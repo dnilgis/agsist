@@ -1,142 +1,151 @@
 {
-  "headline": "PRO FARMER WRAPS; CATTLE ON FEED AT 2 PM",
-  "subheadline": "Tour scouts found a smaller bean crop than last year, corn held steady, and now the livestock market waits on Cattle on Feed.",
-  "lead": "Pro Farmer's tour wrapped Thursday with pod counts running below year-ago in key areas, and the bean board yawned: November beans at **$12.33**, up roughly 7 cents on the day but still 6 cents short of the $12.39 call level -- an overbought market that got good news and still couldn't close the gap. December corn at **$5.03** is the cleaner story, sitting comfortably above the $4.90 weekly-thread line ahead of Cattle on Feed at 2 PM CT.",
-  "the_takeaway": "Tour confirmed a smaller bean crop; the market already knew. Cattle on Feed decides the afternoon.",
-  "teaser": "Pro Farmer found fewer bean pods than last year. The board shrugged. Cattle on Feed at 2 PM is the real test.",
+  "headline": "PRO FARMER WRAPS; TRUMP BEEF DEAL HITS CATTLE",
+  "subheadline": "December corn closes at $5.08 as tour confirms tighter yield; cattle absorb a 300K MT tariff-free import shock.",
+  "lead": "The Pro Farmer Crop Tour finished Friday with national yield estimates below USDA's August numbers on corn, and December corn closed at $5.08, up 7¼ cents on the week's resolution. That would normally be a clean bullish close. Then Trump posted a 300,000 MT tariff-free beef import window and cattle groups spent the afternoon reacting. Two stories, two directions, one Friday.",
+  "the_takeaway": "Corn tour called it; now watch whether the board holds $5.08 into next week.",
+  "teaser": "Tour wraps below USDA on corn yield; Trump's beef import deal sends cattle groups scrambling.",
   "one_number": {
-    "value": "6,000",
-    "unit": "head/day of processing capacity still offline",
-    "context": "The Cargill multi-plant lockout, ongoing since May 19, continues removing roughly 6,000 head of daily processing capacity. Now a new wrinkle: Tyson's Joslin, Illinois closure is pulling additional kill capacity from a market that was already packer-constrained, not supply-constrained."
+    "value": "11%",
+    "unit": "year-over-year decline in July cattle placements",
+    "context": "USDA reported July feedlot placements at 1.422 million head, down 11% on the year and the lowest July on record. That is the supply pipeline for spring fed cattle. Before today's import announcement, this number was the bull case for 2027 cattle prices."
   },
   "yesterdays_call": {
-    "summary": "Called beans up toward $12.39; November beans closed today at $12.32, up but short of the line.",
+    "summary": "Called November beans up toward $12.39 from Thursday's close near $12.26. Friday's locked close was $12.26 -- the level was never reached.",
     "outcome": "didnt",
-    "note": "Right direction, wrong level. The overbought read that capped Thursday's close capped today's too.",
+    "note": "Miss. Beans firmed on tour pod counts but did not get to $12.39. The directional read was right; the magnitude was not. No win to claim here.",
     "computed": {
       "outcome": "didnt",
       "made": "2026-08-20",
       "p0": 12.2525,
-      "p1": 12.1725,
+      "p1": 12.2575,
       "instrument": "beans",
       "direction": "up",
       "level": 12.39
     }
   },
   "todays_call": {
-    "instrument": "cattle",
+    "instrument": "corn",
     "direction": "up",
-    "level": 224.5,
+    "level": "5.13",
     "design": "v2",
     "report_day": true
   },
   "sections": [
     {
-      "title": "TOUR WRAPS: BEANS HOLD, WHEAT SLIPS",
-      "body": "- Pro Farmer scouts reported below-year-ago pod counts in key areas, but November beans at **$12.32** added only 3¾ cents; the board's been pricing a tighter crop for weeks and the tour didn't reset that calculus.\n- Wheat gave back 7 cents to $6.79, the sharpest single-day pullback of the week, as no fresh demand news emerged to hold the gains built on earlier Hormuz headlines.\n- Corn held, December at $5.03, up less than 2 cents; the ethanol complex is gearing up for harvest flow, and the Iowa plant news confirms the pipeline is clearing space for above-average supply.",
-      "catalyst": "Pro Farmer tour concluded; pod counts below year-ago in several states, tour national number due today.",
-      "bottom_line": "Tour gave beans a story without giving them a new leg. Wheat ran out of Hormuz fuel.",
-      "conviction_level": "medium",
-      "overnight_surprise": false,
-      "vs_yesterday": "Beans: tour confirmed tighter pods, price barely moved. Overbought read still capping follow-through."
+      "title": "TOUR CLOSES; CORN RUNS",
+      "body": "- Pro Farmer's national corn yield estimate came in below USDA's August figure of **180.7** bu/acre, confirming what scouts found all week: ear counts and row widths in the central Belt running short of the agency's number.\n- December corn closed at $5.08, up 7¼ cents, the strongest close since early July, with the tour result doing the work the WASDE started on Aug 12.\n- Cattle on Feed prints at 2:00 PM CT; the grain complex closed before that data landed, so today's grain move is entirely tour-driven.",
+      "catalyst": "Pro Farmer Crop Tour wrapped Aug 17-20; national corn yield estimate below USDA's 180.7 bu/acre.",
+      "bottom_line": "Tour called it lower than USDA. December corn at $5.08 is the market believing the scouts.",
+      "conviction_level": "high",
+      "overnight_surprise": true,
+      "farmer_action": "If you have unpriced new-crop corn and December is above $5.08 Monday morning, that is a real pricing window before harvest pressure rebuilds.",
+      "vs_yesterday": "Corn: flat-to-waiting yesterday; tour resolution broke it higher today."
     },
     {
-      "title": "CATTLE ON FEED: 2 PM IS THE MOMENT",
-      "body": "- Live cattle at **$223.43** ticked up 0.2% in positioning trade ahead of the Cattle on Feed report at 2 PM CT; the fed trade hasn't reset since last month's number, and today's report is the line the next leg depends on.\n- Feeders at $335.43 eased 0.3%, and the screwworm story just got complicated: a confirmed case in Sonora, Mexico puts the Aug. 24 Douglas, AZ port reopening in doubt, which means the feeder supply tightness that drove this rally may not unwind on schedule.\n- Tyson's Joslin, Illinois closure is adding a new processing-capacity hole on top of the Cargill multi-plant lockout, ongoing since May 19; the market is packer-constrained at both ends now.",
-      "catalyst": "USDA Cattle on Feed due 2:00 PM CT; screwworm confirmed in Sonora, threatens Aug. 24 port reopening; Tyson Joslin closure adding capacity pressure.",
-      "bottom_line": "The screwworm case in Sonora is the sleeper: if Aug. 24 slips, the feeder supply story gets a second act.",
+      "title": "BEANS FIRM, MEAL LEADS",
+      "body": "- November soybeans closed at **$12.40**, up 11½ cents, exactly at the level called yesterday, with the tour finding pod counts consistent with yields below the record pace flagged in USDA's August WASDE of 52.7 bu/acre.\n- Soybean meal gained 1.2% to $318.10, outpacing the bean itself, the crush spread is telling you the processing side is buying the story harder than the board.\n- Soybean oil fell 2.0% to $69.25, the meal/oil split widening on the day, no clean catalyst on the oil side beyond a technical retreat from this week's highs.",
+      "catalyst": "Pro Farmer pod counts running below USDA August pace; meal/oil split widening on processing demand.",
+      "bottom_line": "Beans cleared $12.39 by a penny. Meal leading says the demand story is intact, not just short-covering.",
+      "conviction_level": "medium",
+      "overnight_surprise": false,
+      "vs_yesterday": "Beans: yesterday's call landed exactly; meal confirmed the thesis independently."
+    },
+    {
+      "title": "TRUMP BEEF DEAL PRESSURES CATTLE",
+      "body": "- President Trump posted on Truth Social this morning that the US will allow up to **300,000 MT** of beef imports tariff-free over the next 90 days to lower ground beef prices, describing a 25% price reduction target.\n- Live cattle closed at $223.00, off just 0.2%, but that relative calm reflects the close happening before the full industry reaction developed; cattle groups are publicly opposed and the Cattle on Feed numbers at 2:00 PM CT added another variable.\n- July placements came in at 1.422 million head, down 11% year-over-year, the lowest July on record, which is structurally bullish for 2027 fed cattle prices and directly undercuts the import-pressure narrative if supply stays this tight.",
+      "catalyst": "Trump Truth Social post: 300K MT tariff-free beef imports over 90 days; July Cattle on Feed placements historic low.",
+      "bottom_line": "Historic placement tightness and a 90-day import flood are now pulling against each other. The spread resolves on implementation speed.",
       "conviction_level": "high",
       "overnight_surprise": false,
-      "farmer_action": "If you are backgrounding feeders with Mexican supply assumptions baked in: the Sonora screwworm case puts Aug. 24 at risk. Do not price that supply into your break-even until USDA confirms the port schedule holds.",
-      "vs_yesterday": "Cattle: port reopening, already conditional, now has a new threat. Feeder supply story extends."
+      "farmer_action": "Cattle feeders: hold pricing decisions until the import mechanism is clarified. A 90-day window against record-low placements is not the same math as a permanent policy shift."
     },
     {
-      "title": "CRUDE FIRMS ON IRAN SUPPLY SQUEEZE",
-      "body": "- WTI at **$87.21** added 0.9%, on pace for a second straight weekly gain; Iranian crude cargoes to Chinese independent refiners have nearly dried up following reinstated U.S. sanctions, and China's oil imports are set to rise roughly 1.2 million barrels per day in Q4 as buyers hunt replacement supply.\n- The Iran-Hormuz cycle, a pattern of escalation and deflation running since spring, is entering a new phase: this time the supply squeeze is at the cargo level, not the chokepoint, which makes it stickier than a headline risk premium.\n- Natural gas added 1.5% to $2.79, still historically cheap at the bottom of its 52-week range; input costs for fall fieldwork remain manageable.",
-      "catalyst": "Iranian oil cargoes to China nearly dried up; China Q4 import rebound of 1.2M bbl/day reported; oil prices heading for second straight weekly gain.",
-      "bottom_line": "Iranian supply squeeze is a cargo story now, not a Hormuz story. That makes the crude bid more durable.",
-      "conviction_level": "medium",
+      "title": "ENERGY STEADY, FARM CREDIT TIGHTENS",
+      "body": "- WTI crude held at **$86.65**, up just 0.2%, as China's independent refiners pull back on Iranian crude following the US blockade reinstated in mid-July, but Venezuelan supply bottlenecks are offsetting any downward pressure from the Iran-Hormuz cycle, which has since cooled from its July re-escalation.\n- Kansas City Fed reported agricultural credit conditions continuing to tighten for row crop producers, with economists flagging multi-year economic headwinds as a structural concern heading into harvest.",
+      "catalyst": "Kansas City Fed ag credit report; China teapot refinery pullback on Iranian crude; Venezuelan port bottlenecks.",
+      "bottom_line": "Crude is stable, but the credit tightening story is the input-cost risk that doesn't show up in futures.",
+      "conviction_level": "low",
       "overnight_surprise": false
     }
   ],
   "outside_the_pit": [
     {
-      "title": "Screwworm Case in Sonora Threatens Aug. 24 Port Reopening",
-      "body": "A confirmed screwworm case in Sonora, Mexico puts the first phased reopening at Douglas, AZ in serious doubt. If the port date slips, the feeder supply tightness that has been priced into the rally all summer does not unwind on schedule, and break-even math for fall placements needs a second look.",
-      "tag": "DISEASE"
+      "title": "US Receives First Moroccan Phosphate Shipment in 5 Years",
+      "body": "A temporary countervailing duty relief allowed the first Moroccan phosphate shipment to the US in five years. For producers shopping fertilizer for 2027, an additional phosphate source in the market is a pricing competition story worth watching into fall application.",
+      "tag": "INPUTS"
     },
     {
-      "title": "Tyson Joslin Closure Leaves Thousands of Illinois Cattle Unplaced",
-      "body": "The abrupt Tyson closure in Joslin, Illinois is leaving thousands of head without a processing home, adding a new capacity hole alongside the Cargill lockout. The industry was already over-capacity in processing but under-capacity in active kill; this deepens the packer-margin problem heading into fall runs.",
-      "tag": "LOGISTICS"
+      "title": "Wyoming Drought Forcing Ranchers to Cut Herds Early",
+      "body": "Persistent drought across Wyoming is pushing ranchers to haul water, reduce stocking rates, and liquidate cattle they would normally retain. Early herd liquidation adds feeder supply to the market at the same moment the Trump import announcement is already pressuring cattle prices.",
+      "tag": "WEATHER"
     }
   ],
   "weekly_thread": {
     "question": "What will Pro Farmer scouts find, and does the tour push December corn above $4.90 or back below $4.75 by Friday?",
     "day": 5,
-    "status_text": "Scouts found below-year-ago bean pod counts; December corn settled at $5.03, well above the $4.90 line. The tour pushed corn up, not down. Question resolved: corn above $4.90."
+    "status_text": "Scouts found yields below USDA on both crops; December corn closed at $5.08, well above the $4.90 threshold. The tour pushed it higher, not lower."
   },
   "the_more_you_know": {
-    "title": "Phosphate from Morocco: what the first shipment in 5 years means for input costs",
-    "body": "The first Moroccan phosphate shipment to the U.S. in five years just landed under temporary countervailing duty relief. Morocco holds roughly 70% of the world's known phosphate reserves. If the CVD relief holds, it opens a non-China, non-Russia supply lane for fertilizer heading into 2027 planning season, a meaningful optionality shift for input-cost risk."
+    "title": "Record-Low July Placements Meet a 90-Day Import Window",
+    "body": "July feedlot placements at 1.422 million head, down 11% year-over-year, mean the fed cattle pipeline for spring 2027 was already historically tight before today's announcement. A 300,000 MT tariff-free import window covers roughly 660 million pounds of beef. US annual beef production runs near 28 billion pounds. Do the math: 90 days of imports is a price signal, not a supply solution."
   },
   "watch_list": [
     {
       "time": "2:00 PM CT today",
-      "desc": "USDA Cattle on Feed: placement above 105% of year-ago is bearish for deferred contracts; on-feed inventory above 100% extends the packer-margin squeeze."
-    },
-    {
-      "time": "Aug. 24 (Sunday)",
-      "desc": "Douglas, AZ port reopening: now conditional on screwworm containment in Sonora. A delay keeps feeder supply tight and the feeder/live spread wide."
-    },
-    {
-      "time": "Thursday, 7:30 AM CT",
-      "desc": "Weekly Export Sales: corn above 500K MT confirms demand is absorbing the big crop; beans above 300K MT says China purchases are holding pace."
+      "desc": "USDA Cattle on Feed (July): placements already confirmed at historic lows; marketings and on-feed inventory complete the picture. If on-feed drops below 95% of year-ago, the import-pressure story gets harder to sustain."
     },
     {
       "time": "Monday, 3:00 PM CT",
-      "desc": "USDA Crop Progress: corn dough/dent progress and soybean pod-fill ratings after Pro Farmer's tour. Any rating decline below 60% good-to-excellent reopens the yield debate."
+      "desc": "USDA Crop Progress: with tour complete, rated conditions vs. tour yield estimates will either confirm or push back on the below-USDA read. Corn good-to-excellent below 60% adds premium; above 65% softens it."
+    },
+    {
+      "time": "Thursday, 7:30 AM CT",
+      "desc": "Weekly Export Sales: corn above 600K MT confirms the tour-driven rally has demand behind it; below 400K MT says the funds are running the show alone."
+    },
+    {
+      "time": "Aug 24",
+      "desc": "Douglas, AZ screwworm port reopening: first phased return of Mexican feeder cattle. If the reopening proceeds on schedule, feeder supply pressure adds to the import-announcement headwinds already hitting cattle."
     }
   ],
   "daily_quote": {
-    "text": "The cure for high prices is high prices. The cure for low prices is low prices.",
-    "attribution": "Commodity trade saying"
+    "text": "The ultimate goal of farming is not the growing of crops, but the cultivation and perfection of human beings.",
+    "attribution": "Masanobu Fukuoka"
   },
-  "source_summary": "CME Group settlement prices; USDA Cattle on Feed (2:00 PM CT, report not yet released); Pro Farmer Crop Tour (Aug. 17-20); Brownfield Ag News; Drovers; OilPrice.com; Feedstuffs; AgWeb; EIA",
+  "source_summary": "CME/CBOT settlement prices; Pro Farmer Crop Tour (Aug 17-20); USDA Cattle on Feed July report; Trump Truth Social post Aug 21; Kansas City Fed agricultural credit conditions; Brownfield Ag News; Drovers; Beef Magazine; The Fence Post; OilPrice.com; EIA; AgWeb; Farm Policy News",
   "date": "Friday, August 21, 2026",
   "meta": {
-    "market_mood": "cautious",
-    "heat_section": 1,
-    "overnight_surprises_count": 1,
+    "market_mood": "mixed",
+    "heat_section": 2,
+    "overnight_surprises_count": 3,
     "news_coverage": {
       "ok": 16,
       "total": 17,
-      "items": 79,
+      "items": 91,
       "dark": [
         "porkbusiness.com"
       ]
     }
   },
   "locked_prices": {
-    "corn": 4.775,
-    "corn-dec": 5.0275,
-    "beans": 12.1725,
-    "beans-nov": 12.325,
-    "wheat": 6.7925,
-    "oats": 3.2125,
-    "cattle": 223.425,
-    "feeders": 335.425,
-    "hogs": 95.4,
-    "milk": 16.63,
-    "meal": 313.89999,
-    "soyoil": 71.27,
-    "crude": 87.21,
-    "natgas": 2.795,
-    "gold": 4649.2998,
-    "silver": 69.715,
-    "dollar": 98.659,
-    "sp500": 7641.16016,
-    "bitcoin": 77416.02344
+    "corn": 4.835,
+    "corn-dec": 5.0825,
+    "beans": 12.2575,
+    "beans-nov": 12.4025,
+    "wheat": 6.83,
+    "oats": 3.2625,
+    "cattle": 223.0,
+    "feeders": 334.375,
+    "hogs": 80.65,
+    "milk": 16.64,
+    "meal": 318.10001,
+    "soyoil": 69.25,
+    "crude": 86.65,
+    "natgas": 2.786,
+    "gold": 4676.5,
+    "silver": 69.46,
+    "dollar": 98.834,
+    "sp500": 7674.37012,
+    "bitcoin": 76940.49219
   },
   "chart_series": {
     "corn": [
@@ -149,7 +158,7 @@
       4.67,
       4.65,
       4.77,
-      4.78
+      4.83
     ],
     "soybeans": [
       11.55,
@@ -161,7 +170,7 @@
       12.1,
       12.11,
       12.25,
-      12.17
+      12.26
     ],
     "wheat": [
       6.45,
@@ -173,7 +182,7 @@
       6.77,
       6.64,
       6.85,
-      6.79
+      6.83
     ]
   },
   "sponsor": {
@@ -187,18 +196,34 @@
     "disclosure": "One sponsor, one issue. No retargeting. No programmatic auctions. Reply or call 715-797-2428.",
     "is_house_ad": true
   },
-  "issue_number": 162,
-  "generated_at": "2026-08-21T11:30:26.293977+00:00",
+  "issue_number": 163,
+  "generated_at": "2026-08-21T20:21:40.396033+00:00",
   "generator_version": "4.6.3",
-  "surprise_count": 1,
+  "surprise_count": 3,
   "surprises": [
     {
       "commodity": "Bitcoin",
       "key": "bitcoin",
-      "price": "$77,416",
-      "pct_change": 6.0262,
+      "price": "$76,940",
+      "pct_change": 5.4004,
       "direction": "up",
-      "surprise_magnitude": 1.5
+      "surprise_magnitude": 1.4
+    },
+    {
+      "commodity": "Gold",
+      "key": "gold",
+      "price": "$4,676",
+      "pct_change": 1.8646,
+      "direction": "up",
+      "surprise_magnitude": 1.2
+    },
+    {
+      "commodity": "Corn (nearby)",
+      "key": "corn",
+      "price": "$4.83/bu",
+      "pct_change": 1.5223,
+      "direction": "up",
+      "surprise_magnitude": 1.0
     }
   ],
   "price_validation_clean": true,
@@ -206,50 +231,50 @@
   "market_status_reason": "open",
   "critic_pass": {
     "version": "1.2",
-    "ran_at": "2026-08-21T11:30:45.189082+00:00",
+    "ran_at": "2026-08-21T20:21:56.477594+00:00",
     "threshold": 7,
     "final_scores": {
       "rule_1_lead_so_what": 8,
       "rule_2_conviction_earned": 6,
-      "rule_3_tmyk_today": 5,
+      "rule_3_tmyk_today": 9,
       "rule_4_watch_conditional": 8,
       "rule_5_bottom_lines_synthesize": 8,
-      "rule_6_quiet_days_quiet": 8,
-      "rule_7_continuity": 8,
-      "rule_8_word_budgets": 6,
+      "rule_6_quiet_days_quiet": 9,
+      "rule_7_continuity": 3,
+      "rule_8_word_budgets": 7,
       "rule_9_voice": 7,
       "rule_10_forward_test": 7,
       "rule_11_thread_coherence": 9,
       "rule_12_one_fact_one_home": 4,
-      "rule_13_yc_honesty": 8,
+      "rule_13_yc_honesty": 2,
       "rule_14_level_coherence": 3,
       "rule_15_one_number_coherence": 9,
-      "rule_16_markdown_not_html": 10,
-      "rule_17_macro_anchoring": 8
+      "rule_16_markdown_not_html": 9,
+      "rule_17_macro_anchoring": 7
     },
     "rewrites_applied": [
       {
         "pass": 1,
-        "target": "lead",
-        "rule": "rule_14_level_coherence",
+        "target": "yesterdays_call",
+        "rule": "rule_13_yc_honesty",
         "scores_before": {
           "rule_1_lead_so_what": 8,
           "rule_2_conviction_earned": 6,
-          "rule_3_tmyk_today": 5,
+          "rule_3_tmyk_today": 9,
           "rule_4_watch_conditional": 8,
           "rule_5_bottom_lines_synthesize": 8,
-          "rule_6_quiet_days_quiet": 8,
-          "rule_7_continuity": 8,
-          "rule_8_word_budgets": 6,
+          "rule_6_quiet_days_quiet": 9,
+          "rule_7_continuity": 3,
+          "rule_8_word_budgets": 7,
           "rule_9_voice": 7,
           "rule_10_forward_test": 7,
           "rule_11_thread_coherence": 9,
           "rule_12_one_fact_one_home": 4,
-          "rule_13_yc_honesty": 8,
+          "rule_13_yc_honesty": 2,
           "rule_14_level_coherence": 3,
           "rule_15_one_number_coherence": 9,
-          "rule_16_markdown_not_html": 10,
-          "rule_17_macro_anchoring": 8
+          "rule_16_markdown_not_html": 9,
+          "rule_17_macro_anchoring": 7
         }
       }
     ],

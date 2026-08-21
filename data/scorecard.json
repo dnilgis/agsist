@@ -1,5 +1,5 @@
 {
- "updated": "2026-08-21T11:30:47+00:00",
+ "updated": "2026-08-21T20:21:58+00:00",
  "total": 94,
  "played_out": 34,
  "didnt": 55,
@@ -42,9 +42,9 @@
   }
  },
  "direction_only": {
-  "right_way": 21,
+  "right_way": 22,
   "graded": 53,
-  "rate": 39.6
+  "rate": 41.5
  },
  "by_instrument": {
   "wheat": {
@@ -94,18 +94,18 @@
   {
    "made": "2026-08-20",
    "judged": "2026-08-21",
-   "call": "Called beans up toward $12.39; November beans closed today at $12.32, up but short of the line.",
+   "call": "Called November beans up toward $12.39 from Thursday's close near $12.26. Friday's locked close was $12.26 -- the level was never reached.",
    "outcome": "didnt",
    "method": "deterministic",
    "mismatch": false,
-   "note": "Right direction, wrong level. The overbought read that capped Thursday's close capped today's too.",
+   "note": "Miss. Beans firmed on tour pod counts but did not get to $12.39. The directional read was right; the magnitude was not. No win to claim here.",
    "instrument": "beans",
    "direction": "up",
    "level": 12.39,
    "p0": 12.2525,
-   "p1": 12.1725,
+   "p1": 12.2575,
    "design": "v2",
-   "direction_ok": false
+   "direction_ok": true
   },
   {
    "made": "2026-08-19",

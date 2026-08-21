@@ -3,11 +3,11 @@
     {
       "date": "2026-08-21",
       "date_display": "Friday, August 21, 2026",
-      "headline": "PRO FARMER WRAPS; CATTLE ON FEED AT 2 PM",
-      "teaser": "Pro Farmer found fewer bean pods than last year. The board shrugged. Cattle on Feed at 2 PM is the real test.",
-      "market_mood": "cautious",
-      "surprise_count": 1,
-      "sections": 3,
+      "headline": "PRO FARMER WRAPS; TRUMP BEEF DEAL HITS CATTLE",
+      "teaser": "Tour wraps below USDA on corn yield; Trump's beef import deal sends cattle groups scrambling.",
+      "market_mood": "mixed",
+      "surprise_count": 3,
+      "sections": 4,
       "url": "/daily/2026-08-21",
       "market_closed": false,
       "yc_outcome": "didnt"
@@ -1854,6 +1854,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-08-21T11:30:45.246338+00:00",
+  "updated": "2026-08-21T20:21:56.523957+00:00",
   "count": 162
 }
