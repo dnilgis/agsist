@@ -5,13 +5,26 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Thu, 20 Aug 2026 11:30:31 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 21 Aug 2026 11:30:47 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/agsist.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>PRO FARMER WRAPS; CATTLE ON FEED AT 2 PM</title>
+      <link>https://agsist.com/daily/2026-08-21</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-08-21</guid>
+      <pubDate>Fri, 21 Aug 2026 05:00:00 -0600</pubDate>
+      <description>Pro Farmer's tour wrapped Thursday with pod counts running below year-ago in key areas, and the bean board yawned: November beans at **$12.33**, up roughly 7 cents on the day but still 6 cents short of the $12.39 call level -- an overbought market that got good news and still couldn't close the gap. December corn at **$5.03** is the cleaner story, sitting comfortably above the $4.90 weekly-thread line ahead of Cattle on Feed at 2 PM CT.
+Tour scouts found a smaller bean crop than last year, corn held steady, and now the livestock market waits on Cattle on Feed.
+• TOUR WRAPS: BEANS HOLD, WHEAT SLIPS
+• CATTLE ON FEED: 2 PM IS THE MOMENT
+  → If you are backgrounding feeders with Mexican supply assumptions baked in: the Sonora screwworm case puts Aug. 24 at risk. Do not price that supply into your break-even until USDA confirms the port schedule holds.
+• CRUDE FIRMS ON IRAN SUPPLY SQUEEZE
+Read more: https://agsist.com/daily/2026-08-21</description>
+    </item>
     <item>
       <title>EXPORT SALES AT 7:30; BEANS HOLD, CRUDE RUNS</title>
       <link>https://agsist.com/daily/2026-08-20</link>
@@ -377,19 +390,6 @@ Feeder cattle dropped 2.5% on beef demand weakness and packer pressure, while WT
   → Harvest-season diesel still unhedged: $90.00 WTI with active strikes running 12 consecutive nights is the line. Cover remaining needs before Friday.
 • Grains Drift; Export Sales Digested
 Read more: https://agsist.com/daily/2026-07-23</description>
-    </item>
-    <item>
-      <title>CRUDE RUNS 3.3%; GRAINS MARK TIME</title>
-      <link>https://agsist.com/daily/2026-07-22</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-07-22</guid>
-      <pubDate>Wed, 22 Jul 2026 05:00:00 -0600</pubDate>
-      <description>Crude oil ran hard to $88.15, up 3.3% on the session, after Houthis threatened to blockade the Bab el-Mandeb Strait alongside ongoing Iran-Hormuz tensions, ongoing since early April, now with a second chokepoint in play. That's the story today. Corn ticked up a quarter cent to $4.55, beans lost half a cent to $12.24, and wheat gave back three-quarters of a cent to $6.83. The grains are in their own world right now, watching pollination weather with one eye and waiting for Thursday's export sales with the other. The 6-to-10-day outlook just turned hotter and drier across the Heartland. That's the thread this week: whether a clean crop condition reading holds or the heat building on the calendar starts repricing the front month.
-Houthi threats to Bab el-Mandeb add a second chokepoint to the Hormuz story, pushing WTI to $88.15 while corn and beans barely moved.
-• Crude Runs on Two Chokepoints
-  → Any harvest-season diesel still unhedged after yesterday's lock recommendation: $88.15 WTI with two active chokepoints is not the moment to wait. Cover what remains.
-• Grains Hold, Heat Builds
-• Cattle Mixed; Feeders Slip
-Read more: https://agsist.com/daily/2026-07-22</description>
     </item>
   </channel>
 </rss>

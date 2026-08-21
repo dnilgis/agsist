@@ -1,18 +1,18 @@
 {
- "updated": "2026-08-20T11:30:31+00:00",
- "total": 93,
+ "updated": "2026-08-21T11:30:47+00:00",
+ "total": 94,
  "played_out": 34,
- "didnt": 54,
+ "didnt": 55,
  "pending": 5,
- "hit_rate": 38.6,
+ "hit_rate": 38.2,
  "by_method": {
   "deterministic": {
    "played": 8,
-   "missed": 44,
-   "graded": 52,
-   "hit_rate": 15.4,
+   "missed": 45,
+   "graded": 53,
+   "hit_rate": 15.1,
    "first": "2026-06-24",
-   "last": "2026-08-20"
+   "last": "2026-08-21"
   },
   "self_reported": {
    "played": 26,
@@ -34,17 +34,17 @@
   },
   "v2": {
    "played": 4,
-   "missed": 4,
-   "graded": 8,
-   "hit_rate": 50.0,
+   "missed": 5,
+   "graded": 9,
+   "hit_rate": 44.4,
    "first": "2026-08-12",
-   "last": "2026-08-20"
+   "last": "2026-08-21"
   }
  },
  "direction_only": {
   "right_way": 21,
-  "graded": 52,
-  "rate": 40.4
+  "graded": 53,
+  "rate": 39.6
  },
  "by_instrument": {
   "wheat": {
@@ -59,8 +59,8 @@
   },
   "beans": {
    "played": 4,
-   "graded": 14,
-   "hit_rate": 28.6
+   "graded": 15,
+   "hit_rate": 26.7
   },
   "crude": {
    "played": 1,
@@ -89,8 +89,24 @@
   "hit_rate": 35.0
  },
  "mismatched": 23,
- "current_streak": 1,
+ "current_streak": 0,
  "records": [
+  {
+   "made": "2026-08-20",
+   "judged": "2026-08-21",
+   "call": "Called beans up toward $12.39; November beans closed today at $12.32, up but short of the line.",
+   "outcome": "didnt",
+   "method": "deterministic",
+   "mismatch": false,
+   "note": "Right direction, wrong level. The overbought read that capped Thursday's close capped today's too.",
+   "instrument": "beans",
+   "direction": "up",
+   "level": 12.39,
+   "p0": 12.2525,
+   "p1": 12.1725,
+   "design": "v2",
+   "direction_ok": false
+  },
   {
    "made": "2026-08-19",
    "judged": "2026-08-20",
