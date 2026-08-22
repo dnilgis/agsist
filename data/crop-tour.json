@@ -1,5 +1,5 @@
 {
-  "updated": "2026-08-20",
+  "updated": "2026-08-21",
   "tour": {
     "year": 2026,
     "start": "2026-08-17",
@@ -152,13 +152,14 @@
       "source": "data/yield-nowcast.json"
     },
     "tour": {
-      "corn": null,
-      "soy_prod": null,
+      "corn": 173.2,
+      "soy_prod": 4.572,
       "label": "Pro Farmer tour",
       "note": "Posts Friday evening, Aug 21.",
       "short": "Posts Friday evening, Aug 21.",
       "short_posted": "Pro Farmer's 2026 national estimate.",
-      "note_posted": "Pro Farmer's 2026 national corn estimate, published at the end of tour week."
+      "note_posted": "Pro Farmer's 2026 national corn estimate, published at the end of tour week.",
+      "as_of": "2026-08-21"
     },
     "_withdrawn_combine": {
       "withdrawn": "2026-08-20",
