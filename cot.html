@@ -53,7 +53,7 @@
       "inLanguage": "en-US",
       "isPartOf": { "@type": "WebSite", "@id": "https://agsist.com/#website", "url": "https://agsist.com/", "name": "AGSIST" },
       "datePublished": "2025-09-01",
-      "dateModified": "2026-08-21",
+      "dateModified": "2026-08-20",
       "author": { "@type": "Person", "name": "Sigurd Lindquist", "email": "sig@farmers1st.com" },
       "publisher": { "@type": "Organization", "name": "AGSIST", "url": "https://agsist.com/" },
       "breadcrumb": {
@@ -75,7 +75,7 @@
       "creditText": "Source: CFTC Commitments of Traders — Disaggregated Futures-Only",
       "isBasedOn": "https://www.cftc.gov/MarketReports/CommitmentsofTraders/index.htm",
       "keywords": ["CFTC", "Commitment of Traders", "managed money", "corn", "soybeans", "wheat", "cattle", "fund positioning"],
-      "dateModified": "2026-08-21",
+      "dateModified": "2026-08-20",
       "distribution": [ { "@type": "DataDownload", "encodingFormat": "application/json", "contentUrl": "https://agsist.com/data/cot.json" } ]
     }
   ]
@@ -113,6 +113,9 @@ button,a,[role="button"]{touch-action:manipulation;}
 .cot-read-tag { font-family:'JetBrains Mono',monospace; font-size:0.755rem; font-weight:800; letter-spacing:.08em; text-transform:uppercase; color:var(--gold); margin-bottom:.35rem; }
 .cot-read-body { font-size:.86rem; line-height:1.6; color:var(--text); }
 .cot-read-body b { color:var(--gold); }
+.cot-read.cot-read-held { border-color:var(--border); background:rgba(128,128,128,.06); }
+.cot-read.cot-read-held .cot-read-tag { color:var(--text-muted); }
+.cot-read.cot-read-held .cot-read-body { color:var(--text-dim); }
 @media (max-width:560px){ .cot-read-body{ font-size:.82rem; } }
 
 
@@ -353,7 +356,7 @@ canvas#cot-chart { width: 100%; height: 260px; display: block; }
     <div class="cvb-text" id="cvb-text">Loading fund positioning data…</div>
     <div class="cvb-meta">
       <div class="cvb-date" id="cvb-date">CFTC · Updated weekly</div>
-      <span class="cvb-countdown" id="cot-countdown"></span>
+      <span class="cvb-countdown" id="cot-countdown" role="status" aria-live="polite" aria-atomic="true"></span>
     </div>
   </div>
 
@@ -474,7 +477,28 @@ function buildCards(){
   });
   grid.innerHTML=html;
   Array.prototype.forEach.call(grid.querySelectorAll('.cot-card'),function(card){
-    function focus(){ setActiveTab(card.getAttribute('data-key')); }
+    /* THE CARD PROMISES SOMETHING IT HAS TO KEEP. Every card is role="button"
+       with an accessible name ending "Activate to focus in chart", and this
+       selected the chart's tab and stopped there -- with the chart roughly
+       4,700px further down the page. Pressing Enter on a card appeared to do
+       nothing at all: no movement, no focus change, nothing in view. Bring the
+       chart to the reader, and put keyboard focus on it so a screen reader
+       lands somewhere that reflects what just happened. */
+    function focus(){
+      var key = card.getAttribute('data-key');
+      setActiveTab(key);
+      var chart = document.getElementById('cot-chart');
+      var target = (chart && (chart.closest('section') || chart.parentElement)) || chart;
+      if (!target) return;
+      try {
+        target.scrollIntoView({
+          behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
+          block: 'center'
+        });
+      } catch (_) { target.scrollIntoView(); }
+      if (!target.hasAttribute('tabindex')) target.setAttribute('tabindex', '-1');
+      try { target.focus({ preventScroll: true }); } catch (_) { target.focus(); }
+    }
     card.addEventListener('click',focus);
     card.addEventListener('keydown',function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); focus(); } });
   });
@@ -493,6 +517,15 @@ function fmtK(n) {
   if (n == null || isNaN(n)) return '--';
   var abs = Math.abs(n), sign = n >= 0 ? '+' : '-';
   return sign + (abs >= 1000 ? (abs/1000).toFixed(1)+'k' : abs);
+}
+/* MAGNITUDE ONLY, NO SIGN. fmtK() always prefixes + or -, so fmtK(Math.abs(x))
+   ALWAYS emits a plus -- which is how the week-over-week cell came to render a
+   fall of 18,946 contracts as "\u25bc +18.9k wk/wk". The arrow already carries
+   the direction; the number beside it must not contradict it. */
+function fmtMag(n) {
+  if (n == null || isNaN(n)) return '--';
+  var abs = Math.abs(n);
+  return abs >= 1000 ? (abs / 1000).toFixed(1) + 'k' : String(abs);
 }
 function fmtKShort(n) {
   if (n == null || isNaN(n)) return '--';
@@ -582,6 +615,120 @@ function computePriceRead(key){
 }
 function divLabel(d){return d==='bearish'?'bearish divergence':d==='bullish'?'bullish divergence':d==='confirmed-up'?'confirmed uptrend':d==='confirmed-down'?'confirmed downtrend':'';}
 
+
+/* ── ONE WEEK, TWO FILES, NO AGREEMENT CHECK ──────────────────────────────
+   The card numbers come from data/cot.json. The sentence under each card, the
+   gold "The Read" panel and the chart all come from data/cot-history.json.
+   The two are fetched independently and NOTHING compared their vintages, so
+   whenever history lagged the summary -- a slow commit, a failed refresh, a
+   CDN serving one and not the other -- the page printed last week's move in
+   the present tense directly beneath this week's number. Measured: the corn
+   card's own cell said the week's move was 7.8k while the sentence inside the
+   same box said funds cut 19k "this week". Both were presented as this week;
+   one was a week old.
+
+   That is house rule 1. A reader cannot be shown a figure that misstates the
+   data, and "this week" attached to last week's number misstates it.
+
+   So the derived prose now has to earn its place: it renders only when the
+   history it is built from is the same report as the figures above it. When
+   it is not, it is withheld and the page says why. It repairs itself the
+   moment the history file catches up, because the poll re-reads both. */
+
+/* Everything derived from the history file goes through here, so the vintage
+   check cannot be bypassed by adding another caller later. */
+
+/* Blank a card the report did not carry, and say so on its face. */
+function cotMarkCard(key, present) {
+  var net  = document.getElementById('net-' + key);
+  var chg  = document.getElementById('chg-' + key);
+  var vd   = document.getElementById('verdict-' + key);
+  var pill = document.getElementById('pctl-' + key);
+  var ins  = document.getElementById('insight-' + key);
+  var card = document.getElementById('card-' + key);
+  if (card) card.classList.toggle('cot-card-absent', !present);
+  if (present) return;
+  if (net) { net.textContent = '\u2014'; net.className = 'cot-card-net'; }
+  if (chg) { chg.textContent = 'not in this report'; chg.className = 'cot-card-chg nc'; }
+  if (vd)  { vd.textContent = '\u2014'; vd.className = 'cot-card-verdict'; }
+  if (pill) pill.textContent = '';
+  if (ins)  ins.innerHTML = '';
+  if (card) card.setAttribute('aria-label',
+    (LABELS[key] || key) + ': no data in this report.');
+}
+
+function cotRenderDerived() {
+  var aligned = cotVintageAligned();
+  var read = document.getElementById('cot-read');
+  var body = document.getElementById('cot-read-body');
+  var tag  = read ? read.querySelector('.cot-read-tag') : null;
+
+  if (aligned) {
+    if (read) read.classList.remove('cot-read-held');
+    if (tag && tag.dataset.orig) { tag.innerHTML = tag.dataset.orig; delete tag.dataset.orig; }
+    ALL_KEYS.forEach(renderInsight);
+    renderTheRead();
+    return;
+  }
+
+  /* Withheld. Clear the sentences rather than leaving the previous week's on
+     screen, and say plainly which report the commentary was built from. */
+  ALL_KEYS.forEach(function (k) {
+    var el = document.getElementById('insight-' + k);
+    if (el) el.innerHTML = '';
+    /* THE PILL IS DERIVED FROM HISTORY TOO. The first version of this guard
+       cleared only the sentence, so all eleven cards kept last week's
+       "74th percentile \u00b7 52wk" sitting under this week's report date --
+       exactly the defect the guard exists to close, left in place by the fix
+       for it. Measured: net and change correct for Aug 18, pill still Aug 11. */
+    var pl = document.getElementById('pctl-' + k);
+    if (pl) { pl.textContent = ''; pl.className = 'cot-pctl'; }
+  });
+  if (read && body) {
+    if (tag && !tag.dataset.orig) { tag.dataset.orig = tag.innerHTML; tag.textContent = 'Holding'; }
+    read.classList.add('cot-read-held');
+    read.style.display = '';
+    body.textContent = cotVintageNote();
+  }
+}
+
+function cotReportISO() {
+  if (!COT_LOADED) return null;
+  var t = Date.parse(COT_LOADED + ' 12:00:00 GMT');
+  if (!isFinite(t)) return null;
+  var d = new Date(t);
+  var m = d.getUTCMonth() + 1, day = d.getUTCDate();
+  return d.getUTCFullYear() + '-' + (m < 10 ? '0' : '') + m + '-' + (day < 10 ? '0' : '') + day;
+}
+function cotHistoryISO() {
+  if (!historyData || !historyData.history) return null;
+  var newest = null;
+  for (var k in historyData.history) {
+    var a = historyData.history[k];
+    if (a && a.length && a[a.length - 1] && a[a.length - 1].date) {
+      var d = a[a.length - 1].date;
+      if (!newest || d > newest) newest = d;
+    }
+  }
+  return newest;
+}
+function cotVintageAligned() {
+  var r = cotReportISO(), h = cotHistoryISO();
+  /* Unknown is not the same as mismatched. If either file has not arrived we
+     are not in a position to accuse anything of being stale. */
+  if (!r || !h) return true;
+  return r === h;
+}
+function cotVintageNote() {
+  var h = cotHistoryISO();
+  var pretty = h;
+  var t = Date.parse(h + 'T12:00:00Z');
+  if (isFinite(t)) pretty = new Date(t).toLocaleDateString('en-US',
+    { month:'long', day:'numeric', timeZone:'UTC' });
+  return 'The written read is still on the ' + pretty + ' report. The figures above are ' +
+         COT_LOADED + ' \u2014 so the commentary is held back rather than shown against the wrong week.';
+}
+
 function renderInsight(key){
   var ins=computeInsight(key); if(!ins)return null;
   // percentile pill
@@ -605,7 +752,27 @@ function renderInsight(key){
     var dvCls=(pr.divergence==='bearish'||pr.divergence==='confirmed-down')?'dn':(pr.divergence==='bullish'||pr.divergence==='confirmed-up')?'up':'';
     var arrow=pr.priceDir>0?'\u2191':pr.priceDir<0?'\u2193':'\u2192';
     var dvTxt=' Over 4 weeks, net is '+(pr.netDir>0?'rising':pr.netDir<0?'falling':'flat')+' while price is '+(pr.priceDir>0?'rising':pr.priceDir<0?'falling':'flat')+' ('+(pr.pPct>=0?'+':'')+pr.pPct+'%) \u2014 <b class="'+dvCls+'">'+divLabel(pr.divergence)+'</b>.';
-    if(pr.analogN>=4){var lean=pr.analogDown>pr.analogUp?'lower':pr.analogUp>pr.analogDown?'higher':'mixed';dvTxt+=' <span style="color:var(--text-muted)">In the past year, similar positioning ('+pr.analogN+' weeks) was followed by '+lean+' prices 4 weeks later in '+Math.max(pr.analogDown,pr.analogUp)+' of '+pr.analogN+' cases \u2014 small sample, an observation, not a forecast.</span>';}
+    /* WITHDRAWN 2026-08-21. This printed a historical hit rate -- "similar
+       positioning was followed by higher prices 4 weeks later in 6 of 8
+       cases" -- built two ways that the data does not support.
+
+       LOOKAHEAD: each historical week was selected by a percentile computed
+       over the WHOLE 54-week array, including every week AFTER the one being
+       scored. Re-running the same arithmetic causally, using only data that
+       existed at each date, INVERTS the corn card: shipped says higher in 6
+       of 8, causal says LOWER in 6 of 11. Corn is the card every reader sees.
+
+       OVERLAP: the "cases" are consecutive weeks of the same episode with
+       forward windows overlapping three weeks in four. Live cattle's "4 of 4"
+       is one late-2025 rally counted four times. The hedge underneath says
+       "small sample"; it does not say the sample was manufactured.
+
+       A farmer sizing a sale off "higher in 4 of 4 cases" is acting on a
+       strength of evidence the page invented. Everything else on the card --
+       the divergence, the percentile, the price move -- still renders. An
+       honest blank beats a fabricated hit rate. See the plan for how to
+       rebuild it by episode with a causal percentile. */
+    if(false && pr.analogN>=4){var lean=pr.analogDown>pr.analogUp?'lower':pr.analogUp>pr.analogDown?'higher':'mixed';dvTxt+=' <span style="color:var(--text-muted)">In the past year, similar positioning ('+pr.analogN+' weeks) was followed by '+lean+' prices 4 weeks later in '+Math.max(pr.analogDown,pr.analogUp)+' of '+pr.analogN+' cases \u2014 small sample, an observation, not a forecast.</span>';}
     el.innerHTML+=dvTxt;
   }
   return ins;
@@ -622,7 +789,7 @@ function renderTheRead(){
   var LBL2=LABELS;
   // v2 (panel): a fresh flip in a GRAIN market is the read of the week —
   // it must not be buried under a milk divergence.
-  var gFlip=null;for(var gi=0;gi<all.length;gi++){var gx=all[gi];if(gx.flip&&gx.flip.weeksAgo<=1&&['corn','soybeans','wheat','kc_wheat'].indexOf(gx.key)>=0){gFlip=gx;break;}}
+  var gFlip=null;for(var gi=0;gi<all.length;gi++){var gx=all[gi];if(gx.flip&&gx.flip.weeksAgo<=1&&['corn','beans','wheat','kcwheat']  /* NOT 'soybeans'/'kc_wheat': CFG defines 'beans' and 'kcwheat', so two of the four literals matched nothing and a KC wheat flip was dropped from The Read entirely */.indexOf(gx.key)>=0){gFlip=gx;break;}}
   if(gFlip){
     var x2=gFlip, flG=gFlip.flip;
     document.getElementById('cot-read-body').innerHTML='<b>'+LABELS[x2.key]+'</b> funds just flipped <b>net '+(flG.dir==='bullish'?'long':'short')+'</b> '+(flG.weeksAgo===0?'this week':'last week')+' \u2014 a structural shift after '+(flG.dir==='bullish'?'an extended bearish stance':'an extended bullish stance')+'. Positioning sits at the '+ordinal(x2.pct)+' percentile of the last year.';
@@ -678,11 +845,17 @@ function renderCard(key, d) {
   var isLong = net >= 0;
   var cls = net > 5000 ? 'long' : net < -5000 ? 'short' : 'flat';
 
+  /* Declared HERE, not thirty lines down inside the chg cell's own if-block.
+     `var` hoists, so the accessible name below read it as undefined, isFinite()
+     was false, and the ", up 18.9k this week" clause silently never rendered --
+     the weekly move reached sighted readers and nobody else. */
+  var chg = (prev != null && isFinite(net) && isFinite(prev)) ? (net - prev) : NaN;
+
   var netEl = document.getElementById('net-' + key);
   if (netEl) { netEl.textContent = fmtK(net); netEl.className = 'cot-card-net ' + cls; }
   // v2: accessible name carries the data once it exists (was action-only)
   var cardEl = document.getElementById('card-' + key);
-  if (cardEl) cardEl.setAttribute('aria-label', (LABELS[key]||key)+': net '+(net>=0?'long ':'short ')+fmtK(Math.abs(net))+(isFinite(chg)?', '+(chg>=0?'up ':'down ')+fmtK(Math.abs(chg))+' this week':'')+'. Activate to focus in chart.');
+  if (cardEl) cardEl.setAttribute('aria-label', (LABELS[key]||key)+': net '+(net>=0?'long ':'short ')+fmtMag(net)+(isFinite(chg)?', '+(chg>=0?'up ':'down ')+fmtMag(chg)+' this week':'')+'. Activate to focus in chart.');
 
   var vEl = document.getElementById('verdict-' + key);
   if (vEl) {
@@ -691,9 +864,8 @@ function renderCard(key, d) {
   }
 
   var chgEl = document.getElementById('chg-' + key);
-  if (chgEl && prev != null) {
-    var chg = net - prev;
-    chgEl.textContent = (chg >= 0 ? '▲' : '▼') + ' ' + fmtK(Math.abs(chg)) + ' wk/wk';
+  if (chgEl && isFinite(chg)) {
+    chgEl.textContent = (chg >= 0 ? '▲' : '▼') + ' ' + fmtMag(chg) + ' wk/wk';
     chgEl.className = 'cot-card-chg ' + (chg > 0 ? 'up' : chg < 0 ? 'dn' : 'nc');
   }
 
@@ -755,6 +927,32 @@ function renderVerdict(summary) {
 var historyData = null;
 var activeKey   = 'grains';
 
+
+/* ── CHART INK FOLLOWS THE THEME ──────────────────────────────────────────
+   Every mark on this canvas was hardcoded rgba(255,255,255,...) - gridlines,
+   the zero line, both axes' labels, and the whole price overlay. The site has
+   a light theme and a toggle in the header (components/styles.css defines
+   [data-theme="light"]), and in light mode the body is #f6f7f5. Measured: the
+   canvas paints an identical 487 white-ink pixels in both themes, so in light
+   mode a reader gets a coloured shape floating with NO axis, NO gridlines, NO
+   zero line, and no price line at all - and on a positioning chart the zero
+   line is the difference between net long and net short, which is the whole
+   point of looking at it.
+
+   Canvas cannot inherit CSS colour, so it has to ask. */
+function chartInk(a) {
+  /* Dark ink on a light ground at the same alpha reads fainter than light ink
+     on a dark one, and the faintest mark here is a .05 gridline, which on
+     white is nothing at all. Light-theme alphas are scaled up. */
+  if (document.documentElement.getAttribute('data-theme') === 'light')
+    return 'rgba(18,22,20,' + Math.min(1, parseFloat(a) * 1.7).toFixed(3) + ')';
+  return 'rgba(255,255,255,' + a + ')';
+}
+function chartOverlayInk(a) {
+  return (document.documentElement.getAttribute('data-theme') === 'light'
+    ? 'rgba(52,58,54,' : 'rgba(240,240,235,') + a + ')';
+}
+
 function drawChart(key) {
   var canvas = document.getElementById('cot-chart');
   var msg    = document.getElementById('cot-chart-msg');
@@ -780,11 +978,19 @@ function drawChart(key) {
   try{var a11y=document.getElementById('cot-chart-a11y');if(a11y){var parts=[];keys.forEach(function(k){var arr=history[k]||[];if(arr.length){var f=arr[0],l=arr[arr.length-1];parts.push(LABELS[k]+': net moved from '+f.net+' on '+f.date+' to '+l.net+' on '+l.date);}});a11y.textContent='52-week managed money net positioning. '+parts.join('. ')+'.';}}catch(e){}
 
   var dpr = window.devicePixelRatio || 1;
-  var W = canvas.offsetWidth || 700;
+  /* ASK THE CONTAINER, NOT THE CANVAS. The line below used to set an inline
+     canvas.style.width in px, which shadows the stylesheet's width:100% -- so
+     every later call, including the resize handler and the theme redraw, read
+     back the FROZEN value instead of the real container. Measured: a canvas
+     first drawn at 1280px stayed 827px inline on a 390px phone, right edge at
+     864 in a 390px viewport, and the page sets overflow-x:clip so there is no
+     scrollbar to reach it. The clipped portion is the right-hand side of the
+     chart -- the most recent months, including this week's point. Rotation
+     never recovered either. */
+  var W = (canvas.parentElement ? canvas.parentElement.clientWidth : 0) || canvas.offsetWidth || 700;
   var H = 260;
   canvas.width  = W * dpr;
   canvas.height = H * dpr;
-  canvas.style.width  = W + 'px';
   canvas.style.height = H + 'px';
 
   var ctx = canvas.getContext('2d');
@@ -804,7 +1010,16 @@ function drawChart(key) {
   minNet -= pad; maxNet += pad;
   var netRange = maxNet - minNet || 1;
 
-  var PAD = { top: 16, right: 16, bottom: 32, left: 52 };
+  /* THE PRICE AXIS WAS PRINTING 93 FOR 930. The right-hand price ticks are
+     drawn at PAD.left + cW + 4 with textAlign='left', and PAD.right was 16 --
+     so a label started 12px from the canvas edge with only 16px of room. At
+     9px JetBrains Mono a four-digit label measures 21.7px, ending ~9.7px PAST
+     the bitmap, where canvas silently drops it. Soybean prices in the history
+     file are all four digits (1196.75, 1207.25, 1219.5, 1155 ...), so the only
+     price scale on the page read 125 / 114 / 104 / 93 for ~1259 / ~1147 /
+     ~1043 / ~930 -- wrong by a factor of ten, with nothing to check it
+     against. Right-align the ticks and give the overlay a real gutter. */
+  var PAD = { top: 16, right: (keys.length === 1 ? 46 : 16), bottom: 32, left: 52 };
   var cW = W - PAD.left - PAD.right;
   var cH = H - PAD.top  - PAD.bottom;
 
@@ -812,19 +1027,19 @@ function drawChart(key) {
   function yOf(n) { return PAD.top + (1 - (n - minNet) / netRange) * cH; }
 
   var zeroY = yOf(0);
-  ctx.strokeStyle = 'rgba(255,255,255,.12)';
+  ctx.strokeStyle = chartInk('.12');
   ctx.lineWidth = 1;
   ctx.setLineDash([4, 4]);
   ctx.beginPath(); ctx.moveTo(PAD.left, zeroY); ctx.lineTo(PAD.left + cW, zeroY); ctx.stroke();
   ctx.setLineDash([]);
 
-  ctx.fillStyle = 'rgba(255,255,255,.25)';
+  ctx.fillStyle = chartInk('.25');
   ctx.font = '10px JetBrains Mono, monospace';
   ctx.textAlign = 'right';
   ctx.fillText('0', PAD.left - 4, zeroY + 4);
 
   var yTicks = 4;
-  ctx.fillStyle = 'rgba(255,255,255,.35)';
+  ctx.fillStyle = chartInk('.35');
   ctx.font = '10px JetBrains Mono, monospace';
   ctx.textAlign = 'right';
   for (var t = 0; t <= yTicks; t++) {
@@ -834,12 +1049,12 @@ function drawChart(key) {
       ? (nVal >= 0 ? '+' : '') + Math.round(nVal / 1000) + 'k'
       : Math.round(nVal);
     ctx.fillText(lbl, PAD.left - 4, yy + 4);
-    ctx.strokeStyle = 'rgba(255,255,255,.05)';
+    ctx.strokeStyle = chartInk('.05');
     ctx.lineWidth = 1;
     ctx.beginPath(); ctx.moveTo(PAD.left, yy); ctx.lineTo(PAD.left + cW, yy); ctx.stroke();
   }
 
-  ctx.fillStyle = 'rgba(255,255,255,.3)';
+  ctx.fillStyle = chartInk('.3');
   ctx.font = '9px JetBrains Mono, monospace';
   ctx.textAlign = 'center';
   var step = Math.max(1, Math.floor(allDates.length / 8));
@@ -902,16 +1117,17 @@ function drawChart(key) {
       var pPad=(pMax-pMin)*0.12||1; pMin-=pPad; pMax+=pPad; var pRange=pMax-pMin||1;
       function yOfP(p){ return PAD.top + (1-(p-pMin)/pRange)*cH; }
       // price line (white, thin, over the net area)
-      ctx.beginPath(); ctx.strokeStyle='rgba(240,240,235,.85)'; ctx.lineWidth=1.5; ctx.lineJoin='round'; ctx.setLineDash([]);
+      ctx.beginPath(); ctx.strokeStyle=chartOverlayInk('.85'); ctx.lineWidth=1.5; ctx.lineJoin='round'; ctx.setLineDash([]);
       var started=false;
       pricedVis.forEach(function(r){ var xi=allDates.indexOf(r.date); var x=xOf(xi),y=yOfP(r.price); if(!started){ctx.moveTo(x,y);started=true;}else ctx.lineTo(x,y); });
       ctx.stroke();
       // last price dot
       var lastP=pricedVis[pricedVis.length-1]; var lpx=xOf(allDates.indexOf(lastP.date)), lpy=yOfP(lastP.price);
-      ctx.beginPath(); ctx.arc(lpx,lpy,3,0,Math.PI*2); ctx.fillStyle='rgba(240,240,235,.95)'; ctx.fill();
+      ctx.beginPath(); ctx.arc(lpx,lpy,3,0,Math.PI*2); ctx.fillStyle=chartOverlayInk('.95'); ctx.fill();
       // right-axis price ticks
-      ctx.fillStyle='rgba(255,255,255,.45)'; ctx.font='9px JetBrains Mono, monospace'; ctx.textAlign='left';
-      for(var pt=0;pt<=3;pt++){ var pv=pMin+(pt/3)*pRange; var py=yOfP(pv); ctx.fillText(Math.round(pv).toString(), PAD.left+cW+4, py+3); }
+      ctx.fillStyle=chartInk('.45'); ctx.font='9px JetBrains Mono, monospace'; ctx.textAlign='left';
+      ctx.textAlign='right';
+      for(var pt=0;pt<=3;pt++){ var pv=pMin+(pt/3)*pRange; var py=yOfP(pv); ctx.fillText(Math.round(pv).toString(), W-4, py+3); }
       priceMeta={min:pMin,max:pMax,last:lastP.price,n:pricedVis.length};
     }
   }
@@ -978,62 +1194,249 @@ var CHART_GEO = null;
 })();
 
 
-fetch('/data/cot.json')
-  .then(function(r) { if (!r.ok) throw new Error('no-cot'); return r.json(); })
-  .then(function(data) {
-    var _bk=document.getElementById('cot-baked');if(_bk)_bk.style.display='none'; // live render supersedes the crawler bake
-    ALL_KEYS.forEach(function(k) {
-      if (data[k]) renderCard(k, data[k]);
-    });
-    renderVerdict(data);
-  })
-  .catch(function() {
-    var banner = document.getElementById('cot-verdict-banner');
-    var text   = document.getElementById('cvb-text');
-    if (text) text.textContent = 'COT data refreshes after each Friday CFTC release.';
-    if (banner) banner.className = 'cot-verdict-banner mixed';
-  });
+/* ── LOADING COT, AND LOADING IT AGAIN ────────────────────────────────────
+   This was a one-shot fetch on page load. Combined with a countdown that ran
+   on the clock alone, a reader who opened the page before the Friday release
+   and waited -- which is exactly what the countdown invites them to do --
+   watched it reach zero and then saw nothing happen, because nothing on the
+   page ever asked for the file a second time. Analytics showed people sitting
+   there. The page kept a promise it had no mechanism to keep.
 
-fetch('/data/cot-history.json')
+   It now re-reads the file while a release is outstanding, and re-renders in
+   place when the new report lands. See cotTick() below for the state. */
+var COT_LOADED = null;            // the report_date now on screen
+var COT_ANNOUNCE_UNTIL = 0;       // the arrival message owns the badge until this
+var COT_ANNOUNCE_TEXT  = '';
+
+function cotApply(data, isPoll) {
+  var _bk = document.getElementById('cot-baked');
+  if (_bk) _bk.style.display = 'none';   // live render supersedes the crawler bake
+  /* A KEY THE PAYLOAD DID NOT CARRY USED TO KEEP ITS OLD CARD. The loop was
+     `if (data[k]) renderCard(...)` -- a missing commodity was skipped in
+     silence, leaving the previous render in the DOM, while renderVerdict
+     stamped the NEW report date across the top regardless. Measured with
+     mplswheat dropped from an August 18 payload: the card still read +9.9k
+     with "\u25b2 1.0k wk/wk" and a Net Long badge, under a banner saying
+     "Positions as of August 18, 2026". Last week's number wearing this week's
+     date, with nothing on screen to tell them apart.
+
+     fetch_cot.py reaches this state on its own: it prints "WARNING: No rows
+     for <key>" and drops the key, and its only exit guard passes if ANY one
+     commodity survived. A renamed exchange -- the fetcher's own docstring
+     names MGEX -> MIAX as the live risk to spring wheat -- lands here. */
+  ALL_KEYS.forEach(function(k) {
+    if (data[k]) { renderCard(k, data[k]); cotMarkCard(k, true); }
+    else         { cotMarkCard(k, false); }
+  });
+  renderVerdict(data);
+  var fresh = data.report_date || null;
+  var moved = isPoll && COT_LOADED && fresh && fresh !== COT_LOADED;
+  COT_LOADED = fresh;
+  if (moved) {
+    /* The chart and the written read are built from the history file, which
+       has moved too. Re-read it rather than leaving last week's line under
+       this week's numbers. */
+    cotLoadHistory(true);
+    /* AND HOLD THE ANNOUNCEMENT ON SCREEN. Written straight into the badge,
+       it survived about a millisecond: cotTick() runs on the next line, sees a
+       fresh report_date, and replaces it with "next update in 6d 21h". The one
+       sentence the whole fix exists to deliver -- to a reader who has been
+       sitting on this page waiting for it -- flashed and was gone. It now owns
+       the badge for a full minute, and cotTick() will not touch it until the
+       window closes. */
+    COT_ANNOUNCE_UNTIL = Date.now() + 60000;
+    COT_ANNOUNCE_TEXT  = 'updated \u2014 ' + fresh + ' report is in';
+  }
+  /* The summary can move without the history file moving, so the agreement
+     has to be re-tested from this side too, not only when history loads. */
+  if (historyData) cotRenderDerived();
+  cotTick();
+}
+
+function cotLoad(isPoll) {
+  return fetch('/data/cot.json' + (isPoll ? '?t=' + Date.now() : ''),
+               isPoll ? { cache: 'no-store' } : undefined)
+    .then(function(r) { if (!r.ok) throw new Error('no-cot'); return r.json(); })
+    .then(function(data) { cotApply(data, isPoll); })
+    .catch(function() {
+      if (isPoll) return;               // a failed poll is not news; keep what is shown
+      var banner = document.getElementById('cot-verdict-banner');
+      var text   = document.getElementById('cvb-text');
+      /* Worded as a schedule note, this was indistinguishable from "no new
+         report yet" -- so a reader whose fetch had simply failed had no reason
+         to reload, and sat in front of blank headline figures. */
+      if (text) text.textContent = 'Couldn\u2019t load the latest COT data \u2014 retrying.';
+      if (banner) banner.className = 'cot-verdict-banner mixed';
+    });
+}
+cotLoad(false);
+
+function cotLoadHistory(isPoll) {
+ return fetch('/data/cot-history.json' + (isPoll ? '?t=' + Date.now() : ''),
+              isPoll ? { cache: 'no-store' } : undefined)
   .then(function(r) { if (!r.ok) throw new Error('no-hist'); return r.json(); })
   .then(function(data) {
     historyData = data;
     drawChart(activeKey);
-    ALL_KEYS.forEach(renderInsight);
-    renderTheRead();
+    cotRenderDerived();
   })
   .catch(function() {
+    /* A FAILED REFRESH IS NOT A REASON TO DELETE THE CHART. cotLoad guards its
+       poll path -- "a failed poll is not news" -- and this did not, so a
+       history hiccup at the exact release moment wiped the 52-week chart the
+       reader was looking at and replaced it with "Chart data refreshes after
+       each Friday CFTC release", which is false: it had just refreshed. */
+    if (isPoll) return;
     var msg = document.getElementById('cot-chart-msg');
-    if (msg) { msg.style.display = 'block'; msg.textContent = 'Chart data refreshes after each Friday CFTC release.'; }
+    if (msg) { msg.style.display = 'block'; msg.textContent = 'Could not load the chart data \u2014 retrying.'; }
     var canvas = document.getElementById('cot-chart');
     if (canvas) canvas.style.display = 'none';
   });
+}
+cotLoadHistory(false);
 
 window.addEventListener('resize', function() {
   if (historyData) drawChart(activeKey);
 });
 
-// ── Next-update countdown. CFTC releases Friday ~3:30pm ET; the AGSIST fetch
-//    runs daily 21:30 UTC, so new data lands by Friday 21:30 UTC. Count to the
-//    next Friday 21:30 UTC; flip to "expected shortly" rather than go negative
-//    (covers holiday-delayed releases without showing a wrong number). ──
-function cotNextTarget(now){
-  var d=new Date(now);
-  var t=new Date(Date.UTC(d.getUTCFullYear(),d.getUTCMonth(),d.getUTCDate(),21,30,0));
-  while(t.getUTCDay()!==5 || t.getTime()<=now){ t=new Date(t.getTime()+86400000); t.setUTCHours(21,30,0,0); }
-  return t.getTime();
+/* The canvas is painted once and does not know the theme changed under it.
+   Without this, toggling to light left the previous theme's ink on screen
+   until something else forced a redraw. */
+if (window.MutationObserver) {
+  new MutationObserver(function(){ if (historyData) drawChart(activeKey); })
+    .observe(document.documentElement, { attributes:true, attributeFilter:['data-theme'] });
+}
+
+/* ── THE COUNTDOWN TELLS THE TRUTH ABOUT THE DATA, NOT THE CLOCK ──────────
+   What this was: a timer to Friday 21:30 UTC. At zero it said "expected
+   shortly" for under a minute, then cotNextTarget() rolled to the FOLLOWING
+   Friday and it went back to "next update in 6d 23h" -- over a page still
+   showing the previous week's report. Readers watched it hit zero and reset
+   with nothing new on the page. The counter never once looked at the data.
+
+   What it is now: the expected report is derived from the report on screen --
+   the Tuesday after it -- and the release moment is that week's Friday at
+   3:30 PM New York, computed against the real zone so it is right in EST and
+   EDT alike. Until the release, it counts down. After the release, it does NOT
+   reset: it says the report is due, keeps saying so, and polls for it. The
+   countdown can only start again once the new report is actually on screen. */
+function cotEtOffsetMin(ts){
+  /* Minutes New York is behind UTC at that instant: 240 in EDT, 300 in EST. */
+  var p = {};
+  new Intl.DateTimeFormat('en-US', { timeZone:'America/New_York', hour12:false,
+    year:'numeric', month:'2-digit', day:'2-digit', hour:'2-digit', minute:'2-digit' })
+    .formatToParts(new Date(ts)).forEach(function(x){ p[x.type] = x.value; });
+  var h = +p.hour === 24 ? 0 : +p.hour;
+  return (ts - Date.UTC(+p.year, +p.month - 1, +p.day, h, +p.minute)) / 60000;
+}
+function cotEtInstant(y, m, d, hh, mm){
+  var guess = Date.UTC(y, m, d, hh + 4, mm);           // assume EDT, then correct
+  return Date.UTC(y, m, d, hh, mm) + cotEtOffsetMin(guess) * 60000;
+}
+/* WHEN THE NEXT REPORT IS DUE -- AND DELIBERATELY NOT WHAT IT WILL BE CALLED.
+   This used to derive the next as-of date by adding ten days to the report on
+   screen and name it in the badge. On a holiday week that is a date CFTC never
+   published: the release shifts, the as-of can shift, and the page would tell a
+   reader the "November 17 report" was late when no such report exists. Naming a
+   report we have not got is inventing a date, which is the same sin as
+   inventing a number, so the badge now names only the report actually in hand.
+
+   The DUE MOMENT is still derived from the report on screen -- the Friday after
+   the following Tuesday, 3:30 PM New York -- because that is the schedule
+   CFTC publishes to, and being a little early on a holiday week costs a reader
+   nothing except a message that says we are still checking. */
+function cotNextRelease(loadedReportDate){
+  if (!loadedReportDate) return null;
+  var t = Date.parse(loadedReportDate + ' 12:00:00 GMT');
+  if (!isFinite(t)) return null;
+  var nextTue = new Date(t + 7 * 86400000);
+  var fri = new Date(nextTue.getTime() + 3 * 86400000);
+  return { due: cotEtInstant(fri.getUTCFullYear(), fri.getUTCMonth(), fri.getUTCDate(), 15, 30) };
 }
 function cotFmtLeft(ms){
-  if(ms<=0) return null;
-  var s=Math.floor(ms/1000), d=Math.floor(s/86400), h=Math.floor((s%86400)/3600), m=Math.floor((s%3600)/60);
-  if(d>0) return d+'d '+h+'h';
-  if(h>0) return h+'h '+m+'m';
-  return m>0 ? m+'m' : '<1m';
+  var s = Math.floor(ms / 1000), d = Math.floor(s / 86400),
+      h = Math.floor((s % 86400) / 3600), m = Math.floor((s % 3600) / 60);
+  if (d > 0) return d + 'd ' + h + 'h';
+  if (h > 0) return h + 'h ' + m + 'm';
+  return m > 0 ? m + 'm' : '<1m';
 }
+/* A first load that failed gets its own slower retry, separate from the
+   release-day poll: the page has nothing to show, so it keeps asking until it
+   does, whatever day of the week it is. */
+var COT_RETRY = null;
+function cotStartRetry(){
+  if (COT_RETRY) return;
+  COT_RETRY = setInterval(function(){ cotLoad(true); }, 30000);
+}
+function cotStopRetry(){ if (COT_RETRY) { clearInterval(COT_RETRY); COT_RETRY = null; } }
+
+var COT_POLL = null;
+function cotStartPolling(){
+  if (COT_POLL) return;
+  /* Two minutes. The file is a few kB on a CDN and this only runs while a
+     release is actually outstanding -- it stops the moment the new report is
+     on screen, and never runs at all on the other six days. */
+  COT_POLL = setInterval(function(){ cotLoad(true); }, 120000);
+}
+function cotStopPolling(){ if (COT_POLL) { clearInterval(COT_POLL); COT_POLL = null; } }
+
 function cotTick(){
-  var el=document.getElementById('cot-countdown'); if(!el) return;
-  var now=Date.now(), f=cotFmtLeft(cotNextTarget(now)-now);
-  el.textContent = f ? ('next update in '+f) : 'new report expected shortly';
+  var el = document.getElementById('cot-countdown');
+  if (!el) return;
+  /* STATE FIRST, TEXT SECOND. Written the other way round, the arrival message
+     took an early return that skipped cotStopPolling() -- so the page went on
+     re-fetching cot.json for the whole minute the message was up, after the
+     thing it was polling for had already arrived. What is on the badge and
+     what the page is doing are two different questions and are now answered
+     separately. */
+  var nx  = cotNextRelease(COT_LOADED);
+  /* While the arrival window is open the badge shows the arrival message and
+     the computed text is discarded -- not merely suppressed. Written as "only
+     write when the window is closed", nothing ever put the announcement on
+     screen at all: cotApply set the text variable and cotTick declined to
+     write anything, so the badge kept the stale overdue line while the new
+     numbers rendered underneath it. */
+  var announcing = Date.now() < COT_ANNOUNCE_UNTIL;
+  /* WRITE ONLY ON CHANGE. This badge is role="status" aria-live="polite", and
+     cotTick runs every 60 seconds. Rewriting the same sentence re-fires the
+     announcement, so a screen-reader user waiting through an outstanding
+     release heard "this week's report is due, checking every couple of
+     minutes" once a minute, indefinitely. Assigning identical text is not a
+     no-op to assistive tech even though it looks like one. */
+  var say = function (t) {
+    var next = announcing ? COT_ANNOUNCE_TEXT : t;
+    if (el.textContent !== next) el.textContent = next;
+  };
+
+  if (!nx) {
+    /* NO REPORT ON SCREEN IS NOT THE SAME AS NOTHING TO DO. COT_LOADED was the
+       only gate on polling, so a first fetch that failed -- a blip, a cold CDN,
+       a phone with one bar -- left this returning early forever: empty badge,
+       polling disarmed, and the page never asking for the file again for as
+       long as it stayed open. The retry is what makes that failure temporary. */
+    cotStopPolling();
+    cotStartRetry();
+    say('');
+    return;
+  }
+  cotStopRetry();
+
+  var left = nx.due - Date.now();
+  if (left > 0) {
+    cotStopPolling();
+    say('next update in ' + cotFmtLeft(left));
+    return;
+  }
+
+  /* Past the release and still on the old report. Say which one is missing and
+     roughly how late it is, rather than resetting the clock over stale data. */
+  cotStartPolling();
+  var lateH = Math.floor(-left / 3600000);
+  say(lateH < 3
+    ? 'this week\u2019s report is due \u2014 checking every couple of minutes'
+    : 'this week\u2019s report hasn\u2019t landed here yet (' +
+      (lateH < 24 ? lateH + 'h' : Math.floor(lateH / 24) + 'd') +
+      ') \u2014 still checking. Holiday weeks run a day later.');
 }
 cotTick(); setInterval(cotTick, 60000);
 

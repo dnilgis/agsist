@@ -181,7 +181,14 @@ def main():
 
     all_rows.sort(key=lambda r: r["dt"])
     latest_dt  = max(r["dt"] for r in all_rows)
-    cutoff_52w = latest_dt - timedelta(weeks=53)
+    # 52 WEEKS MEANS 52 WEEKS. This was weeks=53, and because the comparison
+    # below is >= it also KEEPS the boundary week -- so "min52"/"max52", the
+    # figures the cards label "52-wk range", were drawn from 54 observations.
+    # Three cards were showing a high or a low that is not in the last 52
+    # weeks. A label that says 52 has to mean 52.
+    #
+    # 51 weeks back, inclusive of the boundary and of latest_dt, is 52 rows.
+    cutoff_52w = latest_dt - timedelta(weeks=51)
     print(f"\nLatest report date: {latest_dt.strftime('%Y-%m-%d')}", flush=True)
 
     # ── cot.json — current-week summary ─────────────────────────────────────
