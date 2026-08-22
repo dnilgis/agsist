@@ -1,5 +1,5 @@
 {
-  "fetched": "2026-08-22T02:19:02Z",
+  "fetched": "2026-08-22T02:49:19Z",
   "ok": 78,
   "failed": 2,
   "stale_keys": [
@@ -550,10 +550,10 @@
     },
     "oats-may27": {
       "ticker": "ZOK27.CBT",
-      "close": 365.25,
+      "close": 359.0,
       "open": 358.0,
-      "netChange": 7.25,
-      "pctChange": 2.0251,
+      "netChange": 1.0,
+      "pctChange": 0.2793,
       "wk52_hi": 392.5,
       "wk52_lo": 315.25
     },
@@ -802,28 +802,28 @@
     },
     "bitcoin": {
       "ticker": "BTC-USD",
-      "close": 78142.63281,
+      "close": 78339.02344,
       "open": 77473.57031,
-      "netChange": 669.0625,
-      "pctChange": 0.8636,
+      "netChange": 865.45313,
+      "pctChange": 1.1171,
       "wk52_hi": 126198.0703,
       "wk52_lo": 57747.7656
     },
     "ripple": {
       "ticker": "XRP-USD",
-      "close": 1.5098,
+      "close": 1.5391,
       "open": 1.3702,
-      "netChange": 0.1396,
-      "pctChange": 10.1883,
+      "netChange": 0.1689,
+      "pctChange": 12.3267,
       "wk52_hi": 3.1835,
       "wk52_lo": 0.9884
     },
     "kaspa": {
       "ticker": "KAS-USD",
-      "close": 0.03049,
+      "close": 0.03048,
       "open": 0.02903,
-      "netChange": 0.00146,
-      "pctChange": 5.0293,
+      "netChange": 0.00145,
+      "pctChange": 4.9948,
       "wk52_hi": 0.0937,
       "wk52_lo": 0.0139
     },
