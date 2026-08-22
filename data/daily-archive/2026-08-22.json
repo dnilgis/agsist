@@ -9,18 +9,7 @@
     "unit": "metric tons of tariff-free beef, 90-day window",
     "context": "Trump's Aug. 21 Truth Social post opened a 90-day, tariff-free quota for 300,000 MT of imported beef. That is roughly 660 million pounds hitting the supply side of a domestic market already watching the Cargill lockout constrain processing. Cattle feeders are now pricing two opposing forces at once."
   },
-  "yesterdays_call": {
-    "outcome": "didnt",
-    "computed": {
-      "outcome": "didnt",
-      "made": "2026-08-21",
-      "p0": 4.835,
-      "p1": 4.8375,
-      "instrument": "corn",
-      "direction": "up",
-      "level": "5.13"
-    }
-  },
+  "yesterdays_call": {},
   "todays_call": {
     "instrument": "corn",
     "direction": "down",
@@ -196,31 +185,5 @@
   "surprises": [],
   "price_validation_clean": true,
   "market_closed": true,
-  "market_status_reason": "weekend",
-  "critic_pass": {
-    "version": "1.2",
-    "ran_at": "2026-08-22T11:25:43.830282+00:00",
-    "threshold": 7,
-    "final_scores": {
-      "rule_1_lead_so_what": 8,
-      "rule_2_conviction_earned": 7,
-      "rule_3_tmyk_today": 9,
-      "rule_4_watch_conditional": 8,
-      "rule_5_bottom_lines_synthesize": 8,
-      "rule_6_quiet_days_quiet": 8,
-      "rule_7_continuity": 4,
-      "rule_8_word_budgets": 7,
-      "rule_9_voice": 7,
-      "rule_10_forward_test": 7,
-      "rule_11_thread_coherence": 10,
-      "rule_12_one_fact_one_home": 6,
-      "rule_13_yc_honesty": 2,
-      "rule_14_level_coherence": 3,
-      "rule_15_one_number_coherence": 9,
-      "rule_16_markdown_not_html": 10,
-      "rule_17_macro_anchoring": 8
-    },
-    "rewrites_applied": [],
-    "dry_run": false
-  }
+  "market_status_reason": "weekend"
 }

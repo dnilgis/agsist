@@ -1,6 +1,17 @@
 {
   "briefings": [
     {
+      "date": "2026-08-22",
+      "date_display": "Saturday, August 22, 2026",
+      "headline": "PRO FARMER SAYS SMALLER; CORN CLOSES AT 52-WEEK HIGH",
+      "teaser": "December corn closed at its 52-week high Friday. Pro Farmer backed the yield cut. The next move is the market's to lose.",
+      "market_mood": "bullish",
+      "surprise_count": 0,
+      "sections": 4,
+      "url": "/daily/2026-08-22",
+      "market_closed": true
+    },
+    {
       "date": "2026-08-21",
       "date_display": "Friday, August 21, 2026",
       "headline": "PRO FARMER WRAPS; TRUMP BEEF DEAL HITS CATTLE",
@@ -1854,6 +1865,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-08-21T20:21:56.523957+00:00",
-  "count": 162
+  "updated": "2026-08-22T11:25:20.829210+00:00",
+  "count": 163
 }

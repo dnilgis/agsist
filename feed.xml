@@ -5,13 +5,26 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Fri, 21 Aug 2026 20:21:58 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 22 Aug 2026 11:25:45 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/agsist.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>PRO FARMER SAYS SMALLER; CORN CLOSES AT 52-WEEK HIGH</title>
+      <link>https://agsist.com/daily/2026-08-22</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-08-22</guid>
+      <pubDate>Sat, 22 Aug 2026 05:00:00 -0600</pubDate>
+      <description>December corn closed at $5.08 Friday, at the top of its 52-week range, the first time it has sat there all season. The Pro Farmer tour wrapped pointing toward yields below last year's pace, and the market answered: four days of gains that erased the summer's skepticism about USDA's August cut. The week ahead tests whether that conviction holds or whether harvest pressure and the Trump beef deal rewrite the story.
+December corn hit $5.08 Friday as tour scouts backed USDA's yield cut; cattle absorbed the Trump beef import shock; week ahead hinges on Monday Crop Progress and the Aug 24 border reopening.
+• CORN TOPS THE RANGE
+  → December corn at $5.08 is a 52-week high and a real window. If you have unpriced new-crop bushels, this is the level that has to hold before combines roll. Price what you can defend.
+• BEANS FIRM, OIL SPLITS FROM MEAL
+• CATTLE ABSORB THE IMPORT SHOCK
+Read more: https://agsist.com/daily/2026-08-22</description>
+    </item>
     <item>
       <title>PRO FARMER WRAPS; TRUMP BEEF DEAL HITS CATTLE</title>
       <link>https://agsist.com/daily/2026-08-21</link>
@@ -378,19 +391,6 @@ Wheat gave back its July gains in a single session while cattle firmed ahead of 
   → Old-crop beans still in storage with basis firming: $12.47 nearby at a 52-week high is a pricing window. Price it or have a reason not to.
 • Cattle Bounce Into the Report
 Read more: https://agsist.com/daily/2026-07-24</description>
-    </item>
-    <item>
-      <title>FEEDERS BREAK HARD; CRUDE HOLDS $90</title>
-      <link>https://agsist.com/daily/2026-07-23</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-07-23</guid>
-      <pubDate>Thu, 23 Jul 2026 05:00:00 -0600</pubDate>
-      <description>Feeder cattle fell hard to $336.15 today, the overnight session already printing the loss before the pit opened, and the story isn't complicated: slower box-beef demand ahead of the cash trade, plus the Cargill Fort Morgan/Schuyler plant lockout (ongoing since May 19) still choking 2% of weekly slaughter capacity, means buyers aren't rushing to fill pens. Weekly export sales hit at 7:30 AM CT this morning, and with feeders already down 2.5%, the number that matters isn't soybeans or wheat: it's whether pork export demand from Mexico, which just lifted pseudorabies restrictions on U.S. pork, gives hogs a reason to hold their $88.33 handle. The weekly thread question, whether crop conditions confirm the pollination stress the nearby corn futures have been pricing, got a partial answer today: corn ticked to $4.63, up less than half a cent, which is the market saying the heat forecast is real but not yet a yield story worth paying for.
-Feeder cattle dropped 2.5% on beef demand weakness and packer pressure, while WTI crude held $90 on the 12th consecutive night of U.S.-Iran strikes.
-• Feeders Break Hard
-• Crude Holds $90; Escalation Continues
-  → Harvest-season diesel still unhedged: $90.00 WTI with active strikes running 12 consecutive nights is the line. Cover remaining needs before Friday.
-• Grains Drift; Export Sales Digested
-Read more: https://agsist.com/daily/2026-07-23</description>
     </item>
   </channel>
 </rss>
