@@ -2,11 +2,28 @@ name: Fetch COT Data
 
 on:
   schedule:
-    # CFTC COT releases Friday ~3:30pm ET; positions are as-of the prior Tuesday.
-    # Run DAILY at 21:30 UTC (after the Friday release window, DST-safe). COT
-    # changes once a week, so the commit step is a no-op ~6 days out of 7 — but a
-    # daily run means a holiday-delayed release OR a skipped weekly cron self-heals
-    # the next day instead of leaving the page stale for a full extra week.
+    # CFTC COT releases Friday 3:30pm ET; positions are as-of the prior Tuesday.
+    #
+    # THE DAILY 21:30 UTC RUN WAS THE ONLY ONE, AND IT IS TWO HOURS LATE.
+    # 3:30pm ET is 19:30 UTC in EDT, so a single 21:30 UTC run left the page
+    # showing last week's report for two hours after CFTC had published — with
+    # readers sitting on the page watching a countdown reach zero. Measured on
+    # 2026-08-21: CFTC listed the Aug 18 report while data/cot.json still said
+    # Aug 11. The page has been fixed to say so and to poll, but the right
+    # answer is also to stop being two hours late.
+    #
+    # Both DST cases, because 3:30pm ET moves against UTC:
+    #   EDT (Mar-Nov)  release 19:30 UTC -> 19:45, 20:15
+    #   EST (Nov-Mar)  release 20:30 UTC -> 20:45, 21:15
+    # Two attempts each, because a scheduled run can be delayed or dropped, and
+    # the commit step is a no-op when the data has not moved — so a wasted run
+    # costs a minute of CI and nothing else.
+    - cron: '45 19 * * 5'
+    - cron: '15 20 * * 5'
+    - cron: '45 20 * * 5'
+    - cron: '15 21 * * 5'
+    # The daily catch-all stays: a holiday-shifted release or a dropped Friday
+    # cron self-heals the next day instead of leaving the page stale a week.
     - cron: '30 21 * * *'
   workflow_dispatch:
 
@@ -44,6 +61,75 @@ jobs:
       - name: Enrich COT data with prices
         run: python scripts/enrich_cot_prices.py
 
+      # ── RE-BAKE THE PAGE, NOT ONLY THE DATA ────────────────────────────
+      # This workflow had three work steps and committed two JSON files. It
+      # never re-baked cot.html -- and cot.html carries hard numbers that no
+      # JavaScript ever touches: <title>, the meta/og/twitter descriptions,
+      # and the prerendered paragraph a crawler or a no-JS reader sees.
+      #
+      # Those are owned by scripts/bake_seo.py (seo_cot) and
+      # scripts/prerender_wpi_scorecard.py (bake_cot), which ran on their own
+      # clock crons in freshness.yml and daily.yml. Neither has a push
+      # trigger, and this job commits with [skip ci], so nothing could ever
+      # connect a data update to a re-bake. It was a race with no ordering.
+      #
+      # In EST it is not even a race: CFTC publishes 20:30 UTC, the earliest
+      # commit here is 20:45, and the freshness bake runs at 20:35 -- ten
+      # minutes too early. freshness.yml has no weekend run, so the next bake
+      # is Monday 13:35 UTC. Sixty-five hours of Google results, Slack
+      # unfurls and no-JS readers on last week's figures.
+      #
+      # And not merely stale -- WRONG-SIGNED. Measured with the Aug 18 data
+      # live: the crawler paragraph read "Soybeans funds net long 109,109
+      # contracts" while the actual position was net SHORT 8,891.
+      #
+      # Baking here, in the job that owns the data, is the fix. One writer.
+      # ONLY THE COT BAKE, AND ONLY AFTER THE DATA IS SAFE.
+      #
+      # Run bare, prerender_wpi_scorecard.py bakes FOUR pages -- whats-priced-in,
+      # scorecard, cot and ag-odds -- and three of those belong to other
+      # workflows (analyst-scorecard.yml, daily.yml, whats-priced-in.yml). This
+      # job has no business writing them: it would leave three files dirty that
+      # the reset loop below then throws away, and worse, a failure baking a
+      # page this workflow does not own would take the price update down with
+      # it. bake_cot() is called directly instead.
+      #
+      # continue-on-error is deliberate and is NOT softening a failing check --
+      # the "Bake result" step below still fails the run. What it buys is
+      # ordering: the data commits either way. The live page reads cot.json
+      # from JavaScript, so readers get this week's numbers even on a morning
+      # when the head tags cannot be rebuilt. Withholding the price data
+      # because a meta description could not be regenerated would be the wrong
+      # trade for the person refreshing the page at 3:30.
+      - name: Re-bake the COT head tags and crawler summary
+        id: bake
+        continue-on-error: true
+        run: |
+          # ALL OR NOTHING. bake_seo writes the head tags and prerender writes
+          # the crawler paragraph; if the second fails after the first wrote,
+          # the committed page carries this week's <title> above last week's
+          # paragraph -- internally contradictory, and committed, because the
+          # data commit runs regardless. Snapshot first and roll back on any
+          # failure so the page is either fully rebaked or untouched.
+          cp cot.html /tmp/cot.prebake.html
+          trap 'cp /tmp/cot.prebake.html cot.html; echo "bake failed - cot.html rolled back"' ERR
+          set -e
+          python scripts/bake_seo.py --selftest
+          python scripts/bake_seo.py --page cot.html
+          python - <<'PY'
+          import sys
+          sys.path.insert(0, "scripts")
+          import prerender_wpi_scorecard as p
+          orig, new, fname = p.bake_cot()
+          if new != orig:
+              with open(fname, "w", encoding="utf-8") as f:
+                  f.write(new)
+              print("Baked", fname)
+          else:
+              print(fname, "already in sync")
+          PY
+          trap - ERR
+
       - name: Commit COT data
         run: |
           git config user.name  "AGSIST Bot"
@@ -55,12 +141,14 @@ jobs:
           # commit a clean delta. Retry the push if the remote moves again.
           cp data/cot.json          /tmp/cot.json
           cp data/cot-history.json  /tmp/cot-history.json
+          cp cot.html               /tmp/cot.html
           for i in 1 2 3 4 5; do
             git fetch origin main
             git reset --hard origin/main
             cp /tmp/cot.json         data/cot.json
             cp /tmp/cot-history.json data/cot-history.json
-            git add data/cot.json data/cot-history.json
+            cp /tmp/cot.html         cot.html
+            git add data/cot.json data/cot-history.json cot.html
             if git diff --staged --quiet; then
               echo "No COT changes today — nothing to commit (expected ~6 days/week)."
               exit 0
@@ -74,4 +162,16 @@ jobs:
             sleep $((RANDOM % 4 + 3))
           done
           echo "ERROR: could not push after 5 attempts"
+          exit 1
+
+      # The bake is allowed to fail without taking the data with it, but it is
+      # not allowed to fail QUIETLY. If the head tags could not be rebuilt, the
+      # page is publishing last week's numbers to crawlers and that has to be
+      # visible in the Actions list, not buried in a green run.
+      - name: Bake result
+        if: steps.bake.outcome == 'failure'
+        run: |
+          echo "The COT data committed, but re-baking cot.html FAILED."
+          echo "The title, meta descriptions and the crawler paragraph are"
+          echo "still on the previous report. Fix the baker and re-run."
           exit 1
