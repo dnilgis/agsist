@@ -1,18 +1,18 @@
 {
- "updated": "2026-08-22T11:25:45+00:00",
- "total": 94,
+ "updated": "2026-08-23T11:24:43+00:00",
+ "total": 95,
  "played_out": 34,
- "didnt": 55,
+ "didnt": 56,
  "pending": 5,
- "hit_rate": 38.2,
+ "hit_rate": 37.8,
  "by_method": {
   "deterministic": {
    "played": 8,
-   "missed": 45,
-   "graded": 53,
-   "hit_rate": 15.1,
+   "missed": 46,
+   "graded": 54,
+   "hit_rate": 14.8,
    "first": "2026-06-24",
-   "last": "2026-08-21"
+   "last": "2026-08-23"
   },
   "self_reported": {
    "played": 26,
@@ -34,17 +34,17 @@
   },
   "v2": {
    "played": 4,
-   "missed": 5,
-   "graded": 9,
-   "hit_rate": 44.4,
+   "missed": 6,
+   "graded": 10,
+   "hit_rate": 40.0,
    "first": "2026-08-12",
-   "last": "2026-08-21"
+   "last": "2026-08-23"
   }
  },
  "direction_only": {
   "right_way": 22,
-  "graded": 53,
-  "rate": 41.5
+  "graded": 54,
+  "rate": 40.7
  },
  "by_instrument": {
   "wheat": {
@@ -54,8 +54,8 @@
   },
   "corn": {
    "played": 2,
-   "graded": 18,
-   "hit_rate": 11.1
+   "graded": 19,
+   "hit_rate": 10.5
   },
   "beans": {
    "played": 4,
@@ -91,6 +91,22 @@
  "mismatched": 23,
  "current_streak": 0,
  "records": [
+  {
+   "made": "2026-08-22",
+   "judged": "2026-08-23",
+   "call": "Called corn down through $4.95. December corn closed Friday at $5.085, well above that level. Miss.",
+   "outcome": "didnt",
+   "method": "deterministic",
+   "mismatch": false,
+   "note": "The Pro Farmer yield tour wrap gave funds a reason to stay long, not exit. The $4.95 target needed a demand-side crack that never materialized. No hedge credit here -- own it and watch the $5.00 floor instead.",
+   "instrument": "corn",
+   "direction": "down",
+   "level": 4.95,
+   "p0": 4.8375,
+   "p1": 4.8375,
+   "design": "v2",
+   "direction_ok": false
+  },
   {
    "made": "2026-08-20",
    "judged": "2026-08-21",

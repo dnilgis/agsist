@@ -5,13 +5,27 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Sat, 22 Aug 2026 11:25:45 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 23 Aug 2026 11:24:43 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/agsist.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>CORN AT 52-WEEK HIGH; BEEF IMPORT SHOCK WEEK AHEAD</title>
+      <link>https://agsist.com/daily/2026-08-23</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-08-23</guid>
+      <pubDate>Sun, 23 Aug 2026 05:00:00 -0600</pubDate>
+      <description>Corn finished Friday at $4.84, December at $5.08, both at or near 52-week highs and both carrying a yield story the funds actually believe. Pro Farmer's tour closed Aug 20 pointing below USDA's 180.7 bu/acre. Meanwhile, the cattle market is heading into a week defined by one announcement: Trump's 300,000 MT tariff-free beef import window, 90 days, live this week.
+Pro Farmer's below-consensus yield estimates hold corn near the top of its range heading into a week that will stress-test the cattle market.
+• CORN HOLDS THE HIGH
+  → If you have unpriced new-crop corn and December holds above $5.00 Monday morning, that window is real and narrowing as combines approach. Price what you can defend before harvest basis pressure arrives.
+• CATTLE FACE THE IMPORT WEEK
+  → Cattle feeders: hold major pricing decisions until the import volume mechanics and country-of-origin sourcing are clarified. A 90-day window against record-low placements is not permanent policy.
+• BEANS FIRM, OIL SPLITS
+Read more: https://agsist.com/daily/2026-08-23</description>
+    </item>
     <item>
       <title>PRO FARMER SAYS SMALLER; CORN CLOSES AT 52-WEEK HIGH</title>
       <link>https://agsist.com/daily/2026-08-22</link>
@@ -378,19 +392,6 @@ A brutal Friday for corn and wheat, a triumphant one for soybeans, and hogs had 
   → Old-crop beans still in storage: $12.48 nearby at the 52-week high is the pricing window this week called. Price it before Monday's crop progress report adds uncertainty.
 • Cattle and Hogs Diverge
 Read more: https://agsist.com/daily/2026-07-25</description>
-    </item>
-    <item>
-      <title>WHEAT DROPS 3%; CATTLE BOUNCE INTO COF</title>
-      <link>https://agsist.com/daily/2026-07-24</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-07-24</guid>
-      <pubDate>Fri, 24 Jul 2026 05:00:00 -0600</pubDate>
-      <description>Wheat fell 21 cents to $6.79, dropping sharply in what the Feedstuffs recap called straight profit-taking after a strong bull run, and that's exactly what it looks like: no new bearish headline, just a market that ran too far too fast and finally gave some back. Soybeans told the opposite story, tacking on nearly 5 cents to $12.47 on fund and technical buying with hot-and-dry forecasts threatening fill through early August, the critical window the 2026 planting season has been building toward since the wet May start. Meanwhile, cattle bounced to $227.07 ahead of this afternoon's 2:00 PM CT Cattle on Feed report, the monthly number that has the whole complex holding its breath; the market is positioning, not committing, and the report decides which direction that commitment runs.
-Wheat gave back its July gains in a single session while cattle firmed ahead of this afternoon's Cattle on Feed report, and soybeans added to the week's gains on hot-and-dry forecasts into early August.
-• Wheat Profit-Taking Hits Hard
-• Soybeans Own the Heat Story
-  → Old-crop beans still in storage with basis firming: $12.47 nearby at a 52-week high is a pricing window. Price it or have a reason not to.
-• Cattle Bounce Into the Report
-Read more: https://agsist.com/daily/2026-07-24</description>
     </item>
   </channel>
 </rss>
