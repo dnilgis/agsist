@@ -1,6 +1,18 @@
 {
   "briefings": [
     {
+      "date": "2026-08-24",
+      "date_display": "Monday, August 24, 2026",
+      "headline": "CORN HOLDS 52-WEEK HIGH; CROP PROGRESS AT 3 PM",
+      "teaser": "December corn at $5.22 and a USDA report due at 3 PM. The market is positioning, not moving.",
+      "market_mood": "cautious",
+      "surprise_count": 0,
+      "sections": 3,
+      "url": "/daily/2026-08-24",
+      "market_closed": false,
+      "yc_outcome": "didnt"
+    },
+    {
       "date": "2026-08-23",
       "date_display": "Sunday, August 23, 2026",
       "headline": "CORN AT 52-WEEK HIGH; BEEF IMPORT SHOCK WEEK AHEAD",
@@ -1877,6 +1889,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-08-23T11:24:41.776119+00:00",
-  "count": 164
+  "updated": "2026-08-24T11:32:43.282626+00:00",
+  "count": 165
 }

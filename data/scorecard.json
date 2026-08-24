@@ -1,18 +1,18 @@
 {
- "updated": "2026-08-23T11:24:43+00:00",
- "total": 95,
+ "updated": "2026-08-24T11:32:45+00:00",
+ "total": 96,
  "played_out": 34,
- "didnt": 56,
+ "didnt": 57,
  "pending": 5,
- "hit_rate": 37.8,
+ "hit_rate": 37.4,
  "by_method": {
   "deterministic": {
    "played": 8,
-   "missed": 46,
-   "graded": 54,
-   "hit_rate": 14.8,
+   "missed": 47,
+   "graded": 55,
+   "hit_rate": 14.5,
    "first": "2026-06-24",
-   "last": "2026-08-23"
+   "last": "2026-08-24"
   },
   "self_reported": {
    "played": 26,
@@ -34,17 +34,17 @@
   },
   "v2": {
    "played": 4,
-   "missed": 6,
-   "graded": 10,
-   "hit_rate": 40.0,
+   "missed": 7,
+   "graded": 11,
+   "hit_rate": 36.4,
    "first": "2026-08-12",
-   "last": "2026-08-23"
+   "last": "2026-08-24"
   }
  },
  "direction_only": {
   "right_way": 22,
-  "graded": 54,
-  "rate": 40.7
+  "graded": 55,
+  "rate": 40.0
  },
  "by_instrument": {
   "wheat": {
@@ -81,6 +81,11 @@
    "played": 1,
    "graded": 1,
    "hit_rate": 100.0
+  },
+  "cattle": {
+   "played": 0,
+   "graded": 1,
+   "hit_rate": 0.0
   }
  },
  "trailing20": {
@@ -91,6 +96,22 @@
  "mismatched": 23,
  "current_streak": 0,
  "records": [
+  {
+   "made": "2026-08-23",
+   "judged": "2026-08-24",
+   "call": "Called live cattle down toward $217.92 on Aug 23; cattle settled at $223.05 today, never close to that level.",
+   "outcome": "didnt",
+   "method": "deterministic",
+   "mismatch": false,
+   "note": "Missed. Cattle absorbed the bearish Cattle on Feed report without testing $217.92 -- the packer-leverage story may be real but the board did not confirm it Monday. Watch whether the Douglas reopening this week gives the downside case a second chance.",
+   "instrument": "cattle",
+   "direction": "down",
+   "level": "217.92",
+   "p0": 223.05,
+   "p1": 223.05,
+   "design": "v2",
+   "direction_ok": false
+  },
   {
    "made": "2026-08-22",
    "judged": "2026-08-23",

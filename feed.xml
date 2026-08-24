@@ -5,13 +5,27 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Sun, 23 Aug 2026 11:24:43 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 24 Aug 2026 11:32:45 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/agsist.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>CORN HOLDS 52-WEEK HIGH; CROP PROGRESS AT 3 PM</title>
+      <link>https://agsist.com/daily/2026-08-24</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-08-24</guid>
+      <pubDate>Mon, 24 Aug 2026 05:00:00 -0600</pubDate>
+      <description>December corn is sitting at $5.22, at the top of its 52-week range, and doing nothing dramatic while the market waits on Crop Progress at 3 PM CT today. Indiana took nearly 15 inches of rain last week, which is either a late-season quality story or a harvest delay story depending on which fields got hit. The report decides which conversation starts this week.
+December corn at $5.22 waits on today's USDA Crop Progress report while Indiana flooding and Iran-Hormuz tensions set up a complicated week.
+• CORN WAITS ON THE REPORT
+  → If December holds above $5.22 after the 3 PM report, the pricing window Friday's briefing flagged is still open. Do not wait for combines.
+• CATTLE ABSORB TWO-SIDED NEWS
+  → Cattle feeders: hold major pricing decisions until import volume mechanics and the Douglas reopening pace are clearer this week.
+• ENERGY: HORMUZ BACK ON WATCH
+Read more: https://agsist.com/daily/2026-08-24</description>
+    </item>
     <item>
       <title>CORN AT 52-WEEK HIGH; BEEF IMPORT SHOCK WEEK AHEAD</title>
       <link>https://agsist.com/daily/2026-08-23</link>
@@ -379,19 +393,6 @@ Heat maps the bean rally into August; Mexico border reopening reshapes the feede
 • Cattle Gets Mexico News
 • Hogs and Crude: Two Big Moves
 Read more: https://agsist.com/daily/2026-07-26</description>
-    </item>
-    <item>
-      <title>CORN DROPS 5%; BEANS HIT 52-WEEK HIGH</title>
-      <link>https://agsist.com/daily/2026-07-25</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-07-25</guid>
-      <pubDate>Sat, 25 Jul 2026 05:00:00 -0600</pubDate>
-      <description>Friday handed producers two markets moving hard in opposite directions. Corn fell 24½ cents to $4.64, its biggest single-session drop in months, while soybeans closed at $12.48, at the top of their 52-week range on China buying and pollination heat. The week ends with the belt split wide open: beans are the crop the market is paying for right now.
-A brutal Friday for corn and wheat, a triumphant one for soybeans, and hogs had their biggest single-session move of the year.
-• Corn Takes a Hard Friday
-• Beans Own the Heat Story
-  → Old-crop beans still in storage: $12.48 nearby at the 52-week high is the pricing window this week called. Price it before Monday's crop progress report adds uncertainty.
-• Cattle and Hogs Diverge
-Read more: https://agsist.com/daily/2026-07-25</description>
     </item>
   </channel>
 </rss>
