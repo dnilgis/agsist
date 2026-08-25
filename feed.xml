@@ -5,13 +5,26 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Mon, 24 Aug 2026 11:32:45 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 25 Aug 2026 11:32:30 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/agsist.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>CRUDE BREAKS; CORN AND BEANS HOLD THEIR GROUND</title>
+      <link>https://agsist.com/daily/2026-08-25</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-08-25</guid>
+      <pubDate>Tue, 25 Aug 2026 05:00:00 -0600</pubDate>
+      <description>Crude oil had its biggest single-session drop in weeks, off 3.3% to $82.61, as new U.S. sanctions on Iran and Malacca Strait reassurances pulled the Hormuz premium out of the barrel. Corn and beans barely flinched: December corn eased 3 cents to $5.15, November beans off 4.5 cents to $12.19. The grain market is telling you the yield story matters more than the energy story right now.
+WTI fell 3.3% as Iran sanctions and Malacca pledges reshuffled the energy story; grains gave back pennies, not momentum.
+• CRUDE LEADS LOWER
+• GRAINS HOLD, CROP TOUR LOOMS
+  → Unpriced new-crop corn above $5.10 December: this window stays open through the Pro Farmer tour. Do not wait for combines to force your hand.
+• CRUDE LEADS LOWER
+Read more: https://agsist.com/daily/2026-08-25</description>
+    </item>
     <item>
       <title>CORN HOLDS 52-WEEK HIGH; CROP PROGRESS AT 3 PM</title>
       <link>https://agsist.com/daily/2026-08-24</link>
@@ -380,19 +393,6 @@ Corn drops nearly 2%, soybeans give back last week's highs, and the 3 PM crop pr
 • Corn Drops, Pollination Is Everything
 • Cattle Firm, Mexico Deal Holds
 Read more: https://agsist.com/daily/2026-07-27</description>
-    </item>
-    <item>
-      <title>CORN DROPS 5%, BEANS AT 52-WEEK HIGH: WEEK AHEAD</title>
-      <link>https://agsist.com/daily/2026-07-26</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-07-26</guid>
-      <pubDate>Sun, 26 Jul 2026 05:00:00 -0600</pubDate>
-      <description>Friday's close split the complex in half. Corn tumbled hard, $4.64 nearby after losing 24.5 cents, its biggest single-session drop in months, while nearby beans closed flat at $12.48, sitting at a 52-week high on hot-dry August forecasts. The week ahead has a clear thesis: weather owns beans, and the Mexico border news owns cattle.
-Heat maps the bean rally into August; Mexico border reopening reshapes the feeder market before it opens Monday.
-• Corn's Worst Day; Beans Hold High
-  → Old-crop beans still in storage: $12.48 nearby is at the top of the 52-week range. Price it this week or have a written reason not to.
-• Cattle Gets Mexico News
-• Hogs and Crude: Two Big Moves
-Read more: https://agsist.com/daily/2026-07-26</description>
     </item>
   </channel>
 </rss>

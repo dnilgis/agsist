@@ -1,18 +1,18 @@
 {
- "updated": "2026-08-24T11:32:45+00:00",
- "total": 96,
+ "updated": "2026-08-25T11:32:30+00:00",
+ "total": 97,
  "played_out": 34,
- "didnt": 57,
+ "didnt": 58,
  "pending": 5,
- "hit_rate": 37.4,
+ "hit_rate": 37.0,
  "by_method": {
   "deterministic": {
    "played": 8,
-   "missed": 47,
-   "graded": 55,
-   "hit_rate": 14.5,
+   "missed": 48,
+   "graded": 56,
+   "hit_rate": 14.3,
    "first": "2026-06-24",
-   "last": "2026-08-24"
+   "last": "2026-08-25"
   },
   "self_reported": {
    "played": 26,
@@ -34,17 +34,17 @@
   },
   "v2": {
    "played": 4,
-   "missed": 7,
-   "graded": 11,
-   "hit_rate": 36.4,
+   "missed": 8,
+   "graded": 12,
+   "hit_rate": 33.3,
    "first": "2026-08-12",
-   "last": "2026-08-24"
+   "last": "2026-08-25"
   }
  },
  "direction_only": {
   "right_way": 22,
-  "graded": 55,
-  "rate": 40.0
+  "graded": 56,
+  "rate": 39.3
  },
  "by_instrument": {
   "wheat": {
@@ -54,8 +54,8 @@
   },
   "corn": {
    "played": 2,
-   "graded": 19,
-   "hit_rate": 10.5
+   "graded": 20,
+   "hit_rate": 10.0
   },
   "beans": {
    "played": 4,
@@ -89,13 +89,29 @@
   }
  },
  "trailing20": {
-  "played": 7,
+  "played": 6,
   "graded": 20,
-  "hit_rate": 35.0
+  "hit_rate": 30.0
  },
  "mismatched": 23,
  "current_streak": 0,
  "records": [
+  {
+   "made": "2026-08-24",
+   "judged": "2026-08-25",
+   "call": "Called corn up toward above $5.29; December corn closed $5.15, off 3 cents, never tested $5.29.",
+   "outcome": "didnt",
+   "method": "deterministic",
+   "mismatch": false,
+   "note": "Corn moved the wrong direction and the level was never in play. That's a clean miss.",
+   "instrument": "corn",
+   "direction": "up",
+   "level": 5.29,
+   "p0": 4.9625,
+   "p1": 4.915,
+   "design": "v2",
+   "direction_ok": false
+  },
   {
    "made": "2026-08-23",
    "judged": "2026-08-24",

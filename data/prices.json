@@ -343,8 +343,8 @@
       "ticker": "DC=F",
       "close": 16.51,
       "open": 16.62,
-      "netChange": -0.06,
-      "pctChange": -0.361,
+      "netChange": -0.11,
+      "pctChange": -0.6619,
       "wk52_hi": 17.92,
       "wk52_lo": 14.53,
       "repaired_from": "milk-aug26",
@@ -355,7 +355,8 @@
         "open": 16.41,
         "netChange": 0.1,
         "pctChange": 0.6094
-      }
+      },
+      "derived_recomputed": true
     },
     "cattle-aug26": {
       "ticker": "LEQ26.CME",

@@ -1,6 +1,18 @@
 {
   "briefings": [
     {
+      "date": "2026-08-25",
+      "date_display": "Tuesday, August 25, 2026",
+      "headline": "CRUDE BREAKS; CORN AND BEANS HOLD THEIR GROUND",
+      "teaser": "Energy breaks hard, grains shrug. The crop tour starts Sunday.",
+      "market_mood": "mixed",
+      "surprise_count": 1,
+      "sections": 3,
+      "url": "/daily/2026-08-25",
+      "market_closed": false,
+      "yc_outcome": "didnt"
+    },
+    {
       "date": "2026-08-24",
       "date_display": "Monday, August 24, 2026",
       "headline": "CORN HOLDS 52-WEEK HIGH; CROP PROGRESS AT 3 PM",
@@ -1889,6 +1901,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-08-24T11:32:43.282626+00:00",
-  "count": 165
+  "updated": "2026-08-25T11:32:28.452584+00:00",
+  "count": 166
 }
