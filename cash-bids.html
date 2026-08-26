@@ -85,8 +85,28 @@ button,a,[role="button"],input,select{touch-action:manipulation}
 .cb-filt{padding:.45rem .85rem;border-radius:20px;border:2px solid var(--border);background:var(--surface);color:var(--text-dim);font-size:0.795rem;font-weight:600;cursor:pointer;transition:all .15s;white-space:nowrap;min-height:40px;display:inline-flex;align-items:center}
 .cb-filt:hover{border-color:var(--gold);color:var(--text)}
 .cb-filt.active{background:var(--gold);color:#0a1a0a;border-color:var(--gold)}
-.cb-sort{display:flex;align-items:center;gap:.4rem;font-size:0.795rem;color:var(--text-muted)}
-.cb-sort select{background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:1rem;padding:.35rem .5rem;cursor:pointer;outline:none;min-height:44px}
+/* MEASURED AT 375px, iPhone SE: this row was 556px wide inside a 341px
+   toolbar with flex-wrap:nowrap, so its children were crushed to their
+   narrowest possible column. "Delivery:" rendered 10px wide and 178px TALL --
+   one letter per line, straight down the page. "Sort:" was already doing it at
+   9px by 111px; adding a second label and select made a latent bug obvious
+   rather than causing a new one.
+   Three things fix it and each is doing a distinct job: the row WRAPS, so a
+   second control pair drops to its own line instead of competing for width; a
+   label never wraps, because a label that breaks between letters is not a
+   label; and a select may shrink but is capped at the width it actually has,
+   because min-width:auto on a flex item is what let a 358px select sit in a
+   341px toolbar in the first place. */
+.cb-sort{display:flex;align-items:center;flex-wrap:wrap;gap:.4rem .5rem;font-size:0.795rem;color:var(--text-muted);max-width:100%}
+.cb-sort label{flex:0 0 auto;white-space:nowrap}
+/* A LABEL AND ITS CONTROL WRAP AS ONE THING. With the row merely wrapping,
+   "Sort:" stayed on the first line and the select it names dropped to the
+   second — a label pointing at nothing, above a control with no name. Each
+   pair is its own flex item, so the break can only ever happen BETWEEN pairs.
+   15rem is the width below which the two pairs stop sharing a line. */
+.cb-pair{display:flex;align-items:center;gap:.4rem;flex:1 1 15rem;min-width:0}
+.cb-pair select{flex:1 1 auto;min-width:0}
+.cb-sort select{flex:1 1 9rem;min-width:0;max-width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:1rem;padding:.35rem .5rem;cursor:pointer;outline:none;min-height:44px}
 .bids-section-label{font-family:'JetBrains Mono',monospace;font-size:0.763rem;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.55rem}
 .best-bids-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.65rem;margin-bottom:1.2rem}
 @media(max-width:719px){.best-bids-grid{display:flex;flex-wrap:nowrap;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:.5rem;gap:.65rem}.best-bid-card{min-width:clamp(210px,72vw,270px);flex-shrink:0;scroll-snap-align:start}}
@@ -129,7 +149,13 @@ button,a,[role="button"],input,select{touch-action:manipulation}
 .wtd-comm-btn.active.soybeans{background:rgba(58,139,60,.18);color:var(--green);border-color:rgba(58,139,60,.5)}
 .wtd-comm-btn.active.wheat{background:rgba(202,138,60,.18);color:#ca8a3c;border-color:rgba(202,138,60,.5)}
 .wtd-winner-banner{background:rgba(58,139,60,.12);border:1px solid rgba(58,139,60,.3);border-radius:8px;padding:.6rem .85rem;margin-bottom:.85rem;font-size:.82rem;color:var(--green);display:flex;align-items:center;gap:.5rem}
-.wtd-winner-banner strong{color:var(--text)}
+.wtd-winner-banner strong{color:var(--text);white-space:nowrap}
+/* MEASURED AT 390px: the banner is display:flex with flex-wrap unset, so every
+   text node and every <strong> became its own flex item and was crushed to its
+   narrowest column -- "+$727" rendered as five characters stacked VERTICALLY
+   down a 137px-tall box on an ordinary iPhone. It is a sentence and it should
+   wrap like one; the figures inside it should not break at all. */
+.wtd-winner-banner{display:block;flex-wrap:wrap;line-height:1.45}
 .wtd-table-wrap{position:relative;overflow-x:auto;border-radius:8px;border:1px solid var(--border)}
 .wtd-table-wrap::after{content:'';position:absolute;right:0;top:0;bottom:0;width:28px;background:linear-gradient(to right,transparent,var(--surface2));pointer-events:none;border-radius:0 8px 8px 0;z-index:1}
 .wtd-table{width:100%;border-collapse:collapse;font-size:.82rem;min-width:480px}
@@ -241,12 +267,35 @@ button,a,[role="button"],input,select{touch-action:manipulation}
 @media(min-width:720px){.cb-skeleton{grid-template-columns:repeat(2,1fr)}}
 .cb-skel{background:var(--surface);border:2px solid var(--border);border-radius:12px;min-height:140px;height:auto;animation:shimmer 1.6s infinite;will-change:opacity}
 @keyframes shimmer{0%,100%{opacity:.45}50%{opacity:.8}}
+/* ON A PHONE IT STOPS BEING A TABLE.
+   It used to hide Distance, Round-Trip Fuel and vs-Closest below 580px and
+   leave the rest to scroll sideways. So the tool whose entire job is weighing
+   MILES against DOLLARS showed the dollars and hid the miles — and the four
+   surviving columns still overflowed, clipping "Total Net" mid-figure, with
+   the scroll-hint gradient explicitly switched off so there was no cue you
+   could swipe. Measured at 375px: scrollWidth 348 inside clientWidth 313.
+   Seven columns will not fit a phone and no amount of hiding makes them. So
+   each row becomes a card, every figure is present with its own label, and
+   nothing scrolls sideways. */
 @media(max-width:580px){
-  .wtd-table{min-width:0}
-  .wtd-table th:nth-child(4),.wtd-table td:nth-child(4),
-  .wtd-table th:nth-child(5),.wtd-table td:nth-child(5),
-  .wtd-table th:nth-child(7),.wtd-table td:nth-child(7){display:none}
+  .wtd-table-wrap{overflow-x:visible;border:0;border-radius:0}
   .wtd-table-wrap::after{display:none}
+  .wtd-table{min-width:0;display:block}
+  .wtd-table thead{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+  .wtd-table tbody,.wtd-table tr,.wtd-table td{display:block;width:auto}
+  .wtd-table tr{position:relative;border:1px solid var(--border);border-radius:10px;
+                padding:.6rem .7rem .6rem 2.2rem;margin-bottom:.6rem;background:var(--surface)}
+  .wtd-table tr.wtd-w{border-color:rgba(58,139,60,.55);background:rgba(58,139,60,.07)}
+  .wtd-table td{border:0;padding:.15rem 0;text-align:left!important}
+  .wtd-table td.wt-rank{position:absolute;left:.7rem;top:.7rem;padding:0;
+                        font-weight:700;color:var(--text-muted)}
+  /* Every figure names itself, because a number with no label on a card is
+     worse than the column heading it replaced. */
+  .wtd-table td[data-l]{display:flex;justify-content:space-between;gap:1rem;align-items:baseline}
+  .wtd-table td[data-l]::before{content:attr(data-l);font-family:'JetBrains Mono',monospace;
+    font-size:.7rem;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted);
+    flex:0 0 auto;white-space:nowrap}
+  .wtd-table td.wt-net{border-top:1px solid rgba(255,255,255,.08);margin-top:.25rem;padding-top:.4rem}
 }
 @media(max-width:500px){.cb-hero h1{font-size:1.65rem}.cb-lookup{padding:1rem .9rem}.cb-lookup-row{min-width:0}.cb-lookup-input{font-size:1rem;min-height:48px;min-width:0}.cb-lookup-btn{font-size:0.795rem;min-height:48px;padding:.7rem .7rem;min-width:0;flex:0 0 auto}.wtd-controls{flex-direction:column}.best-bids-grid{grid-template-columns:1fr}}
 @media(max-width:360px){.cb-wrap{padding:0 .7rem}.bid-cash{font-size:.88rem}.bid-basis{font-size:0.775rem;min-width:42px}}
@@ -454,10 +503,13 @@ button,a,[role="button"],input,select{touch-action:manipulation}
              cards together, because all three read the same filtered set.
              The options are built from the delivery periods actually present in
              the data, so this can never offer a month nobody posts. -->
+        <span class="cb-pair">
         <label for="cb-delivery">Delivery:</label>
         <select id="cb-delivery">
           <option value="all">Any delivery</option>
         </select>
+        </span>
+        <span class="cb-pair">
         <label for="cb-sort-select">Sort:</label>
         <select id="cb-sort-select">
           <option value="distance">Closest First</option>
@@ -465,6 +517,7 @@ button,a,[role="button"],input,select{touch-action:manipulation}
           <option value="best-basis">Strongest Basis</option>
           <option value="name">Name A&#8211;Z</option>
         </select>
+        </span>
       </div>
     </div>
     <div id="best-bids-section" style="display:none">
@@ -717,10 +770,33 @@ function showToast(msg,ms){toastEl.textContent=msg;toastEl.classList.add('show')
 function escH(s){return s?String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'):''}
 function fmtMoney(n){if(n==null||isNaN(n))return'&mdash;';var a=Math.abs(n);var t=a>=10000?(a/1000).toFixed(1)+'k':a>=1000?(a/1000).toFixed(2)+'k':a.toFixed(0);return(n<0?'&minus;':'')+'$'+t;}
 function truncName(name,max){return name&&name.length>max?name.slice(0,max-1)+'\u2026':name;}
-function classify(name){var n=(name||'').toLowerCase();if(n.indexOf('corn')>=0)return'corn';if(n.indexOf('soy')>=0||n.indexOf('bean')>=0)return'soybeans';if(n.indexOf('wheat')>=0||n.indexOf('hrw')>=0||n.indexOf('srw')>=0||n.indexOf('hrs')>=0)return'wheat';return'other';}
+/* MEAL, HULLS, PELLETS AND OIL ARE NOT THE GRAIN. They are priced PER TON,
+   and matching on the substring 'soy' filed 37 live rows -- Soybean Meal,
+   Soybean Hull Pellets -- into the soybeans bucket beside per-bushel bids.
+   They go to 'other', where a per-ton price is not compared against a
+   per-bushel one. */
+function classify(name){var n=(name||'').toLowerCase();if(/\b(meal|hull|pellet|oil|flour|ddg|distillers|gluten)\b/.test(n))return'other';if(n.indexOf('corn')>=0)return'corn';if(n.indexOf('soy')>=0||n.indexOf('bean')>=0)return'soybeans';if(n.indexOf('wheat')>=0||n.indexOf('hrw')>=0||n.indexOf('srw')>=0||n.indexOf('hrs')>=0)return'wheat';return'other';}
 function basisCents(b){if(b==null)return null;return Math.abs(b)<5?b*100:b;}
 function formatBasis(b){var c=basisCents(b);if(c==null)return{str:'&mdash;',cls:'flat'};return{str:(c>=0?'+':'')+c.toFixed(0)+'&#162;',cls:c>0?'pos':c<0?'neg':'flat'};}
+/* A PRICE THAT CANNOT BE A BUSHEL PRICE IS NOT SHOWN AS ONE.
+   ppu() divides anything over 30 by 100 because some feeds quote cents. That is
+   a reasonable rule for a cents-quoted bushel and a silent disaster for a
+   per-ton price: FJ Krob of Walker, Iowa posts SOYBEANS at 120.083 with a basis
+   of 11995.62 -- a per-ton row -- and the page rescaled it to $1.20, called it
+   soybeans, and made it the BEST SOYBEANS bid on the board. The sort ranked on
+   the raw 120.083 while the card printed $1.20, so it sorted by a number it did
+   not show.
+   The bands are the ones the AGSIST bid reader already uses to decide whether a
+   scraped number is a plausible price for its commodity. A row outside its own
+   band is withheld and COUNTED, never rescaled into looking sensible. */
+var PPU_BAND={corn:[2,12],soybeans:[6,32],wheat:[3,20]};
 function ppu(raw){if(raw==null)return null;return raw>30?raw/100:raw;}
+function plausible(bid){
+  var band=PPU_BAND[bid.category];
+  if(!band)return true;                       /* no band for it: not our call */
+  var p=ppu(bid.cashPrice);
+  return p!=null&&p>=band[0]&&p<=band[1];
+}
 function mapsUrl(name,city,state){return'https://maps.apple.com/?q='+encodeURIComponent((name||'')+(city?' '+city:'')+(state?' '+state:''));}
 function isSpotDelivery(del){return!del||/(spot|cash|immediate)/i.test(del);}
 
@@ -743,15 +819,26 @@ function getNearestBid(elev,comm){
    Anything else returns '' and is treated as unknown rather than guessed at --
    a bid filed under the wrong month is worse than a bid filed under none. */
 function delKey(b){
-  var m=/^(\d{4})-(\d{2})/.exec(String(b.deliveryStart||''));
-  if(m)return m[1]+'-'+m[2];
+  /* THE CONTRACT MONTH WINS, NOT THE DELIVERY WINDOW'S FIRST DAY.
+     Written the other way round on 2026-08-26 and it was wrong within hours.
+     55 of 345 live rows have a deliveryStart in a DIFFERENT month from the
+     label printed on the card -- Heartland Coop, Council Bluffs, posts a
+     Nov26 bean contract whose delivery window opens 2026-10-01, which is
+     ordinary and every elevator does it. Keying on the window meant asking for
+     November HID a real November bid from a co-op thirty miles from the man
+     who asked for this filter, and asking for October SHOWED him November
+     cards. The label is the number he says on the phone and the number the
+     elevator says back, so the label is what the filter must mean.
+     deliveryStart is kept as the fallback for a row whose label is unusable. */
   var mm=/^([A-Za-z]{3})[A-Za-z]*\s*'?(\d{2}|\d{4})$/.exec(String(b.deliveryMonth||'').trim());
-  if(!mm)return '';
-  var i=['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec']
-        .indexOf(mm[1].toLowerCase());
-  if(i<0)return '';
-  var yr=mm[2].length===2?('20'+mm[2]):mm[2];
-  return yr+'-'+('0'+(i+1)).slice(-2);
+  var i=mm?['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec']
+            .indexOf(mm[1].toLowerCase()):-1;
+  if(i>=0){
+    var yr=mm[2].length===2?('20'+mm[2]):mm[2];
+    return yr+'-'+('0'+(i+1)).slice(-2);
+  }
+  var m=/^(\d{4})-(\d{2})/.exec(String(b.deliveryStart||''));
+  return m?m[1]+'-'+m[2]:'';
 }
 var MONTHNAME=['January','February','March','April','May','June','July',
                'August','September','October','November','December'];
@@ -798,7 +885,12 @@ function syncDeliveryOptions(bids){
      a grower who picked November does not want it silently reset to Any when
      he changes ZIP. */
   var opts=Array.prototype.map.call(sel.options,function(o){return o.value;});
-  sel.value=opts.indexOf(currentDelivery)!==-1?currentDelivery:'all';
+  /* REMEMBERED ACROSS A RELOAD, because the ZIP already is and landing a
+     new-crop seller back on August spot is the exact thing he wrote in to
+     escape. Restored only if the period is still on offer. */
+  var saved=currentDelivery;
+  if(saved==='all'){try{saved=localStorage.getItem('agsist_delivery')||'all';}catch(e){}}
+  sel.value=opts.indexOf(saved)!==-1?saved:'all';
   currentDelivery=sel.value;
 }
 function inDelivery(b){
@@ -829,7 +921,7 @@ function flatten(data){
       var br=(typeof item.location==='string')?item.location:'';
       item.bids.forEach(function(bid){flat.push({facility:fac,branch:br,city:item.city||bid.city||'',state:item.state||bid.state||'',distance:parseFloat(item.distance||bid.distance)||null,phone:item.phone||bid.phone||'',commodity:bid.commodity||bid.commodity_display_name||bid.commodityName||'',cashPrice:parseFloat(bid.cashprice||bid.cashPrice)||null,basis:(function(v){return isFinite(v)?v:null;})(parseFloat(bid.basis)),deliveryMonth:bid.deliveryMonth||bid.delivery_month||'',deliveryStart:bid.deliveryStart||bid.delivery_start||'',asOf:bid.dataTimestamp||bid.timestamp||bid.updateTimestamp||bid.dataDate||item.dataTimestamp||item.timestamp||'',category:classify(bid.commodity||bid.commodity_display_name||bid.commodityName||'')});});
     }else if(item.commodity||item.commodityName||item.cashprice!==undefined||item.cashPrice!==undefined){
-      flat.push({facility:item.company||item.name||item.facility||item.locationName||'Unknown',branch:(typeof item.location==='string')?item.location:'',city:item.city||'',state:item.state||'',distance:parseFloat(item.distance)||null,phone:item.phone||'',commodity:item.commodity||item.commodity_display_name||item.commodityName||'',cashPrice:parseFloat(item.cashprice||item.cashPrice)||null,basis:parseFloat(item.basis)||null,deliveryMonth:item.deliveryMonth||item.delivery_month||'',deliveryStart:item.deliveryStart||item.delivery_start||'',asOf:item.dataTimestamp||item.timestamp||item.updateTimestamp||item.dataDate||'',category:classify(item.commodity||item.commodity_display_name||item.commodityName||'')});
+      flat.push({facility:item.company||item.name||item.facility||item.locationName||'Unknown',branch:(typeof item.location==='string')?item.location:'',city:item.city||'',state:item.state||'',distance:parseFloat(item.distance)||null,phone:item.phone||'',commodity:item.commodity||item.commodity_display_name||item.commodityName||'',cashPrice:parseFloat(item.cashprice||item.cashPrice)||null,basis:(function(v){return isFinite(v)?v:null;})(parseFloat(item.basis)),/* NOT `parseFloat(x)||null`: 0 || null is null, so a FLAT basis -- the strongest basis on the board -- was published as "unknown" and sorted below -80c. 21 of 345 live rows are exactly 0, including the top two bean bids. The sibling branch three lines up already had this right. */deliveryMonth:item.deliveryMonth||item.delivery_month||'',deliveryStart:item.deliveryStart||item.delivery_start||'',asOf:item.dataTimestamp||item.timestamp||item.updateTimestamp||item.dataDate||'',category:classify(item.commodity||item.commodity_display_name||item.commodityName||'')});
     }
   });
   return flat;
@@ -866,12 +958,25 @@ function renderEarnings(){
     if(elevRows.length<2)return;
     var byDist=elevRows.slice().sort(function(a,b){return(a.elev.distance||999)-(b.elev.distance||999);});
     var closest=byDist[0];
-    var sorted=elevRows.slice().sort(function(a,b){return b.p-a.p;});
-    var top=sorted[0];
+    /* RANK ON NET, NOT ON PRICE. This took the single highest-price elevator
+       and then subtracted fuel from it, which answers a different question from
+       the one the panel below it answers -- and the two disagreed on screen.
+       Measured 2026-08-26, 1,000 bu at $1.75: this banner named Cargill US at
+       48 miles, $12.69, +$635. The Worth The Drive table directly beneath it
+       named CHS Ag Terminals at 19 miles, $12.68 -- one cent LESS per bushel
+       and $727 net, ninety-two dollars better and twenty-nine miles nearer.
+       The calculator was right. A page that answers its own headline question
+       two ways in one scroll is worse than a page that does not ask it. */
+    var scored=elevRows.map(function(r){
+      var extra=(r.elev.distance||0)-(closest.elev.distance||0);
+      return{r:r,extraMi:extra,net:((r.p-closest.p)*bu)-(2*extra*fpm)};
+    }).sort(function(a,b){return b.net-a.net;});
+    var win=scored[0];
+    var top=win.r;
     if(top.elev.key===closest.elev.key)return;
+    var extraMi=win.extraMi;
     var gross=(top.p-closest.p)*bu;
-    var extraMi=(top.elev.distance||0)-(closest.elev.distance||0);
-    var net=gross-(2*extraMi*fpm);
+    var net=win.net;
     if(net>50&&(!best||net>best.net))best={cat:cat,topName:top.elev.facility,closeName:closest.elev.facility,tppu:top.p,cppu:closest.p,gross:gross,net:net,extraMi:extraMi};
   });
   if(!best){earningsCallout.classList.add('muted');return;}
@@ -939,7 +1044,10 @@ function renderWTD(){
   var refNet=refRow.net,winner=rows[0];
   if(winner&&winner.elev.key!==refRow.elev.key){
     var gain=winner.net-refNet;
-    wtdWinner.style.display='flex';
+    /* block, not flex: as a flex row every word became its own item and
+       "+$727" was crushed into a vertical column of five characters on a
+       375px phone. The inline style used to override the stylesheet fix. */
+    wtdWinner.style.display='block';
     wtdWinner.innerHTML='<svg class="ic" aria-hidden="true"><use href="#i-trophy"/></svg> <strong>'+escH(winner.elev.facility)+'</strong> nets you <strong style="color:var(--green)">'+(gain>0?'+':'')+fmtMoney(gain)+'</strong> more than your closest elevator on this '+bu.toLocaleString()+'-bu load.';
     gaEvent('wtd_calc',{commodity:comm,bushels:bu,fpm:fpm,winner:winner.elev.facility,gain:Math.round(gain)});
   }else{wtdWinner.style.display='none';}
@@ -955,11 +1063,11 @@ function renderWTD(){
     html+='<tr class="'+(i===0?'wtd-w':'')+'">';
     html+='<td class="wt-rank">'+(i<3?MEDALS[i]:(i+1)+'.')+'</td>';
     html+='<td><div class="wt-name">'+escH(r.elev.facility)+'</div><div class="wt-sub">'+subTxt+'</div></td>';
-    html+='<td class="wt-cash r">$'+r.ppu.toFixed(2)+'</td>';
-    html+='<td class="wt-dist r">'+r.dist.toFixed(0)+' mi</td>';
-    html+='<td class="wt-fuel r">&minus;'+fmtMoney(r.fuel)+'</td>';
-    html+='<td class="wt-net r'+(i===0?' best':'')+'">'+fmtMoney(r.net)+'</td>';
-    html+='<td class="wt-delta '+dcls+'">'+dstr+'</td></tr>';
+    html+='<td data-l="Cash/bu" class="wt-cash r">$'+r.ppu.toFixed(2)+'</td>';
+    html+='<td data-l="Distance" class="wt-dist r">'+r.dist.toFixed(0)+' mi</td>';
+    html+='<td data-l="Round-trip fuel" class="wt-fuel r">&minus;'+fmtMoney(r.fuel)+'</td>';
+    html+='<td data-l="Total net" class="wt-net r'+(i===0?' best':'')+'">'+fmtMoney(r.net)+'</td>';
+    html+='<td data-l="vs closest" class="wt-delta '+dcls+'">'+dstr+'</td></tr>';
   }
   wtdTbody.innerHTML=html;
   $('wtd-delivery-note').style.display='block';
@@ -1032,22 +1140,25 @@ var CB_PAGE_FIRST=10,CB_PAGE_STEP=20,cbVisibleLimit=CB_PAGE_FIRST,cbLastBids=nul
 function renderBids(bids,keepLimit){
   if(!keepLimit)cbVisibleLimit=CB_PAGE_FIRST;
   cbLastBids=bids;
-  if(!bids||!bids.length){results.innerHTML='<div class="cb-empty"><div class="cb-empty-icon" aria-hidden="true"><svg class="ic" aria-hidden="true"><use href="#i-search"/></svg></div><h2>No Bids Found</h2><p>Try a larger search radius or a different ZIP code.</p></div>';elevCount.textContent='0 elevators';return;}
+  if(!bids||!bids.length){results.innerHTML='<div class="cb-empty"><div class="cb-empty-icon" aria-hidden="true"><svg class="ic" aria-hidden="true"><use href="#i-search"/></svg></div><h2>No Bids Found</h2><p>Try a larger search radius or a different ZIP code.</p></div>';elevCount.textContent='0 elevators';currentElevators=[];return;}
   var filtered=currentFilter==='all'?bids:bids.filter(function(b){return b.category===currentFilter;});
   /* The delivery filter is applied HERE, beside the commodity one, on purpose:
      everything downstream -- groupElevators, getBest, the best-bid cards, the
      what-that-drive-is-worth calculator and the compare bar -- reads the set
      this function builds. Filtering once means the sort, the cards and the
      headline prices can never disagree about which delivery they are showing. */
+  /* Withheld before anything ranks, previews or headlines them. */
+  var implausible=filtered.filter(function(b){return !plausible(b);});
+  if(implausible.length)filtered=filtered.filter(plausible);
   if(currentDelivery!=='all'){
     filtered=filtered.filter(inDelivery);
     if(!filtered.length){
       var lab=currentDelivery==='harvest'?'harvest delivery':delLabel(currentDelivery)+' delivery';
       results.innerHTML='<div class="cb-empty"><div class="cb-empty-icon" aria-hidden="true"><svg class="ic" aria-hidden="true"><use href="#i-search"/></svg></div><h2>No bids for '+escH(lab)+'</h2><p>Nobody within this radius is posting that delivery period yet. Try &#8220;Any delivery&#8221;, a wider radius, or check back closer to harvest.</p></div>';
-      elevCount.textContent='0 elevators';return;
+      elevCount.textContent='0 elevators';currentElevators=[];return;
     }
   }
-  if(!filtered.length){results.innerHTML='<div class="cb-empty"><div class="cb-empty-icon" aria-hidden="true"><svg class="ic" aria-hidden="true"><use href="#i-search"/></svg></div><h2>No '+escH(currentFilter)+' bids found</h2><p>Try "All Grains" or a different area.</p></div>';elevCount.textContent='0 elevators';return;}
+  if(!filtered.length){results.innerHTML='<div class="cb-empty"><div class="cb-empty-icon" aria-hidden="true"><svg class="ic" aria-hidden="true"><use href="#i-search"/></svg></div><h2>No '+escH(currentFilter)+' bids found</h2><p>Try "All Grains" or a different area.</p></div>';elevCount.textContent='0 elevators';currentElevators=[];return;}
   var elevators=groupElevators(filtered);
   elevators.sort(function(a,b){switch(currentSort){case 'best-cash':return(b.bestCash||0)-(a.bestCash||0);case 'best-basis':return((b.bestBasis!=null?b.bestBasis:-9999))-((a.bestBasis!=null?a.bestBasis:-9999));case 'name':return(a.facility||'').localeCompare(b.facility||'');default:return(a.distance||999)-(b.distance||999);}});
   currentElevators=elevators;
@@ -1193,18 +1304,36 @@ document.querySelectorAll('.cb-filt').forEach(function(btn){
     currentFilter=btn.getAttribute('data-filter');
     preFilter=currentFilter;
     syncFilterBar(currentFilter);
+    /* THE DRIVE CALCULATOR FOLLOWS THE CHIP. Clicking Soybeans used to leave it
+       on Corn, so a board of twenty-five live soybean elevators sat under a
+       panel reading "No corn bids in results. Switch commodity or try a larger
+       radius." -- an alarming empty box directly beneath the answer, and a
+       click the reader should never have had to make. It already follows the
+       delivery filter; this makes the two consistent. "All Grains" and "Other"
+       name no single commodity, so the calculator is left where it is rather
+       than guessing which one was meant. */
+    if(currentFilter==='corn'||currentFilter==='soybeans'||currentFilter==='wheat'){
+      wtdComm=currentFilter;
+      document.querySelectorAll('.wtd-comm-btn').forEach(function(b){
+        var on=b.getAttribute('data-comm')===wtdComm;
+        b.classList.toggle('active',on);b.setAttribute('aria-pressed',on?'true':'false');
+      });
+    }
     gaEvent('bids_filter',{filter:currentFilter});
     renderBids(currentBids);
     renderBestBids(currentElevators);
     renderEarnings();
+    renderWTD();
   });
 });
 document.getElementById('cb-delivery').addEventListener('change',function(){
   currentDelivery=this.value;
+  try{localStorage.setItem('agsist_delivery',currentDelivery);}catch(e){}
   gaEvent('bids_delivery',{delivery:currentDelivery});
   renderBids(currentBids);
   renderBestBids(currentElevators);
   renderEarnings();
+  renderWTD();
 });
 sortSel.addEventListener('change',function(){
   currentSort=sortSel.value;
