@@ -5,13 +5,26 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Tue, 25 Aug 2026 11:32:30 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 26 Aug 2026 11:34:22 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/agsist.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>CROP RATINGS DIP; GRAINS FIRM, CATTLE SLIDE</title>
+      <link>https://agsist.com/daily/2026-08-26</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-08-26</guid>
+      <pubDate>Wed, 26 Aug 2026 05:00:00 -0600</pubDate>
+      <description>Monday's crop progress report clipped good-to-excellent ratings on both corn and soybeans, and the market noticed: December corn settled at $5.29, November beans at $12.41, wheat at $6.98. None of these are violent moves, but all three firmed on the same catalyst, a USDA condition nudge lower with dough-stage corn and pod-filling beans still weeks from a final verdict. The Pro Farmer tour number Friday is the next real test.
+USDA's Monday condition cut gave corn and beans a foothold; cattle absorbed a double hit from fund selling and the Douglas reopening.
+• GRAINS FIRM ON RATINGS CUT
+  → Unpriced new-crop corn with December above $5.25: the window from last week is still open. Do not let the Pro Farmer tour be the moment that closes it for you.
+• CATTLE ABSORB A DOUBLE HIT
+• ENERGY: CORRIDOR TALKS CAP THE BOUNCE
+Read more: https://agsist.com/daily/2026-08-26</description>
+    </item>
     <item>
       <title>CRUDE BREAKS; CORN AND BEANS HOLD THEIR GROUND</title>
       <link>https://agsist.com/daily/2026-08-25</link>
@@ -380,19 +393,6 @@ Cooler August forecasts hit beans and corn; Mexico cattle import news drives the
 • Grains Give Back
 • Energy Drifts Lower
 Read more: https://agsist.com/daily/2026-07-28</description>
-    </item>
-    <item>
-      <title>BEANS FALL $12.20 AS CROP PROGRESS LOOMS</title>
-      <link>https://agsist.com/daily/2026-07-27</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-07-27</guid>
-      <pubDate>Mon, 27 Jul 2026 05:00:00 -0600</pubDate>
-      <description>Soybeans fell to $12.20 and corn slipped to $4.51 on Monday, both giving back ground they fought hard for last week. Today's crop progress report at 3 PM CT is the decider: if corn pollination ratings come in stressed, the heat premium that drove beans to 52-week highs last week reloads. If the crop looks fine, this morning's selling was the right call. Wait for 3 PM.
-Corn drops nearly 2%, soybeans give back last week's highs, and the 3 PM crop progress report decides whether the heat story still has legs.
-• Beans Give Back, Watching 3 PM
-  → Old-crop beans still unpriced: $12.20 is 90% of the 52-week range. Price before 3 PM CT if you haven't yet.
-• Corn Drops, Pollination Is Everything
-• Cattle Firm, Mexico Deal Holds
-Read more: https://agsist.com/daily/2026-07-27</description>
     </item>
   </channel>
 </rss>
