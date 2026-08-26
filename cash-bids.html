@@ -440,6 +440,24 @@ button,a,[role="button"],input,select{touch-action:manipulation}
         <button class="cb-filt" data-filter="other" aria-pressed="false">Other Grains</button>
       </div>
       <div class="cb-sort">
+        <!-- ASKED FOR BY A GROWER, 2026-08-26. Kolton Jackson, by email: "I wish
+             there was a way to filter by delivery date. As I am watching the
+             market to pre-sell grain before harvest I'm looking at
+             October/November delivery and don't want/don't care about the
+             August/September prices as they are irrelevant."
+             He was right that the page fights him: every card already lists its
+             delivery months, but only the first three show and the rest sit
+             behind "+N more", so a new-crop seller reads spot prices first and
+             has to expand every card. Worse, "Best Price" ranked elevators on
+             whichever delivery paid most — usually the nearby one he does not
+             want. Filtering here fixes the order, the sort and the best-bid
+             cards together, because all three read the same filtered set.
+             The options are built from the delivery periods actually present in
+             the data, so this can never offer a month nobody posts. -->
+        <label for="cb-delivery">Delivery:</label>
+        <select id="cb-delivery">
+          <option value="all">Any delivery</option>
+        </select>
         <label for="cb-sort-select">Sort:</label>
         <select id="cb-sort-select">
           <option value="distance">Closest First</option>
@@ -610,7 +628,7 @@ button,a,[role="button"],input,select{touch-action:manipulation}
 'use strict';
 // Cash bids load from the AGSIST data proxy; no credentials ship in the client.
 var BASE_URL='https://agsist-barchart.dnilgis.workers.dev/barchart/getGrainBids';
-var currentBids=[],currentElevators=[],currentFilter='all',currentSort='distance',pinnedKeys=[],wtdComm='corn';
+var currentBids=[],currentElevators=[],currentFilter='all',currentSort='distance',currentDelivery='all',pinnedKeys=[],wtdComm='corn';
 var hasSearched=false,detectedLabel='',preFilter='all',lastFetchTime=null;
 var radiusTimer=null;
 
@@ -719,6 +737,81 @@ function getNearestBid(elev,comm){
   bids.sort(deliverySort);
   return bids[0];
 }
+/* WHICH DELIVERY PERIOD A BID IS FOR, as a sortable YYYY-MM key.
+   Two shapes arrive from Barchart and both are handled: deliveryStart, which is
+   "2026-10-01 00:00:00", and deliveryMonth, which is "Oct26" or "Oct 26".
+   Anything else returns '' and is treated as unknown rather than guessed at --
+   a bid filed under the wrong month is worse than a bid filed under none. */
+function delKey(b){
+  var m=/^(\d{4})-(\d{2})/.exec(String(b.deliveryStart||''));
+  if(m)return m[1]+'-'+m[2];
+  var mm=/^([A-Za-z]{3})[A-Za-z]*\s*'?(\d{2}|\d{4})$/.exec(String(b.deliveryMonth||'').trim());
+  if(!mm)return '';
+  var i=['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec']
+        .indexOf(mm[1].toLowerCase());
+  if(i<0)return '';
+  var yr=mm[2].length===2?('20'+mm[2]):mm[2];
+  return yr+'-'+('0'+(i+1)).slice(-2);
+}
+var MONTHNAME=['January','February','March','April','May','June','July',
+               'August','September','October','November','December'];
+function delLabel(k){
+  var p=k.split('-');
+  return MONTHNAME[parseInt(p[1],10)-1].slice(0,3)+' '+p[0];
+}
+/* HARVEST IS OFFERED ONLY WHEN THE DATA HAS IT. October, November and December
+   of the nearest crop year at or ahead of today -- which is the window Kolton
+   described and the one a pre-harvest seller means. It is not called "new crop":
+   that phrase means different months to different desks, and this control should
+   say exactly which months it is showing rather than a word people read two
+   ways. */
+function harvestKeys(keys){
+  var now=new Date(), y=now.getFullYear();
+  if(now.getMonth()>11)y++;
+  var want=[y+'-10',y+'-11',y+'-12'];
+  var have=want.filter(function(k){return keys.indexOf(k)!==-1;});
+  return have.length?have:[];
+}
+function syncDeliveryOptions(bids){
+  var sel=document.getElementById('cb-delivery');
+  if(!sel)return;
+  /* ONLY PERIODS A PERSON CAN STILL SELL INTO ARE OFFERED. The live file on
+     2026-08-26 carried eight rows dated FEBRUARY AND MAY 2012 -- fourteen years
+     in the past, plainly wrong somewhere upstream at Barchart or at the
+     elevator. Listed in the dropdown they would read as "Feb 2012" and make the
+     whole control look broken.
+     The rows are NOT hidden: they still appear under "Any delivery", because
+     dropping somebody's posted bid on our own judgement is a bigger sin than
+     showing an odd date. What is withheld is the OFFER to filter to a month
+     that has already gone, which nobody can haul into. */
+  var now=new Date();
+  var floorKey=now.getFullYear()+'-'+('0'+(now.getMonth()+1)).slice(-2);
+  var seen={},keys=[];
+  (bids||[]).forEach(function(b){var k=delKey(b);if(k&&k>=floorKey&&!seen[k]){seen[k]=1;keys.push(k);}});
+  keys.sort();
+  var hk=harvestKeys(keys);
+  var html='<option value="all">Any delivery</option>';
+  if(hk.length)html+='<option value="harvest">Harvest — '+hk.map(delLabel).join(', ')+'</option>';
+  keys.forEach(function(k){html+='<option value="'+k+'">'+delLabel(k)+'</option>';});
+  sel.innerHTML=html;
+  /* Keep the chosen period across a new search if that period still exists;
+     a grower who picked November does not want it silently reset to Any when
+     he changes ZIP. */
+  var opts=Array.prototype.map.call(sel.options,function(o){return o.value;});
+  sel.value=opts.indexOf(currentDelivery)!==-1?currentDelivery:'all';
+  currentDelivery=sel.value;
+}
+function inDelivery(b){
+  if(currentDelivery==='all')return true;
+  var k=delKey(b);
+  if(!k)return false;
+  if(currentDelivery==='harvest'){
+    var hk=harvestKeys([k]);
+    return hk.length>0;
+  }
+  return k===currentDelivery;
+}
+
 function getBest(elev,comm){
   var bids=elev.commodities[comm];
   if(!bids||!bids.length)return null;
@@ -941,6 +1034,19 @@ function renderBids(bids,keepLimit){
   cbLastBids=bids;
   if(!bids||!bids.length){results.innerHTML='<div class="cb-empty"><div class="cb-empty-icon" aria-hidden="true"><svg class="ic" aria-hidden="true"><use href="#i-search"/></svg></div><h2>No Bids Found</h2><p>Try a larger search radius or a different ZIP code.</p></div>';elevCount.textContent='0 elevators';return;}
   var filtered=currentFilter==='all'?bids:bids.filter(function(b){return b.category===currentFilter;});
+  /* The delivery filter is applied HERE, beside the commodity one, on purpose:
+     everything downstream -- groupElevators, getBest, the best-bid cards, the
+     what-that-drive-is-worth calculator and the compare bar -- reads the set
+     this function builds. Filtering once means the sort, the cards and the
+     headline prices can never disagree about which delivery they are showing. */
+  if(currentDelivery!=='all'){
+    filtered=filtered.filter(inDelivery);
+    if(!filtered.length){
+      var lab=currentDelivery==='harvest'?'harvest delivery':delLabel(currentDelivery)+' delivery';
+      results.innerHTML='<div class="cb-empty"><div class="cb-empty-icon" aria-hidden="true"><svg class="ic" aria-hidden="true"><use href="#i-search"/></svg></div><h2>No bids for '+escH(lab)+'</h2><p>Nobody within this radius is posting that delivery period yet. Try &#8220;Any delivery&#8221;, a wider radius, or check back closer to harvest.</p></div>';
+      elevCount.textContent='0 elevators';return;
+    }
+  }
   if(!filtered.length){results.innerHTML='<div class="cb-empty"><div class="cb-empty-icon" aria-hidden="true"><svg class="ic" aria-hidden="true"><use href="#i-search"/></svg></div><h2>No '+escH(currentFilter)+' bids found</h2><p>Try "All Grains" or a different area.</p></div>';elevCount.textContent='0 elevators';return;}
   var elevators=groupElevators(filtered);
   elevators.sort(function(a,b){switch(currentSort){case 'best-cash':return(b.bestCash||0)-(a.bestCash||0);case 'best-basis':return((b.bestBasis!=null?b.bestBasis:-9999))-((a.bestBasis!=null?a.bestBasis:-9999));case 'name':return(a.facility||'').localeCompare(b.facility||'');default:return(a.distance||999)-(b.distance||999);}});
@@ -1043,6 +1149,10 @@ function doSearch(zip){
     try{localStorage.setItem('agsist_zip',zip);}catch(e){}
     goBtn.textContent='\u21BB Refresh';
     currentBids=bids;pinnedKeys=[];
+    /* Built from the bids that just arrived, not from a hardcoded list of
+       months: a radius with no new-crop bids in it must not offer a
+       new-crop option that returns nothing. */
+    syncDeliveryOptions(bids);
     statusBar.style.display='flex';var _cn=document.getElementById('cb-confirm-note');if(_cn)_cn.style.display='block';toolbar.style.display='flex';internalLinks.style.display='block';
     statusLbl.textContent='Live bids within '+radius+' mi of ZIP '+zip;
     /* Wire the freshness timer to lastFetchTime — ticks every 30s.
@@ -1088,6 +1198,13 @@ document.querySelectorAll('.cb-filt').forEach(function(btn){
     renderBestBids(currentElevators);
     renderEarnings();
   });
+});
+document.getElementById('cb-delivery').addEventListener('change',function(){
+  currentDelivery=this.value;
+  gaEvent('bids_delivery',{delivery:currentDelivery});
+  renderBids(currentBids);
+  renderBestBids(currentElevators);
+  renderEarnings();
 });
 sortSel.addEventListener('change',function(){
   currentSort=sortSel.value;
