@@ -1,7 +1,66 @@
 {
- "updated": "2026-08-16",
+ "updated": "2026-08-26",
  "note": "Curated by hand each work session. Dates are the day the change was built; uploads usually land the same day or the next. Machine-refreshed data (prices, bids, weather, briefings) is not logged here — that updates continuously.",
  "entries": [
+  {
+   "date": "2026-08-26",
+   "items": [
+    {
+     "tag": "new",
+     "page": "/cash-bids",
+     "name": "Filter the board by delivery month",
+     "text": "A grower called Kolton wrote in to ask for it: he wanted to see only the bids he could actually deliver against, instead of reading past nine other delivery months to find his. The page now has a Delivery box beside the sort control -- pick a month, or \"Harvest\", and everything below it obeys: the elevator list, the three headline cards at the top, and the what-that-drive-is-worth calculator. The choice survives a reload, so coming back to the page does not mean setting it again. Thank you Kolton -- this one was your idea, and so is most of what is below it."
+    },
+    {
+     "tag": "new",
+     "page": "/cash-bids",
+     "name": "Every basis now says which futures month it is against",
+     "text": "A basis of -55 cents means nothing on its own. Against December corn it is one number; against March it is a different trade entirely, and two elevators quoting -55 and -45 are not comparable at all if they are quoting against different contracts. Each commodity on each elevator card now carries a short strip -- Sep26 $5.14, Dec26 $5.37, Mar27 $5.51 -- and each row is tagged with the contract its basis is quoted against, where that differs from the delivery month. The futures price is worked out from that elevator's own two published numbers, its cash minus its own basis, and nothing else; no outside quote feed is involved. Where an elevator's own rows do not agree on what the futures must be -- which happens when a board rounds its cash price -- the page prints nothing for that contract rather than guessing. Kolton asked for this one too."
+    },
+    {
+     "tag": "new",
+     "page": "/cash-bids",
+     "name": "What your basis was before it last moved, and when",
+     "text": "Under any bid whose history we hold, a line now says what the basis was before its last move and the day it moved -- a red down arrow when it got weaker for the seller, a green up arrow when it got stronger, and \"no change since\" with a date when it has not moved at all. Some of these are more interesting than a price: Big River at Boyceville has not touched its new-crop corn basis since the ninth of June. The history is this site's own -- the national bid file has been committed here daily since June, so its record of what every elevator was posting was already sitting in the archive; it is now kept deliberately rather than by accident, and a state's worth of it is about eight kilobytes, fetched only for the states you are actually looking at. Where the basis on the board no longer matches the last one on file, the line says \"moved since\" and the date we last looked, rather than naming a day it cannot know. This was the second thing Kolton asked for and the one he said he would miss most."
+    },
+    {
+     "tag": "fixed",
+     "page": "/cash-bids",
+     "name": "The new delivery filter hid real November bids",
+     "text": "Shipped in the morning and wrong by lunchtime. The filter matched on the first day of an elevator's delivery window rather than the contract month printed on the row, and 55 of the 345 bids then live had a window that opened in a different month from the month they were posted under. Asking for November therefore hid a genuine November bid -- including one at Heartland Co-op of Council Bluffs -- from the exact person who had asked for the filter. It now matches on the contract month, and falls back to the window only where a row's label cannot be read at all."
+    },
+    {
+     "tag": "fixed",
+     "page": "/cash-bids",
+     "name": "A flat basis was shown as \"unknown\" and sorted last",
+     "text": "A basis of exactly zero -- the strongest basis anybody on the board was posting -- was being read as no basis at all, printed as a dash, and sorted below elevators bidding 80 cents under. Twenty-one of the 345 live rows were affected, including the two best soybean bids on the page. The cause was a single line that treated the number zero as if it meant nothing."
+    },
+    {
+     "tag": "fixed",
+     "page": "/cash-bids",
+     "name": "A soybean meal price was crowned the best soybean bid",
+     "text": "One elevator posts soybean meal on the same board as soybeans, priced per ton rather than per bushel. The page rescaled that per-ton figure into something that looked like a bushel price, called it $1.20 soybeans, and put it in the Best Soybeans card at the top of the page. Prices that cannot be a bushel price for their crop are now withheld and counted rather than quietly rescaled into looking sensible."
+    },
+    {
+     "tag": "fixed",
+     "page": "/cash-bids",
+     "name": "The green banner and the drive calculator named different winners",
+     "text": "The banner above the Worth The Drive table ranked elevators on price alone while the table underneath ranked them on what you actually keep after the fuel to get there. On a 1,000 bushel load at $1.75 a gallon they disagreed by $92 and named two different elevators. The banner now ranks on the same net figure the table does."
+    },
+    {
+     "tag": "fixed",
+     "page": "/cash-bids",
+     "name": "The Delivery and Sort controls collapsed on a phone",
+     "text": "On a 375-pixel screen the word \"Delivery:\" rendered ten pixels wide and 178 pixels tall -- one letter per line, straight down the page -- because the row holding it refused to wrap. Both controls now wrap as a pair, a label never breaks between letters, and the green winner banner above the drive table wraps like the sentence it is instead of stacking \"+$727\" vertically."
+    },
+    {
+     "tag": "improved",
+     "page": "/cash-bids",
+     "name": "A pass over every column, edge and glyph on the page",
+     "text": "The column headings did not sit over their columns. CASH/BU was nineteen pixels right of the price beneath it and DELIVERY seventeen off its own column, at every screen width from a 320-pixel phone to a 1920-pixel monitor, because the heading row and the price rows were two separate grids that each sized themselves to their own contents. They now share one set of widths. The price rows were also indented eleven pixels further than the heading above them, so the inside of every card stepped in and out for no reason; every block on the page now starts and ends on the same two edges. Basis was printing a hyphen where the money beside it printed a minus sign, so a column of +48 and -52 never sat straight. One elevator's phone number arrived as ten unbroken digits next to two hyphenated ones, and one branch name arrived in capitals; both are now formatted for reading rather than passed through. Total Net was rounding to $4.61k while the column beside it counted to the dollar. The search box was 540 pixels wide and four rows tall in the middle of a 1320-pixel page, which pushed the bids most of a screen down; above 720 pixels it is one row across the full width, and above 1180 the elevator list runs three and then four cards across instead of two. Tick marks, a circled question mark and a marketing badge are gone."
+    }
+   ]
+  },
   {
    "date": "2026-08-16",
    "items": [

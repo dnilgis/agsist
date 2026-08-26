@@ -1,4 +1,17 @@
 <!DOCTYPE html>
+<!--
+  CASH BIDS  ·  agsist.com/cash-bids
+
+  With thanks to Kolton Jackson, who wrote in on 26 August 2026 asking whether
+  this page could filter by delivery month, and then kept going. The delivery
+  filter, the contract tags on each row, the futures strip under each commodity
+  heading and the line showing what the basis was before it last moved are all
+  his suggestions. Four numbers on this page were wrong before he made anybody
+  look closely at it.
+
+  Good feedback costs the person giving it more than it costs the person
+  getting it. If you have some: agsist.com/contact
+-->
 <html lang="en" data-theme="dark">
 <head>
 <meta charset="UTF-8">
@@ -41,9 +54,12 @@ button,a,[role="button"],input,select{touch-action:manipulation}
 .cb-hero{text-align:center;padding:1.8rem 0 .75rem}
 .cb-hero-eyebrow{font-family:'JetBrains Mono',monospace;font-size:0.77rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--gold);margin-bottom:.5rem}
 .cb-hero h1{font-family:var(--font-display);font-size:1.9rem;font-weight:800;text-transform:uppercase;letter-spacing:.02em;color:var(--text);margin:0 0 .5rem;line-height:1.1}
-.cb-hero-sub{font-size:.92rem;color:var(--text-dim);line-height:1.65;max-width:40rem;margin:0 auto .85rem}
-.cb-hero-trust{display:flex;flex-wrap:wrap;justify-content:center;gap:.5rem 1rem;font-size:0.785rem;color:var(--text-muted);font-family:'JetBrains Mono',monospace}
-.cb-hero-trust span{display:flex;align-items:center;gap:.25rem}
+/* text-wrap:balance evens the lines instead of filling the first one and
+   leaving whatever fits on the last. Measured at 1600 before it: the sub ended
+   a line on "basis" and began the next with "is.", which is a wrap a person
+   notices. Browsers that do not know the property ignore it. */
+.cb-hero-sub{font-size:.92rem;color:var(--text-dim);line-height:1.65;max-width:40rem;margin:0 auto .85rem;text-wrap:balance}
+.cb-hero h1,.wtd-note,.bm-intro,.wtd-sub,.cb-info h3,.faq-q-text{text-wrap:balance}
 @media(min-width:700px){.cb-hero h1{font-size:2.5rem}}
 .cb-lookup{max-width:540px;margin:1rem auto 1.5rem;background:var(--surface);border:2px solid var(--border);border-radius:12px;padding:1.3rem 1.5rem}
 .cb-lookup-label{font-family:'JetBrains Mono',monospace;font-size:0.77rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:.6rem}
@@ -179,6 +195,58 @@ button,a,[role="button"],input,select{touch-action:manipulation}
 .wtd-delivery-note{font-family:var(--font-body,'Inter',system-ui,sans-serif);font-size:1rem;color:var(--text-muted);margin-top:.5rem;padding:.35rem .55rem;background:var(--surface2);border-radius:6px}
 .cb-grid{display:grid;grid-template-columns:1fr;gap:.85rem;margin-bottom:1.5rem}
 @media(min-width:720px){.cb-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+/* MEASURED AT 1920: the page was using 1060 of 1920 pixels and showing eight
+   elevators where it had room for sixteen. A card is legible at 341px -- that
+   is what it gets on a 375px phone -- so a third and fourth column cost it
+   nothing, and the reading measure of the prose is protected separately below
+   rather than by starving the whole page of width. */
+@media(min-width:1180px){.cb-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(min-width:1560px){.cb-grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media(min-width:1400px){.cb-wrap{max-width:1320px}}
+/* MEASURED AT 1600: the search card is 540px wide and four rows tall, centred
+   in a 1320px page, so it sat in about 780px of empty floor and pushed the
+   bids it produces most of a screen further down. The four rows are four
+   controls that belong on one line at this width. Below 900px it stays the
+   stack it was -- a phone has one column and that was always right for it. */
+/* Below 720 the card keeps its stacked layout but stops being a narrower box
+   inside a wider column: at 700px it was inset 63px from the blocks above and
+   below it. The ZIP row is capped instead, so a full-width card does not turn
+   a five-digit field into a 600px one. */
+@media(max-width:719px){.cb-lookup{max-width:none;margin-left:0;margin-right:0}.cb-lookup-row{max-width:26rem}}
+/* 720 and not 900: the card grid goes two-up at 720, and below that the page
+   is one column. A 540px card centred among full-width blocks is the same
+   ragged edge the wide layout was fixed for, one breakpoint down. */
+@media(min-width:720px){
+  /* FLEX AND NOT GRID, for one reason: the commodity pills must never wrap
+     INSIDE their own group. On a fixed third column they did -- 448px of room
+     against the 460px the label and four pills actually need, so "Wheat"
+     dropped to a second line and the card grew 41px to hold one word. With a
+     30rem flex-basis the group asks for the width it needs and takes its own
+     line when the row cannot give it, which is self-correcting at every width
+     instead of correct at the two that were checked. */
+    /* FULL CONTENT WIDTH, not a centred box. At 1180px centred inside a 1320px
+     page the card started 52px to the right of the sponsor ribbon above it and
+     the status line below it -- three stacked blocks, three different left
+     edges. Spanning the column puts all three flush and hands the controls the
+     room at the same time. */
+  .cb-lookup{max-width:none;display:flex;flex-wrap:wrap;align-items:center;gap:.75rem 1.5rem;text-align:left;padding:1.15rem 1.4rem;margin:1rem 0 1.25rem}
+  .cb-lookup-label{flex:1 0 100%;margin-bottom:0}
+  .cb-lookup-row{flex:0 1 19rem}
+  .cb-radius-row,.cb-comm-row,.cb-geo-row{margin-top:0}
+  .cb-radius-row{flex:0 0 auto}
+  .cb-comm-row{flex:1 1 30rem}
+  .cb-geo-row{flex:1 0 100%}
+}
+/* "Use my location" stays on its own line and stays LEFT, under the ZIP field
+   it is an alternative to. Pushed to the right end it read as a stray link in
+   the corner of the card rather than the second way to answer the first
+   question. */
+/* Prose does not get wider just because the window did. Roughly 72 characters
+   is where a line stops being comfortable to track back from, and the card
+   grid, the tables and the basis map are the things that actually wanted the
+   extra room. */
+.faq-a,.cb-hero-sub,.bm-intro,.cb-info p{max-width:72ch}
+.bm-intro,.cb-hero-sub{margin-left:auto;margin-right:auto}
 .elev-card{background:var(--surface);border:2px solid var(--border);border-radius:12px;overflow:hidden;transition:border-color .15s;position:relative;contain:layout style}
 .elev-card:hover{border-color:rgba(var(--gold-rgb),.3)}
 .elev-card.pinned{border-color:var(--gold);box-shadow:0 0 0 2px rgba(230,176,66,.15)}
@@ -198,8 +266,22 @@ button,a,[role="button"],input,select{touch-action:manipulation}
 .comm-section{border-top:1px solid var(--border)}
 .comm-header{display:flex;align-items:center;gap:.35rem;padding:.55rem 1rem .3rem;font-family:'JetBrains Mono',monospace;font-size:0.755rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
 .comm-header.corn{color:var(--gold)}.comm-header.soybeans{color:var(--green)}.comm-header.wheat{color:#ca8a3c}.comm-header.other{color:var(--text-muted)}
-.bid-rows{padding:0 .65rem .55rem}
-.bid-row{display:grid;grid-template-columns:1fr auto auto;gap:.25rem .6rem;align-items:baseline;padding:.32rem .35rem;border-radius:4px;transition:background .1s}
+/* THE HEADER ROW AND THE DATA ROWS ARE TWO GRIDS AND `auto` CANNOT MAKE THEM
+   AGREE. Both said `1fr auto auto`, which sizes each column to the content of
+   ITS OWN grid: measured at 320, 360, 375, 390, 414, 480, 600, 720, 768, 900,
+   1024, 1280, 1440 and 1920, the word CASH/BU sat 19px to the right of the
+   $4.62 underneath it and DELIVERY 17px off its own column, at every single
+   one. Nothing about the viewport was the problem; the structure was.
+   One set of widths, declared once here and used by the label row and every
+   data row, and the columns line up by construction rather than by luck.
+   The values are the widest real content plus a hair: "$11.91" and "-100c" in
+   the mono face, checked at every width above and at the 360px breakpoint
+   where both type sizes step down. */
+.bid-rows{--c-cash:4.9rem;--c-basis:3.4rem;padding:0 1rem .55rem}
+/* Horizontal padding moved OUT to .bid-rows. It was .35rem here and .65rem
+   there, which put every price row 11px to the right of the commodity heading
+   and the futures strip above it -- a stair-step nobody chose. */
+.bid-row{display:grid;grid-template-columns:minmax(0,1fr) var(--c-cash) var(--c-basis);gap:.1rem .6rem;align-items:baseline;padding:.32rem 0;border-radius:4px;transition:background .1s}
 .bid-row:hover{background:var(--surface2)}
 .bid-row+.bid-row{border-top:1px solid rgba(255,255,255,.04)}
 .bid-del{font-size:0.79rem;color:var(--text-dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -209,6 +291,21 @@ button,a,[role="button"],input,select{touch-action:manipulation}
    the flexible 1fr column, so nothing else can be squeezed by it -- the
    lesson from the "Delivery:" label that rendered one letter per line. */
 .bid-del-cell{display:flex;align-items:baseline;gap:.3rem;min-width:0;overflow:hidden}
+/* THE CHANGE LINE SPANS THE WHOLE ROW, which is the entire reason it cannot
+   break anything. The row is a three-column grid; a fourth child would have
+   competed with the cash price for width on a 320px screen, and this page has
+   already lost that argument once -- "Delivery:" rendered one letter per line
+   in August. grid-column:1/-1 gives it its own line under the three columns,
+   where it can be as wide as it likes and take a second line if it must. */
+/* The row's own .25rem row-gap already separates the price line from this one;
+   the extra margin on top of it opened a hole between a number and the
+   sentence about that number, and seven rows of it is most of a phone screen.
+   The gap belongs BETWEEN rows, which is what the border does. */
+.bid-chg{grid-column:1/-1;text-align:right;font-family:'JetBrains Mono',monospace;font-size:0.70rem;line-height:1.3;margin-top:-.08rem;letter-spacing:.01em}
+.bid-chg .bh-up{color:var(--green);font-weight:700}
+.bid-chg .bh-dn{color:var(--red,#ef4444);font-weight:700}
+.bid-chg .bh-when{color:var(--text-muted);opacity:.85}
+.bid-chg.bh-quiet{color:var(--text-muted);opacity:.62}
 .bid-fut-tag{font-family:'JetBrains Mono',monospace;font-size:0.70rem;color:var(--text-muted);opacity:.75;white-space:nowrap;flex:0 0 auto}
 /* The strip is its own block under the commodity header and it WRAPS. It can
    carry six contracts on a wide screen and three lines on a phone, and neither
@@ -221,7 +318,7 @@ button,a,[role="button"],input,select{touch-action:manipulation}
 .bid-cash{font-family:'JetBrains Mono',monospace;font-size:1.22rem;font-weight:700;color:var(--text);text-align:right;white-space:nowrap;line-height:1.2}
 .bid-basis{font-family:'JetBrains Mono',monospace;font-size:0.79rem;font-weight:600;text-align:right;white-space:nowrap;min-width:52px;opacity:.82}
 .bid-basis.pos{color:var(--green)}.bid-basis.neg{color:var(--red,#ef4444)}.bid-basis.flat{color:var(--text-muted)}
-.bid-row-labels{display:grid;grid-template-columns:1fr auto auto;gap:.25rem .6rem;padding:.18rem .35rem .1rem;font-family:'JetBrains Mono',monospace;font-size:0.755rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);opacity:.7}
+.bid-row-labels{display:grid;grid-template-columns:minmax(0,1fr) var(--c-cash) var(--c-basis);gap:.25rem .6rem;padding:.18rem 0 .1rem;font-family:'JetBrains Mono',monospace;font-size:0.755rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);opacity:.7}
 .bid-row-labels span:nth-child(2),.bid-row-labels span:nth-child(3){text-align:right}
 .internal-links{margin:1.5rem 0;padding:1.1rem;background:var(--surface2);border:2px solid var(--border);border-radius:12px}
 .internal-links h3{font-family:'JetBrains Mono',monospace;font-size:0.763rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin:0 0 .7rem}
@@ -269,7 +366,9 @@ button,a,[role="button"],input,select{touch-action:manipulation}
 .compare-table td{padding:.5rem .75rem;border-bottom:1px solid rgba(255,255,255,.05);vertical-align:top}
 .compare-table tr:last-child td{border-bottom:none}
 .compare-rl{font-family:'JetBrains Mono',monospace;font-size:0.763rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--text-muted);white-space:nowrap}
+/* The winning cell was bold, green AND carried a tick. Two of those say it. */
 .compare-win{font-weight:700;color:var(--green)}
+.compare-win::after{content:'';display:block;height:2px;margin-top:.2rem;border-radius:2px;background:var(--green);opacity:.55}
 .compare-price{font-family:var(--font-display);font-size:1rem;font-weight:700;color:var(--text)}
 .compare-basis{font-family:'JetBrains Mono',monospace;font-size:.8rem;font-weight:700}
 .compare-basis.pos{color:var(--green)}.compare-basis.neg{color:var(--red,#ef4444)}
@@ -313,12 +412,27 @@ button,a,[role="button"],input,select{touch-action:manipulation}
   .wtd-table td.wt-net{border-top:1px solid rgba(255,255,255,.08);margin-top:.25rem;padding-top:.4rem}
 }
 @media(max-width:500px){.cb-hero h1{font-size:1.65rem}.cb-lookup{padding:1rem .9rem}.cb-lookup-row{min-width:0}.cb-lookup-input{font-size:1rem;min-height:48px;min-width:0}.cb-lookup-btn{font-size:0.795rem;min-height:48px;padding:.7rem .7rem;min-width:0;flex:0 0 auto}.wtd-controls{flex-direction:column}.best-bids-grid{grid-template-columns:1fr}}
-@media(max-width:360px){.cb-wrap{padding:0 .7rem}.bid-cash{font-size:.88rem}.bid-basis{font-size:0.775rem;min-width:42px}}
+/* The type steps down at 360, so the columns step down with it. Leaving them
+   at the wide value would hand 30px to whitespace on the narrowest phone,
+   taken straight out of the elevator name. */
+@media(max-width:360px){.cb-wrap{padding:0 .7rem}.bid-cash{font-size:.88rem}.bid-basis{font-size:0.775rem;min-width:0}.bid-rows{--c-cash:3.7rem;--c-basis:2.9rem;padding:0 .8rem .55rem}.comm-header{padding:.55rem .8rem .3rem}.comm-fut{padding:0 .8rem .4rem}}
 @media(prefers-reduced-motion:reduce){.cb-skel{animation:none;opacity:.6}.elev-card,.cb-filt,.cb-lookup-btn,.compare-bar,.best-bid-card,.faq-chev{transition:none}html{scroll-behavior:auto}}
 .cb-toast{position:fixed;bottom:calc(1rem + env(safe-area-inset-bottom));left:50%;transform:translateX(-50%) translateY(20px);background:#1a2a1a;border:1px solid var(--gold);border-radius:8px;padding:.55rem 1rem;font-family:'JetBrains Mono',monospace;font-size:0.795rem;color:var(--text);white-space:nowrap;z-index:1200;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s}
 .cb-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 @media print{.cb-lookup,.cb-toolbar,.compare-bar,.pin-btn,.share-btn,#site-header,#site-footer,.breadcrumb,.cb-geo-row,.cb-radius-row,.wtd-panel,.internal-links,.faq-section{display:none!important}.elev-card{break-inside:avoid;border:1px solid #ccc}body{color:#000;background:#fff}}
-.basis-q{background:none;border:1px solid var(--border);border-radius:50%;width:15px;height:15px;font-size:0.745rem;color:var(--text-muted);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;vertical-align:middle;padding:0;line-height:1;min-height:0;margin-left:.18rem}
+/* THE HEADER WORD IS THE CONTROL. It was "Basis" followed by a 15px circled
+   question mark, and once the columns were pinned to one width that header
+   needed 59px in a 54px column: it wrapped, putting BASIS on one line and the
+   question mark alone on the next, in every card, at every width from 320 to
+   1920. Widening the column to fit a punctuation mark would have taken those
+   pixels from the elevator's name on the narrowest phone.
+   Making the word itself the button fits, gives a 40px-wide tap target instead
+   of a 15px one, and takes a glyph off a card that is otherwise all numbers.
+   The dotted underline is the affordance; the delegated click handler still
+   matches on the class. */
+.basis-q{background:none;border:0;padding:0;margin:0;font:inherit;color:inherit;letter-spacing:inherit;text-transform:inherit;line-height:1.1;min-height:0;cursor:help;border-bottom:1px dotted currentColor}
+.basis-q:hover,.basis-q:focus-visible{color:var(--text-dim)}
+.bid-row-labels span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .wtd-toggle{display:none;width:100%;align-items:center;justify-content:center;gap:.5rem;background:rgba(230,176,66,.06);border:none;border-top:2px solid rgba(230,176,66,.35);color:var(--gold);font-family:'JetBrains Mono',monospace;font-size:0.78rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:.8rem 1rem;cursor:pointer;min-height:44px;transition:color .15s}
 .wtd-toggle:hover{color:var(--gold)}
 .wtd-toggle-chev{transition:transform .2s;display:inline-block}
@@ -439,14 +553,17 @@ button,a,[role="button"],input,select{touch-action:manipulation}
     <div class="cb-hero">
       <div class="cb-hero-eyebrow">Live &#183; Free &#183; No Account Needed</div>
       <h1>What Will Elevators Pay You Today?</h1>
-<style>.ag-sponsor-ribbon{display:block;font-size:0.785rem;padding:.45rem .85rem;margin:1rem 0;border:1px solid rgba(132,160,168,.18);border-radius:8px;color:#8a948f;line-height:1.6}.ag-sponsor-ribbon .ag-sponsor-tag{font-family:'JetBrains Mono',monospace;font-size:0.75rem;letter-spacing:.12em;text-transform:uppercase;color:#d4a23f;margin-right:.5rem}.ag-sponsor-ribbon a{color:#d4a23f}</style><aside class="ag-sponsor-ribbon" id="ag-sponsor"><span class="ag-sponsor-tag">Sponsor this page</span> Sellers with grain to move, checking bids &mdash; one category-exclusive slot. <a href="/sponsor?slot=cash-bids&amp;utm_source=cash-bids&amp;utm_medium=slot">Put your name here &rarr;</a></aside>
-      <p class="cb-hero-sub">Enter your ZIP code to see live cash prices and basis at every elevator near you &#8212; then use our free <strong>Worth the Drive</strong> tool to find which one actually nets you the most after fuel.</p>
-      <div class="cb-hero-trust">
-        <span>&#10003; Live during market hours</span>
-        <span>&#10003; No account &#183; No subscription</span>
-        <span>&#10003; Net revenue calculator</span>
-        <span>&#10003; Up to 250-mile radius</span>
-      </div>
+<style>.ag-sponsor-ribbon{display:block;font-size:0.785rem;padding:.45rem .85rem;margin:1rem 0;border:1px solid rgba(132,160,168,.18);border-radius:8px;color:#8a948f;line-height:1.6}.ag-sponsor-ribbon .ag-sponsor-tag{font-family:'JetBrains Mono',monospace;font-size:0.75rem;letter-spacing:.12em;text-transform:uppercase;color:#d4a23f;margin-right:.5rem}.ag-sponsor-ribbon a{color:#d4a23f}</style><aside class="ag-sponsor-ribbon" id="ag-sponsor"><span class="ag-sponsor-tag">Sponsor this page</span> Sellers with grain to move, checking bids. One category-exclusive slot. <a href="/sponsor?slot=cash-bids&amp;utm_source=cash-bids&amp;utm_medium=slot">Put your name here &rarr;</a></aside>
+      <p class="cb-hero-sub">Enter your ZIP to see what every elevator near you is paying today, and what their basis is. <strong>Worth the Drive</strong> works out which one leaves you the most after fuel.</p>
+<!-- A row of green ticks saying "Live during market hours / No account / Net
+     revenue calculator / 250-mile radius" stood here. It went for three
+     reasons and not only the ticks. The line above it already says LIVE, FREE,
+     NO ACCOUNT NEEDED, so two of the four were the same claim twice on one
+     screen. The other two describe controls that are visible about an inch
+     below -- the radius dropdown offers 250 miles, the calculator is on the
+     page. And "Live during market hours" was appearing directly above a badge
+     reading "Market closed". Deleting it removes a contradiction, a
+     duplication and 42 vertical pixels above the thing people came for. -->
     </div>
     <div class="cb-lookup" role="search">
       <div class="cb-lookup-label">Find Bids Near Your Farm</div>
@@ -485,7 +602,7 @@ button,a,[role="button"],input,select{touch-action:manipulation}
         <span id="cb-status-label">Showing bids near&#8230;</span>
         <span class="cb-count" id="cb-elev-count">0</span>
       </div>
-    <p id="cb-confirm-note" style="display:none;font-size:1rem;color:var(--text-dim,#8a948f);margin:.4rem 0 0">Bids are indicative &mdash; confirm with the elevator before you haul. Elevator operator? <a href="mailto:sig@farmers1st.com?subject=Cash%20bids%20correction" style="color:var(--gold,#d4a23f)">Report a correction &rarr;</a></p>
+    <p id="cb-confirm-note" style="display:none;font-size:1rem;color:var(--text-dim,#8a948f);margin:.4rem 0 0">Bids are indicative. Confirm with the elevator before you haul. Elevator operator? <a href="mailto:sig@farmers1st.com?subject=Cash%20bids%20correction" style="color:var(--gold,#d4a23f)">Report a correction &rarr;</a></p>
       <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap">
         <div class="cb-status-meta">
           <span id="cb-status-timer" data-agsist-timer data-mode="since" style="display:none"></span>
@@ -543,7 +660,7 @@ button,a,[role="button"],input,select{touch-action:manipulation}
           <div class="earnings-detail" id="earnings-detail"></div>
         </div>
       </div>
-      <div class="bids-section-label"><svg class="ic" aria-hidden="true"><use href="#i-trophy"/></svg> Best Bid Near You &#8212; Tap to highlight in list</div>
+      <div class="bids-section-label"><svg class="ic" aria-hidden="true"><use href="#i-trophy"/></svg> Best bid near you</div>
       <div class="best-bids-grid" id="best-bids-grid" role="list"></div>
       <div class="bbc-scroll-hint" id="bbc-scroll-hint" aria-hidden="true">&#8592; swipe to see all commodities &#8594;</div>
       <div class="wtd-panel">
@@ -552,14 +669,14 @@ button,a,[role="button"],input,select{touch-action:manipulation}
             <span class="wtd-icon" aria-hidden="true"><svg class="ic" aria-hidden="true"><use href="#i-truck"/></svg></span>
             <div>
               <div class="wtd-title">Worth the Drive?</div>
-              <div class="wtd-sub">Which elevator nets you the most &#8212; after fuel?</div>
+              <div class="wtd-sub">Which elevator nets you the most after fuel</div>
             </div>
           </div>
-          <span class="wtd-badge">Only on AGSIST</span>
+          
         </div>
-        <button class="wtd-toggle" id="wtd-toggle-btn" aria-expanded="false" aria-controls="wtd-body"><span>Set your load size and fuel cost &#8212; see who really wins</span> <span class="wtd-toggle-chev" aria-hidden="true">&#9660;</span></button>
+        <button class="wtd-toggle" id="wtd-toggle-btn" aria-expanded="false" aria-controls="wtd-body"><span>Set your load size and fuel cost</span> <span class="wtd-toggle-chev" aria-hidden="true">&#9660;</span></button>
         <div class="wtd-body" id="wtd-body">
-          <p class="wtd-note"><strong>The highest cash price isn&#8217;t always the biggest check.</strong> A farther elevator at +14&#162; sounds great &#8212; but on a 1,000 bu load, driving 40 miles farther (80 mi round trip) at $1.75/mile eats $140 in fuel. Set your numbers and see who really wins.</p>
+          <p class="wtd-note"><strong>The highest cash price is not always the biggest check.</strong> On a 1,000 bushel load, an extra 14&#162; is $140. Driving 40 miles farther to get it, 80 miles round trip at $1.75 a mile, is also $140. Put your own numbers in.</p>
           <div class="wtd-controls">
             <div class="wtd-ig">
               <label class="wtd-ilabel" for="wtd-bushels">Your Load Size</label>
@@ -592,7 +709,7 @@ button,a,[role="button"],input,select{touch-action:manipulation}
               <tbody id="wtd-tbody"></tbody>
             </table>
           </div>
-          <div class="wtd-delivery-note" id="wtd-delivery-note" style="display:none">&#9432; Comparing nearest available delivery month at each elevator. Verify delivery terms before hauling.</div>
+          <div class="wtd-delivery-note" id="wtd-delivery-note" style="display:none">Comparing the nearest available delivery month at each elevator. Confirm delivery terms before you haul.</div>
         </div>
       </div>
     </div>
@@ -600,14 +717,14 @@ button,a,[role="button"],input,select{touch-action:manipulation}
       <div class="cb-empty">
         <div class="cb-empty-icon" aria-hidden="true"><svg class="ic" aria-hidden="true"><use href="#i-map-pin"/></svg></div>
         <h2>Find Elevators Near You</h2>
-        <p>Enter your ZIP code above &#8212; or allow location access &#8212; to see live cash bids from grain elevators near your farm.</p>
+        <p>Enter your ZIP code above, or allow location access, to see live cash bids from grain elevators near your farm.</p>
       </div>
     </div>
         <!-- ===== NATIONAL BASIS (merged from /basis-map) ===== -->
     <section id="national-basis" class="bm-section" aria-label="National grain basis by state">
       <h2 class="bm-h">Where basis is strongest nationally</h2>
-      <p class="bm-intro">Your local bids are above. Zoomed out, here&rsquo;s corn, soybean, and wheat basis ranked by state &mdash; cash minus futures &mdash; so you can see where it pays to sell across the country.</p>
-      <div class="bm-sample" id="bm-sample">Sample layout &mdash; live basis data pending. Numbers shown are illustrative.</div>
+      <p class="bm-intro">Your local bids are above. Zoomed out, here&rsquo;s corn, soybean, and wheat basis ranked by state, cash minus futures, so you can see where it pays to sell across the country.</p>
+      <div class="bm-sample" id="bm-sample">Sample layout. Live basis data pending. Numbers shown are illustrative.</div>
       <div class="bm-toggle" id="bm-toggle" role="group" aria-label="Commodity">
         <button data-c="corn" aria-pressed="true">Corn</button>
         <button data-c="soybeans" aria-pressed="false">Soybeans</button>
@@ -631,21 +748,21 @@ button,a,[role="button"],input,select{touch-action:manipulation}
       </div>
     </div>
     <div class="cb-info-grid">
-      <h2 style="grid-column:1/-1;font-family:var(--font-display);font-size:1.15rem;font-weight:700;text-transform:uppercase;letter-spacing:.03em;color:var(--text);margin:0 0 .2rem">Understanding Cash Grain Prices &amp; Basis</h2>
+      <h2 style="grid-column:1/-1;font-family:var(--font-display);font-size:1.15rem;font-weight:700;text-transform:uppercase;letter-spacing:.03em;color:var(--text);margin:0 0 .2rem">Cash Grain Prices &amp; Basis</h2>
       <div class="cb-info"><h3>What Is Basis?</h3><p>Basis is the gap between your local cash price and the CME futures price. A basis of &#8722;30&#162; means the elevator pays 30 cents below futures. Stronger (less negative) basis = more local demand.</p></div>
-      <div class="cb-info"><h3>Why Basis Matters More Than You Think</h3><p>A 5-cent swing in basis on a 10,000 bu corn load is $500. Check multiple elevators before every delivery &#8212; don&#8217;t go to the same place out of habit.</p></div>
-      <div class="cb-info"><h3>Worth the Drive &#8212; How It Works</h3><p>Enter your load in bushels and your cost per mile driven. AGSIST calculates gross revenue at every elevator, subtracts round-trip fuel (2&#215; one-way distance &#215; your rate), and ranks by net revenue.</p></div>
-      <div class="cb-info"><h3>Elevators Covered</h3><p>Cash bids come from elevators, co-ops, and grain facilities that post through the Barchart OnDemand network &#8212; independents, cooperatives, and major grain companies across the Corn Belt, Great Plains, Delta, Southeast, and Pacific Northwest. Coverage depends on whether a facility posts electronically; enter your ZIP to see what reports near you.</p></div>
+      <div class="cb-info"><h3>What a Nickel of Basis Is Worth</h3><p>A 5-cent swing in basis on a 10,000 bu corn load is $500. Check a few elevators before every delivery rather than going to the same one out of habit.</p></div>
+      <div class="cb-info"><h3>How Worth the Drive Works</h3><p>Enter your load in bushels and your cost per mile driven. AGSIST calculates gross revenue at every elevator, subtracts round-trip fuel (2&#215; one-way distance &#215; your rate), and ranks by net revenue.</p></div>
+      <div class="cb-info"><h3>Elevators Covered</h3><p>Cash bids come from elevators, co-ops, and grain facilities that post through the Barchart OnDemand network: independents, cooperatives, and major grain companies across the Corn Belt, Great Plains, Delta, Southeast, and Pacific Northwest. Coverage depends on whether a facility posts electronically; enter your ZIP to see what reports near you.</p></div>
     </div>
     <section class="faq-section" aria-label="Frequently asked questions about cash grain bids">
-      <h2>Cash Grain Bids &#8212; Questions Farmers Ask</h2>
+      <h2>Questions Farmers Ask</h2>
       <div class="faq-item">
         <div class="faq-q" role="button" tabindex="0" aria-expanded="false"><span class="faq-q-text">What are cash grain bids and how are they set?</span><span class="faq-chev" aria-hidden="true">&#9662;</span></div>
         <div class="faq-a">Cash bids are the prices grain elevators will pay you today for corn, soybeans, or wheat delivered to their facility. They&#8217;re set by adding or subtracting a basis from the nearby CME futures contract. The elevator adjusts basis based on local supply, storage availability, and demand from nearby ethanol plants, processors, or export terminals.</div>
       </div>
       <div class="faq-item">
         <div class="faq-q" role="button" tabindex="0" aria-expanded="false"><span class="faq-q-text">How do I know which elevator is really the best deal?</span><span class="faq-chev" aria-hidden="true">&#9662;</span></div>
-        <div class="faq-a">Use the Worth the Drive calculator on this page. Enter your load size in bushels and your cost per mile driven. AGSIST calculates net revenue at every elevator &#8212; not just raw price &#8212; and ranks them. The #1 result puts the most money in your bank account on that load.</div>
+        <div class="faq-a">Use the Worth the Drive calculator on this page. Enter your load size in bushels and your cost per mile driven. AGSIST works out net revenue at every elevator, not just the raw price, and ranks them. The top result is the one that puts the most money in your bank account on that load.</div>
       </div>
       <div class="faq-item">
         <div class="faq-q" role="button" tabindex="0" aria-expanded="false"><span class="faq-q-text">What is a good basis for corn or soybeans?</span><span class="faq-chev" aria-hidden="true">&#9662;</span></div>
@@ -653,7 +770,7 @@ button,a,[role="button"],input,select{touch-action:manipulation}
       </div>
       <div class="faq-item">
         <div class="faq-q" role="button" tabindex="0" aria-expanded="false"><span class="faq-q-text">When is the best time to sell grain?</span><span class="faq-chev" aria-hidden="true">&#9662;</span></div>
-        <div class="faq-a">There&#8217;s no single right answer &#8212; it depends on your cost of production, storage costs, and market conditions. Spring (March&#8211;May) often sees stronger basis as demand picks up before the new crop. Selling at harvest when every elevator is full typically means the weakest basis.</div>
+        <div class="faq-a">There is no single right answer. It depends on your cost of production, your storage costs, and the market. Spring (March&#8211;May) often sees stronger basis as demand picks up before the new crop. Selling at harvest when every elevator is full typically means the weakest basis.</div>
       </div>
       <div class="faq-item">
         <div class="faq-q" role="button" tabindex="0" aria-expanded="false"><span class="faq-q-text">How often are cash grain bids updated on AGSIST?</span><span class="faq-chev" aria-hidden="true">&#9662;</span></div>
@@ -783,7 +900,12 @@ if(useLocationBtn){
 
 function showToast(msg,ms){toastEl.textContent=msg;toastEl.classList.add('show');clearTimeout(toastEl._t);toastEl._t=setTimeout(function(){toastEl.classList.remove('show');},ms||2400);}
 function escH(s){return s?String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'):''}
-function fmtMoney(n){if(n==null||isNaN(n))return'&mdash;';var a=Math.abs(n);var t=a>=10000?(a/1000).toFixed(1)+'k':a>=1000?(a/1000).toFixed(2)+'k':a.toFixed(0);return(n<0?'&minus;':'')+'$'+t;}
+/* $4,610 rather than $4.61k. The k form was rounding the Total Net column to
+   three significant figures -- ten dollars of resolution -- while the column
+   beside it printed the difference to the dollar, so the table disagreed with
+   itself about how precisely it knew the answer. It is also the same six
+   characters wide, so nothing was bought with the precision that was lost. */
+function fmtMoney(n){if(n==null||isNaN(n))return'&mdash;';return(n<0?'&minus;':'')+'$'+Math.round(Math.abs(n)).toLocaleString('en-US');}
 function truncName(name,max){return name&&name.length>max?name.slice(0,max-1)+'\u2026':name;}
 /* MEAL, HULLS, PELLETS AND OIL ARE NOT THE GRAIN. They are priced PER TON,
    and matching on the substring 'soy' filed 37 live rows -- Soybean Meal,
@@ -792,7 +914,12 @@ function truncName(name,max){return name&&name.length>max?name.slice(0,max-1)+'\
    per-bushel one. */
 function classify(name){var n=(name||'').toLowerCase();if(/\b(meal|hull|pellet|oil|flour|ddg|distillers|gluten)\b/.test(n))return'other';if(n.indexOf('corn')>=0)return'corn';if(n.indexOf('soy')>=0||n.indexOf('bean')>=0)return'soybeans';if(n.indexOf('wheat')>=0||n.indexOf('hrw')>=0||n.indexOf('srw')>=0||n.indexOf('hrs')>=0)return'wheat';return'other';}
 function basisCents(b){if(b==null)return null;return Math.abs(b)<5?b*100:b;}
-function formatBasis(b){var c=basisCents(b);if(c==null)return{str:'&mdash;',cls:'flat'};return{str:(c>=0?'+':'')+c.toFixed(0)+'&#162;',cls:c>0?'pos':c<0?'neg':'flat'};}
+/* A TRUE MINUS, not a hyphen. toFixed() on a negative gives U+002D, which is
+   a word-joining hyphen: it is narrower than the plus it alternates with, so a
+   column of +48c and -52c never sat straight, and it sat next to money and
+   basis-change lines that were already using U+2212. Three glyphs for one
+   arithmetic sign on one card. */
+function formatBasis(b){var c=basisCents(b);if(c==null)return{str:'&mdash;',cls:'flat'};return{str:(c>=0?'+':'&minus;')+Math.abs(c).toFixed(0)+'&#162;',cls:c>0?'pos':c<0?'neg':'flat'};}
 /* A PRICE THAT CANNOT BE A BUSHEL PRICE IS NOT SHOWN AS ONE.
    ppu() divides anything over 30 by 100 because some feeds quote cents. That is
    a reasonable rule for a cents-quoted bushel and a silent disaster for a
@@ -881,6 +1008,125 @@ function contractStrip(bids){
     out.push({sym:e.sym,label:e.label,price:e.lo});
   });
   return out;
+}
+/* ══ THE BASIS HISTORY ══════════════════════════════════════════════════════
+   Kolton's second item, and the one he said he would miss most: what the basis
+   was before, and when it moved.
+
+   IT IS NOT A TIME SERIES AND IT IS NOT FETCHED FROM THE BOARD. A basis is
+   sticky -- on the four boards captured on 2026-08-26, nineteen rows of
+   nineteen were unchanged over the previous week -- so a number a day would be
+   the same number a day. What ships instead is three facts per row: the basis
+   now, the basis before it, and the day it changed. They are baked from this
+   repository's own history of data/bids.json by scripts/build_basis_history.py
+   and split ONE FILE PER STATE, because the page knows which states are on
+   screen only after the bids land, and Wisconsin is 8 KB gzipped where the
+   whole country is sixty-five.
+
+   IT DEGRADES TO NOTHING. Before the shards are uploaded, and in any state
+   with no file, the fetch fails and no row says anything. Nothing else on the
+   page waits for it or depends on it. */
+var _bhFetch={},_bhMap={};
+function bhNorm(v){return String(v==null?'':v).trim().toUpperCase().replace(/\s+/g,' ');}
+function bhKeyOf(fac,city,st,cat,sym,month){
+  return [bhNorm(fac),bhNorm(city),bhNorm(st),bhNorm(cat),bhNorm(sym),bhNorm(month)].join('|');
+}
+function bhLoadState(st){
+  if(_bhFetch[st])return _bhFetch[st];
+  _bhFetch[st]=fetch('/data/basis/'+encodeURIComponent(st)+'.json',{cache:'no-store'})
+    .then(function(r){return r.ok?r.json():null;})
+    .then(function(sh){
+      if(!sh||!sh.r)return null;
+      var m={},f=sh.f||[],d=sh.d||[],c=sh.c||['corn','soybeans','wheat','other'];
+      var when=function(i){return(i==null||i>=d.length)?null:d[i];};
+      sh.r.forEach(function(r){
+        var fc=String(f[r[0]]||'').split('|');
+        m[bhKeyOf(fc[0],fc[1],sh.state,c[r[1]],r[2],r[3])]=
+          {cur:r[4],prev:r[5],since:when(r[6]),first:when(r[7]),last:when(r[8])};
+      });
+      _bhMap[st]=m;return m;
+    })
+    .catch(function(){return null;});
+  return _bhFetch[st];
+}
+function bhLook(b,elev){
+  var st=bhNorm(elev.state);if(!st||!_bhMap[st])return null;
+  return _bhMap[st][bhKeyOf(elev.facility,elev.city,st,b.category,b.symbol,b.deliveryMonth)]||null;
+}
+/* "2026-08-03" -> "Aug 3", and "Jun 9 '26" only when it is not this year. */
+var BH_MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+function bhDate(iso){
+  var m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(String(iso||''));if(!m)return'';
+  var lab=BH_MON[+m[2]-1]+' '+(+m[3]);
+  return (+m[1]===new Date().getFullYear())?lab:(lab+' \u2019'+m[1].slice(2));
+}
+/* A basis outside this is not a basis we will narrate. Three dollars a bushel
+   either way covers every real board in the feed and excludes the per-ton rows
+   that arrive filed under a bushel crop -- ADM Grain of Decatur posts a
+   soybean row at +392c, which is a meal price wearing a bean's label. The row
+   itself is still shown, exactly as the board posts it; what is withheld is a
+   sentence about how it moved. */
+function bhSane(c){return c!=null&&Math.abs(c)<=300;}
+function bhLine(b,elev){
+  var h=bhLook(b,elev);if(!h)return'';
+  var live=basisCents(b.basis);if(live==null)return'';
+  live=Math.round(live);
+  if(!bhSane(live)||!bhSane(h.cur))return'';
+  var from,when,bounded=false;
+  if(h.cur===live){
+    if(h.prev==null){
+      var f=bhDate(h.first);
+      return f?'<div class="bid-chg bh-quiet">no change since '+f+'</div>':'';
+    }
+    from=h.prev;when=bhDate(h.since);
+  }else{
+    /* We hold a value and it is not the one on the board, so it moved after
+       the last day we wrote this row down -- and we know that day, which is
+       why lastSeen is in the shard. Bounded, not guessed. */
+    from=h.cur;when=bhDate(h.last);bounded=true;
+  }
+  if(!bhSane(from)||!when)return'';
+  /* A basis that rises is a basis that got STRONGER for the person selling. */
+  var up=live>from,arrow=up?'\u25b2':'\u25bc',cls=up?'bh-up':'bh-dn';
+  var prev=(from>=0?'+':'\u2212')+Math.abs(from).toFixed(0)+'&#162;';
+  return '<div class="bid-chg"><span class="'+cls+'">'+arrow+'</span> from '+prev+
+         ' <span class="bh-when">\u00b7 '+(bounded?'moved since ':'')+when+'</span></div>';
+}
+function applyBasisHistory(){
+  var sts={};currentElevators.forEach(function(e){var s=bhNorm(e.state);if(s)sts[s]=1;});
+  var list=Object.keys(sts);if(!list.length)return;
+  Promise.all(list.map(bhLoadState)).then(function(){
+    if(!results)return;
+    results.querySelectorAll('.bid-row[data-bh-i]').forEach(function(row){
+      if(row.querySelector('.bid-chg'))return;
+      var ref=_bhRows[row.getAttribute('data-bh-i')];
+      if(!ref)return;
+      var line=bhLine(ref.bid,ref.elev);
+      if(line)row.insertAdjacentHTML('beforeend',line);
+    });
+  });
+}
+var _bhRows=[];
+/* One board hands back "715-643-2602", the next "7158746593" and the next
+   "715.632.2319 x3", and all three were printed exactly as given, one under
+   the other. The tel: link has always been digits only and is untouched; this
+   is the label. A number that is not a ten-digit North American one is printed
+   as the elevator gave it rather than forced into a shape it is not. */
+function fmtPhone(p){
+  var v=String(p==null?'':p).trim();if(!v)return'';
+  var m=/^\+?1?[^\d]*(\d{3})[^\d]*(\d{3})[^\d]*(\d{4})([\s\S]*)$/.exec(v);
+  if(!m)return v;
+  var ext=m[4].replace(/[^0-9xX#]+/g,' ').trim();
+  return m[1]+'-'+m[2]+'-'+m[3]+(ext?' '+ext:'');
+}
+/* ALL CAPS is how some boards store a branch. Next to "Boyceville" and
+   "Connorsville" it reads as shouting, and MENOMONIE FEED MILL is a town and a
+   description, not an acronym. Only the BRANCH is touched and only when the
+   whole string is upper case: a facility called ALCIVIA is a brand. */
+function tidyBranch(v){
+  var t=String(v==null?'':v);
+  if(!t||t!==t.toUpperCase()||!/[A-Z]{4}/.test(t))return t;
+  return t.toLowerCase().replace(/(^|[\s\-\/&(])([a-z])/g,function(_,a,c){return a+c.toUpperCase();});
 }
 function mapsUrl(name,city,state){return'https://maps.apple.com/?q='+encodeURIComponent((name||'')+(city?' '+city:'')+(state?' '+state:''));}
 function isSpotDelivery(del){return!del||/(spot|cash|immediate)/i.test(del);}
@@ -1096,10 +1342,10 @@ function renderBestBids(elevators){
       var bfut=futuresOf(best),blab=contractLabel(best);
       if(bfut!=null&&blab)html+='<div class="bbc-fut" title="Implied by this board: cash minus basis">vs '+escH(blab)+' $'+bfut.toFixed(2)+'</div>';
       html+='<div class="bbc-actions">';
-      if(topElev.phone)html+='<a class="bbc-call-btn" href="tel:'+topElev.phone.replace(/[^\d]/g,'')+'" aria-label="Call '+escH(topElev.facility)+'"><svg class="ic" aria-hidden="true"><use href="#i-phone"/></svg> Call</a>';
+      if(topElev.phone)html+='<a class="bbc-call-btn" href="tel:'+topElev.phone.replace(/[^\d]/g,'')+'" aria-label="Call '+escH(topElev.facility)+' on '+escH(fmtPhone(topElev.phone))+'"><svg class="ic" aria-hidden="true"><use href="#i-phone"/></svg> Call</a>';
       html+='<a class="bbc-dir-btn" href="'+mapsUrl(topElev.facility,topElev.city,topElev.state)+'" target="_blank" rel="noopener" aria-label="Directions to '+escH(topElev.facility)+'"><svg class="ic" aria-hidden="true"><use href="#i-map-pin"/></svg> Directions</a>';
       html+='</div>';
-      html+='<div class="bbc-hint">&#8595; Scroll to find in list</div>';
+      html+='<div class="bbc-hint">Show in the list below</div>';
     }else{html+='<div class="bbc-none">No '+c.label+' bids found</div>';}
     html+='</div>';
   });
@@ -1138,7 +1384,6 @@ function renderWTD(){
     wtdWinner.innerHTML='<svg class="ic" aria-hidden="true"><use href="#i-trophy"/></svg> <strong>'+escH(winner.elev.facility)+'</strong> nets you <strong style="color:var(--green)">'+(gain>0?'+':'')+fmtMoney(gain)+'</strong> more than your closest elevator on this '+bu.toLocaleString()+'-bu load.';
     gaEvent('wtd_calc',{commodity:comm,bushels:bu,fpm:fpm,winner:winner.elev.facility,gain:Math.round(gain)});
   }else{wtdWinner.style.display='none';}
-  var MEDALS=['1','2','3'];
   var html='';
   for(var i=0;i<Math.min(rows.length,12);i++){
     var r=rows[i];
@@ -1148,7 +1393,9 @@ function renderWTD(){
     var cs=(r.elev.city||'')+(r.elev.city&&r.elev.state?', ':'')+(r.elev.state||''); /* same precedence bug fixed at renderBestBids 2026-07-20; this copy was missed */
     var subTxt=cs+(r.delivery?(cs?' &middot; ':'')+escH(r.delivery):'');
     html+='<tr class="'+(i===0?'wtd-w':'')+'">';
-    html+='<td class="wt-rank">'+(i<3?MEDALS[i]:(i+1)+'.')+'</td>';
+    /* 1 2 3 4, not 1 2 3 4. -- the first three came from a medal list that no
+       longer holds medals, and only the fourth onwards got a full stop. */
+    html+='<td class="wt-rank">'+(i+1)+'</td>';
     html+='<td><div class="wt-name">'+escH(r.elev.facility)+'</div><div class="wt-sub">'+subTxt+'</div></td>';
     html+='<td data-l="Cash/bu" class="wt-cash r">$'+r.ppu.toFixed(2)+'</td>';
     html+='<td data-l="Distance" class="wt-dist r">'+r.dist.toFixed(0)+' mi</td>';
@@ -1167,7 +1414,7 @@ document.getElementById('wtd-comm-toggle').addEventListener('click',function(e){
 results.addEventListener('click',function(e){
   if(e.target.classList.contains('basis-q')){
     e.stopPropagation();
-    showToast('Basis = cash price minus nearby CME futures. \u221230\u00a2 means 30\u00a2 below futures.',4200);
+    showToast('Basis = cash price minus nearby CME futures. \u221230\u00a2 means 30\u00a2 below futures. A line under a row shows what the basis was before it last moved, and when.',5200);
     return;
   }
   /* THE STRIP HAS TO EXPLAIN ITSELF ON A PHONE. The title attribute covers a
@@ -1215,12 +1462,12 @@ function openCompareModal(){
     var cashVals=elevs.map(function(e){var b=getBest(e,cat);return b?ppu(b.cashPrice):null;});
     var maxCash=cashVals.reduce(function(m,v){return v!=null&&v>m?v:m;},-Infinity);
     html+='<tr><td class="compare-rl" style="padding-left:1.1rem">Best Cash/bu</td>';
-    cashVals.forEach(function(v){if(v==null){html+='<td class="compare-na">&mdash;</td>';return;}html+='<td class="compare-price'+(v===maxCash?' compare-win':'')+'">$'+v.toFixed(2)+(v===maxCash?' &#10003;':'')+'</td>';});html+='</tr>';
+    cashVals.forEach(function(v){if(v==null){html+='<td class="compare-na">&mdash;</td>';return;}html+='<td class="compare-price'+(v===maxCash?' compare-win':'')+'">$'+v.toFixed(2)+'</td>';});html+='</tr>';
     var bVals=elevs.map(function(e){var b=getBest(e,cat);return b?b.basis:null;});
     var cVals=bVals.map(function(b){return basisCents(b);});
     var maxB=cVals.reduce(function(m,v){return v!=null&&v>m?v:m;},-Infinity);
     html+='<tr><td class="compare-rl" style="padding-left:1.1rem">Best Basis</td>';
-    cVals.forEach(function(c,i){if(c==null){html+='<td class="compare-na">&mdash;</td>';return;}var f=formatBasis(bVals[i]);html+='<td class="compare-basis '+f.cls+(c===maxB?' compare-win':'')+'">'+f.str+(c===maxB?' &#10003;':'')+'</td>';});html+='</tr>';
+    cVals.forEach(function(c,i){if(c==null){html+='<td class="compare-na">&mdash;</td>';return;}var f=formatBasis(bVals[i]);html+='<td class="compare-basis '+f.cls+(c===maxB?' compare-win':'')+'">'+f.str+'</td>';});html+='</tr>';
     /* WHICH CONTRACT EACH BASIS IS AGAINST. Two elevators quoting -55 and -45
        are not comparable if one is against December and the other against
        March, and until this row existed the table invited exactly that
@@ -1277,6 +1524,7 @@ function renderBids(bids,keepLimit){
      in the status bar timer (cb-status-timer) so it doesn't repeat
      on every card. */
   var shown=elevators.slice(0,cbVisibleLimit);
+  _bhRows=[];                       /* rebuilt every render; indices are into THIS pass */
   var html='<div class="cb-grid">';
   shown.forEach(function(elev){
     var cs=(elev.city||'')+(elev.city&&elev.state?', ':'')+(elev.state||''); /* precedence bug swallowed the state — printed 'Clayton,' (fixed 2026-07-20) */
@@ -1284,7 +1532,7 @@ function renderBids(bids,keepLimit){
     var murl=mapsUrl(elev.facility,elev.city,elev.state);
     html+='<article class="elev-card'+(isPinned?' pinned':'')+'" data-elev-key="'+escH(elev.key)+'" aria-label="'+escH(elev.facility)+'">';
     html+='<div class="elev-head"><div class="elev-info"><div class="elev-name" title="'+escH(elev.facility)+'">'+escH(elev.facility)+'</div>';
-    if(elev.branch&&elev.branch!==elev.facility)html+='<div class="elev-branch">'+escH(elev.branch)+'</div>';
+    if(elev.branch&&elev.branch!==elev.facility)html+='<div class="elev-branch">'+escH(tidyBranch(elev.branch))+'</div>';
     if(cs)html+='<div class="elev-loc">'+escH(cs)+'</div>';
     /* Per-elevator stale flag: renders ONLY when the feed carries a real
        timestamp for this elevator AND it's >18h old — fresh or timestamp-less
@@ -1292,10 +1540,10 @@ function renderBids(bids,keepLimit){
     if(elev.asOfT!=null){var _age=Date.now()-elev.asOfT;if(_age>18*3600e3){var _d=new Date(elev.asOfT);html+='<div class="elev-stale" title="This elevator\u2019s bid feed hasn\u2019t updated recently — confirm before hauling">bids quoted '+_d.toLocaleDateString('en-US',{month:'short',day:'numeric'})+'</div>';}}
     html+='</div><div class="elev-meta">';
     if(elev.distance!=null)html+='<div class="elev-dist">'+elev.distance.toFixed(0)+' mi away</div>';
-    html+='<button class="pin-btn'+(isPinned?' pinned':'')+'" data-key="'+escH(elev.key)+'" aria-pressed="'+(isPinned?'true':'false')+'" aria-label="'+(isPinned?'Remove':'Add')+' '+escH(elev.facility)+' from comparison">&#43; '+(isPinned?'&#10003; Added':'Compare')+'</button>';
+    html+='<button class="pin-btn'+(isPinned?' pinned':'')+'" data-key="'+escH(elev.key)+'" aria-pressed="'+(isPinned?'true':'false')+'" aria-label="'+(isPinned?'Remove '+escH(elev.facility)+' from':'Add '+escH(elev.facility)+' to')+' comparison">'+(isPinned?'Added':'&#43; Compare')+'</button>';
     html+='</div></div>';
     html+='<div class="elev-actions">';
-    if(elev.phone)html+='<a class="elev-call-btn" href="tel:'+elev.phone.replace(/[^\d]/g,'')+'" aria-label="Call '+escH(elev.facility)+'"><svg class="ic" aria-hidden="true"><use href="#i-phone"/></svg> '+escH(elev.phone)+'</a>';
+    if(elev.phone)html+='<a class="elev-call-btn" href="tel:'+elev.phone.replace(/[^\d]/g,'')+'" aria-label="Call '+escH(elev.facility)+' on '+escH(fmtPhone(elev.phone))+'"><svg class="ic" aria-hidden="true"><use href="#i-phone"/></svg> '+escH(fmtPhone(elev.phone))+'</a>';
     html+='<a class="elev-dir-btn" href="'+murl+'" target="_blank" rel="noopener" aria-label="Directions to '+escH(elev.facility)+'"><svg class="ic" aria-hidden="true"><use href="#i-map-pin"/></svg> Directions</a>';
     html+='</div>';
     COMM_ORDER.forEach(function(cat){
@@ -1309,7 +1557,7 @@ function renderBids(bids,keepLimit){
         strip.forEach(function(e){html+='<span class="comm-fut-c" title="'+escH(e.sym)+'"><b>'+escH(e.label)+'</b> $'+e.price.toFixed(2)+'</span>';});
         html+='</div>';
       }
-      html+='<div class="bid-rows"><div class="bid-row-labels"><span>Delivery</span><span>Cash/bu</span><span>Basis <button class="basis-q" aria-label="What is basis?" tabindex="0">?</button></span></div>';
+      html+='<div class="bid-rows"><div class="bid-row-labels"><span>Delivery</span><span>Cash/bu</span><span><button class="basis-q" type="button" aria-label="What is basis? Select for an explanation.">Basis</button></span></div>';
       catBids.forEach(function(bid,bi){
         var p=ppu(bid.cashPrice);
         var cs2=p!=null?'$'+p.toFixed(2):'&mdash;';
@@ -1325,7 +1573,9 @@ function renderBids(bids,keepLimit){
           var cl=contractLabel(bid);
           if(cl&&cl.toLowerCase()!==String(del).toLowerCase())ctag='<span class="bid-fut-tag" title="Basis quoted against '+escH(bid.symbol)+'">&rarr; '+escH(cl)+'</span>';
         }
-        html+='<div class="bid-row'+(bi>=3?' bid-xtra':'')+'"><span class="bid-del-cell">'+delHtml+ctag+'</span><span class="bid-cash">'+cs2+'</span><span class="bid-basis '+bf.cls+'">'+bf.str+'</span></div>';
+        var bhi='';
+        if(bid.symbol&&bid.deliveryMonth){_bhRows.push({bid:bid,elev:elev});bhi=' data-bh-i="'+(_bhRows.length-1)+'"';}
+        html+='<div class="bid-row'+(bi>=3?' bid-xtra':'')+'"'+bhi+'><span class="bid-del-cell">'+delHtml+ctag+'</span><span class="bid-cash">'+cs2+'</span><span class="bid-basis '+bf.cls+'">'+bf.str+'</span></div>';
       });
       if(catBids.length>3)html+='<button class="bid-more" type="button" aria-expanded="false">+'+(catBids.length-3)+' more delivery months &#9662;</button>';
       html+='</div></div>';
@@ -1342,9 +1592,10 @@ function renderBids(bids,keepLimit){
   var moreBtn=document.getElementById('cb-more-btn');
   if(moreBtn)moreBtn.addEventListener('click',function(){cbVisibleLimit+=CB_PAGE_STEP;renderBids(cbLastBids,true);if(window.gaEvent)gaEvent('bids_show_more',{limit:cbVisibleLimit});});
   results.querySelectorAll('.pin-btn').forEach(function(btn){
-    btn.addEventListener('click',function(e){e.stopPropagation();var key=btn.getAttribute('data-key');var card=btn.closest('.elev-card');if(pinnedKeys.indexOf(key)>=0){pinnedKeys=pinnedKeys.filter(function(k){return k!==key;});btn.classList.remove('pinned');btn.innerHTML='&#43; Compare';btn.setAttribute('aria-pressed','false');if(card)card.classList.remove('pinned');}else{if(pinnedKeys.length>=3){showToast('Up to 3 elevators can be compared at once.');return;}pinnedKeys.push(key);btn.classList.add('pinned');btn.innerHTML='&#10003; Added';btn.setAttribute('aria-pressed','true');if(card)card.classList.add('pinned');gaEvent('compare_pin',{count:pinnedKeys.length});}updateCompareBar();});
+    btn.addEventListener('click',function(e){e.stopPropagation();var key=btn.getAttribute('data-key');var card=btn.closest('.elev-card');if(pinnedKeys.indexOf(key)>=0){pinnedKeys=pinnedKeys.filter(function(k){return k!==key;});btn.classList.remove('pinned');btn.innerHTML='&#43; Compare';btn.setAttribute('aria-pressed','false');if(card)card.classList.remove('pinned');}else{if(pinnedKeys.length>=3){showToast('Up to 3 elevators can be compared at once.');return;}pinnedKeys.push(key);btn.classList.add('pinned');btn.innerHTML='Added';btn.setAttribute('aria-pressed','true');if(card)card.classList.add('pinned');gaEvent('compare_pin',{count:pinnedKeys.length});}updateCompareBar();});
   });
   renderWTD();
+  applyBasisHistory();
 }
 
 function fetchBids(zip,radius,callback){
