@@ -1,0 +1,89 @@
+# ONE-SHOT: seed the basis history out of this repository's own past.
+#
+# Run it once, from the Actions tab, and then it has nothing left to do.
+#
+# WHY IT IS SEPARATE FROM fetch_bids.yml. That workflow checks out at the
+# default depth of one commit, which is right: it runs many times a day and has
+# no use for history. This needs the opposite -- every commit that ever touched
+# data/bids.json, back to 2026-06-09 -- and making the daily job pay for a full
+# clone forever, to serve a thing that happens once, is the wrong trade.
+#
+# WHAT IT READS. data/bids.json as it stood on each day, newest commit per day.
+# Until 2026-08-19 that file carried every row fetched -- around 7,900 a day
+# across 793 elevators -- so its git history is, by accident, a per-elevator
+# basis history. From 2026-08-20 it carries a few hundred, which is why
+# scripts/build_basis_history.py exists and why this backfill is worth running:
+# it converts an accident that has already stopped into a record that has not.
+#
+# WHAT IT WRITES. data/basis/<ST>.json per state, data/basis/changes-<date>.json
+# per day that anything moved, and data/basis/index.json. Around 2 MB in total,
+# once. After this, the daily step inside fetch_bids.yml keeps it current and
+# adds a few kilobytes a day.
+#
+# SAFE TO RUN TWICE. The backfill is a pure function of the git history it
+# reads, so a second run produces the same shards. It will not double anything.
+
+name: seed basis history
+
+on:
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Build it in the runner and throw it away (prints the sizes)"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: basis-history
+  cancel-in-progress: false
+
+jobs:
+  seed:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # THE WHOLE POINT. At depth 1 there is no history to read and the
+          # script would report 0 populated days and write nothing.
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Seed from git history
+        run: python scripts/build_basis_history.py --backfill-from-git
+
+      - name: Read the shards back
+        run: python scripts/build_basis_history.py --check
+
+      - name: Sizes
+        run: |
+          du -sh data/basis
+          ls -lh data/basis/index.json
+          python - <<'PY'
+          import json
+          i = json.load(open("data/basis/index.json"))
+          rows = sorted(i["states"].items(), key=lambda kv: -kv[1]["kb"])
+          print("generated", i["generated"], "-", len(rows), "states")
+          for st, v in rows[:8]:
+              print(f'  {st}  {v["rows"]:>5} rows  {v["facilities"]:>4} facilities  {v["kb"]:>6.1f} KB')
+          PY
+
+      - name: Commit and push
+        if: github.event.inputs.dry_run != 'true'
+        run: |
+          git config user.name "AGSIST Bot"
+          git config user.email "bot@agsist.com"
+          git add data/basis
+          git diff --staged --quiet && echo "No changes" && exit 0
+          git commit -m "Seed basis history from git ($(date -u +%Y-%m-%dT%H:%M:%SZ))"
+          git pull --rebase origin main
+          git push
+
+      - name: Say why nothing was committed
+        if: github.event.inputs.dry_run == 'true'
+        run: echo "dry_run was set - data/basis was built in the runner and thrown away."

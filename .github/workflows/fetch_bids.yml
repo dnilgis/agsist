@@ -69,9 +69,28 @@ jobs:
       - name: Build the national basis map
         run: python scripts/build_basis_map.py
 
+      # ALSO IN THIS JOB, AND FOR THE SAME REASON: the full set exists here and
+      # nowhere else. Slimming data/bids.json on 2026-08-19 was right -- a
+      # browser must not be sent 18,000 bids -- but it ended the per-elevator
+      # basis history that the old committed file had been keeping by accident.
+      # This keeps it deliberately and cheaply: the current basis, the one
+      # before it, and the day it moved. Roughly a hundred rows move on an
+      # ordinary day, so the daily record is small and the state shards delta
+      # to nearly nothing.
+      #
+      # A FAILURE HERE MUST NOT COST THE BIDS. The bids and the basis map are
+      # already written by the time this runs, and a history that skips a day
+      # is a history with a gap; a run that aborts here would throw away a good
+      # bids.json as well. So it warns and carries on, and the gap is visible
+      # in data/basis/index.json's generated date.
+      - name: Keep the basis history
+        continue-on-error: true
+        run: python scripts/build_basis_history.py
+
       - name: Sizes
         run: |
           ls -lh data/bids.json data/basis-map.json bids-full.json
+          du -sh data/basis 2>/dev/null || true
 
       - name: Commit and push
         if: github.event.inputs.dry_run != 'true'
@@ -80,9 +99,9 @@ jobs:
           git config user.email "bot@agsist.com"
           # bids-full.json is gitignored. Adding it explicitly here would put
           # 6 MB into every commit, which is the whole thing this avoids.
-          git add data/bids.json data/basis-map.json
+          git add data/bids.json data/basis-map.json data/basis
           git diff --staged --quiet && echo "No changes" && exit 0
-          git commit -m "Update grain bids + basis map $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          git commit -m "Update grain bids + basis map + basis history $(date -u +%Y-%m-%dT%H:%M:%SZ)"
           git pull --rebase origin main
           git push
 
