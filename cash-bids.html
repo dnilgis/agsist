@@ -203,6 +203,21 @@ button,a,[role="button"],input,select{touch-action:manipulation}
 .bid-row:hover{background:var(--surface2)}
 .bid-row+.bid-row{border-top:1px solid rgba(255,255,255,.04)}
 .bid-del{font-size:0.79rem;color:var(--text-dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* THE DELIVERY CELL IS NOW A CELL, NOT A SPAN. The row is a three-column grid
+   and adding a fourth child would have silently re-flowed every row, so the
+   contract tag goes INSIDE the first column with the delivery label. This is
+   the flexible 1fr column, so nothing else can be squeezed by it -- the
+   lesson from the "Delivery:" label that rendered one letter per line. */
+.bid-del-cell{display:flex;align-items:baseline;gap:.3rem;min-width:0;overflow:hidden}
+.bid-fut-tag{font-family:'JetBrains Mono',monospace;font-size:0.70rem;color:var(--text-muted);opacity:.75;white-space:nowrap;flex:0 0 auto}
+/* The strip is its own block under the commodity header and it WRAPS. It can
+   carry six contracts on a wide screen and three lines on a phone, and neither
+   costs the price columns a pixel. */
+.comm-fut{cursor:help;display:flex;flex-wrap:wrap;align-items:baseline;gap:.2rem .55rem;padding:0 1rem .4rem;font-family:'JetBrains Mono',monospace;font-size:0.72rem;color:var(--text-muted);line-height:1.5}
+.comm-fut-l{font-weight:700;letter-spacing:.08em;text-transform:uppercase;opacity:.7;flex:0 0 auto}
+.comm-fut-c{white-space:nowrap}
+.comm-fut-c b{font-weight:700;color:var(--text-dim)}
+.bbc-fut{font-family:'JetBrains Mono',monospace;font-size:0.735rem;color:var(--text-muted);margin-top:.16rem}
 .bid-cash{font-family:'JetBrains Mono',monospace;font-size:1.22rem;font-weight:700;color:var(--text);text-align:right;white-space:nowrap;line-height:1.2}
 .bid-basis{font-family:'JetBrains Mono',monospace;font-size:0.79rem;font-weight:600;text-align:right;white-space:nowrap;min-width:52px;opacity:.82}
 .bid-basis.pos{color:var(--green)}.bid-basis.neg{color:var(--red,#ef4444)}.bid-basis.flat{color:var(--text-muted)}
@@ -797,6 +812,76 @@ function plausible(bid){
   var p=ppu(bid.cashPrice);
   return p!=null&&p>=band[0]&&p<=band[1];
 }
+/* ══ THE FUTURES REFERENCE ═════════════════════════════════════════════════
+   Kolton Jackson asked for this first: "every row already knows which contract
+   its basis is against, and the page throws it away." It did -- flatten()
+   dropped `symbol` and `basismonth` on the floor.
+
+   THE PRICE IS DERIVED FROM THE ELEVATOR'S OWN TWO NUMBERS AND NOTHING ELSE.
+   cash minus basis, in dollars per bushel. No quote feed is called and none
+   could be: a direct CME feed is licensed under an ILA with no free tier, and
+   the reason every source file in the bid reader carries the futures quote at
+   all is so a consumer can re-check cash - basis. This is that same check,
+   run in the reader's browser, on the board he is already looking at.
+
+   MEASURED BEFORE IT WAS WRITTEN, 2026-08-26, zip 54725 radius 15 -- four
+   independent boards, 25 rows:
+     Big River Boyceville  12 rows  ZCU26 5.14  ZCZ26 5.37  ZCH27 5.51
+                                    ZCK27 5.57  ZCN27 5.59
+     Wheaton Grain          4 rows  ZCU26 5.14  ZCZ26 5.37  ZSX26 12.66
+     ALCIVIA Menomonie      7 rows  ZCU26 5.14  ZCZ26 5.37  ZCH27 5.51
+     Badger Grain Supply    2 rows  ZCU26 5.14  ZCZ26 5.36
+   Twenty-four of twenty-five agree to the cent across four boards that have
+   never spoken to each other. The twenty-fifth is Badger's ZCZ26 at 5.36
+   against everyone else's 5.37 -- a one-cent rounding on their own board, not
+   an error here. That is why the strip is built PER ELEVATOR and never
+   averaged across them: this page must never print a number no single board
+   actually implies.
+
+   AND IT IS OMITTED RATHER THAN GUESSED. Where two rows of one elevator on
+   one contract disagree by so much as a cent, that contract is left out of
+   the strip entirely. A board whose cash cell is floored or rounded cannot
+   have one implied futures price, and the honest answer is silence, not an
+   average. Same rule as the bid reader's probes: when the evidence does not
+   state a rule, do not state one. */
+function futuresOf(bid){
+  var band=PPU_BAND[bid.category];
+  if(!band)return null;                      /* corn, soybeans and wheat only: a
+                                                per-ton meal row has no bushel
+                                                futures and never gets one */
+  if(!plausible(bid))return null;            /* FJ Krob's 120.083 stops here */
+  if(bid.cashPrice==null||bid.basis==null)return null;
+  var c=ppu(bid.cashPrice),b=basisCents(bid.basis);
+  if(c==null||b==null)return null;
+  var f=c-b/100;
+  return(f>=band[0]&&f<=band[1])?f:null;     /* a derived price outside its own
+                                                commodity's band is evidence the
+                                                inputs disagree, not a price */
+}
+/* "Dec 2026" is what the feed calls the contract month; "Dec26" is what fits. */
+function contractLabel(bid){
+  var m=String(bid.basisMonth||'');
+  var p=/^([A-Za-z]{3})\s+(\d{4})$/.exec(m);
+  return p?p[1]+p[2].slice(2):m;
+}
+/* One entry per contract, in delivery order, only where every row of this
+   elevator on that contract implies the same price to the cent. */
+function contractStrip(bids){
+  var order=[],by={};
+  bids.forEach(function(b){
+    var sym=b.symbol;if(!sym)return;
+    var f=futuresOf(b);if(f==null)return;
+    if(!by[sym]){by[sym]={sym:sym,label:contractLabel(b)||sym,lo:f,hi:f};order.push(sym);}
+    else{if(f<by[sym].lo)by[sym].lo=f;if(f>by[sym].hi)by[sym].hi=f;}
+  });
+  var out=[];
+  order.forEach(function(s){
+    var e=by[s];
+    if(Math.round(e.lo*100)!==Math.round(e.hi*100))return;   /* disagrees: omit */
+    out.push({sym:e.sym,label:e.label,price:e.lo});
+  });
+  return out;
+}
 function mapsUrl(name,city,state){return'https://maps.apple.com/?q='+encodeURIComponent((name||'')+(city?' '+city:'')+(state?' '+state:''));}
 function isSpotDelivery(del){return!del||/(spot|cash|immediate)/i.test(del);}
 
@@ -919,9 +1004,9 @@ function flatten(data){
     if(item.bids&&Array.isArray(item.bids)){
       var fac=item.company||item.name||item.locationName||'Unknown';
       var br=(typeof item.location==='string')?item.location:'';
-      item.bids.forEach(function(bid){flat.push({facility:fac,branch:br,city:item.city||bid.city||'',state:item.state||bid.state||'',distance:parseFloat(item.distance||bid.distance)||null,phone:item.phone||bid.phone||'',commodity:bid.commodity||bid.commodity_display_name||bid.commodityName||'',cashPrice:parseFloat(bid.cashprice||bid.cashPrice)||null,basis:(function(v){return isFinite(v)?v:null;})(parseFloat(bid.basis)),deliveryMonth:bid.deliveryMonth||bid.delivery_month||'',deliveryStart:bid.deliveryStart||bid.delivery_start||'',asOf:bid.dataTimestamp||bid.timestamp||bid.updateTimestamp||bid.dataDate||item.dataTimestamp||item.timestamp||'',category:classify(bid.commodity||bid.commodity_display_name||bid.commodityName||'')});});
+      item.bids.forEach(function(bid){flat.push({facility:fac,branch:br,city:item.city||bid.city||'',state:item.state||bid.state||'',distance:parseFloat(item.distance||bid.distance)||null,phone:item.phone||bid.phone||'',commodity:bid.commodity||bid.commodity_display_name||bid.commodityName||'',cashPrice:parseFloat(bid.cashprice||bid.cashPrice)||null,basis:(function(v){return isFinite(v)?v:null;})(parseFloat(bid.basis)),deliveryMonth:bid.deliveryMonth||bid.delivery_month||'',deliveryStart:bid.deliveryStart||bid.delivery_start||'',symbol:bid.symbol||'',basisMonth:bid.basismonth||'',asOf:bid.dataTimestamp||bid.timestamp||bid.updateTimestamp||bid.dataDate||item.dataTimestamp||item.timestamp||'',category:classify(bid.commodity||bid.commodity_display_name||bid.commodityName||'')});});
     }else if(item.commodity||item.commodityName||item.cashprice!==undefined||item.cashPrice!==undefined){
-      flat.push({facility:item.company||item.name||item.facility||item.locationName||'Unknown',branch:(typeof item.location==='string')?item.location:'',city:item.city||'',state:item.state||'',distance:parseFloat(item.distance)||null,phone:item.phone||'',commodity:item.commodity||item.commodity_display_name||item.commodityName||'',cashPrice:parseFloat(item.cashprice||item.cashPrice)||null,basis:(function(v){return isFinite(v)?v:null;})(parseFloat(item.basis)),/* NOT `parseFloat(x)||null`: 0 || null is null, so a FLAT basis -- the strongest basis on the board -- was published as "unknown" and sorted below -80c. 21 of 345 live rows are exactly 0, including the top two bean bids. The sibling branch three lines up already had this right. */deliveryMonth:item.deliveryMonth||item.delivery_month||'',deliveryStart:item.deliveryStart||item.delivery_start||'',asOf:item.dataTimestamp||item.timestamp||item.updateTimestamp||item.dataDate||'',category:classify(item.commodity||item.commodity_display_name||item.commodityName||'')});
+      flat.push({facility:item.company||item.name||item.facility||item.locationName||'Unknown',branch:(typeof item.location==='string')?item.location:'',city:item.city||'',state:item.state||'',distance:parseFloat(item.distance)||null,phone:item.phone||'',commodity:item.commodity||item.commodity_display_name||item.commodityName||'',cashPrice:parseFloat(item.cashprice||item.cashPrice)||null,basis:(function(v){return isFinite(v)?v:null;})(parseFloat(item.basis)),/* NOT `parseFloat(x)||null`: 0 || null is null, so a FLAT basis -- the strongest basis on the board -- was published as "unknown" and sorted below -80c. 21 of 345 live rows are exactly 0, including the top two bean bids. The sibling branch three lines up already had this right. */deliveryMonth:item.deliveryMonth||item.delivery_month||'',deliveryStart:item.deliveryStart||item.delivery_start||'',symbol:item.symbol||'',basisMonth:item.basismonth||'',asOf:item.dataTimestamp||item.timestamp||item.updateTimestamp||item.dataDate||'',category:classify(item.commodity||item.commodity_display_name||item.commodityName||'')});
     }
   });
   return flat;
@@ -1008,6 +1093,8 @@ function renderBestBids(elevators){
       html+='<div class="bbc-meta"><span class="bbc-basis '+bf.cls+'">Basis '+bf.str+'</span>'+(topElev.distance!=null?'<span class="bbc-dist">'+topElev.distance.toFixed(0)+' mi</span>':'')+'</div>';
       if(cs)html+='<div class="bbc-city">'+escH(cs)+'</div>';
       if(del)html+='<div class="bbc-delivery'+(isSpot?' bbc-delivery-spot':'')+'">'+escH(isSpot?'SPOT \u2014 today\'s delivery':del)+'</div>';
+      var bfut=futuresOf(best),blab=contractLabel(best);
+      if(bfut!=null&&blab)html+='<div class="bbc-fut" title="Implied by this board: cash minus basis">vs '+escH(blab)+' $'+bfut.toFixed(2)+'</div>';
       html+='<div class="bbc-actions">';
       if(topElev.phone)html+='<a class="bbc-call-btn" href="tel:'+topElev.phone.replace(/[^\d]/g,'')+'" aria-label="Call '+escH(topElev.facility)+'"><svg class="ic" aria-hidden="true"><use href="#i-phone"/></svg> Call</a>';
       html+='<a class="bbc-dir-btn" href="'+mapsUrl(topElev.facility,topElev.city,topElev.state)+'" target="_blank" rel="noopener" aria-label="Directions to '+escH(topElev.facility)+'"><svg class="ic" aria-hidden="true"><use href="#i-map-pin"/></svg> Directions</a>';
@@ -1081,6 +1168,16 @@ results.addEventListener('click',function(e){
   if(e.target.classList.contains('basis-q')){
     e.stopPropagation();
     showToast('Basis = cash price minus nearby CME futures. \u221230\u00a2 means 30\u00a2 below futures.',4200);
+    return;
+  }
+  /* THE STRIP HAS TO EXPLAIN ITSELF ON A PHONE. The title attribute covers a
+     mouse and nothing else, and two cards side by side can legitimately show
+     Dec26 a cent apart -- Badger Grain floors its cash where its neighbours do
+     not -- which looks like our arithmetic failing unless the page says whose
+     arithmetic it is. Same toast affordance the basis "?" already uses. */
+  if(e.target.closest('.comm-fut')){
+    e.stopPropagation();
+    showToast('Futures reference: this elevator\u2019s own cash minus its own basis, per contract. Nothing is averaged between elevators, so two boards can differ by a cent.',6000);
   }
 });
 
@@ -1124,6 +1221,19 @@ function openCompareModal(){
     var maxB=cVals.reduce(function(m,v){return v!=null&&v>m?v:m;},-Infinity);
     html+='<tr><td class="compare-rl" style="padding-left:1.1rem">Best Basis</td>';
     cVals.forEach(function(c,i){if(c==null){html+='<td class="compare-na">&mdash;</td>';return;}var f=formatBasis(bVals[i]);html+='<td class="compare-basis '+f.cls+(c===maxB?' compare-win':'')+'">'+f.str+(c===maxB?' &#10003;':'')+'</td>';});html+='</tr>';
+    /* WHICH CONTRACT EACH BASIS IS AGAINST. Two elevators quoting -55 and -45
+       are not comparable if one is against December and the other against
+       March, and until this row existed the table invited exactly that
+       mistake. No winner tick: this is context, not a contest. */
+    var fRows=elevs.map(function(e){var b=getBest(e,cat);return b?{f:futuresOf(b),l:contractLabel(b)}:null;});
+    if(fRows.some(function(r){return r&&r.f!=null&&r.l;})){
+      html+='<tr><td class="compare-rl" style="padding-left:1.1rem">Futures ref</td>';
+      fRows.forEach(function(r){
+        if(!r||r.f==null||!r.l){html+='<td class="compare-na">&mdash;</td>';return;}
+        html+='<td style="font-family:\'JetBrains Mono\',monospace;font-size:0.78rem;color:var(--text-muted)">'+escH(r.l)+' $'+r.f.toFixed(2)+'</td>';
+      });
+      html+='</tr>';
+    }
   });
   html+='</tbody>';compareTable.innerHTML=html;
   compareOverlay.classList.add('open');
@@ -1191,8 +1301,15 @@ function renderBids(bids,keepLimit){
     COMM_ORDER.forEach(function(cat){
       var catBids=elev.commodities[cat];if(!catBids||!catBids.length)return;
       html+='<div class="comm-section"><div class="comm-header '+cat+'"><span aria-hidden="true">'+COMM_ICONS[cat]+'</span> '+COMM_LABEL_MAP[cat]+'</div>';
-      html+='<div class="bid-rows"><div class="bid-row-labels"><span>Delivery</span><span>Cash/bu</span><span>Basis <button class="basis-q" aria-label="What is basis?" tabindex="0">?</button></span></div>';
       catBids.sort(deliverySort);
+      var strip=contractStrip(catBids);
+      if(strip.length){
+        html+='<div class="comm-fut" title="The futures each basis is quoted against, implied by this elevator&#39;s own cash minus its own basis. Not a quote feed.">';
+        html+='<span class="comm-fut-l">Futures</span>';
+        strip.forEach(function(e){html+='<span class="comm-fut-c" title="'+escH(e.sym)+'"><b>'+escH(e.label)+'</b> $'+e.price.toFixed(2)+'</span>';});
+        html+='</div>';
+      }
+      html+='<div class="bid-rows"><div class="bid-row-labels"><span>Delivery</span><span>Cash/bu</span><span>Basis <button class="basis-q" aria-label="What is basis?" tabindex="0">?</button></span></div>';
       catBids.forEach(function(bid,bi){
         var p=ppu(bid.cashPrice);
         var cs2=p!=null?'$'+p.toFixed(2):'&mdash;';
@@ -1200,7 +1317,15 @@ function renderBids(bids,keepLimit){
         var del=bid.deliveryMonth||bid.deliveryStart||'';
         var spot=isSpotDelivery(del);
         var delHtml=spot?'<span class="bid-del-spot">SPOT</span>':'<span class="bid-del-fwd">'+escH(del)+'</span>';
-        html+='<div class="bid-row'+(bi>=3?' bid-xtra':'')+'">'+delHtml+'<span class="bid-cash">'+cs2+'</span><span class="bid-basis '+bf.cls+'">'+bf.str+'</span></div>';
+        /* The tag says which contract this row's basis is against, and it is
+           SUPPRESSED when it would only repeat the delivery month back at the
+           reader -- a December delivery against December corn needs no note. */
+        var ctag='';
+        if(bid.symbol&&futuresOf(bid)!=null){
+          var cl=contractLabel(bid);
+          if(cl&&cl.toLowerCase()!==String(del).toLowerCase())ctag='<span class="bid-fut-tag" title="Basis quoted against '+escH(bid.symbol)+'">&rarr; '+escH(cl)+'</span>';
+        }
+        html+='<div class="bid-row'+(bi>=3?' bid-xtra':'')+'"><span class="bid-del-cell">'+delHtml+ctag+'</span><span class="bid-cash">'+cs2+'</span><span class="bid-basis '+bf.cls+'">'+bf.str+'</span></div>';
       });
       if(catBids.length>3)html+='<button class="bid-more" type="button" aria-expanded="false">+'+(catBids.length-3)+' more delivery months &#9662;</button>';
       html+='</div></div>';
