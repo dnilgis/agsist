@@ -1,0 +1,1 @@
+{"date":"2026-08-22","units":"integer cents per bushel","columns":["state","facility","city","commodity","symbol","deliveryMonth","from","to"],"changes":[["IA","HEARTLAND COOP","COUNCIL BLUFFS","corn","ZCU26","AUG26",-13,-14],["IA","HEARTLAND COOP","COUNCIL BLUFFS","corn","ZCU26","SEP26",-13,-14],["MT","COLUMBIA GRAIN","GREAT FALLS","wheat","KEZ26","DEC26",-90,-95]]}
