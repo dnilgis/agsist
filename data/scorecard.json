@@ -1,5 +1,5 @@
 {
- "updated": "2026-08-27T12:12:10+00:00",
+ "updated": "2026-08-27T20:57:34+00:00",
  "total": 99,
  "played_out": 36,
  "didnt": 58,
@@ -99,16 +99,16 @@
   {
    "made": "2026-08-26",
    "judged": "2026-08-27",
-   "call": "Called beans up toward $12.47; front-month beans closed at $12.51, clearing the level by about 4 cents.",
+   "call": "Called beans up toward $12.47; November beans closed at $12.63, well through the line.",
    "outcome": "played_out",
    "method": "deterministic",
    "mismatch": false,
-   "note": "The call played out. Chinese demand did the work across two sessions, lifting beans through $12.47 and holding there. November beans tracked close at $12.62 -- but the scored instrument is the front contract, and it delivered.",
+   "note": "Two straight hits on beans. The ratings-cut bid delivered. Now 7:30 decides the next leg.",
    "instrument": "beans",
    "direction": "up",
    "level": 12.47,
    "p0": 12.32,
-   "p1": 12.5075,
+   "p1": 12.525,
    "design": "v2",
    "direction_ok": true
   },

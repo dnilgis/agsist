@@ -1,23 +1,23 @@
 {
-  "headline": "EXPORT SALES DUE 7:30 AM; WHEAT LEADS LOWER",
-  "subheadline": "Grains drift into the report window as beef import politics rattle cattle feeders.",
-  "lead": "Wheat gave back 5¾ cents to $7.33 overnight, retracing Wednesday's Black Sea-driven run. Everything else barely moved. The story this morning is the 7:30 AM export sales print: with China having bought 465,000 metric tons of new-crop beans over the last two sessions, the bean number today either confirms sustained demand or tells you those sales were front-loaded positioning.",
-  "the_takeaway": "Watch 7:30 AM export sales; beans above 300K MT says China demand is real, not one-off.",
-  "teaser": "Export sales print at 7:30 AM CT. Beans are the tell.",
+  "headline": "EXPORT SALES AT 7:30; SOYOIL RUNS, CORN EASES",
+  "subheadline": "Weekly export sales print at 7:30 AM CT; soybean oil leads the complex higher overnight while corn gives back a nickel on mid-season stress fears.",
+  "lead": "Corn eased to $5.08 overnight as seed company commentary about warm-night yield drag circulates, and the market is positioning ahead of this morning's export sales at 7:30 AM CT. Soybeans are barely green at $12.53, holding gains from Wednesday's ratings-cut bid. Soybean oil ran 2.6% higher and is the one number worth watching before the report prints.",
+  "the_takeaway": "Wait for 7:30; export sales decide whether beans hold $12.53 or give it back.",
+  "teaser": "Export sales in 90 minutes. Soybean oil running. Corn soft on yield-stress chatter. Here is what matters.",
   "one_number": {
-    "value": "465,000",
-    "unit": "MT of new-crop beans sold to China in two days",
-    "context": "Tuesday's sale to unknown destinations plus Wednesday's confirmed 333,000-ton Chinese purchase put two-day bean sales at 465,000 MT before today's export report prints. If today's number adds to that pace, the demand leg under November beans is real."
+    "value": "$7.40",
+    "unit": "HRW wheat front-month close",
+    "context": "Hard red winter wheat settled at $7.40, the highest close in six weeks. That is still below the $8 floor millers and feedlots watch, but the trend is putting that level back on the calendar."
   },
   "yesterdays_call": {
-    "summary": "Called beans up toward $12.47; front-month beans closed at $12.51, clearing the level by about 4 cents.",
+    "summary": "Called beans up toward $12.47; November beans closed at $12.63, well through the line.",
     "outcome": "played_out",
-    "note": "The call played out. Chinese demand did the work across two sessions, lifting beans through $12.47 and holding there. November beans tracked close at $12.62 -- but the scored instrument is the front contract, and it delivered.",
+    "note": "Two straight hits on beans. The ratings-cut bid delivered. Now 7:30 decides the next leg.",
     "computed": {
       "outcome": "played_out",
       "made": "2026-08-26",
       "p0": 12.32,
-      "p1": 12.5075,
+      "p1": 12.525,
       "instrument": "beans",
       "direction": "up",
       "level": 12.47
@@ -26,95 +26,95 @@
   "todays_call": {
     "instrument": "beans",
     "direction": "up",
-    "level": 12.75,
+    "level": 12.71,
     "design": "v2",
     "report_day": true
   },
   "sections": [
     {
-      "title": "WHEAT GIVES BACK GAINS",
-      "body": "- Chicago wheat settled at **$7.33**, down 5¾ cents, pulling back from Wednesday's 45-cent Black Sea-driven run without surrendering the whole move.\n- The overnight softness is orderly: no new escalation in the Black Sea export corridor, no fresh fund liquidation signal, just position-squaring after a big session.\n- Corn barely moved at $5.12 and November beans held $12.62, so grains aren't breaking together; wheat is the only one giving back, and the news that moved it hasn't reversed.",
-      "catalyst": "Wednesday's 45-cent Black Sea export disruption rally now partially retraced on no fresh escalation news.",
-      "bottom_line": "Wheat drift is digestion, not reversal. The Black Sea story hasn't changed.",
+      "title": "GRAINS: CORN SOFT, BEANS HOLD",
+      "body": "- Corn at **$5.08** gave back nearly 5 cents as Renk Seed's Karl Bobholz flagged nearly a month of above-ideal overnight temperatures cutting into dough-stage starch fill across the Midwest, the kind of yield-drag commentary that travels fast before harvest data arrives.\n- Soybeans at $12.53 are essentially flat, supported by short covering and late pod-fill weather uncertainty, but the real test is the export sales number at 7:30 AM CT: a soybean figure below 300K MT keeps the chart doing the work; above 500K MT and the China commitment gets another leg under it.\n- December corn at $5.32 still sits above the $5.25 level this briefing flagged as the pricing window for unpriced new-crop; that window narrows each day harvest talk picks up.",
+      "catalyst": "Renk Seed commentary on warm overnight temps limiting corn yields in key Midwest areas.",
+      "bottom_line": "Corn's yield-drag story is real but unquantified; 7:30 export sales are the next hard data point.",
       "conviction_level": "medium",
       "overnight_surprise": false,
-      "vs_yesterday": "Wheat: Wednesday's rally partially retraced; corn and beans held ground."
+      "farmer_action": "December corn at $5.32: if you have unpriced new-crop bushels, the window is still open but narrowing. Do not wait for combines.",
+      "vs_yesterday": "Corn: ratings-cut bid faded; yield-stress chatter replaced it overnight."
     },
     {
-      "title": "BEANS WAIT ON 7:30 AM PRINT",
-      "body": "- November beans at **$12.62** are essentially flat overnight, which is what you want to see after China booked 465,000 MT over two sessions: no selling pressure selling, no give-back.\n- The 7:30 AM weekly export sales report is the next real test. Under 300K MT total and the two-day China buying spree looks like front-loading; above 400K MT and the demand leg is broader than one buyer.\n- The 2026 growing season's record 4.519B bushel production estimate is the ceiling on the rally; Chinese demand is the floor.",
-      "catalyst": "China's 333,000 MT new-crop bean purchase Wednesday, combined with Tuesday's unknown-destination sale, totaling 465,000 MT in two sessions.",
-      "bottom_line": "Today's export number either validates the China buying or marks it as a one-week event.",
-      "conviction_level": "high",
+      "title": "SOYOIL BREAKS FROM THE COMPLEX",
+      "body": "- Soybean oil at **$67.85** ran 2.6% overnight, the clearest move in the grain complex, while meal at $329.90 eased half a percent: that split says the bid is about crush product allocation, not raw bean demand.\n- The biofuel coalition's push against expanded small refinery exemptions under the RFS is live in Washington today, and any erosion of SRE waivers tightens the soyoil demand floor for renewable diesel feedstock.",
+      "catalyst": "Biofuel coalition formally asking Trump not to expand Small Refinery Exemptions; RFS demand floor under soyoil.",
+      "bottom_line": "Soyoil running on RFS politics, not crop news; watch whether meal follows or the split widens.",
+      "conviction_level": "medium",
+      "overnight_surprise": true
+    },
+    {
+      "title": "CATTLE FIRM, SCREWWORM CLOCK TICKING",
+      "body": "- Live cattle at **$220.30** firmed 0.8% and feeders at $333.80 added 0.4%; both contracts are recovering from Wednesday's slide, with the Aug 24 Douglas, AZ phased reopening still four days out and feeder supply still tight.\n- The FDA issued an Emergency Use Authorization for ivermectin injection against New World screwworm Thursday, the 14th EUA in the response, which is biosecurity infrastructure support ahead of the reopening date, not a cure for the supply-tightness story.",
+      "catalyst": "FDA Emergency Use Authorization for ivermectin against New World screwworm; Douglas port reopening Aug 24.",
+      "bottom_line": "Cattle bouncing on thin supply, not demand; the Douglas reopening pace next week is the real tell.",
+      "conviction_level": "medium",
       "overnight_surprise": false,
-      "farmer_action": "November beans above $12.62 with export sales above 300K MT this morning: price any remaining unhedged new-crop bushels before the September WASDE resets the ceiling.",
-      "vs_yesterday": "Beans: two-day China buying confirmed; now waiting on export data to grade the demand."
+      "vs_yesterday": "Cattle: double-hit narrative eased; screwworm EUA gives modest biosecurity support."
     },
     {
-      "title": "CATTLE: BEEF IMPORT FIGHT BREAKS OPEN",
-      "body": "- Live cattle at **$218.45** barely moved, up a tenth of a percent, but the political story underneath is louder: four major livestock organizations jointly petitioned President Trump this morning to reverse a proposed 90-day beef import initiative.\n- The NCBA's position is blunt: imports won't lower consumer prices, they'll undercut producer margins. That's a structural threat to a market already processing-constrained from the Cargill multi-plant lockout, ongoing since May 19, still removing roughly 6,000 head of daily processing capacity.\n- Feeders at $332.57 slipped 0.4% with the Aug 24 Douglas, AZ phased reopening of Mexican feeder imports now one day away.",
-      "catalyst": "Four major cattle groups jointly petitioned Trump to reverse a proposed 90-day beef import initiative, published this morning.",
-      "bottom_line": "Beef import politics just added a new structural risk to cattle margins; watch for any White House response.",
-      "conviction_level": "medium",
-      "overnight_surprise": false
-    },
-    {
-      "title": "ENERGY: HORMUZ TALKS PUSH CRUDE LOWER",
-      "body": "- WTI at **$81.61** slipped 0.3% as Qatar's prime minister traveled to Tehran to discuss reopening the Strait of Hormuz, extending crude's four-session decline.\n- The Iran-Hormuz cycle, a pattern of escalation and deflation that has played out twice since April, is running its familiar script: tanker struck overnight per UK Maritime Trade Operations, but diplomatic channel opened same day, and the net is a softer market, not a harder one.\n- Qatar and Kuwait have restored 70% of pre-war crude exports through Hormuz via ship-to-ship transfers, removing the supply-squeeze argument.",
-      "catalyst": "Qatar PM traveling to Tehran for Hormuz talks; Qatar/Kuwait restore 70% of pre-war crude exports through the strait.",
-      "bottom_line": "Diplomatic progress is outpacing the tanker strike headlines. Diesel, not crude, stays the input-cost watch for fall fieldwork.",
-      "conviction_level": "medium",
+      "title": "CRUDE FIRMS ON VENEZUELA TALKS",
+      "body": "- WTI at **$83.61** rose 2.2%, its sharpest session in weeks, as reports circulated that the Trump administration is in active talks to take direct US ownership stakes in Venezuelan oil fields, a supply-route story that the market is trading as a geopolitical premium rather than a near-term barrel change.\n- The Iran-Hormuz cycle, a July re-escalation that has since cooled with the premium deflating into August, remains the backdrop; Venezuela adds a second supply-uncertainty thread without changing the fundamental building-stock picture.",
+      "catalyst": "Reports of US-Venezuela talks over direct ownership of Venezuelan oil fields, adding geopolitical supply premium.",
+      "bottom_line": "Crude's 2.2% move is geopolitical positioning, not a supply signal; diesel input cost for fall fieldwork unchanged.",
+      "conviction_level": "low",
       "overnight_surprise": false
     }
   ],
   "outside_the_pit": [
     {
-      "title": "Trump Beef Import Plan Draws Unified Industry Opposition",
-      "body": "Four of the nation's largest livestock groups filed a joint petition against a proposed 90-day beef import initiative Wednesday morning. For producers, this is the sharpest policy threat to fed cattle margins since the packing concentration debate; watch for a White House response before end of week.",
-      "tag": "POLICY"
+      "title": "CHS and OCP Plan First US Phosphate Plant in 40 Years",
+      "body": "CHS and Morocco's OCP announced a joint venture to build a one-million-metric-ton-per-year phosphate fertilizer facility in Louisiana, the first new US capacity in four decades. If it gets built, it restructures the import-dependency picture for DAP and MAP pricing by the late 2020s.",
+      "tag": "INPUTS"
     },
     {
-      "title": "USDA Workforce Gaps Are Slowing Loan and Grant Processing Nationwide",
-      "body": "Farmers across the country report delays in USDA loan approvals, technical assistance, and rural housing financing as staff reductions continue. For operations carrying operating debt into harvest, slower USDA response times are a cash-flow risk, not an abstract policy complaint.",
+      "title": "R-CALF Pushes Mandatory Country-of-Origin Labeling on Beef Imports",
+      "body": "R-CALF USA is calling for M-COOL reinstatement after Trump's proclamation to expand foreign beef imports to lower retail prices. For cow-calf and fed-cattle producers, label origin is both a marketing tool and a packer-margin lever; the policy fight is now formally open.",
       "tag": "POLICY"
     }
   ],
   "weekly_thread": {
     "question": "Does Crop Progress show eastern Corn Belt condition damage from Indiana's flooding, or does the crop hold ratings through late August?",
     "day": 4,
-    "status_text": "Monday's Crop Progress showed a ratings dip; today's 7:30 AM export sales are the market's next data point, with the September WASDE now the next yield event. Thread resolution Friday."
+    "status_text": "Monday's Crop Progress showed a ratings dip. Today's export sales at 7:30 AM CT are the next hard data point; the September WASDE is the next yield event."
   },
   "the_more_you_know": {
-    "title": "When packers finally turn profitable",
-    "body": "Drovers confirmed Wednesday that packers posted their first profitable week since April, a direct result of lower cattle purchase costs after the recent fed trade reset. That margin shift changes the bidding dynamic at the next negotiated trade: packers with positive margins have less urgency to keep bids low. Watch whether that shows up in cash cattle bids this week."
+    "title": "The meal/oil split is the crush market's tell.",
+    "body": "When soybean oil runs and meal lags, as happened overnight, the crush complex is pricing renewable-diesel feedstock demand above protein demand. At $67.85 oil versus $329.90 meal, the oil share of crush value is at its highest point in months. That ratio, not the bean price, tells you which side of the soy complex is doing the bidding right now."
   },
   "watch_list": [
     {
       "time": "7:30 AM CT today",
-      "desc": "USDA Weekly Export Sales: beans above 300K MT confirms sustained demand; below 200K MT says China's two-day buying was front-loaded positioning."
+      "desc": "USDA Weekly Export Sales: soybeans above 500K MT puts China commitment back in the conversation; below 300K MT and the chart holds the wheel."
     },
     {
-      "time": "Aug 24 (Sunday)",
-      "desc": "Douglas, AZ phased reopening of Mexican feeder cattle imports: watch feeder/live spread for first sign of supply normalization."
-    },
-    {
-      "time": "Monday, 3:00 PM CT",
-      "desc": "USDA Crop Progress: eastern Corn Belt condition ratings; any further decline from last week's dip tightens the September WASDE setup."
+      "time": "Aug 24 date approaching",
+      "desc": "Douglas, AZ phased cattle import reopening: feeder/live spread is the tell on how fast returning Mexican supply reprices the feeder board."
     },
     {
       "time": "Ongoing",
-      "desc": "White House response to the four-group joint petition against the beef import plan: any signal of reversal or confirmation moves live cattle sharply."
+      "desc": "December corn above $5.25: pricing window for unpriced new-crop still open, but harvest-pressure talk is building."
+    },
+    {
+      "time": "Sep 30 deadline",
+      "desc": "Farm Bill revote expected in September after Senate Ag markup failed Aug 6; year-round E15 provision in the Senate text is a structural corn-demand tailwind if enacted."
     }
   ],
   "daily_quote": {
     "text": "Waste not, want not.",
     "attribution": "English Proverb"
   },
-  "source_summary": "CME Group locked settlement prices; Brownfield Ag News; Farm Policy News; OilPrice.com; Drovers; Agri-Pulse; farmdoc daily; USDA WASDE Aug 12, 2026.",
+  "source_summary": "CME Group settlement prices; USDA WASDE Aug 12, 2026; Brownfield Ag News; Feedstuffs; Beef Magazine; Agri-Pulse; Farm Policy News; OilPrice.com; AgWeb",
   "date": "Thursday, August 27, 2026",
   "meta": {
     "market_mood": "cautious",
-    "heat_section": 1,
+    "heat_section": 0,
     "overnight_surprises_count": 1,
     "news_coverage": {
       "ok": 15,
@@ -127,25 +127,25 @@
     }
   },
   "locked_prices": {
-    "corn": 5.12,
-    "corn-dec": 5.3475,
-    "beans": 12.5075,
-    "beans-nov": 12.615,
-    "wheat": 7.325,
-    "oats": 3.37,
-    "cattle": 218.45,
-    "feeders": 332.575,
-    "hogs": 80.8,
-    "milk": 16.69,
-    "meal": 330.60001,
-    "soyoil": 66.07,
-    "crude": 81.61,
-    "natgas": 2.909,
-    "gold": 4661.2002,
-    "silver": 68.57,
-    "dollar": 99.142,
-    "sp500": 7675.7002,
-    "bitcoin": 78843.07812
+    "corn": 5.08,
+    "corn-dec": 5.315,
+    "beans": 12.525,
+    "beans-nov": 12.635,
+    "wheat": 7.4,
+    "oats": 3.3625,
+    "cattle": 220.3,
+    "feeders": 333.79999,
+    "hogs": 80.525,
+    "milk": 16.67,
+    "meal": 329.89999,
+    "soyoil": 67.85,
+    "crude": 83.61,
+    "natgas": 2.905,
+    "gold": 4659.0,
+    "silver": 70.135,
+    "dollar": 99.136,
+    "sp500": 7730.99023,
+    "bitcoin": 80006.21094
   },
   "chart_series": {
     "corn": [
@@ -158,7 +158,7 @@
       4.96,
       4.92,
       5.07,
-      5.12
+      5.08
     ],
     "soybeans": [
       12.1,
@@ -170,7 +170,7 @@
       12.22,
       12.13,
       12.32,
-      12.51
+      12.53
     ],
     "wheat": [
       6.77,
@@ -182,7 +182,7 @@
       6.95,
       6.72,
       6.98,
-      7.33
+      7.4
     ]
   },
   "sponsor": {
@@ -196,18 +196,18 @@
     "disclosure": "One sponsor, one issue. No retargeting. No programmatic auctions. Reply or call 715-797-2428.",
     "is_house_ad": true
   },
-  "issue_number": 168,
-  "generated_at": "2026-08-27T12:11:51.577890+00:00",
+  "issue_number": 169,
+  "generated_at": "2026-08-27T20:57:16.912744+00:00",
   "generator_version": "4.6.3",
   "surprise_count": 1,
   "surprises": [
     {
-      "commodity": "Oats",
-      "key": "oats",
-      "price": "$3.37/bu",
-      "pct_change": 3.0581,
+      "commodity": "Soybean Oil",
+      "key": "soyoil",
+      "price": "$67.85",
+      "pct_change": 2.5544,
       "direction": "up",
-      "surprise_magnitude": 1.2
+      "surprise_magnitude": 1.0
     }
   ],
   "price_validation_clean": true,
@@ -215,50 +215,50 @@
   "market_status_reason": "open",
   "critic_pass": {
     "version": "1.2",
-    "ran_at": "2026-08-27T12:12:08.878833+00:00",
+    "ran_at": "2026-08-27T20:57:32.355505+00:00",
     "threshold": 7,
     "final_scores": {
       "rule_1_lead_so_what": 8,
-      "rule_2_conviction_earned": 6,
-      "rule_3_tmyk_today": 8,
+      "rule_2_conviction_earned": 7,
+      "rule_3_tmyk_today": 9,
       "rule_4_watch_conditional": 7,
-      "rule_5_bottom_lines_synthesize": 7,
+      "rule_5_bottom_lines_synthesize": 8,
       "rule_6_quiet_days_quiet": 8,
       "rule_7_continuity": 8,
-      "rule_8_word_budgets": 5,
+      "rule_8_word_budgets": 7,
       "rule_9_voice": 7,
       "rule_10_forward_test": 7,
       "rule_11_thread_coherence": 6,
-      "rule_12_one_fact_one_home": 4,
-      "rule_13_yc_honesty": 6,
-      "rule_14_level_coherence": 3,
-      "rule_15_one_number_coherence": 8,
+      "rule_12_one_fact_one_home": 5,
+      "rule_13_yc_honesty": 8,
+      "rule_14_level_coherence": 2,
+      "rule_15_one_number_coherence": 2,
       "rule_16_markdown_not_html": 10,
-      "rule_17_macro_anchoring": 7
+      "rule_17_macro_anchoring": 8
     },
     "rewrites_applied": [
       {
         "pass": 1,
-        "target": "yesterdays_call",
+        "target": "one_number",
         "rule": "rule_14_level_coherence",
         "scores_before": {
           "rule_1_lead_so_what": 8,
-          "rule_2_conviction_earned": 6,
-          "rule_3_tmyk_today": 8,
+          "rule_2_conviction_earned": 7,
+          "rule_3_tmyk_today": 9,
           "rule_4_watch_conditional": 7,
-          "rule_5_bottom_lines_synthesize": 7,
+          "rule_5_bottom_lines_synthesize": 8,
           "rule_6_quiet_days_quiet": 8,
           "rule_7_continuity": 8,
-          "rule_8_word_budgets": 5,
+          "rule_8_word_budgets": 7,
           "rule_9_voice": 7,
           "rule_10_forward_test": 7,
           "rule_11_thread_coherence": 6,
-          "rule_12_one_fact_one_home": 4,
-          "rule_13_yc_honesty": 6,
-          "rule_14_level_coherence": 3,
-          "rule_15_one_number_coherence": 8,
+          "rule_12_one_fact_one_home": 5,
+          "rule_13_yc_honesty": 8,
+          "rule_14_level_coherence": 2,
+          "rule_15_one_number_coherence": 2,
           "rule_16_markdown_not_html": 10,
-          "rule_17_macro_anchoring": 7
+          "rule_17_macro_anchoring": 8
         }
       }
     ],
