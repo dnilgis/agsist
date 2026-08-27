@@ -4,9 +4,9 @@
  "note":"Per elevator, per commodity, per contract, per delivery month: the basis now, the basis before it, and the day it changed. Rebuildable in full from the changes-*.json files beside this.",
  "states":{
   "??":{
-   "rows":4,
-   "facilities":1,
-   "kb":0.4
+   "rows":14,
+   "facilities":2,
+   "kb":0.8
   },
   "AL":{
    "rows":13,
@@ -19,9 +19,9 @@
    "kb":2.2
   },
   "CO":{
-   "rows":58,
+   "rows":73,
    "facilities":5,
-   "kb":3.1
+   "kb":3.7
   },
   "DE":{
    "rows":5,
@@ -29,14 +29,14 @@
    "kb":0.5
   },
   "GA":{
-   "rows":7,
+   "rows":8,
    "facilities":3,
    "kb":0.6
   },
   "IA":{
-   "rows":2115,
-   "facilities":121,
-   "kb":85.0
+   "rows":5248,
+   "facilities":402,
+   "kb":214.1
   },
   "ID":{
    "rows":46,
@@ -44,39 +44,39 @@
    "kb":2.2
   },
   "IL":{
-   "rows":1478,
-   "facilities":91,
-   "kb":59.2
+   "rows":3268,
+   "facilities":243,
+   "kb":132.2
   },
   "IN":{
-   "rows":645,
-   "facilities":43,
-   "kb":25.8
+   "rows":880,
+   "facilities":64,
+   "kb":35.1
   },
   "KS":{
-   "rows":1469,
-   "facilities":103,
-   "kb":59.9
+   "rows":2472,
+   "facilities":205,
+   "kb":101.2
   },
   "MI":{
-   "rows":322,
-   "facilities":23,
-   "kb":13.7
+   "rows":362,
+   "facilities":26,
+   "kb":15.3
   },
   "MN":{
-   "rows":1990,
-   "facilities":98,
-   "kb":80.8
+   "rows":2955,
+   "facilities":166,
+   "kb":122.7
   },
   "MO":{
-   "rows":546,
-   "facilities":52,
-   "kb":23.1
+   "rows":725,
+   "facilities":66,
+   "kb":30.0
   },
   "MT":{
-   "rows":119,
+   "rows":132,
    "facilities":5,
-   "kb":5.4
+   "kb":5.8
   },
   "NC":{
    "rows":17,
@@ -84,24 +84,24 @@
    "kb":1.0
   },
   "ND":{
-   "rows":1122,
-   "facilities":48,
-   "kb":46.1
+   "rows":1424,
+   "facilities":65,
+   "kb":57.9
   },
   "NE":{
-   "rows":1209,
-   "facilities":58,
-   "kb":47.8
+   "rows":2325,
+   "facilities":134,
+   "kb":92.0
   },
   "OH":{
-   "rows":966,
-   "facilities":60,
-   "kb":38.8
+   "rows":1630,
+   "facilities":127,
+   "kb":65.5
   },
   "OK":{
-   "rows":201,
-   "facilities":20,
-   "kb":8.7
+   "rows":243,
+   "facilities":22,
+   "kb":10.4
   },
   "ON":{
    "rows":8,
@@ -109,14 +109,14 @@
    "kb":0.5
   },
   "OR":{
-   "rows":24,
+   "rows":26,
    "facilities":1,
-   "kb":1.2
+   "kb":1.3
   },
   "SD":{
-   "rows":939,
-   "facilities":47,
-   "kb":37.9
+   "rows":1236,
+   "facilities":75,
+   "kb":49.3
   },
   "TN":{
    "rows":73,
@@ -124,27 +124,27 @@
    "kb":3.4
   },
   "TX":{
-   "rows":36,
+   "rows":41,
    "facilities":3,
-   "kb":1.8
+   "kb":1.9
   },
   "VA":{
-   "rows":18,
+   "rows":20,
    "facilities":2,
-   "kb":1.0
+   "kb":1.1
   },
   "WA":{
-   "rows":288,
+   "rows":302,
    "facilities":14,
-   "kb":12.7
+   "kb":13.2
   },
   "WI":{
-   "rows":1129,
-   "facilities":95,
-   "kb":46.5
+   "rows":1199,
+   "facilities":96,
+   "kb":49.1
   },
   "WY":{
-   "rows":27,
+   "rows":29,
    "facilities":4,
    "kb":1.5
   }
