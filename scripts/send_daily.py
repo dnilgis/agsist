@@ -34,7 +34,6 @@ Sends individually (one To: per message — no exposed CC lists, better
 deliverability), throttled, with a List-Unsubscribe header. Individual
 failures are reported and tolerated; total failure exits nonzero.
 """
-import html
 import json
 import os
 import re
@@ -50,6 +49,9 @@ from datetime import date
 from email.message import EmailMessage
 from email.utils import formataddr, make_msgid
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import brief_email        # noqa: E402  (needs the path line above)
 
 REPO = Path(__file__).resolve().parent.parent
 ARCHIVE = REPO / "data" / "daily-archive"
@@ -73,11 +75,6 @@ def env(name, default=None, required=False):
         print("FATAL: missing env " + name)
         sys.exit(1)
     return v
-
-
-def strip_md(s):
-    """Briefing body fields carry light markdown; emails get plain emphasis."""
-    return re.sub(r"\*\*(.+?)\*\*", r"\1", s or "")
 
 
 def load_today():
@@ -135,18 +132,30 @@ def fetch_recipients():
 
 
 def build_email(day, b, to_addr, from_name, from_addr, reply_to):
-    headline = strip_md(b.get("headline", "AGSIST Daily Briefing"))
-    lead = strip_md(b.get("lead", ""))
-    takeaway = strip_md(b.get("the_takeaway", ""))
-    onum = b.get("one_number") or {}
-    date_display = b.get("date_display", day)
+    """One issue, two bodies, one message.
+
+    Until 2026-08-27 this built a 130-word teaser by hand: headline, lead,
+    takeaway, one number, button. That is an advertisement for a website, not a
+    briefing, and Sig said so plainly. The body now comes from brief_email,
+    which renders the SAME issue as a full HTML letter and as a real plain-text
+    alternative. This function is reduced to what it should always have been:
+    addressing, unsubscribe headers, and transport.
+
+    Nothing in here reads live prices. Every number in the letter is the
+    issue's own locked board measured against the previous session's locked
+    board — see brief_email's module docstring for why that rule exists.
+    """
+    date_display = b.get("date_display") or b.get("date") or day
+    uurl = unsub_url(to_addr)
+
+    prior, _prior_day = brief_email.prior_board(b)
+    subject = brief_email.subject_line(b, prior)
 
     msg = EmailMessage()
-    msg["Subject"] = "AGSIST Daily — " + headline
+    msg["Subject"] = subject
     msg["From"] = formataddr((from_name, from_addr))
     msg["To"] = to_addr
     msg["Message-ID"] = make_msgid(domain=from_addr.split("@", 1)[1])
-    uurl = unsub_url(to_addr)
     if reply_to:
         msg["Reply-To"] = reply_to
     unsub = reply_to or from_addr
@@ -156,40 +165,13 @@ def build_email(day, b, to_addr, from_name, from_addr, reply_to):
     else:
         msg["List-Unsubscribe"] = "<mailto:" + unsub + "?subject=unsubscribe>"
 
-    text = (date_display + "\n\n" + headline + "\n\n" + lead + "\n\n"
-            + ("THE TAKEAWAY: " + takeaway + "\n\n" if takeaway else "")
-            + (("ONE NUMBER: " + str(onum.get("value", "")) + " — "
-                + strip_md(onum.get("unit", "")) + "\n\n") if onum.get("value") else "")
-            + "Full briefing (charts, calls, and what to watch):\n" + SITE
-            + "\n\n—\nAGSIST — free US ag market intelligence · agsist.com\n"
-            + (("Unsubscribe: " + uurl + "\n") if uurl else
-               "To unsubscribe, reply with subject line: unsubscribe\n"))
-    msg.set_content(text)
+    text = brief_email.render_text(b, SITE, unsub_url=uurl, date_display=date_display)
+    hbody = brief_email.render_html(b, SITE_HREF, unsub_url=uurl, date_display=date_display)
 
-    e = html.escape
-    hbody = (
-        '<div style="font-family:Georgia,serif;max-width:560px;margin:0 auto;'
-        'padding:24px 16px;color:#1a1a1a;background:#ffffff">'
-        '<div style="font-family:Courier,monospace;font-size:12px;color:#6b6b6b;'
-        'letter-spacing:.08em;text-transform:uppercase">AGSIST Daily &middot; '
-        + e(date_display) + "</div>"
-        '<h1 style="font-size:22px;line-height:1.25;margin:10px 0 14px">' + e(headline) + "</h1>"
-        '<p style="font-size:15px;line-height:1.6;margin:0 0 14px">' + e(lead) + "</p>"
-        + (('<p style="font-size:15px;line-height:1.6;margin:0 0 14px">'
-            "<strong>The takeaway:</strong> " + e(takeaway) + "</p>") if takeaway else "")
-        + ((('<p style="font-family:Courier,monospace;font-size:14px;'
-             'border-left:3px solid #b58a2e;padding-left:10px;margin:0 0 18px">'
-             "<strong>" + e(str(onum.get("value", ""))) + "</strong> &mdash; "
-             + e(strip_md(onum.get("unit", ""))) + "</p>")) if onum.get("value") else "")
-        + '<p style="margin:20px 0"><a href="' + SITE_HREF + '" '
-        'style="background:#14100a;color:#e9dfc9;text-decoration:none;'
-        'padding:10px 18px;font-family:Courier,monospace;font-size:13px">'
-        "READ THE FULL BRIEFING &#8594;</a></p>"
-        '<p style="font-size:12px;color:#6b6b6b;line-height:1.5">AGSIST &mdash; free US ag '
-        'market intelligence &middot; <a href="https://agsist.com" style="color:#6b6b6b">agsist.com</a>'
-        + (('<br><a href="' + uurl + '" style="color:#6b6b6b">Unsubscribe</a>') if uurl else
-           "<br>To unsubscribe, reply with subject line: unsubscribe")
-        + "</p></div>")
+    # set_content first, add_alternative second: that ordering is what makes it
+    # multipart/alternative with the HTML preferred and the text a real
+    # fallback, not an attachment.
+    msg.set_content(text)
     msg.add_alternative(hbody, subtype="html")
     return msg
 
@@ -213,8 +195,19 @@ def main():
 
     if dry:
         m = build_email(day, b, recipients[0], from_name, from_addr, reply_to)
-        print("SUBJECT: " + m["Subject"])
-        print(m.get_body(("plain",)).get_content()[:600])
+        _prior, _pday = brief_email.prior_board(b)
+        print("SUBJECT: " + str(m["Subject"]))
+        print("board: this issue's locked close, against " + str(_pday or "(no prior board found)"))
+        htm = m.get_body(("html",))
+        txt = m.get_body(("plain",))
+        print("parts: html " + str(len(htm.get_content())) + " bytes, text "
+              + str(len(txt.get_content().split())) + " words")
+        print("-" * 60)
+        print(txt.get_content()[:1200])
+        if os.environ.get("DUMP_HTML"):
+            with open(os.environ["DUMP_HTML"], "w", encoding="utf-8") as fh:
+                fh.write(htm.get_content())
+            print("html written to " + os.environ["DUMP_HTML"])
         print("dry run complete — nothing sent")
         return 0
 
