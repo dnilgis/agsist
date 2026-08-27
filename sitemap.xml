@@ -39,7 +39,7 @@
   <url><loc>https://agsist.com/hail-map</loc><lastmod>2026-08-27</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://agsist.com/harvest-price-tracker</loc><lastmod>2026-08-27</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
   <url><loc>https://agsist.com/presell-calculator</loc><lastmod>2026-08-16</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://agsist.com/whats-priced-in</loc><lastmod>2026-08-26</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://agsist.com/whats-priced-in</loc><lastmod>2026-08-27</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
 
   <!-- Daily Briefing -->
   <url><loc>https://agsist.com/daily</loc><lastmod>2026-08-27</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
@@ -54,7 +54,7 @@
 
   <!-- Added 2026-06-12: audit fixes -->
   <url><loc>https://agsist.com/cattle-futures-prices</loc><lastmod>2026-08-27</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
-  <url><loc>https://agsist.com/scorecard</loc><lastmod>2026-08-26</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://agsist.com/scorecard</loc><lastmod>2026-08-27</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
   <url><loc>https://agsist.com/sponsor</loc><lastmod>2026-08-16</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
   <url><loc>https://agsist.com/developer</loc><lastmod>2026-08-07</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
   <url><loc>https://agsist.com/contact</loc><lastmod>2026-08-07</lastmod><changefreq>yearly</changefreq><priority>0.4</priority></url>
@@ -524,7 +524,7 @@
   <url><loc>https://agsist.com/cash-lease</loc><lastmod>2026-08-16</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
   <url><loc>https://agsist.com/conditions</loc><lastmod>2026-08-16</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
   <url><loc>https://agsist.com/conditions-yield</loc><lastmod>2026-08-16</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://agsist.com/crop-tour</loc><lastmod>2026-08-26</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://agsist.com/crop-tour</loc><lastmod>2026-08-27</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
   <url><loc>https://agsist.com/foreign-land</loc><lastmod>2026-08-16</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
   <url><loc>https://agsist.com/land-tenure</loc><lastmod>2026-08-11</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
   <url><loc>https://agsist.com/daily/2026-08-11</loc><lastmod>2026-08-11</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
