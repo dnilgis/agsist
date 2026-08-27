@@ -89,6 +89,24 @@ jobs:
 
       # Same job, while bids-full.json is still on disk. This step failing is
       # a real failure: it means the full file was not written.
+      # THE DIRECTORY, TAKEN WHILE WE STILL HAVE THE FEED.
+      # Sig, 2026-08-27: "i have a feeling that i wont be continuing my barchart
+      # api subscription ... i want a complete directory of every elevator in
+      # the country ... whoever we cant get, i want a list of them."
+      #
+      # The prices stop at renewal. Who operates a facility and what town it is
+      # in does not, and it is the target list for every adapter still to be
+      # written. This runs HERE, beside the basis map, because that is where
+      # bids-full.json exists: the slim committed sample yields about forty
+      # facilities and the full national sweep yields four hundred.
+      #
+      # It writes no price, no basis and no symbol — only the directory.
+      # continue-on-error because a missing directory must never cost the run
+      # its prices.
+      - name: Extract the elevator directory (no prices)
+        continue-on-error: true
+        run: python scripts/extract_directory.py
+
       - name: Build the national basis map
         run: python scripts/build_basis_map.py
 
@@ -122,7 +140,7 @@ jobs:
           git config user.email "bot@agsist.com"
           # bids-full.json is gitignored. Adding it explicitly here would put
           # 6 MB into every commit, which is the whole thing this avoids.
-          git add data/bids.json data/basis-map.json data/basis
+          git add data/bids.json data/basis-map.json data/basis data/elevator-directory.json
           git diff --staged --quiet && echo "No changes" && exit 0
           git commit -m "Update grain bids + basis map + basis history $(date -u +%Y-%m-%dT%H:%M:%SZ)"
           git pull --rebase origin main
