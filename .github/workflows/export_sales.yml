@@ -2,7 +2,23 @@ name: Fetch Export Sales
 
 on:
   schedule:
+    # USDA FAS publishes Weekly Export Sales Thursday at 8:30am ET.
+    #
+    # THIS WAS ONE CRON A WEEK WITH NOTHING BEHIND IT. A scheduled run on this
+    # platform is best effort -- measured on this repository over 2026-08-19 to
+    # 08-26, data/bids.json delivered between 41% and 86% of the fires it asked
+    # for -- so a single weekly attempt means a dropped run leaves the page a
+    # week stale with nothing to notice it.
+    #
+    # Both DST cases, because 8:30am ET moves against UTC:
+    #   EDT (Mar-Nov)  release 12:30 UTC -> 12:45
+    #   EST (Nov-Mar)  release 13:30 UTC -> 13:45
+    # The original 14:30 stays as the second attempt in both, and Friday
+    # morning is the catch-all. Each is a no-op when the data has not moved.
+    - cron: '45 12 * * 4'
+    - cron: '45 13 * * 4'
     - cron: '30 14 * * 4'
+    - cron: '20 13 * * 5'
   workflow_dispatch:
 
 jobs:

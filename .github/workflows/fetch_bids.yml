@@ -16,7 +16,30 @@ name: Fetch Grain Bids
 
 on:
   schedule:
-    - cron: '*/30 11-21 * * 1-5'
+    # OFF THE TOP OF THE HOUR. This asked for 22 fires a weekday and did not
+    # get them. data/bids.json carries a `fetched` timestamp that changes every
+    # run, so a commit is an exact run count, and measured 2026-08-19 to 08-26:
+    #
+    #   Wed 08-19  19 of 22   86%      Mon 08-24  15 of 22   68%
+    #   Thu 08-20  19 of 22   86%      Tue 08-25  16 of 22   73%
+    #   Fri 08-21  18 of 22   82%      Wed 08-26   9 of 22   41%
+    #
+    # On the 26th that left holes of 1h36m, 2h00m and 2h12m inside the trading
+    # session, under a page that says it refreshes every thirty minutes.
+    #
+    # `*/30` fires at :00 and :30, and :00 is the single most congested minute
+    # on this platform -- every cron on GitHub asks for it at once. The sibling
+    # repository learned the same lesson on `*/10` and wrote it down: "offsetting
+    # to :03 costs nothing and lands in a quieter queue".
+    #
+    # THIS IS THE CHEAP HALF OF THE FIX AND IT IS NOT THE WHOLE ONE. The real
+    # answer is the one poll.yml took on 2026-08-26: stop asking for a high
+    # frequency, take the hourly fire that reliably arrives, and read repeatedly
+    # inside it. That change has not yet been CONFIRMED working -- nobody has
+    # read a run log for it -- and applying an unverified pattern to the feed
+    # behind the customer-facing page would be building on it twice. Same
+    # spacing, quieter minutes, until poll.yml's loop is proven.
+    - cron: '7,37 11-21 * * 1-5'
     - cron: '37 11 * * 6'
   workflow_dispatch:
     inputs:

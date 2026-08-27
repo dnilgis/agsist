@@ -2,7 +2,21 @@ name: Fetch Crop Progress
 
 on:
   schedule:
+    # USDA NASS publishes Crop Progress Monday at 4:00pm ET, and in season it is
+    # the headline number on the conditions page.
+    #
+    # Same fault as export sales: one cron a week and nothing behind it, so a
+    # dropped Monday run showed last week's condition ratings for a further
+    # seven days. And 21:30 UTC is ninety minutes after the release in EDT.
+    #
+    #   EDT (Mar-Nov)  release 20:00 UTC -> 20:15
+    #   EST (Nov-Mar)  release 21:00 UTC -> 21:15
+    # 21:30 stays as the second attempt in both; Tuesday midday is the
+    # catch-all. Each is a no-op when the data has not moved.
+    - cron: '15 20 * * 1'
+    - cron: '15 21 * * 1'
     - cron: '30 21 * * 1'
+    - cron: '30 12 * * 2'
   workflow_dispatch:
 
 jobs:

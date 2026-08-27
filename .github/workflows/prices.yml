@@ -18,7 +18,32 @@ on:
     # Each launch covers ~5.25h of 30-min fetches, so 1 successful fire = a full session.
     - cron: '17 13 * * 1-5'   # ~08:17 CT — start before the 08:30 day-session open
     - cron: '3 16 * * 1-5'    # midday recovery launch (in case the morning one was dropped)
-    - cron: '2 0 * * 1-6'     # evening: 7:02 PM CT Sun-Fri — catches the Globex reopen at 7:00, runs to ~12:50 AM
+    # THE EVENING LAUNCH USED TO FIRE AT 00:02 UTC -- 7:02 PM CT, two minutes
+    # AFTER the 7:00 PM Globex reopen -- while the day launch above was
+    # deliberately given thirteen minutes of lead ("start before the 08:30
+    # open"). The evening one had minus two, and this scheduler is best effort.
+    #
+    # MEASURED on data/prices.json, Tuesday 2026-08-25, Central:
+    #   cron fires   19:02
+    #   first write  20:23:50   <- 1h 22m late
+    #   then 20:54 21:24 21:55 22:25 22:56 23:26 23:56 00:27 00:57 01:28 01:43
+    # The session was open and trading for eighty minutes with the page saying
+    # "DELAYED - Markets 2h 11m ago", which was true and was the whole problem.
+    #
+    # 23:40 UTC is 6:40 PM CDT: twenty minutes of lead in summer, and an hour
+    # and twenty in winter, where 23:40 UTC is 5:40 PM CST. Early is free --
+    # the launch simply covers its 5.25 hours from wherever it starts.
+    #
+    # DAYS 0-4 AND NOT 1-6. At 00:02 UTC the old range fired on Saturday, which
+    # is Friday 7:02 PM CT, when the market has been shut since 1:20 that
+    # afternoon and does not reopen until Sunday evening. That run has been
+    # buying nothing. Sun-Thu UTC at 23:40 is Sun-Thu evening CT, which is
+    # exactly the five overnight sessions there are.
+    - cron: '40 23 * * 0-4'   # ~18:40 CT — start before the 19:00 Globex reopen
+    # An evening recovery, for the same reason the midday one above exists: an
+    # 82-minute delay is not a hypothetical here, it is Tuesday. Newest launch
+    # wins, so this takes over cleanly and carries the session past 2 AM.
+    - cron: '10 2 * * 1-5'    # ~21:10 CT — evening recovery launch
     - cron: '17 10 * * 1-5'   # pre-dawn: 5:17 AM CT Mon-Fri — overnight session trades til 7:45 AM; this hands the 6 AM briefing and early readers CURRENT prices, then the day launch takes over
 
 # Newest launch wins — a restart takes over cleanly instead of queueing a 5h job.

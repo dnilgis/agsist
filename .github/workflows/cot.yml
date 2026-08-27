@@ -22,8 +22,29 @@ on:
     - cron: '15 20 * * 5'
     - cron: '45 20 * * 5'
     - cron: '15 21 * * 5'
-    # The daily catch-all stays: a holiday-shifted release or a dropped Friday
-    # cron self-heals the next day instead of leaving the page stale a week.
+    # AND THE SAME FOUR ON MONDAY, because six of 2026's releases are not on a
+    # Friday at all. From CFTC's own release schedule: "Federal holidays may
+    # delay release by one or two days", and the 2026 calendar marks
+    #   Jan 5 · Jun 22 · Jul 6 · Nov 16 · Nov 30 · Dec 28
+    # every one of them a MONDAY, still at 3:30pm ET.
+    #
+    # Until now the only thing covering those six was the daily catch-all at
+    # 21:30 UTC -- which is the exact two-hours-late failure this file was
+    # rewritten to stop, just moved to the days nobody checked. Nov 16, Nov 30
+    # and Dec 28 are all still ahead of us and all fall in EST, so the catch-all
+    # would have been an hour late on each, in the middle of post-harvest
+    # marketing.
+    #
+    # A Monday run costs a minute of CI on the forty-six Mondays a year that
+    # publish nothing, because the commit step is a no-op when the data has not
+    # moved. Six correct release days are worth forty-six wasted minutes.
+    - cron: '45 19 * * 1'
+    - cron: '15 20 * * 1'
+    - cron: '45 20 * * 1'
+    - cron: '15 21 * * 1'
+    # The daily catch-all stays: a release shifted somewhere neither Friday nor
+    # Monday covers, or a dropped cron, self-heals the next day instead of
+    # leaving the page stale a week.
     - cron: '30 21 * * *'
   workflow_dispatch:
 
