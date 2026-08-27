@@ -45,6 +45,10 @@ on:
       minutes:
         description: "Stop cleanly after this many minutes (0 = no limit)"
         default: "40"
+      probe_cap:
+        description: "Do not sweep — ask three far-apart ZIPs at two caps and report whether the answer varies at all. Writes nothing."
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -68,6 +72,7 @@ jobs:
           BARCHART_API_KEY: ${{ secrets.BARCHART_API_KEY }}
         run: |
           python scripts/extract_directory.py \
+            ${{ inputs.probe_cap && '--probe-cap' || '' }} \
             --max-distance "${{ inputs.max_distance || '75' }}" \
             --total-locations "${{ inputs.total_locations || '500' }}" \
             --start "${{ inputs.start || '0' }}" \
@@ -79,7 +84,7 @@ jobs:
       # with real coordinates, and which ZIPs saturated -- and a run summary is
       # read where a log is not.
       - name: Say what came back
-        if: always()
+        if: ${{ always() && !inputs.probe_cap }}
         run: |
           python - <<'PY' >> "$GITHUB_STEP_SUMMARY"
           import json, pathlib
@@ -102,6 +107,7 @@ jobs:
           PY
 
       - name: Commit the directory
+        if: ${{ !inputs.probe_cap }}
         run: |
           git config user.name  "agsist-bot"
           git config user.email "bot@agsist.com"
