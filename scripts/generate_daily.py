@@ -133,7 +133,7 @@ import os
 import sys
 import random
 import re
-from datetime import datetime, timezone, timedelta
+from datetime import datetime, timezone, timedelta, date
 
 from contract_calendar import is_expired   # ONE definition of contract expiry
 from pathlib import Path
@@ -1104,38 +1104,111 @@ def fetch_ag_news():
     return "\n".join(out)
 
 
-# Pro Farmer Crop Tour window — UPDATE EACH YEAR (tour is the 3rd/4th full week
-# of August). 2026: Aug 17-20. Used to keep the briefing from describing the tour
-# as underway before it actually starts.
-PRO_FARMER_TOUR = (8, 17, 20)  # (month, first_day, last_day)
+# Pro Farmer Crop Tour window. The tour's own file carries its dates; this
+# tuple is only the fallback for a missing or unreadable one.
+#
+# IT USED TO BE THE ONLY SOURCE, hardcoded, with a comment saying UPDATE EACH
+# YEAR. data/crop-tour.json already holds tour.start, tour.end and
+# tour.final_expected, maintained by the crop tour workflow, so the dates are
+# read from there and nobody has to remember.
+_SEPT_BASE = "Early harvest: Corn harvest beginning. September WASDE."
+PRO_FARMER_TOUR = (8, 17, 20)  # (month, first_day, last_day) — fallback only
+
+
+def _tour_dates():
+    """(start, end, final, final_label, year) from the tour's own file, or None."""
+    try:
+        import json as _json
+        from pathlib import Path as _Path
+        p = _Path(__file__).resolve().parent.parent / "data" / "crop-tour.json"
+        t = (_json.loads(p.read_text(encoding="utf-8")) or {}).get("tour") or {}
+        start = date.fromisoformat(t["start"])
+        end = date.fromisoformat(t["end"])
+        final = date.fromisoformat(t.get("final_expected") or t["end"])
+        label = (t.get("final_expected_label") or final.strftime("%A, %b %-d")).strip()
+        return start, end, final, label, int(t.get("year") or start.year)
+    except Exception:
+        return None
+
+
+def _tour_is_over_note(span, label):
+    """THE SENTENCE THAT STOPS THE TOUR BEING NARRATED AS UPCOMING.
+
+    This is the branch that did not exist. The old code had three states --
+    not started, underway, and "wrapped" -- and the wrapped one EXPIRED four
+    days after the tour ended (`now.day <= t1 + 4`). From the 25th onward the
+    model was told nothing about the tour at all, so nothing contradicted it
+    when it decided the number was still coming.
+
+    It did exactly that. The briefing published 2026-08-26 told readers "The
+    Pro Farmer tour number Friday is the next real test" and repeated it in the
+    takeaway -- five days after the tour had finished and four days after its
+    final number was out. Sig caught it in his own inbox.
+
+    A guard that stops guarding is worse than no guard, because the shape of
+    the code implies the case is handled. This one does not expire.
+    """
+    return (f"The Pro Farmer Crop Tour is FINISHED. It ran {span} "
+            f"and published its final national estimate on {label}. Do NOT describe "
+            f"the tour, its scouts, its samples or its number as upcoming, "
+            f"forthcoming, 'this Friday', or 'the next test' -- it has already "
+            f"happened. Reference it only in the past tense, and only with figures "
+            f"that appear in the news block. The next scheduled yield event is the "
+            f"September WASDE.")
 
 
 def _august_context():
     """August seasonal context, day-aware around the Pro Farmer Crop Tour so the
-    generator never narrates tour scouts / pod counts before the tour begins."""
-    now = datetime.now()
-    _, t0, t1 = PRO_FARMER_TOUR
+    generator neither narrates tour findings before they exist nor describes a
+    finished tour as still to come."""
+    today = datetime.now().date()
     base = "Yield formation: corn in dough/dent, soybeans filling pods."
-    if now.day < t0:
-        days = (datetime(now.year, PRO_FARMER_TOUR[0], t0) - datetime(now.year, now.month, now.day)).days
-        return (f"{base} The Pro Farmer Crop Tour runs Aug {t0}-{t1} — it has NOT "
+    d = _tour_dates()
+    if d:
+        t_start, t_end, t_final, t_label, _yr = d
+    else:
+        m, a, b = PRO_FARMER_TOUR
+        t_start, t_end = date(today.year, m, a), date(today.year, m, b)
+        t_final, t_label = t_end, t_end.strftime("%A, %b %-d")
+    span = f"{t_start.strftime('%b %-d')}-{t_end.strftime('%-d')}"
+
+    if today < t_start:
+        days = (t_start - today).days
+        return (f"{base} The Pro Farmer Crop Tour runs {span} — it has NOT "
                 f"started yet ({days} days out). Do NOT describe tour scouts, pod "
                 f"counts, ear samples, or tour findings as if they exist; the tour "
                 f"is only upcoming. Weather and crop-condition ratings drive the crop story now.")
-    if now.day <= t1:
-        return (f"{base} The Pro Farmer Crop Tour is underway (Aug {t0}-{t1}) — "
+    if today <= t_end:
+        return (f"{base} The Pro Farmer Crop Tour is underway ({span}) — "
                 f"scouts are sampling corn ears and soybean pods across the Belt "
                 f"this week. Only cite specific tour figures if they appear in the news block.")
-    if now.day <= t1 + 4:
-        return (f"{base} The Pro Farmer Crop Tour wrapped (Aug {t0}-{t1}); its yield "
-                f"estimates are the market's fresh read. Only cite figures present in the news block.")
-    return f"{base} Late-month yield outlook firming ahead of the September WASDE."
+    # <= AND NOT <. The briefing goes out in the MORNING and Pro Farmer
+    # publishes in the afternoon, so on the day of the final number the honest
+    # line is "due today", not "published".
+    if today <= t_final:
+        return (f"{base} The Pro Farmer Crop Tour has finished sampling ({span}); its "
+                f"final national estimate is due {t_label} and is NOT out yet as this "
+                f"briefing is written. Only cite figures present in the news block.")
+    return f"{base} {_tour_is_over_note(span, t_label)}"
 
 
 def get_seasonal_context():
     month = datetime.now().month
     if month == 8:
         return _august_context()
+    if month == 9:
+        # SEPTEMBER NEEDED IT TOO. The August guard could be perfect and a
+        # briefing on 3 September would still be free to invent a tour date,
+        # because the tour instruction only ever existed inside the August
+        # branch. The tour is over for the rest of the crop year, so say so
+        # for the rest of the crop year.
+        d = _tour_dates()
+        if d:
+            t_start, t_end, _t_final, t_label, yr = d
+            if yr == datetime.now().year:
+                span = f"{t_start.strftime('%b %-d')}-{t_end.strftime('%-d')}"
+                return (_SEPT_BASE + " " + _tour_is_over_note(span, t_label))
+        return _SEPT_BASE
     contexts = {
         1: "Mid-winter: South American crop development. Cattle markets seasonally strong.",
         2: "Late winter: USDA Ag Outlook Forum. South American harvest beginning.",
