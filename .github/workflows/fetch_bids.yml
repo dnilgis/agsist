@@ -103,9 +103,9 @@ jobs:
       # It writes no price, no basis and no symbol — only the directory.
       # continue-on-error because a missing directory must never cost the run
       # its prices.
-      - name: Extract the elevator directory (no prices)
+      - name: Extract the elevator directory (no prices, no extra API calls)
         continue-on-error: true
-        run: python scripts/extract_directory.py
+        run: python scripts/extract_directory.py --from-bids
 
       - name: Build the national basis map
         run: python scripts/build_basis_map.py
