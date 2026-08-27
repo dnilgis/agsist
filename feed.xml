@@ -5,13 +5,26 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Wed, 26 Aug 2026 11:34:22 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 27 Aug 2026 12:12:10 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/agsist.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>EXPORT SALES DUE 7:30 AM; WHEAT LEADS LOWER</title>
+      <link>https://agsist.com/daily/2026-08-27</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-08-27</guid>
+      <pubDate>Thu, 27 Aug 2026 05:00:00 -0600</pubDate>
+      <description>Wheat gave back 5¾ cents to $7.33 overnight, retracing Wednesday's Black Sea-driven run. Everything else barely moved. The story this morning is the 7:30 AM export sales print: with China having bought 465,000 metric tons of new-crop beans over the last two sessions, the bean number today either confirms sustained demand or tells you those sales were front-loaded positioning.
+Grains drift into the report window as beef import politics rattle cattle feeders.
+• WHEAT GIVES BACK GAINS
+• BEANS WAIT ON 7:30 AM PRINT
+  → November beans above $12.62 with export sales above 300K MT this morning: price any remaining unhedged new-crop bushels before the September WASDE resets the ceiling.
+• CATTLE: BEEF IMPORT FIGHT BREAKS OPEN
+Read more: https://agsist.com/daily/2026-08-27</description>
+    </item>
     <item>
       <title>CROP RATINGS DIP; GRAINS FIRM, CATTLE SLIDE</title>
       <link>https://agsist.com/daily/2026-08-26</link>
@@ -381,18 +394,6 @@ Feeders run 1.8% higher one session after their worst day in months, while corn 
 • Grains Ease on Cooling Forecast
 • Crude Firms on Middle East
 Read more: https://agsist.com/daily/2026-07-29</description>
-    </item>
-    <item>
-      <title>FEEDERS FALL 3%; WHEAT LEADS GRAINS LOWER</title>
-      <link>https://agsist.com/daily/2026-07-28</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-07-28</guid>
-      <pubDate>Tue, 28 Jul 2026 05:00:00 -0600</pubDate>
-      <description>Feeders dropped hard to $331.27, down 3% on the overnight, and that is the story today. The US reopening Arizona and New Mexico ports to Mexican cattle, announced Friday, just repriced the feeder supply curve in one session. Meanwhile, cooler August forecasts and profit-taking knocked beans to $12.08 and wheat gave back 8 cents. Monday's crop progress gave the bulls nothing new to work with.
-Cooler August forecasts hit beans and corn; Mexico cattle import news drives the feeder breakdown.
-• Feeders Break Hard
-• Grains Give Back
-• Energy Drifts Lower
-Read more: https://agsist.com/daily/2026-07-28</description>
     </item>
   </channel>
 </rss>

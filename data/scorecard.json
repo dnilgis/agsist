@@ -1,18 +1,18 @@
 {
- "updated": "2026-08-26T11:34:22+00:00",
- "total": 98,
- "played_out": 35,
+ "updated": "2026-08-27T12:12:10+00:00",
+ "total": 99,
+ "played_out": 36,
  "didnt": 58,
  "pending": 5,
- "hit_rate": 37.6,
+ "hit_rate": 38.3,
  "by_method": {
   "deterministic": {
-   "played": 9,
+   "played": 10,
    "missed": 48,
-   "graded": 57,
-   "hit_rate": 15.8,
+   "graded": 58,
+   "hit_rate": 17.2,
    "first": "2026-06-24",
-   "last": "2026-08-26"
+   "last": "2026-08-27"
   },
   "self_reported": {
    "played": 26,
@@ -33,18 +33,18 @@
    "last": "2026-08-11"
   },
   "v2": {
-   "played": 5,
+   "played": 6,
    "missed": 8,
-   "graded": 13,
-   "hit_rate": 38.5,
+   "graded": 14,
+   "hit_rate": 42.9,
    "first": "2026-08-12",
-   "last": "2026-08-26"
+   "last": "2026-08-27"
   }
  },
  "direction_only": {
-  "right_way": 23,
-  "graded": 57,
-  "rate": 40.4
+  "right_way": 24,
+  "graded": 58,
+  "rate": 41.4
  },
  "by_instrument": {
   "wheat": {
@@ -58,9 +58,9 @@
    "hit_rate": 10.0
   },
   "beans": {
-   "played": 4,
-   "graded": 15,
-   "hit_rate": 26.7
+   "played": 5,
+   "graded": 16,
+   "hit_rate": 31.2
   },
   "crude": {
    "played": 2,
@@ -94,8 +94,24 @@
   "hit_rate": 35.0
  },
  "mismatched": 23,
- "current_streak": 1,
+ "current_streak": 2,
  "records": [
+  {
+   "made": "2026-08-26",
+   "judged": "2026-08-27",
+   "call": "Called beans up toward $12.47; front-month beans closed at $12.51, clearing the level by about 4 cents.",
+   "outcome": "played_out",
+   "method": "deterministic",
+   "mismatch": false,
+   "note": "The call played out. Chinese demand did the work across two sessions, lifting beans through $12.47 and holding there. November beans tracked close at $12.62 -- but the scored instrument is the front contract, and it delivered.",
+   "instrument": "beans",
+   "direction": "up",
+   "level": 12.47,
+   "p0": 12.32,
+   "p1": 12.5075,
+   "design": "v2",
+   "direction_ok": true
+  },
   {
    "made": "2026-08-25",
    "judged": "2026-08-26",
