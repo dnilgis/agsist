@@ -1,3 +1,10 @@
 __pycache__/
 *.pyc
 .DS_Store
+# The full national pull. Written by fetch_bids.py for build_basis_map.py and
+# build_basis_history.py to read in the same job, then thrown away with the
+# runner. About 6 MB. The workflow only ever `git add`s explicit paths, so this
+# has never actually been committed -- but the comments have called it
+# gitignored since 2026-08-19 and it was not, and one `git add -A` by hand
+# would have put 6 MB into the repo. Now the claim is true.
+bids-full.json
