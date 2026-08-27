@@ -1,5 +1,5 @@
 {
- "generated": "2026-08-27T23:12:58Z",
+ "generated": "2026-08-27T23:22:38Z",
  "from": "getGrainBids requestType=locations",
  "complete": false,
  "note": "Directory only: who operates a facility and where. No prices, no basis, no symbols, no delivery windows.",
@@ -10,32 +10,15 @@
   "with_coords": 727,
   "with_url": 705,
   "with_phone": 626,
-  "saturated_zips": 5,
+  "saturated_zips": 1,
   "failed_zips": 0,
   "rows_read": 0
  },
  "saturated": [
-  "56711",
-  "56741",
-  "83826",
-  "58255",
-  "56740"
+  "56711"
  ],
  "failed": [],
  "elevators": [
-  {
-   "company": "Hillside Grain, LLC",
-   "location": "Hillside Grain",
-   "address": "1212 W US-160",
-   "city": "Golden City, MO",
-   "zip": "64748",
-   "lat": 37.391985,
-   "lng": -94.066584,
-   "phone": "417-316-1498",
-   "facility_type": "Country Elevator",
-   "locationId": 87820,
-   "elevatorId": 3263
-  },
   {
    "company": "One Earth Energy",
    "location": "One Earth Energy",
@@ -63,7 +46,8 @@
    "url": "https://www.cenovus.com/",
    "facility_type": "Country Elevator",
    "locationId": 87350,
-   "elevatorId": 3225
+   "elevatorId": 3225,
+   "country": "CA"
   },
   {
    "company": "Providence Grain Solutions",
@@ -79,7 +63,8 @@
    "url": "https://providencegrain.ca/",
    "facility_type": "Country Elevator",
    "locationId": 83988,
-   "elevatorId": 1894
+   "elevatorId": 1894,
+   "country": "CA"
   },
   {
    "company": "Baltz Feed Company",
@@ -2572,7 +2557,7 @@
    "company": "Dearwester Grain",
    "location": "Dearwester-Central",
    "address": "709 Prairie Mills Rd, ",
-   "city": "Golden, IL ",
+   "city": "Golden",
    "state": "IL",
    "zip": "62339",
    "county": "Adams County",
@@ -5712,7 +5697,8 @@
    "url": "http://www.bpsonsgrain.com",
    "facility_type": "Country Elevator",
    "locationId": 77695,
-   "elevatorId": 2032
+   "elevatorId": 2032,
+   "country": "CA"
   },
   {
    "company": "Linear Grain Inc.",
@@ -5728,7 +5714,8 @@
    "url": "www.lineargrain.com",
    "facility_type": "Country Elevator",
    "locationId": 36716,
-   "elevatorId": 2196
+   "elevatorId": 2196,
+   "country": "CA"
   },
   {
    "company": "Active Feed Company",
@@ -6509,7 +6496,7 @@
    "company": "Crystal Valley Coop",
    "location": "trimont",
    "address": " 340 Main Street W ",
-   "city": "Trimont, MN",
+   "city": "Trimont",
    "state": "MN",
    "zip": "56176",
    "county": "Martin County",
@@ -7696,6 +7683,20 @@
    "elevatorId": 2113
   },
   {
+   "company": "Hillside Grain, LLC",
+   "location": "Hillside Grain",
+   "address": "1212 W US-160",
+   "city": "Golden City",
+   "zip": "64748",
+   "lat": 37.391985,
+   "lng": -94.066584,
+   "phone": "417-316-1498",
+   "facility_type": "Country Elevator",
+   "locationId": 87820,
+   "elevatorId": 3263,
+   "state": "MO"
+  },
+  {
    "company": "Home City Grain, Inc.",
    "location": "AGP - ST. JOSEPH, MO",
    "address": "900 SW Lower Lake Road",
@@ -8581,7 +8582,7 @@
    "company": "Dakota Midland Grain",
    "location": "Guthrie",
    "address": "4248 Highway 14 ",
-   "city": "Balfour, ND ",
+   "city": "Balfour",
    "state": "ND",
    "zip": "58712",
    "county": "McHenry County",
@@ -11170,7 +11171,8 @@
    "url": "www.addisgrain.com",
    "facility_type": "Country Elevator",
    "locationId": 73655,
-   "elevatorId": 2966
+   "elevatorId": 2966,
+   "country": "CA"
   },
   {
    "company": "Beechwood Agri Services",
@@ -11186,7 +11188,8 @@
    "url": "www.beechwoodagri.com",
    "facility_type": "Country Elevator",
    "locationId": 50136,
-   "elevatorId": 2742
+   "elevatorId": 2742,
+   "country": "CA"
   },
   {
    "company": "Bowling Green Farms",
@@ -11199,7 +11202,8 @@
    "lng": -80.23936,
    "url": "www.bowlinggreenfarms.ca",
    "locationId": 62686,
-   "elevatorId": 2931
+   "elevatorId": 2931,
+   "country": "CA"
   },
   {
    "company": "Clare-Mar Farms Limited",
@@ -11214,7 +11218,8 @@
    "url": "www.claremarfarms.com",
    "facility_type": "Country Elevator",
    "locationId": 19231,
-   "elevatorId": 2041
+   "elevatorId": 2041,
+   "country": "CA"
   },
   {
    "company": "Collwest Grain Ltd.",
@@ -11230,7 +11235,8 @@
    "url": "www.collwestgrain.com",
    "facility_type": "River Terminal",
    "locationId": 25992,
-   "elevatorId": 2248
+   "elevatorId": 2248,
+   "country": "CA"
   },
   {
    "company": "Forest Agri Services LTD.",
@@ -11245,7 +11251,8 @@
    "url": "www.forestagriservices.com",
    "facility_type": "Country Elevator",
    "locationId": 81607,
-   "elevatorId": 2225
+   "elevatorId": 2225,
+   "country": "CA"
   },
   {
    "company": "Ganaraska Grain",
@@ -11261,7 +11268,8 @@
    "url": "www.ganaraskagrain.com",
    "facility_type": "Country Elevator",
    "locationId": 16616,
-   "elevatorId": 1950
+   "elevatorId": 1950,
+   "country": "CA"
   },
   {
    "company": "Gowanlea LTD.",
@@ -11277,7 +11285,8 @@
    "url": "www.gowanlea.com",
    "facility_type": "Country Elevator",
    "locationId": 19066,
-   "elevatorId": 2033
+   "elevatorId": 2033,
+   "country": "CA"
   },
   {
    "company": "Great Lakes Grain",
@@ -11293,7 +11302,8 @@
    "url": "www.greatlakesgrain.com",
    "facility_type": "Country Elevator",
    "locationId": 86431,
-   "elevatorId": 2228
+   "elevatorId": 2228,
+   "country": "CA"
   },
   {
    "company": "Hensall Co-op",
@@ -11308,7 +11318,8 @@
    "url": "https://hensallco-op.ca",
    "facility_type": "Country Elevator",
    "locationId": 84026,
-   "elevatorId": 3112
+   "elevatorId": 3112,
+   "country": "CA"
   },
   {
    "company": "Homeland Grain, Inc.",
@@ -11324,7 +11335,8 @@
    "url": "www.homelandgrain.com",
    "facility_type": "Country Elevator",
    "locationId": 2901,
-   "elevatorId": 1411
+   "elevatorId": 1411,
+   "country": "CA"
   },
   {
    "company": "Judge Farms",
@@ -11340,7 +11352,8 @@
    "url": "www.judgefarms.com",
    "facility_type": "Country Elevator",
    "locationId": 16471,
-   "elevatorId": 1653
+   "elevatorId": 1653,
+   "country": "CA"
   },
   {
    "company": "Lang Farms, Ltd.",
@@ -11355,7 +11368,8 @@
    "url": "www.langfarms.com",
    "facility_type": "Country Elevator",
    "locationId": 28696,
-   "elevatorId": 2349
+   "elevatorId": 2349,
+   "country": "CA"
   },
   {
    "company": "Les Young Farms Ltd.",
@@ -11371,7 +11385,8 @@
    "url": "www.lesyoungfarms.com",
    "facility_type": "Country Elevator",
    "locationId": 27623,
-   "elevatorId": 2309
+   "elevatorId": 2309,
+   "country": "CA"
   },
   {
    "company": "London Ag Commodities",
@@ -11386,7 +11401,8 @@
    "url": "www.londonag.com",
    "facility_type": "Country Elevator",
    "locationId": 81588,
-   "elevatorId": 1291
+   "elevatorId": 1291,
+   "country": "CA"
   },
   {
    "company": "RKM Grain",
@@ -11402,7 +11418,8 @@
    "url": "www.rkmgrain.com",
    "facility_type": "Country Elevator",
    "locationId": 11994,
-   "elevatorId": 1943
+   "elevatorId": 1943,
+   "country": "CA"
   },
   {
    "company": "Rolling Acres",
@@ -11418,7 +11435,8 @@
    "url": "www.rollingacresgrain.com",
    "facility_type": "Country Elevator",
    "locationId": 18213,
-   "elevatorId": 1729
+   "elevatorId": 1729,
+   "country": "CA"
   },
   {
    "company": "Sharedon Farms",
@@ -11434,7 +11452,8 @@
    "url": "sharedonfarms.com",
    "facility_type": "Country Elevator",
    "locationId": 53970,
-   "elevatorId": 2851
+   "elevatorId": 2851,
+   "country": "CA"
   },
   {
    "company": "Shawridge Farms LTD",
@@ -11449,7 +11468,8 @@
    "url": "shawridge.ca",
    "facility_type": "Country Elevator",
    "locationId": 78722,
-   "elevatorId": 2950
+   "elevatorId": 2950,
+   "country": "CA"
   },
   {
    "company": "Snobelen Farmers",
@@ -11465,7 +11485,8 @@
    "url": "www.snobelenfarms.com",
    "facility_type": "Country Elevator",
    "locationId": 84027,
-   "elevatorId": 3111
+   "elevatorId": 3111,
+   "country": "CA"
   },
   {
    "company": "Stoneybrook Elevators",
@@ -11481,7 +11502,8 @@
    "url": "www.stoneybrookelevators.ca",
    "facility_type": "Country Elevator",
    "locationId": 31035,
-   "elevatorId": 2434
+   "elevatorId": 2434,
+   "country": "CA"
   },
   {
    "company": "Thompsons Limited",
@@ -11497,7 +11519,8 @@
    "url": "https://andersonscanada.com/",
    "facility_type": "Country Elevator",
    "locationId": 37935,
-   "elevatorId": 2689
+   "elevatorId": 2689,
+   "country": "CA"
   },
   {
    "company": "Wanstead Farmers Cooperative",
@@ -11513,7 +11536,8 @@
    "url": "https://www.wansteadfarmerscoop.com/",
    "facility_type": "Country Elevator",
    "locationId": 84644,
-   "elevatorId": 3133
+   "elevatorId": 3133,
+   "country": "CA"
   },
   {
    "company": "Columbia Grain",
@@ -11676,7 +11700,8 @@
    "url": "www.greenfield.com",
    "facility_type": "Ethanol/Bio-Fuel",
    "locationId": 79870,
-   "elevatorId": 2861
+   "elevatorId": 2861,
+   "country": "CA"
   },
   {
    "company": "AGrowStar",
@@ -12386,7 +12411,8 @@
    "url": "www.ldcyorkton.com",
    "facility_type": "Country Elevator",
    "locationId": 46832,
-   "elevatorId": 2385
+   "elevatorId": 2385,
+   "country": "CA"
   },
   {
    "company": "Obion Grain",
