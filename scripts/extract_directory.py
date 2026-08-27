@@ -198,38 +198,58 @@ def main():
     key = (os.environ.get("BARCHART_API_KEY") or "").strip()
 
     if a.probe_cap:
-        # MEASURE THE CEILING, DO NOT ASSUME IT.
-        # The first live run showed maxDistance is IGNORED by
-        # requestType=locations: five points on the Canadian border returned
-        # facilities in 37 states, median 616 miles away and up to 1,364, with
-        # only 2% inside the 75 miles asked for. So this is a nearest-N query,
-        # not a radius query, and the only thing that decides how much of the
-        # country one call returns is totalLocations. Everything about how many
-        # grid points are needed follows from where that number stops working.
-        grid = json.loads(GRID.read_text())
-        g = grid[a.start] if a.start < len(grid) else grid[0]
-        print("probing %s (%s) at rising caps; maxDistance %d is sent but appears to be ignored"
-              % (g["zip"], g["label"], a.max_distance))
-        prev = None
-        for cap in (100, 500, 1000, 2500, 5000, 10000):
-            t0 = time.time()
-            try:
-                res = ask(g["zip"], key, a.max_distance, cap, max(a.timeout, 90))
-            except Exception as ex:
-                print("   %6d -> FAILED %s: %s" % (cap, type(ex).__name__, str(ex)[:120]))
-                break
-            uniq = len({ident(r) for r in res})
-            print("   %6d -> %5d rows, %5d unique facilities, %4.1fs%s"
-                  % (cap, len(res), uniq, time.time() - t0,
-                     "  <-- stopped growing" if prev is not None and uniq <= prev else ""))
-            if prev is not None and uniq <= prev:
-                break
-            prev = uniq
-            time.sleep(1)
-        print("\nWhatever the last growing number was, that is the real cap. If it is large "
-              "enough, the country needs a handful of calls rather than 590.")
+        # TWO QUESTIONS, ONE RUN, BECAUSE THEY LOOK THE SAME FROM OUTSIDE.
+        #
+        # Measured 2026-08-27: one grid point and five grid points returned
+        # BYTE-IDENTICAL sets of 727 facilities, and all five were on the
+        # Canadian border while the results spanned 37 states at a median 616
+        # miles away. So zipCode is not selecting anything, and maxDistance is
+        # not either. That leaves two possibilities and they are worth telling
+        # apart before anyone designs another grid:
+        #
+        #   A. totalLocations is the binding constraint, and a bigger number
+        #      returns more of the country.
+        #   B. 727 is simply every elevator this key is entitled to, and no
+        #      parameter will ever return a 728th.
+        #
+        # If far-apart ZIPs give the same set, geography is irrelevant. If a
+        # much larger cap gives the same count, the cap is irrelevant too — and
+        # then B is the answer, which means the rest of the country has to come
+        # from somewhere that is not Barchart.
+        probes = [("50010", "Ames, IA"), ("33101", "Miami, FL"), ("99201", "Spokane, WA")]
+        sets = {}
+        for z, label in probes:
+            for cap in (a.total_locations, max(a.total_locations * 10, 5000)):
+                t0 = time.time()
+                try:
+                    res = ask(z, key, a.max_distance, cap, max(a.timeout, 120))
+                except Exception as ex:
+                    print("   %-6s cap %-6d FAILED %s: %s"
+                          % (z, cap, type(ex).__name__, str(ex)[:110]))
+                    continue
+                ids = {ident(r) for r in res}
+                sets[(z, cap)] = ids
+                print("   %-6s %-13s cap %-6d -> %5d rows, %5d unique, %4.1fs"
+                      % (z, label, cap, len(res), len(ids), time.time() - t0))
+                time.sleep(1)
+
+        if len(sets) >= 2:
+            keys = list(sets)
+            base = sets[keys[0]]
+            same_everywhere = all(sets[k] == base for k in keys)
+            print("\n   every probe returned the SAME set: %s" % same_everywhere)
+            biggest = max(len(v) for v in sets.values())
+            union = set().union(*sets.values())
+            print("   largest single answer: %d   union of all probes: %d" % (biggest, len(union)))
+            if same_everywhere:
+                print("\n   ==> Neither the ZIP nor the cap changes the answer. %d is what this\n"
+                      "       key is entitled to, and no sweep design will get a %dth. Everything\n"
+                      "       beyond it has to come from state licence registries and the platform\n"
+                      "       directories, not from Barchart." % (len(base), len(base) + 1))
+            else:
+                print("\n   ==> The answer DOES vary, so a sweep is worth designing. Use the\n"
+                      "       largest cap that still returns, and enough points to cover the union.")
         return 0
-    facilities, saturated, failed, source, rows_read = {}, [], [], None, 0
 
     if a.from_bids or not key:
         if not key and not a.from_bids:
