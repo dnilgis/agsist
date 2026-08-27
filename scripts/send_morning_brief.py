@@ -52,7 +52,7 @@ import re
 import smtplib
 import ssl
 import sys
-from datetime import datetime
+from datetime import datetime, date
 from email.message import EmailMessage
 from pathlib import Path
 from zoneinfo import ZoneInfo
@@ -120,23 +120,77 @@ def strip_html(s):
     return re.sub(r"<[^>]+>", "", str(s)).strip()
 
 
-def get_change_pct(symbol, prices_data, surprises):
-    """Pct change priority: surprises[] (locked to briefing) →
-    prices.json fallback → None."""
-    # Try surprises first — these are the day's confirmed movers
-    for s in surprises or []:
-        if s.get("key") == symbol:
-            v = s.get("pct_change")
-            if isinstance(v, (int, float)):
-                return v / 100  # surprises store as % (1.6743), we want decimal
-    # Fall back to prices.json — fetch_prices.py writes pctChange (as %, not decimal)
-    if prices_data:
-        q = (prices_data.get("quotes") or {}).get(symbol)
-        if isinstance(q, dict):
-            v = q.get("pctChange")
-            if isinstance(v, (int, float)):
-                return v / 100  # script stores as 1.7 for 1.7%, normalize to decimal
-    return None
+ARCHIVE_DIR = "data/daily-archive"
+
+
+def _same_board(a, b):
+    """Two issues carrying an identical board are the same session.
+
+    The archive publishes at weekends and on holidays, and those issues carry
+    the previous close forward unchanged. Walking back one file therefore lands
+    on a non-session and every change comes out zero.
+    """
+    shared = [k for k in a if k in b
+              and isinstance(a[k], (int, float)) and isinstance(b[k], (int, float))]
+    if len(shared) < 3:
+        return False
+    return all(abs(a[k] - b[k]) < 1e-9 for k in shared)
+
+
+def _prior_board(daily):
+    """The locked board of the previous trading session, from the archive."""
+    import glob as _glob
+    cur = daily.get("locked_prices") or {}
+    ref = ""
+    for cand in (daily.get("date"), str(daily.get("generated_at") or "")[:10]):
+        try:
+            ref = datetime.fromisoformat(str(cand)[:10]).date().isoformat()
+            break
+        except Exception:
+            continue
+    if not ref:
+        ref = date.today().isoformat()
+    try:
+        for f in reversed(sorted(_glob.glob(os.path.join(ARCHIVE_DIR, "20*.json")))):
+            if os.path.basename(f)[:10] >= ref:
+                continue
+            lp = (json.load(open(f, encoding="utf-8")) or {}).get("locked_prices") or {}
+            if lp and not _same_board(lp, cur):
+                return lp
+    except Exception:
+        pass
+    return {}
+
+
+def get_change_pct(symbol, prior_board, daily):
+    """The session's move, LOCKED CLOSE TO LOCKED CLOSE.
+
+    THIS USED TO FALL BACK TO LIVE prices.json AND THAT WAS THE BUG. The issue
+    locks its prices once, in the morning. prices.json is rewritten every half
+    hour all day. Pairing a price frozen at 11:34 with a percentage read at
+    22:08 puts two different sessions in one row, and on 2026-08-26 every one
+    of the nineteen rows took that path, because surprises[] was empty:
+
+        printed   Wheat (ZW)   $6.98   +5.3%
+        locked    $6.98 at 11:34          the Aug 25 session, +3.83%
+        live      $7.305 at 22:08         the Aug 26 session, +5.34%
+
+    $6.98 with +5.3% implies a prior close of $6.63, which never existed.
+    Twelve of the nineteen rows had the locked price and the live quote more
+    than 0.5% apart. It also made the prose look wrong when the prose was
+    right: cattle showed +0.09% beside a sentence correctly saying it gave back
+    0.8%, and feeders showed -0.37% beside one correctly saying it was up a
+    tenth.
+
+    Both numbers in a row now come from the same two boards, so they cannot
+    disagree. No live fallback: a row with no prior board prints no percentage
+    rather than a percentage from somewhere else.
+    """
+    cur = (daily.get("locked_prices") or {}).get(symbol)
+    prev = (prior_board or {}).get(symbol)
+    if not isinstance(cur, (int, float)) or not isinstance(prev, (int, float)) or not prev:
+        return None
+    return (cur - prev) / prev
 
 
 def fmt_change(pct):
@@ -221,11 +275,11 @@ def section_yesterdays_call(daily):
 
 def section_prices(daily, prices_data):
     locked = daily.get("locked_prices") or {}
-    surprises = daily.get("surprises", [])
     if not locked:
         return None
+    prior = _prior_board(daily)
 
-    lines = ["PRICES"]
+    lines = ["PRICES" if prior else "PRICES  (no prior session on file; change withheld)"]
     rendered_any = False
     for symbol, label in PRICES:
         if symbol not in locked:
@@ -234,7 +288,7 @@ def section_prices(daily, prices_data):
             price = float(locked[symbol])
         except (TypeError, ValueError):
             continue
-        chg = get_change_pct(symbol, prices_data, surprises)
+        chg = get_change_pct(symbol, prior, daily)
         chg_str = fmt_change(chg)
         price_str = f"${price:,.2f}"
         lines.append(f"  {label:<22} {price_str:<11} {chg_str}")

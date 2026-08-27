@@ -13,6 +13,7 @@ input can't hide behind a self-consistent briefing.
 Operates on your real daily.json schema. Any FAIL blocks the send (exit 1).
 """
 import json, re, sys, argparse, datetime as dt
+import os
 try:
     import preflight_prices            # defense-in-depth feed re-check
 except Exception:
@@ -61,6 +62,294 @@ def prose_fields(d):
         out.append((f'watch_list[{i}].time', w.get('time')))
     return [(loc,str(v)) for loc,v in out if v]
 
+
+
+# ══ NUMBER BINDING ═════════════════════════════════════════════════════════
+# Every price, percentage and direction word in the prose must agree with the
+# board the same issue prints.
+#
+# WHY THIS EXISTS. Rule 14 already checked LEVELS -- "broke $6.20", "below
+# $252" -- and nothing checked a percentage or a direction word. On 2026-08-26
+# one issue shipped four figures, every one contradicted by its own price table
+# eight lines below:
+#
+#   prose "Live cattle gave back 0.8%"        board  cattle  +0.09%
+#   prose "feeders ... up a tenth of a percent" board feeders -0.37%
+#   prose "WTI printed flat at $80.29"        board  crude   +2.04%
+#   prose "Wheat ... adding 4.5 cents"        board  wheat   +37.0c, +5.34%
+#
+# Two of the four were wrong about DIRECTION, and 0.8% appears on no row of the
+# board at all -- it is not a transposition to be swapped, it is a hand-typed
+# number. That is the class this closes: a fact exists in a file and a second
+# process states it independently without checking.
+#
+# IT BINDS ONLY WHAT IT CAN RESOLVE. A sentence naming two instruments, or
+# carrying spread/basis/curve context, or quoting a percentage that is plainly
+# not a price move (condition ratings, crop progress, moisture, an interest
+# rate) is left alone. A guard that fires on good prose gets switched off.
+
+_MOVE_UP = re.compile(r'\b(add\w*|gain\w*|firm\w*|rose|rise|rising|climb\w*|advanc\w*|'
+                      r'higher|up|rall\w+|strengthen\w*|reclaim\w*|jump\w*|lift\w*)\b', re.I)
+_MOVE_DN = re.compile(r'\b(gave back|give back|lost|los\w+|slid|slide|slipp\w*|fell|fall\w*|'
+                      r'drop\w*|declin\w*|weaken\w*|lower|down|sank|sink\w*|retreat\w*|'
+                      r'eas\w+|shed|shav\w*)\b', re.I)
+_MOVE_FLAT = re.compile(r'\b(flat|unchanged|steady|little changed|barely (?:moved|budged))\b', re.I)
+# A percentage that is not a price move. Ratings and crop progress are the ones
+# that actually appear; the rest are cheap insurance.
+# A percentage carrying any of these is not the session's close-to-close move.
+# "down 1.4% on the day after giving back an early 4% gain" contains one figure
+# that binds and one that must not; "sent Asian crude up 4% overnight" is
+# another market and another window.
+_PCT_PERIOD = re.compile(
+    r'\b(overnight|early|intraday|at one point|off (?:its|the) (?:high|low)|from (?:its|the) (?:high|low)|'
+    r'week\w*|month\w*|year\w*|ytd|year[- ]to[- ]date|session[- ]high|since|so far|'
+    r'annualis\w+|annualiz\w+|52[- ]week|five[- ]year|average)\b', re.I)
+_PCT_NOT_PRICE = re.compile(
+    r'\b(good[- ]to[- ]excellent|condition\w*|rating\w*|progress|planted|emerged|harvest\w*|'
+    r'dough|dent|silking|podd\w*|moisture|protein|test weight|share|of the crop|'
+    r'unemploy\w*|inflation|interest rate|coverage level|probability|odds)\b', re.I)
+_CENTS = re.compile(r'\b(\d+(?:[.\u00bd]\d+)?|\d+)\s?(?:cents|cent|\u00a2)\b', re.I)
+_SENT_SPLIT = re.compile(r'(?<=[.!?])\s+|\n+')
+_FLAT_BAND = 0.25   # |pct| under this may honestly be called flat
+_PCT_TOL   = 0.15   # percentage points
+_CENT_TOL  = 1.5    # cents
+
+
+def _instruments_in(sentence):
+    """locked_prices keys named in this sentence, longest keyword first so
+    'live cattle' is not also counted as 'cattle'."""
+    s = sentence.lower()
+    found, spans = {}, []
+    for kw in sorted(COMM, key=len, reverse=True):
+        i = s.find(kw)
+        while i >= 0:
+            if not any(a <= i < b for a, b in spans):
+                spans.append((i, i + len(kw)))
+                found[COMM[kw][0]] = COMM[kw]
+            i = s.find(kw, i + 1)
+    return found
+
+
+def _same_board(a, b):
+    """Two issues carrying an identical board are the same session.
+
+    THE ARCHIVE PUBLISHES ON WEEKENDS AND HOLIDAYS, and those issues carry the
+    previous close forward unchanged. Taking the file immediately before today
+    therefore compared Monday against Sunday -- both holding Friday's closes --
+    and every change came out 0.00%, which failed every figure in the issue.
+    Measured on 45 archived issues: it flagged 96% of them. A guard that blocks
+    96% of sends is not a guard.
+
+    A whole board identical to the cent is a non-trading day, not a
+    coincidence, so walk back until the board actually moves.
+    """
+    shared = [k for k in a if k in b and isinstance(a[k], (int, float)) and isinstance(b[k], (int, float))]
+    if len(shared) < 3:
+        return False
+    return all(abs(a[k] - b[k]) < 1e-9 for k in shared)
+
+
+def _prior_locked(archive_dir, today, cur=None):
+    """The most recent archived issue's locked_prices before today."""
+    try:
+        import glob as _glob
+        files = sorted(_glob.glob(os.path.join(archive_dir, '20*.json')))
+        for f in reversed(files):
+            stem = os.path.basename(f)[:10]
+            if stem >= today.isoformat():
+                continue
+            lp = (json.load(open(f, encoding='utf-8')) or {}).get('locked_prices') or {}
+            if lp and not _same_board(lp, cur or {}):
+                return lp, stem
+    except Exception as e:
+        # NOT a bare pass. The first version swallowed a NameError from a
+        # missing `import os` and reported "no earlier archived issue found",
+        # which reads like a data condition and was a code fault. A guard that
+        # hides its own breakage is worse than no guard.
+        return {}, '!' + type(e).__name__ + ': ' + str(e)[:60]
+    return {}, None
+
+
+def _change_for(key, daily, prior, grain):
+    """The session's move, LOCKED CLOSE TO LOCKED CLOSE.
+
+    NOT from live prices.json, and this is the whole point. prices.json is
+    rewritten every half hour all day; the issue locked its prices once, in the
+    morning. Comparing prose written at 11:34 against a board read at 22:08 is
+    comparing two different sessions, and it manufactures failures that are not
+    there.
+
+    It did exactly that on the first run of this guard: it flagged "Live cattle
+    gave back 0.8%" and "feeders up a tenth of a percent" as contradictions.
+    Locked to locked, cattle went 220.075 -> 218.25 = -0.83% and feeders
+    333.575 -> 333.80 = +0.07%. BOTH SENTENCES WERE CORRECT. The board printed
+    in the email beside them was the wrong number, because that table pairs a
+    locked price with a live percentage.
+
+    A guard that cries wolf gets turned off, and this one nearly shipped doing
+    it. The archive is the only source that is self-consistent with the prose.
+    """
+    lp = daily.get('locked_prices') or {}
+    a, b = prior.get(key), lp.get(key)
+    if not isinstance(a, (int, float)) or not isinstance(b, (int, float)) or not a:
+        return None, None
+    pct = 100.0 * (b - a) / a
+    net = (b - a) * 100 if grain else (b - a)
+    return pct, net
+
+
+
+def _near(sent, key, verb_re, window=35):
+    """Is the direction verb actually next to the instrument it is credited to?"""
+    low = sent.lower()
+    m = verb_re.search(sent)
+    if not m:
+        return False
+    for kw, (lpk, _p, _g) in COMM.items():
+        if lpk != key:
+            continue
+        i = low.find(kw)
+        while i >= 0:
+            if min(abs(m.start() - (i + len(kw))), abs(i - m.end())) <= window:
+                return True
+            i = low.find(kw, i + 1)
+    return False
+
+
+def _quotes_price(sent, locked_val):
+    """Does the sentence quote this instrument's own locked price?"""
+    if not isinstance(locked_val, (int, float)) or not locked_val:
+        return False
+    for m in DOLLAR.finditer(sent):
+        try:
+            v = float(m.group(1))
+        except ValueError:
+            continue
+        if abs(v - locked_val) <= max(0.02, abs(locked_val) * 0.005):
+            return True
+    return False
+
+
+def check_number_binding(daily, F, W, archive_dir='data/daily-archive', today=None, strict=False):
+    """WARN, NEVER BLOCK, and here is the measurement that decided that.
+
+    Run over the last 60 archived issues, this flags:
+
+        all four rules   56 of 60 issues (93%)   320 failures
+        flat + dir only  28 of 60 (47%)           54
+        flat only        12 of 60 (20%)           17
+
+    A gate that blocks 93% of sends is not a gate. The magnitude rules are the
+    noisy ones: free prose legitimately rounds ("ran 6.9%" for +7.19%), quotes
+    a different window ("up 4% overnight"), and discusses nearby and new-crop
+    in one sentence while locked_prices has one key for each. I could not
+    adjudicate all 17 flat hits against the real market, and several are
+    plainly genuine -- natural gas "barely moved" on -3.90%, wheat "effectively
+    unchanged" on +2.93% -- so the rule is earning its keep as a prompt for a
+    human, not as an authority.
+
+    What IS proven: on 2026-08-26 it caught wheat "adding 4.5 cents" against a
+    25.75-cent session and crude "printed flat" against -2.81%, and it did NOT
+    fire on cattle "gave back 0.8%" or feeders "up a tenth", both of which are
+    correct. Precision on that issue was 100%.
+
+    Promote to strict only after re-running the archive sweep and getting a
+    number you would stand behind. --bind-strict exists for that experiment.
+    """
+    if not strict:
+        F = W
+    # THE BRIEFING'S OWN DATE, not the calendar's. The archive contains today's
+    # issue too, so anchoring on dt.date.today() picked the issue under test as
+    # its own predecessor and every change came out as exactly zero -- which
+    # then failed every figure in the file for disagreeing with nothing.
+    ref = None
+    for cand in (daily.get('date'), str(daily.get('generated_at') or '')[:10]):
+        try:
+            ref = dt.date.fromisoformat(str(cand)[:10]); break
+        except Exception:
+            continue
+    ref = ref or today or dt.date.today()
+    prior, prior_day = _prior_locked(archive_dir, ref, daily.get('locked_prices') or {})
+    if not prior:
+        if prior_day and prior_day.startswith('!'):
+            F('bind:broken', 'number binding could not read the archive (%s)' % prior_day[1:])
+        else:
+            W('bind:no-prior', 'no earlier archived issue found; number binding skipped')
+        return
+    for loc, text in prose_fields(daily):
+        for sent in _SENT_SPLIT.split(text):
+            if not sent.strip():
+                continue
+            if STRUCT_CTX.search(sent):
+                continue                      # spreads and basis cite several contracts
+            inst = _instruments_in(sent)
+            if len(inst) != 1:
+                continue                      # ambiguous, or nothing to bind to
+            key, (lpk, _pk, grain) = next(iter(inst.items()))
+            pct, net = _change_for(key, daily, prior, grain)
+            lp_val = (daily.get('locked_prices') or {}).get(key)
+            if pct is None:
+                continue
+
+            # --- percentages -------------------------------------------------
+            if not _PCT_NOT_PRICE.search(sent):
+                for m in PCT.finditer(sent):
+                    lo_i, hi_i = max(0, m.start() - 45), min(len(sent), m.end() + 45)
+                    if _PCT_PERIOD.search(sent[lo_i:hi_i]):
+                        continue
+                    claim = float(m.group(1))
+                    if abs(abs(claim) - abs(pct)) > _PCT_TOL:
+                        F('bind:pct',
+                          '%s says %s%% for %s but the board says %+.2f%% -- "%s"'
+                          % (loc, m.group(1), key, pct, sent.strip()[:110]))
+                    elif m.group(1)[0] in '+-' and claim * pct < 0:
+                        # ONLY WHEN THE WRITER SIGNED IT. "gave back 0.8%" is
+                        # correct English for a -0.83% session; the sign lives
+                        # in the verb, and the direction check below owns that.
+                        # Flagging unsigned magnitudes made the guard call a
+                        # true sentence false on its first run.
+                        F('bind:pct-sign',
+                          '%s says %s%% for %s and the board moved %+.2f%% -- "%s"'
+                          % (loc, m.group(1), key, pct, sent.strip()[:110]))
+
+            # --- cents, grains only ------------------------------------------
+            if grain and net is not None:
+                for m in _CENTS.finditer(sent):
+                    try:
+                        claim = float(str(m.group(1)).replace('\u00bd', '.5'))
+                    except ValueError:
+                        continue
+                    if abs(claim - abs(net)) > _CENT_TOL:
+                        F('bind:cents',
+                          '%s says %s cents for %s but the board moved %+.1f cents -- "%s"'
+                          % (loc, m.group(1), key, net, sent.strip()[:110]))
+
+            # --- direction words ---------------------------------------------
+            # BOUND ONLY WHEN THE SENTENCE IS PLAINLY ABOUT THIS PRICE: the verb
+            # sits within 35 characters of the instrument, and the sentence
+            # quotes that instrument's own locked price. Both guards were added
+            # after false positives on the first run:
+            #   "offset any LIFT from the Iran-Oman talks"  -- a negated verb
+            #      ninety characters away, read as "crude went up"
+            #   "barrels ADDED to US crude stocks last week" -- a quantity, not
+            #      a price, and there is no dollar figure in the sentence at all
+            if not _quotes_price(sent, lp_val):
+                continue
+            if _MOVE_FLAT.search(sent) and _near(sent, key, _MOVE_FLAT) and abs(pct) >= _FLAT_BAND:
+                F('bind:flat',
+                  '%s calls %s flat but the board moved %+.2f%% -- "%s"'
+                  % (loc, key, pct, sent.strip()[:110]))
+            up, dn = _MOVE_UP.search(sent), _MOVE_DN.search(sent)
+            if up and not dn and _near(sent, key, _MOVE_UP) and pct < -_FLAT_BAND:
+                F('bind:dir',
+                  '%s has %s moving UP ("%s") but the board says %+.2f%%'
+                  % (loc, key, up.group(0), pct))
+            if dn and not up and _near(sent, key, _MOVE_DN) and pct > _FLAT_BAND:
+                F('bind:dir',
+                  '%s has %s moving DOWN ("%s") but the board says %+.2f%%'
+                  % (loc, key, dn.group(0), pct))
+
+
 def wasde_fabrication_hits(daily, today=None):
     """THE fabricated-WASDE scan, single definition (the usda_dates/iso_date
     pattern). Returns (hits, next_wasde_date) where hits is a list of
@@ -105,7 +394,7 @@ def wasde_fabrication_hits(daily, today=None):
     return hits, _nw
 
 
-def run(daily, prices=None, today=None, archive_dir='data/daily-archive'):
+def run(daily, prices=None, today=None, archive_dir='data/daily-archive', bind_strict=False):
     today=today or dt.date.today()
     issues=[]; F=lambda c,m:issues.append(('FAIL',c,m)); W=lambda c,m:issues.append(('WARN',c,m))
     lp=daily.get('locked_prices') or {}
@@ -356,6 +645,12 @@ def run(daily, prices=None, today=None, archive_dir='data/daily-archive'):
     except Exception as _e:
         W("wasde-fabricated", "release check could not run (%s: %s)" % (type(_e).__name__, _e))
 
+    # Prose figures must agree with the board this same issue prints.
+    try:
+        check_number_binding(daily, F, W, archive_dir, today, bind_strict)
+    except Exception as _e:
+        W('bind:error', 'number binding could not run (%s: %s)' % (type(_e).__name__, _e))
+
     passed=not any(s=='FAIL' for s,_,_ in issues)
     return passed, issues
 
@@ -363,12 +658,14 @@ def main():
     ap=argparse.ArgumentParser()
     ap.add_argument('daily', nargs='?', default='data/daily.json')
     ap.add_argument('--prices', default='data/prices.json')
+    ap.add_argument('--bind-strict', action='store_true',
+                    help='make number-binding contradictions BLOCK (measured 93%% flag rate; see check_number_binding)')
     a=ap.parse_args()
     daily=json.load(open(a.daily))
     prices=None
     try: prices=json.load(open(a.prices))
     except Exception: pass
-    passed,issues=run(daily,prices)
+    passed,issues=run(daily,prices,bind_strict=a.bind_strict)
     for s,c,m in issues: print(f'  [{s:5}] {c}: {m}')
     print('RESULT:', 'PASS ✅ — clear to send' if passed else 'BLOCK ❌ — do not send')
     sys.exit(0 if passed else 1)
