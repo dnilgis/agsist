@@ -36,7 +36,28 @@ There is also a `requestType=locations` mode that returns the directory without
 the bids. That is what this uses: it is the cheap question, and it is the only
 question we are entitled to keep the answer to.
 
-THE GRID, AND WHY IT IS 590 POINTS
+THE SWEEP IS ONE CALL. MEASURED, 2026-08-27.
+
+A grid was built for this -- 590 points from the continental ZIP centroids,
+proved to put every US ZIP within 58 miles of a point -- and then the API made
+it pointless. Probing Ames IA, Miami FL and Spokane WA, each at totalLocations
+500 and 5000:
+
+    every one returned 4,079 rows and the SAME 727 unique facilities
+
+Neither `zipCode`, nor `maxDistance`, nor `totalLocations` changes the answer by
+a single record. requestType=locations returns this key's entire entitlement
+every time. So the sweep is one call, half a second, and there is no 728th
+elevator to be had from Barchart at any price of cleverness.
+
+That is worth knowing precisely because it is a ceiling, not a setting: the rest
+of the country has to come from state licence registries and the platform
+directories, and no amount of grid design here will substitute for that.
+
+The grid file is kept because it is the thing that made the question answerable
+and it costs nothing, but nothing reads it any more.
+
+THE OLD GRID NOTE, KEPT FOR THE REASONING
 
 fetch_bids.py sweeps 50 hand-picked ZIPs at 60 miles, which is a sample of the
 country, not the country -- on 2026-08-27 it saw 407 facilities and the slim
@@ -251,6 +272,8 @@ def main():
                       "       largest cap that still returns, and enough points to cover the union.")
         return 0
 
+    facilities, saturated, failed, source, rows_read = {}, [], [], None, 0
+
     if a.from_bids or not key:
         if not key and not a.from_bids:
             print("no BARCHART_API_KEY — falling back to the price pull on disk")
@@ -259,10 +282,11 @@ def main():
             facilities[ident(f)] = f
         complete = False
     else:
-        grid = json.loads(GRID.read_text())
-        pts = grid[a.start:]
-        if a.limit:
-            pts = pts[:a.limit]
+        # ONE POINT, BECAUSE THE ANSWER IS THE SAME FROM ANY OF THEM. Kept as a
+        # list so --limit and --start still work if a future plan ever does
+        # respond to geography; measured today, they change nothing.
+        grid = json.loads(GRID.read_text()) if GRID.exists() else [{"zip": "50010", "label": "Ames, IA"}]
+        pts = grid[a.start:a.start + 1] if not a.limit else grid[a.start:a.start + a.limit]
         deadline = time.time() + a.minutes * 60 if a.minutes else None
         seen_fields, done = set(), 0
         print("sweeping %d of %d grid points, %d mile radius, up to %d locations each"
@@ -278,6 +302,10 @@ def main():
                 failed.append((g["zip"], "%s: %s" % (type(ex).__name__, str(ex)[:90])))
                 continue
             done += 1
+            # Saturation is measured but no longer means what it used to: the
+            # cap is ignored, so a full-looking page is not evidence of
+            # truncation. Kept as a tripwire in case a plan change ever makes
+            # totalLocations bind again.
             if len(res) >= a.total_locations:
                 saturated.append(g["zip"])
             for r in res:
@@ -288,7 +316,9 @@ def main():
                       % (done, len(pts), g["zip"], g["label"][:22], len(facilities)))
             time.sleep(a.pause)
         source = "getGrainBids requestType=locations"
-        complete = not saturated and not failed and a.start == 0 and not a.limit
+        # COMPLETE MEANS "everything this key will give", which is now a
+        # question about the call succeeding, not about grid coverage.
+        complete = bool(facilities) and not failed
         print("\nfields Barchart actually returned: %s" % ", ".join(sorted(seen_fields)))
         for want in ("address", "lat", "lng", "url", "phone", "elevatorId"):
             print("   %-11s %s" % (want, "yes" if want in seen_fields else "NOT RETURNED"))
