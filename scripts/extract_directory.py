@@ -57,6 +57,7 @@ unsafe claim for as long as that lasted.
 import argparse
 import json
 import os
+import re
 import sys
 import time
 import urllib.parse
@@ -105,6 +106,12 @@ def ident(r):
                               (r.get("state") or "").strip().upper())
 
 
+US_STATES = set("AL AK AZ AR CA CO CT DE DC FL GA HI ID IL IN IA KS KY LA ME MD MA MI MN "
+                "MS MO MT NE NV NH NJ NM NY NC ND OH OK OR PA RI SC SD TN TX UT VT VA WA WV "
+                "WI WY PR".split())
+CITY_ST = re.compile(r"^(.*?),\s*([A-Za-z]{2})\s*$")
+
+
 def tidy(r):
     out = {}
     for k in KEEP:
@@ -121,6 +128,25 @@ def tidy(r):
         out[k] = v
     if out.get("zip"):
         out["zip"] = str(out["zip"])[:5]
+
+    # THE STATE IS SOMETIMES INSIDE THE CITY. Measured on the first live run:
+    # 725 of 727 records carried `state`, and of the two that did not, one had
+    # city "Golden City, MO". Two records is nothing until you remember that
+    # the state is what every downstream guard keys on -- the map's
+    # in-state check, the per-state counts, the licence-registry join -- so a
+    # record without one is a record that quietly cannot be placed.
+    m = CITY_ST.match(str(out.get("city") or ""))
+    if m:
+        out["city"] = m.group(1).strip()
+        out.setdefault("state", m.group(2).upper())
+    if out.get("state"):
+        out["state"] = str(out["state"]).strip().upper()
+        # Barchart carries Canadian elevators too: 29 of the first 727, in ON,
+        # MB, SK, AB and QC. They are real and worth keeping; they are simply
+        # not part of a map of the United States, so they are labelled rather
+        # than dropped.
+        if out["state"] not in US_STATES:
+            out["country"] = "CA"
     return out
 
 
@@ -163,10 +189,46 @@ def main():
     ap.add_argument("--limit", type=int, default=0, help="ask at most this many (0 = all)")
     ap.add_argument("--minutes", type=float, default=0, help="stop cleanly after this long")
     ap.add_argument("--pause", type=float, default=0.4)
+    ap.add_argument("--probe-cap", action="store_true",
+                    help="ask ONE point at rising totalLocations and report where it stops "
+                         "growing. Measures the real ceiling instead of guessing at it.")
     ap.add_argument("--timeout", type=int, default=30)
     a = ap.parse_args()
 
     key = (os.environ.get("BARCHART_API_KEY") or "").strip()
+
+    if a.probe_cap:
+        # MEASURE THE CEILING, DO NOT ASSUME IT.
+        # The first live run showed maxDistance is IGNORED by
+        # requestType=locations: five points on the Canadian border returned
+        # facilities in 37 states, median 616 miles away and up to 1,364, with
+        # only 2% inside the 75 miles asked for. So this is a nearest-N query,
+        # not a radius query, and the only thing that decides how much of the
+        # country one call returns is totalLocations. Everything about how many
+        # grid points are needed follows from where that number stops working.
+        grid = json.loads(GRID.read_text())
+        g = grid[a.start] if a.start < len(grid) else grid[0]
+        print("probing %s (%s) at rising caps; maxDistance %d is sent but appears to be ignored"
+              % (g["zip"], g["label"], a.max_distance))
+        prev = None
+        for cap in (100, 500, 1000, 2500, 5000, 10000):
+            t0 = time.time()
+            try:
+                res = ask(g["zip"], key, a.max_distance, cap, max(a.timeout, 90))
+            except Exception as ex:
+                print("   %6d -> FAILED %s: %s" % (cap, type(ex).__name__, str(ex)[:120]))
+                break
+            uniq = len({ident(r) for r in res})
+            print("   %6d -> %5d rows, %5d unique facilities, %4.1fs%s"
+                  % (cap, len(res), uniq, time.time() - t0,
+                     "  <-- stopped growing" if prev is not None and uniq <= prev else ""))
+            if prev is not None and uniq <= prev:
+                break
+            prev = uniq
+            time.sleep(1)
+        print("\nWhatever the last growing number was, that is the real cap. If it is large "
+              "enough, the country needs a handful of calls rather than 590.")
+        return 0
     facilities, saturated, failed, source, rows_read = {}, [], [], None, 0
 
     if a.from_bids or not key:
