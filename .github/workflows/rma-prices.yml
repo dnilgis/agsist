@@ -50,12 +50,34 @@ jobs:
           if [ -n "${{ inputs.year }}" ]; then ARGS="$ARGS --year ${{ inputs.year }}"; fi
           python3 scripts/fetch_rma_prices.py $ARGS
 
+      # WHAT IS IN DISCOVERY TODAY, ONTO THE TRACKER PAGE.
+      #
+      # This job already owns data/rma-prices.json and already runs every day,
+      # which is what the block needs: the number of days left in a window
+      # changes daily. On 2026-08-27 sixteen windows were open, three of them
+      # wheat, and the tracker's default view said "Corn and soybean harvest
+      # prices are set in October" because nothing baked anything else.
+      #
+      # IT WRITES ONE FILE AND IT IS NOT ONE THIS WORKFLOW SHARES BY ACCIDENT.
+      # harvest-prices.yml also commits harvest-price-tracker.html, so the two
+      # are scoped to disjoint marker pairs -- SEED:hpcards there, SEED:discovery
+      # here -- and each substitutes once. Proved locally with git status: the
+      # baker touches harvest-price-tracker.html and nothing else.
+      #
+      # continue-on-error for the same reason the COT bake is: the price data
+      # is the job, the page is the garnish, and a bake that cannot run must
+      # not stop RMA's figures from committing.
+      - name: Bake "in discovery right now" onto the tracker
+        if: ${{ inputs.probe != true }}
+        continue-on-error: true
+        run: python3 scripts/bake_discovery_now.py
+
       - name: Commit and push (rebase armor, 3 tries)
         if: ${{ inputs.probe != true }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add data/rma-prices.json data/rma-discovery-now.json
+          git add data/rma-prices.json data/rma-discovery-now.json harvest-price-tracker.html
           if git diff --cached --quiet; then
             echo "RMA figures unchanged — nothing to commit"
             exit 0
@@ -72,7 +94,7 @@ jobs:
               git reset --hard origin/main
               cp /tmp/rp.json data/rma-prices.json
               cp /tmp/rn.json data/rma-discovery-now.json
-              git add data/rma-prices.json data/rma-discovery-now.json
+              git add data/rma-prices.json data/rma-discovery-now.json harvest-price-tracker.html
               git commit -m "data: RMA price discovery refresh [skip ci]" || true
             }
           done
