@@ -229,8 +229,9 @@
   <url><loc>https://agsist.com/hail-map/wyoming</loc><lastmod>2026-08-02</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <!-- /HAIL-STATE-PAGES -->
   <!-- HAIL-EVENT-PAGES -->
-  <url><loc>https://agsist.com/hail/</loc><lastmod>2026-08-27</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-  <url><loc>https://agsist.com/hail/2026-08-26</loc><lastmod>2026-08-27</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://agsist.com/hail/</loc><lastmod>2026-08-28</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://agsist.com/hail/2026-08-27</loc><lastmod>2026-08-28</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://agsist.com/hail/2026-08-26</loc><lastmod>2026-08-26</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
   <url><loc>https://agsist.com/hail/2026-08-25</loc><lastmod>2026-08-25</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
   <url><loc>https://agsist.com/hail/2026-08-24</loc><lastmod>2026-08-24</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
   <url><loc>https://agsist.com/hail/2026-08-23</loc><lastmod>2026-08-23</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
