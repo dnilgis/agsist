@@ -1,18 +1,18 @@
 {
- "updated": "2026-08-27T20:57:34+00:00",
- "total": 99,
+ "updated": "2026-08-28T13:12:00+00:00",
+ "total": 100,
  "played_out": 36,
- "didnt": 58,
+ "didnt": 59,
  "pending": 5,
- "hit_rate": 38.3,
+ "hit_rate": 37.9,
  "by_method": {
   "deterministic": {
    "played": 10,
-   "missed": 48,
-   "graded": 58,
-   "hit_rate": 17.2,
+   "missed": 49,
+   "graded": 59,
+   "hit_rate": 16.9,
    "first": "2026-06-24",
-   "last": "2026-08-27"
+   "last": "2026-08-28"
   },
   "self_reported": {
    "played": 26,
@@ -34,17 +34,17 @@
   },
   "v2": {
    "played": 6,
-   "missed": 8,
-   "graded": 14,
-   "hit_rate": 42.9,
+   "missed": 9,
+   "graded": 15,
+   "hit_rate": 40.0,
    "first": "2026-08-12",
-   "last": "2026-08-27"
+   "last": "2026-08-28"
   }
  },
  "direction_only": {
-  "right_way": 24,
-  "graded": 58,
-  "rate": 41.4
+  "right_way": 25,
+  "graded": 59,
+  "rate": 42.4
  },
  "by_instrument": {
   "wheat": {
@@ -59,8 +59,8 @@
   },
   "beans": {
    "played": 5,
-   "graded": 16,
-   "hit_rate": 31.2
+   "graded": 17,
+   "hit_rate": 29.4
   },
   "crude": {
    "played": 2,
@@ -94,8 +94,24 @@
   "hit_rate": 35.0
  },
  "mismatched": 23,
- "current_streak": 2,
+ "current_streak": 0,
  "records": [
+  {
+   "made": "2026-08-27",
+   "judged": "2026-08-28",
+   "call": "Called November beans up toward $12.71. Beans-Nov closed at $12.7475, a tick below that trigger on the computed grader -- a miss by the scoring rules.",
+   "outcome": "didnt",
+   "method": "deterministic",
+   "mismatch": false,
+   "note": "The directional read was right and beans did push higher on the week, but the call level was $12.71 and the grader marks it didnt. Own the miss; the WASDE setup next month is the real test.",
+   "instrument": "beans",
+   "direction": "up",
+   "level": 12.71,
+   "p0": 12.525,
+   "p1": 12.6425,
+   "design": "v2",
+   "direction_ok": true
+  },
   {
    "made": "2026-08-26",
    "judged": "2026-08-27",

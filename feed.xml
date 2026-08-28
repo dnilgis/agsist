@@ -5,13 +5,26 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Thu, 27 Aug 2026 20:57:33 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 28 Aug 2026 13:12:00 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/agsist.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>PRO FARMER DONE; SEPTEMBER WASDE HOLDS THE ANSWER</title>
+      <link>https://agsist.com/daily/2026-08-28</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-08-28</guid>
+      <pubDate>Fri, 28 Aug 2026 05:00:00 -0600</pubDate>
+      <description>The Pro Farmer tour is in the rearview. Corn December at $5.38 and November beans at $12.75 are both at fresh 52-week highs, grinding higher on nothing louder than drier September harvest weather and short covering. The next real yield verdict is the September WASDE. Until then, price discovery is mostly complete. Hold what you have and watch the calendar.
+Grains grind higher on drier September forecasts, cattle firm on technical buying, crude drifts lower as Hormuz reopens in name only.
+• GRAINS GRIND TO YEAR HIGHS
+  → December corn at $5.38, a fresh 52-week high: if you have unpriced new-crop bushels, this is the window closing. Do not hand the decision to combines.
+• CATTLE FIRM, BEEF IMPORTS THE UNDERCURRENT
+• CRUDE DRIFTS AS HORMUZ OPENS IN NAME ONLY
+Read more: https://agsist.com/daily/2026-08-28</description>
+    </item>
     <item>
       <title>EXPORT SALES AT 7:30; SOYOIL RUNS, CORN EASES</title>
       <link>https://agsist.com/daily/2026-08-27</link>
@@ -382,18 +395,6 @@ Weekly export sales at 7:30 AM CT set the tone for beans and wheat; hogs dropped
 • Corn and Beans Follow
 • Hogs Fall Without a Headline
 Read more: https://agsist.com/daily/2026-07-30</description>
-    </item>
-    <item>
-      <title>CATTLE FLIP; GRAINS EASE AS HEAT EXITS BELT</title>
-      <link>https://agsist.com/daily/2026-07-29</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-07-29</guid>
-      <pubDate>Wed, 29 Jul 2026 05:00:00 -0600</pubDate>
-      <description>Feeders at $337.23, up 1.8% after getting worked over yesterday. The reversal is real but read it carefully: feedlot margins just turned negative per today's Drovers tracker, and the Cargill Fort Morgan lockout is still running. Yesterday's break may have been oversold. Today's bounce doesn't erase the structural problem.
-Feeders run 1.8% higher one session after their worst day in months, while corn and beans drift lower on favorable forecast.
-• Cattle Flip Overnight
-• Grains Ease on Cooling Forecast
-• Crude Firms on Middle East
-Read more: https://agsist.com/daily/2026-07-29</description>
     </item>
   </channel>
 </rss>

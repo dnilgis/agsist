@@ -1,6 +1,18 @@
 {
   "briefings": [
     {
+      "date": "2026-08-28",
+      "date_display": "Friday, August 28, 2026",
+      "headline": "PRO FARMER DONE; SEPTEMBER WASDE HOLDS THE ANSWER",
+      "teaser": "Grains at year highs, tour done, WASDE next. Here is what the quiet Friday tells you.",
+      "market_mood": "cautious",
+      "surprise_count": 0,
+      "sections": 3,
+      "url": "/daily/2026-08-28",
+      "market_closed": false,
+      "yc_outcome": "didnt"
+    },
+    {
       "date": "2026-08-27",
       "date_display": "Thursday, August 27, 2026",
       "headline": "EXPORT SALES AT 7:30; SOYOIL RUNS, CORN EASES",
@@ -1925,6 +1937,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-08-27T20:57:32.416856+00:00",
-  "count": 168
+  "updated": "2026-08-28T13:11:59.177259+00:00",
+  "count": 169
 }
