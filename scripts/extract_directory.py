@@ -149,6 +149,10 @@ def tidy(r):
         out[k] = v
     if out.get("zip"):
         out["zip"] = str(out["zip"])[:5]
+    # Stamp every record, not just the file. Once these are merged with state
+    # licence registries and platform directories, "where did this come from"
+    # is a per-record question and the file header cannot answer it.
+    out["source"] = "barchart"
 
     # THE STATE IS SOMETIMES INSIDE THE CITY. Measured on the first live run:
     # 725 of 727 records carried `state`, and of the two that did not, one had
