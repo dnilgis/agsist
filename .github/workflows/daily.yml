@@ -19,6 +19,19 @@ on:
     # even with typical GitHub Actions cron delays (occasionally 30+ min
     # during peak load).
     - cron: '2 11 * * *'
+    # BACKUP FIRES. On 2026-08-28 the 11:02 fire did not produce a briefing:
+    # both gates pass against the prices file that run would have read, other
+    # scheduled workflows ran normally that morning, and two hours later there
+    # was no data/daily-archive/2026-08-28.json and no email. GitHub's scheduler
+    # drops fires — measured at roughly one in six on the sibling repository —
+    # and a workflow that fires ONCE A DAY has no second chance by design.
+    #
+    # These cost nothing on a normal day: the gate below sees today's archive
+    # already committed and skips the whole job, email included. They only do
+    # work on a day the first fire is dropped.
+    - cron: '32 11 * * *'
+    - cron: '2 12 * * *'
+    - cron: '32 12 * * *'
     # v4.6: Friday post-close regeneration.
     # 20:00 UTC Fri = 3:00 PM Central (CDT) / 2:00 PM Central (CST).
     # CBOT grain settles 1:20 PM CT, CME livestock 1:00 PM CT, NYMEX
@@ -50,10 +63,25 @@ jobs:
       - uses: actions/checkout@v4
       - id: g
         run: |
+          # ASK THE REMOTE, NOT THE CHECKOUT.
+          # A scheduled run checks out the SHA it was TRIGGERED at, so a backup
+          # fire queued behind a run still in flight would look at a tree from
+          # before that run pushed, decide today's briefing did not exist, and
+          # generate it a second time. (send_daily.py's day-flag would still
+          # stop the second EMAIL — but a regenerated briefing overwrites the
+          # published one, which is its own kind of wrong.) The remote is the
+          # only place that knows whether today is done.
+          git fetch --quiet --depth=1 origin "${{ github.event.repository.default_branch || 'main' }}" || true
+          DAY=$(date -u +%F)
           H=$(date -u +%H)
-          if [ "${{ github.event_name }}" = "schedule" ] && [ "$H" -lt 14 ] && [ -f "data/daily-archive/$(date -u +%F).json" ]; then
+          have=0
+          git cat-file -e "FETCH_HEAD:data/daily-archive/$DAY.json" 2>/dev/null && have=1
+          [ -f "data/daily-archive/$DAY.json" ] && have=1
+          if [ "${{ github.event_name }}" = "schedule" ] && [ "$H" -lt 14 ] && [ "$have" = "1" ]; then
             echo "skip=1" >> "$GITHUB_OUTPUT"
-            echo "today's briefing already exists (a manual run beat the schedule) — skipping regeneration"
+            echo "$DAY is already published — skipping regeneration (this is a backup fire doing its job)"
+          else
+            echo "$DAY is not published yet — generating"
           fi
 
   generate:
@@ -84,6 +112,13 @@ jobs:
       # is worse than no gate, because the RESULT line still says CLEAN.
       - name: GATE 0 — feed gate selftest
         run: python scripts/test_preflight_limits.py
+
+      # The schedule is machinery too. This asserts the backup fires still
+      # exist and are spread, and that the gate asks the remote rather than its
+      # own checkout — the two things that keep a dropped fire from becoming a
+      # missed briefing without letting a backup republish a live one.
+      - name: GATE 0b — the schedule's own selftest
+        run: python scripts/test_daily_schedule.py
 
       - name: GATE 1 — feed pre-flight (repair ZC=F roll contamination; block on unrepairable feed)
         run: python scripts/preflight_prices.py data/prices.json --repair
