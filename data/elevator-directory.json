@@ -1,5 +1,5 @@
 {
- "generated": "2026-08-28T05:15:21Z",
+ "generated": "2026-08-28T21:21:33Z",
  "from": "bids-full.json",
  "complete": false,
  "note": "Directory only: who operates a facility and where. No prices, no basis, no symbols, no delivery windows.",
@@ -12,7 +12,7 @@
   "with_phone": 1811,
   "saturated_zips": 0,
   "failed_zips": 0,
-  "rows_read": 18781
+  "rows_read": 18966
  },
  "saturated": [],
  "failed": [],
@@ -87,6 +87,15 @@
    "state": "CO",
    "zip": "80650",
    "phone": " 970-381-4402",
+   "source": "barchart"
+  },
+  {
+   "facility": "Roggen Farmers Elevator Association",
+   "branch": "Roggen Elevator - Main Office",
+   "city": "Roggen",
+   "state": "CO",
+   "zip": "80652",
+   "phone": "(303) 849-5506",
    "source": "barchart"
   },
   {
@@ -6660,6 +6669,15 @@
    "source": "barchart"
   },
   {
+   "facility": "Iroquois Bio-Energy",
+   "branch": "IBEC",
+   "city": "Rensselaer",
+   "state": "IN",
+   "zip": "47978",
+   "phone": "(219) 866-5990",
+   "source": "barchart"
+  },
+  {
    "facility": "Kentland Elevator & Supply Inc.",
    "branch": "Kentland",
    "city": "Kentland ",
@@ -8898,15 +8916,6 @@
    "state": "KS",
    "zip": "67137",
    "phone": "620-736-2011",
-   "source": "barchart"
-  },
-  {
-   "facility": "Skyland Grain",
-   "branch": "Cunningham Area",
-   "city": "Cunningham",
-   "state": "KS",
-   "zip": "67035",
-   "phone": "(620) 298-2011",
    "source": "barchart"
   },
   {
@@ -11754,6 +11763,15 @@
    "source": "barchart"
   },
   {
+   "facility": "Iroquois Bio-Energy",
+   "branch": "Blue Flint",
+   "city": "Underwood",
+   "state": "ND",
+   "zip": "58576",
+   "phone": "701-442-7500",
+   "source": "barchart"
+  },
+  {
    "facility": "James Valley Grain, LLC",
    "branch": "Oakes",
    "city": "Oakes",
@@ -13263,15 +13281,6 @@
    "state": "OH",
    "zip": "43605",
    "phone": "800-950-7880",
-   "source": "barchart"
-  },
-  {
-   "facility": "Bambauer Fertilizer & Seed INC",
-   "branch": "Bambauer Cash Bids",
-   "city": "New Knoxville",
-   "state": "OH",
-   "zip": "45871",
-   "phone": "(419) 753-2274",
    "source": "barchart"
   },
   {
@@ -15429,15 +15438,6 @@
   {
    "facility": "Dumas Co-op Elevators",
    "branch": "Mwell",
-   "city": "Dumas",
-   "state": "TX",
-   "zip": "79029",
-   "phone": "806-935-6440",
-   "source": "barchart"
-  },
-  {
-   "facility": "Dumas Co-op Elevators",
-   "branch": "Etter",
    "city": "Dumas",
    "state": "TX",
    "zip": "79029",
