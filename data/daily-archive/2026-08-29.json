@@ -1,13 +1,13 @@
 {
-  "headline": "WHEAT AND BEANS CLOSE THE WEEK STRONG",
-  "subheadline": "Friday's close had wheat up nearly 3% and soybeans at a 52-week high, while corn sat out; the September WASDE is now the market's next hard test.",
-  "lead": "Wheat finished Friday at $7.66, up 21 cents on the session, and soybeans closed at $12.78, both sitting above their 52-week highs. Corn at $5.11 barely moved. The heatwave narrative did the work this week, and now the calendar rolls to September WASDE on the 9th, where USDA's first post-tour yield update either confirms the bullish read or hands the funds a reason to exit.",
-  "the_takeaway": "Wheat and beans earned the week; September WASDE decides whether they keep it.",
-  "teaser": "Wheat ran 21 cents Friday. Beans set a 52-week high. Corn watched. Here's what it means going into September.",
+  "headline": "WHEAT LEADS THE WEEK; CORN PRICED FOR HARVEST",
+  "subheadline": "Chicago wheat closed up 22 cents Friday, beans followed, and December corn held $5.37 as combines roll toward the Belt.",
+  "lead": "Wheat ended the week at $7.67, up 22 cents Friday on heat-driven supply stress, the biggest one-day move in the complex. Beans tagged along at $12.76, near a 52-week high. The story this week: the August WASDE cut yields, the Pro Farmer tour confirmed stress, and December corn at $5.37 is pricing a tighter crop. The question now is whether September has a reason to add to that premium.",
+  "the_takeaway": "December corn at $5.37 already prices a tighter crop; September WASDE decides if the market paid enough.",
+  "teaser": "Wheat ran 22 cents Friday, beans held near 52-week highs, and harvest is two weeks out. Here is where everything stands.",
   "one_number": {
-    "value": "$450 million",
-    "unit": "planned US phosphate plant investment",
-    "context": "CHS and OCP North America announced the first domestic phosphate fertilizer plant in 40 years, sited in Louisiana. If it gets built, it changes the input-cost conversation for 2028 and beyond; for 2027, the phosphate squeeze is already baked in."
+    "value": "80%",
+    "unit": "of Nebraska reporting drought stress this week",
+    "context": "The warm, dry pattern that accelerated late-season dough and dent stress did not ease heading into Labor Day. Drought is now a harvest-risk story, not just a yield story: combines may move fast through thin stands, but basis will tell you what the elevator already knows."
   },
   "yesterdays_call": {
     "outcome": "didnt",
@@ -15,7 +15,7 @@
       "outcome": "didnt",
       "made": "2026-08-28",
       "p0": 7.66,
-      "p1": 7.66,
+      "p1": 7.67,
       "instrument": "wheat",
       "direction": "up",
       "level": "7.72"
@@ -24,94 +24,86 @@
   "todays_call": {
     "instrument": "wheat",
     "direction": "up",
-    "level": "7.66",
+    "level": "7.67",
     "design": "v2"
   },
   "sections": [
     {
       "index": 0,
-      "title": "WHEAT AND BEANS LEAD THE WEEK",
+      "title": "GRAINS: WHEAT LEADS, BEANS HOLD",
       "icon": "",
-      "body": "- Chicago wheat closed Friday at **$7.66**, up 21 cents on the session; confirm the 52-week high before calling it broken -- what is clear is the heatwave narrative pulled winter wheat along with the bean complex all week.\n- November soybeans finished at **$12.8775**, also testing multi-month highs, with soybean meal up 2.9% on the day as crush demand and heat-driven yield anxiety kept the bid alive.\n- Corn at **$5.11** barely moved, down less than 2 cents; December at **$5.3625** held flat, which keeps the pricing window from this week open but not forever.",
-      "bottom_line": "Wheat and beans did the work this week; corn is along for the ride, not leading it.",
+      "body": "- Chicago wheat closed at **$7.67**, up 22 cents Friday and up more than 30 cents on the week; the heat-and-supply rally followed through, with Qatar LNG force majeure through November adding freight-cost anxiety.\n- November beans settled at **$12.88**, near the top of their 52-week range; meal up 2.8% and oil up 1.7% Friday confirmed the Pro Farmer pod-fill stress that USDA's 52.7 bu/acre yield already flagged.\n- December corn closed at **$5.365**, holding the week's gains without adding conviction; basis is the tell now as harvest opens across the southern Belt.",
+      "bottom_line": "Wheat earned its move; beans priced the tour. Corn waits on harvest basis to confirm whether $5.37 holds or fades.",
       "conviction_level": "medium",
       "overnight_surprise": false,
-      "farmer_action": "December corn at $5.3625: third session this call has been made. Price it or own the risk into September WASDE."
+      "farmer_action": "December corn at $5.365: if Friday's window did not move you, this is the same price. Harvest pressure arrives before the September WASDE does."
     },
     {
-      "title": "CATTLE HOLD; SCREWWORM CLOCK TICKING",
-      "body": "- Live cattle closed at **$220.55**, up a tenth of a percent, essentially unchanged; the market is holding but not pushing, exactly where it has been all week with the Cargill multi-plant lockout, ongoing since May 19, still removing roughly 6,000 head of daily processing capacity.\n- Feeders at $320.90 slipped half a percent, consistent with the late-July pattern of pricing returning Mexican supply ahead of the Aug 24 Douglas, AZ phased reopening, now in its first week of operation.\n- Lean hogs at $81.90 were the livestock complex's best mover Friday, up 1.7%, with no specific news catalyst; looks like position-squaring into the long weekend.",
-      "catalyst": "Cargill lockout capacity constraint ongoing; Douglas, AZ screwworm port reopening now active as of Aug 24.",
-      "bottom_line": "Feeders are pricing the reopening, not the scarcity; watch feeder/live spread through September.",
+      "title": "CATTLE: LOW ON THE RANGE, WATCHING AUG 24",
+      "body": "- Live cattle closed Friday at $219.25, down half a percent, sitting at just 27% of the 52-week range; feeders at $320.90 mirror that positioning, both far below the summer highs as the market prices returning Mexican feeder supply through the phased Douglas, AZ reopening that began Aug 24.\n- The Cargill multi-plant lockout, ongoing since May 19, still removes roughly 6,000 head of daily processing capacity; packer margins remain the binding constraint, not cattle numbers, and that dynamic keeps the box-beef cutout from sending a clear signal to the board.",
+      "catalyst": "Aug 24 Douglas, AZ port reopening for Mexican feeder cattle began phased restart; Cargill lockout continues to constrain packing capacity.",
+      "bottom_line": "Cattle are priced for supply returning, not for the lockout resolving. Watch which one blinks first.",
       "conviction_level": "low",
       "overnight_surprise": false
     },
     {
-      "title": "ENERGY: QATAR FORCE MAJEURE KEEPS HORMUZ PREMIUM ALIVE",
-      "body": "- WTI closed at **$83.44**, up 0.4% Friday, a quiet close that understates the week's real energy story: Qatar extended its LNG force majeure through November as Hormuz transit blockages continue, a direct echo of the Iran-Hormuz cycle that re-escalated in early-to-mid July when commercial vessels were hit and tanker traffic reversed course.\n- Natural gas at $2.88 slipped 1.4%, with the Qatar LNG story more relevant to Asian and European spot prices than to Henry Hub in the near term.\n- Diesel near-record highs, per AgWeb Friday, are the input story that matters most for harvest operations starting in the next two to four weeks; crude's calm close does not mean diesel follows.",
-      "catalyst": "Qatar extends LNG force majeure through November on Hormuz transit blockage; AgWeb flags diesel near record highs ahead of harvest.",
-      "bottom_line": "Crude calm, diesel hot; harvest fieldwork cost is the real energy number this week.",
+      "title": "INPUTS: DIESEL AND PHOSPHATE HEAD INTO HARVEST",
+      "body": "- Diesel prices ran to near-record highs heading into harvest, per AgWeb Friday; WTI crude held $83.40, up fractionally, but the diesel crack spread is the number that matters for fieldwork budgets, not the board price on crude.\n- CHS and OCP North America announced a $450 million phosphate fertilizer plant in Louisiana, the first domestic phosphate facility in 40 years; it will not relieve 2027 input costs, but it is the structural answer to a supply chain that the Iran-Hormuz cycle, re-escalating in July and now deflating again, exposed as brittle.",
+      "catalyst": "AgWeb: diesel near-record highs ahead of harvest; CHS/OCP Louisiana phosphate plant announcement confirmed by Agri-Pulse and Farm Policy News.",
+      "bottom_line": "Diesel is the harvest cost line nobody priced in April. The phosphate plant is a 2028 story, not a 2026 one.",
       "conviction_level": "medium",
-      "overnight_surprise": false
-    },
-    {
-      "title": "MACRO: DOLLAR FIRMS, METALS FALL",
-      "body": "- The Dollar Index at **$99.68**, up half a percent Friday, is a quiet headwind for any export-driven commodity rally; beans and wheat shrugged it off this week, but a sustained dollar move above $100 would start to compete with the heat premium.\n- Gold off 2.7% and silver off 3.6% Friday suggest a risk-off pocket in macro markets that the ag complex ignored; S&P at $7,711 dipped 0.2%, nothing alarming.\n- Farm bankruptcy tracking data, released Friday by NASDA and NALC covering Chapter 11 and 12 filings, is the quieter macro story: financial stress in the sector is rising even as board prices are firm, a split that the September WASDE won't resolve.",
-      "catalyst": "Dollar Index firmed 0.5%; NASDA/NALC new DEBT project publishes farm bankruptcy trend data.",
-      "bottom_line": "Board prices are high but the stress data says not every producer is capturing them.",
-      "conviction_level": "low",
       "overnight_surprise": false
     }
   ],
   "outside_the_pit": [
     {
-      "title": "First US Phosphate Plant in 40 Years Planned for Louisiana",
-      "body": "CHS and OCP North America announced a $450 million phosphate fertilizer plant in Louisiana, the first domestic build of its kind in four decades. It won't affect 2027 input costs, but it is the first structural answer to the supply squeeze that Iran-related disruptions have made worse this year.",
-      "tag": "INPUTS"
+      "title": "New DEBT Project Tracks Farm Bankruptcy Trends Nationally",
+      "body": "NASDA and NALC are now compiling Chapter 11 and 12 agricultural bankruptcy filings in a single database. For producers carrying heavy input debt into a tighter-margin year, this is the early-warning system the industry has needed; watch the Q3 filing trend when the first report drops.",
+      "tag": "RURAL"
     },
     {
-      "title": "NASDA Launches Farm Bankruptcy Tracker as Filings Rise",
-      "body": "NASDA and NALC are now compiling Chapter 11 and 12 agricultural bankruptcy filings in a new database called DEBT. Board prices near multi-year highs have not prevented rising financial distress, especially for producers who locked basis or sold forward below current levels.",
-      "tag": "RURAL"
+      "title": "Area Add-On Insurance Uptake Rose Sharply After Subsidy Hike",
+      "body": "A farmdoc daily study found farmers responded strongly after federal premium subsidies on area add-on insurance rose to 80%. With USDA's August yield cuts already in the record and drought expanding in Nebraska and Colorado, the producers who bought the area coverage this spring are sitting on a different risk profile heading into harvest.",
+      "tag": "POLICY"
     }
   ],
   "weekly_thread": {},
   "the_more_you_know": {
-    "title": "Farm bankruptcies are rising while the board is high. That is not a contradiction.",
-    "body": "The NASDA/NALC DEBT tracker launched Friday to document exactly this: producers who sold forward below today's $12.78 beans or $5.11 corn, or who carry high input-cost debt from 2024-25, are not benefiting from Friday's closes. A high board and rising bankruptcy filings can coexist, and this data set will be the tell going into 2027."
+    "title": "Drought and Basis: The Number Your Elevator Knows Before You Do",
+    "body": "Nebraska drought at 80% coverage means local supplies may be thinner than the state-level yield average implies. Thin crops harvest fast but also store short. Watch your local basis widen into October as country elevators fill unevenly; basis widening before the September WASDE would tell you more about real local supply than any national estimate."
   },
   "watch_list": [
     {
-      "time": "Tuesday, Sep 1, 7:30 AM CT",
-      "desc": "Weekly export sales. Beans under 400K MT says the rally is chart-driven, not demand-driven. Above 600K MT extends the bid."
+      "time": "Thursday, Sep 3, 7:30 AM CT",
+      "desc": "Weekly export sales. Wheat above 400K MT confirms the heat-rally demand; beans below 600K MT says the tour premium is priced with no foreign buyer adding to it."
     },
     {
-      "time": "Tuesday, Sep 1",
-      "desc": "USDA Crop Progress, 3:00 PM CT. Corn condition holding above 60% good/excellent keeps the September WASDE yield cut thesis alive; a drop below 55% adds weather premium."
+      "time": "Tuesday, Sep 8, 3:00 PM CT",
+      "desc": "USDA Crop Progress. Corn dough/dent completion and soybean pod-set ratings; any deterioration from last week adds September WASDE premium."
     },
     {
-      "time": "Thursday, Sep 3",
-      "desc": "Watch December corn at $5.36: a close above $5.40 opens the next leg; a fade below $5.25 says the heat premium was already the whole story."
+      "time": "Thursday, Sep 10, 11:00 AM CT",
+      "desc": "September WASDE. Corn yield at or below 180.7 bu/acre tightens the 1.653B carryout further and validates the December $5.37 hold. Above 182 reopens carry discussion."
     },
     {
-      "time": "Wednesday, Sep 9",
-      "desc": "September WASDE, 11:00 AM CT. USDA's first post-tour survey-based update on corn and soybean yields. Corn below 179 bu/acre or beans below 52.0 would extend Friday's rally; above August's 180.7/52.7 hands funds a reason to step back."
+      "time": "Week of Aug 31",
+      "desc": "Local diesel basis and harvest logistics. Near-record diesel ahead of corn and soybean harvest is an unreported margin hit; lock fuel if you have not."
     }
   ],
   "daily_quote": {
-    "text": "Failure is simply the opportunity to begin again, this time more intelligently.",
-    "attribution": "Henry Ford"
+    "text": "Nature does not hurry, yet everything is accomplished.",
+    "attribution": "Lao Tzu"
   },
-  "source_summary": "CBOT settlement prices, CME livestock closes, NYMEX crude, feedstuffs.com market recap, AgWeb diesel report, OilPrice.com Qatar LNG force majeure, farmpolicynews.illinois.edu phosphate plant announcement, NASDA DEBT project launch, beefmagazine.com screwworm/USDA updates, USDA Crop Progress calendar.",
+  "source_summary": "CBOT, CME, NYMEX locked prices; feedstuffs.com, agweb.com, farmdocdaily.illinois.edu, farmpolicynews.illinois.edu, agri-pulse.com, beefmagazine.com, thefencepost.com, oilprice.com news digest; USDA WASDE Aug 12 2026; Pro Farmer Crop Tour Aug 17-21 2026; Baltic Exchange via Bloomberg.",
   "date": "Saturday, August 29, 2026",
   "meta": {
-    "market_mood": "bullish",
+    "market_mood": "mixed",
     "heat_section": 0,
     "overnight_surprises_count": 0,
     "news_coverage": {
       "ok": 14,
       "total": 17,
-      "items": 77,
+      "items": 76,
       "dark": [
         "brownfieldagnews.com",
         "dairyherd.com",
@@ -120,25 +112,25 @@
     }
   },
   "locked_prices": {
-    "corn": 5.11,
-    "corn-dec": 5.3625,
-    "beans": 12.7775,
-    "beans-nov": 12.8775,
-    "wheat": 7.66,
-    "oats": 3.48,
-    "cattle": 220.55,
-    "feeders": 320.89999,
+    "corn": 5.12,
+    "corn-dec": 5.365,
+    "beans": 12.7625,
+    "beans-nov": 12.88,
+    "wheat": 7.67,
+    "oats": 3.4875,
+    "cattle": 219.25,
+    "feeders": 320.9,
     "hogs": 81.9,
     "milk": 16.66,
-    "meal": 338.70001,
-    "soyoil": 70.57,
-    "crude": 83.44,
-    "natgas": 2.881,
-    "gold": 4504.1001,
-    "silver": 67.09,
+    "meal": 338.2,
+    "soyoil": 70.59,
+    "crude": 83.4,
+    "natgas": 2.888,
+    "gold": 4529.9,
+    "silver": 67.786,
     "dollar": 99.677,
-    "sp500": 7711.75977,
-    "bitcoin": 77609.99219
+    "sp500": 7711.76,
+    "bitcoin": 77690.57031
   },
   "chart_series": {
     "corn": [
@@ -151,7 +143,7 @@
       5.07,
       5.08,
       5.11,
-      5.11
+      5.12
     ],
     "soybeans": [
       12.25,
@@ -163,7 +155,7 @@
       12.32,
       12.53,
       12.78,
-      12.78
+      12.76
     ],
     "wheat": [
       6.85,
@@ -175,7 +167,7 @@
       6.98,
       7.4,
       7.66,
-      7.66
+      7.67
     ]
   },
   "sponsor": {
@@ -189,8 +181,8 @@
     "disclosure": "One sponsor, one issue. No retargeting. No programmatic auctions. Reply or call 715-797-2428.",
     "is_house_ad": true
   },
-  "issue_number": 170,
-  "generated_at": "2026-08-29T02:40:37.657414+00:00",
+  "issue_number": 171,
+  "generated_at": "2026-08-29T15:33:34.399099+00:00",
   "generator_version": "4.6.3",
   "surprise_count": 0,
   "surprises": [],
@@ -199,22 +191,22 @@
   "market_status_reason": "weekend",
   "critic_pass": {
     "version": "1.2",
-    "ran_at": "2026-08-29T02:40:58.483020+00:00",
+    "ran_at": "2026-08-29T15:33:58.334875+00:00",
     "threshold": 7,
     "final_scores": {
       "rule_1_lead_so_what": 8,
       "rule_2_conviction_earned": 7,
-      "rule_3_tmyk_today": 8,
+      "rule_3_tmyk_today": 9,
       "rule_4_watch_conditional": 9,
       "rule_5_bottom_lines_synthesize": 8,
-      "rule_6_quiet_days_quiet": 8,
-      "rule_7_continuity": 4,
+      "rule_6_quiet_days_quiet": 7,
+      "rule_7_continuity": 5,
       "rule_8_word_budgets": 6,
       "rule_9_voice": 7,
       "rule_10_forward_test": 7,
       "rule_11_thread_coherence": 10,
       "rule_12_one_fact_one_home": 4,
-      "rule_13_yc_honesty": 3,
+      "rule_13_yc_honesty": 6,
       "rule_14_level_coherence": 3,
       "rule_15_one_number_coherence": 8,
       "rule_16_markdown_not_html": 10,
@@ -228,17 +220,17 @@
         "scores_before": {
           "rule_1_lead_so_what": 8,
           "rule_2_conviction_earned": 7,
-          "rule_3_tmyk_today": 8,
+          "rule_3_tmyk_today": 9,
           "rule_4_watch_conditional": 9,
           "rule_5_bottom_lines_synthesize": 8,
-          "rule_6_quiet_days_quiet": 8,
-          "rule_7_continuity": 4,
+          "rule_6_quiet_days_quiet": 7,
+          "rule_7_continuity": 5,
           "rule_8_word_budgets": 6,
           "rule_9_voice": 7,
           "rule_10_forward_test": 7,
           "rule_11_thread_coherence": 10,
           "rule_12_one_fact_one_home": 4,
-          "rule_13_yc_honesty": 3,
+          "rule_13_yc_honesty": 6,
           "rule_14_level_coherence": 3,
           "rule_15_one_number_coherence": 8,
           "rule_16_markdown_not_html": 10,

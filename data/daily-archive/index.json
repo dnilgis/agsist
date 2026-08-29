@@ -3,11 +3,11 @@
     {
       "date": "2026-08-29",
       "date_display": "Saturday, August 29, 2026",
-      "headline": "WHEAT AND BEANS CLOSE THE WEEK STRONG",
-      "teaser": "Wheat ran 21 cents Friday. Beans set a 52-week high. Corn watched. Here's what it means going into September.",
-      "market_mood": "bullish",
+      "headline": "WHEAT LEADS THE WEEK; CORN PRICED FOR HARVEST",
+      "teaser": "Wheat ran 22 cents Friday, beans held near 52-week highs, and harvest is two weeks out. Here is where everything stands.",
+      "market_mood": "mixed",
       "surprise_count": 0,
-      "sections": 4,
+      "sections": 3,
       "url": "/daily/2026-08-29",
       "market_closed": true
     },
@@ -1948,6 +1948,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-08-29T02:40:58.543039+00:00",
+  "updated": "2026-08-29T15:33:58.394537+00:00",
   "count": 170
 }
