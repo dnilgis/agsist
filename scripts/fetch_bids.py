@@ -366,6 +366,224 @@ def _page_crop(name):
     return None
 
 
+# ── THE IDENTITY GUARD ────────────────────────────────────────────────────
+#
+# WHAT WENT WRONG, MEASURED ON data/bids.json AS COMMITTED 2026-08-29.
+#
+# For 34 of the 50 grid ZIPs there is no bid at the ZIP itself, so the futures
+# pages fall through to "the highest-priced bid for this crop in the country".
+# That pick was, for corn:
+#
+#     #2 Yellow Corn   cash 12.92   basis -0.20   symbol N27
+#     Iroquois Bio-Energy, Rensselaer, IN
+#
+# 12.92 - (-0.20) implies a corn futures price of 13.12. Every one of the other
+# 101 corn rows in the same file implies between 5.12 and 5.58. `N27` is not a
+# CME corn contract. Whatever that row is, its cash and its basis are not in
+# the same series, and it was about to be the corn number on three pages.
+#
+# WHAT THE GUARD DOES, AND WHY IT IS THIS SHAPE.
+#
+# cash - basis = the futures price the elevator quoted against. That identity
+# is the same one dnilgis/bids enforces on every scraped board, and it is the
+# only check available here that needs no data this file does not already
+# carry. Two legs, both derived from the payload itself:
+#
+#   1. COHORT. Rows carrying the same contract symbol must imply the same
+#      futures price. Measured on the committed file: of 46 symbols, 43 have a
+#      spread of 0.00 or 0.01 across as many as 78 facilities. The identity is
+#      not approximately true here, it is exactly true, so a row that misses
+#      its own cohort by more than a cent or two is not noise.
+#
+#   2. ENVELOPE. A symbol quoted by only one or two facilities has no cohort to
+#      miss, so its implied futures is measured against its own commodity
+#      CATEGORY's span, built from that category's symbols that DO have a
+#      cohort -- classify_commodity()'s buckets, not the three the pages
+#      select. Corn's cohort
+#      medians run 5.12 to 5.58 across seven contract months; soybeans 12.42 to
+#      13.12; wheat 7.45 to 8.57. The widest carry actually observed is 9% of
+#      the front month. The envelope is 0.70x to 1.40x the measured span --
+#      three to four times the widest real carry, so no genuine deferred month
+#      is refused, while 13.12 against a 5.12-5.58 corn span is.
+#
+# WHAT IT DELIBERATELY DOES NOT DO. It does not test whether a price is HIGH.
+# The two most expensive rows in the file both pass:
+#
+#     Canadian Yellow Soybeans  cash 17.07  basis  4.1875  ZSX26  ADM Decatur
+#     White Wheat (Max Pro 12)  cash 14.58  basis  6.30    KEU6   Ritzville WA
+#
+# Both imply exactly their cohort's futures price. They are real premium bids
+# and a "that looks too high" filter would have thrown them away. The identity
+# is the test; the level is not.
+#
+# WHAT A FAILING ROW COSTS. Nothing is corrected and nothing is guessed. The
+# row keeps its numbers and is marked `verified: false` with the reason, and
+# the pages simply do not SELECT it -- exactly as an unverifiable board is
+# withheld rather than published in bids. A wrong mark costs a bid that does
+# not appear; it can never cost a wrong price.
+
+VERIFY_COHORT_TOL = 0.03        # dollars/bu; observed cohort spread is 0.00-0.01
+VERIFY_MIN_COHORT = 3           # below this, a symbol has nothing to agree with
+VERIFY_ENVELOPE_LO = 0.70       # x the crop's lowest  cohort median
+VERIFY_ENVELOPE_HI = 1.40       # x the crop's highest cohort median
+
+
+import re as _re
+
+_SYMBOL_RE = _re.compile(r"^([A-Z]{1,3})([FGHJKMNQUVXZ])([0-9]{1,2})$")
+
+
+def _norm_symbol(sym):
+    """Barchart writes the same contract two ways and both are in the payload.
+
+    ZCU26 and ZCU6 are September 2026 corn; the file carries 12 rows of the
+    first and 2 of the second, and both imply 5.12 to the cent. So do ZCZ26 /
+    ZCZ6 (5.37), ZSX26 / ZSX6 (12.88), KEU26 / KEU6 (8.28), KEN27 / KEN7
+    (8.46) and ZCZ27 / ZCZ7 (5.27) -- six pairs, every one agreeing exactly.
+    Left unmerged, sixteen rows sit in cohorts of two or four and get no
+    cohort check at all.
+
+    Both forms are canonicalised to the LAST digit of the year rather than
+    expanded to four. Expanding means deciding whether `6` is 2016 or 2026,
+    and nothing in the payload says; truncating decides nothing and merges the
+    pair. It would collide across a decade, and a cash bid is never quoted ten
+    years out.
+
+    Anything that is not root + month code + year is returned unchanged, so a
+    Barchart cash-index pseudo-symbol (DWBQ26-56338-14680.CM) and a symbol that
+    is not a contract at all (`N27`, `27`) stay in cohorts of their own.
+    """
+    sym = str(sym or "").strip().upper()
+    m = _SYMBOL_RE.match(sym)
+    return f"{m.group(1)}{m.group(2)}{m.group(3)[-1]}" if m else sym
+
+
+def _implied_futures(b):
+    """cash - basis, or None when the row cannot state one."""
+    cash, basis = b.get("cashPrice"), b.get("basis")
+    if cash is None or basis is None:
+        return None
+    try:
+        return round(float(cash) - float(basis), 4)
+    except (TypeError, ValueError):
+        return None
+
+
+def verify_bids(bids):
+    """Mark every row `verified` true or false. Returns (n_ok, n_bad).
+
+    Mutates the rows in place and never changes a price. See the block above
+    for what the two legs are and what was measured to choose them.
+
+    THE COHORT LEG IS KEYED ON THE SYMBOL ALONE, NOT ON THE CROP. Central
+    Prairie's MILO quotes against ZCZ26 and implies 5.37, the same figure the
+    51 corn rows on ZCZ26 imply, because sorghum is priced off corn futures.
+    Grouping by crop first would have put those eight rows in a `sorghum`
+    bucket with nothing to compare them to and refused them for being sorghum.
+    What is being tested is arithmetic against one contract; the crop is only
+    needed for the fallback envelope, where there is no cohort.
+    """
+    import statistics
+
+    implied = {id(b): _implied_futures(b) for b in bids}
+
+    by_symbol = {}
+    for b in bids:
+        v = implied[id(b)]
+        sym = _norm_symbol(b.get("symbol"))
+        if v is None or not sym:
+            continue
+        by_symbol.setdefault(sym, []).append((v, b))
+
+    sym_median = {s: statistics.median([v for v, _ in rows])
+                  for s, rows in by_symbol.items()}
+
+    # The envelope's inputs: for each commodity CATEGORY, the span of implied
+    # futures across the symbols in it that have a real cohort. A symbol quoted
+    # for two categories is skipped -- it states nothing about either.
+    cat_span = {}
+    for sym, rows in by_symbol.items():
+        if len(rows) < VERIFY_MIN_COHORT:
+            continue
+        vals = [v for v, _ in rows]
+        # ONLY A COHORT THAT AGREES WITH ITSELF MAY DEFINE AN ENVELOPE. RSX6 is
+        # quoted by four rows implying 90.4, 101.3, 139.9 and 140.0 -- canola
+        # against an ICE Canada quote in Canadian dollars per tonne. A median
+        # of that is not a price and must not become the yardstick anything
+        # else is measured by. Requiring the cohort to be tight costs nothing
+        # (43 of 46 symbols in the committed file span 0.00 to 0.01) and shuts
+        # this out without naming canola anywhere.
+        if max(vals) - min(vals) > VERIFY_COHORT_TOL:
+            continue
+        m = sym_median[sym]
+        # A CONTRACT CAN PRICE MORE THAN ONE COMMODITY. Central Prairie's MILO
+        # quotes against ZCU6 alongside twelve corn rows, and implies the same
+        # 5.12 they do, because sorghum is priced off corn futures. Demanding a
+        # symbol belong to exactly one category dropped every such symbol, and
+        # corn's envelope collapsed from 5.12-5.58 to 5.57-5.58 -- narrower
+        # than the real carry, which is how a genuine deferred month gets
+        # refused. A tight cohort states a price for every category on it.
+        for cat in {classify_commodity(b.get("commodity")) for _, b in rows}:
+            # `other` is what classify_commodity() returns when NOTHING
+            # matched: canola, durum, field peas, hull pellets and
+            # delivered-basis contracts all land in it. It is a leftovers bin,
+            # not a price level. An envelope built from it said things like
+            # "every other contract implies 120.602 to 120.602" and refused
+            # $4.90 durum for not being canola. A row in `other` with no cohort
+            # of its own is simply not checkable here, and now says so.
+            if cat == "other":
+                continue
+            lo, hi = cat_span.get(cat, (m, m))
+            cat_span[cat] = (min(lo, m), max(hi, m))
+
+    n_ok = n_bad = 0
+    for b in bids:
+        v = implied[id(b)]
+        sym = _norm_symbol(b.get("symbol"))
+        cat = classify_commodity(b.get("commodity"))
+        why = None
+
+        if v is None:
+            why = ("the row carries no cash price or no basis, so it states no "
+                   "futures price to check")
+        elif not sym:
+            why = ("the row names no contract, so there is nothing its cash "
+                   "minus basis can be compared against")
+        else:
+            cohort = by_symbol.get(sym, [])
+            if len(cohort) >= VERIFY_MIN_COHORT:
+                med = sym_median[sym]
+                if abs(v - med) > VERIFY_COHORT_TOL:
+                    why = (f"cash {b.get('cashPrice')} minus basis {b.get('basis')} "
+                           f"implies {v} for {sym}, but the other {len(cohort) - 1} "
+                           f"facility rows quoting {sym} imply {med}")
+            else:
+                span = cat_span.get(cat)
+                if span is None:
+                    why = (f"{sym} is quoted by only {len(cohort)} row(s) and no "
+                           f"{cat} contract in this file is quoted by enough "
+                           f"facilities to state a price, so nothing here can check it")
+                elif not (span[0] * VERIFY_ENVELOPE_LO <= v <= span[1] * VERIFY_ENVELOPE_HI):
+                    why = (f"cash {b.get('cashPrice')} minus basis {b.get('basis')} "
+                           f"implies {v} for {sym}, and every {cat} contract this "
+                           f"file can check implies {span[0]} to {span[1]}")
+
+        b["verified"] = why is None
+        if why is None:
+            b.pop("unverifiedWhy", None)
+            n_ok += 1
+        else:
+            b["unverifiedWhy"] = why
+            n_bad += 1
+    return n_ok, n_bad
+
+
+def verified_only(bids):
+    """The rows a page is allowed to SELECT. An unmarked row is allowed:
+    verify_bids() has simply not been run, and this must not silently empty
+    a page that never had the guard."""
+    return [b for b in bids if b.get("verified", True)]
+
 def page_pick(bids, grid_zip, crop):
     """findBestBidForCrop() from the futures pages, ported exactly.
 
@@ -373,15 +591,32 @@ def page_pick(bids, grid_zip, crop):
     file is only safe if the page computes the same answer from it as from the
     full set, and the only way to assert that is to run the page's own logic.
 
-    Note what this port makes visible. The distance branch reads bid.lat /
+    Note what this port made visible. The distance branch reads bid.lat /
     bid.lng, and Barchart's payload carries NEITHER -- flatten() never sets
     them. So the middle branch is dead code on live data, and any grid ZIP with
     no exact-ZIP match falls through to "highest-priced bid in the country".
-    That is a real defect on the live pages and it is NOT fixed here; fixing it
-    means editing three pages. It is ported faithfully, warts included, so this
-    change cannot be blamed for it later.
+    That fallback fires for 34 of the 50 grid ZIPs; it is the normal path, not
+    the edge case.
+
+    TWO THINGS ABOUT IT WERE WRONG AND ARE NOW FIXED, 2026-08-29.
+
+    (1) The three pages sorted that fallback on `bid_price || bidPrice ||
+    price`. The payload carries NONE of those -- the field is `cashPrice`. So
+    every comparison was 0 minus 0, the sort did nothing, and the pages showed
+    cropBids[0]: whatever sorted first by state, city, commodity. On the
+    committed file that was Agrex Inc, Montgomery, ALABAMA for all three crops,
+    labelled as the reader's own nearest bid with no distance beside it. This
+    port did NOT have that bug -- it read cashPrice from the day it was
+    written -- so the every-run equivalence check below compared two correct
+    answers and could never see it. The pages now read the same field.
+
+    (2) The highest price in the country is only meaningful if the row is real.
+    See verify_bids() above. The fallback now picks the highest VERIFIED row.
     """
     crop_bids = [b for b in bids if _page_crop(b.get("commodity")) == crop]
+    if not crop_bids:
+        return None
+    crop_bids = verified_only(crop_bids)     # every branch, as the pages do
     if not crop_bids:
         return None
     for b in crop_bids:
@@ -391,8 +626,7 @@ def page_pick(bids, grid_zip, crop):
         if b.get("lat") is not None and b.get("lng") is not None:
             break
     else:
-        return max(crop_bids,
-                   key=lambda b: float(b.get("cashPrice") or 0))
+        return max(crop_bids, key=lambda b: float(b.get("cashPrice") or 0))
     return None
 
 
@@ -401,7 +635,7 @@ def slim_for_browser(bids, grid):
 
     Two paths can select a bid, so two sets are kept and nothing else:
       1. exact match  -> every bid whose own ZIP is one of the grid ZIPs
-      2. the fallback -> the highest-priced bid per crop, nationally
+      2. the fallback -> the highest-priced VERIFIED bid per crop, nationally
 
     Keeping the union means the page's algorithm, unchanged, reaches the same
     answer it reaches on the full set. Fields are NOT stripped: the page reads
@@ -412,7 +646,8 @@ def slim_for_browser(bids, grid):
     gz = {g["zip"] for g in grid}
     keep = {id(b): b for b in bids if b.get("zip") in gz}
     for crop in ("corn", "beans", "wheat"):
-        cb = [b for b in bids if _page_crop(b.get("commodity")) == crop]
+        cb = verified_only([b for b in bids
+                            if _page_crop(b.get("commodity")) == crop])
         if cb:
             top = max(cb, key=lambda b: float(b.get("cashPrice") or 0))
             keep[id(top)] = top
@@ -511,6 +746,33 @@ def main():
 
     all_bids.sort(key=lambda b: (b.get("state") or "", b.get("city") or "", b.get("commodity") or ""))
 
+    # THE IDENTITY GUARD runs on the FULL set, before anything is cut. Cohorts
+    # are the whole point and the slim file has already thrown most of them
+    # away, so verifying after slimming would be verifying against a handful.
+    n_ok, n_bad = verify_bids(all_bids)
+    print(f"[fetch_bids] identity guard: {n_ok} verified, {n_bad} withheld from "
+          f"selection ({100.0 * n_bad / max(1, n_ok + n_bad):.1f}%)")
+    if n_bad:
+        shown = 0
+        for b in all_bids:
+            if b.get("verified") or shown >= 12:
+                continue
+            print(f"[fetch_bids]   unverified: {b.get('facility')}, {b.get('city')}, "
+                  f"{b.get('state')} -- {b.get('commodity')} -- {b.get('unverifiedWhy')}")
+            shown += 1
+        if n_bad > shown:
+            print(f"[fetch_bids]   ... and {n_bad - shown} more")
+    if n_ok == 0:
+        # Every row failed. That is not 18,000 bad elevators; it is this guard
+        # or the payload shape having changed underneath it. Refusing here
+        # would blank all three pages, so say so loudly and keep going.
+        print("[fetch_bids] WARNING: the identity guard verified NOTHING. "
+              "Treating every row as selectable and NOT blanking the pages. "
+              "Look at the payload before trusting the next run.",
+              file=sys.stderr)
+        for b in all_bids:
+            b["verified"] = True
+
     zip_index = [{"zip": e["zip"], "lat": e["lat"], "lng": e["lng"], "label": e["label"]} for e in ZIP_GRID]
 
     commodities = {}
@@ -566,8 +828,11 @@ def main():
     output["full"] = False
     output["slim_note"] = (
         "Only the bids the futures pages can select: every bid at a grid ZIP, "
-        "plus the highest-priced bid per crop. The complete set is not "
-        "committed - see scripts/fetch_bids.py."
+        "plus the highest-priced VERIFIED bid per crop. `verified` is false "
+        "where cash minus basis does not agree with what every other facility "
+        "quoting the same contract implies; such a row keeps its numbers, "
+        "carries `unverifiedWhy`, and is never SELECTED. The complete set is "
+        "not committed - see scripts/fetch_bids.py."
     )
     os.makedirs(os.path.dirname(OUTPUT_PATH) or ".", exist_ok=True)
     with open(OUTPUT_PATH, "w") as f:
@@ -770,6 +1035,56 @@ def selftest():
            for b in dropped for g in grid))
 
     print()
+    print("the identity guard withholds what it cannot check, and nothing else")
+    R = lambda c, sym, cash, basis: {"commodity": c, "symbol": sym,
+                                     "cashPrice": cash, "basis": basis,
+                                     "zip": "00000", "city": "x"}
+    rows = [
+        R("Corn", "ZCZ26", 4.60, -0.77),          # implies 5.37
+        R("Corn", "ZCZ26", 4.85, -0.52),          # implies 5.37
+        R("Corn", "ZCZ26", 5.00, -0.37),          # implies 5.37
+        R("Corn", "ZCZ6",  5.10, -0.27),          # same contract, short year
+        R("Corn", "N27",  12.92, -0.20),          # implies 13.12 -- the defect
+        R("White Corn", "ZCZ26", 6.37,  1.00),    # premium, identity exact
+        R("MILO", "ZCZ26", 4.72, -0.65),          # sorghum priced off corn
+        R("Soybean Meal", "ZMV26", 3.425, 0.0),   # dollars per TON, not bushel
+    ]
+    ok, bad = verify_bids(rows)
+    by = {(r["commodity"], r["symbol"]): r for r in rows}
+    ck("a row whose cash minus basis matches its cohort is verified",
+       by[("Corn", "ZCZ26")]["verified"] is True)
+    ck("the premium row is kept -- the test is the identity, not the level",
+       by[("White Corn", "ZCZ26")]["verified"] is True
+       and by[("White Corn", "ZCZ26")]["cashPrice"] > by[("Corn", "ZCZ26")]["cashPrice"])
+    ck("a contract written with a one-digit year joins its own cohort",
+       _norm_symbol("ZCZ6") == _norm_symbol("ZCZ26"))
+    ck("sorghum quoted against corn futures is checked, not refused for being sorghum",
+       by[("MILO", "ZCZ26")]["verified"] is True)
+    ck("the row implying 13.12 corn is withheld",
+       by[("Corn", "N27")]["verified"] is False)
+    ck("...and it says why, in figures",
+       "13.12" in by[("Corn", "N27")]["unverifiedWhy"])
+    ck("a per-ton quote sitting in the soybean bucket is withheld",
+       by[("Soybean Meal", "ZMV26")]["verified"] is False)
+    ck("the counts add up", ok + bad == len(rows) and bad == 2)
+    ck("nothing was corrected -- the withheld row keeps its own numbers",
+       by[("Corn", "N27")]["cashPrice"] == 12.92)
+    ck("the page will not select a withheld row",
+       page_pick(rows, "00000", "corn")["cashPrice"] != 12.92)
+    ck("a row with no verified field at all is still selectable",
+       verified_only([{"cashPrice": 1}]) != [])
+
+    print()
+    print("a cohort that disagrees with itself cannot become anyone's yardstick")
+    canola = [R("Canola", "RSX26", 7.407, -83.0), R("Canola", "RSX26", 6.906, -133.1),
+              R("Canola", "RSX26", 6.907, -133.0), R("Canola", "RSX26", 7.297, -94.0)]
+    lone = R("Durum", "DWBQ26-56338-14680.CM", 5.25, 0.0)
+    verify_bids(canola + [lone])
+    ck("the disagreeing cohort is withheld", all(r["verified"] is False for r in canola))
+    ck("and the unrelated single row is not measured against it",
+       lone["verified"] is False and "120" not in lone["unverifiedWhy"]
+       and "nothing here can check it" in lone["unverifiedWhy"])
+
     print("dedup still collapses the overlap a bigger radius creates")
     dup = [
         {"facility": "A", "branch": "", "commodity": "Corn", "deliveryStart": "",

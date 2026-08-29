@@ -1385,6 +1385,17 @@ function findNearestGridZip(userLoc,grid){
 
 // Find the best bid for current crop nearest to the chosen grid ZIP.
 // Returns {bid, distance} or null. Defensive about bid field names.
+function bidCash(b){
+  /* The payload's field is cashPrice. The alternatives are kept because the
+     card's own renderer reads them and a future feed may supply one. */
+  var v=(b.cashPrice!=null)?b.cashPrice
+       :(b.bid_price!=null)?b.bid_price
+       :(b.bidPrice!=null)?b.bidPrice
+       :(b.price!=null)?b.price:null;
+  var n=Number(v);
+  return isFinite(n)?n:-Infinity;
+}
+
 function findBestBidForCrop(bids,nearestGridResult,cropKey){
   if(!bids||!bids.length)return null;
   var cropBids=[];
@@ -1394,6 +1405,22 @@ function findBestBidForCrop(bids,nearestGridResult,cropKey){
     if(c===cropKey)cropBids.push(b);
   }
   if(cropBids.length===0)return null;
+
+  /* WITHHOLD BEFORE SELECTING, ON EVERY BRANCH -- not just the fallback.
+     `verified` is false where cash minus basis disagrees with what every other
+     facility quoting the same contract implies (scripts/fetch_bids.py). The
+     exact-ZIP branch below can return such a row too: on the file committed
+     2026-08-29 a reader at Council Bluffs was shown SOYBEANS at $12.87 whose
+     basis of -1.00 implies November futures of $13.87, while the other 81 rows
+     on that contract imply $12.88. Four verified soybean rows sit at the same
+     ZIP; the best of them is $12.63. A number that cannot be checked is not
+     shown, and the elevator four cents down the road is.
+     A row with no `verified` field is allowed through, so an older
+     data/bids.json cannot empty this card. */
+  var checked=[];
+  for(var v=0;v<cropBids.length;v++){if(cropBids[v].verified!==false)checked.push(cropBids[v]);}
+  if(checked.length===0)return null;
+  cropBids=checked;
 
   if(nearestGridResult&&nearestGridResult.grid){
     var ng=nearestGridResult.grid;
@@ -1414,7 +1441,26 @@ function findBestBidForCrop(bids,nearestGridResult,cropKey){
     if(best)return{bid:best,distance:Math.round(bd+nearestGridResult.distance)};
   }
   // Fallback: highest-priced bid
-  cropBids.sort(function(a,b){return (Number(b.bid_price||b.bidPrice||b.price||0))-(Number(a.bid_price||a.bidPrice||a.price||0));});
+  /* THE FALLBACK. This is not the edge case -- 34 of the 50 grid ZIPs have no
+     bid at the ZIP itself, so this branch is the normal path, and what it
+     returns is the cash number a reader sees.
+
+     IT SORTED ON A FIELD THE PAYLOAD DOES NOT HAVE. data/bids.json carries
+     `cashPrice`; it carries no `bid_price`, no `bidPrice` and no `price` on
+     any of its rows. So every comparison was Number(0)-Number(0), the sort
+     did nothing at all, and this returned cropBids[0] -- whatever happened to
+     sort first by state, then city, then commodity. That was Agrex Inc of
+     Montgomery, ALABAMA, shown to a reader in Wisconsin as their bid, with no
+     distance beside it to give it away. Fixed 2026-08-29.
+
+     `verified` is set by scripts/fetch_bids.py: false where cash minus basis
+     does not agree with what every other facility quoting the same contract
+     implies. Before the guard existed, the highest corn row in the country
+     was $12.92 at Iroquois Bio-Energy on a symbol that is not a CME contract,
+     implying corn futures of $13.12 when every other row in the file implied
+     about $5.37. A row with no `verified` field at all is treated as
+     selectable, so an older bids.json cannot blank this card. */
+  cropBids.sort(function(a,b){return bidCash(b)-bidCash(a);});
   return{bid:cropBids[0],distance:null};
 }
 
@@ -1479,7 +1525,14 @@ function renderBasisCard(data){
 
   if(match&&match.bid){
     var b=match.bid;
-    var bidPrice=b.bid_price!=null?b.bid_price:(b.bidPrice!=null?b.bidPrice:b.price);
+    /* THE SAME MISSING FIELD, A SECOND TIME. This read bid_price, then
+       bidPrice, then price. data/bids.json carries NONE of them -- the field
+       is cashPrice -- so bidPrice was undefined on every row and the card's
+       headline number rendered as an em dash. Not a wrong price: no price at
+       all, on all three pages, for as long as the payload has had this shape.
+       bidCash() is the one place that knows the field name. 2026-08-29. */
+    var bidPrice=bidCash(b);
+    if(bidPrice===-Infinity)bidPrice=null;
     var basis=b.basis!=null?b.basis:b.bidBasis;
     var deliveryStr=b.delivery||b.delivery_str||b.deliveryDescription||(b.delivery_start?b.delivery_start+(b.delivery_end?' \u2013 '+b.delivery_end:''):null);
 
@@ -1502,7 +1555,7 @@ function renderBasisCard(data){
 
     // Header label: show BID\'s location + distance from user
     if(locEl){
-      var label=bidGrid?bidGrid.label:(b.city||b.facility||'\u2014');
+      var label=bidGrid?bidGrid.label:(b.city?(b.city+(b.state?', '+b.state:'')):(b.facility||'\u2014'));
       var locStr=label;
       if(bidGrid&&userLoc.lat!=null&&userLoc.lng!=null&&bidGrid.lat!=null){
         var dMi=haversineMi(userLoc.lat,userLoc.lng,bidGrid.lat,bidGrid.lng);
@@ -1510,6 +1563,16 @@ function renderBasisCard(data){
         else locStr+=' \u00b7 '+Math.round(dMi)+' mi from you';
       }else if(bidGrid&&userLoc.zip&&bidGrid.zip===userLoc.zip){
         locStr+=' \u00b7 your ZIP';
+      }else if(match.distance===null){
+        /* SAY SO WHEN IT IS NOT NEAR THEM. findBestBidForCrop returns
+           distance:null only from the fallback branch -- the highest verified
+           bid anywhere in the sample, chosen because this reader's grid ZIP
+           has no bid of its own. That is 37 of the 50 grid ZIPs for corn on
+           the file committed 2026-08-29. It used to be labelled with a bare
+           city name and no distance, which reads exactly like a local bid.
+           A number the reader cannot act on locally has to say that it is
+           not local; that is cheaper than being quietly wrong. */
+        locStr+=' \u00b7 not near you \u2014 highest checked bid in the sample';
       }
       locEl.textContent=locStr;
     }
