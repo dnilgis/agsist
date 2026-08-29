@@ -1,18 +1,18 @@
 {
- "generated": "2026-08-28T21:21:33Z",
+ "generated": "2026-08-29T03:18:45Z",
  "from": "bids-full.json",
  "complete": false,
  "note": "Directory only: who operates a facility and where. No prices, no basis, no symbols, no delivery windows.",
  "counts": {
-  "facilities": 1811,
+  "facilities": 1810,
   "states": 28,
   "with_address": 0,
   "with_coords": 0,
   "with_url": 0,
-  "with_phone": 1811,
+  "with_phone": 1810,
   "saturated_zips": 0,
   "failed_zips": 0,
-  "rows_read": 18966
+  "rows_read": 18986
  },
  "saturated": [],
  "failed": [],
@@ -87,15 +87,6 @@
    "state": "CO",
    "zip": "80650",
    "phone": " 970-381-4402",
-   "source": "barchart"
-  },
-  {
-   "facility": "Roggen Farmers Elevator Association",
-   "branch": "Roggen Elevator - Main Office",
-   "city": "Roggen",
-   "state": "CO",
-   "zip": "80652",
-   "phone": "(303) 849-5506",
    "source": "barchart"
   },
   {
@@ -6495,15 +6486,6 @@
    "state": "IN",
    "zip": "46182",
    "phone": "765-525-6672",
-   "source": "barchart"
-  },
-  {
-   "facility": "Boswell Chase Grain, Inc.",
-   "branch": "Boswell",
-   "city": "Boswell",
-   "state": "IN",
-   "zip": "47921",
-   "phone": "765-869-5527",
    "source": "barchart"
   },
   {
@@ -13281,6 +13263,15 @@
    "state": "OH",
    "zip": "43605",
    "phone": "800-950-7880",
+   "source": "barchart"
+  },
+  {
+   "facility": "Bambauer Fertilizer & Seed INC",
+   "branch": "Bambauer Cash Bids",
+   "city": "New Knoxville",
+   "state": "OH",
+   "zip": "45871",
+   "phone": "(419) 753-2274",
    "source": "barchart"
   },
   {
