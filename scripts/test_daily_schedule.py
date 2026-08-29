@@ -8,8 +8,30 @@ would have read. Every other scheduled workflow ran that morning. The fire was
 simply not delivered — GitHub drops them, measured at roughly one in six on the
 sibling repository — and a job that fires ONCE A DAY has no second chance.
 
-So daily.yml now has backup fires, and this guards the two things that makes
-safe:
+So daily.yml now has backup fires, and this guards the things that makes safe.
+
+── EXTENDED 2026-08-29, and one check was CORRECTED. ─────────────────────────
+Sig, on the morning nothing arrived: "yes i want it by 630 and yes i want some
+kind of backup run if the scheduled one doesnt fire."
+
+Two things were wrong that this file could not see.
+
+First it was UNDERCOUNTING. `int(m.split(",")[0])` takes only the FIRST minute
+of a comma list, so `0,15,30,45 11 * * *` -- four fires -- was measured as one.
+It now expands the lists, which is what "the backups are spread" was always
+meant to mean. The twenty-minute floor came down to ten in the same breath:
+that number was picked when there were three fires an hour apart, and fifteen
+minutes is spread, not stacked. The check's INTENT is unchanged; only its
+arithmetic was wrong.
+
+Second, and worse, nothing here checked the thing the reader actually cares
+about: WHAT TIME IT LANDS WHERE HE LIVES. GitHub cron has no daylight saving,
+so a fixed UTC cron cannot hold a Central promise, and on 2026-08-28 a fire
+delivered fifteen hours late published the next day's briefing at 9:38 PM and
+made every one of the following morning's fires skip. The net-plus-local-gate
+that replaced it is only worth anything if the net really does cover 05:45 to
+06:30 Central in BOTH seasons, and if the job really does run on Central time.
+Those are now checked.
 
   1. The backup fires exist and land inside the gate's own morning window.
   2. The gate asks the REMOTE whether today is published, not its checkout.
@@ -43,16 +65,35 @@ def main():
     crons = re.findall(r"- cron:\s*'([^']+)'", y)
     print("daily.yml fires at: " + ", ".join(crons))
 
+    # EXPAND THE COMMA LISTS. "0,15,30,45 11 * * *" is FOUR fires, not one.
     morning = []
     for c in crons:
         m, h, _, _, dow = (c.split() + ["*"] * 5)[:5]
-        if dow in ("*", "*/1") and h.isdigit() and int(h) < 14:
-            morning.append(int(h) * 60 + int(m.split(",")[0]))
-    morning.sort()
+        if dow not in ("*", "*/1"):
+            continue
+        for hh in h.split(","):
+            if not hh.isdigit() or int(hh) >= 14:
+                continue
+            for mm in m.split(","):
+                if mm.isdigit():
+                    morning.append(int(hh) * 60 + int(mm))
+    morning = sorted(set(morning))
+    print("  %d morning fires (UTC): %s" % (
+        len(morning), ", ".join("%02d:%02d" % divmod(t, 60) for t in morning)))
 
     check(len(morning) >= 3,
           "there is more than one morning fire",
           "only %d — a dropped fire is a missed briefing" % len(morning))
+
+    # ── BY 6:30 CENTRAL, IN BOTH SEASONS. This is Sig's actual requirement,
+    # and it is the one thing a UTC cron cannot state on its own. CDT is
+    # UTC-5 and CST is UTC-6, so the same net has to straddle both.
+    for label, offset in (("CDT (summer)", 5), ("CST (winter)", 6)):
+        local = sorted((t - offset * 60) % 1440 for t in morning)
+        inwin = [t for t in local if 5 * 60 + 45 <= t <= 6 * 60 + 30]
+        check(len(inwin) >= 3,
+              "at least three fires land between 05:45 and 06:30 Central in %s" % label,
+              "only %d: %s" % (len(inwin), ", ".join("%02d:%02d" % divmod(t, 60) for t in local)))
 
     # Every backup must still be inside the gate's `H < 14` window, or it would
     # regenerate on top of a published day instead of skipping.
@@ -62,8 +103,8 @@ def main():
     # And they must be spread, not stacked: three fires in the same minute are
     # one fire as far as a dropped schedule is concerned.
     gaps = [b - a for a, b in zip(morning, morning[1:])]
-    check(gaps and min(gaps) >= 20,
-          "the backups are spread by at least twenty minutes",
+    check(gaps and min(gaps) >= 10,
+          "the backups are spread by at least ten minutes",
           "closest pair is %d minutes apart" % (min(gaps) if gaps else 0))
 
     check(morning[-1] - morning[0] >= 60,
@@ -78,6 +119,21 @@ def main():
 
     check("$H" in gate and "-lt 14" in gate,
           "the Friday post-close regeneration is still exempt from the gate")
+
+    # THE JOB MUST RUN ON CENTRAL TIME, or every clock above is decoration.
+    # generate_daily.py asks datetime.now() what day and what season it is; on
+    # a UTC runner a 02:38 UTC job believes it is tomorrow, and on 2026-08-28
+    # one did.
+    check(re.search(r"^env:\s*\n\s*TZ:\s*America/Chicago\s*$", y, re.M) is not None,
+          "the workflow runs on America/Chicago",
+          "without TZ the gate's `date` is UTC and the Central window is a fiction")
+
+    check("-lt 0545" in gate,
+          "a fire before 05:45 Central waits for a later one instead of publishing early")
+
+    check('"$DOW" != "5"' in gate,
+          "an afternoon fire only regenerates on FRIDAY",
+          "any delayed morning fire arriving after 14:00 would republish and re-email")
 
     # The whole job — email included — is what gets skipped.
     check(re.search(r"generate:\s*\n\s*needs: gate", y) is not None

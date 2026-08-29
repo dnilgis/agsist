@@ -43,7 +43,7 @@ Required GitHub secrets:
                     Generate at: myaccount.google.com/apppasswords
 
 Optional env:
-  FORCE_SEND=1    — bypass weekend skip (for manual triggers)
+  FORCE_SEND=1    — bypass the send guard (only for a manually verified briefing)
 ─────────────────────────────────────────────────────────────────
 """
 import json
@@ -580,9 +580,21 @@ def send(subject, email_body, sms_body):
 def main():
     today = datetime.now(TZ).date()
 
-    if today.weekday() >= 5 and not os.environ.get("FORCE_SEND"):
-        print(f"Skip {today} (weekend; set FORCE_SEND=1 to override)")
-        return 0
+    # ── THE WEEKEND SKIP IS GONE — 2026-08-29, Sig: "remove weekend skip yes."
+    #
+    # It stopped making sense the moment this script started running from
+    # daily.yml instead of its own weekday-only cron. The BRIEFING publishes
+    # seven days a week and always has — data/daily-archive has a file for
+    # every Saturday and Sunday this month — so the only thing this branch did
+    # was withhold, from the one person who forwards it, an issue that had
+    # already been generated, gated, published and mailed to the list.
+    #
+    # It is why nothing arrived on the morning of Saturday 2026-08-29 even
+    # after the schedule was fixed.
+    #
+    # THE SEND GUARD BELOW IS UNTOUCHED and is the one that matters: it still
+    # refuses to send a briefing that failed validation, weekend or not.
+    # FORCE_SEND still overrides that one, and only that one.
 
     daily = load_json("data/daily.json")
     prices = load_json("data/prices.json", optional=True)

@@ -1131,7 +1131,7 @@ def _tour_dates():
         return None
 
 
-def _tour_is_over_note(span, label):
+def _tour_is_over_note(span, label, final_date=None, today=None):
     """THE SENTENCE THAT STOPS THE TOUR BEING NARRATED AS UPCOMING.
 
     This is the branch that did not exist. The old code had three states --
@@ -1147,14 +1147,56 @@ def _tour_is_over_note(span, label):
 
     A guard that stops guarding is worse than no guard, because the shape of
     the code implies the case is handled. This one does not expire.
+
+    ── AND THEN IT BECAME THE HEADLINE. Corrected 2026-08-29. ───────────────
+    The paragraph above went in on 2026-08-27 and it worked: nothing has
+    described the tour as upcoming since. What it also did was hand the model
+    the loudest, most emphatic sentence in the entire seasonal context, every
+    single day, for six weeks. On Friday 2026-08-28 -- EIGHT DAYS after the
+    tour ended -- the briefing led with
+
+        PRO FARMER DONE; SEPTEMBER WASDE HOLDS THE ANSWER
+        "The Pro Farmer tour is in the rearview."
+
+    Sig caught that one in his inbox too. A prohibition written at full volume
+    reads as a topic. The fix for the last headline defect authored the next.
+
+    So the note now FADES, and says out loud that it is not news:
+
+      * days 0-4 after the final number -- still genuinely recent. Full note.
+      * day 5 onward -- one quiet line whose whole job is suppression, and
+        which BANS the tour from the headline, subheadline, lead, takeaway
+        and teaser by name. A guard belongs in the guard rails, not in the
+        lede.
+
+    The general form of this mistake is rule 21 in the prompt: nothing that
+    has not moved since the last briefing may lead it.
     """
-    return (f"The Pro Farmer Crop Tour is FINISHED. It ran {span} "
-            f"and published its final national estimate on {label}. Do NOT describe "
-            f"the tour, its scouts, its samples or its number as upcoming, "
-            f"forthcoming, 'this Friday', or 'the next test' -- it has already "
-            f"happened. Reference it only in the past tense, and only with figures "
-            f"that appear in the news block. The next scheduled yield event is the "
-            f"September WASDE.")
+    fresh = True
+    if final_date is not None and today is not None:
+        try:
+            fresh = (today - final_date).days <= 4
+        except Exception:
+            fresh = True
+
+    if fresh:
+        return (f"The Pro Farmer Crop Tour is FINISHED. It ran {span} "
+                f"and published its final national estimate on {label}. Do NOT describe "
+                f"the tour, its scouts, its samples or its number as upcoming, "
+                f"forthcoming, 'this Friday', or 'the next test' -- it has already "
+                f"happened. Reference it only in the past tense, and only with figures "
+                f"that appear in the news block. The next scheduled yield event is the "
+                f"September WASDE.")
+
+    days = (today - final_date).days if (final_date and today) else None
+    age = f"{days} days ago" if days is not None else "earlier this season"
+    return (f"BACKGROUND ONLY, NOT NEWS: the Pro Farmer Crop Tour ran {span} and "
+            f"its final national estimate came out on {label}, {age}. That is old "
+            f"news and it is NOT a story. Do NOT put the tour, its number, or the "
+            f"fact that it is over in the headline, subheadline, lead, the_takeaway "
+            f"or teaser. Do not frame the day around 'the tour is behind us' or "
+            f"'now we wait for the WASDE'. Mention it at all only if the news block "
+            f"carries something new about it, and never in the future tense.")
 
 
 def _august_context():
@@ -1189,7 +1231,7 @@ def _august_context():
         return (f"{base} The Pro Farmer Crop Tour has finished sampling ({span}); its "
                 f"final national estimate is due {t_label} and is NOT out yet as this "
                 f"briefing is written. Only cite figures present in the news block.")
-    return f"{base} {_tour_is_over_note(span, t_label)}"
+    return f"{base} {_tour_is_over_note(span, t_label, t_final, today)}"
 
 
 def get_seasonal_context():
@@ -1207,7 +1249,8 @@ def get_seasonal_context():
             t_start, t_end, _t_final, t_label, yr = d
             if yr == datetime.now().year:
                 span = f"{t_start.strftime('%b %-d')}-{t_end.strftime('%-d')}"
-                return (_SEPT_BASE + " " + _tour_is_over_note(span, t_label))
+                return (_SEPT_BASE + " " + _tour_is_over_note(
+                    span, t_label, _t_final, datetime.now().date()))
         return _SEPT_BASE
     contexts = {
         1: "Mid-winter: South American crop development. Cattle markets seasonally strong.",
@@ -1758,6 +1801,8 @@ Past TMYK titles from the last 3 briefings are listed above; do NOT repeat their
 19. ONE FACT, ONE HOME. Every stat, story, and price move is told ONCE, in the one block where it does the most work. The one_number is NEVER re-explained in a section (a six-word pointer like "the Yanbu decline covered above" is the maximum). A cross-commodity insight (meal/oil split, feeder/live ratio) lives in its section OR the_more_you_know, never both. Weather forecasts get one full telling; every later mention is four words or fewer. Before finalizing, scan your own draft: any sentence that restates an earlier sentence gets deleted, not reworded. The Jul 24 issue told the same Saudi pipeline story twice word-for-word and mentioned the same heat forecast six times; that is the failure mode this rule exists to kill.
 
 20. CLEAN OUTPUT MECHANICS. (a) NEVER write internal field names (one_number, weekly_thread, the_more_you_know, watch_list, outside_the_pit, tmyk) in reader-facing prose; say "today's number" or restructure the sentence. A published issue once printed "the one_number today". (b) Percent-of-range figures are 0-100 by definition; if a close sits at or beyond the top of its 52-week range, write "at the top of its 52-week range" or "a fresh 52-week high", never "102% of the range". (c) If the current spread/ratio setup (bean/corn ratio, carry structure) is genuinely at a decision threshold, it earns ONE bolded sentence inside the relevant section, with the acreage/storage logic stated CORRECTLY (a high bean/corn ratio pulls acres toward beans); there is no standalone spread block anymore. (d) NEVER use emoji or pictographic symbols in ANY field — headline, titles, bodies, everywhere. Plain text only; the page chrome supplies its own glyphs.
+
+21. THE LEAD MUST BE NEW. The headline, subheadline, lead, the_takeaway and teaser may only be built on something that happened since the previous briefing: an overnight or prior-session price move, a report released, a forecast that changed, a story in today's news block. A fact that was equally true a week ago cannot lead, however important it is. Two published failures, both caught by the reader and not by any check here: on 2026-08-26 the briefing promised a Pro Farmer number that had already been published, and on 2026-08-28 — eight days after the tour ended — it led with "PRO FARMER DONE; SEPTEMBER WASDE HOLDS THE ANSWER" over the sentence "The Pro Farmer tour is in the rearview." Nothing about that had changed in over a week. The seasonal and background context in this prompt exists to keep you from getting the CALENDAR wrong; it is not a source of stories, and an instruction telling you NOT to say something is never itself the thing to say. Before finalizing, ask of the headline: what changed to make this true today? If the honest answer is "nothing", the day is a quiet one — lead with the price action and say it was quiet. A quiet day reported as quiet is a good briefing. A stale fact dressed as news is not.
 
 ══ OUTPUT, return valid JSON with EXACTLY these fields ══
 
