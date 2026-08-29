@@ -11,9 +11,19 @@ name: Morning brief — email Sigurd
 #   just add the "Send brief" step to your existing daily workflow
 #   instead of running this separately.
 
+# ── ITS SCHEDULE WAS REMOVED 2026-08-29. THIS IS NOW A MANUAL BUTTON. ────────
+#
+# The step that sends this email now runs at the end of daily.yml, immediately
+# after the briefing publishes. See the note there for why.
+#
+# What was here was `cron: '6 12 * * 1-5'` — 12:06 UTC, which is 7:06 AM
+# Central in summer and 6:06 in winter, weekdays only. Sig asked for it by
+# 6:30 and asked why nothing came on a Saturday morning; both answers were in
+# that one line. Leaving it armed alongside the new step would send the email
+# twice on weekdays, because send_morning_brief.py has no day-flag.
+#
+# The button below still works and still forces past the weekend skip.
 on:
-  schedule:
-    - cron: '6 12 * * 1-5'   # 12:00 UTC, weekdays only
   workflow_dispatch:           # manual trigger button in Actions UI
 
 jobs:
