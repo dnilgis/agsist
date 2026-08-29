@@ -5,13 +5,26 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Fri, 28 Aug 2026 21:21:30 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 29 Aug 2026 02:41:00 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/agsist.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>WHEAT AND BEANS CLOSE THE WEEK STRONG</title>
+      <link>https://agsist.com/daily/2026-08-29</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-08-29</guid>
+      <pubDate>Sat, 29 Aug 2026 05:00:00 -0600</pubDate>
+      <description>Wheat finished Friday at $7.66, up 21 cents on the session, and soybeans closed at $12.78, both sitting above their 52-week highs. Corn at $5.11 barely moved. The heatwave narrative did the work this week, and now the calendar rolls to September WASDE on the 9th, where USDA's first post-tour yield update either confirms the bullish read or hands the funds a reason to exit.
+Friday's close had wheat up nearly 3% and soybeans at a 52-week high, while corn sat out; the September WASDE is now the market's next hard test.
+• WHEAT AND BEANS LEAD THE WEEK
+  → December corn at $5.3625: third session this call has been made. Price it or own the risk into September WASDE.
+• CATTLE HOLD; SCREWWORM CLOCK TICKING
+• ENERGY: QATAR FORCE MAJEURE KEEPS HORMUZ PREMIUM ALIVE
+Read more: https://agsist.com/daily/2026-08-29</description>
+    </item>
     <item>
       <title>WHEAT RUNS, BEANS HOLD; HEATWAVE BIDS THE COMPLEX</title>
       <link>https://agsist.com/daily/2026-08-28</link>
@@ -383,18 +396,6 @@ Grains close July in the red as corn pollination wraps in decent shape; Class II
 • Corn and Beans Close July Soft
 • Cattle Hold; Milk Runs Hard
 Read more: https://agsist.com/daily/2026-07-31</description>
-    </item>
-    <item>
-      <title>WHEAT LEADS GRAINS; HOGS FALL HARD ON EXPORT DAY</title>
-      <link>https://agsist.com/daily/2026-07-30</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-07-30</guid>
-      <pubDate>Thu, 30 Jul 2026 05:00:00 -0600</pubDate>
-      <description>Wheat ran **$6.79**, up 17 cents, its sharpest single-session move in weeks, with commodity brokers citing variable heat and China demand noise heading into August. Hogs fell hard, down 3.1%, with no clean catalyst visible in the livestock news. Export sales hit the tape at 7:30 AM CT this morning: the numbers in hand now, and the market's reaction tells the real story.
-Weekly export sales at 7:30 AM CT set the tone for beans and wheat; hogs dropped 3.1% with no obvious headline driver.
-• Wheat Runs Hard
-• Corn and Beans Follow
-• Hogs Fall Without a Headline
-Read more: https://agsist.com/daily/2026-07-30</description>
     </item>
   </channel>
 </rss>
