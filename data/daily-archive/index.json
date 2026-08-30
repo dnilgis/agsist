@@ -1,6 +1,17 @@
 {
   "briefings": [
     {
+      "date": "2026-08-30",
+      "date_display": "Sunday, August 30, 2026",
+      "headline": "WHEAT HOLDS THE HIGH GROUND; SEPTEMBER SETS UP",
+      "teaser": "Wheat ran 3% Friday. September will tell you if it was a sprint or a start.",
+      "market_mood": "mixed",
+      "surprise_count": 0,
+      "sections": 3,
+      "url": "/daily/2026-08-30",
+      "market_closed": true
+    },
+    {
       "date": "2026-08-29",
       "date_display": "Saturday, August 29, 2026",
       "headline": "WHEAT LEADS THE WEEK; CORN PRICED FOR HARVEST",
@@ -1948,6 +1959,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-08-29T15:33:58.394537+00:00",
-  "count": 170
+  "updated": "2026-08-30T14:56:12.513242+00:00",
+  "count": 171
 }

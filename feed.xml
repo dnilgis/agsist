@@ -5,13 +5,26 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Sat, 29 Aug 2026 15:33:59 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 30 Aug 2026 14:56:13 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/agsist.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>WHEAT HOLDS THE HIGH GROUND; SEPTEMBER SETS UP</title>
+      <link>https://agsist.com/daily/2026-08-30</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-08-30</guid>
+      <pubDate>Sun, 30 Aug 2026 05:00:00 -0600</pubDate>
+      <description>Wheat closed Friday at $7.67, up 22 cents on the session and sitting at 92% of its 52-week range. Beans followed at $12.76, meal added nearly 3%. Cattle at $219.25 are 27% off their 52-week low and going nowhere fast. The week ahead has the catalysts to change at least one of those pictures.
+Grains closed the week strong, cattle are low on the range, and three market-moving events hit before Thursday.
+• GRAINS: WHEAT LEADS, BEANS FOLLOW
+  → December corn at $5.37: this is the same window that's been open all week. If you have unpriced new-crop bushels, the September WASDE on the 10th is the next real event. Do not wait past it.
+• CATTLE: STILL LOW, STILL WAITING
+• INPUTS: PHOSPHATE AND DIESEL INTO HARVEST
+Read more: https://agsist.com/daily/2026-08-30</description>
+    </item>
     <item>
       <title>WHEAT LEADS THE WEEK; CORN PRICED FOR HARVEST</title>
       <link>https://agsist.com/daily/2026-08-29</link>
@@ -384,18 +397,6 @@ Rain across the Belt knocked grains to multi-week lows Friday, while hogs had th
 • Hogs Run Hard; Cattle Firm
 • Crude Firms; Milk Breaks Hard
 Read more: https://agsist.com/daily/2026-08-01</description>
-    </item>
-    <item>
-      <title>WHEAT BREAKS 3%; MILK RUNS HARD TO CLOSE WEEK</title>
-      <link>https://agsist.com/daily/2026-07-31</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-07-31</guid>
-      <pubDate>Fri, 31 Jul 2026 05:00:00 -0600</pubDate>
-      <description>Wheat dropped 18¾ cents Friday, closing a brutal week by falling through $6.38 on fund and technical selling after yesterday's short-covering rally ran out of room. Corn pollination coming through in decent shape killed the weather premium that had been propping the complex. Class III milk at $17.58 was the day's one clean winner, up 3.3%. July ends with grains lower and cattle holding.
-Grains close July in the red as corn pollination wraps in decent shape; Class III milk tops the board on its biggest session gain in months.
-• Wheat Breaks to Close July
-• Corn and Beans Close July Soft
-• Cattle Hold; Milk Runs Hard
-Read more: https://agsist.com/daily/2026-07-31</description>
     </item>
   </channel>
 </rss>
