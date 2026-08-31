@@ -5,13 +5,26 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Sun, 30 Aug 2026 14:56:13 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 31 Aug 2026 13:15:54 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/agsist.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>CORN FADES, CRUDE RUNS; CROP PROGRESS AT 3 PM</title>
+      <link>https://agsist.com/daily/2026-08-31</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-08-31</guid>
+      <pubDate>Mon, 31 Aug 2026 05:00:00 -0600</pubDate>
+      <description>Corn settled at $5.09, off 6 cents, and the question is whether today's fade is harvest-pressure positioning or something the Crop Progress number confirms at 3 PM CT. Crude at $86.06 is the session's loudest voice: a supertanker hit mines in the Strait of Hormuz this morning, the Iran-Hormuz cycle reigniting on a day grains had nothing new to trade.
+Grains soften into Monday with Crop Progress due at 3 PM CT; oil runs on fresh US-Iran strikes in the Strait of Hormuz.
+• CORN AND BEANS FADE INTO CROP PROGRESS
+  → December corn at $5.32: if you have unpriced new-crop bushels and the Crop Progress number shows deteriorating conditions, that premium may not last to the September WASDE on the 10th. Know your floor before 3 PM.
+• CRUDE RUNS ON HORMUZ MINES
+• CATTLE HOLD LOW; BEEF DEMAND HOLDS UP
+Read more: https://agsist.com/daily/2026-08-31</description>
+    </item>
     <item>
       <title>WHEAT HOLDS THE HIGH GROUND; SEPTEMBER SETS UP</title>
       <link>https://agsist.com/daily/2026-08-30</link>
@@ -385,18 +398,6 @@ Belt rains removed the weather premium Friday; now the Pro Farmer crop tour and 
 • Crude Firms; Milk Breaks
   → Dairy producers: if you are not hedged on August and September Class III, the 52-week range at 34% says the risk is skewed lower. Look at the floor now.
 Read more: https://agsist.com/daily/2026-08-02</description>
-    </item>
-    <item>
-      <title>CORN DROPS 6%; HOGS RUN 18.7% TO CLOSE JULY</title>
-      <link>https://agsist.com/daily/2026-08-01</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-08-01</guid>
-      <pubDate>Sat, 01 Aug 2026 05:00:00 -0600</pubDate>
-      <description>Corn closed Friday at $4.41, down 6% on the session, its worst day in months, as Belt rainfall eased yield fears and funds rotated hard out of grains. Hogs closed at $98.85, up 18.7%, a move that size demands attention regardless of what drove it. July ends with grains broken and livestock split: cattle patient, hogs running, milk in freefall.
-Rain across the Belt knocked grains to multi-week lows Friday, while hogs had their biggest single-session gain in years and cattle quietly firmed.
-• Grains Break on Belt Rain
-• Hogs Run Hard; Cattle Firm
-• Crude Firms; Milk Breaks Hard
-Read more: https://agsist.com/daily/2026-08-01</description>
     </item>
   </channel>
 </rss>

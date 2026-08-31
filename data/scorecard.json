@@ -1,18 +1,18 @@
 {
- "updated": "2026-08-30T14:56:13+00:00",
- "total": 100,
+ "updated": "2026-08-31T13:15:54+00:00",
+ "total": 101,
  "played_out": 37,
- "didnt": 58,
+ "didnt": 59,
  "pending": 5,
- "hit_rate": 38.9,
+ "hit_rate": 38.5,
  "by_method": {
   "deterministic": {
    "played": 11,
-   "missed": 48,
-   "graded": 59,
-   "hit_rate": 18.6,
+   "missed": 49,
+   "graded": 60,
+   "hit_rate": 18.3,
    "first": "2026-06-24",
-   "last": "2026-08-28"
+   "last": "2026-08-31"
   },
   "self_reported": {
    "played": 26,
@@ -34,22 +34,22 @@
   },
   "v2": {
    "played": 7,
-   "missed": 8,
-   "graded": 15,
-   "hit_rate": 46.7,
+   "missed": 9,
+   "graded": 16,
+   "hit_rate": 43.8,
    "first": "2026-08-12",
-   "last": "2026-08-28"
+   "last": "2026-08-31"
   }
  },
  "direction_only": {
   "right_way": 25,
-  "graded": 59,
-  "rate": 42.4
+  "graded": 60,
+  "rate": 41.7
  },
  "by_instrument": {
   "wheat": {
    "played": 0,
-   "graded": 10,
+   "graded": 11,
    "hit_rate": 0.0
   },
   "corn": {
@@ -94,8 +94,24 @@
   "hit_rate": 40.0
  },
  "mismatched": 23,
- "current_streak": 3,
+ "current_streak": 0,
  "records": [
+  {
+   "made": "2026-08-30",
+   "judged": "2026-08-31",
+   "call": "Called wheat up toward above $7.72; wheat settled at $7.53 today, well short of the line.",
+   "outcome": "didnt",
+   "method": "deterministic",
+   "mismatch": false,
+   "note": "Wheat faded rather than extended; the September WASDE on the 10th is now the next real reset for that thesis.",
+   "instrument": "wheat",
+   "direction": "up",
+   "level": "7.67",
+   "p0": 7.67,
+   "p1": 7.5325,
+   "design": "v2",
+   "direction_ok": false
+  },
   {
    "made": "2026-08-27",
    "judged": "2026-08-28",
