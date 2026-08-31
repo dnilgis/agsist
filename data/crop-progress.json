@@ -1,19 +1,19 @@
 {
-  "updated": "2026-08-24",
-  "report_date": "2026-08-23",
+  "updated": "2026-08-31",
+  "report_date": "2026-08-30",
   "in_season": true,
   "corn": {
     "good_excellent": 57,
-    "report_date": "2026-08-23",
-    "good_excellent_prev_week": 60,
+    "report_date": "2026-08-30",
+    "good_excellent_prev_week": 57,
     "good_excellent_prev_year": 66,
     "planting_pct": 97,
     "planting_prev_year": 97
   },
   "soybeans": {
-    "good_excellent": 60,
-    "report_date": "2026-08-23",
-    "good_excellent_prev_week": 61,
+    "good_excellent": 58,
+    "report_date": "2026-08-30",
+    "good_excellent_prev_week": 60,
     "good_excellent_prev_year": 62,
     "planting_pct": 95,
     "planting_prev_year": 96
@@ -29,7 +29,7 @@
     "good_excellent": 51,
     "report_date": "2026-08-23",
     "good_excellent_prev_year": 49,
-    "harvest_pct": 62,
+    "harvest_pct": 77,
     "harvest_prev_year": 96
   }
 }
