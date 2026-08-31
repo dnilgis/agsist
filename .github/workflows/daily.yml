@@ -19,59 +19,84 @@ env:
 
 on:
   schedule:
-    # 11:02 UTC every day.
-    #   = 6:02 AM Central (CDT, summer) / 5:02 AM Central (CST, winter)
+    # ── REPLACED AGAIN 2026-08-31. THE NET WAS THE WRONG SHAPE. ────────────
     #
-    # Offset 2 min from the prices-fetch workflow (which fires at :00
-    # and :30 of every hour) so prices.json has time to commit before
-    # the briefing reads it. No DST adjustment needed year-round —
-    # both seasons publish comfortably before the 7 AM Central deadline,
-    # even with typical GitHub Actions cron delays (occasionally 30+ min
-    # during peak load).
+    # WHAT I BUILT ON 2026-08-29 AND WHY IT FAILED.
     #
-    # ── REPLACED 2026-08-29. THE CRONS ARE A NET; THE JOB DECIDES. ─────────
+    # Twelve fires every fifteen minutes across a two-and-a-half hour window,
+    # on the theory that twelve chances beat one. Measured over the two
+    # mornings that followed, in true UTC:
     #
-    # Sig: "yes i want it by 630 and yes i want some kind of backup run if the
-    # scheduled one doesnt fire."
+    #     Sun 08-30   ONE run, committed 14:56Z — 86 minutes after 13:30,
+    #                 the LAST fire of the net. The eleven earlier fires
+    #                 produced nothing at all.
+    #     Mon 08-31   NOTHING by 13:02Z (08:02 Central), by which time ten of
+    #                 the twelve fires were already due.
     #
-    # WHAT WAS ACTUALLY HAPPENING. `2 11 * * *` is 6:02 Central in summer, and
-    # for weeks GitHub delivered it 20-32 minutes late, so it landed 6:22-6:34
-    # and felt like a 6:30 schedule. Nothing here ever said 6:30. Then the
-    # delay stopped being 30 minutes: measured from the Actions run list,
+    # Meanwhile prices.yml delivered every one of its writes that same
+    # morning. The difference is not luck, and this repository had already
+    # written it down — at the top of .github/workflows/prices.yml:
     #
-    #     Aug 27  #276  Scheduled   3:55 PM CDT     ~10 hours late
-    #     Aug 28  #278  Scheduled   4:19 PM CDT     the Friday post-close, 79 min late
-    #     Aug 28  #279  Scheduled   9:38 PM CDT     ~15 hours late
+    #     "GitHub's scheduled-cron is best-effort and silently DROPS
+    #      high-frequency (every-30-min) runs ... Low-frequency, off-:00
+    #      minutes (GitHub honors these far more reliably than */30)."
     #
-    # and #279 published 2026-08-29.json at 9:38 PM on the 28th, which made
-    # every one of Saturday's morning fires skip. Sig got a briefing at bedtime
-    # and nothing at breakfast.
+    # And in the standing decisions, measured on the sibling repo 2026-08-26:
+    # a ten-minute cron delivered one to three runs an hour against six asked,
+    # while an hourly cron outside the window delivered every one. The fix
+    # there was ONE fire whose job loops internally. **Do not "fix" the
+    # schedule by asking more often.**
     #
-    # So: cast a NET of fires every fifteen minutes across a two-and-a-half
-    # hour window and let the gate below decide, in CENTRAL time, which one
-    # publishes. Twelve chances instead of one, and the first that arrives
-    # after 05:45 Central wins; the rest cost one runner-minute each and skip.
+    # The net asked more often. Ten of its twelve fires sat on :00, :15, :30
+    # and :45 — the busiest minutes of the hour, which GitHub's own docs name
+    # as the ones to avoid. It was the exact pattern this repo had already
+    # measured and rejected, rebuilt by hand.
     #
-    # THIS IS ALSO THE DST FIX. GitHub cron has no daylight saving. The window
-    # 10:30-13:30 UTC is 05:30-08:30 Central in summer and 04:30-07:30 in
-    # winter; in both seasons there are at least four fires between 05:45 and
-    # 06:30 Central. A fixed UTC cron cannot hold a Central promise. A net plus
-    # a local-time gate can.
-    - cron: '30,45 10 * * *'
-    - cron: '0,15,30,45 11 * * *'
-    - cron: '0,15,30,45 12 * * *'
-    - cron: '0,30 13 * * *'
-    # v4.6: Friday post-close regeneration.
-    # 20:00 UTC Fri = 3:00 PM Central (CDT) / 2:00 PM Central (CST).
-    # CBOT grain settles 1:20 PM CT, CME livestock 1:00 PM CT, NYMEX
-    # crude 1:30 PM CT. Running at 2:00 PM CT (winter) / 3:00 PM CT
-    # (summer) puts us safely past all settlement windows year-round so
-    # locked_prices reflects actual Friday closes. This replaces the
-    # morning Friday briefing with the corrected one, eliminating the
-    # failure mode where Friday's email goes out with intraday prices
-    # and Saturday's recap shows different numbers. Saturday's 11:02
-    # UTC run still happens normally on top of this.
+    # WHAT REPLACES IT: three launches, and a job that waits.
+    #
+    # Each fire is off-:00, off-:15/:30/:45, and at least 80 minutes from its
+    # neighbour — the shape prices.yml uses and GitHub honours. Each one, on
+    # its own, covers the whole morning: the gate below no longer decides once
+    # and exit, it LOOPS until the publish window opens. So one delivered fire
+    # out of three is a briefing on time, and all three being delivered costs
+    # two cheap skips.
+    #
+    #   19 10  = 05:19 CDT / 04:19 CST — ahead of the 05:45 floor either season
+    #   41 11  = 06:41 CDT / 05:41 CST — recovery if the first was dropped
+    #   23 13  = 08:23 CDT / 07:23 CST — last resort, still a morning briefing
+    - cron: '19 10 * * *'
+    - cron: '41 11 * * *'
+    - cron: '23 13 * * *'
+    # v4.6: Friday post-close regeneration. 20:00 UTC Fri = 3:00 PM Central
+    # (CDT) / 2:00 PM Central (CST). CBOT grain settles 1:20 PM CT, CME
+    # livestock 1:00 PM CT, NYMEX crude 1:30 PM CT, so this is safely past
+    # every settlement and locked_prices reflects actual Friday closes. It
+    # replaces the morning file on purpose and does NOT wait — see the gate.
     - cron: '0 20 * * 5'
+  # ── THE HEARTBEAT THAT IS NOT A CRON ──────────────────────────────────
+  #
+  # Three low-frequency fires are the right shape, but they are still three
+  # bets on the same unreliable delivery. On the morning this was written,
+  # every scheduled briefing fire for two days had been dropped while
+  # prices.yml committed to this branch every thirty minutes without missing
+  # one. Pushes are not scheduled, so they are not dropped.
+  #
+  # So every push to main also asks the gate. On a normal morning the pre-dawn
+  # prices launch commits at about 05:17 Central and every half hour after, and
+  # the first of those landing past the 05:45 floor generates the briefing —
+  # with no cron involved at all.
+  #
+  # A PUSH NEVER WAITS. That is the difference from a scheduled fire and it is
+  # what keeps this cheap: a push before the floor exits in seconds rather than
+  # holding a runner for an hour, and there is always another push coming. The
+  # briefing's own push re-triggers this workflow once, sees today already
+  # published, and skips — about twenty seconds, once a day.
+  #
+  # `concurrency: daily-briefing` above already queues rather than overlaps, so
+  # two pushes arriving together cannot both generate.
+  push:
+    branches: [main]
+
   workflow_dispatch:
     inputs:
       send_email:
@@ -92,55 +117,108 @@ jobs:
       - uses: actions/checkout@v4
       - id: g
         run: |
+          # THE GATE WAITS NOW. IT USED TO DECIDE ONCE AND EXIT.
+          #
+          # That is the whole change. A fire that arrived at 05:19 Central used
+          # to look at the clock, see it was before the 05:45 floor, print
+          # "a later fire takes this one" and stop — which was true only while
+          # there WERE later fires. There are three a day now, hours apart, so
+          # the run that arrives early has to hold the window open itself.
+          #
+          # It loops for up to two and a half hours, asking the same three
+          # questions every twelve minutes, and exits the moment one of them
+          # answers. Twelve minutes because the whole point is to stop asking
+          # GitHub for things every fifteen.
+          set -uo pipefail
+
+          EVENT="${{ github.event_name }}"
+          BRANCH="${{ github.event.repository.default_branch || 'main' }}"
+          DEADLINE=$(( $(date +%s) + 150 * 60 ))
+          FLOOR=0545
+
+          say() { echo "$(date +%H:%M) Central — $*"; }
+
           # ASK THE REMOTE, NOT THE CHECKOUT.
-          # A scheduled run checks out the SHA it was TRIGGERED at, so a backup
-          # fire queued behind a run still in flight would look at a tree from
+          # A scheduled run checks out the SHA it was TRIGGERED at, so a run
+          # still in flight when this one starts would look at a tree from
           # before that run pushed, decide today's briefing did not exist, and
           # generate it a second time. (send_daily.py's day-flag would still
           # stop the second EMAIL — but a regenerated briefing overwrites the
           # published one, which is its own kind of wrong.) The remote is the
-          # only place that knows whether today is done.
-          git fetch --quiet --depth=1 origin "${{ github.event.repository.default_branch || 'main' }}" || true
+          # only place that knows whether today is done, and it is re-asked on
+          # every pass of the loop, not once at the start.
+          published() {
+            git fetch --quiet --depth=1 origin "$BRANCH" 2>/dev/null || true
+            git cat-file -e "FETCH_HEAD:data/daily-archive/$1.json" 2>/dev/null && return 0
+            [ -f "data/daily-archive/$1.json" ] && return 0
+            return 1
+          }
+
+          decide() { echo "skip=$1" >> "$GITHUB_OUTPUT"; }
 
           # EVERY CLOCK HERE IS CENTRAL. TZ is set on the workflow.
-          DAY=$(date +%F)          # the reader's day, not the runner's
-          HHMM=$(date +%H%M)       # 0545, 1430 ...
-          H=$(date +%H)
-          DOW=$(date +%u)          # 1=Mon ... 5=Fri
-          EVENT="${{ github.event_name }}"
+          while :; do
+            DAY=$(date +%F)          # the reader's day, not the runner's
+            HHMM=$(date +%H%M)
+            H=$(date +%H)
+            DOW=$(date +%u)          # 1=Mon ... 5=Fri
 
-          have=0
-          git cat-file -e "FETCH_HEAD:data/daily-archive/$DAY.json" 2>/dev/null && have=1
-          [ -f "data/daily-archive/$DAY.json" ] && have=1
-
-          skip=0; why=""
-          if [ "$EVENT" = "schedule" ]; then
-            if [ "$have" = "1" ] && [ "$H" -lt 14 ]; then
-              # A backup fire doing its job. Costs one runner-minute.
-              skip=1; why="$DAY is already published"
-            elif [ "$have" = "0" ] && [ "$HHMM" -lt 0545 ]; then
-              # TOO EARLY, NOT TOO LATE. In winter the first fires of the net
-              # land before 5 AM Central. Publishing then would lock prices
-              # against a stale feed and put the briefing in front of a reader
-              # who is asleep. A later fire in the same net takes it.
-              skip=1; why="$(date +%H:%M) Central is before the 05:45 floor — a later fire takes this one"
-            elif [ "$H" -ge 14 ] && { [ "$DOW" != "5" ] || [ "$H" -ge 18 ]; }; then
-              # THE ONLY AFTERNOON JOB IS FRIDAY'S POST-CLOSE REGENERATION.
-              # Before this, ANY scheduled fire arriving after 14:00 was
-              # allowed to regenerate and re-email. That is how a fire
-              # delivered ten hours late republished Thursday's briefing at
-              # 3:55 PM. A delayed morning fire is not a post-close regen and
-              # must not be treated as one.
-              skip=1; why="$(date +%H:%M) Central on day $DOW is outside both windows — a delayed fire, not a regeneration"
+            # A MANUAL RUN NEVER WAITS AND NEVER SKIPS. It is somebody standing
+            # at the keyboard wanting a briefing now.
+            if [ "$EVENT" != "schedule" ] && [ "$EVENT" != "push" ]; then
+              say "GENERATING: manual $EVENT, $DAY"
+              decide 0; exit 0
             fi
-          fi
 
-          if [ "$skip" = "1" ]; then
-            echo "skip=1" >> "$GITHUB_OUTPUT"
-            echo "SKIPPING: $why"
-          else
-            echo "GENERATING: $DAY, $(date +%H:%M) Central, event=$EVENT, already-published=$have"
-          fi
+            # THE FRIDAY POST-CLOSE REGENERATION NEVER WAITS EITHER. It exists
+            # to overwrite the morning file with settled prices, so "already
+            # published" is its precondition, not its reason to stop.
+            if [ "$H" -ge 14 ] && [ "$DOW" = "5" ] && [ "$H" -lt 18 ]; then
+              say "GENERATING: Friday post-close regeneration, $DAY"
+              decide 0; exit 0
+            fi
+
+            # A DELAYED MORNING FIRE IS NOT A REGENERATION. Before this guard,
+            # ANY scheduled fire arriving after 14:00 was allowed to regenerate
+            # and re-email; that is how a fire delivered ten hours late
+            # republished Thursday's briefing at 3:55 PM.
+            if [ "$H" -ge 14 ]; then
+              say "SKIPPING: $DAY, arrived at $(date +%H:%M) Central on day $DOW — a delayed fire, not a regeneration"
+              decide 1; exit 0
+            fi
+
+            if published "$DAY"; then
+              say "SKIPPING: $DAY is already published — a backup launch doing its job"
+              decide 1; exit 0
+            fi
+
+            # TOO EARLY, NOT TOO LATE. Publishing before 05:45 Central locks
+            # prices against a feed the pre-dawn prices launch has not yet
+            # refreshed, and puts the briefing in front of a reader who is
+            # asleep. So we WAIT for the floor rather than hand the morning to
+            # a later fire that may never be delivered.
+            if [ "$HHMM" -lt "$FLOOR" ]; then
+              # A PUSH NEVER WAITS. Holding a runner for an hour on every
+              # commit would cost more than the whole briefing; there is
+              # another push along in thirty minutes and one of them will be
+              # past the floor.
+              if [ "$EVENT" = "push" ]; then
+                say "SKIPPING: push before the ${FLOOR} floor — the next one takes it"
+                decide 1; exit 0
+              fi
+              now=$(date +%s)
+              if [ "$now" -ge "$DEADLINE" ]; then
+                say "SKIPPING: still before the $FLOOR floor and out of budget — a later launch takes this one"
+                decide 1; exit 0
+              fi
+              say "waiting: $(date +%H:%M) is before the ${FLOOR} floor; $(( (DEADLINE - now) / 60 ))m of budget left"
+              sleep 720
+              continue
+            fi
+
+            say "GENERATING: $DAY, event=$EVENT"
+            decide 0; exit 0
+          done
 
   generate:
     needs: gate
@@ -355,8 +433,18 @@ jobs:
       # test something — emailed the real subscriber list. Now a manual run is
       # a dry run unless the dispatcher explicitly ticks send_email. Scheduled
       # runs are unaffected (event_name == 'schedule' short-circuits true).
+      #
+      # `push` WAS ADDED HERE THE MOMENT THE PUSH TRIGGER WAS. Without it, a
+      # briefing generated by the push heartbeat would publish to the site and
+      # send nothing — a page that is up to date and an inbox that is empty,
+      # which is precisely the complaint that started all of this. The two
+      # changes belong together and neither is safe alone.
+      #
+      # It cannot double-send: send_daily.py sets a day flag through the subs
+      # worker and fails closed, and the gate above refuses any run on a day
+      # that is already published.
       - name: Send daily email
-        if: ${{ github.event_name == 'schedule' || inputs.send_email == true }}
+        if: ${{ github.event_name == 'schedule' || github.event_name == 'push' || inputs.send_email == true }}
         env:
           # new sender env names; falls back to the legacy GMAIL_* secrets so
           # either set works. RECIPIENTS is ignored when LIST_URL is set
@@ -400,7 +488,7 @@ jobs:
       # continue-on-error: a forwarding email that fails must not fail the run
       # that already published the briefing and mailed the list.
       - name: Send the forwarding brief to Sig
-        if: ${{ github.event_name == 'schedule' || inputs.send_email == true }}
+        if: ${{ github.event_name == 'schedule' || github.event_name == 'push' || inputs.send_email == true }}
         continue-on-error: true
         env:
           GMAIL_USER:     ${{ secrets.GMAIL_USER }}
