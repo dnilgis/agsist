@@ -1,18 +1,18 @@
 {
- "generated": "2026-08-29T15:45:24Z",
+ "generated": "2026-08-31T17:58:56Z",
  "from": "bids-full.json",
  "complete": false,
  "note": "Directory only: who operates a facility and where. No prices, no basis, no symbols, no delivery windows.",
  "counts": {
-  "facilities": 1810,
+  "facilities": 1792,
   "states": 28,
   "with_address": 0,
   "with_coords": 0,
   "with_url": 0,
-  "with_phone": 1810,
+  "with_phone": 1792,
   "saturated_zips": 0,
   "failed_zips": 0,
-  "rows_read": 18986
+  "rows_read": 17495
  },
  "saturated": [],
  "failed": [],
@@ -33,33 +33,6 @@
    "state": "AR",
    "zip": "72152",
    "phone": "9999999999",
-   "source": "barchart"
-  },
-  {
-   "facility": "Riceland Co-op",
-   "branch": "Des Arc",
-   "city": "Des Arc",
-   "state": "AR",
-   "zip": "72040",
-   "phone": "(870)256-4125",
-   "source": "barchart"
-  },
-  {
-   "facility": "Riceland Co-op",
-   "branch": "Hazen",
-   "city": "Hazen",
-   "state": "AR",
-   "zip": "72064",
-   "phone": "(870) 255-4531",
-   "source": "barchart"
-  },
-  {
-   "facility": "Riceland Co-op",
-   "branch": "Stuttgart",
-   "city": "Stuttgart",
-   "state": "AR",
-   "zip": "72160",
-   "phone": "(870) 673-5342",
    "source": "barchart"
   },
   {
@@ -87,6 +60,15 @@
    "state": "CO",
    "zip": "80650",
    "phone": " 970-381-4402",
+   "source": "barchart"
+  },
+  {
+   "facility": "Roggen Farmers Elevator Association",
+   "branch": "Roggen Elevator - Main Office",
+   "city": "Roggen",
+   "state": "CO",
+   "zip": "80652",
+   "phone": "(303) 849-5506",
    "source": "barchart"
   },
   {
@@ -5733,33 +5715,6 @@
    "source": "barchart"
   },
   {
-   "facility": "Seatonville Elevator Co",
-   "branch": "Marquis",
-   "city": "Hennepin",
-   "state": "IL",
-   "zip": "61327",
-   "phone": "815-925-9590",
-   "source": "barchart"
-  },
-  {
-   "facility": "Seatonville Elevator Co",
-   "branch": "River",
-   "city": "Spring Valley",
-   "state": "IL",
-   "zip": "62705",
-   "phone": "815-894-2013",
-   "source": "barchart"
-  },
-  {
-   "facility": "Sorells Farm Supply",
-   "branch": "Raymond",
-   "city": "Raymond",
-   "state": "IL",
-   "zip": "62560",
-   "phone": "217-229-3412",
-   "source": "barchart"
-  },
-  {
    "facility": "Stanford Grain Company",
    "branch": "Stanford",
    "city": "Stanford",
@@ -5955,15 +5910,6 @@
    "state": "IL",
    "zip": "62656",
    "phone": "217-735-1178",
-   "source": "barchart"
-  },
-  {
-   "facility": "Top Flight Grain Co-operative",
-   "branch": "MAR",
-   "city": "Maroa",
-   "state": "IL",
-   "zip": "61756",
-   "phone": "217-794-5533",
    "source": "barchart"
   },
   {
@@ -6489,6 +6435,15 @@
    "source": "barchart"
   },
   {
+   "facility": "Boswell Chase Grain, Inc.",
+   "branch": "Boswell",
+   "city": "Boswell",
+   "state": "IN",
+   "zip": "47921",
+   "phone": "765-869-5527",
+   "source": "barchart"
+  },
+  {
    "facility": "Cargill US",
    "branch": "Cargill, CAH (Dlvd AC Grain LLC, Dana, IN)",
    "city": "Dana",
@@ -6648,15 +6603,6 @@
    "state": "IN",
    "zip": "47948",
    "phone": "219-233-5975",
-   "source": "barchart"
-  },
-  {
-   "facility": "Iroquois Bio-Energy",
-   "branch": "IBEC",
-   "city": "Rensselaer",
-   "state": "IN",
-   "zip": "47978",
-   "phone": "(219) 866-5990",
    "source": "barchart"
   },
   {
@@ -7488,15 +7434,6 @@
    "source": "barchart"
   },
   {
-   "facility": "Cardinal Ethanol",
-   "branch": "Cardinal Colwich",
-   "city": "Colwich",
-   "state": "KS",
-   "zip": "67030",
-   "phone": "(316) 789-2500",
-   "source": "barchart"
-  },
-  {
    "facility": "Cargill US",
    "branch": "Hutchinson East, CAH",
    "city": "Hutchinson",
@@ -8218,20 +8155,20 @@
   },
   {
    "facility": "Farmers Cooperative Equity Company",
-   "branch": "Nashville",
-   "city": "Nashville",
-   "state": "KS",
-   "zip": "67112",
-   "phone": "620-246-5226",
-   "source": "barchart"
-  },
-  {
-   "facility": "Farmers Cooperative Equity Company",
    "branch": "St. Leo",
    "city": "Nashville",
    "state": "KS",
    "zip": "67112",
    "phone": "620-246-5262",
+   "source": "barchart"
+  },
+  {
+   "facility": "Farmers Cooperative Equity Company",
+   "branch": "Nashville",
+   "city": "Nashville",
+   "state": "KS",
+   "zip": "67112",
+   "phone": "620-246-5226",
    "source": "barchart"
   },
   {
@@ -8874,15 +8811,6 @@
    "source": "barchart"
   },
   {
-   "facility": "PureField Ingredients",
-   "branch": "LITTLE RIVER \u00c3\u00a2\u00c2\u0080\u00c2\u0093 CPC",
-   "city": "Little River",
-   "state": "KS",
-   "zip": "67457",
-   "phone": "N/A",
-   "source": "barchart"
-  },
-  {
    "facility": "Scoular Company - Missouri",
    "branch": "Scoular Pittsburg Cash Bids",
    "city": "Pittsburg",
@@ -9469,7 +9397,7 @@
   },
   {
    "facility": "CHS Herman",
-   "branch": "French",
+   "branch": "Fergus Falls South (8\u00c3\u0082\u00c2\u00a2 Dump fee)",
    "city": "Fergus Falls",
    "state": "MN",
    "zip": "56537",
@@ -9478,7 +9406,7 @@
   },
   {
    "facility": "CHS Herman",
-   "branch": "Fergus Falls South (8\u00c3\u0082\u00c2\u00a2 Dump fee)",
+   "branch": "French",
    "city": "Fergus Falls",
    "state": "MN",
    "zip": "56537",
@@ -9874,15 +9802,6 @@
   },
   {
    "facility": "Crystal Valley Coop",
-   "branch": "la salle",
-   "city": "La Salle",
-   "state": "MN",
-   "zip": "56056",
-   "phone": "507-642-3300",
-   "source": "barchart"
-  },
-  {
-   "facility": "Crystal Valley Coop",
    "branch": "lake crystal",
    "city": "Lake Crystal",
    "state": "MN",
@@ -9915,15 +9834,6 @@
    "state": "MN",
    "zip": "56090",
    "phone": "507-549-3722",
-   "source": "barchart"
-  },
-  {
-   "facility": "Farmers Elevator Co.",
-   "branch": "Eldred",
-   "city": "Eldred",
-   "state": "MN",
-   "zip": "56523",
-   "phone": "2182811364",
    "source": "barchart"
   },
   {
@@ -11232,15 +11142,6 @@
    "source": "barchart"
   },
   {
-   "facility": "Ricketts Farm Service",
-   "branch": "Salisbury",
-   "city": "Salisbury",
-   "state": "MO",
-   "zip": "65281",
-   "phone": "660-388-6448",
-   "source": "barchart"
-  },
-  {
    "facility": "Scoular Company - Missouri",
    "branch": "Scoular Butterfield Cash Bids",
    "city": "Butterfield",
@@ -11400,42 +11301,6 @@
    "state": "ND",
    "zip": "58045",
    "phone": "701-636-5130",
-   "source": "barchart"
-  },
-  {
-   "facility": "Arthur Companies",
-   "branch": "Anamoose",
-   "city": "Anamoose",
-   "state": "ND",
-   "zip": "58710",
-   "phone": "701-712-2614",
-   "source": "barchart"
-  },
-  {
-   "facility": "Arthur Companies",
-   "branch": "Arthur",
-   "city": "Arthur",
-   "state": "ND",
-   "zip": "58006",
-   "phone": "701-967-8312",
-   "source": "barchart"
-  },
-  {
-   "facility": "Arthur Companies",
-   "branch": "Ayr",
-   "city": "Ayr",
-   "state": "ND",
-   "zip": "58007",
-   "phone": "701-668-2973",
-   "source": "barchart"
-  },
-  {
-   "facility": "Arthur Companies",
-   "branch": "Pillsbury",
-   "city": "Pillsbury",
-   "state": "ND",
-   "zip": "58065",
-   "phone": "701-997-6104",
    "source": "barchart"
   },
   {
@@ -11742,15 +11607,6 @@
    "state": "ND",
    "zip": "58048",
    "phone": "701-874-2112",
-   "source": "barchart"
-  },
-  {
-   "facility": "Iroquois Bio-Energy",
-   "branch": "Blue Flint",
-   "city": "Underwood",
-   "state": "ND",
-   "zip": "58576",
-   "phone": "701-442-7500",
    "source": "barchart"
   },
   {
@@ -13969,15 +13825,6 @@
   },
   {
    "facility": "Pandora Grain & Supply, Inc.",
-   "branch": "Beaverdam",
-   "city": "Beaverdam",
-   "state": "OH",
-   "zip": "45808",
-   "phone": "419-643-4135",
-   "source": "barchart"
-  },
-  {
-   "facility": "Pandora Grain & Supply, Inc.",
    "branch": "New Crop",
    "city": "Bluffton",
    "state": "OH",
@@ -15199,15 +15046,6 @@
    "state": "SD",
    "zip": "57054",
    "phone": "605-482-8291",
-   "source": "barchart"
-  },
-  {
-   "facility": "New Century FS",
-   "branch": "Yankton",
-   "city": "Yankton",
-   "state": "SD",
-   "zip": "57078",
-   "phone": "(605) 665-3691",
    "source": "barchart"
   },
   {
