@@ -1,5 +1,5 @@
 {
-  "fetched": "2026-08-31T21:20:40Z",
+  "fetched": "2026-08-31T21:50:55Z",
   "ok": 77,
   "failed": 2,
   "stale_keys": [
@@ -298,9 +298,9 @@
     "cattle": {
       "ticker": "LE=F",
       "close": 220.72501,
-      "open": 219.25,
-      "netChange": 1.47501,
-      "pctChange": 0.6728,
+      "open": 220.55,
+      "netChange": 0.17501,
+      "pctChange": 0.0794,
       "wk52_hi": 258.725,
       "wk52_lo": 204.55,
       "repaired_from": "cattle-aug26",
@@ -326,9 +326,9 @@
       "_orig": {
         "ticker": "GF=F",
         "close": 316.625,
-        "open": 316.52499,
-        "netChange": 0.10001,
-        "pctChange": 0.0316
+        "open": 316.75,
+        "netChange": -0.125,
+        "pctChange": -0.0395
       }
     },
     "hogs": {
@@ -361,9 +361,9 @@
     "cattle-aug26": {
       "ticker": "LEQ26.CME",
       "close": 220.72501,
-      "open": 219.25,
-      "netChange": 1.47501,
-      "pctChange": 0.6728,
+      "open": 220.55,
+      "netChange": 0.17501,
+      "pctChange": 0.0794,
       "wk52_hi": 251.65,
       "wk52_lo": 197.525
     },
@@ -379,9 +379,9 @@
     "cattle-dec26": {
       "ticker": "LEZ26.CME",
       "close": 214.575,
-      "open": 213.72501,
-      "netChange": 0.84999,
-      "pctChange": 0.3977,
+      "open": 213.8,
+      "netChange": 0.775,
+      "pctChange": 0.3625,
       "wk52_hi": 245.9,
       "wk52_lo": 197.05
     },
@@ -397,9 +397,9 @@
     "cattle-apr27": {
       "ticker": "LEJ27.CME",
       "close": 217.875,
-      "open": 217.52499,
-      "netChange": 0.35001,
-      "pctChange": 0.1609,
+      "open": 217.675,
+      "netChange": 0.2,
+      "pctChange": 0.0919,
       "wk52_hi": 245.3,
       "wk52_lo": 196.075
     },
@@ -444,9 +444,9 @@
     "hogs-feb27": {
       "ticker": "HEG27.CME",
       "close": 76.45,
-      "open": 74.975,
-      "netChange": 1.475,
-      "pctChange": 1.9673,
+      "open": 75.075,
+      "netChange": 1.375,
+      "pctChange": 1.8315,
       "wk52_hi": 87.425,
       "wk52_lo": 72.9
     },
@@ -462,9 +462,9 @@
     "hogs-jun27": {
       "ticker": "HEM27.CME",
       "close": 95.275,
-      "open": 93.925,
-      "netChange": 1.35,
-      "pctChange": 1.4373,
+      "open": 94.15,
+      "netChange": 1.125,
+      "pctChange": 1.1949,
       "wk52_hi": 101.225,
       "wk52_lo": 91.7
     },
@@ -480,27 +480,27 @@
     "feeders-oct26": {
       "ticker": "GFV26.CME",
       "close": 316.625,
-      "open": 316.52499,
-      "netChange": 0.10001,
-      "pctChange": 0.0316,
+      "open": 316.75,
+      "netChange": -0.125,
+      "pctChange": -0.0395,
       "wk52_hi": 375.575,
       "wk52_lo": 287.925
     },
     "feeders-nov26": {
       "ticker": "GFX26.CME",
       "close": 309.95001,
-      "open": 309.92499,
-      "netChange": 0.02502,
-      "pctChange": 0.0081,
+      "open": 310.14999,
+      "netChange": -0.19998,
+      "pctChange": -0.0645,
       "wk52_hi": 372.8,
       "wk52_lo": 284.0
     },
     "feeders-jan27": {
       "ticker": "GFF27.CME",
       "close": 302.64999,
-      "open": 302.27499,
-      "netChange": 0.375,
-      "pctChange": 0.1241,
+      "open": 302.35001,
+      "netChange": 0.29998,
+      "pctChange": 0.0992,
       "wk52_hi": 366.425,
       "wk52_lo": 282.6
     },
@@ -678,9 +678,9 @@
     "milk-dec26": {
       "ticker": "DCZ26.CME",
       "close": 17.31,
-      "open": 17.32,
-      "netChange": -0.01,
-      "pctChange": -0.0577,
+      "open": 17.35,
+      "netChange": -0.04,
+      "pctChange": -0.2305,
       "wk52_hi": 18.42,
       "wk52_lo": 16.97
     },
@@ -767,10 +767,10 @@
     },
     "dollar": {
       "ticker": "DX-Y.NYB",
-      "close": 99.419,
+      "close": 99.412,
       "open": 99.597,
-      "netChange": -0.178,
-      "pctChange": -0.1787,
+      "netChange": -0.185,
+      "pctChange": -0.1857,
       "wk52_hi": 101.8,
       "wk52_lo": 95.55
     },
@@ -794,28 +794,28 @@
     },
     "bitcoin": {
       "ticker": "BTC-USD",
-      "close": 78855.32031,
+      "close": 78993.32812,
       "open": 77683.5,
-      "netChange": 1171.82031,
-      "pctChange": 1.5085,
+      "netChange": 1309.82812,
+      "pctChange": 1.6861,
       "wk52_hi": 126198.0703,
       "wk52_lo": 57747.7656
     },
     "ripple": {
       "ticker": "XRP-USD",
-      "close": 1.3834,
+      "close": 1.3894,
       "open": 1.3578,
-      "netChange": 0.0256,
-      "pctChange": 1.8854,
+      "netChange": 0.0316,
+      "pctChange": 2.3273,
       "wk52_hi": 3.1835,
       "wk52_lo": 0.9884
     },
     "kaspa": {
       "ticker": "KAS-USD",
-      "close": 0.02758,
+      "close": 0.02797,
       "open": 0.02702,
-      "netChange": 0.00056,
-      "pctChange": 2.0725,
+      "netChange": 0.00095,
+      "pctChange": 3.5159,
       "wk52_hi": 0.0909,
       "wk52_lo": 0.0139
     },
@@ -855,9 +855,9 @@
     "cattle-nearby": {
       "ticker": "LEQ26.CME",
       "close": 220.72501,
-      "open": 219.25,
-      "netChange": 1.47501,
-      "pctChange": 0.6728,
+      "open": 220.55,
+      "netChange": 0.17501,
+      "pctChange": 0.0794,
       "wk52_hi": 251.65,
       "wk52_lo": 197.525,
       "alias_of": "cattle-aug26",
