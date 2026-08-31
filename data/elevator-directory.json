@@ -1,18 +1,18 @@
 {
- "generated": "2026-08-31T17:58:56Z",
+ "generated": "2026-08-31T22:45:20Z",
  "from": "bids-full.json",
  "complete": false,
  "note": "Directory only: who operates a facility and where. No prices, no basis, no symbols, no delivery windows.",
  "counts": {
-  "facilities": 1792,
+  "facilities": 1806,
   "states": 28,
   "with_address": 0,
   "with_coords": 0,
   "with_url": 0,
-  "with_phone": 1792,
+  "with_phone": 1806,
   "saturated_zips": 0,
   "failed_zips": 0,
-  "rows_read": 17495
+  "rows_read": 17683
  },
  "saturated": [],
  "failed": [],
@@ -33,6 +33,33 @@
    "state": "AR",
    "zip": "72152",
    "phone": "9999999999",
+   "source": "barchart"
+  },
+  {
+   "facility": "Riceland Co-op",
+   "branch": "Des Arc",
+   "city": "Des Arc",
+   "state": "AR",
+   "zip": "72040",
+   "phone": "(870)256-4125",
+   "source": "barchart"
+  },
+  {
+   "facility": "Riceland Co-op",
+   "branch": "Hazen",
+   "city": "Hazen",
+   "state": "AR",
+   "zip": "72064",
+   "phone": "(870) 255-4531",
+   "source": "barchart"
+  },
+  {
+   "facility": "Riceland Co-op",
+   "branch": "Stuttgart",
+   "city": "Stuttgart",
+   "state": "AR",
+   "zip": "72160",
+   "phone": "(870) 673-5342",
    "source": "barchart"
   },
   {
@@ -5023,6 +5050,15 @@
   },
   {
    "facility": "Litchfield Farmers Grain",
+   "branch": "Decatur Bids",
+   "city": "Decatur",
+   "state": "IL",
+   "zip": "62521",
+   "phone": "N/A",
+   "source": "barchart"
+  },
+  {
+   "facility": "Litchfield Farmers Grain",
    "branch": "Fillmore",
    "city": "Fillmore",
    "state": "IL",
@@ -5145,33 +5181,6 @@
    "state": "IL",
    "zip": "61327",
    "phone": "815-925-9590",
-   "source": "barchart"
-  },
-  {
-   "facility": "Pearl City Elevator",
-   "branch": "Alliance Commodities",
-   "city": "Lena",
-   "state": "IL",
-   "zip": "61048",
-   "phone": "815-809-2667",
-   "source": "barchart"
-  },
-  {
-   "facility": "Pearl City Elevator",
-   "branch": "Adkins Energy",
-   "city": "Lena",
-   "state": "IL",
-   "zip": "61048",
-   "phone": "(815) 809-2667",
-   "source": "barchart"
-  },
-  {
-   "facility": "Pearl City Elevator",
-   "branch": "Pearl City",
-   "city": "Pearl City",
-   "state": "IL",
-   "zip": "61062",
-   "phone": "815-809-2667",
    "source": "barchart"
   },
   {
@@ -5715,12 +5724,66 @@
    "source": "barchart"
   },
   {
+   "facility": "Seatonville Elevator Co",
+   "branch": "Marquis",
+   "city": "Hennepin",
+   "state": "IL",
+   "zip": "61327",
+   "phone": "815-925-9590",
+   "source": "barchart"
+  },
+  {
+   "facility": "Seatonville Elevator Co",
+   "branch": "River",
+   "city": "Spring Valley",
+   "state": "IL",
+   "zip": "62705",
+   "phone": "815-894-2013",
+   "source": "barchart"
+  },
+  {
+   "facility": "Sorells Farm Supply",
+   "branch": "Raymond",
+   "city": "Raymond",
+   "state": "IL",
+   "zip": "62560",
+   "phone": "217-229-3412",
+   "source": "barchart"
+  },
+  {
    "facility": "Stanford Grain Company",
    "branch": "Stanford",
    "city": "Stanford",
    "state": "IL",
    "zip": "61774",
    "phone": "309-379-2141",
+   "source": "barchart"
+  },
+  {
+   "facility": "Stephenson Service Company",
+   "branch": "Alliance Commodities",
+   "city": "Lena",
+   "state": "IL",
+   "zip": "61048",
+   "phone": "815-809-2667",
+   "source": "barchart"
+  },
+  {
+   "facility": "Stephenson Service Company",
+   "branch": "Adkins Energy",
+   "city": "Lena",
+   "state": "IL",
+   "zip": "61048",
+   "phone": "(815) 809-2667",
+   "source": "barchart"
+  },
+  {
+   "facility": "Stephenson Service Company",
+   "branch": "Pearl City",
+   "city": "Pearl City",
+   "state": "IL",
+   "zip": "61062",
+   "phone": "815-809-2667",
    "source": "barchart"
   },
   {
@@ -6679,6 +6742,15 @@
   },
   {
    "facility": "Kokomo Grain Co.",
+   "branch": "Burlington",
+   "city": "Burlington",
+   "state": "IN",
+   "zip": "46915",
+   "phone": "(765) 566-3376",
+   "source": "barchart"
+  },
+  {
+   "facility": "Kokomo Grain Co.",
    "branch": "Edinburgh",
    "city": "Edinburgh",
    "state": "IN",
@@ -7431,6 +7503,15 @@
    "state": "KS",
    "zip": "66780",
    "phone": "620-354-6424",
+   "source": "barchart"
+  },
+  {
+   "facility": "Cardinal Ethanol",
+   "branch": "Cardinal Colwich",
+   "city": "Colwich",
+   "state": "KS",
+   "zip": "67030",
+   "phone": "(316) 789-2500",
    "source": "barchart"
   },
   {
@@ -11304,6 +11385,42 @@
    "source": "barchart"
   },
   {
+   "facility": "Arthur Companies",
+   "branch": "Anamoose",
+   "city": "Anamoose",
+   "state": "ND",
+   "zip": "58710",
+   "phone": "701-712-2614",
+   "source": "barchart"
+  },
+  {
+   "facility": "Arthur Companies",
+   "branch": "Arthur",
+   "city": "Arthur",
+   "state": "ND",
+   "zip": "58006",
+   "phone": "701-967-8312",
+   "source": "barchart"
+  },
+  {
+   "facility": "Arthur Companies",
+   "branch": "Ayr",
+   "city": "Ayr",
+   "state": "ND",
+   "zip": "58007",
+   "phone": "701-668-2973",
+   "source": "barchart"
+  },
+  {
+   "facility": "Arthur Companies",
+   "branch": "Pillsbury",
+   "city": "Pillsbury",
+   "state": "ND",
+   "zip": "58065",
+   "phone": "701-997-6104",
+   "source": "barchart"
+  },
+  {
    "facility": "Berthold Farmers Elevator LLC.",
    "branch": "Berthold",
    "city": "Berthold",
@@ -15046,6 +15163,15 @@
    "state": "SD",
    "zip": "57054",
    "phone": "605-482-8291",
+   "source": "barchart"
+  },
+  {
+   "facility": "New Century FS",
+   "branch": "Yankton",
+   "city": "Yankton",
+   "state": "SD",
+   "zip": "57078",
+   "phone": "(605) 665-3691",
    "source": "barchart"
   },
   {
