@@ -584,6 +584,63 @@ def verified_only(bids):
     a page that never had the guard."""
     return [b for b in bids if b.get("verified", True)]
 
+def _bid_order(b):
+    """Sort key: nearest delivery first, then the best price inside it.
+
+    "PRICES PAID TODAY" MEANS THE NEAREST DELIVERY, NOT THE BIGGEST NUMBER.
+    Sorting a location's rows on price alone hands the card to the furthest
+    contract on the board, because carry pays. Measured on the committed file,
+    picking Mankato's highest corn bid returned $5.23 for JUNE 2027 delivery.
+    That is a real bid and it is not what a reader looking at today's cash
+    board is being shown. Nearest window first, and the best price inside that
+    window second, is what the heading already promises.
+
+    THE DATE IS TAKEN TO THE DAY, NOT THE SECOND, AND THAT IS NOT COSMETIC.
+    Barchart returns the SAME contract month with two different end stamps:
+    of the 56 rows ending 31 August in the committed file, 33 say
+    `2026-08-31 23:59:59` and 23 say `2026-08-31 00:00:00`. Compared as full
+    strings that splits one contract into two groups, the price tie-break
+    never spans them, and the national pick came out $5.02 while a $5.72 row
+    sat in the other half of the same month. Slicing to the day merges them.
+
+    IT ORDERS ON deliveryEnd, NOT deliveryStart, BECAUSE START IS NOT
+    TRUSTWORTHY. Eight rows in the committed file -- both Producer Ag
+    locations -- carry a `deliveryStart` of 2012-02-28 or 2012-05-01 against a
+    correct end date and a correct month label. Ordering on start handed those
+    rows every fallback in the file. Every `deliveryEnd` in the same file is a
+    real future date. Start is kept only as a substitute when end is missing.
+    """
+    when = str(b.get("deliveryEnd") or b.get("deliveryStart") or "9999-99-99")[:10]
+    try:
+        price = float(b.get("cashPrice") or 0)
+    except (TypeError, ValueError):
+        price = 0.0
+    return (when, -price)
+
+
+def near(b, grid_zip):
+    """Is this row inside the radius query that was run around `grid_zip`?
+
+    THE PROXIMITY FACT WAS IN THE PAYLOAD ALL ALONG AND NOTHING USED IT.
+
+    `sourceZip` is the grid ZIP whose getGrainBids call returned this row, and
+    that call is a radius query -- MAX_DISTANCE miles around that ZIP. So a row
+    carrying sourceZip 53705 is, by Barchart's own arithmetic, within range of
+    Madison. It is not a coordinate and it is not a mileage, but it is a real
+    statement about distance and it is the only one this feed makes:
+    `distance` is null on all 346 rows of the committed file, and `lat`/`lng`
+    are absent entirely.
+
+    The facility ZIP is checked too, as a union rather than a fallback. 53 rows
+    in the committed file have `sourceZip != zip`, and 50 of those sit AT a
+    grid ZIP -- returned by some neighbouring ZIP's query rather than their
+    own. Matching on either catches both, and matching on only one loses fifty
+    real local bids.
+    """
+    z = str(grid_zip)
+    return str(b.get("sourceZip") or "") == z or str(b.get("zip") or "") == z
+
+
 def page_pick(bids, grid_zip, crop):
     """findBestBidForCrop() from the futures pages, ported exactly.
 
@@ -591,27 +648,46 @@ def page_pick(bids, grid_zip, crop):
     file is only safe if the page computes the same answer from it as from the
     full set, and the only way to assert that is to run the page's own logic.
 
-    Note what this port made visible. The distance branch reads bid.lat /
-    bid.lng, and Barchart's payload carries NEITHER -- flatten() never sets
-    them. So the middle branch is dead code on live data, and any grid ZIP with
-    no exact-ZIP match falls through to "highest-priced bid in the country".
-    That fallback fires for 34 of the 50 grid ZIPs; it is the normal path, not
-    the edge case.
+    ---------------------------------------------------------------------
+    THE HISTORY OF THIS FUNCTION, BECAUSE IT HAS BEEN WRONG THREE WAYS.
 
-    TWO THINGS ABOUT IT WERE WRONG AND ARE NOW FIXED, 2026-08-29.
+    (1) The distance branch read `bid.lat` / `bid.lng` and Barchart's payload
+    carries NEITHER -- flatten() never sets them. Dead code on live data since
+    it was written. It is gone; `near()` above replaces it with a proximity
+    fact the payload actually makes.
 
-    (1) The three pages sorted that fallback on `bid_price || bidPrice ||
-    price`. The payload carries NONE of those -- the field is `cashPrice`. So
-    every comparison was 0 minus 0, the sort did nothing, and the pages showed
-    cropBids[0]: whatever sorted first by state, city, commodity. On the
-    committed file that was Agrex Inc, Montgomery, ALABAMA for all three crops,
-    labelled as the reader's own nearest bid with no distance beside it. This
-    port did NOT have that bug -- it read cashPrice from the day it was
-    written -- so the every-run equivalence check below compared two correct
-    answers and could never see it. The pages now read the same field.
+    (2) The fallback sorted on `bid_price || bidPrice || price`. The payload
+    carries NONE of those -- the field is `cashPrice` -- so every comparison
+    was 0 minus 0, the sort did nothing, and it returned crop_bids[0]:
+    whatever sorted first by state, city, commodity. On the committed file that
+    was Agrex Inc, Montgomery, ALABAMA, for all three crops. Fixed 2026-08-29.
+    This port never had that bug, which is exactly why the every-run
+    equivalence check below could not see it: it compared two correct answers
+    while the browser computed a third.
 
-    (2) The highest price in the country is only meaningful if the row is real.
-    See verify_bids() above. The fallback now picks the highest VERIFIED row.
+    (3) Even fixed, the fallback fired for 37 of the 50 grid ZIPs for corn, 39
+    for beans and 41 for wheat, because the only local test was `bid.zip ==
+    grid_zip` and bids sat at just 16 of the 50. A reader in Madison was shown
+    a real, checked, identity-verified bid in Jackson, Tennessee. Fixed now by
+    asking `near()` instead.
+
+    ---------------------------------------------------------------------
+    ONE RULE AT TWO RADII: the best price you can actually reach.
+
+      1. LOCAL   -- inside the radius query run around the reader's grid ZIP,
+                    the nearest delivery window, and the best price in it.
+      2. FALLBACK - if that query returned nothing for this crop, the same
+                    rule applied nationally, and the caller is told the
+                    distance is unknown so the page can say so.
+
+    Both steps use _bid_order() above; see it for why the tie-break is nearest
+    delivery rather than biggest number, and why the date is sliced to the day.
+
+    Note that step 1 RANKS the local rows rather than taking the first. The old
+    exact-ZIP branch returned whichever row happened to come first in a file
+    sorted by state, city and commodity -- the same arbitrariness as the
+    national fallback, just with a smaller pool. Council Bluffs has twelve
+    verified local corn rows; there is no reason to show a farmer the fourth.
     """
     crop_bids = [b for b in bids if _page_crop(b.get("commodity")) == crop]
     if not crop_bids:
@@ -619,38 +695,53 @@ def page_pick(bids, grid_zip, crop):
     crop_bids = verified_only(crop_bids)     # every branch, as the pages do
     if not crop_bids:
         return None
-    for b in crop_bids:
-        if b.get("zip") and b["zip"] == grid_zip:
-            return b
-    for b in crop_bids:                      # the dead distance branch
-        if b.get("lat") is not None and b.get("lng") is not None:
-            break
-    else:
-        return max(crop_bids, key=lambda b: float(b.get("cashPrice") or 0))
-    return None
+
+    if grid_zip:
+        local = [b for b in crop_bids if near(b, grid_zip)]
+        if local:
+            return min(local, key=_bid_order)
+
+    return min(crop_bids, key=_bid_order)
 
 
 def slim_for_browser(bids, grid):
     """The smallest set of bids from which the page picks the same bid.
 
-    Two paths can select a bid, so two sets are kept and nothing else:
-      1. exact match  -> every bid whose own ZIP is one of the grid ZIPs
-      2. the fallback -> the highest-priced VERIFIED bid per crop, nationally
+    Two paths can select a bid, so exactly what those two paths can reach is
+    kept and nothing else:
 
-    Keeping the union means the page's algorithm, unchanged, reaches the same
-    answer it reaches on the full set. Fields are NOT stripped: the page reads
-    a dozen of them under several alternative names and dropping the wrong one
-    fails silently as an empty card. Cutting 17,956 rows to a few hundred is
-    where the bytes are; the fields are noise by comparison.
+      1. LOCAL     -> per grid ZIP and per crop, the highest verified bid
+                      inside that ZIP's radius query. That is at most
+                      50 x 3 = 150 rows and is the whole point of this change:
+                      before it, the slim file kept rows by FACILITY ZIP, so
+                      only 16 of the 50 grid ZIPs had anything to offer and
+                      the other 34 fell through to a national bid.
+      2. FALLBACK  -> the highest-priced verified bid per crop, nationally,
+                      for a grid ZIP whose query returned nothing.
+
+    Every bid whose own ZIP is a grid ZIP is kept as well. It is a few hundred
+    rows against a file that was already this size, and it means a future
+    change to the local rule cannot silently find the row it needs missing.
+
+    Fields are NOT stripped: the page reads a dozen of them under several
+    alternative names and dropping the wrong one fails silently as an empty
+    card. Cutting ~18,000 rows to a few hundred is where the bytes are; the
+    fields are noise by comparison.
     """
-    gz = {g["zip"] for g in grid}
-    keep = {id(b): b for b in bids if b.get("zip") in gz}
+    gz = [g["zip"] for g in grid]
+    keep = {id(b): b for b in bids if b.get("zip") in set(gz)}
+
     for crop in ("corn", "beans", "wheat"):
         cb = verified_only([b for b in bids
                             if _page_crop(b.get("commodity")) == crop])
-        if cb:
-            top = max(cb, key=lambda b: float(b.get("cashPrice") or 0))
-            keep[id(top)] = top
+        if not cb:
+            continue
+        for z in gz:
+            local = [b for b in cb if near(b, z)]
+            if local:
+                keep[id(min(local, key=_bid_order))] = min(local, key=_bid_order)
+        top = min(cb, key=_bid_order)
+        keep[id(top)] = top
     return list(keep.values())
 
 
@@ -1035,6 +1126,70 @@ def selftest():
            for b in dropped for g in grid))
 
     print()
+    print("a bid is local when the query that found it was run around the reader")
+    N = lambda z, sz, c, p_: {"zip": z, "sourceZip": sz, "commodity": c,
+                              "cashPrice": p_, "city": z, "symbol": "ZCZ26",
+                              "basis": round(p_ - 5.37, 4)}
+    grid2 = [{"zip": "53705", "lat": 43.07, "lng": -89.40, "label": "Madison, WI"},
+             {"zip": "50010", "lat": 42.03, "lng": -93.62, "label": "Ames, IA"}]
+    rows2 = [
+        N("53590", "53705", "Corn", 4.55),   # near Madison, facility ZIP is not a grid ZIP
+        N("53598", "53705", "Corn", 4.61),   # near Madison, and pays more
+        N("53705", "50010", "Corn", 4.40),   # sits AT Madison, returned by Ames's query
+        N("50010", "50010", "Corn", 4.75),   # at Ames
+        N("99999", "99999", "Corn", 9.99),   # the national top, nowhere near anyone
+    ]
+    verify_bids(rows2)
+    for r in rows2:
+        r["verified"] = True                 # the cohort is synthetic; test selection, not the guard
+    ck("a bid found by the reader's own query is local even off-ZIP",
+       page_pick(rows2, "53705", "corn")["cashPrice"] == 4.61)
+    ck("...and the highest local price wins, not the first row",
+       page_pick(rows2, "53705", "corn") is rows2[1])
+    ck("a bid sitting AT the grid ZIP counts even when another query found it",
+       near(rows2[2], "53705") is True)
+    ck("Ames gets its own bid, not Madison's and not the national top",
+       page_pick(rows2, "50010", "corn")["cashPrice"] == 4.75)
+    ck("a grid ZIP whose query returned nothing still gets the national top",
+       page_pick(rows2, "11111", "corn")["cashPrice"] == 9.99)
+    ck("the national top is NOT shown to a reader who has a local bid",
+       page_pick(rows2, "53705", "corn")["cashPrice"] != 9.99)
+
+    slim2 = slim_for_browser(rows2, grid2)
+    ck("the slim file keeps what each grid ZIP needs",
+       all(page_pick(rows2, g["zip"], "corn") == page_pick(slim2, g["zip"], "corn")
+           for g in grid2))
+    ck("...and still keeps the national fallback",
+       page_pick(rows2, "11111", "corn") == page_pick(slim2, "11111", "corn"))
+    ck("the slim file is smaller than the full set", len(slim2) < len(rows2))
+
+    print()
+    print("nearest delivery beats a bigger number, and three bad date shapes")
+    D = lambda end, p_, start=None, fac="X": {
+        "zip": "53705", "sourceZip": "53705", "commodity": "Corn",
+        "cashPrice": p_, "deliveryEnd": end, "deliveryStart": start or end,
+        "city": "Madison", "facility": fac, "verified": True,
+        "symbol": "ZCZ26", "basis": 0.0, "deliveryMonth": end[:7]}
+    carry = [D("2027-06-30 00:00:00", 5.23, fac="deferred"),
+             D("2026-08-31 00:00:00", 4.72, fac="spot")]
+    ck("the June 2027 bid does not become today's cash price",
+       page_pick(carry, "53705", "corn")["facility"] == "spot")
+
+    split = [D("2026-08-31 00:00:00", 5.02, fac="midnight"),
+             D("2026-08-31 23:59:59", 5.72, fac="one-second-to")]
+    ck("one contract month with two end stamps is still one month",
+       page_pick(split, "53705", "corn")["facility"] == "one-second-to")
+
+    bad_start = [D("2026-12-01 00:00:00", 4.95, start="2012-02-28 00:00:00", fac="dec26"),
+                 D("2026-08-31 00:00:00", 4.72, fac="aug26")]
+    ck("a deliveryStart dated 2012 does not win the board",
+       page_pick(bad_start, "53705", "corn")["facility"] == "aug26")
+
+    no_dates = [dict(D("2026-01-01", 4.10, fac="cheap"), deliveryEnd=None, deliveryStart=None),
+                dict(D("2026-01-01", 4.90, fac="dear"), deliveryEnd=None, deliveryStart=None)]
+    ck("with no dates at all it falls back to price and does not crash",
+       page_pick(no_dates, "53705", "corn")["facility"] == "dear")
+
     print("the identity guard withholds what it cannot check, and nothing else")
     R = lambda c, sym, cash, basis: {"commodity": c, "symbol": sym,
                                      "cashPrice": cash, "basis": basis,

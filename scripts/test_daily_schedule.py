@@ -1,57 +1,70 @@
 #!/usr/bin/env python3
 """
-THE BRIEFING THAT DID NOT GO OUT.
+THE BRIEFING THAT DID NOT GO OUT — THIRD PASS.
 
-2026-08-28: no data/daily-archive/2026-08-28.json, no email, two hours after
-the 11:02 UTC fire. Both preflight gates pass against the prices file that run
-would have read. Every other scheduled workflow ran that morning. The fire was
-simply not delivered — GitHub drops them, measured at roughly one in six on the
-sibling repository — and a job that fires ONCE A DAY has no second chance.
+2026-08-28: no archive, no email, two hours after the 11:02 UTC fire. Both
+preflight gates passed against the prices file that run would have read; every
+other scheduled workflow ran that morning. The fire was simply not delivered.
+GitHub drops them, and a job that fires ONCE A DAY has no second chance.
 
-So daily.yml now has backup fires, and this guards the things that makes safe.
+2026-08-29: the fix was a NET — twelve fires every fifteen minutes across a
+two-and-a-half hour window, and a gate that decided in Central time which one
+publishes. This file grew checks for it: at least three fires between 05:45 and
+06:30 Central in both seasons, spread by at least ten minutes.
 
-── EXTENDED 2026-08-29, and one check was CORRECTED. ─────────────────────────
-Sig, on the morning nothing arrived: "yes i want it by 630 and yes i want some
-kind of backup run if the scheduled one doesnt fire."
+Every one of those checks passed. The net still failed.
 
-Two things were wrong that this file could not see.
+    Sun 08-30   ONE run, committed 14:56Z — 86 minutes after 13:30, the LAST
+                fire of the net. The eleven earlier fires produced nothing.
+    Mon 08-31   NOTHING by 13:02Z (08:02 Central), ten of twelve fires due.
 
-First it was UNDERCOUNTING. `int(m.split(",")[0])` takes only the FIRST minute
-of a comma list, so `0,15,30,45 11 * * *` -- four fires -- was measured as one.
-It now expands the lists, which is what "the backups are spread" was always
-meant to mean. The twenty-minute floor came down to ten in the same breath:
-that number was picked when there were three fires an hour apart, and fifteen
-minutes is spread, not stacked. The check's INTENT is unchanged; only its
-arithmetic was wrong.
+THE CHECKS WERE ASSERTING THE SHAPE OF THE THING THAT DOES NOT WORK. Twelve
+fires an hour apart is a different animal from twelve fires fifteen minutes
+apart, and this file could not tell them apart because "spread by at least ten
+minutes" was written when there were three fires an hour apart and was never
+revisited when there were twelve. It measured the intent of an older design.
 
-Second, and worse, nothing here checked the thing the reader actually cares
-about: WHAT TIME IT LANDS WHERE HE LIVES. GitHub cron has no daylight saving,
-so a fixed UTC cron cannot hold a Central promise, and on 2026-08-28 a fire
-delivered fifteen hours late published the next day's briefing at 9:38 PM and
-made every one of the following morning's fires skip. The net-plus-local-gate
-that replaced it is only worth anything if the net really does cover 05:45 to
-06:30 Central in BOTH seasons, and if the job really does run on Central time.
-Those are now checked.
+The repository already knew. From the top of .github/workflows/prices.yml:
 
-  1. The backup fires exist and land inside the gate's own morning window.
-  2. The gate asks the REMOTE whether today is published, not its checkout.
-     A scheduled run checks out the SHA it was triggered at, so a backup fire
-     queued behind a run still in flight sees a tree from before that run
-     pushed. The old gate would have regenerated and republished on top of a
-     briefing that was already live.
+    "GitHub's scheduled-cron is best-effort and silently DROPS high-frequency
+     (every-30-min) runs ... Low-frequency, off-:00 minutes (GitHub honors
+     these far more reliably than */30)."
 
-The email cannot double-send either way — send_daily.py sets a day flag through
-the subs worker and fails closed — but a republished briefing is its own kind of
-wrong, and one guard is not redundancy.
+And from the standing decisions, measured on the sibling repo 2026-08-26: a
+ten-minute cron delivered one to three runs an hour against six asked, while an
+hourly cron outside the window delivered every one. **Do not "fix" the schedule
+by asking more often.** The net asked more often, with ten of its twelve fires
+sitting on :00, :15, :30 and :45.
+
+SO THIS FILE NOW GUARDS THE OPPOSITE PROPERTY, and it stops grepping.
+
+The old checks were all string matches against the YAML: `-lt 0545` is present,
+`$DOW != 5` is present. None of them executed anything, which is why "the gate
+decides once and exits" — the actual defect — was invisible. A fire arriving at
+05:19 Central looked at the clock, said "a later fire takes this one", and
+stopped. That was true only while later fires existed.
+
+The gate script is now EXTRACTED FROM THE WORKFLOW AND RUN, against stub
+`date`, `git` and `sleep` commands, at the exact times that failed. It is the
+only kind of check that could have caught this.
 
 Run: python scripts/test_daily_schedule.py
 """
+import os
 import re
+import shutil
+import subprocess
 import sys
+import tempfile
 from pathlib import Path
 
 WF = Path(__file__).resolve().parent.parent / ".github/workflows/daily.yml"
 FAILED = []
+
+# The busy minutes. GitHub's own documentation names the start of the hour as
+# the worst time to schedule; :15, :30 and :45 are the same problem one notch
+# down, and the net put ten of its twelve fires on them.
+BUSY_MINUTES = {0, 15, 30, 45}
 
 
 def check(ok, label, detail=""):
@@ -60,12 +73,82 @@ def check(ok, label, detail=""):
         FAILED.append(label)
 
 
+# ── running the real gate ────────────────────────────────────────────────────
+
+def gate_script(y):
+    """The gate's own `run:` block, dedented, exactly as the runner sees it."""
+    a = y.index("      - id: g\n        run: |\n")
+    a = y.index("\n", y.index("run: |", a)) + 1
+    b = y.index("\n  generate:", a)
+    lines = []
+    for ln in y[a:b].split("\n"):
+        lines.append(ln[10:] if ln.startswith(" " * 10) else ln)
+    return "\n".join(lines)
+
+
+def simulate(script, *, event="schedule", start="05:19", dow=1, published=False,
+             day="2026-08-31", max_wait_min=600):
+    """Run the gate with a fake clock. Returns (skip, minutes_waited, log).
+
+    `sleep` advances the clock instead of sleeping, so a loop that waits for
+    the floor completes in milliseconds and the wait is measurable.
+    """
+    tmp = Path(tempfile.mkdtemp())
+    try:
+        clock = tmp / "clock"          # minutes since midnight, Central
+        h, m = start.split(":")
+        clock.write_text(str(int(h) * 60 + int(m)))
+
+        (tmp / "date").write_text(
+            "#!/bin/bash\n"
+            f'T=$(cat "{clock}")\n'
+            'H=$(( (T/60) % 24 )); M=$(( T % 60 ))\n'
+            'case "${1:-}" in\n'
+            '  +%F)    printf "%s" "' + day + '" ;;\n'
+            '  +%H%M)  printf "%02d%02d" "$H" "$M" ;;\n'
+            '  +%H)    printf "%02d" "$H" ;;\n'
+            '  +%u)    printf "%d" "' + str(dow) + '" ;;\n'
+            '  +%H:%M) printf "%02d:%02d" "$H" "$M" ;;\n'
+            '  +%s)    printf "%d" $(( T * 60 )) ;;\n'
+            '  *)      printf "%02d:%02d" "$H" "$M" ;;\n'
+            'esac\n')
+        (tmp / "sleep").write_text(
+            "#!/bin/bash\n"
+            f'T=$(cat "{clock}"); echo $(( T + ${{1:-0}} / 60 )) > "{clock}"\n'
+            f'[ $(cat "{clock}") -lt {max_wait_min} ] || exit 1\n')
+        (tmp / "git").write_text(
+            "#!/bin/bash\n"
+            'if [ "${1:-}" = "cat-file" ]; then exit ' + ("0" if published else "1") + '; fi\n'
+            'exit 0\n')
+        for f in ("date", "sleep", "git"):
+            (tmp / f).chmod(0o755)
+
+        out = tmp / "out"
+        out.write_text("")
+        env = dict(os.environ,
+                   PATH=f"{tmp}:{os.environ['PATH']}",
+                   GITHUB_OUTPUT=str(out))
+        body = script.replace("${{ github.event_name }}", event) \
+                     .replace("${{ github.event.repository.default_branch || 'main' }}", "main")
+        sh = tmp / "gate.sh"
+        sh.write_text(body)
+        r = subprocess.run(["bash", str(sh)], env=env, capture_output=True,
+                           text=True, timeout=30)
+        skip = None
+        for ln in out.read_text().split("\n"):
+            if ln.startswith("skip="):
+                skip = ln.split("=", 1)[1].strip()
+        waited = int(clock.read_text()) - (int(h) * 60 + int(m))
+        return skip, waited, (r.stdout + r.stderr)
+    finally:
+        shutil.rmtree(tmp, ignore_errors=True)
+
+
 def main():
     y = WF.read_text()
     crons = re.findall(r"- cron:\s*'([^']+)'", y)
     print("daily.yml fires at: " + ", ".join(crons))
 
-    # EXPAND THE COMMA LISTS. "0,15,30,45 11 * * *" is FOUR fires, not one.
     morning = []
     for c in crons:
         m, h, _, _, dow = (c.split() + ["*"] * 5)[:5]
@@ -78,75 +161,144 @@ def main():
                 if mm.isdigit():
                     morning.append(int(hh) * 60 + int(mm))
     morning = sorted(set(morning))
-    print("  %d morning fires (UTC): %s" % (
+    print("  %d morning fires (UTC): %s\n" % (
         len(morning), ", ".join("%02d:%02d" % divmod(t, 60) for t in morning)))
 
-    check(len(morning) >= 3,
+    print("the schedule asks rarely, and off the busy minutes")
+    check(len(morning) >= 2,
           "there is more than one morning fire",
           "only %d — a dropped fire is a missed briefing" % len(morning))
 
-    # ── BY 6:30 CENTRAL, IN BOTH SEASONS. This is Sig's actual requirement,
-    # and it is the one thing a UTC cron cannot state on its own. CDT is
-    # UTC-5 and CST is UTC-6, so the same net has to straddle both.
+    # THE ANTI-NET GUARD. This is the check whose absence let the net be built.
+    check(len(morning) <= 4,
+          "there are at most FOUR morning fires",
+          "%d fires is a net, and a net is the pattern this repo has already "
+          "measured and rejected — the job waits, it does not ask again" % len(morning))
+
+    gaps = [b - a for a, b in zip(morning, morning[1:])]
+    check(not gaps or min(gaps) >= 45,
+          "consecutive fires are at least 45 minutes apart",
+          "closest pair is %d minutes apart — that is a net, not redundancy"
+          % (min(gaps) if gaps else 0))
+
+    busy = ["%02d:%02d" % divmod(t, 60) for t in morning if t % 60 in BUSY_MINUTES]
+    check(not busy,
+          "no fire sits on :00, :15, :30 or :45",
+          "%s — the busiest minutes, which GitHub honours least" % ", ".join(busy))
+
+    print("\nthe window is held open by the JOB, not by more fires")
     for label, offset in (("CDT (summer)", 5), ("CST (winter)", 6)):
         local = sorted((t - offset * 60) % 1440 for t in morning)
-        inwin = [t for t in local if 5 * 60 + 45 <= t <= 6 * 60 + 30]
-        check(len(inwin) >= 3,
-              "at least three fires land between 05:45 and 06:30 Central in %s" % label,
-              "only %d: %s" % (len(inwin), ", ".join("%02d:%02d" % divmod(t, 60) for t in local)))
+        early = [t for t in local if t < 5 * 60 + 45]
+        check(bool(early),
+              "at least one fire lands before the 05:45 floor in %s" % label,
+              "earliest is %s — nothing is left to wait through the floor"
+              % ("%02d:%02d" % divmod(local[0], 60) if local else "none"))
+        check(any(t <= 8 * 60 + 30 for t in local),
+              "and a later launch still lands in the morning in %s" % label)
 
-    # Every backup must still be inside the gate's `H < 14` window, or it would
-    # regenerate on top of a published day instead of skipping.
     check(all(t < 14 * 60 for t in morning),
           "every morning fire is inside the gate's own skip window")
 
-    # And they must be spread, not stacked: three fires in the same minute are
-    # one fire as far as a dropped schedule is concerned.
-    gaps = [b - a for a, b in zip(morning, morning[1:])]
-    check(gaps and min(gaps) >= 10,
-          "the backups are spread by at least ten minutes",
-          "closest pair is %d minutes apart" % (min(gaps) if gaps else 0))
-
-    check(morning[-1] - morning[0] >= 60,
-          "the backups cover at least an hour of dropped fires",
-          "they span only %d minutes" % (morning[-1] - morning[0]))
-
-    # THE GATE MUST ASK THE REMOTE.
-    gate = y[y.index("  gate:"):y.index("  generate:")]
-    check("git fetch" in gate and "FETCH_HEAD:data/daily-archive/" in gate,
-          "the gate asks the remote whether today is already published",
-          "it only looks at its own checkout, which a queued backup fire predates")
-
-    check("$H" in gate and "-lt 14" in gate,
-          "the Friday post-close regeneration is still exempt from the gate")
-
-    # THE JOB MUST RUN ON CENTRAL TIME, or every clock above is decoration.
-    # generate_daily.py asks datetime.now() what day and what season it is; on
-    # a UTC runner a 02:38 UTC job believes it is tomorrow, and on 2026-08-28
-    # one did.
+    print("\nthe job runs on the reader's clock")
     check(re.search(r"^env:\s*\n\s*TZ:\s*America/Chicago\s*$", y, re.M) is not None,
           "the workflow runs on America/Chicago",
           "without TZ the gate's `date` is UTC and the Central window is a fiction")
 
-    check("-lt 0545" in gate,
-          "a fire before 05:45 Central waits for a later one instead of publishing early")
+    gate = gate_script(y)
+    check("sleep" in gate and "continue" in gate,
+          "the gate WAITS for the window instead of handing it to a later fire",
+          "this is the 2026-08-30 defect: decide once, exit, and hope")
+    check(gate.count("git fetch") >= 1 and "FETCH_HEAD:data/daily-archive/" in gate,
+          "the gate asks the remote whether today is already published")
+    check("published()" in gate and gate.index("while") < gate.index("published \"$DAY\""),
+          "and it re-asks INSIDE the loop, not once before it",
+          "a run that waits an hour on a stale answer republishes over a live briefing")
 
-    check('"$DOW" != "5"' in gate,
-          "an afternoon fire only regenerates on FRIDAY",
-          "any delayed morning fire arriving after 14:00 would republish and re-email")
+    print("\nthe gate itself, run at the times that failed")
 
-    # The whole job — email included — is what gets skipped.
+    skip, waited, _ = simulate(gate, start="05:19")
+    check(skip == "0" and waited >= 20,
+          "a 05:19 fire waits for the floor and then generates",
+          "skip=%s after %d minutes — 2026-08-30 exactly" % (skip, waited))
+
+    skip, waited, _ = simulate(gate, start="05:45")
+    check(skip == "0" and waited == 0,
+          "a fire landing exactly on the floor generates at once",
+          "skip=%s waited=%d" % (skip, waited))
+
+    skip, _, _ = simulate(gate, start="06:41")
+    check(skip == "0", "a 06:41 recovery fire generates when nothing is published")
+
+    skip, _, _ = simulate(gate, start="06:41", published=True)
+    check(skip == "1", "…and skips when the morning already published")
+
+    skip, _, _ = simulate(gate, start="04:19", published=True)
+    check(skip == "1",
+          "an early fire notices an already-published day WITHOUT waiting first")
+
+    skip, _, _ = simulate(gate, start="21:41", dow=5)
+    check(skip == "1",
+          "the 9:41 PM Friday fire that started all this is refused",
+          "a delayed morning fire is not a post-close regeneration")
+
+    skip, _, _ = simulate(gate, start="15:55", dow=4)
+    check(skip == "1", "a Thursday afternoon fire is refused")
+
+    skip, _, _ = simulate(gate, start="15:00", dow=5, published=True)
+    check(skip == "0",
+          "the Friday post-close regeneration still runs, on top of a published day")
+
+    skip, waited, _ = simulate(gate, event="workflow_dispatch", start="04:00")
+    check(skip == "0" and waited == 0,
+          "a manual run never waits and never skips",
+          "skip=%s waited=%d — somebody is standing at the keyboard" % (skip, waited))
+
+    skip, _, _ = simulate(gate, event="workflow_dispatch", start="09:00", published=True)
+    check(skip == "0", "…even when today is already published")
+
+    print("\nthe push heartbeat — the path that does not depend on cron")
+    check(re.search(r"^  push:\s*\n\s*branches:\s*\[main\]", y, re.M) is not None,
+          "every push to main also asks the gate",
+          "three cron fires are still three bets on the same delivery")
+
+    skip, waited, _ = simulate(gate, event="push", start="05:47")
+    check(skip == "0" and waited == 0,
+          "a push past the floor generates the briefing with no cron involved",
+          "skip=%s waited=%d" % (skip, waited))
+
+    skip, waited, _ = simulate(gate, event="push", start="04:30")
+    check(skip == "1" and waited == 0,
+          "a push BEFORE the floor exits at once and does NOT hold a runner",
+          "skip=%s after %d minutes — a waiting push costs more than the briefing"
+          % (skip, waited))
+
+    skip, _, _ = simulate(gate, event="push", start="06:00", published=True)
+    check(skip == "1",
+          "the briefing's own push re-triggers once and skips",
+          "otherwise publishing would loop")
+
+    skip, _, _ = simulate(gate, event="push", start="16:00", dow=2)
+    check(skip == "1", "an afternoon push is refused like an afternoon fire")
+
+    print("\nwhat a skip costs, and what the email is allowed to do")
     check(re.search(r"generate:\s*\n\s*needs: gate", y) is not None
           and "needs.gate.outputs.skip != '1'" in y,
           "a skipped day skips the EMAIL too, not just the generation")
-
-    # The email must still never fire from an untick'd manual run.
-    check("github.event_name == 'schedule' || inputs.send_email == true" in y,
+    email_if = "github.event_name == 'schedule' || github.event_name == 'push' || inputs.send_email == true"
+    check(y.count(email_if) == 2,
           "a manual run is still a dry run unless send_email is ticked")
+    # THE TWO HALVES OF THE PUSH CHANGE MUST TRAVEL TOGETHER. A push trigger
+    # without `push` in the email condition publishes to the site and sends
+    # nothing — an up-to-date page and an empty inbox, which is the complaint
+    # that started all of this.
+    check(("push:" not in y) or ("github.event_name == 'push'" in y),
+          "a push-generated briefing EMAILS as well as publishing",
+          "the push trigger is on but the email step still only fires on schedule")
 
     print()
     if FAILED:
-        print("FAILED: " + "; ".join(FAILED))
+        print("FAILED (%d): %s" % (len(FAILED), "; ".join(FAILED)))
         return 1
     print("daily schedule selftest: all passed")
     return 0

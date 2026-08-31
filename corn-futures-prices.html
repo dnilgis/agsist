@@ -1454,46 +1454,80 @@ function findBestBidForCrop(bids,nearestGridResult,cropKey){
   if(checked.length===0)return null;
   cropBids=checked;
 
+  /* ONE RULE AT TWO RADII: the best price the reader can actually reach.
+
+     THE PROXIMITY FACT WAS IN THE PAYLOAD ALL ALONG AND NOTHING USED IT.
+     `sourceZip` is the grid ZIP whose Barchart query returned this row, and
+     that query is a radius search around that ZIP. So a row carrying
+     sourceZip 53705 is, by Barchart's own arithmetic, within range of
+     Madison. It is not a coordinate and not a mileage, but it is the only
+     statement about distance this feed makes: `distance` is null on all 346
+     rows of the committed file, and lat/lng are absent entirely -- which is
+     why the haversine branch that used to sit here had never once executed.
+
+     The facility ZIP is checked as a union, not a fallback. 53 rows in the
+     committed file have sourceZip != zip and 50 of those sit AT a grid ZIP,
+     returned by a neighbouring ZIP's query rather than their own. Matching
+     on either catches both; matching on one loses fifty real local bids.
+
+     WHAT THIS REPLACED. The only local test was `bid.zip === ng.zip`, and
+     bids sat at just 16 of the 50 grid ZIPs, so 37 of 50 fell through to
+     "highest bid in the country" for corn -- 39 for beans, 41 for wheat. A
+     reader in Madison was shown a real, checked bid in Jackson, Tennessee.
+
+     And step 1 takes the HIGHEST price, not the first row. The old exact-ZIP
+     branch returned whichever row came first in a file sorted by state, city
+     and commodity -- the same arbitrariness as the national fallback with a
+     smaller pool. Council Bluffs has five verified soybean rows; there is no
+     reason to show a farmer the fourth one. */
+  function nearGrid(b,z){
+    z=String(z);
+    return String(b.sourceZip||'')===z||String(b.zip||'')===z;
+  }
+  /* NEAREST DELIVERY FIRST, BEST PRICE INSIDE IT SECOND.
+
+     "Prices paid today" does not mean the biggest number on the board. Rank a
+     location's rows on price alone and the card goes to the furthest contract,
+     because carry pays: on the committed file, Mankato's highest corn bid is
+     $5.23 for JUNE 2027 delivery. Real bid, wrong answer to the question the
+     heading is asking.
+
+     THE DATE IS TAKEN TO THE DAY, NOT THE SECOND. Barchart returns the same
+     contract month with two different end stamps -- of the 56 rows ending 31
+     August, 33 say 23:59:59 and 23 say 00:00:00. Compared as full strings that
+     splits one month into two groups, the price tie-break never spans them,
+     and the national pick came out $5.02 with a $5.72 row sitting in the other
+     half of the same month.
+
+     IT ORDERS ON deliveryEnd, NOT deliveryStart. Eight rows in the committed
+     file carry a deliveryStart of 2012 against a correct end date and a
+     correct month label; ordering on start handed those rows every fallback in
+     the file. Every deliveryEnd in that file is a real future date. */
+  function bidWhen(b){
+    var w=b.deliveryEnd||b.deliveryStart||'9999-99-99';
+    return String(w).slice(0,10);
+  }
+  function bestBid(rows){
+    var best=rows[0];
+    for(var k=1;k<rows.length;k++){
+      var a=rows[k], wa=bidWhen(a), wb=bidWhen(best);
+      if(wa<wb||(wa===wb&&bidCash(a)>bidCash(best)))best=a;
+    }
+    return best;
+  }
+
   if(nearestGridResult&&nearestGridResult.grid){
     var ng=nearestGridResult.grid;
-    var best=null,bd=Infinity;
-    for(var j=0;j<cropBids.length;j++){
-      var bid=cropBids[j];
-      // Prefer bids whose own ZIP matches the grid ZIP
-      if(bid.zip&&bid.zip===ng.zip){
-        return{bid:bid,distance:nearestGridResult.distance};
-      }
-      var bLat=bid.lat||bid.latitude;
-      var bLng=bid.lng||bid.lon||bid.longitude;
-      if(bLat!=null&&bLng!=null){
-        var d=haversineMi(ng.lat,ng.lng,bLat,bLng);
-        if(d<bd){bd=d;best=bid;}
-      }
-    }
-    if(best)return{bid:best,distance:Math.round(bd+nearestGridResult.distance)};
+    var local=[];
+    for(var j=0;j<cropBids.length;j++){ if(nearGrid(cropBids[j],ng.zip))local.push(cropBids[j]); }
+    if(local.length)return{bid:bestBid(local),distance:nearestGridResult.distance};
   }
-  // Fallback: highest-priced bid
-  /* THE FALLBACK. This is not the edge case -- 34 of the 50 grid ZIPs have no
-     bid at the ZIP itself, so this branch is the normal path, and what it
-     returns is the cash number a reader sees.
 
-     IT SORTED ON A FIELD THE PAYLOAD DOES NOT HAVE. data/bids.json carries
-     `cashPrice`; it carries no `bid_price`, no `bidPrice` and no `price` on
-     any of its rows. So every comparison was Number(0)-Number(0), the sort
-     did nothing at all, and this returned cropBids[0] -- whatever happened to
-     sort first by state, then city, then commodity. That was Agrex Inc of
-     Montgomery, ALABAMA, shown to a reader in Wisconsin as their bid, with no
-     distance beside it to give it away. Fixed 2026-08-29.
-
-     `verified` is set by scripts/fetch_bids.py: false where cash minus basis
-     does not agree with what every other facility quoting the same contract
-     implies. Before the guard existed, the highest corn row in the country
-     was $12.92 at Iroquois Bio-Energy on a symbol that is not a CME contract,
-     implying corn futures of $13.12 when every other row in the file implied
-     about $5.37. A row with no `verified` field at all is treated as
-     selectable, so an older bids.json cannot blank this card. */
-  cropBids.sort(function(a,b){return bidCash(b)-bidCash(a);});
-  return{bid:cropBids[0],distance:null};
+  /* NOTHING WITHIN RANGE. The reader's own grid ZIP returned no verified bid
+     for this crop, so the honest answer is the best one anywhere plus a
+     distance of null, which renderBasisCard turns into a label that says it
+     is not near them. */
+  return{bid:bestBid(cropBids),distance:null};
 }
 
 function fmtBidTime(ts){
@@ -1595,6 +1629,14 @@ function renderBasisCard(data){
         else locStr+=' \u00b7 '+Math.round(dMi)+' mi from you';
       }else if(bidGrid&&userLoc.zip&&bidGrid.zip===userLoc.zip){
         locStr+=' \u00b7 your ZIP';
+      }else if(match.distance!==null){
+        /* A LOCAL BID WHOSE FACILITY ZIP IS NOT ITSELF A GRID ZIP. It was
+           returned by the radius query run around the reader's own grid ZIP,
+           so it is within range -- there just is no grid entry to measure a
+           mileage from. Say the true thing rather than nothing: an
+           unqualified "Sun Prairie, WI" reads as a bid the reader can place,
+           which it is, but it should not look like an exact distance either. */
+        locStr+=' \u00b7 within range of you';
       }else if(match.distance===null){
         /* SAY SO WHEN IT IS NOT NEAR THEM. findBestBidForCrop returns
            distance:null only from the fallback branch -- the highest verified
