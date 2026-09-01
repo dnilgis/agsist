@@ -57,6 +57,9 @@ jobs:
     timeout-minutes: 350      # guard well under the 6h hosted-runner ceiling
     permissions:
       contents: write
+      # `actions: write` is what lets the last step of the fetch loop dispatch
+      # the briefing. Added 2026-09-01 with the heartbeat; see the note there.
+      actions: write
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -80,6 +83,11 @@ jobs:
           python scripts/test_preflight_limits.py
 
       - name: Fetch loop (every 30 min for the session)
+        env:
+          # `gh workflow run` authenticates from GH_TOKEN. The built-in token is
+          # enough: a workflow_dispatch is one of the two events GitHub creates
+          # runs for even when GITHUB_TOKEN sends it.
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -uo pipefail
           git config user.name  "AGSIST Bot"
@@ -120,6 +128,47 @@ jobs:
                 echo "push attempt $i lost a race; retrying…"; sleep $((RANDOM % 5 + 2))
               done
               [ "$pushed" = "0" ] && echo "::warning::could not push this cycle; will retry next cycle"
+
+              # ── THE BRIEFING HEARTBEAT ──────────────────────────────────
+              #
+              # This loop is the only thing in this repository that GitHub
+              # delivers reliably. daily.yml's own scheduled fires are dropped
+              # for days at a time; this one committed at 09:06, 09:37, 10:07,
+              # 10:37, 11:08, 11:38, 12:08 and 12:39 UTC on 2026-08-31 — eight
+              # for eight — while not one briefing fire arrived.
+              #
+              # daily.yml was given `on: push` on 2026-08-31 to ride along with
+              # exactly these commits. IT CANNOT WORK, and the reason is
+              # GitHub's, written down in their own documentation:
+              #
+              #   "When you use the repository's GITHUB_TOKEN to perform tasks,
+              #    events triggered by the GITHUB_TOKEN ... will not create a
+              #    new workflow run. ... this behavior prevents you from
+              #    accidentally creating recursive workflow runs."
+              #
+              # The checkout above authenticates with secrets.GITHUB_TOKEN, so
+              # every push this loop makes is invisible to every `on: push`
+              # trigger in the repository. Not unreliable. Impossible.
+              #
+              # The SAME page names the two events that are exempt:
+              #
+              #   "workflow_dispatch and repository_dispatch events always
+              #    create workflow runs."
+              #
+              # So the heartbeat is a dispatch, not a push. It needs no new
+              # secret and creates no recursion: daily.yml answers a heartbeat
+              # exactly the way it answered a push — it never waits, it skips
+              # if today is published or if it is before the 05:45 Central
+              # floor, and there is another one along in thirty minutes.
+              #
+              # `|| true` because a briefing is not worth failing a price
+              # fetch over.
+              if [ "$pushed" = "1" ]; then
+                gh workflow run daily.yml \
+                  -f heartbeat=true -f send_email=true \
+                  && echo "briefing heartbeat sent" \
+                  || echo "::warning::briefing heartbeat could not be sent this cycle"
+              fi
             else
               echo "no price change this cycle"
             fi

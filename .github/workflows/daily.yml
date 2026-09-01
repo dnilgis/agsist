@@ -73,34 +73,44 @@ on:
     # every settlement and locked_prices reflects actual Friday closes. It
     # replaces the morning file on purpose and does NOT wait — see the gate.
     - cron: '0 20 * * 5'
-  # ── THE HEARTBEAT THAT IS NOT A CRON ──────────────────────────────────
+  # ── `on: push` WAS HERE AND IT COULD NEVER HAVE FIRED. REMOVED 2026-09-01.
   #
-  # Three low-frequency fires are the right shape, but they are still three
-  # bets on the same unreliable delivery. On the morning this was written,
-  # every scheduled briefing fire for two days had been dropped while
-  # prices.yml committed to this branch every thirty minutes without missing
-  # one. Pushes are not scheduled, so they are not dropped.
+  # Added on 2026-08-31 as "the heartbeat that is not a cron", on the reasoning
+  # that pushes are not scheduled and so are not dropped. That much is true.
+  # What is also true, from GitHub's own documentation:
   #
-  # So every push to main also asks the gate. On a normal morning the pre-dawn
-  # prices launch commits at about 05:17 Central and every half hour after, and
-  # the first of those landing past the 05:45 floor generates the briefing —
-  # with no cron involved at all.
+  #   "When you use the repository's GITHUB_TOKEN to perform tasks, events
+  #    triggered by the GITHUB_TOKEN ... will not create a new workflow run.
+  #    ... this behavior prevents you from accidentally creating recursive
+  #    workflow runs."
   #
-  # A PUSH NEVER WAITS. That is the difference from a scheduled fire and it is
-  # what keeps this cheap: a push before the floor exits in seconds rather than
-  # holding a runner for an hour, and there is always another push coming. The
-  # briefing's own push re-triggers this workflow once, sees today already
-  # published, and skips — about twenty seconds, once a day.
+  # `prices.yml` checks out with `token: ${{ secrets.GITHUB_TOKEN }}` and
+  # pushes with those credentials. Every one of its commits — eight for eight
+  # on the morning of 08-31, and again every thirty minutes on 09-01 — was
+  # therefore invisible to this trigger. The briefing did not miss its morning
+  # because the heartbeat was unreliable. The heartbeat did not exist.
   #
-  # `concurrency: daily-briefing` above already queues rather than overlaps, so
-  # two pushes arriving together cannot both generate.
-  push:
-    branches: [main]
+  # It is REMOVED rather than left in place, because a dead trigger sitting in
+  # a file is how this survived a whole morning looking healthy.
+  #
+  # What replaces it is at the bottom of prices.yml's fetch loop: a
+  # `workflow_dispatch` with `heartbeat=true`, sent after every successful
+  # push. From the same documentation page:
+  #
+  #   "workflow_dispatch and repository_dispatch events always create workflow
+  #    runs."
+  #
+  # Always. Including from GITHUB_TOKEN. That is the only door in this
+  # repository that a bot can actually knock on.
 
   workflow_dispatch:
     inputs:
       send_email:
         description: "Email the live subscriber list? Manual runs default to NO — a dry run that generates, gates, and publishes but sends nothing. Scheduled runs always send."
+        type: boolean
+        default: false
+      heartbeat:
+        description: "Sent by the price loop, not by a person. A heartbeat NEVER waits and NEVER overrides the morning floor — it behaves exactly as the old push trigger was meant to. Leave this false when you are the one clicking Run workflow."
         type: boolean
         default: false
 
@@ -133,7 +143,23 @@ jobs:
 
           EVENT="${{ github.event_name }}"
           BRANCH="${{ github.event.repository.default_branch || 'main' }}"
-          DEADLINE=$(( $(date +%s) + 150 * 60 ))
+
+          # A DISPATCH FROM THE PRICE LOOP IS NOT A PERSON AT A KEYBOARD.
+          # It arrives every thirty minutes all morning, so it must obey the
+          # floor and the published check exactly as the push trigger was meant
+          # to. Only a human clicking Run workflow gets to override them.
+          HEARTBEAT="${{ github.event.inputs.heartbeat || 'false' }}"
+          [ "$EVENT" = "workflow_dispatch" ] && [ "$HEARTBEAT" = "true" ] && EVENT="heartbeat"
+
+          # THE WAIT IS CAPPED AT FORTY MINUTES, DOWN FROM 150. Not a tuning
+          # tweak — the old budget could hold `concurrency: daily-briefing` for
+          # two and a half hours, and GitHub keeps at most ONE pending run per
+          # group and CANCELS the rest. A gate that sleeps through the morning
+          # would have cancelled the very recovery launches it was there to
+          # back up. Forty minutes covers the 05:19 launch's wait to the 05:45
+          # floor with room to spare, and with a heartbeat every thirty minutes
+          # nothing needs to wait longer than that anyway.
+          DEADLINE=$(( $(date +%s) + 40 * 60 ))
           FLOOR=0545
 
           say() { echo "$(date +%H:%M) Central — $*"; }
@@ -165,7 +191,7 @@ jobs:
 
             # A MANUAL RUN NEVER WAITS AND NEVER SKIPS. It is somebody standing
             # at the keyboard wanting a briefing now.
-            if [ "$EVENT" != "schedule" ] && [ "$EVENT" != "push" ]; then
+            if [ "$EVENT" != "schedule" ] && [ "$EVENT" != "heartbeat" ]; then
               say "GENERATING: manual $EVENT, $DAY"
               decide 0; exit 0
             fi
@@ -198,12 +224,12 @@ jobs:
             # asleep. So we WAIT for the floor rather than hand the morning to
             # a later fire that may never be delivered.
             if [ "$HHMM" -lt "$FLOOR" ]; then
-              # A PUSH NEVER WAITS. Holding a runner for an hour on every
-              # commit would cost more than the whole briefing; there is
-              # another push along in thirty minutes and one of them will be
+              # A HEARTBEAT NEVER WAITS. Holding a runner for an hour on every
+              # price commit would cost more than the whole briefing; there is
+              # another one along in thirty minutes and one of them will be
               # past the floor.
-              if [ "$EVENT" = "push" ]; then
-                say "SKIPPING: push before the ${FLOOR} floor — the next one takes it"
+              if [ "$EVENT" = "heartbeat" ]; then
+                say "SKIPPING: heartbeat before the ${FLOOR} floor — the next one takes it"
                 decide 1; exit 0
               fi
               now=$(date +%s)
