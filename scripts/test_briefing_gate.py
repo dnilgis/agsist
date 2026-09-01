@@ -1,6 +1,16 @@
 #!/usr/bin/env python3
 """
-THE BRIEFING GATE, DRIVEN THROUGH EVERY EVENT SHAPE IT CAN MEET.
+THE BRIEFING *SCHEDULE* GATE, DRIVEN THROUGH EVERY EVENT SHAPE IT CAN MEET.
+
+NAME WARNING, AND IT IS MY FAULT. This file tests the SCHEDULE gate -- the shell
+block inside daily.yml that decides whether a fire generates or stands down. It
+has nothing to do with scripts/briefing_gate.py, which is a different thing
+entirely: the 673-line checker that decides whether the finished briefing is fit
+to send. That one is tested by scripts/test_briefing_binding.py.
+
+  test_briefing_gate.py     -> daily.yml's gate:  should this run generate?
+  test_briefing_binding.py  -> briefing_gate.py:  is this issue fit to send?
+  test_daily_schedule.py    -> the shape of the crons around both.
 
 Written 2026-09-01, after the third failure of this schedule in four days and
 the second one that was my own fix.

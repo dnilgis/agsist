@@ -88,11 +88,25 @@ def prose_fields(d):
 # not a price move (condition ratings, crop progress, moisture, an interest
 # rate) is left alone. A guard that fires on good prose gets switched off.
 
+# ── THE VOCABULARY WAS NARROWER THAN THE MARKET'S ────────────────────────────
+# Probed 2026-09-01 against ordinary board prose. These all read as NO MOVE AT
+# ALL and so could never disagree with anything:
+#
+#   down:  giving back · gives back · pared · paring · sliding · backed off
+#          erased · trimmed · surrendered · softened
+#   up:    tacked on · tacking on
+#
+# "gave back" was in the list and "giving back" was not, which is the shape of
+# every gap here: one inflection of a phrase, and the guard goes quiet on the
+# rest. Widened below. `pared` is spelled out rather than `par\w*` because that
+# would swallow part, particular and parity.
 _MOVE_UP = re.compile(r'\b(add\w*|gain\w*|firm\w*|rose|rise|rising|climb\w*|advanc\w*|'
-                      r'higher|up|rall\w+|strengthen\w*|reclaim\w*|jump\w*|lift\w*)\b', re.I)
-_MOVE_DN = re.compile(r'\b(gave back|give back|lost|los\w+|slid|slide|slipp\w*|fell|fall\w*|'
-                      r'drop\w*|declin\w*|weaken\w*|lower|down|sank|sink\w*|retreat\w*|'
-                      r'eas\w+|shed|shav\w*)\b', re.I)
+                      r'higher|up|rall\w+|strengthen\w*|reclaim\w*|jump\w*|lift\w*|'
+                      r'tack\w+ on)\b', re.I)
+_MOVE_DN = re.compile(r'\b(g[aiu]v\w* back|give back|lost|los\w+|slid\w*|slide|slipp\w*|'
+                      r'fell|fall\w*|drop\w*|declin\w*|weaken\w*|lower|down|sank|sink\w*|'
+                      r'retreat\w*|eas\w+|shed|shav\w*|pared|paring|pares|back(?:ed)? off|'
+                      r'eras\w*|trimm\w*|surrender\w*|soften\w*)\b', re.I)
 _MOVE_FLAT = re.compile(r'\b(flat|unchanged|steady|little changed|barely (?:moved|budged))\b', re.I)
 # A percentage that is not a price move. Ratings and crop progress are the ones
 # that actually appear; the rest are cheap insurance.
@@ -256,6 +270,42 @@ def check_number_binding(daily, F, W, archive_dir='data/daily-archive', today=No
     Promote to strict only after re-running the archive sweep and getting a
     number you would stand behind. --bind-strict exists for that experiment.
     """
+    # ── ONE OF THESE RULES IS SHARP ENOUGH TO BLOCK, AND HERE IS THE SWEEP ──
+    #
+    # The docstring above measured the four rules together and found them too
+    # noisy to block on: 93% of issues. That is still true of magnitude. It is
+    # NOT true of DIRECTION AT SIZE, and the difference is measurable.
+    #
+    # Swept 2026-09-01 over 173 archived issues, counting direction
+    # disagreements by the size of the move the board actually printed:
+    #
+    #     |move| >= 0.0%   76 hits   48 issues   27.7%
+    #     |move| >= 1.0%   36 hits   28 issues   16.2%
+    #     |move| >= 2.0%   20 hits   17 issues    9.8%   <- this line
+    #     |move| >= 3.0%   12 hits   10 issues    5.8%
+    #
+    # AND EVERY ONE OF THE NINETEEN AT 2% IS INDEFENSIBLE. Read them: hogs
+    # "give back" on a +15.71% session, twice in one issue; hogs "added" on
+    # -14.16%; cattle "up" on -3.01% (2026-09-01, the issue that prompted this);
+    # natgas "dropped" on +3.92%; cattle "erasing" on +4.05%. There is no window,
+    # no nearby-versus-new-crop
+    # confusion and no rounding that produces those sentences. The honest
+    # ambiguity the docstring describes -- "ran 6.9%" for +7.19%, "up 4%
+    # overnight" -- all lives BELOW one percent, and stays a warning.
+    #
+    # So: a direction word against a two-percent move BLOCKS THE SEND, in every
+    # mode, and everything else keeps behaving exactly as it did. Roughly one
+    # blocked send a fortnight, each one naming the sentence and the number, and
+    # a manual re-run fixes it in two minutes.
+    #
+    # This is the house rule everywhere else in these repositories: the applier
+    # refuses rather than filing a wrong number, the price panel withdraws
+    # rather than picking a winner between two towns. A briefing that tells a
+    # grower cattle went up on a day they fell three percent is the same defect,
+    # and it has been going out.
+    HARD = F
+    DIR_BLOCK_PCT = 2.0
+
     if not strict:
         F = W
     # THE BRIEFING'S OWN DATE, not the calendar's. The archive contains today's
@@ -340,14 +390,18 @@ def check_number_binding(daily, F, W, archive_dir='data/daily-archive', today=No
                   '%s calls %s flat but the board moved %+.2f%% -- "%s"'
                   % (loc, key, pct, sent.strip()[:110]))
             up, dn = _MOVE_UP.search(sent), _MOVE_DN.search(sent)
-            if up and not dn and _near(sent, key, _MOVE_UP) and pct < -_FLAT_BAND:
-                F('bind:dir',
-                  '%s has %s moving UP ("%s") but the board says %+.2f%%'
-                  % (loc, key, up.group(0), pct))
-            if dn and not up and _near(sent, key, _MOVE_DN) and pct > _FLAT_BAND:
-                F('bind:dir',
-                  '%s has %s moving DOWN ("%s") but the board says %+.2f%%'
-                  % (loc, key, dn.group(0), pct))
+            wrong = ((up, not dn, _MOVE_UP, 'UP',   pct < -_FLAT_BAND),
+                     (dn, not up, _MOVE_DN, 'DOWN', pct > _FLAT_BAND))
+            for hit, alone, rx, word, contradicts in wrong:
+                if not (hit and alone and _near(sent, key, rx) and contradicts):
+                    continue
+                big = abs(pct) >= DIR_BLOCK_PCT
+                (HARD if big else F)(
+                    'bind:dir',
+                    '%s has %s moving %s ("%s") but the board says %+.2f%%%s -- "%s"'
+                    % (loc, key, word, hit.group(0), pct,
+                       '  [BLOCKING: past the %.1f%% line]' % DIR_BLOCK_PCT if big else '',
+                       sent.strip()[:110]))
 
 
 def wasde_fabrication_hits(daily, today=None):
