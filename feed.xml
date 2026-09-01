@@ -5,13 +5,26 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Mon, 31 Aug 2026 13:15:54 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 01 Sep 2026 13:23:18 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/agsist.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>WHEAT FIRMS; EPA BIOFUEL EXEMPTIONS HIT THE BOARD</title>
+      <link>https://agsist.com/daily/2026-09-01</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-09-01</guid>
+      <pubDate>Tue, 01 Sep 2026 05:00:00 -0600</pubDate>
+      <description>Wheat is the only grain doing anything today, up nearly 15 cents to $7.60 while corn barely twitched and beans gave back three cents. The real story isn't the price action: it's the EPA quietly handing 18 refineries full RFS exemptions this morning, removing 1.76 billion gallons of biofuel obligation from the 2025 compliance year. Corn's ethanol demand argument just got smaller.
+Chicago wheat rose 1.9% on overnight momentum while EPA granted 1.76 billion gallons of RFS exemptions, a direct hit to ethanol demand math.
+• WHEAT LEADS; CORN IGNORES EPA
+  → December corn at $5.37 with harvest beginning: the EPA exemption is a demand headwind the board hasn't moved on yet. If you have unpriced new-crop, the September WASDE on the 10th is your next real window, but don't assume the price holds there.
+• HOGS FIRM; CATTLE HOLD
+• CRUDE UP; NATGAS SLIPS
+Read more: https://agsist.com/daily/2026-09-01</description>
+    </item>
     <item>
       <title>CORN FADES, CRUDE RUNS; CROP PROGRESS AT 3 PM</title>
       <link>https://agsist.com/daily/2026-08-31</link>
@@ -385,19 +398,6 @@ Corn and beans drift near unchanged as Pro Farmer crop tour gets underway; wheat
 • Livestock Quiet; Milk Breaks
   → Dairy: Class III at $17.16 with no hedge is exposed. Look at August and September floor options before Tuesday's open.
 Read more: https://agsist.com/daily/2026-08-03</description>
-    </item>
-    <item>
-      <title>CORN DOWN 6%; WEEK AHEAD RESETS THE STORY</title>
-      <link>https://agsist.com/daily/2026-08-02</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-08-02</guid>
-      <pubDate>Sun, 02 Aug 2026 05:00:00 -0600</pubDate>
-      <description>Corn closed Friday at $4.41, down 6% on the session as Belt rains knocked the last of the yield-concern premium out of the market. The funds have been selling weather, and Friday proved the weather is done cooperating with that trade. The week ahead gives producers the first hard look at 2026 yield potential: Pro Farmer hits the fields Monday, and the numbers either put the floor back or they don't.
-Belt rains removed the weather premium Friday; now the Pro Farmer crop tour and USDA Export Sales reset the price story for August.
-• Grains Reset Lower
-• Cattle Firm; Hogs Run
-• Crude Firms; Milk Breaks
-  → Dairy producers: if you are not hedged on August and September Class III, the 52-week range at 34% says the risk is skewed lower. Look at the floor now.
-Read more: https://agsist.com/daily/2026-08-02</description>
     </item>
   </channel>
 </rss>

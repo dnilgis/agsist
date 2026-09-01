@@ -1,18 +1,18 @@
 {
- "updated": "2026-08-31T13:15:54+00:00",
- "total": 101,
+ "updated": "2026-09-01T13:23:18+00:00",
+ "total": 102,
  "played_out": 37,
- "didnt": 59,
+ "didnt": 60,
  "pending": 5,
- "hit_rate": 38.5,
+ "hit_rate": 38.1,
  "by_method": {
   "deterministic": {
    "played": 11,
-   "missed": 49,
-   "graded": 60,
-   "hit_rate": 18.3,
+   "missed": 50,
+   "graded": 61,
+   "hit_rate": 18.0,
    "first": "2026-06-24",
-   "last": "2026-08-31"
+   "last": "2026-09-01"
   },
   "self_reported": {
    "played": 26,
@@ -34,17 +34,17 @@
   },
   "v2": {
    "played": 7,
-   "missed": 9,
-   "graded": 16,
-   "hit_rate": 43.8,
+   "missed": 10,
+   "graded": 17,
+   "hit_rate": 41.2,
    "first": "2026-08-12",
-   "last": "2026-08-31"
+   "last": "2026-09-01"
   }
  },
  "direction_only": {
-  "right_way": 25,
-  "graded": 60,
-  "rate": 41.7
+  "right_way": 26,
+  "graded": 61,
+  "rate": 42.6
  },
  "by_instrument": {
   "wheat": {
@@ -59,8 +59,8 @@
   },
   "beans": {
    "played": 6,
-   "graded": 17,
-   "hit_rate": 35.3
+   "graded": 18,
+   "hit_rate": 33.3
   },
   "crude": {
    "played": 2,
@@ -96,6 +96,22 @@
  "mismatched": 23,
  "current_streak": 0,
  "records": [
+  {
+   "made": "2026-08-31",
+   "judged": "2026-09-01",
+   "call": "Called beans up toward $12.85; November beans closed today at $13.01 but nearby beans slipped to $12.76.",
+   "outcome": "didnt",
+   "method": "deterministic",
+   "mismatch": false,
+   "note": "Old-crop vs new-crop spread is doing the work; the thesis needs nearby beans to confirm.",
+   "instrument": "beans",
+   "direction": "up",
+   "level": "12.85",
+   "p0": 12.7,
+   "p1": 12.755,
+   "design": "v2",
+   "direction_ok": true
+  },
   {
    "made": "2026-08-30",
    "judged": "2026-08-31",

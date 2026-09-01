@@ -1,6 +1,18 @@
 {
   "briefings": [
     {
+      "date": "2026-09-01",
+      "date_display": "Tuesday, September 1, 2026",
+      "headline": "WHEAT FIRMS; EPA BIOFUEL EXEMPTIONS HIT THE BOARD",
+      "teaser": "Wheat runs, EPA clips ethanol demand, and September starts with a policy gut-punch corn ignored.",
+      "market_mood": "mixed",
+      "surprise_count": 4,
+      "sections": 3,
+      "url": "/daily/2026-09-01",
+      "market_closed": false,
+      "yc_outcome": "didnt"
+    },
+    {
       "date": "2026-08-31",
       "date_display": "Monday, August 31, 2026",
       "headline": "CORN FADES, CRUDE RUNS; CROP PROGRESS AT 3 PM",
@@ -1971,6 +1983,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-08-31T13:15:52.278745+00:00",
-  "count": 172
+  "updated": "2026-09-01T13:23:16.898114+00:00",
+  "count": 173
 }
