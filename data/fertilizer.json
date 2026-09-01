@@ -1,59 +1,65 @@
 {
- "updated": "2026-07-20",
- "source": "Midwest dealer benchmark — July 2026",
+ "updated": "2026-09-01",
+ "source": "Midwest dealer quotes \u2014 each row carries the date it was last quoted",
  "prices": [
   {
    "name": "Urea",
    "symbol": "46-0-0",
-   "icon": "🌾",
-   "price": 695,
-   "prev": 760,
+   "icon": "\ud83c\udf3e",
+   "price": 590,
+   "prev": 695,
    "unit": "$/ton",
+   "as_of": "2026-09-01",
    "location": "Midwest dealer"
   },
   {
    "name": "Potash",
    "symbol": "0-0-60",
-   "icon": "🪨",
+   "icon": "\ud83e\udea8",
    "price": 460,
-   "prev": 450,
+   "prev": 460,
    "unit": "$/ton",
+   "as_of": "2026-09-01",
    "location": "Midwest dealer"
   },
   {
    "name": "MAP + Sulfur",
    "symbol": "12-40-0-10S",
-   "icon": "⚗️",
+   "icon": "\u2697\ufe0f",
    "price": 930,
    "prev": 930,
    "unit": "$/ton",
+   "as_of": "2026-09-01",
    "location": "Midwest dealer"
   },
   {
    "name": "Amm. Sulfate",
    "symbol": "21-0-0-24S",
-   "icon": "🧂",
-   "price": 580,
+   "icon": "\ud83e\uddc2",
+   "price": 460,
    "prev": 580,
    "unit": "$/ton",
+   "as_of": "2026-09-01",
    "location": "Midwest dealer"
   },
   {
    "name": "K-Mag Premium",
    "symbol": "0-0-20-22S-11Mg",
-   "icon": "💎",
+   "icon": "\ud83d\udc8e",
    "price": 650,
    "prev": 650,
    "unit": "$/ton",
+   "as_of": "2026-07-20",
    "location": "Midwest dealer"
   },
   {
    "name": "Pell Lime",
    "symbol": "SuperCal 98G",
-   "icon": "🪨",
+   "icon": "\ud83e\udea8",
    "price": 285,
    "prev": 285,
    "unit": "$/ton",
+   "as_of": "2026-07-20",
    "location": "Midwest dealer"
   }
  ]

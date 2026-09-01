@@ -139,6 +139,7 @@ button,a,[role="button"]{touch-action:manipulation;}
 .fpc-chg-val.up{color:#ef4444}
 .fpc-chg-val.dn{color:var(--green)}
 .fpc-chg-val.nc{color:var(--text-muted)}
+.fpc-asof{color:var(--gold,#d4a23f);}
 .fpc-loc{font-size:0.757rem;color:var(--text-muted);margin-top:.12rem}
 
 /* Natural gas */
@@ -400,6 +401,21 @@ function fmtLb(n){return Math.round(n).toLocaleString('en-US');}
 /* nutrient engine */
 function parseGrade(sym){if(!sym)return null;var parts=String(sym).trim().split('-');if(parts.length<3)return null;var n=parseFloat(parts[0]),p=parseFloat(parts[1]),k=parseFloat(parts[2]);if(isNaN(n)||isNaN(p)||isNaN(k))return null;var g={N:n,P:p,K:k,S:0,Mg:0};for(var i=3;i<parts.length;i++){var m=String(parts[i]).match(/([\d.]+)\s*([A-Za-z]+)/);if(m){var v=parseFloat(m[1]),u=m[2].toLowerCase();if(u==='s')g.S=v;else if(u==='mg')g.Mg=v;}}return g;}
 function costPerLb(price,pct){return pct>0?price/(20*pct):null;}
+/* A ROW THAT WAS NOT QUOTED TODAY MUST NOT WEAR TODAY'S DATE.
+   2026-09-01: four of the six products were re-quoted and two were not. Under a
+   single file-level "updated" stamp, K-Mag and pelletized lime would have been
+   presented as September prices when they were last asked about in July. A
+   reader cannot tell a price that HELD from a price nobody asked about, and on
+   a page people use to decide when to book fertilizer that difference is the
+   whole point. So each row carries its own as_of, and any row older than the
+   file says so, right where the reader is already looking for provenance. */
+function stale(p, updated){
+  if(!p.as_of || !updated || p.as_of === updated) return '';
+  var d = new Date(p.as_of + 'T12:00:00Z');
+  if(isNaN(d)) return '';
+  return ' \u00b7 <span class="fpc-asof">quoted ' +
+    d.toLocaleDateString('en-US',{timeZone:'UTC',month:'short',day:'numeric'}) + '</span>';
+}
 function analyze(prices){return prices.map(function(p){var g=parseGrade(p.symbol);return{name:p.name,symbol:p.symbol,price:p.price,grade:g};});}
 function cheapest(products,nut){var best=null;products.forEach(function(pr){if(!pr.grade||!pr.grade[nut]||pr.price==null)return;var c=costPerLb(pr.price,pr.grade[nut]);if(c!=null&&(best===null||c<best.cost))best={name:pr.name,cost:c,product:pr};});return best;}
 var CROPS={corn:{label:'Corn',nRate:0.90,p2o5:0.37,k2o:0.24,sNeed:18,fixesN:false},soybean:{label:'Soybeans',nRate:0.00,p2o5:0.80,k2o:1.30,sNeed:12,fixesN:true},wheat:{label:'Wheat',nRate:1.20,p2o5:0.50,k2o:0.30,sNeed:12,fixesN:false}};
@@ -433,7 +449,7 @@ function renderCards(data){
     var chgStr=chg!=null&&chg!==0?'$'+Math.abs(chg).toFixed(0)+'/ton vs prior':'No change';
     var chgTxt=chg!=null&&chg!==0?arrow+' $'+Math.abs(chg).toFixed(0):(chg===0?'\u2014':'');
     var priceDisplay=hasPrice?'$'+p.price:'Call';var priceColor=hasPrice?'':'color:var(--text-muted);font-size:1.2rem';
-    return '<div class="fert-price-card"><div class="fpc-head"><span class="fpc-name">'+esc(p.name)+'</span><span class="fpc-sym">'+esc(p.symbol)+'</span></div><div class="fpc-price" style="'+priceColor+'">'+priceDisplay+'</div><div class="fpc-unit">'+esc(p.unit)+'</div>'+(chgTxt?'<div class="fpc-chg"><span class="fpc-chg-val '+chgCls+'" title="'+esc(chgStr)+'">'+esc(chgTxt)+'</span></div>':'')+'<div class="fpc-loc">'+esc(p.location)+'</div></div>';
+    return '<div class="fert-price-card"><div class="fpc-head"><span class="fpc-name">'+esc(p.name)+'</span><span class="fpc-sym">'+esc(p.symbol)+'</span></div><div class="fpc-price" style="'+priceColor+'">'+priceDisplay+'</div><div class="fpc-unit">'+esc(p.unit)+'</div>'+(chgTxt?'<div class="fpc-chg"><span class="fpc-chg-val '+chgCls+'" title="'+esc(chgStr)+'">'+esc(chgTxt)+'</span></div>':'')+'<div class="fpc-loc">'+esc(p.location)+stale(p,data.updated)+'</div></div>';
   }).join('');
   if(window.gtag)gtag('event','fertilizer_view',{products:data.prices.length});
 }
