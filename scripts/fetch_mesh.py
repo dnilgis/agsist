@@ -90,6 +90,92 @@ def simplify_ring(ring, tol):
     return out
 
 
+def assemble(rings):
+    """Contour rings → one valid MultiPolygon, with holes where holes belong.
+
+    ── WHY THIS FUNCTION EXISTS ────────────────────────────────────────────
+    Until 2026-09-01 each ring became its own hole-less polygon:
+
+        polys.append([ring])
+
+    matplotlib's `allsegs` returns OUTER boundaries and HOLE boundaries in the
+    same flat list with nothing to tell them apart. So every hole in a hail
+    swath was written out as a second solid shell sitting inside the first.
+    Two things followed, and both were live for at least a month:
+
+      1. A DOUGHNUT OF HAIL WAS PUBLISHED AS A FILLED DISC. The quiet middle
+         of a swath counted as hail. This product mails growers to say hail
+         passed over their field.
+      2. The file was invalid GeoJSON — "Nested shells" — so every consumer
+         that unions it was one GEOS call from an exception.
+
+    Measured across the last 30 archived days: 25 carried an invalid band and
+    9 of those made `unary_union` raise outright. `scripts/check_alerts.py`
+    died on exactly that on 2026-09-01 and sent no alerts.
+
+    THE ASSEMBLY IS EVEN-ODD, which is what a set of contour rings means: a
+    point is inside the band when it is inside an odd number of rings. XOR
+    gives that, and unlike a nesting test it does not care which way a ring
+    was wound.
+
+    Douglas-Peucker is also not self-intersection safe — it can fold a ring
+    across itself, and rounding to three decimals can collapse two points onto
+    one. So each ring is made valid before it joins the pile.
+    """
+    from functools import reduce
+    from shapely.geometry import Polygon
+    from shapely.geometry.base import BaseMultipartGeometry
+    from shapely.validation import make_valid
+
+    def areal(g):
+        """make_valid can hand back stray lines and points; a band is an area."""
+        if g.geom_type in ("Polygon", "MultiPolygon"):
+            return g
+        if isinstance(g, BaseMultipartGeometry):
+            parts = [x for x in g.geoms if x.geom_type in ("Polygon", "MultiPolygon")]
+            return reduce(lambda a, b: a.union(b), parts) if parts else None
+        return None
+
+    polys = []
+    for ring in rings:
+        p = Polygon(ring)
+        if not p.is_valid:
+            p = areal(make_valid(p))
+        if p is not None and not p.is_empty and p.area > 0:
+            polys.append(p)
+    if not polys:
+        return None
+
+    # Largest first, so the common case — one outer ring and its holes — is a
+    # single pass of subtractions rather than a pile of unions.
+    polys.sort(key=lambda g: g.area, reverse=True)
+    out = reduce(lambda a, b: a.symmetric_difference(b), polys)
+    out = areal(out)
+    if out is None or out.is_empty:
+        return None
+    if not out.is_valid:                      # belt and braces; never seen to fire
+        out = areal(make_valid(out))
+    return out
+
+
+def geom_to_multipolygon(g):
+    """shapely geometry → GeoJSON MultiPolygon coordinates, rounded as before."""
+    parts = list(g.geoms) if g.geom_type == "MultiPolygon" else [g]
+    coords = []
+    for poly in parts:
+        rings = [list(poly.exterior.coords)] + [list(r.coords) for r in poly.interiors]
+        out = []
+        for r in rings:
+            ring = [[round(float(x), 3), round(float(y), 3)] for x, y in r]
+            if ring[0] != ring[-1]:
+                ring.append(ring[0])
+            if len(ring) >= 4:
+                out.append(ring)
+        if out:
+            coords.append(out)
+    return coords
+
+
 def contour_features(grid_mm, lons, lats):
     """grid → GeoJSON features per threshold (filled bands rendered as
     stacked polygons: each threshold's polygon covers everything ≥ it)."""
@@ -101,15 +187,19 @@ def contour_features(grid_mm, lons, lats):
     for t_in in THRESH_IN:
         t_mm = t_in * MM_PER_IN
         cs = plt.contourf(lons, lats, grid_mm, levels=[t_mm, 1e9])
-        polys = []
-        # matplotlib API: modern versions expose allsegs; each seg is a ring
+        rings = []
+        # matplotlib API: modern versions expose allsegs; each seg is a ring,
+        # and an OUTER ring and a HOLE ring look identical here. assemble()
+        # is what tells them apart.
         for seg in cs.allsegs[0]:
             if len(seg) < 4:
                 continue
             ring = simplify_ring([[round(float(x), 3), round(float(y), 3)] for x, y in seg], SIMPLIFY_DEG)
             if len(ring) >= 4:
-                polys.append([ring])
+                rings.append(ring)
         plt.clf()
+        g = assemble(rings) if rings else None
+        polys = geom_to_multipolygon(g) if g is not None else []
         if polys:
             feats.append({
                 "type": "Feature",
@@ -251,7 +341,39 @@ def selftest():
     # empty grid → no features
     assert contour_features(np.zeros_like(vp), lp, la) == [], "empty grid produced features"
     json.dumps({"type": "FeatureCollection", "features": feats})
-    log("SELFTEST OK —", sum(len(f['geometry']['coordinates']) for f in feats), "polygons across", len(feats), "bands")
+
+    # ── EVERY BAND MUST BE VALID GEOMETRY ────────────────────────────────
+    # This assertion did not exist until 2026-09-01, and that is the whole
+    # reason a month of swath files shipped invalid. The old selftest checked
+    # that rings were closed and inside the box — both true of a hole drawn
+    # as a solid shell.
+    from shapely.geometry import shape as _shape
+    from shapely.validation import explain_validity as _why
+    for f in feats:
+        g = _shape(f["geometry"])
+        assert g.is_valid, ("band %s is invalid: %s"
+                            % (f["properties"]["thresh_in"], _why(g)))
+
+    # ── A HOLE IN THE SWATH MUST COME OUT AS A HOLE ──────────────────────
+    # A ring of hail with a quiet middle. Before assemble() this produced two
+    # solid shells, one inside the other: nested shells, invalid, and the
+    # quiet middle counted as hail on a page that mails growers about it.
+    R = np.hypot(LN + 99.0, LT - 40.0)
+    donut = np.where((R > 0.45) & (R < 1.05), 40.0, 0.0).astype(np.float32)
+    dp = maxpool(donut, POOL)
+    dfeats = contour_features(dp, lp, la)
+    assert dfeats, "the donut produced no band at all"
+    dg = _shape(dfeats[0]["geometry"])
+    assert dg.is_valid, "donut band invalid: " + _why(dg)
+    holes = sum(len(p.interiors) for p in
+                (dg.geoms if dg.geom_type == "MultiPolygon" else [dg]))
+    assert holes >= 1, "the donut came out solid — holes are being drawn as fill"
+    from shapely.geometry import Point as _Point
+    assert not dg.contains(_Point(-99.0, 40.0)), \
+        "the quiet middle of the swath is inside the band"
+
+    log("SELFTEST OK —", sum(len(f['geometry']['coordinates']) for f in feats),
+        "polygons across", len(feats), "bands; donut kept", holes, "hole(s)")
 
 
 def run_partial():

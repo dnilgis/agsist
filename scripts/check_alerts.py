@@ -36,7 +36,9 @@ from email.utils import formataddr, make_msgid
 from pathlib import Path
 
 from shapely.geometry import Point, shape
+from shapely.geometry.base import BaseMultipartGeometry
 from shapely.ops import unary_union
+from shapely.validation import explain_validity, make_valid
 
 REPO = Path(__file__).resolve().parent.parent
 MESH_DIR = REPO / "data" / "hail" / "mesh"
@@ -68,10 +70,45 @@ def newest_mesh_date():
     return sorted(dates)[-1]
 
 
+# How far a repair may move a band's area before this stops trusting the file.
+# Measured over the 30 archived days to 2026-08-31: 25 carried an invalid band
+# and the worst repair moved 5.667% (2026-08-05); the median was under 0.3%.
+# Ten percent is well clear of ordinary repair noise and well under the kind of
+# move that would mean the swath itself is wrong.
+REPAIR_AREA_TOLERANCE_PCT = 10.0
+
+
+def _areal(g):
+    """make_valid can return stray lines and points. A hail band is an area."""
+    if g.geom_type in ("Polygon", "MultiPolygon"):
+        return g
+    if isinstance(g, BaseMultipartGeometry):
+        parts = [x for x in g.geoms if x.geom_type in ("Polygon", "MultiPolygon")]
+        return unary_union(parts) if parts else None
+    return None
+
+
 def load_bands(day):
     """{thresh_in: shapely geometry} — bands are stacked (each threshold's
     polygon covers everything >= it), so a point's band = max thresh whose
-    geometry contains it."""
+    geometry contains it.
+
+    ── THE ARCHIVE CONTAINS INVALID GEOMETRY AND ALWAYS WILL ───────────────
+    Until 2026-09-01 the mesh pipeline wrote every contour ring as its own
+    hole-less polygon, so a hole in a swath came out as a solid shell nested
+    inside another. `scripts/fetch_mesh.py` no longer does that — but the 117
+    files already in the archive were written by the old one and nothing is
+    going to rewrite them.
+
+    Measured over the 30 days to 2026-08-31: 25 carried an invalid band, and
+    on 9 of those `unary_union` raised outright. This job died on exactly that
+    on 2026-09-01 — `TopologyException: side location conflict at
+    -110.85998098859315 40.175954372623572` — and mailed nobody.
+
+    So a repair happens here, and it is REPORTED rather than done quietly:
+    a band whose area moves under repair is a band whose alerts move with it,
+    and a grower who is not told is worse off than one who sees a red run.
+    """
     p = MESH_DIR / (day + ".json")   # NB: the mesh pipeline writes .json, not .geojson
     if not p.exists():
         print("no swath file for " + day + " — quiet day or not yet fetched. exit 0")
@@ -81,7 +118,43 @@ def load_bands(day):
     for f in gj.get("features", []):
         t = f["properties"]["thresh_in"]
         by_t.setdefault(t, []).append(shape(f["geometry"]))
-    return {t: unary_union(gs) for t, gs in by_t.items()}
+
+    bands, refuse = {}, []
+    for t, gs in sorted(by_t.items()):
+        fixed, before = [], 0.0
+        for g in gs:
+            before += g.area
+            if g.is_valid:
+                fixed.append(g)
+                continue
+            why = explain_validity(g)
+            r = _areal(make_valid(g))
+            if r is None or r.is_empty:
+                refuse.append("%.2f\" band: %s repaired to nothing" % (t, why))
+                continue
+            print("  repaired the %.2f\" band: %s" % (t, why))
+            fixed.append(r)
+        if not fixed:
+            continue
+        u = unary_union(fixed)
+        after = u.area
+        moved = (after - before) / before * 100.0 if before else 0.0
+        if abs(moved) > 0.0005:
+            print("  %.2f\" band area moved %+.3f%% under repair" % (t, moved))
+        if abs(moved) > REPAIR_AREA_TOLERANCE_PCT:
+            refuse.append("%.2f\" band moved %+.3f%% under repair, past the %.1f%% limit"
+                          % (t, moved, REPAIR_AREA_TOLERANCE_PCT))
+        bands[t] = u
+
+    # A REFUSAL, NOT A QUIET ALERT OFF A MANGLED BAND. If the geometry cannot
+    # be trusted the run goes red and somebody looks; it does not mail a
+    # smaller swath and say nothing.
+    if refuse:
+        print("REFUSING to alert on " + day + ":")
+        for r in refuse:
+            print("  - " + r)
+        sys.exit(1)
+    return bands
 
 
 def watch_circle(lat, lon, radius_mi):
