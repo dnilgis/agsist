@@ -1,0 +1,1051 @@
+{
+ "schema": "agsist-feeds/1",
+ "generated_by": "scripts/build_feeds.py",
+ "note": "Derived from the repository, never typed. Pages come from a grep of every .html; the writer and its cadence come from the workflow that names the file or runs the script that names it.",
+ "count": 45,
+ "with_known_cadence": 45,
+ "feeds": [
+  {
+   "path": "data/afida/county.json",
+   "pages": [
+    "foreign-land.html"
+   ],
+   "written_by": [],
+   "touched_by": [],
+   "cadence": "maintained by hand, not on a schedule",
+   "curated": true,
+   "planned": false,
+   "crons": [],
+   "max_gap_hours": null,
+   "quiet": null,
+   "why_quiet": null
+  },
+  {
+   "path": "data/analyst-scorecard.json",
+   "pages": [
+    "whats-priced-in.html"
+   ],
+   "written_by": [
+    "Build Analyst Scorecard"
+   ],
+   "touched_by": [
+    "Build Analyst Scorecard",
+    "Fetch COT Data",
+    "Generate Daily Briefing",
+    "Build What's Priced In"
+   ],
+   "cadence": "on demand",
+   "curated": false,
+   "planned": false,
+   "crons": [],
+   "max_gap_hours": null,
+   "quiet": null,
+   "why_quiet": null
+  },
+  {
+   "path": "data/basis-map.json",
+   "pages": [
+    "cash-bids.html"
+   ],
+   "written_by": [
+    "Build National Basis Map",
+    "Fetch Grain Bids"
+   ],
+   "touched_by": [
+    "Build National Basis Map",
+    "Fetch Grain Bids"
+   ],
+   "cadence": "2 launches on a fixed schedule at about 6am Central",
+   "curated": false,
+   "planned": false,
+   "crons": [
+    "7,37 11-21 * * 1-5",
+    "37 11 * * 6"
+   ],
+   "max_gap_hours": 47.5,
+   "quiet": null,
+   "why_quiet": null
+  },
+  {
+   "path": "data/bids.json",
+   "pages": [
+    "cash-bids.html",
+    "corn-futures-prices.html",
+    "soybean-futures-prices.html",
+    "status.html",
+    "wheat-futures-prices.html"
+   ],
+   "written_by": [
+    "seed basis history",
+    "Build National Basis Map",
+    "Fetch Export Sales",
+    "Fetch Grain Bids"
+   ],
+   "touched_by": [
+    "seed basis history",
+    "Build National Basis Map",
+    "Fetch Export Sales",
+    "Fetch Grain Bids"
+   ],
+   "cadence": "6 launches on a fixed schedule at about 6am, 7am, 8am, 9am Central",
+   "curated": false,
+   "planned": false,
+   "crons": [
+    "45 12 * * 4",
+    "45 13 * * 4",
+    "30 14 * * 4",
+    "20 13 * * 5",
+    "7,37 11-21 * * 1-5",
+    "37 11 * * 6"
+   ],
+   "max_gap_hours": 47.5,
+   "quiet": null,
+   "why_quiet": null
+  },
+  {
+   "path": "data/cond-yield/fit.json",
+   "pages": [
+    "conditions-yield.html"
+   ],
+   "written_by": [
+    "cond-yield"
+   ],
+   "touched_by": [
+    "cond-yield"
+   ],
+   "cadence": "on demand",
+   "curated": false,
+   "planned": false,
+   "crons": [],
+   "max_gap_hours": null,
+   "quiet": null,
+   "why_quiet": null
+  },
+  {
+   "path": "data/conditions/conditions.json",
+   "pages": [
+    "conditions.html"
+   ],
+   "written_by": [
+    "conditions"
+   ],
+   "touched_by": [
+    "cond-yield",
+    "conditions"
+   ],
+   "cadence": "1 launch on a fixed schedule at about 8pm Central",
+   "curated": false,
+   "planned": false,
+   "crons": [
+    "12 1 * * 2"
+   ],
+   "max_gap_hours": 168.0,
+   "quiet": null,
+   "why_quiet": null
+  },
+  {
+   "path": "data/cot-history.json",
+   "pages": [
+    "cot.html"
+   ],
+   "written_by": [
+    "Fetch COT Data"
+   ],
+   "touched_by": [
+    "Fetch COT Data"
+   ],
+   "cadence": "9 launches on a fixed schedule at about 2pm, 3pm, 4pm Central",
+   "curated": false,
+   "planned": false,
+   "crons": [
+    "45 19 * * 5",
+    "15 20 * * 5",
+    "45 20 * * 5",
+    "15 21 * * 5",
+    "45 19 * * 1",
+    "15 20 * * 1",
+    "45 20 * * 1",
+    "15 21 * * 1",
+    "30 21 * * *"
+   ],
+   "max_gap_hours": 24.0,
+   "quiet": "weekly",
+   "why_quiet": "Rebuilt from cot.json, so it moves when the COT report does."
+  },
+  {
+   "path": "data/cot.json",
+   "pages": [
+    "cattle-futures-prices.html",
+    "corn-futures-prices.html",
+    "cot.html",
+    "index.html",
+    "index1.html",
+    "soybean-futures-prices.html",
+    "status.html",
+    "wheat-futures-prices.html"
+   ],
+   "written_by": [
+    "Fetch COT Data"
+   ],
+   "touched_by": [
+    "Build Analyst Scorecard",
+    "Fetch COT Data",
+    "Generate Daily Briefing",
+    "Build What's Priced In"
+   ],
+   "cadence": "9 launches on a fixed schedule at about 2pm, 3pm, 4pm Central",
+   "curated": false,
+   "planned": false,
+   "crons": [
+    "45 19 * * 5",
+    "15 20 * * 5",
+    "45 20 * * 5",
+    "15 21 * * 5",
+    "45 19 * * 1",
+    "15 20 * * 1",
+    "45 20 * * 1",
+    "15 21 * * 1",
+    "30 21 * * *"
+   ],
+   "max_gap_hours": 24.0,
+   "quiet": "weekly",
+   "why_quiet": "The CFTC Commitments of Traders report lands Friday afternoon."
+  },
+  {
+   "path": "data/crop-progress.json",
+   "pages": [
+    "corn-futures-prices.html",
+    "index.html",
+    "index1.html",
+    "soybean-futures-prices.html",
+    "wheat-futures-prices.html"
+   ],
+   "written_by": [
+    "Fetch Crop Progress"
+   ],
+   "touched_by": [
+    "Fetch Crop Progress"
+   ],
+   "cadence": "4 launches on a fixed schedule at about 7am, 3pm, 4pm Central",
+   "curated": false,
+   "planned": false,
+   "crons": [
+    "15 20 * * 1",
+    "15 21 * * 1",
+    "30 21 * * 1",
+    "30 12 * * 2"
+   ],
+   "max_gap_hours": 151.8,
+   "quiet": "weekly",
+   "why_quiet": "USDA Crop Progress is a Monday afternoon release, in season only."
+  },
+  {
+   "path": "data/daily-archive/index.json",
+   "pages": [
+    "archive.html",
+    "daily.html"
+   ],
+   "written_by": [
+    "Generate Daily Briefing",
+    "Generate RSS Feed"
+   ],
+   "touched_by": [
+    "Generate Daily Briefing",
+    "Generate RSS Feed"
+   ],
+   "cadence": "4 launches on a fixed schedule at about 5am, 6am, 8am, 3pm Central",
+   "curated": false,
+   "planned": false,
+   "crons": [
+    "19 10 * * *",
+    "41 11 * * *",
+    "23 13 * * *",
+    "0 20 * * 5"
+   ],
+   "max_gap_hours": 20.9,
+   "quiet": null,
+   "why_quiet": null
+  },
+  {
+   "path": "data/daily.json",
+   "pages": [
+    "cattle-futures-prices.html",
+    "corn-futures-prices.html",
+    "daily.html",
+    "developer.html",
+    "index.html",
+    "index1.html",
+    "soybean-futures-prices.html",
+    "status.html",
+    "wheat-futures-prices.html"
+   ],
+   "written_by": [
+    "Generate Daily Briefing"
+   ],
+   "touched_by": [
+    "Generate Daily Briefing",
+    "Morning brief \u2014 email Sigurd"
+   ],
+   "cadence": "4 launches on a fixed schedule at about 5am, 6am, 8am, 3pm Central",
+   "curated": false,
+   "planned": false,
+   "crons": [
+    "19 10 * * *",
+    "41 11 * * *",
+    "23 13 * * *",
+    "0 20 * * 5"
+   ],
+   "max_gap_hours": 20.9,
+   "quiet": null,
+   "why_quiet": null
+  },
+  {
+   "path": "data/dairy-data.json",
+   "pages": [
+    "milk-prices.html",
+    "status.html"
+   ],
+   "written_by": [],
+   "touched_by": [],
+   "cadence": "maintained by hand, not on a schedule",
+   "curated": true,
+   "planned": true,
+   "crons": [],
+   "max_gap_hours": null,
+   "quiet": "planned",
+   "why_quiet": "The dairy pipeline is not built yet. milk-prices.html expects this and falls back field by field when it is missing, on purpose."
+  },
+  {
+   "path": "data/export-sales.json",
+   "pages": [
+    "index.html",
+    "index1.html",
+    "wheat-futures-prices.html"
+   ],
+   "written_by": [
+    "Fetch Export Sales"
+   ],
+   "touched_by": [
+    "Fetch Export Sales"
+   ],
+   "cadence": "4 launches on a fixed schedule at about 7am, 8am, 9am Central",
+   "curated": false,
+   "planned": false,
+   "crons": [
+    "45 12 * * 4",
+    "45 13 * * 4",
+    "30 14 * * 4",
+    "20 13 * * 5"
+   ],
+   "max_gap_hours": 143.4,
+   "quiet": "weekly",
+   "why_quiet": "USDA FAS publishes export sales on Thursday mornings. Its workflow only fires Thursday and Friday."
+  },
+  {
+   "path": "data/fertilizer.json",
+   "pages": [
+    "fast-facts.html",
+    "fertilizer.html",
+    "index.html",
+    "index1.html"
+   ],
+   "written_by": [
+    "Fertilizer \u2014 update dealer prices"
+   ],
+   "touched_by": [
+    "Fertilizer \u2014 update dealer prices"
+   ],
+   "cadence": "on demand",
+   "curated": false,
+   "planned": false,
+   "crons": [],
+   "max_gap_hours": null,
+   "quiet": null,
+   "why_quiet": null
+  },
+  {
+   "path": "data/hail/manifest.json",
+   "pages": [
+    "status.html"
+   ],
+   "written_by": [
+    "MESH radar hail swaths \u2014 daily"
+   ],
+   "touched_by": [
+    "Freshness \u2014 seed static prices, dateModified, sitemap lastmod",
+    "MESH radar hail swaths \u2014 daily"
+   ],
+   "cadence": "1 launch every day at about 3am Central",
+   "curated": false,
+   "planned": false,
+   "crons": [
+    "25 8 * * *"
+   ],
+   "max_gap_hours": 24.0,
+   "quiet": null,
+   "why_quiet": null
+  },
+  {
+   "path": "data/hail/ncei/index.json",
+   "pages": [
+    "hail-map.html"
+   ],
+   "written_by": [
+    "NCEI hail backfill"
+   ],
+   "touched_by": [
+    "NCEI hail backfill"
+   ],
+   "cadence": "1 launch every day at about 3am Central",
+   "curated": false,
+   "planned": false,
+   "crons": [
+    "47 8 15 1 *"
+   ],
+   "max_gap_hours": null,
+   "quiet": null,
+   "why_quiet": null
+  },
+  {
+   "path": "data/harvest-prices.json",
+   "pages": [
+    "corn-futures-prices.html",
+    "soybean-futures-prices.html",
+    "status.html",
+    "wheat-futures-prices.html"
+   ],
+   "written_by": [
+    "Harvest price tracker"
+   ],
+   "touched_by": [
+    "Harvest price tracker"
+   ],
+   "cadence": "1 launch weekdays at about 4pm Central",
+   "curated": false,
+   "planned": false,
+   "crons": [
+    "45 21 * * 1-5"
+   ],
+   "max_gap_hours": 72.0,
+   "quiet": "seasonal",
+   "why_quiet": "Harvest price discovery is October; the file's own harvest.status is \"pending\" until then. The projected price was final in February."
+  },
+  {
+   "path": "data/markets.json",
+   "pages": [
+    "ag-odds.html",
+    "developer.html",
+    "index.html",
+    "index1.html"
+   ],
+   "written_by": [
+    "Fetch Markets"
+   ],
+   "touched_by": [
+    "Build Analyst Scorecard",
+    "Fetch COT Data",
+    "Generate Daily Briefing",
+    "Fetch Markets",
+    "Build What's Priced In"
+   ],
+   "cadence": "1 launch every day at about 4am Central",
+   "curated": false,
+   "planned": false,
+   "crons": [
+    "23 9 * * *"
+   ],
+   "max_gap_hours": 24.0,
+   "quiet": null,
+   "why_quiet": null
+  },
+  {
+   "path": "data/nass/corn-acres.json",
+   "pages": [
+    "usda-quick-stats.html"
+   ],
+   "written_by": [
+    "Fetch NASS (RETIRED)",
+    "Build NASS Series"
+   ],
+   "touched_by": [
+    "Fetch NASS (RETIRED)",
+    "Build NASS Series"
+   ],
+   "cadence": "on demand",
+   "curated": false,
+   "planned": false,
+   "crons": [],
+   "max_gap_hours": null,
+   "quiet": null,
+   "why_quiet": null
+  },
+  {
+   "path": "data/nass/corn-price.json",
+   "pages": [
+    "usda-quick-stats.html"
+   ],
+   "written_by": [
+    "Fetch NASS (RETIRED)",
+    "Build NASS Series"
+   ],
+   "touched_by": [
+    "Fetch NASS (RETIRED)",
+    "Build NASS Series"
+   ],
+   "cadence": "on demand",
+   "curated": false,
+   "planned": false,
+   "crons": [],
+   "max_gap_hours": null,
+   "quiet": null,
+   "why_quiet": null
+  },
+  {
+   "path": "data/nass/corn-yield-us.json",
+   "pages": [
+    "usda-quick-stats.html"
+   ],
+   "written_by": [
+    "Fetch NASS (RETIRED)",
+    "Build NASS Series"
+   ],
+   "touched_by": [
+    "Fetch NASS (RETIRED)",
+    "Build NASS Series"
+   ],
+   "cadence": "on demand",
+   "curated": false,
+   "planned": false,
+   "crons": [],
+   "max_gap_hours": null,
+   "quiet": null,
+   "why_quiet": null
+  },
+  {
+   "path": "data/nass/corn-yield.json",
+   "pages": [
+    "usda-quick-stats.html"
+   ],
+   "written_by": [
+    "Fetch NASS (RETIRED)",
+    "Build NASS Series"
+   ],
+   "touched_by": [
+    "Fetch NASS (RETIRED)",
+    "Build NASS Series"
+   ],
+   "cadence": "on demand",
+   "curated": false,
+   "planned": false,
+   "crons": [],
+   "max_gap_hours": null,
+   "quiet": null,
+   "why_quiet": null
+  },
+  {
+   "path": "data/nass/soy-acres.json",
+   "pages": [
+    "usda-quick-stats.html"
+   ],
+   "written_by": [
+    "Fetch NASS (RETIRED)",
+    "Build NASS Series"
+   ],
+   "touched_by": [
+    "Fetch NASS (RETIRED)",
+    "Build NASS Series"
+   ],
+   "cadence": "on demand",
+   "curated": false,
+   "planned": false,
+   "crons": [],
+   "max_gap_hours": null,
+   "quiet": null,
+   "why_quiet": null
+  },
+  {
+   "path": "data/nass/soy-price.json",
+   "pages": [
+    "usda-quick-stats.html"
+   ],
+   "written_by": [
+    "Fetch NASS (RETIRED)",
+    "Build NASS Series"
+   ],
+   "touched_by": [
+    "Fetch NASS (RETIRED)",
+    "Build NASS Series"
+   ],
+   "cadence": "on demand",
+   "curated": false,
+   "planned": false,
+   "crons": [],
+   "max_gap_hours": null,
+   "quiet": null,
+   "why_quiet": null
+  },
+  {
+   "path": "data/nass/soy-yield-us.json",
+   "pages": [
+    "usda-quick-stats.html"
+   ],
+   "written_by": [
+    "Fetch NASS (RETIRED)",
+    "Build NASS Series"
+   ],
+   "touched_by": [
+    "Fetch NASS (RETIRED)",
+    "Build NASS Series"
+   ],
+   "cadence": "on demand",
+   "curated": false,
+   "planned": false,
+   "crons": [],
+   "max_gap_hours": null,
+   "quiet": null,
+   "why_quiet": null
+  },
+  {
+   "path": "data/nass/soy-yield.json",
+   "pages": [
+    "usda-quick-stats.html"
+   ],
+   "written_by": [
+    "Fetch NASS (RETIRED)",
+    "Build NASS Series"
+   ],
+   "touched_by": [
+    "Fetch NASS (RETIRED)",
+    "Build NASS Series"
+   ],
+   "cadence": "on demand",
+   "curated": false,
+   "planned": false,
+   "crons": [],
+   "max_gap_hours": null,
+   "quiet": null,
+   "why_quiet": null
+  },
+  {
+   "path": "data/nass/wheat-yield-us.json",
+   "pages": [
+    "usda-quick-stats.html"
+   ],
+   "written_by": [
+    "Fetch NASS (RETIRED)",
+    "Build NASS Series"
+   ],
+   "touched_by": [
+    "Fetch NASS (RETIRED)",
+    "Build NASS Series"
+   ],
+   "cadence": "on demand",
+   "curated": false,
+   "planned": false,
+   "crons": [],
+   "max_gap_hours": null,
+   "quiet": null,
+   "why_quiet": null
+  },
+  {
+   "path": "data/nass/wheat-yield.json",
+   "pages": [
+    "usda-quick-stats.html"
+   ],
+   "written_by": [
+    "Fetch NASS (RETIRED)",
+    "Build NASS Series"
+   ],
+   "touched_by": [
+    "Fetch NASS (RETIRED)",
+    "Build NASS Series"
+   ],
+   "cadence": "on demand",
+   "curated": false,
+   "planned": false,
+   "crons": [],
+   "max_gap_hours": null,
+   "quiet": null,
+   "why_quiet": null
+  },
+  {
+   "path": "data/nowcast-direction.json",
+   "pages": [
+    "conditions-yield.html",
+    "status.html"
+   ],
+   "written_by": [
+    "cond-yield"
+   ],
+   "touched_by": [
+    "cond-yield"
+   ],
+   "cadence": "on demand",
+   "curated": false,
+   "planned": false,
+   "crons": [],
+   "max_gap_hours": null,
+   "quiet": null,
+   "why_quiet": null
+  },
+  {
+   "path": "data/outlooks/manifest.json",
+   "pages": [
+    "drought-monitor.html",
+    "status.html"
+   ],
+   "written_by": [
+    "Fetch Outlooks (NOAA + USDM)"
+   ],
+   "touched_by": [
+    "Fetch Outlooks (NOAA + USDM)"
+   ],
+   "cadence": "1 launch every day at about 7pm Central",
+   "curated": false,
+   "planned": false,
+   "crons": [
+    "15 * * * *"
+   ],
+   "max_gap_hours": 1.0,
+   "quiet": null,
+   "why_quiet": null
+  },
+  {
+   "path": "data/poll.json",
+   "pages": [
+    "grower-pulse.html"
+   ],
+   "written_by": [],
+   "touched_by": [],
+   "cadence": "maintained by hand, not on a schedule",
+   "curated": true,
+   "planned": false,
+   "crons": [],
+   "max_gap_hours": null,
+   "quiet": null,
+   "why_quiet": null
+  },
+  {
+   "path": "data/price-stats.json",
+   "pages": [
+    "cattle-futures-prices.html",
+    "corn-futures-prices.html",
+    "index.html",
+    "index1.html",
+    "soybean-futures-prices.html",
+    "wheat-futures-prices.html"
+   ],
+   "written_by": [
+    "Build Price Stats (5-year percentile)"
+   ],
+   "touched_by": [
+    "Build Price Stats (5-year percentile)"
+   ],
+   "cadence": "1 launch weekdays at about 4pm Central",
+   "curated": false,
+   "planned": false,
+   "crons": [
+    "40 21 * * 1-5"
+   ],
+   "max_gap_hours": 72.0,
+   "quiet": null,
+   "why_quiet": null
+  },
+  {
+   "path": "data/prices.json",
+   "pages": [
+    "breakeven.html",
+    "cash-rent.html",
+    "cattle-futures-prices.html",
+    "corn-futures-prices.html",
+    "developer.html",
+    "fast-facts.html",
+    "fertilizer.html",
+    "index.html",
+    "index1.html",
+    "markets.html",
+    "soybean-futures-prices.html",
+    "status.html",
+    "wheat-futures-prices.html",
+    "yield-estimator.html"
+   ],
+   "written_by": [
+    "Generate Daily Briefing",
+    "Freshness \u2014 seed static prices, dateModified, sitemap lastmod",
+    "Fetch Prices"
+   ],
+   "touched_by": [
+    "Generate Daily Briefing",
+    "Freshness \u2014 seed static prices, dateModified, sitemap lastmod",
+    "Morning brief \u2014 email Sigurd",
+    "Build Price Stats (5-year percentile)",
+    "Fetch Prices"
+   ],
+   "cadence": "11 launches on a fixed schedule at about 5am, 6am, 8am, 11am Central",
+   "curated": false,
+   "planned": false,
+   "crons": [
+    "19 10 * * *",
+    "41 11 * * *",
+    "23 13 * * *",
+    "0 20 * * 5",
+    "35 13 * * 1-5",
+    "35 20 * * 1-5",
+    "17 13 * * 1-5",
+    "3 16 * * 1-5",
+    "40 23 * * 0-4",
+    "10 2 * * 1-5",
+    "17 10 * * 1-5"
+   ],
+   "max_gap_hours": 20.9,
+   "quiet": null,
+   "why_quiet": null
+  },
+  {
+   "path": "data/rma-discovery.json",
+   "pages": [
+    "index.html",
+    "index1.html"
+   ],
+   "written_by": [],
+   "touched_by": [],
+   "cadence": "maintained by hand, not on a schedule",
+   "curated": true,
+   "planned": false,
+   "crons": [],
+   "max_gap_hours": null,
+   "quiet": null,
+   "why_quiet": null
+  },
+  {
+   "path": "data/rma-planting-dates.json",
+   "pages": [
+    "index.html",
+    "index1.html"
+   ],
+   "written_by": [],
+   "touched_by": [],
+   "cadence": "maintained by hand, not on a schedule",
+   "curated": true,
+   "planned": false,
+   "crons": [],
+   "max_gap_hours": null,
+   "quiet": null,
+   "why_quiet": null
+  },
+  {
+   "path": "data/rma-prices.json",
+   "pages": [
+    "harvest-price-tracker.html"
+   ],
+   "written_by": [
+    "RMA price discovery"
+   ],
+   "touched_by": [
+    "RMA price discovery"
+   ],
+   "cadence": "1 launch every day at about 5pm Central",
+   "curated": false,
+   "planned": false,
+   "crons": [
+    "10 22 * * *"
+   ],
+   "max_gap_hours": 24.0,
+   "quiet": "seasonal",
+   "why_quiet": "RMA price discovery runs in defined windows; outside them there is nothing to publish."
+  },
+  {
+   "path": "data/scorecard.json",
+   "pages": [
+    "scorecard.html"
+   ],
+   "written_by": [
+    "Generate Daily Briefing"
+   ],
+   "touched_by": [
+    "Build Analyst Scorecard",
+    "Fetch COT Data",
+    "Generate Daily Briefing",
+    "Build What's Priced In"
+   ],
+   "cadence": "4 launches on a fixed schedule at about 5am, 6am, 8am, 3pm Central",
+   "curated": false,
+   "planned": false,
+   "crons": [
+    "19 10 * * *",
+    "41 11 * * *",
+    "23 13 * * *",
+    "0 20 * * 5"
+   ],
+   "max_gap_hours": 20.9,
+   "quiet": null,
+   "why_quiet": null
+  },
+  {
+   "path": "data/state-stats.json",
+   "pages": [
+    "fast-facts.html",
+    "usda-quick-stats.html"
+   ],
+   "written_by": [
+    "Build State Stats (USDA NASS)"
+   ],
+   "touched_by": [
+    "Build State Stats (USDA NASS)"
+   ],
+   "cadence": "on demand",
+   "curated": false,
+   "planned": false,
+   "crons": [],
+   "max_gap_hours": null,
+   "quiet": null,
+   "why_quiet": null
+  },
+  {
+   "path": "data/storage/storage.json",
+   "pages": [
+    "storage-crunch.html"
+   ],
+   "written_by": [
+    "storage"
+   ],
+   "touched_by": [
+    "storage"
+   ],
+   "cadence": "on demand",
+   "curated": false,
+   "planned": false,
+   "crons": [],
+   "max_gap_hours": null,
+   "quiet": null,
+   "why_quiet": null
+  },
+  {
+   "path": "data/tariffs.json",
+   "pages": [
+    "index.html",
+    "index1.html",
+    "tariffs.html"
+   ],
+   "written_by": [],
+   "touched_by": [],
+   "cadence": "maintained by hand, not on a schedule",
+   "curated": true,
+   "planned": false,
+   "crons": [],
+   "max_gap_hours": null,
+   "quiet": null,
+   "why_quiet": null
+  },
+  {
+   "path": "data/tenure/tenure.json",
+   "pages": [
+    "land-tenure.html"
+   ],
+   "written_by": [
+    "tenure"
+   ],
+   "touched_by": [
+    "tenure"
+   ],
+   "cadence": "on demand",
+   "curated": false,
+   "planned": false,
+   "crons": [],
+   "max_gap_hours": null,
+   "quiet": null,
+   "why_quiet": null
+  },
+  {
+   "path": "data/transport/basis.json",
+   "pages": [
+    "basis.html"
+   ],
+   "written_by": [
+    "transport"
+   ],
+   "touched_by": [
+    "transport"
+   ],
+   "cadence": "1 launch Fridays at about 6am Central",
+   "curated": false,
+   "planned": false,
+   "crons": [
+    "43 11 * * 5"
+   ],
+   "max_gap_hours": 168.0,
+   "quiet": null,
+   "why_quiet": null
+  },
+  {
+   "path": "data/transport/journey.json",
+   "pages": [
+    "basis.html"
+   ],
+   "written_by": [
+    "transport"
+   ],
+   "touched_by": [
+    "transport"
+   ],
+   "cadence": "1 launch Fridays at about 6am Central",
+   "curated": false,
+   "planned": false,
+   "crons": [
+    "43 11 * * 5"
+   ],
+   "max_gap_hours": 168.0,
+   "quiet": null,
+   "why_quiet": null
+  },
+  {
+   "path": "data/whats-priced-in.json",
+   "pages": [
+    "corn-futures-prices.html",
+    "soybean-futures-prices.html",
+    "whats-priced-in.html",
+    "wheat-futures-prices.html"
+   ],
+   "written_by": [
+    "Build What's Priced In"
+   ],
+   "touched_by": [
+    "Build Analyst Scorecard",
+    "Fetch COT Data",
+    "Generate Daily Briefing",
+    "Build What's Priced In"
+   ],
+   "cadence": "on demand",
+   "curated": false,
+   "planned": false,
+   "crons": [],
+   "max_gap_hours": null,
+   "quiet": null,
+   "why_quiet": null
+  },
+  {
+   "path": "data/yield-nowcast.json",
+   "pages": [
+    "conditions-yield.html",
+    "index.html",
+    "index1.html",
+    "status.html"
+   ],
+   "written_by": [
+    "cond-yield",
+    "bake crop tour"
+   ],
+   "touched_by": [
+    "cond-yield",
+    "bake crop tour"
+   ],
+   "cadence": "on demand",
+   "curated": false,
+   "planned": false,
+   "crons": [],
+   "max_gap_hours": null,
+   "quiet": null,
+   "why_quiet": null
+  }
+ ]
+}

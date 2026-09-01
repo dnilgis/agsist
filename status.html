@@ -44,6 +44,12 @@
   .st-updated button{background:none;border:1px solid var(--border,#2a3324);color:var(--text-muted,#9bb0a3);border-radius:6px;padding:.25rem .6rem;font:inherit;font-size:.78rem;cursor:pointer;margin-left:.5rem;min-height:32px;}
   .st-updated button:hover{border-color:var(--green,#4aab4c);color:var(--green,#4aab4c);}
   .st-grid{display:flex;flex-direction:column;gap:.55rem;}
+  /* The second tier. Same cards, one heading, and the "why it is quiet"
+     sentence set apart so it reads as an explanation and not as a label. */
+  .st-h2{margin:2rem 0 .3rem;font-size:1.05rem;}
+  .st-more-lede{margin:0 0 .8rem;color:var(--text-muted,#9bb0a3);font-size:.9rem;max-width:62ch;}
+  #st-grid-more .st-desc em{font-style:normal;display:inline-block;margin-top:.2rem;
+    color:var(--text-muted,#9bb0a3);}
   .st-card{display:flex;align-items:center;gap:.85rem;background:var(--card,#161b14);border:1px solid var(--border,#2a3324);border-radius:12px;padding:.9rem 1rem;}
   .st-card .dot{width:11px;height:11px;border-radius:50%;flex-shrink:0;background:var(--text-muted,#9bb0a3);}
   .st-card .dot.ok{background:var(--green,#4aab4c);box-shadow:0 0 0 3px rgba(74,171,76,.15);}
@@ -91,6 +97,33 @@
       <div class="st-updated" id="st-updated" aria-live="polite">&nbsp;</div>
 
       <div class="st-grid" id="st-grid" aria-label="Service components"></div>
+
+      <!-- ══════════════════════════════════════════════════════════════════
+           EVERY OTHER FEED THE SITE PUBLISHES
+           ══════════════════════════════════════════════════════════════════
+           The eight cards above carry real judgment — market hours, whether a
+           briefing is due, whether the grain board is even open. That judgment
+           is worth keeping and cannot be generated.
+
+           But on 2026-09-01 a sweep found FORTY-FIVE data files that a page on
+           this site fetches, and only those eight were being watched. The three
+           oldest were all in the thirty-seven nobody was looking at.
+
+           So the rest are listed here, from data/feeds.json, which is derived
+           from the repository by scripts/build_feeds.py — the pages that read
+           each feed, the workflow that writes it, and the longest gap its own
+           cron allows. Nothing on this list is typed, which is why it cannot
+           fall behind the site.
+
+           AND A FEED IS ALLOWED TO SIT STILL. data/harvest-prices.json had not
+           changed in eighty-five days when this was written, and that is
+           correct: its own harvest.status says "pending" and RMA harvest price
+           discovery is October. A correctly idle feed and a dead one look
+           identical from outside. That is the whole reason this section says
+           WHY. -->
+      <h2 class="st-h2" id="st-more-h">Everything else the site publishes</h2>
+      <p class="st-more-lede" id="st-more-lede">Checked live from your browser, the same way. Each row says who writes it, how often, and — when a feed is meant to sit still — why.</p>
+      <div class="st-grid" id="st-grid-more" aria-labelledby="st-more-h"></div>
 
       <div class="st-legend" aria-hidden="true">
         <span><i style="background:var(--green,#4aab4c)"></i> Live</span>
@@ -232,7 +265,13 @@
       },
       {
         name:'COT Positioning', desc:'CFTC managed-money and commercial positioning — publishes Fridays, fetched weekly.',
-        url:'/data/cot.json', tsKey:'fetched',
+        /* `fetched` — the key data/cot.json does not have. It carries `updated`.
+           So this card has been reading "No timestamp" in amber every day since
+           it shipped, on a page whose entire job is telling a reader whether a
+           number is current. Found 2026-09-01 by rendering the page and looking
+           at it; scripts/test_feeds.py now checks every tsKey against the file
+           it names, which is the check that would have caught it. */
+        url:'/data/cot.json', tsKey:'updated',
         check:function(d,age){
           if(age < 9*86400000) return {state:'ok', label:'Current', age:ago(age)};
           if(age < 14*86400000) return {state:'warn', label:'Delayed', age:ago(age)};
@@ -291,6 +330,64 @@
       });
     }
 
+    /* ── THE REST OF THE FEEDS, FROM THE MANIFEST ────────────────────────
+       Generic on purpose. These rows do not pretend to know market hours; they
+       say what the repository says — who writes it, how often, and how long ago
+       it last changed — and they call a feed late only when it has passed the
+       longest gap its own cron allows, with an hour of slack for a runner that
+       started late. A threshold nobody typed is a threshold that moves when the
+       schedule does. */
+    function loadMore(){
+      var host=document.getElementById('st-grid-more');
+      var covered={};
+      COMPONENTS.forEach(function(c){ covered[c.url.replace(/^\//,'')]=1; });
+      fetch('/data/feeds.json?_t='+Date.now(),{cache:'no-store'}).then(function(r){
+        if(!r.ok) throw new Error('http'); return r.json();
+      }).then(function(man){
+        var feeds=(man.feeds||[]).filter(function(f){ return !covered[f.path]; });
+        if(!feeds.length){ host.parentNode.removeChild(host); return; }
+        feeds.sort(function(a,b){ return b.pages.length-a.pages.length; });
+        feeds.forEach(function(f){
+          var el=document.createElement('div'); el.className='st-card';
+          var who=(f.written_by&&f.written_by.length)?f.written_by[0]:(f.curated?'kept by hand':'—');
+          var sub=who+' \u00b7 '+f.cadence+
+            ' \u00b7 on '+f.pages.length+' page'+(f.pages.length===1?'':'s')+
+            (f.why_quiet?'<br><em>'+f.why_quiet+'</em>':'');
+          el.innerHTML='<span class="dot wait"></span><div class="st-body">'+
+            '<div class="st-name">'+f.path.replace(/^data\//,'').replace(/\.json$/,'')+'</div>'+
+            '<div class="st-desc">'+sub+'</div></div>'+
+            '<div class="st-right"><div class="st-state wait">Checking</div><div class="st-age">&nbsp;</div></div>';
+          host.appendChild(el);
+          var row={el:el,dot:el.querySelector('.dot'),state:el.querySelector('.st-state'),age:el.querySelector('.st-age')};
+          fetch('/'+f.path+'?_t='+Date.now(),{cache:'no-store'}).then(function(r){
+            if(!r.ok) throw new Error('http'); return r.json();
+          }).then(function(d){
+            var t=null, keys=['fetched','generated_at','generated','updated','updated_at','as_of','asOf','timestamp','fetched_at','recent_generated','date'];
+            for(var i=0;i<keys.length&&t==null;i++) t=parseTs(d[keys[i]]);
+            if(t==null){ paint(row,{state:'ok',label:'Published',age:'no timestamp in the file'}); return; }
+            var age=Date.now()-t;
+            /* A FEED WITH A REASON TO BE STILL IS NOT LATE. */
+            if(f.quiet){ paint(row,{state:'idle',label:f.quiet.charAt(0).toUpperCase()+f.quiet.slice(1),age:'last change '+ago(age)}); return; }
+            if(f.curated||f.max_gap_hours==null){ paint(row,{state:'ok',label:f.curated?'Kept by hand':'Published',age:ago(age)}); return; }
+            var limit=(f.max_gap_hours+1)*3600000;
+            if(age<limit) paint(row,{state:'ok',label:'Current',age:ago(age)});
+            else if(age<limit*2) paint(row,{state:'warn',label:'Delayed',age:ago(age)});
+            else paint(row,{state:'down',label:'Stalled',age:ago(age)});
+          }).catch(function(){
+            /* A FEED A PAGE IS READY FOR BUT NOBODY PUBLISHES YET IS NOT AN
+               OUTAGE. milk-prices.html fetches data/dairy-data.json and falls
+               back field by field when it 404s, deliberately. Red here would be
+               crying wolf about the one page built not to break. */
+            if(f.planned) paint(row,{state:'idle',label:'Planned',age:'not published yet'});
+            else paint(row,{state:'down',label:'Unreachable',age:'no data'});
+          });
+        });
+      }).catch(function(){
+        var l=document.getElementById('st-more-lede');
+        if(l) l.textContent='The feed manifest could not be loaded, so only the components above were checked.';
+      });
+    }
+
     function overall(results){
       var b=document.getElementById('st-banner'), bm=document.getElementById('st-banner-main'), bs=document.getElementById('st-banner-sub');
       // Site-reachability: if EVERY same-origin feed failed to load, the site/CDN is the problem.
@@ -325,6 +422,10 @@
 
     function run(){
       document.getElementById('st-updated').innerHTML='&nbsp;';
+      /* The manifest tier reloads with everything else, so Re-check re-checks
+         all of it and not just the eight above. */
+      var more=document.getElementById('st-grid-more');
+      if(more) { more.innerHTML=''; loadMore(); }
       rows.forEach(function(row){ row.dot.className='dot wait'; row.state.className='st-state wait'; row.state.textContent='Checking'; row.age.textContent=''; });
       Promise.all(rows.map(function(row){
         return checkOne(row).then(function(res){ paint(row,res); return {row:row,res:res}; });
