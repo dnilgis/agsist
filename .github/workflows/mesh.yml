@@ -42,7 +42,7 @@ jobs:
         run: sudo apt-get update -qq && sudo apt-get install -y -qq libeccodes0 libeccodes-data
 
       - name: Python deps
-        run: pip install --quiet numpy matplotlib requests xarray cfgrib
+        run: pip install --quiet numpy matplotlib requests xarray cfgrib shapely
 
       - name: Offline selftest (contour engine)
         run: python scripts/fetch_mesh.py --selftest
