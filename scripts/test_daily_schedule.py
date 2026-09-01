@@ -60,6 +60,7 @@ from pathlib import Path
 
 WF = Path(__file__).resolve().parent.parent / ".github/workflows/daily.yml"
 FAILED = []
+PRICES = ""
 
 # The busy minutes. GitHub's own documentation names the start of the hour as
 # the worst time to schedule; :15, :30 and :45 are the same problem one notch
@@ -87,7 +88,7 @@ def gate_script(y):
 
 
 def simulate(script, *, event="schedule", start="05:19", dow=1, published=False,
-             day="2026-08-31", max_wait_min=600):
+             heartbeat=False, day="2026-08-31", max_wait_min=600):
     """Run the gate with a fake clock. Returns (skip, minutes_waited, log).
 
     `sleep` advances the clock instead of sleeping, so a loop that waits for
@@ -123,17 +124,48 @@ def simulate(script, *, event="schedule", start="05:19", dow=1, published=False,
         for f in ("date", "sleep", "git"):
             (tmp / f).chmod(0o755)
 
+        # ── RUN IT SOMEWHERE EMPTY. THIS LINE IS THE WHOLE 2026-09-01 BUG.
+        #
+        # `published()` asks the remote and then falls back to the checkout:
+        #
+        #     git cat-file -e "FETCH_HEAD:data/daily-archive/$1.json" && return 0
+        #     [ -f "data/daily-archive/$1.json" ] && return 0
+        #
+        # The `git` stub above owns the first line. NOTHING owned the second,
+        # because this ran with the repository as its working directory — so
+        # `data/daily-archive/2026-08-31.json` was really there, on disk, and
+        # `published=False` quietly meant published.
+        #
+        # It passed on 2026-08-31 for the only reason it could: that day's
+        # archive did not exist yet. PUBLISHING IT IS WHAT BROKE THE TEST, and
+        # from the next morning the four "should generate" cases all came back
+        # skip=1. Wired as GATE 0b under `bash -e`, that failure took the
+        # briefing with it. Sig got no briefing on 09-01 and three manual runs
+        # died at 26 seconds.
+        #
+        # A test whose fixture is the live repository is not a fixture.
+        work = tmp / "work"
+        work.mkdir()
+
         out = tmp / "out"
         out.write_text("")
         env = dict(os.environ,
                    PATH=f"{tmp}:{os.environ['PATH']}",
                    GITHUB_OUTPUT=str(out))
         body = script.replace("${{ github.event_name }}", event) \
-                     .replace("${{ github.event.repository.default_branch || 'main' }}", "main")
+                     .replace("${{ github.event.repository.default_branch || 'main' }}", "main") \
+                     .replace("${{ github.event.inputs.heartbeat || 'false' }}",
+                              "true" if heartbeat else "false")
+        # EVERY EXPRESSION MUST BE SUBSTITUTED, NOT MOST OF THEM. A leftover
+        # `${{ … }}` is a bash "bad substitution" that makes the gate exit
+        # before it decides anything, and the failure it produces looks exactly
+        # like a logic failure. Caught adding the heartbeat input.
+        assert "${{" not in body, \
+            "unsubstituted workflow expression: " + body[body.index("${{"):][:80]
         sh = tmp / "gate.sh"
         sh.write_text(body)
-        r = subprocess.run(["bash", str(sh)], env=env, capture_output=True,
-                           text=True, timeout=30)
+        r = subprocess.run(["bash", str(sh)], env=env, cwd=str(work),
+                           capture_output=True, text=True, timeout=30)
         skip = None
         for ln in out.read_text().split("\n"):
             if ln.startswith("skip="):
@@ -146,6 +178,8 @@ def simulate(script, *, event="schedule", start="05:19", dow=1, published=False,
 
 def main():
     y = WF.read_text()
+    global PRICES
+    PRICES = (WF.parent / "prices.yml").read_text()
     crons = re.findall(r"- cron:\s*'([^']+)'", y)
     print("daily.yml fires at: " + ", ".join(crons))
 
@@ -257,44 +291,77 @@ def main():
     skip, _, _ = simulate(gate, event="workflow_dispatch", start="09:00", published=True)
     check(skip == "0", "…even when today is already published")
 
-    print("\nthe push heartbeat — the path that does not depend on cron")
-    check(re.search(r"^  push:\s*\n\s*branches:\s*\[main\]", y, re.M) is not None,
-          "every push to main also asks the gate",
-          "three cron fires are still three bets on the same delivery")
+    print("\nthe heartbeat — the path that does not depend on cron")
+    # A BOT PUSH TRIGGERS NOTHING. `on: push` was here from 2026-08-31 to
+    # 2026-09-01 and could never once have fired: prices.yml pushes with
+    # secrets.GITHUB_TOKEN, and GitHub does not create workflow runs from
+    # events that token raised. The two events it always creates runs for,
+    # whatever sent them, are workflow_dispatch and repository_dispatch.
+    check("push:" not in y,
+          "the dead `on: push` trigger is gone",
+          "a bot push cannot trigger a workflow — see the tombstone in daily.yml")
+    check("heartbeat" in y and "github.event.inputs.heartbeat" in gate,
+          "the gate can tell the price loop's dispatch from a person",
+          "without this a heartbeat reads as a human and republishes every 30 min")
 
-    skip, waited, _ = simulate(gate, event="push", start="05:47")
+    skip, waited, _ = simulate(gate, event="workflow_dispatch", heartbeat=True, start="05:47")
     check(skip == "0" and waited == 0,
-          "a push past the floor generates the briefing with no cron involved",
+          "a heartbeat past the floor generates the briefing with no cron involved",
           "skip=%s waited=%d" % (skip, waited))
 
-    skip, waited, _ = simulate(gate, event="push", start="04:30")
+    skip, waited, _ = simulate(gate, event="workflow_dispatch", heartbeat=True, start="04:30")
     check(skip == "1" and waited == 0,
-          "a push BEFORE the floor exits at once and does NOT hold a runner",
-          "skip=%s after %d minutes — a waiting push costs more than the briefing"
+          "a heartbeat BEFORE the floor exits at once and does NOT hold a runner",
+          "skip=%s after %d minutes — a waiting heartbeat costs more than the briefing"
           % (skip, waited))
 
-    skip, _, _ = simulate(gate, event="push", start="06:00", published=True)
+    skip, _, _ = simulate(gate, event="workflow_dispatch", heartbeat=True,
+                          start="06:00", published=True)
     check(skip == "1",
-          "the briefing's own push re-triggers once and skips",
-          "otherwise publishing would loop")
+          "the heartbeat after the briefing published skips",
+          "otherwise every price commit would republish the day")
 
-    skip, _, _ = simulate(gate, event="push", start="16:00", dow=2)
-    check(skip == "1", "an afternoon push is refused like an afternoon fire")
+    skip, _, _ = simulate(gate, event="workflow_dispatch", heartbeat=True,
+                          start="16:00", dow=2)
+    check(skip == "1", "an afternoon heartbeat is refused like an afternoon fire")
+
+    # THE HEARTBEAT MUST NOT BE ABLE TO BECOME A PERSON. This is the trap the
+    # first draft of the fix walked into: without the input, prices.yml's
+    # dispatch takes the manual branch and regenerates all day.
+    skip, _, _ = simulate(gate, event="workflow_dispatch", heartbeat=False,
+                          start="16:00", dow=2, published=True)
+    check(skip == "0",
+          "…while a PERSON dispatching in the afternoon still gets one")
+
+    check("gh workflow run daily.yml" in PRICES and "heartbeat=true" in PRICES,
+          "the price loop actually sends the heartbeat",
+          "nothing in prices.yml dispatches the briefing")
+    check(re.search(r"actions:\s*write", PRICES) is not None
+          and "GH_TOKEN" in PRICES,
+          "and it has the permission and the token to send it",
+          "`gh workflow run` needs actions: write and GH_TOKEN")
 
     print("\nwhat a skip costs, and what the email is allowed to do")
     check(re.search(r"generate:\s*\n\s*needs: gate", y) is not None
           and "needs.gate.outputs.skip != '1'" in y,
           "a skipped day skips the EMAIL too, not just the generation")
-    email_if = "github.event_name == 'schedule' || github.event_name == 'push' || inputs.send_email == true"
+    email_if = "github.event_name == 'schedule' || inputs.send_email == true"
     check(y.count(email_if) == 2,
           "a manual run is still a dry run unless send_email is ticked")
     # THE TWO HALVES OF THE PUSH CHANGE MUST TRAVEL TOGETHER. A push trigger
     # without `push` in the email condition publishes to the site and sends
     # nothing — an up-to-date page and an empty inbox, which is the complaint
     # that started all of this.
-    check(("push:" not in y) or ("github.event_name == 'push'" in y),
-          "a push-generated briefing EMAILS as well as publishing",
-          "the push trigger is on but the email step still only fires on schedule")
+    # STRIP THE COMMENTS FIRST. The tombstone explaining why the push trigger
+    # was removed contains the very string this is looking for, so a plain
+    # substring search over the file failed on the file that is correct.
+    live = "\n".join(ln for ln in y.split("\n") if not ln.lstrip().startswith("#"))
+    check("github.event_name == 'push'" not in live,
+          "no live condition still names the dead push trigger")
+    check("send_email=true" in PRICES,
+          "a heartbeat-generated briefing EMAILS as well as publishing",
+          "the price loop dispatches without send_email, so the page updates "
+          "and the inbox stays empty — the complaint that started all of this")
 
     print()
     if FAILED:
