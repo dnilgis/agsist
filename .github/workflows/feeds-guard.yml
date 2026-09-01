@@ -1,0 +1,42 @@
+name: Feed manifest — every published number is accounted for
+
+# data/feeds.json is derived from this repository, so it can go stale the moment
+# a page starts reading a new file or a workflow stops writing one. This
+# regenerates it and fails if the committed copy differs.
+#
+# It runs when something it describes changes, and once a week in case something
+# drifts under it. Off-:00 and low frequency — the shape this repository has
+# measured as the one GitHub actually delivers.
+on:
+  push:
+    branches: [main]
+    paths:
+      - '**.html'
+      - '.github/workflows/**'
+      - 'scripts/**'
+      - 'data/feeds.json'
+  pull_request:
+    paths: ['**.html', 'scripts/**', 'data/feeds.json']
+  schedule:
+    - cron: '52 14 * * 2'
+  workflow_dispatch:
+
+concurrency:
+  group: feeds-guard-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  TZ: America/Chicago
+
+jobs:
+  guard:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: The feed manifest is current and every claim in it has a source
+        run: python3 scripts/test_feeds.py
