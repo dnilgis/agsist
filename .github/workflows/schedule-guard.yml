@@ -1,0 +1,65 @@
+name: Schedule guard — the briefing's own shape
+
+# ── WHY THIS IS A WORKFLOW OF ITS OWN ──────────────────────────────────────
+#
+# `scripts/test_daily_schedule.py` used to run as GATE 0b inside the briefing's
+# generate job, under `bash -e`. On 2026-09-01 it failed and took the briefing
+# down with it: three manual runs, all red at 26 to 30 seconds, nothing
+# published, no email. Sig's morning was spent by a test about cron spacing.
+#
+# What it checks — cron shape, the gate's branching, whether the email
+# condition travels with the trigger — cannot change between one morning and
+# the next unless somebody edits a workflow file. So it runs when a workflow
+# file is edited, and once a week in case something else drifts under it.
+#
+# IT IS NOT SOFTENED. It still fails loudly and it still fails the run. It just
+# cannot hold the morning hostage. The feed gate — GATE 0, about today's actual
+# numbers — stays exactly where it was, because a bad number MUST stop the
+# briefing.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/daily.yml'
+      - '.github/workflows/prices.yml'
+      - '.github/workflows/schedule-guard.yml'
+      - 'scripts/test_daily_schedule.py'
+      - 'scripts/test_briefing_gate.py'
+  pull_request:
+    paths:
+      - '.github/workflows/daily.yml'
+      - 'scripts/test_daily_schedule.py'
+  # Off-:00, low frequency — the shape this repository has measured as the one
+  # GitHub actually delivers. Monday 09:37 Central.
+  schedule:
+    - cron: '37 14 * * 1'
+  workflow_dispatch:
+
+concurrency:
+  group: schedule-guard-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  TZ: America/Chicago
+
+jobs:
+  guard:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      # THE ORDER MATTERS. test_briefing_gate.py drives the gate through every
+      # event shape with the filesystem stubbed out completely; if the gate's
+      # own logic is wrong, that says so first and in one line.
+      - name: The gate, driven through every event shape
+        run: python3 scripts/test_briefing_gate.py
+
+      - name: The schedule's shape
+        run: python3 scripts/test_daily_schedule.py
