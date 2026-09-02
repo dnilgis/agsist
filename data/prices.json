@@ -1,5 +1,5 @@
 {
-  "fetched": "2026-09-02T21:17:12Z",
+  "fetched": "2026-09-02T21:47:28Z",
   "ok": 75,
   "failed": 1,
   "stale_keys": [],
@@ -721,10 +721,10 @@
     },
     "dollar": {
       "ticker": "DX-Y.NYB",
-      "close": 99.557,
+      "close": 99.56,
       "open": 99.771,
-      "netChange": -0.214,
-      "pctChange": -0.2145,
+      "netChange": -0.211,
+      "pctChange": -0.2115,
       "wk52_hi": 101.8,
       "wk52_lo": 95.55
     },
@@ -748,19 +748,19 @@
     },
     "bitcoin": {
       "ticker": "BTC-USD",
-      "close": 77270.72656,
+      "close": 77301.64844,
       "open": 77398.61719,
-      "netChange": -127.89063,
-      "pctChange": -0.1652,
+      "netChange": -96.96875,
+      "pctChange": -0.1253,
       "wk52_hi": 126198.0703,
       "wk52_lo": 57747.7656
     },
     "ripple": {
       "ticker": "XRP-USD",
-      "close": 1.3483,
+      "close": 1.3503,
       "open": 1.3512,
-      "netChange": -0.0029,
-      "pctChange": -0.2146,
+      "netChange": -0.0009,
+      "pctChange": -0.0666,
       "wk52_hi": 3.1835,
       "wk52_lo": 0.9884
     },
