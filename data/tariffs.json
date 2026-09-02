@@ -1,9 +1,9 @@
 {
-  "updated": "2026-08-03",
+  "updated": "2026-09-02",
   "status": "mixed",
-  "status_label": "Truce Holding — USMCA Renegotiation Opened, Brazil Ethanol Tariff In",
-  "status_note": "The US-China ag tariff truce from the Oct 30, 2025 Busan agreement is holding and was extended through Nov 10, 2026. China lifted its March 2025 retaliatory ag tariffs (up to 15%) on Nov 10, 2025 but kept its broad 10% 'Liberation Day' retaliatory levy, so US soybeans still face roughly 13% (3% MFN + 10%). SCOTUS struck down IEEPA tariffs Feb 20, 2026; the Section 122 global 10-15% surcharge that replaced them (effective Feb 24) was ruled invalid by the Court of International Trade on May 7, 2026 and is under appeal. A May 18, 2026 US-China deal added $17B/yr in US ag purchases through 2028 and resumed beef and poultry access. On June 2, 2026 USTR proposed Section 301 'forced labor' tariffs (10-12.5%, with some agricultural exemptions; hearing July 7) to maintain duties after Section 122 expires around July 24. Since then, three July developments: the Administration signaled in early July it will NOT renew USMCA and will negotiate a successor instead (Mexico and Canada are the #1 and #2 US ag export destinations; no rate changes announced, bilateral talks resumed in Mexico City the week of Jul 20). A 25% tariff on Brazilian goods including ethanol landed mid-July after a Section 301 investigation — an inbound tariff that structurally favors US corn ethanol at home. The Section 301 'forced labor' duties took effect 12:01 a.m. ET on July 24, 2026 at 10% or 12.5% across 60 economies, replacing the lapsed Section 122 surcharge. Verify against USTR and the Federal Register before any trading decision.",
-  "headline": "US-China ag truce holding post-Busan, but China's retained 10% levy keeps soybeans near 13%; USMCA renegotiation opened in July with no rate changes yet, and a 25% Section 301 tariff on Brazilian goods (incl. ethanol) favors US corn ethanol at home.",
+  "status_label": "Truce Holding — China 10% Levy May Lift Oct 1; USMCA Origin No Longer Shields",
+  "status_note": "WHAT APPLIES TODAY. US soybeans into China face roughly 13% (3% MFN + China's broad 10% 'Liberation Day' retaliatory levy); corn and wheat about 11%, pork about 22%. The March 2025 retaliatory tranche of up to 15% was lifted on Nov 10, 2025 under the Busan truce, which has been extended through Nov 10, 2026. A May 18, 2026 deal added at least $17B/yr of US ag purchases through 2028 on top of Busan's 25 MMT/yr of soybeans; as of Aug 10, 2026 China was roughly a quarter of the way through the 2026 soybean commitment — behind pace, with buying accelerating into an expected September Trump-Xi meeting.\n\nTHE ONE TO WATCH. On July 6, 2026 it was reported that the US would end its 10% fentanyl tariff and China would reciprocate by dropping its 10% levy on US ag, aimed at cargoes arriving after Oct 1, 2026. China's Ministry of Commerce confirmed it; USTR had not. That levy is the whole difference between 13% and 3% on soybeans, so treat the Oct 1 date as reported, not settled.\n\nTARIFF AUTHORITY. SCOTUS voided the IEEPA tariffs on Feb 20, 2026. The Section 122 surcharge that replaced them was ruled invalid by the Court of International Trade on May 7, 2026 (under appeal) and lapsed around July 24. Section 301 'forced labor' duties took effect July 24, 2026 at 10-12.5% across 60 trading partners and about 99.4% of US imports, with a transit grace period to July 28. Farm inputs are explicitly exempt: in-quota sugar, fertilizer and pesticides, and certain planting seeds.\n\nNORTH AMERICA. The Administration signalled in July that it will not renew USMCA and will negotiate a successor; bilateral talks resumed in Mexico City the week of Jul 20. Then in August the US imposed 50% Section 338 duties on about $20B of Canadian imports — dairy, alcoholic beverages and motor vehicles, with a covered list reaching honey, certain planting seeds, molasses and fructose syrups. Sources differ on the operative date (Aug 19 per counsel, 12:01 a.m. ET Aug 22 per customs brokers). Bulk grain and oilseeds are not covered, so the 0% rows above are unchanged — but USMCA origin did NOT exempt covered goods, which is the first outright override of USMCA duty-free treatment and it happened mid-renegotiation. Canada retaliated on Aug 25 with $27.6B in counter-tariffs: 50% on certain steel and aluminum, 25% on fish and tools. No bulk ag on either list.\n\nUNCONFIRMED — one trade tracker lists a further Canadian counter-tariff tranche of 15-50% effective Sept 8, 2026. We found no second source and are not putting a number to it; if you ship to Canada, confirm directly.\n\nBRAZIL. A 25% tariff on Brazilian goods including ethanol landed mid-July after a Section 301 investigation — an inbound tariff that structurally favours US corn ethanol at home.\n\nVerify against USTR and the Federal Register before any trading decision.",
+  "headline": "China's retained 10% levy still keeps US soybeans near 13%, but a reported deal would drop it for cargoes arriving after Oct 1. Section 301 forced-labor duties are in effect at 10-12.5% with fertilizer and pesticides exempt. New 50% Section 338 duties on Canadian dairy, alcohol and vehicles did NOT spare USMCA-originating goods — grain is untouched, but the precedent matters while USMCA is renegotiated.",
   "rows": [
     {
       "commodity": "Soybeans",
@@ -12,7 +12,7 @@
       "rate": "~13%",
       "baseline": "3%",
       "status": "mixed",
-      "note": "China lifted its March 2025 retaliatory 10% on soybeans under the Busan agreement (effective Nov 10, 2025) but kept its broad 10% 'Liberation Day' retaliatory levy — so US soybeans face roughly 13% (3% MFN + 10%), a persistent disadvantage vs. Brazil. A Section 301 investigation is pending and could re-escalate.",
+      "note": "China lifted its March 2025 retaliatory 10% on soybeans under the Busan agreement (effective Nov 10, 2025) but kept its broad 10% 'Liberation Day' retaliatory levy — so US soybeans face roughly 13% (3% MFN + 10%), a persistent disadvantage vs. Brazil. A Section 301 investigation is pending and could re-escalate. Watch: a reported Jul 6 deal would drop this 10% for cargoes arriving after Oct 1 — China's MOFCOM confirmed it, USTR had not.",
       "effective": "2025-11-10",
       "source_url": "https://www.congress.gov/crs-product/R48549"
     },
@@ -23,7 +23,7 @@
       "rate": "~11%",
       "baseline": "1%",
       "status": "mixed",
-      "note": "China suspended its March 2025 retaliatory 15% on corn under the Busan agreement but kept the broad 10% retaliatory levy, leaving roughly 11% (1% MFN + 10%). China purchases remain below pre-trade-war levels; Brazil retains market share.",
+      "note": "China suspended its March 2025 retaliatory 15% on corn under the Busan agreement but kept the broad 10% retaliatory levy, leaving roughly 11% (1% MFN + 10%). China purchases remain below pre-trade-war levels; Brazil retains market share. Watch: a reported Jul 6 deal would drop this 10% for cargoes arriving after Oct 1 — China's MOFCOM confirmed it, USTR had not.",
       "effective": "2025-11-10",
       "source_url": "https://www.congress.gov/crs-product/R48549"
     },
@@ -34,7 +34,7 @@
       "rate": "~11%",
       "baseline": "1%",
       "status": "mixed",
-      "note": "March 2025 retaliatory 15% suspended under the Busan agreement; the broad 10% retaliatory levy remains (~11% = 1% MFN + 10%). US wheat has modest direct China exposure — global trade flows matter more than this rate.",
+      "note": "March 2025 retaliatory 15% suspended under the Busan agreement; the broad 10% retaliatory levy remains (~11% = 1% MFN + 10%). US wheat has modest direct China exposure — global trade flows matter more than this rate. Watch: a reported Jul 6 deal would drop this 10% for cargoes arriving after Oct 1 — China's MOFCOM confirmed it, USTR had not.",
       "effective": "2025-11-10",
       "source_url": "https://www.congress.gov/crs-product/R48549"
     },
@@ -45,7 +45,7 @@
       "rate": "~22%",
       "baseline": "12%",
       "status": "mixed",
-      "note": "March 2025 retaliatory 10% suspended under the Busan agreement; the broad 10% retaliatory levy remains (~22% = 12% MFN + 10%). China resumed US beef and poultry access under the May 18, 2026 deal and remains a major US pork market.",
+      "note": "March 2025 retaliatory 10% suspended under the Busan agreement; the broad 10% retaliatory levy remains (~22% = 12% MFN + 10%). China resumed US beef and poultry access under the May 18, 2026 deal and remains a major US pork market. Watch: a reported Jul 6 deal would drop this 10% for cargoes arriving after Oct 1 — China's MOFCOM confirmed it, USTR had not.",
       "effective": "2025-11-10",
       "source_url": "https://www.congress.gov/crs-product/R48549"
     },
@@ -56,7 +56,7 @@
       "rate": "0%",
       "baseline": "0%",
       "status": "normal",
-      "note": "USMCA-compliant, duty-free. USMCA joint review underway (US-Mexico bilateral rounds began May 2026). Penn Wharton: USMCA exemption share reached 86.3% of Canada/Mexico imports by February 2026. USMCA renegotiation opened July 2026 — rates unchanged so far, but the framework itself is now in play.",
+      "note": "USMCA-compliant, duty-free. USMCA joint review underway (US-Mexico bilateral rounds began May 2026). Penn Wharton: USMCA exemption share reached 86.3% of Canada/Mexico imports by February 2026. USMCA renegotiation opened July 2026 — rates unchanged so far, but the framework itself is now in play. Aug 2026: 50% Section 338 duties on Canadian dairy, alcohol and vehicles applied DESPITE USMCA origin. Grain is not covered and this rate is unchanged.",
       "effective": "2020-07-01",
       "source_url": "https://ustr.gov/trade-agreements/free-trade-agreements/united-states-mexico-canada-agreement"
     },
@@ -67,7 +67,7 @@
       "rate": "0%",
       "baseline": "0%",
       "status": "normal",
-      "note": "USMCA-compliant, duty-free. Mexico remains the top US corn export destination; Canadian demand steady. USMCA joint review underway. USMCA renegotiation opened July 2026 — rates unchanged so far, but the framework itself is now in play.",
+      "note": "USMCA-compliant, duty-free. Mexico remains the top US corn export destination; Canadian demand steady. USMCA joint review underway. USMCA renegotiation opened July 2026 — rates unchanged so far, but the framework itself is now in play. Aug 2026: 50% Section 338 duties on Canadian dairy, alcohol and vehicles applied DESPITE USMCA origin. Grain is not covered and this rate is unchanged.",
       "effective": "2020-07-01",
       "source_url": "https://ustr.gov/trade-agreements/free-trade-agreements/united-states-mexico-canada-agreement"
     },
@@ -85,6 +85,30 @@
   ],
   "timeline": [
     {
+      "date": "2026-08-25",
+      "impact": "medium",
+      "event": "Canada retaliates with $27.6B in counter-tariffs: 50% on certain steel and aluminum, 25% on fish and tools. No bulk agricultural commodity is named in the Canadian list.",
+      "source_url": "https://www.ghy.com/trade-compliance/us-imposes-50-section-338-tariffs-on-canadian-imports-dairy-alcoholic-beverages-and-motor-vehicles/"
+    },
+    {
+      "date": "2026-08-22",
+      "impact": "high",
+      "event": "US imposes 50% Section 338 duties on roughly $20B of Canadian imports — dairy (notably TRQ cheese), alcoholic beverages and motor vehicles, plus a longer covered list that reaches honey, certain planting seeds, molasses and fructose syrups. Grain and oilseeds are NOT covered. The date differs by source: counsel reported it effective Aug 19, customs brokers put it at 12:01 a.m. ET Aug 22 for entries on or after that date — confirm the entry date for a specific shipment. Critically, USMCA origin does NOT exempt covered goods, which is the first time duty-free USMCA treatment has been overridden outright while the agreement is being renegotiated.",
+      "source_url": "https://www.wiley.law/alert-President-Trump-Imposes-New-50-Tariffs-on-Certain-Canadian-Imports"
+    },
+    {
+      "date": "2026-08-10",
+      "impact": "medium",
+      "event": "China is roughly a quarter of the way through its 25 MMT/yr soybean commitment for 2026 — behind pace with a Trump-Xi meeting expected in September. Buying accelerated into that meeting; private crushers reportedly held back.",
+      "source_url": "https://farmpolicynews.illinois.edu/2026/08/china-ramping-up-us-soybean-purchases/"
+    },
+    {
+      "date": "2026-07-24",
+      "impact": "high",
+      "event": "Section 301 'forced labor' duties take effect at 10-12.5% across 60 trading partners, covering about 99.4% of US imports and replacing the lapsed Section 122 surcharge (goods in transit had a grace period to July 28). Agricultural exemptions apply universally to in-quota sugar, FERTILIZER AND PESTICIDES, and certain planting seeds — input costs are shielded. Five economies were cut to 10% after forced-labour import bans or trade commitments; the EU, Japan, South Korea, Switzerland and Taiwan get a modified MFN-ceiling method where existing duties count toward the cap instead of stacking on top.",
+      "source_url": "https://www.bhfs.com/insight/trump-administration-imposes-tariffs-under-section-301-investigation-into-forced-labor-imports/"
+    },
+    {
       "date": "2026-07-21",
       "event": "USMCA bilateral negotiations resume in Mexico City — the first talks since the Administration signaled it would not renew the agreement. No ag rate changes announced; Canada/Mexico access (top two US ag export destinations) rides on the outcome.",
       "impact": "medium",
@@ -95,6 +119,12 @@
       "event": "25% tariff on Brazilian goods, including ethanol, announced the prior week following a Section 301 investigation. Inbound tariff: Brazilian ethanol had been gaining US market share — this structurally improves US corn ethanol's domestic position.",
       "impact": "medium",
       "source_url": "https://agsist.com/daily/2026-07-19"
+    },
+    {
+      "date": "2026-07-06",
+      "impact": "high",
+      "event": "Reported deal to unwind the last ag levy: the US would end its 10% fentanyl tariff and China would reciprocate by dropping its 10% tax on US agricultural goods, targeted at cargoes ARRIVING AFTER OCTOBER 1 — timed to when China normally shifts from Brazilian to US supply. China's Ministry of Commerce confirmed the agreement; USTR had not confirmed it at the time of reporting. This is the levy that keeps US soybeans near 13%, so it is the single line item on this page most worth watching.",
+      "source_url": "https://www.agweb.com/news/china-drop-10-tariff-u-s-ag-goods-including-soybeans"
     },
     {
       "date": "2026-07-03",
