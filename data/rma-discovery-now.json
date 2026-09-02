@@ -1,7 +1,7 @@
 {
  "_note": "Derived from data/rma-prices.json. 'open' = a discovery window containing today; 'next' = one opening within 75 days. Price range is Conventional practice.",
- "updated": "2026-09-01T01:29:28Z",
- "as_of": "2026-09-01",
+ "updated": "2026-09-02T00:13:00Z",
+ "as_of": "2026-09-02",
  "crop_year": 2026,
  "open": [
   {
@@ -15,15 +15,15 @@
     "Mississippi"
    ],
    "n_states": 2,
-   "lo": 5.13,
-   "hi": 5.13,
+   "lo": 5.16,
+   "hi": 5.16,
    "exch": [
     "CBOT"
    ],
    "contract": [
     "December"
    ],
-   "day": 18,
+   "day": 19,
    "span": 31,
    "in_days": null
   },
@@ -45,7 +45,7 @@
    "contract": [
     "December"
    ],
-   "day": 1,
+   "day": 2,
    "span": 30,
    "in_days": null
   },
@@ -73,7 +73,7 @@
    "contract": [
     "November"
    ],
-   "day": 1,
+   "day": 2,
    "span": 30,
    "in_days": null
   },
@@ -100,7 +100,7 @@
    "contract": [
     "November"
    ],
-   "day": 1,
+   "day": 2,
    "span": 30,
    "in_days": null
   },
@@ -124,7 +124,7 @@
    "contract": [
     "December"
    ],
-   "day": 1,
+   "day": 2,
    "span": 30,
    "in_days": null
   },
@@ -146,7 +146,7 @@
    "contract": [
     "December"
    ],
-   "day": 1,
+   "day": 2,
    "span": 30,
    "in_days": null
   },
@@ -172,7 +172,7 @@
    "contract": [
     "November"
    ],
-   "day": 1,
+   "day": 2,
    "span": 30,
    "in_days": null
   },
@@ -197,7 +197,7 @@
    "contract": [
     "December"
    ],
-   "day": 1,
+   "day": 2,
    "span": 30,
    "in_days": null
   },
@@ -221,7 +221,7 @@
    "contract": [
     "December"
    ],
-   "day": 1,
+   "day": 2,
    "span": 30,
    "in_days": null
   },
@@ -246,7 +246,7 @@
    "contract": [
     "November"
    ],
-   "day": 1,
+   "day": 2,
    "span": 30,
    "in_days": null
   },
@@ -271,7 +271,7 @@
    "contract": [
     "November"
    ],
-   "day": 1,
+   "day": 2,
    "span": 30,
    "in_days": null
   },
@@ -293,7 +293,7 @@
    "contract": [
     "November"
    ],
-   "day": 1,
+   "day": 2,
    "span": 30,
    "in_days": null
   }
@@ -352,7 +352,7 @@
    ],
    "day": null,
    "span": null,
-   "in_days": 30
+   "in_days": 29
   },
   {
    "crop": "Corn",
@@ -380,7 +380,7 @@
    ],
    "day": null,
    "span": null,
-   "in_days": 30
+   "in_days": 29
   },
   {
    "crop": "Cotton",
@@ -415,7 +415,7 @@
    ],
    "day": null,
    "span": null,
-   "in_days": 30
+   "in_days": 29
   },
   {
    "crop": "Grain Sorghum",
@@ -461,7 +461,7 @@
    ],
    "day": null,
    "span": null,
-   "in_days": 30
+   "in_days": 29
   },
   {
    "crop": "Peanuts",
@@ -491,7 +491,7 @@
    "contract": [],
    "day": null,
    "span": null,
-   "in_days": 30
+   "in_days": 29
   },
   {
    "crop": "Peanuts",
@@ -517,7 +517,7 @@
    "contract": [],
    "day": null,
    "span": null,
-   "in_days": 30
+   "in_days": 29
   },
   {
    "crop": "Peanuts",
@@ -544,7 +544,7 @@
    "contract": [],
    "day": null,
    "span": null,
-   "in_days": 30
+   "in_days": 29
   },
   {
    "crop": "Peanuts",
@@ -566,7 +566,7 @@
    "contract": [],
    "day": null,
    "span": null,
-   "in_days": 30
+   "in_days": 29
   },
   {
    "crop": "Popcorn",
@@ -599,7 +599,7 @@
    ],
    "day": null,
    "span": null,
-   "in_days": 30
+   "in_days": 29
   },
   {
    "crop": "Rice",
@@ -625,7 +625,7 @@
    ],
    "day": null,
    "span": null,
-   "in_days": 30
+   "in_days": 29
   },
   {
    "crop": "Rice",
@@ -651,7 +651,7 @@
    ],
    "day": null,
    "span": null,
-   "in_days": 30
+   "in_days": 29
   },
   {
    "crop": "Soybeans",
@@ -700,7 +700,7 @@
    ],
    "day": null,
    "span": null,
-   "in_days": 30
+   "in_days": 29
   },
   {
    "crop": "Sunflowers",
@@ -731,7 +731,7 @@
    ],
    "day": null,
    "span": null,
-   "in_days": 30
+   "in_days": 29
   },
   {
    "crop": "Sunflowers",
@@ -762,7 +762,7 @@
    ],
    "day": null,
    "span": null,
-   "in_days": 30
+   "in_days": 29
   },
   {
    "crop": "Corn",
@@ -787,7 +787,7 @@
    ],
    "day": null,
    "span": null,
-   "in_days": 61
+   "in_days": 60
   },
   {
    "crop": "Cotton",
@@ -811,7 +811,7 @@
    ],
    "day": null,
    "span": null,
-   "in_days": 61
+   "in_days": 60
   },
   {
    "crop": "Popcorn",
@@ -833,7 +833,7 @@
    ],
    "day": null,
    "span": null,
-   "in_days": 61
+   "in_days": 60
   },
   {
    "crop": "Soybeans",
@@ -864,7 +864,7 @@
    ],
    "day": null,
    "span": null,
-   "in_days": 61
+   "in_days": 60
   }
  ]
 }
