@@ -678,8 +678,8 @@
       "ticker": "ZL=F",
       "close": 72.27,
       "open": 70.17,
-      "netChange": 1.88,
-      "pctChange": 2.6792,
+      "netChange": 2.1,
+      "pctChange": 2.9927,
       "wk52_hi": 79.69,
       "wk52_lo": 47.51,
       "repaired_from": "soyoil-sep26",
@@ -690,7 +690,8 @@
         "open": 72.04,
         "netChange": 0.23,
         "pctChange": 0.3193
-      }
+      },
+      "derived_recomputed": true
     },
     "crude": {
       "ticker": "CL=F",

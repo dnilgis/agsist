@@ -5,13 +5,26 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Tue, 01 Sep 2026 13:23:18 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 02 Sep 2026 11:40:59 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/agsist.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>CATTLE BREAK ON BEEF IMPORTS; BEANS FIRM</title>
+      <link>https://agsist.com/daily/2026-09-02</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-09-02</guid>
+      <pubDate>Wed, 02 Sep 2026 05:00:00 -0600</pubDate>
+      <description>Cattle at $212.40 and feeders at $320.80 are barely off, but the news under them is worse than the ticks: Trump is opening lean beef imports AND Mexico resumes feeder shipments, two supply hits the same morning. Beans at $12.94 are up 1.5% on a different story -- soybean oil ran 3% as diesel crack spreads hit records, pulled higher by the U.S.-Iran exchange of strikes overnight (ongoing since late August) that cut Hormuz tanker traffic to four crossings Tuesday from a 13-vessel average. Two markets, two completely different problems.
+Trump's lean beef import expansion and Mexico feeder resumption hit cattle markets just as soybeans push 1.5% higher on oil-crush demand.
+• CATTLE: SUPPLY SHOCK LANDS
+  → If you have cattle to price, the import headline is not priced in at $212.40. Lock something before Thursday's export sales confirm or deny the demand side.
+• BEANS AND OIL FIRM HARD
+• WHEAT DROPS; OATS RUN
+Read more: https://agsist.com/daily/2026-09-02</description>
+    </item>
     <item>
       <title>WHEAT FIRMS; EPA BIOFUEL EXEMPTIONS HIT THE BOARD</title>
       <link>https://agsist.com/daily/2026-09-01</link>
@@ -385,19 +398,6 @@ Energy leads the complex lower while Belt crop reports keep weather premium out 
 • Wheat Breaks; Yesterday's Call Missed
 • Energy Leads the Complex Lower
 Read more: https://agsist.com/daily/2026-08-04</description>
-    </item>
-    <item>
-      <title>CROP TOUR WEEK OPENS QUIET; WHEAT FIRMS</title>
-      <link>https://agsist.com/daily/2026-08-03</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-08-03</guid>
-      <pubDate>Mon, 03 Aug 2026 05:00:00 -0600</pubDate>
-      <description>Most markets barely moved today. Corn added a penny and a half to $4.38, beans gave back 3 cents to $11.69, and the whole complex is marking time ahead of Pro Farmer crop tour results later this week. Wheat at $6.40 is the one market with a pulse. Today is position-holding, not position-making. Wait.
-Corn and beans drift near unchanged as Pro Farmer crop tour gets underway; wheat adds 4 cents on its own momentum.
-• Grains Tread Water
-• Wheat Firms Quietly
-• Livestock Quiet; Milk Breaks
-  → Dairy: Class III at $17.16 with no hedge is exposed. Look at August and September floor options before Tuesday's open.
-Read more: https://agsist.com/daily/2026-08-03</description>
     </item>
   </channel>
 </rss>

@@ -1,18 +1,18 @@
 {
- "updated": "2026-09-01T13:23:18+00:00",
- "total": 102,
+ "updated": "2026-09-02T11:40:59+00:00",
+ "total": 103,
  "played_out": 37,
- "didnt": 60,
+ "didnt": 61,
  "pending": 5,
- "hit_rate": 38.1,
+ "hit_rate": 37.8,
  "by_method": {
   "deterministic": {
    "played": 11,
-   "missed": 50,
-   "graded": 61,
-   "hit_rate": 18.0,
+   "missed": 51,
+   "graded": 62,
+   "hit_rate": 17.7,
    "first": "2026-06-24",
-   "last": "2026-09-01"
+   "last": "2026-09-02"
   },
   "self_reported": {
    "played": 26,
@@ -34,22 +34,22 @@
   },
   "v2": {
    "played": 7,
-   "missed": 10,
-   "graded": 17,
-   "hit_rate": 41.2,
+   "missed": 11,
+   "graded": 18,
+   "hit_rate": 38.9,
    "first": "2026-08-12",
-   "last": "2026-09-01"
+   "last": "2026-09-02"
   }
  },
  "direction_only": {
   "right_way": 26,
-  "graded": 61,
-  "rate": 42.6
+  "graded": 62,
+  "rate": 41.9
  },
  "by_instrument": {
   "wheat": {
    "played": 0,
-   "graded": 11,
+   "graded": 12,
    "hit_rate": 0.0
   },
   "corn": {
@@ -96,6 +96,22 @@
  "mismatched": 23,
  "current_streak": 0,
  "records": [
+  {
+   "made": "2026-09-01",
+   "judged": "2026-09-02",
+   "call": "Called wheat up toward $7.68; wheat closed today at $7.54, dropping 20.5 cents and moving sharply the wrong direction.",
+   "outcome": "didnt",
+   "method": "deterministic",
+   "mismatch": false,
+   "note": "Wheat going from lead yesterday to the session's biggest loser today is the market reminding you that direction calls on range-bound contracts earn their misses.",
+   "instrument": "wheat",
+   "direction": "up",
+   "level": "7.68",
+   "p0": 7.5975,
+   "p1": 7.5425,
+   "design": "v2",
+   "direction_ok": false
+  },
   {
    "made": "2026-08-31",
    "judged": "2026-09-01",
