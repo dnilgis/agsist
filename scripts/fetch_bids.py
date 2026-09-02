@@ -609,13 +609,37 @@ def _bid_order(b):
     correct end date and a correct month label. Ordering on start handed those
     rows every fallback in the file. Every `deliveryEnd` in the same file is a
     real future date. Start is kept only as a substitute when end is missing.
+
+    IT IS A TOTAL ORDER, AND IT WAS NOT.
+    The key was (deliveryEnd, -price) and nothing else, so it could not separate
+    two elevators offering the same price for the same window -- and they are
+    everywhere. Seven Aberdeen co-ops sit on ('2026-11-30', -12.58) in the
+    committed file; 136 of its 440 rows share a key with another row. min()
+    then returns whichever tied row it happens to reach first, which depends on
+    the order of the list it is handed. page_pick walks the full set; the slim
+    file is a dict rebuilt in a different sequence. On 2026-09-02 the two picked
+    different rows for eleven grid ZIP/crop pairs -- every one of them wheat --
+    and the run failed with exit 4.
+
+    The build failure was the cheap half. The expensive half is that the page
+    could name Elevator A this morning and Elevator B this afternoon off numbers
+    that had not moved.
+
+    The tie-break is the facility's own name, then branch, then commodity: no
+    meaning is claimed by it, only stability. DISTANCE WOULD HAVE BEEN THE
+    MEANINGFUL CHOICE -- same price, same window, go to the nearer one -- and it
+    is not available: `distance` is null on all 440 rows of the committed file,
+    which is also why deduplicate()'s `(distance or 999)` has always compared
+    999 against 999.
     """
     when = str(b.get("deliveryEnd") or b.get("deliveryStart") or "9999-99-99")[:10]
     try:
         price = float(b.get("cashPrice") or 0)
     except (TypeError, ValueError):
         price = 0.0
-    return (when, -price)
+    return (when, -price,
+            str(b.get("facility") or ""), str(b.get("branch") or ""),
+            str(b.get("commodity") or ""))
 
 
 def near(b, grid_zip):
@@ -1253,6 +1277,47 @@ def selftest():
     ck("one row per facility+commodity+delivery", len(out) == 2)
     ck("the closest of a duplicate pair wins",
        [b for b in out if b["facility"] == "A"][0]["distance"] == 3.0)
+
+    print()
+    print("the pick does not depend on the order the rows arrive in")
+    # 2026-09-02, run 91285466096: the run failed with exit 4 --
+    # "the slim file would change what the futures pages display for 11 grid
+    # ZIP/crop pairs" -- and every one of the eleven was wheat.
+    #
+    # Nothing was wrong with the data. _bid_order returned (deliveryEnd, -price)
+    # and NOTHING ELSE, so it is not a total order: seven Aberdeen elevators sit
+    # on ('2026-11-30', -12.58) in the committed file alone, and 136 of its 440
+    # rows share a key with some other row. min() returns whichever tied row it
+    # reaches first, and page_pick walks the full list while the slim file is a
+    # dict rebuilt in a different sequence -- so the two picked different rows
+    # with identical price and identical delivery, and the equivalence guard,
+    # comparing whole rows, correctly said they disagreed.
+    #
+    # It was never only a build failure. An unstable pick means the page can
+    # name Elevator A this morning and Elevator B this afternoon off the same
+    # numbers, and the farmer who drove to the first one has no idea why.
+    tied = [
+        {"facility": "West-Con", "branch": "", "city": "Aberdeen", "state": "SD",
+         "commodity": "Wheat", "cashPrice": 12.58, "deliveryEnd": "2026-11-30", "zip": "57401"},
+        {"facility": "Country Pride Coop", "branch": "", "city": "Aberdeen", "state": "SD",
+         "commodity": "Wheat", "cashPrice": 12.58, "deliveryEnd": "2026-11-30", "zip": "57401"},
+        {"facility": "Agwrx Cooperative", "branch": "", "city": "Aberdeen", "state": "SD",
+         "commodity": "Wheat", "cashPrice": 12.58, "deliveryEnd": "2026-11-30", "zip": "57401"},
+    ]
+    picks = {id(min(order, key=_bid_order)) for order in
+             (tied, list(reversed(tied)), [tied[1], tied[2], tied[0]])}
+    ck("three tied rows in three orders select the SAME row", len(picks) == 1)
+    ck("_bid_order is a total order over rows that differ",
+       len({_bid_order(b) for b in tied}) == len(tied))
+    # And the same thing through the door that actually failed: the equivalence
+    # check the run performs, on a full set and a slim set built from it.
+    grid = [{"zip": "57401", "label": "Aberdeen, SD"}]
+    full = list(tied)
+    slim = slim_for_browser(full, grid)
+    ck("slim and full pick the same wheat row for the grid ZIP",
+       page_pick(full, "57401", "wheat") == page_pick(slim, "57401", "wheat"))
+    ck("...and the same one nationally",
+       page_pick(full, None, "wheat") == page_pick(slim, None, "wheat"))
 
     print()
     if fails:

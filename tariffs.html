@@ -122,10 +122,20 @@ a:focus-visible,button:focus-visible,input:focus-visible,[role="button"]:focus-v
 .tariff-section-title{margin:0;font-size:inherit;font-weight:inherit;letter-spacing:inherit;text-transform:inherit;color:inherit}
 .tariff-block-title{font-size:0.763rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin:0 0 .6rem}
 
-.tariff-page { max-width: 900px; margin: 0 auto; padding: 0 1rem 3rem; }
+/* 1100px, not 900: this page's centrepiece is a DATA TABLE, and at 900 the note
+   column — which carries every fact worth reading — got 229px of an 864px table
+   while five columns holding about forty characters took the other 635. It was
+   also narrower than the header and footer above and below it, which are 1100.
+   Measured, and 1100 is the site's own table measure: usda-calendar, hail-map,
+   soybean-futures-prices and the header/footer fallbacks all use it. */
+.tariff-page { max-width: 1100px; margin: 0 auto; padding: 0 1rem 3rem; }
 
 /* Breadcrumb */
-.breadcrumb { max-width: 900px; margin: 0 auto; padding: .65rem 1rem 0; font-size:0.795rem; color: var(--text-dim); }
+/* 1100 to match .tariff-page. Widening main and leaving this at 900 inset the
+   breadcrumb 83px from every band beneath it — measured left=270 against
+   left=187 for the title, banner, table and explainer. A container width is two
+   numbers on this page, not one. */
+.breadcrumb { max-width: 1100px; margin: 0 auto; padding: .65rem 1rem 0; font-size:0.795rem; color: var(--text-dim); }
 .breadcrumb a { color: var(--text-dim); text-decoration: none; }
 .breadcrumb a:hover { color: var(--gold); }
 
@@ -159,13 +169,27 @@ a:focus-visible,button:focus-visible,input:focus-visible,[role="button"]:focus-v
   font-size:0.763rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--text-muted);
   display: flex; align-items: center; justify-content: space-between;
 }
-.tariff-table { width: 100%; border-collapse: collapse; }
+/* FIXED layout, or the widths below are only minimums. With auto layout the
+   'Current Rate' header is white-space:nowrap and pushed its column to 150px
+   regardless of what was asked for, and the same happened across the five
+   metadata columns — every pixel they over-took came out of the note. */
+.tariff-table { width: 100%; border-collapse: collapse; table-layout: fixed; }
 .tariff-table th {
   padding: .5rem .85rem; text-align: left;
   font-size:0.763rem; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; color: var(--text-muted);
-  border-bottom: 1px solid var(--border); white-space: nowrap;
+  border-bottom: 1px solid var(--border);
 }
-.tariff-table td { padding: .6rem .85rem; border-bottom: 1px solid rgba(255,255,255,.04); font-size: .8rem; color: var(--text); vertical-align: middle; }
+/* TOP, not middle. With a long note the row is hundreds of pixels tall, and
+   vertical-align:middle floated 'Soybeans / China / 3% / ~13%' in empty space
+   halfway down it, level with nothing. Top-aligned, the row reads across. */
+.tariff-table td { padding: .7rem .85rem; border-bottom: 1px solid rgba(255,255,255,.04); font-size: .8rem; color: var(--text); vertical-align: top; }
+/* The five metadata columns hold about forty characters between them; the note
+   holds the content. Fixed widths on those five hand the remainder to the note. */
+.tariff-table th:nth-child(1){width:8.5rem}
+.tariff-table th:nth-child(2){width:7.5rem}
+.tariff-table th:nth-child(3){width:5.5rem}
+.tariff-table th:nth-child(4){width:9rem}   /* "Current Rate" is the longest header; anything less and it alone wraps to two lines and drags the whole header row taller */
+.tariff-table th:nth-child(5){width:6rem}
 .tariff-table tr:last-child td { border-bottom: none; }
 .tariff-table tr:hover td { background: rgba(255,255,255,.015); }
 .tt-comm { display: flex; align-items: center; gap: .45rem; font-weight: 700; }
@@ -182,10 +206,35 @@ a:focus-visible,button:focus-visible,input:focus-visible,[role="button"]:focus-v
 .tt-badge.elevated { color: #ef4444; background: rgba(239,68,68,.08); border-color: rgba(239,68,68,.22); }
 .tt-badge.normal   { color: var(--green); background: rgba(34,197,94,.07); border-color: rgba(34,197,94,.2); }
 .tt-badge.mixed    { color: var(--gold); background: rgba(212,162,63,.08); border-color: rgba(212,162,63,.22); }
-.tt-note { font-size:1rem; color: var(--text-muted); }
-@media (max-width: 600px) {
-  .tt-note, .tt-note-col { display: none; }
-  .tariff-table th:nth-child(3), .tariff-table td:nth-child(3) { display: none; }
+/* .8rem to match the table. It was 1rem — the annotation set larger than the
+   numbers it annotates, which inverted the hierarchy and cost it extra lines. */
+.tt-note { font-size:.8rem; color: var(--text-muted); line-height:1.6; }
+/* THE PHONE USED TO GET THE NUMBERS AND NONE OF THE REASONS.
+   This rule was `.tt-note { display: none }` — so on a phone the note column
+   vanished and with it every explanation, every caveat and every source link on
+   the page. What survived was a grid of bare percentages. Measured at 390px: four
+   columns, rows 53px tall, nothing to read.
+   A table that will not fit becomes a stack, not a truncation. */
+/* 960, not 600. Measured across eleven widths: the five metadata columns need
+   about 620px between them, so the note keeps 344px at a 1000px window and
+   only 244px at 900 — and at 768 it was 112px with the page running to 14,362px,
+   a column of two-word lines. 960 is the measured width below which the table
+   stops being able to hold its own content. It stops being a table well before
+   the phone. */
+@media (max-width: 960px) {
+  .tariff-table, .tariff-table tbody, .tariff-table tr, .tariff-table td { display: block; width: auto; }
+  .tariff-table thead { display: none; }
+  .tariff-table tr { border-bottom: 1px solid var(--border); padding: .75rem 0; }
+  .tariff-table tr:last-child { border-bottom: none; }
+  .tariff-table td { border: none; padding: .1rem .9rem; }
+  /* Each value names its own column, since the header row is gone. */
+  .tariff-table td[data-label]:not([data-label=""])::before {
+    content: attr(data-label) " "; color: var(--text-dim);
+    font-size: .7rem; text-transform: uppercase; letter-spacing: .06em;
+  }
+  .tariff-table td.tt-rate { font-size: 1.05rem; }
+  .tt-note { display: block; margin-top: .5rem; padding-top: .5rem;
+             border-top: 1px solid rgba(255,255,255,.06); }
 }
 
 /* Timeline */
@@ -466,12 +515,15 @@ fetch('/data/tariffs.json')
         if(row.source_url){meta+='<a href="'+esc(row.source_url)+'" target="_blank" rel="noopener" class="tariff-src">Source \u2197</a>';}
         var watch=watchLinks(row.commodity);
         var noteCell='<td class="tt-note">'+esc(row.note)+(meta?'<span class="tt-meta">'+meta+'</span>':'')+(watch?'<span class="tt-watch">'+watch+'</span>':'')+'</td>';
+        /* data-label feeds the mobile stack: below 960px the table becomes blocks
+           and each value prints its own column name, because a bare "3%" under a
+           bare "~13%" with no headings is not a table, it is a riddle. */
         return '<tr>'
-          +'<td><div class="tt-comm"><span class="tt-icon">'+commodityIcon(row.commodity)+'</span>'+esc(row.commodity)+'</div></td>'
-          +'<td style="color:var(--text-muted)">'+esc(row.destination)+'</td>'
-          +'<td class="tt-baseline">'+esc(row.baseline)+'</td>'
-          +'<td class="tt-rate '+sc+'">'+esc(row.rate)+'</td>'
-          +'<td><span class="tt-badge '+sc+'">'+statusBadgeTxt(row.status)+'</span></td>'
+          +'<td data-label=""><div class="tt-comm"><span class="tt-icon">'+commodityIcon(row.commodity)+'</span>'+esc(row.commodity)+'</div></td>'
+          +'<td data-label="Destination" style="color:var(--text-muted)">'+esc(row.destination)+'</td>'
+          +'<td data-label="Baseline" class="tt-baseline">'+esc(row.baseline)+'</td>'
+          +'<td data-label="Current rate" class="tt-rate '+sc+'">'+esc(row.rate)+'</td>'
+          +'<td data-label=""><span class="tt-badge '+sc+'">'+statusBadgeTxt(row.status)+'</span></td>'
           +noteCell
           +'</tr>';
       }).join('');
