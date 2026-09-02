@@ -1,0 +1,28 @@
+name: Tariff data check
+# data/tariffs.json is hand-refreshed, and every way it can be wrong is a way the
+# page renders confidently instead of failing: the timeline is drawn in file order
+# so an out-of-sequence entry just looks like history, an unknown `impact` draws an
+# invisible dot, an unknown `status` falls through to a "Mixed" badge, and a missing
+# key prints "undefined" into copy a farmer reads. So the file is checked on every
+# push that touches it, and by hand before a refresh goes up.
+on:
+  push:
+    paths:
+      - 'data/tariffs.json'
+      - 'scripts/check_tariffs.py'
+      - '.github/workflows/tariffs-check.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate data/tariffs.json
+        run: python3 scripts/check_tariffs.py
