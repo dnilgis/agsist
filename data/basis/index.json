@@ -21,7 +21,7 @@
   "CO":{
    "rows":81,
    "facilities":5,
-   "kb":4.1
+   "kb":4.0
   },
   "DE":{
    "rows":5,
@@ -34,12 +34,12 @@
    "kb":0.7
   },
   "IA":{
-   "rows":5933,
+   "rows":5934,
    "facilities":402,
    "kb":239.7
   },
   "ID":{
-   "rows":51,
+   "rows":52,
    "facilities":1,
    "kb":2.5
   },
@@ -54,9 +54,9 @@
    "kb":41.3
   },
   "KS":{
-   "rows":3189,
+   "rows":3254,
    "facilities":206,
-   "kb":128.1
+   "kb":130.5
   },
   "MI":{
    "rows":465,
@@ -94,9 +94,9 @@
    "kb":105.1
   },
   "OH":{
-   "rows":1973,
-   "facilities":127,
-   "kb":79.4
+   "rows":1986,
+   "facilities":129,
+   "kb":79.9
   },
   "OK":{
    "rows":293,
@@ -114,9 +114,9 @@
    "kb":1.4
   },
   "SD":{
-   "rows":1501,
+   "rows":1504,
    "facilities":75,
-   "kb":60.2
+   "kb":60.3
   },
   "TN":{
    "rows":79,
@@ -139,9 +139,9 @@
    "kb":15.6
   },
   "WI":{
-   "rows":1319,
+   "rows":1321,
    "facilities":96,
-   "kb":53.9
+   "kb":54.0
   },
   "WY":{
    "rows":41,
