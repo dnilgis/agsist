@@ -1,6 +1,18 @@
 {
   "briefings": [
     {
+      "date": "2026-09-03",
+      "date_display": "Thursday, September 3, 2026",
+      "headline": "GRAINS BREAK HARD; EXPORT SALES ARRIVE AT 7:30",
+      "teaser": "Corn off 2%, wheat off 2.5%, and export sales land in minutes. Hold your fire.",
+      "market_mood": "bearish",
+      "surprise_count": 4,
+      "sections": 4,
+      "url": "/daily/2026-09-03",
+      "market_closed": false,
+      "yc_outcome": "didnt"
+    },
+    {
       "date": "2026-09-02",
       "date_display": "Wednesday, September 2, 2026",
       "headline": "CATTLE BREAK ON BEEF IMPORTS; BEANS FIRM",
@@ -1995,6 +2007,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-09-02T11:40:57.821650+00:00",
-  "count": 174
+  "updated": "2026-09-03T11:12:52.792845+00:00",
+  "count": 175
 }

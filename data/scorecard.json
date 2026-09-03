@@ -1,18 +1,18 @@
 {
- "updated": "2026-09-02T11:40:59+00:00",
- "total": 103,
+ "updated": "2026-09-03T11:12:54+00:00",
+ "total": 104,
  "played_out": 37,
- "didnt": 61,
+ "didnt": 62,
  "pending": 5,
- "hit_rate": 37.8,
+ "hit_rate": 37.4,
  "by_method": {
   "deterministic": {
    "played": 11,
-   "missed": 51,
-   "graded": 62,
-   "hit_rate": 17.7,
+   "missed": 52,
+   "graded": 63,
+   "hit_rate": 17.5,
    "first": "2026-06-24",
-   "last": "2026-09-02"
+   "last": "2026-09-03"
   },
   "self_reported": {
    "played": 26,
@@ -34,17 +34,17 @@
   },
   "v2": {
    "played": 7,
-   "missed": 11,
-   "graded": 18,
-   "hit_rate": 38.9,
+   "missed": 12,
+   "graded": 19,
+   "hit_rate": 36.8,
    "first": "2026-08-12",
-   "last": "2026-09-02"
+   "last": "2026-09-03"
   }
  },
  "direction_only": {
   "right_way": 26,
-  "graded": 62,
-  "rate": 41.9
+  "graded": 63,
+  "rate": 41.3
  },
  "by_instrument": {
   "wheat": {
@@ -59,8 +59,8 @@
   },
   "beans": {
    "played": 6,
-   "graded": 18,
-   "hit_rate": 33.3
+   "graded": 19,
+   "hit_rate": 31.6
   },
   "crude": {
    "played": 2,
@@ -89,13 +89,29 @@
   }
  },
  "trailing20": {
-  "played": 8,
+  "played": 7,
   "graded": 20,
-  "hit_rate": 40.0
+  "hit_rate": 35.0
  },
  "mismatched": 23,
  "current_streak": 0,
  "records": [
+  {
+   "made": "2026-09-02",
+   "judged": "2026-09-03",
+   "call": "Called beans up, toward above $13.12. Beans settled at $12.87 nearby, well short of the line.",
+   "outcome": "didnt",
+   "method": "deterministic",
+   "mismatch": false,
+   "note": "Beans failed the level by 25 cents; today's overnight pressure confirmed the direction was wrong.",
+   "instrument": "beans",
+   "direction": "up",
+   "level": "13.12",
+   "p0": 12.94,
+   "p1": 12.87,
+   "design": "v2",
+   "direction_ok": false
+  },
   {
    "made": "2026-09-01",
    "judged": "2026-09-02",

@@ -5,13 +5,26 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Wed, 02 Sep 2026 11:40:59 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 03 Sep 2026 11:12:54 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/agsist.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>GRAINS BREAK HARD; EXPORT SALES ARRIVE AT 7:30</title>
+      <link>https://agsist.com/daily/2026-09-03</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-09-03</guid>
+      <pubDate>Thu, 03 Sep 2026 05:00:00 -0600</pubDate>
+      <description>Corn is at $5.08 and wheat at $7.56, both down sharply overnight, with December corn now $5.30 and harvest just starting to pull the rug out from under the board. Export sales print at 7:30 AM CT. The market is positioning right now, not reacting, and which way that report lands will tell you whether this morning's sell-off was front-running or the real thing.
+Corn drops 2%, wheat 2.5% overnight as harvest pressure builds and the market awaits Thursday's export sales data.
+• GRAINS BREAK INTO HARVEST
+  → December corn at $5.30 with harvest starting: if you have unpriced bushels, 7:30 export sales are your decision point. A weak number removes your excuse to wait.
+• BEANS HOLD BETTER; MEAL FIRMS
+• CATTLE SLIPS; PACKER MARGINS SHIFT
+Read more: https://agsist.com/daily/2026-09-03</description>
+    </item>
     <item>
       <title>CATTLE BREAK ON BEEF IMPORTS; BEANS FIRM</title>
       <link>https://agsist.com/daily/2026-09-02</link>
@@ -386,18 +399,6 @@ Pro Farmer scouts in the field kept corn and beans under pressure Wednesday, but
 • Corn Drifts; Wheat Firms
 • Cattle Rebounds; Feeders Lead
 Read more: https://agsist.com/daily/2026-08-05</description>
-    </item>
-    <item>
-      <title>CRUDE DROPS 4%; GRAINS SOFTEN ON GOOD CROP NEWS</title>
-      <link>https://agsist.com/daily/2026-08-04</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-08-04</guid>
-      <pubDate>Tue, 04 Aug 2026 05:00:00 -0600</pubDate>
-      <description>Crude fell hard, off $3.35 to $77.89, the biggest single-session drop in weeks as Iran-Hormuz tensions, with the Strait of Hormuz premium that built since early April now deflating on diplomatic progress, keep unwinding. Grains drifted lower in sympathy: beans gave back 14 cents, corn 3.75. The reason is sitting in the crop reports: Missouri ahead of schedule, Minnesota corn and beans at 75% good-to-excellent, Michigan got its million-dollar rain.
-Energy leads the complex lower while Belt crop reports keep weather premium out of corn and beans.
-• Grains Soften on Good Belt
-• Wheat Breaks; Yesterday's Call Missed
-• Energy Leads the Complex Lower
-Read more: https://agsist.com/daily/2026-08-04</description>
     </item>
   </channel>
 </rss>
