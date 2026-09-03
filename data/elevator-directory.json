@@ -1,5 +1,5 @@
 {
- "generated": "2026-09-03T21:16:53Z",
+ "generated": "2026-09-03T23:29:52Z",
  "from": "bids-full.json",
  "complete": false,
  "note": "Directory only: who operates a facility and where. No prices, no basis, no symbols, no delivery windows.",
@@ -12,7 +12,7 @@
   "with_phone": 1804,
   "saturated_zips": 0,
   "failed_zips": 0,
-  "rows_read": 17688
+  "rows_read": 17712
  },
  "saturated": [],
  "failed": [],
@@ -87,15 +87,6 @@
    "state": "CO",
    "zip": "80650",
    "phone": " 970-381-4402",
-   "source": "barchart"
-  },
-  {
-   "facility": "Roggen Farmers Elevator Association",
-   "branch": "Roggen Elevator - Main Office",
-   "city": "Roggen",
-   "state": "CO",
-   "zip": "80652",
-   "phone": "(303) 849-5506",
    "source": "barchart"
   },
   {
@@ -4245,6 +4236,15 @@
    "state": "IL",
    "zip": "61773",
    "phone": "217-745-2336",
+   "source": "barchart"
+  },
+  {
+   "facility": "Alto Ingredients, Inc.",
+   "branch": "Pekin, IL",
+   "city": "Pekin",
+   "state": "IL",
+   "zip": "61554",
+   "phone": "(916) 403-2123",
    "source": "barchart"
   },
   {
