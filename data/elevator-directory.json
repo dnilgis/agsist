@@ -1,18 +1,18 @@
 {
- "generated": "2026-09-03T14:57:26Z",
+ "generated": "2026-09-03T18:31:07Z",
  "from": "bids-full.json",
  "complete": false,
  "note": "Directory only: who operates a facility and where. No prices, no basis, no symbols, no delivery windows.",
  "counts": {
   "facilities": 1801,
-  "states": 28,
+  "states": 27,
   "with_address": 0,
   "with_coords": 0,
   "with_url": 0,
   "with_phone": 1801,
   "saturated_zips": 0,
   "failed_zips": 0,
-  "rows_read": 17655
+  "rows_read": 17669
  },
  "saturated": [],
  "failed": [],
@@ -87,6 +87,15 @@
    "state": "CO",
    "zip": "80650",
    "phone": " 970-381-4402",
+   "source": "barchart"
+  },
+  {
+   "facility": "Roggen Farmers Elevator Association",
+   "branch": "Roggen Elevator - Main Office",
+   "city": "Roggen",
+   "state": "CO",
+   "zip": "80652",
+   "phone": "(303) 849-5506",
    "source": "barchart"
   },
   {
@@ -4248,15 +4257,6 @@
    "source": "barchart"
   },
   {
-   "facility": "Alto Ingredients, Inc.",
-   "branch": "Pekin, IL",
-   "city": "Pekin",
-   "state": "IL",
-   "zip": "61554",
-   "phone": "(916) 403-2123",
-   "source": "barchart"
-  },
-  {
    "facility": "Assumption Coop",
    "branch": "Assumption Facility",
    "city": "Assumption",
@@ -6648,15 +6648,6 @@
    "state": "IN",
    "zip": "47948",
    "phone": "219-233-5975",
-   "source": "barchart"
-  },
-  {
-   "facility": "Iroquois Bio-Energy",
-   "branch": "IBEC",
-   "city": "Rensselaer",
-   "state": "IN",
-   "zip": "47978",
-   "phone": "(219) 866-5990",
    "source": "barchart"
   },
   {
@@ -11223,15 +11214,6 @@
    "source": "barchart"
   },
   {
-   "facility": "Smithfield Grain - West",
-   "branch": "Nevada, MO",
-   "city": "Nevada",
-   "state": "MO",
-   "zip": "64772",
-   "phone": "417-667-3397",
-   "source": "barchart"
-  },
-  {
    "facility": "Spring River MFA Agri Services",
    "branch": "Lamar MFA",
    "city": "Lamar",
@@ -11610,6 +11592,24 @@
    "source": "barchart"
   },
   {
+   "facility": "Dakota Midland Grain",
+   "branch": "Surrey",
+   "city": "Norwich",
+   "state": "ND",
+   "zip": "58768",
+   "phone": "701-728-6430",
+   "source": "barchart"
+  },
+  {
+   "facility": "Dakota Midland Grain",
+   "branch": "Voltaire",
+   "city": "Volitaire",
+   "state": "ND",
+   "zip": "58792",
+   "phone": "701-338-2530",
+   "source": "barchart"
+  },
+  {
    "facility": "Embden Grain Company",
    "branch": "Embden Grain Co.",
    "city": "Embden",
@@ -11670,15 +11670,6 @@
    "state": "ND",
    "zip": "58048",
    "phone": "701-874-2112",
-   "source": "barchart"
-  },
-  {
-   "facility": "Iroquois Bio-Energy",
-   "branch": "Blue Flint",
-   "city": "Underwood",
-   "state": "ND",
-   "zip": "58576",
-   "phone": "701-442-7500",
    "source": "barchart"
   },
   {
@@ -13221,6 +13212,15 @@
    "source": "barchart"
   },
   {
+   "facility": "Buckley Bros",
+   "branch": "Buckley Brothers Inc",
+   "city": "Wilmington",
+   "state": "OH",
+   "zip": "45177",
+   "phone": "(937) 383-2040  ",
+   "source": "barchart"
+  },
+  {
    "facility": "Cargill US",
    "branch": "Bloomingburg, CAH",
    "city": "Bloomingburg",
@@ -14554,15 +14554,6 @@
    "country": "CA"
   },
   {
-   "facility": "Columbia Grain",
-   "branch": "All Washington/Idaho Cash Bids",
-   "city": "Portland",
-   "state": "OR",
-   "zip": "97201",
-   "phone": "N/A",
-   "source": "barchart"
-  },
-  {
    "facility": "AGP",
    "branch": "AGP Aberdeen, SD",
    "city": "Aberdeen",
@@ -15379,6 +15370,15 @@
    "state": "TX",
    "zip": "79086",
    "phone": "(806) 948-4121",
+   "source": "barchart"
+  },
+  {
+   "facility": "Smithfield Grain - East",
+   "branch": "Petersburg, VA",
+   "city": "Petersburg",
+   "state": "VA",
+   "zip": "23805",
+   "phone": "804-733-5750",
    "source": "barchart"
   },
   {
