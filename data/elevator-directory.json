@@ -1,5 +1,5 @@
 {
- "generated": "2026-09-02T23:31:57Z",
+ "generated": "2026-09-03T14:57:26Z",
  "from": "bids-full.json",
  "complete": false,
  "note": "Directory only: who operates a facility and where. No prices, no basis, no symbols, no delivery windows.",
@@ -12,7 +12,7 @@
   "with_phone": 1801,
   "saturated_zips": 0,
   "failed_zips": 0,
-  "rows_read": 17667
+  "rows_read": 17655
  },
  "saturated": [],
  "failed": [],
@@ -6651,6 +6651,15 @@
    "source": "barchart"
   },
   {
+   "facility": "Iroquois Bio-Energy",
+   "branch": "IBEC",
+   "city": "Rensselaer",
+   "state": "IN",
+   "zip": "47978",
+   "phone": "(219) 866-5990",
+   "source": "barchart"
+  },
+  {
    "facility": "Kentland Elevator & Supply Inc.",
    "branch": "Kentland",
    "city": "Kentland ",
@@ -8182,20 +8191,20 @@
   },
   {
    "facility": "Farmers Cooperative Equity Company",
-   "branch": "St. Leo",
-   "city": "Nashville",
-   "state": "KS",
-   "zip": "67112",
-   "phone": "620-246-5262",
-   "source": "barchart"
-  },
-  {
-   "facility": "Farmers Cooperative Equity Company",
    "branch": "Nashville",
    "city": "Nashville",
    "state": "KS",
    "zip": "67112",
    "phone": "620-246-5226",
+   "source": "barchart"
+  },
+  {
+   "facility": "Farmers Cooperative Equity Company",
+   "branch": "St. Leo",
+   "city": "Nashville",
+   "state": "KS",
+   "zip": "67112",
+   "phone": "620-246-5262",
    "source": "barchart"
   },
   {
@@ -8862,6 +8871,15 @@
    "state": "KS",
    "zip": "67137",
    "phone": "620-736-2011",
+   "source": "barchart"
+  },
+  {
+   "facility": "Skyland Grain",
+   "branch": "Cunningham Area",
+   "city": "Cunningham",
+   "state": "KS",
+   "zip": "67035",
+   "phone": "(620) 298-2011",
    "source": "barchart"
   },
   {
@@ -11592,24 +11610,6 @@
    "source": "barchart"
   },
   {
-   "facility": "Dakota Midland Grain",
-   "branch": "Surrey",
-   "city": "Norwich",
-   "state": "ND",
-   "zip": "58768",
-   "phone": "701-728-6430",
-   "source": "barchart"
-  },
-  {
-   "facility": "Dakota Midland Grain",
-   "branch": "Voltaire",
-   "city": "Volitaire",
-   "state": "ND",
-   "zip": "58792",
-   "phone": "701-338-2530",
-   "source": "barchart"
-  },
-  {
    "facility": "Embden Grain Company",
    "branch": "Embden Grain Co.",
    "city": "Embden",
@@ -11670,6 +11670,15 @@
    "state": "ND",
    "zip": "58048",
    "phone": "701-874-2112",
+   "source": "barchart"
+  },
+  {
+   "facility": "Iroquois Bio-Energy",
+   "branch": "Blue Flint",
+   "city": "Underwood",
+   "state": "ND",
+   "zip": "58576",
+   "phone": "701-442-7500",
    "source": "barchart"
   },
   {
@@ -13209,15 +13218,6 @@
    "state": "OH",
    "zip": "45807",
    "phone": "419-339-3457",
-   "source": "barchart"
-  },
-  {
-   "facility": "Buckley Bros",
-   "branch": "Buckley Brothers Inc",
-   "city": "Wilmington",
-   "state": "OH",
-   "zip": "45177",
-   "phone": "(937) 383-2040  ",
    "source": "barchart"
   },
   {
