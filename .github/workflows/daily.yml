@@ -199,9 +199,48 @@ jobs:
             # THE FRIDAY POST-CLOSE REGENERATION NEVER WAITS EITHER. It exists
             # to overwrite the morning file with settled prices, so "already
             # published" is its precondition, not its reason to stop.
-            if [ "$H" -ge 14 ] && [ "$DOW" = "5" ] && [ "$H" -lt 18 ]; then
+            #
+            # AND IT IS ONE FIRE, NOT A FOUR-HOUR OPEN DOOR.
+            #
+            # This branch used to ask only what TIME it was. Friday, after two,
+            # before six — regenerate and email. It never asked what had woken
+            # the run, and the thing that wakes this workflow most often is
+            # prices.yml's heartbeat, sent after EVERY successful price push,
+            # about every thirty minutes through the trading day.
+            #
+            # So on Friday 2026-09-04 issue #177 was generated and emailed to
+            # the live list SEVEN TIMES between 2:23 and 5:04 PM Central, each
+            # with a different headline as the prices moved under it:
+            #
+            #     2:23  WASDE ARRIVES 11 AM
+            #     2:54  WASDE SETUP ARRIVES FRIDAY
+            #     3:24  WHEAT DROPS 3.4%; WASDE SETUP TAKES SHAPE
+            #     3:54  WHEAT BREAKS 3%; WASDE CLOCK TICKING
+            #     4:25  WHEAT BREAKS 3.4%; SEPTEMBER WASDE LOOMS
+            #     4:55  WHEAT DROPS 3.4%; WASDE CLOCK TICKING
+            #     5:04  WHEAT BREAKS 3.4%; SEPTEMBER WASDE SETUP BEGINS
+            #
+            # Every one of those is a heartbeat that walked through a door held
+            # open for the 20:00 UTC Friday cron. There is exactly ONE
+            # scheduled fire inside this window — `0 20 * * 5`, 3:00 PM CDT —
+            # and the three morning crons are all before 14:00 Central, so
+            # requiring `schedule` gives one regeneration and no more.
+            #
+            # If that one cron is dropped, Friday keeps its morning briefing
+            # and gets no post-close refresh. That is the right trade: a
+            # missed refresh costs a reader nothing they can see, and seven
+            # emails costs the list its patience.
+            if [ "$EVENT" = "schedule" ] && [ "$H" -ge 14 ] && [ "$DOW" = "5" ] && [ "$H" -lt 18 ]; then
               say "GENERATING: Friday post-close regeneration, $DAY"
               decide 0; exit 0
+            fi
+
+            # A HEARTBEAT IN THAT WINDOW IS A PRICE COMMIT, NOT A REGENERATION.
+            # Named separately from the general late-arrival skip below so the
+            # log says which rule stopped it.
+            if [ "$EVENT" = "heartbeat" ] && [ "$H" -ge 14 ]; then
+              say "SKIPPING: heartbeat at $(date +%H:%M) Central — the post-close regeneration is the Friday cron's job, not every price push's"
+              decide 1; exit 0
             fi
 
             # A DELAYED MORNING FIRE IS NOT A REGENERATION. Before this guard,
