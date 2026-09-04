@@ -1,18 +1,18 @@
 {
- "generated": "2026-09-04T18:17:14Z",
+ "generated": "2026-09-04T20:59:15Z",
  "from": "bids-full.json",
  "complete": false,
  "note": "Directory only: who operates a facility and where. No prices, no basis, no symbols, no delivery windows.",
  "counts": {
-  "facilities": 1801,
+  "facilities": 1806,
   "states": 28,
   "with_address": 0,
   "with_coords": 0,
   "with_url": 0,
-  "with_phone": 1801,
+  "with_phone": 1806,
   "saturated_zips": 0,
   "failed_zips": 0,
-  "rows_read": 17792
+  "rows_read": 17867
  },
  "saturated": [],
  "failed": [],
@@ -5724,6 +5724,15 @@
    "source": "barchart"
   },
   {
+   "facility": "Sorells Farm Supply",
+   "branch": "Raymond",
+   "city": "Raymond",
+   "state": "IL",
+   "zip": "62560",
+   "phone": "217-229-3412",
+   "source": "barchart"
+  },
+  {
    "facility": "Stanford Grain Company",
    "branch": "Stanford",
    "city": "Stanford",
@@ -6642,6 +6651,15 @@
    "source": "barchart"
   },
   {
+   "facility": "Iroquois Bio-Energy",
+   "branch": "IBEC",
+   "city": "Rensselaer",
+   "state": "IN",
+   "zip": "47978",
+   "phone": "(219) 866-5990",
+   "source": "barchart"
+  },
+  {
    "facility": "Kentland Elevator & Supply Inc.",
    "branch": "Kentland",
    "city": "Kentland ",
@@ -7452,6 +7470,15 @@
    "source": "barchart"
   },
   {
+   "facility": "Cardinal Ethanol",
+   "branch": "Cardinal Colwich",
+   "city": "Colwich",
+   "state": "KS",
+   "zip": "67030",
+   "phone": "(316) 789-2500",
+   "source": "barchart"
+  },
+  {
    "facility": "Cargill US",
    "branch": "Hutchinson East, CAH",
    "city": "Hutchinson",
@@ -8173,20 +8200,20 @@
   },
   {
    "facility": "Farmers Cooperative Equity Company",
-   "branch": "St. Leo",
-   "city": "Nashville",
-   "state": "KS",
-   "zip": "67112",
-   "phone": "620-246-5262",
-   "source": "barchart"
-  },
-  {
-   "facility": "Farmers Cooperative Equity Company",
    "branch": "Nashville",
    "city": "Nashville",
    "state": "KS",
    "zip": "67112",
    "phone": "620-246-5226",
+   "source": "barchart"
+  },
+  {
+   "facility": "Farmers Cooperative Equity Company",
+   "branch": "St. Leo",
+   "city": "Nashville",
+   "state": "KS",
+   "zip": "67112",
+   "phone": "620-246-5262",
    "source": "barchart"
   },
   {
@@ -11661,6 +11688,15 @@
    "state": "ND",
    "zip": "58048",
    "phone": "701-874-2112",
+   "source": "barchart"
+  },
+  {
+   "facility": "Iroquois Bio-Energy",
+   "branch": "Blue Flint",
+   "city": "Underwood",
+   "state": "ND",
+   "zip": "58576",
+   "phone": "701-442-7500",
    "source": "barchart"
   },
   {
@@ -16171,6 +16207,15 @@
    "state": "WI",
    "zip": "54725",
    "phone": "7158746593",
+   "source": "barchart"
+  },
+  {
+   "facility": "Wheaton Grain",
+   "branch": "Chippewa Falls",
+   "city": "Chippewa Falls",
+   "state": "WI",
+   "zip": "54729",
+   "phone": "715-874-659",
    "source": "barchart"
   },
   {
