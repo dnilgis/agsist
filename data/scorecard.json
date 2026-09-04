@@ -1,5 +1,5 @@
 {
- "updated": "2026-09-04T21:55:03+00:00",
+ "updated": "2026-09-04T22:04:52+00:00",
  "total": 105,
  "played_out": 37,
  "didnt": 63,
@@ -99,11 +99,11 @@
   {
    "made": "2026-09-03",
    "judged": "2026-09-04",
-   "call": "Called corn down toward $4.99; corn closed at $5.12, off just 3.5 cents, nowhere near the level.",
+   "call": "Called corn down toward $4.99. Corn closed $5.12 today, up from yesterday's $5.075 settle -- nowhere near the target.",
    "outcome": "didnt",
    "method": "deterministic",
    "mismatch": false,
-   "note": "Direction was right, magnitude was miles off; corn drifted but the harvest-pressure breakdown didn't materialize.",
+   "note": "Miss. Harvest pressure is real but hasn't been enough; $4.99 needs a weather-free WASDE confirmation the funds don't have yet.",
    "instrument": "corn",
    "direction": "down",
    "level": 4.99,
