@@ -1,5 +1,5 @@
 {
- "updated": "2026-09-04T20:24:17+00:00",
+ "updated": "2026-09-04T21:25:26+00:00",
  "total": 105,
  "played_out": 37,
  "didnt": 63,
@@ -99,11 +99,11 @@
   {
    "made": "2026-09-03",
    "judged": "2026-09-04",
-   "call": "Called corn down toward $4.99. December corn settled $5.37 today, off 3.5 cents but nowhere near the $4.99 line.",
+   "call": "Called corn down toward $4.99; December corn closed $5.37 today, nowhere near that level.",
    "outcome": "didnt",
    "method": "deterministic",
    "mismatch": false,
-   "note": "Miss, plain and simple. The call's level was never in range.",
+   "note": "Corn fell but harvest pressure is pulling it slowly; the $4.99 target was too far in one session.",
    "instrument": "corn",
    "direction": "down",
    "level": 4.99,
