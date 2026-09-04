@@ -1,18 +1,18 @@
 {
- "generated": "2026-09-04T14:54:44Z",
+ "generated": "2026-09-04T18:17:14Z",
  "from": "bids-full.json",
  "complete": false,
  "note": "Directory only: who operates a facility and where. No prices, no basis, no symbols, no delivery windows.",
  "counts": {
-  "facilities": 1802,
+  "facilities": 1801,
   "states": 28,
   "with_address": 0,
   "with_coords": 0,
   "with_url": 0,
-  "with_phone": 1802,
+  "with_phone": 1801,
   "saturated_zips": 0,
   "failed_zips": 0,
-  "rows_read": 17770
+  "rows_read": 17792
  },
  "saturated": [],
  "failed": [],
@@ -5724,15 +5724,6 @@
    "source": "barchart"
   },
   {
-   "facility": "Sorells Farm Supply",
-   "branch": "Raymond",
-   "city": "Raymond",
-   "state": "IL",
-   "zip": "62560",
-   "phone": "217-229-3412",
-   "source": "barchart"
-  },
-  {
    "facility": "Stanford Grain Company",
    "branch": "Stanford",
    "city": "Stanford",
@@ -8182,20 +8173,20 @@
   },
   {
    "facility": "Farmers Cooperative Equity Company",
-   "branch": "Nashville",
-   "city": "Nashville",
-   "state": "KS",
-   "zip": "67112",
-   "phone": "620-246-5226",
-   "source": "barchart"
-  },
-  {
-   "facility": "Farmers Cooperative Equity Company",
    "branch": "St. Leo",
    "city": "Nashville",
    "state": "KS",
    "zip": "67112",
    "phone": "620-246-5262",
+   "source": "barchart"
+  },
+  {
+   "facility": "Farmers Cooperative Equity Company",
+   "branch": "Nashville",
+   "city": "Nashville",
+   "state": "KS",
+   "zip": "67112",
+   "phone": "620-246-5226",
    "source": "barchart"
   },
   {
@@ -8862,15 +8853,6 @@
    "state": "KS",
    "zip": "67137",
    "phone": "620-736-2011",
-   "source": "barchart"
-  },
-  {
-   "facility": "Skyland Grain",
-   "branch": "Cunningham Area",
-   "city": "Cunningham",
-   "state": "KS",
-   "zip": "67035",
-   "phone": "(620) 298-2011",
    "source": "barchart"
   },
   {
@@ -11256,6 +11238,15 @@
    "state": "MT",
    "zip": "59420",
    "phone": "406-735-5336",
+   "source": "barchart"
+  },
+  {
+   "facility": "Columbia Grain",
+   "branch": "Fort Benton, MT",
+   "city": "Fort Benton",
+   "state": "MT",
+   "zip": "59442",
+   "phone": "406-734-5336",
    "source": "barchart"
   },
   {
