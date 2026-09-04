@@ -321,6 +321,48 @@ def main():
           "the heartbeat after the briefing published skips",
           "otherwise every price commit would republish the day")
 
+    # ── THE FRIDAY AFTERNOON HOLE, MEASURED THE HARD WAY ──────────────────
+    #
+    # The afternoon-heartbeat case below was tested on a TUESDAY and passed for
+    # a year. The Friday post-close branch sits above the afternoon skip and
+    # asked only what time it was — Friday, after two, before six, regenerate
+    # and email — never what had woken the run.
+    #
+    # prices.yml sends a heartbeat after every successful price push, about
+    # every thirty minutes through the trading day. So on Friday 2026-09-04
+    # issue #177 went to the live list SEVEN TIMES between 2:23 and 5:04 PM
+    # Central, each with a different headline as the market moved under it.
+    #
+    # Sig found it in his own inbox. No test did.
+    for hhmm in ("14:23", "14:54", "15:24", "15:54", "16:25", "16:55", "17:04"):
+        skip, _, out = simulate(gate, event="workflow_dispatch", heartbeat=True,
+                                start=hhmm, dow=5, published=True)
+        check(skip == "1",
+              "a Friday %s heartbeat does NOT regenerate and re-email" % hhmm,
+              "this is one of the seven that went out on 2026-09-04")
+        # AND IT SAYS WHICH RULE STOPPED IT. Behaviourally this is covered by
+        # the general afternoon skip below it, so deleting the named heartbeat
+        # branch changes no outcome — which is precisely why the message is
+        # what has to be pinned. When this recurs, "a delayed fire, not a
+        # regeneration" sends the next person to the cron; "the post-close
+        # regeneration is the Friday cron's job" sends them to the price loop.
+        check("the Friday cron's job" in out,
+              "…and the log names the price loop, not a delayed cron",
+              "said instead: %r" % out.strip().splitlines()[-1][:90] if out.strip() else "(nothing)")
+
+    # AND THE REGENERATION ITSELF STILL HAPPENS — one scheduled fire, which is
+    # the only thing inside that window: `0 20 * * 5`, 3:00 PM CDT. The three
+    # morning crons are all before 14:00 Central.
+    skip, _, _ = simulate(gate, event="schedule", start="15:00", dow=5, published=True)
+    check(skip == "0",
+          "the Friday post-close regeneration still runs from its cron")
+
+    # A PERSON ON A FRIDAY AFTERNOON is still a person, and a manual run
+    # defaults to send_email=false anyway.
+    skip, _, _ = simulate(gate, event="workflow_dispatch", start="15:30", dow=5,
+                          published=True)
+    check(skip == "0", "a person dispatching on Friday afternoon still gets one")
+
     skip, _, _ = simulate(gate, event="workflow_dispatch", heartbeat=True,
                           start="16:00", dow=2)
     check(skip == "1", "an afternoon heartbeat is refused like an afternoon fire")
