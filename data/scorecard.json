@@ -1,18 +1,18 @@
 {
- "updated": "2026-09-03T11:12:54+00:00",
- "total": 104,
+ "updated": "2026-09-04T11:16:25+00:00",
+ "total": 105,
  "played_out": 37,
- "didnt": 62,
+ "didnt": 63,
  "pending": 5,
- "hit_rate": 37.4,
+ "hit_rate": 37.0,
  "by_method": {
   "deterministic": {
    "played": 11,
-   "missed": 52,
-   "graded": 63,
-   "hit_rate": 17.5,
+   "missed": 53,
+   "graded": 64,
+   "hit_rate": 17.2,
    "first": "2026-06-24",
-   "last": "2026-09-03"
+   "last": "2026-09-04"
   },
   "self_reported": {
    "played": 26,
@@ -34,17 +34,17 @@
   },
   "v2": {
    "played": 7,
-   "missed": 12,
-   "graded": 19,
-   "hit_rate": 36.8,
+   "missed": 13,
+   "graded": 20,
+   "hit_rate": 35.0,
    "first": "2026-08-12",
-   "last": "2026-09-03"
+   "last": "2026-09-04"
   }
  },
  "direction_only": {
   "right_way": 26,
-  "graded": 63,
-  "rate": 41.3
+  "graded": 64,
+  "rate": 40.6
  },
  "by_instrument": {
   "wheat": {
@@ -54,8 +54,8 @@
   },
   "corn": {
    "played": 2,
-   "graded": 20,
-   "hit_rate": 10.0
+   "graded": 21,
+   "hit_rate": 9.5
   },
   "beans": {
    "played": 6,
@@ -96,6 +96,22 @@
  "mismatched": 23,
  "current_streak": 0,
  "records": [
+  {
+   "made": "2026-09-03",
+   "judged": "2026-09-04",
+   "call": "Called corn down, toward below $4.99. December corn was at $5.30 yesterday and closed today at $5.40, moving against the call.",
+   "outcome": "didnt",
+   "method": "deterministic",
+   "mismatch": false,
+   "note": "Corn softened but held well above the target; harvest pressure is real but the board isn't breaking the way the call needed.",
+   "instrument": "corn",
+   "direction": "down",
+   "level": 4.99,
+   "p0": 5.075,
+   "p1": 5.1525,
+   "design": "v2",
+   "direction_ok": false
+  },
   {
    "made": "2026-09-02",
    "judged": "2026-09-03",

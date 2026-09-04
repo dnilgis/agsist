@@ -1,6 +1,18 @@
 {
   "briefings": [
     {
+      "date": "2026-09-04",
+      "date_display": "Friday, September 4, 2026",
+      "headline": "BEANS HIT 52-WEEK HIGH; CATTLE RECOVER",
+      "teaser": "Beans at a 52-week high, corn sliding into harvest, cattle running on tight supply. Friday's story is about who has real demand behind them.",
+      "market_mood": "mixed",
+      "surprise_count": 3,
+      "sections": 4,
+      "url": "/daily/2026-09-04",
+      "market_closed": false,
+      "yc_outcome": "didnt"
+    },
+    {
       "date": "2026-09-03",
       "date_display": "Thursday, September 3, 2026",
       "headline": "GRAINS BREAK HARD; EXPORT SALES ARRIVE AT 7:30",
@@ -2007,6 +2019,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-09-03T11:12:52.792845+00:00",
-  "count": 175
+  "updated": "2026-09-04T11:16:23.522092+00:00",
+  "count": 176
 }

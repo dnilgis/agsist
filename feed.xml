@@ -5,13 +5,26 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Thu, 03 Sep 2026 11:12:54 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 04 Sep 2026 11:16:25 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/agsist.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>BEANS HIT 52-WEEK HIGH; CATTLE RECOVER</title>
+      <link>https://agsist.com/daily/2026-09-04</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-09-04</guid>
+      <pubDate>Fri, 04 Sep 2026 05:00:00 -0600</pubDate>
+      <description>Soybeans hit a 52-week high at $13.08 today while December corn gave back nearly all of Wednesday's bounce, closing at $5.40. The split tells you something: the funds are done with grains going into harvest, but the soy demand story from China's $17 billion annual US ag purchase commitment is still printing sales. Cattle ran hard, up nearly 2%, with feeders right behind them.
+Black Sea peace talks punished corn and wheat, but soy demand held its own and cattle ran hard on tight-supply fundamentals.
+• BEANS LEAD; CORN FADES
+• WHEAT DROPS; PEACE TALK PREMIUM LEAKS OUT
+• CATTLE RUN ON TIGHT SUPPLY
+  → If you have fed cattle to price, lock something at $214 before the DOJ headlines create packer-side noise that moves the basis.
+Read more: https://agsist.com/daily/2026-09-04</description>
+    </item>
     <item>
       <title>GRAINS BREAK HARD; EXPORT SALES ARRIVE AT 7:30</title>
       <link>https://agsist.com/daily/2026-09-03</link>
@@ -387,18 +400,6 @@ Pro Farmer tour wraps its bean read; weekly export sales at 7:30 AM CT are the n
 • Corn Flat; Farm Bill Markup Today
 • Cattle Firm; Feeders Hold Above $348
 Read more: https://agsist.com/daily/2026-08-06</description>
-    </item>
-    <item>
-      <title>CROP TOUR BEARS DOWN; WHEAT LEADS GRAINS HIGHER</title>
-      <link>https://agsist.com/daily/2026-08-05</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-08-05</guid>
-      <pubDate>Wed, 05 Aug 2026 05:00:00 -0600</pubDate>
-      <description>November soybeans drifted to $11.70, down 9 cents, as Pro Farmer tour scouts keep building a bearish field picture day two. Corn gave back another quarter cent to close Dec at $4.61. Wheat went the other direction, up 6 cents to $6.43, and crude recovered 2.4% to $76.39. The tour is doing exactly what it was supposed to do: it is replacing the weather premium with yield data.
-Pro Farmer scouts in the field kept corn and beans under pressure Wednesday, but wheat found 6 cents and crude recovered hard.
-• Tour Presses Beans Lower
-• Corn Drifts; Wheat Firms
-• Cattle Rebounds; Feeders Lead
-Read more: https://agsist.com/daily/2026-08-05</description>
     </item>
   </channel>
 </rss>
