@@ -1,18 +1,18 @@
 {
-  "headline": "WHEAT BREAKS 3.4%; SEPTEMBER WASDE LOOMS",
-  "subheadline": "Black Sea peace-talk headlines hit wheat hard; soybean oil drops on the crush split; corn eases into harvest.",
-  "lead": "Wheat dropped 25 cents to $7.16 on Black Sea peace-talk headlines that pulled the geopolitical premium out of the winter crop in one session. Corn gave back another 3.5 cents to $5.37 December, a fourth losing day running as harvest pressure builds. The September WASDE next Thursday at 11 AM CT is the next real number that resets every story in this complex.",
-  "the_takeaway": "Wheat's geopolitical premium left the building today; hold new grain and wait for Thursday's WASDE.",
-  "teaser": "Wheat dropped 25 cents on Black Sea peace talk; corn slips into harvest. Thursday's WASDE decides what comes next.",
+  "headline": "WHEAT DROPS 3.4%; WASDE CLOCK TICKING",
+  "subheadline": "Chicago wheat had its biggest single-session drop in three weeks; corn and beans eased into the Labor Day weekend with the September WASDE seven days out.",
+  "lead": "Chicago wheat fell 25 cents to $7.16 on Friday, the sharpest drop in the complex this session, with the FAO food price index rising on Black Sea logistics stress but the board pricing in something else: pre-holiday liquidation ahead of a WASDE that could reset everything. Corn gave back 3.5 cents. Beans slipped 14 cents. The funds are stepping out before a three-day weekend.",
+  "the_takeaway": "Wheat's 25-cent drop is pre-WASDE fund liquidation; nothing changes until September 11.",
+  "teaser": "Wheat fell hard into the weekend; the September WASDE on the 11th is the next real price setter.",
   "one_number": {
     "value": "6%",
-    "unit": "US beef export value gain in July vs year-ago",
-    "context": "July beef exports rose 6% in value even as China's technical barriers held. Pork fell on a PRV outbreak impact in Mexico. Beef demand offshore is firming, but the gains aren't reaching the live cattle board today."
+    "unit": "year-over-year rise in US beef export value, July",
+    "context": "USDA trade data shows beef export value up 6% in July despite technical barriers to China. Pork fell on PRV headwinds. The beef number supports the cattle board's floor even as live cattle drift to $213.15."
   },
   "yesterdays_call": {
-    "summary": "Called corn down toward $4.99; December corn closed $5.37 today, nowhere near that level.",
+    "summary": "Called corn down toward $4.99; corn closed at $5.12, off just 3.5 cents, nowhere near the level.",
     "outcome": "didnt",
-    "note": "Corn fell but harvest pressure is pulling it slowly; the $4.99 target was too far in one session.",
+    "note": "Direction was right, magnitude was miles off; corn drifted but the harvest-pressure breakdown didn't materialize.",
     "computed": {
       "outcome": "didnt",
       "made": "2026-09-03",
@@ -26,92 +26,91 @@
   "todays_call": {
     "instrument": "wheat",
     "direction": "up",
-    "level": 7.28,
+    "level": 7.26,
     "design": "v2",
     "report_day": true
   },
   "sections": [
     {
-      "title": "WHEAT BREAKS ON PEACE TALKS",
-      "body": "- Chicago wheat tumbled 25 cents to **$7.16**, the biggest single-session loss in weeks, as Black Sea peace-talk headlines pulled the war premium out of the winter crop in one afternoon.\n- The move is clean: no change in US crop conditions, no fresh USDA data, just geopolitical risk deflating fast when a diplomatic signal hits a market that had been pricing conflict-driven supply disruption.\n- The FAO Food Price Index also rose in August on Black Sea trade logistics concerns, so the board was priced for tension that the headlines just partially removed.",
-      "catalyst": "Black Sea peace-talk headlines removed geopolitical supply-disruption premium from wheat.",
-      "bottom_line": "If peace talks stall or reverse, that 25-cent premium comes back just as fast.",
+      "title": "WHEAT BREAKS INTO WEEKEND",
+      "body": "- Chicago wheat tumbled 25 cents to **$7.16**, the session's biggest move in any grain, with FAO's August food price index rising on Middle East conflict and Black Sea logistics stress but the board ignoring the fundamental case and pricing pre-holiday fund exit instead.\n- Oats ran 16 cents higher, a 4.7% move, on no clean catalyst, looks like position-squaring into the weekend after three straight down sessions.\n- The next real information arrives September 11 at 11:00 AM CT; until then, wheat is a range defined by whoever comes back from the long weekend with a fresh view.",
+      "catalyst": "FAO Food Price Index rose in August on Black Sea trade logistics and Middle East conflict; board sold anyway.",
+      "bottom_line": "Pre-WASDE, pre-holiday liquidation. The fundamental case for wheat is intact; the fund case is not.",
       "conviction_level": "medium",
       "overnight_surprise": true,
-      "vs_yesterday": "Wheat: broke lower again, now down two sessions on geopolitical deflation."
+      "vs_yesterday": "Wheat: yesterday's break deepened; two-day loss now tops 35 cents."
     },
     {
-      "title": "CORN GRINDS LOWER INTO HARVEST",
-      "body": "- December corn settled at **$5.37**, off 3.5 cents, a fourth straight losing session as combines roll in the early Belt and harvest-pressure selling builds.\n- Thursday's export sales didn't provide cover: the number wasn't strong enough to offset the weight of fresh bushels hitting country elevators.\n- CPKC just reported a record start to its crop year, meaning rail movement is moving early volume fast, which keeps basis from firming the way it might if logistics were tight.",
-      "catalyst": "Harvest pressure and record CPKC rail crop-year start keeping new-crop supply moving briskly.",
-      "bottom_line": "Thursday's WASDE is the next real floor test; without a yield surprise, $5.37 is a ceiling, not a floor.",
+      "index": 1,
+      "title": "GRAINS EASE; BEANS HOLD BETTER",
+      "icon": "",
+      "body": "- December corn slipped 3.5 cents to **$5.37**, four sessions in a row lower; harvest pressure is doing what harvest pressure does, and there is no fresh export sales number to interrupt it.\n- November beans gave back a nickel to **$13.10**, still the strongest leg in the complex; the May 18 China purchase commitment (roughly $17 billion through 2028) has kept floor bids intact, but Friday offered no fresh buyer.\n- Soybean meal held flat while soybean oil dropped 3.3%, widening the meal/oil spread -- protein demand is the engine, fat is the passenger.",
+      "bottom_line": "Corn is pricing harvest. Beans are pricing demand. They are not the same story and should not trade that way into the WASDE.",
       "conviction_level": "medium",
       "overnight_surprise": false,
-      "farmer_action": "Unpriced December corn above $5.37: the September WASDE on the 11th is your window. Don't assume the price holds there if USDA confirms a big crop."
-    },
-    {
-      "index": 2,
-      "title": "SOYBEAN OIL LEADS CRUSH SPLIT",
-      "icon": "",
-      "body": "- Nearby soybeans eased to **$12.94**, off 14 cents, but the story is soybean oil dropping 3.3% while meal held flat -- a sharp reversal of the oil-share narrative that ran all week.\n- When oil falls and meal holds, crush economics shift toward meal volume; biofuel-linked oil demand is getting second-guessed after the EPA small-refinery exemption headlines earlier this week.\n- Funds are still long November beans at **$13.10**; next Thursday's export sales number is the trigger -- a miss below 300K MT is the first real test of that position.",
-      "bottom_line": "Meal is carrying the beans right now; if oil can't recover its share, the crush bid for soybeans gets softer heading into WASDE.",
-      "conviction_level": "medium",
-      "overnight_surprise": true,
       "farmer_action": ""
     },
     {
-      "title": "ENERGY HOLDS; DIESEL CRACK STORY CONTINUES",
-      "body": "- WTI crude eased to **$91.22**, off less than a dollar, a quiet session by crude standards even as Brent is being pushed toward $95 by diesel crack spreads at elevated levels.\n- The story is refined products, not crude: middle distillate tightness is running diesel margins wide, which is the input-cost story for fall fieldwork and harvest fuel budgets.\n- The Iran-Hormuz cycle, a July re-escalation that has since cooled with the premium deflating into August, is no longer the driver; diesel cracks are.",
-      "catalyst": "Record diesel crack spreads and tightening middle distillate supplies pushing Brent toward $95, per EIA and oilprice.com.",
-      "bottom_line": "Budget fall harvest fuel now; diesel at wide cracks is a cost the September crop budget doesn't have room for.",
-      "conviction_level": "medium",
+      "title": "CATTLE HOLD; BEEF EXPORTS SUPPORT FLOOR",
+      "body": "- Live cattle slipped to **$213.15**, off 0.5%, with the Cargill multi-plant lockout (ongoing since May 19, still removing roughly 6,000 head of daily processing capacity) keeping packer margins as the binding constraint, not cattle supply.\n- Beef export value rose 6% in July year-over-year per USDA trade data, a number that argues the floor here is real even as cattle sit at the bottom 16% of their 52-week range.\n- Trump signed new executive orders Friday aimed at supporting ranchers and expanding market access; separately, a House bill was introduced to nullify beef import authority, two political signals that the cattle producer has Washington's attention, for what that's worth at settlement.",
+      "catalyst": "Beef export value +6% in July (USDA); Trump executive orders on cattle market access signed Friday.",
+      "bottom_line": "Export data says the demand floor is real. The processing constraint is still the ceiling.",
+      "conviction_level": "low",
+      "overnight_surprise": false
+    },
+    {
+      "title": "ENERGY: DIESEL CRACKS DRIVE CRUDE",
+      "body": "- WTI crude eased to **$91.22**, off less than a dollar, as Brent pushed toward $95 on record diesel crack spreads and tightening middle distillate supplies, not on crude fundamentals.\n- The Iran-Hormuz cycle, a July re-escalation that has since cooled with the premium deflating again into August, is not the driver today; refined products are.\n- Fall fieldwork diesel costs are the input story heading into harvest, not crude.",
+      "catalyst": "Record diesel crack spreads and tightening middle distillate supplies pushing Brent toward $95 (OilPrice.com).",
+      "bottom_line": "Crude is a sideshow. Diesel crack spreads are the harvest-cost number to watch.",
+      "conviction_level": "low",
       "overnight_surprise": false
     }
   ],
   "outside_the_pit": [
     {
-      "title": "Congress Bill Seeks to Reverse Trump Beef Import Order",
-      "body": "Rep. Figures introduced the Protecting American Beef Producers Act to nullify the Trump beef import proclamation. If it advances, it removes one supply-pressure headwind that has been sitting on cattle prices since the import headlines hit last week.",
+      "title": "USDA Piloting Satellites and Tech for Crop Yield Estimates",
+      "body": "USDA Secretary Rollins confirmed Tuesday the agency is launching a pilot to replace survey-based acreage and yield estimates with satellite and remote-sensing data. For producers, this means future WASDE numbers could carry different error characteristics than the farmer-survey model built over decades.",
       "tag": "POLICY"
     },
     {
-      "title": "EPA and Army Reopen WOTUS Comment Period on New Options",
-      "body": "A supplemental proposed rule on the Waters of the US definition is open for input, with agencies evaluating new regulatory options. For producers with drainage tile, wetland easements, or field-border water features, the final rule sets the compliance map for the next decade.",
-      "tag": "POLICY"
+      "title": "Screwworm Port Reopening: CBP Now Active in Response",
+      "body": "US Customs and Border Protection confirmed Friday it is facilitating sterile-fly movement and training personnel ahead of the phased reopening at Douglas, AZ set for August 24. The screwworm-driven closure of Mexican feeder cattle imports remains the structural story under the historic feeder rally; the Aug 24 date is the next real tell.",
+      "tag": "DISEASE"
     }
   ],
   "weekly_thread": {
     "question": "Will today's Crop Progress rating confirm the August yield cuts or add a weather premium back into corn and beans?",
     "day": 5,
-    "status_text": "The week's crop ratings held steady without a weather surprise, so no premium was added; the September WASDE at 11 AM CT Thursday delivers the definitive answer."
+    "status_text": "The September WASDE on September 11 at 11:00 AM CT is the real resolution; Monday's Crop Progress set the table, but the board is waiting for the report."
   },
   "the_more_you_know": {
-    "title": "Black Sea Peace Talks and the Wheat Premium: How Fast It Unwinds",
-    "body": "Wheat carries a geopolitical risk premium when conflict disrupts Black Sea shipping lanes. When diplomatic signals arrive, that premium doesn't bleed out gradually, it reprices in a session, exactly as today's 25-cent drop shows. The floor below that premium is US and EU supply fundamentals, currently not supportive of $7.16 without the war risk."
+    "title": "The Diesel Crack Spread: What Farmers Actually Pay",
+    "body": "Diesel rack prices track refining margins more than crude. With crack spreads at record levels heading into harvest, the per-gallon cost at the co-op is running well above what the WTI price alone implies. A $91 crude number is not a $91 farm input story right now."
   },
   "watch_list": [
     {
-      "time": "Friday Sep 11, 7:30 AM CT",
-      "desc": "Weekly export sales: soybeans under 300K MT keeps funds in the driver's seat and the November contract vulnerable below $13.00."
+      "time": "Mon Sep 7",
+      "desc": "Labor Day: all markets closed. No USDA Crop Progress published; next Crop Progress is Tuesday Sep 8 at 3:00 PM CT."
     },
     {
-      "time": "Friday Sep 11, 11:00 AM CT",
-      "desc": "September WASDE: corn yield above 181 bu/acre reopens the downside toward $5.20 December; a yield cut below 180 adds a weather premium back."
+      "time": "Thu Sep 10, 7:30 AM CT",
+      "desc": "Weekly export sales: beans under 300K MT keeps the chart in charge; above 400K MT gives the November contract a bid back toward $13.20."
     },
     {
-      "time": "Tuesday Sep 8, 3:00 PM CT",
-      "desc": "USDA Crop Progress: harvest pace above 10% nationally means harvest pressure continues; a slow number could provide temporary support."
+      "time": "Fri Sep 11, 11:00 AM CT",
+      "desc": "September WASDE: corn yield at or above 181 bu/acre would pressure December corn below $5.25; below 179 adds a weather premium back to the board."
     },
     {
-      "time": "Tuesday Sep 8 onward",
-      "desc": "Black Sea peace-talk follow-through: any breakdown in talks returns wheat's geopolitical premium toward $7.40; a formal agreement removes it entirely."
+      "time": "Tuesday Aug 24 (PAST) / ongoing",
+      "desc": "Douglas, AZ phased feeder import reopening: watch the feeder/live ratio at or below 1.52 as returning Mexican supply begins testing the historic feeder premium."
     }
   ],
   "daily_quote": {
     "text": "Sell down to the sleeping point.",
     "attribution": "Wall Street maxim"
   },
-  "source_summary": "CBOT, CME, NYMEX locked settlement prices; USDA WASDE Aug 12 2026; FAO Food Price Index August 2026; beefmagazine.com beef export data July 2026; world-grain.com CPKC crop-year report; oilprice.com diesel crack spread and Brent analysis; feedstuffs.com EPA WOTUS supplemental rule; agweb.com Black Sea peace-talk grain recap.",
+  "source_summary": "CME Group settlement prices; USDA Agricultural Marketing Service; FAO Food Price Index August 2026; USDA trade data (beef/pork export value July 2026); OilPrice.com (diesel crack spreads, Rosneft/China commentary, BLM Alaska permitting); FeedStuffs.com (Trump cattle executive orders, beef import bill); BeefMagazine.com (beef export value, CBP screwworm response); FarmPolicyNews Illinois (USDA satellite crop reporting); EIA crack spreads report.",
   "date": "Friday, September 4, 2026",
   "meta": {
     "market_mood": "bearish",
@@ -120,10 +119,10 @@
     "news_coverage": {
       "ok": 11,
       "total": 17,
-      "items": 67,
+      "items": 64,
       "dark": [
-        "agri-pulse.com",
-        "agproud.com",
+        "world-grain.com",
+        "agweb.com",
         "brownfieldagnews.com",
         "drovers.com",
         "dairyherd.com",
@@ -150,7 +149,7 @@
     "silver": 66.82,
     "dollar": 99.157,
     "sp500": 7718.6001,
-    "bitcoin": 79823.35156
+    "bitcoin": 79708.64062
   },
   "chart_series": {
     "corn": [
@@ -202,7 +201,7 @@
     "is_house_ad": true
   },
   "issue_number": 177,
-  "generated_at": "2026-09-04T21:25:04.263265+00:00",
+  "generated_at": "2026-09-04T21:54:40.869537+00:00",
   "generator_version": "4.6.3",
   "surprise_count": 3,
   "surprises": [
@@ -236,48 +235,48 @@
   "market_status_reason": "open",
   "critic_pass": {
     "version": "1.2",
-    "ran_at": "2026-09-04T21:25:25.349174+00:00",
+    "ran_at": "2026-09-04T21:55:02.475695+00:00",
     "threshold": 7,
     "final_scores": {
       "rule_1_lead_so_what": 8,
-      "rule_2_conviction_earned": 6,
+      "rule_2_conviction_earned": 7,
       "rule_3_tmyk_today": 8,
       "rule_4_watch_conditional": 8,
-      "rule_5_bottom_lines_synthesize": 7,
+      "rule_5_bottom_lines_synthesize": 8,
       "rule_6_quiet_days_quiet": 8,
       "rule_7_continuity": 7,
-      "rule_8_word_budgets": 5,
+      "rule_8_word_budgets": 6,
       "rule_9_voice": 7,
       "rule_10_forward_test": 7,
-      "rule_11_thread_coherence": 7,
-      "rule_12_one_fact_one_home": 3,
-      "rule_13_yc_honesty": 6,
-      "rule_14_level_coherence": 3,
-      "rule_15_one_number_coherence": 9,
+      "rule_11_thread_coherence": 5,
+      "rule_12_one_fact_one_home": 5,
+      "rule_13_yc_honesty": 8,
+      "rule_14_level_coherence": 4,
+      "rule_15_one_number_coherence": 8,
       "rule_16_markdown_not_html": 10,
       "rule_17_macro_anchoring": 8
     },
     "rewrites_applied": [
       {
         "pass": 1,
-        "target": "section[2]",
+        "target": "section[1]",
         "rule": "rule_14_level_coherence",
         "scores_before": {
           "rule_1_lead_so_what": 8,
-          "rule_2_conviction_earned": 6,
+          "rule_2_conviction_earned": 7,
           "rule_3_tmyk_today": 8,
           "rule_4_watch_conditional": 8,
-          "rule_5_bottom_lines_synthesize": 7,
+          "rule_5_bottom_lines_synthesize": 8,
           "rule_6_quiet_days_quiet": 8,
           "rule_7_continuity": 7,
-          "rule_8_word_budgets": 5,
+          "rule_8_word_budgets": 6,
           "rule_9_voice": 7,
           "rule_10_forward_test": 7,
-          "rule_11_thread_coherence": 7,
-          "rule_12_one_fact_one_home": 3,
-          "rule_13_yc_honesty": 6,
-          "rule_14_level_coherence": 3,
-          "rule_15_one_number_coherence": 9,
+          "rule_11_thread_coherence": 5,
+          "rule_12_one_fact_one_home": 5,
+          "rule_13_yc_honesty": 8,
+          "rule_14_level_coherence": 4,
+          "rule_15_one_number_coherence": 8,
           "rule_16_markdown_not_html": 10,
           "rule_17_macro_anchoring": 8
         }
