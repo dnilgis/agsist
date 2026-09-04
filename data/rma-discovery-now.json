@@ -1,6 +1,6 @@
 {
  "_note": "Derived from data/rma-prices.json. 'open' = a discovery window containing today; 'next' = one opening within 75 days. Price range is Conventional practice.",
- "updated": "2026-09-03T00:16:44Z",
+ "updated": "2026-09-04T00:12:18Z",
  "as_of": "2026-09-03",
  "crop_year": 2026,
  "open": [
@@ -15,8 +15,8 @@
     "Mississippi"
    ],
    "n_states": 2,
-   "lo": 5.18,
-   "hi": 5.18,
+   "lo": 5.2,
+   "hi": 5.2,
    "exch": [
     "CBOT"
    ],
@@ -37,8 +37,8 @@
     "Alaska"
    ],
    "n_states": 1,
-   "lo": 6.38,
-   "hi": 6.38,
+   "lo": 6.37,
+   "hi": 6.37,
    "exch": [
     "CBOT"
    ],
@@ -65,8 +65,8 @@
     "Washington"
    ],
    "n_states": 7,
-   "lo": 0.276,
-   "hi": 0.276,
+   "lo": 0.274,
+   "hi": 0.274,
    "exch": [
     "ICE"
    ],
@@ -116,8 +116,8 @@
     "Texas"
    ],
    "n_states": 3,
-   "lo": 5.46,
-   "hi": 5.46,
+   "lo": 5.45,
+   "hi": 5.45,
    "exch": [
     "CBOT"
    ],
@@ -138,8 +138,8 @@
     "Texas"
    ],
    "n_states": 1,
-   "lo": 0.92,
-   "hi": 0.92,
+   "lo": 0.9,
+   "hi": 0.9,
    "exch": [
     "ICE"
    ],
@@ -164,8 +164,8 @@
     "South Dakota"
    ],
    "n_states": 5,
-   "lo": 16.4,
-   "hi": 16.4,
+   "lo": 16.27,
+   "hi": 16.27,
    "exch": [
     "ICE"
    ],
@@ -189,8 +189,8 @@
     "Texas"
    ],
    "n_states": 4,
-   "lo": 5.45,
-   "hi": 5.45,
+   "lo": 5.44,
+   "hi": 5.44,
    "exch": [
     "CBOT"
    ],
@@ -213,8 +213,8 @@
     "Maine"
    ],
    "n_states": 3,
-   "lo": 4.48,
-   "hi": 5.77,
+   "lo": 4.46,
+   "hi": 5.73,
    "exch": [
     "CBOT"
    ],
@@ -285,8 +285,8 @@
     "Texas"
    ],
    "n_states": 1,
-   "lo": 13.18,
-   "hi": 13.18,
+   "lo": 13.14,
+   "hi": 13.14,
    "exch": [
     "CBOT"
    ],
