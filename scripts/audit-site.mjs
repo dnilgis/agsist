@@ -90,6 +90,29 @@ const rgb = (s) => { const m = (s || "").match(/[\d.]+/g); return m ? m.slice(0,
 const DEAD_TEXT = [/\bundefined\b/, /\bNaN\b/, /\bnull\b/, /\[object Object\]/,
                    /Failed to fetch/i, /Loading[.…]{1,3}$/];
 
+/* ═══════════════════════════════════════════════════════════════════════════
+ *  REQUESTS THAT FAIL ON PURPOSE
+ * ═══════════════════════════════════════════════════════════════════════════
+ *  The first live run reported three 404s as HIGH. One was real — the status
+ *  page asking agsist.com for a feed that lives on the bids site, and painting
+ *  the bid network "Unreachable" as a result. Two were deliberate: a liveness
+ *  ping to a Worker route that does not exist (a 404 IS the proof of life the
+ *  ping wants) and a planned feed that pages already fall back for.
+ *
+ *  Reported every day, those two would train everyone to skim past the block
+ *  the real one appears in.
+ *
+ *  So they are declared, with a reason, and reported as `expected` — still
+ *  printed, never fatal. An allowlist is exactly how a genuine regression gets
+ *  buried, so it stays short and every entry has to say why.
+ */
+let EXPECTED = [];
+try {
+  EXPECTED = JSON.parse(readFileSync(ROOT + "data/audit-expected.json", "utf8")).expected || [];
+} catch { /* no file, no exemptions — the strict behaviour is the safe one */ }
+const expectedFor = (url, status) =>
+  EXPECTED.find((e) => url.includes(e.match) && (!e.status || e.status === status));
+
 const findings = [];
 const add = (page, sev, kind, detail) => findings.push({ page, sev, kind, detail });
 
@@ -103,14 +126,17 @@ for (const path of PAGES) {
       userAgent: "AGSIST-audit/1.0 (+https://agsist.com; sig@farmers1st.com)" });
     const page = await ctx.newPage();
 
-    const errors = [], badRes = [], deadRes = [];
+    const errors = [], badRes = [], deadRes = [], okRes = [];
     page.on("pageerror", (e) => errors.push(String(e).split("\n")[0].slice(0, 160)));
     page.on("response", (r) => {
       const s = r.status();
       /* THE CHECK THAT WOULD HAVE CAUGHT THE MAP. Every subresource the page
          asked for, and what it got back. A 404 tile is invisible on screen
          and unmissable here. */
-      if (s >= 400) badRes.push(s + "  " + r.url().replace(BASE, "").slice(0, 110));
+      if (s < 400) return;
+      const known = expectedFor(r.url(), s);
+      if (known) { okRes.push(s + "  " + r.url().replace(BASE, "").slice(0, 90)); return; }
+      badRes.push(s + "  " + r.url().replace(BASE, "").slice(0, 110));
     });
     /* A REQUEST THAT NEVER CONNECTED IS AS BROKEN AS A 404, AND IT FIRES A
        DIFFERENT EVENT. `response` never runs for a DNS failure, a refused
@@ -149,6 +175,9 @@ for (const path of PAGES) {
     for (const r of uniqRes.slice(0, 6))
       add(path, "high", "subresource", device + ": " + r +
         (uniqRes.length > 6 ? "  (+" + (uniqRes.length - 6) + " more)" : ""));
+
+    for (const r of [...new Set(okRes)])
+      add(path, "expected", "expected-404", device + ": " + r);
 
     const uniqDead = [...new Set(deadRes.map((b) => b.replace(/\/\d+\/\d+\/\d+(@2x)?\.png$/, "/{z}/{x}/{y}.png")))];
     for (const r of uniqDead.slice(0, 4))
@@ -196,8 +225,44 @@ for (const path of PAGES) {
         if (!b.width || !b.height || b.top > 4000) continue;
         const cs = getComputedStyle(el);
         if (cs.visibility === "hidden" || cs.opacity === "0") continue;
-        let bg = cs.backgroundColor, node = el;
-        while (bg === "rgba(0, 0, 0, 0)" && node.parentElement) { node = node.parentElement; bg = getComputedStyle(node).backgroundColor; }
+        /* COMPOSITE THE ALPHA. THE FIRST RUN GOT THIS WRONG.
+           It walked up until it found a background that was not fully
+           transparent and used that — so a 5%-opacity gold tint over a dark
+           page reported as `rgba(212,162,63,0.05)`, and the contrast came out
+           1.97:1 against text that is in fact perfectly readable. Six of the
+           twelve findings on the first live run were this, including both
+           HIGHs on /hail-map.
+
+           A translucent layer is not a background; it is a layer OVER one.
+           So: walk up, compositing each translucent layer onto what is behind
+           it, until an opaque one is reached. Source-over, straight alpha. */
+        const parse = (c) => {
+          const m = (c || "").match(/[\d.]+/g);
+          if (!m) return null;
+          return [ +m[0], +m[1], +m[2], m.length > 3 ? +m[3] : 1 ];
+        };
+        const layers = [];
+        let node = el;
+        while (node) {
+          const c = parse(getComputedStyle(node).backgroundColor);
+          if (c && c[3] > 0) { layers.push(c); if (c[3] >= 1) break; }
+          node = node.parentElement;
+        }
+        /* Nothing opaque all the way up means the page background shows
+           through. Use the canvas colour the browser reports for <html>, and
+           white only as the last resort, because that is what a browser
+           paints when nothing else is set. */
+        const last = layers[layers.length - 1];
+        if (!last || last[3] < 1) layers.push([255, 255, 255, 1]);
+        /* Composite back to front. */
+        let flat = layers[layers.length - 1].slice(0, 3);
+        for (let i = layers.length - 2; i >= 0; i--) {
+          const [r, g, b, a] = layers[i];
+          flat = [ r * a + flat[0] * (1 - a),
+                   g * a + flat[1] * (1 - a),
+                   b * a + flat[2] * (1 - a) ];
+        }
+        const bg = "rgb(" + flat.map((v) => Math.round(v)).join(", ") + ")";
         const key = cs.color + "|" + bg;
         if (seen.has(key)) continue;
         seen.add(key);
@@ -218,8 +283,14 @@ for (const path of PAGES) {
         add(path, "high", "dead-text", device + ": visible \"" + measured.sample.match(d)[0] + "\"");
 
     for (const c of measured.lowContrast) {
-      const f = rgb(c.fg), b = rgb(c.bg);
+      let f = rgb(c.fg); const b = rgb(c.bg);
       if (!f || !b) continue;
+      /* Text at less than full opacity is likewise a layer over the
+         background, not a colour of its own. rgba(233,237,235,0.9) is what
+         /hail-map actually uses. */
+      const fa = (c.fg.match(/[\d.]+/g) || []);
+      const alpha = fa.length > 3 ? +fa[3] : 1;
+      if (alpha < 1) f = f.map((v, i) => v * alpha + b[i] * (1 - alpha));
       const r = contrast(f, b);
       if (r < 4.5) add(path, r < 3 ? "high" : "med", "contrast",
         device + ": " + r.toFixed(2) + ":1 on \"" + c.txt + "\" (" + c.fg + " on " + c.bg + ")");
@@ -272,7 +343,7 @@ await browser.close();
   }
 }
 
-const order = { high: 0, med: 1, low: 2 };
+const order = { high: 0, med: 1, low: 2, expected: 3 };
 findings.sort((a, b) => order[a.sev] - order[b.sev] || a.page.localeCompare(b.page));
 const counts = findings.reduce((a, f) => (a[f.sev] = (a[f.sev] || 0) + 1, a), {});
 const secs = Math.round((Date.now() - started) / 1000);
@@ -283,9 +354,10 @@ if (!findings.length) console.log("  nothing found\n");
 let last = "";
 for (const f of findings) {
   if (f.page !== last) { console.log("  " + f.page); last = f.page; }
-  console.log("    [" + f.sev.toUpperCase().padEnd(4) + "] " + f.kind.padEnd(12) + f.detail);
+  console.log("    [" + f.sev.toUpperCase().padEnd(8) + "] " + f.kind.padEnd(14) + f.detail);
 }
-console.log("\n  high " + (counts.high || 0) + "   med " + (counts.med || 0) + "\n");
+console.log("\n  high " + (counts.high || 0) + "   med " + (counts.med || 0) +
+  "   expected " + (counts.expected || 0) + "\n");
 
 /* Committed so the trend exists. A single audit says what is broken today; a
    file in git says whether the site is getting better. */

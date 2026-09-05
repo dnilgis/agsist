@@ -94,6 +94,19 @@ CURATED = {
 #
 # It is not CURATED: no person edits it by hand. It is not PLANNED: it is live
 # and current. It is external, and the cadence belongs to the other side.
+# WHERE IT ACTUALLY LIVES, NOT WHERE ITS PATH SUGGESTS.
+#
+# 2026-09-05, found by the render audit's first live run: status.html fetched
+# every feed as "/" + path, so it asked agsist.com for data/merged-index.json,
+# got a 404, and — because the feed is not `planned` — painted the BID NETWORK
+# AS "UNREACHABLE" on the public status page. The feature that had just gone
+# live was being reported as down, by us, on the page people check.
+#
+# The path is where cash-bids.html looks relative to ITS OWN base, which is the
+# bids site. So an external feed now carries the absolute URL it is really at,
+# and the status page uses it.
+EXTERNAL_BASE = "https://dnilgis.github.io/bids/"
+
 EXTERNAL = {
     "data/merged-index.json": (
         "published by dnilgis/bids, refreshed with the boards",
@@ -293,6 +306,9 @@ def main():
             "curated": f in CURATED,
             "planned": f in PLANNED,
             "external": bool(ext),
+            # Absolute, so nothing has to guess the host. Null for our own
+            # feeds, which are correctly fetched relative to this site.
+            "url": (EXTERNAL_BASE + f) if ext else None,
             "crons": crons,
             # The longest legitimate silence, straight off the crons — so the
             # status page never carries a hand-typed threshold that goes stale

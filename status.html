@@ -359,7 +359,15 @@
             '<div class="st-right"><div class="st-state wait">Checking</div><div class="st-age">&nbsp;</div></div>';
           host.appendChild(el);
           var row={el:el,dot:el.querySelector('.dot'),state:el.querySelector('.st-state'),age:el.querySelector('.st-age')};
-          fetch('/'+f.path+'?_t='+Date.now(),{cache:'no-store'}).then(function(r){
+          /* AN EXTERNAL FEED IS FETCHED WHERE IT LIVES, NOT WHERE ITS PATH
+             READS. Until 2026-09-05 every feed was asked of agsist.com, so
+             data/merged-index.json — which dnilgis/bids publishes to its own
+             GitHub Pages site — 404'd here and this page reported the BID
+             NETWORK as "Unreachable". The feature had just gone live. The
+             manifest now carries the absolute url for external feeds; a feed
+             of ours has url:null and is fetched relative, exactly as before. */
+          var src=(f.url||('/'+f.path))+((f.url||'').indexOf('?')<0?'?':'&')+'_t='+Date.now();
+          fetch(src,{cache:'no-store'}).then(function(r){
             if(!r.ok) throw new Error('http'); return r.json();
           }).then(function(d){
             var t=null, keys=['fetched','generated_at','generated','updated','updated_at','as_of','asOf','timestamp','fetched_at','recent_generated','date'];

@@ -1,0 +1,15 @@
+{
+ "note": "Requests that return an error ON PURPOSE. The render audit lists these as 'expected' so they stay visible, and does not fail the run for them. Every entry needs a reason, and a reason that is really 'we have not fixed it yet' does not belong here — put it on the list of things to fix instead. An allowlist is how a real regression gets hidden, so this file should stay short.",
+ "expected": [
+  {
+   "match": "agsist-subs.dnilgis.workers.dev/",
+   "status": 404,
+   "reason": "status.html pings the subscription Worker's root to see if it is alive. The Worker has no route for '/', so it answers 404 — and a 404 IS an answer, which is what the ping is testing. The check treats any response as reachable, so this works exactly as intended and the status row reads Online."
+  },
+  {
+   "match": "/data/dairy-data.json",
+   "status": 404,
+   "reason": "A planned feed nobody publishes yet. milk-prices.html falls back field by field to the seed already in the page, and status.html renders the row as 'Planned — not published yet' rather than red. Declared planned:true in data/feeds.json; the page is built not to break on it."
+  }
+ ]
+}
