@@ -1,0 +1,161 @@
+name: Render audit — what a farmer's browser actually gets
+
+# ══════════════════════════════════════════════════════════════════════════════
+#  WHY THIS EXISTS
+# ══════════════════════════════════════════════════════════════════════════════
+#  On 2026-09-05 four defects shipped. Every one passed every check in this
+#  repository. Every one was obvious the moment a person opened the page:
+#
+#    /elevators       the CARTO style was `dark_matter`, which is a 404. The map
+#                     drew 4,581 dots on a black void for a day.
+#    /sponsor-report  the card used two CSS variables that do not exist, so a
+#                     near-white panel carried the dark theme's light text.
+#    /                the bid network shipped and the homepage never said so.
+#    the sponsor ad   the homepage card and the email block read different key
+#                     names, so a paid ad would have shown zero impressions.
+#
+#  The checks in this repository read CODE. A farmer gets a RENDERED PAGE. A
+#  grep cannot see a 404 tile, a contrast ratio, or a number that never arrived.
+#
+#  IT RUNS HERE AND NOT IN A CHAT SESSION for a specific reason: the sandbox
+#  those checks were written in cannot reach agsist.com, cdnjs or the tile host.
+#  Leaflet was `undefined` in every "render check" of the map, so the map never
+#  initialised and the checks were measuring an empty page while reporting
+#  success. A GitHub runner has open egress. The audit belongs where the network
+#  is real, on a schedule, not depending on anybody being in a conversation.
+#
+#  The script says so itself: if several third-party hosts fail to connect, it
+#  reports ONE finding saying the run proves nothing, rather than a confident
+#  list of things that are not actually wrong.
+# ══════════════════════════════════════════════════════════════════════════════
+
+on:
+  schedule:
+    # 06:40 Central, after the morning briefing has published and the data
+    # workflows have run — so it audits the site as it will be read today.
+    - cron: '40 11 * * *'
+  workflow_dispatch:
+    inputs:
+      pages:
+        description: 'Space-separated paths (blank = the default set). "--all" audits every URL in sitemap.xml.'
+        required: false
+        default: ''
+      base:
+        description: 'Base URL to audit'
+        required: false
+        default: 'https://agsist.com'
+
+concurrency:
+  group: render-audit
+  cancel-in-progress: false
+
+env:
+  TZ: America/Chicago
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      # The browser is the whole point. --with-deps pulls the system libraries
+      # a headless Chromium needs on a bare runner.
+      - name: Install a real browser
+        run: |
+          npm install --no-save playwright@1.49.1
+          npx playwright install --with-deps chromium
+
+      - name: Audit
+        id: audit
+        continue-on-error: true
+        run: |
+          ARGS=""
+          if [ -n "${{ inputs.pages }}" ]; then
+            for p in ${{ inputs.pages }}; do
+              if [ "$p" = "--all" ]; then ARGS="$ARGS --all"; else ARGS="$ARGS --page $p"; fi
+            done
+          fi
+          node scripts/audit-site.mjs --base "${{ inputs.base || 'https://agsist.com' }}" $ARGS
+
+      # Committed so the TREND exists. One audit says what is broken today; a
+      # file in git says whether the site is getting better or worse.
+      - name: Keep the record
+        run: |
+          git config user.name  "agsist-bot"
+          git config user.email "bot@agsist.com"
+          git add data/audit.json 2>/dev/null || true
+          if git diff --cached --quiet; then
+            echo "no change"
+          else
+            HIGH=$(python3 -c "import json;print(json.load(open('data/audit.json'))['high'])" 2>/dev/null || echo "?")
+            git commit -m "audit: $HIGH high finding(s) [skip ci]"
+            for i in 1 2 3; do
+              git push && break
+              git pull --rebase --autostash && sleep 3
+            done
+          fi
+
+      # ══════════════════════════════════════════════════════════════════
+      #  AN ALERT HAS TO REACH A PERSON
+      # ══════════════════════════════════════════════════════════════════
+      #  A red tick on a page nobody has open is not an alert. This is the
+      #  same reasoning as the bids reader's own failure mail: the email goes
+      #  first, and it cannot fail the job, because a mail problem must never
+      #  be the reason a site problem goes unreported.
+      - name: Email, if the site is broken
+        if: steps.audit.outcome == 'failure'
+        continue-on-error: true
+        env:
+          SMTP_HOST: ${{ secrets.SMTP_HOST }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASS: ${{ secrets.SMTP_PASS }}
+          ALERT_TO:  ${{ secrets.ALERT_TO }}
+        run: |
+          python3 - <<'PY'
+          import json, os, smtplib, ssl
+          from email.message import EmailMessage
+          try:
+              d = json.load(open("data/audit.json"))
+          except Exception:
+              raise SystemExit(0)
+          high = [f for f in d.get("findings", []) if f["sev"] == "high"]
+          if not high:
+              raise SystemExit(0)
+          host = (os.environ.get("SMTP_HOST") or "").strip()
+          to   = (os.environ.get("ALERT_TO") or "").strip()
+          if not host or not to:
+              print("::warning::no SMTP settings — audit findings not emailed")
+              raise SystemExit(0)
+          body = ["The render audit found %d high finding(s) on %s.\n" % (len(high), d["base"])]
+          for f in high[:25]:
+              body.append("  %-16s %-12s %s" % (f["page"], f["kind"], f["detail"]))
+          body.append("\nFull report: the run summary in Actions, and data/audit.json in the repo.")
+          m = EmailMessage()
+          m["Subject"] = "agsist: render audit found %d problem(s)" % len(high)
+          m["From"] = os.environ.get("SMTP_USER") or to
+          m["To"] = to
+          m.set_content("\n".join(body))
+          try:
+              port = int(os.environ.get("SMTP_PORT") or 587)
+              s = smtplib.SMTP(host, port, timeout=30)
+              s.starttls(context=ssl.create_default_context())
+              s.login(os.environ["SMTP_USER"], os.environ["SMTP_PASS"])
+              s.send_message(m); s.quit()
+              print("emailed %s" % to)
+          except Exception as e:
+              print("::warning::could not send the audit email: %s" % e)
+          PY
+
+      - name: Go red if the site is broken
+        if: steps.audit.outcome == 'failure'
+        run: |
+          echo "::error::the render audit found high-severity problems — see the job summary"
+          exit 1
