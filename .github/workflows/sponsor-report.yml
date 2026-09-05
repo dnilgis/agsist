@@ -1,0 +1,70 @@
+name: Sponsor reports — yesterday's numbers, from GA4
+
+# One file per sponsor under data/sponsors/, rebuilt daily from the GA4 Data
+# API and committed. The report page reads those files; nothing is computed in
+# the browser and nothing is counted twice.
+#
+# WHY DAILY AND NOT LIVE. A live counter would need a server holding its own
+# tally — a second source of truth for a number the sponsor will check against
+# GA4 anyway. Reading GA4 itself means there is one number, and it is in git.
+#
+# It ends at YESTERDAY on purpose: GA4 keeps refining the current day for
+# hours, and a figure that moves after the sponsor looked at it is worse than
+# one that is a day old and says so.
+#
+# 6:12 Central, before the morning briefing goes out, off the hour.
+
+on:
+  schedule:
+    - cron: '12 11 * * *'
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/build_sponsor_report.py'
+      - 'data/sponsors.json'
+
+concurrency:
+  group: sponsor-report
+  cancel-in-progress: false
+
+env:
+  TZ: America/Chicago
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install the GA4 client
+        run: pip install --quiet google-analytics-data
+
+      # No secrets, no report, no failure. A fork or a PR cannot have these and
+      # should not go red for it — the script says so and exits 0.
+      - name: Build the reports
+        env:
+          GA4_PROPERTY_ID:     ${{ secrets.GA4_PROPERTY_ID }}
+          GA4_SERVICE_ACCOUNT: ${{ secrets.GA4_SERVICE_ACCOUNT }}
+        run: python3 scripts/build_sponsor_report.py
+
+      - name: Commit
+        run: |
+          git config user.name  "agsist-bot"
+          git config user.email "bot@agsist.com"
+          git add data/sponsors 2>/dev/null || true
+          if git diff --cached --quiet; then
+            echo "no change"
+            exit 0
+          fi
+          git commit -m "sponsor reports: through $(date -d yesterday +%Y-%m-%d) [skip ci]"
+          for i in 1 2 3; do
+            git push && break
+            git pull --rebase --autostash && sleep 3
+          done

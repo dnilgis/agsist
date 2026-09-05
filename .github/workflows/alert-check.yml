@@ -41,6 +41,18 @@ jobs:
           ref: main   # workflow_run defaults to the pre-mesh commit — must
                       # checkout main to see the swath day mesh.yml just pushed
 
+      # THE SEND LOOP IS CHECKED BEFORE IT IS USED.
+      #
+      # check_alerts.py caught only smtplib.SMTPException, and the day flag is
+      # set AFTER the loop — so a socket timeout killed the step with the flag
+      # unset and the rerun re-alerted everyone who had already been emailed.
+      # That is the defect that sent AGSIST Daily #177 seven times.
+      #
+      # The guard lifts the loop out of the script and runs it against a fake
+      # server that drops mid-list. One second, no network, no shapely.
+      - name: Neither send loop can re-mail the whole list
+        run: python3 scripts/test_send_loops.py
+
       - name: Install geometry lib
         run: pip install shapely --quiet
 

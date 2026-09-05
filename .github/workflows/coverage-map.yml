@@ -1,0 +1,61 @@
+name: Coverage map — the elevator directory, drawn
+
+# /elevators shows every grain elevator AGSIST tracks: green where we read the
+# elevator's own board, grey where it is still in the queue. The source of
+# truth is dnilgis/bids, which publishes its directory to GitHub Pages, so this
+# repository holds no copy of the elevator list — it renders one.
+#
+# Daily, at 7:38 Central, off the hour. GitHub's scheduler is most congested at
+# :00 and this repository has measured what that costs.
+
+on:
+  schedule:
+    - cron: '38 12 * * *'
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/build_coverage_map.mjs'
+      - 'elevators.html'
+
+concurrency:
+  group: coverage-map
+  cancel-in-progress: false
+
+env:
+  TZ: America/Chicago
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      # The builder refuses to write an empty map rather than committing one:
+      # a directory that comes back with no elevators is a fetch that failed,
+      # and an empty coverage map is worse than yesterday's.
+      - name: Build the coverage data from the bids directory
+        run: node scripts/build_coverage_map.mjs
+
+      - name: Commit
+        run: |
+          git config user.name  "agsist-bot"
+          git config user.email "bot@agsist.com"
+          git add data/elevator-coverage.json
+          if git diff --cached --quiet; then
+            echo "coverage unchanged"
+            exit 0
+          fi
+          n=$(node -e "console.log(require('./data/elevator-coverage.json').counts.read)")
+          k=$(node -e "console.log(require('./data/elevator-coverage.json').counts.known)")
+          git commit -m "coverage: $n read, $k in the queue [skip ci]"
+          for i in 1 2 3; do
+            git push && break
+            git pull --rebase --autostash && sleep 3
+          done

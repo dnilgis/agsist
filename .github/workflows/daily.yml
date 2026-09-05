@@ -536,6 +536,20 @@ jobs:
       # It cannot double-send: send_daily.py sets a day flag through the subs
       # worker and fails closed, and the gate above refuses any run on a day
       # that is already published.
+      # THE SEND LOOP IS CHECKED IN THE SECOND BEFORE IT MAILS THE LIST.
+      #
+      # Both senders in this repository put each message inside
+      # `except smtplib.SMTPException`, and the day flag is set AFTER the loop.
+      # A socket timeout is not an SMTPException: it killed the step with the
+      # flag unset, and the rerun mailed everyone who had already received it.
+      # That is how issue #177 went out seven times in one afternoon.
+      #
+      # The guard lifts both loops out of their scripts and runs them against a
+      # fake server that drops mid-list. A second, no network, no dependencies.
+      - name: Neither send loop can re-mail the whole list
+        if: ${{ github.event_name == 'schedule' || inputs.send_email == true }}
+        run: python3 scripts/test_send_loops.py
+
       - name: Send daily email
         if: ${{ github.event_name == 'schedule' || inputs.send_email == true }}
         env:

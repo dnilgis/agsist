@@ -11,7 +11,7 @@ on:
   push:
     branches: [main]
     paths:
-      - '**.html'
+      - '**.html'          # cash-bids.html is what network-checks.mjs lifts from
       - '.github/workflows/**'
       - 'scripts/**'
       - 'data/feeds.json'
@@ -38,5 +38,43 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
       - name: The feed manifest is current and every claim in it has a source
         run: python3 scripts/test_feeds.py
+
+      # THE BID NETWORK, AND WHY IT IS CHECKED HERE.
+      #
+      # cash-bids.html now merges two feeds: Barchart, and the boards this
+      # project reads itself at dnilgis.github.io/bids. On a duplicate OURS
+      # wins, because ours is the elevator's own posting and Barchart's is a
+      # copy of it. That rule is worth exactly as much as the guard on it.
+      #
+      # network-checks.mjs LIFTS the functions out of cash-bids.html rather
+      # than keeping a copy, so it cannot pass against code the page no longer
+      # runs. It needs no network: the live-feed checks skip with a note when
+      # dnilgis.github.io is unreachable, and never fail for that reason.
+      - name: The bid network merges correctly and cannot break the page
+        run: node scripts/network-checks.mjs
+
+      # CBOT hours come from CME, not from memory, and the countdown must
+      # survive both clock changes.
+      - name: The market clock matches CME's published grain hours
+        run: node scripts/market-clock-checks.mjs
+
+      # THE QUESTION A NERVOUS DEPLOY ASKS. Drive the page's own merge with a
+      # fixed Barchart response against every way the feed can fail — offline,
+      # 404, 500, malformed, empty, hung — and require byte-identical rows
+      # every time. If this ever goes red, the network has stopped being
+      # additive and the page can be made worse by something outside it.
+      - name: A broken bid network leaves the page exactly as it is today
+        run: node scripts/network-safety-checks.mjs
+
+      # Also run at the commit, not only at the next hail event.
+      - name: Neither send loop can re-mail the whole list
+        run: python3 scripts/test_send_loops.py
+
+      # Nothing is written to a shard the page cannot fetch.
+      - name: Basis history lands in a state a reader can ask for
+        run: python3 scripts/test_basis_states.py
