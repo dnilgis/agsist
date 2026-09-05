@@ -1,6 +1,17 @@
 {
   "briefings": [
     {
+      "date": "2026-09-05",
+      "date_display": "Saturday, September 5, 2026",
+      "headline": "WHEAT DROPS 3.4%; DIESEL TIGHTENS INTO HARVEST",
+      "teaser": "Wheat's worst day in weeks and diesel at record cracks: here's what the week ahead holds.",
+      "market_mood": "bearish",
+      "surprise_count": 0,
+      "sections": 3,
+      "url": "/daily/2026-09-05",
+      "market_closed": true
+    },
+    {
       "date": "2026-09-04",
       "date_display": "Friday, September 4, 2026",
       "headline": "WHEAT BREAKS 3.4%; SEPTEMBER WASDE SETUP BEGINS",
@@ -2019,6 +2030,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-09-04T22:04:51.387251+00:00",
-  "count": 176
+  "updated": "2026-09-05T13:31:05.959179+00:00",
+  "count": 177
 }

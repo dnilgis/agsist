@@ -5,13 +5,26 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Fri, 04 Sep 2026 22:04:52 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 05 Sep 2026 13:31:07 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/agsist.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>WHEAT DROPS 3.4%; DIESEL TIGHTENS INTO HARVEST</title>
+      <link>https://agsist.com/daily/2026-09-05</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-09-05</guid>
+      <pubDate>Sat, 05 Sep 2026 05:00:00 -0600</pubDate>
+      <description>Wheat closed Friday at $7.16, down 3.4%, the sharpest single-session drop in this complex in weeks. Diesel crack spreads widened to record levels according to EIA data, meaning the fuel bill for first-pass harvest is higher than any budget penciled in last spring. The September 11 WASDE is six days out and the market is walking in with a bearish lean on wheat and a diesel problem.
+Friday's close put wheat at its worst session in weeks while diesel crack spreads widened, squeezing fall fieldwork budgets before the September 11 WASDE.
+• WHEAT BREAKS; GRAINS DRIFT
+• CATTLE QUIET; POLICY NOISE RISES
+• DIESEL TIGHTENS; CRUDE HOLDS
+  → If you haven't locked fall diesel at current rack prices, the EIA data says waiting is not working in your favor.
+Read more: https://agsist.com/daily/2026-09-05</description>
+    </item>
     <item>
       <title>WHEAT BREAKS 3.4%; SEPTEMBER WASDE SETUP BEGINS</title>
       <link>https://agsist.com/daily/2026-09-04</link>
@@ -388,18 +401,6 @@ Wheat firmed on weather while corn and beans drifted lower to close a week that 
 • Cattle Mixed; Feeders Hold
 • Farm Bill Optimism Fades
 Read more: https://agsist.com/daily/2026-08-07</description>
-    </item>
-    <item>
-      <title>EXPORT SALES DAY; BEANS BOUNCE, CATTLE FIRM</title>
-      <link>https://agsist.com/daily/2026-08-06</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-08-06</guid>
-      <pubDate>Thu, 06 Aug 2026 05:00:00 -0600</pubDate>
-      <description>Soybeans closed at $11.54, up nearly a nickel from yesterday's lows, but the bounce is positioning ahead of today's 7:30 AM export sales print, not a verdict on what tour scouts found in the fields this week. The tour's pod counts are the reason beans can't sustain a rally without demand confirmation behind them. Today's export number either validates the bounce or kills it.
-Pro Farmer tour wraps its bean read; weekly export sales at 7:30 AM CT are the next number that matters.
-• Beans Bounce Before Export Sales
-• Corn Flat; Farm Bill Markup Today
-• Cattle Firm; Feeders Hold Above $348
-Read more: https://agsist.com/daily/2026-08-06</description>
     </item>
   </channel>
 </rss>
