@@ -173,6 +173,21 @@
   @media(max-width:480px){.ffai-health{flex-direction:column;gap:.5rem;}.ffai-score-big{font-size:2.4rem;}}
   .tool-list{display:flex;flex-direction:column;gap:.45rem;flex:1;}
   .card-body{display:flex;flex-direction:column;}
+
+/* Bid-network announcement (2026-09-05). Sized off the geo bar directly below
+   it so the two read as one stack rather than two competing strips. */
+.bidnet-note{display:flex;align-items:center;gap:.6rem;text-decoration:none;
+  border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:8px;
+  padding:.62rem .8rem;margin:0 0 .85rem;background:var(--surface);
+  font-size:0.815rem;line-height:1.45;color:var(--text-dim);transition:border-color .15s}
+.bidnet-note:hover{border-color:var(--gold)}
+.bidnet-tag{font-family:'JetBrains Mono',monospace;font-size:.62rem;font-weight:700;
+  letter-spacing:.11em;color:var(--gold);border:1px solid var(--gold);border-radius:3px;
+  padding:.13rem .34rem;flex:none;align-self:flex-start;margin-top:.1rem}
+.bidnet-txt{min-width:0}
+.bidnet-txt strong{color:var(--text);font-weight:600}
+.bidnet-go{margin-left:auto;color:var(--gold);font-weight:700;flex:none}
+@media(max-width:520px){.bidnet-note{align-items:flex-start}.bidnet-go{display:none}}
 /* cash-bids card: pin bids to top of stretched card (override dash-grid center) */
 #f1>.card>.card-body{justify-content:flex-start}
 #f2>.card>.card-body{justify-content:flex-start}
@@ -971,6 +986,17 @@
     <div class="fade-up" id="f1">
 
       <div class="sec-head"><h2 class="sec-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:1.05em;height:1.05em;vertical-align:-.13em;margin-right:.34em;flex:none"><rect width="20" height="12" x="2" y="6" rx="2" /> <circle cx="12" cy="12" r="2" /> <path d="M6 12h.01M18 12h.01" /></svg>Cash Bids &amp; Basis <span style="font-size:0.755rem;font-weight:600;color:var(--gold);letter-spacing:.04em">+ Worth the Drive&trade;</span></h2><a href="/cash-bids" class="sec-all">Find Elevators &rarr;</a></div>
+      <!-- THE ANNOUNCEMENT. Added 2026-09-05: the bid network went live and
+           nothing on the homepage said so — /changelog was reachable only from
+           the footer, and the word "changelog" appeared nowhere on this page.
+           Deliberately one line. Says what changed and where to look; does not
+           recite how it works. -->
+      <a class="bidnet-note" href="/elevators">
+        <span class="bidnet-tag">NEW</span>
+        <span class="bidnet-txt">Some of these bids now come <strong>straight from the elevator&rsquo;s own board.</strong>
+          See which elevators we read &mdash; and which are still in the queue.</span>
+        <span class="bidnet-go" aria-hidden="true">&rarr;</span>
+      </a>
       <div class="card"><div class="card-body">
         <div id="bids-geo-bar" style="display:flex;align-items:center;gap:.55rem;margin-bottom:.6rem;font-size:0.787rem;color:var(--text-dim)">
           <span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--gold);animation:blink 1.5s infinite" aria-hidden="true"></span>
