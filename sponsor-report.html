@@ -9,11 +9,19 @@
 <link rel="icon" href="/favicon.ico">
 <link rel="stylesheet" href="/components/styles.css?v=15">
 <style>
-    .sr-pending{border:1px solid var(--sr-line,#d8d4cb);border-radius:10px;padding:1.6rem 1.7rem;margin:1.4rem 0;background:var(--sr-panel,#fbfaf7)}
-    .sr-pending h2{margin:0 0 .7rem;font-size:1.12rem;line-height:1.35}
+    /* --sr-panel and --sr-line were INVENTED and do not exist anywhere on this
+       site, so their light fallbacks always won: a near-white card carrying the
+       dark theme's light text. Unreadable, and shipped. These use the same two
+       tokens as .sr-tile and .sr-win below, which is what they should have been
+       from the start — a new block does not get its own colour vocabulary. */
+    .sr-pending{border:1px solid var(--border,#2a3230);border-radius:10px;
+      padding:1.6rem 1.7rem;margin:1.4rem 0;background:var(--surface,#141918);
+      color:var(--text,#e8ece9)}
+    .sr-pending h2{margin:0 0 .7rem;font-size:1.12rem;line-height:1.35;color:var(--text,#e8ece9)}
     .sr-pending p{margin:.55rem 0;max-width:62ch}
     .sr-pending ul{margin:.5rem 0 .2rem;padding-left:1.15rem;max-width:62ch}
     .sr-pending li{margin:.35rem 0}
+    .sr-pending strong{color:var(--gold,#d4a23f)}
     .sr-pending-note{opacity:.72;font-size:.92em}
 .sr{max-width:920px;margin:0 auto;padding:2.2rem 1.1rem 5rem}
 .sr-head{border-bottom:2px solid var(--border,#2a3230);padding-bottom:1.1rem;margin-bottom:1.6rem}
