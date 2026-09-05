@@ -1,83 +1,35 @@
 {
  "schema": "agsist-render-audit/1",
  "base": "https://agsist.com",
- "ran": "2026-09-05T17:59:34.680Z",
+ "ran": "2026-09-05T18:14:54.670Z",
  "pages": 16,
  "seconds": 202,
- "high": 8,
- "med": 4,
+ "high": 0,
+ "med": 0,
  "findings": [
   {
-   "page": "/hail-map",
-   "sev": "high",
-   "kind": "contrast",
-   "detail": "desktop: 1.97:1 on \"Search or tap your spot, pick a radius, drop y\" (rgba(233, 237, 235, 0.9) on rgba(212, 162, 63, 0.05))"
-  },
-  {
-   "page": "/hail-map",
-   "sev": "high",
-   "kind": "contrast",
-   "detail": "mobile: 1.97:1 on \"Search or tap your spot, pick a radius, drop y\" (rgba(233, 237, 235, 0.9) on rgba(212, 162, 63, 0.05))"
-  },
-  {
    "page": "/status",
-   "sev": "high",
-   "kind": "subresource",
-   "detail": "desktop: 404  /data/dairy-data.json?_t=1788631099508"
-  },
-  {
-   "page": "/status",
-   "sev": "high",
-   "kind": "subresource",
-   "detail": "desktop: 404  /data/merged-index.json?_t=1788631099510"
-  },
-  {
-   "page": "/status",
-   "sev": "high",
-   "kind": "subresource",
+   "sev": "expected",
+   "kind": "expected-404",
    "detail": "desktop: 404  https://agsist-subs.dnilgis.workers.dev/"
   },
   {
    "page": "/status",
-   "sev": "high",
-   "kind": "subresource",
+   "sev": "expected",
+   "kind": "expected-404",
+   "detail": "desktop: 404  /data/dairy-data.json?_t=1788632019535"
+  },
+  {
+   "page": "/status",
+   "sev": "expected",
+   "kind": "expected-404",
    "detail": "mobile: 404  https://agsist-subs.dnilgis.workers.dev/"
   },
   {
    "page": "/status",
-   "sev": "high",
-   "kind": "subresource",
-   "detail": "mobile: 404  /data/dairy-data.json?_t=1788631105718"
-  },
-  {
-   "page": "/status",
-   "sev": "high",
-   "kind": "subresource",
-   "detail": "mobile: 404  /data/merged-index.json?_t=1788631105720"
-  },
-  {
-   "page": "/corn-futures-prices",
-   "sev": "med",
-   "kind": "contrast",
-   "detail": "desktop: 3.60:1 on \"Price is in the upper quartile of its 52-week \" (rgb(233, 237, 235) on rgba(58, 139, 60, 0.07))"
-  },
-  {
-   "page": "/corn-futures-prices",
-   "sev": "med",
-   "kind": "contrast",
-   "detail": "mobile: 3.60:1 on \"Price is in the upper quartile of its 52-week \" (rgb(233, 237, 235) on rgba(58, 139, 60, 0.07))"
-  },
-  {
-   "page": "/soybean-futures-prices",
-   "sev": "med",
-   "kind": "contrast",
-   "detail": "desktop: 3.60:1 on \"Price is in the upper quartile of its 52-week \" (rgb(233, 237, 235) on rgba(58, 139, 60, 0.07))"
-  },
-  {
-   "page": "/soybean-futures-prices",
-   "sev": "med",
-   "kind": "contrast",
-   "detail": "mobile: 3.60:1 on \"Price is in the upper quartile of its 52-week \" (rgb(233, 237, 235) on rgba(58, 139, 60, 0.07))"
+   "sev": "expected",
+   "kind": "expected-404",
+   "detail": "mobile: 404  /data/dairy-data.json?_t=1788632025771"
   }
  ]
 }
