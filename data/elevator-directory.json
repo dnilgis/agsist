@@ -1,18 +1,18 @@
 {
- "generated": "2026-09-04T22:58:46Z",
+ "generated": "2026-09-05T14:00:15Z",
  "from": "bids-full.json",
  "complete": false,
  "note": "Directory only: who operates a facility and where. No prices, no basis, no symbols, no delivery windows.",
  "counts": {
-  "facilities": 1806,
+  "facilities": 1804,
   "states": 28,
   "with_address": 0,
   "with_coords": 0,
   "with_url": 0,
-  "with_phone": 1806,
+  "with_phone": 1804,
   "saturated_zips": 0,
   "failed_zips": 0,
-  "rows_read": 17867
+  "rows_read": 17838
  },
  "saturated": [],
  "failed": [],
@@ -6651,15 +6651,6 @@
    "source": "barchart"
   },
   {
-   "facility": "Iroquois Bio-Energy",
-   "branch": "IBEC",
-   "city": "Rensselaer",
-   "state": "IN",
-   "zip": "47978",
-   "phone": "(219) 866-5990",
-   "source": "barchart"
-  },
-  {
    "facility": "Kentland Elevator & Supply Inc.",
    "branch": "Kentland",
    "city": "Kentland ",
@@ -8880,6 +8871,15 @@
    "state": "KS",
    "zip": "67137",
    "phone": "620-736-2011",
+   "source": "barchart"
+  },
+  {
+   "facility": "Skyland Grain",
+   "branch": "Cunningham Area",
+   "city": "Cunningham",
+   "state": "KS",
+   "zip": "67035",
+   "phone": "(620) 298-2011",
    "source": "barchart"
   },
   {
@@ -11688,15 +11688,6 @@
    "state": "ND",
    "zip": "58048",
    "phone": "701-874-2112",
-   "source": "barchart"
-  },
-  {
-   "facility": "Iroquois Bio-Energy",
-   "branch": "Blue Flint",
-   "city": "Underwood",
-   "state": "ND",
-   "zip": "58576",
-   "phone": "701-442-7500",
    "source": "barchart"
   },
   {
@@ -16207,15 +16198,6 @@
    "state": "WI",
    "zip": "54725",
    "phone": "7158746593",
-   "source": "barchart"
-  },
-  {
-   "facility": "Wheaton Grain",
-   "branch": "Chippewa Falls",
-   "city": "Chippewa Falls",
-   "state": "WI",
-   "zip": "54729",
-   "phone": "715-874-659",
    "source": "barchart"
   },
   {
