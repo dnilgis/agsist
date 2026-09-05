@@ -137,6 +137,9 @@ button,a,[role="button"]{touch-action:manipulation}
 .el-disc{margin-top:1.4rem;font-size:0.765rem;color:var(--text-muted);line-height:1.7;padding:.8rem 1rem;background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:var(--r-sm)}
 .el-disc a{color:var(--gold)}
 
+.covmap-tilewarn{margin:.6rem 0 0;padding:.6rem .8rem;border:1px solid var(--gold,#d4a23f);
+  border-left:3px solid var(--gold,#d4a23f);border-radius:6px;background:var(--surface,#141918);
+  color:var(--text-dim,#8a948f);font-size:.82rem;line-height:1.45;max-width:62ch}
 .el-map-lede{color:var(--text-dim,#8a948f);max-width:62ch;margin:.4rem 0 1rem;line-height:1.65}
 .el-map-wrap{position:relative;border:1px solid var(--border,#2a3230);border-radius:12px;overflow:hidden}
 #cov-map{height:min(70vh,620px);width:100%;background:#0e1211}
@@ -383,7 +386,7 @@ document.addEventListener('click',function(e){var a=e.target.closest&&e.target.c
   }
   if (typeof L === 'undefined') return giveUp();
 
-  /* These sit on dark_matter or on voyager, so they carry a thin dark halo
+  /* These sit on dark_all or on voyager, so they carry a thin dark halo
      rather than relying on the basemap being pale. A green dot that vanishes
      over a green field is not a map. */
   var COLOUR = { read: '#4ade80', quiet: '#fbbf24', known: '#9ca3af' };
@@ -414,24 +417,66 @@ document.addEventListener('click',function(e){var a=e.target.closest&&e.target.c
       map.on('mouseout', function () { map.scrollWheelZoom.disable(); });
 
       /* TWO REAL BASEMAPS, FOLLOWING THE SITE'S OWN THEME.
-         dark_matter and voyager both carry roads, water and place names —
+         Both carry roads, water and place names —
          light_all, which was here, is a near-white slab with almost nothing on
          it. Same host as the other five maps on this site, free with
          attribution, no key.
          Esri's satellite imagery is the obvious alternative and is not
          available: Esri state the tile service needs an ArcGIS licence and is
          not for commercial use. */
+      /* THE STYLE NAMES ARE THE RASTER PATHS, NOT THE VECTOR NAMES.
+         This shipped as 'dark_matter' and 'voyager' and the map had NO
+         BASEMAP AT ALL -- 4,581 dots on a black void, with the CARTO
+         attribution underneath them implying tiles were there. Measured
+         2026-09-05:
+
+             /dark_matter/4/4/6.png          404
+             /voyager/4/4/6.png              404
+             /dark_all/4/4/6.png             an image
+             /rastertiles/voyager/4/4/6.png  an image
+
+         `dark_matter` and `voyager` are what CARTO calls these basemaps in its
+         VECTOR styles. The raster service uses different paths, and a wrong one
+         is a 404 per tile -- silent, because Leaflet draws nothing and leaves
+         the attribution in place. */
       var CARTO = '{s}.basemaps.cartocdn.com';
       var ATTR = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>';
+      var STYLES = { dark: 'dark_all', light: 'rastertiles/voyager' };
       function tiles(style) {
-        return L.tileLayer('https://' + CARTO + '/' + style + '/{z}/{x}/{y}{r}.png', {
-          attribution: ATTR, maxZoom: 16, minZoom: 3, detectRetina: true
+        var layer = L.tileLayer('https://' + CARTO + '/' + style + '/{z}/{x}/{y}{r}.png', {
+          attribution: ATTR, maxZoom: 16, minZoom: 3, detectRetina: true,
+          subdomains: 'abcd'
         });
+        /* A MAP THAT CANNOT DRAW ITS BASEMAP SAYS SO.
+           This is the guard that was missing. The failure above was invisible
+           because nothing on the page or in any check asserted that a single
+           tile had loaded -- the markers drew, the attribution drew, and the
+           result read as a design choice rather than a fault. */
+        var failed = 0;
+        layer.on('tileerror', function () {
+          failed++;
+          if (failed !== 3) return;          /* one blip is not an outage */
+          var warn = document.getElementById('covmap-tilewarn');
+          if (warn) { warn.hidden = false; return; }
+          warn = document.createElement('div');
+          warn.id = 'covmap-tilewarn';
+          warn.className = 'covmap-tilewarn';
+          warn.textContent = 'The background map is not loading right now. The ' +
+            'elevator pins are correct and complete \u2014 only the streets and ' +
+            'place names behind them are missing.';
+          if (el && el.parentNode) el.parentNode.insertBefore(warn, el.nextSibling);
+        });
+        layer.on('tileload', function () {
+          failed = 0;
+          var warn = document.getElementById('covmap-tilewarn');
+          if (warn) warn.hidden = true;
+        });
+        return layer;
       }
       var base = null;
       function paint() {
         var dark = document.documentElement.getAttribute('data-theme') !== 'light';
-        var want = dark ? 'dark_matter' : 'voyager';
+        var want = dark ? STYLES.dark : STYLES.light;
         if (base && base._style === want) return;
         if (base) map.removeLayer(base);
         base = tiles(want);
