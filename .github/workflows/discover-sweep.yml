@@ -1,0 +1,147 @@
+# WHAT BOARD DOES EACH OF BARCHART'S SEVEN HUNDRED OPERATORS ACTUALLY RUN?
+#
+# WHY THIS EXISTS
+#
+# Sig, repeatedly: "I want every elevator in the country". The Barchart harvest
+# gave 727 facilities and 705 operator websites — and that subscription is
+# cancelled, so those 727 are a FROZEN SNAPSHOT. They are grey pins forever
+# unless somebody asks what each site runs.
+#
+# bushel and dtn-cs carry 97% of everything this project reads and both have
+# adapters. So an operator that lands on one of them is a SOURCE FILE away from
+# a green pin — no new parser, no new code. That is the cheapest grey-to-green
+# there is, and until now the script that could answer it wrote nothing down:
+# its own header said "it writes nothing into data/ and publishes no number.
+# The output is the log."
+#
+# IT WALKS THE LIST BY ITSELF. --resume skips every host the ledger has already
+# decided, so each run picks up where the last one stopped without a person
+# carrying --start forward. 674 hosts at up to 45 seconds each is roughly eight
+# hours of wall clock; at one batch an hour it finishes in a few days and then
+# says "nothing left to ask" every time until the list changes.
+#
+# AN UNREACHABLE PAGE IS NOT DECIDED. It comes round again on the next run,
+# because "we could not reach it" is a fact about the network and not about the
+# operator. Writing those off is how a sweep quietly loses a working elevator.
+#
+# ONE PAGE AT A TIME, DELIBERATELY. These are other people's websites.
+
+name: discover — what board does each operator run
+
+on:
+  schedule:
+    # Every three hours, off the hour everything else uses. Not during the
+    # trading window's busiest minutes: the reader has priority on runners.
+    - cron: "35 1,4,7,16,19,22 * * *"
+  workflow_dispatch:
+    inputs:
+      limit:
+        description: "How many hosts to ask in this run"
+        default: "45"
+      budget:
+        description: "Minutes of wall clock before it stops and writes what it has"
+        default: "40"
+      patience:
+        description: "Seconds to wait on one page"
+        default: "45"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: discover-sweep
+  cancel-in-progress: false
+
+jobs:
+  sweep:
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      # The list is REGENERATED, not trusted. known-elevators.json is synced
+      # from agsist and sources/ grows every week, so a stale list would keep
+      # asking hosts we have since started reading.
+      - name: Rebuild the list of hosts still to ask
+        run: node scripts/barchart_sites.mjs > probe-lists/barchart-sites.txt
+
+      - name: Ask them
+        continue-on-error: true
+        run: |
+          node scripts/discover.mjs \
+            --list probe-lists/barchart-sites.txt \
+            --ledger data/platforms.json \
+            --resume \
+            --limit "${{ inputs.limit || '45' }}" \
+            --budget "${{ inputs.budget || '40' }}" \
+            --patience "${{ inputs.patience || '45' }}" \
+            | tee /tmp/sweep.txt
+          tail -40 /tmp/sweep.txt >> "$GITHUB_STEP_SUMMARY"
+
+      - name: How much of this is a config row rather than a scraper
+        if: always()
+        run: |
+          # tee, NOT just the summary. This wrote only to the step summary, so
+          # the one number the whole sweep exists to produce was absent from the
+          # log — and the log is what gets downloaded and read.
+          node scripts/platform_report.mjs | tee /tmp/report.txt || echo "no ledger yet"
+          {
+            echo '```'
+            cat /tmp/report.txt 2>/dev/null || echo "no ledger yet"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      # THE TWO LISTS OF WHAT WE DO NOT HAVE — regenerated whenever the inputs
+      # move, because a worklist that goes stale gets phoned twice.
+      - name: Rebuild the gap lists
+        if: always()
+        continue-on-error: true
+        run: node scripts/gap_lists.mjs
+
+      - name: Commit
+        if: always()
+        run: |
+          # ══════════════════════════════════════════════════════════════
+          #  THE SIBLINGS THE BOARDS NAMED
+          # ══════════════════════════════════════════════════════════════
+          #  Every board we read lists its own other locations, and the
+          #  adapters have been capturing that in `otherLocationsOnPage` all
+          #  along. Measured 2026-09-05: 964 locations exposed, 627 already
+          #  sources, 337 NOT — on pages we fetch every poll, costing no new
+          #  request and no discovery.
+          #
+          #  agricharts-sweep refuses to place what it cannot join to a town,
+          #  which is right. But it printed the refusals to this log and threw
+          #  them away, so the 337 existed only in expired run logs and no
+          #  worklist of them existed anywhere.
+          #
+          #  This writes them to data/gaps/board-siblings.csv with the state
+          #  where one can be decided honestly. It writes no sources.
+          #  It cannot fail the sweep: the harvest above is the valuable part.
+          node scripts/board-siblings.mjs || echo "::warning::board-siblings did not run"
+
+          git add data/platforms.json probe-lists/barchart-sites.txt data/gaps 2>/dev/null || true
+          # --cached LEFT THEM ON DISK AS UNTRACKED FILES, AND THAT BROKE A PUSH.
+          # 2026-08-28, run 33214328053: the sharded sweep decided all 674
+          # hosts, merged twenty ledgers, committed -- and then the push was
+          # rejected because the poller had pushed first, which is routine and
+          # is what commit-and-push.sh retries. The rebase could not run:
+          #
+          #   error: The following untracked working tree files would be
+          #   overwritten by checkout: data/gaps/no-board-published.csv
+          #
+          # gap_lists.mjs now writes no-website-on-file.csv and
+          # board-not-read.csv, so the two old names are stale. Untracking
+          # them with --cached removed them from the index but LEFT them in
+          # the working tree, where they then collided with the same paths
+          # arriving from the remote. Thirty minutes of twenty runners was
+          # committed locally and never landed.
+          #
+          # Without --cached the files leave the working tree too, so there is
+          # nothing left to collide with.
+          git rm -q --ignore-unmatch data/gaps/no-website.csv data/gaps/no-board-published.csv 2>/dev/null || true
+          n=$(node -e "try{const s=require('./data/platforms.json').sites;process.stdout.write(String(Object.keys(s).length))}catch(e){process.stdout.write('0')}")
+          bash scripts/commit-and-push.sh "discover: $n operator sites identified [skip ci]"
