@@ -170,9 +170,55 @@ def apply_day(state, rows, date):
 # ------------------------------------------------------------- the write ---
 def write_shards(state, out_dir, generated):
     os.makedirs(out_dir, exist_ok=True)
-    by_state = {}
+    # ── A STATE THE ROW ALREADY CARRIES IS NOT A GUESS ────────────────────
+    # This wrote `st or "??"`, and cash-bids.html fetches
+    # /data/basis/{STATE}.json — so there is no control on the page that can
+    # ever ask for "??". Every row that landed there was basis history
+    # collected, written, committed and unreachable.
+    #
+    # Some of those rows state their own state in their city field:
+    #
+    #     HILLSIDE GRAIN, LLC | GOLDEN CITY, MO
+    #
+    # Reading "MO" off the end of that is reading, not inventing, so it is
+    # done. A row with nothing to read stays stateless — and is REPORTED
+    # rather than filed somewhere nobody can open.
+    US_STATES = frozenset(
+        ("AL AK AZ AR CA CO CT DE DC FL GA HI ID IL IN IA KS KY LA ME MD MA MI "
+         "MN MS MO MT NE NV NH NJ NM NY NC ND OH OK OR PA RI SC SD TN TX UT VT "
+         "VA WA WV WI WY PR VI GU AS MP").split())
+
+    def state_of(city, st):
+        if st:
+            return st
+        tail = (city or "").strip().rsplit(",", 1)
+        if len(tail) == 2:
+            code = tail[1].strip().upper()
+            if code in US_STATES:
+                return code
+        return None
+
+    by_state, stateless = {}, []
+    recovered = 0
     for (facility, city, st, cat, sym, month), v in state.items():
-        by_state.setdefault(st or "??", []).append((facility, city, cat, sym, month, v))
+        code = state_of(city, st)
+        if code is None:
+            stateless.append("%s | %s" % (facility, city or "no city"))
+            continue
+        if not st:
+            recovered += 1
+        by_state.setdefault(code, []).append((facility, city, cat, sym, month, v))
+
+    if recovered:
+        print("  %d row(s) placed by the state written in their own city field"
+              % recovered)
+    if stateless:
+        # Named, not counted. A number here is a shrug; a name is a fix.
+        uniq = sorted(set(stateless))
+        print("::warning::%d basis row(s) carry no state and were NOT written — "
+              "the page can only fetch /data/basis/{STATE}.json, so a '??' shard "
+              "would be collected and unreachable. Give these a state at the "
+              "source: %s" % (len(stateless), "; ".join(uniq[:10])))
     index = {"generated": generated, "units": "integer cents per bushel",
              "note": ("Per elevator, per commodity, per contract, per delivery month: "
                       "the basis now, the basis before it, and the day it changed. "

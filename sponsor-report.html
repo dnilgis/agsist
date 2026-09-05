@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sponsor report — AGSIST</title>
+<!-- A sponsor's own numbers, on a link they hold. Not for search. -->
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="/favicon.ico">
+<link rel="stylesheet" href="/components/styles.css?v=15">
+<style>
+    .sr-pending{border:1px solid var(--sr-line,#d8d4cb);border-radius:10px;padding:1.6rem 1.7rem;margin:1.4rem 0;background:var(--sr-panel,#fbfaf7)}
+    .sr-pending h2{margin:0 0 .7rem;font-size:1.12rem;line-height:1.35}
+    .sr-pending p{margin:.55rem 0;max-width:62ch}
+    .sr-pending ul{margin:.5rem 0 .2rem;padding-left:1.15rem;max-width:62ch}
+    .sr-pending li{margin:.35rem 0}
+    .sr-pending-note{opacity:.72;font-size:.92em}
+.sr{max-width:920px;margin:0 auto;padding:2.2rem 1.1rem 5rem}
+.sr-head{border-bottom:2px solid var(--border,#2a3230);padding-bottom:1.1rem;margin-bottom:1.6rem}
+.sr-eyebrow{font-family:'JetBrains Mono',monospace;font-size:.7rem;letter-spacing:.15em;
+  text-transform:uppercase;color:var(--gold,#d4a23f)}
+.sr-head h1{font-size:1.9rem;line-height:1.15;margin:.35rem 0 .3rem}
+.sr-through{color:var(--text-dim,#8a948f);font-size:.9rem}
+.sr-tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1px;
+  background:var(--border,#2a3230);border:1px solid var(--border,#2a3230);border-radius:10px;
+  overflow:hidden;margin:1.4rem 0}
+.sr-tile{background:var(--surface,#141918);padding:.95rem 1rem;display:flex;flex-direction:column;gap:.2rem}
+.sr-n{font-size:1.75rem;font-weight:700;line-height:1;font-variant-numeric:tabular-nums}
+.sr-k{font-size:.76rem;color:var(--text-muted,#6d7671);line-height:1.4}
+.sr-h2{font-size:1.05rem;margin:2rem 0 .6rem}
+.sr-chart{width:100%;height:190px;display:block}
+.sr-chart text{font-family:'JetBrains Mono',monospace;font-size:9px;fill:var(--text-muted,#6d7671)}
+table.sr-t{width:100%;border-collapse:collapse;font-size:.88rem}
+.sr-t th{text-align:left;font-family:'JetBrains Mono',monospace;font-size:.67rem;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--text-muted,#6d7671);font-weight:500;
+  padding:0 .8rem .5rem 0;border-bottom:1px solid var(--border,#2a3230)}
+.sr-t td{padding:.5rem .8rem .5rem 0;border-bottom:1px solid var(--border,#2a3230)}
+.sr-t td.n{font-family:'JetBrains Mono',monospace;font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
+.sr-t tr:last-child td{border-bottom:0}
+.sr-win{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:.7rem;margin:.4rem 0 0}
+.sr-win div{border:1px solid var(--border,#2a3230);border-radius:8px;padding:.7rem .8rem}
+.sr-win b{display:block;font-size:1.15rem;font-variant-numeric:tabular-nums}
+.sr-win span{font-size:.74rem;color:var(--text-muted,#6d7671)}
+.sr-def{margin-top:2.4rem;border-top:1px solid var(--border,#2a3230);padding-top:1.2rem;
+  font-size:.86rem;color:var(--text-dim,#8a948f);line-height:1.7}
+.sr-def h2{font-size:.95rem;color:var(--text,#e8ede9);margin:0 0 .6rem}
+.sr-def dt{font-family:'JetBrains Mono',monospace;font-size:.75rem;letter-spacing:.05em;
+  color:var(--gold,#d4a23f);margin-top:.85rem}
+.sr-def dd{margin:.2rem 0 0}
+.sr-err{padding:2rem 0;color:var(--text-dim,#8a948f)}
+.sr-foot{margin-top:2rem;font-size:.78rem;color:var(--text-muted,#6d7671);line-height:1.6}
+</style>
+</head>
+<body>
+<main class="sr" id="sr">
+  <div class="sr-err" id="sr-loading">Loading&hellip;</div>
+</main>
+
+<script>
+/* THE SPONSOR REPORT.
+ *
+ * Reads one baked file — data/sponsors/<slug>-<token>.json — written daily by
+ * scripts/build_sponsor_report.py straight out of GA4. Nothing is counted
+ * here; the browser only draws what the analytics account already said.
+ *
+ * THE LINK IS THE KEY, AND THAT IS OBSCURITY, NOT A LOGIN. Anyone holding the
+ * URL can read that sponsor's numbers. That is the point — it has to survive
+ * being forwarded to their marketing person — but it means nothing goes in a
+ * report that would matter if it leaked.
+ */
+(function () {
+  var root = document.getElementById('sr');
+  function die(msg) { root.innerHTML = '<div class="sr-err">' + msg + '</div>'; }
+
+  var r = (new URLSearchParams(location.search).get('r') || '').replace(/[^a-z0-9-]/gi, '');
+  if (!r) return die('This report needs the link you were sent.');
+
+  fetch('/data/sponsors/' + r + '.json', { cache: 'no-cache' })
+    .then(function (x) { if (!x.ok) throw 0; return x.json(); })
+    .then(draw)
+    .catch(function () {
+      die('That report link is not recognised. If it was working before, ' +
+          'reply to the email it came in and we will send a fresh one.');
+    });
+
+  function esc(s) {
+    return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+    });
+  }
+  function num(n) { return (n == null ? '—' : Number(n).toLocaleString()); }
+  function day(iso) {
+    var d = new Date(iso + 'T12:00:00Z');
+    return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' });
+  }
+
+  function draw(d) {
+    var t = d.totals || {};
+    var h = '';
+
+    h += '<div class="sr-head">' +
+      '<div class="sr-eyebrow">AGSIST &middot; sponsor report</div>' +
+      '<h1>' + esc(d.sponsor) + '</h1>' +
+      '<div class="sr-through">' +
+      (d.pending ? 'the counter has not started yet'
+                 : day(d.start) + ' &ndash; ' + day(d.through) +
+                   ' &middot; updated daily, through the end of ' + day(d.through)) +
+      '</div></div>';
+
+    /* NOT STARTED IS A STATE, NOT AN EMPTY REPORT.
+       A sponsor whose first ad has not run has no numbers, and the honest page
+       says exactly that rather than showing zeroes that look like a bad week --
+       or, as this did in its first draft, ninety days of site traffic that was
+       never theirs. This page is sendable today: it says what will be counted
+       and when counting begins. */
+    if (d.pending) {
+      h += '<div class="sr-pending">' +
+        '<h2>Nothing to report yet &mdash; and that is what this says.</h2>' +
+        '<p>Counting begins the day your first ad runs. Until then this page ' +
+        'holds no numbers at all, because the alternative is showing you ' +
+        'traffic that was not yours.</p>' +
+        '<p>From day one it will show, updated every morning:</p>' +
+        '<ul>' +
+        '<li><strong>Viewable impressions</strong> &mdash; half the ad on screen ' +
+        'for one continuous second, which is the MRC/IAB rule, not simply the ' +
+        'number of times the ad was served.</li>' +
+        '<li><strong>Clicks</strong>, and the click-through rate they give.</li>' +
+        '<li><strong>By day</strong> and <strong>by page</strong>, so you can ' +
+        'see where it worked.</li>' +
+        '</ul>' +
+        '<p class="sr-pending-note">This link keeps working &mdash; it fills in ' +
+        'on its own. Nothing to log into.</p>' +
+        '</div>';
+      root.innerHTML = h;
+      return;
+    }
+
+    h += '<div class="sr-tiles">' +
+      tile(num(t.viewable), 'viewable impressions') +
+      tile(num(t.clicks), 'clicks') +
+      tile(t.ctr == null ? '—' : t.ctr.toFixed(2) + '%', 'click-through rate') +
+      tile(num((d.series || []).length), 'days running') +
+      '</div>';
+
+    h += '<h2 class="sr-h2">Recent windows</h2><div class="sr-win">';
+    (d.windows || []).forEach(function (w) {
+      h += '<div><b>' + num(w.viewable) + '</b><span>viewable in the last ' + w.days +
+           ' days &middot; ' + num(w.clicks) + ' click' + (w.clicks === 1 ? '' : 's') +
+           (w.ctr == null ? '' : ' &middot; ' + w.ctr.toFixed(2) + '% CTR') + '</span></div>';
+    });
+    h += '</div>';
+
+    h += '<h2 class="sr-h2">By day</h2>' + chart(d.series || []);
+
+    if (d.byPage && d.byPage.length) {
+      h += '<h2 class="sr-h2">Where it was seen</h2><table class="sr-t"><thead><tr>' +
+        '<th>Page</th><th style="text-align:right">Viewable</th>' +
+        '<th style="text-align:right">Clicks</th><th style="text-align:right">CTR</th>' +
+        '</tr></thead><tbody>';
+      d.byPage.forEach(function (p) {
+        var ctr = p.viewable ? (100 * p.clicks / p.viewable) : null;
+        h += '<tr><td>' + esc(p.page) + '</td><td class="n">' + num(p.viewable) +
+             '</td><td class="n">' + num(p.clicks) + '</td><td class="n">' +
+             (ctr == null ? '—' : ctr.toFixed(2) + '%') + '</td></tr>';
+      });
+      h += '</tbody></table>';
+    }
+
+    /* THE DEFINITIONS ARE THE PRODUCT. Anybody can put a big number on a page.
+       Saying exactly what was counted, and what was not, is the part a media
+       buyer can check — and the part nobody else in this market offers. */
+    h += '<div class="sr-def"><h2>What these numbers mean</h2><dl>' +
+      '<dt>Viewable impression</dt><dd>At least half of the ad was in the ' +
+      'browser window for one continuous second &mdash; the Media Rating Council ' +
+      'and IAB standard for display. An ad that scrolled past without stopping ' +
+      'is not counted. Neither is a background tab.</dd>' +
+      '<dt>Click</dt><dd>A click on the sponsor link itself.</dd>' +
+      '<dt>Click-through rate</dt><dd>Clicks divided by viewable impressions &mdash; ' +
+      'not by page views, which would make the rate look better and mean less.</dd>' +
+      '<dt>Source</dt><dd>Google Analytics 4, read once a day through Google’s ' +
+      'reporting API. These are the same figures in the analytics account; nothing ' +
+      'is estimated or modelled here.</dd>' +
+      '<dt>Through yesterday</dt><dd>GA4 keeps adjusting the current day for several ' +
+      'hours. This report ends at the last complete day so a number never changes ' +
+      'after you have looked at it.</dd>';
+    if (t.legacyImpressions) {
+      h += '<dt>Before ' + day(d.definitionChanged) + '</dt><dd>Earlier impressions were ' +
+        'recorded on a looser rule &mdash; half the ad visible, with no minimum time. ' +
+        'There are <strong>' + num(t.legacyImpressions) + '</strong> of those in this period ' +
+        'and they are deliberately <em>not</em> added to the total above: two definitions ' +
+        'summed into one figure is a figure that means nothing.</dd>';
+    }
+    h += '</dl></div>';
+
+    h += '<div class="sr-foot">Generated ' +
+      new Date(d.generated).toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' }) +
+      '. Questions about anything on this page &mdash; including how it is counted &mdash; ' +
+      'reply to the email this link came in.</div>';
+
+    root.innerHTML = h;
+  }
+
+  function tile(n, k) {
+    return '<div class="sr-tile"><div class="sr-n">' + n + '</div><div class="sr-k">' + k + '</div></div>';
+  }
+
+  /* A plain bar chart, drawn to one scale, with the axis labelled at a value
+     the chart actually reaches. No library for eight lines of arithmetic. */
+  function chart(series) {
+    if (!series.length) return '<p class="sr-err">No days yet.</p>';
+    var W = 900, H = 190, PAD_L = 34, PAD_B = 22, PAD_T = 10;
+    var max = Math.max.apply(null, series.map(function (s) { return s.v; })).toFixed(0);
+    max = Math.max(1, Math.ceil(max / 10) * 10);
+    var n = series.length;
+    var bw = (W - PAD_L - 6) / n;
+    var s = '<svg class="sr-chart" viewBox="0 0 ' + W + ' ' + H + '" role="img" ' +
+      'aria-label="Viewable impressions by day"><g>';
+    [0, 0.5, 1].forEach(function (f) {
+      var y = PAD_T + (H - PAD_T - PAD_B) * (1 - f);
+      s += '<line x1="' + PAD_L + '" y1="' + y + '" x2="' + W + '" y2="' + y +
+           '" stroke="rgba(255,255,255,.08)"/>' +
+           '<text x="' + (PAD_L - 6) + '" y="' + (y + 3) + '" text-anchor="end">' +
+           Math.round(max * f) + '</text>';
+    });
+    series.forEach(function (d, i) {
+      var hh = (H - PAD_T - PAD_B) * (d.v / max);
+      var x = PAD_L + i * bw;
+      s += '<rect x="' + (x + 0.6) + '" y="' + (PAD_T + (H - PAD_T - PAD_B) - hh) +
+           '" width="' + Math.max(1, bw - 1.6) + '" height="' + Math.max(0, hh) +
+           '" fill="#4ade80" opacity=".85"><title>' + d.d + ': ' + d.v +
+           ' viewable, ' + d.c + ' click' + (d.c === 1 ? '' : 's') + '</title></rect>';
+      if (d.c) {
+        s += '<circle cx="' + (x + bw / 2) + '" cy="' + (PAD_T + 4) +
+             '" r="2.6" fill="#d4a23f"><title>' + d.d + ': ' + d.c + ' click' +
+             (d.c === 1 ? '' : 's') + '</title></circle>';
+      }
+    });
+    var first = series[0].d, last = series[n - 1].d;
+    s += '<text x="' + PAD_L + '" y="' + (H - 6) + '">' + first + '</text>' +
+         '<text x="' + W + '" y="' + (H - 6) + '" text-anchor="end">' + last + '</text>';
+    s += '</g></svg><p class="sr-k" style="margin:.3rem 0 0">Green bars are viewable ' +
+         'impressions. A gold dot marks a day with a click.</p>';
+    return s;
+  }
+})();
+</script>
+<script src="/components/loader.js?v=15" defer></script>
+</body>
+</html>

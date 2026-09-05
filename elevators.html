@@ -136,7 +136,44 @@ button,a,[role="button"]{touch-action:manipulation}
 /* disclaimer */
 .el-disc{margin-top:1.4rem;font-size:0.765rem;color:var(--text-muted);line-height:1.7;padding:.8rem 1rem;background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:var(--r-sm)}
 .el-disc a{color:var(--gold)}
+
+.el-map-lede{color:var(--text-dim,#8a948f);max-width:62ch;margin:.4rem 0 1rem;line-height:1.65}
+.el-map-wrap{position:relative;border:1px solid var(--border,#2a3230);border-radius:12px;overflow:hidden}
+#cov-map{height:min(70vh,620px);width:100%;background:#0e1211}
+.el-map-hint{position:absolute;right:.55rem;bottom:.55rem;z-index:500;pointer-events:none;
+  font-family:'JetBrains Mono',monospace;font-size:.66rem;letter-spacing:.06em;
+  background:rgba(8,12,11,.72);color:#cbd5d1;border:1px solid rgba(255,255,255,.1);
+  border-radius:5px;padding:.2rem .45rem;transition:opacity .3s}
+#cov-map.leaflet-container:hover ~ .el-map-hint{opacity:0}
+@media(max-width:640px){#cov-map{height:min(60vh,420px)}}
+.el-map-fallback{padding:1.2rem;color:var(--text-dim,#8a948f);font-size:.9rem}
+.el-map-key{display:flex;flex-wrap:wrap;gap:.5rem;margin:.7rem 0 0}
+.el-key{display:inline-flex;align-items:center;gap:.42rem;background:none;border:1px solid var(--border,#2a3230);
+  border-radius:20px;padding:.3rem .7rem;color:var(--text-dim,#8a948f);font-size:.8rem;cursor:pointer;
+  font-family:inherit;transition:opacity .15s}
+.el-key[aria-pressed="false"]{opacity:.4}
+.el-key b{color:var(--text,#e8ede9);font-variant-numeric:tabular-nums}
+.el-dot{width:9px;height:9px;border-radius:50%;display:inline-block;flex:0 0 auto}
+.el-key-read .el-dot,.el-dot-read{background:#3a8b3c}
+.el-key-quiet .el-dot,.el-dot-quiet{background:#d4a23f}
+.el-key-known .el-dot,.el-dot-known{background:#6b7280}
+.el-map-panel{margin-top:.7rem;border:1px solid var(--border,#2a3230);border-radius:10px;padding:.8rem .9rem;
+  background:var(--surface,#141918)}
+.el-panel-head{font-weight:700;font-size:.9rem;margin-bottom:.45rem}
+.el-panel-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:.3rem;
+  font-size:.85rem;max-height:14rem;overflow-y:auto}
+.el-panel-list li{display:flex;align-items:baseline;gap:.45rem;color:var(--text-dim,#8a948f)}
+.el-panel-list b{color:var(--text,#e8ede9);font-weight:600}
+.el-panel-list em{font-style:normal;font-size:.76rem;color:var(--text-muted,#6d7671)}
+.el-panel-list .el-more{color:var(--text-muted,#6d7671);font-size:.8rem}
+.el-panel-prec{margin-top:.55rem;padding-top:.5rem;border-top:1px solid var(--border,#2a3230);
+  font-size:.78rem;color:var(--text-muted,#6d7671)}
+.el-map-foot{font-size:.78rem;color:var(--text-muted,#6d7671);margin:.55rem 0 0;line-height:1.6;max-width:70ch}
 </style>
+  <!-- Leaflet 1.9.4 from cdnjs and the CARTO light tiles: both already used by
+       hail-map, field-scout, cash-rent, foreign-land and land-tenure, so the
+       coverage map adds no new dependency and no new host. -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
 </head>
 <body>
 <noscript><div style="padding:1rem;background:#1a2a1a;color:#e6b042;font-family:sans-serif;text-align:center;border-bottom:2px solid #3a8b3c;font-size:.9rem">AGSIST requires JavaScript for live bids. Enable JavaScript or visit agsist.com/cash-bids directly.</div></noscript>
@@ -171,11 +208,30 @@ button,a,[role="button"]{touch-action:manipulation}
   <div class="el-cov">
     <div class="el-cov-item"><div class="el-cov-k">Commodities</div><div class="el-cov-v"><strong>Corn, soybeans, wheat</strong> &mdash; plus specialty grades (white &amp; food-grade corn, food-grade soybeans, milo) where elevators post them.</div></div>
     <div class="el-cov-item"><div class="el-cov-k">Geography</div><div class="el-cov-v"><strong>Nationwide.</strong> Bids appear wherever elevators post them &mdash; Corn Belt, Northern &amp; Southern Plains, Delta, Southeast, and Pacific Northwest.</div></div>
-    <div class="el-cov-item"><div class="el-cov-k">Source</div><div class="el-cov-v">Sourced from the <strong>Barchart OnDemand API</strong> &mdash; the same elevator-posted feed merchandisers use.</div></div>
+    <div class="el-cov-item"><div class="el-cov-k">Source</div><div class="el-cov-v">Two feeds, merged. Where AGSIST reads an elevator&rsquo;s <strong>own posted bid board</strong> &mdash; marked <em>direct from the elevator</em> on the results &mdash; that board wins. Everything else comes from the <strong>Barchart OnDemand API</strong>, the same elevator-posted feed merchandisers use. The map below shows which is which.</div></div>
     <div class="el-cov-item"><div class="el-cov-k">Freshness</div><div class="el-cov-v">Updated <strong>through the trading day</strong>, during market hours.</div></div>
     <div class="el-cov-item"><div class="el-cov-k">Each bid shows</div><div class="el-cov-v"><strong>Cash price</strong> (futures + basis), contract month, delivery window, and distance from your ZIP.</div></div>
   </div>
-  <div class="el-thin"><strong>Where it&rsquo;s thin:</strong> some smaller independent elevators don&rsquo;t post bids electronically, so they won&rsquo;t show up. If your local elevator is missing, that&rsquo;s usually why &mdash; and it&rsquo;s exactly what the form below is for.</div>
+  <h2 class="el-h2" id="coverage-map">Coverage map</h2>
+  <p class="el-map-lede">Every grain elevator AGSIST tracks, nationwide. <strong>Green</strong> means we read that elevator&rsquo;s own posted board. <strong>Grey</strong> means we know it&rsquo;s there and it&rsquo;s in the queue. The network grows most weeks &mdash; if yours is grey, tell us and it moves up.</p>
+
+  <div class="el-map-wrap">
+    <div id="cov-map" role="img" aria-label="Map of grain elevators AGSIST knows about, coloured by whether its bid board is read"></div>
+    <div class="el-map-hint" aria-hidden="true">Click the map to scroll-zoom</div>
+    <div id="cov-fallback" class="el-map-fallback" hidden>The coverage map could not load just now. The counts below are unaffected.</div>
+  </div>
+
+  <div class="el-map-key" id="cov-key">
+    <button type="button" class="el-key el-key-read"  data-c="read"  aria-pressed="true"><span class="el-dot"></span><b id="cov-n-read">&mdash;</b> read direct</button>
+    <button type="button" class="el-key el-key-quiet" data-c="quiet" aria-pressed="true"><span class="el-dot"></span><b id="cov-n-quiet">&mdash;</b> checking</button>
+    <button type="button" class="el-key el-key-known" data-c="known" aria-pressed="true"><span class="el-dot"></span><b id="cov-n-known">&mdash;</b> in the queue</button>
+  </div>
+
+  <div class="el-map-panel" id="cov-panel" hidden aria-live="polite"></div>
+
+  <p class="el-map-foot" id="cov-foot"></p>
+
+  <div class="el-thin"><strong>Missing your elevator?</strong> Some smaller independents don&rsquo;t post bids electronically at all, and some we simply haven&rsquo;t added yet. Either way the form below is the fastest way to get it on the map.</div>
 
   <section class="el-list" id="list-bids">
     <div class="el-list-eyebrow">For elevators &amp; co-ops</div>
@@ -301,6 +357,180 @@ document.addEventListener('click',function(e){var a=e.target.closest&&e.target.c
   });
 })();
 (function(){var zf=document.getElementById('el-zip-form');if(zf)zf.addEventListener('submit',function(){if(window.gaEvent)gaEvent('elevators_zip_search',{});});})();
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script>
+/* THE COVERAGE MAP.
+ *
+ * Leaflet 1.9.4 from cdnjs and the CARTO light tiles — both already used by
+ * five other pages on this site, so no new dependency and no new host.
+ *
+ * IT FAILS HONESTLY. If Leaflet does not load, or the data does not, the map
+ * replaces itself with one sentence and every other thing on this page is
+ * untouched. A coverage page that breaks silently is worse than one that says
+ * it broke.
+ *
+ * CANVAS, NOT AN SVG CIRCLE EACH. 2,929 SVG dots is what makes a Leaflet map
+ * crawl on a phone in a field.
+ */
+(function () {
+  var el = document.getElementById('cov-map');
+  if (!el) return;
+  var fallback = document.getElementById('cov-fallback');
+  function giveUp() {
+    if (el) el.style.display = 'none';
+    if (fallback) fallback.hidden = false;
+  }
+  if (typeof L === 'undefined') return giveUp();
+
+  /* These sit on dark_matter or on voyager, so they carry a thin dark halo
+     rather than relying on the basemap being pale. A green dot that vanishes
+     over a green field is not a map. */
+  var COLOUR = { read: '#4ade80', quiet: '#fbbf24', known: '#9ca3af' };
+  var EDGE = 'rgba(6,10,9,.85)';
+  var RADIUS = { read: 4.2, quiet: 4.2, known: 2.6 };
+  /* Grey is drawn smaller and underneath on purpose: it is the larger number
+     by far, and at full weight it buries the green the page exists to show.
+     Smaller, not hidden — the whole argument is that it is visible. */
+  var ORDER = ['known', 'quiet', 'read'];
+
+  fetch('/data/elevator-coverage.json', { cache: 'no-cache' })
+    .then(function (r) { if (!r.ok) throw 0; return r.json(); })
+    .then(function (d) {
+      if (!d || !d.places || !d.places.length) throw 0;
+
+      var map = L.map(el, {
+        preferCanvas: true,
+        /* SCROLL TO ZOOM, but only once the map has been clicked. A map that
+           grabs the wheel as you scroll past it hijacks the page; one that
+           needs a button to zoom is not a map. Click it and it behaves like
+           every other map you have used. */
+        scrollWheelZoom: false,
+        zoomControl: true, attributionControl: true,
+        worldCopyJump: true, zoomSnap: 0.5, wheelDebounceTime: 25
+      }).setView([41.5, -93.5], 4.5);
+      try { window.__covmap = map; } catch (e) {}
+      map.on('click focus', function () { map.scrollWheelZoom.enable(); });
+      map.on('mouseout', function () { map.scrollWheelZoom.disable(); });
+
+      /* TWO REAL BASEMAPS, FOLLOWING THE SITE'S OWN THEME.
+         dark_matter and voyager both carry roads, water and place names —
+         light_all, which was here, is a near-white slab with almost nothing on
+         it. Same host as the other five maps on this site, free with
+         attribution, no key.
+         Esri's satellite imagery is the obvious alternative and is not
+         available: Esri state the tile service needs an ArcGIS licence and is
+         not for commercial use. */
+      var CARTO = '{s}.basemaps.cartocdn.com';
+      var ATTR = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>';
+      function tiles(style) {
+        return L.tileLayer('https://' + CARTO + '/' + style + '/{z}/{x}/{y}{r}.png', {
+          attribution: ATTR, maxZoom: 16, minZoom: 3, detectRetina: true
+        });
+      }
+      var base = null;
+      function paint() {
+        var dark = document.documentElement.getAttribute('data-theme') !== 'light';
+        var want = dark ? 'dark_matter' : 'voyager';
+        if (base && base._style === want) return;
+        if (base) map.removeLayer(base);
+        base = tiles(want);
+        base._style = want;
+        base.addTo(map);
+        base.bringToBack();
+        el.style.background = dark ? '#0e1211' : '#eef2ef';
+      }
+      paint();
+      /* loader.js writes data-theme on <html>; follow it rather than reading
+         localStorage, so the map turns over at the same moment the site does. */
+      try {
+        new MutationObserver(paint).observe(document.documentElement,
+          { attributes: true, attributeFilter: ['data-theme'] });
+      } catch (e) {}
+
+      var layers = {};
+      ORDER.forEach(function (c) {
+        var g = L.layerGroup().addTo(map);
+        layers[c] = g;
+      });
+
+      var panel = document.getElementById('cov-panel');
+      /* WHAT THE PIN ACTUALLY CLAIMS ABOUT WHERE IT IS. Standing rule 45: a
+         town centroid drawn as a street address is the same lie as a made-up
+         number, only quieter. */
+      /* Standing rule 45 still applies — a town centroid drawn as a street
+         address is a quiet lie — but the reader needs the caveat, not the
+         mechanism. */
+      var PREC = {
+        street: 'Located to the street address.',
+        zip: 'Located to the ZIP, not the driveway.',
+        town: 'Located to the town, not the driveway.',
+        county: 'Located to the county only.',
+        unknown: ''
+      };
+      var LABEL = { read: 'read direct', quiet: 'checking', known: 'in the queue' };
+
+      function show(p) {
+        if (!panel) return;
+        var rows = p.a.map(function (a) {
+          return '<li><span class="el-dot el-dot-' + a[2] + '"></span>' +
+                 '<b>' + esc(a[0]) + '</b>' + (a[1] ? ' &mdash; ' + esc(a[1]) : '') +
+                 ' <em>' + LABEL[a[2]] + '</em></li>';
+        }).join('');
+        var more = p.n > p.a.length ? '<li class="el-more">and ' + (p.n - p.a.length) + ' more at this point</li>' : '';
+        panel.innerHTML = '<div class="el-panel-head">' + p.n + ' elevator' + (p.n === 1 ? '' : 's') +
+          (p.s ? ' in ' + esc(p.s) : '') + '</div><ul class="el-panel-list">' + rows + more +
+          '</ul><div class="el-panel-prec">' + (PREC[p.p] || PREC.unknown) + '</div>';
+        panel.hidden = false;
+      }
+      function esc(s) {
+        return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) {
+          return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+        });
+      }
+
+      d.places.forEach(function (p) {
+        var m = L.circleMarker([p.y, p.x], {
+          radius: RADIUS[p.c] || 3,
+          color: EDGE, weight: p.c === 'known' ? 0.5 : 1,
+          fillColor: COLOUR[p.c], fillOpacity: p.c === 'known' ? 0.6 : 0.95
+        });
+        m.on('click', function () { show(p); });
+        m.addTo(layers[p.c]);
+      });
+
+      var n = d.counts || {};
+      set('cov-n-read', n.read); set('cov-n-quiet', n.quiet); set('cov-n-known', n.known);
+      function set(id, v) {
+        var e = document.getElementById(id);
+        if (e) e.textContent = (v == null ? '—' : v.toLocaleString());
+      }
+
+      /* A MAP THAT QUIETLY OMITS WHAT IT COULD NOT PLACE TELLS THE READER THE
+         GAP IS SMALLER THAN IT IS. So the unplaced are printed under it. */
+      var foot = document.getElementById('cov-foot');
+      if (foot) {
+        /* One line: the total, and why a pin can hold more than one. The
+           unplaced handful and the build timestamp are ours to watch, not the
+           reader's to read. */
+        foot.textContent = n.elevators.toLocaleString() + ' elevators tracked. ' +
+          'Several share a town centre, so one pin can cover more than one \u2014 click to see what is there.';
+      }
+
+      /* The key doubles as a filter. Three buttons, and turning the grey off
+         is the fastest way to see what we actually cover. */
+      var keys = document.getElementById('cov-key');
+      if (keys) keys.addEventListener('click', function (ev) {
+        var b = ev.target.closest('button[data-c]');
+        if (!b) return;
+        var c = b.getAttribute('data-c');
+        var on = b.getAttribute('aria-pressed') !== 'true';
+        b.setAttribute('aria-pressed', on ? 'true' : 'false');
+        if (on) layers[c].addTo(map); else map.removeLayer(layers[c]);
+      });
+    })
+    .catch(giveUp);
+})();
 </script>
 </body>
 </html>

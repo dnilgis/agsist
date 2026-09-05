@@ -712,11 +712,11 @@
               </div>
             </div>
             <!-- Filled state: shown when data.sponsor is populated -->
-            <div class="dsp-filled" id="dsp-filled" style="display:none">
+            <div class="dsp-filled" id="dsp-filled" style="display:none" data-sponsor-slot="daily-briefing">
               <div class="dsp-label" id="dsp-filled-label"><svg class="ic" aria-hidden="true"><use href="#i-newspaper"/></svg> Today&rsquo;s Sponsor</div>
               <div class="dsp-sponsor-name" id="dsp-filled-name"></div>
               <div class="dsp-sponsor-tag" id="dsp-filled-tag"></div>
-              <a class="dsp-sponsor-cta" id="dsp-filled-cta" href="mailto:sig@farmers1st.com">Visit sponsor &rarr;</a>
+              <a class="dsp-sponsor-cta" id="dsp-filled-cta" href="mailto:sig@farmers1st.com" rel="sponsored" data-sponsor-click="daily-briefing">Visit sponsor &rarr;</a>
             </div>
           </div>
           <div id="daily-yc" class="daily-yc">
@@ -1803,16 +1803,13 @@
       var a=e.target&&e.target.closest?e.target.closest('#f-read a.sig'):null;
       if(a&&a.id)ga('read_deepdive',{commodity:a.id.replace('sig-','')});
     });
-    var sp=document.getElementById('daily-sponsor');
-    if(sp&&'IntersectionObserver'in window){
-      var seen=false;
-      var io=new IntersectionObserver(function(en){
-        en.forEach(function(x){
-          if(x.isIntersecting&&!seen){seen=true;ga('sponsor_impression',{page:'home'});io.disconnect();}
-        });
-      },{threshold:.5});
-      io.observe(sp);
-    }
+    /* The sponsor_impression observer that stood here was REMOVED 2026-09-05.
+       It watched #daily-sponsor -- the whole block, which shows the house
+       "Available / Founding Sponsor" pitch whenever no sponsor is booked -- so
+       every event it ever fired was a view of us advertising our own empty
+       slot. It also fired at 50% with no dwell, which is not the MRC rule.
+       components/sponsor-metrics.js now measures the FILLED element only, on
+       the real rule. Do not add a second counter here. */
   })();
   </script>
 <script src="/components/loader.js?v=14" defer></script>

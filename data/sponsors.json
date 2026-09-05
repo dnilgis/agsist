@@ -1,0 +1,16 @@
+{
+ "note": "Sponsors with a live report page. The token makes the report URL unguessable, and that is obscurity rather than a login: anyone holding the link can read that sponsor's numbers, which is the point of being able to email it. Do not put anything in a report that would matter if it were forwarded. Set 'pages' to limit the report to the slots that sponsor actually bought; leave it null for site-wide.",
+ "startNote": "'start' is the date that sponsor's FIRST AD RAN. It is not a reporting window and it must never be guessed: with no start date the builder writes a page that says the counter has not begun, which is the truth, instead of handing over ninety days of traffic that was never theirs. Set it the day the ad goes live.",
+ "oneAtATime": "While `slot` is unregistered as a GA4 custom dimension, only ONE sponsor may be active. Two would each be shown the site-wide total as their own. build_sponsor_report.py refuses rather than guessing.",
+ "sponsors": [
+  {
+   "slug": "apex",
+   "name": "Apex Insurance Group",
+   "contact": "Rich Stiehl",
+   "active": true,
+   "start": null,
+   "pages": null,
+   "token": "c1c1e09865171cd1"
+  }
+ ]
+}

@@ -304,22 +304,87 @@ def main():
     pw = env("SMTP_PASS", required=True)
     sent, failed = 0, []
     ctx = ssl.create_default_context()
-    with smtplib.SMTP(host, port, timeout=30) as s:
-        s.starttls(context=ctx)
-        s.login(user, pw)
+
+    def connect():
+        """A fresh, logged-in connection. Called again if one dies mid-list."""
+        c = smtplib.SMTP(host, port, timeout=30)
+        c.starttls(context=ctx)
+        c.login(user, pw)
+        return c
+
+    # BARE Exception, NOT smtplib.SMTPException. A socket timeout, an SSLError
+    # or a reset connection is not an SMTPException: it escaped this loop, the
+    # step died, and day_flag() -- which is below -- never ran, so the rerun
+    # re-alerted everyone who had already been emailed. send_daily.py was
+    # widened for exactly this reason and carries the same comment. This is the
+    # defect that sent AGSIST Daily #177 seven times in one afternoon.
+    #
+    # AND ONE RECONNECT. A single connection served the whole list, so a drop
+    # at recipient N meant everyone after N got nothing, silently, while
+    # `sent > 0` still flagged the day as delivered. One reconnect per failure,
+    # at most three in a run, so a bad socket costs one email and not the tail
+    # of the list.
+    conn = connect()
+    reconnects, MAX_RECONNECTS = 0, 3
+    try:
         for i, (w, band) in enumerate(hits):
             try:
-                s.send_message(build_email(w, day, band, from_name, from_addr, reply_to))
+                conn.send_message(build_email(w, day, band, from_name, from_addr, reply_to))
                 sent += 1
-            except smtplib.SMTPException as ex:
+            except Exception as ex:
                 failed.append(w["email"] + " (" + type(ex).__name__ + ")")
+                # A CONNECTION-LEVEL FAILURE POISONS EVERY REMAINING SEND.
+                # A rejected address does not; only reconnect for the former.
+                #
+                # AND THE ORDER OF THESE TESTS MATTERS, because
+                # smtplib.SMTPException INHERITS FROM OSError in Python 3:
+                #
+                #     (SMTPException, OSError, Exception, BaseException)
+                #
+                # so a bare `isinstance(ex, OSError)` is true for every SMTP
+                # error there is, and one subscriber with a typo in their
+                # address would open a fresh connection. A raw socket error is
+                # an OSError that is NOT an SMTPException; that is the one that
+                # means the pipe is dead.
+                fatal = (isinstance(ex, (smtplib.SMTPServerDisconnected,
+                                         smtplib.SMTPConnectError))
+                         or (isinstance(ex, OSError)
+                             and not isinstance(ex, smtplib.SMTPException)))
+                if fatal and reconnects < MAX_RECONNECTS and i < len(hits) - 1:
+                    reconnects += 1
+                    print("  connection lost after %d sent; reconnecting (%d/%d)"
+                          % (sent, reconnects, MAX_RECONNECTS))
+                    try:
+                        conn.quit()
+                    except Exception:
+                        pass
+                    try:
+                        conn = connect()
+                    except Exception as ex2:
+                        print("::error::could not reconnect (%s) — %d of %d alerts sent"
+                              % (type(ex2).__name__, sent, len(hits)))
+                        break
             if i < len(hits) - 1:
                 time.sleep(1.2)
+    finally:
+        try:
+            conn.quit()
+        except Exception:
+            pass
+
     print("sent " + str(sent) + "/" + str(len(hits)))
+    # THE FLAG IS SET FOR ANY SUCCESSFUL SEND, and it is reached now because
+    # nothing above it can escape. A partial send that silently repeats is a
+    # worse outcome than a partial send that is reported, so the addresses that
+    # did not receive are printed as a GitHub error annotation rather than a
+    # log line nobody reads.
     if sent > 0:
         day_flag(day, set_it=True)
     if failed:
         print("failed: " + ", ".join(failed))
+        print("::error::%d of %d hail alerts did not send. The day is flagged, so a "
+              "rerun will NOT retry them — send these by hand: %s"
+              % (len(failed), len(hits), ", ".join(failed)))
     return 0 if sent > 0 else 1
 
 

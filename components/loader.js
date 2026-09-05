@@ -16,7 +16,7 @@
   // Component cache version. Bump on every chrome deploy so browsers fetch the
   // new header/footer; between deploys the files cache normally (no refetch /
   // no nav-flash on each page navigation).
-  var CV = '19'; // v19 2026-08-12: new SVG wordmark (theme-aware) in header/drawer/footer
+  var CV = '20'; // v20 2026-09-05: sponsor-metrics.js loaded sitewide; footer sponsor card measured on the MRC rule
   function cv(path) { return path + (path.indexOf('?') < 0 ? '?v=' : '&v=') + CV; }
 
   function loadComponent(id, path, onDone) {
@@ -276,9 +276,14 @@
             a.innerHTML = '<span class="ad-slot-tag ad-slot-tag--live">Sponsor</span>'
               + inner
               + (s.blurb ? '<span class="ad-filled-blurb">' + esc(s.blurb) + '</span>' : '');
-            a.addEventListener('click', function () {
-              if (typeof gtag === 'function') gtag('event', 'supporter_click', { supporter: s.name || '' });
-            });
+            // MEASURED BY components/sponsor-metrics.js, NOT HERE.
+            // This card is only ever built for an ACTIVE supporter, so unlike
+            // the open slot beside it, it is a real ad and counts as one. The
+            // old inline supporter_click listener was DELETED in the same edit
+            // that added these attributes -- leaving both would have counted
+            // every click twice, and a doubled CTR is worse than no CTR.
+            a.setAttribute('data-sponsor-slot', 'footer-strip');
+            a.setAttribute('data-sponsor-click', 'footer-strip');
             if (slot) slot.parentNode.replaceChild(a, slot);
             else row.appendChild(a);
           })(list[i], open[i]);
@@ -287,10 +292,25 @@
       .catch(function () { /* leave mockups on any failure */ });
   }
 
+  // ── Sponsor measurement ────────────────────────────────────────
+  // A tracker nobody loads is a draft. Every page pulls this loader, so this
+  // is the one place that puts sponsor-metrics.js on every page. It is
+  // deferred behind the chrome because nothing it measures exists until the
+  // footer is injected, and it watches for that itself.
+  function loadSponsorMetrics() {
+    if (window.__sponsorMetrics) return;
+    window.__sponsorMetrics = true;
+    var s = document.createElement('script');
+    s.src = BASE + cv('/components/sponsor-metrics.js');
+    s.async = true;
+    document.head.appendChild(s);
+  }
+
   document.addEventListener('DOMContentLoaded', function () {
     injectAnalytics();
     loadComponent('site-header', '/components/header.html', initNav);
     loadComponent('site-footer', '/components/footer.html', renderSupporters);
+    loadSponsorMetrics();
   });
 })();
 

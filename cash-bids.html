@@ -252,7 +252,11 @@ button,a,[role="button"],input,select{touch-action:manipulation}
 .elev-card.pinned{border-color:var(--gold);box-shadow:0 0 0 2px rgba(230,176,66,.15)}
 .elev-head{padding:.85rem 1rem .7rem;display:flex;align-items:flex-start;justify-content:space-between;gap:.5rem;border-bottom:1px solid var(--border)}
 .elev-info{flex:1;min-width:0}
+.elev-direct{display:inline-block;font-size:.62rem;font-weight:700;letter-spacing:.04em;
+  text-transform:uppercase;color:var(--gold);border:1px solid rgba(var(--gold-rgb),.45);
+  border-radius:3px;padding:.1rem .3rem;margin-top:.25rem}
 .elev-name{font-size:.92rem;font-weight:700;color:var(--text);line-height:1.3;margin-bottom:.15rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.elev-posted{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--text-muted);border:1px solid var(--border);border-radius:5px;padding:.06rem .36rem;margin-top:.2rem}
 .elev-stale{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--gold);border:1px solid rgba(230,176,66,.4);border-radius:5px;padding:.08rem .4rem;margin-top:.2rem}
 .elev-branch{font-size:0.78rem;color:var(--text-dim);margin-bottom:.1rem}
 .elev-loc{font-size:0.775rem;color:var(--text-muted)}
@@ -448,6 +452,9 @@ button,a,[role="button"],input,select{touch-action:manipulation}
 .cb-geo-link-btn{background:none;border:none;color:var(--gold);cursor:pointer;font-size:.82rem;padding:.5rem .2rem;text-decoration:underline;font-family:inherit;min-height:44px}
 .market-badge{font-family:'JetBrains Mono',monospace;font-size:0.75rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:.14rem .48rem;border-radius:20px;white-space:nowrap}
 .market-badge.open{background:rgba(58,139,60,.2);color:var(--green);border:1px solid rgba(58,139,60,.4)}
+.market-badge.day{background:rgba(58,139,60,.2);color:var(--green);border:1px solid rgba(58,139,60,.4)}
+.market-badge.overnight{background:rgba(var(--gold-rgb),.14);color:var(--gold);border:1px solid rgba(var(--gold-rgb),.35)}
+.market-badge.pause{background:rgba(var(--gold-rgb),.08);color:var(--text-dim);border:1px solid var(--border)}
 .market-badge.closed{background:rgba(255,255,255,.05);color:var(--text-muted);border:1px solid var(--border)}
 .bbc-actions{display:flex;gap:.35rem;margin-top:.45rem;flex-wrap:wrap}
 .bbc-call-btn,.bbc-dir-btn{display:inline-flex;align-items:center;gap:.2rem;font-family:'JetBrains Mono',monospace;font-size:0.755rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:.28rem .6rem;border-radius:6px;text-decoration:none;min-height:34px;transition:opacity .15s}
@@ -602,11 +609,20 @@ button,a,[role="button"],input,select{touch-action:manipulation}
         <span id="cb-status-label">Showing bids near&#8230;</span>
         <span class="cb-count" id="cb-elev-count">0</span>
       </div>
+    <p id="cb-network-note" style="display:none;font-size:.9rem;color:var(--text-dim,#8a948f);margin:.5rem 0 0;line-height:1.6">
+      <span style="font-family:'JetBrains Mono',monospace;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--gold,#d4a23f);margin-right:.45rem">New</span>
+      <span id="cb-network-note-text"></span>
+      <a href="/elevators#coverage-map" style="color:var(--gold,#d4a23f)">See the coverage map &rarr;</a>
+    </p>
     <p id="cb-confirm-note" style="display:none;font-size:1rem;color:var(--text-dim,#8a948f);margin:.4rem 0 0">Bids are indicative. Confirm with the elevator before you haul. Elevator operator? <a href="mailto:sig@farmers1st.com?subject=Cash%20bids%20correction" style="color:var(--gold,#d4a23f)">Report a correction &rarr;</a></p>
       <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap">
         <div class="cb-status-meta">
           <span id="cb-status-timer" data-agsist-timer data-mode="since" style="display:none"></span>
           <span id="cb-status-source">Barchart OnDemand</span>
+        <!-- Filled by renderNetStats() when any elevator on this page was read
+             from its own board. Hidden entirely when none was, so it never
+             claims a network that did not answer. -->
+        <span id="cb-net-stats" style="display:none"></span>
         </div>
         <span class="market-badge" id="market-badge"></span>
         <button class="share-btn" id="share-btn" aria-label="Share these results" title="Share results"><svg class="ic" aria-hidden="true"><use href="#i-share-2"/></svg></button>
@@ -830,21 +846,228 @@ var shareBtn=$('share-btn'),internalLinks=$('internal-links-block');
 var toastEl=$('cb-toast');
 var bttBtn=$('back-to-top');
 var wtdToggleBtn=$('wtd-toggle-btn'),wtdBodyEl=$('wtd-body');
+/* ═══════════════════════════════════════════════════════════════════════════
+ * THE MARKET CLOCK — what session the board is in, and when the next one opens.
+ *
+ * HOURS, FROM CME, NOT FROM MEMORY. CME's own grain and oilseed fact card:
+ *
+ *     "7:00 p.m. - 7:45 a.m. CT, Sun - Fri and 8:30 a.m. - 1:20 p.m. CT, Mon - Fri"
+ *
+ * for Corn, Wheat, Soybeans, Soybean Oil, Soybean Meal, Oats and Rough Rice.
+ * So there are three states in a weekday and they are not symmetric:
+ *
+ *     19:00 -> 07:45   overnight, and it starts the night BEFORE
+ *     07:45 -> 08:30   the 45-minute pause; nothing trades
+ *     08:30 -> 13:20   the day session
+ *     13:20 -> 19:00   closed, Mon-Thu; on Friday it stays closed to Sunday 19:00
+ *
+ * WHY THIS IS ON A CASH BIDS PAGE. A cash bid is a futures price plus a basis.
+ * When the board says something a farmer has not seen before, the first
+ * question is whether the futures leg is still moving. And it answers the
+ * complaint underneath the stale badge: an elevator's board that has not moved
+ * since Friday is not broken on a Sunday -- the market has been shut.
+ *
+ * CENTRAL TIME, THROUGH THE CLOCK CHANGE. Everything below reasons in Chicago
+ * wall time via Intl, never in a fixed offset, because a hard-coded -5 or -6
+ * walks the whole schedule an hour out twice a year.
+ * ═══════════════════════════════════════════════════════════════════════════ */
+var MKT_TZ = 'America/Chicago';
+
+/* CME holidays. THIRD-PARTY AND DELIBERATELY NOT ACTED ON.
+ * CME finalises product hours roughly two weeks ahead and grains do not all
+ * follow the same holiday pattern, so this list is used only to SAY that the
+ * schedule differs and to point at CME -- never to invent an open or a close.
+ * Rule 1. */
+var MKT_HOLIDAYS_2026 = {
+  '2026-01-01': "New Year's Day", '2026-01-19': 'Martin Luther King Jr. Day',
+  '2026-02-16': "Presidents' Day", '2026-04-03': 'Good Friday',
+  '2026-05-25': 'Memorial Day', '2026-06-19': 'Juneteenth',
+  '2026-07-03': 'Independence Day (observed)', '2026-09-07': 'Labor Day',
+  '2026-11-26': 'Thanksgiving', '2026-12-25': 'Christmas Day'
+};
+
+/* The Chicago wall-clock parts of an instant. */
+var _mktFmt = null;
+function mktParts(d) {
+  if (!_mktFmt) _mktFmt = new Intl.DateTimeFormat('en-US', {
+    timeZone: MKT_TZ, hour12: false,
+    year: 'numeric', month: '2-digit', day: '2-digit',
+    hour: '2-digit', minute: '2-digit', weekday: 'short'
+  });
+  var o = {};
+  _mktFmt.formatToParts(d).forEach(function (p) { o[p.type] = p.value; });
+  var h = parseInt(o.hour, 10);
+  if (h === 24) h = 0;                       /* some engines say 24 for midnight */
+  var DOW = { Sun: 0, Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6 };
+  return {
+    y: +o.year, m: +o.month, d: +o.day, h: h, mi: +o.minute,
+    dow: DOW[o.weekday],
+    date: o.year + '-' + o.month + '-' + o.day,
+    minutes: h * 60 + parseInt(o.minute, 10)
+  };
+}
+
+/* An instant for a given Chicago wall time. The offset is SEARCHED, not
+   assumed: try each plausible UTC offset and keep the one that formats back to
+   the wall time asked for. That is correct on both sides of the clock change,
+   and on the spring-forward hour that does not exist it falls through to the
+   nearest real instant rather than silently returning a wrong one. */
+function mktInstant(y, m, d, h, mi) {
+  for (var off = 4; off <= 7; off++) {
+    var guess = new Date(Date.UTC(y, m - 1, d, h + off, mi, 0, 0));
+    var p = mktParts(guess);
+    if (p.y === y && p.m === m && p.d === d && p.h === h && p.mi === mi) return guess;
+  }
+  return new Date(Date.UTC(y, m - 1, d, h + 5, mi, 0, 0));
+}
+
+var MKT_OPEN_EVE = 19 * 60;      /* 19:00 overnight open       */
+var MKT_PAUSE = 7 * 60 + 45;     /* 07:45 overnight close      */
+var MKT_DAY_OPEN = 8 * 60 + 30;  /* 08:30 day session open     */
+var MKT_DAY_CLOSE = 13 * 60 + 20;/* 13:20 day session close    */
+
+function mktAddDays(p, n) {
+  var t = mktInstant(p.y, p.m, p.d, 12, 0);          /* midday: never a DST edge */
+  return mktParts(new Date(t.getTime() + n * 86400e3));
+}
+
+/* The next Chicago 19:00 that actually opens a session: Sunday through
+   Thursday evenings. Friday and Saturday evenings do not. */
+function mktNextEveningOpen(p) {
+  var q = p;
+  for (var i = 0; i < 8; i++) {
+    var isTonight = (i === 0 && p.minutes < MKT_OPEN_EVE);
+    if ((q.dow >= 0 && q.dow <= 4) && (i > 0 || isTonight))
+      return mktInstant(q.y, q.m, q.d, 19, 0);
+    q = mktAddDays(q, 1);
+  }
+  return null;
+}
+
+/* What is happening right now, and what happens next. */
+function marketSession(now) {
+  var p = mktParts(now);
+  var mins = p.minutes, dow = p.dow;
+  var holiday = MKT_HOLIDAYS_2026[p.date] || null;
+
+  /* A weekday-shaped session only exists Mon-Fri; the overnight that runs into
+     Saturday morning belongs to Friday and does not exist. */
+  var weekdayMorning = dow >= 1 && dow <= 5;
+
+  function at(y, m, d, h, mi) { return mktInstant(y, m, d, h, mi); }
+
+  if (weekdayMorning && mins < MKT_PAUSE) {
+    return { state: 'overnight', label: 'Overnight session',
+             until: at(p.y, p.m, p.d, 7, 45), untilLabel: 'pauses',
+             holiday: holiday };
+  }
+  if (weekdayMorning && mins < MKT_DAY_OPEN) {
+    return { state: 'pause', label: 'Pre-open pause',
+             until: at(p.y, p.m, p.d, 8, 30), untilLabel: 'day session opens',
+             holiday: holiday };
+  }
+  if (weekdayMorning && mins < MKT_DAY_CLOSE) {
+    return { state: 'day', label: 'Day session',
+             until: at(p.y, p.m, p.d, 13, 20), untilLabel: 'closes',
+             holiday: holiday };
+  }
+  /* THE OTHER HALF OF THE OVERNIGHT SESSION.
+     CME's "7:00 p.m. - 7:45 a.m. CT, Sun - Fri" is ONE session that starts the
+     evening before and ends the next morning. The morning half is handled
+     above; this is the evening half, and leaving it out reported the market
+     closed from 19:00 to midnight five nights a week.
+     Sunday through Thursday evenings open. Friday's does not — that is the
+     weekend gap. */
+  if (mins >= MKT_OPEN_EVE && dow >= 0 && dow <= 4) {
+    var tom = mktAddDays(p, 1);
+    return { state: 'overnight', label: 'Overnight session',
+             until: at(tom.y, tom.m, tom.d, 7, 45), untilLabel: 'pauses',
+             holiday: holiday };
+  }
+
+  /* Closed. The next thing to happen is an evening open. */
+  var next = mktNextEveningOpen(p);
+  var nextP = next ? mktParts(next) : null;
+  var tonight = nextP && nextP.date === p.date;
+  return {
+    state: 'closed',
+    label: (dow === 6 || dow === 0 || (dow === 5 && mins >= MKT_DAY_CLOSE))
+      ? 'Closed for the weekend' : 'Closed',
+    until: next, untilLabel: tonight ? 'overnight opens' : 'reopens',
+    holiday: holiday
+  };
+}
+
+/* "2h 14m", "46m", "3d 4h" — the largest two units, never a bare number. */
+function mktCountdown(ms) {
+  if (ms == null || !isFinite(ms) || ms < 0) return '';
+  var s = Math.floor(ms / 1000), d = Math.floor(s / 86400);
+  var h = Math.floor((s % 86400) / 3600), m = Math.floor((s % 3600) / 60);
+  if (d) return d + 'd ' + h + 'h';
+  if (h) return h + 'h ' + (m < 10 ? '0' : '') + m + 'm';
+  if (m) return m + 'm';
+  return 'under a minute';
+}
+
+/* ── HOW OLD A DIRECT BOARD IS, JUDGED AGAINST THE MARKET ──────────────────
+ *
+ * The page flags an elevator stale when its timestamp is over 18 hours old.
+ * That is right for a feed that updates continuously and wrong for an
+ * elevator's board, which is posted once a day and not at all at weekends:
+ * every direct row would carry a stale badge all weekend and on Monday
+ * morning, beside a badge claiming it was read straight from the elevator.
+ *
+ * The honest question is not "how many hours" but "how many day sessions have
+ * closed since this board last moved". Nothing closed = this IS the board.
+ * One = it has not been touched since the last close. Two or more = say so
+ * plainly.
+ */
+function mktSessionsClosedSince(pricedAt, now) {
+  if (!pricedAt) return null;
+  var t = (typeof pricedAt === 'number') ? pricedAt : Date.parse(pricedAt);
+  if (!isFinite(t)) return null;
+  if (t > +now) return 0;
+  var n = 0, p = mktParts(new Date(t));
+  for (var i = 0; i < 30; i++) {
+    var close = mktInstant(p.y, p.m, p.d, 13, 20);
+    if (p.dow >= 1 && p.dow <= 5 && +close > t && +close <= +now) n++;
+    if (+close > +now) break;
+    p = mktAddDays(p, 1);
+  }
+  return n;
+}
+
 var marketBadge=$('market-badge');
 var geoDot=$('cb-geo-dot');
 
+/* Kept for anything else that asks the simple question. The session clock
+   above is the authority; this just reads off it. */
 function isMarketOpen(){
-  var ct=new Date(new Date().toLocaleString('en-US',{timeZone:'America/Chicago'}));
-  var day=ct.getDay();
-  if(day===0||day===6)return false;
-  var t=ct.getHours()*60+ct.getMinutes();
-  return t>=510&&t<=800;
+  var st=marketSession(new Date()).state;
+  return st==='day'||st==='overnight';
 }
+var _mktTick=null;
 function updateMarketBadge(){
   if(!marketBadge)return;
-  var open=isMarketOpen();
-  marketBadge.className='market-badge '+(open?'open':'closed');
-  marketBadge.textContent=open?'\u25CF LIVE':'\u25CF Market closed';
+  var now=new Date(), s=marketSession(now);
+  var left=s.until?mktCountdown(s.until-now):'';
+  marketBadge.className='market-badge '+s.state;
+  /* THE COUNTDOWN IS THE POINT. "Market closed" tells a farmer nothing he
+     cannot see out of the window; "opens in 4h 00m" tells him when to look
+     again. The session name comes first because it is the fact, and the
+     countdown second because it is the consequence. */
+  var txt='\u25CF '+s.label.toUpperCase();
+  if(left)txt+=' \u00B7 '+s.untilLabel+' in '+left;
+  marketBadge.textContent=txt;
+  marketBadge.title=s.holiday
+    ? s.holiday+' \u2014 CME publishes a modified schedule for holidays and finalises it about two weeks ahead. Check CME before relying on these times today.'
+    : 'CBOT grains: 7:00pm\u20137:45am CT Sun\u2013Fri, and 8:30am\u20131:20pm CT Mon\u2013Fri (CME).';
+  if(s.holiday)marketBadge.textContent+=' \u00B7 '+s.holiday;
+  /* One timer, re-armed on the minute rather than every second: nothing here
+     changes faster than that, and a page left open on a phone in a tractor
+     should not spin. */
+  if(_mktTick)clearTimeout(_mktTick);
+  _mktTick=setTimeout(updateMarketBadge,60000-(now.getSeconds()*1000+now.getMilliseconds())+50);
 }
 
 if(wtdToggleBtn&&wtdBodyEl){
@@ -1262,7 +1485,9 @@ function groupElevators(bids){
   var map={};
   bids.forEach(function(b){
     var key=(b.facility||'')+'||'+(b.branch||'')+'||'+(b.city||'');
-    if(!map[key])map[key]={key:key,facility:b.facility,branch:b.branch,city:b.city,state:b.state,distance:b.distance,phone:b.phone,commodities:{},bestCash:null,bestBasis:null,asOfT:null};
+    if(!map[key])map[key]={key:key,facility:b.facility,branch:b.branch,city:b.city,state:b.state,distance:b.distance,phone:b.phone,commodities:{},bestCash:null,bestBasis:null,asOfT:null,via:null};
+    /* One row read straight from the board makes the elevator a direct read. */
+    if(b.via==='direct')map[key].via='direct';
     if(b.asOf){var _t=Date.parse(b.asOf);if(!isNaN(_t)&&(map[key].asOfT==null||_t>map[key].asOfT))map[key].asOfT=_t;}
     var e=map[key],cat=b.category||'other';
     if(!e.commodities[cat])e.commodities[cat]=[];
@@ -1534,10 +1759,39 @@ function renderBids(bids,keepLimit){
     html+='<div class="elev-head"><div class="elev-info"><div class="elev-name" title="'+escH(elev.facility)+'">'+escH(elev.facility)+'</div>';
     if(elev.branch&&elev.branch!==elev.facility)html+='<div class="elev-branch">'+escH(tidyBranch(elev.branch))+'</div>';
     if(cs)html+='<div class="elev-loc">'+escH(cs)+'</div>';
+    /* READ STRAIGHT FROM THIS ELEVATOR'S OWN BOARD, not licensed from a feed.
+       The badge is a claim about provenance, so it is drawn only when a row on
+       this card actually came from the elevator's own posting. */
+    if(elev.via==='direct')html+='<div class="elev-direct" title="AGSIST reads this elevator\u2019s own posted bid board">direct from the elevator</div>';
     /* Per-elevator stale flag: renders ONLY when the feed carries a real
        timestamp for this elevator AND it's >18h old — fresh or timestamp-less
        bids stay clean (the status-bar timer covers those). */
-    if(elev.asOfT!=null){var _age=Date.now()-elev.asOfT;if(_age>18*3600e3){var _d=new Date(elev.asOfT);html+='<div class="elev-stale" title="This elevator\u2019s bid feed hasn\u2019t updated recently — confirm before hauling">bids quoted '+_d.toLocaleDateString('en-US',{month:'short',day:'numeric'})+'</div>';}}
+    /* A BOARD THAT HAS NOT MOVED SINCE FRIDAY IS NOT BROKEN ON A SUNDAY.
+       The 18-hour rule is right for a feed that updates continuously and
+       wrong for an elevator's board, which is posted once a day and not at
+       all at weekends: every direct row would have carried this badge all
+       weekend and on Monday morning, sitting beside a badge claiming it was
+       read straight from the elevator.
+       The honest question is not how many hours have passed but how many DAY
+       SESSIONS have closed since the board last moved. None means this IS the
+       board. One means it has not been touched since the last close, which is
+       worth saying plainly rather than as a warning. Two or more is a warning. */
+    if(elev.asOfT!=null){
+      if(elev.via==='direct'){
+        var _cl=mktSessionsClosedSince(elev.asOfT,new Date());
+        if(_cl>=1){
+          var _dd=new Date(elev.asOfT);
+          var _lbl=_dd.toLocaleDateString('en-US',{weekday:'short'});
+          html+='<div class="elev-posted'+(_cl>=2?' elev-stale':'')+'" title="'+
+            (_cl>=2?'This board has not moved through '+_cl+' day sessions \u2014 confirm before hauling'
+                   :'The last board this elevator posted. The market has closed once since.')+
+            '">last posted '+_lbl+'</div>';
+        }
+      }else{
+        var _age=Date.now()-elev.asOfT;
+        if(_age>18*3600e3){var _d=new Date(elev.asOfT);html+='<div class="elev-stale" title="This elevator\u2019s bid feed hasn\u2019t updated recently — confirm before hauling">bids quoted '+_d.toLocaleDateString('en-US',{month:'short',day:'numeric'})+'</div>';}
+      }
+    }
     html+='</div><div class="elev-meta">';
     if(elev.distance!=null)html+='<div class="elev-dist">'+elev.distance.toFixed(0)+' mi away</div>';
     html+='<button class="pin-btn'+(isPinned?' pinned':'')+'" data-key="'+escH(elev.key)+'" aria-pressed="'+(isPinned?'true':'false')+'" aria-label="'+(isPinned?'Remove '+escH(elev.facility)+' from':'Add '+escH(elev.facility)+' to')+' comparison">'+(isPinned?'Added':'&#43; Compare')+'</button>';
@@ -1598,9 +1852,303 @@ function renderBids(bids,keepLimit){
   applyBasisHistory();
 }
 
+/* ═══════════════════════════════════════════════════════════════════════════
+ * THE BID NETWORK — elevators read straight from their own posted boards.
+ *
+ * WHY THIS EXISTS. Every bid on this page used to come from Barchart, which
+ * collects bids by hosting the elevator's website: its coverage is bounded by
+ * its client list, not by what elevators actually publish. dnilgis/bids reads
+ * the boards themselves — 650-odd of them across eight platforms — and
+ * publishes one merged feed on GitHub Pages with CORS already open.
+ *
+ * WHAT IT DOES NOT DO. It does not replace Barchart. It is merged in FRONT of
+ * it, and on a duplicate OURS WINS, because ours is the elevator's own posting
+ * and Barchart's is a copy of it. Everything else Barchart returns is kept.
+ *
+ * IT MUST NEVER BREAK THE PAGE. Every fetch below resolves to an empty set on
+ * any failure — a 404, a timeout, a malformed shard, no network at all. If the
+ * whole feed is down the page is exactly what it was before this block
+ * existed. That is why fetchNetwork never rejects.
+ * ═══════════════════════════════════════════════════════════════════════════ */
+/* ── THE OFF SWITCH ────────────────────────────────────────────────────────
+   Set this to false and the page is EXACTLY what it was before the bid network
+   existed: Barchart only, no extra requests, no badge, no counter. One word,
+   one file, no merge to unpick. It is here at the top where it can be found in
+   a hurry rather than buried in a function.
+   ?nonetwork=1 does the same thing for one page load, so the two can be
+   compared side by side without deploying anything. */
+var NET_ON = true;
+var NET_DEBUG = false;
+try {
+  if (/[?&]nonetwork=1/.test(location.search)) NET_ON = false;
+  /* ?netdebug=1 — the network says what it did and how long it took. The
+     design fails soft on purpose, so without this a real failure (a CORS
+     refusal, a 404, a hung host) is indistinguishable from "no elevators near
+     you". This is the ten-second answer to "is it actually working". */
+  if (/[?&]netdebug=1/.test(location.search)) NET_DEBUG = true;
+} catch (e) {}
+function netLog(){
+  if(!NET_DEBUG||typeof console==='undefined')return;
+  var a=['%c[bid network]','color:#d4a23f;font-weight:700'];
+  for(var i=0;i<arguments.length;i++)a.push(arguments[i]);
+  console.log.apply(console,a);
+}
+var NET_BASE='https://dnilgis.github.io/bids/';
+var NET_MAX_PLACES=60;      /* shards fetched per lookup; 60 covers 250 miles */
+var NET_TIMEOUT_MS=2500;    /* one request */
+/* THE WHOLE ATTEMPT, END TO END. fetchNetwork chains three requests, so
+   per-request timeouts alone allowed a stalled feed to hold the page for
+   3 x 6s = 18 seconds while Barchart's answer sat finished and unused.
+   Whatever has arrived by this deadline is used; the rest is abandoned and
+   the page renders. Measured worst case with this in place: ~3.5s, and the
+   page is identical to today's either way. */
+var NET_DEADLINE_MS=3500;
+
+/* A fetch that gives up rather than hanging the page behind it. */
+function netGet(path){
+  return new Promise(function(resolve){
+    var done=false,t0=Date.now();
+    var t=setTimeout(function(){
+      if(!done){done=true;netLog('TIMED OUT after '+NET_TIMEOUT_MS+'ms:',path);resolve(null);}
+    },NET_TIMEOUT_MS);
+    fetch(NET_BASE+path,{cache:'default'}).then(function(r){
+      if(!r.ok)netLog('HTTP '+r.status+' ('+(Date.now()-t0)+'ms):',path);
+      return r.ok?r.json():null;
+    }).then(function(j){
+      if(!done){done=true;clearTimeout(t);
+        if(j)netLog('ok ('+(Date.now()-t0)+'ms):',path);
+        resolve(j);}
+    }).catch(function(err){
+      if(!done){done=true;clearTimeout(t);
+        /* A CORS refusal arrives here as a TypeError with no status, and is
+           the single most likely reason for this to do nothing on a real
+           browser while every test passes. Name it. */
+        netLog('FAILED ('+(Date.now()-t0)+'ms):',path,'\u2014',String(err&&err.message||err),
+               '\u2014 if this says "Failed to fetch", the browser was not allowed to read it (CORS) or the host is unreachable');
+        resolve(null);}
+    });
+  });
+}
+
+/* A ZIP TO A COORDINATE, WITHOUT SHIPPING THE WHOLE TABLE.
+   41,917 centroids is 334 KB gzipped. Down a phone on a gravel road that is
+   the wrong trade to answer one question, so the table is sharded on the first
+   two digits: 54728 asks for zips/54.json, which is 4 KB. */
+function netZipCoord(zip){
+  var z=String(zip||'').trim().slice(0,5);
+  if(!/^\d{5}$/.test(z))return Promise.resolve(null);
+  return netGet('data/zips/'+z.slice(0,2)+'.json').then(function(tbl){
+    if(!tbl)return null;
+    var p=tbl[z];
+    if(!Array.isArray(p)||p.length<2)return null;
+    var lat=Number(p[0]),lon=Number(p[1]);
+    if(!isFinite(lat)||!isFinite(lon))return null;
+    /* 0,0 IS THE ATLANTIC. The builder drops these, but a coordinate that
+       means "we did not know" must never travel as one that means Ghana. */
+    if(lat===0&&lon===0)return null;
+    return [lat,lon];
+  });
+}
+
+/* Miles, because this page is in miles and the radius control says miles. */
+function netDistanceMi(a,b){
+  var R=3958.7613,rad=Math.PI/180;
+  var dLat=(b[0]-a[0])*rad,dLon=(b[1]-a[1])*rad;
+  var s=Math.sin(dLat/2)*Math.sin(dLat/2)+
+        Math.cos(a[0]*rad)*Math.cos(b[0]*rad)*Math.sin(dLon/2)*Math.sin(dLon/2);
+  return 2*R*Math.asin(Math.min(1,Math.sqrt(s)));
+}
+
+/* The nearest mappable places inside the radius, closest first. A place with
+   no coordinate is not "at 0 miles"; it is not returned at all. */
+function netPlacesWithin(index,coord,radiusMi,cap){
+  if(!index||!Array.isArray(index.places)||!coord)return [];
+  var out=[];
+  index.places.forEach(function(p){
+    if(!p||p.mappable===false)return;
+    var lat=Number(p.lat),lon=Number(p.lon);
+    if(!isFinite(lat)||!isFinite(lon))return;
+    if(lat===0&&lon===0)return;
+    if(!p.shard)return;
+    var d=netDistanceMi(coord,[lat,lon]);
+    if(d>radiusMi)return;
+    out.push({shard:p.shard,distance:d,operator:p.operator,city:p.city,state:p.state});
+  });
+  out.sort(function(x,y){return x.distance-y.distance;});
+  return out.slice(0,cap||NET_MAX_PLACES);
+}
+
+/* A MERGED BID BECOMES A ROW THIS PAGE ALREADY KNOWS HOW TO DRAW.
+   The shapes differ in three ways that matter and nowhere else: our `crop` is
+   already bucketed but is re-derived through classify() anyway so one rule
+   governs both feeds; our basis is per-bushel dollars, which is what the page
+   expects; and our distance is computed here because the feed does not know
+   where the reader is standing. */
+function netRowsFrom(shard,distanceMi){
+  if(!shard||!Array.isArray(shard.bids))return [];
+  var rows=[];
+  shard.bids.forEach(function(b){
+    if(!b)return;
+    var cash=(typeof b.cash==='number'&&isFinite(b.cash))?b.cash:null;
+    /* NOT `parseFloat(x)||null`. A FLAT basis is zero and zero is falsy, and
+       that bug already shipped once on this page: it published the strongest
+       basis on a board as "unknown" and sorted it below minus eighty cents. */
+    var basis=(typeof b.basis==='number'&&isFinite(b.basis))?b.basis:null;
+    if(cash===null&&basis===null)return;
+    rows.push({
+      facility:b.operator||shard.operator||'Unknown',
+      branch:b.branch||'',
+      city:b.city||shard.city||'',
+      state:b.state||shard.state||'',
+      distance:(typeof distanceMi==='number'&&isFinite(distanceMi))?distanceMi:null,
+      phone:'',
+      commodity:b.commodity||'',
+      cashPrice:cash,
+      basis:basis,
+      deliveryMonth:b.delivery||'',
+      deliveryStart:'',
+      symbol:b.futuresSymbol||'',
+      basisMonth:b.futuresMonth||'',
+      asOf:shard.pricedAt||shard.checkedAt||'',
+      category:classify(b.commodity||b.crop||''),
+      via:'direct'
+    });
+  });
+  return rows;
+}
+
+/* THE DUPLICATE RULE, AND IT IS THE POINT OF THE WHOLE EXERCISE.
+   Same facility, same town, same state = the same elevator, however the two
+   feeds spell it. When both have it, ours is kept and Barchart's is dropped,
+   because ours is what the elevator posted and Barchart's is a copy. */
+function netKey(r){
+  return [(r.facility||''),(r.city||''),(r.state||'')]
+    .map(function(s){return String(s).toLowerCase().replace(/[^a-z0-9]/g,'');})
+    .join('|');
+}
+/* WHAT OURS INHERITS WHEN IT WINS.
+   Ours wins on PRICE, because ours is the elevator's own posting and
+   Barchart's is a copy of it. It does not follow that ours knows more about
+   the elevator. The merged feed carries no phone number at all, so displacing
+   Barchart's row silently removed the Call button from the card — found by
+   rendering the page, not by any of the checks that came before it.
+   These are facts about the business, not about the bid, so they cross over. */
+var NET_INHERIT=['phone'];
+function netMerge(barchartRows,networkRows){
+  var mine={},kept=[],dropped=0,byKey={};
+  (networkRows||[]).forEach(function(r){
+    var k=netKey(r);
+    mine[k]=true;kept.push(r);
+    (byKey[k]=byKey[k]||[]).push(r);
+  });
+  (barchartRows||[]).forEach(function(r){
+    var k=netKey(r);
+    if(mine[k]){
+      dropped++;
+      /* Carry across anything ours does not have. Never overwrite: if our own
+         source gave us a phone one day, it is the elevator's own and wins. */
+      (byKey[k]||[]).forEach(function(ours){
+        NET_INHERIT.forEach(function(f){
+          if(!ours[f]&&r[f])ours[f]=r[f];
+        });
+      });
+      return;
+    }
+    kept.push(r);
+  });
+  return {rows:kept,duplicatesResolved:dropped};
+}
+
+/* Never rejects. Resolves to an empty result on any failure at all. */
+function fetchNetwork(zip,radiusMi){
+  var empty={rows:[],places:0,duplicatesResolved:0,nationalPlaces:null};
+  /* Off means off: no request is made at all, not merely ignored. */
+  if(!NET_ON)return Promise.resolve(empty);
+  /* THE DEADLINE WRAPS EVERYTHING BELOW. Whichever settles first wins, and the
+     loser is simply dropped — there is nothing to clean up, because every path
+     in here resolves rather than rejects. */
+  return Promise.race([
+    new Promise(function(res){setTimeout(function(){res(empty);},NET_DEADLINE_MS);}),
+    _fetchNetworkInner(zip,radiusMi,empty)
+  ]);
+}
+function _fetchNetworkInner(zip,radiusMi,empty){
+  return netZipCoord(zip).then(function(coord){
+    if(!coord)return empty;
+    return netGet('data/merged-index.json').then(function(index){
+      if(!index)return empty;
+      var national=(index.counts&&index.counts.places)||null;
+      var near=netPlacesWithin(index,coord,radiusMi||50,NET_MAX_PLACES);
+      if(!near.length)return {rows:[],places:0,duplicatesResolved:0,nationalPlaces:national};
+      return Promise.all(near.map(function(p){
+        return netGet('data/'+p.shard).then(function(s){
+          return s?netRowsFrom(s,p.distance):[];
+        });
+      })).then(function(lists){
+        var rows=[],places=0;
+        lists.forEach(function(l){if(l.length){places++;rows=rows.concat(l);}});
+        return {rows:rows,places:places,duplicatesResolved:0,nationalPlaces:national};
+      });
+    });
+  }).catch(function(){return empty;});
+}
+
+/* BOTH FEEDS, AND THE NETWORK CANNOT BREAK THE PAGE.
+   Barchart is still the call that decides success or failure: if it fails the
+   page errors exactly as it always did. The network is asked alongside it and
+   contributes whatever it has, including nothing. */
+var cbNetStats={places:0,rows:0,duplicatesResolved:0,nationalPlaces:null};
+/* SAY HOW MANY OF THESE CAME STRAIGHT FROM THE ELEVATOR.
+   This was computed on every search and rendered nowhere — dead from the day
+   it was written, and invisible to every check that was not a real browser.
+   It is the one line on the page that explains what makes it different from
+   the five elevators AgWeb will show for free, so it should be on it. */
+function renderNetStats(){
+  renderNetworkNote();
+  var el=document.getElementById('cb-net-stats');
+  if(!el)return;
+  if(!cbNetStats.places){el.style.display='none';el.textContent='';return;}
+  var t=cbNetStats.places+' read direct';
+  if(cbNetStats.duplicatesResolved)
+    t+=' \u00B7 '+cbNetStats.duplicatesResolved+' duplicate'+
+       (cbNetStats.duplicatesResolved===1?'':'s')+' resolved in the elevator\u2019s favour';
+  if(cbNetStats.nationalPlaces)
+    t+=' \u00B7 '+cbNetStats.nationalPlaces+' nationally';
+  el.textContent=t;
+  el.title='AGSIST reads these elevators\u2019 own posted bid boards, rather than licensing them from a feed.';
+  el.style.display='';
+}
+
+/* ONE SENTENCE, AND ONLY WHEN IT IS TRUE OF THIS SEARCH.
+   A banner that appears whether or not the reader can see the thing it
+   announces is an advert. This is drawn only when at least one elevator on
+   the page was read from its own board, and it names how many. */
+function renderNetworkNote(){
+  var p=document.getElementById('cb-network-note'),
+      t=document.getElementById('cb-network-note-text');
+  if(!p||!t)return;
+  if(!cbNetStats.places){p.style.display='none';return;}
+  t.textContent=cbNetStats.places+' of the elevators below '+
+    (cbNetStats.places===1?'is':'are')+
+    ' read straight from their own posted board \u2014 marked '+
+    '\u201Cdirect from the elevator\u201D. ';
+  p.style.display='';
+}
 function fetchBids(zip,radius,callback){
   var url=BASE_URL+'?zipCode='+encodeURIComponent(zip)+'&maxDistance='+(radius||50)+'&getAllBids=1';
-  fetch(url).then(function(r){return r.ok?r.json():Promise.reject('HTTP '+r.status);}).then(function(data){var bids=flatten(data);bids=bids.filter(function(b){return b.cashPrice!==null||b.basis!==null;});callback(null,bids);}).catch(function(err){
+  var net=fetchNetwork(zip,radius||50);
+  fetch(url).then(function(r){return r.ok?r.json():Promise.reject('HTTP '+r.status);}).then(function(data){var bids=flatten(data);bids=bids.filter(function(b){return b.cashPrice!==null||b.basis!==null;});
+    return net.then(function(n){
+      var merged=netMerge(bids,n.rows);
+      cbNetStats={places:n.places,rows:n.rows.length,duplicatesResolved:merged.duplicatesResolved,nationalPlaces:n.nationalPlaces};
+      netLog('result:',n.places+' places, '+n.rows.length+' rows, '+
+             merged.duplicatesResolved+' duplicate(s) resolved; Barchart contributed '+
+             bids.length+' rows; the page will draw '+merged.rows.length,
+             NET_ON?'':'(NETWORK IS SWITCHED OFF)');
+      renderNetStats();
+      callback(null,merged.rows);
+    });
+  }).catch(function(err){
     var msg=String(err);
     var human=msg.indexOf('429')>=0?'Too many requests \u2014 wait a moment and try again.':msg.indexOf('5')>=0&&/HTTP 5/.test(msg)?'Barchart data service is temporarily unavailable. Try again shortly.':msg.indexOf('Failed to fetch')>=0||msg.indexOf('NetworkError')>=0||msg.indexOf('TypeError')>=0?'Couldn\u2019t reach the bid service \u2014 it may be busy or briefly down (it\u2019s usually not your signal). Tap Retry in a few seconds.':'Could not load bids \u2014 please try again.';
     console.warn('[AGSIST]',err);callback(new Error(human),[]);

@@ -85,6 +85,25 @@ CURATED = {
     "data/rma-planting-dates.json",
 }
 
+# ── feeds another repository publishes, and this one only reads ─────────────
+# cash-bids.html merges two sources: Barchart, and the elevator boards that
+# dnilgis/bids reads itself. The second is published by that repository's own
+# workflows to GitHub Pages, with CORS open, and NOTHING in this repository
+# writes it — which is exactly right, and which the manifest would otherwise
+# have to call "unknown" forever.
+#
+# It is not CURATED: no person edits it by hand. It is not PLANNED: it is live
+# and current. It is external, and the cadence belongs to the other side.
+EXTERNAL = {
+    "data/merged-index.json": (
+        "published by dnilgis/bids, refreshed with the boards",
+        "The elevator bid network. dnilgis/bids reads ~650 boards and publishes "
+        "this index and its shards to dnilgis.github.io/bids on its own "
+        "schedule. cash-bids.html fetches it and falls back to Barchart alone "
+        "if it is unreachable, so a stale or missing feed costs coverage and "
+        "never breaks the page."),
+}
+
 # ── feeds a page is ready for but nothing publishes yet ──────────────────────
 # Declared, not guessed: milk-prices.html says so in its own source — "Loads
 # /data/dairy-data.json when the pipeline ships it. Every field falls back" —
@@ -261,23 +280,26 @@ def main():
         touched = sorted(set(wf_touch.get(f, [])) | set(wf_writes.get(f, [])))
         crons = [c for w in ws for c in wf_cron[w]]
         state, why = QUIET.get(f, PLANNED.get(f, (None, None)))
+        ext = EXTERNAL.get(f)
         feeds.append({
             "path": f,
             "pages": sorted(readers[f]),
             "written_by": [wf_name[w] for w in ws],
             "touched_by": [wf_name[w] for w in touched],
             "cadence": (cron_sentence(crons)
-                        or ("maintained by hand, not on a schedule" if f in CURATED
+                        or (ext[0] if ext
+                            else "maintained by hand, not on a schedule" if f in CURATED
                             else "on demand" if ws else "unknown")),
             "curated": f in CURATED,
             "planned": f in PLANNED,
+            "external": bool(ext),
             "crons": crons,
             # The longest legitimate silence, straight off the crons — so the
             # status page never carries a hand-typed threshold that goes stale
             # the day a schedule moves.
             "max_gap_hours": max_gap_hours(crons),
             "quiet": state,
-            "why_quiet": why,
+            "why_quiet": why if why else (ext[1] if ext else None),
         })
 
     known = sum(1 for x in feeds if x["cadence"] != "unknown")
@@ -304,7 +326,7 @@ def main():
     unknown = [x["path"] for x in feeds if x["cadence"] == "unknown"]
     print("  %d curated by hand" % sum(1 for x in feeds if x["curated"]))
     if unknown:
-        print("  NO WRITER AND NOT DECLARED CURATED — decide which: "
+        print("  NO WRITER AND NOT DECLARED CURATED OR EXTERNAL — decide which: "
               + ", ".join(unknown))
     return 1 if unknown else 0
 

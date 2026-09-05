@@ -521,15 +521,20 @@
       if(qs && STATE_BBOX[qs]){ var bb=STATE_BBOX[qs]; map.fitBounds([[bb[1],bb[0]],[bb[3],bb[2]]]); }
       if(qp.get('lat')&&qp.get('lon')){ var la=+qp.get('lat'), lo=+qp.get('lon');
         if(isFinite(la)&&isFinite(lo)){ map.setView([la,lo],9); setTimeout(function(){ runLookup(la,lo,null); },400); } }
-      // sponsor-slot intent metrics: one view event when seen, click event on the CTA
+      // HOUSE SLOT, COUNTED AS A HOUSE SLOT. #hm-sponsor says "Sponsor this
+      // map" -- it is us selling the ribbon, not a sponsor's ad in it. The
+      // hm_sponsor_view observer was REMOVED 2026-09-05 because "sponsor view"
+      // is what it was named and not what it measured, and a name like that
+      // ends up in somebody's report. The CTA click stays: it is a real
+      // signal, and it is a sponsorship ENQUIRY, so it is named as one and is
+      // not in any sponsor's click total.
+      //
+      // When this ribbon is sold, give the filled markup data-sponsor-slot
+      // and data-sponsor-click (see components/sponsor-metrics.js) and leave
+      // this enquiry event on whatever house copy remains.
       try{
-        var sp=document.getElementById('hm-sponsor');
-        if(sp && 'IntersectionObserver' in window){
-          var io=new IntersectionObserver(function(en){ if(en[0].isIntersecting){ ga('hm_sponsor_view',{slot:'hail-map'}); io.disconnect(); } },{threshold:.6});
-          io.observe(sp);
-        }
         var cta=document.getElementById('hm-sponsor-cta');
-        if(cta) cta.addEventListener('click', function(){ ga('hm_sponsor_click',{slot:'hail-map'}); });
+        if(cta) cta.addEventListener('click', function(){ ga('sponsor_enquiry_click',{slot:'hail-map'}); });
       }catch(e){}
 
       loadCounties();

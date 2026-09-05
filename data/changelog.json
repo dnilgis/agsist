@@ -1,7 +1,36 @@
 {
- "updated": "2026-08-26",
+ "updated": "2026-09-05",
  "note": "Curated by hand each work session. Dates are the day the change was built; uploads usually land the same day or the next. Machine-refreshed data (prices, bids, weather, briefings) is not logged here — that updates continuously.",
  "entries": [
+  {
+   "date": "2026-09-05",
+   "items": [
+    {
+     "tag": "new",
+     "page": "/cash-bids",
+     "name": "Bids read straight from the elevator",
+     "text": "AGSIST now reads a growing number of elevators' own posted bid boards directly, rather than only through a licensed feed. Where we do, the card says “direct from the elevator” and that board is the one you see — it is the elevator's own posting, so it wins over any copy of it. Everything else is unchanged, and the page still shows every elevator it showed before."
+    },
+    {
+     "tag": "new",
+     "page": "/elevators",
+     "name": "Coverage map",
+     "text": "A map of every grain elevator AGSIST tracks nationwide. Green is one we read direct; grey is one we know about and are working through. Click a pin to see what is there. If your elevator is grey, the form on that page is the fastest way to move it up."
+    },
+    {
+     "tag": "new",
+     "page": "/cash-bids",
+     "name": "Market session clock",
+     "text": "The badge beside the results now says which CBOT session is running and counts down to the next one — the overnight session, the 8:30 open, the 1:20 close, and the Sunday evening reopen. It previously only knew about the day session, so it read “market closed” through every overnight."
+    },
+    {
+     "tag": "fixed",
+     "page": "/cash-bids",
+     "name": "Weekend bids no longer look stale",
+     "text": "An elevator that posted its board on Friday was being flagged as out of date all weekend. A board is now judged against the trading calendar rather than a fixed number of hours, so Friday's board reads as Friday's board — which is what it is until the market reopens."
+    }
+   ]
+  },
   {
    "date": "2026-08-26",
    "items": [

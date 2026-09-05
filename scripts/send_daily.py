@@ -218,22 +218,65 @@ def main():
 
     sent, failed = 0, []
     ctx = ssl.create_default_context()
-    with smtplib.SMTP(host, port, timeout=30) as s:
-        s.starttls(context=ctx)
-        s.login(user, pw)
+
+    def connect():
+        """A fresh, logged-in connection. Called again if one dies mid-list."""
+        c = smtplib.SMTP(host, port, timeout=30)
+        c.starttls(context=ctx)
+        c.login(user, pw)
+        return c
+
+    # ONE CONNECTION SERVED THE WHOLE LIST, AND THAT WAS THE QUIET HALF.
+    #
+    # The wide `except Exception` below was added after issue #177 went out
+    # seven times: a socket timeout, an SSLError or a reset connection is not
+    # an SMTPException, so it aborted the loop with the day flag never set and
+    # the rerun re-sent to everyone who already had it.
+    #
+    # But catching it per recipient is not enough on its own. A dead socket
+    # fails EVERY remaining send, so a drop at recipient N meant everyone after
+    # N silently got nothing while `sent > 0` still flagged the day delivered
+    # and a rerun refused. One reconnect per fatal failure, three at most, so a
+    # bad socket costs one email rather than the tail of the list.
+    conn = connect()
+    reconnects, MAX_RECONNECTS = 0, 3
+    try:
         for i, r in enumerate(recipients):
             try:
-                s.send_message(build_email(day, b, r, from_name, from_addr, reply_to))
+                conn.send_message(build_email(day, b, r, from_name, from_addr, reply_to))
                 sent += 1
             except Exception as ex:
-                # Was smtplib.SMTPException only, so a socket timeout, an
-                # SSLError or a reset connection aborted the loop with the day
-                # flag never set — and the rerun then re-sent to everyone who
-                # had already received it. Catch everything per recipient and
-                # keep going; the flag below still gets set.
                 failed.append(r + " (" + type(ex).__name__ + ")")
+                # smtplib.SMTPException INHERITS FROM OSError in Python 3, so a
+                # bare isinstance(ex, OSError) is true for every SMTP error
+                # there is — including one refused address, which would then
+                # open a whole new connection. A raw OSError that is NOT an
+                # SMTPException is the one that means the pipe is dead.
+                fatal = (isinstance(ex, (smtplib.SMTPServerDisconnected,
+                                         smtplib.SMTPConnectError))
+                         or (isinstance(ex, OSError)
+                             and not isinstance(ex, smtplib.SMTPException)))
+                if fatal and reconnects < MAX_RECONNECTS and i < len(recipients) - 1:
+                    reconnects += 1
+                    print("  connection lost after %d sent; reconnecting (%d/%d)"
+                          % (sent, reconnects, MAX_RECONNECTS))
+                    try:
+                        conn.quit()
+                    except Exception:
+                        pass
+                    try:
+                        conn = connect()
+                    except Exception as ex2:
+                        print("::error::could not reconnect (%s) — %d of %d briefings sent"
+                              % (type(ex2).__name__, sent, len(recipients)))
+                        break
             if i < len(recipients) - 1:
                 time.sleep(1.2)  # gentle throttle keeps Gmail happy
+    finally:
+        try:
+            conn.quit()
+        except Exception:
+            pass
     print("sent " + str(sent) + "/" + str(len(recipients)))
     # Set the day flag whenever ANY mail went out. Anyone who received a copy
     # must never get a second one, so the flag is about the day, not about
@@ -241,7 +284,7 @@ def main():
     if sent > 0:
         flag(day, set_it=True)
     if failed:
-        print("failed (" + str(len(failed)) + " of " + str(len(recipients))
+        print("::error::failed (" + str(len(failed)) + " of " + str(len(recipients))
               + ") — the day is flagged, so a plain rerun will NOT resend to "
               "anyone. Resend to these addresses individually: " + ", ".join(failed))
     return 0 if sent > 0 else 1

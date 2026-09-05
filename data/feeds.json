@@ -2,8 +2,8 @@
  "schema": "agsist-feeds/1",
  "generated_by": "scripts/build_feeds.py",
  "note": "Derived from the repository, never typed. Pages come from a grep of every .html; the writer and its cadence come from the workflow that names the file or runs the script that names it.",
- "count": 45,
- "with_known_cadence": 45,
+ "count": 47,
+ "with_known_cadence": 47,
  "feeds": [
   {
    "path": "data/afida/county.json",
@@ -15,6 +15,7 @@
    "cadence": "maintained by hand, not on a schedule",
    "curated": true,
    "planned": false,
+   "external": false,
    "crons": [],
    "max_gap_hours": null,
    "quiet": null,
@@ -37,6 +38,7 @@
    "cadence": "on demand",
    "curated": false,
    "planned": false,
+   "external": false,
    "crons": [],
    "max_gap_hours": null,
    "quiet": null,
@@ -58,6 +60,7 @@
    "cadence": "2 launches on a fixed schedule at about 6am Central",
    "curated": false,
    "planned": false,
+   "external": false,
    "crons": [
     "7,37 11-21 * * 1-5",
     "37 11 * * 6"
@@ -90,6 +93,7 @@
    "cadence": "6 launches on a fixed schedule at about 6am, 7am, 8am, 9am Central",
    "curated": false,
    "planned": false,
+   "external": false,
    "crons": [
     "45 12 * * 4",
     "45 13 * * 4",
@@ -116,6 +120,7 @@
    "cadence": "on demand",
    "curated": false,
    "planned": false,
+   "external": false,
    "crons": [],
    "max_gap_hours": null,
    "quiet": null,
@@ -136,6 +141,7 @@
    "cadence": "1 launch on a fixed schedule at about 8pm Central",
    "curated": false,
    "planned": false,
+   "external": false,
    "crons": [
     "12 1 * * 2"
    ],
@@ -157,6 +163,7 @@
    "cadence": "9 launches on a fixed schedule at about 2pm, 3pm, 4pm Central",
    "curated": false,
    "planned": false,
+   "external": false,
    "crons": [
     "45 19 * * 5",
     "15 20 * * 5",
@@ -196,6 +203,7 @@
    "cadence": "9 launches on a fixed schedule at about 2pm, 3pm, 4pm Central",
    "curated": false,
    "planned": false,
+   "external": false,
    "crons": [
     "45 19 * * 5",
     "15 20 * * 5",
@@ -229,6 +237,7 @@
    "cadence": "4 launches on a fixed schedule at about 7am, 3pm, 4pm Central",
    "curated": false,
    "planned": false,
+   "external": false,
    "crons": [
     "15 20 * * 1",
     "15 21 * * 1",
@@ -256,6 +265,7 @@
    "cadence": "4 launches on a fixed schedule at about 5am, 6am, 8am, 3pm Central",
    "curated": false,
    "planned": false,
+   "external": false,
    "crons": [
     "19 10 * * *",
     "41 11 * * *",
@@ -289,6 +299,7 @@
    "cadence": "4 launches on a fixed schedule at about 5am, 6am, 8am, 3pm Central",
    "curated": false,
    "planned": false,
+   "external": false,
    "crons": [
     "19 10 * * *",
     "41 11 * * *",
@@ -310,10 +321,33 @@
    "cadence": "maintained by hand, not on a schedule",
    "curated": true,
    "planned": true,
+   "external": false,
    "crons": [],
    "max_gap_hours": null,
    "quiet": "planned",
    "why_quiet": "The dairy pipeline is not built yet. milk-prices.html expects this and falls back field by field when it is missing, on purpose."
+  },
+  {
+   "path": "data/elevator-coverage.json",
+   "pages": [
+    "elevators.html"
+   ],
+   "written_by": [
+    "Coverage map \u2014 the elevator directory, drawn"
+   ],
+   "touched_by": [
+    "Coverage map \u2014 the elevator directory, drawn"
+   ],
+   "cadence": "1 launch every day at about 7am Central",
+   "curated": false,
+   "planned": false,
+   "external": false,
+   "crons": [
+    "38 12 * * *"
+   ],
+   "max_gap_hours": 24.0,
+   "quiet": null,
+   "why_quiet": null
   },
   {
    "path": "data/export-sales.json",
@@ -331,6 +365,7 @@
    "cadence": "4 launches on a fixed schedule at about 7am, 8am, 9am Central",
    "curated": false,
    "planned": false,
+   "external": false,
    "crons": [
     "45 12 * * 4",
     "45 13 * * 4",
@@ -358,6 +393,7 @@
    "cadence": "on demand",
    "curated": false,
    "planned": false,
+   "external": false,
    "crons": [],
    "max_gap_hours": null,
    "quiet": null,
@@ -378,6 +414,7 @@
    "cadence": "1 launch every day at about 3am Central",
    "curated": false,
    "planned": false,
+   "external": false,
    "crons": [
     "25 8 * * *"
    ],
@@ -399,6 +436,7 @@
    "cadence": "1 launch every day at about 3am Central",
    "curated": false,
    "planned": false,
+   "external": false,
    "crons": [
     "47 8 15 1 *"
    ],
@@ -423,6 +461,7 @@
    "cadence": "1 launch weekdays at about 4pm Central",
    "curated": false,
    "planned": false,
+   "external": false,
    "crons": [
     "45 21 * * 1-5"
    ],
@@ -451,12 +490,29 @@
    "cadence": "1 launch every day at about 4am Central",
    "curated": false,
    "planned": false,
+   "external": false,
    "crons": [
     "23 9 * * *"
    ],
    "max_gap_hours": 24.0,
    "quiet": null,
    "why_quiet": null
+  },
+  {
+   "path": "data/merged-index.json",
+   "pages": [
+    "cash-bids.html"
+   ],
+   "written_by": [],
+   "touched_by": [],
+   "cadence": "published by dnilgis/bids, refreshed with the boards",
+   "curated": false,
+   "planned": false,
+   "external": true,
+   "crons": [],
+   "max_gap_hours": null,
+   "quiet": null,
+   "why_quiet": "The elevator bid network. dnilgis/bids reads ~650 boards and publishes this index and its shards to dnilgis.github.io/bids on its own schedule. cash-bids.html fetches it and falls back to Barchart alone if it is unreachable, so a stale or missing feed costs coverage and never breaks the page."
   },
   {
    "path": "data/nass/corn-acres.json",
@@ -474,6 +530,7 @@
    "cadence": "on demand",
    "curated": false,
    "planned": false,
+   "external": false,
    "crons": [],
    "max_gap_hours": null,
    "quiet": null,
@@ -495,6 +552,7 @@
    "cadence": "on demand",
    "curated": false,
    "planned": false,
+   "external": false,
    "crons": [],
    "max_gap_hours": null,
    "quiet": null,
@@ -516,6 +574,7 @@
    "cadence": "on demand",
    "curated": false,
    "planned": false,
+   "external": false,
    "crons": [],
    "max_gap_hours": null,
    "quiet": null,
@@ -537,6 +596,7 @@
    "cadence": "on demand",
    "curated": false,
    "planned": false,
+   "external": false,
    "crons": [],
    "max_gap_hours": null,
    "quiet": null,
@@ -558,6 +618,7 @@
    "cadence": "on demand",
    "curated": false,
    "planned": false,
+   "external": false,
    "crons": [],
    "max_gap_hours": null,
    "quiet": null,
@@ -579,6 +640,7 @@
    "cadence": "on demand",
    "curated": false,
    "planned": false,
+   "external": false,
    "crons": [],
    "max_gap_hours": null,
    "quiet": null,
@@ -600,6 +662,7 @@
    "cadence": "on demand",
    "curated": false,
    "planned": false,
+   "external": false,
    "crons": [],
    "max_gap_hours": null,
    "quiet": null,
@@ -621,6 +684,7 @@
    "cadence": "on demand",
    "curated": false,
    "planned": false,
+   "external": false,
    "crons": [],
    "max_gap_hours": null,
    "quiet": null,
@@ -642,6 +706,7 @@
    "cadence": "on demand",
    "curated": false,
    "planned": false,
+   "external": false,
    "crons": [],
    "max_gap_hours": null,
    "quiet": null,
@@ -663,6 +728,7 @@
    "cadence": "on demand",
    "curated": false,
    "planned": false,
+   "external": false,
    "crons": [],
    "max_gap_hours": null,
    "quiet": null,
@@ -683,6 +749,7 @@
    "cadence": "on demand",
    "curated": false,
    "planned": false,
+   "external": false,
    "crons": [],
    "max_gap_hours": null,
    "quiet": null,
@@ -703,6 +770,7 @@
    "cadence": "1 launch every day at about 7pm Central",
    "curated": false,
    "planned": false,
+   "external": false,
    "crons": [
     "15 * * * *"
    ],
@@ -720,6 +788,7 @@
    "cadence": "maintained by hand, not on a schedule",
    "curated": true,
    "planned": false,
+   "external": false,
    "crons": [],
    "max_gap_hours": null,
    "quiet": null,
@@ -744,6 +813,7 @@
    "cadence": "1 launch weekdays at about 4pm Central",
    "curated": false,
    "planned": false,
+   "external": false,
    "crons": [
     "40 21 * * 1-5"
    ],
@@ -784,6 +854,7 @@
    "cadence": "11 launches on a fixed schedule at about 5am, 6am, 8am, 11am Central",
    "curated": false,
    "planned": false,
+   "external": false,
    "crons": [
     "19 10 * * *",
     "41 11 * * *",
@@ -812,6 +883,7 @@
    "cadence": "maintained by hand, not on a schedule",
    "curated": true,
    "planned": false,
+   "external": false,
    "crons": [],
    "max_gap_hours": null,
    "quiet": null,
@@ -828,6 +900,7 @@
    "cadence": "maintained by hand, not on a schedule",
    "curated": true,
    "planned": false,
+   "external": false,
    "crons": [],
    "max_gap_hours": null,
    "quiet": null,
@@ -847,6 +920,7 @@
    "cadence": "1 launch every day at about 5pm Central",
    "curated": false,
    "planned": false,
+   "external": false,
    "crons": [
     "10 22 * * *"
    ],
@@ -871,6 +945,7 @@
    "cadence": "4 launches on a fixed schedule at about 5am, 6am, 8am, 3pm Central",
    "curated": false,
    "planned": false,
+   "external": false,
    "crons": [
     "19 10 * * *",
     "41 11 * * *",
@@ -896,6 +971,7 @@
    "cadence": "on demand",
    "curated": false,
    "planned": false,
+   "external": false,
    "crons": [],
    "max_gap_hours": null,
    "quiet": null,
@@ -915,6 +991,7 @@
    "cadence": "on demand",
    "curated": false,
    "planned": false,
+   "external": false,
    "crons": [],
    "max_gap_hours": null,
    "quiet": null,
@@ -927,11 +1004,16 @@
     "index1.html",
     "tariffs.html"
    ],
-   "written_by": [],
-   "touched_by": [],
+   "written_by": [
+    "Tariff data check"
+   ],
+   "touched_by": [
+    "Tariff data check"
+   ],
    "cadence": "maintained by hand, not on a schedule",
    "curated": true,
    "planned": false,
+   "external": false,
    "crons": [],
    "max_gap_hours": null,
    "quiet": null,
@@ -951,6 +1033,7 @@
    "cadence": "on demand",
    "curated": false,
    "planned": false,
+   "external": false,
    "crons": [],
    "max_gap_hours": null,
    "quiet": null,
@@ -970,6 +1053,7 @@
    "cadence": "1 launch Fridays at about 6am Central",
    "curated": false,
    "planned": false,
+   "external": false,
    "crons": [
     "43 11 * * 5"
    ],
@@ -991,6 +1075,7 @@
    "cadence": "1 launch Fridays at about 6am Central",
    "curated": false,
    "planned": false,
+   "external": false,
    "crons": [
     "43 11 * * 5"
    ],
@@ -1018,6 +1103,7 @@
    "cadence": "on demand",
    "curated": false,
    "planned": false,
+   "external": false,
    "crons": [],
    "max_gap_hours": null,
    "quiet": null,
@@ -1042,6 +1128,7 @@
    "cadence": "on demand",
    "curated": false,
    "planned": false,
+   "external": false,
    "crons": [],
    "max_gap_hours": null,
    "quiet": null,
