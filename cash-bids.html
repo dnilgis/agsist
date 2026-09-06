@@ -614,6 +614,9 @@ button,a,[role="button"],input,select{touch-action:manipulation}
       <span id="cb-network-note-text"></span>
       <a href="/elevators#coverage-map" style="color:var(--gold,#d4a23f)">See the coverage map &rarr;</a>
     </p>
+    <!-- Drawn by renderSeasonNote() only when a MONTH filter held back a board
+         that posts by season. Never on "Any delivery" or "Harvest". -->
+    <p id="cb-season-note" style="display:none;font-size:.9rem;color:var(--text-dim,#8a948f);margin:.5rem 0 0;line-height:1.6"></p>
     <p id="cb-confirm-note" style="display:none;font-size:1rem;color:var(--text-dim,#8a948f);margin:.4rem 0 0">Bids are indicative. Confirm with the elevator before you haul. Elevator operator? <a href="mailto:sig@farmers1st.com?subject=Cash%20bids%20correction" style="color:var(--gold,#d4a23f)">Report a correction &rarr;</a></p>
       <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap">
         <div class="cb-status-meta">
@@ -1391,6 +1394,30 @@ function delKey(b){
     var yr=mm[2].length===2?('20'+mm[2]):mm[2];
     return yr+'-'+('0'+(i+1)).slice(-2);
   }
+  /* MONTH, DAY, YEAR -- "Sep 01, 2026". CDR Farms of Bloomer, Wisconsin posts
+     every row that way, and the pattern above wants month-then-year with
+     nothing in between, so it matched nothing. A row read straight from a
+     board has no deliveryStart to fall back on either, so that elevator
+     dropped out of EVERY delivery filter, including harvest, while still
+     appearing under "Any delivery" — sixteen miles from ZIP 54771. Nothing is
+     guessed here: the month and the year are both printed on the row. The day
+     is discarded, because this key is a month. */
+  var md=/^([A-Za-z]{3})[A-Za-z]*\s+\d{1,2},\s*(\d{4})$/
+    .exec(String(b.deliveryMonth||'').trim());
+  var j=md?['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec']
+           .indexOf(md[1].toLowerCase()):-1;
+  if(j>=0)return md[2]+'-'+('0'+(j+1)).slice(-2);
+  /* THE FEED'S OWN ANSWER, WHEN THE LABEL IS NOT A MONTH THIS PAGE CAN READ.
+     Every AgriCharts mobile board writes its delivery as "09/01/2026", and
+     none of the patterns above is a date parser. dnilgis/bids already reads
+     that shape — lib/delivery.mjs, which knows every shape those boards use —
+     and writes the answer into the shard as `period`. Where that period is a
+     month it IS this key, and re-deriving it here from the printed label would
+     be doing the same work a second time and worse. A season ("newcrop-2026")
+     and a month pair ("2026-10/2026-11") do not match this shape and are
+     rightly left unkeyed: neither is one month. */
+  var p=/^(\d{4})-(\d{2})$/.exec(String(b.deliveryPeriod||''));
+  if(p)return p[1]+'-'+p[2];
   var m=/^(\d{4})-(\d{2})/.exec(String(b.deliveryStart||''));
   return m?m[1]+'-'+m[2]:'';
 }
@@ -1406,12 +1433,23 @@ function delLabel(k){
    that phrase means different months to different desks, and this control should
    say exactly which months it is showing rather than a word people read two
    ways. */
-function harvestKeys(keys){
+function harvestYear(){
   var now=new Date(), y=now.getFullYear();
   if(now.getMonth()>11)y++;
+  return y;
+}
+function harvestKeys(keys){
+  var y=harvestYear();
   var want=[y+'-10',y+'-11',y+'-12'];
   var have=want.filter(function(k){return keys.indexOf(k)!==-1;});
   return have.length?have:[];
+}
+/* A ROW THAT NAMES A SEASON INSTEAD OF A MONTH, AND WHETHER IT IS THIS HARVEST.
+   Read straight from the feed's own classification -- never inferred here from
+   the printed label, which is the mistake delKey() exists to refuse. */
+function isHarvestSeason(b){
+  var m=/^newcrop-(\d{4})$/.exec(String(b&&b.deliveryPeriod||''));
+  return !!m&&Number(m[1])===harvestYear();
 }
 function syncDeliveryOptions(bids){
   var sel=document.getElementById('cb-delivery');
@@ -1431,8 +1469,16 @@ function syncDeliveryOptions(bids){
   (bids||[]).forEach(function(b){var k=delKey(b);if(k&&k>=floorKey&&!seen[k]){seen[k]=1;keys.push(k);}});
   keys.sort();
   var hk=harvestKeys(keys);
+  /* AND OFFERED WHEN A SEASONAL LABEL IS THE ONLY THING THAT CAN ANSWER IT.
+     Boards read straight from the elevator often post "Fall 26" and no month at
+     all. Keying this control on month keys alone meant that where OUR feed was
+     the only feed nearby, the Harvest option was not offered — the one place it
+     was most wanted. */
+  var seasonal=(bids||[]).some(isHarvestSeason);
   var html='<option value="all">Any delivery</option>';
-  if(hk.length)html+='<option value="harvest">Harvest — '+hk.map(delLabel).join(', ')+'</option>';
+  if(hk.length||seasonal)
+    html+='<option value="harvest">Harvest — '+
+          (hk.length?hk.map(delLabel).join(', '):'fall '+harvestYear())+'</option>';
   keys.forEach(function(k){html+='<option value="'+k+'">'+delLabel(k)+'</option>';});
   sel.innerHTML=html;
   /* Keep the chosen period across a new search if that period still exists;
@@ -1450,11 +1496,25 @@ function syncDeliveryOptions(bids){
 function inDelivery(b){
   if(currentDelivery==='all')return true;
   var k=delKey(b);
-  if(!k)return false;
+  /* HARVEST IS A WINDOW, AND A SEASONAL LABEL NAMES THE SAME WINDOW.
+     Written as `if(!k)return false;` above everything else, this filter threw
+     away every bid whose label is a season rather than a month -- which is most
+     of what the boards we read ourselves actually post. Flash Grain, Thorp WI,
+     four miles from a reader in 54771, posts Fall 26 / Fall 27 / Fall 28: he
+     was on the page under "Any delivery" and gone under "Harvest", while
+     Barchart's copy of a neighbouring board stayed. The one feed that is ours
+     was the one the filter silently emptied.
+
+     A SEASON ANSWERS HARVEST AND NOTHING ELSE. "Fall 26" is the 2026 harvest
+     window; it is NOT October and it is not November, and the elevator never
+     said which. So a chosen MONTH still drops it -- inventing a month to keep
+     a card on the page is the same sin delKey() refuses -- and renderBids()
+     says out loud how many were withheld rather than letting them vanish. */
   if(currentDelivery==='harvest'){
-    var hk=harvestKeys([k]);
-    return hk.length>0;
+    if(k)return harvestKeys([k]).length>0;
+    return isHarvestSeason(b);
   }
+  if(!k)return false;
   return k===currentDelivery;
 }
 
@@ -1719,10 +1779,27 @@ var COMM_ICONS={corn:'<svg class="ic" aria-hidden="true"><use href="#i-sprout"/>
 var COMM_LABEL_MAP={corn:'Corn',soybeans:'Soybeans',wheat:'Wheat',other:'Other Grains'};
 
 var CB_PAGE_FIRST=10,CB_PAGE_STEP=20,cbVisibleLimit=CB_PAGE_FIRST,cbLastBids=null;
+/* ONE LINE, ONLY WHEN A CARD WAS HELD BACK, AND IT NAMES WHO.
+   The alternative is an elevator four miles away that is on the page under one
+   setting and gone under another with nothing said — which is how this was
+   reported: "i do see it when i default to all delivery months, but not when i
+   select the harvest months which is weird." */
+function renderSeasonNote(names){
+  var el=document.getElementById('cb-season-note');
+  if(!el)return;
+  if(!names||!names.length){el.style.display='none';el.textContent='';return;}
+  var lab=delLabel(currentDelivery), one=names.length===1;
+  el.textContent=names[0]+(one?'':' and '+(names.length-1)+' other'+(names.length>2?'s':''))+
+    ' post'+(one?'s':'')+' by season (\u201Cfall '+harvestYear()+'\u201D) rather than by '+
+    'month, so '+(one?'it is':'they are')+' not shown under '+lab+
+    ' \u2014 choose \u201CHarvest\u201D or \u201CAny delivery\u201D.';
+  el.style.display='';
+}
 function renderBids(bids,keepLimit){
   if(!keepLimit)cbVisibleLimit=CB_PAGE_FIRST;
   cbLastBids=bids;
   if(!bids||!bids.length){results.innerHTML='<div class="cb-empty"><div class="cb-empty-icon" aria-hidden="true"><svg class="ic" aria-hidden="true"><use href="#i-search"/></svg></div><h2>No Bids Found</h2><p>Try a larger search radius or a different ZIP code.</p></div>';elevCount.textContent='0 elevators';currentElevators=[];return;}
+  renderSeasonNote([]);
   var filtered=currentFilter==='all'?bids:bids.filter(function(b){return b.category===currentFilter;});
   /* The delivery filter is applied HERE, beside the commodity one, on purpose:
      everything downstream -- groupElevators, getBest, the best-bid cards, the
@@ -1733,7 +1810,20 @@ function renderBids(bids,keepLimit){
   var implausible=filtered.filter(function(b){return !plausible(b);});
   if(implausible.length)filtered=filtered.filter(plausible);
   if(currentDelivery!=='all'){
+    /* WHAT A MONTH FILTER CANNOT PLACE, IT SAYS OUT LOUD.
+       A board posting "Fall 26" has not named October or November, so asking
+       for October must not show it -- and must not make it disappear without a
+       word either. Counted BEFORE the filter runs, named after it. */
+    var seasonHeld=(currentDelivery==='harvest')?[]:filtered.filter(function(b){
+      return !delKey(b)&&isHarvestSeason(b);
+    });
+    var seasonNames=[];
+    seasonHeld.forEach(function(b){
+      var n=(b.facility||'')+(b.city?' — '+b.city:'');
+      if(n&&seasonNames.indexOf(n)<0)seasonNames.push(n);
+    });
     filtered=filtered.filter(inDelivery);
+    renderSeasonNote(seasonNames);
     if(!filtered.length){
       var lab=currentDelivery==='harvest'?'harvest delivery':delLabel(currentDelivery)+' delivery';
       results.innerHTML='<div class="cb-empty"><div class="cb-empty-icon" aria-hidden="true"><svg class="ic" aria-hidden="true"><use href="#i-search"/></svg></div><h2>No bids for '+escH(lab)+'</h2><p>Nobody within this radius is posting that delivery period yet. Try &#8220;Any delivery&#8221;, a wider radius, or check back closer to harvest.</p></div>';
@@ -2011,6 +2101,16 @@ function netRowsFrom(shard,distanceMi){
       basisMonth:b.futuresMonth||'',
       asOf:shard.pricedAt||shard.checkedAt||'',
       category:classify(b.commodity||b.crop||''),
+      /* THE SEASON THE FEED ALREADY WORKED OUT, CARRIED RATHER THAN REDERIVED.
+         An elevator's delivery label is often a season, not a month: Flash
+         Grain of Thorp, Wisconsin posts "Fall 26", "Fall 27", "Fall 28" and
+         nothing else. delKey() rightly refuses to guess a month out of that,
+         and this field was not carried, so those rows had no month key AND no
+         season -- and inDelivery() dropped every one of them the moment a
+         delivery period was chosen. dnilgis/bids classifies the label when it
+         builds the shard (period "newcrop-2026", periodVia "season"), so the
+         answer is in the bytes already and only had to be brought across. */
+      deliveryPeriod:b.period||'',
       via:'direct'
     });
   });
