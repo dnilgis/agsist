@@ -5,13 +5,26 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Sat, 05 Sep 2026 13:31:07 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 06 Sep 2026 13:44:50 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/agsist.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>WHEAT BREAKS 3.4%; SEPTEMBER WASDE COUNTDOWN BEGINS</title>
+      <link>https://agsist.com/daily/2026-09-06</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-09-06</guid>
+      <pubDate>Sun, 06 Sep 2026 05:00:00 -0600</pubDate>
+      <description>Wheat closed $7.16, down 3.4% Friday, the biggest single-session drop in the complex. Corn drifted to $5.12 on light volume as Labor Day weekend stripped the room. Beans held better at $12.94, off just 1.1%. The whole week telegraphs one thing: the funds took profits before the holiday and are waiting for Thursday's export sales and Friday's WASDE to decide their next move.
+Friday's pre-holiday profit-taking hit wheat hardest while corn and beans drifted; the September 11 WASDE is the week's make-or-break event.
+• WHEAT BREAKS; GRAINS DRIFT
+• CATTLE QUIET; TRUMP ORDERS MOVE
+• ENERGY AND INPUTS INTO HARVEST
+  → If you have unpriced fall diesel needs, the EIA crack-spread data says the current rack price is not the top of the range.
+Read more: https://agsist.com/daily/2026-09-06</description>
+    </item>
     <item>
       <title>WHEAT DROPS 3.4%; DIESEL TIGHTENS INTO HARVEST</title>
       <link>https://agsist.com/daily/2026-09-05</link>
@@ -389,18 +402,6 @@ Friday closed a week of quiet grain pressure, a surprise hog move, and a Farm Bi
 • Hogs Move Hard; Cattle Firms
 • Farm Bill Hits a Wall
 Read more: https://agsist.com/daily/2026-08-08</description>
-    </item>
-    <item>
-      <title>FARM BILL STALLS; GRAINS END WEEK SOFT</title>
-      <link>https://agsist.com/daily/2026-08-07</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-08-07</guid>
-      <pubDate>Fri, 07 Aug 2026 05:00:00 -0600</pubDate>
-      <description>The week ends with corn at $4.39, beans at $11.60 on the nearby, and a farm bill that Senate Agriculture Committee partisanship may have killed for the year. Pro Farmer tour scouts don't hit fields for another 10 days. Until then, favorable Belt weather keeps the bear case alive and the bull case renting by the week.
-Wheat firmed on weather while corn and beans drifted lower to close a week that gave crop tour optimists little to cheer.
-• Wheat Firms; Grains End Soft
-• Cattle Mixed; Feeders Hold
-• Farm Bill Optimism Fades
-Read more: https://agsist.com/daily/2026-08-07</description>
     </item>
   </channel>
 </rss>

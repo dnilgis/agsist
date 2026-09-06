@@ -1,18 +1,18 @@
 {
- "updated": "2026-09-05T13:31:07+00:00",
- "total": 105,
+ "updated": "2026-09-06T13:44:50+00:00",
+ "total": 106,
  "played_out": 37,
- "didnt": 63,
+ "didnt": 64,
  "pending": 5,
- "hit_rate": 37.0,
+ "hit_rate": 36.6,
  "by_method": {
   "deterministic": {
    "played": 11,
-   "missed": 53,
-   "graded": 64,
-   "hit_rate": 17.2,
+   "missed": 54,
+   "graded": 65,
+   "hit_rate": 16.9,
    "first": "2026-06-24",
-   "last": "2026-09-04"
+   "last": "2026-09-06"
   },
   "self_reported": {
    "played": 26,
@@ -34,22 +34,22 @@
   },
   "v2": {
    "played": 7,
-   "missed": 13,
-   "graded": 20,
-   "hit_rate": 35.0,
+   "missed": 14,
+   "graded": 21,
+   "hit_rate": 33.3,
    "first": "2026-08-12",
-   "last": "2026-09-04"
+   "last": "2026-09-06"
   }
  },
  "direction_only": {
   "right_way": 26,
-  "graded": 64,
-  "rate": 40.6
+  "graded": 65,
+  "rate": 40.0
  },
  "by_instrument": {
   "wheat": {
    "played": 0,
-   "graded": 12,
+   "graded": 13,
    "hit_rate": 0.0
   },
   "corn": {
@@ -89,13 +89,29 @@
   }
  },
  "trailing20": {
-  "played": 7,
+  "played": 6,
   "graded": 20,
-  "hit_rate": 35.0
+  "hit_rate": 30.0
  },
  "mismatched": 23,
  "current_streak": 0,
  "records": [
+  {
+   "made": "2026-09-05",
+   "judged": "2026-09-06",
+   "call": "Called wheat lower through $7.00 on Friday's session.",
+   "outcome": "didnt",
+   "method": "deterministic",
+   "mismatch": false,
+   "note": "Didn't play out. Wheat closed $7.16 -- down 3.4% on the day but never tested $7.00. The pre-holiday profit-taking moved the direction right but not the magnitude; the $7.00 level is still live and worth watching into Thursday's export sales.",
+   "instrument": "wheat",
+   "direction": "down",
+   "level": "7.00",
+   "p0": 7.16,
+   "p1": 7.16,
+   "design": "v2",
+   "direction_ok": false
+  },
   {
    "made": "2026-09-03",
    "judged": "2026-09-04",

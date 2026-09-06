@@ -1,6 +1,18 @@
 {
   "briefings": [
     {
+      "date": "2026-09-06",
+      "date_display": "Sunday, September 6, 2026",
+      "headline": "WHEAT BREAKS 3.4%; SEPTEMBER WASDE COUNTDOWN BEGINS",
+      "teaser": "Wheat got hit hardest Friday; here's what the September 11 WASDE needs to show to matter.",
+      "market_mood": "cautious",
+      "surprise_count": 0,
+      "sections": 3,
+      "url": "/daily/2026-09-06",
+      "market_closed": true,
+      "yc_outcome": "didnt"
+    },
+    {
       "date": "2026-09-05",
       "date_display": "Saturday, September 5, 2026",
       "headline": "WHEAT DROPS 3.4%; DIESEL TIGHTENS INTO HARVEST",
@@ -2030,6 +2042,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-09-05T13:31:05.959179+00:00",
-  "count": 177
+  "updated": "2026-09-06T13:44:48.424903+00:00",
+  "count": 178
 }
