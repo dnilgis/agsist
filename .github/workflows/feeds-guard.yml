@@ -58,6 +58,16 @@ jobs:
       - name: The bid network merges correctly and cannot break the page
         run: node scripts/network-checks.mjs
 
+      # THE DELIVERY FILTER, WHICH HAS NOW BROKEN TWICE AND WAS UNGUARDED BOTH
+      # TIMES. scripts/delivery-checks.mjs existed on 2026-09-05 and nothing
+      # ran it, so a filter that hid every board we read ourselves — Flash
+      # Grain of Thorp, four miles from the man who reported it, posts "Fall
+      # 26" and no month at all — shipped and stayed shipped. It lifts the
+      # functions out of cash-bids.html, so it needs no network and cannot
+      # pass against code the page no longer runs.
+      - name: The delivery filter hides nothing it cannot place
+        run: node scripts/delivery-checks.mjs
+
       # CBOT hours come from CME, not from memory, and the countdown must
       # survive both clock changes.
       - name: The market clock matches CME's published grain hours
