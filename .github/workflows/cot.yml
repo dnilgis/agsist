@@ -82,6 +82,40 @@ jobs:
       - name: Enrich COT data with prices
         run: python scripts/enrich_cot_prices.py
 
+      # ── THE TWENTY-YEAR FILE AND THE ANALYSIS ─────────────────────────
+      # cot-release-watch.yml is now the fast path -- it probes CFTC every
+      # five minutes across the release window and publishes within minutes
+      # of the report existing. These steps run here too, on the old
+      # schedule, so that this workflow remains a COMPLETE backstop: if the
+      # watcher is disabled, throttled or dropped, a reader still gets the
+      # analysis, just later.
+      #
+      # --append is O(one week) and takes the new row from the same API the
+      # watcher probes. The twenty-year archive rebuild lives in
+      # cot-deep-rebuild.yml and never runs on a release day.
+      #
+      # continue-on-error on the append is deliberate: data/cot-deep.json may
+      # not exist yet on the first run after deploy, and the page is built to
+      # show nothing rather than something wrong when the analysis file is
+      # missing. The COT numbers themselves must still publish.
+      - name: Prove the readers and the calendar
+        continue-on-error: true
+        run: |
+          python scripts/cot_calendar.py
+          python scripts/cot_deep.py --selftest
+
+      - name: Append the week to the deep history
+        continue-on-error: true
+        run: python scripts/cot_deep.py --append
+
+      - name: Prove the statistics
+        continue-on-error: true
+        run: python scripts/cot_analysis.py --selftest
+
+      - name: Run the analysis
+        continue-on-error: true
+        run: python scripts/cot_analysis.py
+
       # ── RE-BAKE THE PAGE, NOT ONLY THE DATA ────────────────────────────
       # This workflow had three work steps and committed two JSON files. It
       # never re-baked cot.html -- and cot.html carries hard numbers that no
@@ -163,13 +197,18 @@ jobs:
           cp data/cot.json          /tmp/cot.json
           cp data/cot-history.json  /tmp/cot-history.json
           cp cot.html               /tmp/cot.html
+          cp data/cot-deep.json     /tmp/cot-deep.json     2>/dev/null || true
+          cp data/cot-analysis.json /tmp/cot-analysis.json 2>/dev/null || true
           for i in 1 2 3 4 5; do
             git fetch origin main
             git reset --hard origin/main
             cp /tmp/cot.json         data/cot.json
             cp /tmp/cot-history.json data/cot-history.json
             cp /tmp/cot.html         cot.html
+            [ -f /tmp/cot-deep.json ]     && cp /tmp/cot-deep.json     data/cot-deep.json
+            [ -f /tmp/cot-analysis.json ] && cp /tmp/cot-analysis.json data/cot-analysis.json
             git add data/cot.json data/cot-history.json cot.html
+            git add data/cot-deep.json data/cot-analysis.json 2>/dev/null || true
             if git diff --staged --quiet; then
               echo "No COT changes today — nothing to commit (expected ~6 days/week)."
               exit 0

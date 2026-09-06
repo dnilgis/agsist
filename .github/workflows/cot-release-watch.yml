@@ -1,0 +1,253 @@
+name: COT Release Watch
+
+# WHY A WATCHER AND NOT MORE CRONS
+# --------------------------------
+# cot.yml fires at :45 and :15 past the release hours. On a good week that puts
+# the new report on the page fifteen to forty-five minutes after CFTC published
+# it, and that is on top of the platform's own delay: measured on this repo,
+# 2026-08-26, only 9 of 22 scheduled fires arrived at all, and one evening job
+# ran 82 minutes late. The readers who care about this page are the ones
+# sitting in front of it at 3:30 watching a countdown.
+#
+# So this file does not try to guess the minute. It PROBES, every five minutes
+# across both DST release windows, and does the work only when the answer has
+# actually changed:
+#
+#   * The probe is one HTTP call to CFTC's public reporting API for the single
+#     latest corn row -- a few hundred bytes, no zip, no yfinance. A run that
+#     finds nothing new is over in about twenty seconds.
+#   * Twenty-nine chances an afternoon means a dropped or delayed cron costs
+#     five minutes, not a week.
+#   * Monday through Friday, because six of 2026's releases are Mondays and
+#     holiday weeks can push one to a Tuesday or Wednesday. The probe is cheap
+#     enough that covering days which publish nothing is the right trade.
+#
+# It shares cot.yml's concurrency group, so the two can never write data/ at
+# the same time.
+
+on:
+  schedule:
+    # 19:00-21:55 UTC covers 3:00-4:55pm ET in BOTH daylight and standard time,
+    # which is where the 3:30pm ET release lands either way.
+    - cron: '*/5 19-21 * * 1-5'
+  workflow_dispatch:
+    inputs:
+      force:
+        description: 'Run the pipeline even if the report date has not moved'
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: fetch-cot
+  cancel-in-progress: false
+
+jobs:
+  watch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # ── THE PROBE ────────────────────────────────────────────────────────
+      # Nothing below this step runs unless CFTC's latest report date is newer
+      # than the one already committed. Deliberately compares DATES, not
+      # strings: data/cot.json stores "September 01, 2026" and the API returns
+      # "2026-09-01T00:00:00.000".
+      - name: Has the report moved?
+        id: probe
+        run: |
+          python - <<'PY' >> "$GITHUB_OUTPUT"
+          import json, os, sys, urllib.request
+          from datetime import datetime
+
+          URL = ("https://publicreporting.cftc.gov/resource/72hh-3qpy.json"
+                 "?$limit=1&$order=report_date_as_yyyy_mm_dd%20DESC"
+                 "&$where=market_and_exchange_names%20like%20%27CORN%20-%20CHICAGO%25%27")
+
+          def committed():
+              try:
+                  with open("data/cot.json") as f:
+                      raw = json.load(f).get("report_date", "")
+                  return datetime.strptime(raw, "%B %d, %Y").date()
+              except Exception as e:
+                  print(f"# could not read committed report date ({e})", file=sys.stderr)
+                  return None
+
+          try:
+              req = urllib.request.Request(URL, headers={"User-Agent": "AGSIST/1.0 (+https://agsist.com/cot)"})
+              with urllib.request.urlopen(req, timeout=25) as r:
+                  rows = json.loads(r.read().decode())
+              latest = datetime.fromisoformat(rows[0]["report_date_as_yyyy_mm_dd"].split("T")[0]).date()
+          except Exception as e:
+              # A probe that cannot reach CFTC must not be read as "nothing new".
+              # It reports unknown, the run stops, and the next probe in five
+              # minutes tries again. cot.yml's own schedule is the backstop.
+              print(f"# probe failed: {e}", file=sys.stderr)
+              print("moved=false")
+              print("reason=probe-failed")
+              sys.exit(0)
+
+          have = committed()
+          moved = have is None or latest > have
+          print(f"# CFTC latest {latest} vs committed {have}", file=sys.stderr)
+          print(f"moved={'true' if moved else 'false'}")
+          print(f"latest={latest}")
+          print(f"reason={'new-report' if moved else 'unchanged'}")
+          PY
+
+      - name: Nothing new
+        if: steps.probe.outputs.moved != 'true' && inputs.force != true
+        run: |
+          echo "CFTC has not published a newer report (${{ steps.probe.outputs.reason }})."
+          echo "This is the expected outcome for all but one run a week."
+
+      - uses: actions/setup-python@v5
+        if: steps.probe.outputs.moved == 'true' || inputs.force == true
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        if: steps.probe.outputs.moved == 'true' || inputs.force == true
+        run: pip install --quiet yfinance pandas
+
+      # ── THE HOT PATH ─────────────────────────────────────────────────────
+      # Everything here is O(one week). The twenty-year archive is NOT
+      # re-downloaded: cot_deep.py --append takes the new week from the same
+      # API the probe used and lays it on the committed file. A rebuild is
+      # twenty zips and several hundred megabytes; it belongs in the weekly
+      # reconciliation job, not between a reader and the report they are
+      # waiting for.
+      # Both parsers are proved against fixtures built from CFTC's real column
+      # names -- BOTH spellings, the archive zip's and the API's -- before
+      # anything reads live data. The failure this guards against is silent:
+      # a renamed column read as zero flattens a trader group's chart and
+      # nobody notices for a month.
+      - name: Prove the readers
+        if: steps.probe.outputs.moved == 'true' || inputs.force == true
+        run: |
+          python scripts/cot_calendar.py
+          python scripts/cot_deep.py --selftest
+
+      - name: Fetch the new report
+        if: steps.probe.outputs.moved == 'true' || inputs.force == true
+        run: python scripts/fetch_cot.py
+
+      - name: Attach prices
+        if: steps.probe.outputs.moved == 'true' || inputs.force == true
+        run: python scripts/enrich_cot_prices.py
+
+      # CONTINUE-ON-ERROR ON ALL THREE, AND IT IS NOT SOFTENING A FAILING CHECK.
+      # The "Analysis result" step at the bottom still fails the run. What it
+      # buys is ordering: the COT numbers commit either way.
+      #
+      # The specific case this exists for is the FIRST release after this kit
+      # is uploaded. data/cot-deep.json does not exist until the deep rebuild
+      # has been run by hand, so --append exits 1, and without this the whole
+      # job dies before the commit step and the page never gets this week's
+      # report at all. A missing analysis panel is a hidden section. A missing
+      # COT update is the thing readers came for.
+      - name: Append the week to the deep history
+        id: deep
+        continue-on-error: true
+        if: steps.probe.outputs.moved == 'true' || inputs.force == true
+        run: python scripts/cot_deep.py --append
+
+      # The statistics are checked against fixtures BEFORE they are computed on
+      # live data. A broken percentile is worse than a late one.
+      - name: Prove the statistics
+        id: selftest
+        continue-on-error: true
+        if: steps.probe.outputs.moved == 'true' || inputs.force == true
+        run: python scripts/cot_analysis.py --selftest
+
+      # Only if the selftest passed. Computing statistics on live data with
+      # known-broken arithmetic is how a wrong number reaches a reader.
+      - name: Run the analysis
+        id: analysis
+        continue-on-error: true
+        if: (steps.probe.outputs.moved == 'true' || inputs.force == true) && steps.selftest.outcome == 'success'
+        run: python scripts/cot_analysis.py
+
+      - name: Re-bake the head tags and crawler summary
+        if: steps.probe.outputs.moved == 'true' || inputs.force == true
+        id: bake
+        continue-on-error: true
+        run: |
+          cp cot.html /tmp/cot.prebake.html
+          trap 'cp /tmp/cot.prebake.html cot.html; echo "bake failed - cot.html rolled back"' ERR
+          set -e
+          python scripts/bake_seo.py --selftest
+          python scripts/bake_seo.py --page cot.html
+          python - <<'PY'
+          import sys
+          sys.path.insert(0, "scripts")
+          import prerender_wpi_scorecard as p
+          orig, new, fname = p.bake_cot()
+          if new != orig:
+              open(fname, "w", encoding="utf-8").write(new)
+              print("Baked", fname)
+          else:
+              print(fname, "already in sync")
+          PY
+          trap - ERR
+
+      - name: Commit
+        if: steps.probe.outputs.moved == 'true' || inputs.force == true
+        run: |
+          git config user.name  "AGSIST Bot"
+          git config user.email "bot@agsist.com"
+          # Same shape as cot.yml: our regenerated files are authoritative, so
+          # snapshot them, hard-sync to the remote, lay ours back on top.
+          for f in data/cot.json data/cot-history.json data/cot-deep.json data/cot-analysis.json cot.html; do
+            mkdir -p "/tmp/keep/$(dirname "$f")"; cp "$f" "/tmp/keep/$f" 2>/dev/null || true
+          done
+          for i in 1 2 3 4 5; do
+            git fetch origin main
+            git reset --hard origin/main
+            for f in data/cot.json data/cot-history.json data/cot-deep.json data/cot-analysis.json cot.html; do
+              [ -f "/tmp/keep/$f" ] && cp "/tmp/keep/$f" "$f"
+            done
+            git add data/cot.json data/cot-history.json cot.html
+            # These two do not exist until the deep rebuild has been run once.
+            # Unguarded, `git add` on a missing path exits 128 and the commit
+            # never happens -- which would mean the first release after this
+            # kit is uploaded publishes nothing at all.
+            git add data/cot-deep.json data/cot-analysis.json 2>/dev/null || true
+            if git diff --staged --quiet; then
+              echo "Probe said the report moved but nothing changed on disk — investigate."
+              exit 0
+            fi
+            git commit -m "chore: COT ${{ steps.probe.outputs.latest }} released [skip ci]"
+            if git push; then echo "published (attempt $i)"; exit 0; fi
+            sleep $((RANDOM % 4 + 3))
+          done
+          echo "ERROR: could not push after 5 attempts"; exit 1
+
+      - name: Bake result
+        if: steps.bake.outcome == 'failure'
+        run: |
+          echo "The COT data published, but re-baking cot.html FAILED."
+          echo "Title, meta descriptions and the crawler paragraph are still on"
+          echo "the previous report. Fix the baker and re-run."
+          exit 1
+
+      # The analysis is allowed to fail without taking the COT numbers with it.
+      # It is not allowed to fail quietly: the sections that read
+      # data/cot-analysis.json hide themselves when it is stale, so a silent
+      # failure here is a page that loses half its content with nothing in the
+      # Actions list to say why.
+      - name: Analysis result
+        if: steps.deep.outcome == 'failure' || steps.selftest.outcome == 'failure' || steps.analysis.outcome == 'failure' || steps.selftest.outcome == 'skipped'
+        run: |
+          echo "The COT data published, but the analysis pipeline did not complete."
+          echo "  deep append : ${{ steps.deep.outcome }}"
+          echo "  selftest    : ${{ steps.selftest.outcome }}"
+          echo "  analysis    : ${{ steps.analysis.outcome }}"
+          echo ""
+          echo "If this is the first release after the kit was uploaded, run the"
+          echo "'COT Deep History Rebuild' workflow once and this clears itself."
+          echo "Otherwise the analysis sections on /cot are showing last week's"
+          echo "report or hiding themselves. Fix before next Friday."
+          exit 1

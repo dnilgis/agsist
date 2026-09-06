@@ -1,0 +1,89 @@
+name: COT Deep History Rebuild
+
+# The release watcher APPENDS one week to data/cot-deep.json and never looks
+# back. CFTC revises. An append-only file that is never reconciled slowly stops
+# being CFTC's data and starts being ours, and nobody notices because every
+# individual week looked right on the day it landed.
+#
+# So once a week the whole twenty-year archive is re-read and the file is
+# rebuilt from scratch. The verify step runs FIRST and prints every cell that
+# had drifted, so a revision shows up in the Actions log as a line of text
+# rather than as a silently corrected number.
+#
+# Sunday, because the archive is quiet and nobody is waiting on the page.
+
+on:
+  schedule:
+    - cron: '20 9 * * 0'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: fetch-cot
+  cancel-in-progress: false
+
+jobs:
+  rebuild:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: pip install --quiet yfinance pandas
+
+      - name: Prove the readers and the calendar
+        run: |
+          python scripts/cot_calendar.py
+          python scripts/cot_deep.py --selftest
+
+      # Loud, and allowed to find things: drift is the reason this job exists,
+      # so a non-zero exit here is information, not a failure.
+      - name: What has CFTC revised since last week?
+        continue-on-error: true
+        run: python scripts/cot_deep.py --verify
+
+      - name: Rebuild from the archive
+        run: python scripts/cot_deep.py --rebuild
+
+      - name: Prove the statistics
+        run: python scripts/cot_analysis.py --selftest
+
+      # continue-on-error so a failure here does not discard a rebuild that
+      # took forty minutes and several hundred megabytes. The deep file is the
+      # expensive artifact; the analysis can be re-run in a minute.
+      - name: Re-run the analysis on the rebuilt history
+        id: analysis
+        continue-on-error: true
+        run: python scripts/cot_analysis.py
+
+      - name: Commit
+        run: |
+          git config user.name  "AGSIST Bot"
+          git config user.email "bot@agsist.com"
+          cp data/cot-deep.json /tmp/deep.json
+          cp data/cot-analysis.json /tmp/analysis.json
+          for i in 1 2 3; do
+            git fetch origin main && git reset --hard origin/main
+            cp /tmp/deep.json data/cot-deep.json
+            cp /tmp/analysis.json data/cot-analysis.json
+            git add data/cot-deep.json
+            git add data/cot-analysis.json 2>/dev/null || true
+            if git diff --staged --quiet; then echo "No change after rebuild."; exit 0; fi
+            git commit -m "chore: rebuild COT deep history $(date +%F) [skip ci]"
+            if git push; then echo "pushed"; exit 0; fi
+            sleep 5
+          done
+          echo "ERROR: could not push"; exit 1
+
+      - name: Analysis result
+        if: steps.analysis.outcome == 'failure'
+        run: |
+          echo "The rebuilt history committed, but re-running the analysis FAILED."
+          echo "data/cot-analysis.json is on the previous run, so the analysis"
+          echo "sections on /cot are hiding themselves until this is fixed."
+          exit 1
