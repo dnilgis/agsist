@@ -104,11 +104,38 @@ COMMODITIES = [
 # COT key -> yfinance front-month continuous symbol. Same table as
 # enrich_cot_prices.py; kept here rather than imported so a change to one
 # cannot silently re-point the other.
+# COT key -> yfinance symbols, tried in order until one returns data.
+#
+# THE FIRST REAL RUN PROVED WHY THIS IS A LIST. MWE=F returned
+# "Quote not found for symbol: MWE=F" and Minneapolis wheat came back with
+# ZERO price observations -- no momentum, no analogs, no correlations, every
+# forward study withheld -- in the same week it was sitting at the 99th
+# percentile of its own record. A single hardcoded ticker turns a vendor
+# renaming a symbol into a silently blank market.
 SYMBOLS = {
-    "corn": "ZC=F", "beans": "ZS=F", "wheat": "ZW=F", "kcwheat": "KE=F",
-    "mplswheat": "MWE=F", "soymeal": "ZM=F", "soyoil": "ZL=F",
-    "livecattle": "LE=F", "feedercattle": "GF=F", "leanhogs": "HE=F",
-    "milk": "DC=F",
+    "corn":         ["ZC=F"],
+    "beans":        ["ZS=F"],
+    "wheat":        ["ZW=F"],
+    "kcwheat":      ["KE=F", "KW=F"],
+    "mplswheat":    ["MW=F", "MWE=F", "MWN25.CBT"],
+    "soymeal":      ["ZM=F"],
+    "soyoil":       ["ZL=F"],
+    "livecattle":   ["LE=F", "LC=F"],
+    "feedercattle": ["GF=F", "FC=F"],
+    "leanhogs":     ["HE=F", "LH=F"],
+    "milk":         ["DC=F"],
+}
+
+# CFTC's contract market code is the only identifier that survives a rename.
+# Only codes verified against CFTC's own API are listed; the rest match by
+# name, and an unmatched market is now reported rather than dropped in
+# silence (see the audit in parse_rows).
+MARKET_CODES = {
+    "001602": "wheat",       # WHEAT-SRW
+    "001612": "kcwheat",     # WHEAT-HRW
+    "001626": "mplswheat",   # WHEAT-HRSpring
+    "002602": "corn",
+    "005602": "beans",
 }
 
 # ── column resolution ───────────────────────────────────────────────────────
@@ -145,6 +172,7 @@ FIELDS = {
     "tr_total":    ["traders_tot_all"],
 }
 DATE_FIELDS = ["report_date_as_yyyy_mm_dd", "as_of_date_in_form_yymmdd"]
+CODE_FIELDS = ["cftc_contract_market_code"]
 NAME_FIELDS = ["market_and_exchange_names"]
 
 # Fields the page can live without if an archive year predates them. Trader
@@ -168,37 +196,68 @@ def build_colmap(headers) -> dict:
         )
     out["_date"] = next((have[c] for c in DATE_FIELDS if c in have), None)
     out["_name"] = next((have[c] for c in NAME_FIELDS if c in have), None)
+    out["_code"] = next((have[c] for c in CODE_FIELDS if c in have), None)
     if not out["_date"] or not out["_name"]:
         raise SystemExit("FATAL: no usable date or market-name column in CFTC file.")
     return out
 
 
-def match_commodity(market: str):
-    """Identical rules to fetch_cot.py. Two readers of the same file that
-    disagree about what 'wheat' means is a bug waiting for a Friday."""
+def match_commodity(market: str, code: str = None):
+    """Map a CFTC row to our commodity key.
+
+    Code first, because the code is the only thing that does not change when
+    an exchange is renamed or a contract moves. Name second, and the name
+    rules now include the pre-2014 spellings.
+
+    THE FIRST REAL REBUILD LOST FOUR YEARS OF TWO MARKETS TO THIS. The annual
+    archive zips carry the market name as it was PUBLISHED at the time, while
+    CFTC's API restates it -- so the API shows "WHEAT-HRW - CHICAGO BOARD OF
+    TRADE" back to 2010, and the 2010-2013 zips do not. KC wheat came back
+    starting 2013-12-17 and Minneapolis wheat 2014-03-25, and nothing said so:
+    the percentiles were simply computed against a shorter record than the
+    page claimed. Silence is the failure mode this function has to stop.
+    """
+    if code:
+        hit = MARKET_CODES.get(str(code).strip())
+        if hit:
+            return hit
     m = (market or "").lower().strip()
+
+    # ── grains ──
     if m.startswith("corn - chicago"):
         return "corn"
     if m.startswith("soybeans - chicago"):
         return "beans"
+    # wheats: class token first, then the exchange-named legacy forms. Order
+    # matters -- "wheat - kansas city" must not fall through to the generic
+    # Chicago rule, and nothing containing "mini" may match at all.
+    if "mini" in m:
+        return None
     if "wheat-srw" in m or m.startswith("wheat - chicago"):
         return "wheat"
-    if "wheat-hrw" in m:
+    if "wheat-hrw" in m or "kansas city" in m:
         return "kcwheat"
-    if "wheat-hrspring" in m or ("spring" in m and "wheat" in m):
+    if "wheat-hrspring" in m or "minneapolis" in m or ("spring" in m and "wheat" in m):
         return "mplswheat"
+
+    # ── crush complex ──
     if m.startswith("soybean oil"):
         return "soyoil"
     if m.startswith("soybean meal"):
         return "soymeal"
+
+    # ── livestock ──
     if m.startswith("live cattle"):
         return "livecattle"
     if m.startswith("feeder cattle"):
         return "feedercattle"
     if m.startswith("lean hogs"):
         return "leanhogs"
+
+    # ── dairy ──
     if ("class iii" in m and "milk" in m) or m.startswith("milk, class iii"):
         return "milk"
+
     return None
 
 
@@ -229,16 +288,25 @@ def _date_of(row, colmap):
     return None
 
 
-def parse_rows(text: str) -> list:
+def parse_rows(text: str, audit: bool = True) -> list:
     reader = csv.DictReader(io.StringIO(text))
     rows = list(reader)
     if not rows:
         return []
     colmap = build_colmap(rows[0].keys())
-    out = []
+    out, near_miss = [], {}
     for r in rows:
-        key = match_commodity(r.get(colmap["_name"], ""))
+        name = r.get(colmap["_name"], "")
+        code = r.get(colmap["_code"]) if colmap.get("_code") else None
+        key = match_commodity(name, code)
         if key is None:
+            # A market that looks like one of ours but matched nothing is the
+            # exact shape of the bug that cost four years of KC and spring
+            # wheat. Collect it and print it rather than dropping it.
+            low = (name or "").lower()
+            if any(w in low for w in ("wheat", "corn", "soybean", "cattle", "hogs", "milk")) \
+               and "mini" not in low:
+                near_miss[name.strip()] = near_miss.get(name.strip(), 0) + 1
             continue
         d = _date_of(r, colmap)
         if d is None:
@@ -247,6 +315,10 @@ def parse_rows(text: str) -> list:
         for f in FIELDS:
             rec[f] = _int(r.get(colmap[f])) if f in colmap else 0
         out.append(rec)
+    if audit and near_miss:
+        print("  UNMATCHED markets that look like ours (check match_commodity):", flush=True)
+        for nm, n in sorted(near_miss.items(), key=lambda kv: -kv[1])[:12]:
+            print(f"    {n:5d} rows  '{nm}'", flush=True)
     return out
 
 
@@ -280,26 +352,36 @@ def fetch_socrata():
 # ── prices ──────────────────────────────────────────────────────────────────
 
 def load_price_frames(start: date):
-    """{key: {date: close}} from yfinance. Missing symbol -> empty dict, and
-    every downstream consumer treats an absent price as 'no read', never as 0."""
+    """{key: {date: close}}. Each symbol candidate is tried in turn; the first
+    that returns data wins. A market with no usable symbol comes back empty,
+    and every consumer treats an absent price as "no read", never as zero."""
     try:
         import yfinance as yf
     except ImportError:
         print("  yfinance not installed — prices will be omitted", flush=True)
         return {k: {} for k in COMMODITIES}
     out = {}
-    for key, sym in SYMBOLS.items():
-        try:
-            df = yf.Ticker(sym).history(start=start.isoformat(), interval="1d", auto_adjust=False)
-            closes = {}
-            for idx, val in df["Close"].items():
-                if val == val:                     # NaN check without importing math
-                    closes[idx.date()] = round(float(val), 4)
-            out[key] = closes
-            print(f"  {key:12s} {sym:6s} {len(closes)} daily closes", flush=True)
-        except Exception as e:
-            out[key] = {}
-            print(f"  {key:12s} {sym:6s} FAILED ({e}) — positioning still publishes, price overlay does not", flush=True)
+    for key, syms in SYMBOLS.items():
+        closes, used = {}, None
+        for sym in syms:
+            try:
+                df = yf.Ticker(sym).history(start=start.isoformat(), interval="1d", auto_adjust=False)
+                got = {}
+                for idx, val in df["Close"].items():
+                    if val == val:                      # NaN check without importing math
+                        got[idx.date()] = round(float(val), 4)
+                if len(got) >= 200:
+                    closes, used = got, sym
+                    break
+                print(f"  {key:12s} {sym:10s} only {len(got)} closes — trying the next symbol", flush=True)
+            except Exception as e:
+                print(f"  {key:12s} {sym:10s} failed ({str(e)[:90]}) — trying the next symbol", flush=True)
+        out[key] = closes
+        if used:
+            print(f"  {key:12s} {used:10s} {len(closes)} daily closes", flush=True)
+        else:
+            print(f"  {key:12s} NO PRICE SERIES from {syms} — positioning still publishes, "
+                  f"every price-based read for this market is withheld", flush=True)
     return out
 
 
@@ -375,6 +457,22 @@ def assemble(records: list, prices: dict) -> dict:
         npx = sum(1 for v in b["px_entry"] if v is not None)
         print(f"  {key:12s} {len(b['dates']):5d} weeks  {b['dates'][0]} -> {b['dates'][-1]}  "
               f"{npx} tradable entries  {len(gaps)} gaps", flush=True)
+
+    # COVERAGE. A market that starts years after the rest of the file is not a
+    # market with a short history -- it is almost always a market this parser
+    # stopped recognising at some point in the past, and the only symptom is a
+    # percentile quietly computed against a shorter record than the page says.
+    if blocks:
+        earliest = min(b["dates"][0] for b in blocks.values())
+        for key, b in sorted(blocks.items()):
+            if (date.fromisoformat(b["dates"][0]) - date.fromisoformat(earliest)).days > 200:
+                print(f"  COVERAGE: {key} starts {b['dates'][0]}, {earliest} for the rest of the "
+                      f"file. Either CFTC did not report it before then, or match_commodity is "
+                      f"missing the name it used.", flush=True)
+        nopx = [k for k, b in blocks.items() if not any(v is not None for v in b["px_entry"])]
+        if nopx:
+            print(f"  COVERAGE: no price series at all for {', '.join(sorted(nopx))} — every "
+                  f"price-based read for those markets is withheld.", flush=True)
     return blocks
 
 
@@ -639,7 +737,31 @@ def selftest():
     for key, name in MARKET_NAMES.items():
         ck(f"matches '{name[:34]}'", match_commodity(name), key)
     ckt("mini contracts are excluded", match_commodity("MINI-SIZED CORN - CHICAGO BOARD OF TRADE") is None)
+    ckt("mini soybeans are excluded", match_commodity("MINI SOYBEANS - CHICAGO BOARD OF TRADE") is None)
     ckt("an unrelated market is ignored", match_commodity("GOLD - COMMODITY EXCHANGE INC.") is None)
+
+    # The names the 2010-2013 archive zips actually use. Missing these cost
+    # four years of KC wheat and four of spring wheat on the first real run,
+    # silently.
+    ck("legacy KCBT wheat", match_commodity("WHEAT - KANSAS CITY BOARD OF TRADE"), "kcwheat")
+    ck("legacy MGEX wheat", match_commodity("WHEAT - MINNEAPOLIS GRAIN EXCHANGE"), "mplswheat")
+    ck("HRSpring under MIAX", match_commodity("WHEAT-HRSPRING - MIAX FUTURES EXCHANGE"), "mplswheat")
+    ck("Chicago SRW under its old plain name",
+       match_commodity("WHEAT - CHICAGO BOARD OF TRADE"), "wheat")
+
+    # The contract code outranks the name, because it survives every rename.
+    ck("code wins over a name we would not match",
+       match_commodity("WHEAT - SOME EXCHANGE NOBODY HAS HEARD OF", "001612"), "kcwheat")
+    ck("code wins over a name that says otherwise",
+       match_commodity("CORN - CHICAGO BOARD OF TRADE", "001626"), "mplswheat")
+    ckt("an unknown code falls back to the name",
+       match_commodity("CORN - CHICAGO BOARD OF TRADE", "999999") == "corn")
+
+    # Every symbol table entry is a list, so one dead ticker cannot blank a
+    # market the way MWE=F did.
+    ckt("every market has at least one price symbol",
+        all(isinstance(v, list) and v for v in SYMBOLS.values()))
+    ckt("spring wheat has a fallback symbol", len(SYMBOLS["mplswheat"]) > 1)
 
     # ── parsing both fixtures ───────────────────────────────────────────────
     d1, d2 = date(2026, 8, 25), date(2026, 9, 1)

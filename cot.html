@@ -87,9 +87,9 @@
   "@type": "FAQPage",
   "mainEntity": [
     { "@type": "Question", "name": "What is the COT Report?", "acceptedAnswer": { "@type": "Answer", "text": "The CFTC publishes Commitments of Traders every Friday at 3:30pm Eastern, counting positions held as of the previous Tuesday. It splits the market into four reportable categories: managed money, producers and merchants, swap dealers and other reportables, plus a small-trader remainder. This page leads with managed money, which is the speculative money, and breaks out all five further down. Every contract has two sides, so the categories net to zero: when funds buy, somebody sold." } },
-    { "@type": "Question", "name": "How to Use It", "acceptedAnswer": { "@type": "Answer", "text": "As a measure of who is exposed, not of where price is going. We tested that on twenty years of the data and published the result above. Positioning and price move together in the week they are measured; the relationship with the next four to thirteen weeks is close to zero. What a crowded position does tell you is how much buying or selling could be forced if the market turns, which is a reason to protect unpriced bushels rather than a reason to predict a direction." } },
+    { "@type": "Question", "name": "How to Use It", "acceptedAnswer": { "@type": "Answer", "text": "As a measure of who is exposed, not of where price is going. We tested that on the whole record and published the result above. Positioning and price move together in the week they are measured; the relationship with the next four to thirteen weeks is close to zero. What a crowded position does tell you is how much buying or selling could be forced if the market turns, which is a reason to protect unpriced bushels rather than a reason to predict a direction." } },
     { "@type": "Question", "name": "What \"Managed Money\" Means", "acceptedAnswer": { "@type": "Answer", "text": "CTAs, commodity pools and hedge funds. They do not own grain, they trade paper, and their buying and selling moves the futures leg. It does not follow that it moves your basis. Basis is your local cash price minus futures, and it is set by what is happening at your elevator: bushels arriving, space, freight and demand. Fund flow and basis frequently move in opposite directions." } },
-    { "@type": "Question", "name": "Where The Position Sits", "acceptedAnswer": { "@type": "Answer", "text": "The bar on each card covers the last year. The sections above rank the same position against the whole record back to 2006, measured as a share of all open contracts, which is the comparison that survives a market doubling in size. When the card and the section disagree they are answering different questions: one about this year, one about the whole record." } }
+    { "@type": "Question", "name": "Where The Position Sits", "acceptedAnswer": { "@type": "Answer", "text": "The bar on each card covers the last year. The sections above rank the same position against the whole record we hold, measured as a share of all open contracts, which is the comparison that survives a market doubling in size. When the card and the section disagree they are answering different questions: one about this year, one about the whole record." } }
   ]
 }
 </script>
@@ -538,7 +538,7 @@ canvas#cot-chart { width: 100%; height: 260px; display: block; }
   <div class="cot-hero">
     <div class="cot-eyebrow"><svg class="ic" aria-hidden="true"><use href="#i-chart-column"/></svg> Market Intelligence · Updated Weekly</div>
     <h1 class="cot-page-title">CFTC Commitment of Traders</h1>
-    <p class="cot-page-sub">Every week the government publishes what the big speculative funds are betting on corn, beans, wheat, cattle, hogs and milk. These are hedge funds and commodity traders: they trade paper and never own a bushel. This page shows where they sit today, how crowded that is against twenty years of the same report, and what it does and does not tell you about price.</p>
+    <p class="cot-page-sub">Every week the government publishes what the big speculative funds are betting on corn, beans, wheat, cattle, hogs and milk. These are hedge funds and commodity traders: they trade paper and never own a bushel. This page shows where they sit today, how crowded that is against every week of the same report we hold, and what it does and does not tell you about price.</p>
   <p class="cot-page-sub" style="margin-top:.55rem"><b>It is not a forecast.</b> We tested that on the full record and published the result below. Crowded positioning tells you how much buying or selling could be forced if the market turns, not which way it turns. Positions are counted on <b>Tuesday</b> and published <b>Friday</b> afternoon, so they are three days old the moment you see them.</p>
   </div>
 
@@ -567,11 +567,11 @@ canvas#cot-chart { width: 100%; height: 260px; display: block; }
   <!-- ══ WHERE EVERY MARKET STANDS ══ renders from data/cot-analysis.json ══ -->
   <section class="cx" id="cx-board-sec" aria-labelledby="cx-board-h">
     <h2 class="cx-h" id="cx-board-h">Where Every Market Stands</h2>
-    <p class="cx-sub">Each market placed by how crowded fund positioning is against its own record
-      back to 2006, and by what price has done since. Position is measured as a share of all open
-      contracts, so a 2008 reading and a 2026 reading mean the same thing in a market that has since
-      doubled in size. Bottom right is the corner to watch: funds crowded long while price has already
-      turned down.</p>
+    <p class="cx-sub">Each market placed by how crowded fund positioning is against <b>its own
+      record</b>, and by what price has done since. Position is measured as a share of all open
+      contracts, so an old reading and a new one mean the same thing in a market that has since
+      changed size. Bottom right is the corner to watch: funds crowded long while price has already
+      turned down. <span id="cx-window"></span></p>
     <p class="cx-stamp" id="cx-stamp"></p>
     <div class="cx-panel" style="margin-bottom:.9rem">
       <h3 class="cx-h4" style="margin-top:0">What moved this week</h3>
@@ -598,7 +598,7 @@ canvas#cot-chart { width: 100%; height: 260px; display: block; }
   <!-- ══ DOES THIS PREDICT PRICES ══ -->
   <section class="cx" id="cx-pred-sec" aria-labelledby="cx-pred-h">
     <h2 class="cx-h" id="cx-pred-h">Does This Predict Prices?</h2>
-    <p class="cx-sub">The question everyone asks about this report, measured on twenty years of it
+    <p class="cx-sub">The question everyone asks about this report, measured on the whole record
       rather than asserted. Correlation runs from &minus;1 to +1; zero means no relationship.</p>
     <div class="cx-panel">
       <div id="cx-pred"></div>
@@ -678,7 +678,7 @@ canvas#cot-chart { width: 100%; height: 260px; display: block; }
       </div>
       <div class="cot-explainer-item">
         <h3>How to Use It</h3>
-        <p>As a measure of who is exposed, not of where price is going. We tested that on twenty years of the data and published the result above. Positioning and price move together in the week they are measured; the relationship with the next four to thirteen weeks is close to zero. What a crowded position does tell you is how much buying or selling could be forced if the market turns, which is a reason to protect unpriced bushels rather than a reason to predict a direction.</p>
+        <p>As a measure of who is exposed, not of where price is going. We tested that on the whole record and published the result above. Positioning and price move together in the week they are measured; the relationship with the next four to thirteen weeks is close to zero. What a crowded position does tell you is how much buying or selling could be forced if the market turns, which is a reason to protect unpriced bushels rather than a reason to predict a direction.</p>
       </div>
       <div class="cot-explainer-item">
         <h3>What "Managed Money" Means</h3>
@@ -686,7 +686,7 @@ canvas#cot-chart { width: 100%; height: 260px; display: block; }
       </div>
       <div class="cot-explainer-item">
         <h3>Where The Position Sits</h3>
-        <p>The bar on each card covers the last year. The sections above rank the same position against the whole record back to 2006, measured as a share of all open contracts, which is the comparison that survives a market doubling in size. When the card and the section disagree they are answering different questions: one about this year, one about the whole record.</p>
+        <p>The bar on each card covers the last year. The sections above rank the same position against the whole record we hold, measured as a share of all open contracts, which is the comparison that survives a market doubling in size. When the card and the section disagree they are answering different questions: one about this year, one about the whole record.</p>
       </div>
     </div>
   </div>
@@ -1912,6 +1912,20 @@ cotTick(); setInterval(cotTick, 60000);
         if (hot.length) txt += 'Crowded long: ' + name(hot) + '. ';
         if (cold.length) txt += 'Crowded short: ' + name(cold) + '.';
       }
+      /* A market missing from the plot is not a market that does not matter.
+         Minneapolis wheat was the most crowded long on the board and had no
+         dot, because our futures feed carries no price for it. Say so under
+         the picture rather than leaving a hole. */
+      var plotted = {};
+      pts.forEach(function(q){ plotted[q.key] = 1; });
+      var absent = Object.keys(CX.commodities).filter(function(kk){ return !plotted[kk]; })
+        .map(function(kk){ return esc(CX.commodities[kk].label); });
+      if (absent.length && !narrow()) {
+        txt += ' <b>Not on the plot: ' + absent.join(', ') + '</b> \u2014 we have no price series for '
+          + (absent.length === 1 ? 'it' : 'them') + ', so there is no price change to place '
+          + (absent.length === 1 ? 'it' : 'them') + ' against. The positioning figures are complete '
+          + 'and ' + (absent.length === 1 ? 'it is' : 'they are') + ' in the table below.';
+      }
       $('cx-board-note').innerHTML = txt;
     }
 
@@ -1924,9 +1938,16 @@ cotTick(); setInterval(cotTick, 60000);
       var mr = ['<thead><tr><th>Market</th><th>Week change</th><th>% of open</th>'
         + '<th>vs its own weeks</th><th>Crowding</th></tr></thead><tbody>'];
       mv.slice(0, 6).forEach(function(m){
+        /* No Greek letters. The reader who needs this column most is the one
+           who has never seen a z-score, and the magnitude is already in the
+           column to its left. */
+        var zw = (m.z === null || m.z === undefined) ? '\u2014'
+               : Math.abs(m.z) >= 3 ? 'far bigger than usual'
+               : Math.abs(m.z) >= 2 ? 'much bigger than usual'
+               : Math.abs(m.z) >= 1 ? 'bigger than usual'
+               : 'an ordinary week';
         mr.push('<tr><td>' + esc(m.label) + '</td><td>' + (m.chg >= 0 ? '+' : '\u2212')
-          + num(Math.abs(m.chg)) + '</td><td>' + sgn(m.chg_oi, 2) + '%</td><td>'
-          + (m.z === null || m.z === undefined ? '\u2014' : sgn(m.z, 1) + '\u03c3')
+          + num(Math.abs(m.chg)) + '</td><td>' + sgn(m.chg_oi, 2) + '%</td><td>' + zw
           + '</td><td>' + crowdWord(m.pctl)
           + (m.pctl_prev !== null && m.pctl_prev !== undefined && Math.abs(m.pctl - m.pctl_prev) >= 5
               ? ' <span class="cx-dim">(was ' + crowdWord(m.pctl_prev) + ')</span>' : '')
@@ -1936,7 +1957,7 @@ cotTick(); setInterval(cotTick, 60000);
         + '</tbody></table></div>';
     }
 
-    /* Replace the banner the cards wrote with the twenty-year version. */
+    /* Replace the banner the cards wrote with the full-record version. */
     var vt = document.getElementById('cvb-text'), vb = document.getElementById('cvb-badge');
     if (vt && b) {
       var top = mv.length ? mv[0] : null;
@@ -1998,7 +2019,7 @@ cotTick(); setInterval(cotTick, 60000);
     for (var v = Math.ceil(ymin/step)*step; v <= ymax; v += step) {
       s.push('<text class="cx-axlab" x="'+(L-8)+'" y="'+(Y(v)+3.5)+'" text-anchor="end">'+(v>0?'+':'')+v+'%</text>');
     }
-    s.push('<text class="cx-axlab" x="'+(L+cw/2)+'" y="'+(H-14)+'" text-anchor="middle">Fund positioning, percentile of its own record since 2006 (share of open contracts)</text>');
+    s.push('<text class="cx-axlab" x="'+(L+cw/2)+'" y="'+(H-14)+'" text-anchor="middle">Fund positioning, percentile of its own record since '+String(CX.coverage.first_week).slice(0,4)+' (share of open contracts)</text>');
     s.push('<text class="cx-axlab" transform="translate(11,'+(T+ch/2)+') rotate(-90)" text-anchor="middle">Price, 13 weeks</text>');
 
     s.push('<text class="cx-quad" x="'+(L+cw-6)+'" y="'+(T+13)+'" text-anchor="end">Crowded long, price confirming</text>');
@@ -2092,7 +2113,7 @@ cotTick(); setInterval(cotTick, 60000);
     o.push('<p class="cx-body">All three use the same measure of positioning, so the only thing that '
       + 'changes between them is the question. Fund flow and price move together in the four weeks '
       + 'they share: funds buy strength and sell weakness, and that is what most commentary about '
-      + 'this report is really describing. Point the same twenty years at the <em>next</em> eight '
+      + 'this report is really describing. Point the same record at the <em>next</em> eight '
       + 'weeks and the relationship '
       + (fw !== null && Math.abs(fw) < 0.12 ? 'is close to nothing' : 'is much weaker') + '.</p>');
     o.push('<p class="cx-body">The third number is the claim people actually make: funds are crowded '
@@ -2281,7 +2302,7 @@ cotTick(); setInterval(cotTick, 60000);
     o.push(stat('If it went flat', num(c.capacity.to_flat),
       'contracts of ' + toward + ', ' + pct(c.capacity.to_flat_oi) + ' of everything open in '
       + esc(c.label) + ' today. Beyond that, ' + num(c.net > 0 ? c.capacity.room_down : c.capacity.room_up)
-      + ' more to the far end of the twenty-year record, and '
+      + ' more to the far end of the record, and '
       + num(c.net > 0 ? c.capacity.room_up : c.capacity.room_down) + ' of ' + away
       + ' to the near end. Positioning has no mechanical effect on price. This is the size of the '
       + 'position, not a forecast of a move.'));
@@ -2323,9 +2344,8 @@ cotTick(); setInterval(cotTick, 60000);
            the wrong book. */
         o.push(stat('Average size per ' + c.crowding.side + ' fund',
           num(Math.round(c.crowding.per_trader)),
-          'contracts each, across ' + c.crowding.traders_on_side + ' funds on the '
-          + c.crowding.side + ' side (' + c.crowding.traders_long + ' long and '
-          + c.crowding.traders_short + ' short in all). Measured against this market\u2019s own '
+          'contracts each. ' + c.crowding.traders_long + ' funds hold the long side, '
+          + c.crowding.traders_short + ' the short. Measured against this market\u2019s own '
           + 'average book over the last three years, that is the ' + ord(c.crowding.pctl) + ' percentile'
           + (c.crowding.pctl >= 85 ? ': held by fewer, larger hands than usual.'
              : c.crowding.pctl <= 15 ? ': unusually spread out.' : ', which is normal.')));
@@ -2360,9 +2380,19 @@ cotTick(); setInterval(cotTick, 60000);
       o.push('</div>');
     });
     if (!any) {
-      o.push('<div class="cx-withheld">Positioning in ' + esc(c.label) + ' is close enough to normal '
-        + 'this week that there is no unusual condition to test. That is normal, and it is an answer '
-        + 'rather than a blank.</div>');
+      /* Two different reasons for an empty panel, and they must not read the
+         same. One is "nothing unusual is happening", the other is "we have no
+         price series for this market at all" -- which is the state Minneapolis
+         wheat was in on the first real run, while sitting at the 99th
+         percentile. */
+      var noPrice = (c.base && c.base['8'] && !c.base['8'].n);
+      o.push('<div class="cx-withheld">' + (noPrice
+        ? '<b>No price series for ' + esc(c.label) + '.</b> The positioning figures above are CFTC\u2019s '
+          + 'and are complete. Everything that needs a price \u2014 what followed last time, the analogs, '
+          + 'the correlations \u2014 is withheld because our futures feed does not carry this contract.'
+        : 'Positioning in ' + esc(c.label) + ' is close enough to normal this week that there is no '
+          + 'unusual condition to test. That is the common case, and it is an answer rather than a '
+          + 'blank.') + '</div>');
     }
 
     /* analogs */
@@ -2462,9 +2492,27 @@ cotTick(); setInterval(cotTick, 60000);
   function render(){
     SECTIONS.forEach(function(id){ var el = $(id); if (el) el.className = 'cx on'; });
     if ($('cx-stamp')) {
+      /* THE RECORD IS NOT THE SAME LENGTH FOR EVERY MARKET, and it is not the
+         twenty years the copy used to claim. CFTC's annual archives start in
+         2010, and two of the wheats appear later still. Saying "twenty years"
+         over sixteen, or "since 2006" over a market that starts in 2014, is
+         exactly the kind of claim this page exists to not make. Every window
+         on the page is now read from the data. */
+      var short = [];
+      for (var ck in CX.commodities) {
+        var cc = CX.commodities[ck];
+        if (cc.first_week && CX.coverage.first_week && cc.first_week > CX.coverage.first_week) {
+          short.push(esc(cc.label) + ' from ' + cc.first_week.slice(0,4));
+        }
+      }
       $('cx-stamp').innerHTML = 'Positions as of <b>' + dt(CX.report_date) + '</b>, published '
         + dt(CX.release_date) + '. CFTC Disaggregated Commitments of Traders, futures only, all '
-        + 'contract months, ' + num(CX.coverage.weeks) + ' weeks back to ' + dt(CX.coverage.first_week) + '.';
+        + 'contract months. The record here runs <b>' + num(CX.coverage.weeks) + ' weeks</b> back to '
+        + dt(CX.coverage.first_week) + '.'
+        + (short.length ? ' Shorter for ' + short.join(', ') + ', so their percentiles are ranked '
+            + 'against less history than the rest.' : '');
+      var w = $('cx-window');
+      if (w) w.textContent = 'The record starts ' + String(CX.coverage.first_week).slice(0,4) + '.';
     }
     buildPicker();
     drawBoard();
@@ -2496,7 +2544,7 @@ cotTick(); setInterval(cotTick, 60000);
         if (ob) ob.addEventListener('click', function(){ selectKey(best, false); });
       } else {
         $('cx-outlier').textContent = 'Nothing is at an extreme this week. Every market is inside the '
-          + 'middle half of its own twenty-year record.';
+          + 'middle half of its own record.';
       }
     }
     selectKey(CX_KEY || remembered || (CX.commodities.corn ? 'corn' : Object.keys(CX.commodities)[0]), false);
@@ -2539,7 +2587,8 @@ cotTick(); setInterval(cotTick, 60000);
         else card.appendChild(el);
       }
       var p = c.pctl.net_oi_all;
-      el.textContent = (p === null ? 'no 20-year ranking' : 'vs 20 years: ' + crowdWord(p));
+      el.textContent = (p === null ? 'no long-run ranking'
+        : 'vs ' + (c.first_week ? c.first_week.slice(0,4) : 'record') + ': ' + crowdWord(p));
       el.style.color = p === null ? 'var(--text-muted)' : (p >= 90 ? HOT : p <= 10 ? COLD : 'var(--text-muted)');
     }
   }

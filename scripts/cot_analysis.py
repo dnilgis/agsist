@@ -276,7 +276,7 @@ def series_for(block):
     tr_l, tr_s, tr_t = g("tr_mm_long"), g("tr_mm_short"), g("tr_total")
     per_trader = [round(mm_l[i] / tr_l[i], 1) if tr_l[i] else None for i in range(n)]
     per_short = [round(mm_s[i] / tr_s[i], 1) if tr_s[i] else None for i in range(n)]
-    # Average book size has a twenty-year uptrend: open interest has roughly
+    # Average book size trends up over the record: open interest has roughly
     # doubled while the reportable trader count has not. Ranked raw, the
     # crowding number reads "record" almost every recent week. Ranked against
     # the market's own average book (OI per reporting trader) it measures what
@@ -710,8 +710,8 @@ def analyse_commodity(key, block, family):
             band = [j for j in elig if net_oi[j] is not None and abs(net_oi[j] - net_oi[i]) <= tol]
             q = (f"Weeks when funds held about the same share of the market as now "
                  f"({net_oi[i]:+.1f}% of open interest, within {tol:.1f} points). Share of "
-                 f"open interest rather than contracts, so a 2008 reading and a 2026 "
-                 f"reading are the same claim.")
+                 f"open interest rather than contracts, so a {d[0][:4]} reading and a "
+                 f"{d[i][:4]} reading are the same claim.")
             hs["share_of_oi"] = study("share_of_oi", q, band, fwd, base, h, rng_for("share_of_oi"), len(elig))
             family.append((key, h, "share_of_oi", hs["share_of_oi"], True))
 
