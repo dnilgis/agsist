@@ -2227,7 +2227,7 @@ cotTick(); setInterval(cotTick, 60000);
         + c.first_week.slice(0,4) + '. Nothing we tested says which way price goes next. What it does '
         + 'say is that ' + num(c.capacity.to_flat) + ' contracts of ' + dir + ' sit between here and '
         + 'flat, and ' + num(room) + ' between here and the far end of that record. That is a reason '
-        + 'to look at ' + esc(noun) + ' this week, not a reason to predict a move.</p>';
+        + 'to look this week at ' + esc(noun) + ', not a reason to predict a move.</p>';
     }
     return '<p class="cx-verdict"><b>Nothing here should change your marketing plan this week.</b> '
       + esc(c.read) + ' None of the readings we tested beat an average week.</p>';
@@ -2361,6 +2361,35 @@ cotTick(); setInterval(cotTick, 60000);
 
     /* what followed */
     o.push('<h4 class="cx-h4">What followed, the last time it looked like this</h4>');
+
+    /* A market with no price series has no forward returns, so every study
+       comes back with zero usable weeks and the gate prints "not enough
+       history to say". That is true and it is the wrong reason: the history
+       is complete, the PRICES are missing. Printing the thin-sample message
+       here would send a reader looking for more history that already exists.
+       Say the real reason once and stop. */
+    if (base && !base.n) {
+      o.push('<div class="cx-withheld"><b>No price series for ' + esc(c.label) + ', so there is '
+        + 'nothing to measure against.</b> The positioning above is CFTC\u2019s and is complete, all '
+        + num(c.weeks_of_history) + ' weeks of it. Everything on this page that needs a price \u2014 '
+        + 'what followed last time, the past weeks that look like today, the correlations \u2014 is '
+        + 'withheld for this market because our futures feed does not carry the contract. It is not '
+        + 'a thin sample; it is no sample.</div>');
+      o.push('<details class="cx-details"><summary>Show the arithmetic behind this panel</summary>'
+        + '<div class="cx-tw"><table class="cx-table"><tbody>'
+        + row('Report', 'CFTC Disaggregated, futures only, all contract months')
+        + row('Positions as of', dt(c.date))
+        + row('Published', dt(c.release_date))
+        + row('Weeks on record', num(c.weeks_of_history) + ' from ' + dt(c.first_week))
+        + row('Managed money long / short', num(c.mm_long) + ' / ' + num(c.mm_short))
+        + row('Net, long minus short', num(c.net))
+        + row('Open interest', num(c.oi))
+        + row('Net as a share of open interest', pct(c.net_oi, 2))
+        + row('Price series', 'none available')
+        + '</tbody></table></div></details>');
+      host.innerHTML = o.join('');
+      return;
+    }
     o.push('<p class="cx-foot" style="margin-top:0">Percentages are the futures board, not your cash '
       + 'price. Basis moves separately.</p>');
     o.push('<div class="cx-hz" role="group" aria-label="How far ahead">'
