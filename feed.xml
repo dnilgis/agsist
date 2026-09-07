@@ -5,13 +5,26 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Sun, 06 Sep 2026 13:44:50 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 07 Sep 2026 10:50:49 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/agsist.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>MARKETS DARK; U.S. STRIKES IRANIAN TANKERS TUESDAY LOOMS</title>
+      <link>https://agsist.com/daily/2026-09-07</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-09-07</guid>
+      <pubDate>Mon, 07 Sep 2026 05:00:00 -0600</pubDate>
+      <description>Markets are closed today, but the weekend handed traders a live wire: U.S. strikes on three Iranian tankers, WTI already ticking to $92.14 in overnight trade, and Goldman calling $120 a real scenario if shipping disruptions widen. Friday's close on December corn at $5.37 and November beans at $13.10 is the last clean number. Tuesday opens with a new risk premium in the room.
+Labor Day closes the board, but Iran escalation over the holiday weekend is the first thing traders price Tuesday morning.
+• IRAN ESCALATES; ENERGY INTO HARVEST
+  → If fall diesel needs are unpriced, the overnight move says Tuesday morning is not the moment to wait for a pullback.
+• GRAINS: FRIDAY'S PROFIT TAKING, TUESDAY'S SETUP
+• CATTLE COMPLEX: EXECUTIVE ORDERS, QUIET PRICE
+Read more: https://agsist.com/daily/2026-09-07</description>
+    </item>
     <item>
       <title>WHEAT BREAKS 3.4%; SEPTEMBER WASDE COUNTDOWN BEGINS</title>
       <link>https://agsist.com/daily/2026-09-06</link>
@@ -390,18 +403,6 @@ August 12 WASDE is the first real look at post-pollination yield estimates, and 
   → If you are carrying feeder inventory above $340, watch the Aug 24 border date. A return-to-work at Cargill before then compounds the downside.
 • Hormuz: Iran Raises the Stakes Again
 Read more: https://agsist.com/daily/2026-08-09</description>
-    </item>
-    <item>
-      <title>LEAN HOGS RUN 17%; CORN, BEANS END WEEK SOFT</title>
-      <link>https://agsist.com/daily/2026-08-08</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-08-08</guid>
-      <pubDate>Sat, 08 Aug 2026 05:00:00 -0600</pubDate>
-      <description>Lean hogs had their biggest single-session gain in years, closing at $95.50, up 16.9%, while corn fell hard to $4.39 and beans gave back $0.28 to $11.56. The Pro Farmer Crop Tour is nine days out. Until those scouts are in fields, favorable August rains across Missouri and much of the Belt keep the burden of proof on the bulls.
-Friday closed a week of quiet grain pressure, a surprise hog move, and a Farm Bill that ran out of road before the Senate recess.
-• Grains End Week Soft
-• Hogs Move Hard; Cattle Firms
-• Farm Bill Hits a Wall
-Read more: https://agsist.com/daily/2026-08-08</description>
     </item>
   </channel>
 </rss>

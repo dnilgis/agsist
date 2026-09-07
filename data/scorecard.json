@@ -1,18 +1,18 @@
 {
- "updated": "2026-09-06T13:44:50+00:00",
- "total": 106,
+ "updated": "2026-09-07T10:50:49+00:00",
+ "total": 107,
  "played_out": 37,
- "didnt": 64,
+ "didnt": 65,
  "pending": 5,
- "hit_rate": 36.6,
+ "hit_rate": 36.3,
  "by_method": {
   "deterministic": {
    "played": 11,
-   "missed": 54,
-   "graded": 65,
-   "hit_rate": 16.9,
+   "missed": 55,
+   "graded": 66,
+   "hit_rate": 16.7,
    "first": "2026-06-24",
-   "last": "2026-09-06"
+   "last": "2026-09-07"
   },
   "self_reported": {
    "played": 26,
@@ -34,22 +34,22 @@
   },
   "v2": {
    "played": 7,
-   "missed": 14,
-   "graded": 21,
-   "hit_rate": 33.3,
+   "missed": 15,
+   "graded": 22,
+   "hit_rate": 31.8,
    "first": "2026-08-12",
-   "last": "2026-09-06"
+   "last": "2026-09-07"
   }
  },
  "direction_only": {
   "right_way": 26,
-  "graded": 65,
-  "rate": 40.0
+  "graded": 66,
+  "rate": 39.4
  },
  "by_instrument": {
   "wheat": {
    "played": 0,
-   "graded": 13,
+   "graded": 14,
    "hit_rate": 0.0
   },
   "corn": {
@@ -96,6 +96,22 @@
  "mismatched": 23,
  "current_streak": 0,
  "records": [
+  {
+   "made": "2026-09-06",
+   "judged": "2026-09-07",
+   "call": "Called wheat higher from $7.16 Friday. It closed flat at $7.16 -- no move, no play.",
+   "outcome": "didnt",
+   "method": "deterministic",
+   "mismatch": false,
+   "note": "Miss. Wheat had no catalyst to push off that level into the holiday weekend. Friday's session confirmed the pattern: wheat gets sold while corn and beans hold. The call was wrong to expect a break higher into a long weekend with no fresh fundamental.",
+   "instrument": "wheat",
+   "direction": "up",
+   "level": "7.16",
+   "p0": 7.16,
+   "p1": 7.16,
+   "design": "v2",
+   "direction_ok": false
+  },
   {
    "made": "2026-09-05",
    "judged": "2026-09-06",
