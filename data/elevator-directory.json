@@ -1,18 +1,18 @@
 {
- "generated": "2026-09-07T16:23:43Z",
+ "generated": "2026-09-07T20:07:08Z",
  "from": "bids-full.json",
  "complete": false,
  "note": "Directory only: who operates a facility and where. No prices, no basis, no symbols, no delivery windows.",
  "counts": {
-  "facilities": 1802,
+  "facilities": 1800,
   "states": 28,
   "with_address": 0,
   "with_coords": 0,
   "with_url": 0,
-  "with_phone": 1802,
+  "with_phone": 1800,
   "saturated_zips": 0,
   "failed_zips": 0,
-  "rows_read": 17817
+  "rows_read": 17769
  },
  "saturated": [],
  "failed": [],
@@ -11589,24 +11589,6 @@
    "state": "ND",
    "zip": "58712",
    "phone": "701-465-3900",
-   "source": "barchart"
-  },
-  {
-   "facility": "Dakota Midland Grain",
-   "branch": "Surrey",
-   "city": "Norwich",
-   "state": "ND",
-   "zip": "58768",
-   "phone": "701-728-6430",
-   "source": "barchart"
-  },
-  {
-   "facility": "Dakota Midland Grain",
-   "branch": "Voltaire",
-   "city": "Volitaire",
-   "state": "ND",
-   "zip": "58792",
-   "phone": "701-338-2530",
    "source": "barchart"
   },
   {
