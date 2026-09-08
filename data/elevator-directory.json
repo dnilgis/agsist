@@ -1,18 +1,18 @@
 {
- "generated": "2026-09-07T22:47:15Z",
+ "generated": "2026-09-08T15:02:52Z",
  "from": "bids-full.json",
  "complete": false,
  "note": "Directory only: who operates a facility and where. No prices, no basis, no symbols, no delivery windows.",
  "counts": {
-  "facilities": 1801,
+  "facilities": 1802,
   "states": 28,
   "with_address": 0,
   "with_coords": 0,
   "with_url": 0,
-  "with_phone": 1801,
+  "with_phone": 1802,
   "saturated_zips": 0,
   "failed_zips": 0,
-  "rows_read": 17775
+  "rows_read": 17791
  },
  "saturated": [],
  "failed": [],
@@ -7461,6 +7461,15 @@
    "source": "barchart"
   },
   {
+   "facility": "Cardinal Ethanol",
+   "branch": "Cardinal Colwich",
+   "city": "Colwich",
+   "state": "KS",
+   "zip": "67030",
+   "phone": "(316) 789-2500",
+   "source": "barchart"
+  },
+  {
    "facility": "Cargill US",
    "branch": "Hutchinson East, CAH",
    "city": "Hutchinson",
@@ -11601,6 +11610,24 @@
    "source": "barchart"
   },
   {
+   "facility": "Dakota Midland Grain",
+   "branch": "Surrey",
+   "city": "Norwich",
+   "state": "ND",
+   "zip": "58768",
+   "phone": "701-728-6430",
+   "source": "barchart"
+  },
+  {
+   "facility": "Dakota Midland Grain",
+   "branch": "Voltaire",
+   "city": "Volitaire",
+   "state": "ND",
+   "zip": "58792",
+   "phone": "701-338-2530",
+   "source": "barchart"
+  },
+  {
    "facility": "Embden Grain Company",
    "branch": "Embden Grain Co.",
    "city": "Embden",
@@ -13717,15 +13744,6 @@
   },
   {
    "facility": "Luckey Farmers, Inc.",
-   "branch": "Curtice",
-   "city": "Curtice",
-   "state": "OH",
-   "zip": "43412",
-   "phone": "(419) 836-6262",
-   "source": "barchart"
-  },
-  {
-   "facility": "Luckey Farmers, Inc.",
    "branch": "Cygnet",
    "city": "Cygnet",
    "state": "OH",
@@ -15109,15 +15127,6 @@
    "state": "SD",
    "zip": "57054",
    "phone": "605-482-8291",
-   "source": "barchart"
-  },
-  {
-   "facility": "New Century FS",
-   "branch": "Yankton",
-   "city": "Yankton",
-   "state": "SD",
-   "zip": "57078",
-   "phone": "(605) 665-3691",
    "source": "barchart"
   },
   {
