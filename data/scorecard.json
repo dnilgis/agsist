@@ -1,10 +1,10 @@
 {
- "updated": "2026-09-07T10:50:49+00:00",
- "total": 107,
+ "updated": "2026-09-08T11:16:09+00:00",
+ "total": 108,
  "played_out": 37,
- "didnt": 65,
+ "didnt": 66,
  "pending": 5,
- "hit_rate": 36.3,
+ "hit_rate": 35.9,
  "by_method": {
   "deterministic": {
    "played": 11,
@@ -16,11 +16,11 @@
   },
   "self_reported": {
    "played": 26,
-   "missed": 10,
-   "graded": 36,
-   "hit_rate": 72.2,
+   "missed": 11,
+   "graded": 37,
+   "hit_rate": 70.3,
    "first": "2026-04-28",
-   "last": "2026-06-23"
+   "last": "2026-09-08"
   }
  },
  "by_design": {
@@ -96,6 +96,15 @@
  "mismatched": 23,
  "current_streak": 0,
  "records": [
+  {
+   "made": "2026-09-07",
+   "judged": "2026-09-08",
+   "call": "Called wheat up toward $7.27; wheat closed $7.16, down 25 cents.",
+   "outcome": "didnt",
+   "method": "self",
+   "mismatch": false,
+   "note": "Wheat went the wrong direction, hard. The call was wrong and the record reflects it: wheat 0/15."
+  },
   {
    "made": "2026-09-06",
    "judged": "2026-09-07",

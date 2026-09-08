@@ -5,13 +5,26 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Mon, 07 Sep 2026 10:50:49 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 08 Sep 2026 11:16:09 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/agsist.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>WHEAT DROPS AGAIN; CRUDE NEARS $100</title>
+      <link>https://agsist.com/daily/2026-09-08</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-09-08</guid>
+      <pubDate>Tue, 08 Sep 2026 05:00:00 -0600</pubDate>
+      <description>Wheat hit $7.16 again Tuesday, a 25-cent drop that mirrors the Sep 5 selloff almost tick for tick. Two 3.4% down sessions in four trading days is not consolidation: somebody is getting out. Crude ran to $93.92 on fresh Saudi site attacks and fading Iran peace hopes, with Brent pressing $100. Crop Progress at 3 PM CT gives harvest a real number today.
+Wheat fell 3.4% for the second time in three sessions as Iran tensions push crude higher; USDA Crop Progress prints at 3 PM CT.
+• WHEAT BREAKS AGAIN
+• CORN SPLITS; HARVEST OPENS
+  → If you have unpriced December corn, hold through today's 3 PM Crop Progress before making a move.
+• SOYOIL LEADS BEANS LOWER
+Read more: https://agsist.com/daily/2026-09-08</description>
+    </item>
     <item>
       <title>MARKETS DARK; U.S. STRIKES IRANIAN TANKERS TUESDAY LOOMS</title>
       <link>https://agsist.com/daily/2026-09-07</link>
@@ -390,19 +403,6 @@ Corn and wheat give back ground ahead of Tuesday's report while WTI adds 2.6% on
 • CATTLE HOLDS; FEEDERS EASE
 • CRUDE RUNS ON FREIGHT RISK
 Read more: https://agsist.com/daily/2026-08-10</description>
-    </item>
-    <item>
-      <title>WASDE WEEK ARRIVES; WHEAT LEADS, CORN SOFT</title>
-      <link>https://agsist.com/daily/2026-08-09</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-08-09</guid>
-      <pubDate>Sun, 09 Aug 2026 05:00:00 -0600</pubDate>
-      <description>Friday's close handed bears a clean exit: corn at $4.39, beans at $11.56, both soft on favorable weather and fund selling with no new demand story to fight back. Wheat bucked the complex at $6.40, up 8 cents, on export interest. This week the August 12 WASDE resets every number on the board. Come in ready.
-August 12 WASDE is the first real look at post-pollination yield estimates, and the Belt just got more rain.
-• Grains: WASDE in the Headlights
-• Livestock: Feeders Hold Historic Ground
-  → If you are carrying feeder inventory above $340, watch the Aug 24 border date. A return-to-work at Cargill before then compounds the downside.
-• Hormuz: Iran Raises the Stakes Again
-Read more: https://agsist.com/daily/2026-08-09</description>
     </item>
   </channel>
 </rss>
