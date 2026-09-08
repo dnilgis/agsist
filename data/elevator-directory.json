@@ -1,18 +1,18 @@
 {
- "generated": "2026-09-08T18:30:51Z",
+ "generated": "2026-09-08T21:21:49Z",
  "from": "bids-full.json",
  "complete": false,
  "note": "Directory only: who operates a facility and where. No prices, no basis, no symbols, no delivery windows.",
  "counts": {
-  "facilities": 1804,
+  "facilities": 1791,
   "states": 28,
   "with_address": 0,
   "with_coords": 0,
   "with_url": 0,
-  "with_phone": 1804,
+  "with_phone": 1791,
   "saturated_zips": 0,
   "failed_zips": 0,
-  "rows_read": 17854
+  "rows_read": 17770
  },
  "saturated": [],
  "failed": [],
@@ -87,6 +87,15 @@
    "state": "CO",
    "zip": "80650",
    "phone": " 970-381-4402",
+   "source": "barchart"
+  },
+  {
+   "facility": "Roggen Farmers Elevator Association",
+   "branch": "Roggen Elevator - Main Office",
+   "city": "Roggen",
+   "state": "CO",
+   "zip": "80652",
+   "phone": "(303) 849-5506",
    "source": "barchart"
   },
   {
@@ -3210,15 +3219,6 @@
    "state": "IA",
    "zip": "51060",
    "phone": "712-885-2249",
-   "source": "barchart"
-  },
-  {
-   "facility": "NEW Cooperative, Inc.",
-   "branch": "MortonMills",
-   "city": "Villisca",
-   "state": "IA",
-   "zip": "50864",
-   "phone": "712-414-0120",
    "source": "barchart"
   },
   {
@@ -6642,15 +6642,6 @@
    "source": "barchart"
   },
   {
-   "facility": "Iroquois Bio-Energy",
-   "branch": "IBEC",
-   "city": "Rensselaer",
-   "state": "IN",
-   "zip": "47978",
-   "phone": "(219) 866-5990",
-   "source": "barchart"
-  },
-  {
    "facility": "Kentland Elevator & Supply Inc.",
    "branch": "Kentland",
    "city": "Kentland ",
@@ -8871,6 +8862,15 @@
    "state": "KS",
    "zip": "67137",
    "phone": "620-736-2011",
+   "source": "barchart"
+  },
+  {
+   "facility": "Skyland Grain",
+   "branch": "Cunningham Area",
+   "city": "Cunningham",
+   "state": "KS",
+   "zip": "67035",
+   "phone": "(620) 298-2011",
    "source": "barchart"
   },
   {
@@ -11601,24 +11601,6 @@
    "source": "barchart"
   },
   {
-   "facility": "Dakota Midland Grain",
-   "branch": "Surrey",
-   "city": "Norwich",
-   "state": "ND",
-   "zip": "58768",
-   "phone": "701-728-6430",
-   "source": "barchart"
-  },
-  {
-   "facility": "Dakota Midland Grain",
-   "branch": "Voltaire",
-   "city": "Volitaire",
-   "state": "ND",
-   "zip": "58792",
-   "phone": "701-338-2530",
-   "source": "barchart"
-  },
-  {
    "facility": "Embden Grain Company",
    "branch": "Embden Grain Co.",
    "city": "Embden",
@@ -11679,15 +11661,6 @@
    "state": "ND",
    "zip": "58048",
    "phone": "701-874-2112",
-   "source": "barchart"
-  },
-  {
-   "facility": "Iroquois Bio-Energy",
-   "branch": "Blue Flint",
-   "city": "Underwood",
-   "state": "ND",
-   "zip": "58576",
-   "phone": "701-442-7500",
    "source": "barchart"
   },
   {
@@ -13113,60 +13086,6 @@
    "source": "barchart"
   },
   {
-   "facility": "The Scoular Company",
-   "branch": "South Grant, NE",
-   "city": "Grant",
-   "state": "NE",
-   "zip": "69140",
-   "phone": "308-352-4914",
-   "source": "barchart"
-  },
-  {
-   "facility": "The Scoular Company",
-   "branch": "Madrid, NE",
-   "city": "Madrid",
-   "state": "NE",
-   "zip": "69150",
-   "phone": "308-326-4206",
-   "source": "barchart"
-  },
-  {
-   "facility": "The Scoular Company",
-   "branch": "North Grant, NE",
-   "city": "Ogallala",
-   "state": "NE",
-   "zip": "69153",
-   "phone": "308-447-5531",
-   "source": "barchart"
-  },
-  {
-   "facility": "The Scoular Company",
-   "branch": "Scoular Paxton, NE Bids",
-   "city": "Paxton",
-   "state": "NE",
-   "zip": "69155",
-   "phone": "308-239-4995",
-   "source": "barchart"
-  },
-  {
-   "facility": "The Scoular Company",
-   "branch": "Wallace, NE",
-   "city": "Wallace",
-   "state": "NE",
-   "zip": "69169",
-   "phone": "308-387-4301",
-   "source": "barchart"
-  },
-  {
-   "facility": "The Scoular Company",
-   "branch": "Grainton Cash Bids",
-   "city": "Wallace",
-   "state": "NE",
-   "zip": "69169",
-   "phone": "308-228-2417",
-   "source": "barchart"
-  },
-  {
    "facility": "Thomas Livestock Co",
    "branch": "Thomas Livestock Co.",
    "city": " Broken Bow",
@@ -13740,42 +13659,6 @@
    "state": "OH",
    "zip": "43402",
    "phone": "(567) 806-5461",
-   "source": "barchart"
-  },
-  {
-   "facility": "Luckey Farmers, Inc.",
-   "branch": "Curtice",
-   "city": "Curtice",
-   "state": "OH",
-   "zip": "43412",
-   "phone": "(419) 836-6262",
-   "source": "barchart"
-  },
-  {
-   "facility": "Luckey Farmers, Inc.",
-   "branch": "Cygnet",
-   "city": "Cygnet",
-   "state": "OH",
-   "zip": "43413",
-   "phone": "(567) 316-1544",
-   "source": "barchart"
-  },
-  {
-   "facility": "Luckey Farmers, Inc.",
-   "branch": "Graytown",
-   "city": "Graytown",
-   "state": "OH",
-   "zip": "43432",
-   "phone": "(419) 862-3213",
-   "source": "barchart"
-  },
-  {
-   "facility": "Luckey Farmers, Inc.",
-   "branch": "Haskins",
-   "city": "Haskins",
-   "state": "OH",
-   "zip": "43525",
-   "phone": "(419) 823-1331",
    "source": "barchart"
   },
   {
@@ -16201,15 +16084,6 @@
    "source": "barchart"
   },
   {
-   "facility": "Wheaton Grain",
-   "branch": "Chippewa Falls",
-   "city": "Chippewa Falls",
-   "state": "WI",
-   "zip": "54729",
-   "phone": "715-874-659",
-   "source": "barchart"
-  },
-  {
    "facility": "Winchester Ag Service, Inc",
    "branch": "Chippewa Falls",
    "city": "Chippewa Falls",
@@ -16243,6 +16117,15 @@
    "state": "WY",
    "zip": "82082",
    "phone": "(307) 245-3202",
+   "source": "barchart"
+  },
+  {
+   "facility": "PineBluffs Feed & Grain",
+   "branch": "PineBluffs Feed",
+   "city": "Pine Bluffs",
+   "state": "WY",
+   "zip": "82082",
+   "phone": "307-245-3881",
    "source": "barchart"
   },
   {
