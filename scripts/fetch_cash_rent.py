@@ -31,9 +31,12 @@ USAGE
 """
 
 import argparse
+import contextlib
 import json
 import os
 import re
+import shutil
+import tempfile
 import sys
 import time
 import urllib.parse
@@ -370,11 +373,41 @@ def emit_national():
     return doc
 
 
+@contextlib.contextmanager
+def _scratch_outdir():
+    """THE SELFTEST MUST NOT WRITE INTO data/cash-rent.
+
+    emit_national() rolls up every [A-Z]{2}.json it finds there, so a fixture
+    dropped beside 49 real state files produces a national number built from
+    both — which is how `assert nat["n_rent"] == 2` came to fail with 2772. The
+    assertion was fine; the directory was not empty any more.
+
+    Worse than the wrong count: write_state() overwrote the real IA.json with
+    the two-county fixture and emit_national() then rewrote national.json from
+    that. The assert fires immediately after, so CI exits before committing
+    anything, but a passing run would have left a national.json with no real
+    Iowa counties in it.
+
+    Every path in this file resolves through OUTDIR, so swapping it is enough.
+    """
+    global OUTDIR
+    real = OUTDIR
+    tmp = tempfile.mkdtemp(prefix="cash-rent-selftest-")
+    OUTDIR = tmp
+    try:
+        yield tmp
+    finally:
+        OUTDIR = real
+        shutil.rmtree(tmp, ignore_errors=True)
+
+
 def selftest():
     """Offline. NASS is blocked in the sandbox, so exercise every rule that
     matters against synthetic records: suppression, the 2015 hole, FIPS
     assembly, trend fitting, and the thin-data refusal."""
     log("SELFTEST: cash rent")
+    _real_outdir = OUTDIR
+    _before_outdir = sorted(os.listdir(OUTDIR)) if os.path.isdir(OUTDIR) else []
 
     # --- suppression markers are never numbers -------------------------------
     for bad in ["(D)", "(NA)", "(X)", "(Z)", "(L)", "", "  ", None, "0"]:
@@ -438,41 +471,54 @@ def selftest():
     log("  missing-term years produce no ratio point (no partial invention)")
 
     # --- end-to-end doc shape ------------------------------------------------
-    counties = {"19169": {"fips": "19169", "name": "Story",
-                          "rent": {"nonirr": {"2024": 269.0, "2016": 230.0}},
-                          "yield": {"corn": {"trend": 201.4, "r2": 0.71, "n": 15, "slope": 1.9,
-                                             "last": 205.0, "hist": {"2016": 203.0, "2024": 205.0}}}}}
-    prices = {"corn": {"2016": 3.36, "2024": 4.35}}
-    path, n = write_state("IA", counties, prices)
-    doc = json.load(open(path))
-    assert doc["years"] == [2016, 2024], doc["years"]
-    assert 2015 not in doc["years"]
-    assert doc["no_survey_years"] == [2015]
-    assert doc["prices"]["corn"]["2024"] == 4.35
-    assert doc["counties"][0]["yield"]["corn"]["hist"]["2016"] == 203.0
-    json.dumps(doc)
-    os.remove(path)
-    log(f"  document shape OK ({n} county, years={doc['years']}, prices+yield history carried)")
+    # From here down the selftest writes files, so it runs in its own
+    # directory. Nothing below can see or touch the committed state files.
+    with _scratch_outdir():
+      counties = {"19169": {"fips": "19169", "name": "Story",
+                            "rent": {"nonirr": {"2024": 269.0, "2016": 230.0}},
+                            "yield": {"corn": {"trend": 201.4, "r2": 0.71, "n": 15, "slope": 1.9,
+                                               "last": 205.0, "hist": {"2016": 203.0, "2024": 205.0}}}}}
+      prices = {"corn": {"2016": 3.36, "2024": 4.35}}
+      path, n = write_state("IA", counties, prices)
+      doc = json.load(open(path))
+      assert doc["years"] == [2016, 2024], doc["years"]
+      assert 2015 not in doc["years"]
+      assert doc["no_survey_years"] == [2015]
+      assert doc["prices"]["corn"]["2024"] == 4.35
+      assert doc["counties"][0]["yield"]["corn"]["hist"]["2016"] == 203.0
+      json.dumps(doc)
+      os.remove(path)
+      log(f"  document shape OK ({n} county, years={doc['years']}, prices+yield history carried)")
 
-    # --- national roll-up ----------------------------------------------------
-    counties2 = {
-        "19169": {"fips": "19169", "name": "Story",
-                  "rent": {"nonirr": {"2016": 230.0, "2024": 269.0}},
-                  "yield": {"corn": {"hist": {"2016": 203.0, "2024": 205.0}}}},
-        "19153": {"fips": "19153", "name": "Polk",          # rent but no yield -> rent only
-                  "rent": {"nonirr": {"2024": 240.0}}, "yield": {}},
-    }
-    write_state("IA", counties2, {"corn": {"2016": 3.36, "2024": 4.35}})
-    nat = emit_national()
-    assert nat["n_rent"] == 2, nat["n_rent"]
-    assert nat["n_pct"] == 1, "county without yield must have rent but NO ratio"
-    s = nat["counties"]["19169"]
-    assert abs(s["p"] - (269.0 / (205.0 * 4.35) * 100)) < 0.05, s
-    assert s["py"] == 2024 and s["ry"] == 2024
-    assert "p" not in nat["counties"]["19153"], "ratio invented for a county with no yield"
-    log(f"  national roll-up OK ({nat['n_rent']} rent, {nat['n_pct']} ratio, "
-        f"Story={nat['counties']['19169']['p']}%)")
-    os.remove(os.path.join(OUTDIR, "IA.json")); os.remove(os.path.join(OUTDIR, "national.json"))
+      # --- national roll-up ----------------------------------------------------
+      counties2 = {
+          "19169": {"fips": "19169", "name": "Story",
+                    "rent": {"nonirr": {"2016": 230.0, "2024": 269.0}},
+                    "yield": {"corn": {"hist": {"2016": 203.0, "2024": 205.0}}}},
+          "19153": {"fips": "19153", "name": "Polk",          # rent but no yield -> rent only
+                    "rent": {"nonirr": {"2024": 240.0}}, "yield": {}},
+      }
+      write_state("IA", counties2, {"corn": {"2016": 3.36, "2024": 4.35}})
+      nat = emit_national()
+      assert nat["n_rent"] == 2, nat["n_rent"]
+      assert nat["n_pct"] == 1, "county without yield must have rent but NO ratio"
+      s = nat["counties"]["19169"]
+      assert abs(s["p"] - (269.0 / (205.0 * 4.35) * 100)) < 0.05, s
+      assert s["py"] == 2024 and s["ry"] == 2024
+      assert "p" not in nat["counties"]["19153"], "ratio invented for a county with no yield"
+      log(f"  national roll-up OK ({nat['n_rent']} rent, {nat['n_pct']} ratio, "
+          f"Story={nat['counties']['19169']['p']}%)")
+      os.remove(os.path.join(OUTDIR, "IA.json")); os.remove(os.path.join(OUTDIR, "national.json"))
+    # AND IT LEAVES THE REPOSITORY EXACTLY AS IT FOUND IT. The fault this
+    # file just carried was not a wrong number, it was a selftest writing into
+    # the directory it was measuring. Checking that directly is cheaper than
+    # noticing 2772 and working backwards.
+    assert OUTDIR == _real_outdir, f"OUTDIR was not restored: {OUTDIR}"
+    after = sorted(os.listdir(OUTDIR)) if os.path.isdir(OUTDIR) else []
+    assert after == _before_outdir, (
+        "the selftest changed the contents of " + OUTDIR + ": "
+        + str(set(after) ^ set(_before_outdir)))
+    log(f"  repository untouched ({len(after)} files still in {OUTDIR})")
     log("SELFTEST OK")
 
 
