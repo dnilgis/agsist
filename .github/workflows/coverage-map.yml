@@ -28,7 +28,7 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 45
     permissions:
       contents: write
     steps:
@@ -37,9 +37,20 @@ jobs:
         with:
           node-version: 22
 
+      # Hand-worked answers first. If the bucketing is wrong, the map is
+      # wrong quietly, so this runs before anything talks to the network.
+      - name: Selftest the builder
+        run: node scripts/build_coverage_map.mjs --selftest
+
       # The builder refuses to write an empty map rather than committing one:
       # a directory that comes back with no elevators is a fetch that failed,
-      # and an empty coverage map is worse than yesterday's.
+      # and an empty coverage map is worse than yesterday's. It also refuses a
+      # partial pass. bids' directory records ONE fetch pass, and a source that
+      # pass did not reach comes back indistinguishable from an elevator with
+      # no reader; publishing that undercounts the green. The builder samples a
+      # few passes, keeps the best, and fails this step rather than write a
+      # number it cannot stand behind. A red X here means yesterday's map is
+      # still up, which is the intended outcome.
       - name: Build the coverage data from the bids directory
         run: node scripts/build_coverage_map.mjs
 
@@ -54,7 +65,9 @@ jobs:
           fi
           n=$(node -e "console.log(require('./data/elevator-coverage.json').counts.read)")
           k=$(node -e "console.log(require('./data/elevator-coverage.json').counts.known)")
-          git commit -m "coverage: $n read, $k in the queue [skip ci]"
+          r=$(node -e "console.log(require('./data/elevator-coverage.json').counts.readers)")
+          u=$(node -e "console.log(require('./data/elevator-coverage.json').counts.unreported)")
+          git commit -m "coverage: $n of $r readers answered, $u did not, $k in the queue [skip ci]"
           for i in 1 2 3; do
             git push && break
             git pull --rebase --autostash && sleep 3
