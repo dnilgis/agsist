@@ -1,0 +1,72 @@
+name: yield-panel
+
+# "What everyone else says" on /conditions-yield — the panel of independent 2026
+# yield forecasts beside our own nowcast.
+#
+# SEPARATE FROM cond-yield.yml ON PURPOSE. That workflow is gated on an
+# in-season window and skips itself outside it, which is right for a ratings
+# model and wrong for this: the benchmark file is edited by hand, and an edit
+# made in December has to reach the page in December. This job carries no
+# seasonal gate.
+#
+# It reads two files and owns neither number. data/yield-benchmarks.json is the
+# hand-maintained roster of other people's forecasts; data/yield-nowcast.json is
+# ours, read rather than copied so the panel cannot disagree with the tiles
+# above it.
+
+on:
+  # The point of a hand-maintained file is that editing it does something. A
+  # push to either of these rebuilds the panel within the minute.
+  push:
+    branches: [main]
+    paths:
+      - 'data/yield-benchmarks.json'
+      - 'scripts/build_yield_benchmarks.py'
+      - 'conditions-yield.html'
+  # Daily, off the hour. The nowcast lands Tuesdays 03:18 UTC, so this picks up
+  # a fresh model number the same morning and every other day is a no-op that
+  # commits nothing.
+  schedule:
+    - cron: '24 4 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: yield-panel
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # Hand-worked answers before anything is written. The failure this
+      # guards against is silent: a sort that stops sorting or a rank off by
+      # one produces a panel that looks fine and ranks people wrongly.
+      - name: Selftest the builder
+        run: python scripts/build_yield_benchmarks.py --selftest
+
+      # Refuses to write on an unsourced forecast, and refuses if it disagrees
+      # with data/crop-tour.json about a figure both pages print. A red X here
+      # means the panel did not update and the old one is still correct.
+      - name: Build the panel
+        run: python scripts/build_yield_benchmarks.py
+
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/yield-panel.json
+          if git diff --cached --quiet; then echo "panel unchanged"; exit 0; fi
+          git commit -m "data: yield benchmark panel [skip ci]"
+          for i in 1 2 3; do
+            git push && break
+            git pull --rebase --autostash origin main && sleep 3
+          done
