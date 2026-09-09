@@ -1,18 +1,18 @@
 {
- "generated": "2026-09-09T21:07:21Z",
+ "generated": "2026-09-09T23:10:41Z",
  "from": "bids-full.json",
  "complete": false,
  "note": "Directory only: who operates a facility and where. No prices, no basis, no symbols, no delivery windows.",
  "counts": {
-  "facilities": 1802,
+  "facilities": 1803,
   "states": 28,
   "with_address": 0,
   "with_coords": 0,
   "with_url": 0,
-  "with_phone": 1802,
+  "with_phone": 1803,
   "saturated_zips": 0,
   "failed_zips": 0,
-  "rows_read": 17859
+  "rows_read": 17863
  },
  "saturated": [],
  "failed": [],
@@ -267,6 +267,15 @@
    "state": "IA",
    "zip": "51231",
    "phone": "712-723-5233",
+   "source": "barchart"
+  },
+  {
+   "facility": "Archer Coop Grain Co",
+   "branch": "Direct Ship AGP Sheldon ",
+   "city": "Sheldon",
+   "state": "IA",
+   "zip": "51201",
+   "phone": "402-275-6201",
    "source": "barchart"
   },
   {
