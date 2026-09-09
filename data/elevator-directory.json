@@ -1,18 +1,18 @@
 {
- "generated": "2026-09-09T15:05:20Z",
+ "generated": "2026-09-09T18:30:55Z",
  "from": "bids-full.json",
  "complete": false,
  "note": "Directory only: who operates a facility and where. No prices, no basis, no symbols, no delivery windows.",
  "counts": {
-  "facilities": 1803,
+  "facilities": 1798,
   "states": 28,
   "with_address": 0,
   "with_coords": 0,
   "with_url": 0,
-  "with_phone": 1803,
+  "with_phone": 1798,
   "saturated_zips": 0,
   "failed_zips": 0,
-  "rows_read": 17847
+  "rows_read": 17787
  },
  "saturated": [],
  "failed": [],
@@ -87,15 +87,6 @@
    "state": "CO",
    "zip": "80650",
    "phone": " 970-381-4402",
-   "source": "barchart"
-  },
-  {
-   "facility": "Roggen Farmers Elevator Association",
-   "branch": "Roggen Elevator - Main Office",
-   "city": "Roggen",
-   "state": "CO",
-   "zip": "80652",
-   "phone": "(303) 849-5506",
    "source": "barchart"
   },
   {
@@ -177,33 +168,6 @@
    "state": "IA",
    "zip": "50313",
    "phone": "515-263-3250",
-   "source": "barchart"
-  },
-  {
-   "facility": "AGP",
-   "branch": "AGP Eagle Grove, IA",
-   "city": "Eage Grove",
-   "state": "IA",
-   "zip": "50533",
-   "phone": "(515) 448?4711",
-   "source": "barchart"
-  },
-  {
-   "facility": "AGP",
-   "branch": "AGP Mason City, IA",
-   "city": "Mason City",
-   "state": "IA",
-   "zip": "50401",
-   "phone": "(800) 247-6372",
-   "source": "barchart"
-  },
-  {
-   "facility": "AGP",
-   "branch": "AGP Sheldon, IA",
-   "city": "Sheldon",
-   "state": "IA",
-   "zip": "51201",
-   "phone": "(800) 798-4282",
    "source": "barchart"
   },
   {
@@ -1423,7 +1387,7 @@
   },
   {
    "facility": "Heartland Coop",
-   "branch": "EARLHAM FEED MILL",
+   "branch": "EARLHAM",
    "city": "Earlham",
    "state": "IA",
    "zip": "50072",
@@ -1432,7 +1396,7 @@
   },
   {
    "facility": "Heartland Coop",
-   "branch": "EARLHAM",
+   "branch": "EARLHAM FEED MILL",
    "city": "Earlham",
    "state": "IA",
    "zip": "50072",
@@ -6651,6 +6615,15 @@
    "source": "barchart"
   },
   {
+   "facility": "Iroquois Bio-Energy",
+   "branch": "IBEC",
+   "city": "Rensselaer",
+   "state": "IN",
+   "zip": "47978",
+   "phone": "(219) 866-5990",
+   "source": "barchart"
+  },
+  {
    "facility": "Kentland Elevator & Supply Inc.",
    "branch": "Kentland",
    "city": "Kentland ",
@@ -8182,6 +8155,15 @@
   },
   {
    "facility": "Farmers Cooperative Equity Company",
+   "branch": "Isabel",
+   "city": "Isabel",
+   "state": "KS",
+   "zip": "67065",
+   "phone": "620-739-4335",
+   "source": "barchart"
+  },
+  {
+   "facility": "Farmers Cooperative Equity Company",
    "branch": "Nashville",
    "city": "Nashville",
    "state": "KS",
@@ -8862,15 +8844,6 @@
    "state": "KS",
    "zip": "67137",
    "phone": "620-736-2011",
-   "source": "barchart"
-  },
-  {
-   "facility": "Skyland Grain",
-   "branch": "Cunningham Area",
-   "city": "Cunningham",
-   "state": "KS",
-   "zip": "67035",
-   "phone": "(620) 298-2011",
    "source": "barchart"
   },
   {
@@ -11682,6 +11655,15 @@
    "source": "barchart"
   },
   {
+   "facility": "Iroquois Bio-Energy",
+   "branch": "Blue Flint",
+   "city": "Underwood",
+   "state": "ND",
+   "zip": "58576",
+   "phone": "701-442-7500",
+   "source": "barchart"
+  },
+  {
    "facility": "James Valley Grain, LLC",
    "branch": "Oakes",
    "city": "Oakes",
@@ -11931,15 +11913,6 @@
    "state": "NE",
    "zip": "68503",
    "phone": "402-476-3631",
-   "source": "barchart"
-  },
-  {
-   "facility": "AGP",
-   "branch": "AGP David City, NE",
-   "city": "David City",
-   "state": "NE",
-   "zip": "68632",
-   "phone": "(402) 275-6039",
    "source": "barchart"
   },
   {
@@ -15130,15 +15103,6 @@
    "source": "barchart"
   },
   {
-   "facility": "New Century FS",
-   "branch": "Yankton",
-   "city": "Yankton",
-   "state": "SD",
-   "zip": "57078",
-   "phone": "(605) 665-3691",
-   "source": "barchart"
-  },
-  {
    "facility": "NuGen Energy, LLC",
    "branch": "NuGen Marion",
    "city": "Marion",
@@ -15946,15 +15910,6 @@
    "state": "WI",
    "zip": "54642",
    "phone": "608-488-6661",
-   "source": "barchart"
-  },
-  {
-   "facility": "Meyer Brothers Grain",
-   "branch": "Elk Mound/Pleasant Valley",
-   "city": "Elk Mound",
-   "state": "WI",
-   "zip": "54739",
-   "phone": "715-879-5586",
    "source": "barchart"
   },
   {
