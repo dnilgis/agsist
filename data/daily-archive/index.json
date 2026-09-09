@@ -1,6 +1,18 @@
 {
   "briefings": [
     {
+      "date": "2026-09-09",
+      "date_display": "Wednesday, September 9, 2026",
+      "headline": "BRENT HITS $100; GRAINS AND CATTLE FOLLOW",
+      "teaser": "Iranian tankers hit, Brent at $100, harvest diesel tightening. This is the session that matters.",
+      "market_mood": "volatile",
+      "surprise_count": 2,
+      "sections": 4,
+      "url": "/daily/2026-09-09",
+      "market_closed": false,
+      "yc_outcome": "didnt"
+    },
+    {
       "date": "2026-09-08",
       "date_display": "Tuesday, September 8, 2026",
       "headline": "WHEAT DROPS AGAIN; CRUDE NEARS $100",
@@ -2066,6 +2078,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-09-08T11:16:08.206742+00:00",
-  "count": 180
+  "updated": "2026-09-09T10:54:55.888694+00:00",
+  "count": 181
 }
