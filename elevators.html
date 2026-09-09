@@ -226,7 +226,7 @@ button,a,[role="button"]{touch-action:manipulation}
 
   <div class="el-map-key" id="cov-key">
     <button type="button" class="el-key el-key-read"  data-c="read"  aria-pressed="true"><span class="el-dot"></span><b id="cov-n-read">&mdash;</b> read direct</button>
-    <button type="button" class="el-key el-key-quiet" data-c="quiet" aria-pressed="true"><span class="el-dot"></span><b id="cov-n-quiet">&mdash;</b> checking</button>
+    <button type="button" class="el-key el-key-quiet" data-c="quiet" aria-pressed="true" title="We have a reader for these. It did not answer the pass this map was built from, or the board is refusing."><span class="el-dot"></span><b id="cov-n-quiet">&mdash;</b> checking</button>
     <button type="button" class="el-key el-key-known" data-c="known" aria-pressed="true"><span class="el-dot"></span><b id="cov-n-known">&mdash;</b> in the queue</button>
   </div>
 
@@ -560,6 +560,15 @@ document.addEventListener('click',function(e){var a=e.target.closest&&e.target.c
            reader's to read. */
         foot.textContent = n.elevators.toLocaleString() + ' elevators tracked. ' +
           'Several share a town centre, so one pin can cover more than one \u2014 click to see what is there.';
+        /* THE SAMPLE, BESIDE THE CLAIM. Green counts what answered one pass of
+           our readers; the fleet is bigger and steadier than any one pass. A
+           page that printed only the first read 599 on a day it had 935. */
+        if (n.readers != null) {
+          var when = (d.directoryGenerated || '').slice(0, 16).replace('T', ' ');
+          foot.textContent += ' We have readers for ' + n.readers.toLocaleString() +
+            ' of them; ' + (n.read || 0).toLocaleString() + ' answered the pass this map ' +
+            'was built from' + (when ? ' (' + when + ' UTC)' : '') + '.';
+        }
       }
 
       /* The key doubles as a filter. Three buttons, and turning the grey off
