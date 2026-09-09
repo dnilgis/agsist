@@ -1,0 +1,52 @@
+{
+  "_note": "Independent 2026 US yield forecasts, maintained BY HAND in the GitHub editor. Two rules, and the builder enforces both: every entry needs a public source you can click and the date it was said, and nothing already published is ever edited afterwards. A forecaster being wrong is the point of this panel, not a defect in it. When USDA prints the January final, fill `final` under each crop and the builder scores everyone at once.",
+  "_adding_one": "Copy a block under `forecasts`. `as_of` is the date the number was PUBLISHED, not the date you added it. `source` must resolve to the page carrying the number. Leave a crop null if that forecaster did not publish one; a missing number renders as an em dash and a reason, never as a gap in the table.",
+  "_not_in_here": "AGSIST's own nowcast is deliberately absent. The builder reads it from data/yield-nowcast.json so our number on this panel can never drift from our number on the rest of the page.",
+  "season": 2026,
+  "crops": {
+    "corn": {
+      "unit": "bu/acre",
+      "usda_current": 180.7,
+      "usda_current_label": "USDA, August WASDE",
+      "usda_current_as_of": "2026-08-12",
+      "final": null,
+      "final_source": null
+    },
+    "soybeans": {
+      "unit": "bu/acre",
+      "usda_current": 52.7,
+      "usda_current_label": "USDA, August WASDE",
+      "usda_current_as_of": "2026-08-12",
+      "final": null,
+      "final_source": null
+    }
+  },
+  "usda_source": "https://www.usda.gov/oce/commodity/wasde/wasde0826.pdf",
+  "forecasts": [
+    {
+      "id": "dtn",
+      "name": "DTN Digital Yield Tour",
+      "kind": "model",
+      "as_of": "2026-08-10",
+      "source": "https://www.dtnpf.com/agriculture/web/ag/crops/article/2026/08/10/dtn-digital-yield-tour-estimates-us",
+      "method": "Satellite and weather modelling, run to crop conditions as of 1 August.",
+      "corn": 178.5,
+      "soybeans": 52.1
+    },
+    {
+      "id": "profarmer",
+      "name": "Pro Farmer Crop Tour",
+      "kind": "field",
+      "as_of": "2026-08-21",
+      "source": "https://www.profarmer.com/news/pro-farmer-estimates-2026-u-s-corn-crop-15-344-billion-bushels-soybeans-4-572-billion-bushels",
+      "method": "Scouts sampled more than 3,000 fields across seven states over four days, combined with maturity data and trend.",
+      "corn": 173.2,
+      "corn_low": 171.5,
+      "corn_high": 175.0,
+      "soybeans": 53.3,
+      "soybeans_low": 52.2,
+      "soybeans_high": 54.4,
+      "band_note": "Pro Farmer publishes a band: plus or minus 1 percent on corn, 2 percent on soybean production."
+    }
+  ]
+}

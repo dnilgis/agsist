@@ -175,6 +175,76 @@
     }).catch(function(){});
   })();
   </script>
+
+  <!-- WHAT EVERYONE ELSE SAYS. Additive: hidden until data/yield-panel.json
+       loads, so the page before the first build is the page that was there
+       yesterday. The numbers are not computed here — scripts/build_yield_benchmarks.py
+       owns every one of them and the panel file carries them ready to print. -->
+  <section id="cy-panel" style="display:none;background:#0d1112;border:1px solid #1a1f20;border-radius:12px;padding:18px 20px;margin:18px 0">
+    <div style="font-size:0.755rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#d4a23f;margin-bottom:7px">What everyone else says</div>
+    <div id="cyp-verdict" style="font-size:0.9rem;color:#e6ebe9;line-height:1.6;margin-bottom:12px"></div>
+    <div id="cyp-crops" style="display:grid;gap:14px"></div>
+    <div id="cyp-foot" style="font-size:0.795rem;color:#8a948f;line-height:1.65;margin-top:12px"></div>
+  </section>
+  <script>
+  (function(){
+    fetch('/data/yield-panel.json').then(function(r){return r.ok?r.json():null;}).then(function(d){
+      if(!d||!d.crops)return;
+      var wrap=document.getElementById('cyp-crops'); if(!wrap)return;
+      var LABEL={corn:'Corn',soybeans:'Soybeans'};
+      var esc=function(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');};
+      /* A GAP IS INFORMATION. A forecaster who published no number for a crop
+         is not in that crop's table at all, and the count under it says how
+         many are — rather than a blank row a reader reads as a zero. */
+      var blocks=[],verdicts=[];
+      Object.keys(LABEL).forEach(function(crop){
+        var c=d.crops[crop]; if(!c||!c.rows||!c.rows.length)return;
+        var sp=c.spread||{};
+        var rows=c.rows.map(function(r){
+          var band=(r.low!=null&&r.high!=null)?' <span style="color:#8a948f">'+r.low.toFixed(1)+'–'+r.high.toFixed(1)+'</span>':'';
+          var when=r.as_of?'<span style="color:#8a948f">'+esc(r.as_of)+'</span>':'<span style="color:#8a948f">— no date published</span>';
+          /* USDA'S ROW SORTS INTO THE COLUMN WITH EVERYONE ELSE — its print is a
+             forecast too, and pinning it under a sorted table made the table
+             read as unsorted. Its colour marks it apart without moving it. */
+          var col=r.ours?'#d4a23f':r.official?'#b9c2bd':'#e6ebe9';
+          var name=r.source?'<a href="'+esc(r.source)+'" style="color:'+col+';text-decoration:underline;text-underline-offset:2px">'+esc(r.name)+'</a>':'<span style="color:'+col+'">'+esc(r.name)+'</span>';
+          return '<div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-family:\'JetBrains Mono\',monospace;font-size:0.775rem;padding:5px 0;border-top:1px solid #171c1d'
+            +(r.ours?';background:rgba(212,162,63,.06)':'')+'">'
+            +'<span>'+(r.ours?'▸ ':'')+name+'</span>'
+            +'<span><b style="color:'+col+'">'+r.value.toFixed(1)+'</b>'+band+' &middot; '+when+'</span></div>';
+        }).join('');
+        blocks.push('<div><div style="font-size:0.82rem;color:#e6ebe9;font-weight:600;margin-bottom:2px">'+LABEL[crop]
+          +' <span style="color:#8a948f;font-weight:400">'+esc(c.unit||'')+'</span></div>'+rows
+          +'<div style="font-size:0.755rem;color:#8a948f;margin-top:6px">'+(sp.n||c.rows.length)+' forecasts on the table'
+          +(sp.spread!=null?', '+sp.spread.toFixed(1)+' apart end to end':'')+'.</div></div>');
+        if(sp.ours!=null){
+          verdicts.push(LABEL[crop].toLowerCase()+': ours is '
+            +(sp.highest?'the highest of the '+sp.n:sp.lowest?'the lowest of the '+sp.n:'#'+sp.rank+' of '+sp.n)
+            +(sp.spread!=null&&sp.spread>0?', '+Math.abs(sp.ours_vs_low).toFixed(1)+' over the lowest':''));
+        }
+      });
+      if(!blocks.length)return;
+      wrap.innerHTML=blocks.join('');
+      /* THE VERDICT IN WORDS, ABOVE THE NUMBERS. Being the outlier is the
+         thing a reader should take away, and it should not need arithmetic. */
+      var v=document.getElementById('cyp-verdict');
+      if(v)v.textContent=verdicts.length
+        ? 'Read against the other published forecasts — '+verdicts.join('; ')+'.'
+        : 'Other published forecasts, beside ours.';
+      var foot=document.getElementById('cyp-foot');
+      if(foot){
+        var bits=['Everything here was published by somebody else and is linked to where they published it. Our own figure is read from the nowcast file above, not typed in beside it, so the two cannot drift apart.'];
+        var graded=Object.keys(LABEL).some(function(k){return d.crops[k]&&d.crops[k].graded;});
+        bits.push(graded?'Scored against USDA’s January final, misses included.':'Nobody is scored until USDA prints the January final. Being early is not the same as being right, and this panel will not pretend otherwise.');
+        if(d.cross_checked&&d.cross_checked.length)
+          bits.push('Cross-checked against the crop tour page so the two cannot print different numbers for the same figure ('+d.cross_checked.join(', ')+').');
+        foot.textContent=bits.join(' ');
+      }
+      document.getElementById('cy-panel').style.display='block';
+    }).catch(function(){});
+  })();
+  </script>
+
   <section class="vp-ver" aria-live="polite">
     <div><select id="vp-sel" aria-label="Pick a state"></select><div class="vp-geo" id="vp-geo"></div></div>
     <div class="vp-big" id="vp-big">&hellip;</div>
