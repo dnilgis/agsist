@@ -5,13 +5,26 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Wed, 09 Sep 2026 10:54:57 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 10 Sep 2026 10:49:51 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/agsist.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>WHEAT BREAKS 2%; EXPORT SALES AT 7:30</title>
+      <link>https://agsist.com/daily/2026-09-10</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-09-10</guid>
+      <pubDate>Thu, 10 Sep 2026 05:00:00 -0600</pubDate>
+      <description>Wheat gave back another 14 cents to close at $7.13, the sharpest one-day drop in the complex this week, and WASDE positioning is the reason. Corn held, beans barely moved, meal firmed. The market is parked ahead of the 7:30 CT export sales print, which either confirms demand is backing the board or tells you the chart has been doing the work alone.
+Wheat leads grains lower on WASDE positioning and Black Sea news; the weekly export sales number prints in hours.
+• WHEAT BREAKS; WASDE PRESSURE
+• BEANS STALL; MEAL RUNS
+• CRUDE HOLDS ABOVE $97; TANKER RATES AT RECORDS
+  → If fall diesel needs are still unpriced, record tanker rates and $97 crude say this is not the window to wait.
+Read more: https://agsist.com/daily/2026-09-10</description>
+    </item>
     <item>
       <title>BRENT HITS $100; GRAINS AND CATTLE FOLLOW</title>
       <link>https://agsist.com/daily/2026-09-09</link>
@@ -390,19 +403,6 @@ Wheat ran 10 cents into the report; soybean oil is the quiet mover nobody's talk
 • BEANS SPLIT: OLD CROP FIRMS, NEW CROP FLAT
 • CORN TICKS; WASDE IS THE ONLY STORY
 Read more: https://agsist.com/daily/2026-08-12</description>
-    </item>
-    <item>
-      <title>WASDE EVE: CORN FLAT, BEANS SPLIT</title>
-      <link>https://agsist.com/daily/2026-08-11</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-08-11</guid>
-      <pubDate>Tue, 11 Aug 2026 05:00:00 -0600</pubDate>
-      <description>[Correction, posted late morning Aug 11: the emailed edition of this briefing described the August WASDE as already released. It had not — it prints Wednesday, Aug 12 at 11:00 AM CT. Every price in this briefing was and is real; the framing below is corrected, and the changelog carries the full account.] December corn didn't flinch on WASDE eve, flat at $4.62 for the second straight session. Nearby beans added nearly 5 cents on soyoil running up 2.1%, with 62% of the crop rated good-to-excellent holding the floor under new-crop. The weekly thread's question doesn't get its answer today — the WASDE prints tomorrow at 11 AM CT, and the market is positioned like it already knows what USDA will say.
-The August WASDE prints Wednesday at 11 AM CT; December corn held $4.62 while nearby beans firmed on soyoil strength and field reports point to a better-than-expected crop.
-• WASDE EVE; GRAINS SIT STILL
-• BEANS SPLIT: OLD CROP FIRMS, NEW CROP EASES
-  → If you are holding unpriced new-crop beans, $11.78 is a reasonable target ahead of the Pro Farmer tour Aug 17; a strong tour pulls the bid lower.
-• CATTLE FIRMS; FEEDERS EASE
-Read more: https://agsist.com/daily/2026-08-11</description>
     </item>
   </channel>
 </rss>
