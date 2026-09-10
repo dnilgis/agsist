@@ -25,7 +25,15 @@ Stdlib only. No secrets, no network.
 """
 import json
 import os
+import sys
 from datetime import datetime, timezone
+
+# THE SAME BAND THE TRACK RECORD USES. This file carried its own flat 2%, and on
+# 2026-09-09 the page called 2026/27 corn yield BULLISH in one section and IN
+# LINE in another — same consensus, same print, two builders. See
+# scripts/report_bands.py, which also explains why a yield gets a tighter band.
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from report_bands import surprise as band_surprise  # noqa: E402
 
 EST_PATH = "data/analyst-estimates.json"
 OUT_PATH = "data/analyst-scorecard.json"
@@ -47,15 +55,14 @@ def _roster_map(data):
     return m
 
 
-def _surprise(consensus, actual):
-    """Metric-level label (reuses the What's Priced In convention: a print below
-    the trade estimate is bullish/less supply, above is bearish)."""
-    if consensus in (None, 0) or actual is None:
-        return ""
-    gap = (actual - consensus) / abs(consensus)
-    if abs(gap) <= 0.02:
-        return "in line"
-    return "bullish" if actual < consensus else "bearish"
+def _surprise(consensus, actual, label=""):
+    """Metric-level label, from the shared rule.
+
+    The empty string means there was no consensus to compare against, and it is
+    NOT the same as "in line". The page used to render `m.surprise || 'in line'`,
+    so a metric nobody had filed an estimate for was published as having landed
+    where the trade expected. It now prints the reason instead."""
+    return band_surprise(consensus, actual, label)
 
 
 def build_upcoming(reports, roster, today):
@@ -126,9 +133,21 @@ def score(data, roster, today):
                 if closest and len(ests) >= 2:
                     a["wins"] += 1
             results.sort(key=lambda x: x["err_pct"])
-            rep_metrics.append({"label": met.get("label", met.get("key", "")),
+            label = met.get("label", met.get("key", ""))
+            rep_metrics.append({"label": label,
                                 "unit": met.get("unit", ""), "consensus": consensus,
-                                "actual": actual, "surprise": _surprise(consensus, actual),
+                                "actual": actual,
+                                "surprise": _surprise(consensus, actual, label),
+                                # WHERE THE CONSENSUS CAME FROM. Typed into
+                                # analyst-estimates.json beside every figure and
+                                # then dropped here, so the page cited nothing
+                                # for any number it printed.
+                                "consensus_source": met.get("consensus_source"),
+                                "consensus_range": met.get("consensus_range"),
+                                # HOW MANY FORECASTERS WERE ON IT. A metric with
+                                # one estimate and a metric with eight are not
+                                # the same evidence and used to look identical.
+                                "n_estimates": len(ests),
                                 "results": results})
         if any_scored:
             scored_reports.append({"report": r.get("report", ""), "date": r.get("date", ""),
@@ -140,7 +159,13 @@ def score(data, roster, today):
                "mape": round(a["err_sum"] / a["n"], 2),
                "bias": round(a["signed_sum"] / a["n"], 2),
                "wins": a["wins"],
-               "beat_rate": (round(a["beat_yes"] / a["beat_n"] * 100) if a["beat_n"] else None)}
+               "beat_rate": (round(a["beat_yes"] / a["beat_n"] * 100) if a["beat_n"] else None),
+               # HOW MANY OF THIS ANALYST'S CALLS HAD A TRADE ESTIMATE TO BEAT.
+               # beat_rate is None when none of them did, and the page printed a
+               # bare dash for it, which reads as a zero to anybody skimming.
+               "beat_n": a["beat_n"],
+               "qualified": a["n"] >= MIN_N,
+               "needs": max(0, MIN_N - a["n"])}
         (leaderboard if a["n"] >= MIN_N else building).append(row)
     leaderboard.sort(key=lambda x: x["mape"])
     building.sort(key=lambda x: (-x["n"], x["analyst"].lower()))

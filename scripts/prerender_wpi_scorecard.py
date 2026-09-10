@@ -59,11 +59,16 @@ def num(n, u=""):
 
 
 def days_until(date_iso):
-    # Mirrors the page JS exactly: Math.ceil((date 12:00 local - now) / 86400000)
-    import math
-    t = datetime.strptime(date_iso, "%Y-%m-%d").replace(hour=12)
-    now = datetime.now()
-    return math.ceil((t - now).total_seconds() / 86400)
+    """Whole calendar days from today to that date. Mirrors the page JS.
+
+    IT STOPPED MIRRORING IT, AND THE COMMENT KEPT SAYING IT DID. The page was
+    corrected on 2026-08-11 — "compare calendar DATES, not noon-anchored ceil —
+    the old version said 'tomorrow' all report-day morning" — and this port was
+    not. So on the morning of a release the baked HTML a crawler reads would
+    have said "tomorrow" over a card the hydrated page rendered as "today", from
+    one JSON file. Same arithmetic as the JS now: midnight to midnight, rounded."""
+    t = datetime.strptime(date_iso, "%Y-%m-%d").date()
+    return (t - datetime.now().date()).days
 
 
 # ── WPI renderers (ports of the page's JS) ─────────────────────────────────
@@ -123,6 +128,14 @@ def next_card(n):
     d = days_until(n["date"])
     cd = f"{d} days out" if d > 1 else ("tomorrow" if d == 1 else ("today" if d == 0 else "released"))
     lo, hi, av, u = n.get("estimate_low"), n.get("estimate_high"), n.get("estimate_avg"), n.get("unit") or ""
+
+    # A BLOCK THAT IS NOT THERE, SAYING WHY — the same four gaps the page fills.
+    withheld = n.get("withheld") or {}
+
+    def gap(key, title):
+        return (f'<div class="wp-gap"><b>{title}:</b> {esc(withheld[key])}</div>'
+                if withheld.get(key) else "")
+
     range_html = ""
     if lo is not None and hi is not None and hi > lo:
         p_av = ((av - lo) / (hi - lo) * 100) if av is not None else 50
@@ -133,6 +146,8 @@ def next_card(n):
             f'<div class="wp-metric">Trade range for {esc(n["metric"])} &middot; '
             f'avg <b style="color:var(--wp-gold2)">{esc(num(av, u))}</b></div>'
         )
+    else:
+        range_html = gap("range", "No trade range yet")
     odds = ""
     if n.get("implied_odds"):
         rows = "".join(
@@ -141,6 +156,8 @@ def next_card(n):
             for o in n["implied_odds"]
         )
         odds = f'<div class="wp-odds">{rows}</div>'
+    else:
+        odds = gap("odds", "No market odds")
     thr = ""
     if n.get("bullish_threshold") or n.get("bearish_threshold"):
         thr = (
@@ -148,7 +165,10 @@ def next_card(n):
             f'<div class="t bull"><div class="k">Bullish surprise</div><div class="v">{n.get("bullish_threshold") or "—"}</div></div>'
             f'<div class="t bear"><div class="k">Bearish surprise</div><div class="v">{n.get("bearish_threshold") or "—"}</div></div></div>'
         )
-    pos = f'<div class="wp-pos">Fund positioning: {esc(n["positioning"])}</div>' if n.get("positioning") else ""
+    else:
+        thr = gap("thresholds", "No surprise thresholds")
+    pos = (f'<div class="wp-pos">Fund positioning: {esc(n["positioning"])}</div>'
+           if n.get("positioning") else gap("positioning", "No positioning"))
     commodity = (
         f'<div class="wp-metric">{esc(n["commodity"])} — {esc(n.get("metric", ""))}</div>'
         if n.get("commodity") else ""
@@ -226,13 +246,20 @@ def history_el(h):
         body = []
         for r in ordered:
             cls = "bull" if r.get("surprise") == "bullish" else ("bear" if r.get("surprise") == "bearish" else "flat")
-            reaction = f'<div class="wp-hr-reaction">{esc(r["reaction"])}</div>' if r.get("reaction") else ""
+            # An empty surprise means there was no estimate to compare against,
+            # which is not the same as landing in line. See report_bands.py.
+            tag = r.get("surprise") or "no trade estimate"
+            gp = r.get("gap_pct")
+            gap_line = (f'<div class="wp-hr-gap">{"+" if gp > 0 else ""}{gp}% vs trade</div>'
+                        if gp is not None else "")
+            reaction = (f'<div class="wp-hr-reaction">{esc(r["reaction"])}</div>' if r.get("reaction")
+                        else '<div class="wp-hr-gap">No note written on how the market took it.</div>')
             body.append(
                 f'<div class="wp-hr"><div class="wp-hr-top"><span class="wp-hr-metric">{esc(r["metric"])}</span>'
-                f'<span class="wp-tag {cls}">{r.get("surprise") or "in line"}</span></div>'
+                f'<span class="wp-tag {cls}">{tag}</span></div>'
                 f'<div class="wp-hr-nums">{fmt_num_nbsp(r.get("expected"), r.get("unit"))} '
                 f'<span class="wp-arrow">→</span> <b class="{cls}">{fmt_num_nbsp(r.get("actual"), r.get("unit"))}</b></div>'
-                f'{reaction}</div>'
+                f'{gap_line}{reaction}</div>'
             )
         out.append(
             f'<div class="wp-hg"><div class="wp-hg-hd"><span class="wp-hg-rpt">{esc(g["report"])}</span>'
@@ -253,39 +280,53 @@ def bias_cell(b):
             f'{sign}{b:.2f}% {"high" if hi else "low"}</span></span>')
 
 
-def board_tbl(rows, building):
+def board_row(r, rank, min_n):
+    """One row of the board. Ranked rows carry a number; building rows are
+    greyed and say how many calls they still need."""
+    qualified = bool(r.get("qualified", True))
+    beat_cls = "as-beat" if (r.get("beat_rate") is not None and r["beat_rate"] >= 50) else "as-beat lo"
+    beat = ('<span class="as-mut" title="None of this forecaster\u2019s scored calls had a '
+            'trade estimate to beat">no trade to beat</span>'
+            if r.get("beat_rate") is None
+            else f'<span class="{beat_cls}">{r["beat_rate"]}%</span>')
+    calls = str(r["n"]) if qualified else f'{r["n"]} of {min_n}'
+    wins = (f'<span class="as-wins" title="Closest of everyone on record for that metric">'
+            f'{r["wins"]}\u00d7 closest</span>') if r.get("wins") else ""
+    cls = "" if qualified else ' class="as-building"'
+    return (f'<tr{cls}><td class="rk" data-label="#">{rank if rank else "&mdash;"}</td>'
+            f'<td data-label="Analyst"><span class="who">{esc(r["analyst"])}</span>'
+            f'<span class="firm">{esc(r["firm"])}</span>{wins}</td>'
+            f'<td class="num" data-label="Calls">{calls}</td>'
+            f'<td class="num" data-label="Accuracy"><span class="as-acc">{r["mape"]:.2f}%</span></td>'
+            f'<td class="num" data-label="Beat trade">{beat}</td>'
+            f'<td class="num" data-label="Bias">{bias_cell(r.get("bias"))}</td></tr>')
+
+
+def board_tbl(rows, building, min_n=3):
+    """EVERYONE WHO HAS BEEN SCORED, on one table.
+
+    The building rows used to render only when the ranked table was empty, so
+    on 2026-09-09 the page showed one forecaster — the least accurate on record
+    — ranked first and alone, with three better records in a hidden array."""
+    min_n = min_n or 3
+    rows = rows or []
+    building = building or []
     head = ('<table class="as-tbl"><thead><tr><th>#</th><th>Analyst</th>'
             '<th class="num">Calls</th><th class="num">Accuracy</th>'
             '<th class="num">Beat trade</th><th class="num">Bias</th></tr></thead><tbody>')
     if not rows and not building:
         return '<div class="as-err">No forecasters scored yet.</div>'
-    if not rows:
-        brows = "".join(
-            '<tr style="opacity:.55"><td class="rk" data-label="#">&mdash;</td>'
-            f'<td data-label="Analyst"><span class="who">{esc(r["analyst"])}</span>'
-            f'<span class="firm">{esc(r["firm"])}</span></td>'
-            f'<td class="num" data-label="Calls">{r["n"]} of 3</td>'
-            f'<td class="num" data-label="Accuracy"><span class="as-acc">{r["mape"]:.2f}%</span></td>'
-            '<td class="num" data-label="Beat trade">&mdash;</td>'
-            f'<td class="num" data-label="Bias">{bias_cell(r.get("bias"))}</td></tr>'
-            for r in building
-        )
-        return ('<div class="as-err" style="margin-bottom:.6rem">Rankings post once a forecaster has '
-                f'<b>3 scored calls</b> &mdash; building records below.</div>{head}{brows}</tbody></table>')
-    body = []
-    for i, r in enumerate(rows):
-        beat_cls = "as-beat" if (r.get("beat_rate") is not None and r["beat_rate"] >= 50) else "as-beat lo"
-        beat = "&mdash;" if r.get("beat_rate") is None else f'<span class="{beat_cls}">{r["beat_rate"]}%</span>'
-        body.append(
-            f'<tr><td class="rk" data-label="#">{i + 1}</td>'
-            f'<td data-label="Analyst"><span class="who">{esc(r["analyst"])}</span>'
-            f'<span class="firm">{esc(r["firm"])}</span></td>'
-            f'<td class="num" data-label="Calls">{r["n"]}</td>'
-            f'<td class="num" data-label="Accuracy"><span class="as-acc">{r["mape"]:.2f}%</span></td>'
-            f'<td class="num" data-label="Beat trade">{beat}</td>'
-            f'<td class="num" data-label="Bias">{bias_cell(r.get("bias"))}</td></tr>'
-        )
-    return f'{head}{"".join(body)}</tbody></table>'
+    body = "".join(board_row(r, i + 1, min_n) for i, r in enumerate(rows))
+    brows = "".join(board_row(r, None, min_n) for r in building)
+    note = ""
+    if building:
+        note = ('<tr class="as-split"><td colspan="6">Still building &mdash; ranked once a '
+                f'forecaster has <b>{min_n} scored calls</b>. Their accuracy so far is real and '
+                f'is shown; their position is not, because {min_n - 1} calls is not a record.'
+                '</td></tr>')
+    lead = "" if rows else ('<div class="as-err" style="margin-bottom:.6rem">Nobody has '
+                            f'{min_n} scored calls yet &mdash; building records below.</div>')
+    return f'{lead}{head}{body}{note}{brows}</tbody></table>'
 
 
 # ── Scorecard renderers ────────────────────────────────────────────────────
@@ -371,7 +412,9 @@ def bake_wpi(check_only=False):
     src = replace_region(src, "wp-farmbox", farm_box(wpi.get("upcoming")), WPI_HTML)
     src = replace_region(src, "wp-next", next_card(wpi.get("upcoming")), WPI_HTML)
     src = replace_region(src, "wp-history", history_el(wpi.get("history")), WPI_HTML)
-    src = replace_region(src, "as-board", board_tbl(asd.get("leaderboard"), asd.get("building")), WPI_HTML)
+    src = replace_region(src, "as-board",
+                         board_tbl(asd.get("leaderboard"), asd.get("building"), asd.get("min_n")),
+                         WPI_HTML)
     if wpi.get("updated"):
         src = re.sub(r'("dateModified":")(\d{4}-\d{2}-\d{2})(")',
                      lambda m: m.group(1) + wpi["updated"] + m.group(3), src, count=1)

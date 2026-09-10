@@ -75,18 +75,34 @@ log = logging.getLogger(__name__)
 # STALE TARGETS SKEW pct_of_target — update alongside the analyst-board
 # actuals on every WASDE day (same playbook step). Wheat's marketing year
 # rolled Jun 1 (now 2026/27); corn/soy roll Sep 1.
+# EACH TARGET NOW CARRIES THE MARKETING YEAR IT IS FOR, and a run that has
+# rolled past it refuses to divide by it. `pct_of_target` is a share of USDA's
+# export forecast; measuring this year's shipments against last year's forecast
+# produces a number that is arithmetically fine and means nothing.
 USDA_TARGETS = {
-    'corn':     57_900_000,   # 2,362 Mbu — April 2026 WASDE
-    'soybeans': 52_200_000,   # 1,870 Mbu — April 2026 WASDE
-    'wheat':    21_800_000,   #   825 Mbu — April 2026 WASDE
+    'corn':     {'mt': 57_900_000, 'my': '2025/26', 'src': '2,362 Mbu — April 2026 WASDE'},
+    'soybeans': {'mt': 52_200_000, 'my': '2025/26', 'src': '1,870 Mbu — April 2026 WASDE'},
+    'wheat':    {'mt': 21_800_000, 'my': '2025/26', 'src': '825 Mbu — April 2026 WASDE'},
 }
-MARKETING_YEAR = '2025/26'
+
+# WHEN EACH MARKETING YEAR BEGINS. Corn and soybeans roll on 1 September, wheat
+# on 1 June. This was a hardcoded '2025/26' string, which on 2026-09-04 — three
+# days after corn and soybeans rolled into 2026/27 — still labelled the whole
+# file 2025/26.
+MY_START_MONTH = {'corn': 9, 'soybeans': 9, 'wheat': 6}
+
+
+def marketing_year(commodity, today):
+    """(label, start year) for the marketing year in progress on `today`."""
+    start = MY_START_MONTH[commodity]
+    yr = today.year if today.month >= start else today.year - 1
+    return '%d/%s' % (yr, str(yr + 1)[-2:]), yr
 # ESR marketYear convention is being confirmed from live diagnostics (the
 # parameter may key off the year the MY begins OR ends). Until confirmed, query
 # both candidate years, log the structure, and publish only the one whose
 # cumulative lands in a plausible range vs. the USDA target.
 MKT_YEAR_INT = 2025
-CANDIDATE_YEARS = [2025, 2026]
+CANDIDATE_YEARS = [2025, 2026, 2027]
 # A commodity's commitments can run a little over the export forecast late in
 # the MY, but a figure far above it means the wrong marketYear or a
 # double-counted rollup row — never publish those.
@@ -197,6 +213,77 @@ def load_existing() -> dict:
     return {}
 
 
+# HOW OLD A PRESERVED WEEK MAY BE BEFORE IT STOPS BEING NEWS. The report is
+# weekly, so a fortnight covers a holiday week and a late publication. Past that
+# the figure is history and the page must not print it under this week's date.
+STALE_AFTER_DAYS = 15
+
+
+def retire_stale(out: dict, today: date):
+    """Withhold a commodity whose last real week is too old to be current.
+
+    2026-09-04 SHIPPED A CORN FIGURE FROM 2025-09-04. The preserve path below
+    keeps the last good numbers when a fetch cannot resolve a plausible, recent
+    marketing year — which is right — and bumps `updated` to today, which is
+    also right, because the attempt happened. What was wrong is what the page
+    then did with it: the widget prints ONE date for all three commodities, the
+    top-level `report_date`, so a corn row whose own `report_date` was a year
+    old rendered under "Week of Aug 27, 2026" at 121.3% of target. Nobody could
+    see it. The 35-day recency guard added on 2026-08-11 stops a NEW bad pick;
+    it never retired the bad row already in the file.
+
+    A withheld figure keeps its own dates and says why, and the page prints the
+    reason where the number was. Standing rule: a silent withholding is worse
+    than a refusal."""
+    # THE LABEL ON THE WHOLE FILE ROLLS TOO. `marketing_year` is written by the
+    # live path; a preserved run left whatever was there, so the homepage chip
+    # still read "2025/26 mkt yr" on 2026-09-10, nine days after corn and
+    # soybeans rolled. It is derived here because this is the one function both
+    # paths call.
+    out['marketing_year'] = marketing_year('corn', today)[0]
+    retired = []
+    for comm in ('corn', 'soybeans', 'wheat'):
+        row = out.get(comm)
+        if not isinstance(row, dict):
+            continue
+        rd = str(row.get('report_date') or '')[:10]
+        try:
+            age = (today - date.fromisoformat(rd)).days
+        except Exception:
+            age = None
+        if age is None:
+            row['withheld'] = 'no report date on file for this commodity'
+        elif age > STALE_AFTER_DAYS:
+            row['withheld'] = (
+                'the last week FAS published for %s is %s, %d days ago — too old to '
+                'show as current pace' % (comm, rd, age))
+        else:
+            # AND THE OTHER WAY A ROW GOES STALE. The live path already refuses
+            # to divide this year's shipments by last year's export forecast;
+            # this is the same check on a row that was preserved rather than
+            # refetched, so the two paths cannot disagree about one commodity.
+            spec = USDA_TARGETS.get(comm) or {}
+            if row.get('pct_of_target') is not None and spec.get('my') not in (None, out['marketing_year']):
+                row['withheld'] = (
+                    "USDA's export forecast on file is for %s (%s) and the marketing year "
+                    "is now %s. The pace figure returns when the target is updated from the "
+                    "next WASDE." % (spec.get('my'), spec.get('src'), out['marketing_year']))
+                row['usda_target_mt'] = None
+                row['pct_of_target'] = None
+                retired.append(comm)
+                continue
+            row.pop('withheld', None)
+            continue
+        # The numbers go, the dates stay. A reader can see what was withheld and
+        # when it was last true; nothing is left that could be read as this week.
+        for k in ('weekly_net_mt', 'cumulative_mt', 'pct_of_target'):
+            row[k] = None
+        retired.append(comm)
+    if retired:
+        log.warning('withheld as stale: %s', ', '.join(retired))
+    return retired
+
+
 def preserve(existing: dict, today: date):
     """On any live-data failure, keep the last good numbers and only bump the
     fetch timestamp — never overwrite with empty/partial data."""
@@ -208,12 +295,96 @@ def preserve(existing: dict, today: date):
     # `updated` now moves only when live data actually lands; a separate
     # `checked` records the attempt so staleness is measurable.
     existing['checked'] = today.isoformat()
+    # A RUN THAT REACHED NOTHING STILL HAS TO RETIRE WHAT WENT STALE. This is
+    # the path the corn row sat on for a year: preserved every week, `updated`
+    # bumped every week, and never once re-examined.
+    retire_stale(existing, today)
     OUT_FILE.parent.mkdir(parents=True, exist_ok=True)
     OUT_FILE.write_text(json.dumps(existing, indent=2))
     log.info('Preserved existing commodity data (checked stamped; updated left honest).')
 
 
+def selftest():
+    """Hand-worked, no network, no key. Run as a gate before the fetch."""
+    fails = []
+
+    def check(cond, label, detail=""):
+        print(("  ok    " if cond else "  FAIL  ") + label + ("" if cond else "  -- " + detail))
+        if not cond:
+            fails.append(label)
+
+    print("THE MARKETING YEAR IS DERIVED, NOT TYPED")
+    check(marketing_year('corn', date(2026, 8, 31))[0] == '2025/26',
+          "corn on 31 August is still 2025/26")
+    check(marketing_year('corn', date(2026, 9, 1))[0] == '2026/27',
+          "and rolls on 1 September")
+    check(marketing_year('soybeans', date(2026, 9, 1))[0] == '2026/27',
+          "soybeans roll with it")
+    check(marketing_year('wheat', date(2026, 5, 31))[0] == '2025/26',
+          "wheat is still 2025/26 on 31 May")
+    check(marketing_year('wheat', date(2026, 6, 1))[0] == '2026/27',
+          "and rolls three months earlier, on 1 June")
+
+    print("\nA WEEK TOO OLD TO BE THIS WEEK IS WITHHELD, AND SAYS SO")
+    # The real file as it shipped on 2026-09-04: a corn row dated a year back,
+    # rendered on the homepage under the week of 27 August 2026 at 121.3%.
+    doc = {'marketing_year': '2025/26',
+           'corn': {'weekly_net_mt': 57394, 'cumulative_mt': 70251050,
+                    'usda_target_mt': 57900000, 'pct_of_target': 121.3,
+                    'report_date': '2025-09-04'},
+           'soybeans': {'weekly_net_mt': -94181, 'cumulative_mt': 41854497,
+                        'usda_target_mt': 52200000, 'pct_of_target': 80.2,
+                        'report_date': '2026-08-27'},
+           'wheat': {'weekly_net_mt': 95094, 'cumulative_mt': 23706522,
+                     'usda_target_mt': 21800000, 'pct_of_target': 108.7,
+                     'report_date': '2026-06-04'}}
+    retired = retire_stale(doc, date(2026, 9, 10))
+    check('corn' in retired, "the year-old corn week is withheld")
+    check(doc['corn']['pct_of_target'] is None and doc['corn']['weekly_net_mt'] is None,
+          "and its figures are gone, not left to render under this week's date")
+    check(doc['corn']['report_date'] == '2025-09-04',
+          "while its own date stays, so a reader can see what was withheld")
+    check('371 days ago' in (doc['corn'].get('withheld') or ''),
+          "and the reason counts the days", str(doc['corn'].get('withheld'))[:70])
+    check('wheat' in retired, "the June wheat week is withheld too")
+
+    print("\nA GOOD WEEK IS NOT THROWN AWAY TO EXPLAIN A BAD PACE")
+    # Soybeans has a current week and a target from a marketing year that has
+    # rolled. Only the percentage is unsupportable.
+    check(doc['soybeans']['weekly_net_mt'] == -94181,
+          "the week survives", str(doc['soybeans']['weekly_net_mt']))
+    check(doc['soybeans']['pct_of_target'] is None,
+          "the pace does not, because the target is last year's")
+    check('2026/27' in (doc['soybeans'].get('withheld') or ''),
+          "and the reason names both years", str(doc['soybeans'].get('withheld'))[:70])
+    check(doc['marketing_year'] == '2026/27',
+          "and the file's own label rolled with it", doc['marketing_year'])
+
+    print("\nA CURRENT WEEK WITH A CURRENT TARGET IS LEFT ALONE")
+    fresh = {'marketing_year': '2026/27',
+             'corn': {'weekly_net_mt': 1, 'cumulative_mt': 2, 'usda_target_mt': 3,
+                      'pct_of_target': 4.0, 'report_date': '2026-09-08'}}
+    save = USDA_TARGETS['corn']['my']
+    USDA_TARGETS['corn']['my'] = '2026/27'
+    try:
+        out = retire_stale(fresh, date(2026, 9, 10))
+    finally:
+        USDA_TARGETS['corn']['my'] = save
+    check(out == [], "nothing withheld", str(out))
+    check(fresh['corn']['pct_of_target'] == 4.0 and 'withheld' not in fresh['corn'],
+          "and the row is untouched")
+
+    print()
+    if fails:
+        print("FAILED (%d): %s" % (len(fails), "; ".join(fails)))
+        return 1
+    print("export sales: all passed")
+    return 0
+
+
 def main():
+    if '--selftest' in sys.argv:
+        return selftest()
     log.info('=== fetch_export_sales.py (FAS Open Data ESR API) ===')
     today = date.today()
     existing = load_existing()
@@ -237,14 +408,24 @@ def main():
 
     out = {
         'updated':        today.isoformat(),
-        'marketing_year': MARKETING_YEAR,
+        # Corn and soybeans share a marketing year; wheat's runs three months
+        # ahead of them, so the file states each commodity's own alongside the
+        # headline one rather than labelling all three with a single string.
+        'marketing_year': marketing_year('corn', today)[0],
         'note':           'USDA FAS ESR API — api.fas.usda.gov/api/esr',
     }
     report_dates = []
     any_live = False
 
     for comm in ('corn', 'soybeans', 'wheat'):
-        target = USDA_TARGETS[comm]
+        spec = USDA_TARGETS[comm]
+        my_label, _my_year = marketing_year(comm, today)
+        target = spec['mt']
+        # A TARGET FOR A MARKETING YEAR THAT HAS ROLLED IS NOT THIS YEAR'S
+        # TARGET. It is still used to sanity-check the scale and the
+        # plausibility band — an order of magnitude does not change between
+        # years — but the published percentage is withheld and says why.
+        target_current = (spec['my'] == my_label)
         candidates = []
         for yr in CANDIDATE_YEARS:
             info = fetch_year(codes[comm], yr)
@@ -305,10 +486,16 @@ def main():
         out[comm] = {
             'weekly_net_mt':  pick['weekly_mt'],
             'cumulative_mt':  pick['cumul'],
-            'usda_target_mt': target,
-            'pct_of_target':  pick['pct'],
+            'usda_target_mt': target if target_current else None,
+            'pct_of_target':  pick['pct'] if target_current else None,
             'report_date':    rd,
+            'marketing_year': my_label,
         }
+        if not target_current:
+            out[comm]['withheld'] = (
+                'USDA\'s export forecast on file is for %s (%s) and the marketing year '
+                'is now %s. The pace figure returns when the target is updated from the '
+                'next WASDE.' % (spec['my'], spec['src'], my_label))
         any_live = True
         log.info(
             f'{comm:9s} -> MY{pick["year"]}  wk={pick["weekly_mt"]:>12,} MT  '
@@ -319,6 +506,7 @@ def main():
         log.warning('No live commodity data at all — preserving existing.')
         return preserve(existing, today)
 
+    retire_stale(out, today)
     out['report_date'] = max(report_dates) if report_dates else today.isoformat()
 
     OUT_FILE.parent.mkdir(parents=True, exist_ok=True)

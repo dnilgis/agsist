@@ -504,8 +504,22 @@
       if(typeof L==='undefined' || typeof L.heatLayer==='undefined'){ banner('The map library failed to load &mdash; refresh the page.'); return; }
       map = L.map('hm-map', { zoomControl:true, minZoom:3, maxZoom:12, worldCopyJump:false, preferCanvas:true })
         .setView([39.5, -98.35], 4); // CONUS
-      L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
-        { maxZoom:12, attribution:'&copy; OpenStreetMap, &copy; CARTO' }).addTo(map);
+      /* NO TILE VENDOR. The basemap is data/us-states.geo.json in this
+         repository. CARTO began serving a watermarked "API KEY REQUIRED" tile
+         with a 200 status in September 2026, which no check here could see
+         because nothing had failed. Natural Earth 1:50m, public domain, US and
+         Canada, 73KB — less than one screen of the tiles it replaces.
+         Rebuilt by build/make_outline.sh. */
+      fetch('/data/us-states.geo.json').then(function(r){ return r.ok?r.json():null; })
+        .then(function(g){
+          if(!g){ banner('The background map could not load. The hail reports on it are unaffected.'); return; }
+          L.geoJSON(g, { interactive:false,
+            attribution:'Boundaries: <a href="https://www.naturalearthdata.com/">Natural Earth</a> (public domain)',
+            style:function(){ return { color:'#c0cac3', weight:0.8, opacity:1,
+                                       fillColor:'#f4f7f4', fillOpacity:1 }; }
+          }).addTo(map).bringToBack();
+        })
+        .catch(function(){ banner('The background map could not load. The hail reports on it are unaffected.'); });
 
       // Honesty at street zoom: LSR points are town-precision, not parcel-exact.
       var zn=document.createElement('div'); zn.className='hm-zoomnote';

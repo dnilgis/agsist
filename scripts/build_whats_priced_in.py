@@ -30,16 +30,20 @@ import os
 import sys
 from datetime import datetime, timezone
 
+# ONE DEFINITION OF "IN LINE", shared with build_analyst_scorecard.py. The two
+# used to carry their own copies and disagreed on one screen about one number:
+# 2026/27 corn yield read BULLISH in the track record and IN LINE in the graded
+# calls, same consensus, same print. See scripts/report_bands.py.
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from report_bands import surprise as band_surprise, gap_pct as band_gap_pct  # noqa: E402
+
 EST_PATH  = "data/wpi-estimates.json"
 HIST_PATH = "data/wpi-history.json"
 OUT_PATH  = "data/whats-priced-in.json"
-IN_LINE_PCT = 0.02   # within 2% of the trade estimate counts as "in line"
-# AUDIT 2026-08-11: a flat 2% band is calibrated for ending stocks (2% of
-# 2.1B bu = ~42M, sane) but absurd for YIELD (2% of 183 bu = 3.7 bu — nearly
-# any August print would score "in line"). Yield metrics get a tighter band:
-# 0.5% of expected (~0.9 bu on corn, ~0.26 on beans) matches how the trade
-# actually reads a yield print.
-IN_LINE_PCT_YIELD = 0.005
+COT_PATH  = "data/cot.json"
+# The bands moved to scripts/report_bands.py on 2026-09-10, unchanged, so the
+# scorecard could apply the same ones. The 2026-08-11 reasoning for why a yield
+# gets a tighter band than a stocks figure is in that file's header.
 
 UPCOMING_FIELDS = ["report", "date", "time", "commodity", "metric", "expectation",
                    "estimate_low", "estimate_high", "estimate_avg", "unit",
@@ -47,6 +51,12 @@ UPCOMING_FIELDS = ["report", "date", "time", "commodity", "metric", "expectation
                    "positioning"]
 HISTORY_FIELDS  = ["date", "report", "metric", "expected", "actual", "unit",
                    "surprise", "reaction"]
+
+# WHICH COMMODITIES A REPORT IS ABOUT, read off the words the author wrote in
+# `commodity` rather than a second field to keep in step. The keys are the ones
+# data/cot.json uses.
+COT_KEYS = [("corn", "corn", "Corn"), ("beans", "soybean", "Soybeans"),
+            ("wheat", "wheat", "Wheat")]
 
 
 def _load(path, key):
@@ -65,7 +75,53 @@ def _fmt(v, unit):
     return f"{v}{(' ' + unit) if unit else ''}"
 
 
-def build_upcoming(reports, today):
+def cot_positioning(commodity_text, cot):
+    """Where the money is sitting going into this report, from the last COT.
+
+    THE PAGE HAS PROMISED THIS SINCE IT WAS BUILT. Its own FAQ says positioning
+    comes from the weekly Commitments of Traders, `upcoming.positioning` has
+    never once been filled by hand, and the block was hidden with no
+    explanation — so the answer to "what does the FAQ mean" was nothing at all.
+    data/cot.json is fetched every week and was three days old when this was
+    written.
+
+    NOTHING HERE IS INFERRED. The net position, the week-on-week change and the
+    52-week extremes are all fields in that file; the sentence states the report
+    date the CFTC put on them, because a position is only a fact about the
+    Tuesday it was taken.
+    """
+    if not cot:
+        return None
+    text = str(commodity_text or "").lower()
+    parts = []
+    for key, word, label in COT_KEYS:
+        if word not in text:
+            continue
+        c = cot.get(key) or {}
+        net, prev = c.get("net"), c.get("prev")
+        if net is None:
+            continue
+        side = "net long" if net > 0 else "net short" if net < 0 else "flat"
+        bit = "%s %s %s contracts" % (label, side, f"{abs(net):,}")
+        if prev is not None:
+            move = net - prev
+            if move:
+                bit += ", %s %s on the week" % ("up" if move > 0 else "down", f"{abs(move):,}")
+        # `max52` and `min52` are the extremes of the window the file covers, so
+        # "no week in it was higher" is what the equality means — not a record.
+        if c.get("max52") is not None and net == c["max52"]:
+            bit += " and the biggest of the last 52 weeks"
+        elif c.get("min52") is not None and net == c["min52"]:
+            bit += " and the smallest of the last 52 weeks"
+        parts.append(bit)
+    if not parts:
+        return None
+    when = cot.get("report_date")
+    return ("Managed money: " + "; ".join(parts) + "."
+            + (" CFTC Commitments of Traders, positions as of %s." % when if when else ""))
+
+
+def build_upcoming(reports, today, cot=None):
     future = sorted((r for r in reports if (r.get("date") or "") >= today),
                     key=lambda r: r["date"])
     if not future:
@@ -82,17 +138,47 @@ def build_upcoming(reports, today):
             out["bullish_threshold"] = "Below " + _fmt(lo, unit)
         if not out.get("bearish_threshold"):
             out["bearish_threshold"] = "Above " + _fmt(hi, unit)
+    # The one block that can fill itself.
+    if not out.get("positioning"):
+        out["positioning"] = cot_positioning(out.get("commodity"), cot)
+
+    # ── AND WHAT IS MISSING SAYS SO ──────────────────────────────────────
+    #
+    # Four blocks of this card — the trade range, the implied odds, the
+    # bullish/bearish thresholds and the positioning line — were each hidden by
+    # a falsy check with nothing rendered in their place. On 2026-09-10, the day
+    # before a WASDE, that meant the card carried a heading, a date and one
+    # sentence of prose, and a reader had no way to tell whether the trade
+    # survey had not published, had not been collected, or had been withheld.
+    #
+    # Standing rule 20: a silent withholding is worse than a refusal. Each gap
+    # now carries the reason it is a gap, and the page prints it where the block
+    # would have been.
+    out["withheld"] = {}
+    if lo is None or hi is None or (hi is not None and lo is not None and hi <= lo):
+        out["withheld"]["range"] = (
+            "No pre-report trade survey is on file for this report yet. The survey "
+            "usually publishes one to two days ahead of the release; the range is "
+            "typed in from it and is never estimated here.")
+    if not out["implied_odds"]:
+        out["withheld"]["odds"] = (
+            "No prediction market is quoting this report. When one is, its odds "
+            "appear here with the venue named.")
+    if not out.get("bullish_threshold") and not out.get("bearish_threshold"):
+        out["withheld"]["thresholds"] = (
+            "The thresholds are the ends of the trade range, so they arrive with it.")
+    if not out.get("positioning"):
+        out["withheld"]["positioning"] = (
+            "No Commitments of Traders file covering this report's commodities "
+            "could be read.")
     return out
 
 
 def score(expected, actual, metric=""):
-    if expected in (None, 0) or actual is None:
-        return "in line"
-    gap = (actual - expected) / abs(expected)
-    band = IN_LINE_PCT_YIELD if "yield" in str(metric).lower() else IN_LINE_PCT
-    if abs(gap) <= band:
-        return "in line"
-    return "bullish" if actual < expected else "bearish"
+    """The shared rule. Returns "" when there was nothing to compare against —
+    which used to return "in line", telling a reader that a print nobody had an
+    estimate for landed where the trade expected it."""
+    return band_surprise(expected, actual, metric)
 
 
 def build_history(rows):
@@ -101,6 +187,10 @@ def build_history(rows):
         row = {k: r.get(k) for k in HISTORY_FIELDS}
         if not row.get("surprise"):
             row["surprise"] = score(r.get("expected"), r.get("actual"), r.get("metric") or r.get("label") or "")
+        # HOW FAR OFF, ON EVERY ROW. This was computed for the one report in the
+        # result banner and nowhere else, so the track record showed "765 -> 744"
+        # and left the reader to do the arithmetic on thirteen rows.
+        row["gap_pct"] = band_gap_pct(r.get("expected"), r.get("actual"))
         out.append(row)
     # newest first
     out.sort(key=lambda x: x.get("date") or "", reverse=True)
@@ -108,9 +198,7 @@ def build_history(rows):
 
 
 def _gap_pct(expected, actual):
-    if expected in (None, 0) or actual is None:
-        return None
-    return round((actual - expected) / abs(expected) * 100, 1)
+    return band_gap_pct(expected, actual)
 
 
 def build_latest_result(history):
@@ -146,7 +234,13 @@ def main():
     hist_rows = _load(HIST_PATH, "history")
     today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
 
-    upcoming = build_upcoming(reports, today)
+    cot = None
+    if os.path.exists(COT_PATH):
+        try:
+            cot = json.load(open(COT_PATH))
+        except Exception as ex:
+            print("[whats-priced-in] could not read %s (%s)" % (COT_PATH, type(ex).__name__))
+    upcoming = build_upcoming(reports, today, cot)
     history = build_history(hist_rows)
     latest_result = build_latest_result(history)
     has_real = bool(upcoming) or bool(history)

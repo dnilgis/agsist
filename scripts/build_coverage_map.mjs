@@ -136,6 +136,66 @@ export function build(dir, opts = {}) {
       '"a reader exists"; that no longer holds, so the read/known split cannot be ' +
       "trusted. Refusing to write.");
 
+  /* EVERY DRAWN PIN MUST LAND ON DRAWN GROUND.
+     The basemap is data/us-states.geo.json in this repository, not a tile
+     vendor, so its coverage is finite and knowable — and a pin outside it is a
+     dot floating on a void with nothing on the page to say so.
+
+     This is not hypothetical. The network carries three Ontario elevators
+     (Addis Grain, Sharedon Farms, Wanstead Farmers Cooperative). All three are
+     unplaced today, which is the only reason a US-only outline would not have
+     stranded one. Canada is in the file now; this is what notices the next
+     time the map and the data disagree about which countries exist.
+
+     Compared against each feature's own bounding BOX with half a degree of
+     slack, not against the polygons: the outline is simplified to 20%, so a
+     coastal elevator can sit a few kilometres outside its own state's drawn
+     edge. That is a rendering artefact, not a stranded pin.
+
+     WHAT A BOX CHECK CANNOT SEE, measured against the three real Ontario
+     elevators with Canada removed from the outline:
+
+         Owen Sound   (44.57, -80.94)   caught
+         Wanstead     (42.95, -82.05)   MISSED — inside Michigan's box
+         Addis Grain  (42.40, -82.18)   MISSED — inside Michigan's and Ohio's
+
+     Michigan's rectangle reaches across Lake Huron into Ontario, so a pin in
+     the wrong country can hide inside a right one. This catches a whole region
+     going missing, which is the realistic failure; it does not catch a pin a
+     few dozen miles across a lake. Point-in-polygon would, at the cost of
+     stranding coastal pins on a 20%-simplified outline. Named rather than
+     gold-plated. */
+  const outline = opts.outline;
+  if (outline && outline.features) {
+    const PAD = 0.5;
+    const boxes = outline.features.map((f) => {
+      const g = f.geometry || {};
+      const parts = g.type === "MultiPolygon" ? g.coordinates : [g.coordinates || []];
+      let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
+      for (const part of parts) for (const ring of part) for (const [x, y] of ring) {
+        if (x < x0) x0 = x; if (x > x1) x1 = x;
+        if (y < y0) y0 = y; if (y > y1) y1 = y;
+      }
+      return { name: (f.properties || {}).name || "?", x0, y0, x1, y1 };
+    });
+    const inside = (lat, lon) => boxes.some((b) =>
+      lon >= b.x0 - PAD && lon <= b.x1 + PAD && lat >= b.y0 - PAD && lat <= b.y1 + PAD);
+    const stranded = [];
+    for (const e of els) {
+      const lat = Number(e.lat), lon = Number(e.lon);
+      if (!isFinite(lat) || !isFinite(lon) || (lat === 0 && lon === 0)) continue;
+      if (!inside(lat, lon))
+        stranded.push(`${e.operator || "?"} ${e.location || ""} (${lat.toFixed(2)}, ${lon.toFixed(2)})`);
+      if (stranded.length > 5) break;
+    }
+    if (stranded.length)
+      throw new Error(
+        `${stranded.length > 5 ? "more than 5" : stranded.length} elevator(s) sit outside ` +
+        `every region the basemap draws, e.g. ${stranded[0]}. They would render as pins on ` +
+        `empty space. Add the missing country or region to data/us-states.geo.json ` +
+        `(build/make_outline.sh) rather than dropping the pin. Refusing to write.`);
+  }
+
   const readers = els.filter(hasReader).length;
   const missing = els.filter(unreported).length;
   const gate = opts.maxMissing == null ? MAX_MISSING : opts.maxMissing;
@@ -289,6 +349,25 @@ function selftest() {
   eq(p.places.find((q) => q.y === 42).c, "read", "a shared pin takes its best state");
   eq(p.byState.IA, { read: 2, quiet: 3, known: 2 }, "byState.IA");
 
+  // A pin outside every drawn region stops the build. Two boxes: a US-ish one
+  // and nothing else, with an elevator up in Ontario.
+  const outline = { features: [{ properties: { name: "Iowa" }, geometry: {
+    type: "Polygon", coordinates: [[[-96, 40], [-90, 40], [-90, 44], [-96, 44], [-96, 40]]] } }] };
+  const okOutline = build(dir, { maxMissing: 0.5, outline });
+  eq(okOutline.counts.read, 2, "pins inside the drawn region build normally");
+  let strandedMsg = "";
+  try {
+    build({ elevators: [row("on", "dtn-cs", "read", { lat: 43.5, lon: -81.0 })] },
+          { maxMissing: 1, outline });
+  } catch (err) { strandedMsg = err.message; }
+  if (!/outside every region the basemap draws/.test(strandedMsg))
+    throw new Error("an Ontario pin with no Canada drawn did not raise: " + strandedMsg);
+  console.log("  ok  a pin outside the drawn regions refuses the whole build");
+  // Half a degree of slack, so simplification does not strand a coastal pin.
+  const edge = build({ elevators: [row("edge", "dtn-cs", "read", { lat: 44.3, lon: -89.7 })] },
+                     { maxMissing: 1, outline });
+  eq(edge.counts.read, 1, "a pin just outside a simplified edge is not stranded");
+
   // The gate refuses rather than undercounting.
   let threw = "";
   try { build(dir, { maxMissing: 0.1 }); } catch (err) { threw = err.message; }
@@ -308,7 +387,14 @@ function selftest() {
 if (process.argv.includes("--selftest")) { selftest(); process.exit(0); }
 
 const { dir, seen } = await bestPass();
-const payload = build(dir, { passesSeen: seen });
+/* The basemap this repository draws, so the builder can check its own pins
+   land on it. Absent = the check is skipped and the build says so, rather
+   than silently passing. */
+const OUTLINE_PATH = join(ROOT, "data", "us-states.geo.json");
+const outline = existsSync(OUTLINE_PATH)
+  ? JSON.parse(readFileSync(OUTLINE_PATH, "utf8")) : null;
+if (!outline) console.log("  no data/us-states.geo.json — the stranded-pin check did not run");
+const payload = build(dir, { passesSeen: seen, outline });
 const counts = payload.counts;
 
 if (!existsSync(join(ROOT, "data"))) mkdirSync(join(ROOT, "data"), { recursive: true });

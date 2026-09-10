@@ -173,9 +173,10 @@ button,a,[role="button"]{touch-action:manipulation}
   font-size:.78rem;color:var(--text-muted,#6d7671)}
 .el-map-foot{font-size:.78rem;color:var(--text-muted,#6d7671);margin:.55rem 0 0;line-height:1.6;max-width:70ch}
 </style>
-  <!-- Leaflet 1.9.4 from cdnjs and the CARTO light tiles: both already used by
-       hail-map, field-scout, cash-rent, foreign-land and land-tenure, so the
-       coverage map adds no new dependency and no new host. -->
+  <!-- Leaflet 1.9.4 from cdnjs, already used by hail-map, field-scout,
+       cash-rent, foreign-land and land-tenure, so this page adds no new
+       dependency and no new host. The basemap is NOT a tile service: it is
+       data/us-states.geo.json in this repository. See the note by the map. -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
 </head>
 <body>
@@ -365,8 +366,9 @@ document.addEventListener('click',function(e){var a=e.target.closest&&e.target.c
 <script>
 /* THE COVERAGE MAP.
  *
- * Leaflet 1.9.4 from cdnjs and the CARTO light tiles — both already used by
- * five other pages on this site, so no new dependency and no new host.
+ * Leaflet 1.9.4 from cdnjs, already used by five other pages on this site,
+ * so no new dependency and no new host. There is no tile service: the ground
+ * is data/us-states.geo.json, drawn from this repository.
  *
  * IT FAILS HONESTLY. If Leaflet does not load, or the data does not, the map
  * replaces itself with one sentence and every other thing on this page is
@@ -410,7 +412,12 @@ document.addEventListener('click',function(e){var a=e.target.closest&&e.target.c
            every other map you have used. */
         scrollWheelZoom: false,
         zoomControl: true, attributionControl: true,
-        worldCopyJump: true, zoomSnap: 0.5, wheelDebounceTime: 25
+        worldCopyJump: true, zoomSnap: 0.5, wheelDebounceTime: 25,
+        /* ZOOM STOPS AT 9. The tile version allowed 16, which put a pin on a
+           specific building — and 83% of these pins are town centroids, a fact
+           the panel prints two inches below the map. Zoom 9 is a county-sized
+           view, which is as precise as this data honestly gets. */
+        minZoom: 3, maxZoom: 9
       }).setView([41.5, -93.5], 4.5);
       try { window.__covmap = map; } catch (e) {}
       map.on('click focus', function () { map.scrollWheelZoom.enable(); });
@@ -439,53 +446,94 @@ document.addEventListener('click',function(e){var a=e.target.closest&&e.target.c
          VECTOR styles. The raster service uses different paths, and a wrong one
          is a 404 per tile -- silent, because Leaflet draws nothing and leaves
          the attribution in place. */
-      var CARTO = '{s}.basemaps.cartocdn.com';
-      var ATTR = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>';
-      var STYLES = { dark: 'dark_all', light: 'rastertiles/voyager' };
-      function tiles(style) {
-        var layer = L.tileLayer('https://' + CARTO + '/' + style + '/{z}/{x}/{y}{r}.png', {
-          attribution: ATTR, maxZoom: 16, minZoom: 3, detectRetina: true,
-          subdomains: 'abcd'
-        });
-        /* A MAP THAT CANNOT DRAW ITS BASEMAP SAYS SO.
-           This is the guard that was missing. The failure above was invisible
-           because nothing on the page or in any check asserted that a single
-           tile had loaded -- the markers drew, the attribution drew, and the
-           result read as a design choice rather than a fault. */
-        var failed = 0;
-        layer.on('tileerror', function () {
-          failed++;
-          if (failed !== 3) return;          /* one blip is not an outage */
-          var warn = document.getElementById('covmap-tilewarn');
-          if (warn) { warn.hidden = false; return; }
-          warn = document.createElement('div');
-          warn.id = 'covmap-tilewarn';
-          warn.className = 'covmap-tilewarn';
-          warn.textContent = 'The background map is not loading right now. The ' +
-            'elevator pins are correct and complete \u2014 only the streets and ' +
-            'place names behind them are missing.';
-          if (el && el.parentNode) el.parentNode.insertBefore(warn, el.nextSibling);
-        });
-        layer.on('tileload', function () {
-          failed = 0;
-          var warn = document.getElementById('covmap-tilewarn');
-          if (warn) warn.hidden = true;
-        });
-        return layer;
+      /* NO TILE VENDOR. The basemap is one file in this repository.
+
+         CARTO changed terms and started serving a watermarked "API KEY
+         REQUIRED" tile in place of the map. Nothing here noticed: the tiles
+         returned 200, so the tileerror guard below never fired and
+         basemap-checks went green while the live page was defaced. Esri's
+         keyless endpoints are the same bet one repricing behind — their own
+         staff will not state the licence for commercial use of them.
+
+         Measured before choosing: the 51 US state outlines, simplified with
+         topology preserved, are 36KB raw and 10KB gzipped, fetched once. One
+         view of this map at zoom 4 pulled 12–20 raster tiles, 200–700KB, on
+         every pan. Self-hosting the basemap is CHEAPER than renting one, and
+         it cannot be watermarked, repriced or keyed.
+
+         WHAT IS LOST: streets and place names, and zoom past 9. Both were
+         promising more than this map has. 83% of these pins are town
+         centroids — the panel says so — so a dot at zoom 16 sat on a building
+         it has nothing to do with. Capping the zoom is a correction, not a
+         concession.
+
+         Source: Natural Earth 1:50m admin-1, public domain, no attribution
+         required. Rebuilt by build/make_outline.sh. */
+      var OUTLINE_URL = '/data/us-states.geo.json';
+      var ATTR = 'Boundaries: <a href="https://www.naturalearthdata.com/">Natural Earth</a> (public domain)';
+      var PALETTE = {
+        dark:  { fill: '#141a1b', stroke: '#2b3335', page: '#0e1211' },
+        /* THE LIGHT FILL IS NEARLY WHITE ON PURPOSE. At #e7ece8 the grey
+           "in the queue" pins (#9ca3af) sat on a background two shades away
+           and the largest group on the map was the hardest to see. Renting
+           tiles meant living with whoever's palette; self-hosting means the
+           basemap can get out of the data's way. */
+        light: { fill: '#f4f7f4', stroke: '#c0cac3', page: '#eef2ef' }
+      };
+      var outlineGeo = null, outlineFailed = false;
+
+      function tileWarn(show, msg) {
+        var warn = document.getElementById('covmap-tilewarn');
+        if (!show) { if (warn) warn.hidden = true; return; }
+        if (warn) { warn.hidden = false; return; }
+        warn = document.createElement('div');
+        warn.id = 'covmap-tilewarn';
+        warn.className = 'covmap-tilewarn';
+        warn.textContent = msg;
+        if (el && el.parentNode) el.parentNode.insertBefore(warn, el.nextSibling);
       }
+
+      /* THE SAME PROMISE THE TILE VERSION MADE, KEPT THE SAME WAY: if the
+         basemap does not draw, the page says so rather than showing dots on a
+         void and letting it read as a design choice. */
+      function outlineLayer(theme) {
+        var pal = PALETTE[theme];
+        return L.geoJSON(outlineGeo, {
+          attribution: ATTR,
+          interactive: false,
+          style: function () {
+            return { color: pal.stroke, weight: 0.8, opacity: 1,
+                     fillColor: pal.fill, fillOpacity: 1 };
+          }
+        });
+      }
+
       var base = null;
       function paint() {
         var dark = document.documentElement.getAttribute('data-theme') !== 'light';
-        var want = dark ? STYLES.dark : STYLES.light;
-        if (base && base._style === want) return;
+        var want = dark ? 'dark' : 'light';
+        el.style.background = PALETTE[want].page;
+        if (!outlineGeo || (base && base._style === want)) return;
         if (base) map.removeLayer(base);
-        base = tiles(want);
+        base = outlineLayer(want);
         base._style = want;
         base.addTo(map);
         base.bringToBack();
-        el.style.background = dark ? '#0e1211' : '#eef2ef';
       }
       paint();
+      fetch(OUTLINE_URL).then(function (r) { return r.ok ? r.json() : null; })
+        .then(function (g) {
+          if (!g) throw new Error('no outline');
+          outlineGeo = g;
+          paint();
+          tileWarn(false);
+        })
+        .catch(function () {
+          outlineFailed = true;
+          tileWarn(true, 'The state outlines are not loading right now. The ' +
+            'elevator pins are correct and complete \u2014 only the background ' +
+            'map behind them is missing.');
+        });
       /* loader.js writes data-theme on <html>; follow it rather than reading
          localStorage, so the map turns over at the same moment the site does. */
       try {
