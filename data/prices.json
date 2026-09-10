@@ -1,5 +1,5 @@
 {
-  "fetched": "2026-09-10T21:32:02Z",
+  "fetched": "2026-09-10T22:02:20Z",
   "ok": 75,
   "failed": 1,
   "stale_keys": [],
@@ -739,10 +739,10 @@
     },
     "dollar": {
       "ticker": "DX-Y.NYB",
-      "close": 99.081,
+      "close": 99.077,
       "open": 98.738,
-      "netChange": 0.343,
-      "pctChange": 0.3474,
+      "netChange": 0.339,
+      "pctChange": 0.3433,
       "wk52_hi": 101.8,
       "wk52_lo": 95.55
     },
@@ -766,28 +766,28 @@
     },
     "bitcoin": {
       "ticker": "BTC-USD",
-      "close": 77184.21094,
+      "close": 77093.17188,
       "open": 78291.15625,
-      "netChange": -1106.94531,
-      "pctChange": -1.4139,
+      "netChange": -1197.98437,
+      "pctChange": -1.5302,
       "wk52_hi": 126198.0703,
       "wk52_lo": 57747.7656
     },
     "ripple": {
       "ticker": "XRP-USD",
-      "close": 1.353,
+      "close": 1.3508,
       "open": 1.3951,
-      "netChange": -0.0421,
-      "pctChange": -3.0177,
+      "netChange": -0.0443,
+      "pctChange": -3.1754,
       "wk52_hi": 3.1835,
       "wk52_lo": 0.9884
     },
     "kaspa": {
       "ticker": "KAS-USD",
-      "close": 0.03686,
+      "close": 0.03638,
       "open": 0.03651,
-      "netChange": 0.00035,
-      "pctChange": 0.9586,
+      "netChange": -0.00013,
+      "pctChange": -0.3561,
       "wk52_hi": 0.0909,
       "wk52_lo": 0.0139
     },
