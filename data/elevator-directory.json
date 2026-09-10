@@ -1,18 +1,18 @@
 {
- "generated": "2026-09-10T18:18:23Z",
+ "generated": "2026-09-10T21:08:26Z",
  "from": "bids-full.json",
  "complete": false,
  "note": "Directory only: who operates a facility and where. No prices, no basis, no symbols, no delivery windows.",
  "counts": {
-  "facilities": 1803,
+  "facilities": 1806,
   "states": 28,
   "with_address": 0,
   "with_coords": 0,
   "with_url": 0,
-  "with_phone": 1803,
+  "with_phone": 1806,
   "saturated_zips": 0,
   "failed_zips": 0,
-  "rows_read": 17909
+  "rows_read": 17927
  },
  "saturated": [],
  "failed": [],
@@ -87,15 +87,6 @@
    "state": "CO",
    "zip": "80650",
    "phone": " 970-381-4402",
-   "source": "barchart"
-  },
-  {
-   "facility": "Roggen Farmers Elevator Association",
-   "branch": "Roggen Elevator - Main Office",
-   "city": "Roggen",
-   "state": "CO",
-   "zip": "80652",
-   "phone": "(303) 849-5506",
    "source": "barchart"
   },
   {
@@ -4906,20 +4897,20 @@
   },
   {
    "facility": "Farmers Grain Service, Inc.",
-   "branch": "OTTAWA RIVER",
-   "city": "Grand Ridge",
-   "state": "IL",
-   "zip": "61325",
-   "phone": "815-249-5515",
-   "source": "barchart"
-  },
-  {
-   "facility": "Farmers Grain Service, Inc.",
    "branch": "GRAND RIDGE",
    "city": "Grand Ridge",
    "state": "IL",
    "zip": "61325",
    "phone": "8152495515",
+   "source": "barchart"
+  },
+  {
+   "facility": "Farmers Grain Service, Inc.",
+   "branch": "OTTAWA RIVER",
+   "city": "Grand Ridge",
+   "state": "IL",
+   "zip": "61325",
+   "phone": "815-249-5515",
    "source": "barchart"
   },
   {
@@ -5712,6 +5703,15 @@
    "state": "IL",
    "zip": "62526",
    "phone": "419-622-6151",
+   "source": "barchart"
+  },
+  {
+   "facility": "Seatonville Elevator Co",
+   "branch": "Marquis",
+   "city": "Hennepin",
+   "state": "IL",
+   "zip": "61327",
+   "phone": "815-925-9590",
    "source": "barchart"
   },
   {
@@ -6648,6 +6648,15 @@
    "state": "IN",
    "zip": "47948",
    "phone": "219-233-5975",
+   "source": "barchart"
+  },
+  {
+   "facility": "Iroquois Bio-Energy",
+   "branch": "IBEC",
+   "city": "Rensselaer",
+   "state": "IN",
+   "zip": "47978",
+   "phone": "(219) 866-5990",
    "source": "barchart"
   },
   {
@@ -8178,6 +8187,15 @@
    "state": "KS",
    "zip": "67135",
    "phone": "316-796-0367",
+   "source": "barchart"
+  },
+  {
+   "facility": "Farmers Cooperative Equity Company",
+   "branch": "Isabel",
+   "city": "Isabel",
+   "state": "KS",
+   "zip": "67065",
+   "phone": "620-739-4335",
    "source": "barchart"
   },
   {
@@ -11679,6 +11697,15 @@
    "state": "ND",
    "zip": "58048",
    "phone": "701-874-2112",
+   "source": "barchart"
+  },
+  {
+   "facility": "Iroquois Bio-Energy",
+   "branch": "Blue Flint",
+   "city": "Underwood",
+   "state": "ND",
+   "zip": "58576",
+   "phone": "701-442-7500",
    "source": "barchart"
   },
   {
