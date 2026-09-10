@@ -1,18 +1,18 @@
 {
- "generated": "2026-09-10T14:57:12Z",
+ "generated": "2026-09-10T18:18:23Z",
  "from": "bids-full.json",
  "complete": false,
  "note": "Directory only: who operates a facility and where. No prices, no basis, no symbols, no delivery windows.",
  "counts": {
-  "facilities": 1802,
+  "facilities": 1803,
   "states": 28,
   "with_address": 0,
   "with_coords": 0,
   "with_url": 0,
-  "with_phone": 1802,
+  "with_phone": 1803,
   "saturated_zips": 0,
   "failed_zips": 0,
-  "rows_read": 17881
+  "rows_read": 17909
  },
  "saturated": [],
  "failed": [],
@@ -87,6 +87,15 @@
    "state": "CO",
    "zip": "80650",
    "phone": " 970-381-4402",
+   "source": "barchart"
+  },
+  {
+   "facility": "Roggen Farmers Elevator Association",
+   "branch": "Roggen Elevator - Main Office",
+   "city": "Roggen",
+   "state": "CO",
+   "zip": "80652",
+   "phone": "(303) 849-5506",
    "source": "barchart"
   },
   {
@@ -4897,20 +4906,20 @@
   },
   {
    "facility": "Farmers Grain Service, Inc.",
-   "branch": "GRAND RIDGE",
-   "city": "Grand Ridge",
-   "state": "IL",
-   "zip": "61325",
-   "phone": "8152495515",
-   "source": "barchart"
-  },
-  {
-   "facility": "Farmers Grain Service, Inc.",
    "branch": "OTTAWA RIVER",
    "city": "Grand Ridge",
    "state": "IL",
    "zip": "61325",
    "phone": "815-249-5515",
+   "source": "barchart"
+  },
+  {
+   "facility": "Farmers Grain Service, Inc.",
+   "branch": "GRAND RIDGE",
+   "city": "Grand Ridge",
+   "state": "IL",
+   "zip": "61325",
+   "phone": "8152495515",
    "source": "barchart"
   },
   {
@@ -5703,15 +5712,6 @@
    "state": "IL",
    "zip": "62526",
    "phone": "419-622-6151",
-   "source": "barchart"
-  },
-  {
-   "facility": "Seatonville Elevator Co",
-   "branch": "Marquis",
-   "city": "Hennepin",
-   "state": "IL",
-   "zip": "61327",
-   "phone": "815-925-9590",
    "source": "barchart"
   },
   {
@@ -8182,15 +8182,6 @@
   },
   {
    "facility": "Farmers Cooperative Equity Company",
-   "branch": "Isabel",
-   "city": "Isabel",
-   "state": "KS",
-   "zip": "67065",
-   "phone": "620-739-4335",
-   "source": "barchart"
-  },
-  {
-   "facility": "Farmers Cooperative Equity Company",
    "branch": "Nashville",
    "city": "Nashville",
    "state": "KS",
@@ -8871,6 +8862,15 @@
    "state": "KS",
    "zip": "67137",
    "phone": "620-736-2011",
+   "source": "barchart"
+  },
+  {
+   "facility": "Skyland Grain",
+   "branch": "Cunningham Area",
+   "city": "Cunningham",
+   "state": "KS",
+   "zip": "67035",
+   "phone": "(620) 298-2011",
    "source": "barchart"
   },
   {
@@ -16180,6 +16180,15 @@
    "state": "WI",
    "zip": "54725",
    "phone": "7158746593",
+   "source": "barchart"
+  },
+  {
+   "facility": "Wheaton Grain",
+   "branch": "Chippewa Falls",
+   "city": "Chippewa Falls",
+   "state": "WI",
+   "zip": "54729",
+   "phone": "715-874-659",
    "source": "barchart"
   },
   {
