@@ -830,6 +830,70 @@ def board_correlation(out):
             "n_markets": len(rows)}
 
 
+HIST_PATH = os.path.join(DATA, "cot-history.json")
+
+
+def attach_adjusted_prices(deep):
+    """Put the roll-repaired price index onto every row of cot-history.json.
+
+    THE CARDS WERE MEASURING THE ROLL. Each commodity card prints a bolded
+    four-week price move, and its sign decides the card's divergence label and
+    which market becomes "The Read" of the week. That number came from
+    cot-history.json's `price`, which enrich_cot_prices.py documents in its own
+    docstring as front-month continuous and NOT roll-adjusted -- while
+    cot-deep.json has carried a roll-repaired index (`px_adj`) the whole time,
+    on the same Tuesdays, used only by the study section.
+
+    Measured 2026-09-11 on the live files: Soybean Oil printed +6.1% against a
+    true +2.6%, Live Cattle -8.6% against -4.8%, Feeder Cattle -8.8% against
+    -5.1%, Soybeans +13.1% against +10.6%, Soybean Meal +10.1% against +8.9%.
+    Corn, both wheats and lean hogs had no roll in the window and agreed exactly,
+    which is why nothing ever looked broken on the market most readers open.
+    Across all 480 four-week windows in the 52-week file, 42 (8.75%) have the
+    OPPOSITE SIGN once repaired -- each of those would print the wrong label.
+
+    Joined by DATE, never by position: the two files can differ in length and a
+    missing week must not silently shift the window. A row that cannot be joined
+    is left without `px_adj`, and the page says so rather than quietly falling
+    back to the unadjusted figure.
+    """
+    if not os.path.exists(HIST_PATH):
+        print(f"  {HIST_PATH} absent; no adjusted prices attached")
+        return
+    try:
+        with open(HIST_PATH) as f:
+            hist = json.load(f)
+    except (ValueError, OSError) as e:
+        print(f"  could not read {HIST_PATH} ({e}); no adjusted prices attached")
+        return
+
+    commodities = deep.get("commodities", deep)
+    joined = missing = 0
+    for key, rows in (hist.get("history") or {}).items():
+        block = commodities.get(key) or {}
+        dates, px = block.get("dates"), block.get("px_adj")
+        if not dates or not px:
+            missing += len(rows)
+            for r in rows:
+                r.pop("px_adj", None)
+            continue
+        at = {d: i for i, d in enumerate(dates)}
+        for r in rows:
+            i = at.get(r.get("date"))
+            v = px[i] if (i is not None and i < len(px)) else None
+            if v is None:
+                r.pop("px_adj", None)
+                missing += 1
+            else:
+                r["px_adj"] = v
+                joined += 1
+
+    with open(HIST_PATH, "w") as f:
+        json.dump(hist, f, separators=(",", ":"))
+    print(f"  roll-repaired prices attached to {HIST_PATH}: "
+          f"{joined} rows joined, {missing} without one")
+
+
 def main():
     if "--selftest" in sys.argv:
         return selftest()
@@ -912,6 +976,8 @@ def main():
     }
     with open(OUT_PATH, "w") as f:
         json.dump(payload, f, separators=(",", ":"))
+
+    attach_adjusted_prices(deep)
     pr = payload["predictive"]
     print(f"\n{len(measured)} tests · {raw_hits} at p<{ALPHA} · {len(survivors)} survive "
           f"(expected by chance {len(measured)*ALPHA:.1f})")

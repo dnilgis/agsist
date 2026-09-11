@@ -539,7 +539,7 @@ canvas#cot-chart { width: 100%; height: 260px; display: block; }
     <div class="cot-eyebrow"><svg class="ic" aria-hidden="true"><use href="#i-chart-column"/></svg> Market Intelligence · Updated Weekly</div>
     <h1 class="cot-page-title">CFTC Commitment of Traders</h1>
     <p class="cot-page-sub">Every week the government publishes what the big speculative funds are betting on corn, beans, wheat, cattle, hogs and milk. These are hedge funds and commodity traders: they trade paper and never own a bushel. This page shows where they sit today, how crowded that is against every week of the same report we hold, and what it does and does not tell you about price.</p>
-  <p class="cot-page-sub" style="margin-top:.55rem"><b>It is not a forecast.</b> We tested that on the full record and published the result below. Crowded positioning tells you how much buying or selling could be forced if the market turns, not which way it turns. Positions are counted on <b>Tuesday</b> and published <b>Friday</b> afternoon, so they are three days old the moment you see them.</p>
+  <p class="cot-page-sub" style="margin-top:.55rem"><b>It is not a forecast.</b> We tested that on the full record and published the result below. Crowded positioning tells you how much buying or selling could be forced if the market turns, not which way it turns. Positions are counted on <b>Tuesday</b> and published <b>Friday</b> afternoon, so they are three days old when they land and older every day after &mdash; the figures below carry their own age.</p>
   </div>
 
   <!-- The Read: single most important positioning signal -->
@@ -872,9 +872,19 @@ function computePriceRead(key){
   var n=arr.length, W=4; if(n<W+2)return null;
   var last=arr[n-1], base=arr[n-1-W];
   if(typeof last.price!=='number'||typeof base.price!=='number')return null;
+  /* MEASURE THE MOVE, NOT THE ROLL. `price` is front-month continuous and is
+     not roll-adjusted -- enrich_cot_prices.py says so in its own docstring --
+     so across a contract change this read the whole old-crop/new-crop spread as
+     a price move. cot_analysis.py now joins the roll-repaired index onto these
+     rows as px_adj. When it is there, it is what gets measured; when it is not,
+     the card still shows a direction but the sentence says the figure is
+     unadjusted rather than passing it off as a clean move. */
+  var adj = (typeof last.px_adj==='number' && typeof base.px_adj==='number' && base.px_adj);
+  var pLast = adj ? last.px_adj : last.price;
+  var pBase = adj ? base.px_adj : base.price;
   var netDir=last.net>base.net?1:last.net<base.net?-1:0;
-  var priceDir=last.price>base.price?1:last.price<base.price?-1:0;
-  var pPct=base.price?Math.round((last.price-base.price)/Math.abs(base.price)*1000)/10:0;
+  var priceDir=pLast>pBase?1:pLast<pBase?-1:0;
+  var pPct=pBase?Math.round((pLast-pBase)/Math.abs(pBase)*1000)/10:0;
   var div=null;
   if(netDir>0&&priceDir<0)div='bearish';
   else if(netDir<0&&priceDir>0)div='bullish';
@@ -894,10 +904,19 @@ function computePriceRead(key){
     }
   }
   var med=null; if(fwd.length){ var s=fwd.slice().sort(function(x,y){return x-y;}); var mid=Math.floor(s.length/2); med=s.length%2?s[mid]:(s[mid-1]+s[mid])/2; }
-  return {key:key,netDir:netDir,priceDir:priceDir,pPct:pPct,divergence:div,
+  return {key:key,netDir:netDir,priceDir:priceDir,pPct:pPct,divergence:div,rollAdj:!!adj,
           analogN:aN,analogDown:aDown,analogUp:aUp,analogMedian:med,curPctl:Math.round(curPctl),window:W};
 }
-function divLabel(d){return d==='bearish'?'bearish divergence':d==='bullish'?'bullish divergence':d==='confirmed-up'?'confirmed uptrend':d==='confirmed-down'?'confirmed downtrend':'';}
+/* DESCRIBE THE WINDOW, DO NOT NAME A SIGNAL. These four labels are computed
+   from nothing but the signs of the 4-week net change and the 4-week price
+   change. The same page reports the FORWARD correlation for that relationship
+   at 0.04 for corn, CI -0.085 to 0.146 -- zero -- eight hundred pixels below.
+   "Confirmed uptrend" in green is the most forecast-sounding phrase in the
+   trading vocabulary and the page spends four hundred lines earning the right
+   not to say it. The hit-rate sentence that used to sit beside these was
+   withdrawn on 2026-08-21 for exactly this reason; the coloured verdict it
+   decorated was left behind. */
+function divLabel(d){return d==='bearish'?'net rose while price fell':d==='bullish'?'net fell while price rose':d==='confirmed-up'?'net and price both rose':d==='confirmed-down'?'net and price both fell':'';}
 
 
 /* ── ONE WEEK, TWO FILES, NO AGREEMENT CHECK ──────────────────────────────
@@ -1018,8 +1037,20 @@ function renderInsight(key){
   // percentile pill
   var pill=document.getElementById('pctl-'+key);
   if(pill){
-    pill.textContent=ordinal(ins.pct)+' percentile \u00b7 52wk';
-    pill.className='cot-pctl'+(ins.crowded==='long'?' hot':ins.crowded==='short'?' cold':'');
+    /* SAY WHAT IS BEING RANKED, not just over how long. This pill ranks RAW NET
+       CONTRACTS over 52 weeks; the line directly beneath it ranks net as a SHARE
+       OF OPEN INTEREST since 2010, and the only thing separating them was the
+       window label. That mis-attributes the difference: over the full 870 weeks
+       soybeans is still the 99.9th percentile by contracts, so "vs 2010: high
+       side" is the normalisation talking, not the window.
+
+       And the hue: it was firing here on 52wk contracts and on the line below on
+       870wk share of open -- two thresholds, two quantities, nine pixels apart,
+       landing on opposite lines for Soybeans and Minneapolis Wheat. Hue says one
+       thing on this page. The line below uses the same measure as the banner,
+       the board and the moves table, so it keeps it. */
+    pill.textContent=ordinal(ins.pct)+' percentile \u00b7 52wk, contracts';
+    pill.className='cot-pctl';
   }
   // insight sentence
   var el=document.getElementById('insight-'+key); if(!el)return ins;
@@ -2282,7 +2313,12 @@ cotTick(); setInterval(cotTick, 60000);
           ? 'No week since ' + c.first_week.slice(0,4) + ' carries a bigger net '
             + (longSide ? 'long' : 'short') + ' than this one. '
           : 'Funds have been this ' + (longSide ? 'long or longer' : 'short or shorter')
-            + ' in ' + (rarer < 1 ? 'under 1' : rarer.toFixed(0)) + '% of weeks since '
+            /* THE RANK CLAUSE BELOW SAYS "by net position"; this one said
+               nothing, so a reader applied the stated measure to both and read
+               "5% of weeks" (48 weeks, share of open interest) against "Rank 2nd
+               of 870" (contracts) as a contradiction. Both are true. Only one
+               of them said what it was counting. */
+            + ' in ' + (rarer < 1 ? 'under 1' : rarer.toFixed(0)) + '% of weeks, measured as a share of open interest, since '
             + c.first_week.slice(0,4) + '. ')
         + 'Rank ' + ord(c.rank.desc) + ' of ' + num(c.rank.of) + ' by net position.'
         + (c.rank.last_higher ? ' Last higher ' + dt(c.rank.last_higher) + '.' : ''))));
@@ -2301,8 +2337,18 @@ cotTick(); setInterval(cotTick, 60000);
     var away   = c.net > 0 ? 'buying' : 'selling';
     o.push(stat('If it went flat', num(c.capacity.to_flat),
       'contracts of ' + toward + ', ' + pct(c.capacity.to_flat_oi) + ' of everything open in '
-      + esc(c.label) + ' today. Beyond that, ' + num(c.net > 0 ? c.capacity.room_down : c.capacity.room_up)
-      + ' more to the far end of the record, and '
+      /* NOT "BEYOND THAT", AND NOT "MORE". cot_analysis.py _room() measures to
+         the record share FROM TODAY'S POSITION, so when today and the record sit
+         on opposite sides of zero the number already contains to_flat. Printing
+         it after "Beyond that ... more" added the distance to itself: corn read
+         401,003 to flat and then 803,673 MORE, when 803,673 IS the whole distance
+         and the increment is 402,670. Every market was overstated, 1.09x to 6.20x
+         (Live Cattle printed 58,252 against a true 9,401). The sibling paragraph
+         above words the same value as "between here and the far end" and was
+         always right; only this sentence was wrong. */
+      + esc(c.label) + ' today. From here it is '
+      + num(c.net > 0 ? c.capacity.room_down : c.capacity.room_up)
+      + ' to the far end of the record, and '
       + num(c.net > 0 ? c.capacity.room_up : c.capacity.room_down) + ' of ' + away
       + ' to the near end. Positioning has no mechanical effect on price. This is the size of the '
       + 'position, not a forecast of a move.'));
@@ -2455,8 +2501,15 @@ cotTick(); setInterval(cotTick, 60000);
         + 'outcome ' + sgn(b13.median) + '%. Across these five the range was ' + sgn(lo13) + '% to '
         + sgn(hi13) + '%. '
         + (agree >= 4
+            /* THE STATED ODDS WERE FOR A DIFFERENT EVENT THAN THE ONE TESTED.
+               `agree` is Math.max(ups, downs), so this fires on four-or-five
+               EITHER WAY. Under a fair coin that is P(#up in {0,1,4,5}) =
+               12/32 = 37.5%, three times in eight. "One time in five" is 6/32 --
+               the odds of four-or-five UP specifically, the one-sided event
+               nobody is testing here. Understated by exactly 2x, in the one
+               sentence whose job is to stop a reader over-reading the pattern. */
             ? 'Four or five the same way looks like agreement, and with five picks that happens by '
-              + 'chance about one time in five, so treat it as a prompt rather than a result.'
+              + 'chance about three times in eight, so treat it as a prompt rather than a result.'
             : 'They disagree, which is the usual outcome.')
         + ' Lower match numbers are closer; anything above about 0.6 is a loose resemblance.</p>');
     }
@@ -2591,7 +2644,17 @@ cotTick(); setInterval(cotTick, 60000);
     if ($('cx-limits')) {
       $('cx-limits').innerHTML = 'What this cannot do: it does not know your basis, your storage cost '
         + 'or your cash flow, and every percentage on this page is the futures board rather than the '
-        + 'price at your elevator. Twenty years is not long enough to be sure about a market that has '
+        /* READ IT FROM THE DATA, like every other window on this page. The
+           comment 68 lines up already ruled that saying "twenty years" over
+           sixteen is "exactly the kind of claim this page exists to not make"
+           -- and then this literal survived in the limitations box, two
+           paragraphs below #cx-stamp printing the true 870 weeks. */
+        + 'price at your elevator. '
+        /* FLOOR, not round. 870 weeks is 16.7 years; rounding gives 17, which
+           overstates the record in the one box whose job is to say the record
+           is short. Understate it or state it exactly -- never round it up. */
+        + ((CX.coverage && CX.coverage.weeks) ? Math.floor(CX.coverage.weeks / 52) : 16)
+        + ' years is not long enough to be sure about a market that has '
         + 'changed as much as this one has. CFTC revises earlier weeks, and we rebuild the whole '
         + 'history every Sunday rather than trust our own copy. This page is information, not advice, '
         + 'and nothing on it is a recommendation to buy or sell anything.';
@@ -2617,7 +2680,7 @@ cotTick(); setInterval(cotTick, 60000);
       }
       var p = c.pctl.net_oi_all;
       el.textContent = (p === null ? 'no long-run ranking'
-        : 'vs ' + (c.first_week ? c.first_week.slice(0,4) : 'record') + ': ' + crowdWord(p));
+        : 'vs ' + (c.first_week ? c.first_week.slice(0,4) : 'record') + ', share of open: ' + crowdWord(p));
       el.style.color = p === null ? 'var(--text-muted)' : (p >= 90 ? HOT : p <= 10 ? COLD : 'var(--text-muted)');
     }
   }
@@ -2641,7 +2704,20 @@ cotTick(); setInterval(cotTick, 60000);
            strength of a comparison that has not been made -- come back for it.
            Three tries covers a slow first fetch; after that the cards are
            failing and their own error path owns the page. */
-        if (VINTAGE_TRIES < 3) { VINTAGE_TRIES++; setTimeout(function(){ load(true); }, 1200); return; }
+        /* AND IF THEY NEVER ANSWER, STILL DO NOT PUBLISH.
+           Until 2026-09-11 this fell THROUGH after three tries: render() then
+           overwrote the cards' own "Couldn't load the latest COT data" notice,
+           4.2 seconds in, with a confident undated verdict -- "5 of 11 markets
+           sit in the top or bottom tenth" -- above eleven cards still reading
+           "Loading...". Worse, the comparison this guard exists to make had not
+           been made, so an analysis file from ANY week could publish as the
+           headline with no date on it. Measured by setting cot-analysis.json to
+           a June report while cot.json 404'd: the June board published as today's.
+           A guard that fails open is not a guard. */
+        VINTAGE_TRIES++;
+        if (VINTAGE_TRIES < 3) { setTimeout(function(){ load(true); }, 1200); }
+        if (!CX) hideAll();
+        return;
       } else if (j.report_date) {
         /* cot.json stores "September 01, 2026"; the analysis file stores
            "2026-09-01". Parse both to a day rather than trusting Date() with
@@ -2718,6 +2794,17 @@ cotTick(); setInterval(cotTick, 60000);
   document.addEventListener('click', function(e){
     var card = e.target && e.target.closest && e.target.closest('.cot-card');
     if (card && card.getAttribute('data-key')) selectKey(card.getAttribute('data-key'), false);
+  }, false);
+  /* AND BY KEYBOARD. The cards carry role="button" and tabindex="0", so a screen
+     reader announces eleven buttons and a keyboard user can tab to every one --
+     and until 2026-09-11 Enter did nothing and Space scrolled the page instead.
+     Announcing a control as a button is a promise that it can be operated. */
+  document.addEventListener('keydown', function(e){
+    if (e.key !== 'Enter' && e.key !== ' ' && e.key !== 'Spacebar') return;
+    var card = e.target && e.target.closest && e.target.closest('.cot-card[data-key]');
+    if (!card) return;
+    e.preventDefault();
+    selectKey(card.getAttribute('data-key'), false);
   }, false);
 })();
 </script>

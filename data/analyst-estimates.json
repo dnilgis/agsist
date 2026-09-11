@@ -413,7 +413,8 @@
        "id": "gulke",
        "value": 180.75,
        "source": "https://www.agweb.com/markets/grain-markets-and-farmers-prepare-august-wasde",
-       "source_note": "Jerry Gulke, AgWeb Aug 7 2026: corn \"could be closer to 180.5 to 181 bu. per acre.\" He stated a RANGE, not a point \u2014 180.75 is the midpoint, used only so the call can be scored. Set to null to drop it."
+       "source_note": "Jerry Gulke, AgWeb Aug 7 2026: corn \"could be closer to 180.5 to 181 bu. per acre.\" He stated a RANGE, not a point \u2014 180.75 is the midpoint, used only so the call can be scored. Set to null to drop it.",
+       "derived": true
       }
      ],
      "consensus_source": "https://www.agweb.com/markets/grain-markets-and-farmers-prepare-august-wasde",

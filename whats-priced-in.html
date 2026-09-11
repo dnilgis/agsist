@@ -26,7 +26,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/components/styles.css?v=15">
 <style>
-:root{--wp-green:#4aab4c;--wp-gold:var(--gold);--wp-gold2:#e6b042;--wp-bg:#0f1311;--wp-panel:#161b18;--wp-panel2:#1d2420;--wp-line:#2a332d;--wp-txt:#e7ece8;--wp-mut:#9bb0a3;--wp-up:#4aab4c;--wp-dn:#d9534f;}
+:root{--wp-green:#4aab4c;--wp-gold:var(--gold);--wp-gold2:#e6b042;--wp-bg:#0f1311;--wp-panel:#161b18;--wp-panel2:#1d2420;--wp-line:#2a332d;--wp-txt:#e7ece8;--wp-mut:#9bb0a3;--wp-up:#4aab4c;--wp-dn:#e8706c;}
 .wp-wrap{max-width:900px;margin:0 auto;padding:1.25rem 1rem 3rem;color:var(--wp-txt);font-family:Inter,system-ui,sans-serif;}
 .wp-wrap h1{font-family:var(--font-display);font-weight:700;font-size:clamp(1.7rem,5vw,2.4rem);line-height:1.08;margin:.2rem 0 .4rem;text-wrap:balance;}
 .wp-wrap h2{font-family:var(--font-display);font-weight:600;font-size:1.25rem;margin:2rem 0 .6rem;color:var(--wp-gold2);}
@@ -174,6 +174,9 @@
 .as-pa .vals{font-family:'JetBrains Mono',monospace;font-size:.85rem;color:var(--as-txt);margin-top:.25rem;}
 .as-pa .vals span{color:var(--as-mut);}
 .as-lock{font-family:'JetBrains Mono',monospace;font-size:.74rem;color:var(--as-mut);white-space:nowrap;}
+.as-res-derived{font-size:.72rem;color:var(--as-mut);margin-left:.35rem;border-bottom:1px dotted var(--as-line);cursor:help;}
+.as-stamp{font-family:'JetBrains Mono',monospace;font-size:.76rem;color:var(--as-mut);margin:.1rem 0 .6rem;}
+.as-stamp.stale{color:var(--wp-dn);}
 .as-rep{background:var(--as-panel);border:1px solid var(--as-line);border-radius:12px;padding:1rem 1.1rem;margin-bottom:.8rem;}
 .as-rep .hd{display:flex;justify-content:space-between;align-items:baseline;gap:.6rem;flex-wrap:wrap;}
 .as-rep .rpt{font-family:var(--font-display);font-weight:700;font-size:1.2rem;color:#fff;}
@@ -271,7 +274,7 @@
   <div id="wp-result"><!-- PRERENDER:wp-result --><!-- /PRERENDER:wp-result --></div>
 
   <h2><!-- PRERENDER:wp-nexthead -->Next report: what the trade expects from the September WASDE<!-- /PRERENDER:wp-nexthead --></h2>
-  <div id="wp-next"><!-- PRERENDER:wp-next --><div class="wp-card"><div class="hd"><span class="rpt">September WASDE</span><span class="cd">2026-09-11 · 12:00 PM ET · today</span></div><div class="wp-metric">Corn — 2026/27 corn yield</div><div class="wp-exp">The first update to August&#x27;s survey-based yields. The trade looks for corn to come down from 180.7 to 178.1 bu/acre and soybeans from 52.7 to 52.5, with corn ending stocks cut 120 mb to 1.533 bb and soybean stocks cut 30 mb to 290 mb (Dow Jones survey, via DTN, 2026-09-09). The range bar below is the corn yield survey only.</div><div class="wp-range"><span>173.2</span><span class="wp-rbar"><span class="span" style="left:0;right:0"></span><span class="avg" style="left:51%"></span></span><span>182.9</span></div><div class="wp-metric">Trade range for 2026/27 corn yield &middot; avg <b style="color:var(--wp-gold2)">178.1 bu/acre</b></div><div class="wp-gap"><b>No market odds:</b> No prediction market is quoting this report. When one is, its odds appear here with the venue named.</div><div class="wp-thr"><div class="t bull"><div class="k">Bullish surprise</div><div class="v">Below 173.2 bu/acre</div></div><div class="t bear"><div class="k">Bearish surprise</div><div class="v">Above 182.9 bu/acre</div></div></div><div class="wp-pos">Fund positioning: Managed money: Corn net long 401,003 contracts, up 83,555 on the week and the biggest of the last 52 weeks; Soybeans net long 234,920 contracts, up 34,241 on the week and the biggest of the last 52 weeks. CFTC Commitments of Traders, positions as of September 01, 2026.</div></div><!-- /PRERENDER:wp-next --></div>
+  <div id="wp-next"><!-- PRERENDER:wp-next --><div class="wp-card"><div class="hd"><span class="rpt">September WASDE</span><span class="cd">2026-09-11 · 12:00 PM ET · today</span></div><div class="wp-metric">Corn — 2026/27 corn yield</div><div class="wp-exp">The first update to August&#x27;s survey-based yields. The trade looks for corn to come down from 180.7 to 178.1 bu/acre and soybeans from 52.7 to 52.5, with corn ending stocks cut 120 mb to 1.533 bb and soybean stocks cut 30 mb to 290 mb (Dow Jones survey, via DTN, 2026-09-09). The range bar below is the corn yield survey only.</div><div class="wp-range"><span aria-hidden="true">173.2</span><span class="wp-rbar" role="img" aria-label="Trade range 173.2 to 182.9 bu/acre, average 178.1"><span class="span" style="left:0;right:0"></span><span class="avg" style="left:51%"></span></span><span aria-hidden="true">182.9</span></div><div class="wp-metric">Trade range for 2026/27 corn yield &middot; avg <b style="color:var(--wp-gold2)">178.1 bu/acre</b></div><div class="wp-gap"><b>No market odds:</b> No prediction market is quoting this report. When one is, its odds appear here with the venue named.</div><div class="wp-thr"><div class="t bull"><div class="k">Bullish surprise</div><div class="v">Below 173.2 bu/acre</div></div><div class="t bear"><div class="k">Bearish surprise</div><div class="v">Above 182.9 bu/acre</div></div></div><div class="wp-pos">Fund positioning: Managed money: Corn net long 401,003 contracts, up 83,555 on the week and the biggest of the last 52 weeks; Soybeans net long 234,920 contracts, up 34,241 on the week and the biggest of the last 52 weeks. CFTC Commitments of Traders, positions as of September 01, 2026.</div></div><!-- /PRERENDER:wp-next --></div>
 
   <h2 id="track-record">Track record</h2>
   <p class="wp-lede" style="margin-bottom:.4rem">How the expectation lined up against the actual print, and which way price moved. <span style="color:var(--wp-mut)">The July WASDE went unscored &mdash; expectations were not filed that window; the gap stays on the record.</span></p>
@@ -282,8 +285,8 @@
   <div class="as-ribbon" id="as-ribbon" style="display:none">Scoring begins with the June 11 WASDE &mdash; the ranked board posts once the first report is scored against the actual print. Below is who's tracked and on record.</div>
 
   <h3 class="as-sub">Leaderboard</h3>
-  <div id="as-board"><!-- PRERENDER:as-board --><table class="as-tbl"><thead><tr><th>#</th><th>Analyst</th><th class="num">Calls</th><th class="num">Accuracy</th><th class="num">Beat trade</th><th class="num">Bias</th></tr></thead><tbody><tr><td class="rk" data-label="#">1</td><td data-label="Analyst"><span class="who">Arlan Suderman</span><span class="firm">StoneX</span><span class="as-wins" title="Closest of everyone on record for that metric">1× closest</span></td><td class="num" data-label="Calls">3</td><td class="num" data-label="Accuracy"><span class="as-acc">1.81%</span></td><td class="num" data-label="Beat trade"><span class="as-beat lo">0%</span></td><td class="num" data-label="Bias"><span class="as-bias"><span class="hi">+1.81% high</span></span></td></tr><tr class="as-split"><td colspan="6">Still building &mdash; ranked once a forecaster has <b>3 scored calls</b>. Their accuracy so far is real and is shown; their position is not, because 2 calls is not a record.</td></tr><tr class="as-building"><td class="rk" data-label="#">&mdash;</td><td data-label="Analyst"><span class="who">AGSIST Yield Nowcast</span><span class="firm">agsist.com (model)</span></td><td class="num" data-label="Calls">2 of 3</td><td class="num" data-label="Accuracy"><span class="as-acc">1.85%</span></td><td class="num" data-label="Beat trade"><span class="as-beat lo">0%</span></td><td class="num" data-label="Bias"><span class="as-bias"><span class="hi">+1.85% high</span></span></td></tr><tr class="as-building"><td class="rk" data-label="#">&mdash;</td><td data-label="Analyst"><span class="who">Robert McClure</span><span class="firm">McClure Trades</span></td><td class="num" data-label="Calls">2 of 3</td><td class="num" data-label="Accuracy"><span class="as-acc">0.98%</span></td><td class="num" data-label="Beat trade"><span class="as-beat">50%</span></td><td class="num" data-label="Bias"><span class="as-bias"><span class="lo">-0.92% low</span></span></td></tr><tr class="as-building"><td class="rk" data-label="#">&mdash;</td><td data-label="Analyst"><span class="who">Jerry Gulke</span><span class="firm">Gulke Group</span><span class="as-wins" title="Closest of everyone on record for that metric">1× closest</span></td><td class="num" data-label="Calls">1 of 3</td><td class="num" data-label="Accuracy"><span class="as-acc">0.03%</span></td><td class="num" data-label="Beat trade"><span class="as-beat">100%</span></td><td class="num" data-label="Bias"><span class="as-bias">&#8776; even</span></td></tr></tbody></table><!-- /PRERENDER:as-board --></div>
-  <div class="as-legend" id="as-legend" style="display:none"><b>Accuracy</b> = average % off the USDA actual (lower is better, the ranking driver). <b>Beat trade</b> = share of calls closer than the trade consensus. <b>Bias</b> = average signed % error &mdash; <span style="color:var(--wp-dn)">high</span> means systematically over, <span style="color:var(--wp-up)">low</span> means under. <b>Calls</b> = scored metrics; an analyst needs <span id="as-minn">3</span>+ before being ranked.</div>
+  <div id="as-board"><!-- PRERENDER:as-board --><table class="as-tbl"><thead><tr><th>#</th><th>Analyst</th><th class="num">Calls</th><th class="num">Accuracy</th><th class="num">Beat trade</th><th class="num">Bias</th></tr></thead><tbody><tr><td class="rk" data-label="#">1</td><td data-label="Analyst"><span class="who">Arlan Suderman</span><span class="firm">StoneX</span><span class="as-wins" title="Closest of everyone on record for that metric">1× closest</span></td><td class="num" data-label="Calls">3</td><td class="num" data-label="Accuracy"><span class="as-acc">1.81%</span></td><td class="num" data-label="Beat trade"><span class="as-beat lo">0%</span></td><td class="num" data-label="Bias"><span class="as-bias"><span class="hi">+1.81% high</span></span></td></tr><tr class="as-split"><td colspan="6">Still building &mdash; ranked once a forecaster has <b>3 scored calls</b>. Their accuracy so far is real and is shown; their position is not, because 2 calls is not a record.</td></tr><tr class="as-building"><td class="rk" data-label="#">&mdash;</td><td data-label="Analyst"><span class="who">AGSIST Yield Nowcast</span><span class="firm">agsist.com (model)</span></td><td class="num" data-label="Calls">2 of 3</td><td class="num" data-label="Accuracy"><span class="as-acc">1.85%</span></td><td class="num" data-label="Beat trade"><span class="as-beat lo">0%</span></td><td class="num" data-label="Bias"><span class="as-bias"><span class="hi">+1.85% high</span></span></td></tr><tr class="as-building"><td class="rk" data-label="#">&mdash;</td><td data-label="Analyst"><span class="who">Robert McClure</span><span class="firm">McClure Trades</span><span class="as-wins" title="Closest of everyone on record for that metric">1× closest</span></td><td class="num" data-label="Calls">2 of 3</td><td class="num" data-label="Accuracy"><span class="as-acc">0.98%</span></td><td class="num" data-label="Beat trade"><span class="as-beat">50%</span></td><td class="num" data-label="Bias"><span class="as-bias"><span class="lo">-0.92% low</span></span></td></tr><tr class="as-building"><td class="rk" data-label="#">&mdash;</td><td data-label="Analyst"><span class="who">Jerry Gulke</span><span class="firm">Gulke Group</span></td><td class="num" data-label="Calls">1 of 3</td><td class="num" data-label="Accuracy"><span class="as-acc">0.03%</span></td><td class="num" data-label="Beat trade"><span class="as-beat">100%</span></td><td class="num" data-label="Bias"><span class="as-bias">&#8776; even</span></td></tr></tbody></table><!-- /PRERENDER:as-board --></div>
+  <div class="as-legend" id="as-legend"><b>Avg error</b> = average % off the USDA actual (lower is better, the ranking driver). <b>Beat trade</b> = share of calls closer than the trade consensus. <b>Bias</b> = average signed % error &mdash; <span style="color:var(--wp-dn)">high</span> means systematically over, <span style="color:var(--wp-up)">low</span> means under. <b>Calls</b> = scored metrics; an analyst needs <span id="as-minn">3</span>+ before being ranked.</div>
 
   <h3 class="as-sub">Calls on the board</h3>
   <p class="as-legend" style="margin:.1rem 0 .5rem">Every forecast already filed for an upcoming report &mdash; timestamped now, graded automatically once USDA prints. Lean is versus the trade consensus, or USDA's standing projection where no survey exists yet.</p>
@@ -312,7 +315,7 @@
   <div class="wp-faq" id="wp-faq">
     <details><summary>What does "priced in" mean?</summary><p>Markets move on surprises, not facts. If the trade already expects a bearish number, that expectation is built into today's price &mdash; "priced in." Price reacts to the gap between the report and what was expected, which is why the expectation matters as much as the report.</p></details>
     <details><summary>Where do the expectations come from?</summary><p>The estimate range is the pre-report trade survey, typed in from the published survey and left blank with the reason when none has been filed. Positioning is the weekly CFTC Commitments of Traders, dated on the card, because a position is only a fact about the Tuesday it was taken. Implied odds appear when a prediction market is quoting the report and the card says so when none is. Together they show what the market has already assumed.</p></details>
-    <details><summary>What's a "surprise threshold"?</summary><p>The level beyond which the report breaks from expectations enough to move price. A print past the bullish threshold tends to rally the market; past the bearish threshold tends to sink it. Inside the range is roughly "as expected."</p></details>
+    <details><summary>What's a "surprise threshold"?</summary><p>The level beyond which the report breaks from expectations enough to move price. A print past the bullish threshold tends to rally the market; past the bearish threshold tends to sink it. Inside the range means no analyst on record was surprised by the level. The track record below grades separately and more tightly &mdash; against the trade <i>average</i>, within 0.5% for a yield &mdash; so a print inside the range can still be graded bullish or bearish there.</p></details>
     <details><summary>Is this a trade recommendation?</summary><p>No. It's a map of expectations, not advice. It tells you where the bar is set so you can judge a report's reaction for yourself.</p></details>
   </div>
 
@@ -344,7 +347,7 @@
 }
 </script>
 <script type="application/ld+json">
-{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "What does \"priced in\" mean?", "acceptedAnswer": {"@type": "Answer", "text": "Markets move on surprises, not facts. If the trade already expects a bearish number, that expectation is built into today's price — \"priced in.\" Price reacts to the gap between the report and what was expected, which is why the expectation matters as much as the report."}}, {"@type": "Question", "name": "Where do the expectations come from?", "acceptedAnswer": {"@type": "Answer", "text": "The estimate range is the pre-report trade survey, typed in from the published survey and left blank with the reason when none has been filed. Positioning is the weekly CFTC Commitments of Traders, dated on the card, because a position is only a fact about the Tuesday it was taken. Implied odds appear when a prediction market is quoting the report and the card says so when none is. Together they show what the market has already assumed."}}, {"@type": "Question", "name": "What's a \"surprise threshold\"?", "acceptedAnswer": {"@type": "Answer", "text": "The level beyond which the report breaks from expectations enough to move price. A print past the bullish threshold tends to rally the market; past the bearish threshold tends to sink it. Inside the range is roughly \"as expected.\""}}, {"@type": "Question", "name": "Is this a trade recommendation?", "acceptedAnswer": {"@type": "Answer", "text": "No. It's a map of expectations, not advice. It tells you where the bar is set so you can judge a report's reaction for yourself."}}]}
+{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "What does \"priced in\" mean?", "acceptedAnswer": {"@type": "Answer", "text": "Markets move on surprises, not facts. If the trade already expects a bearish number, that expectation is built into today's price — \"priced in.\" Price reacts to the gap between the report and what was expected, which is why the expectation matters as much as the report."}}, {"@type": "Question", "name": "Where do the expectations come from?", "acceptedAnswer": {"@type": "Answer", "text": "The estimate range is the pre-report trade survey, typed in from the published survey and left blank with the reason when none has been filed. Positioning is the weekly CFTC Commitments of Traders, dated on the card, because a position is only a fact about the Tuesday it was taken. Implied odds appear when a prediction market is quoting the report and the card says so when none is. Together they show what the market has already assumed."}}, {"@type": "Question", "name": "What's a \"surprise threshold\"?", "acceptedAnswer": {"@type": "Answer", "text": "The level beyond which the report breaks from expectations enough to move price. A print past the bullish threshold tends to rally the market; past the bearish threshold tends to sink it. Inside the range means no analyst on record was surprised by the level. The track record grades separately and more tightly \u2014 against the trade average, within 0.5% for a yield \u2014 so a print inside the range can still be graded bullish or bearish there."}}, {"@type": "Question", "name": "Is this a trade recommendation?", "acceptedAnswer": {"@type": "Answer", "text": "No. It's a map of expectations, not advice. It tells you where the bar is set so you can judge a report's reaction for yourself."}}]}
 </script>
 <script type="application/ld+json">
 {
@@ -376,8 +379,19 @@ function gaEvent(name,params){try{gtag('event',name,params||{});}catch(e){}}
     function gap(key,title){return W[key]?('<div class="wp-gap"><b>'+title+':</b> '+W[key]+'</div>'):'';}
     var rangeHtml='';
     if(lo!=null&&hi!=null&&hi>lo){
-      var pAv=(av!=null)?((av-lo)/(hi-lo)*100):50;
-      rangeHtml='<div class="wp-range"><span>'+lo+'</span><span class="wp-rbar"><span class="span" style="left:0;right:0"></span><span class="avg" style="left:'+pAv.toFixed(0)+'%"></span></span><span>'+hi+'</span></div>'
+      /* CLAMP IT. Unclamped, an average outside its own range put the tick
+         hundreds of pixels past the end of the bar -- off-screen at phone width,
+         so the reader saw a range bar with no average and no sign one was
+         intended. */
+      var pAvRaw=(av!=null)?((av-lo)/(hi-lo)*100):50;
+      var pAv=Math.max(0,Math.min(100,pAvRaw));
+      var avOut=(av!=null)&&(av<lo||av>hi);
+      rangeHtml='<div class="wp-range"><span aria-hidden="true">'+lo+'</span>'
+        +'<span class="wp-rbar" role="img" aria-label="Trade range '+lo+' to '+hi
+        +(n.unit?(' '+n.unit):'')+(av!=null?(', average '+av):'')+'">'
+        +'<span class="span" style="left:0;right:0"></span><span class="avg" style="left:'+pAv.toFixed(0)+'%"></span></span>'
+        +'<span aria-hidden="true">'+hi+'</span></div>'
+        +(avOut?'<div class="wp-gap"><b>Note:</b> the survey average ('+av+') falls outside the published high and low. The marker is pinned to the end of the bar.</div>':'')
         +'<div class="wp-metric">Trade range for '+n.metric+' &middot; avg <b style="color:var(--wp-gold2)">'+num(av,u)+'</b></div>';
     } else { rangeHtml=gap('range','No trade range yet'); }
     var odds='';
@@ -401,7 +415,14 @@ function gaEvent(name,params){try{gtag('event',name,params||{});}catch(e){}}
   }
   function resultBanner(lr){
     if(!lr||!lr.date)return '';
-    var age=Math.floor((new Date()-new Date(lr.date+'T12:00:00'))/86400000);
+    /* CALENDAR DAYS, the same comparison days_until() already makes, so the
+       baked copy and the hydrated copy agree. A local-noon anchor made this
+       off by one against prerender_wpi_scorecard.py's date arithmetic: on
+       report morning the baker showed the banner and the live page did not,
+       and six days later the reverse -- from one JSON file. */
+    var _t=new Date(); _t.setHours(0,0,0,0);
+    var _r=new Date(lr.date+'T00:00:00'); _r.setHours(0,0,0,0);
+    var age=Math.round((_t-_r)/86400000);
     if(age<0||age>5)return '';   // show only on/just after report day, then it lives in the track record
     var b=lr.biggest_surprise||{};
     var sc=(b.surprise==='bullish')?'bull':(b.surprise==='bearish'?'bear':'flat');
@@ -435,7 +456,13 @@ function gaEvent(name,params){try{gtag('event',name,params||{});}catch(e){}}
     h.forEach(function(r){var k=r.date+'|'+r.report;if(!(k in idx)){idx[k]=groups.length;groups.push({date:r.date,report:r.report,rows:[]});}groups[idx[k]].rows.push(r);});
     return groups.map(function(g){
       var surp=g.rows.filter(function(r){return r.surprise&&r.surprise!=='in line';});
-      var pill=surp.length?(surp.length+' surprise'+(surp.length>1?'s':'')):'all in line';
+      /* "ALL IN LINE" OVER A REPORT NOBODY GRADED. The row-level fix landed;
+         the group pill above it kept asserting the report matched expectations
+         for windows where no expectation was ever filed -- the page's own lede
+         says the July WASDE went unscored. A pill counts what was scored. */
+      var scoredRows=g.rows.filter(function(r){return r.surprise;});
+      var pill=surp.length?(surp.length+' surprise'+(surp.length>1?'s':''))
+             :(scoredRows.length?'all in line':'not scored');
       var pillCls=surp.length?'surp':'line';
       var ordered=g.rows.slice().sort(function(a,b){var av=(a.surprise&&a.surprise!=='in line')?0:1,bv=(b.surprise&&b.surprise!=='in line')?0:1;return av-bv;});
       var body=ordered.map(function(r){
@@ -499,7 +526,8 @@ function gaEvent(name,params){try{gtag('event',name,params||{});}catch(e){}}
     var beatCls=(r.beat_rate!=null&&r.beat_rate>=50)?'as-beat':'as-beat lo';
     var beat=(r.beat_rate==null)
       ? '<span class="as-mut" title="None of this forecaster\u2019s scored calls had a trade estimate to beat">no trade to beat</span>'
-      : '<span class="'+beatCls+'">'+r.beat_rate+'%</span>';
+      : '<span class="'+beatCls+'">'+r.beat_rate+'%</span>'
+        +((r.beat_n!=null&&r.beat_n!==r.n)?'<span class="as-mut"> of '+r.beat_n+'</span>':'');
     var calls=r.qualified?String(r.n):(r.n+' of '+minN);
     return '<tr'+(r.qualified?'':' class="as-building"')+'>'
       +'<td class="rk" data-label="#">'+(rank||'&mdash;')+'</td>'
@@ -579,7 +607,15 @@ function gaEvent(name,params){try{gtag('event',name,params||{});}catch(e){}}
       var ms=mets.map(function(m){
         var cls=(m.surprise==='bullish')?'bull':(m.surprise==='bearish'?'bear':'flat');
         var res=m.results.map(function(x){
-          return '<div class="as-res-row"><span class="as-res-who'+(x.closest?' best':'')+'">'+(x.closest?'\u2605 ':'')+esc(x.analyst)+'</span>'
+          /* SAY WHEN THE NUMBER IS OURS. Some of these are a midpoint AGSIST
+             computed because the forecaster published a range. Rendering
+             "180.75 &middot; 0.03% off &middot; closest call" with no mark
+             credits a forecaster for a figure they never said. */
+          /* ONLY the values AGSIST reduced from a published range. Keying this
+             on source_note marked every properly-sourced call as derived --
+             a false claim about four forecasters to disclose one. */
+          var note=x.derived?(' <span class="as-res-derived" title="'+esc(x.source_note||'')+'">midpoint of a stated range</span>'):'';
+          return '<div class="as-res-row"><span class="as-res-who'+(x.closest?' best':'')+'">'+(x.closest?'\u2605 ':'')+esc(x.analyst)+note+'</span>'
             +'<span class="as-res-stat">'+esc(x.value)+' &middot; '+x.err_pct.toFixed(2)+'% off'+(x.beat?' &middot; <span class="as-res-beat">beat trade</span>':'')+'</span></div>';
         }).join('');
         /* THE TRADE NUMBER, AND WHERE IT CAME FROM. `trade &mdash;` told a

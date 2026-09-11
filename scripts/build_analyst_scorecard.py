@@ -60,7 +60,16 @@ NOWCAST_CROP_KEY = {"corn": "corn_yield", "soybeans": "soy_yield"}
 
 def _load():
     if not os.path.exists(EST_PATH):
-        return {"analysts": [], "reports": []}
+        # AN EMPTY BUILD IS A SET OF POSITIVE FALSE CLAIMS, NOT A BLANK PAGE.
+        # This used to return an empty roster and exit 0. The 134-byte scorecard
+        # that produced was then baked into the page, which published "No
+        # forecasters scored yet", "No calls filed yet", "No graded forecaster
+        # calls yet" and a ribbon saying scoring begins with the June WASDE --
+        # four assertions, all false, all committed by a green workflow, over a
+        # roster that never stops saying "Roster loading...". Refuse instead.
+        sys.exit("build_analyst_scorecard: %s is missing. Refusing to write an "
+                 "empty scorecard: an empty file publishes 'No forecasters "
+                 "scored yet' as a fact." % EST_PATH)
     with open(EST_PATH) as f:
         return json.load(f)
 
@@ -176,7 +185,16 @@ def score(data, roster, today):
             any_scored = True
             ests = [e for e in met.get("estimates", []) if e.get("value") is not None]
             # find closest for this metric
-            best_err = min((abs(e["value"] - actual) for e in ests), default=None)
+            # A NUMBER WE COMPUTED CANNOT WIN A CONTEST OF WHAT PEOPLE SAID.
+            # `derived` marks an estimate AGSIST reduced to a point from a range
+            # the forecaster published. Jerry Gulke said "180.5 to 181"; the
+            # midpoint 180.75 landed 0.05 from the print and took the closest
+            # call, while Robert McClure's PUBLISHED 180.8 was 0.10 away. On
+            # either number Gulke actually said, McClure was closer. The
+            # midpoint is kept so the call can be scored at all, and it is
+            # disclosed on the page -- but it does not get to win.
+            judged = [e for e in ests if not e.get("derived")]
+            best_err = min((abs(e["value"] - actual) for e in judged), default=None)
             results = []
             for e in ests:
                 v = e["value"]
@@ -185,13 +203,32 @@ def score(data, roster, today):
                 signed_pct = (v - actual) / abs(actual) * 100
                 beat = (consensus is not None) and \
                     (abs(consensus - actual) - err) > 1e-9 * (abs(actual) or 1.0)
-                closest = (best_err is not None) and (abs(err - best_err) < 1e-9)
+                # THE SAME GUARD `wins` ALREADY USES. Without it, the only
+                # house to file a figure gets the "closest call" star every
+                # time -- June's soybean ending stocks starred a lone entry that
+                # was 2.58% off and further from the print than the consensus.
+                # The badge was counting coverage, not accuracy.
+                closest = (best_err is not None) and (not e.get("derived")) \
+                    and (abs(err - best_err) < 1e-9) and len(judged) >= 2
                 aid = e.get("id")
                 info = roster.get(aid, {"analyst": aid, "firm": ""})
                 results.append({"analyst": info["analyst"], "firm": info["firm"],
                                 "value": v, "err_pct": round(err_pct, 2),
                                 "signed_pct": round(signed_pct, 2),
                                 "beat": beat, "has_consensus": consensus is not None,
+                                # HOW THE NUMBER GOT HERE, CARRIED TO THE PAGE.
+                                # Some estimates are a midpoint AGSIST computed
+                                # because the analyst published a range -- Jerry
+                                # Gulke's August corn 180.75 is the midpoint of
+                                # his stated 180.5-181.0. The note explaining
+                                # that was typed into analyst-estimates.json and
+                                # then dropped right here, so the board rendered
+                                # "0.03% off, closest call" on a figure he never
+                                # said. On either number he DID say, McClure's
+                                # published 180.8 was closer.
+                                "source_note": e.get("source_note"),
+                                "derived": bool(e.get("derived")),
+                                "locked_on": e.get("locked_on"),
                                 "closest": closest})
                 a = agg.setdefault(aid, {"analyst": info["analyst"], "firm": info["firm"],
                                          "n": 0, "err_sum": 0.0, "signed_sum": 0.0,
@@ -203,7 +240,7 @@ def score(data, roster, today):
                     a["beat_n"] += 1
                     if beat:
                         a["beat_yes"] += 1
-                if closest and len(ests) >= 2:
+                if closest and len(judged) >= 2:
                     a["wins"] += 1
             results.sort(key=lambda x: x["err_pct"])
             label = met.get("label", met.get("key", ""))

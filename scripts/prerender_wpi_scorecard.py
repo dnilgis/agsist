@@ -138,12 +138,24 @@ def next_card(n):
 
     range_html = ""
     if lo is not None and hi is not None and hi > lo:
-        p_av = ((av - lo) / (hi - lo) * 100) if av is not None else 50
+        # CLAMPED, AND THE BAR IS LABELLED. Mirrors the page's nextCard():
+        # an average outside its own published range put the marker off the end
+        # of the bar, and the bar itself carried no text for a screen reader.
+        p_av_raw = ((av - lo) / (hi - lo) * 100) if av is not None else 50
+        p_av = max(0.0, min(100.0, p_av_raw))
+        av_out = av is not None and (av < lo or av > hi)
+        bar_label = (f"Trade range {lo} to {hi}"
+                     + (f" {n['unit']}" if n.get("unit") else "")
+                     + (f", average {av}" if av is not None else ""))
         range_html = (
-            f'<div class="wp-range"><span>{lo}</span><span class="wp-rbar">'
+            f'<div class="wp-range"><span aria-hidden="true">{lo}</span>'
+            f'<span class="wp-rbar" role="img" aria-label="{esc(bar_label)}">'
             f'<span class="span" style="left:0;right:0"></span>'
-            f'<span class="avg" style="left:{p_av:.0f}%"></span></span><span>{hi}</span></div>'
-            f'<div class="wp-metric">Trade range for {esc(n["metric"])} &middot; '
+            f'<span class="avg" style="left:{p_av:.0f}%"></span></span><span aria-hidden="true">{hi}</span></div>'
+            + (f'<div class="wp-gap"><b>Note:</b> the survey average ({av}) falls outside the '
+               f'published high and low. The marker is pinned to the end of the bar.</div>'
+               if av_out else '')
+            + f'<div class="wp-metric">Trade range for {esc(n["metric"])} &middot; '
             f'avg <b style="color:var(--wp-gold2)">{esc(num(av, u))}</b></div>'
         )
     else:
@@ -240,7 +252,10 @@ def history_el(h):
     out = []
     for g in groups:
         surp = [r for r in g["rows"] if r.get("surprise") and r["surprise"] != "in line"]
-        pill = f'{len(surp)} surprise{"s" if len(surp) > 1 else ""}' if surp else "all in line"
+        # A GROUP WITH NOTHING SCORED DID NOT LAND IN LINE. Mirrors historyEl().
+        scored_rows = [r for r in g["rows"] if r.get("surprise")]
+        pill = (f'{len(surp)} surprise{"s" if len(surp) > 1 else ""}' if surp
+                else ("all in line" if scored_rows else "not scored"))
         pill_cls = "surp" if surp else "line"
         ordered = sorted(g["rows"], key=lambda r: 0 if (r.get("surprise") and r["surprise"] != "in line") else 1)
         body = []
@@ -288,7 +303,9 @@ def board_row(r, rank, min_n):
     beat = ('<span class="as-mut" title="None of this forecaster\u2019s scored calls had a '
             'trade estimate to beat">no trade to beat</span>'
             if r.get("beat_rate") is None
-            else f'<span class="{beat_cls}">{r["beat_rate"]}%</span>')
+            else (f'<span class="{beat_cls}">{r["beat_rate"]}%</span>'
+                  + (f'<span class="as-mut"> of {r["beat_n"]}</span>'
+                     if r.get("beat_n") is not None and r.get("beat_n") != r.get("n") else '')))
     calls = str(r["n"]) if qualified else f'{r["n"]} of {min_n}'
     wins = (f'<span class="as-wins" title="Closest of everyone on record for that metric">'
             f'{r["wins"]}\u00d7 closest</span>') if r.get("wins") else ""
