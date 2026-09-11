@@ -1,5 +1,20 @@
 # Fill in a USDA report's actual numbers the moment they are public.
 #
+# RE-SAVED 2026-09-11 TO REGISTER IT. Uploaded 2026-09-10 20:26. GitHub listed it
+# under Actions but registered NEITHER trigger: no Run workflow button, and the
+# schedule did not fire once through its own release window on 2026-09-11
+# (16:00-17:59 UTC, the September WASDE). Zero runs, ever.
+#
+# Not the file: the YAML parses, `workflow_dispatch` is declared, and the em dash
+# in the name is shared with twelve other workflows here that ran the same day.
+# What was different is that this was the only BRAND NEW workflow in that upload
+# -- the other three files in the same commit were edits to workflows that
+# already existed, and those kept working.
+#
+# A new commit touching this file on the default branch is what makes GitHub
+# parse it again and arm its triggers. If the Run workflow button is there after
+# this upload, that was the whole of it.
+#
 # WHY A WATCHER AND NOT A NIGHTLY JOB
 #
 # Sig, 2026-09-10: "i want the wasde what priced in page to process the reports
@@ -72,15 +87,24 @@ jobs:
         run: |
           python scripts/report_bands.py --selftest
           python scripts/fetch_wasde.py --selftest
+          python scripts/build_whats_priced_in.py --selftest
 
       - name: Read the print
         id: read
         env:
           NASS_API_KEY: ${{ secrets.NASS_API_KEY }}
+          # THE TWO INPUTS ARRIVE AS ENV, NOT SPLICED INTO THE COMMAND LINE.
+          # `${{ }}` inside a run: block is substituted as text before bash sees
+          # it, so a typed value becomes part of the script rather than an
+          # argument to it. A date box on a Run workflow form is the wrong place
+          # to discover that.
+          WASDE_DATE: ${{ inputs.date }}
+          WASDE_DRY:  ${{ inputs.dry_run }}
         run: |
-          python scripts/fetch_wasde.py \
-            ${{ inputs.date && format('--date {0}', inputs.date) || '' }} \
-            ${{ inputs.dry_run && '--dry-run' || '' }} | tee /tmp/wasde.log
+          args=()
+          [ -n "${WASDE_DATE:-}" ] && args+=(--date "$WASDE_DATE")
+          [ "${WASDE_DRY:-false}" = "true" ] && args+=(--dry-run)
+          python scripts/fetch_wasde.py "${args[@]}" | tee /tmp/wasde.log
           if grep -q "^wrote " /tmp/wasde.log; then echo "filled=1" >> $GITHUB_OUTPUT; fi
 
       # Only when something was actually filled. A no-op run must not rewrite
