@@ -1,15 +1,15 @@
 {
- "generated": "2026-09-11T21:12:40Z",
+ "generated": "2026-09-11T23:30:44Z",
  "from": "bids-full.json",
  "complete": false,
  "note": "Directory only: who operates a facility and where. No prices, no basis, no symbols, no delivery windows.",
  "counts": {
-  "facilities": 1801,
+  "facilities": 1802,
   "states": 28,
   "with_address": 0,
   "with_coords": 0,
   "with_url": 0,
-  "with_phone": 1801,
+  "with_phone": 1802,
   "saturated_zips": 0,
   "failed_zips": 0,
   "rows_read": 17909
@@ -8871,6 +8871,15 @@
    "state": "KS",
    "zip": "67137",
    "phone": "620-736-2011",
+   "source": "barchart"
+  },
+  {
+   "facility": "Skyland Grain",
+   "branch": "Cunningham Area",
+   "city": "Cunningham",
+   "state": "KS",
+   "zip": "67035",
+   "phone": "(620) 298-2011",
    "source": "barchart"
   },
   {
