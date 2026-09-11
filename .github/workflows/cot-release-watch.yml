@@ -193,6 +193,38 @@ jobs:
           PY
           trap - ERR
 
+      # ── AND THE PAGE THAT QUOTES THIS NUMBER ─────────────────────────────
+      #
+      # THE POSITIONING LINE ON /whats-priced-in COMES FROM data/cot.json, AND
+      # NOTHING HERE REBUILT IT. This job updated the COT file and committed
+      # with [skip ci], so the next report card kept quoting the PREVIOUS
+      # Tuesday's positions until the 11:20 UTC daily cron the following
+      # morning. On 2026-09-11 that meant a WASDE card carrying Sep 1 numbers
+      # for sixteen hours after CFTC published Sep 8 — on the one day a month
+      # anybody reads the positioning line closely.
+      #
+      # It is one stdlib script over a file already on disk: about a second.
+      # continue-on-error for the same reason as the three steps above — the
+      # COT numbers are what readers came for and they commit either way.
+      - name: Refresh the report card's positioning line
+        id: wpi
+        continue-on-error: true
+        if: steps.probe.outputs.moved == 'true' || inputs.force == true
+        run: |
+          python scripts/report_bands.py --selftest
+          python scripts/build_whats_priced_in.py
+          python - <<'PY'
+          import sys
+          sys.path.insert(0, "scripts")
+          import prerender_wpi_scorecard as p
+          orig, new, fname = p.bake_wpi()
+          if new != orig:
+              open(fname, "w", encoding="utf-8").write(new)
+              print("Baked", fname)
+          else:
+              print(fname, "already in sync")
+          PY
+
       - name: Commit
         if: steps.probe.outputs.moved == 'true' || inputs.force == true
         run: |
@@ -200,16 +232,20 @@ jobs:
           git config user.email "bot@agsist.com"
           # Same shape as cot.yml: our regenerated files are authoritative, so
           # snapshot them, hard-sync to the remote, lay ours back on top.
-          for f in data/cot.json data/cot-history.json data/cot-deep.json data/cot-analysis.json cot.html; do
+          for f in data/cot.json data/cot-history.json data/cot-deep.json data/cot-analysis.json cot.html data/whats-priced-in.json whats-priced-in.html; do
             mkdir -p "/tmp/keep/$(dirname "$f")"; cp "$f" "/tmp/keep/$f" 2>/dev/null || true
           done
           for i in 1 2 3 4 5; do
             git fetch origin main
             git reset --hard origin/main
-            for f in data/cot.json data/cot-history.json data/cot-deep.json data/cot-analysis.json cot.html; do
+            for f in data/cot.json data/cot-history.json data/cot-deep.json data/cot-analysis.json cot.html data/whats-priced-in.json whats-priced-in.html; do
               [ -f "/tmp/keep/$f" ] && cp "/tmp/keep/$f" "$f"
             done
             git add data/cot.json data/cot-history.json cot.html
+            # The report card's positioning line, refreshed above. Guarded the
+            # same way: on a run where that step failed these are unchanged,
+            # and an unchanged path is not an error.
+            git add data/whats-priced-in.json whats-priced-in.html 2>/dev/null || true
             # These two do not exist until the deep rebuild has been run once.
             # Unguarded, `git add` on a missing path exits 128 and the commit
             # never happens -- which would mean the first release after this
