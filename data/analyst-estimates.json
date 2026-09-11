@@ -1,5 +1,5 @@
 {
- "_note": "Maintained by hand in the GitHub editor. THREE steps per report cycle: (1) before the report, fill each analyst's `value` and a `source` link for the metrics they publicly posted, and the `consensus` (trade average) per metric; (2) after USDA releases, fill each metric's `actual`; (3) the build script scores everyone automatically. Only keep analysts whose numbers you can source from a public post/interview/survey — leave a value null if you don't have it. Never invent a number. Add a new block under `reports` for each future report.",
+ "_note": "Maintained by hand in the GitHub editor. THREE steps per report cycle: (1) before the report, fill each analyst's `value` and a `source` link for the metrics they publicly posted, and the `consensus` (trade average) per metric; (2) after USDA releases, fill each metric's `actual`; (3) the build script scores everyone automatically. Only keep analysts whose numbers you can source from a public post/interview/survey \u2014 leave a value null if you don't have it. Never invent a number. Add a new block under `reports` for each future report.",
  "analysts": [
   {
    "id": "stonex",
@@ -401,7 +401,7 @@
        "id": "agsist",
        "value": 183.6,
        "source": "https://agsist.com/conditions-yield",
-       "source_note": "Current conditions-yield model nowcast (ratings week ending 2026-08-09), locked 2026-08-11 pre-report in the direction ledger (data/nowcast-direction.json). Supersedes the retired ge-linear-v1 call (corn 189.4 / beans 56.2, locked 2026-07-25) — the supersession is on the record in git history."
+       "source_note": "Current conditions-yield model nowcast (ratings week ending 2026-08-09), locked 2026-08-11 pre-report in the direction ledger (data/nowcast-direction.json). Supersedes the retired ge-linear-v1 call (corn 189.4 / beans 56.2, locked 2026-07-25) \u2014 the supersession is on the record in git history."
       },
       {
        "id": "stonex",
@@ -413,7 +413,7 @@
        "id": "gulke",
        "value": 180.75,
        "source": "https://www.agweb.com/markets/grain-markets-and-farmers-prepare-august-wasde",
-       "source_note": "Jerry Gulke, AgWeb Aug 7 2026: corn \"could be closer to 180.5 to 181 bu. per acre.\" He stated a RANGE, not a point — 180.75 is the midpoint, used only so the call can be scored. Set to null to drop it."
+       "source_note": "Jerry Gulke, AgWeb Aug 7 2026: corn \"could be closer to 180.5 to 181 bu. per acre.\" He stated a RANGE, not a point \u2014 180.75 is the midpoint, used only so the call can be scored. Set to null to drop it."
       }
      ],
      "consensus_source": "https://www.agweb.com/markets/grain-markets-and-farmers-prepare-august-wasde",
@@ -437,7 +437,7 @@
        "id": "agsist",
        "value": 53.8,
        "source": "https://agsist.com/conditions-yield",
-       "source_note": "Current conditions-yield model nowcast (ratings week ending 2026-08-09), locked 2026-08-11 pre-report in the direction ledger (data/nowcast-direction.json). Supersedes the retired ge-linear-v1 call (corn 189.4 / beans 56.2, locked 2026-07-25) — the supersession is on the record in git history."
+       "source_note": "Current conditions-yield model nowcast (ratings week ending 2026-08-09), locked 2026-08-11 pre-report in the direction ledger (data/nowcast-direction.json). Supersedes the retired ge-linear-v1 call (corn 189.4 / beans 56.2, locked 2026-07-25) \u2014 the supersession is on the record in git history."
       },
       {
        "id": "stonex",
@@ -460,22 +460,38 @@
      "label": "2026/27 corn yield",
      "unit": "bu/acre",
      "direction": "supply",
-     "consensus": null,
+     "consensus": 178.1,
      "actual": null,
      "usda_current": 180.7,
-     "consensus_source": null,
-     "consensus_note": "Fill from the pre-report trade survey when it publishes (~Sep 8-10). Never invent."
+     "consensus_source": "https://www.dtnpf.com/agriculture/web/ag/news/article/2026/09/09/historic-late-august-price-rallies",
+     "consensus_note": "Dow Jones pre-report survey, reported by DTN on 2026-09-09: \"For Friday, the average trade guess is calling for a 178.1 bpa yield.\" The high and low are the survey's own, from the same table (182.9 / 173.2). Typed from the published survey, never computed here.",
+     "consensus_range": [
+      173.2,
+      182.9
+     ],
+     "estimates": [
+      {
+       "id": "profarmer",
+       "value": 173.2,
+       "source": "https://www.profarmer.com/news/pro-farmer-estimates-2026-u-s-corn-crop-15-344-billion-bushels-soybeans-4-572-billion-bushels",
+       "source_note": "Pro Farmer's 2026 crop tour national corn estimate, published at the end of tour week and already carried in data/crop-tour.json. It is the low end of the Dow Jones survey range, which is why 173.2 appears in both places."
+      }
+     ]
     },
     {
      "key": "soy_yield_2627",
      "label": "2026/27 soybean yield",
      "unit": "bu/acre",
      "direction": "supply",
-     "consensus": null,
+     "consensus": 52.5,
      "actual": null,
      "usda_current": 52.7,
-     "consensus_source": null,
-     "consensus_note": "Fill from the pre-report trade survey when it publishes (~Sep 8-10). Never invent."
+     "consensus_source": "https://www.dtnpf.com/agriculture/web/ag/news/article/2026/09/09/historic-late-august-price-rallies",
+     "consensus_note": "Dow Jones pre-report survey, reported by DTN on 2026-09-09: analysts expect \"another slight cut to the national soybean yield, with an average trade guess of 52.5 bpa.\" High and low (53.3 / 51.5) are from the same survey table. NO PRO FARMER CALL IS FILED HERE. A secondary write-up attributed 53.3 bu/acre to the tour, but Pro Farmer publishes soybeans as production (4.572 bb), not a yield -- data/crop-tour.json says so in measure_note: \"Tour soybean numbers are pod counts in a 3x3 foot square, not a yield.\" 53.3 is the survey high, and whoever's arithmetic it is, it is not Pro Farmer's published number.",
+     "consensus_range": [
+      51.5,
+      53.3
+     ]
     }
    ]
   }
