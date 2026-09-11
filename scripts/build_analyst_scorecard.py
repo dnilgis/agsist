@@ -39,6 +39,24 @@ EST_PATH = "data/analyst-estimates.json"
 OUT_PATH = "data/analyst-scorecard.json"
 MIN_N = 3   # scored calls required before an analyst is ranked
 
+# ── THE MODEL'S OWN CALLS, WHICH WERE NEVER ON ITS OWN BOARD ─────────────────
+#
+# AGSIST's yield nowcast locks a corn and a soybean number into
+# data/nowcast-direction.json days before each WASDE, and grades itself against
+# the print afterwards. Those locked calls were only ever read by the
+# conditions-yield page. So on 2026-09-10 — the day before a September WASDE the
+# model had already called (corn 182.6, beans 54.1, locked Aug 18) — this
+# board rendered "No calls filed yet."
+#
+# It joins them here, under one rule: only the number that was LOCKED is used.
+# Never a live recompute — a call that moves after it is made is not a call —
+# and never one whose lock date is missing or falls on/after the report it
+# forecasts, because that is a call made with the answer in hand.
+NOWCAST_PATH = "data/nowcast-direction.json"
+NOWCAST_ID = "agsist"            # must match the roster id in analyst-estimates.json
+NOWCAST_LINK = "https://agsist.com/conditions-yield"  # same form the typed rows use
+NOWCAST_CROP_KEY = {"corn": "corn_yield", "soybeans": "soy_yield"}
+
 
 def _load():
     if not os.path.exists(EST_PATH):
@@ -65,6 +83,58 @@ def _surprise(consensus, actual, label=""):
     return band_surprise(consensus, actual, label)
 
 
+def merge_locked_model_calls(reports, path=NOWCAST_PATH):
+    """Fold the locked yield nowcasts into the matching report metrics as
+    estimates from NOWCAST_ID, so the board shows the house call alongside the
+    trade's. Returns (merged, refused) counts. Never overwrites a hand-typed
+    estimate for the same id — the file a person maintains wins."""
+    if not os.path.exists(path):
+        return 0, 0
+    try:
+        with open(path) as f:
+            nc = json.load(f)
+    except (ValueError, OSError):
+        return 0, 0
+
+    by_date = {}
+    for r in reports:
+        if r.get("date"):
+            by_date.setdefault(r["date"], []).append(r)
+
+    merged = refused = 0
+    for call in nc.get("calls", []):
+        when = call.get("wasde")
+        crop = (call.get("crop") or "").lower()
+        value = call.get("model")
+        locked = call.get("locked_on")
+        if when not in by_date or value is None:
+            continue
+        # A call is only a call if it was locked, and locked BEFORE the print.
+        if not locked or locked >= when:
+            refused += 1
+            continue
+        prefix = NOWCAST_CROP_KEY.get(crop)
+        if not prefix:
+            continue
+        for r in by_date[when]:
+            for met in r.get("metrics", []):
+                key = met.get("key") or ""
+                if not (key.startswith(prefix) and "yield" in key):
+                    continue
+                # A graded metric is NOT skipped. The merge is in-memory only —
+                # analyst-estimates.json is never rewritten — so skipping here
+                # would make the model's call visible on the board before the
+                # report and gone from the record after it. It carries through
+                # and gets scored like anyone else's.
+                ests = met.setdefault("estimates", [])
+                if any(e.get("id") == NOWCAST_ID for e in ests):
+                    continue   # a person typed it; leave theirs alone
+                ests.append({"id": NOWCAST_ID, "value": value,
+                             "source": NOWCAST_LINK, "locked_on": locked})
+                merged += 1
+    return merged, refused
+
+
 def build_upcoming(reports, roster, today):
     future = sorted((r for r in reports if (r.get("date") or "") >= today),
                     key=lambda r: r["date"])
@@ -82,7 +152,10 @@ def build_upcoming(reports, roster, today):
             row = by_analyst.setdefault(aid, {"analyst": info["analyst"], "firm": info["firm"],
                                               "metrics": [], "source": est.get("source")})
             row["metrics"].append({"label": met.get("label", met.get("key", "")),
-                                   "value": est["value"], "unit": met.get("unit", "")})
+                                   "value": est["value"], "unit": met.get("unit", ""),
+                                   "locked_on": est.get("locked_on")})
+            if est.get("locked_on") and not row.get("locked_on"):
+                row["locked_on"] = est["locked_on"]
             if est.get("source") and not row["source"]:
                 row["source"] = est["source"]
     panel = sorted(by_analyst.values(), key=lambda x: x["analyst"].lower())
@@ -207,6 +280,7 @@ def build_pipeline(reports, roster, today):
                         lean = "bullish" if v < ref else "bearish"   # less supply = bullish
                 calls.append({"analyst": info["analyst"], "firm": info["firm"],
                               "value": v, "source": e.get("source"),
+                              "locked_on": e.get("locked_on"),
                               "ref": ref, "ref_label": ref_label, "dev_pct": dev, "lean": lean})
             if calls:
                 calls.sort(key=lambda c: c["analyst"].lower())
@@ -222,6 +296,8 @@ def main():
     data = _load()
     roster = _roster_map(data)
     today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+
+    merged, refused = merge_locked_model_calls(data.get("reports", []))
 
     upcoming = build_upcoming(data.get("reports", []), roster, today)
     pipeline = build_pipeline(data.get("reports", []), roster, today)
@@ -239,7 +315,81 @@ def main():
     nx = (upcoming["report"] + " " + upcoming["date"]) if upcoming else "none scheduled"
     print(f"[analyst-scorecard] upcoming={nx} | ranked={len(leaderboard)} "
           f"building={len(building)} | scored_reports={len(reports)} | sample={out['sample']}")
+    print(f"[analyst-scorecard] locked model calls merged={merged} refused={refused}")
+
+
+def _selftest():
+    """The lock rule, exercised. No network, no repo files — every case builds its
+    own report and its own nowcast file. Run by .github/workflows/analyst-scorecard.yml
+    before the build, so a change to the rule cannot ship silently."""
+    import tempfile
+
+    def nowcast(calls):
+        f = tempfile.NamedTemporaryFile("w", suffix=".json", delete=False)
+        json.dump({"calls": calls}, f)
+        f.close()
+        return f.name
+
+    def report():
+        return [{"date": "2026-09-11", "report": "September WASDE", "metrics": [
+            {"key": "corn_yield_2627", "label": "corn", "unit": "bu/acre",
+             "usda_current": 180.7, "estimates": []}]}]
+
+    cases = [
+        ("locked before the print merges",
+         [{"wasde": "2026-09-11", "crop": "corn", "model": 182.6, "locked_on": "2026-08-18"}], (1, 0)),
+        ("locked ON the print is refused",
+         [{"wasde": "2026-09-11", "crop": "corn", "model": 182.6, "locked_on": "2026-09-11"}], (0, 1)),
+        ("locked after the print is refused",
+         [{"wasde": "2026-09-11", "crop": "corn", "model": 182.6, "locked_on": "2026-09-12"}], (0, 1)),
+        ("a call with no lock date is refused",
+         [{"wasde": "2026-09-11", "crop": "corn", "model": 182.6}], (0, 1)),
+        ("no model number, nothing to merge",
+         [{"wasde": "2026-09-11", "crop": "corn", "model": None, "locked_on": "2026-08-18"}], (0, 0)),
+        ("a crop with no metric here is skipped",
+         [{"wasde": "2026-09-11", "crop": "oats", "model": 90, "locked_on": "2026-08-18"}], (0, 0)),
+        ("a call for a report we do not carry is skipped",
+         [{"wasde": "2026-10-09", "crop": "corn", "model": 182.6, "locked_on": "2026-08-18"}], (0, 0)),
+    ]
+    ok = True
+    for name, calls, want in cases:
+        path = nowcast(calls)
+        got = merge_locked_model_calls(report(), path)
+        os.unlink(path)
+        good = got == want
+        ok &= good
+        print(("  ok    " if good else "  FAIL  ") + name + ("" if good else f"  got {got} want {want}"))
+
+    # A number a person typed is never replaced by the model's.
+    r = report()
+    r[0]["metrics"][0]["estimates"] = [{"id": NOWCAST_ID, "value": 999.0, "source": "typed"}]
+    path = nowcast([{"wasde": "2026-09-11", "crop": "corn", "model": 182.6, "locked_on": "2026-08-18"}])
+    got = merge_locked_model_calls(r, path)
+    os.unlink(path)
+    good = got == (0, 0) and [e["value"] for e in r[0]["metrics"][0]["estimates"]] == [999.0]
+    ok &= good
+    print(("  ok    " if good else "  FAIL  ") + "a hand-typed estimate is not overwritten")
+
+    # A graded metric keeps the call, or the model would vanish from its own record.
+    r = report()
+    r[0]["metrics"][0]["actual"] = 180.0
+    path = nowcast([{"wasde": "2026-09-11", "crop": "corn", "model": 182.6, "locked_on": "2026-08-18"}])
+    got = merge_locked_model_calls(r, path)
+    os.unlink(path)
+    good = got == (1, 0)
+    ok &= good
+    print(("  ok    " if good else "  FAIL  ") + "a graded metric keeps the call")
+
+    good = merge_locked_model_calls(report(), "/nonexistent-nowcast.json") == (0, 0)
+    ok &= good
+    print(("  ok    " if good else "  FAIL  ") + "a missing nowcast file is not fatal")
+
+    print()
+    print("analyst-scorecard: " + ("all passed" if ok else "FAILURES ABOVE"))
+    return 0 if ok else 1
 
 
 if __name__ == "__main__":
+    if "--selftest" in sys.argv:
+        sys.exit(_selftest())
     main()

@@ -173,6 +173,7 @@
 .as-pa .fm{color:var(--as-mut);font-size:.82rem;}
 .as-pa .vals{font-family:'JetBrains Mono',monospace;font-size:.85rem;color:var(--as-txt);margin-top:.25rem;}
 .as-pa .vals span{color:var(--as-mut);}
+.as-lock{font-family:'JetBrains Mono',monospace;font-size:.74rem;color:var(--as-mut);white-space:nowrap;}
 .as-rep{background:var(--as-panel);border:1px solid var(--as-line);border-radius:12px;padding:1rem 1.1rem;margin-bottom:.8rem;}
 .as-rep .hd{display:flex;justify-content:space-between;align-items:baseline;gap:.6rem;flex-wrap:wrap;}
 .as-rep .rpt{font-family:var(--font-display);font-weight:700;font-size:1.2rem;color:#fff;}
@@ -525,12 +526,26 @@ function gaEvent(name,params){try{gtag('event',name,params||{});}catch(e){}}
     var lead=rows.length?'':'<div class="as-err" style="margin-bottom:.6rem">Nobody has '+minN+' scored calls yet \u2014 building records below.</div>';
     return lead+head+body+note+brows+'</tbody></table>';
   }
+  // WHEN THE CALL WAS LOCKED, SHOWN NEXT TO IT. A forecast filed the morning of
+  // a report and one filed three weeks out are not the same claim, and the board
+  // used to render them identically. Only calls that carry a lock date get the
+  // note; the rest render exactly as before.
+  var MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  function lockNote(iso){
+    if(!iso)return '';
+    var m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(iso);
+    if(!m)return '';
+    var mi=parseInt(m[2],10)-1;
+    if(mi<0||mi>11)return '';
+    return '<span class="as-lock" title="The date this call was locked and can no longer be changed">locked '+MON[mi]+' '+parseInt(m[3],10)+'</span>';
+  }
   function upcomingPanel(u){
     if(!u||!u.panel||!u.panel.length)return '<div class="as-err">No forecasts logged yet for the next report. Check back as analysts publish ahead of the release.</div>';
     var rows=u.panel.map(function(p){
       var vals=p.metrics.map(function(m){return '<span>'+esc(m.label)+':</span> '+esc(m.value)+(m.unit?(' '+esc(m.unit)):'');}).join(' &nbsp; ');
       var nm=p.source?('<a href="'+esc(p.source)+'" target="_blank" rel="noopener" style="color:#fff;text-decoration:none">'+esc(p.analyst)+'</a>'):esc(p.analyst);
-      return '<div class="as-pa"><span class="nm">'+nm+'</span> <span class="fm">'+esc(p.firm)+'</span><div class="vals">'+vals+'</div></div>';
+      var lk=lockNote(p.locked_on);
+      return '<div class="as-pa"><span class="nm">'+nm+'</span> <span class="fm">'+esc(p.firm)+'</span>'+(lk?(' '+lk):'')+'<div class="vals">'+vals+'</div></div>';
     }).join('');
     return '<div class="as-panelbox"><div style="font-family:\'JetBrains Mono\',monospace;font-size:.8rem;color:var(--as-gold2);margin-bottom:.4rem">'+esc(u.report)+' &middot; '+esc(u.date)+'</div>'+rows+'</div>';
   }
@@ -545,7 +560,7 @@ function gaEvent(name,params){try{gtag('event',name,params||{});}catch(e){}}
           var nm=c.source?('<a href="'+esc(c.source)+'" target="_blank" rel="noopener" class="as-pl-link">'+esc(c.analyst)+'</a>'):esc(c.analyst);
           return '<div class="as-pl-call"><span class="as-pl-who">'+nm+'</span><span class="as-pl-firm">'+esc(c.firm)+'</span>'
             +'<span class="as-pl-val">'+esc(c.value)+(m.unit?(' '+esc(m.unit)):'')+'</span>'
-            +'<span class="as-pl-badge '+lc+'">'+(dev?dev+' &middot; ':'')+esc(c.lean)+'</span></div>';
+            +'<span class="as-pl-badge '+lc+'">'+(dev?dev+' &middot; ':'')+esc(c.lean)+'</span>'+lockNote(c.locked_on)+'</div>';
         }).join('');
         return '<div class="as-pl-met"><div class="as-pl-met-lbl"><b>'+esc(m.label)+'</b>'+(ref?(' &middot; '+esc(ref)):'')+'</div>'+calls+'</div>';
       }).join('');
