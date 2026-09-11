@@ -1,18 +1,18 @@
 {
- "generated": "2026-09-11T14:57:32Z",
+ "generated": "2026-09-11T21:12:40Z",
  "from": "bids-full.json",
  "complete": false,
  "note": "Directory only: who operates a facility and where. No prices, no basis, no symbols, no delivery windows.",
  "counts": {
-  "facilities": 1803,
+  "facilities": 1801,
   "states": 28,
   "with_address": 0,
   "with_coords": 0,
   "with_url": 0,
-  "with_phone": 1803,
+  "with_phone": 1801,
   "saturated_zips": 0,
   "failed_zips": 0,
-  "rows_read": 17870
+  "rows_read": 17909
  },
  "saturated": [],
  "failed": [],
@@ -87,6 +87,15 @@
    "state": "CO",
    "zip": "80650",
    "phone": " 970-381-4402",
+   "source": "barchart"
+  },
+  {
+   "facility": "Roggen Farmers Elevator Association",
+   "branch": "Roggen Elevator - Main Office",
+   "city": "Roggen",
+   "state": "CO",
+   "zip": "80652",
+   "phone": "(303) 849-5506",
    "source": "barchart"
   },
   {
@@ -1423,7 +1432,7 @@
   },
   {
    "facility": "Heartland Coop",
-   "branch": "EARLHAM FEED MILL",
+   "branch": "EARLHAM",
    "city": "Earlham",
    "state": "IA",
    "zip": "50072",
@@ -1432,7 +1441,7 @@
   },
   {
    "facility": "Heartland Coop",
-   "branch": "EARLHAM",
+   "branch": "EARLHAM FEED MILL",
    "city": "Earlham",
    "state": "IA",
    "zip": "50072",
@@ -3246,15 +3255,6 @@
    "state": "IA",
    "zip": "50599",
    "phone": "515-839-5531",
-   "source": "barchart"
-  },
-  {
-   "facility": "Nelson Grain, Inc.",
-   "branch": "Nelson Grain Inc",
-   "city": "Marshalltown ",
-   "state": "IA",
-   "zip": "50158",
-   "phone": "641-751-5636",
    "source": "barchart"
   },
   {
@@ -11646,15 +11646,6 @@
    "source": "barchart"
   },
   {
-   "facility": "Fullerton Farmers Elevator",
-   "branch": "Fullerton Elevator",
-   "city": "Fullerton",
-   "state": "ND",
-   "zip": "58441",
-   "phone": "8887656965",
-   "source": "barchart"
-  },
-  {
    "facility": "Hunter Grain Company",
    "branch": "Tharaldson Ethanol",
    "city": "Casselton",
@@ -16180,15 +16171,6 @@
    "state": "WI",
    "zip": "54725",
    "phone": "7158746593",
-   "source": "barchart"
-  },
-  {
-   "facility": "Wheaton Grain",
-   "branch": "Chippewa Falls",
-   "city": "Chippewa Falls",
-   "state": "WI",
-   "zip": "54729",
-   "phone": "715-874-659",
    "source": "barchart"
   },
   {
