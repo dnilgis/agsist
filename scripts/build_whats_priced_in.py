@@ -38,6 +38,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from report_bands import surprise as band_surprise, gap_pct as band_gap_pct  # noqa: E402
 
 EST_PATH  = "data/wpi-estimates.json"
+ANALYST_PATH = "data/analyst-estimates.json"
 HIST_PATH = "data/wpi-history.json"
 OUT_PATH  = "data/whats-priced-in.json"
 COT_PATH  = "data/cot.json"
@@ -120,6 +121,87 @@ def cot_positioning(commodity_text, cot):
     return ("Managed money: " + "; ".join(parts) + "."
             + (" CFTC Commitments of Traders, positions as of %s." % when if when else ""))
 
+
+
+# ── EVERY NUMBER ON THE REPORT, NOT JUST THE HEADLINE ────────────────────────
+#
+# Sig, 2026-09-11, after reading the page on WASDE morning: "it only showed
+# corn, i want to walk people through the numbers when released, more
+# informative without getting messy."
+#
+# The card above stays exactly as it is: one metric, one range bar, the odds and
+# the thresholds. That is the pre-report focus and it is not improved by being
+# four of everything. What was missing is the part AFTER the print, when a
+# grower wants the whole report on one line each.
+#
+# WHERE THESE COME FROM, AND WHY NOT A NEW FILE. data/analyst-estimates.json
+# already carries every metric on the report with its consensus, the survey's
+# own high and low, USDA's standing figure, a source URL and a note saying who
+# published the survey and when. The WASDE watcher writes `actual` into that
+# same file the moment the print lands. So the numbers, their provenance and
+# their result already live in one place, and this reads it rather than asking
+# anybody to keep a second list in step. Two files carrying the same figure is
+# how a page ends up disagreeing with itself in front of a reader.
+#
+# NOTHING IS COMPUTED TWICE. The bullish / bearish / in-line verdict comes from
+# report_bands.surprise, the same function the scorecard and the track record
+# use. A third implementation of "in line" is how one screen once called a print
+# BULLISH and another called it IN LINE off the same two numbers.
+def build_report_numbers(upcoming, path=ANALYST_PATH):
+    """Every metric on the upcoming report, one row each, ready to render.
+
+    Returns [] when the file is absent or carries no matching report. An empty
+    list is a real answer and the page says so in words; it is never padded.
+    """
+    if not upcoming:
+        return []
+    try:
+        with open(path) as f:
+            book = json.load(f)
+    except (OSError, ValueError):
+        return []
+
+    date = upcoming.get("date")
+    rpt = next((r for r in (book.get("reports") or []) if r.get("date") == date), None)
+    if not rpt:
+        return []
+
+    rows = []
+    for m in rpt.get("metrics") or []:
+        label = m.get("label")
+        if not label:
+            continue
+        exp, act = m.get("consensus"), m.get("actual")
+        rng = m.get("consensus_range") or []
+        lo, hi = (rng + [None, None])[:2]
+
+        # A MISSING VALUE GETS A REASON, NOT A BLANK AND NOT A ZERO.
+        # Before the print, `actual` is null for an ordinary reason and the page
+        # must say which one rather than leave a reader guessing whether the
+        # number was withheld.
+        if act is None:
+            why = "not printed yet"
+        elif exp is None:
+            why = "no trade estimate was published for this one"
+        else:
+            why = ""
+
+        rows.append({
+            "key": m.get("key"),
+            "label": label,
+            "unit": m.get("unit") or "",
+            "expected": exp,
+            "low": lo,
+            "high": hi,
+            "usda_current": m.get("usda_current"),
+            "actual": act,
+            "surprise": band_surprise(exp, act, label),
+            "gap_pct": band_gap_pct(exp, act),
+            "why": why,
+            "source": m.get("consensus_source"),
+            "source_note": m.get("consensus_note"),
+        })
+    return rows
 
 def build_upcoming(reports, today, cot=None):
     future = sorted((r for r in reports if (r.get("date") or "") >= today),
@@ -254,6 +336,8 @@ def main():
         except Exception as ex:
             print("[whats-priced-in] could not read %s (%s)" % (COT_PATH, type(ex).__name__))
     upcoming = build_upcoming(reports, today, cot)
+    if upcoming:
+        upcoming["numbers"] = build_report_numbers(upcoming)
     history = build_history(hist_rows)
     latest_result = build_latest_result(history)
     has_real = bool(upcoming) or bool(history)
@@ -274,5 +358,70 @@ def main():
           f"sample={out['sample']} -> wrote {OUT_PATH}")
 
 
+
+def _selftest():
+    """Hand-worked answers for build_report_numbers. The page renders these
+    rows and computes nothing, so this is the only place the arithmetic is
+    checked."""
+    import tempfile, os as _os
+    book = {"reports": [{"report": "Test WASDE", "date": "2026-09-11", "metrics": [
+        # printed BELOW the trade estimate, well outside the yield band -> bullish
+        {"key": "a", "label": "2026/27 corn yield", "unit": "bu/acre",
+         "consensus": 178.1, "consensus_range": [173.2, 182.9],
+         "usda_current": 180.7, "actual": 173.0, "consensus_source": "u"},
+        # printed ABOVE -> bearish
+        {"key": "b", "label": "2026/27 soybean yield", "unit": "bu/acre",
+         "consensus": 52.5, "consensus_range": [51.5, 53.3],
+         "usda_current": 52.7, "actual": 54.0},
+        # dead on -> in line
+        {"key": "c", "label": "2026/27 wheat ending stocks", "unit": "mil bu",
+         "consensus": 800, "actual": 800},
+        # not printed yet -> no verdict, and a reason in words
+        {"key": "d", "label": "2026/27 corn ending stocks", "unit": "mil bu",
+         "consensus": 2100, "actual": None},
+        # printed, but nobody surveyed it -> no verdict, different reason
+        {"key": "e", "label": "2026/27 sorghum production", "unit": "mil bu",
+         "consensus": None, "actual": 370},
+        # no label at all is not a row
+        {"key": "f", "unit": "mil bu", "consensus": 1, "actual": 2},
+    ]}]}
+    fd, path = tempfile.mkstemp(suffix=".json"); _os.close(fd)
+    with open(path, "w") as f:
+        json.dump(book, f)
+    try:
+        rows = build_report_numbers({"date": "2026-09-11"}, path)
+        assert len(rows) == 5, f"a metric with no label is not a row: got {len(rows)}"
+        by = {r["key"]: r for r in rows}
+
+        # 173.0 vs 178.1 is -2.86%, past the 0.5% yield band, and below -> bullish
+        assert by["a"]["surprise"] == "bullish", by["a"]["surprise"]
+        assert by["a"]["gap_pct"] == -2.9, by["a"]["gap_pct"]
+        assert by["a"]["low"] == 173.2 and by["a"]["high"] == 182.9
+        assert by["a"]["why"] == ""
+
+        assert by["b"]["surprise"] == "bearish", by["b"]["surprise"]
+        assert by["c"]["surprise"] == "in line", by["c"]["surprise"]
+        assert by["c"]["low"] is None and by["c"]["high"] is None, "an absent range is None, never 0"
+
+        # THE TWO SILENCES ARE DIFFERENT AND MUST READ DIFFERENTLY.
+        # Both print no verdict. One is "the report has not landed", the other
+        # is "nobody forecast this". A reader told the same thing twice cannot
+        # tell which, and would reasonably assume the print was unremarkable.
+        assert by["d"]["surprise"] == "" and by["d"]["why"] == "not printed yet"
+        assert by["e"]["surprise"] == "" and "no trade estimate" in by["e"]["why"]
+        assert by["d"]["why"] != by["e"]["why"]
+
+        # a date with no report in the book is an empty list, never a guess
+        assert build_report_numbers({"date": "1999-01-01"}, path) == []
+        assert build_report_numbers(None, path) == []
+        assert build_report_numbers({"date": "2026-09-11"}, "/nonexistent.json") == []
+    finally:
+        _os.unlink(path)
+    print("[whats-priced-in] selftest ok: 5 rows, 3 verdicts, 2 kinds of silence")
+
+
 if __name__ == "__main__":
-    main()
+    if "--selftest" in sys.argv:
+        _selftest()
+    else:
+        main()

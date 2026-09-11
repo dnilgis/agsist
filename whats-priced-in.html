@@ -48,6 +48,30 @@
 .wp-odds .ol{display:flex;justify-content:space-between;font-size:.85rem;margin:0 0 .2rem;}
 .wp-odds .ot{position:relative;height:8px;background:var(--wp-panel2);border-radius:5px;overflow:hidden;}
 .wp-odds .of{position:absolute;left:0;top:0;bottom:0;background:var(--wp-green);border-radius:5px;}
+/* EVERY NUMBER ON THE REPORT, one line each. Sig, 2026-09-11: "it only showed
+   corn ... more informative without getting messy." The card above is unchanged;
+   this sits under it and is where a grower reads the whole report after the
+   print. Nothing here computes: every figure and every verdict arrives from
+   build_whats_priced_in.py already decided. */
+.wp-nums{margin:1.1rem 0 0;border:1px solid var(--wp-line);border-radius:10px;overflow:hidden;background:var(--wp-panel2);}
+.wp-nums .nh{display:flex;justify-content:space-between;align-items:baseline;gap:.5rem;flex-wrap:wrap;padding:.6rem .8rem;border-bottom:1px solid var(--wp-line);}
+.wp-nums .nh b{font-size:.9rem;color:var(--wp-txt);}
+.wp-nums .nh span{font-size:.76rem;color:var(--wp-mut);}
+.wp-nums table{width:100%;border-collapse:collapse;font-size:.86rem;}
+.wp-nums th{text-align:right;font-weight:600;color:var(--wp-mut);font-size:.72rem;letter-spacing:.04em;text-transform:uppercase;padding:.5rem .8rem;border-bottom:1px solid var(--wp-line);}
+.wp-nums th:first-child,.wp-nums td:first-child{text-align:left;}
+.wp-nums td{text-align:right;padding:.55rem .8rem;border-bottom:1px solid var(--wp-line);color:var(--wp-txt);}
+.wp-nums tr:last-child td{border-bottom:none;}
+.wp-nums td.n{font-family:'JetBrains Mono',monospace;}
+.wp-nums td.wait{color:var(--wp-mut);font-style:normal;}
+.wp-nums .v{display:inline-block;font-size:.72rem;font-weight:700;padding:.1rem .4rem;border-radius:5px;margin-left:.4rem;}
+.wp-nums .v.bull{color:var(--wp-up);background:rgba(74,171,76,.13);}
+.wp-nums .v.bear{color:var(--wp-dn);background:rgba(217,83,79,.13);}
+.wp-nums .v.flat{color:var(--wp-mut);background:rgba(255,255,255,.06);}
+.wp-nums .src{padding:.55rem .8rem;font-size:.74rem;color:var(--wp-mut);border-top:1px solid var(--wp-line);}
+.wp-nums .src a{color:var(--wp-gold2);}
+@media(max-width:560px){.wp-nums th,.wp-nums td{padding:.45rem .5rem;font-size:.8rem;}.wp-nums th{font-size:.66rem;}}
+
 .wp-thr{display:grid;grid-template-columns:1fr 1fr;gap:.7rem;margin:1.1rem 0 0;}
 @media(max-width:520px){.wp-thr{grid-template-columns:1fr;}}
 .wp-thr .t{background:var(--wp-panel2);border:1px solid var(--wp-line);border-radius:10px;padding:.7rem .8rem;border-top:3px solid var(--wp-line);}
@@ -370,6 +394,37 @@ function gaEvent(name,params){try{gtag('event',name,params||{});}catch(e){}}
 (function(){
   function daysUntil(d){/* AUDIT 2026-08-11: compare calendar DATES, not noon-anchored ceil — the old version said 'tomorrow' all report-day morning */var t=new Date(d+'T00:00:00');var now=new Date();now.setHours(0,0,0,0);return Math.round((t-now)/86400000);}
   function num(n,u){return (n==null)?'\u2014':(n+(u?(' '+u):''));}
+  /* THE STRIP. Renders what the pipeline decided and decides nothing itself.
+     A missing figure prints an em dash and the reason the pipeline gave, never
+     a blank cell and never a zero. */
+  function numbersEl(rows){
+    if(!rows||!rows.length)return '';
+    var DASH='\u2014';
+    var body=rows.map(function(r){
+      var u=r.unit?(' '+r.unit):'';
+      var exp=(r.expected==null)?DASH:(r.expected+u);
+      var rng=(r.low!=null&&r.high!=null)?('<div style="font-size:.72rem;color:var(--wp-mut)">range '+r.low+' to '+r.high+'</div>'):'';
+      var now=(r.usda_current==null)?DASH:(r.usda_current+u);
+      var printed,tag='';
+      if(r.actual==null){ printed='<td class="wait">'+DASH+' '+(r.why||'not printed yet')+'</td>'; }
+      else{
+        if(r.surprise==='bullish')tag='<span class="v bull">bullish</span>';
+        else if(r.surprise==='bearish')tag='<span class="v bear">bearish</span>';
+        else if(r.surprise==='in line')tag='<span class="v flat">in line</span>';
+        else tag='<span class="v flat" title="'+(r.why||'')+'">no call</span>';
+        printed='<td class="n"><b>'+r.actual+u+'</b>'+tag+'</td>';
+      }
+      return '<tr><td>'+r.label+rng+'</td><td class="n">'+exp+'</td><td class="n">'+now+'</td>'+printed+'</tr>';
+    }).join('');
+    var src=rows.map(function(r){return r.source;}).filter(Boolean)[0];
+    var note=src?('<div class="src">Trade estimates are a published pre-report survey, typed from the source and never computed here. <a href="'+src+'" rel="nofollow noopener" target="_blank">Survey source</a>. A print below the trade estimate is bullish, above it bearish; inside the band either side, in line.</div>'):'';
+    var waiting=rows.every(function(r){return r.actual==null;});
+    return '<div class="wp-nums"><div class="nh"><b>Every number on this report</b><span>'
+      +(waiting?'USDA prints at 12:00 PM ET. This fills in on its own.':'Graded against the pre-report survey.')
+      +'</span></div><table><thead><tr><th>Number</th><th>Trade expects</th><th>USDA now</th><th>USDA printed</th></tr></thead><tbody>'
+      +body+'</tbody></table>'+note+'</div>';
+  }
+
   function nextCard(n){
     if(!n)return '<div class="wp-err">No upcoming report is scheduled right now. Check the <a href="/usda-calendar" style="color:var(--wp-gold2)">USDA calendar</a>.</div>';
     var d=daysUntil(n.date);
@@ -411,7 +466,7 @@ function gaEvent(name,params){try{gtag('event',name,params||{});}catch(e){}}
     return '<div class="wp-card"><div class="hd"><span class="rpt">'+n.report+'</span><span class="cd">'+n.date+(n.time?(' \u00b7 '+n.time):'')+' \u00b7 '+cd+'</span></div>'
       +(n.commodity?'<div class="wp-metric">'+n.commodity+' \u2014 '+(n.metric||'')+'</div>':'')
       +(n.expectation?'<div class="wp-exp">'+n.expectation+'</div>':'')
-      +rangeHtml+odds+thr+pos+'</div>';
+      +rangeHtml+odds+thr+pos+numbersEl(n.numbers)+'</div>';
   }
   function resultBanner(lr){
     if(!lr||!lr.date)return '';
