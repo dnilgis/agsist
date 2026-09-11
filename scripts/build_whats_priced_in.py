@@ -139,8 +139,21 @@ def build_upcoming(reports, today, cot=None):
         if not out.get("bearish_threshold"):
             out["bearish_threshold"] = "Above " + _fmt(hi, unit)
     # The one block that can fill itself.
+    #
+    # WHICH COMMODITIES, NOT WHICH BAR. `commodity` names what the range bar
+    # measures. It was ALSO the string this searched for "corn" / "soybean" /
+    # "wheat" in, which quietly made the two one decision. On 2026-09-11 the
+    # September WASDE card was relabelled "Corn" so its heading would stop
+    # naming four quantities above a bar that measured one -- and the soybean
+    # fund-positioning line vanished from the card on WASDE morning, because a
+    # label edit had silently reselected the data.
+    #
+    # `positioning_commodities` says which series to show, independently of what
+    # the bar is measuring. Absent, it falls back to `commodity`, so every
+    # report that does not set it behaves exactly as before.
     if not out.get("positioning"):
-        out["positioning"] = cot_positioning(out.get("commodity"), cot)
+        out["positioning"] = cot_positioning(
+            r.get("positioning_commodities") or out.get("commodity"), cot)
 
     # ── AND WHAT IS MISSING SAYS SO ──────────────────────────────────────
     #

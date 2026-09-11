@@ -15,7 +15,8 @@
    "implied_odds": [],
    "bullish_threshold": null,
    "bearish_threshold": null,
-   "positioning": null
+   "positioning": null,
+   "positioning_commodities": "corn soybeans"
   }
  ]
 }
