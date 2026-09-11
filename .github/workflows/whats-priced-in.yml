@@ -25,6 +25,11 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+      # THE RULE BEFORE THE BUILD. Both builders now share one definition of
+      # "in line" (scripts/report_bands.py); before they had one each and
+      # disagreed on the page about one number. Two seconds, no network.
+      - name: Test the shared scoring rule
+        run: python scripts/report_bands.py --selftest
       - name: Build whats-priced-in.json
         run: python scripts/build_whats_priced_in.py
       - name: Commit if changed (race-tolerant)

@@ -1,0 +1,123 @@
+# Fill in a USDA report's actual numbers the moment they are public.
+#
+# WHY A WATCHER AND NOT A NIGHTLY JOB
+#
+# Sig, 2026-09-10: "i want the wasde what priced in page to process the reports
+# the moment they are available for release."
+#
+# The report lands at 11:00 Central. Until it is graded, /whats-priced-in shows
+# an ungraded report, "Calls on the board" empties out the next day, and no
+# forecaster gains a scored call — which is how the July WASDE went unscored.
+# A daily cron would leave that gap open for up to a day; this closes it inside
+# five minutes.
+#
+# WHAT DECIDES THAT IT HAS LANDED IS THE DATA, NOT THE CLOCK. The query asks
+# NASS for the release month's forecast by name — reference_period_desc = "SEP"
+# for a September WASDE — and that row does not exist until NASS publishes it.
+# The clock is only a gate: scripts/usda_dates.py refuses to call any WASDE
+# public before 16:00 UTC on release day, a rule written after 2026-08-11, when
+# a briefing announced a WASDE the day before it landed.
+#
+# A run that finds nothing exits 0 and writes nothing. That is the normal answer
+# for most of these runs, and a red tick here means something is actually wrong.
+#
+# WHY THESE DAYS. Every 2026 WASDE falls on the 9th, 10th, 11th or 12th (see
+# WASDE_2026 in scripts/usda_dates.py). The script asks that table which day it
+# is and exits immediately when today is not a release date, so the other three
+# days cost a checkout each.
+
+name: WASDE watch — grade the report as it lands
+
+on:
+  schedule:
+    # Every five minutes, 16:00-17:55 UTC, on the four days a WASDE can fall.
+    # 16:00 UTC is 11:00 Central in daylight time and noon Eastern, which is the
+    # release. The window runs two hours because the winter reports print at
+    # 17:00 UTC, and because NASS's own publication can trail the WASDE by a few
+    # minutes.
+    - cron: "*/5 16-17 9-12 * *"
+  workflow_dispatch:
+    inputs:
+      date:
+        description: "Release date to process, YYYY-MM-DD. Blank = the one that just landed."
+        default: ""
+      dry_run:
+        description: "Read and print, write nothing"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  # One writer. Two of these five minutes apart would both try to fill the same
+  # metric and race on the same three files.
+  group: wasde-watch
+  cancel-in-progress: false
+
+jobs:
+  grade:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # THE READER, BEFORE THE NETWORK. Twenty-odd hand-worked cases, no key,
+      # under a second — and this job runs up to fifty times a month, so a
+      # regression that reaches the live file would reach it fast.
+      - name: Test the reader this run is about to use
+        run: |
+          python scripts/report_bands.py --selftest
+          python scripts/fetch_wasde.py --selftest
+
+      - name: Read the print
+        id: read
+        env:
+          NASS_API_KEY: ${{ secrets.NASS_API_KEY }}
+        run: |
+          python scripts/fetch_wasde.py \
+            ${{ inputs.date && format('--date {0}', inputs.date) || '' }} \
+            ${{ inputs.dry_run && '--dry-run' || '' }} | tee /tmp/wasde.log
+          if grep -q "^wrote " /tmp/wasde.log; then echo "filled=1" >> $GITHUB_OUTPUT; fi
+
+      # Only when something was actually filled. A no-op run must not rewrite
+      # four files and commit a timestamp.
+      - name: Rebuild the page's data
+        if: steps.read.outputs.filled == '1'
+        run: |
+          python scripts/build_analyst_scorecard.py
+          python scripts/build_whats_priced_in.py
+          python scripts/prerender_wpi_scorecard.py || true
+
+      - name: Commit
+        if: steps.read.outputs.filled == '1'
+        run: |
+          set -e
+          git config user.name "AGSIST Bot"
+          git config user.email "bot@agsist.com"
+          for i in 1 2 3 4 5; do
+            git add data/analyst-estimates.json data/wpi-history.json data/wasde.json \
+                    data/analyst-scorecard.json data/whats-priced-in.json \
+                    whats-priced-in.html scorecard.html cot.html ag-odds.html 2>/dev/null || true
+            if git diff --staged --quiet; then echo "No change."; exit 0; fi
+            git commit -m "wasde: graded the $(date -u +%Y-%m-%d) print"
+            if git push; then echo "Pushed on attempt $i."; exit 0; fi
+            echo "Push race on attempt $i; rebasing..."
+            git pull --rebase --autostash origin "${GITHUB_REF_NAME:-main}" || true
+            sleep $((RANDOM % 4 + 2))
+          done
+          echo "Failed to push after 5 attempts."; exit 1
+
+      - name: Say what happened
+        if: always()
+        run: |
+          {
+            echo "### WASDE watch"
+            echo ""
+            echo '```'
+            cat /tmp/wasde.log 2>/dev/null || echo "the reader did not run"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"

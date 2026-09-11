@@ -42,6 +42,13 @@ jobs:
         # strategies, which USDA decommissioned on June 2, 2026.
         run: pip install requests
 
+      # THE WITHHOLDING RULE, BEFORE THE FETCH. A corn figure from a finished
+      # marketing year rendered on the homepage under this week's date for
+      # months; the retirement that stops it is pure arithmetic and is checked
+      # here in under a second.
+      - name: Test the staleness rule this run depends on
+        run: python scripts/fetch_export_sales.py --selftest
+
       - name: Fetch USDA FAS Export Sales
         # FAS_API_KEY is a free api.data.gov key (https://api.data.gov/signup),
         # stored as a repo secret. Without it the script preserves existing data.
