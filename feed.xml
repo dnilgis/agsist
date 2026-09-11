@@ -5,13 +5,27 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Thu, 10 Sep 2026 10:49:51 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 11 Sep 2026 10:51:03 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/agsist.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>WASDE AT 11 CT; CRUDE DROPS 4%, BEANS FIRM</title>
+      <link>https://agsist.com/daily/2026-09-11</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-09-11</guid>
+      <pubDate>Fri, 11 Sep 2026 05:00:00 -0600</pubDate>
+      <description>Soybeans firmed to $13.17 at the 52-week high while crude fell hard to $99.06, its sharpest one-session drop in weeks, as the whole complex repositioned ahead of the September WASDE at 11 CT. The meal/bean side held; the energy side gave back two weeks of war premium in one morning. WASDE decides which part of the market read this week correctly.
+September WASDE prints in hours while crude's biggest single-day drop in weeks reshapes the input-cost math for fall fieldwork.
+• WASDE POSITIONING; BEANS AT 52-WEEK HIGH
+  → If you have unpriced new-crop beans above $13.17, hold through 11 CT and let the WASDE print before making a sale.
+• CRUDE DROPS HARD; DIESEL HITS $6
+  → Today's crude pullback to $99 is the window to price fall diesel, not a reason to wait for $95.
+• CATTLE FIRMS; FEEDLOT MARGINS STILL DEEP RED
+Read more: https://agsist.com/daily/2026-09-11</description>
+    </item>
     <item>
       <title>WHEAT BREAKS 2%; EXPORT SALES AT 7:30</title>
       <link>https://agsist.com/daily/2026-09-10</link>
@@ -391,18 +405,6 @@ Soybean meal's biggest session in months leads the complex higher ahead of the w
 • WHEAT HOLDS ABOVE $6.55
 • CATTLE SLIP ON CORN LIFT
 Read more: https://agsist.com/daily/2026-08-13</description>
-    </item>
-    <item>
-      <title>WASDE PRINTS AT 11 CT: WHEAT LEADS, BEANS REACT</title>
-      <link>https://agsist.com/daily/2026-08-12</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-08-12</guid>
-      <pubDate>Wed, 12 Aug 2026 05:00:00 -0600</pubDate>
-      <description>Chicago wheat pushed up 10 cents to $6.45 this morning, the loudest pre-WASDE move in the complex, and it's not an accident. A possible Black Sea deal is circulating in the overnight wires, which is exactly the kind of headline that gets fund desks repositioning before an 11 CT print that could reset global wheat supply. The WASDE lands in hours. Everything this morning is positioning.
-Wheat ran 10 cents into the report; soybean oil is the quiet mover nobody's talking about yet.
-• WHEAT LEADS INTO THE PRINT
-• BEANS SPLIT: OLD CROP FIRMS, NEW CROP FLAT
-• CORN TICKS; WASDE IS THE ONLY STORY
-Read more: https://agsist.com/daily/2026-08-12</description>
     </item>
   </channel>
 </rss>

@@ -66,8 +66,8 @@
       "ticker": "ZS=F",
       "close": 1317.25,
       "open": 1298.0,
-      "netChange": 20.25,
-      "pctChange": 1.5601,
+      "netChange": 19.25,
+      "pctChange": 1.4831,
       "wk52_hi": 1318.25,
       "wk52_lo": 993.75,
       "repaired_from": "beans-sep26",
@@ -78,7 +78,8 @@
         "open": 1323.0,
         "netChange": -5.75,
         "pctChange": -0.4346
-      }
+      },
+      "derived_recomputed": true
     },
     "beans-nov": {
       "ticker": "ZSX26.CBT",
