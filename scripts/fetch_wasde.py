@@ -23,15 +23,29 @@ publishes the same morning. NASS has a documented JSON API, this repository
 already reads it in eight workflows, and NASS_API_KEY is already a secret. The
 WASDE's own XML would be a second acquisition route for the same figure.
 
-    corn 2026, national, YIELD, BU / ACRE, reference_period_desc = "SEP"
+    corn 2026, national, YIELD, BU / ACRE  -- and NO period pin; see SURVEY_MONTHS
 
-THAT PERIOD FIELD IS THE WHOLE MECHANISM, and it is the opposite of the pin
-build_nass_series.py uses. That file pins reference_period_desc = "YEAR" to keep
-the in-season AUG..NOV forecasts OUT of a series of finals. Here the in-season
-forecast is precisely what a September WASDE prints, so the query asks for the
-release month by name. A row for "SEP" does not exist until NASS publishes it,
-which makes "has the report landed" a question the data answers rather than one
-the clock guesses at.
+THE PERIOD FIELD WAS THE WHOLE MECHANISM, AND IT WAS WRONG. Corrected
+2026-09-12; the paragraph that stood here described the design that produced a
+day of HTTP 400s and is kept in outline so nobody rebuilds it.
+
+It said: build_nass_series.py pins reference_period_desc = "YEAR" to keep the
+in-season AUG..NOV forecasts OUT of a series of finals, so this file, wanting
+exactly those forecasts, asks for the release month by name -- "SEP" -- and a
+row that does not exist until NASS publishes it makes "has the report landed" a
+question the data answers rather than one the clock guesses at.
+
+Elegant, and NASS has no such value. Every call came back
+{"error":["bad request - invalid query"]}. The obvious repair, "YEAR - SEP
+FORECAST", is a spelling this repository has never measured: it appears only in
+hand-typed fixtures, and build_state_stats.py records a real 2026-08-15 run
+where the August forecast came back and "FORECAST" was not in the field at all.
+
+So there is no pin. The query is the series, the crop year, NATIONAL and SURVEY,
+and read_value's ambiguity guard decides -- one value is the answer, two
+different values is a refusal naming both and the periods they came under. "Has
+the report landed" is still a question the data answers; it is just answered by
+whether a value comes back rather than by a string nobody has verified.
 
 WHAT IT REFUSES TO DO
 
@@ -102,7 +116,38 @@ SERIES = {
 # January's annual summary is the final. Everything else in the WASDE calendar
 # prints a USDA projection that is not a NASS estimate, and this file will not
 # pretend otherwise.
-FORECAST_PERIOD = {8: "AUG", 9: "SEP", 10: "OCT", 11: "NOV", 1: "YEAR"}
+# WHICH MONTHS NASS PUBLISHES A SURVEY YIELD. NOT A PERIOD PIN ANY MORE.
+#
+# 2026-09-12, and this is the second version of this comment because the first
+# one was wrong.
+#
+# The query pinned reference_period_desc = "SEP" and NASS answered every call
+# with HTTP 400 {"error":["bad request - invalid query"]}. No such value.
+#
+# The obvious replacement looked like "YEAR - SEP FORECAST": build_nass_series.py
+# pins "YEAR" to keep "the AUG..NOV FORECAST contamination" out, and both it and
+# build_state_stats.py carry fixtures spelling it "YEAR - AUG FORECAST", one of
+# them beside the real 180.7. That was going to be the fix.
+#
+# IT IS NOT, AND THE REPOSITORY SAYS SO. build_state_stats.py records a measured
+# run -- 2026-08-15 21:51Z -- where the August forecast came back for all 42
+# states and "Whatever NASS put in reference_period_desc for those rows,
+# 'FORECAST' was not in it." A real observation beats two hand-typed fixtures
+# that agree with each other, and it is why that file gave up on the string and
+# made the calendar the authority instead.
+#
+# So the honest position is that this file does not know the spelling, and the
+# fix must not depend on knowing it. It no longer pins the period at all: it
+# asks for the series, the crop year, NATIONAL and SURVEY, and lets read_value's
+# ambiguity guard do the work -- one value is the answer, two different values
+# is a refusal that names them. Narrowing on a string nobody here has measured
+# is what produced a day of 400s.
+#
+# The months are still listed, because a WASDE month NASS does not survey at all
+# has to be skipped by name rather than queried and found empty.
+SURVEY_MONTHS = {8: "August", 9: "September", 10: "October", 11: "November",
+                 1: "the January annual summary"}
+
 
 
 def metric_series(key):
@@ -141,8 +186,11 @@ def nass_rows(short_desc, year, period, key=None, opener=None):
               "agg_level_desc": "NATIONAL",
               "source_desc": "SURVEY",
               "year": str(year),
-              "reference_period_desc": period,
               "format": "JSON"}
+    # period=None is the discovery call above: ask the same series without the
+    # pin so NASS lists what it has, instead of sending the string "None".
+    if period is not None:
+        params["reference_period_desc"] = period
     url = API + "?" + urllib.parse.urlencode(params)
     req = urllib.request.Request(url, headers={"User-Agent": UA})
     try:
@@ -191,8 +239,14 @@ def read_value(rows):
     # number picked out of an ambiguous answer is worse than none.
     distinct = {v for v, _ in vals}
     if len(distinct) > 1:
-        return None, ("NASS returned %d different values for one series and period (%s)"
-                      % (len(distinct), ", ".join(str(d) for d in sorted(distinct))))
+        # NAME THE PERIODS TOO. Without the period pin an ambiguous answer is
+        # the one place NASS tells us how it distinguishes an in-season forecast
+        # from a final, which is the fact this file has been missing.
+        per = sorted({str(r.get("reference_period_desc")) for _, r in vals})
+        return None, ("NASS returned %d different values for one series and year "
+                      "(%s) across periods: %s"
+                      % (len(distinct), ", ".join(str(d) for d in sorted(distinct)),
+                         ", ".join(per)))
     return vals[0][0], None
 
 
@@ -204,7 +258,8 @@ def plan(est, release):
     already on file."""
     jobs, skipped = [], []
     iso = release.isoformat()
-    period = FORECAST_PERIOD.get(release.month)
+    surveyed = SURVEY_MONTHS.get(release.month)
+    period = None   # deliberately unpinned; see SURVEY_MONTHS
     for rep in est.get("reports", []):
         if (rep.get("date") or "") != iso:
             continue
@@ -223,7 +278,7 @@ def plan(est, release):
             if year is None:
                 skipped.append((label, "its label does not state a crop year"))
                 continue
-            if not period:
+            if not surveyed:
                 skipped.append((label, "NASS publishes no survey yield in %s — this "
                                        "month's WASDE figure is USDA's own projection"
                                        % release.strftime("%B")))
@@ -318,6 +373,22 @@ def main(argv=None):
             # printed "nothing published yet ... that is not an error" over two
             # HTTP 400s and exited 0.
             refused.append((j["label"], "%s: %s" % (type(ex).__name__, str(ex)[:300])))
+            # WHEN A PIN IS REFUSED, ASK WHAT NASS ACTUALLY HAS.
+            # "bad request - invalid query" does not say WHICH parameter is
+            # wrong, and working that out by hand cost a day. One extra call,
+            # only on failure, drops the period pin and reports the values that
+            # do exist for this series and year. If NASS ever respells the
+            # forecast periods, the log names the new spelling instead of
+            # repeating the same dead end.
+            try:
+                probe = nass_rows(j["short_desc"], j["year"], None)
+                seen = sorted({str(r.get("reference_period_desc")) for r in probe})
+                print("  probe    %-32s NASS has these periods for %s %s: %s"
+                      % (j["label"][:32], j["short_desc"][:20], j["year"],
+                         ", ".join(seen[:8]) or "none"))
+            except Exception as pex:
+                print("  probe    %-32s could not list the periods either (%s)"
+                      % (j["label"][:32], type(pex).__name__))
             continue
         value, why = read_value(rows)
         if value is None:
@@ -409,8 +480,19 @@ def selftest():
     check(len(jobs) == 2, "two of the four metrics can be filled", str(len(jobs)))
     check({j["key"] for j in jobs} == {"corn_yield_2627", "soy_yield_2627"},
           "the two yields", str([j["key"] for j in jobs]))
-    check(all(j["period"] == "SEP" for j in jobs),
-          "asked for the SEPTEMBER forecast, which is what a September WASDE prints")
+    # THIS ASSERTION HAS BEEN WRONG TWICE, IN OPPOSITE DIRECTIONS.
+    # First it pinned "SEP", the value the code sent, which is how a green gate
+    # ran into a 400. Then it pinned "YEAR - SEP FORECAST", which is a spelling
+    # nobody here has measured and which build_state_stats.py's own 2026-08-15
+    # observation argues against. It now asserts the only thing that is true:
+    # this file does not narrow on a period it cannot verify.
+    check(all(j["period"] is None for j in jobs),
+          "no period is pinned, because the right value has never been measured here",
+          str({j["period"] for j in jobs}))
+    check(set(SURVEY_MONTHS) == {1, 8, 9, 10, 11},
+          "and the surveyed months are the ones NASS actually publishes a yield in")
+    check(SURVEY_MONTHS.get(5) is None,
+          "so a May WASDE is skipped by name rather than queried and found empty")
     check(all(j["year"] == 2026 for j in jobs),
           "for the 2026 crop, read off the 2026/27 label")
     reasons = dict(skipped)
@@ -549,6 +631,37 @@ def selftest():
               "got %r" % rc)
     finally:
         API_KEY = _saved_key
+
+
+    # THE DISCOVERY CALL MUST DROP THE PIN, NOT SEND "None".
+    # It only runs after a refusal, so nothing else exercises it, and a probe
+    # that asks for reference_period_desc=None is a second invalid query
+    # dressed as a diagnosis.
+    _cap = {}
+
+    def _capture(req, timeout=None):
+        _cap["url"] = req.full_url
+
+        class R:
+            def read(self): return b'{"data":[]}'
+            def __enter__(self): return self
+            def __exit__(self, *a): return False
+        return R()
+
+    nass_rows("CORN, GRAIN - YIELD, MEASURED IN BU / ACRE", 2026, None,
+              key="K", opener=_capture)
+    _q = urllib.parse.parse_qs(urllib.parse.urlparse(_cap["url"]).query)
+    check("reference_period_desc" not in _q,
+          "the probe omits the period pin entirely, so NASS lists what it has",
+          str(_q.get("reference_period_desc")))
+    check(_q.get("year") == ["2026"] and _q.get("short_desc"),
+          "and still pins the series and year, or it would list the whole database")
+
+    nass_rows("CORN, GRAIN - YIELD, MEASURED IN BU / ACRE", 2026,
+              "YEAR - SEP FORECAST", key="K", opener=_capture)
+    _q = urllib.parse.parse_qs(urllib.parse.urlparse(_cap["url"]).query)
+    check(_q.get("reference_period_desc") == ["YEAR - SEP FORECAST"],
+          "while an ordinary call still sends the pin")
 
     print()
     if fails:
