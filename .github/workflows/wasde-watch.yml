@@ -91,6 +91,11 @@ jobs:
           # The strip this run is about to fill is drawn twice -- once by the
           # page, once by the prerenderer below. Byte-for-byte, before we write.
           node --test test/wpi-numbers-strip.test.mjs
+          # The date table this whole workflow gates on. --selftest only: the
+          # horizon check itself is NOT run here, because a calendar that is
+          # about to run out must never be the reason a report that HAS landed
+          # goes ungraded.
+          python scripts/usda_dates.py --selftest
 
       - name: Read the print
         id: read

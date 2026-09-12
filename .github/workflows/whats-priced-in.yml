@@ -30,6 +30,15 @@ jobs:
       # disagreed on the page about one number. Two seconds, no network.
       - name: Test the shared scoring rule
         run: python scripts/report_bands.py --selftest
+
+      # THE CALENDAR RUNS OUT ON A DATE. This is the daily job, so it is the one
+      # that will actually be seen. Amber from 75 days out, red only once the
+      # calendar has genuinely run out -- at which point the card on this very
+      # page is already reading "no upcoming report", so red is a report rather
+      # than a warning. Deliberately NOT allowed to block the build in the
+      # run-up: a December problem must not stop November's page being built.
+      - name: How much WASDE calendar is left
+        run: python scripts/usda_dates.py --selftest && python scripts/usda_dates.py
       # THE TWO COPIES OF THE REPORT STRIP, COMPARED.
       # "Every number on this report" is rendered by the page's JS and again by
       # the prerenderer for the baked copy. This runs both on the same rows and
