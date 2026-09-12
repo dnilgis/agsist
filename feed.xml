@@ -5,13 +5,26 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Fri, 11 Sep 2026 10:51:03 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 12 Sep 2026 13:40:06 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/agsist.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>SEPTEMBER WASDE PRINTS; BEANS GIVE BACK 24 CENTS</title>
+      <link>https://agsist.com/daily/2026-09-12</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-09-12</guid>
+      <pubDate>Sat, 12 Sep 2026 05:00:00 -0600</pubDate>
+      <description>The September WASDE printed Thursday, and Friday the market said what it thought: soybeans at $12.99 gave back 24 cents, the sharpest single-session drop in weeks, while December corn at $5.32 actually added a nickel. The USDA printed something, the funds sold beans and held corn, and now the question is whether $12.99 is the new floor or the first step lower.
+Friday's WASDE report sent soybeans lower and corn sideways, while crude fell hard on the Saudi pipeline story reversing course.
+• WASDE PRINTS; BEANS FOLD
+  → If you have unpriced new-crop beans, $12.99 is the line. A close below $12.85 next week says the WASDE break has legs; price on that signal, not ahead of it.
+• CRUDE FALLS ON SAUDI PIPELINE REVERSAL
+• CATTLE FIRMS; HOGS SLIP
+Read more: https://agsist.com/daily/2026-09-12</description>
+    </item>
     <item>
       <title>WASDE AT 11 CT; CRUDE DROPS 4%, BEANS FIRM</title>
       <link>https://agsist.com/daily/2026-09-11</link>
@@ -392,19 +405,6 @@ Dec corn added nearly a dime Friday as meal's 6% move pulled the whole grain com
   → Old-crop bean holders: $11.65-$11.74 target band from Thursday is now in the rearview. If you have unpriced old-crop, $11.67 nearby is working; set a new target at $11.80 and let the tour decide.
 • CATTLE SLIP; TYSON ADDS PRESSURE
 Read more: https://agsist.com/daily/2026-08-14</description>
-    </item>
-    <item>
-      <title>MEAL RUNS 6%; EXPORT SALES AT 7:30 CT</title>
-      <link>https://agsist.com/daily/2026-08-13</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-08-13</guid>
-      <pubDate>Thu, 13 Aug 2026 05:00:00 -0600</pubDate>
-      <description>Soybean meal moved hard, up 6% to $325.00, the biggest day in the complex by a wide margin, and nearby beans followed to $11.65. The weekly export sales report prints at 7:30 CT this morning. If beans show up strong in that number, the meal move gets a fundamental leg; if sales disappoint, this was positioning ahead of the print and the board gives some back.
-Soybean meal's biggest session in months leads the complex higher ahead of the weekly export print.
-• MEAL RUNS; BEANS FIRM
-  → If you hold unpriced old-crop beans, $11.65 is working right now. Set a target at $11.74 and let the export print decide; a disappointing sales number pulls the board back fast.
-• WHEAT HOLDS ABOVE $6.55
-• CATTLE SLIP ON CORN LIFT
-Read more: https://agsist.com/daily/2026-08-13</description>
     </item>
   </channel>
 </rss>

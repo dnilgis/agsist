@@ -1,18 +1,18 @@
 {
- "updated": "2026-09-11T10:51:03+00:00",
- "total": 111,
+ "updated": "2026-09-12T13:40:06+00:00",
+ "total": 112,
  "played_out": 37,
- "didnt": 69,
+ "didnt": 70,
  "pending": 5,
- "hit_rate": 34.9,
+ "hit_rate": 34.6,
  "by_method": {
   "deterministic": {
    "played": 11,
-   "missed": 58,
-   "graded": 69,
-   "hit_rate": 15.9,
+   "missed": 59,
+   "graded": 70,
+   "hit_rate": 15.7,
    "first": "2026-06-24",
-   "last": "2026-09-11"
+   "last": "2026-09-12"
   },
   "self_reported": {
    "played": 26,
@@ -34,17 +34,17 @@
   },
   "v2": {
    "played": 7,
-   "missed": 18,
-   "graded": 25,
-   "hit_rate": 28.0,
+   "missed": 19,
+   "graded": 26,
+   "hit_rate": 26.9,
    "first": "2026-08-12",
-   "last": "2026-09-11"
+   "last": "2026-09-12"
   }
  },
  "direction_only": {
   "right_way": 29,
-  "graded": 69,
-  "rate": 42.0
+  "graded": 70,
+  "rate": 41.4
  },
  "by_instrument": {
   "wheat": {
@@ -59,8 +59,8 @@
   },
   "beans": {
    "played": 6,
-   "graded": 20,
-   "hit_rate": 30.0
+   "graded": 21,
+   "hit_rate": 28.6
   },
   "crude": {
    "played": 2,
@@ -89,13 +89,29 @@
   }
  },
  "trailing20": {
-  "played": 5,
+  "played": 4,
   "graded": 20,
-  "hit_rate": 25.0
+  "hit_rate": 20.0
  },
  "mismatched": 23,
  "current_streak": 0,
  "records": [
+  {
+   "made": "2026-09-11",
+   "judged": "2026-09-12",
+   "call": "Called beans up through $13.30. Beans closed Friday at $12.99, down 24 cents on the day. The call did not play out.",
+   "outcome": "didnt",
+   "method": "deterministic",
+   "mismatch": false,
+   "note": "The WASDE was the miss. The September supply number was bearish enough to flush length, and the funds sold rather than held. Wrong direction, wrong read on the report.",
+   "instrument": "beans",
+   "direction": "up",
+   "level": 13.3,
+   "p0": 13.1725,
+   "p1": 12.99,
+   "design": "v2",
+   "direction_ok": false
+  },
   {
    "made": "2026-09-10",
    "judged": "2026-09-11",
