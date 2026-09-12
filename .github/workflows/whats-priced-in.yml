@@ -30,6 +30,16 @@ jobs:
       # disagreed on the page about one number. Two seconds, no network.
       - name: Test the shared scoring rule
         run: python scripts/report_bands.py --selftest
+      # THE TWO COPIES OF THE REPORT STRIP, COMPARED.
+      # "Every number on this report" is rendered by the page's JS and again by
+      # the prerenderer for the baked copy. This runs both on the same rows and
+      # fails on a byte of difference, and checks that neither renderer calls a
+      # helper that lives in the page's other script block -- a borrowed helper
+      # throws inside the fetch's .catch and blanks the panel with no error
+      # anywhere visible. Offline, under a second.
+      - name: The baked strip and the live strip must agree
+        run: node --test test/wpi-numbers-strip.test.mjs
+
       - name: Build whats-priced-in.json
         run: |
           # THE ARITHMETIC BEFORE THE PUBLISH. build_report_numbers decides the

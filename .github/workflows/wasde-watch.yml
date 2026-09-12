@@ -88,6 +88,9 @@ jobs:
           python scripts/report_bands.py --selftest
           python scripts/fetch_wasde.py --selftest
           python scripts/build_whats_priced_in.py --selftest
+          # The strip this run is about to fill is drawn twice -- once by the
+          # page, once by the prerenderer below. Byte-for-byte, before we write.
+          node --test test/wpi-numbers-strip.test.mjs
 
       - name: Read the print
         id: read
