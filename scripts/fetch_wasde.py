@@ -60,6 +60,7 @@ import json
 import os
 import re
 import sys
+import urllib.error
 import urllib.parse
 import urllib.request
 from datetime import date, datetime, timezone
@@ -125,6 +126,15 @@ def crop_year(label):
     return int(m.group(1) + m.group(2)) if m else None
 
 
+class NassRefused(Exception):
+    """NASS answered, and the answer was a refusal.
+
+    Kept apart from "no rows came back" on purpose. A refusal is a statement
+    about our query or our key; no rows is a statement about the report. They
+    were the same branch until 2026-09-12 and the difference is the whole
+    question of whether anybody needs to do anything."""
+
+
 def nass_rows(short_desc, year, period, key=None, opener=None):
     params = {"key": key if key is not None else API_KEY,
               "short_desc": short_desc,
@@ -135,8 +145,27 @@ def nass_rows(short_desc, year, period, key=None, opener=None):
               "format": "JSON"}
     url = API + "?" + urllib.parse.urlencode(params)
     req = urllib.request.Request(url, headers={"User-Agent": UA})
-    with (opener or urllib.request.urlopen)(req, timeout=60) as r:
-        return json.load(r).get("data", [])
+    try:
+        with (opener or urllib.request.urlopen)(req, timeout=60) as r:
+            return json.load(r).get("data", [])
+    except urllib.error.HTTPError as e:
+        # NASS SAYS WHY IN THE BODY, AND WE WERE THROWING IT AWAY.
+        #
+        # 2026-09-12: a hand-fired catch-up run for the September WASDE logged
+        #   waiting  2026/27 corn yield   HTTPError: HTTP Error 400: Bad Request
+        # twice and then "nothing published yet ... not an error", exit 0. Quick
+        # Stats answers a 400 with a JSON body naming the fault -- an unusable
+        # key, an unknown parameter value, a result set over its row cap. None
+        # of that reached the log, so the run was green and the one sentence
+        # that would have said what to fix was discarded unread.
+        body = ""
+        try:
+            body = e.read().decode("utf-8", "replace")[:400]
+        except Exception:
+            pass
+        raise NassRefused("HTTP %s from NASS%s" % (e.code, (": " + body) if body else
+                          " (no body). Query: " + urllib.parse.urlencode(
+                              {k: v for k, v in params.items() if k != "key"}))) from None
 
 
 def read_value(rows):
@@ -278,12 +307,17 @@ def main(argv=None):
               "https://quickstats.nass.usda.gov/api/ and add it as a repository secret.")
         return 1
 
-    filled, waiting = [], []
+    filled, waiting, refused = [], [], []
     for j in jobs:
         try:
             rows = nass_rows(j["short_desc"], j["year"], j["period"])
         except Exception as ex:
-            waiting.append((j["label"], "%s: %s" % (type(ex).__name__, str(ex)[:80])))
+            # WAITING AND REFUSED ARE NOT THE SAME THING.
+            # "waiting" means we asked and the report is not out. "refused"
+            # means we could not ask. Filing the second as the first is what
+            # printed "nothing published yet ... that is not an error" over two
+            # HTTP 400s and exited 0.
+            refused.append((j["label"], "%s: %s" % (type(ex).__name__, str(ex)[:300])))
             continue
         value, why = read_value(rows)
         if value is None:
@@ -295,6 +329,15 @@ def main(argv=None):
               % (j["label"][:32], value, j["unit"], j["year"], j["period"]))
     for label, why in waiting:
         print("  waiting  %-32s %s" % (label[:32], why))
+    for label, why in refused:
+        print("  REFUSED  %-32s %s" % (label[:32], why))
+        print("::error title=NASS refused the query::%s -- %s" % (label, why))
+
+    if refused and not filled:
+        print("  NASS refused every query. This is NOT 'the report has not landed':")
+        print("  we never got an answer to read. Nothing was written, and this run")
+        print("  is red on purpose so it is not mistaken for a quiet one.")
+        return 1
 
     if not filled:
         # THIS IS THE NORMAL ANSWER BEFORE THE RELEASE LANDS, and it is not a
@@ -435,9 +478,83 @@ def selftest():
     check(len(hist2["history"]) == 2, "two rows, not three", str(len(hist2["history"])))
 
     print()
+    print("A REFUSAL IS NOT A REPORT THAT HAS NOT LANDED")
+    # 2026-09-12: two HTTP 400s were filed as "waiting" and the run printed
+    # "nothing published yet ... that is not an error" and exited 0.
+    import io as _io
+
+    def _http(code, body):
+        def _open(req, timeout=None):
+            raise urllib.error.HTTPError(req.full_url, code, "Bad Request", {},
+                                         _io.BytesIO(body.encode()))
+        return _open
+
+    try:
+        nass_rows("X", 2026, "SEP", key="k",
+                  opener=_http(400, '{"error":["unauthorized"]}'))
+        check(False, "a 400 raises", "it returned normally")
+    except NassRefused as ex:
+        check(True, "a 400 raises NassRefused, not a generic error")
+        check("400" in str(ex), "and names the status")
+        check("unauthorized" in str(ex),
+              "AND CARRIES THE BODY NASS SENT, which is the part that says why")
+        check("key=" not in str(ex), "without leaking the API key into the log")
+    except Exception as ex:
+        check(False, "a 400 raises NassRefused", type(ex).__name__)
+
+    # a body-less refusal still has to be actionable
+    try:
+        nass_rows("X", 2026, "SEP", key="k", opener=_http(500, ""))
+        check(False, "a 500 raises", "it returned normally")
+    except NassRefused as ex:
+        check("short_desc" in str(ex),
+              "a refusal with no body prints the query instead, so it is still diagnosable")
+        check("key=" not in str(ex), "and still does not leak the key")
+
+    # and an ordinary empty answer is NOT a refusal: that is the real "waiting"
+    def _empty(req, timeout=None):
+        class R:
+            def read(self): return b'{"data": []}'
+            def __enter__(self): return self
+            def __exit__(self, *a): return False
+        return R()
+    try:
+        rows = nass_rows("X", 2026, "SEP", key="k", opener=_empty)
+        check(rows == [], "an empty data array is an ordinary answer, not a refusal")
+        v, why = read_value(rows)
+        check(v is None and why, "and read_value calls it waiting, with a reason")
+    except Exception as ex:
+        check(False, "an empty answer does not raise", type(ex).__name__)
+
+
+    # AND THE RUN ITSELF HAS TO GO RED. Everything above proves the refusal is
+    # classified correctly; this proves it reaches the exit code, which is the
+    # only part GitHub reads. Without it, `if refused and not filled` could be
+    # deleted and every check above would still pass.
+    import unittest.mock as _mock
+    global API_KEY
+    _saved_key = API_KEY
+    API_KEY = "test"
+    try:
+        with _mock.patch(__name__ + ".nass_rows",
+                         side_effect=NassRefused('HTTP 400 from NASS: {"error":["unauthorized"]}')):
+            rc = main(["--date", "2026-09-11"])
+        check(rc == 1, "a run where NASS refused everything exits 1, not 0",
+              "got %r" % rc)
+
+        # and a genuine empty answer still exits 0 -- a quiet day is not a failure
+        with _mock.patch(__name__ + ".nass_rows", return_value=[]):
+            rc = main(["--date", "2026-09-11"])
+        check(rc == 0, "a run where the report simply has not landed still exits 0",
+              "got %r" % rc)
+    finally:
+        API_KEY = _saved_key
+
+    print()
     if fails:
         print("FAILED (%d): %s" % (len(fails), "; ".join(fails)))
         return 1
+
     print("fetch_wasde: all passed")
     return 0
 
