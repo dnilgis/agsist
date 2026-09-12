@@ -28,7 +28,7 @@ Stdlib only. No secrets, no network. Safe to run on every push + daily cron.
 import json
 import os
 import sys
-from datetime import datetime, timezone
+from datetime import datetime, timezone, date as _date
 
 # ONE DEFINITION OF "IN LINE", shared with build_analyst_scorecard.py. The two
 # used to carry their own copies and disagreed on one screen about one number:
@@ -49,7 +49,11 @@ COT_PATH  = "data/cot.json"
 UPCOMING_FIELDS = ["report", "date", "time", "commodity", "metric", "expectation",
                    "estimate_low", "estimate_high", "estimate_avg", "unit",
                    "implied_odds", "bullish_threshold", "bearish_threshold",
-                   "positioning"]
+                   # from_calendar marks a card built from the shipped WASDE
+                   # calendar rather than from a researched report row. Without
+                   # it in this list the marker is dropped here and a reader of
+                   # the JSON cannot tell a placeholder from the real thing.
+                   "positioning", "from_calendar"]
 HISTORY_FIELDS  = ["date", "report", "metric", "expected", "actual", "unit",
                    "surprise", "reaction"]
 
@@ -203,11 +207,55 @@ def build_report_numbers(upcoming, path=ANALYST_PATH):
         })
     return rows
 
+
+# ── THE CARD MUST NEVER GO BLANK BECAUSE A LIST RAN OUT ──────────────────────
+#
+# Found 2026-09-12. data/wpi-estimates.json held exactly one report, the
+# September WASDE, and its date had passed. At the next 11:20 UTC build
+# build_upcoming would have returned None and the top of the flagship page would
+# have read "No upcoming report is scheduled right now" -- on a site whose whole
+# proposition is knowing what is coming. Nothing was broken; a hand-maintained
+# list had simply reached its end, silently, on a schedule.
+#
+# Adding October fixed that day and moved the cliff to 10 October. This removes
+# the cliff. scripts/usda_dates.py already carries WASDE_2026, every release
+# date for the year, and it is the same table the WASDE watcher gates on. When
+# the estimates file has nothing dated today or later, the next date is read
+# from that table and rendered as a card with no figures on it.
+#
+# WHAT THE FALLBACK CARD SAYS. Only the things that are known without a survey:
+# the report's name, its date, and the 12:00 PM ET release time every WASDE
+# keeps. Every other block -- the range, the odds, the thresholds -- goes
+# through the existing `withheld` path, which already prints why it is absent.
+# No figure is invented, and `from_calendar` marks the card so a reader of the
+# JSON can tell a scheduled placeholder from a report somebody has researched.
+def calendar_fallback(today):
+    """The next WASDE from the shipped calendar, as a minimal report row."""
+    try:
+        import usda_dates
+    except ImportError:
+        return None
+    try:
+        nxt = usda_dates.next_wasde(_date.fromisoformat(today))
+    except (AttributeError, ValueError):
+        return None
+    if not nxt:
+        return None
+    return {
+        "report": nxt.strftime("%B") + " WASDE",
+        "date": nxt.isoformat(),
+        "time": "12:00 PM ET",
+        "from_calendar": True,
+    }
+
 def build_upcoming(reports, today, cot=None):
     future = sorted((r for r in reports if (r.get("date") or "") >= today),
                     key=lambda r: r["date"])
     if not future:
-        return None
+        fb = calendar_fallback(today)
+        if not fb:
+            return None
+        future = [fb]
     r = dict(future[0])
     out = {k: r.get(k) for k in UPCOMING_FIELDS}
     if not isinstance(out.get("implied_odds"), list):
@@ -417,7 +465,35 @@ def _selftest():
         assert build_report_numbers({"date": "2026-09-11"}, "/nonexistent.json") == []
     finally:
         _os.unlink(path)
-    print("[whats-priced-in] selftest ok: 5 rows, 3 verdicts, 2 kinds of silence")
+
+    # ── THE CARD NEVER GOES BLANK BECAUSE THE LIST RAN OUT ──────────────────
+    reps = [{"report": "September WASDE", "date": "2026-09-11", "metric": "corn yield"}]
+
+    # a report still ahead is used as-is and is NOT marked as a placeholder
+    u = build_upcoming(reps, "2026-09-10")
+    assert u["report"] == "September WASDE" and not u.get("from_calendar")
+
+    # the day after the last one on file, the calendar takes over
+    u = build_upcoming(reps, "2026-09-12")
+    assert u is not None, "the card must not go blank when the list runs out"
+    assert u["report"] == "October WASDE" and u["date"] == "2026-10-09"
+    assert u["from_calendar"] is True, "a placeholder must say so in the JSON"
+
+    # and it carries NO figures. A placeholder that invents a range is worse
+    # than an empty card, because a reader cannot tell it is a placeholder.
+    for k in ("estimate_low", "estimate_avg", "estimate_high", "bullish_threshold"):
+        assert u.get(k) is None, f"the fallback card must not carry {k}"
+    assert u.get("withheld"), "and it must say in words why each block is missing"
+
+    # an empty list behaves the same way as an exhausted one
+    assert build_upcoming([], "2026-09-12")["report"] == "October WASDE"
+
+    # past the calendar's horizon it returns None rather than inventing a date
+    assert calendar_fallback("2027-06-01") is None
+    assert build_upcoming([], "2027-06-01") is None
+
+    print("[whats-priced-in] selftest ok: 5 rows, 3 verdicts, 2 kinds of silence, "
+          "and the card falls back to the calendar")
 
 
 if __name__ == "__main__":

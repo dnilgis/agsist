@@ -17,6 +17,17 @@
    "bearish_threshold": null,
    "positioning": null,
    "positioning_commodities": "corn soybeans"
+  },
+  {
+   "report": "October WASDE",
+   "date": "2026-10-09",
+   "time": "12:00 PM ET",
+   "commodity": "Corn",
+   "metric": "2026/27 corn yield",
+   "unit": "bu/acre",
+   "positioning_commodities": "corn soybeans",
+   "expectation": "USDA's fourth survey-based corn and soybean yields of the season, and the first to fold in October's harvest results. The pre-report trade survey usually publishes one to two days ahead; its numbers are typed in from it when it does.",
+   "_added": "2026-09-12. The September WASDE was the only report on file and its date had passed, so at the next 11:20 UTC build build_upcoming would have returned None and the top of the page would have read 'No upcoming report is scheduled right now.' The date is WASDE_2026 in scripts/usda_dates.py, not a guess."
   }
  ]
 }
