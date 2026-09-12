@@ -116,35 +116,35 @@ SERIES = {
 # January's annual summary is the final. Everything else in the WASDE calendar
 # prints a USDA projection that is not a NASS estimate, and this file will not
 # pretend otherwise.
-# WHICH MONTHS NASS PUBLISHES A SURVEY YIELD. NOT A PERIOD PIN ANY MORE.
+# THE PERIOD, MEASURED. Third version of this block; the first two were guesses.
 #
-# 2026-09-12, and this is the second version of this comment because the first
-# one was wrong.
+#   v1  pinned "SEP"                -> HTTP 400, {"error":["bad request - invalid query"]}
+#   v2  pinned "YEAR - SEP FORECAST" -> inferred from hand-typed fixtures, and
+#       build_state_stats.py's real 2026-08-15 run argued against it, so it was
+#       not shipped
+#   v3  pinned nothing, and let read_value's ambiguity guard report what came back
 #
-# The query pinned reference_period_desc = "SEP" and NASS answered every call
-# with HTTP 400 {"error":["bad request - invalid query"]}. No such value.
+# v3 is what produced the answer. Run of 2026-09-12 12:52 UTC, verbatim:
 #
-# The obvious replacement looked like "YEAR - SEP FORECAST": build_nass_series.py
-# pins "YEAR" to keep "the AUG..NOV FORECAST contamination" out, and both it and
-# build_state_stats.py carry fixtures spelling it "YEAR - AUG FORECAST", one of
-# them beside the real 180.7. That was going to be the fix.
+#   NASS returned 2 different values for one series and year (178.5, 180.7)
+#   across periods: YEAR, YEAR - AUG FORECAST, YEAR - SEP FORECAST
 #
-# IT IS NOT, AND THE REPOSITORY SAYS SO. build_state_stats.py records a measured
-# run -- 2026-08-15 21:51Z -- where the August forecast came back for all 42
-# states and "Whatever NASS put in reference_period_desc for those rows,
-# 'FORECAST' was not in it." A real observation beats two hand-typed fixtures
-# that agree with each other, and it is why that file gave up on the string and
-# made the calendar the authority instead.
+#   NASS returned 2 different values for one series and year (52.7, 52.8)
+#   across periods: YEAR, YEAR - AUG FORECAST, YEAR - SEP FORECAST
 #
-# So the honest position is that this file does not know the spelling, and the
-# fix must not depend on knowing it. It no longer pins the period at all: it
-# asks for the series, the crop year, NATIONAL and SURVEY, and lets read_value's
-# ambiguity guard do the work -- one value is the answer, two different values
-# is a refusal that names them. Narrowing on a string nobody here has measured
-# is what produced a day of 400s.
+# So "YEAR - SEP FORECAST" is real at NATIONAL level after all, and 178.5 and
+# 52.8 are September's corn and soybean yields. build_state_stats.py's
+# observation was about STATE rows and does not carry to these.
 #
-# The months are still listed, because a WASDE month NASS does not survey at all
-# has to be skipped by name rather than queried and found empty.
+# This spelling is now measured against the live API rather than copied from a
+# fixture, and the refusal that measured it is quoted above so the next person
+# can see the evidence rather than trust the constant.
+FORECAST_PERIOD = {8: "YEAR - AUG FORECAST", 9: "YEAR - SEP FORECAST",
+                   10: "YEAR - OCT FORECAST", 11: "YEAR - NOV FORECAST",
+                   1: "YEAR"}
+
+# Kept alongside so a WASDE month NASS does not survey at all is skipped by name
+# rather than queried and found empty.
 SURVEY_MONTHS = {8: "August", 9: "September", 10: "October", 11: "November",
                  1: "the January annual summary"}
 
@@ -242,11 +242,13 @@ def read_value(rows):
         # NAME THE PERIODS TOO. Without the period pin an ambiguous answer is
         # the one place NASS tells us how it distinguishes an in-season forecast
         # from a final, which is the fact this file has been missing.
-        per = sorted({str(r.get("reference_period_desc")) for _, r in vals})
-        return None, ("NASS returned %d different values for one series and year "
-                      "(%s) across periods: %s"
-                      % (len(distinct), ", ".join(str(d) for d in sorted(distinct)),
-                         ", ".join(per)))
+        # PAIR THE VALUE WITH ITS PERIOD. The 2026-09-12 run printed the two
+        # lists side by side -- (178.5, 180.7) and three period names -- which
+        # settled the spelling but not which figure belonged to which. One line
+        # of pairing would have said both.
+        pairs = sorted({"%s=%s" % (r.get("reference_period_desc"), v) for v, r in vals})
+        return None, ("NASS returned %d different values for one series and year: %s"
+                      % (len(distinct), "; ".join(pairs)))
     return vals[0][0], None
 
 
@@ -259,7 +261,7 @@ def plan(est, release):
     jobs, skipped = [], []
     iso = release.isoformat()
     surveyed = SURVEY_MONTHS.get(release.month)
-    period = None   # deliberately unpinned; see SURVEY_MONTHS
+    period = FORECAST_PERIOD.get(release.month)
     for rep in est.get("reports", []):
         if (rep.get("date") or "") != iso:
             continue
@@ -480,19 +482,16 @@ def selftest():
     check(len(jobs) == 2, "two of the four metrics can be filled", str(len(jobs)))
     check({j["key"] for j in jobs} == {"corn_yield_2627", "soy_yield_2627"},
           "the two yields", str([j["key"] for j in jobs]))
-    # THIS ASSERTION HAS BEEN WRONG TWICE, IN OPPOSITE DIRECTIONS.
-    # First it pinned "SEP", the value the code sent, which is how a green gate
-    # ran into a 400. Then it pinned "YEAR - SEP FORECAST", which is a spelling
-    # nobody here has measured and which build_state_stats.py's own 2026-08-15
-    # observation argues against. It now asserts the only thing that is true:
-    # this file does not narrow on a period it cannot verify.
-    check(all(j["period"] is None for j in jobs),
-          "no period is pinned, because the right value has never been measured here",
+    # THIS ASSERTION HAS BEEN WRONG TWICE AND IS NOW MEASURED.
+    # "SEP" (what the code sent, so the gate ran into a 400), then briefly the
+    # unpinned state. The value below came back from the live API on
+    # 2026-09-12 in a refusal that listed every period NASS holds for this
+    # series, quoted in full beside FORECAST_PERIOD.
+    check(all(j["period"] == "YEAR - SEP FORECAST" for j in jobs),
+          "asks for the September forecast in the spelling NASS answered with",
           str({j["period"] for j in jobs}))
-    check(set(SURVEY_MONTHS) == {1, 8, 9, 10, 11},
-          "and the surveyed months are the ones NASS actually publishes a yield in")
-    check(SURVEY_MONTHS.get(5) is None,
-          "so a May WASDE is skipped by name rather than queried and found empty")
+    check(FORECAST_PERIOD[1] == "YEAR" and "FORECAST" in FORECAST_PERIOD[8],
+          "January is the plain annual summary; the in-season months are forecasts")
     check(all(j["year"] == 2026 for j in jobs),
           "for the 2026 crop, read off the 2026/27 label")
     reasons = dict(skipped)
@@ -662,6 +661,18 @@ def selftest():
     _q = urllib.parse.parse_qs(urllib.parse.urlparse(_cap["url"]).query)
     check(_q.get("reference_period_desc") == ["YEAR - SEP FORECAST"],
           "while an ordinary call still sends the pin")
+
+
+    # AN AMBIGUOUS ANSWER MUST SAY WHICH FIGURE CAME UNDER WHICH PERIOD.
+    # The 2026-09-12 run printed the values and the periods as two separate
+    # lists, which settled the spelling but not the mapping, and that cost a
+    # round trip. Pairing them is the difference between a clue and an answer.
+    _v, _why = read_value([
+        {"Value": "178.5", "reference_period_desc": "YEAR - SEP FORECAST"},
+        {"Value": "180.7", "reference_period_desc": "YEAR - AUG FORECAST"}])
+    check(_v is None, "two different values are still refused, never picked between")
+    check("YEAR - SEP FORECAST=178.5" in _why and "YEAR - AUG FORECAST=180.7" in _why,
+          "and the refusal pairs each figure with the period it came under", _why)
 
     print()
     if fails:
