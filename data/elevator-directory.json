@@ -1,18 +1,18 @@
 {
- "generated": "2026-09-11T23:30:44Z",
+ "generated": "2026-09-12T14:21:28Z",
  "from": "bids-full.json",
  "complete": false,
  "note": "Directory only: who operates a facility and where. No prices, no basis, no symbols, no delivery windows.",
  "counts": {
-  "facilities": 1802,
+  "facilities": 1800,
   "states": 28,
   "with_address": 0,
   "with_coords": 0,
   "with_url": 0,
-  "with_phone": 1802,
+  "with_phone": 1800,
   "saturated_zips": 0,
   "failed_zips": 0,
-  "rows_read": 17909
+  "rows_read": 17890
  },
  "saturated": [],
  "failed": [],
@@ -1252,15 +1252,6 @@
   },
   {
    "facility": "Gold-Eagle Cooperative",
-   "branch": "AGP Eagle Grove",
-   "city": "Eagle Grove",
-   "state": "IA",
-   "zip": "50533",
-   "phone": "N/A",
-   "source": "barchart"
-  },
-  {
-   "facility": "Gold-Eagle Cooperative",
    "branch": "GALT FEED MILL",
    "city": "Galt",
    "state": "IA",
@@ -1293,15 +1284,6 @@
    "state": "IA",
    "zip": "50453",
    "phone": "(641) 567-3010",
-   "source": "barchart"
-  },
-  {
-   "facility": "Gold-Eagle Cooperative",
-   "branch": "AGP Mason City",
-   "city": "Mason City",
-   "state": "IA",
-   "zip": "50401",
-   "phone": "N/A",
    "source": "barchart"
   },
   {
@@ -1432,7 +1414,7 @@
   },
   {
    "facility": "Heartland Coop",
-   "branch": "EARLHAM",
+   "branch": "EARLHAM FEED MILL",
    "city": "Earlham",
    "state": "IA",
    "zip": "50072",
@@ -1441,7 +1423,7 @@
   },
   {
    "facility": "Heartland Coop",
-   "branch": "EARLHAM FEED MILL",
+   "branch": "EARLHAM",
    "city": "Earlham",
    "state": "IA",
    "zip": "50072",
