@@ -121,6 +121,77 @@ def sc_next_report(n):
             'priced in</a> before the number drops.')
 
 
+# ── THE REPORT STRIP, BAKED ────────────────────────────────────────────────
+#
+# Found 2026-09-12. The page's JS rendered "Every number on this report" and
+# this file did not, so the baked HTML a crawler (or a reader before hydration)
+# sees carried the card without the strip and the live page grew one. Same JSON,
+# two answers, which is the thing this file exists to prevent.
+#
+# This is a line-for-line port of numbersEl() in whats-priced-in.html.
+# test/wpi-numbers-strip.test.mjs runs both against the same rows and fails on
+# any byte of difference, so the port cannot quietly drift again.
+def _esc4(s):
+    """The page's own esc(): & < > and the double quote, and NOT the apostrophe.
+
+    html.escape(quote=True) also turns ' into &#x27;, which would make this port
+    differ from the JS by a handful of bytes on any string containing one -- and
+    the parity test compares bytes. These strings only ever sit inside
+    double-quoted attributes or element text, so four characters is the whole
+    job."""
+    return (str("" if s is None else s).replace("&", "&amp;").replace("<", "&lt;")
+            .replace(">", "&gt;").replace('"', "&quot;"))
+
+
+def _sig(n):
+    """Render a number the way JSON.stringify/JS would: 178.5, 800, not 800.0."""
+    if isinstance(n, float) and n.is_integer():
+        return str(int(n))
+    return str(n)
+
+
+def numbers_el(rows):
+    if not rows:
+        return ""
+    DASH = "\u2014"
+    body = []
+    for r in rows:
+        u = (" " + r["unit"]) if r.get("unit") else ""
+        exp = DASH if r.get("expected") is None else (_sig(r["expected"]) + u)
+        rng = ('<div style="font-size:.72rem;color:var(--wp-mut)">range '
+               + _sig(r["low"]) + " to " + _sig(r["high"]) + "</div>") \
+            if (r.get("low") is not None and r.get("high") is not None) else ""
+        now = DASH if r.get("usda_current") is None else (_sig(r["usda_current"]) + u)
+        if r.get("actual") is None:
+            printed = '<td class="wait">' + DASH + " " + _esc4(r.get("why") or "not printed yet") + "</td>"
+        else:
+            sur = r.get("surprise")
+            if sur == "bullish":
+                tag = '<span class="v bull">bullish</span>'
+            elif sur == "bearish":
+                tag = '<span class="v bear">bearish</span>'
+            elif sur == "in line":
+                tag = '<span class="v flat">in line</span>'
+            else:
+                tag = '<span class="v flat" title="' + _esc4(r.get("why") or "") + '">no call</span>'
+            printed = '<td class="n"><b>' + _sig(r["actual"]) + u + "</b>" + tag + "</td>"
+        body.append("<tr><td>" + _esc4(r.get("label")) + rng + '</td><td class="n">' + exp
+                    + '</td><td class="n">' + now + "</td>" + printed + "</tr>")
+    src = next((r.get("source") for r in rows if r.get("source")), None)
+    note = ('<div class="src">Trade estimates are a published pre-report survey, typed '
+            'from the source and never computed here. <a href="' + _esc4(src) + '" '
+            'rel="nofollow noopener" target="_blank">Survey source</a>. A print below the '
+            'trade estimate is bullish, above it bearish; inside the band either side, '
+            'in line.</div>') if src else ""
+    waiting = all(r.get("actual") is None for r in rows)
+    head = ("USDA prints at 12:00 PM ET. This fills in on its own." if waiting
+            else "Graded against the pre-report survey.")
+    return ('<div class="wp-nums"><div class="nh"><b>Every number on this report</b><span>'
+            + head + '</span></div><table><thead><tr><th>Number</th><th>Trade expects</th>'
+            '<th>USDA now</th><th>USDA printed</th></tr></thead><tbody>'
+            + "".join(body) + "</tbody></table>" + note + "</div>")
+
+
 def next_card(n):
     if not n:
         return ('<div class="wp-err">No upcoming report is scheduled right now. '
@@ -190,7 +261,8 @@ def next_card(n):
     return (
         f'<div class="wp-card"><div class="hd"><span class="rpt">{esc(n["report"])}</span>'
         f'<span class="cd">{esc(n["date"])}{time_part} · {cd}</span></div>'
-        f'{commodity}{expectation}{range_html}{odds}{thr}{pos}</div>'
+        f'{commodity}{expectation}{range_html}{odds}{thr}{pos}'
+        f'{numbers_el(n.get("numbers"))}</div>'
     )
 
 
@@ -228,6 +300,7 @@ def result_banner(lr):
         f'<span class="wp-res-k">How the {esc(lr["report"])} landed</span>'
         f'<span class="wp-res-d">{lr["date"]}</span></div>'
         f'<div class="wp-res-sum">{sum_txt}</div>{big}'
+        f'{numbers_el(lr.get("numbers"))}'
         '<div class="wp-res-foot">Every figure, scored, in the '
         '<a href="#track-record">track record</a> below.</div></div>'
     )

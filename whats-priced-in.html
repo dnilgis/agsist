@@ -295,7 +295,7 @@
 
   <div class="wp-sample" id="wp-sample">Sample layout &mdash; live report data pending. Figures shown are illustrative.</div>
 
-  <div id="wp-result"><!-- PRERENDER:wp-result --><div class="wp-result bear"><div class="wp-res-hd"><span class="wp-res-k">How the September WASDE landed</span><span class="wp-res-d">2026-09-11</span></div><div class="wp-res-sum">1 of 2 figures landed in line with the trade. The one that didn’t:</div><div class="wp-res-big"><div class="wp-res-row"><span class="wp-res-metric">2026/27 soybean yield</span><span class="wp-res-tag bear">bearish</span></div><div class="wp-res-nums"><b>52.8 bu/acre</b> actual &middot; 52.5 bu/acre expected &middot; +0.6% vs trade</div></div><div class="wp-res-foot">Every figure, scored, in the <a href="#track-record">track record</a> below.</div></div><!-- /PRERENDER:wp-result --></div>
+  <div id="wp-result"><!-- PRERENDER:wp-result --><div class="wp-result bear"><div class="wp-res-hd"><span class="wp-res-k">How the September WASDE landed</span><span class="wp-res-d">2026-09-11</span></div><div class="wp-res-sum">1 of 2 figures landed in line with the trade. The one that didn’t:</div><div class="wp-res-big"><div class="wp-res-row"><span class="wp-res-metric">2026/27 soybean yield</span><span class="wp-res-tag bear">bearish</span></div><div class="wp-res-nums"><b>52.8 bu/acre</b> actual &middot; 52.5 bu/acre expected &middot; +0.6% vs trade</div></div><div class="wp-nums"><div class="nh"><b>Every number on this report</b><span>Graded against the pre-report survey.</span></div><table><thead><tr><th>Number</th><th>Trade expects</th><th>USDA now</th><th>USDA printed</th></tr></thead><tbody><tr><td>2026/27 corn yield<div style="font-size:.72rem;color:var(--wp-mut)">range 173.2 to 182.9</div></td><td class="n">178.1 bu/acre</td><td class="n">180.7 bu/acre</td><td class="n"><b>178.5 bu/acre</b><span class="v flat">in line</span></td></tr><tr><td>2026/27 soybean yield<div style="font-size:.72rem;color:var(--wp-mut)">range 51.5 to 53.3</div></td><td class="n">52.5 bu/acre</td><td class="n">52.7 bu/acre</td><td class="n"><b>52.8 bu/acre</b><span class="v bear">bearish</span></td></tr></tbody></table><div class="src">Trade estimates are a published pre-report survey, typed from the source and never computed here. <a href="https://www.dtnpf.com/agriculture/web/ag/news/article/2026/09/09/historic-late-august-price-rallies" rel="nofollow noopener" target="_blank">Survey source</a>. A print below the trade estimate is bullish, above it bearish; inside the band either side, in line.</div></div><div class="wp-res-foot">Every figure, scored, in the <a href="#track-record">track record</a> below.</div></div><!-- /PRERENDER:wp-result --></div>
 
   <h2><!-- PRERENDER:wp-nexthead -->Next report: what the trade expects from the October WASDE<!-- /PRERENDER:wp-nexthead --></h2>
   <div id="wp-next"><!-- PRERENDER:wp-next --><div class="wp-card"><div class="hd"><span class="rpt">October WASDE</span><span class="cd">2026-10-09 · 12:00 PM ET · 27 days out</span></div><div class="wp-metric">Corn — 2026/27 corn yield</div><div class="wp-exp">USDA&#x27;s fourth survey-based corn and soybean yields of the season, and the first to fold in October&#x27;s harvest results. The pre-report trade survey usually publishes one to two days ahead; its numbers are typed in from it when it does.</div><div class="wp-gap"><b>No trade range yet:</b> No pre-report trade survey is on file for this report yet. The survey usually publishes one to two days ahead of the release; the range is typed in from it and is never estimated here.</div><div class="wp-gap"><b>No market odds:</b> No prediction market is quoting this report. When one is, its odds appear here with the venue named.</div><div class="wp-gap"><b>No surprise thresholds:</b> The thresholds are the ends of the trade range, so they arrive with it.</div><div class="wp-pos">Fund positioning: Managed money: Corn net long 414,459 contracts, up 13,456 on the week and the biggest of the last 52 weeks; Soybeans net long 257,258 contracts, up 22,338 on the week and the biggest of the last 52 weeks. CFTC Commitments of Traders, positions as of September 08, 2026.</div></div><!-- /PRERENDER:wp-next --></div>
@@ -393,6 +393,14 @@ function gaEvent(name,params){try{gtag('event',name,params||{});}catch(e){}}
 <script>
 (function(){
   function daysUntil(d){/* AUDIT 2026-08-11: compare calendar DATES, not noon-anchored ceil — the old version said 'tomorrow' all report-day morning */var t=new Date(d+'T00:00:00');var now=new Date();now.setHours(0,0,0,0);return Math.round((t-now)/86400000);}
+  /* A LOCAL ONE ON PURPOSE. There is an identical esc() further down the page,
+     but it lives inside the scorecard's own IIFE and is not visible from this
+     one. Reaching for it renders the whole panel as "briefly unavailable":
+     resultBanner throws ReferenceError, the fetch's catch swallows it, and the
+     reader gets an error where the report was. Four characters, declared where
+     it is used. Kept byte-identical to the other so the baked port can mirror
+     one rule; test/wpi-numbers-strip.test.mjs holds them together. */
+  function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
   function num(n,u){return (n==null)?'\u2014':(n+(u?(' '+u):''));}
   /* THE STRIP. Renders what the pipeline decided and decides nothing itself.
      A missing figure prints an em dash and the reason the pipeline gave, never
@@ -406,18 +414,18 @@ function gaEvent(name,params){try{gtag('event',name,params||{});}catch(e){}}
       var rng=(r.low!=null&&r.high!=null)?('<div style="font-size:.72rem;color:var(--wp-mut)">range '+r.low+' to '+r.high+'</div>'):'';
       var now=(r.usda_current==null)?DASH:(r.usda_current+u);
       var printed,tag='';
-      if(r.actual==null){ printed='<td class="wait">'+DASH+' '+(r.why||'not printed yet')+'</td>'; }
+      if(r.actual==null){ printed='<td class="wait">'+DASH+' '+esc(r.why||'not printed yet')+'</td>'; }
       else{
         if(r.surprise==='bullish')tag='<span class="v bull">bullish</span>';
         else if(r.surprise==='bearish')tag='<span class="v bear">bearish</span>';
         else if(r.surprise==='in line')tag='<span class="v flat">in line</span>';
-        else tag='<span class="v flat" title="'+(r.why||'')+'">no call</span>';
+        else tag='<span class="v flat" title="'+esc(r.why||'')+'">no call</span>';
         printed='<td class="n"><b>'+r.actual+u+'</b>'+tag+'</td>';
       }
-      return '<tr><td>'+r.label+rng+'</td><td class="n">'+exp+'</td><td class="n">'+now+'</td>'+printed+'</tr>';
+      return '<tr><td>'+esc(r.label)+rng+'</td><td class="n">'+exp+'</td><td class="n">'+now+'</td>'+printed+'</tr>';
     }).join('');
     var src=rows.map(function(r){return r.source;}).filter(Boolean)[0];
-    var note=src?('<div class="src">Trade estimates are a published pre-report survey, typed from the source and never computed here. <a href="'+src+'" rel="nofollow noopener" target="_blank">Survey source</a>. A print below the trade estimate is bullish, above it bearish; inside the band either side, in line.</div>'):'';
+    var note=src?('<div class="src">Trade estimates are a published pre-report survey, typed from the source and never computed here. <a href="'+esc(src)+'" rel="nofollow noopener" target="_blank">Survey source</a>. A print below the trade estimate is bullish, above it bearish; inside the band either side, in line.</div>'):'';
     var waiting=rows.every(function(r){return r.actual==null;});
     return '<div class="wp-nums"><div class="nh"><b>Every number on this report</b><span>'
       +(waiting?'USDA prints at 12:00 PM ET. This fills in on its own.':'Graded against the pre-report survey.')
@@ -493,8 +501,14 @@ function gaEvent(name,params){try{gtag('event',name,params||{});}catch(e){}}
         +'<div class="wp-res-nums"><b>'+num(b.actual,b.unit)+'</b> actual &middot; '+num(b.expected,b.unit)+' expected'+(gp?(' &middot; '+gp):'')+'</div>'
         +(b.reaction?'<div class="wp-res-reaction">'+b.reaction+'</div>':'')+'</div>';
     }
+    /* THE WALK-THROUGH LIVES HERE NOW, not only on the next-report card.
+       The strip used to hang off `upcoming`, which stops being the report the
+       moment its date passes -- so on 2026-09-11 it showed the trade's guesses
+       all morning and was gone before the grade was even written. Same rows,
+       same renderer, attached to the banner that already runs report day plus
+       five. */
     return '<div class="wp-result '+sc+'"><div class="wp-res-hd"><span class="wp-res-k">How the '+lr.report+' landed</span><span class="wp-res-d">'+lr.date+'</span></div>'
-      +'<div class="wp-res-sum">'+sum+'</div>'+big
+      +'<div class="wp-res-sum">'+sum+'</div>'+big+numbersEl(lr.numbers)
       +'<div class="wp-res-foot">Every figure, scored, in the <a href="#track-record">track record</a> below.</div></div>';
   }
   function fmtNum(n,u){return (n==null)?'\u2014':(n+(u?('\u00a0'+u):''));}

@@ -388,6 +388,26 @@ def main():
         upcoming["numbers"] = build_report_numbers(upcoming)
     history = build_history(hist_rows)
     latest_result = build_latest_result(history)
+
+    # ── THE WALK-THROUGH HAS TO OUTLIVE THE REPORT IT WALKS THROUGH ──────
+    #
+    # Found 2026-09-12, reading the run that finally graded the September
+    # print. `numbers` was attached to `upcoming` only, and `upcoming` is the
+    # next report dated today or later. So the strip filled in with actuals at
+    # 16:05 UTC on release day and emptied at 00:00 UTC, roughly seven hours
+    # later -- and this September it never filled at all, because NASS refused
+    # for two days and by the time the grade landed the card had already
+    # flipped to October. Sig asked to "walk people through the numbers when
+    # released"; the strip was showing them only before the release.
+    #
+    # The result banner already has the right lifetime: it runs from report day
+    # to five days after. Attaching the same rows to it puts the walk-through
+    # where a grower goes looking for it, for as long as they are looking.
+    #
+    # SAME FUNCTION, SAME FILE, NO SECOND LIST. build_report_numbers keys off a
+    # date, and latest_result carries the date of the report it summarises.
+    if latest_result:
+        latest_result["numbers"] = build_report_numbers(latest_result)
     has_real = bool(upcoming) or bool(history)
 
     out = {
@@ -492,8 +512,68 @@ def _selftest():
     assert calendar_fallback("2027-06-01") is None
     assert build_upcoming([], "2027-06-01") is None
 
+    # ── THE WALK-THROUGH SURVIVES THE PRINT ─────────────────────────────────
+    #
+    # This runs main() end to end against temporary files, because the bug it
+    # guards was not in build_report_numbers -- which was right -- but in which
+    # object main() hung the rows on. A unit test on the builder would have
+    # passed on the day the strip was empty on the page.
+    #
+    # The setup is the real September shape: a report dated yesterday, already
+    # graded, and nothing else on the list. That is exactly the state in which
+    # `upcoming` flips to the calendar's next date and the walk-through used to
+    # disappear.
+    import tempfile as _tf, os as _o
+    d = _tf.mkdtemp()
+    graded = {"reports": [{"report": "September WASDE", "date": "2026-09-11", "metrics": [
+        {"key": "corn_yield_2627", "label": "2026/27 corn yield", "unit": "bu/acre",
+         "consensus": 178.1, "consensus_range": [173.2, 182.9],
+         "usda_current": 180.7, "actual": 178.5, "consensus_source": "u"},
+        {"key": "soy_yield_2627", "label": "2026/27 soybean yield", "unit": "bu/acre",
+         "consensus": 52.5, "consensus_range": [51.5, 53.3],
+         "usda_current": 52.7, "actual": 52.8},
+    ]}]}
+    hist = {"history": [
+        {"date": "2026-09-11", "report": "September WASDE", "metric": "2026/27 corn yield",
+         "expected": 178.1, "actual": 178.5, "unit": "bu/acre"},
+        {"date": "2026-09-11", "report": "September WASDE", "metric": "2026/27 soybean yield",
+         "expected": 52.5, "actual": 52.8, "unit": "bu/acre"},
+    ]}
+    paths = {}
+    for name, blob in (("analyst-estimates.json", graded), ("wpi-history.json", hist),
+                       ("wpi-estimates.json", {"reports": graded["reports"]})):
+        paths[name] = _os.path.join(d, name)
+        with open(paths[name], "w") as f:
+            json.dump(blob, f)
+    global ANALYST_PATH, HIST_PATH, EST_PATH, OUT_PATH, COT_PATH
+    keep = (ANALYST_PATH, HIST_PATH, EST_PATH, OUT_PATH, COT_PATH)
+    try:
+        ANALYST_PATH = paths["analyst-estimates.json"]
+        HIST_PATH = paths["wpi-history.json"]
+        EST_PATH = paths["wpi-estimates.json"]
+        OUT_PATH = _os.path.join(d, "out.json")
+        COT_PATH = _os.path.join(d, "no-cot.json")
+        main()
+        built = json.load(open(OUT_PATH))
+    finally:
+        ANALYST_PATH, HIST_PATH, EST_PATH, OUT_PATH, COT_PATH = keep
+
+    lr = built["latest_result"]
+    assert lr and lr["date"] == "2026-09-11"
+    nums = lr.get("numbers") or []
+    assert len(nums) == 2, ("the graded report's walk-through must ride with the "
+                            "result banner, not the next card: got %r" % (nums,))
+    got = {r["key"]: (r["actual"], r["surprise"]) for r in nums}
+    assert got["corn_yield_2627"] == (178.5, "in line"), got
+    assert got["soy_yield_2627"] == (52.8, "bearish"), got
+    # and the September rows are NOT also hanging off October's card, which
+    # would put the same figures under the wrong report's heading.
+    assert built["upcoming"]["date"] != "2026-09-11"
+    assert (built["upcoming"].get("numbers") or []) == [], \
+        "the next report has no numbers until its own survey is typed in"
+
     print("[whats-priced-in] selftest ok: 5 rows, 3 verdicts, 2 kinds of silence, "
-          "and the card falls back to the calendar")
+          "the card falls back to the calendar, and the walk-through outlives the print")
 
 
 if __name__ == "__main__":

@@ -612,11 +612,40 @@ def selftest():
     # classified correctly; this proves it reaches the exit code, which is the
     # only part GitHub reads. Without it, `if refused and not filled` could be
     # deleted and every check above would still pass.
-    import unittest.mock as _mock
-    global API_KEY
-    _saved_key = API_KEY
+    # ON A FIXTURE, NOT ON data/analyst-estimates.json.
+    #
+    # This test ran main() against the repo's real estimates file. It passed on
+    # 2026-09-12 at 12:58 UTC, the run wrote 178.5 and 52.8 into that same file,
+    # and from 12:59 onwards the September metrics were "already filled in", so
+    # main() had no jobs, refused nothing, and returned 0. The check went red and
+    # stayed red -- and it is the first step of the WASDE watch, so the next
+    # release would have been blocked by a gate failing over data, not code.
+    #
+    # A test whose answer depends on which figures happen to be on file is not
+    # testing the reader. Two metrics, both empty, in a temporary file.
+    import unittest.mock as _mock, tempfile as _tf
+    global API_KEY, EST_PATH, HIST_PATH, OUT_PATH
+    _saved = (API_KEY, EST_PATH, HIST_PATH, OUT_PATH)
+    _dir = Path(_tf.mkdtemp())
+    (_dir / "est.json").write_text(json.dumps({"reports": [{
+        "report": "Fixture WASDE", "date": "2026-09-11", "metrics": [
+            {"key": "corn_yield_2627", "label": "2026/27 corn yield",
+             "unit": "bu/acre", "consensus": 178.1, "actual": None},
+            {"key": "soy_yield_2627", "label": "2026/27 soybean yield",
+             "unit": "bu/acre", "consensus": 52.5, "actual": None},
+        ]}]}))
+    (_dir / "hist.json").write_text(json.dumps({"history": []}))
     API_KEY = "test"
+    EST_PATH = _dir / "est.json"
+    HIST_PATH = _dir / "hist.json"
+    OUT_PATH = _dir / "wasde.json"
     try:
+        # the fixture really does give main() something to do, or the two checks
+        # below would pass for the wrong reason -- which is how this broke.
+        _jobs, _ = plan(json.loads(EST_PATH.read_text()), date(2026, 9, 11))
+        check(len(_jobs) == 2, "the fixture leaves both metrics to fill",
+              "got %d" % len(_jobs))
+
         with _mock.patch(__name__ + ".nass_rows",
                          side_effect=NassRefused('HTTP 400 from NASS: {"error":["unauthorized"]}')):
             rc = main(["--date", "2026-09-11"])
@@ -628,8 +657,12 @@ def selftest():
             rc = main(["--date", "2026-09-11"])
         check(rc == 0, "a run where the report simply has not landed still exits 0",
               "got %r" % rc)
+
+        # nothing was written to the repo's own files by either run
+        check(not (_dir / "wasde.json").exists(),
+              "a refused or empty run writes no output file at all")
     finally:
-        API_KEY = _saved_key
+        API_KEY, EST_PATH, HIST_PATH, OUT_PATH = _saved
 
 
     # THE DISCOVERY CALL MUST DROP THE PIN, NOT SEND "None".
