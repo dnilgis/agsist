@@ -6,8 +6,8 @@
 <meta name="theme-color" content="#111a0a">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preload" href="/components/styles.css?v=15" as="style">
-<link rel="stylesheet" href="/components/styles.css?v=15">
+<link rel="preload" href="/components/styles.css?v=16" as="style">
+<link rel="stylesheet" href="/components/styles.css?v=16">
 <link rel="icon" type="image/x-icon"            href="/img/favicon.ico">
 <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
@@ -51,7 +51,7 @@
 ]}
 </script>
 <style>
-button,a,[role="button"]{touch-action:manipulation;}
+
 .ff-scope{font-size:0.78rem;color:var(--text-muted);line-height:1.5;max-width:680px;margin:.6rem 0 0;border-left:2px solid var(--gold);padding-left:.6rem;}
 .ff-scope strong{color:var(--text-dim);}
 .ff-meta{font-size:0.765rem;color:var(--text-muted);margin-top:.55rem;}
@@ -145,7 +145,6 @@ button,a,[role="button"]{touch-action:manipulation;}
 .ff-warn strong{color:var(--gold);}
 .ff-alert{background:rgba(224,92,92,.08);border-left:3px solid #e05c5c;border-radius:0 6px 6px 0;padding:.6rem .9rem;font-size:0.79rem;color:var(--text-dim);line-height:1.55;margin-bottom:.75rem;}
 .ff-alert strong{color:#e05c5c;}
-@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.4;}}
 .live-badge{display:inline-flex;align-items:center;gap:.35rem;font-size:0.755rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--green);background:rgba(58,139,60,.1);border:1px solid rgba(58,139,60,.3);border-radius:20px;padding:.18rem .6rem;vertical-align:middle;}
 .live-badge .b-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s infinite;display:inline-block;flex-shrink:0;}
 .fert-banner{background:var(--surface);border:2px solid var(--border);border-radius:10px;padding:.85rem 1.1rem;margin-bottom:1.1rem;}
@@ -222,7 +221,7 @@ button,a,[role="button"]{touch-action:manipulation;}
 .spray-loc-btn:hover{border-color:var(--gold);}
 .spray-link{font-size:0.77rem;color:var(--gold);text-decoration:none;margin-top:.4rem;display:inline-block;}
 .spray-link:hover{text-decoration:underline;}
-.live-dot-sm{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s infinite;}
+
 .eco-price-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.6rem;margin-bottom:1.2rem;}
 @media(min-width:500px){.eco-price-grid{grid-template-columns:repeat(3,minmax(0,1fr));}}
 @media(min-width:700px){.eco-price-grid{grid-template-columns:repeat(6,minmax(0,1fr));}}
@@ -298,8 +297,8 @@ button,a,[role="button"]{touch-action:manipulation;}
 .ff-source{font-size:0.763rem;color:var(--text-muted);text-align:center;margin-top:1.5rem;}
 .ff-source a{color:var(--gold);text-decoration:none;}
 /* FIX: two-line overflow-x pattern */
-html { overflow-x: hidden; overflow-x: clip; width: 100%; }
-body { overflow-x: hidden; overflow-x: clip; width: 100%; }
+
+
 .ff-page{overflow-x:clip;}
 @media(max-width:540px){
   .eco-cost-row{flex-direction:column;align-items:flex-start;gap:.3rem;}
@@ -425,12 +424,12 @@ body { overflow-x: hidden; overflow-x: clip; width: 100%; }
   <path d="M20 2h2v2a4 4 0 0 1-4 4h-2V6a4 4 0 0 1 4-4Z" />
   <path d="M11.47 17.47 13 19l-1.53 1.53a3.5 3.5 0 0 1-4.94 0L5 19l1.53-1.53a3.5 3.5 0 0 1 4.94 0Z" />
   <path d="M15.47 13.47 17 15l-1.53 1.53a3.5 3.5 0 0 1-4.94 0L9 15l1.53-1.53a3.5 3.5 0 0 1 4.94 0Z" />
-  <path d="M19.47 9.47 21 11l-1.53 1.53a3.5 3.5 0 0 1-4.94 0L13 11l1.53-1.53a3.5 3.5 0 0 1 4.94 0Z" /></symbol><symbol id="i-zap" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z" /></symbol></defs></svg><style>.ic{width:1em;height:1em;display:inline-block;vertical-align:-0.14em;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}</style>
+  <path d="M19.47 9.47 21 11l-1.53 1.53a3.5 3.5 0 0 1-4.94 0L13 11l1.53-1.53a3.5 3.5 0 0 1 4.94 0Z" /></symbol><symbol id="i-zap" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z" /></symbol></defs></svg><style></style>
 <main id="main" tabindex="-1" class="ff-page">
-<style>.ag-sponsor-ribbon{display:block;font-size:0.785rem;padding:.45rem .85rem;margin:1rem 0;border:1px solid rgba(132,160,168,.18);border-radius:8px;color:#8a948f;line-height:1.6}.ag-sponsor-ribbon .ag-sponsor-tag{font-family:'JetBrains Mono',monospace;font-size:0.75rem;letter-spacing:.12em;text-transform:uppercase;color:#d4a23f;margin-right:.5rem}.ag-sponsor-ribbon a{color:#d4a23f}@media print{.ag-sponsor-ribbon{display:none!important}}</style><aside class="ag-sponsor-ribbon" id="ag-sponsor"><span class="ag-sponsor-tag">Sponsor this page</span> The reference farmers pull up in the shop, the cab, and the co-op line &mdash; one category-exclusive slot. <a href="/sponsor?slot=fast-facts&amp;utm_source=fast-facts&amp;utm_medium=slot">Put your name here &rarr;</a></aside>
+<style>@media print{.ag-sponsor-ribbon{display:none!important}}</style><aside class="ag-sponsor-ribbon" id="ag-sponsor"><span class="ag-sponsor-tag">Sponsor this page</span> The reference farmers pull up in the shop, the cab, and the co-op line &mdash; one category-exclusive slot. <a href="/sponsor?slot=fast-facts&amp;utm_source=fast-facts&amp;utm_medium=slot">Put your name here &rarr;</a></aside>
 <div class="ff-hero">
   <div class="ff-eyebrow"><svg class="ic" aria-hidden="true"><use href="#i-clipboard-list"/></svg> Free &middot; no login &middot; updated with live prices</div>
-  <h1>Agricultural Fast Facts</h1>
+  <h1>Corn &amp; Soybean Reference Tables</h1>
   <p>The numbers you check before you spend money &mdash; N rates, P&amp;K, manure value, staging, thresholds, conversions.</p>
   <div class="ff-meta">Rates calibrated to <strong>UW A2809</strong> (Upper Midwest) &mdash; confirm with your state extension &middot; maintained by <strong>Sigurd Lindquist</strong> &middot; <a href="mailto:sig@farmers1st.com">sig@farmers1st.com</a> &middot; related: <a href="/fertilizer">Fertilizer Prices</a> &middot; <a href="/breakeven">Break-Even</a> &middot; <a href="/gdu-calculator">GDU History</a></div>
 </div>
@@ -1142,7 +1141,7 @@ body { overflow-x: hidden; overflow-x: clip; width: 100%; }
 </main><!-- /ff-page -->
 <div id="site-footer"></div>
 <!-- FIX: loader.js defer — prevents render-blocking -->
-<script src="/components/loader.js?v=15" defer></script>
+<script src="/components/loader.js?v=16" defer></script>
 <script>
 (function(){
 'use strict';

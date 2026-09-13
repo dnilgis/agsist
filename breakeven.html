@@ -6,8 +6,8 @@
   <meta name="theme-color" content="#0e0e0c">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="preload" href="/components/styles.css?v=15" as="style">
-  <link rel="stylesheet" href="/components/styles.css?v=15">
+  <link rel="preload" href="/components/styles.css?v=16" as="style">
+  <link rel="stylesheet" href="/components/styles.css?v=16">
   <link rel="icon" type="image/x-icon"            href="/img/favicon.ico">
   <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
@@ -39,9 +39,9 @@
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
   <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "WebApplication", "name": "Farm Break-Even Price Calculator", "description": "Calculate break-even price and profit margins for corn, soybeans, and wheat.", "url": "https://agsist.com/breakeven", "applicationCategory": "UtilitiesApplication", "operatingSystem": "Web", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}}, {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "How do I calculate break-even price per bushel?", "acceptedAnswer": {"@type": "Answer", "text": "Divide your total cost per acre by your expected yield in bushels. For example: $850 per acre total cost ÷ 200 bu/ac expected yield = $4.25/bu break-even price for corn. This is the minimum cash price at which you cover all expenses. Because cash = futures + basis and basis is usually negative, the futures price you need is this number minus your basis (e.g. $4.25 cash at a -$0.30 basis means $4.55 futures). The calculator above does this automatically as you enter your costs — the Break-Even Price result updates instantly. To stay profitable, your market price (futures + basis) needs to exceed this number."}}, {"@type": "Question", "name": "What is a realistic corn production cost per acre in Wisconsin or Minnesota?", "acceptedAnswer": {"@type": "Answer", "text": "University budget series (Iowa State estimated costs, Illinois farmdoc, FINBIN) put total tenant corn cost at roughly $750–$1,100 per acre for 2026, or about $550–$850 without cash rent — the low end takes cheap ground and light inputs. Land is the biggest variable: USDA NASS county cash rents for most WI/MN cropland fall between $150 and $350/acre — see your county on the AGSIST cash rent map. Fertilizer and seed are the next biggest lines in those budgets. The defaults in this calculator reflect a representative Upper Midwest tenant operation — adjust each line for your actual costs to get your true break-even."}}, {"@type": "Question", "name": "How does cash rent affect my corn or soybean break-even price?", "acceptedAnswer": {"@type": "Answer", "text": "Cash rent is typically the single largest per-acre variable cost for tenant farmers, and it moves your break-even directly. Every $50/acre increase in land rent raises your corn break-even by roughly $0.25–$0.28/bu at 180 bu/ac yields. At 200 bu/ac, it's $0.25/bu per $50 rent increase. For soybeans at 55 bu/ac, every $50/acre rent increase adds about $0.91/bu to your break-even. This is why land rent negotiation is one of the highest-value conversations in farm management — the math is direct and permanent."}}, {"@type": "Question", "name": "What costs should I include in a full farm break-even calculation?", "acceptedAnswer": {"@type": "Answer", "text": "A complete break-even includes two layers. Direct inputs: seed, fertilizer (N, P, K, lime, sulfur), herbicides (pre and post-emerge), fungicide, insecticide, crop insurance premium (net of subsidy), drying, and trucking. Overhead costs: land rent or property tax/ownership cost, machinery depreciation, fuel and lube, repairs and maintenance, labor (including your own time at a market wage), operating loan interest, and general farm overhead. Many producers undercount labor and depreciation — in university budgets, own labor and machinery depreciation together commonly add on the order of $50–$120/acre to a true break-even."}}, {"@type": "Question", "name": "What is the what-if sensitivity table and how do I use it?", "acceptedAnswer": {"@type": "Answer", "text": "The sensitivity table shows profit or loss per acre across 36 different combinations of yield and price simultaneously. Your current inputs are highlighted in green so you can immediately see where you stand. The rows show different yield scenarios (above and below your estimate) and the columns show different price scenarios. Red numbers are losses; green numbers are profitable outcomes. This lets you answer questions like: \"If yields come in 10% below plan AND prices drop $0.30, what's my loss per acre?\" — without running the calculator multiple times. It's most useful for evaluating crop insurance coverage levels and forward pricing decisions."}}]}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://agsist.com/"}, {"@type": "ListItem", "position": 2, "name": "Break-Even Calculator", "item": "https://agsist.com/breakeven"}]}]}</script>
   <style>
-    button,a,[role="button"]{touch-action:manipulation;}
-    html { overflow-x: hidden; overflow-x: clip; width: 100%; }
-    body { overflow-x: hidden; overflow-x: clip; width: 100%; }
+    
+    
+    
     .panel{overflow:visible;}.panel-body{overflow-x:hidden;}.grid-2{max-width:1100px;margin:0 auto;}
     input[type="number"],select{font-size:1rem;min-height:44px;}
     input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0;}
@@ -61,8 +61,7 @@
     .hint-list{list-style:none;padding:0;margin:0;}.hint-list li{font-size:0.787rem;color:var(--text);padding:2px 0;line-height:1.5;}.hint-list li::before{content:'\25A1 ';color:var(--text-dim);}
     .hint-note{font-size:1rem;color:var(--text-dim);margin-top:6px;border-top:1px solid var(--border);padding-top:6px;}
     .live-price-bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:10px 14px;margin-bottom:16px;background:rgba(58,139,60,0.05);border:2px solid rgba(58,139,60,0.20);border-radius:6px;font-size:0.8rem;}
-    .live-dot{width:6px;height:6px;background:var(--green);border-radius:50%;animation:pulse 2s infinite;flex-shrink:0;}
-    @keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.3;}}
+    
     .live-price-bar .price-tag{font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--gold);}
     .live-price-bar .chg-tag{font-family:'JetBrains Mono',monospace;font-size:0.787rem;font-weight:600;}
     .live-price-bar .chg-tag.up{color:var(--green);}.live-price-bar .chg-tag.dn{color:var(--red);}
@@ -157,9 +156,9 @@
       .sens-current{background:#eef6ee!important;outline:1.5pt solid #2d6a2e!important;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;}
     }
   
-.ag-sponsor-ribbon{display:block;font-size:0.785rem;padding:.45rem .85rem;margin:1rem 0;border:1px solid rgba(132,160,168,.18);border-radius:8px;color:#8a948f;line-height:1.6}
-.ag-sponsor-ribbon .ag-sponsor-tag{font-family:'JetBrains Mono',monospace;font-size:0.75rem;letter-spacing:.12em;text-transform:uppercase;color:#d4a23f;margin-right:.5rem}
-.ag-sponsor-ribbon a{color:#d4a23f}
+
+
+
 </style>
 </head>
 <body>
@@ -313,7 +312,7 @@
   <div id="mini-bar" aria-hidden="true"><span>Break-even <b id="mb-be">$5.03/bu</b></span><span id="mb-profit">-$95/ac</span></div>
   <div class="print-footer">Generated by AGSIST — agsist.com — Free Agricultural Dashboard &middot; For informational purposes only. Not financial advice. Verify all inputs with your local data.</div>
   <div id="site-footer"></div>
-  <script src="/components/loader.js?v=15" defer></script>
+  <script src="/components/loader.js?v=16" defer></script>
   <script>
   var CROP_DEFAULTS={corn:{yield:180,price:4.50,basis:0,seed:125,fertilizer:175,chemicals:65,insurance:35,machinery:145,labor:35,land:250,overhead:75},soybeans:{yield:55,price:10.50,basis:0,seed:75,fertilizer:45,chemicals:55,insurance:30,machinery:110,labor:30,land:250,overhead:55},wheat:{yield:70,price:5.50,basis:0,seed:40,fertilizer:110,chemicals:50,insurance:25,machinery:90,labor:30,land:200,overhead:45}};
   var CROP_PRICE_KEY={corn:'corn-dec',soybeans:'beans-nov',wheat:'wheat'};
