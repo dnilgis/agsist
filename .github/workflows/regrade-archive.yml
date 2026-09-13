@@ -1,0 +1,86 @@
+name: Regrade Archive Pages
+
+# Brings every archived issue's "yesterday's call" block onto the same rule
+# that grades the public record, then re-renders the pages it changed.
+#
+# WHY THIS EXISTS. On 2026-09-13 the grading rule was corrected and
+# `Rebuild Call Scorecard` recomputed data/scorecard.json under it. That fixed
+# the RECORD. Every archived issue also stores its own verdict -- outcome,
+# computed p0/p1, and the reader-facing call_line -- written by the old grader,
+# and those were left behind. 48 of them had p0 == p1, because the call had
+# been scored against the board it was made from. The record said one thing and
+# the page said another:
+#
+#     2026-06-30   page: corn $4.035 -> closed $4.035, DIDN'T
+#                  record: closed $4.1375
+#     2026-08-04   page: beans $11.59 -> closed $11.59, DIDN'T
+#                  record: closed $11.49, PLAYED OUT
+#
+# Run it after any change to the grading rule, and after Rebuild Call
+# Scorecard. Idempotent: a second run commits nothing.
+#
+# IT DOES NOT MOVE THE RECORD. regrade_archive reads grade_calls, the same
+# module build_scorecard reads, so the pages are brought to the record rather
+# than the record to the pages. Verified before shipping: rebuilding the
+# scorecard after a full regrade produced a byte-identical record.
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: regrade-archive
+  cancel-in-progress: false
+
+jobs:
+  regrade:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        # rebuild_archive_html imports generate_daily for the page template.
+        run: pip install feedparser requests
+
+      - name: Prove the rule before rewriting 185 files with it
+        run: |
+          python scripts/contract_calendar.py
+          python scripts/test_grade_calls.py
+          python scripts/regrade_archive.py --selftest
+
+      - name: Regrade the archive JSON
+        run: python scripts/regrade_archive.py | tee /tmp/regrade.txt
+
+      - name: Re-render only the pages that changed
+        # NOT a full rebuild. rebuild_archive_html.py redraws from the current
+        # template, so a blanket run would also push 126 unrelated template
+        # changes into this commit. The dates come from the regrade's own log.
+        run: |
+          DATES=$(grep -oE '^  \[(fix |drop)\] [0-9]{4}-[0-9]{2}-[0-9]{2}' /tmp/regrade.txt \
+                  | awk '{print $NF}' | sort -u)
+          if [ -z "$DATES" ]; then echo "nothing changed; no pages to render"; exit 0; fi
+          echo "re-rendering: $DATES"
+          python scripts/rebuild_archive_html.py $DATES
+
+      - name: The pages must now agree with the record
+        # The check that matters. If any page still carries a verdict the
+        # record contradicts, this run did not do its job and should say so
+        # rather than committing a half-fix.
+        run: python scripts/regrade_archive.py --check
+
+      - name: Commit and push
+        run: |
+          git config user.name "AGSIST Bot"
+          git config user.email "bot@agsist.com"
+          git add data/daily-archive daily || true
+          git diff --staged --quiet || git commit -m "Regrade archive pages to the session-aware rule"
+          git pull --rebase origin main
+          git push
