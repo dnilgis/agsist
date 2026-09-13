@@ -80,3 +80,16 @@ jobs:
             sleep $((RANDOM % 4 + 2))
           done
           echo "Failed to push after 5 attempts."; exit 1
+
+      # The bake runs behind "|| true" so a bad bake can never block the data
+      # commit. That also means a bake that quietly stopped working leaves the
+      # pages stale forever under a green run -- whats-priced-in.html was two
+      # days stale on 2026-09-12 and nothing said so. --check already existed;
+      # no workflow called it. It runs here, AFTER the commit, blocking nothing.
+      - name: The pages must match the data
+        if: always()
+        run: |
+          git fetch origin "${GITHUB_REF_NAME:-main}"
+          git reset --hard "origin/${GITHUB_REF_NAME:-main}"
+          python scripts/prerender_wpi_scorecard.py --check
+

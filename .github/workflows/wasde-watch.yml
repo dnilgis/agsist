@@ -21,7 +21,7 @@
 # the moment they are available for release."
 #
 # The report lands at 11:00 Central. Until it is graded, /whats-priced-in shows
-# an ungraded report, "Calls on the board" empties out the next day, and no
+# an ungraded report, "Filed for the next report" empties out the next day, and no
 # forecaster gains a scored call — which is how the July WASDE went unscored.
 # A daily cron would leave that gap open for up to a day; this closes it inside
 # five minutes.
