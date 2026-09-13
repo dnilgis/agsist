@@ -1,6 +1,18 @@
 {
   "briefings": [
     {
+      "date": "2026-09-13",
+      "date_display": "Sunday, September 13, 2026",
+      "headline": "WASDE BREAK HOLDS; WEEK AHEAD SETS THE PRICE",
+      "teaser": "Beans on the line, crude won't quit, and the Hormuz war just went from weeks to years.",
+      "market_mood": "cautious",
+      "surprise_count": 0,
+      "sections": 4,
+      "url": "/daily/2026-09-13",
+      "market_closed": true,
+      "yc_outcome": "didnt"
+    },
+    {
       "date": "2026-09-12",
       "date_display": "Saturday, September 12, 2026",
       "headline": "SEPTEMBER WASDE PRINTS; BEANS GIVE BACK 24 CENTS",
@@ -2114,6 +2126,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-09-12T13:40:04.936737+00:00",
-  "count": 184
+  "updated": "2026-09-13T14:29:29.153687+00:00",
+  "count": 185
 }

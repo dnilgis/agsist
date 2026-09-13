@@ -5,13 +5,27 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Sat, 12 Sep 2026 13:40:06 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 13 Sep 2026 14:29:30 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/agsist.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>WASDE BREAK HOLDS; WEEK AHEAD SETS THE PRICE</title>
+      <link>https://agsist.com/daily/2026-09-13</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-09-13</guid>
+      <pubDate>Sun, 13 Sep 2026 05:00:00 -0600</pubDate>
+      <description>Beans finished Friday at $12.99, off 24 cents on the WASDE print, and sat exactly on the line this briefing drew. Corn held better, Dec '26 at $5.32. The week ahead has no single report to reset the board, but $100 crude, a Hormuz war the oil market is now pricing for years, and early harvest pressure on corn all have opinions. The question is whether $12.99 holds or breaks.
+Beans closed Friday at $12.99, exactly on the line called last session; crude at $99.99 and Iran's war premium aren't going anywhere.
+• BEANS ON THE LINE
+  → If new-crop beans are unpriced, watch the Monday and Tuesday closes. A settlement below $12.85 is the signal to move; do not wait for $12.70.
+• CORN: HARVEST PRESSURE APPROACHING
+• CRUDE ABOVE $100; HORMUZ WAR PRICED FOR YEARS
+  → If fall diesel is unpriced, the window to act is not wider than it was last week. Lock what you need.
+Read more: https://agsist.com/daily/2026-09-13</description>
+    </item>
     <item>
       <title>SEPTEMBER WASDE PRINTS; BEANS GIVE BACK 24 CENTS</title>
       <link>https://agsist.com/daily/2026-09-12</link>
@@ -392,19 +406,6 @@ Corn and wheat closed the week with real gains; the crop tour starting Aug 17 is
 • BEANS LAG, CARRY TELLS THE STORY
 • CATTLE SLIP ON FUND EXIT
 Read more: https://agsist.com/daily/2026-08-15</description>
-    </item>
-    <item>
-      <title>CORN AND WHEAT RUN; MEAL LEADS THE COMPLEX</title>
-      <link>https://agsist.com/daily/2026-08-14</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-08-14</guid>
-      <pubDate>Fri, 14 Aug 2026 05:00:00 -0600</pubDate>
-      <description>The week that started with a WASDE and ended with a grain rally. Dec corn closed $4.84, up nearly 10 cents; wheat closed $6.74, up 17 cents; and meal ran 6% for the second session in two weeks. The weekly thread's question is answered: record corn yield confirmed, Dec corn did NOT break $4.50. It ran the other way.
-Dec corn added nearly a dime Friday as meal's 6% move pulled the whole grain complex higher into the weekend.
-• CORN AND WHEAT RUN
-• MEAL LEADS; BEANS TRAIL
-  → Old-crop bean holders: $11.65-$11.74 target band from Thursday is now in the rearview. If you have unpriced old-crop, $11.67 nearby is working; set a new target at $11.80 and let the tour decide.
-• CATTLE SLIP; TYSON ADDS PRESSURE
-Read more: https://agsist.com/daily/2026-08-14</description>
     </item>
   </channel>
 </rss>
