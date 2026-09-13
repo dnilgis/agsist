@@ -17,9 +17,15 @@ WHY (2026-09-13)
       section  "WTI ... down 3.1%"          flagged: "the board says +0.94%"
 
   The prose was right both times. The board was wrong, and the gate was
-  flagging correct sentences. Across the last 20 archived issues the walk
-  produced 70 bind findings; against the locked change it produces 14, and the
-  one issue with a BLOCKING bind finding has none.
+  flagging correct sentences.
+
+  MEASURED, ON CLEAN CLONES. Across the last 20 archived issues the walk
+  produced 89 bind findings; with the session-aware board it produces 70. An
+  earlier version of this note claimed 70 -> 14 and said the one BLOCKING
+  finding went away. Both figures were taken in a tree the generator had
+  written to and both were wrong. The blocking one, on 2026-09-01, stays: the
+  board says cattle fell 3.01% and the section says they rose. It survives
+  because it is true.
 
   Fixing the board also turned two silent passes into failures on correct
   prose, which is why the two guards below exist. Both were findable only once
@@ -146,6 +152,64 @@ def main():
                                     "note": "Miss; wheat never took the line."})
         check("'called wheat higher' is not bound to today's board",
               not any(c.startswith("bind") for _s, c, _m in binds(yc, tmp)), str(binds(yc, tmp)))
+
+        print("\nthe gate reads the real briefing, not a two-field stub")
+        # WHICH SESSION A BOARD BELONGS TO IS ANSWERED FROM `generated_at`.
+        # The gate used to hand market_board {"date", "locked_prices"} only,
+        # so board_session fell back to the pre-open assumption -- right for
+        # 167 of 185 archived issues and wrong for the 18 post-close re-runs.
+        # On those it bound the prose to a board TWO sessions away and flagged
+        # the disagreement it had just created. 2026-05-29 is the real case:
+        # four findings including a BLOCKING one, on prose that was correct.
+        post = {"date": "Friday, September 11, 2026",
+                "generated_at": "2026-09-11T21:52:00+00:00",   # 16:52 CT, after the settle
+                "locked_prices": {"corn": 5.09, "beans": 12.99},
+                "sections": []}
+        pre = dict(post, generated_at="2026-09-11T11:30:00+00:00")  # 06:30 CT
+        thu = {"date": "Thursday, September 10, 2026",
+               "generated_at": "2026-09-10T11:30:00+00:00",         # holds WEDNESDAY's close
+               "locked_prices": {"corn": 5.115, "beans": 13.17}}
+        with tempfile.TemporaryDirectory() as t2:
+            (Path(t2) / "2026-09-10.json").write_text(json.dumps(thu))
+            _lp_post, day_post, _e = mb.prior_board(post, t2)
+            _lp_pre, day_pre, _e2 = mb.prior_board(pre, t2)
+            check("a post-close re-run is refused a board two sessions back",
+                  str(day_post).startswith("~too-far:"), str(day_post))
+            check("...while the same issue published pre-open compares normally",
+                  day_pre == "2026-09-09", str(day_pre))
+            stub = {"date": "2026-09-11", "locked_prices": post["locked_prices"]}
+            _lps, day_stub, _e3 = mb.prior_board(stub, t2)
+            check("and the old stub could not tell those two apart",
+                  day_stub == day_pre, f"stub={day_stub} pre={day_pre}")
+
+        print("\nan issue that carries its own change does not need the archive")
+        # The archive walk's silences are facts about the ARCHIVE. A briefing
+        # carrying locked_changes holds its own previous close, so the walk
+        # failing must not stop the check -- otherwise the 13 post-close
+        # re-runs go unchecked forever instead of just until the lock lands.
+        with tempfile.TemporaryDirectory() as t3:
+            (Path(t3) / "2026-09-10.json").write_text(json.dumps(thu))
+            SEC = [{"title": "Beans", "body": "- Soybeans climbed to **$12.99**, up on the session."}]
+            bare = dict(post, sections=SEC)
+            self_desc = dict(post, sections=SEC,
+                             locked_changes={"beans": {"prev": 13.23, "pct": -1.8141}})
+            bb = [(s_, c_, m_) for s_, c_, m_ in bg.run(
+                bare, prices=None, today=datetime.date(2026, 9, 11), archive_dir=t3)[1]
+                if c_.startswith("bind")]
+            sb = [(s_, c_, m_) for s_, c_, m_ in bg.run(
+                self_desc, prices=None, today=datetime.date(2026, 9, 11), archive_dir=t3)[1]
+                if c_.startswith("bind")]
+            check("without a lock, a refused walk withholds the check entirely",
+                  [c_ for _s, c_, _m in bb] == ["bind:too-far"], str(bb))
+            check("with a lock, the same wrong sentence is caught anyway",
+                  any(c_ == "bind:dir" for _s, c_, _m in sb), str(sb))
+            right = dict(self_desc, sections=[{"title": "Beans",
+                         "body": "- Soybeans gave back 24 cents to **$12.99** on the print."}])
+            rb = [c_ for _s, c_, _m in bg.run(
+                right, prices=None, today=datetime.date(2026, 9, 11), archive_dir=t3)[1]
+                if c_.startswith("bind")]
+            check("...and a correct sentence on the same issue is not flagged",
+                  rb == [], str(rb))
 
         print("\nthe sessions the two numbers belong to")
         check("a Tuesday pre-open fetch quotes Tuesday, against Monday's close",

@@ -150,7 +150,7 @@ def _instruments_in(sentence):
     return found
 
 
-def _prior_locked(archive_dir, today, cur=None):
+def _prior_locked(archive_dir, today, cur=None, daily=None):
     """The most recent archived issue's locked_prices from a DIFFERENT session.
 
     THE ARCHIVE PUBLISHES ON WEEKENDS AND HOLIDAYS, and those issues carry the
@@ -169,9 +169,27 @@ def _prior_locked(archive_dir, today, cur=None):
     hid a NameError from a missing `import os` behind "no earlier archived
     issue found", which reads like a data condition and was a code fault. A
     guard that hides its own breakage is worse than no guard.
+
+    v5.5: PASS THE REAL BRIEFING, NOT A STUB. This used to hand market_board a
+    two-field dictionary -- a date and a board -- which is not enough to answer
+    which session that board belongs to. grade_calls.board_session reads
+    `generated_at`: an issue generated from 14:00 CT holds THAT day's closes,
+    anything earlier holds the previous session's. Without the timestamp it
+    falls back to the pre-open assumption, which is right for 167 of the 185
+    archived issues and WRONG for the 18 post-close re-runs.
+
+    Measured on the archive: the one-session cap fired on 2 issues with the
+    stub and on 15 with the real briefing. The 13 in between are the Friday
+    and post-close re-runs -- 2026-05-29, 06-05, 06-12, 06-23, 07-10, 07-17,
+    07-24, 07-31, 08-07, 08-14, 08-21, 08-27, 09-04 -- each generated between
+    15:57 and 17:04 CT, holding that day's own closes. The gate believed their
+    boards belonged to the day before, so it bound their prose to a board two
+    sessions away and flagged the disagreement it had created.
     """
     lp, stem, err = market_board.prior_board(
-        {"date": today.isoformat(), "locked_prices": cur or {}}, archive_dir)
+        daily if daily is not None
+        else {"date": today.isoformat(), "locked_prices": cur or {}},
+        archive_dir)
     if err:
         return {}, '!' + err
     return lp, stem
@@ -336,8 +354,24 @@ def check_number_binding(daily, F, W, archive_dir='data/daily-archive', today=No
         except Exception:
             continue
     ref = ref or today or dt.date.today()
-    prior, prior_day = _prior_locked(archive_dir, ref, daily.get('locked_prices') or {})
-    if not prior:
+    prior, prior_day = _prior_locked(archive_dir, ref,
+                                     daily.get('locked_prices') or {},
+                                     daily=daily)
+    # THE ARCHIVE IS ONLY A FALLBACK NOW. A briefing that carries
+    # `locked_changes` already holds its own previous close per instrument --
+    # the source's own close-over-close figure, recorded by the fetch that set
+    # the price. The archive walk exists because older issues do not have it,
+    # and every one of its failure modes (a weekend board, an overwritten
+    # session, a two-session gap) is a fact about the ARCHIVE, not about the
+    # issue under test. So when the issue can answer for itself, it does, and
+    # the walk's silences do not stop the check.
+    #
+    # This is exactly the 13 post-close re-runs: their previous session's board
+    # was overwritten in the archive, so the walk can offer nothing honest --
+    # but the issue itself knows what it moved from.
+    if not prior and (daily.get('locked_changes') or {}):
+        prior, prior_day = {}, None
+    elif not prior:
         if prior_day and prior_day.startswith('!'):
             F('bind:broken', 'number binding could not read the archive (%s)' % prior_day[1:])
         elif prior_day and prior_day.startswith('~too-far:'):
