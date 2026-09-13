@@ -1,0 +1,59 @@
+name: Rebuild Feed Manifest
+
+# data/feeds.json is DERIVED from this repository — which pages read which data
+# files, and which workflow writes each one. feeds-guard.yml regenerates it and
+# fails if the committed copy differs.
+#
+# WHY THIS BUTTON EXISTS. Until now nothing in CI ever WROTE that file. The
+# guard could only say "this is stale"; regenerating it was a local chore, and
+# on 2026-09-13 it was forgotten: adding rebuild-scorecard.yml made six feeds
+# gain a writer, the manifest did not move, and feeds-guard went red. A derived
+# file with a guard and no writer goes stale every time anybody edits a
+# workflow. This is the writer.
+#
+# Press it after adding or DELETING a workflow. Reads the repository only —
+# no network, no API keys. Idempotent: a second run commits nothing.
+#
+# DISPATCH ONLY, DELIBERATELY. Committing this automatically on every push to
+# main would mean a bot push landing on top of whatever a person just pushed,
+# for a file that changes a few times a month. The guard already says when it
+# is needed; this is the one-click answer.
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: rebuild-feeds
+  cancel-in-progress: false
+
+jobs:
+  rebuild:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Regenerate the manifest
+        run: python3 scripts/build_feeds.py
+
+      - name: And prove it against its own guard before committing
+        # Same check feeds-guard runs. If the manifest cannot satisfy it, this
+        # stops here rather than committing a file that turns the guard red.
+        run: python3 scripts/test_feeds.py
+
+      - name: Commit and push
+        run: |
+          git config user.name "AGSIST Bot"
+          git config user.email "bot@agsist.com"
+          git add data/feeds.json || true
+          git diff --staged --quiet || git commit -m "Rebuild feed manifest [skip ci]"
+          git pull --rebase origin main
+          git push

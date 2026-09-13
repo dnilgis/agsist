@@ -332,8 +332,10 @@ jobs:
       # v5.3: the board comparison the email and the gate both read. One
       # definition; the copies it replaced all let a moving bitcoin pass a
       # frozen ag board off as a fresh session.
-      - name: GATE 0d — session board selftest
-        run: python scripts/market_board.py
+      - name: GATE 0d — session board + number binding selftests
+        run: |
+          python scripts/market_board.py
+          python scripts/test_number_binding.py
 
       # The schedule is machinery too. This asserts the backup fires still
       # exist and are spread, and that the gate asks the remote rather than its
