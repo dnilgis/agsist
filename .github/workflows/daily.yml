@@ -329,6 +329,12 @@ jobs:
           python scripts/contract_calendar.py
           python scripts/test_grade_calls.py
 
+      # v5.3: the board comparison the email and the gate both read. One
+      # definition; the copies it replaced all let a moving bitcoin pass a
+      # frozen ag board off as a fresh session.
+      - name: GATE 0d — session board selftest
+        run: python scripts/market_board.py
+
       # The schedule is machinery too. This asserts the backup fires still
       # exist and are spread, and that the gate asks the remote rather than its
       # own checkout — the two things that keep a dropped fire from becoming a
