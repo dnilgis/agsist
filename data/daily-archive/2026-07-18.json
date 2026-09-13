@@ -9,18 +9,7 @@
     "unit": "MT of soybeans sold to China and Mexico in Friday flash sales",
     "context": "Ahead of Friday's open, USDA confirmed 340,000 MT to China, 256,634 MT to Mexico, and 120,000 MT to unknown destinations. That is not a routine week of export sales; that is a single morning telling you the China purchase commitment announced May 18 is beginning to move physical grain. Three consecutive weeks of strong flash sales is the pattern that turns a promise on paper into price support in the pit."
   },
-  "yesterdays_call": {
-    "outcome": "didnt",
-    "computed": {
-      "outcome": "didnt",
-      "made": "2026-07-18",
-      "p0": 12.045,
-      "p1": 12.045,
-      "instrument": "beans",
-      "direction": "up",
-      "level": 12.15
-    }
-  },
+  "yesterdays_call": {},
   "todays_call": {
     "instrument": "beans",
     "direction": "up",

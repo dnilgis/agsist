@@ -21,7 +21,8 @@
       "instrument": "corn",
       "direction": "up",
       "level": 5.29
-    }
+    },
+    "call_line": "Called corn up toward $5.29 ($4.9625 when the call was made). It closed at $4.915."
   },
   "todays_call": {
     "instrument": "crude",

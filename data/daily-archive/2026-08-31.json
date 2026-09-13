@@ -9,20 +9,7 @@
     "unit": "Goldman Sachs diesel crack forecast per barrel",
     "context": "Goldman revised its diesel refining margin forecast to $63/barrel on the global diesel shortage, doubling its prior estimate. With combines rolling in weeks, this is the number that should be on every operation's harvest budget right now."
   },
-  "yesterdays_call": {
-    "summary": "Called wheat up toward above $7.72; wheat settled at $7.53 today, well short of the line.",
-    "outcome": "didnt",
-    "note": "Wheat faded rather than extended; the September WASDE on the 10th is now the next real reset for that thesis.",
-    "computed": {
-      "outcome": "didnt",
-      "made": "2026-08-30",
-      "p0": 7.67,
-      "p1": 7.5325,
-      "instrument": "wheat",
-      "direction": "up",
-      "level": "7.67"
-    }
-  },
+  "yesterdays_call": {},
   "todays_call": {
     "instrument": "beans",
     "direction": "up",

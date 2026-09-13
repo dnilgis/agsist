@@ -9,20 +9,7 @@
     "unit": "old-crop corn single-session decline",
     "context": "Nearby corn gave back 17¾ cents today while December gave back only 1¼ cents. That 16½-cent gap between the two contracts in a single session is the spread talking: fund liquidation is concentrated in the nearby, not in the new-crop. When the spread between old-crop and new-crop widens this fast without a weather catalyst, it says the funds are stepping out of front-month exposure, not repositioning for a crop failure. Watch whether December follows or holds."
   },
-  "yesterdays_call": {
-    "summary": "The call was corn up, toward above $4.42.",
-    "outcome": "didnt",
-    "note": "Corn closed at $4.25 today, the same level it started the session -- the move went the wrong direction entirely, with old-crop shedding 17 and three-quarter cents rather than pushing toward $4.42. Fund liquidation into the holiday reopen overwhelmed any weather premium. Own the miss: $4.42 was not in play today.",
-    "computed": {
-      "outcome": "didnt",
-      "made": "2026-07-06",
-      "p0": 4.25,
-      "p1": 4.25,
-      "instrument": "corn",
-      "direction": "up",
-      "level": "4.42"
-    }
-  },
+  "yesterdays_call": {},
   "todays_call": {
     "instrument": "corn",
     "direction": "up",

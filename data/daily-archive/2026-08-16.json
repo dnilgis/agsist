@@ -9,18 +9,7 @@
     "unit": "bu/acre, USDA August corn yield",
     "context": "USDA's Aug 12 survey-based yield came in 2.3 bushels below July's 183.0. Pro Farmer's national number, due Friday Aug 21, is the first independent cross-check. Our own nowcast sat at 183.6 before the WASDE. We were wrong. The tour is the next data point."
   },
-  "yesterdays_call": {
-    "outcome": "didnt",
-    "computed": {
-      "outcome": "didnt",
-      "made": "2026-08-15",
-      "p0": 4.5925,
-      "p1": 4.5925,
-      "instrument": "corn",
-      "direction": "up",
-      "level": 4.84
-    }
-  },
+  "yesterdays_call": {},
   "todays_call": {
     "instrument": "corn",
     "direction": "down",

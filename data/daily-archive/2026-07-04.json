@@ -9,20 +9,7 @@
     "unit": "nearby corn single-session Friday decline",
     "context": "That 17¾-cent drop in nearby corn contrasts sharply with December's 1¼-cent slip, a spread that doesn't happen randomly. Old-crop holders liquidated over the long weekend; new-crop holders held conviction. When the old/new-crop spread widens this fast on a down day, it says the selling was calendar-driven, not fundamental. Watch whether December closes that gap next week or lets it run wider, that answer prices the pollination story."
   },
-  "yesterdays_call": {
-    "outcome": "didnt",
-    "computed": {
-      "outcome": "didnt",
-      "made": "2026-07-04",
-      "p0": 4.25,
-      "p1": 4.25,
-      "instrument": "corn",
-      "direction": "up",
-      "level": "4.42"
-    },
-    "summary": "Called corn to trade up toward $4.42 into Thursday's close. Corn finished at $4.25, down 17 3/4 cents. The call did not play out.",
-    "note": "Corn never sniffed $4.42. Fund liquidation ahead of the long weekend ran the other direction entirely, and the $4.25 close was the low end of the day's range. The pollination anxiety that should have supported nearby prices instead became the excuse to exit. Miss. The old-crop/new-crop spread widening to roughly 16 cents in a single session is the residue of that position flush -- watch whether new-crop holds $4.41 into next week's Crop Progress or follows nearby lower."
-  },
+  "yesterdays_call": {},
   "todays_call": {
     "instrument": "corn",
     "direction": "up",

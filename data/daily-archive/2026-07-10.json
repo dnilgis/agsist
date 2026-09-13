@@ -10,18 +10,17 @@
     "context": "USDA pulled 150 million pounds of beef production out of its 2026 estimate in today's WASDE, citing tight ready-to-market numbers driven partly by the ongoing Cargill Fort Morgan and Schuyler plant lockout that began May 19. That cut is the structural reason live cattle held $235.00 while feeders dipped today: the packer math is tightening, not loosening. Producers holding cattle into late summer have a USDA number now working in their favor."
   },
   "yesterdays_call": {
-    "summary": "Yesterday's call: wheat up, toward $6.45, on the thesis that WASDE supply tightening would extend the move.",
     "outcome": "didnt",
-    "note": "Wheat closed $6.30 today, up 18.5 cents and the biggest grain session since spring, but the $6.45 target was not reached. The call had the right direction and the right catalyst -- WASDE did tighten global wheat supply -- but the level was a step too far in a single session. Call did not play out; direction was right, target was not.",
     "computed": {
       "outcome": "didnt",
-      "made": "2026-07-10",
-      "p0": 6.3,
-      "p1": 6.3,
-      "instrument": "wheat",
+      "made": "2026-07-09",
+      "p0": 11.97,
+      "p1": 11.975,
+      "instrument": "beans",
       "direction": "up",
-      "level": "6.45"
-    }
+      "level": 12.1
+    },
+    "call_line": "Called soybeans up toward $12.1 ($11.97 when the call was made). It closed at $11.975."
   },
   "todays_call": {
     "instrument": "wheat",

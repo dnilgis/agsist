@@ -10,18 +10,17 @@
     "context": "Trump's temporary suspension of countervailing duties on Moroccan phosphate fertilizer, announced this morning, could cut phosphate costs by roughly 22% according to USDA estimates. That number does not move today's corn or soybean contracts, but it does change the pencil math on next year's input budgets. Producers who locked phosphate early at tariff-elevated prices are watching this with frustration."
   },
   "yesterdays_call": {
-    "summary": "Yesterday's call: corn down, toward $3.95, based on pre-report positioning ahead of the Acreage and Quarterly Stocks release.",
     "outcome": "didnt",
-    "note": "Corn closed at $4.035 today, holding well above $3.95. The downside move did not materialize; the report did not deliver enough bearish confirmation to push nearby through that level. Miss. The heat wave premium now entering the conversation is the reason $3.95 stays on the board as a potential target if the weather story fades, but today's close did not get there.",
     "computed": {
       "outcome": "didnt",
-      "made": "2026-06-30",
-      "p0": 4.035,
+      "made": "2026-06-29",
+      "p0": 4.1275,
       "p1": 4.035,
       "instrument": "corn",
-      "direction": "down",
-      "level": "3.95"
-    }
+      "direction": "up",
+      "level": "4.42"
+    },
+    "call_line": "Called corn up toward $4.42 ($4.1275 when the call was made). It closed at $4.035."
   },
   "todays_call": {
     "instrument": "corn",

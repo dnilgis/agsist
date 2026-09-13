@@ -9,20 +9,7 @@
     "unit": "of China's annual US soybean target already bought",
     "context": "China's purchases since the May summit are roughly a quarter of the $17B annual commitment. That pace, if it holds, outpaces typical seasonal buying and is one reason beans at $11.60 aren't breaking lower ahead of tomorrow's WASDE."
   },
-  "yesterdays_call": {
-    "summary": "Called corn down, toward below $4.45; corn closed today at $4.385, through that level.",
-    "outcome": "played_out",
-    "note": "The call played out: WASDE-eve positioning drained conviction from the board and corn drifted to $4.385, through the $4.45 target. Funds sat on their hands and the tape did the work.",
-    "computed": {
-      "outcome": "played_out",
-      "made": "2026-08-09",
-      "p0": 4.39,
-      "p1": 4.385,
-      "instrument": "corn",
-      "direction": "down",
-      "level": 4.45
-    }
-  },
+  "yesterdays_call": {},
   "todays_call": {
     "instrument": "corn",
     "direction": "up",

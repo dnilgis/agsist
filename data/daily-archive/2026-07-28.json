@@ -10,18 +10,17 @@
     "context": "160,000 metric tons valued at $614 million through May 2026. With cattle supply getting complicated by Mexican imports, pork's gaining ground in the protein export race. A demand floor that is building quietly."
   },
   "yesterdays_call": {
-    "summary": "Called feeders down toward $328.00. Feeders closed at $331.27 -- moved the right direction, but never reached the level.",
     "outcome": "didnt",
-    "note": "Mexico border news did the work; feeders dropped 3% and the direction was right. The $328 target stayed just out of reach. Call gets credit for the thesis, not the number.",
     "computed": {
       "outcome": "didnt",
-      "made": "2026-07-28",
-      "p0": 331.275,
-      "p1": 331.275,
-      "instrument": "feeders",
-      "direction": "down",
-      "level": 328.0
-    }
+      "made": "2026-07-27",
+      "p0": 12.2025,
+      "p1": 12.0825,
+      "instrument": "beans",
+      "direction": "up",
+      "level": 12.47
+    },
+    "call_line": "Called soybeans up toward $12.47 ($12.2025 when the call was made). It closed at $12.0825."
   },
   "todays_call": {
     "instrument": "feeders",

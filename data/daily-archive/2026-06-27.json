@@ -13,15 +13,14 @@
     "outcome": "didnt",
     "computed": {
       "outcome": "didnt",
-      "made": "2026-06-27",
-      "p0": 4.1275,
+      "made": "2026-06-26",
+      "p0": 4.14,
       "p1": 4.1275,
       "instrument": "corn",
       "direction": "up",
-      "level": 4.42
+      "level": "4.43"
     },
-    "summary": "Called corn up through $4.42 going into Friday. It did not happen.",
-    "note": "December corn closed at $4.415, essentially unchanged, while nearby corn dropped two and a half percent to $4.13. The call was for a move up through $4.42 and the market went the other direction on the nearby and sat flat on December. Miss. The pressure stayed concentrated in old crop exactly as the structure suggested it would, but that did not translate into the December bid the call needed. Tuesday's acreage report is the next honest test of whether $4.42 has any defense left."
+    "call_line": "Called corn up toward $4.43 ($4.14 when the call was made). It closed at $4.1275."
   },
   "todays_call": {
     "instrument": "corn",

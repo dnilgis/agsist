@@ -9,18 +9,7 @@
     "unit": "lean hog single-session gain Friday",
     "context": "Hogs ran from $88 territory to $102.85 in one session, the biggest move in lean hog futures this year. Cold storage data showing a 9% year-over-year rise in pork supplies did not stop it. USDA's post-close cattle reports may have pulled cattle money sideways, but hog money had a very different Friday."
   },
-  "yesterdays_call": {
-    "outcome": "didnt",
-    "computed": {
-      "outcome": "didnt",
-      "made": "2026-07-25",
-      "p0": 12.48,
-      "p1": 12.48,
-      "instrument": "beans",
-      "direction": "up",
-      "level": 12.54
-    }
-  },
+  "yesterdays_call": {},
   "todays_call": {
     "instrument": "beans",
     "direction": "up",

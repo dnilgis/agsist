@@ -9,20 +9,7 @@
     "unit": "lean hog single-session gain Friday",
     "context": "A move that size in lean hogs, closing at $98.85, is not a normal session. It dwarfs anything the hog complex has done this year and demands a catalyst explanation before Monday's open. Check the news; if there is no fundamental anchor, this is a position unwind or a reporting anomaly, not a demand story."
   },
-  "yesterdays_call": {
-    "outcome": "didnt",
-    "computed": {
-      "outcome": "didnt",
-      "made": "2026-08-01",
-      "p0": 4.4075,
-      "p1": 4.4075,
-      "instrument": "corn",
-      "direction": "down",
-      "level": 4.41
-    },
-    "summary": "Called corn lower through $4.41 Friday. Corn closed at $4.4075 -- right at the doorstep but did not print below the target level.",
-    "note": "Miss by a tick. The directional read was correct -- corn broke hard on Belt rain, funds rotated out, and the session was the worst in months. But $4.4075 did not clear $4.41, so the level call did not play out. Own it and watch whether Monday continuation puts the market through that figure."
-  },
+  "yesterdays_call": {},
   "todays_call": {
     "instrument": "corn",
     "direction": "down",

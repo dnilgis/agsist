@@ -9,20 +9,7 @@
     "unit": "date USDA reopens Douglas, AZ cattle port",
     "context": "USDA announced a phased reopening of the U.S.-Mexico southern cattle ports starting August 24. That is 29 days away, close enough to move feeders this week before a single head crosses the border."
   },
-  "yesterdays_call": {
-    "outcome": "didnt",
-    "computed": {
-      "outcome": "didnt",
-      "made": "2026-07-26",
-      "p0": 12.48,
-      "p1": 12.48,
-      "instrument": "beans",
-      "direction": "up",
-      "level": 12.54
-    },
-    "summary": "Called beans up through $12.54 nearby. Beans closed flat at $12.48 -- the level was not touched.",
-    "note": "Miss. Beans held the 52-week high but did not extend. The heat-weather bid is real; the timing was one session early."
-  },
+  "yesterdays_call": {},
   "todays_call": {
     "instrument": "beans",
     "direction": "up",

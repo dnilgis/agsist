@@ -10,18 +10,17 @@
     "context": "The U.S. rescinded the sanctions waiver that had allowed Iran to sell oil without penalties, and with tankers now making U-turns at the Strait of Hormuz, that crude has nowhere to go. That volume represents a meaningful supply disruption signal on top of the vessel attacks. For producers watching diesel and fertilizer costs, this is the number that matters more than today's $74.58 WTI close."
   },
   "yesterdays_call": {
-    "summary": "Yesterday's call: crude up, toward $76.50, contingent on Hormuz tanker diversion numbers growing and the Iran sanctions pressure holding.",
     "outcome": "didnt",
-    "note": "Crude ran to $74.58 today, up 3.2%, and the Hormuz situation absolutely reignited -- but $76.50 stayed untouched. The call got the direction and the catalyst right; the level was a step too far for one session. Thursday's tanker count is still the trigger that gets us there.",
     "computed": {
       "outcome": "didnt",
-      "made": "2026-07-08",
-      "p0": 74.58,
-      "p1": 74.58,
-      "instrument": "crude",
+      "made": "2026-07-07",
+      "p0": 11.815,
+      "p1": 12.0775,
+      "instrument": "beans",
       "direction": "up",
-      "level": "76.50"
-    }
+      "level": "12.10"
+    },
+    "call_line": "Called soybeans up toward $12.10 ($11.815 when the call was made). It closed at $12.0775."
   },
   "todays_call": {
     "instrument": "crude",

@@ -10,18 +10,17 @@
     "context": "The American Farm Bureau Federation's new report projects $32 billion in losses for major row crop producers next year. That number reframes today's modest corn and bean bounces: a penny here doesn't fix a structural hole that size."
   },
   "yesterdays_call": {
-    "summary": "Called wheat up, toward $6.90. Wheat closed today at $6.7875, up roughly 13 cents from yesterday's open but still 11 cents short of the $6.90 target.",
     "outcome": "didnt",
-    "note": "Direction was right, wheat ran hard on heat and China demand noise, but the move ran out of steam before $6.90. A near-miss: the thesis held, the level did not.",
     "computed": {
       "outcome": "didnt",
-      "made": "2026-07-30",
-      "p0": 6.7875,
-      "p1": 6.7875,
-      "instrument": "wheat",
-      "direction": "up",
-      "level": 6.9
-    }
+      "made": "2026-07-29",
+      "p0": 337.225,
+      "p1": 339.05,
+      "instrument": "feeders",
+      "direction": "down",
+      "level": 333.0
+    },
+    "call_line": "Called feeder cattle down toward $333.0 ($337.225 when the call was made). It closed at $339.05."
   },
   "todays_call": {
     "instrument": "wheat",

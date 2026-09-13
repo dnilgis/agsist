@@ -21,7 +21,8 @@
       "instrument": "crude",
       "direction": "down",
       "level": 81.5
-    }
+    },
+    "call_line": "Called crude down toward $81.5 ($82.61 when the call was made). It closed at $80.29."
   },
   "todays_call": {
     "instrument": "beans",

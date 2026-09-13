@@ -10,18 +10,17 @@
     "context": "Monday's Crop Progress put Iowa, the nation's largest corn producer, at 80% good-to-excellent during the critical pollination window. That's the number the weather-premium bulls needed to come in lower. It didn't. Nebraska climbed to 65%, Kansas soybeans hit 72%, and farmers across eastern South Dakota and Missouri are reporting crops beating mid-July expectations despite the heat dome. A clean crop-condition reading during pollination is the single strongest argument against adding new weather premium here."
   },
   "yesterdays_call": {
-    "summary": "The call was feeders up, toward $350.00, on oversold technicals after the Cargill-driven selldown.",
     "outcome": "didnt",
-    "note": "Feeders closed at $346.77, up 2.2% on the session and the biggest cattle-complex move in weeks. The direction was right. The level wasn't: $350 stayed out of reach, and the call doesn't get credit when the target holds. Still, the oversold read was earned -- watch whether cash trade confirms or fades this move before adding conviction.",
     "computed": {
       "outcome": "didnt",
-      "made": "2026-07-21",
-      "p0": 346.775,
-      "p1": 346.775,
-      "instrument": "feeders",
+      "made": "2026-07-20",
+      "p0": 4.4475,
+      "p1": 4.49,
+      "instrument": "corn",
       "direction": "up",
-      "level": 350.0
-    }
+      "level": 4.55
+    },
+    "call_line": "Called corn up toward $4.55 ($4.4475 when the call was made). It closed at $4.49."
   },
   "todays_call": {
     "instrument": "feeders",

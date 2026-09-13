@@ -9,20 +9,7 @@
     "unit": "lean hog single-session gain Friday",
     "context": "A 16.9% single-session move in lean hogs is the kind of print that demands a reason. No livestock supply shock appeared in the news bucket. Watch Monday's open for whether this holds or fades as a gap fill."
   },
-  "yesterdays_call": {
-    "outcome": "didnt",
-    "computed": {
-      "outcome": "didnt",
-      "made": "2026-08-07",
-      "p0": 6.3825,
-      "p1": 6.3975,
-      "instrument": "wheat",
-      "direction": "up",
-      "level": 6.5
-    },
-    "summary": "Called wheat higher to $6.50 off a $6.38 close. Wheat settled Friday at $6.40 -- barely moved, never sniffed $6.50. Miss.",
-    "note": "Wheat bucked the grain selloff Friday and gained a cent, but the $6.50 target was never in play. The bull case (international weather premium) is real; the timing was wrong. No credit."
-  },
+  "yesterdays_call": {},
   "todays_call": {
     "instrument": "corn",
     "direction": "down",

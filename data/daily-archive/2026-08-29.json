@@ -9,18 +9,7 @@
     "unit": "of Nebraska reporting drought stress this week",
     "context": "The warm, dry pattern that accelerated late-season dough and dent stress did not ease heading into Labor Day. Drought is now a harvest-risk story, not just a yield story: combines may move fast through thin stands, but basis will tell you what the elevator already knows."
   },
-  "yesterdays_call": {
-    "outcome": "didnt",
-    "computed": {
-      "outcome": "didnt",
-      "made": "2026-08-28",
-      "p0": 7.66,
-      "p1": 7.67,
-      "instrument": "wheat",
-      "direction": "up",
-      "level": "7.72"
-    }
-  },
+  "yesterdays_call": {},
   "todays_call": {
     "instrument": "wheat",
     "direction": "up",

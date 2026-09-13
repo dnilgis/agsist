@@ -9,20 +9,7 @@
     "unit": "inflation-adjusted Midwest farmland value decline, Q2 2026 year-over-year",
     "context": "The steepest real drop since 2016, per the Chicago Fed's Seventh District survey. Land is still nominally elevated, but when input costs and interest rates stay high and real values fall, the operating margin math gets harder before the next farm bill lands."
   },
-  "yesterdays_call": {
-    "outcome": "didnt",
-    "computed": {
-      "outcome": "didnt",
-      "made": "2026-08-22",
-      "p0": 4.8375,
-      "p1": 4.8375,
-      "instrument": "corn",
-      "direction": "down",
-      "level": 4.95
-    },
-    "summary": "Called corn down through $4.95. December corn closed Friday at $5.085, well above that level. Miss.",
-    "note": "The Pro Farmer yield tour wrap gave funds a reason to stay long, not exit. The $4.95 target needed a demand-side crack that never materialized. No hedge credit here -- own it and watch the $5.00 floor instead."
-  },
+  "yesterdays_call": {},
   "todays_call": {
     "instrument": "cattle",
     "direction": "down",

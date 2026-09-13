@@ -21,7 +21,8 @@
       "level": 13.3
     },
     "summary": "Called beans up through $13.30. Beans closed Friday at $12.99, down 24 cents on the day. The call did not play out.",
-    "note": "The WASDE was the miss. The September supply number was bearish enough to flush length, and the funds sold rather than held. Wrong direction, wrong read on the report."
+    "note": "The WASDE was the miss. The September supply number was bearish enough to flush length, and the funds sold rather than held. Wrong direction, wrong read on the report.",
+    "call_line": "Called soybeans up toward $13.3 ($13.1725 when the call was made). It closed at $12.99."
   },
   "todays_call": {
     "instrument": "beans",

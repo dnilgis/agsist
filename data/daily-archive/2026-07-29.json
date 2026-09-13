@@ -10,18 +10,17 @@
     "context": "Drovers' Profit Tracker posted negative feedlot margins this morning, the first read in the red in weeks. That cap on feeder demand is exactly why today's 1.8% bounce deserves skepticism even as the chart looks better."
   },
   "yesterdays_call": {
-    "summary": "Called feeders down, below $328.00. Feeders closed today at $337.23, well above that line.",
     "outcome": "didnt",
-    "note": "The break didn't materialize; feeders flipped the other direction entirely.",
     "computed": {
       "outcome": "didnt",
-      "made": "2026-07-29",
-      "p0": 337.225,
+      "made": "2026-07-28",
+      "p0": 331.275,
       "p1": 337.225,
       "instrument": "feeders",
       "direction": "down",
-      "level": 333.0
-    }
+      "level": 328.0
+    },
+    "call_line": "Called feeder cattle down toward $328.0 ($331.275 when the call was made). It closed at $337.225."
   },
   "todays_call": {
     "instrument": "feeders",

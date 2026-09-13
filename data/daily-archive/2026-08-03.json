@@ -9,20 +9,7 @@
     "unit": "lean hog 52-week range percentile",
     "context": "Hogs at $84.85 sit at just the 23rd percentile of their 52-week range, even after Friday's big run. Finland's first-ever African Swine Fever detection near the Russian border is the tail risk that could reprice that floor fast."
   },
-  "yesterdays_call": {
-    "summary": "Called wheat up toward $6.55; wheat closed today at $6.40, firming 4 cents but well short of the $6.55 line.",
-    "outcome": "didnt",
-    "note": "The directional lean was right but $6.55 never came into play; call it a partial at best, graded as a miss on the level.",
-    "computed": {
-      "outcome": "didnt",
-      "made": "2026-08-03",
-      "p0": 6.4025,
-      "p1": 6.4025,
-      "instrument": "wheat",
-      "direction": "up",
-      "level": 6.55
-    }
-  },
+  "yesterdays_call": {},
   "todays_call": {
     "instrument": "wheat",
     "direction": "up",

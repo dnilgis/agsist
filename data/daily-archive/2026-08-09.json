@@ -9,20 +9,7 @@
     "unit": "AGSIST corn yield nowcast, bu/acre",
     "context": "AGSIST's ratings-based nowcast sits at 184.1 bu/acre versus USDA's July trend of 183.0. Tuesday's WASDE is the first post-pollination official estimate. If USDA moves above 184, December corn at $4.62 has no floor until $4.45."
   },
-  "yesterdays_call": {
-    "outcome": "didnt",
-    "computed": {
-      "outcome": "didnt",
-      "made": "2026-08-08",
-      "p0": 4.39,
-      "p1": 4.39,
-      "instrument": "corn",
-      "direction": "down",
-      "level": 4.62
-    },
-    "summary": "Called corn lower from $4.39 toward the $4.62 December level on Friday Aug 8. Corn closed Friday at $4.39 -- no movement, no follow-through.",
-    "note": "Didn't play out. Price sat flat; the market had no catalyst to push December corn in either direction heading into WASDE weekend. Fair miss -- quiet tape on a pre-report Friday."
-  },
+  "yesterdays_call": {},
   "todays_call": {
     "instrument": "corn",
     "direction": "down",

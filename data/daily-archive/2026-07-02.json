@@ -10,18 +10,17 @@
     "context": "Saudi supertankers have been loading at Ras Tanura and pushing crude east at volume. That flow, combined with Chinese teapot refiners snapping up discounted Middle Eastern barrels on the spot market, is exactly why WTI crude sits at $67.66 and is going nowhere fast. The Iran-Hormuz tensions, with the Strait of Hormuz premium that built since early April now deflating on diplomatic progress, have repriced crude by roughly 19% since May. For producers, that's still a soft diesel ceiling, and input costs are not re-escalating today."
   },
   "yesterdays_call": {
-    "summary": "Yesterday's call was beans up, toward $11.54 on China demand talk and heat-driven short covering.",
     "outcome": "didnt",
-    "note": "Nearby beans closed at $11.3275, up 6.5 cents on the session -- right direction, but the level that would have confirmed the call is November at $11.54. November beans closed at $11.545, essentially sitting on that number without a clean break above. The demand catalyst -- China buying talk -- circulated but produced no announced sales. Call moved the right way; the confirming level is not yet through. Miss on the level, even if the directional read held.",
     "computed": {
       "outcome": "didnt",
-      "made": "2026-07-02",
-      "p0": 11.3275,
-      "p1": 11.3275,
-      "instrument": "beans",
+      "made": "2026-07-01",
+      "p0": 4.1375,
+      "p1": 4.2425,
+      "instrument": "corn",
       "direction": "up",
-      "level": "11.54"
-    }
+      "level": 4.45
+    },
+    "call_line": "Called corn up toward $4.45 ($4.1375 when the call was made). It closed at $4.2425."
   },
   "todays_call": {
     "instrument": "beans",

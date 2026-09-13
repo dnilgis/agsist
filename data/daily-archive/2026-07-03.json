@@ -9,7 +9,19 @@
     "unit": "oats single-session decline, Thursday close",
     "context": "Oats fell $0.525 to $2.86 on Thursday, sitting at the 20th percentile of its 52-week range. There was no oats-specific news in Thursday's bucket. That kind of move with no catalyst is either a deeply illiquid pre-holiday market doing what thin markets do, or a structural signal about feed demand softening. At the 20% 52-week level, oats has now given back nearly everything it built since winter."
   },
-  "yesterdays_call": {},
+  "yesterdays_call": {
+    "outcome": "didnt",
+    "computed": {
+      "outcome": "didnt",
+      "made": "2026-07-02",
+      "p0": 11.3275,
+      "p1": 11.3175,
+      "instrument": "beans",
+      "direction": "up",
+      "level": "11.54"
+    },
+    "call_line": "Called soybeans up toward $11.54 ($11.3275 when the call was made). It closed at $11.3175."
+  },
   "todays_call": {
     "instrument": "corn",
     "direction": "up",

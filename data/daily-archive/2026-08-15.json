@@ -9,20 +9,7 @@
     "unit": "July Class III benchmark drop from June",
     "context": "USDA set the July Federal Order Class III price at $15.52/cwt, down 46 cents from June and $1.80 below July 2025, the lowest Class III since February. Dairy producers heading into fall should not assume spot prices will bail out margins already under pressure from elevated input costs."
   },
-  "yesterdays_call": {
-    "outcome": "played_out",
-    "computed": {
-      "outcome": "played_out",
-      "made": "2026-08-14",
-      "p0": 325.0,
-      "p1": 309.60001,
-      "instrument": "meal",
-      "direction": "down",
-      "level": "322.00"
-    },
-    "summary": "Called meal lower through $322 on Aug 14; meal closed Friday at $309.60, down from $325 -- well through the trigger level.",
-    "note": "That one played out clean. Meal gave back $15+ on the session, validating the fund-exit read. With meal now at $309.60 and the Pro Farmer Tour starting Monday, watch whether a soft bean pod count gives meal a bid back toward $315 or whether the carry structure keeps the pressure on."
-  },
+  "yesterdays_call": {},
   "todays_call": {
     "instrument": "corn",
     "direction": "up",

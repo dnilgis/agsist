@@ -9,20 +9,7 @@
     "unit": "EIA forecast 2026 US natural gas production",
     "context": "That would be a record, above 2025's 118.5 Bcf/d. More supply into a market where natural gas already sits at $2.66 near the bottom of its 52-week range keeps input-cost pressure off grain drying and ammonia this fall."
   },
-  "yesterdays_call": {
-    "summary": "Called December corn down toward $4.72. December corn settled at $4.84 today -- never threatened that level.",
-    "outcome": "didnt",
-    "note": "Corn did not cooperate; $4.84 held comfortably above the $4.72 target. Miss owned. Tour week opens with December corn still needing a catalyst to break lower.",
-    "computed": {
-      "outcome": "didnt",
-      "made": "2026-08-16",
-      "p0": 4.5925,
-      "p1": 4.595,
-      "instrument": "corn",
-      "direction": "down",
-      "level": 4.72
-    }
-  },
+  "yesterdays_call": {},
   "todays_call": {
     "instrument": "beans",
     "direction": "up",

@@ -9,20 +9,7 @@
     "unit": "year-over-year rise in July cattle-on-feed inventories",
     "context": "USDA's Cattle on Feed report printed Friday: feedlot inventories up 2% year-over-year, which runs directly against the record-low placements story that has held the feeder complex all summer. More cattle in the system means packer leverage grows, not shrinks, as the import window opens."
   },
-  "yesterdays_call": {
-    "summary": "Called live cattle down toward $217.92 on Aug 23; cattle settled at $223.05 today, never close to that level.",
-    "outcome": "didnt",
-    "note": "Missed. Cattle absorbed the bearish Cattle on Feed report without testing $217.92 -- the packer-leverage story may be real but the board did not confirm it Monday. Watch whether the Douglas reopening this week gives the downside case a second chance.",
-    "computed": {
-      "outcome": "didnt",
-      "made": "2026-08-23",
-      "p0": 223.05,
-      "p1": 223.05,
-      "instrument": "cattle",
-      "direction": "down",
-      "level": "217.92"
-    }
-  },
+  "yesterdays_call": {},
   "todays_call": {
     "instrument": "corn",
     "direction": "up",

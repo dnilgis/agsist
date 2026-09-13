@@ -10,18 +10,17 @@
     "context": "Brent topped $98 in early Asian trade after the 12th straight night of U.S. strikes on Iranian targets. WTI settled at $90.00, up 1.7%, still below the headline benchmark because U.S. production buffers the domestic price. Twelve consecutive nights without a ceasefire signal is not a diplomatic channel opening; it's a grinding escalation that keeps a floor under diesel exactly when harvest-season fuel decisions need to be locked."
   },
   "yesterdays_call": {
-    "summary": "Called feeders down, toward $333.00, on processing bottleneck and demand pressure.",
-    "outcome": "didnt",
-    "note": "Feeders closed at $336.15 today -- down hard on the session and moving in the right direction, but they did not reach the $333.00 target. The call read the setup correctly: lockout pressure and slower box-beef demand were real, and feeder cattle did drop 2.5%. The level just did not give way. $333 is still the next line to watch if the bottleneck holds into next week.",
+    "outcome": "played_out",
     "computed": {
-      "outcome": "didnt",
-      "made": "2026-07-23",
-      "p0": 336.15,
-      "p1": 336.15,
-      "instrument": "feeders",
-      "direction": "down",
-      "level": "333.00"
-    }
+      "outcome": "played_out",
+      "made": "2026-07-22",
+      "p0": 88.15,
+      "p1": 90.0,
+      "instrument": "crude",
+      "direction": "up",
+      "level": 90.0
+    },
+    "call_line": "Called crude up toward $90.0 ($88.15 when the call was made). It closed at $90.0."
   },
   "todays_call": {
     "instrument": "feeders",

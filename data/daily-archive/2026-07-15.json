@@ -10,18 +10,17 @@
     "context": "Lean hogs closing at $84.33 after a 14.1% drop is a magnitude-7x overnight surprise with no routine explanation. For context, hogs were at $94.78 as recently as Monday. A move of this size in a liquid contract typically involves either a structural demand shock, a disease headline, or forced fund liquidation at scale. Check your exposure before the open tomorrow because moves this size rarely close cleanly in one session."
   },
   "yesterdays_call": {
-    "summary": "The call was hogs lower, targeting a move through $82.00, after Monday's $94.78 close looked extended on a 10.8% two-session run.",
     "outcome": "didnt",
-    "note": "Hogs closed $84.33 today, down hard at 14.1%, but the $82.00 target level was not reached. Direction was right -- the reversal arrived exactly as flagged -- but the close held above $82, so the level call does not score. Miss on the level, correct on the thesis.",
     "computed": {
       "outcome": "didnt",
-      "made": "2026-07-15",
-      "p0": 84.325,
-      "p1": 84.325,
-      "instrument": "hogs",
-      "direction": "down",
-      "level": 82.0
-    }
+      "made": "2026-07-14",
+      "p0": 78.66,
+      "p1": 79.94,
+      "instrument": "crude",
+      "direction": "up",
+      "level": 80.0
+    },
+    "call_line": "Called crude up toward $80.0 ($78.66 when the call was made). It closed at $79.94."
   },
   "todays_call": {
     "instrument": "hogs",

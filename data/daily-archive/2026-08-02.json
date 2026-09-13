@@ -9,18 +9,7 @@
     "unit": "old-crop to new-crop corn carry, July into Dec",
     "context": "Friday's nearby corn closed at $4.41 while Dec '26 held at $4.64, a 23-cent carry. That spread says the market is not panicking about old-crop supply; it is discounting new-crop yield optimism built on Belt rain. If the Pro Farmer tour prints strong yields, that carry widens further."
   },
-  "yesterdays_call": {
-    "outcome": "didnt",
-    "computed": {
-      "outcome": "didnt",
-      "made": "2026-08-02",
-      "p0": 4.4075,
-      "p1": 4.4075,
-      "instrument": "corn",
-      "direction": "down",
-      "level": 4.41
-    }
-  },
+  "yesterdays_call": {},
   "todays_call": {
     "instrument": "corn",
     "direction": "down",

@@ -21,7 +21,8 @@
       "instrument": "wheat",
       "direction": "up",
       "level": "6.83"
-    }
+    },
+    "call_line": "Called wheat up toward $6.83 ($6.77 when the call was made). It closed at $6.6375."
   },
   "todays_call": {
     "instrument": "beans",

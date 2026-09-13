@@ -10,18 +10,17 @@
     "context": "EPA issued rulings on 6 small refinery exemption requests Wednesday, granting one full and two partial exemptions for 2023-2024 compliance years. Each full exemption removes a buyer from the renewable fuel credit market, a quiet headwind for ethanol demand the corn board does not need right now."
   },
   "yesterdays_call": {
-    "summary": "Called soybeans down, toward below $11.59. Nov beans closed $11.70, off 9 cents but still well above $11.59.",
-    "outcome": "didnt",
-    "note": "Direction was right, beans did fall, but the level has not been reached; tour data still in play.",
+    "outcome": "played_out",
     "computed": {
-      "outcome": "didnt",
-      "made": "2026-08-05",
-      "p0": 11.49,
+      "outcome": "played_out",
+      "made": "2026-08-04",
+      "p0": 11.59,
       "p1": 11.49,
-      "instrument": "beans",
+      "instrument": "soybeans",
       "direction": "down",
-      "level": 11.59
-    }
+      "level": "11.59"
+    },
+    "call_line": "Called soybeans down toward $11.59 ($11.59 when the call was made). It closed at $11.49."
   },
   "todays_call": {
     "instrument": "beans",

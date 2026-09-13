@@ -9,20 +9,7 @@
     "unit": "Saudi Yanbu crude export decline since March peak",
     "context": "Saudi Arabia's East-West pipeline redirect to the Red Sea, its backup route around the Strait of Hormuz, has now lost 41% of its throughput as drone threats pressure Yanbu exports. That brings Saudi Red Sea volumes down to roughly 2.39 million barrels per day from their March peak. The Iran-Hormuz tensions, with the Strait of Hormuz premium that built since early April now deflating on diplomatic progress, created this redirect in the first place; the fact that the backup route is now under pressure too is the structural crude story the $90.37 WTI close is still absorbing."
   },
-  "yesterdays_call": {
-    "summary": "Yesterday's call: wheat up, toward $6.91, on Black Sea supply concerns and fund momentum.",
-    "outcome": "didnt",
-    "note": "Wheat closed $6.79 today -- exactly where it opened the session and well short of the $6.91 target. The profit-taking session that defines today's tape is the opposite of what the call needed; the funds got lighter, not heavier, and the $6.91 level never came into play. Miss, plain and simple. The bull thesis on Black Sea supply is not broken, but the call did not play out today.",
-    "computed": {
-      "outcome": "didnt",
-      "made": "2026-07-24",
-      "p0": 6.79,
-      "p1": 6.79,
-      "instrument": "wheat",
-      "direction": "up",
-      "level": 6.91
-    }
-  },
+  "yesterdays_call": {},
   "todays_call": {
     "instrument": "wheat",
     "direction": "up",

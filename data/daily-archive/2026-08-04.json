@@ -10,18 +10,17 @@
     "context": "Minnesota's crop reporting at 75% good-to-excellent, with corn 5% dented against a 2% five-year average, tells you the Belt is running ahead of the calendar. That removes the last credible weather-premium argument heading into Pro Farmer crop tour week."
   },
   "yesterdays_call": {
-    "summary": "Called soybeans down, toward $11.59. Beans closed today at $11.59, exactly at the target level.",
     "outcome": "didnt",
-    "note": "The level printed but beans got there on crude's coattails and crop-report pressure, not a standalone bean story. Call it played out on the number; the driver was right even if the thesis was shared with the whole complex.",
     "computed": {
       "outcome": "didnt",
-      "made": "2026-08-04",
-      "p0": 11.59,
-      "p1": 11.59,
-      "instrument": "soybeans",
-      "direction": "down",
-      "level": "11.59"
-    }
+      "made": "2026-08-03",
+      "p0": 6.4025,
+      "p1": 6.4325,
+      "instrument": "wheat",
+      "direction": "up",
+      "level": 6.55
+    },
+    "call_line": "Called wheat up toward $6.55 ($6.4025 when the call was made). It closed at $6.4325."
   },
   "todays_call": {
     "instrument": "soybeans",

@@ -21,7 +21,8 @@
       "instrument": "beans",
       "direction": "up",
       "level": "12.16"
-    }
+    },
+    "call_line": "Called soybeans up toward $12.16 ($12.1125 when the call was made). It closed at $12.2525."
   },
   "todays_call": {
     "instrument": "beans",

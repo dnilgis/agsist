@@ -9,20 +9,7 @@
     "unit": "WTI crude in overnight holiday trade",
     "context": "That is 66 cents above Friday's settle of $91.48, on U.S. strikes against Iranian tankers. Goldman Sachs put $120/bbl on the table if shipping disruptions broaden. Diesel for harvest does not get cheaper from here if this holds."
   },
-  "yesterdays_call": {
-    "outcome": "didnt",
-    "computed": {
-      "outcome": "didnt",
-      "made": "2026-09-06",
-      "p0": 7.16,
-      "p1": 7.16,
-      "instrument": "wheat",
-      "direction": "up",
-      "level": "7.16"
-    },
-    "summary": "Called wheat higher from $7.16 Friday. It closed flat at $7.16 -- no move, no play.",
-    "note": "Miss. Wheat had no catalyst to push off that level into the holiday weekend. Friday's session confirmed the pattern: wheat gets sold while corn and beans hold. The call was wrong to expect a break higher into a long weekend with no fresh fundamental."
-  },
+  "yesterdays_call": {},
   "todays_call": null,
   "sections": [
     {

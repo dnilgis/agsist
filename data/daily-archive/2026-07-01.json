@@ -10,18 +10,17 @@
     "context": "USDA's June Quarterly Stocks showed corn supplies running 14% above last year, which by itself reads bearish. But the market didn't sell it that way: the stocks figure came in below trade expectations, turning a potentially heavy number into mild support. That gap between what the number says and what the market does tells you positioning was already leaned bearish heading in. The stocks beat is now priced; the next repricing event is pollination, not another report."
   },
   "yesterdays_call": {
-    "summary": "Yesterday's call was corn up, toward $4.45 on December.",
     "outcome": "didnt",
-    "note": "Didn't play out. December corn closed at $4.38, short of the $4.45 target. The stocks beat and steady acreage confirmation held corn from breaking lower, but the weather premium needed to push December through $4.45 hasn't materialized yet. The call had the right direction on support but overestimated the upside follow-through from the report. Weather owns the next attempt.",
     "computed": {
       "outcome": "didnt",
-      "made": "2026-07-01",
-      "p0": 4.1375,
+      "made": "2026-06-30",
+      "p0": 4.035,
       "p1": 4.1375,
       "instrument": "corn",
-      "direction": "up",
-      "level": 4.45
-    }
+      "direction": "down",
+      "level": "3.95"
+    },
+    "call_line": "Called corn down toward $3.95 ($4.035 when the call was made). It closed at $4.1375."
   },
   "todays_call": {
     "instrument": "corn",

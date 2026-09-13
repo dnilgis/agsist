@@ -10,18 +10,17 @@
     "context": "That is not a market drifting lower. At $85.53, hogs are sitting at just 25% of their 52-week range, the weakest relative position of any commodity in today's table. Mexico's PRV restrictions chopped U.S. pork offal exports, and that demand hole is showing up in the futures price before it shows up in the box. This is the kind of session-level damage that takes weeks to repair, not days."
   },
   "yesterdays_call": {
-    "summary": "Yesterday's call was beans up, toward above $12.10.",
     "outcome": "didnt",
-    "note": "Beans closed at $11.97 today, 13 cents short of the $12.10 target. The China soybean sale confirmed Wednesday morning gave beans a lift intraday, but the 'buy the rumor, sell the fact' reaction capped the move and sellers tested $11.87 on November before recovering. The directional call did not play out; beans held ground but never made the run. Export sales at 7:30 AM CT are now the next opportunity to retest the thesis.",
     "computed": {
       "outcome": "didnt",
-      "made": "2026-07-09",
-      "p0": 11.97,
-      "p1": 11.97,
-      "instrument": "beans",
+      "made": "2026-07-08",
+      "p0": 74.58,
+      "p1": 73.57,
+      "instrument": "crude",
       "direction": "up",
-      "level": 12.1
-    }
+      "level": "76.50"
+    },
+    "call_line": "Called crude up toward $76.50 ($74.58 when the call was made). It closed at $73.57."
   },
   "todays_call": {
     "instrument": "beans",

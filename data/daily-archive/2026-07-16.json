@@ -10,18 +10,17 @@
     "context": "Pakistan LNG paid the highest spot price in four years after Hormuz disruptions cut off Qatar term supply. That is not a grain story in isolation, but it is a demand-destruction warning for fertilizer and energy inputs headed into U.S. harvest season. When LNG spot prices run this hard, nitrogen feedstock costs follow within weeks."
   },
   "yesterdays_call": {
-    "summary": "Yesterday's call was wheat up, targeting a move toward $7.10, after the close at $6.86 with Hormuz premium rebuilding.",
     "outcome": "didnt",
-    "note": "Wheat closed $6.8575 today, essentially unchanged from the prior session's $6.86 level -- the call for a push toward $7.10 did not materialize. The Hormuz catalyst is live and the directional read was correct, but the export sales data and overnight positioning did not generate enough follow-through to reach the target. Miss on the level; the thesis is still in play for Thursday's 7:30 AM export sales to confirm or deny.",
     "computed": {
       "outcome": "didnt",
-      "made": "2026-07-16",
-      "p0": 6.8575,
-      "p1": 6.8575,
-      "instrument": "wheat",
-      "direction": "up",
-      "level": "7.10"
-    }
+      "made": "2026-07-15",
+      "p0": 84.325,
+      "p1": 86.725,
+      "instrument": "hogs",
+      "direction": "down",
+      "level": 82.0
+    },
+    "call_line": "Called hogs down toward $82.0 ($84.325 when the call was made). It closed at $86.725."
   },
   "todays_call": {
     "instrument": "wheat",

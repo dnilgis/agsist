@@ -9,18 +9,7 @@
     "unit": "of 52-week range -- where soybean meal closed Friday",
     "context": "Meal settled at $345.30, the top of its full-year range, while soy oil dropped 3.3% to $68.74. Crush margins are being driven by protein demand, not fat. That split matters to anyone merchandising beans or evaluating crush capacity heading into harvest."
   },
-  "yesterdays_call": {
-    "outcome": "didnt",
-    "computed": {
-      "outcome": "didnt",
-      "made": "2026-09-04",
-      "p0": 7.16,
-      "p1": 7.16,
-      "instrument": "wheat",
-      "direction": "up",
-      "level": 7.27
-    }
-  },
+  "yesterdays_call": {},
   "todays_call": {
     "instrument": "wheat",
     "direction": "down",

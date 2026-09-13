@@ -9,20 +9,7 @@
     "unit": "nearby corn discount to December '26",
     "context": "December corn closed $4.61 while nearby dropped to $4.38 -- a 23-cent spread that is the market's live poll on 2026 crop size. When nearby trades at a steep discount to new crop, the funds and commercials are saying the old-crop pipeline is adequately supplied and the weather premium belongs to the fall contract, not this one. Watch whether today's Crop Progress print widens or breaks down this gap: a condition decline pressures December higher without necessarily rescuing nearby."
   },
-  "yesterdays_call": {
-    "summary": "The call on July 10 was hogs down, toward $90.00, on the thesis that two weeks of fund selling had room to extend into the week.",
-    "outcome": "didnt",
-    "note": "Hogs closed $94.775 today -- not only did price never test $90.00, it ran 10.8% the wrong direction. The short-squeeze and tight cash market overwhelmed the bearish setup entirely. Miss, clean and simple.",
-    "computed": {
-      "outcome": "didnt",
-      "made": "2026-07-13",
-      "p0": 94.775,
-      "p1": 94.775,
-      "instrument": "hogs",
-      "direction": "down",
-      "level": 90.0
-    }
-  },
+  "yesterdays_call": {},
   "todays_call": {
     "instrument": "hogs",
     "direction": "down",

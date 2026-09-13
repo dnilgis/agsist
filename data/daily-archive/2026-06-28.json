@@ -9,20 +9,7 @@
     "unit": "July-to-December corn carry, Friday's close",
     "context": "July corn closed at $4.13, December at $4.42. That 29-cent carry means the market is paying you to store corn into new crop rather than sell it now. In a year where the nearby contract is sitting 39% off its 52-week low and a heat dome is building, a carry this wide is the market saying: we are not worried about old-crop supply yet, but we are not convinced new crop is fine either. Tuesday's acreage number will either tighten that carry or widen it further."
   },
-  "yesterdays_call": {
-    "outcome": "didnt",
-    "computed": {
-      "outcome": "didnt",
-      "made": "2026-06-28",
-      "p0": 4.1275,
-      "p1": 4.1275,
-      "instrument": "corn",
-      "direction": "up",
-      "level": 4.42
-    },
-    "summary": "Called corn higher toward $4.42 December. It did not happen.",
-    "note": "The call was for corn to move up toward the $4.42 December level. Friday's close left the nearby at $4.1275 and December at $4.415, with no progress toward the upside target. The fund selling that accelerated into the weekend did the opposite. Own the miss. The thesis on weather optionality in new crop is still alive going into Tuesday's acreage print, but Friday's tape was not cooperating."
-  },
+  "yesterdays_call": {},
   "todays_call": {
     "instrument": "corn",
     "direction": "up",

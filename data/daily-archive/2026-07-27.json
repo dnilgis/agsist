@@ -9,20 +9,7 @@
     "unit": "year-over-year rise in June poultry production",
     "context": "USDA certified 4.751 billion pounds of poultry in June, up 8% on the year. More chicken and heavier turkeys mean more competition for the protein dollar at retail, a headwind for beef demand that the live cattle chart hasn't fully priced."
   },
-  "yesterdays_call": {
-    "summary": "Called beans up, toward $12.47. Beans closed at $12.20 today, never threatening that target.",
-    "outcome": "didnt",
-    "note": "The heat premium that drove last week's highs didn't carry through Monday; beans gave back ground and the $12.47 level was never in play. Miss.",
-    "computed": {
-      "outcome": "didnt",
-      "made": "2026-07-27",
-      "p0": 12.2025,
-      "p1": 12.2025,
-      "instrument": "beans",
-      "direction": "up",
-      "level": 12.47
-    }
-  },
+  "yesterdays_call": {},
   "todays_call": {
     "instrument": "beans",
     "direction": "up",

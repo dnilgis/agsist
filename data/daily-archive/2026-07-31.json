@@ -10,18 +10,17 @@
     "context": "Milk at $17.58 sits at 90% of its 52-week range after today's 3.3% gain, the highest positioning in the complex. Strengthening U.S.-Mexico dairy partnership and ongoing USMCA talks are building a floor under Class III that the grains don't have right now."
   },
   "yesterdays_call": {
-    "summary": "Called wheat up, toward above $6.90. Wheat closed today at $6.38, dropping 18¾ cents.",
     "outcome": "didnt",
-    "note": "Yesterday's export-driven conviction ran straight into today's weather-premium breakdown and fund selling. Miss, plain and simple.",
     "computed": {
       "outcome": "didnt",
-      "made": "2026-07-31",
-      "p0": 6.38,
+      "made": "2026-07-30",
+      "p0": 6.7875,
       "p1": 6.38,
       "instrument": "wheat",
       "direction": "up",
-      "level": 6.55
-    }
+      "level": 6.9
+    },
+    "call_line": "Called wheat up toward $6.9 ($6.7875 when the call was made). It closed at $6.38."
   },
   "todays_call": {
     "instrument": "wheat",

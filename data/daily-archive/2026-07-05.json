@@ -9,20 +9,7 @@
     "unit": "nearby corn single-session drop into July 4",
     "context": "Corn's 17¾-cent Friday loss is the biggest single-session decline in months for the nearby contract, and it landed on the eve of pollination. That timing matters: the market sold into a weather-uncertainty window it usually guards. If the 6-to-10 day forecast stays benign when traders return Tuesday, that 4% move looks like the funds gaining ahead of a crop that's doing fine. If heat builds on the forecast, Friday's close looks like early warning."
   },
-  "yesterdays_call": {
-    "outcome": "didnt",
-    "computed": {
-      "outcome": "didnt",
-      "made": "2026-07-05",
-      "p0": 4.25,
-      "p1": 4.25,
-      "instrument": "corn",
-      "direction": "up",
-      "level": 4.42
-    },
-    "summary": "Called corn up toward $4.42 December going into the July 4 weekend. Corn went the other way hard.",
-    "note": "The call was for December corn to work toward $4.42. Instead, nearby corn shed 17 and three-quarter cents on Friday and December settled at $4.415 -- essentially flat, not a rally. The miss is clean: funds liquidated into the holiday close rather than buying the pollination weather premium the call anticipated. Own it and watch whether Tuesday's forecast run changes the calculus."
-  },
+  "yesterdays_call": {},
   "todays_call": {
     "instrument": "corn",
     "direction": "up",

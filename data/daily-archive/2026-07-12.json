@@ -9,20 +9,7 @@
     "unit": "cents: nearby vs Dec corn gap at Friday's close",
     "context": "Nearby corn closed $4.38 Friday while December settled $4.61, a 23-cent spread that represents the market's real-time weather premium for the 2026 crop during peak pollination. A year ago this spread was under 10 cents. The gap tells you exactly how much weather risk the funds are pricing into the new crop; if this week's forecast models turn benign, that premium compresses fast and December corn gives back ground."
   },
-  "yesterdays_call": {
-    "outcome": "didnt",
-    "computed": {
-      "outcome": "didnt",
-      "made": "2026-07-12",
-      "p0": 4.38,
-      "p1": 4.38,
-      "instrument": "corn",
-      "direction": "up",
-      "level": 4.7
-    },
-    "summary": "Called corn higher toward $4.70 on Friday; nearby settled at $4.38, miss.",
-    "note": "The corn-up call toward $4.70 did not play out. Nearby corn closed at $4.38, old-crop liquidation ran the other direction, and the level was never tested. The December contract did move to $4.61 on new-crop weather positioning, but that is a different contract and a different story than the nearby call made. Own the miss: the nearby market was already priced for liquidation pressure and the WASDE data did not provide the catalyst. The weather-premium story now lives entirely in December, and that is where this week's calls belong."
-  },
+  "yesterdays_call": {},
   "todays_call": {
     "instrument": "corn",
     "direction": "up",

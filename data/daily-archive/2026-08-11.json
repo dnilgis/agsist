@@ -21,7 +21,8 @@
       "instrument": "corn",
       "direction": "up",
       "level": 4.45
-    }
+    },
+    "call_line": "Called corn up toward $4.45 ($4.385 when the call was made). It closed at $4.3825."
   },
   "todays_call": {
     "instrument": "beans",

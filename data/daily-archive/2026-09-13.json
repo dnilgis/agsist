@@ -7,20 +7,7 @@
     "unit": "bu/acre, USDA Sept corn yield",
     "context": "USDA cut corn yield 2.3 bu from July on the Aug 12 WASDE. Early harvest reports this week are the first field check against that number."
   },
-  "yesterdays_call": {
-    "outcome": "didnt",
-    "computed": {
-      "outcome": "didnt",
-      "made": "2026-09-12",
-      "p0": 12.99,
-      "p1": 12.99,
-      "instrument": "beans",
-      "direction": "down",
-      "level": 12.85
-    },
-    "call_line": "Called soybeans down toward $12.85 ($12.99 when the call was made). It closed at $12.99.",
-    "note": "Beans held $12.99 all session; the $12.85 target never threatened -- a clean miss on timing."
-  },
+  "yesterdays_call": {},
   "todays_call": {
     "instrument": "beans",
     "direction": "down",

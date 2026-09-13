@@ -9,20 +9,7 @@
     "unit": "days LNG shipments through Hormuz have halted",
     "context": "Tanker-tracking firms reported Monday that LNG exports via the Strait of Hormuz have ground to a halt over the past three days, with oil tanker traffic also shrinking sharply. This is a direct escalation from the standing situation earlier this month, when five carriers cleared the Strait the week of May 25. Crude running 4.2% to $82.49 in a single session is the market pricing what a sustained Hormuz blockage does to global energy supply, and that price transmits directly into harvest-season diesel costs."
   },
-  "yesterdays_call": {
-    "summary": "Call was corn up, toward $4.55.",
-    "outcome": "didnt",
-    "note": "Corn closed $4.4475 Monday, never reaching the $4.55 target. The 3.6% break went the other direction entirely: old-crop supply pressure and the front-month/new-crop inversion took over the narrative. The upside thesis did not resolve.",
-    "computed": {
-      "outcome": "didnt",
-      "made": "2026-07-20",
-      "p0": 4.4475,
-      "p1": 4.4475,
-      "instrument": "corn",
-      "direction": "up",
-      "level": 4.55
-    }
-  },
+  "yesterdays_call": {},
   "todays_call": {
     "instrument": "corn",
     "direction": "up",

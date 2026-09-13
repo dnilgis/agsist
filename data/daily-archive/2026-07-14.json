@@ -10,18 +10,17 @@
     "context": "Trump's Monday announcement of a reinstated Iran blockade initially pushed crude more than 8% before today's session settled the WTI nearby at $78.66, up 5.9% on the day. That two-day move represents the fastest repricing of the Hormuz risk premium since it first built in early April. Producers planning harvest fuel budgets who benchmarked off last week's sub-$74 crude are now looking at a materially different input cost picture heading into August."
   },
   "yesterdays_call": {
-    "summary": "Yesterday's call was crude up, targeting a move through $80.00, after Trump's Iran blockade reinstatement lit the Hormuz risk premium.",
     "outcome": "didnt",
-    "note": "Crude closed today at $78.66, up 5.9% on the session. The move confirmed the directional thesis but stopped short of the $80.00 target level. The call didn't fully play out by the close, though the tape is still leaning the same direction heading into Wednesday.",
     "computed": {
       "outcome": "didnt",
-      "made": "2026-07-14",
-      "p0": 78.66,
-      "p1": 78.66,
-      "instrument": "crude",
-      "direction": "up",
-      "level": 80.0
-    }
+      "made": "2026-07-13",
+      "p0": 94.775,
+      "p1": 98.15,
+      "instrument": "hogs",
+      "direction": "down",
+      "level": 90.0
+    },
+    "call_line": "Called hogs down toward $90.0 ($94.775 when the call was made). It closed at $98.15."
   },
   "todays_call": {
     "instrument": "crude",

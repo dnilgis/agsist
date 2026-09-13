@@ -9,20 +9,7 @@
     "unit": "year-over-year rise in US LNG exports, H1 2026",
     "context": "US LNG exports averaged 17.4 Bcf/day in the first half of 2026, up 23% from a year ago per EIA. That export pace tightens domestic natural gas supply and puts a floor under natgas prices heading into fall fieldwork and harvest season."
   },
-  "yesterdays_call": {
-    "outcome": "didnt",
-    "computed": {
-      "outcome": "didnt",
-      "made": "2026-09-05",
-      "p0": 7.16,
-      "p1": 7.16,
-      "instrument": "wheat",
-      "direction": "down",
-      "level": "7.00"
-    },
-    "summary": "Called wheat lower through $7.00 on Friday's session.",
-    "note": "Didn't play out. Wheat closed $7.16 -- down 3.4% on the day but never tested $7.00. The pre-holiday profit-taking moved the direction right but not the magnitude; the $7.00 level is still live and worth watching into Thursday's export sales."
-  },
+  "yesterdays_call": {},
   "todays_call": {
     "instrument": "wheat",
     "direction": "up",

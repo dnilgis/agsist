@@ -9,20 +9,7 @@
     "unit": "of US cowherd in active drought areas",
     "context": "Three quarters of the national cowherd is sitting in drought-stressed pasture right now, according to drought monitor data cited in a Fence Post analysis this week. That number matters more than any single session's feeder cattle close: it puts a ceiling on herd rebuilding capacity at exactly the moment USDA is already cutting beef output projections. The breeding herd can't expand into ground that's burning."
   },
-  "yesterdays_call": {
-    "outcome": "didnt",
-    "computed": {
-      "outcome": "didnt",
-      "made": "2026-07-11",
-      "p0": 6.32,
-      "p1": 6.32,
-      "instrument": "wheat",
-      "direction": "up",
-      "level": 6.45
-    },
-    "summary": "Called wheat higher through $6.45 off the WASDE tighter-stocks read.",
-    "note": "Didn't get there. Wheat closed at $6.32, held the WASDE gains fine, but $6.45 was one resistance step too far for a Friday tape that had already done its work Thursday. The bulls had the story right -- USDA cut old-crop stocks and trimmed the crop estimate -- but Friday's session had no fresh catalyst to push through the next level. Own the miss: the direction was right, the target was not. Scale that resistance down to $6.40 on next week's call."
-  },
+  "yesterdays_call": {},
   "todays_call": {
     "instrument": "wheat",
     "direction": "up",

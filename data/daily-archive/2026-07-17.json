@@ -10,18 +10,17 @@
     "context": "USDA announced 340,000 MT to China, 256,634 MT to Mexico, and 120,000 MT to unknown destinations all before Friday's open. That's the kind of export demand the futures market notices. Beans at $12.03 didn't move as hard as the sales warranted, which tells you the market was already sniffing this out earlier in the week."
   },
   "yesterdays_call": {
-    "summary": "The call was feeders down, targeting a break below $335.",
     "outcome": "didnt",
-    "note": "Feeders closed at $339.08, never testing $335. The cattle section was directionally right that cash pressure was building, but the level didn't resolve -- feeders held above the target all session. Miss on the level. The $335 watch carries into Monday.",
     "computed": {
       "outcome": "didnt",
-      "made": "2026-07-17",
-      "p0": 339.07501,
-      "p1": 339.07501,
-      "instrument": "feeders",
-      "direction": "down",
-      "level": 335.0
-    }
+      "made": "2026-07-16",
+      "p0": 6.8575,
+      "p1": 6.8475,
+      "instrument": "wheat",
+      "direction": "up",
+      "level": "7.10"
+    },
+    "call_line": "Called wheat up toward $7.10 ($6.8575 when the call was made). It closed at $6.8475."
   },
   "todays_call": {
     "instrument": "feeders",

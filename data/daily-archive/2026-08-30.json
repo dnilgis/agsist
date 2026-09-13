@@ -9,18 +9,7 @@
     "unit": "added to global energy import bill, March-August 2026",
     "context": "The US-Israel-Iran conflict, ongoing since early 2026, has lifted the world's oil and gas import tab by $330 billion over six months. For US farmers, that math runs straight through diesel prices that are already near record highs heading into harvest."
   },
-  "yesterdays_call": {
-    "outcome": "didnt",
-    "computed": {
-      "outcome": "didnt",
-      "made": "2026-08-29",
-      "p0": 7.67,
-      "p1": 7.67,
-      "instrument": "wheat",
-      "direction": "up",
-      "level": "7.67"
-    }
-  },
+  "yesterdays_call": {},
   "todays_call": {
     "instrument": "wheat",
     "direction": "up",

@@ -21,7 +21,8 @@
       "instrument": "corn",
       "direction": "down",
       "level": 4.99
-    }
+    },
+    "call_line": "Called corn down toward $4.99 ($5.075 when the call was made). It closed at $5.12."
   },
   "todays_call": {
     "instrument": "wheat",

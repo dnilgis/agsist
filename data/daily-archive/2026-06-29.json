@@ -9,20 +9,7 @@
     "unit": "share of US soybeans now crushed domestically",
     "context": "Three or four years ago, more than 60% of US soybeans were exported. That share has now flipped, with domestic crush, driven by biofuel demand under the EPA's finalized RFS Set 2 rule, absorbing the majority. That structural shift is what is behind soybean oil's 6.9% run today: the RVO volumes locked in for 2026-2027 are unprecedented, and the market is pricing the feedstock demand accordingly. Meal and oil splitting apart is not noise, it is the biofuel trade repricing in real time."
   },
-  "yesterdays_call": {
-    "summary": "Yesterday's call: corn up, toward above $4.43.",
-    "outcome": "didnt",
-    "note": "Corn opened and closed at $4.13 on the nearby, nowhere near $4.43, and December slipped a penny to $4.42; the directional thesis did not play.",
-    "computed": {
-      "outcome": "didnt",
-      "made": "2026-06-29",
-      "p0": 4.1275,
-      "p1": 4.1275,
-      "instrument": "corn",
-      "direction": "up",
-      "level": "4.42"
-    }
-  },
+  "yesterdays_call": {},
   "todays_call": {
     "instrument": "corn",
     "direction": "up",

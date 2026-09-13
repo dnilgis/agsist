@@ -10,18 +10,17 @@
     "context": "USDA's June Acreage report confirmed 85.4 million soybean acres, unchanged from March's Prospective Plantings estimate. No surprise add means no new supply overhang to price, and that removed a ceiling the nearby contract had been rubbing against. When acreage comes in at or below the earlier estimate, the balance sheet stays as tight as the funds modeled it. Today's 30-cent move is the market pricing out the risk that it was wrong."
   },
   "yesterdays_call": {
-    "summary": "Called beans up, toward $12.10, after Monday's Crop Progress print.",
     "outcome": "didnt",
-    "note": "Nearby beans closed at $11.815 today, which means the $12.10 target did not play out -- the market moved in the right direction on the 30-cent rally but stopped well short of the level. Own the miss on the level; the directional read was correct, the target was ambitious. Thursday export sales above 400K MT is the next real look at whether the funds are still pointing that direction.",
     "computed": {
       "outcome": "didnt",
-      "made": "2026-07-07",
-      "p0": 11.815,
-      "p1": 11.815,
-      "instrument": "beans",
+      "made": "2026-07-06",
+      "p0": 4.25,
+      "p1": 4.395,
+      "instrument": "corn",
       "direction": "up",
-      "level": "12.10"
-    }
+      "level": "4.42"
+    },
+    "call_line": "Called corn up toward $4.42 ($4.25 when the call was made). It closed at $4.395."
   },
   "todays_call": {
     "instrument": "beans",

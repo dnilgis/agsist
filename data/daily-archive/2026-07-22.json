@@ -10,18 +10,17 @@
     "context": "Yesterday the crude story was Hormuz alone. Today Houthi forces threatened to blockade the Bab el-Mandeb Strait as well, the narrow passage between Yemen and Djibouti that handles roughly 10% of global seaborne oil. Two chokepoints at the same time is not the same risk as one. Harvest-season diesel locked above $82 last week looks like a better trade today than it did at yesterday's open."
   },
   "yesterdays_call": {
-    "summary": "Called crude up, toward $90.00.",
     "outcome": "didnt",
-    "note": "WTI closed at $88.15, up 3.3% on the session -- the direction was right but $90 never traded. Two chokepoints active and crude still couldn't clear the target. Own the miss on the level; the thesis has more fuel in it tomorrow than it did at yesterday's open.",
     "computed": {
       "outcome": "didnt",
-      "made": "2026-07-22",
-      "p0": 88.15,
-      "p1": 88.15,
-      "instrument": "crude",
+      "made": "2026-07-21",
+      "p0": 346.775,
+      "p1": 344.875,
+      "instrument": "feeders",
       "direction": "up",
-      "level": 90.0
-    }
+      "level": 350.0
+    },
+    "call_line": "Called feeder cattle up toward $350.0 ($346.775 when the call was made). It closed at $344.875."
   },
   "todays_call": {
     "instrument": "crude",

@@ -10,18 +10,17 @@
     "context": "Kpler data shows Chinese crude imports in June tracking at the weakest pace since 2016, reinforcing why the Iran-Hormuz premium is deflating faster than most traders expected. WTI fell to $69.44 today, down 1.6%, and this number tells you the demand side is doing as much work as the supply side. Cheaper crude eventually means cheaper fuel and fertilizer inputs, but the path there runs through more volatility in energy markets first."
   },
   "yesterdays_call": {
-    "summary": "Yesterday's call was corn up, toward the $4.43 December level, leaning on the Belt's ahead-of-pace crop progress removing the last bearish overhang and leaving room for a pre-Acreage bid.",
     "outcome": "didnt",
-    "note": "Corn closed $4.14 today, flat on the day and well below $4.43. The call did not play out. The market never found a reason to bid December toward that level on a quiet pre-holiday Friday -- the pre-Acreage coil kept both corn contracts pinned. Own the miss: the directional thesis needed a catalyst that did not arrive.",
     "computed": {
       "outcome": "didnt",
-      "made": "2026-06-26",
-      "p0": 4.14,
-      "p1": 4.14,
-      "instrument": "corn",
+      "made": "2026-06-25",
+      "p0": 11.11,
+      "p1": 11.21,
+      "instrument": "beans",
       "direction": "up",
-      "level": "4.43"
-    }
+      "level": 11.38
+    },
+    "call_line": "Called soybeans up toward $11.38 ($11.11 when the call was made). It closed at $11.21."
   },
   "todays_call": {
     "instrument": "corn",
