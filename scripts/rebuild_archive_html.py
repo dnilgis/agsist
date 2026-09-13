@@ -55,7 +55,11 @@ def rebuild_one(date_iso: str, dry_run: bool = False) -> bool:
         return True
 
     prev_d, next_d = archive_neighbor_dates(date_iso)
-    html = generate_archive_html(briefing, date_iso, prev_d, next_d)
+    # og_require_file: a dated social card exists only from 2026-07-18. Without
+    # this a full rebuild pointed 126 published pages at a PNG that does not
+    # exist, breaking a preview image that was working.
+    html = generate_archive_html(briefing, date_iso, prev_d, next_d,
+                                 og_require_file=True)
     ARCHIVE_HTML_DIR.mkdir(parents=True, exist_ok=True)
     with open(html_path, "w") as f:
         f.write(html)

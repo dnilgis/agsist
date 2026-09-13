@@ -1058,13 +1058,15 @@
    ],
    "written_by": [
     "Generate Daily Briefing",
-    "Rebuild Call Scorecard"
+    "Rebuild Call Scorecard",
+    "Regrade Archive Pages"
    ],
    "touched_by": [
     "Build Analyst Scorecard",
     "Fetch COT Data",
     "Generate Daily Briefing",
     "Rebuild Call Scorecard",
+    "Regrade Archive Pages",
     "WASDE watch \u2014 grade the report as it lands",
     "Build What's Priced In"
    ],

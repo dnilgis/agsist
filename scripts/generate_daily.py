@@ -2250,9 +2250,32 @@ def js_esc(s):
             .replace("\r", " ").replace("\u2028", " ").replace("\u2029", " "))
 
 
-def og_image_for(date_iso):
-    if OG_IMAGE_BASE: return f"{OG_IMAGE_BASE}{date_iso}.png"
-    return "https://agsist.com/img/og/agsist.jpg"
+OG_IMAGE_FALLBACK = "https://agsist.com/img/og/agsist.jpg"
+SOCIAL_CARD_DIR = REPO_ROOT / "data" / "social"
+
+
+def og_image_for(date_iso, require_file=False):
+    """The dated social card, or the generic image when there is no card.
+
+    require_file=False is the LIVE path and must stay that way: daily.yml
+    renders the card AFTER generate_daily writes the page, so at the moment
+    this is called for today's issue the PNG does not exist yet. Checking the
+    disk there would point every new issue at the generic image.
+
+    require_file=True is for re-rendering the backlog.
+    scripts/rebuild_archive_html.py redraws all 185 archive pages from the
+    CURRENT template, and cards only exist from 2026-07-18 -- 59 of 185. Before
+    this check a full rebuild pointed 126 published pages at a PNG that does
+    not exist and never will, silently breaking their social preview. The
+    fallback is the image those pages already carry, so a rebuild leaves them
+    exactly as they are.
+    """
+    if not OG_IMAGE_BASE:
+        return OG_IMAGE_FALLBACK
+    if require_file and not (SOCIAL_CARD_DIR / f"card-{date_iso}.png").exists():
+        return OG_IMAGE_FALLBACK
+    return f"{OG_IMAGE_BASE}{date_iso}.png"
+
 
 
 def render_sponsor_block_html(sponsor):
@@ -2464,7 +2487,8 @@ def _nav_date_label(d):
         return d
 
 
-def generate_archive_html(briefing, date_iso, prev_date=None, next_date=None):
+def generate_archive_html(briefing, date_iso, prev_date=None, next_date=None,
+                         og_require_file=False):
     date_display = briefing.get("date", date_iso)
     headline = html_esc(briefing.get("headline", "AGSIST Daily Briefing"))
     subheadline = html_esc(briefing.get("subheadline", ""))
@@ -2478,7 +2502,13 @@ def generate_archive_html(briefing, date_iso, prev_date=None, next_date=None):
     gen_at = briefing.get("generated_at", "")
     issue_num = briefing.get("issue_number", 0)
 
-    og_image_url = og_image_for(date_iso)
+    og_image_url = og_image_for(date_iso, require_file=og_require_file)
+    # THE DIMENSIONS MUST DESCRIBE THE IMAGE THAT IS ACTUALLY LINKED. They were
+    # hardcoded to the dated card's 2400x1350; when the fallback is served that
+    # declared a size the file does not have, which is how a scraper crops the
+    # wrong region or refuses the image outright.
+    og_image_w, og_image_h = (("1200", "630") if og_image_url == OG_IMAGE_FALLBACK
+                              else ("2400", "1350"))
     og_description_raw = briefing.get("teaser") or briefing.get("lead") or briefing.get("subheadline") or "AGSIST Daily morning market briefing"
     og_description = html_esc(og_description_raw[:180])
     desc_escaped = html_esc(lead[:160]) if lead else og_description
@@ -2688,8 +2718,8 @@ def generate_archive_html(briefing, date_iso, prev_date=None, next_date=None):
 <meta property="og:description" content="{og_description}">
 <meta property="og:url" content="https://agsist.com/daily/{date_iso}">
 <meta property="og:image" content="{og_image_url}">
-<meta property="og:image:width" content="2400">
-<meta property="og:image:height" content="1350">
+<meta property="og:image:width" content="{og_image_w}">
+<meta property="og:image:height" content="{og_image_h}">
 <meta property="og:image:alt" content="AGSIST Daily &mdash; {headline}">
 <meta property="article:published_time" content="{date_iso}">
 <meta property="article:modified_time" content="{gen_at}">
