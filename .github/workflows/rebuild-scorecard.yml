@@ -1,0 +1,63 @@
+name: Rebuild Call Scorecard
+
+# Recompiles data/scorecard.json from the archive and re-bakes the numbers into
+# scorecard.html. Run it from the Actions tab after deploying the 2026-09-13
+# grading fix; after that the daily briefing keeps it current on its own and
+# this only needs running if the archive is ever backfilled.
+#
+# WHY A BUTTON. build_scorecard.py runs inside daily.yml, so before this the
+# only ways to rebuild the public record were to wait for the 6 AM run or to
+# regenerate the whole briefing. The record changed the moment the grading rule
+# was corrected, and it should not take a briefing regeneration to publish it.
+#
+# Reads only data/daily-archive/*.json, which the briefing owns and this never
+# writes. Idempotent: two runs in a row produce the same file and the second
+# commits nothing. No API keys.
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: rebuild-scorecard
+  cancel-in-progress: false
+
+jobs:
+  rebuild:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        # build_scorecard imports grade_calls, which imports contract_calendar.
+        # None of them need the network; requests/feedparser are here only
+        # because prerender_wpi_scorecard imports the generator module.
+        run: pip install feedparser requests
+
+      - name: Prove the grading rule before rebuilding on it
+        run: |
+          python scripts/contract_calendar.py
+          python scripts/test_grade_calls.py
+
+      - name: Rebuild the scorecard
+        run: python scripts/build_scorecard.py
+
+      - name: Bake the numbers into scorecard.html
+        run: python scripts/prerender_wpi_scorecard.py
+
+      - name: Commit and push
+        run: |
+          git config user.name "AGSIST Bot"
+          git config user.email "bot@agsist.com"
+          git add data/scorecard.json scorecard.html whats-priced-in.html || true
+          git diff --staged --quiet || git commit -m "Rebuild call scorecard — session-aware grading"
+          git pull --rebase origin main
+          git push

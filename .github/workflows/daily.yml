@@ -320,6 +320,15 @@ jobs:
       - name: GATE 0b — word budget selftest
         run: python scripts/briefing_cut.py --selftest
 
+      # v5.2 (the grading fix): the trading calendar and the call grader. A call
+      # is scored against a LATER SESSION, never against the board it was made
+      # from. 20 of 81 graded calls were scored that way until 2026-09-13 and
+      # nothing was red, so the rule is pinned here, ahead of the generator.
+      - name: GATE 0c — trading calendar + call grader selftests
+        run: |
+          python scripts/contract_calendar.py
+          python scripts/test_grade_calls.py
+
       # The schedule is machinery too. This asserts the backup fires still
       # exist and are spread, and that the gate asks the remote rather than its
       # own checkout — the two things that keep a dropped fire from becoming a
