@@ -7,8 +7,8 @@ WHY: index.html renders its content client-side from /data/daily.json and
 PerplexityBot and CCBot do not — so the most citable content AGSIST
 produces was invisible to the AI crawlers the sponsor pitch is built on.
 
-WHAT: writes today's headline, subheadline, lead, takeaway, section titles
-+ bodies, and The Read's percentile numbers/sentences directly into the
+WHAT: writes today's headline, lead, action, section titles
++ bodies (subheadline is retired as of v5.1 and baked empty), and The Read's percentile numbers/sentences directly into the
 empty elements hydrateDaily() targets. The browser then hydrates the same
 elements with live data — baked text is the no-JS / crawler fallback, JS
 remains the source of truth on screen.
@@ -127,16 +127,22 @@ def main():
         html, r'<p id="daily-lead" class="daily-lead">', "</p>",
         md(daily.get("lead", "")), "lead")
 
-    takeaway = (daily.get("the_takeaway") or "").strip()
-    if takeaway:
-        # un-hide the container for the no-JS view (JS manages it after)
+    # v5.1: the action holds the takeaway's block (same ids, label reads
+    # THE ACTION). Empty action -> block stays hidden and its text is emptied,
+    # so yesterday's line never survives into a day that has none.
+    action = (daily.get("action") or "").strip()
+    html, _ = replace_inner(
+        html, r'<p id="daily-takeaway-text" class="daily-takeaway-text">',
+        "</p>", md(action), "action")
+    if action:
         html = re.sub(
             r'(<div id="daily-takeaway"[^>]*?)\s*style="display:none"(>)',
             r"\1\2", html, count=1)
-        html, _ = replace_inner(
-            html, r'<p id="daily-takeaway-text" class="daily-takeaway-text">',
-            "</p>", esc(takeaway), "takeaway")
-        baked.append("takeaway")
+        baked.append("action")
+    else:
+        html = re.sub(
+            r'(<div id="daily-takeaway"(?:(?!style=)[^>])*?)(>)',
+            r'\1 style="display:none"\2', html, count=1)
 
     # ── Sections (fill used slots, EMPTY unused ones) ───────────────
     sections = daily.get("sections") or []

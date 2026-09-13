@@ -747,9 +747,9 @@
           <h2 id="daily-headline" class="daily-headline">WASDE BREAK HOLDS; WEEK AHEAD SETS THE PRICE</h2>
           <p id="daily-subheadline" style="font-size:.88rem;color:var(--gold);font-weight:600;margin-bottom:.5rem;letter-spacing:.02em">Beans closed Friday at $12.99, exactly on the line called last session; crude at $99.99 and Iran's war premium aren't going anywhere.</p>
           <p id="daily-lead" class="daily-lead">Beans finished Friday at $12.99, off 24 cents on the WASDE print, and sat exactly on the line this briefing drew. Corn held better, Dec '26 at $5.32. The week ahead has no single report to reset the board, but $100 crude, a Hormuz war the oil market is now pricing for years, and early harvest pressure on corn all have opinions. The question is whether $12.99 holds or breaks.</p>
-          <div id="daily-takeaway" class="daily-takeaway" role="note" aria-label="Today's key takeaway">
-            <span class="daily-takeaway-label"><svg class="ic" aria-hidden="true"><use href="#i-target"/></svg> THE TAKEAWAY</span>
-            <p id="daily-takeaway-text" class="daily-takeaway-text">Beans are at the line; hold or break this week tells you everything about fall pricing.</p>
+          <div id="daily-takeaway" class="daily-takeaway" role="note" aria-label="Today's action" style="display:none">
+            <span class="daily-takeaway-label"><svg class="ic" aria-hidden="true"><use href="#i-target"/></svg> THE ACTION</span>
+            <p id="daily-takeaway-text" class="daily-takeaway-text"></p>
           </div>
           <div class="daily-sponsor" id="daily-sponsor" role="region" aria-label="Sponsor slot">
             <!-- Empty state: billboard for finding the founding sponsor -->
@@ -2552,14 +2552,21 @@ window.hydrateDaily = function(data) {
   // can emit **bold** or <strong> safely without XSS surface (was raw
   // innerHTML — that bypassed escaping entirely).
   var dh=el('daily-headline');if(dh)dh.textContent=headline;
-  var dsh=el('daily-subheadline');if(dsh)dsh.textContent=subheadline;
+  // v5.1: subheadline is retired; the <p> stays for issues that carry one and hides otherwise
+  var dsh=el('daily-subheadline');if(dsh){dsh.textContent=subheadline;dsh.style.display=subheadline?'':'none';}
   var dl=el('daily-lead');if(dl)dl.innerHTML=mdInline(lead);
 
-  // v4.3: render the_takeaway if present and non-empty
-  var takeaway=(data.the_takeaway||'').trim();
+  // v5.1: the one thresholded action, in the block the takeaway used to hold.
+  // A daily.json from before the cut has no action and shows its takeaway
+  // under the old label instead, so the block never goes blank on upload day.
+  var takeaway=(data.action||'').trim();
+  var taLabel=takeaway?'THE ACTION':'THE TAKEAWAY';
+  if(!takeaway)takeaway=(data.the_takeaway||'').trim();
   var taEl=el('daily-takeaway');
   var taText=el('daily-takeaway-text');
-  if(taEl){if(takeaway){if(taText)taText.textContent=takeaway;taEl.style.display='block';}else{taEl.style.display='none';}}
+  var taLbl=taEl&&taEl.querySelector('.daily-takeaway-label');
+  if(taLbl)taLbl.innerHTML='<svg class="ic" aria-hidden="true"><use href="#i-target"/></svg> '+taLabel;
+  if(taEl){if(takeaway){if(taText)taText.innerHTML=mdInline(takeaway);taEl.style.display='block';}else{taEl.style.display='none';}}
 
   // v4.3: Copy The Number button — copies "VALUE UNIT" to clipboard
   var dnCopyBtn=el('daily-number-copy');
@@ -2642,8 +2649,10 @@ window.hydrateDaily = function(data) {
       setText('daily-section-'+si+'-title',sec.title||'');
       setHTML('daily-section-'+si+'-body',mdInline(sec.body||''));
       // bottom_line + farmer_action default to display:none in CSS — must flip when populated
+      // v5.1: so_what is the field; bottom_line is read for issues before the cut
+      var soWhat=sec.so_what||sec.bottom_line||'';
       var blEl=el('daily-section-'+si+'-bottomline');
-      if(blEl){if(sec.bottom_line){blEl.textContent=sec.bottom_line;blEl.style.display='block';}else{blEl.style.display='none';}}
+      if(blEl){if(soWhat){blEl.textContent=soWhat;blEl.style.display='block';}else{blEl.style.display='none';}}
       var acEl=el('daily-section-'+si+'-action');
       var acTxt=pick(sec.farmer_action,sec.action);
       if(acEl){if(acTxt){acEl.textContent=acTxt;acEl.style.display='block';}else{acEl.style.display='none';}}
@@ -2769,13 +2778,15 @@ window.hydrateDaily = function(data) {
   // v4.0: yesterdays_call — outcome pill (played_out=green, didnt=red, pending=amber)
   var yc=data.yesterdays_call,ycEl=el('daily-yc');
   if(ycEl){
-    if(yc&&yc.summary){
+    // v5.1: call_line is written by the grader from the record; summary is the pre-cut prose
+    var ycLine=(yc&&(yc.call_line||yc.summary))||'';
+    if(yc&&ycLine){
       var pill=el('daily-yc-pill'),sumEl=el('daily-yc-summary'),noteEl=el('daily-yc-note');
       var oc=String(yc.outcome||'pending').toLowerCase();
       var ocLbl=oc==='played_out'?'<svg class="ic" aria-hidden="true"><use href="#i-check"/></svg> Played out':oc==='didnt'?'<svg class="ic" aria-hidden="true"><use href="#i-x"/></svg> Didn\u2019t':'<svg class="ic" aria-hidden="true"><use href="#i-hourglass"/></svg> Pending';
       var ocCls=oc==='played_out'?'yc-pill--good':oc==='didnt'?'yc-pill--bad':'yc-pill--pending';
       if(pill){pill.innerHTML=ocLbl;pill.className='daily-yc-pill '+ocCls;}
-      if(sumEl)sumEl.textContent=yc.summary;
+      if(sumEl)sumEl.textContent=ycLine;
       if(noteEl)noteEl.textContent=yc.note?' \u2014 '+yc.note:'';
       ycEl.style.display='block';
     } else { ycEl.style.display='none'; }

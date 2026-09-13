@@ -612,10 +612,17 @@ function renderToday(data){
     lead='<p class="dv3-today-lead">'+paras.map(mdInline).join('<br><br>')+'</p>';
   }
 
-  // v4.3: takeaway block — committable single-sentence "if you remember one thing"
+  // v5.1: the one thresholded action holds the takeaway's slot. An issue
+  // from before the cut has no action and keeps its takeaway.
   var takeaway='';
+  var actTxt=(data.action||'').trim();
   var taTxt=(data.the_takeaway||'').trim();
-  if(taTxt){
+  if(actTxt){
+    takeaway='<div class="dv3-takeaway dv3-action" role="note" aria-label="Today\u2019s action">'+
+      '<span class="dv3-takeaway-label"><svg class="dv3-ic" aria-hidden="true"><use href="#i-target"/></svg>THE ACTION</span>'+
+      '<p class="dv3-takeaway-text">'+mdInline(actTxt)+'</p>'+
+    '</div>';
+  } else if(taTxt){
     takeaway='<div class="dv3-takeaway" role="note" aria-label="Today\u2019s key takeaway">'+
       '<span class="dv3-takeaway-label"><svg class="dv3-ic" aria-hidden="true"><use href="#i-target"/></svg>THE TAKEAWAY</span>'+
       '<p class="dv3-takeaway-text">'+escHtml(taTxt)+'</p>'+
@@ -688,7 +695,8 @@ function renderToday(data){
     var heatIdx=(data.meta && typeof data.meta.heat_section==='number')?data.meta.heat_section:-1;
     sections='<div class="dv3-sections">';
     data.sections.forEach(function(sec,i){
-      if(!sec.body&&!sec.bottom_line&&!sec.farmer_action)return;
+      if(!sec.body&&!sec.so_what&&!sec.bottom_line&&!sec.farmer_action)return;
+      var soWhat=sec.so_what||sec.bottom_line||''; // v5.1: so_what; bottom_line on old issues
       var classes=['dv3-sec'];
       if(i===heatIdx)classes.push('dv3-sec--heat');
       if(sec.overnight_surprise)classes.push('dv3-sec--surprise');
@@ -713,7 +721,7 @@ function renderToday(data){
         catHtml+
         vsHtml+
         (sec.body?'<div class="dv3-sec-body">'+mdBody(sec.body)+'</div>':'')+
-        (sec.bottom_line?'<div class="dv3-sec-bottomline">'+mdInline(sec.bottom_line)+'</div>':'')+
+        (soWhat?'<div class="dv3-sec-bottomline">'+mdInline(soWhat)+'</div>':'')+
         (sec.farmer_action?'<div class="dv3-sec-action"><svg class="dv3-ic" aria-hidden="true"><use href="#i-target"/></svg><span>'+escHtml(sec.farmer_action)+'</span></div>':'')+
       '</div>';
     });
@@ -814,7 +822,9 @@ function renderToday(data){
   // Yesterday's Call (between sponsor and sections)
   var yc='';
   var ycData=data.yesterdays_call||null;
-  if(ycData && ycData.summary && !marketClosed){
+  // v5.1: call_line from the grader; summary only on issues before the cut
+  var ycLine=ycData?(ycData.call_line||ycData.summary||''):'';
+  if(ycData && ycLine && !marketClosed){
     var outcome=(ycData.outcome||'pending').toLowerCase();
     var outcomeMap={
       played_out:['PLAYED OUT','#4aab4c','rgba(74,171,76,.10)','rgba(74,171,76,.32)'],
@@ -827,7 +837,7 @@ function renderToday(data){
       '<div class="dv3-yc-label">\u21BA YESTERDAY\u2019S CALL '+
         '<span class="dv3-yc-outcome" style="color:'+oCfg[1]+';background:'+oCfg[2]+';border:1px solid '+oCfg[3]+';">'+oCfg[0]+'</span>'+
       '</div>'+
-      '<div class="dv3-yc-summary">'+escHtml(ycData.summary)+'</div>'+
+      '<div class="dv3-yc-summary">'+escHtml(ycLine)+'</div>'+
       ycNote+
     '</div>';
   }

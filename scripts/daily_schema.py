@@ -15,10 +15,24 @@ v4.2 update (Phase 2): adds optional fields the_takeaway, subject_line,
 named_week (top-level), and vs_yesterday (per-section). Schema slots are
 ready before the prompt emits them — the renderer can read these as soon
 as the generator starts producing them.
+
+v5.1 (the cut, 2026-09-13): subheadline is no longer required (retired from
+the model output; still accepted so the 185 archived issues validate).
+New: top-level `action` (string), per-section `so_what`, and
+yesterdays_call.call_line. The word ceiling is checked HERE too, with the
+same function the generator and critic use (briefing_cut.over_ceiling):
+this step is a hard stop in daily.yml, so a briefing over 450 words cannot
+reach the commit even if the earlier steps let it through.
 """
 import sys
 import json
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+try:
+    import briefing_cut
+except ImportError:      # never let a missing helper mask a schema failure
+    briefing_cut = None
 
 # ---------------------------------------------------------------------------
 # Canonical field names — the only accepted names going forward.
@@ -27,7 +41,6 @@ from pathlib import Path
 
 REQUIRED_TOP_LEVEL = [
     "headline",
-    "subheadline",
     "lead",
     "sections",
     "date",
@@ -35,6 +48,9 @@ REQUIRED_TOP_LEVEL = [
 ]
 
 OPTIONAL_TOP_LEVEL = [
+    "subheadline",         # v5.1: retired from the model output; archived issues carry it
+    "action",              # v5.1: the one mandatory thresholded action (string)
+    "outside_the_pit",     # [{title, body, tag}] — one item since v5.1
     "teaser",
     "one_number",          # {value, unit, context}
     "the_more_you_know",   # {title, body}
@@ -77,7 +93,9 @@ DEPRECATED_ALIASES = {
 SECTION_REQUIRED = ["title", "body"]
 SECTION_OPTIONAL = [
     "icon",
-    "bottom_line",
+    "so_what",             # v5.1: the 15-word synthesis (was bottom_line)
+    "bottom_line",         # retired; archived issues carry it
+    "catalyst",            # retired; archived issues carry it
     "conviction_level",
     "overnight_surprise",
     "farmer_action",
@@ -235,21 +253,38 @@ def validate(data: dict) -> tuple[bool, list[str], list[str]]:
     # v3.9 + v4.0 BLOCKS — shape and enum validation
     # ─────────────────────────────────────────────────────────────────────
 
-    # yesterdays_call (v4.0) — outcome must be valid enum when summary is set
+    # yesterdays_call (v4.0) — outcome must be valid enum when the block
+    # carries anything a reader sees (v5.1: call_line or note; summary is the
+    # pre-cut field, still accepted).
     yc = data.get("yesterdays_call")
     if yc is not None:
         if not isinstance(yc, dict):
             errors.append("'yesterdays_call' must be an object")
         elif yc:
-            summary = (yc.get("summary") or "").strip()
-            if summary:
+            shown = any((yc.get(k) or "").strip() for k in ("call_line", "summary", "note"))
+            if shown:
                 outcome = (yc.get("outcome") or "").strip().lower()
                 if outcome not in YC_OUTCOMES:
                     errors.append(
                         f"yesterdays_call.outcome must be one of "
-                        f"{sorted(YC_OUTCOMES)} when summary is set "
+                        f"{sorted(YC_OUTCOMES)} when the block is shown "
                         f"(got {yc.get('outcome')!r})"
                     )
+
+    # action (v5.1) — a string when present; required on open-market days
+    act = data.get("action")
+    if act is not None and not isinstance(act, str):
+        errors.append("'action' must be a string")
+    if data.get("market_closed") is False and not (act or "").strip():
+        errors.append("'action' is required on a weekday briefing (v5.1, RULE 11)")
+
+    # word ceiling (v5.1) — the same function the generator enforces with
+    if briefing_cut is not None:
+        _n, _over = briefing_cut.over_ceiling(data)
+        if _over:
+            errors.append(f"briefing is {_n} words; the hard ceiling is {briefing_cut.HARD_CEILING}")
+        if len(data.get("sections") or []) > briefing_cut.MAX_SECTIONS:
+            errors.append(f"{len(data['sections'])} sections; max is {briefing_cut.MAX_SECTIONS}")
 
     # todays_call (v4.7) — the falsifiable forward call, graded deterministically
     # (direction AND level) by grade_calls.py. Shape-checked here.

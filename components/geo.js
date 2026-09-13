@@ -1273,7 +1273,8 @@ function loadDailyBriefing() {
           if (el && sec.body) el.innerHTML = sec.body;
 
           el = document.getElementById('daily-section-' + n + '-bottomline');
-          if (el && sec.bottom_line) { el.textContent = sec.bottom_line; el.style.display = 'block'; }
+          var soWhat = sec.so_what || sec.bottom_line; // v5.1: so_what; bottom_line on old issues
+          if (el && soWhat) { el.textContent = soWhat; el.style.display = 'block'; }
 
           el = document.getElementById('daily-section-' + n + '-conviction');
           if (el && sec.conviction_level) {

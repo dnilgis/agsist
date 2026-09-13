@@ -282,7 +282,10 @@ def call_card(daily):
 
 def yesterday_card(daily):
     y = daily.get("yesterdays_call") or {}
-    summary = strip_md(y.get("summary"))
+    # v5.1: call_line is written by the grader from the structured call and
+    # the closes; summary is the pre-cut model prose, read for old issues only.
+    summary = strip_md(y.get("call_line") or y.get("summary"))
+    note = strip_md(y.get("note")) if y.get("call_line") else ""
     if not summary:
         return ""
     outcome = str((y.get("computed") or {}).get("outcome") or y.get("outcome") or "").lower()
@@ -293,7 +296,9 @@ def yesterday_card(daily):
               'font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:%s" class="%s">%s</span></td></tr>'
               % (MONO, col, ('up' if col==UP else ('down' if col==DOWN else 'mute')), tag)
             + '<tr><td class="ink" style="font-family:%s;font-size:15px;line-height:1.55;color:%s">%s</td></tr>'
-              % (SANS, INK, e(summary)))
+              % (SANS, INK, e(summary))
+            + (('<tr><td class="mute" style="padding:4px 0 0;font-family:%s;font-size:14px;line-height:1.5;color:%s">%s</td></tr>'
+                % (SANS, MUTE, e(note))) if note else ""))
 
 
 def sections_html(daily, limit=3):
@@ -304,7 +309,9 @@ def sections_html(daily, limit=3):
         title = strip_md(s.get("title"))
         if not title and not (s.get("body") or "").strip():
             continue
-        bottom, action = strip_md(s.get("bottom_line")), strip_md(s.get("farmer_action"))
+        # v5.1: so_what is the field; bottom_line/farmer_action are read for
+        # issues archived before the cut.
+        bottom, action = strip_md(s.get("so_what") or s.get("bottom_line")), strip_md(s.get("farmer_action"))
         conv = (s.get("conviction_level") or "").lower()
         badges = []
         if i == heat:
@@ -436,7 +443,12 @@ def render_html(daily, site_href, unsub_url=None, date_display=None):
     prior, prior_day = prior_board(daily)
     head = strip_md(daily.get("headline"))
     lead = strip_md(daily.get("lead"))
-    take = strip_md(daily.get("the_takeaway"))
+    # v5.1: the action holds the slot the takeaway had. An issue from before
+    # the cut has no action and keeps its takeaway.
+    take = strip_md(daily.get("action"))
+    take_label = "The action." if take else "The takeaway."
+    if not take:
+        take = strip_md(daily.get("the_takeaway"))
     issue = daily.get("issue_number")
     # The issue's own "date" field is the long form a reader wants ("Wednesday,
     # August 26, 2026"); date_display is a caller override. Prefer the long
@@ -466,8 +478,8 @@ def render_html(daily, site_href, unsub_url=None, date_display=None):
         body.append('<tr><td style="padding:14px 0 0"><table role="presentation" width="100%%" '
                     'cellpadding="0" cellspacing="0" border="0"><tr><td style="border-left:3px solid %s;'
                     'padding:4px 0 4px 12px;font-family:%s;font-size:16px;line-height:1.55;color:%s" '
-                    'class="ink"><strong>The takeaway.</strong> %s</td></tr></table></td></tr>'
-                    % (GOLD, SANS, INK, e(take)))
+                    'class="ink"><strong>%s</strong> %s</td></tr></table></td></tr>'
+                    % (GOLD, SANS, INK, e(take_label), e(take)))
 
     body.append(_rule())
     body.append(price_table(daily, prior, prior_day))
@@ -557,9 +569,13 @@ def render_text(daily, site, unsub_url=None, date_display=None):
         v = strip_md(daily.get(k))
         if v:
             L += ["", v]
-    take = strip_md(daily.get("the_takeaway"))
+    take = strip_md(daily.get("action"))
     if take:
-        L += ["", "THE TAKEAWAY: " + take]
+        L += ["", "THE ACTION: " + take]
+    else:
+        take = strip_md(daily.get("the_takeaway"))
+        if take:
+            L += ["", "THE TAKEAWAY: " + take]
     L += ["", "THE BOARD" + (" (close, against %s)" % prior_day if prior_day else "")]
     for key, label, grain in ROWS:
         v = (daily.get("locked_prices") or {}).get(key)
@@ -574,9 +590,15 @@ def render_text(daily, site, unsub_url=None, date_display=None):
     if c.get("instrument") and c.get("direction") and c.get("level") is not None:
         L += ["", "TODAY'S CALL: %s %s toward $%s. Graded against tomorrow's close."
               % (str(c["instrument"]).title(), str(c["direction"]).lower(), c["level"])]
-    y = strip_md((daily.get("yesterdays_call") or {}).get("summary"))
+    _yc = daily.get("yesterdays_call") or {}
+    y = strip_md(_yc.get("call_line") or _yc.get("summary"))
     if y:
-        L += ["", "YESTERDAY'S CALL: " + y]
+        _oc = str((_yc.get("computed") or {}).get("outcome") or _yc.get("outcome") or "").lower()
+        _tag = {"played_out": "Played out", "didnt": "Missed"}.get(_oc, "Pending")
+        L += ["", "YESTERDAY'S CALL (%s): %s" % (_tag, y)]
+        _note = strip_md(_yc.get("note")) if _yc.get("call_line") else ""
+        if _note:
+            L.append(_note)
     for s in (daily.get("sections") or [])[:3]:
         t = strip_md(s.get("title"))
         bl_list = split_bullets(s.get("body"))
@@ -585,9 +607,9 @@ def render_text(daily, site, unsub_url=None, date_display=None):
         L += ["", t.upper() if t else ""]
         for one in bl_list:
             L.append(("- " + one) if len(bl_list) > 1 else one)
-        bl, ac = strip_md(s.get("bottom_line")), strip_md(s.get("farmer_action"))
+        bl, ac = strip_md(s.get("so_what") or s.get("bottom_line")), strip_md(s.get("farmer_action"))
         if bl:
-            L.append("Bottom line: " + bl)
+            L.append("So what: " + bl)
         if ac:
             L.append("Action: " + ac)
     wl = [w for w in (daily.get("watch_list") or [])[:3] if strip_md(w.get("desc"))]

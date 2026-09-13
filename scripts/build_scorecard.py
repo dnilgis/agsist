@@ -66,25 +66,25 @@ def main():
         low = summary.lower()
         return any(w in low for w in _WORDS.get(instrument, (instrument,)))
 
+    # v5.1: the reader-facing call sentence is grade_calls.plain_call — one
+    # definition, shared with the generator and the renderers. The local copy
+    # that used to live here is gone.
     def _plain_call(call, p0, p1, outcome):
-        """Reader-facing description built from the structured call itself."""
-        names = {"corn": "corn", "beans": "soybeans", "wheat": "wheat",
-                 "cattle": "cattle", "feeders": "feeder cattle", "hogs": "hogs",
-                 "crude": "crude", "natgas": "natural gas"}
-        inst = names.get((call.get("instrument") or "").lower(), call.get("instrument"))
-        d = (call.get("direction") or "").lower()
-        lvl = call.get("level")
-        way = "up toward" if d == "up" else "down toward"
-        got = f" It closed at ${p1}." if p1 is not None else ""
-        made = f" (${p0} when the call was made)" if p0 is not None else ""
-        return f"Called {inst} {way} ${lvl}{made}.{got}"
+        if grade_calls is None:
+            return ""
+        return grade_calls.plain_call(call, p0, p1, outcome)
 
     for i, d in enumerate(dates):
         briefing = load(d)
         if briefing is None:
             continue
         yc = briefing.get("yesterdays_call") or {}
+        # v5.1: issues after the cut carry no model summary; the row's text is
+        # the deterministic call_line (or is rebuilt below from the computed
+        # call). Issues before the cut still carry summary and are checked
+        # against the computed instrument as before.
         summary = (yc.get("summary") or "").strip()
+        call_line = (yc.get("call_line") or "").strip()
         stored = (yc.get("outcome") or "").strip()
 
         # Bulletproof: recompute the outcome from the structured call + actual
@@ -107,7 +107,9 @@ def main():
                     yc["_regrade_note"] = _regrade
                 outcome = computed
 
-        if not summary or outcome not in VALID:
+        if outcome not in VALID:
+            continue
+        if not summary and not call_line and _computed_call is None:
             continue
 
         # ── Instrument cross-check ────────────────────────────────────────
@@ -121,12 +123,14 @@ def main():
         # and keep the original text reachable via the briefing link.
         method = "self" if _computed_call is None else "deterministic"
         mismatch = False
-        if _computed_call is not None:
+        if _computed_call is not None and summary:
             inst = (_computed_call.get("instrument") or "").lower()
             if inst and not _summary_mentions(summary, inst):
                 mismatch = True
 
-        call_text = summary
+        call_text = summary or call_line
+        if not call_text and _computed_call is not None:
+            call_text = _plain_call(_computed_call, _p0v, _p1v, outcome)
         note_text = ((yc.get("note") or "").strip() + (yc.get("_regrade_note") or "")).strip()
         if mismatch:
             call_text = _plain_call(_computed_call, _p0v, _p1v, outcome)

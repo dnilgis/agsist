@@ -19,6 +19,11 @@ Used by:
   - generate_daily.py  (compute yesterday's outcome, inject it into the prompt)
   - briefing_gate.py   (verify the published outcome == computed; block on mismatch)
   - build_scorecard.py (recompute from the archive; the public record can't drift)
+
+plain_call() is the ONE reader-facing description of a graded call. The
+generator writes it into yesterdays_call.call_line before the archive renders;
+this script writes the same thing as its own workflow step; the scorecard
+prints it for every row. There is no second copy.
 """
 import json, sys
 from pathlib import Path
@@ -56,6 +61,30 @@ def compute_outcome(call, p0, p1):
         direction_ok = p1 < p0
         level_ok = p1 <= L
     return "played_out" if (direction_ok and level_ok) else "didnt"
+
+# reader-facing names for the instruments the call can be about
+_PLAIN_NAMES = {"corn": "corn", "beans": "soybeans", "soybeans": "soybeans", "wheat": "wheat",
+                "cattle": "cattle", "feeders": "feeder cattle", "hogs": "hogs",
+                "crude": "crude", "natgas": "natural gas", "meal": "soybean meal",
+                "soyoil": "soybean oil", "oats": "oats", "milk": "milk"}
+
+
+def plain_call(call, p0, p1, outcome=None):
+    """THE reader-facing sentence for a graded call, built from the structured
+    call and the two closes and nothing else. v5.1 (the cut): this replaces
+    the model's yesterdays_call.summary everywhere the verdict is shown (the
+    page, the email, the scorecard). It cannot describe a different market
+    than the one scored, which the prose did on 23 of 40 rows once.
+    Example: 'Called soybeans down toward $12.85 ($12.99 when the call was
+    made). It closed at $12.99.'"""
+    inst = _PLAIN_NAMES.get((call.get("instrument") or "").strip().lower(), call.get("instrument"))
+    d = (call.get("direction") or "").lower()
+    lvl = call.get("level")
+    way = "up toward" if d == "up" else "down toward"
+    got = f" It closed at ${p1}." if p1 is not None else ""
+    made = f" (${p0} when the call was made)" if p0 is not None else ""
+    return f"Called {inst} {way} ${lvl}{made}.{got}"
+
 
 def explain(call, p0, p1, outcome):
     d = (call.get("direction") or "").lower(); L = call.get("level")
@@ -130,6 +159,8 @@ def grade_today(daily_path="data/daily.json", archive_dir="data/daily-archive", 
     yc["computed"] = {"outcome": outcome, "made": prior[-1], "p0": p0, "p1": p1,
                       "instrument": call.get("instrument"), "direction": call.get("direction"),
                       "level": call.get("level")}
+    # v5.1: the sentence the reader sees, from the record, not the model.
+    yc["call_line"] = plain_call(call, p0, p1, outcome)
     daily["yesterdays_call"] = yc
     flag = "" if llm_outcome in (None, outcome) else f"  (overrode LLM '{llm_outcome}')"
     print(f"[grade] {note}{flag}")

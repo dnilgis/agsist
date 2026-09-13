@@ -1,8 +1,23 @@
 #!/usr/bin/env python3
 """
-AGSIST Daily Briefing Generator, v4.6.3
+AGSIST Daily Briefing Generator, v5.1 (the cut)
 ═══════════════════════════════════════════════════════════════════
 Generates the daily agricultural intelligence briefing via Claude API.
+
+v5.1 (the cut, 2026-09-13): the briefing is ~400 words, hard ceiling 450,
+enforced by scripts/briefing_cut.py (one definition, imported by the
+generator, the critic and the schema check). Fields retired from the
+model output: subheadline, the_takeaway, catalyst, vs_yesterday,
+the_more_you_know, weekly_thread, per-section farmer_action, and
+yesterdays_call.summary. bottom_line is now so_what (15 words). One
+mandatory thresholded `action`. outside_the_pit is 1 item, watch_list
+is 3 items of 20 words, sections are 2-3 of 55 words. The lede may not
+end by pointing forward (RULE 3). "Word budget" is no longer in
+NON_BLOCKING: a briefing still over 450 after deterministic truncation
+fails the run. yesterdays_call is graded in the generator (grade_calls,
+imported) before the archive is rendered, and carries a deterministic
+call_line in place of the model's summary. Renderers keep drawing the
+retired fields for the 185 archived issues that carry them.
 
 v4.6.3 (model migration, 2026-06-16): MODEL -> claude-sonnet-4-6 (the old
 claude-sonnet-4-20250514 was retired from the Claude API on 2026-06-15, causing 404s);
@@ -136,6 +151,7 @@ import re
 from datetime import datetime, timezone, timedelta, date
 
 from contract_calendar import is_expired   # ONE definition of contract expiry
+import briefing_cut                         # ONE definition of the word budget
 from pathlib import Path
 
 try:
@@ -681,8 +697,8 @@ def load_yesterdays_call_context():
                         key=lambda s: priority.get((s.get("conviction_level") or "").lower(), 1),
                         reverse=True)
         top = ranked[0]
-        # Prefer farmer_action (most specific), fall back to bottom_line, then title
-        call = (top.get("farmer_action") or "").strip()
+        # v5.1: so_what is the field; the older names are read for archived issues.
+        call = (top.get("so_what") or top.get("farmer_action") or "").strip()
         if not call: call = (top.get("bottom_line") or "").strip()
         if not call: call = (top.get("title") or "").strip()
         if not call: continue
@@ -893,7 +909,7 @@ def load_past_phrases(n=2, top_k=12):
             corpus.append((b.get("lead") or "").lower())
             for s in (b.get("sections") or []):
                 corpus.append((s.get("body") or "").lower())
-                corpus.append((s.get("bottom_line") or "").lower())
+                corpus.append((s.get("so_what") or s.get("bottom_line") or "").lower())
             tmyk = b.get("the_more_you_know") or {}
             corpus.append((tmyk.get("body") or "").lower())
         except Exception:
@@ -1165,7 +1181,7 @@ def _tour_is_over_note(span, label, final_date=None, today=None):
 
       * days 0-4 after the final number -- still genuinely recent. Full note.
       * day 5 onward -- one quiet line whose whole job is suppression, and
-        which BANS the tour from the headline, subheadline, lead, takeaway
+        which BANS the tour from the headline, lead, action
         and teaser by name. A guard belongs in the guard rails, not in the
         lede.
 
@@ -1193,7 +1209,7 @@ def _tour_is_over_note(span, label, final_date=None, today=None):
     return (f"BACKGROUND ONLY, NOT NEWS: the Pro Farmer Crop Tour ran {span} and "
             f"its final national estimate came out on {label}, {age}. That is old "
             f"news and it is NOT a story. Do NOT put the tour, its number, or the "
-            f"fact that it is over in the headline, subheadline, lead, the_takeaway "
+            f"fact that it is over in the headline, lead, action "
             f"or teaser. Do not frame the day around 'the tour is behind us' or "
             f"'now we wait for the WASDE'. Mention it at all only if the news block "
             f"carries something new about it, and never in the future tense.")
@@ -1361,13 +1377,11 @@ def get_usda_release_today():
         "\n  1. Today's report's numbers DO NOT EXIST yet. Any overnight or morning move"
         "\n     happened BEFORE the report: it is positioning, never reaction. Do not"
         "\n     attribute any price move to the report's contents."
-        "\n  2. Headline, subheadline and lead must frame the report as UPCOMING"
+        "\n  2. Headline, lead and action must frame the report as UPCOMING"
         "\n     (\"WASDE prints at 11 CT\", \"ahead of the report\") — never as having"
         "\n     printed, landed, delivered, dropped, confirmed, showed, or come in."
-        "\n  3. If the weekly thread's question involves today's report, the thread STAYS"
-        "\n     OPEN: status_text says the answer arrives at 11:00 AM CT today. Do NOT"
-        "\n     resolve it. If a prior briefing implied the report already came out, that"
-        "\n     was an error — THIS block is authoritative."
+        "\n  3. If a prior briefing implied the report already came out, that was an"
+        "\n     error — THIS block is authoritative."
     )
     return header
 
@@ -1379,8 +1393,8 @@ def build_system_prompt(market_status, past_tmyk_topics, yesterdays_call=None, w
         if reason == "weekend" and "Saturday" in day:
             weekend_instructions = (
                 "\nWEEKEND MODE SATURDAY: Markets CLOSED. Write WEEK IN REVIEW + WEEKEND OUTLOOK. "
-                "Reference 'Friday's close'. No overnight language. Skip yesterdays_call and "
-                "weekly_thread (set to empty objects).\n"
+                "Reference 'Friday's close'. No overnight language. Skip yesterdays_call "
+                "(set it to an empty object).\n"
                 "RULE 17 ON WEEKENDS: the post-gen level-coherence validator checks every "
                 "'broke $X'/'below $X'/'above $X' claim against FRIDAY'S CLOSE (the only close "
                 "in locked_prices on weekends). Retrospective prose with explicit day-of-week "
@@ -1396,8 +1410,8 @@ def build_system_prompt(market_status, past_tmyk_topics, yesterdays_call=None, w
         elif reason == "weekend" and "Sunday" in day:
             weekend_instructions = (
                 "\nWEEKEND MODE SUNDAY: Markets CLOSED. Write SUNDAY PREVIEW + WEEK AHEAD. "
-                "Reference 'Friday's close'. No overnight language. Skip yesterdays_call and "
-                "weekly_thread (set to empty objects).\n"
+                "Reference 'Friday's close'. No overnight language. Skip yesterdays_call "
+                "(set it to an empty object).\n"
                 "RULE 17 ON SUNDAYS: forecast and conditional prose is the dominant mode "
                 "('if cattle break $X next week', 'a move below $Y would target $Z'). The "
                 "validator auto-skips claims wrapped in 'if/would/should/could/next week/might/may' "
@@ -1411,14 +1425,12 @@ def build_system_prompt(market_status, past_tmyk_topics, yesterdays_call=None, w
         else:
             weekend_instructions = (
                 f"\nHOLIDAY MODE {day.upper()}: Markets CLOSED. Holiday outlook framing. "
-                f"Skip yesterdays_call and weekly_thread (set to empty objects). "
+                f"Skip yesterdays_call (set it to an empty object). "
                 f"Rule 17 (level coherence) references the most recent close in locked_prices. "
                 f"Rule 18 (macro anchoring) applies normally.\n"
             )
 
-    banned_tmyk = ""
-    if past_tmyk_topics:
-        banned_tmyk = "\n\nTMYK TOPIC EXCLUSION (last 3 briefings):\n  - " + "\n  - ".join(past_tmyk_topics) + "\nPick a different angle today."
+    banned_tmyk = ""   # v5.1: the_more_you_know is retired; nothing to exclude
 
     banned_one_number = ""
     if past_one_number_topics:
@@ -1487,7 +1499,7 @@ def build_system_prompt(market_status, past_tmyk_topics, yesterdays_call=None, w
             call_identity = (
                 f"On {yesterdays_call['prior_date']}, your graded call was: "
                 f"{_sc.get('instrument')} {_scdir}, toward {_scarrow} ${_sc.get('level')}.\n"
-                f"This is the EXACT call scored automatically from today's close. Your summary and "
+                f"This is the EXACT call scored automatically from today's close. Your "
                 f"note MUST be about {_sc.get('instrument')} and this line — describe what "
                 f"{_sc.get('instrument')} actually did versus that call. Do NOT write the note about a "
                 f"different market, even if another section was louder yesterday."
@@ -1533,68 +1545,13 @@ OUTCOME RUBRIC: be honest, but be accurate. Most calls are PARTIAL. Choose the c
 DO NOT default to "didnt" because "the bounce was thin" or "the move was small."
 A directional call that resolved in the called direction is PLAYED OUT, even if the magnitude was modest. Readers respect accountability, both for being right AND for being wrong. Mislabeling a win as a loss undermines trust as much as the reverse.
 
-Output as the yesterdays_call object in the JSON. Give your best read for outcome ('played_out', 'didnt', or 'pending'), but know it is RE-COMPUTED deterministically from the actual close after you finish (direction AND level both must resolve in the call's favor). Do not strain to justify a verdict — in the summary, describe the call and what the market actually did, factually.
+Output as the yesterdays_call object in the JSON: {{"outcome": your best read ('played_out', 'didnt', or 'pending'), "note": ONE sentence, MAX 25 WORDS}}. The outcome is RE-COMPUTED deterministically from the actual close after you finish (direction AND level both must resolve in the call's favor), and the call itself is printed from the record, so do NOT restate what the call was. The note says what the market did against it and what that means today. A miss is a miss: 'Miss; beans stopped a nickel short of the line and the thesis is still live' beats a paragraph of replay.
 """
 
+    # v5.1: weekly_thread is retired. The thread block, its Monday setup, its
+    # Friday resolution and the release-day thread rule all left with it. The
+    # parameter stays on the signature so the call sites did not have to move.
     thread_block = ""
-    day_names_full = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
-    if weekly_thread and not market_status["is_closed"]:
-        day_label = day_names_full[weekly_thread["today_day_of_week"] - 1] if weekly_thread["today_day_of_week"] <= 5 else "Friday"
-        if weekly_thread["is_resolution_day"]:
-            thread_block = f"""
-
-══ WEEKLY THREAD: FRIDAY RESOLUTION ══
-Monday's question for the week was: "{weekly_thread['question']}"
-
-Today is FRIDAY. RESOLVE the question. Did it play out? What's the answer? Use the weekly_thread.status_text field for a 1-2 sentence resolution. Lead paragraph should pay off the week's arc, the reader who has been reading all week should feel the story landed.
-
-Set weekly_thread.day = 5 and weekly_thread.question = (Monday's question, copied forward).
-"""
-        else:
-            thread_block = f"""
-
-══ WEEKLY THREAD: {day_label.upper()} UPDATE ══
-Monday's question for the week was: "{weekly_thread['question']}"
-
-Today is {day_label}. PROGRESS the thread. New data, new development, where does the question stand right now? Use the weekly_thread.status_text field for a 1-2 sentence update. Lead paragraph can briefly reference where the thread sits without over-explaining (the chapter marker handles framing).
-
-Set weekly_thread.day = {weekly_thread['today_day_of_week']} and weekly_thread.question = (Monday's question, copied forward).
-"""
-    elif not market_status["is_closed"]:
-        # Today is Monday: model identifies the question
-        if datetime.now().weekday() == 0:
-            thread_block = """
-
-══ WEEKLY THREAD: MONDAY SETUP ══
-Today is MONDAY. IDENTIFY the single biggest unresolved question for the week ahead. The question should be:
-  - Specific enough to track day-by-day (not "where will markets go")
-  - Resolvable by Friday's data (not multi-week)
-  - About the dominant story arc, not a side issue
-
-Examples of strong weekly questions:
-  - "Will planting hit 50% by Friday?"
-  - "Will the funds defend the long in corn through this week's data?"
-  - "Does soybean basis crack before the export sales print?"
-  - "Will live cattle hold $245 through Tuesday's Cattle on Feed?"
-
-Set weekly_thread.day = 1, weekly_thread.question = (your question), weekly_thread.status_text = (1-2 sentence setup explaining why this is the week's question).
-"""
-
-    # 2026-08-12: when a USDA release block is active, the weekly thread is the
-    # poison path — Monday's question ("does the WASDE confirm...") reads like
-    # an invitation to resolve it with a report that hasn't printed. Both
-    # fabricated drafts on WASDE morning resolved the thread. Tie the thread
-    # instruction to the release grounding EXPLICITLY, right where the thread
-    # is briefed (this also covers the Sep 11 WASDE, which is a FRIDAY — the
-    # thread's own resolution day).
-    if thread_block and usda_release:
-        thread_block += (
-            "\nRELEASE-DAY THREAD RULE: a USDA release block is active today (see it above"
-            " — it is authoritative). If this week's question hinges on that report, today's"
-            " thread update covers the SETUP ONLY: the report has NOT printed as you write,"
-            " no matter what the question's wording or any prior status_text implies."
-            " status_text must say the answer arrives after 11:00 AM CT — never that it"
-            " already did.\n")
 
     # v4.6: collect ALL non-empty optional blocks and join with double-newline.
     # This avoids the wall-of-blanks problem when several blocks are empty
@@ -1633,7 +1590,7 @@ LEAD example (quiet day, equally valid AGSIST voice):
 LEAD example (range-bound consolidation):
 "Wheat closed $5.91, the fifth straight session inside a 12-cent band. Range-bound isn't drama, but it's information: the funds aren't selling, the commercials aren't buying, and nobody has new news. When wheat decides which way it's leaving the range, it'll be on data the calendar already shows."
 
-SECTION BODY example (medium conviction) — 2-3 bullet lines, each ONE sentence, "- " prefix; the so-what goes in bottom_line, not in a trailing bullet:
+SECTION BODY example (medium conviction) — 2-3 bullet lines, each ONE sentence, "- " prefix, MAX 55 WORDS; the so-what goes in so_what, not in a trailing bullet:
 "- Soybeans ran into the 200-day at **$10.42** and bounced like they were supposed to, but the bounce is thin: funds still net long 64,000 contracts, crush margins eased a nickel.
 - No new catalyst in the fundamentals; the chart is doing the work alone.
 - Thursday export sales under 300K MT says the bounce was position-squaring, not demand."
@@ -1642,15 +1599,20 @@ SECTION BODY example (low conviction, quiet day) — 2 bullets is plenty:
 "- Cattle marked time at **$248.50**, give or take a quarter; nothing in the box-beef cutout said anything new.
 - The fed trade hasn't reset since the last Cattle on Feed; no reason to push the contract until it does."
 
-BOTTOM LINE examples (synthesis, not restatement):
+SO WHAT examples (synthesis, not restatement, MAX 15 WORDS):
 - "Coiled range plus Tuesday catalyst equals directional resolution this week."
 - "Cattle still acting like the buyer is patient, not gone."
 - "Carry's working in soybeans, old crop into new crop just rolled wider for a third week."
 - "No move worth narrating; the data calendar will reset the story."
 
-WATCH LIST example (conditional, not calendar):
-- "Tuesday: USDA Crop Progress; corn above 40% planted confirms the Belt is on pace, below 30% adds weather premium."
-- "Thursday: Weekly export sales; soy under 300K MT keeps the chart in charge of the story."
+WATCH LIST example (conditional, not calendar, MAX 20 WORDS each):
+- "Tuesday: Crop Progress; corn above 40% planted keeps the Belt on pace, below 30% adds weather premium."
+- "Thursday: Export sales; soy under 300K MT keeps the chart in charge."
+
+ACTION examples (one per briefing, thresholded, MAX 25 WORDS):
+- "Unpriced new-crop beans: a settle below $12.85 is the sell signal. Do not wait for $12.70."
+- "Cattle: nothing to do at $248.50. A close above $251 is the first reason to price the fall calves."
+- "Quiet day, no action. Hold. Watch $4.62 corn; a close under it is the next decision point."
 
 VOCABULARY: use these:
 - "the funds got lost" / "the funds are out" / "funds rotating out of X into Y", be specific
@@ -1715,7 +1677,7 @@ GEOGRAPHIC SCOPE: National. NEVER narrow to "Wisconsin and Minnesota farmers" or
 
 HEADLINE NUMERALS: Always digit format. Write "9.2%" or "9%", not "NINE PERCENT". AI search engines query digits, not spelled-out numbers. The headline is the canonical anchor and must be queryable.
 
-NEWS DISCIPLINE: News is INPUT, not flavor. The news block below is organized by bucket (GRAINS, LIVESTOCK, ENERGY, POLICY, WEATHER, MACRO). Every section with medium or high conviction MUST identify the catalyst, the news / data / event / report that drove or contextualizes the price action. If the relevant news bucket has NO recent items, you may write "no clean catalyst, looks like fund liquidation" or similar, but only if the bucket was actually empty. Default behavior: thread a specific news item from the relevant bucket into each section's body. Do NOT recap the news; weave it into the price story as the why. Lead with the price + so-what; the catalyst is the why behind it.
+NEWS DISCIPLINE: News is INPUT, not flavor. The news block below is organized by bucket (GRAINS, LIVESTOCK, ENERGY, POLICY, WEATHER, MACRO). Every section with medium or high conviction MUST identify the catalyst, the news / data / event / report that drove or contextualizes the price action. If the relevant news bucket has NO recent items, you may write "no clean catalyst, looks like fund liquidation" or similar, but only if the bucket was actually empty. Default behavior: thread a specific news item from the relevant bucket into each section's body. Do NOT recap the news; weave it into the price story as the why. Lead with the price + so-what; the news is the why behind it. There is no separate catalyst field; the why lives in the bullets or it does not exist.
 {context_blocks}
 
 {CALENDAR_FACTS_2026_LOCAL}
@@ -1736,46 +1698,39 @@ The vocabulary stays in the working-ag register at EVERY magnitude. Big moves ge
 
 For genuinely once-a-decade events, you may use "historic" once. Otherwise describe the move by the size of the move ("9% in a single session, the biggest since [date]") and let the reader feel the weight. NEVER use drama verbs at any magnitude.
 
-══ THE 20 IMPACT RULES ══
+══ THE 16 IMPACT RULES ══
 
 1. THE LEAD MUST DELIVER A "SO WHAT". Not a price recap. Specific price + synthesizing observation that interprets, contextualizes, or connects.
 
 2. CONVICTION MUST BE EARNED. "Medium" is the cop-out. Default to "low" on quiet days. Reserve "high" for genuine directional thesis with data behind it.
 
-3. THE MORE YOU KNOW IS OPTIONAL AND MUST BE NEW. Include it ONLY when it teaches something no section already explained; if the insight already lives in a section body, set the_more_you_know to an empty object. When included: opens with a hook tied to a number from today's briefing, 2-3 sentences, max 60 words. Most days it should be EMPTY. An empty TMYK is a feature, not a failure.
+3. THE LEDE MAY NOT DEFER. The LAST sentence of the lead states a consequence that is ALREADY TRUE: what today's close already did to a bushel, a load, a margin, a decision. It may not point forward. Banned as a closing sentence: "Tuesday's print decides", "the question is whether", "this week tells you", "will set", "holds the answer", "watch Thursday". The 2026-09-13 issue closed its lede with "The question is whether $12.99 holds or breaks." That is a promise, not a briefing. Write instead: "Every unpriced bushel is worth 24 cents less than it was Thursday." The forward pointer belongs in the watch list, which exists for it.
 
-3a. TMYK RHETORICAL SHAPE. Vary the title shape across briefings. Do NOT default to "Why X Y" titles more than once per five briefings. Acceptable shapes:
-  - Thesis statement: "The carry trade is the planting calendar's tell."
-  - Question: "What does open interest say that price doesn't?"
-  - Counterintuitive claim: "Quiet days price the next move, not the noise."
-  - Number-first: "12 cents. The spread that's running the corn market."
-  - Named concept: "The 'planting paradox' explained."
-  - Historical parallel: "The 2012 drought premium showed up first in the calendar spread."
-Past TMYK titles from the last 3 briefings are listed above; do NOT repeat their shape OR topic.
+4. WATCH LIST: EXACTLY 3 ITEMS, EACH UNDER 20 WORDS, CONDITIONAL. At least two of the three must include a specific level, threshold, or trigger. Calendar entries are weakest.
 
-4. WATCH LIST ITEMS MUST BE CONDITIONAL. At least HALF of items must include a specific level, threshold, or trigger. Calendar entries are weakest.
+5. SO WHAT MUST SYNTHESIZE, NOT RESTATE. Each section's so_what is MAX 15 WORDS and adds information beyond the section title. If inferable from the title alone, rewrite.
 
-5. BOTTOM LINES MUST SYNTHESIZE, NOT RESTATE. Add information beyond the section title. If inferable from title alone, rewrite.
+6. QUIET DAYS DESERVE QUIET BRIEFINGS. Do not manufacture drama. Acceptable: "Most days don't move markets. Today is one of them." Prefer 2 sections to 3. A reader who sees you call quiet days quiet trusts your loud days.
 
-6. QUIET DAYS DESERVE QUIET BRIEFINGS. Do not manufacture drama. Acceptable: "Most days don't move markets. Today is one of them." Prefer 2 sections to 4. A reader who sees you call quiet days quiet trusts your loud days.
+7. CONTINUITY: REWARD THE REGULAR READER. When past briefings are provided, surface prior calls that today's data confirmed or invalidated. The yesterdays_call note is where that lives.
 
-7. CONTINUITY: REWARD THE REGULAR READER. When past briefings are provided, surface prior calls that today's data confirmed or invalidated.
-
-8. WORD BUDGETS, HARD. The whole briefing is 750-900 words of prose, total. It used to run 1,600; the diet is deliberate (reader-panel finding: completion died at the halfway mark). Per-field caps: lead 65 words; each section body 80 words; one_number.context 45; yesterdays_call summary+note 45 combined; weekly_thread.status_text 35; each outside_the_pit item 45; the_more_you_know.body 60. The way to hit budget is to CUT the weakest material, not to compress everything equally. A 2-section briefing under budget beats a 4-section briefing over it.
+8. THE WORD BUDGET IS THE PRODUCT. The whole briefing is about 400 words of prose. 450 is a hard ceiling: anything over it is cut by a machine after you finish, weakest block first, and if it is still over, the run fails and nobody gets a briefing. It used to run 1,090 words and the reader who pays for this said he barely reads it. Per-field caps: lead 55; each section body 55; so_what 15; one_number.context 30; action 25; yesterdays_call.note 25; outside_the_pit body 30; each watch item 20. The way to hit budget is to CUT the weakest material, not to compress everything equally. A 2-section briefing at 350 words beats a 3-section briefing at 460.
 
 9. VOICE, ABSOLUTELY NON-NEGOTIABLE. The briefing must sound like the VOICE SAMPLES above. If a paragraph could appear unchanged in a Reuters or Bloomberg wire summary, REWRITE it with the operator vocabulary, embedded thesis, and imperative tone shown in the samples. The single most common failure mode is regression to wire-service neutral. Reject your own first draft if it reads neutral.
 
 10. THE FORWARD TEST. Before you finalize the lead, ask: would a working farmer forward this lead with one line of context to another farmer? If the answer is no, rewrite. The lead is the entire product.
 
-11. THREAD COHERENCE (Tue-Fri only). When weekly_thread context is provided, today's lead must materially advance the thread, new data, new development, new angle. Do NOT just rehash Monday's setup with the same evidence. Friday must resolve, not summarize.
+11. ONE ACTION, THRESHOLDED, EVERY DAY. The action field is MANDATORY: one sentence, MAX 25 WORDS, naming an instrument, a level in LOCKED TABLE units, and what a producer does at that level. "If new-crop beans settle below $12.85, price the first 10%." On a quiet day the action is still thresholded: "Nothing to do at $4.62; a close under it is the next decision point." An action with no number is not an action. An action that is a mood ("stay cautious") is not an action.
 
-12. THE TAKEAWAY MUST BE COMMITTABLE. The_takeaway is the briefing's commitment to the reader: if you forget everything else, remember this. Single sentence, max 18 words. Must be operational, a producer should be able to say it out loud at the elevator and have it mean something. NOT a price recap ("hogs crashed 9%"), NOT a vague mood ("markets are uncertain"). DO say something like: "Cattle still acting like the buyer is patient, not gone." or "Wait, quiet days price the next move, not this one." If you can't write a takeaway sharper than the headline, leave the field empty (set the_takeaway to "").
+12. ONE FACT, ONE HOME. Every stat, story, and price move is told ONCE, in the one block where it does the most work. The one_number is NEVER re-explained in a section (a six-word pointer like "the Yanbu decline covered above" is the maximum). Weather forecasts get one full telling; every later mention is four words or fewer. Before finalizing, scan your own draft: any sentence that restates an earlier sentence gets deleted, not reworded. The Jul 24 issue told the same Saudi pipeline story twice word-for-word and mentioned the same heat forecast six times; that is the failure mode this rule exists to kill.
 
-13. VS_YESTERDAY MUST BE NEW INFO. The vs_yesterday field on each section is OPTIONAL, only include it when today's data confirmed, contradicted, or materially advanced what yesterday's section said about the same commodity. Keep it under 12 words. Format: "[Commodity]: [what changed since yesterday]." Examples: "Cattle: narrative held, momentum fading exactly as called." "Hogs: yesterday's drift broke into outright crash." Do NOT pad, if there's no continuity worth noting, OMIT the field. Empty vs_yesterday is a feature, not a failure. (Skip entirely on Mondays after long weekends or when no prior briefing exists.)
+13. LEVEL COHERENCE — MATH SANITY ON SUPPORT/RESISTANCE CLAIMS. If the briefing claims a price level was BROKEN, BREACHED, BELOW, UNDER, ABOVE, or THROUGH a support/resistance level, the LOCKED CLOSE PRICE for that contract MUST be on the breaking side of that level. Self-check before finalizing every section and the lead:
+  - If the close is HIGHER than the level cited, you may NOT write "broke $X", "below $X", "under $X", "decisively through $X", or "crashed through $X". Use instead: "tested $X", "pulled back to $X", "right back to $X", "held above $X by a hair".
+  - If the close is LOWER than the level cited, you may NOT write "above $X", "held $X", "defended $X", "reclaimed $X". Use instead: "broke $X", "lost $X", "fell through $X".
+  - The post-generation validator scans for "broke|below|under|above|over|through $XX.XX" patterns and cross-checks against the LOCKED PRICE TABLE. If it finds a contradiction, the briefing fails validation and you wasted a generation. Get this right the first time.
+  - This rule applies retroactively too: when continuity-referencing prior briefings (e.g., "one day after Monday broke $252"), do NOT carry forward false break claims. If you cannot verify the prior close from the past_dailies block, soften to "one day after Monday tested $252".
 
-14. NEWS CATALYST OR HONEST ABSENCE. Every section with conviction medium or high MUST identify the catalyst, a specific news item, USDA report, weather event, policy change, geopolitical move, fund-positioning shift, basis development, or cross-commodity move. The news block is structured by bucket. Pull from the relevant bucket. If the relevant bucket has nothing, and only then, write "no clean catalyst" or "looks like fund liquidation." Generic "managed money positioning" or "technical selling" without a specific tie is wire filler. Reject it. The reader's question every section must answer: WHY did this move (or not move) today? The body must answer that question.
-
-15. ONE NUMBER RUBRIC: CANNOT BE A PRICE FROM THE CLOSES TABLE. The Number is the day's most interesting STAT. It earns its place by adding information beyond what the closes table already shows. Acceptable sources:
+14. ONE NUMBER RUBRIC: CANNOT BE A PRICE FROM THE CLOSES TABLE. The Number is the day's most interesting STAT. It earns its place by adding information beyond what the closes table already shows. Acceptable sources:
     - News headlines (export volumes, USDA report numbers, fund positioning changes)
     - Cross-commodity ratios (feeder/live ratio, crude/diesel crack, soyoil/meal share)
     - Week-over-week or year-over-year deltas (export pace vs last year, planting % vs 5-year avg)
@@ -1788,63 +1743,39 @@ Past TMYK titles from the last 3 briefings are listed above; do NOT repeat their
     - A vague "$X billion" without specific context
   COHERENCE CHECK: value and unit must describe the SAME thing. If value=1.4%, unit must describe what 1.4% IS, not a different commodity, not a different metric. Self-test before finalizing: read value + unit aloud. Does it parse as a single fact?
 
-16. OUTSIDE THE PIT: ALWAYS POPULATE WEEKDAYS. The outside_the_pit array is the briefing's "what else mattered today in ag" block. EXACTLY 2 items, each max 45 words (one sentence of what happened + one of why a producer cares), each a piece of ag news that is NOT directly moving today's prices but IS in the calculus for what's coming. Pick the 2 that touch a farm decision; skip consumer-recall noise. Examples of strong items: a structural China/Brazil shipment shift, a USDA staffing or methodology change, an EPA/RFS rule update, a packer concentration story, a drought monitor expansion, a freight or logistics development, a farm bill provision, an animal disease outbreak. Pull from the news block, especially the POLICY & TRADE, WEATHER & CLIMATE, and OTHER buckets. Source attribution optional but encouraged. On weekends, populate with week-ahead context items instead of empty.
+15. MACRO EVENT ANCHORING. The first time any briefing in a given week references an ongoing geopolitical or macro event (Iran tensions, Hormuz disruption, election cycle, Fed pivot, trade war, etc.), include a single anchoring clause that establishes what the event is and roughly when it began. Example: "...as Iran-Iraq tensions over the Strait of Hormuz, ongoing since March, eased on diplomatic progress." Subsequent briefings in the same week can reference shorthand. The reader who lands on this briefing for the first time should be able to follow the macro thread.
 
-17. LEVEL COHERENCE — MATH SANITY ON SUPPORT/RESISTANCE CLAIMS. If the briefing claims a price level was BROKEN, BREACHED, BELOW, UNDER, ABOVE, or THROUGH a support/resistance level, the LOCKED CLOSE PRICE for that contract MUST be on the breaking side of that level. Self-check before finalizing every section, lead, and TMYK:
-  - If the close is HIGHER than the level cited, you may NOT write "broke $X", "below $X", "under $X", "decisively through $X", or "crashed through $X". Use instead: "tested $X", "pulled back to $X", "right back to $X", "held above $X by a hair".
-  - If the close is LOWER than the level cited, you may NOT write "above $X", "held $X", "defended $X", "reclaimed $X". Use instead: "broke $X", "lost $X", "fell through $X".
-  - The post-generation validator scans for "broke|below|under|above|over|through $XX.XX" patterns and cross-checks against the LOCKED PRICE TABLE. If it finds a contradiction, the briefing fails validation and you wasted a generation. Get this right the first time.
-  - This rule applies retroactively too: when continuity-referencing prior briefings (e.g., "one day after Monday broke $252"), do NOT carry forward false break claims. If you cannot verify the prior close from the past_dailies block, soften to "one day after Monday tested $252".
-
-18. MACRO EVENT ANCHORING. The first time any briefing in a given week references an ongoing geopolitical or macro event (Iran tensions, Hormuz disruption, election cycle, Fed pivot, trade war, etc.), include a single anchoring clause that establishes what the event is and roughly when it began. Example: "...as Iran-Iraq tensions over the Strait of Hormuz, ongoing since March, eased on diplomatic progress." Subsequent briefings in the same week can reference shorthand. The reader who lands on this briefing for the first time should be able to follow the macro thread. This also helps AI search engines and LLM crawlers cite AGSIST as a primary source rather than getting stuck on uncited shorthand.
-
-19. ONE FACT, ONE HOME. Every stat, story, and price move is told ONCE, in the one block where it does the most work. The one_number is NEVER re-explained in a section (a six-word pointer like "the Yanbu decline covered above" is the maximum). A cross-commodity insight (meal/oil split, feeder/live ratio) lives in its section OR the_more_you_know, never both. Weather forecasts get one full telling; every later mention is four words or fewer. Before finalizing, scan your own draft: any sentence that restates an earlier sentence gets deleted, not reworded. The Jul 24 issue told the same Saudi pipeline story twice word-for-word and mentioned the same heat forecast six times; that is the failure mode this rule exists to kill.
-
-20. CLEAN OUTPUT MECHANICS. (a) NEVER write internal field names (one_number, weekly_thread, the_more_you_know, watch_list, outside_the_pit, tmyk) in reader-facing prose; say "today's number" or restructure the sentence. A published issue once printed "the one_number today". (b) Percent-of-range figures are 0-100 by definition; if a close sits at or beyond the top of its 52-week range, write "at the top of its 52-week range" or "a fresh 52-week high", never "102% of the range". (c) If the current spread/ratio setup (bean/corn ratio, carry structure) is genuinely at a decision threshold, it earns ONE bolded sentence inside the relevant section, with the acreage/storage logic stated CORRECTLY (a high bean/corn ratio pulls acres toward beans); there is no standalone spread block anymore. (d) NEVER use emoji or pictographic symbols in ANY field — headline, titles, bodies, everywhere. Plain text only; the page chrome supplies its own glyphs.
-
-21. THE LEAD MUST BE NEW. The headline, subheadline, lead, the_takeaway and teaser may only be built on something that happened since the previous briefing: an overnight or prior-session price move, a report released, a forecast that changed, a story in today's news block. A fact that was equally true a week ago cannot lead, however important it is. Two published failures, both caught by the reader and not by any check here: on 2026-08-26 the briefing promised a Pro Farmer number that had already been published, and on 2026-08-28 — eight days after the tour ended — it led with "PRO FARMER DONE; SEPTEMBER WASDE HOLDS THE ANSWER" over the sentence "The Pro Farmer tour is in the rearview." Nothing about that had changed in over a week. The seasonal and background context in this prompt exists to keep you from getting the CALENDAR wrong; it is not a source of stories, and an instruction telling you NOT to say something is never itself the thing to say. Before finalizing, ask of the headline: what changed to make this true today? If the honest answer is "nothing", the day is a quiet one — lead with the price action and say it was quiet. A quiet day reported as quiet is a good briefing. A stale fact dressed as news is not.
+16. CLEAN OUTPUT MECHANICS. (a) NEVER write internal field names (one_number, watch_list, outside_the_pit, so_what) in reader-facing prose; say "today's number" or restructure the sentence. A published issue once printed "the one_number today". (b) Percent-of-range figures are 0-100 by definition; if a close sits at or beyond the top of its 52-week range, write "at the top of its 52-week range" or "a fresh 52-week high", never "102% of the range". (c) If the current spread/ratio setup (bean/corn ratio, carry structure) is genuinely at a decision threshold, it earns ONE bolded sentence inside the relevant section, with the acreage/storage logic stated CORRECTLY (a high bean/corn ratio pulls acres toward beans); there is no standalone spread block. (d) NEVER use emoji or pictographic symbols in ANY field — headline, titles, bodies, everywhere. Plain text only; the page chrome supplies its own glyphs. (e) THE LEAD MUST BE NEW. The headline, lead, action and teaser may only be built on something that happened since the previous briefing: an overnight or prior-session price move, a report released, a forecast that changed, a story in today's news block. A fact that was equally true a week ago cannot lead, however important it is. Two published failures, both caught by the reader and not by any check here: on 2026-08-26 the briefing promised a Pro Farmer number that had already been published, and on 2026-08-28 — eight days after the tour ended — it led with "PRO FARMER DONE; SEPTEMBER WASDE HOLDS THE ANSWER" over the sentence "The Pro Farmer tour is in the rearview." Nothing about that had changed in over a week. The seasonal and background context in this prompt exists to keep you from getting the CALENDAR wrong; it is not a source of stories, and an instruction telling you NOT to say something is never itself the thing to say. Before finalizing, ask of the headline: what changed to make this true today? If the honest answer is "nothing", the day is a quiet one — lead with the price action and say it was quiet. A quiet day reported as quiet is a good briefing. A stale fact dressed as news is not.
 
 ══ OUTPUT, return valid JSON with EXACTLY these fields ══
 
 {{
   "headline": "ALL CAPS, 6-10 words.",
-  "subheadline": "One sentence adding context.",
-  "lead": "2-3 sentences, MAX 65 WORDS (RULE 8). Specific price from table + synthesizing observation (RULE 1). Voice samples (RULE 9). Forward test (RULE 10). On Tue-Fri, advances the thread (RULE 11).",
-  "the_takeaway": "Single sentence, max 18 words. The if-you-remember-one-thing (RULE 12). Empty string if you cannot write one sharper than the headline.",
-  "teaser": "One punchy sentence for the collapsed hero bar.",
-  "one_number": {{"value": "The day's most interesting number, see ONE NUMBER RUBRIC below.", "unit": "3-6 words DESCRIBING WHAT THE VALUE IS. Must be coherent with value. Wrong: value=1.4%, unit='live cattle decline' when the actual mover was feeders. Right: value=1.4%, unit='feeder cattle decline'.", "context": "1-2 sentences, MAX 45 WORDS. Why this number matters today and what it tells you that prices alone don't. This is the ONLY place this stat gets explained (RULE 19)."}},
+  "lead": "2-3 sentences, MAX 55 WORDS (RULE 8). Specific price from table + synthesizing observation (RULE 1). Voice samples (RULE 9). Forward test (RULE 10). LAST SENTENCE states a consequence already true, never a pointer forward (RULE 3).",
+  "teaser": "One punchy sentence, max 18 words, for the collapsed hero bar and the archive index.",
+  "one_number": {{"value": "The day's most interesting number, see ONE NUMBER RUBRIC (RULE 14).", "unit": "3-6 words DESCRIBING WHAT THE VALUE IS. Must be coherent with value. Wrong: value=1.4%, unit='live cattle decline' when the actual mover was feeders. Right: value=1.4%, unit='feeder cattle decline'.", "context": "1-2 sentences, MAX 30 WORDS. Why this number matters today and what it tells you that prices alone don't. This is the ONLY place this stat gets explained (RULE 12)."}},
   "yesterdays_call": {{
-    "summary": "1 short sentence describing the prior call (summary + note combined MAX 45 WORDS; 'Miss, plain and simple' beats a paragraph of replay).",
     "outcome": "played_out | didnt | pending",
-    "note": "1 sentence on what it means for today. OMIT field entirely on Mondays after long weekends or when no prior call was provided."
+    "note": "ONE sentence, MAX 25 WORDS: what the market did against the call and what it means today. The call itself is printed from the record; do not restate it. OMIT the whole object when no prior call was provided or the market is closed."
   }},
   "todays_call": {{
     "instrument": "The ONE instrument this briefing makes its sharpest directional bet on: corn, beans, wheat, cattle, feeders, hogs, crude, or natgas. Match your highest-conviction section.",
     "direction": "up | down",
     "level": "Number only, in the SAME units as the LOCKED PRICE TABLE ($/bu grains, $/cwt livestock, $/bbl crude). The price line your call hinges on."
   }},
+  "action": "MANDATORY. ONE sentence, MAX 25 WORDS. Instrument + level from the LOCKED TABLE + what a producer does at that level (RULE 11).",
   "sections": [
-    {{"title": "3-5 words", "body": "2-3 BULLET LINES, MAX 80 WORDS TOTAL. Each line starts with '- ' and is ONE sentence, separated by newline (\\n). Exactly ONE **bold** number per section, the price or the threshold that matters (markdown bold, NEVER <strong>). All prices from LOCKED TABLE. VOICE. Thread the catalyst (RULE 14) into a bullet, do not just append it. The so-what belongs in bottom_line, not a trailing bullet.",
-      "catalyst": "OPTIONAL but recommended. 8-15 words naming the specific news/data/event that drove or contextualizes this section's price action. Example: 'USDA crop progress shows corn at 42%, ahead of 5-year avg.' Empty string allowed only when no relevant news in bucket.",
-      "bottom_line": "TL;DR adding info beyond title (RULE 5). Max 20 words.",
+    {{"title": "3-5 words", "body": "2-3 BULLET LINES, MAX 55 WORDS TOTAL. Each line starts with '- ' and is ONE sentence, separated by newline (\\n). Exactly ONE **bold** number per section, the price or the threshold that matters (markdown bold, NEVER <strong>). All prices from LOCKED TABLE. VOICE. The news that drove the move is IN a bullet (NEWS DISCIPLINE), not a separate field. The so-what belongs in so_what, not a trailing bullet.",
+      "so_what": "MAX 15 WORDS. Synthesis beyond the title (RULE 5).",
       "conviction_level": "low | medium | high (earned per RULE 2)",
-      "overnight_surprise": true/false,
-      "farmer_action": "OPTIONAL. Specific thresholded recommendation only. Otherwise OMIT entirely.",
-      "vs_yesterday": "OPTIONAL. Continuity marker per RULE 13. Under 12 words. OMIT if no real continuity to flag."}}
+      "overnight_surprise": true/false}}
   ],
   "outside_the_pit": [
     {{"title": "Short headline of the news item, 6-12 words.",
-      "body": "1-2 sentences in AGSIST voice. Why this matters even though it's not in today's prices.",
+      "body": "1-2 sentences, MAX 30 WORDS, in AGSIST voice. Why this matters even though it's not in today's prices.",
       "tag": "OPTIONAL. One-word category: POLICY, TRADE, WEATHER, DISEASE, LOGISTICS, INPUTS, MACRO, RURAL."}}
   ],
-  "weekly_thread": {{
-    "question": "Monday's question (copy forward Tue-Fri verbatim, set fresh on Mondays).",
-    "day": "1=Mon, 2=Tue, 3=Wed, 4=Thu, 5=Fri",
-    "status_text": "Today's contribution to the arc. 1 sentence, MAX 35 WORDS. Setup on Mon, progress Tue-Thu, resolution on Fri (RULE 11). Do not re-ask the question; the question field already shows it."
-  }},
-  "the_more_you_know": {{"title": "OPTIONAL, empty object {{}} most days (RULE 3). Differs from past TMYK topics.",
-                          "body": "2-3 sentences, MAX 60 WORDS. Only when it teaches something NO section already covered."}},
-  "watch_list": [{{"time": "Time", "desc": "What. 3-4 items max, each under 30 words. Half must include level/threshold (RULE 4)."}}],
+  "watch_list": [{{"time": "Time", "desc": "What. EXACTLY 3 items, each under 20 words. Two of three carry a level or threshold (RULE 4)."}}],
   "daily_quote": {{"text": "EXACT quote.", "attribution": "EXACT attribution."}},
   "source_summary": "Data sources",
   "date": "Like 'Monday, April 27, 2026'",
@@ -1852,24 +1783,20 @@ Past TMYK titles from the last 3 briefings are listed above; do NOT repeat their
 }}
 
 SECTIONS:
-- Default weekday: Grains & Oilseeds / Livestock & Dairy / Energy & Inputs / Macro & Trade
-- MIN 2, MAX 5. If no story in a bucket, fold or OMIT. No padding.
-- Quiet days: prefer 2-3 sections (RULE 6).
-- vs_yesterday is OPTIONAL per section. Only include it when today's data
-  meaningfully advanced or contradicted yesterday's coverage of the same
-  commodity. Empty fields are correct when there's no continuity to note.
+- Default weekday: Grains & Oilseeds / Livestock & Dairy / Energy & Inputs (Macro & Trade only when it moved a price today)
+- MIN 2, MAX 3. If no story in a bucket, fold or OMIT. No padding. A fourth section is deleted by the machine, lowest conviction first, before anyone reads it.
+- Quiet days: 2 sections (RULE 6).
 
 OMISSIONS, set fields to null or empty objects when not applicable:
-- yesterdays_call: omit on Mondays after long weekends if no recent call provided. Otherwise required Tue-Fri.
+- yesterdays_call: omit when no prior call was provided (Mondays after long weekends, fresh archive) or when the market is closed. Otherwise required.
 - todays_call: required every weekday (a real direction+level call). Omit only when the market is closed.
-- weekly_thread: required every weekday. Monday sets, Tue-Thu advance, Fri resolves.
-- the_more_you_know: OPTIONAL. Empty object {{}} unless it teaches something no section covered (RULE 3).
-- outside_the_pit: REQUIRED every day, weekday and weekend. Exactly 2 items. Pull from news block. (Per RULE 16.)
-- catalyst (per section): OPTIONAL field. Empty string allowed only when relevant news bucket is empty (per RULE 14).
-- the_takeaway: STRING field. If you cannot write something committable per RULE 12, set to empty string "". Better empty than weak.
-- vs_yesterday (per section): OMIT the field entirely when no continuity to mark (per RULE 13). Do not emit empty strings.
+- action: NEVER omitted. Every day has a thresholded action, quiet days included (RULE 11).
+- outside_the_pit: REQUIRED every day, weekday and weekend. EXACTLY 1 item. Pull from the news block.
+- watch_list: REQUIRED every day. EXACTLY 3 items.
+- Do NOT emit these fields at all; they are retired and a machine deletes them: subheadline, the_takeaway, the_more_you_know, weekly_thread, catalyst, vs_yesterday, bottom_line, farmer_action, summary.
 
 RESPOND WITH ONLY THE JSON OBJECT. No markdown. No preamble. No em dashes. VOICE OR DEATH."""
+
 
 
 def _loads_lenient(text):
@@ -1921,14 +1848,14 @@ OVERNIGHT SURPRISES:
 
 SEASONAL: {seasonal_ctx}
 {past_section}
-TODAY'S AG NEWS DIGEST, USE THIS to thread catalysts into sections (RULE 14) and to populate outside_the_pit (RULE 16). Items are clustered by bucket and sorted recent-first. Each item has title + summary + age:
+TODAY'S AG NEWS DIGEST, USE THIS to thread the why into section bullets (NEWS DISCIPLINE) and to populate the one outside_the_pit item. Items are clustered by bucket and sorted recent-first. Each item has title + summary + age:
 {news_block}
 
 TODAY'S QUOTE (copy exactly):
 Text: "{todays_quote['text']}"
 Attribution: "{todays_quote['attribution']}"
 
-Apply all 18 IMPACT RULES. Voice samples are NON-NEGOTIABLE, no wire-service neutral. Forward test the lead before you finalize. If today is Tue-Fri, advance the weekly thread, do NOT rehash. Thread NEWS into every section's body, generic "fund positioning" without a specific catalyst tie is wire filler. Rule 17 (level coherence) is failure-mode-zero: the post-gen validator will reject contradictory break claims."""
+Apply all 16 IMPACT RULES. Voice samples are NON-NEGOTIABLE, no wire-service neutral. Forward test the lead before you finalize, and check its last sentence against RULE 3. About 400 words, 450 is cut by a machine. Thread NEWS into every section's body, generic "fund positioning" without a specific news tie is wire filler. Rule 13 (level coherence) is failure-mode-zero: the post-gen validator will reject contradictory break claims."""
 
     payload = {"model": MODEL, "max_tokens": 4500,
                "system": build_system_prompt(market_status, past_tmyk_topics, yesterdays_call, weekly_thread, ongoing_situations, editorial_notes, past_one_number_topics, past_phrases, usda_release),
@@ -2035,28 +1962,48 @@ Apply all 18 IMPACT RULES. Voice samples are NON-NEGOTIABLE, no wire-service neu
 def validate_briefing(briefing, locked_prices):
     warnings = []
     known_values = {k: v for k, v in locked_prices.items() if v and v > 0}
+    # v5.1: the prose the price scan walks. Retired fields are read when
+    # present (an old archive re-validated) but a new briefing never has them.
     parts = [briefing.get("headline", ""), briefing.get("lead", ""), briefing.get("subheadline", ""),
-             briefing.get("the_takeaway", "")]  # v4.3
+             briefing.get("the_takeaway", ""), briefing.get("action", "")]
     if briefing.get("one_number"): parts.append(briefing["one_number"].get("context", ""))
     for sec in briefing.get("sections", []):
-        parts.append(sec.get("body", "")); parts.append(sec.get("bottom_line", ""))
-        parts.append(sec.get("vs_yesterday", ""))  # v4.3
+        parts.append(sec.get("body", "")); parts.append(sec.get("so_what", "") or sec.get("bottom_line", ""))
+        parts.append(sec.get("vs_yesterday", ""))
     tmyk = briefing.get("the_more_you_know") or briefing.get("tmyk") or {}
     parts.append(tmyk.get("body", ""))
     full_text = " ".join(parts)
-    # v5.0 briefing diet: word budgets. Warnings only (editorial, never blocks a
-    # send); the critic enforces the rewrite. Total counts every prose field.
-    _wc = lambda s: len((s or "").split())
-    _total = sum(_wc(p) for p in parts)
-    for it in (briefing.get("outside_the_pit") or []): _total += _wc(it.get("body", "")) + _wc(it.get("title", ""))
-    for w in (briefing.get("watch_list") or []): _total += _wc(w.get("desc", ""))
-    _total += _wc((briefing.get("weekly_thread") or {}).get("status_text", ""))
-    yc = briefing.get("yesterdays_call") or {}
-    _total += _wc(yc.get("summary", "")) + _wc(yc.get("note", ""))
-    if _total > 1000: warnings.append(f"Word budget: {_total} words total (target 750-900)")
-    if _wc(briefing.get("lead", "")) > 75: warnings.append(f"Word budget: lead {_wc(briefing.get('lead',''))}w (cap 65)")
-    for i, sec in enumerate(briefing.get("sections", [])):
-        if _wc(sec.get("body", "")) > 92: warnings.append(f"Word budget: section {i} body {_wc(sec.get('body',''))}w (cap 80)")
+    # v5.1 the cut: ONE word count (briefing_cut.word_count), and the ceiling
+    # BLOCKS. enforce_budget() has already truncated deterministically before
+    # this runs, so a briefing that is still over 450 here is one the machine
+    # could not save; the run fails rather than the reader getting 1,090 words.
+    _total = briefing_cut.word_count(briefing)
+    if _total > briefing_cut.HARD_CEILING:
+        warnings.append(f"Word budget: {_total} words total (hard ceiling {briefing_cut.HARD_CEILING}, target {briefing_cut.TARGET_WORDS})")
+    _fc = briefing_cut.field_counts(briefing)
+    _caps = {"lead": briefing_cut.CAP_LEAD, "action": briefing_cut.CAP_ACTION,
+             "one_number.context": briefing_cut.CAP_ONE_NUMBER_CONTEXT,
+             "yesterdays_call.note": briefing_cut.CAP_YC_NOTE}
+    for _k, _n in _fc.items():
+        cap = _caps.get(_k)
+        if cap is None and _k.startswith("sections[") and _k.endswith(".body"): cap = briefing_cut.CAP_SECTION_BODY
+        if cap is None and _k.endswith(".so_what"): cap = briefing_cut.CAP_SO_WHAT
+        if cap is None and _k.startswith("watch_list["): cap = briefing_cut.CAP_WATCH_DESC
+        if cap is None and _k.startswith("outside_the_pit[") and _k.endswith(".body"): cap = briefing_cut.CAP_OTP_BODY
+        if cap is not None and _n > cap:
+            warnings.append(f"Field cap: {_k} {_n}w (cap {cap})")
+    if len(briefing.get("sections") or []) > briefing_cut.MAX_SECTIONS:
+        warnings.append(f"Section count: {len(briefing['sections'])} (max {briefing_cut.MAX_SECTIONS})")
+    for _rf in briefing_cut.RETIRED_FIELDS:
+        if briefing.get(_rf): warnings.append(f"Retired field emitted: {_rf}")
+    for _i, _sec in enumerate(briefing.get("sections") or []):
+        for _rf in briefing_cut.RETIRED_SECTION_FIELDS:
+            if _sec.get(_rf): warnings.append(f"Retired field emitted: sections[{_i}].{_rf}")
+    if not briefing.get("market_closed") and not (briefing.get("action") or "").strip():
+        warnings.append("Action missing: every weekday briefing carries one thresholded action")
+    _defer = briefing_cut.lede_defers(briefing.get("lead", ""))
+    if _defer:
+        warnings.append(f"Lede deferral: last sentence points forward | \"{_defer}\"")
     em = full_text.count("\u2014"); en = full_text.count("\u2013")
     if em: warnings.append(f"Em dash {em}x")
     if en: warnings.append(f"En dash {en}x")
@@ -2103,8 +2050,17 @@ def validate_briefing(briefing, locked_prices):
     # price_validation_clean. Voice is still policed by the critic; scope is still hard-
     # blocked by the gate. (Add a token here only for a future genuine data-integrity
     # check that truly must stop the send.)
+    # v5.1: "Word budget" LEFT this tuple. It sat here from v5.0 and the
+    # briefing drifted to 1,090 words with every run green. The ceiling is a
+    # product rule now, enforced by truncation first and by this flag second.
+    # "Field cap", "Retired field", "Lede deferral" and "Action missing" stay
+    # non-blocking: enforce_budget already clamped the fields, the retired
+    # fields are stripped, and the lede rule is a prose heuristic the critic
+    # owns (Rule 3).
     NON_BLOCKING = ("not in prices.json", "Em dash", "En dash",
-                    "Geo scope", "Quote attribution filler", "Word budget")
+                    "Geo scope", "Quote attribution filler",
+                    "Field cap", "Retired field", "Lede deferral", "Action missing",
+                    "Section count")
     fatal = [w for w in warnings if not any(tok in w for tok in NON_BLOCKING)]
     return len(fatal) == 0, warnings
 
@@ -2325,9 +2281,12 @@ def render_sponsor_attribution_html(sponsor):
 
 def render_yesterdays_call_block_html(yc, market_closed=False):
     """yc is briefing.get('yesterdays_call') dict. Skip on weekends/holidays
-    or when summary is empty (no prior call to thread)."""
+    or when there is no call to show. v5.1: the line is `call_line`, written
+    deterministically by grade_calls.plain_call from the structured call and
+    the two closes; `summary` (the model's prose) is read only for archived
+    issues that predate the cut."""
     if not yc or market_closed: return ""
-    summary = html_esc((yc.get("summary") or "").strip())
+    summary = html_esc((yc.get("call_line") or yc.get("summary") or "").strip())
     outcome = (yc.get("outcome") or "").strip().lower()
     note = html_esc_preserve_strong((yc.get("note") or "").strip())
     if not summary: return ""
@@ -2405,7 +2364,8 @@ def render_outside_the_pit_html(items, market_closed=False):
 
 def render_takeaway_block_html(takeaway):
     """v4.3: render the_takeaway as a prominent committable-statement card.
-    Empty string or missing field → no render."""
+    v5.1: the_takeaway is retired; this stays only for archived issues that
+    carry one. Empty string or missing field → no render."""
     if not takeaway or not isinstance(takeaway, str):
         return ""
     text = takeaway.strip()
@@ -2414,6 +2374,20 @@ def render_takeaway_block_html(takeaway):
     return (f'<div class="dv3-takeaway" role="note" aria-label="Today\'s key takeaway">'
             f'<span class="dv3-takeaway-label">THE TAKEAWAY</span>'
             f'<p class="dv3-takeaway-text">{html_esc(text)}</p>'
+            f'</div>')
+
+
+def render_action_block_html(action):
+    """v5.1: the one mandatory thresholded action, in the slot the takeaway
+    used to hold (same CSS, different label). Empty → no render."""
+    if not action or not isinstance(action, str):
+        return ""
+    text = action.strip()
+    if not text:
+        return ""
+    return (f'<div class="dv3-takeaway dv3-action" role="note" aria-label="Today\'s action">'
+            f'<span class="dv3-takeaway-label">THE ACTION</span>'
+            f'<p class="dv3-takeaway-text">{html_esc_preserve_strong(text)}</p>'
             f'</div>')
 
 
@@ -2524,7 +2498,8 @@ def generate_archive_html(briefing, date_iso, prev_date=None, next_date=None):
         if i == heat_idx: cls += " dv3-sec--heat"
         title = html_esc(sec.get("title", ""))
         body = render_section_body_html(sec.get("body", ""))
-        bottom_line = html_esc(sec.get("bottom_line", ""))
+        # v5.1: so_what is the field; bottom_line is read for archived issues.
+        bottom_line = html_esc(sec.get("so_what") or sec.get("bottom_line", ""))
         farmer_action = html_esc(sec.get("farmer_action", ""))
         conviction = sec.get("conviction_level", "")
         conviction_html = ""
@@ -2619,7 +2594,10 @@ def generate_archive_html(briefing, date_iso, prev_date=None, next_date=None):
     forward_html = render_forward_block_html(date_iso)
     byline_html = render_byline_block_html()
     # v4.3: new render helpers
-    takeaway_html = render_takeaway_block_html(briefing.get("the_takeaway", ""))
+    # v5.1: the action takes the takeaway's slot. An archived issue from
+    # before the cut has no action and keeps its takeaway.
+    takeaway_html = (render_action_block_html(briefing.get("action", ""))
+                     or render_takeaway_block_html(briefing.get("the_takeaway", "")))
     cashbids_html = render_cashbids_footer_html(is_weekend_brief)
     yc_html = render_yesterdays_call_block_html(briefing.get("yesterdays_call"), is_weekend_brief)
     thread_html = render_thread_marker_html(briefing.get("weekly_thread"), is_weekend_brief)
@@ -2994,7 +2972,7 @@ def update_archive_index(briefing, date_iso):
              "market_closed": briefing.get("market_closed", False)}
     # v4.1: surface YC outcome on archive entries for the homepage grid dots
     yc = briefing.get("yesterdays_call") or {}
-    if yc.get("outcome") and yc.get("summary"):
+    if yc.get("outcome") and (yc.get("call_line") or yc.get("summary")):
         entry["yc_outcome"] = yc["outcome"]  # played_out | didnt | pending
     found = False
     for i, e in enumerate(entries):
@@ -3077,8 +3055,8 @@ def sanitize_em_dashes(briefing):
 # sanitize_html_tags walker only converts <strong>/<em> in these fields,
 # leaving the rest of the briefing untouched (icons, IDs, etc).
 _BOLD_BODY_FIELDS = {
-    "lead", "subheadline", "the_takeaway", "teaser",
-    "body", "bottom_line", "vs_yesterday", "catalyst",
+    "lead", "subheadline", "the_takeaway", "teaser", "action",
+    "body", "bottom_line", "so_what", "vs_yesterday", "catalyst",
     "context", "commentary", "status_text", "note", "summary",
 }
 
@@ -3290,7 +3268,7 @@ _SCRUBBED_FIELDS = {
     "headline", "subheadline", "lead", "subhead",
     "the_takeaway", "teaser", "title", "label", "name",
     # Section fields
-    "body", "bottom_line", "vs_yesterday", "catalyst", "driver",
+    "body", "bottom_line", "so_what", "vs_yesterday", "catalyst", "driver",
     "context", "commentary", "note", "status_text", "summary",
     "farmer_action", "action", "story",
     # Watch list / spread / basis
@@ -3537,13 +3515,16 @@ def validate_level_coherence(briefing, locked_prices):
         if not isinstance(sec, dict):
             continue
         title = sec.get("title", "")
-        for fname in ("body", "bottom_line", "catalyst", "vs_yesterday"):
+        for fname in ("body", "so_what", "bottom_line", "catalyst", "vs_yesterday"):
             v = sec.get(fname, "")
             if isinstance(v, str) and v:
                 # Carry the section title forward as commodity context;
                 # it often names the commodity even when the body is
                 # mid-sentence.
                 parts.append((f"{title}. {v}", f"section[{i}].{fname}"))
+    # `action` is deliberately NOT scanned here either (v5.1): it is a conditional
+    # threshold by definition ("a settle below $12.85 is the signal") and this
+    # heuristic would flag it every day. The gate's guarded level check reads it.
     # yesterdays_call.{summary,note} are deliberately NOT scanned here. That block is
     # RETROSPECTIVE about a forward call's target level: on a miss it must honestly cite
     # a level price never reached ("called beans above $11.38; they closed $11.21"), which
@@ -3637,6 +3618,60 @@ def validate_level_coherence(briefing, locked_prices):
     return warnings
 
 
+def strip_retired_fields(briefing):
+    """v5.1: the prompt says not to emit them; the model sometimes will. Drop
+    them so the JSON contract is the schema, not the model's mood. Returns
+    (briefing, list of what was dropped)."""
+    dropped = []
+    for k in briefing_cut.RETIRED_FIELDS:
+        if k in briefing:
+            dropped.append(k); briefing.pop(k, None)
+    for i, sec in enumerate(briefing.get("sections") or []):
+        if not isinstance(sec, dict): continue
+        # a model that still writes bottom_line meant so_what
+        if sec.get("bottom_line") and not sec.get("so_what"):
+            sec["so_what"] = sec.pop("bottom_line"); dropped.append(f"sections[{i}].bottom_line->so_what")
+        for k in briefing_cut.RETIRED_SECTION_FIELDS + ("farmer_action",):
+            if k in sec:
+                dropped.append(f"sections[{i}].{k}"); sec.pop(k, None)
+    yc = briefing.get("yesterdays_call")
+    if isinstance(yc, dict) and "summary" in yc:
+        yc.pop("summary", None); dropped.append("yesterdays_call.summary")
+    return briefing, dropped
+
+
+def grade_in_generator(briefing, market_status):
+    """v5.1: grade yesterday's call HERE, before the archive HTML is rendered,
+    so the page and the email show the deterministic verdict and call_line on
+    the first render. grade_calls.py still runs as its own workflow step and
+    writes the identical result (one function, two callers). Fails open."""
+    if market_status.get("is_closed"):
+        return briefing
+    try:
+        import grade_calls as _gc
+        arch = ARCHIVE_JSON_DIR
+        dates = sorted(p.stem for p in arch.glob("*.json") if p.stem != "index") if arch.exists() else []
+        today_iso = datetime.now().strftime("%Y-%m-%d")
+        prior = [d for d in dates if d < today_iso]
+        if not prior:
+            return briefing
+        prior_daily = json.loads((arch / f"{prior[-1]}.json").read_text())
+        outcome, call, p0, p1, note = _gc.grade_from_archives(briefing, prior_daily)
+        if outcome is None:
+            return briefing
+        yc = briefing.get("yesterdays_call") or {}
+        yc["outcome"] = outcome
+        yc["computed"] = {"outcome": outcome, "made": prior[-1], "p0": p0, "p1": p1,
+                          "instrument": call.get("instrument"), "direction": call.get("direction"),
+                          "level": call.get("level")}
+        yc["call_line"] = _gc.plain_call(call, p0, p1, outcome)
+        briefing["yesterdays_call"] = yc
+        print(f"  [grade] {note}")
+    except Exception as _e:
+        print(f"  [warn] in-generator grading skipped ({type(_e).__name__}: {_e})")
+    return briefing
+
+
 def sanitize_weekend_blocks(briefing, market_status):
     """v4.2 (Phase 2 C4): the prompt instructs the model to set
     weekend-disallowed fields to empty on Sat/Sun/holidays. Models
@@ -3653,7 +3688,7 @@ def sanitize_weekend_blocks(briefing, market_status):
 
 
 def main():
-    print("=== AGSIST Daily Briefing Generator v5.0 (the diet) ===")
+    print("=== AGSIST Daily Briefing Generator v5.1 (the cut) ===")
     print(f"  Time: {datetime.now().isoformat()}")
     market_status = get_market_status()
     if market_status["is_closed"]:
@@ -3674,7 +3709,7 @@ def main():
     print("  Loading past dailies...")
     past_dailies_block, past_tmyk_topics = load_past_dailies(num_days=3)
     if past_dailies_block:
-        print(f"  Past context loaded ({len(past_tmyk_topics)} prior TMYK to avoid)")
+        print("  Past context loaded")
     # v4.6: new loaders for cross-day continuity, anti-cliche, anti-repetition,
     # editorial-notes cumulative learning, and USDA release-day awareness.
     ongoing_situations = load_ongoing_situations()
@@ -3703,13 +3738,7 @@ def main():
             print(f"  Yesterday's call: {yesterdays_call_ctx['section_title']!r} ({yesterdays_call_ctx['conviction']}) from {yesterdays_call_ctx['prior_date']}")
         else:
             print("  Yesterday's call: none found (Monday after long weekend or fresh archive)")
-        weekly_thread_ctx = load_weekly_thread()
-        if weekly_thread_ctx:
-            print(f"  Weekly thread: day {weekly_thread_ctx['today_day_of_week']}/5, Monday's question: {weekly_thread_ctx['question'][:60]}...")
-        elif datetime.now().weekday() == 0:
-            print("  Weekly thread: Monday, model will set this week's question")
-        else:
-            print("  Weekly thread: no Monday briefing found")
+        # v5.1: weekly_thread retired; weekly_thread_ctx stays None.
 
     print("  Fetching ag news...")
     news_block = fetch_ag_news()
@@ -3828,6 +3857,18 @@ def main():
     if _wd_fixes:
         print(f"  Weekday corrections: {_wd_fixes}")
 
+    # v5.1 the cut, in this order: drop what the prompt retired, then cut to
+    # the budget deterministically (weakest block first), then grade the call
+    # so the archive render below carries the verdict.
+    briefing, _dropped = strip_retired_fields(briefing)
+    if _dropped:
+        print(f"  Retired fields stripped: {', '.join(_dropped)}")
+    briefing, _cut_log = briefing_cut.enforce_budget(briefing)
+    for _l in _cut_log:
+        print(f"  [cut] {_l}")
+    _wc_total = briefing_cut.word_count(briefing)
+    print(f"  Word count: {_wc_total} (target {briefing_cut.TARGET_WORDS}, ceiling {briefing_cut.HARD_CEILING})")
+
     locked_prices = price_data.get("locked_prices", {})
     is_clean, val_warnings = validate_briefing(briefing, locked_prices)
     # v4.5.0: deterministic level coherence check. Catches the math
@@ -3851,6 +3892,9 @@ def main():
     else:
         print("  Validation passed")
     briefing["locked_prices"] = locked_prices
+    # v5.1: grade yesterday's call now that today's closes are on the briefing,
+    # so save_archive() below renders the verdict and call_line first time.
+    briefing = grade_in_generator(briefing, market_status)
     chart_series = build_chart_series(locked_prices)
     if chart_series:
         briefing["chart_series"] = chart_series
@@ -3865,14 +3909,14 @@ def main():
     briefing["issue_number"] = pre_issue + 1
     print(f"  Issue number for today: #{briefing['issue_number']}")
 
-    # v4.0: log new block presence for verification
-    if briefing.get("yesterdays_call", {}).get("summary"):
-        outcome = briefing["yesterdays_call"].get("outcome", "?")
-        print(f"  Yesterday's call assessed: {outcome.upper()}")
-    wt = briefing.get("weekly_thread") or {}
-    if wt.get("question"):
-        print(f"  Weekly thread day {wt.get('day','?')}: {wt['question'][:60]}...")
-    # v4.4: outside_the_pit + section catalyst presence
+    # v5.1: log block presence for verification
+    _yc = briefing.get("yesterdays_call") or {}
+    if _yc.get("call_line"):
+        print(f"  Yesterday's call: {_yc['call_line']} -> {(_yc.get('outcome') or '?').upper()}")
+    if briefing.get("action"):
+        print(f"  Action: {briefing['action'][:90]}")
+    else:
+        print("  Action: MISSING" + (" (market closed)" if market_status["is_closed"] else " (model violated RULE 11)"))
     otp = briefing.get("outside_the_pit") or []
     if otp:
         print(f"  Outside the Pit: {len(otp)} item(s)")
@@ -3881,15 +3925,10 @@ def main():
             tag_str = f"[{tag}] " if tag else ""
             print(f"    - {tag_str}{(it.get('title') or '')[:60]}")
     else:
-        print("  Outside the Pit: EMPTY (model violated RULE 16)")
-    cats_with = sum(1 for s in briefing.get("sections", [])
-                    if (s.get("catalyst") or "").strip())
-    cats_total = len(briefing.get("sections", []))
-    if cats_total:
-        print(f"  Section catalysts: {cats_with}/{cats_total} sections name a driver")
+        print("  Outside the Pit: EMPTY (model violated the OMISSIONS contract)")
 
     briefing["generated_at"] = datetime.now(timezone.utc).isoformat()
-    briefing["generator_version"] = "4.6.3"
+    briefing["generator_version"] = "5.1.0"
     briefing["surprise_count"] = len(surprises)
     briefing["surprises"] = surprises
     briefing["price_validation_clean"] = is_clean
@@ -3897,6 +3936,7 @@ def main():
     briefing["market_status_reason"] = market_status["reason"]
     if "meta" not in briefing: briefing["meta"] = {}
     briefing["meta"]["overnight_surprises_count"] = len(surprises)
+    briefing["meta"]["word_count"] = _wc_total
     # Measured news coverage, not the model's claim about it. source_summary is
     # written BY the LLM and is a narrative; this is the tally. briefing_gate
     # holds it to a floor so a collapsing news base fails loudly instead of
@@ -3927,7 +3967,7 @@ def main():
     save_archive(briefing)
     print(f"  Headline: {briefing.get('headline', 'N/A')}")
     print(f"  Sections: {len(briefing.get('sections', []))}")
-    print("=== Done. Run scripts/critique_briefing.py next for the v1.2 quality gate. ===")
+    print("=== Done. Run scripts/critique_briefing.py next for the v2.0 quality gate. ===")
 
 
 if __name__ == "__main__":

@@ -46,11 +46,14 @@ WEEKDATE=re.compile(r'\b(Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunda
 LEVEL_TOL=0.006
 
 def prose_fields(d):
+    # v5.1: action and so_what are the fields; the older names are still
+    # scanned so an archived issue re-checked by the gate reads the same.
     out=[('headline',d.get('headline')),('subheadline',d.get('subheadline')),
          ('lead',d.get('lead')),('the_takeaway',d.get('the_takeaway')),
+         ('action',d.get('action')),
          ('subject_line',d.get('subject_line'))]
     for i,s in enumerate(d.get('sections') or []):
-        for k in ('title','body','bottom_line','farmer_action'):
+        for k in ('title','body','so_what','bottom_line','farmer_action'):
             out.append((f'sections[{i}].{k}', s.get(k)))
     for blk,keys in [('the_more_you_know',('title','body')),('spread_to_watch',('label','level','commentary')),
                      ('basis',('headline','body')),('yesterdays_call',('summary','note')),

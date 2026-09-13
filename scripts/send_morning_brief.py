@@ -257,11 +257,20 @@ def section_one_number(daily):
     return f"{line1}\n{ctx}" if ctx else line1
 
 
+def section_action(daily):
+    """v5.1: the one thresholded action, right after the lead."""
+    a = strip_html(daily.get("action", ""))
+    if not a:
+        return None
+    return f"THE ACTION\n{a}"
+
+
 def section_yesterdays_call(daily):
     yc = daily.get("yesterdays_call")
     if not isinstance(yc, dict):
         return None
-    summary = strip_html(yc.get("summary", ""))
+    # v5.1: call_line from the grader; summary only on issues before the cut
+    summary = strip_html(yc.get("call_line") or yc.get("summary", ""))
     note = strip_html(yc.get("note", ""))
     outcome = (yc.get("outcome") or "").lower().replace("_", " ")
     if not summary:
@@ -308,7 +317,7 @@ def section_briefing_blocks(daily):
     for i, sec in enumerate(sections):
         title = (sec.get("title") or "").strip()
         body = strip_html(sec.get("body", ""))
-        bottom = strip_html(sec.get("bottom_line", ""))
+        bottom = strip_html(sec.get("so_what") or sec.get("bottom_line", ""))
         action = strip_html(sec.get("farmer_action", ""))
         conviction = (sec.get("conviction_level") or "").lower()
         is_surprise = sec.get("overnight_surprise") is True
@@ -462,6 +471,7 @@ def build_email_body(daily, prices_data, today):
     parts = [
         section_header(daily, today),
         section_headline(daily),
+        section_action(daily),
         section_surprises(daily),
         section_one_number(daily),
         section_yesterdays_call(daily),
