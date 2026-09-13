@@ -638,24 +638,29 @@ def run(daily, prices=None, today=None, archive_dir='data/daily-archive', bind_s
         import os, grade_calls
         yc = daily.get("yesterdays_call") or {}
         if yc.get("outcome") and archive_dir and os.path.isdir(archive_dir):
-            dates = sorted(p[:-5] for p in os.listdir(archive_dir)
-                           if p.endswith(".json") and p != "index.json")
-            # Was: d < daily["date"] — an ISO name compared against a DISPLAY date
-            # ("2026-08-10" < "Monday, August 10, 2026" is always true), so prior[-1]
-            # was TODAY'S OWN archive: this gate re-graded today's call against
-            # today's close and disagreed with the (correct) grader, blocking the
-            # 2026-08-10 send. Same definition as grade_calls now — one source.
-            today_iso = grade_calls.iso_date(daily)
-            if today_iso is None:
-                W("call-outcome", "cannot parse briefing date %r to ISO — outcome not verified"
-                  % (daily.get("date"),))
-                prior = []
+            # Was: sorted archive filenames, take the last one before today. That
+            # picked the file immediately before this issue, and the archive
+            # publishes at weekends and on holidays where the board is carried
+            # forward unchanged — so a Sunday verified Saturday's call against
+            # Saturday's own board. find_graded_call picks by SESSION instead,
+            # and is the same function the generator and the scorecard use, so
+            # this check and the thing it checks cannot disagree about which
+            # call is being scored. (The older bug this replaced: an ISO name
+            # compared against a DISPLAY date, which made prior[-1] today's own
+            # archive and blocked the 2026-08-10 send.)
+            made, prior_daily, why = grade_calls.find_graded_call(daily, archive_dir)
+            if made is None:
+                # Today grades nothing, yet the issue published a verdict.
+                F("call-outcome",
+                  "yesterdays_call.outcome=%r but there is no call to grade today (%s)"
+                  % (yc.get("outcome"), why))
             else:
-                prior = [d for d in dates if d < today_iso]
-            if prior:
-                with open(os.path.join(archive_dir, prior[-1] + ".json")) as _f:
-                    prior_daily = json.load(_f)
                 computed, _c, _p0, _p1, note = grade_calls.grade_from_archives(daily, prior_daily)
+                _made_claimed = (yc.get("computed") or {}).get("made")
+                if _made_claimed and _made_claimed != made:
+                    F("call-outcome",
+                      "issue grades %s's call but the session says it should grade %s"
+                      % (_made_claimed, made))
                 if computed and computed != "pending" and yc["outcome"] != computed:
                     F("call-outcome", "yesterdays_call.outcome=%r but prices compute %r (%s)"
                       % (yc["outcome"], computed, note))

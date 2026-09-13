@@ -87,7 +87,9 @@ from datetime import datetime, timezone, date, timedelta
 
 __all__ = ["is_expired", "front_key", "month_num", "EXPIRY_DAY",
            "expiry_date", "recent_expiry", "ROLL_WINDOW_DAYS",
-           "PRODUCT_RULE", "rule_for", "dead_from"]
+           "PRODUCT_RULE", "rule_for", "dead_from",
+           "is_trading_day", "holiday_name", "prior_trading_day",
+           "next_trading_day", "sessions_between", "market_holidays"]
 
 # How long after a dated contract dies we consider the continuous front-month
 # to be "in the roll window". Yahoo's continuous series (ZC=F etc.) switches
@@ -246,6 +248,136 @@ def front_key(keys, now=None):
     return None
 
 
+# ═══════════════════════════════════════════════════════════════════════════
+# THE TRADING CALENDAR — ONE definition of "was there a session that day".
+#
+# Added 2026-09-13 with the grading fix. get_market_status() in
+# generate_daily.py carried a hardcoded HOLIDAYS_2026 map marked "REFRESH
+# ANNUALLY", and it could only answer the question for TODAY (it reads
+# datetime.now()). The call grader needed the same question about an
+# arbitrary past date, which is exactly how a second holiday list gets
+# written and then disagrees with the first one in January.
+#
+# So the rule is computed, not listed, and get_market_status() imports it.
+# _selftest pins the computed 2026 set against the map that was hardcoded,
+# so if the computation is ever wrong for a year the repo has already
+# published against, the test goes red rather than the briefing going out
+# with a phantom session.
+#
+# These are CME/CBOT FULL closures. Nov 27 2026 (day after Thanksgiving) is
+# an early close, not a closure, and is deliberately a trading day here.
+# ═══════════════════════════════════════════════════════════════════════════
+
+def _easter(y):
+    """Anonymous Gregorian algorithm. Good Friday is Easter minus two days."""
+    a = y % 19; b = y // 100; c = y % 100; d = b // 4; e = b % 4
+    f = (b + 8) // 25; g = (b - f + 1) // 3
+    h = (19 * a + b - d - g + 15) % 30; i = c // 4; k = c % 4
+    l = (32 + 2 * e + 2 * i - h - k) % 7
+    m = (a + 11 * h + 22 * l) // 451
+    return date(y, (h + l - 7 * m + 114) // 31, ((h + l - 7 * m + 114) % 31) + 1)
+
+
+def _nth_weekday(y, mon, weekday, n):
+    d = date(y, mon, 1)
+    d += timedelta(days=(weekday - d.weekday()) % 7)
+    return d + timedelta(weeks=n - 1)
+
+
+def _last_weekday_in(y, mon, weekday):
+    d = (date(y, mon + 1, 1) - timedelta(days=1)) if mon < 12 else date(y, 12, 31)
+    return d - timedelta(days=(d.weekday() - weekday) % 7)
+
+
+def _observed(d):
+    """A fixed-date holiday falling on a weekend is observed on the adjacent
+    weekday. Saturday shifts BACK to Friday, Sunday FORWARD to Monday."""
+    if d.weekday() == 5:
+        return d - timedelta(days=1)
+    if d.weekday() == 6:
+        return d + timedelta(days=1)
+    return d
+
+
+def market_holidays(year):
+    """{date: name} of full-closure holidays observed in `year`. A fixed-date
+    holiday can be observed in the neighbouring year (Jan 1 2028 is a Saturday,
+    observed Dec 31 2027), so is_trading_day checks three years."""
+    y = int(year)
+    return {
+        _observed(date(y, 1, 1)): "New Year's Day",
+        _nth_weekday(y, 1, 0, 3): "MLK Day",
+        _nth_weekday(y, 2, 0, 3): "Presidents Day",
+        _easter(y) - timedelta(days=2): "Good Friday",
+        _last_weekday_in(y, 5, 0): "Memorial Day",
+        _observed(date(y, 6, 19)): "Juneteenth",
+        _observed(date(y, 7, 4)): "Independence Day",
+        _nth_weekday(y, 9, 0, 1): "Labor Day",
+        _nth_weekday(y, 11, 3, 4): "Thanksgiving",
+        _observed(date(y, 12, 25)): "Christmas Day",
+    }
+
+
+def _as_date(d):
+    if isinstance(d, datetime):
+        return d.date()
+    if isinstance(d, date):
+        return d
+    return date.fromisoformat(str(d)[:10])
+
+
+def holiday_name(d):
+    """The closure's name if `d` is a market holiday, else None."""
+    d = _as_date(d)
+    for y in (d.year - 1, d.year, d.year + 1):
+        n = market_holidays(y).get(d)
+        if n:
+            return n
+    return None
+
+
+def is_trading_day(d):
+    """True when a session settles on `d`: a weekday that is not a full-closure
+    holiday. This is THE definition; do not write a second one."""
+    d = _as_date(d)
+    return d.weekday() < 5 and holiday_name(d) is None
+
+
+def prior_trading_day(d):
+    """The last session that settled strictly before `d`."""
+    d = _as_date(d) - timedelta(days=1)
+    for _ in range(30):
+        if is_trading_day(d):
+            return d
+        d -= timedelta(days=1)
+    raise ValueError("no trading day found in the 30 days before the date given")
+
+
+def next_trading_day(d):
+    """The first session that settles strictly after `d`."""
+    d = _as_date(d) + timedelta(days=1)
+    for _ in range(30):
+        if is_trading_day(d):
+            return d
+        d += timedelta(days=1)
+    raise ValueError("no trading day found in the 30 days after the date given")
+
+
+def sessions_between(start, end):
+    """Count of sessions that settled in [start, end). Zero means nothing
+    traded between the two, which is why a briefing published on Sunday holds
+    exactly the board Saturday's held."""
+    a, b = _as_date(start), _as_date(end)
+    if b <= a:
+        return 0
+    n = 0
+    while a < b:
+        if is_trading_day(a):
+            n += 1
+        a += timedelta(days=1)
+    return n
+
+
 def _selftest():
     ok = True
 
@@ -362,6 +494,39 @@ def _selftest():
                        f"(proves the bug was real)")
     days = sorted({d for _, d, _ in mism})
     chk(days == [EXPIRY_DAY], f"...and ONLY on day {days} of a contract month — the exact outage signature")
+
+    # --- the trading calendar ----------------------------------------------
+    # Pinned against the map that generate_daily.get_market_status carried
+    # hardcoded until 2026-09-13. If the computation ever disagrees with a
+    # year the site has already published against, this goes red.
+    HARDCODED_2026 = {(1, 1), (1, 19), (2, 16), (4, 3), (5, 25), (6, 19),
+                      (7, 3), (9, 7), (11, 26), (12, 25)}
+    computed = {(d.month, d.day) for d in market_holidays(2026)}
+    chk(computed == HARDCODED_2026,
+        f"computed 2026 holidays == the map generate_daily used to hardcode "
+        f"(extra={sorted(computed - HARDCODED_2026)} missing={sorted(HARDCODED_2026 - computed)})")
+    chk(is_trading_day(date(2026, 9, 4)) is True, "Fri Sep 4 2026 is a session")
+    chk(is_trading_day(date(2026, 9, 5)) is False, "Sat Sep 5 2026 is not")
+    chk(is_trading_day(date(2026, 9, 6)) is False, "Sun Sep 6 2026 is not")
+    chk(is_trading_day(date(2026, 9, 7)) is False, "Labor Day 2026 is not")
+    chk(is_trading_day(date(2026, 9, 8)) is True, "Tue Sep 8 2026 is a session")
+    chk(is_trading_day(date(2026, 11, 27)) is True,
+        "day after Thanksgiving is an EARLY CLOSE, still a session")
+    chk(holiday_name(date(2026, 9, 7)) == "Labor Day", "Labor Day named")
+    chk(prior_trading_day(date(2026, 9, 8)) == date(2026, 9, 4),
+        "the session before Tue Sep 8 is Fri Sep 4 (Labor Day weekend skipped)")
+    chk(next_trading_day(date(2026, 9, 4)) == date(2026, 9, 8),
+        "the session after Fri Sep 4 is Tue Sep 8")
+    # sessions_between is what tells the grader a weekend issue adds nothing
+    chk(sessions_between(date(2026, 9, 5), date(2026, 9, 6)) == 0, "Sat->Sun: no session")
+    chk(sessions_between(date(2026, 9, 5), date(2026, 9, 8)) == 0,
+        "Sat->Tue across Labor Day: still no session settled")
+    chk(sessions_between(date(2026, 9, 5), date(2026, 9, 9)) == 1,
+        "Sat->Wed: one session (Tuesday) settled")
+    chk(sessions_between(date(2026, 8, 21), date(2026, 8, 22)) == 1, "Fri->Sat: Friday settled")
+    # a fixed-date holiday observed in the neighbouring year
+    chk(holiday_name(date(2027, 12, 31)) == "New Year's Day",
+        "Jan 1 2028 falls on a Saturday, observed Fri Dec 31 2027")
 
     print("SELFTEST OK" if ok else "SELFTEST FAILED")
     return 0 if ok else 1

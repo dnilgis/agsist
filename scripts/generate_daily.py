@@ -150,7 +150,7 @@ import random
 import re
 from datetime import datetime, timezone, timedelta, date
 
-from contract_calendar import is_expired   # ONE definition of contract expiry
+from contract_calendar import is_expired, holiday_name   # ONE expiry rule + ONE trading calendar
 import briefing_cut                         # ONE definition of the word budget
 from pathlib import Path
 
@@ -332,19 +332,17 @@ def get_market_status():
     if weekday == 6:
         return {"is_closed": True, "reason": "weekend", "day_name": "Sunday",
             "note": "TODAY IS SUNDAY. Markets CLOSED. Write SUNDAY PREVIEW and WEEK AHEAD. Reference 'Friday's close'. No overnight language."}
-    # Full-closure US market holidays. Authoritative hardcoded 2026 map (matches
-    # CALENDAR_FACTS_2026) — REFRESH ANNUALLY. Covers ALL market holidays, not
-    # just the fixed three, so weekday holidays (MLK, Presidents, Memorial,
-    # Juneteenth, Labor Day, Thanksgiving) don't get written as normal sessions.
+    # Full-closure US market holidays. v5.2 (2026-09-13): the hardcoded 2026 map
+    # that used to live here, with its "REFRESH ANNUALLY" note, moved into
+    # contract_calendar.market_holidays, which COMPUTES the closures for any
+    # year. The call grader needs the same question answered about arbitrary
+    # PAST dates, and this function can only answer it about today (it reads
+    # datetime.now()). A second holiday list is how two graders come to disagree
+    # in January. contract_calendar's selftest pins the computed 2026 set
+    # against the map this function used to carry.
     # (Nov 27 is an early close, not a full closure, so it stays a trading day.)
-    HOLIDAYS_2026 = {
-        (1, 1): "New Year's Day", (1, 19): "MLK Day", (2, 16): "Presidents Day",
-        (4, 3): "Good Friday", (5, 25): "Memorial Day", (6, 19): "Juneteenth",
-        (7, 3): "Independence Day (observed)", (9, 7): "Labor Day",
-        (11, 26): "Thanksgiving", (12, 25): "Christmas Day",
-    }
-    if now.year == 2026 and (month, day) in HOLIDAYS_2026:
-        hname = HOLIDAYS_2026[(month, day)]
+    hname = holiday_name(now.date())
+    if hname:
         return {"is_closed": True, "reason": "holiday", "day_name": hname,
             "note": f"TODAY IS {hname.upper()}. Markets CLOSED (CBOT grain + equities). "
                     f"Write a HOLIDAY OUTLOOK — do not describe an overnight session or "
@@ -665,12 +663,29 @@ def load_issue_number():
     except Exception: return 0
 
 
-def load_yesterdays_call_context():
-    """Pull highest-conviction call from most recent prior weekday briefing.
-    Skips weekends/holidays. Returns dict with prior_date, section_title,
-    conviction, and call text, or None on Mondays after a long weekend
-    where there's nothing recent enough to thread back to."""
+def load_yesterdays_call_context(today_briefing=None):
+    """The call TODAY actually grades, as prompt context.
+
+    v5.2: this used to walk back to "the most recent weekday briefing", which
+    could hand the model a call the grader was not going to score, or one it had
+    already scored on Saturday. The model then wrote an honest-sounding note
+    about the wrong call. One question, one answer: ask grade_calls, which the
+    grader, the gate and the public record all ask too. Returns None when no
+    session has settled since the last issue, and the block is then omitted."""
     archive_dir = REPO_ROOT / "data" / "daily-archive"
+    only_date = None
+    try:
+        import grade_calls as _gc
+        _probe = dict(today_briefing or {})
+        _probe.setdefault("date", datetime.now().strftime("%Y-%m-%d"))
+        _probe.setdefault("generated_at", datetime.now(timezone.utc).isoformat())
+        made, _prior, why = _gc.find_graded_call(_probe, str(archive_dir))
+        if made is None:
+            print(f"  Yesterday's call: nothing to grade ({why})")
+            return None
+        only_date = made
+    except Exception as _e:
+        print(f"  [warn] call-context selector unavailable ({type(_e).__name__}: {_e})")
     index_path = archive_dir / "index.json"
     if not index_path.exists(): return None
     try:
@@ -682,8 +697,10 @@ def load_yesterdays_call_context():
         [b for b in briefings if b.get("date") and b["date"] != today_iso],
         key=lambda x: x.get("date", ""), reverse=True
     )
+    if only_date:
+        candidates = [b for b in candidates if b.get("date") == only_date]
     for entry in candidates[:5]:  # Look back up to 5 days
-        if entry.get("market_closed"): continue
+        if only_date is None and entry.get("market_closed"): continue
         date_iso = entry.get("date", "")
         json_path = archive_dir / f"{date_iso}.json"
         if not json_path.exists(): continue
@@ -1393,8 +1410,10 @@ def build_system_prompt(market_status, past_tmyk_topics, yesterdays_call=None, w
         if reason == "weekend" and "Saturday" in day:
             weekend_instructions = (
                 "\nWEEKEND MODE SATURDAY: Markets CLOSED. Write WEEK IN REVIEW + WEEKEND OUTLOOK. "
-                "Reference 'Friday's close'. No overnight language. Skip yesterdays_call "
-                "(set it to an empty object).\n"
+                "Reference 'Friday's close'. No overnight language. Make NO todays_call "
+                "(omit it): the board you hold is Friday's close, the same board Friday's "
+                "issue called from. If a yesterdays_call block is briefed below, it is "
+                "because today's board scores it; write the note.\n"
                 "RULE 17 ON WEEKENDS: the post-gen level-coherence validator checks every "
                 "'broke $X'/'below $X'/'above $X' claim against FRIDAY'S CLOSE (the only close "
                 "in locked_prices on weekends). Retrospective prose with explicit day-of-week "
@@ -1410,8 +1429,10 @@ def build_system_prompt(market_status, past_tmyk_topics, yesterdays_call=None, w
         elif reason == "weekend" and "Sunday" in day:
             weekend_instructions = (
                 "\nWEEKEND MODE SUNDAY: Markets CLOSED. Write SUNDAY PREVIEW + WEEK AHEAD. "
-                "Reference 'Friday's close'. No overnight language. Skip yesterdays_call "
-                "(set it to an empty object).\n"
+                "Reference 'Friday's close'. No overnight language. Make NO todays_call "
+                "(omit it): the board you hold is Friday's close, the same board Friday's "
+                "issue called from. If a yesterdays_call block is briefed below, it is "
+                "because today's board scores it; write the note.\n"
                 "RULE 17 ON SUNDAYS: forecast and conditional prose is the dominant mode "
                 "('if cattle break $X next week', 'a move below $Y would target $Z'). The "
                 "validator auto-skips claims wrapped in 'if/would/should/could/next week/might/may' "
@@ -1425,7 +1446,8 @@ def build_system_prompt(market_status, past_tmyk_topics, yesterdays_call=None, w
         else:
             weekend_instructions = (
                 f"\nHOLIDAY MODE {day.upper()}: Markets CLOSED. Holiday outlook framing. "
-                f"Skip yesterdays_call (set it to an empty object). "
+                f"Make NO todays_call (omit it); the board is the last close, "
+                f"unchanged. Write the yesterdays_call note only if one is briefed below. "
                 f"Rule 17 (level coherence) references the most recent close in locked_prices. "
                 f"Rule 18 (macro anchoring) applies normally.\n"
             )
@@ -1491,7 +1513,11 @@ def build_system_prompt(market_status, past_tmyk_topics, yesterdays_call=None, w
             print(f"  [call-v2] calibration unavailable, using v1 call text: {_e}")
 
     yesterdays_block = ""
-    if yesterdays_call and not market_status["is_closed"]:
+    # v5.2: no is_closed condition. Saturday's issue holds Friday's closes and
+    # is where Friday morning's call is scored; the selector decides, not the
+    # weekday. When nothing is gradeable the caller passes None and this block
+    # is absent.
+    if yesterdays_call:
         _sc = yesterdays_call.get("structured_call")
         if _sc:
             _scdir = (_sc.get("direction") or "").lower()
@@ -3644,24 +3670,32 @@ def grade_in_generator(briefing, market_status):
     """v5.1: grade yesterday's call HERE, before the archive HTML is rendered,
     so the page and the email show the deterministic verdict and call_line on
     the first render. grade_calls.py still runs as its own workflow step and
-    writes the identical result (one function, two callers). Fails open."""
-    if market_status.get("is_closed"):
-        return briefing
+    writes the identical result (one function, two callers). Fails open.
+
+    v5.2: WHICH call gets graded comes from grade_calls.find_graded_call, which
+    requires a session to have SETTLED since the previous issue. This now runs
+    on closed days too, because Saturday's issue holds Friday's closes and is
+    exactly where Friday morning's call should be scored. The weekday is not
+    the question; the session is."""
     try:
         import grade_calls as _gc
-        arch = ARCHIVE_JSON_DIR
-        dates = sorted(p.stem for p in arch.glob("*.json") if p.stem != "index") if arch.exists() else []
-        today_iso = datetime.now().strftime("%Y-%m-%d")
-        prior = [d for d in dates if d < today_iso]
-        if not prior:
+        made, prior_daily, why = _gc.find_graded_call(briefing, str(ARCHIVE_JSON_DIR))
+        if made is None:
+            # NOT a miss. A Sunday issue, or a Monday before the open, holds the
+            # same closes as the issue before it, so there is nothing new to
+            # score. Dropping the block is the honest answer; grading it against
+            # the board the call was made from is how 20 of 81 calls were
+            # recorded as misses before any market opened.
+            print(f"  [grade] nothing to grade: {why}")
+            briefing["yesterdays_call"] = {}
             return briefing
-        prior_daily = json.loads((arch / f"{prior[-1]}.json").read_text())
         outcome, call, p0, p1, note = _gc.grade_from_archives(briefing, prior_daily)
         if outcome is None:
+            briefing["yesterdays_call"] = {}
             return briefing
         yc = briefing.get("yesterdays_call") or {}
         yc["outcome"] = outcome
-        yc["computed"] = {"outcome": outcome, "made": prior[-1], "p0": p0, "p1": p1,
+        yc["computed"] = {"outcome": outcome, "made": made, "p0": p0, "p1": p1,
                           "instrument": call.get("instrument"), "direction": call.get("direction"),
                           "level": call.get("level")}
         yc["call_line"] = _gc.plain_call(call, p0, p1, outcome)
@@ -3680,7 +3714,15 @@ def sanitize_weekend_blocks(briefing, market_status):
     weekday data is untouched."""
     if not market_status.get("is_closed"):
         return briefing
-    weekend_disallowed = ["yesterdays_call", "weekly_thread"]
+    # v5.2: todays_call JOINS this list and yesterdays_call LEAVES it.
+    # A weekend issue cannot make a forward call: it holds Friday's closes, so
+    # its "call" is the same claim, from the same board, that Friday's issue
+    # already made, and the record scored both. 25 of the archived calls were
+    # made on closed days.
+    # yesterdays_call is no longer wiped here, because Saturday's issue holds
+    # Friday's closes and is the right place to score Friday morning's call.
+    # grade_in_generator decides that from the session, not from the weekday.
+    weekend_disallowed = ["weekly_thread", "todays_call"]
     for key in weekend_disallowed:
         if key in briefing:
             briefing[key] = {}
@@ -3730,15 +3772,13 @@ def main():
         print(f"  [v4.6] today is a USDA release day")
 
     # v4.0: load yesterday's call + weekly thread context
-    yesterdays_call_ctx = None
+    # v5.2: asked on EVERY day, closed ones included. The selector returns None
+    # unless a session has settled since the last issue, so Saturday grades
+    # Friday's call and Sunday grades nothing. weekly_thread_ctx stays None (v5.1).
     weekly_thread_ctx = None
-    if not market_status["is_closed"]:
-        yesterdays_call_ctx = load_yesterdays_call_context()
-        if yesterdays_call_ctx:
-            print(f"  Yesterday's call: {yesterdays_call_ctx['section_title']!r} ({yesterdays_call_ctx['conviction']}) from {yesterdays_call_ctx['prior_date']}")
-        else:
-            print("  Yesterday's call: none found (Monday after long weekend or fresh archive)")
-        # v5.1: weekly_thread retired; weekly_thread_ctx stays None.
+    yesterdays_call_ctx = load_yesterdays_call_context()
+    if yesterdays_call_ctx:
+        print(f"  Yesterday's call: {yesterdays_call_ctx['section_title']!r} ({yesterdays_call_ctx['conviction']}) from {yesterdays_call_ctx['prior_date']}")
 
     print("  Fetching ag news...")
     news_block = fetch_ag_news()

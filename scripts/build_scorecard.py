@@ -2,10 +2,17 @@
 """
 build_scorecard.py — compile the public Yesterday's-Call track record
 ═══════════════════════════════════════════════════════════════════════════
-Walks data/daily-archive/*.json in date order. Each briefing's
-yesterdays_call block judges the forward call made in the PREVIOUS
-briefing, so day i's yc produces a record dated to publish-day i-1 and
-judged on day i.
+Walks the CALLS in data/daily-archive/*.json. Each call is scored against the
+first later issue whose board holds a later session (grade_calls.grading_issue_for),
+so a record is dated to the publish day that made the call and judged on the day
+a new close actually arrived.
+
+REBUILT 2026-09-13. This used to walk DAYS and score each briefing's call against
+the file immediately before it. The archive publishes at weekends and on holidays
+and those issues carry the last close forward, so 20 of 81 graded calls were
+scored against the very board they were made from: p0 == p1, direction can never
+be satisfied, recorded as a miss before any market opened. Nothing was red — the
+row count was right and the outcome was a valid enum.
 
 Honest by construction: outcomes come straight from the archive — the same
 JSON the public briefing pages render — and nothing here can edit them.
@@ -74,11 +81,76 @@ def main():
             return ""
         return grade_calls.plain_call(call, p0, p1, outcome)
 
+    # Iterate CALLS, not days: one row per call, judged by the issue that
+    # actually carried a later close. A call with no later session yet simply
+    # has no row (it is pending), rather than being scored against a frozen board.
+    call_dates = []
+    for d in dates:
+        b = load(d)
+        if b and isinstance(b.get("todays_call"), dict) and (b["todays_call"].get("instrument")):
+            call_dates.append(d)
+
+    # ── THE LEGACY ERA, PRESERVED ─────────────────────────────────────────
+    # Structured calls (todays_call) begin 2026-06-23. Before that the briefing
+    # made prose calls and graded them itself; there is no structured call to
+    # recompute, so those rows are carried forward exactly as published and stay
+    # fenced off in by_method.self_reported, which is what the page already
+    # leads away from. Rebuilding the deterministic era must not quietly delete
+    # five weeks of the public record.
+    FIRST_STRUCTURED = call_dates[0] if call_dates else None
     for i, d in enumerate(dates):
-        briefing = load(d)
-        if briefing is None:
+        if FIRST_STRUCTURED and d > FIRST_STRUCTURED:
+            break
+        if i == 0:
+            continue
+        b = load(d)
+        if not b:
+            continue
+        lyc = b.get("yesterdays_call") or {}
+        lsummary = (lyc.get("summary") or "").strip()
+        loutcome = (lyc.get("outcome") or "").strip()
+        if not lsummary or loutcome not in VALID:
+            continue
+        records.append({
+            "made": dates[i - 1], "judged": d, "call": lsummary,
+            "outcome": loutcome, "method": "self", "mismatch": False,
+            "note": (lyc.get("note") or "").strip(),
+        })
+
+    for made in call_dates:
+        judged = grade_calls.grading_issue_for(made, str(ARCHIVE)) if grade_calls else None
+        if judged is None:
+            # No later session has settled yet: the call is OPEN, not a miss.
+            # Publish it as pending so the newest call is visible on the record
+            # instead of disappearing until the next close arrives.
+            _b = load(made) or {}
+            _c = _b.get("todays_call") or {}
+            _p0 = (_b.get("locked_prices") or {}).get(
+                grade_calls.locked_key(_c.get("instrument")) if grade_calls else None)
+            records.append({
+                "made": made, "judged": None,
+                "call": (grade_calls.plain_call(_c, _p0, None, "pending")
+                         if grade_calls else ""),
+                "outcome": "pending", "method": "deterministic", "mismatch": False,
+                "note": "Open: no session has settled since this call was made.",
+                "instrument": (grade_calls.locked_key((_c.get("instrument") or "").lower())
+                               if grade_calls else None) or (_c.get("instrument") or "").lower(),
+                "direction": (_c.get("direction") or "").lower(),
+                "level": _c.get("level"), "p0": _p0, "p1": None,
+                "design": _c.get("design") or "v1",
+            })
+            continue
+        d = judged
+        briefing = load(judged)
+        prior_call_issue = load(made)
+        if briefing is None or prior_call_issue is None:
             continue
         yc = briefing.get("yesterdays_call") or {}
+        # The published prose belongs to this row only if that issue was in fact
+        # grading THIS call. Under the old rule it often was not.
+        _yc_made = ((yc.get("computed") or {}).get("made"))
+        if _yc_made and _yc_made != made:
+            yc = {}
         # v5.1: issues after the cut carry no model summary; the row's text is
         # the deterministic call_line (or is rebuilt below from the computed
         # call). Issues before the cut still carry summary and are checked
@@ -93,7 +165,7 @@ def main():
         # value only when no structured call exists (legacy entries).
         outcome = stored
         _computed_call = _p0v = _p1v = None
-        prior = load(dates[i - 1]) if i > 0 else None
+        prior = prior_call_issue
         if grade_calls is not None and prior is not None:
             computed, _c, _p0, _p1, _n = grade_calls.grade_from_archives(briefing, prior)
             _computed_call, _p0v, _p1v = _c, _p0, _p1
@@ -142,8 +214,8 @@ def main():
             )
 
         rec = {
-            "made": dates[i - 1] if i > 0 else None,
-            "judged": d,
+            "made": made,
+            "judged": judged,
             "call": call_text,
             "outcome": outcome,
             "method": method,
@@ -172,6 +244,10 @@ def main():
                 rec["direction_ok"] = (_p1v > _p0v) if rec["direction"] == "up" else (_p1v < _p0v)
         records.append(rec)
 
+    # Two passes append to `records` (legacy era, then calls), so order the list
+    # explicitly rather than relying on the order they happened to run in.
+    records.sort(key=lambda r: (r.get("judged") or r.get("made") or ""))
+
     played = sum(1 for r in records if r["outcome"] == "played_out")
     missed = sum(1 for r in records if r["outcome"] == "didnt")
     pending = sum(1 for r in records if r["outcome"] == "pending")
@@ -190,8 +266,10 @@ def main():
         g = pl + ms
         return {"played": pl, "missed": ms, "graded": g,
                 "hit_rate": round(100.0 * pl / g, 1) if g else None,
-                "first": rs[0]["judged"] if rs else None,
-                "last": rs[-1]["judged"] if rs else None}
+                # Span of the GRADED rows: a pending row has no judged date and
+                # must not blank out the era's range.
+                "first": next((r["judged"] for r in rs if r.get("judged")), None),
+                "last": next((r["judged"] for r in reversed(rs) if r.get("judged")), None)}
 
     det = [r for r in records if r.get("method") == "deterministic"]
     slf = [r for r in records if r.get("method") != "deterministic"]
