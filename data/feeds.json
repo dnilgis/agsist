@@ -2,8 +2,8 @@
  "schema": "agsist-feeds/1",
  "generated_by": "scripts/build_feeds.py",
  "note": "Derived from the repository, never typed. Pages come from a grep of every .html; the writer and its cadence come from the workflow that names the file or runs the script that names it.",
- "count": 47,
- "with_known_cadence": 47,
+ "count": 52,
+ "with_known_cadence": 52,
  "feeds": [
   {
    "path": "data/afida/county.json",
@@ -28,13 +28,36 @@
     "whats-priced-in.html"
    ],
    "written_by": [
-    "Build Analyst Scorecard"
+    "Build Analyst Scorecard",
+    "WASDE watch \u2014 grade the report as it lands"
    ],
    "touched_by": [
     "Build Analyst Scorecard",
     "Fetch COT Data",
     "Generate Daily Briefing",
+    "WASDE watch \u2014 grade the report as it lands",
     "Build What's Priced In"
+   ],
+   "cadence": "on demand",
+   "curated": false,
+   "planned": false,
+   "external": false,
+   "url": null,
+   "crons": [],
+   "max_gap_hours": null,
+   "quiet": null,
+   "why_quiet": null
+  },
+  {
+   "path": "data/atlas/atlas.json",
+   "pages": [
+    "farmland-atlas.html"
+   ],
+   "written_by": [
+    "farmland-atlas"
+   ],
+   "touched_by": [
+    "farmland-atlas"
    ],
    "cadence": "on demand",
    "curated": false,
@@ -156,22 +179,62 @@
    "why_quiet": null
   },
   {
-   "path": "data/cot-history.json",
+   "path": "data/cot-analysis.json",
    "pages": [
     "cot.html"
    ],
    "written_by": [
+    "COT Deep History Rebuild",
+    "COT Release Watch",
     "Fetch COT Data"
    ],
    "touched_by": [
+    "COT Deep History Rebuild",
+    "COT Release Watch",
     "Fetch COT Data"
    ],
-   "cadence": "9 launches on a fixed schedule at about 2pm, 3pm, 4pm Central",
+   "cadence": "11 launches on a fixed schedule at about 4am, 2pm, 3pm, 4pm Central",
    "curated": false,
    "planned": false,
    "external": false,
    "url": null,
    "crons": [
+    "20 9 * * 0",
+    "*/5 19-21 * * 1-5",
+    "45 19 * * 5",
+    "15 20 * * 5",
+    "45 20 * * 5",
+    "15 21 * * 5",
+    "45 19 * * 1",
+    "15 20 * * 1",
+    "45 20 * * 1",
+    "15 21 * * 1",
+    "30 21 * * *"
+   ],
+   "max_gap_hours": 23.6,
+   "quiet": null,
+   "why_quiet": null
+  },
+  {
+   "path": "data/cot-history.json",
+   "pages": [
+    "cot.html"
+   ],
+   "written_by": [
+    "COT Release Watch",
+    "Fetch COT Data"
+   ],
+   "touched_by": [
+    "COT Release Watch",
+    "Fetch COT Data"
+   ],
+   "cadence": "10 launches on a fixed schedule at about 2pm, 3pm, 4pm Central",
+   "curated": false,
+   "planned": false,
+   "external": false,
+   "url": null,
+   "crons": [
+    "*/5 19-21 * * 1-5",
     "45 19 * * 5",
     "15 20 * * 5",
     "45 20 * * 5",
@@ -193,26 +256,29 @@
     "corn-futures-prices.html",
     "cot.html",
     "index.html",
-    "index1.html",
     "soybean-futures-prices.html",
     "status.html",
     "wheat-futures-prices.html"
    ],
    "written_by": [
+    "COT Release Watch",
     "Fetch COT Data"
    ],
    "touched_by": [
     "Build Analyst Scorecard",
+    "COT Release Watch",
     "Fetch COT Data",
     "Generate Daily Briefing",
+    "WASDE watch \u2014 grade the report as it lands",
     "Build What's Priced In"
    ],
-   "cadence": "9 launches on a fixed schedule at about 2pm, 3pm, 4pm Central",
+   "cadence": "10 launches on a fixed schedule at about 2pm, 3pm, 4pm Central",
    "curated": false,
    "planned": false,
    "external": false,
    "url": null,
    "crons": [
+    "*/5 19-21 * * 1-5",
     "45 19 * * 5",
     "15 20 * * 5",
     "45 20 * * 5",
@@ -232,7 +298,6 @@
    "pages": [
     "corn-futures-prices.html",
     "index.html",
-    "index1.html",
     "soybean-futures-prices.html",
     "wheat-futures-prices.html"
    ],
@@ -294,7 +359,6 @@
     "daily.html",
     "developer.html",
     "index.html",
-    "index1.html",
     "soybean-futures-prices.html",
     "status.html",
     "wheat-futures-prices.html"
@@ -366,7 +430,6 @@
    "path": "data/export-sales.json",
    "pages": [
     "index.html",
-    "index1.html",
     "wheat-futures-prices.html"
    ],
    "written_by": [
@@ -395,8 +458,7 @@
    "pages": [
     "fast-facts.html",
     "fertilizer.html",
-    "index.html",
-    "index1.html"
+    "index.html"
    ],
    "written_by": [
     "Fertilizer \u2014 update dealer prices"
@@ -492,8 +554,7 @@
    "pages": [
     "ag-odds.html",
     "developer.html",
-    "index.html",
-    "index1.html"
+    "index.html"
    ],
    "written_by": [
     "Fetch Markets"
@@ -503,6 +564,7 @@
     "Fetch COT Data",
     "Generate Daily Briefing",
     "Fetch Markets",
+    "WASDE watch \u2014 grade the report as it lands",
     "Build What's Priced In"
    ],
    "cadence": "1 launch every day at about 4am Central",
@@ -520,7 +582,8 @@
   {
    "path": "data/merged-index.json",
    "pages": [
-    "cash-bids.html"
+    "cash-bids.html",
+    "status.html"
    ],
    "written_by": [],
    "touched_by": [],
@@ -765,16 +828,40 @@
    "why_quiet": null
   },
   {
+   "path": "data/news.json",
+   "pages": [
+    "news.html"
+   ],
+   "written_by": [
+    "The wire"
+   ],
+   "touched_by": [
+    "The wire"
+   ],
+   "cadence": "on demand",
+   "curated": false,
+   "planned": false,
+   "external": false,
+   "url": null,
+   "crons": [],
+   "max_gap_hours": null,
+   "quiet": null,
+   "why_quiet": null
+  },
+  {
    "path": "data/nowcast-direction.json",
    "pages": [
     "conditions-yield.html",
     "status.html"
    ],
    "written_by": [
+    "Build Analyst Scorecard",
     "cond-yield"
    ],
    "touched_by": [
-    "cond-yield"
+    "Build Analyst Scorecard",
+    "cond-yield",
+    "WASDE watch \u2014 grade the report as it lands"
    ],
    "cadence": "on demand",
    "curated": false,
@@ -833,7 +920,6 @@
     "cattle-futures-prices.html",
     "corn-futures-prices.html",
     "index.html",
-    "index1.html",
     "soybean-futures-prices.html",
     "wheat-futures-prices.html"
    ],
@@ -866,7 +952,6 @@
     "fast-facts.html",
     "fertilizer.html",
     "index.html",
-    "index1.html",
     "markets.html",
     "soybean-futures-prices.html",
     "status.html",
@@ -910,8 +995,7 @@
   {
    "path": "data/rma-discovery.json",
    "pages": [
-    "index.html",
-    "index1.html"
+    "index.html"
    ],
    "written_by": [],
    "touched_by": [],
@@ -928,8 +1012,7 @@
   {
    "path": "data/rma-planting-dates.json",
    "pages": [
-    "index.html",
-    "index1.html"
+    "index.html"
    ],
    "written_by": [],
    "touched_by": [],
@@ -978,6 +1061,7 @@
     "Build Analyst Scorecard",
     "Fetch COT Data",
     "Generate Daily Briefing",
+    "WASDE watch \u2014 grade the report as it lands",
     "Build What's Priced In"
    ],
    "cadence": "4 launches on a fixed schedule at about 5am, 6am, 8am, 3pm Central",
@@ -1042,7 +1126,6 @@
    "path": "data/tariffs.json",
    "pages": [
     "index.html",
-    "index1.html",
     "tariffs.html"
    ],
    "written_by": [
@@ -1129,24 +1212,16 @@
    "why_quiet": null
   },
   {
-   "path": "data/whats-priced-in.json",
+   "path": "data/us-states.geo.json",
    "pages": [
-    "corn-futures-prices.html",
-    "soybean-futures-prices.html",
-    "whats-priced-in.html",
-    "wheat-futures-prices.html"
+    "elevators.html",
+    "farmland-atlas.html",
+    "hail-map.html"
    ],
-   "written_by": [
-    "Build What's Priced In"
-   ],
-   "touched_by": [
-    "Build Analyst Scorecard",
-    "Fetch COT Data",
-    "Generate Daily Briefing",
-    "Build What's Priced In"
-   ],
-   "cadence": "on demand",
-   "curated": false,
+   "written_by": [],
+   "touched_by": [],
+   "cadence": "maintained by hand, not on a schedule",
+   "curated": true,
    "planned": false,
    "external": false,
    "url": null,
@@ -1156,28 +1231,87 @@
    "why_quiet": null
   },
   {
-   "path": "data/yield-nowcast.json",
+   "path": "data/whats-priced-in.json",
    "pages": [
-    "conditions-yield.html",
-    "index.html",
-    "index1.html",
-    "status.html"
+    "corn-futures-prices.html",
+    "soybean-futures-prices.html",
+    "whats-priced-in.html",
+    "wheat-futures-prices.html"
    ],
    "written_by": [
-    "cond-yield",
-    "bake crop tour"
+    "COT Release Watch",
+    "WASDE watch \u2014 grade the report as it lands",
+    "Build What's Priced In"
    ],
    "touched_by": [
-    "cond-yield",
-    "bake crop tour"
+    "Build Analyst Scorecard",
+    "COT Release Watch",
+    "Fetch COT Data",
+    "Generate Daily Briefing",
+    "WASDE watch \u2014 grade the report as it lands",
+    "Build What's Priced In"
    ],
-   "cadence": "on demand",
+   "cadence": "1 launch weekdays Central",
    "curated": false,
    "planned": false,
    "external": false,
    "url": null,
-   "crons": [],
-   "max_gap_hours": null,
+   "crons": [
+    "*/5 19-21 * * 1-5"
+   ],
+   "max_gap_hours": 69.1,
+   "quiet": null,
+   "why_quiet": null
+  },
+  {
+   "path": "data/yield-nowcast.json",
+   "pages": [
+    "conditions-yield.html",
+    "index.html",
+    "status.html"
+   ],
+   "written_by": [
+    "cond-yield",
+    "bake crop tour",
+    "yield-panel"
+   ],
+   "touched_by": [
+    "cond-yield",
+    "bake crop tour",
+    "yield-panel"
+   ],
+   "cadence": "1 launch every day at about 11pm Central",
+   "curated": false,
+   "planned": false,
+   "external": false,
+   "url": null,
+   "crons": [
+    "24 4 * * *"
+   ],
+   "max_gap_hours": 24.0,
+   "quiet": null,
+   "why_quiet": null
+  },
+  {
+   "path": "data/yield-panel.json",
+   "pages": [
+    "conditions-yield.html"
+   ],
+   "written_by": [
+    "yield-panel"
+   ],
+   "touched_by": [
+    "yield-panel"
+   ],
+   "cadence": "1 launch every day at about 11pm Central",
+   "curated": false,
+   "planned": false,
+   "external": false,
+   "url": null,
+   "crons": [
+    "24 4 * * *"
+   ],
+   "max_gap_hours": 24.0,
    "quiet": null,
    "why_quiet": null
   }

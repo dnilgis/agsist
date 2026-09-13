@@ -83,6 +83,11 @@ CURATED = {
     "data/tariffs.json", "data/dairy-data.json", "data/poll.json",
     "data/afida/county.json", "data/rma-discovery.json",
     "data/rma-planting-dates.json",
+    # State outlines for the Atlas map. Shipped once; state borders do not move,
+    # so there is no cadence to read and nothing to refresh. Without this line
+    # build_feeds.py exits 1 and takes feeds-guard down on every push that
+    # touches an .html file -- which is most of them.
+    "data/us-states.geo.json",
 }
 
 # ── feeds another repository publishes, and this one only reads ─────────────
