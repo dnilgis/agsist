@@ -314,6 +314,12 @@ jobs:
       - name: GATE 0 — feed gate selftest
         run: python scripts/test_preflight_limits.py
 
+      # v5.1 (the cut): the word budget lives in ONE file that the generator,
+      # the critic and the schema check all import. Prove it works before a
+      # briefing is generated against it.
+      - name: GATE 0b — word budget selftest
+        run: python scripts/briefing_cut.py --selftest
+
       # The schedule is machinery too. This asserts the backup fires still
       # exist and are spread, and that the gate asks the remote rather than its
       # own checkout — the two things that keep a dropped fire from becoming a
@@ -415,11 +421,11 @@ jobs:
         # On failure, yesterday's briefing stays live until the next
         # successful run. GitHub emails the workflow owner on failure.
         #
-        # NOTE (v4.2): daily.json supports new optional fields:
-        #   the_takeaway, subject_line, named_week (top-level)
-        #   vs_yesterday (per-section)
-        # Schema knows about these — generator will start emitting them
-        # as the prompt is updated.
+        # v5.1 (the cut): this step also fails the run when the briefing is
+        # over 450 words or has more than 3 sections (briefing_cut, the same
+        # function the generator and critic enforce with). Retired fields
+        # (subheadline, the_takeaway, weekly_thread, the_more_you_know,
+        # catalyst, vs_yesterday, bottom_line) stay accepted for the archive.
         run: python scripts/daily_schema.py data/daily.json
 
       - name: Generate RSS feed
