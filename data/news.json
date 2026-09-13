@@ -1,0 +1,51 @@
+{
+ "updated": "2026-09-13T14:54:05+00:00",
+ "count": 4,
+ "added": 4,
+ "items": [
+  {
+   "id": "wasde:2026-09-11:2026/27 soybean yield",
+   "kind": "usda",
+   "headline": "September WASDE: 2026/27 soybean yield came in bearish",
+   "detail": "Trade looked for 52.5 bu/acre; USDA printed 52.8 bu/acre — +0.6% versus the survey.",
+   "significance": "high",
+   "url": "/whats-priced-in",
+   "source": "USDA WASDE, graded against the pre-report survey",
+   "day_only": true,
+   "ts": "2026-09-11T12:00:00+00:00"
+  },
+  {
+   "id": "cot:September 08, 2026:corn:max",
+   "kind": "positioning",
+   "headline": "Managed money holds its biggest corn net long in a year",
+   "detail": "Net +414,459 contracts as of September 08, 2026, from +401,003 the week before.",
+   "significance": "high",
+   "url": "/cot",
+   "source": "CFTC Commitments of Traders",
+   "day_only": true,
+   "ts": "2026-09-08T12:00:00+00:00"
+  },
+  {
+   "id": "cot:September 08, 2026:beans:max",
+   "kind": "positioning",
+   "headline": "Managed money holds its biggest soybeans net long in a year",
+   "detail": "Net +257,258 contracts as of September 08, 2026, from +234,920 the week before.",
+   "significance": "high",
+   "url": "/cot",
+   "source": "CFTC Commitments of Traders",
+   "day_only": true,
+   "ts": "2026-09-08T12:00:00+00:00"
+  },
+  {
+   "id": "cot:September 08, 2026:soymeal:max",
+   "kind": "positioning",
+   "headline": "Managed money holds its biggest soybean meal net long in a year",
+   "detail": "Net +157,689 contracts as of September 08, 2026, from +157,179 the week before.",
+   "significance": "high",
+   "url": "/cot",
+   "source": "CFTC Commitments of Traders",
+   "day_only": true,
+   "ts": "2026-09-08T12:00:00+00:00"
+  }
+ ]
+}

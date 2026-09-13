@@ -8,6 +8,7 @@
 <meta name="robots" content="noindex, nofollow">
 <link rel="icon" href="/favicon.ico">
 <link rel="stylesheet" href="/components/styles.css?v=16">
+  <script src="/components/util.js?v=16"></script>
 <style>
     /* --sr-panel and --sr-line were INVENTED and do not exist anywhere on this
        site, so their light fallbacks always won: a near-white card carrying the
@@ -91,11 +92,7 @@ table.sr-t{width:100%;border-collapse:collapse;font-size:.88rem}
           'reply to the email it came in and we will send a fresh one.');
     });
 
-  function esc(s) {
-    return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) {
-      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
-    });
-  }
+  
   function num(n) { return (n == null ? '—' : Number(n).toLocaleString()); }
   function day(iso) {
     var d = new Date(iso + 'T12:00:00Z');

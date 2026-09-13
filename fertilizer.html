@@ -10,6 +10,7 @@
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
 <link rel="preload" href="/components/styles.css?v=16" as="style">
 <link rel="stylesheet" href="/components/styles.css?v=16">
+  <script src="/components/util.js?v=16"></script>
 <link rel="icon" type="image/x-icon"            href="/img/favicon.ico">
 <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
@@ -392,7 +393,7 @@
 <script>
 (function(){
 'use strict';
-function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
 function fmtDate(iso){if(!iso)return'\u2014';try{var d=new Date(iso+'T12:00:00');return d.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});}catch(e){return iso;}}
 function money(n){return '$'+Math.round(n).toLocaleString('en-US');}
 function money2(n){return '$'+(Math.round(n*100)/100).toFixed(2);}

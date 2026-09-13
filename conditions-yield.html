@@ -7,9 +7,10 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H"></script>
-  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');function gaEvent(n,p){try{gtag('event',n,p||{});}catch(e){}}</script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
   <link rel="preload" href="/components/styles.css?v=16" as="style">
   <link rel="stylesheet" href="/components/styles.css?v=16">
+  <script src="/components/util.js?v=16"></script>
   <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
   <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
@@ -193,7 +194,7 @@
       if(!d||!d.crops)return;
       var wrap=document.getElementById('cyp-crops'); if(!wrap)return;
       var LABEL={corn:'Corn',soybeans:'Soybeans'};
-      var esc=function(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');};
+      
       /* A GAP IS INFORMATION. A forecaster who published no number for a crop
          is not in that crop's table at all, and the count under it says how
          many are — rather than a blank row a reader reads as a zero. */
@@ -358,7 +359,7 @@
     var ab=F2A[String(l.state||'').toLowerCase()]||(String(l.state||'').length===2?String(l.state).toUpperCase():null);
     if(ab&&av[ab]){ geoNote='auto-set from your location'; return ab; } }catch(e){}
     return av.IA?'IA':Object.keys(av)[0]; }
-  function el(id){return document.getElementById(id);}
+  
   function render(){
     if(!VD)return;
     if(!picked||!VD[picked]) picked=geoPick(VD);

@@ -23,10 +23,16 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 // The page's numbersEl(), lifted from the file that ships it. Braces are
 // counted rather than regex-matched so a nested function body cannot end the
 // slice early.
-function liftFromPage(name) {
-  const src = readFileSync(join(ROOT, "whats-priced-in.html"), "utf8");
+//
+// esc() moved to components/util.js on 2026-09-13 -- it existed in 17 copies in
+// two different behaviours, one of which did not escape a double quote and
+// turned esc(0) into "". This test follows it there rather than keeping a copy,
+// for the same reason it lifts numbersEl() instead of pasting it: a copy is
+// another implementation to disagree with.
+function liftFrom(file, name) {
+  const src = readFileSync(join(ROOT, file), "utf8");
   const start = src.indexOf("function " + name + "(");
-  assert.notEqual(start, -1, name + "() is no longer in whats-priced-in.html");
+  assert.notEqual(start, -1, name + "() is no longer in " + file);
   let i = src.indexOf("{", start), depth = 0, end = -1;
   for (let p = i; p < src.length; p++) {
     if (src[p] === "{") depth++;
@@ -35,11 +41,30 @@ function liftFromPage(name) {
   assert.notEqual(end, -1, name + "() has unbalanced braces");
   return src.slice(start, end);
 }
+const liftFromPage = (name) => liftFrom("whats-priced-in.html", name);
+const liftFromUtil = (name) => liftFrom("components/util.js", name);
 
-const jsStrip = new Function(
-  "rows",
-  liftFromPage("esc") + "\n" + liftFromPage("numbersEl") + "\nreturn numbersEl(rows);"
-);
+// util.js is executed as shipped, not lifted, so this exercises the real file
+// including anything its helpers close over. Lifting esc() alone silently lost
+// the entity map it reads and the renderer threw ReferenceError: ENT.
+const UTIL_SRC = readFileSync(join(ROOT, "components/util.js"), "utf8");
+
+const jsStrip = new Function("rows", `
+  const window = {};
+  ${UTIL_SRC}
+  const esc = window.esc;
+  ${liftFromPage("numbersEl")}
+  return numbersEl(rows);
+`);
+
+// What components/util.js actually puts on window, read from the file rather
+// than typed here, so this list cannot drift away from what ships.
+function utilProvides() {
+  const names = new Set();
+  for (const m of UTIL_SRC.matchAll(/\bw\.([A-Za-z_$][\w$]*)\s*=/g)) names.add(m[1]);
+  assert.ok(names.has("esc"), "components/util.js no longer provides esc()");
+  return names;
+}
 
 function pyStrip(rows) {
   return execFileSync("python3", ["-c", `
@@ -119,10 +144,14 @@ const GLOBALS = new Set([
   "decodeURIComponent", "fetch", "setTimeout", "clearTimeout", "setInterval",
   "clearInterval", "requestAnimationFrame", "if", "for", "while", "switch",
   "catch", "return", "typeof", "function", "else", "do",
-  // Declared at page scope, outside every IIFE, and verified in a browser to be
-  // a real window global: whats-priced-in.html line ~390.
-  "gaEvent",
 ]);
+
+// Helpers the shared components/util.js defines on window are legitimately
+// callable from any block. That file loads before every page script and is not
+// deferred, so unlike a helper sealed in a sibling IIFE it is genuinely there.
+// The set is read from the file, so removing a helper there fails this test
+// rather than silently widening what a renderer may call.
+for (const n of utilProvides()) GLOBALS.add(n);
 
 test("the renderers call nothing that lives in the other script block", () => {
   const src = readFileSync(join(ROOT, "whats-priced-in.html"), "utf8");

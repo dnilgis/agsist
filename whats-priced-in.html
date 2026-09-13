@@ -25,6 +25,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/components/styles.css?v=16">
+  <script src="/components/util.js?v=16"></script>
 <style>
 :root{--wp-green:#4aab4c;--wp-gold:var(--gold);--wp-gold2:#e6b042;--wp-bg:#0f1311;--wp-panel:#161b18;--wp-panel2:#1d2420;--wp-line:#2a332d;--wp-txt:#e7ece8;--wp-mut:#9bb0a3;--wp-up:#4aab4c;--wp-dn:#e8706c;}
 .wp-wrap{max-width:900px;margin:0 auto;padding:1.25rem 1rem 3rem;color:var(--wp-txt);font-family:Inter,system-ui,sans-serif;}
@@ -377,7 +378,7 @@
   "isAccessibleForFree":true,
   "license":"https://agsist.com/terms",
   "datePublished":"2026-06-09",
-  "dateModified":"2026-09-13",
+  "dateModified":"2026-09-12",
   "temporalCoverage":"2026/..",
   "measurementTechnique":"Actual print graded against the average pre-report trade estimate: within the in-line band of the average (2% for stocks-type metrics, 0.5% for yields) counts as in line; a print below that band is bullish, above it bearish.",
   "variableMeasured":["Trade estimate range","Trade estimate average","USDA actual","Surprise direction"],
@@ -401,7 +402,7 @@
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H"></script>
 <script>
 window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');
-function gaEvent(name,params){try{gtag('event',name,params||{});}catch(e){}}
+
 </script>
 
 <script>
@@ -414,7 +415,7 @@ function gaEvent(name,params){try{gtag('event',name,params||{});}catch(e){}}
      reader gets an error where the report was. Four characters, declared where
      it is used. Kept byte-identical to the other so the baked port can mirror
      one rule; test/wpi-numbers-strip.test.mjs holds them together. */
-  function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+  
   function num(n,u){return (n==null)?'\u2014':(n+(u?(' '+u):''));}
   /* THE STRIP. Renders what the pipeline decided and decides nothing itself.
      A missing figure prints an em dash and the reason the pipeline gave, never
@@ -586,7 +587,7 @@ function gaEvent(name,params){try{gtag('event',name,params||{});}catch(e){}}
 </script>
 <script>
 (function(){
-  function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+  
   function biasCell(b){
     if(b==null)return '<span class="as-bias">&mdash;</span>';
     if(Math.abs(b)<0.25)return '<span class="as-bias">&#8776; even</span>';

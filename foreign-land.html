@@ -7,9 +7,10 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H"></script>
-  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');function gaEvent(n,p){try{gtag('event',n,p||{});}catch(e){}}</script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
   <link rel="preload" href="/components/styles.css?v=16" as="style">
   <link rel="stylesheet" href="/components/styles.css?v=16">
+  <script src="/components/util.js?v=16"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
   <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
   <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
@@ -412,7 +413,7 @@
     var ab=F2A[String(l.state||'').toLowerCase()]||(String(l.state||'').length===2?String(l.state).toUpperCase():null);
     if(ab&&av[ab]){ geoNote='auto-set from your location'; return ab; } }catch(e){}
     return av.IA?'IA':Object.keys(av)[0]; }
-  function el(id){return document.getElementById(id);}
+  
   function render(){
     if(!VD)return;
     if(!picked||!VD[picked]) picked=geoPick(VD);

@@ -10,6 +10,7 @@
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
 <link rel="preload" href="/components/styles.css?v=16" as="style">
 <link rel="stylesheet" href="/components/styles.css?v=16">
+  <script src="/components/util.js?v=16"></script>
 <link rel="icon" type="image/x-icon"            href="/img/favicon.ico">
 <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
@@ -2161,7 +2162,7 @@ function statusCls(s){return s==='elevated'?'elevated':s==='normal'?'normal':'mi
 function statusIcon(s){return s==='elevated'?'<svg class="ic" aria-hidden="true"><use href="#i-siren"/></svg>':s==='normal'?'<svg class="ic" aria-hidden="true"><use href="#i-circle-check"/></svg>':'<svg class="ic" aria-hidden="true"><use href="#i-triangle-alert"/></svg>';}
 function statusTxt(s){return s==='elevated'?'Trade War Active':s==='normal'?'Normal Trade':'Mixed';}
 function fmtDate(iso){if(!iso)return'\u2014';try{var d=new Date(iso+'T12:00:00');return d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});}catch(e){return iso;}}
-function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
 fetch('/data/tariffs.json')
   .then(function(r){if(!r.ok)throw new Error('no-tariffs');return r.json();})
   .then(function(data){
@@ -2265,7 +2266,7 @@ fetch('/data/export-sales.json')
 (function(){
 'use strict';
 function fmtDate(iso){if(!iso)return'\u2014';try{var d=new Date(iso+'T12:00:00');return d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});}catch(e){return iso;}}
-function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
 fetch('/data/fertilizer.json')
   .then(function(r){if(!r.ok)throw new Error('no-fert');return r.json();})
   .then(function(data){
@@ -2299,7 +2300,7 @@ var WHY=[['egg','Egg prices signal avian flu pressure and poultry feed demand.']
 function getWhy(t){var s=t.toLowerCase();for(var i=0;i<WHY.length;i++){if(s.indexOf(WHY[i][0])>=0)return WHY[i][1];}return'Affects agricultural commodity prices, input costs, or farm policy.';}
 function pc(n){return n>=70?'var(--green)':n>=50?'var(--gold)':n>=30?'var(--text-dim)':'#ef4444';}
 function barBg(n){var rgb=n>=70?'34,197,94':n>=50?'218,165,32':n>=30?'140,140,130':'239,68,68';return'linear-gradient(90deg,rgba('+rgb+',.9),rgba('+rgb+',.3))';}
-function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
 function tLeft(iso){if(!iso)return'';try{var d=(new Date(iso).getTime()-Date.now())/86400000;if(d<0)return'';if(d<1)return'Today';if(d<2)return'Tomorrow';if(d<=30)return Math.round(d)+'d left';return'~'+Math.round(d/30)+'mo';}catch(e){return'';}}
 var TIER_COLORS={1:'color:var(--green);border-color:rgba(34,197,94,.25);background:rgba(34,197,94,.06)',2:'color:var(--gold);border-color:rgba(var(--gold-rgb),.25);background:rgba(var(--gold-rgb),.06)',3:'color:var(--blue);border-color:rgba(91,163,224,.25);background:rgba(91,163,224,.06)'};
 var TIER_LABELS={1:'DIRECT AG',2:'TRADE / ENERGY',3:'MACRO'};
@@ -2498,7 +2499,7 @@ gj('/data/markets.json').then(function(cached){
 window.hydrateDaily = function(data) {
   'use strict';
   if(!data||!data.headline) return;
-  var el = function(id){return document.getElementById(id);};
+  
   function setText(id,v){var e=el(id);if(e&&v!=null)e.textContent=v;}
   function setHTML(id,v){var e=el(id);if(e&&v!=null)e.innerHTML=v;}
   function pick(){for(var i=0;i<arguments.length;i++){if(arguments[i]!=null)return arguments[i];}return null;}

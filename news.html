@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preload" href="/components/styles.css?v=16" as="style">
+  <link rel="stylesheet" href="/components/styles.css?v=16">
+  <script src="/components/util.js?v=16"></script>
+  <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
+  <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
+  <link rel="alternate" type="application/rss+xml" title="AGSIST Wire" href="https://agsist.com/news.xml">
+
+  <title>Ag Market Wire — What Just Moved | AGSIST</title>
+  <meta name="description" content="Dated grain and livestock market events the moment they are measurable: USDA report surprises, one-year positioning extremes, 52-week highs and lows, crop rating swings. Free.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://agsist.com/news">
+  <meta property="og:title" content="Ag Market Wire — What Just Moved | AGSIST">
+  <meta property="og:description" content="Dated grain and livestock market events the moment they are measurable. Not a headline aggregator.">
+  <meta property="og:url" content="https://agsist.com/news">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="AGSIST">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@agsist">
+  <link rel="manifest" href="/manifest.json">
+
+<style>
+  .nw-head{max-width:820px;margin:0 auto;padding:1.6rem 1rem .2rem}
+  .nw-head h1{font-size:clamp(1.6rem,4.4vw,2.3rem);font-weight:800;letter-spacing:-.015em;margin:0 0 .5rem}
+  .nw-lede{color:var(--text-dim);font-size:1rem;line-height:1.65;margin:0 0 .5rem;max-width:64ch}
+  .nw-meta{font-family:'JetBrains Mono',monospace;font-size:.76rem;color:var(--text-muted);
+    display:flex;flex-wrap:wrap;gap:.2rem .9rem;align-items:center;margin:.6rem 0 0}
+  .nw-meta a{color:var(--gold);text-decoration:none;border-bottom:1px solid var(--border-2)}
+  .nw-wrap{max-width:820px;margin:0 auto;padding:1rem 1rem 3rem}
+  .nw-day{font-family:'JetBrains Mono',monospace;font-size:.74rem;letter-spacing:.09em;
+    text-transform:uppercase;color:var(--text-muted);margin:1.5rem 0 .55rem;
+    border-bottom:1px solid var(--border);padding-bottom:.35rem}
+  .nw-item{display:block;text-decoration:none;color:inherit;background:var(--surface);
+    border:1px solid var(--border);border-left:2px solid var(--border-2);border-radius:10px;
+    padding:.85rem 1rem;margin:0 0 .6rem;transition:border-color .16s ease,transform .16s ease}
+  .nw-item:hover{border-color:var(--border-2);border-left-color:var(--gold);transform:translateX(1px)}
+  .nw-item:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+  .nw-item.is-high{border-left-color:var(--gold)}
+  .nw-top{display:flex;align-items:baseline;gap:.6rem;flex-wrap:wrap;margin-bottom:.28rem}
+  .nw-kind{font-family:'JetBrains Mono',monospace;font-size:.68rem;letter-spacing:.1em;
+    text-transform:uppercase;color:var(--gold)}
+  .nw-time{font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--text-muted);margin-left:auto}
+  .nw-h{font-size:1.02rem;font-weight:700;line-height:1.35;margin:0 0 .25rem;color:var(--text)}
+  .nw-d{font-size:.93rem;line-height:1.6;color:var(--text-dim);margin:0}
+  .nw-src{font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--text-muted);margin-top:.4rem}
+  .nw-empty{background:var(--surface);border:1px solid var(--border);border-radius:10px;
+    padding:1.1rem;color:var(--text-dim);line-height:1.6}
+  .nw-note{margin-top:2rem;padding-top:1rem;border-top:1px solid var(--border);
+    color:var(--text-muted);font-size:.88rem;line-height:1.65}
+  .nw-note b{color:var(--text-dim)}
+  @media(max-width:520px){ .nw-time{margin-left:0;width:100%} }
+</style>
+</head>
+<body>
+  <div id="site-header"></div>
+
+  <main id="main" tabindex="-1">
+    <div class="nw-head">
+      <h1>What just moved</h1>
+      <p class="nw-lede">Dated events from the numbers this site already reads &mdash; a USDA figure that missed the trade, positioning at a one-year extreme, a contract closing outside its 52-week range, a crop rating that swung. Each one is posted when the data says so, not when somebody writes it up.</p>
+      <div class="nw-meta">
+        <span id="nw-updated">&mdash;</span>
+        <a href="/news.xml">RSS</a>
+        <a href="/daily">The full morning briefing &rarr;</a>
+      </div>
+    </div>
+
+    <div class="nw-wrap" id="nw-list">
+      <div class="nw-empty">Loading the wire&hellip;</div>
+    </div>
+
+    <div class="nw-wrap" style="padding-top:0">
+      <div class="nw-note">
+        <b>What this is not.</b> It is not a headline aggregator. Republishing somebody else&rsquo;s
+        story is slower than the story, and adds nothing to it. Everything here is a change
+        this site measured in a primary source it already polls, with the number in the item
+        and a link to the page that shows the work.
+        <br><br>
+        <b>What earns a place.</b> Only a change the data itself defines: a bound the source
+        file already carries &mdash; a 52-week high, a one-year positioning extreme, last
+        week&rsquo;s crop rating &mdash; or a plain percentage move. Nothing is measured against a
+        threshold typed in by hand, because a number somebody invented is one that will
+        eventually be wrong with no way to tell.
+      </div>
+    </div>
+  </main>
+
+  <div id="site-footer"></div>
+  <script src="/components/loader.js?v=16" defer></script>
+<script>
+(function(){
+  'use strict';
+  var KIND={usda:'USDA',positioning:'Positioning',board:'Board',crop:'Crop'};
+
+  function dayLabel(iso){
+    var d=new Date(iso); if(isNaN(d)) return '';
+    var t=new Date(), y=new Date(t.getTime()-864e5);
+    var same=function(a,b){return a.toDateString()===b.toDateString();};
+    if(same(d,t)) return 'Today';
+    if(same(d,y)) return 'Yesterday';
+    return d.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
+  }
+  function clock(iso){
+    var d=new Date(iso); if(isNaN(d)) return '';
+    return d.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
+  }
+
+  fetch('/data/news.json',{cache:'no-store'}).then(function(r){
+    if(!r.ok) throw new Error(r.status); return r.json();
+  }).then(function(d){
+    var items=(d&&d.items)||[];
+    var u=el('nw-updated');
+    if(u&&d.updated) u.textContent='Updated '+new Date(d.updated).toLocaleString('en-US',
+      {month:'short',day:'numeric',hour:'numeric',minute:'2-digit'});
+    var box=el('nw-list');
+    if(!items.length){
+      box.innerHTML='<div class="nw-empty">Nothing has cleared the bar yet today. '+
+        'That is the honest state of a quiet market, not a broken page &mdash; the '+
+        '<a href="/daily" style="color:var(--gold)">morning briefing</a> runs every weekday regardless.</div>';
+      return;
+    }
+    var html='', lastDay='';
+    items.forEach(function(i){
+      var day=dayLabel(i.ts);
+      if(day && day!==lastDay){ html+='<div class="nw-day">'+esc(day)+'</div>'; lastDay=day; }
+      html+='<a class="nw-item'+(i.significance==='high'?' is-high':'')+'" href="'+esc(i.url||'/')+'">'
+        + '<div class="nw-top"><span class="nw-kind">'+esc(KIND[i.kind]||i.kind||'')+'</span>'
+        + (i.day_only ? '' : '<span class="nw-time">'+esc(clock(i.ts))+'</span>')+'</div>'
+        + '<div class="nw-h">'+esc(i.headline||'')+'</div>'
+        + '<p class="nw-d">'+esc(i.detail||'')+'</p>'
+        + (i.source?'<div class="nw-src">'+esc(i.source)+'</div>':'')
+        + '</a>';
+    });
+    box.innerHTML=html;
+    if(window.gaEvent) gaEvent('news_view',{items:items.length});
+  }).catch(function(){
+    el('nw-list').innerHTML='<div class="nw-empty">The wire is briefly unavailable. '+
+      'The <a href="/daily" style="color:var(--gold)">morning briefing</a> and the '+
+      '<a href="/markets" style="color:var(--gold)">board</a> are unaffected.</div>';
+  });
+})();
+</script>
+</body>
+</html>

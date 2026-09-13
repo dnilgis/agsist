@@ -21,6 +21,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="/components/styles.css?v=15">
+  <script src="/components/util.js?v=16"></script>
 <style>
 :root{--pd-gold:#d4a23f;--pd-gold2:#e6b042;--pd-green:#5fc28a;--pd-green2:#4aab4c;
   --pd-red:#c8562e;--pd-bg:#0f1311;--pd-p1:#161b18;--pd-p2:#1d2420;--pd-line:#2a332d;
@@ -429,7 +430,7 @@ table.hp-hist td.up{color:var(--pd-green);} table.hp-hist td.dn{color:var(--pd-r
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H"></script>
 <script>
 window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');
-function gaEvent(name,params){try{gtag('event',name,params||{});}catch(e){}}
+
 </script>
 <script>
 /* Price discovery, per grower.
@@ -469,8 +470,7 @@ function gaEvent(name,params){try{gtag('event',name,params||{});}catch(e){}}
 
   function d(s){ var p=String(s).split('-'); return new Date(+p[0],+p[1]-1,+p[2],12,0,0); }
   function days(a,b){ return Math.round((b-a)/86400000); }
-  function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){
-    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+  
   function unit(r){ return CENT[r.crop]?'lb':'bu'; }
   function unitOf(g){
     // Fail loud rather than mislabel: a price under $1 cannot be per bushel, and a

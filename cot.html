@@ -9,6 +9,7 @@
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
 <link rel="preload" href="/components/styles.css?v=16" as="style">
 <link rel="stylesheet" href="/components/styles.css?v=16">
+  <script src="/components/util.js?v=16"></script>
 <link rel="icon" type="image/x-icon"            href="/img/favicon.ico">
 <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
@@ -1850,8 +1851,7 @@ cotTick(); setInterval(cotTick, 60000);
   var SECTIONS = ['cx-board-sec','cx-pred-sec','cx-deep-sec','cx-method-sec'];
 
   function $(id){ return document.getElementById(id); }
-  function esc(s){ return String(s == null ? '' : s).replace(/[&<>"]/g, function(c){
-    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+  
   function num(n){ return (n === null || n === undefined || n !== n) ? '—' : Number(n).toLocaleString('en-US'); }
   function sgn(n, d){ if (n === null || n === undefined || n !== n) return '—';
     return (n > 0 ? '+' : n < 0 ? '−' : '') + Math.abs(n).toFixed(d === undefined ? 1 : d); }

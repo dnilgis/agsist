@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>AGSIST Wire — What Just Moved</title>
+    <link>https://agsist.com/news</link>
+    <description>Dated grain and livestock market events the moment they are measurable: USDA report surprises, one-year positioning extremes, 52-week highs and lows, crop rating swings. Measured, not aggregated.</description>
+    <language>en-us</language>
+    <lastBuildDate>Sun, 13 Sep 2026 14:54:05 +0000</lastBuildDate>
+    <atom:link href="https://agsist.com/news.xml" rel="self" type="application/rss+xml"/>
+    <item>
+      <title>September WASDE: 2026/27 soybean yield came in bearish</title>
+      <link>https://agsist.com/whats-priced-in</link>
+      <description>Trade looked for 52.5 bu/acre; USDA printed 52.8 bu/acre — +0.6% versus the survey.</description>
+      <guid isPermaLink="false">agsist-news-wasde:2026-09-11:2026/27 soybean yield</guid>
+      <pubDate>Fri, 11 Sep 2026 12:00:00 +0000</pubDate>
+      <source url="https://agsist.com/news.xml">USDA WASDE, graded against the pre-report survey</source>
+    </item>
+    <item>
+      <title>Managed money holds its biggest corn net long in a year</title>
+      <link>https://agsist.com/cot</link>
+      <description>Net +414,459 contracts as of September 08, 2026, from +401,003 the week before.</description>
+      <guid isPermaLink="false">agsist-news-cot:September 08, 2026:corn:max</guid>
+      <pubDate>Tue, 08 Sep 2026 12:00:00 +0000</pubDate>
+      <source url="https://agsist.com/news.xml">CFTC Commitments of Traders</source>
+    </item>
+    <item>
+      <title>Managed money holds its biggest soybeans net long in a year</title>
+      <link>https://agsist.com/cot</link>
+      <description>Net +257,258 contracts as of September 08, 2026, from +234,920 the week before.</description>
+      <guid isPermaLink="false">agsist-news-cot:September 08, 2026:beans:max</guid>
+      <pubDate>Tue, 08 Sep 2026 12:00:00 +0000</pubDate>
+      <source url="https://agsist.com/news.xml">CFTC Commitments of Traders</source>
+    </item>
+    <item>
+      <title>Managed money holds its biggest soybean meal net long in a year</title>
+      <link>https://agsist.com/cot</link>
+      <description>Net +157,689 contracts as of September 08, 2026, from +157,179 the week before.</description>
+      <guid isPermaLink="false">agsist-news-cot:September 08, 2026:soymeal:max</guid>
+      <pubDate>Tue, 08 Sep 2026 12:00:00 +0000</pubDate>
+      <source url="https://agsist.com/news.xml">CFTC Commitments of Traders</source>
+    </item>
+  </channel>
+</rss>
