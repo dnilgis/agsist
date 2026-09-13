@@ -1,0 +1,81 @@
+name: The wire
+
+# WHY THIS RUNS OFTEN
+#   The point of the wire is to publish a measurable event before somebody else
+#   writes it up. Cron delivery on this account was measured at 17.4% (66 of 380
+#   fires), so a single schedule would miss most of the day. Three offset
+#   schedules run the same idempotent job: whichever one lands does the work,
+#   and the ones that follow find nothing new and write nothing. Duplicate items
+#   are impossible -- build_news.py keys every item on what it is about, never on
+#   when it ran.
+on:
+  schedule:
+    - cron: "7,37 12-21 * * 1-5"    # 7:07am-4:37pm Central, weekdays
+    - cron: "22,52 12-21 * * 1-5"   # offset by 15 minutes
+    - cron: "12 22,23,0,11 * * *"   # evening and pre-open, every day
+  workflow_dispatch:
+  # The watchers already know the moment something lands. They can say so.
+  repository_dispatch:
+    types: [wire]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: news
+  cancel-in-progress: false
+
+jobs:
+  wire:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # github.sha is fixed when the run is CREATED. A queued run that starts
+          # ten minutes later would otherwise build the wire from a stale tree.
+          ref: ${{ github.ref_name }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Test the detectors before trusting them
+        run: python scripts/build_news.py --selftest
+
+      - name: Build the wire
+        id: build
+        run: |
+          set -o pipefail
+          python scripts/build_news.py | tee /tmp/wire.log
+          ADDED=$(python -c "import json;print(json.load(open('data/news.json'))['added'])")
+          echo "added=$ADDED" >> "$GITHUB_OUTPUT"
+          echo "Added $ADDED item(s)."
+
+      - name: Commit if changed (race-tolerant)
+        id: commit
+        run: |
+          set -e
+          git config user.name  "AGSIST Bot"
+          git config user.email "bot@agsist.com"
+          cp data/news.json /tmp/news.json
+          cp news.xml       /tmp/news.xml
+          BR="${GITHUB_REF_NAME:-main}"
+          for i in 1 2 3 4 5; do
+            git fetch origin "$BR"
+            git reset --hard "origin/$BR"
+            cp /tmp/news.json data/news.json
+            cp /tmp/news.xml  news.xml
+            git add data/news.json news.xml
+            if git diff --staged --quiet; then echo "No change."; echo "pushed=0" >> "$GITHUB_OUTPUT"; exit 0; fi
+            git commit -m "wire: $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+            if git push origin "HEAD:$BR"; then echo "pushed=1" >> "$GITHUB_OUTPUT"; exit 0; fi
+            echo "Push race on attempt $i; re-syncing..."
+            sleep $((RANDOM % 4 + 2))
+          done
+          echo "Failed to push after 5 attempts."; exit 1
+
+      # The whole point. A crawler hears about the page within seconds of the
+      # item existing, rather than whenever it next decides to visit.
+      - name: Tell the crawlers
+        if: steps.build.outputs.added != '0' && steps.commit.outputs.pushed == '1'
+        continue-on-error: true          # a search engine being down is not our outage
+        run: python scripts/indexnow_submit.py --urls https://agsist.com/news https://agsist.com/news.xml
