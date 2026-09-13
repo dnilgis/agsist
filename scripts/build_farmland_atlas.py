@@ -1,0 +1,1182 @@
+#!/usr/bin/env python3
+"""
+build_farmland_atlas.py — every statistic on /farmland-atlas, in one place.
+
+WHAT THIS IS
+  The Farmland Atlas grades Corn Belt and Plains counties on things nobody
+  grades: how warm the nights are in July and August and which way they are
+  going, how much of the county's cropland only works with irrigation and
+  where that water comes from, and what has actually destroyed crops there
+  since 1989 according to the insurance record. Each is its own layer. There
+  is no combined score, by decision (Sig, 2026-09): heat and water are graded
+  separately and never added.
+
+  The page renders. This script computes. Nothing on the page derives a
+  number the pipeline did not print, so a reader can re-derive every figure
+  from the "show the arithmetic" block beside it.
+
+INPUTS (all optional except cash rent; a missing input withholds its layer
+with a reason instead of leaving a hole)
+  data/cash-rent/<ST>.json              cash rent + county corn yield (repo)
+  data/atlas/raw/heat.json              fetch_atlas_heat.py  (NCEI nClimDiv county)
+  data/atlas/raw/water.json             fetch_atlas_water.py (USDA Census 2022 + USGS 2015)
+  data/atlas/raw/loss.json              fetch_atlas_loss.py  (RMA cause of loss 1989-)
+
+OUTPUT
+  data/atlas/atlas.json                 one record per county, plus the layer
+                                        vintages and the thesis test
+
+HONESTY RULES BAKED IN
+  * A gap is a gap. Every withheld figure carries `status` naming why.
+  * Minimum samples are explicit constants below and printed on the page.
+  * The yield trend is the one already published on /cash-rent (15-year
+    window, fitted by fetch_cash_rent.py). It is not refitted here so the two
+    pages cannot disagree about one county's slope.
+  * The thesis test counts the whole search: four correlations are run, all
+    four are published, and the significance line is corrected for four.
+
+USAGE
+  python scripts/build_farmland_atlas.py --selftest
+  python scripts/build_farmland_atlas.py
+  python scripts/build_farmland_atlas.py --seed farmland-atlas.html   # also refresh the page's static block
+"""
+
+import glob
+import json
+import math
+import os
+import statistics
+import sys
+from datetime import datetime, timezone
+
+# Corn Belt + Plains. Extend by adding a state here and to ATLAS_STATE_FIPS;
+# the geometry file must carry the state too (scripts/atlas_geometry.py).
+ATLAS_STATES = ["IA", "IL", "IN", "OH", "MI", "WI", "MN", "MO",
+                "NE", "KS", "SD", "ND", "OK", "CO", "TX"]
+ATLAS_STATE_FIPS = {"19": "IA", "17": "IL", "18": "IN", "39": "OH", "26": "MI",
+                    "55": "WI", "27": "MN", "29": "MO", "31": "NE", "20": "KS",
+                    "46": "SD", "38": "ND", "40": "OK", "08": "CO", "48": "TX"}
+
+RENT_DIR = "data/cash-rent"
+RAW_DIR = "data/atlas/raw"
+OUT = "data/atlas/atlas.json"
+
+# Gates. Printed on the page beside the figure they protect.
+MIN_PREMIUM_PAIRS = 6      # paired irrigated/non-irrigated rent years for a premium trend
+MIN_LEADER_PAIRS = 8       # and for a place on the fastest-rising / fastest-falling tables
+MIN_YIELD_N = 8            # observed county yields for the worst-year line
+MIN_HEAT_TREND_N = 40      # Julys in the 50-year window for a trend
+MIN_HEAT_LEVEL_N = 8       # of the last 10 Julys for a recent level
+MIN_NORMAL_N = 27          # of 30 for a 1991-2020 normal
+MIN_LOSS_PREMIUM = 1_000_000   # dollars of premium in a period before a loss ratio is printed (phase 2)
+MIN_LOSS_INDEM = 100_000       # dollars of indemnity in a period before shares are printed
+MIN_THESIS_N = 200         # counties before a cross-county correlation is printed
+
+HEAT_TREND_START = 1976    # 50 Julys through 2025
+HOT_JULY_F = 70.0          # a July whose average low was at or above this. Extension
+                           # literature puts the harm line for corn at nightly lows above
+                           # 70 F (Ohio State C.O.R.N. 2019-27; High Plains Journal 2026-09-03).
+                           # A monthly MEAN low at 70 means most nights were above it.
+REFERENCE_LINES_F = [58, 60, 62, 64, 66, 68, 70, 72]   # decade-crossing lines for the slider
+
+CAUSE_GROUPS = ["heat_drought", "wet", "hail", "wind", "cold", "irrigation", "price", "unassigned", "other"]
+LOSS_RATIO_WITHHELD = ("withheld: the cause-of-loss file carries premium only on rows with a loss; "
+                       "the true county loss ratio needs RMA's Summary of Business premium, not yet fetched")
+
+
+def log(*a):
+    print(*a, flush=True)
+
+
+# ---------------------------------------------------------------- statistics
+
+# two-sided 97.5% t critical values by degrees of freedom; beyond 30 use 1.96+
+_T975 = {1: 12.706, 2: 4.303, 3: 3.182, 4: 2.776, 5: 2.571, 6: 2.447, 7: 2.365,
+         8: 2.306, 9: 2.262, 10: 2.228, 11: 2.201, 12: 2.179, 13: 2.160, 14: 2.145,
+         15: 2.131, 16: 2.120, 17: 2.110, 18: 2.101, 19: 2.093, 20: 2.086,
+         21: 2.080, 22: 2.074, 23: 2.069, 24: 2.064, 25: 2.060, 26: 2.056,
+         27: 2.052, 28: 2.048, 29: 2.045, 30: 2.042, 40: 2.021, 60: 2.000, 120: 1.980}
+
+
+def t975(df):
+    """Critical t for a 95% two-sided interval. Between tabulated rows the value
+    for the largest tabulated df AT OR BELOW df is used, which is the conservative
+    side (the interval is slightly wider, never narrower, than the exact t)."""
+    if df <= 0:
+        return None
+    if df in _T975:
+        return _T975[df]
+    below = max(k for k in _T975 if k <= df)
+    return _T975[below]
+
+
+def ols(pairs):
+    """OLS y ~ x. pairs: list of (x, y). Returns dict or None (n < 3 or no x spread)."""
+    pts = [(float(x), float(y)) for x, y in pairs if x is not None and y is not None]
+    n = len(pts)
+    if n < 3:
+        return None
+    mx = sum(x for x, _ in pts) / n
+    my = sum(y for _, y in pts) / n
+    sxx = sum((x - mx) ** 2 for x, _ in pts)
+    if sxx == 0:
+        return None
+    sxy = sum((x - mx) * (y - my) for x, y in pts)
+    slope = sxy / sxx
+    intercept = my - slope * mx
+    ss_tot = sum((y - my) ** 2 for _, y in pts)
+    ss_res = sum((y - (intercept + slope * x)) ** 2 for x, y in pts)
+    r2 = 1 - ss_res / ss_tot if ss_tot > 0 else 0.0
+    se = math.sqrt(ss_res / (n - 2) / sxx) if n > 2 else None
+    ci = t975(n - 2) * se if se is not None else None
+    return {"slope": slope, "intercept": intercept, "r2": r2, "n": n,
+            "se": se, "ci95": ci}
+
+
+def pearson(pairs):
+    pts = [(float(x), float(y)) for x, y in pairs if x is not None and y is not None]
+    n = len(pts)
+    if n < 3:
+        return None
+    mx = sum(x for x, _ in pts) / n
+    my = sum(y for _, y in pts) / n
+    sxx = sum((x - mx) ** 2 for x, _ in pts)
+    syy = sum((y - my) ** 2 for _, y in pts)
+    # a column of identical values leaves a spread of ~1e-30 from float rounding,
+    # which is not spread; the relative test catches it, the equality test did not
+    if sxx <= 1e-12 * n * max(1.0, mx * mx) or syy <= 1e-12 * n * max(1.0, my * my):
+        return None
+    r = sum((x - mx) * (y - my) for x, y in pts) / math.sqrt(sxx * syy)
+    # two-sided p from t = r*sqrt((n-2)/(1-r^2)); normal approximation is fine at n >= 200
+    if abs(r) >= 1:
+        p = 0.0
+    else:
+        t = r * math.sqrt((n - 2) / (1 - r * r))
+        p = 2 * (1 - _phi(abs(t)))
+    return {"r": r, "n": n, "p": p}
+
+
+def _phi(z):
+    return 0.5 * (1 + math.erf(z / math.sqrt(2)))
+
+
+def r1(x, k=1):
+    return None if x is None else round(x, k)
+
+
+def direction(slope, ci, up="rising", down="falling", k=2):
+    """Called on the values AS PRINTED (rounded to k decimals), so a reader who
+    checks slope against the interval beside it reaches the same call."""
+    if slope is None or ci is None:
+        return "no clear direction"
+    s, c = round(slope, k), round(ci, k)
+    if s - c > 0:
+        return up
+    if s + c < 0:
+        return down
+    return "no clear direction"
+
+
+def half_up(x):
+    """Round half away from zero, like the page's rounding; Python's round() is half to even."""
+    return int(math.floor(abs(x) + 0.5)) * (-1 if x < 0 else 1)
+
+
+def record_sha(rec):
+    import hashlib
+    return hashlib.sha1(json.dumps(rec, sort_keys=True, separators=(",", ":"), default=str).encode()).hexdigest()[:16]
+
+
+def decade_of(year):
+    return f"{(year // 10) * 10}s"
+
+
+# ---------------------------------------------------------------- rent + yield (repo)
+
+def load_rent(rent_dir=RENT_DIR, states=ATLAS_STATES):
+    out = {}
+    vintage = None
+    for st in states:
+        p = os.path.join(rent_dir, f"{st}.json")
+        if not os.path.exists(p):
+            log(f"  rent: no file for {st}")
+            continue
+        with open(p, encoding="utf-8") as f:
+            d = json.load(f)
+        vintage = max(vintage or "", d.get("generated", "") or "")
+        for c in d.get("counties", []):
+            out[c["fips"]] = {"name": c["name"], "state": st,
+                              "rent": c.get("rent", {}), "yield": c.get("yield", {})}
+    return out, vintage
+
+
+def rent_layer(rent):
+    """Latest rent per kind, the 10-year change on non-irrigated, and the series."""
+    def latest(series):
+        if not series:
+            return None
+        y = max(series, key=int)
+        return {"year": int(y), "value": series[y]}
+
+    def change10(series):
+        if not series:
+            return None
+        ys = sorted(int(y) for y in series)
+        last = ys[-1]
+        # the survey skipped 2015 and some counties skip years; take the closest
+        # published year at or before last-10 but not older than last-12
+        cands = [y for y in ys if last - 12 <= y <= last - 10]
+        if not cands:
+            return None
+        base = max(cands)
+        b, l = series[str(base)], series[str(last)]
+        if not b:
+            return None
+        return {"from_year": base, "to_year": last, "from": b, "to": l,
+                "pct": round((l - b) / b * 100, 1)}
+
+    non = rent.get("nonirr") or {}
+    irr = rent.get("irr") or {}
+    pas = rent.get("pasture") or {}
+    rec = {
+        "status": "ok" if non else "withheld: NASS published no non-irrigated cash rent for this county",
+        "nonirr": latest(non),
+        "nonirr_change10": change10(non),
+        "irr": latest(irr),
+        "pasture": latest(pas),
+        "series_nonirr": {int(k): v for k, v in non.items()},
+        "series_irr": {int(k): v for k, v in irr.items()},
+    }
+    return rec
+
+
+def yield_layer(yld):
+    """County corn yield trend fitted here on EVERY published year (2008 onward).
+
+    /cash-rent publishes its own fit over the last fifteen years, which as of
+    2026 means 2012 to 2024: it starts on the drought year, so that slope is
+    mostly how deep 2012 was and it will jump the year 2012 drops out (measured
+    2026-09-13 on 1,022 Atlas counties: median county slope 2.82 over 2012-2024,
+    1.80 over 2013-2024). The
+    Atlas therefore fits the whole record and says so; the two pages print two
+    labelled windows, not two answers to one question.
+
+    The median and the worst year are observations, not fits."""
+    corn = (yld or {}).get("corn") or {}
+    hist = {int(k): v for k, v in (corn.get("hist") or {}).items() if v}
+    if len(hist) < MIN_YIELD_N:
+        return {"status": f"withheld: fewer than {MIN_YIELD_N} published county corn yields", "hist": hist}
+    vals = list(hist.values())
+    med = statistics.median(vals)
+    wy = min(hist, key=lambda y: hist[y])
+    fit = ols(sorted(hist.items()))
+    rec = {
+        "status": "ok",
+        "last_year": max(hist), "first_year": min(hist), "n": len(hist),
+        "median": round(med, 1),
+        "worst": {"year": wy, "value": hist[wy], "share_of_median": round(hist[wy] / med, 3)},
+        "hist": hist,
+        "cash_rent_slope": corn.get("slope"),      # the /cash-rent 15-year fit, kept for reference
+    }
+    if fit and len(hist) >= 10:
+        rec.update({"slope": round(fit["slope"], 3), "slope_ci95": round(fit["ci95"], 3) if fit["ci95"] is not None else None,
+                    "r2": round(fit["r2"], 3), "window": f"{min(hist)}-{max(hist)}"})
+    else:
+        rec["slope"] = None
+        rec["trend_status"] = "withheld: fewer than 10 published years for a trend"
+    return rec
+
+
+def water_premium_layer(rent):
+    """Irrigated minus non-irrigated cash rent, same county, same year. The land
+    market's own price on water. Trend is OLS on the premium in dollars."""
+    non = {int(k): v for k, v in (rent.get("nonirr") or {}).items() if v}
+    irr = {int(k): v for k, v in (rent.get("irr") or {}).items() if v}
+    years = sorted(set(non) & set(irr))
+    if not irr:
+        return {"status": "withheld: NASS published no irrigated cash rent for this county (little or no irrigated cropland surveyed)"}
+    if not non:
+        return {"status": "withheld: NASS published no non-irrigated cash rent for this county"}
+    series = {y: round(irr[y] - non[y], 1) for y in years}
+    ratio = {y: round(irr[y] / non[y], 3) for y in years}
+    rec = {"n_pairs": len(years), "series": series, "ratio": ratio}
+    if len(years) < MIN_PREMIUM_PAIRS:
+        rec["status"] = f"withheld: only {len(years)} paired years, gate is {MIN_PREMIUM_PAIRS}"
+        return rec
+    fit = ols([(y, series[y]) for y in years])
+    first, last = years[0], years[-1]
+    rec.update({
+        "status": "ok",
+        "first": {"year": first, "irr": irr[first], "nonirr": non[first], "premium": series[first], "ratio": ratio[first]},
+        "latest": {"year": last, "irr": irr[last], "nonirr": non[last], "premium": series[last], "ratio": ratio[last]},
+        "slope_per_year": r1(fit["slope"], 2) if fit else None,
+        "slope_ci95": r1(fit["ci95"], 2) if fit and fit["ci95"] is not None else None,
+        "r2": r1(fit["r2"], 3) if fit else None,
+        # "rising"/"falling" of the premium itself. Not "widening": a premium that
+        # goes from $0 to -$29 is falling, and the gap is not narrowing in any
+        # sense a tenant would recognise.
+        "direction": direction(fit["slope"], fit["ci95"]) if fit else "no clear direction",
+    })
+    return rec
+
+
+# ---------------------------------------------------------------- heat (NCEI)
+
+NOT_YET = "not yet measured: this layer publishes after the first data run"
+
+
+def heat_layer(h, latest_year, ran=False):
+    """h: {"jul": {year: F}, "aug": {year: F}} for one county. Values are the monthly
+    mean of daily minimum temperature, degrees F, from NCEI nClimDiv county.
+    ran: the heat fetch has run, so an absent county is a gap in NCEI, not a pending run."""
+    if not h:
+        return {"status": "withheld: NCEI publishes no series for this county"} if ran else {"status": NOT_YET}
+    if latest_year is None:
+        return {"status": "withheld: the heat file carries no complete year"}
+    out = {"status": "ok", "months": {}}
+    for m in ("jul", "aug"):
+        s = {int(k): v for k, v in (h.get(m) or {}).items() if v is not None}
+        rec = {"n_years": len(s)}
+        if not s:
+            rec["status"] = "withheld: NCEI has no county series"
+            out["months"][m] = rec
+            continue
+        # recent level: last 10 years ending at latest_year
+        rec_years = [y for y in range(latest_year - 9, latest_year + 1) if y in s]
+        if len(rec_years) >= MIN_HEAT_LEVEL_N:
+            rec["recent"] = {"from": latest_year - 9, "to": latest_year, "n": len(rec_years),
+                             "mean": round(sum(s[y] for y in rec_years) / len(rec_years), 1)}
+        else:
+            rec["recent"] = {"status": f"withheld: {len(rec_years)} of the last 10 years present, gate is {MIN_HEAT_LEVEL_N}"}
+        norm_years = [y for y in range(1991, 2021) if y in s]
+        if len(norm_years) >= MIN_NORMAL_N:
+            rec["normal_1991_2020"] = {"n": len(norm_years),
+                                       "mean": round(sum(s[y] for y in norm_years) / len(norm_years), 1)}
+        else:
+            rec["normal_1991_2020"] = {"status": f"withheld: {len(norm_years)} of 30 years present, gate is {MIN_NORMAL_N}"}
+        # trend over the 50-year window, degrees F per decade
+        tw = [(y, s[y]) for y in range(HEAT_TREND_START, latest_year + 1) if y in s]
+        if len(tw) >= MIN_HEAT_TREND_N:
+            fit = ols(tw)
+            rec["trend"] = {"from": HEAT_TREND_START, "to": latest_year, "n": len(tw),
+                            "per_decade": round(fit["slope"] * 10, 2),
+                            "ci95_per_decade": round(fit["ci95"] * 10, 2) if fit["ci95"] is not None else None,
+                            "r2": round(fit["r2"], 3),
+                            "direction": direction(fit["slope"] * 10, fit["ci95"] * 10 if fit["ci95"] is not None else None, "warming", "cooling")}
+        else:
+            rec["trend"] = {"status": f"withheld: {len(tw)} of {latest_year - HEAT_TREND_START + 1} Julys present, gate is {MIN_HEAT_TREND_N}"}
+        # the whole record, so a reader can see what the 1976 start point does
+        tl = [(y, s[y]) for y in sorted(s) if y <= latest_year]
+        if len(tl) >= 80:
+            fl = ols(tl)
+            rec["trend_full"] = {"from": tl[0][0], "to": latest_year, "n": len(tl), "per_decade": round(fl["slope"] * 10, 2),
+                                 "ci95_per_decade": round(fl["ci95"] * 10, 2) if fl["ci95"] is not None else None}
+        # decade means and hot-month counts, 1900s onward
+        dec = {}
+        for y, v in s.items():
+            if y < 1900:
+                continue
+            d = decade_of(y)
+            dd = dec.setdefault(d, {"sum": 0.0, "n": 0, "hot": 0})
+            dd["sum"] += v
+            dd["n"] += 1
+            if v >= HOT_JULY_F:
+                dd["hot"] += 1
+        rec["decades"] = {d: {"mean": round(x["sum"] / x["n"], 1), "n": x["n"], "hot": x["hot"]}
+                          for d, x in sorted(dec.items())}
+        # the first decade (with at least 5 years) whose mean sits at or above each line
+        cross = {}
+        for line in REFERENCE_LINES_F:
+            first = None
+            for d, x in sorted(dec.items()):
+                if x["n"] >= 5 and x["sum"] / x["n"] >= line:
+                    first = d
+                    break
+            cross[str(line)] = first
+        rec["first_decade_at_or_above"] = cross
+        rec["series"] = s
+        out["months"][m] = rec
+    return out
+
+
+# ---------------------------------------------------------------- water (Census + USGS)
+
+GAL_PER_ACRE_FT = 325851.0
+
+
+def water_layer(w, ran=False, absent_is_zero=False):
+    """w: {"census2022": {"harvested": acres, "irrigated": acres},
+           "usgs2015": {"ir_gw_mgd", "ir_sw_mgd", "ir_tot_mgd", "ir_acres_k"}}"""
+    if not w:
+        return {"status": "withheld: neither the census nor USGS has a row for this county"} if ran else {"status": NOT_YET}
+    out = {"status": "ok"}
+    c = w.get("census2022") or {}
+    if c.get("harvested") and c.get("irrigated") is not None:
+        out["irrigated_share_2022"] = {"harvested_acres": c["harvested"], "irrigated_acres": c["irrigated"],
+                                       "share": round(c["irrigated"] / c["harvested"], 3)}
+    elif c.get("harvested") and c.get("irrigated") is None and c.get("irrigated_published"):
+        out["irrigated_share_2022"] = {"harvested_acres": c["harvested"],
+                                       "status": "withheld: NASS suppressed the irrigated acres (D)"}
+    elif c.get("harvested") and c.get("irrigated") is None and absent_is_zero:
+        # NASS published no irrigated row and, measured at fetch time, published
+        # no explicit zeros either, so absence is how the census says "none".
+        # Carried as 0 with `reported` false; the card says "none reported".
+        out["irrigated_share_2022"] = {"harvested_acres": c["harvested"], "irrigated_acres": None, "share": 0.0,
+                                       "reported": False,
+                                       "note": "NASS published no irrigated-acres row; the census publishes no zero rows, so no farm reported irrigated harvested cropland"}
+    elif c.get("harvested") and c.get("irrigated") is None:
+        out["irrigated_share_2022"] = {"harvested_acres": c["harvested"],
+                                       "status": "withheld: NASS published no irrigated-acres row, and it does publish zeros, so absence is not zero"}
+    else:
+        out["irrigated_share_2022"] = {"status": "withheld: NASS published no harvested cropland for this county"}
+    u = w.get("usgs2015") or {}
+    tot = u.get("ir_tot_mgd")
+    gw = u.get("ir_gw_mgd")
+    acres_k = u.get("ir_acres_k")
+    if tot and gw is not None and tot > 0:
+        out["groundwater_share_2015"] = {"gw_mgd": gw, "total_mgd": tot, "share": round(gw / tot, 3),
+                                         "basis": u.get("basis", "IC")}      # IC = crop irrigation; IR = all irrigation incl. golf
+    elif tot == 0 or tot is None:
+        out["groundwater_share_2015"] = {"status": "withheld: USGS reports no irrigation withdrawal for this county"}
+    if tot and acres_k and acres_k >= 1:      # under 1,000 irrigated acres the ratio is noise
+        ft = tot * 365 * 1e6 / GAL_PER_ACRE_FT / (acres_k * 1000)
+        out["applied_2015"] = {"total_mgd": tot, "irrigated_acres": int(round(acres_k * 1000)),
+                               "acre_ft_per_acre": round(ft, 2)}
+    elif tot and acres_k:
+        out["applied_2015"] = {"status": "withheld: under 1,000 irrigated acres"}
+    return out
+
+
+# ---------------------------------------------------------------- loss (RMA)
+
+def loss_layer(l, latest_year, ran=False, partial_year=None):
+    """l: {"years": {year: {group: {"indem": $, "prem": $, "liab": $}}},
+           "corn": {year: {group: {...}}}}   (aggregated by fetch_atlas_loss.py)
+    partial_year: the crop year RMA is still settling (the current one)."""
+    if not l:
+        return {"status": "withheld: RMA has no cause-of-loss rows for this county"} if ran else {"status": NOT_YET}
+    years = {int(k): v for k, v in (l.get("years") or {}).items()}
+    if not years:
+        return {"status": "withheld: RMA has no cause-of-loss rows for this county"}
+    periods = [("1989-1999", 1989, 1999), ("2000-2009", 2000, 2009),
+               ("2010-2019", 2010, 2019), (f"2020-{latest_year}", 2020, latest_year)]
+    out = {"status": "ok", "first_year": min(years), "last_year": max(years), "periods": {},
+           "partial_year": partial_year if partial_year and partial_year in years else None,
+           "prf_excluded_indemnity": round(l.get("prf_indemnity", 0) or 0)}
+    all_ind = 0.0
+    all_prem = 0.0
+    by_group_all = {g: 0.0 for g in CAUSE_GROUPS}
+    per_year = {}
+    for y, groups in sorted(years.items()):
+        ti = sum(v.get("indem", 0) for v in groups.values())
+        tp = sum(v.get("prem", 0) for v in groups.values())
+        hd = groups.get("heat_drought", {}).get("indem", 0)
+        per_year[y] = {"indem": round(ti), "prem": round(tp), "heat_drought": round(hd)}
+        all_ind += ti
+        all_prem += tp
+        for g, v in groups.items():
+            by_group_all[g] = by_group_all.get(g, 0) + v.get("indem", 0)
+    out["per_year"] = per_year
+    out["total_indemnity"] = round(all_ind)
+    # The cause-of-loss file carries premium only on rows that had a loss, so
+    # indemnity / that premium overstates the county's true loss ratio. It is
+    # withheld until the Summary of Business county premium is fetched (phase 2).
+    # The fields stay so the page and the tests do not change shape when it is.
+    out["loss_ratio_all"] = None
+    out["loss_ratio_status"] = LOSS_RATIO_WITHHELD
+    if all_ind >= MIN_LOSS_INDEM:
+        out["share_all"] = {g: round(v / all_ind, 3) for g, v in by_group_all.items()}
+        out["top_cause_all"] = max(by_group_all, key=by_group_all.get)
+    else:
+        out["share_all"] = None
+    for label, a, b in periods:
+        ind = {g: 0.0 for g in CAUSE_GROUPS}
+        prem = 0.0
+        n = 0
+        for y in range(a, b + 1):
+            if y not in years:
+                continue
+            n += 1
+            for g, v in years[y].items():
+                ind[g] = ind.get(g, 0) + v.get("indem", 0)
+                prem += v.get("prem", 0)
+        ti = sum(ind.values())
+        rec = {"years_present": n, "indemnity": round(ti)}
+        rec["loss_ratio"] = None
+        rec["loss_ratio_status"] = LOSS_RATIO_WITHHELD
+        if ti >= MIN_LOSS_INDEM:
+            rec["share"] = {g: round(v / ti, 3) for g, v in ind.items()}
+            rec["top_cause"] = max(ind, key=ind.get)
+            rec["heat_drought_share"] = rec["share"]["heat_drought"]
+        else:
+            rec["share_status"] = f"withheld: under ${MIN_LOSS_INDEM:,} of indemnity in the period"
+        out["periods"][label] = rec
+    # irrigation failure, all years: a direct water-security signal
+    out["irrigation_failure_indemnity"] = round(by_group_all.get("irrigation", 0))
+    # corn only, all years
+    corn = {int(k): v for k, v in (l.get("corn") or {}).items()}
+    if corn:
+        ci = {g: 0.0 for g in CAUSE_GROUPS}
+        cp = 0.0
+        for y, groups in corn.items():
+            for g, v in groups.items():
+                ci[g] = ci.get(g, 0) + v.get("indem", 0)
+                cp += v.get("prem", 0)
+        tci = sum(ci.values())
+        out["corn"] = {"indemnity": round(tci),
+                       "loss_ratio": None, "loss_ratio_status": LOSS_RATIO_WITHHELD,
+                       "share": {g: round(v / tci, 3) for g, v in ci.items()} if tci >= MIN_LOSS_INDEM else None,
+                       "top_cause": max(ci, key=ci.get) if tci >= MIN_LOSS_INDEM else None}
+    return out
+
+
+# ---------------------------------------------------------------- across the Atlas
+
+def national(counties, loss_latest):
+    """Sums and counts across every county, for the page's summary and the static
+    seed. Every figure here is a count of counties or a sum of published dollars;
+    nothing is averaged across counties of different size."""
+    out = {}
+    # heat
+    trend_n = warming = cooling = 0
+    slopes = []
+    warmest_last = 0
+    hot_by_decade = {}
+    n_hot = 0
+    for c in counties.values():
+        j = ((c.get("heat") or {}).get("months") or {}).get("jul") or {}
+        t = j.get("trend") or {}
+        if t.get("per_decade") is not None:
+            trend_n += 1
+            slopes.append(t["per_decade"])
+            if t["direction"] == "warming":
+                warming += 1
+            elif t["direction"] == "cooling":
+                cooling += 1
+        d = j.get("decades") or {}
+        if d:
+            n_hot += 1
+            full = {k: v for k, v in d.items() if v["n"] >= 10}      # complete decades only
+            if full:
+                last = sorted(full)[-1]
+                if full[last]["mean"] >= max(v["mean"] for v in full.values()):
+                    warmest_last += 1
+            for k, v in d.items():
+                hb = hot_by_decade.setdefault(k, {"hot": 0, "counties": 0})
+                hb["hot"] += v.get("hot", 0)
+                hb["counties"] += 1
+    if trend_n:
+        full_decades = sorted(k for k, v in hot_by_decade.items() if v["counties"])
+        out["heat"] = {"counties_with_trend": trend_n, "warming": warming, "cooling": cooling,
+                       "no_clear_direction": trend_n - warming - cooling,
+                       "median_trend_per_decade": round(statistics.median(slopes), 2),
+                       "latest_full_decade": max((k for k, v in hot_by_decade.items()), default=None),
+                       "latest_decade_is_warmest": warmest_last, "counties_with_decades": n_hot,
+                       "hot_julys_by_decade": hot_by_decade}
+    # water
+    shares = [c["water"]["irrigated_share_2022"]["share"] for c in counties.values()
+              if (c.get("water") or {}).get("status") == "ok" and (c["water"].get("irrigated_share_2022") or {}).get("share") is not None]
+    gws = [c["water"]["groundwater_share_2015"]["share"] for c in counties.values()
+           if (c.get("water") or {}).get("status") == "ok" and (c["water"].get("groundwater_share_2015") or {}).get("share") is not None]
+    if shares:
+        out["water"] = {"counties_with_share": len(shares), "median_irrigated_share": round(statistics.median(shares), 3),
+                        "over_half_irrigated": sum(1 for x in shares if x >= 0.5),
+                        "over_quarter_irrigated": sum(1 for x in shares if x >= 0.25),
+                        "counties_with_gw_share": len(gws), "gw_over_90pct": sum(1 for x in gws if x >= 0.9)}
+    # premium
+    prem = [c["water_premium"] for c in counties.values() if (c.get("water_premium") or {}).get("status") == "ok"]
+    if prem:
+        out["premium"] = {"counties": len(prem), "rising": sum(1 for p in prem if p["direction"] == "rising"),
+                          "falling": sum(1 for p in prem if p["direction"] == "falling"),
+                          # 284 separate 95% tests: about 2.5% would be called in each direction by luck
+                          "expected_by_chance_each_way": round(len(prem) * 0.025, 1)}
+    # loss: dollars summed across counties, by period and group
+    # dollars are summed from every county's per-year totals, gated or not, so
+    # the national share has the same denominator as its numerator
+    tot = 0.0
+    by_period = {}
+    irr = 0.0
+    n_loss = 0
+    prf = 0.0
+    for c in counties.values():
+        lo = c.get("loss") or {}
+        if lo.get("status") != "ok":
+            continue
+        n_loss += 1
+        tot += lo.get("total_indemnity", 0) or 0
+        irr += lo.get("irrigation_failure_indemnity", 0) or 0
+        prf += lo.get("prf_excluded_indemnity", 0) or 0
+        for y, r in (lo.get("per_year") or {}).items():
+            y = int(y)
+            label = next((k for k in lo.get("periods", {}) if _in_period(k, y)), None)
+            if not label:
+                continue
+            bp = by_period.setdefault(label, {"indemnity": 0.0, "heat_drought": 0.0})
+            bp["indemnity"] += r.get("indem", 0) or 0
+            bp["heat_drought"] += r.get("heat_drought", 0) or 0
+    if n_loss:
+        periods = {}
+        for k in sorted(by_period):
+            bp = by_period[k]
+            periods[k] = {"indemnity": round(bp["indemnity"]),
+                          "heat_drought_share": round(bp["heat_drought"] / bp["indemnity"], 3) if bp["indemnity"] >= MIN_LOSS_INDEM else None}
+        out["loss"] = {"counties": n_loss, "total_indemnity": round(tot), "irrigation_failure_indemnity": round(irr),
+                       "prf_excluded_indemnity": round(prf), "periods": periods, "latest_year": loss_latest}
+    return out
+
+
+def _in_period(label, year):
+    a, b = label.split("-")
+    return int(a) <= year <= int(b)
+
+
+# ---------------------------------------------------------------- thesis test
+
+def thesis_test(counties):
+    """Across counties: does the /cash-rent corn yield slope (bu/ac/yr, 15-yr window)
+    move with July or August night heat?
+
+    Two versions of each test. RAW correlates counties as they are; it is confounded
+    by geography, because night heat rises to the south and so do several things
+    that also move yield trends (soils, season length, state programs). WITHIN-STATE
+    subtracts each state's mean from both variables first, so a county is compared
+    with its own state's counties. Within-state is the version the verdict reads.
+    Eight tests are run; all eight are published; the odds are corrected for eight."""
+    tests = [("jul", "recent", "July mean low, last 10 years (F)"),
+             ("jul", "trend", "July mean low trend since 1976 (F/decade)"),
+             ("aug", "recent", "August mean low, last 10 years (F)"),
+             ("aug", "trend", "August mean low trend since 1976 (F/decade)")]
+    results = []
+    any_heat = False
+    n_tests = len(tests) * 2
+    for m, kind, label in tests:
+        pairs = []
+        for fips, c in counties.items():
+            y = c.get("yield") or {}
+            h = ((c.get("heat") or {}).get("months") or {}).get(m) or {}
+            if y.get("status") != "ok" or y.get("slope") is None or (y.get("n") or 0) < 10:
+                continue
+            x = (h.get("recent") or {}).get("mean") if kind == "recent" else (h.get("trend") or {}).get("per_decade")
+            if x is None:
+                continue
+            any_heat = True
+            pairs.append((x, y["slope"], fips))
+        for scope in ("raw", "within_state"):
+            rec = {"month": m, "kind": kind, "scope": scope, "x": label,
+                   "y": "county corn yield trend, bu/ac per year, fitted on every published year since 2008", "n": len(pairs)}
+            pts = pairs
+            if scope == "within_state":
+                by = {}
+                for x, yv, f in pairs:
+                    by.setdefault(f[:2], []).append((x, yv, f))
+                pts = []
+                for st, lst in by.items():
+                    if len(lst) < 5:
+                        continue
+                    mx = sum(t[0] for t in lst) / len(lst)
+                    my = sum(t[1] for t in lst) / len(lst)
+                    pts.extend((x - mx, yv - my, f) for x, yv, f in lst)
+                rec["n"] = len(pts)
+            if len(pts) < MIN_THESIS_N:
+                rec["status"] = f"withheld: {len(pts)} counties, gate is {MIN_THESIS_N}"
+                results.append(rec)
+                continue
+            p = pearson([(x, yv) for x, yv, _ in pts])
+            if p is None:
+                rec["status"] = "withheld: no spread in x"
+                results.append(rec)
+                continue
+            rec.update({"status": "ok", "r": round(p["r"], 3), "p": p["p"],
+                        "p_corrected": min(1.0, p["p"] * n_tests)})
+            xs = sorted(pts, key=lambda t: t[0])
+            k = len(xs) // 5
+            if k >= 20:
+                cool = [t[1] for t in xs[:k]]
+                hot = [t[1] for t in xs[-k:]]
+                rec["fifths"] = {"n_each": k,
+                                 "coolest_mean_slope": round(sum(cool) / k, 2),
+                                 "hottest_mean_slope": round(sum(hot) / k, 2)}
+            results.append(rec)
+    verdict = None
+    if any_heat:
+        oks = [r for r in results if r.get("status") == "ok" and r["scope"] == "within_state"]
+        if oks:
+            sig = [r for r in oks if r["p_corrected"] < 0.05]
+            if not sig:
+                verdict = "No relationship the data can vouch for in this window."
+            else:
+                signs = set("negative" if r["r"] < 0 else "positive" for r in sig)
+                size = max(abs(r["r"]) for r in sig)
+                if signs == {"negative"}:
+                    verdict = ("Within a state, warmer-night counties gained yield more slowly. The sign is the thesis; "
+                               + ("the size is too small to matter on its own." if size < 0.15 else "the size is modest." if size < 0.3 else "the size is not small."))
+                elif signs == {"positive"}:
+                    verdict = "Within a state, warmer-night counties gained yield faster in this window. That is the opposite of the thesis."
+                else:
+                    verdict = "The tests disagree on sign. No verdict."
+        else:
+            verdict = "Not enough counties within a state to say."
+    return {"status": "ok" if any_heat else "not yet measured: heat layer has not run",
+            "claim": "Counties with warmer July and August nights have gained corn yield more slowly.",
+            "window_note": ("The yield trend is fitted on the published county yields since 2008, a window that holds the 2012 drought "
+                            "and is dominated by genetics and management, so a weak result here does not refute a longer-run heat effect; "
+                            "the decade series on the map is the longer record. Rows marked across all counties compare counties as they sit, "
+                            "and night heat rises to the south along with several other things that move yield, so the verdict reads the "
+                            "within-state rows, where each county is compared only with the other counties of its own state, and their fifths "
+                            "are deviations from the state's mean, not yield gains. That removes the between-state contrast, which is the "
+                            "largest heat contrast in the sample, and it leaves the north-south gradient inside Texas, Kansas and Nebraska in place. "
+                            "The chance column treats counties as independent; neighbouring counties are not, so read it as generous."),
+            "tests_run": n_tests, "verdict": verdict, "tests": results}
+
+
+# ---------------------------------------------------------------- assemble
+
+def build(rent_dir=RENT_DIR, raw_dir=RAW_DIR, geometry_names=None):
+    """geometry_names: {fips: name} from data/atlas/counties.geo.json, so a county that
+    is on the map but in no survey still gets a record (all layers withheld)."""
+    rent, rent_vintage = load_rent(rent_dir)
+    raw = {}
+    vint = {}
+    for name in ("heat", "water", "loss"):
+        p = os.path.join(raw_dir, f"{name}.json")
+        if os.path.exists(p):
+            with open(p, encoding="utf-8") as f:
+                d = json.load(f)
+            raw[name] = d.get("counties") or {}
+            vint[name] = {k: v for k, v in d.items() if k != "counties"}
+            log(f"  {name}: {len(raw[name])} counties, {vint[name].get('source', '')}")
+        else:
+            raw[name] = None
+            log(f"  {name}: no raw file, layer will read 'not yet measured'")
+
+    heat_latest = (vint.get("heat") or {}).get("latest_year")
+    loss_latest = (vint.get("loss") or {}).get("latest_year")
+    # RMA keeps settling the current crop year for a year or more; the builder marks it
+    loss_partial = loss_latest if loss_latest and loss_latest >= datetime.now(timezone.utc).year else None
+
+    fips_all = set(rent)
+    for name in ("heat", "water", "loss"):
+        if raw[name]:
+            fips_all |= {f for f in raw[name] if f[:2] in ATLAS_STATE_FIPS}
+    if geometry_names:
+        fips_all |= set(geometry_names)
+
+    counties = {}
+    for fips in sorted(fips_all):
+        st = ATLAS_STATE_FIPS.get(fips[:2])
+        if not st:
+            continue
+        r = rent.get(fips) or {}
+        # Census spelling first (DeKalb, O'Brien, St. Clair); NASS upper-cases and drops punctuation
+        name = (geometry_names or {}).get(fips) or r.get("name") or (raw["heat"] or {}).get(fips, {}).get("name") \
+            or (raw["loss"] or {}).get(fips, {}).get("name") or (raw["water"] or {}).get(fips, {}).get("name")
+        c = {"name": name, "state": st}
+        c["rent"] = rent_layer(r.get("rent") or {}) if r else {"status": "withheld: county not in the NASS cash rents survey frame"}
+        c["yield"] = yield_layer(r.get("yield")) if r else {"status": "withheld: county not in the NASS cash rents survey frame"}
+        c["water_premium"] = water_premium_layer(r.get("rent") or {}) if r else {"status": "withheld: county not in the NASS cash rents survey frame"}
+        c["heat"] = heat_layer((raw["heat"] or {}).get(fips), heat_latest, ran=True) if raw["heat"] is not None else heat_layer(None, None)
+        c["water"] = (water_layer((raw["water"] or {}).get(fips), ran=True, absent_is_zero=bool((vint.get("water") or {}).get("absent_is_zero")))
+                      if raw["water"] is not None else water_layer(None))
+        c["loss"] = (loss_layer((raw["loss"] or {}).get(fips), loss_latest, ran=True, partial_year=loss_partial)
+                     if raw["loss"] is not None else loss_layer(None, None))
+        # a fingerprint of the numbers. atlas_reads.py stores it beside each AI read
+        # and the page shows a read only when the two agree, so a read can never
+        # describe numbers the county no longer carries.
+        c["sha"] = record_sha(c)
+        counties[fips] = c
+
+    layers = {
+        "rent": {"status": "ok", "source": "USDA NASS Cash Rents Survey (county), via data/cash-rent", "vintage": rent_vintage,
+                 "gates": {"min_premium_pairs": MIN_PREMIUM_PAIRS, "min_leader_pairs": MIN_LEADER_PAIRS}},
+        "yield": {"status": "ok", "source": "USDA NASS county corn yield; trend fit published on /cash-rent (15-year window)",
+                  "vintage": rent_vintage, "gates": {"min_years": MIN_YIELD_N}},
+        "heat": {"status": "ok" if raw["heat"] else "not yet measured",
+                 "source": "NOAA NCEI nClimDiv county monthly minimum temperature (climdiv-tmincy)",
+                 "gates": {"min_trend_years": MIN_HEAT_TREND_N, "min_recent_years": MIN_HEAT_LEVEL_N,
+                           "min_normal_years": MIN_NORMAL_N, "hot_month_line_f": HOT_JULY_F,
+                           "trend_start": HEAT_TREND_START},
+                 **(vint.get("heat") or {})},
+        "water": {"status": "ok" if raw["water"] else "not yet measured",
+                  "source": "USDA Census of Agriculture 2022 (irrigated share of harvested cropland); USGS Estimated Use of Water 2015 (irrigation withdrawals by source)",
+                  **(vint.get("water") or {})},
+        "loss": {"status": "ok" if raw["loss"] else "not yet measured",
+                 "source": "USDA RMA Summary of Business, Cause of Loss, 1989 onward",
+                 "gates": {"min_premium_for_ratio": MIN_LOSS_PREMIUM, "min_indemnity_for_shares": MIN_LOSS_INDEM},
+                 **(vint.get("loss") or {})},
+    }
+    out = {
+        "generated": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "states": ATLAS_STATES,
+        "layers": layers,
+        "national": national(counties, loss_latest),
+        "thesis_test": thesis_test(counties),
+        "counts": {"counties": len(counties),
+                   "rent_ok": sum(1 for c in counties.values() if c["rent"].get("status") == "ok"),
+                   "yield_ok": sum(1 for c in counties.values() if c["yield"].get("status") == "ok"),
+                   "premium_ok": sum(1 for c in counties.values() if c["water_premium"].get("status") == "ok"),
+                   "heat_ok": sum(1 for c in counties.values() if c["heat"].get("status") == "ok"),
+                   "water_ok": sum(1 for c in counties.values() if c["water"].get("status") == "ok"),
+                   "loss_ok": sum(1 for c in counties.values() if c["loss"].get("status") == "ok")},
+        "counties": counties,
+    }
+    return out
+
+
+# ---------------------------------------------------------------- selftest
+
+def selftest():
+    # ols on a hand-worked line: y = 2x + 1 exactly
+    f = ols([(1, 3), (2, 5), (3, 7), (4, 9)])
+    assert abs(f["slope"] - 2) < 1e-9 and abs(f["intercept"] - 1) < 1e-9 and f["r2"] == 1.0, f
+    # ols with noise: points (0,0),(1,1),(2,1),(3,3): slope = 0.9, intercept = -0.1 (hand worked)
+    f = ols([(0, 0), (1, 1), (2, 1), (3, 3)])
+    assert abs(f["slope"] - 0.9) < 1e-9 and abs(f["intercept"] + 0.1) < 1e-9, f
+    # pearson exact
+    p = pearson([(1, 2), (2, 4), (3, 6), (4, 8)])
+    assert abs(p["r"] - 1) < 1e-9
+    p = pearson([(1, 8), (2, 6), (3, 4), (4, 2)])
+    assert abs(p["r"] + 1) < 1e-9
+
+    # water premium: hand worked. irr 200,210,220,230,240,250; nonirr 100,105,110,115,120,125
+    rent = {"irr": {str(2019 + i): 200 + 10 * i for i in range(6)},
+            "nonirr": {str(2019 + i): 100 + 5 * i for i in range(6)}}
+    w = water_premium_layer(rent)
+    assert w["status"] == "ok" and w["n_pairs"] == 6, w
+    assert w["latest"]["premium"] == 125 and w["first"]["premium"] == 100, w
+    assert abs(w["slope_per_year"] - 5.0) < 1e-9, w          # premium rises 5/yr exactly
+    assert w["direction"] == "rising", w
+    assert direction(2.33, 2.26) == "rising" and direction(2.3, 2.3) == "no clear direction" and direction(-2.33, 2.26) == "falling"
+    assert direction(0.004, 0.001) == "no clear direction", "a call must survive rounding to what is printed"
+    assert half_up(104.5) == 105 and half_up(-6.5) == -7 and half_up(2.4) == 2
+    assert t975(48) == 2.021 and t975(31) == 2.042 and t975(200) == 1.980 and t975(5) == 2.571
+    # gate: 5 pairs withheld
+    rent5 = {"irr": {str(2019 + i): 200 for i in range(5)}, "nonirr": {str(2019 + i): 100 for i in range(5)}}
+    assert water_premium_layer(rent5)["status"].startswith("withheld"), water_premium_layer(rent5)
+    # no irrigated rent at all: withheld with the right reason
+    assert "no irrigated" in water_premium_layer({"nonirr": {"2020": 100}})["status"]
+
+    # rent 10-year change: 2015 skipped, so from 2025 the base is 2014 or 2013 (closest at/before 2015 within 12)
+    r = rent_layer({"nonirr": {"2013": 100, "2014": 110, "2016": 120, "2025": 165}})
+    assert r["nonirr_change10"]["from_year"] == 2014 and r["nonirr_change10"]["pct"] == 50.0, r
+    assert r["nonirr"] == {"year": 2025, "value": 165}
+
+    # yield: worst year share of median; hist of 9 values, median 150, worst 90 -> 0.6
+    hist = {str(2010 + i): v for i, v in enumerate([150, 160, 90, 155, 150, 145, 170, 150, 165])}
+    y = yield_layer({"corn": {"hist": hist, "slope": 1.5, "r2": .3, "n": 9, "trend": 170, "last": 165}})
+    assert y["status"] == "ok" and y["median"] == 150 and y["worst"] == {"year": 2012, "value": 90, "share_of_median": 0.6}, y
+    assert yield_layer({"corn": {"hist": {"2010": 100}}})["status"].startswith("withheld")
+
+    # heat: synthetic county, July = 60 + 0.05*(year-1976) from 1900..2025 -> slope 0.5 F/decade exactly
+    s = {y: 60 + 0.05 * (y - 1976) for y in range(1900, 2026)}
+    h = heat_layer({"jul": {str(y): v for y, v in s.items()}, "aug": {}}, 2025)
+    j = h["months"]["jul"]
+    assert abs(j["trend"]["per_decade"] - 0.5) < 1e-6, j["trend"]
+    assert j["trend"]["direction"] == "warming"
+    assert j["recent"]["n"] == 10 and abs(j["recent"]["mean"] - (60 + 0.05 * (2020.5 - 1976))) < 0.051, j["recent"]
+    assert j["decades"]["1900s"]["n"] == 10 and j["decades"]["2020s"]["n"] == 6
+    # 70 F line never reached (max is 60+0.05*49=62.45); 62 line first at the 2020s (mean 2020-2025 = 62.325)
+    assert j["first_decade_at_or_above"]["70"] is None and j["first_decade_at_or_above"]["62"] == "2020s", j["first_decade_at_or_above"]
+    assert j["decades"]["2020s"]["hot"] == 0
+    a = h["months"]["aug"]
+    assert a["status"].startswith("withheld")
+    assert heat_layer(None, 2025)["status"].startswith("not yet measured")
+
+    # water: 100 Mgal/d over 50 thousand acres = 100*365e6/325851/50000 = 2.24 ft/acre
+    w = water_layer({"census2022": {"harvested": 200000, "irrigated": 50000},
+                     "usgs2015": {"ir_gw_mgd": 80, "ir_sw_mgd": 20, "ir_tot_mgd": 100, "ir_acres_k": 50}})
+    assert w["irrigated_share_2022"]["share"] == 0.25 and w["groundwater_share_2015"]["share"] == 0.8, w
+    assert w["applied_2015"]["acre_ft_per_acre"] == 2.24, w["applied_2015"]
+    w = water_layer({"census2022": {"harvested": 200000, "irrigated": None, "irrigated_published": True}, "usgs2015": {}})
+    assert "suppressed" in w["irrigated_share_2022"]["status"]
+    w = water_layer({"census2022": {"harvested": 200000, "irrigated": None, "irrigated_published": False}, "usgs2015": {}}, absent_is_zero=True)
+    assert w["irrigated_share_2022"]["share"] == 0.0 and w["irrigated_share_2022"]["reported"] is False
+    w = water_layer({"census2022": {"harvested": 200000, "irrigated": None, "irrigated_published": False}, "usgs2015": {}}, absent_is_zero=False)
+    assert "withheld" in w["irrigated_share_2022"]["status"] and "share" not in w["irrigated_share_2022"]
+    assert "withheld" in w["groundwater_share_2015"]["status"]
+    assert "withheld" in water_layer({"census2022": {}, "usgs2015": {"ir_gw_mgd": 0.4, "ir_sw_mgd": 0.1, "ir_tot_mgd": 0.5, "ir_acres_k": 0.05}})["applied_2015"]["status"]
+    assert water_layer(None, ran=True)["status"].startswith("withheld") and water_layer(None)["status"].startswith("not yet")
+
+    # loss: two years, hand worked
+    l = {"years": {"2012": {"heat_drought": {"indem": 3_000_000, "prem": 1_000_000},
+                            "hail": {"indem": 1_000_000, "prem": 500_000}},
+                   "2019": {"wet": {"indem": 2_000_000, "prem": 1_500_000}}}}
+    L = loss_layer(l, 2025)
+    assert L["total_indemnity"] == 6_000_000 and L["loss_ratio_all"] is None and "withheld" in L["loss_ratio_status"], L
+    assert L["share_all"]["heat_drought"] == 0.5 and L["top_cause_all"] == "heat_drought"
+    p1 = L["periods"]["2010-2019"]
+    assert p1["indemnity"] == 6_000_000 and p1["top_cause"] == "heat_drought" and p1["heat_drought_share"] == 0.5, p1
+    assert L["periods"]["1989-1999"]["loss_ratio"] is None and "withheld" in L["periods"]["1989-1999"]["loss_ratio_status"]
+    assert "share" not in L["periods"]["1989-1999"] and "withheld" in L["periods"]["1989-1999"]["share_status"]
+    assert L["per_year"][2012]["heat_drought"] == 3_000_000
+
+    # yield: fit on every published year, not /cash-rent's 15-year window
+    hist2 = {str(2008 + i): 150 + 2 * i for i in range(17)}     # exactly +2 bu/yr
+    y2 = yield_layer({"corn": {"hist": hist2, "slope": 9.9}})
+    assert y2["slope"] == 2.0 and y2["window"] == "2008-2024" and y2["n"] == 17 and y2["cash_rent_slope"] == 9.9, y2
+    # thesis: not yet measured when no heat
+    t = thesis_test({"19001": {"yield": {"status": "ok", "slope": 1, "n": 12}, "heat": {"status": "not yet measured"}}})
+    assert t["status"].startswith("not yet measured") and t["verdict"] is None
+    # thesis: 250 synthetic counties with yield slope falling as July low rises -> negative r, verdict says so
+    cs = {}
+    for i in range(250):
+        x = 55 + i * 0.06
+        cs[f"19{i:03d}"] = {"yield": {"status": "ok", "slope": 3 - 0.1 * (x - 55) + (0.3 if i % 2 else -0.3), "n": 12},
+                            "heat": {"status": "ok", "months": {"jul": {"recent": {"mean": x}, "trend": {"per_decade": 0.3}}}}}
+    t = thesis_test(cs)
+    tj = [r for r in t["tests"] if r["month"] == "jul" and r["kind"] == "recent" and r["scope"] == "raw"][0]
+    assert tj["status"] == "ok" and tj["r"] < -0.5 and tj["p_corrected"] < 0.05, tj
+    assert tj["fifths"]["hottest_mean_slope"] < tj["fifths"]["coolest_mean_slope"]
+    tw = [r for r in t["tests"] if r["month"] == "jul" and r["kind"] == "recent" and r["scope"] == "within_state"][0]
+    assert tw["status"] == "ok" and tw["r"] < -0.5, tw       # all 250 are one state, so demeaning keeps the slope
+    # the trend test has no spread in x (all 0.3): withheld, not a crash and not a number
+    tt = [r for r in t["tests"] if r["kind"] == "trend" and r["month"] == "jul" and r["scope"] == "raw"][0]
+    assert tt["status"] == "withheld: no spread in x", tt
+    assert len(t["tests"]) == 8 and t["tests_run"] == 8
+    assert "slowly" in t["verdict"], t["verdict"]
+    # the seed writes between its markers, once, and is idempotent
+    import tempfile
+    tmp = tempfile.NamedTemporaryFile("w", suffix=".html", delete=False, encoding="utf-8")
+    tmp.write("<p>before</p>\n" + SEED_OPEN + "\nold\n" + SEED_CLOSE + "\n<p>after</p>")
+    tmp.close()
+    fake = {"generated": "2026-09-13T00:00:00Z", "states": ["IA"], "counts": {"counties": 1},
+            "national": {"premium": {"counties": 1, "rising": 1, "falling": 0, "expected_by_chance_each_way": 0.0}},
+            "counties": {"19001": {"name": "Adair", "state": "IA", "water_premium": {"status": "ok", "direction": "rising", "slope_per_year": 2.0, "n_pairs": 9,
+                                                                                   "first": {"year": 2008, "premium": 10}, "latest": {"year": 2025, "premium": 40}}}}}
+    seed_page(tmp.name, fake)
+    t1 = open(tmp.name, encoding="utf-8").read()
+    assert "old" not in t1 and "Adair, IA: $10 in 2008 to $40 in 2025" in t1 and t1.startswith("<p>before</p>") and t1.endswith("<p>after</p>"), t1
+    assert 'data-built="2026-09-13T00:00:00Z"' in t1 and "not yet measured" in t1
+    assert _money(104.5) == "$105" and _money(-29) == "\u2212$29" and _money(1234567.4) == "$1,234,567"
+    seed_page(tmp.name, fake)
+    assert open(tmp.name, encoding="utf-8").read() == t1, "seed is not idempotent"
+    os.unlink(tmp.name)
+    # the fingerprint changes when a number changes and not otherwise
+    assert record_sha({"a": 1, "b": {"c": 2}}) == record_sha({"b": {"c": 2}, "a": 1})
+    assert record_sha({"a": 1}) != record_sha({"a": 2})
+    # summarize keeps the map fields and drops the series; the detail record is not mutated
+    rec = {"name": "X", "state": "IA", "sha": "s",
+           "rent": {"status": "ok", "nonirr": {"year": 2025, "value": 1}, "nonirr_change10": {"pct": 5.0, "from_year": 2014, "to_year": 2025, "from": 1, "to": 2}, "series_nonirr": {2025: 1}},
+           "yield": {"status": "ok", "slope": 1.0, "r2": .5, "n": 12, "median": 150, "worst": {"year": 2012, "value": 90, "share_of_median": .6}, "hist": {2012: 90}},
+           "water_premium": {"status": "withheld: x"},
+           "heat": {"status": "ok", "months": {"jul": {"recent": {"mean": 1}, "trend": {"per_decade": .2}, "decades": {"2010s": {"mean": 64.0, "n": 10, "hot": 1, "sum": 640}}, "series": {2000: 1}},
+                                              "aug": {"status": "withheld: none"}}},
+           "water": {"status": "not yet measured"},
+           "loss": {"status": "ok", "per_year": {2012: 1}, "total_indemnity": 5, "first_year": 1989, "last_year": 2025,
+                    "share_all": {"heat_drought": .5, "wet": .2, "hail": .1, "other": .2}, "top_cause_all": "heat_drought",
+                    "periods": {"2020-2025": {"heat_drought_share": .7}}, "irrigation_failure_indemnity": 0}}
+    sm = summarize(rec)
+    assert "series_nonirr" not in sm["rent"] and sm["rent"]["nonirr"]["value"] == 1 and sm["rent"]["nonirr_change10"]["pct"] == 5.0
+    assert "hist" not in sm["yield"] and sm["yield"]["worst"]["share_of_median"] == .6
+    assert sm["water_premium"] == {"status": "withheld: x"}
+    assert "series" not in sm["heat"]["months"]["jul"] and sm["heat"]["months"]["jul"]["decades"]["2010s"] == {"mean": 64.0, "n": 10, "hot": 1}
+    assert sm["heat"]["months"]["aug"] == {"status": "withheld: none"}
+    assert "per_year" not in sm["loss"] and sm["loss"]["heat_drought_2020s"] == .7 and sm["loss"]["share_all"]["heat_drought"] == .5
+    assert "series" in rec["heat"]["months"]["jul"], "summarize must not mutate the detail record"
+    log("selftest ok")
+
+
+DETAIL_DIR = "data/atlas/counties"
+
+
+def _st(layer):
+    return (layer or {}).get("status")
+
+
+def summarize(rec):
+    """The map-level record: only what the map, the tables and the tooltip need.
+    Everything else is in the county's detail file. Statuses are carried so the
+    page can say why a county is grey."""
+    out = {"name": rec["name"], "state": rec["state"], "sha": rec["sha"]}
+    r = rec.get("rent") or {}
+    out["rent"] = {"status": _st(r)}
+    if _st(r) == "ok":
+        out["rent"]["nonirr"] = r.get("nonirr")
+        out["rent"]["nonirr_change10"] = ({"pct": r["nonirr_change10"]["pct"], "from_year": r["nonirr_change10"]["from_year"],
+                                           "to_year": r["nonirr_change10"]["to_year"]} if r.get("nonirr_change10") else None)
+        out["rent"]["irr"] = r.get("irr")
+    y = rec.get("yield") or {}
+    out["yield"] = {"status": _st(y)}
+    if _st(y) == "ok":
+        out["yield"].update({"slope": y.get("slope"), "slope_ci95": y.get("slope_ci95"), "r2": y.get("r2"), "n": y.get("n"),
+                             "window": y.get("window"), "first_year": y.get("first_year"), "last_year": y.get("last_year"),
+                             "worst": y.get("worst"), "median": y.get("median"), "trend_status": y.get("trend_status")})
+    w = rec.get("water_premium") or {}
+    out["water_premium"] = {"status": _st(w)}
+    if _st(w) == "ok":
+        out["water_premium"].update({"slope_per_year": w["slope_per_year"], "slope_ci95": w["slope_ci95"],
+                                     "direction": w["direction"], "n_pairs": w["n_pairs"],
+                                     "first": w["first"], "latest": w["latest"]})
+    h = rec.get("heat") or {}
+    out["heat"] = {"status": _st(h)}
+    if _st(h) == "ok":
+        m = {}
+        for mo in ("jul", "aug"):
+            md = (h.get("months") or {}).get(mo) or {}
+            if md.get("status"):
+                m[mo] = {"status": md["status"]}
+                continue
+            rec_m = {"recent": md.get("recent"), "trend": md.get("trend"), "normal_1991_2020": md.get("normal_1991_2020")}
+            if mo == "jul":
+                rec_m["decades"] = {d: {"mean": x["mean"], "n": x["n"], "hot": x["hot"]} for d, x in (md.get("decades") or {}).items()}
+            else:
+                rec_m["hot"] = sum(x.get("hot", 0) for x in (md.get("decades") or {}).values())
+            m[mo] = rec_m
+        out["heat"]["months"] = m
+    wa = rec.get("water") or {}
+    out["water"] = {"status": _st(wa)}
+    if _st(wa) == "ok":
+        out["water"].update({"irrigated_share_2022": {"share": (wa.get("irrigated_share_2022") or {}).get("share"),
+                                                      "reported": (wa.get("irrigated_share_2022") or {}).get("reported", True),
+                                                      "status": (wa.get("irrigated_share_2022") or {}).get("status")},
+                             "groundwater_share_2015": {"share": (wa.get("groundwater_share_2015") or {}).get("share"),
+                                                        "status": (wa.get("groundwater_share_2015") or {}).get("status")},
+                             "applied_2015": {"acre_ft_per_acre": (wa.get("applied_2015") or {}).get("acre_ft_per_acre")} if wa.get("applied_2015") else None})
+    lo = rec.get("loss") or {}
+    out["loss"] = {"status": _st(lo)}
+    if _st(lo) == "ok":
+        sa = lo.get("share_all") or {}
+        recent = None
+        for k, p in (lo.get("periods") or {}).items():
+            if k.startswith("2020"):
+                recent = p.get("heat_drought_share")
+        out["loss"].update({"first_year": lo.get("first_year"), "last_year": lo.get("last_year"), "partial_year": lo.get("partial_year"),
+                            "total_indemnity": lo.get("total_indemnity"),
+                            "share_all": {"heat_drought": sa.get("heat_drought"), "wet": sa.get("wet"), "hail": sa.get("hail"), "unassigned": sa.get("unassigned")} if sa else None,
+                            "top_cause_all": lo.get("top_cause_all"),
+                            "heat_drought_2020s": recent,
+                            "irrigation_failure_indemnity": lo.get("irrigation_failure_indemnity")})
+    return out
+
+
+def write_outputs(out, out_path=OUT, detail_dir=DETAIL_DIR):
+    os.makedirs(detail_dir, exist_ok=True)
+    full = out["counties"]
+    # detail files, one per county, stamped with the same `generated` as the summary
+    # so the page can refuse to show a detail that belongs to a different build
+    written = set()
+    for fips, rec in full.items():
+        p = os.path.join(detail_dir, f"{fips}.json")
+        with open(p, "w", encoding="utf-8") as f:
+            json.dump({"fips": fips, "generated": out["generated"], **rec}, f, separators=(",", ":"), ensure_ascii=False)
+        written.add(f"{fips}.json")
+    # a county that left the Atlas leaves the folder too
+    for name in os.listdir(detail_dir):
+        if name.endswith(".json") and name not in written:
+            os.remove(os.path.join(detail_dir, name))
+    summary = dict(out)
+    summary["counties"] = {fips: summarize(rec) for fips, rec in full.items()}
+    with open(out_path, "w", encoding="utf-8") as f:
+        json.dump(summary, f, separators=(",", ":"), ensure_ascii=False)
+    return summary
+
+
+# ---------------------------------------------------------------- static seed for JS-blind readers
+
+SEED_OPEN = "<!--SEED:atlas-->"
+SEED_CLOSE = "<!--/SEED:atlas-->"
+
+
+def _money(x):
+    # half away from zero, the same as the page's Math.round on positives, so the
+    # static block and the live table never print 104 and 105 for one number
+    v = int(math.floor(abs(x) + 0.5))
+    return ("\u2212$" if x < 0 else "$") + f"{v:,}"
+
+
+def _pct(x):
+    return f"{half_up(x * 100)}%"
+
+
+def seed_html(out):
+    """The Atlas's national facts as plain HTML, stamped with the build. The page
+    keeps this block only while the stamp matches the data file it loads."""
+    n = out["national"]
+    c = out["counts"]
+    parts = [f'<div id="fa-seed" data-built="{out["generated"]}" class="fa-seedbox">']
+    parts.append(f'<p><strong>Across the Atlas</strong> · built {out["generated"][:10]} · {c["counties"]} counties in {len(out["states"])} states.</p>')
+    h = n.get("heat")
+    if h:
+        hb = h["hot_julys_by_decade"]
+        dec = " · ".join(f"{k} {v['hot']}" for k, v in sorted(hb.items()) if k >= "1930s" and k <= "2010s")
+        parts.append(f'<p>July nights: {h["warming"]} of {h["counties_with_trend"]} counties are warming since 1976 with the 95% interval clear of zero, {h["cooling"]} cooling, {h["no_clear_direction"]} with no clear direction; the median trend is {h["median_trend_per_decade"]:+.2f} F per decade. In {h["latest_decade_is_warmest"]} of {h["counties_with_decades"]} counties the 2010s were the warmest complete decade since the 1900s (the 2020s are not complete and are not counted). Julys with an average low at or above 70 F, summed over every county, by decade: {dec}.</p>')
+    else:
+        parts.append('<p>July nights: not yet measured.</p>')
+    w = n.get("water")
+    if w:
+        parts.append(f'<p>Water: {w["over_quarter_irrigated"]} of {w["counties_with_share"]} counties irrigate a quarter or more of their harvested cropland and {w["over_half_irrigated"]} irrigate half or more; the median county irrigates {_pct(w["median_irrigated_share"])}. In {w["gw_over_90pct"]} of {w["counties_with_gw_share"]} counties nine-tenths or more of the irrigation water is pumped from the ground.</p>')
+    else:
+        parts.append('<p>Water dependence: not yet measured.</p>')
+    lo = n.get("loss")
+    if lo:
+        per = " · ".join(f"{k} {_pct(v['heat_drought_share'])}" for k, v in lo["periods"].items() if v.get("heat_drought_share") is not None)
+        parts.append(f'<p>Loss record: {_money(lo["total_indemnity"])} of crop insurance indemnities since 1989 across {lo["counties"]} counties (nominal dollars; pasture and rangeland rainfall-index policies excluded). Heat and drought share by period: {per}. Paid for failure of irrigation supply or equipment: {_money(lo["irrigation_failure_indemnity"])}.</p>')
+    else:
+        parts.append('<p>Loss record: not yet measured.</p>')
+    pr = n.get("premium")
+    if pr:
+        rows = [(f, cc["water_premium"]) for f, cc in out["counties"].items() if (cc.get("water_premium") or {}).get("status") == "ok"]
+        rows = [r for r in rows if r[1]["n_pairs"] >= MIN_LEADER_PAIRS]
+        narrow = sorted([r for r in rows if r[1]["direction"] == "falling"], key=lambda r: r[1]["slope_per_year"])[:5]
+        wide = sorted([r for r in rows if r[1]["direction"] == "rising"], key=lambda r: -r[1]["slope_per_year"])[:5]
+        def li(f, p):
+            cc = out["counties"][f]
+            return f'{cc["name"]}, {cc["state"]}: {_money(p["first"]["premium"])} in {p["first"]["year"]} to {_money(p["latest"]["premium"])} in {p["latest"]["year"]}'
+        parts.append(f'<p>The irrigated rent premium: {pr["counties"]} counties publish both rents with enough paired years; the premium is rising in {pr["rising"]} and falling in {pr["falling"]}, with the 95% interval clear of zero. Falling fastest, fitted through every paired year: ' + "; ".join(li(f, p) for f, p in narrow) + '. Rising fastest: ' + "; ".join(li(f, p) for f, p in wide) + '.</p>')
+    parts.append('</div>')
+    return "\n".join(parts)
+
+
+def seed_page(path, out):
+    with open(path, encoding="utf-8") as f:
+        html = f.read()
+    a = html.count(SEED_OPEN)
+    b = html.count(SEED_CLOSE)
+    if a != 1 or b != 1:
+        sys.exit(f"{path}: expected one {SEED_OPEN} and one {SEED_CLOSE}, found {a} and {b}")
+    i = html.index(SEED_OPEN) + len(SEED_OPEN)
+    j = html.index(SEED_CLOSE)
+    new = html[:i] + "\n" + seed_html(out) + "\n" + html[j:]
+    if new != html:
+        with open(path, "w", encoding="utf-8") as f:
+            f.write(new)
+        log(f"seeded {path}")
+    else:
+        log(f"{path}: seed unchanged")
+
+
+def main():
+    if "--selftest" in sys.argv:
+        selftest()
+        return
+    geo_names = None
+    gp = "data/atlas/counties.geo.json"
+    if os.path.exists(gp):
+        with open(gp, encoding="utf-8") as f:
+            geo_names = {ft["id"]: ft["properties"].get("name") for ft in json.load(f)["features"]}
+    out = build(geometry_names=geo_names)
+    os.makedirs(os.path.dirname(OUT), exist_ok=True)
+    # If no county's numbers changed since the last build, keep the last build's
+    # stamp: 1,450 detail files and the seeded page would otherwise be rewritten
+    # every month for a timestamp, and the git history would say the Atlas moved
+    # when it did not.
+    if os.path.exists(OUT):
+        try:
+            with open(OUT, encoding="utf-8") as f:
+                prev = json.load(f)
+            same = (prev.get("counties") and set(prev["counties"]) == set(out["counties"])
+                    and all(prev["counties"][k].get("sha") == v["sha"] for k, v in out["counties"].items())
+                    and prev.get("thesis_test") == out["thesis_test"] and prev.get("national") == out["national"])
+            if same and prev.get("generated"):
+                out["generated"] = prev["generated"]
+                log(f"no county changed; keeping build stamp {out['generated']}")
+        except Exception as e:      # a broken previous file is not a reason to stop
+            log(f"previous {OUT} unreadable ({e}); new stamp")
+    summary = write_outputs(out)
+    log(f"wrote {OUT} + {DETAIL_DIR}/: {out['counts']}")
+    if "--seed" in sys.argv:
+        seed_page(sys.argv[sys.argv.index("--seed") + 1], out)
+    log(f"thesis: {out['thesis_test']['status']} — {out['thesis_test'].get('verdict')}")
+
+
+if __name__ == "__main__":
+    main()
