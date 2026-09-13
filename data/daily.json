@@ -1,13 +1,11 @@
 {
-  "headline": "WASDE BREAK HOLDS; WEEK AHEAD SETS THE PRICE",
-  "subheadline": "Beans closed Friday at $12.99, exactly on the line called last session; crude at $99.99 and Iran's war premium aren't going anywhere.",
-  "lead": "Beans finished Friday at $12.99, off 24 cents on the WASDE print, and sat exactly on the line this briefing drew. Corn held better, Dec '26 at $5.32. The week ahead has no single report to reset the board, but $100 crude, a Hormuz war the oil market is now pricing for years, and early harvest pressure on corn all have opinions. The question is whether $12.99 holds or breaks.",
-  "the_takeaway": "Beans are at the line; hold or break this week tells you everything about fall pricing.",
-  "teaser": "Beans on the line, crude won't quit, and the Hormuz war just went from weeks to years.",
+  "headline": "BEANS HOLD $12.99; CRUDE AT $100, WEEK AHEAD",
+  "lead": "Soybeans closed Friday at $12.99 after shedding 24 cents on the WASDE print, and that level is now the line every unpriced bushel is measured against. Crude held just under $100 as oil traders priced a longer Iran conflict, not a resolution.",
+  "teaser": "Beans stuck at $12.99, crude below $100, and a week that will answer both questions.",
   "one_number": {
-    "value": "98%",
-    "unit": "US refinery utilization rate, near max capacity",
-    "context": "American refineries are running at 98% utilization with diesel already above $6/gallon. The White House is weighing the Defense Production Act to add capacity. For fall fieldwork, there is no cushion left in the system."
+    "value": "180.7",
+    "unit": "bu/acre, USDA Sept corn yield",
+    "context": "USDA cut corn yield 2.3 bu from July on the Aug 12 WASDE. Early harvest reports this week are the first field check against that number."
   },
   "yesterdays_call": {
     "outcome": "didnt",
@@ -20,8 +18,8 @@
       "direction": "down",
       "level": 12.85
     },
-    "summary": "Called beans to break below $12.85 on WASDE day. They closed at $12.99 -- right on the line, but above the trigger.",
-    "note": "Miss. Beans fell 24 cents on the WASDE print and landed exactly at $12.99, not through $12.85. The thesis isn't wrong; the level just hasn't given way yet. Monday's close is now the real test."
+    "call_line": "Called soybeans down toward $12.85 ($12.99 when the call was made). It closed at $12.99.",
+    "note": "Beans held $12.99 all session; the $12.85 target never threatened -- a clean miss on timing."
   },
   "todays_call": {
     "instrument": "beans",
@@ -29,91 +27,66 @@
     "level": 12.85,
     "design": "v2"
   },
+  "action": "Unpriced new-crop beans: hold above $12.99; a close below $12.85 any day this week is the sale signal, not a reason to watch further.",
   "sections": [
     {
-      "title": "BEANS ON THE LINE",
-      "body": "- Soybeans closed Friday at **$12.99**, off 24 cents on the WASDE print, sitting at the exact threshold this briefing flagged as make-or-break for new-crop pricing decisions.\n- Meal at its 52-week high and soybean oil slipping half a percent says the complex is fractured: crushers are buying meal, not beans, and that doesn't lift the flat price.\n- Early harvest pressure on corn is coming; if corn basis weakens as combines roll, beans get no sympathy lift from the grain complex.",
-      "catalyst": "September WASDE printed larger soybean carryout than the trade expected, triggering Friday's 24-cent break.",
-      "bottom_line": "Close below $12.85 this week confirms the break has legs; price on that signal, not ahead of it.",
+      "title": "BEANS AND CORN: WASDE HANGOVER",
+      "body": "- November beans closed Friday at **$12.99**, right where the WASDE drop left them; the bounce that would say 'noise' never came, and the weekend gave nobody a reason to own them.",
+      "so_what": "Beans need a bid Monday or $12.85 becomes the next test by midweek.",
       "conviction_level": "high",
-      "overnight_surprise": false,
-      "farmer_action": "If new-crop beans are unpriced, watch the Monday and Tuesday closes. A settlement below $12.85 is the signal to move; do not wait for $12.70."
+      "overnight_surprise": false
     },
     {
-      "title": "CORN: HARVEST PRESSURE APPROACHING",
-      "body": "- Nearby corn eased to **$5.09** Friday, off 3 cents, while Dec '26 at $5.32 held better, a 23-cent carry structure that is still working and tells you the market isn't panicking about supply yet.\n- The farmdoc piece on swine feed costs flags that corn has run from $4.40 at the start of 2026 to over $5 in a matter of months, and that matters for hog finishing margins all fall.\n- Combines are beginning to roll in early-harvest zones; the first real yield reads from the field will either confirm or challenge the USDA's 180.7 bu/acre August print.",
-      "catalyst": "USDA August WASDE pegged corn yield at 180.7 bu/acre; early harvest weeks are when field reality begins to talk back to the model.",
-      "bottom_line": "Carry's working, but early harvest is the week's tell. Watch basis, not the board.",
+      "title": "CRUDE BELOW $100; IRAN WAR PRICED LONGER",
+      "body": "- WTI closed Friday at **$99.99**, off 3.1%, as the Iran-Hormuz cycle (a re-escalation that has run since July, with the Strait effectively shut since March per oil traders) shifted from acute-risk to priced-in-for-years framing.",
+      "so_what": "Crude under $100 is not a buying window for farmers; lock fall diesel now.",
       "conviction_level": "medium",
       "overnight_surprise": false
     },
     {
-      "title": "CRUDE ABOVE $100; HORMUZ WAR PRICED FOR YEARS",
-      "body": "- WTI closed Friday at **$99.99**, off 3.1%, but the bigger story is structural: oil industry sources and traders are now bracing for a prolonged US-Iran conflict in the Persian Gulf with no quick resolution in sight.\n- The Iran-Hormuz cycle, a July re-escalation that has since deflated and re-inflated twice since April, is no longer being treated as episodic; the market is starting to price a new baseline, not a risk premium.\n- US refineries running at 98% capacity with diesel above $6 means any further disruption to crude flows lands directly on fall fieldwork costs, with no buffer in the system.",
-      "catalyst": "Oil industry and trader sources publicly bracing for a years-long Iran war; White House weighing Defense Production Act as refinery utilization hits 98%.",
-      "bottom_line": "Diesel above $6 with no refinery slack and a years-long war priced in is not a dip to wait out.",
-      "conviction_level": "high",
-      "overnight_surprise": false,
-      "farmer_action": "If fall diesel is unpriced, the window to act is not wider than it was last week. Lock what you need."
-    },
-    {
-      "title": "CATTLE FIRMS; HOGS SLIP",
-      "body": "- Live cattle at **$219.62**, up 0.8% Friday, and feeders at $337.88, up 1.6%, with the feeder/live premium still stretched and the Aug 24 Douglas, AZ port reopening now behind us, so returning Mexican feeder supply is beginning to work into the market.\n- Hogs slipped 1.9% to $81.62, continuing a drift that has no obvious floor yet at 16% of the 52-week range.\n- The mCOOL and beef import noise flagged in trade press this week is political backdrop, not a price driver yet, but it's worth watching if the Farm Bill endgame brings it back to the Senate floor in September.",
-      "catalyst": "Feeder rally continues despite post-Aug 24 reopening of Mexican feeder cattle imports at Douglas, AZ; political noise around mCOOL adding background volatility.",
-      "bottom_line": "Cattle acting like the buyer is patient; hogs have no floor in sight at current levels.",
+      "title": "CATTLE FIRMS; FEEDERS PUSH HIGHER",
+      "body": "- Live cattle closed at **$219.62**, up 0.8%, and feeders at $337.88, up 1.6%, with political noise around mCOOL and beef imports adding headline volatility but not changing the processing-constrained fundamental.\n- The Cargill multi-plant lockout, ongoing since May 19, still removes roughly 6,000 head of daily capacity; the cattle are there, the kill slots are not.",
+      "so_what": "Cattle firm on tight processing, not demand; watch the Douglas reopening pace.",
       "conviction_level": "medium",
       "overnight_surprise": false
     }
   ],
   "outside_the_pit": [
     {
-      "title": "GAO Asked to Investigate $12B USDA Trade War Relief Distribution",
-      "body": "House members DeLauro and Bishop asked the GAO to audit whether the $12 billion in FBA and specialty crop trade war payments were distributed fairly. If the GAO finds irregularities, it reopens the political fight over who gets compensated and how, right as the Farm Bill heads into a September Senate revote.",
-      "tag": "POLICY"
-    },
-    {
-      "title": "US-Canada Trade War Threatens Ag Supply Chains Heading Into Fall",
-      "body": "New tariff exchanges between the US and Canada are already rattling supply chains for fertilizer, equipment parts, and cross-border grain flows. Farm-state Republicans say they want deescalation, but the trade war is moving faster than the political will to stop it.",
-      "tag": "TRADE"
+      "title": "Oil Industry Models Years-Long Iran War, Not a Cycle",
+      "body": "Producers and refiners are now planning for a structural Iran conflict, not an episode. That reprices crude risk from seasonal to structural and keeps diesel elevated through 2027.",
+      "tag": "MACRO"
     }
   ],
-  "weekly_thread": {},
-  "the_more_you_know": {
-    "title": "98% Utilization: Why the Refinery Math Matters for Fall Fieldwork",
-    "body": "With US refineries at 98% capacity and Hormuz effectively shut since March, diesel has no slack supplier to draw on. In past supply crunches, spare refinery capacity acted as a pressure valve. That valve is gone. Any new crude disruption lands immediately on the pump price, with no buffer between the barrel and the field."
-  },
   "watch_list": [
     {
-      "time": "Monday, all day",
-      "desc": "Early harvest yield reports from early-corn states. Actual field yields above 182 bu/acre soften the board; below 179 adds a premium. Watch the cash market, not just the board."
+      "time": "Monday, 3:00 PM CT",
+      "desc": "Crop Progress: corn harvest pace above 10% says early fields are moving; below 5% adds weather and yield uncertainty."
     },
     {
-      "time": "Monday 3:00 PM CT",
-      "desc": "USDA Crop Progress. Corn harvest pace above 10% nationally says combines are rolling on schedule; below 6% says weather is slowing things and early pressure gets delayed."
-    },
-    {
-      "time": "Thursday 7:30 AM CT",
-      "desc": "Weekly Export Sales. Soybean sales below 300K MT with beans sitting at $12.99 confirms the chart is doing the work alone and the break has legs. Above 600K MT changes the story."
+      "time": "Thursday, 7:30 AM CT",
+      "desc": "Export Sales: beans under 700K MT keeps the WASDE break in charge; above 900K MT is the first recovery signal."
     },
     {
       "time": "All week",
-      "desc": "Iran-Hormuz headlines. Any naval engagement or chokepoint incident flips crude back above $103; the oil market is now priced for a long war, not a flare-up, so the reactions will be larger than last month's."
+      "desc": "November beans vs $12.85: a close below it confirms WASDE direction; hold is the only trade above it."
     }
   ],
   "daily_quote": {
-    "text": "If you are patient in one moment of anger, you will escape a hundred days of sorrow.",
-    "attribution": "Chinese Proverb"
+    "text": "Know what you own, and know why you own it.",
+    "attribution": "Peter Lynch"
   },
-  "source_summary": "CBOT, CME, NYMEX Friday closes; USDA August WASDE (Aug 12); farmdoc daily; OilPrice.com; Feedstuffs; AgWeb; Beef Magazine; Agri-Pulse; Farm Policy News",
+  "source_summary": "USDA WASDE Aug 12, USDA Crop Progress, CME Friday closes, farmdocdaily.illinois.edu, oilprice.com, beefmagazine.com, feedstuffs.com",
   "date": "Sunday, September 13, 2026",
   "meta": {
-    "market_mood": "cautious",
-    "heat_section": 2,
+    "market_mood": "bearish",
+    "heat_section": 0,
     "overnight_surprises_count": 0,
+    "word_count": 385,
     "news_coverage": {
       "ok": 14,
       "total": 17,
-      "items": 74,
+      "items": 70,
       "dark": [
         "agproud.com",
         "brownfieldagnews.com",
@@ -191,60 +164,58 @@
     "disclosure": "One sponsor, one issue. No retargeting. No programmatic auctions. Reply or call 715-797-2428.",
     "is_house_ad": true
   },
-  "issue_number": 185,
-  "generated_at": "2026-09-13T14:29:13.840076+00:00",
-  "generator_version": "4.6.3",
+  "issue_number": 186,
+  "generated_at": "2026-09-13T17:22:36.875820+00:00",
+  "generator_version": "5.1.0",
   "surprise_count": 0,
   "surprises": [],
   "price_validation_clean": true,
   "market_closed": true,
   "market_status_reason": "weekend",
   "critic_pass": {
-    "version": "1.2",
-    "ran_at": "2026-09-13T14:29:29.095556+00:00",
+    "version": "2.0",
+    "ran_at": "2026-09-13T17:22:48.325861+00:00",
     "threshold": 7,
     "final_scores": {
       "rule_1_lead_so_what": 8,
       "rule_2_conviction_earned": 7,
-      "rule_3_tmyk_today": 8,
+      "rule_3_lede_no_deferral": 9,
       "rule_4_watch_conditional": 9,
-      "rule_5_bottom_lines_synthesize": 8,
+      "rule_5_so_what_synthesizes": 8,
       "rule_6_quiet_days_quiet": 8,
-      "rule_7_continuity": 5,
-      "rule_8_word_budgets": 7,
-      "rule_9_voice": 7,
-      "rule_10_forward_test": 7,
-      "rule_11_thread_coherence": 10,
-      "rule_12_one_fact_one_home": 4,
-      "rule_13_yc_honesty": 3,
-      "rule_14_level_coherence": 8,
-      "rule_15_one_number_coherence": 7,
-      "rule_16_markdown_not_html": 10,
-      "rule_17_macro_anchoring": 7
+      "rule_7_yc_honesty": 6,
+      "rule_8_word_budget": 9,
+      "rule_9_voice": 8,
+      "rule_10_forward_test": 8,
+      "rule_11_action_thresholded": 9,
+      "rule_12_one_fact_one_home": 6,
+      "rule_13_level_coherence": 9,
+      "rule_14_one_number_coherence": 8,
+      "rule_15_markdown_not_html": 10,
+      "rule_16_macro_anchoring": 9
     },
     "rewrites_applied": [
       {
         "pass": 1,
-        "target": "yesterdays_call",
-        "rule": "rule_13_yc_honesty",
+        "target": "yesterdays_call.note",
+        "rule": "rule_7_yc_honesty",
         "scores_before": {
           "rule_1_lead_so_what": 8,
           "rule_2_conviction_earned": 7,
-          "rule_3_tmyk_today": 8,
+          "rule_3_lede_no_deferral": 9,
           "rule_4_watch_conditional": 9,
-          "rule_5_bottom_lines_synthesize": 8,
+          "rule_5_so_what_synthesizes": 8,
           "rule_6_quiet_days_quiet": 8,
-          "rule_7_continuity": 5,
-          "rule_8_word_budgets": 7,
-          "rule_9_voice": 7,
-          "rule_10_forward_test": 7,
-          "rule_11_thread_coherence": 10,
-          "rule_12_one_fact_one_home": 4,
-          "rule_13_yc_honesty": 3,
-          "rule_14_level_coherence": 8,
-          "rule_15_one_number_coherence": 7,
-          "rule_16_markdown_not_html": 10,
-          "rule_17_macro_anchoring": 7
+          "rule_7_yc_honesty": 6,
+          "rule_8_word_budget": 9,
+          "rule_9_voice": 8,
+          "rule_10_forward_test": 8,
+          "rule_11_action_thresholded": 9,
+          "rule_12_one_fact_one_home": 6,
+          "rule_13_level_coherence": 9,
+          "rule_14_one_number_coherence": 8,
+          "rule_15_markdown_not_html": 10,
+          "rule_16_macro_anchoring": 9
         }
       }
     ],

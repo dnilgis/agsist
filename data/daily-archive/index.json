@@ -3,11 +3,11 @@
     {
       "date": "2026-09-13",
       "date_display": "Sunday, September 13, 2026",
-      "headline": "WASDE BREAK HOLDS; WEEK AHEAD SETS THE PRICE",
-      "teaser": "Beans on the line, crude won't quit, and the Hormuz war just went from weeks to years.",
-      "market_mood": "cautious",
+      "headline": "BEANS HOLD $12.99; CRUDE AT $100, WEEK AHEAD",
+      "teaser": "Beans stuck at $12.99, crude below $100, and a week that will answer both questions.",
+      "market_mood": "bearish",
       "surprise_count": 0,
-      "sections": 4,
+      "sections": 3,
       "url": "/daily/2026-09-13",
       "market_closed": true,
       "yc_outcome": "didnt"
@@ -2126,6 +2126,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-09-13T14:29:29.153687+00:00",
+  "updated": "2026-09-13T17:22:48.385262+00:00",
   "count": 185
 }

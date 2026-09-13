@@ -1,16 +1,16 @@
 {
- "updated": "2026-09-13T14:29:30+00:00",
- "total": 113,
+ "updated": "2026-09-13T17:22:49+00:00",
+ "total": 123,
  "played_out": 37,
- "didnt": 71,
+ "didnt": 81,
  "pending": 5,
- "hit_rate": 34.3,
+ "hit_rate": 31.4,
  "by_method": {
   "deterministic": {
    "played": 11,
-   "missed": 60,
-   "graded": 71,
-   "hit_rate": 15.5,
+   "missed": 70,
+   "graded": 81,
+   "hit_rate": 13.6,
    "first": "2026-06-24",
    "last": "2026-09-13"
   },
@@ -26,41 +26,41 @@
  "by_design": {
   "v1": {
    "played": 4,
-   "missed": 40,
-   "graded": 44,
-   "hit_rate": 9.1,
+   "missed": 45,
+   "graded": 49,
+   "hit_rate": 8.2,
    "first": "2026-06-24",
    "last": "2026-08-11"
   },
   "v2": {
    "played": 7,
-   "missed": 20,
-   "graded": 27,
-   "hit_rate": 25.9,
+   "missed": 25,
+   "graded": 32,
+   "hit_rate": 21.9,
    "first": "2026-08-12",
    "last": "2026-09-13"
   }
  },
  "direction_only": {
-  "right_way": 29,
-  "graded": 71,
-  "rate": 40.8
+  "right_way": 31,
+  "graded": 81,
+  "rate": 38.3
  },
  "by_instrument": {
   "wheat": {
    "played": 0,
-   "graded": 15,
+   "graded": 19,
    "hit_rate": 0.0
   },
   "corn": {
    "played": 2,
-   "graded": 21,
-   "hit_rate": 9.5
+   "graded": 24,
+   "hit_rate": 8.3
   },
   "beans": {
    "played": 6,
-   "graded": 22,
-   "hit_rate": 27.3
+   "graded": 24,
+   "hit_rate": 25.0
   },
   "crude": {
    "played": 2,
@@ -74,7 +74,7 @@
   },
   "feeders": {
    "played": 0,
-   "graded": 4,
+   "graded": 5,
    "hit_rate": 0.0
   },
   "meal": {
@@ -89,9 +89,9 @@
   }
  },
  "trailing20": {
-  "played": 4,
+  "played": 3,
   "graded": 20,
-  "hit_rate": 20.0
+  "hit_rate": 15.0
  },
  "mismatched": 23,
  "current_streak": 0,
@@ -99,11 +99,11 @@
   {
    "made": "2026-09-12",
    "judged": "2026-09-13",
-   "call": "Called beans to break below $12.85 on WASDE day. They closed at $12.99 -- right on the line, but above the trigger.",
+   "call": "Called soybeans down toward $12.85 ($12.99 when the call was made). It closed at $12.99.",
    "outcome": "didnt",
    "method": "deterministic",
    "mismatch": false,
-   "note": "Miss. Beans fell 24 cents on the WASDE print and landed exactly at $12.99, not through $12.85. The thesis isn't wrong; the level just hasn't given way yet. Monday's close is now the real test.",
+   "note": "Beans held $12.99 all session; the $12.85 target never threatened -- a clean miss on timing.",
    "instrument": "beans",
    "direction": "down",
    "level": 12.85,
@@ -218,6 +218,22 @@
    "direction_ok": false
   },
   {
+   "made": "2026-09-04",
+   "judged": "2026-09-05",
+   "call": "Called wheat up toward $7.27 ($7.16 when the call was made). It closed at $7.16.",
+   "outcome": "didnt",
+   "method": "deterministic",
+   "mismatch": false,
+   "note": "",
+   "instrument": "wheat",
+   "direction": "up",
+   "level": 7.27,
+   "p0": 7.16,
+   "p1": 7.16,
+   "design": "v2",
+   "direction_ok": false
+  },
+  {
    "made": "2026-09-03",
    "judged": "2026-09-04",
    "call": "Called corn down toward $4.99. Corn closed $5.12 today, up from yesterday's $5.075 settle -- nowhere near the target.",
@@ -296,6 +312,38 @@
    "p1": 7.5325,
    "design": "v2",
    "direction_ok": false
+  },
+  {
+   "made": "2026-08-29",
+   "judged": "2026-08-30",
+   "call": "Called wheat up toward $7.67 ($7.67 when the call was made). It closed at $7.67.",
+   "outcome": "didnt",
+   "method": "deterministic",
+   "mismatch": false,
+   "note": "",
+   "instrument": "wheat",
+   "direction": "up",
+   "level": "7.67",
+   "p0": 7.67,
+   "p1": 7.67,
+   "design": "v2",
+   "direction_ok": false
+  },
+  {
+   "made": "2026-08-28",
+   "judged": "2026-08-29",
+   "call": "Called wheat up toward $7.72 ($7.66 when the call was made). It closed at $7.67.",
+   "outcome": "didnt",
+   "method": "deterministic",
+   "mismatch": false,
+   "note": "",
+   "instrument": "wheat",
+   "direction": "up",
+   "level": "7.72",
+   "p0": 7.66,
+   "p1": 7.67,
+   "design": "v2",
+   "direction_ok": true
   },
   {
    "made": "2026-08-27",
@@ -394,6 +442,22 @@
    "direction_ok": false
   },
   {
+   "made": "2026-08-21",
+   "judged": "2026-08-22",
+   "call": "Called corn up toward $5.13 ($4.835 when the call was made). It closed at $4.8375.",
+   "outcome": "didnt",
+   "method": "deterministic",
+   "mismatch": false,
+   "note": "",
+   "instrument": "corn",
+   "direction": "up",
+   "level": "5.13",
+   "p0": 4.835,
+   "p1": 4.8375,
+   "design": "v2",
+   "direction_ok": true
+  },
+  {
    "made": "2026-08-20",
    "judged": "2026-08-21",
    "call": "Called November beans up toward $12.39 from Thursday's close near $12.26. Friday's locked close was $12.26 -- the level was never reached.",
@@ -470,6 +534,22 @@
    "level": 4.72,
    "p0": 4.5925,
    "p1": 4.595,
+   "design": "v2",
+   "direction_ok": false
+  },
+  {
+   "made": "2026-08-15",
+   "judged": "2026-08-16",
+   "call": "Called corn up toward $4.84 ($4.5925 when the call was made). It closed at $4.5925.",
+   "outcome": "didnt",
+   "method": "deterministic",
+   "mismatch": false,
+   "note": "",
+   "instrument": "corn",
+   "direction": "up",
+   "level": 4.84,
+   "p0": 4.5925,
+   "p1": 4.5925,
    "design": "v2",
    "direction_ok": false
   },
@@ -682,6 +762,22 @@
    "direction_ok": true
   },
   {
+   "made": "2026-08-01",
+   "judged": "2026-08-02",
+   "call": "Called corn down toward $4.41 ($4.4075 when the call was made). It closed at $4.4075.",
+   "outcome": "didnt",
+   "method": "deterministic",
+   "mismatch": false,
+   "note": "",
+   "instrument": "corn",
+   "direction": "down",
+   "level": 4.41,
+   "p0": 4.4075,
+   "p1": 4.4075,
+   "design": "v1",
+   "direction_ok": false
+  },
+  {
    "made": "2026-07-31",
    "judged": "2026-08-01",
    "call": "Called wheat up toward $6.55 ($6.38 when the call was made). It closed at $6.3925.",
@@ -794,6 +890,22 @@
    "direction_ok": false
   },
   {
+   "made": "2026-07-24",
+   "judged": "2026-07-25",
+   "call": "Called wheat up toward $6.91 ($6.79 when the call was made). It closed at $6.78.",
+   "outcome": "didnt",
+   "method": "deterministic",
+   "mismatch": false,
+   "note": "",
+   "instrument": "wheat",
+   "direction": "up",
+   "level": 6.91,
+   "p0": 6.79,
+   "p1": 6.78,
+   "design": "v1",
+   "direction_ok": false
+  },
+  {
    "made": "2026-07-23",
    "judged": "2026-07-24",
    "call": "Called feeder cattle down toward $333.00 ($336.15 when the call was made). It closed at $342.04999.",
@@ -870,6 +982,38 @@
    "level": 12.2,
    "p0": 12.045,
    "p1": 12.045,
+   "design": "v1",
+   "direction_ok": false
+  },
+  {
+   "made": "2026-07-18",
+   "judged": "2026-07-19",
+   "call": "Called soybeans up toward $12.15 ($12.045 when the call was made). It closed at $12.045.",
+   "outcome": "didnt",
+   "method": "deterministic",
+   "mismatch": false,
+   "note": "",
+   "instrument": "beans",
+   "direction": "up",
+   "level": 12.15,
+   "p0": 12.045,
+   "p1": 12.045,
+   "design": "v1",
+   "direction_ok": false
+  },
+  {
+   "made": "2026-07-17",
+   "judged": "2026-07-18",
+   "call": "Called feeder cattle down toward $335.0 ($339.07501 when the call was made). It closed at $345.95001.",
+   "outcome": "didnt",
+   "method": "deterministic",
+   "mismatch": false,
+   "note": "",
+   "instrument": "feeders",
+   "direction": "down",
+   "level": 335.0,
+   "p0": 339.07501,
+   "p1": 345.95001,
    "design": "v1",
    "direction_ok": false
   },
@@ -1094,6 +1238,22 @@
    "level": 4.42,
    "p0": 4.25,
    "p1": 4.25,
+   "design": "v1",
+   "direction_ok": false
+  },
+  {
+   "made": "2026-07-02",
+   "judged": "2026-07-03",
+   "call": "Called soybeans up toward $11.54 ($11.3275 when the call was made). It closed at $11.3175.",
+   "outcome": "didnt",
+   "method": "deterministic",
+   "mismatch": false,
+   "note": "",
+   "instrument": "beans",
+   "direction": "up",
+   "level": "11.54",
+   "p0": 11.3275,
+   "p1": 11.3175,
    "design": "v1",
    "direction_ok": false
   },
