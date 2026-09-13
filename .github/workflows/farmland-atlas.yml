@@ -1,0 +1,138 @@
+name: farmland-atlas
+
+# The Farmland Atlas (/farmland-atlas). Four fetches, one build, one commit.
+#
+#   heat   NOAA NCEI nClimDiv county minimum temperature   (no key, ~40 MB)
+#   water  USDA Census 2022 via NASS Quick Stats + USGS 2015 (NASS_API_KEY)
+#   loss   USDA RMA cause of loss, 1989 onward              (no key; first run ~38 zips, later runs 2)
+#   reads  one written read per county                      (ANTHROPIC_API_KEY; skipped when unset)
+#
+# Monthly, because none of the sources moves faster: NCEI refreshes the county
+# file around the 8th, RMA reposts the current crop year through the season,
+# NASS census and cash rent are yearly. Off the hour and off the top of the
+# month (rule 27). The first run must be started by hand from the Actions tab;
+# nothing on the page appears until it has.
+on:
+  schedule:
+    - cron: "17 9 12 * *"      # 12th of each month, 09:17 UTC
+  workflow_dispatch:
+    inputs:
+      layers:
+        description: "Which fetches to run (comma-separated: heat,water,loss,reads). Blank = all."
+        required: false
+        default: ""
+      loss_all:
+        description: "Refetch every RMA year since 1989 instead of the last two (type: yes)"
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+
+concurrency:
+  group: farmland-atlas
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 300     # the first RMA pull is 38 zips; later runs are minutes
+    env:
+      LAYERS: ${{ github.event.inputs.layers }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install
+        run: pip install --quiet openpyxl
+
+      # Offline, no keys. If a parser is broken there is no point downloading
+      # a gigabyte of RMA files to find out.
+      - name: Selftests (gate)
+        working-directory: scripts
+        run: |
+          python build_farmland_atlas.py --selftest
+          python fetch_atlas_heat.py --selftest
+          python fetch_atlas_water.py --selftest
+          python fetch_atlas_loss.py --selftest
+          python atlas_reads.py --selftest
+          python atlas_geometry.py --selftest
+
+      - name: Which layers
+        id: which
+        run: |
+          L="${LAYERS:-heat,water,loss,reads}"
+          for k in heat water loss reads; do
+            case ",$L," in *",$k,"*) echo "$k=1" >> "$GITHUB_OUTPUT";; *) echo "$k=0" >> "$GITHUB_OUTPUT";; esac
+          done
+          echo "running: $L"
+
+      # Each fetch may fail on its own. A failed fetch leaves its raw file as it
+      # was (or absent), the builder marks that layer not yet measured or keeps
+      # last month's, and the run still builds and commits what did arrive. The
+      # step turns red so the failure is visible in the Actions list.
+      - name: Fetch night heat (NCEI)
+        if: steps.which.outputs.heat == '1'
+        continue-on-error: true
+        run: python scripts/fetch_atlas_heat.py
+
+      - name: Fetch water (NASS census + USGS)
+        if: steps.which.outputs.water == '1'
+        continue-on-error: true
+        env:
+          NASS_API_KEY: ${{ secrets.NASS_API_KEY }}
+        run: python scripts/fetch_atlas_water.py
+
+      - name: Fetch loss record (RMA)
+        if: steps.which.outputs.loss == '1'
+        continue-on-error: true
+        run: |
+          if [ "${{ github.event.inputs.loss_all }}" = "yes" ]; then
+            python scripts/fetch_atlas_loss.py --all
+          else
+            python scripts/fetch_atlas_loss.py
+          fi
+
+      # --seed rewrites the static "Across the Atlas" block in farmland-atlas.html
+      # between its SEED markers, so a reader with no JavaScript (and a crawler)
+      # still gets the national numbers of this build.
+      - name: Build the Atlas
+        run: python scripts/build_farmland_atlas.py --seed farmland-atlas.html
+
+      # Skipped, not failed, when the key is not set: the page shows numbers
+      # without reads rather than nothing.
+      - name: County reads
+        if: steps.which.outputs.reads == '1'
+        continue-on-error: true
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          if [ -z "$ANTHROPIC_API_KEY" ]; then echo "ANTHROPIC_API_KEY not set; reads skipped"; exit 0; fi
+          python scripts/atlas_reads.py
+
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A data/atlas farmland-atlas.html
+          if git diff --cached --quiet; then echo "no change"; exit 0; fi
+          C=$(python -c "import json;a=json.load(open('data/atlas/atlas.json'));c=a['counts'];print(f\"{c['counties']} counties, heat {c['heat_ok']}, water {c['water_ok']}, loss {c['loss_ok']}, premium {c['premium_ok']}\")")
+          git commit -m "data: farmland atlas ($C)"
+          # other workflows commit to main all day; rebase and retry rather than
+          # lose a five-hour run to one rejected push
+          for i in 1 2 3 4; do
+            git rebase --abort 2>/dev/null || true
+            if git pull --rebase --autostash origin main && git push; then exit 0; fi
+            sleep $((30 * i))
+          done
+          echo "push failed after 4 attempts"; exit 1
+
+      - name: IndexNow ping
+        run: |
+          curl -s -X POST "https://api.indexnow.org/indexnow" \
+            -H "Content-Type: application/json; charset=utf-8" \
+            -d '{"host":"agsist.com","key":"f4a81c26db974e0f92c35b7a6e10d8c4","keyLocation":"https://agsist.com/f4a81c26db974e0f92c35b7a6e10d8c4.txt","urlList":["https://agsist.com/farmland-atlas","https://agsist.com/sitemap.xml"]}' \
+            || echo "IndexNow ping failed - harmless"
