@@ -253,13 +253,25 @@ def build():
     added = [i for i in fresh if i.get("id") not in seen]
     items = sorted(added + kept, key=lambda i: (i.get("ts") or ""), reverse=True)[:KEEP]
 
+    # Write only when the ITEMS changed. On 2026-09-13 the first live run added
+    # nothing and still committed: "updated", "added" and lastBuildDate had moved,
+    # so the diff was three timestamps. Three cron schedules times twenty slots a
+    # day is dozens of empty commits, and a wire whose "Updated" line advances
+    # while nothing happened is claiming a freshness it does not have.
+    #
+    # So "updated" now means when an item last arrived, which is the only thing
+    # that reading it should tell you. Liveness is the feed manifest's job --
+    # data/news.json is registered there with no max_gap, precisely because a
+    # quiet wire is correct rather than broken.
+    changed = items != kept
     out = {
-        "updated": datetime.now(timezone.utc).replace(microsecond=0).isoformat(),
+        "updated": (datetime.now(timezone.utc).replace(microsecond=0).isoformat()
+                    if changed else (old.get("updated") or "")),
         "count": len(items),
         "added": len(added),
         "items": items,
     }
-    return out, added
+    return out, added, changed
 
 
 
@@ -383,6 +395,19 @@ def _selftest():
         fn(o)
     check(o == [], "every detector writes nothing when its file is missing")
 
+    # A run that finds nothing must leave the files alone, or the wire commits a
+    # timestamp to main every ten minutes and calls it news.
+    _prior = {"updated": "2026-09-01T00:00:00+00:00",
+              "items": [{"id": "x", "ts": "2026-09-01T12:00:00+00:00", "kind": "board",
+                         "headline": "h", "detail": "d", "significance": "notable",
+                         "url": "/", "source": "s", "day_only": True}]}
+    globals()["load"] = lambda n: _prior if n == "news.json" else None
+    _d, _a, _ch = build()
+    check(_ch is False, "an unchanged item list reports no change")
+    check(_a == [], "and nothing was added")
+    check(_d["updated"] == "2026-09-01T00:00:00+00:00",
+          "updated keeps the moment the last item arrived, not the moment the job ran")
+
     check(_rfc822("2026-09-11T12:00:00+00:00") == "Fri, 11 Sep 2026 12:00:00 +0000",
           "_rfc822 renders a pubDate RSS readers accept")
     check(_rfc822("nonsense") is None, "_rfc822 invents nothing")
@@ -401,7 +426,13 @@ def _selftest():
 if __name__ == "__main__":
     if "--selftest" in sys.argv:
         _selftest(); raise SystemExit(0)
-    data, added = build()
+    data, added, changed = build()
+    # the workflow reads this line rather than the file, so a run that writes
+    # nothing cannot leave a stale "added" behind for the next one to act on
+    print(f"added={len(added)}")
+    if not changed:
+        print(f"news.json: {data['count']} items, nothing new — files left alone")
+        raise SystemExit(0)
     with open(OUT, "w", encoding="utf-8") as f:
         json.dump(data, f, indent=1, ensure_ascii=False)
         f.write("\n")
