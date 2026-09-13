@@ -1004,6 +1004,19 @@
     <button class="scu-dismiss" id="btn-compact-dismiss" aria-label="Dismiss signup"><svg class="ic" aria-hidden="true"><use href="#i-x"/></svg> No thanks</button>
   </div>
 
+  <!-- THE WIRE. Built 2026-09-13. Hidden until it has something: a wire with an
+       empty box on the homepage is worse than no wire, and a quiet market is a
+       real state, not a broken feed. Each card carries the DAY it happened, so a
+       three-day-old item cannot read as if it just landed. -->
+  <div class="wr fade-up" id="wire-band" hidden>
+    <div class="wr-top">
+      <div class="wr-k">The wire</div>
+      <div class="wr-sub" id="wire-sub"></div>
+      <a class="wr-all" href="/news">Everything that moved &rarr;</a>
+    </div>
+    <div class="wr-g" id="wire-g"></div>
+  </div>
+
   <div class="hbz fade-up" id="harvest-band">
     <div class="hbz-k" id="hbz-kicker">Harvest 2026</div>
     <div class="hbz-g">
@@ -1580,6 +1593,21 @@
    inside it. An earlier attempt inserted them inside the grid's .fade-up
    wrappers: the div count stayed balanced while the nesting scrambled.
    Div balance is not a structure check — verify parentElement in a browser. */
+.wr{background:linear-gradient(180deg,rgba(var(--gold-rgb),.06),transparent);border:1px solid rgba(var(--gold-rgb),.28);border-radius:12px;padding:.9rem 1rem;margin:0 0 var(--sp-xl)}
+.wr-top{display:flex;align-items:baseline;gap:.6rem;flex-wrap:wrap;margin-bottom:.55rem}
+.wr-k{font-family:'JetBrains Mono',monospace;font-size:.73rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--gold)}
+.wr-sub{font-size:.79rem;color:var(--text-muted)}
+.wr-all{margin-left:auto;font-size:.8rem;color:var(--gold);text-decoration:none;white-space:nowrap}
+.wr-all:hover{text-decoration:underline}
+.wr-g{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(240px,100%),1fr));gap:.5rem}
+.wr-c{display:block;background:var(--surface2);border:1px solid var(--border);border-left:2px solid var(--border-2);border-radius:9px;padding:.6rem .7rem;text-decoration:none;min-height:44px}
+.wr-c:hover{border-color:var(--border-2);border-left-color:var(--gold)}
+.wr-c:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.wr-c.hi{border-left-color:var(--gold)}
+.wr-when{font-family:'JetBrains Mono',monospace;font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);display:block;margin-bottom:.15rem}
+.wr-c strong{display:block;font-size:.9rem;color:var(--text);font-weight:700;line-height:1.3}
+.wr-c em{font-style:normal;font-size:.79rem;color:var(--text-muted);line-height:1.45;display:block;margin-top:.12rem}
+@media(max-width:520px){ .wr-all{margin-left:0;width:100%} }
 .hbz{background:linear-gradient(180deg,rgba(var(--brand-rgb),.07),transparent);border:1px solid rgba(var(--brand-rgb),.32);border-radius:12px;padding:.9rem 1rem;margin:0 0 var(--sp-xl)}
 .hbz-k{font-family:'JetBrains Mono',monospace;font-size:.73rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--brand);margin-bottom:.55rem}
 .hbz-g{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(170px,100%),1fr));gap:.5rem}
@@ -3682,6 +3710,42 @@ setTimeout(function(){
     if(s) s.scrollIntoView({block:'start',behavior:'smooth'});
     if(window.gaEvent) gaEvent('daily_expand',{});
   });
+})();
+</script>
+
+<script>
+/* The wire, on the homepage. Reads the same file /news reads. Shows nothing at
+   all when there is nothing -- no skeleton, no empty box, no "check back later".
+   esc() comes from components/util.js, which loads before this. */
+(function(){
+  'use strict';
+  var KIND={usda:'USDA',positioning:'Positioning',board:'Board',crop:'Crop'};
+  function when(iso,dayOnly){
+    var d=new Date(iso); if(isNaN(d)) return '';
+    var t=new Date(), y=new Date(t.getTime()-864e5);
+    var same=function(a,b){return a.toDateString()===b.toDateString();};
+    if(same(d,t)) return dayOnly?'Today':d.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
+    if(same(d,y)) return 'Yesterday';
+    return d.toLocaleDateString('en-US',{month:'short',day:'numeric'});
+  }
+  fetch('/data/news.json',{cache:'no-store'}).then(function(r){
+    if(!r.ok) throw new Error(r.status); return r.json();
+  }).then(function(d){
+    var items=(d&&d.items)||[]; if(!items.length) return;   // stay hidden
+    var band=document.getElementById('wire-band'), g=document.getElementById('wire-g');
+    if(!band||!g) return;
+    var sub=document.getElementById('wire-sub');
+    if(sub) sub.textContent=items.length===1?'1 thing the numbers said':
+      items.length+' things the numbers said';
+    g.innerHTML=items.slice(0,3).map(function(i){
+      return '<a class="wr-c'+(i.significance==='high'?' hi':'')+'" href="'+esc(i.url||'/news')+'">'
+        +'<span class="wr-when">'+esc(when(i.ts,i.day_only))+' &middot; '+esc(KIND[i.kind]||i.kind||'')+'</span>'
+        +'<strong>'+esc(i.headline||'')+'</strong>'
+        +'<em>'+esc(i.detail||'')+'</em></a>';
+    }).join('');
+    band.hidden=false;
+    if(window.gaEvent) gaEvent('wire_band_shown',{items:items.length});
+  }).catch(function(){ /* the band simply never appears */ });
 })();
 </script>
 </body>

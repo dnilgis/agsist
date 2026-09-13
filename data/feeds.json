@@ -830,6 +830,7 @@
   {
    "path": "data/news.json",
    "pages": [
+    "index.html",
     "news.html"
    ],
    "written_by": [
