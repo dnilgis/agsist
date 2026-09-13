@@ -46,10 +46,17 @@ jobs:
         run: |
           set -o pipefail
           python scripts/build_news.py | tee /tmp/wire.log
-          ADDED=$(python -c "import json;print(json.load(open('data/news.json'))['added'])")
-          echo "added=$ADDED" >> "$GITHUB_OUTPUT"
-          echo "Added $ADDED item(s)."
+          # Read the count the script PRINTED, not the file. A run that finds
+          # nothing now leaves the files untouched -- so the file still carries
+          # the previous run's "added", and reading it would ping IndexNow for
+          # news that already went out.
+          ADDED=$(grep -m1 '^added=' /tmp/wire.log | cut -d= -f2)
+          echo "added=${ADDED:-0}" >> "$GITHUB_OUTPUT"
+          echo "Added ${ADDED:-0} item(s)."
 
+      # A quiet wire writes nothing, so this usually finds nothing to commit and
+      # says so. That is the point: before 2026-09-13 it committed three moved
+      # timestamps on every fire.
       - name: Commit if changed (race-tolerant)
         id: commit
         run: |
