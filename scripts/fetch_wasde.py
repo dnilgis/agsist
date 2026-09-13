@@ -10,8 +10,8 @@ the moment they are available for release."
 Until now the second of the three hand steps in data/analyst-estimates.json —
 "(2) after USDA releases, fill each metric's `actual`" — was a person typing a
 number into the GitHub editor. Nothing on the page moves until that happens: an
-ungraded report never reaches "Graded calls", every call filed for it drops off
-"Calls on the board" the day after the release, and no forecaster gains a scored
+ungraded report never reaches "Scored, by report", every call filed for it drops off
+"Filed for the next report" the day after the release, and no forecaster gains a scored
 call. The July WASDE went unscored exactly this way and the track record still
 carries the gap.
 

@@ -814,3 +814,144 @@ td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;
     transition-duration:.01ms!important;
     scroll-behavior:auto!important}
 }
+
+
+/* ── SHARED COMPONENTS ─────────────────────────────────────────────────────
+   Everything below had been copied into individual pages one at a time and had
+   drifted. Measured 2026-09-12: 876 KB of inline <style> across 60 pages
+   against 74 KB in this file. The sponsor ribbon alone was declared on 32 pages
+   in 3 versions. A component declared once cannot disagree with itself.
+   Values are carried over EXACTLY, so consolidating moves no pixels -- proved by
+   screenshotting all 64 pages before and after. Tokenising them is a separate,
+   visible step. Rules inside a page's @media block were left where they are.
+   ─────────────────────────────────────────────────────────────────────── */
+
+/* Sponsor ribbon — was declared on 32 pages in 3 versions. Pages that hide it keep their own override; only the shared definition moved. */
+.ag-sponsor-ribbon{display:block;font-size:0.785rem;padding:.45rem .85rem;margin:1rem 0;border:1px solid rgba(132,160,168,.18);border-radius:8px;color:#8a948f;line-height:1.6}
+.ag-sponsor-ribbon .ag-sponsor-tag{font-family:'JetBrains Mono',monospace;font-size:0.75rem;letter-spacing:.12em;text-transform:uppercase;color:#d4a23f;margin-right:.5rem}
+.ag-sponsor-ribbon a{color:#d4a23f}
+
+/* Inline icon sprite — was on 14 pages, identical every time. */
+.ic{width:1em;height:1em;display:inline-block;vertical-align:-0.14em;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+
+/* Tap-target boilerplate — was repeated on 27 pages. */
+button,a,[role="button"]{touch-action:manipulation;}
+
+/* Horizontal-overflow guard — was on 14 pages. */
+html { overflow-x: hidden; overflow-x: clip; width: 100%; }
+body { overflow-x: hidden; overflow-x: clip; width: 100%; }
+
+/* Scrollable table wrapper — was on 5 pages. */
+.tblscroll{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:10px 0}
+/* .tblscroll table{margin:0;min-width:520px} stays on the pages: it ties on
+   specificity with page rules like table.rs-t, and from an earlier sheet a tie
+   goes the other way. Consolidating it moved the storage-crunch table 10px. */
+
+/* Grower Pulse vote panel — 24 rules, byte-identical on all 5 pages carrying it. */
+.vp-ver{background:#101415;border:1px solid #1a1f20;border-radius:14px;padding:20px 24px;margin:14px 0;display:flex;gap:24px;flex-wrap:wrap;align-items:center}
+.vp-ver select{background:#0a0c0d;border:1px solid #2a3133;color:#e6ebe9;border-radius:8px;padding:8px 12px;font-family:'JetBrains Mono',monospace;font-size:.95rem}
+.vp-big{font-family:'JetBrains Mono',monospace;font-size:4rem;font-weight:800;line-height:1}
+.vp-word{font-family:'JetBrains Mono',monospace;font-size:1.3rem;font-weight:800;letter-spacing:.05em}
+.vp-sent{font-size:1rem;line-height:1.7;color:#e6ebe9;max-width:540px}
+.vp-geo{font-size:0.765rem;color:#5a6467;font-family:'JetBrains Mono',monospace;margin-top:6px}
+.vp-maplab{font-family:'JetBrains Mono',monospace;font-size:0.765rem;letter-spacing:.1em;color:#8a948f;text-transform:uppercase;margin:16px 0 10px}
+.vp-grid{position:relative;width:840px;height:560px;margin:0 auto;max-width:100%}
+.vp-tile{position:absolute;width:64px;height:64px;border-radius:9px;padding:10px 9px;box-sizing:border-box;cursor:pointer;transition:transform .08s;left:calc(var(--gc)*70px - 70px);top:calc(var(--gr)*70px - 70px)}
+.vp-tile:hover{transform:scale(1.12);z-index:2;outline:2px solid #d4a23f}
+.vp-tile.sel{outline:2px solid #d4a23f}
+.vp-tile.dim{background:#101415;border:1px dashed #1a1f20;opacity:.45;cursor:default}
+.vp-tst{font-family:'JetBrains Mono',monospace;font-weight:800;font-size:.92rem;color:#e6ebe9}
+.vp-tge{font-family:'JetBrains Mono',monospace;font-size:.98rem;font-weight:700;margin-top:2px;color:#e6ebe9}
+.vp-leg{display:flex;gap:14px;justify-content:center;margin:12px 0 0;font-size:0.785rem;color:#8a948f;flex-wrap:wrap}
+.vp-leg span b{display:inline-block;width:13px;height:13px;border-radius:3px;vertical-align:-2px;margin-right:5px}
+
+/* Author block — was on 3 pages. */
+.author-block{background:linear-gradient(135deg,var(--surface) 0%,rgba(58,139,60,.03) 100%);border:1px solid var(--border);border-radius:10px;padding:13px 15px;margin-bottom:14px;display:flex;align-items:flex-start;gap:12px}
+.author-avatar{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--green) 0%,#5dbf61 100%);display:flex;align-items:center;justify-content:center;color:#fff;font-family:'JetBrains Mono',monospace;font-size:1.1rem;font-weight:700;flex-shrink:0;border:2px solid rgba(255,255,255,.1)}
+.author-text{flex:1;min-width:0}
+.author-name{font-size:0.795rem;font-weight:700;color:var(--text);margin:0 0 2px 0}
+.author-role{font-size:0.765rem;color:var(--text-dim);margin:0 0 6px 0;line-height:1.5}
+.author-meta{font-size:0.765rem;color:var(--text-dim);line-height:1.5}
+.author-meta a{color:var(--gold);text-decoration:none}
+.author-meta a:hover{text-decoration:underline}
+
+/* Futures price header — was on 3 pages. Their mobile @media overrides stay on the pages. */
+.ph{background:linear-gradient(135deg,var(--surface) 0%,rgba(230,176,66,.05) 100%);border:1px solid var(--border);border-radius:12px;padding:1.1rem 1.2rem;margin-bottom:8px;display:flex;align-items:center;gap:1rem;flex-wrap:wrap}
+.ph-info h1{font-size:1.3rem;font-weight:800;letter-spacing:-.01em;color:var(--text);margin:0 0 3px 0}
+.ph-exch{font-size:0.775rem;color:var(--text-dim)}
+.ph-price{margin-left:auto;text-align:right}
+.ph-val{font-family:'JetBrains Mono',monospace;font-size:2.2rem;font-weight:700;color:var(--text);line-height:1}
+.ph-unit{font-size:0.78rem;color:var(--text-dim)}
+.ph-chg{font-size:.88rem;font-weight:700;margin-top:2px}
+.ph-chg.roll,.roll{color:var(--gold,#d4a23f)}
+
+
+/* ── LOADING STATES ────────────────────────────────────────────────────────
+   Measured 2026-09-13: 258 elements across 20 pages sit as a bare em-dash
+   until JavaScript fills them -- 72 on fast-facts, 36 on markets, 30 on the
+   corn page. A reader on a slow connection, or one whose fetch fails, gets a
+   screen of dashes and no way to tell which. A skeleton says "a number is
+   coming"; a dash after the skeleton says "there isn't one". Those are
+   different facts and the page should not use one glyph for both.
+
+   Applied by loader.js, not by markup, so it covers pages written later too.
+   Everything settles within SK_TIMEOUT (6s) whatever happens, so a value that
+   never arrives falls back to the dash rather than shimmering forever.
+   ──────────────────────────────────────────────────────────────────────── */
+.sk{
+  color:transparent!important;
+  -webkit-text-fill-color:transparent!important;
+  border-radius:4px;
+  min-width:3.2ch;
+  /* A full-width bar reads as a broken layout; a bar roughly the width of the
+     number that is coming reads as the number that is coming. max-width only
+     shrinks, so small inline placeholders are untouched. */
+  max-width:min(12ch, 72%);
+  display:inline-block;
+  background-image:linear-gradient(90deg,
+    rgba(132,160,168,.09) 0%, rgba(132,160,168,.09) 38%,
+    rgba(132,160,168,.20) 50%,
+    rgba(132,160,168,.09) 62%, rgba(132,160,168,.09) 100%);
+  background-size:280% 100%;
+  background-repeat:no-repeat;
+  animation:sk-sweep 1.5s linear infinite;
+}
+.sk *{visibility:hidden}
+@keyframes sk-sweep{from{background-position:180% 0}to{background-position:-80% 0}}
+
+/* A value that arrived and then changed. The eye should catch the one number
+   that moved without the page doing a somersault about it. */
+.sk-in{animation:sk-in .28s ease-out}
+@keyframes sk-in{from{opacity:0;transform:translateY(2px)}to{opacity:1;transform:none}}
+.sk-up{animation:sk-up 1s ease-out}
+.sk-dn{animation:sk-dn 1s ease-out}
+@keyframes sk-up{0%{background-color:rgba(var(--green-rgb),.22)}100%{background-color:transparent}}
+@keyframes sk-dn{0%{background-color:rgba(var(--red-rgb),.22)}100%{background-color:transparent}}
+
+/* Reduced motion: the global rule at the top of this file collapses every
+   duration, which would leave the skeleton as a flat bar and kill the flash.
+   Give both a still, legible form instead of a broken one. */
+@media (prefers-reduced-motion: reduce){
+  .sk{background-image:none;background-color:rgba(132,160,168,.13)}
+  .sk-up,.sk-dn{outline:1px solid rgba(132,160,168,.35);outline-offset:1px}
+}
+
+
+/* ── PULSE, AND THE DOT THAT USES IT ───────────────────────────────────────
+   Measured 2026-09-13: `@keyframes pulse` was defined on 9 pages in 4 different
+   ways (fade to .3, to .4, to 0.3, and to .5 with a scale) -- one name, four
+   behaviours. Worse, FOUR pages animate with `pulse` and no sheet anywhere
+   defined it for them, so the animation silently did nothing: the homepage's
+   sponsor "available" indicator, its teaser dot and PWA arrow, the sponsor
+   page's own eyebrow dot, and the cattle page's session dot. They were inert.
+
+   The fade-to-.3 form is the one most pages used, so it is the one kept. The
+   spray/urea variant also scaled to .8; that difference is gone on purpose --
+   a dot named "pulse" should not pulse differently depending which page it is on.
+   ──────────────────────────────────────────────────────────────────────── */
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* Live indicator dot -- was 6 shapes across 7 pages: 6px and 7px, green and
+   gold, 2s and 1.8s, and one of them called .live-dot-sm. */
+.live-dot,.live-dot-sm{display:inline-block;width:6px;height:6px;border-radius:50%;
+  background:var(--green);animation:pulse 2s infinite;flex-shrink:0}

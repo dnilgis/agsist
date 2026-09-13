@@ -382,12 +382,17 @@ def board_row(r, rank, min_n):
     calls = str(r["n"]) if qualified else f'{r["n"]} of {min_n}'
     wins = (f'<span class="as-wins" title="Closest of everyone on record for that metric">'
             f'{r["wins"]}\u00d7 closest</span>') if r.get("wins") else ""
+    # We run this board AND we are on it. Say so on the row, not only in the firm
+    # line -- a reader scanning names should not have to notice the domain.
+    ours = ('<span class="as-ours" title="This is our own model. We run this board '
+            'and score it, and the same rules apply to us.">ours</span>'
+            if "agsist.com" in (r.get("firm") or "").lower() else "")
     cls = "" if qualified else ' class="as-building"'
     return (f'<tr{cls}><td class="rk" data-label="#">{rank if rank else "&mdash;"}</td>'
-            f'<td data-label="Analyst"><span class="who">{esc(r["analyst"])}</span>'
+            f'<td data-label="Analyst"><span class="who">{esc(r["analyst"])}</span>{ours}'
             f'<span class="firm">{esc(r["firm"])}</span>{wins}</td>'
             f'<td class="num" data-label="Calls">{calls}</td>'
-            f'<td class="num" data-label="Accuracy"><span class="as-acc">{r["mape"]:.2f}%</span></td>'
+            f'<td class="num" data-label="Avg error"><span class="as-acc">{r["mape"]:.2f}%</span></td>'
             f'<td class="num" data-label="Beat trade">{beat}</td>'
             f'<td class="num" data-label="Bias">{bias_cell(r.get("bias"))}</td></tr>')
 
@@ -402,11 +407,16 @@ def board_tbl(rows, building, min_n=3):
     rows = rows or []
     building = building or []
     head = ('<table class="as-tbl"><thead><tr><th>#</th><th>Analyst</th>'
-            '<th class="num">Calls</th><th class="num">Accuracy</th>'
+            '<th class="num">Calls</th><th class="num">Avg error</th>'
             '<th class="num">Beat trade</th><th class="num">Bias</th></tr></thead><tbody>')
     if not rows and not building:
         return '<div class="as-err">No forecasters scored yet.</div>'
-    body = "".join(board_row(r, i + 1, min_n) for i, r in enumerate(rows))
+    # A single qualified forecaster is not a ranking. On 2026-09-09 the one row
+    # that cleared min_n held the LEAST accurate record on the board and printed
+    # "#1" above three better ones. A place needs somebody to be ahead of.
+    ranked = len(rows) > 1
+    body = "".join(board_row(r, (i + 1) if ranked else None, min_n)
+                   for i, r in enumerate(rows))
     brows = "".join(board_row(r, None, min_n) for r in building)
     note = ""
     if building:
@@ -414,8 +424,15 @@ def board_tbl(rows, building, min_n=3):
                 f'forecaster has <b>{min_n} scored calls</b>. Their accuracy so far is real and '
                 f'is shown; their position is not, because {min_n - 1} calls is not a record.'
                 '</td></tr>')
-    lead = "" if rows else ('<div class="as-err" style="margin-bottom:.6rem">Nobody has '
-                            f'{min_n} scored calls yet &mdash; building records below.</div>')
+    if not rows:
+        lead = ('<div class="as-err" style="margin-bottom:.6rem">Nobody has '
+                f'{min_n} scored calls yet &mdash; building records below.</div>')
+    elif not ranked:
+        lead = ('<div class="as-err" style="margin-bottom:.6rem">A ranking needs at least two '
+                f'forecasters with {min_n} scored calls. One has cleared that so far, so this '
+                'board shows records, not places.</div>')
+    else:
+        lead = ""
     return f'{lead}{head}{body}{note}{brows}</tbody></table>'
 
 
@@ -464,6 +481,19 @@ def sc_stats_html(d):
     )
 
 
+def sc_eras_html(d):
+    """The two-eras figures. Hand-typed once, they went stale by 2x on the very
+    number the paragraph nominates as the honest one. Baked from by_method now."""
+    m = d.get("by_method") or {}
+    sr, det = m.get("self_reported") or {}, m.get("deterministic") or {}
+    def part(label, o):
+        p, g = o.get("played"), o.get("graded")
+        if p is None or not g:
+            return f"{label}, not yet scored"
+        return f"{label}, {p} of {g} ({round(100.0 * p / g, 1)}%)"
+    return ("<b>" + part("self-graded", sr) + ". " + part("Machine-checked", det) + ".</b>")
+
+
 def sc_list_html(d, limit=25):
     recs = d.get("records") or []
     if not recs:
@@ -471,9 +501,13 @@ def sc_list_html(d, limit=25):
                 'the next briefing.</div>')
     rows = "".join(sc_row(r) for r in recs[:limit])
     more = ""
+    # recs includes pending calls; "graded" must not.
+    n_graded = sum(1 for r in recs if (r.get("outcome") or "") != "pending")
+    n_pending = len(recs) - n_graded
+    pend = f" ({n_pending} pending)" if n_pending else ""
     if len(recs) > limit:
         more = (f'<p class="sc-note" style="margin-top:.7rem">Showing the latest {limit} of '
-                f'{len(recs)} graded calls &mdash; the full record loads on this page with '
+                f'{n_graded} graded calls{pend} &mdash; the full record loads on this page with '
                 f'JavaScript, and every briefing is readable in the <a href="/archive">archive</a>.</p>')
     return rows + more
 
@@ -527,6 +561,7 @@ def bake_scorecard(check_only=False):
     src = replace_region(src, "sc-nextrep", sc_next_report(_up), SC_HTML)
     src = replace_region(src, "sc-stats", "\n        " + sc_stats_html(sc) + "\n      ", SC_HTML)
     src = replace_region(src, "sc-list", sc_list_html(sc), SC_HTML)
+    src = replace_region(src, "sc-eras", sc_eras_html(sc), SC_HTML)
     if sc.get("hit_rate") is not None:
         src = replace_region(src, "sc-prose-hit", f"{round(sc['hit_rate'])}%", SC_HTML)
     return orig, src, SC_HTML

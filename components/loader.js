@@ -656,3 +656,97 @@
   }
   window.addEventListener('scroll', onScroll, { passive: true });
 })();
+
+
+/* ── LOADING STATES ────────────────────────────────────────────────────────
+   258 elements across 20 pages ship as a bare em-dash and wait for a fetch.
+   This turns each of them into a skeleton until its value lands, then flashes
+   the ones that change afterwards.
+
+   Applied here rather than in markup for two reasons: 20 pages of hand-edits
+   drift apart -- that is the whole reason this file exists -- and any page
+   written later gets it for free.
+
+   Rules it follows:
+     - Only an element with an id whose entire text is a dash. Anything else is
+       content, not a placeholder.
+     - Everything settles by SK_TIMEOUT whatever happens. A value that never
+       arrives falls back to the dash, because "no number" is a real answer and
+       a skeleton that never resolves is a lie about it.
+     - The first change is the value landing (fade in). Later changes are the
+       number moving (flash green or red). They are not the same event and do
+       not get the same treatment.
+   ──────────────────────────────────────────────────────────────────────── */
+(function () {
+  'use strict';
+  var SK_TIMEOUT = 6000;                 // hard stop; nothing shimmers past this
+  var DASH = /^[\s—–\-]+$/;    // em dash, en dash, hyphen, or spaces
+  var NUM  = /-?[\d][\d,]*(?:\.\d+)?/;
+
+  function isPlaceholder(el) {
+    if (!el.id) return false;
+    if (el.children.length) return false;
+    return DASH.test(el.textContent || '');
+  }
+
+  function numberIn(t) {
+    var m = String(t == null ? '' : t).replace(/[−]/g, '-').match(NUM);
+    return m ? parseFloat(m[0].replace(/,/g, '')) : null;
+  }
+
+  function start() {
+    var marked = [];
+    var els = document.querySelectorAll('[id]');
+    for (var i = 0; i < els.length; i++) {
+      if (isPlaceholder(els[i])) { els[i].classList.add('sk'); marked.push(els[i]); }
+    }
+    if (!marked.length) return;
+
+    var seen = new WeakMap();            // el -> last settled value
+    var done = false;
+
+    function settle(el, flash) {
+      if (!el.classList.contains('sk') && !flash) return;
+      el.classList.remove('sk');
+      if (flash == null) { el.classList.add('sk-in'); setTimeout(function(){ el.classList.remove('sk-in'); }, 300); return; }
+      var c = flash > 0 ? 'sk-up' : 'sk-dn';
+      el.classList.remove('sk-up', 'sk-dn');
+      void el.offsetWidth;               // restart the animation on a repeat move
+      el.classList.add(c);
+      setTimeout(function(){ el.classList.remove(c); }, 1000);
+    }
+
+    var obs = new MutationObserver(function (recs) {
+      for (var i = 0; i < recs.length; i++) {
+        var el = recs[i].target;
+        el = el.nodeType === 1 ? el : el.parentElement;
+        while (el && !el.id) el = el.parentElement;
+        if (!el) continue;
+        if (!el.classList.contains('sk') && !seen.has(el)) continue;
+        var txt = el.textContent || '';
+        if (DASH.test(txt)) continue;    // still a placeholder; keep waiting
+        var now = numberIn(txt);
+        var was = seen.get(el);
+        if (was === undefined) { settle(el, null); }
+        else if (now !== null && was !== null && now !== was) { settle(el, now > was ? 1 : -1); }
+        seen.set(el, now);
+      }
+    });
+    obs.observe(document.body, { subtree: true, childList: true, characterData: true });
+
+    function sweep() {
+      var left = document.querySelectorAll('.sk');
+      for (var i = 0; i < left.length; i++) left[i].classList.remove('sk');
+    }
+    // Sweep the document, not the list we built: a page that re-renders a node
+    // hands us a fresh element carrying the class we can no longer reach by
+    // reference. Twice, because a late fetch can land between the two.
+    setTimeout(sweep, SK_TIMEOUT);
+    setTimeout(function () { done = true; obs.disconnect(); sweep(); }, SK_TIMEOUT + 2000);
+  }
+
+  if (window.__agsistSkeletons) return;   // loader.js included twice is not two skeleton passes
+  window.__agsistSkeletons = 1;
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start);
+  else start();
+})();

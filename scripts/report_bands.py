@@ -8,7 +8,7 @@ On 2026-09-09 the What's Priced In page said two different things about one
 number, on one screen, at the same time:
 
     Track record   2026/27 corn yield   BULLISH    182.0 -> 180.7
-    Graded calls   2026/27 corn yield   IN LINE    trade 182 -> actual 180.7
+    Scored report  2026/27 corn yield   IN LINE    trade 182 -> actual 180.7
 
 Same metric, same consensus, same print. Two builders, two bands.
 build_whats_priced_in.py had been corrected on 2026-08-11 —
