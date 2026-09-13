@@ -108,13 +108,11 @@
     "wheat-futures-prices.html"
    ],
    "written_by": [
-    "seed basis history",
     "Build National Basis Map",
     "Fetch Export Sales",
     "Fetch Grain Bids"
    ],
    "touched_by": [
-    "seed basis history",
     "Build National Basis Map",
     "Fetch Export Sales",
     "Fetch Grain Bids"
@@ -619,11 +617,9 @@
     "usda-quick-stats.html"
    ],
    "written_by": [
-    "Fetch NASS (RETIRED)",
     "Build NASS Series"
    ],
    "touched_by": [
-    "Fetch NASS (RETIRED)",
     "Build NASS Series"
    ],
    "cadence": "on demand",
@@ -642,11 +638,9 @@
     "usda-quick-stats.html"
    ],
    "written_by": [
-    "Fetch NASS (RETIRED)",
     "Build NASS Series"
    ],
    "touched_by": [
-    "Fetch NASS (RETIRED)",
     "Build NASS Series"
    ],
    "cadence": "on demand",
@@ -665,11 +659,9 @@
     "usda-quick-stats.html"
    ],
    "written_by": [
-    "Fetch NASS (RETIRED)",
     "Build NASS Series"
    ],
    "touched_by": [
-    "Fetch NASS (RETIRED)",
     "Build NASS Series"
    ],
    "cadence": "on demand",
@@ -688,11 +680,9 @@
     "usda-quick-stats.html"
    ],
    "written_by": [
-    "Fetch NASS (RETIRED)",
     "Build NASS Series"
    ],
    "touched_by": [
-    "Fetch NASS (RETIRED)",
     "Build NASS Series"
    ],
    "cadence": "on demand",
@@ -711,11 +701,9 @@
     "usda-quick-stats.html"
    ],
    "written_by": [
-    "Fetch NASS (RETIRED)",
     "Build NASS Series"
    ],
    "touched_by": [
-    "Fetch NASS (RETIRED)",
     "Build NASS Series"
    ],
    "cadence": "on demand",
@@ -734,11 +722,9 @@
     "usda-quick-stats.html"
    ],
    "written_by": [
-    "Fetch NASS (RETIRED)",
     "Build NASS Series"
    ],
    "touched_by": [
-    "Fetch NASS (RETIRED)",
     "Build NASS Series"
    ],
    "cadence": "on demand",
@@ -757,11 +743,9 @@
     "usda-quick-stats.html"
    ],
    "written_by": [
-    "Fetch NASS (RETIRED)",
     "Build NASS Series"
    ],
    "touched_by": [
-    "Fetch NASS (RETIRED)",
     "Build NASS Series"
    ],
    "cadence": "on demand",
@@ -780,11 +764,9 @@
     "usda-quick-stats.html"
    ],
    "written_by": [
-    "Fetch NASS (RETIRED)",
     "Build NASS Series"
    ],
    "touched_by": [
-    "Fetch NASS (RETIRED)",
     "Build NASS Series"
    ],
    "cadence": "on demand",
@@ -803,11 +785,9 @@
     "usda-quick-stats.html"
    ],
    "written_by": [
-    "Fetch NASS (RETIRED)",
     "Build NASS Series"
    ],
    "touched_by": [
-    "Fetch NASS (RETIRED)",
     "Build NASS Series"
    ],
    "cadence": "on demand",
@@ -826,11 +806,9 @@
     "usda-quick-stats.html"
    ],
    "written_by": [
-    "Fetch NASS (RETIRED)",
     "Build NASS Series"
    ],
    "touched_by": [
-    "Fetch NASS (RETIRED)",
     "Build NASS Series"
    ],
    "cadence": "on demand",
