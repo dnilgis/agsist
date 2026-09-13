@@ -6,8 +6,8 @@
 <meta name="theme-color" content="#111a0a">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preload" href="/components/styles.css?v=15" as="style">
-<link rel="stylesheet" href="/components/styles.css?v=15">
+<link rel="preload" href="/components/styles.css?v=16" as="style">
+<link rel="stylesheet" href="/components/styles.css?v=16">
 <link rel="icon" type="image/x-icon"            href="/img/favicon.ico">
 <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
@@ -55,9 +55,9 @@
 </script>
 <style>
 /* ── LAYOUT ──────────────────────────────────────────────────────────── */
-html { overflow-x: hidden; overflow-x: clip; width: 100%; }
-body { overflow-x: hidden; overflow-x: clip; width: 100%; }
-button,a,[role="button"]{touch-action:manipulation;}
+
+
+
 
 .gdu-page { max-width: 1060px; margin: 0 auto; padding: 0 1rem 3rem; }
 
@@ -181,9 +181,8 @@ button,a,[role="button"]{touch-action:manipulation;}
 .formula-card code { font-family:'JetBrains Mono',monospace; font-size:0.78rem; color:var(--green); background:rgba(58,139,60,.1); padding:.1rem .3rem; border-radius:3px; }
 
 /* ── LIVE BADGE ───────────────────────────────────────────────────────── */
-@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.4;}}
 .live-badge { display:inline-flex; align-items:center; gap:.3rem; font-size:0.755rem; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--green); background:rgba(58,139,60,.1); border:1px solid rgba(58,139,60,.3); border-radius:20px; padding:.15rem .5rem; }
-.live-dot { width:6px; height:6px; border-radius:50%; background:var(--green); animation:pulse 2s infinite; display:inline-block; }
+
 
 /* ── RESPONSIVE ───────────────────────────────────────────────────────── */
 @media(max-width:480px){
@@ -197,10 +196,10 @@ button,a,[role="button"]{touch-action:manipulation;}
 .gdu-source a { color:var(--gold); text-decoration:none; }
 @media (prefers-reduced-motion: reduce){ .live-dot{animation:none;} #arc-fill,.prog-fill,.prog-marker,.ms{transition:none !important;} }
 
-.ag-sponsor-ribbon{display:block;font-size:0.785rem;padding:.45rem .85rem;margin:1rem 0;border:1px solid rgba(132,160,168,.18);border-radius:8px;color:#8a948f;line-height:1.6}
-.ag-sponsor-ribbon .ag-sponsor-tag{font-family:'JetBrains Mono',monospace;font-size:0.75rem;letter-spacing:.12em;text-transform:uppercase;color:#d4a23f;margin-right:.5rem}
-.ag-sponsor-ribbon a{color:#d4a23f}
-.tblscroll{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:10px 0}.tblscroll table{margin:0;min-width:480px}
+
+
+
+.tblscroll table{margin:0;min-width:480px}
 </style>
 </head>
 <body>
@@ -534,7 +533,7 @@ button,a,[role="button"]{touch-action:manipulation;}
 
 </main>
 <div id="site-footer"></div>
-<script src="/components/loader.js?v=15" defer></script>
+<script src="/components/loader.js?v=16" defer></script>
 <script>
 (function(){
 'use strict';

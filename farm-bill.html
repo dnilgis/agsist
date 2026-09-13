@@ -21,8 +21,8 @@
 <meta name="twitter:title" content="2026 Farm Bill, Explained: House vs Senate, Money &amp; Status">
 <meta name="twitter:description" content="Senate markup Aug 6. The $1.374T baseline, House vs Senate side-by-side, and the Sep 30 deadline. Neutral, sourced.">
 <meta name="twitter:image" content="https://agsist.com/img/og-farm-bill.jpg">
-<link rel="preload" href="/components/styles.css?v=15" as="style">
-<link rel="stylesheet" href="/components/styles.css?v=15">
+<link rel="preload" href="/components/styles.css?v=16" as="style">
+<link rel="stylesheet" href="/components/styles.css?v=16">
 <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
 <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
@@ -86,7 +86,7 @@ img{display:block}
 .hero{padding:52px 0 36px;border-bottom:1px solid var(--hair)}
 .eyebrow{font-family:var(--mono);font-size:13.2px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);margin-bottom:18px}
 h1{font-family:var(--display);font-weight:800;font-size:clamp(31px,5.4vw,52px);line-height:1.04;letter-spacing:-.01em;margin-bottom:14px}
-h1 .sub{display:block;color:var(--dim);font-weight:600;font-size:clamp(15px,2.2vw,20px);letter-spacing:.01em;margin-top:14px;line-height:1.35}
+h1 .sub,h1+.sub{display:block;color:var(--dim);font-weight:600;font-size:clamp(15px,2.2vw,20px);letter-spacing:.01em;margin-top:14px;line-height:1.35}
 .bill-id{font-family:var(--mono);color:var(--accent)}
 .lede{max-width:700px;color:var(--text);opacity:.86;font-size:17px;margin-top:22px}
 .lede b{opacity:1;font-weight:600}
@@ -292,9 +292,8 @@ h2{font-family:var(--display);font-weight:700;font-size:clamp(22px,3.2vw,30px);l
  <div class="wrap">
   <div class="hero">
     <div class="eyebrow">Farm Bill Tracker &middot; National</div>
-    <h1>The 2026 Farm Bill
-      <span class="sub">Two chambers, two bills: the House-passed <span class="bill-id">H.R. 7567</span> and the Senate's new discussion draft, the <span class="bill-id">Agricultural Act of 2026</span> (Farm Bill 2.0)</span>
-    </h1>
+    <h1>The 2026 Farm Bill</h1>
+    <p class="sub">Two chambers, two bills: the House-passed <span class="bill-id">H.R. 7567</span> and the Senate's new discussion draft, the <span class="bill-id">Agricultural Act of 2026</span> (Farm Bill 2.0)</p>
     <p class="lede">A plain, sourced look at where farm bill money actually goes &mdash; and what these bills
       actually change. Those are two different questions. The programs carry a <b>$1.374 trillion</b>
       ten-year baseline; each bill's own effect on that baseline is close to <b>budget-neutral</b>. Both
@@ -641,7 +640,7 @@ h2{font-family:var(--display);font-weight:700;font-size:clamp(22px,3.2vw,30px);l
   }
 })();
 </script>
-<script src="/components/loader.js?v=15" defer></script>
+<script src="/components/loader.js?v=16" defer></script>
 <script>
 (function(){
   var f=document.getElementById('fb-notify'); if(!f)return;

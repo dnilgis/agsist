@@ -8,8 +8,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
-<link rel="preload" href="/components/styles.css?v=15" as="style">
-<link rel="stylesheet" href="/components/styles.css?v=15">
+<link rel="preload" href="/components/styles.css?v=16" as="style">
+<link rel="stylesheet" href="/components/styles.css?v=16">
 <link rel="icon" type="image/x-icon"            href="/img/favicon.ico">
 <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
@@ -94,8 +94,8 @@
 </script>
 
 <style>
-html { overflow-x: hidden; overflow-x: clip; width: 100%; }
-body { overflow-x: hidden; overflow-x: clip; width: 100%; }
+
+
 button,a,[role="button"] { touch-action: manipulation; }
 
 .dm-page { max-width: 1040px; margin: 0 auto; padding: 0 1rem 3rem; }
@@ -166,7 +166,7 @@ button,a,[role="button"] { touch-action: manipulation; }
 .dm-outlook { display: flex; gap: .6rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
 .dm-outlook a { display: inline-flex; align-items: center; gap: .35rem; padding: .45rem .9rem; border: 1px solid var(--border); border-radius: 8px; font-size:0.787rem; color: var(--text-dim); text-decoration: none; background: var(--surface); transition: all .15s; min-height: 44px; }
 .dm-outlook a:hover { border-color: var(--gold); color: var(--gold); }
-.tblscroll{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:10px 0}.tblscroll table{margin:0;min-width:480px}
+.tblscroll table{margin:0;min-width:480px}
 </style>
 </head>
 <body>
@@ -217,7 +217,7 @@ button,a,[role="button"] { touch-action: manipulation; }
   <div class="dm-hero">
     <div class="dm-eyebrow"><svg class="ic-sp" aria-hidden="true"><use href="#sp-map"/></svg> Drought Intelligence · Updated Weekly</div>
     <h1>US Drought Monitor</h1>
-<style>.ag-sponsor-ribbon{display:block;font-size:0.785rem;padding:.45rem .85rem;margin:1rem 0;border:1px solid rgba(132,160,168,.18);border-radius:8px;color:#8a948f;line-height:1.6}.ag-sponsor-ribbon .ag-sponsor-tag{font-family:'JetBrains Mono',monospace;font-size:0.75rem;letter-spacing:.12em;text-transform:uppercase;color:#d4a23f;margin-right:.5rem}.ag-sponsor-ribbon a{color:#d4a23f}</style><aside class="ag-sponsor-ribbon" id="ag-sponsor"><span class="ag-sponsor-tag">Sponsor this page</span> Everyone here is watching moisture &mdash; one category-exclusive slot. <a href="/sponsor?slot=drought&amp;utm_source=drought&amp;utm_medium=slot">Put your name here &rarr;</a></aside>
+<style></style><aside class="ag-sponsor-ribbon" id="ag-sponsor"><span class="ag-sponsor-tag">Sponsor this page</span> Everyone here is watching moisture &mdash; one category-exclusive slot. <a href="/sponsor?slot=drought&amp;utm_source=drought&amp;utm_medium=slot">Put your name here &rarr;</a></aside>
     <p>Weekly drought conditions for US crop regions. Select national, state, or regional views. Published every Thursday by the National Drought Mitigation Center, USDA, and NOAA.</p>
     <div class="dm-hero-meta">
       <div class="dm-updated">Source: droughtmonitor.unl.edu · Updated Thursdays by 8:30 AM ET<span id="dm-valid"></span></div><script>fetch("/data/outlooks/manifest.json").then(function(r){return r.json()}).then(function(m){var f=(m&&m.files)||{};var d=(f["usdm_latest.png"]&&f["usdm_latest.png"].data_valid)||(m&&m.usdm_latest&&m.usdm_latest.data_valid)||(m&&m.data_valid);if(d)document.getElementById("dm-valid").textContent=" · map valid "+d;}).catch(function(){});</script>
@@ -329,7 +329,7 @@ button,a,[role="button"] { touch-action: manipulation; }
 
 </main>
 <div id="site-footer"></div>
-<script src="/components/loader.js?v=15" defer></script>
+<script src="/components/loader.js?v=16" defer></script>
 <script>
 (function(){
   'use strict';

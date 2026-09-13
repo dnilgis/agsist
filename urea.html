@@ -11,8 +11,8 @@
 <link rel="preconnect" href="https://api.open-meteo.com">
 <link rel="preconnect" href="https://nominatim.openstreetmap.org">
 <link rel="preconnect" href="https://geocoding-api.open-meteo.com">
-<link rel="preload" href="/components/styles.css?v=15" as="style">
-<link rel="stylesheet" href="/components/styles.css?v=15">
+<link rel="preload" href="/components/styles.css?v=16" as="style">
+<link rel="stylesheet" href="/components/styles.css?v=16">
 <link rel="icon" type="image/x-icon"             href="/img/favicon.ico">
 <link rel="icon" type="image/png" sizes="32x32"  href="/img/favicon-32.png">
 <link rel="icon" type="image/png" sizes="16x16"  href="/img/favicon-16.png">
@@ -99,17 +99,7 @@ body {
 }
 
 /* ── Risk-level CSS variables ────────────────────────────────────── */
-:root {
-  --risk-low:     var(--green);
-  --risk-mod:     var(--gold);
-  --risk-high:    #c87a28;
-  --risk-extreme: var(--red);
-  --orange:       #c87a28;
-  --blue:         #4a8fba;
-  --bg2:          var(--bg, #0e0e0c);
-  --border-g:     var(--border, rgba(var(--gold-rgb),.30));
-  --surface3:     var(--surface2, #1e1e1a);
-}
+
 
 /* ── Hero ────────────────────────────────────────────────────────── */
 .hero {
@@ -492,15 +482,7 @@ body {
 .cross-link:hover .cross-link-arrow { transform: translateX(3px); color: var(--green); }
 
 /* ── Live dot ────────────────────────────────────────────────────── */
-.live-dot {
-  display: inline-block; width: 7px; height: 7px;
-  border-radius: 50%; background: var(--gold);
-  animation: pulse 1.8s infinite;
-}
-@keyframes pulse {
-  0%,100% { opacity: 1; transform: scale(1); }
-  50%      { opacity: .5; transform: scale(.8); }
-}
+
 
 /* ── Fade-up ─────────────────────────────────────────────────────── */
 .fade-up { opacity: 0; transform: translateY(20px); transition: opacity .6s ease, transform .6s ease; }
@@ -635,12 +617,12 @@ body {
 /* WCAG AA: brighten danger red for chip/label text contrast on dark (was #c8562e 3.7:1 -> #e06b42 ~4.9:1). Scoped to this page. */
 [data-theme="dark"]{--red:#e06b42;--risk-extreme:#e06b42;}
 
-.ag-sponsor-ribbon{display:block;font-size:0.785rem;padding:.45rem .85rem;margin:1rem 0;border:1px solid rgba(132,160,168,.18);border-radius:8px;color:#8a948f;line-height:1.6}
-.ag-sponsor-ribbon .ag-sponsor-tag{font-family:'JetBrains Mono',monospace;font-size:0.75rem;letter-spacing:.12em;text-transform:uppercase;color:#d4a23f;margin-right:.5rem}
-.ag-sponsor-ribbon a{color:#d4a23f}
+
+
+
 </style>
 <style>
-button,a,[role="button"]{touch-action:manipulation;}
+
 html{overflow-x:hidden;overflow-x:clip;width:100%;}
 body{overflow-x:hidden;overflow-x:clip;width:100%;}
 h2.edu-head,h2.soil-air-head,h2.s-card-title,h3.s-card-title,h3.stab-title{margin:0;font-size:inherit;font-weight:inherit;line-height:inherit;}
@@ -1011,7 +993,7 @@ h2.edu-head,h2.soil-air-head,h2.s-card-title,h3.s-card-title,h3.stab-title{margi
   </section>
 </main>
 <div id="site-footer"></div>
-<script src="/components/loader.js?v=15" defer></script>
+<script src="/components/loader.js?v=16" defer></script>
 <script>
 document.querySelectorAll('.faq-a').forEach(function(a){a.setAttribute('aria-hidden','true');});
 document.getElementById('faq-list').addEventListener('click',function(e){

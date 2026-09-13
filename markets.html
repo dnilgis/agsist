@@ -8,8 +8,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
-<link rel="preload" href="/components/styles.css?v=15" as="style">
-<link rel="stylesheet" href="/components/styles.css?v=15">
+<link rel="preload" href="/components/styles.css?v=16" as="style">
+<link rel="stylesheet" href="/components/styles.css?v=16">
 <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
 <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
@@ -38,9 +38,18 @@
 <meta name="twitter:image" content="https://agsist.com/img/og/agsist.jpg">
 <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebPage","@id":"https://agsist.com/markets#webpage","url":"https://agsist.com/markets","dateModified":"2026-09-11","name":"Commodity Prices Today: Corn, Soybeans, Wheat, Cattle, Crude | AGSIST","description":"Track commodity prices in one place: corn, soybeans, wheat, oats, cattle, hogs, crude oil, natural gas, and gold — updated every 30 minutes. No charge.","isPartOf":{"@id":"https://agsist.com/#website"},"breadcrumb":{"@id":"https://agsist.com/markets#breadcrumb"}},{"@type":"BreadcrumbList","@id":"https://agsist.com/markets#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://agsist.com/"},{"@type":"ListItem","position":2,"name":"Commodity Prices","item":"https://agsist.com/markets"}]},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How often are grain prices updated on AGSIST?","acceptedAnswer":{"@type":"Answer","text":"Grain futures prices on AGSIST refresh every 30 minutes during CME trading hours Monday through Friday, sourced from Yahoo Finance. The timestamp at top right shows time since the last update. Weekend prices reflect the last Friday settlement. For real-time streaming quotes, use the TradingView chart on each commodity's detail page (corn, soybeans, or wheat)."}},{"@type":"Question","name":"Why does the Dollar Index affect corn and soybean prices?","acceptedAnswer":{"@type":"Answer","text":"US grain futures are priced in US dollars. When the Dollar Index (DXY) rises, US grain becomes more expensive for foreign buyers paying in other currencies — reducing export demand and typically pressuring corn and soybean futures prices. A weaker dollar supports US grain exports. A 5-point swing in DXY can influence corn and soybean prices by 10–30 cents depending on the export demand environment."}},{"@type":"Question","name":"What does natural gas price mean for my farm budget?","acceptedAnswer":{"@type":"Answer","text":"Natural gas is the primary feedstock for nitrogen fertilizer production, including anhydrous ammonia, urea, and UAN — approximately 33 mmBtu per ton of anhydrous ammonia. When natural gas prices rise above $3.50–$4.00 per mmBtu, nitrogen fertilizer costs typically follow within 60–90 days as producers reprice inventory. Monitoring natural gas prices lets farmers anticipate input cost changes before making fertilizer purchase decisions."}},{"@type":"Question","name":"What is Class III Milk futures price and why is it shown here?","acceptedAnswer":{"@type":"Answer","text":"Class III Milk (DC=F) is the futures benchmark for fluid milk used in cheese production, priced in dollars per hundredweight (100 lbs). It is included because dairy operations compete for corn and soybean meal as feed inputs — dairy herd profitability directly affects corn and soy meal demand. Strong milk prices typically support feed grain demand; weak milk prices can cause herd liquidation that temporarily reduces feed grain consumption. For grain producers selling into dairy feed markets, milk prices are a key demand signal."}},{"@type":"Question","name":"Where can I find local cash grain bids near me?","acceptedAnswer":{"@type":"Answer","text":"AGSIST's Cash Bids page shows live local elevator bids sourced from the Barchart OnDemand API, located by your GPS position or ZIP code. This shows the actual price your nearest elevators are paying for corn and soybeans today — including the local basis, the difference between the futures price and what your elevator pays. Cash bid data is essential for storage and marketing decisions because basis varies significantly by location, season, and elevator competition."}}]}]}</script>
 <style>
-html { overflow-x: hidden; overflow-x: clip; width: 100%; }
-body { overflow-x: hidden; overflow-x: clip; width: 100%; }
-button,a,[role="button"]{touch-action:manipulation;}
+
+
+
+.mkt-idx{margin-top:1.4rem;background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.mkt-idx-hd{padding:10px 16px;border-bottom:1px solid var(--border);font-size:0.795rem;font-weight:700;color:var(--gold)}
+.mkt-idx-grp{padding:12px 16px 4px;font-size:0.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted)}
+.mkt-idx-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:2px 18px;padding:0 16px 12px}
+.mkt-idx-list a{display:block;padding:7px 0;text-decoration:none;border-bottom:1px solid var(--border);line-height:1.35}
+.mkt-idx-list a:last-child{border-bottom:none}
+.mkt-idx-list b{display:block;color:var(--text);font-size:0.95rem;font-weight:600}
+.mkt-idx-list span{display:block;color:var(--text-muted);font-size:0.8rem}
+.mkt-idx-list a:hover b{color:var(--gold)}
 .mkt-faq{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-top:1.2rem}
 .mkt-faq-hd{padding:10px 16px;border-bottom:1px solid var(--border);font-size:0.795rem;font-weight:700;color:var(--gold)}
 .mkt-faq-item{border-bottom:1px solid var(--border)}.mkt-faq-item:last-child{border-bottom:none}
@@ -66,7 +75,7 @@ h1.sec-title{font-family:inherit;font-size:inherit;font-weight:inherit;line-heig
 
         <span id="price-data-status" style="font-size:0.78rem;color:var(--text-muted)"></span>
       </div>
-<style>.ag-sponsor-ribbon{display:block;font-size:0.785rem;padding:.45rem .85rem;margin:1rem 0;border:1px solid rgba(132,160,168,.18);border-radius:8px;color:#8a948f;line-height:1.6}.ag-sponsor-ribbon .ag-sponsor-tag{font-family:'JetBrains Mono',monospace;font-size:0.75rem;letter-spacing:.12em;text-transform:uppercase;color:#d4a23f;margin-right:.5rem}.ag-sponsor-ribbon a{color:#d4a23f}</style><aside class="ag-sponsor-ribbon" id="ag-sponsor"><span class="ag-sponsor-tag">Sponsor this page</span> The whole grain complex checks prices here &mdash; one category-exclusive slot. <a href="/sponsor?slot=markets&amp;utm_source=markets&amp;utm_medium=slot">Put your name here &rarr;</a></aside>
+<style></style><aside class="ag-sponsor-ribbon" id="ag-sponsor"><span class="ag-sponsor-tag">Sponsor this page</span> The whole grain complex checks prices here &mdash; one category-exclusive slot. <a href="/sponsor?slot=markets&amp;utm_source=markets&amp;utm_medium=slot">Put your name here &rarr;</a></aside>
 
       <div style="font-size:0.77rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.6rem;margin-top:.25rem">Grain Futures</div>
       <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.65rem;margin-bottom:1.5rem">
@@ -117,6 +126,38 @@ h1.sec-title{font-family:inherit;font-size:inherit;font-weight:inherit;line-heig
 
       <div style="margin-top:.75rem;font-size:0.78rem;color:var(--text-muted)">Updated every 30 min &middot; Source: Yahoo Finance (yfinance) &middot; <a href="/data-sources" style="color:var(--gold)">Data sources &rarr;</a></div>
 
+      <div class="mkt-idx">
+        <div class="mkt-idx-hd">Every market page on AGSIST</div>
+        <div class="mkt-idx-grp">Quotes</div>
+        <div class="mkt-idx-list">
+          <a href="/corn-futures-prices"><b>Corn Futures</b><span>Front month and December, with the CME chart</span></a>
+          <a href="/soybean-futures-prices"><b>Soybean Futures</b><span>Front month and November, meal and oil</span></a>
+          <a href="/wheat-futures-prices"><b>Wheat Futures</b><span>Chicago SRW and Kansas City HRW</span></a>
+          <a href="/cattle-futures-prices"><b>Cattle Futures</b><span>Live cattle and feeders</span></a>
+          <a href="/milk-prices"><b>Milk Prices</b><span>How the Class III milk check is calculated</span></a>
+          <a href="/basis"><b>Basis vs Normal</b><span>Your local basis against its own seasonal average</span></a>
+          <a href="/cash-bids"><b>Cash Bids</b><span>What elevators near you are paying today</span></a>
+          <a href="/elevators"><b>Elevators by State</b><span>Every elevator we carry bids for, by state</span></a>
+        </div>
+        <div class="mkt-idx-grp">Positioning</div>
+        <div class="mkt-idx-list">
+          <a href="/cot"><b>COT Report</b><span>What managed money is holding, from the CFTC</span></a>
+          <a href="/storage-crunch"><b>Storage Crunch</b><span>States growing more grain than they can store</span></a>
+          <a href="/ag-odds"><b>Prediction Markets</b><span>Live Kalshi and Polymarket odds on ag events</span></a>
+        </div>
+        <div class="mkt-idx-grp">Policy</div>
+        <div class="mkt-idx-list">
+          <a href="/tariffs"><b>Tariffs</b><span>Which tariffs are live and what they cover</span></a>
+          <a href="/farm-bill"><b>Farm Bill</b><span>Where the 2026 money goes, House vs Senate</span></a>
+        </div>
+        <div class="mkt-idx-grp">USDA</div>
+        <div class="mkt-idx-list">
+          <a href="/usda-calendar"><b>USDA Calendar</b><span>Every release date, with an .ics you can subscribe to</span></a>
+          <a href="/whats-priced-in"><b>What's Priced In</b><span>What the trade expects from the next report</span></a>
+          <a href="/whats-priced-in#analyst-board"><b>Analyst Estimates</b><span>Which forecasters call USDA yields best, graded</span></a>
+          <a href="/usda-quick-stats"><b>USDA Crop Data</b><span>Yields, acres and prices by state from NASS</span></a>
+        </div>
+      </div>
       <div class="mkt-faq">
         <div class="mkt-faq-hd">Common Questions About Grain &amp; Commodity Prices</div>
         <div class="mkt-faq-item">
@@ -144,7 +185,7 @@ h1.sec-title{font-family:inherit;font-size:inherit;font-weight:inherit;line-heig
   </section>
 </main>
 <div id="site-footer"></div>
-<script src="/components/loader.js?v=15" defer></script>
+<script src="/components/loader.js?v=16" defer></script>
 <script>
 (function(){
   'use strict';
