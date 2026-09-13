@@ -39,6 +39,10 @@ import os
 import re
 from datetime import date, datetime
 
+import sys
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import market_board   # noqa: E402  ONE definition of "is this the same session's board"
+
 # Resolved against the repo, not the cwd. send_daily.py is invoked from the
 # workflow's checkout root today, but a sender that only finds the previous
 # session's board when someone happens to launch it from the right folder is
@@ -121,41 +125,32 @@ def _href(u):
     return re.sub(r"&(?!(?:amp|lt|gt|quot|apos|#\d+|#x[0-9a-fA-F]+);)", "&amp;", str(u or ""))
 
 
-def _same_board(a, b):
-    shared = [k for k in a if k in b
-              and isinstance(a[k], (int, float)) and isinstance(b[k], (int, float))]
-    return len(shared) >= 3 and all(abs(a[k] - b[k]) < 1e-9 for k in shared)
-
-
 def prior_board(daily, archive_dir=ARCHIVE_DIR):
     """The previous TRADING session's locked board.
 
     Not simply the previous file: the archive publishes at weekends and on
     holidays, and those issues carry the last close forward unchanged. Walking
     back one file lands on a non-session and every change comes out zero.
+
+    v5.3: the rule moved to market_board, which compares the SESSION-TRADED
+    board only. The copy that used to live here compared every shared key, and
+    locked_prices carries bitcoin -- one round-the-clock instrument was enough
+    to make a frozen ag board look like a fresh session. 9 archived issues
+    emailed a price table where every row read unchanged.
     """
-    cur = daily.get("locked_prices") or {}
-    ref = ""
-    for cand in (daily.get("date"), str(daily.get("generated_at") or "")[:10]):
-        try:
-            ref = datetime.fromisoformat(str(cand)[:10]).date().isoformat()
-            break
-        except Exception:
-            continue
-    ref = ref or date.today().isoformat()
-    try:
-        for f in reversed(sorted(glob.glob(os.path.join(archive_dir, "20*.json")))):
-            if os.path.basename(f)[:10] >= ref:
-                continue
-            lp = (json.load(open(f, encoding="utf-8")) or {}).get("locked_prices") or {}
-            if lp and not _same_board(lp, cur):
-                return lp, os.path.basename(f)[:10]
-    except Exception:
-        pass
-    return {}, None
+    lp, day, _err = market_board.prior_board(daily, archive_dir)
+    return lp, day
 
 
 def change(daily, prior, key):
+    # v5.4: prefer the change LOCKED at generation — the source's own
+    # close-over-close move, read at fetch time. The walk below compares two
+    # archived snapshots taken at different times of day and mixes in overnight
+    # drift; it stays as the fallback for the 185 issues archived before the
+    # lock existed.
+    locked = market_board.locked_change(daily, key)
+    if locked is not None:
+        return locked
     cur, prev = (daily.get("locked_prices") or {}).get(key), (prior or {}).get(key)
     if not isinstance(cur, (int, float)) or not isinstance(prev, (int, float)) or not prev:
         return None
@@ -231,6 +226,11 @@ def price_table(daily, prior, prior_day):
         if not isinstance(v, (int, float)):
             continue
         p = change(daily, prior, key)
+        # v5.3: no prior session on file means no change column at all. Seven
+        # rows of "n/a" is not information, and a fabricated "+0.0%" is worse:
+        # before this, a weekend issue printed every row unchanged in the same
+        # email whose lead said wheat fell 3.4%.
+        cell = fmt_pct(p) if (prior_day or daily.get("locked_changes")) else ""
         rows.append(
             '<tr>'
             '<td class="ink cell" style="padding:5px 0;font-family:%s;font-size:14px;color:%s;'
@@ -241,13 +241,19 @@ def price_table(daily, prior, prior_day):
             'color:%s;border-bottom:1px solid %s;white-space:nowrap">%s</td>'
             '</tr>'
             % (SANS, INK, LINE, e(label), MONO, INK, LINE, fmt_price(v, grain),
-               pct_class(p), MONO, pct_colour(p), LINE, fmt_pct(p)))
+               pct_class(p), MONO, pct_colour(p), LINE, cell))
     if not rows:
         return ""
     # THE STAMP IS NOT DECORATION. It is the sentence that makes the column
     # honest: these are settlements, and the change is against the session
     # named, not against whatever a live feed said when the mail went out.
-    stamp = ("close, against %s" % e(prior_day)) if prior_day else "close"
+    # The stamp names the session the change is measured against. With the
+    # change locked at generation that is recorded on the briefing; otherwise
+    # it is the archived board the walk landed on.
+    _board = (daily.get("board") or {})
+    _against = _board.get("prev_close_session") if daily.get("locked_changes") else None
+    _against = _against or prior_day
+    stamp = ("close, against %s" % e(_against)) if _against else "close"
     return (_label("The board")
             + '<tr><td class="mute" style="padding:0 0 8px;font-family:%s;font-size:12px;color:%s">%s</td></tr>'
               % (SANS, MUTE, stamp)
@@ -576,16 +582,22 @@ def render_text(daily, site, unsub_url=None, date_display=None):
         take = strip_md(daily.get("the_takeaway"))
         if take:
             L += ["", "THE TAKEAWAY: " + take]
-    L += ["", "THE BOARD" + (" (close, against %s)" % prior_day if prior_day else "")]
+    _b = (daily.get("board") or {})
+    _ag = (_b.get("prev_close_session") if daily.get("locked_changes") else None) or prior_day
+    L += ["", "THE BOARD" + (" (close, against %s)" % _ag if _ag else "")]
     for key, label, grain in ROWS:
         v = (daily.get("locked_prices") or {}).get(key)
         if not isinstance(v, (int, float)):
             continue
         p = change(daily, prior, key)
-        pct = "n/a" if p is None else ("%+.1f%%" % p)
         # "label price change" on one line with single spaces: a proportional
-        # font cannot pull apart what was never a column.
-        L.append("  %s %s (%s)" % (label, fmt_price(v, grain), pct))
+        # font cannot pull apart what was never a column. With no prior session
+        # on file the change is omitted rather than printed as "n/a" seven times.
+        if not prior_day and not daily.get("locked_changes"):
+            L.append("  %s %s" % (label, fmt_price(v, grain)))
+        else:
+            L.append("  %s %s (%s)" % (label, fmt_price(v, grain),
+                                       "n/a" if p is None else ("%+.1f%%" % p)))
     c = daily.get("todays_call") or {}
     if c.get("instrument") and c.get("direction") and c.get("level") is not None:
         L += ["", "TODAY'S CALL: %s %s toward $%s. Graded against tomorrow's close."

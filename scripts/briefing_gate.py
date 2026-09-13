@@ -14,6 +14,9 @@ Operates on your real daily.json schema. Any FAIL blocks the send (exit 1).
 """
 import json, re, sys, argparse, datetime as dt
 import os
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import market_board   # noqa: E402  ONE definition of "is this the same session's board"
 try:
     import preflight_prices            # defense-in-depth feed re-check
 except Exception:
@@ -147,44 +150,40 @@ def _instruments_in(sentence):
     return found
 
 
-def _same_board(a, b):
-    """Two issues carrying an identical board are the same session.
+def _prior_locked(archive_dir, today, cur=None):
+    """The most recent archived issue's locked_prices from a DIFFERENT session.
 
     THE ARCHIVE PUBLISHES ON WEEKENDS AND HOLIDAYS, and those issues carry the
     previous close forward unchanged. Taking the file immediately before today
-    therefore compared Monday against Sunday -- both holding Friday's closes --
-    and every change came out 0.00%, which failed every figure in the issue.
-    Measured on 45 archived issues: it flagged 96% of them. A guard that blocks
-    96% of sends is not a guard.
+    compared Monday against Sunday -- both holding Friday's closes -- and every
+    change came out 0.00%, which failed every figure in the issue. Measured on
+    45 archived issues: it flagged 96% of them. A guard that blocks 96% of
+    sends is not a guard.
 
-    A whole board identical to the cent is a non-trading day, not a
-    coincidence, so walk back until the board actually moves.
+    v5.3: the board-identity rule moved to market_board, which compares the
+    SESSION-TRADED board only. The copy that used to live here compared every
+    shared key including bitcoin, which trades around the clock and defeated it
+    on 55 of 142 issues.
+
+    The error string is still returned rather than swallowed: the first version
+    hid a NameError from a missing `import os` behind "no earlier archived
+    issue found", which reads like a data condition and was a code fault. A
+    guard that hides its own breakage is worse than no guard.
     """
-    shared = [k for k in a if k in b and isinstance(a[k], (int, float)) and isinstance(b[k], (int, float))]
-    if len(shared) < 3:
-        return False
-    return all(abs(a[k] - b[k]) < 1e-9 for k in shared)
+    lp, stem, err = market_board.prior_board(
+        {"date": today.isoformat(), "locked_prices": cur or {}}, archive_dir)
+    if err:
+        return {}, '!' + err
+    return lp, stem
 
 
-def _prior_locked(archive_dir, today, cur=None):
-    """The most recent archived issue's locked_prices before today."""
-    try:
-        import glob as _glob
-        files = sorted(_glob.glob(os.path.join(archive_dir, '20*.json')))
-        for f in reversed(files):
-            stem = os.path.basename(f)[:10]
-            if stem >= today.isoformat():
-                continue
-            lp = (json.load(open(f, encoding='utf-8')) or {}).get('locked_prices') or {}
-            if lp and not _same_board(lp, cur or {}):
-                return lp, stem
-    except Exception as e:
-        # NOT a bare pass. The first version swallowed a NameError from a
-        # missing `import os` and reported "no earlier archived issue found",
-        # which reads like a data condition and was a code fault. A guard that
-        # hides its own breakage is worse than no guard.
-        return {}, '!' + type(e).__name__ + ': ' + str(e)[:60]
-    return {}, None
+# Capping constructions: the move named after one of these was ARRESTED, not
+# asserted. Kept to a short, literal list — a wide one would swallow the real
+# contradictions this check exists to catch.
+_CAPPED = re.compile(
+    r'\b(ceiling|cap|capped|caps|capping|halt|halted|stall|stalled|stopped|'
+    r'checked|ended|reversed|unwound|erased|wiped out|pared|trimmed|'
+    r'gave back|gave up|limited|contained)\b[^.]{0,45}$', re.I)
 
 
 def _change_for(key, daily, prior, grain):
@@ -207,10 +206,25 @@ def _change_for(key, daily, prior, grain):
     it. The archive is the only source that is self-consistent with the prose.
     """
     lp = daily.get('locked_prices') or {}
-    a, b = prior.get(key), lp.get(key)
+    # v5.4: prefer the previous close LOCKED at generation. The docstring above
+    # is why this matters: the failure it describes came from pairing a locked
+    # price with a LIVE percentage. The fix then was to re-derive the move from
+    # the archive; the better source now is the previous close captured by the
+    # same fetch that set the price, which is also the number the model was
+    # shown in its price block. Same arithmetic below either way — there is no
+    # second formula. Archived issues have no locked_changes and use `prior`.
+    _row = market_board.locked_row(daily, key)
+    a = _row.get("prev") if isinstance(_row, dict) else prior.get(key)
+    b = lp.get(key)
     if not isinstance(a, (int, float)) or not isinstance(b, (int, float)) or not a:
         return None, None
-    pct = 100.0 * (b - a) / a
+    # ONE percentage. When the briefing carries a locked change, the gate uses
+    # the same figure the email prints and the model was shown, rather than
+    # recomputing it from rounded display values and landing a hair away. The
+    # net is derived from the locked previous close so both halves of the
+    # return describe the same two boards.
+    _lp = market_board.locked_change(daily, key)
+    pct = _lp if _lp is not None else 100.0 * (b - a) / a
     net = (b - a) * 100 if grain else (b - a)
     return pct, net
 
@@ -326,10 +340,29 @@ def check_number_binding(daily, F, W, archive_dir='data/daily-archive', today=No
     if not prior:
         if prior_day and prior_day.startswith('!'):
             F('bind:broken', 'number binding could not read the archive (%s)' % prior_day[1:])
+        elif prior_day and prior_day.startswith('~too-far:'):
+            # NOT the same silence. An earlier issue exists; it was refused
+            # because the nearest different board is more than one session
+            # back, and a two-session move beside one-session prose is not a
+            # check, it is a different number. Naming the file it refused is
+            # what separates "withheld on purpose" from "archive is missing".
+            W('bind:too-far', 'nearest different board is %s, more than one '
+              'session back; number binding withheld' % prior_day[len('~too-far:'):])
         else:
             W('bind:no-prior', 'no earlier archived issue found; number binding skipped')
         return
     for loc, text in prose_fields(daily):
+        if loc.startswith('yesterdays_call'):
+            # RETROSPECTIVE PROSE ABOUT A FORWARD CALL, not an assertion about
+            # today's move. "Called wheat higher from $7.16 Friday" describes
+            # the call that was made; binding it to today's board reads the word
+            # "higher" as a claim and flags the sentence exactly when an honest
+            # miss is being owned. generate_daily's level-coherence scanner
+            # excludes this block for the same reason, in the same words.
+            # Surfaced 2026-09-13: locking the change made the real move big
+            # enough to cross the 2.0% blocking line on the 2026-09-07 issue,
+            # which would have held a send over a correctly written sentence.
+            continue
         for sent in _SENT_SPLIT.split(text):
             if not sent.strip():
                 continue
@@ -393,6 +426,18 @@ def check_number_binding(daily, F, W, archive_dir='data/daily-archive', today=No
                   '%s calls %s flat but the board moved %+.2f%% -- "%s"'
                   % (loc, key, pct, sent.strip()[:110]))
             up, dn = _MOVE_UP.search(sent), _MOVE_DN.search(sent)
+            # A direction word that is the OBJECT of a capping verb is not a
+            # claim that the market moved that way. "put a ceiling on the crude
+            # rally" says the rally was STOPPED, and the issue it came from
+            # (2026-09-12) had crude correctly down 3.1% two sentences earlier.
+            # Found on 2026-09-13, and only findable then: until the change was
+            # locked, the board itself read +0.94% for that session, so "rally"
+            # AGREED with a wrong number and nothing fired. Fixing the board
+            # turned a silent pass into a blocking failure on correct prose.
+            if up and _CAPPED.search(sent[:up.start()]):
+                up = None
+            if dn and _CAPPED.search(sent[:dn.start()]):
+                dn = None
             wrong = ((up, not dn, _MOVE_UP, 'UP',   pct < -_FLAT_BAND),
                      (dn, not up, _MOVE_DN, 'DOWN', pct > _FLAT_BAND))
             for hit, alone, rx, word, contradicts in wrong:

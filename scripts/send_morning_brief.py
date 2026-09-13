@@ -120,46 +120,21 @@ def strip_html(s):
     return re.sub(r"<[^>]+>", "", str(s)).strip()
 
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import market_board   # noqa: E402  ONE definition of "is this the same session's board"
+
 ARCHIVE_DIR = "data/daily-archive"
 
 
-def _same_board(a, b):
-    """Two issues carrying an identical board are the same session.
-
-    The archive publishes at weekends and on holidays, and those issues carry
-    the previous close forward unchanged. Walking back one file therefore lands
-    on a non-session and every change comes out zero.
-    """
-    shared = [k for k in a if k in b
-              and isinstance(a[k], (int, float)) and isinstance(b[k], (int, float))]
-    if len(shared) < 3:
-        return False
-    return all(abs(a[k] - b[k]) < 1e-9 for k in shared)
-
-
 def _prior_board(daily):
-    """The locked board of the previous trading session, from the archive."""
-    import glob as _glob
-    cur = daily.get("locked_prices") or {}
-    ref = ""
-    for cand in (daily.get("date"), str(daily.get("generated_at") or "")[:10]):
-        try:
-            ref = datetime.fromisoformat(str(cand)[:10]).date().isoformat()
-            break
-        except Exception:
-            continue
-    if not ref:
-        ref = date.today().isoformat()
-    try:
-        for f in reversed(sorted(_glob.glob(os.path.join(ARCHIVE_DIR, "20*.json")))):
-            if os.path.basename(f)[:10] >= ref:
-                continue
-            lp = (json.load(open(f, encoding="utf-8")) or {}).get("locked_prices") or {}
-            if lp and not _same_board(lp, cur):
-                return lp
-    except Exception:
-        pass
-    return {}
+    """The locked board of the previous trading session, from the archive.
+
+    v5.3: one definition, in market_board. The copy that used to live here
+    compared every shared key, and bitcoin trades around the clock -- so a
+    frozen ag board read as a fresh session and the brief's change column came
+    out zeros."""
+    lp, _day, _err = market_board.prior_board(daily, ARCHIVE_DIR)
+    return lp
 
 
 def get_change_pct(symbol, prior_board, daily):
@@ -186,6 +161,14 @@ def get_change_pct(symbol, prior_board, daily):
     disagree. No live fallback: a row with no prior board prints no percentage
     rather than a percentage from somewhere else.
     """
+    # v5.4: prefer the previous close LOCKED at generation, from the same fetch
+    # that set the price. Same arithmetic below, so this row still cannot mix
+    # two sessions — it just stops reconstructing the prior board from an
+    # archived snapshot taken at a different time of day. Issues archived before
+    # the lock fall back to `prior_board`.
+    _pct = market_board.locked_change(daily, symbol)
+    if _pct is not None:
+        return _pct / 100.0        # this function returns a FRACTION, not a percent
     cur = (daily.get("locked_prices") or {}).get(symbol)
     prev = (prior_board or {}).get(symbol)
     if not isinstance(cur, (int, float)) or not isinstance(prev, (int, float)) or not prev:

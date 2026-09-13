@@ -11,7 +11,9 @@
     "foreign-land.html"
    ],
    "written_by": [],
-   "touched_by": [],
+   "touched_by": [
+    "Rebuild Feed Manifest"
+   ],
    "cadence": "maintained by hand, not on a schedule",
    "curated": true,
    "planned": false,
@@ -35,6 +37,7 @@
     "Build Analyst Scorecard",
     "Fetch COT Data",
     "Generate Daily Briefing",
+    "Rebuild Call Scorecard",
     "WASDE watch \u2014 grade the report as it lands",
     "Build What's Priced In"
    ],
@@ -226,7 +229,8 @@
    ],
    "touched_by": [
     "COT Release Watch",
-    "Fetch COT Data"
+    "Fetch COT Data",
+    "Rebuild Feed Manifest"
    ],
    "cadence": "10 launches on a fixed schedule at about 2pm, 3pm, 4pm Central",
    "curated": false,
@@ -269,6 +273,8 @@
     "COT Release Watch",
     "Fetch COT Data",
     "Generate Daily Briefing",
+    "Rebuild Feed Manifest",
+    "Rebuild Call Scorecard",
     "WASDE watch \u2014 grade the report as it lands",
     "Build What's Priced In"
    ],
@@ -305,7 +311,8 @@
     "Fetch Crop Progress"
    ],
    "touched_by": [
-    "Fetch Crop Progress"
+    "Fetch Crop Progress",
+    "Rebuild Feed Manifest"
    ],
    "cadence": "4 launches on a fixed schedule at about 7am, 3pm, 4pm Central",
    "curated": false,
@@ -330,10 +337,12 @@
    ],
    "written_by": [
     "Generate Daily Briefing",
+    "Rebuild Call Scorecard",
     "Generate RSS Feed"
    ],
    "touched_by": [
     "Generate Daily Briefing",
+    "Rebuild Call Scorecard",
     "Generate RSS Feed"
    ],
    "cadence": "4 launches on a fixed schedule at about 5am, 6am, 8am, 3pm Central",
@@ -392,7 +401,9 @@
     "status.html"
    ],
    "written_by": [],
-   "touched_by": [],
+   "touched_by": [
+    "Rebuild Feed Manifest"
+   ],
    "cadence": "maintained by hand, not on a schedule",
    "curated": true,
    "planned": true,
@@ -436,7 +447,8 @@
     "Fetch Export Sales"
    ],
    "touched_by": [
-    "Fetch Export Sales"
+    "Fetch Export Sales",
+    "Rebuild Feed Manifest"
    ],
    "cadence": "4 launches on a fixed schedule at about 7am, 8am, 9am Central",
    "curated": false,
@@ -535,7 +547,8 @@
     "Harvest price tracker"
    ],
    "touched_by": [
-    "Harvest price tracker"
+    "Harvest price tracker",
+    "Rebuild Feed Manifest"
    ],
    "cadence": "1 launch weekdays at about 4pm Central",
    "curated": false,
@@ -564,6 +577,7 @@
     "Fetch COT Data",
     "Generate Daily Briefing",
     "Fetch Markets",
+    "Rebuild Call Scorecard",
     "WASDE watch \u2014 grade the report as it lands",
     "Build What's Priced In"
    ],
@@ -586,7 +600,9 @@
     "status.html"
    ],
    "written_by": [],
-   "touched_by": [],
+   "touched_by": [
+    "Rebuild Feed Manifest"
+   ],
    "cadence": "published by dnilgis/bids, refreshed with the boards",
    "curated": false,
    "planned": false,
@@ -904,7 +920,9 @@
     "grower-pulse.html"
    ],
    "written_by": [],
-   "touched_by": [],
+   "touched_by": [
+    "Rebuild Feed Manifest"
+   ],
    "cadence": "maintained by hand, not on a schedule",
    "curated": true,
    "planned": false,
@@ -999,7 +1017,9 @@
     "index.html"
    ],
    "written_by": [],
-   "touched_by": [],
+   "touched_by": [
+    "Rebuild Feed Manifest"
+   ],
    "cadence": "maintained by hand, not on a schedule",
    "curated": true,
    "planned": false,
@@ -1016,7 +1036,9 @@
     "index.html"
    ],
    "written_by": [],
-   "touched_by": [],
+   "touched_by": [
+    "Rebuild Feed Manifest"
+   ],
    "cadence": "maintained by hand, not on a schedule",
    "curated": true,
    "planned": false,
@@ -1036,6 +1058,7 @@
     "RMA price discovery"
    ],
    "touched_by": [
+    "Rebuild Feed Manifest",
     "RMA price discovery"
    ],
    "cadence": "1 launch every day at about 5pm Central",
@@ -1056,12 +1079,14 @@
     "scorecard.html"
    ],
    "written_by": [
-    "Generate Daily Briefing"
+    "Generate Daily Briefing",
+    "Rebuild Call Scorecard"
    ],
    "touched_by": [
     "Build Analyst Scorecard",
     "Fetch COT Data",
     "Generate Daily Briefing",
+    "Rebuild Call Scorecard",
     "WASDE watch \u2014 grade the report as it lands",
     "Build What's Priced In"
    ],
@@ -1133,6 +1158,7 @@
     "Tariff data check"
    ],
    "touched_by": [
+    "Rebuild Feed Manifest",
     "Tariff data check"
    ],
    "cadence": "maintained by hand, not on a schedule",
@@ -1220,7 +1246,9 @@
     "hail-map.html"
    ],
    "written_by": [],
-   "touched_by": [],
+   "touched_by": [
+    "Rebuild Feed Manifest"
+   ],
    "cadence": "maintained by hand, not on a schedule",
    "curated": true,
    "planned": false,
@@ -1249,6 +1277,7 @@
     "COT Release Watch",
     "Fetch COT Data",
     "Generate Daily Briefing",
+    "Rebuild Call Scorecard",
     "WASDE watch \u2014 grade the report as it lands",
     "Build What's Priced In"
    ],

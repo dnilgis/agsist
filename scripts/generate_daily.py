@@ -539,7 +539,7 @@ def load_prices():
     with open(PRICES_PATH) as f: data = json.load(f)
     fetched = data.get("fetched", "")
     quotes = _resolve_front_month(data)  # repair roll-splice contamination before locking prices
-    price_lines = []; locked_prices = {}; surprises = []
+    price_lines = []; locked_prices = {}; locked_changes = {}; surprises = []
     for key, label in COMMODITY_LABELS.items():
         q = quotes.get(key)
         if not q or q.get("close") is None: continue
@@ -557,6 +557,16 @@ def load_prices():
             price_str = f"{close:.2f}%"; chg_str = f"{pct:+.1f}%"; locked_prices[key] = close
         else:
             price_str = f"${close:.2f}"; chg_str = f"{pct:+.1f}%"; locked_prices[key] = close
+        # v5.4 (2026-09-13): LOCK THE CHANGE, not just the price.
+        # `pct` here is the source's own close-over-close move, read at fetch
+        # time. Until now only the price survived, so every consumer that wanted
+        # a change re-derived one by walking the archive and comparing two
+        # SNAPSHOTS taken at different times of day — which mixes in overnight
+        # drift. Measured on 2026-09-12: the walk gave corn -0.49% and beans
+        # -1.39% where the fetch had -0.63% and -1.81%. The number was here all
+        # along and was being thrown away one line above.
+        locked_changes[key] = {"prev": round(opn / 100, 4) if is_grain else round(opn, 4),
+                               "pct": round(pct, 4)}
         arrow = "UP" if pct > 0 else ("DN" if pct < 0 else "FLAT")
         line = f"  {label}: {price_str} ({arrow} {chg_str})"
         wk52_hi = q.get("wk52_hi"); wk52_lo = q.get("wk52_lo")
@@ -573,6 +583,7 @@ def load_prices():
                 "surprise_magnitude": round(abs(pct) / threshold, 1)})
     surprises.sort(key=lambda x: x["surprise_magnitude"], reverse=True)
     return ({"price_block": "\n".join(price_lines), "locked_prices": locked_prices,
+             "locked_changes": locked_changes,
              "fetched": fetched, "surprises": surprises, "quotes": quotes}, surprises)
 
 
@@ -3932,6 +3943,24 @@ def main():
     else:
         print("  Validation passed")
     briefing["locked_prices"] = locked_prices
+    # v5.4: the change column, locked with the prices it belongs to, plus the
+    # sessions the two numbers belong to. Recorded once here so no reader has to
+    # infer them from a publish time or reconstruct them from the archive.
+    briefing["locked_changes"] = price_data.get("locked_changes", {}) or {}
+    _fetched = price_data.get("fetched", "")
+    try:
+        import market_board as _mb
+        _qs, _ps = _mb.quote_session(_fetched), _mb.prev_close_session(_fetched)
+        briefing["board"] = {
+            "fetched": _fetched,
+            "quote_session": _qs.isoformat() if _qs else None,
+            "prev_close_session": _ps.isoformat() if _ps else None,
+        }
+        print(f"  Board: {len(briefing['locked_changes'])} locked changes; "
+              f"quotes are the {_qs} session, change is against the {_ps} close")
+    except Exception as _e:
+        briefing["board"] = {"fetched": _fetched}
+        print(f"  [warn] board session stamp unavailable ({type(_e).__name__}: {_e})")
     # v5.1: grade yesterday's call now that today's closes are on the briefing,
     # so save_archive() below renders the verdict and call_line first time.
     briefing = grade_in_generator(briefing, market_status)

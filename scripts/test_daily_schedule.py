@@ -57,6 +57,7 @@ import subprocess
 import sys
 import tempfile
 from pathlib import Path
+import yaml
 
 WF = Path(__file__).resolve().parent.parent / ".github/workflows/daily.yml"
 FAILED = []
@@ -388,8 +389,30 @@ def main():
           and "needs.gate.outputs.skip != '1'" in y,
           "a skipped day skips the EMAIL too, not just the generation")
     email_if = "github.event_name == 'schedule' || inputs.send_email == true"
-    check(y.count(email_if) == 2,
-          "a manual run is still a dry run unless send_email is ticked")
+    # ASK THE PROPERTY, NOT THE COUNT. This used to assert `count == 2`, which
+    # went red the day a third guarded step was added and stayed red for weeks
+    # — a guard nobody reads is worse than no guard. What actually matters is
+    # that EVERY step which puts mail on the wire carries the dry-run
+    # condition, so the check now names the offender instead of a number.
+    # Comment lines inside a run block are stripped first: the tombstone in the
+    # gate job mentions send_daily.py and is not a send.
+    MAILERS = ("send_daily.py", "send_morning_brief.py", "brief_email.py")
+    parsed = yaml.safe_load(open(WF))
+    unguarded = []
+    for job_name, job in (parsed.get("jobs") or {}).items():
+        for step in (job.get("steps") or []):
+            body = "\n".join(ln for ln in (step.get("run") or "").splitlines()
+                              if not ln.lstrip().startswith("#"))
+            if not any(m in body for m in MAILERS):
+                continue
+            if email_if not in str(step.get("if") or ""):
+                unguarded.append("%s / %s" % (job_name, step.get("name") or "(unnamed)"))
+    check(not unguarded,
+          "a manual run is still a dry run unless send_email is ticked",
+          "sends without the guard: " + ", ".join(unguarded))
+    check(y.count(email_if) >= 2,
+          "and the guard is on the wire in more than one place",
+          "found %d" % y.count(email_if))
     # THE TWO HALVES OF THE PUSH CHANGE MUST TRAVEL TOGETHER. A push trigger
     # without `push` in the email condition publishes to the site and sends
     # nothing — an up-to-date page and an empty inbox, which is the complaint
