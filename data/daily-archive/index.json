@@ -1,6 +1,17 @@
 {
   "briefings": [
     {
+      "date": "2026-09-14",
+      "date_display": "Monday, September 14, 2026",
+      "headline": "CRUDE BACK AT $102; BEANS CRACK, CORN FIRMS",
+      "teaser": "Crude runs on Saudi pipeline news; beans fold on Fed fears while corn holds its ground.",
+      "market_mood": "mixed",
+      "surprise_count": 4,
+      "sections": 3,
+      "url": "/daily/2026-09-14",
+      "market_closed": false
+    },
+    {
       "date": "2026-09-13",
       "date_display": "Sunday, September 13, 2026",
       "headline": "BEANS HOLD $12.99; CRUDE AT $100, WEEK AHEAD",
@@ -2126,6 +2137,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-09-13T17:22:48.385262+00:00",
-  "count": 185
+  "updated": "2026-09-14T10:56:50.241544+00:00",
+  "count": 186
 }

@@ -5,13 +5,25 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Sun, 13 Sep 2026 17:22:49 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 14 Sep 2026 10:56:52 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/agsist.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>CRUDE BACK AT $102; BEANS CRACK, CORN FIRMS</title>
+      <link>https://agsist.com/daily/2026-09-14</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-09-14</guid>
+      <pubDate>Mon, 14 Sep 2026 05:00:00 -0600</pubDate>
+      <description>Saudi East-West pipeline offline + Brent at $108 this morning handed corn a tailwind and charged beans a toll: WTI settled $102.38, November beans cracked to $12.95, and the corn-bean spread is the widest it has been since the August WASDE. Input costs just got repriced for fall fieldwork.
+Action: New-crop beans at $12.95: a settle at or below $12.85 is the sell signal the Sep 12 brief flagged. Do not wait for $12.70.
+• CORN FIRMS; BEANS CRACK
+• CRUDE RUNS; FED HIKE LOOMS
+• CATTLE FIRMS; HOGS SLIP
+Read more: https://agsist.com/daily/2026-09-14</description>
+    </item>
     <item>
       <title>BEANS HOLD $12.99; CRUDE AT $100, WEEK AHEAD</title>
       <link>https://agsist.com/daily/2026-09-13</link>
@@ -391,19 +403,6 @@ Pro Farmer scouts hit the road Monday; Friday's close sets the stakes for what t
 • BEANS LAG, BUT TOUR WEEK IS THE REAL TEST
 • CATTLE SLIP ON FUND EXIT, STRUCTURAL STORY INTACT
 Read more: https://agsist.com/daily/2026-08-16</description>
-    </item>
-    <item>
-      <title>PRO FARMER TOUR STARTS MONDAY: GRAINS FINISH STRONG</title>
-      <link>https://agsist.com/daily/2026-08-15</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-08-15</guid>
-      <pubDate>Sat, 15 Aug 2026 05:00:00 -0600</pubDate>
-      <description>Corn closed Friday at $4.59, up 9 cents on the session and up for the week, with December at $4.84 telling the new-crop story. Wheat ran harder, finishing at $6.74, up 17 cents. Both markets are pricing a question, not an answer: the Pro Farmer Crop Tour hits fields Monday, and whatever scouts find in dough-stage corn and pod-filling beans overrides every chart level currently on the board.
-Corn and wheat closed the week with real gains; the crop tour starting Aug 17 is the next number that matters.
-• GRAINS RUN INTO TOUR WEEK
-  → Old-crop corn sellers: $4.59 is above the 52-week midpoint. If you have unpriced bushels, the tour's Wednesday summary is your natural exit window before volatility settles.
-• BEANS LAG, CARRY TELLS THE STORY
-• CATTLE SLIP ON FUND EXIT
-Read more: https://agsist.com/daily/2026-08-15</description>
     </item>
   </channel>
 </rss>

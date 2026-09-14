@@ -1,9 +1,9 @@
 {
- "updated": "2026-09-13T21:23:38+00:00",
- "total": 123,
+ "updated": "2026-09-14T10:56:52+00:00",
+ "total": 124,
  "played_out": 41,
  "didnt": 75,
- "pending": 7,
+ "pending": 8,
  "hit_rate": 35.3,
  "by_method": {
   "deterministic": {
@@ -96,6 +96,21 @@
  "mismatched": 2,
  "current_streak": 0,
  "records": [
+  {
+   "made": "2026-09-14",
+   "judged": null,
+   "call": "Called soybeans down toward $12.8 ($12.945 when the call was made).",
+   "outcome": "pending",
+   "method": "deterministic",
+   "mismatch": false,
+   "note": "Open: no session has settled since this call was made.",
+   "instrument": "beans",
+   "direction": "down",
+   "level": 12.8,
+   "p0": 12.945,
+   "p1": null,
+   "design": "v2"
+  },
   {
    "made": "2026-09-13",
    "judged": null,
