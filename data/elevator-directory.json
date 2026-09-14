@@ -1,18 +1,18 @@
 {
- "generated": "2026-09-12T14:21:28Z",
+ "generated": "2026-09-14T16:56:06Z",
  "from": "bids-full.json",
  "complete": false,
  "note": "Directory only: who operates a facility and where. No prices, no basis, no symbols, no delivery windows.",
  "counts": {
-  "facilities": 1800,
+  "facilities": 1798,
   "states": 28,
   "with_address": 0,
   "with_coords": 0,
   "with_url": 0,
-  "with_phone": 1800,
+  "with_phone": 1798,
   "saturated_zips": 0,
   "failed_zips": 0,
-  "rows_read": 17890
+  "rows_read": 17880
  },
  "saturated": [],
  "failed": [],
@@ -87,15 +87,6 @@
    "state": "CO",
    "zip": "80650",
    "phone": " 970-381-4402",
-   "source": "barchart"
-  },
-  {
-   "facility": "Roggen Farmers Elevator Association",
-   "branch": "Roggen Elevator - Main Office",
-   "city": "Roggen",
-   "state": "CO",
-   "zip": "80652",
-   "phone": "(303) 849-5506",
    "source": "barchart"
   },
   {
@@ -7443,15 +7434,6 @@
    "source": "barchart"
   },
   {
-   "facility": "Cardinal Ethanol",
-   "branch": "Cardinal Colwich",
-   "city": "Colwich",
-   "state": "KS",
-   "zip": "67030",
-   "phone": "(316) 789-2500",
-   "source": "barchart"
-  },
-  {
    "facility": "Cargill US",
    "branch": "Hutchinson East, CAH",
    "city": "Hutchinson",
@@ -8173,20 +8155,20 @@
   },
   {
    "facility": "Farmers Cooperative Equity Company",
-   "branch": "Nashville",
-   "city": "Nashville",
-   "state": "KS",
-   "zip": "67112",
-   "phone": "620-246-5226",
-   "source": "barchart"
-  },
-  {
-   "facility": "Farmers Cooperative Equity Company",
    "branch": "St. Leo",
    "city": "Nashville",
    "state": "KS",
    "zip": "67112",
    "phone": "620-246-5262",
+   "source": "barchart"
+  },
+  {
+   "facility": "Farmers Cooperative Equity Company",
+   "branch": "Nashville",
+   "city": "Nashville",
+   "state": "KS",
+   "zip": "67112",
+   "phone": "620-246-5226",
    "source": "barchart"
   },
   {
@@ -8853,15 +8835,6 @@
    "state": "KS",
    "zip": "67137",
    "phone": "620-736-2011",
-   "source": "barchart"
-  },
-  {
-   "facility": "Skyland Grain",
-   "branch": "Cunningham Area",
-   "city": "Cunningham",
-   "state": "KS",
-   "zip": "67035",
-   "phone": "(620) 298-2011",
    "source": "barchart"
   },
   {
@@ -15339,6 +15312,15 @@
   {
    "facility": "Dumas Co-op Elevators",
    "branch": "Mwell",
+   "city": "Dumas",
+   "state": "TX",
+   "zip": "79029",
+   "phone": "806-935-6440",
+   "source": "barchart"
+  },
+  {
+   "facility": "Dumas Co-op Elevators",
+   "branch": "Etter",
    "city": "Dumas",
    "state": "TX",
    "zip": "79029",
