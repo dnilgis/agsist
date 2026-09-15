@@ -15,5 +15,71 @@
  },
  "windows": [],
  "series": [],
- "byPage": []
+ "byPage": [],
+ "creative": {
+  "live": false,
+  "proof_code": "94420f85",
+  "fields": {
+   "advertiser": "Apex Insurance Group of WI",
+   "headline": "Farm, business and personal insurance from an independent agency.",
+   "body": "Apex Insurance Group is an independent multi-line agency with 13 offices across the Midwest and its home office in Bloomer, Wisconsin. Farm, business, auto, home, life and employee benefits, placed with more than one carrier. Call 715-568-5050 or email info@aigwi.com.",
+   "cta_text": "Talk to Apex",
+   "cta_url": "https://aigwi.com/",
+   "disclosure": "Apex Insurance Group of WI, LLC \u00b7 2055 19th Ave Ste 100, Bloomer, WI 54724 \u00b7 aigwi.com. Paid sponsorship. AGSIST does not sell insurance and receives no commission on any policy."
+  },
+  "label": "SPONSORED",
+  "tier": "founding",
+  "links": {
+   "homepage": "https://aigwi.com/?utm_source=agsist&utm_medium=homepage&utm_campaign=sponsor-apex",
+   "archive": "https://aigwi.com/?utm_source=agsist&utm_medium=archive&utm_campaign=sponsor-apex",
+   "daily_email": "https://aigwi.com/?utm_source=agsist&utm_medium=daily_email&utm_campaign=sponsor-apex",
+   "rss": "https://aigwi.com/?utm_source=agsist&utm_medium=rss&utm_campaign=sponsor-apex",
+   "report": "https://aigwi.com/?utm_source=agsist&utm_medium=report&utm_campaign=sponsor-apex"
+  },
+  "previews": {
+   "homepage": "<aside class=\"dv3-sponsor\" aria-label=\"Sponsored content\"><div class=\"dv3-sponsor-label-row\"><span class=\"dv3-sponsor-label\">SPONSORED</span><span class=\"dv3-sponsor-by\">Apex Insurance Group of WI</span></div><div class=\"dv3-sponsor-headline\">Farm, business and personal insurance from an independent agency.</div><div class=\"dv3-sponsor-body\">Apex Insurance Group is an independent multi-line agency with 13 offices across the Midwest and its home office in Bloomer, Wisconsin. Farm, business, auto, home, life and employee benefits, placed with more than one carrier. Call 715-568-5050 or email info@aigwi.com.</div><a class=\"dv3-sponsor-cta\" href=\"https://aigwi.com/?utm_source=agsist&amp;utm_medium=homepage&amp;utm_campaign=sponsor-apex\" rel=\"sponsored noopener\" target=\"_blank\">Talk to Apex &rarr;</a><div class=\"dv3-sponsor-disclosure\">Apex Insurance Group of WI, LLC \u00b7 2055 19th Ave Ste 100, Bloomer, WI 54724 \u00b7 aigwi.com. Paid sponsorship. AGSIST does not sell insurance and receives no commission on any policy.</div></aside>",
+   "archive": "<aside class=\"dv3-sponsor\" aria-label=\"Sponsored content\"><div class=\"dv3-sponsor-label-row\"><span class=\"dv3-sponsor-label\">SPONSORED</span><span class=\"dv3-sponsor-by\">Apex Insurance Group of WI</span></div><div class=\"dv3-sponsor-headline\">Farm, business and personal insurance from an independent agency.</div><div class=\"dv3-sponsor-body\">Apex Insurance Group is an independent multi-line agency with 13 offices across the Midwest and its home office in Bloomer, Wisconsin. Farm, business, auto, home, life and employee benefits, placed with more than one carrier. Call 715-568-5050 or email info@aigwi.com.</div><a class=\"dv3-sponsor-cta\" href=\"https://aigwi.com/?utm_source=agsist&amp;utm_medium=archive&amp;utm_campaign=sponsor-apex\" rel=\"sponsored noopener\" target=\"_blank\">Talk to Apex &rarr;</a><div class=\"dv3-sponsor-disclosure\">Apex Insurance Group of WI, LLC \u00b7 2055 19th Ave Ste 100, Bloomer, WI 54724 \u00b7 aigwi.com. Paid sponsorship. AGSIST does not sell insurance and receives no commission on any policy.</div></aside>",
+   "email_html": "<tr><td style=\"padding:16px 0 0\"><table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\"><tr><td style=\"border-left:3px solid #e3ded4;padding:2px 0 2px 12px\"><div style=\"font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:#6b6b6b\">SPONSORED &middot; Apex Insurance Group of WI</div><div class=\"ink\" style=\"font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:15px;line-height:1.45;font-weight:700;color:#14100a;padding-top:4px\">Farm, business and personal insurance from an independent agency.</div><div class=\"ink\" style=\"font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:14px;line-height:1.55;color:#14100a;padding-top:5px\">Apex Insurance Group is an independent multi-line agency with 13 offices across the Midwest and its home office in Bloomer, Wisconsin. Farm, business, auto, home, life and employee benefits, placed with more than one carrier. Call 715-568-5050 or email info@aigwi.com.</div><div style=\"padding-top:7px\"><a href=\"https://aigwi.com/?utm_source=agsist&amp;utm_medium=daily_email&amp;utm_campaign=sponsor-apex\" rel=\"sponsored noopener\" style=\"font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:#8a6b1f;text-decoration:underline\">Talk to Apex &rarr;</a></div><div class=\"mute\" style=\"font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:11px;line-height:1.5;color:#6b6b6b;padding-top:6px\">Apex Insurance Group of WI, LLC \u00b7 2055 19th Ave Ste 100, Bloomer, WI 54724 \u00b7 aigwi.com. Paid sponsorship. AGSIST does not sell insurance and receives no commission on any policy.</div></td></tr></table></td></tr>",
+   "css": ".dv3-sponsor{background:linear-gradient(135deg,var(--surface) 0%,rgba(218,165,32,.04) 100%);border:2px solid rgba(218,165,32,.30);border-radius:8px;padding:1.4rem 1.6rem;margin-bottom:1.75rem;position:relative;overflow:hidden}\n.dv3-sponsor::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--gold) 0%,rgba(218,165,32,.3) 60%,transparent 100%)}\n.dv3-sponsor--house{border-style:dashed;border-color:rgba(218,165,32,.34)}\n.dv3-sponsor-label-row{display:flex;align-items:center;justify-content:space-between;gap:.6rem;margin-bottom:.65rem;flex-wrap:wrap}\n.dv3-sponsor-label{font-family:'JetBrains Mono',monospace;font-size:.6rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);padding:.2rem .6rem;border:1px solid rgba(218,165,32,.42);border-radius:3px;background:rgba(218,165,32,.06)}\n.dv3-sponsor-by{font-family:'JetBrains Mono',monospace;font-size:.7rem;font-weight:600;color:var(--text-muted);letter-spacing:.04em}\n.dv3-sponsor-headline{font-family:'Oswald',sans-serif;font-size:1.2rem;font-weight:700;color:var(--text);line-height:1.3;margin-bottom:.6rem;letter-spacing:-.005em}\n.dv3-sponsor-body{font-size:.93rem;line-height:1.7;color:var(--text-dim);margin-bottom:.95rem}\n.dv3-sponsor-cta{display:inline-flex;align-items:center;gap:.4rem;font-family:'JetBrains Mono',monospace;font-size:.78rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;text-decoration:none;color:#0a1a0a;background:var(--gold);padding:.65rem 1.05rem;border-radius:6px;transition:background .15s,transform .1s;min-height:44px}\n.dv3-sponsor-cta:hover{background:#c9941d;transform:translateY(-1px)}\n.dv3-sponsor-disclosure{font-size:.66rem;color:var(--text-muted);margin-top:.7rem;letter-spacing:.02em;line-height:1.5}\n@media(max-width:640px){.dv3-page{padding:1.25rem .9rem}.dv3-topbar{grid-template-columns:minmax(0,1fr)}.dv3-one-number-val{font-size:2.4rem}.dv3-sec{padding:.85rem 1rem}.dv3-sponsor{padding:1.1rem 1.2rem}.dv3-sponsor-headline{font-size:1.05rem}.dv3-forward{flex-direction:column;align-items:flex-start;gap:.7rem}.dv3-forward-cta{width:100%;justify-content:center}}"
+  }
+ },
+ "rateCard": {
+  "_": "THE ONE DEFINITION OF WHAT A PLACEMENT COSTS. These prices are published in three places: sponsor.html (the pitch), about.html, and now each sponsor's own portal. scripts/test_rate_card.py fails if a price here is not present on sponsor.html, so the two cannot drift without somebody being told. Change a price HERE first, then the prose around it.",
+  "_updated": "2026-09-13",
+  "currency": "USD",
+  "trial": "First 2 weeks free on every tier. No card, no commitment.",
+  "terms": "Month-to-month. No minimum, cancel any time, no penalty.",
+  "tiers": [
+   {
+    "id": "founding",
+    "name": "Founding sponsor",
+    "price_week": 100,
+    "slots": 1,
+    "exclusive": true,
+    "placement": "Above the fold on every daily briefing and on the homepage. Web and email.",
+    "note": "One ag company per issue. Founding rate locked for 12 months from start date. Once filled, the next slot opens only on renewal.",
+    "year_equivalent": 5200
+   },
+   {
+    "id": "page",
+    "name": "Own a page",
+    "price_week": 35,
+    "slots": null,
+    "exclusive": true,
+    "placement": "One sponsor ribbon on a single high-traffic page, category-exclusive.",
+    "note": "Any one page \u2014 cash bids, the hail map, break-even, a state hail page. The 51 state hail pages can each carry their own ribbon at the same rate."
+   },
+   {
+    "id": "supporter",
+    "name": "Supporter",
+    "price_week": 25,
+    "slots": 6,
+    "exclusive": false,
+    "placement": "Your name or logo in the shared Supporters strip in the footer of every page.",
+    "note": "Non-exclusive and capped at 6 so the strip keeps its value."
+   }
+  ]
+ },
+ "approveTo": "sig@farmers1st.com",
+ "creativeRefreshed": "2026-09-13T22:45:05+00:00"
 }

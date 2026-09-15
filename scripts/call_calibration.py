@@ -54,13 +54,22 @@ BAND_KEYS = ["corn", "beans", "wheat", "cattle", "feeders", "hogs",
              "meal", "soyoil", "oats", "milk", "crude", "natgas"]
 
 
-def _archive_closes(archive_dir, key, max_days=LOOKBACK + 5):
+def _archive_closes(archive_dir, key, max_days=LOOKBACK + 5, as_of=None):
     """Consecutive available closes for one locked_prices key, oldest->newest.
-    Skips market-closed days and days missing the key."""
+    Skips market-closed days and days missing the key.
+
+    as_of (YYYY-MM-DD) stops the window there, so the band is the one that
+    APPLIED ON THAT DAY. Without it the archive walk always takes the newest
+    sessions -- right for the generator and the gate, which ask about today,
+    and wrong for anything scoring a historical call: a call made on June 24
+    would be judged against September's volatility. Default None keeps the
+    live behaviour exactly as it was."""
     arch = Path(archive_dir)
     if not arch.exists():
         return []
     dates = sorted(p.stem for p in arch.glob("*.json") if p.stem != "index")
+    if as_of:
+        dates = [d for d in dates if d <= str(as_of)[:10]]
     closes = []
     for d in dates[-max_days:]:
         try:
@@ -77,25 +86,26 @@ def _archive_closes(archive_dir, key, max_days=LOOKBACK + 5):
     return closes
 
 
-def realized_moves(archive_dir, key, n=LOOKBACK):
+def realized_moves(archive_dir, key, n=LOOKBACK, as_of=None):
     """Last n absolute close-to-close moves for an instrument. [] if thin."""
-    closes = _archive_closes(archive_dir, key)
+    closes = _archive_closes(archive_dir, key, as_of=as_of)
     moves = [abs(b - a) for a, b in zip(closes, closes[1:])]
     return moves[-n:]
 
 
-def avg_move(archive_dir, key, n=LOOKBACK):
+def avg_move(archive_dir, key, n=LOOKBACK, as_of=None):
     """Mean absolute one-session move, or None below MIN_SAMPLES moves."""
-    m = realized_moves(archive_dir, key, n)
+    m = realized_moves(archive_dir, key, n, as_of=as_of)
     if len(m) < MIN_SAMPLES:
         return None
     return sum(m) / len(m)
 
 
-def level_band(archive_dir, key, report_day=False):
+def level_band(archive_dir, key, report_day=False, as_of=None):
     """(min_dist, max_dist) a v2 level should sit from today's close, or None.
-    report_day widens both edges — report sessions are a different regime."""
-    a = avg_move(archive_dir, key)
+    report_day widens both edges — report sessions are a different regime.
+    as_of pins the volatility window to that date; see _archive_closes."""
+    a = avg_move(archive_dir, key, as_of=as_of)
     if a is None or a <= 0:
         return None
     if report_day:
@@ -127,7 +137,7 @@ def bands_text(archive_dir, keys=None, report_day=False):
     return " · ".join(parts)
 
 
-def band_check(call, today_close, archive_dir):
+def band_check(call, today_close, archive_dir, as_of=None):
     """Gate-side check of a v2 call's level distance.
     Returns (status, detail): 'ok' | 'too_far' | 'too_near' | 'unknown'.
     Honors the generator's report_day stamp on the call, so a WASDE-day call
@@ -142,7 +152,7 @@ def band_check(call, today_close, archive_dir):
     if not key:
         return "unknown", f"no locked key for instrument {call.get('instrument')!r}"
     report_day = bool(call.get("report_day"))
-    band = level_band(archive_dir, key, report_day=report_day)
+    band = level_band(archive_dir, key, report_day=report_day, as_of=as_of)
     if band is None:
         return "unknown", f"{key}: not enough archive history for a band"
     dist = abs(level - close)

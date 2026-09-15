@@ -67,6 +67,9 @@ SLOT_DIMENSION = None       # e.g. "customEvent:slot"
 
 VIEWABLE_EVENTS = ["sponsor_viewable"]
 
+# Where an approval lands. Per-sponsor override in sponsors.json: approve_to.
+APPROVE_TO = "sig@farmers1st.com"
+
 # EMPTY, ON PURPOSE -- see the note above. Every impression event this site has
 # ever fired came from a slot advertising the slot. There is no sponsor history
 # to carry forward, so there is nothing honest to put here.
@@ -82,6 +85,172 @@ CLICK_EVENTS = ["sponsor_click", "supporter_click"]
 def fail(msg):
     print("::error::" + msg)
     sys.exit(1)
+
+
+# ── THE PROOF ─────────────────────────────────────────────────────────────
+# A sponsor approving an ad has to be approving SPECIFIC WORDS, or the approval
+# means nothing. There is no server here to record a click, so the approval is
+# an email -- and what makes it worth having is the code.
+#
+# proof_code is a short hash of the exact fields that reach a reader: the
+# advertiser, the headline, the body, the CTA text, the destination and the
+# disclosure. Change any of them and the code changes. The portal shows it, the
+# approval email carries it, and when the two stop matching the portal says so
+# rather than showing an approved badge over copy nobody approved.
+#
+# Deliberately NOT a signature. It proves WHICH WORDS, not who said yes -- that
+# is what the reply-to address is for. A four-byte hash is enough to catch a
+# changed word and short enough to read down a phone.
+
+CREATIVE_FIELDS = ("advertiser", "headline", "body", "cta_text", "cta_url", "disclosure")
+
+
+def proof_code(creative):
+    """Eight hex characters over the fields a reader actually sees."""
+    import hashlib
+    if not creative:
+        return None
+    blob = "\x1f".join(str(creative.get(k) or "") for k in CREATIVE_FIELDS)
+    return hashlib.sha256(blob.encode("utf-8")).hexdigest()[:8]
+
+
+def creative_block(slug):
+    """What this sponsor's ad says, where it points, and the code for it.
+
+    Returns None when there is no creative on file -- a sponsor who has not
+    been given one yet gets the pending page, not an empty proof.
+    """
+    src = ROOT / "data" / "sponsor.json"
+    if not src.exists():
+        return None
+    try:
+        c = json.loads(src.read_text())
+    except (OSError, ValueError):
+        return None
+    # WHOSE CREATIVE IS THIS? An unattributed one is refused outright rather
+    # than handed to whichever sponsor asked. With two sponsors configured and
+    # no slug on the file, the second one's portal would have shown the first
+    # one's ad for approval -- and the proof code would have matched, which is
+    # the worst possible version of that mistake.
+    if not c.get("slug"):
+        print("  [warn] data/sponsor.json has no slug; refusing to attribute it")
+        return None
+    if c["slug"] != slug:
+        return None
+    if c.get("is_house_ad"):
+        return None
+    url = c.get("cta_url") or ""
+    links = {}
+    try:
+        sys.path.insert(0, str(ROOT / "scripts"))
+        import sponsor_links
+        links = sponsor_links.all_surfaces(url, slug) if url else {}
+    except Exception:
+        links = {}
+    return {
+        "live": bool(c.get("active")),
+        "proof_code": proof_code(c),
+        "fields": {k: c.get(k) for k in CREATIVE_FIELDS},
+        "label": c.get("label") or "SPONSORED",
+        "tier": c.get("tier"),
+        "links": links,
+        "previews": previews(c),
+    }
+
+
+# ---------------------------------------------------------------------------
+# THE PREVIEWS, RENDERED BY THE CODE THAT PUBLISHES -- NOT BY A LOOKALIKE.
+#
+# The portal used to draw its own approximation of the ad: .sr-ad, .sr-ad-head,
+# .sr-ad-cta, hand-styled in sponsor-report.html to resemble the site. Same six
+# fields in the same order, and `dv3-sponsor` appeared ZERO times in that file.
+#
+# That is a second copy of the definition, and it fails in the worst possible
+# direction. Change the real block's CSS and the proof drifts from what runs
+# WHILE THE PROOF CODE STILL MATCHES -- the code is a hash over the six text
+# fields, so it cannot see a styling change. The sponsor approves a picture of
+# something that is not what ships, and both sides have a matching code saying
+# they agreed.
+#
+# So nothing here is drawn. Every preview below is the output of the function
+# that actually writes that surface:
+#
+#     homepage, archive   generate_daily.render_sponsor_block_html(sp, surface)
+#     html email          brief_email.sponsor_block({"sponsor": sp})
+#     plain text          brief_email's text part, same fields, same order
+#
+# If any of those change, the preview changes with them on the next build,
+# because it IS them.
+# ---------------------------------------------------------------------------
+
+def site_sponsor_css():
+    """The real .dv3-sponsor rules, read out of the generator that emits them.
+
+    generate_daily.py holds this CSS inside an f-string, so its braces are
+    doubled in the source; they are halved back here. Extracted rather than
+    copied for the same reason the markup is: a stylesheet pasted into the
+    portal is a stylesheet that goes stale silently.
+    """
+    src = ROOT / "scripts" / "generate_daily.py"
+    try:
+        text = src.read_text(encoding="utf-8")
+    except OSError:
+        return ""
+    out = []
+    for line in text.splitlines():
+        t = line.strip()
+        if "dv3-sponsor" not in t:
+            continue
+        # A CSS rule, not a line of Python that mentions the class name.
+        if not (t.startswith(".dv3-sponsor") or t.startswith("@media")):
+            continue
+        if "{{" not in t:
+            continue
+        out.append(t.replace("{{", "{").replace("}}", "}"))
+    return "\n".join(out)
+
+
+def previews(c):
+    """What this ad looks like on each surface it runs on.
+
+    Returns {} rather than a half-built set when the renderers cannot be
+    imported: a missing preview is a portal with one section absent, and a
+    WRONG preview is a sponsor approving the wrong thing. The first is
+    recoverable.
+    """
+    out = {}
+    try:
+        sys.path.insert(0, str(ROOT / "scripts"))
+        import generate_daily as gd
+        for surface in ("homepage", "archive"):
+            out[surface] = gd.render_sponsor_block_html(c, surface=surface)
+    except Exception as e:                                    # noqa: BLE001
+        print("  [warn] no page preview (%s: %s)" % (type(e).__name__, e))
+
+    try:
+        sys.path.insert(0, str(ROOT / "scripts"))
+        import brief_email as be
+        # active=True ON THE COPY ONLY. sponsor_block() returns "" for an
+        # inactive sponsor, which is right for sending and wrong for a proof:
+        # the whole point of this page is showing an ad BEFORE it runs. The
+        # file on disk is not touched and data/sponsor.json keeps its own
+        # active flag -- nothing here can put an ad in front of a reader.
+        out["email_html"] = be.sponsor_block({"sponsor": dict(c, active=True)})
+    except Exception as e:                                    # noqa: BLE001
+        print("  [warn] no email preview (%s: %s)" % (type(e).__name__, e))
+
+    css = site_sponsor_css()
+    if css:
+        out["css"] = css
+    return out
+
+
+def rate_card():
+    f = ROOT / "data" / "rate-card.json"
+    try:
+        return json.loads(f.read_text())
+    except (OSError, ValueError):
+        return None
 
 
 def main():
@@ -116,8 +285,43 @@ def main():
     cred = os.environ.get("GA4_SERVICE_ACCOUNT", "").strip()
     if not prop or not cred:
         # Not a failure. A PR from a fork has no secrets and should not go red.
+        #
+        # BUT THE PROOF DOES NOT DEPEND ON ANALYTICS. Approving the copy is the
+        # thing that happens first and it must not wait on a GA4 credential.
+        # This refreshes the creative, the tagged links and the rate card on
+        # every existing report, leaves the numbers exactly as they were, and
+        # says so. Without it, a broken GA4 secret would also mean a sponsor
+        # could not see what they are being asked to approve.
+        n = 0
+        OUTDIR.mkdir(parents=True, exist_ok=True)
+        for s_ in sponsors:
+            slug_, token_ = s_.get("slug"), s_.get("token")
+            if not slug_ or not token_:
+                continue
+            f_ = OUTDIR / ("%s-%s.json" % (slug_, token_))
+            try:
+                cur = json.loads(f_.read_text()) if f_.exists() else {
+                    "schema": "agsist-sponsor-report/1",
+                    "sponsor": s_.get("name", slug_), "slug": slug_,
+                    "through": None, "start": s_.get("start"), "pending": True,
+                    "pages": s_.get("pages"),
+                    "totals": {"viewable": 0, "clicks": 0, "ctr": None,
+                               "legacyImpressions": 0},
+                    "windows": [], "series": [], "byPage": [],
+                }
+            except (OSError, ValueError) as e:
+                print("  [skip] %s: %s" % (slug_, e))
+                continue
+            cur["creative"] = creative_block(slug_)
+            cur["rateCard"] = rate_card()
+            cur["approveTo"] = s_.get("approve_to") or APPROVE_TO
+            cur["creativeRefreshed"] = datetime.now(timezone.utc).isoformat(timespec="seconds")
+            f_.write_text(json.dumps(cur, indent=1) + "\n", encoding="utf-8")
+            n += 1
         print("::warning::GA4_PROPERTY_ID or GA4_SERVICE_ACCOUNT is not set — "
-              "no report was written. Set both on the repository for this to run.")
+              "the numbers were not refreshed. Set both on the repository for "
+              "that to run. Wrote the creative and rate card on %d report(s); "
+              "the counts in them are as of their last successful run." % n)
         return 0
 
     try:
@@ -201,6 +405,12 @@ def main():
                 "pages": pages,
                 "totals": {"viewable": 0, "clicks": 0, "ctr": None, "legacyImpressions": 0},
                 "windows": [], "series": [], "byPage": [],
+                # The proof and the rate card do NOT wait for a start date.
+                # Approving the copy is the thing that happens first, and a
+                # sponsor with no numbers yet is exactly who needs to see it.
+                "creative": creative_block(slug),
+                "rateCard": rate_card(),
+                "approveTo": s.get("approve_to") or APPROVE_TO,
             }, indent=1) + "\n", encoding="utf-8")
             written.append("%s: not started -- no start date set, wrote the pending page" % slug)
             continue
@@ -265,6 +475,9 @@ def main():
                 [{"page": p, "viewable": v, "clicks": clicks_page.get(p, 0)}
                  for p, v in views_page.items()],
                 key=lambda x: -x["viewable"]),
+            "creative": creative_block(slug),
+            "rateCard": rate_card(),
+            "approveTo": s.get("approve_to") or APPROVE_TO,
         }
         f = OUTDIR / ("%s-%s.json" % (slug, token))
         f.write_text(json.dumps(payload, indent=1) + "\n", encoding="utf-8")

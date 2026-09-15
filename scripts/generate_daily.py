@@ -2278,14 +2278,35 @@ def og_image_for(date_iso, require_file=False):
 
 
 
-def render_sponsor_block_html(sponsor):
+def _sponsor_cta(sponsor, surface):
+    """The sponsor's destination with this surface's attribution on it.
+
+    ONE definition, in scripts/sponsor_links.py. data/sponsor.json holds the
+    bare url: parameters written in by hand would be inherited by every
+    surface, and the email would then report inbox clicks as page clicks.
+    """
+    url = sponsor.get("cta_url") or "#"
+    if url == "#" or sponsor.get("is_house_ad"):
+        return url            # the house ad points at our own inbox
+    try:
+        import sponsor_links
+        return sponsor_links.tag(url, surface, sponsor.get("slug") or "sponsor")
+    except Exception as e:
+        print(f"  [warn] sponsor link not tagged ({type(e).__name__}: {e})")
+        return url
+
+
+def render_sponsor_block_html(sponsor, surface="archive"):
+    """surface picks the utm medium; see scripts/sponsor_links.py. The archive
+    page and the homepage are different placements and a sponsor checking our
+    number against their own analytics must be able to tell them apart."""
     if not sponsor: return ""
     label = html_esc(sponsor.get("label", "SPONSORED"))
     advertiser = html_esc(sponsor.get("advertiser", ""))
     headline = html_esc(sponsor.get("headline", ""))
     body = html_esc(sponsor.get("body", ""))
     cta_text = html_esc(sponsor.get("cta_text", "Learn more"))
-    cta_url = html_esc(sponsor.get("cta_url", "#"))
+    cta_url = html_esc(_sponsor_cta(sponsor, surface))
     disclosure = html_esc(sponsor.get("disclosure", ""))
     is_house = sponsor.get("is_house_ad", False)
     house_class = " dv3-sponsor--house" if is_house else ""
@@ -2317,14 +2338,14 @@ def render_byline_block_html():
             '</div>')
 
 
-def render_sponsor_attribution_html(sponsor):
+def render_sponsor_attribution_html(sponsor, surface="archive"):
     """Tiny single-line sponsor attribution that sits between the date and
     the headline. Renders 'Today's sponsor: [Name] \u2192' when paid, or
     'Sponsor this slot \u2192' when house-ad. Click-through goes to the same
     cta_url the main sponsor block uses."""
     if not sponsor: return ""
     is_house = sponsor.get("is_house_ad", False)
-    cta_url = html_esc(sponsor.get("cta_url", "#"))
+    cta_url = html_esc(_sponsor_cta(sponsor, surface))
     target = ' target="_blank"' if cta_url.startswith('http') else ''
     rel_attr = ' rel="sponsored noopener"' if not is_house else ''
     if is_house:

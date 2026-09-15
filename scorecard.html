@@ -75,6 +75,7 @@
     .sc-pill--bad{background:rgba(200,86,46,.14);color:var(--red);border:1px solid rgba(200,86,46,.35)}
     .sc-pill--pending{background:var(--surface2);color:var(--text-muted);border:1px solid var(--border)}
     .sc-call{font-size:.9rem;color:var(--text);font-weight:600;line-height:1.55}
+    .sc-band{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.04em;text-transform:uppercase;color:var(--text-muted);border:1px solid var(--border);border-radius:3px;padding:.1rem .35rem;margin-left:.45rem;white-space:nowrap;}
     .sc-note{font-size:.85rem;color:var(--text-dim);margin-top:.3rem;line-height:1.6}
     .sc-note a{font-style:normal}
     .sc-loading{color:var(--text-muted);font-size:.88rem;padding:1.2rem 0}
@@ -187,8 +188,16 @@
             : 'Graded '+fdate(r.judged);
           var madeLink = r.made ? '<a href="/daily/'+esc(r.made)+'" class="sc-date" aria-label="Read the briefing this call appeared in">'+esc(dateTxt)+'</a>'
                                 : '<span class="sc-date">'+esc(dateTxt)+'</span>';
+          // Same band tag the baked rows carry — see sc_row() in
+          // prerender_wpi_scorecard.py. One rule, two renderers.
+          var band = '';
+          if (r.band === 'too_far' || r.band === 'too_near') {
+            band = '<span class="sc-band" title="'+esc(r.band_detail||'')+'">level '
+                 + (r.band === 'too_far' ? 'beyond one session' : 'inside the noise')
+                 + '</span>';
+          }
           return '<div class="sc-row">'+
-            '<div class="sc-row-top">'+madeLink+pill(r.outcome)+'</div>'+
+            '<div class="sc-row-top">'+madeLink+band+pill(r.outcome)+'</div>'+
             '<div class="sc-call">'+esc(r.call)+'</div>'+
             (r.note?'<div class="sc-note">'+esc(r.note)+'</div>':'')+
           '</div>';

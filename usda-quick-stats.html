@@ -197,6 +197,9 @@
     .ts-bar{height:100%;background:linear-gradient(90deg,rgba(var(--gold-rgb),.5),var(--gold));border-radius:4px;min-width:2px;}
     .ts-val{font-family:'JetBrains Mono',monospace;font-size:0.795rem;color:var(--text);font-weight:700;white-space:nowrap;text-align:right;}
     .ts-val small{color:var(--text-muted);font-weight:400;font-size:0.765rem;}
+    /* Forecast marker. A quiet mono tag, not a warning colour: an in-season
+       forecast is a fact about the number, not a problem with it. */
+    .ts-fc{font-family:'JetBrains Mono',monospace;font-size:0.68rem;font-weight:400;color:var(--text-muted);letter-spacing:.02em;margin-left:.4rem;white-space:nowrap;}
     @media(max-width:520px){.ts-row{grid-template-columns:minmax(0,6rem) minmax(0,1fr) auto;}.ts-val small{display:none;}}
 
     @media(max-width:640px){.qs-hero{padding:2rem 1rem 1.5rem;}.qs-main{padding:0 .75rem 3rem;}.qb-wrap{padding:1rem;}.snap-prod-num{font-size:1.8rem;}}
@@ -777,8 +780,13 @@
     if (!window.__ss) return;
     document.querySelectorAll('.ts-btn').forEach(function(b){ b.classList.toggle('active', b.dataset.cmd === cmd); });
     var ss = window.__ss.stateStats || {};
+    // CARRY THE FORECAST FLAG. state-stats.json marks each state's crop year
+    // and whether the figure is an in-season forecast -- 33 of its 42 states
+    // were forecasts on 2026-08-16 -- and this block used to drop both, then
+    // print "latest final USDA NASS crop year 2026" over the top of them.
     var arr = Object.keys(ss).map(function(k){
-      return { name: ss[k].name || k, prod: ss[k][cmd+'_prod'], yld: ss[k][cmd+'_yield'] };
+      return { name: ss[k].name || k, prod: ss[k][cmd+'_prod'], yld: ss[k][cmd+'_yield'],
+               year: ss[k].year, fc: !!ss[k].forecast };
     }).filter(function(x){ return x.prod != null && +x.prod > 0; })
       .sort(function(a,b){ return b.prod - a.prod; }).slice(0,10);
     var list = el('ts-list');
@@ -787,7 +795,8 @@
     list.innerHTML = arr.map(function(x,i){
       var pct = Math.max(2, (x.prod/max)*100);
       var y = x.yld != null ? ' <small>'+x.yld+' bu/ac</small>' : '';
-      return '<div class="ts-row"><div class="ts-rank"><span>'+(i+1)+'</span><b>'+x.name+'</b></div>'
+      var f = x.fc ? ' <small class="ts-fc" title="USDA NASS in-season forecast, not a final estimate">'+(x.year||'')+' est.</small>' : '';
+      return '<div class="ts-row"><div class="ts-rank"><span>'+(i+1)+'</span><b>'+x.name+'</b>'+f+'</div>'
         + '<div class="ts-bar-track"><div class="ts-bar" style="width:'+pct.toFixed(1)+'%"></div></div>'
         + '<div class="ts-val">'+(+x.prod).toLocaleString()+' <small>M bu</small>'+y+'</div></div>';
     }).join('');
@@ -798,7 +807,24 @@
       window.__ss = d;
       el('topstates-wrap').style.display = 'block';
       var src = el('ts-src');
-      if (src) src.innerHTML = 'Production in million bushels, latest final USDA NASS crop year' + (d.year ? (' ' + d.year) : '') + '. Top 10 states; yield shown where reported.';
+      // SAY WHAT THE NUMBERS ARE. This line read "latest final USDA NASS crop
+      // year 2026" regardless, while most of the block was an in-season
+      // forecast -- and the yield table lower down the same page shows the
+      // 2025 finals, so the two disagreed by six bushels on Iowa with nothing
+      // to tell a reader why.
+      if (src) {
+        var vals = Object.keys(d.stateStats).map(function(k){ return d.stateStats[k]; });
+        var nfc = vals.filter(function(v){ return v.forecast; }).length;
+        var yrs = {}; vals.forEach(function(v){ if (v.year) yrs[v.year] = 1; });
+        var span = Object.keys(yrs).sort();
+        var what = nfc === 0
+          ? 'latest final USDA NASS crop year' + (span.length ? (' ' + span.join('/')) : '')
+          : (nfc === vals.length
+              ? 'USDA NASS in-season forecast for the ' + span.join('/') + ' crop, not a final estimate'
+              : nfc + ' of ' + vals.length + ' states are USDA NASS in-season forecasts (marked "est."); the rest are finals');
+        src.innerHTML = 'Production in million bushels, ' + what
+          + '. Top 10 states; yield shown where reported. The yield table above is finals only, so a forecast state reads higher here.';
+      }
       rankStates('corn');
     }).catch(function(){});
   }

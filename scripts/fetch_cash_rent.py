@@ -578,6 +578,33 @@ def main():
     if totals["counties"] < 500:
         sys.exit(f"REFUSING: only {totals['counties']} counties — NASS returned far less than expected")
 
+    # ── DID THE SURVEY ACTUALLY ARRIVE? ──────────────────────────────────────
+    # cash-rent.yml runs every Wednesday and only acts in August and September,
+    # because that is when NASS publishes the county Cash Rents Survey. On
+    # 2026-09-13 the window had been open six weeks, six runs had gone green,
+    # and data/cash-rent/IA.json still read "generated": "2026-07-18" with 2025
+    # as its newest rent year.
+    #
+    # Nothing was broken in a way anyone could see: the script fetched, wrote
+    # the same numbers, the commit step said "no change" and exited 0. Six runs
+    # that found nothing looked exactly like six runs that found everything.
+    #
+    # This does NOT fail the run -- NASS is genuinely late some years and a red
+    # cross on a normal delay is a guard that gets ignored. It says so, in the
+    # one place a person looks, with the two possibilities named.
+    _now = datetime.now(timezone.utc)
+    if _now.month in (8, 9) and years and years[-1] < _now.year:
+        _msg = (f"county cash rent is still {years[-1]}: the {_now.year} NASS survey has "
+                f"not arrived after {_now.strftime('%d %B')} in the release window. "
+                f"Either NASS has not published it, or this fetch is not seeing it. "
+                f"Check quickstats.nass.usda.gov for "
+                f"'CASH RENTS, CROPLAND, NON-IRRIGATED - EXPENSE, MEASURED IN $ / ACRE', "
+                f"year {_now.year}, agg_level_desc=COUNTY.")
+        print(f"::warning title=Cash rent survey not seen::{_msg}")
+        log(f"\n[!] {_msg}")
+    elif years and years[-1] >= _now.year:
+        log(f"\n[ok] the {years[-1]} survey is in.")
+
 
 if __name__ == "__main__":
     main()

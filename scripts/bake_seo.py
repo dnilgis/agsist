@@ -99,6 +99,8 @@ def build_ctx(today):
         "state_stats": _load("state-stats.json"),
         "crop_tour": _load("crop-tour.json"),
         "prices": _load("prices.json"),
+        "cond_yield": _load("cond-yield/fit.json"),
+        "crop_progress": _load("crop-progress.json"),
     }
 
 
@@ -236,6 +238,50 @@ def seo_quick_stats(c):
             f"Stats, made readable and free.")
 
 
+def seo_cond_yield(c):
+    """The R-squared curve, read off the file instead of typed into the HTML.
+
+    The hand-written description on this page said "ratings in week 35 explain
+    59% of Iowa's final yield. By week 39: 64%." The file said 0.61 and 0.639
+    on 2026-09-08, and both of those were computed with the current year
+    inside its own fit (fixed 2026-09-13). A number in a search snippet that
+    nothing recomputes goes stale silently and nobody sees it but strangers.
+    """
+    d = c.get("cond_yield")
+    if not d:
+        return None
+    ia = (((d.get("crops") or {}).get("corn") or {}).get("states") or {}).get("IA")
+    if not ia or not ia.get("weeks"):
+        return None
+    # The week that explains the most, computed — not a week somebody liked.
+    wk, best = max(ia["weeks"].items(), key=lambda kv: kv[1].get("r2") or 0)
+    r2 = best.get("r2")
+    n = best.get("n")
+    if r2 is None or not n:
+        return None
+    return ("Do Crop Ratings Predict Yield? The Real R&sup2;" + SUFFIX,
+            f"Iowa corn: Good+Excellent in week {wk} explains {r2 * 100:.0f}% of final yield "
+            f"deviation over {n} years. Every state, every week — including the weeks "
+            f"that explain nothing.")
+
+
+def seo_conditions(c):
+    """Today's national G+E against the same week last year. Both from the file."""
+    d = c.get("crop_progress")
+    if not d or not d.get("in_season"):
+        return None
+    corn = d.get("corn") or {}
+    ge, prev = corn.get("good_excellent"), corn.get("good_excellent_prev_year")
+    if ge is None:
+        return None
+    soy = (d.get("soybeans") or {}).get("good_excellent")
+    vs = f" against {prev}% a year ago" if prev is not None else ""
+    also = f", soybeans {soy}%" if soy is not None else ""
+    return (f"Crop Conditions: Corn {ge:g}% Good-Excellent — USDA Ratings{SUFFIX}",
+            f"US corn is {ge:g}% good to excellent{also},{vs}. Every state's rating ranked "
+            f"against the same week since 2000 — a percentile, not a feel.")
+
+
 def _px(prices, key):
     q = ((prices or {}).get("quotes") or {}).get(key) or (prices or {}).get(key)
     if isinstance(q, dict):
@@ -370,6 +416,11 @@ PAGES = {
     "crop-tour.html":        (seo_crop_tour,     frozenset({"title", "desc"})),
     "usda-quick-stats.html": (seo_quick_stats,   frozenset({"title", "desc"})),
     "breakeven.html":        (seo_breakeven,     frozenset({"title", "desc"})),
+    # Added 2026-09-13. Both pages carried a HAND-TYPED number in their search
+    # snippet: conditions-yield quoted an R-squared that had already drifted
+    # from the file it describes, conditions quoted nothing current at all.
+    "conditions-yield.html": (seo_cond_yield,    frozenset({"title", "desc"})),
+    "conditions.html":       (seo_conditions,    frozenset({"title", "desc"})),
 }
 for _p in FUTURES:
     PAGES[_p] = (make_futures(_p), frozenset({"title"}))
@@ -497,6 +548,14 @@ def selftest():
                          "nights": [{"posted": False}] * 4, "benchmarks": {}},
            "state_stats": {"stateStats": {"IA": {"corn_yield": 216.0, "year": 2026,
                                                  "forecast": True}}},
+           # The week with the HIGHEST r2 must win, not the last one in the
+           # dict and not a week somebody liked: 39 here, not 22.
+           "cond_yield": {"crops": {"corn": {"states": {"IA": {"weeks": {
+               "22": {"r2": 0.003, "n": 26}, "35": {"r2": 0.59, "n": 26},
+               "39": {"r2": 0.64, "n": 26}}}}}}},
+           "crop_progress": {"in_season": True,
+                             "corn": {"good_excellent": 57, "good_excellent_prev_year": 66},
+                             "soybeans": {"good_excellent": 58}},
            "prices": {"quotes": {"corn": {"close": 459.25}, "beans": {"close": 1176.25},
                                  "wheat": {"close": 674.0}, "cattle": {"close": 223.75},
                                  "feeders": {"close": 341.275}},
@@ -529,6 +588,16 @@ def selftest():
     ck("after the tour the title carries the number", "Corn 179.4 bu/ac" in t3, t3)
 
     print("\nhonesty")
+    t, d = seo_cond_yield(ctx)
+    ck("cond-yield picks the strongest week, not the first", "week 39" in d and "64%" in d)
+    ck("cond-yield names the sample size", "26 years" in d)
+    ck("cond-yield skips when the file is missing",
+       seo_cond_yield(dict(ctx, cond_yield=None)) is None)
+    t, d = seo_conditions(ctx)
+    ck("conditions carries this week's G+E and last year's", "57%" in d and "66%" in d)
+    ck("conditions stays quiet out of season",
+       seo_conditions(dict(ctx, crop_progress={"in_season": False})) is None)
+
     t, d = seo_quick_stats(ctx)
     ck("a forecast is called a forecast, never a final", "2026 forecast" in d, d)
     ctx4 = dict(ctx, state_stats={"stateStats": {"IA": {"corn_yield": 211.0, "year": 2025,

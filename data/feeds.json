@@ -2,8 +2,8 @@
  "schema": "agsist-feeds/1",
  "generated_by": "scripts/build_feeds.py",
  "note": "Derived from the repository, never typed. Pages come from a grep of every .html; the writer and its cadence come from the workflow that names the file or runs the script that names it.",
- "count": 52,
- "with_known_cadence": 52,
+ "count": 53,
+ "with_known_cadence": 53,
  "feeds": [
   {
    "path": "data/afida/county.json",
@@ -986,6 +986,29 @@
     "17 10 * * 1-5"
    ],
    "max_gap_hours": 20.9,
+   "quiet": null,
+   "why_quiet": null
+  },
+  {
+   "path": "data/rate-card.json",
+   "pages": [
+    "sponsor-report.html"
+   ],
+   "written_by": [
+    "Sponsor reports \u2014 yesterday's numbers, from GA4"
+   ],
+   "touched_by": [
+    "Sponsor reports \u2014 yesterday's numbers, from GA4"
+   ],
+   "cadence": "1 launch every day at about 6am Central",
+   "curated": false,
+   "planned": false,
+   "external": false,
+   "url": null,
+   "crons": [
+    "12 11 * * *"
+   ],
+   "max_gap_hours": 24.0,
    "quiet": null,
    "why_quiet": null
   },

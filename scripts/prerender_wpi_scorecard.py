@@ -463,8 +463,20 @@ def sc_row(r):
     else:
         made = f'<span class="sc-date">{esc(date_txt)}</span>'
     note = f'<div class="sc-note">{esc(r["note"])}</div>' if r.get("note") else ""
+    # THE BAND TAG. 61 of the 80 machine-graded calls put the level outside the
+    # one-session band computed from that instrument's own realized moves. The
+    # gate has said so at generation time since August and the record counted
+    # them anyway, so the warning reached nobody. The hit rate is untouched --
+    # what a reader gets is the ability to see which calls were the kind that
+    # one session could plausibly settle.
+    band = ""
+    if r.get("band") in ("too_far", "too_near"):
+        label = ("beyond one session" if r["band"] == "too_far"
+                 else "inside the noise")
+        band = (f'<span class="sc-band" title="{esc(r.get("band_detail") or "")}">'
+                f'level {label}</span>')
     return ('<div class="sc-row">'
-            f'<div class="sc-row-top">{made}{sc_pill(r.get("outcome"))}</div>'
+            f'<div class="sc-row-top">{made}{band}{sc_pill(r.get("outcome"))}</div>'
             f'<div class="sc-call">{esc(r.get("call"))}</div>{note}</div>')
 
 

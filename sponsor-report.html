@@ -24,6 +24,45 @@
     .sr-pending li{margin:.35rem 0}
     .sr-pending strong{color:var(--gold,#d4a23f)}
     .sr-pending-note{opacity:.72;font-size:.92em}
+/* Proof, links and tiers. Same two tokens as .sr-tile and .sr-win: a new
+   block does not get its own colour vocabulary. */
+.sr-proof{border:1px solid var(--border,#2a3230);border-radius:10px;padding:1.3rem 1.4rem;
+  margin:1.4rem 0;background:var(--surface,#141918)}
+.sr-proof h3{margin:0 0 .2rem;font-size:1rem}
+.sr-code{font-family:'JetBrains Mono',monospace;font-size:.82rem;letter-spacing:.1em;
+  color:var(--gold,#d4a23f)}
+  text-transform:uppercase;color:var(--text-dim,#8a948f)}
+  letter-spacing:.05em;text-transform:uppercase;color:var(--gold,#d4a23f);
+  display:inline-block;margin-top:.5rem}
+.sr-shot{margin:.9rem 0 1.3rem}
+.sr-shot-where{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.11em;
+  text-transform:uppercase;color:var(--text-muted,#8a948f);margin-bottom:.5rem}
+.sr-shot-body{border:1px solid var(--border,#2a3230);border-radius:8px;padding:1rem;
+  background:var(--surface,#131a17)}
+.sr-shot-mail{background:#fdfcf9}
+.sr-pre{font-family:'JetBrains Mono',monospace;font-size:.74rem;line-height:1.55;
+  white-space:pre-wrap;word-break:break-word;background:var(--surface2,#0f1413);
+  border:1px solid var(--border,#2a3230);border-radius:7px;padding:.7rem .8rem;margin:.5rem 0 0}
+.sr-approve{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:.76rem;
+  font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--gold,#d4a23f);border:1px solid var(--gold,#d4a23f);border-radius:6px;
+  padding:.6rem 1.05rem;text-decoration:none;margin-top:.9rem;min-height:38px}
+.sr-approve:hover{background:var(--gold,#d4a23f);color:#0d1117}
+.sr-links{width:100%;border-collapse:collapse;margin:.6rem 0 0;font-size:.8rem}
+.sr-links td{border-top:1px solid var(--border,#2a3230);padding:.45rem .5rem;vertical-align:top}
+.sr-links td:first-child{font-family:'JetBrains Mono',monospace;color:var(--text-dim,#8a948f);
+  white-space:nowrap;width:1%}
+.sr-links code{font-family:'JetBrains Mono',monospace;font-size:.74rem;word-break:break-all}
+.sr-tiers{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:.8rem;margin:.9rem 0 0}
+.sr-tier{border:1px solid var(--border,#2a3230);border-radius:9px;padding:.9rem 1rem}
+.sr-tier.is-current{border-color:var(--gold,#d4a23f)}
+.sr-tier-name{font-weight:700;font-size:.95rem}
+.sr-tier-price{font-family:'JetBrains Mono',monospace;color:var(--gold,#d4a23f);
+  font-size:1.05rem;margin:.2rem 0 .45rem}
+.sr-tier-what{font-size:.82rem;line-height:1.55;color:var(--text-dim,#8a948f)}
+.sr-tier-you{font-family:'JetBrains Mono',monospace;font-size:.62rem;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--gold,#d4a23f);display:block;margin-bottom:.3rem}
+@media(max-width:520px){.sr-links td:first-child{width:auto;white-space:normal}}
 .sr{max-width:920px;margin:0 auto;padding:2.2rem 1.1rem 5rem}
 .sr-head{border-bottom:2px solid var(--border,#2a3230);padding-bottom:1.1rem;margin-bottom:1.6rem}
 .sr-eyebrow{font-family:'JetBrains Mono',monospace;font-size:.7rem;letter-spacing:.15em;
@@ -99,6 +138,142 @@ table.sr-t{width:100%;border-collapse:collapse;font-size:.88rem}
     return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' });
   }
 
+
+  /* ── THE PROOF ──────────────────────────────────────────────────────────
+     A sponsor approving an ad has to be approving SPECIFIC WORDS. There is no
+     server here to record a click, so the approval is an email — and what
+     makes it worth having is the code. It is a hash of the exact fields a
+     reader sees; change one and it changes. The email carries it, so an
+     approval can never quietly cover different copy.
+
+     The ad is shown THREE times on purpose: as the page draws it, as the HTML
+     email draws it, and as the plain-text part draws it. A sponsor who only
+     ever sees the pretty one has not seen what half their audience gets. */
+  /* THE REAL BLOCK'S OWN CSS, extracted from scripts/generate_daily.py at build
+     time and carried in the report. Added once, to <head>, the first time a
+     preview is rendered. The palette it references -- --gold, --surface,
+     --text-dim -- comes from /components/styles.css, which this page already
+     links, so the preview resolves against the same variables the live page
+     does rather than against a copy of their values. */
+  var cssIn = false;
+  function useSiteCss(css) {
+    if (cssIn || !css) return;
+    var el = document.createElement('style');
+    el.textContent = css;
+    document.head.appendChild(el);
+    cssIn = true;
+  }
+
+  function proofBlock(d) {
+    var c = d.creative;
+    if (!c || !c.fields) return '';
+    useSiteCss(c.previews && c.previews.css);
+    var f = c.fields, h = '';
+    h += '<div class="sr-proof">';
+    h += '<h3>Your ad, as it will run</h3>';
+    h += '<div class="sr-through">Proof code <span class="sr-code">' + esc(c.proof_code) +
+         '</span> &middot; ' + (c.live ? 'live now' : 'not running yet') + '</div>';
+
+    /* NOT A DRAWING OF THE AD -- THE AD.
+       Every block below is the output of the function that publishes that
+       surface: generate_daily.render_sponsor_block_html for the pages,
+       brief_email.sponsor_block for the email. The portal used to draw its own
+       .sr-ad lookalike, which meant a change to the real CSS drifted the proof
+       while the proof CODE still matched -- the code is a hash over the six
+       text fields and cannot see styling. Injected as HTML on purpose: it is
+       our own baked markup from our own repository, not anything a reader can
+       reach. Nothing from the sponsor is trusted -- the FIELDS were escaped
+       when the renderer built this, by the same escaper the live page uses. */
+    var pv = c.previews || {};
+
+    if (pv.homepage) {
+      h += '<div class="sr-shot">' +
+           '<div class="sr-shot-where">On the homepage, and on every archive page</div>' +
+           '<div class="sr-shot-body">' + pv.homepage + '</div></div>';
+    }
+
+    if (pv.email_html) {
+      h += '<div class="sr-shot">' +
+           '<div class="sr-shot-where">In the daily email &mdash; how most people will see it</div>' +
+           '<div class="sr-shot-body sr-shot-mail"><table role="presentation" width="100%" ' +
+           'cellpadding="0" cellspacing="0" border="0"><tbody>' + pv.email_html +
+           '</tbody></table></div></div>';
+    }
+
+    var txt = (c.label || 'SPONSORED') + (f.advertiser ? ' - ' + f.advertiser : '') + '\n' +
+      (f.headline || '') + '\n' + (f.body || '') + '\n' +
+      (f.cta_text ? f.cta_text + ': ' + ((c.links && c.links.daily_email) || f.cta_url || '') + '\n' : '') +
+      (f.disclosure || '');
+    h += '<div class="sr-shot">' +
+         '<div class="sr-shot-where">In the plain-text email, for readers who block images</div>' +
+         '<div class="sr-pre">' + esc(txt) + '</div></div>';
+
+    /* A PREVIEW THAT COULD NOT BE BUILT SAYS SO. Silence here would read as
+       "there is no ad on that surface", which is a different and wrong claim. */
+    if (!pv.homepage && !pv.email_html) {
+      h += '<p class="sr-through">The rendered previews could not be built on the ' +
+           'last run. The wording and the links below are still exact.</p>';
+    }
+
+    /* WHERE THE CLICKS GO, AND WHY EACH ONE IS DIFFERENT.
+       Every surface carries its own utm_medium, so the sponsor can match our
+       count against their own analytics per placement instead of taking one
+       aggregate number on faith. */
+    if (c.links) {
+      h += '<h3 style="margin-top:1.2rem">Your links, as we tag them</h3>' +
+           '<p class="sr-through">Paste these into your own analytics. Each ' +
+           'placement is tagged separately, so your numbers can be compared ' +
+           'against ours one at a time rather than as a single total.</p>' +
+           '<table class="sr-links"><tbody>';
+      ['homepage', 'archive', 'daily_email', 'rss'].forEach(function (k) {
+        if (!c.links[k]) return;
+        h += '<tr><td>' + esc(k.replace('_', ' ')) + '</td><td><code>' +
+             esc(c.links[k]) + '</code></td></tr>';
+      });
+      h += '</tbody></table>';
+    }
+
+    var to = d.approveTo || 'sig@farmers1st.com';
+    var subj = 'Approved: ' + (f.advertiser || d.sponsor) + ' ad, proof ' + (c.proof_code || '');
+    var bodyTxt = 'I approve the ad shown on the AGSIST sponsor page with proof code ' +
+      (c.proof_code || '') + '.\n\nHeadline: ' + (f.headline || '') +
+      '\n\nIf the copy changes, this approval does not carry over.\n\n';
+    h += '<a class="sr-approve" href="mailto:' + encodeURIComponent(to) +
+         '?subject=' + encodeURIComponent(subj) + '&body=' + encodeURIComponent(bodyTxt) +
+         '">Approve this ad &rarr;</a>';
+    h += '<p class="sr-pending-note" style="margin-top:.7rem">Changes? Reply to that ' +
+         'email with the wording you want. The proof code changes with the copy, ' +
+         'so an approval can never cover words you did not see.</p>';
+    h += '</div>';
+    return h;
+  }
+
+  /* ── WHAT THEY ARE ON, AND WHAT ELSE THERE IS ───────────────────────────
+     Read from data/rate-card.json, which scripts/test_rate_card.py holds
+     against the prices on /sponsor. The portal cannot quote a rate the sales
+     page does not. */
+  function tierBlock(d) {
+    var rc = d.rateCard;
+    if (!rc || !rc.tiers || !rc.tiers.length) return '';
+    var cur = (d.creative && d.creative.tier) || null;
+    var h = '<h2 class="sr-h2">Your placement</h2><div class="sr-tiers">';
+    rc.tiers.forEach(function (t) {
+      var is = (t.id === cur);
+      h += '<div class="sr-tier' + (is ? ' is-current' : '') + '">' +
+        (is ? '<span class="sr-tier-you">You are here</span>' : '') +
+        '<div class="sr-tier-name">' + esc(t.name) + '</div>' +
+        '<div class="sr-tier-price">$' + esc(t.price_week) + ' / week</div>' +
+        '<div class="sr-tier-what">' + esc(t.placement) +
+        (t.note ? ' ' + esc(t.note) : '') + '</div></div>';
+    });
+    h += '</div>';
+    if (rc.trial || rc.terms) {
+      h += '<p class="sr-through" style="margin-top:.7rem">' +
+           esc([rc.trial, rc.terms].filter(Boolean).join(' ')) + '</p>';
+    }
+    return h;
+  }
+
   function draw(d) {
     var t = d.totals || {};
     var h = '';
@@ -136,9 +311,13 @@ table.sr-t{width:100%;border-collapse:collapse;font-size:.88rem}
         '<p class="sr-pending-note">This link keeps working &mdash; it fills in ' +
         'on its own. Nothing to log into.</p>' +
         '</div>';
+      h += proofBlock(d);
+      h += tierBlock(d);
       root.innerHTML = h;
       return;
     }
+
+    h += proofBlock(d);
 
     h += '<div class="sr-tiles">' +
       tile(num(t.viewable), 'viewable impressions') +
@@ -170,6 +349,8 @@ table.sr-t{width:100%;border-collapse:collapse;font-size:.88rem}
       });
       h += '</tbody></table>';
     }
+
+    h += tierBlock(d);
 
     /* THE DEFINITIONS ARE THE PRODUCT. Anybody can put a big number on a page.
        Saying exactly what was counted, and what was not, is the part a media

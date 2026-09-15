@@ -445,6 +445,71 @@ def subject_line(daily, prior):
     return " · ".join(bits)
 
 
+def _sponsor_cta(sp):
+    """The sponsor's destination tagged for the EMAIL, not the page.
+
+    One definition, scripts/sponsor_links.py. data/sponsor.json holds the bare
+    url; if the parameters lived in the file the email would inherit the
+    homepage's medium and report inbox clicks as page clicks -- against the one
+    number a sponsor can check independently.
+    """
+    url = sp.get("cta_url") or ""
+    if not url:
+        return ""
+    try:
+        import sponsor_links
+        return sponsor_links.tag(url, "daily_email", sp.get("slug") or "sponsor")
+    except Exception:
+        return url
+
+
+def sponsor_block(daily):
+    """The paid sponsor's block as an email table row, or "" when there isn't one.
+
+    Deliberately plainer than the page version: no gradient, no coloured
+    border, no button. Outlook's Word engine drops most of that anyway, and a
+    sponsor who bought a line in a briefing that looks like a briefing does not
+    want theirs to be the one element that looks like an ad network.
+
+    Returns "" for the house ad (is_house_ad) and for an inactive sponsor, so
+    the only thing that can put a name in front of the list is a real one.
+    """
+    sp = daily.get("sponsor")
+    if not isinstance(sp, dict) or not sp.get("active") or sp.get("is_house_ad"):
+        return ""
+    label = e(sp.get("label") or "SPONSORED")
+    who = e(sp.get("advertiser") or "")
+    head = e(sp.get("headline") or "")
+    text = e(sp.get("body") or "")
+    cta_t = e(sp.get("cta_text") or "Learn more")
+    cta_u = _href(_sponsor_cta(sp))
+    disc = e(sp.get("disclosure") or "")
+    if not (head or text):
+        return ""
+    parts = ['<tr><td style="padding:16px 0 0"><table role="presentation" width="100%%" '
+             'cellpadding="0" cellspacing="0" border="0"><tr><td style="border-left:3px solid %s;'
+             'padding:2px 0 2px 12px">' % LINE]
+    parts.append('<div style="font-family:%s;font-size:10px;letter-spacing:.08em;'
+                 'text-transform:uppercase;color:%s">%s%s</div>'
+                 % (MONO, MUTE, label, (" &middot; " + who) if who else ""))
+    if head:
+        parts.append('<div class="ink" style="font-family:%s;font-size:15px;line-height:1.45;'
+                     'font-weight:700;color:%s;padding-top:4px">%s</div>' % (SANS, INK, head))
+    if text:
+        parts.append('<div class="ink" style="font-family:%s;font-size:14px;line-height:1.55;'
+                     'color:%s;padding-top:5px">%s</div>' % (SANS, INK, text))
+    if cta_u:
+        parts.append('<div style="padding-top:7px"><a href="%s" rel="sponsored noopener" '
+                     'style="font-family:%s;font-size:12px;font-weight:700;letter-spacing:.05em;'
+                     'text-transform:uppercase;color:%s;text-decoration:underline">%s &rarr;</a></div>'
+                     % (cta_u, MONO, GOLD, cta_t))
+    if disc:
+        parts.append('<div class="mute" style="font-family:%s;font-size:11px;line-height:1.5;'
+                     'color:%s;padding-top:6px">%s</div>' % (SANS, MUTE, disc))
+    parts.append('</td></tr></table></td></tr>')
+    return "".join(parts)
+
+
 def render_html(daily, site_href, unsub_url=None, date_display=None):
     prior, prior_day = prior_board(daily)
     head = strip_md(daily.get("headline"))
@@ -486,6 +551,23 @@ def render_html(daily, site_href, unsub_url=None, date_display=None):
                     'padding:4px 0 4px 12px;font-family:%s;font-size:16px;line-height:1.55;color:%s" '
                     'class="ink"><strong>%s</strong> %s</td></tr></table></td></tr>'
                     % (GOLD, SANS, INK, e(take_label), e(take)))
+
+    # THE SPONSOR SLOT, WHICH /sponsor SELLS AND THE EMAIL DID NOT CARRY.
+    # The pitch page says, in these words: "Above the fold on every briefing
+    # and the homepage. Mobile + desktop. Web + email." This file's own
+    # docstring said the opposite -- "sponsors buy pageviews on the site, not
+    # opens in an inbox" -- and there was no sponsor block in the message at
+    # all. Two honest positions, sold as one. The page is what a sponsor
+    # signs against, so the email carries the slot.
+    #
+    # It renders ONLY for a real, active sponsor: the house ad is a billboard
+    # for finding one and has no business in a subscriber's inbox. With
+    # data/sponsor.json inactive this appends nothing and the email is
+    # byte-identical to what it was.
+    sp = sponsor_block(daily)
+    if sp:
+        body.append(_rule())
+        body.append(sp)
 
     body.append(_rule())
     body.append(price_table(daily, prior, prior_day))
@@ -582,6 +664,25 @@ def render_text(daily, site, unsub_url=None, date_display=None):
         take = strip_md(daily.get("the_takeaway"))
         if take:
             L += ["", "THE TAKEAWAY: " + take]
+    # Same slot as the HTML part, same rule: real active sponsor only, never
+    # the house ad. A multipart message whose text half quietly drops the
+    # sponsor is a message that shortchanges them for every reader whose
+    # client shows text.
+    _sp = daily.get("sponsor")
+    if isinstance(_sp, dict) and _sp.get("active") and not _sp.get("is_house_ad"):
+        _who = strip_md(_sp.get("advertiser")) or ""
+        L += ["", (strip_md(_sp.get("label")) or "SPONSORED") + (" - " + _who if _who else "")]
+        for _k in ("headline", "body"):
+            _v = strip_md(_sp.get(_k))
+            if _v:
+                L.append(_v)
+        _u = _sponsor_cta(_sp)
+        if _u:
+            L.append((strip_md(_sp.get("cta_text")) or "Learn more") + ": " + _u)
+        _d = strip_md(_sp.get("disclosure"))
+        if _d:
+            L.append(_d)
+
     _b = (daily.get("board") or {})
     _ag = (_b.get("prev_close_session") if daily.get("locked_changes") else None) or prior_day
     L += ["", "THE BOARD" + (" (close, against %s)" % _ag if _ag else "")]

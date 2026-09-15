@@ -1,0 +1,37 @@
+{
+  "_": "THE ONE DEFINITION OF WHAT A PLACEMENT COSTS. These prices are published in three places: sponsor.html (the pitch), about.html, and now each sponsor's own portal. scripts/test_rate_card.py fails if a price here is not present on sponsor.html, so the two cannot drift without somebody being told. Change a price HERE first, then the prose around it.",
+  "_updated": "2026-09-13",
+  "currency": "USD",
+  "trial": "First 2 weeks free on every tier. No card, no commitment.",
+  "terms": "Month-to-month. No minimum, cancel any time, no penalty.",
+  "tiers": [
+    {
+      "id": "founding",
+      "name": "Founding sponsor",
+      "price_week": 100,
+      "slots": 1,
+      "exclusive": true,
+      "placement": "Above the fold on every daily briefing and on the homepage. Web and email.",
+      "note": "One ag company per issue. Founding rate locked for 12 months from start date. Once filled, the next slot opens only on renewal.",
+      "year_equivalent": 5200
+    },
+    {
+      "id": "page",
+      "name": "Own a page",
+      "price_week": 35,
+      "slots": null,
+      "exclusive": true,
+      "placement": "One sponsor ribbon on a single high-traffic page, category-exclusive.",
+      "note": "Any one page — cash bids, the hail map, break-even, a state hail page. The 51 state hail pages can each carry their own ribbon at the same rate."
+    },
+    {
+      "id": "supporter",
+      "name": "Supporter",
+      "price_week": 25,
+      "slots": 6,
+      "exclusive": false,
+      "placement": "Your name or logo in the shared Supporters strip in the footer of every page.",
+      "note": "Non-exclusive and capped at 6 so the strip keeps its value."
+    }
+  ]
+}

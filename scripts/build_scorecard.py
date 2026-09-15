@@ -242,6 +242,44 @@ def main():
             # short-of-level — the two failure modes mean different things.
             if _p0v is not None and _p1v is not None and rec["direction"] in ("up", "down"):
                 rec["direction_ok"] = (_p1v > _p0v) if rec["direction"] == "up" else (_p1v < _p0v)
+            # ── A LEVEL SET INSIDE THE NOISE IS NOT A CALL ───────────────────
+            # Six graded calls put the level within a cent or less of the price
+            # when the call was made -- "wheat up toward $7.67" written with
+            # wheat at $7.67. Two of those are counted as wins. The gate has
+            # been saying so at generation time for a month, in these words:
+            #
+            #   level $7.67 is only 0.0c from close $7.67; band minimum is 4c
+            #   -- a level this close grades as noise
+            #
+            # It WARNs and the record counted the call anyway, so the warning
+            # reached nobody. Marking the row is the honest middle: the hit
+            # rate does not move -- changing a published number to flatter a
+            # methodology is the thing this file exists not to do -- but a
+            # reader can now see which calls were set inside the noise and
+            # subtract them if they want to.
+            #
+            # The band is call_calibration's, the same computation the
+            # generator briefed the model with and the gate checks against.
+            # One definition, three callers.
+            try:
+                import call_calibration as _cc
+                if rec.get("level") is not None and _p0v is not None:
+                    # as_of=made: the band that APPLIED THE DAY THE CALL WAS
+                    # MADE. Without it every historical call is judged against
+                    # the newest 20 sessions -- corn's band was 0.8-2c in June
+                    # and 1-4c in September, so a June call would be scored
+                    # against September's volatility. The generator and the
+                    # gate pass no as_of, because they are asking about today.
+                    _st, _dt = _cc.band_check(
+                        {"instrument": rec.get("instrument"),
+                         "level": rec["level"],
+                         "report_day": bool((_computed_call or {}).get("report_day"))},
+                        _p0v, str(ARCHIVE), as_of=made)
+                    if _st in ("too_near", "too_far"):
+                        rec["band"] = _st
+                        rec["band_detail"] = _dt
+            except Exception as _e:
+                print(f"[scorecard] band check skipped for {made}: {_e}")
         records.append(rec)
 
     # Two passes append to `records` (legacy era, then calls), so order the list
@@ -253,6 +291,22 @@ def main():
     pending = sum(1 for r in records if r["outcome"] == "pending")
     graded = played + missed
     hit_rate = round(100.0 * played / graded, 1) if graded else None
+
+    # Published so the count is checkable without reading 123 rows. Both halves
+    # matter: a level too NEAR grades as noise, a level too FAR was never a
+    # one-session call. Neither is subtracted from the hit rate here.
+    _near = [r for r in records if r.get("band") == "too_near" and r["outcome"] in ("played_out", "didnt")]
+    _far = [r for r in records if r.get("band") == "too_far" and r["outcome"] in ("played_out", "didnt")]
+    band_flags = {
+        "too_near": len(_near),
+        "too_near_wins": sum(1 for r in _near if r["outcome"] == "played_out"),
+        "too_far": len(_far),
+        "too_far_wins": sum(1 for r in _far if r["outcome"] == "played_out"),
+        "note": ("Calls whose level sat outside the one-session band computed from "
+                 "that instrument's own realized moves. Counted in the hit rate "
+                 "exactly like every other call; flagged so they can be read "
+                 "separately."),
+    }
 
     # Two eras, two grading methods. Early records could only be graded by the
     # briefing's own self-report (no structured call was stored yet); later ones
@@ -333,6 +387,7 @@ def main():
         "by_instrument": by_instrument,
         "trailing20": trailing20,
         "mismatched": mismatched,
+        "band_flags": band_flags,
         "current_streak": streak,
         "records": list(reversed(records)),   # newest first for the page
     }
@@ -342,6 +397,10 @@ def main():
           f"({d_['hit_rate']}%) {d_['first']}..{d_['last']} | self-reported "
           f"{s_['played']}/{s_['graded']} ({s_['hit_rate']}%) {s_['first']}..{s_['last']}"
           + (f" | {mismatched} rows re-described from the structured call" if mismatched else ""))
+    print(f"[scorecard] level band — {band_flags['too_far']} graded calls set a level "
+          f"further than one session usually travels ({band_flags['too_far_wins']} of them hit), "
+          f"{band_flags['too_near']} set one inside the noise "
+          f"({band_flags['too_near_wins']} hit). Neither is subtracted.")
     print(f"[scorecard] {len(records)} calls — {played} played out, "
           f"{missed} didn't, {pending} pending"
           + (f", hit rate {hit_rate}%" if hit_rate is not None else ""))

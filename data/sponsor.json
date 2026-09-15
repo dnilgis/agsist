@@ -1,0 +1,21 @@
+{
+  "_": "NOT LIVE. active=false means generate_daily.build_sponsor_block ignores this file and keeps running the house ad, on every surface. Flip active to true and the next briefing run puts Apex in the slot: homepage, archive page, RSS, the subscriber email and the forwarding brief. Nothing else has to change.",
+  "_before_going_live": [
+    "Rich signs off on headline, body and disclosure — this is his company's copy, not ours.",
+    "Set data/sponsors.json -> sponsors[slug=apex].start to the date the first ad actually runs. build_sponsor_report.py refuses to report until it is set, which is correct: with no start date it would hand Apex ninety days of traffic that was never theirs.",
+    "Check the cta_url lands where Rich wants it. It points at the Bloomer home office page today."
+  ],
+  "_utm": "cta_url is the BARE destination. scripts/sponsor_links.py appends utm per surface at render time, so the homepage, the archive page and the email each report their own clicks and cannot disagree. Parameters written into this url by hand would be inherited by every surface and would make inbox clicks read as page clicks.",
+  "active": false,
+  "label": "SPONSORED",
+  "advertiser": "Apex Insurance Group of WI",
+  "headline": "Farm, business and personal insurance from an independent agency.",
+  "body": "Apex Insurance Group is an independent multi-line agency with 13 offices across the Midwest and its home office in Bloomer, Wisconsin. Farm, business, auto, home, life and employee benefits, placed with more than one carrier. Call 715-568-5050 or email info@aigwi.com.",
+  "cta_text": "Talk to Apex",
+  "cta_url": "https://aigwi.com/",
+  "disclosure": "Apex Insurance Group of WI, LLC · 2055 19th Ave Ste 100, Bloomer, WI 54724 · aigwi.com. Paid sponsorship. AGSIST does not sell insurance and receives no commission on any policy.",
+  "is_house_ad": false,
+  "tier": "founding",
+  "_slug": "WHOSE creative this is. build_sponsor_report.creative_block refuses to put it on any other sponsor's portal, and refuses to put it on ANY portal if this is missing -- an unattributed creative shown to the wrong sponsor is worse than a portal with no proof on it.",
+  "slug": "apex"
+}

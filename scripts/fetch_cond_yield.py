@@ -13,8 +13,11 @@ Data (strings verified live in fetch_conditions + probe):
   {CORN|SOYBEANS} - CONDITION, MEASURED IN PCT {GOOD|EXCELLENT}   STATE, 2000+
   CORN, GRAIN - YIELD, MEASURED IN BU / ACRE                      STATE, YEAR only
   SOYBEANS - YIELD, MEASURED IN BU / ACRE                         STATE, YEAR only
-  (reference_period_desc='YEAR' pins out the AUG..NOV FORECAST contamination
-   the probe re-confirmed.)
+  (reference_period_desc='YEAR' drops the explicitly-labelled AUG..NOV
+   forecast rows, but it does NOT make the current year safe: until harvest
+   is final, what comes back for it is still a forecast. The year filter in
+   shape() and emit_pairs is what keeps it out, and only one of the two had
+   it until 2026-09-13.)
 
 Method: for each state, crop, and ISO week 22..40, pair that week's G+E
 (week ±0 exact only — no wobble blending inside a regression) with that
@@ -136,15 +139,32 @@ def collect(crop_desc, yield_sd, fetch):
 def shape(ge, yields):
     out = {}
     for st in sorted(ge):
-        yy = yields.get(st, {})
+        yy_all = yields.get(st, {})
+        newest = max(ge[st])   # (yr, wk) -- the newest year with a RATING
+        # HOLD THE CURRENT YEAR OUT OF ITS OWN FIT, ONCE, HERE.
+        #
+        # Until harvest is final, what NASS returns for the current year is a
+        # forecast, and this file's whole output is a number that predicts the
+        # current year. It was leaking in twice:
+        #
+        #   1. the pair filter read `int(y) < newest[0] + 1`, i.e. `<=`, so the
+        #      year being predicted was a training point. Measured on the live
+        #      file 2026-09-08: IA corn week 35 published n=27 (2000..2026)
+        #      while emit_pairs, the correct form in the same file, used n=26.
+        #   2. detrend() was handed every year including the current one, so a
+        #      forecast also bent the trend line that every OTHER year's
+        #      deviation is measured against -- a subtler leak that survives
+        #      fixing the filter alone.
+        #
+        # Both are closed by cutting the dictionary before either runs.
+        yy = {y: v for y, v in yy_all.items() if int(y) < newest[0]}
         if len(yy) < MIN_N:
             continue
         dev = detrend(yy)
         weeks = {}
-        newest = max(ge[st])   # (yr, wk)
         for wk in WEEKS:
             pairs = [(ge[st][(int(y), wk)], yy[y], dev[y]) for y in yy
-                     if (int(y), wk) in ge[st] and int(y) < newest[0] + 1]
+                     if (int(y), wk) in ge[st]]
             pairs = [(g, r, d) for g, r, d in pairs]
             if len(pairs) < MIN_N:
                 continue
@@ -215,22 +235,43 @@ def main():
     print(f"wrote {PAIRS_OUT} ({sum(len(c['states']) for c in pairs_out['crops'].values())} state panels)")
 
 
+def _iso_monday(year, week):
+    """The Monday of an ISO week, as YYYY-MM-DD. Selftest fixture only."""
+    from datetime import date as _d
+    return _d.fromisocalendar(year, week, 1).isoformat()
+
+
 def selftest():
     """Synthetic: G+E linearly tied to detrended yield at week 30, noise at 25."""
     import random
     rnd = random.Random(7)
+    # THE FIXTURE MUST CONTAIN A CURRENT YEAR, or the look-ahead is invisible.
+    # It used to run 2000..2025 for BOTH conditions and yields, so every year
+    # with a rating also had a final yield and `int(y) < newest[0] + 1` could
+    # not be caught. 2026 here has ratings and a yield that is a FORECAST --
+    # deliberately absurd, 400 bu, so that if it ever enters a fit the numbers
+    # move far enough to be unmistakable.
+    FORECAST_YEAR, FORECAST_YIELD = 2026, 400.0
+
     def fake(params):
         sd = params["short_desc"]
         if "YIELD" in sd:
             assert params["reference_period_desc"] == "YEAR"
-            return [{"state_alpha": "IA", "year": yr, "Value": str(150 + 2 * (yr - 2000) + ((yr * 7) % 11 - 5))}
+            rows = [{"state_alpha": "IA", "year": yr, "Value": str(150 + 2 * (yr - 2000) + ((yr * 7) % 11 - 5))}
                     for yr in range(2000, 2026)]
+            rows.append({"state_alpha": "IA", "year": FORECAST_YEAR,
+                         "Value": str(FORECAST_YIELD)})
+            return rows
         rows = []
         base = 30.0 if "GOOD" in sd else 10.0
-        for yr in range(2000, 2026):
+        for yr in range(2000, 2027):
             dev = (yr * 7) % 11 - 5                     # same deviation the yield carries
-            # week 30: G+E tracks deviation; week 25: pure noise
-            for wk, we in ((25, f"{yr}-06-22"), (30, f"{yr}-07-27")):
+            # week 30: G+E tracks deviation; week 25: pure noise.
+            # THE DATE IS COMPUTED FROM THE ISO WEEK, not a fixed "06-22" that
+            # drifts a week either side depending on the year. With the fixed
+            # dates, 5 of 27 years landed in weeks 26 and 31 instead, which
+            # thinned every fit and left emit_pairs below its 12-row floor.
+            for wk, we in ((25, _iso_monday(yr, 25)), (30, _iso_monday(yr, 30))):
                 sig = dev * 2 if wk == 30 else rnd.uniform(-8, 8)
                 rows.append({"state_alpha": "IA", "week_ending": we,
                              "Value": str(base + sig / 2)})
@@ -248,8 +289,40 @@ def selftest():
     assert wk30 and wk30["r2"] > 0.9, f"signal week not detected: {wk30}"
     assert wk25 and wk25["r2"] < 0.35, f"noise week shows fake signal: {wk25}"
     assert wk30["n"] >= MIN_N
+
+    # ── THE LOOK-AHEAD CHECK ────────────────────────────────────────────────
+    # Not "is n the number I expect" -- that just restates the filter. The
+    # property is that the CURRENT YEAR CANNOT CHANGE THE ANSWER. Its yield is
+    # a forecast, so run shape() again with that year's yield removed
+    # entirely: if it is being held out, both runs are identical. The fixture
+    # gives it 400 bu, so any leak -- through the pair filter OR through
+    # detrend() bending the trend line -- moves r2 or slope far enough to be
+    # unmistakable.
+    #
+    # This is what the old fixture could not see: it ran 2000..2025 for both
+    # ratings and yields, so every rated year also had a FINAL yield and there
+    # was no current year to leak.
+    yields_final_only = {st: {y: v for y, v in d.items() if int(y) != FORECAST_YEAR}
+                         for st, d in yields.items()}
+    pkg_ref = shape(ge, yields_final_only)
+    assert pkg["IA"]["weeks"] == pkg_ref["IA"]["weeks"], (
+        "the current year's forecast changes the published fit -- it is "
+        "leaking into the regression it is supposed to be predicted by.\n"
+        f"  with forecast: {pkg['IA']['weeks'].get('30')}\n"
+        f"  without      : {pkg_ref['IA']['weeks'].get('30')}")
+    # ...and the current year IS in the ratings, so that check is exercising
+    # the hold-out rather than an empty case.
+    assert pkg["IA"]["latest"]["year"] == FORECAST_YEAR, pkg["IA"]["latest"]
+
+    # emit_pairs has always had the right filter. Pin the two together so they
+    # cannot drift apart again -- they did, and one published a wrong n for
+    # months while the other sat twelve lines below it being correct.
+    ep = emit_pairs(ge, yields)
+    yrs = [r[0] for r in ep["states"]["IA"]]
+    assert max(yrs) < FORECAST_YEAR, f"emit_pairs leaked {max(yrs)}"
     print(f"SELFTEST OK — detrended fit finds real signal (wk30 R²={wk30['r2']}) "
-          f"and refuses fake signal (wk25 R²={wk25['r2']}); n gating on")
+          f"and refuses fake signal (wk25 R²={wk25['r2']}); n gating on; "
+          f"current year cannot move the fit (n={wk30['n']})")
 
 
 if __name__ == "__main__":

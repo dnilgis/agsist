@@ -741,7 +741,7 @@
         <div class="daily-left">
           <div style="display:flex;align-items:center;flex-wrap:wrap;gap:.5rem;margin-bottom:.9rem"><div class="daily-eyebrow"><span class="daily-eyebrow-dot"></span> AGSIST DAILY</div><span id="daily-mood" class="daily-mood" style="display:none"></span></div>
           <div id="daily-date" class="daily-date"></div>
-          <div class="daily-snapshot-note" aria-label="Briefing snapshot context" style="font-family:var(--font-body,'Inter',system-ui,sans-serif);font-size:.8rem;color:var(--text-muted);letter-spacing:.02em;margin:-.4rem 0 .8rem;line-height:1.5">Snapshot at briefing publish &middot; <span style="color:var(--gold)">live ticker above shows current prices</span></div>
+          <div class="daily-snapshot-note" aria-label="Briefing snapshot context" style="font-family:var(--font-body,'Inter',system-ui,sans-serif);font-size:.8rem;color:var(--text-muted);letter-spacing:.02em;margin:-.4rem 0 .8rem;line-height:1.5"><span id="daily-published">Snapshot at briefing publish</span> &middot; <span style="color:var(--gold)">live ticker above shows current prices</span></div>
           <div id="site-greeting" class="daily-greeting">Good Morning</div>
           <div id="daily-thread-marker" class="daily-thread-marker"><span class="dtm-day">Day <span id="daily-thread-day">--</span>/5</span><span class="dtm-q" id="daily-thread-q"></span></div>
           <h2 id="daily-headline" class="daily-headline">CRUDE BACK AT $102; BEANS CRACK, CORN FIRMS</h2>
@@ -2583,10 +2583,36 @@ window.hydrateDaily = function(data) {
     });
   }
 
+  // THE GREETING IS THE READER'S CLOCK; THE BRIEFING IS NOT.
+  // At 6pm this said "Good Evening" directly above a briefing written before
+  // the open, and the line under it said only "Snapshot at briefing publish"
+  // -- true, and silent about WHEN. A reader arriving in the evening had no
+  // way to tell whether the prices were an hour old or twelve.
+  //
+  // The greeting stays as a greeting. The publish time goes where it belongs,
+  // in the snapshot note, straight from the issue's own generated_at.
   var now=new Date();
   var h=now.getHours();
   var greeting=h<12?'Good Morning':h<17?'Good Afternoon':'Good Evening';
   setText('site-greeting',greeting);
+  (function(){
+    var el=document.getElementById('daily-published');
+    if(!el) return;
+    var g=data&&data.generated_at;
+    if(!g) return;
+    var d=new Date(g);
+    if(isNaN(d.getTime())) return;
+    var t;
+    try{
+      t=d.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',
+                                      timeZone:'America/Chicago'});
+    }catch(e){ return; }
+    var sameDay=d.toDateString()===now.toDateString();
+    el.textContent='Published '+t+' CT'+(sameDay?'':' on '+
+      d.toLocaleDateString('en-US',{month:'short',day:'numeric',
+                                    timeZone:'America/Chicago'}))+
+      ' \u00b7 prices are that snapshot';
+  })();
 
   if(dateStr){
     try{

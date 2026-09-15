@@ -67,6 +67,31 @@ SITE = "https://agsist.com/?d=1&utm_source=daily_email&utm_medium=email"
 SITE_HREF = SITE.replace("&", "&amp;")
 
 
+def issue_url(daily):
+    """The permanent page for THIS issue, not whatever the homepage shows now.
+
+    The button used to send every reader to agsist.com, which hydrates the
+    NEWEST briefing. Open Tuesday's email on Thursday and you land on
+    Thursday's issue reading Tuesday's subject line -- the one link in the
+    message goes somewhere other than the message. /daily/<date>.html is the
+    page that issue was archived to and it never changes under the reader.
+
+    Falls back to the homepage when the date cannot be read, because a button
+    that works is worth more than one that is precise; a missing date is the
+    only case and it has never happened on a real issue.
+    """
+    iso = None
+    try:
+        import grade_calls
+        iso = grade_calls.iso_date(daily)
+    except Exception:
+        iso = None
+    if not iso:
+        return SITE
+    return ("https://agsist.com/daily/%s.html"
+            "?utm_source=daily_email&utm_medium=email" % iso)
+
+
 def env(name, default=None, required=False):
     v = os.environ.get(name, default)
     if isinstance(v, str):
@@ -165,8 +190,10 @@ def build_email(day, b, to_addr, from_name, from_addr, reply_to):
     else:
         msg["List-Unsubscribe"] = "<mailto:" + unsub + "?subject=unsubscribe>"
 
-    text = brief_email.render_text(b, SITE, unsub_url=uurl, date_display=date_display)
-    hbody = brief_email.render_html(b, SITE_HREF, unsub_url=uurl, date_display=date_display)
+    text = brief_email.render_text(b, issue_url(b), unsub_url=uurl, date_display=date_display)
+    _issue = issue_url(b)
+    hbody = brief_email.render_html(b, _issue.replace("&", "&amp;"),
+                                    unsub_url=uurl, date_display=date_display)
 
     # set_content first, add_alternative second: that ordering is what makes it
     # multipart/alternative with the HTML preferred and the text a real
