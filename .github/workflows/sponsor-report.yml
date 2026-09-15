@@ -22,7 +22,15 @@ on:
     branches: [main]
     paths:
       - 'scripts/build_sponsor_report.py'
+      - 'scripts/sponsor_links.py'
+      - 'scripts/test_sponsor_portal.py'
+      - 'scripts/test_rate_card.py'
+      - 'scripts/sponsor-checks.mjs'
+      - 'sponsor-report.html'
+      - 'sponsor.html'
       - 'data/sponsors.json'
+      - 'data/sponsor.json'
+      - 'data/rate-card.json'
 
 concurrency:
   group: sponsor-report
@@ -42,6 +50,27 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      # ── GUARDS, BEFORE THE NUMBERS ────────────────────────────────────────
+      # This is the one page a paying sponsor sees. Three ways it can be wrong
+      # and every one of them is silent: an approved badge over copy that
+      # changed, one surface's tracking link shown as another's, or a price the
+      # sales page does not quote. They run before the build so a bad shape
+      # never reaches a sponsor's link, and they need no secrets.
+      #
+      # sponsor-checks.mjs already existed and NOTHING RAN IT — the same way
+      # delivery-checks.mjs sat unrun while a broken filter shipped. It runs
+      # here now.
+      - name: The portal cannot approve words nobody saw
+        run: |
+          python3 scripts/sponsor_links.py --selftest
+          python3 scripts/test_sponsor_portal.py
+          python3 scripts/test_rate_card.py
+          node scripts/sponsor-checks.mjs
 
       - name: Install the GA4 client
         run: pip install --quiet google-analytics-data
