@@ -21,7 +21,7 @@
   "CO":{
    "rows":81,
    "facilities":5,
-   "kb":4.1
+   "kb":4.0
   },
   "DE":{
    "rows":5,
@@ -66,7 +66,7 @@
   "MN":{
    "rows":3442,
    "facilities":167,
-   "kb":142.3
+   "kb":142.2
   },
   "MO":{
    "rows":858,
@@ -74,7 +74,7 @@
    "kb":35.8
   },
   "MT":{
-   "rows":156,
+   "rows":158,
    "facilities":5,
    "kb":7.1
   },
@@ -84,14 +84,14 @@
    "kb":1.0
   },
   "ND":{
-   "rows":1669,
+   "rows":1670,
    "facilities":65,
    "kb":68.5
   },
   "NE":{
-   "rows":2713,
+   "rows":2714,
    "facilities":134,
-   "kb":107.4
+   "kb":107.0
   },
   "OH":{
    "rows":2017,
@@ -114,9 +114,9 @@
    "kb":1.4
   },
   "SD":{
-   "rows":1541,
+   "rows":1551,
    "facilities":75,
-   "kb":62.7
+   "kb":63.1
   },
   "TN":{
    "rows":79,
@@ -131,7 +131,7 @@
   "VA":{
    "rows":24,
    "facilities":2,
-   "kb":1.4
+   "kb":1.3
   },
   "WA":{
    "rows":361,
