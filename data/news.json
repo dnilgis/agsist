@@ -1,8 +1,19 @@
 {
- "updated": "2026-09-13T16:14:59+00:00",
- "count": 4,
- "added": 0,
+ "updated": "2026-09-15T15:33:06+00:00",
+ "count": 5,
+ "added": 1,
  "items": [
+  {
+   "id": "px:2026-09-15:corn:hi",
+   "kind": "board",
+   "headline": "Corn closed at a 52-week high",
+   "detail": "$5.34 a bushel, taking out the $5.26 top of its range.",
+   "significance": "high",
+   "url": "/corn-futures-prices",
+   "source": "CME settlement via the AGSIST board",
+   "day_only": true,
+   "ts": "2026-09-15T12:00:00+00:00"
+  },
   {
    "id": "wasde:2026-09-11:2026/27 soybean yield",
    "kind": "usda",
