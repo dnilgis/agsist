@@ -1,8 +1,19 @@
 {
- "updated": "2026-09-15T15:33:06+00:00",
- "count": 5,
+ "updated": "2026-09-15T20:08:35+00:00",
+ "count": 6,
  "added": 1,
  "items": [
+  {
+   "id": "px:2026-09-15:beans:hi",
+   "kind": "board",
+   "headline": "Soybeans closed at a 52-week high",
+   "detail": "$13.19 a bushel, taking out the $13.18 top of its range.",
+   "significance": "high",
+   "url": "/soybean-futures-prices",
+   "source": "CME settlement via the AGSIST board",
+   "day_only": true,
+   "ts": "2026-09-15T12:00:00+00:00"
+  },
   {
    "id": "px:2026-09-15:corn:hi",
    "kind": "board",
