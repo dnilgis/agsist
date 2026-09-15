@@ -1,18 +1,12 @@
 {
  "schema": "agsist-render-audit/1",
  "base": "https://agsist.com",
- "ran": "2026-09-14T17:05:56.545Z",
+ "ran": "2026-09-15T15:43:42.633Z",
  "pages": 16,
- "seconds": 201,
- "high": 1,
+ "seconds": 203,
+ "high": 0,
  "med": 0,
  "findings": [
-  {
-   "page": "/status",
-   "sev": "high",
-   "kind": "subresource",
-   "detail": "desktop: 503  /data/cond-yield/fit.json?_t=1789405480287"
-  },
   {
    "page": "/status",
    "sev": "expected",
@@ -23,13 +17,13 @@
    "page": "/status",
    "sev": "expected",
    "kind": "expected-404",
-   "detail": "desktop: 404  /data/dairy-data.json?_t=1789405480286"
+   "detail": "desktop: 404  /data/dairy-data.json?_t=1789486947131"
   },
   {
    "page": "/status",
    "sev": "expected",
    "kind": "expected-404",
-   "detail": "mobile: 404  /data/dairy-data.json?_t=1789405486392"
+   "detail": "mobile: 404  /data/dairy-data.json?_t=1789486953343"
   },
   {
    "page": "/status",
