@@ -1,6 +1,18 @@
 {
   "briefings": [
     {
+      "date": "2026-09-15",
+      "date_display": "Tuesday, September 15, 2026",
+      "headline": "HOGS BREAK HARD; CATTLE HOLD; CHS DROPS $700M ON CRUSH",
+      "teaser": "Hogs broke hard, cattle ran, and CHS just committed $700M to soy crush in Wisconsin.",
+      "market_mood": "mixed",
+      "surprise_count": 2,
+      "sections": 3,
+      "url": "/daily/2026-09-15",
+      "market_closed": false,
+      "yc_outcome": "didnt"
+    },
+    {
       "date": "2026-09-14",
       "date_display": "Monday, September 14, 2026",
       "headline": "CRUDE BACK AT $102; BEANS CRACK, CORN FIRMS",
@@ -2137,6 +2149,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-09-14T10:56:50.241544+00:00",
-  "count": 186
+  "updated": "2026-09-15T11:13:08.838463+00:00",
+  "count": 187
 }

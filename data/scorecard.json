@@ -1,18 +1,18 @@
 {
- "updated": "2026-09-14T10:56:52+00:00",
- "total": 124,
+ "updated": "2026-09-15T11:13:10+00:00",
+ "total": 125,
  "played_out": 41,
- "didnt": 75,
- "pending": 8,
- "hit_rate": 35.3,
+ "didnt": 78,
+ "pending": 6,
+ "hit_rate": 34.5,
  "by_method": {
   "deterministic": {
    "played": 15,
-   "missed": 65,
-   "graded": 80,
-   "hit_rate": 18.8,
+   "missed": 68,
+   "graded": 83,
+   "hit_rate": 18.1,
    "first": "2026-06-25",
-   "last": "2026-09-12"
+   "last": "2026-09-15"
   },
   "self_reported": {
    "played": 26,
@@ -34,17 +34,17 @@
   },
   "v2": {
    "played": 9,
-   "missed": 22,
-   "graded": 31,
-   "hit_rate": 29.0,
+   "missed": 25,
+   "graded": 34,
+   "hit_rate": 26.5,
    "first": "2026-08-12",
-   "last": "2026-09-12"
+   "last": "2026-09-15"
   }
  },
  "direction_only": {
   "right_way": 40,
-  "graded": 80,
-  "rate": 50.0
+  "graded": 83,
+  "rate": 48.2
  },
  "by_instrument": {
   "wheat": {
@@ -59,8 +59,8 @@
   },
   "beans": {
    "played": 8,
-   "graded": 23,
-   "hit_rate": 34.8
+   "graded": 26,
+   "hit_rate": 30.8
   },
   "crude": {
    "played": 2,
@@ -94,52 +94,81 @@
   "hit_rate": 25.0
  },
  "mismatched": 2,
+ "band_flags": {
+  "too_near": 6,
+  "too_near_wins": 2,
+  "too_far": 57,
+  "too_far_wins": 10,
+  "note": "Calls whose level sat outside the one-session band computed from that instrument's own realized moves. Counted in the hit rate exactly like every other call; flagged so they can be read separately."
+ },
  "current_streak": 0,
  "records": [
   {
-   "made": "2026-09-14",
+   "made": "2026-09-15",
    "judged": null,
-   "call": "Called soybeans down toward $12.8 ($12.945 when the call was made).",
+   "call": "Called feeder cattle up toward $345.0 ($343.7 when the call was made).",
    "outcome": "pending",
    "method": "deterministic",
    "mismatch": false,
    "note": "Open: no session has settled since this call was made.",
+   "instrument": "feeders",
+   "direction": "up",
+   "level": 345.0,
+   "p0": 343.7,
+   "p1": null,
+   "design": "v2"
+  },
+  {
+   "made": "2026-09-14",
+   "judged": "2026-09-15",
+   "call": "Called soybeans down toward $12.8 ($12.945 when the call was made). It closed at $13.0025.",
+   "outcome": "didnt",
+   "method": "deterministic",
+   "mismatch": false,
+   "note": "Miss. Beans ticked up a nickel to $13.00 instead of breaking lower; the line held and the thesis stays alive but unconfirmed.",
    "instrument": "beans",
    "direction": "down",
    "level": 12.8,
    "p0": 12.945,
-   "p1": null,
-   "design": "v2"
+   "p1": 13.0025,
+   "design": "v2",
+   "direction_ok": false
   },
   {
    "made": "2026-09-13",
-   "judged": null,
-   "call": "Called soybeans down toward $12.85 ($12.99 when the call was made).",
-   "outcome": "pending",
+   "judged": "2026-09-15",
+   "call": "Called soybeans down toward $12.85 ($12.99 when the call was made). It closed at $13.0025.",
+   "outcome": "didnt",
    "method": "deterministic",
    "mismatch": false,
-   "note": "Open: no session has settled since this call was made.",
+   "note": "",
    "instrument": "beans",
    "direction": "down",
    "level": 12.85,
    "p0": 12.99,
-   "p1": null,
-   "design": "v2"
+   "p1": 13.0025,
+   "design": "v2",
+   "direction_ok": false,
+   "band": "too_far",
+   "band_detail": "beans: level $12.85 is 14¢ from close $12.99; one-session band is 3¢–8¢"
   },
   {
    "made": "2026-09-12",
-   "judged": null,
-   "call": "Called soybeans down toward $12.85 ($12.99 when the call was made).",
-   "outcome": "pending",
+   "judged": "2026-09-15",
+   "call": "Called soybeans down toward $12.85 ($12.99 when the call was made). It closed at $13.0025.",
+   "outcome": "didnt",
    "method": "deterministic",
    "mismatch": false,
-   "note": "Open: no session has settled since this call was made.",
+   "note": "",
    "instrument": "beans",
    "direction": "down",
    "level": 12.85,
    "p0": 12.99,
-   "p1": null,
-   "design": "v2"
+   "p1": 13.0025,
+   "design": "v2",
+   "direction_ok": false,
+   "band": "too_far",
+   "band_detail": "beans: level $12.85 is 14¢ from close $12.99; one-session band is 3¢–8¢"
   },
   {
    "made": "2026-09-11",
@@ -171,7 +200,9 @@
    "p0": 12.98,
    "p1": 13.1725,
    "design": "v2",
-   "direction_ok": true
+   "direction_ok": true,
+   "band": "too_far",
+   "band_detail": "beans: level $13.23 is 25¢ from close $12.98; one-session band is 5¢–21¢ [report-day band]"
   },
   {
    "made": "2026-09-09",
@@ -219,7 +250,9 @@
    "p0": 7.16,
    "p1": 7.27,
    "design": "v2",
-   "direction_ok": true
+   "direction_ok": true,
+   "band": "too_near",
+   "band_detail": "wheat: level $7.16 is only 0.0¢ from close $7.16; band minimum is 8¢ [report-day band] — a level this close grades as noise"
   },
   {
    "made": "2026-09-05",
@@ -283,7 +316,9 @@
    "p0": 12.94,
    "p1": 12.87,
    "design": "v2",
-   "direction_ok": false
+   "direction_ok": false,
+   "band": "too_far",
+   "band_detail": "beans: level $13.12 is 18¢ from close $12.94; one-session band is 3¢–9¢"
   },
   {
    "made": "2026-09-01",
@@ -331,7 +366,9 @@
    "p0": 7.67,
    "p1": 7.5975,
    "design": "v2",
-   "direction_ok": false
+   "direction_ok": false,
+   "band": "too_near",
+   "band_detail": "wheat: level $7.67 is only 0.0¢ from close $7.67; band minimum is 4¢ — a level this close grades as noise"
   },
   {
    "made": "2026-08-29",
@@ -347,7 +384,9 @@
    "p0": 7.67,
    "p1": 7.5975,
    "design": "v2",
-   "direction_ok": false
+   "direction_ok": false,
+   "band": "too_near",
+   "band_detail": "wheat: level $7.67 is only 0.0¢ from close $7.67; band minimum is 3¢ — a level this close grades as noise"
   },
   {
    "made": "2026-08-28",
@@ -379,7 +418,9 @@
    "p0": 12.525,
    "p1": 12.7775,
    "design": "v2",
-   "direction_ok": true
+   "direction_ok": true,
+   "band": "too_far",
+   "band_detail": "beans: level $12.71 is 19¢ from close $12.525; one-session band is 5¢–18¢ [report-day band]"
   },
   {
    "made": "2026-08-26",
@@ -395,7 +436,9 @@
    "p0": 12.32,
    "p1": 12.525,
    "design": "v2",
-   "direction_ok": true
+   "direction_ok": true,
+   "band": "too_far",
+   "band_detail": "beans: level $12.47 is 15¢ from close $12.32; one-session band is 2¢–7¢"
   },
   {
    "made": "2026-08-25",
@@ -411,7 +454,9 @@
    "p0": 82.61,
    "p1": 80.29,
    "design": "v2",
-   "direction_ok": true
+   "direction_ok": true,
+   "band": "too_far",
+   "band_detail": "crude: level $81.5 is $1.11 from close $82.61; one-session band is $0.31–$1.00"
   },
   {
    "made": "2026-08-24",
@@ -427,7 +472,9 @@
    "p0": 4.9625,
    "p1": 4.915,
    "design": "v2",
-   "direction_ok": false
+   "direction_ok": false,
+   "band": "too_far",
+   "band_detail": "corn: level $5.29 is 33¢ from close $4.9625; one-session band is 3¢–11¢ [report-day band]"
   },
   {
    "made": "2026-08-23",
@@ -443,7 +490,9 @@
    "p0": 223.05,
    "p1": 220.075,
    "design": "v2",
-   "direction_ok": true
+   "direction_ok": true,
+   "band": "too_far",
+   "band_detail": "cattle: level $217.92 is $5.13 from close $223.05; one-session band is $0.36–$1.15"
   },
   {
    "made": "2026-08-22",
@@ -459,7 +508,9 @@
    "p0": 4.8375,
    "p1": 4.915,
    "design": "v2",
-   "direction_ok": false
+   "direction_ok": false,
+   "band": "too_far",
+   "band_detail": "corn: level $4.95 is 11¢ from close $4.8375; one-session band is 1¢–4¢"
   },
   {
    "made": "2026-08-21",
@@ -475,7 +526,9 @@
    "p0": 4.835,
    "p1": 4.915,
    "design": "v2",
-   "direction_ok": true
+   "direction_ok": true,
+   "band": "too_far",
+   "band_detail": "corn: level $5.13 is 29¢ from close $4.835; one-session band is 3¢–10¢ [report-day band]"
   },
   {
    "made": "2026-08-20",
@@ -555,7 +608,9 @@
    "p0": 4.5925,
    "p1": 4.675,
    "design": "v2",
-   "direction_ok": false
+   "direction_ok": false,
+   "band": "too_far",
+   "band_detail": "corn: level $4.72 is 13¢ from close $4.5925; one-session band is 1¢–4¢"
   },
   {
    "made": "2026-08-15",
@@ -571,7 +626,9 @@
    "p0": 4.5925,
    "p1": 4.675,
    "design": "v2",
-   "direction_ok": true
+   "direction_ok": true,
+   "band": "too_far",
+   "band_detail": "corn: level $4.84 is 25¢ from close $4.5925; one-session band is 1¢–4¢"
   },
   {
    "made": "2026-08-14",
@@ -587,7 +644,9 @@
    "p0": 325.0,
    "p1": 315.60001,
    "design": "v2",
-   "direction_ok": true
+   "direction_ok": true,
+   "band": "too_far",
+   "band_detail": "meal: level $322.0 is $3.0 from close $325.0; one-session band is $0.9–$2.8"
   },
   {
    "made": "2026-08-13",
@@ -635,7 +694,9 @@
    "p0": 11.6125,
    "p1": 11.55,
    "design": "v2",
-   "direction_ok": true
+   "direction_ok": true,
+   "band": "too_far",
+   "band_detail": "beans: level $11.74 is 13¢ from close $11.6125; one-session band is 3¢–8¢"
   },
   {
    "made": "2026-08-10",
@@ -651,7 +712,9 @@
    "p0": 4.385,
    "p1": 4.3825,
    "design": "v1",
-   "direction_ok": false
+   "direction_ok": false,
+   "band": "too_far",
+   "band_detail": "corn: level $4.45 is 7¢ from close $4.385; one-session band is 1¢–4¢"
   },
   {
    "made": "2026-08-09",
@@ -667,7 +730,9 @@
    "p0": 4.39,
    "p1": 4.3825,
    "design": "v1",
-   "direction_ok": true
+   "direction_ok": true,
+   "band": "too_far",
+   "band_detail": "corn: level $4.45 is 6¢ from close $4.39; one-session band is 1¢–4¢"
   },
   {
    "made": "2026-08-08",
@@ -683,7 +748,9 @@
    "p0": 4.39,
    "p1": 4.3825,
    "design": "v1",
-   "direction_ok": true
+   "direction_ok": true,
+   "band": "too_far",
+   "band_detail": "corn: level $4.62 is 23¢ from close $4.39; one-session band is 1¢–4¢"
   },
   {
    "made": "2026-08-07",
@@ -699,7 +766,9 @@
    "p0": 6.3825,
    "p1": 6.405,
    "design": "v1",
-   "direction_ok": true
+   "direction_ok": true,
+   "band": "too_far",
+   "band_detail": "wheat: level $6.5 is 12¢ from close $6.3825; one-session band is 3¢–10¢"
   },
   {
    "made": "2026-08-06",
@@ -715,7 +784,9 @@
    "p0": 11.535,
    "p1": 11.6,
    "design": "v1",
-   "direction_ok": true
+   "direction_ok": true,
+   "band": "too_far",
+   "band_detail": "beans: level $11.76 is 22¢ from close $11.535; one-session band is 3¢–8¢"
   },
   {
    "made": "2026-08-05",
@@ -731,7 +802,9 @@
    "p0": 11.49,
    "p1": 11.535,
    "design": "v1",
-   "direction_ok": false
+   "direction_ok": false,
+   "band": "too_far",
+   "band_detail": "beans: level $11.59 is 10¢ from close $11.49; one-session band is 3¢–9¢"
   },
   {
    "made": "2026-08-04",
@@ -747,7 +820,9 @@
    "p0": 11.59,
    "p1": 11.49,
    "design": "v1",
-   "direction_ok": true
+   "direction_ok": true,
+   "band": "too_near",
+   "band_detail": "beans: level $11.59 is only 0.0¢ from close $11.59; band minimum is 3¢ — a level this close grades as noise"
   },
   {
    "made": "2026-08-03",
@@ -763,7 +838,9 @@
    "p0": 6.4025,
    "p1": 6.4325,
    "design": "v1",
-   "direction_ok": true
+   "direction_ok": true,
+   "band": "too_far",
+   "band_detail": "wheat: level $6.55 is 15¢ from close $6.4025; one-session band is 3¢–11¢"
   },
   {
    "made": "2026-08-02",
@@ -779,7 +856,9 @@
    "p0": 4.4075,
    "p1": 4.47,
    "design": "v1",
-   "direction_ok": false
+   "direction_ok": false,
+   "band": "too_near",
+   "band_detail": "corn: level $4.41 is only 0.3¢ from close $4.4075; band minimum is 1¢ — a level this close grades as noise"
   },
   {
    "made": "2026-08-01",
@@ -795,7 +874,9 @@
    "p0": 4.4075,
    "p1": 4.47,
    "design": "v1",
-   "direction_ok": false
+   "direction_ok": false,
+   "band": "too_near",
+   "band_detail": "corn: level $4.41 is only 0.3¢ from close $4.4075; band minimum is 1¢ — a level this close grades as noise"
   },
   {
    "made": "2026-07-31",
@@ -811,7 +892,9 @@
    "p0": 6.38,
    "p1": 6.4325,
    "design": "v1",
-   "direction_ok": true
+   "direction_ok": true,
+   "band": "too_far",
+   "band_detail": "wheat: level $6.55 is 17¢ from close $6.38; one-session band is 4¢–11¢"
   },
   {
    "made": "2026-07-30",
@@ -827,7 +910,9 @@
    "p0": 6.7875,
    "p1": 6.38,
    "design": "v1",
-   "direction_ok": false
+   "direction_ok": false,
+   "band": "too_far",
+   "band_detail": "wheat: level $6.9 is 11¢ from close $6.7875; one-session band is 3¢–10¢"
   },
   {
    "made": "2026-07-29",
@@ -843,7 +928,9 @@
    "p0": 337.225,
    "p1": 339.05,
    "design": "v1",
-   "direction_ok": false
+   "direction_ok": false,
+   "band": "too_far",
+   "band_detail": "feeders: level $333.0 is $4.23 from close $337.225; one-session band is $0.99–$3.17"
   },
   {
    "made": "2026-07-28",
@@ -859,7 +946,9 @@
    "p0": 331.275,
    "p1": 337.225,
    "design": "v1",
-   "direction_ok": false
+   "direction_ok": false,
+   "band": "too_far",
+   "band_detail": "feeders: level $328.0 is $3.27 from close $331.275; one-session band is $0.96–$3.07"
   },
   {
    "made": "2026-07-27",
@@ -875,7 +964,9 @@
    "p0": 12.2025,
    "p1": 12.0825,
    "design": "v1",
-   "direction_ok": false
+   "direction_ok": false,
+   "band": "too_far",
+   "band_detail": "beans: level $12.47 is 27¢ from close $12.2025; one-session band is 3¢–11¢"
   },
   {
    "made": "2026-07-26",
@@ -923,7 +1014,9 @@
    "p0": 6.79,
    "p1": 6.5325,
    "design": "v1",
-   "direction_ok": false
+   "direction_ok": false,
+   "band": "too_far",
+   "band_detail": "wheat: level $6.91 is 12¢ from close $6.79; one-session band is 3¢–9¢"
   },
   {
    "made": "2026-07-23",
@@ -939,7 +1032,9 @@
    "p0": 336.15,
    "p1": 342.04999,
    "design": "v1",
-   "direction_ok": false
+   "direction_ok": false,
+   "band": "too_far",
+   "band_detail": "feeders: level $333.0 is $3.15 from close $336.15; one-session band is $0.79–$2.54"
   },
   {
    "made": "2026-07-22",
@@ -955,7 +1050,9 @@
    "p0": 88.15,
    "p1": 90.0,
    "design": "v1",
-   "direction_ok": true
+   "direction_ok": true,
+   "band": "too_far",
+   "band_detail": "crude: level $90.0 is $1.85 from close $88.15; one-session band is $0.51–$1.62"
   },
   {
    "made": "2026-07-21",
@@ -971,7 +1068,9 @@
    "p0": 346.775,
    "p1": 344.875,
    "design": "v1",
-   "direction_ok": false
+   "direction_ok": false,
+   "band": "too_far",
+   "band_detail": "feeders: level $350.0 is $3.23 from close $346.775; one-session band is $0.72–$2.31"
   },
   {
    "made": "2026-07-20",
@@ -987,7 +1086,9 @@
    "p0": 4.4475,
    "p1": 4.49,
    "design": "v1",
-   "direction_ok": true
+   "direction_ok": true,
+   "band": "too_far",
+   "band_detail": "corn: level $4.55 is 10¢ from close $4.4475; one-session band is 1¢–4¢"
   },
   {
    "made": "2026-07-19",
@@ -1003,7 +1104,9 @@
    "p0": 12.045,
    "p1": 12.285,
    "design": "v1",
-   "direction_ok": true
+   "direction_ok": true,
+   "band": "too_far",
+   "band_detail": "beans: level $12.2 is 15¢ from close $12.045; one-session band is 3¢–9¢"
   },
   {
    "made": "2026-07-18",
@@ -1019,7 +1122,9 @@
    "p0": 12.045,
    "p1": 12.285,
    "design": "v1",
-   "direction_ok": true
+   "direction_ok": true,
+   "band": "too_far",
+   "band_detail": "beans: level $12.15 is 11¢ from close $12.045; one-session band is 3¢–9¢"
   },
   {
    "made": "2026-07-17",
@@ -1035,7 +1140,9 @@
    "p0": 339.07501,
    "p1": 346.775,
    "design": "v1",
-   "direction_ok": false
+   "direction_ok": false,
+   "band": "too_far",
+   "band_detail": "feeders: level $335.0 is $4.08 from close $339.07501; one-session band is $0.65–$2.07"
   },
   {
    "made": "2026-07-16",
@@ -1051,7 +1158,9 @@
    "p0": 6.8575,
    "p1": 6.8475,
    "design": "v1",
-   "direction_ok": false
+   "direction_ok": false,
+   "band": "too_far",
+   "band_detail": "wheat: level $7.1 is 24¢ from close $6.8575; one-session band is 3¢–8¢"
   },
   {
    "made": "2026-07-15",
@@ -1099,7 +1208,9 @@
    "p0": 94.775,
    "p1": 98.15,
    "design": "v1",
-   "direction_ok": false
+   "direction_ok": false,
+   "band": "too_far",
+   "band_detail": "hogs: level $90.0 is $4.78 from close $94.775; one-session band is $0.86–$2.75"
   },
   {
    "made": "2026-07-12",
@@ -1115,7 +1226,9 @@
    "p0": 4.38,
    "p1": 4.4075,
    "design": "v1",
-   "direction_ok": true
+   "direction_ok": true,
+   "band": "too_far",
+   "band_detail": "corn: level $4.7 is 32¢ from close $4.38; one-session band is 1¢–4¢"
   },
   {
    "made": "2026-07-11",
@@ -1131,7 +1244,9 @@
    "p0": 6.32,
    "p1": 6.3075,
    "design": "v1",
-   "direction_ok": false
+   "direction_ok": false,
+   "band": "too_far",
+   "band_detail": "wheat: level $6.45 is 13¢ from close $6.32; one-session band is 2¢–7¢"
   },
   {
    "made": "2026-07-10",
@@ -1147,7 +1262,9 @@
    "p0": 6.3,
    "p1": 6.3075,
    "design": "v1",
-   "direction_ok": true
+   "direction_ok": true,
+   "band": "too_far",
+   "band_detail": "wheat: level $6.45 is 15¢ from close $6.3; one-session band is 2¢–7¢"
   },
   {
    "made": "2026-07-09",
@@ -1163,7 +1280,9 @@
    "p0": 11.97,
    "p1": 11.975,
    "design": "v1",
-   "direction_ok": true
+   "direction_ok": true,
+   "band": "too_far",
+   "band_detail": "beans: level $12.1 is 13¢ from close $11.97; one-session band is 4¢–12¢"
   },
   {
    "made": "2026-07-08",
@@ -1179,7 +1298,9 @@
    "p0": 74.58,
    "p1": 73.57,
    "design": "v1",
-   "direction_ok": false
+   "direction_ok": false,
+   "band": "too_far",
+   "band_detail": "crude: level $76.5 is $1.92 from close $74.58; one-session band is $0.49–$1.56"
   },
   {
    "made": "2026-07-07",
@@ -1195,7 +1316,9 @@
    "p0": 11.815,
    "p1": 12.0775,
    "design": "v1",
-   "direction_ok": true
+   "direction_ok": true,
+   "band": "too_far",
+   "band_detail": "beans: level $12.1 is 29¢ from close $11.815; one-session band is 4¢–12¢"
   },
   {
    "made": "2026-07-06",
@@ -1211,7 +1334,9 @@
    "p0": 4.25,
    "p1": 4.395,
    "design": "v1",
-   "direction_ok": true
+   "direction_ok": true,
+   "band": "too_far",
+   "band_detail": "corn: level $4.42 is 17¢ from close $4.25; one-session band is 1.0¢–3¢"
   },
   {
    "made": "2026-07-05",
@@ -1227,7 +1352,9 @@
    "p0": 4.25,
    "p1": 4.395,
    "design": "v1",
-   "direction_ok": true
+   "direction_ok": true,
+   "band": "too_far",
+   "band_detail": "corn: level $4.42 is 17¢ from close $4.25; one-session band is 1.0¢–3¢"
   },
   {
    "made": "2026-07-04",
@@ -1243,7 +1370,9 @@
    "p0": 4.25,
    "p1": 4.395,
    "design": "v1",
-   "direction_ok": true
+   "direction_ok": true,
+   "band": "too_far",
+   "band_detail": "corn: level $4.42 is 17¢ from close $4.25; one-session band is 1¢–3¢"
   },
   {
    "made": "2026-07-03",
@@ -1259,7 +1388,9 @@
    "p0": 4.25,
    "p1": 4.395,
    "design": "v1",
-   "direction_ok": true
+   "direction_ok": true,
+   "band": "too_far",
+   "band_detail": "corn: level $4.42 is 17¢ from close $4.25; one-session band is 1¢–3¢"
   },
   {
    "made": "2026-07-02",
@@ -1275,7 +1406,9 @@
    "p0": 11.3275,
    "p1": 11.3175,
    "design": "v1",
-   "direction_ok": false
+   "direction_ok": false,
+   "band": "too_far",
+   "band_detail": "beans: level $11.54 is 21¢ from close $11.3275; one-session band is 3¢–9¢"
   },
   {
    "made": "2026-07-01",
@@ -1291,7 +1424,9 @@
    "p0": 4.1375,
    "p1": 4.2425,
    "design": "v1",
-   "direction_ok": true
+   "direction_ok": true,
+   "band": "too_far",
+   "band_detail": "corn: level $4.45 is 31¢ from close $4.1375; one-session band is 0.9¢–3¢"
   },
   {
    "made": "2026-06-30",
@@ -1307,7 +1442,9 @@
    "p0": 4.035,
    "p1": 4.1375,
    "design": "v1",
-   "direction_ok": false
+   "direction_ok": false,
+   "band": "too_far",
+   "band_detail": "corn: level $3.95 is 8¢ from close $4.035; one-session band is 0.8¢–3¢"
   },
   {
    "made": "2026-06-29",
@@ -1323,7 +1460,9 @@
    "p0": 4.1275,
    "p1": 4.035,
    "design": "v1",
-   "direction_ok": false
+   "direction_ok": false,
+   "band": "too_far",
+   "band_detail": "corn: level $4.42 is 29¢ from close $4.1275; one-session band is 0.7¢–2¢"
   },
   {
    "made": "2026-06-28",
@@ -1339,7 +1478,9 @@
    "p0": 4.1275,
    "p1": 4.035,
    "design": "v1",
-   "direction_ok": false
+   "direction_ok": false,
+   "band": "too_far",
+   "band_detail": "corn: level $4.42 is 29¢ from close $4.1275; one-session band is 0.7¢–2¢"
   },
   {
    "made": "2026-06-27",
@@ -1355,7 +1496,9 @@
    "p0": 4.1275,
    "p1": 4.035,
    "design": "v1",
-   "direction_ok": false
+   "direction_ok": false,
+   "band": "too_far",
+   "band_detail": "corn: level $4.42 is 29¢ from close $4.1275; one-session band is 0.9¢–3¢"
   },
   {
    "made": "2026-06-26",
@@ -1371,7 +1514,9 @@
    "p0": 4.14,
    "p1": 4.1275,
    "design": "v1",
-   "direction_ok": false
+   "direction_ok": false,
+   "band": "too_far",
+   "band_detail": "corn: level $4.43 is 29¢ from close $4.14; one-session band is 0.9¢–3¢"
   },
   {
    "made": "2026-06-25",
@@ -1387,7 +1532,9 @@
    "p0": 11.11,
    "p1": 11.21,
    "design": "v1",
-   "direction_ok": true
+   "direction_ok": true,
+   "band": "too_far",
+   "band_detail": "beans: level $11.38 is 27¢ from close $11.11; one-session band is 3¢–9¢"
   },
   {
    "made": "2026-06-24",
@@ -1403,7 +1550,9 @@
    "p0": 4.105,
    "p1": 4.065,
    "design": "v1",
-   "direction_ok": false
+   "direction_ok": false,
+   "band": "too_far",
+   "band_detail": "corn: level $4.25 is 14¢ from close $4.105; one-session band is 0.8¢–2¢"
   },
   {
    "made": "2026-06-23",
@@ -1419,7 +1568,9 @@
    "p0": 5.88,
    "p1": 5.865,
    "design": "v1",
-   "direction_ok": true
+   "direction_ok": true,
+   "band": "too_far",
+   "band_detail": "wheat: level $5.75 is 13¢ from close $5.88; one-session band is 2¢–7¢"
   },
   {
    "made": "2026-06-22",
