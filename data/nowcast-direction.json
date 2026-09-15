@@ -67,13 +67,43 @@
    "actual": null,
    "outcome": null,
    "graded_on": null
+  },
+  {
+   "wasde": "2026-10-09",
+   "crop": "corn",
+   "model": 182.6,
+   "model_week_ending": "2026-09-13",
+   "band80": 5.5,
+   "usda_before": 180.7,
+   "usda_before_label": "USDA, August WASDE",
+   "call": "up",
+   "locked_on": "2026-09-15",
+   "usda_after": null,
+   "actual": null,
+   "outcome": null,
+   "graded_on": null
+  },
+  {
+   "wasde": "2026-10-09",
+   "crop": "soybeans",
+   "model": 53.7,
+   "model_week_ending": "2026-09-13",
+   "band80": 1.4,
+   "usda_before": 52.7,
+   "usda_before_label": "USDA, August WASDE",
+   "call": "up",
+   "locked_on": "2026-09-15",
+   "usda_after": null,
+   "actual": null,
+   "outcome": null,
+   "graded_on": null
   }
  ],
- "updated": "2026-08-18T03:58:13+00:00",
+ "updated": "2026-09-15T08:41:04+00:00",
  "record": {
   "graded": 2,
   "correct": 0,
-  "pending": 2,
+  "pending": 4,
   "on_defective_input": 2
  }
 }
