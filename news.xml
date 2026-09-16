@@ -5,8 +5,24 @@
     <link>https://agsist.com/news</link>
     <description>Dated grain and livestock market events the moment they are measurable: USDA report surprises, one-year positioning extremes, 52-week highs and lows, crop rating swings. Measured, not aggregated.</description>
     <language>en-us</language>
-    <lastBuildDate>Tue, 15 Sep 2026 20:08:35 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 16 Sep 2026 00:17:23 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/news.xml" rel="self" type="application/rss+xml"/>
+    <item>
+      <title>Corn closed at a 52-week high</title>
+      <link>https://agsist.com/corn-futures-prices</link>
+      <description>$5.36 a bushel, taking out the $5.26 top of its range.</description>
+      <guid isPermaLink="false">agsist-news-px:2026-09-16:corn:hi</guid>
+      <pubDate>Wed, 16 Sep 2026 12:00:00 +0000</pubDate>
+      <source url="https://agsist.com/news.xml">CME settlement via the AGSIST board</source>
+    </item>
+    <item>
+      <title>Soybeans closed at a 52-week high</title>
+      <link>https://agsist.com/soybean-futures-prices</link>
+      <description>$13.19 a bushel, taking out the $13.18 top of its range.</description>
+      <guid isPermaLink="false">agsist-news-px:2026-09-16:beans:hi</guid>
+      <pubDate>Wed, 16 Sep 2026 12:00:00 +0000</pubDate>
+      <source url="https://agsist.com/news.xml">CME settlement via the AGSIST board</source>
+    </item>
     <item>
       <title>Soybeans closed at a 52-week high</title>
       <link>https://agsist.com/soybean-futures-prices</link>
