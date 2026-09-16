@@ -1,18 +1,18 @@
 {
- "updated": "2026-09-15T11:13:10+00:00",
- "total": 125,
+ "updated": "2026-09-16T11:11:27+00:00",
+ "total": 126,
  "played_out": 41,
- "didnt": 78,
+ "didnt": 79,
  "pending": 6,
- "hit_rate": 34.5,
+ "hit_rate": 34.2,
  "by_method": {
   "deterministic": {
    "played": 15,
-   "missed": 68,
-   "graded": 83,
-   "hit_rate": 18.1,
+   "missed": 69,
+   "graded": 84,
+   "hit_rate": 17.9,
    "first": "2026-06-25",
-   "last": "2026-09-15"
+   "last": "2026-09-16"
   },
   "self_reported": {
    "played": 26,
@@ -34,17 +34,17 @@
   },
   "v2": {
    "played": 9,
-   "missed": 25,
-   "graded": 34,
-   "hit_rate": 26.5,
+   "missed": 26,
+   "graded": 35,
+   "hit_rate": 25.7,
    "first": "2026-08-12",
-   "last": "2026-09-15"
+   "last": "2026-09-16"
   }
  },
  "direction_only": {
   "right_way": 40,
-  "graded": 83,
-  "rate": 48.2
+  "graded": 84,
+  "rate": 47.6
  },
  "by_instrument": {
   "wheat": {
@@ -74,7 +74,7 @@
   },
   "feeders": {
    "played": 0,
-   "graded": 5,
+   "graded": 6,
    "hit_rate": 0.0
   },
   "meal": {
@@ -89,9 +89,9 @@
   }
  },
  "trailing20": {
-  "played": 5,
+  "played": 4,
   "graded": 20,
-  "hit_rate": 25.0
+  "hit_rate": 20.0
  },
  "mismatched": 2,
  "band_flags": {
@@ -104,19 +104,35 @@
  "current_streak": 0,
  "records": [
   {
-   "made": "2026-09-15",
+   "made": "2026-09-16",
    "judged": null,
-   "call": "Called feeder cattle up toward $345.0 ($343.7 when the call was made).",
+   "call": "Called soybeans up toward $13.35 ($13.285 when the call was made).",
    "outcome": "pending",
    "method": "deterministic",
    "mismatch": false,
    "note": "Open: no session has settled since this call was made.",
+   "instrument": "beans",
+   "direction": "up",
+   "level": 13.35,
+   "p0": 13.285,
+   "p1": null,
+   "design": "v2"
+  },
+  {
+   "made": "2026-09-15",
+   "judged": "2026-09-16",
+   "call": "Called feeder cattle up toward $345.0 ($343.7 when the call was made). It closed at $340.05.",
+   "outcome": "didnt",
+   "method": "deterministic",
+   "mismatch": false,
+   "note": "Feeders fell to $340.05 today, well under $345; the supply-tightness bid is fading as the Aug 24 Douglas reopening approaches.",
    "instrument": "feeders",
    "direction": "up",
    "level": 345.0,
    "p0": 343.7,
-   "p1": null,
-   "design": "v2"
+   "p1": 340.05,
+   "design": "v2",
+   "direction_ok": false
   },
   {
    "made": "2026-09-14",

@@ -5,13 +5,24 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Tue, 15 Sep 2026 11:13:09 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 16 Sep 2026 11:11:27 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/agsist.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>BEANS LEAD; SAUDI PIPELINE CRISIS KEEPS CRUDE BID</title>
+      <link>https://agsist.com/daily/2026-09-16</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-09-16</guid>
+      <pubDate>Wed, 16 Sep 2026 05:00:00 -0600</pubDate>
+      <description>Soybeans added 6¾ cents to $13.29 on strong demand and meal follow-through, while corn flatlined at $5.37 and cattle corrected across the board. WTI held $103.73 -- the Saudi pipeline shutdown, which began forcing spot crude sales outside the Strait of Hormuz last week, kept the bid alive despite a $1 pullback.
+Action: New-crop beans at a 52-week high: price the first 10% on any settle above $13.35. Do not wait.
+• BEANS FIRM; CORN FLAT
+• CRUDE HOLDS; CATTLE CORRECT
+Read more: https://agsist.com/daily/2026-09-16</description>
+    </item>
     <item>
       <title>HOGS BREAK HARD; CATTLE HOLD; CHS DROPS $700M ON CRUSH</title>
       <link>https://agsist.com/daily/2026-09-15</link>
@@ -389,19 +400,6 @@ A vessel hit in the Strait of Hormuz sent Brent above $91, but WTI pulled back; 
 • WHEAT LEADS; HORMUZ IS THE REASON
 • CATTLE STEADY; FORT MORGAN DEAL CHANGES THE MATH
 Read more: https://agsist.com/daily/2026-08-18</description>
-    </item>
-    <item>
-      <title>TOUR WEEK OPENS: SCOUTS IN FIELDS, PRICES QUIET</title>
-      <link>https://agsist.com/daily/2026-08-17</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-08-17</guid>
-      <pubDate>Mon, 17 Aug 2026 05:00:00 -0600</pubDate>
-      <description>The Pro Farmer Crop Tour put boots in the Belt this morning and the market is doing what markets do before a verdict: nothing. Corn at $4.59 off a fraction, beans at $11.81 up a nickel, wheat the only real mover at $6.67, down 7 cents. Crop Progress at 3 PM CT is the first live number of the week.
-Pro Farmer crop tour begins today with corn and beans barely moving; Crop Progress at 3 PM CT resets the week.
-• GRAINS MARK TIME BEFORE TOUR DATA
-  → Old-crop corn: hold. Wednesday's scout summary is still your exit trigger if ears come in above 182 bu/acre.
-• BEANS FIRM; TOUR IS THE REAL TEST
-• CATTLE SLIP; STRUCTURAL STORY INTACT
-Read more: https://agsist.com/daily/2026-08-17</description>
     </item>
   </channel>
 </rss>
