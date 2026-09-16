@@ -1,18 +1,18 @@
 {
- "generated": "2026-09-15T22:25:23Z",
+ "generated": "2026-09-16T15:24:08Z",
  "from": "bids-full.json",
  "complete": false,
  "note": "Directory only: who operates a facility and where. No prices, no basis, no symbols, no delivery windows.",
  "counts": {
-  "facilities": 1800,
+  "facilities": 1797,
   "states": 28,
   "with_address": 0,
   "with_coords": 0,
   "with_url": 0,
-  "with_phone": 1800,
+  "with_phone": 1797,
   "saturated_zips": 0,
   "failed_zips": 0,
-  "rows_read": 18137
+  "rows_read": 18263
  },
  "saturated": [],
  "failed": [],
@@ -729,15 +729,6 @@
    "source": "barchart"
   },
   {
-   "facility": "Dunkerton Coop",
-   "branch": "Shell Rock Soy Processing ",
-   "city": "Shell Rock ",
-   "state": "IA",
-   "zip": "50670",
-   "phone": "N/A",
-   "source": "barchart"
-  },
-  {
    "facility": "Eastland Feed & Grain Inc.",
    "branch": "Cargill - Cedar Rapids",
    "city": "Cedar Rapids",
@@ -1212,15 +1203,6 @@
    "state": "IA",
    "zip": "51503",
    "phone": "(712) 366-0392",
-   "source": "barchart"
-  },
-  {
-   "facility": "Frontier Cooperative",
-   "branch": "Bunge CB",
-   "city": "Council Bluffs",
-   "state": "IA",
-   "zip": "51503",
-   "phone": "(712) 366-3600",
    "source": "barchart"
   },
   {
@@ -5023,15 +5005,6 @@
   },
   {
    "facility": "Litchfield Farmers Grain",
-   "branch": "Decatur Bids",
-   "city": "Decatur",
-   "state": "IL",
-   "zip": "62521",
-   "phone": "N/A",
-   "source": "barchart"
-  },
-  {
-   "facility": "Litchfield Farmers Grain",
    "branch": "Fillmore",
    "city": "Fillmore",
    "state": "IL",
@@ -7452,6 +7425,15 @@
    "source": "barchart"
   },
   {
+   "facility": "Cardinal Ethanol",
+   "branch": "Cardinal Colwich",
+   "city": "Colwich",
+   "state": "KS",
+   "zip": "67030",
+   "phone": "(316) 789-2500",
+   "source": "barchart"
+  },
+  {
    "facility": "Cargill US",
    "branch": "Hutchinson East, CAH",
    "city": "Hutchinson",
@@ -8164,11 +8146,11 @@
   },
   {
    "facility": "Farmers Cooperative Equity Company",
-   "branch": "Isabel",
-   "city": "Isabel",
+   "branch": "Nashville",
+   "city": "Nashville",
    "state": "KS",
-   "zip": "67065",
-   "phone": "620-739-4335",
+   "zip": "67112",
+   "phone": "620-246-5226",
    "source": "barchart"
   },
   {
@@ -8178,15 +8160,6 @@
    "state": "KS",
    "zip": "67112",
    "phone": "620-246-5262",
-   "source": "barchart"
-  },
-  {
-   "facility": "Farmers Cooperative Equity Company",
-   "branch": "Nashville",
-   "city": "Nashville",
-   "state": "KS",
-   "zip": "67112",
-   "phone": "620-246-5226",
    "source": "barchart"
   },
   {
@@ -8838,6 +8811,15 @@
    "source": "barchart"
   },
   {
+   "facility": "PureField Ingredients",
+   "branch": "LITTLE RIVER \u00c3\u00a2\u00c2\u0080\u00c2\u0093 CPC",
+   "city": "Little River",
+   "state": "KS",
+   "zip": "67457",
+   "phone": "N/A",
+   "source": "barchart"
+  },
+  {
    "facility": "Scoular Company - Missouri",
    "branch": "Scoular Pittsburg Cash Bids",
    "city": "Pittsburg",
@@ -8853,6 +8835,15 @@
    "state": "KS",
    "zip": "67137",
    "phone": "620-736-2011",
+   "source": "barchart"
+  },
+  {
+   "facility": "Skyland Grain",
+   "branch": "Cunningham Area",
+   "city": "Cunningham",
+   "state": "KS",
+   "zip": "67035",
+   "phone": "(620) 298-2011",
    "source": "barchart"
   },
   {
@@ -8934,6 +8925,15 @@
    "state": "KS",
    "zip": "67124",
    "phone": "620-933-2440",
+   "source": "barchart"
+  },
+  {
+   "facility": "The Scoular Company",
+   "branch": "Salina, KS",
+   "city": "Salina",
+   "state": "KS",
+   "zip": "67401",
+   "phone": "785-823-6001",
    "source": "barchart"
   },
   {
@@ -12646,15 +12646,6 @@
   },
   {
    "facility": "Frontier Cooperative",
-   "branch": "E-Energy Adams",
-   "city": "Adams",
-   "state": "NE",
-   "zip": "68301",
-   "phone": "(402) 988-4655",
-   "source": "barchart"
-  },
-  {
-   "facility": "Frontier Cooperative",
    "branch": "Adams",
    "city": "Adams",
    "state": "NE",
@@ -12687,15 +12678,6 @@
    "state": "NE",
    "zip": "68317",
    "phone": "402-782-2295",
-   "source": "barchart"
-  },
-  {
-   "facility": "Frontier Cooperative",
-   "branch": "Cargill Blair",
-   "city": "Blair",
-   "state": "NE",
-   "zip": "68008",
-   "phone": "(402) 533-4100",
    "source": "barchart"
   },
   {
@@ -15320,15 +15302,6 @@
   },
   {
    "facility": "Dumas Co-op Elevators",
-   "branch": "Morton",
-   "city": "Dumas",
-   "state": "TX",
-   "zip": "79029",
-   "phone": "806-948-5323 ",
-   "source": "barchart"
-  },
-  {
-   "facility": "Dumas Co-op Elevators",
    "branch": "Mwell",
    "city": "Dumas",
    "state": "TX",
@@ -15343,6 +15316,15 @@
    "state": "TX",
    "zip": "79029",
    "phone": "806-935-6440",
+   "source": "barchart"
+  },
+  {
+   "facility": "Dumas Co-op Elevators",
+   "branch": "Morton",
+   "city": "Dumas",
+   "state": "TX",
+   "zip": "79029",
+   "phone": "806-948-5323 ",
    "source": "barchart"
   },
   {
@@ -15442,15 +15424,6 @@
    "state": "WA",
    "zip": "99343",
    "phone": "5092694693",
-   "source": "barchart"
-  },
-  {
-   "facility": "HighLine Grain Growers, Inc",
-   "branch": "Farmer",
-   "city": "Farmer",
-   "state": "WA",
-   "zip": "98858",
-   "phone": "509-745-8142",
    "source": "barchart"
   },
   {
