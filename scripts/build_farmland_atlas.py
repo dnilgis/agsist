@@ -49,6 +49,10 @@ import statistics
 import sys
 from datetime import datetime, timezone
 
+from atlas_layers_p1 import (sob_layer, value_layer, crp_layer, drought_layer, energy_layer, wells_layer,
+                             national_p1, summarize_p1, seed_p1,
+                             MIN_RATIO_PREMIUM, MIN_RATIO_YEARS, MIN_CRP_ACRES, FULL_YEAR_MAPS, HALF_YEAR_WEEKS)
+
 # Corn Belt + Plains. Extend by adding a state here and to ATLAS_STATE_FIPS;
 # the geometry file must carry the state too (scripts/atlas_geometry.py).
 ATLAS_STATES = ["IA", "IL", "IN", "OH", "MI", "WI", "MN", "MO",
@@ -80,8 +84,8 @@ HOT_JULY_F = 70.0          # a July whose average low was at or above this. Exte
 REFERENCE_LINES_F = [58, 60, 62, 64, 66, 68, 70, 72]   # decade-crossing lines for the slider
 
 CAUSE_GROUPS = ["heat_drought", "wet", "hail", "wind", "cold", "irrigation", "price", "unassigned", "other"]
-LOSS_RATIO_WITHHELD = ("withheld: the cause-of-loss file carries premium only on rows with a loss; "
-                       "the true county loss ratio needs RMA's Summary of Business premium, not yet fetched")
+LOSS_RATIO_WITHHELD = ("withheld here: the cause-of-loss file carries premium only on rows with a loss; "
+                       "the county loss ratio is computed from RMA's Summary of Business premium in the Loss ratio card")
 
 
 def log(*a):
@@ -543,16 +547,22 @@ def national(counties, loss_latest):
     warmest_last = 0
     hot_by_decade = {}
     n_hot = 0
+    by_state = {}
     for c in counties.values():
         j = ((c.get("heat") or {}).get("months") or {}).get("jul") or {}
         t = j.get("trend") or {}
         if t.get("per_decade") is not None:
             trend_n += 1
             slopes.append(t["per_decade"])
+            bs = by_state.setdefault(c["state"], {"counties": 0, "warming": 0, "cooling": 0, "slopes": []})
+            bs["counties"] += 1
+            bs["slopes"].append(t["per_decade"])
             if t["direction"] == "warming":
                 warming += 1
+                bs["warming"] += 1
             elif t["direction"] == "cooling":
                 cooling += 1
+                bs["cooling"] += 1
         d = j.get("decades") or {}
         if d:
             n_hot += 1
@@ -566,7 +576,11 @@ def national(counties, loss_latest):
                 hb["hot"] += v.get("hot", 0)
                 hb["counties"] += 1
     if trend_n:
-        full_decades = sorted(k for k, v in hot_by_decade.items() if v["counties"])
+        # where the warming is: by state, counted, not averaged across county sizes
+        out["heat_by_state"] = {st: {"counties": v["counties"], "warming": v["warming"], "cooling": v["cooling"],
+                                     "share_warming": round(v["warming"] / v["counties"], 3),
+                                     "median_trend_per_decade": round(statistics.median(v["slopes"]), 2)}
+                                for st, v in sorted(by_state.items(), key=lambda kv: -kv[1]["warming"] / kv[1]["counties"])}
         out["heat"] = {"counties_with_trend": trend_n, "warming": warming, "cooling": cooling,
                        "no_clear_direction": trend_n - warming - cooling,
                        "median_trend_per_decade": round(statistics.median(slopes), 2),
@@ -701,19 +715,32 @@ def thesis_test(counties):
     if any_heat:
         oks = [r for r in results if r.get("status") == "ok" and r["scope"] == "within_state"]
         if oks:
+            def word(r):
+                return "faster" if r["r"] > 0 else "more slowly"
             sig = [r for r in oks if r["p_corrected"] < 0.05]
+            lvl = [r for r in sig if r["kind"] == "recent"]
+            trd = [r for r in sig if r["kind"] == "trend"]
             if not sig:
                 verdict = "No relationship the data can vouch for in this window."
             else:
-                signs = set("negative" if r["r"] < 0 else "positive" for r in sig)
-                size = max(abs(r["r"]) for r in sig)
-                if signs == {"negative"}:
-                    verdict = ("Within a state, warmer-night counties gained yield more slowly. The sign is the thesis; "
-                               + ("the size is too small to matter on its own." if size < 0.15 else "the size is modest." if size < 0.3 else "the size is not small."))
-                elif signs == {"positive"}:
-                    verdict = "Within a state, warmer-night counties gained yield faster in this window. That is the opposite of the thesis."
-                else:
-                    verdict = "The tests disagree on sign. No verdict."
+                parts = []
+                # the level of night heat is mostly geography inside a state (south is warmer
+                # and has the longer season); the TREND of night heat is the thesis
+                if lvl and len(set(word(r) for r in lvl)) == 1:
+                    parts.append(f"Within a state, counties with warmer nights gained yield {word(lvl[0])} "
+                                 f"(r {max(lvl, key=lambda r: abs(r['r']))['r']:+.2f}); that is where the longer season is, not the thesis.")
+                elif lvl:
+                    parts.append("The two level tests disagree on sign.")
+                if trd and len(set(word(r) for r in trd)) == 1:
+                    rr = max(trd, key=lambda r: abs(r['r']))['r']
+                    size = "too small to matter on its own" if abs(rr) < 0.15 else "modest" if abs(rr) < 0.3 else "not small"
+                    parts.append(f"Counties whose nights warmed faster since 1976 gained yield {word(trd[0])} "
+                                 f"(r {rr:+.2f}); the sign is {'the thesis' if rr < 0 else 'the opposite of the thesis'} and the size is {size}.")
+                elif trd:
+                    parts.append("The two trend tests disagree on sign.")
+                elif lvl:
+                    parts.append("The trend of night heat, which is the thesis, shows no relationship the data can vouch for.")
+                verdict = " ".join(parts)
         else:
             verdict = "Not enough counties within a state to say."
     return {"status": "ok" if any_heat else "not yet measured: heat layer has not run",
@@ -737,13 +764,14 @@ def build(rent_dir=RENT_DIR, raw_dir=RAW_DIR, geometry_names=None):
     rent, rent_vintage = load_rent(rent_dir)
     raw = {}
     vint = {}
-    for name in ("heat", "water", "loss"):
+    for name in ("heat", "water", "loss", "sob", "value", "crp", "drought", "energy", "wells"):
         p = os.path.join(raw_dir, f"{name}.json")
         if os.path.exists(p):
             with open(p, encoding="utf-8") as f:
                 d = json.load(f)
-            raw[name] = d.get("counties") or {}
-            vint[name] = {k: v for k, v in d.items() if k != "counties"}
+            raw[name] = d.get("counties") if name != "wells" else {"ne": d.get("ne") or {}, "ks": d.get("ks") or {}}
+            raw[name] = raw[name] or {}
+            vint[name] = {k: v for k, v in d.items() if k not in ("counties", "ne", "ks", "unmatched_atlas_names", "unplaced", "failed")}
             log(f"  {name}: {len(raw[name])} counties, {vint[name].get('source', '')}")
         else:
             raw[name] = None
@@ -753,9 +781,16 @@ def build(rent_dir=RENT_DIR, raw_dir=RAW_DIR, geometry_names=None):
     loss_latest = (vint.get("loss") or {}).get("latest_year")
     # RMA keeps settling the current crop year for a year or more; the builder marks it
     loss_partial = loss_latest if loss_latest and loss_latest >= datetime.now(timezone.utc).year else None
+    now = datetime.now(timezone.utc)
+    sob_latest = (vint.get("sob") or {}).get("latest_year")
+    sob_partial = sob_latest if sob_latest and sob_latest >= now.year else None
+    drought_half = (vint.get("drought") or {}).get("half", 50.0)
+    energy_year = (vint.get("energy") or {}).get("year")
+    # the federal fiscal year starts in October
+    this_fy = now.year + (1 if now.month >= 10 else 0)
 
     fips_all = set(rent)
-    for name in ("heat", "water", "loss"):
+    for name in ("heat", "water", "loss", "sob", "value", "crp", "drought"):
         if raw[name]:
             fips_all |= {f for f in raw[name] if f[:2] in ATLAS_STATE_FIPS}
     if geometry_names:
@@ -779,6 +814,19 @@ def build(rent_dir=RENT_DIR, raw_dir=RAW_DIR, geometry_names=None):
                       if raw["water"] is not None else water_layer(None))
         c["loss"] = (loss_layer((raw["loss"] or {}).get(fips), loss_latest, ran=True, partial_year=loss_partial)
                      if raw["loss"] is not None else loss_layer(None, None))
+        c["sob"] = (sob_layer((raw["sob"] or {}).get(fips), sob_latest, ran=True, partial_year=sob_partial,
+                              col_total_indemnity=c["loss"].get("total_indemnity") if c["loss"].get("status") == "ok" else None)
+                    if raw["sob"] is not None else sob_layer(None, None))
+        c["value"] = (value_layer((raw["value"] or {}).get(fips), (r.get("rent") or {}).get("nonirr"), ran=True)
+                      if raw["value"] is not None else value_layer(None))
+        harvested = (((raw["water"] or {}).get(fips) or {}).get("census2022") or {}).get("harvested")
+        c["crp"] = (crp_layer((raw["crp"] or {}).get(fips), harvested_cropland=harvested, ran=True, this_fy=this_fy)
+                    if raw["crp"] is not None else crp_layer(None))
+        c["drought"] = (drought_layer((raw["drought"] or {}).get(fips), half=drought_half, ran=True, this_year=now.year)
+                        if raw["drought"] is not None else drought_layer(None))
+        c["energy"] = energy_layer((raw["energy"] or {}).get(fips), ran=raw["energy"] is not None, year=energy_year)
+        c["wells"] = wells_layer(st, ne=(raw["wells"] or {}).get("ne", {}).get(fips), ks=(raw["wells"] or {}).get("ks", {}).get(fips),
+                                 ran=raw["wells"] is not None)
         # a fingerprint of the numbers. atlas_reads.py stores it beside each AI read
         # and the page shows a read only when the two agree, so a read can never
         # describe numbers the county no longer carries.
@@ -803,12 +851,33 @@ def build(rent_dir=RENT_DIR, raw_dir=RAW_DIR, geometry_names=None):
                  "source": "USDA RMA Summary of Business, Cause of Loss, 1989 onward",
                  "gates": {"min_premium_for_ratio": MIN_LOSS_PREMIUM, "min_indemnity_for_shares": MIN_LOSS_INDEM},
                  **(vint.get("loss") or {})},
+        "sob": {"status": "ok" if raw["sob"] else "not yet measured",
+                "source": "USDA RMA Summary of Business, state/county/crop/coverage level (sobcov), 1989 onward",
+                "gates": {"min_premium_for_ratio": MIN_RATIO_PREMIUM, "min_years_for_period_ratio": MIN_RATIO_YEARS},
+                **(vint.get("sob") or {})},
+        "value": {"status": "ok" if raw["value"] else "not yet measured",
+                  "source": "USDA Census of Agriculture 2012, 2017, 2022: estimated market value of land and buildings, $/acre, county",
+                  **(vint.get("value") or {})},
+        "crp": {"status": "ok" if raw["crp"] else "not yet measured",
+                "source": "USDA FSA CRP statistics: enrollment by county by year; contract expirations by county by fiscal year",
+                "gates": {"min_acres_for_share": MIN_CRP_ACRES}, "this_fy": this_fy,
+                **(vint.get("crp") or {})},
+        "drought": {"status": "ok" if raw["drought"] else "not yet measured",
+                    "source": "U.S. Drought Monitor county statistics (NDMC/UNL), weekly since 2000",
+                    "gates": {"maps_for_full_year": FULL_YEAR_MAPS, "half_year_weeks": HALF_YEAR_WEEKS, "area_pct": drought_half},
+                    **(vint.get("drought") or {})},
+        "energy": {"status": "ok" if raw["energy"] else "not yet measured",
+                   "source": "EIA Form 860: plant and generator files, operable and proposed",
+                   **(vint.get("energy") or {})},
+        "wells": {"status": "ok" if raw["wells"] else "not yet measured",
+                  "source": "Nebraska DNR registered wells; Kansas DWR WIMAS points of diversion (other states: no open register read yet)",
+                  **(vint.get("wells") or {})},
     }
     out = {
         "generated": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "states": ATLAS_STATES,
         "layers": layers,
-        "national": national(counties, loss_latest),
+        "national": {**national(counties, loss_latest), **national_p1(counties, this_fy=this_fy)},
         "thesis_test": thesis_test(counties),
         "counts": {"counties": len(counties),
                    "rent_ok": sum(1 for c in counties.values() if c["rent"].get("status") == "ok"),
@@ -816,7 +885,13 @@ def build(rent_dir=RENT_DIR, raw_dir=RAW_DIR, geometry_names=None):
                    "premium_ok": sum(1 for c in counties.values() if c["water_premium"].get("status") == "ok"),
                    "heat_ok": sum(1 for c in counties.values() if c["heat"].get("status") == "ok"),
                    "water_ok": sum(1 for c in counties.values() if c["water"].get("status") == "ok"),
-                   "loss_ok": sum(1 for c in counties.values() if c["loss"].get("status") == "ok")},
+                   "loss_ok": sum(1 for c in counties.values() if c["loss"].get("status") == "ok"),
+                   "sob_ok": sum(1 for c in counties.values() if c["sob"].get("status") == "ok"),
+                   "value_ok": sum(1 for c in counties.values() if c["value"].get("status") == "ok"),
+                   "crp_ok": sum(1 for c in counties.values() if c["crp"].get("status") == "ok"),
+                   "drought_ok": sum(1 for c in counties.values() if c["drought"].get("status") == "ok"),
+                   "energy_ok": sum(1 for c in counties.values() if c["energy"].get("status") == "ok"),
+                   "wells_ok": sum(1 for c in counties.values() if c["wells"].get("status") == "ok")},
         "counties": counties,
     }
     return out
@@ -932,7 +1007,7 @@ def selftest():
     tt = [r for r in t["tests"] if r["kind"] == "trend" and r["month"] == "jul" and r["scope"] == "raw"][0]
     assert tt["status"] == "withheld: no spread in x", tt
     assert len(t["tests"]) == 8 and t["tests_run"] == 8
-    assert "slowly" in t["verdict"], t["verdict"]
+    assert "more slowly" in t["verdict"] and "longer season" in t["verdict"], t["verdict"]
     # the seed writes between its markers, once, and is idempotent
     import tempfile
     tmp = tempfile.NamedTemporaryFile("w", suffix=".html", delete=False, encoding="utf-8")
@@ -972,6 +1047,9 @@ def selftest():
     assert sm["heat"]["months"]["aug"] == {"status": "withheld: none"}
     assert "per_year" not in sm["loss"] and sm["loss"]["heat_drought_2020s"] == .7 and sm["loss"]["share_all"]["heat_drought"] == .5
     assert "series" in rec["heat"]["months"]["jul"], "summarize must not mutate the detail record"
+    assert sm["sob"] == {"status": None} and sm["energy"] == {"status": None}, "phase 1 layers absent from the record read as status None"
+    rec["drought"] = drought_layer({"2012": {"maps": 52, "d2": 30, "d3": 10}}, ran=True)
+    assert summarize(rec)["drought"]["latest_d2"] == 30
     log("selftest ok")
 
 
@@ -1045,6 +1123,7 @@ def summarize(rec):
                             "top_cause_all": lo.get("top_cause_all"),
                             "heat_drought_2020s": recent,
                             "irrigation_failure_indemnity": lo.get("irrigation_failure_indemnity")})
+    out.update(summarize_p1(rec))
     return out
 
 
@@ -1099,6 +1178,10 @@ def seed_html(out):
         hb = h["hot_julys_by_decade"]
         dec = " · ".join(f"{k} {v['hot']}" for k, v in sorted(hb.items()) if k >= "1930s" and k <= "2010s")
         parts.append(f'<p>July nights: {h["warming"]} of {h["counties_with_trend"]} counties are warming since 1976 with the 95% interval clear of zero, {h["cooling"]} cooling, {h["no_clear_direction"]} with no clear direction; the median trend is {h["median_trend_per_decade"]:+.2f} F per decade. In {h["latest_decade_is_warmest"]} of {h["counties_with_decades"]} counties the 2010s were the warmest complete decade since the 1900s (the 2020s are not complete and are not counted). Julys with an average low at or above 70 F, summed over every county, by decade: {dec}.</p>')
+        bs = n.get("heat_by_state") or {}
+        if bs:
+            row = " · ".join(f"{st} {v['warming']} of {v['counties']}" for st, v in bs.items())
+            parts.append(f'<p>Where the warming is, counties warming since 1976 by state, most to least: {row}.</p>')
     else:
         parts.append('<p>July nights: not yet measured.</p>')
     w = n.get("water")
@@ -1122,6 +1205,7 @@ def seed_html(out):
             cc = out["counties"][f]
             return f'{cc["name"]}, {cc["state"]}: {_money(p["first"]["premium"])} in {p["first"]["year"]} to {_money(p["latest"]["premium"])} in {p["latest"]["year"]}'
         parts.append(f'<p>The irrigated rent premium: {pr["counties"]} counties publish both rents with enough paired years; the premium is rising in {pr["rising"]} and falling in {pr["falling"]}, with the 95% interval clear of zero. Falling fastest, fitted through every paired year: ' + "; ".join(li(f, p) for f, p in narrow) + '. Rising fastest: ' + "; ".join(li(f, p) for f, p in wide) + '.</p>')
+    parts.extend(seed_p1(n, _money, _pct))
     parts.append('</div>')
     return "\n".join(parts)
 

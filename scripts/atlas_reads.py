@@ -44,7 +44,8 @@ DETAIL_DIR = "data/atlas/counties"
 OUT = "data/atlas/reads.json"
 API = "https://api.anthropic.com/v1/messages"
 MODEL = "claude-sonnet-4-6"
-MAX_WORDS = 110
+MAX_WORDS = 130          # the prompt asks for under 100; the gate leaves room for a long county name
+WORKERS = 2               # 2026-09-13 first run: four workers hit the API's rate limit within a minute
 BANNED = ["alarming", "devastating", "skyrocket", "plummet", "crisis", "catastroph", "stunning",
           "shocking", "dramatic", "unprecedented", "game-chang", "robust", "leverage", "delve",
           "deep dive", "navigate", "landscape", "journey", "unlock",
@@ -57,11 +58,12 @@ CAUSE_WORDS = {"heat_drought": "heat and drought", "wet": "excess moisture and f
 SYSTEM = """You write the county read for AGSIST's Farmland Atlas. First person plural is not used; write as "I". Plain, short sentences. No adjectives of alarm. No advice to buy or sell. No emoji. No headings, no bullets.
 
 Rules that are checked by a program after you answer:
-1. Use ONLY the numbers in the block you are given, written exactly as given (same digits). Do not compute new numbers, do not round, do not convert units, do not add a year that is not in the block.
+1. Use ONLY the numbers in the block you are given, written exactly as given (same digits). Do not compute new numbers, do not round, do not convert units, do not add a year that is not in the block. A negative percent in the block is a fall: write "down 40 percent", never "down -40 percent".
 2. If a layer says "not yet measured" or "withheld", say so in four words or fewer and move on. Do not guess what it would show.
-3. Four or five sentences, under 110 words.
+3. Four or five sentences, under 100 words.
 4. Lead with the thing a land buyer would most want to know for this county, from what is present. Say what is present, not what is missing, unless nothing is present.
-5. The Atlas never combines heat and water into one grade. Do not rank the county overall. Do not use the word "score"."""
+5. The Atlas never combines heat and water into one grade. Do not rank the county overall. Do not use the word "score".
+6. These words fail the check and must not appear: nearly, almost, about, roughly, half, double, twice, triple, quarter, fold, alarming, dramatic, unprecedented, crisis, robust."""
 
 
 def log(*a):
@@ -145,6 +147,42 @@ def inputs_block(fips, rec):
             L.append(f"Indemnities for irrigation failure, all years: {fmt_num(round(lo['irrigation_failure_indemnity'] / 1e6, 2))} million dollars")
     else:
         L.append("Insurance loss record: not yet measured")
+    sb = rec.get("sob") or {}
+    if sb.get("status") == "ok":
+        if sb.get("loss_ratio_all") is not None:
+            L.append(f"Crop insurance loss ratio (indemnity over total premium) {sb['first_year']}-{sb['last_year']}: {fmt_num(sb['loss_ratio_all'])}; crop years paying out more than premium: {sb.get('years_over_one')} of {sb.get('years_with_ratio')}")
+        l10 = sb.get("last10") or {}
+        if l10.get("ratio") is not None:
+            L.append(f"Loss ratio over the last ten crop years {l10['from']}-{l10['to']}: {fmt_num(l10['ratio'])}")
+    v = rec.get("value") or {}
+    if v.get("status") == "ok" and v.get("latest") is not None:
+        L.append(f"Census market value of land and buildings, {v['latest_year']}: {fmt_num(v['latest'])} dollars per acre")
+        if (v.get("change") or {}).get("cagr_pct") is not None:
+            L.append(f"Land value change {v['change']['from_year']}-{v['change']['to_year']}: {fmt_num(v['change']['pct'])} percent, {fmt_num(v['change']['cagr_pct'])} percent a year")
+        if (v.get("rent_to_value") or {}).get("pct") is not None:
+            L.append(f"Non-irrigated cash rent as a share of land value, {v['rent_to_value']['year']}: {fmt_num(v['rent_to_value']['pct'])} percent")
+    c = rec.get("crp") or {}
+    if c.get("status") == "ok":
+        if (c.get("latest") or {}).get("acres") is not None:
+            L.append(f"CRP acres, {c['latest']['year']}: {fmt_num(c['latest']['acres'])}" + (f"; share of the cropland base: {fmt_num(c['share_of_cropland']['pct'])} percent" if (c.get('share_of_cropland') or {}).get('pct') is not None else ""))
+        if c.get("expiring_next3"):
+            L.append(f"CRP acres expiring fiscal years {c['expiring_next3']['from']}-{c['expiring_next3']['to']}: {fmt_num(c['expiring_next3']['acres'])}")
+    d = rec.get("drought") or {}
+    if d.get("status") == "ok":
+        w = d["weeks"]
+        L.append(f"Weeks with at least half the county in severe drought or worse, {d['first_year']}-{d['last_full_year']}: {w['d2']} of {w['counted']} ({fmt_num(w['share_d2_pct'])} percent); worst year {d['worst_year']['year']} with {d['worst_year']['d2']} weeks")
+        if d.get("last5"):
+            L.append(f"Weeks in severe drought or worse, {d['last5']['from']}-{d['last5']['to']}: {d['last5']['d2']}")
+    e = rec.get("energy") or {}
+    if e.get("status") == "ok":
+        o, pr = e["operable"], e["proposed"]
+        L.append(f"Solar operating: {fmt_num(o['solar'])} MW; wind operating: {fmt_num(o['wind'])} MW; proposed to EIA: {fmt_num(pr['solar'])} MW solar, {fmt_num(pr['wind'])} MW wind")
+    wl = rec.get("wells") or {}
+    if wl.get("status") == "ok":
+        if wl.get("wells") is not None:
+            L.append(f"Registered wells: {wl['wells']}; irrigation wells not decommissioned: {wl['irrigation_active']}" + (f"; median depth {fmt_num(wl['depth_median_ft'])} feet" if wl.get('depth_median_ft') is not None else "") + (f"; median static water level {fmt_num(wl['static_median_ft'])} feet" if wl.get('static_median_ft') is not None else ""))
+        elif wl.get("points") is not None:
+            L.append(f"Water rights: {wl['active']} active points of diversion, {wl['irrigation_active']} irrigation" + (f"; median priority year {wl['priority_year_median']}" if wl.get('priority_year_median') else ""))
     return "\n".join(L)
 
 
@@ -187,27 +225,49 @@ def gate(text, block):
     return None
 
 
+class ApiError(Exception):
+    pass
+
+
+_errors_logged = 0
+
+
 def call_model(api_key, block):
+    global _errors_logged
     payload = {"model": MODEL, "max_tokens": 400, "system": SYSTEM,
                "messages": [{"role": "user", "content": "Numbers for this county:\n\n" + block + "\n\nWrite the read."}]}
     req = urllib.request.Request(API, data=json.dumps(payload).encode(),
                                  headers={"Content-Type": "application/json", "x-api-key": api_key,
                                           "anthropic-version": "2023-06-01"})
-    for attempt in range(4):
+    delays = [5, 15, 30, 60, 90, 120]
+    for attempt in range(len(delays) + 1):
         try:
             with urllib.request.urlopen(req, timeout=120) as r:
                 d = json.load(r)
             return "".join(p.get("text", "") for p in d.get("content", []) if p.get("type") == "text").strip()
         except urllib.error.HTTPError as e:
-            if e.code in (429, 500, 502, 503, 529) and attempt < 3:
-                time.sleep(5 * (attempt + 1))
+            body = ""
+            try:
+                body = e.read().decode("utf-8", "replace")[:300]
+            except Exception:
+                pass
+            if _errors_logged < 5:
+                _errors_logged += 1
+                log(f"  API {e.code}: {body}")
+            if e.code in (408, 429, 500, 502, 503, 529) and attempt < len(delays):
+                ra = e.headers.get("retry-after") if e.headers else None
+                try:
+                    wait = max(float(ra), delays[attempt]) if ra else delays[attempt]
+                except ValueError:
+                    wait = delays[attempt]
+                time.sleep(wait)
                 continue
-            raise
-        except Exception:
-            if attempt < 3:
-                time.sleep(5 * (attempt + 1))
+            raise ApiError(f"HTTP {e.code}: {body[:120]}")
+        except urllib.error.URLError as e:
+            if attempt < len(delays):
+                time.sleep(delays[attempt])
                 continue
-            raise
+            raise ApiError(f"network: {e}")
 
 
 def one(api_key, fips, rec):
@@ -243,7 +303,7 @@ def selftest():
     assert gate(bad, block) == "number not in inputs: 152", gate(bad, block)
     assert gate("An alarming 138 dollars.", block) == "banned word: alarming"
     assert gate("- 138 dollars", block) == "list or heading formatting"
-    assert gate(" ".join(["word"] * 111), block).startswith("111 words")
+    assert gate(" ".join(["word"] * 131), block).startswith("131 words")
     # a trailing period after a number is not part of the number
     assert gate("Rent is 138.", block) is None
     # an integer written from a float: 289.0 in the record, "289" in the text
@@ -299,9 +359,9 @@ def main():
                 return fips, {"status": "withheld: detail file is from another build", "sha": rec["sha"]}
             return fips, one(api_key, fips, detail)
         except Exception as e:
-            return fips, {"status": f"withheld: API error {type(e).__name__}", "sha": rec["sha"]}
+            return fips, {"status": f"withheld: API error {str(e)[:160]}", "sha": rec["sha"]}
 
-    with ThreadPoolExecutor(max_workers=4) as ex:
+    with ThreadPoolExecutor(max_workers=WORKERS) as ex:
         for fips, res in ex.map(work, todo):
             reads["counties"][fips] = res
             done += 1

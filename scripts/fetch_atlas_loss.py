@@ -139,6 +139,8 @@ def aggregate(lines, agg=None, others=None):
         if not line:
             continue
         f = line.split("|")
+        if len(f) == NFIELDS + 1 and not f[-1].strip():      # a row that ends with its delimiter is still a row
+            f.pop()
         if len(f) != NFIELDS:
             raise ValueError(f"expected {NFIELDS} fields, got {len(f)}: {line[:300]}")
         n += 1
@@ -186,22 +188,57 @@ def zip_lines(zbytes):
                 yield raw
 
 
-def fetch(url):
+# 2026-09-13, first run from a GitHub runner: pubfs-rma.fpac.usda.gov never answered
+# the TCP connect (Errno 110), three times, fourteen minutes. NCEI, NASS and USGS
+# answered the same runner in the same job, so this is the host refusing the
+# runner's address range, not the runner. The way round it is the same as the
+# Barchart proxy: a Cloudflare Worker that fetches the zip from a Cloudflare
+# address and streams it back. RMA_PROXY_BASE (a repository variable) names it;
+# workers/atlas-rma-proxy.js is the Worker. The direct host is still tried
+# first, with a short connect timeout, and the proxy is used for the rest of
+# the run after the first direct failure.
+PROXY_BASE = os.environ.get("RMA_PROXY_BASE", "").strip().rstrip("/")
+CONNECT_TIMEOUT = 40
+_direct_ok = True
+
+
+def _get(url, timeout):
     req = urllib.request.Request(url, headers={"User-Agent": UA})
-    for attempt in range(3):
-        try:
-            with urllib.request.urlopen(req, timeout=600) as r:
-                return r.read()
-        except urllib.error.HTTPError as e:
-            if e.code == 404:
-                return None
-            if attempt == 2:
-                raise
-            time.sleep(10 * (attempt + 1))
-        except Exception:
-            if attempt == 2:
-                raise
-            time.sleep(10 * (attempt + 1))
+    with urllib.request.urlopen(req, timeout=timeout) as r:
+        return r.read()
+
+
+def fetch(url):
+    """The zip bytes, None on 404, raises when neither route answers."""
+    global _direct_ok
+    name = url.rsplit("/", 1)[-1]
+    routes = []
+    if _direct_ok:
+        routes.append(("direct", url))
+    if PROXY_BASE:
+        routes.append(("proxy", f"{PROXY_BASE}/{name}"))
+    last = None
+    for label, u in routes:
+        for attempt in range(2):
+            try:
+                t0 = time.time()
+                data = _get(u, CONNECT_TIMEOUT if label == "direct" else 600)
+                log(f"  {name}: {label} in {time.time() - t0:.0f}s")
+                return data
+            except urllib.error.HTTPError as e:
+                if e.code == 404:
+                    return None
+                last = e
+                time.sleep(10)
+            except Exception as e:      # connect timeout, reset, DNS
+                last = e
+                if label == "direct":
+                    _direct_ok = False
+                    log(f"  {name}: direct route failed ({type(e).__name__}); "
+                        + ("switching to the proxy" if PROXY_BASE else "no RMA_PROXY_BASE set, cannot continue"))
+                    break
+                time.sleep(10)
+    raise RuntimeError(f"{name}: no route answered ({type(last).__name__}: {last})")
 
 
 def keep_except(existing, years):
