@@ -17,14 +17,14 @@
   <link rel="manifest" href="/manifest.json">
 
   <title>Farmland Atlas: Night Heat, Water and the Loss Record by County | AGSIST</title>
-  <meta name="description" content="Every Corn Belt and Plains county graded on July night heat and its 50-year trend, on how much of its cropland runs on irrigation and where the water comes from, and on what has actually destroyed crops there since 1989. Three layers, never combined. Free, sources shown.">
+  <meta name="description" content="Every Corn Belt and Plains county on July night heat and its 50-year trend, irrigation and where the water comes from, the crop insurance loss record and loss ratio, census land value and rent-to-value, CRP acres and expiries, weeks in drought since 2000, solar and wind on the ground and proposed, and the state well and water-right registers. Ten layers, never combined. Free, sources shown.">
   <link rel="canonical" href="https://agsist.com/farmland-atlas">
 
   <meta property="og:type" content="article">
   <meta property="og:site_name" content="AGSIST">
   <meta property="og:locale" content="en_US">
   <meta property="og:title" content="Farmland Atlas: Night Heat, Water and the Loss Record by County">
-  <meta property="og:description" content="Nobody grades a county on how warm its July nights are, how much of it only works with a pump, or what the insurance record says has destroyed crops there. This does, county by county, and never adds the three together.">
+  <meta property="og:description" content="Night heat, water, the loss record and loss ratio, land value, CRP, drought weeks, solar and wind, wells and water rights: county by county, from the public record, never added together into a score.">
   <meta property="og:url" content="https://agsist.com/farmland-atlas">
   <meta property="og:image" content="https://agsist.com/img/og/agsist.jpg">
   <meta property="og:image:width" content="1200">
@@ -44,8 +44,8 @@
       {
         "@type": "Dataset",
         "@id": "https://agsist.com/farmland-atlas#dataset",
-        "name": "AGSIST Farmland Atlas: county night heat, water dependence and crop insurance loss record",
-        "description": "County-level records for Corn Belt and Plains states: July and August mean daily minimum temperature by decade since 1900 and the 50-year trend (NOAA NCEI nClimDiv county); irrigated share of harvested cropland (USDA Census of Agriculture 2022) and groundwater share of irrigation withdrawals (USGS 2015); crop insurance indemnities by cause of loss since 1989 (USDA RMA Summary of Business); county cash rent, the irrigated rent premium and county corn yield trend (USDA NASS). Layers are published separately and never combined into a score.",
+        "name": "AGSIST Farmland Atlas: county night heat, water, loss record, land value, CRP, drought, energy and wells",
+        "description": "County-level records for Corn Belt and Plains states: July and August mean daily minimum temperature by decade since 1900 and the 50-year trend (NOAA NCEI nClimDiv county); irrigated share of harvested cropland (USDA Census of Agriculture 2022) and groundwater share of irrigation withdrawals (USGS 2015); crop insurance indemnities by cause of loss and the county loss ratio since 1989 (USDA RMA Summary of Business); census land and buildings value per acre 2012-2022 and rent-to-value; CRP acres by year and contract expirations (USDA FSA); weeks per year in severe drought since 2000 (U.S. Drought Monitor); solar, wind and battery MW operating and proposed (EIA Form 860); registered wells (Nebraska) and water rights (Kansas); county cash rent, the irrigated rent premium and county corn yield trend (USDA NASS). Layers are published separately and never combined into a score.",
         "url": "https://agsist.com/farmland-atlas",
         "license": "https://www.usa.gov/government-works",
         "isAccessibleForFree": true,
@@ -59,7 +59,13 @@
           {"@type": "PropertyValue", "name": "Irrigated share of harvested cropland, 2022", "unitText": "ratio"},
           {"@type": "PropertyValue", "name": "Groundwater share of irrigation withdrawals, 2015", "unitText": "ratio"},
           {"@type": "PropertyValue", "name": "Crop insurance indemnity by cause of loss, 1989 onward", "unitText": "USD"},
-          {"@type": "PropertyValue", "name": "Cash rent, non-irrigated and irrigated cropland", "unitText": "USD per acre per year"}
+          {"@type": "PropertyValue", "name": "Cash rent, non-irrigated and irrigated cropland", "unitText": "USD per acre per year"},
+          {"@type": "PropertyValue", "name": "Crop insurance loss ratio, indemnity over total premium, 1989 onward", "unitText": "ratio"},
+          {"@type": "PropertyValue", "name": "Estimated market value of land and buildings, 2012, 2017, 2022", "unitText": "USD per acre"},
+          {"@type": "PropertyValue", "name": "CRP acres enrolled by year and expiring by fiscal year", "unitText": "acres"},
+          {"@type": "PropertyValue", "name": "Weeks per year with at least half the county in D2 or worse drought, 2000 onward", "unitText": "weeks"},
+          {"@type": "PropertyValue", "name": "Solar, wind and battery nameplate capacity, operating and proposed", "unitText": "MW"},
+          {"@type": "PropertyValue", "name": "Registered wells and water rights (Nebraska, Kansas)", "unitText": "count, feet, year"}
         ],
         "distribution": [
           {"@type": "DataDownload", "encodingFormat": "application/json", "contentUrl": "https://agsist.com/data/atlas/atlas.json"}
@@ -87,6 +93,21 @@
             "@type": "Question",
             "name": "What is the irrigated rent premium?",
             "acceptedAnswer": {"@type": "Answer", "text": "The county's irrigated cropland cash rent minus its non-irrigated cropland cash rent, in the same year, from the USDA NASS Cash Rents Survey. It is the land market's own price on water. Where the premium is narrowing, tenants are paying less for the pump than they used to; where it is widening, more."}
+          },
+          {
+            "@type": "Question",
+            "name": "What is a crop insurance loss ratio and why does it matter for land?",
+            "acceptedAnswer": {"@type": "Answer", "text": "Indemnities paid divided by total premium, from USDA RMA's Summary of Business county files, every policy since 1989. At 1.00 the county's insurance book paid out what it took in; above it, the ground has been costing the program money. Insurers, lenders and anyone pricing a lease look at it because it is the longest continuous record of how often crops in that county have failed against what was expected, with the dollars attached."}
+          },
+          {
+            "@type": "Question",
+            "name": "Where does the land value come from, and is it an appraisal?",
+            "acceptedAnswer": {"@type": "Answer", "text": "The USDA Census of Agriculture, which asks every operator the market value of their land and buildings and publishes the average per acre by county for 2012, 2017 and 2022. It is not an appraisal and not a sale price; it is what operators reported, buildings included. This page shows it as published and divides the county's non-irrigated cash rent by it. It never models a value."}
+          },
+          {
+            "@type": "Question",
+            "name": "Why are wells and water rights shown only for Nebraska and Kansas?",
+            "acceptedAnswer": {"@type": "Answer", "text": "Because those two states publish an open register that can be read and checked: Nebraska's registered wells and Kansas's WIMAS points of diversion. Other states keep theirs behind a login, a fee, or do not publish one. A county in another state reads \"no open register read yet\" rather than a guess."}
           }
         ]
       }
@@ -117,10 +138,10 @@ button,a,[role="button"]{touch-action:manipulation}
 .fa-seedbox strong{color:var(--gold);font-family:var(--font-mono);font-size:.72rem;letter-spacing:.12em;text-transform:uppercase}
 
 /* layer picker */
-.fa-layers{display:flex;flex-wrap:wrap;gap:.35rem;margin-bottom:.8rem}
+.fa-layers{display:flex;flex-wrap:wrap;gap:.3rem .9rem;margin-bottom:.8rem}
 .fa-grp{display:flex;flex-wrap:wrap;gap:.35rem;align-items:center;margin-right:.6rem}
 .fa-grp-lbl{font-family:var(--font-mono);font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin-right:.2rem}
-.fa-tab{padding:.42rem .8rem;border-radius:999px;border:1px solid var(--border-2);background:var(--surface);color:var(--text-dim);font-size:.78rem;font-weight:600;cursor:pointer;min-height:36px;white-space:nowrap}
+.fa-tab{padding:.36rem .66rem;border-radius:999px;border:1px solid var(--border-2);background:var(--surface);color:var(--text-dim);font-size:.75rem;font-weight:600;cursor:pointer;min-height:34px;white-space:nowrap}
 .fa-tab:hover{border-color:var(--gold);color:var(--text)}
 .fa-tab.active{background:var(--gold);color:#0a0c0d;border-color:var(--gold);font-weight:700}
 .fa-tab[disabled]{opacity:.28;cursor:not-allowed;border-style:dashed}
@@ -241,8 +262,8 @@ details.fa-arith code{font-family:var(--font-mono);font-size:.74rem;color:var(--
 
   <div class="fa-hero">
     <div class="fa-eyebrow">Farmland Atlas · Corn Belt and Plains · by county</div>
-    <h1>Night heat, water and the loss record</h1>
-    <p>Three things nobody grades a county on: how warm its July nights are and which way they are going, how much of its cropland only works with a pump and where that water comes from, and what has actually destroyed crops there since 1989 according to the insurance record. Each is its own layer. I never add them together, because a combined score hides which problem the ground has.</p>
+    <h1>Night heat, water, the loss record and what the land is worth</h1>
+    <p>The things nobody shows a county on one page: how warm its July nights are and which way they are going; how much of its cropland only works with a pump and where that water comes from; what has destroyed crops there since 1989 and whether the insurance book has paid out more than it took in; what the census says the land is worth and what rent buys of that; how much sits in CRP and when those contracts end; how many weeks of each year since 2000 it spent in drought; how much solar and wind is on the ground and proposed; and, where a state publishes the register, its wells and water rights. Each is its own layer. I never add them together, because a combined score hides which problem the ground has.</p>
     <div class="fa-meta" id="fa-meta">
       <span>Built <b id="fa-built">—</b></span>
       <span>Counties <b id="fa-n">—</b></span>
@@ -302,6 +323,13 @@ details.fa-arith code{font-family:var(--font-mono);font-size:.74rem;color:var(--
       <p class="fa-note">The yield trend is the county corn yield fit on every published year since 2008, in bushels per acre per year. Eight tests are run and all eight are shown; the chance column is multiplied by eight so that running eight tests cannot manufacture a finding. The fifths are the mean yield trend of the coolest and hottest fifth of counties; in the within-state rows they are deviations from the state mean, not yield gains. The verdict reads the within-state rows.</p>
     </section>
 
+    <section class="fa-sec" id="fa-bystate" hidden>
+      <h2>Where the nights are warming</h2>
+      <p>Counties whose July nights have warmed since 1976 with the 95% interval clear of zero, counted by state. A count, not an average, so a big state and a small one are read the same way. The median trend is the middle county's slope.</p>
+      <div class="tblscroll"><table class="fa-table" id="fa-bystate-table"><thead><tr><th>State</th><th class="n">Counties</th><th class="n">Warming</th><th class="n">Share</th><th class="n">Median trend, F/decade</th></tr></thead><tbody></tbody></table></div>
+      <p class="fa-note" id="fa-bystate-note"></p>
+    </section>
+
     <section class="fa-sec" id="fa-premium">
       <h2>The market's own price on water</h2>
       <p>Where a county publishes both, irrigated cropland usually rents for more than non-irrigated cropland. That premium is what tenants pay for the water and the well, pump and pivot that deliver it. When it falls, the market is paying less for that package than it did; when it rises, more. Each row is a county with at least <span class="fa-mono" id="fa-prem-gate">—</span> paired survey years, sorted by the fitted trend in dollars per acre per year. A direction is called only when the 95% confidence interval of that trend, printed beside it, excludes zero.</p>
@@ -344,9 +372,15 @@ details.fa-arith code{font-family:var(--font-mono);font-size:.74rem;color:var(--
     <h2>How each layer is measured</h2>
     <p><strong style="color:var(--text)">Night heat.</strong> NOAA NCEI's nClimDiv county dataset gives, for every county, the monthly mean of each day's minimum temperature since 1895. I keep July, the silking month across most of these states, and August, the grain-fill month where the cited harm from warm nights is measured. The recent level is the mean of the last ten Julys (at least eight must be present). The trend is an ordinary least squares line through the Julys since 1976, reported in degrees per decade with a 95% confidence interval; a county gets a direction only when that interval, as printed, excludes zero, and no trend at all with fewer than forty of the years present. 1976 sits at the cold end of the record, which flatters a warming slope, so the slope through the whole record from 1895 is printed beside it in the arithmetic. Decade means run from the 1900s; a decade needs five Julys to print and ten to count as complete. A hot July is one whose average low was at or above 70 F: extension research puts the harm line for corn at nightly lows above 70 F, and a monthly average at that line means most nights were over it. North of Kansas that is rare, and the count says so; the decade means and the slider carry the Corn Belt story.</p>
     <p><strong style="color:var(--text)">Water.</strong> Two official sources, neither produced by AGSIST. The irrigated share is irrigated harvested cropland over all harvested cropland from the 2022 Census of Agriculture; where NASS suppressed the irrigated figure it stays suppressed here, and where NASS published no irrigated row at all, which is what happens when no farm in the county reported any, the county shows none reported. The groundwater share is crop-irrigation withdrawals from groundwater over all fresh crop-irrigation withdrawals in the USGS county water-use estimates for 2015, the latest county release; USGS builds those from irrigated acreage and application rates, not meters, so they are estimates. Water withdrawn per irrigated acre comes from the same file and includes conveyance losses, so surface-water districts read high. The irrigated rent premium is separate: it is NASS's own survey of what tenants pay, and it needs at least six paired years before a trend is printed.</p>
-    <p><strong style="color:var(--text)">The loss record.</strong> USDA RMA's cause-of-loss files, one per crop year from 1989. Every crop indemnity dollar in the county is grouped by the peril that caused it and summed by period: 1989 to 1999, the 2000s, the 2010s, and 2020 on. Pasture, rangeland and forage rainfall-index policies are left out, because they pay on a rainfall index rather than a destroyed crop and in ranch counties they would swamp everything else; the dollars left out are printed. Area and index plans on crops (GRP, GRIP, ARPI, SCO, STAX) pay on a county outcome and RMA assigns them no peril; they are carried as peril not assigned rather than guessed into drought. Price decline stays in the denominator, so a revenue-protection county's 2014 and 2015 show up as price, not weather. Prevented planting sits inside excess moisture. Dollars are nominal and participation grew sharply after 1994 and 2000, so the shares by period are the comparable numbers, not the dollars. The heat-and-drought share by period is the number to watch. Irrigation failure is its own group: it is failure of the irrigation supply or equipment within the policy period, and aquifer decline is not an insured cause, so it is a narrow signal, not the Ogallala. The current crop year is partial until RMA closes it and is marked. What is deliberately not shown: a loss ratio. Those files carry premium only for policies that had a loss, so indemnity over that premium overstates the county's true ratio. It will be added when the Summary of Business county premium is fetched, and not before.</p>
+    <p><strong style="color:var(--text)">The loss record.</strong> USDA RMA's cause-of-loss files, one per crop year from 1989. Every crop indemnity dollar in the county is grouped by the peril that caused it and summed by period: 1989 to 1999, the 2000s, the 2010s, and 2020 on. Pasture, rangeland and forage rainfall-index policies are left out, because they pay on a rainfall index rather than a destroyed crop and in ranch counties they would swamp everything else; the dollars left out are printed. Area and index plans on crops (GRP, GRIP, ARPI, SCO, STAX) pay on a county outcome and RMA assigns them no peril; they are carried as peril not assigned rather than guessed into drought. Price decline stays in the denominator, so a revenue-protection county's 2014 and 2015 show up as price, not weather. Prevented planting sits inside excess moisture. Dollars are nominal and participation grew sharply after 1994 and 2000, so the shares by period are the comparable numbers, not the dollars. The heat-and-drought share by period is the number to watch. Irrigation failure is its own group: it is failure of the irrigation supply or equipment within the policy period, and aquifer decline is not an insured cause, so it is a narrow signal, not the Ogallala. The current crop year is partial until RMA closes it and is marked. The cause-of-loss files carry premium only for policies that had a loss, so no loss ratio is computed from them; that comes from the next layer.</p>
+    <p><strong style="color:var(--text)">Loss ratio.</strong> RMA's Summary of Business county files (sobcov, one per crop year from 1989) carry every policy in the county whether it paid or not: liability, total premium, subsidy and indemnity by crop, plan and coverage level. Indemnity over that premium is the loss ratio as RMA defines it, and 1.00 means the county's book paid out exactly what it took in. It is summed over the whole record, over the last ten crop years, and by the same periods as the loss record; it prints only above $1,000,000 of premium, and a period prints only with at least five of its years present. Rainfall and Vegetation Index plans are left out here too, so the two RMA layers describe the same book, and the ratio of the two files' indemnity totals is printed as a check. The premium is the whole premium, farmer-paid plus federal subsidy, because that is what the ratio means to the program; a farmer's own premium is a fraction of it.</p>
+    <p><strong style="color:var(--text)">Land value.</strong> The Census of Agriculture asks every operator the market value of their land and buildings; NASS publishes the average per acre by county for 2012, 2017 and 2022. It is the only county land value on one method across all fifteen states, and it is what it is: operators' estimates, buildings included, five years apart. Beside it, the county's non-irrigated cropland cash rent for the census year divided by that value, printed as a gross percentage. No modelled value, ever, unless it ships with a backtest beside it; the one vendor that prints an accuracy for its model prints ±25%.</p>
+    <p><strong style="color:var(--text)">CRP.</strong> FSA's county statistics: acres enrolled by year since 1986, and acres whose contracts expire by fiscal year. The share is CRP acres over CRP acres plus 2022 harvested cropland, the county's arable base. Acres expiring in the current and next two fiscal years are summed and printed against the enrolled total. FSA publishes county names; they are joined to FIPS by name and a name that does not match is listed, never guessed.</p>
+    <p><strong style="color:var(--text)">Drought.</strong> The U.S. Drought Monitor's county statistics, one record per weekly map since January 2000. A week counts when at least half the county's area was in D2 (severe) or worse; D3 (extreme) or worse is counted the same way. Weeks are summed by year, over the record, and over the last five full years; a year needs forty weekly maps to count as full. The Monitor is a map drawn by people from many indicators, not a rain gauge, and it is the map that USDA's disaster designations and livestock forage payments key off, so it is the drought that the program world recognises.</p>
+    <p><strong style="color:var(--text)">Solar and wind.</strong> EIA's Form 860 lists every generator of 1 MW or more at a grid-connected plant, with the plant's county and coordinates; the Operable tab gives what runs and the Proposed tab what developers have reported with a planned year. Solar, wind and battery nameplate MW are summed by county, with the year the first solar and first wind generator came online. A county with no plant in the file reads zero, not missing, because the file is a census. Proposed is not the interconnection queue; much of it is never built, and the queue itself is a later layer.</p>
+    <p><strong style="color:var(--text)">Wells and water rights.</strong> Two states publish an open register that this page has read and verified: Nebraska's registered wells (every well, with use, status, depth, static level at completion and completion date) and Kansas's WIMAS points of diversion (every point, with use, active flag, source of supply and the right's priority date). Nebraska counties show wells, irrigation wells not decommissioned, median depth, median static level and completions by decade; Kansas counties show points, active irrigation rights, the median priority year and the source split. Every other state reads "no open register read yet", which is the truth: some have one behind a login or a fee, some have none. Water-level change over the High Plains aquifer (USGS) is a layer to add once its file can be fetched from a runner.</p>
     <p><strong style="color:var(--text)">Rent and yield.</strong> County cash rent and county corn yields are the same NASS series that drive <a href="/cash-rent" style="color:var(--gold)">Cash Rent by County</a>. The yield trend here is fitted on every published year since 2008 and labelled with its window; that page's own trend uses the last fifteen years, which as of 2026 starts on the 2012 drought, and the two are different windows, not two answers. The rent change is nominal dollars over about ten years, using the closest published year at or before ten years back, because NASS published no county estimates for 2015 or 2018 and some counties skip years. The worst year is an observation, not a fit: the lowest published yield since 2008 as a share of the county's median over the same years.</p>
-    <p><strong style="color:var(--text)">What is never done.</strong> No number is interpolated from a neighbour. No layer is scaled, weighted or added to another. A county with nothing published shows a dash and the reason. The states covered are Iowa, Illinois, Indiana, Ohio, Michigan, Wisconsin, Minnesota, Missouri, Nebraska, Kansas, South Dakota, North Dakota, Oklahoma, Colorado and Texas.</p>
+    <p><strong style="color:var(--text)">What is never done.</strong> No number is interpolated from a neighbour. No layer is scaled, weighted or added to another. No owner name appears on this page. No land value is modelled. A county with nothing published shows a dash and the reason. The states covered are Iowa, Illinois, Indiana, Ohio, Michigan, Wisconsin, Minnesota, Missouri, Nebraska, Kansas, South Dakota, North Dakota, Oklahoma, Colorado and Texas.</p>
   </section>
 
   <section class="fa-sec fa-faq" id="fa-faq">
@@ -355,6 +389,9 @@ details.fa-arith code{font-family:var(--font-mono);font-size:.74rem;color:var(--
     <details><summary>What does the July night temperature measure?</summary><p>The monthly mean of each day's minimum temperature for the county, in degrees Fahrenheit, from NOAA NCEI's nClimDiv county dataset, which runs from 1895. July is the silking month for corn across most of these states. Extension research puts the harm line for corn at nightly lows above 70 F, so a July whose average low was at or above 70 F is counted as a hot July.</p></details>
     <details><summary>Where does the crop insurance loss record come from?</summary><p>USDA Risk Management Agency's Summary of Business cause-of-loss files, one per crop year since 1989. Each indemnity is grouped by the peril that caused it: heat and drought, excess moisture and flood, hail, wind, freeze and frost, irrigation failure, price decline, and other. Dollar totals and shares are published. A loss ratio is not, because those files carry premium only for policies that had a loss.</p></details>
     <details><summary>What is the irrigated rent premium?</summary><p>The county's irrigated cropland cash rent minus its non-irrigated cropland cash rent, in the same year, from the USDA NASS Cash Rents Survey. It is the land market's own price on water. Where the premium is narrowing, tenants are paying less for the pump than they used to; where it is widening, more.</p></details>
+    <details><summary>What is a crop insurance loss ratio and why does it matter for land?</summary><p>Indemnities paid divided by total premium, from USDA RMA's Summary of Business county files, every policy since 1989. At 1.00 the county's insurance book paid out what it took in; above it, the ground has been costing the program money. Insurers, lenders and anyone pricing a lease look at it because it is the longest continuous record of how often crops in that county have failed against what was expected, with the dollars attached.</p></details>
+    <details><summary>Where does the land value come from, and is it an appraisal?</summary><p>The USDA Census of Agriculture, which asks every operator the market value of their land and buildings and publishes the average per acre by county for 2012, 2017 and 2022. It is not an appraisal and not a sale price; it is what operators reported, buildings included. This page shows it as published and divides the county's non-irrigated cash rent by it. It never models a value.</p></details>
+    <details><summary>Why are wells and water rights shown only for Nebraska and Kansas?</summary><p>Because those two states publish an open register that can be read and checked: Nebraska's registered wells and Kansas's WIMAS points of diversion. Other states keep theirs behind a login, a fee, or do not publish one. A county in another state reads "no open register read yet" rather than a guess.</p></details>
   </section>
 
   <section class="fa-sec" id="fa-parcel">
@@ -376,7 +413,13 @@ details.fa-arith code{font-family:var(--font-mono);font-size:.74rem;color:var(--
       NOAA NCEI, <a href="https://www.ncei.noaa.gov/pub/data/cirs/climdiv/" target="_blank" rel="noopener">nClimDiv county monthly minimum temperature</a> (climdiv-tmincy) ·
       USDA NASS, <a href="https://quickstats.nass.usda.gov/" target="_blank" rel="noopener">Census of Agriculture 2022 and Cash Rents Survey</a> ·
       USGS, <a href="https://www.usgs.gov/data/estimated-use-water-united-states-county-level-data-2015" target="_blank" rel="noopener">Estimated Use of Water in the United States, county-level data for 2015</a> ·
-      USDA RMA, <a href="https://www.rma.usda.gov/tools-reports/summary-of-business/cause-loss" target="_blank" rel="noopener">Summary of Business, cause of loss</a> ·
+      USDA RMA, <a href="https://www.rma.usda.gov/tools-reports/summary-of-business/cause-loss" target="_blank" rel="noopener">Summary of Business, cause of loss</a> and <a href="https://www.rma.usda.gov/tools-reports/summary-of-business/state-county-crop-summary-business" target="_blank" rel="noopener">state/county/crop with coverage level</a> ·
+      USDA NASS, Census of Agriculture 2012, 2017, 2022, land and buildings value per acre ·
+      USDA FSA, <a href="https://www.fsa.usda.gov/tools/informational/reports/conservation-statistics/crp" target="_blank" rel="noopener">CRP statistics by county</a> ·
+      National Drought Mitigation Center, <a href="https://droughtmonitor.unl.edu/DmData/DataDownload/ComprehensiveStatistics.aspx" target="_blank" rel="noopener">U.S. Drought Monitor county statistics</a> ·
+      EIA, <a href="https://www.eia.gov/electricity/data/eia860/" target="_blank" rel="noopener">Form 860</a> ·
+      Nebraska DNR, <a href="https://gis.ne.gov/agency3/rest/services/Groundwater_Wells_DWEE/FeatureServer/0" target="_blank" rel="noopener">registered groundwater wells</a> ·
+      Kansas DWR / KGS, <a href="https://services.kgs.ku.edu/arcgis/rest/services/wimas/wimas_pd/FeatureServer/0" target="_blank" rel="noopener">WIMAS points of diversion</a> ·
       Night-heat harm line: <a href="https://agcrops.osu.edu/newsletter/corn-newsletter/2019-27/hot-night-temperatures-can-decrease-corn-yield" target="_blank" rel="noopener">Ohio State C.O.R.N. 2019-27</a> ·
       County boundaries: US Census cartographic boundary file, 2010 vintage.
       <br>Data files: <a href="/data/atlas/atlas.json">atlas.json</a> (every county, every layer) · per-county detail under <span class="fa-mono">/data/atlas/counties/&lt;fips&gt;.json</span>.
@@ -402,6 +445,7 @@ var DECADES=['1900s','1910s','1920s','1930s','1940s','1950s','1960s','1970s','19
 function fmt(x,k){ if(x===null||x===undefined||isNaN(x)) return '—'; return Number(x).toLocaleString('en-US',{maximumFractionDigits:k===undefined?1:k,minimumFractionDigits:0}); }
 function money(x){ if(x===null||x===undefined) return '—'; var v=Math.floor(Math.abs(x)+0.5); return (x<0?'−$':'$')+v.toLocaleString('en-US'); }   // half away from zero, same as the pipeline
 function pm(v,ci,k){ return (v>0?'+':'')+Number(v).toFixed(k)+' ± '+Number(ci).toFixed(k); }
+function r2(x){ return x===null||x===undefined?'—':Number(x).toFixed(2); }
 function pct(x,k){ return x===null||x===undefined?'—':fmt(x*100,k===undefined?0:k)+'%'; }
 function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
 function get(o){ for(var i=1;i<arguments.length;i++){ if(o==null) return undefined; o=o[arguments[i]]; } return o; }
@@ -452,7 +496,8 @@ var RAMPS={
   heat:['#3b2c22','#5a3a26','#7e4a2a','#a45d2e','#c97432','#f39a3f'],
   water:['#1f3340','#264a60','#2f6180','#3a78a0','#4b90bf','#6fb0de'],
   gold:['#2c2a1f','#4a4224','#6b5c2a','#8f7a31','#b3963a','#d4a23f'],
-  loss:['#3a2226','#5a2c30','#7e3838','#a44540','#c85648','#e0685f']
+  loss:['#3a2226','#5a2c30','#7e3838','#a44540','#c85648','#e0685f'],
+  green:['#1e3324','#284a31','#34643f','#428050','#539d63','#6fbb7f']
 };
 // Diverging: blue pole, neutral grey midpoint, orange pole. Equal arms.
 var DIV=['#4b90bf','#476b7f','#5a6466','#7d5a3a','#c97432'];   // the midpoint is a mid grey, not the missing-data near-black
@@ -493,7 +538,43 @@ var LAYERS=[
  {key:'yield_slope',grp:'Rent and yield',label:'Corn yield trend',div:true,unit:'bu/ac/yr',k:1,needs:'yield',
   v:function(c){var y=c['yield']; return ok(y)&&y.slope!=null?y.slope:null;},title:'County corn yield trend, bushels per acre per year, fitted on every published year since 2008'},
  {key:'yield_worst',grp:'Rent and yield',label:'Worst year vs median',ramp:'gold',unit:'%',pct:true,k:0,needs:'yield',
-  v:function(c){var y=c['yield']; return ok(y)?y.worst.share_of_median:null;},title:'Lowest published county corn yield as a share of the county median'}
+  v:function(c){var y=c['yield']; return ok(y)?y.worst.share_of_median:null;},title:'Lowest published county corn yield as a share of the county median'},
+ {key:'sob_all',grp:'Loss ratio',label:'Since 1989',ramp:'loss',unit:'',k:2,fixed:true,needs:'sob',
+  v:function(c){return get(c,'sob','loss_ratio_all');},title:'Crop insurance loss ratio, indemnity ÷ total premium, every policy since 1989 (1.00 = paid out what it took in)'},
+ {key:'sob_10',grp:'Loss ratio',label:'Last 10 crop years',ramp:'loss',unit:'',k:2,fixed:true,needs:'sob',
+  v:function(c){return get(c,'sob','ratio_last10');},title:'Loss ratio over the last ten crop years'},
+ {key:'sob_over',grp:'Loss ratio',label:'Years over 1.00',ramp:'loss',unit:'yrs',k:0,needs:'sob',
+  v:function(c){return get(c,'sob','years_over_one');},title:'Crop years since 1989 in which indemnities exceeded premium'},
+ {key:'val',grp:'Land value',label:'Land + buildings, 2022',ramp:'gold',unit:'$/acre',money:true,k:0,needs:'value',
+  v:function(c){return get(c,'value','latest');},title:'Estimated market value of land and buildings per acre, 2022 Census of Agriculture, as operators reported it'},
+ {key:'val_cagr',grp:'Land value',label:'Change, %/yr',div:true,unit:'%/yr',k:1,needs:'value',
+  v:function(c){return get(c,'value','change_cagr_pct');},title:'Compound annual change in census land value between the last two censuses, nominal'},
+ {key:'val_rtv',grp:'Land value',label:'Rent ÷ value',ramp:'gold',unit:'%',k:2,fixed:true,needs:'value',
+  v:function(c){return get(c,'value','rent_to_value_pct');},title:'Non-irrigated cropland cash rent as a share of census land value, same year, gross (no tax, insurance or management taken off)'},
+ {key:'crp_share',grp:'CRP',label:'Share of cropland base',ramp:'green',unit:'%',k:1,needs:'crp',
+  v:function(c){return get(c,'crp','share_pct');},title:'CRP acres as a share of CRP acres plus 2022 harvested cropland'},
+ {key:'crp_peak',grp:'CRP',label:'Change from peak',div:true,unit:'%',k:0,needs:'crp',
+  v:function(c){return get(c,'crp','change_from_peak_pct');},title:'Latest CRP acres against the county\'s peak year since 1986, percent'},
+ {key:'crp_exp',grp:'CRP',label:'Expiring, next 3 FY',ramp:'green',unit:'acres',k:0,needs:'crp',
+  v:function(c){return get(c,'crp','expiring_next3','acres');},title:'CRP acres whose contracts expire in the current and next two fiscal years'},
+ {key:'dr_share',grp:'Drought',label:'Weeks in D2+, since 2000',ramp:'heat',unit:'%',k:0,needs:'drought',
+  v:function(c){return get(c,'drought','weeks','share_d2_pct');},title:'Share of weekly Drought Monitor maps since 2000 with at least half the county in severe drought (D2) or worse'},
+ {key:'dr_last5',grp:'Drought',label:'Weeks in D2+, last 5 yrs',ramp:'heat',unit:'wks',k:0,needs:'drought',
+  v:function(c){return get(c,'drought','last5','d2');},title:'Weeks in the last five full years with at least half the county in D2 or worse'},
+ {key:'dr_half',grp:'Drought',label:'Years half or more in D2+',ramp:'heat',unit:'yrs',k:0,needs:'drought',
+  v:function(c){return get(c,'drought','years_half_or_more');},title:'Full years since 2000 in which at least half the county was in D2 or worse for 26 weeks or more'},
+ {key:'en_solar',grp:'Solar and wind',label:'Solar, operating',ramp:'gold',unit:'MW',k:0,needs:'energy',
+  v:function(c){var e=c.energy; return ok(e)?e.solar:null;},title:'Solar nameplate capacity operating in the county, MW, EIA Form 860 (plants of 1 MW or more)'},
+ {key:'en_wind',grp:'Solar and wind',label:'Wind, operating',ramp:'gold',unit:'MW',k:0,needs:'energy',
+  v:function(c){var e=c.energy; return ok(e)?e.wind:null;},title:'Wind nameplate capacity operating in the county, MW, EIA Form 860'},
+ {key:'en_prop',grp:'Solar and wind',label:'Proposed',ramp:'gold',unit:'MW',k:0,needs:'energy',
+  v:function(c){var e=c.energy; return ok(e)?e.proposed:null;},title:'Solar, wind and battery capacity developers have told EIA they plan in the county, MW'},
+ {key:'we_depth',grp:'Wells and rights',label:'NE: median well depth',ramp:'water',unit:'ft',k:0,needs:'wells',
+  v:function(c){return get(c,'wells','depth_median_ft');},title:'Nebraska: median total depth of registered irrigation wells not decommissioned, feet'},
+ {key:'we_static',grp:'Wells and rights',label:'NE: static water level',ramp:'water',unit:'ft',k:0,needs:'wells',
+  v:function(c){return get(c,'wells','static_median_ft');},title:'Nebraska: median static water level of irrigation wells, feet below land surface at completion'},
+ {key:'we_prio',grp:'Wells and rights',label:'KS: median priority year',ramp:'water',unit:'',k:0,needs:'wells',
+  v:function(c){return get(c,'wells','priority_year_median');},title:'Kansas: median priority year of active irrigation water rights (older is served first in a shortage)'}
 ];
 var DEC=12;
 
@@ -529,7 +610,7 @@ function paint(){
   $('fa-slider').hidden=!L.slider;
   if(L.slider) paintSliderNote();
 }
-function fmtv(L,v){ if(v==null) return '—'; if(L.pct) return pct(v,L.k); if(L.money) return money(v); return (L.div&&v>0?'+':'')+fmt(v,L.k)+(L.unit==='%'?'%':L.unit?' '+L.unit:''); }
+function fmtv(L,v){ if(v==null) return '—'; if(L.pct) return pct(v,L.k); if(L.money) return money(v); if(L.key==='we_prio') return String(Math.round(v)); if(L.fixed) return Number(v).toFixed(L.k)+(L.unit==='%'?'%':L.unit?' '+L.unit:''); return (L.div&&v>0?'+':'')+fmt(v,L.k)+(L.unit==='%'||L.unit==='%/yr'?L.unit:L.unit?' '+L.unit:''); }
 function paintSliderNote(){
   var line=Number($('fa-line').value), d=DECADES[DEC], n=0, at=0;
   for(var f in ATLAS.counties){ var dd=get(ATLAS.counties[f],'heat','months','jul','decades',d); if(dd&&dd.n>=5){ n++; if(dd.mean>=line) at++; } }
@@ -742,6 +823,120 @@ function renderPanel(fips,c,full,whyNot){
     cards.push(card('The loss record',rl,arl,sl));
   } else cards.push(withheldCard('The loss record',Lo));
 
+  // loss ratio (Summary of Business)
+  var S=c.sob;
+  if(ok(S)){
+    var rs=[], span=S.first_year+'–'+S.last_year+(S.partial_year?' ('+S.partial_year+' partial)':'');
+    if(S.loss_ratio_all!=null) rs.push(['Loss ratio, '+span, r2(S.loss_ratio_all)+(S.total_premium!=null?' · '+money(S.total_indemnity)+' paid on '+money(S.total_premium):'')]);
+    else rs.push(['Loss ratio, '+span,'— '+why({status:S.loss_ratio_all_status||'withheld: under the premium gate'}),true]);
+    if(S.last10) rs.push(['Last ten crop years, '+S.last10.from+'–'+S.last10.to, S.last10.ratio!=null?r2(S.last10.ratio)+' · '+money(S.last10.indemnity)+' on '+money(S.last10.premium):'— under the premium gate', S.last10.ratio==null]);
+    else if(S.ratio_last10!=null) rs.push(['Last ten crop years', r2(S.ratio_last10)]);
+    if(S.periods){ Object.keys(S.periods).forEach(function(k){ var p=S.periods[k]; rs.push(['Loss ratio, '+k.replace('-','–'), p.ratio!=null?r2(p.ratio)+' · '+money(p.indemnity)+' on '+money(p.premium):'— '+why({status:p.ratio_status||'withheld'}), p.ratio==null]); }); }
+    else if(S.ratio_2020s!=null) rs.push(['Loss ratio, 2020 on', r2(S.ratio_2020s)]);
+    if(S.years_with_ratio!=null) rs.push(['Crop years paying out more than premium', S.years_over_one+' of '+S.years_with_ratio+' years with a ratio']);
+    if(S.worst_year) rs.push(['Worst year', S.worst_year.year+': '+r2(S.worst_year.ratio)]);
+    if(S.latest) rs.push(['Insured liability, '+S.latest.year, money(S.latest.liability)+' · '+fmt(S.latest.policies,0)+' policies earning premium']);
+    else if(S.liability_latest!=null) rs.push(['Insured liability, latest year', money(S.liability_latest)]);
+    if(S.corn&&S.corn.ratio!=null) rs.push(['Corn only, all years', r2(S.corn.ratio)+' · '+money(S.corn.indemnity)+' on '+money(S.corn.premium)]);
+    else if(S.corn_ratio!=null) rs.push(['Corn only, all years', r2(S.corn_ratio)]);
+    if(S.cause_of_loss_check) rs.push(['Check: cause-of-loss file ÷ this file', fmt(S.cause_of_loss_check.col_over_sob,3)+' (two RMA products, same county, same years; they differ by their own revisions)']);
+    var sb='';
+    if(d&&d.sob&&d.sob.per_year){ var sy=Object.keys(d.sob.per_year).map(Number).sort(function(x,y){return x-y;}); var si=sy.map(function(y){ var r=d.sob.per_year[y]; return {l:String(y),short:String(y).slice(2),v:r.ratio,cls:r.ratio!=null&&r.ratio>1?'hot':''}; }); sb=sparkBars(si,{label:'Loss ratio by crop year; outlined where over 1.00',ref:1,every:5,zero:true,fmt:function(v){return r2(v);}}); }
+    var ars='Source: USDA RMA Summary of Business, state/county/crop/coverage-level files (sobcov_YYYY), fetched '+esc((get(ATLAS,'layers','sob','fetched')||'').slice(0,10))+'. Loss ratio = indemnity ÷ total premium (the whole premium, farmer-paid plus subsidy, on every policy whether it paid or not), summed over the county, the crop year and every plan except Rainfall and Vegetation Index (13, 14). That is how RMA defines it. Gates: $'+fmt(get(ATLAS,'layers','sob','gates','min_premium_for_ratio'),0)+' of premium before a ratio prints; a period prints with at least '+esc(get(ATLAS,'layers','sob','gates','min_years_for_period_ratio'))+' of its years present. Bars: ratio per crop year, dashed line at 1.00, an outlined bar is a year over it; a year under the premium gate has no bar. '+(S.partial_year?S.partial_year+' is partial until RMA closes it. ':'')+'Dollars are nominal.';
+    cards.push(card('Loss ratio',rs,ars,sb));
+  } else cards.push(withheldCard('Loss ratio',S));
+
+  // land value
+  var V=c.value;
+  if(ok(V)){
+    var rv=[];
+    if(V.latest!=null) rv.push(['Land and buildings, '+V.latest_year+' census', money(V.latest)+'/ac']); else rv.push(['Land and buildings, '+V.latest_year+' census','— '+why(get(V,'values',V.latest_year)||{status:'suppressed'}),true]);
+    if(V.values){ Object.keys(V.values).sort().forEach(function(y){ if(String(y)===String(V.latest_year)) return; var x=V.values[y]; rv.push([y+' census', x.per_acre!=null?money(x.per_acre)+'/ac':'— '+why(x), x.per_acre==null]); }); }
+    if(V.change) rv.push(['Change '+V.change.from_year+'→'+V.change.to_year+', nominal', (V.change.pct>0?'+':'')+fmt(V.change.pct,1)+'% · '+(V.change.cagr_pct>0?'+':'')+fmt(V.change.cagr_pct,1)+'% a year']);
+    else if(V.change_cagr_pct!=null) rv.push(['Change from '+V.change_from_year+', nominal', (V.change_cagr_pct>0?'+':'')+fmt(V.change_cagr_pct,1)+'% a year']);
+    var rtv=V.rent_to_value||{};
+    if(rtv.pct!=null) rv.push(['Non-irrigated rent ÷ value, '+rtv.year, r2(rtv.pct)+'% ('+money(rtv.rent)+' ÷ '+money(rtv.value)+')']);
+    else if(V.rent_to_value_pct!=null) rv.push(['Non-irrigated rent ÷ value', r2(V.rent_to_value_pct)+'%']);
+    else rv.push(['Non-irrigated rent ÷ value','— '+why({status:rtv.status||V.rent_to_value_status||'withheld'}),true]);
+    var arv='Source: USDA Census of Agriculture 2012, 2017 and 2022 via NASS Quick Stats, "AG LAND, INCL BUILDINGS - ASSET VALUE, MEASURED IN $ / ACRE", county level: the average estimated market value of land and buildings per acre as reported by the operators counted. It is not a sale price and not an appraisal, and it includes buildings. (D) means NASS suppressed the county. Change is between the two latest censuses with a value, nominal, and as a compound annual rate. Rent ÷ value = the NASS county non-irrigated cropland cash rent for the census year ÷ this value: a gross yield with no tax, insurance or management taken off, so it sits above a lender\'s cap rate on the same ground. For scale, a 2024 ASFMRA Journal study of nine appraisals of the same Iowa farms averaged a 2.19% cap rate.';
+    cards.push(card('Land value',rv,arv));
+  } else cards.push(withheldCard('Land value',V));
+
+  // CRP
+  var C=c.crp;
+  if(ok(C)){
+    var rc=[];
+    if(C.latest&&C.latest.acres!=null) rc.push(['CRP acres, '+C.latest.year, fmt(C.latest.acres,0)]); else rc.push(['CRP acres','— '+why(C.latest||{status:'withheld'}),true]);
+    var sh2=C.share_of_cropland||{};
+    if(sh2.pct!=null) rc.push(['Share of the cropland base', fmt(sh2.pct,1)+'%']); else if(C.share_pct!=null) rc.push(['Share of the cropland base', fmt(C.share_pct,1)+'%']); else rc.push(['Share of the cropland base','— '+why({status:sh2.status||C.share_status||'withheld'}),true]);
+    if(C.peak) rc.push(['Peak', C.peak.year+': '+fmt(C.peak.acres,0)+' acres · now '+(C.change_from_peak_pct>0?'+':'')+fmt(C.change_from_peak_pct,0)+'%']);
+    else if(C.change_from_peak_pct!=null) rc.push(['Change from peak ('+C.peak_year+')', (C.change_from_peak_pct>0?'+':'')+fmt(C.change_from_peak_pct,0)+'%']);
+    var ex=C.expiring_next3;
+    if(ex) rc.push(['Expiring, FY'+ex.from+'–'+ex.to, fmt(ex.acres,0)+' acres'+(ex.share_of_enrolled_pct!=null?' · '+fmt(ex.share_of_enrolled_pct,0)+'% of enrolled':'')]);
+    else rc.push(['Expiring, next three fiscal years','— no expiration row for this county',true]);
+    var sc='';
+    if(d&&d.crp&&d.crp.series){ var cy=Object.keys(d.crp.series).map(Number).sort(function(x,y){return x-y;}); sc+=sparkBars(cy.map(function(y){return {l:String(y),short:String(y).slice(2),v:d.crp.series[y]};}),{label:'CRP acres by year',every:5,zero:true,fmt:function(v){return fmt(v,0);}}); }
+    if(d&&d.crp&&d.crp.expiring){ var ey=Object.keys(d.crp.expiring).map(Number).sort(function(x,y){return x-y;}); sc+=sparkBars(ey.map(function(y){return {l:'FY'+y,short:String(y).slice(2),v:d.crp.expiring[y]};}),{label:'CRP acres expiring by fiscal year',zero:true,fmt:function(v){return fmt(v,0);}}); }
+    var arc='Source: USDA FSA CRP statistics, county enrollment 1986 onward and county contract expirations by fiscal year, fetched '+esc((get(ATLAS,'layers','crp','fetched')||'').slice(0,10))+'; FSA publishes county names, joined to FIPS by name and never guessed. Share of the cropland base = CRP acres ÷ (CRP acres + 2022 census harvested cropland), so a county that retired a third of its arable ground reads a third. Gate: '+esc(get(ATLAS,'layers','crp','gates','min_acres_for_share'))+' enrolled acres before a share prints. Expiring = acres whose contracts end in the current federal fiscal year (October to September) and the next two, FY'+esc(get(ATLAS,'layers','crp','this_fy'))+' first; some are re-enrolled and some go back to crops, and FSA does not say which. Bars: enrolled acres by year, then acres expiring by fiscal year.';
+    cards.push(card('CRP',rc,arc,sc));
+  } else cards.push(withheldCard('CRP',C));
+
+  // drought
+  var Dr=c.drought;
+  if(ok(Dr)){
+    var rd=[], wk=Dr.weeks||{};
+    rd.push(['Weeks with half the county in D2 or worse, '+Dr.first_year+'–'+Dr.last_full_year, fmt(wk.d2,0)+' of '+fmt(wk.counted,0)+' ('+fmt(wk.share_d2_pct,0)+'%)']);
+    rd.push(['Weeks in D3 or worse', fmt(wk.d3,0)+' ('+fmt(wk.share_d3_pct,0)+'%)']);
+    if(Dr.worst_year) rd.push(['Worst year', Dr.worst_year.year+': '+Dr.worst_year.d2+' weeks in D2+, '+Dr.worst_year.d3+' in D3+']);
+    var yh=Dr.years_half_or_more; if(yh!=null) rd.push(['Years half or more in D2+', Array.isArray(yh)?(yh.length?yh.length+' ('+yh.join(', ')+')':'0'):String(yh)]);
+    if(Dr.last5) rd.push(['Last five full years, '+Dr.last5.from+'–'+Dr.last5.to, Dr.last5.d2+' weeks in D2+, '+Dr.last5.d3+' in D3+']);
+    if(Dr.partial_year) rd.push([Dr.partial_year.year+' so far', Dr.partial_year.d2+' of '+Dr.partial_year.maps+' weeks in D2+']);
+    var sd='';
+    if(d&&d.drought&&d.drought.series){ var dy=Object.keys(d.drought.series).map(Number).sort(function(x,y){return x-y;}); sd=sparkBars(dy.map(function(y){var r=d.drought.series[y]; return {l:String(y)+(r.maps<40?' (partial)':''),short:String(y).slice(2),v:r.d2,cls:r.d2>=26?'hot':''};}),{label:'Weeks per year with half the county in D2 or worse; dashed line at 26',ref:26,every:3,zero:true,fmt:function(v){return fmt(v,0);}}); }
+    var ard='Source: U.S. Drought Monitor county statistics API (National Drought Mitigation Center, University of Nebraska-Lincoln), one record per weekly map since 2000-01-04, cumulative area percent, fetched '+esc((get(ATLAS,'layers','drought','fetched')||'').slice(0,10))+'. A week counts when at least '+esc(get(ATLAS,'layers','drought','gates','area_pct'))+'% of the county\'s area was in D2 (severe) or worse; D3 (extreme) or worse is counted the same way. A year counts as full with at least '+esc(get(ATLAS,'layers','drought','gates','maps_for_full_year'))+' weekly maps; the current year is partial and shown apart. The Monitor is an expert-drawn map, not a gauge; it is the map that USDA disaster designations and the Livestock Forage Program key off. Bars: weeks per year, dashed line at half a year, an outlined bar is a year at or over it.';
+    cards.push(card('Drought',rd,ard,sd));
+  } else cards.push(withheldCard('Drought',Dr));
+
+  // solar and wind
+  var E=c.energy;
+  if(ok(E)){
+    var re=[], op=E.operable||{solar:E.solar,wind:E.wind,storage:E.storage,first_solar:E.first_solar,first_wind:E.first_wind}, pr=E.proposed&&typeof E.proposed==='object'?E.proposed:{solar:E.proposed_solar,wind:E.proposed_wind,storage:(E.proposed||0)-(E.proposed_solar||0)-(E.proposed_wind||0)};
+    if(E.none_reported) re.push(['Plants of 1 MW or more', 'none in Form 860 '+(E.year||'')]);
+    re.push(['Solar, operating', fmt(op.solar,0)+' MW'+(op.first_solar?' · first online '+op.first_solar:'')]);
+    re.push(['Wind, operating', fmt(op.wind,0)+' MW'+(op.first_wind?' · first online '+op.first_wind:'')]);
+    re.push(['Batteries, operating', fmt(op.storage,0)+' MW']);
+    var ptot=(pr.solar||0)+(pr.wind||0)+(pr.storage||0);
+    re.push(['Proposed to EIA', ptot?fmt(pr.solar,0)+' MW solar · '+fmt(pr.wind,0)+' MW wind · '+fmt(pr.storage,0)+' MW batteries'+(pr.earliest_year?' · earliest '+pr.earliest_year:''):'none']);
+    if(op.plants!=null) re.push(['Plants of any kind', String(op.plants)]);
+    var are='Source: EIA Form 860 '+esc(get(ATLAS,'layers','energy','year')||'')+', the annual census of every generator of 1 MW or more at a grid-connected plant (rooftop solar is not in it): Plant file for the county, Generator file Operable and Proposed tabs for technology and nameplate MW, fetched '+esc((get(ATLAS,'layers','energy','fetched')||'').slice(0,10))+'. Technology strings are classed on SOLAR, WIND and BATTER. Proposed is what developers have reported to EIA with a planned year; it is not the interconnection queue and much of it is never built. A county with no plant in the file reads zero, because the file is a census, not a sample. For scale, a utility solar plant runs roughly 5 to 8 acres per MW.';
+    cards.push(card('Solar and wind',re,are));
+  } else cards.push(withheldCard('Solar and wind',E));
+
+  // wells and rights
+  var Wl=c.wells;
+  if(ok(Wl)){
+    var rw2=[];
+    if(Wl.wells!=null){
+      rw2.push(['Registered wells, all uses', fmt(Wl.wells,0)]);
+      rw2.push(['Irrigation wells, not decommissioned', fmt(Wl.irrigation_active,0)]);
+      rw2.push(['Median total depth', Wl.depth_median_ft!=null?fmt(Wl.depth_median_ft,0)+' ft (n '+fmt(Wl.depth_n,0)+')':'— no depth on record',Wl.depth_median_ft==null]);
+      rw2.push(['Median static water level', Wl.static_median_ft!=null?fmt(Wl.static_median_ft,0)+' ft below surface (n '+fmt(Wl.static_n,0)+')':'— no level on record',Wl.static_median_ft==null]);
+      var dec=Wl.irrigation_by_decade||(d&&d.wells&&d.wells.irrigation_by_decade); var sw='';
+      if(dec){ var dk=Object.keys(dec).sort(); sw=sparkBars(dk.map(function(k){return {l:k,short:k.slice(0,4),v:dec[k]};}),{label:'Irrigation wells completed by decade',zero:true,fmt:function(v){return fmt(v,0);}}); }
+      var arw2='Source: Nebraska DNR registered groundwater wells (gis.ne.gov FeatureServer), every registered well with its use, status, total depth, static water level at completion and completion date, placed in the county by its name and otherwise by its coordinates, fetched '+esc((get(ATLAS,'layers','wells','fetched')||'').slice(0,10))+'. Irrigation wells = use description containing "Irrigation" with no decommissioned date. Medians are of the wells that carry the field; n is how many did. A static level is measured when the well was drilled, so a county of old wells reads the water table of the year they went in, not today\'s. Bars: irrigation wells by decade of completion.';
+      cards.push(card('Wells (Nebraska register)',rw2,arw2,sw));
+    } else {
+      rw2.push(['Points of diversion, all', fmt(Wl.points,0)]);
+      rw2.push(['Active', fmt(Wl.active,0)]);
+      rw2.push(['Active irrigation', fmt(Wl.irrigation_active,0)]);
+      rw2.push(['Median priority year, active irrigation', Wl.priority_year_median!=null?String(Wl.priority_year_median)+' (n '+fmt(Wl.priority_n,0)+')':'— no priority date on record',Wl.priority_year_median==null]);
+      if(Wl.priority_before_1970!=null) rw2.push(['Priority before 1970', fmt(Wl.priority_before_1970,0)]);
+      if(Wl.groundwater!=null) rw2.push(['Source of supply', fmt(Wl.groundwater,0)+' groundwater · '+fmt(Wl.surface,0)+' surface'+(Wl.unclassed_source?' · '+fmt(Wl.unclassed_source,0)+' not classed':'')]);
+      var arw3='Source: Kansas DWR WIMAS points of diversion (services.kgs.ku.edu FeatureServer), every point with its use code, active flag, source of supply and the water right\'s priority date, placed in the county by its coordinates, fetched '+esc((get(ATLAS,'layers','wells','fetched')||'').slice(0,10))+'. Kansas is a prior-appropriation state: in a shortage the older priority date is served first, so a county whose active irrigation rights have a median priority year in the 1960s holds senior water and one in the 1980s holds junior water. The exact strings the service uses for active and for source are listed in the raw file with the counts classed each way. Quantities appropriated are not in the open layer and are not shown.';
+      cards.push(card('Water rights (Kansas register)',rw2,arw3));
+    }
+  } else cards.push(withheldCard('Wells and water rights',Wl));
+
   // rent + yield
   var R=c.rent, Y=c['yield'];
   var rr=[];
@@ -781,6 +976,18 @@ function renderThesis(){
     h+='<tr'+(ws?' style="color:var(--text)"':'')+'><td>'+esc(t.x)+'</td><td>'+scope+'</td><td class="n">'+t.n+'</td><td class="n">'+(t.r>0?'+':'')+fmt(t.r,3)+'</td><td class="n">'+pcs+'</td><td class="n">'+(f.coolest_mean_slope!=null?(f.coolest_mean_slope>0?'+':'')+fmt(f.coolest_mean_slope,2)+u:'—')+'</td><td class="n">'+(f.hottest_mean_slope!=null?(f.hottest_mean_slope>0?'+':'')+fmt(f.hottest_mean_slope,2)+u:'—')+'</td></tr>';
   });
   tb.innerHTML=h;
+}
+
+// ---------- where the warming is, by state
+function renderByState(){
+  var bs=get(ATLAS,'national','heat_by_state'); if(!bs){ $('fa-bystate').hidden=true; return; }
+  var NAMES={IA:'Iowa',IL:'Illinois',IN:'Indiana',OH:'Ohio',MI:'Michigan',WI:'Wisconsin',MN:'Minnesota',MO:'Missouri',NE:'Nebraska',KS:'Kansas',SD:'South Dakota',ND:'North Dakota',OK:'Oklahoma',CO:'Colorado',TX:'Texas'};
+  var h='', keys=Object.keys(bs);
+  keys.forEach(function(st){ var v=bs[st]; h+='<tr><td>'+esc(NAMES[st]||st)+'</td><td class="n">'+v.counties+'</td><td class="n">'+v.warming+'</td><td class="n">'+pct(v.share_warming,0)+'</td><td class="n">'+(v.median_trend_per_decade>0?'+':'')+fmt(v.median_trend_per_decade,2)+'</td></tr>'; });
+  $('fa-bystate-table').querySelector('tbody').innerHTML=h;
+  var zero=keys.filter(function(k){return bs[k].warming===0;}), top=keys[0];
+  $('fa-bystate-note').textContent=(zero.length?'No county in '+zero.map(function(k){return NAMES[k]||k;}).join(' or ')+' clears the interval. ':'')+'The map layer "Trend since 1976" shows the same thing county by county; the middle of the Corn Belt is where the trend is flattest.';
+  $('fa-bystate').hidden=false;
 }
 
 // ---------- premium leaderboard (lives on rent data alone)
@@ -847,6 +1054,12 @@ function boot(){
     if(L.water&&L.water.status==='ok') v.push('Water: census 2022, USGS 2015'); else v.push('Water: not yet measured');
     if(L.loss&&L.loss.status==='ok') v.push('Loss record '+L.loss.first_year+'–'+L.loss.latest_year); else v.push('Loss record: not yet measured');
     if(L.rent) v.push('Rent and yield: NASS, '+(L.rent.vintage||''));
+    if(L.sob&&L.sob.status==='ok') v.push('Loss ratio '+L.sob.first_year+'–'+L.sob.latest_year); else v.push('Loss ratio: not yet measured');
+    if(L.value&&L.value.status==='ok') v.push('Land value: census '+(L.value.years||[]).join(', ')); else v.push('Land value: not yet measured');
+    if(L.crp&&L.crp.status==='ok') v.push('CRP'+(L.crp.history_years&&L.crp.history_years.length?' '+L.crp.history_years.join('–'):'')+', expiring from FY'+L.crp.this_fy); else v.push('CRP: not yet measured');
+    if(L.drought&&L.drought.status==='ok') v.push('Drought Monitor '+L.drought.first_year+'–'+L.drought.latest_year); else v.push('Drought: not yet measured');
+    if(L.energy&&L.energy.status==='ok') v.push('Solar and wind: Form 860 '+L.energy.year); else v.push('Solar and wind: not yet measured');
+    if(L.wells&&L.wells.status==='ok') v.push('Wells and rights: NE and KS registers, '+(L.wells.fetched||'').slice(0,10)); else v.push('Wells and rights: not yet measured');
     $('fa-vint').innerHTML=v.map(function(t){return '<span>'+esc(t)+'</span>';}).join('');
     buildPaths(GEO,STATES);
     buildLayerButtons();
@@ -854,6 +1067,7 @@ function boot(){
     buildSearch();
     paint();
     renderThesis();
+    renderByState();
     renderPremium();
     renderScatters();
     $('fa-app').hidden=false;      // only once everything drew; a throw above lands in the catch
