@@ -1,6 +1,18 @@
 {
   "briefings": [
     {
+      "date": "2026-09-17",
+      "date_display": "Thursday, September 17, 2026",
+      "headline": "FARM BILL MOVES; EXPORT SALES PRINT AT 7:30",
+      "teaser": "Farm Bill clears committee; Export Sales prints at 7:30 with beans near 52-week highs.",
+      "market_mood": "cautious",
+      "surprise_count": 0,
+      "sections": 2,
+      "url": "/daily/2026-09-17",
+      "market_closed": false,
+      "yc_outcome": "didnt"
+    },
+    {
       "date": "2026-09-16",
       "date_display": "Wednesday, September 16, 2026",
       "headline": "BEANS LEAD; SAUDI PIPELINE CRISIS KEEPS CRUDE BID",
@@ -2161,6 +2173,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-09-16T11:11:25.207002+00:00",
-  "count": 188
+  "updated": "2026-09-17T11:08:55.262452+00:00",
+  "count": 189
 }
