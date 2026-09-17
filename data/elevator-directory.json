@@ -1,18 +1,18 @@
 {
- "generated": "2026-09-17T19:13:39Z",
+ "generated": "2026-09-17T22:24:19Z",
  "from": "bids-full.json",
  "complete": false,
  "note": "Directory only: who operates a facility and where. No prices, no basis, no symbols, no delivery windows.",
  "counts": {
-  "facilities": 1796,
+  "facilities": 1804,
   "states": 28,
   "with_address": 0,
   "with_coords": 0,
   "with_url": 0,
-  "with_phone": 1796,
+  "with_phone": 1804,
   "saturated_zips": 0,
   "failed_zips": 0,
-  "rows_read": 18180
+  "rows_read": 18298
  },
  "saturated": [],
  "failed": [],
@@ -861,15 +861,6 @@
    "state": "IA",
    "zip": "51250",
    "phone": "(712) 722-2671",
-   "source": "barchart"
-  },
-  {
-   "facility": "Farmers Elevator & Exchange, Inc.",
-   "branch": "Cedar Rapids",
-   "city": "Cedar Rapids",
-   "state": "IA",
-   "zip": "52401",
-   "phone": "N/A",
    "source": "barchart"
   },
   {
@@ -3555,6 +3546,42 @@
    "source": "barchart"
   },
   {
+   "facility": "Premier Co-op",
+   "branch": "Manchester",
+   "city": "Manchester",
+   "state": "IA",
+   "zip": "52057",
+   "phone": "563-927-6050",
+   "source": "barchart"
+  },
+  {
+   "facility": "Premier Co-op",
+   "branch": "Ossian",
+   "city": "Ossian",
+   "state": "IA",
+   "zip": "52161",
+   "phone": "563-532-9381",
+   "source": "barchart"
+  },
+  {
+   "facility": "Premier Co-op",
+   "branch": "Postville",
+   "city": "Postville",
+   "state": "IA",
+   "zip": " 5216",
+   "phone": "563-864-7234",
+   "source": "barchart"
+  },
+  {
+   "facility": "Premier Co-op",
+   "branch": "Ft Atkinson/Waucoma",
+   "city": "Waucoma",
+   "state": "IA",
+   "zip": "52171",
+   "phone": "563-776-7755",
+   "source": "barchart"
+  },
+  {
    "facility": "Premium Feed & Grain",
    "branch": "Brunsville",
    "city": "Brunsville",
@@ -4861,20 +4888,20 @@
   },
   {
    "facility": "Farmers Grain Service, Inc.",
-   "branch": "OTTAWA RIVER",
-   "city": "Grand Ridge",
-   "state": "IL",
-   "zip": "61325",
-   "phone": "815-249-5515",
-   "source": "barchart"
-  },
-  {
-   "facility": "Farmers Grain Service, Inc.",
    "branch": "GRAND RIDGE",
    "city": "Grand Ridge",
    "state": "IL",
    "zip": "61325",
    "phone": "8152495515",
+   "source": "barchart"
+  },
+  {
+   "facility": "Farmers Grain Service, Inc.",
+   "branch": "OTTAWA RIVER",
+   "city": "Grand Ridge",
+   "state": "IL",
+   "zip": "61325",
+   "phone": "815-249-5515",
    "source": "barchart"
   },
   {
@@ -5658,6 +5685,15 @@
    "state": "IL",
    "zip": "62526",
    "phone": "419-622-6151",
+   "source": "barchart"
+  },
+  {
+   "facility": "Seatonville Elevator Co",
+   "branch": "Marquis",
+   "city": "Hennepin",
+   "state": "IL",
+   "zip": "61327",
+   "phone": "815-925-9590",
    "source": "barchart"
   },
   {
@@ -6999,15 +7035,6 @@
    "state": "KS",
    "zip": "66780",
    "phone": "620-354-6424",
-   "source": "barchart"
-  },
-  {
-   "facility": "Abbyville Farmers Co-op Grain Co.",
-   "branch": "Abbyville",
-   "city": "Abbyville",
-   "state": "KS",
-   "zip": "67510",
-   "phone": "16202865201",
    "source": "barchart"
   },
   {
@@ -8829,6 +8856,15 @@
    "source": "barchart"
   },
   {
+   "facility": "Skyland Grain",
+   "branch": "Cunningham Area",
+   "city": "Cunningham",
+   "state": "KS",
+   "zip": "67035",
+   "phone": "(620) 298-2011",
+   "source": "barchart"
+  },
+  {
    "facility": "Stafford County Flour Mills",
    "branch": "Hudson",
    "city": "Hudson",
@@ -9942,6 +9978,15 @@
    "state": "MN",
    "zip": "55939",
    "phone": "5078866062",
+   "source": "barchart"
+  },
+  {
+   "facility": "Hord Feed & Grain",
+   "branch": "Pipestone",
+   "city": "PIPESTONE",
+   "state": "MN",
+   "zip": "56164",
+   "phone": "507-499-8352",
    "source": "barchart"
   },
   {
@@ -15910,6 +15955,33 @@
    "state": "WI",
    "zip": "54612",
    "phone": "320-202-7451",
+   "source": "barchart"
+  },
+  {
+   "facility": "Premier Co-op",
+   "branch": "Mazomanie",
+   "city": "Mazomanie",
+   "state": "WI",
+   "zip": "53560",
+   "phone": "608-767-3801",
+   "source": "barchart"
+  },
+  {
+   "facility": "Premier Co-op",
+   "branch": "Mineral Point",
+   "city": "Mineral Point",
+   "state": "WI",
+   "zip": "53565",
+   "phone": "608-319-1202",
+   "source": "barchart"
+  },
+  {
+   "facility": "Premier Co-op",
+   "branch": "Richland Center",
+   "city": "Richland Center",
+   "state": "WI",
+   "zip": "53581",
+   "phone": "608-647-6171",
    "source": "barchart"
   },
   {
