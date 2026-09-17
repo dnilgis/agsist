@@ -1,18 +1,18 @@
 {
- "generated": "2026-09-16T22:03:32Z",
+ "generated": "2026-09-17T15:30:58Z",
  "from": "bids-full.json",
  "complete": false,
  "note": "Directory only: who operates a facility and where. No prices, no basis, no symbols, no delivery windows.",
  "counts": {
-  "facilities": 1799,
+  "facilities": 1795,
   "states": 28,
   "with_address": 0,
   "with_coords": 0,
   "with_url": 0,
-  "with_phone": 1799,
+  "with_phone": 1795,
   "saturated_zips": 0,
   "failed_zips": 0,
-  "rows_read": 18260
+  "rows_read": 18139
  },
  "saturated": [],
  "failed": [],
@@ -87,15 +87,6 @@
    "state": "CO",
    "zip": "80650",
    "phone": " 970-381-4402",
-   "source": "barchart"
-  },
-  {
-   "facility": "Roggen Farmers Elevator Association",
-   "branch": "Roggen Elevator - Main Office",
-   "city": "Roggen",
-   "state": "CO",
-   "zip": "80652",
-   "phone": "(303) 849-5506",
    "source": "barchart"
   },
   {
@@ -8146,15 +8137,6 @@
   },
   {
    "facility": "Farmers Cooperative Equity Company",
-   "branch": "Isabel",
-   "city": "Isabel",
-   "state": "KS",
-   "zip": "67065",
-   "phone": "620-739-4335",
-   "source": "barchart"
-  },
-  {
-   "facility": "Farmers Cooperative Equity Company",
    "branch": "Nashville",
    "city": "Nashville",
    "state": "KS",
@@ -10279,15 +10261,6 @@
   },
   {
    "facility": "Nexus Cooperative",
-   "branch": "CONGER, MN",
-   "city": "Conger",
-   "state": "MN",
-   "zip": "56020",
-   "phone": "507-265-3231",
-   "source": "barchart"
-  },
-  {
-   "facility": "Nexus Cooperative",
    "branch": "EMMONS, MN",
    "city": "Emmons",
    "state": "MN",
@@ -11220,15 +11193,6 @@
    "state": "MT",
    "zip": "59422",
    "phone": " 406-466-5371",
-   "source": "barchart"
-  },
-  {
-   "facility": "Columbia Grain",
-   "branch": "Conrad, MT",
-   "city": "Conrad",
-   "state": "MT",
-   "zip": "59425",
-   "phone": "406-278-3256",
    "source": "barchart"
   },
   {
