@@ -1,37 +1,37 @@
 {
-  "fetched_at": "2026-09-10T19:43:39+00:00",
+  "fetched_at": "2026-09-17T13:30:08+00:00",
   "files": {
     "noaa_prcp_30day.gif": {
-      "bytes": 248509,
-      "changed": false,
-      "last_modified": "2026-08-31T19:00:43+00:00",
-      "sha256": "4c138aa986dfe3a0933327f68c65ddfc63109d536ce2bb0480d3306a184d78f1",
-      "source": "https://www.cpc.ncep.noaa.gov/products/predictions/30day/off15_prcp.gif",
+      "bytes": 217405,
+      "changed": true,
+      "last_modified": "2026-09-17T12:31:40+00:00",
+      "sha256": "c369a44d7523f04cd8c9dd4f101d6733352d7f0e68ec1c2296e8af3832367069",
+      "source": "https://www.cpc.ncep.noaa.gov/products/predictions/long_range/lead14/off14_prcp.gif",
       "status": "ok",
-      "variant": "lead15"
+      "variant": "lead14"
     },
     "noaa_prcp_90day.gif": {
-      "bytes": 237895,
-      "changed": false,
-      "last_modified": "2026-08-20T12:32:06+00:00",
-      "sha256": "20b8fc97ee8304f1853068b41da2986602cefc4fb50077eb7ffe4363fe9bee46",
+      "bytes": 241612,
+      "changed": true,
+      "last_modified": "2026-09-17T12:31:40+00:00",
+      "sha256": "1e3081c842fb260f7c2b58950a0e3b704fa23d4e8b5ce62497de0ce8c9d3198d",
       "source": "https://www.cpc.ncep.noaa.gov/products/predictions/long_range/lead01/off01_prcp.gif",
       "status": "ok"
     },
     "noaa_temp_30day.gif": {
-      "bytes": 246338,
-      "changed": false,
-      "last_modified": "2026-08-31T19:00:43+00:00",
-      "sha256": "40177cb325e4b902940c5c1fba1388abc17071f85645f5a04b1edf9e5a4a3bae",
-      "source": "https://www.cpc.ncep.noaa.gov/products/predictions/30day/off15_temp.gif",
+      "bytes": 232386,
+      "changed": true,
+      "last_modified": "2026-09-17T12:31:40+00:00",
+      "sha256": "ca80cb75667e0bb5a06e1666b413031cb8d0416e371d2a67426605325cf1daad",
+      "source": "https://www.cpc.ncep.noaa.gov/products/predictions/long_range/lead14/off14_temp.gif",
       "status": "ok",
-      "variant": "lead15"
+      "variant": "lead14"
     },
     "noaa_temp_90day.gif": {
-      "bytes": 225779,
-      "changed": false,
-      "last_modified": "2026-08-20T12:32:06+00:00",
-      "sha256": "e1ce4d49b32b6b2bdf64fd95ca51d8258c80ee94e7723977065be2c2d55996e8",
+      "bytes": 229804,
+      "changed": true,
+      "last_modified": "2026-09-17T12:31:40+00:00",
+      "sha256": "84e2687c71fdda0b3f032afeed5305f90406aacbb8a0982034413055afba4cb4",
       "source": "https://www.cpc.ncep.noaa.gov/products/predictions/long_range/lead01/off01_temp.gif",
       "status": "ok"
     },
