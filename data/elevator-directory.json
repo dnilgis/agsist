@@ -1,18 +1,18 @@
 {
- "generated": "2026-09-17T15:30:58Z",
+ "generated": "2026-09-17T19:13:39Z",
  "from": "bids-full.json",
  "complete": false,
  "note": "Directory only: who operates a facility and where. No prices, no basis, no symbols, no delivery windows.",
  "counts": {
-  "facilities": 1795,
+  "facilities": 1796,
   "states": 28,
   "with_address": 0,
   "with_coords": 0,
   "with_url": 0,
-  "with_phone": 1795,
+  "with_phone": 1796,
   "saturated_zips": 0,
   "failed_zips": 0,
-  "rows_read": 18139
+  "rows_read": 18180
  },
  "saturated": [],
  "failed": [],
@@ -87,6 +87,15 @@
    "state": "CO",
    "zip": "80650",
    "phone": " 970-381-4402",
+   "source": "barchart"
+  },
+  {
+   "facility": "Roggen Farmers Elevator Association",
+   "branch": "Roggen Elevator - Main Office",
+   "city": "Roggen",
+   "state": "CO",
+   "zip": "80652",
+   "phone": "(303) 849-5506",
    "source": "barchart"
   },
   {
@@ -4212,15 +4221,6 @@
    "source": "barchart"
   },
   {
-   "facility": "Alto Ingredients, Inc.",
-   "branch": "Pekin, IL",
-   "city": "Pekin",
-   "state": "IL",
-   "zip": "61554",
-   "phone": "(916) 403-2123",
-   "source": "barchart"
-  },
-  {
    "facility": "Assumption Coop",
    "branch": "Assumption Facility",
    "city": "Assumption",
@@ -4861,20 +4861,20 @@
   },
   {
    "facility": "Farmers Grain Service, Inc.",
-   "branch": "GRAND RIDGE",
-   "city": "Grand Ridge",
-   "state": "IL",
-   "zip": "61325",
-   "phone": "8152495515",
-   "source": "barchart"
-  },
-  {
-   "facility": "Farmers Grain Service, Inc.",
    "branch": "OTTAWA RIVER",
    "city": "Grand Ridge",
    "state": "IL",
    "zip": "61325",
    "phone": "815-249-5515",
+   "source": "barchart"
+  },
+  {
+   "facility": "Farmers Grain Service, Inc.",
+   "branch": "GRAND RIDGE",
+   "city": "Grand Ridge",
+   "state": "IL",
+   "zip": "61325",
+   "phone": "8152495515",
    "source": "barchart"
   },
   {
@@ -5658,15 +5658,6 @@
    "state": "IL",
    "zip": "62526",
    "phone": "419-622-6151",
-   "source": "barchart"
-  },
-  {
-   "facility": "Seatonville Elevator Co",
-   "branch": "Marquis",
-   "city": "Hennepin",
-   "state": "IL",
-   "zip": "61327",
-   "phone": "815-925-9590",
    "source": "barchart"
   },
   {
@@ -8137,6 +8128,15 @@
   },
   {
    "facility": "Farmers Cooperative Equity Company",
+   "branch": "Isabel",
+   "city": "Isabel",
+   "state": "KS",
+   "zip": "67065",
+   "phone": "620-739-4335",
+   "source": "barchart"
+  },
+  {
+   "facility": "Farmers Cooperative Equity Company",
    "branch": "Nashville",
    "city": "Nashville",
    "state": "KS",
@@ -8826,15 +8826,6 @@
    "state": "KS",
    "zip": "67137",
    "phone": "620-736-2011",
-   "source": "barchart"
-  },
-  {
-   "facility": "Skyland Grain",
-   "branch": "Cunningham Area",
-   "city": "Cunningham",
-   "state": "KS",
-   "zip": "67035",
-   "phone": "(620) 298-2011",
    "source": "barchart"
   },
   {
@@ -10261,6 +10252,15 @@
   },
   {
    "facility": "Nexus Cooperative",
+   "branch": "CONGER, MN",
+   "city": "Conger",
+   "state": "MN",
+   "zip": "56020",
+   "phone": "507-265-3231",
+   "source": "barchart"
+  },
+  {
+   "facility": "Nexus Cooperative",
    "branch": "EMMONS, MN",
    "city": "Emmons",
    "state": "MN",
@@ -11193,6 +11193,15 @@
    "state": "MT",
    "zip": "59422",
    "phone": " 406-466-5371",
+   "source": "barchart"
+  },
+  {
+   "facility": "Columbia Grain",
+   "branch": "Conrad, MT",
+   "city": "Conrad",
+   "state": "MT",
+   "zip": "59425",
+   "phone": "406-278-3256",
    "source": "barchart"
   },
   {
