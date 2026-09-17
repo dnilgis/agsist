@@ -31,7 +31,23 @@ import urllib.request
 UA = "AGSIST-automation/1.0 (+https://agsist.com/farmland-atlas)"
 GEO = "data/atlas/counties.geo.json"
 PROXY_BASE = os.environ.get("RMA_PROXY_BASE", "").strip().rstrip("/")
-PROXIED_HOSTS = {"pubfs-rma.fpac.usda.gov"}
+# HOSTS THAT DO NOT ANSWER A GITHUB RUNNER IN A REASONABLE TIME.
+#
+# Membership buys two things and they are separable: the direct attempt is
+# capped at CONNECT_TIMEOUT instead of the full `timeout` and is tried ONCE
+# instead of twice, and a proxy route is added IF RMA_PROXY_BASE is set and the
+# caller passed a proxy_path. A host can be in here purely for the first half.
+#
+#   pubfs-rma.fpac.usda.gov  TCP connect timeout from a runner, measured
+#                            2026-09-13. It has answered directly since --
+#                            every colsom zip on 2026-09-16 logged "direct in
+#                            1s" -- so the proxy has never actually been needed.
+#   www.fsa.usda.gov         measured 2026-09-17: the CRP request accepted the
+#                            connection and sat on it until the remote end
+#                            closed without a response, twice, for 629 seconds
+#                            in total. Here for the TIMEOUT, not for a proxy;
+#                            fetch_atlas_crp.py passes no proxy_path.
+PROXIED_HOSTS = {"pubfs-rma.fpac.usda.gov", "www.fsa.usda.gov"}
 CONNECT_TIMEOUT = 40
 _dead_hosts = set()
 
@@ -78,7 +94,9 @@ def get(url, timeout=600, retries=2, proxy_path=None):
                 if label == "direct" and host in PROXIED_HOSTS:
                     _dead_hosts.add(host)
                     log(f"  {host}: direct route failed ({type(e).__name__}); "
-                        + ("switching to the proxy" if PROXY_BASE else "no RMA_PROXY_BASE set"))
+                        + ("switching to the proxy" if (PROXY_BASE and proxy_path)
+                           else "no proxy route for this url" if not proxy_path
+                           else "no RMA_PROXY_BASE set"))
                     break
                 time.sleep(10)
     raise RuntimeError(f"{url}: no route answered ({type(last).__name__}: {last})")

@@ -43,6 +43,23 @@ from datetime import datetime, timezone
 
 from atlas_common import get, county_index, names_to_fips, log
 
+# THIS ONE IS A LANDING PAGE, NOT THE WORKBOOK -- 2026-09-17.
+#
+# The CRP statistics page links here and the link text says xlsx, so this was
+# read as a file url. It is not: it answers with an HTML page that says "Your
+# file is ready" and carries the real href. The first run from a runner never
+# got that far -- the connection was accepted and then dropped after 629
+# seconds -- but even a successful fetch would have handed openpyxl a web page.
+#
+# THE REAL FILE SITS UNDER A DATED DIRECTORY, measured the same day:
+#   https://www.fsa.usda.gov/sites/default/files/2026-05/CRPHistoryCounty86-25.xlsx
+# and `2026-05` is why that address is NOT hardcoded here. FSA republishes this
+# workbook every year -- the name already carries "86-25" -- and the next one
+# lands in a different month's folder. A url pinned to 2026-05 works until it
+# silently does not. So the landing page is fetched and its link followed,
+# which is what a browser does and what survives the directory moving.
+#
+# EXPIRE_URL below needs none of this; it is already the file.
 HISTORY_URL = "https://www.fsa.usda.gov/documents/crphistorycounty86-25xlsx"
 EXPIRE_URL = "https://www.fsa.usda.gov/sites/default/files/documents/EXPIRECOUNTY.xlsx"
 OUT = "data/atlas/raw/crp.json"
@@ -145,6 +162,65 @@ def read_table(header, body, value_hint=None, above=None):
     raise ValueError(f"neither year columns nor a YEAR column in header {header}")
 
 
+# Every .xlsx is a zip, so every one begins "PK". Anything else that came back
+# from a url we asked for a workbook is a page about the workbook.
+XLSX_MAGIC = b"PK"
+HREF_XLSX = re.compile(rb'href=["\']([^"\']+\.xlsx)["\']', re.I)
+
+
+def _selftest_follow():
+    """The landing-page hop, without a network."""
+    real = XLSX_MAGIC + b"rest of a workbook"
+    calls = []
+    import builtins  # noqa: F401  (kept explicit; the stub below replaces a module global)
+    global get
+    orig = get
+    try:
+        get = lambda u, **k: calls.append(u) or real           # noqa: E731
+        # already a workbook: returned untouched, nothing fetched
+        assert follow_to_workbook(real, "u") is real and not calls
+        # a landing page with an absolute link
+        page = b'<a href="https://www.fsa.usda.gov/sites/default/files/2026-05/X.xlsx">get</a>'
+        assert follow_to_workbook(page, "https://www.fsa.usda.gov/documents/x") is real
+        assert calls == ["https://www.fsa.usda.gov/sites/default/files/2026-05/X.xlsx"], calls
+        # and a root-relative one, resolved against the page's host
+        calls.clear()
+        assert follow_to_workbook(b"<a href='/sites/default/files/2026-05/X.xlsx'>",
+                                  "https://www.fsa.usda.gov/documents/x") is real
+        assert calls == ["https://www.fsa.usda.gov/sites/default/files/2026-05/X.xlsx"], calls
+        # a page with no link at all must exit loudly, never return the page
+        calls.clear()
+        try:
+            follow_to_workbook(b"<html>nothing here</html>", "https://www.fsa.usda.gov/documents/x")
+        except SystemExit as e:
+            assert "carry no .xlsx link" in str(e), e
+        else:
+            raise AssertionError("a page with no workbook link must not pass silently")
+    finally:
+        get = orig
+
+
+def follow_to_workbook(body, from_url):
+    """The bytes of a workbook, following one landing page if that is what came back.
+
+    ONE HOP, NOT A CRAWLER. If the page it lands on is another page, that is a
+    different failure and it should say so rather than wander."""
+    if body is None or body[:2] == XLSX_MAGIC:
+        return body
+    hrefs = HREF_XLSX.findall(body)
+    if not hrefs:
+        sys.exit(f"{from_url} returned {len(body)} bytes that are not a workbook and carry no "
+                 f".xlsx link. Open it in a browser: the CRP statistics page has been relaid out.")
+    href = hrefs[0].decode("utf-8", "replace")
+    if href.startswith("/"):
+        href = "https://" + from_url.split("://", 1)[-1].split("/", 1)[0] + href
+    log(f"  landing page; following {href}")
+    got = get(href)
+    if got is None or got[:2] != XLSX_MAGIC:
+        sys.exit(f"{href} did not return a workbook either")
+    return got
+
+
 def read_workbook(xlsx_bytes, value_hint=None, label=""):
     try:
         import openpyxl
@@ -218,6 +294,7 @@ def selftest():
 
 def main():
     if "--selftest" in sys.argv:
+        _selftest_follow()
         selftest()
         return
     if "--history" in sys.argv:
@@ -227,7 +304,7 @@ def main():
             exp_bytes = f.read()
     else:
         log(f"downloading {HISTORY_URL}")
-        hist_bytes = get(HISTORY_URL)
+        hist_bytes = follow_to_workbook(get(HISTORY_URL), HISTORY_URL)
         log(f"downloading {EXPIRE_URL}")
         exp_bytes = get(EXPIRE_URL)
         if hist_bytes is None or exp_bytes is None:
