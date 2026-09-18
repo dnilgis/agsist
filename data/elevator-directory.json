@@ -1,5 +1,5 @@
 {
- "generated": "2026-09-17T22:24:19Z",
+ "generated": "2026-09-18T14:55:03Z",
  "from": "bids-full.json",
  "complete": false,
  "note": "Directory only: who operates a facility and where. No prices, no basis, no symbols, no delivery windows.",
@@ -12,7 +12,7 @@
   "with_phone": 1804,
   "saturated_zips": 0,
   "failed_zips": 0,
-  "rows_read": 18298
+  "rows_read": 18250
  },
  "saturated": [],
  "failed": [],
@@ -4248,6 +4248,15 @@
    "source": "barchart"
   },
   {
+   "facility": "Alto Ingredients, Inc.",
+   "branch": "Pekin, IL",
+   "city": "Pekin",
+   "state": "IL",
+   "zip": "61554",
+   "phone": "(916) 403-2123",
+   "source": "barchart"
+  },
+  {
    "facility": "Assumption Coop",
    "branch": "Assumption Facility",
    "city": "Assumption",
@@ -7035,6 +7044,15 @@
    "state": "KS",
    "zip": "66780",
    "phone": "620-354-6424",
+   "source": "barchart"
+  },
+  {
+   "facility": "Abbyville Farmers Co-op Grain Co.",
+   "branch": "Abbyville",
+   "city": "Abbyville",
+   "state": "KS",
+   "zip": "67510",
+   "phone": "16202865201",
    "source": "barchart"
   },
   {
@@ -9981,15 +9999,6 @@
    "source": "barchart"
   },
   {
-   "facility": "Hord Feed & Grain",
-   "branch": "Pipestone",
-   "city": "PIPESTONE",
-   "state": "MN",
-   "zip": "56164",
-   "phone": "507-499-8352",
-   "source": "barchart"
-  },
-  {
    "facility": "Jennie-o Turkey Store",
    "branch": "Faribault Mill",
    "city": "Faribault",
@@ -10293,15 +10302,6 @@
    "state": "MN",
    "zip": "55918",
    "phone": "507-567-2234",
-   "source": "barchart"
-  },
-  {
-   "facility": "Nexus Cooperative",
-   "branch": "CONGER, MN",
-   "city": "Conger",
-   "state": "MN",
-   "zip": "56020",
-   "phone": "507-265-3231",
    "source": "barchart"
   },
   {
