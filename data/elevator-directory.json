@@ -1,5 +1,5 @@
 {
- "generated": "2026-09-18T14:55:03Z",
+ "generated": "2026-09-18T18:18:12Z",
  "from": "bids-full.json",
  "complete": false,
  "note": "Directory only: who operates a facility and where. No prices, no basis, no symbols, no delivery windows.",
@@ -12,7 +12,7 @@
   "with_phone": 1804,
   "saturated_zips": 0,
   "failed_zips": 0,
-  "rows_read": 18250
+  "rows_read": 18271
  },
  "saturated": [],
  "failed": [],
@@ -87,15 +87,6 @@
    "state": "CO",
    "zip": "80650",
    "phone": " 970-381-4402",
-   "source": "barchart"
-  },
-  {
-   "facility": "Roggen Farmers Elevator Association",
-   "branch": "Roggen Elevator - Main Office",
-   "city": "Roggen",
-   "state": "CO",
-   "zip": "80652",
-   "phone": "(303) 849-5506",
    "source": "barchart"
   },
   {
@@ -8874,15 +8865,6 @@
    "source": "barchart"
   },
   {
-   "facility": "Skyland Grain",
-   "branch": "Cunningham Area",
-   "city": "Cunningham",
-   "state": "KS",
-   "zip": "67035",
-   "phone": "(620) 298-2011",
-   "source": "barchart"
-  },
-  {
    "facility": "Stafford County Flour Mills",
    "branch": "Hudson",
    "city": "Hudson",
@@ -9999,6 +9981,15 @@
    "source": "barchart"
   },
   {
+   "facility": "Hord Feed & Grain",
+   "branch": "Pipestone",
+   "city": "PIPESTONE",
+   "state": "MN",
+   "zip": "56164",
+   "phone": "507-499-8352",
+   "source": "barchart"
+  },
+  {
    "facility": "Jennie-o Turkey Store",
    "branch": "Faribault Mill",
    "city": "Faribault",
@@ -10302,6 +10293,15 @@
    "state": "MN",
    "zip": "55918",
    "phone": "507-567-2234",
+   "source": "barchart"
+  },
+  {
+   "facility": "Nexus Cooperative",
+   "branch": "CONGER, MN",
+   "city": "Conger",
+   "state": "MN",
+   "zip": "56020",
+   "phone": "507-265-3231",
    "source": "barchart"
   },
   {
