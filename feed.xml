@@ -5,13 +5,25 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Thu, 17 Sep 2026 11:08:56 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 18 Sep 2026 10:55:21 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/agsist.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>CRUDE DROPS 5%; HARVEST PRESSURE BUILDS IN CORN</title>
+      <link>https://agsist.com/daily/2026-09-18</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-09-18</guid>
+      <pubDate>Fri, 18 Sep 2026 05:00:00 -0600</pubDate>
+      <description>Crude oil fell hard Friday, its biggest single-session drop in weeks, as Saudi ship-to-ship transfer reports quelled export-disruption fears that had been bid into the market all month. WTI settled at $95.78, down $5.34 on the session. Corn held at $5.31 while basis season begins its predictable grind lower toward the mid-October harvest low.
+Action: Unpriced new-crop corn: a close under $5.28 is the next decision point. Do not wait for harvest-low basis to eat the margin.
+• CRUDE LEADS LOWER
+• GRAINS MIXED AT HARVEST DOOR
+• CATTLE AND HOGS DRIFT
+Read more: https://agsist.com/daily/2026-09-18</description>
+    </item>
     <item>
       <title>FARM BILL MOVES; EXPORT SALES PRINT AT 7:30</title>
       <link>https://agsist.com/daily/2026-09-17</link>
@@ -385,19 +397,6 @@ Pro Farmer's final tour day sets up this morning's export print as the week's la
   → Old-crop corn: if export sales print above 500K MT on corn, that is your window to re-evaluate holds before harvest pressure builds.
 • CRUDE RUNS ON HORMUZ FRACTURES
 Read more: https://agsist.com/daily/2026-08-20</description>
-    </item>
-    <item>
-      <title>TOUR DAY 3: BEANS FIRM, CORN FLAT, HORMUZ TIGHTENS</title>
-      <link>https://agsist.com/daily/2026-08-19</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-08-19</guid>
-      <pubDate>Wed, 19 Aug 2026 05:00:00 -0600</pubDate>
-      <description>Soybeans closed at $12.11, up 4.5 cents, and finished well off the day's highs after profit-takers hit the afternoon session. Corn sat exactly flat at $4.65. The tour is halfway done, boxed beef is sharply higher, and the Cargill Fort Morgan lockout just ended. Three things changed today. The prices mostly didn't.
-Soybeans hold gains as Cargill lockout ends and tanker traffic at Hormuz slows further; corn goes nowhere on day three of the Pro Farmer tour.
-• TOUR DAY 3: BEANS LEAD, CORN WAITS
-• FORT MORGAN DEAL DONE; CATTLE FIRM
-  → If you are backgrounding feeders targeting fall placement: the Aug 24 port date is now conditional. Watch the Juarez screwworm report before pricing Mexican feeder expectations into your break-even.
-• HORMUZ TIGHTENS AGAIN; CRUDE HOLDS
-Read more: https://agsist.com/daily/2026-08-19</description>
     </item>
   </channel>
 </rss>

@@ -1,18 +1,18 @@
 {
- "updated": "2026-09-17T11:08:57+00:00",
- "total": 127,
+ "updated": "2026-09-18T10:55:21+00:00",
+ "total": 128,
  "played_out": 41,
- "didnt": 80,
+ "didnt": 81,
  "pending": 6,
- "hit_rate": 33.9,
+ "hit_rate": 33.6,
  "by_method": {
   "deterministic": {
    "played": 15,
-   "missed": 70,
-   "graded": 85,
-   "hit_rate": 17.6,
+   "missed": 71,
+   "graded": 86,
+   "hit_rate": 17.4,
    "first": "2026-06-25",
-   "last": "2026-09-17"
+   "last": "2026-09-18"
   },
   "self_reported": {
    "played": 26,
@@ -34,17 +34,17 @@
   },
   "v2": {
    "played": 9,
-   "missed": 27,
-   "graded": 36,
-   "hit_rate": 25.0,
+   "missed": 28,
+   "graded": 37,
+   "hit_rate": 24.3,
    "first": "2026-08-12",
-   "last": "2026-09-17"
+   "last": "2026-09-18"
   }
  },
  "direction_only": {
   "right_way": 40,
-  "graded": 85,
-  "rate": 47.1
+  "graded": 86,
+  "rate": 46.5
  },
  "by_instrument": {
   "wheat": {
@@ -59,8 +59,8 @@
   },
   "beans": {
    "played": 8,
-   "graded": 27,
-   "hit_rate": 29.6
+   "graded": 28,
+   "hit_rate": 28.6
   },
   "crude": {
    "played": 2,
@@ -89,9 +89,9 @@
   }
  },
  "trailing20": {
-  "played": 3,
+  "played": 2,
   "graded": 20,
-  "hit_rate": 15.0
+  "hit_rate": 10.0
  },
  "mismatched": 2,
  "band_flags": {
@@ -104,19 +104,35 @@
  "current_streak": 0,
  "records": [
   {
-   "made": "2026-09-17",
+   "made": "2026-09-18",
    "judged": null,
-   "call": "Called soybeans up toward $13.42 ($13.2625 when the call was made).",
+   "call": "Called crude down toward $94.5 ($95.78 when the call was made).",
    "outcome": "pending",
    "method": "deterministic",
    "mismatch": false,
    "note": "Open: no session has settled since this call was made.",
+   "instrument": "crude",
+   "direction": "down",
+   "level": 94.5,
+   "p0": 95.78,
+   "p1": null,
+   "design": "v2"
+  },
+  {
+   "made": "2026-09-17",
+   "judged": "2026-09-18",
+   "call": "Called soybeans up toward $13.42 ($13.2625 when the call was made). It closed at $13.08.",
+   "outcome": "didnt",
+   "method": "deterministic",
+   "mismatch": false,
+   "note": "Miss; beans slipped to $13.08, a nickel below $13.42, and the export-sales catalyst didn't hold the line.",
    "instrument": "beans",
    "direction": "up",
    "level": 13.42,
    "p0": 13.2625,
-   "p1": null,
-   "design": "v2"
+   "p1": 13.08,
+   "design": "v2",
+   "direction_ok": false
   },
   {
    "made": "2026-09-16",

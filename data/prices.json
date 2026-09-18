@@ -259,8 +259,8 @@
       "ticker": "LE=F",
       "close": 216.2,
       "open": 218.64999,
-      "netChange": -3.02499,
-      "pctChange": -1.3835,
+      "netChange": -2.44999,
+      "pctChange": -1.1205,
       "wk52_hi": 258.725,
       "wk52_lo": 204.55,
       "repaired_from": "cattle-oct26",
@@ -271,7 +271,8 @@
         "open": 220.325,
         "netChange": -4.125,
         "pctChange": -1.8722
-      }
+      },
+      "derived_recomputed": true
     },
     "feeders": {
       "ticker": "GF=F",
