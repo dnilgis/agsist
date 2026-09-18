@@ -1,7 +1,7 @@
 {
- "updated": "2026-09-16T00:17:23+00:00",
- "count": 8,
- "added": 2,
+ "updated": "2026-09-18T21:44:41+00:00",
+ "count": 11,
+ "added": 3,
  "items": [
   {
    "id": "px:2026-09-16:corn:hi",
@@ -24,6 +24,39 @@
    "source": "CME settlement via the AGSIST board",
    "day_only": true,
    "ts": "2026-09-16T12:00:00+00:00"
+  },
+  {
+   "id": "cot:September 15, 2026:corn:max",
+   "kind": "positioning",
+   "headline": "Managed money holds its biggest corn net long in a year",
+   "detail": "Net +414,460 contracts as of September 15, 2026, from +414,459 the week before.",
+   "significance": "high",
+   "url": "/cot",
+   "source": "CFTC Commitments of Traders",
+   "day_only": true,
+   "ts": "2026-09-15T12:00:00+00:00"
+  },
+  {
+   "id": "cot:September 15, 2026:wheat:flip",
+   "kind": "positioning",
+   "headline": "Managed money flipped net short in chicago wheat",
+   "detail": "Net +4,873 to -3,674 contracts in a week, as of September 15, 2026.",
+   "significance": "notable",
+   "url": "/cot",
+   "source": "CFTC Commitments of Traders",
+   "day_only": true,
+   "ts": "2026-09-15T12:00:00+00:00"
+  },
+  {
+   "id": "cot:September 15, 2026:soymeal:max",
+   "kind": "positioning",
+   "headline": "Managed money holds its biggest soybean meal net long in a year",
+   "detail": "Net +183,111 contracts as of September 15, 2026, from +157,689 the week before.",
+   "significance": "high",
+   "url": "/cot",
+   "source": "CFTC Commitments of Traders",
+   "day_only": true,
+   "ts": "2026-09-15T12:00:00+00:00"
   },
   {
    "id": "px:2026-09-15:beans:hi",

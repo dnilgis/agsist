@@ -5,7 +5,7 @@
     <link>https://agsist.com/news</link>
     <description>Dated grain and livestock market events the moment they are measurable: USDA report surprises, one-year positioning extremes, 52-week highs and lows, crop rating swings. Measured, not aggregated.</description>
     <language>en-us</language>
-    <lastBuildDate>Wed, 16 Sep 2026 00:17:23 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 18 Sep 2026 21:44:41 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/news.xml" rel="self" type="application/rss+xml"/>
     <item>
       <title>Corn closed at a 52-week high</title>
@@ -22,6 +22,30 @@
       <guid isPermaLink="false">agsist-news-px:2026-09-16:beans:hi</guid>
       <pubDate>Wed, 16 Sep 2026 12:00:00 +0000</pubDate>
       <source url="https://agsist.com/news.xml">CME settlement via the AGSIST board</source>
+    </item>
+    <item>
+      <title>Managed money holds its biggest corn net long in a year</title>
+      <link>https://agsist.com/cot</link>
+      <description>Net +414,460 contracts as of September 15, 2026, from +414,459 the week before.</description>
+      <guid isPermaLink="false">agsist-news-cot:September 15, 2026:corn:max</guid>
+      <pubDate>Tue, 15 Sep 2026 12:00:00 +0000</pubDate>
+      <source url="https://agsist.com/news.xml">CFTC Commitments of Traders</source>
+    </item>
+    <item>
+      <title>Managed money flipped net short in chicago wheat</title>
+      <link>https://agsist.com/cot</link>
+      <description>Net +4,873 to -3,674 contracts in a week, as of September 15, 2026.</description>
+      <guid isPermaLink="false">agsist-news-cot:September 15, 2026:wheat:flip</guid>
+      <pubDate>Tue, 15 Sep 2026 12:00:00 +0000</pubDate>
+      <source url="https://agsist.com/news.xml">CFTC Commitments of Traders</source>
+    </item>
+    <item>
+      <title>Managed money holds its biggest soybean meal net long in a year</title>
+      <link>https://agsist.com/cot</link>
+      <description>Net +183,111 contracts as of September 15, 2026, from +157,689 the week before.</description>
+      <guid isPermaLink="false">agsist-news-cot:September 15, 2026:soymeal:max</guid>
+      <pubDate>Tue, 15 Sep 2026 12:00:00 +0000</pubDate>
+      <source url="https://agsist.com/news.xml">CFTC Commitments of Traders</source>
     </item>
     <item>
       <title>Soybeans closed at a 52-week high</title>
