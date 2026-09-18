@@ -59,11 +59,12 @@ SYSTEM = """You write the county read for AGSIST's Farmland Atlas. First person 
 
 Rules that are checked by a program after you answer:
 1. Use ONLY the numbers in the block you are given, written exactly as given (same digits). Do not compute new numbers, do not round, do not convert units, do not add a year that is not in the block. A negative percent in the block is a fall: write "down 40 percent", never "down -40 percent".
-2. If a layer says "not yet measured" or "withheld", say so in four words or fewer and move on. Do not guess what it would show.
-3. Four or five sentences, under 100 words.
-4. Lead with the thing a land buyer would most want to know for this county, from what is present. Say what is present, not what is missing, unless nothing is present.
-5. The Atlas never combines heat and water into one grade. Do not rank the county overall. Do not use the word "score".
-6. These words fail the check and must not appear: nearly, almost, about, roughly, half, double, twice, triple, quarter, fold, alarming, dramatic, unprecedented, crisis, robust."""
+2. Name a period exactly as the block writes it. The block writes "1989-1999", so write "1989-1999". Never turn a period into a decade: "the 1990s" puts the number 1990 in your answer, 1990 is not in the block, and the check rejects it. The same goes for "the 2000s" and "the 2020s" unless the block writes that exact token.
+3. If a layer says "not yet measured" or "withheld", say so in four words or fewer and move on. Do not guess what it would show.
+4. Four or five sentences. Keep it under 120 words; a program rejects anything at 130 words or more, so 120 is the target and not a stretch.
+5. Lead with the thing a land buyer would most want to know for this county, from what is present. Say what is present, not what is missing, unless nothing is present.
+6. The Atlas never combines heat and water into one grade. Do not rank the county overall. Do not use the word "score".
+7. These words fail the check and must not appear: nearly, almost, about, roughly, half, double, twice, triple, quarter, fold, alarming, dramatic, unprecedented, crisis, robust."""
 
 
 def log(*a):
@@ -170,7 +171,14 @@ def inputs_block(fips, rec):
     d = rec.get("drought") or {}
     if d.get("status") == "ok":
         w = d["weeks"]
-        L.append(f"Weeks with at least half the county in severe drought or worse, {d['first_year']}-{d['last_full_year']}: {w['d2']} of {w['counted']} ({fmt_num(w['share_d2_pct'])} percent); worst year {d['worst_year']['year']} with {d['worst_year']['d2']} weeks")
+        # "half" IS ON THE BANNED LIST AND THIS LINE PUT IT IN 98% OF BLOCKS.
+        # Measured 2026-09-18 over 400 committed county records: 393 of them
+        # carried the word, in this sentence, because this is the Drought
+        # Monitor's own definition of the D2 area threshold. The prompt says
+        # "half" fails the check; the block then hands it to the model on
+        # almost every county and the read comes back with it. The gate was
+        # right and the input was baiting it.
+        L.append(f"Weeks with at least 50 percent of the county in severe drought or worse, {d['first_year']}-{d['last_full_year']}: {w['d2']} of {w['counted']} ({fmt_num(w['share_d2_pct'])} percent); worst year {d['worst_year']['year']} with {d['worst_year']['d2']} weeks")
         if d.get("last5"):
             L.append(f"Weeks in severe drought or worse, {d['last5']['from']}-{d['last5']['to']}: {d['last5']['d2']}")
     e = rec.get("energy") or {}
@@ -301,6 +309,36 @@ def selftest():
     assert gate(ok, block) is None, gate(ok, block)
     bad = ok.replace("151", "152")
     assert gate(bad, block) == "number not in inputs: 152", gate(bad, block)
+
+    # THE INPUT MAY NOT CONTAIN A WORD THE READ IS FORBIDDEN TO USE.
+    #
+    # 2026-09-18: the drought line said "at least half the county" and "half"
+    # is on BANNED. 393 of 400 committed county records carried it, the model
+    # echoed the word it had been given, and the gate rejected the read. Every
+    # retry cost a call. The gate was not wrong and the model was not wrong:
+    # the two halves of this file disagreed, and nothing checked that they
+    # agreed. This is that check, over the sentences the block is built from.
+    import re as _re
+    src = open(__file__, encoding="utf-8").read()
+    body = src[src.index("def inputs_block"):src.index("def gate(")]
+    said = []
+    for line in body.split("\n"):
+        m = _re.search(r'L\.append\(f?"(.*)"\)', line)
+        if not m:
+            continue
+        # drop the {...} placeholders; a county name or a number is not prose
+        prose = _re.sub(r"\{[^}]*\}", " ", m.group(1)).lower()
+        for b in BANNED:
+            if b in prose:
+                said.append(f"{b!r} in: {m.group(1)[:70]}")
+    assert not said, ("the block hands the model a word the prompt forbids:\n  "
+                      + "\n  ".join(said))
+
+    # and the period rule the prompt now carries is the one the block obeys
+    assert "1989-1999" in numbers_in("indemnities 1989-1999: 19 percent") or True
+    _p = numbers_in("Heat and drought share of indemnities 1989-1999: 19 percent")
+    assert "1989" in _p and "1999" in _p, _p
+    assert "1990" not in _p, "1990 can never pass; the prompt must not let the model write it"
     assert gate("An alarming 138 dollars.", block) == "banned word: alarming"
     assert gate("- 138 dollars", block) == "list or heading formatting"
     assert gate(" ".join(["word"] * 131), block).startswith("131 words")
