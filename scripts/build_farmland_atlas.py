@@ -789,6 +789,12 @@ def build(rent_dir=RENT_DIR, raw_dir=RAW_DIR, geometry_names=None):
     # the federal fiscal year starts in October
     this_fy = now.year + (1 if now.month >= 10 else 0)
 
+    # A LAYER CONTRIBUTES A COUNTY; IT DOES NOT INVENT ONE. Every layer may
+    # widen this set, because a county in one survey and no other still earns a
+    # record with the rest withheld. The state prefix was the only filter, and
+    # it is not enough: RMA's sobcov files carry RMA's own county codes, which
+    # include state aggregates (county 000) and codes outside the Census range.
+    # The name check below is what turns this back into a set of counties.
     fips_all = set(rent)
     for name in ("heat", "water", "loss", "sob", "value", "crp", "drought"):
         if raw[name]:
@@ -797,6 +803,7 @@ def build(rent_dir=RENT_DIR, raw_dir=RAW_DIR, geometry_names=None):
         fips_all |= set(geometry_names)
 
     counties = {}
+    unnamed = []
     for fips in sorted(fips_all):
         st = ATLAS_STATE_FIPS.get(fips[:2])
         if not st:
@@ -805,6 +812,25 @@ def build(rent_dir=RENT_DIR, raw_dir=RAW_DIR, geometry_names=None):
         # Census spelling first (DeKalb, O'Brien, St. Clair); NASS upper-cases and drops punctuation
         name = (geometry_names or {}).get(fips) or r.get("name") or (raw["heat"] or {}).get(fips, {}).get("name") \
             or (raw["loss"] or {}).get(fips, {}).get("name") or (raw["water"] or {}).get(fips, {}).get("name")
+        # WE DO NOT PUBLISH A COUNTY WE CANNOT NAME. 2026-09-17: the sob layer
+        # landed and the Atlas went from 1455 counties to 1479. All 24 were
+        # nameless, none had a polygon, and every layer read "withheld" except
+        # sob, whose own numbers were a single 1989 row of zeros. Seven were
+        # state totals (17000, 19000, 27000, 31000, 39000, 48000, 55000); the
+        # rest were codes no Census county uses (38445, 26179, 18201).
+        # The name chain above is the test, and it is the right one: the map,
+        # the rent frame, heat, loss and water all carry county names, so a
+        # real county is named by at least one of them. sob, value, crp and
+        # drought carry numbers only. The five counties that have no polygon
+        # but do have a name -- RMA's split units, W Pottawattamie IA, West
+        # Otter Tail MN, West Polk MN -- are real places and stay.
+        # The map is the primary namer, so the check only runs when we have it:
+        # without counties.geo.json, San Juan CO (08111) and St. Louis City MO
+        # (29510) are named by nothing else and a blind check would drop two
+        # real counties to remove twenty-four codes. Measured both ways.
+        if not name and geometry_names:
+            unnamed.append(fips)
+            continue
         c = {"name": name, "state": st}
         c["rent"] = rent_layer(r.get("rent") or {}) if r else {"status": "withheld: county not in the NASS cash rents survey frame"}
         c["yield"] = yield_layer(r.get("yield")) if r else {"status": "withheld: county not in the NASS cash rents survey frame"}
@@ -832,6 +858,16 @@ def build(rent_dir=RENT_DIR, raw_dir=RAW_DIR, geometry_names=None):
         # describe numbers the county no longer carries.
         c["sha"] = record_sha(c)
         counties[fips] = c
+
+    if not geometry_names:
+        log("  WARNING: no county geometry, so the name check did not run; "
+            "a source's own county codes can enter the Atlas unchallenged")
+    if unnamed:
+        by_state = {}
+        for f in unnamed:
+            by_state.setdefault(ATLAS_STATE_FIPS.get(f[:2], "??"), []).append(f)
+        log(f"  dropped {len(unnamed)} code(s) no source could name: "
+            + ", ".join(f"{st} {' '.join(sorted(v))}" for st, v in sorted(by_state.items())))
 
     layers = {
         "rent": {"status": "ok", "source": "USDA NASS Cash Rents Survey (county), via data/cash-rent", "vintage": rent_vintage,
@@ -899,7 +935,32 @@ def build(rent_dir=RENT_DIR, raw_dir=RAW_DIR, geometry_names=None):
 
 # ---------------------------------------------------------------- selftest
 
+def _selftest_unnamed(tmp):
+    """A LAYER MAY NOT MINT A COUNTY. The sob layer arrived on 2026-09-17
+    carrying RMA's own county codes and the Atlas gained 24 counties that no
+    source could name. Build twice off one fixture: once with a map, once
+    without."""
+    import tempfile
+    raw = {"sob": {"counties": {"19155": {"years": {}}, "19000": {"years": {}}, "38445": {"years": {}}},
+                   "latest_year": 2026, "source": "fixture"}}
+    d = tempfile.mkdtemp()
+    with open(os.path.join(d, "sob.json"), "w") as f:
+        json.dump(raw["sob"], f)
+    rent_dir = tempfile.mkdtemp()          # no rent: the layer is the only source of fips
+    geo = {"19155": "Pottawattamie"}       # the map knows one of the three
+
+    out = build(rent_dir=rent_dir, raw_dir=d, geometry_names=geo)
+    got = set(out["counties"])
+    assert got == {"19155"}, f"a named county survives and the codes do not: {sorted(got)}"
+
+    # and with no map at all the check stands down rather than dropping real counties
+    out = build(rent_dir=rent_dir, raw_dir=d, geometry_names=None)
+    assert set(out["counties"]) == {"19155", "19000", "38445"}, \
+        "without a map there is nothing to check a name against, so nothing is dropped"
+
+
 def selftest():
+    _selftest_unnamed(None)
     # ols on a hand-worked line: y = 2x + 1 exactly
     f = ols([(1, 3), (2, 5), (3, 7), (4, 9)])
     assert abs(f["slope"] - 2) < 1e-9 and abs(f["intercept"] - 1) < 1e-9 and f["r2"] == 1.0, f
