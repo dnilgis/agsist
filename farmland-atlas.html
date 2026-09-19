@@ -813,8 +813,6 @@ var LAYERS=[
   v:function(c,f){return tenShare(f,'2022');},title:'Share of land in farms rented from others, 2022 Census of Agriculture, as farms reported it'},
  {key:'pr_tile',grp:'Tile and tillage',label:'Tile-drained',ramp:'water',unit:'%',pct:true,k:0,needs:'practices',
   v:function(c){return get(c,'practices','tile');},title:'Land drained by tile as a share of the county\'s cropland, 2022 Census of Agriculture'},
- {key:'pr_tile_chg',grp:'Tile and tillage',label:'Tile, 2017 to 2022',div:true,unit:'%',k:0,needs:'practices',
-  v:function(c){return get(c,'practices','tile_chg_pct');},title:'Change in tile-drained acres from the 2017 to the 2022 census, percent (counties under 1,000 tile acres in 2017 are grey)'},
  {key:'pr_notill',grp:'Tile and tillage',label:'No-till',ramp:'green',unit:'%',pct:true,k:0,needs:'practices',
   v:function(c){return get(c,'practices','notill');},title:'Cropland farmed no-till as a share of all cropland, 2022 Census of Agriculture'},
  {key:'pr_cover',grp:'Tile and tillage',label:'Cover crops',ramp:'green',unit:'%',pct:true,k:0,needs:'practices',
@@ -1118,7 +1116,10 @@ function renderRail(){
     var key=STATE?'st':'us';
     function row(r){ return '<li><button type="button" data-fips="'+r.f+'"'+(r.f===SEL?' class="me"':'')+'><span class="sw" style="background:'+(PATHS[r.f].getAttribute('fill'))+'"></span><span class="nm">'+esc(shortName(r.c,STATE||'~'))+'</span><span class="v">'+esc(fmtv(L,r.v))+'</span></button></li>'; }
     h+='<div class="fa-rk"><h3 class="fa-rk-h"><span>Highest in '+esc(scope)+'</span></h3><ol class="fa-rk-l">'+list.slice(0,k).map(row).join('')+'</ol>'
-      +'<h3 class="fa-rk-h"><span>Lowest in '+esc(scope)+'</span></h3><ol class="fa-rk-l">'+list.slice(n-k).reverse().map(row).join('')+'</ol>'
+      +(function(){ var lo=list[n-1].v, tied=list.filter(function(r){return r.v===lo;}).length;
+          // a list of eight of the 540 counties at 0% says nothing; say how many share the floor instead
+          if(tied>k) return '<h3 class="fa-rk-h"><span>Lowest in '+esc(scope)+'</span></h3><p class="fa-rk-n" style="margin:.1rem 0 .6rem">'+fmt(tied,0)+' counties tied at '+esc(fmtv(L,lo))+'.</p>';
+          return '<h3 class="fa-rk-h"><span>Lowest in '+esc(scope)+'</span></h3><ol class="fa-rk-l">'+list.slice(n-k).reverse().map(row).join('')+'</ol>'; })()
       +'<p class="fa-rk-n">'+fmt(n,0)+' counties'+(farmOk?' with 10,000 acres or more in farms':' with a value')+((L.key==='rent'||L.key==='rent_irr')&&RENT_LATEST?', '+RENT_LATEST+' survey':'')+'. '+(n>2*k||RAIL_MORE?'<button type="button" class="fa-rk-more" id="fa-rk-more">'+(RAIL_MORE?'Show fewer':'Show more')+'</button>':'')+'</p></div>';
   }
   var ae=document.activeElement, keepF=ae&&box.contains(ae)?(ae.getAttribute('data-fips')||ae.id):null;
@@ -1628,7 +1629,8 @@ function renderPanel(fips,c){
     f+=facthead('Drainage and tillage, 2022 census');
     var prf=function(label,x,none){ if(!x) return; if(x.reported===false) f+=fact(label,'none reported'); else if(x.share!=null){ var s0=Pr.cropland?x.acres/Pr.cropland:x.share; f+=fact(label, (s0>0&&s0<0.005?'under 1%':pct(x.share,0))+' of cropland', fmt(x.acres,0)+' acres'); } else f+=fact(label,'— '+why(x),'',true); };
     prf('Drained by tile',Pr.tile);
-    if(Pr.tile_change&&Pr.tile_change.pct!=null) f+=fact('Tile acres, 2017 to 2022', sgn(Pr.tile_change.pct,1)+'%', fmt(Pr.tile_change.acres_from,0)+' → '+fmt(Pr.tile_change.acres_to,0)+' acres');
+    // no 2017-to-2022 tile change: Iowa's statewide census total fell 8% (14.1M to 13.0M acres) while tile is
+    // almost never pulled; a county's change measures who answered the census, not drainage put in
     prf('Drained by ditches',Pr.ditch);
     prf('Farmed no-till',Pr.notill);
     prf('Other conservation tillage',Pr.reduced);

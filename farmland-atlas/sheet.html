@@ -296,7 +296,6 @@ function render(){
   if(ok(Pr)){
     var p=function(label,x){ if(!x) return; if(x.reported===false) Rt+=fct(label,'none reported'); else if(x.share!=null){ var s0=Pr.cropland?x.acres/Pr.cropland:x.share; Rt+=fct(label, (s0>0&&s0<0.005?'under 1%':pct(x.share,0))+' of cropland', fmt(x.acres,0)+' ac'); } };
     p('Drained by tile, 2022',Pr.tile);
-    if(Pr.tile_change&&Pr.tile_change.pct!=null) Rt+=fct('Tile acres, 2017 to 2022', sgn(Pr.tile_change.pct,1)+'%');
     p('Farmed no-till, 2022',Pr.notill); p('Cover crops, 2022',Pr.cover);
   }
   if(Pr&&Pr.status&&!ok(Pr)) Rt+=fw('Tile drainage and tillage', why(Pr));
