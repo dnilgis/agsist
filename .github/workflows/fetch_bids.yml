@@ -52,6 +52,11 @@ on:
         type: boolean
         required: false
         default: false
+      force:
+        description: 'Fetch even if the last fetch is under 10 minutes old'
+        type: boolean
+        required: false
+        default: false
 
 permissions:
   contents: write
@@ -61,7 +66,65 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  # ONE BARCHART PULL PER HALF HOUR, HOWEVER MANY THINGS ASK FOR ONE.
+  #
+  # Since 2026-09-19 two schedulers start this workflow AT THE SAME MINUTES:
+  # its own cron above (:07 and :37, 11-21 UTC weekdays), which GitHub
+  # delivered 4 times of 22 on 2026-09-18, and the agsist-clock Worker
+  # (workers/agsist-clock.js) on the same minutes. When both arrive, the
+  # concurrency group runs one and queues the other, and the queued one starts
+  # the moment the first has committed. This job reads when the last fetch
+  # landed and stops the run if it is under 10 minutes old -- which is only
+  # ever that second, duplicate run. Barchart OnDemand is a paid feed; the two
+  # schedulers together make one pull per half hour, never two.
+  #
+  # WHY 10 AND NOT 20, AND WHY THE SAME MINUTES. `fetched` is stamped when the
+  # fetch FINISHES. With the schedulers 18 minutes apart and a 20-minute rule,
+  # a fetch taking 10 minutes would have made the NEXT legitimate half-hour
+  # run look fresh and skip it (found by the final reviewer, 2026-09-19). On the
+  # same minutes a duplicate is seconds-to-minutes old, and a real half-hour
+  # gap stays over 10 unless one fetch took 20 minutes.
+  #
+  # It checks out the branch tip, not the queued SHA: a run that waited in the
+  # concurrency group behind the previous fetch must see that fetch's commit.
+  # A missing or unreadable file means "fetch", never "skip".
+  freshness:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    outputs:
+      skip: ${{ steps.age.outputs.skip }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+          sparse-checkout: data/bids.json
+          sparse-checkout-cone-mode: false
+      - id: age
+        env:
+          FORCE: ${{ github.event.inputs.force }}
+          DRY: ${{ github.event.inputs.dry_run }}
+        run: |
+          python3 - <<'PY'
+          import json, os, datetime as dt
+          skip = "0"
+          try:
+              f = json.load(open("data/bids.json")).get("fetched", "")
+              age = (dt.datetime.now(dt.timezone.utc) - dt.datetime.fromisoformat(f.replace("Z", "+00:00"))).total_seconds() / 60
+              print(f"last fetch {f}, {age:.0f} min ago")
+              if age < 10 and os.environ.get("FORCE") != "true" and os.environ.get("DRY") != "true":
+                  skip = "1"
+                  print("under 10 minutes old: this run is a duplicate and stops here (force=true fetches anyway)")
+          except Exception as e:
+              print(f"could not read the last fetch time ({e}); fetching")
+          with open(os.environ["GITHUB_OUTPUT"], "a") as o:
+              o.write(f"skip={skip}\n")
+          PY
+
   fetch-bids:
+    needs: freshness
+    # !cancelled(): if the freshness job itself fails, fetch anyway -- a
+    # missing answer means "fetch", never "skip".
+    if: ${{ !cancelled() && needs.freshness.outputs.skip != '1' }}
     runs-on: ubuntu-latest
     # Was 10. Two hundred locations per ZIP is a lot more payload across 50
     # ZIPs, and a run that dies on the clock looks exactly like one that died

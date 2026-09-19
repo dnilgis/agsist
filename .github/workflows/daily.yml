@@ -369,6 +369,7 @@ jobs:
       - name: Generate daily briefing
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          BRIEFING_MODEL: ${{ vars.BRIEFING_MODEL }}
         run: python scripts/generate_daily.py
 
       # Grade yesterday's call deterministically (direction AND level) from the
@@ -403,6 +404,7 @@ jobs:
       - name: Run critic pass
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          BRIEFING_MODEL: ${{ vars.BRIEFING_MODEL }}
         continue-on-error: true
         run: python scripts/critique_briefing.py
 

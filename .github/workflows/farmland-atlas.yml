@@ -48,6 +48,14 @@ on:
         description: "Refetch the whole history for loss, sob AND drought, not just recent years (type: yes)"
         required: false
         default: ""
+      reads_model:
+        description: "Model for the county reads. Blank = the ATLAS_READS_MODEL variable, else claude-sonnet-5"
+        required: false
+        default: ""
+      reads_trial:
+        description: "Trial only: a number N writes N counties on Haiku 4.5 and on Sonnet 5 into this run's log, with each text and whether it passed. Touches no live read. Use with layers = reads"
+        required: false
+        default: ""
 
 permissions:
   contents: write
@@ -63,6 +71,11 @@ jobs:
     env:
       LAYERS: ${{ github.event.inputs.layers }}
     steps:
+      # The job's own start time, for atlas_reads.py: its batch wait ends early
+      # enough that the Commit step still runs inside the 300-minute ceiling.
+      - name: Note the start time
+        run: echo "ATLAS_JOB_T0=$(date +%s)" >> "$GITHUB_ENV"
+
       - uses: actions/checkout@v4
 
       - uses: actions/setup-python@v5
@@ -142,9 +155,13 @@ jobs:
       # layer that fails is marked "not yet measured" and the other nine still
       # build and commit.
 
+      # FSA has never answered a runner; RMA_PROXY_BASE gives it a second route
+      # through the Worker's /fsa/ path (workers/atlas-rma-proxy.js).
       - name: Fetch CRP (FSA)
         if: steps.which.outputs.crp == '1'
         continue-on-error: true
+        env:
+          RMA_PROXY_BASE: ${{ vars.RMA_PROXY_BASE }}
         run: python scripts/fetch_atlas_crp.py
 
       - name: Fetch land value (NASS census)
@@ -199,14 +216,27 @@ jobs:
 
       # Skipped, not failed, when the key is not set: the page shows numbers
       # without reads rather than nothing.
+      # A BATCH, AND AN ANNOTATION WHEN THE ACCOUNT SAYS NO.
+      # atlas_reads.py submits the counties as one Message Batch (half price)
+      # and waits for it, up to 180 minutes and never past 255 minutes into the
+      # job. Out of credit, a usage limit, a bad key or an unknown model stops it
+      # before any read is overwritten and exits 1. This step is
+      # continue-on-error, so the run stays green and the build's commit goes
+      # through; the stop shows as an error annotation on the run's summary.
       - name: County reads
         if: steps.which.outputs.reads == '1'
         continue-on-error: true
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          ATLAS_READS_MODEL: ${{ github.event.inputs.reads_model || vars.ATLAS_READS_MODEL }}
+          READS_TRIAL: ${{ github.event.inputs.reads_trial }}
         run: |
           if [ -z "$ANTHROPIC_API_KEY" ]; then echo "ANTHROPIC_API_KEY not set; reads skipped"; exit 0; fi
-          python scripts/atlas_reads.py
+          if [ -n "$READS_TRIAL" ]; then
+            python scripts/atlas_reads.py --trial "$READS_TRIAL"
+          else
+            python scripts/atlas_reads.py
+          fi
 
       - name: Commit
         run: |
