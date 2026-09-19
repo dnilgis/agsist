@@ -20,9 +20,11 @@ FORMAT (county-readme.txt, verified 2026-09-13)
   August = cols 61-67. Missing = -99.90 or -99.99.
 
 THE STATE CODE IS THE TRAP
-  NCEI numbers the 48 states alphabetically (01 Alabama ... 48 Wyoming, 50
-  Alaska). Iowa is 13 in this file and 19 in FIPS. The table below is copied
-  from county-readme.txt and the selftest pins Iowa, Kansas and Texas.
+  NCEI numbers the 48 contiguous states alphabetically (01 Alabama ... 48
+  Wyoming) and adds 49 Hawaii and 50 Alaska. Nothing above 50 is assigned and
+  there is no Puerto Rico in this file. Iowa is 13 in this file and 19 in
+  FIPS. The table below is copied from county-readme.txt and the selftest pins
+  Iowa, Kansas and Texas.
 
 USAGE
   python scripts/fetch_atlas_heat.py --selftest
@@ -133,13 +135,19 @@ def selftest():
     row3 = "1417328" + "2024" + "".join(f"{v:7.2f}" for v in [10, 20, 30, 40, 50, 60, 71.50, 70.10, 50, 40, 30, 20])
     # Texas (NCEI 41) Deaf Smith 117
     row4 = "4111728" + "2024" + "".join(f"{v:7.2f}" for v in [10, 20, 30, 40, 50, 60, 66.00, 65.00, 50, 40, 30, 20])
-    # Alabama (NCEI 01) — not an Atlas state, must be dropped
-    row5 = "0100128" + "2024" + "".join(f"{v:7.2f}" for v in [10] * 12)
+    # A state code the file does not use: parse() must drop a row it cannot
+    # name. NCEI's county scheme runs 01-48 plus 49 Hawaii and 50 Alaska and
+    # assigns nothing above that, so 51 is not a state here and never will be
+    # one in the Atlas. It cannot be Puerto Rico -- nClimDiv has no Puerto
+    # Rico code at all -- and it cannot be a real NCEI code either, because
+    # all 50 states are Atlas states now.
+    row5 = "5100128" + "2024" + "".join(f"{v:7.2f}" for v in [10] * 12)
     # a tmax row (27) for Iowa must be dropped
     row6 = "1316927" + "2024" + "".join(f"{v:7.2f}" for v in [90] * 12)
     assert len(row1) == 95, len(row1)
     out, st = parse([row1, row2, row3, row4, row5, row6])
     assert set(out) == {"19169", "20173", "48117"}, out.keys()
+    assert not any(f.startswith("51") for f in out), out.keys()
     assert out["19169"]["jul"] == {2024: 64.3} and out["19169"]["aug"] == {2024: 61.0}, out["19169"]
     assert 2025 not in out["19169"]["jul"]
     assert out["20173"]["jul"][2024] == 71.5 and out["48117"]["aug"][2024] == 65.0

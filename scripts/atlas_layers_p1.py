@@ -357,45 +357,44 @@ def national_p1(counties, this_fy=None):
 # ---------------------------------------------------------------- map record
 
 def summarize_p1(rec):
+    """The map-level projection of the phase-1 layers. FIRST PAINT ONLY.
+    Everything the county panel shows comes from the county's own detail file
+    (data/atlas/counties/<fips>.json), so a field that is only ever read inside
+    the panel does not belong here. Nationally the index is fetched by every
+    visitor and the detail file by the one who clicks; carrying the panel's
+    fields in both put about 1.7 MB on every page load for nobody."""
     out = {}
     s = rec.get("sob") or {}
     out["sob"] = {"status": s.get("status")}
     if s.get("status") == "ok":
-        rec20 = next((p.get("ratio") for k, p in (s.get("periods") or {}).items() if k.startswith("2020")), None)
-        out["sob"].update({"loss_ratio_all": s.get("loss_ratio_all"), "ratio_2020s": rec20, "ratio_last10": (s.get("last10") or {}).get("ratio"),
-                           "years_over_one": s.get("years_over_one"), "years_with_ratio": s.get("years_with_ratio"),
-                           "first_year": s.get("first_year"), "last_year": s.get("last_year"), "partial_year": s.get("partial_year"),
-                           "liability_latest": (s.get("latest") or {}).get("liability"), "corn_ratio": (s.get("corn") or {}).get("ratio")})
+        out["sob"].update({"loss_ratio_all": s.get("loss_ratio_all"), "ratio_last10": (s.get("last10") or {}).get("ratio"),
+                           "years_over_one": s.get("years_over_one")})
     v = rec.get("value") or {}
     out["value"] = {"status": v.get("status")}
     if v.get("status") == "ok":
-        out["value"].update({"latest_year": v.get("latest_year"), "latest": v.get("latest"),
-                             "change_cagr_pct": (v.get("change") or {}).get("cagr_pct"), "change_from_year": (v.get("change") or {}).get("from_year"),
-                             "rent_to_value_pct": (v.get("rent_to_value") or {}).get("pct"), "rent_to_value_status": (v.get("rent_to_value") or {}).get("status")})
+        out["value"].update({"latest": v.get("latest"), "change_cagr_pct": (v.get("change") or {}).get("cagr_pct"),
+                             "rent_to_value_pct": (v.get("rent_to_value") or {}).get("pct")})
     c = rec.get("crp") or {}
     out["crp"] = {"status": c.get("status")}
     if c.get("status") == "ok":
-        out["crp"].update({"latest": c.get("latest"), "share_pct": (c.get("share_of_cropland") or {}).get("pct"), "share_status": (c.get("share_of_cropland") or {}).get("status"),
-                           "change_from_peak_pct": c.get("change_from_peak_pct"), "peak_year": (c.get("peak") or {}).get("year"),
-                           "expiring_next3": c.get("expiring_next3")})
+        out["crp"].update({"share_pct": (c.get("share_of_cropland") or {}).get("pct"),
+                           "change_from_peak_pct": c.get("change_from_peak_pct"),
+                           "expiring_next3": {"acres": (c.get("expiring_next3") or {}).get("acres")} if c.get("expiring_next3") else None})
     d = rec.get("drought") or {}
     out["drought"] = {"status": d.get("status")}
     if d.get("status") == "ok":
-        out["drought"].update({"first_year": d.get("first_year"), "last_full_year": d.get("last_full_year"), "weeks": d.get("weeks"),
-                               "worst_year": d.get("worst_year"), "last5": d.get("last5"), "years_half_or_more": len(d.get("years_half_or_more") or []),
-                               "latest_d2": (d["series"].get(d["last_full_year"]) or {}).get("d2")})
+        out["drought"].update({"weeks": {"share_d2_pct": (d.get("weeks") or {}).get("share_d2_pct")},
+                               "last5": {"d2": (d.get("last5") or {}).get("d2")},
+                               "years_half_or_more": len(d.get("years_half_or_more") or [])})
     e = rec.get("energy") or {}
     out["energy"] = {"status": e.get("status")}
     if e.get("status") == "ok":
-        out["energy"].update({"solar": e["operable"]["solar"], "wind": e["operable"]["wind"], "storage": e["operable"]["storage"],
-                              "proposed": round(e["proposed"]["solar"] + e["proposed"]["wind"] + e["proposed"]["storage"], 1),
-                              "proposed_solar": e["proposed"]["solar"], "proposed_wind": e["proposed"]["wind"],
-                              "first_solar": e["operable"]["first_solar"], "first_wind": e["operable"]["first_wind"], "year": e.get("year")})
+        out["energy"].update({"solar": e["operable"]["solar"], "wind": e["operable"]["wind"],
+                              "proposed": round(e["proposed"]["solar"] + e["proposed"]["wind"] + e["proposed"]["storage"], 1)})
     w = rec.get("wells") or {}
     out["wells"] = {"status": w.get("status")}
     if w.get("status") == "ok":
-        out["wells"].update({k: w.get(k) for k in ("register", "wells", "irrigation_active", "depth_median_ft", "static_median_ft", "depth_n", "static_n",
-                                                     "points", "active", "priority_year_median", "priority_n", "priority_before_1970", "groundwater", "surface") if k in w})
+        out["wells"].update({k: w.get(k) for k in ("depth_median_ft", "static_median_ft", "priority_year_median") if k in w})
     return out
 
 
@@ -513,9 +512,20 @@ def selftest():
     assert N["energy"]["solar_mw"] == 10 and N["energy"]["wind_mw"] == 100 and N["energy"]["counties_with_proposed"] == 1
     assert N["wells"]["NE"]["irrigation_active"] == 60 and "KS" not in N["wells"]
     sm = summarize_p1(cs["31001"])
-    assert sm["sob"]["loss_ratio_all"] == 1.1 and sm["sob"]["ratio_2020s"] is None and sm["value"]["rent_to_value_pct"] is None
-    assert sm["crp"]["share_pct"] is None and sm["drought"]["latest_d2"] == 26 and sm["energy"]["proposed"] == 0.0 and sm["wells"]["depth_median_ft"] == 210.0
+    assert sm["sob"]["loss_ratio_all"] == 1.1 and sm["value"]["rent_to_value_pct"] is None
+    assert sm["crp"]["share_pct"] is None and sm["energy"]["proposed"] == 0.0 and sm["wells"]["depth_median_ft"] == 210.0
     assert "series" not in sm["drought"] and "per_year" not in sm["sob"]
+    # FIRST PAINT ONLY. Each of these is read by the county panel and by nothing
+    # on the map, so it lives in the county's detail file and must not come back
+    # here: at 50 states the index is fetched by every visitor and the detail
+    # file by the one who clicks.
+    assert set(sm["sob"]) == {"status", "loss_ratio_all", "ratio_last10", "years_over_one"}, sm["sob"]
+    assert set(sm["value"]) == {"status", "latest", "change_cagr_pct", "rent_to_value_pct"}, sm["value"]
+    assert set(sm["crp"]) == {"status", "share_pct", "change_from_peak_pct", "expiring_next3"}, sm["crp"]
+    assert set(sm["drought"]) == {"status", "weeks", "last5", "years_half_or_more"}, sm["drought"]
+    assert set(sm["drought"]["weeks"]) == {"share_d2_pct"} and set(sm["drought"]["last5"]) == {"d2"}
+    assert set(sm["energy"]) == {"status", "solar", "wind", "proposed"}, sm["energy"]
+    assert set(sm["wells"]) <= {"status", "depth_median_ft", "static_median_ft", "priority_year_median"}, sm["wells"]
     parts = seed_p1(N, lambda x: f"${x:,.0f}", None)
     assert any("loss ratio of" in p for p in parts) and any("Nebraska: 100 registered wells" in p for p in parts), parts
     print("selftest ok")

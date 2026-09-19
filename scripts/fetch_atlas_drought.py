@@ -17,8 +17,9 @@ WHAT IS COUNTED
   least half the county's area was in D2 (severe) or worse, and the weeks in
   which at least half was in D3 (extreme) or worse. "Half" is the Atlas's
   threshold (HALF = 50.0), printed with the number wherever it appears. A
-  county is one call; the Atlas is 1,450 calls, so a first run is long and
-  later runs refetch only the current and previous year.
+  county is one call; at 50 states the Atlas is 3,141 calls, so a first run is
+  long and later runs refetch only the current and previous year. The calls
+  are made WORKERS at a time; see WORKERS below for why that number.
 
   The API answers CSV or JSON depending on the client; both are parsed.
 
@@ -28,6 +29,7 @@ USAGE
   python scripts/fetch_atlas_drought.py --all
 """
 
+import concurrent.futures
 import csv
 import io
 import json
@@ -44,6 +46,19 @@ OUT = "data/atlas/raw/drought.json"
 FIRST_YEAR = 2000
 HALF = 50.0
 REFETCH_YEARS = 2
+SLEEP = 0.2
+# HOW MANY CALLS ARE IN FLIGHT AT ONCE.
+#
+# This is one endpoint at one university, not a CDN, and it is answering a
+# 26-year query per county. Four is chosen to be small: it is enough to turn
+# 3,141 serial calls into a run that finishes well inside the workflow's 300
+# minutes, and few enough that if NDMC is having a slow day we are four
+# connections of its load and not forty. Each worker keeps the same SLEEP the
+# single loop had, so a worker is exactly as polite as the old code was and
+# WORKERS is the whole of the increase. Raising it is not free: the 429 path
+# below backs off one worker, not the pool, so a rate limit hit by four
+# workers is hit four times.
+WORKERS = 4
 FIELDS = ("MapDate", "FIPS", "County", "State", "None", "D0", "D1", "D2", "D3", "D4", "ValidStart", "ValidEnd", "StatisticFormatID")
 
 
@@ -165,19 +180,36 @@ def main():
         fips_list = fips_list[:int(sys.argv[sys.argv.index("--limit") + 1])]
     failed = []
     t0 = time.time()
-    for i, fips in enumerate(fips_list, 1):
+
+    def work(fips):
+        """One county in one worker. Returns (fips, years or None, error or None);
+        the exception is carried back rather than raised so the pool keeps
+        going and the caller decides, exactly as the serial loop did."""
         try:
-            recs = fetch_county(fips, y0, this_year)
+            years, err = count_weeks(fetch_county(fips, y0, this_year)), None
         except RuntimeError as e:
-            log(f"  {e}")
-            failed.append(fips)
-            continue
-        years = count_weeks(recs)
-        rec = counties.setdefault(fips, {})
-        rec.update(years)
-        if i % 100 == 0 or i == len(fips_list):
-            log(f"  {i}/{len(fips_list)} counties, {time.time() - t0:.0f}s")
-        time.sleep(0.2)
+            years, err = None, e
+        time.sleep(SLEEP)
+        return fips, years, err
+
+    done = 0
+    results = {}
+    log(f"  {len(fips_list)} counties, {WORKERS} at a time, {y0}-{this_year}")
+    with concurrent.futures.ThreadPoolExecutor(max_workers=WORKERS) as pool:
+        # map() hands results back in the order the counties went in, so the
+        # failed list and the file are the same whatever order the API answers.
+        for fips, years, err in pool.map(work, fips_list):
+            done += 1
+            if err is not None:
+                log(f"  {err}")
+                failed.append(fips)
+            else:
+                results[fips] = years
+            if done % 100 == 0 or done == len(fips_list):
+                log(f"  {done}/{len(fips_list)} counties, {time.time() - t0:.0f}s")
+    for fips in fips_list:
+        if fips in results:
+            counties.setdefault(fips, {}).update(results[fips])
     if not counties:
         sys.exit("no counties fetched")
     if len(failed) > len(fips_list) // 10:

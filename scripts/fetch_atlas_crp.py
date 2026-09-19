@@ -63,6 +63,11 @@ from atlas_common import get, county_index, names_to_fips, log
 HISTORY_URL = "https://www.fsa.usda.gov/documents/crphistorycounty86-25xlsx"
 EXPIRE_URL = "https://www.fsa.usda.gov/sites/default/files/documents/EXPIRECOUNTY.xlsx"
 OUT = "data/atlas/raw/crp.json"
+# The history gate, as a share of the map rather than a count. The old gate was
+# a flat 500, written when the Atlas was 1,450 counties -- 500/1450 = 0.34. The
+# map is 3,141 counties now, so a flat 500 would have passed a run that found
+# CRP in one county in six. Held at the share the old gate protected.
+HISTORY_MIN_SHARE = 0.34
 YEAR_RE = re.compile(r"^(?:FY\s*)?((?:19|20)\d\d)(?:\s*\+)?$", re.I)
 STATE_ABBR = {"ALABAMA": "AL", "ARKANSAS": "AR", "COLORADO": "CO", "ILLINOIS": "IL", "INDIANA": "IN", "IOWA": "IA",
               "KANSAS": "KS", "KENTUCKY": "KY", "MICHIGAN": "MI", "MINNESOTA": "MN", "MISSISSIPPI": "MS",
@@ -320,8 +325,17 @@ def main():
     un_atlas = sorted(set(u for u in hist_un + exp_un if u[0] in atlas_states))
     if un_atlas:
         log(f"  unmatched Atlas-state names ({len(un_atlas)}): {un_atlas[:40]}")
-    if len(hist_c) < 500:
-        sys.exit(f"only {len(hist_c)} Atlas counties in the history workbook; the name join or the layout is wrong; nothing written")
+    # WHAT THIS GATE CATCHES: the name join losing a whole class of county in
+    # silence. FSA writes the unit word -- "Acadia Parish", "Bethel Census
+    # Area", "Juneau City and Borough", "Alexandria city" -- and a normaliser
+    # that does not know one of those spellings drops every county that uses
+    # it: 64 Louisiana parishes, 29 Alaska boroughs and census areas, 40
+    # independent cities. Each of those alone is too small to notice in a
+    # county count; together with a layout change they are not.
+    n_map = len(set(idx.values()))
+    floor = int(n_map * HISTORY_MIN_SHARE)
+    if len(hist_c) < floor:
+        sys.exit(f"only {len(hist_c)} of {n_map} Atlas counties in the history workbook, floor {floor} ({HISTORY_MIN_SHARE:.0%} of the map); the name join or the layout is wrong; nothing written")
     counties = {}
     for fips in set(hist_c) | set(exp_c):
         counties[fips] = {"acres": {str(y): round(v, 1) for y, v in sorted(hist_c.get(fips, {}).items())},

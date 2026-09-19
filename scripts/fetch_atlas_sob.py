@@ -146,7 +146,9 @@ def selftest():
              row(2012, "31", "001", "0081", "02", 200, 5_000_000, 400_000, 100_000),
              row(2012, "31", "001", "0088", "13", 50, 1_000_000, 80_000, 500_000),    # PRF: kept apart
              row(2019, "31", "001", "0041", "02", 310, 12_000_000, 1_000_000, 200_000),
-             row(2019, "01", "001", "0041", "02", 1, 1, 1, 1),                        # not an Atlas state
+             # Puerto Rico: state 72 is in RMA's summary of business and is not
+             # one of the 50 states, so it can never pass the state filter
+             row(2019, "72", "001", "0041", "02", 1, 1, 1, 1),
              row(2019, "31", "999", "0041", "02", 1, 1, 1, 1)]                        # not a county
     agg, n, kept, sh = aggregate(lines)
     assert sh == 1 and n == 6 and kept == 4, (n, kept, sh)

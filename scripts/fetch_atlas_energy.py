@@ -276,9 +276,16 @@ def main():
     placed, n_name, n_point, unplaced = place(plants, county_index(geo), CountyLocator(geo))
     log(f"  plants: {len(plants)} in file; {n_name} placed by county name, {n_point} by point; {len(unplaced)} Atlas-state plants unplaced")
     counties = aggregate(placed, operable, proposed)
-    # a layout that misreads gives zero placed plants (measured on a fixture); a
-    # real file gives hundreds of counties, so the gate only needs to tell those apart
-    if len(counties) < 100:
+    # A layout that misreads gives zero placed plants (measured on a fixture).
+    # 100 told that apart from a real run and nothing else: the last 15-state
+    # run placed solar in 543 counties and wind in 360, and `counties` counts
+    # the union, so it was already more than five times the gate. A 50-state
+    # run covers those same 15 states plus 35 more, so it cannot honestly come
+    # back with fewer counties than the 15 states alone produced. The gate is
+    # 500 -- just under the observed 543, so one county moving between EIA
+    # releases does not fail a good run, and high enough that a broken
+    # EIA-860 join that still places a few hundred plants stops the write.
+    if len(counties) < 500:
         sys.exit(f"only {len(counties)} Atlas counties carry a generator; the join or the layout is wrong; nothing written")
     os.makedirs(os.path.dirname(OUT), exist_ok=True)
     with open(OUT, "w", encoding="utf-8") as f:

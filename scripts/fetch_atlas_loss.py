@@ -285,7 +285,9 @@ def selftest():
         row(2019, "31", "001", "0041", "Excess Moisture/Precip/Rain", 1200000, 90000, 200000),
         row(2019, "31", "001", "0041", "Failure of Irrigation Supply", 1200000, 90000, 40000),
         row(2019, "31", "001", "0041", "Mycotoxin (Aflatoxin)", 1200000, 90000, 10000),
-        row(2019, "01", "001", "0041", "Drought", 1, 1, 1, cname="AUTAUGA", stabbr="AL"),   # not an Atlas state
+        # Puerto Rico: RMA writes state 72 in the cause-of-loss files and the
+        # Atlas is the 50 states, so 72 can never pass the state filter
+        row(2019, "72", "001", "0041", "Drought", 1, 1, 1, cname="ADJUNTAS", stabbr="PR"),
         row(2019, "31", "999", "0041", "Drought", 1, 1, 1, cname="ALL OTHER"),               # not a county
         row(2019, "31", "001", "0088", "ARPI/SCO/STAX/MP/HIP WI Crops Only", 500000, 50000, 300000, plan="13"),   # PRF rainfall index, RMA's real cause text
         row(2012, "31", "001", "0041", "Area Plan Crops Only", 900000, 90000, 250000, plan="04"),               # GRIP corn: peril not assigned

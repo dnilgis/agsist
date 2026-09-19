@@ -17,7 +17,7 @@
   <link rel="manifest" href="/manifest.json">
 
   <title>Farmland Atlas: Night Heat, Water and the Loss Record by County | AGSIST</title>
-  <meta name="description" content="Every Corn Belt and Plains county on July night heat and its 50-year trend, irrigation and where the water comes from, the crop insurance loss record and loss ratio, census land value and rent-to-value, CRP acres and expiries, weeks in drought since 2000, solar and wind on the ground and proposed, and the state well and water-right registers. Ten layers, never combined. Free, sources shown.">
+  <meta name="description" content="Every county in the fifty states on July night heat and its 50-year trend, irrigation and where the water comes from, the crop insurance loss record and loss ratio, census land value and rent-to-value, CRP acres and expiries, weeks in drought since 2000, solar and wind on the ground and proposed, and the state well and water-right registers. 34 layers in 10 groups, never combined. Each layer covers the counties its own source publishes, and the page names the reason where it does not. Free, sources shown.">
   <link rel="canonical" href="https://agsist.com/farmland-atlas">
 
   <meta property="og:type" content="article">
@@ -34,7 +34,7 @@
   <meta name="twitter:site" content="@agsist">
   <meta name="twitter:creator" content="@agsist">
   <meta name="twitter:title" content="Farmland Atlas: Night Heat, Water and the Loss Record by County">
-  <meta name="twitter:description" content="July night heat and its trend, water dependence, and 36 years of crop insurance losses, for every Corn Belt and Plains county. Three layers, never combined.">
+  <meta name="twitter:description" content="July night heat and its trend, water dependence, and 36 years of crop insurance losses, county by county across the fifty states. 34 layers, never combined.">
   <meta name="twitter:image" content="https://agsist.com/img/og/agsist.jpg">
 
   <script type="application/ld+json">
@@ -45,13 +45,13 @@
         "@type": "Dataset",
         "@id": "https://agsist.com/farmland-atlas#dataset",
         "name": "AGSIST Farmland Atlas: county night heat, water, loss record, land value, CRP, drought, energy and wells",
-        "description": "County-level records for Corn Belt and Plains states: July and August mean daily minimum temperature by decade since 1900 and the 50-year trend (NOAA NCEI nClimDiv county); irrigated share of harvested cropland (USDA Census of Agriculture 2022) and groundwater share of irrigation withdrawals (USGS 2015); crop insurance indemnities by cause of loss and the county loss ratio since 1989 (USDA RMA Summary of Business); census land and buildings value per acre 2012-2022 and rent-to-value; CRP acres by year and contract expirations (USDA FSA); weeks per year in severe drought since 2000 (U.S. Drought Monitor); solar, wind and battery MW operating and proposed (EIA Form 860); registered wells (Nebraska) and water rights (Kansas); county cash rent, the irrigated rent premium and county corn yield trend (USDA NASS). Layers are published separately and never combined into a score.",
+        "description": "County-level records for the United States, county by county: July and August mean daily minimum temperature by decade since 1900 and the 50-year trend (NOAA NCEI nClimDiv county); irrigated share of harvested cropland (USDA Census of Agriculture 2022) and groundwater share of irrigation withdrawals (USGS 2015); crop insurance indemnities by cause of loss and the county loss ratio since 1989 (USDA RMA Summary of Business); census land and buildings value per acre 2012-2022 and rent-to-value; CRP acres by year and contract expirations (USDA FSA); weeks per year in severe drought since 2000 (U.S. Drought Monitor); solar, wind and battery MW operating and proposed (EIA Form 860); registered wells (Nebraska) and water rights (Kansas); county cash rent, the irrigated rent premium and county corn yield trend (USDA NASS). Layers are published separately and never combined into a score. Each layer covers the counties its own source publishes; the coverage of a layer is stated county by county, and several layers are still short of every county.",
         "url": "https://agsist.com/farmland-atlas",
         "license": "https://www.usa.gov/government-works",
         "isAccessibleForFree": true,
         "creator": {"@type": "Organization", "name": "AGSIST", "url": "https://agsist.com"},
         "temporalCoverage": "1895/..",
-        "spatialCoverage": {"@type": "Place", "name": "United States: Corn Belt and Plains states"},
+        "spatialCoverage": {"@type": "Place", "name": "United States"},
         "measurementTechnique": "Monthly mean of daily minimum temperature aggregated by decade; ordinary least squares trend 1976 onward with 95% confidence interval; ratios of published census and survey acres; summation of RMA cause-of-loss indemnities by peril group",
         "variableMeasured": [
           {"@type": "PropertyValue", "name": "July mean daily minimum temperature", "unitText": "degrees Fahrenheit"},
@@ -261,7 +261,7 @@ details.fa-arith code{font-family:var(--font-mono);font-size:.74rem;color:var(--
 <main id="main" tabindex="-1" class="fa-page">
 
   <div class="fa-hero">
-    <div class="fa-eyebrow">Farmland Atlas · Corn Belt and Plains · by county</div>
+    <div class="fa-eyebrow">Farmland Atlas · the fifty states · by county</div>
     <h1>Night heat, water, the loss record and what the land is worth</h1>
     <p>The things nobody shows a county on one page: how warm its July nights are and which way they are going; how much of its cropland only works with a pump and where that water comes from; what has destroyed crops there since 1989 and whether the insurance book has paid out more than it took in; what the census says the land is worth and what rent buys of that; how much sits in CRP and when those contracts end; how many weeks of each year since 2000 it spent in drought; how much solar and wind is on the ground and proposed; and, where a state publishes the register, its wells and water rights. Each is its own layer. I never add them together, because a combined score hides which problem the ground has.</p>
     <div class="fa-meta" id="fa-meta">
@@ -289,7 +289,7 @@ details.fa-arith code{font-family:var(--font-mono);font-size:.74rem;color:var(--
     <p class="fa-note" id="fa-layers-note" hidden style="margin:-.3rem 0 .8rem">Dimmed layers are not yet measured. They fill in after the first data run.</p>
 
     <div class="fa-map-wrap">
-      <svg class="fa-map" id="fa-map" viewBox="0 0 960 640" role="img" aria-label="County map of the Corn Belt and Plains coloured by the selected layer">
+      <svg class="fa-map" id="fa-map" viewBox="0 0 960 640" role="img" aria-label="County map of the United States coloured by the selected layer">
         <g id="fa-counties"></g>
         <g id="fa-states"></g>
       </svg>
@@ -377,17 +377,17 @@ details.fa-arith code{font-family:var(--font-mono);font-size:.74rem;color:var(--
 
   <section class="fa-sec" id="fa-method">
     <h2>How each layer is measured</h2>
-    <p><strong style="color:var(--text)">Night heat.</strong> NOAA NCEI's nClimDiv county dataset gives, for every county, the monthly mean of each day's minimum temperature since 1895. I keep July, the silking month across most of these states, and August, the grain-fill month where the cited harm from warm nights is measured. The recent level is the mean of the last ten Julys (at least eight must be present). The trend is an ordinary least squares line through the Julys since 1976, reported in degrees per decade with a 95% confidence interval; a county gets a direction only when that interval, as printed, excludes zero, and no trend at all with fewer than forty of the years present. 1976 sits at the cold end of the record, which flatters a warming slope, so the slope through the whole record from 1895 is printed beside it in the arithmetic. Decade means run from the 1900s; a decade needs five Julys to print and ten to count as complete. A hot July is one whose average low was at or above 70 F: extension research puts the harm line for corn at nightly lows above 70 F, and a monthly average at that line means most nights were over it. North of Kansas that is rare, and the count says so; the decade means and the slider carry the Corn Belt story.</p>
+    <p><strong style="color:var(--text)">Night heat.</strong> NOAA NCEI's nClimDiv county dataset gives, for every county, the monthly mean of each day's minimum temperature since 1895. I keep July, the silking month for corn across the Corn Belt, and August, the grain-fill month where the cited harm from warm nights is measured. The recent level is the mean of the last ten Julys (at least eight must be present). The trend is an ordinary least squares line through the Julys since 1976, reported in degrees per decade with a 95% confidence interval; a county gets a direction only when that interval, as printed, excludes zero, and no trend at all with fewer than forty of the years present. 1976 sits at the cold end of the record, which flatters a warming slope, so the slope through the whole record from 1895 is printed beside it in the arithmetic. Decade means run from the 1900s; a decade needs five Julys to print and ten to count as complete. A hot July is one whose average low was at or above 70 F: extension research puts the harm line for corn at nightly lows above 70 F, and a monthly average at that line means most nights were over it. North of Kansas that is rare, and the count says so; the decade means and the slider carry the Corn Belt story.</p>
     <p><strong style="color:var(--text)">Water.</strong> Two official sources, neither produced by AGSIST. The irrigated share is irrigated harvested cropland over all harvested cropland from the 2022 Census of Agriculture; where NASS suppressed the irrigated figure it stays suppressed here, and where NASS published no irrigated row at all, which is what happens when no farm in the county reported any, the county shows none reported. The groundwater share is crop-irrigation withdrawals from groundwater over all fresh crop-irrigation withdrawals in the USGS county water-use estimates for 2015, the latest county release; USGS builds those from irrigated acreage and application rates, not meters, so they are estimates. Water withdrawn per irrigated acre comes from the same file and includes conveyance losses, so surface-water districts read high. The irrigated rent premium is separate: it is NASS's own survey of what tenants pay, and it needs at least six paired years before a trend is printed.</p>
     <p><strong style="color:var(--text)">The loss record.</strong> USDA RMA's cause-of-loss files, one per crop year from 1989. Every crop indemnity dollar in the county is grouped by the peril that caused it and summed by period: 1989 to 1999, the 2000s, the 2010s, and 2020 on. Pasture, rangeland and forage rainfall-index policies are left out, because they pay on a rainfall index rather than a destroyed crop and in ranch counties they would swamp everything else; the dollars left out are printed. Area and index plans on crops (GRP, GRIP, ARPI, SCO, STAX) pay on a county outcome and RMA assigns them no peril; they are carried as peril not assigned rather than guessed into drought. Price decline stays in the denominator, so a revenue-protection county's 2014 and 2015 show up as price, not weather. Prevented planting sits inside excess moisture. Dollars are nominal and participation grew sharply after 1994 and 2000, so the shares by period are the comparable numbers, not the dollars. The heat-and-drought share by period is the number to watch. Irrigation failure is its own group: it is failure of the irrigation supply or equipment within the policy period, and aquifer decline is not an insured cause, so it is a narrow signal, not the Ogallala. The current crop year is partial until RMA closes it and is marked. The cause-of-loss files carry premium only for policies that had a loss, so no loss ratio is computed from them; that comes from the next layer.</p>
     <p><strong style="color:var(--text)">Loss ratio.</strong> RMA's Summary of Business county files (sobcov, one per crop year from 1989) carry every policy in the county whether it paid or not: liability, total premium, subsidy and indemnity by crop, plan and coverage level. Indemnity over that premium is the loss ratio as RMA defines it, and 1.00 means the county's book paid out exactly what it took in. It is summed over the whole record, over the last ten crop years, and by the same periods as the loss record; it prints only above $1,000,000 of premium, and a period prints only with at least five of its years present. Rainfall and Vegetation Index plans are left out here too, so the two RMA layers describe the same book, and the ratio of the two files' indemnity totals is printed as a check. The premium is the whole premium, farmer-paid plus federal subsidy, because that is what the ratio means to the program; a farmer's own premium is a fraction of it.</p>
-    <p><strong style="color:var(--text)">Land value.</strong> The Census of Agriculture asks every operator the market value of their land and buildings; NASS publishes the average per acre by county for 2012, 2017 and 2022. It is the only county land value on one method across all fifteen states, and it is what it is: operators' estimates, buildings included, five years apart. Beside it, the county's non-irrigated cropland cash rent for the census year divided by that value, printed as a gross percentage. No modelled value, ever, unless it ships with a backtest beside it; the one vendor that prints an accuracy for its model prints ±25%.</p>
+    <p><strong style="color:var(--text)">Land value.</strong> The Census of Agriculture asks every operator the market value of their land and buildings; NASS publishes the average per acre by county for 2012, 2017 and 2022. It is the only county land value on one method across every state, and it is what it is: operators' estimates, buildings included, five years apart. Beside it, the county's non-irrigated cropland cash rent for the census year divided by that value, printed as a gross percentage. No modelled value, ever, unless it ships with a backtest beside it; the one vendor that prints an accuracy for its model prints ±25%.</p>
     <p><strong style="color:var(--text)">CRP.</strong> FSA's county statistics: acres enrolled by year since 1986, and acres whose contracts expire by fiscal year. The share is CRP acres over CRP acres plus 2022 harvested cropland, the county's arable base. Acres expiring in the current and next two fiscal years are summed and printed against the enrolled total. FSA publishes county names; they are joined to FIPS by name and a name that does not match is listed, never guessed.</p>
     <p><strong style="color:var(--text)">Drought.</strong> The U.S. Drought Monitor's county statistics, one record per weekly map since January 2000. A week counts when at least half the county's area was in D2 (severe) or worse; D3 (extreme) or worse is counted the same way. Weeks are summed by year, over the record, and over the last five full years; a year needs forty weekly maps to count as full. The Monitor is a map drawn by people from many indicators, not a rain gauge, and it is the map that USDA's disaster designations and livestock forage payments key off, so it is the drought that the program world recognises.</p>
     <p><strong style="color:var(--text)">Solar and wind.</strong> EIA's Form 860 lists every generator of 1 MW or more at a grid-connected plant, with the plant's county and coordinates; the Operable tab gives what runs and the Proposed tab what developers have reported with a planned year. Solar, wind and battery nameplate MW are summed by county, with the year the first solar and first wind generator came online. A county with no plant in the file reads zero, not missing, because the file is a census. Proposed is not the interconnection queue; much of it is never built, and the queue itself is a later layer.</p>
     <p><strong style="color:var(--text)">Wells and water rights.</strong> Two states publish an open register that this page has read and verified: Nebraska's registered wells (every well, with use, status, depth, static level at completion and completion date) and Kansas's WIMAS points of diversion (every point, with use, active flag, source of supply and the right's priority date). Nebraska counties show wells, irrigation wells not decommissioned, median depth, median static level and completions by decade; Kansas counties show points, active irrigation rights, the median priority year and the source split. Every other state reads "no open register read yet", which is the truth: some have one behind a login or a fee, some have none. Water-level change over the High Plains aquifer (USGS) is a layer to add once its file can be fetched from a runner.</p>
     <p><strong style="color:var(--text)">Rent and yield.</strong> County cash rent and county corn yields are the same NASS series that drive <a href="/cash-rent" style="color:var(--gold)">Cash Rent by County</a>. The yield trend here is fitted on every published year since 2008 and labelled with its window; that page's own trend uses the last fifteen years, which as of 2026 starts on the 2012 drought, and the two are different windows, not two answers. The rent change is nominal dollars over about ten years, using the closest published year at or before ten years back, because NASS published no county estimates for 2015 or 2018 and some counties skip years. The worst year is an observation, not a fit: the lowest published yield since 2008 as a share of the county's median over the same years.</p>
-    <p><strong style="color:var(--text)">What is never done.</strong> No number is interpolated from a neighbour. No layer is scaled, weighted or added to another. No owner name appears on this page. No land value is modelled. A county with nothing published shows a dash and the reason. The states covered are Iowa, Illinois, Indiana, Ohio, Michigan, Wisconsin, Minnesota, Missouri, Nebraska, Kansas, South Dakota, North Dakota, Oklahoma, Colorado and Texas.</p>
+    <p><strong style="color:var(--text)">What is never done.</strong> No number is interpolated from a neighbour. No layer is scaled, weighted or added to another. No owner name appears on this page. No land value is modelled. A county with nothing published shows a dash and the reason. The Atlas holds every county in the fifty states, and each layer covers only the counties its own source publishes: some cover all of them, some are still being fetched a state at a time, and the wells layer is two states by design. The county panel says which is which.</p>
   </section>
 
   <section class="fa-sec fa-faq" id="fa-faq">
@@ -455,6 +455,9 @@ function pm(v,ci,k){ return (v>0?'+':'')+Number(v).toFixed(k)+' ± '+Number(ci).
 function r2(x){ return x===null||x===undefined?'—':Number(x).toFixed(2); }
 function pct(x,k){ return x===null||x===undefined?'—':fmt(x*100,k===undefined?0:k)+'%'; }
 function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
+// 134 of the 3,144 counties in atlas.json carry a unit word that is not "County". Test with 'u' in c, not c.u:
+// Carson City's unit word is an empty string because its name is already whole, and truthiness would print "Carson City County".
+function cname(c){ var u=('u' in c)?c.u:'County'; return c.name+(u?' '+u:'')+', '+c.state; }
 function get(o){ for(var i=1;i<arguments.length;i++){ if(o==null) return undefined; o=o[arguments[i]]; } return o; }
 function ok(layer){ return layer&&layer.status==='ok'; }
 function why(layer){ return layer&&layer.status?layer.status.replace(/^(withheld|not yet measured):\s*/,''):'no data'; }
@@ -519,9 +522,9 @@ var LAYERS=[
  {key:'heat_trend',grp:'Night heat',label:'Trend since 1976',div:true,unit:'F/decade',k:2,needs:'heat',
   v:function(c){return get(c,'heat','months','jul','trend','per_decade');},title:'July mean low trend since 1976 (F per decade); every slope is coloured, a direction is called only where the 95% interval excludes zero'},
  {key:'heat_hot',grp:'Night heat',label:'Hot Julys since 1900',ramp:'heat',unit:'Julys',k:0,needs:'heat',
-  v:function(c){var d=get(c,'heat','months','jul','decades'); if(!d) return null; var n=0; for(var k in d) n+=d[k].hot||0; return n;},title:'Julys since 1900 whose average low was at or above 70 F'},
- {key:'heat_decade',grp:'Night heat',label:'By decade',ramp:'heat',unit:'F',k:1,needs:'heat',slider:true,
-  v:function(c){var d=get(c,'heat','months','jul','decades',DECADES[DEC]); return d&&d.n>=5?d.mean:null;},title:'July mean daily low by decade (F)'},
+  sidecar:true,v:function(c,f){var d=jdec(f); if(!d) return null; var n=0; for(var k in d) n+=d[k].hot||0; return n;},title:'Julys since 1900 whose average low was at or above 70 F'},
+ {key:'heat_decade',grp:'Night heat',label:'By decade',ramp:'heat',unit:'F',k:1,needs:'heat',slider:true,sidecar:true,
+  v:function(c,f){var d=jdec(f); d=d&&d[DECADES[DEC]]; return d&&d.n>=5?d.mean:null;},title:'July mean daily low by decade (F)'},
  {key:'water_irr',grp:'Water',label:'Cropland irrigated',ramp:'water',unit:'%',pct:true,k:0,needs:'water',
   v:function(c){return get(c,'water','irrigated_share_2022','share');},title:'Share of harvested cropland irrigated, 2022 census'},
  {key:'water_gw',grp:'Water',label:'From groundwater',ramp:'water',unit:'%',pct:true,k:0,needs:'water',
@@ -585,17 +588,40 @@ var LAYERS=[
 ];
 var DEC=12;
 
+// ---------- July decade series: a sidecar file, not the index. Only the two layers below need it,
+// so it is fetched the first time one of them is picked and never on first paint.
+var HEATD=null, HEATD_P=null, HEATD_DONE=false, HEATD_WHY='';
+function loadHeatDecades(){
+  if(!HEATD_P) HEATD_P=fetch(DATA+(get(ATLAS,'sidecars','heat_decades')||'heat-decades.json'),{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).catch(function(){return null;}).then(function(r){
+    // a sidecar from another build would colour counties from numbers the rest of the page is not using
+    if(!r||!r.counties) HEATD_WHY='the decade file did not load';
+    else if(r.generated!==ATLAS.generated) HEATD_WHY='the decade file is from another build; reload for the current one';
+    else HEATD=r.counties;
+    HEATD_DONE=true; return HEATD;
+  });
+  return HEATD_P;
+}
+function jdec(f){ return HEATD?HEATD[f]:null; }
+
 function quantiles(vals){ var s=vals.slice().sort(function(a,b){return a-b;}); function q(p){ var i=(s.length-1)*p, lo=Math.floor(i), hi=Math.ceil(i); return s[lo]+(s[hi]-s[lo])*(i-lo); } return {lo:q(0.05),hi:q(0.95),min:s[0],max:s[s.length-1],n:s.length}; }
 
+function pending(L){
+  // the decade file is still in flight; leave the colours alone rather than call every county missing
+  $('fa-legend').innerHTML='<span>'+esc(L.title)+' — loading the decade file.</span>';
+  $('fa-map-title').textContent=L.title+(L.slider?' · '+DECADES[DEC]:'');
+  $('fa-slider').hidden=!L.slider;
+  if(L.slider) $('fa-slider-note').textContent='';
+}
 function paint(){
   var L=LAYERS.filter(function(l){return l.key===CUR;})[0];
+  if(L.sidecar&&!HEATD_DONE){ pending(L); loadHeatDecades().then(function(){ if(CUR===L.key) paint(); }); return; }
   var vals=[], byF={};
-  for(var f in ATLAS.counties){ var v=L.v(ATLAS.counties[f]); if(v!=null&&!isNaN(v)){ vals.push(v); byF[f]=v; } }
+  for(var f in ATLAS.counties){ var v=L.v(ATLAS.counties[f],f); if(v!=null&&!isNaN(v)){ vals.push(v); byF[f]=v; } }
   var leg=$('fa-legend'), html='';
   if(!vals.length){
     for(var f2 in PATHS) PATHS[f2].setAttribute('fill',MISSING);
-    leg.innerHTML='<span>'+esc(L.title)+' — no county has a value yet.</span>';
-    $('fa-map-title').textContent=L.title; return;
+    leg.innerHTML='<span>'+esc(L.title)+' — '+esc(L.sidecar&&HEATD_WHY?HEATD_WHY:'no county has a value yet')+'.</span>';
+    $('fa-map-title').textContent=L.title; $('fa-slider').hidden=!L.slider; return;
   }
   var q=quantiles(vals), scale;
   if(L.div){
@@ -620,10 +646,10 @@ function paint(){
 function fmtv(L,v){ if(v==null) return '—'; if(L.pct) return pct(v,L.k); if(L.money) return money(v); if(L.key==='we_prio') return String(Math.round(v)); if(L.fixed) return Number(v).toFixed(L.k)+(L.unit==='%'?'%':L.unit?' '+L.unit:''); return (L.div&&v>0?'+':'')+fmt(v,L.k)+(L.unit==='%'||L.unit==='%/yr'?L.unit:L.unit?' '+L.unit:''); }
 function paintSliderNote(){
   var line=Number($('fa-line').value), d=DECADES[DEC], n=0, at=0;
-  for(var f in ATLAS.counties){ var dd=get(ATLAS.counties[f],'heat','months','jul','decades',d); if(dd&&dd.n>=5){ n++; if(dd.mean>=line) at++; } }
+  for(var f in ATLAS.counties){ var dd=jdec(f); dd=dd&&dd[d]; if(dd&&dd.n>=5){ n++; if(dd.mean>=line) at++; } }
   $('fa-slider-note').textContent=n?(at+' of '+n+' counties at or above '+line+' F in the '+d):'';
   // overlay: counties at/above the line get a light outline that keeps its width at any zoom
-  for(var f2 in PATHS){ var d2=get(ATLAS.counties[f2],'heat','months','jul','decades',d); var hit=d2&&d2.n>=5&&d2.mean>=line; PATHS[f2].classList.toggle('line',!!hit); }
+  for(var f2 in PATHS){ var d2=jdec(f2); d2=d2&&d2[d]; var hit=d2&&d2.n>=5&&d2.mean>=line; PATHS[f2].classList.toggle('line',!!hit); }
 }
 
 function buildLayerButtons(){
@@ -654,8 +680,8 @@ function wireMap(){
   svg.addEventListener('mousemove',function(e){
     var t=e.target; if(!t.classList||!t.classList.contains('c')){ tip.style.display='none'; return; }
     var f=t.getAttribute('data-fips'), c=ATLAS.counties[f]; if(!c) return;
-    var L=LAYERS.filter(function(l){return l.key===CUR;})[0], v=L.v(c);
-    tip.innerHTML='<b>'+esc(c.name)+' County, '+esc(c.state)+'</b><br>'+esc(L.label)+': <span class="v">'+(v==null?'— '+esc(missingWhy(c,L)):esc(fmtv(L,v)))+'</span>';
+    var L=LAYERS.filter(function(l){return l.key===CUR;})[0], v=L.v(c,f);
+    tip.innerHTML='<b>'+esc(cname(c))+'</b><br>'+esc(L.label)+': <span class="v">'+(v==null?'— '+esc(missingWhy(c,L)):esc(fmtv(L,v)))+'</span>';
     var r=wrap.getBoundingClientRect(), x=e.clientX-r.left+14, y=e.clientY-r.top+14;
     if(x>r.width-270) x=e.clientX-r.left-270; if(y>r.height-80) y=e.clientY-r.top-70;
     tip.style.left=x+'px'; tip.style.top=y+'px'; tip.style.display='block';
@@ -667,21 +693,34 @@ function wireMap(){
 function missingWhy(c,L){ var lay=c[L.needs]; if(!lay) return 'no data'; if(lay.status!=='ok') return why(lay); return 'withheld'; }
 
 // ---------- search
+// The list now carries the unit word, so the typed string is matched against two keys per county:
+// the whole name, and the name with the unit word taken out. Both sides are stripped the same way,
+// so "Acadia", "Acadia Parish" and "Acadia Parish, LA" all land on the same county.
+// Six pairs share a stripped key — Fairfax, Franklin, Richmond and Roanoke VA, Baltimore MD and
+// St. Louis MO each have a county and a city — so the whole name has to be matched first, or a
+// typed "Fairfax City, VA" would land on Fairfax County.
+var UNITS=/\b(city and borough|census area|county|parish|borough|municipality|city)\b/g;
+function nkey(s){ return String(s).toLowerCase().replace(/[^a-z0-9]+/g,' ').trim(); }
+function bkey(s){ return nkey(s).replace(UNITS,' ').replace(/\s+/g,' ').trim(); }
 function buildSearch(){
   var dl=$('fa-list'), names=[];
-  for(var f in ATLAS.counties){ var c=ATLAS.counties[f]; names.push({t:c.name+', '+c.state,f:f}); }
+  for(var f in ATLAS.counties){ var c=ATLAS.counties[f], t=cname(c); names.push({t:t,f:f,k:nkey(t),b:bkey(t),nm:bkey(c.name)}); }
   names.sort(function(a,b){return a.t<b.t?-1:1;});
   var frag=document.createDocumentFragment();
   names.forEach(function(n){ var o=document.createElement('option'); o.value=n.t; frag.appendChild(o); });
   dl.appendChild(frag);
   var q=$('fa-q');
-  function go(){ var v=q.value.trim().toLowerCase().replace(/\s+county\b/,'').replace(/,?\s+/g,', ').replace(/, ,/,','); if(!v) return;
-    var hit=names.filter(function(n){return n.t.toLowerCase()===v;})[0]||names.filter(function(n){return n.t.toLowerCase().indexOf(v)===0;})[0]||names.filter(function(n){return n.t.toLowerCase().split(',')[0]===v.split(',')[0];})[0];
-    if(hit){ $('fa-q-status').textContent=''; select(hit.f); } else { $('fa-q-status').textContent='No county called "'+q.value.trim()+'" in the Atlas. Try "Name, ST".'; } }
+  function first(fn){ return names.filter(fn)[0]; }
+  function go(){ var raw=q.value.trim(); if(!raw) return;
+    var v=nkey(raw), b=bkey(raw), nm=bkey(raw.split(',')[0]);
+    var hit=first(function(n){return n.k===v;})||(b?first(function(n){return n.b===b;}):null)                              // exact
+          ||first(function(n){return n.k.indexOf(v)===0;})||(b?first(function(n){return n.b.indexOf(b)===0;}):null)        // prefix
+          ||(nm?first(function(n){return n.nm===nm;}):null);                                                              // name only
+    if(hit){ $('fa-q-status').textContent=''; select(hit.f); } else { $('fa-q-status').textContent='No county called "'+raw+'" in the Atlas. Try "Name, ST".'; } }
   q.addEventListener('change',go); q.addEventListener('keydown',function(e){ if(e.key==='Enter'){ e.preventDefault(); go(); } });
   // AGSIST_STATE carries a county when the visitor has set a location on another page
   var S=window.AGSIST_STATE;
-  if(S&&S.fips&&ATLAS.counties[String(S.fips)]){ var b=$('fa-mine'); b.hidden=false; b.addEventListener('click',function(){ select(String(S.fips)); }); }
+  if(S&&S.fips&&ATLAS.counties[String(S.fips)]){ var b2=$('fa-mine'); b2.hidden=false; b2.addEventListener('click',function(){ select(String(S.fips)); }); }
 }
 
 // ---------- county panel
@@ -692,16 +731,17 @@ function select(fips){
   if(SEL&&PATHS[SEL]) PATHS[SEL].classList.remove('sel');
   SEL=fips; if(PATHS[fips]){ PATHS[fips].classList.add('sel'); PATHS[fips].parentNode.appendChild(PATHS[fips]); }
   var panel=$('fa-panel'); panel.hidden=false;
-  $('fa-p-name').textContent=c.name+' County, '+c.state;
+  $('fa-p-name').textContent=cname(c);
   $('fa-p-sub').textContent='FIPS '+fips+' · loading detail';
   try{ history.replaceState(null,'','#'+fips); }catch(e){}
   Promise.all([fetch(DATA+'counties/'+fips+'.json',{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).catch(function(){return null;}), loadReads()]).then(function(res){
-    var d=res[0], whyNot=d?null:'county detail not published yet; showing the summary';
+    var d=res[0], whyNot=d?null:'The detail file for this county is not published yet. It appears after the next build.';
     // the detail must belong to the same build as the summary, or it is not shown
-    if(d&&d.generated!==ATLAS.generated){ d=null; whyNot='county detail is from another build; showing the summary. Reload for the current build'; }
-    renderPanel(fips,d||c,!!d,whyNot);
+    if(d&&d.generated!==ATLAS.generated){ d=null; whyNot='The detail file for this county is from another build. Reload the page for the current one.'; }
+    // the index carries only what the map needs now, so there is no summary to fill the cards from
+    if(d) renderPanel(fips,d); else renderNoDetail(fips,whyNot);
     panel.scrollIntoView({behavior:'smooth',block:'start'});
-    $('fa-p-status').textContent=c.name+' County, '+c.state+' loaded';
+    $('fa-p-status').textContent=cname(c)+' loaded';
     try{ $('fa-p-name').focus({preventScroll:true}); }catch(e){}
   });
   gaEvent('atlas_county',{fips:fips});
@@ -752,12 +792,17 @@ function sparkLine(series,opts){
   return s+'</svg>';
 }
 
-function renderPanel(fips,c,full,whyNot){
-  // c is the county's detail record when it loaded and matched this build; otherwise the map summary
-  var d=full?c:null, cards=[], sub=[];
-  sub.push('FIPS '+fips);
-  if(!full) sub.push(whyNot||'showing the summary');
-  $('fa-p-sub').textContent=sub.join(' · ');
+function renderNoDetail(fips,whyNot){
+  // one line instead of a grid of dashes, which would read as missing data rather than a missing file.
+  // The heading is already set and stays put, so focus and scrolling are untouched.
+  $('fa-p-sub').textContent='FIPS '+fips;
+  var rb=$('fa-p-read'); rb.hidden=true; rb.innerHTML='';
+  $('fa-p-cards').innerHTML='<p class="fa-note" style="grid-column:1/-1;margin:0">'+esc(whyNot)+'</p>';
+}
+function renderPanel(fips,c){
+  // c is the county's detail file; the index no longer carries any of the fields below
+  var d=c, cards=[];
+  $('fa-p-sub').textContent='FIPS '+fips;
   // The Read
   var rd=READS&&READS.counties&&READS.counties[fips];
   var readBox=$('fa-p-read');
@@ -988,12 +1033,16 @@ function renderThesis(){
 // ---------- where the warming is, by state
 function renderByState(){
   var bs=get(ATLAS,'national','heat_by_state'); if(!bs){ $('fa-bystate').hidden=true; return; }
-  var NAMES={IA:'Iowa',IL:'Illinois',IN:'Indiana',OH:'Ohio',MI:'Michigan',WI:'Wisconsin',MN:'Minnesota',MO:'Missouri',NE:'Nebraska',KS:'Kansas',SD:'South Dakota',ND:'North Dakota',OK:'Oklahoma',CO:'Colorado',TX:'Texas'};
+  var NAMES={AL:'Alabama',AK:'Alaska',AZ:'Arizona',AR:'Arkansas',CA:'California',CO:'Colorado',CT:'Connecticut',DE:'Delaware',FL:'Florida',GA:'Georgia',
+             HI:'Hawaii',ID:'Idaho',IL:'Illinois',IN:'Indiana',IA:'Iowa',KS:'Kansas',KY:'Kentucky',LA:'Louisiana',ME:'Maine',MD:'Maryland',
+             MA:'Massachusetts',MI:'Michigan',MN:'Minnesota',MS:'Mississippi',MO:'Missouri',MT:'Montana',NE:'Nebraska',NV:'Nevada',NH:'New Hampshire',NJ:'New Jersey',
+             NM:'New Mexico',NY:'New York',NC:'North Carolina',ND:'North Dakota',OH:'Ohio',OK:'Oklahoma',OR:'Oregon',PA:'Pennsylvania',RI:'Rhode Island',SC:'South Carolina',
+             SD:'South Dakota',TN:'Tennessee',TX:'Texas',UT:'Utah',VT:'Vermont',VA:'Virginia',WA:'Washington',WV:'West Virginia',WI:'Wisconsin',WY:'Wyoming'};
   var h='', keys=Object.keys(bs);
   keys.forEach(function(st){ var v=bs[st]; h+='<tr><td>'+esc(NAMES[st]||st)+'</td><td class="n">'+v.counties+'</td><td class="n">'+v.warming+'</td><td class="n">'+pct(v.share_warming,0)+'</td><td class="n">'+(v.median_trend_per_decade>0?'+':'')+fmt(v.median_trend_per_decade,2)+'</td></tr>'; });
   $('fa-bystate-table').querySelector('tbody').innerHTML=h;
   var zero=keys.filter(function(k){return bs[k].warming===0;}), top=keys[0];
-  $('fa-bystate-note').textContent=(zero.length?'No county in '+zero.map(function(k){return NAMES[k]||k;}).join(' or ')+' clears the interval. ':'')+'The map layer "Trend since 1976" shows the same thing county by county; the middle of the Corn Belt is where the trend is flattest.';
+  $('fa-bystate-note').textContent=(zero.length?'No county in '+zero.map(function(k){return NAMES[k]||k;}).join(' or ')+' clears the interval. ':'')+'The map layer "Trend since 1976" shows the same thing county by county.';
   $('fa-bystate').hidden=false;
 }
 
@@ -1007,7 +1056,7 @@ function renderPremium(){
   var lead=rows.filter(function(r){return r.w.n_pairs>=minLead;});
   var narrow=lead.filter(function(r){return r.w.direction==='falling';}).sort(function(a,b){return a.w.slope_per_year-b.w.slope_per_year;}).slice(0,12);
   var wide=lead.filter(function(r){return r.w.direction==='rising';}).sort(function(a,b){return b.w.slope_per_year-a.w.slope_per_year;}).slice(0,12);
-  function tr(r){ return '<tr><td><button type="button" class="fa-link" data-fips="'+r.f+'">'+esc(r.c.name)+', '+esc(r.c.state)+'</button></td><td class="n">'+pm(r.w.slope_per_year,r.w.slope_ci95,2)+'</td><td class="n">'+money(r.w.first.premium)+' <span style="color:var(--text-muted)">'+r.w.first.year+'</span></td><td class="n">'+money(r.w.latest.premium)+' <span style="color:var(--text-muted)">'+r.w.latest.year+'</span></td><td class="n">'+r.w.n_pairs+'</td></tr>'; }
+  function tr(r){ return '<tr><td><button type="button" class="fa-link" data-fips="'+r.f+'">'+esc(cname(r.c))+'</button></td><td class="n">'+pm(r.w.slope_per_year,r.w.slope_ci95,2)+'</td><td class="n">'+money(r.w.first.premium)+' <span style="color:var(--text-muted)">'+r.w.first.year+'</span></td><td class="n">'+money(r.w.latest.premium)+' <span style="color:var(--text-muted)">'+r.w.latest.year+'</span></td><td class="n">'+r.w.n_pairs+'</td></tr>'; }
   $('fa-prem-narrow').querySelector('tbody').innerHTML=narrow.length?narrow.map(tr).join(''):'<tr><td colspan="5" style="color:var(--text-muted)">— no county falls with the interval clear of zero</td></tr>';
   $('fa-prem-wide').querySelector('tbody').innerHTML=wide.length?wide.map(tr).join(''):'<tr><td colspan="5" style="color:var(--text-muted)">— no county rises with the interval clear of zero</td></tr>';
   var nW=rows.filter(function(r){return r.w.direction==='rising';}).length, nN=rows.filter(function(r){return r.w.direction==='falling';}).length;
@@ -1034,8 +1083,8 @@ function scatter(id,pts,xl,yl,xf){
 function renderScatters(){
   var a=[],b=[];
   for(var f in ATLAS.counties){ var c=ATLAS.counties[f], r=get(c,'rent','nonirr','value'); if(r==null) continue;
-    var h=get(c,'heat','months','jul','recent','mean'); if(h!=null) a.push({f:f,n:c.name+', '+c.state,x:h,y:r});
-    var w=get(c,'water','irrigated_share_2022','share'); if(w!=null) b.push({f:f,n:c.name+', '+c.state,x:w*100,y:r}); }
+    var h=get(c,'heat','months','jul','recent','mean'); if(h!=null) a.push({f:f,n:cname(c),x:h,y:r});
+    var w=get(c,'water','irrigated_share_2022','share'); if(w!=null) b.push({f:f,n:cname(c),x:w*100,y:r}); }
   var any=false;
   any=scatter('fa-sc-heat',a,'July mean low, last ten years (F)','Non-irrigated rent, $/acre',function(v){return fmt(v,0)+' F';})||any;
   any=scatter('fa-sc-water',b,'Share of harvested cropland irrigated, 2022','Non-irrigated rent, $/acre',function(v){return fmt(v,0)+'%';})||any;

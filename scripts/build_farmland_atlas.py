@@ -45,6 +45,7 @@ import glob
 import json
 import math
 import os
+import re
 import statistics
 import sys
 from datetime import datetime, timezone
@@ -55,11 +56,74 @@ from atlas_layers_p1 import (sob_layer, value_layer, crp_layer, drought_layer, e
 
 # Corn Belt + Plains. Extend by adding a state here and to ATLAS_STATE_FIPS;
 # the geometry file must carry the state too (scripts/atlas_geometry.py).
-ATLAS_STATES = ["IA", "IL", "IN", "OH", "MI", "WI", "MN", "MO",
-                "NE", "KS", "SD", "ND", "OK", "CO", "TX"]
-ATLAS_STATE_FIPS = {"19": "IA", "17": "IL", "18": "IN", "39": "OH", "26": "MI",
-                    "55": "WI", "27": "MN", "29": "MO", "31": "NE", "20": "KS",
-                    "46": "SD", "38": "ND", "40": "OK", "08": "CO", "48": "TX"}
+ATLAS_STATE_FIPS = {
+    "01": "AL", "02": "AK", "04": "AZ", "05": "AR", "06": "CA", "08": "CO",
+    "09": "CT", "10": "DE", "12": "FL", "13": "GA", "15": "HI", "16": "ID",
+    "17": "IL", "18": "IN", "19": "IA", "20": "KS", "21": "KY", "22": "LA",
+    "23": "ME", "24": "MD", "25": "MA", "26": "MI", "27": "MN", "28": "MS",
+    "29": "MO", "30": "MT", "31": "NE", "32": "NV", "33": "NH", "34": "NJ",
+    "35": "NM", "36": "NY", "37": "NC", "38": "ND", "39": "OH", "40": "OK",
+    "41": "OR", "42": "PA", "44": "RI", "45": "SC", "46": "SD", "47": "TN",
+    "48": "TX", "49": "UT", "50": "VT", "51": "VA", "53": "WA", "54": "WV",
+    "55": "WI", "56": "WY"}
+ATLAS_STATES = sorted(ATLAS_STATE_FIPS.values())
+
+# COUNTY CODES MOVE AND THE FEDERAL SOURCES DO NOT MOVE TOGETHER. The map is
+# built from the 2010 Census boundary file (scripts/atlas_geometry.py). NASS is
+# still on the old Connecticut county codes -- data/cash-rent/CT.json carries
+# 09003 through 09015, not the 2022 planning regions -- while RMA has already
+# moved South Dakota's Shannon County to Oglala Lakota. So neither vintage is
+# "the" vintage, and picking one would silently drop whichever source disagreed.
+# Instead every code a source might emit is folded onto the code the map carries,
+# here, at ingest. A code that is not folded and is not on the map is NOT guessed:
+# it is named in the unmatched report at the end of the build.
+#
+# Shannon SD and Wade Hampton AK are renames, so the fold is exact. Bedford city
+# VA was absorbed by Bedford County in 2013, so it folds to the county it is now
+# part of. Alaska's Valdez-Cordova split in 2019 into Chugach and Copper River;
+# the 2010 map has one polygon for the pair, so both new codes fold onto it and
+# the page draws them as one place, which is what the map can honestly show.
+# Connecticut's nine 2022 planning regions are not a rename of the eight
+# counties -- they cross the old lines -- so they are deliberately NOT folded.
+# If a source starts publishing them they will appear in the unmatched report,
+# which is the signal to go and get a newer boundary file.
+# Names a federal file uses for a row that is not a county. Normalised through
+# atlas_common.norm_name before the test, so spacing and case do not matter.
+def _plain(name):
+    return re.sub(r"[^a-z0-9]+", "", (name or "").lower())
+
+
+PLACEHOLDER_NAMES = {"unknown", "other", "allother", "notspecified", "statetotal", "othercounties", "allothercounties"}
+
+FIPS_ALIAS = {
+    "46113": "46102",   # Shannon SD -> Oglala Lakota, 2015-05-01
+    "02270": "02158",   # Wade Hampton AK -> Kusilvak, 2015-07-01
+    "51515": "51019",   # Bedford city VA -> Bedford County VA, 2013-07-01
+    "02063": "02261",   # Chugach AK      -> the 2010 Valdez-Cordova polygon, split 2019-01-02
+    "02066": "02261",   # Copper River AK -> the same polygon
+}
+
+
+def fold(fips):
+    """The code the map carries, for a code a federal file published."""
+    return FIPS_ALIAS.get(fips, fips)
+
+
+def fold_keys(d):
+    """Re-key a {fips: rec} layer onto the map's codes. A fold that collides --
+    two source codes onto one polygon -- keeps the first by sorted code order and
+    reports the second, because merging two counties' numbers would invent a
+    figure neither source published."""
+    if not d:
+        return d, []
+    out, merged = {}, []
+    for f in sorted(d):
+        t = fold(f)
+        if t in out and t != f:
+            merged.append(f)
+            continue
+        out[t] = d[f]
+    return out, merged
 
 RENT_DIR = "data/cash-rent"
 RAW_DIR = "data/atlas/raw"
@@ -758,10 +822,17 @@ def thesis_test(counties):
 
 # ---------------------------------------------------------------- assemble
 
-def build(rent_dir=RENT_DIR, raw_dir=RAW_DIR, geometry_names=None):
+def build(rent_dir=RENT_DIR, raw_dir=RAW_DIR, geometry_names=None, geometry_units=None):
     """geometry_names: {fips: name} from data/atlas/counties.geo.json, so a county that
-    is on the map but in no survey still gets a record (all layers withheld)."""
+    is on the map but in no survey still gets a record (all layers withheld).
+    geometry_units: {fips: unit word} for the 135 units of the 3,141 that are not
+    called "County" -- 64 Louisiana parishes, 40 independent cities, Alaska's
+    boroughs and census areas, Carson City. The page prints name + unit, so a
+    missing unit word is how "Acadia County, LA" gets published."""
     rent, rent_vintage = load_rent(rent_dir)
+    rent, rent_merged = fold_keys(rent)
+    if rent_merged:
+        log(f"  rent: {len(rent_merged)} code(s) fold onto a polygon already taken, kept the first: {' '.join(rent_merged)}")
     raw = {}
     vint = {}
     for name in ("heat", "water", "loss", "sob", "value", "crp", "drought", "energy", "wells"):
@@ -771,6 +842,10 @@ def build(rent_dir=RENT_DIR, raw_dir=RAW_DIR, geometry_names=None):
                 d = json.load(f)
             raw[name] = d.get("counties") if name != "wells" else {"ne": d.get("ne") or {}, "ks": d.get("ks") or {}}
             raw[name] = raw[name] or {}
+            if name != "wells":
+                raw[name], merged = fold_keys(raw[name])
+                if merged:
+                    log(f"  {name}: {len(merged)} code(s) fold onto a polygon already taken, kept the first: {' '.join(merged)}")
             vint[name] = {k: v for k, v in d.items() if k not in ("counties", "ne", "ks", "unmatched_atlas_names", "unplaced", "failed")}
             log(f"  {name}: {len(raw[name])} counties, {vint[name].get('source', '')}")
         else:
@@ -804,6 +879,7 @@ def build(rent_dir=RENT_DIR, raw_dir=RAW_DIR, geometry_names=None):
 
     counties = {}
     unnamed = []
+    placeholders = []
     for fips in sorted(fips_all):
         st = ATLAS_STATE_FIPS.get(fips[:2])
         if not st:
@@ -828,10 +904,20 @@ def build(rent_dir=RENT_DIR, raw_dir=RAW_DIR, geometry_names=None):
         # without counties.geo.json, San Juan CO (08111) and St. Louis City MO
         # (29510) are named by nothing else and a blind check would drop two
         # real counties to remove twenty-four codes. Measured both ways.
+        # A PLACEHOLDER IS NOT A NAME. RMA's sobcov and colsom files carry a
+        # per-state catch-all row whose county name is literally "Unknown"
+        # (46131 SD, found on the first 50-state build). It passes the name test
+        # above, has no polygon, and would publish as "Unknown County, SD".
+        if name and _plain(name) in PLACEHOLDER_NAMES:
+            placeholders.append(f"{fips} {name}")
+            name = None
         if not name and geometry_names:
             unnamed.append(fips)
             continue
         c = {"name": name, "state": st}
+        u = (geometry_units or {}).get(fips)
+        if u is not None and u != "County":
+            c["u"] = u          # "" is a real value here: Carson City NV
         c["rent"] = rent_layer(r.get("rent") or {}) if r else {"status": "withheld: county not in the NASS cash rents survey frame"}
         c["yield"] = yield_layer(r.get("yield")) if r else {"status": "withheld: county not in the NASS cash rents survey frame"}
         c["water_premium"] = water_premium_layer(r.get("rent") or {}) if r else {"status": "withheld: county not in the NASS cash rents survey frame"}
@@ -862,6 +948,28 @@ def build(rent_dir=RENT_DIR, raw_dir=RAW_DIR, geometry_names=None):
     if not geometry_names:
         log("  WARNING: no county geometry, so the name check did not run; "
             "a source's own county codes can enter the Atlas unchallenged")
+    if geometry_names:
+        off_map = {}
+        for name in ("heat", "water", "loss", "sob", "value", "crp", "drought"):
+            extra = sorted(f for f in (raw[name] or {}) if f[:2] in ATLAS_STATE_FIPS and f not in geometry_names)
+            if extra:
+                off_map[name] = extra
+        for f in sorted(rent):
+            if f[:2] in ATLAS_STATE_FIPS and f not in geometry_names:
+                off_map.setdefault("rent", []).append(f)
+        # A CODE THE MAP DOES NOT CARRY IS NEVER GUESSED INTO A COUNTY. It is
+        # named here so the next build can either fold it (FIPS_ALIAS) or go and
+        # get a newer boundary file. Connecticut's 09110-09190 showing up here is
+        # the specific signal that NASS or RMA has moved to the planning regions.
+        if off_map:
+            for name, codes in sorted(off_map.items()):
+                log(f"  off-map codes in {name}: {len(codes)} — {' '.join(codes[:40])}"
+                    + (" ..." if len(codes) > 40 else ""))
+        else:
+            log("  off-map codes: none; every source code the states cover is on the map")
+
+    if placeholders:
+        log(f"  dropped {len(placeholders)} code(s) whose only name is a placeholder: " + ", ".join(placeholders))
     if unnamed:
         by_state = {}
         for f in unnamed:
@@ -1080,7 +1188,7 @@ def selftest():
                                                                                    "first": {"year": 2008, "premium": 10}, "latest": {"year": 2025, "premium": 40}}}}}
     seed_page(tmp.name, fake)
     t1 = open(tmp.name, encoding="utf-8").read()
-    assert "old" not in t1 and "Adair, IA: $10 in 2008 to $40 in 2025" in t1 and t1.startswith("<p>before</p>") and t1.endswith("<p>after</p>"), t1
+    assert "old" not in t1 and "Adair County, IA: $10 in 2008 to $40 in 2025" in t1 and t1.startswith("<p>before</p>") and t1.endswith("<p>after</p>"), t1
     assert 'data-built="2026-09-13T00:00:00Z"' in t1 and "not yet measured" in t1
     assert _money(104.5) == "$105" and _money(-29) == "\u2212$29" and _money(1234567.4) == "$1,234,567"
     seed_page(tmp.name, fake)
@@ -1104,71 +1212,107 @@ def selftest():
     assert "series_nonirr" not in sm["rent"] and sm["rent"]["nonirr"]["value"] == 1 and sm["rent"]["nonirr_change10"]["pct"] == 5.0
     assert "hist" not in sm["yield"] and sm["yield"]["worst"]["share_of_median"] == .6
     assert sm["water_premium"] == {"status": "withheld: x"}
-    assert "series" not in sm["heat"]["months"]["jul"] and sm["heat"]["months"]["jul"]["decades"]["2010s"] == {"mean": 64.0, "n": 10, "hot": 1}
-    assert sm["heat"]["months"]["aug"] == {"status": "withheld: none"}
+    # THE INDEX IS FIRST PAINT ONLY. These are the fields the panel reads and the
+    # map does not; every one of them is in the county's detail file. If a field
+    # comes back here, every visitor pays for it and only a clicker reads it.
+    assert "series" not in sm["heat"]["months"]["jul"]
+    assert "decades" not in sm["heat"]["months"]["jul"], "the July decades belong in the sidecar"
+    assert "aug" not in sm["heat"]["months"], "the map has no August layer"
+    assert sm["heat"]["months"]["jul"]["recent"] == {"mean": 1} and sm["heat"]["months"]["jul"]["trend"] == {"per_decade": .2}
+    assert "normal_1991_2020" not in sm["heat"]["months"]["jul"]
+    assert "first_year" not in sm["rent"].get("nonirr", {}) and "irr" not in sm["rent"]
+    assert set(sm["yield"]) == {"status", "slope", "worst"}, sm["yield"]
+    assert "hail" not in (sm["loss"]["share_all"] or {}) and "total_indemnity" not in sm["loss"]
     assert "per_year" not in sm["loss"] and sm["loss"]["heat_drought_2020s"] == .7 and sm["loss"]["share_all"]["heat_drought"] == .5
     assert "series" in rec["heat"]["months"]["jul"], "summarize must not mutate the detail record"
     assert sm["sob"] == {"status": None} and sm["energy"] == {"status": None}, "phase 1 layers absent from the record read as status None"
+    # the sidecar carries what the index dropped, keyed the same way
+    assert heat_decades(rec) == {"2010s": {"mean": 64.0, "n": 10, "hot": 1}}, heat_decades(rec)
+    assert heat_decades({"heat": {"status": "withheld: none"}}) is None
+    # the unit word rides through summarize, and only when it is not "County"
+    assert "u" not in sm
+    rec2 = dict(rec); rec2["u"] = "Parish"
+    assert summarize(rec2)["u"] == "Parish"
     rec["drought"] = drought_layer({"2012": {"maps": 52, "d2": 30, "d3": 10}}, ran=True)
-    assert summarize(rec)["drought"]["latest_d2"] == 30
+    sd = summarize(rec)["drought"]
+    assert "latest_d2" not in sd and "worst_year" not in sd, sd
+    assert sd["weeks"] == {"share_d2_pct": drought_layer({"2012": {"maps": 52, "d2": 30, "d3": 10}}, ran=True)["weeks"]["share_d2_pct"]}
+    # the fold, and its refusal to merge two counties' numbers into one
+    assert fold("46113") == "46102" and fold("19169") == "19169"
+    folded, merged = fold_keys({"02063": {"a": 1}, "02066": {"a": 2}, "19169": {"a": 3}})
+    assert set(folded) == {"02261", "19169"} and merged == ["02066"], (folded, merged)
+    assert folded["02261"] == {"a": 1}, "the first code by sorted order wins; nothing is averaged"
     log("selftest ok")
 
 
 DETAIL_DIR = "data/atlas/counties"
+DECADES_OUT = "data/atlas/heat-decades.json"
 
 
 def _st(layer):
     return (layer or {}).get("status")
 
 
+def _label(c):
+    """'Story County, IA'. `u` is absent for an ordinary county and is the empty
+    string for Carson City, whose name is already whole."""
+    u = c["u"] if "u" in c else "County"
+    return f'{c["name"]}{(" " + u) if u else ""}, {c["state"]}'
+
+
 def summarize(rec):
-    """The map-level record: only what the map, the tables and the tooltip need.
-    Everything else is in the county's detail file. Statuses are carried so the
-    page can say why a county is grey."""
+    """The map-level record: FIRST PAINT ONLY — what the choropleth, the
+    tooltip, the search list, the premium tables, the scatters and the "why is
+    this county grey" note need, and nothing else.
+
+    Everything the county panel shows comes from the county's own detail file.
+    Carrying the panel's fields here too is a second copy of the same bytes on
+    every visitor's first load; at 50 states that copy was about 1.7 MB. The
+    July decade series is the other big block and it feeds two of the 34 map
+    layers, so it goes to its own sidecar (see write_outputs) and is fetched
+    only when one of those two layers is chosen.
+
+    Statuses are carried in full, because the page prints them verbatim to say
+    why a county is grey."""
     out = {"name": rec["name"], "state": rec["state"], "sha": rec["sha"]}
+    if "u" in rec:
+        # membership, not truth: Carson City's unit word is the empty string --
+        # its name is already complete -- and `if rec.get("u")` published it as
+        # "Carson City County, NV".
+        out["u"] = rec["u"]
     r = rec.get("rent") or {}
     out["rent"] = {"status": _st(r)}
     if _st(r) == "ok":
-        out["rent"]["nonirr"] = r.get("nonirr")
-        out["rent"]["nonirr_change10"] = ({"pct": r["nonirr_change10"]["pct"], "from_year": r["nonirr_change10"]["from_year"],
-                                           "to_year": r["nonirr_change10"]["to_year"]} if r.get("nonirr_change10") else None)
-        out["rent"]["irr"] = r.get("irr")
+        out["rent"]["nonirr"] = {"value": (r.get("nonirr") or {}).get("value")} if r.get("nonirr") else None
+        out["rent"]["nonirr_change10"] = {"pct": r["nonirr_change10"]["pct"]} if r.get("nonirr_change10") else None
     y = rec.get("yield") or {}
     out["yield"] = {"status": _st(y)}
     if _st(y) == "ok":
-        out["yield"].update({"slope": y.get("slope"), "slope_ci95": y.get("slope_ci95"), "r2": y.get("r2"), "n": y.get("n"),
-                             "window": y.get("window"), "first_year": y.get("first_year"), "last_year": y.get("last_year"),
-                             "worst": y.get("worst"), "median": y.get("median"), "trend_status": y.get("trend_status")})
+        out["yield"].update({"slope": y.get("slope"),
+                             "worst": {"share_of_median": (y.get("worst") or {}).get("share_of_median")} if y.get("worst") else None})
     w = rec.get("water_premium") or {}
     out["water_premium"] = {"status": _st(w)}
     if _st(w) == "ok":
         out["water_premium"].update({"slope_per_year": w["slope_per_year"], "slope_ci95": w["slope_ci95"],
                                      "direction": w["direction"], "n_pairs": w["n_pairs"],
-                                     "first": w["first"], "latest": w["latest"]})
+                                     "first": {"year": (w.get("first") or {}).get("year"), "premium": (w.get("first") or {}).get("premium")},
+                                     "latest": {"year": (w.get("latest") or {}).get("year"), "premium": (w.get("latest") or {}).get("premium")}})
     h = rec.get("heat") or {}
     out["heat"] = {"status": _st(h)}
     if _st(h) == "ok":
-        m = {}
-        for mo in ("jul", "aug"):
-            md = (h.get("months") or {}).get(mo) or {}
-            if md.get("status"):
-                m[mo] = {"status": md["status"]}
-                continue
-            rec_m = {"recent": md.get("recent"), "trend": md.get("trend"), "normal_1991_2020": md.get("normal_1991_2020")}
-            if mo == "jul":
-                rec_m["decades"] = {d: {"mean": x["mean"], "n": x["n"], "hot": x["hot"]} for d, x in (md.get("decades") or {}).items()}
-            else:
-                rec_m["hot"] = sum(x.get("hot", 0) for x in (md.get("decades") or {}).values())
-            m[mo] = rec_m
-        out["heat"]["months"] = m
+        # July only. August is in the detail file: the map has no August layer.
+        md = ((h.get("months") or {}).get("jul")) or {}
+        if md.get("status"):
+            out["heat"]["months"] = {"jul": {"status": md["status"]}}
+        else:
+            out["heat"]["months"] = {"jul": {
+                "recent": {"mean": (md.get("recent") or {}).get("mean")} if md.get("recent") else None,
+                "trend": {"per_decade": (md.get("trend") or {}).get("per_decade")} if md.get("trend") else None}}
     wa = rec.get("water") or {}
     out["water"] = {"status": _st(wa)}
     if _st(wa) == "ok":
-        out["water"].update({"irrigated_share_2022": {"share": (wa.get("irrigated_share_2022") or {}).get("share"),
-                                                      "reported": (wa.get("irrigated_share_2022") or {}).get("reported", True),
-                                                      "status": (wa.get("irrigated_share_2022") or {}).get("status")},
-                             "groundwater_share_2015": {"share": (wa.get("groundwater_share_2015") or {}).get("share"),
-                                                        "status": (wa.get("groundwater_share_2015") or {}).get("status")},
+        out["water"].update({"irrigated_share_2022": {"share": (wa.get("irrigated_share_2022") or {}).get("share")},
+                             "groundwater_share_2015": {"share": (wa.get("groundwater_share_2015") or {}).get("share")},
                              "applied_2015": {"acre_ft_per_acre": (wa.get("applied_2015") or {}).get("acre_ft_per_acre")} if wa.get("applied_2015") else None})
     lo = rec.get("loss") or {}
     out["loss"] = {"status": _st(lo)}
@@ -1178,14 +1322,25 @@ def summarize(rec):
         for k, p in (lo.get("periods") or {}).items():
             if k.startswith("2020"):
                 recent = p.get("heat_drought_share")
-        out["loss"].update({"first_year": lo.get("first_year"), "last_year": lo.get("last_year"), "partial_year": lo.get("partial_year"),
-                            "total_indemnity": lo.get("total_indemnity"),
-                            "share_all": {"heat_drought": sa.get("heat_drought"), "wet": sa.get("wet"), "hail": sa.get("hail"), "unassigned": sa.get("unassigned")} if sa else None,
-                            "top_cause_all": lo.get("top_cause_all"),
+        out["loss"].update({"share_all": {"heat_drought": sa.get("heat_drought"), "wet": sa.get("wet")} if sa else None,
                             "heat_drought_2020s": recent,
                             "irrigation_failure_indemnity": lo.get("irrigation_failure_indemnity")})
     out.update(summarize_p1(rec))
     return out
+
+
+def heat_decades(rec):
+    """The July decade series for one county, or None. Two of the 34 map layers
+    read it (the hot-night count and the decade slider); every other visitor
+    never needs it, and it is 29% of the index. So it is published beside the
+    index and fetched on demand."""
+    h = rec.get("heat") or {}
+    if _st(h) != "ok":
+        return None
+    md = ((h.get("months") or {}).get("jul")) or {}
+    if md.get("status") or not md.get("decades"):
+        return None
+    return {d: {"mean": x["mean"], "n": x["n"], "hot": x["hot"]} for d, x in md["decades"].items()}
 
 
 def write_outputs(out, out_path=OUT, detail_dir=DETAIL_DIR):
@@ -1205,8 +1360,13 @@ def write_outputs(out, out_path=OUT, detail_dir=DETAIL_DIR):
             os.remove(os.path.join(detail_dir, name))
     summary = dict(out)
     summary["counties"] = {fips: summarize(rec) for fips, rec in full.items()}
+    summary["sidecars"] = {"heat_decades": os.path.basename(DECADES_OUT)}
     with open(out_path, "w", encoding="utf-8") as f:
         json.dump(summary, f, separators=(",", ":"), ensure_ascii=False)
+    dec = {fips: d for fips, d in ((f, heat_decades(r)) for f, r in full.items()) if d}
+    with open(DECADES_OUT, "w", encoding="utf-8") as f:
+        json.dump({"generated": out["generated"], "month": "jul", "counties": dec}, f, separators=(",", ":"))
+    log(f"  index {os.path.getsize(out_path):,} bytes; heat-decades sidecar {os.path.getsize(DECADES_OUT):,} bytes for {len(dec)} counties")
     return summary
 
 
@@ -1264,7 +1424,7 @@ def seed_html(out):
         wide = sorted([r for r in rows if r[1]["direction"] == "rising"], key=lambda r: -r[1]["slope_per_year"])[:5]
         def li(f, p):
             cc = out["counties"][f]
-            return f'{cc["name"]}, {cc["state"]}: {_money(p["first"]["premium"])} in {p["first"]["year"]} to {_money(p["latest"]["premium"])} in {p["latest"]["year"]}'
+            return f'{_label(cc)}: {_money(p["first"]["premium"])} in {p["first"]["year"]} to {_money(p["latest"]["premium"])} in {p["latest"]["year"]}'
         parts.append(f'<p>The irrigated rent premium: {pr["counties"]} counties publish both rents with enough paired years; the premium is rising in {pr["rising"]} and falling in {pr["falling"]}, with the 95% interval clear of zero. Falling fastest, fitted through every paired year: ' + "; ".join(li(f, p) for f, p in narrow) + '. Rising fastest: ' + "; ".join(li(f, p) for f, p in wide) + '.</p>')
     parts.extend(seed_p1(n, _money, _pct))
     parts.append('</div>')
@@ -1294,11 +1454,14 @@ def main():
         selftest()
         return
     geo_names = None
+    geo_units = None
     gp = "data/atlas/counties.geo.json"
     if os.path.exists(gp):
         with open(gp, encoding="utf-8") as f:
-            geo_names = {ft["id"]: ft["properties"].get("name") for ft in json.load(f)["features"]}
-    out = build(geometry_names=geo_names)
+            feats = json.load(f)["features"]
+            geo_names = {ft["id"]: ft["properties"].get("name") for ft in feats}
+            geo_units = {ft["id"]: ft["properties"].get("u", "County") for ft in feats}
+    out = build(geometry_names=geo_names, geometry_units=geo_units)
     os.makedirs(os.path.dirname(OUT), exist_ok=True)
     # If no county's numbers changed since the last build, keep the last build's
     # stamp: 1,450 detail files and the seeded page would otherwise be rewritten

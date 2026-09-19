@@ -230,7 +230,9 @@ def selftest():
     rows = {"harvested": [
                 {"state_fips_code": "31", "county_ansi": "001", "county_name": "ADAMS", "Value": "250,000"},
                 {"state_fips_code": "31", "county_ansi": "003", "county_name": "ANTELOPE", "Value": "300,000"},
-                {"state_fips_code": "01", "county_ansi": "001", "county_name": "AUTAUGA", "Value": "1"}],
+                # Puerto Rico 72001 Adjuntas: NASS publishes census rows for it and
+                # the Atlas is the 50 states, so this row must always be dropped
+                {"state_fips_code": "72", "county_ansi": "001", "county_name": "ADJUNTAS", "Value": "1"}],
             "irrigated": [
                 {"state_fips_code": "31", "county_ansi": "001", "county_name": "ADAMS", "Value": "200,000"},
                 {"state_fips_code": "31", "county_ansi": "003", "county_name": "ANTELOPE", "Value": "(D)"}]}
@@ -239,7 +241,8 @@ def selftest():
     assert c["31001"] == {"name": "Adams", "harvested": 250000.0, "irrigated": 200000.0, "irrigated_published": True}, c["31001"]
     assert c["31003"]["irrigated"] is None and c["31003"]["irrigated_published"] is True
     u = usgs_to_counties([{"fips": "31001", "ir_gw_mgd": 80.0, "ir_sw_mgd": 20.0, "ir_tot_mgd": 100.0, "ir_acres_k": 50.0, "basis": "IC"},
-                          {"fips": "01001", "ir_gw_mgd": 1, "ir_sw_mgd": 1, "ir_tot_mgd": 2, "ir_acres_k": 1, "basis": "IC"}])
+                          # the USGS workbook covers Puerto Rico too; 72 is not an Atlas state and cannot become one
+                          {"fips": "72001", "ir_gw_mgd": 1, "ir_sw_mgd": 1, "ir_tot_mgd": 2, "ir_acres_k": 1, "basis": "IC"}])
     assert set(u) == {"31001"} and u["31001"]["basis"] == "IC"
     assert absent_rows_mean_zero(rows) is True
     assert absent_rows_mean_zero({"irrigated": [{"Value": "0"}]}) is False
@@ -254,7 +257,11 @@ def selftest():
         ws.title = "CountyData"
         ws.append(["STATE", "STATEFIPS", "COUNTY", "COUNTYFIPS", "FIPS", "YEAR", "IC-WGWFr", "IC-WSWFr", "IC-WFrTo", "IC-IrTot", "IR-WGWFr", "IR-WSWFr", "IR-WFrTo", "IR-IrTot"])
         ws.append(["NE", "31", "Adams County", "001", "31001", 2015, 80, 20, 100, 50, 81, 21, 102, 51])
-        ws.append(["AL", "01", "Autauga County", "001", "1001", 2015, 1, 1, 2, 1, 1, 1, 2, 1])   # a FIPS that lost its zero
+        # NOT a not-an-Atlas-state row: this one is here because Excel drops the
+        # leading zero off a FIPS in a state numbered below 10, and usgs_rows has
+        # to put it back. That needs a single-digit state code, which Puerto Rico
+        # (72) cannot supply, so Alabama stays.
+        ws.append(["AL", "01", "Autauga County", "001", "1001", 2015, 1, 1, 2, 1, 1, 1, 2, 1])
         ws.append(["KS", "20", "Finney County", "055", "20055", 2015, "--", "--", "--", "--", 300, 10, 310, 200])   # state did not split crop/golf
         buf = io.BytesIO()
         wb.save(buf)

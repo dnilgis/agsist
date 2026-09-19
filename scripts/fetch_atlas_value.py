@@ -66,7 +66,8 @@ def fetch(key, states=ATLAS_STATES, years=YEARS):
 def selftest():
     rows = {"2022": [{"state_fips_code": "19", "county_ansi": "169", "county_name": "STORY", "Value": "12,345"},
                      {"state_fips_code": "19", "county_ansi": "001", "county_name": "ADAIR", "Value": "(D)"},
-                     {"state_fips_code": "01", "county_ansi": "001", "county_name": "AUTAUGA", "Value": "1"},
+                     # Puerto Rico 72001 Adjuntas: a real NASS census row, never an Atlas state
+                     {"state_fips_code": "72", "county_ansi": "001", "county_name": "ADJUNTAS", "Value": "1"},
                      {"state_fips_code": "19", "county_ansi": "", "county_name": "OTHER", "Value": "1"}],
             "2017": [{"state_fips_code": "19", "county_ansi": "169", "county_name": "STORY", "Value": "10,000"}]}
     c = rows_to_counties(rows)

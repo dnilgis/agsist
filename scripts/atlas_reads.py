@@ -86,7 +86,13 @@ def pct100(x):
 
 def inputs_block(fips, rec):
     """The numbers the model may use, one per line. Everything else is withheld."""
-    L = [f"County: {rec['name']} County, {rec['state']}"]
+    # The unit word, not a bare " County". 134 of the 3,144 are a parish, a
+    # borough, a census area, a city-and-borough, a municipality, an independent
+    # city or Carson City, and the model repeats back whatever the block says.
+    # `u` is absent for an ordinary county and can be the empty string when the
+    # name is already whole, so test membership, not truth.
+    _u = rec["u"] if "u" in rec else "County"
+    L = [f"County: {rec['name']}{(' ' + _u) if _u else ''}, {rec['state']}"]
     r = rec.get("rent") or {}
     if r.get("status") == "ok" and r.get("nonirr"):
         L.append(f"Non-irrigated cash rent {r['nonirr']['year']}: {fmt_num(r['nonirr']['value'])} dollars per acre")

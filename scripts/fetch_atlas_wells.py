@@ -29,6 +29,16 @@ WHAT IS KEPT, PER COUNTY
   No other Atlas state publishes a comparable open layer that this script
   has verified; the builder says "no state well register read" for them.
 
+COVERAGE, SAID PLAINLY
+  At 50 states this layer covers 2 of them. 48 states get nothing from this
+  file and that is by design, not a fault: it is two state registers, read
+  from the two agencies that publish them openly, and widening it means
+  finding and verifying another state's service, not changing anything here.
+  The page's own status text is the truth about what a reader is looking at.
+  No gate in this script should be written as if the layer were national --
+  the one below counts Nebraska and Kansas counties against Nebraska and
+  Kansas, and 48 states of silence must never read as a failure.
+
 USAGE
   python scripts/fetch_atlas_wells.py --selftest
   python scripts/fetch_atlas_wells.py
@@ -231,8 +241,12 @@ def main():
     ks_by, ks_dropped = place_rows(ks_rows, idx, CountyLocator(ks_geo), "KS", lat_key="LATITUDE", lon_key="LONGITUDE")
     ks = summarise_ks(ks_by)
     log(f"  {len(ks)} counties, {ks_dropped:,} rows unplaced")
-    # a broken query or join places nothing (measured on a fixture); a real pull
-    # places nearly every county, so the gate only needs to tell those apart
+    # A broken query or join places nothing (measured on a fixture); a real pull
+    # places nearly every county, so the gate only needs to tell those apart.
+    # 30 is unchanged by the move to 50 states and should stay: it is measured
+    # against Nebraska's 93 counties and Kansas's 105, and this script slices
+    # the geometry down to those two states before it places anything, so the
+    # size of the national map does not enter into it.
     if not limit and (len(ne) < 30 or len(ks) < 30):
         sys.exit(f"Nebraska {len(ne)} and Kansas {len(ks)} counties: too few for a full pull; nothing written")
     unclassed_active = sum(v for k, v in ks_active_counts.items() if k.upper() not in ACTIVE_STRINGS and k.upper() not in {"N", "NO", "I", "INACTIVE", "0", "F", "FALSE", "NULL"})
