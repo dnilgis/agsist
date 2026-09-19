@@ -102,6 +102,13 @@ FIPS_ALIAS = {
     "02063": "02261",   # Chugach AK      -> the 2010 Valdez-Cordova polygon, split 2019-01-02
     "02066": "02261",   # Copper River AK -> the same polygon
     "12025": "12086",   # Dade FL -> Miami-Dade, 1997. RMA kept writing 12025 into 2002.
+    # RMA split three big counties into two rating areas through 2012; the second
+    # code is the other half of the same county, with its own policies. Its
+    # 1989-2012 book belongs on the county's polygon, added (panel 9/19: the
+    # 19156 "W Pottawattamie" record sat off the map and 19155 ran short).
+    "19156": "19155",   # W Pottawattamie IA -> Pottawattamie
+    "27112": "27111",   # West Otter Tail MN -> Otter Tail
+    "27120": "27119",   # West Polk MN -> Polk
 }
 
 # THE ALIASES THAT ARE RENAMES: one place, one piece of ground, a new code.
@@ -109,7 +116,7 @@ FIPS_ALIAS = {
 # others in FIPS_ALIAS are a merger (Bedford city into Bedford County) and a
 # split (Chugach and Copper River out of Valdez-Cordova): two places, whose
 # numbers must never be added, and they keep first-code-wins.
-RENAMES = {"46113", "02270", "12025"}
+RENAMES = {"46113", "02270", "12025", "19156", "27112", "27120"}
 
 
 def fold(fips):
@@ -988,6 +995,7 @@ def build(rent_dir=RENT_DIR, raw_dir=RAW_DIR, geometry_names=None, geometry_unit
         fips_all |= set(geometry_names)
 
     value_flags = value_outliers(raw["value"], load_neighbors())
+    tenure_lif = load_land_in_farms()
 
     counties = {}
     unnamed = []
@@ -1009,9 +1017,9 @@ def build(rent_dir=RENT_DIR, raw_dir=RAW_DIR, geometry_names=None, geometry_unit
         # The name chain above is the test, and it is the right one: the map,
         # the rent frame, heat, loss and water all carry county names, so a
         # real county is named by at least one of them. sob, value, crp and
-        # drought carry numbers only. The five counties that have no polygon
-        # but do have a name -- RMA's split units, W Pottawattamie IA, West
-        # Otter Tail MN, West Polk MN -- are real places and stay.
+        # drought carry numbers only. RMA's split units (W Pottawattamie IA,
+        # West Otter Tail MN, West Polk MN) are folded onto their county by
+        # FIPS_ALIAS before this runs.
         # The map is the primary namer, so the check only runs when we have it:
         # without counties.geo.json, San Juan CO (08111) and St. Louis City MO
         # (29510) are named by nothing else and a blind check would drop two
@@ -1059,11 +1067,27 @@ def build(rent_dir=RENT_DIR, raw_dir=RAW_DIR, geometry_names=None, geometry_unit
                     _ish, _src = min(1.0, _ia / _ha), "USGS 2015 irrigated acres over 2022 harvested cropland"
         if _ish is not None and _ish >= 0.10 and (c["value"].get("rent_to_value") or {}).get("pct") is not None:
             c["value"]["rent_to_value"] = {"status": f"withheld: about {int(_ish * 100 + 0.5)}% of cropland is irrigated ({_src}), so dry rent over the all-land census value is not a yield on anything"}
+        # And only where the census value is mostly cropland. Where cropland is
+        # under half of land in farms the value is pasture, woods and buildings,
+        # and the ratio ranks hill counties as the best yields in the US
+        # (Yalobusha MS 5.36% on 41% cropland; panel 9/19, corr 0.61 with the mix).
+        _rtv = c["value"].get("rent_to_value") or {}
+        _crop = (((raw["practices"] or {}).get(fips) or {}).get("y") or {}).get("2022", {}).get("cropland")
+        _lif = tenure_lif.get(fips)
+        if _rtv.get("pct") is not None and _crop and _lif:
+            _cs = min(1.0, _crop / _lif)
+            if _cs < RTV_MIN_CROPLAND:
+                c["value"]["rent_to_value"] = {"status": f"withheld: cropland is {int(_cs * 100 + 0.5)}% of land in farms (2022 census), so the census value is mostly pasture, woods and buildings, not cropland"}
+            else:
+                _rtv["cropland_share_pct"] = int(_cs * 100 + 0.5)
         if fips in value_flags and c["value"].get("status") == "ok":
             fl = value_flags[fips]
-            why_v = (f"withheld: the 2022 census value fell {abs(fl['own_pct']):.0f}% from 2017 while the {fl['n']} counties next door "
-                     f"rose a median {fl['nb_pct']:.0f}%; the census figure counts buildings and small residential farms, "
-                     "so this drop is not read as a change in cropland prices")
+            # half away from zero, as the page rounds: Cook read "fell 13%" beside "fell 12%"
+            _r0 = lambda x: int(abs(x) + 0.5)
+            _nbw = f"rose a median {_r0(fl['nb_pct'])}%" if fl["nb_pct"] >= 0 else f"fell a median {_r0(fl['nb_pct'])}%"
+            why_v = (f"withheld: the 2022 census value {fl['dir']} {_r0(fl['own_pct'])}% from 2017 while the {fl['n']} counties next door "
+                     f"{_nbw}; the census figure counts buildings and small residential farms, "
+                     f"so this {'drop' if fl['dir'] == 'fell' else 'jump'} is not read as a change in cropland prices")
             c["value"]["flag"] = fl
             c["value"]["change"] = {"status": why_v}
             if (c["value"].get("rent_to_value") or {}).get("pct") is not None:
@@ -1128,7 +1152,7 @@ def build(rent_dir=RENT_DIR, raw_dir=RAW_DIR, geometry_names=None, geometry_unit
     layers = {
         "rent": {"status": "ok", "source": "USDA NASS Cash Rents Survey (county), via data/cash-rent", "vintage": rent_vintage,
                  "gates": {"min_premium_pairs": MIN_PREMIUM_PAIRS, "min_leader_pairs": MIN_LEADER_PAIRS}},
-        "yield": {"status": "ok", "source": "USDA NASS county corn yield; trend fit published on /cash-rent (15-year window)",
+        "yield": {"status": "ok", "source": "USDA NASS county corn yield, all practices; trend fitted here on every published year since 2008",
                   "vintage": rent_vintage, "gates": {"min_years": MIN_YIELD_N}},
         "heat": {"status": "ok" if raw["heat"] else "not yet measured",
                  "source": "NOAA NCEI nClimDiv county monthly minimum temperature (climdiv-tmincy)",
@@ -1178,6 +1202,9 @@ def build(rent_dir=RENT_DIR, raw_dir=RAW_DIR, geometry_names=None, geometry_unit
         "national": {**national(counties, loss_latest), **national_p1(counties, this_fy=this_fy)},
         "thesis_test": thesis_test(counties),
         "counts": {"counties": len(counties),
+                   # records with a polygon: the 7 Connecticut planning regions carry RMA's
+                   # 2024-25 book but have no shape in the 2019 boundary file
+                   "mapped": sum(1 for f in counties if f in geometry_names) if geometry_names else len(counties),
                    "rent_ok": sum(1 for c in counties.values() if c["rent"].get("status") == "ok"),
                    "yield_ok": sum(1 for c in counties.values() if c["yield"].get("status") == "ok"),
                    "premium_ok": sum(1 for c in counties.values() if c["water_premium"].get("status") == "ok"),
@@ -1432,6 +1459,7 @@ def _st(layer):
 VALUE_FALL = -10.0        # own 2017->2022 change at or below this, percent
 VALUE_NB_RISE = 15.0      # while the median neighbour rose at least this, percent
 VALUE_NB_MIN = 3
+VALUE_JUMP_GAP = 100.0    # or own change this many points above the neighbour median
 
 
 def load_neighbors(path="data/atlas/neighbors.json"):
@@ -1442,8 +1470,28 @@ def load_neighbors(path="data/atlas/neighbors.json"):
         return {}
 
 
+RTV_MIN_CROPLAND = 0.5     # cropland share of land in farms before rent / value is printed
+
+
+def load_land_in_farms(path="data/tenure/tenure.json"):
+    """{fips: acres in farms, 2022 census} = owned + rented from others, where
+    both parts are published. Missing file: {} and the cropland gate is off."""
+    try:
+        with open(path, encoding="utf-8") as f:
+            T = json.load(f).get("counties") or {}
+    except (OSError, ValueError):
+        return {}
+    out = {}
+    for f, c in T.items():
+        p = (c.get("y") or {}).get("2022")
+        if p and p[0] is not None and p[1] is not None and p[0] + p[1] > 0:
+            out[fold(f)] = p[0] + p[1]
+    return out
+
+
 def value_outliers(raw_value, nbrs):
-    """Counties whose 2022 census land value fell while their neighbours rose.
+    """Counties whose 2022 census land value fell while their neighbours rose,
+    or rose 100 points or more faster than their neighbours.
 
     47 counties on the 2026-09 data, nearly all home to a city (McLean IL
     $9,844 -> $7,074 while its neighbours rose a median 30%). The census value is
@@ -1461,18 +1509,24 @@ def value_outliers(raw_value, nbrs):
         a, b = y.get("2017"), y.get("2022")
         return (b / a - 1) * 100 if a and b else None
 
+    # Panel 9/19 (second round): the rule caught falls only. Shasta CA went
+    # +274% while its neighbours rose a median 61% and ranked 6th in the US on
+    # yearly change; Loving TX +775% ranked 1st. A jump of 100 points or more
+    # over the neighbour median is the same mix effect in the other direction.
     out = {}
     for f in raw_value:
         own = chg(f)
-        if own is None or own > VALUE_FALL:
+        if own is None:
             continue
         nb = sorted(x for x in (chg(g) for g in nbrs.get(f, [])) if x is not None)
         if len(nb) < VALUE_NB_MIN:
             continue
         m = len(nb)
         med = nb[m // 2] if m % 2 else (nb[m // 2 - 1] + nb[m // 2]) / 2
-        if med >= VALUE_NB_RISE:
-            out[f] = {"own_pct": round(own, 1), "nb_pct": round(med, 1), "n": m}
+        if own <= VALUE_FALL and med >= VALUE_NB_RISE:
+            out[f] = {"own_pct": round(own, 1), "nb_pct": round(med, 1), "n": m, "dir": "fell"}
+        elif own - med >= VALUE_JUMP_GAP:
+            out[f] = {"own_pct": round(own, 1), "nb_pct": round(med, 1), "n": m, "dir": "rose"}
     return out
 
 
@@ -1484,6 +1538,10 @@ def _selftest_value_outliers():
     o = value_outliers(raw, nb)
     assert set(o) == {"1"} and o["1"]["own_pct"] == -30.0 and o["1"]["nb_pct"] == 25.0 and o["1"]["n"] == 3, o
     assert value_outliers(raw, {"1": ["2", "3"]}) == {}, "fewer than three neighbours with both years: no call"
+    raw["6"] = {"years": {"2017": 3000, "2022": 11000}}      # +267% beside neighbours at +25%: a jump
+    raw["7"] = {"years": {"2017": 5000, "2022": 10000}}      # +100% beside +25%: 75 points, not flagged
+    o = value_outliers(raw, {"6": ["2", "3", "4"], "7": ["2", "3", "4"]})
+    assert set(o) == {"6"} and o["6"]["dir"] == "rose" and o["6"]["nb_pct"] == 25.0, o
 
 
 # ---------------------------------------------------------------- practices
@@ -1739,7 +1797,7 @@ def seed_html(out):
     n = out["national"]
     c = out["counts"]
     parts = [f'<div id="fa-seed" data-built="{out["generated"]}" class="fa-seedbox">']
-    parts.append(f'<p><strong>Across the Atlas</strong> · built {out["generated"][:10]} · {c["counties"]} counties in {len(out["states"])} states.</p>')
+    parts.append(f'<p><strong>Across the Atlas</strong> · built {out["generated"][:10]} · {c.get("mapped", c["counties"])} counties in {len(out["states"])} states.</p>')
     h = n.get("heat")
     if h:
         hb = h["hot_julys_by_decade"]

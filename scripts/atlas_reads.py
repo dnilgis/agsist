@@ -145,6 +145,8 @@ def usd(x):
 def usd_m(x):
     """$156.5 million; under a million it is written in whole dollars instead
     of "0.0 million", which is how 854 dollars became "0 million" on 9/19."""
+    if abs(x) >= 1e9:
+        return f"${x / 1e9:,.2f} billion"     # the page's form; "$1,700.1 million" read like a typo (panel 9/19)
     if abs(x) >= 1e6:
         return f"${x / 1e6:,.1f} million"
     return usd(x)
@@ -302,6 +304,14 @@ def gate(text, block):
         return "minus sign: write the fall in words"
     if re.search(r"\d\s+dollars\b", text):
         return "money written as dollars: use the $ form"
+    # the prompt's own word for the numbers leaked into three published reads
+    # ("the block shows no clear direction"), and "since 2000-2025" into 283
+    if re.search(r"\b(?:the|this|that) block\b|\bthe inputs? (?:show|say|give|list)", low):
+        return "prompt wording: the block"
+    if re.search(r"\bsince \d{4}-\d{4}\b", text):
+        return "since + period: write 'in 2000-2025' or 'since 2000'"
+    if re.search(r"\$\d{1,3}(?:,\d{3})+(?:\.\d+)? million", text):
+        return "a thousand million or more: write billions"
     for per in re.findall(r"\b\d{4}-\d{4}\b", text):
         if per not in block:
             return f"period not in inputs: {per}"
@@ -696,6 +706,9 @@ def selftest():
     assert carry(wh, {"sha": "new"}, block)["sha"] == "new"
     assert carry({"status": "withheld: API error HTTP 500", "sha": "old", "block": block_hash(block)}, {"sha": "new"}, block) is None
     assert gate(ok.replace("since 2014", "over 2014-2026"), block) == "period not in inputs: 2014-2026"
+    assert gate(ok.replace("and the multiple is rising", "and the block shows it rising"), block) == "prompt wording: the block"
+    assert gate(ok.replace("since 2014", "since 2008-2025"), block).startswith("since + period")
+    assert usd_m(1_700_100_000) == "$1.70 billion" and usd_m(156_500_000) == "$156.5 million"
     assert gate(ok.replace("$289", "289 dollars"), block).startswith("money written as dollars")
     old = ("Adams County rents non-irrigated ground at 138 dollars per acre in 2025, up 7.8 percent since 2014. "
            "Night heat is withheld. Irrigated ground brings 289 dollars. The loss ratio is 0.99 and it rose over 2008-2025. "
@@ -799,7 +812,7 @@ def salvage(atlas, reads):
     """No API: rebuild a read for every county from the text already on file
     (any age), against this build's numbers. Used when the account has no
     credit. A salvaged read is shown, and the next run with credit rewrites it."""
-    n_new = n_cut = n_none = 0
+    n_new = n_cut = n_none = n_carry = 0
     for fips, rec in sorted(atlas["counties"].items()):
         have = reads["counties"].get(fips) or {}
         if have.get("text") and have.get("sha") == rec.get("sha") and not have.get("salvaged"):
@@ -812,6 +825,13 @@ def salvage(atlas, reads):
             n_none += 1
             continue
         block = inputs_block(fips, detail)
+        # the numbers the read was written from did not move (only the fingerprint
+        # did): carry it whole, unflagged, so the paid run does not pay for it again
+        c = carry(have, rec, block)
+        if c is not None:
+            reads["counties"][fips] = c
+            n_carry += 1
+            continue
         out = salvage_text(text, block)
         if out is None:
             n_none += 1
@@ -824,7 +844,7 @@ def salvage(atlas, reads):
         n_new += 1
         reads["counties"][fips] = {"text": out, "sha": rec["sha"], "block": block_hash(block), "salvaged": True,
                                    "model": have.get("model"), "generated": have.get("generated")}
-    log(f"salvage: {n_new} reads kept from older text ({n_cut} with sentences dropped), {n_none} counties with none")
+    log(f"salvage: {n_carry} carried whole, {n_new} reads kept from older text ({n_cut} with sentences dropped), {n_none} counties with none")
     return reads
 
 

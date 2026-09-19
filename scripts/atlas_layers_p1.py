@@ -210,7 +210,10 @@ def crp_layer(c, harvested_cropland=None, ran=False, this_fy=None):
         peak = max(acres, key=acres.get)
         out["latest"] = {"year": latest, "acres": round(acres[latest])}
         out["peak"] = {"year": peak, "acres": round(acres[peak])}
-        out["change_from_peak_pct"] = round((acres[latest] / acres[peak] - 1) * 100, 1) if acres[peak] else None
+        # from the whole acres printed, so a reader can redo it; a peak under the
+        # floor is a change off nothing (5 counties read "peak 0 acres, -100%")
+        out["change_from_peak_pct"] = (round((round(acres[latest]) / round(acres[peak]) - 1) * 100, 1)
+                                       if round(acres[peak]) >= MIN_CRP_ACRES else None)
         out["first_year"] = min(acres)
         out["series"] = {y: round(a) for y, a in sorted(acres.items())}
         if acres[latest] < MIN_CRP_ACRES:
@@ -230,7 +233,11 @@ def crp_layer(c, harvested_cropland=None, ran=False, this_fy=None):
             out["rate"] = {"year": ry, "usd_per_acre": round(rate[ry], 2),
                            "basis": "FSA average annual rental payment per acre under contract"}
         else:
-            out["rate"] = {"status": f"withheld: under {MIN_CRP_ACRES} acres enrolled in {ry}"}
+            # the latest year's acres, not the last year FSA printed a rate (Fresno read "in 1996")
+            out["rate"] = {"status": f"withheld: under {MIN_CRP_ACRES} acres enrolled in {ry}, the last year FSA printed a rate"
+                           if acres and acres.get(ry, 0) < MIN_CRP_ACRES and acres[max(acres)] >= MIN_CRP_ACRES
+                           else f"withheld: under {MIN_CRP_ACRES} acres enrolled in {max(acres)}" if acres
+                           else f"withheld: no enrollment row for {ry}"}
     if exp:
         out["expiring"] = {fy: round(a) for fy, a in sorted(exp.items())}
         fys = sorted(exp)
@@ -240,7 +247,7 @@ def crp_layer(c, harvested_cropland=None, ran=False, this_fy=None):
         out["expiring_next3"] = {"from": start, "to": start + 2, "acres": round(tot)}
         enrolled = acres.get(max(acres)) if acres else None
         if enrolled and enrolled >= MIN_CRP_ACRES:
-            out["expiring_next3"]["share_of_enrolled_pct"] = round(min(tot / enrolled, 1.0) * 100, 1)
+            out["expiring_next3"]["share_of_enrolled_pct"] = round(min(round(tot) / round(enrolled), 1.0) * 100, 1)
     else:
         out["expiring"] = None
     return out
@@ -429,7 +436,7 @@ def summarize_p1(rec):
         out["value"].update({"latest": v.get("latest"), "change_cagr_pct": (v.get("change") or {}).get("cagr_pct"),
                              "rent_to_value_pct": (v.get("rent_to_value") or {}).get("pct")})
         if v.get("flag"):
-            out["value"]["flag"] = True
+            out["value"]["flag"] = v["flag"].get("dir", "fell")   # truthy; the rail says which way
     c = rec.get("crp") or {}
     out["crp"] = {"status": c.get("status")}
     if c.get("status") == "ok":

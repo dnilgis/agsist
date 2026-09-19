@@ -97,7 +97,7 @@
           {
             "@type": "Question",
             "name": "What is a crop insurance loss ratio and why does it matter for land?",
-            "acceptedAnswer": {"@type": "Answer", "text": "Indemnities paid divided by total premium, from USDA RMA's Summary of Business county files, every policy since 1989. At 1.00 the county's insurance book paid out what it took in; above it, the ground has been costing the program money. Insurers, lenders and anyone pricing a lease look at it because it is the longest continuous record of how often crops in that county have failed against what was expected, with the dollars attached."}
+            "acceptedAnswer": {"@type": "Answer", "text": "Indemnities paid divided by total premium, from USDA RMA's Summary of Business county files, every policy since 1989. At 1.00 the county's insurance book paid out what it took in; above it, claims exceeded the whole premium, the farmer's share and the federal subsidy together. Insurers, lenders and anyone pricing a lease look at it because it is the longest continuous record of how often crops in that county have failed against what was expected, with the dollars attached."}
           },
           {
             "@type": "Question",
@@ -131,6 +131,7 @@ button,a,[role="button"]{touch-action:manipulation}
 #fa-vint{display:flex;flex-wrap:wrap;gap:.25rem 1.2rem;font-family:var(--font-mono);font-size:.72rem;color:var(--text-muted);padding:.5rem 0 .2rem}
 .fa-lbl{font-family:var(--font-mono);font-size:.74rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted);margin:0 0 .55rem}
 .fa-note{font-size:.82rem;color:var(--text-muted);line-height:1.55}
+.fa-loading:not([hidden]){min-height:calc(min(100vw,1180px)*.625 + 220px)}
 .fa-notice{border:1px solid var(--border);border-left:2px solid var(--gold);padding:.7rem .9rem;border-radius:6px;font-size:.85rem;color:var(--text-dim);margin:0 0 1rem;line-height:1.55}
 .fa-mono{font-family:var(--font-mono)}
 .fa-seedbox{border:1px solid var(--border);border-radius:10px;padding:.2rem 1rem;margin:0 0 1.2rem;background:var(--surface)}
@@ -242,6 +243,7 @@ details.fa-vd summary:hover{color:var(--gold)}
 .fa-legend2{margin-top:-.2rem}.fa-legend2:empty{display:none}
 .fa-scale{align-self:flex-start;font-family:var(--font-mono);font-size:.66rem;letter-spacing:.08em;text-transform:uppercase;color:#111;background:var(--gold);border-radius:4px;padding:.1rem .4rem;margin-bottom:.2rem}
 #fa-method a{color:var(--gold);text-decoration:underline}
+#fa-panel a:not([class]),#fa-legend2 .fa-note a{text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:2px}   /* colour alone was 1.6:1 against body text */
 .fa-rail h3.fa-rk-h{font-weight:400}
 .fa-sws button:first-child{border-radius:3px 0 0 3px}.fa-sws button:last-child{border-radius:0 3px 3px 0;margin-right:0}
 .fa-sws button:hover,.fa-sws button[aria-pressed=true]{outline:2px solid var(--text);outline-offset:1px;position:relative;z-index:1}
@@ -468,6 +470,7 @@ details.fa-arith .body a{color:var(--gold)}
 
   <div id="fa-nodata" class="fa-notice" hidden>The Atlas data has not been published yet. The county layers appear here after the first data run.</div>
 
+  <div id="fa-loading" class="fa-notice fa-loading" role="status" aria-live="polite">Loading the map: 3,141 counties.</div>
   <div id="fa-app" hidden>
 
     <div class="fa-bar">
@@ -526,15 +529,15 @@ details.fa-arith .body a{color:var(--gold)}
     <p class="fa-note">Every county in the Atlas, added up. Open a section for the table behind it.</p>
     <details class="fa-fold" id="fa-seedfold"><summary>The national figures, layer by layer</summary>
 <!--SEED:atlas-->
-<div id="fa-seed" data-built="2026-09-19T21:51:48Z" class="fa-seedbox">
-<p><strong>Across the Atlas</strong> · built 2026-09-19 · 3151 counties in 50 states.</p>
+<div id="fa-seed" data-built="2026-09-19T23:12:25Z" class="fa-seedbox">
+<p><strong>Across the Atlas</strong> · built 2026-09-19 · 3141 counties in 50 states.</p>
 <p>July nights: 2029 of 3135 counties are warming since 1976 with the 95% interval clear of zero, 0 cooling, 1106 with no clear direction; the median trend is +0.45 F per decade. In 2178 of 3140 counties the 2010s were the warmest complete decade since the 1900s (the 2020s are not complete and are not counted). </p>
 <p>Each county has 51 Julys since 1976, and a single county's trend has to be large to clear its own 95% interval. Fitted on every July since 1895 instead, 2616 of 3135 counties are warming with the interval clear of zero.</p>
 <p>Water: 608 of 2161 counties irrigate a quarter or more of their harvested cropland and 412 irrigate half or more; the median county irrigates 4%. In 886 of 2663 counties nine-tenths or more of the irrigation water is pumped from the ground.</p>
-<p>Loss record: $210.6 billion of crop insurance indemnities in closed crop years since 1989 across 2843 counties (nominal dollars; the crop year still being paid is left out; pasture and rangeland rainfall-index policies excluded). Heat and drought share by period: 1989-1999 27% · 2000-2009 42% · 2010-2019 42% · 2020-2025 46%. Paid for failure of irrigation supply or equipment: $3.4 billion.</p>
+<p>Loss record: $210.6 billion of crop insurance indemnities in closed crop years since 1989 across 2840 counties (nominal dollars; the crop year still being paid is left out; pasture and rangeland rainfall-index policies excluded). Heat and drought share by period: 1989-1999 27% · 2000-2009 42% · 2010-2019 42% · 2020-2025 46%. Paid for failure of irrigation supply or equipment: $3.4 billion.</p>
 <p>Irrigated against dry cash rent: 572 counties publish both with enough paired years. Measured as irrigated rent over dry rent, so general rent inflation cancels out, the multiple is rising in 77 and falling in 54, with the 95% interval clear of zero. Falling fastest: Box Butte County, NE: 8.10 times dry rent in 2013 to 5.34 in 2026; Thurston County, WA: 6.12 times dry rent in 2009 to 2.20 in 2026; Lawrence County, AR: 3.31 times dry rent in 2012 to 1.67 in 2026. Rising fastest: Sutter County, CA: 4.00 times dry rent in 2010 to 12.11 in 2023; Yolo County, CA: 5.09 times dry rent in 2009 to 10.23 in 2026; Independence County, AR: 1.84 times dry rent in 2009 to 4.21 in 2023.</p>
-<p>Loss ratio: across 2893 counties RMA has paid $210.6 billion of indemnity on $246.4 billion of premium in closed crop years since 1989, a loss ratio of 0.85; in 826 counties indemnities have exceeded premium over the whole record. By period: 1989-1999 1.02 · 2000-2009 0.79 · 2010-2019 0.86 · 2020-2025 0.86. The crop year still being paid is left out; rainfall-index pasture policies are excluded.</p>
-<p>Land value, 2022 census: the median county reports $4,382 an acre for land and buildings (range $325 to $2,551,600, 3067 counties). Non-irrigated cash rent as a share of that value is published for 1756 counties, median 1.75%; under 2% in 961, over 4% in 18.</p>
+<p>Loss ratio: across 2890 counties RMA has paid $210.6 billion of indemnity on $246.4 billion of premium in closed crop years since 1989, a loss ratio of 0.85; in 826 counties indemnities have exceeded premium over the whole record. By period: 1989-1999 1.02 · 2000-2009 0.79 · 2010-2019 0.86 · 2020-2025 0.86. The crop year still being paid is left out; rainfall-index pasture policies are excluded.</p>
+<p>Land value, 2022 census: the median county reports $4,382 an acre for land and buildings (range $325 to $2,551,600, 3067 counties). Non-irrigated cash rent as a share of that value is published for 933 counties, median 2.48%; under 2% in 263, over 4% in 12.</p>
 <p>CRP: 25,753,630 acres enrolled across 3110 counties in 2025; 3,276,727 acres expire in the three fiscal years from 2026. In 382 of 1923 counties CRP is a tenth or more of the cropland base.</p>
 <p>Drought: summed over 3132 counties, the year with the most county-weeks with at least half the county in severe drought or worse since 2000 was 2012 (41,841 county-weeks). In 2025, the latest full year, 121 counties spent half the year or more in that condition.</p>
 <p>Solar and wind, Form 860 2025: 154,264 MW of solar in 1326 counties and 159,732 MW of wind in 518; 43,643 MW of batteries. Proposed to EIA: 140,162 MW solar and 28,250 MW wind, touching 825 counties.</p>
@@ -609,7 +612,7 @@ details.fa-arith .body a{color:var(--gold)}
     <details><summary>What does the July night temperature measure?</summary><p>The monthly mean of each day's minimum temperature for the county, in degrees Fahrenheit, from NOAA NCEI's nClimDiv county dataset, which runs from 1895. July is the silking month for corn across most of these states. Extension research puts the harm line for corn at nightly lows above 70 F, so a July whose average low was at or above 70 F is counted as a hot July.</p></details>
     <details><summary>Where does the crop insurance loss record come from?</summary><p>USDA Risk Management Agency's Summary of Business cause-of-loss files, one per crop year since 1989. Each indemnity is grouped by the peril that caused it: heat and drought, excess moisture and flood, hail, wind, freeze and frost, irrigation failure, price decline, and other. Dollar totals and shares come from these files. The loss ratio comes from RMA's county Summary of Business instead, which carries premium on every policy; the cause-of-loss files carry premium only on policies that had a loss.</p></details>
     <details><summary>How does irrigated rent compare with dry rent?</summary><p>Irrigated cropland cash rent divided by non-irrigated cash rent, same county, same year, from the USDA NASS Cash Rents Survey. A multiple rather than a dollar gap, because rents rose almost everywhere and a dollar gap widens even when nothing about the water changed. Irrigated rent also pays for the well, pump and pivot, so the multiple is not the price of water alone. Its direction is called only where the 95% interval of the fitted trend excludes zero and dry rent is at least $25 an acre.</p></details>
-    <details><summary>What is a crop insurance loss ratio and why does it matter for land?</summary><p>Indemnities paid divided by total premium, from USDA RMA's Summary of Business county files, every policy since 1989. At 1.00 the county's insurance book paid out what it took in; above it, the ground has been costing the program money. Insurers, lenders and anyone pricing a lease look at it because it is the longest continuous record of how often crops in that county have failed against what was expected, with the dollars attached.</p></details>
+    <details><summary>What is a crop insurance loss ratio and why does it matter for land?</summary><p>Indemnities paid divided by total premium, from USDA RMA's Summary of Business county files, every policy since 1989. At 1.00 the county's insurance book paid out what it took in; above it, claims exceeded the whole premium, the farmer's share and the federal subsidy together. Insurers, lenders and anyone pricing a lease look at it because it is the longest continuous record of how often crops in that county have failed against what was expected, with the dollars attached.</p></details>
     <details><summary>Where does the land value come from, and is it an appraisal?</summary><p>The USDA Census of Agriculture, which asks every operator the market value of their land and buildings and publishes the average per acre by county for 2012, 2017 and 2022. It is not an appraisal and not a sale price; it is what operators reported, buildings included. This page shows it as published and divides the county's non-irrigated cash rent by it. It never models a value.</p></details>
     <details><summary>Why are wells and water rights shown only for Nebraska and Kansas?</summary><p>Because those two states publish an open register that can be read and checked: Nebraska's registered wells and Kansas's WIMAS points of diversion. Other states keep theirs behind a login, a fee, or do not publish one. A county in another state reads "no open register read yet" rather than a guess.</p></details>
   </section>
@@ -760,7 +763,7 @@ var LAYERS=[
  {key:'loss_wet',grp:'Loss record',label:'Excess moisture share',ramp:'loss',unit:'%',pct:true,k:0,needs:'loss',
   v:function(c){return get(c,'loss','share_all','wet');},title:'Share of indemnities since 1989 caused by excess moisture and flood'},
  {key:'loss_irr',grp:'Loss record',label:'Irrigation failure',ramp:'loss',unit:'$',money:true,k:0,needs:'loss',
-  v:function(c){var v=get(c,'loss','irrigation_failure_indemnity'); return v==null?null:v;},title:'Indemnities paid for irrigation failure, all years'},
+  v:function(c){var v=get(c,'loss','irrigation_failure_indemnity'); return v==null?null:Math.max(0,v);},title:'Indemnities paid for irrigation failure, all years (a net reversal reads as $0)'},
  {key:'rent',grp:'Rent and yield',label:'Non-irrigated rent',ramp:'gold',unit:'$/acre',money:true,k:0,needs:'rent',
   v:function(c){return METRICS.rent(c);},title:'Non-irrigated cropland cash rent, latest published year (counties last surveyed more than three years before the newest survey are left grey)'},
  {key:'rent_irr',grp:'Rent and yield',label:'Irrigated rent',ramp:'water',unit:'$/acre',money:true,k:0,needs:'rent',
@@ -772,11 +775,11 @@ var LAYERS=[
  {key:'yield_worst',grp:'Rent and yield',label:'Worst year vs median',ramp:'gold',unit:'%',pct:true,k:0,needs:'yield',
   v:function(c){var y=c['yield']; return ok(y)?y.worst.share_of_median:null;},title:'Lowest published county corn yield as a share of the county median'},
  {key:'sob_cost',grp:'Loss ratio',label:'Claims per $100 of coverage',ramp:'loss',unit:'$',k:2,cost:true,needs:'sob',
-  v:function(c){var x=get(c,'sob','loss_cost_last10'); return x==null?null:x*100;},title:'Crop insurance indemnity per $100 of insured value, last ten closed crop years'},
+  v:function(c){var x=get(c,'sob','loss_cost_last10'); return x==null?null:x*100;},title:'Crop insurance claims paid per $100 of coverage (liability), a year, last ten closed crop years'},
  {key:'sob_10',grp:'Loss ratio',label:'Loss ratio, last 10 years',ramp:'loss',unit:'',k:2,fixed:true,needs:'sob',
-  v:function(c){return get(c,'sob','ratio_last10');},title:'Crop insurance loss ratio, indemnity ÷ premium, last ten closed crop years (1.00 = paid out what it took in)'},
+  pivot:1, v:function(c){return get(c,'sob','ratio_last10');},title:'Crop insurance loss ratio, indemnity ÷ premium, last ten closed crop years (1.00 = paid out what it took in)'},
  {key:'sob_all',grp:'Loss ratio',label:'Loss ratio, since 1989',ramp:'loss',unit:'',k:2,fixed:true,needs:'sob',
-  v:function(c){return get(c,'sob','loss_ratio_all');},title:'Crop insurance loss ratio, every closed crop year since 1989 (1.00 = paid out what it took in)'},
+  pivot:1, v:function(c){return get(c,'sob','loss_ratio_all');},title:'Crop insurance loss ratio, every closed crop year since 1989 (1.00 = paid out what it took in)'},
  {key:'sob_over',grp:'Loss ratio',label:'Share of years over 1.00',ramp:'loss',unit:'%',pct:true,k:0,needs:'sob',
   v:function(c){return get(c,'sob','share_over_one');},title:'Share of closed crop years in which indemnities exceeded premium (counties with fewer than ten rated years are grey)'},
  {key:'val',grp:'Land value',label:'Land + buildings, 2022',ramp:'gold',unit:'$/acre',money:true,k:0,needs:'value',
@@ -784,11 +787,11 @@ var LAYERS=[
  {key:'val_cagr',grp:'Land value',label:'Change, %/yr',div:true,unit:'%/yr',k:1,needs:'value',
   v:function(c){return get(c,'value','change_cagr_pct');},title:'Compound annual change in census land value between the last two censuses, nominal'},
  {key:'val_rtv',grp:'Land value',label:'Rent ÷ value',ramp:'gold',unit:'%',k:2,fixed:true,needs:'value',
-  v:function(c){return get(c,'value','rent_to_value_pct');},title:'Non-irrigated cropland cash rent as a share of census land value, same year, gross (no tax, insurance or management taken off)'},
- {key:'crp_share',grp:'CRP',label:'Share of cropland base',ramp:'green',unit:'%',k:1,needs:'crp',
+  v:function(c){return get(c,'value','rent_to_value_pct');},title:'Non-irrigated cropland cash rent as a share of census land value, same year, gross (grey where cropland is under half of land in farms or a tenth is irrigated)'},
+ {key:'crp_share',grp:'CRP',label:'Share of cropland + CRP',ramp:'green',unit:'%',k:1,needs:'crp',
   v:function(c){return get(c,'crp','share_pct');},title:'CRP acres as a share of CRP acres plus 2022 harvested cropland'},
  {key:'crp_peak',grp:'CRP',label:'Change from peak',div:true,unit:'%',k:0,needs:'crp',
-  v:function(c){return get(c,'crp','change_from_peak_pct');},title:'Latest CRP acres against the county\'s peak year since 1986, percent'},
+  v:function(c){return get(c,'crp','change_from_peak_pct');},title:'Latest CRP acres against the county\'s peak year since 1986, percent (counties whose peak never reached 100 acres are grey)'},
  {key:'crp_rate',grp:'CRP',label:'Rental payment, $/ac',ramp:'green',unit:'$/acre',money:true,k:0,needs:'crp',
   v:function(c){return get(c,'crp','rate');},title:'Average annual CRP rental payment per acre under contract, latest fiscal year, USDA FSA (counties under 100 enrolled acres are grey)'},
  {key:'crp_exp',grp:'CRP',label:'Expiring, next 3 FY',ramp:'green',unit:'acres',k:0,needs:'crp',
@@ -852,7 +855,7 @@ var DEC=12;
 // so it is fetched the first time one of them is picked and never on first paint.
 var HEATD=null, HEATD_P=null, HEATD_DONE=false, HEATD_WHY='';
 function loadHeatDecades(){
-  if(!HEATD_P) HEATD_P=fetch(DATA+(get(ATLAS,'sidecars','heat_decades')||'heat-decades.json'),{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).catch(function(){return null;}).then(function(r){
+  if(!HEATD_P) HEATD_P=fetch(DATA+(get(ATLAS,'sidecars','heat_decades')||'heat-decades.json'),{cache:'no-cache'}).then(function(r){return r.ok?r.json():null;}).catch(function(){return null;}).then(function(r){
     // a sidecar from another build would colour counties from numbers the rest of the page is not using
     if(!r||!r.counties) HEATD_WHY='the decade file did not load';
     else if(r.generated!==ATLAS.generated) HEATD_WHY='the decade file is from another build; reload for the current one';
@@ -891,7 +894,8 @@ function paint(){
   // zoomed to a state, the classes are that state's own: Iowa at national classes is one pale block
   var nIn=0; if(STATE){ for(var fz in byF) if(ATLAS.counties[fz].state===STATE) nIn++; }
   var local=STATE&&nIn>=20&&!L.div, inScope=function(f){ return !local||ATLAS.counties[f].state===STATE; };
-  var raw=[]; for(var fr in byF) if(inScope(fr)) raw.push(un(byF[fr]));
+  // a log layer's round trip turns 300 into 299.9999: the county on a break would drop a class (acres are whole)
+  var raw=[]; for(var fr in byF) if(inScope(fr)) raw.push(L.log?Math.round(un(byF[fr])):un(byF[fr]));
   if(L.key==='heat_decade'&&HEATD){
     // one set of classes for every decade, so moving the slider shows change instead of re-sorting the colours
     raw=[]; for(var g in HEATD){ if(!inScope(g)) continue; var dd=HEATD[g]; for(var dk in dd){ if(dd[dk].n>=5) raw.push(dd[dk].mean); } }
@@ -901,7 +905,7 @@ function paint(){
   for(var f3 in PATHS){ var vv=byF[f3];
     if(vv==null){ PATHS[f3].setAttribute('fill',MISSING); continue; }
     if(!inScope(f3)){ PATHS[f3].setAttribute('fill','#262b2d'); continue; }     // another state's county, on another state's scale: no colour at all
-    var ci=K.cls(un(vv)); CLS[f3]=ci; counts[ci]++; PATHS[f3].setAttribute('fill',K.cols[ci]); }
+    var ci=K.cls(L.log?Math.round(un(vv)):un(vv)); CLS[f3]=ci; counts[ci]++; PATHS[f3].setAttribute('fill',K.cols[ci]); }
   for(var fo in PATHS){ var co=ATLAS.counties[fo]; PATHS[fo].classList.toggle('out',!!(STATE&&(!co||co.state!==STATE))); }
   var inN=0; for(var fi in byF) if(inScope(fi)) inN++;
   K.counts=counts; K.L=L; LEG=K;
@@ -912,7 +916,7 @@ function paint(){
   var tot=0; for(var ft in PATHS) if(!local||(ATLAS.counties[ft]&&ATLAS.counties[ft].state===STATE)) tot++;
   var html2='';
   html2+='<span><span class="miss"></span>withheld or not published</span><span class="fa-mono">'+(local?inN:vals.length)+' of '+tot+' counties'+(local?' in '+esc(STATE_NAMES[STATE]||STATE):'')+'</span>';
-  html2+='<span class="fa-note">'+(L.div?'Blue is below zero, orange above. ':'')+(K.zero?'Zero is its own class. ':'')+(local?'Colours are set for '+esc(STATE_NAMES[STATE]||STATE)+' alone; other states are grey. ':'')+(K.even?'Each colour holds about the same number of counties':'The colours split the counties at the values shown')+(L.key==='heat_decade'?', across every decade together':'')+'. Tap or point at a colour to see its counties. <a href="/farmland-atlas/methods#m-map">How the colours and ranks work</a></span>';
+  html2+='<span class="fa-note">'+(L.div?(K.hasNeg&&K.hasPos?'Blue is below zero, orange above. ':K.hasNeg?'Blue is below zero; no county is above it. ':'Orange is above zero. '):'')+(L.pivot!=null&&K.br.indexOf(L.pivot)>=0?'The colours change at '+shortv(L,L.pivot)+', where claims matched premium. ':'')+(K.zero?'Zero is its own class. ':'')+(local?'Colours are set for '+esc(STATE_NAMES[STATE]||STATE)+' alone; other states are grey. ':'')+(K.even?'Each colour holds about the same number of counties':'The colours split the counties at the values shown')+(L.key==='heat_decade'?', across every decade together':'')+'. Tap or point at a colour to see its counties. <a href="/farmland-atlas/methods#m-map">How the colours and ranks work</a></span>';
   leg.innerHTML=html; $('fa-legend2').innerHTML=html2;
   wireLegend();
   markLegend();
@@ -937,7 +941,7 @@ function tidy(b,lo,hi){
 }
 function classesFor(L,raw){
   var a=raw.filter(function(v){return v!=null&&isFinite(v);}).sort(function(x,y){return x-y;});
-  var lo=a[0], hi=a[a.length-1], ints=a.every(function(v){return Math.round(v)===v;});
+  var lo=a[0], hi=a[a.length-1], hasPos=hi>0, ints=a.every(function(v){return Math.round(v)===v;});
   var EPS=Number.MIN_VALUE, br=[], zero=false, neutral=false, negs=a[0]<0;
   function rb(list,l0,h0){ return ints&&hi<=500?list.map(function(x){return Math.ceil(x);}):tidy(list,l0,h0).map(function(x){ return ints?Math.ceil(x):x; }); }
   if(L.div){
@@ -954,8 +958,14 @@ function classesFor(L,raw){
       zero=true; var pp=a.filter(function(v){return v>0;});
       br=[EPS].concat(rb(qbreaks(pp,6),pp[0],hi).filter(function(x){return x>0;}));
     } else br=rb(qbreaks(a,7),lo,hi);
+    // a loss ratio of 1.00 is where claims passed premium: a class that runs 0.87 to 1.06 hides it
+    // added as a break of its own, and only when both sides hold at least 5% of the counties
+    // (Illinois has one county past 1.00: a class for it alone says less than the quantile it would replace)
+    if(L.pivot!=null&&br.indexOf(L.pivot)<0){
+      var below=a.filter(function(v){return v<L.pivot;}).length;
+      if(below>=0.05*a.length&&a.length-below>=0.05*a.length){ br.push(L.pivot); br.sort(function(x,y){return x-y;}); } }
   }
-  var fixed=function(b){ return b===0||b===EPS; };
+  var fixed=function(b){ return b===0||b===EPS||(L.pivot!=null&&b===L.pivot); };
   // one break per label, then no class without a county
   var seen={}; br=br.filter(function(b,i){ if(i&&b<=br[i-1]) return false; if(fixed(b)) return true; var t=shortv(L,b); if(seen[t]) return false; seen[t]=1; return true; });
   function cls(v){ var c=0; while(c<br.length&&v>=br[c]) c++; return c; }
@@ -971,7 +981,8 @@ function classesFor(L,raw){
     var nNeu=neutral?1:0, nPos=N-nNeg-nNeu;
     function shade(list,d,n){ return list[n===1?1:Math.round(d*3/(n-1))]; }
     for(var i=0;i<nNeg;i++) cols.push(shade(DIVNEG,nNeg-1-i,nNeg));
-    if(nNeu) cols.push('#5f6b6e');
+    // nothing above zero (CRP against its own peak): the "at zero" grey goes light, or it sits beside the darkest blue
+    if(nNeu) cols.push(pos.length?'#5f6b6e':'#a7afb1');
     for(var j=0;j<nPos;j++) cols.push(shade(DIVPOS,j,nPos));
   } else {
     var R=RAMPS[L.ramp];
@@ -989,19 +1000,20 @@ function classesFor(L,raw){
     if(ints&&from!=null&&to!=null) return to-1>from?shortv(L,from)+' to '+shortv(L,to-1):shortv(L,from);
     if(from==null&&to==null) return 'every county';
     if(from==null) return 'under '+shortv(L,to);
-    if(to==null) return shortv(L,from)+' and up';
+    if(to==null) return L.div&&from===0&&!hasPos?shortv(L,0):shortv(L,from)+' and up';
     if(ints&&to-from===1) return shortv(L,from);
     return shortv(L,from)+' to under '+shortv(L,to);
   }
   var cnt2=[]; for(var z2=0;z2<N;z2++) cnt2.push(0); a.forEach(function(v){ cnt2[cls(v)]++; });
-  var sized=cnt2.filter(function(x,i){ return !(zero&&i===0)&&!(neutral&&cols[i]==='#5f6b6e'); });
+  var sized=cnt2.filter(function(x,i){ return !(zero&&i===0)&&!(neutral&&L.div&&i===nNeg); });
   var even=sized.length>1&&Math.min.apply(null,sized)>=0.6*Math.max.apply(null,sized);
-  return {cols:cols, br:br, cls:cls, labels:labels, zero:zero, range:range, n:N, even:even};
+  return {cols:cols, br:br, cls:cls, labels:labels, zero:zero, range:range, n:N, even:even, hasPos:hasPos, hasNeg:lo<0};
 }
 function shortv(L,v){
   if(L.key==='we_prio') return String(Math.round(v));
+  if(L.pivot!=null&&v===L.pivot) return Number(v).toFixed(2);     // "1.00", as the title writes it
   function exact(x){ return String(Number(Number(x).toPrecision(10))); }
-  if(L.cost) return '$'+Number(v).toFixed(2);
+  if(L.cost) return '$'+rh(Number(v),2);
   if(L.pct) return exact(v*100)+'%';
   var a=Math.abs(v), sgn2=(L.div&&v>0?'+':v<0?'−':''), body;
   if(a>=1e6&&a%1e4===0) body=exact(a/1e6)+'M'; else if(a>=1000&&a%100===0) body=exact(a/1000)+'k'; else body=Number(exact(a)).toLocaleString('en-US',{maximumFractionDigits:6});
@@ -1028,7 +1040,7 @@ function markLegend(){
   var mt=$('fa-mk-t'); if(mt){ mt.hidden=false; mt.textContent='▲ '+cname(c)+': '+fmtv(LEG.L,v); }
 }
 function fmtv(L,v){ var t=fmtv0(L,v); return typeof t==='string'?t.replace(/^-/,'−'):t; }
-function fmtv0(L,v){ if(v==null) return '—'; if(L.cost) return '$'+Number(v).toFixed(2); if(L.pct) return pct(v,L.k); if(L.money) return money(v); if(L.key==='we_prio') return String(Math.round(v)); if(L.fixed) return Number(v).toFixed(L.k)+(L.unit==='%'?'%':L.unit?' '+L.unit:''); return (L.div&&v>0?'+':'')+fmt(v,L.k)+(L.unit==='%'||L.unit==='%/yr'?L.unit:L.unit?' '+L.unit:''); }
+function fmtv0(L,v){ if(v==null) return '—'; if(L.cost) return '$'+rh(Number(v),2); if(L.pct) return pct(v,L.k); if(L.money) return money(v); if(L.key==='we_prio') return String(Math.round(v)); if(L.fixed) return Number(v).toFixed(L.k)+(L.unit==='%'?'%':L.unit?' '+L.unit:''); return (L.div&&v>0?'+':'')+fmt(v,L.k)+(L.unit==='%'||L.unit==='%/yr'?L.unit:L.unit?' '+L.unit:''); }
 function paintSliderNote(){
   var line=Number($('fa-line').value), d=DECADES[DEC], n=0, at=0;
   for(var f in ATLAS.counties){ var dd=jdec(f); dd=dd&&dd[d]; if(dd&&dd.n>=5){ n++; if(dd.mean>=line) at++; } }
@@ -1045,8 +1057,9 @@ function farmReady(){ return SIDE.tenure.done&&SIDE.tenure.ok; }
 function isFarm(f){ if(!farmReady()) return true; var a=farmAcres(f); return a==null||a>=10000; }
 function rankLayer(L){
   RK={}; RANKED=[]; var us={}, st={};
+  if(SIDE.tenure.done&&!SIDE.tenure.ok) return;      // without farm acres the pool would hold Staten Island
   for(var f in PATHS){ var c=ATLAS.counties[f]; if(!c) continue; var v=L.v(c,f); if(v==null||isNaN(v)||!isFarm(f)) continue;
-    if(L.key==='val'&&get(c,'value','flag')) continue;      // the census value that fell while every neighbour rose is shown, not ranked
+    if(L.key==='val'&&get(c,'value','flag')) continue;      // a census value that fell while next door rose, or jumped far past it, is shown, not ranked
     var r={f:f,c:c,v:v}; RANKED.push(r); var g=rgroup(L,c);
     (us[g]=us[g]||[]).push(r); (st[c.state+'|'+g]=st[c.state+'|'+g]||[]).push(r); }
   function rank(list,key){ list.sort(function(a,b){return b.v-a.v;}); var n=list.length, i=0;
@@ -1089,8 +1102,9 @@ function renderRail(){
     else { var yr=ryear(L,c); h+='<div class="fa-cc-v">'+esc(fmtv(L,v))+(yr&&yr!==RENT_LATEST?' <small>'+esc(yr)+'</small>':'')+'</div>';
       var rs=[];
       if(!SIDE.tenure.done){}
+      else if(!SIDE.tenure.ok) rs.push('Not ranked: the census farm-acres file did not load');
       else if(!isFarm(SEL)) rs.push('Not ranked: under 10,000 acres in farms in the 2022 census');
-      else if(L.key==='val'&&get(c,'value','flag')) rs.push('Not ranked: the 2022 census value fell while every county next door rose (see the county record)');
+      else if(L.key==='val'&&get(c,'value','flag')) rs.push('Not ranked: the 2022 census value '+(get(c,'value','flag')==='rose'?'rose far faster than':'fell while')+' the counties next door '+(get(c,'value','flag')==='rose'?'did':'rose')+' (see the county record)');
       else {
         var w1=rankWords(rk.st), w2=rankWords(rk.us), among=yr&&yr!==RENT_LATEST?' surveyed in '+yr:'';
         if(w1&&!(yr&&yr!==RENT_LATEST&&rk.st&&rk.st[1]<10)) rs.push(w1+' in '+(STATE_NAMES[c.state]||c.state)+among);
@@ -1113,6 +1127,7 @@ function renderRail(){
   if((L.key==='rent'||L.key==='rent_irr')&&RENT_LATEST) list=list.filter(function(r){ return ryear(L,r.c)===RENT_LATEST; });
   var n=list.length, k=Math.min(RAIL_MORE?15:(SEL?5:8),Math.floor(n/2));
   if(!T.done) h+='<div class="fa-rk"><p class="fa-rk-n">Ranking the counties…</p></div>';
+  else if(!farmOk) h+='<div class="fa-rk"><p class="fa-rk-n">No ranking: the census farm-acres file did not load, and without it cities would rank as farm counties. Reload to try again.</p></div>';
   else if(n<4) h+='<div class="fa-rk"><p class="fa-rk-n">'+(n?'Only '+n:'No')+' '+(n===1?'county':'counties')+(farmOk?' with 10,000 acres or more in farms':'')+' in '+esc(scope)+' '+(n===1?'has':'have')+' a figure on this layer'+(n?', too few to list':'')+'.</p></div>';
   else {
     var key=STATE?'st':'us';
@@ -1218,9 +1233,13 @@ function writeHash(){
   var parts=[]; if(SEL) parts.push(SEL); if(CUR!==DEFAULT_LAYER) parts.push('l='+CUR); if(STATE) parts.push('s='+STATE);
   var h=parts.length?'#'+parts.join('&'):location.pathname+location.search;
   if(('#'+parts.join('&'))===location.hash||(!parts.length&&!location.hash)) return;
-  try{ history.replaceState(null,'',h); }catch(e){}
+  // a new county is a step Back should undo; a layer or a zoom is not (ten clicks, then Back left the Atlas)
+  var was=readHash().f;
+  try{ if(SEL&&SEL!==was&&!APPLYING) history.pushState(null,'',h); else history.replaceState(null,'',h); }catch(e){}
 }
-function applyHash(first){
+var APPLYING=false;     // following the address bar (Back, Forward, a pasted link): replace, never push
+function applyHash(first){ APPLYING=true; try{ applyHash0(first); } finally { APPLYING=false; } }
+function applyHash0(first){
   var raw0=(location.hash||'').replace(/^#/,'');
   if(raw0&&!/^(\d{5}|l=|s=)/.test(raw0)) return;       // #main, #fa-b-risk: a place on the page, not a view
   var o=readHash(), want=o.l&&layerOf(o.l)&&!layerOff(layerOf(o.l))?o.l:(first?CUR:DEFAULT_LAYER);
@@ -1256,7 +1275,12 @@ function wireMap(){
     select(f,'map'); });
   $('fa-hint').classList.add('on');
 }
-function missingWhy(c,L){ if(L.key==='rent'){ var rr=get(c,'rent','nonirr'); if(rr&&rr.year&&RENT_LATEST&&rr.year<RENT_LATEST-3) return 'latest published rent is from '+rr.year; } if(L.key==='sob_over'&&ok(c.sob)&&get(c,'sob','share_over_one')==null) return 'fewer than ten crop years with a rated premium'; if((L.side&&!SIDE[L.side].done)||(L.sidecar&&!HEATD_DONE)) return 'loading'; if(L.side) return L.side==='tenure'?'not published for this county (census suppression or no match)':'no data'; var lay=c[L.needs]; if(!lay) return 'no data'; if(lay.status!=='ok') return why(lay); return 'withheld'; }
+function missingWhy(c,L){ if(L.key==='rent'){ var rr=get(c,'rent','nonirr'); if(rr&&rr.year&&RENT_LATEST&&rr.year<RENT_LATEST-3) return 'latest published rent is from '+rr.year; } if(L.key==='sob_over'&&ok(c.sob)&&get(c,'sob','share_over_one')==null) return 'fewer than ten crop years with a rated premium'; if((L.side&&!SIDE[L.side].done)||(L.sidecar&&!HEATD_DONE)) return 'loading'; if(L.side) return L.side==='tenure'?'not published for this county (census suppression or no match)':'no data'; var lay=c[L.needs]; if(!lay) return 'no data'; if(lay.status!=='ok') return why(lay);
+  if(L.key==='crp_peak') return 'peak enrollment under 100 acres';
+  if(L.key==='crp_rate') return 'under 100 acres enrolled';
+  if(L.key==='val_rtv'&&get(c,'value','flag')) return 'the census value moved against next door; see the county record';
+  if(L.key==='val_rtv') return 'no same-year dry rent, a tenth or more of cropland irrigated, or cropland under half of land in farms';
+  return 'withheld'; }
 
 // ---------- search
 // The list now carries the unit word, so the typed string is matched against two keys per county:
@@ -1428,6 +1452,7 @@ var METRICS={
 function stateStat(key,st,f){
   // a code with no boundary (a Connecticut planning region) is not ranked against the old counties
   if(!PATHS[f]) return null;
+  if(SIDE.tenure.done&&!SIDE.tenure.ok) return null;     // without farm acres, Staten Island would be in the pool
   var vals=[], mine=null, yr=(key==='rent'||key==='irr')?get(ATLAS.counties[f],'rent',key==='rent'?'nonirr':'irr','year'):null;
   for(var g in ATLAS.counties){ var c=ATLAS.counties[g]; if(c.state!==st||!PATHS[g]) continue;
     if(yr&&get(c,'rent',key==='rent'?'nonirr':'irr','year')!==yr) continue;    // one survey year at a time
@@ -1451,10 +1476,10 @@ function renderStrip(fips,c){
   if(R&&R.irr&&(!ok(R)||!R.nonirr||(sh!=null&&sh>=0.10))){
     h+=tile('fa-t-rent','Cash rent, irrigated', money(R.irr.value),'/ac', R.irr.year+' county average'+(rv?' · dry '+money(rv.value):' · no dry rent published'), st, money, stateStat('irr',st,fips));
   } else h+=tile('fa-t-rent','Cash rent, non-irrigated', rv?money(rv.value):null,'/ac', rv?rv.year+' county average':why(R), st, money, rv?stateStat('rent',st,fips):null);
-  h+=tile('fa-t-val','Land and buildings', ok(V)&&V.latest!=null?money(V.latest):null,'/ac', ok(V)?(V.flag?V.latest_year+' census · read with care: fell '+Math.abs(V.flag.own_pct).toFixed(0)+'% while next door rose '+V.flag.nb_pct.toFixed(0)+'%':V.latest_year+' census, operators\' own estimate'):why(V), st, money, ok(V)?stateStat('value',st,fips):null);
+  h+=tile('fa-t-val','Land and buildings', ok(V)&&V.latest!=null?money(V.latest):null,'/ac', ok(V)?(V.flag?V.latest_year+' census · read with care: '+flagWords(V.flag,true):V.latest_year+' census, operators\' own estimate'):why(V), st, money, ok(V)?stateStat('value',st,fips):null);
   h+=tile('fa-t-yld','Corn yield, median', ok(Y)?f1(Y.median):null,' bu/ac', ok(Y)?Y.n+' published years, '+Y.first_year+'–'+Y.last_year:why(Y), st, f1, ok(Y)&&Y.n>=15?stateStat('yld',st,fips):null);
   var lc=ok(S)&&S.last10&&S.last10.loss_cost!=null?S.last10.loss_cost*100:null;
-  h+=tile('fa-t-cost','Claims paid per $100 of coverage', lc!=null?'$'+lc.toFixed(2):null,'', lc!=null?S.last10.from+'–'+S.last10.to+', closed crop years':(ok(S)?'under the premium gate':why(S)), st, function(v){return '$'+v.toFixed(2);}, lc!=null?stateStat('cost',st,fips):null);
+  h+=tile('fa-t-cost','Claims paid per $100 of coverage', lc!=null?'$'+rh(lc,2):null,'', lc!=null?S.last10.from+'–'+S.last10.to+', closed crop years':(ok(S)?'under the premium gate':why(S)), st, function(v){return '$'+rh(v,2);}, lc!=null?stateStat('cost',st,fips):null);
   var jr=j&&j.recent&&j.recent.mean!=null?j.recent:null;
   h+=tile('fa-t-heat','July night low, average', jr?f1(jr.mean):null,' °F', jr?jr.from+'–'+jr.to+(j.normal_1991_2020&&j.normal_1991_2020.mean!=null?' · normal '+f1(j.normal_1991_2020.mean)+' °F':''):why(get(c,'heat')), st, function(v){return f1(v)+' °F';}, jr?stateStat('heat',st,fips):null);
   h+=tile('fa-t-rented','Farmland rented','…','', '2022 census', st, pct, null);
@@ -1496,20 +1521,20 @@ function renderPanel(fips,c){
   f+=facthead('Land value');
   if(ok(V)){
     if(V.latest!=null) f+=fact('Land and buildings, '+V.latest_year+' census', money(V.latest)+'/ac', 'what farm operators guessed their own land and buildings were worth; not a sale price');
-    if(V.flag) f+=fact('Read with care', 'the '+V.latest_year+' census value fell '+Math.abs(V.flag.own_pct).toFixed(0)+'% while the '+V.flag.n+' counties next door rose a median '+V.flag.nb_pct.toFixed(0)+'%', 'the census figure counts buildings and small residential farms; the change, the rent ratio and the rank are not shown','',true);
-    else f+=fact('Land and buildings, '+V.latest_year+' census','— '+why(get(V,'values',V.latest_year)||{status:'suppressed'}),'',true);
+    if(V.flag) f+=fact('Read with care', 'the '+V.latest_year+' census value '+flagWords(V.flag), 'the census figure counts buildings and small residential farms; the change, the rent ratio and the rank are not shown','',true);
+    if(V.latest==null) f+=fact('Land and buildings, '+V.latest_year+' census','— '+why(get(V,'values',V.latest_year)||{status:'suppressed'}),'',true);
     var older=Object.keys(V.values||{}).sort().filter(function(y){return String(y)!==String(V.latest_year)&&V.values[y].per_acre!=null;}).map(function(y){return y+': '+money(V.values[y].per_acre);});
     if(older.length) f+=fact('Earlier censuses', older.join(' · '));
     if(V.change&&V.change.pct!=null) f+=fact('Change '+V.change.from_year+' to '+V.change.to_year, sgn(V.change.pct,1)+'%', sgn(V.change.cagr_pct,1)+'% a year, nominal');
     var rtv=V.rent_to_value||{};
-    if(rtv.pct!=null) f+=fact('Dry cropland rent ÷ census value of all farm real estate, '+rtv.year, fmt(rtv.pct,2)+'%', money(rtv.rent)+' ÷ '+money(rtv.value)+'; the value includes buildings, pasture and woods; not a cap rate');
+    if(rtv.pct!=null) f+=fact('Dry cropland rent ÷ census value of all farm real estate, '+rtv.year, fmt(rtv.pct,2)+'%', money(rtv.rent)+' ÷ '+money(rtv.value)+(rtv.cropland_share_pct!=null?'; cropland is '+rtv.cropland_share_pct+'% of land in farms':'')+'; the value includes buildings, pasture and woods; not a cap rate');
     else if(rtv.status) f+=fact('Dry rent ÷ census value','— '+why(rtv),'',true);
   } else f+=fact('Land value','— '+why(V),'',true);
   f+=facthead('Corn yield');
   if(ok(Y)){
     f+=fact('Median, '+Y.first_year+'–'+Y.last_year, f1(Y.median)+' bu/ac', Y.n+' published years, '+(irrShare(c)!=null&&irrShare(c)>=0.10?'irrigated and dryland combined':'all practices'));
     var ry5=recentYield(d['yield']);
-    if(ry5) f+=fact('Recent level, '+ry5.from+'–'+ry5.to, f1(ry5.avg)+' bu/ac', ry5.n+' published years'+(ry5.dropped.length?', high and low dropped':'')+' ('+ry5.used.join(', ')+')');
+    if(ry5) f+=fact('Recent level, '+ry5.from+'–'+ry5.to, f1(ry5.avg)+' bu/ac', 'average of '+ry5.used.join(', ')+'; '+ry5.n+' published years, the high ('+ry5.hi+') and low ('+ry5.lo+') dropped');
     f+=fact('Lowest published year', Y.worst.year+': '+f1(Y.worst.value)+' bu/ac', pct(Y.worst.share_of_median,0)+' of median');
     if(Y.slope!=null) f+=fact('Trend, '+(Y.window||'').replace('-','–'), sgn(Y.slope,1)+' bu/ac a year');
     else f+=fact('Trend','— '+why({status:Y.trend_status||'withheld'}),'',true);
@@ -1532,7 +1557,7 @@ function renderPanel(fips,c){
   f+=facthead('Crop insurance');
   if(ok(S)){
     var l10=S.last10||{};
-    if(l10.loss_cost!=null) f+=fact('Paid per $100 insured, '+l10.from+'–'+l10.to, '$'+(l10.loss_cost*100).toFixed(2), mUSD(l10.indemnity)+' paid on '+mUSD(l10.liability)+' insured');
+    if(l10.loss_cost!=null) f+=fact('Claims paid per $100 of coverage, '+l10.from+'–'+l10.to, '$'+rh(l10.loss_cost*100,2), mUSD(l10.indemnity)+' paid on '+mUSD(l10.liability)+' insured');
     else f+=fact('Paid per $100 insured, last ten years','— '+why(l10.status?l10:{status:'withheld: under $1M of premium'}),'',true);
     if(l10.ratio!=null) f+=fact('Loss ratio, '+l10.from+'–'+l10.to, r2(l10.ratio), 'claims ÷ total premium (farmer share plus federal subsidy)');
     var sameSpan=l10.from===S.first_year&&l10.to===S.last_year;
@@ -1646,9 +1671,9 @@ function renderPanel(fips,c){
   } else na.push(['Solar and wind', why(E)]);
   if(ok(C)){
     f+=facthead('Conservation Reserve (CRP)');
-    if(C.latest&&C.latest.acres!=null) f+=fact('Enrolled, '+C.latest.year, fmt(C.latest.acres,0)+' acres', C.share_of_cropland&&C.share_of_cropland.pct!=null?fmt(C.share_of_cropland.pct,1)+'% of the cropland base':'');
+    if(C.latest&&C.latest.acres!=null) f+=fact('Enrolled, '+C.latest.year, fmt(C.latest.acres,0)+' acres', C.share_of_cropland&&C.share_of_cropland.pct!=null?fmt(C.share_of_cropland.pct,1)+'% of harvested cropland plus CRP':'');
     if(C.expiring_next3) f+=fact('Expiring FY'+C.expiring_next3.from+'–'+C.expiring_next3.to, fmt(C.expiring_next3.acres,0)+' acres', C.expiring_next3.share_of_enrolled_pct!=null?fmt(C.expiring_next3.share_of_enrolled_pct,0)+'% of what is enrolled':'');
-    if(C.rate&&C.rate.usd_per_acre!=null) f+=fact('Average CRP rental payment, FY'+C.rate.year, money(C.rate.usd_per_acre)+'/ac', ok(c.rent)&&c.rent.nonirr?'county dry cash rent '+money(c.rent.nonirr.value)+'/ac in '+c.rent.nonirr.year:'what FSA pays per enrolled acre, on average');
+    if(C.rate&&C.rate.usd_per_acre!=null) f+=fact('Average CRP rental payment, FY'+C.rate.year, money(C.rate.usd_per_acre)+'/ac', 'averaged over every contract in force, some signed 10 to 15 years ago; not today\'s offer'+(ok(c.rent)&&c.rent.nonirr?'. County dry cash rent '+money(c.rent.nonirr.value)+'/ac in '+c.rent.nonirr.year:''));
     else if(C.rate&&C.rate.status) f+=fact('Average CRP rental payment','— '+why(C.rate),'',true);
   } else na.push(['CRP', why(C)]);
   var aw='Irrigated share: 2022 Census of Agriculture. Groundwater share and water withdrawn: USGS 2015 county water use; not shown under 1,000 irrigated acres. '
@@ -1664,7 +1689,7 @@ var NBCOLS=[
   ['Irrigated rent','$/acre',function(c){return METRICS.irr(c);},function(v){return money(v);},'irr'],
   ['Land value','$/acre, 2022',function(c){return METRICS.value(c);},function(v){return money(v);}],
   ['Corn yield','median, bu/ac',function(c){return METRICS.yld(c);},function(v){return f1(v);}],
-  ['Claims paid','per $100 of coverage',function(c){return METRICS.cost(c);},function(v){return '$'+v.toFixed(2);}],
+  ['Claims paid','per $100 of coverage',function(c){return METRICS.cost(c);},function(v){return '$'+rh(v,2);}],
   ['July low','°F, last 10 yrs',function(c){return METRICS.heat(c);},function(v){return f1(v);}],
   ['Tile','share of cropland',function(c){return get(c,'practices','tile');},function(v){return pct(v,0);}],
   ['Irrigated','share of cropland',function(c){return get(c,'water','irrigated_share_2022','share');},function(v){return pct(v,0);}],
@@ -1696,8 +1721,11 @@ function nextDoor(fips,d){
     +'<p class="fa-na">Rank counts this county and its neighbours with a figure, at the precision shown. A rent from another survey year carries its year and is left out of the rent rank and median. Across a state line, rent and yield come from each state\'s own survey.</p></section>';
 }
 // the recent yield level: the last five years of the newest county series, the high and low dropped
-// (4 published: the low dropped); fewer than 4 published, none. The county's own median runs 18 years
+// (4 published: the middle two); fewer than 4 published, none. The county's own median runs 18 years
 // against a trend of +3 bu a year, so it sits below what the ground grows now.
+// "fell 28% while the 8 counties next door rose a median 27%"; a jump reads the same way up
+function flagWords(fl,short){ var dir=fl.dir||'fell', nb=fl.nb_pct>=0?'rose a median '+Math.round(fl.nb_pct)+'%':'fell a median '+Math.round(Math.abs(fl.nb_pct))+'%';
+  return dir+' '+Math.round(Math.abs(fl.own_pct))+'% from 2017 while '+(short?'next door ':'the '+fl.n+' counties next door ')+nb; }
 function recentYield(y){
   if(!y||!y.hist) return null;
   var last=y.last_year, yrs=[]; if(!last) return null;
@@ -1705,9 +1733,12 @@ function recentYield(y){
   for(var k=last-4;k<=last;k++) if(y.hist[k]!=null) yrs.push(k);
   if(yrs.length<4) return null;
   var vals=yrs.map(function(k){return {y:k,v:y.hist[k]};}).sort(function(a,b){return a.v-b.v;}), drop=[];
-  if(vals.length===5){ drop=[vals[0].y,vals[4].y]; vals=vals.slice(1,4); } else { drop=[vals[0].y]; vals=vals.slice(1); }
+  // five years: drop the high and the low; four: the same, the middle two. Dropping only the low
+  // leaned high (Anderson SC read 103.0 bu where the middle two average 75.9; panel 9/19)
+  drop=[vals[0].y,vals[vals.length-1].y]; vals=vals.slice(1,vals.length-1);
   var avg=vals.reduce(function(a,b){return a+b.v;},0)/vals.length;
-  return {from:last-4,to:last,avg:avg,n:yrs.length,used:vals.map(function(x){return x.y;}).sort(),dropped:drop};
+  var byv=yrs.map(function(k){return {y:k,v:y.hist[k]};}).sort(function(a,b){return a.v-b.v;});
+  return {from:last-4,to:last,avg:avg,n:yrs.length,used:vals.map(function(x){return x.y;}).sort(),dropped:drop,lo:byv[0].y,hi:byv[byv.length-1].y};
 }
 function irrShare(c){ var s=get(c,'water','irrigated_share_2022','share'); return s==null?null:s; }
 function renderNoDetail(fips,whyNot){
@@ -1760,15 +1791,23 @@ function select(fips,how){
     if(how==='rail'){ var cc=document.querySelector('.fa-cc'); if(cc) try{ cc.focus({preventScroll:true}); }catch(e){} }
   }
   else panel.scrollIntoView({behavior:'smooth',block:'start'});
+  // A shared link or the sheet's QR code: the rail and the read grow above the panel after the first
+  // scroll, and on a phone the county name ended up 480px down the screen. Scroll again once things
+  // settle, unless the reader has moved the page themselves.
+  var moved=false, mv=function(){ moved=true; };
+  function settle(){ if(how&&how!=='link') return; if(moved||SEL!==fips) return; var t=panel.getBoundingClientRect().top; if(Math.abs(t)>24) panel.scrollIntoView({block:'start'}); }
+  if(!how||how==='link'){ ['wheel','touchstart','keydown'].forEach(function(e){ window.addEventListener(e,mv,{once:true,passive:true}); });
+    [700,1600,3000].forEach(function(ms){ setTimeout(settle,ms); }); }
   var done=false, slow=setTimeout(function(){ if(!done&&SEL===fips) $('fa-p-sub').textContent='Still loading: the county file is slow. It will appear here when it arrives.'; },8000);
-  fetch(DATA+'counties/'+fips+'.json',{cache:'no-cache'}).then(function(r){return r.ok?r.json():null;}).catch(function(){return null;}).then(function(d){
+  var net=false;
+  fetch(DATA+'counties/'+fips+'.json',{cache:'no-cache'}).then(function(r){ if(!r.ok&&r.status!==404) net=true; return r.ok?r.json():null;}).catch(function(){ net=true; return null;}).then(function(d){
     done=true; clearTimeout(slow);
     if(SEL!==fips) return;             // a later click won
-    var whyNot=d?null:'The detail file for this county is not published yet. It appears after the next build.';
+    var whyNot=d?null:net?'The county file did not load: the connection dropped. Tap the county again to retry.':'The detail file for this county is not published yet. It appears after the next build.';
     if(d&&d.generated!==ATLAS.generated){ d=null; whyNot='The detail file for this county is from another build. Reload the page for the current one.'; }
-    if(d){ renderPanel(fips,d); renderOwnership(fips); loadReads().then(function(){ if(SEL===fips) renderRead(fips,d); }); }
+    if(d){ renderPanel(fips,d); renderOwnership(fips); loadReads().then(function(){ if(SEL===fips){ renderRead(fips,d); settle(); } }); }
     else { LAST_PANEL=null; renderNoDetail(fips,whyNot); }
-    renderScatters();
+    renderScatters(); settle();
     $('fa-p-status').textContent=cname(c)+' loaded';
     if(!how||how==='link') try{ $('fa-p-name').focus({preventScroll:true}); }catch(e){}
   });
@@ -1823,7 +1862,9 @@ function renderPremium(){
   $('fa-premium').hidden=false;
 }
 // rent against night heat: one labelled scatter with the open county marked; water as a table
+// built when the section is opened: 2,700 circles in a closed fold cost 130-330 ms on every county click
 function renderScatters(){
+  var fold=$('fa-price'); if(fold&&!fold.open){ if(!fold._w){ fold._w=1; fold.addEventListener('toggle',function(){ if(fold.open) renderScatters(); }); } return; }
   var pts=[];
   for(var f in ATLAS.counties){ var c=ATLAS.counties[f], r=METRICS.rent(c); if(r==null) continue; var h=get(c,'heat','months','jul','recent','mean'); if(h!=null) pts.push({f:f,n:cname(c),x:h,y:r}); }
   var svg=$('fa-sc-heat');
@@ -1856,12 +1897,18 @@ function renderScatters(){
 
 // ---------- boot
 function boot(){
-  var j=function(u){ return fetch(u,{cache:'no-cache'}).then(function(r){return r.ok?r.json():null;}).catch(function(){return null;}); };
-  var g=function(u){ return fetch(u).then(function(r){return r.ok?r.json():null;}).catch(function(){return null;}); };   // geometry never changes: let the browser cache it
+  // a stalled file on a rural signal used to leave a blank space for good; after 25 s, say so
+  var WHY=null, lw=$('fa-loading'), slowT=setTimeout(function(){ if(lw&&!lw.hidden) lw.textContent='Still loading the map: the data is slow on this connection.'; },9000);
+  function timed(u,opt,mark){ var ac=window.AbortController?new AbortController():null, t=ac?setTimeout(function(){ ac.abort(); },30000):0;
+    opt.signal=ac?ac.signal:undefined;
+    return fetch(u,opt).then(function(r){ if(!r.ok){ if(mark) WHY=r.status===404?'missing':'net'; return null; } return r.json(); })
+      .catch(function(){ if(mark) WHY='net'; return null; }).then(function(x){ clearTimeout(t); return x; }); }
+  var j=function(u){ return timed(u,{cache:'no-cache'},true); };
+  var g=function(u){ return timed(u,{},false); };   // geometry never changes: let the browser cache it
   Promise.all([j(DATA+'atlas.json'), g(DATA+'counties.geo.json'), g('/data/us-states.geo.json')]).then(function(res){
-    ATLAS=res[0]; GEO=res[1]; STATES=res[2];
+    ATLAS=res[0]; GEO=res[1]; STATES=res[2]; clearTimeout(slowT); if(lw) lw.hidden=true;
     var seed=$('fa-seed');
-    if(!ATLAS||!ATLAS.counties){ $('fa-nodata').hidden=false; return; }          // the seed, if any, stays: it is the last build's numbers
+    if(!ATLAS||!ATLAS.counties){ var n0=$('fa-nodata'); if(WHY==='net') n0.innerHTML='The Atlas data did not load: the connection dropped or timed out. <a href="">Try again</a>'; n0.hidden=false; return; }          // the seed, if any, stays: it is the last build's numbers
     if(!GEO){ var n=$('fa-nodata'); n.textContent='The county outlines did not load, so the map cannot be drawn. The numbers below are current.'; n.hidden=false; return; }
     // the static block was written from one build; keep it only while the data file is that build
     if(seed&&seed.getAttribute('data-built')!==ATLAS.generated) seed.hidden=true;
@@ -1908,8 +1955,10 @@ function boot(){
     centerTab();                   // the tabs had no width while the app was hidden
     applyHash(true);
     window.addEventListener('hashchange',function(){ applyHash(false); });
+    window.addEventListener('popstate',function(){ applyHash(false); });
   }).catch(function(e){
     try{ console.error('farmland-atlas:',e); }catch(x){}
+    if(lw) lw.hidden=true;
     $('fa-app').hidden=true;
     var n=$('fa-nodata'); n.textContent='The Atlas could not be drawn in this browser. The summary below is from the last build.'; n.hidden=false;
     var seed=$('fa-seed'); if(seed) seed.hidden=false;
