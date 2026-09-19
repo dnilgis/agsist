@@ -1,18 +1,18 @@
 {
- "generated": "2026-09-18T23:33:01Z",
+ "generated": "2026-09-19T14:46:01Z",
  "from": "bids-full.json",
  "complete": false,
  "note": "Directory only: who operates a facility and where. No prices, no basis, no symbols, no delivery windows.",
  "counts": {
-  "facilities": 1804,
+  "facilities": 1805,
   "states": 28,
   "with_address": 0,
   "with_coords": 0,
   "with_url": 0,
-  "with_phone": 1804,
+  "with_phone": 1805,
   "saturated_zips": 0,
   "failed_zips": 0,
-  "rows_read": 18267
+  "rows_read": 18228
  },
  "saturated": [],
  "failed": [],
@@ -15667,6 +15667,15 @@
    "state": "WI",
    "zip": "54661",
    "phone": "(608) 989-2298",
+   "source": "barchart"
+  },
+  {
+   "facility": "Allied Cooperative, WI",
+   "branch": "CLINTONVILLE",
+   "city": "Clintonville",
+   "state": "WI",
+   "zip": "54929",
+   "phone": "715-823-7340",
    "source": "barchart"
   },
   {
