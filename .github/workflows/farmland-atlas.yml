@@ -235,6 +235,14 @@ jobs:
       - name: Build the Atlas
         run: python scripts/build_farmland_atlas.py --seed farmland-atlas.html
 
+      # A county whose numbers moved gets a new fingerprint, and the page hides a
+      # read whose fingerprint is old. Salvage keeps each such read, cut to the
+      # sentences that still pass against the new numbers; no API, no cost. A
+      # paid run of the reads step below rewrites them in full.
+      - name: Keep the reads in step with the build
+        continue-on-error: true
+        run: python scripts/atlas_reads.py --salvage
+
       # Skipped, not failed, when the key is not set: the page shows numbers
       # without reads rather than nothing.
       # A BATCH, AND AN ANNOTATION WHEN THE ACCOUNT SAYS NO.
