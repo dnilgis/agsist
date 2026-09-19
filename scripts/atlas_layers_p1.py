@@ -19,9 +19,10 @@ different size; no layer is combined with another into a score.
 
 import statistics
 
-NOT_YET = "not yet measured: this layer publishes after the first data run"
+NOT_YET = "not yet measured: not loaded into the Atlas yet"
 MIN_RATIO_PREMIUM = 1_000_000      # dollars of premium before a loss ratio is printed
 MIN_RATIO_YEARS = 5                # years in a period before a period ratio is printed
+MIN_YEARS_FOR_COUNT = 10           # closed crop years with a ratio before "years over 1.00" is printed
 MIN_CRP_ACRES = 100                # enrolled acres before a share is printed
 FULL_YEAR_MAPS = 40                # weekly maps in a year before it counts as a full year (52 or 53 when complete)
 HALF_YEAR_WEEKS = 26
@@ -32,6 +33,14 @@ def _ratio(indem, prem):
     return round(indem / prem, 2) if prem and prem >= MIN_RATIO_PREMIUM else None
 
 
+def _cost(indem, liab, prem):
+    """Loss cost: indemnity per dollar of insured liability. RMA sets premium
+    rates from each county's own loss history, so loss ratios drift toward the
+    same target everywhere; loss cost is what separates a risky county from a
+    safe one. Same premium gate as the ratio."""
+    return round(indem / liab, 4) if liab and prem and prem >= MIN_RATIO_PREMIUM else None
+
+
 # ---------------------------------------------------------------- RMA Summary of Business
 
 def sob_layer(s, latest_year, ran=False, partial_year=None, col_total_indemnity=None):
@@ -39,21 +48,33 @@ def sob_layer(s, latest_year, ran=False, partial_year=None, col_total_indemnity=
     from fetch_atlas_sob.py. Premium here is total premium on every policy,
     paid or not, so indemnity / premium is the loss ratio as RMA defines it.
     col_total_indemnity: the cause-of-loss file's total for the same county,
-    so the two RMA files can be checked against each other on the page."""
+    so the two RMA files can be checked against each other.
+
+    THE CROP YEAR RMA IS STILL SETTLING IS LEFT OUT OF EVERY RATIO AND COUNT.
+    Its premium is booked in full at sign-up and most of its indemnity is paid
+    months later. On 2026-09-19 the open year carried 0.15 nationally; left in,
+    it pulled Story IA's all-years ratio from 0.72 to 0.67 and Finney KS's from
+    1.08 to 1.02. It is reported apart, as "so far"."""
     if not s:
         return {"status": "withheld: RMA Summary of Business has no rows for this county"} if ran else {"status": NOT_YET}
     years = {int(k): v for k, v in (s.get("years") or {}).items()}
     if not years:
         return {"status": "withheld: RMA Summary of Business has no rows for this county"}
-    out = {"status": "ok", "first_year": min(years), "last_year": max(years),
-           "partial_year": partial_year if partial_year and partial_year in years else None}
-    ti = sum(v.get("indem", 0) for v in years.values())
-    tp = sum(v.get("prem", 0) for v in years.values())
+    partial = partial_year if partial_year and partial_year in years else None
+    closed = {y: v for y, v in years.items() if y != partial}
+    if not closed:
+        return {"status": f"withheld: RMA has only the open {partial} crop year for this county", "partial_year": partial}
+    out = {"status": "ok", "first_year": min(closed), "last_year": max(closed), "partial_year": partial}
+    ti = sum(v.get("indem", 0) for v in closed.values())
+    tp = sum(v.get("prem", 0) for v in closed.values())
+    tl = sum(v.get("liab", 0) for v in closed.values())
     out["total_indemnity"] = round(ti)
     out["total_premium"] = round(tp)
+    out["total_liability"] = round(tl)
     out["loss_ratio_all"] = _ratio(ti, tp)
     if out["loss_ratio_all"] is None:
-        out["loss_ratio_all_status"] = f"withheld: under ${MIN_RATIO_PREMIUM:,} of premium since {min(years)}"
+        out["loss_ratio_all_status"] = f"withheld: under ${MIN_RATIO_PREMIUM:,} of premium since {min(closed)}"
+    out["loss_cost_all"] = _cost(ti, tl, tp)
     per_year = {}
     over_one = 0
     worst = None
@@ -62,23 +83,44 @@ def sob_layer(s, latest_year, ran=False, partial_year=None, col_total_indemnity=
         r = _ratio(v.get("indem", 0), v.get("prem", 0))
         per_year[y] = {"indem": round(v.get("indem", 0)), "prem": round(v.get("prem", 0)), "liab": round(v.get("liab", 0)),
                        "policies": int(round(v.get("policies", 0))), "ratio": r}
+        if y == partial:
+            per_year[y]["partial"] = True
+            continue
         if r is not None:
             if r > 1:
                 over_one += 1
             if worst is None or r > worst["ratio"]:
                 worst = {"year": y, "ratio": r}
     out["per_year"] = per_year
-    out["years_with_ratio"] = sum(1 for v in per_year.values() if v["ratio"] is not None)
-    out["years_over_one"] = over_one
+    n_ratio = sum(1 for y, v in per_year.items() if v["ratio"] is not None and y != partial)
+    out["years_with_ratio"] = n_ratio
+    # A count of years over 1.00 means nothing without the years it is out of,
+    # and 1,060 counties have no year above the premium gate at all: their
+    # "0" was being painted as a real zero.
+    if n_ratio >= MIN_YEARS_FOR_COUNT:
+        out["years_over_one"] = over_one
+        out["share_over_one"] = round(over_one / n_ratio, 3)
+    else:
+        out["years_over_one"] = None
+        out["share_over_one"] = None
+        out["years_over_one_status"] = f"withheld: {n_ratio} crop years above the premium gate, {MIN_YEARS_FOR_COUNT} needed"
     out["worst_year"] = worst
     latest = per_year.get(max(years))
     out["latest"] = {"year": max(years), "liability": latest["liab"], "premium": latest["prem"], "policies": latest["policies"]}
-    periods = PERIODS + [(f"2020-{latest_year}", 2020, latest_year)] if latest_year else PERIODS
+    if partial:
+        pv = years[partial]
+        out["partial"] = {"year": partial, "indemnity": round(pv.get("indem", 0)), "premium": round(pv.get("prem", 0)),
+                          "liability": round(pv.get("liab", 0))}
+    last_closed = max(closed)
+    # the period label is the Atlas's, not the county's: every county's last
+    # period is the same span, so the page and the national sums line up
+    end = (latest_year - 1 if partial_year and latest_year == partial_year else latest_year) or last_closed
+    periods = PERIODS + [(f"2020-{end}", 2020, end)]
     out["periods"] = {}
     for label, a, b in periods:
-        ys = [y for y in years if a <= y <= b]
-        pi = sum(years[y].get("indem", 0) for y in ys)
-        pp = sum(years[y].get("prem", 0) for y in ys)
+        ys = [y for y in closed if a <= y <= b]
+        pi = sum(closed[y].get("indem", 0) for y in ys)
+        pp = sum(closed[y].get("prem", 0) for y in ys)
         rec = {"years_present": len(ys), "indemnity": round(pi), "premium": round(pp)}
         if len(ys) < MIN_RATIO_YEARS:
             rec["ratio"] = None
@@ -88,22 +130,25 @@ def sob_layer(s, latest_year, ran=False, partial_year=None, col_total_indemnity=
             if rec["ratio"] is None:
                 rec["ratio_status"] = f"withheld: under ${MIN_RATIO_PREMIUM:,} of premium in the period"
         out["periods"][label] = rec
-    # last ten crop years, the horizon a lender or an agent actually looks at
-    last10 = [y for y in years if y > max(years) - 10]
-    i10 = sum(years[y].get("indem", 0) for y in last10)
-    p10 = sum(years[y].get("prem", 0) for y in last10)
-    out["last10"] = {"from": min(last10), "to": max(last10), "years": len(last10), "indemnity": round(i10), "premium": round(p10), "ratio": _ratio(i10, p10)}
-    corn = {int(k): v for k, v in (s.get("corn") or {}).items()}
+    # last ten closed crop years, the horizon a lender or an agent actually looks at
+    last10 = [y for y in closed if y > last_closed - 10]
+    i10 = sum(closed[y].get("indem", 0) for y in last10)
+    p10 = sum(closed[y].get("prem", 0) for y in last10)
+    l10 = sum(closed[y].get("liab", 0) for y in last10)
+    enough = len(last10) >= MIN_RATIO_YEARS
+    out["last10"] = {"from": min(last10), "to": max(last10), "years": len(last10), "indemnity": round(i10), "premium": round(p10),
+                     "liability": round(l10), "ratio": _ratio(i10, p10) if enough else None, "loss_cost": _cost(i10, l10, p10) if enough else None}
+    if not enough:
+        out["last10"]["status"] = f"withheld: {len(last10)} closed crop years in the last ten, {MIN_RATIO_YEARS} needed"
+    corn = {int(k): v for k, v in (s.get("corn") or {}).items() if int(k) != partial}
     if corn:
         ci = sum(v.get("indem", 0) for v in corn.values())
         cp = sum(v.get("prem", 0) for v in corn.values())
         out["corn"] = {"indemnity": round(ci), "premium": round(cp), "ratio": _ratio(ci, cp), "years": len(corn)}
-    prf = {int(k): v for k, v in (s.get("prf") or {}).items()}
+    prf = {int(k): v for k, v in (s.get("prf") or {}).items() if int(k) != partial}
     out["prf_excluded"] = {"indemnity": round(sum(v.get("indem", 0) for v in prf.values())),
                            "premium": round(sum(v.get("prem", 0) for v in prf.values()))}
     if col_total_indemnity is not None and ti:
-        # the cause-of-loss file and the summary of business are two RMA
-        # products; they should agree to within their own revisions
         out["cause_of_loss_check"] = {"col_indemnity": round(col_total_indemnity), "sob_indemnity": round(ti),
                                       "col_over_sob": round(col_total_indemnity / ti, 3)}
     return out
@@ -368,7 +413,8 @@ def summarize_p1(rec):
     out["sob"] = {"status": s.get("status")}
     if s.get("status") == "ok":
         out["sob"].update({"loss_ratio_all": s.get("loss_ratio_all"), "ratio_last10": (s.get("last10") or {}).get("ratio"),
-                           "years_over_one": s.get("years_over_one")})
+                           "loss_cost_last10": (s.get("last10") or {}).get("loss_cost"),
+                           "years_over_one": s.get("years_over_one"), "share_over_one": s.get("share_over_one")})
     v = rec.get("value") or {}
     out["value"] = {"status": v.get("status")}
     if v.get("status") == "ok":
@@ -407,7 +453,8 @@ def seed_p1(n, money, pct_of_unit):
     s = n.get("sob")
     if s:
         per = " · ".join(f"{k} {v['ratio']:.2f}" for k, v in s["periods"].items() if v.get("ratio") is not None)
-        parts.append(f'<p>Loss ratio: across {s["counties"]} counties RMA has paid {money(s["total_indemnity"])} of indemnity on {money(s["total_premium"])} of premium since 1989, a loss ratio of {s["loss_ratio"]:.2f}; in {s["counties_over_one"]} counties indemnities have exceeded premium over the whole record. By period: {per}. Rainfall-index pasture policies excluded.</p>')
+        big = lambda x: f"${x / 1e9:,.1f} billion" if abs(x) >= 1e9 else money(x)
+        parts.append(f'<p>Loss ratio: across {s["counties"]} counties RMA has paid {big(s["total_indemnity"])} of indemnity on {big(s["total_premium"])} of premium in closed crop years since 1989, a loss ratio of {s["loss_ratio"]:.2f}; in {s["counties_over_one"]} counties indemnities have exceeded premium over the whole record. By period: {per}. The crop year still being paid is left out; rainfall-index pasture policies are excluded.</p>')
     else:
         parts.append('<p>Loss ratio: not yet measured.</p>')
     v = n.get("value")
@@ -454,12 +501,12 @@ def selftest():
                    "2021": {"liab": 40e6, "prem": 0.5e6, "indem": 0.1e6, "policies": 300}},
          "corn": {"2012": {"liab": 20e6, "prem": 1e6, "indem": 2.5e6}}, "prf": {"2012": {"liab": 1e6, "prem": 80e3, "indem": 500e3}}}
     L = sob_layer(s, 2025, ran=True, col_total_indemnity=3.1e6)
-    assert L["loss_ratio_all"] == 1.1 and L["total_premium"] == 3_000_000 and L["years_over_one"] == 1, L
+    assert L["loss_ratio_all"] == 1.1 and L["total_premium"] == 3_000_000 and L["years_over_one"] is None and L["loss_cost_all"] == 0.03, L   # 2 years: under the count gate
     assert L["per_year"][2012]["ratio"] == 2.0 and L["per_year"][2021]["ratio"] is None, L["per_year"]
     assert L["worst_year"] == {"year": 2012, "ratio": 2.0} and L["years_with_ratio"] == 2
     assert L["periods"]["2010-2019"]["ratio"] is None and "2 of the period" in L["periods"]["2010-2019"]["ratio_status"]
     assert L["periods"]["1989-1999"]["years_present"] == 0 and L["corn"]["ratio"] == 2.5
-    assert L["last10"]["from"] == 2012 and L["last10"]["years"] == 3 and L["last10"]["ratio"] == 1.1 and L["prf_excluded"]["indemnity"] == 500_000
+    assert L["last10"]["from"] == 2012 and L["last10"]["years"] == 3 and L["last10"]["ratio"] is None and "3 closed crop years" in L["last10"]["status"] and L["prf_excluded"]["indemnity"] == 500_000
     assert L["cause_of_loss_check"]["col_over_sob"] == 0.939, L["cause_of_loss_check"]
     assert L["latest"] == {"year": 2021, "liability": 40_000_000, "premium": 500_000, "policies": 300}
     # a period with enough years and enough premium prints
@@ -467,6 +514,18 @@ def selftest():
     L2 = sob_layer(s2, 2025, ran=True)
     assert L2["periods"]["2010-2019"]["ratio"] == 1.0 and L2["periods"]["2010-2019"]["years_present"] == 10, L2["periods"]
     assert sob_layer(None, 2025, ran=True)["status"].startswith("withheld") and sob_layer(None, 2025)["status"].startswith("not yet")
+    # the open crop year stays out of every ratio and count, and is reported apart
+    s3 = {"years": {str(y): {"liab": 10e6, "prem": 1e6, "indem": 1.5e6 if y == 2020 else 0.5e6, "policies": 1} for y in range(2012, 2026)}}
+    s3["years"]["2026"] = {"liab": 10e6, "prem": 1e6, "indem": 0.01e6, "policies": 1}
+    L3 = sob_layer(s3, 2026, ran=True, partial_year=2026)
+    assert L3["last_year"] == 2025 and L3["partial"]["year"] == 2026 and L3["per_year"][2026]["partial"] is True, L3
+    assert L3["loss_ratio_all"] == round((13 * 0.5e6 + 1.5e6) / 14e6, 2) and L3["years_with_ratio"] == 14 and L3["years_over_one"] == 1, L3
+    assert L3["last10"] == {"from": 2016, "to": 2025, "years": 10, "indemnity": 6_000_000, "premium": 10_000_000, "liability": 100_000_000,
+                            "ratio": 0.6, "loss_cost": 0.06}, L3["last10"]
+    assert "2020-2025" in L3["periods"] and L3["share_over_one"] == round(1 / 14, 3)
+    # fewer than ten closed years with a ratio: no count, not a zero
+    L4 = sob_layer({"years": {"2020": {"liab": 1e6, "prem": 2e6, "indem": 1e6, "policies": 1}}}, 2025, ran=True)
+    assert L4["years_over_one"] is None and L4["share_over_one"] is None and "withheld" in L4["years_over_one_status"], L4
     # value: 10,000 -> 12,100 over 2017..2022 = +21%, CAGR 3.9%; rent 300 / 12,100 = 2.48%
     V = value_layer({"years": {"2012": 8000, "2017": 10000, "2022": 12100}}, {"2022": 300, "2025": 320}, ran=True)
     assert V["latest"] == 12100 and V["change"]["pct"] == 21.0 and V["change"]["cagr_pct"] == 3.9 and V["change"]["from_year"] == 2017, V
@@ -519,7 +578,7 @@ def selftest():
     # on the map, so it lives in the county's detail file and must not come back
     # here: at 50 states the index is fetched by every visitor and the detail
     # file by the one who clicks.
-    assert set(sm["sob"]) == {"status", "loss_ratio_all", "ratio_last10", "years_over_one"}, sm["sob"]
+    assert set(sm["sob"]) == {"status", "loss_ratio_all", "ratio_last10", "loss_cost_last10", "years_over_one", "share_over_one"}, sm["sob"]
     assert set(sm["value"]) == {"status", "latest", "change_cagr_pct", "rent_to_value_pct"}, sm["value"]
     assert set(sm["crp"]) == {"status", "share_pct", "change_from_peak_pct", "expiring_next3"}, sm["crp"]
     assert set(sm["drought"]) == {"status", "weeks", "last5", "years_half_or_more"}, sm["drought"]

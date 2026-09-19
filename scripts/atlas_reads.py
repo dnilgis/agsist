@@ -116,7 +116,10 @@ Rules that are checked by a program after you answer:
 5. Lead with the thing a land buyer would most want to know for this county, from what is present. Say what is present, not what is missing, unless nothing is present.
 6. The Atlas never combines heat and water into one grade. Do not rank the county overall. Do not use the word "score".
 7. These words fail the check and must not appear: nearly, almost, about, roughly, half, double, twice, triple, quarter, fold, alarming, dramatic, unprecedented, crisis, robust.
-8. To compare two numbers, write both numbers and stop. Do not state the gap, the ratio, a share of a total, or how many years a period spans: each of those is a new number and fails the check."""
+8. To compare two numbers, write both numbers and stop. Do not state the gap, the ratio, a share of a total, or how many years a period spans: each of those is a new number and fails the check.
+9. Write money exactly as the block writes it, with the dollar sign and commas: "$10,914 per acre", "$156.5 million". Never write "dollars" after a number.
+10. Do not say a figure rose, fell, grew or shrank across three or more periods unless every step moves the same way. Otherwise list the periods and stop.
+11. Do not mention how this text was written, by whom or by what, or that anything checks it."""
 
 
 def log(*a):
@@ -129,6 +132,20 @@ def fmt_num(x):
     if isinstance(x, float) and x.is_integer():
         return str(int(x))
     return str(x)
+
+
+def usd(x):
+    """$10,914 -- the page's money format. The gate strips commas, so the
+    number check still reads 10914."""
+    return "$" + f"{int(round(x)):,}"
+
+
+def usd_m(x):
+    """$156.5 million; under a million it is written in whole dollars instead
+    of "0.0 million", which is how 854 dollars became "0 million" on 9/19."""
+    if abs(x) >= 1e6:
+        return f"${x / 1e6:,.1f} million"
+    return usd(x)
 
 
 def pct100(x):
@@ -147,24 +164,25 @@ def inputs_block(fips, rec):
     L = [f"County: {rec['name']}{(' ' + _u) if _u else ''}, {rec['state']}"]
     r = rec.get("rent") or {}
     if r.get("status") == "ok" and r.get("nonirr"):
-        L.append(f"Non-irrigated cash rent {r['nonirr']['year']}: {fmt_num(r['nonirr']['value'])} dollars per acre")
+        L.append(f"Non-irrigated cash rent {r['nonirr']['year']} (county average): {usd(r['nonirr']['value'])} per acre")
         ch = r.get("nonirr_change10")
         if ch:
             L.append(f"Change in non-irrigated rent from {ch['from_year']} to {ch['to_year']}: {fmt_num(ch['pct'])} percent")
         if r.get("irr"):
-            L.append(f"Irrigated cash rent {r['irr']['year']}: {fmt_num(r['irr']['value'])} dollars per acre")
+            L.append(f"Irrigated cash rent {r['irr']['year']}: {usd(r['irr']['value'])} per acre")
     else:
         L.append("Cash rent: withheld")
     y = rec.get("yield") or {}
     if y.get("status") == "ok":
         if y.get("slope") is not None:
-            L.append(f"County corn yield trend, fitted on published years {y.get('window') or ''}: {fmt_num(y['slope'])} bushels per acre per year, r-squared {fmt_num(y['r2'])}")
+            L.append(f"County corn yield trend, fitted on published years {y.get('window') or ''}: {fmt_num(round(y['slope'], 1))} bushels per acre a year")
         L.append(f"Median county corn yield {y.get('first_year')}-{y.get('last_year')}: {fmt_num(y['median'])} bushels per acre; worst year {y['worst']['year']} at {fmt_num(y['worst']['value'])}")
     else:
         L.append("County corn yield: withheld")
     wp = rec.get("water_premium") or {}
     if wp.get("status") == "ok":
-        L.append(f"Irrigated rent premium over non-irrigated {wp['latest']['year']}: {fmt_num(wp['latest']['premium'])} dollars per acre, ratio {fmt_num(wp['latest']['ratio'])}; in {wp['first']['year']} it was {fmt_num(wp['first']['premium'])}; direction: {wp['direction']}")
+        if wp["latest"].get("ratio") is not None and wp["first"].get("ratio") is not None and not str(wp.get("direction", "")).startswith("not called"):
+            L.append(f"Irrigated cash rent as a multiple of non-irrigated rent: {wp['latest']['ratio']:.2f} in {wp['latest']['year']}, {wp['first']['ratio']:.2f} in {wp['first']['year']}; direction of the multiple: {wp['direction']}")
     h = rec.get("heat") or {}
     if h.get("status") == "ok":
         j = (h.get("months") or {}).get("jul") or {}
@@ -190,7 +208,8 @@ def inputs_block(fips, rec):
         if s.get("share") is not None:
             L.append(f"Share of harvested cropland irrigated, 2022 census: {pct100(s['share'])} percent" + ("" if s.get("reported", True) else " (no farm reported irrigated harvested cropland)"))
         g = w.get("groundwater_share_2015") or {}
-        if g.get("share") is not None:
+        tiny = str((w.get("applied_2015") or {}).get("status") or "").startswith("withheld: under")
+        if g.get("share") is not None and not tiny:
             L.append(f"Share of irrigation water from groundwater, 2015: {pct100(g['share'])} percent")
     else:
         L.append("Water dependence: not yet measured")
@@ -198,28 +217,31 @@ def inputs_block(fips, rec):
     if lo.get("status") == "ok":
         if lo.get("share_all"):
             top = lo["top_cause_all"]
-            L.append(f"Crop insurance indemnities {lo['first_year']}-{lo['last_year']}" + (f" ({lo['partial_year']} still partial)" if lo.get("partial_year") else "") + f": {fmt_num(round(lo['total_indemnity'] / 1e6, 1))} million dollars; largest cause: {CAUSE_WORDS[top]} at {pct100(lo['share_all'][top])} percent")
+            L.append(f"Crop insurance indemnities {lo['first_year']}-{lo['last_year']}, closed crop years: {usd_m(lo['total_indemnity'])}; largest cause: {CAUSE_WORDS[top]} at {pct100(lo['share_all'][top])} percent")
         for label, p in (lo.get("periods") or {}).items():
             if p.get("heat_drought_share") is not None:
                 L.append(f"Heat and drought share of indemnities {label}: {pct100(p['heat_drought_share'])} percent")
-        if lo.get("irrigation_failure_indemnity"):
-            L.append(f"Indemnities for irrigation failure, all years: {fmt_num(round(lo['irrigation_failure_indemnity'] / 1e6, 2))} million dollars")
+        if (lo.get("irrigation_failure_indemnity") or 0) >= 10000:
+            L.append(f"Indemnities for irrigation failure, all closed years: {usd_m(lo['irrigation_failure_indemnity'])}")
     else:
         L.append("Insurance loss record: not yet measured")
     sb = rec.get("sob") or {}
     if sb.get("status") == "ok":
         if sb.get("loss_ratio_all") is not None:
-            L.append(f"Crop insurance loss ratio (indemnity over total premium) {sb['first_year']}-{sb['last_year']}: {fmt_num(sb['loss_ratio_all'])}; crop years paying out more than premium: {sb.get('years_over_one')} of {sb.get('years_with_ratio')}")
+            L.append(f"Crop insurance loss ratio (indemnity over total premium), closed crop years {sb['first_year']}-{sb['last_year']}: {fmt_num(sb['loss_ratio_all'])}"
+                     + (f"; crop years paying out more than premium: {sb['years_over_one']} of {sb['years_with_ratio']}" if sb.get("years_over_one") is not None else ""))
         l10 = sb.get("last10") or {}
         if l10.get("ratio") is not None:
-            L.append(f"Loss ratio over the last ten crop years {l10['from']}-{l10['to']}: {fmt_num(l10['ratio'])}")
+            L.append(f"Loss ratio over the ten closed crop years {l10['from']}-{l10['to']}: {fmt_num(l10['ratio'])}")
+        if l10.get("loss_cost") is not None:
+            L.append(f"Indemnity paid per $100 of insured value, {l10['from']}-{l10['to']}: ${l10['loss_cost'] * 100:.2f}")
     v = rec.get("value") or {}
     if v.get("status") == "ok" and v.get("latest") is not None:
-        L.append(f"Census market value of land and buildings, {v['latest_year']}: {fmt_num(v['latest'])} dollars per acre")
+        L.append(f"Census value of land and buildings, {v['latest_year']} (the operators' own estimate, not a sale price): {usd(v['latest'])} per acre")
         if (v.get("change") or {}).get("cagr_pct") is not None:
             L.append(f"Land value change {v['change']['from_year']}-{v['change']['to_year']}: {fmt_num(v['change']['pct'])} percent, {fmt_num(v['change']['cagr_pct'])} percent a year")
         if (v.get("rent_to_value") or {}).get("pct") is not None:
-            L.append(f"Non-irrigated cash rent as a share of land value, {v['rent_to_value']['year']}: {fmt_num(v['rent_to_value']['pct'])} percent")
+            L.append(f"Non-irrigated cash rent {v['rent_to_value']['year']} as a share of that census value: {fmt_num(v['rent_to_value']['pct'])} percent")
     c = rec.get("crp") or {}
     if c.get("status") == "ok":
         if (c.get("latest") or {}).get("acres") is not None:
@@ -246,7 +268,7 @@ def inputs_block(fips, rec):
     wl = rec.get("wells") or {}
     if wl.get("status") == "ok":
         if wl.get("wells") is not None:
-            L.append(f"Registered wells: {wl['wells']}; irrigation wells not decommissioned: {wl['irrigation_active']}" + (f"; median depth {fmt_num(wl['depth_median_ft'])} feet" if wl.get('depth_median_ft') is not None else "") + (f"; median static water level {fmt_num(wl['static_median_ft'])} feet" if wl.get('static_median_ft') is not None else ""))
+            L.append(f"Registered wells: {wl['wells']:,}; irrigation wells with no decommission date on record: {wl['irrigation_active']:,}" + (f"; median depth {fmt_num(wl['depth_median_ft'])} feet" if wl.get('depth_median_ft') is not None else "") + (f"; median static water level when the wells were drilled {fmt_num(wl['static_median_ft'])} feet" if wl.get('static_median_ft') is not None else ""))
         elif wl.get("points") is not None:
             L.append(f"Water rights: {wl['active']} active points of diversion, {wl['irrigation_active']} irrigation" + (f"; median priority year {wl['priority_year_median']}" if wl.get('priority_year_median') else ""))
     return "\n".join(L)
@@ -373,12 +395,16 @@ def api_json(api_key, method, path, payload=None, timeout=120, retry=True):
             raise ApiError(f"network: {type(e).__name__}: {e}")
 
 
-def request_params(block, model):
+_FEEDBACK = {}   # fips -> why the first read failed the gate; sent back once in round 2
+
+
+def request_params(block, model, why=None):
     # Sonnet 5 thinks by default and the thinking counts against max_tokens: on 9/19 it
     # used up the 400 before the read in 828 of 2,331 requests (stop_reason max_tokens),
     # and those tokens were billed. A 130-word read from a fixed block needs no thinking.
     return {"model": model, "max_tokens": 400, "thinking": {"type": "disabled"}, "system": SYSTEM,
-            "messages": [{"role": "user", "content": "Numbers for this county:\n\n" + block + "\n\nWrite the read."}]}
+            "messages": [{"role": "user", "content": "Numbers for this county:\n\n" + block + "\n\nWrite the read."
+                          + (f"\n\nA first read of these numbers failed the check: {why}. Write a new one that passes; stay under 110 words." if why else "")}]}
 
 
 def parse_results(jsonl_bytes):
@@ -413,7 +439,7 @@ def run_batch(api_key, jobs, model, label):
     The batch id is in the log; Anthropic keeps a batch's results for 29 days."""
     if not jobs:
         return {}
-    reqs = [{"custom_id": f, "params": request_params(b, model)} for f, b in sorted(jobs.items())]
+    reqs = [{"custom_id": f, "params": request_params(b, model, _FEEDBACK.get(f))} for f, b in sorted(jobs.items())]
     raw = api_json(api_key, "POST", "/v1/messages/batches", {"requests": reqs}, timeout=300, retry=False)
     b = json.loads(raw)
     bid = b["id"]
@@ -576,15 +602,20 @@ def selftest():
            "yield": {"status": "ok", "slope": 2.468, "r2": 0.454, "first_year": 2008, "last_year": 2024, "window": "2008-2024", "median": 195.9,
                      "worst": {"year": 2008, "value": 181.0}},
            "water_premium": {"status": "ok", "latest": {"year": 2025, "premium": 151.0, "ratio": 2.094},
-                             "first": {"year": 2008, "premium": 84.0}, "direction": "rising"},
+                             "first": {"year": 2008, "premium": 84.0, "ratio": 1.8}, "direction": "rising"},
            "heat": {"status": "not yet measured"}, "water": {"status": "not yet measured"}, "loss": {"status": "not yet measured"}}
     block = inputs_block("31001", rec)
-    assert "138 dollars per acre" in block and "7.8 percent" in block and "2.468 bushels" in block, block
+    assert "$138 per acre" in block and "7.8 percent" in block and "2.5 bushels" in block and "r-squared" not in block, block
+    assert "2.09 in 2025, 1.80 in 2008" in block, block
+    assert usd(10914) == "$10,914" and usd_m(156461808) == "$156.5 million" and usd_m(854) == "$854"
+    # the retry carries the reason; a first request does not
+    assert "failed the check: 134 words" in request_params("b", "m", "134 words, limit 130")["messages"][0]["content"]
+    assert "failed the check" not in request_params("b", "m")["messages"][0]["content"]
     assert "Night heat: not yet measured" in block
-    ok = "Adams County rents non-irrigated ground at 138 dollars an acre in 2025, up 7.8 percent since 2014. Irrigated ground brings 289. The irrigated premium was 84 dollars in 2008 and 151 in 2025, and it is rising. Night heat, water and the loss record are not yet measured."
+    ok = "Adams County rents non-irrigated ground at $138 per acre in 2025, up 7.8 percent since 2014. Irrigated ground brings $289. Irrigated rent was 1.80 times dry rent in 2008 and 2.09 in 2025, and the multiple is rising. Night heat, water and the loss record are not yet measured."
     assert gate(ok, block) is None, gate(ok, block)
-    bad = ok.replace("151", "152")
-    assert gate(bad, block) == "number not in inputs: 152", gate(bad, block)
+    bad = ok.replace("2.09", "2.1")
+    assert gate(bad, block) == "number not in inputs: 2.1", gate(bad, block)
 
     # THE INPUT MAY NOT CONTAIN A WORD THE READ IS FORBIDDEN TO USE.
     #
@@ -822,6 +853,7 @@ def main():
                         n_gate += 1
                         _log_reject(fips, why, val)
                         retry[fips] = block
+                        _FEEDBACK[fips] = why
                     else:
                         _log_reject(fips, why, val)
                         reads["counties"][fips] = {"status": f"withheld: {why}", "sha": recs[fips]["sha"],

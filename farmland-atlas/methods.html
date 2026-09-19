@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#0a0c0d">
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');function gaEvent(n,p){try{gtag('event',n,p||{});}catch(e){}}</script>
+  <link rel="preload" href="/components/styles.css?v=16" as="style">
+  <link rel="stylesheet" href="/components/styles.css?v=16">
+  <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
+  <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
+  <link rel="manifest" href="/manifest.json">
+
+  <title>Farmland Atlas Methods: Sources and Formulas | AGSIST</title>
+  <meta name="description" content="How every Farmland Atlas figure is measured: the federal and state files, the formulas, the gates, and what is withheld and why.">
+  <link rel="canonical" href="https://agsist.com/farmland-atlas/methods">
+  <meta property="og:title" content="Farmland Atlas Methods | AGSIST">
+  <meta property="og:url" content="https://agsist.com/farmland-atlas/methods">
+  <meta property="og:description" content="The files, formulas and gates behind every Farmland Atlas figure, and what is withheld and why.">
+  <meta property="og:image" content="https://agsist.com/img/og/agsist.jpg">
+<style>
+.fm{max-width:780px;margin:0 auto;padding:0 1rem 3rem}
+.fm h1{font-family:var(--font-display);font-size:1.7rem;font-weight:800;color:var(--text);margin:1.2rem 0 .5rem}
+.fm h2{font-family:var(--font-display);font-size:1.15rem;font-weight:800;color:var(--text);margin:1.8rem 0 .4rem;scroll-margin-top:90px}
+.fm p{font-size:.93rem;line-height:1.7;color:var(--text-dim)}
+.fm a{color:var(--gold)}
+.fm .src{font-size:.85rem;line-height:1.9;color:var(--text-muted)}
+.breadcrumb{max-width:780px;margin:0 auto;padding:.65rem 1rem 0;font-size:.795rem;color:var(--text-dim)}
+.breadcrumb a{color:var(--text-dim);text-decoration:none}
+:root[data-theme="light"] .fm{--gold:#7a5a12}
+</style>
+</head>
+<body>
+<a href="#main" class="skip">Skip to content</a>
+<div id="site-header"></div>
+<nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a> › <a href="/farmland-atlas">Farmland Atlas</a> › <span>Methods</span></nav>
+<main id="main" class="fm">
+  <h1>How the Farmland Atlas is measured</h1>
+  <p>Every figure on the <a href="/farmland-atlas">Farmland Atlas</a> comes from a public federal or state file. This page names each file, the formula, the gate a number must pass before it is printed, and what is withheld and why.</p>
+
+    <h2 id="m-heat">Night heat</h2>
+    <p> NOAA NCEI's nClimDiv county dataset gives, for every county, the monthly mean of each day's minimum temperature since 1895. I keep July, the silking month for corn across the Corn Belt, and August, the grain-fill month where the cited harm from warm nights is measured. The recent level is the mean of the last ten Julys (at least eight must be present). The trend is an ordinary least squares line through the Julys since 1976, reported in degrees per decade with a 95% confidence interval; a county gets a direction only when that interval, as printed, excludes zero, and no trend at all with fewer than forty of the years present. 1976 sits at the cold end of the record, which flatters a warming slope, so the slope through the whole record from 1895 is printed beside it in the arithmetic. Decade means run from the 1900s; a decade needs five Julys to print and ten to count as complete. A hot July is one whose average low was at or above 70 F: extension research puts the harm line for corn at nightly lows above 70 F, and a monthly average at that line means most nights were over it. North of Kansas that is rare, and the count says so; the decade means and the slider carry the Corn Belt story.</p>
+    <h2 id="m-water">Water</h2>
+    <p> Two official sources, neither produced by AGSIST. The irrigated share is irrigated harvested cropland over all harvested cropland from the 2022 Census of Agriculture; where NASS suppressed the irrigated figure it stays suppressed here, and where NASS published no irrigated row at all, which is what happens when no farm in the county reported any, the county shows none reported. The groundwater share is crop-irrigation withdrawals from groundwater over all fresh crop-irrigation withdrawals in the USGS county water-use estimates for 2015, the latest county release; USGS builds those from irrigated acreage and application rates, not meters, so they are estimates. Water withdrawn per irrigated acre comes from the same file and includes conveyance losses, so surface-water districts read high. The irrigated rent premium is separate: it is NASS's own survey of what tenants pay, and it needs at least six paired years before a trend is printed.</p>
+    <h2 id="m-loss">The loss record</h2>
+    <p> USDA RMA's cause-of-loss files, one per crop year from 1989. Every crop indemnity dollar in the county is grouped by the peril that caused it and summed by period: 1989 to 1999, the 2000s, the 2010s, and 2020 on. Pasture, rangeland and forage rainfall-index policies are left out, because they pay on a rainfall index rather than a destroyed crop and in ranch counties they would swamp everything else; the dollars left out are printed. Area and index plans on crops (GRP, GRIP, ARPI, SCO, STAX) pay on a county outcome and RMA assigns them no peril; they are carried as peril not assigned rather than guessed into drought. Price decline stays in the denominator, so a revenue-protection county's 2014 and 2015 show up as price, not weather. Prevented planting sits inside excess moisture. Dollars are nominal and participation grew sharply after 1994 and 2000, so the shares by period are the comparable numbers, not the dollars. The heat-and-drought share by period is the number to watch. Irrigation failure is its own group: it is failure of the irrigation supply or equipment within the policy period, and aquifer decline is not an insured cause, so it is a narrow signal, not the Ogallala. The current crop year is partial until RMA closes it and is marked. The cause-of-loss files carry premium only for policies that had a loss, so no loss ratio is computed from them; that comes from the next layer.</p>
+    <h2 id="m-ratio">Loss ratio and loss cost</h2>
+    <p>The crop year RMA is still settling is left out of every ratio, count and share on the Atlas and shown apart as "so far": its premium is booked in full at sign-up and most of its claims are paid months later. Loss cost is indemnity per $100 of insured liability. RMA prices premium from each county's own loss history, so loss ratios drift toward the same target everywhere; loss cost is what tells a risky county from a safe one. "Years over 1.00" is printed only for a county with ten or more crop years above the premium gate.  RMA's Summary of Business county files (sobcov, one per crop year from 1989) carry every policy in the county whether it paid or not: liability, total premium, subsidy and indemnity by crop, plan and coverage level. Indemnity over that premium is the loss ratio as RMA defines it, and 1.00 means the county's book paid out exactly what it took in. It is summed over the whole record, over the last ten crop years, and by the same periods as the loss record; it prints only above $1,000,000 of premium, and a period prints only with at least five of its years present. Rainfall and Vegetation Index plans are left out here too, so the two RMA layers describe the same book, and the ratio of the two files' indemnity totals is printed as a check. The premium is the whole premium, farmer-paid plus federal subsidy, because that is what the ratio means to the program; a farmer's own premium is a fraction of it.</p>
+    <h2 id="m-value">Land value</h2>
+    <p>Dry cash rent divided by this value is withheld where a tenth or more of cropland is irrigated (the 2022 census share, or USGS 2015 irrigated acres where the census suppressed it), because the census value then carries the irrigation and the ratio reads like a cap rate it is not.  The Census of Agriculture asks every operator the market value of their land and buildings; NASS publishes the average per acre by county for 2012, 2017 and 2022. It is the only county land value on one method across every state, and it is what it is: operators' estimates, buildings included, five years apart. Beside it, the county's non-irrigated cropland cash rent for the census year divided by that value, printed as a gross percentage. No modelled value, ever, unless it ships with a backtest beside it; the one vendor that prints an accuracy for its model prints ±25%.</p>
+    <h2 id="m-crp">CRP</h2>
+    <p> FSA's county statistics: acres enrolled by year since 1986, and acres whose contracts expire by fiscal year. The share is CRP acres over CRP acres plus 2022 harvested cropland, the county's arable base. Acres expiring in the current and next two fiscal years are summed and printed against the enrolled total. FSA publishes county names; they are joined to FIPS by name and a name that does not match is listed, never guessed.</p>
+    <h2 id="m-drought">Drought</h2>
+    <p> The U.S. Drought Monitor's county statistics, one record per weekly map since January 2000. A week counts when at least half the county's area was in D2 (severe) or worse; D3 (extreme) or worse is counted the same way. Weeks are summed by year, over the record, and over the last five full years; a year needs forty weekly maps to count as full. The Monitor is a map drawn by people from many indicators, not a rain gauge, and it is the map that USDA's disaster designations and livestock forage payments key off, so it is the drought that the program world recognises.</p>
+    <h2 id="m-energy">Solar and wind</h2>
+    <p> EIA's Form 860 lists every generator of 1 MW or more at a grid-connected plant, with the plant's county and coordinates; the Operable tab gives what runs and the Proposed tab what developers have reported with a planned year. Solar, wind and battery nameplate MW are summed by county, with the year the first solar and first wind generator came online. A county with no plant in the file reads zero, not missing, because the file is a census. Proposed is not the interconnection queue; much of it is never built, and the queue itself is a later layer.</p>
+    <h2 id="m-wells">Wells and water rights</h2>
+    <p> Two states publish an open register that this page has read and verified: Nebraska's registered wells (every well, with use, status, depth, static level at completion and completion date) and Kansas's WIMAS points of diversion (every point, with use, active flag, source of supply and the right's priority date). Nebraska counties show wells, irrigation wells not decommissioned, median depth, median static level and completions by decade; Kansas counties show points, active irrigation rights, the median priority year and the source split. Every other state reads "no open register read yet", which is the truth: some have one behind a login or a fee, some have none. Water-level change over the High Plains aquifer (USGS) is a layer to add once its file can be fetched from a runner.</p>
+    <h2 id="m-premium">Irrigated against dry rent</h2>
+    <p>Irrigated cash rent divided by non-irrigated cash rent, same county, same survey year. The direction is called on that multiple, fitted through every paired year, and only when the 95% interval excludes zero. A dollar gap would widen with general rent inflation even when nothing about the water changed. Irrigated rent also pays for the well, pump and pivot, so the multiple is not the price of water alone.</p>
+    <h2 id="m-rent">Rent and yield</h2>
+    <p> County cash rent and county corn yields are the same NASS series that drive <a href="/cash-rent" style="color:var(--gold)">Cash Rent by County</a>. The yield trend here is fitted on every published year since 2008 and labelled with its window; that page's own trend uses the last fifteen years, which as of 2026 starts on the 2012 drought, and the two are different windows, not two answers. The rent change is nominal dollars over about ten years, using the closest published year at or before ten years back, because NASS published no county estimates for 2015 or 2018 and some counties skip years. The worst year is an observation, not a fit: the lowest published yield since 2008 as a share of the county's median over the same years.</p>
+    <h2 id="m-owners">Who farms it</h2>
+    <p> Read from the same files as <a href="/land-tenure" style="color:var(--gold)">Rented vs Owner-Farmed</a> and <a href="/foreign-land" style="color:var(--gold)">Foreign-Owned Land</a>, so the pages cannot disagree. The rented share is land rented from others over land owned plus rented, as farms reported it to the Census of Agriculture; a county NASS suppressed has no figure, never an estimate. Foreign-held acres are USDA FSA's AFIDA disclosures summed by county for the latest year: self-reported, leaseholds of ten years or more included, and much of it forest. A county with no filing disclosed none, so it is coloured as zero rather than left blank; codes with no boundary on the map are left out.</p>
+    <h2 id="m-never">What is never done</h2>
+    <p> No number is interpolated from a neighbour. No layer is scaled, weighted or added to another. No owner name appears on this page. No land value is modelled. A county with nothing published shows a dash and the reason. The Atlas holds every county in the fifty states, and each layer covers only the counties its own source publishes: some cover all of them, some are still being fetched a state at a time, and the wells layer is two states by design. The county panel says which is which.</p>
+  
+  <h2 id="m-thesis">The night-heat yield test</h2>
+  <p>The Atlas tests one claim: that counties whose July nights are warm, or warming, gain corn yield more slowly. Each county's yield trend is fitted on every published year since 2008. Four night-heat measures are compared with it, each across all counties and again within each state after the state mean is taken out. The within-state rows are the ones that count, because across the country the south is warmer and different in every other way too. Eight tests are run and all eight are shown; each chance figure is multiplied by eight. Neighbouring counties move together, so treat the chance figures as generous.</p>
+  <h2 id="m-sources">Sources</h2>
+  <p class="src">NOAA NCEI, <a href="https://www.ncei.noaa.gov/pub/data/cirs/climdiv/" target="_blank" rel="noopener">nClimDiv county monthly minimum temperature</a> (climdiv-tmincy) ·
+      USDA NASS, <a href="https://quickstats.nass.usda.gov/" target="_blank" rel="noopener">Census of Agriculture 2022 and Cash Rents Survey</a> ·
+      USGS, <a href="https://www.usgs.gov/data/estimated-use-water-united-states-county-level-data-2015" target="_blank" rel="noopener">Estimated Use of Water in the United States, county-level data for 2015</a> ·
+      USDA RMA, <a href="https://www.rma.usda.gov/tools-reports/summary-of-business/cause-loss" target="_blank" rel="noopener">Summary of Business, cause of loss</a> and <a href="https://www.rma.usda.gov/tools-reports/summary-of-business/state-county-crop-summary-business" target="_blank" rel="noopener">state/county/crop with coverage level</a> ·
+      USDA NASS, Census of Agriculture 2012, 2017, 2022, land and buildings value per acre ·
+      USDA FSA, <a href="https://www.fsa.usda.gov/tools/informational/reports/conservation-statistics/crp" target="_blank" rel="noopener">CRP statistics by county</a> ·
+      National Drought Mitigation Center, <a href="https://droughtmonitor.unl.edu/DmData/DataDownload/ComprehensiveStatistics.aspx" target="_blank" rel="noopener">U.S. Drought Monitor county statistics</a> ·
+      EIA, <a href="https://www.eia.gov/electricity/data/eia860/" target="_blank" rel="noopener">Form 860</a> ·
+      Nebraska DNR, <a href="https://gis.ne.gov/agency3/rest/services/Groundwater_Wells_DWEE/FeatureServer/0" target="_blank" rel="noopener">registered groundwater wells</a> ·
+      Kansas DWR / KGS, <a href="https://services.kgs.ku.edu/arcgis/rest/services/wimas/wimas_pd/FeatureServer/0" target="_blank" rel="noopener">WIMAS points of diversion</a> ·
+      Night-heat harm line: <a href="https://agcrops.osu.edu/newsletter/corn-newsletter/2019-27/hot-night-temperatures-can-decrease-corn-yield" target="_blank" rel="noopener">Ohio State C.O.R.N. 2019-27</a> ·
+      USDA NASS, Census of Agriculture land in farms by tenure, 1997–2022 (via <a href="/land-tenure">Rented vs Owner-Farmed</a>) ·
+      USDA FSA, <a href="https://www.fsa.usda.gov/resources/economic-policy-analysis/afida/annual-reports-underlying-data" target="_blank" rel="noopener">Agricultural Foreign Investment Disclosure Act holdings</a> (via <a href="/foreign-land">Foreign-Owned Land</a>) ·
+      County boundaries: US Census cartographic boundary file, 2010 vintage.
+      <br>Data files: <a href="/data/atlas/atlas.json">atlas.json</a> (every county, every layer) · per-county detail under <span class="fa-mono">/data/atlas/counties/&lt;fips&gt;.json</span>.</p>
+</main>
+<div id="site-footer"></div>
+<script src="/components/loader.js?v=16" defer></script>
+</body>
+</html>
