@@ -101,7 +101,9 @@ BANNED = ["alarming", "devastating", "skyrocket", "plummet", "crisis", "catastro
           "shocking", "dramatic", "unprecedented", "game-chang", "robust", "leverage", "delve",
           "deep dive", "navigate", "landscape", "journey", "unlock",
           # derived magnitudes: a number the model computed, which the digit check cannot see
-          "double", "tripl", "twice", "half", "a third", "quarter", "-fold", "nearly", "almost", "roughly", "about "]
+          "double", "tripl", "twice", "half", "a third", "quarter", "-fold", "nearly", "almost", "roughly", "about ",
+          # 9/19: 945 of 2,062 reads spent words on what the county does not have
+          "withheld", "not yet measured", "not measured"]
 CAUSE_WORDS = {"heat_drought": "heat and drought", "wet": "excess moisture and flood", "hail": "hail",
                "wind": "wind", "cold": "freeze and frost", "irrigation": "irrigation failure",
                "price": "price decline", "unassigned": "area and index plans with no peril assigned", "other": "other causes"}
@@ -109,11 +111,11 @@ CAUSE_WORDS = {"heat_drought": "heat and drought", "wet": "excess moisture and f
 SYSTEM = """You write the county read for AGSIST's Farmland Atlas. First person plural is not used; write as "I". Plain, short sentences. No adjectives of alarm. No advice to buy or sell. No emoji. No headings, no bullets.
 
 Rules that are checked by a program after you answer:
-1. Use ONLY the numbers in the block you are given, written exactly as given (same digits). Do not compute new numbers, do not round, do not convert units, do not add a year that is not in the block. A negative percent in the block is a fall: write "down 40 percent", never "down -40 percent".
+1. Use ONLY the numbers in the block you are given, written exactly as given (same digits). Do not compute new numbers, do not round, do not convert units, do not add a year that is not in the block. A negative number in the block is a fall: write "down 40 percent" or "falling 2.3 bushels per acre a year", never a minus sign.
 2. Name a period exactly as the block writes it. The block writes "1989-1999", so write "1989-1999". Never turn a period into a decade: "the 1990s" puts the number 1990 in your answer, 1990 is not in the block, and the check rejects it. The same goes for "the 2000s" and "the 2020s" unless the block writes that exact token.
-3. If a layer says "not yet measured" or "withheld", say so in four words or fewer and move on. Do not guess what it would show.
+3. The block lists only what is measured for this county. Do not mention anything that is missing, withheld, unpublished or not measured, and do not guess at it.
 4. Four or five sentences. Keep it under 120 words; a program rejects anything at 130 words or more, so 120 is the target and not a stretch.
-5. Lead with the thing a land buyer would most want to know for this county, from what is present. Say what is present, not what is missing, unless nothing is present.
+5. Lead with the thing a land buyer would most want to know for this county, from what is present. Say what is present.
 6. The Atlas never combines heat and water into one grade. Do not rank the county overall. Do not use the word "score".
 7. These words fail the check and must not appear: nearly, almost, about, roughly, half, double, twice, triple, quarter, fold, alarming, dramatic, unprecedented, crisis, robust.
 8. To compare two numbers, write both numbers and stop. Do not state the gap, the ratio, a share of a total, or how many years a period spans: each of those is a new number and fails the check.
@@ -170,15 +172,11 @@ def inputs_block(fips, rec):
             L.append(f"Change in non-irrigated rent from {ch['from_year']} to {ch['to_year']}: {fmt_num(ch['pct'])} percent")
         if r.get("irr"):
             L.append(f"Irrigated cash rent {r['irr']['year']}: {usd(r['irr']['value'])} per acre")
-    else:
-        L.append("Cash rent: withheld")
     y = rec.get("yield") or {}
     if y.get("status") == "ok":
         if y.get("slope") is not None:
             L.append(f"County corn yield trend, fitted on published years {y.get('window') or ''}: {fmt_num(round(y['slope'], 1))} bushels per acre a year")
         L.append(f"Median county corn yield {y.get('first_year')}-{y.get('last_year')}: {fmt_num(y['median'])} bushels per acre; worst year {y['worst']['year']} at {fmt_num(y['worst']['value'])}")
-    else:
-        L.append("County corn yield: withheld")
     wp = rec.get("water_premium") or {}
     if wp.get("status") == "ok":
         if wp["latest"].get("ratio") is not None and wp["first"].get("ratio") is not None and not str(wp.get("direction", "")).startswith("not called"):
@@ -200,8 +198,6 @@ def inputs_block(fips, rec):
         cr = (j.get("first_decade_at_or_above") or {}).get("66")
         if cr:
             L.append(f"First decade the July average low reached 66 F: {cr}")
-    else:
-        L.append("Night heat: not yet measured")
     w = rec.get("water") or {}
     if w.get("status") == "ok":
         s = w.get("irrigated_share_2022") or {}
@@ -211,8 +207,6 @@ def inputs_block(fips, rec):
         tiny = str((w.get("applied_2015") or {}).get("status") or "").startswith("withheld: under")
         if g.get("share") is not None and not tiny:
             L.append(f"Share of irrigation water from groundwater, 2015: {pct100(g['share'])} percent")
-    else:
-        L.append("Water dependence: not yet measured")
     lo = rec.get("loss") or {}
     if lo.get("status") == "ok":
         if lo.get("share_all"):
@@ -223,8 +217,6 @@ def inputs_block(fips, rec):
                 L.append(f"Heat and drought share of indemnities {label}: {pct100(p['heat_drought_share'])} percent")
         if (lo.get("irrigation_failure_indemnity") or 0) >= 10000:
             L.append(f"Indemnities for irrigation failure, all closed years: {usd_m(lo['irrigation_failure_indemnity'])}")
-    else:
-        L.append("Insurance loss record: not yet measured")
     sb = rec.get("sob") or {}
     if sb.get("status") == "ok":
         if sb.get("loss_ratio_all") is not None:
@@ -258,8 +250,11 @@ def inputs_block(fips, rec):
         # "half" fails the check; the block then hands it to the model on
         # almost every county and the read comes back with it. The gate was
         # right and the input was baiting it.
-        L.append(f"Weeks with at least 50 percent of the county in severe drought or worse, {d['first_year']}-{d['last_full_year']}: {w['d2']} of {w['counted']} ({fmt_num(w['share_d2_pct'])} percent); worst year {d['worst_year']['year']} with {d['worst_year']['d2']} weeks")
-        if d.get("last5"):
+        if w["d2"]:
+            L.append(f"Weeks with at least 50 percent of the county in severe drought or worse, {d['first_year']}-{d['last_full_year']}: {w['d2']} of {w['counted']} ({fmt_num(w['share_d2_pct'])} percent); worst year {d['worst_year']['year']} with {d['worst_year']['d2']} weeks")
+        else:
+            L.append(f"Weeks with at least 50 percent of the county in severe drought or worse, {d['first_year']}-{d['last_full_year']}: none")
+        if d.get("last5") and w["d2"]:
             L.append(f"Weeks in severe drought or worse, {d['last5']['from']}-{d['last5']['to']}: {d['last5']['d2']}")
     e = rec.get("energy") or {}
     if e.get("status") == "ok":
@@ -303,6 +298,13 @@ def gate(text, block):
     for b in BANNED:
         if b in low:
             return f"banned word: {b}"
+    if re.search(r"(?:^|[^\w.])-\d", text):
+        return "minus sign: write the fall in words"
+    if re.search(r"\d\s+dollars\b", text):
+        return "money written as dollars: use the $ form"
+    for per in re.findall(r"\b\d{4}-\d{4}\b", text):
+        if per not in block:
+            return f"period not in inputs: {per}"
     allowed = numbers_in(block)
     # years inside ranges like 2008-2024 come as two numbers; the block writes them the same way
     for n in numbers_in(text):
@@ -584,6 +586,8 @@ def carry(have, rec, block):
     written from exactly this block of numbers. Otherwise None."""
     if not have or not have.get("block") or have["block"] != block_hash(block):
         return None
+    if have.get("salvaged"):
+        return None          # kept from an older read until a run with credit rewrites it
     if have.get("text"):
         if gate(have["text"], block) is not None:
             return None
@@ -611,8 +615,8 @@ def selftest():
     # the retry carries the reason; a first request does not
     assert "failed the check: 134 words" in request_params("b", "m", "134 words, limit 130")["messages"][0]["content"]
     assert "failed the check" not in request_params("b", "m")["messages"][0]["content"]
-    assert "Night heat: not yet measured" in block
-    ok = "Adams County rents non-irrigated ground at $138 per acre in 2025, up 7.8 percent since 2014. Irrigated ground brings $289. Irrigated rent was 1.80 times dry rent in 2008 and 2.09 in 2025, and the multiple is rising. Night heat, water and the loss record are not yet measured."
+    assert "not yet measured" not in block and "withheld" not in block, block
+    ok = "Adams County rents non-irrigated ground at $138 per acre in 2025, up 7.8 percent since 2014. Irrigated ground brings $289. Irrigated rent was 1.80 times dry rent in 2008 and 2.09 in 2025, and the multiple is rising. Corn yield has a median of 195.9 bushels per acre."
     assert gate(ok, block) is None, gate(ok, block)
     bad = ok.replace("2.09", "2.1")
     assert gate(bad, block) == "number not in inputs: 2.1", gate(bad, block)
@@ -647,7 +651,9 @@ def selftest():
     assert "1989" in _p and "1999" in _p, _p
     assert "1990" not in _p, "1990 can never pass; the prompt must not let the model write it"
     assert gate("An alarming 138 dollars.", block) == "banned word: alarming"
-    assert gate("- 138 dollars", block) == "list or heading formatting"
+    assert gate("- $138 per acre", block) == "list or heading formatting"
+    assert gate(ok.replace("up 7.8", "a change of -7.8"), block) == "minus sign: write the fall in words"
+    assert gate(ok + " Night heat is withheld.", block) == "banned word: withheld"
     assert gate(" ".join(["word"] * 131), block).startswith("131 words")
     # a trailing period after a number is not part of the number
     assert gate("Rent is 138.", block).endswith("minimum 20"), "the number passed; only the length stops it"
@@ -689,6 +695,18 @@ def selftest():
     wh = {"status": "withheld: banned word: nearly", "sha": "old", "block": block_hash(block)}
     assert carry(wh, {"sha": "new"}, block)["sha"] == "new"
     assert carry({"status": "withheld: API error HTTP 500", "sha": "old", "block": block_hash(block)}, {"sha": "new"}, block) is None
+    assert gate(ok.replace("since 2014", "over 2014-2026"), block) == "period not in inputs: 2014-2026"
+    assert gate(ok.replace("$289", "289 dollars"), block).startswith("money written as dollars")
+    old = ("Adams County rents non-irrigated ground at 138 dollars per acre in 2025, up 7.8 percent since 2014. "
+           "Night heat is withheld. Irrigated ground brings 289 dollars. The loss ratio is 0.99 and it rose over 2008-2025. "
+           "Irrigated rent was 1.80 times dry rent in 2008 and 2.09 in 2025, and the multiple is rising.")
+    sv = salvage_text(old, block)
+    assert sv == ("Adams County rents non-irrigated ground at $138 per acre in 2025, up 7.8 percent since 2014. "
+                  "Irrigated ground brings $289. Irrigated rent was 1.80 times dry rent in 2008 and 2.09 in 2025, "
+                  "and the multiple is rising."), sv
+    assert salvage_text("Night heat is withheld. Rent is 12345 dollars.", block) is None
+    assert salvage_text("Rent is 999 dollars an acre in Adams County, Nebraska, for the record. That rent is up 7.8 percent since 2014 on every acre counted.", block) is None
+    assert carry({"text": sv, "sha": "old", "block": block_hash(block), "salvaged": True}, {"sha": "new"}, block) is None
     log("selftest ok")
 
 
@@ -746,9 +764,80 @@ def trial(api_key, atlas, n):
     log(f"wrote {TRIAL_OUT}")
 
 
+_SENT = re.compile(r"(?<=[.!?])\s+(?=[A-Z$])")
+_POINTS_BACK = re.compile(r"(It|That|This|Those|These|They|Its|Both|Still|But|And|Also|Meanwhile|By contrast|Over the same)\b")
+
+
+def _money(m):
+    x = float(m.group(1).replace(",", ""))
+    return "$" + (f"{int(x):,}" if x.is_integer() else f"{x:,}")
+
+
+def salvage_text(text, block):
+    """What is left of an older read once every sentence that fails today's
+    gate is dropped. Whole sentences only: nothing is reworded except "290
+    dollars" -> "$290", so no number is changed or added. None if under
+    MIN_WORDS remain or the joined text still fails."""
+    t = re.sub(r"(\d[\d,]*\.\d+) million dollars", lambda m: "$" + m.group(1) + " million", text)
+    t = re.sub(r"(\d[\d,]*(?:\.\d+)?) dollars", _money, t)
+    keep, prev_kept = [], True
+    for sent in _SENT.split(t.strip()):
+        why = gate(sent, block)
+        ok = (why is None or why.endswith(f"minimum {MIN_WORDS}")) and \
+            not re.search(r"\$0(\.0)? million|\b0 of \d+ weeks", sent)
+        # "That share ..." after its sentence was dropped points at nothing
+        if ok and not prev_kept and _POINTS_BACK.match(sent):
+            ok = False
+        if ok:
+            keep.append(sent)
+        prev_kept = ok
+    out = " ".join(keep)
+    return out if keep and gate(out, block) is None else None
+
+
+def salvage(atlas, reads):
+    """No API: rebuild a read for every county from the text already on file
+    (any age), against this build's numbers. Used when the account has no
+    credit. A salvaged read is shown, and the next run with credit rewrites it."""
+    n_new = n_cut = n_none = 0
+    for fips, rec in sorted(atlas["counties"].items()):
+        have = reads["counties"].get(fips) or {}
+        if have.get("text") and have.get("sha") == rec.get("sha") and not have.get("salvaged"):
+            d0 = load_detail(fips, rec)
+            if d0 is not None and gate(have["text"], inputs_block(fips, d0)) is None:
+                continue                     # current and passes today's gate
+        text = have.get("text")
+        detail = load_detail(fips, rec)
+        if not text or detail is None:
+            n_none += 1
+            continue
+        block = inputs_block(fips, detail)
+        out = salvage_text(text, block)
+        if out is None:
+            n_none += 1
+            if have.get("text"):
+                reads["counties"][fips] = {"status": "withheld: nothing in the older read passes today's check",
+                                           "sha": rec["sha"], "salvaged": True,
+                                           "model": have.get("model"), "generated": have.get("generated")}
+            continue
+        n_cut += len(_SENT.split(out)) < len(_SENT.split(text.strip()))
+        n_new += 1
+        reads["counties"][fips] = {"text": out, "sha": rec["sha"], "block": block_hash(block), "salvaged": True,
+                                   "model": have.get("model"), "generated": have.get("generated")}
+    log(f"salvage: {n_new} reads kept from older text ({n_cut} with sentences dropped), {n_none} counties with none")
+    return reads
+
+
 def main():
     if "--selftest" in sys.argv:
         selftest()
+        return
+    if "--salvage" in sys.argv:
+        with open(ATLAS, encoding="utf-8") as f:
+            atlas = json.load(f)
+        with open(OUT, encoding="utf-8") as f:
+            reads = json.load(f)
+        save(salvage(atlas, reads))
         return
     api_key = os.environ.get("ANTHROPIC_API_KEY", "").strip()
     if not api_key:
@@ -782,7 +871,7 @@ def main():
         if not any((rec.get(k) or {}).get("status") == "ok" for k in ("heat", "water", "loss")):
             continue
         have = reads["counties"].get(fips)
-        if have and have.get("sha") == rec.get("sha") and have.get("text"):
+        if have and have.get("sha") == rec.get("sha") and have.get("text") and not have.get("salvaged"):
             # CURRENT, AND WRITTEN BEFORE READS CARRIED A BLOCK HASH: stamp it now,
             # for nothing, so the first month its fingerprint moves it can be
             # carried instead of paid for again -- but only if it still passes
