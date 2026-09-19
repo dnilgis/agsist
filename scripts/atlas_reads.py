@@ -374,7 +374,10 @@ def api_json(api_key, method, path, payload=None, timeout=120, retry=True):
 
 
 def request_params(block, model):
-    return {"model": model, "max_tokens": 400, "system": SYSTEM,
+    # Sonnet 5 thinks by default and the thinking counts against max_tokens: on 9/19 it
+    # used up the 400 before the read in 828 of 2,331 requests (stop_reason max_tokens),
+    # and those tokens were billed. A 130-word read from a fixed block needs no thinking.
+    return {"model": model, "max_tokens": 400, "thinking": {"type": "disabled"}, "system": SYSTEM,
             "messages": [{"role": "user", "content": "Numbers for this county:\n\n" + block + "\n\nWrite the read."}]}
 
 
@@ -566,6 +569,7 @@ def carry(have, rec, block):
 
 
 def selftest():
+    assert request_params('x', 'claude-sonnet-5').get('thinking') == {'type': 'disabled'}, 'reads must not think: it eats max_tokens'
     rec = {"name": "Adams", "state": "NE", "sha": "abc",
            "rent": {"status": "ok", "nonirr": {"year": 2025, "value": 138.0},
                     "nonirr_change10": {"from_year": 2014, "to_year": 2025, "pct": 7.8}, "irr": {"year": 2025, "value": 289.0}},
@@ -796,12 +800,14 @@ def main():
                     break
                 retry = {}
                 n_gate = n_err = 0
+                why_err = {}
                 for fips, block in pending.items():
                     kind, val = res.get(fips, ("error", "missing from results"))
                     if kind == "error":
                         # previous entry stays exactly as it was; an overloaded or
                         # expired request gets one more go in round 2
                         n_err += 1
+                        why_err[val[:60]] = why_err.get(val[:60], 0) + 1
                         if rnd == 1:
                             retry[fips] = block
                         else:
@@ -823,6 +829,8 @@ def main():
                         written += 1
                 log(f"  round {rnd}: {n_gate} failed the gate, {n_err} came back as API errors"
                     + (f"; {len(retry)} go round again" if rnd == 1 and retry else ""))
+                for w, n in sorted(why_err.items(), key=lambda x: -x[1])[:5]:
+                    log(f"    {n} x {w}")
                 pending = retry
                 save(reads)
         else:

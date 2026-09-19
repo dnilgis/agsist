@@ -16,14 +16,14 @@
   <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
   <link rel="manifest" href="/manifest.json">
 
-  <title>Farmland Atlas: Night Heat, Water and the Loss Record by County | AGSIST</title>
-  <meta name="description" content="Every county in the fifty states on July night heat and its 50-year trend, irrigation and where the water comes from, the crop insurance loss record and loss ratio, census land value and rent-to-value, CRP acres and expiries, weeks in drought since 2000, solar and wind on the ground and proposed, and the state well and water-right registers. 34 layers in 10 groups, never combined. Each layer covers the counties its own source publishes, and the page names the reason where it does not. Free, sources shown.">
+  <title>Farmland Atlas: Land Value, Rent &amp; Risk by County | AGSIST</title>
+  <meta name="description" content="Every U.S. county on one map: 2022 land value, cash rent, July night heat, water, crop insurance losses since 1989, drought, CRP and who farms it. Free, sourced.">
   <link rel="canonical" href="https://agsist.com/farmland-atlas">
 
   <meta property="og:type" content="article">
   <meta property="og:site_name" content="AGSIST">
   <meta property="og:locale" content="en_US">
-  <meta property="og:title" content="Farmland Atlas: Night Heat, Water and the Loss Record by County">
+  <meta property="og:title" content="Farmland Atlas: Land Value, Rent and Risk by County">
   <meta property="og:description" content="Night heat, water, the loss record and loss ratio, land value, CRP, drought weeks, solar and wind, wells and water rights: county by county, from the public record, never added together into a score.">
   <meta property="og:url" content="https://agsist.com/farmland-atlas">
   <meta property="og:image" content="https://agsist.com/img/og/agsist.jpg">
@@ -33,8 +33,8 @@
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:site" content="@agsist">
   <meta name="twitter:creator" content="@agsist">
-  <meta name="twitter:title" content="Farmland Atlas: Night Heat, Water and the Loss Record by County">
-  <meta name="twitter:description" content="July night heat and its trend, water dependence, and 36 years of crop insurance losses, county by county across the fifty states. 34 layers, never combined.">
+  <meta name="twitter:title" content="Farmland Atlas: Land Value, Rent and Risk by County">
+  <meta name="twitter:description" content="July night heat and its trend, water dependence, and 36 years of crop insurance losses, county by county across the fifty states. 37 layers, never combined.">
   <meta name="twitter:image" content="https://agsist.com/img/og/agsist.jpg">
 
   <script type="application/ld+json">
@@ -122,13 +122,13 @@ button,a,[role="button"]{touch-action:manipulation}
 .breadcrumb a{color:var(--text-dim);text-decoration:none}
 .breadcrumb a:hover{color:var(--gold)}
 .breadcrumb span{margin:0 .35rem;opacity:.45}
-.fa-hero{padding:1.2rem 0 1rem;border-bottom:1px solid var(--border);margin-bottom:1.25rem}
+.fa-hero{padding:.9rem 0 .8rem;margin-bottom:.4rem}
 .fa-hero h1{font-family:var(--font-display);font-size:1.75rem;font-weight:800;text-transform:uppercase;color:var(--text);margin:0 0 .4rem;letter-spacing:.01em}
-.fa-hero p{color:var(--text-dim);font-size:.9rem;line-height:1.6;max-width:720px;margin:0}
+.fa-hero p{color:var(--text-dim);font-size:.92rem;line-height:1.55;max-width:780px;margin:0}
 .fa-eyebrow{font-size:.755rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:.3rem}
 .fa-meta{display:flex;flex-wrap:wrap;gap:.5rem 1.2rem;margin-top:.7rem;font-family:var(--font-mono);font-size:.74rem;color:var(--text-muted)}
 .fa-meta b{color:var(--text-dim);font-weight:600}
-#fa-vint{display:contents}
+#fa-vint{display:flex;flex-wrap:wrap;gap:.25rem 1.2rem;font-family:var(--font-mono);font-size:.72rem;color:var(--text-muted);padding:.5rem 0 .2rem}
 .fa-lbl{font-family:var(--font-mono);font-size:.74rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted);margin:0 0 .55rem}
 .fa-note{font-size:.82rem;color:var(--text-muted);line-height:1.55}
 .fa-notice{border:1px solid var(--border);border-left:2px solid var(--gold);padding:.7rem .9rem;border-radius:6px;font-size:.85rem;color:var(--text-dim);margin:0 0 1rem;line-height:1.55}
@@ -136,6 +136,36 @@ button,a,[role="button"]{touch-action:manipulation}
 .fa-seedbox{border:1px solid var(--border);border-radius:10px;padding:.2rem 1rem;margin:0 0 1.2rem;background:var(--surface)}
 .fa-seedbox p{font-size:.86rem;line-height:1.6;color:var(--text-dim);margin:.6rem 0}
 .fa-seedbox strong{color:var(--gold);font-family:var(--font-mono);font-size:.72rem;letter-spacing:.12em;text-transform:uppercase}
+
+.fa-panel,#fa-groups,.fa-maphead{scroll-margin-top:84px}
+/* toolbar: search, state zoom, layer groups, layers */
+.fa-bar{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;margin:0 0 .7rem}
+.fa-bar input[type=search]{flex:1 1 260px;min-width:0;background:var(--surface);color:var(--text);border:1px solid var(--border-2);border-radius:8px;padding:.55rem .8rem;font-size:.9rem;min-height:44px}
+.fa-bar input[type=search]:focus,.fa-bar select:focus{outline:2px solid var(--gold);outline-offset:1px}
+.fa-bar select{flex:0 1 190px;background:var(--surface);color:var(--text);border:1px solid var(--border-2);border-radius:8px;padding:.5rem .6rem;font-size:.85rem;min-height:44px}
+.fa-bar button{padding:.5rem .9rem;border-radius:8px;border:1px solid var(--border-2);background:var(--surface);color:var(--text-dim);font-size:.8rem;font-weight:600;cursor:pointer;min-height:44px}
+.fa-bar button:hover{border-color:var(--gold);color:var(--text)}
+.fa-bar .fa-note{flex-basis:100%}
+.fa-gtabs{position:relative;display:flex;flex-wrap:wrap;gap:.3rem;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:thin;padding:0 0 .45rem;margin:0 0 .45rem;border-bottom:1px solid var(--border)}
+.fa-gtab{flex:0 0 auto;padding:.42rem .62rem;border-radius:8px 8px 0 0;border:1px solid transparent;background:none;color:var(--text-dim);font-size:.8rem;font-weight:700;cursor:pointer;min-height:38px;white-space:nowrap}
+.fa-gtab:hover{color:var(--text);background:var(--surface)}
+.fa-gtab[aria-pressed=true]{color:var(--gold);background:var(--surface);border-color:var(--border);border-bottom-color:var(--gold);box-shadow:inset 0 -2px 0 var(--gold)}
+.fa-gtab.off{opacity:.4}
+.fa-subs{display:flex;flex-wrap:wrap;gap:.35rem;margin:0 0 .8rem;min-height:36px}
+.fa-maphead{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:.3rem 1rem}
+.fa-zoomout{position:absolute;top:10px;right:10px;padding:.35rem .7rem;border-radius:6px;border:1px solid rgba(233,237,235,.3);background:rgba(10,12,13,.78);color:#e9edeb;font-size:.75rem;font-weight:700;cursor:pointer;min-height:34px}
+.fa-zoomout:hover{border-color:#d4a23f;color:#d4a23f}
+.fa-ptools{display:flex;flex-wrap:wrap;gap:.4rem;margin:-.4rem 0 .9rem}
+.fa-ptools button,.fa-ptools a{padding:.3rem .7rem;border-radius:6px;border:1px solid var(--border-2);background:var(--bg2);color:var(--text-dim);font-size:.75rem;font-weight:600;cursor:pointer;text-decoration:none;min-height:32px;display:inline-flex;align-items:center}
+.fa-ptools button:hover,.fa-ptools a:hover{border-color:var(--gold);color:var(--text)}
+details.fa-vd{margin:-.6rem 0 1.2rem}
+details.fa-vd summary{cursor:pointer;font-family:var(--font-mono);font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted)}
+details.fa-vd summary:hover{color:var(--gold)}
+.fa-rel{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));gap:.6rem;margin:.7rem 0 0}
+.fa-rel a{display:block;border:1px solid var(--border);border-radius:8px;padding:.7rem .85rem;background:var(--surface);text-decoration:none}
+.fa-rel a:hover{border-color:var(--gold)}
+.fa-rel b{display:block;color:var(--text);font-size:.88rem;margin-bottom:.15rem}
+.fa-rel span{color:var(--text-muted);font-size:.78rem;line-height:1.45}
 
 /* layer picker */
 .fa-layers{display:flex;flex-wrap:wrap;gap:.3rem .9rem;margin-bottom:.8rem}
@@ -152,12 +182,13 @@ button,a,[role="button"]{touch-action:manipulation}
    borders are tuned to #101415 and would invert their meaning on a white surface. */
 .fa-map-wrap{position:relative;background:#101415;border:1px solid rgba(132,160,168,.24);border-radius:12px;overflow:hidden;margin-bottom:.6rem}
 .fa-map{display:block;width:100%;height:auto}
-.fa-map path.c{stroke:rgba(10,12,13,.55);stroke-width:.35;cursor:pointer;transition:none}
-.fa-map path.c:hover{stroke:#e9edeb;stroke-width:1.2}
-.fa-map path.c.sel{stroke:#d4a23f;stroke-width:1.6}
+.fa-map path.c{stroke:rgba(10,12,13,.55);stroke-width:.4px;vector-effect:non-scaling-stroke;cursor:pointer;transition:none}
+.fa-map path.c:hover{stroke:#e9edeb;stroke-width:1.4px}
+.fa-map path.c.sel{stroke:#d4a23f;stroke-width:2.4px}
 .fa-map path.c.line{stroke:#e9edeb;stroke-width:1.2px;vector-effect:non-scaling-stroke}
-.fa-map path.s{fill:none;stroke:rgba(233,237,235,.35);stroke-width:.9;pointer-events:none}
-.fa-map-title{position:absolute;top:10px;left:12px;font-family:var(--font-mono);font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;background:rgba(10,12,13,.7);color:#e9edeb;padding:.22rem .55rem;border-radius:4px;max-width:70%}
+.fa-map path.s{fill:none;stroke:rgba(233,237,235,.38);stroke-width:.9px;vector-effect:non-scaling-stroke;pointer-events:none}
+.fa-map path.inset{fill:none;stroke:rgba(233,237,235,.2);stroke-width:1px;stroke-dasharray:4 4;vector-effect:non-scaling-stroke;pointer-events:none}
+.fa-map-title{font-family:var(--font-mono);font-size:.74rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--text);margin:0 0 .45rem;line-height:1.45}
 .fa-tip{position:absolute;pointer-events:none;background:var(--surface2);border:1px solid var(--border-2);border-radius:6px;padding:.4rem .6rem;font-size:.78rem;color:var(--text);display:none;z-index:5;max-width:260px;box-shadow:var(--glow-card)}
 .fa-tip .v{font-family:var(--font-mono);color:var(--gold)}
 .fa-legend{display:flex;flex-wrap:wrap;align-items:center;gap:.6rem 1rem;margin:0 0 1.2rem;font-size:.76rem;color:var(--text-dim)}
@@ -187,7 +218,7 @@ button,a,[role="button"]{touch-action:manipulation}
 .fa-panel .fa-sub{font-family:var(--font-mono);font-size:.74rem;color:var(--text-muted);margin-bottom:.9rem}
 .fa-read{border-left:2px solid var(--gold);padding:.2rem 0 .2rem .9rem;margin:0 0 1.1rem;font-size:.95rem;line-height:1.65;color:var(--text)}
 .fa-read .who{display:block;font-family:var(--font-mono);font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin-top:.35rem}
-.fa-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:.8rem}
+.fa-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,310px),1fr));gap:.8rem}
 .fa-card{border:1px solid var(--border);border-radius:8px;padding:.8rem .9rem;background:var(--bg2)}
 .fa-card h3{font-family:var(--font-mono);font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin:0 0 .5rem;font-weight:700}
 .fa-kv{display:flex;justify-content:space-between;align-items:baseline;gap:.8rem;padding:.3rem 0;border-bottom:1px solid var(--border);font-size:.83rem}
@@ -245,7 +276,12 @@ details.fa-arith code{font-family:var(--font-mono);font-size:.74rem;color:var(--
 [hidden]{display:none!important}
 @media (max-width:640px){
   .fa-hero h1{font-size:1.4rem}
-  .fa-map-title{font-size:.62rem}
+  .fa-map-title{font-size:.66rem}
+  .fa-bar select{flex:1 1 100%}
+  .fa-gtabs{flex-wrap:nowrap}
+  .fa-gtab{padding:.4rem .6rem;font-size:.76rem}
+  .fa-hero p{font-size:.86rem}
+  .fa-eyebrow{display:none}
   .fa-tab{padding:.4rem .65rem;font-size:.74rem}
 }
 </style>
@@ -261,13 +297,12 @@ details.fa-arith code{font-family:var(--font-mono);font-size:.74rem;color:var(--
 <main id="main" tabindex="-1" class="fa-page">
 
   <div class="fa-hero">
-    <div class="fa-eyebrow">Farmland Atlas · the fifty states · by county</div>
-    <h1>Night heat, water, the loss record and what the land is worth</h1>
-    <p>The things nobody shows a county on one page: how warm its July nights are and which way they are going; how much of its cropland only works with a pump and where that water comes from; what has destroyed crops there since 1989 and whether the insurance book has paid out more than it took in; what the census says the land is worth and what rent buys of that; how much sits in CRP and when those contracts end; how many weeks of each year since 2000 it spent in drought; how much solar and wind is on the ground and proposed; and, where a state publishes the register, its wells and water rights. Each is its own layer. I never add them together, because a combined score hides which problem the ground has.</p>
+    <div class="fa-eyebrow">The fifty states · county by county · public record only</div>
+    <h1>Farmland Atlas: land value, rent and risk by county</h1>
+    <p>Every county in the fifty states on 37 layers of the public record: heat, water, the insurance loss record, land value, rent, who farms it, drought, CRP, energy and wells. Pick a layer, tap a county. Nothing is ever added into a score.</p>
     <div class="fa-meta" id="fa-meta">
       <span>Built <b id="fa-built">—</b></span>
       <span>Counties <b id="fa-n">—</b></span>
-      <span id="fa-vint"></span>
     </div>
   </div>
 
@@ -277,26 +312,30 @@ details.fa-arith code{font-family:var(--font-mono);font-size:.74rem;color:var(--
 
   <div id="fa-app" hidden>
 
-    <div class="fa-search">
-      <input type="search" id="fa-q" list="fa-list" placeholder="Find your county — e.g. Story, IA" autocomplete="off" aria-label="Find a county">
+    <div class="fa-bar">
+      <input type="search" id="fa-q" list="fa-list" placeholder="Find a county — e.g. Story, IA" autocomplete="off" aria-label="Find a county">
       <datalist id="fa-list"></datalist>
+      <select id="fa-st" aria-label="Zoom to a state"><option value="">All fifty states · pick one to zoom</option></select>
       <button type="button" id="fa-mine" hidden>My county</button>
       <span class="fa-note" id="fa-q-status" role="status"></span>
     </div>
 
-    <div class="fa-lbl">Colour the map by</div>
-    <div class="fa-layers" id="fa-layers" role="group" aria-label="Map layer"></div>
+    <div class="fa-gtabs" id="fa-groups" role="group" aria-label="Layer group"></div>
+    <div class="fa-subs" id="fa-layers" role="group" aria-label="Map layer"></div>
     <p class="fa-note" id="fa-layers-note" hidden style="margin:-.3rem 0 .8rem">Dimmed layers are not yet measured. They fill in after the first data run.</p>
 
+    <div class="fa-maphead"><div class="fa-map-title" id="fa-map-title">—</div></div>
     <div class="fa-map-wrap">
-      <svg class="fa-map" id="fa-map" viewBox="0 0 960 640" role="img" aria-label="County map of the United States coloured by the selected layer">
+      <svg class="fa-map" id="fa-map" viewBox="0 0 960 600" role="img" aria-label="County map of the United States coloured by the selected layer">
         <g id="fa-counties"></g>
         <g id="fa-states"></g>
+        <g id="fa-insets"></g>
       </svg>
-      <div class="fa-map-title" id="fa-map-title">—</div>
+      <button type="button" class="fa-zoomout" id="fa-zoomout" hidden>← All fifty states</button>
       <div class="fa-tip" id="fa-tip"></div>
     </div>
     <div class="fa-legend" id="fa-legend"></div>
+    <details class="fa-vd"><summary>Sources and vintages</summary><div id="fa-vint"></div></details>
 
     <div class="fa-slider" id="fa-slider" hidden>
       <span class="fa-lbl" style="margin:0">The line moving</span>
@@ -310,6 +349,7 @@ details.fa-arith code{font-family:var(--font-mono);font-size:.74rem;color:var(--
       <p class="sr-only" id="fa-p-status" role="status"></p>
       <h2 id="fa-p-name" tabindex="-1">—</h2>
       <div class="fa-sub" id="fa-p-sub"></div>
+      <div class="fa-ptools"><button type="button" id="fa-p-copy">Copy link to this county</button><button type="button" id="fa-p-map">Back to the map</button><span class="fa-note" id="fa-p-copied" role="status"></span></div>
       <div id="fa-p-read" hidden></div>
       <div class="fa-grid" id="fa-p-cards"></div>
     </section>
@@ -356,7 +396,25 @@ details.fa-arith code{font-family:var(--font-mono);font-size:.74rem;color:var(--
       </div>
     </section>
 
+    <section class="fa-sec" id="fa-related">
+      <h2>The rest of the land record on AGSIST</h2>
+      <p>The Atlas carries the county numbers from these pages. Each goes further on its own subject.</p>
+      <div class="fa-rel">
+        <a href="/cash-rent"><b>Cash Rent by County</b><span>Every NASS rent estimate by state and county, irrigated and not, with the history.</span></a>
+        <a href="/land-tenure"><b>Rented vs Owner-Farmed</b><span>Rented share by state and county across six censuses since 1997.</span></a>
+        <a href="/foreign-land"><b>Foreign-Owned Land</b><span>AFIDA holdings by state, county and holder country since 2010.</span></a>
+        <a href="/drought-monitor"><b>Drought Monitor</b><span>This week's map and the seasonal outlooks.</span></a>
+        <a href="/hail-map"><b>Hail Map</b><span>Radar hail swaths and the storm record, down to the field.</span></a>
+        <a href="/conditions-yield"><b>Ratings vs Yield</b><span>What the weekly crop ratings have said about the final yield.</span></a>
+      </div>
+    </section>
+
   </div><!-- /fa-app -->
+
+  <section class="fa-sec" id="fa-about">
+    <h2>What the Atlas is</h2>
+    <p>The things nobody shows a county on one page: how warm its July nights are and which way they are going; how much of its cropland only works with a pump and where that water comes from; what has destroyed crops there since 1989 and whether the insurance book has paid out more than it took in; what the census says the land is worth and what rent buys of that; how much sits in CRP and when those contracts end; how many weeks of each year since 2000 it spent in drought; how much solar and wind is on the ground and proposed; and, where a state publishes the register, its wells and water rights. Each is its own layer. I never add them together, because a combined score hides which problem the ground has.</p>
+  </section>
 
   <!--SEED:atlas-->
 <div id="fa-seed" data-built="2026-09-19T14:55:43Z" class="fa-seedbox">
@@ -387,6 +445,7 @@ details.fa-arith code{font-family:var(--font-mono);font-size:.74rem;color:var(--
     <p><strong style="color:var(--text)">Solar and wind.</strong> EIA's Form 860 lists every generator of 1 MW or more at a grid-connected plant, with the plant's county and coordinates; the Operable tab gives what runs and the Proposed tab what developers have reported with a planned year. Solar, wind and battery nameplate MW are summed by county, with the year the first solar and first wind generator came online. A county with no plant in the file reads zero, not missing, because the file is a census. Proposed is not the interconnection queue; much of it is never built, and the queue itself is a later layer.</p>
     <p><strong style="color:var(--text)">Wells and water rights.</strong> Two states publish an open register that this page has read and verified: Nebraska's registered wells (every well, with use, status, depth, static level at completion and completion date) and Kansas's WIMAS points of diversion (every point, with use, active flag, source of supply and the right's priority date). Nebraska counties show wells, irrigation wells not decommissioned, median depth, median static level and completions by decade; Kansas counties show points, active irrigation rights, the median priority year and the source split. Every other state reads "no open register read yet", which is the truth: some have one behind a login or a fee, some have none. Water-level change over the High Plains aquifer (USGS) is a layer to add once its file can be fetched from a runner.</p>
     <p><strong style="color:var(--text)">Rent and yield.</strong> County cash rent and county corn yields are the same NASS series that drive <a href="/cash-rent" style="color:var(--gold)">Cash Rent by County</a>. The yield trend here is fitted on every published year since 2008 and labelled with its window; that page's own trend uses the last fifteen years, which as of 2026 starts on the 2012 drought, and the two are different windows, not two answers. The rent change is nominal dollars over about ten years, using the closest published year at or before ten years back, because NASS published no county estimates for 2015 or 2018 and some counties skip years. The worst year is an observation, not a fit: the lowest published yield since 2008 as a share of the county's median over the same years.</p>
+    <p><strong style="color:var(--text)">Who farms it.</strong> Read from the same files as <a href="/land-tenure" style="color:var(--gold)">Rented vs Owner-Farmed</a> and <a href="/foreign-land" style="color:var(--gold)">Foreign-Owned Land</a>, so the pages cannot disagree. The rented share is land rented from others over land owned plus rented, as farms reported it to the Census of Agriculture; a county NASS suppressed has no figure, never an estimate. Foreign-held acres are USDA FSA's AFIDA disclosures summed by county for the latest year: self-reported, leaseholds of ten years or more included, and much of it forest. A county with no filing disclosed none, so it is coloured as zero rather than left blank; codes with no boundary on the map are left out.</p>
     <p><strong style="color:var(--text)">What is never done.</strong> No number is interpolated from a neighbour. No layer is scaled, weighted or added to another. No owner name appears on this page. No land value is modelled. A county with nothing published shows a dash and the reason. The Atlas holds every county in the fifty states, and each layer covers only the counties its own source publishes: some cover all of them, some are still being fetched a state at a time, and the wells layer is two states by design. The county panel says which is which.</p>
   </section>
 
@@ -428,6 +487,8 @@ details.fa-arith code{font-family:var(--font-mono);font-size:.74rem;color:var(--
       Nebraska DNR, <a href="https://gis.ne.gov/agency3/rest/services/Groundwater_Wells_DWEE/FeatureServer/0" target="_blank" rel="noopener">registered groundwater wells</a> ·
       Kansas DWR / KGS, <a href="https://services.kgs.ku.edu/arcgis/rest/services/wimas/wimas_pd/FeatureServer/0" target="_blank" rel="noopener">WIMAS points of diversion</a> ·
       Night-heat harm line: <a href="https://agcrops.osu.edu/newsletter/corn-newsletter/2019-27/hot-night-temperatures-can-decrease-corn-yield" target="_blank" rel="noopener">Ohio State C.O.R.N. 2019-27</a> ·
+      USDA NASS, Census of Agriculture land in farms by tenure, 1997–2022 (via <a href="/land-tenure">Rented vs Owner-Farmed</a>) ·
+      USDA FSA, <a href="https://www.fsa.usda.gov/resources/economic-policy-analysis/afida/annual-reports-underlying-data" target="_blank" rel="noopener">Agricultural Foreign Investment Disclosure Act holdings</a> (via <a href="/foreign-land">Foreign-Owned Land</a>) ·
       County boundaries: US Census cartographic boundary file, 2010 vintage.
       <br>Data files: <a href="/data/atlas/atlas.json">atlas.json</a> (every county, every layer) · per-county detail under <span class="fa-mono">/data/atlas/counties/&lt;fips&gt;.json</span>.
     </div>
@@ -444,7 +505,9 @@ var DATA='/data/atlas/';
 var ATLAS=null, GEO=null, STATES=null, READS=null;
 var PATHS={};          // fips -> path element
 var PROJ=null;         // projection fn
-var CUR='heat_trend';
+var CUR='val';           // land value first: the question most people arrive with
+var DEFAULT_LAYER='val';
+var STATE='';          // zoomed state, '' for the whole country
 var SEL=null;          // selected fips
 var DECADES=['1900s','1910s','1920s','1930s','1940s','1950s','1960s','1970s','1980s','1990s','2000s','2010s','2020s'];
 
@@ -463,28 +526,37 @@ function ok(layer){ return layer&&layer.status==='ok'; }
 function why(layer){ return layer&&layer.status?layer.status.replace(/^(withheld|not yet measured):\s*/,''):'no data'; }
 function sigDir(slope,ci){ if(slope==null||ci==null) return 'no clear direction'; if(slope-ci>0) return 'up'; if(slope+ci<0) return 'down'; return 'no clear direction'; }
 
-// ---------- projection: Albers equal-area conic, standard parallels 29.5 / 45.5, origin 37.5 N 96 W
-function albers(){
-  var d=Math.PI/180, p1=29.5*d, p2=45.5*d, p0=37.5*d, l0=-96*d;
+// ---------- projection: Albers equal-area conic. The lower 48 on 29.5/45.5 N; Alaska and Hawaii each on
+// their own parallels, drawn as insets in the lower left the way every national map does. A single conic
+// fitted to all fifty states put the Aleutians past the date line and left the lower 48 a postage stamp.
+function albersP(a,b,c,lon0){
+  var d=Math.PI/180, p1=a*d, p2=b*d, p0=c*d, l0=lon0*d;
   var n=(Math.sin(p1)+Math.sin(p2))/2, C=Math.cos(p1)*Math.cos(p1)+2*n*Math.sin(p1), r0=Math.sqrt(C-2*n*Math.sin(p0))/n;
-  // y is flipped so north is up on the screen (SVG y grows downward)
-  return function(lon,lat){ var p=lat*d, l=lon*d, r=Math.sqrt(C-2*n*Math.sin(p))/n, t=n*(l-l0); return [r*Math.sin(t), r*Math.cos(t)-r0]; };
+  // y is flipped so north is up on the screen (SVG y grows downward); longitudes east of 180 are the Aleutians
+  return function(lon,lat){ if(lon>0) lon-=360; var p=lat*d, l=lon*d, r=Math.sqrt(C-2*n*Math.sin(p))/n, t=n*(l-l0); return [r*Math.sin(t), r*Math.cos(t)-r0]; };
 }
+var MAPW=960, MAPH=600;
+function which(code){ return code==='02'||code==='AK'?'ak':(code==='15'||code==='HI'?'hi':'main'); }
 function buildPaths(geo,states){
-  var raw=albers(), pts=[];
-  function walk(c){ if(typeof c[0]==='number'){ pts.push(raw(c[0],c[1])); } else c.forEach(walk); }
-  geo.features.forEach(function(f){ walk(f.geometry.coordinates); });
-  var minx=1e9,miny=1e9,maxx=-1e9,maxy=-1e9;
-  pts.forEach(function(p){ if(p[0]<minx)minx=p[0]; if(p[0]>maxx)maxx=p[0]; if(p[1]<miny)miny=p[1]; if(p[1]>maxy)maxy=p[1]; });
-  var W=960,H=640,pad=14, s=Math.min((W-2*pad)/(maxx-minx),(H-2*pad)/(maxy-miny));
-  var ox=(W-(maxx-minx)*s)/2, oy=(H-(maxy-miny)*s)/2;
-  PROJ=function(lon,lat){ var p=raw(lon,lat); return [ox+(p[0]-minx)*s, oy+(p[1]-miny)*s]; };
-  function ring(r){ var d=''; for(var i=0;i<r.length;i++){ var p=PROJ(r[i][0],r[i][1]); d+=(i?'L':'M')+p[0].toFixed(1)+' '+p[1].toFixed(1); } return d+'Z'; }
-  function path(g){ var d=''; if(g.type==='Polygon'){ g.coordinates.forEach(function(r){ d+=ring(r); }); } else if(g.type==='MultiPolygon'){ g.coordinates.forEach(function(poly){ poly.forEach(function(r){ d+=ring(r); }); }); } return d; }
+  var RAW={main:albersP(29.5,45.5,37.5,-96), ak:albersP(55,65,50,-154), hi:albersP(8,18,3,-157)};
+  var box={main:[1e9,1e9,-1e9,-1e9], ak:[1e9,1e9,-1e9,-1e9], hi:[1e9,1e9,-1e9,-1e9]};
+  function walk(k,c){ if(typeof c[0]==='number'){ var p=RAW[k](c[0],c[1]), b=box[k]; if(p[0]<b[0])b[0]=p[0]; if(p[1]<b[1])b[1]=p[1]; if(p[0]>b[2])b[2]=p[0]; if(p[1]>b[3])b[3]=p[1]; } else c.forEach(function(x){ walk(k,x); }); }
+  geo.features.forEach(function(f){ walk(which(String(f.id).slice(0,2)),f.geometry.coordinates); });
+  // each frame: [x, y, width] on the 960 x 600 board; the lower 48 fill it, the insets sit bottom left
+  var pad=12, fit={};
+  function place(k,x,y,w,h){ var b=box[k]; if(b[2]<b[0]) return; var sc=Math.min(w/(b[2]-b[0]),h/(b[3]-b[1])); fit[k]={s:sc,ox:x+(w-(b[2]-b[0])*sc)/2,oy:y+(h-(b[3]-b[1])*sc)/2,b:b,x:x,y:y,w:w,h:h}; }
+  place('main',pad+40,pad,MAPW-2*pad-40,MAPH-2*pad-20);
+  place('ak',pad,MAPH-pad-150,215,150);
+  place('hi',pad+225,MAPH-pad-80,120,80);
+  var PJ={};
+  ['main','ak','hi'].forEach(function(k){ var F=fit[k]; if(!F) return; PJ[k]=function(lon,lat){ var p=RAW[k](lon,lat); return [F.ox+(p[0]-F.b[0])*F.s, F.oy+(p[1]-F.b[1])*F.s]; }; });
+  function ring(P,r){ var d=''; for(var i=0;i<r.length;i++){ var p=P(r[i][0],r[i][1]); d+=(i?'L':'M')+p[0].toFixed(1)+' '+p[1].toFixed(1); } return d+'Z'; }
+  function path(P,g){ var d=''; if(g.type==='Polygon'){ g.coordinates.forEach(function(r){ d+=ring(P,r); }); } else if(g.type==='MultiPolygon'){ g.coordinates.forEach(function(poly){ poly.forEach(function(r){ d+=ring(P,r); }); }); } return d; }
   var gc=$('fa-counties'), frag=document.createDocumentFragment();
   geo.features.forEach(function(f){
+    var P=PJ[which(String(f.id).slice(0,2))];
     var el=document.createElementNS('http://www.w3.org/2000/svg','path');
-    el.setAttribute('d',path(f.geometry)); el.setAttribute('class','c'); el.setAttribute('data-fips',f.id);
+    el.setAttribute('d',path(P,f.geometry)); el.setAttribute('class','c'); el.setAttribute('data-fips',f.id);
     el.setAttribute('fill',MISSING);
     PATHS[f.id]=el; frag.appendChild(el);
   });
@@ -494,11 +566,18 @@ function buildPaths(geo,states){
     ATLAS.states.forEach(function(s){want[s]=1;});
     states.features.forEach(function(f){
       if(f.properties.iso_a2!=='US'||!want[f.properties.postal]) return;
+      if(f.properties.name) STATE_NAMES[f.properties.postal]=f.properties.name;
       var el=document.createElementNS('http://www.w3.org/2000/svg','path');
-      el.setAttribute('d',path(f.geometry)); el.setAttribute('class','s'); gs.appendChild(el);
+      el.setAttribute('d',path(PJ[which(f.properties.postal)],f.geometry)); el.setAttribute('class','s'); gs.appendChild(el);
     });
   }
+  // a dashed frame says the insets are not to scale or in place
+  var gi=$('fa-insets');
+  ['ak','hi'].forEach(function(k){ var F=fit[k]; if(!F) return; var el=document.createElementNS('http://www.w3.org/2000/svg','path');
+    var x0=F.x-4, y0=F.y-4, x1=F.x+F.w+4, y1=F.y+F.h+4;
+    el.setAttribute('d','M'+x0+' '+y0+'L'+x1+' '+y0+'L'+x1+' '+y1+'L'+x0+' '+y1+'Z'); el.setAttribute('class','inset'); gi.appendChild(el); });
 }
+var STATE_NAMES={};
 
 // ---------- colour
 // Sequential ramps: one hue, dark -> bright on the dark surface. Lightness is monotone by construction.
@@ -584,8 +663,38 @@ var LAYERS=[
  {key:'we_static',grp:'Wells and rights',label:'NE: static water level',ramp:'water',unit:'ft',k:0,needs:'wells',
   v:function(c){return get(c,'wells','static_median_ft');},title:'Nebraska: median static water level of irrigation wells, feet below land surface at completion'},
  {key:'we_prio',grp:'Wells and rights',label:'KS: median priority year',ramp:'water',unit:'',k:0,needs:'wells',
-  v:function(c){return get(c,'wells','priority_year_median');},title:'Kansas: median priority year of active irrigation water rights (older is served first in a shortage)'}
+  v:function(c){return get(c,'wells','priority_year_median');},title:'Kansas: median priority year of active irrigation water rights (older is served first in a shortage)'},
+ {key:'ten_rent',grp:'Who farms it',label:'Rented, 2022',ramp:'gold',unit:'%',pct:true,k:0,side:'tenure',
+  v:function(c,f){return tenShare(f,'2022');},title:'Share of land in farms rented from others, 2022 Census of Agriculture, as farms reported it'},
+ {key:'ten_chg',grp:'Who farms it',label:'Rented, change since 2002',div:true,unit:'pts',k:1,side:'tenure',
+  v:function(c,f){var a=tenShare(f,'2002'), b=tenShare(f,'2022'); return a==null||b==null?null:(b-a)*100;},title:'Change in the rented share of land in farms, 2002 to 2022 census, percentage points'},
+ {key:'afida',grp:'Who farms it',label:'Foreign-held acres',ramp:'water',unit:'acres',k:0,side:'afida',log:true,
+  v:function(c,f){return afidaAcres(f);},title:'Agricultural acres held by foreign persons, latest AFIDA year, as disclosed to USDA FSA (forest included; log scale)'}
 ];
+
+// ---------- the land pages' own files, read in place so the Atlas and those pages never disagree
+var SIDE={
+  tenure:{url:'/data/tenure/tenure.json', why:'the census tenure file did not load'},
+  afida:{url:'/data/afida/county.json', nat:'/data/afida/national.json', why:'the AFIDA file did not load'}
+};
+function loadSide(k){
+  var S=SIDE[k];
+  if(!S.p){
+    var get1=function(u){ return fetch(u,{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).catch(function(){return null;}); };
+    S.p=Promise.all([get1(S.url), S.nat?get1(S.nat):Promise.resolve(null)]).then(function(r){
+      if(r[0]&&(k!=='afida'||(r[1]&&r[1].latest_year))){ S.d=r[0]; S.n=r[1]; S.ok=true; }
+      S.done=true; return S;
+    });
+  }
+  return S.p;
+}
+function tenShare(f,y){ var T=SIDE.tenure.d, c=T&&T.counties&&T.counties[f], p=c&&c.y&&c.y[y]; if(!p||p[0]==null||p[1]==null||p[0]+p[1]<=0) return null; return p[1]/(p[0]+p[1]); }
+function afidaAcres(f){
+  var A=SIDE.afida; if(!A.ok||!PATHS[f]) return null;     // an off-map code is not a county AFIDA could report
+  var c=A.d[f], y=String(A.n.latest_year);
+  // a county absent from the file, or without a filing in the latest year, disclosed no holdings: zero, not missing
+  return c&&c.y?(c.y[y]||0):0;
+}
 var DEC=12;
 
 // ---------- July decade series: a sidecar file, not the index. Only the two layers below need it,
@@ -607,7 +716,7 @@ function quantiles(vals){ var s=vals.slice().sort(function(a,b){return a-b;}); f
 
 function pending(L){
   // the decade file is still in flight; leave the colours alone rather than call every county missing
-  $('fa-legend').innerHTML='<span>'+esc(L.title)+' — loading the decade file.</span>';
+  $('fa-legend').innerHTML='<span>'+esc(L.title)+' — loading.</span>';
   $('fa-map-title').textContent=L.title+(L.slider?' · '+DECADES[DEC]:'');
   $('fa-slider').hidden=!L.slider;
   if(L.slider) $('fa-slider-note').textContent='';
@@ -615,12 +724,13 @@ function pending(L){
 function paint(){
   var L=LAYERS.filter(function(l){return l.key===CUR;})[0];
   if(L.sidecar&&!HEATD_DONE){ pending(L); loadHeatDecades().then(function(){ if(CUR===L.key) paint(); }); return; }
-  var vals=[], byF={};
-  for(var f in ATLAS.counties){ var v=L.v(ATLAS.counties[f],f); if(v!=null&&!isNaN(v)){ vals.push(v); byF[f]=v; } }
+  if(L.side&&!SIDE[L.side].done){ pending(L); loadSide(L.side).then(function(){ if(CUR===L.key) paint(); }); return; }
+  var vals=[], byF={}, tf=L.log?function(x){return Math.log(x+1);}:function(x){return x;}, un=L.log?function(x){return Math.exp(x)-1;}:function(x){return x;};
+  for(var f in ATLAS.counties){ if(!PATHS[f]) continue; var v=L.v(ATLAS.counties[f],f); if(v!=null&&!isNaN(v)){ vals.push(tf(v)); byF[f]=tf(v); } }
   var leg=$('fa-legend'), html='';
   if(!vals.length){
     for(var f2 in PATHS) PATHS[f2].setAttribute('fill',MISSING);
-    leg.innerHTML='<span>'+esc(L.title)+' — '+esc(L.sidecar&&HEATD_WHY?HEATD_WHY:'no county has a value yet')+'.</span>';
+    leg.innerHTML='<span>'+esc(L.title)+' — '+esc(L.sidecar&&HEATD_WHY?HEATD_WHY:(L.side&&!SIDE[L.side].ok?SIDE[L.side].why:'no county has a value yet'))+'.</span>';
     $('fa-map-title').textContent=L.title; $('fa-slider').hidden=!L.slider; return;
   }
   var q=quantiles(vals), scale;
@@ -631,17 +741,18 @@ function paint(){
   } else {
     var lo=q.lo, hi=q.hi; if(hi<=lo){ lo=q.min; hi=q.max; } if(hi<=lo) hi=lo+1;
     scale=function(v){ return lerp(RAMPS[L.ramp], (v-lo)/(hi-lo)); };
-    html='<span class="fa-mono">'+fmtv(L,lo)+'</span><span class="fa-ramp">'+RAMPS[L.ramp].map(function(c){return '<i style="background:'+c+'"></i>';}).join('')+'</span><span class="fa-mono">'+fmtv(L,hi)+'</span>';
+    html='<span class="fa-mono">'+fmtv(L,un(lo))+'</span><span class="fa-ramp">'+RAMPS[L.ramp].map(function(c){return '<i style="background:'+c+'"></i>';}).join('')+'</span><span class="fa-mono">'+fmtv(L,un(hi))+'</span>';
   }
-  html+='<span><span class="miss"></span>withheld or not published</span><span class="fa-mono">'+vals.length+' of '+Object.keys(ATLAS.counties).length+' counties</span>';
+  html+='<span><span class="miss"></span>withheld or not published</span><span class="fa-mono">'+vals.length+' of '+Object.keys(PATHS).length+' counties</span>';
   if(L.div) html+='<span class="fa-note">Grey is the midpoint at zero. The scale is symmetric to the 5th and 95th percentiles.</span>';
-  else html+='<span class="fa-note">Scale runs 5th to 95th percentile; beyond it the colour saturates.</span>';
+  else html+='<span class="fa-note">Scale runs 5th to 95th percentile'+(L.log?', on a log scale':'')+'; beyond it the colour saturates.</span>';
   leg.innerHTML=html;
   for(var f3 in PATHS){ var vv=byF[f3]; PATHS[f3].setAttribute('fill', vv==null?MISSING:scale(vv)); }
   $('fa-map-title').textContent=L.title+(L.slider?' · '+DECADES[DEC]:'');
   $('fa-map').setAttribute('aria-label','County map coloured by '+L.title);
   $('fa-slider').hidden=!L.slider;
   if(L.slider) paintSliderNote();
+  writeHash();
 }
 function fmtv(L,v){ if(v==null) return '—'; if(L.pct) return pct(v,L.k); if(L.money) return money(v); if(L.key==='we_prio') return String(Math.round(v)); if(L.fixed) return Number(v).toFixed(L.k)+(L.unit==='%'?'%':L.unit?' '+L.unit:''); return (L.div&&v>0?'+':'')+fmt(v,L.k)+(L.unit==='%'||L.unit==='%/yr'?L.unit:L.unit?' '+L.unit:''); }
 function paintSliderNote(){
@@ -652,27 +763,98 @@ function paintSliderNote(){
   for(var f2 in PATHS){ var d2=jdec(f2); d2=d2&&d2[d]; var hit=d2&&d2.n>=5&&d2.mean>=line; PATHS[f2].classList.toggle('line',!!hit); }
 }
 
+function layerOff(l){ if(l.side) return false; var st=get(ATLAS,'layers',l.needs,'status'); return !!(st&&st!=='ok'); }
+function layerOf(k){ return LAYERS.filter(function(l){return l.key===k;})[0]; }
+var GROUPS=[], LAST_IN={};
+var GLABEL={'Night heat':'Heat','Loss record':'Losses','Rent and yield':'Rent & yield','Solar and wind':'Energy','Wells and rights':'Wells'};   // short enough for one row at desktop width
 function buildLayerButtons(){
-  var box=$('fa-layers'), grps={}, order=[];
-  LAYERS.forEach(function(l){ if(!grps[l.grp]){ grps[l.grp]=[]; order.push(l.grp); } grps[l.grp].push(l); });
-  order.forEach(function(g){
-    var div=document.createElement('div'); div.className='fa-grp';
-    var lbl=document.createElement('span'); lbl.className='fa-grp-lbl'; lbl.textContent=g; div.appendChild(lbl);
-    grps[g].forEach(function(l){
-      var b=document.createElement('button'); b.type='button'; b.className='fa-tab'+(l.key===CUR?' active':''); b.textContent=l.label; b.setAttribute('data-layer',l.key);
-      var st=get(ATLAS,'layers',l.needs,'status');
-      if(st&&st!=='ok'){ b.disabled=true; b.title='Not yet measured'; }
-      b.setAttribute('aria-pressed',l.key===CUR?'true':'false');
-      b.addEventListener('click',function(){ if(b.disabled) return; CUR=l.key; box.querySelectorAll('.fa-tab').forEach(function(x){x.classList.remove('active');x.setAttribute('aria-pressed','false');}); b.classList.add('active'); b.setAttribute('aria-pressed','true'); if(!l.slider){ for(var f in PATHS){ PATHS[f].classList.remove('line'); } } paint(); gaEvent('atlas_layer',{layer:l.key}); });
-      div.appendChild(b);
-    });
-    box.appendChild(div);
+  var gbox=$('fa-groups'), seen={};
+  LAYERS.forEach(function(l){ if(!seen[l.grp]){ seen[l.grp]=1; GROUPS.push(l.grp); } });
+  GROUPS.forEach(function(g){
+    var b=document.createElement('button'); b.type='button'; b.className='fa-gtab'; b.textContent=GLABEL[g]||g; b.setAttribute('data-grp',g);
+    var all=LAYERS.filter(function(l){return l.grp===g;}), live=all.filter(function(l){return !layerOff(l);});
+    if(!live.length){ b.classList.add('off'); b.title='Not yet measured'; }
+    b.addEventListener('click',function(){ if(!live.length){ drawSubs(g); return; } var k=LAST_IN[g]||live[0].key; setLayer(k,true); });
+    gbox.appendChild(b);
   });
-  if(box.querySelector('.fa-tab[disabled]')) $('fa-layers-note').hidden=false;
-  // first enabled layer wins if the default is disabled
-  var cur=box.querySelector('[data-layer="'+CUR+'"]');
-  if(cur&&cur.disabled){ var first=box.querySelector('[data-layer="rent"]:not([disabled])')||box.querySelector('.fa-tab:not([disabled])'); if(first){ CUR=first.getAttribute('data-layer'); cur.classList.remove('active'); first.classList.add('active'); } }
+  if(!layerOf(CUR)||layerOff(layerOf(CUR))){ var first=LAYERS.filter(function(l){return !layerOff(l);})[0]; if(first) CUR=first.key; }
+  drawSubs();
 }
+function drawSubs(show){
+  // show: a group whose layers are all unmeasured, drawn dimmed without changing the map
+  var L=layerOf(CUR), g=show||L.grp, box=$('fa-layers'), had=box.contains(document.activeElement)?document.activeElement.getAttribute('data-layer'):null; box.innerHTML='';
+  document.querySelectorAll('#fa-groups .fa-gtab').forEach(function(b){ var on=b.getAttribute('data-grp')===g; b.setAttribute('aria-pressed',on?'true':'false'); });
+  centerTab();
+  var dim=false;
+  LAYERS.filter(function(l){return l.grp===g;}).forEach(function(l){
+    var b=document.createElement('button'); b.type='button'; b.className='fa-tab'+(l.key===CUR?' active':''); b.textContent=l.label; b.setAttribute('data-layer',l.key);
+    b.setAttribute('aria-pressed',l.key===CUR?'true':'false');
+    if(layerOff(l)){ b.disabled=true; b.title='Not yet measured'; dim=true; }
+    b.addEventListener('click',function(){ if(!b.disabled) setLayer(l.key,true); });
+    box.appendChild(b);
+  });
+  $('fa-layers-note').hidden=!dim;
+  if(had){ var nb=box.querySelector('[data-layer="'+had+'"]')||box.querySelector('[data-layer="'+CUR+'"]'); if(nb) nb.focus(); }   // keyboard focus survives the redraw
+}
+function centerTab(){ var b=document.querySelector('#fa-groups [aria-pressed=true]'); if(!b) return; var p=b.parentNode; if(p.scrollWidth>p.clientWidth) p.scrollLeft=Math.max(0,b.offsetLeft-p.clientWidth/2+b.offsetWidth/2); }
+function setLayer(k,user){
+  var l=layerOf(k); if(!l||layerOff(l)) return;
+  CUR=k; LAST_IN[l.grp]=k;
+  if(!l.slider){ for(var f in PATHS){ PATHS[f].classList.remove('line'); } }
+  drawSubs(); paint();
+  if(user) gaEvent('atlas_layer',{layer:k});
+}
+
+// ---------- state zoom: the viewBox moves, the strokes keep their width
+var VB0=[0,0,MAPW,MAPH], VB=VB0.slice(), VB_RAF=0;
+function setVB(t){
+  var svg=$('fa-map'), from=VB.slice(), t0=null, reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(VB_RAF) cancelAnimationFrame(VB_RAF);
+  function step(ts){ if(t0===null) t0=ts; var k=reduce?1:Math.min(1,(ts-t0)/320), e=1-Math.pow(1-k,3);
+    VB=from.map(function(v,i){ return v+(t[i]-v)*e; }); svg.setAttribute('viewBox',VB.map(function(v){return v.toFixed(1);}).join(' '));
+    if(k<1) VB_RAF=requestAnimationFrame(step); else VB_RAF=0; }
+  VB_RAF=requestAnimationFrame(step);
+}
+function zoomState(st){
+  STATE=st&&ATLAS.states.indexOf(st)>=0?st:'';
+  $('fa-st').value=STATE; $('fa-zoomout').hidden=!STATE; $('fa-insets').style.display=STATE?'none':'';
+  if(!STATE){ setVB(VB0); writeHash(); return; }
+  var x0=1e9,y0=1e9,x1=-1e9,y1=-1e9;
+  for(var f in PATHS){ var c=ATLAS.counties[f]; if(!c||c.state!==STATE) continue; var b=PATHS[f].getBBox(); if(b.x<x0)x0=b.x; if(b.y<y0)y0=b.y; if(b.x+b.width>x1)x1=b.x+b.width; if(b.y+b.height>y1)y1=b.y+b.height; }
+  if(x1<x0){ setVB(VB0); return; }
+  var w=x1-x0, h=y1-y0, cx=x0+w/2, cy=y0+h/2; w*=1.12; h*=1.12;
+  if(w/h>MAPW/MAPH) h=w*MAPH/MAPW; else w=h*MAPW/MAPH;
+  w=Math.max(w,60); h=w*MAPH/MAPW;
+  setVB([cx-w/2,cy-h/2,w,h]); writeHash();
+}
+function buildStates(){
+  var sel=$('fa-st');
+  ATLAS.states.slice().sort(function(a,b){ var A=STATE_NAMES[a]||a, B=STATE_NAMES[b]||b; return A<B?-1:1; }).forEach(function(st){ var o=document.createElement('option'); o.value=st; o.textContent=STATE_NAMES[st]||st; sel.appendChild(o); });
+  sel.addEventListener('change',function(){ zoomState(sel.value); if(sel.value) gaEvent('atlas_state',{state:sel.value}); });
+  $('fa-zoomout').addEventListener('click',function(){ zoomState(''); });
+}
+
+// ---------- the address bar carries the county, the layer and the state, so any view can be sent on:
+// #19169 (the old form still works), #19169&l=rent, #l=afida&s=NE
+var HASH_READY=false;
+function readHash(){ var o={f:'',l:'',s:''}; (location.hash||'').replace(/^#/,'').split('&').forEach(function(p){ if(/^\d{5}$/.test(p)) o.f=p; else if(p.slice(0,2)==='l=') o.l=dec(p.slice(2)); else if(p.slice(0,2)==='s=') o.s=dec(p.slice(2)).toUpperCase(); }); return o; }
+function dec(x){ try{ return decodeURIComponent(x); }catch(e){ return ''; } }   // a mangled shared link must not take the map down
+function writeHash(){
+  if(!HASH_READY) return;
+  var parts=[]; if(SEL) parts.push(SEL); if(CUR!==DEFAULT_LAYER) parts.push('l='+CUR); if(STATE) parts.push('s='+STATE);
+  var h=parts.length?'#'+parts.join('&'):location.pathname+location.search;
+  if(('#'+parts.join('&'))===location.hash||(!parts.length&&!location.hash)) return;
+  try{ history.replaceState(null,'',h); }catch(e){}
+}
+function applyHash(first){
+  var o=readHash(), want=o.l&&layerOf(o.l)&&!layerOff(layerOf(o.l))?o.l:(first?CUR:DEFAULT_LAYER);
+  if(want!==CUR) setLayer(want,false);
+  if(o.s!==STATE) zoomState(o.s);
+  if(o.f&&o.f!==SEL&&ATLAS.counties[o.f]) select(o.f);
+  else if(!o.f&&SEL&&!first) deselect();
+  writeHash();                     // anything the address bar carried that the page could not use is dropped
+}
+function deselect(){ if(PATHS[SEL]) PATHS[SEL].classList.remove('sel'); SEL=null; $('fa-panel').hidden=true; }
 
 // ---------- tooltip + selection
 function wireMap(){
@@ -683,14 +865,14 @@ function wireMap(){
     var L=LAYERS.filter(function(l){return l.key===CUR;})[0], v=L.v(c,f);
     tip.innerHTML='<b>'+esc(cname(c))+'</b><br>'+esc(L.label)+': <span class="v">'+(v==null?'— '+esc(missingWhy(c,L)):esc(fmtv(L,v)))+'</span>';
     var r=wrap.getBoundingClientRect(), x=e.clientX-r.left+14, y=e.clientY-r.top+14;
-    if(x>r.width-270) x=e.clientX-r.left-270; if(y>r.height-80) y=e.clientY-r.top-70;
+    if(x>r.width-270) x=e.clientX-r.left-270; if(y>r.height-80) y=e.clientY-r.top-70; if(x<4) x=4; if(y<4) y=4;
     tip.style.left=x+'px'; tip.style.top=y+'px'; tip.style.display='block';
   });
   svg.addEventListener('mouseleave',function(){ tip.style.display='none'; });
   svg.addEventListener('touchstart',function(){ tip.style.display='none'; },{passive:true});
   svg.addEventListener('click',function(e){ tip.style.display='none'; var t=e.target; if(t.classList&&t.classList.contains('c')) select(t.getAttribute('data-fips')); });
 }
-function missingWhy(c,L){ var lay=c[L.needs]; if(!lay) return 'no data'; if(lay.status!=='ok') return why(lay); return 'withheld'; }
+function missingWhy(c,L){ if((L.side&&!SIDE[L.side].done)||(L.sidecar&&!HEATD_DONE)) return 'loading'; if(L.side) return L.side==='tenure'?'not published for this county (census suppression or no match)':'no data'; var lay=c[L.needs]; if(!lay) return 'no data'; if(lay.status!=='ok') return why(lay); return 'withheld'; }
 
 // ---------- search
 // The list now carries the unit word, so the typed string is matched against two keys per county:
@@ -733,13 +915,15 @@ function select(fips){
   var panel=$('fa-panel'); panel.hidden=false;
   $('fa-p-name').textContent=cname(c);
   $('fa-p-sub').textContent='FIPS '+fips+' · loading detail';
-  try{ history.replaceState(null,'','#'+fips); }catch(e){}
+  writeHash();
   Promise.all([fetch(DATA+'counties/'+fips+'.json',{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).catch(function(){return null;}), loadReads()]).then(function(res){
     var d=res[0], whyNot=d?null:'The detail file for this county is not published yet. It appears after the next build.';
     // the detail must belong to the same build as the summary, or it is not shown
     if(d&&d.generated!==ATLAS.generated){ d=null; whyNot='The detail file for this county is from another build. Reload the page for the current one.'; }
     // the index carries only what the map needs now, so there is no summary to fill the cards from
+    if(SEL!==fips) return;             // a later click won
     if(d) renderPanel(fips,d); else renderNoDetail(fips,whyNot);
+    renderOwnership(fips);
     panel.scrollIntoView({behavior:'smooth',block:'start'});
     $('fa-p-status').textContent=cname(c)+' loaded';
     try{ $('fa-p-name').focus({preventScroll:true}); }catch(e){}
@@ -792,6 +976,27 @@ function sparkLine(series,opts){
   return s+'</svg>';
 }
 
+function renderOwnership(fips){
+  Promise.all([loadSide('tenure'),loadSide('afida')]).then(function(){
+    if(SEL!==fips) return;
+    var T=SIDE.tenure, A=SIDE.afida, rows=[], tc=T.ok&&T.d.counties&&T.d.counties[fips];
+    if(tc){
+      var yrs=Object.keys(tc.y).sort(), lastY=null;
+      for(var i=yrs.length-1;i>=0;i--){ if(tenShare(fips,yrs[i])!=null){ lastY=yrs[i]; break; } }
+      if(lastY){ var p=tc.y[lastY]; rows.push(['Land in farms rented, '+lastY, pct(tenShare(fips,lastY),0)+' · '+fmt(p[1],0)+' of '+fmt(p[0]+p[1],0)+' ac']); }
+      var s02=tenShare(fips,'2002'), s22=tenShare(fips,'2022');
+      if(s02!=null&&s22!=null) rows.push(['Change, 2002 to 2022', (s22>=s02?'+':'−')+(Math.abs(s22-s02)*100).toFixed(1)+' pts']);
+    } else rows.push(['Rented share', T.ok?'— not published for this county':'— '+T.why, true]);
+    if(A.ok){
+      var ac=afidaAcres(fips), ly=A.n.latest_year, ac2=A.d[fips], top=ac2&&ac2.top&&ac2.top[0];
+      rows.push(['Foreign-held, '+ly, ac?fmt(ac,0)+' ac':'none disclosed']);
+      if(ac&&top&&top[0]) rows.push(['Largest holder country', /^999/.test(String(top[0]))?'No predominant country':/^998/.test(String(top[0]))?'No country listed':String(top[0]).toLowerCase().replace(/\b[a-z]/g,function(x){return x.toUpperCase();})]);
+    } else rows.push(['Foreign-held', '— '+A.why, true]);
+    var arith='Rented share: acres rented from others over owned plus rented acres, USDA Census of Agriculture, land in farms by tenure, as each farm reported it; a suppressed (D) county simply has no figure. Foreign-held: USDA FSA AFIDA disclosures, summed by county for the latest year; leaseholds of ten years or more count, and much of it is forest. The same files as <a href="/land-tenure" style="color:var(--gold)">Rented vs Owner-Farmed</a> and <a href="/foreign-land" style="color:var(--gold)">Foreign-Owned Land</a>.';
+    var box=$('fa-p-cards'), old=$('fa-own'); if(old) old.remove();
+    box.insertAdjacentHTML('beforeend', card('Who farms it',rows,arith).replace('<div class="fa-card">','<div class="fa-card" id="fa-own">'));
+  });
+}
 function renderNoDetail(fips,whyNot){
   // one line instead of a grid of dashes, which would read as missing data rather than a missing file.
   // The heading is already set and stays put, so focus and scrolling are untouched.
@@ -1118,9 +1323,15 @@ function boot(){
     if(L.wells&&L.wells.status==='ok') v.push('Wells and rights: NE and KS registers, '+(L.wells.fetched||'').slice(0,10)); else v.push('Wells and rights: not yet measured');
     $('fa-vint').innerHTML=v.map(function(t){return '<span>'+esc(t)+'</span>';}).join('');
     buildPaths(GEO,STATES);
+    // Codes in the data with no boundary: Connecticut's planning regions and NASS's split reporting
+    // districts (W Pottawattamie, West Otter Tail ...). They keep their numbers but are not called counties.
+    for(var fx in ATLAS.counties){ if(!PATHS[fx]){ var cx=ATLAS.counties[fx]; cx.name=String(cx.name).replace(/\s+Ct$/,''); cx.u=cx.state==='CT'?'planning region':'reporting district'; } }
+    $('fa-n').textContent=Object.keys(PATHS).filter(function(f){return ATLAS.counties[f];}).length;
     buildLayerButtons();
     wireMap();
     buildSearch();
+    buildStates();
+    var h0=readHash(); if(h0.l&&layerOf(h0.l)&&!layerOff(layerOf(h0.l))){ CUR=h0.l; drawSubs(); }
     paint();
     renderThesis();
     renderByState();
@@ -1130,7 +1341,13 @@ function boot(){
     var dec=$('fa-decade'); dec.setAttribute('aria-valuetext',DECADES[DEC]);
     dec.addEventListener('input',function(){ DEC=Number(this.value); $('fa-decade-out').textContent=DECADES[DEC]; this.setAttribute('aria-valuetext',DECADES[DEC]); paint(); });
     $('fa-line').addEventListener('change',function(){ paint(); });
-    var hash=(location.hash||'').replace('#',''); if(/^\d{5}$/.test(hash)&&ATLAS.counties[hash]) select(hash);
+    $('fa-p-map').addEventListener('click',function(){ var w=document.querySelector('.fa-map-wrap'); (document.getElementById('fa-groups')||w).scrollIntoView({behavior:'smooth',block:'start'}); });
+    $('fa-p-copy').addEventListener('click',function(){ var u=location.href, done=function(ok){ $('fa-p-copied').textContent=ok?'Link copied':'Copy this address: '+u; setTimeout(function(){ $('fa-p-copied').textContent=''; },4000); };
+      if(navigator.clipboard&&navigator.clipboard.writeText) navigator.clipboard.writeText(u).then(function(){done(true);},function(){done(false);}); else done(false); gaEvent('atlas_copy',{fips:SEL}); });
+    HASH_READY=true;
+    centerTab();                   // the tabs had no width while the app was hidden
+    applyHash(true);
+    window.addEventListener('hashchange',function(){ applyHash(false); });
   }).catch(function(e){
     try{ console.error('farmland-atlas:',e); }catch(x){}
     $('fa-app').hidden=true;

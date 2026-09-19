@@ -309,6 +309,7 @@ Respond with ONLY the JSON output. No preamble, no markdown."""
     payload = {
         "model": MODEL,
         "max_tokens": 4000,
+        "thinking": {"type": "disabled"},   # Sonnet 5 thinks by default; that eats max_tokens and is billed
         "system": CRITIC_SYSTEM,
         "messages": [{"role": "user", "content": user_message}],
     }

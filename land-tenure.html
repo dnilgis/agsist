@@ -273,6 +273,7 @@
     var lp=latestPair(c); if(!lp)return;
     var h='<h3>'+c.n+' County, '+c.st+'</h3>';
     h+='<div style="font-family:\'JetBrains Mono\',monospace;font-size:.85rem;color:#e6ebe9">'+pct(lp.p).toFixed(1)+'% rented ('+lp.yr+') &middot; '+(lp.p[1]/1000).toFixed(0)+'k ac rented &middot; '+(lp.p[0]/1000).toFixed(0)+'k ac owned</div>';
+    h+='<a href="/farmland-atlas#'+fips+'&amp;l=ten_rent" style="display:inline-block;margin-top:6px;font-size:.8rem;color:var(--gold)">This county in the Farmland Atlas: heat, water, losses, land value &rarr;</a>';
     var yrs=(data.years||[]).map(String);
     h+='<div style="margin-top:8px">';
     for(var i=0;i<yrs.length;i++){

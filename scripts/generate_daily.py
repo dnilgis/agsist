@@ -1917,7 +1917,7 @@ Attribution: "{todays_quote['attribution']}"
 
 Apply all 16 IMPACT RULES. Voice samples are NON-NEGOTIABLE, no wire-service neutral. Forward test the lead before you finalize, and check its last sentence against RULE 3. About 400 words, 450 is cut by a machine. Thread NEWS into every section's body, generic "fund positioning" without a specific news tie is wire filler. Rule 13 (level coherence) is failure-mode-zero: the post-gen validator will reject contradictory break claims."""
 
-    payload = {"model": MODEL, "max_tokens": 4500,
+    payload = {"model": MODEL, "max_tokens": 4500, "thinking": {"type": "disabled"},   # Sonnet 5 thinks by default; that eats max_tokens and is billed
                "system": build_system_prompt(market_status, past_tmyk_topics, yesterdays_call, weekly_thread, ongoing_situations, editorial_notes, past_one_number_topics, past_phrases, usda_release),
                "messages": [{"role": "user", "content": user_message}]}
     headers = {"Content-Type": "application/json", "x-api-key": api_key, "anthropic-version": "2023-06-01"}
