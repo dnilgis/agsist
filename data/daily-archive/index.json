@@ -1,6 +1,17 @@
 {
   "briefings": [
     {
+      "date": "2026-09-19",
+      "date_display": "Saturday, September 19, 2026",
+      "headline": "CRUDE RETREATS; TRUMP-XI SUMMIT HANGS OVER BEANS",
+      "teaser": "Beans and wheat sold off Friday as the Trump-Xi summit looms. Crude had its worst week in months.",
+      "market_mood": "bearish",
+      "surprise_count": 0,
+      "sections": 3,
+      "url": "/daily/2026-09-19",
+      "market_closed": true
+    },
+    {
       "date": "2026-09-18",
       "date_display": "Friday, September 18, 2026",
       "headline": "CRUDE BREAKS 5.6%; BEANS WAIT FOR XI",
@@ -2185,6 +2196,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-09-18T22:14:11.069700+00:00",
-  "count": 190
+  "updated": "2026-09-19T13:58:33.985459+00:00",
+  "count": 191
 }

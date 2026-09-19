@@ -5,13 +5,25 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Fri, 18 Sep 2026 22:14:12 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 19 Sep 2026 13:58:35 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/agsist.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>CRUDE RETREATS; TRUMP-XI SUMMIT HANGS OVER BEANS</title>
+      <link>https://agsist.com/daily/2026-09-19</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-09-19</guid>
+      <pubDate>Sat, 19 Sep 2026 05:00:00 -0600</pubDate>
+      <description>Soybeans closed Friday at $13.03, down 7½ cents, and the fund liquidation was straightforward: nobody wanted to hold a long position into a weekend with the Trump-Xi summit on September 24 still unresolved. Wheat led the grain complex lower at $7.13, off 11½ cents.
+Action: Unpriced new-crop beans: a Sept 24 Trump-Xi outcome below expectations is the sell signal; hold until then, not past it.
+• GRAINS SELL INTO THE WEEKEND
+• CRUDE RETREATS; DIESEL STILL TIGHT
+• CATTLE HOLD; FEEDERS UNDER PRESSURE
+Read more: https://agsist.com/daily/2026-09-19</description>
+    </item>
     <item>
       <title>CRUDE BREAKS 5.6%; BEANS WAIT FOR XI</title>
       <link>https://agsist.com/daily/2026-09-18</link>
@@ -384,19 +396,6 @@ December corn closes at $5.08 as tour confirms tighter yield; cattle absorb a 30
 • TRUMP BEEF DEAL PRESSURES CATTLE
   → Cattle feeders: hold pricing decisions until the import mechanism is clarified. A 90-day window against record-low placements is not the same math as a permanent policy shift.
 Read more: https://agsist.com/daily/2026-08-21</description>
-    </item>
-    <item>
-      <title>EXPORT SALES AT 7:30; BEANS HOLD, CRUDE RUNS</title>
-      <link>https://agsist.com/daily/2026-08-20</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-08-20</guid>
-      <pubDate>Thu, 20 Aug 2026 05:00:00 -0600</pubDate>
-      <description>Beans added a dime and a half to $12.25, corn sat dead flat at $4.77, and crude ran nearly 3% to $86.86 as Iranian supply routes fracture further. The export sales number at 7:30 AM CT is the last data point that can move this week's grain story. Tour results have run below last year; the question is whether buyers care.
-Pro Farmer's final tour day sets up this morning's export print as the week's last live catalyst.
-• BEANS FIRM, CORN FLAT
-• EXPORT SALES: 7:30 AM CT
-  → Old-crop corn: if export sales print above 500K MT on corn, that is your window to re-evaluate holds before harvest pressure builds.
-• CRUDE RUNS ON HORMUZ FRACTURES
-Read more: https://agsist.com/daily/2026-08-20</description>
     </item>
   </channel>
 </rss>
