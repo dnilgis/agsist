@@ -420,6 +420,8 @@ def summarize_p1(rec):
     if v.get("status") == "ok":
         out["value"].update({"latest": v.get("latest"), "change_cagr_pct": (v.get("change") or {}).get("cagr_pct"),
                              "rent_to_value_pct": (v.get("rent_to_value") or {}).get("pct")})
+        if v.get("flag"):
+            out["value"]["flag"] = True
     c = rec.get("crp") or {}
     out["crp"] = {"status": c.get("status")}
     if c.get("status") == "ok":

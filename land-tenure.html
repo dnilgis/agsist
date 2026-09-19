@@ -216,7 +216,7 @@
   </div>
 
   <h2>Your county, 2022</h2>
-  <p class="sub">Share of land in farms rented from others. Click a county for its 25-year history.</p>
+  <p class="sub">Share of land in farms rented from others. Click a county for its 2022 figures.</p>
   <div class="lt-mleg" id="lt-mleg"></div>
   <div id="lt-map"></div>
   <div class="lt-panel" id="lt-panel"></div>
@@ -264,28 +264,20 @@
   var RAMP=['#5fc28a','#9fbf74','#d4a23f','#d97f45','#e0685f'];
   var data=null, breaks=[], map=null, layer=null;
   function pct(pair){ return (pair&&pair[0]!=null&&pair[1]!=null)?100*pair[1]/(pair[0]+pair[1]):null; }
-  function latestPair(c){ var yrs=Object.keys(c.y).sort(); for(var i=yrs.length-1;i>=0;i--){var p=c.y[yrs[i]];if(p[0]!=null&&p[1]!=null)return {yr:yrs[i],p:p};} return null; }
+  // 2022 only for counties: the county rows pulled for 1997-2017 add up to well under the state totals
+  // (Illinois 19.3M of 27.0M acres in 2017), so an earlier county share is not the same count as 2022's
+  function latestPair(c){ var p=c.y['2022']; return p&&p[0]!=null&&p[1]!=null?{yr:'2022',p:p}:null; }
   function quantiles(vals,n){ vals=vals.slice().sort(function(a,b){return a-b;}); var out=[]; for(var i=1;i<n;i++)out.push(vals[Math.floor(vals.length*i/n)]); return out; }
   function shade(v){ if(v==null)return '#1a1f20'; for(var i=0;i<breaks.length;i++)if(v<breaks[i])return RAMP[i]; return RAMP[RAMP.length-1]; }
   function legend(){ var h=''; for(var i=0;i<RAMP.length;i++){ var lab=(i===0)?('<'+breaks[0].toFixed(0)+'%'):(i===RAMP.length-1?('\u2265'+breaks[breaks.length-1].toFixed(0)+'%'):breaks[i-1].toFixed(0)+'%'); h+='<span><span class="lt-mleg-s" style="background:'+RAMP[i]+'"></span> '+lab+'</span>'; } h+='<span><span class="lt-mleg-s" style="background:#1a1f20"></span> no data</span><span style="color:#5a6467">share of farmland rented, 2022</span>'; $('lt-mleg').innerHTML=h; }
   function showCounty(fips){
     var c=data.counties[fips]; if(!c)return;
-    var lp=latestPair(c); if(!lp)return;
+    var lp=latestPair(c);
+    if(!lp){ var el0=$('lt-panel'); el0.innerHTML='<h3>'+c.n+' County, '+c.st+'</h3><div style="font-size:.85rem;color:#8a948f">NASS suppressed the 2022 owned or rented acres for this county.</div>'; el0.style.display='block'; return; }
     var h='<h3>'+c.n+' County, '+c.st+'</h3>';
     h+='<div style="font-family:\'JetBrains Mono\',monospace;font-size:.85rem;color:#e6ebe9">'+pct(lp.p).toFixed(1)+'% rented ('+lp.yr+') &middot; '+(lp.p[1]/1000).toFixed(0)+'k ac rented &middot; '+(lp.p[0]/1000).toFixed(0)+'k ac owned</div>';
     h+='<a href="/farmland-atlas#'+fips+'&amp;l=ten_rent" style="display:inline-block;margin-top:6px;font-size:.8rem;color:var(--gold)">This county in the Farmland Atlas: heat, water, losses, land value &rarr;</a>';
-    var yrs=(data.years||[]).map(String);
-    h+='<div style="margin-top:8px">';
-    for(var i=0;i<yrs.length;i++){
-      // Bar length is the percentage, full stop. It used to be Math.min(96, v*1.2), which
-      // meant every county at 80% rented or above drew an identical full-length bar - an
-      // 80% county and a 95% county were indistinguishable - and every bar below that was
-      // stretched 20% longer than the number printed beside it.
-      var p=c.y[yrs[i]]; var v=pct(p);
-      if(v==null){ h+='<div class="lt-bar"><span class="y">'+yrs[i]+'</span><span class="mut2" style="">not published for this county</span></div>'; }
-      else { h+='<div class="lt-bar"><span class="y">'+yrs[i]+'</span><div class="b" style="width:'+Math.max(0,Math.min(100,v)).toFixed(1)+'%"></div><span class="v">'+v.toFixed(1)+'%</span></div>'; }
-    }
-    h+='</div><div style="font-size:0.78rem;color:#5a6467;margin-top:6px">Share of land in farms rented from others, each census. <a href="/cash-rent" style="color:#d4a23f">See this county\'s cash rent &rarr;</a></div>';
+    h+='<div style="font-size:0.78rem;color:#5a6467;margin-top:6px">Share of land owned or rented by farms that is rented from others, 2022 census. County figures for earlier censuses are off this page until they are pulled again: the county rows for 1997&ndash;2017 add up to well under the state totals. State and national history above is unaffected. <a href="/cash-rent" style="color:#d4a23f">See this county\'s cash rent &rarr;</a></div>';
     var el=$('lt-panel'); el.innerHTML=h; el.style.display='block';
     gaEvent('tenure_county',{fips:fips});
   }

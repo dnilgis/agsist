@@ -945,7 +945,7 @@ def build(rent_dir=RENT_DIR, raw_dir=RAW_DIR, geometry_names=None, geometry_unit
         log(f"  rent: {len(rent_merged)} code(s) fold onto a polygon already taken, kept the first: {' '.join(rent_merged)}")
     raw = {}
     vint = {}
-    for name in ("heat", "water", "loss", "sob", "value", "crp", "drought", "energy", "wells"):
+    for name in ("heat", "water", "loss", "sob", "value", "crp", "drought", "energy", "wells", "practices"):
         p = os.path.join(raw_dir, f"{name}.json")
         if os.path.exists(p):
             with open(p, encoding="utf-8") as f:
@@ -986,6 +986,8 @@ def build(rent_dir=RENT_DIR, raw_dir=RAW_DIR, geometry_names=None, geometry_unit
             fips_all |= {f for f in raw[name] if f[:2] in ATLAS_STATE_FIPS}
     if geometry_names:
         fips_all |= set(geometry_names)
+
+    value_flags = value_outliers(raw["value"], load_neighbors())
 
     counties = {}
     unnamed = []
@@ -1057,18 +1059,33 @@ def build(rent_dir=RENT_DIR, raw_dir=RAW_DIR, geometry_names=None, geometry_unit
                     _ish, _src = min(1.0, _ia / _ha), "USGS 2015 irrigated acres over 2022 harvested cropland"
         if _ish is not None and _ish >= 0.10 and (c["value"].get("rent_to_value") or {}).get("pct") is not None:
             c["value"]["rent_to_value"] = {"status": f"withheld: about {int(_ish * 100 + 0.5)}% of cropland is irrigated ({_src}), so dry rent over the all-land census value is not a yield on anything"}
+        if fips in value_flags and c["value"].get("status") == "ok":
+            fl = value_flags[fips]
+            why_v = (f"withheld: the 2022 census value fell {abs(fl['own_pct']):.0f}% from 2017 while the {fl['n']} counties next door "
+                     f"rose a median {fl['nb_pct']:.0f}%; the census figure counts buildings and small residential farms, "
+                     "so this drop is not read as a change in cropland prices")
+            c["value"]["flag"] = fl
+            c["value"]["change"] = {"status": why_v}
+            if (c["value"].get("rent_to_value") or {}).get("pct") is not None:
+                c["value"]["rent_to_value"] = {"status": why_v}
         harvested = (((raw["water"] or {}).get(fips) or {}).get("census2022") or {}).get("harvested")
         c["crp"] = (crp_layer((raw["crp"] or {}).get(fips), harvested_cropland=harvested, ran=True, this_fy=this_fy)
                     if raw["crp"] is not None else crp_layer(None))
         c["drought"] = (drought_layer((raw["drought"] or {}).get(fips), half=drought_half, ran=True, this_year=now.year)
                         if raw["drought"] is not None else drought_layer(None))
         c["energy"] = energy_layer((raw["energy"] or {}).get(fips), ran=raw["energy"] is not None, year=energy_year)
+        c["practices"] = practices_layer((raw["practices"] or {}).get(fips), ran=raw["practices"] is not None,
+                                         none_if_absent=(vint.get("practices") or {}).get("absent_means_none") or {},
+                                         failed=[x[len(st) + 1:] for x in (vint.get("practices") or {}).get("failed_pulls") or [] if x.startswith(st + " ")],
+                                         item_commodity=(vint.get("practices") or {}).get("item_commodity") or {})
         c["wells"] = wells_layer(st, ne=(raw["wells"] or {}).get("ne", {}).get(fips), ks=(raw["wells"] or {}).get("ks", {}).get(fips),
                                  ran=raw["wells"] is not None)
         # a fingerprint of the numbers. atlas_reads.py stores it beside each AI read
         # and the page shows a read only when the two agree, so a read can never
         # describe numbers the county no longer carries.
-        c["sha"] = record_sha(c)
+        # practices stay out of the fingerprint: no read quotes them, and a new
+        # layer must not hide every read on the map until the next paid run.
+        c["sha"] = record_sha({k: v for k, v in c.items() if k != "practices"})
         counties[fips] = c
 
     if not geometry_names:
@@ -1139,6 +1156,12 @@ def build(rent_dir=RENT_DIR, raw_dir=RAW_DIR, geometry_names=None, geometry_unit
         "energy": {"status": "ok" if raw["energy"] else "not yet measured",
                    "source": "EIA Form 860: plant and generator files, operable and proposed",
                    **(vint.get("energy") or {})},
+        "practices": {"status": "ok" if raw["practices"] else "not yet measured",
+                      "source": "USDA Census of Agriculture 2017 and 2022: land drained by tile and by ditches, no-till, cover crops, cropland",
+                      "gates": {"min_tile_acres_for_change": MIN_TILE_CHANGE_ACRES},
+                      # the county fingerprints leave practices out, so the build stamp watches this instead
+                      "sha": record_sha({f: c.get("practices") for f, c in counties.items()}) if raw["practices"] else None,
+                      **{k: v for k, v in (vint.get("practices") or {}).items() if k not in ("absent_means_none",)}},
         "wells": {"status": "ok" if raw["wells"] else "not yet measured",
                   "source": "Nebraska DNR registered wells; Kansas DWR WIMAS points of diversion (other states: no open register read yet)",
                   **(vint.get("wells") or {})},
@@ -1161,7 +1184,8 @@ def build(rent_dir=RENT_DIR, raw_dir=RAW_DIR, geometry_names=None, geometry_unit
                    "crp_ok": sum(1 for c in counties.values() if c["crp"].get("status") == "ok"),
                    "drought_ok": sum(1 for c in counties.values() if c["drought"].get("status") == "ok"),
                    "energy_ok": sum(1 for c in counties.values() if c["energy"].get("status") == "ok"),
-                   "wells_ok": sum(1 for c in counties.values() if c["wells"].get("status") == "ok")},
+                   "wells_ok": sum(1 for c in counties.values() if c["wells"].get("status") == "ok"),
+                   "practices_ok": sum(1 for c in counties.values() if (c.get("practices") or {}).get("status") == "ok")},
         "counties": counties,
     }
     return out
@@ -1195,6 +1219,8 @@ def _selftest_unnamed(tmp):
 
 def selftest():
     _selftest_unnamed(None)
+    _selftest_practices()
+    _selftest_value_outliers()
     # ols on a hand-worked line: y = 2x + 1 exactly
     f = ols([(1, 3), (2, 5), (3, 7), (4, 9)])
     assert abs(f["slope"] - 2) < 1e-9 and abs(f["intercept"] - 1) < 1e-9 and f["r2"] == 1.0, f
@@ -1397,6 +1423,153 @@ def _st(layer):
     return (layer or {}).get("status")
 
 
+# ---------------------------------------------------------------- value outliers
+VALUE_FALL = -10.0        # own 2017->2022 change at or below this, percent
+VALUE_NB_RISE = 15.0      # while the median neighbour rose at least this, percent
+VALUE_NB_MIN = 3
+
+
+def load_neighbors(path="data/atlas/neighbors.json"):
+    try:
+        with open(path, encoding="utf-8") as f:
+            return json.load(f).get("counties") or {}
+    except (OSError, ValueError):
+        return {}
+
+
+def value_outliers(raw_value, nbrs):
+    """Counties whose 2022 census land value fell while their neighbours rose.
+
+    47 counties on the 2026-09 data, nearly all home to a city (McLean IL
+    $9,844 -> $7,074 while its neighbours rose a median 30%). The census value is
+    the operators' own estimate of land AND buildings over all land in farms, so
+    a county full of small residential operations can move on the mix, not on
+    the price of cropland. NASS published it, so the value itself is printed
+    with the reason; the change, the rent ratio and the rank are not built on it.
+    (Adversary review 9/19: a rule on the level against neighbours caught 14
+    counties that had risen and missed 4 of the 10 named; this rule is on change.)"""
+    if not raw_value or not nbrs:
+        return {}
+
+    def chg(f):
+        y = (raw_value.get(f) or {}).get("years") or {}
+        a, b = y.get("2017"), y.get("2022")
+        return (b / a - 1) * 100 if a and b else None
+
+    out = {}
+    for f in raw_value:
+        own = chg(f)
+        if own is None or own > VALUE_FALL:
+            continue
+        nb = sorted(x for x in (chg(g) for g in nbrs.get(f, [])) if x is not None)
+        if len(nb) < VALUE_NB_MIN:
+            continue
+        m = len(nb)
+        med = nb[m // 2] if m % 2 else (nb[m // 2 - 1] + nb[m // 2]) / 2
+        if med >= VALUE_NB_RISE:
+            out[f] = {"own_pct": round(own, 1), "nb_pct": round(med, 1), "n": m}
+    return out
+
+
+def _selftest_value_outliers():
+    raw = {"1": {"years": {"2017": 10000, "2022": 7000}}, "2": {"years": {"2017": 8000, "2022": 10000}},
+           "3": {"years": {"2017": 8000, "2022": 9600}}, "4": {"years": {"2017": 8000, "2022": 10400}},
+           "5": {"years": {"2017": 8000, "2022": 8100}}}
+    nb = {"1": ["2", "3", "4"], "5": ["2", "3", "4"]}
+    o = value_outliers(raw, nb)
+    assert set(o) == {"1"} and o["1"]["own_pct"] == -30.0 and o["1"]["nb_pct"] == 25.0 and o["1"]["n"] == 3, o
+    assert value_outliers(raw, {"1": ["2", "3"]}) == {}, "fewer than three neighbours with both years: no call"
+
+
+# ---------------------------------------------------------------- practices
+MIN_TILE_CHANGE_ACRES = 1000     # a change off a few hundred acres is a percent of nothing
+
+
+PRACTICE_COMMODITY = {"cropland": "AG LAND", "tile": "AG LAND", "ditch": "AG LAND",
+                      "notill": "PRACTICES", "reduced": "PRACTICES", "cover": "PRACTICES"}
+
+
+def practices_layer(rec, ran=False, none_if_absent=None, failed=None, item_commodity=None):
+    """Tile and ditch drainage, no-till and cover crops as shares of the county's
+    cropland, 2022 census; tile acres 2017 to 2022.
+
+    A share over 1 is withheld, not clipped: the census counts tile on all land
+    in farms, cropland is the denominator the reader expects, and where the two
+    disagree the honest answer is that the ratio does not hold for the county."""
+    if not ran:
+        return {"status": "not yet measured"}
+    if not rec:
+        return {"status": "withheld: the 2022 census printed no land-use row for this county"}
+    none_if_absent = none_if_absent or {}
+    failed = set(failed or [])       # "2022 PRACTICES": that pull for this state came back empty
+    y22 = (rec.get("y") or {}).get("2022") or {}
+    y17 = (rec.get("y") or {}).get("2017") or {}
+    crop = y22.get("cropland")
+    if not crop:
+        return {"status": "withheld: cropland acres suppressed or not printed in the 2022 census"}
+    out = {"status": "ok", "year": 2022, "cropland": crop}
+
+    def share(k):
+        if k not in y22:
+            # the pull the item actually came from (tile may be filed under PRACTICES); both when unseen
+            com = (item_commodity or {}).get(f"2022 {k}")
+            coms = [com] if com else ["AG LAND", "PRACTICES"]
+            if any(f"2022 {c}" in failed for c in coms):
+                return {"status": "withheld: the census pull for this state failed; the next build retries"}
+            if none_if_absent.get(f"2022 {k}"):
+                return {"acres": 0, "share": 0.0, "reported": False}
+            return {"status": "withheld: not printed for this county"}
+        v = y22[k]
+        if v is None:
+            return {"status": "withheld: suppressed by NASS (D)"}
+        sh = v / crop
+        if sh > 1.0:
+            return {"acres": v, "status": "withheld: more acres than the county's cropland (the census counts this on all land in farms)"}
+        return {"acres": v, "share": round(sh, 3), "reported": True}
+
+    for k in ("tile", "ditch", "notill", "reduced", "cover"):
+        out[k] = share(k)
+    t17, t22 = y17.get("tile"), y22.get("tile")
+    if t17 is not None and t22 is not None and t17 >= MIN_TILE_CHANGE_ACRES:
+        out["tile_change"] = {"from": 2017, "to": 2022, "acres_from": t17, "acres_to": t22,
+                              "pct": round((t22 / t17 - 1) * 100, 1)}
+    elif t17 is not None and t17 >= MIN_TILE_CHANGE_ACRES and (out["tile"] or {}).get("reported") is False:
+        out["tile_change"] = {"from": 2017, "to": 2022, "acres_from": t17, "acres_to": 0, "pct": -100.0}
+    elif t22 is not None:
+        out["tile_change"] = {"status": f"withheld: under {MIN_TILE_CHANGE_ACRES:,} tile acres in 2017, or 2017 not printed"}
+    return out
+
+
+def _selftest_practices():
+    none = {"2022 tile": True, "2022 cover": False}
+    r = {"y": {"2022": {"cropland": 300000.0, "tile": 180000.0, "notill": None, "cover": 12000.0},
+               "2017": {"tile": 150000.0}}}
+    p = practices_layer(r, ran=True, none_if_absent=none)
+    assert p["tile"] == {"acres": 180000.0, "share": 0.6, "reported": True}, p
+    assert p["notill"]["status"].startswith("withheld: suppressed"), p
+    assert p["tile_change"]["pct"] == 20.0, p
+    assert p["ditch"]["status"].startswith("withheld: not printed"), p
+    q = practices_layer({"y": {"2022": {"cropland": 1000.0}}}, ran=True, none_if_absent=none)
+    assert q["tile"] == {"acres": 0, "share": 0.0, "reported": False}, q
+    assert q["cover"]["status"].startswith("withheld"), "absence is zero only where the pull said so"
+    over = practices_layer({"y": {"2022": {"cropland": 1000.0, "tile": 1500.0}}}, ran=True)
+    assert "share" not in over["tile"] and over["tile"]["status"].startswith("withheld: more acres"), over
+    small = practices_layer({"y": {"2022": {"cropland": 1000.0, "tile": 600.0}, "2017": {"tile": 300.0}}}, ran=True)
+    assert small["tile_change"]["status"].startswith("withheld"), small
+    assert practices_layer(None) == {"status": "not yet measured"}
+    fp = practices_layer({"y": {"2022": {"cropland": 1000.0}}}, ran=True, none_if_absent={"2022 cover": True, "2022 tile": True},
+                         failed=["2022 PRACTICES"], item_commodity={"2022 tile": "AG LAND", "2022 cover": "PRACTICES"})
+    assert fp["cover"]["status"].startswith("withheld: the census pull") and fp["tile"]["reported"] is False, fp
+    tp = practices_layer({"y": {"2022": {"cropland": 1000.0}}}, ran=True, none_if_absent={"2022 tile": True},
+                         failed=["2022 PRACTICES"], item_commodity={"2022 tile": "PRACTICES"})
+    assert tp["tile"]["status"].startswith("withheld: the census pull"), "tile filed under PRACTICES follows that pull"
+    gone = practices_layer({"y": {"2022": {"cropland": 5000.0}, "2017": {"tile": 2000.0}}}, ran=True, none_if_absent={"2022 tile": True})
+    assert gone["tile_change"]["pct"] == -100.0, gone
+    assert practices_layer({"y": {"2022": {"tile": 5.0}}}, ran=True)["status"].startswith("withheld: cropland")
+    sm = summarize({"name": "X", "state": "IA", "sha": "s", "practices": p})
+    assert sm["practices"] == {"status": "ok", "tile": 0.6, "notill": None, "cover": 0.04, "tile_reported": True, "tile_chg_pct": 20.0}, sm["practices"]
+
+
 def _label(c):
     """'Story County, IA'. `u` is absent for an ordinary county and is the empty
     string for Carson City, whose name is already whole."""
@@ -1431,6 +1604,10 @@ def summarize(rec):
         if r.get("irr"):
             out["rent"]["irr"] = {"value": r["irr"].get("value"), "year": r["irr"].get("year")}
         out["rent"]["nonirr_change10"] = {"pct": r["nonirr_change10"]["pct"]} if r.get("nonirr_change10") else None
+    if r.get("irr") and "irr" not in out["rent"]:
+        # 86 counties publish an irrigated rent and no dry one; the rent layer is
+        # withheld for them, and the irrigated rent must still reach the map and the ranks
+        out["rent"]["irr"] = {"value": r["irr"].get("value"), "year": r["irr"].get("year")}
     y = rec.get("yield") or {}
     out["yield"] = {"status": _st(y)}
     if _st(y) == "ok":
@@ -1473,6 +1650,12 @@ def summarize(rec):
                             "heat_drought_2020s": recent,
                             "irrigation_failure_indemnity": lo.get("irrigation_failure_indemnity")})
     out.update(summarize_p1(rec))
+    pr = rec.get("practices") or {}
+    out["practices"] = {"status": _st(pr)}
+    if _st(pr) == "ok":
+        out["practices"].update({k: (pr.get(k) or {}).get("share") for k in ("tile", "notill", "cover")})
+        out["practices"]["tile_reported"] = (pr.get("tile") or {}).get("reported")
+        out["practices"]["tile_chg_pct"] = (pr.get("tile_change") or {}).get("pct")
     return out
 
 
@@ -1636,7 +1819,8 @@ def main():
                 prev = json.load(f)
             same = (prev.get("counties") and set(prev["counties"]) == set(out["counties"])
                     and all(prev["counties"][k].get("sha") == v["sha"] for k, v in out["counties"].items())
-                    and prev.get("thesis_test") == out["thesis_test"] and prev.get("national") == out["national"])
+                    and prev.get("thesis_test") == out["thesis_test"] and prev.get("national") == out["national"]
+                    and ((prev.get("layers") or {}).get("practices") or {}).get("sha") == out["layers"]["practices"].get("sha"))
             if same and prev.get("generated"):
                 out["generated"] = prev["generated"]
                 log(f"no county changed; keeping build stamp {out['generated']}")

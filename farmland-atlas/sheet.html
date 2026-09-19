@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');function gaEvent(n,p){try{gtag('event',n,p||{});}catch(e){}}</script>
+  <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
+  <title>County Farmland Sheet: Rent, Value and Risk | AGSIST</title>
+  <meta name="description" content="A one-page printable sheet for any US county: cash rent against the neighbours, land value, corn yield, the crop insurance record, drought, night heat and water, from public records.">
+  <link rel="canonical" href="https://agsist.com/farmland-atlas/sheet">
+  <meta name="robots" content="noindex,follow">
+<style>
+:root{--ink:#16191a;--dim:#4a5356;--mute:#6f787b;--rule:#d5d9da;--gold:#7a5a12;--band:#f4efe3;--paper:#fff}
+*{box-sizing:border-box}
+html,body{margin:0;background:#e6e8e8;color:var(--ink);font:9pt/1.38 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
+.bar{position:sticky;top:0;z-index:5;display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;justify-content:center;padding:.6rem 1rem;background:#0f1213;color:#e9edeb;font-size:13px}
+.bar a,.bar button{color:#e9edeb;background:#1b2022;border:1px solid #3a4448;border-radius:8px;padding:.5rem .9rem;font:inherit;font-weight:700;text-decoration:none;cursor:pointer;min-height:40px}
+.bar button.go{background:#d4a23f;border-color:#d4a23f;color:#111}
+.bar input{min-height:40px;border-radius:8px;border:1px solid #3a4448;background:#1b2022;color:#e9edeb;padding:.4rem .7rem;font:inherit;min-width:220px}
+.bar .msg{flex-basis:100%;text-align:center;color:#c9d0d2}
+.paper{width:8.5in;min-height:11in;margin:18px auto 40px;background:var(--paper);padding:.45in;box-shadow:0 2px 18px rgba(0,0,0,.18)}
+.hd{display:grid;grid-template-columns:1fr auto;gap:14px;align-items:start;border-bottom:2px solid var(--ink);padding-bottom:8px}
+.kick{font-size:7pt;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);font-weight:800}
+h1{font-size:19pt;line-height:1.1;margin:2px 0 3px;font-weight:800}
+.sub{color:var(--dim);font-size:8pt}
+.qr{text-align:center;font-size:6.5pt;color:var(--mute);width:92px}
+.qr svg{width:84px;height:84px;display:block;margin:0 auto 2px}
+.keys{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px;margin:9px 0 8px}
+.k{border:1px solid var(--rule);border-radius:5px;padding:5px 6px}
+.k .t{font-size:7.4pt;color:var(--dim);line-height:1.2;min-height:2.4em}
+.k .v{font-size:12.5pt;font-weight:800;margin:1px 0 1px;white-space:nowrap}
+.k .v.sm{font-size:10pt}
+.k .v small{font-size:7.5pt;font-weight:600;color:var(--dim)}
+.k .s{font-size:7.4pt;color:#50595c;line-height:1.28}
+.cols{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px}
+h2{font-size:8pt;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin:8px 0 3px;font-weight:800;border-bottom:1px solid var(--rule);padding-bottom:2px}
+.f{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;padding:1.5px 0;border-bottom:1px dotted var(--rule)}
+.f.st{grid-template-columns:1fr;gap:0}.f.st .r{text-align:left}
+.f .l{color:var(--dim)}
+.f .r{text-align:right;font-weight:700;max-width:100%}
+.f .r small{font-weight:400;color:var(--mute)}
+.f.w .r{font-weight:400;color:var(--mute);white-space:normal}
+table{width:100%;border-collapse:collapse;font-size:7.6pt}
+th{font-size:7pt;text-transform:uppercase;letter-spacing:.05em;color:var(--mute);text-align:right;font-weight:700;border-bottom:1px solid var(--ink);padding:2px 3px;vertical-align:bottom}
+th:first-child,td:first-child{text-align:left}
+td{padding:2px 3px;border-bottom:1px dotted var(--rule);text-align:right;white-space:nowrap}
+tr.me td{background:var(--band);font-weight:800}
+tr.med td{font-style:italic;color:var(--dim);border-top:1px solid var(--ink)}
+td .yr{color:#50595c;font-size:7pt;font-weight:400}
+.chart{margin:3px 0 2px}
+.chart svg{display:block;width:100%;height:auto}
+.note{font-size:7.3pt;color:#50595c;margin:3px 0 0;line-height:1.35}
+.rc{display:flex;flex-direction:column}
+.notes{border:1px solid var(--rule);border-radius:5px;margin-top:9px;padding:3px 7px;flex:1 1 auto;min-height:.3in}
+.notes .t{font-size:7pt;color:var(--mute)}
+.ft{margin-top:8px;padding-top:5px;border-top:1px solid var(--ink);font-size:7pt;color:#50595c;line-height:1.4}
+.ft b{color:var(--dim)}
+.warn{margin:7px 0 0;padding:4px 7px;border:1px solid #b9862b;background:#fbf3df;border-radius:4px;font-size:7.6pt}
+.tight .opt{display:none}
+.empty{padding:40px 10px;text-align:center;color:var(--dim);font-size:11pt}
+@media screen and (max-width:860px){
+  .paper{width:auto;min-height:0;margin:0;padding:16px;box-shadow:none;font-size:10.5pt}
+  .keys{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .cols{grid-template-columns:1fr;gap:0}
+  .hd{grid-template-columns:1fr}.qr{display:none}
+  .k .t,.k .s,.note,th,td .yr,.ft{font-size:8.5pt}
+  .f{grid-template-columns:1fr;gap:0}.f .r{text-align:left}
+  table{font-size:9pt}
+}
+@page{margin:.4in}   /* no paper size: Letter and A4 both print; the fit is measured on the narrower A4 width */
+@media print{
+  html,body{background:#fff}
+  .paper{zoom:var(--fit,1)}
+  .bar{display:none}
+  .paper{width:7.47in;min-height:0;margin:0;padding:0;box-shadow:none}
+  h2,.f,tr,.k{break-inside:avoid}
+  a{color:inherit;text-decoration:none}
+}
+</style>
+</head>
+<body>
+<div class="bar" id="bar">
+  <a href="/farmland-atlas" id="back">← Farmland Atlas</a>
+  <input id="q" list="ql" placeholder="Another county — e.g. Story, IA" aria-label="Find a county" autocomplete="off"><datalist id="ql"></datalist>
+  <button type="button" class="go" id="print" disabled>Print this sheet</button>
+  <span class="msg" id="msg" role="status" aria-live="polite">Loading the county record…</span>
+</div>
+<main class="paper" id="paper"></main>
+<script src="/farmland-atlas/qr.js"></script>
+<script>
+(function(){
+'use strict';
+var DATA='/data/atlas/', A=null, NB=null, TEN=null, D=null, F='', RENT_LATEST=null;
+var ST={AL:'Alabama',AK:'Alaska',AZ:'Arizona',AR:'Arkansas',CA:'California',CO:'Colorado',CT:'Connecticut',DE:'Delaware',FL:'Florida',GA:'Georgia',HI:'Hawaii',ID:'Idaho',IL:'Illinois',IN:'Indiana',IA:'Iowa',KS:'Kansas',KY:'Kentucky',LA:'Louisiana',ME:'Maine',MD:'Maryland',MA:'Massachusetts',MI:'Michigan',MN:'Minnesota',MS:'Mississippi',MO:'Missouri',MT:'Montana',NE:'Nebraska',NV:'Nevada',NH:'New Hampshire',NJ:'New Jersey',NM:'New Mexico',NY:'New York',NC:'North Carolina',ND:'North Dakota',OH:'Ohio',OK:'Oklahoma',OR:'Oregon',PA:'Pennsylvania',RI:'Rhode Island',SC:'South Carolina',SD:'South Dakota',TN:'Tennessee',TX:'Texas',UT:'Utah',VT:'Vermont',VA:'Virginia',WA:'Washington',WV:'West Virginia',WI:'Wisconsin',WY:'Wyoming'};
+var CAUSE={heat_drought:'heat and drought',wet:'excess moisture',hail:'hail',wind:'wind',cold:'freeze',irrigation:'irrigation failure',price:'price decline (revenue policies)',unassigned:'area plans',other:'other'};
+function $(i){ return document.getElementById(i); }
+function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
+function get(o){ for(var i=1;i<arguments.length;i++){ if(o==null) return undefined; o=o[arguments[i]]; } return o; }
+function ok(l){ return l&&l.status==='ok'; }
+function why(l){ return l&&l.status?String(l.status).replace(/^(withheld|not yet measured):\s*/,''):'no data'; }
+function fmt(x,k){ if(x==null||isNaN(x)) return '—'; return Number(x).toLocaleString('en-US',{maximumFractionDigits:k==null?1:k,minimumFractionDigits:0}); }
+function money(x){ if(x==null) return '—'; var v=Math.floor(Math.abs(x)+0.5); return (x<0?'−$':'$')+v.toLocaleString('en-US'); }
+function mUSD(x){ if(x==null) return '—'; var a=Math.abs(x); if(a>=1e9) return '$'+(x/1e9).toFixed(2)+' billion'; if(a>=1e6) return '$'+(x/1e6).toFixed(1)+' million'; return money(x); }
+function pct(x,k){ return x==null?'—':fmt(x*100,k==null?0:k)+'%'; }
+function rh(v,k){ var m=Math.pow(10,k); return (Math.sign(v)*Math.round(Math.abs(v)*m+1e-9)/m).toFixed(k); }   // half away from zero; toFixed alone prints 2.135 as 2.13
+function f1(v){ return rh(Number(v),1); }
+function usd2(v){ return '$'+rh(Number(v),2); }
+function sgn(v,k){ var t=Number(v).toFixed(k); if(Number(t)===0) t=Number(0).toFixed(k); return (Number(t)>0?'+':Number(t)<0?'−':'')+t.replace('-',''); }
+function ord(n){ var s=['th','st','nd','rd'], v=n%100; return Number(n).toLocaleString('en-US')+(s[(v-20)%10]||s[v]||s[0]); }
+function cname(c){ var u=('u' in c)?c.u:'County'; return c.name+(u?' '+u:''); }
+function shortName(c,st){ var u=('u' in c)?c.u:'County'; return c.name+(/^city$/i.test(u)?' (city)':'')+(st&&c.state!==st?', '+c.state:''); }
+function j(u){ return fetch(u,{cache:'no-cache'}).then(function(r){return r.ok?r.json():null;}).catch(function(){return null;}); }
+
+function farmAcres(f){ var c=TEN&&TEN.counties&&TEN.counties[f], p=c&&c.y&&c.y['2022']; if(!p) return 0; return p[0]!=null&&p[1]!=null?p[0]+p[1]:null; }   // null: one part suppressed, size unknown
+function isFarm(f){ if(!TEN) return true; var a=farmAcres(f); return a==null||a>=10000; }
+function tenShare(f,y){ var c=TEN&&TEN.counties&&TEN.counties[f], p=c&&c.y&&c.y[y]; if(!p||p[0]==null||p[1]==null||p[0]+p[1]<=0) return null; return p[1]/(p[0]+p[1]); }
+var M={
+  rent:function(c){ var r=get(c,'rent','nonirr'); if(!r||r.value==null) return null; if(r.year&&RENT_LATEST&&r.year<RENT_LATEST-3) return null; return r.value; },
+  irr:function(c){ var r=get(c,'rent','irr'); return r&&r.value!=null&&(!r.year||!RENT_LATEST||r.year>=RENT_LATEST-3)?r.value:null; },
+  value:function(c){ return get(c,'value','latest'); },
+  yld:function(c){ var n=get(c,'yield','n'); return n!=null&&n<15?null:get(c,'yield','median'); },
+  cost:function(c){ var x=get(c,'sob','loss_cost_last10'); return x==null?null:x*100; },
+  heat:function(c){ return get(c,'heat','months','jul','recent','mean'); },
+  rented:function(c,f){ return tenShare(f,'2022'); }
+};
+function rankWords(r,n,t){
+  t=t||1; var N=fmt(n,0); if(n<2||t>=n) return '';
+  var tie=t>1?'tied for ':'', last=r+t-1;
+  if(r===1) return tie+'highest of '+N; if(last===n) return tie+'lowest of '+N;
+  if(r<=n/2) return tie+ord(r)+' highest of '+N; return tie+ord(n-last+1)+' lowest of '+N;
+}
+function stat(key,st,f){
+  if(!NB[f]) return null;
+  var yk=key==='rent'?'nonirr':key==='irr'?'irr':null, yr=yk?get(A.counties[f],'rent',yk,'year'):null, vals=[], mine=null;
+  for(var g in A.counties){ var c=A.counties[g]; if(c.state!==st||!NB[g]) continue;
+    if(yk&&get(c,'rent',yk,'year')!==yr) continue;
+    var v=M[key](c,g); if(v==null||isNaN(v)) continue; if(g===f) mine=v; if(!isFarm(g)) continue; if(key==='value'&&get(c,'value','flag')) continue; vals.push(v); }
+  if(vals.length<(yr&&yr!==RENT_LATEST?10:3)) return yr&&yr!==RENT_LATEST?{none:'too few '+yr+' county surveys in the state to compare'}:null;
+  vals.sort(function(a,b){return a-b;}); var m=vals.length, med=m%2?vals[(m-1)/2]:(vals[m/2-1]+vals[m/2])/2;
+  var inPool=TEN&&mine!=null&&isFarm(f)&&!(key==='value'&&get(A.counties[f],'value','flag'));
+  return {med:med, yr:yr, words:inPool?rankWords(vals.filter(function(x){return x>mine;}).length+1,m,vals.filter(function(x){return x===mine;}).length):''};
+}
+function recentYield(y){
+  if(!y||!y.hist||!y.last_year) return null;
+  var last=y.last_year, yrs=[]; if(RENT_LATEST&&last<RENT_LATEST-3) return null;
+  for(var k=last-4;k<=last;k++) if(y.hist[k]!=null) yrs.push(k);
+  if(yrs.length<4) return null;
+  var vals=yrs.map(function(k){return {y:k,v:y.hist[k]};}).sort(function(a,b){return a.v-b.v;});
+  vals=vals.length===5?vals.slice(1,4):vals.slice(1);
+  return {from:last-4,to:last,n:yrs.length,avg:vals.reduce(function(a,b){return a+b.v;},0)/vals.length};
+}
+function key(label,val,unit,sub,s,fm){
+  if(s&&s.none){ var nn=esc(s.none); s=null; }
+  var cmp=s?esc((ST[D.state]?D.state:'')+' median'+(s.yr&&s.yr!==RENT_LATEST?' of '+s.yr+' surveys':'')+' '+fm(s.med))+(s.words?' · '+esc(s.words):''):'';
+  return '<div class="k"><div class="t">'+esc(label)+'</div><div class="v'+(val&&String(val).length>8?' sm':'')+'">'+(val==null?'<small>—</small>':esc(val)+(unit?'<small>'+esc(unit)+'</small>':''))+'</div><div class="s">'+esc(sub||'')+(cmp?'<br>'+cmp:(typeof nn!=='undefined'?'<br>'+nn:''))+'</div></div>';
+}
+function fopt(l,r,small){ return fct(l,r,small).replace('class="f','class="opt f'); }
+function fct(l,r,small){ var long=String(r).length+String(small||'').length>34||String(l).length>44; return '<div class="f'+(long?' st':'')+'"><span class="l">'+esc(l)+'</span><span class="r">'+esc(r)+(small?' <small>'+esc(small)+'</small>':'')+'</span></div>'; }
+function fw(l,r){ r=String(r).replace(/\s*\(D\)/g,' to protect individual farms'); return '<div class="f w'+(String(r).length>30?' st':'')+'"><span class="l">'+esc(l)+'</span><span class="r">— '+esc(r)+'</span></div>'; }
+
+// a small line chart, every axis and end labelled
+function chart(series,W,H){
+  var all=[]; series.forEach(function(s){ for(var y in s.d) if(s.d[y]!=null) all.push([+y,s.d[y]]); });
+  if(all.length<3) return '';
+  var x0=Math.min.apply(null,all.map(function(p){return p[0];})), x1=Math.max.apply(null,all.map(function(p){return p[0];}));
+  var vmax=Math.max.apply(null,all.map(function(p){return p[1];})), step=vmax>400?100:vmax>150?50:vmax>60?20:10, top=Math.ceil(vmax*1.08/step)*step;
+  var L=34,R=62,T=10,B=16, X=function(y){ return L+(x1===x0?0:(y-x0)/(x1-x0))*(W-L-R); }, Y=function(v){ return T+(1-v/top)*(H-T-B); };
+  var s='';
+  for(var g=0;g<=top;g+=step){ s+='<line x1="'+L+'" x2="'+(W-R)+'" y1="'+Y(g).toFixed(1)+'" y2="'+Y(g).toFixed(1)+'" stroke="#e3e6e7" stroke-width=".6"/><text x="'+(L-4)+'" y="'+(Y(g)+3).toFixed(1)+'" font-size="7" text-anchor="end" fill="#6f787b">$'+g+'</text>'; }
+  var span=x1-x0, xs=span>12?5:span>6?2:1;
+  for(var yy=Math.ceil(x0/xs)*xs;yy<=x1;yy+=xs) s+='<text x="'+X(yy).toFixed(1)+'" y="'+(H-4)+'" font-size="7" text-anchor="middle" fill="#6f787b">'+yy+'</text>';
+  series.forEach(function(sr){
+    var ys=Object.keys(sr.d).map(Number).filter(function(y){return sr.d[y]!=null;}).sort(function(a,b){return a-b;}); if(!ys.length) return;
+    var path='', prev=null;
+    ys.forEach(function(y){ path+=(prev!=null&&y-prev===1?'L':'M')+X(y).toFixed(1)+' '+Y(sr.d[y]).toFixed(1); prev=y; });
+    s+='<path d="'+path+'" fill="none" stroke="'+sr.c+'" stroke-width="1.6"'+(sr.dash?' stroke-dasharray="3 2"':'')+'/>';
+    ys.forEach(function(y){ s+='<circle cx="'+X(y).toFixed(1)+'" cy="'+Y(sr.d[y]).toFixed(1)+'" r="1.6" fill="'+sr.c+'"/>'; });
+    var a=ys[0], b=ys[ys.length-1];
+    s+='<text x="'+(X(a)+2).toFixed(1)+'" y="'+(Y(sr.d[a])-4).toFixed(1)+'" font-size="7" fill="'+sr.c+'" font-weight="700">$'+Math.round(sr.d[a])+'</text>';
+    s+='<text x="'+(X(b)+4).toFixed(1)+'" y="'+(Y(sr.d[b])+3).toFixed(1)+'" font-size="7" fill="'+sr.c+'" font-weight="700">$'+Math.round(sr.d[b])+' '+esc(sr.n)+'</text>';
+  });
+  var lab=series.map(function(sr){ var ys=Object.keys(sr.d).filter(function(y){return sr.d[y]!=null;}).sort(); return sr.n+' rent $'+Math.round(sr.d[ys[0]])+' in '+ys[0]+' to $'+Math.round(sr.d[ys[ys.length-1]])+' in '+ys[ys.length-1]; }).join('; ');
+  return '<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Cash rent by survey year: '+esc(lab)+'">'+s+'</svg>';
+}
+
+function nextDoor(){
+  var c=A.counties[F], nb=(NB[F]||[]).filter(function(g){return A.counties[g];});
+  if(!nb.length) return '<p class="note">This county shares no border with another county on the map.</p>';
+  var rows=[F].concat(nb.sort(function(a,b){ var x=A.counties[a], y=A.counties[b]; return (x.state+x.name)<(y.state+y.name)?-1:1; }));
+  var cols=[['Dry rent','nonirr',M.rent,money],['Irr. rent','irr',M.irr,money],['Land value',null,M.value,money],['Corn yield',null,M.yld,f1],['Claims per $100',null,M.cost,usd2]]
+    .filter(function(k){ return rows.some(function(f){ var v=k[2](A.counties[f]); return v!=null&&!isNaN(v); }); });
+  var yr=function(k,g){ return k[1]?get(g,'rent',k[1],'year'):null; };
+  var h='<table><thead><tr><th>County</th>'+cols.map(function(k){return '<th>'+esc(k[0])+'</th>';}).join('')+'</tr></thead><tbody>';
+  rows.forEach(function(f){ var g=A.counties[f];
+    h+='<tr'+(f===F?' class="me" aria-current="true"':'')+'><th scope="row" style="text-align:left;font-size:inherit;text-transform:none;letter-spacing:0;color:inherit;border-bottom:1px dotted var(--rule)">'+esc(shortName(g,c.state))+'</th>'+cols.map(function(k){ var v=k[2](g); if(v==null||isNaN(v)) return '<td>—</td>'; var y=yr(k,g);
+      return '<td>'+esc(k[3](v))+(k[1]&&y!==RENT_LATEST?' <span class="yr">'+y+'</span>':'')+'</td>'; }).join('')+'</tr>'; });
+  h+='<tr class="med"><td>Median next door</td>'+cols.map(function(k){ var v=nb.filter(function(f){ var g=A.counties[f], x=k[2](g); return x!=null&&!isNaN(x)&&(!k[1]||yr(k,g)===RENT_LATEST); }).map(function(f){ return k[2](A.counties[f]); }).sort(function(a,b){return a-b;});
+    if(!v.length) return '<td>—</td>'; var m=v.length, md=m%2?v[(m-1)/2]:(v[m/2-1]+v[m/2])/2; return '<td>'+esc(k[3](md))+(m<3?' <span class="yr">'+m+' co.</span>':'')+'</td>'; }).join('')+'</tr></tbody></table>';
+  return h+'<p class="note">Counties sharing a border. An older rent carries its year and stays out of the median.</p>';
+}
+
+function render(){
+  var c=A.counties[F], d=D, st=d.state, R=d.rent||{}, V=d.value||{}, Y=d['yield']||{}, S=d.sob||{}, Lo=d.loss||{}, Dr=d.drought||{}, W=d.water||{}, E=d.energy||{}, Wl=d.wells||{}, C=d.crp||{}, Pr=d.practices||{};
+  var jul=get(d,'heat','months','jul')||{}, stateName=ST[st]||st, built=String(A.generated||'').slice(0,10);
+  var url='https://agsist.com/farmland-atlas#'+F;
+  document.title=cname(d)+', '+st+' farmland sheet: rent, value, risk | AGSIST';
+  var qr='';
+  try{ var q=qrcode(0,'M'); q.addData(url); q.make(); qr=q.createSvgTag({cellSize:2,margin:0,scalable:true}).replace('<svg','<svg aria-hidden="true" focusable="false"'); }catch(e){ qr=''; }
+  var h='<header class="hd"><div><div class="kick">AGSIST Farmland Atlas · county sheet</div><h1>'+esc(cname(d))+', '+esc(stateName)+'</h1>'
+    +'<div class="sub">County figures from public records, built '+esc(built)+'. County averages, not an appraisal of any farm. FIPS '+esc(F)+'.</div></div>'
+    +'<div class="qr">'+qr+'agsist.com/farmland-atlas#'+esc(F)+'</div></header>';
+
+  if(TEN&&farmAcres(F)<10000) h+='<p class="warn">'+esc(cname(d))+' had '+(farmAcres(F)?fmt(farmAcres(F),0)+' acres':'no acres published')+' in farms in the 2022 census. County averages here describe very little farmland; read them with care.</p>';
+  // key figures
+  var rv=ok(R)&&R.nonirr?R.nonirr:null, ri=R&&R.irr?R.irr:null, lc=ok(S)&&S.last10&&S.last10.loss_cost!=null?S.last10.loss_cost*100:null, rs=tenShare(F,'2022');
+  var jr=jul.recent&&jul.recent.mean!=null?jul.recent:null;
+  var ish=get(W,'irrigated_share_2022','share'), irrKnownLow=ok(W)&&ish!=null&&ish<0.10, irrHigh=ok(W)&&ish!=null&&ish>=0.10;
+  var ry5=ok(Y)?recentYield(Y):null, fl=ok(V)?V.flag:null;
+  var valSub=ok(V)?(fl?V.latest_year+' census · read with care: fell '+Math.abs(fl.own_pct).toFixed(0)+'% while next door rose '+fl.nb_pct.toFixed(0)+'%':V.latest_year+': what operators guessed land and buildings were worth'):why(V);
+  h+='<section class="keys">'
+    +key('Cash rent, non-irrigated', rv?money(rv.value):null,'/ac', rv?rv.year+' county average':(ri?'no dry rent published':why(R)), rv?stat('rent',st,F):null, money)
+    +(ri?key('Cash rent, irrigated', money(ri.value),'/ac', ri.year+' county average', stat('irr',st,F), money)
+        :key('Land and buildings', ok(V)&&V.latest!=null?money(V.latest):null,'/ac', valSub, ok(V)&&!fl?stat('value',st,F):null, money))
+    +(ri?key('Land and buildings', ok(V)&&V.latest!=null?money(V.latest):null,'/ac', valSub, ok(V)&&!fl?stat('value',st,F):null, money)
+        :key('Dry rent ÷ census value', get(V,'rent_to_value','pct')!=null?fmt(V.rent_to_value.pct,2)+'%':null,'', get(V,'rent_to_value','pct')!=null?'cropland rent over all farm real estate incl. buildings, '+V.rent_to_value.year:'not shown'+(get(V,'rent_to_value','status')?': '+why(V.rent_to_value):''), null, null))
+    +key('Corn yield, '+(ok(Y)?Y.first_year+'–'+Y.last_year+' median':'median'), ok(Y)?f1(Y.median):null,' bu/ac', ok(Y)?(ry5?'recent level '+ry5.from+'–'+ry5.to+': '+f1(ry5.avg):Y.n+' published years')+(irrHigh?' · irrigated and dryland combined':''):why(Y), ok(Y)&&Y.n>=15?stat('yld',st,F):null, f1)
+    +key('Claims paid per $100 of coverage', lc!=null?usd2(lc):null,'', lc!=null?S.last10.from+'–'+S.last10.to+', closed crop years':(ok(S)?'under the premium floor for a figure':why(S)), lc!=null?stat('cost',st,F):null, usd2)
+    +key('Farmland rented', rs!=null?pct(rs,0):null,'', rs!=null?'2022 census, rented from others':(TEN?'suppressed by NASS':'the census tenure file did not load'), rs!=null?stat('rented',st,F):null, function(v){return pct(v,0);})
+    +'</section>';
+
+  // left column
+  var L='<h2>Cash rent</h2>';
+  var sn=get(d,'rent','series_nonirr')||{}, si=get(d,'rent','series_irr')||{};
+  var ser=[]; if(Object.keys(sn).length>2) ser.push({d:sn,c:'#7a5a12',n:'dry'}); if(Object.keys(si).length>2) ser.push({d:si,c:'#2c6a95',n:'irrigated',dash:true});
+  if(ser.length) L+='<div class="chart">'+chart(ser,340,78)+'</div><p class="note">$ per acre, NASS county survey; a gap is a year with no survey.</p>';
+  if(ok(R)){
+    if(rv) L+=fct('Non-irrigated, '+rv.year, money(rv.value)+'/ac');
+    if(R.nonirr_change10) L+=fct('Change '+R.nonirr_change10.from_year+' to '+R.nonirr_change10.to_year, sgn(R.nonirr_change10.pct,1)+'%','nominal');
+    if(ri) L+=fct('Irrigated, '+ri.year, money(ri.value)+'/ac');
+    if(R.pasture&&(!RENT_LATEST||R.pasture.year>=RENT_LATEST-3)) L+=fopt('Pasture, '+R.pasture.year, money(R.pasture.value)+'/ac');
+    if(rv&&ry5&&irrKnownLow) L+=fct('Dry rent per bushel of corn', usd2(rv.value/ry5.avg), money(rv.value)+' ÷ '+f1(ry5.avg)+' bu, county yield '+ry5.from+'–'+ry5.to);
+  } else if(ri) L+=fct('Irrigated, '+ri.year, money(ri.value)+'/ac','no dry rent published');
+  else L+=fw('Cash rent', why(R));
+  L+='<h2>Land value</h2>';
+  if(ok(V)){
+    var vs=V.values||{}; L+=fct('Land and buildings, '+V.latest_year, money(V.latest)+'/ac','operators\' own estimate, not a sale price');
+    if(fl) L+=fw('Read with care', 'the '+V.latest_year+' census value fell '+Math.abs(fl.own_pct).toFixed(0)+'% while the '+fl.n+' counties next door rose a median '+fl.nb_pct.toFixed(0)+'%. The census counts buildings and small residential farms, so no change, ratio or rank is shown');
+    var earlier=Object.keys(vs).filter(function(y){return +y!==V.latest_year&&vs[y]&&vs[y].per_acre!=null;}).sort();
+    if(V.change&&V.change.pct!=null) L+=fct('Change '+V.change.from_year+' to '+V.change.to_year, sgn(V.change.pct,1)+'%', sgn(V.change.cagr_pct,1)+'% a year, nominal');
+    if(get(V,'rent_to_value','pct')!=null) L+=fct('Dry cropland rent ÷ census value, '+V.rent_to_value.year, fmt(V.rent_to_value.pct,2)+'%', money(V.rent_to_value.rent)+' ÷ '+money(V.rent_to_value.value)+'; value includes buildings, pasture, woods');
+    else if(get(V,'rent_to_value','status')&&!fl) L+=fw('Dry rent ÷ census value', why(V.rent_to_value));
+  } else L+=fw('Land value', why(V));
+  L+='<h2>Next door</h2>'+nextDoor();
+
+  // right column
+  var Y_='';
+  Y_+='<h2>Corn yield</h2>';
+  if(ok(Y)){
+    Y_+=fct('Median, '+Y.first_year+'–'+Y.last_year, f1(Y.median)+' bu/ac', Y.n+' published years'+(irrHigh?', irrigated and dryland combined':''));
+    if(ry5) Y_+=fct('Recent level, '+ry5.from+'–'+ry5.to, f1(ry5.avg)+' bu/ac', ry5.n===5?'high and low year dropped':'low year dropped');
+    if(Y.worst) Y_+=fct('Lowest published year', Y.worst.year+': '+f1(Y.worst.value)+' bu/ac', pct(Y.worst.share_of_median,0)+' of median');
+    if(Y.slope!=null) Y_+=fct('Trend, '+String(Y.window||(Y.first_year+'–'+Y.last_year)).replace('-','–'), sgn(Y.slope,1)+' bu/ac a year');
+  } else Y_+=fw('County corn yield', why(Y));
+  var Rt=Y_+'<h2>Crop insurance record</h2>';
+  if(ok(S)){
+    if(lc!=null) Rt+=fct('Claims paid per $100 of coverage, '+S.last10.from+'–'+S.last10.to, usd2(lc));
+    if(S.last10&&S.last10.ratio!=null) Rt+=fct('Loss ratio, '+S.last10.from+'–'+S.last10.to, rh(S.last10.ratio,2),'claims ÷ total premium (farmer share + federal subsidy)');
+    if(S.loss_ratio_all!=null) Rt+=fct('Loss ratio, '+S.first_year+'–'+S.last_year, rh(S.loss_ratio_all,2), mUSD(S.total_indemnity)+' paid');
+    if(S.years_over_one!=null) Rt+=fopt('Years claims exceeded premium', S.years_over_one+' of '+S.years_with_ratio);
+    if(S.worst_year) Rt+=fopt('Worst year', S.worst_year.year+'', 'ratio '+Number(S.worst_year.ratio).toFixed(2));
+  } else Rt+=fw('Premium and payouts', why(S));
+  if(ok(Lo)&&Lo.share_all){
+    var top=Object.keys(Lo.share_all).filter(function(k){return Lo.share_all[k]!=null;}).sort(function(a,b){return Lo.share_all[b]-Lo.share_all[a];}).slice(0,3);
+    Rt+=fct('Largest causes, '+Lo.first_year+'–'+Lo.last_year, top.map(function(k){ return (CAUSE[k]||k)+' '+pct(Lo.share_all[k],0); }).join(' · '));
+    var per=Lo.periods||{}, hp=Object.keys(per).filter(function(k){return per[k].heat_drought_share!=null;});
+  }
+  Rt+='<h2>Drought and heat</h2>';
+  if(ok(Dr)){
+    var wk=Dr.weeks||{};
+    Rt+=fct('Weeks with half the county or more in D2 (severe) drought or worse, '+Dr.first_year+'–'+Dr.last_full_year, fmt(wk.d2,0)+' of '+fmt(wk.counted,0), fmt(wk.share_d2_pct,0)+'% of weeks');
+    if(wk.d2&&Dr.worst_year) Rt+=fct('Year with the most D2+ weeks', Dr.worst_year.year+'', Dr.worst_year.d2+' weeks');
+    if(Dr.last5) Rt+=fct('Last five years, '+Dr.last5.from+'–'+Dr.last5.to, fmt(Dr.last5.d2,0)+' weeks');
+  } else Rt+=fw('Drought', why(Dr));
+  if(ok(d.heat)&&jr){
+    Rt+=fct('July average of daily lows, '+jr.from+'–'+jr.to, f1(jr.mean)+' °F', jul.normal_1991_2020&&jul.normal_1991_2020.mean!=null?'1991–2020 normal '+f1(jul.normal_1991_2020.mean)+' °F':'');
+    if(jul.trend&&jul.trend.per_decade!=null) Rt+=fopt('Trend since '+jul.trend.from, sgn(jul.trend.per_decade,2)+' °F a decade', jul.trend.direction||'');
+  }
+  Rt+='<h2>Land and water</h2>';
+  if(ok(W)){
+    var sh=W.irrigated_share_2022||{}, gw=W.groundwater_share_2015||{}, tiny=get(W,'applied_2015','status')&&/under 1,000/.test(W.applied_2015.status);
+    if(sh.share!=null&&sh.reported===false) Rt+=fct('Harvested cropland irrigated, 2022','none reported');
+    else if(sh.share!=null) Rt+=fct('Harvested cropland irrigated, 2022', pct(sh.share,0));
+    else Rt+=fw('Harvested cropland irrigated, 2022', why(sh));
+  }
+  if(ok(Pr)){
+    var p=function(label,x){ if(!x) return; if(x.reported===false) Rt+=fct(label,'none reported'); else if(x.share!=null){ var s0=Pr.cropland?x.acres/Pr.cropland:x.share; Rt+=fct(label, (s0>0&&s0<0.005?'under 1%':pct(x.share,0))+' of cropland', fmt(x.acres,0)+' ac'); } };
+    p('Drained by tile, 2022',Pr.tile);
+    if(Pr.tile_change&&Pr.tile_change.pct!=null) Rt+=fct('Tile acres, 2017 to 2022', sgn(Pr.tile_change.pct,1)+'%');
+    p('Farmed no-till, 2022',Pr.notill); p('Cover crops, 2022',Pr.cover);
+  }
+  if(Pr&&Pr.status&&!ok(Pr)) Rt+=fw('Tile drainage and tillage', why(Pr));
+  if(C&&C.status&&!ok(C)) Rt+=fw('CRP', why(C));
+  if(ok(C)){
+    if(C.latest&&C.latest.acres!=null) Rt+=fct('CRP enrolled, '+C.latest.year, fmt(C.latest.acres,0)+' ac', C.share_of_cropland&&C.share_of_cropland.pct!=null?fmt(C.share_of_cropland.pct,1)+'% of cropland base':'');
+    if(C.expiring_next3) Rt+=fct('CRP expiring FY'+C.expiring_next3.from+'–'+C.expiring_next3.to, fmt(C.expiring_next3.acres,0)+' ac');
+  }
+  if(ok(Wl)){
+    if(Wl.wells!=null){ Rt+=fct('Irrigation wells in use (NE register)', fmt(Wl.irrigation_active,0)); if(Wl.depth_median_ft!=null) Rt+=fct('Median well depth', fmt(Wl.depth_median_ft,0)+' ft'); }
+    else { Rt+=fct('Active irrigation water rights (KS)', fmt(Wl.irrigation_active,0)); if(Wl.priority_year_median!=null) Rt+=fct('Median priority year', String(Wl.priority_year_median)); }
+  }
+  var own=tenShare(F,'2022'), o02=tenShare(F,'2002');
+
+  h+='<div class="cols"><div>'+L+'</div><div class="rc">'+Rt+'<div class="notes"><div class="t">Notes</div></div></div></div>';
+  h+='<footer class="ft"><b>Sources:</b> USDA NASS Cash Rents Survey and county yields; Census of Agriculture 2012, 2017, 2022; USDA RMA Summary of Business and Cause of Loss, 1989 on (the open crop year left out); U.S. Drought Monitor; NOAA nClimDiv; USGS water use 2015; EIA Form 860'
+    +(ok(Wl)?'; Nebraska DNR and Kansas DWR registers':'')+(ok(C)?'; USDA FSA CRP statistics':'')+'. '+(TEN?'Ranks count counties with 10,000 acres or more in farms, in the same survey year for rent; a state median is the median of its county figures. ':'No ranks: the census tenure file did not load. ')
+    +'<b>Method:</b> agsist.com/farmland-atlas/methods · <b>Live county record:</b> '+esc(url.replace('https://',''))+' · Printed '+esc(new Date().toISOString().slice(0,10))+'.</footer>';
+  $('paper').innerHTML=h;
+  // one printed page: measure at the printed width (letter less .4in margins) and shrink only if it overflows
+  var pp=$('paper'), keep=pp.getAttribute('style')||'';
+  pp.setAttribute('style','width:7.47in;padding:0;margin:0;min-height:0;box-shadow:none;position:absolute;left:-9999px;top:0');
+  pp.classList.remove('tight');
+  var need=pp.scrollHeight, room=10.2*96;
+  if(need>room/0.9){ pp.classList.add('tight'); need=pp.scrollHeight; }   // a long county drops four lesser lines before it shrinks past 90%
+  pp.setAttribute('style',keep);
+  document.documentElement.style.setProperty('--fit', need>room?String(Math.max(0.9,Math.floor(room/need*1000)/1000)):'1');
+  $('print').disabled=false;
+  $('msg').textContent='';
+  $('msg').style.display='none';
+  $('back').href='/farmland-atlas#'+F;
+}
+
+function load(f){
+  F=f; D=null; $('print').disabled=true;
+  if(f&&!A.counties[f]){ $('paper').innerHTML='<p class="empty">No county in the Atlas has the code '+esc(f)+'. Pick one above.</p>'; $('msg').style.display='none'; return; }
+  if(!A.counties[f]){ $('paper').innerHTML='<p class="empty">Pick a county above, or open one on the <a href="/farmland-atlas">Farmland Atlas</a> and choose "Printable county sheet".</p>'; $('msg').style.display='none'; return; }
+  $('msg').style.display=''; $('msg').textContent='Loading the county record…';
+  j(DATA+'counties/'+f+'.json').then(function(d){
+    if(F!==f) return;
+    if(!d||d.generated!==A.generated){ $('paper').innerHTML='<p class="empty">The county file for '+esc(cname(A.counties[f]))+' is not ready. Reload the page in a minute.</p>'; $('msg').style.display='none'; return; }
+    D=d; render(); gaEvent('atlas_sheet',{fips:f});
+  });
+}
+function search(){
+  var dl=$('ql'), names=[];
+  for(var f in A.counties){ var c=A.counties[f]; names.push({t:cname(c)+', '+c.state,f:f}); }
+  names.sort(function(a,b){return a.t<b.t?-1:1;});
+  names.forEach(function(n){ var o=document.createElement('option'); o.value=n.t; dl.appendChild(o); });
+  function norm(s){ return String(s).toLowerCase().replace(/[^a-z0-9]+/g,' ').replace(/\b(county|parish|borough|census area)\b/g,' ').replace(/\s+/g,' ').trim(); }
+  function go(){ var v=norm($('q').value); if(!v) return;
+    var hit=names.filter(function(n){ return norm(n.t)===v; })[0]||names.filter(function(n){ return norm(n.t).indexOf(v)===0; })[0];
+    if(hit){ location.hash=hit.f; $('q').value=''; } else { $('msg').style.display=''; $('msg').textContent='No county called "'+$('q').value+'". Try "Name, ST".'; } }
+  $('q').addEventListener('change',go); $('q').addEventListener('keydown',function(e){ if(e.key==='Enter'){ e.preventDefault(); go(); } });
+}
+$('print').addEventListener('click',function(){ gaEvent('atlas_sheet_print',{fips:F}); window.print(); });
+Promise.all([j(DATA+'atlas.json'), j(DATA+'neighbors.json'), j('/data/tenure/tenure.json')]).then(function(r){
+  A=r[0]; NB=r[1]&&r[1].counties; TEN=r[2];
+  if(!A||!A.counties||!NB){ $('msg').textContent='The Atlas data did not load. Reload the page.'; return; }
+  for(var f in A.counties){ var ry=get(A.counties[f],'rent','nonirr','year'); if(ry&&(!RENT_LATEST||ry>RENT_LATEST)) RENT_LATEST=ry; }
+  search();
+  var h=(location.hash||'').replace('#',''); load(/^\d{5}$/.test(h)?h:'');
+  window.addEventListener('hashchange',function(){ var x=(location.hash||'').replace('#',''); load(/^\d{5}$/.test(x)?x:(x?x:'')); });
+});
+})();
+</script>
+</body>
+</html>
