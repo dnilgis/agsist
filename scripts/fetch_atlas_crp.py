@@ -126,6 +126,21 @@ def num(v):
         return None
 
 
+# FSA still files a county under its old code: Shannon SD is Oglala Lakota since
+# 2015, Dade FL is Miami-Dade; Bedford city VA went into Bedford County in 2013,
+# Clifton Forge into Alleghany, South Boston into Halifax.
+FIPS_RENAME = {"46113": "46102", "12025": "12086", "02270": "02158",
+               "51515": "51019", "51560": "51005", "51780": "51083"}
+
+
+def fips5(v):
+    s = cell(v).split(".")[0]
+    if not s.isdigit() or len(s) > 5:
+        return None
+    s = s.zfill(5)
+    return FIPS_RENAME.get(s, s)
+
+
 def read_table(header, body, value_hint=None, above=None):
     """-> list of {"state","county","year","value"}; layout decided by the header.
     value_hint: substring the value column's header (long form) or the block
@@ -134,6 +149,9 @@ def read_table(header, body, value_hint=None, above=None):
     up = [h.upper() for h in header]
     i_state = next(i for i, h in enumerate(up) if h == "STATE" or h.startswith("STATE ") or h == "ST")
     i_county = next(i for i, h in enumerate(up) if h == "COUNTY" or h.startswith("COUNTY "))
+    # the 2026 workbooks carry a FIPS column: it beats the name join, which loses
+    # FSA's split districts ("W POTTAWATTAMIE", "N ST LOUIS") and typos ("MOUNTRIAL")
+    i_fips = next((i for i, h in enumerate(up) if h in ("FIPS", "FIPS CODE", "COUNTY FIPS")), None)
     year_cols = [(i, year_of(h)) for i, h in enumerate(header) if year_of(h)]
     if year_cols and len({y for _, y in year_cols}) != len(year_cols):
         # two blocks of years side by side; the row above names the blocks
@@ -153,10 +171,14 @@ def read_table(header, body, value_hint=None, above=None):
             st, co = state_abbr(r[i_state] if i_state < len(r) else ""), cell(r[i_county] if i_county < len(r) else "")
             if not st or not co or co.upper() in ("TOTAL", "STATE TOTAL", "US TOTAL", "GRAND TOTAL"):
                 continue
+            fp = fips5(r[i_fips]) if i_fips is not None and i_fips < len(r) else None
             for i, y in year_cols:
                 v = num(r[i]) if i < len(r) else None
                 if v is not None:
-                    out.append({"state": st, "county": co, "year": y, "value": v})
+                    rec = {"state": st, "county": co, "year": y, "value": v}
+                    if fp:
+                        rec["fips"] = fp
+                    out.append(rec)
         return out, "wide"
     if i_year is not None:
         cands = [i for i, h in enumerate(up) if i not in (i_state, i_county, i_year) and (value_hint is None or value_hint in h)]
@@ -264,7 +286,11 @@ def follow_to_workbook(body, from_url):
     return got
 
 
-def read_workbook(xlsx_bytes, value_hint=None, label=""):
+def read_workbook(xlsx_bytes, value_hint=None, label="", sheet=None):
+    """sheet: keep only the worksheet of that title when the workbook has it.
+    The 2026 history workbook has three sheets of the same shape -- ACRES,
+    RENT ($) and AVERAGE ($/acre) -- and reading every sheet summed dollars
+    into acres."""
     try:
         import openpyxl
     except ImportError:
@@ -272,7 +298,12 @@ def read_workbook(xlsx_bytes, value_hint=None, label=""):
     wb = openpyxl.load_workbook(io.BytesIO(xlsx_bytes), read_only=True, data_only=True)
     found = []
     previews = []
-    for ws in wb.worksheets:
+    sheets = wb.worksheets
+    if sheet and any(ws.title.strip().upper() == sheet for ws in sheets):
+        sheets = [ws for ws in sheets if ws.title.strip().upper() == sheet]
+    elif len(sheets) > 1:
+        log(f"  {label}: no sheet called {sheet!r}; reading all {len(sheets)}")
+    for ws in sheets:
         rows = list(ws.iter_rows(values_only=True, max_row=20000))
         previews.append((ws.title, rows[:6]))
         t = find_table(rows)
@@ -296,9 +327,22 @@ def read_workbook(xlsx_bytes, value_hint=None, label=""):
     return found
 
 
-def to_counties(recs, idx):
-    by_fips, unmatched = names_to_fips(recs, idx)
+def to_counties(recs, idx, add=True):
+    """add: sum rows that land on one county (acres); False keeps the first (a rate)."""
+    on_map = set(idx.values())
+    by_code = [r for r in recs if r.get("fips") in on_map]
+    by_name = [r for r in recs if r.get("fips") not in on_map]
+    by_fips, unmatched = names_to_fips(by_name, idx)
+    for r in by_code:
+        by_fips.setdefault(r["fips"], []).append(r)
     out = {}
+    if not add:
+        for fips, rows in by_fips.items():
+            years = {}
+            for r in rows:
+                years.setdefault(r["year"], r["value"])
+            out[fips] = years
+        return out, sorted(set(unmatched))
     for fips, rows in by_fips.items():
         years = {}
         for r in rows:
@@ -332,6 +376,13 @@ def selftest():
     geo = {"features": [{"id": "19169", "properties": {"name": "Story", "st": "IA"}, "geometry": {"type": "Polygon", "coordinates": [[[0, 0], [1, 0], [1, 1], [0, 0]]]}}]}
     c, un = to_counties(recs, county_index(geo))
     assert c == {"19169": {2020: 100.0, 2021: 1200.0}} and un == [("AL", "Autauga"), ("IA", "Adair")], (c, un)
+    hdr4 = ["STATE", "COUNTY", "FIPS", "2024", "2025"]
+    recs4, _ = read_table(hdr4, [("IOWA", "W POTTAWATTAMIE", 19155, 10, 20), ("SOUTH DAKOTA", "SHANNON 2/", 46113, 0, 7), ("IOWA", "STORY", 19169.0, 1, 2)])
+    assert recs4[0]["fips"] == "19155" and recs4[2]["fips"] == "46102" and recs4[4]["fips"] == "19169", recs4
+    geo4 = {"features": [{"id": f, "properties": {"name": n, "st": st}, "geometry": {"type": "Polygon", "coordinates": [[[0, 0], [1, 0], [1, 1], [0, 0]]]}}
+                         for f, n, st in (("19155", "Pottawattamie", "IA"), ("46102", "Oglala Lakota", "SD"), ("19169", "Story", "IA"))]}
+    c4, un4 = to_counties(recs4, county_index(geo4))
+    assert c4 == {"19155": {2024: 10.0, 2025: 20.0}, "46102": {2024: 0.0, 2025: 7.0}, "19169": {2024: 1.0, 2025: 2.0}} and un4 == [], (c4, un4)
     log("selftest ok")
 
 
@@ -353,8 +404,14 @@ def main():
         if hist_bytes is None or exp_bytes is None:
             sys.exit("FSA returned 404 for a CRP workbook; the link on the CRP statistics page has moved")
     idx = county_index()
-    hist = read_workbook(hist_bytes, "ACRE", "history")
+    hist = read_workbook(hist_bytes, "ACRE", "history", sheet="ACRES")
     exp = read_workbook(exp_bytes, "ACRE", "expirations")
+    # the average rental payment per acre, the sheet FSA calls AVERAGE; absent in older workbooks
+    try:
+        rate = read_workbook(hist_bytes, None, "rate", sheet="AVERAGE")
+        rate_c, _ = to_counties(rate, idx, add=False) if any(True for _ in rate) else ({}, [])
+    except SystemExit:
+        rate_c = {}
     hist_c, hist_un = to_counties(hist, idx)
     exp_c, exp_un = to_counties(exp, idx)
     log(f"  history: {len(hist_c)} Atlas counties, {len(hist_un)} unmatched names (non-Atlas states included)")
@@ -377,7 +434,8 @@ def main():
     counties = {}
     for fips in set(hist_c) | set(exp_c):
         counties[fips] = {"acres": {str(y): round(v, 1) for y, v in sorted(hist_c.get(fips, {}).items())},
-                          "expiring": {str(y): round(v, 1) for y, v in sorted(exp_c.get(fips, {}).items())}}
+                          "expiring": {str(y): round(v, 1) for y, v in sorted(exp_c.get(fips, {}).items())},
+                          "rate": {str(y): round(v, 2) for y, v in sorted(rate_c.get(fips, {}).items()) if v}}
     hist_years = sorted({y for c in hist_c.values() for y in c})
     exp_years = sorted({y for c in exp_c.values() for y in c})
     os.makedirs(os.path.dirname(OUT), exist_ok=True)

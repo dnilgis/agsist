@@ -1085,7 +1085,12 @@ def build(rent_dir=RENT_DIR, raw_dir=RAW_DIR, geometry_names=None, geometry_unit
         # describe numbers the county no longer carries.
         # practices stay out of the fingerprint: no read quotes them, and a new
         # layer must not hide every read on the map until the next paid run.
-        c["sha"] = record_sha({k: v for k, v in c.items() if k != "practices"})
+        # CRP arrived 2026-09-19, a year after the reads were written; none of them quotes it, and
+        # counting it would hide every read on the map until the next paid run. atlas_reads.py still
+        # sees CRP in its own block hash, so the next run with credit rewrites each read with it.
+        # (It is held at the placeholder the reads were fingerprinted with, rather than dropped, so the
+        # 3,151 fingerprints already on the map stay the same.)
+        c["sha"] = record_sha({**{k: v for k, v in c.items() if k != "practices"}, "crp": CRP_SHA_PLACEHOLDER})
         counties[fips] = c
 
     if not geometry_names:
@@ -1483,6 +1488,7 @@ def _selftest_value_outliers():
 
 # ---------------------------------------------------------------- practices
 MIN_TILE_CHANGE_ACRES = 1000     # a change off a few hundred acres is a percent of nothing
+CRP_SHA_PLACEHOLDER = {"status": "not yet measured: not loaded into the Atlas yet"}   # see the sha line in build()
 
 
 PRACTICE_COMMODITY = {"cropland": "AG LAND", "tile": "AG LAND", "ditch": "AG LAND",

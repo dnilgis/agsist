@@ -789,6 +789,8 @@ var LAYERS=[
   v:function(c){return get(c,'crp','share_pct');},title:'CRP acres as a share of CRP acres plus 2022 harvested cropland'},
  {key:'crp_peak',grp:'CRP',label:'Change from peak',div:true,unit:'%',k:0,needs:'crp',
   v:function(c){return get(c,'crp','change_from_peak_pct');},title:'Latest CRP acres against the county\'s peak year since 1986, percent'},
+ {key:'crp_rate',grp:'CRP',label:'Rental payment, $/ac',ramp:'green',unit:'$/acre',money:true,k:0,needs:'crp',
+  v:function(c){return get(c,'crp','rate');},title:'Average annual CRP rental payment per acre under contract, latest fiscal year, USDA FSA (counties under 100 enrolled acres are grey)'},
  {key:'crp_exp',grp:'CRP',label:'Expiring, next 3 FY',ramp:'green',unit:'acres',k:0,needs:'crp',
   v:function(c){return get(c,'crp','expiring_next3','acres');},title:'CRP acres whose contracts expire in the current and next two fiscal years'},
  {key:'dr_share',grp:'Drought',label:'Weeks in D2+, since 2000',ramp:'heat',unit:'%',k:0,needs:'drought',
@@ -1645,7 +1647,9 @@ function renderPanel(fips,c){
   if(ok(C)){
     f+=facthead('Conservation Reserve (CRP)');
     if(C.latest&&C.latest.acres!=null) f+=fact('Enrolled, '+C.latest.year, fmt(C.latest.acres,0)+' acres', C.share_of_cropland&&C.share_of_cropland.pct!=null?fmt(C.share_of_cropland.pct,1)+'% of the cropland base':'');
-    if(C.expiring_next3) f+=fact('Expiring FY'+C.expiring_next3.from+'–'+C.expiring_next3.to, fmt(C.expiring_next3.acres,0)+' acres');
+    if(C.expiring_next3) f+=fact('Expiring FY'+C.expiring_next3.from+'–'+C.expiring_next3.to, fmt(C.expiring_next3.acres,0)+' acres', C.expiring_next3.share_of_enrolled_pct!=null?fmt(C.expiring_next3.share_of_enrolled_pct,0)+'% of what is enrolled':'');
+    if(C.rate&&C.rate.usd_per_acre!=null) f+=fact('Average CRP rental payment, FY'+C.rate.year, money(C.rate.usd_per_acre)+'/ac', ok(c.rent)&&c.rent.nonirr?'county dry cash rent '+money(c.rent.nonirr.value)+'/ac in '+c.rent.nonirr.year:'what FSA pays per enrolled acre, on average');
+    else if(C.rate&&C.rate.status) f+=fact('Average CRP rental payment','— '+why(C.rate),'',true);
   } else na.push(['CRP', why(C)]);
   var aw='Irrigated share: 2022 Census of Agriculture. Groundwater share and water withdrawn: USGS 2015 county water use; not shown under 1,000 irrigated acres. '
     +'Rent multiple: irrigated ÷ non-irrigated cash rent in the same survey year, so general rent inflation cancels out; its direction is called only when the 95% interval of the fitted trend excludes zero'+(ok(P)&&P.ratio_slope_per_year!=null?' ('+sgn(P.ratio_slope_per_year,3)+' ± '+fmt(P.ratio_slope_ci95,3)+' a year, '+P.n_pairs+' paired years)':'')+'. '

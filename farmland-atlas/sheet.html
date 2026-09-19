@@ -259,14 +259,14 @@ function render(){
   if(ok(Y)){
     Y_+=fct('Median, '+Y.first_year+'–'+Y.last_year, f1(Y.median)+' bu/ac', Y.n+' published years'+(irrHigh?', irrigated and dryland combined':''));
     if(ry5) Y_+=fct('Recent level, '+ry5.from+'–'+ry5.to, f1(ry5.avg)+' bu/ac', ry5.n===5?'high and low year dropped':'low year dropped');
-    if(Y.worst) Y_+=fct('Lowest published year', Y.worst.year+': '+f1(Y.worst.value)+' bu/ac', pct(Y.worst.share_of_median,0)+' of median');
+    if(Y.worst) Y_+=fopt('Lowest published year', Y.worst.year+': '+f1(Y.worst.value)+' bu/ac', pct(Y.worst.share_of_median,0)+' of median');
     if(Y.slope!=null) Y_+=fct('Trend, '+String(Y.window||(Y.first_year+'–'+Y.last_year)).replace('-','–'), sgn(Y.slope,1)+' bu/ac a year');
   } else Y_+=fw('County corn yield', why(Y));
   var Rt=Y_+'<h2>Crop insurance record</h2>';
   if(ok(S)){
     if(lc!=null) Rt+=fct('Claims paid per $100 of coverage, '+S.last10.from+'–'+S.last10.to, usd2(lc));
     if(S.last10&&S.last10.ratio!=null) Rt+=fct('Loss ratio, '+S.last10.from+'–'+S.last10.to, rh(S.last10.ratio,2),'claims ÷ total premium (farmer share + federal subsidy)');
-    if(S.loss_ratio_all!=null) Rt+=fct('Loss ratio, '+S.first_year+'–'+S.last_year, rh(S.loss_ratio_all,2), mUSD(S.total_indemnity)+' paid');
+    if(S.loss_ratio_all!=null) Rt+=fopt('Loss ratio, '+S.first_year+'–'+S.last_year, rh(S.loss_ratio_all,2), mUSD(S.total_indemnity)+' paid');
     if(S.years_over_one!=null) Rt+=fopt('Years claims exceeded premium', S.years_over_one+' of '+S.years_with_ratio);
     if(S.worst_year) Rt+=fopt('Worst year', S.worst_year.year+'', 'ratio '+Number(S.worst_year.ratio).toFixed(2));
   } else Rt+=fw('Premium and payouts', why(S));
@@ -280,7 +280,7 @@ function render(){
     var wk=Dr.weeks||{};
     Rt+=fct('Weeks with half the county or more in D2 (severe) drought or worse, '+Dr.first_year+'–'+Dr.last_full_year, fmt(wk.d2,0)+' of '+fmt(wk.counted,0), fmt(wk.share_d2_pct,0)+'% of weeks');
     if(wk.d2&&Dr.worst_year) Rt+=fct('Year with the most D2+ weeks', Dr.worst_year.year+'', Dr.worst_year.d2+' weeks');
-    if(Dr.last5) Rt+=fct('Last five years, '+Dr.last5.from+'–'+Dr.last5.to, fmt(Dr.last5.d2,0)+' weeks');
+    if(Dr.last5) Rt+=fopt('Last five years, '+Dr.last5.from+'–'+Dr.last5.to, fmt(Dr.last5.d2,0)+' weeks');
   } else Rt+=fw('Drought', why(Dr));
   if(ok(d.heat)&&jr){
     Rt+=fct('July average of daily lows, '+jr.from+'–'+jr.to, f1(jr.mean)+' °F', jul.normal_1991_2020&&jul.normal_1991_2020.mean!=null?'1991–2020 normal '+f1(jul.normal_1991_2020.mean)+' °F':'');
@@ -291,7 +291,7 @@ function render(){
     var sh=W.irrigated_share_2022||{}, gw=W.groundwater_share_2015||{}, tiny=get(W,'applied_2015','status')&&/under 1,000/.test(W.applied_2015.status);
     if(sh.share!=null&&sh.reported===false) Rt+=fct('Harvested cropland irrigated, 2022','none reported');
     else if(sh.share!=null) Rt+=fct('Harvested cropland irrigated, 2022', pct(sh.share,0));
-    else Rt+=fw('Harvested cropland irrigated, 2022', why(sh));
+    else Rt+=fw('Harvested cropland irrigated, 2022', why(sh)).replace('class="f','class="opt f');
   }
   if(ok(Pr)){
     var p=function(label,x){ if(!x) return; if(x.reported===false) Rt+=fct(label,'none reported'); else if(x.share!=null){ var s0=Pr.cropland?x.acres/Pr.cropland:x.share; Rt+=fct(label, (s0>0&&s0<0.005?'under 1%':pct(x.share,0))+' of cropland', fmt(x.acres,0)+' ac'); } };
@@ -303,6 +303,7 @@ function render(){
   if(ok(C)){
     if(C.latest&&C.latest.acres!=null) Rt+=fct('CRP enrolled, '+C.latest.year, fmt(C.latest.acres,0)+' ac', C.share_of_cropland&&C.share_of_cropland.pct!=null?fmt(C.share_of_cropland.pct,1)+'% of cropland base':'');
     if(C.expiring_next3) Rt+=fct('CRP expiring FY'+C.expiring_next3.from+'–'+C.expiring_next3.to, fmt(C.expiring_next3.acres,0)+' ac');
+    if(C.rate&&C.rate.usd_per_acre!=null) Rt+=fct('CRP average rental payment, FY'+C.rate.year, money(C.rate.usd_per_acre)+'/ac', rv?'dry cash rent '+money(rv.value)+'/ac':'');
   }
   if(ok(Wl)){
     if(Wl.wells!=null){ Rt+=fct('Irrigation wells in use (NE register)', fmt(Wl.irrigation_active,0)); if(Wl.depth_median_ft!=null) Rt+=fct('Median well depth', fmt(Wl.depth_median_ft,0)+' ft'); }
@@ -319,7 +320,7 @@ function render(){
   var pp=$('paper'), keep=pp.getAttribute('style')||'';
   pp.setAttribute('style','width:7.47in;padding:0;margin:0;min-height:0;box-shadow:none;position:absolute;left:-9999px;top:0');
   pp.classList.remove('tight');
-  var need=pp.scrollHeight, room=10.2*96;
+  var need=pp.scrollHeight, room=10.1*96;   // 10.2in printable, less a margin for zoom rounding (a 0.909 fit printed 1px over)
   if(need>room/0.9){ pp.classList.add('tight'); need=pp.scrollHeight; }   // a long county drops four lesser lines before it shrinks past 90%
   pp.setAttribute('style',keep);
   document.documentElement.style.setProperty('--fit', need>room?String(Math.max(0.9,Math.floor(room/need*1000)/1000)):'1');
