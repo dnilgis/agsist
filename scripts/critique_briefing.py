@@ -68,7 +68,26 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 DAILY_PATH = REPO_ROOT / "data" / "daily.json"
 ARCHIVE_DIR = REPO_ROOT / "data" / "daily-archive"
 ANTHROPIC_API = "https://api.anthropic.com/v1/messages"
-MODEL = "claude-sonnet-4-6"  # match generator; -20250514 now 404s
+# Matches the generator: BRIEFING_MODEL, else claude-sonnet-5, with one fall
+# back to claude-sonnet-4-6 if the API does not know the model.
+MODEL = os.environ.get("BRIEFING_MODEL", "").strip() or "claude-sonnet-5"
+FALLBACK_MODEL = "claude-sonnet-4-6"
+
+
+def _refused_model(e):
+    """(status, body) if an exception is the API saying it does not know the
+    model -- a 404, or a 400 naming "model:" -- else None. Reads both a
+    requests error (e.response) and a urllib one (e.code, e.read())."""
+    resp = getattr(e, "response", None)
+    sc = getattr(resp, "status_code", None) if resp is not None else getattr(e, "code", None)
+    body = ""
+    try:
+        body = (getattr(resp, "text", "") if resp is not None else e.read().decode("utf-8", "replace")) or ""
+    except Exception:
+        pass
+    if sc == 404 or (sc == 400 and "model:" in body.lower()):
+        return sc, body[:200]
+    return None
 
 # Make the generator importable so we can re-archive after rewrite
 sys.path.insert(0, str(REPO_ROOT / "scripts"))
@@ -299,7 +318,18 @@ Respond with ONLY the JSON output. No preamble, no markdown."""
         "anthropic-version": "2023-06-01",
     }
 
-    result = http_post_json(ANTHROPIC_API, payload, headers, timeout=90)
+    try:
+        result = http_post_json(ANTHROPIC_API, payload, headers, timeout=90)
+    except Exception as e:
+        _ref = _refused_model(e)
+        if _ref and payload["model"] != FALLBACK_MODEL:
+            print(f"::warning title=Critic model fallback::'{payload['model']}' refused "
+                  f"(HTTP {_ref[0]}); the critic pass runs on {FALLBACK_MODEL}", flush=True)
+            payload["model"] = FALLBACK_MODEL
+            globals()["MODEL"] = FALLBACK_MODEL
+            result = http_post_json(ANTHROPIC_API, payload, headers, timeout=90)
+        else:
+            raise
     text = ""
     for block in result.get("content", []):
         if block.get("type") == "text":

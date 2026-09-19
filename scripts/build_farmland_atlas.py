@@ -101,7 +101,15 @@ FIPS_ALIAS = {
     "51515": "51019",   # Bedford city VA -> Bedford County VA, 2013-07-01
     "02063": "02261",   # Chugach AK      -> the 2010 Valdez-Cordova polygon, split 2019-01-02
     "02066": "02261",   # Copper River AK -> the same polygon
+    "12025": "12086",   # Dade FL -> Miami-Dade, 1997. RMA kept writing 12025 into 2002.
 }
+
+# THE ALIASES THAT ARE RENAMES: one place, one piece of ground, a new code.
+# Their year-keyed records are JOINED onto the new code (join_renamed). The
+# others in FIPS_ALIAS are a merger (Bedford city into Bedford County) and a
+# split (Chugach and Copper River out of Valdez-Cordova): two places, whose
+# numbers must never be added, and they keep first-code-wins.
+RENAMES = {"46113", "02270", "12025"}
 
 
 def fold(fips):
@@ -109,20 +117,90 @@ def fold(fips):
     return FIPS_ALIAS.get(fips, fips)
 
 
-def fold_keys(d):
-    """Re-key a {fips: rec} layer onto the map's codes. A fold that collides --
-    two source codes onto one polygon -- keeps the first by sorted code order and
-    reports the second, because merging two counties' numbers would invent a
-    figure neither source published."""
+def _add_leaves(a, b):
+    """a + b, leaf by leaf, for two records of the same shape; None if the
+    shapes differ anywhere (a number beside a dict, a key holding text)."""
+    if isinstance(a, bool) or isinstance(b, bool):
+        return None
+    if isinstance(a, (int, float)) and isinstance(b, (int, float)):
+        return a + b
+    if isinstance(a, dict) and isinstance(b, dict):
+        out = {}
+        for k in set(a) | set(b):
+            if k not in a or k not in b:
+                out[k] = a[k] if k in a else b[k]
+                continue
+            v = _add_leaves(a[k], b[k])
+            if v is None:
+                return None
+            out[k] = v
+        return out
+    return None
+
+
+def join_renamed(new, old):
+    """One county's record under its new code and its old one, joined; None if
+    the two records are not the same shape.
+
+    A RENAME IS ONE PLACE WITH TWO CODES, NOT TWO PLACES. Measured 2026-09-19 on
+    the national build: RMA files Shannon SD as 46113 through 2016 and Oglala
+    Lakota as 46102 from 2017, so the fold kept 46102's 2017-2026 and dropped
+    1989-2016 -- the page said "Crop indemnities 2017-2026" for a county with a
+    38-year record. Dade FL (12025) ran into 2002 while Miami-Dade (12086)
+    started in 2002: three straggler policies filed under the old code in the
+    same year as 934 under the new one.
+
+    So a year present under both codes is ADDED, leaf by leaf: those are
+    different policies on the same ground, and leaving either out undercounts
+    the county. The first version of this refused any overlapping year and, on
+    Dade, threw away $124M of 1989-2001 premium-book indemnity while the
+    cause-of-loss record joined -- the two RMA products then disagreed by 21% on
+    one county page that says they agree. Found by the audit panel the same day.
+
+    `name`, the only text field, is kept from the new code. A plain number
+    beside the year dicts (prf_indemnity, a total over the record's own years)
+    adds the same way."""
+    if not (isinstance(new, dict) and isinstance(old, dict)):
+        return None
+    out = {}
+    for k in set(new) | set(old):
+        if k not in new or k not in old:
+            out[k] = new[k] if k in new else old[k]
+        elif isinstance(new[k], str) and isinstance(old[k], str):
+            out[k] = new[k]
+        else:
+            v = _add_leaves(new[k], old[k])
+            if v is None:
+                return None
+            out[k] = v
+    return out
+
+
+def fold_keys(d, join=False, label=""):
+    """Re-key a {fips: rec} layer onto the map's codes.
+
+    The map's own code is taken first, then the aliases in code order. A fold
+    that collides -- two source codes onto one polygon -- keeps what is already
+    there and reports the second, because merging two counties' numbers would
+    invent a figure neither source published. With join=True, a collision from
+    a code in RENAMES is one county under two codes and is joined instead
+    (join_renamed says why)."""
     if not d:
         return d, []
-    out, merged = {}, []
-    for f in sorted(d):
+    out, merged, joined = {}, [], []
+    for f in sorted(d, key=lambda c: (fold(c) != c, c)):
         t = fold(f)
         if t in out and t != f:
+            j = join_renamed(out[t], d[f]) if (join and f in RENAMES) else None
+            if j is not None:
+                out[t] = j
+                joined.append(f"{f}->{t}")
+                continue
             merged.append(f)
             continue
         out[t] = d[f]
+    if joined:
+        log(f"  {label + ': ' if label else ''}joined {len(joined)} renamed code(s) onto the current code: {' '.join(joined)}")
     return out, merged
 
 RENT_DIR = "data/cash-rent"
@@ -843,7 +921,7 @@ def build(rent_dir=RENT_DIR, raw_dir=RAW_DIR, geometry_names=None, geometry_unit
             raw[name] = d.get("counties") if name != "wells" else {"ne": d.get("ne") or {}, "ks": d.get("ks") or {}}
             raw[name] = raw[name] or {}
             if name != "wells":
-                raw[name], merged = fold_keys(raw[name])
+                raw[name], merged = fold_keys(raw[name], join=name in ("loss", "sob"), label=name)
                 if merged:
                     log(f"  {name}: {len(merged)} code(s) fold onto a polygon already taken, kept the first: {' '.join(merged)}")
             vint[name] = {k: v for k, v in d.items() if k not in ("counties", "ne", "ks", "unmatched_atlas_names", "unplaced", "failed")}
@@ -1241,7 +1319,22 @@ def selftest():
     assert fold("46113") == "46102" and fold("19169") == "19169"
     folded, merged = fold_keys({"02063": {"a": 1}, "02066": {"a": 2}, "19169": {"a": 3}})
     assert set(folded) == {"02261", "19169"} and merged == ["02066"], (folded, merged)
-    assert folded["02261"] == {"a": 1}, "the first code by sorted order wins; nothing is averaged"
+    assert folded["02261"] == {"a": 1}, "a split: the first alias by code order wins; nothing is averaged"
+    # a rename joins, and a year under both codes is added leaf by leaf
+    sh = {"name": "Shannon", "years": {"1989": {"indem": 1.0}, "2016": {"indem": 2.0}}, "corn": {}, "prf_indemnity": 10.0}
+    ol = {"name": "Oglala Lakota", "years": {"2016": {"indem": 3.0, "prem": 1.0}, "2017": {"indem": 4.0}}, "corn": {}, "prf_indemnity": 5.0}
+    fj, mj = fold_keys({"46113": sh, "46102": ol}, join=True)
+    assert mj == [] and fj["46102"]["years"] == {"1989": {"indem": 1.0}, "2016": {"indem": 5.0, "prem": 1.0}, "2017": {"indem": 4.0}}, fj
+    assert fj["46102"]["name"] == "Oglala Lakota" and fj["46102"]["prf_indemnity"] == 15.0, fj
+    # a split is never joined, even when its years happen not to overlap
+    fs, ms = fold_keys({"02063": {"years": {"2001": {"indem": 1.0}}}, "02066": {"years": {"2002": {"indem": 2.0}}}}, join=True)
+    assert ms == ["02066"] and fs["02261"] == {"years": {"2001": {"indem": 1.0}}}, fs
+    # join is opt-in per layer
+    fn, mn = fold_keys({"46113": sh, "46102": ol})
+    assert mn == ["46113"] and fn["46102"] == ol
+    # shapes that differ refuse to join rather than guess
+    assert join_renamed({"years": {"2002": {"indem": 1.0}}}, {"years": {"2002": 5.0}}) is None
+    assert fold("12025") == "12086"
     log("selftest ok")
 
 

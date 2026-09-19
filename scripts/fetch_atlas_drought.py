@@ -176,17 +176,46 @@ def main():
         y0 = this_year - REFETCH_YEARS + 1
         counties = {f: {int(y): v for y, v in c.items() if int(y) < y0} for f, c in existing["counties"].items()}
         log(f"  keeping years before {y0}; refetching {y0}-{this_year}")
+    # A COUNTY THE FILE HAS NEVER SEEN GETS ITS WHOLE HISTORY, NOT TWO YEARS.
+    #
+    # 2026-09-19: the Atlas went from 15 states to 50 and the first ordinary run
+    # after it fetched 2025-2026 for all 3,141 counties -- right for the 1,450
+    # already in the file, wrong for the 1,691 that were not. Fresno CA came
+    # out with 52 weeks counted and was coloured on the "since 2000" map as if
+    # that were its record. It took a hand-typed refetch_all to repair. Now the
+    # start year is decided per county: FIRST_YEAR for any county whose record
+    # does not already reach back to it.
+    start_of = {}
     if "--limit" in sys.argv:
         fips_list = fips_list[:int(sys.argv[sys.argv.index("--limit") + 1])]
     failed = []
     t0 = time.time()
+
+    # Full history only for a county the file has never held, or one whose record
+    # was non-empty and holds nothing before this run's window. NOT for a county
+    # the file holds as empty: the Drought Monitor publishes nothing for it (the
+    # 8 old Connecticut codes, 02261), and a from-2000 call for it every run
+    # would come back empty every run. Found by the audit panel, 2026-09-19.
+    prior = (existing or {}).get("counties") or {}
+    for fips in fips_list:
+        if existing is None:
+            start_of[fips] = FIRST_YEAR
+        elif fips not in prior:
+            start_of[fips] = FIRST_YEAR
+        elif prior[fips] and not counties.get(fips):
+            start_of[fips] = FIRST_YEAR
+        else:
+            start_of[fips] = y0
+    n_full = sum(1 for f in fips_list if start_of[f] == FIRST_YEAR)
+    if existing is not None and n_full:
+        log(f"  {n_full} counties have no history before {y0} in the file; fetching them from {FIRST_YEAR}")
 
     def work(fips):
         """One county in one worker. Returns (fips, years or None, error or None);
         the exception is carried back rather than raised so the pool keeps
         going and the caller decides, exactly as the serial loop did."""
         try:
-            years, err = count_weeks(fetch_county(fips, y0, this_year)), None
+            years, err = count_weeks(fetch_county(fips, start_of[fips], this_year)), None
         except RuntimeError as e:
             years, err = None, e
         time.sleep(SLEEP)

@@ -48,8 +48,9 @@ PROXY_BASE = os.environ.get("RMA_PROXY_BASE", "").strip().rstrip("/")
 #   www.fsa.usda.gov         measured 2026-09-17: the CRP request accepted the
 #                            connection and sat on it until the remote end
 #                            closed without a response, twice, for 629 seconds
-#                            in total. Here for the TIMEOUT, not for a proxy;
-#                            fetch_atlas_crp.py passes no proxy_path.
+#                            in total. Since 2026-09-19 fetch_atlas_crp.py
+#                            passes a proxy_path, so with RMA_PROXY_BASE set
+#                            the second route is the Worker's /fsa/ path.
 PROXIED_HOSTS = {"pubfs-rma.fpac.usda.gov", "www.fsa.usda.gov"}
 CONNECT_TIMEOUT = 40
 _dead_hosts = set()

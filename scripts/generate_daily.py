@@ -171,7 +171,30 @@ PRICES_PATH = REPO_ROOT / "data" / "prices.json"
 OUTPUT_PATH = REPO_ROOT / "data" / "daily.json"
 QUOTE_POOL_PATH = REPO_ROOT / "data" / "quote-pool.json"
 ANTHROPIC_API = "https://api.anthropic.com/v1/messages"
-MODEL = "claude-sonnet-4-6"
+# 2026-09-19: claude-sonnet-5 by default, $2/$10 per million tokens against
+# $3/$15 for claude-sonnet-4-6 on Anthropic's pricing page that day. The
+# repository variable BRIEFING_MODEL overrides it without a code change, and a
+# model the API does not know falls back to FALLBACK_MODEL once, in the same
+# run, with a ::warning:: on the run page -- so a name change at Anthropic
+# costs an annotation and not a morning.
+MODEL = os.environ.get("BRIEFING_MODEL", "").strip() or "claude-sonnet-5"
+FALLBACK_MODEL = "claude-sonnet-4-6"
+
+
+def _refused_model(e):
+    """(status, body) if an exception is the API saying it does not know the
+    model -- a 404, or a 400 naming "model:" -- else None. Reads both a
+    requests error (e.response) and a urllib one (e.code, e.read())."""
+    resp = getattr(e, "response", None)
+    sc = getattr(resp, "status_code", None) if resp is not None else getattr(e, "code", None)
+    body = ""
+    try:
+        body = (getattr(resp, "text", "") if resp is not None else e.read().decode("utf-8", "replace")) or ""
+    except Exception:
+        pass
+    if sc == 404 or (sc == 400 and "model:" in body.lower()):
+        return sc, body[:200]
+    return None
 # Dated social card rendered by build_social_card.py in the same daily.yml run
 # (card step runs after generate, both commit together — so the published page
 # and its image land at the same moment). If a card ever fails to render, the
@@ -1906,7 +1929,12 @@ Apply all 16 IMPACT RULES. Voice samples are NON-NEGOTIABLE, no wire-service neu
     BACKOFF_SECONDS = [4, 12, 30]
     last_err = None
     result = None
-    for attempt in range(MAX_RETRIES):
+    _fell_back = False
+    # One extra pass is allowed for the model fallback, so a refusal on the
+    # last ordinary attempt still gets its one try on FALLBACK_MODEL.
+    for attempt in range(MAX_RETRIES + 1):
+        if attempt == MAX_RETRIES and not _fell_back:
+            break
         try:
             if requests:
                 # v4.6.2: STREAM the response. A non-streaming POST puts the entire
@@ -1955,11 +1983,24 @@ Apply all 16 IMPACT RULES. Voice samples are NON-NEGOTIABLE, no wire-service neu
         except Exception as e:
             last_err = e
             _sc = getattr(getattr(e, "response", None), "status_code", None)
+            _ref = _refused_model(e)
+            if _ref and payload["model"] != FALLBACK_MODEL:
+                print(f"::warning title=Briefing model fallback::'{payload['model']}' refused "
+                      f"(HTTP {_ref[0]}: {_ref[1][:120]}); this briefing is written on {FALLBACK_MODEL}",
+                      flush=True)
+                payload["model"] = FALLBACK_MODEL
+                # and for the rest of this run, so a regenerate after a bad
+                # parse does not ask for the refused model a second time
+                globals()["MODEL"] = FALLBACK_MODEL
+                _fell_back = True
+                continue
+            if _sc is None:
+                _sc = getattr(e, "code", None)
             if _sc is not None and 400 <= _sc < 500 and _sc != 429:
                 # Permanent client error (e.g. 404 model-not-found, 401 bad key) -
                 # retrying cannot help, so fail fast with a pointed hint.
                 print(f"  [error] non-retryable HTTP {_sc} from Anthropic API; not retrying. "
-                      f"Verify MODEL is current (currently '{MODEL}').", file=sys.stderr)
+                      f"Verify the model is current (this call used '{payload['model']}').", file=sys.stderr)
                 break
             if attempt < MAX_RETRIES - 1:
                 wait = BACKOFF_SECONDS[attempt]

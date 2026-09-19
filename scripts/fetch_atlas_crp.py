@@ -41,7 +41,13 @@ import re
 import sys
 from datetime import datetime, timezone
 
+from urllib.parse import urljoin
+
 from atlas_common import get, county_index, names_to_fips, log
+
+
+def _host_of(url):
+    return url.split("://", 1)[-1].split("/", 1)[0].lower()
 
 # THIS ONE IS A LANDING PAGE, NOT THE WORKBOOK -- 2026-09-17.
 #
@@ -167,6 +173,17 @@ def read_table(header, body, value_hint=None, above=None):
     raise ValueError(f"neither year columns nor a YEAR column in header {header}")
 
 
+def fsa_proxy_path(url):
+    """The Worker path for an FSA url: /fsa + the path, query dropped.
+
+    FSA HAS NEVER ANSWERED A GITHUB RUNNER. Twice on 2026-09-17 it accepted
+    the connection and held it until the far end closed. workers/atlas-rma-proxy.js
+    serves /fsa/documents/... and /fsa/sites/default/files/... and nothing else,
+    and atlas_common.get() uses it only after the direct route has failed."""
+    path = "/" + url.split("://", 1)[-1].split("/", 1)[-1].split("?", 1)[0]
+    return "/fsa" + path
+
+
 # Every .xlsx is a zip, so every one begins "PK". Anything else that came back
 # from a url we asked for a workbook is a page about the workbook.
 XLSX_MAGIC = b"PK"
@@ -182,6 +199,22 @@ def _selftest_follow():
     orig = get
     try:
         get = lambda u, **k: calls.append(u) or real           # noqa: E731
+        assert fsa_proxy_path(HISTORY_URL) == "/fsa/documents/crphistorycounty86-25xlsx"
+        assert fsa_proxy_path(EXPIRE_URL) == "/fsa/sites/default/files/documents/EXPIRECOUNTY.xlsx"
+        assert fsa_proxy_path("https://www.fsa.usda.gov/sites/default/files/2026-05/X.xlsx?x=1") == "/fsa/sites/default/files/2026-05/X.xlsx"
+        calls.clear()
+        assert follow_to_workbook(b'<a href="//www.fsa.usda.gov/sites/default/files/Y.xlsx">', "https://www.fsa.usda.gov/documents/x") is real
+        assert calls == ["https://www.fsa.usda.gov/sites/default/files/Y.xlsx"], calls
+        calls.clear()
+        assert follow_to_workbook(b'<a href="Z.xlsx">', "https://www.fsa.usda.gov/documents/x") is real
+        assert calls == ["https://www.fsa.usda.gov/documents/Z.xlsx"], calls
+        calls.clear()
+        try:
+            follow_to_workbook(b'<a href="https://fsa.usda.gov/sites/default/files/Y.xlsx">', "https://www.fsa.usda.gov/documents/x")
+            raise AssertionError("an off-host link must not be followed")
+        except SystemExit as e:
+            assert "another host" in str(e), e
+        calls.clear()
         # already a workbook: returned untouched, nothing fetched
         assert follow_to_workbook(real, "u") is real and not calls
         # a landing page with an absolute link
@@ -216,11 +249,16 @@ def follow_to_workbook(body, from_url):
     if not hrefs:
         sys.exit(f"{from_url} returned {len(body)} bytes that are not a workbook and carry no "
                  f".xlsx link. Open it in a browser: the CRP statistics page has been relaid out.")
-    href = hrefs[0].decode("utf-8", "replace")
-    if href.startswith("/"):
-        href = "https://" + from_url.split("://", 1)[-1].split("/", 1)[0] + href
+    # urljoin, not a string prefix: a protocol-relative "//host/x" or a
+    # page-relative "x.xlsx" would otherwise become a malformed url. And the
+    # link must stay on the host we asked: anything else would get neither the
+    # short FSA timeout nor the proxy route, and could hang a runner 20 minutes.
+    href = urljoin(from_url, hrefs[0].decode("utf-8", "replace"))
+    if _host_of(href) != _host_of(from_url):
+        sys.exit(f"{from_url} links its workbook on another host ({href}); not following it. "
+                 "Open the CRP statistics page in a browser and check the link.")
     log(f"  landing page; following {href}")
-    got = get(href)
+    got = get(href, proxy_path=fsa_proxy_path(href))
     if got is None or got[:2] != XLSX_MAGIC:
         sys.exit(f"{href} did not return a workbook either")
     return got
@@ -309,9 +347,9 @@ def main():
             exp_bytes = f.read()
     else:
         log(f"downloading {HISTORY_URL}")
-        hist_bytes = follow_to_workbook(get(HISTORY_URL), HISTORY_URL)
+        hist_bytes = follow_to_workbook(get(HISTORY_URL, proxy_path=fsa_proxy_path(HISTORY_URL)), HISTORY_URL)
         log(f"downloading {EXPIRE_URL}")
-        exp_bytes = get(EXPIRE_URL)
+        exp_bytes = follow_to_workbook(get(EXPIRE_URL, proxy_path=fsa_proxy_path(EXPIRE_URL)), EXPIRE_URL)
         if hist_bytes is None or exp_bytes is None:
             sys.exit("FSA returned 404 for a CRP workbook; the link on the CRP statistics page has moved")
     idx = county_index()

@@ -17,10 +17,35 @@ THE GATE
   build_farmland_atlas.py) and the page shows it only while the fingerprint
   matches, so a read can never describe last build's numbers.
 
-COST
-  About 1,300 counties at roughly 700 input and 150 output tokens each on
-  claude-sonnet-4-6. Unchanged counties are skipped on every run after the
-  first, so the monthly cost is the counties whose numbers moved.
+COST, AND WHY THIS NOW RUNS AS A BATCH (2026-09-19)
+  The first national run was 3,149 counties. On claude-sonnet-4-6 at the
+  standard price it ran the account out of credit 480 counties in. Three
+  changes, all measured against Anthropic's pricing page that day:
+
+  1. Message Batches, 50% off input and output. A monthly job does not need
+     its answers in seconds. Batches usually finish within the hour and are
+     allowed 24.
+  2. The model is a setting: ATLAS_READS_MODEL, default claude-sonnet-5
+     ($2/$10 per million tokens against $3/$15 for 4.6). `--trial N` writes N
+     counties on two models side by side into data/atlas/reads-trial.json so
+     the cheaper one (claude-haiku-4-5-20251001, $1/$5) can be judged on this
+     gate's own pass rate before it is used for real.
+  3. A read is carried forward, not rewritten, when the block of numbers it
+     was written from has not changed. The county fingerprint changes every
+     month because heat and the partial-year loss record move; most of the
+     numbers a read uses do not. Each read stores the hash of its block.
+
+  Prompt caching is NOT used: the system prompt is about 500 tokens and the
+  documented minimum is 1,024 (Sonnet) and 4,096 (Haiku 4.5). Marking it
+  would change nothing.
+
+FATAL ERRORS STOP THE RUN AND TOUCH NOTHING
+  2026-09-19: "Your credit balance is too low" came back on every call after
+  county 480 and each one was written into reads.json as "withheld: API
+  error", over the county's previous entry. An out-of-credit, bad-key or
+  unknown-model answer is now fatal: the run stops, keeps every entry it did
+  not finish, and exits 1 so the step goes red. A per-county API error keeps
+  that county's previous entry as it was.
 
 USAGE
   python scripts/atlas_reads.py --selftest
@@ -35,6 +60,8 @@ import os
 import re
 import sys
 import time
+import http.client
+import urllib.error
 import urllib.request
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timezone
@@ -43,7 +70,31 @@ ATLAS = "data/atlas/atlas.json"
 DETAIL_DIR = "data/atlas/counties"
 OUT = "data/atlas/reads.json"
 API = "https://api.anthropic.com/v1/messages"
-MODEL = "claude-sonnet-4-6"
+MODEL = os.environ.get("ATLAS_READS_MODEL", "").strip() or "claude-sonnet-5"
+MODE = os.environ.get("ATLAS_READS_MODE", "").strip() or "batch"      # batch | sync
+BATCH_WAIT_MIN = float(os.environ.get("ATLAS_READS_BATCH_WAIT_MIN", "") or 180)
+# ONE DEADLINE, AND IT COUNTS FROM THE JOB'S START WHEN THE WORKFLOW SAYS WHEN
+# THAT WAS. The job is killed at 300 minutes, and a kill skips the Commit step --
+# every layer fetched in that run lost, and a batch never canceled. So the wait
+# ends at whichever comes first: BATCH_WAIT_MIN from now, or 255 minutes after
+# the job started (ATLAS_JOB_T0, set by the workflow's first step), which leaves
+# 15 minutes for a cancel to settle and 30 for the commit.
+try:
+    _JOB_T0 = float(os.environ.get("ATLAS_JOB_T0", "") or 0)
+except ValueError:
+    _JOB_T0 = 0
+_DEADLINE = time.time() + BATCH_WAIT_MIN * 60
+if _JOB_T0:
+    _DEADLINE = min(_DEADLINE, _JOB_T0 + 255 * 60)
+if MODE not in ("batch", "sync"):
+    sys.exit(f"ATLAS_READS_MODE must be batch or sync, not {MODE!r}")
+TRIAL_MODELS = [m.strip() for m in (os.environ.get("ATLAS_READS_TRIAL_MODELS", "")
+                or "claude-haiku-4-5-20251001,claude-sonnet-5").split(",") if m.strip()]
+# NOT under data/atlas: that directory is committed and served on agsist.com,
+# and a trial is rejected model text by design. The file goes in the runner's
+# temp dir and every text is printed to the log, which is where it is read.
+TRIAL_OUT = os.path.join(os.environ.get("RUNNER_TEMP", "/tmp"), "reads-trial.json")
+MIN_WORDS = 20
 MAX_WORDS = 130          # the prompt asks for under 100; the gate leaves room for a long county name
 WORKERS = 2               # 2026-09-13 first run: four workers hit the API's rate limit within a minute
 BANNED = ["alarming", "devastating", "skyrocket", "plummet", "crisis", "catastroph", "stunning",
@@ -64,7 +115,8 @@ Rules that are checked by a program after you answer:
 4. Four or five sentences. Keep it under 120 words; a program rejects anything at 130 words or more, so 120 is the target and not a stretch.
 5. Lead with the thing a land buyer would most want to know for this county, from what is present. Say what is present, not what is missing, unless nothing is present.
 6. The Atlas never combines heat and water into one grade. Do not rank the county overall. Do not use the word "score".
-7. These words fail the check and must not appear: nearly, almost, about, roughly, half, double, twice, triple, quarter, fold, alarming, dramatic, unprecedented, crisis, robust."""
+7. These words fail the check and must not appear: nearly, almost, about, roughly, half, double, twice, triple, quarter, fold, alarming, dramatic, unprecedented, crisis, robust.
+8. To compare two numbers, write both numbers and stop. Do not state the gap, the ratio, a share of a total, or how many years a period spans: each of those is a new number and fails the check."""
 
 
 def log(*a):
@@ -236,6 +288,12 @@ def gate(text, block):
             return f"number not in inputs: {n}"
     if "\n-" in text or text.lstrip().startswith("-") or "#" in text:
         return "list or heading formatting"
+    # A read is four or five sentences. Under 20 words is an empty answer or a
+    # one-line refusal ("I can't write this.") -- no number in it, so nothing
+    # above would stop it being published. Checked last, so every other reason
+    # is still reported first.
+    if words < MIN_WORDS:
+        return f"{words} words, minimum {MIN_WORDS}"
     return None
 
 
@@ -243,13 +301,176 @@ class ApiError(Exception):
     pass
 
 
+class Fatal(Exception):
+    """An answer no retry and no other county can get past: no credit, a bad
+    key, an unknown model. The run stops and writes nothing over old entries."""
+
+
+def is_fatal(code, body):
+    b = (body or "").lower()
+    if code in (401, 403, 404):
+        return True
+    # "You have reached your specified API usage limits. You will regain access
+    # on 2026-10-01" -- measured 2026-09-19 14:08Z, a 400 that says neither
+    # credit nor billing. Every later call gets the same answer until the date.
+    if code == 400 and ("credit balance" in b or "billing" in b or "model" in b or "usage limit" in b):
+        return True
+    return False
+
+
+def block_hash(block):
+    """The numbers AND the rules a read is held to. A change to the prompt, the
+    banned words or the word limits changes every hash, so every read is judged
+    again under the new rules. One exception, made on purpose: reads written
+    before hashes existed are stamped once with today's hash, and only if they
+    pass today's gate -- re-writing 822 good reads to add a field would cost
+    the same as writing them."""
+    import hashlib
+    rules = SYSTEM + "|" + ",".join(BANNED) + f"|{MIN_WORDS}-{MAX_WORDS}"
+    return hashlib.sha256((rules + "\n" + block).encode("utf-8")).hexdigest()[:16]
+
+
+def _headers(api_key):
+    return {"Content-Type": "application/json", "x-api-key": api_key,
+            "anthropic-version": "2023-06-01"}
+
+
+def api_json(api_key, method, path, payload=None, timeout=120, retry=True):
+    """One call to the Anthropic API that is not a message. Fatal answers raise
+    Fatal; transient ones retry unless retry=False; anything else raises ApiError.
+
+    THE BATCH-CREATE POST IS NEVER RETRIED. If Anthropic creates the batch and
+    the answer is lost on the way back, a second POST makes a second batch that
+    nothing polls or cancels, billed in full. Better to stop the run: every
+    county keeps its entry and the next run submits once."""
+    data = json.dumps(payload).encode() if payload is not None else None
+    delays = [5, 15, 30, 60] if retry else []
+    for attempt in range(len(delays) + 1):
+        req = urllib.request.Request("https://api.anthropic.com" + path, data=data,
+                                     headers=_headers(api_key), method=method)
+        try:
+            with urllib.request.urlopen(req, timeout=timeout) as r:
+                raw = r.read()
+            return raw
+        except urllib.error.HTTPError as e:
+            body = ""
+            try:
+                body = e.read().decode("utf-8", "replace")[:300]
+            except Exception:
+                pass
+            if is_fatal(e.code, body):
+                raise Fatal(f"HTTP {e.code}: {body[:200]}")
+            if e.code in (408, 429, 500, 502, 503, 529) and attempt < len(delays):
+                time.sleep(delays[attempt])
+                continue
+            raise ApiError(f"HTTP {e.code}: {body[:160]}")
+        except (urllib.error.URLError, TimeoutError, ConnectionError, http.client.HTTPException) as e:
+            # a server that accepts and never answers raises a bare TimeoutError,
+            # one that hangs up raises RemoteDisconnected: neither is a URLError
+            if attempt < len(delays):
+                time.sleep(delays[attempt])
+                continue
+            raise ApiError(f"network: {type(e).__name__}: {e}")
+
+
+def request_params(block, model):
+    return {"model": model, "max_tokens": 400, "system": SYSTEM,
+            "messages": [{"role": "user", "content": "Numbers for this county:\n\n" + block + "\n\nWrite the read."}]}
+
+
+def parse_results(jsonl_bytes):
+    """{custom_id: ("text", str) | ("error", str)} from a batch results file."""
+    out = {}
+    for line in jsonl_bytes.decode("utf-8", "replace").splitlines():
+        line = line.strip()
+        if not line:
+            continue
+        try:
+            d = json.loads(line)
+        except ValueError:
+            continue
+        cid, res = d.get("custom_id"), d.get("result") or {}
+        if res.get("type") == "succeeded":
+            msg = res.get("message") or {}
+            if msg.get("stop_reason") in ("refusal", "max_tokens"):
+                out[cid] = ("error", f"stop_reason {msg.get('stop_reason')}")
+                continue
+            text = "".join(p.get("text", "") for p in msg.get("content", []) if p.get("type") == "text").strip()
+            out[cid] = ("text", text)
+        else:
+            err = res.get("error") or {}
+            detail = (err.get("error") or {}).get("message") or err.get("message") or ""
+            out[cid] = ("error", f"{res.get('type')}: {detail}"[:200])
+    return out
+
+
+def run_batch(api_key, jobs, model, label):
+    """jobs: {fips: block}. Returns {fips: ("text"|"error", str)}, or None if the
+    batch had still not ended 15 minutes after it was canceled at the deadline.
+    The batch id is in the log; Anthropic keeps a batch's results for 29 days."""
+    if not jobs:
+        return {}
+    reqs = [{"custom_id": f, "params": request_params(b, model)} for f, b in sorted(jobs.items())]
+    raw = api_json(api_key, "POST", "/v1/messages/batches", {"requests": reqs}, timeout=300, retry=False)
+    b = json.loads(raw)
+    bid = b["id"]
+    log(f"  {label}: batch {bid}, {len(reqs)} requests on {model}")
+    t0 = time.time()
+    try:
+        return _wait_and_collect(api_key, bid, label, t0)
+    finally:
+        # Whatever broke the wait -- a network error, an exception, the job
+        # being stopped -- a batch still running is canceled so what has not
+        # been processed is not billed for nothing.
+        if not _ENDED.get(bid):
+            try:
+                api_json(api_key, "POST", f"/v1/messages/batches/{bid}/cancel", {})
+                log(f"  {label}: batch {bid} canceled on the way out")
+            except Exception as e:
+                log(f"  {label}: could not cancel batch {bid} ({e}); cancel it in the Anthropic console")
+
+
+_ENDED = {}
+
+
+def _wait_and_collect(api_key, bid, label, t0):
+    canceled = False
+    while True:
+        st = json.loads(api_json(api_key, "GET", f"/v1/messages/batches/{bid}"))
+        if st.get("processing_status") == "ended":
+            _ENDED[bid] = True
+            break
+        # ONE DEADLINE FOR THE WHOLE RUN, not one per round: two rounds of 180
+        # minutes would outlive the job's 300. At the deadline the batch is
+        # CANCELED, not abandoned -- requests not yet processed are then not
+        # billed, and the ones already answered still come back and are used.
+        if time.time() > _DEADLINE and not canceled:
+            log(f"  {label}: batch {bid} not ended by the run's deadline; canceling the rest. "
+                f"Counts so far: {st.get('request_counts')}")
+            api_json(api_key, "POST", f"/v1/messages/batches/{bid}/cancel", {})
+            canceled = True
+        if canceled and time.time() > _DEADLINE + 900:
+            log(f"  {label}: batch {bid} still not ended 15 min after cancel; leaving it")
+            return None
+        time.sleep(30)
+    log(f"  {label}: ended in {time.time() - t0:.0f}s, {st.get('request_counts')}")
+    res = parse_results(api_json(api_key, "GET", f"/v1/messages/batches/{bid}/results", timeout=300))
+    # EVERY REQUEST ERRORED THE SAME WAY: that is an account or model problem,
+    # not 3,000 county problems. Treat it as fatal so nothing is overwritten.
+    errs = [v[1] for v in res.values() if v[0] == "error"]
+    if res and len(errs) == len(res):
+        msg = errs[0].lower()
+        if any(w in msg for w in ("credit", "billing", "model", "authentication", "permission", "usage limit")):
+            raise Fatal(f"every request in batch {bid} errored: {errs[0]}")
+    return res
+
+
 _errors_logged = 0
 
 
-def call_model(api_key, block):
+def call_model(api_key, block, model=None):
     global _errors_logged
-    payload = {"model": MODEL, "max_tokens": 400, "system": SYSTEM,
-               "messages": [{"role": "user", "content": "Numbers for this county:\n\n" + block + "\n\nWrite the read."}]}
+    payload = request_params(block, model or MODEL)
     req = urllib.request.Request(API, data=json.dumps(payload).encode(),
                                  headers={"Content-Type": "application/json", "x-api-key": api_key,
                                           "anthropic-version": "2023-06-01"})
@@ -258,6 +479,8 @@ def call_model(api_key, block):
         try:
             with urllib.request.urlopen(req, timeout=120) as r:
                 d = json.load(r)
+            if d.get("stop_reason") in ("refusal", "max_tokens"):
+                raise ApiError(f"stop_reason {d.get('stop_reason')}")
             return "".join(p.get("text", "") for p in d.get("content", []) if p.get("type") == "text").strip()
         except urllib.error.HTTPError as e:
             body = ""
@@ -268,6 +491,8 @@ def call_model(api_key, block):
             if _errors_logged < 5:
                 _errors_logged += 1
                 log(f"  API {e.code}: {body}")
+            if is_fatal(e.code, body):
+                raise Fatal(f"HTTP {e.code}: {body[:200]}")
             if e.code in (408, 429, 500, 502, 503, 529) and attempt < len(delays):
                 ra = e.headers.get("retry-after") if e.headers else None
                 try:
@@ -277,26 +502,67 @@ def call_model(api_key, block):
                 time.sleep(wait)
                 continue
             raise ApiError(f"HTTP {e.code}: {body[:120]}")
-        except urllib.error.URLError as e:
+        except (urllib.error.URLError, TimeoutError, ConnectionError, http.client.HTTPException) as e:
             if attempt < len(delays):
                 time.sleep(delays[attempt])
                 continue
             raise ApiError(f"network: {e}")
 
 
-def one(api_key, fips, rec):
+def _now():
+    return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+
+_rejects_logged = 0
+
+
+def _log_reject(fips, why, text):
+    """The rejected text itself, for the first few: a count of gate failures
+    says nothing about whether the prompt or the gate needs the fix."""
+    global _rejects_logged
+    if _rejects_logged < 8:
+        _rejects_logged += 1
+        log(f"  {fips}: rejected ({why}): {text[:300]!r}")
+
+
+def one(api_key, fips, rec, model=None):
+    model = model or MODEL
     block = inputs_block(fips, rec)
     last = None
     for attempt in range(2):
-        text = call_model(api_key, block)
+        text = call_model(api_key, block, model)
         why = gate(text, block)
         if why is None:
-            return {"text": text, "sha": rec["sha"], "model": MODEL,
-                    "generated": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")}
+            return {"text": text, "sha": rec["sha"], "block": block_hash(block), "model": model,
+                    "generated": _now()}
         last = why
         log(f"  {fips}: gate failed ({why}), attempt {attempt + 1}")
-    return {"status": f"withheld: {last}", "sha": rec["sha"], "model": MODEL,
-            "generated": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")}
+        _log_reject(fips, why, text)
+    return {"status": f"withheld: {last}", "sha": rec["sha"], "block": block_hash(block), "model": model,
+            "generated": _now()}
+
+
+# A county the gate refused twice for exactly these numbers and these rules
+# is not sent again until one of them changes: the answer would not.
+def gate_withheld(status):
+    """True for a county the GATE refused -- not an API error, not a stale file."""
+    st = str(status or "")
+    return st.startswith("withheld: ") and not st.startswith(("withheld: API error", "withheld: detail file"))
+
+
+def carry(have, rec, block):
+    """The previous read, re-stamped with this build's fingerprint, if it was
+    written from exactly this block of numbers. Otherwise None."""
+    if not have or not have.get("block") or have["block"] != block_hash(block):
+        return None
+    if have.get("text"):
+        if gate(have["text"], block) is not None:
+            return None
+    elif not gate_withheld(have.get("status")):
+        return None          # an API error or a stale detail file: try again
+    out = dict(have)
+    out["sha"] = rec["sha"]
+    return out
 
 
 def selftest():
@@ -349,14 +615,100 @@ def selftest():
     assert gate("- 138 dollars", block) == "list or heading formatting"
     assert gate(" ".join(["word"] * 131), block).startswith("131 words")
     # a trailing period after a number is not part of the number
-    assert gate("Rent is 138.", block) is None
+    assert gate("Rent is 138.", block).endswith("minimum 20"), "the number passed; only the length stops it"
     # an integer written from a float: 289.0 in the record, "289" in the text
     assert "289" in numbers_in(block)
     # a year from a range: "2008-2024" licenses "2024" on its own
-    assert "2024" in numbers_in(block) and gate("Yields ran through 2024.", block) is None
+    assert "2024" in numbers_in(block) and gate("Yields ran through 2024.", block).endswith("minimum 20")
     assert (gate("Rent nearly doubled.", block) or "").startswith("banned word")
     assert pct100(0.325) == 33 and pct100(0.625) == 63
+
+    # THE ANSWERS THAT MUST STOP A RUN, measured 2026-09-19 from the log.
+    credit = '{"type":"error","error":{"type":"invalid_request_error","message":"Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits."}}'
+    assert is_fatal(400, credit)
+    assert is_fatal(401, "") and is_fatal(403, "") and is_fatal(404, '{"error":{"type":"not_found_error","message":"model: x"}}')
+    assert not is_fatal(429, "") and not is_fatal(529, "") and not is_fatal(500, "")
+    assert not is_fatal(400, '{"error":{"message":"messages: text content blocks must be non-empty"}}')
+    assert is_fatal(400, '{"type":"error","error":{"type":"invalid_request_error","message":"You have reached your specified API usage limits. You will regain access on 2026-10-01 at 00:00 UTC."}}')
+    assert gate("", block) and gate("I can't write this.", block), "an empty answer or a refusal is not a read"
+    rr = parse_results((json.dumps({"custom_id": "1", "result": {"type": "succeeded", "message": {"stop_reason": "max_tokens", "content": [{"type": "text", "text": "Rent is"}]}}})).encode())
+    assert rr["1"][0] == "error", rr
+
+    # A BATCH RESULTS FILE, in the documented shape.
+    jl = (json.dumps({"custom_id": "19169", "result": {"type": "succeeded", "message": {"content": [{"type": "text", "text": " Rent is 138. "}]}}}) + "\n"
+          + json.dumps({"custom_id": "31001", "result": {"type": "errored", "error": {"type": "error", "error": {"type": "overloaded_error", "message": "Overloaded"}}}}) + "\n"
+          + json.dumps({"custom_id": "20055", "result": {"type": "expired"}}) + "\n\n")
+    pr = parse_results(jl.encode())
+    assert pr["19169"] == ("text", "Rent is 138."), pr
+    assert pr["31001"][0] == "error" and "Overloaded" in pr["31001"][1], pr
+    assert pr["20055"][0] == "error" and pr["20055"][1].startswith("expired"), pr
+
+    # CARRY FORWARD: same block, new fingerprint -> the read is kept, not rewritten.
+    have = {"text": ok, "sha": "old", "block": block_hash(block)}
+    assert carry(have, {"sha": "new"}, block) == {"text": ok, "sha": "new", "block": block_hash(block)}
+    assert carry(have, {"sha": "new"}, block + "\nmore") is None
+    assert carry({"text": ok, "sha": "old"}, {"sha": "new"}, block) is None, "no stored block hash, no carry"
+    # a carried read that no longer passes the gate is rewritten, not carried
+    assert carry({"text": ok + " It nearly doubled.", "sha": "old", "block": block_hash(block)}, {"sha": "new"}, block) is None
+    # a gate refusal for the same numbers is not re-sent; an API error is
+    wh = {"status": "withheld: banned word: nearly", "sha": "old", "block": block_hash(block)}
+    assert carry(wh, {"sha": "new"}, block)["sha"] == "new"
+    assert carry({"status": "withheld: API error HTTP 500", "sha": "old", "block": block_hash(block)}, {"sha": "new"}, block) is None
     log("selftest ok")
+
+
+def load_detail(fips, rec):
+    """The detail record for this build, or None if it is from another one."""
+    try:
+        with open(os.path.join(DETAIL_DIR, f"{fips}.json"), encoding="utf-8") as f:
+            detail = json.load(f)
+    except (OSError, ValueError):
+        return None
+    return detail if detail.get("sha") == rec.get("sha") else None
+
+
+def save(reads):
+    with open(OUT, "w", encoding="utf-8") as f:
+        json.dump(reads, f, separators=(",", ":"), ensure_ascii=False)
+
+
+def trial(api_key, atlas, n):
+    """N counties, the same N for every model in TRIAL_MODELS, written side by
+    side. Never touches reads.json. Sync calls: 2 x N small calls."""
+    import random
+    pool = [f for f, r in sorted(atlas["counties"].items())
+            if any((r.get(k) or {}).get("status") == "ok" for k in ("heat", "water", "loss"))]
+    random.Random(20260919).shuffle(pool)
+    picks = pool[:n]
+    out = {"generated": _now(), "counties": picks, "models": {}}
+    for m in TRIAL_MODELS:
+        rows, passed, first_try = {}, 0, 0
+        for fips in picks:
+            d = load_detail(fips, atlas["counties"][fips])
+            if d is None:
+                continue
+            block = inputs_block(fips, d)
+            tries = []
+            for attempt in range(2):
+                try:
+                    text = call_model(api_key, block, m)
+                except ApiError as e:
+                    tries.append({"text": "", "gate": f"API error: {e}"})
+                    break
+                why = gate(text, block)
+                tries.append({"text": text, "gate": why or "pass"})
+                log(f"  --- {m} {fips} try {attempt + 1}: {why or 'PASS'}\n{text}")
+                if why is None:
+                    break
+            ok = tries[-1]["gate"] == "pass"
+            passed += ok
+            first_try += tries[0]["gate"] == "pass"
+            rows[fips] = tries
+        out["models"][m] = {"passed": passed, "passed_first_try": first_try, "of": len(rows), "reads": rows}
+        log(f"  trial {m}: {passed}/{len(rows)} passed, {first_try} on the first try")
+    with open(TRIAL_OUT, "w", encoding="utf-8") as f:
+        json.dump(out, f, indent=1, ensure_ascii=False)
+    log(f"wrote {TRIAL_OUT}")
 
 
 def main():
@@ -368,13 +720,25 @@ def main():
         sys.exit("ANTHROPIC_API_KEY missing")
     with open(ATLAS, encoding="utf-8") as f:
         atlas = json.load(f)
+    if "--trial" in sys.argv:
+        try:
+            n = int(sys.argv[sys.argv.index("--trial") + 1])
+        except (IndexError, ValueError):
+            sys.exit("--trial needs a number of counties, for example --trial 50")
+        try:
+            trial(api_key, atlas, n)
+        except Fatal as e:
+            sys.exit(f"STOPPED: {e}")
+        return
     reads = {"generated": None, "model": MODEL, "counties": {}}
     if os.path.exists(OUT):
         with open(OUT, encoding="utf-8") as f:
             reads = json.load(f)
     only = sys.argv[sys.argv.index("--only") + 1] if "--only" in sys.argv else None
     limit = int(sys.argv[sys.argv.index("--limit") + 1]) if "--limit" in sys.argv else None
-    todo = []
+    mode = "sync" if (only or "--sync" in sys.argv) else MODE
+
+    jobs, recs, carried, stale, stamped = {}, {}, 0, 0, 0
     for fips, rec in sorted(atlas["counties"].items()):
         if only and fips != only:
             continue
@@ -384,44 +748,126 @@ def main():
             continue
         have = reads["counties"].get(fips)
         if have and have.get("sha") == rec.get("sha") and have.get("text"):
+            # CURRENT, AND WRITTEN BEFORE READS CARRIED A BLOCK HASH: stamp it now,
+            # for nothing, so the first month its fingerprint moves it can be
+            # carried instead of paid for again -- but only if it still passes
+            # today's gate, so a read written under looser rules is not kept.
+            if not have.get("block"):
+                d0 = load_detail(fips, rec)
+                if d0 is not None:
+                    b0 = inputs_block(fips, d0)
+                    if gate(have["text"], b0) is None:
+                        have["block"] = block_hash(b0)
+                        stamped += 1
             continue
-        todo.append((fips, rec))
+        detail = load_detail(fips, rec)
+        if detail is None:
+            stale += 1
+            continue
+        block = inputs_block(fips, detail)
+        kept = carry(have, rec, block)
+        if kept:
+            reads["counties"][fips] = kept
+            carried += 1
+            continue
+        jobs[fips] = block
+        recs[fips] = rec
     if limit:
-        todo = todo[:limit]
-    log(f"{len(todo)} counties need a read ({len(atlas['counties'])} in the Atlas)")
-    done = 0
-    t0 = time.time()
+        jobs = dict(list(jobs.items())[:limit])
+    if stamped:
+        save(reads)
+    log(f"{len(jobs)} counties need a read, {carried} carried forward unchanged, {stamped} current reads stamped, "
+        f"{stale} skipped (detail file from another build); {len(atlas['counties'])} in the Atlas; "
+        f"{mode} on {MODEL}")
 
-    def work(item):
-        fips, rec = item
-        try:
-            # the summary is thin; the detail record has every field the block wants
-            dp = os.path.join(DETAIL_DIR, f"{fips}.json")
-            with open(dp, encoding="utf-8") as f:
-                detail = json.load(f)
-            if detail.get("sha") != rec.get("sha"):
-                return fips, {"status": "withheld: detail file is from another build", "sha": rec["sha"]}
-            return fips, one(api_key, fips, detail)
-        except Exception as e:
-            return fips, {"status": f"withheld: API error {str(e)[:160]}", "sha": rec["sha"]}
+    written = kept_old = 0
+    try:
+        if mode == "batch":
+            pending = dict(jobs)
+            for rnd in (1, 2):
+                if not pending:
+                    break
+                if time.time() > _DEADLINE:
+                    log(f"  round {rnd} not submitted: past the run's deadline; {len(pending)} counties keep their entries")
+                    break
+                res = run_batch(api_key, pending, MODEL, f"round {rnd}")
+                if res is None:
+                    log("  the batch outlived this run's wait; counties in it keep their previous entries")
+                    break
+                retry = {}
+                n_gate = n_err = 0
+                for fips, block in pending.items():
+                    kind, val = res.get(fips, ("error", "missing from results"))
+                    if kind == "error":
+                        # previous entry stays exactly as it was; an overloaded or
+                        # expired request gets one more go in round 2
+                        n_err += 1
+                        if rnd == 1:
+                            retry[fips] = block
+                        else:
+                            kept_old += 1
+                        continue
+                    why = gate(val, block)
+                    if why is None:
+                        reads["counties"][fips] = {"text": val, "sha": recs[fips]["sha"], "block": block_hash(block),
+                                                   "model": MODEL, "generated": _now()}
+                        written += 1
+                    elif rnd == 1:
+                        n_gate += 1
+                        _log_reject(fips, why, val)
+                        retry[fips] = block
+                    else:
+                        _log_reject(fips, why, val)
+                        reads["counties"][fips] = {"status": f"withheld: {why}", "sha": recs[fips]["sha"],
+                                                   "block": block_hash(block), "model": MODEL, "generated": _now()}
+                        written += 1
+                log(f"  round {rnd}: {n_gate} failed the gate, {n_err} came back as API errors"
+                    + (f"; {len(retry)} go round again" if rnd == 1 and retry else ""))
+                pending = retry
+                save(reads)
+        else:
+            t0 = time.time()
 
-    with ThreadPoolExecutor(max_workers=WORKERS) as ex:
-        for fips, res in ex.map(work, todo):
-            reads["counties"][fips] = res
-            done += 1
-            if done % 50 == 0:
-                log(f"  {done}/{len(todo)} in {time.time() - t0:.0f}s")
-                with open(OUT, "w", encoding="utf-8") as f:
-                    json.dump(reads, f, separators=(",", ":"), ensure_ascii=False)
-    reads["generated"] = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+            def work(fips):
+                try:
+                    return fips, one(api_key, fips, load_detail(fips, recs[fips]))
+                except ApiError as e:
+                    return fips, ("error", str(e))
+
+            ex = ThreadPoolExecutor(max_workers=WORKERS)
+            try:
+                for fips, res in ex.map(work, list(jobs)):
+                    if isinstance(res, tuple):
+                        kept_old += 1
+                        log(f"  {fips}: {res[1][:120]}; previous entry kept")
+                    else:
+                        reads["counties"][fips] = res
+                        written += 1
+                    if (written + kept_old) % 50 == 0:
+                        log(f"  {written + kept_old}/{len(jobs)} in {time.time() - t0:.0f}s")
+                        save(reads)
+            finally:
+                # a Fatal must not leave every queued county still calling the API
+                ex.shutdown(wait=True, cancel_futures=True)
+    except (Fatal, ApiError, OSError, ValueError) as e:
+        reads["counties"] = {k: v for k, v in reads["counties"].items() if k in atlas["counties"]}
+        save(reads)
+        # ::error:: puts it on the run's summary page; the step itself is
+        # continue-on-error so the build's own commit still goes through.
+        print(f"::error title=County reads stopped::{type(e).__name__}: {str(e)[:300]}", flush=True)
+        log(f"STOPPED: {type(e).__name__}: {e}")
+        log(f"  {written} entries written before the stop; every other county keeps the entry it had.")
+        sys.exit(1)
+
+    reads["generated"] = _now()
+    reads["model"] = MODEL
     # drop reads for counties no longer in the Atlas
     reads["counties"] = {k: v for k, v in reads["counties"].items() if k in atlas["counties"]}
-    with open(OUT, "w", encoding="utf-8") as f:
-        json.dump(reads, f, separators=(",", ":"), ensure_ascii=False)
-    n_ok = sum(1 for v in reads["counties"].values() if v.get("text"))
-    n_wh = sum(1 for v in reads["counties"].values() if not v.get("text"))
-    log(f"wrote {OUT}: {n_ok} reads, {n_wh} withheld, {done} written this run")
-
+    save(reads)
+    n_ok = sum(1 for k, v in reads["counties"].items() if v.get("text") and v.get("sha") == atlas["counties"][k].get("sha"))
+    n_wh = len(reads["counties"]) - n_ok
+    log(f"wrote {OUT}: {n_ok} current reads, {n_wh} without one, {written} written this run, "
+        f"{carried} carried forward, {kept_old} kept as they were after an API error")
 
 if __name__ == "__main__":
     main()
