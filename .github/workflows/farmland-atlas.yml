@@ -37,7 +37,7 @@ on:
   workflow_dispatch:
     inputs:
       layers:
-        description: "Which fetches to run, comma-separated: heat,water,loss,sob,value,crp,drought,energy,wells,reads. Blank = all."
+        description: "Which fetches to run, comma-separated: heat,water,loss,sob,value,practices,crp,drought,energy,wells,reads. Blank = all."
         required: false
         default: ""
       loss_all:
@@ -96,6 +96,7 @@ jobs:
           python fetch_atlas_loss.py --selftest
           python fetch_atlas_sob.py --selftest
           python fetch_atlas_value.py --selftest
+          python fetch_atlas_practices.py --selftest
           python fetch_atlas_crp.py --selftest
           python fetch_atlas_drought.py --selftest
           python fetch_atlas_energy.py --selftest
@@ -107,8 +108,8 @@ jobs:
       - name: Which layers
         id: which
         run: |
-          L="${LAYERS:-heat,water,loss,sob,value,crp,drought,energy,wells,reads}"
-          for k in heat water loss sob value crp drought energy wells reads; do
+          L="${LAYERS:-heat,water,loss,sob,value,practices,crp,drought,energy,wells,reads}"
+          for k in heat water loss sob value practices crp drought energy wells reads; do
             case ",$L," in *",$k,"*) echo "$k=1" >> "$GITHUB_OUTPUT";; *) echo "$k=0" >> "$GITHUB_OUTPUT";; esac
           done
           echo "running: $L"
@@ -162,7 +163,20 @@ jobs:
         continue-on-error: true
         env:
           RMA_PROXY_BASE: ${{ vars.RMA_PROXY_BASE }}
-        run: python scripts/fetch_atlas_crp.py
+        # FSA refuses runners. When the two workbooks have been uploaded to
+        # data/atlas/src (downloaded in a browser from the CRP statistics page,
+        # names unchanged), they are read from there and nothing is fetched.
+        run: |
+          # the newest workbook wins if an older one was left in the folder (86-24 vs 86-25)
+          H=$(ls data/atlas/src/*[Hh][Ii][Ss][Tt]*.xlsx 2>/dev/null | sort -V | tail -1)
+          E=$(ls data/atlas/src/*[Ee][Xx][Pp][Ii][Rr]*.xlsx 2>/dev/null | sort -V | tail -1)
+          ls -l data/atlas/src/ 2>/dev/null || true
+          if [ -n "$H" ] && [ -n "$E" ]; then
+            echo "reading uploaded workbooks: $H, $E"
+            python scripts/fetch_atlas_crp.py --history "$H" --expire "$E"
+          else
+            python scripts/fetch_atlas_crp.py
+          fi
 
       - name: Fetch land value (NASS census)
         if: steps.which.outputs.value == '1'
@@ -170,6 +184,13 @@ jobs:
         env:
           NASS_API_KEY: ${{ secrets.NASS_API_KEY }}
         run: python scripts/fetch_atlas_value.py
+
+      - name: Fetch tile drainage and tillage (NASS census)
+        if: steps.which.outputs.practices == '1'
+        continue-on-error: true
+        env:
+          NASS_API_KEY: ${{ secrets.NASS_API_KEY }}
+        run: python scripts/fetch_atlas_practices.py
 
       - name: Fetch energy (EIA-860)
         if: steps.which.outputs.energy == '1'
@@ -252,7 +273,7 @@ jobs:
           import json
           c = json.load(open('data/atlas/atlas.json'))['counts']
           parts = ["%d counties" % c['counties']]
-          for k in ("heat", "water", "loss", "sob", "value", "crp", "drought", "energy", "wells", "premium"):
+          for k in ("heat", "water", "loss", "sob", "value", "practices", "crp", "drought", "energy", "wells", "premium"):
               n = c.get(k + "_ok")
               if n:
                   parts.append("%s %d" % (k, n))
