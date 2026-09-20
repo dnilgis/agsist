@@ -32,7 +32,7 @@
  */
 
 // Build stamp — bump on every paste so /health proves which code is live.
-const BUILD = 'fs-2026-07-02a';
+const BUILD = 'fs-2026-09-20c';
 
 const CDSE_TOKEN_URL = 'https://identity.dataspace.copernicus.eu/auth/realms/CDSE/protocol/openid-connect/token';
 const SH_PROCESS_URL = 'https://sh.dataspace.copernicus.eu/api/v1/process';
@@ -327,7 +327,10 @@ async function proxySoil(request, cors) {
   // Soil under a polygon doesn't change — cache the SDA answer per polygon for a
   // week so reopening a saved field (or SDA having a bad hour) is a cache hit.
   // v2 namespace: the query gained the drainage column — v1 entries lack it.
-  const sk = new Request('https://fs-cache/soil/v2/' + (await sha1(wkt)));
+  // v3 namespace: columns [10..14] appended (csr2, farmlndcl, flodfreq, hydric_pct,
+  // nirrcapscl) plus the top-level `ext` flag — v2 entries lack both.
+  // v4 namespace: corn/soy submodel names fixed (v3 entries carry NULL for both).
+  const sk = new Request('https://fs-cache/soil/v4/' + (await sha1(wkt)));
   const sCache = caches.default;
   const sHit = await sCache.match(sk);
   if (sHit) return withCors(sHit, cors);
@@ -337,20 +340,97 @@ async function proxySoil(request, cors) {
   //   GetClippedMapunits → clip every intersecting mapunit to @aoi (id=mukey, geom=clipped)
   // We then sum each clip's area (geography STArea, m² → acres) per mukey and join
   // the tabular attributes (name, capability class, slope, NCCPI productivity).
-  // Column order is contractual with field-scout.js: [areasymbol, musym, muname, ac,
-  // nicc, slope_pct, nccpi, nccpi_corn, nccpi_soy, drainage].
-  const query =
-    "~DeclareGeometry(@aoi)~\n" +
+  // Column order is contractual with field-scout.js (it parses by index):
+  //   [0] areasymbol [1] musym [2] muname [3] ac [4] nicc [5] slope_pct [6] nccpi
+  //   [7] nccpi_corn [8] nccpi_soy [9] drainage
+  //   extended only: [10] csr2 [11] farmlndcl [12] flodfreq [13] hydric_pct [14] nirrcapscl
+  // The response is SDA's {Table:[...]} plus a top-level `ext` (true = extended columns
+  // present; false = SDA rejected one of them and we fell back to the 10-column query).
+  const query = soilQuery(wktSql, true);
+  const queryBase = soilQuery(wktSql, false);
+
+  let res, ext = true;
+  // The extended query is tried first. ANY failure of it -- a refused column, a differently
+  // worded error, or a timeout on the heavier query -- falls back to the original ten
+  // columns, so the soil card can never be worse off than under the old worker.
+  try {
+    res = await sdaPost(query, 1);   // one try: 12 s + the fallback's 2 x 12 s stays under the page's 45 s
+    if (!res.ok) {
+      var firstDetail = '';
+      try { firstDetail = await res.text(); } catch (e) {}
+      console.log('soil ext refused ' + res.status + ': ' + firstDetail.slice(0, 300));
+      res = null;
+    }
+  } catch (e) {
+    console.log('soil ext failed: ' + (e && e.name));
+    res = null;
+  }
+  if (!res) {
+    ext = false;
+    try {
+      res = await sdaPost(queryBase);
+    } catch (e) {
+      const aborted = e && e.name === 'AbortError';
+      return json({ error: aborted ? 'ssurgo upstream timeout' : 'ssurgo fetch failed', timeout: aborted }, cors, 504);
+    }
+  }
+
+  if (!res.ok) {
+    // Capture SDA's actual complaint (it returns a descriptive message, e.g. an
+    // invalid-column error) so a bad query is diagnosable instead of an opaque 502.
+    var detail = '';
+    try { detail = (await res.text()).slice(0, 800); } catch (e) {}
+    return json({ error: 'ssurgo ' + res.status, detail: detail, ext: ext }, cors, 502);
+  }
+  const d = await res.json();
+  if (d && typeof d === 'object' && !Array.isArray(d)) d.ext = ext;
+  const out = new Response(JSON.stringify(d), { status: 200, headers: Object.assign({}, cors,
+    // a fallback (ext:false) answer is kept one day, not a week, so the full read returns soon
+    { 'Content-Type': 'application/json', 'Cache-Control': 'public, max-age=' + (ext ? 604800 : 86400) }) });
+  await sCache.put(sk, out.clone());
+  return out;
+}
+
+function sdaPost(query, tries) {
+  return fetchRetry('https://sdmdataaccess.nrcs.usda.gov/Tabular/post.rest', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ format: 'JSON', query }),
+  }, 12000, tries || 2);
+}
+
+// Builds the SDA soil query. `extended` appends columns [10..14]; the first ten
+// columns and their order are identical either way (field-scout.js parses by index).
+function soilQuery(wktSql, extended) {
+  // `like` = true matches a prefix. The corn and soybean submodels are published as
+  // "NCCPI - NCCPI Corn Submodel (I)" / "... Soybeans Submodel (I)" (soilDB's rule list);
+  // this code asked for "(II)" and got NULL every time. A prefix match takes either.
+  const nccpiSub = (mrule, like) =>
+    " ( SELECT ROUND(SUM(ci.interphr*c2.comppct_r)/NULLIF(SUM(c2.comppct_r),0),3) FROM component c2 JOIN cointerp ci ON ci.cokey=c2.cokey WHERE c2.mukey=mu.mukey AND ci.ruledepth=0 AND ci.mrulename" + (like ? " LIKE '" + mrule + "%'" : "='" + mrule + "'") + " AND ci.interphr IS NOT NULL )";
+  const extCols = !extended ? '' :
+    // [10] Iowa CSR2: component-weighted mean over components that carry a rating
+    // (NULL outside Iowa, where iacornsr is not populated).
+    ", ( SELECT ROUND(SUM(CAST(c3.iacornsr AS float)*c3.comppct_r)/NULLIF(SUM(c3.comppct_r),0),1) FROM component c3" +
+    "   WHERE c3.mukey=mu.mukey AND c3.iacornsr IS NOT NULL ) AS csr2" +
+    ", mu.farmlndcl AS farmlndcl" +          // [11]
+    ", ma.flodfreqdcd AS flodfreq" +         // [12]
+    ", ma.hydclprs AS hydric_pct" +          // [13]
+    // [14] capability subclass of the largest major component.
+    ", ( SELECT TOP 1 c4.nirrcapscl FROM component c4" +
+    "   WHERE c4.mukey=mu.mukey AND c4.majcompflag='Yes'" +
+    "   ORDER BY c4.comppct_r DESC, c4.cokey ) AS nirrcapscl";
+  return "~DeclareGeometry(@aoi)~\n" +
     "SELECT @aoi = geometry::STGeomFromText('" + wktSql + "', 4326)\n" +
     "~DeclareIdGeomTable(@clip)~\n" +
     "~GetClippedMapunits(@aoi,polygon,geo,@clip)~\n" +
     "SELECT l.areasymbol, mu.musym, mu.muname, ROUND(area.ac, 2) AS ac, ma.niccdcd AS nicc," +
     " ( SELECT ROUND(AVG(CAST(c.slope_r AS float)),1) FROM component c" +
     "   WHERE c.mukey=mu.mukey AND c.majcompflag='Yes' ) AS slope_pct," +
-    " ( SELECT ROUND(SUM(ci.interphr*c2.comppct_r)/NULLIF(SUM(c2.comppct_r),0),3) FROM component c2 JOIN cointerp ci ON ci.cokey=c2.cokey WHERE c2.mukey=mu.mukey AND ci.ruledepth=0 AND ci.mrulename='NCCPI - National Commodity Crop Productivity Index (Ver 3.0)' AND ci.interphr IS NOT NULL ) AS nccpi," +
-    " ( SELECT ROUND(SUM(ci.interphr*c2.comppct_r)/NULLIF(SUM(c2.comppct_r),0),3) FROM component c2 JOIN cointerp ci ON ci.cokey=c2.cokey WHERE c2.mukey=mu.mukey AND ci.ruledepth=0 AND ci.mrulename='NCCPI - NCCPI Corn Submodel (II)' AND ci.interphr IS NOT NULL ) AS nccpi_corn," +
-    " ( SELECT ROUND(SUM(ci.interphr*c2.comppct_r)/NULLIF(SUM(c2.comppct_r),0),3) FROM component c2 JOIN cointerp ci ON ci.cokey=c2.cokey WHERE c2.mukey=mu.mukey AND ci.ruledepth=0 AND ci.mrulename='NCCPI - NCCPI Soybeans Submodel (II)' AND ci.interphr IS NOT NULL ) AS nccpi_soy," +
+    nccpiSub('NCCPI - National Commodity Crop Productivity Index (Ver 3.0)') + " AS nccpi," +
+    nccpiSub('NCCPI - NCCPI Corn Submodel', true) + " AS nccpi_corn," +
+    nccpiSub('NCCPI - NCCPI Soybeans Submodel', true) + " AS nccpi_soy," +
     " ma.drclassdcd AS drainage" +
+    extCols +
     " FROM ( SELECT id AS mukey," +
     "        SUM( GEOGRAPHY::STGeomFromWKB(geom.STAsBinary(),4326).STArea() * 0.000247105 ) AS ac" +
     "        FROM @clip GROUP BY id ) area" +
@@ -358,30 +438,6 @@ async function proxySoil(request, cors) {
     " INNER JOIN legend l ON l.lkey=mu.lkey" +
     " LEFT JOIN muaggatt ma ON ma.mukey=mu.mukey" +
     " ORDER BY ac DESC";
-
-  let res;
-  try {
-    res = await fetchRetry('https://sdmdataaccess.nrcs.usda.gov/Tabular/post.rest', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ format: 'JSON', query }),
-    }, 12000);
-  } catch (e) {
-    const aborted = e && e.name === 'AbortError';
-    return json({ error: aborted ? 'ssurgo upstream timeout' : 'ssurgo fetch failed', timeout: aborted }, cors, 504);
-  }
-  if (!res.ok) {
-    // Capture SDA's actual complaint (it returns a descriptive message, e.g. an
-    // invalid-column error) so a bad query is diagnosable instead of an opaque 502.
-    var detail = '';
-    try { detail = (await res.text()).slice(0, 800); } catch (e) {}
-    return json({ error: 'ssurgo ' + res.status, detail: detail }, cors, 502);
-  }
-  const d = await res.json();
-  const out = new Response(JSON.stringify(d), { status: 200, headers: Object.assign({}, cors,
-    { 'Content-Type': 'application/json', 'Cache-Control': 'public, max-age=604800' }) });
-  await sCache.put(sk, out.clone());
-  return out;
 }
 
 // ── 4. CDL crop history ─────────────────────────────────────────────────────
@@ -699,7 +755,9 @@ async function proxyDrought(url, cors) {
   try {
     const u = 'https://droughtmonitor.unl.edu/DmData/GetDroughtSeverityStatisticsByPoint.ashx'
       + '?lon=' + encodeURIComponent(lon) + '&lat=' + encodeURIComponent(lat);
-    const res = await fetchRetry(u, { headers: { 'Accept': 'application/json' } }, 6000);
+    // One short try: on 2026-09-20 this URL answered with the site's 404 page, so the
+    // county fallback below is doing the work, and the page waits 20 s for the whole call.
+    const res = await fetchRetry(u, { headers: { 'Accept': 'application/json' } }, 4000, 1);
     if (res.ok) {
       const txt = await res.text();
       try { return await ok(JSON.parse(txt)); }
@@ -736,29 +794,58 @@ async function droughtCountyFallback(lat, lon) {
   const fmt = (d) => (d.getUTCMonth() + 1) + '/' + d.getUTCDate() + '/' + d.getUTCFullYear();
   const du = 'https://usdmdataservices.unl.edu/api/CountyStatistics/GetDroughtSeverityStatisticsByAreaPercent'
     + '?aoi=' + fips + '&startdate=' + encodeURIComponent(fmt(start))
-    + '&enddate=' + encodeURIComponent(fmt(end)) + '&statisticsType=1';
+    + '&enddate=' + encodeURIComponent(fmt(end)) + '&statisticsType=2';
   const dr = await fetchWithTimeout(du, withUA({ headers: { 'Accept': 'application/json' } }), 7000);
   if (!dr.ok) return null;
-  let arr; try { arr = await dr.json(); } catch (e) { return null; }
+  // READ WHATEVER SHAPE COMES BACK. Measured 2026-09-20: this endpoint answers CSV
+  // ("MapDate,FIPS,County,State,None,D0,...") unless JSON is negotiated, and its JSON
+  // keys are not guaranteed to be the CSV's PascalCase. The old parse read only
+  // row.None / row.D0 from JSON, so any other shape fell through to a 502. The point
+  // endpoint above now returns a 404 page, which left this fallback as the only path.
+  // Keys are lower-cased here and both forms are accepted.
+  const body = await dr.text();
+  let arr = null;
+  try { arr = JSON.parse(body); } catch (e) {
+    const lines = body.trim().split(/\r?\n/).filter(Boolean);
+    if (lines.length >= 2) {
+      const head = lines[0].split(',').map((h) => h.trim().replace(/^"|"$/g, ''));
+      arr = lines.slice(1).map((ln) => {
+        const cells = ln.split(',').map((c) => c.trim().replace(/^"|"$/g, ''));
+        const o = {}; head.forEach((h, i) => { o[h] = cells[i]; }); return o;
+      });
+    }
+  }
   if (!Array.isArray(arr) || !arr.length) return null;
+  arr = arr.map((r) => { const o = {}; for (const k in r) o[String(k).toLowerCase()] = r[k]; return o; });
 
-  // Take the most recent map week (ValidStart / MapDate both sort lexicographically).
+  // Take the most recent map week (validstart / mapdate both sort lexicographically).
   let row = arr[0];
   for (const r of arr) {
-    const a = String(r.ValidStart || r.MapDate || '');
-    const b = String(row.ValidStart || row.MapDate || '');
+    const a = String(r.validstart || r.mapdate || '');
+    const b = String(row.validstart || row.mapdate || '');
     if (a > b) row = r;
   }
-  // Dominant county category → point-class approximation.
-  const cats = ['None', 'D0', 'D1', 'D2', 'D3', 'D4'];
+  // statisticsType=2 is USDM's "categorical" statistics: each category is exclusive
+  // (D0 = area in D0 only), so the largest one is a real dominant category. Type 1
+  // ("traditional") is cumulative — D0 includes D1–D4 — which made D0 always win.
+  const cats = ['none', 'd0', 'd1', 'd2', 'd3', 'd4'];
   let cls = -1, bestPct = -1;
-  cats.forEach((k, i) => {
+  const pct = cats.map((k, i) => {
     const v = parseFloat(row[k]);
     if (isFinite(v) && v > bestPct) { bestPct = v; cls = i - 1; }
+    return isFinite(v) ? v : 0;
   });
   if (bestPct < 0) return null;
-  return { DroughtClass: cls, approx: 'county-dominant', fips,
-           mapWeek: row.ValidStart || row.MapDate || null, source: 'usdm-county-statistics' };
+  // worstHalf: worst category covering >= 50% of the county under the cumulative
+  // reading (Dn-or-worse). Sum the exclusive shares from D4 downward; the first
+  // category where the running total reaches 50 is it. Never reaching 50 → -1 (None).
+  let worstHalf = -1, acc = 0;
+  for (let i = 5; i >= 1; i--) {
+    acc += pct[i];
+    if (acc >= 50) { worstHalf = i - 1; break; }
+  }
+  return { DroughtClass: cls, worstHalf, approx: 'county-dominant', fips,
+           mapWeek: row.validstart || row.mapdate || null, source: 'usdm-county-statistics' };
 }
 
 // ── 7. Copernicus index time-series (Sentinel-2 via Statistical API) ────────
