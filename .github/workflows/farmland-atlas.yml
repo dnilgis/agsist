@@ -37,7 +37,7 @@ on:
   workflow_dispatch:
     inputs:
       layers:
-        description: "Which fetches to run, comma-separated: heat,water,loss,sob,value,practices,crp,drought,energy,wells,reads. Blank = all."
+        description: "Which fetches to run, comma-separated: heat,water,loss,sob,value,practices,crp,drought,energy,wells,climate,storms,livestock,frost,reads. Blank = all. build = no fetch, rebuild only."
         required: false
         default: ""
       loss_all:
@@ -83,7 +83,7 @@ jobs:
           python-version: "3.11"
 
       - name: Install
-        run: pip install --quiet openpyxl
+        run: pip install --quiet openpyxl pyarrow
 
       # Offline, no keys. If a parser is broken there is no point downloading
       # a gigabyte of RMA files to find out.
@@ -101,15 +101,21 @@ jobs:
           python fetch_atlas_drought.py --selftest
           python fetch_atlas_energy.py --selftest
           python fetch_atlas_wells.py --selftest
+          python fetch_atlas_wells_states.py --selftest
+          python fetch_atlas_climate.py --selftest
+          python fetch_atlas_storms.py --selftest
+          python fetch_atlas_livestock.py --selftest
+          python fetch_atlas_frost.py --selftest
           python atlas_layers_p1.py --selftest
+          python atlas_layers_p2.py --selftest
           python atlas_reads.py --selftest
           python atlas_geometry.py --selftest
 
       - name: Which layers
         id: which
         run: |
-          L="${LAYERS:-heat,water,loss,sob,value,practices,crp,drought,energy,wells,reads}"
-          for k in heat water loss sob value practices crp drought energy wells reads; do
+          L="${LAYERS:-heat,water,loss,sob,value,practices,crp,drought,energy,wells,climate,storms,livestock,frost,reads}"
+          for k in heat water loss sob value practices crp drought energy wells climate storms livestock frost reads; do
             case ",$L," in *",$k,"*) echo "$k=1" >> "$GITHUB_OUTPUT";; *) echo "$k=0" >> "$GITHUB_OUTPUT";; esac
           done
           echo "running: $L"
@@ -202,6 +208,36 @@ jobs:
         continue-on-error: true
         run: python scripts/fetch_atlas_wells.py
 
+      # Ten more state registers. A state whose pull fails keeps its last good
+      # pull; the step goes red only when none came back.
+      - name: Fetch irrigation wells, other state registers
+        if: steps.which.outputs.wells == '1'
+        continue-on-error: true
+        run: python scripts/fetch_atlas_wells_states.py
+
+      - name: Fetch rain and July highs (NCEI nClimDiv)
+        if: steps.which.outputs.climate == '1'
+        continue-on-error: true
+        run: python scripts/fetch_atlas_climate.py
+
+      - name: Fetch hail, wind and tornado reports (NCEI Storm Events)
+        if: steps.which.outputs.storms == '1'
+        continue-on-error: true
+        run: python scripts/fetch_atlas_storms.py
+
+      - name: Fetch cattle, hogs and pasture (Census of Agriculture)
+        if: steps.which.outputs.livestock == '1'
+        continue-on-error: true
+        env:
+          NASS_API_KEY: ${{ secrets.NASS_API_KEY }}
+        run: python scripts/fetch_atlas_livestock.py
+
+      # 270 monthly parquet files, about 220 MB, 1996 on
+      - name: Fetch freeze dates and heat units (NOAA nClimGrid daily, AWS)
+        if: steps.which.outputs.frost == '1'
+        continue-on-error: true
+        run: python scripts/fetch_atlas_frost.py
+
       # First run pulls every year since 1989, the same shape as loss; after
       # that the raw file exists and only the last two years are refetched.
       - name: Fetch premium book (RMA Summary of Business)
@@ -232,7 +268,12 @@ jobs:
       # --seed rewrites the static "Across the Atlas" block in farmland-atlas.html
       # between its SEED markers, so a reader with no JavaScript (and a crawler)
       # still gets the national numbers of this build.
+      # A fixed hash seed: a few sums run over sets, and a float summed in another
+      # order can round a dollar differently, move a county's fingerprint and hide
+      # its read (27111 and 27119 did on 9/19 with no data change).
       - name: Build the Atlas
+        env:
+          PYTHONHASHSEED: "0"
         run: python scripts/build_farmland_atlas.py --seed farmland-atlas.html
 
       # A county whose numbers moved gets a new fingerprint, and the page hides a
@@ -281,7 +322,7 @@ jobs:
           import json
           c = json.load(open('data/atlas/atlas.json'))['counts']
           parts = ["%d counties" % c['counties']]
-          for k in ("heat", "water", "loss", "sob", "value", "practices", "crp", "drought", "energy", "wells", "premium"):
+          for k in ("heat", "water", "loss", "sob", "value", "practices", "crp", "drought", "energy", "wells", "climate", "storms", "livestock", "frost", "premium"):
               n = c.get(k + "_ok")
               if n:
                   parts.append("%s %d" % (k, n))
