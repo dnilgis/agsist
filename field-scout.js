@@ -1269,7 +1269,9 @@
     // endpoint sends no CORS headers, so a direct browser call is blocked).
     // If unreachable, the panel omits the drought chip rather than blocking weather.
     var url=FS_WORKER+'/drought?lat='+c.lat.toFixed(4)+'&lon='+c.lng.toFixed(4);
-    fetchT(url, 15000).then(function(r){return r.ok?r.json():null;}).then(function(d){
+    // 20 s: the worker's worst case is a 4 s point try, then the county lookup (5 s) and
+    // the county statistics (7 s).
+    fetchT(url, 20000).then(function(r){return r.ok?r.json():null;}).then(function(d){
       if(gen !== fieldGen) return;
       // Honesty rule: 'None' is a real answer from the service; a failed or
       // unrecognized response is UNKNOWN (null) — never assert no-drought on error.
