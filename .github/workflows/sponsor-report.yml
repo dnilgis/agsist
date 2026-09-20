@@ -31,6 +31,10 @@ on:
       - 'data/sponsors.json'
       - 'data/sponsor.json'
       - 'data/rate-card.json'
+      - 'data/supporters.json'
+      - 'components/sponsor-ad.js'
+      - 'components/sponsor-ad.css'
+      - 'scripts/brief_email.py'
 
 concurrency:
   group: sponsor-report
