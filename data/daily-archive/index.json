@@ -1,6 +1,17 @@
 {
   "briefings": [
     {
+      "date": "2026-09-20",
+      "date_display": "Sunday, September 20, 2026",
+      "headline": "BEANS SANK FRIDAY; SUMMIT WEEK OPENS WITH CROSSED SIGNALS",
+      "teaser": "Beans gave back 16 cents into the weekend; the summit that's supposed to fix that trades Wednesday.",
+      "market_mood": "cautious",
+      "surprise_count": 0,
+      "sections": 3,
+      "url": "/daily/2026-09-20",
+      "market_closed": true
+    },
+    {
       "date": "2026-09-19",
       "date_display": "Saturday, September 19, 2026",
       "headline": "CRUDE RETREATS; TRUMP-XI SUMMIT HANGS OVER BEANS",
@@ -2196,6 +2207,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-09-19T13:58:33.985459+00:00",
-  "count": 191
+  "updated": "2026-09-20T14:17:22.394390+00:00",
+  "count": 192
 }

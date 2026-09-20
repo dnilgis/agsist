@@ -5,13 +5,25 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Sat, 19 Sep 2026 13:58:35 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 20 Sep 2026 14:17:37 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/agsist.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>BEANS SANK FRIDAY; SUMMIT WEEK OPENS WITH CROSSED SIGNALS</title>
+      <link>https://agsist.com/daily/2026-09-20</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-09-20</guid>
+      <pubDate>Sun, 20 Sep 2026 05:00:00 -0600</pubDate>
+      <description>Soybeans closed Friday at $13.03, down 16 cents on the week's last session as funds took profits ahead of the Trump-Xi summit set for Sep 24. Crude broke 5.6% the same day, its biggest single-session drop in weeks, while diesel stayed near record highs regardless.
+Action: Nothing to do at $13.03 beans over the weekend; a Monday close below $12.90 says the summit trade is unwinding, not building.
+• BEANS PRICE THE SUMMIT, NOT THE CROP
+• DIESEL STAYS TIGHT AS CRUDE BREAKS
+• CATTLE FIRM, FEEDER SUPPLY THE STORY
+Read more: https://agsist.com/daily/2026-09-20</description>
+    </item>
     <item>
       <title>CRUDE RETREATS; TRUMP-XI SUMMIT HANGS OVER BEANS</title>
       <link>https://agsist.com/daily/2026-09-19</link>
@@ -382,20 +394,6 @@ December corn hit $5.08 Friday as tour scouts backed USDA's yield cut; cattle ab
 • BEANS FIRM, OIL SPLITS FROM MEAL
 • CATTLE ABSORB THE IMPORT SHOCK
 Read more: https://agsist.com/daily/2026-08-22</description>
-    </item>
-    <item>
-      <title>PRO FARMER WRAPS; TRUMP BEEF DEAL HITS CATTLE</title>
-      <link>https://agsist.com/daily/2026-08-21</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-08-21</guid>
-      <pubDate>Fri, 21 Aug 2026 05:00:00 -0600</pubDate>
-      <description>The Pro Farmer Crop Tour finished Friday with national yield estimates below USDA's August numbers on corn, and December corn closed at $5.08, up 7¼ cents on the week's resolution. That would normally be a clean bullish close. Then Trump posted a 300,000 MT tariff-free beef import window and cattle groups spent the afternoon reacting. Two stories, two directions, one Friday.
-December corn closes at $5.08 as tour confirms tighter yield; cattle absorb a 300K MT tariff-free import shock.
-• TOUR CLOSES; CORN RUNS
-  → If you have unpriced new-crop corn and December is above $5.08 Monday morning, that is a real pricing window before harvest pressure rebuilds.
-• BEANS FIRM, MEAL LEADS
-• TRUMP BEEF DEAL PRESSURES CATTLE
-  → Cattle feeders: hold pricing decisions until the import mechanism is clarified. A 90-day window against record-low placements is not the same math as a permanent policy shift.
-Read more: https://agsist.com/daily/2026-08-21</description>
     </item>
   </channel>
 </rss>
