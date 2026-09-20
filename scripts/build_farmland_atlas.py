@@ -53,6 +53,11 @@ from datetime import datetime, timezone
 from atlas_layers_p1 import (sob_layer, value_layer, crp_layer, drought_layer, energy_layer, wells_layer,
                              national_p1, summarize_p1, seed_p1,
                              MIN_RATIO_PREMIUM, MIN_RATIO_YEARS, MIN_CRP_ACRES, FULL_YEAR_MAPS, HALF_YEAR_WEEKS)
+from atlas_layers_p2 import (climate_layer, storms_layer, livestock_layer, frost_layer, wells_state_block, more_row, MORE_KEYS)
+
+# Layers added 2026-09-20. None of them is in a county's fingerprint: no read
+# quotes them, and adding one must not hide every read on the map.
+P2_LAYERS = ("climate", "storms", "livestock", "frost")
 
 # Corn Belt + Plains. Extend by adding a state here and to ATLAS_STATE_FIPS;
 # the geometry file must carry the state too (scripts/atlas_geometry.py).
@@ -952,11 +957,19 @@ def build(rent_dir=RENT_DIR, raw_dir=RAW_DIR, geometry_names=None, geometry_unit
         log(f"  rent: {len(rent_merged)} code(s) fold onto a polygon already taken, kept the first: {' '.join(rent_merged)}")
     raw = {}
     vint = {}
-    for name in ("heat", "water", "loss", "sob", "value", "crp", "drought", "energy", "wells", "practices"):
+    for name in ("heat", "water", "loss", "sob", "value", "crp", "drought", "energy", "wells", "practices") + P2_LAYERS + ("wells_states",):
         p = os.path.join(raw_dir, f"{name}.json")
         if os.path.exists(p):
             with open(p, encoding="utf-8") as f:
                 d = json.load(f)
+            if name == "wells_states":
+                # {state: {register meta..., counties: {fips: summary}}}; the counties are placed by point, so they are map codes already
+                raw[name] = {st: v for st, v in (d.get("states") or {}).items() if st not in ("NE", "KS")}
+                vint[name] = {k: v for k, v in d.items() if k != "states"}
+                vint[name]["registers"] = {st: {k: v[k] for k in ("register", "url", "rows", "unplaced", "fetched", "level_kind") if k in v}
+                                           for st, v in raw[name].items()}
+                log(f"  wells_states: {', '.join(st + ' ' + str(len(v.get('counties') or {})) for st, v in sorted(raw[name].items()))}")
+                continue
             raw[name] = d.get("counties") if name != "wells" else {"ne": d.get("ne") or {}, "ks": d.get("ks") or {}}
             raw[name] = raw[name] or {}
             if name != "wells":
@@ -1104,6 +1117,18 @@ def build(rent_dir=RENT_DIR, raw_dir=RAW_DIR, geometry_names=None, geometry_unit
                                          item_commodity=(vint.get("practices") or {}).get("item_commodity") or {})
         c["wells"] = wells_layer(st, ne=(raw["wells"] or {}).get("ne", {}).get(fips), ks=(raw["wells"] or {}).get("ks", {}).get(fips),
                                  ran=raw["wells"] is not None)
+        ws = (raw.get("wells_states") or {}).get(st)
+        if ws is not None:
+            c["wells"] = wells_state_block(st, ws, (ws.get("counties") or {}).get(fips))
+        c["climate"] = climate_layer((raw["climate"] or {}).get(fips), gs_latest=(vint.get("climate") or {}).get("gs_latest_year"),
+                                     tmax_latest=(vint.get("climate") or {}).get("tmax_latest_year"), ran=raw["climate"] is not None)
+        c["storms"] = storms_layer((raw["storms"] or {}).get(fips), (vint.get("storms") or {}).get("years"), ran=raw["storms"] is not None)
+        c["livestock"] = livestock_layer((raw["livestock"] or {}).get(fips),
+                                         none_if_absent=(vint.get("livestock") or {}).get("absent_means_none") or {},
+                                         failed=[x for x in (vint.get("livestock") or {}).get("failed_pulls") or [] if x.startswith(st + " ")],
+                                         land_in_farms=tenure_lif.get(fips), items=(vint.get("livestock") or {}).get("items"),
+                                         ran=raw["livestock"] is not None)
+        c["frost"] = frost_layer((raw["frost"] or {}).get(fips), ran=raw["frost"] is not None)
         # a fingerprint of the numbers. atlas_reads.py stores it beside each AI read
         # and the page shows a read only when the two agree, so a read can never
         # describe numbers the county no longer carries.
@@ -1114,7 +1139,7 @@ def build(rent_dir=RENT_DIR, raw_dir=RAW_DIR, geometry_names=None, geometry_unit
         # sees CRP in its own block hash, so the next run with credit rewrites each read with it.
         # (It is held at the placeholder the reads were fingerprinted with, rather than dropped, so the
         # 3,151 fingerprints already on the map stay the same.)
-        c["sha"] = record_sha({**{k: v for k, v in c.items() if k != "practices"}, "crp": CRP_SHA_PLACEHOLDER})
+        c["sha"] = record_sha({**{k: v for k, v in c.items() if k != "practices" and k not in P2_LAYERS}, "crp": CRP_SHA_PLACEHOLDER})
         counties[fips] = c
 
     if not geometry_names:
@@ -1191,6 +1216,12 @@ def build(rent_dir=RENT_DIR, raw_dir=RAW_DIR, geometry_names=None, geometry_unit
                       # the county fingerprints leave practices out, so the build stamp watches this instead
                       "sha": record_sha({f: c.get("practices") for f, c in counties.items()}) if raw["practices"] else None,
                       **{k: v for k, v in (vint.get("practices") or {}).items() if k not in ("absent_means_none",)}},
+        **{name: {"status": "ok" if raw[name] else "not yet measured",
+                  # left out of the county fingerprints, so the build stamp watches these instead
+                  "sha": record_sha({f: c.get(name) for f, c in counties.items()}) if raw[name] else None,
+                  **{k: v for k, v in (vint.get(name) or {}).items() if k not in ("absent_means_none", "stats", "files", "parse_stats")}}
+           for name in P2_LAYERS},
+        "wells_states": {"status": "ok" if raw.get("wells_states") else "not yet measured", **(vint.get("wells_states") or {})},
         "wells": {"status": "ok" if raw["wells"] else "not yet measured",
                   "source": "Nebraska DNR registered wells; Kansas DWR WIMAS points of diversion (other states: no open register read yet)",
                   **(vint.get("wells") or {})},
@@ -1217,7 +1248,8 @@ def build(rent_dir=RENT_DIR, raw_dir=RAW_DIR, geometry_names=None, geometry_unit
                    "drought_ok": sum(1 for c in counties.values() if c["drought"].get("status") == "ok"),
                    "energy_ok": sum(1 for c in counties.values() if c["energy"].get("status") == "ok"),
                    "wells_ok": sum(1 for c in counties.values() if c["wells"].get("status") == "ok"),
-                   "practices_ok": sum(1 for c in counties.values() if (c.get("practices") or {}).get("status") == "ok")},
+                   "practices_ok": sum(1 for c in counties.values() if (c.get("practices") or {}).get("status") == "ok"),
+                   **{f"{name}_ok": sum(1 for c in counties.values() if (c.get(name) or {}).get("status") == "ok") for name in P2_LAYERS}},
         "counties": counties,
     }
     return out
@@ -1449,6 +1481,7 @@ def selftest():
 
 DETAIL_DIR = "data/atlas/counties"
 DECADES_OUT = "data/atlas/heat-decades.json"
+MORE_OUT = "data/atlas/more.json"
 
 
 def _st(layer):
@@ -1754,13 +1787,24 @@ def write_outputs(out, out_path=OUT, detail_dir=DETAIL_DIR):
             os.remove(os.path.join(detail_dir, name))
     summary = dict(out)
     summary["counties"] = {fips: summarize(rec) for fips, rec in full.items()}
-    summary["sidecars"] = {"heat_decades": os.path.basename(DECADES_OUT)}
+    summary["sidecars"] = {"heat_decades": os.path.basename(DECADES_OUT), "more": os.path.basename(MORE_OUT)}
     with open(out_path, "w", encoding="utf-8") as f:
         json.dump(summary, f, separators=(",", ":"), ensure_ascii=False)
+    # weather, storms, livestock, freeze dates: the map's slice goes in its own file, fetched
+    # only when one of those layers is picked, so the first paint does not carry it.
+    # A county block that is not "ok" is left out; the county file says why.
+    more = {}
+    for fips, rec in full.items():
+        row = more_row(rec)
+        if row:
+            more[fips] = row
+    with open(MORE_OUT, "w", encoding="utf-8") as f:
+        json.dump({"generated": out["generated"], "keys": {k: v[1] for k, v in MORE_KEYS.items()}, "counties": more}, f, separators=(",", ":"))
     dec = {fips: d for fips, d in ((f, heat_decades(r)) for f, r in full.items()) if d}
     with open(DECADES_OUT, "w", encoding="utf-8") as f:
         json.dump({"generated": out["generated"], "month": "jul", "counties": dec}, f, separators=(",", ":"))
-    log(f"  index {os.path.getsize(out_path):,} bytes; heat-decades sidecar {os.path.getsize(DECADES_OUT):,} bytes for {len(dec)} counties")
+    log(f"  index {os.path.getsize(out_path):,} bytes; heat-decades sidecar {os.path.getsize(DECADES_OUT):,} bytes for {len(dec)} counties; "
+        f"more sidecar {os.path.getsize(MORE_OUT):,} bytes for {len(more)} counties")
     return summary
 
 
@@ -1883,8 +1927,12 @@ def main():
                 prev = json.load(f)
             same = (prev.get("counties") and set(prev["counties"]) == set(out["counties"])
                     and all(prev["counties"][k].get("sha") == v["sha"] for k, v in out["counties"].items())
-                    and prev.get("thesis_test") == out["thesis_test"] and prev.get("national") == out["national"]
-                    and ((prev.get("layers") or {}).get("practices") or {}).get("sha") == out["layers"]["practices"].get("sha"))
+                    # through JSON: in memory some keys are ints, in the file they are strings, and
+                    # the two never compared equal, so the stamp moved on every run (panel 9/20)
+                    and prev.get("thesis_test") == json.loads(json.dumps(out["thesis_test"]))
+                    and prev.get("national") == json.loads(json.dumps(out["national"]))
+                    and ((prev.get("layers") or {}).get("practices") or {}).get("sha") == out["layers"]["practices"].get("sha")
+                    and all(((prev.get("layers") or {}).get(n) or {}).get("sha") == out["layers"][n].get("sha") for n in P2_LAYERS))
             if same and prev.get("generated"):
                 out["generated"] = prev["generated"]
                 log(f"no county changed; keeping build stamp {out['generated']}")

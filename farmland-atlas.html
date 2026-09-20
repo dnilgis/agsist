@@ -65,7 +65,12 @@
           {"@type": "PropertyValue", "name": "CRP acres enrolled by year and expiring by fiscal year", "unitText": "acres"},
           {"@type": "PropertyValue", "name": "Weeks per year with at least half the county in D2 or worse drought, 2000 onward", "unitText": "weeks"},
           {"@type": "PropertyValue", "name": "Solar, wind and battery nameplate capacity, operating and proposed", "unitText": "MW"},
-          {"@type": "PropertyValue", "name": "Registered wells and water rights (Nebraska, Kansas)", "unitText": "count, feet, year"}
+          {"@type": "PropertyValue", "name": "Registered wells and water rights (Nebraska, Kansas)", "unitText": "count, feet, year"},
+          {"@type": "PropertyValue", "name": "Irrigation wells on state registers (MN, MI, OH, WI, OK, CA, AZ, ID, OR, NV)", "unitText": "count, feet"},
+          {"@type": "PropertyValue", "name": "April-September precipitation, 1991-2020 normal and recent seasons (NOAA nClimDiv county)", "unitText": "inches, percent"},
+          {"@type": "PropertyValue", "name": "Last spring and first fall freeze, frost-free days, corn growing degree days (NOAA nClimGrid daily county)", "unitText": "date, days, GDD"},
+          {"@type": "PropertyValue", "name": "Hail and severe wind report days (NOAA Storm Events, 2010 on)", "unitText": "days per year"},
+          {"@type": "PropertyValue", "name": "Cattle, beef cows, milk cows, hogs, permanent pasture (Census of Agriculture 2017, 2022)", "unitText": "head, acres"}
         ],
         "distribution": [
           {"@type": "DataDownload", "encodingFormat": "application/json", "contentUrl": "https://agsist.com/data/atlas/atlas.json"}
@@ -106,8 +111,8 @@
           },
           {
             "@type": "Question",
-            "name": "Why are wells and water rights shown only for Nebraska and Kansas?",
-            "acceptedAnswer": {"@type": "Answer", "text": "Because those two states publish an open register that can be read and checked: Nebraska's registered wells and Kansas's WIMAS points of diversion. Other states keep theirs behind a login, a fee, or do not publish one. A county in another state reads \"no open register read yet\" rather than a guess."}
+            "name": "Why are irrigation wells shown for some states and not others?",
+            "acceptedAnswer": {"@type": "Answer", "text": "Because only some states publish an open well register with an irrigation code that can be read and checked. The Atlas reads Nebraska's registered wells and Kansas's WIMAS water rights, and from September 2026 the registers of Minnesota, Michigan, Ohio, Wisconsin, Oklahoma, California, Arizona, Idaho, Oregon and Nevada, each where that month's pull succeeds. Registers differ in what they count and how far back they go, so compare a county with its own state. A county in any other state reads \"no open register read yet\" rather than a guess."}
           }
         ]
       }
@@ -348,7 +353,10 @@ details.fa-arith code{font-family:var(--font-mono);font-size:.74rem;color:var(--
   .fa-hero h1{font-size:1.4rem}
   .fa-map-title{font-size:.66rem}
   .fa-bar select{flex:1 1 100%}
-  .fa-gtabs{flex-wrap:nowrap}
+  /* 16 groups: two rows that scroll sideways, with a fade that says there is more */
+  .fa-gtabs{display:grid;grid-auto-flow:column;grid-template-rows:auto auto;grid-auto-columns:max-content;
+    -webkit-mask-image:linear-gradient(90deg,#000 86%,transparent);mask-image:linear-gradient(90deg,#000 86%,transparent)}
+  .fa-gtabs.at-end{-webkit-mask-image:none;mask-image:none}
   .fa-gtab{padding:.4rem .6rem;font-size:.76rem}
   .fa-hero p{font-size:.86rem}
   .fa-eyebrow{display:none}
@@ -374,6 +382,7 @@ details.fa-arith code{font-family:var(--font-mono);font-size:.74rem;color:var(--
 .fa-bandnav{display:flex;gap:.4rem;flex-wrap:wrap;margin:.2rem 0 .6rem;position:sticky;top:74px;z-index:3;background:var(--surface);padding:.4rem 0;border-bottom:1px solid var(--border)}
 .fa-bandnav a{font-size:.78rem;font-weight:700;color:var(--text-dim);text-decoration:none;padding:.3rem .7rem;border:1px solid var(--border-2);border-radius:999px}
 .fa-bandnav a:hover{color:var(--text);border-color:var(--gold)}
+#fa-panel .fa-bandnav a{text-decoration:none}
 .fa-band{padding:1rem 0 .4rem;border-top:1px solid var(--border);scroll-margin-top:130px}
 .fa-band:first-child{border-top:none}
 .fa-band-h{font-family:var(--font-display);font-size:1.1rem;font-weight:800;color:var(--text);margin:0 0 .6rem}
@@ -518,7 +527,7 @@ details.fa-arith .body a{color:var(--gold)}
       </div>
       <div class="fa-strip" id="fa-p-strip"></div>
       <div id="fa-p-read" hidden></div>
-      <nav class="fa-bandnav" aria-label="County sections"><a href="#fa-b-money">Money</a><a href="#fa-b-risk">Risk</a><a href="#fa-b-water">Water and land</a><a href="#fa-b-nb">Next door</a></nav>
+      <nav class="fa-bandnav" aria-label="County sections"><a href="#fa-b-money">Money</a><a href="#fa-b-risk">Risk</a><a href="#fa-b-wx">Weather</a><a href="#fa-b-water">Water and land</a><a href="#fa-b-nb">Next door</a></nav>
       <div id="fa-p-cards"></div>
     </section>
 
@@ -614,7 +623,7 @@ details.fa-arith .body a{color:var(--gold)}
     <details><summary>How does irrigated rent compare with dry rent?</summary><p>Irrigated cropland cash rent divided by non-irrigated cash rent, same county, same year, from the USDA NASS Cash Rents Survey. A multiple rather than a dollar gap, because rents rose almost everywhere and a dollar gap widens even when nothing about the water changed. Irrigated rent also pays for the well, pump and pivot, so the multiple is not the price of water alone. Its direction is called only where the 95% interval of the fitted trend excludes zero and dry rent is at least $25 an acre.</p></details>
     <details><summary>What is a crop insurance loss ratio and why does it matter for land?</summary><p>Indemnities paid divided by total premium, from USDA RMA's Summary of Business county files, every policy since 1989. At 1.00 the county's insurance book paid out what it took in; above it, claims exceeded the whole premium, the farmer's share and the federal subsidy together. Insurers, lenders and anyone pricing a lease look at it because it is the longest continuous record of how often crops in that county have failed against what was expected, with the dollars attached.</p></details>
     <details><summary>Where does the land value come from, and is it an appraisal?</summary><p>The USDA Census of Agriculture, which asks every operator the market value of their land and buildings and publishes the average per acre by county for 2012, 2017 and 2022. It is not an appraisal and not a sale price; it is what operators reported, buildings included. This page shows it as published and divides the county's non-irrigated cash rent by it. It never models a value.</p></details>
-    <details><summary>Why are wells and water rights shown only for Nebraska and Kansas?</summary><p>Because those two states publish an open register that can be read and checked: Nebraska's registered wells and Kansas's WIMAS points of diversion. Other states keep theirs behind a login, a fee, or do not publish one. A county in another state reads "no open register read yet" rather than a guess.</p></details>
+    <details><summary>Why are irrigation wells shown for some states and not others?</summary><p>Because only some states publish an open well register with an irrigation code that can be read and checked. The Atlas reads Nebraska's registered wells and Kansas's WIMAS water rights, and from September 2026 the registers of Minnesota, Michigan, Ohio, Wisconsin, Oklahoma, California, Arizona, Idaho, Oregon and Nevada, each where that month's pull succeeds. Registers differ in what they count and how far back they go, so compare a county with its own state. A county in any other state reads "no open register read yet" rather than a guess.</p></details>
   </section>
 
   <section class="fa-sec" id="fa-parcel">
@@ -802,17 +811,45 @@ var LAYERS=[
   v:function(c){return get(c,'drought','last5','d2');},title:'Weeks in the last five full years with at least half the county in D2 or worse'},
  {key:'dr_half',grp:'Drought',label:'Years half or more in D2+',ramp:'heat',unit:'yrs',k:0,needs:'drought',
   v:function(c){return get(c,'drought','years_half_or_more');},title:'Full years since 2000 in which at least half the county was in D2 or worse for 26 weeks or more'},
+ {key:'gs_normal',grp:'Rain and heat',label:'Apr–Sep rain, normal',ramp:'water',unit:'in',k:1,needs:'climate',side:'more',
+  v:function(c,f){return mv(f,'c',0);},title:'Growing-season rain, April to September, 1991–2020 average, inches'},
+ {key:'gs_recent',grp:'Rain and heat',label:'Last 10 seasons vs normal',div:true,unit:'%',k:0,needs:'climate',side:'more',
+  v:function(c,f){var p=mv(f,'c',2); return p==null?null:p-100;},title:'April–September rain over the last ten complete seasons, percent above or below the 1991–2020 normal'},
+ {key:'gs_latest',grp:'Rain and heat',label:'Last season vs normal',div:true,unit:'%',k:0,needs:'climate',side:'more',
+  v:function(c,f){var p=mv(f,'c',3); return p==null?null:p-100;},title:'The latest complete April–September season, percent above or below the 1991–2020 normal'},
+ {key:'gs_cv',grp:'Rain and heat',label:'Year-to-year swing',ramp:'heat',unit:'%',k:0,needs:'climate',side:'more',
+  v:function(c,f){return mv(f,'c',1);},title:'How far a typical growing season lands from the average, percent of the 1991–2020 normal (higher is less dependable; grey under 6 inches of normal)'},
+ {key:'jul_high',grp:'Rain and heat',label:'July highs, last 10 yrs',ramp:'heat',unit:'F',k:1,needs:'climate',side:'more',
+  v:function(c,f){return mv(f,'c',4);},title:'July mean daily high, last ten years (F)'},
+ {key:'fr_ffd',grp:'Season',label:'Frost-free days',ramp:'green',unit:'days',k:0,needs:'frost',side:'more',
+  v:function(c,f){return mv(f,'f',2);},title:'Median days between the last spring and first fall freeze (32 F on the county-average low), 1996 on'},
+ {key:'fr_spring',grp:'Season',label:'Last spring freeze',ramp:'green',unit:'',k:0,doy:true,needs:'frost',side:'more',
+  v:function(c,f){var v=mv(f,'f',0); return v===-1?null:v;},title:'Median date of the last spring freeze (32 F on the county-average low), 1996 on; low ground freezes later'},
+ {key:'fr_fall',grp:'Season',label:'First fall freeze',ramp:'green',unit:'',k:0,doy:true,needs:'frost',side:'more',
+  v:function(c,f){var v=mv(f,'f',1); return v===999?null:v;},title:'Median date of the first fall freeze (32 F on the county-average low), 1996 on; low ground freezes earlier'},
+ {key:'fr_gdd',grp:'Season',label:'Corn GDD, May–Sep',ramp:'gold',unit:'GDD',k:0,needs:'frost',side:'more',
+  v:function(c,f){return mv(f,'f',3);},title:'Median corn growing degree days, May 1 to September 30, 86/50 method, 1996 on'},
+ {key:'fr_hot',grp:'Season',label:'Days 95 °F+',ramp:'heat',unit:'days',k:1,needs:'frost',side:'more',
+  v:function(c,f){return mv(f,'f',4);},title:'Days a year with a county-average high of 95 F or more, June to August, 1996 on'},
+ {key:'st_hail',grp:'Storms',label:'Hail 1"+ days a year',ramp:'loss',unit:'days',k:1,needs:'storms',side:'more',
+  v:function(c,f){return mv(f,'s',0);},title:'Days a year with a hail report of 1 inch or more, 2010 on. Reports, not storms: more people and a bigger county log more report days'},
+ {key:'st_hail2',grp:'Storms',label:'Hail 2"+ days a year',ramp:'loss',unit:'days',k:2,needs:'storms',side:'more',
+  v:function(c,f){return mv(f,'s',1);},title:'Days a year with a hail report of 2 inches or more, 2010 on (reports; a bigger county logs more)'},
+ {key:'st_wind',grp:'Storms',label:'Severe wind days a year',ramp:'loss',unit:'days',k:1,needs:'storms',side:'more',
+  v:function(c,f){return mv(f,'s',2);},title:'Days a year with a thunderstorm wind report of 58 mph or more, measured or estimated, 2010 on (reports; a bigger county logs more)'},
  {key:'en_solar',grp:'Solar and wind',label:'Solar, operating',ramp:'gold',unit:'MW',k:0,needs:'energy',
   v:function(c){var e=c.energy; return ok(e)?e.solar:null;},title:'Solar nameplate capacity operating in the county, MW, EIA Form 860 (plants of 1 MW or more)'},
  {key:'en_wind',grp:'Solar and wind',label:'Wind, operating',ramp:'gold',unit:'MW',k:0,needs:'energy',
   v:function(c){var e=c.energy; return ok(e)?e.wind:null;},title:'Wind nameplate capacity operating in the county, MW, EIA Form 860'},
  {key:'en_prop',grp:'Solar and wind',label:'Proposed',ramp:'gold',unit:'MW',k:0,needs:'energy',
   v:function(c){var e=c.energy; return ok(e)?e.proposed:null;},title:'Solar, wind and battery capacity developers have told EIA they plan in the county, MW'},
- {key:'we_depth',grp:'Wells and rights',label:'NE: median well depth',ramp:'water',unit:'ft',k:0,needs:'wells',
-  v:function(c){return get(c,'wells','depth_median_ft');},title:'Nebraska: median total depth of registered irrigation wells not decommissioned, feet'},
- {key:'we_static',grp:'Wells and rights',label:'NE: static water level',ramp:'water',unit:'ft',k:0,needs:'wells',
-  v:function(c){return get(c,'wells','static_median_ft');},title:'Nebraska: median static water level of irrigation wells, feet below land surface at completion'},
- {key:'we_prio',grp:'Wells and rights',label:'KS: median priority year',ramp:'water',unit:'',k:0,needs:'wells',
+ {key:'we_depth',grp:'Wells and rights',label:'Irrigation well depth',ramp:'water',unit:'ft',k:0,needs:'wells',
+  v:function(c){return get(c,'wells','depth_median_ft');},title:'Median total depth of irrigation wells on the state register, feet (registers differ: compare a county with its own state)'},
+ {key:'we_static',grp:'Wells and rights',label:'Water level when drilled',ramp:'water',unit:'ft',k:0,needs:'wells',
+  v:function(c){var v=get(c,'wells','static_median_ft'); if(v==null&&!get(c,'wells','first_water')) v=get(c,'wells','level_median_ft'); return v;},title:'Median water level of irrigation wells when drilled, feet below land surface (state registers; Oklahoma records first water instead and is left out)'},
+ {key:'we_irr',grp:'Wells and rights',label:'Irrigation wells on record',ramp:'water',unit:'',k:0,log:true,needs:'wells',
+  v:function(c){var v=get(c,'wells','irrigation_wells'); return v==null?get(c,'wells','irrigation_active'):v;},title:'Irrigation wells on the state register (log scale; Kansas: active irrigation water rights, surface water included). Registers differ: Nebraska counts wells in use; most others count every well ever logged, sealed ones included; Michigan and Arizona include lawn and multi-use wells. Compare a county with its own state'},
+ {key:'we_prio',grp:'Wells and rights',label:'KS: rights, priority year',ramp:'water',unit:'',k:0,needs:'wells',
   v:function(c){return get(c,'wells','priority_year_median');},title:'Kansas: median priority year of active irrigation water rights (older is served first in a shortage)'},
  {key:'ten_rent',grp:'Who farms it',label:'Rented, 2022',ramp:'gold',unit:'%',pct:true,k:0,side:'tenure',
   v:function(c,f){return tenShare(f,'2022');},title:'Share of land in farms rented from others, 2022 Census of Agriculture, as farms reported it'},
@@ -823,20 +860,35 @@ var LAYERS=[
  {key:'pr_cover',grp:'Tile and tillage',label:'Cover crops',ramp:'green',unit:'%',pct:true,k:0,needs:'practices',
   v:function(c){return get(c,'practices','cover');},title:'Cropland planted to cover crops (CRP excluded) as a share of all cropland, 2022 Census of Agriculture'},
  {key:'afida',grp:'Who farms it',label:'Foreign-held acres',ramp:'water',unit:'acres',k:0,side:'afida',log:true,
-  v:function(c,f){return afidaAcres(f);},title:'Agricultural acres held by foreign persons, latest AFIDA year, as disclosed to USDA FSA (forest included; log scale)'}
+  v:function(c,f){return afidaAcres(f);},title:'Agricultural acres held by foreign persons, latest AFIDA year, as disclosed to USDA FSA (forest included; log scale)'},
+ {key:'lv_cattle',grp:'Livestock',label:'Cattle and calves',ramp:'gold',unit:'head',k:0,log:true,needs:'livestock',side:'more',
+  v:function(c,f){return mv(f,'l',0);},title:'Cattle and calves on farms, 2022 Census of Agriculture (log scale)'},
+ {key:'lv_dens',grp:'Livestock',label:'Cattle per 1,000 farm acres',ramp:'gold',unit:'/1,000 ac',k:0,needs:'livestock',side:'more',
+  v:function(c,f){return mv(f,'l',3);},title:'Cattle and calves per 1,000 acres of land in farms, 2022 census (all cattle, feedlots included: a feedlot county reads far above any grazing rate)'},
+ {key:'lv_beef',grp:'Livestock',label:'Beef cows',ramp:'gold',unit:'head',k:0,log:true,needs:'livestock',side:'more',
+  v:function(c,f){return mv(f,'l',1);},title:'Beef cows, 2022 census (log scale)'},
+ {key:'lv_milk',grp:'Livestock',label:'Milk cows',ramp:'gold',unit:'head',k:0,log:true,needs:'livestock',side:'more',
+  v:function(c,f){return mv(f,'l',2);},title:'Milk cows, 2022 census (log scale)'},
+ {key:'lv_chg',grp:'Livestock',label:'Cattle, 2017 to 2022',div:true,unit:'%',k:0,needs:'livestock',side:'more',
+  v:function(c,f){return mv(f,'l',4);},title:'Change in cattle and calves between the 2017 and 2022 censuses, percent (counties under 50 head in 2017 are grey)'}
 ];
 
 // ---------- the land pages' own files, read in place so the Atlas and those pages never disagree
 var SIDE={
   tenure:{url:'/data/tenure/tenure.json', why:'the census tenure file did not load'},
-  afida:{url:'/data/afida/county.json', nat:'/data/afida/national.json', why:'the AFIDA file did not load'}
+  afida:{url:'/data/afida/county.json', nat:'/data/afida/national.json', why:'the AFIDA file did not load'},
+  more:{url:'/data/atlas/more.json', why:'the weather, storm and livestock file did not load'}
 };
+// weather, storms, livestock, freeze dates: fetched when one of those layers is picked (build: MORE_KEYS)
+function mv(f,blk,i){ var M=SIDE.more; if(!M.ok) return null; var r=M.d.counties&&M.d.counties[f]; r=r&&r[blk]; var v=r?r[i]:null; return v==null?null:v; }
+function doyLabel(d){ var t=new Date(Date.UTC(2021,0,1)+(Math.round(d)-1)*864e5); return ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][t.getUTCMonth()]+' '+t.getUTCDate(); }
 function loadSide(k){
   var S=SIDE[k];
   if(!S.p){
     var get1=function(u){ return fetch(u,{cache:'no-cache'}).then(function(r){return r.ok?r.json():null;}).catch(function(){return null;}); };
     S.p=Promise.all([get1(S.url), S.nat?get1(S.nat):Promise.resolve(null)]).then(function(r){
-      if(r[0]&&(k!=='afida'||(r[1]&&r[1].latest_year))){ S.d=r[0]; S.n=r[1]; S.ok=true; }
+      if(r[0]&&k==='more'&&r[0].generated!==ATLAS.generated){ S.why='the weather and livestock file is from another build; reload the page'; }
+      else if(r[0]&&(k!=='afida'||(r[1]&&r[1].latest_year))){ S.d=r[0]; S.n=r[1]; S.ok=true; }
       S.done=true; return S;
     });
   }
@@ -999,8 +1051,8 @@ function classesFor(L,raw){
     if(from===EPS) return 'above '+shortv(L,0)+(to==null?'':', under '+shortv(L,to));
     if(ints&&from!=null&&to!=null) return to-1>from?shortv(L,from)+' to '+shortv(L,to-1):shortv(L,from);
     if(from==null&&to==null) return 'every county';
-    if(from==null) return 'under '+shortv(L,to);
-    if(to==null) return L.div&&from===0&&!hasPos?shortv(L,0):shortv(L,from)+' and up';
+    if(from==null) return (L.doy?'before ':'under ')+shortv(L,to);
+    if(to==null) return L.div&&from===0&&!hasPos?shortv(L,0):shortv(L,from)+(L.doy?' or later':' and up');
     if(ints&&to-from===1) return shortv(L,from);
     return shortv(L,from)+' to under '+shortv(L,to);
   }
@@ -1011,6 +1063,7 @@ function classesFor(L,raw){
 }
 function shortv(L,v){
   if(L.key==='we_prio') return String(Math.round(v));
+  if(L.doy) return doyLabel(v);
   if(L.pivot!=null&&v===L.pivot) return Number(v).toFixed(2);     // "1.00", as the title writes it
   function exact(x){ return String(Number(Number(x).toPrecision(10))); }
   if(L.cost) return '$'+rh(Number(v),2);
@@ -1040,7 +1093,7 @@ function markLegend(){
   var mt=$('fa-mk-t'); if(mt){ mt.hidden=false; mt.textContent='▲ '+cname(c)+': '+fmtv(LEG.L,v); }
 }
 function fmtv(L,v){ var t=fmtv0(L,v); return typeof t==='string'?t.replace(/^-/,'−'):t; }
-function fmtv0(L,v){ if(v==null) return '—'; if(L.cost) return '$'+rh(Number(v),2); if(L.pct) return pct(v,L.k); if(L.money) return money(v); if(L.key==='we_prio') return String(Math.round(v)); if(L.fixed) return Number(v).toFixed(L.k)+(L.unit==='%'?'%':L.unit?' '+L.unit:''); return (L.div&&v>0?'+':'')+fmt(v,L.k)+(L.unit==='%'||L.unit==='%/yr'?L.unit:L.unit?' '+L.unit:''); }
+function fmtv0(L,v){ if(v==null) return '—'; if(L.doy) return doyLabel(v); if(L.cost) return '$'+rh(Number(v),2); if(L.pct) return pct(v,L.k); if(L.money) return money(v); if(L.key==='we_prio') return String(Math.round(v)); if(L.fixed) return Number(v).toFixed(L.k)+(L.unit==='%'?'%':L.unit?' '+L.unit:''); return (L.div&&v>0?'+':'')+fmt(v,L.k)+(L.unit==='%'||L.unit==='%/yr'?L.unit:L.unit?' '+L.unit:''); }
 function paintSliderNote(){
   var line=Number($('fa-line').value), d=DECADES[DEC], n=0, at=0;
   for(var f in ATLAS.counties){ var dd=jdec(f); dd=dd&&dd[d]; if(dd&&dd.n>=5){ n++; if(dd.mean>=line) at++; } }
@@ -1092,13 +1145,15 @@ function neighbours(f){
 function farmAcres(f){ var T=SIDE.tenure.d, c=T&&T.counties&&T.counties[f], p=c&&c.y&&c.y['2022']; if(!p) return 0; return p[0]!=null&&p[1]!=null?p[0]+p[1]:null; }   // null: one part suppressed (D), size unknown
 function shortName(c,st){ var u=('u' in c)?c.u:'County'; return c.name+(/^city$/i.test(u)?' (city)':'')+(st&&c.state!==st?', '+c.state:''); }
 var RAIL_MORE=false;
+// a date layer ranks by the calendar: the latest freeze is not the "highest"
+function hl(L,t){ return L&&L.doy?String(t).replace(/highest/g,'latest').replace(/lowest/g,'earliest').replace(/Highest/g,'Latest').replace(/Lowest/g,'Earliest'):t; }
 function renderRail(){
   var box=$('fa-rail'); if(!box||!LEG) return; var L=LEG.L, h='';
   var scope=STATE?(STATE_NAMES[STATE]||STATE):'the US';
   if(SEL&&ATLAS.counties[SEL]){
     var c=ATLAS.counties[SEL], v=L.v(c,SEL), rk=RK[SEL]||{}, nbs=neighbours(SEL);
     h+='<div class="fa-cc" role="region" aria-labelledby="fa-cc-n" tabindex="-1"><div class="fa-cc-top"><div><h3 class="fa-cc-n" id="fa-cc-n" style="margin:0">'+esc(cname(c))+'</h3><div class="fa-cc-l">'+esc(L.label)+'</div></div><span style="display:flex;gap:6px;align-items:center"><a class="fa-cc-pr" href="/farmland-atlas/sheet#'+SEL+'" target="_blank" rel="noopener" aria-label="Printable county sheet">Print</a><button type="button" class="fa-cc-x" id="fa-cc-x" aria-label="Close this county">×</button></span></div>';
-    if(v==null||isNaN(v)) h+='<div class="fa-cc-v dim">— '+esc(missingWhy(c,L))+'</div>';
+    if(v==null||isNaN(v)) h+='<div class="fa-cc-v dim">— '+esc(missingWhy(c,L,SEL))+'</div>';
     else { var yr=ryear(L,c); h+='<div class="fa-cc-v">'+esc(fmtv(L,v))+(yr&&yr!==RENT_LATEST?' <small>'+esc(yr)+'</small>':'')+'</div>';
       var rs=[];
       if(!SIDE.tenure.done){}
@@ -1111,7 +1166,7 @@ function renderRail(){
         if(w2&&!(yr&&yr!==RENT_LATEST)) rs.push(w2+' in the US');
         if(rs.length) rs.push('among counties with 10,000 acres or more in farms');
       }
-      if(rs.length) h+='<div class="fa-cc-r">'+rs.map(esc).join('<br>')+'</div>'; }
+      if(rs.length) h+='<div class="fa-cc-r">'+rs.map(function(x){return esc(hl(L,x));}).join('<br>')+'</div>'; }
     if(nbs.length){
       var rows=[{f:SEL,c:c,v:v}].concat(nbs.map(function(g){ var cg=ATLAS.counties[g]; return {f:g,c:cg,v:L.v(cg,g)}; }));
       rows.sort(function(a,b){ var A=a.v==null||isNaN(a.v), B=b.v==null||isNaN(b.v); if(A!==B) return A?1:-1; if(A) return a.c.name<b.c.name?-1:1; return b.v-a.v; });
@@ -1132,11 +1187,11 @@ function renderRail(){
   else {
     var key=STATE?'st':'us';
     function row(r){ return '<li><button type="button" data-fips="'+r.f+'"'+(r.f===SEL?' class="me"':'')+'><span class="sw" style="background:'+(PATHS[r.f].getAttribute('fill'))+'"></span><span class="nm">'+esc(shortName(r.c,STATE||'~'))+'</span><span class="v">'+esc(fmtv(L,r.v))+'</span></button></li>'; }
-    h+='<div class="fa-rk"><h3 class="fa-rk-h"><span>Highest in '+esc(scope)+'</span></h3><ol class="fa-rk-l">'+list.slice(0,k).map(row).join('')+'</ol>'
+    h+='<div class="fa-rk"><h3 class="fa-rk-h"><span>'+hl(L,'Highest')+' in '+esc(scope)+'</span></h3><ol class="fa-rk-l">'+list.slice(0,k).map(row).join('')+'</ol>'
       +(function(){ var lo=list[n-1].v, tied=list.filter(function(r){return r.v===lo;}).length;
           // a list of eight of the 540 counties at 0% says nothing; say how many share the floor instead
-          if(tied>k) return '<h3 class="fa-rk-h"><span>Lowest in '+esc(scope)+'</span></h3><p class="fa-rk-n" style="margin:.1rem 0 .6rem">'+fmt(tied,0)+' counties tied at '+esc(fmtv(L,lo))+'.</p>';
-          return '<h3 class="fa-rk-h"><span>Lowest in '+esc(scope)+'</span></h3><ol class="fa-rk-l">'+list.slice(n-k).reverse().map(row).join('')+'</ol>'; })()
+          if(tied>k) return '<h3 class="fa-rk-h"><span>'+hl(L,'Lowest')+' in '+esc(scope)+'</span></h3><p class="fa-rk-n" style="margin:.1rem 0 .6rem">'+fmt(tied,0)+' counties tied at '+esc(fmtv(L,lo))+'.</p>';
+          return '<h3 class="fa-rk-h"><span>'+hl(L,'Lowest')+' in '+esc(scope)+'</span></h3><ol class="fa-rk-l">'+list.slice(n-k).reverse().map(row).join('')+'</ol>'; })()
       +'<p class="fa-rk-n">'+fmt(n,0)+' counties'+(farmOk?' with 10,000 acres or more in farms':' with a value')+((L.key==='rent'||L.key==='rent_irr')&&RENT_LATEST?', '+RENT_LATEST+' survey':'')+'. '+(n>2*k||RAIL_MORE?'<button type="button" class="fa-rk-more" id="fa-rk-more">'+(RAIL_MORE?'Show fewer':'Show more')+'</button>':'')+'</p></div>';
   }
   var ae=document.activeElement, keepF=ae&&box.contains(ae)?(ae.getAttribute('data-fips')||ae.id):null;
@@ -1153,10 +1208,12 @@ function renderRail(){
 function layerOff(l){ if(l.side) return false; var st=get(ATLAS,'layers',l.needs,'status'); if(!st) return l.needs==='practices'; return st!=='ok'; }   // a layer the data file does not know yet is dimmed, not drawn empty
 function layerOf(k){ return LAYERS.filter(function(l){return l.key===k;})[0]; }
 var GROUPS=[], LAST_IN={};
-var GLABEL={'Tile and tillage':'Tile & tillage','Loss ratio':'Insurance','Night heat':'Heat','Loss record':'Losses','Rent and yield':'Rent & yield','Solar and wind':'Energy','Wells and rights':'Wells'};   // short enough for one row at desktop width
+// short labels; 16 groups wrap to two rows at desktop width, two scrolling rows on a phone
+var GLABEL={'Rain and heat':'Weather','Season':'Frost & GDD','Tile and tillage':'Tile & tillage','Loss ratio':'Insurance','Night heat':'Heat','Loss record':'Losses','Rent and yield':'Rent & yield','Solar and wind':'Energy','Wells and rights':'Wells'};   // short enough for one row at desktop width
 function buildLayerButtons(){
   var gbox=$('fa-groups'), seen={};
   LAYERS.forEach(function(l){ if(!seen[l.grp]){ seen[l.grp]=1; GROUPS.push(l.grp); } });
+  var gt=$('fa-groups'); if(gt&&!gt._s){ gt._s=1; var ends=function(){ gt.classList.toggle('at-end', gt.scrollLeft+gt.clientWidth>=gt.scrollWidth-4); }; gt.addEventListener('scroll',ends,{passive:true}); window.addEventListener('resize',ends); setTimeout(ends,0); }
   GROUPS.forEach(function(g){
     var b=document.createElement('button'); b.type='button'; b.className='fa-gtab'; b.textContent=GLABEL[g]||g; b.setAttribute('data-grp',g);
     var all=LAYERS.filter(function(l){return l.grp===g;}), live=all.filter(function(l){return !layerOff(l);});
@@ -1259,8 +1316,8 @@ function wireMap(){
     var t=e.target; if(!t.classList||!t.classList.contains('c')){ tip.style.display='none'; return; }
     var f=t.getAttribute('data-fips'), c=ATLAS.counties[f]; if(!c) return;
     var L=LAYERS.filter(function(l){return l.key===CUR;})[0], v=L.v(c,f);
-    var rk=RK[f]||{}, rw=rk.st?rankWords(rk.st):'';
-    tip.innerHTML='<b>'+esc(cname(c))+'</b><br>'+esc(L.label)+': <span class="v">'+(v==null?'— '+esc(missingWhy(c,L)):esc(fmtv(L,v)))+'</span>'+(v!=null&&rw?'<br><span style="color:var(--text-muted)">'+esc(rw)+' in '+esc(c.state)+'</span>':'');
+    var rk=RK[f]||{}, rw=rk.st?hl(L,rankWords(rk.st)):'';
+    tip.innerHTML='<b>'+esc(cname(c))+'</b><br>'+esc(L.label)+': <span class="v">'+(v==null?'— '+esc(missingWhy(c,L,f)):esc(fmtv(L,v)))+'</span>'+(v!=null&&rw?'<br><span style="color:var(--text-muted)">'+esc(rw)+' in '+esc(c.state)+'</span>':'');
     var r=wrap.getBoundingClientRect(), x=e.clientX-r.left+14, y=e.clientY-r.top+14;
     if(x>r.width-270) x=e.clientX-r.left-270; if(y>r.height-80) y=e.clientY-r.top-70; if(x<4) x=4; if(y<4) y=4;
     tip.style.left=x+'px'; tip.style.top=y+'px'; tip.style.display='block';
@@ -1275,7 +1332,7 @@ function wireMap(){
     select(f,'map'); });
   $('fa-hint').classList.add('on');
 }
-function missingWhy(c,L){ if(L.key==='rent'){ var rr=get(c,'rent','nonirr'); if(rr&&rr.year&&RENT_LATEST&&rr.year<RENT_LATEST-3) return 'latest published rent is from '+rr.year; } if(L.key==='sob_over'&&ok(c.sob)&&get(c,'sob','share_over_one')==null) return 'fewer than ten crop years with a rated premium'; if((L.side&&!SIDE[L.side].done)||(L.sidecar&&!HEATD_DONE)) return 'loading'; if(L.side) return L.side==='tenure'?'not published for this county (census suppression or no match)':'no data'; var lay=c[L.needs]; if(!lay) return 'no data'; if(lay.status!=='ok') return why(lay);
+function missingWhy(c,L,f){ if(L.key==='rent'){ var rr=get(c,'rent','nonirr'); if(rr&&rr.year&&RENT_LATEST&&rr.year<RENT_LATEST-3) return 'latest published rent is from '+rr.year; } if(L.key==='sob_over'&&ok(c.sob)&&get(c,'sob','share_over_one')==null) return 'fewer than ten crop years with a rated premium'; if((L.side&&!SIDE[L.side].done)||(L.sidecar&&!HEATD_DONE)) return 'loading'; if(L.side) return L.side==='tenure'?'not published for this county (census suppression or no match)':L.side==='more'?(!SIDE.more.ok?(SIDE.more.why||'the file did not load'):L.key==='fr_spring'&&mv(f,'f',0)===-1?'no freeze after March 1 in most years':L.key==='fr_fall'&&mv(f,'f',1)===999?'no freeze before December in most years':'withheld or not published here; the county record says why'):'no data'; var lay=c[L.needs]; if(!lay) return 'no data'; if(lay.status!=='ok') return why(lay);
   if(L.key==='crp_peak') return 'peak enrollment under 100 acres';
   if(L.key==='crp_rate') return 'under 100 acres enrolled';
   if(L.key==='val_rtv'&&get(c,'value','flag')) return 'the census value moved against next door; see the county record';
@@ -1422,6 +1479,7 @@ function yearPts(series,fn,from,to,partialYear){
 function fact(label,value,sub,withheld){
   return '<div class="fa-f'+(withheld?' w':'')+'"><div class="k">'+esc(label)+'</div><div class="v">'+(withheld?'<span class="dim">'+esc(value)+'</span>':esc(value))+(sub?' <span class="s">'+esc(sub)+'</span>':'')+'</div></div>';
 }
+var NOTYET='not yet measured';
 function facthead(t){ return '<div class="fa-fh">'+esc(t)+'</div>'; }
 function band(id,title,facts,charts,na,arith){
   var cols=CW_COLS;
@@ -1617,6 +1675,47 @@ function renderPanel(fips,c){
     +'Heat: NOAA nClimDiv county monthly mean of daily lows. A trend gets a direction only when its 95% interval excludes zero. <a href="/farmland-atlas/methods#m-loss">Full method</a>';
   var risk_band=band('fa-b-risk','Risk: insurance record, drought, night heat',f,ch,na,ar);
 
+  // ---- WEATHER AND SEASON
+  f=''; ch=[]; na=[];
+  var Cl=c.climate, Fr=c.frost, St=c.storms;
+  f+=facthead('Growing-season rain, April to September');
+  if(ok(Cl)&&Cl.gs_normal_in!=null){
+    f+=fact('1991–2020 normal', fmt(Cl.gs_normal_in,1)+' in', Cl.annual_normal_in!=null?'of '+fmt(Cl.annual_normal_in,1)+' in a year':'');
+    var pn=function(x){ return x.pct_of_normal!=null?x.pct_of_normal+'% of normal':''; };
+    if(Cl.gs_recent) f+=fact('Last ten seasons, '+Cl.gs_recent.from+'–'+Cl.gs_recent.to, fmt(Cl.gs_recent.mean_in,1)+' in', pn(Cl.gs_recent));
+    if(Cl.gs_latest) f+=fact(String(Cl.gs_latest.year), fmt(Cl.gs_latest.in,1)+' in', pn(Cl.gs_latest));
+    if(Cl.gs_driest) f+=fact('Driest season since 1991', Cl.gs_driest.year+': '+fmt(Cl.gs_driest.in,1)+' in', pn(Cl.gs_driest));
+    if(Cl.gs_years_under_75pct) f+=fact('Seasons under 75% of normal', Cl.gs_years_under_75pct.n+' of '+Cl.gs_years_under_75pct.of, Cl.gs_years_under_75pct.from+'–'+Cl.gs_years_under_75pct.to);
+    if(Cl.gs_cv_pct!=null) f+=fact('How far a typical season lands from normal', Cl.gs_cv_pct+'%', '1991–2020; a higher number is a less dependable season');
+    if(Cl.gs_pct_status) f+=fact('Percent of normal','— '+why({status:Cl.gs_pct_status}),'',true);
+    if(Cl.gs_series){ ch.push(chart({title:'April–September rain, by season',sub:'inches, NOAA county average',kind:'bars',
+        pts:yearPts(Cl.gs_series,function(v){return v;}),y0:0,refs:[{v:Cl.gs_normal_in,label:'1991–2020 normal '+fmt(Cl.gs_normal_in,1)+' in'}],
+        fmtY:function(v){return fmt(v,0);},fmtV:function(v){return fmt(v,1)+' in';},top:2})); }
+  } else f+=fact('Growing-season rain','— '+why(ok(Cl)?{status:Cl.gs_status||'withheld'}:Cl),'',true);
+  if(ok(Cl)&&Cl.jul_high&&Cl.jul_high.recent) f+=fact('July average high, '+Cl.jul_high.recent.from+'–'+Cl.jul_high.recent.to, f1(Cl.jul_high.recent.mean_f)+' °F', Cl.jul_high.normal_f!=null?'1991–2020 normal '+f1(Cl.jul_high.normal_f)+' °F':'');
+  f+=facthead('Frost, season length and heat units');
+  if(ok(Fr)){
+    var ls=Fr.last_spring_freeze, fs=Fr.first_fall_freeze;
+    if(ls) f+=fact('Last spring freeze, median', ls.median||(ls.censored==='before'?'before Mar 1':'—'), 'half of years froze later'+(ls.late?'; '+ls.late.years+' of '+ls.n+' on or after '+ls.late.on_or_after:'')+(ls.latest?'; latest '+ls.latest.date+', '+ls.latest.year:''));
+    if(fs) f+=fact('First fall freeze, median', fs.median||(fs.censored==='after'?'after Nov 30':'—'), 'half of years froze earlier'+(fs.early?'; '+fs.early.years+' of '+fs.n+' on or before '+fs.early.on_or_before:'')+(fs.earliest?'; earliest '+fs.earliest.date+', '+fs.earliest.year:''));
+    if(Fr.frost_free_days&&Fr.frost_free_days.median!=null) f+=fact('Frost-free days, median', (Fr.frost_free_days.at_least?'at least ':'')+Fr.frost_free_days.median, Fr.from+'–'+Fr.to+(Fr.frost_free_days.open_years?'; '+Fr.frost_free_days.open_years+' years ran past the Mar 1–Nov 30 window':''));
+    else if(Fr.frost_free_days&&Fr.frost_free_days.status) f+=fact('Frost-free days','— '+why(Fr.frost_free_days),'',true);
+    if(Fr.gdd) f+=fact('Corn GDD, May 1 to Sep 30, median', fmt(Fr.gdd.median,0), (Fr.gdd.recent?'last ten years '+fmt(Fr.gdd.recent.mean,0)+'; ':'')+'86/50 method');
+    if(Fr.hot_days) f+=fact('Days 95 °F or hotter, June to August', fmt(Fr.hot_days.per_year,1)+' a year', Fr.hot_days.recent?'last ten years '+fmt(Fr.hot_days.recent.per_year,1):'');
+  } else f+=fact('Freeze dates and GDD','— '+why(Fr),'',true);
+  f+=facthead('Storm reports');
+  if(ok(St)){
+    f+=fact('Days with hail 1 inch or larger', fmt(St.hail_1in_days_per_year,1)+' a year', St.hail_1in_days+' days, '+St.from+'–'+St.to+(St.worst_hail_year?'; most in '+St.worst_hail_year.year+' ('+St.worst_hail_year.days+')':''));
+    f+=fact('Days with hail 2 inches or larger', fmt(St.hail_2in_days_per_year,2)+' a year', St.hail_2in_days+' days');
+    f+=fact('Days with wind 58 mph or more', fmt(St.wind_days_per_year,1)+' a year', St.wind_days+' days');
+    f+=fact('Tornado tracks through the county', String(St.tornadoes), St.from+'–'+St.to);
+  } else f+=fact('Storm reports','— '+why(St),'',true);
+  var awx='Rain and July highs: NOAA nClimDiv county monthly values, averaged over a 5 km grid; a season counts only when all six months are in. Normal = 1991–2020. '
+    +'Freeze dates, GDD and hot days: NOAA nClimGrid daily county averages, 1996 on; a freeze is a county-average low of 32 °F or lower, roughly the day half the county froze. Low ground and frost pockets freeze later in spring and earlier in fall than these dates; station freeze tables will read later in spring and earlier in fall. Says little in mountain counties. '
+    +'Storms: NOAA Storm Events reports filed against the county, 2010 on (the year the severe hail line became 1 inch). A report is where someone saw it: more people, more reports; a zero is no report, not no hail. <a href="/farmland-atlas/methods#m-weather">Full method</a>';
+  var wx_band=(Cl&&Cl.status===NOTYET&&Fr&&Fr.status===NOTYET&&St&&St.status===NOTYET)?'':band('fa-b-wx','Weather: rain, frost, storms',f,ch,na,awx);
+  var wxl=document.querySelector('.fa-bandnav a[href="#fa-b-wx"]'); if(wxl) wxl.hidden=!wx_band;     // no dead link before the first weather fetch
+
   // ---- WATER AND LAND
   f=''; ch=[]; na=[];
   var W=c.water, P=c.water_premium, E=c.energy, Wl=c.wells, C=c.crp, Pr=c.practices;
@@ -1640,7 +1739,14 @@ function renderPanel(fips,c){
   }
   if(ok(P)&&thin) f+=fact('Irrigated minus dry rent, '+P.latest.year, money(P.latest.premium)+'/ac');
   if(ok(Lo)&&(Lo.irrigation_failure_indemnity||0)>=10000) f+=fact('Insurance paid for irrigation failure', mUSD(Lo.irrigation_failure_indemnity), Lo.first_year+'–'+Lo.last_year);
-  if(ok(Wl)){
+  if(ok(Wl)&&Wl.kind==='state_register'){
+    f+=facthead('Irrigation wells, '+Wl.register);
+    f+=fact('Irrigation wells on record', fmt(Wl.irrigation_wells,0), Wl.rated_100gpm!=null&&Wl.rate_n?fmt(Wl.rated_100gpm,0)+' of the '+fmt(Wl.rate_n,0)+' with a recorded rate pump 100 gpm or more':'');
+    if(Wl.depth_median_ft!=null) f+=fact('Median well depth', fmt(Wl.depth_median_ft,0)+' ft', 'of '+fmt(Wl.depth_n,0)+' with a depth');
+    if(Wl.level_median_ft!=null) f+=fact(/first water/.test(Wl.level_kind||'')?'Median depth to first water when drilled':'Median water level when drilled', fmt(Wl.level_median_ft,0)+' ft below ground', 'of '+fmt(Wl.level_n,0)+'; '+(Wl.level_kind||'as recorded')+', across every decade of drilling, not today\'s level');
+    if(/Michigan|Arizona/.test(Wl.register||'')) f+=fact('Read with care', /Michigan/.test(Wl.register)?'the register counts lawn and garden irrigation wells with farm wells':'a well counts when irrigation is one of its listed uses, domestic included','the 100 gpm count is the better farm signal','',true);
+    var dk=Object.keys(Wl.by_decade||{}).sort(); if(dk.length) f+=fact('Completed by decade', dk.map(function(k){return k+' '+Wl.by_decade[k];}).join(' · '));
+  } else if(ok(Wl)){
     if(Wl.wells!=null){
       f+=facthead('Wells, Nebraska register');
       f+=fact('Irrigation wells, not decommissioned', fmt(Wl.irrigation_active,0), 'of '+fmt(Wl.wells,0)+' registered wells, all uses');
@@ -1663,6 +1769,16 @@ function renderPanel(fips,c){
     prf('Other conservation tillage',Pr.reduced);
     prf('Cover crops (CRP excluded)',Pr.cover);
   } else na.push(['Tile drainage and tillage', Pr?why(Pr):'not loaded into the Atlas yet']);
+  var Lv=c.livestock;
+  if(ok(Lv)){
+    f+=facthead('Livestock and pasture, 2022 census');
+    var lvf=function(label,x,unit){ if(!x) return; if(x.none_reported) f+=fact(label,'none reported'); else if(x.value!=null) f+=fact(label, fmt(x.value,0)+(unit||'')); else f+=fact(label,'— '+why(x),'',true); };
+    lvf('Cattle and calves',Lv.cattle,' head');
+    if(Lv.cattle_change) f+=fact('Cattle, '+Lv.cattle_change.from+' to '+Lv.cattle_change.to, sgn(Lv.cattle_change.pct,1)+'%', fmt(Lv.cattle_change.from_head,0)+' → '+fmt(Lv.cattle_change.to_head,0)+' head');
+    if(Lv.cattle_per_1000ac!=null) f+=fact('Cattle per 1,000 acres in farms', fmt(Lv.cattle_per_1000ac,1));
+    lvf('Beef cows',Lv.beef_cows,' head'); lvf('Milk cows',Lv.milk_cows,' head'); lvf('Cattle on feed',Lv.on_feed,' head');
+    lvf('Hogs and pigs',Lv.hogs,' head'); lvf('Permanent pasture and rangeland',Lv.pasture,' acres');
+  } else if(Lv&&Lv.status!==NOTYET) na.push(['Livestock', why(Lv)]);
   f+=facthead('Solar and wind');
   if(ok(E)){
     var op=E.operable||{}, pr=E.proposed||{}, ptot=(pr.solar||0)+(pr.wind||0)+(pr.storage||0);
@@ -1681,7 +1797,7 @@ function renderPanel(fips,c){
     +'Wells and rights: the Nebraska DNR and Kansas DWR registers. Energy: EIA Form 860. Tile, ditches, tillage and cover crops: 2017 and 2022 Census of Agriculture, as shares of the county\'s cropland; a share over 100% is withheld because the census counts drainage on all land in farms (<a href="/farmland-atlas/methods#m-practices">method</a>). <a href="/farmland-atlas/methods#m-water">Full method</a>';
   var water_band=band('fa-b-water','Water and land',f,ch,na,aw);
 
-  $('fa-p-cards').innerHTML=money_band+risk_band+water_band+nextDoor(fips,c);
+  $('fa-p-cards').innerHTML=money_band+risk_band+wx_band+water_band+nextDoor(fips,c);
   $('fa-p-cards').querySelectorAll('#fa-b-nb button.fa-link').forEach(function(b){ b.addEventListener('click',function(){ select(b.getAttribute('data-fips')); }); });
 }
 var NBCOLS=[
@@ -1924,7 +2040,12 @@ function boot(){
     if(L.crp&&L.crp.status==='ok') v.push('CRP'+(L.crp.history_years&&L.crp.history_years.length?' '+L.crp.history_years.join('–'):'')+', expiring from FY'+L.crp.this_fy); else v.push('CRP: not yet measured');
     if(L.drought&&L.drought.status==='ok') v.push('Drought Monitor '+L.drought.first_year+'–'+L.drought.latest_year); else v.push('Drought: not yet measured');
     if(L.energy&&L.energy.status==='ok') v.push('Solar and wind: Form 860 '+L.energy.year); else v.push('Solar and wind: not yet measured');
-    if(L.wells&&L.wells.status==='ok') v.push('Wells and rights: NE and KS registers, '+(L.wells.fetched||'').slice(0,10)); else v.push('Wells and rights: not yet measured');
+    var regs=Object.keys(get(L,'wells_states','registers')||{}).sort();
+    if(L.wells&&L.wells.status==='ok') v.push('Wells and rights: NE and KS registers'+(regs.length?', and '+regs.join(', '):'')+', '+(L.wells.fetched||'').slice(0,10)); else v.push('Wells and rights: not yet measured');
+    if(L.climate&&L.climate.status==='ok') v.push('Rain and July highs: nClimDiv to '+(L.climate.gs_latest_year||'')); else v.push('Rain: not yet measured');
+    if(L.frost&&L.frost.status==='ok') v.push('Freeze dates and GDD: nClimGrid '+(L.frost.first_year||'')+'–'+(L.frost.last_year||'')); else v.push('Freeze dates: not yet measured');
+    if(L.storms&&L.storms.status==='ok') v.push('Storm reports: '+((L.storms.years||[])[0]||'')+'–'+((L.storms.years||[]).slice(-1)[0]||'')); else v.push('Storm reports: not yet measured');
+    if(L.livestock&&L.livestock.status==='ok') v.push('Livestock: census 2017, 2022'); else v.push('Livestock: not yet measured');
     $('fa-vint').innerHTML=v.map(function(t){return '<span>'+esc(t)+'</span>';}).join('');
     for(var rf in ATLAS.counties){ var ry=get(ATLAS.counties[rf],'rent','nonirr','year'); if(ry&&(!RENT_LATEST||ry>RENT_LATEST)) RENT_LATEST=ry; }
     buildPaths(GEO,STATES);

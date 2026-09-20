@@ -567,6 +567,9 @@
 // homepage (it has its own tiers), /daily (its own pitch), or
 // /field-scout (bottom-of-screen map controls). Shows only after real
 // engagement: 25s on page or 45% scrolled, whichever comes first.
+// Sept 2026: it arrives as a small pill in the corner, not a full-width bar
+// over the page (it sat on the bottom 73px of the Farmland Atlas map). A tap
+// opens the form; the x closes it for 90 days, at either stage.
 (function () {
   var p = location.pathname.replace(/\/+$/, '') || '/';
   if (p === '/' || p === '/index.html' || p === '/daily' || p === '/field-scout') return;
@@ -588,12 +591,34 @@
     // signup or alert form (spray/urea/futures sidebars, hail #notify, etc.),
     // its form wins and the bar stays away.
     if (document.querySelector('#signup-form, #signup-card, #notify, .signup-form')) return;
+    if (!document.getElementById('agsb-pill-css')) {
+      var css = document.createElement('style');
+      css.id = 'agsb-pill-css';
+      css.textContent =
+        '.agsb.agsb--pill,.agsb.agsb--card{left:auto;right:max(12px,env(safe-area-inset-right));bottom:max(12px,env(safe-area-inset-bottom));' +
+        'border:1px solid var(--border);border-left:3px solid var(--brand);border-radius:12px;box-shadow:0 6px 24px rgba(0,0,0,.35);padding:.35rem .45rem .35rem .8rem;}' +
+        '.agsb.agsb--pill{max-width:min(300px,calc(100vw - 24px));gap:.2rem;flex-wrap:nowrap;padding:.15rem .25rem .15rem .7rem}' +
+        '.agsb--pill .agsb-form,.agsb--pill .agsb-txt{display:none}' +
+        '.agsb-open-btn{background:none;border:none;color:var(--text);font:inherit;font-size:.86rem;cursor:pointer;text-align:left;padding:.45rem .1rem;min-height:40px;line-height:1.3}' +
+        '.agsb-open-btn strong{color:var(--brand)}' +
+        '.agsb--card .agsb-open-btn{display:none}' +
+        '.agsb.agsb--card{max-width:min(440px,calc(100vw - 24px));padding:.7rem .7rem .7rem .9rem}' +
+        '.agsb--card .agsb-txt{flex:1 1 calc(100% - 52px);min-width:0;font-size:.9rem}' +
+        '.agsb--card .agsb-form{flex:1 1 100%;order:3}' +
+        '.agsb--pill .agsb-x,.agsb--card .agsb-x{min-height:40px;min-width:40px}' +
+        '.agsb--pill,.agsb--card{box-sizing:border-box}.agsb--card .agsb-form{min-width:0}.agsb--card .agsb-input{width:0}.agsb--card .agsb-btn{flex:0 0 auto;padding:.5rem .7rem}' +
+        '@media (max-width:640px){.agsb.agsb--card{left:12px;right:12px;max-width:none}.agsb--pill .agsb-open-btn{font-size:.8rem}}' +
+        '@media print{.agsb{display:none!important}}';
+      document.head.appendChild(css);
+    }
     var bar = document.createElement('div');
-    bar.className = 'agsb';
+    bar.className = 'agsb agsb--pill';
     bar.setAttribute('role', 'complementary');
     bar.setAttribute('aria-label', 'Free daily briefing signup');
-    bar.innerHTML = '<span class="agsb-txt"><span class="agsb-txt-full"><strong>AGSIST Daily</strong> — the 3-minute farm market briefing, free every weekday before the open.</span><span class="agsb-txt-short"><strong>AGSIST Daily</strong> — free weekday market briefing.</span></span>' +
-      '<form class="agsb-form"><input type="email" class="agsb-input" placeholder="your@email.com" autocomplete="email" aria-label="Email for the free daily briefing" required>' +
+    bar.id = 'agsb';
+    bar.innerHTML = '<button type="button" class="agsb-open-btn" aria-expanded="false" aria-controls="agsb-form"><strong>AGSIST Daily</strong> · free market briefing &#9656;</button>' +
+      '<span class="agsb-txt"><span class="agsb-txt-full"><strong>AGSIST Daily</strong> — the 3-minute farm market briefing, free every weekday before the open.</span><span class="agsb-txt-short"><strong>AGSIST Daily</strong> — free weekday market briefing.</span></span>' +
+      '<form class="agsb-form" id="agsb-form"><input type="email" class="agsb-input" placeholder="your@email.com" autocomplete="email" aria-label="Email for the free daily briefing" required>' +
       '<button type="submit" class="agsb-btn">Get it free</button></form>' +
       '<button type="button" class="agsb-x" aria-label="No thanks">&#10005;</button>';
     document.body.classList.add('agsb-open'); // lets pages with their own bottom bars (e.g. /breakeven mini-bar) yield while the signup is up
@@ -601,11 +626,39 @@
     requestAnimationFrame(function () { requestAnimationFrame(function () { bar.classList.add('agsb--in'); }); });
     try { if (typeof gtag === 'function') gtag('event', 'signup_bar_shown', { page: p }); } catch (e) {}
 
+    var back = null;      // where focus goes when the card closes
+    function collapse() {
+      bar.classList.remove('agsb--card');
+      bar.classList.add('agsb--pill');
+      var ob = bar.querySelector('.agsb-open-btn');
+      if (ob) { ob.setAttribute('aria-expanded', 'false'); try { ob.focus({ preventScroll: true }); } catch (e) {} }
+    }
+    function giveBack() {
+      var t = back && document.contains(back) ? back : document.getElementById('main');
+      if (t) try { t.focus({ preventScroll: true }); } catch (e) {}
+    }
+    // Esc: the card folds back to the pill; on the pill it goes away for this page (no 90-day snooze)
+    bar.addEventListener('keydown', function (e) {
+      if (e.key !== 'Escape') return;
+      if (bar.classList.contains('agsb--card')) { collapse(); return; }
+      bar.classList.remove('agsb--in'); document.body.classList.remove('agsb-open');
+      setTimeout(function () { bar.remove(); }, 400); giveBack();
+    });
+    bar.querySelector('.agsb-open-btn').addEventListener('click', function () {
+      back = document.activeElement !== this ? document.activeElement : back;
+      bar.classList.remove('agsb--pill');
+      bar.classList.add('agsb--card');
+      this.setAttribute('aria-expanded', 'true');
+      var inp = bar.querySelector('.agsb-input');
+      if (inp) try { inp.focus({ preventScroll: true }); } catch (e) {}
+      try { if (typeof gtag === 'function') gtag('event', 'signup_bar_open', { page: p }); } catch (e) {}
+    });
     bar.querySelector('.agsb-x').addEventListener('click', function () {
       try { localStorage.setItem('agsist_bar_snooze', String(Date.now() + 90 * 864e5)); } catch (e) {}
       bar.classList.remove('agsb--in');
       document.body.classList.remove('agsb-open');
       setTimeout(function () { bar.remove(); }, 400);
+      giveBack();
     });
     bar.querySelector('.agsb-form').addEventListener('submit', function (e) {
       e.preventDefault();

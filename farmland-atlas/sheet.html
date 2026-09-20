@@ -58,6 +58,8 @@ td .yr{color:#50595c;font-size:7pt;font-weight:400}
 .ft b{color:var(--dim)}
 .warn{margin:7px 0 0;padding:4px 7px;border:1px solid #b9862b;background:#fbf3df;border-radius:4px;font-size:7.6pt}
 .tight .opt{display:none}
+.tighter .opt2{display:none}
+.tightest .opt3{display:none}
 .empty{padding:40px 10px;text-align:center;color:var(--dim);font-size:11pt}
 @media screen and (max-width:860px){
   .paper{width:auto;min-height:0;margin:0;padding:16px;box-shadow:none;font-size:10.5pt}
@@ -151,6 +153,9 @@ function pulled(){ var Ly=A.layers||{}, ds=[], parts=[];
   if(d(Ly.sob)&&Ly.sob.latest_year) parts.push('RMA through crop year '+(Ly.sob.latest_year-1));
   if(d(Ly.crp)&&Ly.crp.history_years) parts.push('FSA CRP FY'+Ly.crp.history_years[1]);
   if(d(Ly.drought)) parts.push('Drought Monitor');
+  if(d(Ly.climate)) parts.push('nClimDiv rain to '+(Ly.climate.gs_latest_year||''));
+  if(d(Ly.frost)) parts.push('nClimGrid '+(Ly.frost.first_year||'')+'–'+(Ly.frost.last_year||''));
+  if(d(Ly.storms)) parts.push('Storm Events');
   if(!ds.length) return ''; ds.sort();
   return '<b>Pulled:</b> '+esc(parts.join(' · '))+'; files retrieved '+esc(ds[0]===ds[ds.length-1]?ds[0]:ds[0]+' to '+ds[ds.length-1])+'. ';
 }
@@ -171,6 +176,8 @@ function key(label,val,unit,sub,s,fm){
   return '<div class="k"><div class="t">'+esc(label)+'</div><div class="v'+(val&&String(val).length>8?' sm':'')+'">'+(val==null?'<small>—</small>':esc(val)+(unit?'<small>'+esc(unit)+'</small>':''))+'</div><div class="s">'+esc(sub||'')+(cmp?'<br>'+cmp:(typeof nn!=='undefined'?'<br>'+nn:''))+'</div></div>';
 }
 function fopt(l,r,small){ return fct(l,r,small).replace('class="f','class="opt f'); }
+function fopt3(l,r,small){ return fct(l,r,small).replace('class="f','class="opt3 f'); }   // the last to go
+function fopt2(l,r,small){ return fct(l,r,small).replace('class="f','class="opt2 f'); }   // kept in tight mode, dropped only when a county still runs over
 function fct(l,r,small){ var long=String(r).length+String(small||'').length>34||String(l).length>44; return '<div class="f'+(long?' st':'')+'"><span class="l">'+esc(l)+'</span><span class="r">'+esc(r)+(small?' <small>'+esc(small)+'</small>':'')+'</span></div>'; }
 function fw(l,r){ r=String(r).replace(/\s*\(D\)/g,' to protect individual farms'); return '<div class="f w'+(String(r).length>30?' st':'')+'"><span class="l">'+esc(l)+'</span><span class="r">— '+esc(r)+'</span></div>'; }
 
@@ -282,7 +289,7 @@ function render(){
     Y_+=fct('Median, '+Y.first_year+'–'+Y.last_year, f1(Y.median)+' bu/ac', Y.n+' published years'+(irrHigh?', irrigated and dryland combined':''));
     if(ry5) Y_+=fct('Recent level, '+ry5.from+'–'+ry5.to, f1(ry5.avg)+' bu/ac', ry5.n+' published years, high and low dropped');
     if(Y.worst) Y_+=fopt('Lowest published year', Y.worst.year+': '+f1(Y.worst.value)+' bu/ac', pct(Y.worst.share_of_median,0)+' of median');
-    if(Y.slope!=null) Y_+=fct('Trend, '+String(Y.window||(Y.first_year+'–'+Y.last_year)).replace('-','–'), sgn(Y.slope,1)+' bu/ac a year');
+    if(Y.slope!=null) Y_+=fopt2('Trend, '+String(Y.window||(Y.first_year+'–'+Y.last_year)).replace('-','–'), sgn(Y.slope,1)+' bu/ac a year');
   } else Y_+=fw('County corn yield', why(Y));
   var Rt=Y_+'<h2>Crop insurance record</h2>';
   if(ok(S)){
@@ -297,17 +304,25 @@ function render(){
     Rt+=fct('Largest causes, '+Lo.first_year+'–'+Lo.last_year, top.map(function(k){ return (CAUSE[k]||k)+' '+pct(Lo.share_all[k],0); }).join(' · '));
     var per=Lo.periods||{}, hp=Object.keys(per).filter(function(k){return per[k].heat_drought_share!=null;});
   }
-  Rt+='<h2>Drought and heat</h2>';
+  Rt+='<h2>Weather</h2>';
   if(ok(Dr)){
     var wk=Dr.weeks||{};
     Rt+=fct('Weeks with half the county or more in D2 (severe) drought or worse, '+Dr.first_year+'–'+Dr.last_full_year, fmt(wk.d2,0)+' of '+fmt(wk.counted,0), fmt(wk.share_d2_pct,0)+'% of weeks');
-    if(wk.d2&&Dr.worst_year) Rt+=fct('Year with the most D2+ weeks', Dr.worst_year.year+'', Dr.worst_year.d2+' weeks');
+    if(wk.d2&&Dr.worst_year) Rt+=fopt2('Year with the most D2+ weeks', Dr.worst_year.year+'', Dr.worst_year.d2+' weeks');
     if(Dr.last5) Rt+=fopt('Last five years, '+Dr.last5.from+'–'+Dr.last5.to, fmt(Dr.last5.d2,0)+' weeks');
   } else Rt+=fw('Drought', why(Dr));
   if(ok(d.heat)&&jr){
     Rt+=fct('July average of daily lows, '+jr.from+'–'+jr.to, f1(jr.mean)+' °F', jul.normal_1991_2020&&jul.normal_1991_2020.mean!=null?'1991–2020 normal '+f1(jul.normal_1991_2020.mean)+' °F':'');
     if(jul.trend&&jul.trend.per_decade!=null) Rt+=fopt('Trend since '+jul.trend.from, sgn(jul.trend.per_decade,2)+' °F a decade', jul.trend.direction||'');
   }
+  var Cl=d.climate, Fr=d.frost, Sm=d.storms, Lv=d.livestock;
+  // one line for rain and the season: the sheet has one page, and a second line pushed long counties onto two
+  var ffd=ok(Fr)&&Fr.frost_free_days&&Fr.frost_free_days.median!=null?Fr.frost_free_days.median:null, ls=ok(Fr)?Fr.last_spring_freeze||{}:{}, fs=ok(Fr)?Fr.first_fall_freeze||{}:{};
+  if(ok(Cl)&&Cl.gs_normal_in!=null) Rt+=fct('Rain Apr–Sep, and season', f1(Cl.gs_normal_in)+' in',
+      (Cl.gs_recent&&Cl.gs_recent.pct_of_normal!=null?'normal; last 10: '+Cl.gs_recent.pct_of_normal+'%':'1991–2020 normal')+(ffd!=null?' · '+(Fr.frost_free_days.at_least?'at least ':'')+ffd+' frost-free days':''));
+  else if(ffd!=null) Rt+=fct('Frost-free days, median', (Fr.frost_free_days.at_least?'at least ':'')+ffd, (ls.median||'—')+' to '+(fs.median||'—'));
+  if(ok(Fr)&&Fr.gdd) Rt+=fopt('Corn GDD, May–Sep, median', fmt(Fr.gdd.median,0), '86/50 method');
+  if(ok(Sm)) Rt+=fopt('Days with hail 1 inch or larger', f1(Sm.hail_1in_days_per_year)+' a year', 'reports, '+Sm.from+'–'+Sm.to);
   Rt+='<h2>Land and water</h2>';
   if(ok(W)){
     var sh=W.irrigated_share_2022||{}, gw=W.groundwater_share_2015||{}, tiny=get(W,'applied_2015','status')&&/under 1,000/.test(W.applied_2015.status);
@@ -322,29 +337,34 @@ function render(){
   }
   if(Pr&&Pr.status&&!ok(Pr)) Rt+=fw('Tile drainage and tillage', why(Pr));
   if(C&&C.status&&!ok(C)) Rt+=fw('CRP', why(C));
+  if(ok(Lv)&&Lv.cattle&&Lv.cattle.value!=null) Rt+=(Lv.cattle.value>=10000?fopt3:fopt)('Cattle and calves, 2022', fmt(Lv.cattle.value,0), Lv.cattle_change?sgn(Lv.cattle_change.pct,1)+'% since 2017':'');
   if(ok(C)){
     if(C.latest&&C.latest.acres!=null) Rt+=fct('CRP enrolled, '+C.latest.year, fmt(C.latest.acres,0)+' ac', C.share_of_cropland&&C.share_of_cropland.pct!=null?fmt(C.share_of_cropland.pct,1)+'% of harvested cropland + CRP':'');
     if(C.expiring_next3) Rt+=fct('CRP expiring FY'+C.expiring_next3.from+'–'+C.expiring_next3.to, fmt(C.expiring_next3.acres,0)+' ac');
     if(C.rate&&C.rate.usd_per_acre!=null) Rt+=fct('CRP average rental payment, FY'+C.rate.year, money(C.rate.usd_per_acre)+'/ac', 'all contracts in force, old ones included; not today\'s offer');
   }
   if(ok(Wl)){
-    if(Wl.wells!=null){ Rt+=fct('Irrigation wells in use (NE register)', fmt(Wl.irrigation_active,0)); if(Wl.depth_median_ft!=null) Rt+=fct('Median well depth', fmt(Wl.depth_median_ft,0)+' ft'); }
-    else { Rt+=fct('Active irrigation water rights (KS)', fmt(Wl.irrigation_active,0)); if(Wl.priority_year_median!=null) Rt+=fct('Median priority year', String(Wl.priority_year_median)); }
+    if(Wl.kind==='state_register'){ Rt+=fct('Irrigation wells on record', fmt(Wl.irrigation_wells,0), Wl.register); if(Wl.depth_median_ft!=null) Rt+=fopt2('Median well depth', fmt(Wl.depth_median_ft,0)+' ft'); }
+    else if(Wl.wells!=null){ Rt+=fct('Irrigation wells in use (NE register)', fmt(Wl.irrigation_active,0)); if(Wl.depth_median_ft!=null) Rt+=fopt2('Median well depth', fmt(Wl.depth_median_ft,0)+' ft'); }
+    else { Rt+=fct('Active irrigation water rights (KS)', fmt(Wl.irrigation_active,0)); if(Wl.priority_year_median!=null) Rt+=fopt2('Median priority year', String(Wl.priority_year_median)); }
   }
   var own=tenShare(F,'2022'), o02=tenShare(F,'2002');
 
   h+='<div class="cols"><div>'+L+'</div><div class="rc">'+Rt+'<div class="notes"><div class="t">Notes</div></div></div></div>';
   h+='<footer class="ft"><b>Sources:</b> USDA NASS Cash Rents Survey and county yields; Census of Agriculture 2012, 2017, 2022; USDA RMA Summary of Business and Cause of Loss, 1989 on (the open crop year left out); U.S. Drought Monitor; NOAA nClimDiv; USGS water use 2015; EIA Form 860'
-    +(ok(Wl)?'; Nebraska DNR and Kansas DWR registers':'')+(ok(C)?'; USDA FSA CRP statistics':'')+'. '+(TEN?'Ranks count counties with 10,000 acres or more in farms, in the same survey year for rent; a state median is the median of its county figures. ':'No ranks: the census tenure file did not load. ')
+    +(ok(Wl)?'; '+(Wl.register||'Nebraska DNR and Kansas DWR registers'):'')+(ok(C)?'; USDA FSA CRP statistics':'')
+    +(ok(d.frost)?'; NOAA nClimGrid daily county averages':'')+(ok(d.storms)?'; NOAA Storm Events':'')+'. '+(TEN?'Ranks count counties with 10,000 acres or more in farms, in the same survey year for rent; a state median is the median of its county figures. ':'No ranks: the census tenure file did not load. ')
     +pulled()
     +'<b>Method:</b> agsist.com/farmland-atlas/methods · <b>Live county record:</b> '+esc(url.replace('https://',''))+' · Printed '+esc(new Date().toISOString().slice(0,10))+'.</footer>';
   $('paper').innerHTML=h;
   // one printed page: measure at the printed width (letter less .4in margins) and shrink only if it overflows
   var pp=$('paper'), keep=pp.getAttribute('style')||'';
   pp.setAttribute('style','width:7.47in;padding:0;margin:0;min-height:0;box-shadow:none;position:absolute;left:-9999px;top:0');
-  pp.classList.remove('tight');
+  pp.classList.remove('tight'); pp.classList.remove('tighter'); pp.classList.remove('tightest');
   var need=pp.scrollHeight, room=10.1*96;   // 10.2in printable, less a margin for zoom rounding (a 0.909 fit printed 1px over)
-  if(need>room/0.9){ pp.classList.add('tight'); need=pp.scrollHeight; }   // a long county drops four lesser lines before it shrinks past 90%
+  if(need>room/0.9){ pp.classList.add('tight'); need=pp.scrollHeight; }
+  if(need>room/0.9){ pp.classList.add('tighter'); need=pp.scrollHeight; }
+  if(need>room/0.9){ pp.classList.add('tightest'); need=pp.scrollHeight; }   // a long county drops four lesser lines before it shrinks past 90%
   pp.setAttribute('style',keep);
   document.documentElement.style.setProperty('--fit', need>room?String(Math.max(0.9,Math.floor(room/need*1000)/1000)):'1');
   $('print').disabled=false;

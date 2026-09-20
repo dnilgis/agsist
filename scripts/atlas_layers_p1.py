@@ -457,7 +457,12 @@ def summarize_p1(rec):
     w = rec.get("wells") or {}
     out["wells"] = {"status": w.get("status")}
     if w.get("status") == "ok":
-        out["wells"].update({k: w.get(k) for k in ("depth_median_ft", "static_median_ft", "priority_year_median") if k in w})
+        out["wells"].update({k: w.get(k) for k in ("depth_median_ft", "static_median_ft", "priority_year_median",
+                                                    "irrigation_wells", "level_median_ft", "irrigation_active") if k in w})
+        if w.get("kind") == "state_register":
+            out["wells"]["reg"] = 1
+            if w.get("level_kind") and "first water" in w["level_kind"]:
+                out["wells"]["first_water"] = 1
     return out
 
 
@@ -601,7 +606,7 @@ def selftest():
     assert set(sm["drought"]) == {"status", "weeks", "last5", "years_half_or_more"}, sm["drought"]
     assert set(sm["drought"]["weeks"]) == {"share_d2_pct"} and set(sm["drought"]["last5"]) == {"d2"}
     assert set(sm["energy"]) == {"status", "solar", "wind", "proposed"}, sm["energy"]
-    assert set(sm["wells"]) <= {"status", "depth_median_ft", "static_median_ft", "priority_year_median"}, sm["wells"]
+    assert set(sm["wells"]) <= {"status", "depth_median_ft", "static_median_ft", "priority_year_median", "irrigation_active", "irrigation_wells", "level_median_ft", "reg", "first_water"}, sm["wells"]
     parts = seed_p1(N, lambda x: f"${x:,.0f}", None)
     assert any("loss ratio of" in p for p in parts) and any("Nebraska: 100 registered wells" in p for p in parts), parts
     print("selftest ok")
