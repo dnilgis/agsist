@@ -43,20 +43,25 @@ def check(ok, name, detail=""):
 def main():
     print("the proof code tracks the words a reader sees")
     base = {"advertiser": "A Co", "headline": "Head", "body": "Body",
-            "cta_text": "Go", "cta_url": "https://a.example/", "disclosure": "Disc"}
+            "facts": ["40+ carriers", "13 offices"], "cta_text": "Go",
+            "cta_url": "https://a.example/", "phone": "715-555-0100",
+            "logo": "/img/sponsors/a.webp", "disclosure": "Disc"}
     c0 = bsr.proof_code(base)
     check(bool(c0) and len(c0) == 8, "it is eight hex characters", c0)
     # PIN THE LIST, DO NOT LOOP OVER IT. Looping over CREATIVE_FIELDS means
     # deleting a field also deletes its own check: dropping "body" left this
     # green while the body text stopped being covered by the approval.
-    EXPECTED = {"advertiser", "headline", "body", "cta_text", "cta_url", "disclosure"}
+    # 2026-09-20: facts, phone and logo added. Each reaches a reader (the facts
+    # row, the "or call" link, the logo tile) so each is part of what is approved.
+    EXPECTED = {"advertiser", "headline", "body", "facts", "cta_text", "cta_url",
+                "phone", "logo", "disclosure"}
     check(set(bsr.CREATIVE_FIELDS) == EXPECTED,
           "the code is over exactly the fields a reader sees",
           "missing %s / extra %s" % (sorted(EXPECTED - set(bsr.CREATIVE_FIELDS)),
                                      sorted(set(bsr.CREATIVE_FIELDS) - EXPECTED)))
     for f in sorted(EXPECTED):
         alt = dict(base)
-        alt[f] = str(alt[f]) + "."
+        alt[f] = (list(alt[f]) + ["x"]) if isinstance(alt[f], list) else str(alt[f]) + "."
         check(bsr.proof_code(alt) != c0,
               "a change to %s moves the code" % f,
               "%s unchanged at %s" % (f, c0))
@@ -65,6 +70,9 @@ def main():
     for noise in ("active", "label", "is_house_ad", "tier", "slug"):
         check(bsr.proof_code(dict(base, **{noise: "x"})) == c0,
               "%s does not move the code" % noise)
+    # A list is not flattened into something another list can collide with.
+    check(bsr.proof_code(dict(base, facts=["a b", "c"])) != bsr.proof_code(dict(base, facts=["a", "b c"])),
+          "two different fact lists with the same words do not share a code")
     check(bsr.proof_code({}) is None and bsr.proof_code(None) is None,
           "no creative yields no code, rather than a code for nothing")
 
@@ -120,8 +128,10 @@ def main():
     html = PAGE.read_text()
     for key in ("creative", "proof_code", "rateCard", "approveTo", "links", "tier"):
         check(key in html, "sponsor-report.html reads d.%s" % key)
-    check("mailto:" in html and "sr-approve" in html,
+    check("mailto:" in html and "Approve this ad" in html,
           "the approve action is a mailto the sponsor can actually send")
+    check("d.approval" in html and "ap.proof === code" in html,
+          "APPROVED is shown only when the approval on record is for THIS proof code")
     check("price_week" in html, "the tier block prints the rate-card price")
     check(re.search(r"\$\s*\d+\s*/\s*week", html) is None,
           "no price is typed into the page",
@@ -139,19 +149,42 @@ def main():
     src = json.loads((ROOT / "data" / "sponsor.json").read_text())
     pv = bsr.previews(src)
 
-    for surface in ("homepage", "archive"):
-        check("dv3-sponsor" in (pv.get(surface) or ""),
-              "the %s preview is the site's own block" % surface,
-              "a lookalike drifts from what ships and the proof code cannot see it")
-    check(bool(pv.get("homepage")) and pv.get("homepage") != pv.get("archive"),
-          "homepage and archive previews are tagged apart",
-          "a sponsor must be able to tell one placement from the other")
+    # 2026-09-20: the pages are drawn by components/sponsor-ad.js. The portal
+    # loads that same file and calls it for the homepage and /daily tabs; the
+    # archive tab is the Python renderer's output, which sponsor-checks.mjs
+    # holds byte-identical to the JS. So: no lookalike anywhere.
+    check("/components/sponsor-ad.js" in html and "AgsistAd.render" in html,
+          "the portal draws the page previews with the live renderer",
+          "a lookalike drifts from what ships and the proof code cannot see it")
+    check("/components/sponsor-ad.css" in html,
+          "and with the live stylesheet")
+    check('class="sa-ad"' in (pv.get("archive") or ""),
+          "the archive preview is the site's own block",
+          "a lookalike drifts from what ships and the proof code cannot see it")
+    blk2 = bsr.creative_block(src.get("slug") or "apex") or {}
+    urls = blk2.get("cta_urls") or {}
+    check(len(set(urls.values())) == len(urls) >= 3,
+          "homepage, /daily and archive are tagged apart",
+          urls)
+    check("utm_medium=archive" in (pv.get("archive") or ""),
+          "the archive preview's button carries the archive tag")
     check("<table" in (pv.get("email_html") or ""),
           "the html email preview is brief_email's own table",
           "most readers see the html email, not the text part")
-    css = pv.get("css") or ""
-    check(".dv3-sponsor{" in css and "{{" not in css,
-          "the real css travels with it, braces un-doubled")
+
+    print("\nthe ad that runs is the ad that was approved")
+    conf = json.loads((ROOT / "data" / "sponsors.json").read_text())
+    for sp_ in conf.get("sponsors", []):
+        if sp_.get("slug") != src.get("slug"):
+            continue
+        if src.get("active"):
+            ap = (sp_.get("approved") or {}).get("proof")
+            check(ap == bsr.proof_code(src),
+                  "a live ad carries an approval for its current proof code",
+                  "approved %r, current %r -- the words running are not the words approved"
+                  % (ap, bsr.proof_code(src)))
+        else:
+            check(True, "the ad is not live, so no approval is needed yet")
     check("sr-ad-head" not in html and "sr-ad-cta" not in html,
           "the portal keeps no lookalike of its own")
 

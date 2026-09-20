@@ -10,7 +10,22 @@
    "active": true,
    "start": null,
    "pages": null,
-   "token": "c1c1e09865171cd1"
+   "token": "c1c1e09865171cd1",
+   "approved": null,
+   "billing": {
+    "tier": "founding",
+    "trial_weeks": 2,
+    "rate_lock_months": 12,
+    "invoice_contact": "Sig Lindquist · sig@farmers1st.com · 715-797-2428"
+   },
+   "placements": [
+    "homepage",
+    "daily_page",
+    "archive",
+    "daily_email"
+   ]
   }
- ]
+ ],
+ "approvedNote": "'approved' is filled in by hand when the sponsor's approval email arrives: {\"proof\": the code quoted in that email, \"on\": the date, \"by\": who sent it}. The portal shows APPROVED only while that code equals the current proof code, so an edit to the copy after approval shows up on the sponsor's own page as 'changed since you approved it'. scripts/sponsor-checks.mjs refuses a live ad whose current proof code was never approved.",
+ "billingNote": "'billing' is the deal as agreed, typed here, never inferred. The price comes from data/rate-card.json by tier, so the portal cannot quote a rate the sales page does not. The schedule on the portal (free weeks, first billed week, rate-lock end) is computed from these numbers and 'start'."
 }

@@ -123,6 +123,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preload" href="/components/styles.css?v=16" as="style">
   <link rel="stylesheet" href="/components/styles.css?v=16">
+  <link rel="stylesheet" href="/components/sponsor-ad.css?v=1">
+  <script src="/components/sponsor-ad.js?v=1"></script>
   <script src="/components/util.js?v=16"></script>
   <link rel="icon" type="image/x-icon"            href="/img/favicon.ico">
   <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
@@ -376,19 +378,48 @@
       <h2 class="sp-h2"><span class="sp-h2-num">1</span> The Spot</h2>
       <p>One sponsor card. Above the fold of every Daily Briefing &mdash; <strong>and above the fold on the AGSIST homepage</strong>, where the same briefing leads the page all day. Your logo, a headline, your message, and your URL. No rotation, no programmatic auction, no competing ads on the page. <strong>The first thing a reader sees after the date and the headline</strong> &mdash; and before they read today&rsquo;s market view.</p>
 
+      <!-- NOT A MOCKUP. This draws the real ad with components/sponsor-ad.js, the
+           same renderer the homepage, /daily, the archive pages and a sponsor's own
+           portal use. The hand-drawn .sp-mockup that stood here was a lookalike: it
+           could drift from the slot it was selling and nothing would say so. When a
+           sponsor is running, this shows theirs; otherwise it shows the shape. -->
       <div class="sp-mockup-card">
-        <div class="sp-mockup-lbl"><svg class="ic" aria-hidden="true"><use href="#i-smartphone"/></svg> What it looks like &middot; live preview</div>
-        <div class="sp-mockup" aria-label="Mockup of a sponsor placement in the AGSIST Daily Briefing">
-          <div class="sp-mockup-tags">
-            <span class="sp-mockup-tag sp-mockup-tag-sponsor">Today&rsquo;s Sponsor</span>
-            <span class="sp-mockup-tag sp-mockup-tag-brand">Your Brand</span>
-          </div>
-          <div class="sp-mockup-headline">Your headline. 90 characters to make farmers stop scrolling.</div>
-          <div class="sp-mockup-body">A short paragraph &mdash; up to about 50 words &mdash; describing what you do for working US producers. Plus a strong call to action below.</div>
-          <a class="sp-mockup-cta" href="#" onclick="event.preventDefault()">Your call to action &rarr;</a>
-        </div>
+        <div class="sp-mockup-lbl"><svg class="ic" aria-hidden="true"><use href="#i-smartphone"/></svg> <span id="sp-live-lbl">What it looks like &middot; the real slot, drawn by the page that runs it</span></div>
+        <div id="sp-live-ad" aria-label="A sponsor placement in the AGSIST Daily Briefing"></div>
         <div class="sp-mockup-caption">Above the fold on every briefing <em>and</em> the homepage. Mobile + desktop. Web + email.</div>
       </div>
+      <script>
+      /* The slot, drawn by the renderer that publishes it. If a sponsor is live
+         today, their ad is what a buyer sees here -- the honest demo. The links
+         are inert (no cta_urls, no measurement slot), so nothing on this page
+         counts as an impression or a click for whoever is running. */
+      (function () {
+        var box = document.getElementById('sp-live-ad'), lbl = document.getElementById('sp-live-lbl');
+        var PLACEHOLDER = {
+          label: 'SPONSORED', advertiser: 'Your company',
+          headline: 'Your headline \u2014 the line that makes a farmer stop.',
+          body: 'Two or three sentences about what you do for working producers, written the way you would say it on the phone rather than the way a brochure says it.',
+          facts: ['3 or 4 short facts', 'Numbers read best', 'Yours, checkable'],
+          cta_text: 'Your call to action', cta_url: '#', phone: '', logo: '',
+          disclosure: 'Paid sponsorship. Your company, your address. The disclosure runs on every placement.'
+        };
+        function draw(sp, live) {
+          if (!window.AgsistAd || !box) return;
+          box.innerHTML = window.AgsistAd.render(sp, 'homepage');
+          [].forEach.call(box.querySelectorAll('a'), function (a) {
+            a.setAttribute('href', '#'); a.removeAttribute('target');
+            a.addEventListener('click', function (e) { e.preventDefault(); });
+          });
+          if (live && lbl) lbl.innerHTML = 'This week\u2019s sponsor, in the real slot &middot; drawn by the page that runs it';
+        }
+        draw(PLACEHOLDER, false);
+        fetch('/data/daily.json', { cache: 'no-cache' }).then(function (r) { return r.ok ? r.json() : null; })
+          .then(function (d) {
+            var sp = d && d.sponsor;
+            if (sp && !sp.is_house_ad && sp.headline) draw(sp, true);
+          }).catch(function () {});
+      })();
+      </script>
 
       <!-- ───────────── BY THE NUMBERS ───────────── -->
       <h2 class="sp-h2" id="why-this-audience"><span class="sp-h2-num">2</span> By the Numbers</h2>

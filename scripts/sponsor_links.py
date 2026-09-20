@@ -42,6 +42,7 @@ SOURCE = "agsist"
 # has run under them -- renaming one silently splits a sponsor's history in two.
 SURFACES = {
     "homepage": "homepage",
+    "daily_page": "daily_page",  # the live /daily page -- its own placement, added 2026-09-20
     "archive": "archive",
     "daily_email": "daily_email",
     "rss": "rss",

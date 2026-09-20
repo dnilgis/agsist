@@ -1,0 +1,128 @@
+/* THE SPONSOR AD. ONE STYLESHEET FOR EVERY PAGE THAT DRAWS IT.
+ *
+ * Before this file the paid ad had four hand-kept copies of its CSS: the
+ * homepage (.dsp-*), the live /daily page (.dv3-sponsor), the archive pages
+ * (the same rules inside a Python f-string, in gold rather than ad-orange), and
+ * the sponsor's own portal, which injected the archive copy. They had drifted:
+ * two different accent colours, two different layouts, and a homepage that read
+ * fields (name/tagline) the sponsor file does not have, so a live sponsor would
+ * have been drawn as the house billboard.
+ *
+ * Now: this file is the look, components/sponsor-ad.js is the markup, and
+ * scripts/generate_daily.py renders the same markup for the archive pages.
+ * scripts/sponsor-checks.mjs holds the two renderers byte-identical.
+ *
+ * Colour: the ad accent is the site's ad orange, #e8743a. Its ink is #0d1117,
+ * 4.66:1 on the orange (bold, >= 14px). The advertiser's own colours arrive
+ * through their logo, which sits on a white tile so it reads in both themes.
+ */
+.sa-ad{
+  --sa-acc:var(--ad-orange,#e8743a);
+  --sa-acc-rgb:var(--ad-orange-rgb,232,116,58);
+  --sa-acc-hi:var(--ad-orange-hi,#f2935f);
+  --sa-ink:#0d1117;
+  --sa-bg:var(--surface,#141918);
+  --sa-line:var(--border,#2a3230);
+  --sa-text:var(--text,#e8ece9);
+  --sa-dim:var(--text-dim,#a9b3ae);
+  --sa-mute:var(--text-muted,#7d8782);
+  position:relative;overflow:hidden;
+  margin:1.25rem 0 1.5rem;padding:1.25rem 1.35rem 1.1rem 1.55rem;
+  background:
+    radial-gradient(120% 140% at 100% 0%,rgba(var(--sa-acc-rgb),.13) 0%,rgba(var(--sa-acc-rgb),0) 55%),
+    var(--sa-bg);
+  border:1px solid rgba(var(--sa-acc-rgb),.38);
+  border-radius:14px;
+  color:var(--sa-text);
+  font-family:var(--font-body,'Inter',system-ui,sans-serif);
+  box-shadow:0 1px 0 rgba(255,255,255,.03) inset,0 10px 28px -14px rgba(0,0,0,.55);
+  text-align:left;
+}
+.sa-ad::before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;
+  background:linear-gradient(180deg,var(--sa-acc) 0%,var(--sa-acc-hi) 100%)}
+.sa-ad *{box-sizing:border-box}
+.sa-top{display:flex;align-items:center;gap:.55rem;flex-wrap:wrap;margin:0 0 .85rem}
+.sa-label{font-family:var(--font-mono,'JetBrains Mono',monospace);font-size:.66rem;font-weight:700;
+  letter-spacing:.16em;text-transform:uppercase;color:var(--sa-acc);
+  padding:.2rem .5rem;border:1px solid rgba(var(--sa-acc-rgb),.5);border-radius:4px;
+  background:rgba(var(--sa-acc-rgb),.08);line-height:1.3}
+.sa-by{font-family:var(--font-mono,'JetBrains Mono',monospace);font-size:.72rem;font-weight:600;
+  letter-spacing:.03em;color:var(--sa-mute)}
+.sa-main{display:flex;gap:1.1rem;align-items:flex-start}
+.sa-logo{flex:0 0 auto;display:flex;align-items:center;justify-content:center;
+  width:132px;min-height:76px;padding:.55rem .7rem;background:#fff;border-radius:10px;
+  box-shadow:0 0 0 1px rgba(0,0,0,.06),0 6px 16px -8px rgba(0,0,0,.5)}
+.sa-logo img{display:block;max-width:100%;max-height:58px;width:auto;height:auto}
+.sa-wordmark{display:none;font-family:var(--font-display,'Inter',system-ui,sans-serif);font-weight:800;
+  font-size:.95rem;line-height:1.1;color:#10233f;text-align:center;letter-spacing:-.01em}
+.sa-logo--text img{display:none}
+.sa-logo--text .sa-wordmark{display:block}
+.sa-copy{flex:1 1 auto;min-width:0}
+.sa-headline{font-family:var(--font-display,'Inter',system-ui,sans-serif);font-weight:800;
+  font-size:clamp(1.28rem,2.3vw,1.72rem);line-height:1.14;letter-spacing:-.018em;
+  color:var(--sa-text);margin:0 0 .5rem;text-wrap:balance}
+.sa-body{font-size:.94rem;line-height:1.62;color:var(--sa-dim);margin:0;max-width:62ch}
+.sa-facts{list-style:none;display:flex;flex-wrap:wrap;gap:.45rem;margin:1rem 0 0;padding:0}
+.sa-facts li{display:block;padding:.34rem .62rem;
+  border:1px solid var(--sa-line);border-radius:999px;background:rgba(var(--sa-acc-rgb),.05);
+  font-size:.78rem;line-height:1.2;color:var(--sa-dim);white-space:nowrap}
+.sa-facts b{white-space:nowrap;margin-right:.1rem;font-family:var(--font-mono,'JetBrains Mono',monospace);font-weight:800;
+  font-size:.86rem;color:var(--sa-text);font-variant-numeric:tabular-nums}
+.sa-actions{display:flex;align-items:center;gap:.5rem 1rem;flex-wrap:wrap;margin:1.05rem 0 0}
+.sa-cta{display:inline-flex;align-items:center;gap:.45rem;min-height:44px;padding:.62rem 1.15rem;
+  border-radius:9px;background:var(--sa-acc);color:var(--sa-ink);text-decoration:none;
+  font-family:var(--font-mono,'JetBrains Mono',monospace);font-size:.8rem;font-weight:800;
+  letter-spacing:.05em;text-transform:uppercase;
+  box-shadow:0 8px 18px -10px rgba(var(--sa-acc-rgb),.9);transition:background .15s,transform .12s}
+.sa-cta:hover,.sa-cta:focus-visible{background:var(--sa-acc-hi);transform:translateY(-1px);color:var(--sa-ink)}
+.sa-cta:focus-visible,.sa-phone:focus-visible{outline:2px solid var(--sa-text);outline-offset:3px}
+.sa-cta-arrow{font-size:1rem;line-height:1;transition:transform .15s}
+.sa-cta:hover .sa-cta-arrow{transform:translateX(3px)}
+.sa-phone{display:inline-flex;align-items:center;gap:.4rem;min-height:44px;
+  font-family:var(--font-mono,'JetBrains Mono',monospace);font-size:.86rem;font-weight:700;
+  color:var(--sa-text);text-decoration:none;line-height:1.2}
+.sa-phone:hover{color:var(--sa-acc)}
+.sa-phone-k{font-weight:500;color:var(--sa-mute)}
+.sa-disc{margin:.95rem 0 0;padding-top:.7rem;border-top:1px solid var(--sa-line);
+  font-size:.72rem;line-height:1.55;color:var(--sa-mute)}
+/* The house ad: our own pitch for the slot. Dashed, so nobody mistakes it for a
+   company that paid. No logo tile, no facts row. */
+.sa-ad--house{border-style:dashed;background:var(--sa-bg);box-shadow:none}
+.sa-ad--house::before{opacity:.45}
+@media (max-width:560px){
+  .sa-ad{padding:1rem .95rem .95rem 1.15rem;border-radius:12px;margin:1rem 0 1.25rem}
+  .sa-top{margin-bottom:.7rem}
+  .sa-main{flex-direction:column;gap:.8rem}
+  .sa-logo{width:auto;min-height:0;padding:.4rem .7rem;align-self:flex-start;max-width:100%}
+  .sa-logo img{max-height:34px}
+  .sa-headline{font-size:1.3rem}
+  .sa-body{font-size:.9rem;line-height:1.55}
+  .sa-facts{display:grid;grid-template-columns:1fr 1fr;gap:.4rem;margin-top:.85rem}
+  .sa-facts li{font-size:.74rem;white-space:normal;border-radius:10px;padding:.4rem .55rem}
+  .sa-ad:has(.sa-logo) .sa-by{display:none}
+  .sa-actions{flex-direction:column;align-items:stretch;gap:.1rem;margin-top:.9rem}
+  .sa-cta{justify-content:center}
+  .sa-phone{justify-content:center}
+}
+/* The same narrow layout, by container width, for a preview frame drawn at
+   phone width inside a wide page (the sponsor's portal). */
+@container sa-frame (max-width:560px){
+  .sa-ad{padding:1.05rem 1rem 1rem 1.2rem;border-radius:12px}
+  .sa-main{flex-direction:column;gap:.8rem}
+  .sa-logo{width:auto;min-height:0;padding:.4rem .7rem;align-self:flex-start;max-width:100%}
+  .sa-logo img{max-height:34px}
+  .sa-headline{font-size:1.3rem}
+  .sa-body{font-size:.9rem;line-height:1.55}
+  .sa-facts{display:grid;grid-template-columns:1fr 1fr;gap:.4rem;margin-top:.85rem}
+  .sa-facts li{font-size:.74rem;white-space:normal;border-radius:10px;padding:.4rem .55rem}
+  .sa-ad:has(.sa-logo) .sa-by{display:none}
+  .sa-actions{flex-direction:column;align-items:stretch;gap:.1rem;margin-top:.9rem}
+  .sa-cta{justify-content:center}
+  .sa-phone{justify-content:center}
+}
+@media (prefers-reduced-motion:reduce){.sa-cta,.sa-cta-arrow{transition:none}.sa-cta:hover{transform:none}}
+[data-theme="light"] .sa-ad{box-shadow:0 10px 26px -18px rgba(20,30,25,.45);
+  background:radial-gradient(120% 140% at 100% 0%,rgba(var(--sa-acc-rgb),.10) 0%,rgba(var(--sa-acc-rgb),0) 55%),var(--sa-bg)}
+[data-theme="light"] .sa-logo{box-shadow:0 0 0 1px rgba(0,0,0,.09)}
+[data-theme="light"] .sa-label{color:#a8380a;border-color:rgba(168,56,10,.45);background:rgba(232,116,58,.08)}
+[data-theme="light"] .sa-phone:hover{color:#a8380a}

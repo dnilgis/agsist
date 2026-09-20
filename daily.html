@@ -8,6 +8,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preload" href="/components/styles.css?v=16" as="style">
 <link rel="stylesheet" href="/components/styles.css?v=16">
+<link rel="stylesheet" href="/components/sponsor-ad.css?v=1">
+<script src="/components/sponsor-ad.js?v=1"></script>
 <link rel="icon" type="image/x-icon"            href="/img/favicon.ico">
 <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
@@ -576,7 +578,7 @@ function renderToday(data){
   var attribution='';
   var spA=data.sponsor;
   var aIsHouse=!spA||spA.is_house_ad===true||(!spA.advertiser&&!spA.name);
-  var aUrl=(spA&&spA.cta_url)||(spA&&spA.url)||'/sponsor';
+  var aUrl=(spA&&spA.cta_urls&&spA.cta_urls.daily_page)||(spA&&spA.cta_url)||(spA&&spA.url)||'/sponsor';
   var aTarget=aUrl.indexOf('http')===0?' target="_blank" rel="sponsored noopener"':' rel="sponsored"';
   if(aIsHouse){
     // v4.3: house-ad pill suppressed — the in-flow sponsor card carries the pitch.
@@ -585,7 +587,7 @@ function renderToday(data){
   } else {
     var aName=escHtml(spA.advertiser||spA.name||'').trim();
     if(aName){
-      attribution='<a class="dv3-spattr dv3-spattr--paid" href="'+escHtml(aUrl)+'"'+aTarget+' aria-label="Sponsor information"><span class="dv3-spattr-dot"></span> Today\u2019s sponsor: <strong>'+aName+'</strong> \u2192</a>';
+      attribution='<a class="dv3-spattr dv3-spattr--paid" href="'+escHtml(aUrl)+'"'+aTarget+' data-sponsor-click="daily-page" aria-label="Sponsor information"><span class="dv3-spattr-dot"></span> Today\u2019s sponsor: <strong>'+aName+'</strong> \u2192</a>';
     }
   }
 
@@ -857,24 +859,11 @@ function renderToday(data){
       is_house_ad:true
     };
   }
-  var spLabel=escHtml(sp.label||'SPONSORED');
-  var spAdv=escHtml(sp.advertiser||'');
-  var spHeadline=escHtml(sp.headline||'');
-  var spBody=mdInline(sp.body||'');
-  var spCtaText=escHtml(sp.cta_text||'Learn more');
-  var spCtaUrl=escHtml(sp.cta_url||'#');
-  var spDisclosure=escHtml(sp.disclosure||'');
-  var spHouse=sp.is_house_ad?' dv3-sponsor--house':'';
-  var spAdvHtml=(spAdv && !sp.is_house_ad)?'<span class="dv3-sponsor-by">'+spAdv+'</span>':'';
-  var spDiscHtml=spDisclosure?'<div class="dv3-sponsor-disclosure">'+spDisclosure+'</div>':'';
-  var spTarget=spCtaUrl.indexOf('http')===0?' target="_blank"':'';
-  sponsor='<aside class="dv3-sponsor'+spHouse+'" aria-label="Sponsored content">'+
-    '<div class="dv3-sponsor-label-row"><span class="dv3-sponsor-label">'+spLabel+'</span>'+spAdvHtml+'</div>'+
-    '<div class="dv3-sponsor-headline">'+spHeadline+'</div>'+
-    '<div class="dv3-sponsor-body">'+spBody+'</div>'+
-    '<a class="dv3-sponsor-cta" href="'+spCtaUrl+'" rel="sponsored noopener"'+spTarget+'>'+spCtaText+' \u2192</a>'+
-    spDiscHtml+
-  '</aside>';
+  /* ONE RENDERER: components/sponsor-ad.js, the same markup the homepage, the
+     archive pages (scripts/generate_daily.py) and the sponsor's portal draw.
+     Measured as its own slot, "daily-page", so the sponsor's report can tell
+     /daily apart from the homepage. The house pitch is never measured. */
+  sponsor=window.AgsistAd?window.AgsistAd.render(sp,'daily_page',{slot:'daily-page'}):'';
 
   // Forward block
   var forward='<div class="dv3-forward">'+

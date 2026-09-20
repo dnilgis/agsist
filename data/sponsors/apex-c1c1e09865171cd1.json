@@ -18,29 +18,41 @@
  "byPage": [],
  "creative": {
   "live": false,
-  "proof_code": "94420f85",
+  "proof_code": "3d231431",
   "fields": {
    "advertiser": "Apex Insurance Group of WI",
-   "headline": "Farm, business and personal insurance from an independent agency.",
-   "body": "Apex Insurance Group is an independent multi-line agency with 13 offices across the Midwest and its home office in Bloomer, Wisconsin. Farm, business, auto, home, life and employee benefits, placed with more than one carrier. Call 715-568-5050 or email info@aigwi.com.",
-   "cta_text": "Talk to Apex",
-   "cta_url": "https://aigwi.com/",
-   "disclosure": "Apex Insurance Group of WI, LLC \u00b7 2055 19th Ave Ste 100, Bloomer, WI 54724 \u00b7 aigwi.com. Paid sponsorship. AGSIST does not sell insurance and receives no commission on any policy."
+   "headline": "One call. 40+ carriers. The farm, the trucks, the house.",
+   "body": "Farm owners, equipment, livestock, farm auto, umbrella and liability, plus the house and everything else you insure. Apex is an independent, locally owned agency with access to 40+ carriers, so your coverage gets compared rather than assumed.",
+   "facts": [
+    "40+ carriers",
+    "13 Wisconsin offices",
+    "25,000+ clients",
+    "Locally owned \u00b7 Bloomer, WI"
+   ],
+   "cta_text": "Talk to an Apex agent",
+   "cta_url": "https://www.aigwi.com/contact-us",
+   "phone": "715-568-5050",
+   "logo": "/img/sponsors/apex-logo.webp",
+   "disclosure": "Paid sponsorship. Apex Insurance Group of WI, LLC \u00b7 2055 19th Ave Ste 100, Bloomer, WI 54724. AGSIST does not sell insurance and earns no commission on any policy."
   },
   "label": "SPONSORED",
   "tier": "founding",
   "links": {
-   "homepage": "https://aigwi.com/?utm_source=agsist&utm_medium=homepage&utm_campaign=sponsor-apex",
-   "archive": "https://aigwi.com/?utm_source=agsist&utm_medium=archive&utm_campaign=sponsor-apex",
-   "daily_email": "https://aigwi.com/?utm_source=agsist&utm_medium=daily_email&utm_campaign=sponsor-apex",
-   "rss": "https://aigwi.com/?utm_source=agsist&utm_medium=rss&utm_campaign=sponsor-apex",
-   "report": "https://aigwi.com/?utm_source=agsist&utm_medium=report&utm_campaign=sponsor-apex"
+   "homepage": "https://www.aigwi.com/contact-us?utm_source=agsist&utm_medium=homepage&utm_campaign=sponsor-apex",
+   "daily_page": "https://www.aigwi.com/contact-us?utm_source=agsist&utm_medium=daily_page&utm_campaign=sponsor-apex",
+   "archive": "https://www.aigwi.com/contact-us?utm_source=agsist&utm_medium=archive&utm_campaign=sponsor-apex",
+   "daily_email": "https://www.aigwi.com/contact-us?utm_source=agsist&utm_medium=daily_email&utm_campaign=sponsor-apex",
+   "rss": "https://www.aigwi.com/contact-us?utm_source=agsist&utm_medium=rss&utm_campaign=sponsor-apex",
+   "report": "https://www.aigwi.com/contact-us?utm_source=agsist&utm_medium=report&utm_campaign=sponsor-apex"
+  },
+  "cta_urls": {
+   "homepage": "https://www.aigwi.com/contact-us?utm_source=agsist&utm_medium=homepage&utm_campaign=sponsor-apex",
+   "daily_page": "https://www.aigwi.com/contact-us?utm_source=agsist&utm_medium=daily_page&utm_campaign=sponsor-apex",
+   "archive": "https://www.aigwi.com/contact-us?utm_source=agsist&utm_medium=archive&utm_campaign=sponsor-apex"
   },
   "previews": {
-   "homepage": "<aside class=\"dv3-sponsor\" aria-label=\"Sponsored content\"><div class=\"dv3-sponsor-label-row\"><span class=\"dv3-sponsor-label\">SPONSORED</span><span class=\"dv3-sponsor-by\">Apex Insurance Group of WI</span></div><div class=\"dv3-sponsor-headline\">Farm, business and personal insurance from an independent agency.</div><div class=\"dv3-sponsor-body\">Apex Insurance Group is an independent multi-line agency with 13 offices across the Midwest and its home office in Bloomer, Wisconsin. Farm, business, auto, home, life and employee benefits, placed with more than one carrier. Call 715-568-5050 or email info@aigwi.com.</div><a class=\"dv3-sponsor-cta\" href=\"https://aigwi.com/?utm_source=agsist&amp;utm_medium=homepage&amp;utm_campaign=sponsor-apex\" rel=\"sponsored noopener\" target=\"_blank\">Talk to Apex &rarr;</a><div class=\"dv3-sponsor-disclosure\">Apex Insurance Group of WI, LLC \u00b7 2055 19th Ave Ste 100, Bloomer, WI 54724 \u00b7 aigwi.com. Paid sponsorship. AGSIST does not sell insurance and receives no commission on any policy.</div></aside>",
-   "archive": "<aside class=\"dv3-sponsor\" aria-label=\"Sponsored content\"><div class=\"dv3-sponsor-label-row\"><span class=\"dv3-sponsor-label\">SPONSORED</span><span class=\"dv3-sponsor-by\">Apex Insurance Group of WI</span></div><div class=\"dv3-sponsor-headline\">Farm, business and personal insurance from an independent agency.</div><div class=\"dv3-sponsor-body\">Apex Insurance Group is an independent multi-line agency with 13 offices across the Midwest and its home office in Bloomer, Wisconsin. Farm, business, auto, home, life and employee benefits, placed with more than one carrier. Call 715-568-5050 or email info@aigwi.com.</div><a class=\"dv3-sponsor-cta\" href=\"https://aigwi.com/?utm_source=agsist&amp;utm_medium=archive&amp;utm_campaign=sponsor-apex\" rel=\"sponsored noopener\" target=\"_blank\">Talk to Apex &rarr;</a><div class=\"dv3-sponsor-disclosure\">Apex Insurance Group of WI, LLC \u00b7 2055 19th Ave Ste 100, Bloomer, WI 54724 \u00b7 aigwi.com. Paid sponsorship. AGSIST does not sell insurance and receives no commission on any policy.</div></aside>",
-   "email_html": "<tr><td style=\"padding:16px 0 0\"><table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\"><tr><td style=\"border-left:3px solid #e3ded4;padding:2px 0 2px 12px\"><div style=\"font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:#6b6b6b\">SPONSORED &middot; Apex Insurance Group of WI</div><div class=\"ink\" style=\"font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:15px;line-height:1.45;font-weight:700;color:#14100a;padding-top:4px\">Farm, business and personal insurance from an independent agency.</div><div class=\"ink\" style=\"font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:14px;line-height:1.55;color:#14100a;padding-top:5px\">Apex Insurance Group is an independent multi-line agency with 13 offices across the Midwest and its home office in Bloomer, Wisconsin. Farm, business, auto, home, life and employee benefits, placed with more than one carrier. Call 715-568-5050 or email info@aigwi.com.</div><div style=\"padding-top:7px\"><a href=\"https://aigwi.com/?utm_source=agsist&amp;utm_medium=daily_email&amp;utm_campaign=sponsor-apex\" rel=\"sponsored noopener\" style=\"font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:#8a6b1f;text-decoration:underline\">Talk to Apex &rarr;</a></div><div class=\"mute\" style=\"font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:11px;line-height:1.5;color:#6b6b6b;padding-top:6px\">Apex Insurance Group of WI, LLC \u00b7 2055 19th Ave Ste 100, Bloomer, WI 54724 \u00b7 aigwi.com. Paid sponsorship. AGSIST does not sell insurance and receives no commission on any policy.</div></td></tr></table></td></tr>",
-   "css": ".dv3-sponsor{background:linear-gradient(135deg,var(--surface) 0%,rgba(218,165,32,.04) 100%);border:2px solid rgba(218,165,32,.30);border-radius:8px;padding:1.4rem 1.6rem;margin-bottom:1.75rem;position:relative;overflow:hidden}\n.dv3-sponsor::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--gold) 0%,rgba(218,165,32,.3) 60%,transparent 100%)}\n.dv3-sponsor--house{border-style:dashed;border-color:rgba(218,165,32,.34)}\n.dv3-sponsor-label-row{display:flex;align-items:center;justify-content:space-between;gap:.6rem;margin-bottom:.65rem;flex-wrap:wrap}\n.dv3-sponsor-label{font-family:'JetBrains Mono',monospace;font-size:.6rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);padding:.2rem .6rem;border:1px solid rgba(218,165,32,.42);border-radius:3px;background:rgba(218,165,32,.06)}\n.dv3-sponsor-by{font-family:'JetBrains Mono',monospace;font-size:.7rem;font-weight:600;color:var(--text-muted);letter-spacing:.04em}\n.dv3-sponsor-headline{font-family:'Oswald',sans-serif;font-size:1.2rem;font-weight:700;color:var(--text);line-height:1.3;margin-bottom:.6rem;letter-spacing:-.005em}\n.dv3-sponsor-body{font-size:.93rem;line-height:1.7;color:var(--text-dim);margin-bottom:.95rem}\n.dv3-sponsor-cta{display:inline-flex;align-items:center;gap:.4rem;font-family:'JetBrains Mono',monospace;font-size:.78rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;text-decoration:none;color:#0a1a0a;background:var(--gold);padding:.65rem 1.05rem;border-radius:6px;transition:background .15s,transform .1s;min-height:44px}\n.dv3-sponsor-cta:hover{background:#c9941d;transform:translateY(-1px)}\n.dv3-sponsor-disclosure{font-size:.66rem;color:var(--text-muted);margin-top:.7rem;letter-spacing:.02em;line-height:1.5}\n@media(max-width:640px){.dv3-page{padding:1.25rem .9rem}.dv3-topbar{grid-template-columns:minmax(0,1fr)}.dv3-one-number-val{font-size:2.4rem}.dv3-sec{padding:.85rem 1rem}.dv3-sponsor{padding:1.1rem 1.2rem}.dv3-sponsor-headline{font-size:1.05rem}.dv3-forward{flex-direction:column;align-items:flex-start;gap:.7rem}.dv3-forward-cta{width:100%;justify-content:center}}"
+   "archive": "<aside class=\"sa-ad\" aria-label=\"Sponsored: Apex Insurance Group of WI\"><div class=\"sa-top\"><span class=\"sa-label\">SPONSORED</span><span class=\"sa-by\">Apex Insurance Group of WI</span></div><div class=\"sa-main\"><div class=\"sa-logo\"><img src=\"/img/sponsors/apex-logo.webp\" alt=\"Apex Insurance Group of WI logo\" loading=\"lazy\" decoding=\"async\" onerror=\"this.parentNode.className+=' sa-logo--text'\"><span class=\"sa-wordmark\">Apex Insurance Group of WI</span></div><div class=\"sa-copy\"><div class=\"sa-headline\">One call. 40+ carriers. The farm, the trucks, the house.</div><p class=\"sa-body\">Farm owners, equipment, livestock, farm auto, umbrella and liability, plus the house and everything else you insure. Apex is an independent, locally owned agency with access to 40+ carriers, so your coverage gets compared rather than assumed.</p></div></div><ul class=\"sa-facts\"><li><b>40+</b> carriers</li><li><b>13</b> Wisconsin offices</li><li><b>25,000+</b> clients</li><li>Locally owned \u00b7 Bloomer, WI</li></ul><div class=\"sa-actions\"><a class=\"sa-cta\" href=\"https://www.aigwi.com/contact-us?utm_source=agsist&amp;utm_medium=archive&amp;utm_campaign=sponsor-apex\" rel=\"sponsored noopener\" target=\"_blank\">Talk to an Apex agent <span class=\"sa-cta-arrow\" aria-hidden=\"true\">&rarr;</span></a><a class=\"sa-phone\" href=\"tel:+17155685050\" rel=\"sponsored\"><span class=\"sa-phone-k\">or call</span> 715-568-5050</a></div><p class=\"sa-disc\">Paid sponsorship. Apex Insurance Group of WI, LLC \u00b7 2055 19th Ave Ste 100, Bloomer, WI 54724. AGSIST does not sell insurance and earns no commission on any policy.</p></aside>",
+   "email_html": "<tr><td style=\"padding:18px 0 0\"><table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\"><tr><td style=\"border:1px solid #e3ded4;border-left:4px solid #e8743a;border-radius:8px;padding:14px 16px 14px 14px\"><div style=\"font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#a8380a\">SPONSORED <span style=\"color:#6b6b6b;font-weight:600;letter-spacing:.04em\">&middot; Apex Insurance Group of WI</span></div><div class=\"ink\" style=\"font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:19px;line-height:1.25;font-weight:800;color:#14100a;padding-top:6px\">One call. 40+ carriers. The farm, the trucks, the house.</div><div class=\"ink\" style=\"font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:14px;line-height:1.55;color:#14100a;padding-top:6px\">Farm owners, equipment, livestock, farm auto, umbrella and liability, plus the house and everything else you insure. Apex is an independent, locally owned agency with access to 40+ carriers, so your coverage gets compared rather than assumed.</div><div class=\"mute\" style=\"font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace;font-size:12px;line-height:1.6;font-weight:700;color:#6b6b6b;padding-top:8px\">40+ carriers &nbsp;&middot;&nbsp; 13 Wisconsin offices &nbsp;&middot;&nbsp; 25,000+ clients &nbsp;&middot;&nbsp; Locally owned \u00b7 Bloomer, WI</div><table role=\"presentation\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"margin-top:12px\"><tr><td bgcolor=\"#e8743a\" style=\"background:#e8743a;border-radius:6px\"><a href=\"https://www.aigwi.com/contact-us?utm_source=agsist&amp;utm_medium=daily_email&amp;utm_campaign=sponsor-apex\" rel=\"sponsored noopener\" style=\"display:inline-block;padding:11px 18px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace;font-size:13px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:#0d1117;text-decoration:none\">Talk to an Apex agent &rarr;</a></td><td style=\"padding-left:14px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:13px;color:#6b6b6b\">or call <a href=\"tel:+17155685050\" style=\"color:#14100a;font-weight:700;text-decoration:none\">715-568-5050</a></td></tr></table><div class=\"mute\" style=\"font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:11px;line-height:1.5;color:#6b6b6b;padding-top:10px\">Paid sponsorship. Apex Insurance Group of WI, LLC \u00b7 2055 19th Ave Ste 100, Bloomer, WI 54724. AGSIST does not sell insurance and earns no commission on any policy.</div></td></tr></table></td></tr>"
   }
  },
  "rateCard": {
@@ -81,5 +93,19 @@
   ]
  },
  "approveTo": "sig@farmers1st.com",
- "creativeRefreshed": "2026-09-20T14:41:24+00:00"
+ "creativeRefreshed": "2026-09-20T16:23:21+00:00",
+ "approval": null,
+ "billing": {
+  "tier": "founding",
+  "trial_weeks": 2,
+  "rate_lock_months": 12,
+  "invoice_contact": "Sig Lindquist \u00b7 sig@farmers1st.com \u00b7 715-797-2428"
+ },
+ "contact": "Rich Stiehl",
+ "placements": [
+  "homepage",
+  "daily_page",
+  "archive",
+  "daily_email"
+ ]
 }

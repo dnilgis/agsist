@@ -120,13 +120,16 @@ check("the report ends at yesterday, never at today", () =>
   assert.match(BUILDER, /end = today - timedelta\(days=1\)/));
 check("the page renders the pending state instead of zeroes", () => {
   /* Measured by position, not by a distance-bounded regex: the branch is long
-     and a {0,N} span silently stops matching the day somebody adds a line. */
-  const at = REPORT.indexOf("if (d.pending)");
-  assert.ok(at > 0, "sponsor-report.html has no pending branch");
-  const tiles = REPORT.indexOf("sr-tiles", at);
-  assert.ok(tiles > at, "the tiles are not rendered after the pending branch");
-  const ret = REPORT.indexOf("return;", at);
-  assert.ok(ret > at && ret < tiles,
+     and a {0,N} span silently stops matching the day somebody adds a line.
+     2026-09-20: the portal was rebuilt; the pending branch lives in results(). */
+  const fn = REPORT.indexOf("function results(");
+  assert.ok(fn > 0, "sponsor-report.html has no results() section");
+  const at = REPORT.indexOf("if (d.pending)", fn);
+  assert.ok(at > fn, "results() has no pending branch");
+  const real = REPORT.indexOf("num(t.viewable)", at);
+  assert.ok(real > at, "the real number tiles are not rendered after the pending branch");
+  const ret = REPORT.indexOf("return h", at);
+  assert.ok(ret > at && ret < real,
     "the pending branch does not return before the number tiles — a sponsor " +
     "who has not started would be shown a row of zeroes");
 });
@@ -143,9 +146,112 @@ check("no active sponsor carries a start date nobody has confirmed", () => {
     assert.ok(s.start === null || /^\d{4}-\d{2}-\d{2}$/.test(s.start),
       s.slug + " has a malformed start date");
 });
+/* THE FOOTER STRIP IS A SECOND SLOT, AND GA4 CANNOT TELL THEM APART.
+   supporter_click is in CLICK_EVENTS and the filled footer card is stamped
+   data-sponsor-slot="footer-strip" on every page of the site. With
+   SLOT_DIMENSION unset there is no dimension to separate them, so a paid
+   Supporter's views and clicks would be added to the daily sponsor's totals --
+   and the daily sponsor would never know. The "one sponsor at a time" refusal
+   in the builder reads data/sponsors.json only; supporters live in another
+   file. Until `slot` is registered in GA4, the two cannot both be sold. */
+check("no footer supporter is live while a daily sponsor is being reported", () => {
+  const sup = JSON.parse(R("data/supporters.json"));
+  const liveSup = (sup.supporters || []).filter((x) => x.active === true);
+  const liveSponsor = (CONF.sponsors || []).some((s) => s.active !== false);
+  const slotDim = /^\s*SLOT_DIMENSION\s*=\s*None\b/m.test(BUILDER);
+  assert.ok(!(liveSup.length && liveSponsor && slotDim),
+    liveSup.length + " active footer supporter(s) and a sponsor being reported, with SLOT_DIMENSION unset: " +
+    "footer-strip views and supporter_click would be counted as the sponsor's. Register `slot` as a GA4 " +
+    "custom dimension and set SLOT_DIMENSION, or keep one of the two off.");
+});
 check("every sponsor has a token long enough to be unguessable", () => {
   for (const s of CONF.sponsors || [])
     assert.ok((s.token || "").length >= 16, s.slug + "'s token is too short to be the key to the page");
+});
+
+/* ── ONE AD, EVERY SURFACE ──────────────────────────────────────────────
+   2026-09-20. The homepage's filled state read sp.name / sp.tagline, fields
+   data/sponsor.json has never had, so a paying sponsor would have been drawn
+   as the house billboard. The /daily page ad carried no measurement slot, so it
+   was never counted. Four hand-kept copies of the ad's CSS had drifted to two
+   colours. These guard the replacement: one renderer, one stylesheet. */
+console.log("\nONE AD, EVERY SURFACE");
+const AD_JS  = R("components/sponsor-ad.js");
+const AD_CSS = R("components/sponsor-ad.css");
+const DAILY  = decomment(R("daily.html"));
+const GEN    = R("scripts/generate_daily.py");
+const { createRequire } = await import("node:module");
+const require_ = createRequire(import.meta.url);
+const AgsistAd = require_("../components/sponsor-ad.js");
+
+check("every page that draws the ad links the one stylesheet and the one renderer", () => {
+  for (const [name, src] of [["index.html", INDEX], ["daily.html", DAILY], ["sponsor-report.html", REPORT]]) {
+    assert.match(src, /\/components\/sponsor-ad\.css/, name + " does not link components/sponsor-ad.css");
+    assert.match(src, /\/components\/sponsor-ad\.js/, name + " does not load components/sponsor-ad.js");
+    assert.match(src, /AgsistAd\.render\(/, name + " does not call the renderer");
+  }
+  assert.match(GEN, /\/components\/sponsor-ad\.css/, "the archive page template does not link the stylesheet");
+});
+check("the homepage draws a paid sponsor from the fields the sponsor file has", () => {
+  assert.match(INDEX, /sp\.advertiser/, "the homepage never reads sp.advertiser");
+  assert.ok(!/else if\(sp&&\(sp\.tagline\|\|sp\.name\)\)/.test(INDEX),
+    "the filled state still keys on tagline/name, which data/sponsor.json does not carry");
+});
+check("the homepage ad inside the measured wrapper carries clicks, not a second slot", () => {
+  assert.match(INDEX, /AgsistAd\.render\(sp,'homepage',\{click:'daily-briefing'\}\)/);
+  const html = AgsistAd.render({ advertiser: "A", headline: "H", body: "B", cta_url: "https://a.example/" }, "homepage", { click: "daily-briefing" });
+  assert.ok(!/data-sponsor-slot/.test(html), "a click-only ad carries a slot: every view would count twice");
+  assert.match(html, /data-sponsor-click="daily-briefing"/);
+});
+check("the /daily page ad is measured as its own slot", () =>
+  assert.match(DAILY, /AgsistAd\.render\(sp,'daily_page',\{slot:'daily-page'\}\)/));
+check("the archive ad is measured as its own slot", () =>
+  assert.match(py(GEN), /render_sponsor_block_html\(sponsor, surface="archive", slot="daily-archive"\)/));
+check("the house pitch is never measured, whatever the caller asks", () => {
+  const html = AgsistAd.render({ is_house_ad: true, headline: "Sponsor this", cta_url: "/sponsor" }, "daily_page", { slot: "daily-page", click: "x" });
+  assert.ok(!/data-sponsor-(slot|click)/.test(html), "the house ad carries a measurement attribute");
+});
+console.log("  the JS and Python renderers write the same bytes:");
+{
+  const { execFileSync } = await import("node:child_process");
+  const SP = JSON.parse(R("data/sponsor.json"));
+  const cases = [
+    [Object.assign({}, SP, { cta_urls: { archive: "https://a.example/q?x=1&y=\"2\"", homepage: "h" } }), "archive", "daily-archive"],
+    [Object.assign({}, SP, { cta_urls: { archive: "https://a.example/" }, logo: "", phone: "12", facts: ["no number", "3 things", "1,200+ acres & more"] }), "archive", null],
+    [{ is_house_ad: true, label: "H", advertiser: "AGSIST", headline: "<b>x</b>", body: "a & b", cta_text: "Go", cta_url: "mailto:a@b.c", disclosure: "d" }, "archive", "s"],
+  ];
+  let i = 0;
+  for (const [sp, surf, slot] of cases) {
+    i++;
+    check("  parity case " + i, () => {
+      const js = AgsistAd.render(sp, surf, slot ? { slot } : {});
+      const pyOut = execFileSync("python3", ["-c",
+        "import sys,json;sys.path.insert(0,'scripts');import generate_daily as g;" +
+        "print(g.render_sponsor_block_html(json.loads(sys.stdin.read())," + JSON.stringify(surf) + "," +
+        (slot ? JSON.stringify(slot) : "None") + "),end='')"],
+        { input: JSON.stringify(sp), cwd: fileURLToPath(new URL("../", import.meta.url)) }).toString();
+      if (js !== pyOut) {
+        let k = 0; while (js[k] === pyOut[k]) k++;
+        assert.fail("differ at byte " + k + "\n         JS: " + js.slice(Math.max(0, k - 30), k + 60) +
+                    "\n         PY: " + pyOut.slice(Math.max(0, k - 30), k + 60));
+      }
+    });
+  }
+}
+check("the ad's button ink is readable on its orange", () => {
+  const lum = (hex) => { const c = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16) / 255)
+    .map((v) => v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4));
+    return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2]; };
+  const ratio = (a, b) => { const x = lum(a), y = lum(b); return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05); };
+  const ink = /--sa-ink:(#[0-9a-f]{6})/i.exec(AD_CSS)[1];
+  for (const bg of ["#e8743a", "#f2935f"]) {
+    const r = ratio(ink, bg);
+    assert.ok(r >= 4.5, "ink " + ink + " on " + bg + " is " + r.toFixed(2) + ":1");
+  }
+});
+check("the ad's CSS lives in one file", () => {
+  for (const [name, src] of [["index.html", R("index.html")], ["daily.html", R("daily.html")], ["sponsor-report.html", R("sponsor-report.html")], ["scripts/generate_daily.py", GEN]])
+    assert.ok(!/(^|\})\s*\.sa-(ad|headline|cta|body|facts)\s*\{/m.test(src), name + " carries its own copy of the ad's rules");
 });
 
 console.log("\n  " + pass + " passed, " + fail + " failed\n");

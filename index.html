@@ -10,6 +10,8 @@
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
 <link rel="preload" href="/components/styles.css?v=16" as="style">
 <link rel="stylesheet" href="/components/styles.css?v=16">
+<link rel="stylesheet" href="/components/sponsor-ad.css?v=1">
+<script src="/components/sponsor-ad.js?v=1"></script>
   <script src="/components/util.js?v=16"></script>
 <link rel="icon" type="image/x-icon"            href="/img/favicon.ico">
 <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
@@ -538,7 +540,10 @@
   .dsp-contact a:hover{text-decoration:underline}
   .dsp-contact-sep{margin:0 .55rem;opacity:.5}
   /* Filled state — subdued so sponsor brand can breathe */
-  .daily-sponsor.filled{border-width:1px;border-color:rgba(var(--ad-orange-rgb),.3);border-left:3px solid var(--ad-orange);background:linear-gradient(135deg,var(--surface) 0%,rgba(var(--ad-orange-rgb),.04) 100%);box-shadow:none;padding:1.1rem 1.4rem}
+  /* Filled: the ad draws its own card (components/sponsor-ad.css), so the slot
+     frame steps out of the way instead of boxing a box. */
+  .daily-sponsor.filled{border:0;background:none;box-shadow:none;padding:0;border-radius:0}
+  .daily-sponsor.filled .sa-ad{margin:0}
   .dsp-label{font-family:'JetBrains Mono',monospace;font-size:0.755rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--ad-orange);margin-bottom:.5rem;display:flex;align-items:center;gap:.35rem}
   .dsp-sponsor-name{font-family:var(--font-display);font-size:1.5rem;font-weight:600;color:var(--text);margin-bottom:.3rem;line-height:1.15}
   .dsp-sponsor-tag{font-size:.92rem;line-height:1.55;color:var(--text-dim);margin-bottom:.9rem;max-width:54rem}
@@ -770,12 +775,10 @@
               </div>
             </div>
             <!-- Filled state: shown when data.sponsor is populated -->
-            <div class="dsp-filled" id="dsp-filled" style="display:none" data-sponsor-slot="daily-briefing">
-              <div class="dsp-label" id="dsp-filled-label"><svg class="ic" aria-hidden="true"><use href="#i-newspaper"/></svg> Today&rsquo;s Sponsor</div>
-              <div class="dsp-sponsor-name" id="dsp-filled-name"></div>
-              <div class="dsp-sponsor-tag" id="dsp-filled-tag"></div>
-              <a class="dsp-sponsor-cta" id="dsp-filled-cta" href="mailto:sig@farmers1st.com" rel="sponsored" data-sponsor-click="daily-briefing">Visit sponsor &rarr;</a>
-            </div>
+            <!-- Filled state: the paid ad, drawn by components/sponsor-ad.js from
+                 data/daily.json -> sponsor. This wrapper is the measured slot; the
+                 ad inside carries click attributes only, so a view counts once. -->
+            <div class="dsp-filled" id="dsp-filled" style="display:none" data-sponsor-slot="daily-briefing"></div>
           </div>
           <div id="daily-yc" class="daily-yc">
             <div class="daily-yc-head"><span class="daily-yc-label">YESTERDAY'S CALL</span><span class="daily-yc-pill yc-pill--pending" id="daily-yc-pill">--</span><a href="/scorecard" style="margin-left:auto;font-size:0.77rem;font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--text-muted)" aria-label="Full call track record">Track record &rarr;</a></div>
@@ -2851,36 +2854,37 @@ window.hydrateDaily = function(data) {
       spEl.style.display='none';
       if(spTeaser)spTeaser.style.display='none';
       if(spAttr)spAttr.style.display='none';
-    } else if(sp&&(sp.tagline||sp.name)){
+    } else if(sp&&!sp.is_house_ad&&(sp.advertiser||sp.name)&&(sp.headline||sp.tagline)){
+      // data/sponsor.json carries advertiser/headline/body/cta_url. This used to
+      // test sp.name/sp.tagline, which that file has never had, so a paid
+      // sponsor fell through to the house billboard below.
+      var spNm=sp.advertiser||sp.name||'';
+      var spHref=(sp.cta_urls&&sp.cta_urls.homepage)||sp.cta_url||sp.url||'';
       // Filled state — paid sponsor placement
       spEl.style.display='';
       spEl.classList.add('filled');
       if(spEmpty)spEmpty.style.display='none';
       if(spFilled)spFilled.style.display='block';
-      var spName=el('dsp-filled-name'),spTag=el('dsp-filled-tag'),spCta=el('dsp-filled-cta');
-      if(spName)spName.textContent=sp.name||'';
-      if(spTag)spTag.textContent=sp.tagline||'';
-      if(spCta){
-        if(sp.url){spCta.href=sp.url;spCta.target='_blank';spCta.rel='noopener';}
-        else{spCta.removeAttribute('target');spCta.removeAttribute('rel');spCta.href='mailto:sig@farmers1st.com';}
-        spCta.textContent=sp.cta_text||(sp.name?'Visit '+sp.name+' \u2192':'Visit \u2192');
-      }
+      /* ONE RENDERER. components/sponsor-ad.js draws this ad on the homepage,
+         /daily and the sponsor's own portal; the archive pages get the same
+         markup from scripts/generate_daily.py. */
+      if(spFilled)spFilled.innerHTML=(window.AgsistAd?window.AgsistAd.render(sp,'homepage',{click:'daily-briefing'}):'');
       // Collapsed teaser sponsor — quiet attribution
       if(spTeaser){
         spTeaser.style.display='';
         spTeaser.classList.remove('empty-state');
         spTeaser.classList.add('has-sponsor');
-        spTeaser.textContent='Sponsored by '+(sp.name||'partner');
-        if(sp.url){spTeaser.href=sp.url;spTeaser.target='_blank';spTeaser.rel='noopener';}
-        else{spTeaser.removeAttribute('target');spTeaser.removeAttribute('rel');spTeaser.href='/sponsor';}
+        spTeaser.textContent='Sponsored by '+(spNm||'partner');
+        if(spHref){spTeaser.href=spHref;spTeaser.target='_blank';spTeaser.rel='sponsored noopener';spTeaser.setAttribute('data-sponsor-click','daily-briefing');}
+        else{spTeaser.removeAttribute('target');spTeaser.removeAttribute('rel');spTeaser.removeAttribute('data-sponsor-click');spTeaser.href='/sponsor';}
       }
       // Inline attribution above greeting — paid state
-      if(spAttr&&sp.name){
+      if(spAttr&&spNm){
         spAttr.style.display='inline-flex';
         spAttr.classList.remove('daily-spattr--house');
         spAttr.classList.add('daily-spattr--paid');
-        spAttr.innerHTML='<svg class="ic" aria-hidden="true"><use href="#i-circle"/></svg> Today\u2019s sponsor: <strong>'+escHtml(sp.name||'')+'</strong> \u2192';
-        if(sp.url){spAttr.href=sp.url;spAttr.target='_blank';spAttr.rel='sponsored noopener';}
+        spAttr.innerHTML='<svg class="ic" aria-hidden="true"><use href="#i-circle"/></svg> Today\u2019s sponsor: <strong>'+escHtml(spNm)+'</strong> \u2192';
+        if(spHref){spAttr.href=spHref;spAttr.target='_blank';spAttr.rel='sponsored noopener';}
         else{spAttr.removeAttribute('target');spAttr.rel='sponsored';spAttr.href='mailto:sig@farmers1st.com';}
       }
     } else {

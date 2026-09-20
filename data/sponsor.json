@@ -1,19 +1,28 @@
 {
   "_": "NOT LIVE. active=false means generate_daily.build_sponsor_block ignores this file and keeps running the house ad, on every surface. Flip active to true and the next briefing run puts Apex in the slot: homepage, archive page, RSS, the subscriber email and the forwarding brief. Nothing else has to change.",
   "_before_going_live": [
-    "Rich signs off on headline, body and disclosure — this is his company's copy, not ours.",
-    "Set data/sponsors.json -> sponsors[slug=apex].start to the date the first ad actually runs. build_sponsor_report.py refuses to report until it is set, which is correct: with no start date it would hand Apex ninety days of traffic that was never theirs.",
-    "Check the cta_url lands where Rich wants it. It points at the Bloomer home office page today."
+    "Rich approves on his portal: the proof code in his approval email must match the one the portal shows. Record it in data/sponsors.json -> sponsors[slug=apex].approved.",
+    "Then flip active to true here AND set data/sponsors.json -> sponsors[slug=apex].start to the date the first ad runs. Both, same commit. scripts/sponsor-checks.mjs fails if one moves without the other.",
+    "The logo file must be at img/sponsors/apex-logo.webp. If it is not, the ad draws the name as a wordmark in the logo tile instead of a broken image."
   ],
+  "_sources": "Every claim is Apex's own, read from aigwi.com on 2026-09-20 (home page: 13 office locations, 40+ carriers offered, 25,000+ active clients, locally owned and operated; /locations: 13 offices, all in Wisconsin, headquarters 2055 19th Ave Suite 100, Bloomer; /services/farm-insurance: farm owners, equipment, livestock, farm auto, umbrella, liability). Sig confirmed permission to use their site's brand assets. The old copy said 'across the Midwest'; the locations page lists Wisconsin only. Checked again 2026-09-20 by an adversary pass: every claim above appears on aigwi.com. \"The people on your payroll\" was CUT because workers' compensation appears nowhere on their site. Crop insurance is on their farm page and is deliberately left out here, because Sig's own agency writes crop — his call if he wants it added. Their /about page still says seven locations while /locations lists 13; worth Rich reconciling. The disclosure address is from aigwi.com/locations (headquarters) and /contact-us; their homepage footer still prints an older Main St address.",
   "_utm": "cta_url is the BARE destination. scripts/sponsor_links.py appends utm per surface at render time, so the homepage, the archive page and the email each report their own clicks and cannot disagree. Parameters written into this url by hand would be inherited by every surface and would make inbox clicks read as page clicks.",
   "active": false,
   "label": "SPONSORED",
   "advertiser": "Apex Insurance Group of WI",
-  "headline": "Farm, business and personal insurance from an independent agency.",
-  "body": "Apex Insurance Group is an independent multi-line agency with 13 offices across the Midwest and its home office in Bloomer, Wisconsin. Farm, business, auto, home, life and employee benefits, placed with more than one carrier. Call 715-568-5050 or email info@aigwi.com.",
-  "cta_text": "Talk to Apex",
-  "cta_url": "https://aigwi.com/",
-  "disclosure": "Apex Insurance Group of WI, LLC · 2055 19th Ave Ste 100, Bloomer, WI 54724 · aigwi.com. Paid sponsorship. AGSIST does not sell insurance and receives no commission on any policy.",
+  "headline": "One call. 40+ carriers. The farm, the trucks, the house.",
+  "body": "Farm owners, equipment, livestock, farm auto, umbrella and liability, plus the house and everything else you insure. Apex is an independent, locally owned agency with access to 40+ carriers, so your coverage gets compared rather than assumed.",
+  "facts": [
+    "40+ carriers",
+    "13 Wisconsin offices",
+    "25,000+ clients",
+    "Locally owned · Bloomer, WI"
+  ],
+  "cta_text": "Talk to an Apex agent",
+  "cta_url": "https://www.aigwi.com/contact-us",
+  "phone": "715-568-5050",
+  "logo": "/img/sponsors/apex-logo.webp",
+  "disclosure": "Paid sponsorship. Apex Insurance Group of WI, LLC · 2055 19th Ave Ste 100, Bloomer, WI 54724. AGSIST does not sell insurance and earns no commission on any policy.",
   "is_house_ad": false,
   "tier": "founding",
   "_slug": "WHOSE creative this is. build_sponsor_report.creative_block refuses to put it on any other sponsor's portal, and refuses to put it on ANY portal if this is missing -- an unattributed creative shown to the wrong sponsor is worse than a portal with no proof on it.",

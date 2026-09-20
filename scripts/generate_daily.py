@@ -2212,11 +2212,33 @@ SPONSOR_HOUSE_AD = {
 }
 
 
+def sponsor_cta_urls(sponsor):
+    """{surface: tagged url} for the pages that draw the ad in the browser.
+
+    The homepage and the live /daily page render from data/daily.json with
+    components/sponsor-ad.js, which cannot import scripts/sponsor_links.py. So
+    the tagged links are made HERE, by the one definition, and carried in the
+    file. Before this the homepage and /daily used the bare cta_url and every
+    click from them reached the sponsor's analytics untagged.
+    """
+    url = sponsor.get("cta_url") or ""
+    if not url or sponsor.get("is_house_ad"):
+        return {}
+    try:
+        import sponsor_links
+        slug = sponsor.get("slug") or "sponsor"
+        return {s: sponsor_links.tag(url, s, slug) for s in ("homepage", "daily_page", "archive")}
+    except Exception as e:
+        print(f"  [warn] sponsor links not tagged ({type(e).__name__}: {e})")
+        return {}
+
+
 def build_sponsor_block():
     if SPONSOR_OVERRIDE:
         out = dict(SPONSOR_OVERRIDE)
         out.setdefault("label", "SPONSORED"); out.setdefault("active", True)
         out.setdefault("is_house_ad", False)
+        out["cta_urls"] = sponsor_cta_urls(out)
         return out
     sponsor_path = REPO_ROOT / "data" / "sponsor.json"
     if sponsor_path.exists():
@@ -2224,6 +2246,7 @@ def build_sponsor_block():
             with open(sponsor_path) as f: data = json.load(f)
             if data.get("active"):
                 data.setdefault("label", "SPONSORED"); data.setdefault("is_house_ad", False)
+                data["cta_urls"] = sponsor_cta_urls(data)
                 return data
         except Exception as e:
             print(f"  [warn] sponsor.json unreadable: {e}", file=sys.stderr)
@@ -2337,29 +2360,72 @@ def _sponsor_cta(sponsor, surface):
         return url
 
 
-def render_sponsor_block_html(sponsor, surface="archive"):
-    """surface picks the utm medium; see scripts/sponsor_links.py. The archive
-    page and the homepage are different placements and a sponsor checking our
-    number against their own analytics must be able to tell them apart."""
+def _sa_fact(f):
+    """"40+ carriers" -> <b>40+</b> carriers. Mirrors fact() in
+    components/sponsor-ad.js; scripts/sponsor-checks.mjs holds the two equal."""
+    m = re.match(r"^([0-9][0-9,.+%]*)\s+([\s\S]+)$", str(f if f is not None else ""))
+    return f"<b>{html_esc(m.group(1))}</b> {html_esc(m.group(2))}" if m else html_esc(f)
+
+
+def _sa_tel(p):
+    d = re.sub(r"\D", "", str(p or ""))
+    if len(d) == 11 and d[0] == "1":
+        d = d[1:]
+    return "tel:+1" + d if len(d) == 10 else ""
+
+
+def render_sponsor_block_html(sponsor, surface="archive", slot=None):
+    """THE SAME MARKUP components/sponsor-ad.js WRITES, IN PYTHON.
+
+    The archive pages are static and are drawn here; the homepage and /daily
+    are drawn in the browser by the JS renderer. scripts/sponsor-checks.mjs
+    renders one sponsor through both and fails on a single differing byte, so
+    the ad on an archive page is the ad on the homepage is the ad the sponsor
+    approved. The look is components/sponsor-ad.css, linked by every page.
+
+    surface picks the tagged link (see scripts/sponsor_links.py). slot, when
+    given and the ad is paid, adds the measurement attributes that
+    components/sponsor-metrics.js counts.
+    """
     if not sponsor: return ""
-    label = html_esc(sponsor.get("label", "SPONSORED"))
-    advertiser = html_esc(sponsor.get("advertiser", ""))
-    headline = html_esc(sponsor.get("headline", ""))
-    body = html_esc(sponsor.get("body", ""))
-    cta_text = html_esc(sponsor.get("cta_text", "Learn more"))
-    cta_url = html_esc(_sponsor_cta(sponsor, surface))
-    disclosure = html_esc(sponsor.get("disclosure", ""))
-    is_house = sponsor.get("is_house_ad", False)
-    house_class = " dv3-sponsor--house" if is_house else ""
-    advertiser_html = f'<span class="dv3-sponsor-by">{advertiser}</span>' if advertiser and not is_house else ""
-    disclosure_html = f'<div class="dv3-sponsor-disclosure">{disclosure}</div>' if disclosure else ""
-    target = ' target="_blank"' if cta_url.startswith('http') else ''
-    return (f'<aside class="dv3-sponsor{house_class}" aria-label="Sponsored content">'
-            f'<div class="dv3-sponsor-label-row"><span class="dv3-sponsor-label">{label}</span>{advertiser_html}</div>'
-            f'<div class="dv3-sponsor-headline">{headline}</div>'
-            f'<div class="dv3-sponsor-body">{body}</div>'
-            f'<a class="dv3-sponsor-cta" href="{cta_url}" rel="sponsored noopener"{target}>{cta_text} &rarr;</a>'
-            f'{disclosure_html}</aside>')
+    sp = sponsor
+    house = bool(sp.get("is_house_ad"))
+    slot = str(slot) if (slot and not house) else ""
+    adv = sp.get("advertiser") or ""
+    urls = sp.get("cta_urls") or {}
+    url = urls.get(surface) or (_sponsor_cta(sp, surface) if sp.get("cta_url") else "") or "#"
+    ext = bool(re.match(r"^https?:", url, re.I))
+    click = f' data-sponsor-click="{html_esc(slot)}"' if slot else ""
+    h = []
+    aria = "Sponsor this slot" if house else "Sponsored: " + adv
+    h.append(f'<aside class="sa-ad{" sa-ad--house" if house else ""}" aria-label="{html_esc(aria)}"'
+             + (f' data-sponsor-slot="{html_esc(slot)}"' if slot else "") + ">")
+    h.append(f'<div class="sa-top"><span class="sa-label">{html_esc(sp.get("label") or "SPONSORED")}</span>'
+             + (f'<span class="sa-by">{html_esc(adv)}</span>' if (adv and not house) else "") + "</div>")
+    h.append('<div class="sa-main">')
+    if sp.get("logo") and not house:
+        h.append(f'<div class="sa-logo"><img src="{html_esc(sp.get("logo"))}" alt="{html_esc(adv + " logo")}" '
+                 'loading="lazy" decoding="async" onerror="this.parentNode.className+=\' sa-logo--text\'">'
+                 f'<span class="sa-wordmark">{html_esc(adv)}</span></div>')
+    h.append(f'<div class="sa-copy"><div class="sa-headline">{html_esc(sp.get("headline"))}</div>'
+             f'<p class="sa-body">{html_esc(sp.get("body"))}</p></div>')
+    h.append("</div>")
+    facts = sp.get("facts") if (not house and sp.get("facts")) else []
+    if facts:
+        h.append('<ul class="sa-facts">' + "".join(f"<li>{_sa_fact(f)}</li>" for f in facts) + "</ul>")
+    h.append(f'<div class="sa-actions"><a class="sa-cta" href="{html_esc(url)}" rel="sponsored noopener"'
+             + (' target="_blank"' if ext else "") + click + ">"
+             + html_esc(sp.get("cta_text") or "Learn more")
+             + ' <span class="sa-cta-arrow" aria-hidden="true">&rarr;</span></a>')
+    t = "" if house else _sa_tel(sp.get("phone"))
+    if t:
+        h.append(f'<a class="sa-phone" href="{t}" rel="sponsored"{click}>'
+                 f'<span class="sa-phone-k">or call</span> {html_esc(sp.get("phone"))}</a>')
+    h.append("</div>")
+    if sp.get("disclosure"):
+        h.append(f'<p class="sa-disc">{html_esc(sp.get("disclosure"))}</p>')
+    h.append("</aside>")
+    return "".join(h)
 
 
 def render_forward_block_html(date_iso):
@@ -2719,7 +2785,7 @@ def generate_archive_html(briefing, date_iso, prev_date=None, next_date=None,
     topbar_html = f'<div class="dv3-topbar">{one_num_html}{quote_html}</div>' if (one_num_html or quote_html) else ""
 
     sponsor = briefing.get("sponsor") or build_sponsor_block()
-    sponsor_html = render_sponsor_block_html(sponsor)
+    sponsor_html = render_sponsor_block_html(sponsor, surface="archive", slot="daily-archive")
     forward_html = render_forward_block_html(date_iso)
     byline_html = render_byline_block_html()
     # v4.3: new render helpers
@@ -2796,6 +2862,7 @@ def generate_archive_html(briefing, date_iso, prev_date=None, next_date=None,
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preload" href="/components/styles.css?v=10" as="style">
 <link rel="stylesheet" href="/components/styles.css?v=10">
+<link rel="stylesheet" href="/components/sponsor-ad.css?v=1">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Oswald:wght@500;600;700&display=swap">
 <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
 <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">

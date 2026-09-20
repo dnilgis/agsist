@@ -102,7 +102,21 @@ def fail(msg):
 # is what the reply-to address is for. A four-byte hash is enough to catch a
 # changed word and short enough to read down a phone.
 
-CREATIVE_FIELDS = ("advertiser", "headline", "body", "cta_text", "cta_url", "disclosure")
+# 2026-09-20: facts, phone and logo joined the six. Each one reaches a reader
+# (the facts row, the "or call" link, the logo tile), so each one is something a
+# sponsor is approving. Adding them changes every existing code, which is
+# correct: no approval had been given against the old six, and an approval that
+# did not cover the phone number printed under it would not be an approval.
+CREATIVE_FIELDS = ("advertiser", "headline", "body", "facts", "cta_text", "cta_url",
+                   "phone", "logo", "disclosure")
+
+
+def _field_text(v):
+    """A list (the facts) is joined with a separator no text field contains, so
+    ["a b", "c"] and ["a", "b c"] cannot hash alike."""
+    if isinstance(v, (list, tuple)):
+        return "\x1e".join(str(x) for x in v)
+    return str(v or "")
 
 
 def proof_code(creative):
@@ -110,7 +124,7 @@ def proof_code(creative):
     import hashlib
     if not creative:
         return None
-    blob = "\x1f".join(str(creative.get(k) or "") for k in CREATIVE_FIELDS)
+    blob = "\x1f".join(_field_text(creative.get(k)) for k in CREATIVE_FIELDS)
     return hashlib.sha256(blob.encode("utf-8")).hexdigest()[:8]
 
 
@@ -147,6 +161,12 @@ def creative_block(slug):
         links = sponsor_links.all_surfaces(url, slug) if url else {}
     except Exception:
         links = {}
+    # The browser-drawn surfaces (homepage, /daily, and this portal's own
+    # previews) read tagged links from cta_urls, the same way data/daily.json
+    # carries them. Built from the same links dict, so the portal and the live
+    # pages cannot tag differently.
+    shown = dict(c)
+    shown["cta_urls"] = {k: links[k] for k in ("homepage", "daily_page", "archive") if k in links}
     return {
         "live": bool(c.get("active")),
         "proof_code": proof_code(c),
@@ -154,7 +174,8 @@ def creative_block(slug):
         "label": c.get("label") or "SPONSORED",
         "tier": c.get("tier"),
         "links": links,
-        "previews": previews(c),
+        "cta_urls": shown["cta_urls"],
+        "previews": previews(shown),
     }
 
 
@@ -183,33 +204,6 @@ def creative_block(slug):
 # because it IS them.
 # ---------------------------------------------------------------------------
 
-def site_sponsor_css():
-    """The real .dv3-sponsor rules, read out of the generator that emits them.
-
-    generate_daily.py holds this CSS inside an f-string, so its braces are
-    doubled in the source; they are halved back here. Extracted rather than
-    copied for the same reason the markup is: a stylesheet pasted into the
-    portal is a stylesheet that goes stale silently.
-    """
-    src = ROOT / "scripts" / "generate_daily.py"
-    try:
-        text = src.read_text(encoding="utf-8")
-    except OSError:
-        return ""
-    out = []
-    for line in text.splitlines():
-        t = line.strip()
-        if "dv3-sponsor" not in t:
-            continue
-        # A CSS rule, not a line of Python that mentions the class name.
-        if not (t.startswith(".dv3-sponsor") or t.startswith("@media")):
-            continue
-        if "{{" not in t:
-            continue
-        out.append(t.replace("{{", "{").replace("}}", "}"))
-    return "\n".join(out)
-
-
 def previews(c):
     """What this ad looks like on each surface it runs on.
 
@@ -219,11 +213,15 @@ def previews(c):
     recoverable.
     """
     out = {}
+    # THE PAGES ARE DRAWN IN THE PORTAL BY components/sponsor-ad.js -- the file
+    # the homepage and /daily load -- from the fields above. The archive block
+    # is baked here by generate_daily.render_sponsor_block_html, which
+    # scripts/sponsor-checks.mjs holds byte-identical to the JS. No preview is a
+    # lookalike; each one is the renderer that publishes that surface.
     try:
         sys.path.insert(0, str(ROOT / "scripts"))
         import generate_daily as gd
-        for surface in ("homepage", "archive"):
-            out[surface] = gd.render_sponsor_block_html(c, surface=surface)
+        out["archive"] = gd.render_sponsor_block_html(c, surface="archive")
     except Exception as e:                                    # noqa: BLE001
         print("  [warn] no page preview (%s: %s)" % (type(e).__name__, e))
 
@@ -239,10 +237,28 @@ def previews(c):
     except Exception as e:                                    # noqa: BLE001
         print("  [warn] no email preview (%s: %s)" % (type(e).__name__, e))
 
-    css = site_sponsor_css()
-    if css:
-        out["css"] = css
     return out
+
+
+def portal_extras(s):
+    """What the portal needs beyond the numbers: the approval on record, the
+    contract terms, and who to call. All of it is read from data/sponsors.json,
+    typed there by Sig, never inferred.
+
+    approved  {"proof": "xxxxxxxx", "on": "YYYY-MM-DD", "by": "name"} -- set when
+              the approval email arrives. The portal shows APPROVED only when
+              this proof equals the current proof code; if the copy changed
+              since, it says the approval does not cover the new words.
+    billing   {"tier": "founding", "trial_weeks": 2, "rate_lock_months": 12,
+               "invoice_to": "...", "notes": "..."} -- the deal as agreed. The
+              schedule on the portal is computed from this and the start date.
+    """
+    return {
+        "approval": s.get("approved") or None,
+        "billing": s.get("billing") or None,
+        "contact": s.get("contact") or None,
+        "placements": s.get("placements") or None,
+    }
 
 
 def rate_card():
@@ -315,6 +331,7 @@ def main():
             cur["creative"] = creative_block(slug_)
             cur["rateCard"] = rate_card()
             cur["approveTo"] = s_.get("approve_to") or APPROVE_TO
+            cur.update(portal_extras(s_))
             cur["creativeRefreshed"] = datetime.now(timezone.utc).isoformat(timespec="seconds")
             f_.write_text(json.dumps(cur, indent=1) + "\n", encoding="utf-8")
             n += 1
@@ -411,6 +428,7 @@ def main():
                 "creative": creative_block(slug),
                 "rateCard": rate_card(),
                 "approveTo": s.get("approve_to") or APPROVE_TO,
+                **portal_extras(s),
             }, indent=1) + "\n", encoding="utf-8")
             written.append("%s: not started -- no start date set, wrote the pending page" % slug)
             continue
@@ -478,6 +496,7 @@ def main():
             "creative": creative_block(slug),
             "rateCard": rate_card(),
             "approveTo": s.get("approve_to") or APPROVE_TO,
+            **portal_extras(s),
         }
         f = OUTDIR / ("%s-%s.json" % (slug, token))
         f.write_text(json.dumps(payload, indent=1) + "\n", encoding="utf-8")

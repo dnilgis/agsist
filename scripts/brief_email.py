@@ -463,13 +463,26 @@ def _sponsor_cta(sp):
         return url
 
 
+AD_ORANGE, AD_INK = "#e8743a", "#0d1117"    # 4.66:1, bold 13px; the site's ad colour
+
+
+def _sa_tel(p):
+    d = "".join(ch for ch in str(p or "") if ch.isdigit())
+    if len(d) == 11 and d[0] == "1":
+        d = d[1:]
+    return "tel:+1" + d if len(d) == 10 else ""
+
+
 def sponsor_block(daily):
     """The paid sponsor's block as an email table row, or "" when there isn't one.
 
-    Deliberately plainer than the page version: no gradient, no coloured
-    border, no button. Outlook's Word engine drops most of that anyway, and a
-    sponsor who bought a line in a briefing that looks like a briefing does not
-    want theirs to be the one element that looks like an ad network.
+    2026-09-20: rebuilt to carry the same content as the page ad (label,
+    advertiser, headline, body, the facts line, a button, a phone number,
+    disclosure) in the only construction every client draws the same way:
+    tables, inline styles, a bulletproof button (a coloured table cell, not a
+    styled link, because Outlook's Word engine drops a link's background). No
+    logo image: the logo is .webp, which Outlook and older Apple Mail do not
+    show, and a broken image in the inbox is worse than the name set in type.
 
     Returns "" for the house ad (is_house_ad) and for an inactive sponsor, so
     the only thing that can put a name in front of the list is a real one.
@@ -484,28 +497,42 @@ def sponsor_block(daily):
     cta_t = e(sp.get("cta_text") or "Learn more")
     cta_u = _href(_sponsor_cta(sp))
     disc = e(sp.get("disclosure") or "")
+    facts = [e(f) for f in (sp.get("facts") or []) if f]
+    phone = e(sp.get("phone") or "")
+    tel = _sa_tel(sp.get("phone"))
     if not (head or text):
         return ""
-    parts = ['<tr><td style="padding:16px 0 0"><table role="presentation" width="100%%" '
-             'cellpadding="0" cellspacing="0" border="0"><tr><td style="border-left:3px solid %s;'
-             'padding:2px 0 2px 12px">' % LINE]
-    parts.append('<div style="font-family:%s;font-size:10px;letter-spacing:.08em;'
+    parts = ['<tr><td style="padding:18px 0 0"><table role="presentation" width="100%%" '
+             'cellpadding="0" cellspacing="0" border="0"><tr><td style="border:1px solid %s;'
+             'border-left:4px solid %s;border-radius:8px;padding:14px 16px 14px 14px">' % (LINE, AD_ORANGE)]
+    parts.append('<div style="font-family:%s;font-size:10px;font-weight:700;letter-spacing:.14em;'
                  'text-transform:uppercase;color:%s">%s%s</div>'
-                 % (MONO, MUTE, label, (" &middot; " + who) if who else ""))
+                 % (MONO, "#a8380a", label, (' <span style="color:%s;font-weight:600;'
+                    'letter-spacing:.04em">&middot; %s</span>' % (MUTE, who)) if who else ""))
     if head:
-        parts.append('<div class="ink" style="font-family:%s;font-size:15px;line-height:1.45;'
-                     'font-weight:700;color:%s;padding-top:4px">%s</div>' % (SANS, INK, head))
+        parts.append('<div class="ink" style="font-family:%s;font-size:19px;line-height:1.25;'
+                     'font-weight:800;color:%s;padding-top:6px">%s</div>' % (SANS, INK, head))
     if text:
         parts.append('<div class="ink" style="font-family:%s;font-size:14px;line-height:1.55;'
-                     'color:%s;padding-top:5px">%s</div>' % (SANS, INK, text))
+                     'color:%s;padding-top:6px">%s</div>' % (SANS, INK, text))
+    if facts:
+        parts.append('<div class="mute" style="font-family:%s;font-size:12px;line-height:1.6;'
+                     'font-weight:700;color:%s;padding-top:8px">%s</div>'
+                     % (MONO, MUTE, " &nbsp;&middot;&nbsp; ".join(facts)))
     if cta_u:
-        parts.append('<div style="padding-top:7px"><a href="%s" rel="sponsored noopener" '
-                     'style="font-family:%s;font-size:12px;font-weight:700;letter-spacing:.05em;'
-                     'text-transform:uppercase;color:%s;text-decoration:underline">%s &rarr;</a></div>'
-                     % (cta_u, MONO, GOLD, cta_t))
+        parts.append('<table role="presentation" cellpadding="0" cellspacing="0" border="0" '
+                     'style="margin-top:12px"><tr><td bgcolor="%s" style="background:%s;border-radius:6px">'
+                     '<a href="%s" rel="sponsored noopener" style="display:inline-block;padding:11px 18px;'
+                     'font-family:%s;font-size:13px;font-weight:800;letter-spacing:.05em;'
+                     'text-transform:uppercase;color:%s;text-decoration:none">%s &rarr;</a></td>'
+                     '%s</tr></table>'
+                     % (AD_ORANGE, AD_ORANGE, cta_u, MONO, AD_INK, cta_t,
+                        ('<td style="padding-left:14px;font-family:%s;font-size:13px;color:%s">'
+                         'or call <a href="%s" style="color:%s;font-weight:700;text-decoration:none">%s</a></td>'
+                         % (SANS, MUTE, tel, INK, phone)) if tel else ""))
     if disc:
         parts.append('<div class="mute" style="font-family:%s;font-size:11px;line-height:1.5;'
-                     'color:%s;padding-top:6px">%s</div>' % (SANS, MUTE, disc))
+                     'color:%s;padding-top:10px">%s</div>' % (SANS, MUTE, disc))
     parts.append('</td></tr></table></td></tr>')
     return "".join(parts)
 
@@ -676,9 +703,15 @@ def render_text(daily, site, unsub_url=None, date_display=None):
             _v = strip_md(_sp.get(_k))
             if _v:
                 L.append(_v)
+        _f = [strip_md(x) for x in (_sp.get("facts") or []) if x]
+        if _f:
+            L.append(" / ".join(_f))
         _u = _sponsor_cta(_sp)
         if _u:
             L.append((strip_md(_sp.get("cta_text")) or "Learn more") + ": " + _u)
+        _ph = strip_md(_sp.get("phone"))
+        if _ph:
+            L.append("Or call " + _ph)
         _d = strip_md(_sp.get("disclosure"))
         if _d:
             L.append(_d)
