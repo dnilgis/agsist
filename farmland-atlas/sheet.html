@@ -355,6 +355,7 @@ function render(){
     +(ok(Wl)?'; '+(Wl.register||'Nebraska DNR and Kansas DWR registers'):'')+(ok(C)?'; USDA FSA CRP statistics':'')
     +(ok(d.frost)?'; NOAA nClimGrid daily county averages':'')+(ok(d.storms)?'; NOAA Storm Events':'')+'. '+(TEN?'Ranks count counties with 10,000 acres or more in farms, in the same survey year for rent; a state median is the median of its county figures. ':'No ranks: the census tenure file did not load. ')
     +pulled()
+    +'<b>One field, not the county:</b> agsist.com/field-scout · '
     +'<b>Method:</b> agsist.com/farmland-atlas/methods · <b>Live county record:</b> '+esc(url.replace('https://',''))+' · Printed '+esc(new Date().toISOString().slice(0,10))+'.</footer>';
   $('paper').innerHTML=h;
   // one printed page: measure at the printed width (letter less .4in margins) and shrink only if it overflows

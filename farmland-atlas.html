@@ -523,7 +523,7 @@ details.fa-arith .body a{color:var(--gold)}
       <p class="sr-only" id="fa-p-status" role="status"></p>
       <div class="fa-p-head">
         <div><h2 id="fa-p-name" tabindex="-1">—</h2><div class="fa-sub" id="fa-p-sub"></div></div>
-        <div class="fa-ptools"><button type="button" id="fa-p-copy">Copy link</button><button type="button" id="fa-p-map">Back to the map</button><a id="fa-p-print" href="/farmland-atlas/sheet" target="_blank" rel="noopener">Printable county sheet</a><span class="fa-note" id="fa-p-copied" role="status"></span></div>
+        <div class="fa-ptools"><button type="button" id="fa-p-copy">Copy link</button><button type="button" id="fa-p-map">Back to the map</button><a id="fa-p-print" href="/farmland-atlas/sheet" target="_blank" rel="noopener">Printable county sheet</a><a id="fa-p-scout" href="/field-scout">Scout a field in this county</a><span class="fa-note" id="fa-p-copied" role="status"></span></div>
       </div>
       <div class="fa-strip" id="fa-p-strip"></div>
       <div id="fa-p-read" hidden></div>
@@ -1145,6 +1145,14 @@ function neighbours(f){
 function farmAcres(f){ var T=SIDE.tenure.d, c=T&&T.counties&&T.counties[f], p=c&&c.y&&c.y['2022']; if(!p) return 0; return p[0]!=null&&p[1]!=null?p[0]+p[1]:null; }   // null: one part suppressed (D), size unknown
 function shortName(c,st){ var u=('u' in c)?c.u:'County'; return c.name+(/^city$/i.test(u)?' (city)':'')+(st&&c.state!==st?', '+c.state:''); }
 var RAIL_MORE=false;
+// Field Scout opens on the county's middle, zoomed to where a field can be drawn
+function scoutHref(f){
+  var ft=null; (GEO&&GEO.features||[]).some(function(x){ if(x.id===f){ ft=x; return true; } return false; });
+  if(!ft||!ft.geometry) return '/field-scout';
+  var x0=180,x1=-180,y0=90,y1=-90;
+  (function walk(c){ if(typeof c[0]==='number'){ if(c[0]<x0)x0=c[0]; if(c[0]>x1)x1=c[0]; if(c[1]<y0)y0=c[1]; if(c[1]>y1)y1=c[1]; } else c.forEach(walk); })(ft.geometry.coordinates);
+  return '/field-scout?at='+((y0+y1)/2).toFixed(4)+','+((x0+x1)/2).toFixed(4)+'&fips='+f;
+}
 // a date layer ranks by the calendar: the latest freeze is not the "highest"
 function hl(L,t){ return L&&L.doy?String(t).replace(/highest/g,'latest').replace(/lowest/g,'earliest').replace(/Highest/g,'Latest').replace(/Lowest/g,'Earliest'):t; }
 function renderRail(){
@@ -1174,7 +1182,7 @@ function renderRail(){
         var ry2=ryear(L,r.c), tag=ry2&&ry2!==ryear(L,c)?' ('+ry2+')':'';
         return '<li><button type="button" data-fips="'+r.f+'"'+(r.f===SEL?' class="me"':'')+'><span class="sw" style="background:'+(miss?'transparent':PATHS[r.f]?PATHS[r.f].getAttribute('fill'):'transparent')+'"></span><span class="nm">'+esc(shortName(r.c,c.state))+'</span><span class="v">'+(miss?'—':esc(fmtv(L,r.v)+tag))+'</span></button></li>'; }).join('')+'</ul>';
     }
-    h+='<button type="button" class="fa-cc-go" id="fa-cc-go">Full county record ↓</button><a class="fa-cc-print" href="/farmland-atlas/sheet#'+SEL+'" target="_blank" rel="noopener">Printable county sheet</a></div>';
+    h+='<button type="button" class="fa-cc-go" id="fa-cc-go">Full county record ↓</button><a class="fa-cc-print" href="/farmland-atlas/sheet#'+SEL+'" target="_blank" rel="noopener">Printable county sheet</a><a class="fa-cc-print" href="'+scoutHref(SEL)+'">Scout a field here</a></div>';
   }
   // RANKED already skips a city with a few hundred acres of farms: Staten Island is not the most valuable farmland in the US
   var T=SIDE.tenure, farmOk=farmReady();
@@ -1898,6 +1906,7 @@ function select(fips,how){
   $('fa-p-cards').innerHTML='';
   writeHash(); markLegend(); renderRail();
   var pl=$('fa-p-print'); if(pl) pl.href='/farmland-atlas/sheet#'+fips;
+  var ps=$('fa-p-scout'); if(ps) ps.href=scoutHref(fips);
   if(how==='map'||how==='rail'||how==='search'){
     if(!window.matchMedia('(min-width:1280px)').matches){
       // keep the bottom of the map on screen so the county stays in view above its card

@@ -134,7 +134,7 @@
       if(a) ga('presell_click', {});
     });
     renderSavedFields();
-    if(!restoreFromLink()) tryAutoLocate();
+    if(!restoreFromLink() && !fromAtlasLink()) tryAutoLocate();
   }
 
   // ── GOD LAYERS: NDVI / moisture tile overlays, on-map chips + bottom layer sheet ──
@@ -424,6 +424,15 @@
   }
 
   // ── Geo helpers ─────────────────────────────────────────────────────
+  // /field-scout?at=lat,lng&fips=19169 — opened from a Farmland Atlas county: start on that county
+  function fromAtlasLink(){
+    var m=/[?&]at=(-?\d+(?:\.\d+)?),(-?\d+(?:\.\d+)?)/.exec(location.search||''); if(!m) return false;
+    var lat=+m[1], lng=+m[2]; if(!isFinite(lat)||!isFinite(lng)||Math.abs(lat)>72||lng>-60||lng<-180) return false;
+    map.setView([lat,lng], 11);
+    flashHint('Zoom in to your field in this county, then tap or draw it', 7000);
+    ga('field_from_atlas', {});
+    return true;
+  }
   function tryAutoLocate(){
     if(window.AGSIST_STATE && window.AGSIST_STATE.lat && window.AGSIST_STATE.lon){
       map.setView([window.AGSIST_STATE.lat, window.AGSIST_STATE.lon], 14);
@@ -869,6 +878,7 @@
           section('risk',ICONS.risk,'Risk Profile','fs-risk') +
           section('bids',ICONS.bids,'Nearby Cash Bids','fs-bids') +
           section('rent',ICONS.rent,'What This Ground Rents For','fs-rent') +
+          section('atlas',ICONS.risk,'The County’s Long Record','fs-atlas') +
           section('market',ICONS.market,'Selling It From Here','fs-market') +
           section('hood',ICONS.hood,'Who Farms Around Here','fs-hood') +
           section('cond',ICONS.cond,'How the Crop Looks Statewide','fs-cond') +
@@ -1850,7 +1860,7 @@
         var ad=(d&&d.address)||{};
         var stFull=ad.state, cty=(ad.county||'').replace(/\s+County$/i,'');
         var abbr=N2A[stFull];
-        if(!abbr||!cty){ ['fs-rent','fs-market','fs-hood','fs-cond'].forEach(function(id){ setErr(id, 'This spot didn’t resolve to a US county — the county and state layers only cover the fifty states.'); }); return; }
+        if(!abbr||!cty){ ['fs-rent','fs-market','fs-hood','fs-cond','fs-atlas'].forEach(function(id){ setErr(id, 'This spot didn’t resolve to a US county — the county and state layers only cover the fifty states.'); }); return; }
         FIELD.county = { name:cty, st:stFull, abbr:abbr, fips:null };
         var co=document.querySelector('#fs-results .coords');
         if(co) co.textContent='center '+c.lat.toFixed(4)+', '+c.lng.toFixed(4)+' · '+cty+' County, '+stFull;
@@ -1859,7 +1869,7 @@
         loadHoodCard(gen, abbr, cty, stFull);
         loadCondCard(gen, abbr, stFull);
       })
-      .catch(function(){ if(gen!==fieldGen) return; ['fs-rent','fs-market','fs-hood','fs-cond'].forEach(function(id){ setErr(id, ERR_ALL); }); });
+      .catch(function(){ if(gen!==fieldGen) return; ['fs-rent','fs-market','fs-hood','fs-cond','fs-atlas'].forEach(function(id){ setErr(id, ERR_ALL); }); });
   }
   function loadRentCard(gen, abbr, cty, stFull){
     getJSON('/data/cash-rent/'+abbr+'.json').then(function(d){
@@ -1867,6 +1877,10 @@
       var rec=(d.counties||[]).find(function(x){ return String(x.name).toLowerCase()===cty.toLowerCase(); });
       if(!rec){ setErr('fs-rent','NASS publishes no county rent survey for '+esc(cty)+' County — small samples get suppressed rather than guessed.'); return; }
       if(FIELD.county) FIELD.county.fips = rec.fips;
+      atlasCard(gen, rec.fips);
+      atlasCounty(rec.fips).then(function(ad){ if(gen!==fieldGen) return; rentCard(rec, ad); });
+    }).catch(function(){ if(gen===fieldGen) setErr('fs-rent','County rent data didn’t load — refresh in a minute.'); });
+    function rentCard(rec, ad){
       var ni=rec.rent&&rec.rent.nonirr||{};
       var yrs=Object.keys(ni).map(Number).sort(function(a,b){return a-b;});
       if(!yrs.length){ setErr('fs-rent','No non-irrigated rent series for '+esc(cty)+' County in the NASS survey.'); return; }
@@ -1876,17 +1890,75 @@
       var html=bigline('$'+Math.round(val), 'gold', '/ac non-irrigated · '+last, '');
       html+=cbar('county rent vs its own '+last10.length+'-yr average, $/ac', val, avg, '$', true);
       html+='<div class="fs-cbar-cap">center tick = '+esc(cty)+' Co’s own average ($'+Math.round(avg)+') · red = pricier than usual</div>';
-      if(cornY&&cornY.trend){
-        var trend=Math.round(cornY.trend);
-        var lastY=cornY.last!=null?cornY.last:null;
-        var bid=FIELD.bids&&FIELD.bids.corn?FIELD.bids.corn.cash:null;
-        var money = bid ? ' At $'+bid.toFixed(2)+' nearby corn that’s $'+Math.round(trend*bid).toLocaleString('en-US')+' gross — rent takes '+Math.round(val/(trend*bid)*100)+'%.' : '';
-        html+='<p class="fs-cline">County corn trend: <strong>'+trend+' bu/ac</strong>'+(lastY?' (recent county average: '+lastY+' bu)':'')+'.'+money+' <a class="fs-act-link" href="/cash-lease?st='+abbr+'" target="_blank" rel="noopener">Run this lease in Cash Lease &rarr;</a></p>';
+      // THE COUNTY YIELD IS THE ATLAS'S: the last five published years, high and low dropped. The
+      // Atlas, its county sheet and this report now print one number for a county; before, this
+      // card printed the /cash-rent trend (Story IA 3.9 bu/yr) while the sheet printed another.
+      var lv=recentLevel(ad&&ad['yield']);
+      var bid=FIELD.bids&&FIELD.bids.corn?FIELD.bids.corn.cash:null;
+      var yl=null, ylab='';
+      if(lv){ yl=lv.avg; ylab='County corn, recent level: <strong>'+lv.avg.toFixed(1)+' bu/ac</strong> ('+lv.from+'–'+lv.to+', high and low year dropped)'; }
+      else if(cornY&&cornY.trend){ yl=Math.round(cornY.trend); ylab='County corn trend: <strong>'+yl+' bu/ac</strong>'+(cornY.last!=null?' (recent county average: '+cornY.last+' bu)':''); }
+      if(yl){
+        var money = bid ? ' At $'+bid.toFixed(2)+' nearby corn that’s $'+Math.round(yl*bid).toLocaleString('en-US')+' gross — rent takes '+Math.round(val/(yl*bid)*100)+'%.' : '';
+        html+='<p class="fs-cline">'+ylab+'.'+money+' <a class="fs-act-link" href="/cash-lease?st='+abbr+'" target="_blank" rel="noopener">Run this lease in Cash Lease &rarr;</a></p>';
       }
-      html+=csrc('USDA NASS county cash-rent survey · '+esc(cty)+' County, '+esc(stFull)+' · missing years = never surveyed, not zero');
-      FIELD.county.rent={ val:val, year:last, avg:Math.round(avg), trend:cornY&&cornY.trend?Math.round(cornY.trend):null, lastYield:cornY?cornY.last:null };
+      html+=csrc('USDA NASS county cash-rent survey and county corn yield · '+esc(cty)+' County, '+esc(stFull)+' · missing years = never surveyed, not zero');
+      FIELD.county.rent={ val:val, year:last, avg:Math.round(avg), level:lv, trend:!lv&&cornY&&cornY.trend?Math.round(cornY.trend):null, lastYield:!lv&&cornY?cornY.last:null };
       setBody('fs-rent', html); recomputeInsight();
-    }).catch(function(){ if(gen===fieldGen) setErr('fs-rent','County rent data didn’t load — refresh in a minute.'); });
+    }
+  }
+  // ── The county's long record, from the same file the Farmland Atlas and its county sheet print ──
+  var ATLAS_CO={};
+  function atlasCounty(fips){
+    if(!fips) return Promise.resolve(null);
+    if(!ATLAS_CO[fips]) ATLAS_CO[fips]=getJSON('/data/atlas/counties/'+fips+'.json').catch(function(){ return null; });
+    return ATLAS_CO[fips];
+  }
+  // the Atlas's recent yield level, same rule: five years ending at the county's newest, four needed, high and low dropped
+  function recentLevel(y){
+    if(!y||y.status!=='ok'||!y.hist||!y.last_year) return null;
+    var last=y.last_year, yrs=[]; for(var k=last-4;k<=last;k++) if(y.hist[k]!=null) yrs.push(k);
+    if(yrs.length<4 || last < new Date().getFullYear()-3) return null;     // the Atlas drops a series last published 4+ years back
+    var v=yrs.map(function(k){ return y.hist[k]; }).sort(function(a,b){ return a-b; }).slice(1,-1);
+    return { avg:v.reduce(function(a,b){ return a+b; },0)/v.length, from:last-4, to:last, n:yrs.length };
+  }
+  function atlasRows(d){
+    var rows=[], ok=function(x){ return x&&x.status==='ok'; }, n0=function(x){ return Math.round(x).toLocaleString('en-US'); };
+    var V=d.value, Y=d['yield'], S=d.sob, Lo=d.loss, Dr=d.drought, Cl=d.climate, Fr=d.frost, St=d.storms, W=d.water, Pr=d.practices, C=d.crp, H=d.heat, Wl=d.wells, Lv=d.livestock;
+    if(ok(V)&&V.latest!=null) rows.push(['Land and buildings, '+V.latest_year+' census', '$'+n0(V.latest)+'/ac',
+      V.flag?'read with care: the census value moved far off the counties next door':(V.change&&V.change.pct!=null?(V.change.pct>=0?'+':'')+V.change.pct.toFixed(1)+'% since '+V.change.from_year:'operators’ own estimate')]);
+    if(ok(Y)) rows.push(['Corn yield, '+Y.first_year+'–'+Y.last_year+' median', Y.median.toFixed(1)+' bu/ac', 'worst year '+Y.worst.year+' at '+Math.round(Y.worst.share_of_median*100)+'% of median']);
+    if(ok(S)&&S.last10&&S.last10.loss_cost!=null) rows.push(['Crop insurance claims per $100 of coverage', '$'+(S.last10.loss_cost*100).toFixed(2), S.last10.from+'–'+S.last10.to+(S.loss_ratio_all!=null?'; loss ratio since '+S.first_year+' '+S.loss_ratio_all.toFixed(2):'')]);
+    if(ok(Lo)&&Lo.share_all){ var NM={heat_drought:'heat and drought',wet:'excess moisture',hail:'hail',wind:'wind',cold:'cold',irrigation:'irrigation failure',price:'price decline',unassigned:'area plans',other:'other'};
+      var top=Object.keys(Lo.share_all).filter(function(k){ return Lo.share_all[k]!=null; }).sort(function(a,b){ return Lo.share_all[b]-Lo.share_all[a]; })[0];
+      if(top) rows.push(['Largest cause of crop insurance payouts', NM[top]||top, Math.round(Lo.share_all[top]*100)+'% of dollars paid, '+Lo.first_year+'–'+Lo.last_year]); }
+    if(ok(Dr)&&Dr.weeks&&Dr.weeks.share_d2_pct!=null) rows.push(['Weeks in severe drought or worse', Math.round(Dr.weeks.share_d2_pct)+'%', 'of weeks since '+Dr.first_year+' with half the county in D2+']);
+    if(ok(Cl)&&Cl.gs_normal_in!=null) rows.push(['April–September rain, normal', Cl.gs_normal_in.toFixed(1)+' in', (Cl.gs_recent&&Cl.gs_recent.pct_of_normal!=null?'last ten seasons '+Cl.gs_recent.pct_of_normal+'% of normal; ':'')+'1991–2020']);
+    if(ok(Fr)&&Fr.frost_free_days&&Fr.frost_free_days.median!=null) rows.push(['Frost-free days, median', (Fr.frost_free_days.at_least?'at least ':'')+Fr.frost_free_days.median,
+      ((Fr.last_spring_freeze||{}).median||'')+' to '+((Fr.first_fall_freeze||{}).median||'')+(Fr.gdd?'; corn GDD '+n0(Fr.gdd.median):'')+'; county-average lows']);
+    if(ok(St)) rows.push(['Hail 1 inch or larger, county reports', St.hail_1in_days_per_year.toFixed(1)+' days a year', St.from+'–'+St.to+'; reports, not storms']);
+    if(ok(H)&&H.months&&H.months.jul&&H.months.jul.recent) rows.push(['July nights, average low', H.months.jul.recent.mean.toFixed(1)+' °F', H.months.jul.recent.from+'–'+H.months.jul.recent.to]);
+    if(ok(W)&&W.irrigated_share_2022&&W.irrigated_share_2022.share!=null) rows.push(['Harvested cropland irrigated', Math.round(W.irrigated_share_2022.share*100)+'%', '2022 census']);
+    if(ok(Pr)&&Pr.tile&&Pr.tile.share!=null&&Pr.tile.share>=0.005) rows.push(['Cropland drained by tile', Math.round(Pr.tile.share*100)+'%', '2022 census']);
+    if(ok(C)&&C.latest&&C.latest.acres) rows.push(['CRP enrolled', n0(C.latest.acres)+' ac', C.expiring_next3?n0(C.expiring_next3.acres)+' ac expire FY'+C.expiring_next3.from+'–'+C.expiring_next3.to:String(C.latest.year)]);
+    if(ok(Wl)&&(Wl.irrigation_wells!=null||Wl.irrigation_active!=null)) rows.push(['Irrigation wells on the state register', n0(Wl.irrigation_wells!=null?Wl.irrigation_wells:Wl.irrigation_active), Wl.depth_median_ft!=null?'median depth '+n0(Wl.depth_median_ft)+' ft':'']);
+    if(ok(Lv)&&Lv.cattle&&Lv.cattle.value!=null) rows.push(['Cattle and calves', n0(Lv.cattle.value)+' head', '2022 census']);
+    return rows;
+  }
+  function atlasCard(gen, fips){
+    if(!fips||!FIELD||!FIELD.county||FIELD.county.atlasFips===fips) return;
+    FIELD.county.atlasFips=fips;
+    atlasCounty(fips).then(function(d){
+      if(gen!==fieldGen) return;
+      if(!d){ setErr('fs-atlas','The county’s Farmland Atlas record didn’t load — refresh in a minute.'); return; }
+      var rows=atlasRows(d);
+      FIELD.county.atlas={ fips:fips, rows:rows };
+      var html=rows.length?rows.map(function(r){ return '<p class="fs-cline">'+esc(r[0])+': <strong>'+esc(r[1])+'</strong>'+(r[2]?' <span style="opacity:.8">· '+esc(r[2])+'</span>':'')+'</p>'; }).join('')
+        :'<div class="fs-err">The Atlas publishes no county figures here yet.</div>';
+      html+='<p class="fs-cline"><a class="fs-act-link" href="/farmland-atlas#'+fips+'" target="_blank" rel="noopener">Full county record on the Farmland Atlas &rarr;</a> &nbsp; <a class="fs-act-link" href="/farmland-atlas/sheet#'+fips+'" target="_blank" rel="noopener">Printable county sheet &rarr;</a></p>';
+      html+=csrc('County-wide figures, the same ones the Farmland Atlas prints · the field sections above are this field alone');
+      setBody('fs-atlas', html);
+    });
   }
   function loadMarketCard(gen, abbr, stFull){
     Promise.all([
@@ -1946,6 +2018,7 @@
           var owned=pair[0], rented=pair[1]; denom=owned+rented;
           var pct=Math.round(rented/denom*100);
           if(!fips){ fips=trec.k; if(FIELD.county) FIELD.county.fips=fips; }
+          atlasCard(gen, fips);
           html+=bigline(pct+'%','blue','rented ground','');
           html+='<p class="fs-cline">'+esc(cty)+' Co farms rent <strong>'+Math.round(rented).toLocaleString('en-US')+' of '+Math.round(denom).toLocaleString('en-US')+' acres</strong> ('+ly+' census)'+(pct>=60?' — landlord country, and rents show it.':'.')+'</p>';
           FIELD.county.tenure={ pct:pct, rented:rented, total:denom, year:ly };
@@ -1964,6 +2037,7 @@
           FIELD.county.afida={ acres:ac, year:aly, share:share };
         }
       }
+      if(!fips&&!(FIELD.county&&FIELD.county.fips)) setErr('fs-atlas','Couldn’t match '+esc(cty)+' County to a county code, so its long record can’t be shown.');
       if(!got){ setErr('fs-hood','No census tenure or AFIDA rows published for '+esc(cty)+' County — suppressed small-sample counties stay blank rather than estimated.'); return; }
       html+=csrc('USDA Census of Agriculture (owned vs rented-from-others) · USDA AFIDA foreign-holdings filings');
       setBody('fs-hood', html); recomputeInsight();
@@ -2415,7 +2489,8 @@
     var bandCells='';
     function cell(k,v,n){ bandCells+='<div class="r-st"><div class="r-stk">'+esc(k)+'</div><div class="r-stv">'+v+'</div>'+(n?'<div class="r-stn">'+esc(n)+'</div>':'')+'</div>'; }
     if(cy&&cy.rent) cell('County rent \u2019'+String(cy.rent.year).slice(2), '$'+Math.round(cy.rent.val)+'<span class="r-stu">/ac</span>', cy.rent.avg?('10-yr avg $'+cy.rent.avg):null);
-    if(cy&&cy.rent&&cy.rent.trend) cell('Corn trend yield', cy.rent.trend+'<span class="r-stu"> bu</span>', cy.rent.lastYield?('made '+cy.rent.lastYield+' last year'):null);
+    if(cy&&cy.rent&&cy.rent.level) cell('County corn, recent', cy.rent.level.avg.toFixed(1)+'<span class="r-stu"> bu</span>', cy.rent.level.from+'–'+cy.rent.level.to+', high & low dropped');
+    else if(cy&&cy.rent&&cy.rent.trend) cell('Corn trend yield', cy.rent.trend+'<span class="r-stu"> bu</span>', cy.rent.lastYield?('made '+cy.rent.lastYield+' last year'):null);
     if(cy&&cy.basis) cell(esc(cy.basis.crop)+' basis vs normal', '<span class="'+(cy.basis.dev<0?'r-red':'r-green')+'">'+(cy.basis.dev<0?'\u2212$':'+$')+Math.abs(cy.basis.dev).toFixed(2)+'</span>', (cy.basis.latest<0?'\u2212$':'$')+Math.abs(cy.basis.latest).toFixed(2)+' vs '+(cy.basis.avg5>=0?'+$':'\u2212$')+Math.abs(cy.basis.avg5).toFixed(2)+' avg');
     if(cy&&cy.tenure) cell('Rented ground here', cy.tenure.pct+'%', 'of county farmland');
     var bandHtml = bandCells ? '<div class="r-band">'+bandCells+'</div>' : '';
@@ -2423,9 +2498,10 @@
     var moneyRows='';
     if(cy&&cy.rent){
       moneyRows+=kv('County rent, non-irr \u2019'+String(cy.rent.year).slice(2), '$'+Math.round(cy.rent.val)+'/ac');
-      if(cy.rent.trend&&b&&b.corn){
-        var gross=Math.round(cy.rent.trend*b.corn.cash);
-        moneyRows+=kv('Gross @ trend \u00d7 $'+b.corn.cash.toFixed(2), '$'+gross.toLocaleString('en-US')+'/ac');
+      var yl=cy.rent.level?cy.rent.level.avg:cy.rent.trend;
+      if(yl&&b&&b.corn){
+        var gross=Math.round(yl*b.corn.cash);
+        moneyRows+=kv('Gross @ '+(cy.rent.level?'recent county yield':'trend')+' \u00d7 $'+b.corn.cash.toFixed(2), '$'+gross.toLocaleString('en-US')+'/ac');
         moneyRows+=kv('Rent share of gross', Math.round(cy.rent.val/gross*100)+'%');
       }
     }
@@ -2478,6 +2554,8 @@
       +sect('Statewide crop & bins', stateRows?'<table class="r-kv">'+stateRows+'</table>':'')
       +sect('Conditions', condRows?'<table class="r-kv">'+condRows+'</table>':'')
       +sect('Nearby cash bids', bidRows?'<table class="r-kv">'+bidRows+'</table>':'')
+      +(cy&&cy.atlas&&cy.atlas.rows.length?sect('The county\u2019s long record', '<table class="r-kv">'+cy.atlas.rows.map(function(r){ return kv(r[0], esc(r[1])+(r[2]?' <span style="color:#777">\u00b7 '+esc(r[2])+'</span>':'')); }).join('')+'</table>'
+        +'<p class="r-note">County-wide, the same figures the Farmland Atlas prints: agsist.com/farmland-atlas#'+esc(cy.atlas.fips)+' \u00b7 county sheet: agsist.com/farmland-atlas/sheet#'+esc(cy.atlas.fips)+'</p>'):'')
       +'<div class="r-foot"><strong>Prepared by Sigurd Lindquist \u00b7 AGSIST Field Scout \u00b7 agsist.com/field-scout \u00b7 sig@farmers1st.com</strong><br>Compiled from public data: USDA SSURGO soil survey, Cropland Data Layer, NASS county cash-rent survey &amp; weekly crop conditions, Census of Agriculture, AFIDA foreign-holdings filings, AgTransport basis, Open-Meteo, US Drought Monitor, Iowa Environmental Mesonet hail reports, and the AGSIST cash-bid feed. Survey estimates &mdash; not a substitute for sampling your own ground. A starting read, not an underwriting decision or financial advice. Missing data prints as missing; nothing here is interpolated.</div>'
       +'</body></html>';
 
