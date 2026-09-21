@@ -1,18 +1,18 @@
 {
- "generated": "2026-09-21T16:58:33Z",
+ "generated": "2026-09-21T20:57:48Z",
  "from": "bids-full.json",
  "complete": false,
  "note": "Directory only: who operates a facility and where. No prices, no basis, no symbols, no delivery windows.",
  "counts": {
-  "facilities": 1808,
+  "facilities": 1809,
   "states": 28,
   "with_address": 0,
   "with_coords": 0,
   "with_url": 0,
-  "with_phone": 1808,
+  "with_phone": 1809,
   "saturated_zips": 0,
   "failed_zips": 0,
-  "rows_read": 18309
+  "rows_read": 18375
  },
  "saturated": [],
  "failed": [],
@@ -10005,6 +10005,15 @@
    "state": "MN",
    "zip": "56164",
    "phone": "507-499-8352",
+   "source": "barchart"
+  },
+  {
+   "facility": "Hugoson Feedmill and Pork",
+   "branch": "Hugoson Feedmill",
+   "city": "Granada",
+   "state": "MN",
+   "zip": "56039",
+   "phone": "(507) 773-4571",
    "source": "barchart"
   },
   {
