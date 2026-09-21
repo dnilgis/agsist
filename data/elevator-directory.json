@@ -1,18 +1,18 @@
 {
- "generated": "2026-09-19T14:46:01Z",
+ "generated": "2026-09-21T16:58:33Z",
  "from": "bids-full.json",
  "complete": false,
  "note": "Directory only: who operates a facility and where. No prices, no basis, no symbols, no delivery windows.",
  "counts": {
-  "facilities": 1805,
+  "facilities": 1808,
   "states": 28,
   "with_address": 0,
   "with_coords": 0,
   "with_url": 0,
-  "with_phone": 1805,
+  "with_phone": 1808,
   "saturated_zips": 0,
   "failed_zips": 0,
-  "rows_read": 18228
+  "rows_read": 18309
  },
  "saturated": [],
  "failed": [],
@@ -6651,6 +6651,15 @@
    "source": "barchart"
   },
   {
+   "facility": "Iroquois Bio-Energy",
+   "branch": "IBEC",
+   "city": "Rensselaer",
+   "state": "IN",
+   "zip": "47978",
+   "phone": "(219) 866-5990",
+   "source": "barchart"
+  },
+  {
    "facility": "Kentland Elevator & Supply Inc.",
    "branch": "Kentland",
    "city": "Kentland ",
@@ -7458,15 +7467,6 @@
    "state": "KS",
    "zip": "66780",
    "phone": "620-354-6424",
-   "source": "barchart"
-  },
-  {
-   "facility": "Cardinal Ethanol",
-   "branch": "Cardinal Colwich",
-   "city": "Colwich",
-   "state": "KS",
-   "zip": "67030",
-   "phone": "(316) 789-2500",
    "source": "barchart"
   },
   {
@@ -8856,12 +8856,30 @@
    "source": "barchart"
   },
   {
+   "facility": "Scoular Company - Missouri",
+   "branch": "Scoular Pittsburg Cash Bids",
+   "city": "Pittsburg",
+   "state": "KS",
+   "zip": "66762",
+   "phone": "620-232-5800",
+   "source": "barchart"
+  },
+  {
    "facility": "Sek Coop Inc.",
    "branch": "Severy",
    "city": "Severy",
    "state": "KS",
    "zip": "67137",
    "phone": "620-736-2011",
+   "source": "barchart"
+  },
+  {
+   "facility": "Skyland Grain",
+   "branch": "Cunningham Area",
+   "city": "Cunningham",
+   "state": "KS",
+   "zip": "67035",
+   "phone": "(620) 298-2011",
    "source": "barchart"
   },
   {
@@ -11670,6 +11688,15 @@
    "state": "ND",
    "zip": "58048",
    "phone": "701-874-2112",
+   "source": "barchart"
+  },
+  {
+   "facility": "Iroquois Bio-Energy",
+   "branch": "Blue Flint",
+   "city": "Underwood",
+   "state": "ND",
+   "zip": "58576",
+   "phone": "701-442-7500",
    "source": "barchart"
   },
   {
