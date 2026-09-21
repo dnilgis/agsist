@@ -1,5 +1,5 @@
 {
-  "fetched": "2026-09-21T20:14:22Z",
+  "fetched": "2026-09-21T20:18:02Z",
   "ok": 69,
   "failed": 1,
   "stale_keys": [],
@@ -305,10 +305,10 @@
       "repair_reason": "continuous-roll-contamination",
       "_orig": {
         "ticker": "DC=F",
-        "close": 15.7,
+        "close": 15.72,
         "open": 15.6,
-        "netChange": 0.1,
-        "pctChange": 0.641
+        "netChange": 0.12,
+        "pctChange": 0.7692
       }
     },
     "cattle-oct26": {
@@ -556,19 +556,19 @@
     },
     "milk-oct26": {
       "ticker": "DCV26.CME",
-      "close": 15.7,
+      "close": 15.72,
       "open": 15.6,
-      "netChange": 0.1,
-      "pctChange": 0.641,
+      "netChange": 0.12,
+      "pctChange": 0.7692,
       "wk52_hi": 19.25,
       "wk52_lo": 15.62
     },
     "milk-nov26": {
       "ticker": "DCX26.CME",
-      "close": 15.97,
+      "close": 15.99,
       "open": 15.91,
-      "netChange": 0.06,
-      "pctChange": 0.3771,
+      "netChange": 0.08,
+      "pctChange": 0.5028,
       "wk52_hi": 18.95,
       "wk52_lo": 15.9
     },
@@ -628,46 +628,46 @@
     },
     "crude": {
       "ticker": "CL=F",
-      "close": 92.0,
+      "close": 92.05,
       "open": 93.97,
-      "netChange": -1.97,
-      "pctChange": -2.0964,
+      "netChange": -1.92,
+      "pctChange": -2.0432,
       "wk52_hi": 119.48,
       "wk52_lo": 54.98
     },
     "natgas": {
       "ticker": "NG=F",
-      "close": 2.83,
+      "close": 2.831,
       "open": 2.878,
-      "netChange": -0.048,
-      "pctChange": -1.6678,
+      "netChange": -0.047,
+      "pctChange": -1.6331,
       "wk52_hi": 7.827,
       "wk52_lo": 2.483
     },
     "gold": {
       "ticker": "GC=F",
-      "close": 4381.0,
+      "close": 4381.2998,
       "open": 4395.7998,
-      "netChange": -14.7998,
-      "pctChange": -0.3367,
+      "netChange": -14.5,
+      "pctChange": -0.3299,
       "wk52_hi": 5586.2002,
       "wk52_lo": 3718.1001
     },
     "silver": {
       "ticker": "SI=F",
-      "close": 66.515,
+      "close": 66.52,
       "open": 66.645,
-      "netChange": -0.13,
-      "pctChange": -0.1951,
+      "netChange": -0.125,
+      "pctChange": -0.1876,
       "wk52_hi": 121.3,
       "wk52_lo": 43.3
     },
     "dollar": {
       "ticker": "DX-Y.NYB",
-      "close": 100.433,
+      "close": 100.435,
       "open": 100.309,
-      "netChange": 0.124,
-      "pctChange": 0.1236,
+      "netChange": 0.126,
+      "pctChange": 0.1256,
       "wk52_hi": 101.8,
       "wk52_lo": 95.55
     },
@@ -691,28 +691,28 @@
     },
     "bitcoin": {
       "ticker": "BTC-USD",
-      "close": 86777.67188,
-      "open": 81159.52344,
-      "netChange": 5618.14844,
-      "pctChange": 6.9224,
+      "close": 86762.13281,
+      "open": 81159.53906,
+      "netChange": 5602.59375,
+      "pctChange": 6.9032,
       "wk52_hi": 126198.0703,
       "wk52_lo": 57747.7656
     },
     "ripple": {
       "ticker": "XRP-USD",
-      "close": 1.5104,
+      "close": 1.5126,
       "open": 1.41,
-      "netChange": 0.1004,
-      "pctChange": 7.1206,
+      "netChange": 0.1026,
+      "pctChange": 7.2766,
       "wk52_hi": 3.0993,
       "wk52_lo": 0.9884
     },
     "kaspa": {
       "ticker": "KAS-USD",
-      "close": 0.04485,
+      "close": 0.04495,
       "open": 0.03994,
-      "netChange": 0.00491,
-      "pctChange": 12.2934,
+      "netChange": 0.00501,
+      "pctChange": 12.5438,
       "wk52_hi": 0.0819,
       "wk52_lo": 0.0139
     },
