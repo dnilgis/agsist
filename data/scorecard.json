@@ -1,9 +1,9 @@
 {
- "updated": "2026-09-20T14:17:38+00:00",
- "total": 128,
+ "updated": "2026-09-21T10:58:08+00:00",
+ "total": 129,
  "played_out": 41,
  "didnt": 81,
- "pending": 6,
+ "pending": 7,
  "hit_rate": 33.6,
  "by_method": {
   "deterministic": {
@@ -103,6 +103,21 @@
  },
  "current_streak": 0,
  "records": [
+  {
+   "made": "2026-09-21",
+   "judged": null,
+   "call": "Called crude down toward $91.50 ($92.97 when the call was made).",
+   "outcome": "pending",
+   "method": "deterministic",
+   "mismatch": false,
+   "note": "Open: no session has settled since this call was made.",
+   "instrument": "crude",
+   "direction": "down",
+   "level": "91.50",
+   "p0": 92.97,
+   "p1": null,
+   "design": "v2"
+  },
   {
    "made": "2026-09-18",
    "judged": null,

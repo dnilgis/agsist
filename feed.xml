@@ -5,13 +5,24 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Sun, 20 Sep 2026 14:17:37 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 21 Sep 2026 10:58:07 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/agsist.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>BEANS FLAT, DIESEL AT $6.50, CRUDE BREAKS ON IRAN THAW</title>
+      <link>https://agsist.com/daily/2026-09-21</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-09-21</guid>
+      <pubDate>Mon, 21 Sep 2026 05:00:00 -0600</pubDate>
+      <description>Soybeans sit at $13.10, off a penny and a half, still waiting on Xi. Meanwhile diesel crossed $6.50 a gallon this weekend, a record, while crude fell to $92.97 on Iran diplomacy hopes: two energy stories moving in opposite directions on the same headline.
+Action: Diesel at $6.50/gallon: lock harvest fuel needs now, don't wait for crude's Iran-talk dip to reach the pump.
+• Diesel Record, Crude Breaks
+• Beans Wait On Xi
+Read more: https://agsist.com/daily/2026-09-21</description>
+    </item>
     <item>
       <title>BEANS SANK FRIDAY; SUMMIT WEEK OPENS WITH CROSSED SIGNALS</title>
       <link>https://agsist.com/daily/2026-09-20</link>
@@ -381,19 +392,6 @@ Pro Farmer's below-consensus yield estimates hold corn near the top of its range
   → Cattle feeders: hold major pricing decisions until the import volume mechanics and country-of-origin sourcing are clarified. A 90-day window against record-low placements is not permanent policy.
 • BEANS FIRM, OIL SPLITS
 Read more: https://agsist.com/daily/2026-08-23</description>
-    </item>
-    <item>
-      <title>PRO FARMER SAYS SMALLER; CORN CLOSES AT 52-WEEK HIGH</title>
-      <link>https://agsist.com/daily/2026-08-22</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-08-22</guid>
-      <pubDate>Sat, 22 Aug 2026 05:00:00 -0600</pubDate>
-      <description>December corn closed at $5.08 Friday, at the top of its 52-week range, the first time it has sat there all season. The Pro Farmer tour wrapped pointing toward yields below last year's pace, and the market answered: four days of gains that erased the summer's skepticism about USDA's August cut. The week ahead tests whether that conviction holds or whether harvest pressure and the Trump beef deal rewrite the story.
-December corn hit $5.08 Friday as tour scouts backed USDA's yield cut; cattle absorbed the Trump beef import shock; week ahead hinges on Monday Crop Progress and the Aug 24 border reopening.
-• CORN TOPS THE RANGE
-  → December corn at $5.08 is a 52-week high and a real window. If you have unpriced new-crop bushels, this is the level that has to hold before combines roll. Price what you can defend.
-• BEANS FIRM, OIL SPLITS FROM MEAL
-• CATTLE ABSORB THE IMPORT SHOCK
-Read more: https://agsist.com/daily/2026-08-22</description>
     </item>
   </channel>
 </rss>

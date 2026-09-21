@@ -1,6 +1,17 @@
 {
   "briefings": [
     {
+      "date": "2026-09-21",
+      "date_display": "Monday, September 21, 2026",
+      "headline": "BEANS FLAT, DIESEL AT $6.50, CRUDE BREAKS ON IRAN THAW",
+      "teaser": "Diesel hit a record $6.50 a gallon even as crude fell on Iran talk, a split that's already in your harvest budget.",
+      "market_mood": "mixed",
+      "surprise_count": 0,
+      "sections": 2,
+      "url": "/daily/2026-09-21",
+      "market_closed": false
+    },
+    {
       "date": "2026-09-20",
       "date_display": "Sunday, September 20, 2026",
       "headline": "BEANS SANK FRIDAY; SUMMIT WEEK OPENS WITH CROSSED SIGNALS",
@@ -2207,6 +2218,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-09-20T14:17:22.394390+00:00",
-  "count": 192
+  "updated": "2026-09-21T10:57:51.970850+00:00",
+  "count": 193
 }
