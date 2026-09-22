@@ -35,6 +35,8 @@ on:
       - 'components/sponsor-ad.js'
       - 'components/sponsor-ad.css'
       - 'scripts/brief_email.py'
+      - 'scripts/audience_from_exports.py'
+      - 'data/audience.json'
 
 concurrency:
   group: sponsor-report
@@ -74,6 +76,7 @@ jobs:
           python3 scripts/sponsor_links.py --selftest
           python3 scripts/test_sponsor_portal.py
           python3 scripts/test_rate_card.py
+          python3 scripts/audience_from_exports.py --selftest
           node scripts/sponsor-checks.mjs
 
       - name: Install the GA4 client
