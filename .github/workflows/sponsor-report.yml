@@ -72,6 +72,13 @@ jobs:
       # sponsor-checks.mjs already existed and NOTHING RAN IT — the same way
       # delivery-checks.mjs sat unrun while a broken filter shipped. It runs
       # here now.
+      # BEFORE the guards: build_audience.py's selftest builds real GA4 request
+      # objects to prove the field names, so it needs the client installed. It
+      # ran after the guards on 2026-09-22 and the first run died on
+      # "No module named 'google'" before any report was built.
+      - name: Install the GA4 client
+        run: pip install --quiet google-analytics-data google-auth requests
+
       - name: The portal cannot approve words nobody saw
         run: |
           python3 scripts/sponsor_links.py --selftest
@@ -80,9 +87,6 @@ jobs:
           python3 scripts/audience_from_exports.py --selftest
           python3 scripts/build_audience.py --selftest
           node scripts/sponsor-checks.mjs
-
-      - name: Install the GA4 client
-        run: pip install --quiet google-analytics-data google-auth requests
 
       # WHO READS AGSIST -- the dashboard on every sponsor's portal. Each source
       # is optional and fails on its own; a missing or broken one keeps its last
