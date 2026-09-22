@@ -1,18 +1,18 @@
 {
- "generated": "2026-09-22T15:29:42Z",
+ "generated": "2026-09-22T19:04:14Z",
  "from": "bids-full.json",
  "complete": false,
  "note": "Directory only: who operates a facility and where. No prices, no basis, no symbols, no delivery windows.",
  "counts": {
-  "facilities": 2525,
+  "facilities": 2500,
   "states": 33,
   "with_address": 0,
   "with_coords": 0,
   "with_url": 0,
-  "with_phone": 1786,
+  "with_phone": 1781,
   "saturated_zips": 0,
   "failed_zips": 0,
-  "rows_read": 27644
+  "rows_read": 27406
  },
  "saturated": [],
  "failed": [],
@@ -68,40 +68,6 @@
    "state": "AR",
    "zip": "72160",
    "phone": "(870) 673-5342",
-   "source": "barchart"
-  },
-  {
-   "facility": "Riceland Foods",
-   "city": "Des Arc",
-   "state": "AR",
-   "lat": 34.9751,
-   "source": "barchart"
-  },
-  {
-   "facility": "Riceland Foods",
-   "city": "Hickory Ridge",
-   "state": "AR",
-   "lat": 35.3995,
-   "source": "barchart"
-  },
-  {
-   "facility": "Riceland Foods",
-   "city": "Pendleton",
-   "state": "AR",
-   "source": "barchart"
-  },
-  {
-   "facility": "Riceland Foods",
-   "city": "Tuckerman",
-   "state": "AR",
-   "lat": 35.7307,
-   "source": "barchart"
-  },
-  {
-   "facility": "Riceland Foods",
-   "city": "Weiner",
-   "state": "AR",
-   "lat": 35.6291,
    "source": "barchart"
   },
   {
@@ -273,11 +239,11 @@
   },
   {
    "facility": "Roggen Farmers Elevator Association",
-   "branch": "Roggen Elevator - Main Office",
-   "city": "Roggen",
+   "branch": "Watkins",
+   "city": "Watkins",
    "state": "CO",
-   "zip": "80652",
-   "phone": "(303) 849-5506",
+   "zip": "80137",
+   "phone": "N/A",
    "source": "barchart"
   },
   {
@@ -1353,6 +1319,33 @@
   },
   {
    "facility": "Farmers Win Coop",
+   "branch": "Granger",
+   "city": "Cresco",
+   "state": "IA",
+   "zip": "52136",
+   "phone": "563-547-4349",
+   "source": "barchart"
+  },
+  {
+   "facility": "Farmers Win Coop",
+   "branch": "Cresco East",
+   "city": "Cresco",
+   "state": "IA",
+   "zip": "52136",
+   "phone": "N/A",
+   "source": "barchart"
+  },
+  {
+   "facility": "Farmers Win Coop",
+   "branch": "Cresco",
+   "city": "Cresco",
+   "state": "IA",
+   "zip": "52136",
+   "phone": "563-547-5404",
+   "source": "barchart"
+  },
+  {
+   "facility": "Farmers Win Coop",
    "branch": "Poet Fairbank",
    "city": "Fairbank",
    "state": "IA",
@@ -1367,6 +1360,15 @@
    "state": "IA",
    "zip": "50630",
    "phone": "563-237-5324",
+   "source": "barchart"
+  },
+  {
+   "facility": "Farmers Win Coop",
+   "branch": "Hawkeye",
+   "city": "Hawkeye",
+   "state": "IA",
+   "zip": "52147",
+   "phone": "563-427-3214",
    "source": "barchart"
   },
   {
@@ -1398,6 +1400,15 @@
   },
   {
    "facility": "Farmers Win Coop",
+   "branch": "Ridgeway",
+   "city": "Ridgeway",
+   "state": "IA",
+   "zip": "52165",
+   "phone": "563-737-2244",
+   "source": "barchart"
+  },
+  {
+   "facility": "Farmers Win Coop",
    "branch": "Poet Shell Rock",
    "city": "Shell Rock",
    "state": "IA",
@@ -1416,135 +1427,20 @@
   },
   {
    "facility": "Farmers Win Coop",
+   "branch": "Sumner",
+   "city": "Sumner",
+   "state": "IA",
+   "zip": "50674",
+   "phone": "563-578-3432",
+   "source": "barchart"
+  },
+  {
+   "facility": "Farmers Win Coop",
    "branch": "Bremer",
    "city": "Waverly",
    "state": "IA",
    "zip": "50677",
    "phone": "319-352-1354",
-   "source": "barchart"
-  },
-  {
-   "facility": "Farmers Win Cooperative",
-   "city": "AGP - Mason City",
-   "state": "IA",
-   "zip": "50401",
-   "lat": 43.1499,
-   "source": "barchart"
-  },
-  {
-   "facility": "Farmers Win Cooperative",
-   "city": "Bremer",
-   "state": "IA",
-   "zip": "50677",
-   "lat": 42.7748,
-   "source": "barchart"
-  },
-  {
-   "facility": "Farmers Win Cooperative",
-   "city": "Cresco",
-   "state": "IA",
-   "zip": "52136",
-   "lat": 43.363,
-   "phone": "563-547-4349",
-   "source": "barchart"
-  },
-  {
-   "facility": "Farmers Win Cooperative",
-   "city": "Cresco East",
-   "state": "IA",
-   "zip": "52136",
-   "lat": 43.363,
-   "source": "barchart"
-  },
-  {
-   "facility": "Farmers Win Cooperative",
-   "city": "F'Burg",
-   "state": "IA",
-   "zip": "50630",
-   "lat": 42.9593,
-   "source": "barchart"
-  },
-  {
-   "facility": "Farmers Win Cooperative",
-   "city": "Granger",
-   "state": "IA",
-   "zip": "52136",
-   "lat": 43.363,
-   "source": "barchart"
-  },
-  {
-   "facility": "Farmers Win Cooperative",
-   "city": "Hawkeye",
-   "state": "IA",
-   "zip": "52147",
-   "lat": 42.9487,
-   "phone": "563-427-3214",
-   "source": "barchart"
-  },
-  {
-   "facility": "Farmers Win Cooperative",
-   "city": "Homeland",
-   "state": "IA",
-   "zip": "52154",
-   "lat": 43.0932,
-   "source": "barchart"
-  },
-  {
-   "facility": "Farmers Win Cooperative",
-   "city": "Poet Fairbank",
-   "state": "IA",
-   "zip": "50629",
-   "lat": 42.6162,
-   "source": "barchart"
-  },
-  {
-   "facility": "Farmers Win Cooperative",
-   "city": "Poet Shell Rock",
-   "state": "IA",
-   "zip": "50670",
-   "lat": 42.7061,
-   "source": "barchart"
-  },
-  {
-   "facility": "Farmers Win Cooperative",
-   "city": "Ridgeway",
-   "state": "IA",
-   "zip": "52165",
-   "lat": 43.2979,
-   "phone": "563-737-2244",
-   "source": "barchart"
-  },
-  {
-   "facility": "Farmers Win Cooperative",
-   "city": "SRSP",
-   "state": "IA",
-   "zip": "50670",
-   "lat": 42.7061,
-   "source": "barchart"
-  },
-  {
-   "facility": "Farmers Win Cooperative",
-   "city": "Sumner",
-   "state": "IA",
-   "zip": "50674",
-   "lat": 42.8419,
-   "phone": "563-578-3432",
-   "source": "barchart"
-  },
-  {
-   "facility": "Farmers Win Cooperative",
-   "city": "Valero",
-   "state": "IA",
-   "zip": "50616",
-   "lat": 43.0683,
-   "source": "barchart"
-  },
-  {
-   "facility": "Farmers Win Cooperative",
-   "city": "Viserion",
-   "state": "IA",
-   "zip": "52157",
-   "lat": 43.0237,
    "source": "barchart"
   },
   {
@@ -6467,15 +6363,6 @@
    "source": "barchart"
   },
   {
-   "facility": "Encompass Grain & Rail Co-op",
-   "branch": "Havana",
-   "city": "Havana",
-   "state": "IL",
-   "zip": "62644",
-   "phone": "309-244-7541",
-   "source": "barchart"
-  },
-  {
    "facility": "Evergreen FS",
    "branch": "Yuton",
    "city": "Bloomington",
@@ -7488,15 +7375,6 @@
   },
   {
    "facility": "Seatonville Elevator Co",
-   "branch": "Marquis",
-   "city": "Hennepin",
-   "state": "IL",
-   "zip": "61327",
-   "phone": "815-925-9590",
-   "source": "barchart"
-  },
-  {
-   "facility": "Seatonville Elevator Co",
    "city": "Marquis",
    "state": "IL",
    "source": "barchart"
@@ -7512,15 +7390,6 @@
    "city": "Seatonville",
    "state": "IL",
    "lat": 41.3613,
-   "source": "barchart"
-  },
-  {
-   "facility": "Seatonville Elevator Co",
-   "branch": "River",
-   "city": "Spring Valley",
-   "state": "IL",
-   "zip": "62705",
-   "phone": "815-894-2013",
    "source": "barchart"
   },
   {
@@ -10310,38 +10179,6 @@
    "source": "barchart"
   },
   {
-   "facility": "Farmers Coop Columbus",
-   "city": "BAXTER SPRINGS",
-   "state": "KS",
-   "zip": "66713",
-   "lat": 37.0281,
-   "source": "barchart"
-  },
-  {
-   "facility": "Farmers Coop Columbus",
-   "city": "COLUMBUS",
-   "state": "KS",
-   "zip": "66725",
-   "lat": 37.1699,
-   "source": "barchart"
-  },
-  {
-   "facility": "Farmers Coop Columbus",
-   "city": "COLUMBUS EAST",
-   "state": "KS",
-   "zip": "66739",
-   "lat": 37.1699,
-   "source": "barchart"
-  },
-  {
-   "facility": "Farmers Coop Columbus",
-   "city": "FAULKNER",
-   "state": "KS",
-   "zip": "67336",
-   "lat": 37.0418,
-   "source": "barchart"
-  },
-  {
    "facility": "Farmers Coop Conway Springs",
    "branch": "BELLE PLAINE",
    "city": "Belle Plaine",
@@ -11489,15 +11326,6 @@
    "source": "barchart"
   },
   {
-   "facility": "Skyland Grain",
-   "branch": "Cunningham Area",
-   "city": "Cunningham",
-   "state": "KS",
-   "zip": "67035",
-   "phone": "(620) 298-2011",
-   "source": "barchart"
-  },
-  {
    "facility": "Stafford County Flour Mills",
    "city": "Hudson",
    "state": "KS",
@@ -11558,15 +11386,6 @@
    "state": "KS",
    "zip": "67490",
    "phone": "N/A",
-   "source": "barchart"
-  },
-  {
-   "facility": "The Scoular Company",
-   "branch": "Scoular Pittsburg Cash Bids",
-   "city": "Pittsburg",
-   "state": "KS",
-   "zip": "66762",
-   "phone": "620-232-5800",
    "source": "barchart"
   },
   {
@@ -13153,38 +12972,38 @@
    "source": "barchart"
   },
   {
-   "facility": "Farmers Win Cooperative",
+   "facility": "Farmers Win Coop",
+   "branch": "Houston",
    "city": "Houston",
    "state": "MN",
    "zip": "55943",
-   "lat": 43.7929,
    "phone": "507-896-3147",
    "source": "barchart"
   },
   {
-   "facility": "Farmers Win Cooperative",
+   "facility": "Farmers Win Coop",
+   "branch": "Mabel",
    "city": "Mabel",
    "state": "MN",
    "zip": "55954",
-   "lat": 43.5446,
    "phone": "507-493-5070",
    "source": "barchart"
   },
   {
-   "facility": "Farmers Win Cooperative",
+   "facility": "Farmers Win Coop",
+   "branch": "Rushford",
    "city": "Rushford",
    "state": "MN",
    "zip": "55971",
-   "lat": 43.8216,
    "phone": "507-864-2161",
    "source": "barchart"
   },
   {
-   "facility": "Farmers Win Cooperative",
+   "facility": "Farmers Win Coop",
+   "branch": "Spring Grove",
    "city": "Spring Grove",
    "state": "MN",
    "zip": "55974",
-   "lat": 43.5623,
    "phone": "507-498-5321",
    "source": "barchart"
   },
@@ -13643,15 +13462,6 @@
    "state": "MN",
    "zip": "55918",
    "phone": "507-567-2234",
-   "source": "barchart"
-  },
-  {
-   "facility": "Nexus Cooperative",
-   "branch": "CONGER, MN",
-   "city": "Conger",
-   "state": "MN",
-   "zip": "56020",
-   "phone": "507-265-3231",
    "source": "barchart"
   },
   {
@@ -17163,15 +16973,6 @@
   {
    "facility": "Frontier Cooperative",
    "branch": "Yanka",
-   "city": "David City",
-   "state": "NE",
-   "zip": "68632",
-   "phone": "+1 402-367-3582",
-   "source": "barchart"
-  },
-  {
-   "facility": "Frontier Cooperative",
-   "branch": "David City",
    "city": "David City",
    "state": "NE",
    "zip": "68632",
@@ -21347,11 +21148,11 @@
    "source": "barchart"
   },
   {
-   "facility": "Pilgrims Gold N' Plump",
+   "facility": "Pilgrims Gold N Plump",
+   "branch": "Arcadia",
    "city": "Arcadia",
    "state": "WI",
    "zip": "54612",
-   "lat": 44.2539,
    "phone": "320-202-7451",
    "source": "barchart"
   },
