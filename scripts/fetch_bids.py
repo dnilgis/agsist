@@ -534,10 +534,47 @@ def _nearest_grid(lat, lon, grid):
             best_z, best_d = g["zip"], d
     return best_z, best_d
 
+# Legal-entity words that a feed carries and the other one drops. Stripped only
+# from the END of a name, never mid-name: "Co-op Services" must keep its "co".
+_LEGAL_SUFFIX = {"llc", "lc", "inc", "incorporated", "co", "corp", "corporation",
+                 "ltd", "limited", "lp", "llp", "company"}
+
+def _norm_operator(name):
+    """One elevator's name as the two feeds spell it, reduced to one string.
+
+    EXACT MATCH WAS NOT ENOUGH AND IT SHOWED ON THE PAGE. On 2026-09-22
+    cash-bids.html drew Badger Grain Supply of Wheeler twice, 19 miles and 22
+    miles away, with different corn bids: Barchart calls it "Badger Grain
+    Supply" and its own board says "Badger Grain Supply, LLC". Midwest Commodity
+    at Baldwin doubled the same way, off one plural -- "Services Inc." against
+    "Service, Inc.". Two cards for one elevator quoting two prices is worse than
+    either feed alone.
+
+    So: punctuation out, a trailing legal suffix dropped, co-op spellings
+    settled, and a trailing plural removed from each word. Measured against the
+    1,807 facilities in agsist's Barchart directory, this groups two different
+    spellings under one key exactly once -- "Centerra Coop" with "centerracoop",
+    which is the same business typed twice. It deliberately does NOT merge names
+    that differ by a real word ("ADM Grain" against "ADM"): a duplicate pin is
+    visible and fixable, a wrong merge hides a real elevator.
+
+    cash-bids.html carries the same rule in netKey(). If one changes, change
+    both -- they are the same decision made in two places.
+    """
+    import re as _re
+    s = _re.sub(r"[^a-z0-9]+", " ", str(name or "").lower())
+    s = s.replace("co op", "coop").replace("co operative", "cooperative")
+    toks = [t for t in s.split() if t]
+    while toks and toks[-1] in _LEGAL_SUFFIX:
+        toks.pop()
+    toks = ["coop" if t in ("cooperative", "coops") else t for t in toks]
+    toks = [t[:-1] if (len(t) > 3 and t.endswith("s")) else t for t in toks]
+    return "".join(toks)
+
 def _net_key(facility, city, state):
     import re as _re
-    return "|".join(_re.sub(r"[^a-z0-9]", "", str(x).lower())
-                    for x in (facility or "", city or "", state or ""))
+    plain = lambda x: _re.sub(r"[^a-z0-9]", "", str(x or "").lower())
+    return f"{_norm_operator(facility)}|{plain(city)}|{plain(state)}"
 
 def _period_dates(period):
     """A shard `period` -> (start, end) as YYYY-MM-DD strings for sorting, or
@@ -1630,6 +1667,26 @@ def selftest():
        any(r.get("source") == "network" and r.get("phone") == "(620) 555-0100" for r in m))
     ck("a Barchart elevator we do NOT read is kept",
        any(r.get("facility") == "Only In Barchart" for r in m))
+
+    # THE DUPLICATE THAT REACHED THE PAGE, 2026-09-22: cash-bids.html drew
+    # Badger Grain Supply of Wheeler twice because one feed writes ", LLC" and
+    # the other does not, and Midwest Commodity twice off a single plural.
+    ck("a trailing LLC does not split one elevator into two",
+       _net_key("Badger Grain Supply", "Wheeler", "WI")
+       == _net_key("Badger Grain Supply, LLC", "Wheeler", "WI"))
+    ck("nor does Service against Services",
+       _net_key("Midwest Commodity Services Inc.", "Baldwin", "WI")
+       == _net_key("Midwest Commodity Service, Inc.", "Baldwin", "WI"))
+    ck("nor Coop against Cooperative",
+       _net_key("Farmers Win Coop", "Cresco", "IA")
+       == _net_key("Farmers Win Cooperative", "Cresco", "IA"))
+    ck("but a name differing by a REAL word is still two elevators",
+       _net_key("ADM Grain", "Jackson", "TN") != _net_key("ADM", "Jackson", "TN"))
+    ck("a co-op keeps a 'co' that is part of its name",
+       _net_key("Co-op Services", "Ames", "IA").startswith("coopservice"))
+    ck("the key still separates two towns",
+       _net_key("Badger Grain Supply", "Wheeler", "WI")
+       != _net_key("Badger Grain Supply", "Menomonie", "WI"))
 
     # NEVER LOAD-BEARING: an unreachable feed leaves Barchart untouched.
     with redirect_stdout(buf), redirect_stderr(buf):

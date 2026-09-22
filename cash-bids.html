@@ -2122,10 +2122,33 @@ function netRowsFrom(shard,distanceMi){
    Same facility, same town, same state = the same elevator, however the two
    feeds spell it. When both have it, ours is kept and Barchart's is dropped,
    because ours is what the elevator posted and Barchart's is a copy. */
+/* Legal-entity words one feed carries and the other drops. Stripped only from
+   the END of a name, never mid-name: "Co-op Services" must keep its "co". */
+var NET_LEGAL={llc:1,lc:1,inc:1,incorporated:1,co:1,corp:1,corporation:1,
+               ltd:1,limited:1,lp:1,llp:1,company:1};
+/* EXACT MATCH WAS NOT ENOUGH AND IT SHOWED ON THIS PAGE. On 2026-09-22 this
+   drew Badger Grain Supply of Wheeler TWICE, 19 miles and 22 miles away, with
+   different corn bids: Barchart calls it "Badger Grain Supply" and the
+   elevator's own board says "Badger Grain Supply, LLC". Midwest Commodity at
+   Baldwin doubled off one plural, "Services Inc." against "Service, Inc.".
+   Two cards for one elevator quoting two prices is worse than either feed
+   alone. Measured against 1,807 Barchart facilities this groups two different
+   spellings once, and that pair is the same business typed twice. It does NOT
+   merge names differing by a real word ("ADM Grain" vs "ADM") — a duplicate
+   pin is visible and fixable, a wrong merge hides a real elevator.
+   scripts/fetch_bids.py carries the same rule in _norm_operator(). */
+function netNormOperator(name){
+  var s=String(name||'').toLowerCase().replace(/[^a-z0-9]+/g,' ');
+  s=s.replace(/co op/g,'coop').replace(/co operative/g,'cooperative');
+  var toks=s.split(' ').filter(function(t){return t;});
+  while(toks.length&&NET_LEGAL[toks[toks.length-1]])toks.pop();
+  toks=toks.map(function(t){return (t==='cooperative'||t==='coops')?'coop':t;});
+  toks=toks.map(function(t){return (t.length>3&&t.charAt(t.length-1)==='s')?t.slice(0,-1):t;});
+  return toks.join('');
+}
 function netKey(r){
-  return [(r.facility||''),(r.city||''),(r.state||'')]
-    .map(function(s){return String(s).toLowerCase().replace(/[^a-z0-9]/g,'');})
-    .join('|');
+  var plain=function(s){return String(s||'').toLowerCase().replace(/[^a-z0-9]/g,'');};
+  return netNormOperator(r.facility||'')+'|'+plain(r.city)+'|'+plain(r.state);
 }
 /* WHAT OURS INHERITS WHEN IT WINS.
    Ours wins on PRICE, because ours is the elevator's own posting and
