@@ -36,6 +36,7 @@ on:
       - 'components/sponsor-ad.css'
       - 'scripts/brief_email.py'
       - 'scripts/audience_from_exports.py'
+      - 'scripts/build_audience.py'
       - 'data/audience.json'
 
 concurrency:
@@ -77,10 +78,25 @@ jobs:
           python3 scripts/test_sponsor_portal.py
           python3 scripts/test_rate_card.py
           python3 scripts/audience_from_exports.py --selftest
+          python3 scripts/build_audience.py --selftest
           node scripts/sponsor-checks.mjs
 
       - name: Install the GA4 client
-        run: pip install --quiet google-analytics-data
+        run: pip install --quiet google-analytics-data google-auth requests
+
+      # WHO READS AGSIST -- the dashboard on every sponsor's portal. Each source
+      # is optional and fails on its own; a missing or broken one keeps its last
+      # figures, with their dates, and says so in the log. Nothing here can stop
+      # the sponsor reports below from building.
+      - name: Refresh the audience dashboard
+        continue-on-error: true
+        env:
+          GA4_PROPERTY_ID:     ${{ secrets.GA4_PROPERTY_ID }}
+          GA4_SERVICE_ACCOUNT: ${{ secrets.GA4_SERVICE_ACCOUNT }}
+          BING_API_KEY:        ${{ secrets.BING_API_KEY }}
+          LIST_URL:            ${{ secrets.LIST_URL }}
+          LIST_TOKEN:          ${{ secrets.LIST_TOKEN }}
+        run: python3 scripts/build_audience.py
 
       # No secrets, no report, no failure. A fork or a PR cannot have these and
       # should not go red for it — the script says so and exits 0.
@@ -94,7 +110,7 @@ jobs:
         run: |
           git config user.name  "agsist-bot"
           git config user.email "bot@agsist.com"
-          git add data/sponsors 2>/dev/null || true
+          git add data/sponsors data/audience.json 2>/dev/null || true
           if git diff --cached --quiet; then
             echo "no change"
             exit 0
