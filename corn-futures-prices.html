@@ -528,7 +528,7 @@ h2.snap-lbl,h2.basis-title,h2.crop-title{margin:0;display:inline-block}
       <a href="/cash-bids">See full cash bid map →</a>
       <button type="button" id="basis-zip-btn">Set my ZIP</button>
     </div>
-    <div class="basis-src" id="basis-src">Cash bids sourced from Barchart OnDemand API · 50-ZIP grid sample across the grain belt</div>
+    <div class="basis-src" id="basis-src">Cash bids from the AGSIST elevator network and Barchart OnDemand</div>
   </div>
   <div class="crop-card" id="crop-card">
     <div class="crop-head">
@@ -1582,7 +1582,7 @@ function renderBasisCard(data){
       emptyEl.style.display='block';
       emptyEl.innerHTML='<strong>Set your ZIP to see your nearest cash bid.</strong> AGSIST samples 50 ZIP locations across the grain belt for representative '+CROP_LABEL.toLowerCase()+' cash bids and basis vs CBOT futures. Tap \u201cSet my ZIP\u201d below to find your nearest sample.';
     }
-    if(srcEl){srcEl.innerHTML='Cash bids sourced from <a href="https://www.barchart.com/ondemand" target="_blank" rel="noopener">Barchart OnDemand API</a> \u00b7 50-ZIP grid sample across the grain belt';}
+    if(srcEl){srcEl.innerHTML='Cash bids from the AGSIST elevator network and <a href="https://www.barchart.com/ondemand" target="_blank" rel="noopener">Barchart OnDemand</a>';}
     return;
   }
 
@@ -1679,7 +1679,11 @@ function renderBasisCard(data){
       var srcLine='Source: '+(b.facility||b.bidName||b.location||'local elevator');
       if(b.timestamp||b.cashPriceTimestamp)srcLine+=' \u00b7 updated '+fmtBidTime(b.timestamp||b.cashPriceTimestamp);
       else if(data.fetched)srcLine+=' \u00b7 polled '+fmtBidTime(data.fetched);
-      srcLine+=' \u00b7 <a href="https://www.barchart.com/ondemand" target="_blank" rel="noopener">Barchart OnDemand</a>';
+      // Credit the source of THIS bid: a network elevator's own board, or
+      // Barchart. The merged feed marks network rows source=='network'.
+      srcLine+= (b.source==='network')
+        ? ' \u00b7 AGSIST elevator network'
+        : ' \u00b7 <a href="https://www.barchart.com/ondemand" target="_blank" rel="noopener">Barchart OnDemand</a>';
       srcEl.innerHTML=srcLine;
     }
 
@@ -1722,7 +1726,7 @@ function renderBasisCard(data){
       emptyEl.innerHTML=msg;
     }
     if(srcEl){
-      srcEl.innerHTML='Cash bids sourced from <a href="https://www.barchart.com/ondemand" target="_blank" rel="noopener">Barchart OnDemand API</a> \u00b7 50-ZIP grid sample across the grain belt';
+      srcEl.innerHTML='Cash bids from the AGSIST elevator network and <a href="https://www.barchart.com/ondemand" target="_blank" rel="noopener">Barchart OnDemand</a>';
     }
   }
 }

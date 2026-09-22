@@ -657,33 +657,195 @@ def load_past_dailies(num_days=3):
     return header + "\n\n".join(blocks), past_tmyk_topics
 
 
-def build_chart_series(today_locked_prices, num_days=9):
+def build_chart_series(today_locked_prices, today_market_closed=False, num_days=9):
+    """The last briefing-morning locks, one point per TRADING day, one CONTRACT
+    per series, full precision — plus the dates, so the window can be printed.
+
+    Three rules, each bought with a shipped defect (audit 2026-09-22):
+
+    - DATED CONTRACTS ONLY. The `corn` key is the nearby alias, and the
+      Sep'26->Dec'26 roll landed inside one 10-entry window: the strip printed
+      "corn up 4.7% / 24c" when the Dec contract had moved one cent. 22.5 of
+      those cents were the carry spread. The dated key is found from today's
+      locked table (corn-<mon>, beans-<mon>) and every archive day must carry
+      THAT key, so a series can never straddle a roll. Wheat has no dated key
+      in the archive and is therefore not charted at all — absent beats wrong.
+    - MARKET-CLOSED DAYS ARE SKIPPED. Weekend briefings re-lock Friday, and
+      the three-point plateaus rendered as "consolidation".
+    - NO ROUNDING HERE. round(v, 2) before differencing showed 24c on a 23.5c
+      move, and could print 'unch' across a real half-cent move depending on
+      which side of the boundary it fell. Settles are on a quarter-cent grid;
+      they are stored as locked.
+
+    A date enters only when every charted key has a price on it, so the
+    series stay the same length and aligned — a renderer that assumes equal
+    spacing cannot be handed a silently shifted series.
+
+    Returns (series, dates): series maps name -> [floats], dates is ISO per
+    point, shared by all series. ({}, []) when fewer than 2 points survive.
+    """
     archive_dir = REPO_ROOT / "data" / "daily-archive"
     index_path = archive_dir / "index.json"
-    if not index_path.exists(): return {}
+    if not index_path.exists(): return {}, []
     try:
         with open(index_path) as f: idx = json.load(f)
-    except Exception: return {}
+    except Exception: return {}, []
+    key_map = {}
+    for name, base in (("corn", "corn"), ("soybeans", "beans")):
+        dated = sorted(k for k in (today_locked_prices or {})
+                       if k.startswith(base + "-") and today_locked_prices.get(k))
+        if dated: key_map[name] = dated[0]
+    if not key_map: return {}, []
     entries = idx.get("briefings", [])
     today_iso = datetime.now().strftime("%Y-%m-%d")
-    past = sorted([e for e in entries if e.get("date") and e["date"] != today_iso],
-                  key=lambda e: e["date"])[-num_days:]
-    key_map = {"corn": "corn", "soybeans": "beans", "wheat": "wheat"}
-    series = {k: [] for k in key_map}
-    for entry in past:
+    # Strictly BEFORE today, not merely != today: this also keeps a re-run on a
+    # later day (or a skewed clock) from charting the same lock twice.
+    past = sorted([e for e in entries if e.get("date") and e["date"] < today_iso],
+                  key=lambda e: e["date"])
+    rows = []
+    for entry in reversed(past):
+        if len(rows) >= num_days: break
         json_path = archive_dir / f"{entry.get('date', '')}.json"
         if not json_path.exists(): continue
         try:
             with open(json_path) as f: b = json.load(f)
-            lp = b.get("locked_prices", {})
-            for ser_key, src_key in key_map.items():
-                v = lp.get(src_key)
-                if v and v > 0: series[ser_key].append(round(float(v), 2))
         except Exception: continue
-    for ser_key, src_key in key_map.items():
-        v = today_locked_prices.get(src_key)
-        if v and v > 0: series[ser_key].append(round(float(v), 2))
-    return {k: v for k, v in series.items() if len(v) >= 2}
+        if b.get("market_closed") is True: continue
+        lp = b.get("locked_prices") or {}
+        vals = {}
+        for name, key in key_map.items():
+            v = lp.get(key)
+            if isinstance(v, (int, float)) and v > 0: vals[name] = float(v)
+        if len(vals) == len(key_map): rows.append((entry["date"], vals))
+    rows.reverse()
+    if rows and rows[-1][0] >= today_iso: rows.pop()  # belt to the guard above
+    if not today_market_closed:
+        vals = {}
+        for name, key in key_map.items():
+            v = (today_locked_prices or {}).get(key)
+            if isinstance(v, (int, float)) and v > 0: vals[name] = float(v)
+        if len(vals) == len(key_map): rows.append((today_iso, vals))
+    if len(rows) < 2: return {}, []
+    return ({name: [v[name] for _, v in rows] for name in key_map},
+            [d for d, _ in rows])
+
+
+def _chart_window_label(dates):
+    """"Sep 8 - Sep 21" from the first and last ISO dates of the series."""
+    def short(iso):
+        try:
+            dt = datetime.strptime(iso, "%Y-%m-%d")
+            return f"{dt.strftime('%b')} {dt.day}"
+        except Exception: return iso
+    if not dates: return ""
+    return f"{short(dates[0])} - {short(dates[-1])}" if len(dates) > 1 else short(dates[0])
+
+
+STRIP_DISPLAY = {"corn": "Corn", "beans": "Soybeans", "wheat": "Wheat"}
+
+def build_quote_strip(locked_prices, locked_changes, board):
+    """The market strip both pages render: the DAY move, against the prior
+    settle, with the contract named — never an unlabeled multi-day percent.
+
+    Replaces two things the 2026-09-22 audit killed: the archive pages'
+    frameless sparklines (autoscaled, always shaped by whatever the series
+    happened to contain, no window, no change figure) and the live strip's
+    first-to-last percent over a never-labeled window that contradicted the
+    page's own locked_changes on the same screen.
+
+    Uses the dated contract where today's lock carries one (corn, beans) and
+    the nearby where none exists (wheat, labeled "nearby"). prev and pct come
+    from locked_changes — the same numbers the prose is written against, so
+    the strip can no longer disagree with the lead.
+    """
+    lp = locked_prices or {}
+    lc = locked_changes or {}
+    quotes = []
+    for base in ("corn", "beans", "wheat"):
+        dated = sorted(k for k in lp if k.startswith(base + "-") and lp.get(k))
+        key = dated[0] if dated else base
+        last = lp.get(key)
+        ch = lc.get(key) or {}
+        prev, pct = ch.get("prev"), ch.get("pct")
+        if not isinstance(last, (int, float)) or last <= 0: continue
+        if not isinstance(prev, (int, float)) or prev <= 0: continue
+        if not isinstance(pct, (int, float)): continue
+        name = STRIP_DISPLAY.get(base, base.title())
+        if dated:
+            label = COMMODITY_LABELS.get(key, "")
+            parts = label.rsplit(" ", 2)
+            contract = f"{parts[1]} {parts[2]}" if len(parts) == 3 else key.split("-", 1)[1].capitalize()
+        else:
+            contract = "nearby"
+        quotes.append({"key": key, "name": name, "contract": contract,
+                       "last": last, "prev": prev, "pct": pct})
+    if not quotes: return None
+    b = board or {}
+    return {"asof": b.get("fetched") or None,
+            "session": b.get("quote_session") or None,
+            "vs_session": b.get("prev_close_session") or None,
+            "quotes": quotes}
+
+
+def _ct_stamp(iso_utc, with_day=True):
+    """"5:57 AM CT Mon" from an ISO UTC stamp; '' when unparseable."""
+    try:
+        from zoneinfo import ZoneInfo
+        dt = datetime.fromisoformat(str(iso_utc).replace("Z", "+00:00"))
+        dt = dt.astimezone(ZoneInfo("America/Chicago"))
+        out = dt.strftime("%I:%M %p").lstrip("0") + " CT"
+        if with_day: out += " " + dt.strftime("%a")
+        return out
+    except Exception:
+        return ""
+
+
+def _ct_weekday(iso_date):
+    """"Fri" from an ISO date; '' when unparseable."""
+    try:
+        return datetime.strptime(str(iso_date), "%Y-%m-%d").strftime("%a")
+    except Exception:
+        return ""
+
+
+def render_quote_strip_html(strip):
+    """One HTML for both surfaces: same classes as daily.html's renderer, so
+    the baked archive page and the live page cannot drift apart visually."""
+    if not strip or not strip.get("quotes"): return ""
+    cells = []
+    for q in strip["quotes"]:
+        last, prev, pct = q["last"], q["prev"], q["pct"]
+        d = last - prev
+        if abs(d) < 0.0001: direction = "flat"
+        elif d > 0: direction = "up"
+        else: direction = "down"
+        arrow = {"up": "\u25B2", "down": "\u25BC"}.get(direction, "")
+        cls = {"up": "pos", "down": "neg"}.get(direction, "flat")
+        cents = abs(d) * 100
+        cents_str = ""
+        if cents >= 0.005:
+            cents_str = f"{cents:.2f}".rstrip("0").rstrip(".") + "¢"
+        pct_str = "unch" if direction == "flat" else f"{arrow} {abs(pct):.1f}%"
+        price_str = f"${last:.2f}"
+        aria = (f"{q['name']} {q['contract']}, {price_str}, "
+                + ("unchanged" if direction == "flat" else f"{direction} {abs(pct):.1f}%")
+                + " vs the prior close")
+        cells.append(
+            f'<div class="dv3-quote" role="img" aria-label="{html_esc(aria)}">'
+            f'<div class="dv3-quote-top"><span class="dv3-quote-name">{html_esc(q["name"])}</span>'
+            f'<span class="dv3-quote-win">{html_esc(q["contract"])}</span></div>'
+            f'<span class="dv3-quote-price">{price_str}</span>'
+            f'<span class="dv3-quote-chg {cls}">{pct_str}'
+            + (f'<span class="cents">{cents_str}</span>' if cents_str else "")
+            + '</span></div>')
+    bits = []
+    asof = _ct_stamp(strip.get("asof")) if strip.get("asof") else ""
+    if asof: bits.append(f"Quotes as of {asof}")
+    vs = _ct_weekday(strip.get("vs_session")) if strip.get("vs_session") else ""
+    if vs: bits.append(f"change vs {vs} close")
+    bits.append("CME futures, delayed")
+    asof_html = f'<div class="dv3-quote-asof">{html_esc(" · ".join(bits))}</div>'
+    return '<div class="dv3-quotes">' + "".join(cells) + "</div>" + asof_html
 
 
 def load_issue_number():
@@ -2253,23 +2415,6 @@ def build_sponsor_block():
     return dict(SPONSOR_HOUSE_AD)
 
 
-def render_sparkline_svg(series, width=180, height=32):
-    if not series or len(series) < 2: return ""
-    mn, mx = min(series), max(series); rng = (mx - mn) or 1
-    p = 3; step = (width - p * 2) / (len(series) - 1)
-    pts = [(p + i * step, height - p - ((v - mn) / rng) * (height - p * 2)) for i, v in enumerate(series)]
-    first, last = series[0], series[-1]
-    stroke = "#4aab4c" if last >= first else "#e05a42"
-    fill = "rgba(74,171,76,.14)" if last >= first else "rgba(224,90,66,.14)"
-    pts_str = " ".join(f"{x:.1f},{y:.1f}" for x, y in pts)
-    last_x, last_y = pts[-1]
-    area_pts = pts_str + f" {last_x:.1f},{height} {p},{height}"
-    return (f'<svg viewBox="0 0 {width} {height}" preserveAspectRatio="none" aria-hidden="true" style="width:100%;height:30px;display:block">'
-            f'<polyline points="{area_pts}" fill="{fill}" stroke="none"/>'
-            f'<polyline points="{pts_str}" fill="none" stroke="{stroke}" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/>'
-            f'<circle cx="{last_x:.1f}" cy="{last_y:.1f}" r="2" fill="{stroke}"/></svg>')
-
-
 ARCHIVE_JSON_DIR = REPO_ROOT / "data" / "daily-archive"
 ARCHIVE_HTML_DIR = REPO_ROOT / "daily"
 
@@ -2669,22 +2814,20 @@ def generate_archive_html(briefing, date_iso, prev_date=None, next_date=None,
         mood_html = (f'<span class="dv3-mood" style="display:inline-flex;color:{mc[0]};background:{mc[1]};border:1px solid {mc[2]}">'
                      f'{mi} {mood.capitalize()}</span>')
 
-    chart_series = briefing.get("chart_series") or {}
-    sparks_html = ""
-    if chart_series:
-        label_map = [("corn", "Corn"), ("soybeans", "Soybeans"), ("wheat", "Wheat")]
-        cells = []
-        for key, label in label_map:
-            ser = chart_series.get(key) or []
-            if len(ser) >= 2:
-                last = ser[-1]
-                try: last_str = f"${float(last):.2f}"
-                except (TypeError, ValueError): last_str = str(last)
-                svg = render_sparkline_svg(ser)
-                cells.append(f'<div class="dv3-spark"><div class="dv3-spark-head">'
-                             f'<span class="dv3-spark-label">{label}</span>'
-                             f'<span class="dv3-spark-last">{last_str}</span></div>{svg}</div>')
-        if cells: sparks_html = '<div class="dv3-sparks">' + "".join(cells) + '</div>'
+    # The market strip: the day move vs the prior settle, labeled — built by
+    # the generator when this issue was made, or rebuilt here from the same
+    # locked numbers for issues that predate quote_strip. Issues older than
+    # locked_changes (pre v5.4) get no strip: absent beats an unlabeled line.
+    # The real compile time, not a fiction: "Auto-compiled at 6:02 AM CT" was
+    # a hardcoded string matching none of daily.yml's cron slots.
+    _stamp = _ct_stamp(briefing.get("generated_at"))
+    compiled_html = f" &middot; Compiled {_stamp}" if _stamp else ""
+
+    sparks_html = render_quote_strip_html(
+        briefing.get("quote_strip")
+        or build_quote_strip(briefing.get("locked_prices"),
+                             briefing.get("locked_changes"),
+                             briefing.get("board")))
 
     sections_html = ""
     for i, sec in enumerate(briefing.get("sections", [])):
@@ -2906,11 +3049,17 @@ html,body{{overflow-x:hidden;overflow-x:clip;width:100%;}}
 .dv3-surprise-banner .surprise-text{{font-size:.85rem;color:var(--text-dim);line-height:1.45}}
 .dv3-surprise-banner .surprise-text strong{{color:var(--gold);font-weight:700}}
 .dv3-mood{{display:none;align-items:center;gap:.3rem;font-family:'JetBrains Mono',monospace;font-size:.62rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:.22rem .6rem;border-radius:3px;white-space:nowrap;margin-left:.75rem}}
-.dv3-sparks{{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:.75rem;margin:0 0 1.5rem;padding:1rem;background:rgba(5,10,5,.35);border:1px solid var(--border);border-radius:8px}}
-.dv3-spark{{display:flex;flex-direction:column;gap:.2rem}}
-.dv3-spark-head{{display:flex;justify-content:space-between;align-items:baseline;gap:.4rem}}
-.dv3-spark-label{{font-family:'JetBrains Mono',monospace;font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted)}}
-.dv3-spark-last{{font-family:'JetBrains Mono',monospace;font-size:.78rem;font-weight:700;color:var(--text)}}
+.dv3-quotes{{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1px;margin:0 0 .4rem;background:var(--border);border:1px solid var(--border);border-radius:8px;overflow:hidden}}
+@media(max-width:480px){{.dv3-quotes{{grid-template-columns:1fr}}}}
+.dv3-quote{{display:flex;flex-direction:column;gap:.28rem;padding:.7rem .85rem;background:var(--surface);min-width:0}}
+.dv3-quote-top{{display:flex;align-items:baseline;justify-content:space-between;gap:.5rem}}
+.dv3-quote-name{{font-family:'JetBrains Mono',monospace;font-size:.75rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted)}}
+.dv3-quote-win{{font-family:'JetBrains Mono',monospace;font-size:.72rem;letter-spacing:.04em;color:var(--text-muted);white-space:nowrap}}
+.dv3-quote-price{{font-family:'JetBrains Mono',monospace;font-size:1.15rem;font-weight:700;color:var(--text);line-height:1;letter-spacing:-.01em}}
+.dv3-quote-chg{{display:flex;align-items:baseline;gap:.45rem;font-family:'JetBrains Mono',monospace;font-size:.765rem;font-weight:700}}
+.dv3-quote-chg .cents{{font-weight:600;opacity:.85}}
+.dv3-quote .pos{{color:var(--green,#5fc28a)}}.dv3-quote .neg{{color:var(--red,#e0685f)}}.dv3-quote .flat{{color:var(--text-muted)}}
+.dv3-quote-asof{{font-family:'JetBrains Mono',monospace;font-size:.68rem;letter-spacing:.03em;color:var(--text-muted);margin:0 0 1.1rem}}
 .dv3-topbar{{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:1.25rem;margin-bottom:2rem}}
 .dv3-one-number{{background:var(--surface);border:2px solid var(--border-g);border-radius:8px;padding:1.2rem 1.4rem}}
 .dv3-one-number-label{{font-family:'JetBrains Mono',monospace;font-size:.64rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--green);margin-bottom:.5rem}}
@@ -3074,7 +3223,7 @@ html,body{{overflow-x:hidden;overflow-x:clip;width:100%;}}
     {forward_html}
     {share_html}
     {archive_nav_html}
-    <div class="dv3-source">{source} &middot; Auto-compiled at 6:02 AM CT</div>
+    <div class="dv3-source">{source}{compiled_html}</div>
   </article>
   <nav class="dv3-nav" aria-label="Briefing navigation" id="dv3-archive-nav">
     <span></span>
@@ -4123,10 +4272,19 @@ def main():
     # v5.1: grade yesterday's call now that today's closes are on the briefing,
     # so save_archive() below renders the verdict and call_line first time.
     briefing = grade_in_generator(briefing, market_status)
-    chart_series = build_chart_series(locked_prices)
+    chart_series, chart_dates = build_chart_series(
+        locked_prices, briefing.get("market_closed") is True)
     if chart_series:
         briefing["chart_series"] = chart_series
-        print(f"  Chart series: {{k: len(v) for k, v in chart_series.items()}}")
+        briefing["chart_dates"] = chart_dates
+        briefing["chart_window"] = _chart_window_label(chart_dates)
+        print(f"  Chart series: { {k: len(v) for k, v in chart_series.items()} }"
+              f" over {briefing['chart_window']} ({len(chart_dates)} trading days)")
+    strip = build_quote_strip(locked_prices, briefing["locked_changes"], briefing.get("board"))
+    if strip:
+        briefing["quote_strip"] = strip
+        print("  Quote strip: " + ", ".join(
+            f"{q['name']} {q['contract']} {q['pct']:+.2f}%" for q in strip["quotes"]))
     sponsor = build_sponsor_block()
     briefing["sponsor"] = sponsor
     if sponsor.get("is_house_ad"):

@@ -469,6 +469,226 @@ def _implied_futures(b):
         return None
 
 
+# ── THE AGSIST ELEVATOR NETWORK ───────────────────────────────────────────
+# dnilgis/bids reads ~1,050 elevator boards directly and publishes a merged
+# index plus one shard per elevator to dnilgis.github.io/bids. This folds that
+# network into the same feed Barchart fills, so every AGSIST surface that shows
+# a cash bid -- the futures-page cards, the homepage card, and the national
+# basis map -- presents both sources, not Barchart alone. cash-bids.html already
+# merges the two live in the browser; this brings the same merge to the files
+# the other surfaces read.
+#
+# The dedup rule is the one cash-bids.html already uses (netMerge): same
+# facility, same town, same state is the same elevator however the two feeds
+# spell it, and OURS wins on price because ours is the board the elevator
+# posted and Barchart's is a copy. Barchart's phone crosses over, because the
+# network feed carries none.
+#
+# NEVER LOAD-BEARING. If the network cannot be read, this returns the Barchart
+# rows untouched and says so. A network outage must not empty or fail the feed
+# that Barchart fills -- same contract as the browser merge, which resolves to
+# "nothing added" on any failure.
+import math as _math
+
+BIDS_NETWORK_BASE = os.environ.get(
+    "BIDS_NETWORK_BASE", "https://dnilgis.github.io/bids/")
+MERGE_RADIUS_MI = float(os.environ.get("BIDS_MERGE_RADIUS_MI", "50"))
+
+def _net_get_json(base, rel, timeout=60):
+    """Read base+rel as JSON. base may be an http(s) URL or a local directory
+    (used by the self-test and any offline run).
+
+    Asks for gzip: data/merged-all.json is 8 MB of JSON and 203 KB gzipped, and
+    Pages serves the compressed copy when the client says it can read one."""
+    if base.startswith("http://") or base.startswith("https://"):
+        url = base.rstrip("/") + "/" + rel.lstrip("/")
+        req = Request(url, headers={
+            "User-Agent": "agsist-fetch-bids (+agsist.com)",
+            "Accept-Encoding": "gzip",
+        })
+        with urlopen(req, timeout=timeout) as r:
+            raw = r.read()
+            if (r.headers.get("Content-Encoding") or "").lower() == "gzip":
+                import gzip as _gzip
+                raw = _gzip.decompress(raw)
+            return json.loads(raw.decode("utf-8"))
+    path = os.path.join(base, rel)
+    with open(path) as f:
+        return json.load(f)
+
+def _haversine_mi(a_lat, a_lon, b_lat, b_lon):
+    R = 3958.7613
+    p = _math.pi / 180
+    dlat = (b_lat - a_lat) * p
+    dlon = (b_lon - a_lon) * p
+    x = (_math.sin(dlat / 2) ** 2
+         + _math.cos(a_lat * p) * _math.cos(b_lat * p) * _math.sin(dlon / 2) ** 2)
+    return 2 * R * _math.asin(_math.sqrt(x))
+
+def _nearest_grid(lat, lon, grid):
+    """(zip, distance_mi) of the closest grid ZIP, or (None, None)."""
+    best_z, best_d = None, None
+    for g in grid:
+        d = _haversine_mi(lat, lon, g["lat"], g["lng"])
+        if best_d is None or d < best_d:
+            best_z, best_d = g["zip"], d
+    return best_z, best_d
+
+def _net_key(facility, city, state):
+    import re as _re
+    return "|".join(_re.sub(r"[^a-z0-9]", "", str(x).lower())
+                    for x in (facility or "", city or "", state or ""))
+
+def _period_dates(period):
+    """A shard `period` -> (start, end) as YYYY-MM-DD strings for sorting, or
+    ("","") when it names no month (a season like "newcrop-2027").
+
+    Formats seen in the feed: "2026-09", "2026-09/2026-11" (range, sometimes
+    with the tail truncated to the year), "newcrop-2027". _bid_order sorts on
+    the END date, so a bid with no parseable month must sort LAST, not first --
+    which is exactly what an empty string does against real dates. This is the
+    fix for network rows all collapsing to "9999-99-99" and the card then
+    showing the highest-priced deferred contract as today's cash.
+    """
+    import re as _re
+    s = str(period or "")
+    parts = s.split("/")
+    def ym(tok):
+        m = _re.match(r"^(\d{4})-(\d{2})", tok.strip())
+        return (m.group(1), m.group(2)) if m else None
+    a = ym(parts[0])
+    b = ym(parts[-1]) or a
+    if not a:
+        return "", ""
+    last_day = {"01":"31","02":"28","03":"31","04":"30","05":"31","06":"30",
+                "07":"31","08":"31","09":"30","10":"31","11":"30","12":"31"}
+    start = f"{a[0]}-{a[1]}-01"
+    end = f"{b[0]}-{b[1]}-{last_day.get(b[1], '28')}"
+    return start, end
+
+
+def network_rows(grid, base=None):
+    """Every network bid, in the row shape this file's downstream expects.
+
+    ONE REQUEST, NOT 1,056. dnilgis/bids publishes data/merged-all.json -- every
+    merged row, flat, with the same field names as its per-elevator shards --
+    precisely so a build like this one does not walk the shard index. Walking it
+    was the first version of this function and it was wrong on the runner: 1,056
+    sequential HTTPS calls inside a job that runs every half hour and already
+    has a 20-minute collision rule with the sibling scheduler.
+
+    The index alone will not do either, and the reason is measurable rather than
+    stylistic: its per-place `best` is the top CASH bid per crop, which on
+    2026-09-22 was a 2027 contract for 1,467 places. Selecting from that shows a
+    deferred price as today's cash.
+
+    Each row is stamped source="network", the nearest grid ZIP (so the per-ZIP
+    slimming and the futures cards can select it) and the distance to it.
+    Returns [] on any failure at all.
+    """
+    base = base or BIDS_NETWORK_BASE
+    try:
+        doc = _net_get_json(base, "data/merged-all.json")
+    except Exception as e:
+        print(f"[fetch_bids] network feed unreachable ({type(e).__name__}: {e}); "
+              f"Barchart only this run", file=sys.stderr)
+        return []
+    bids = (doc.get("bids") if isinstance(doc, dict) else None) or []
+    if not bids:
+        print("[fetch_bids] network feed carried no bids; Barchart only this run",
+              file=sys.stderr)
+        return []
+    rows = []
+    dropped_stale = 0
+    for b in bids:
+        if not b:
+            continue
+        # FRESHNESS GATE. A board dnilgis/bids could not confirm this run
+        # republishes its last-known price flagged stale (sourceStatus
+        # "broken"/"refused"); merging that would show an unconfirmed price
+        # as today's cash. Drop it -- the same call the browser merge makes.
+        if b.get("stale") is True:
+            dropped_stale += 1
+            continue
+        if (b.get("sourceStatus") or "ok") not in ("ok",):
+            dropped_stale += 1
+            continue
+        cash = b.get("cash")
+        basis = b.get("basis")
+        cash = cash if isinstance(cash, (int, float)) else None
+        basis = basis if isinstance(basis, (int, float)) else None
+        if cash is None and basis is None:
+            continue
+        la, lo = b.get("lat"), b.get("lon")
+        gz, gd = (_nearest_grid(la, lo, grid)
+                  if (isinstance(la, (int, float)) and isinstance(lo, (int, float)))
+                  else (None, None))
+        commodity = b.get("commodity") or b.get("crop") or ""
+        d_start, d_end = _period_dates(b.get("period"))
+        cat = classify_commodity(commodity)
+        rows.append({
+            "facility": b.get("operator") or "Unknown",
+            "branch": b.get("branch") or "",
+            "city": b.get("city") or "",
+            "state": (b.get("state") or "").upper(),
+            "zip": b.get("zip") or "",
+            "distance": round(gd, 1) if isinstance(gd, (int, float)) else None,
+            "phone": "",
+            "commodity": commodity,
+            "symbol": b.get("futuresMonth") or "",
+            "cashPrice": cash,
+            "basis": basis,
+            "notes": None,
+            # `delivery` is what the card displays; the ISO start/end are what
+            # _bid_order sorts on so the NEAREST month wins, not the
+            # highest-priced deferred one.
+            "delivery": b.get("delivery") or "",
+            "deliveryMonth": b.get("delivery") or b.get("period") or "",
+            "deliveryStart": d_start,
+            "deliveryEnd": d_end,
+            # Category from the SAME commodity string the futures cards
+            # classify on, so a row that is beans on the map is beans on the
+            # card. Trusting the feed's own `crop` field instead split 115 rows
+            # between the two surfaces.
+            "category": cat if cat != "other" else (b.get("crop") or "other"),
+            "sourceZip": gz if (gd is not None and gd <= MERGE_RADIUS_MI) else "",
+            "verified": True,
+            "source": "network",
+            "lat": la if isinstance(la, (int, float)) else None,
+            "lon": lo if isinstance(lo, (int, float)) else None,
+        })
+    print(f"[fetch_bids] network: {len(bids)} rows in the feed, "
+          f"{dropped_stale} stale/broken dropped, {len(rows)} merged in")
+    return rows
+
+
+def merge_network(barchart_rows, grid, base=None):
+    """Barchart rows plus the network, deduped. Ours wins on price; Barchart's
+    phone crosses to the network row that displaced it. Barchart-only on any
+    network failure."""
+    net = network_rows(grid, base=base)
+    if not net:
+        return barchart_rows
+    by_key = {}
+    for r in net:
+        by_key.setdefault(_net_key(r["facility"], r["city"], r["state"]), []).append(r)
+    kept = list(net)
+    dropped = 0
+    for r in barchart_rows:
+        k = _net_key(r.get("facility"), r.get("city"), r.get("state"))
+        mates = by_key.get(k)
+        if mates:
+            dropped += 1
+            for ours in mates:
+                if not ours.get("phone") and r.get("phone"):
+                    ours["phone"] = r["phone"]
+            continue
+        kept.append(r)
+    print(f"[fetch_bids] merged: {len(barchart_rows)} Barchart + {len(net)} network "
+          f"-> {len(kept)} rows ({dropped} Barchart rows were the same elevator)")
+    return kept
+
+
 def verify_bids(bids):
     """Mark every row `verified` true or false. Returns (n_ok, n_bad).
 
@@ -538,6 +758,17 @@ def verify_bids(bids):
 
     n_ok = n_bad = 0
     for b in bids:
+        # Rows from the AGSIST elevator network (dnilgis/bids) were verified
+        # by that repository's own board checks before they were published
+        # -- status ok, observed fresh, cash-minus-basis inside the band. They
+        # are not in Barchart's per-symbol cohorts, so this Barchart-shaped
+        # cohort check cannot see them; running it would refuse every one for
+        # having no cohort. Trust the upstream verification and move on.
+        if b.get("source") == "network":
+            b["verified"] = True
+            b.pop("unverifiedWhy", None)
+            n_ok += 1
+            continue
         v = implied[id(b)]
         sym = _norm_symbol(b.get("symbol"))
         cat = classify_commodity(b.get("commodity"))
@@ -857,6 +1088,11 @@ def main():
     before = len(all_bids)
     all_bids = deduplicate(all_bids)
     print(f"\n[fetch_bids] {before} kept → {len(all_bids)} after dedup")
+
+    # Fold in the AGSIST elevator network so every surface reading these
+    # files shows both sources. Barchart-only if the network is unreachable.
+    grid_for_merge = [{"zip": e["zip"], "lat": e["lat"], "lng": e["lng"]} for e in ZIP_GRID]
+    all_bids = merge_network(all_bids, grid_for_merge)
     print(f"[fetch_bids] Errors: {errors}/{len(ZIP_GRID)} ZIPs")
 
     all_bids.sort(key=lambda b: (b.get("state") or "", b.get("city") or "", b.get("commodity") or ""))
@@ -917,7 +1153,7 @@ def main():
 
     output = {
         "fetched": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
-        "source": "Barchart OnDemand getGrainBids",
+        "source": "Barchart OnDemand getGrainBids + AGSIST elevator network (dnilgis/bids)",
         "zip_grid": zip_index,
         "stats": {
             "total_bids": len(all_bids),
@@ -1318,6 +1554,88 @@ def selftest():
        page_pick(full, "57401", "wheat") == page_pick(slim, "57401", "wheat"))
     ck("...and the same one nationally",
        page_pick(full, None, "wheat") == page_pick(slim, None, "wheat"))
+
+    print()
+    print("THE NETWORK MERGE -- run against a written feed, not a described one")
+    import tempfile, shutil
+    # A feed with every case that has bitten: a stale row, a broken-source row,
+    # a deferred month priced above the nearby one at the SAME elevator, a
+    # duplicate of a Barchart row, and a commodity whose trade abbreviation the
+    # card and the map used to classify differently.
+    feed = {"schema": "agsist-merged-all/1", "bids": [
+        {"operator": "Kanza Co-op", "city": "Iuka", "state": "KS", "zip": "67066",
+         "lat": 37.73, "lon": -98.73, "commodity": "Corn", "crop": "corn",
+         "cash": 5.10, "basis": -0.25, "futuresMonth": "ZCZ26",
+         "delivery": "Sep 2026", "period": "2026-09", "stale": False, "sourceStatus": "ok"},
+        {"operator": "Kanza Co-op", "city": "Iuka", "state": "KS", "zip": "67066",
+         "lat": 37.73, "lon": -98.73, "commodity": "Corn", "crop": "corn",
+         "cash": 5.85, "basis": -0.10, "futuresMonth": "ZCN27",
+         "delivery": "Jul 2027", "period": "2027-07", "stale": False, "sourceStatus": "ok"},
+        {"operator": "Stale Elevator", "city": "Pratt", "state": "KS", "zip": "67124",
+         "lat": 37.64, "lon": -98.73, "commodity": "Corn", "crop": "corn",
+         "cash": 9.99, "basis": -0.05, "futuresMonth": "ZCZ26",
+         "delivery": "Sep 2026", "period": "2026-09", "stale": True, "sourceStatus": "ok"},
+        {"operator": "Broken Elevator", "city": "Pratt", "state": "KS", "zip": "67124",
+         "lat": 37.64, "lon": -98.73, "commodity": "Corn", "crop": "corn",
+         "cash": 8.88, "basis": -0.05, "futuresMonth": "ZCZ26",
+         "delivery": "Sep 2026", "period": "2026-09", "stale": False, "sourceStatus": "refused"},
+        {"operator": "Dupe Co-op", "city": "Hutchinson", "state": "KS", "zip": "67501",
+         "lat": 38.06, "lon": -97.93, "commodity": "HRS", "crop": "wheat",
+         "cash": 7.20, "basis": -0.40, "futuresMonth": "KEZ26",
+         "delivery": "Sep 2026", "period": "2026-09", "stale": False, "sourceStatus": "ok"},
+    ]}
+    tmp = tempfile.mkdtemp()
+    os.makedirs(os.path.join(tmp, "data"), exist_ok=True)
+    with open(os.path.join(tmp, "data", "merged-all.json"), "w") as f:
+        json.dump(feed, f)
+    grid_n = [{"zip": "67501", "lat": 38.06, "lng": -97.93}]
+
+    buf = io.StringIO()
+    with redirect_stdout(buf), redirect_stderr(buf):
+        net = network_rows(grid_n, base=tmp)
+    ck("the stale row is not merged", not any(r["cashPrice"] == 9.99 for r in net))
+    ck("the broken-source row is not merged", not any(r["cashPrice"] == 8.88 for r in net))
+    ck("the good rows are merged", len(net) == 3)
+    ck("a period becomes sortable delivery dates",
+       _period_dates("2026-09") == ("2026-09-01", "2026-09-30")
+       and _period_dates("2026-09/2026-11")[1] == "2026-11-30")
+    ck("a season with no month sorts LAST rather than first",
+       _period_dates("newcrop-2027") == ("", ""))
+    ck("HRS lands in the same bucket the card classifies it into",
+       [r["category"] for r in net if r["commodity"] == "HRS"] == ["wheat"])
+    ck("every network row carries the grid ZIP it is near",
+       all(r["sourceZip"] == "67501" for r in net if r["distance"] is not None and r["distance"] <= MERGE_RADIUS_MI))
+
+    # THE BUG THE PANEL CAUGHT: the nearby month must win the card, not the
+    # higher-priced 2027 contract at the same elevator.
+    with redirect_stdout(buf), redirect_stderr(buf):
+        pick = page_pick(slim_for_browser(net, grid_n), "67501", "corn")
+    ck("the NEARBY month wins the card, not the higher deferred bid",
+       pick is not None and pick["cashPrice"] == 5.10)
+
+    # Dedup: ours displaces Barchart's copy and inherits its phone.
+    bc_rows = [
+        {"facility": "Dupe Co-op", "city": "Hutchinson", "state": "KS", "commodity": "Wheat",
+         "cashPrice": 7.10, "basis": -0.45, "phone": "(620) 555-0100", "category": "wheat",
+         "sourceZip": "67501", "zip": "67501", "deliveryEnd": "2026-09-30", "verified": True},
+        {"facility": "Only In Barchart", "city": "Wichita", "state": "KS", "commodity": "Corn",
+         "cashPrice": 5.00, "basis": -0.30, "phone": "(316) 555-0101", "category": "corn",
+         "sourceZip": "67501", "zip": "67202", "deliveryEnd": "2026-09-30", "verified": True},
+    ]
+    with redirect_stdout(buf), redirect_stderr(buf):
+        m = merge_network(bc_rows, grid_n, base=tmp)
+    ck("Barchart's copy of an elevator we read ourselves is dropped",
+       not any(r.get("cashPrice") == 7.10 for r in m))
+    ck("...and our row inherits the phone number it displaced",
+       any(r.get("source") == "network" and r.get("phone") == "(620) 555-0100" for r in m))
+    ck("a Barchart elevator we do NOT read is kept",
+       any(r.get("facility") == "Only In Barchart" for r in m))
+
+    # NEVER LOAD-BEARING: an unreachable feed leaves Barchart untouched.
+    with redirect_stdout(buf), redirect_stderr(buf):
+        m2 = merge_network(bc_rows, grid_n, base=os.path.join(tmp, "does-not-exist"))
+    ck("an unreachable network feed returns the Barchart rows unchanged", m2 == bc_rows)
+    shutil.rmtree(tmp, ignore_errors=True)
 
     print()
     if fails:

@@ -146,7 +146,7 @@ body{overflow-x:hidden;overflow-x:clip;width:100%;}
    Terminal-quote idiom: mono numbers, the price, its move, and the window it covers.
    Honest by construction — the number and window ARE the frame of reference. */
 .dv3-quotes{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1px;
-  margin:0 0 1rem;background:var(--border);border:1px solid var(--border);border-radius:8px;overflow:hidden;}
+  margin:0 0 .4rem;background:var(--border);border:1px solid var(--border);border-radius:8px;overflow:hidden;}
 .dv3-quote{display:flex;flex-direction:column;gap:.28rem;padding:.7rem .85rem;background:var(--surface);min-width:0;}
 .dv3-quote-top{display:flex;align-items:baseline;justify-content:space-between;gap:.5rem;}
 .dv3-quote-name{font-family:'JetBrains Mono',monospace;font-size:0.75rem;font-weight:700;
@@ -158,9 +158,11 @@ body{overflow-x:hidden;overflow-x:clip;width:100%;}
 .dv3-quote-chg{display:flex;align-items:baseline;gap:.45rem;font-family:'JetBrains Mono',monospace;
   font-size:0.765rem;font-weight:700;}
 .dv3-quote-chg .cents{font-weight:600;opacity:.85;}
-.dv3-quote .pos{color:#5fc28a;}
-.dv3-quote .neg{color:#e0685f;}
+.dv3-quote .pos{color:var(--green,#5fc28a);}
+.dv3-quote .neg{color:var(--red,#e0685f);}
 .dv3-quote .flat{color:var(--text-muted);}
+.dv3-quote-asof{font-family:'JetBrains Mono',monospace;font-size:.68rem;letter-spacing:.03em;color:var(--text-muted);margin:0 0 1.1rem;}
+@media(max-width:480px){.dv3-quotes{grid-template-columns:1fr;}}
 
 /* Sections */
 .dv3-sections{display:flex;flex-direction:column;gap:1rem;margin:1rem 0 1.25rem;}
@@ -436,6 +438,7 @@ body{overflow-x:hidden;overflow-x:clip;width:100%;}
   </div>
 
   <div class="dv3-today" id="dv3-today">
+<noscript><div style="padding:2rem"><p style="font-size:.9rem">This page loads the briefing with JavaScript, which is off in this browser. The <a href="/archive.html" style="color:var(--gold)">briefing archive</a> works without it &mdash; the newest issue is at the top.</p></div></noscript>
     <div class="dv3-loading"><div class="dv3-loading-spinner"></div>Loading today&rsquo;s briefing&hellip;</div>
   </div>
 
@@ -522,10 +525,19 @@ function convictionClass(c){
 }
 
 // ── today's briefing ──────────────────────────────────────────────────
-function renderToday(data){
+function renderToday(data,why){
   var el=document.getElementById('dv3-today');
   if(!el)return;
   if(!data||!data.headline){
+    // A network failure is not an editorial fact. Say which one happened.
+    if(why==='error'){
+      el.innerHTML='<div class="dv3-loading" style="padding:2rem"><p style="color:var(--text-dim);font-size:.88rem">The briefing could not be loaded \u2014 the connection failed. '+
+        '<button id="dv3-retry" style="color:var(--gold);background:none;border:1px solid var(--border);border-radius:6px;padding:.35rem .8rem;cursor:pointer;font:inherit">Try again</button>'+
+        '<br><br><a href="/archive.html" style="color:var(--gold)">Briefing archive \u2192</a></p></div>';
+      var rb=document.getElementById('dv3-retry');
+      if(rb)rb.addEventListener('click',function(){location.reload();});
+      return;
+    }
     el.innerHTML='<div class="dv3-loading" style="padding:2rem"><p style="color:var(--text-dim);font-size:.88rem">Today\'s briefing is not yet available. Published before the market open on weekday mornings.<br><br><a href="/" style="color:var(--gold)">\u2190 Return to dashboard</a></p></div>';
     // AUDIT 2026-08-11: don't dead-end — offer the most recent archived
     // briefing right here (the archive index is a cheap fetch).
@@ -547,10 +559,18 @@ function renderToday(data){
   // !undefined === true → incorrectly treating closed markets as open.
   var marketClosed=data.market_closed===true;
 
+  // A stale daily.json must not wear today's label: when the issue's date is
+  // behind the reader's date (America/Chicago), say what it is instead.
+  var todayLabel='Today\'s briefing';
+  try{
+    var todayCT=new Date().toLocaleDateString('en-CA',{timeZone:'America/Chicago'});
+    if(iso&&iso<todayCT)todayLabel='Latest briefing';
+  }catch(e){/* keep the default */}
+
   // Header block
   var mood=(data.meta && data.meta.market_mood) || '';
   var header=
-    '<div class="dv3-today-label"><span><svg class="dv3-ic" aria-hidden="true"><use href="#i-newspaper"/></svg></span>Today\'s briefing'+
+    '<div class="dv3-today-label"><span><svg class="dv3-ic" aria-hidden="true"><use href="#i-newspaper"/></svg></span>'+todayLabel+
       (mood?'<span class="dv3-mood-pill">'+escHtml(mood)+'</span>':'')+
     '</div>'+
     '<div class="dv3-today-date">'+escHtml(fmtDate(data.date))+'</div>'+
@@ -655,39 +675,57 @@ function renderToday(data){
     topbar+='</div>';
   }
 
-  // Market quote strip (progressive enhancement — renders when daily.json
-  // carries chart_series). A framed reference row, not a frameless line:
-  // price + move + the window it covers, so the number IS the frame.
+  // Market quote strip — the DAY move, against the prior settle, labeled.
+  // Prefers the generator-built quote_strip (contract names come from the
+  // generator, which knows the roll calendar); rebuilds a contract-less strip
+  // from locked_changes for issues after v5.4 and before quote_strip.
+  // chart_series is deliberately NOT rendered any more: first-to-last over a
+  // series that straddled the Sep->Dec corn roll printed "up 4.7%" on a down
+  // day, with no window label, against this page's own lead (audit 2026-09-22).
+  function ctStamp(iso){try{return new Date(iso).toLocaleString('en-US',{timeZone:'America/Chicago',weekday:'short',hour:'numeric',minute:'2-digit'});}catch(e){return '';}}
+  function ctWeekday(isoDate){try{return new Date(isoDate+'T12:00:00Z').toLocaleString('en-US',{timeZone:'America/Chicago',weekday:'short'});}catch(e){return '';}}
   var sparks='';
-  if(data.chart_series&&typeof data.chart_series==='object'){
-    var keys=['corn','soybeans','wheat'];
-    var present=keys.filter(function(k){return Array.isArray(data.chart_series[k])&&data.chart_series[k].length>=2;});
-    if(present.length){
-      var win=(data.chart_window&&typeof data.chart_window==='string')?data.chart_window:'';
-      sparks='<div class="dv3-quotes">';
-      present.forEach(function(k){
-        var series=data.chart_series[k];
-        var first=series[0],last=series[series.length-1];
-        var lastStr=typeof last==='number'?('$'+last.toFixed(2)):String(last);
-        var d=last-first,pct=first?(d/first*100):0;
-        var dir=Math.abs(pct)<0.05?'flat':(d>0?'up':'down');
-        var arrow=dir==='up'?'\u25B2':dir==='down'?'\u25BC':'\u2013';
-        var cls=dir==='up'?'pos':dir==='down'?'neg':'flat';
-        var pctStr=dir==='flat'?'unch':(arrow+' '+Math.abs(pct).toFixed(1)+'%');
-        var centsStr=dir==='flat'?'':(Math.round(Math.abs(d)*100)+'\u00A2');
-        var nm=k.charAt(0).toUpperCase()+k.slice(1);
-        var aria=nm+', last '+lastStr+', '+(dir==='flat'?'unchanged':(dir+' '+Math.abs(pct).toFixed(1)+'%'))+(win?' over '+win:'');
-        sparks+='<div class="dv3-quote" role="img" aria-label="'+aria+'">'+
-          '<div class="dv3-quote-top">'+
-            '<span class="dv3-quote-name">'+nm+'</span>'+
-            (win?'<span class="dv3-quote-win">'+win+'</span>':'')+
-          '</div>'+
-          '<span class="dv3-quote-price">'+lastStr+'</span>'+
-          '<span class="dv3-quote-chg '+cls+'">'+pctStr+(centsStr?'<span class="cents">'+centsStr+'</span>':'')+'</span>'+
-        '</div>';
-      });
-      sparks+='</div>';
-    }
+  var strip=data.quote_strip;
+  if(!strip&&data.locked_prices&&data.locked_changes){
+    var lpF=data.locked_prices,lcF=data.locked_changes,qsF=[];
+    [['corn','Corn'],['beans','Soybeans'],['wheat','Wheat']].forEach(function(pair){
+      var dated=Object.keys(lpF).filter(function(k){return k.indexOf(pair[0]+'-')===0&&lpF[k];}).sort();
+      var key=dated[0]||pair[0];
+      var last=lpF[key],ch=lcF[key]||{};
+      if(typeof last!=='number'||last<=0)return;
+      if(typeof ch.prev!=='number'||ch.prev<=0||typeof ch.pct!=='number')return;
+      qsF.push({key:key,name:pair[1],contract:'',last:last,prev:ch.prev,pct:ch.pct});
+    });
+    if(qsF.length)strip={asof:(data.board||{}).fetched||null,vs_session:(data.board||{}).prev_close_session||null,quotes:qsF};
+  }
+  if(strip&&strip.quotes&&strip.quotes.length){
+    sparks='<div class="dv3-quotes">';
+    strip.quotes.forEach(function(q){
+      var d=q.last-q.prev;
+      var dir=Math.abs(d)<0.0001?'flat':(d>0?'up':'down');
+      var arrow=dir==='up'?'\u25B2':dir==='down'?'\u25BC':'';
+      var cls=dir==='up'?'pos':dir==='down'?'neg':'flat';
+      var cents=Math.abs(d)*100;
+      var centsStr=cents>=0.005?(String(+cents.toFixed(2))+'\u00A2'):'';
+      var pctStr=dir==='flat'?'unch':(arrow+' '+Math.abs(q.pct).toFixed(1)+'%');
+      var priceStr='$'+q.last.toFixed(2);
+      var aria=q.name+(q.contract?' '+q.contract:'')+', '+priceStr+', '+
+        (dir==='flat'?'unchanged':(dir+' '+Math.abs(q.pct).toFixed(1)+'%'))+' vs the prior close';
+      sparks+='<div class="dv3-quote" role="img" aria-label="'+escHtml(aria)+'">'+
+        '<div class="dv3-quote-top">'+
+          '<span class="dv3-quote-name">'+escHtml(q.name)+'</span>'+
+          (q.contract?'<span class="dv3-quote-win">'+escHtml(q.contract)+'</span>':'')+
+        '</div>'+
+        '<span class="dv3-quote-price">'+priceStr+'</span>'+
+        '<span class="dv3-quote-chg '+cls+'">'+pctStr+(centsStr?'<span class="cents">'+centsStr+'</span>':'')+'</span>'+
+      '</div>';
+    });
+    sparks+='</div>';
+    var asofBits=[];
+    if(strip.asof){var t=ctStamp(strip.asof);if(t)asofBits.push('Quotes as of '+t+' CT');}
+    if(strip.vs_session){var wd=ctWeekday(strip.vs_session);if(wd)asofBits.push('change vs '+wd+' close');}
+    asofBits.push('CME futures, delayed');
+    sparks+='<div class="dv3-quote-asof">'+escHtml(asofBits.join(' \u00B7 '))+'</div>';
   }
 
   // Sections
@@ -882,10 +920,13 @@ function renderToday(data){
   '</div>';
 
   // Source + permalink
-  var src='<div class="dv3-source">CME futures &middot; EIA energy data &middot; USDA crop data &middot; Auto-compiled at 6:02 AM CT</div>';
+  // The real compile time — "6:02 AM CT" was a hardcoded fiction matching
+  // none of daily.yml's cron slots.
+  var compiled=data.generated_at?ctStamp(data.generated_at):'';
+  var src='<div class="dv3-source">CME futures &middot; EIA energy data &middot; USDA crop data'+(compiled?' &middot; Compiled '+escHtml(compiled)+' CT':'')+'</div>';
   var perm=iso?'<div class="dv3-perm"><a href="/daily/'+escHtml(iso)+'">Permalink to this briefing \u2192</a></div>':'';
 
-  el.innerHTML=header+attribution+thread+ticker+surprise+takeaway+lead+topbar+sponsor+yc+sparks+sections+tmyk+watch+outsidePit+byline+cashbids+forward+share+src+perm;
+  el.innerHTML=header+attribution+thread+ticker+surprise+takeaway+lead+sparks+topbar+sponsor+yc+sections+tmyk+watch+outsidePit+byline+cashbids+forward+share+src+perm;
 
   // Wire share buttons
   var btns=el.querySelectorAll('.dv3-share-btn');
@@ -986,8 +1027,29 @@ var subBtn=document.getElementById('dv3-sub-btn');
 var closeBtn=document.getElementById('dv3-modal-close');
 var form=document.getElementById('dv3-sub-form');
 
-function openModal(){if(modal)modal.classList.add('open');}
-function closeModal(){if(modal)modal.classList.remove('open');}
+var lastFocus=null;
+function openModal(){
+  if(!modal)return;
+  lastFocus=document.activeElement;
+  modal.classList.add('open');
+  // Keyboard users were left focused on a button hidden behind the overlay.
+  var em=document.querySelector('#dv3-sub-form input[type="email"]');
+  if(em)em.focus();
+}
+function closeModal(){
+  if(!modal)return;
+  modal.classList.remove('open');
+  if(lastFocus&&lastFocus.focus)lastFocus.focus();
+  lastFocus=null;
+}
+if(modal)modal.addEventListener('keydown',function(e){
+  if(e.key!=='Tab')return;
+  var f=modal.querySelectorAll('a[href],button,input:not([tabindex="-1"])');
+  if(!f.length)return;
+  var first=f[0],last=f[f.length-1];
+  if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus();}
+  else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}
+});
 
 if(subBtn)subBtn.addEventListener('click',openModal);
 if(closeBtn)closeBtn.addEventListener('click',closeModal);
@@ -1015,8 +1077,8 @@ if(form){
 // ── load ──────────────────────────────────────────────────────────────
 fetch('/data/daily.json',{cache:'no-store'})
   .then(function(r){return r.ok?r.json():null;})
-  .then(renderToday)
-  .catch(function(){renderToday(null);});
+  .then(function(d){renderToday(d);})
+  .catch(function(){renderToday(null,'error');});
 
 renderArchive();
 
