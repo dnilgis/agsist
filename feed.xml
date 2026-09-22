@@ -5,13 +5,25 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Mon, 21 Sep 2026 10:58:07 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 22 Sep 2026 11:13:40 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/agsist.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>CORN RALLIES ON CHINA HOPES; CATTLE JUMP 2.4%</title>
+      <link>https://agsist.com/daily/2026-09-22</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-09-22</guid>
+      <pubDate>Tue, 22 Sep 2026 05:00:00 -0600</pubDate>
+      <description>Corn ran 15 cents to three-week highs and beans gained 24 cents overnight on fresh hope for a US-China trade deal, but both gave it back into the close, corn settling $5.38 and beans $13.19, both down on the day. Cattle didn't fade: $221.15, up 2.4% on record low placements.
+Action: Live cattle at $221.15: nothing to sell into a 2.4% up day off record low placements, hold for $222 confirmation.
+• Grains Fade The China Pop
+• Cattle Ignore The Grain Fade
+• Crude Reverses On Iran Hope
+Read more: https://agsist.com/daily/2026-09-22</description>
+    </item>
     <item>
       <title>BEANS FLAT, DIESEL AT $6.50, CRUDE BREAKS ON IRAN THAW</title>
       <link>https://agsist.com/daily/2026-09-21</link>
@@ -378,20 +390,6 @@ December corn at $5.22 waits on today's USDA Crop Progress report while Indiana 
   → Cattle feeders: hold major pricing decisions until import volume mechanics and the Douglas reopening pace are clearer this week.
 • ENERGY: HORMUZ BACK ON WATCH
 Read more: https://agsist.com/daily/2026-08-24</description>
-    </item>
-    <item>
-      <title>CORN AT 52-WEEK HIGH; BEEF IMPORT SHOCK WEEK AHEAD</title>
-      <link>https://agsist.com/daily/2026-08-23</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-08-23</guid>
-      <pubDate>Sun, 23 Aug 2026 05:00:00 -0600</pubDate>
-      <description>Corn finished Friday at $4.84, December at $5.08, both at or near 52-week highs and both carrying a yield story the funds actually believe. Pro Farmer's tour closed Aug 20 pointing below USDA's 180.7 bu/acre. Meanwhile, the cattle market is heading into a week defined by one announcement: Trump's 300,000 MT tariff-free beef import window, 90 days, live this week.
-Pro Farmer's below-consensus yield estimates hold corn near the top of its range heading into a week that will stress-test the cattle market.
-• CORN HOLDS THE HIGH
-  → If you have unpriced new-crop corn and December holds above $5.00 Monday morning, that window is real and narrowing as combines approach. Price what you can defend before harvest basis pressure arrives.
-• CATTLE FACE THE IMPORT WEEK
-  → Cattle feeders: hold major pricing decisions until the import volume mechanics and country-of-origin sourcing are clarified. A 90-day window against record-low placements is not permanent policy.
-• BEANS FIRM, OIL SPLITS
-Read more: https://agsist.com/daily/2026-08-23</description>
     </item>
   </channel>
 </rss>

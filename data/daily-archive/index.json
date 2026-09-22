@@ -1,6 +1,18 @@
 {
   "briefings": [
     {
+      "date": "2026-09-22",
+      "date_display": "Tuesday, September 22, 2026",
+      "headline": "CORN RALLIES ON CHINA HOPES; CATTLE JUMP 2.4%",
+      "teaser": "Corn and beans faded a China-hope rally; cattle didn't, closing up 2.4% on record low placements.",
+      "market_mood": "mixed",
+      "surprise_count": 3,
+      "sections": 3,
+      "url": "/daily/2026-09-22",
+      "market_closed": false,
+      "yc_outcome": "played_out"
+    },
+    {
       "date": "2026-09-21",
       "date_display": "Monday, September 21, 2026",
       "headline": "BEANS FLAT, DIESEL AT $6.50, CRUDE BREAKS ON IRAN THAW",
@@ -2218,6 +2230,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-09-21T10:57:51.970850+00:00",
-  "count": 193
+  "updated": "2026-09-22T11:13:34.166889+00:00",
+  "count": 194
 }
