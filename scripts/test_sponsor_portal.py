@@ -189,46 +189,60 @@ def main():
           "the portal keeps no lookalike of its own")
 
     # ---- WHO READS AGSIST ---------------------------------------------------
-    # The audience section is what a sponsor quotes to their own boss. Every
-    # number on it must come from data/audience.json, carry its window, and a
-    # missing or malformed file must leave the portal exactly as it was.
-    print("\nthe audience section says only what the file says")
+    # The audience dashboard is what a sponsor quotes to their own boss. Every
+    # number on it must come from data/audience.json and carry its window, and
+    # a missing or malformed file must leave the portal exactly as it was.
+    print("\nthe audience dashboard says only what the file says")
     check("/data/audience.json" in html, "the portal reads data/audience.json")
-    check("a.schema === 'agsist-audience/1'" in html,
+    check("a.schema === 'agsist-audience/2'" in html,
           "a file of the wrong shape is treated as absent, not drawn",
-          "a half-drawn audience block is worse than none")
+          "a half-drawn dashboard is worse than none")
     check(".catch(function () { return null; })" in html,
           "an unreachable audience file cannot break the sponsor's link")
     check("x[0] !== '#audience'" in html, "no nav link points at a section that was not drawn")
-    for s_, what in (("14,340", "the US reader count"), ("1501", "a state's count")):
+    check("var AUDP = fetch(" in html and "AUDP.then(" in html,
+          "the audience promise has its own name",
+          "it once shared AUD with the dashboard state; the state overwrote the promise and every link said 'not recognised'")
+    for s_, what in (("14,340", "a reader count"), ("1501", "a state's count"), ("1,615", "an AI figure")):
         check(s_ not in html, "no audience figure is typed into the page (%s)" % what)
+    check("Automated traffic rarely" not in html,
+          "the page does not claim engaged visits screen out bots (Singapore made 1,706 at 2s a user)")
     af = ROOT / "data" / "audience.json"
     if af.exists():
         a = json.loads(af.read_text())
-        R, S = a.get("readers") or {}, a.get("states") or {}
-        rows = S.get("rows") or []
-        check(a.get("schema") == "agsist-audience/1", "audience.json declares its schema")
-        check(bool(R.get("start") and R.get("end") and R.get("source")),
-              "the reader count carries its window and its report")
-        check(bool(S.get("start") and S.get("end") and S.get("source")),
-              "the state table carries its window and its report")
-        check(len({r["code"] for r in rows}) == len(rows) <= 51, "one row per state, at most 50 and DC")
-        check(all(rows[i]["engaged"] >= rows[i + 1]["engaged"] for i in range(len(rows) - 1)),
-              "states are ranked by engaged visits")
-        ranked = [r["rank"] for r in rows if r.get("flag") != "home"]
-        check(ranked == list(range(1, len(ranked) + 1)), "ranks run 1..n with no gaps")
-        check(all(r["rank"] is None for r in rows if r.get("flag") == "home"),
-              "the home state is shown and not ranked -- its numbers are partly our own visits")
-        check(S.get("rowsSumEngaged") == sum(r["engaged"] for r in rows),
-              "the engaged-visits sum on the page is the rows' own sum")
-        check(S.get("rowsSumUsers") == sum(r["users"] for r in rows),
-              "the 'rows add up to' figure on the page is the rows' own sum")
-        fr = S.get("flagRule") or {}
-        bad = [r["code"] for r in rows if r.get("flag") != "home" and
-               ((r.get("flag") == "server") != (r["users"] >= fr.get("minReaders", 0) and r["avgSeconds"] < fr.get("seconds", 0)))]
-        check(not bad, "every server-traffic flag follows the printed rule, and nothing else is flagged", bad)
-        check(not any(r.get("flag") == "server" and "cut" in r for r in rows),
-              "a flagged state keeps its reported numbers")
+        rg = a.get("ranges") or []
+        check(a.get("schema") == "agsist-audience/2", "audience.json is the shape the portal draws")
+        check(bool(rg) and all(r.get("start") and r.get("end") and r.get("id") for r in rg), "every range carries its dates")
+        ids = [r["id"] for r in rg]
+        check(set(a.get("totals") or {}) == set(ids) and set(a.get("states") or {}) == set(ids),
+              "totals and states exist for exactly the ranges offered")
+        for rid in ids:
+            rows = a["states"][rid]
+            check(len({r["code"] for r in rows}) == len(rows) <= 51, "%s: one row per state, at most 50 and DC" % rid)
+            check(all(rows[i]["engaged"] >= rows[i + 1]["engaged"] for i in range(len(rows) - 1)),
+                  "%s: states are ranked by engaged visits" % rid)
+            ranked = [r["rank"] for r in rows if r.get("flag") != "home"]
+            check(ranked == list(range(1, len(ranked) + 1)), "%s: ranks run 1..n with no gaps" % rid)
+            check(all(r["rank"] is None for r in rows if r.get("flag") == "home"),
+                  "%s: the home state is shown and not ranked" % rid)
+        fr = a.get("stateFlagRule")
+        if fr:
+            rows = a["states"][ids[0]]
+            bad = [r["code"] for r in rows if r.get("flag") != "home" and
+                   ((r.get("flag") == "server") != (r["users"] >= fr["minReaders"] and r["avgSeconds"] < fr["seconds"]))]
+            check(not bad, "every server-traffic flag follows the printed rule, and nothing else is flagged", bad)
+        if a.get("ai"):
+            check(bool(a["ai"].get("start") and a["ai"].get("end")), "the AI figure carries its export's dates")
+        blob = json.dumps(a)
+        check("@" not in blob.replace("sig@farmers1st.com", ""), "no email address is written into the public file")
+
+    print("\nthe requests box never pretends")
+    check("formspree.io/f/xnjbwepn" in html, "requests post to the site's own Formspree form")
+    check("That did not go through." in html and "mailto:" in html,
+          "a failed request says so and hands over a written email")
+    check("if (!j || j.ok === false || j.errors) throw 0;" in html,
+          "only an explicit ok from Formspree counts as sent")
+    check("Nothing changes until" in html, "the box says a person acts on it, not the button")
     conf_ls = [sp_.get("licensed_states") for sp_ in conf.get("sponsors", [])]
     for v in conf_ls:
         if v is not None:

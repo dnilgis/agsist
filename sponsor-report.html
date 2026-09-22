@@ -191,53 +191,111 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
 .cp-err{padding:3rem 0;color:var(--text-dim,#a9b3ae);text-align:center}
 
 
-/* ── audience ──
-   One hue for magnitude: the ad orange at five strengths, light to strong.
-   Numbers stay in text ink; the tile colour carries the size, the code on the
-   tile carries the identity, and the table below carries every exact figure. */
-.cp-aud-map{display:grid;grid-template-columns:repeat(11,minmax(0,1fr));gap:4px;max-width:640px;margin:0 auto}
+/* ── audience: the dashboard ──
+   Flat cards, one hue for magnitude (the ad orange), two series colours for
+   the trend lines (blue, orange -- validated for colour-blind separation on
+   both themes). Numbers in mono, text in text ink, never in a series colour. */
+.cp-aud{--s1:#3987e5;--s2:#d95926}
+[data-theme="light"] .cp-aud{--s1:#2a78d6;--s2:#d95926}
+.cp-aud-head{display:flex;align-items:center;gap:.6rem 1rem;flex-wrap:wrap;margin:0 0 .9rem}
+.cp-aud-head h2{font-size:1.3rem;letter-spacing:-.01em;margin:0}
+.cp-pills{display:inline-flex;border:1px solid var(--border,#2a3230);border-radius:10px;overflow:hidden;margin-left:auto}
+.cp-pills button{font-family:var(--font-mono,'JetBrains Mono',monospace);font-size:.72rem;letter-spacing:.04em;padding:.45rem .8rem;
+  min-height:38px;background:transparent;color:var(--text-dim,#a9b3ae);border:0;border-left:1px solid var(--border,#2a3230);cursor:pointer}
+.cp-pills button:first-child{border-left:0}
+.cp-pills button[aria-pressed="true"]{background:var(--text,#e8ece9);color:var(--bg,#0d1110);font-weight:700}
+.cp-pills button:focus-visible{outline:2px solid var(--acc);outline-offset:-2px}
+.cp-asof{width:100%;font-family:var(--font-mono,'JetBrains Mono',monospace);font-size:.68rem;color:var(--text-muted,#7d8782)}
+.cp-grid2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:.7rem;margin-top:.7rem}
+.cp-grid2>.cp-card{margin:0}
+.cp-ct{display:flex;align-items:baseline;justify-content:space-between;gap:.6rem;flex-wrap:wrap;margin:0 0 .6rem}
+.cp-ct h3{font-size:.95rem;margin:0;font-weight:700}
+.cp-ct span{font-family:var(--font-mono,'JetBrains Mono',monospace);font-size:.66rem;color:var(--text-muted,#7d8782)}
+.cp-keys{display:flex;gap:.9rem;flex-wrap:wrap;font-size:.76rem;color:var(--text-dim,#a9b3ae);margin:0 0 .4rem}
+.cp-keys i{display:inline-block;width:14px;height:3px;border-radius:2px;vertical-align:middle;margin-right:.35rem}
+.cp-tr{position:relative}
+.cp-tr svg{width:100%;height:190px;display:block;overflow:visible}
+.cp-tr text{font-family:'JetBrains Mono',monospace;font-size:10px;fill:var(--text-muted,#7d8782)}
+.cp-tr .gl{stroke:var(--border,#2a3230);stroke-width:1}
+.cp-tr .xh{stroke:var(--text-muted,#7d8782);stroke-width:1;stroke-dasharray:3 3}
+.cp-tr .hit{fill:transparent;cursor:crosshair}
+.cp-aud-map{display:grid;grid-template-columns:repeat(11,minmax(0,1fr));gap:4px;max-width:620px;margin:0 auto}
 .cp-tile{position:relative;aspect-ratio:1/1;border-radius:6px;display:flex;align-items:center;justify-content:center;
-  font-family:var(--font-mono,'JetBrains Mono',monospace);font-size:clamp(.55rem,1.6vw,.74rem);font-weight:700;letter-spacing:.02em;
+  font-family:var(--font-mono,'JetBrains Mono',monospace);font-size:clamp(.55rem,1.6vw,.72rem);font-weight:700;
   color:var(--text,#e8ece9);background:rgba(var(--acc-rgb),var(--a,.06));border:1px solid transparent;cursor:default;min-width:0}
 .cp-tile.is-dark{color:#0d1117}
-.cp-tile.is-lic{border-color:var(--text,#e8ece9);box-shadow:inset 0 0 0 1px var(--text,#e8ece9)}
-.cp-tile.is-flag::after{content:"";position:absolute;top:3px;right:3px;width:5px;height:5px;border-radius:50%;
-  background:var(--text-muted,#7d8782)}
+.cp-tile.is-lic{box-shadow:inset 0 0 0 2px var(--text,#e8ece9)}
+.cp-tile.is-flag::after{content:"";position:absolute;top:3px;right:3px;width:5px;height:5px;border-radius:50%;background:var(--text-muted,#7d8782)}
 .cp-tile:focus-visible,.cp-tile:hover{outline:2px solid var(--text,#e8ece9);outline-offset:1px;z-index:1}
-.cp-tip{position:absolute;z-index:6;pointer-events:none;min-width:190px;padding:.6rem .7rem;border-radius:10px;
-  background:var(--bg,#0d1110);border:1px solid var(--border,#2a3230);box-shadow:0 12px 26px -14px rgba(0,0,0,.8);
-  font-size:.8rem;line-height:1.5;color:var(--text-dim,#a9b3ae)}
-.cp-tip b{display:block;color:var(--text,#e8ece9);font-size:.88rem;margin-bottom:.15rem}
-.cp-tip span{font-family:var(--font-mono,'JetBrains Mono',monospace);color:var(--text,#e8ece9)}
+.cp-tip{position:absolute;z-index:6;pointer-events:none;min-width:170px;padding:.55rem .7rem;border-radius:8px;
+  background:var(--bg,#0d1110);border:1px solid var(--border,#2a3230);box-shadow:0 10px 24px -14px rgba(0,0,0,.7);
+  font-size:.78rem;line-height:1.55;color:var(--text-dim,#a9b3ae);white-space:nowrap}
+.cp-tip b{display:block;color:var(--text,#e8ece9);font-size:.84rem;margin-bottom:.1rem}
+.cp-tip span{font-family:var(--font-mono,'JetBrains Mono',monospace);color:var(--text,#e8ece9);float:right;margin-left:1rem}
+.cp-tip i{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:.35rem}
 .cp-legend{display:flex;align-items:center;gap:.9rem;flex-wrap:wrap;justify-content:center;margin:.9rem 0 0;
-  font-family:var(--font-mono,'JetBrains Mono',monospace);font-size:.68rem;color:var(--text-muted,#7d8782)}
+  font-family:var(--font-mono,'JetBrains Mono',monospace);font-size:.66rem;color:var(--text-muted,#7d8782)}
 .cp-legend-ramp{display:inline-flex;gap:3px;align-items:center}
-.cp-legend-ramp i{width:22px;height:12px;border-radius:3px;background:rgba(var(--acc-rgb),var(--a))}
+.cp-legend-ramp i{width:22px;height:10px;border-radius:2px;background:rgba(var(--acc-rgb),var(--a))}
 .cp-legend-key{display:inline-flex;align-items:center;gap:.35rem}
-.cp-legend-key i{width:12px;height:12px;border-radius:3px;display:inline-block}
+.cp-legend-key i{width:11px;height:11px;border-radius:2px;display:inline-block}
 .cp-legend-key .k-lic{box-shadow:inset 0 0 0 2px var(--text,#e8ece9)}
 .cp-legend-key .k-flag{width:6px;height:6px;border-radius:50%;background:var(--text-muted,#7d8782)}
+.cp-lic{display:flex;gap:.4rem 1.2rem;flex-wrap:wrap;justify-content:center;margin:0 0 .9rem;font-size:.86rem;color:var(--text-dim,#a9b3ae)}
+.cp-lic b{color:var(--text,#e8ece9);font-family:var(--font-mono,'JetBrains Mono',monospace)}
 .cp-aud-t td:first-child{width:1%;white-space:nowrap;color:var(--text-muted,#7d8782);font-family:var(--font-mono,'JetBrains Mono',monospace)}
-.cp-aud-t .cp-tag{font-family:var(--font-mono,'JetBrains Mono',monospace);font-size:.62rem;letter-spacing:.06em;text-transform:uppercase;
-  color:var(--text-muted,#7d8782);border:1px solid var(--border,#2a3230);border-radius:5px;padding:.08rem .35rem;margin-left:.35rem;white-space:nowrap}
-.cp-aud-t .cp-tag.is-lic{color:var(--text,#e8ece9);border-color:var(--text-dim,#a9b3ae)}
+.cp-tag{font-family:var(--font-mono,'JetBrains Mono',monospace);font-size:.6rem;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--text-muted,#7d8782);border:1px solid var(--border,#2a3230);border-radius:5px;padding:.06rem .35rem;margin-left:.35rem;white-space:nowrap}
+.cp-tag.is-lic{color:var(--text,#e8ece9);border-color:var(--text-dim,#a9b3ae)}
 .cp-aud-t tr.is-more{display:none}
 .cp-aud-t.is-all tr.is-more{display:table-row}
 .cp-more{margin:.8rem 0 0}
-.cp-reach{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.7rem;margin-top:.7rem}
-.cp-reach div{border:1px solid var(--border,#2a3230);border-radius:12px;padding:.9rem 1rem;background:var(--surface,#141918);min-width:0}
-.cp-reach b{display:block;font-family:var(--font-display,'Inter',sans-serif);font-size:1.45rem;font-weight:800;letter-spacing:-.01em;font-variant-numeric:tabular-nums}
-.cp-reach em{display:block;font-style:normal;font-weight:700;font-size:.86rem;margin:.1rem 0 .3rem}
-.cp-reach span{display:block;font-size:.8rem;color:var(--text-dim,#a9b3ae);line-height:1.5}
-.cp-reach small{display:block;font-family:var(--font-mono,'JetBrains Mono',monospace);font-size:.64rem;color:var(--text-muted,#7d8782);margin-top:.45rem}
-.cp-src{font-family:var(--font-mono,'JetBrains Mono',monospace);font-size:.66rem;color:var(--text-muted,#7d8782);margin:.5rem 0 0}
+.cp-bar{position:relative;height:6px;border-radius:3px;background:var(--border,#2a3230);margin-top:.3rem;overflow:hidden}
+.cp-bar i{position:absolute;left:0;top:0;bottom:0;border-radius:3px;background:var(--acc)}
+.cp-rows{list-style:none;margin:0;padding:0}
+.cp-rows li{padding:.5rem 0;border-bottom:1px solid var(--border,#2a3230);font-size:.86rem}
+.cp-rows li:last-child{border-bottom:0}
+.cp-rows .r{display:flex;justify-content:space-between;gap:.8rem}
+.cp-rows .r span:first-child{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cp-rows .n{font-family:var(--font-mono,'JetBrains Mono',monospace);color:var(--text,#e8ece9);white-space:nowrap;font-variant-numeric:tabular-nums}
+.cp-dev3{display:flex;height:34px;border-radius:8px;overflow:hidden;gap:2px;margin:.2rem 0 .7rem}
+.cp-dev3 div{display:flex;align-items:center;justify-content:center;font-family:var(--font-mono,'JetBrains Mono',monospace);
+  font-size:.72rem;font-weight:700;color:#0d1117;min-width:0;overflow:hidden;white-space:nowrap}
+.cp-big{font-family:var(--font-display,'Inter',sans-serif);font-weight:800;font-size:2rem;letter-spacing:-.02em;line-height:1;font-variant-numeric:tabular-nums}
+.cp-small{font-size:.8rem;color:var(--text-dim,#a9b3ae);line-height:1.5;margin:.35rem 0 0}
+.cp-howto{margin-top:.7rem}
+.cp-howto summary{cursor:pointer;font-family:var(--font-mono,'JetBrains Mono',monospace);font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--text-dim,#a9b3ae);min-height:40px;display:flex;align-items:center}
+.cp-howto ul{margin:.2rem 0 0;padding-left:1.1rem;font-size:.84rem;line-height:1.65;color:var(--text-dim,#a9b3ae)}
+.cp-howto li{margin:.25rem 0}
+
+/* ── requests ── */
+.cp-req-acts{display:flex;flex-wrap:wrap;gap:.4rem;margin:0 0 1rem}
+.cp-req-acts button{font-family:var(--font-mono,'JetBrains Mono',monospace);font-size:.74rem;letter-spacing:.03em;padding:.55rem .85rem;min-height:42px;
+  border-radius:9px;border:1px solid var(--border,#2a3230);background:transparent;color:var(--text-dim,#a9b3ae);cursor:pointer}
+.cp-req-acts button[aria-checked="true"]{background:var(--text,#e8ece9);color:var(--bg,#0d1110);border-color:var(--text,#e8ece9);font-weight:700}
+.cp-req-acts button:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+.cp-req-f{margin:0 0 .85rem}
+.cp-req-f label{display:block;font-size:.8rem;color:var(--text-dim,#a9b3ae);margin:0 0 .3rem}
+.cp-req-f input,.cp-req-f select,.cp-req-f textarea{width:100%;max-width:560px;font:inherit;font-size:.92rem;color:var(--text,#e8ece9);background:var(--bg,#0d1110);
+  border:1px solid var(--border,#2a3230);border-radius:9px;padding:.6rem .7rem;min-height:44px}
+.cp-req-f textarea{resize:vertical;min-height:96px}
+.cp-req-f input:focus,.cp-req-f select:focus,.cp-req-f textarea:focus{outline:2px solid var(--acc);outline-offset:1px}
+.cp-req-go{display:flex;align-items:center;gap:.9rem;flex-wrap:wrap}
+.cp-req-go .cp-btn[disabled]{opacity:.6;cursor:wait}
+.cp-req-out{margin-top:.8rem}
+.cp-req-ok{margin:0;padding:.7rem .85rem;border-radius:9px;border:1px solid rgba(var(--ok-rgb),.45);background:rgba(var(--ok-rgb),.08);font-size:.88rem}
+.cp-req-bad{margin:0 0 .6rem;padding:.7rem .85rem;border-radius:9px;border:1px solid rgba(var(--acc-rgb),.5);background:rgba(var(--acc-rgb),.08);font-size:.88rem}
+.cp-req-terms{max-width:560px;margin:0 0 .85rem}
+.cp-req a{color:var(--text,#e8ece9)}
 
 @media (max-width:820px){
   .cp-steps{grid-template-columns:repeat(5,minmax(140px,1fr));overflow-x:auto;scrollbar-width:thin;padding-bottom:.3rem}
   .cp-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .cp-bill,.cp-places,.cp-wait,.cp-reach{grid-template-columns:minmax(0,1fr)}
+  .cp-bill,.cp-places,.cp-wait,.cp-grid2{grid-template-columns:minmax(0,1fr)}
   .cp-aud-map{gap:3px}
   .cp-tile{border-radius:4px}
+  .cp-pills{margin-left:0}
 }
 @media (max-width:560px){
   .cp{padding:1rem .9rem 4rem}
@@ -260,7 +318,7 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
 [data-theme="light"] .cp{--ok:#1f9d55;--ok-rgb:31,157,85}
 [data-theme="light"] .cp-code,[data-theme="light"] .cp-plan-name,[data-theme="light"] .cp-tl li.is-now .cp-tl-d{color:#a8380a}
 [data-theme="light"] .cp-step.is-now .cp-step-n{color:#a8380a}
-@media print{.cp-nav,.cp-tabs,.cp-copy,.cp-more,.cp-tip{display:none}.cp-aud-t tr.is-more{display:table-row}.cp-sec{break-inside:avoid}}
+@media print{.cp-nav,.cp-tabs,.cp-copy,.cp-more,.cp-tip,.cp-pills{display:none}.cp-aud-t tr.is-more{display:table-row}.cp-sec{break-inside:avoid}}
 </style>
 </head>
 <body>
@@ -324,14 +382,17 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
   /* The audience file is site-wide and OPTIONAL. If it is missing or broken the
      page is exactly the page it was before it existed -- the sponsor's own
      link must never fail because of it. */
-  var AUD = fetch('/data/audience.json', { cache: 'no-cache' })
+  var AUDP = fetch('/data/audience.json', { cache: 'no-cache' })
     .then(function (x) { return x.ok ? x.json() : null; })
-    .then(function (a) { return a && a.schema === 'agsist-audience/1' && a.readers && a.states ? a : null; })
+    .then(function (a) {
+      /* Only the shape this page draws. Anything else is treated as absent. */
+      return a && a.schema === 'agsist-audience/2' && Array.isArray(a.ranges) && a.ranges.length && a.totals && a.states ? a : null;
+    })
     .catch(function () { return null; });
 
   fetch('/data/sponsors/' + r + '.json', { cache: 'no-cache' })
     .then(function (x) { if (!x.ok) throw 0; return x.json(); })
-    .then(function (d) { return AUD.then(function (a) { d.__aud = a; return d; }); })
+    .then(function (d) { return AUDP.then(function (a) { d.__aud = a; return d; }); })
     .then(function (d) {
       /* A failure INSIDE the drawing is not a bad link, and saying so sends the
          sponsor chasing the wrong thing. The two are separated here. */
@@ -455,7 +516,7 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
   }
 
   function nav(hasAud) {
-    var items = [['#ad', 'Your ad'], ['#results', 'Results'], ['#audience', 'Audience'], ['#where', 'Where it runs'], ['#billing', 'Billing'], ['#links', 'Tracking links'], ['#how', 'How we count']];
+    var items = [['#ad', 'Your ad'], ['#results', 'Results'], ['#audience', 'Audience'], ['#where', 'Where it runs'], ['#billing', 'Billing'], ['#requests', 'Requests'], ['#links', 'Tracking links'], ['#how', 'How we count']];
     if (!hasAud) items = items.filter(function (x) { return x[0] !== '#audience'; });
     return '<nav class="cp-nav" aria-label="Sections">' + items.map(function (x) { return '<a href="' + x[0] + '">' + x[1] + '</a>'; }).join('') + '</nav>';
   }
@@ -642,6 +703,108 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
   }
 
   /* ───────────────────────────── billing ───────────────────────────── */
+  /* ───────────────────────────── requests ─────────────────────────────
+     Everything a sponsor might ask for, in one place: a change to the ad, a
+     different plan, more time, a pause, a cancellation, or just a note.
+
+     It posts to the site's Formspree form (the same one /farmland-atlas uses),
+     which emails Sig. Nothing here changes the campaign by itself -- a person
+     reads it and acts -- and the page says so. If the post fails for any
+     reason the page says it did NOT send and hands over a ready-written email
+     with the same words, because a request that quietly vanishes is the worst
+     thing this box could do. */
+  var FORM = 'https://formspree.io/f/xnjbwepn';
+  var ACTS = [
+    ['change', 'Change the ad', 'What should the ad say or link to instead?'],
+    ['plan', 'Switch plan', 'Anything we should know about the switch?'],
+    ['extend', 'Extend or renew', 'How long would you like to run?'],
+    ['pause', 'Pause', 'From when, and for how long?'],
+    ['cancel', 'Cancel', 'Anything we could have done better? (optional)'],
+    ['note', 'Send a note', 'Your message']
+  ];
+  function requestsSection(d, s) {
+    var rc = d.rateCard || {}, cur = s.tier ? s.tier.id : null;
+    var h = '<section class="cp-sec" id="requests"><div class="cp-h2"><h2>Requests</h2><span class="cp-eyebrow">Goes straight to Sig</span></div>';
+    h += '<form class="cp-card cp-req" id="cp-req" novalidate><div class="cp-req-acts" role="radiogroup" aria-label="What do you need?">';
+    ACTS.forEach(function (a, i) {
+      h += '<button type="button" role="radio" data-act="' + a[0] + '" aria-checked="' + (i === 0) + '" tabindex="' + (i === 0 ? 0 : -1) + '">' + esc(a[1]) + '</button>';
+    });
+    h += '</div>';
+    h += '<div class="cp-req-f" data-for="plan" hidden><label for="cp-req-plan">New plan</label><select id="cp-req-plan" name="plan">' +
+      (rc.tiers || []).filter(function (t) { return t.id !== cur; }).map(function (t) {
+        return '<option value="' + esc(t.id) + '">' + esc(t.name) + ' · $' + esc(t.price_week) + ' / week</option>'; }).join('') + '</select>' +
+      '<p class="cp-small" id="cp-req-plan-d"></p></div>';
+    h += '<div class="cp-req-f" data-for="pause cancel extend" hidden><label for="cp-req-date" id="cp-req-date-l">From</label><input type="date" id="cp-req-date" name="date"></div>';
+    h += '<p class="cp-small cp-req-terms" data-for="cancel pause" hidden>' + esc(rc.terms || '') + ' Your ad keeps running until Sig confirms the date with you.</p>';
+    h += '<div class="cp-req-f"><label for="cp-req-msg" id="cp-req-msg-l">' + esc(ACTS[0][2]) + '</label><textarea id="cp-req-msg" name="message" rows="4"></textarea></div>';
+    h += '<div class="cp-req-f"><label for="cp-req-email">Your email, for the reply</label><input type="email" id="cp-req-email" name="email" autocomplete="email" placeholder="you@company.com"></div>';
+    h += '<div class="cp-req-go"><button class="cp-btn" type="submit" id="cp-req-send">Send to Sig</button>' +
+      '<span class="cp-small" style="margin:0">Nothing changes until Sig confirms it with you.</span></div>';
+    h += '<div class="cp-req-out" id="cp-req-out" role="status" aria-live="polite"></div>';
+    h += '<p class="cp-small" style="margin-top:.9rem">Rather talk? <a href="tel:+17157972428">715-797-2428</a> or <a href="mailto:' + esc(d.approveTo || 'sig@farmers1st.com') + '">' + esc(d.approveTo || 'sig@farmers1st.com') + '</a></p>';
+    return h + '</form></section>';
+  }
+  function wireRequests(d, s) {
+    var f = document.getElementById('cp-req'); if (!f) return;
+    var act = ACTS[0][0], tiers = (d.rateCard && d.rateCard.tiers) || [];
+    var btns = [].slice.call(f.querySelectorAll('[data-act]'));
+    function planNote() {
+      var sel = f.querySelector('#cp-req-plan'), p = f.querySelector('#cp-req-plan-d'); if (!sel || !p) return;
+      var t = tiers.filter(function (x) { return x.id === sel.value; })[0]; p.textContent = t ? t.placement : '';
+    }
+    function pick(a) {
+      act = a;
+      btns.forEach(function (b) { var on = b.getAttribute('data-act') === a; b.setAttribute('aria-checked', String(on)); b.tabIndex = on ? 0 : -1; });
+      [].forEach.call(f.querySelectorAll('[data-for]'), function (el) { el.hidden = el.getAttribute('data-for').split(' ').indexOf(a) < 0; });
+      var A = ACTS.filter(function (x) { return x[0] === a; })[0];
+      f.querySelector('#cp-req-msg-l').textContent = A[2];
+      f.querySelector('#cp-req-date-l').textContent = a === 'extend' ? 'Run through' : a === 'cancel' ? 'Last day' : 'From';
+      f.querySelector('#cp-req-out').innerHTML = '';
+      planNote();
+    }
+    btns.forEach(function (b, i) {
+      b.addEventListener('click', function () { pick(b.getAttribute('data-act')); });
+      b.addEventListener('keydown', function (e) {
+        var k = e.key === 'ArrowRight' || e.key === 'ArrowDown' ? 1 : e.key === 'ArrowLeft' || e.key === 'ArrowUp' ? -1 : 0;
+        if (!k) return; e.preventDefault(); var nb = btns[(i + k + btns.length) % btns.length]; pick(nb.getAttribute('data-act')); nb.focus();
+      });
+    });
+    var sel = f.querySelector('#cp-req-plan'); if (sel) sel.addEventListener('change', planNote);
+    f.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var A = ACTS.filter(function (x) { return x[0] === act; })[0];
+      var msg = f.querySelector('#cp-req-msg').value.trim(), date_ = f.querySelector('#cp-req-date').value, em = f.querySelector('#cp-req-email').value.trim();
+      var out = f.querySelector('#cp-req-out');
+      var plan = act === 'plan' && sel ? sel.options[sel.selectedIndex] && sel.options[sel.selectedIndex].text : '';
+      if ((act === 'change' || act === 'note') && !msg) { out.innerHTML = '<p class="cp-req-bad">Add a line about what you need first.</p>'; f.querySelector('#cp-req-msg').focus(); return; }
+      if (em && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)) { out.innerHTML = '<p class="cp-req-bad">That email address does not look complete.</p>'; f.querySelector('#cp-req-email').focus(); return; }
+      var lines = ['Request: ' + A[1], 'Sponsor: ' + (d.sponsor || ''), d.contact ? 'Contact: ' + d.contact : '',
+        plan ? 'New plan: ' + plan : '', date_ && !f.querySelector('[data-for="pause cancel extend"]').hidden ? f.querySelector('#cp-req-date-l').textContent + ': ' + date_ : '',
+        'Current plan: ' + (s.tier ? s.tier.name : 'not recorded'), 'Ad proof code: ' + (s.code || '—'), '', msg].filter(function (x, i) { return x !== '' || i === 7; });
+      var body = lines.join('\n');
+      var subj = 'AGSIST portal: ' + A[1] + ' (' + (d.sponsor || '') + ')';
+      var to = d.approveTo || 'sig@farmers1st.com';
+      var mail = 'mailto:' + encodeURIComponent(to) + '?subject=' + encodeURIComponent(subj) + '&body=' + encodeURIComponent(body);
+      var go = f.querySelector('#cp-req-send'); go.disabled = true; go.textContent = 'Sending…';
+      var fd = new FormData();
+      fd.append('_subject', subj); fd.append('request', A[1]); fd.append('sponsor', d.sponsor || ''); fd.append('message', body);
+      if (em) fd.append('email', em);
+      fetch(FORM, { method: 'POST', body: fd, headers: { Accept: 'application/json' } })
+        .then(function (r) { return r.ok ? r.json() : null; })
+        .then(function (j) {
+          if (!j || j.ok === false || j.errors) throw 0;
+          out.innerHTML = '<p class="cp-req-ok"><b>Sent.</b> Sig has it' + (em ? ' and will reply to ' + esc(em) : '') + '. Nothing changes until he confirms it with you.</p>';
+          f.querySelector('#cp-req-msg').value = '';
+        })
+        .catch(function () {
+          out.innerHTML = '<p class="cp-req-bad"><b>That did not go through.</b> Use this email instead. Your request is already written in it.</p>' +
+            '<a class="cp-btn cp-btn--ghost" href="' + esc(mail) + '">Email the request</a>';
+        })
+        .then(function () { go.disabled = false; go.textContent = 'Send to Sig'; });
+    });
+    pick(act);
+  }
+
   function billingSection(d, s) {
     var rc = d.rateCard || {}, t = s.tier;
     var h = '<section class="cp-sec" id="billing"><div class="cp-h2"><h2>Billing</h2><span class="cp-eyebrow">' + esc(rc.currency || 'USD') + '</span></div>';
@@ -717,12 +880,11 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
   }
 
   /* ───────────────────────────── audience ─────────────────────────────
-     Who reads AGSIST, from data/audience.json (scripts/audience_from_exports.py).
-     US readers only. Every figure prints its window and the report it came
-     from. States are ranked by engaged visits -- GA4's own "engaged session",
-     which a crawler rarely makes -- and a state whose readers average under the
-     flag rule is marked, not trimmed, because the export cannot say how much of
-     it is servers. */
+     "Who reads AGSIST": a dashboard drawn from data/audience.json, which
+     scripts/build_audience.py refreshes every morning from GA4, Search Console
+     and Bing (or scripts/audience_from_exports.py writes from exports until
+     those are connected). US readers only. Every figure prints its window.
+     Nothing here is typed into the page; a missing module is not drawn. */
   var GRID = [['AK',0,0],['ME',10,0],['VT',9,1],['NH',10,1],
     ['WA',0,2],['ID',1,2],['MT',2,2],['ND',3,2],['MN',4,2],['IL',5,2],['WI',6,2],['MI',7,2],['NY',8,2],['RI',9,2],['MA',10,2],
     ['OR',0,3],['NV',1,3],['WY',2,3],['SD',3,3],['IA',4,3],['IN',5,3],['OH',6,3],['PA',7,3],['NJ',8,3],['CT',9,3],
@@ -730,142 +892,271 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
     ['AZ',1,5],['NM',2,5],['KS',3,5],['AR',4,5],['TN',5,5],['NC',6,5],['SC',7,5],['DC',8,5],
     ['OK',3,6],['LA',4,6],['MS',5,6],['AL',6,6],['GA',7,6],
     ['HI',0,7],['TX',3,7],['FL',8,7]];
-  var STEPS = [0.2, 0.38, 0.56, 0.76, 0.96];
-  function secs(n) { n = Math.round(n || 0); return n < 60 ? n + 's' : Math.floor(n / 60) + 'm' + (n % 60 ? ' ' + (n % 60) + 's' : ''); }
-  function perDay(n, a, b) { var d = Math.round((D(b) - D(a)) / 864e5) + 1; return d > 0 ? Math.round(n / d) : null; }
+  var STEPS = [0.2, 0.38, 0.56, 0.76, 0.96], TOP = 15, THIN = 20;
+  function secs(n) { if (n == null) return '—'; n = Math.round(n); return n < 60 ? n + 's' : Math.floor(n / 60) + 'm' + (n % 60 ? ' ' + (n % 60) + 's' : ''); }
   function pct(x) { return x == null ? '—' : Math.round(100 * x) + '%'; }
   function span(a, b) { return (a && b && a.slice(0, 4) === b.slice(0, 4) ? fmt(a) : fmt(a, true)) + ' – ' + fmt(b, true); }
-  /* Square-root steps: engaged visits run from single digits to the thousands,
-     and a linear scale paints every state but three the same pale colour. The
-     cut points are computed from the data, printed in the legend, and a state's
-     exact number is always one hover or one table row away. */
-  function stepper(rows) {
-    var max = Math.max.apply(null, rows.map(function (r) { return r.engaged; }).concat([1]));
-    var cuts = [0.2, 0.4, 0.6, 0.8].map(function (f) { return Math.round(Math.pow(f, 2) * max); });
-    return { cuts: cuts, max: max, of: function (v) { var i = 0; while (i < cuts.length && v > cuts[i]) i++; return i; } };
+  function perDay(n, a, b) { var d = Math.round((D(b) - D(a)) / 864e5) + 1; return d > 0 ? Math.round(n / d) : null; }
+  function nice(v) { if (v <= 0) return 1; var p = Math.pow(10, Math.floor(Math.log(v) / Math.LN10)), f = v / p; return (f <= 1 ? 1 : f <= 2 ? 2 : f <= 5 ? 5 : 10) * p; }
+  function card(title, note, body, extra) {
+    return '<div class="cp-card' + (extra || '') + '"><div class="cp-ct"><h3>' + title + '</h3>' + (note ? '<span>' + note + '</span>' : '') + '</div>' + body + '</div>';
   }
+
+  var AUD = { d: null, a: null, r: null };
   function audience(d) {
-    var a = d.__aud;
-    if (!a) return '';
-    var R = a.readers, S = a.states, rows = S.rows || [];
+    var a = d.__aud; if (!a) return '';
+    var ids = (a.ranges || []).map(function (x) { return x.id; });
+    AUD.d = d; AUD.a = a; AUD.r = ids.indexOf('28d') >= 0 ? '28d' : ids[0];
+    return '<section class="cp-sec cp-aud" id="audience"><div id="cp-aud-body">' + audBody() + '</div></section>';
+  }
+  function rangeOf(id) { var r = null; (AUD.a.ranges || []).forEach(function (x) { if (x.id === id) r = x; }); return r; }
+
+  function audBody() {
+    var a = AUD.a, d = AUD.d, rid = AUD.r, R = rangeOf(rid), T = (a.totals || {})[rid] || {};
+    var rows = (a.states || {})[rid] || [];
+    var live = a.mode !== 'export';
+    var h = '<div class="cp-aud-head"><h2>Who reads AGSIST</h2>';
+    if ((a.ranges || []).length > 1) {
+      h += '<div class="cp-pills" role="group" aria-label="Date range">' + a.ranges.map(function (x) {
+        return '<button type="button" data-range="' + esc(x.id) + '" aria-pressed="' + (x.id === rid) + '">' + esc(x.label) + '</button>'; }).join('') + '</div>';
+    }
+    h += '<div class="cp-asof">US readers &middot; ' + esc(span(R.start, R.end)) + (live ? ' &middot; updated every morning' : '') + '</div></div>';
+
+    /* KPIs */
+    var fourth = a.email
+      ? kpi(num(a.email.subscribers), 'Morning email subscribers', 'the briefing your ad runs in &middot; ' + esc(fmt(a.email.asOf, true)))
+      : kpi(num(rows.filter(function (r) { return r.users > 0; }).length), 'States with readers', rows.length === 51 ? 'all 50 and DC' : 'of 50 and DC');
+    h += '<div class="cp-kpis">' +
+      kpi(num(T.users), 'US readers', live ? 'server towns removed' : 'includes some server traffic') +
+      kpi(num(T.engaged), 'Engaged visits', T.engagementRate != null ? pct(T.engagementRate) + ' of visits' : '') +
+      kpi(esc(secs(T.avgSeconds)), 'Time per reader', 'average engagement') + fourth + '</div>';
+
+    /* trends */
+    var days = (a.series && a.series.days || []).filter(function (x) { return x.d >= R.start && x.d <= R.end; });
+    var hasGA = days.some(function (x) { return x.users != null; }), hasS = days.some(function (x) { return x.gClicks != null || x.bClicks != null; });
+    if (hasGA || hasS) {
+      h += '<div class="cp-grid2">';
+      if (hasGA) h += card('Readers per day', esc(span(R.start, R.end)),
+        '<div class="cp-keys"><span><i style="background:var(--s1)"></i>Readers</span><span><i style="background:var(--s2)"></i>Engaged visits</span></div>' +
+        '<div class="cp-tr" data-tr="ga"></div>');
+      if (hasS) {
+        var gs = 0, bs = 0; days.forEach(function (x) { gs += x.gClicks || 0; bs += x.bClicks || 0; });
+        h += card('Search clicks per day', esc(num(gs + bs)) + ' in range',
+          '<div class="cp-keys"><span><i style="background:var(--s1)"></i>Google, US</span><span><i style="background:var(--s2)"></i>Bing, worldwide</span></div>' +
+          '<div class="cp-tr" data-tr="s"></div>');
+      }
+      h += '</div>';
+    }
+
+    /* map */
     var lic = Array.isArray(d.licensedStates) ? d.licensedStates : null;
     var inLic = function (c) { return !!(lic && lic.indexOf(c) >= 0); };
-    var by = {}; rows.forEach(function (r) { by[r.code] = r; });
-    var st = stepper(rows);
-    var h = '<section class="cp-sec" id="audience"><div class="cp-h2"><h2>Who reads AGSIST</h2><span class="cp-eyebrow">US readers &middot; ' +
-      esc(span(R.start, R.end)) + ' &middot; from GA4</span></div>';
-
-    h += '<div class="cp-kpis">' +
-      kpi(num(R.us), 'US readers', 'active users, ' + esc(span(R.start, R.end)) + ' &middot; includes some server traffic') +
-      kpi(num(R.engaged), 'Engaged visits', pct(R.engagementRate) + ' of US visits') +
-      kpi(esc(secs(R.avgSeconds)), 'Time per reader', 'average engagement, US') +
-      (lic ? (function () {
-          /* Both sides of the share are sums of state rows, so the double count
-             across states is in both and cancels; dividing by the US total would
-             mix two bases. N is the states that matched a row, not the list. */
-          var e = 0, n = 0, te = 0, fl = false;
-          rows.forEach(function (r) { te += r.engaged; if (inLic(r.code)) { e += r.engaged; n++; if (r.flag) fl = true; } });
-          return kpi(num(e), 'Engaged visits in your ' + n + ' state' + (n === 1 ? '' : 's'),
-                     (te ? Math.round(100 * e / te) + '% of engaged visits across all states' : '') + (fl ? ' &middot; see notes' : ''));
-        })()
-       : kpi(num(S.withReaders), 'States with readers', S.withReaders === 51 ? 'all 50 and DC' : 'of 50 and DC')) +
-      '</div>';
-
-    /* the map */
-    h += '<div class="cp-card" style="margin-top:.7rem;position:relative" id="cp-aud-card"><div class="cp-aud-map" role="img" aria-label="Engaged visits by state. Exact numbers are in the table below.">';
+    var by = {}, max = 1, te = 0, le = 0, ln = 0, lu = 0;
+    rows.forEach(function (r) { by[r.code] = r; max = Math.max(max, r.engaged); te += r.engaged;
+      if (inLic(r.code)) { le += r.engaged; lu += r.users; ln++; } });
+    var cuts = [0.2, 0.4, 0.6, 0.8].map(function (f) { return Math.round(f * f * max); });
+    var lvl = function (v) { var i = 0; while (i < 4 && v > cuts[i]) i++; return i; };
+    var m = '';
+    if (lic) m += '<div class="cp-lic"><span>Your ' + ln + ' licensed state' + (ln === 1 ? '' : 's') + '</span><span><b>' + num(le) + '</b> engaged visits</span><span><b>' + num(lu) + '</b> readers</span>' +
+      (te ? '<span><b>' + Math.round(100 * le / te) + '%</b> of all state visits</span>' : '') + '</div>';
+    m += '<div class="cp-aud-map" role="img" aria-label="Engaged visits by state; exact figures are in the table below">';
     GRID.forEach(function (g) {
-      var r = by[g[0]], lvl = r ? st.of(r.engaged) : -1;
-      var a_ = lvl < 0 ? 0.04 : STEPS[lvl];
-      var cls = 'cp-tile' + (lvl >= 3 ? ' is-dark' : '') + (inLic(g[0]) ? ' is-lic' : '') + (r && r.flag === 'server' ? ' is-flag' : '');
-      h += '<div class="' + cls + '" tabindex="0" data-st="' + g[0] + '" style="grid-column:' + (g[1] + 1) + ';grid-row:' + (g[2] + 1) +
-           ';--a:' + a_ + '" aria-label="' + esc(r ? r.name + ': ' + r.engaged + ' engaged visits, ' + r.users + ' readers' : g[0] + ': no readers') + '">' + g[0] + '</div>';
+      var r = by[g[0]], L = r ? lvl(r.engaged) : -1;
+      m += '<div class="cp-tile' + (L >= 3 ? ' is-dark' : '') + (inLic(g[0]) ? ' is-lic' : '') + (r && r.flag === 'server' ? ' is-flag' : '') +
+        '" tabindex="0" data-st="' + g[0] + '" style="grid-column:' + (g[1] + 1) + ';grid-row:' + (g[2] + 1) + ';--a:' + (L < 0 ? 0.04 : STEPS[L]) +
+        '" aria-label="' + esc(r ? r.name + ', ' + r.engaged + ' engaged visits, ' + r.users + ' readers' : g[0] + ', no readers') + '">' + g[0] + '</div>';
     });
-    h += '</div><div class="cp-tip" id="cp-tip" hidden></div>';
-    h += '<div class="cp-legend"><span>Engaged visits</span><span class="cp-legend-ramp">' +
-      STEPS.map(function (x) { return '<i style="--a:' + x + '"></i>'; }).join('') + '</span><span>' +
-      '0–' + num(st.cuts[0]) + ' &middot; ' + num(st.cuts[0] + 1) + '–' + num(st.cuts[1]) + ' &middot; ' + num(st.cuts[1] + 1) + '–' + num(st.cuts[2]) +
-      ' &middot; ' + num(st.cuts[2] + 1) + '–' + num(st.cuts[3]) + ' &middot; ' + num(st.cuts[3] + 1) + '+</span>' +
-      (lic ? '<span class="cp-legend-key"><i class="k-lic"></i>licensed for you</span>' : '') +
-      '<span class="cp-legend-key"><i class="k-flag"></i>includes server traffic</span></div>';
-    if (!lic) h += '<p class="cp-note" style="text-align:center">Send us the states you are licensed in and they will be outlined here, with your readers in them totalled above.</p>';
-    h += '</div>';
+    m += '</div><div class="cp-legend"><span>Engaged visits</span><span class="cp-legend-ramp">' +
+      STEPS.map(function (x) { return '<i style="--a:' + x + '"></i>'; }).join('') + '</span><span>0–' + num(cuts[0]) +
+      ' &middot; ' + num(cuts[3] + 1) + '+</span>' + (lic ? '<span class="cp-legend-key"><i class="k-lic"></i>licensed for you</span>' : '') +
+      (rows.some(function (r) { return r.flag === 'server'; }) ? '<span class="cp-legend-key"><i class="k-flag"></i>includes server traffic</span>' : '') + '</div>';
+    h += '<div style="margin-top:.7rem;position:relative" id="cp-aud-map">' + card('Where they are', esc(span(R.start, R.end)), m) + '<div class="cp-tip" id="cp-tip" hidden></div></div>';
 
-    /* the table -- the exact figures, and the accessible view of the map */
-    var TOP = 15, THIN = 20;
-    h += '<div class="cp-card" style="margin-top:.7rem"><table class="cp-t cp-aud-t" id="cp-aud-t"><thead><tr><th>#</th><th>State</th>' +
-      '<th style="text-align:right">Engaged visits</th><th style="text-align:right">Readers</th><th style="text-align:right">Time per reader</th>' +
-      '<th style="text-align:right">Engaged</th></tr></thead><tbody>';
+    /* state table */
+    var t = '<table class="cp-t cp-aud-t" id="cp-aud-t"><thead><tr><th>#</th><th>State</th><th style="text-align:right">Engaged visits</th>' +
+      '<th style="text-align:right">Readers</th><th style="text-align:right">Time per reader</th><th style="text-align:right">Engaged</th></tr></thead><tbody>';
     rows.forEach(function (r, i) {
-      var tags = (inLic(r.code) ? '<span class="cp-tag is-lic">licensed</span>' : '') +
-        (r.flag === 'server' ? '<span class="cp-tag">server traffic</span>' : '') +
-        (r.flag === 'home' ? '<span class="cp-tag">our home state</span>' : '');
-      /* Under THIN readers an average is one person's afternoon; it is not printed. */
       var thin = r.users < THIN;
-      h += '<tr' + (i >= TOP ? ' class="is-more"' : '') + '><td>' + (r.rank == null ? '—' : r.rank) + '</td><td>' + esc(r.name) + tags + '</td><td class="n">' + num(r.engaged) +
-        '</td><td class="n">' + num(r.users) + '</td><td class="n">' + (thin ? '—' : esc(secs(r.avgSeconds))) + '</td><td class="n">' + (thin ? '—' : pct(r.engagementRate)) + '</td></tr>';
+      t += '<tr' + (i >= TOP ? ' class="is-more"' : '') + '><td>' + (r.rank == null ? '—' : r.rank) + '</td><td>' + esc(r.name) +
+        (inLic(r.code) ? '<span class="cp-tag is-lic">licensed</span>' : '') + (r.flag === 'server' ? '<span class="cp-tag">server traffic</span>' : '') +
+        (r.flag === 'home' ? '<span class="cp-tag">home state</span>' : '') + '</td><td class="n">' + num(r.engaged) + '</td><td class="n">' + num(r.users) +
+        '</td><td class="n">' + (thin ? '—' : esc(secs(r.avgSeconds))) + '</td><td class="n">' + (thin ? '—' : pct(r.engagementRate)) + '</td></tr>';
     });
-    h += '</tbody></table>';
-    if (rows.length > TOP) h += '<button class="cp-btn cp-btn--ghost cp-more" type="button" id="cp-aud-more" aria-controls="cp-aud-t" aria-expanded="false">Show all ' + rows.length + '</button>';
-    var fr = S.flagRule || {};
-    h += '<p class="cp-note"><b>Ranked by engaged visits</b>, GA4’s own measure: a visit of ten seconds or more, two or more pages, or a key event. It is less exposed to automated traffic than a raw count of users. It is not free of it.</p>' +
-      '<p class="cp-note"><b>Server traffic.</b> A state is marked when its readers average under ' + esc(fr.seconds) + ' seconds, across at least ' + esc(fr.minReaders) +
-      ' readers, against ' + esc(secs(fr.nationalAvgSeconds)) + ' nationally. The rule catches the heaviest cases, like Ashburn in Virginia and The Dalles in Oregon. It does not catch all of them: GA4’s city report also shows data-centre towns in Washington, Wyoming and Iowa (Moses Lake, Cheyenne, Council Bluffs). Every state keeps its reported numbers; this report is by state, not by city, so the server share cannot be measured, and it is not guessed at.</p>' +
-      (function () {
-        var hs = by[S.homeState]; if (!hs || !hs.users || !R.us) return '';
-        return '<p class="cp-note"><b>' + esc(hs.name) + '</b> is shown but not ranked. AGSIST is run from Chetek, and its ' + (hs.engaged / hs.users).toFixed(1) +
-          ' engaged visits a reader, against ' + (R.engaged / R.us).toFixed(1) + ' nationally, is largely our own work on the site.</p>';
-      })() +
-      '<p class="cp-note">A reader who connects from two states counts in both, so the rows add up to more than the totals above: ' + num(S.rowsSumUsers) + ' readers against ' + num(R.us) +
-      (S.rowsSumEngaged ? ', and ' + num(S.rowsSumEngaged) + ' engaged visits against ' + num(R.engaged) : '') + '.' +
-      (R.left_out ? ' Nothing outside the US is in these figures. The largest excluded country, ' + esc(R.left_out.country) + ', logged ' + num(R.left_out.users) + ' “users” averaging ' + esc(secs(R.left_out.avgSeconds)) + ' each, which is almost certainly automated.' : '') + '</p>' +
-      '<p class="cp-src">' + esc(S.source) + ' &middot; ' + esc(span(S.start, S.end)) + ' &middot; ' + esc(R.source) + '</p></div>';
+    t += '</tbody></table>' + (rows.length > TOP ? '<button class="cp-btn cp-btn--ghost cp-more" type="button" id="cp-aud-more" aria-controls="cp-aud-t" aria-expanded="false">All ' + rows.length + ' states</button>' : '');
+    h += '<div style="margin-top:.7rem">' + card('By state', 'ranked by engaged visits', t) + '</div>';
 
-    /* reach beyond the visit */
-    var sr = a.search || {}, ai = a.ai;
-    if (sr.google || sr.bing || ai) {
-      h += '<div class="cp-reach">';
-      if (sr.google) h += '<div><em>Google search</em><b>' + num(sr.google.clicks) + '</b><span>clicks to AGSIST from ' + num(sr.google.impressions) + ' page appearances in Google results, about ' + num(perDay(sr.google.clicks, sr.google.start, sr.google.end)) + ' clicks a day, worldwide</span><small>' + esc(span(sr.google.start, sr.google.end)) + ' &middot; ' + esc(sr.google.source) + '</small></div>';
-      if (sr.bing) h += '<div><em>Bing search</em><b>' + num(sr.bing.clicks) + '</b><span>clicks from ' + num(sr.bing.impressions) + ' appearances in ' + esc(sr.bing.days) + ' days, about ' + num(perDay(sr.bing.clicks, sr.bing.start, sr.bing.end)) + ' a day, worldwide</span><small>' + esc(span(sr.bing.start, sr.bing.end)) + ' &middot; ' + esc(sr.bing.source) + '</small></div>';
-      if (ai) h += '<div><em>AI answers</em><b>' + num(ai.perDay) + '/day</b><span>times Copilot and Bing answers cited AGSIST, ' + num(ai.citations) + ' in ' + esc(ai.days) + ' days' +
-        (ai.earlier ? ', up from ' + num(ai.earlier.perDay) + '/day over ' + esc(span(ai.earlier.start, ai.earlier.end)) : '') + '</span><small>' + esc(span(ai.start, ai.end)) + ' &middot; ' + esc(ai.source) + '</small></div>';
-      h += '</div><p class="cp-note">Search and AI figures count appearances and citations, not people, and the windows differ, so compare them by the per-day figures. They are shown for reach only and none of them is counted in the readers above.</p>';
+    /* what they search */
+    var q = a.queries || {};
+    function qTable(x, label) {
+      if (!x || !x.rows || !x.rows.length) return '';
+      var mx = Math.max.apply(null, x.rows.map(function (r) { return r.clicks; }).concat([1]));
+      return card(label, esc(span(x.start, x.end)), '<ul class="cp-rows">' + x.rows.slice(0, 10).map(function (r) {
+        return '<li><div class="r"><span>' + esc(r.q) + '</span><span class="n">' + num(r.clicks) + '</span></div><div class="cp-bar"><i style="width:' +
+          (100 * r.clicks / mx).toFixed(1) + '%"></i></div></li>'; }).join('') + '</ul>');
     }
-    return h + '</section>';
+    var qg = qTable(q.google, 'What they search on Google'), qb = qTable(q.bing, 'What they search on Bing');
+    if (qg || qb) h += '<div class="cp-grid2">' + qg + qb + '</div>';
+
+    /* what they read, how they read */
+    var pk = (rid === '7d' || rid === '28d') ? '28d' : '90d', pg = (a.pages || {})[pk], pr = rangeOf(pk);
+    var dv = (a.devices || {})[rid], ch = (a.channels || {})[rid];
+    var left = '', right = '';
+    if (pg && pg.length) {
+      var pm = Math.max.apply(null, pg.map(function (p) { return p.views; }).concat([1]));
+      left = card('What they read', pr ? esc(span(pr.start, pr.end)) : '', '<ul class="cp-rows">' + pg.slice(0, 10).map(function (p) {
+        return '<li><div class="r"><span title="' + esc(p.path) + '">' + esc(p.title) + '</span><span class="n">' + num(p.views) + '</span></div><div class="cp-bar"><i style="width:' +
+          (100 * p.views / pm).toFixed(1) + '%"></i></div></li>'; }).join('') + '</ul>');
+    }
+    if (dv || (ch && ch.length)) {
+      var b = '';
+      if (dv) {
+        var tot = (dv.mobile || 0) + (dv.desktop || 0) + (dv.tablet || 0) || 1;
+        var seg = [['mobile', 'Phone', 'var(--s2)'], ['desktop', 'Computer', 'var(--s1)'], ['tablet', 'Tablet', 'var(--text-muted,#7d8782)']];
+        b += '<div class="cp-dev3">' + seg.map(function (s_) { var v = dv[s_[0]] || 0, w = 100 * v / tot;
+          return w > 0 ? '<div style="flex:' + w.toFixed(2) + ';background:' + s_[2] + '" title="' + s_[1] + ' ' + num(v) + '">' + (w >= 12 ? Math.round(w) + '%' : '') + '</div>' : ''; }).join('') + '</div>';
+        b += '<div class="cp-keys">' + seg.map(function (s_) { return '<span><i style="background:' + s_[2] + ';height:8px;width:8px"></i>' + s_[1] + ' ' + num(dv[s_[0]] || 0) + '</span>'; }).join('') + '</div>';
+      }
+      if (ch && ch.length) {
+        var cm = Math.max.apply(null, ch.map(function (c) { return c.sessions; }).concat([1]));
+        b += '<ul class="cp-rows" style="margin-top:.4rem">' + ch.slice(0, 6).map(function (c) {
+          return '<li><div class="r"><span>' + esc(c.channel) + '</span><span class="n">' + num(c.sessions) + '</span></div><div class="cp-bar"><i style="width:' + (100 * c.sessions / cm).toFixed(1) + '%"></i></div></li>'; }).join('') + '</ul>';
+      }
+      right = card('How they arrive', esc(span(R.start, R.end)), b);
+    }
+    if (left || right) h += '<div class="cp-grid2">' + left + right + '</div>';
+
+    /* reach: AI answers, and the export-era search totals */
+    var reach = '';
+    if (a.ai) {
+      reach += card('Cited in AI answers', esc(span(a.ai.start, a.ai.end)),
+        '<div class="cp-big">' + num(a.ai.perDay) + '<span style="font-size:1rem;font-weight:600;color:var(--text-dim,#a9b3ae)"> a day</span></div>' +
+        '<p class="cp-small">times Copilot and Bing answers cited AGSIST' + (a.ai.earlier ? ', up from ' + num(a.ai.earlier.perDay) + ' a day over ' + esc(span(a.ai.earlier.start, a.ai.earlier.end)) : '') + '.</p>' +
+        (a.ai.days && a.ai.days.length > 7 ? '<div class="cp-tr" data-tr="ai" style="margin-top:.6rem"></div>' : ''));
+    }
+    var ss = !hasS && a.searchStatic;
+    if (ss && (ss.google || ss.bing)) {
+      var sb = '';
+      if (ss.google) sb += '<div class="r" style="display:flex;justify-content:space-between;margin:.2rem 0"><span>Google, clicks</span><span class="n">' + num(ss.google.clicks) + ' &middot; ' + num(perDay(ss.google.clicks, ss.google.start, ss.google.end)) + '/day</span></div><p class="cp-small" style="margin:0 0 .6rem">' + esc(span(ss.google.start, ss.google.end)) + ', worldwide</p>';
+      if (ss.bing) sb += '<div class="r" style="display:flex;justify-content:space-between;margin:.2rem 0"><span>Bing, clicks</span><span class="n">' + num(ss.bing.clicks) + ' &middot; ' + num(perDay(ss.bing.clicks, ss.bing.start, ss.bing.end)) + '/day</span></div><p class="cp-small" style="margin:0">' + esc(span(ss.bing.start, ss.bing.end)) + ', worldwide</p>';
+      reach += card('Search clicks', '', sb);
+    }
+    if (reach) h += '<div class="cp-grid2">' + reach + '</div>';
+
+    /* how it is counted -- closed by default */
+    var notes = [];
+    notes.push('US readers only, from Google Analytics 4. Engaged visits are GA4’s own measure: ten seconds or more, two or more pages, or a key event.');
+    if (a.servers && a.servers.towns) {
+      var tw = a.servers.towns;
+      notes.push(tw.length
+        ? 'Server towns removed before anything is counted: any town whose readers average under ' + esc(a.servers.rule.seconds) + ' seconds across ' + esc(a.servers.rule.minReaders) + ' or more readers, over ' +
+          esc(span(a.servers.window.start, a.servers.window.end)) + '. This window: ' + tw.slice(0, 12).map(function (x) { return esc(x.city) + ', ' + esc(x.region) + ' (' + num(x.users) + ')'; }).join('; ') +
+          (tw.length > 12 ? ' and ' + (tw.length - 12) + ' more' : '') + '.'
+        : 'No town met the server-traffic rule this window, so nothing was removed.');
+    } else if (a.stateFlagRule) {
+      notes.push('Marked states average under ' + esc(a.stateFlagRule.seconds) + ' seconds a reader across ' + esc(a.stateFlagRule.minReaders) + ' or more readers, against ' +
+        esc(secs(a.stateFlagRule.nationalAvgSeconds)) + ' nationally; data-centre towns show up there. They keep their numbers: this export is by state, not town, so the server share is not known.');
+    }
+    var hs = by[a.homeState];
+    if (hs && hs.users) notes.push(esc(hs.name) + ' is shown but not ranked: AGSIST is run from Chetek, and its ' + (hs.engaged / hs.users).toFixed(1) + ' engaged visits a reader against ' +
+      (T.users ? (T.engaged / T.users).toFixed(1) : '—') + ' overall is largely our own work on the site.');
+    var su = 0, sen = 0; rows.forEach(function (r) { su += r.users; sen += r.engaged; });
+    if (su > (T.users || 0)) notes.push('A reader seen in two states counts in both, so the state rows add up to ' + num(su) + ' readers and ' + num(sen) + ' engaged visits, above the totals.');
+    if (hasS) notes.push('Search clicks: Google is US searches (Search Console); Bing is worldwide (its API has no country filter). Search figures count clicks, not people, and are not part of the reader totals.');
+    if (a.ai) notes.push('AI citations are from Bing Webmaster’s AI report, which has no API; they carry the dates of the last export.');
+    if (a.leftOut) notes.push('Outside the US, ' + esc(a.leftOut.country) + ' alone logged ' + num(a.leftOut.users) + ' “users” averaging ' + esc(secs(a.leftOut.avgSeconds)) + ', almost certainly automated. None of it is here.');
+    h += '<details class="cp-card cp-howto"><summary>How these numbers are counted</summary><ul>' + notes.map(function (n) { return '<li>' + n + '</li>'; }).join('') + '</ul></details>';
+    return h;
   }
 
-  function wireAudience(d) {
-    var a = d.__aud; if (!a) return;
-    var by = {}; (a.states.rows || []).forEach(function (r) { by[r.code] = r; });
-    var card = document.getElementById('cp-aud-card'), tip = document.getElementById('cp-tip');
-    var lic = Array.isArray(d.licensedStates) ? d.licensedStates : [];
+  /* One line chart. Two series share ONE axis (same unit); hover or tap shows
+     the day's values. Null days break the line rather than drawing a zero. */
+  function lineChart(el, days, keys) {
+    var W = el.clientWidth || 480, H = 190, L = 40, Rm = 8, T = 10, B = 22;
+    var vals = []; days.forEach(function (d) { keys.forEach(function (k) { if (d[k[0]] != null) vals.push(d[k[0]]); }); });
+    if (!vals.length || days.length < 2) { el.innerHTML = '<p class="cp-small">Not enough days in this range to draw.</p>'; return; }
+    var top = nice(Math.max.apply(null, vals) * 1.05), n = days.length;
+    var x = function (i) { return L + (W - L - Rm) * i / (n - 1); }, y = function (v) { return T + (H - T - B) * (1 - v / top); };
+    var s = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="' + esc(keys.map(function (k) { return k[1]; }).join(' and ')) + ' by day">';
+    [0, 0.5, 1].forEach(function (f) { var v = top * f; s += '<line class="gl" x1="' + L + '" x2="' + (W - Rm) + '" y1="' + y(v) + '" y2="' + y(v) + '"/><text x="' + (L - 6) + '" y="' + (y(v) + 3) + '" text-anchor="end">' + num(Math.round(v)) + '</text>'; });
+    [0, Math.floor((n - 1) / 2), n - 1].forEach(function (i, j) { s += '<text x="' + x(i) + '" y="' + (H - 6) + '" text-anchor="' + (j === 0 ? 'start' : j === 2 ? 'end' : 'middle') + '">' + esc(fmt(days[i].d)) + '</text>'; });
+    keys.forEach(function (k) {
+      var dpath = '', pen = false;
+      days.forEach(function (d, i) { var v = d[k[0]]; if (v == null) { pen = false; return; } dpath += (pen ? 'L' : 'M') + x(i).toFixed(1) + ' ' + y(v).toFixed(1); pen = true; });
+      s += '<path d="' + dpath + '" fill="none" stroke="' + k[2] + '" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>';
+    });
+    s += '<line class="xh" id="xh" x1="0" x2="0" y1="' + T + '" y2="' + (H - B) + '" style="display:none"/>';
+    keys.forEach(function (k, j) { s += '<circle class="dot' + j + '" r="4" fill="' + k[2] + '" stroke="var(--surface,#141918)" stroke-width="2" style="display:none"/>'; });
+    s += '<rect class="hit" x="' + L + '" y="0" width="' + (W - L - Rm) + '" height="' + H + '"/></svg><div class="cp-tip" hidden></div>';
+    el.innerHTML = s;
+    var svg = el.querySelector('svg'), tip = el.querySelector('.cp-tip'), xh = svg.querySelector('.xh');
+    function at(ev) {
+      var r = svg.getBoundingClientRect(), px = (ev.touches ? ev.touches[0].clientX : ev.clientX) - r.left, sx = px * W / r.width;
+      var i = Math.max(0, Math.min(n - 1, Math.round((sx - L) / (W - L - Rm) * (n - 1)))), d = days[i];
+      xh.setAttribute('x1', x(i)); xh.setAttribute('x2', x(i)); xh.style.display = '';
+      keys.forEach(function (k, j) { var c = svg.querySelector('.dot' + j), v = d[k[0]];
+        if (v == null) { c.style.display = 'none'; return; } c.setAttribute('cx', x(i)); c.setAttribute('cy', y(v)); c.style.display = ''; });
+      tip.innerHTML = '<b>' + esc(fmt(d.d, true)) + '</b>' + keys.map(function (k) { return '<i style="background:' + k[2] + '"></i>' + esc(k[1]) + '<span>' + (d[k[0]] == null ? '—' : num(d[k[0]])) + '</span>'; }).join('<br>');
+      tip.hidden = false;
+      var tx = x(i) * r.width / W + 12; if (tx + tip.offsetWidth > r.width) tx = x(i) * r.width / W - tip.offsetWidth - 12;
+      tip.style.left = Math.max(0, tx) + 'px'; tip.style.top = '8px';
+    }
+    function off() { tip.hidden = true; xh.style.display = 'none'; keys.forEach(function (k, j) { svg.querySelector('.dot' + j).style.display = 'none'; }); }
+    var hit = svg.querySelector('.hit');
+    /* A tap is followed by emulated mouse events, including a mouseleave that
+       would hide the reading the finger just asked for. On touch, the reading
+       stays until the next tap somewhere else. */
+    var touched = 0;
+    function tat(ev) { touched = Date.now(); at(ev); }
+    hit.addEventListener('mousemove', function (ev) { if (Date.now() - touched > 800) at(ev); });
+    hit.addEventListener('click', function (ev) { if (Date.now() - touched > 800) at(ev); });
+    hit.addEventListener('touchstart', tat, { passive: true }); hit.addEventListener('touchmove', tat, { passive: true });
+    hit.addEventListener('mouseleave', function () { if (Date.now() - touched > 800) off(); });
+    document.addEventListener('touchstart', function (ev) { if (!el.contains(ev.target)) off(); }, { passive: true });
+  }
+
+  function wireAudience() {
+    var a = AUD.a; if (!a) return;
+    var box = document.getElementById('cp-aud-body'); if (!box) return;
+    var R = rangeOf(AUD.r);
+    var days = (a.series && a.series.days || []).filter(function (x) { return x.d >= R.start && x.d <= R.end; });
+    [].forEach.call(box.querySelectorAll('[data-tr]'), function (el) {
+      var k = el.getAttribute('data-tr');
+      if (k === 'ga') lineChart(el, days, [['users', 'Readers', 'var(--s1)'], ['engaged', 'Engaged visits', 'var(--s2)']]);
+      if (k === 's') lineChart(el, days, [['gClicks', 'Google, US', 'var(--s1)'], ['bClicks', 'Bing, worldwide', 'var(--s2)']]);
+      if (k === 'ai') lineChart(el, a.ai.days, [['c', 'AI citations', 'var(--s2)']]);
+    });
+    var rows = (a.states || {})[AUD.r] || [], by = {}; rows.forEach(function (r) { by[r.code] = r; });
+    var wrap = document.getElementById('cp-aud-map'), tip = document.getElementById('cp-tip');
+    var lic = Array.isArray(AUD.d.licensedStates) ? AUD.d.licensedStates : [];
     function show(el) {
       var c = el.getAttribute('data-st'), r = by[c];
-      tip.innerHTML = r
-        ? '<b>' + esc(r.name) + (lic.indexOf(c) >= 0 ? ' &middot; licensed' : '') + '</b>Engaged visits <span>' + num(r.engaged) + '</span><br>Readers <span>' + num(r.users) +
-          '</span><br>Time per reader <span>' + esc(secs(r.avgSeconds)) + '</span>' + (r.flag === 'server' ? '<br>Includes server traffic' : r.flag === 'home' ? '<br>Includes our own visits' : '')
-        : '<b>' + esc(c) + '</b>No readers in this window';
+      tip.innerHTML = r ? '<b>' + esc(r.name) + (lic.indexOf(c) >= 0 ? ' &middot; licensed' : '') + '</b>Engaged visits<span>' + num(r.engaged) + '</span><br>Readers<span>' + num(r.users) + '</span>' +
+        (r.users >= THIN ? '<br>Time per reader<span>' + esc(secs(r.avgSeconds)) + '</span>' : '') +
+        (r.flag === 'server' ? '<br>Includes server traffic' : r.flag === 'home' ? '<br>Includes our own visits' : '') : '<b>' + esc(c) + '</b>No readers in this range';
       tip.hidden = false;
-      var cb = card.getBoundingClientRect(), eb = el.getBoundingClientRect();
-      var x = eb.left - cb.left + eb.width / 2 - tip.offsetWidth / 2, y = eb.top - cb.top - tip.offsetHeight - 8;
-      x = Math.max(6, Math.min(x, cb.width - tip.offsetWidth - 6));
-      if (y < 6) y = eb.bottom - cb.top + 8;
+      var wb = wrap.getBoundingClientRect(), eb = el.getBoundingClientRect();
+      var x = eb.left - wb.left + eb.width / 2 - tip.offsetWidth / 2, y = eb.top - wb.top - tip.offsetHeight - 8;
+      x = Math.max(4, Math.min(x, wb.width - tip.offsetWidth - 4)); if (y < 4) y = eb.bottom - wb.top + 8;
       tip.style.left = x + 'px'; tip.style.top = y + 'px';
     }
-    function hide() { tip.hidden = true; }
-    [].forEach.call(card.querySelectorAll('.cp-tile'), function (el) {
-      el.addEventListener('mouseenter', function () { show(el); });
-      el.addEventListener('focus', function () { show(el); });
-      el.addEventListener('click', function () { show(el); });
-      el.addEventListener('mouseleave', hide);
-      el.addEventListener('blur', hide);
+    [].forEach.call(wrap.querySelectorAll('.cp-tile'), function (el) {
+      ['mouseenter', 'focus', 'click'].forEach(function (ev) { el.addEventListener(ev, function () { show(el); }); });
+      ['mouseleave', 'blur'].forEach(function (ev) { el.addEventListener(ev, function () { tip.hidden = true; }); });
     });
     var more = document.getElementById('cp-aud-more'), t = document.getElementById('cp-aud-t');
     if (more) more.addEventListener('click', function () {
-      var on = t.classList.toggle('is-all');
-      more.setAttribute('aria-expanded', String(on));
-      more.textContent = on ? 'Show top 15' : 'Show all ' + (a.states.rows || []).length;
+      var on = t.classList.toggle('is-all'); more.setAttribute('aria-expanded', String(on));
+      more.textContent = on ? 'Top ' + TOP + ' only' : 'All ' + rows.length + ' states';
+    });
+    [].forEach.call(box.querySelectorAll('[data-range]'), function (b) {
+      b.addEventListener('click', function () {
+        AUD.r = b.getAttribute('data-range'); box.innerHTML = audBody(); wireAudience();
+        var nb = box.querySelector('[data-range="' + AUD.r + '"]'); if (nb) nb.focus();
+      });
     });
   }
+  var _rs; window.addEventListener('resize', function () { clearTimeout(_rs); _rs = setTimeout(function () { if (AUD.a && document.getElementById('cp-aud-body')) { var box = document.getElementById('cp-aud-body'); box.innerHTML = audBody(); wireAudience(); } }, 200); });
+
 
   function draw(d) {
     var s = state(d);
@@ -874,9 +1165,10 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
        first thing a sponsor needs to do here is read and approve it. */
     var aud = audience(d);
     var body = d.pending ? adSection(d, s) + aud + results(d, s) : results(d, s) + aud + adSection(d, s);
-    root.innerHTML = hero(d, s) + nav(!!aud) + body + whereSection(d, s) + billingSection(d, s) + linksSection(d, s) + howSection(d) + contact(d);
+    root.innerHTML = hero(d, s) + nav(!!aud) + body + whereSection(d, s) + billingSection(d, s) + requestsSection(d, s) + linksSection(d, s) + howSection(d) + contact(d);
     wireAd(d, s);
-    wireAudience(d);
+    wireAudience();
+    wireRequests(d, s);
   }
 })();
 </script>

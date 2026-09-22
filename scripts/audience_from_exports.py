@@ -219,7 +219,37 @@ def build(country, region, google=None, bing=None, ai=None, today=None):
                      "perDay": round(sum(x[1] for x in last) / len(last)),
                      "earlier": {"start": first[0][0].isoformat(), "end": first[-1][0].isoformat(),
                                  "perDay": round(sum(x[1] for x in first) / len(first))},
-                     "maxPagesOneDay": max(x[2] for x in d)}
+                     "maxPagesOneDay": max(x[2] for x in d),
+                     "days": [{"d": x[0].isoformat(), "c": x[1]} for x in d[-90:]]}
+    return out
+
+
+def to_v2(a):
+    """The portal draws one shape, agsist-audience/2 -- the shape
+    scripts/build_audience.py writes from the live APIs. An export gives one
+    window, so the range picker offers one range; everything a single export
+    cannot supply (the daily series, queries, pages, devices) is simply absent
+    and the portal does not draw it."""
+    R, S = a["readers"], a["states"]
+    rid = "ytd" if R["start"].endswith("-01-01") else "export"
+    out = {"schema": "agsist-audience/2", "built": a["built"], "mode": "export",
+           "ranges": [{"id": rid, "label": R["start"][:4] if rid == "ytd" else "export",
+                       "start": R["start"], "end": R["end"]}],
+           "homeState": S["homeState"],
+           "totals": {rid: {"users": R["us"], "engaged": R["engaged"], "avgSeconds": R["avgSeconds"],
+                            "engagementRate": R["engagementRate"]}},
+           "states": {rid: S["rows"]},
+           "stateWindow": {"start": S["start"], "end": S["end"]},
+           "stateFlagRule": S["flagRule"],
+           "rowsSum": {rid: {"users": S["rowsSumUsers"], "engaged": S["rowsSumEngaged"]}},
+           "leftOut": R.get("left_out"),
+           "sources": {"ga4": {"ok": False, "export": "%s and %s" % (R["source"], S["source"])}}}
+    if S["start"] != R["start"] or S["end"] != R["end"]:
+        raise SystemExit("the country and region exports cover different windows -- export both for the same dates")
+    if a.get("search"):
+        out["searchStatic"] = a["search"]
+    if a.get("ai"):
+        out["ai"] = a["ai"]
     return out
 
 
@@ -261,6 +291,10 @@ def selftest():
         t(st["WI"]["rank"] is None and st["IA"]["rank"] == 1, "the home state is shown but not ranked")
         t(st["VA"]["users"] == 300, "a flagged state keeps its reported number -- nothing is subtracted")
         t(len(a["states"]["missing"]) == 51 - 4, "states absent from the export are listed, not zero-filled")
+        v = to_v2(a)
+        t(v["schema"] == "agsist-audience/2" and [r["id"] for r in v["ranges"]] == ["ytd"],
+          "an export becomes the portal's shape with one range")
+        t(v["totals"]["ytd"]["users"] == 1000 and v["states"]["ytd"][0]["code"] == "WI", "totals and states carried across")
     print("selftest " + ("passed" if ok else "FAILED"))
     return 0 if ok else 1
 
@@ -277,7 +311,19 @@ def main(argv):
         print(__doc__)
         return 2
     out = build(args["country"], args["region"], args.get("google"), args.get("bing"), args.get("ai"))
-    OUT.write_text(json.dumps(out, indent=1) + "\n", encoding="utf-8")
+    v2 = to_v2(out)
+    # Once the live builder has run, an export only refreshes what the APIs
+    # cannot supply (the AI citations). It never writes over live figures.
+    try:
+        cur = json.loads(OUT.read_text()) if OUT.exists() else {}
+    except ValueError:
+        cur = {}
+    if cur.get("schema") == "agsist-audience/2" and cur.get("mode") != "export":
+        if "ai" in v2:
+            cur["ai"] = v2["ai"]
+        v2 = cur
+        print("live figures present -- only the AI citations were refreshed from the export")
+    OUT.write_text(json.dumps(v2, indent=1) + "\n", encoding="utf-8")
     r, s = out["readers"], out["states"]
     print("US readers %s (%s to %s); %d states with readers; %d flagged as server-heavy"
           % (r["us"], r["start"], r["end"], s["withReaders"],
