@@ -1,31 +1,31 @@
 {
- "generated": "2026-09-15T08:41:04Z",
+ "generated": "2026-09-22T08:32:59Z",
  "model": "ge-linear-v1",
  "note": "Ratings-only nowcast of US final yield. Band is the 80th percentile of absolute leave-one-year-out backtest errors AT THIS WEEK \u2014 recomputed every run, never assumed. trend_mae is the no-ratings baseline. History rows are append-only; final USDA yield is written beside them in January, misses included.",
  "crops": {
   "corn": {
    "history_source": "pairs-2000",
-   "week_ending": "2026-09-13",
-   "nowcast": 182.6,
-   "band80": 5.5,
-   "mae": 3.9,
+   "week_ending": "2026-09-20",
+   "nowcast": 182.4,
+   "band80": 5.3,
+   "mae": 3.8,
    "trend": 188.7,
    "trend_mae": 7.8,
-   "skill_pct": 50,
+   "skill_pct": 51,
    "states": 22,
    "backtest_years": 16,
    "unit": "bu/acre"
   },
   "soybeans": {
    "history_source": "pairs-2000",
-   "week_ending": "2026-09-13",
-   "nowcast": 53.7,
-   "band80": 1.4,
-   "mae": 1.1,
+   "week_ending": "2026-09-20",
+   "nowcast": 53.8,
+   "band80": 1.2,
+   "mae": 1.0,
    "trend": 53.9,
    "trend_mae": 2.0,
-   "skill_pct": 46,
-   "states": 28,
+   "skill_pct": 50,
+   "states": 27,
    "backtest_years": 16,
    "unit": "bu/acre"
   }
@@ -71,6 +71,11 @@
     "week_ending": "2026-09-13",
     "nowcast": 182.6,
     "band80": 5.5
+   },
+   {
+    "week_ending": "2026-09-20",
+    "nowcast": 182.4,
+    "band80": 5.3
    }
   ],
   "soybeans": [
@@ -113,6 +118,11 @@
     "week_ending": "2026-09-13",
     "nowcast": 53.7,
     "band80": 1.4
+   },
+   {
+    "week_ending": "2026-09-20",
+    "nowcast": 53.8,
+    "band80": 1.2
    }
   ]
  }
