@@ -258,7 +258,36 @@ def portal_extras(s):
         "billing": s.get("billing") or None,
         "contact": s.get("contact") or None,
         "placements": s.get("placements") or None,
+        # The states this sponsor can write business in, as two-letter codes,
+        # typed from the sponsor's own list. The audience section marks them on
+        # the map and adds up readers inside them. Never inferred from where
+        # their offices are: an agency licensed in a state with no office is
+        # exactly the case this exists for.
+        "licensedStates": licensed_states(s.get("licensed_states")),
     }
+
+
+US_CODES = set("AL AK AZ AR CA CO CT DE DC FL GA HI ID IL IN IA KS KY LA ME MD MA MI MN MS "
+               "MO MT NE NV NH NJ NM NY NC ND OH OK OR PA RI SC SD TN TX UT VT VA WA WV "
+               "WI WY".split())
+
+
+def licensed_states(v):
+    """None when nobody has typed a list -- the page then says it is waiting for
+    one. A code that is not a US state or DC fails the build rather than being
+    dropped, because a silently shortened list undercounts the sponsor's reach."""
+    if v is None:
+        return None
+    if not isinstance(v, list):
+        fail("licensed_states must be a list of two-letter codes, got %r" % (v,))
+    out = []
+    for c in v:
+        c = str(c).strip().upper()
+        if c not in US_CODES:
+            fail("licensed_states: %r is not a US state or DC code" % c)
+        if c not in out:
+            out.append(c)
+    return sorted(out)
 
 
 def rate_card():

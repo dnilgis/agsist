@@ -190,10 +190,54 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
 .cp-foot{margin-top:1.4rem;font-size:.76rem;color:var(--text-muted,#7d8782);line-height:1.6}
 .cp-err{padding:3rem 0;color:var(--text-dim,#a9b3ae);text-align:center}
 
+
+/* ── audience ──
+   One hue for magnitude: the ad orange at five strengths, light to strong.
+   Numbers stay in text ink; the tile colour carries the size, the code on the
+   tile carries the identity, and the table below carries every exact figure. */
+.cp-aud-map{display:grid;grid-template-columns:repeat(11,minmax(0,1fr));gap:4px;max-width:640px;margin:0 auto}
+.cp-tile{position:relative;aspect-ratio:1/1;border-radius:6px;display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-mono,'JetBrains Mono',monospace);font-size:clamp(.55rem,1.6vw,.74rem);font-weight:700;letter-spacing:.02em;
+  color:var(--text,#e8ece9);background:rgba(var(--acc-rgb),var(--a,.06));border:1px solid transparent;cursor:default;min-width:0}
+.cp-tile.is-dark{color:#0d1117}
+.cp-tile.is-lic{border-color:var(--text,#e8ece9);box-shadow:inset 0 0 0 1px var(--text,#e8ece9)}
+.cp-tile.is-flag::after{content:"";position:absolute;top:3px;right:3px;width:5px;height:5px;border-radius:50%;
+  background:var(--text-muted,#7d8782)}
+.cp-tile:focus-visible,.cp-tile:hover{outline:2px solid var(--text,#e8ece9);outline-offset:1px;z-index:1}
+.cp-tip{position:absolute;z-index:6;pointer-events:none;min-width:190px;padding:.6rem .7rem;border-radius:10px;
+  background:var(--bg,#0d1110);border:1px solid var(--border,#2a3230);box-shadow:0 12px 26px -14px rgba(0,0,0,.8);
+  font-size:.8rem;line-height:1.5;color:var(--text-dim,#a9b3ae)}
+.cp-tip b{display:block;color:var(--text,#e8ece9);font-size:.88rem;margin-bottom:.15rem}
+.cp-tip span{font-family:var(--font-mono,'JetBrains Mono',monospace);color:var(--text,#e8ece9)}
+.cp-legend{display:flex;align-items:center;gap:.9rem;flex-wrap:wrap;justify-content:center;margin:.9rem 0 0;
+  font-family:var(--font-mono,'JetBrains Mono',monospace);font-size:.68rem;color:var(--text-muted,#7d8782)}
+.cp-legend-ramp{display:inline-flex;gap:3px;align-items:center}
+.cp-legend-ramp i{width:22px;height:12px;border-radius:3px;background:rgba(var(--acc-rgb),var(--a))}
+.cp-legend-key{display:inline-flex;align-items:center;gap:.35rem}
+.cp-legend-key i{width:12px;height:12px;border-radius:3px;display:inline-block}
+.cp-legend-key .k-lic{box-shadow:inset 0 0 0 2px var(--text,#e8ece9)}
+.cp-legend-key .k-flag{width:6px;height:6px;border-radius:50%;background:var(--text-muted,#7d8782)}
+.cp-aud-t td:first-child{width:1%;white-space:nowrap;color:var(--text-muted,#7d8782);font-family:var(--font-mono,'JetBrains Mono',monospace)}
+.cp-aud-t .cp-tag{font-family:var(--font-mono,'JetBrains Mono',monospace);font-size:.62rem;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--text-muted,#7d8782);border:1px solid var(--border,#2a3230);border-radius:5px;padding:.08rem .35rem;margin-left:.35rem;white-space:nowrap}
+.cp-aud-t .cp-tag.is-lic{color:var(--text,#e8ece9);border-color:var(--text-dim,#a9b3ae)}
+.cp-aud-t tr.is-more{display:none}
+.cp-aud-t.is-all tr.is-more{display:table-row}
+.cp-more{margin:.8rem 0 0}
+.cp-reach{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.7rem;margin-top:.7rem}
+.cp-reach div{border:1px solid var(--border,#2a3230);border-radius:12px;padding:.9rem 1rem;background:var(--surface,#141918);min-width:0}
+.cp-reach b{display:block;font-family:var(--font-display,'Inter',sans-serif);font-size:1.45rem;font-weight:800;letter-spacing:-.01em;font-variant-numeric:tabular-nums}
+.cp-reach em{display:block;font-style:normal;font-weight:700;font-size:.86rem;margin:.1rem 0 .3rem}
+.cp-reach span{display:block;font-size:.8rem;color:var(--text-dim,#a9b3ae);line-height:1.5}
+.cp-reach small{display:block;font-family:var(--font-mono,'JetBrains Mono',monospace);font-size:.64rem;color:var(--text-muted,#7d8782);margin-top:.45rem}
+.cp-src{font-family:var(--font-mono,'JetBrains Mono',monospace);font-size:.66rem;color:var(--text-muted,#7d8782);margin:.5rem 0 0}
+
 @media (max-width:820px){
   .cp-steps{grid-template-columns:repeat(5,minmax(140px,1fr));overflow-x:auto;scrollbar-width:thin;padding-bottom:.3rem}
   .cp-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .cp-bill,.cp-places,.cp-wait{grid-template-columns:minmax(0,1fr)}
+  .cp-bill,.cp-places,.cp-wait,.cp-reach{grid-template-columns:minmax(0,1fr)}
+  .cp-aud-map{gap:3px}
+  .cp-tile{border-radius:4px}
 }
 @media (max-width:560px){
   .cp{padding:1rem .9rem 4rem}
@@ -208,11 +252,15 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
   .cp-fields{grid-template-columns:minmax(0,1fr)}
   .cp-links td:first-child{white-space:normal;width:auto}
   .cp-nav{margin:1rem -.9rem 0;padding:.6rem .9rem}
+  /* Phone: the two derived columns go; both are in each tile's tooltip. */
+  .cp-aud-t th:nth-child(5),.cp-aud-t td:nth-child(5),.cp-aud-t th:nth-child(6),.cp-aud-t td:nth-child(6){display:none}
+  .cp-aud-t .cp-tag{display:inline-block;margin:.2rem 0 0 0}
+  .cp-aud-t td:nth-child(2) .cp-tag{margin-left:.35rem}
 }
 [data-theme="light"] .cp{--ok:#1f9d55;--ok-rgb:31,157,85}
 [data-theme="light"] .cp-code,[data-theme="light"] .cp-plan-name,[data-theme="light"] .cp-tl li.is-now .cp-tl-d{color:#a8380a}
 [data-theme="light"] .cp-step.is-now .cp-step-n{color:#a8380a}
-@media print{.cp-nav,.cp-tabs,.cp-copy{display:none}.cp-sec{break-inside:avoid}}
+@media print{.cp-nav,.cp-tabs,.cp-copy,.cp-more,.cp-tip{display:none}.cp-aud-t tr.is-more{display:table-row}.cp-sec{break-inside:avoid}}
 </style>
 </head>
 <body>
@@ -273,8 +321,17 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
   var r = (new URLSearchParams(location.search).get('r') || '').replace(/[^a-z0-9-]/gi, '');
   if (!r) return die('This page needs the link you were sent.');
 
+  /* The audience file is site-wide and OPTIONAL. If it is missing or broken the
+     page is exactly the page it was before it existed -- the sponsor's own
+     link must never fail because of it. */
+  var AUD = fetch('/data/audience.json', { cache: 'no-cache' })
+    .then(function (x) { return x.ok ? x.json() : null; })
+    .then(function (a) { return a && a.schema === 'agsist-audience/1' && a.readers && a.states ? a : null; })
+    .catch(function () { return null; });
+
   fetch('/data/sponsors/' + r + '.json', { cache: 'no-cache' })
     .then(function (x) { if (!x.ok) throw 0; return x.json(); })
+    .then(function (d) { return AUD.then(function (a) { d.__aud = a; return d; }); })
     .then(function (d) {
       /* A failure INSIDE the drawing is not a bad link, and saying so sends the
          sponsor chasing the wrong thing. The two are separated here. */
@@ -397,8 +454,9 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
     return h + '</ol></header>';
   }
 
-  function nav() {
-    var items = [['#ad', 'Your ad'], ['#results', 'Results'], ['#where', 'Where it runs'], ['#billing', 'Billing'], ['#links', 'Tracking links'], ['#how', 'How we count']];
+  function nav(hasAud) {
+    var items = [['#ad', 'Your ad'], ['#results', 'Results'], ['#audience', 'Audience'], ['#where', 'Where it runs'], ['#billing', 'Billing'], ['#links', 'Tracking links'], ['#how', 'How we count']];
+    if (!hasAud) items = items.filter(function (x) { return x[0] !== '#audience'; });
     return '<nav class="cp-nav" aria-label="Sections">' + items.map(function (x) { return '<a href="' + x[0] + '">' + x[1] + '</a>'; }).join('') + '</nav>';
   }
 
@@ -658,14 +716,167 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
       'This page is private to the link you were sent. It is not listed or searchable.</p></section>';
   }
 
+  /* ───────────────────────────── audience ─────────────────────────────
+     Who reads AGSIST, from data/audience.json (scripts/audience_from_exports.py).
+     US readers only. Every figure prints its window and the report it came
+     from. States are ranked by engaged visits -- GA4's own "engaged session",
+     which a crawler rarely makes -- and a state whose readers average under the
+     flag rule is marked, not trimmed, because the export cannot say how much of
+     it is servers. */
+  var GRID = [['AK',0,0],['ME',10,0],['VT',9,1],['NH',10,1],
+    ['WA',0,2],['ID',1,2],['MT',2,2],['ND',3,2],['MN',4,2],['IL',5,2],['WI',6,2],['MI',7,2],['NY',8,2],['RI',9,2],['MA',10,2],
+    ['OR',0,3],['NV',1,3],['WY',2,3],['SD',3,3],['IA',4,3],['IN',5,3],['OH',6,3],['PA',7,3],['NJ',8,3],['CT',9,3],
+    ['CA',0,4],['UT',1,4],['CO',2,4],['NE',3,4],['MO',4,4],['KY',5,4],['WV',6,4],['VA',7,4],['MD',8,4],['DE',9,4],
+    ['AZ',1,5],['NM',2,5],['KS',3,5],['AR',4,5],['TN',5,5],['NC',6,5],['SC',7,5],['DC',8,5],
+    ['OK',3,6],['LA',4,6],['MS',5,6],['AL',6,6],['GA',7,6],
+    ['HI',0,7],['TX',3,7],['FL',8,7]];
+  var STEPS = [0.2, 0.38, 0.56, 0.76, 0.96];
+  function secs(n) { n = Math.round(n || 0); return n < 60 ? n + 's' : Math.floor(n / 60) + 'm' + (n % 60 ? ' ' + (n % 60) + 's' : ''); }
+  function perDay(n, a, b) { var d = Math.round((D(b) - D(a)) / 864e5) + 1; return d > 0 ? Math.round(n / d) : null; }
+  function pct(x) { return x == null ? '—' : Math.round(100 * x) + '%'; }
+  function span(a, b) { return (a && b && a.slice(0, 4) === b.slice(0, 4) ? fmt(a) : fmt(a, true)) + ' – ' + fmt(b, true); }
+  /* Square-root steps: engaged visits run from single digits to the thousands,
+     and a linear scale paints every state but three the same pale colour. The
+     cut points are computed from the data, printed in the legend, and a state's
+     exact number is always one hover or one table row away. */
+  function stepper(rows) {
+    var max = Math.max.apply(null, rows.map(function (r) { return r.engaged; }).concat([1]));
+    var cuts = [0.2, 0.4, 0.6, 0.8].map(function (f) { return Math.round(Math.pow(f, 2) * max); });
+    return { cuts: cuts, max: max, of: function (v) { var i = 0; while (i < cuts.length && v > cuts[i]) i++; return i; } };
+  }
+  function audience(d) {
+    var a = d.__aud;
+    if (!a) return '';
+    var R = a.readers, S = a.states, rows = S.rows || [];
+    var lic = Array.isArray(d.licensedStates) ? d.licensedStates : null;
+    var inLic = function (c) { return !!(lic && lic.indexOf(c) >= 0); };
+    var by = {}; rows.forEach(function (r) { by[r.code] = r; });
+    var st = stepper(rows);
+    var h = '<section class="cp-sec" id="audience"><div class="cp-h2"><h2>Who reads AGSIST</h2><span class="cp-eyebrow">US readers &middot; ' +
+      esc(span(R.start, R.end)) + ' &middot; from GA4</span></div>';
+
+    h += '<div class="cp-kpis">' +
+      kpi(num(R.us), 'US readers', 'active users, ' + esc(span(R.start, R.end)) + ' &middot; includes some server traffic') +
+      kpi(num(R.engaged), 'Engaged visits', pct(R.engagementRate) + ' of US visits') +
+      kpi(esc(secs(R.avgSeconds)), 'Time per reader', 'average engagement, US') +
+      (lic ? (function () {
+          /* Both sides of the share are sums of state rows, so the double count
+             across states is in both and cancels; dividing by the US total would
+             mix two bases. N is the states that matched a row, not the list. */
+          var e = 0, n = 0, te = 0, fl = false;
+          rows.forEach(function (r) { te += r.engaged; if (inLic(r.code)) { e += r.engaged; n++; if (r.flag) fl = true; } });
+          return kpi(num(e), 'Engaged visits in your ' + n + ' state' + (n === 1 ? '' : 's'),
+                     (te ? Math.round(100 * e / te) + '% of engaged visits across all states' : '') + (fl ? ' &middot; see notes' : ''));
+        })()
+       : kpi(num(S.withReaders), 'States with readers', S.withReaders === 51 ? 'all 50 and DC' : 'of 50 and DC')) +
+      '</div>';
+
+    /* the map */
+    h += '<div class="cp-card" style="margin-top:.7rem;position:relative" id="cp-aud-card"><div class="cp-aud-map" role="img" aria-label="Engaged visits by state. Exact numbers are in the table below.">';
+    GRID.forEach(function (g) {
+      var r = by[g[0]], lvl = r ? st.of(r.engaged) : -1;
+      var a_ = lvl < 0 ? 0.04 : STEPS[lvl];
+      var cls = 'cp-tile' + (lvl >= 3 ? ' is-dark' : '') + (inLic(g[0]) ? ' is-lic' : '') + (r && r.flag === 'server' ? ' is-flag' : '');
+      h += '<div class="' + cls + '" tabindex="0" data-st="' + g[0] + '" style="grid-column:' + (g[1] + 1) + ';grid-row:' + (g[2] + 1) +
+           ';--a:' + a_ + '" aria-label="' + esc(r ? r.name + ': ' + r.engaged + ' engaged visits, ' + r.users + ' readers' : g[0] + ': no readers') + '">' + g[0] + '</div>';
+    });
+    h += '</div><div class="cp-tip" id="cp-tip" hidden></div>';
+    h += '<div class="cp-legend"><span>Engaged visits</span><span class="cp-legend-ramp">' +
+      STEPS.map(function (x) { return '<i style="--a:' + x + '"></i>'; }).join('') + '</span><span>' +
+      '0–' + num(st.cuts[0]) + ' &middot; ' + num(st.cuts[0] + 1) + '–' + num(st.cuts[1]) + ' &middot; ' + num(st.cuts[1] + 1) + '–' + num(st.cuts[2]) +
+      ' &middot; ' + num(st.cuts[2] + 1) + '–' + num(st.cuts[3]) + ' &middot; ' + num(st.cuts[3] + 1) + '+</span>' +
+      (lic ? '<span class="cp-legend-key"><i class="k-lic"></i>licensed for you</span>' : '') +
+      '<span class="cp-legend-key"><i class="k-flag"></i>includes server traffic</span></div>';
+    if (!lic) h += '<p class="cp-note" style="text-align:center">Send us the states you are licensed in and they will be outlined here, with your readers in them totalled above.</p>';
+    h += '</div>';
+
+    /* the table -- the exact figures, and the accessible view of the map */
+    var TOP = 15, THIN = 20;
+    h += '<div class="cp-card" style="margin-top:.7rem"><table class="cp-t cp-aud-t" id="cp-aud-t"><thead><tr><th>#</th><th>State</th>' +
+      '<th style="text-align:right">Engaged visits</th><th style="text-align:right">Readers</th><th style="text-align:right">Time per reader</th>' +
+      '<th style="text-align:right">Engaged</th></tr></thead><tbody>';
+    rows.forEach(function (r, i) {
+      var tags = (inLic(r.code) ? '<span class="cp-tag is-lic">licensed</span>' : '') +
+        (r.flag === 'server' ? '<span class="cp-tag">server traffic</span>' : '') +
+        (r.flag === 'home' ? '<span class="cp-tag">our home state</span>' : '');
+      /* Under THIN readers an average is one person's afternoon; it is not printed. */
+      var thin = r.users < THIN;
+      h += '<tr' + (i >= TOP ? ' class="is-more"' : '') + '><td>' + (r.rank == null ? '—' : r.rank) + '</td><td>' + esc(r.name) + tags + '</td><td class="n">' + num(r.engaged) +
+        '</td><td class="n">' + num(r.users) + '</td><td class="n">' + (thin ? '—' : esc(secs(r.avgSeconds))) + '</td><td class="n">' + (thin ? '—' : pct(r.engagementRate)) + '</td></tr>';
+    });
+    h += '</tbody></table>';
+    if (rows.length > TOP) h += '<button class="cp-btn cp-btn--ghost cp-more" type="button" id="cp-aud-more" aria-controls="cp-aud-t" aria-expanded="false">Show all ' + rows.length + '</button>';
+    var fr = S.flagRule || {};
+    h += '<p class="cp-note"><b>Ranked by engaged visits</b>, GA4’s own measure: a visit of ten seconds or more, two or more pages, or a key event. It is less exposed to automated traffic than a raw count of users. It is not free of it.</p>' +
+      '<p class="cp-note"><b>Server traffic.</b> A state is marked when its readers average under ' + esc(fr.seconds) + ' seconds, across at least ' + esc(fr.minReaders) +
+      ' readers, against ' + esc(secs(fr.nationalAvgSeconds)) + ' nationally. The rule catches the heaviest cases, like Ashburn in Virginia and The Dalles in Oregon. It does not catch all of them: GA4’s city report also shows data-centre towns in Washington, Wyoming and Iowa (Moses Lake, Cheyenne, Council Bluffs). Every state keeps its reported numbers; this report is by state, not by city, so the server share cannot be measured, and it is not guessed at.</p>' +
+      (function () {
+        var hs = by[S.homeState]; if (!hs || !hs.users || !R.us) return '';
+        return '<p class="cp-note"><b>' + esc(hs.name) + '</b> is shown but not ranked. AGSIST is run from Chetek, and its ' + (hs.engaged / hs.users).toFixed(1) +
+          ' engaged visits a reader, against ' + (R.engaged / R.us).toFixed(1) + ' nationally, is largely our own work on the site.</p>';
+      })() +
+      '<p class="cp-note">A reader who connects from two states counts in both, so the rows add up to more than the totals above: ' + num(S.rowsSumUsers) + ' readers against ' + num(R.us) +
+      (S.rowsSumEngaged ? ', and ' + num(S.rowsSumEngaged) + ' engaged visits against ' + num(R.engaged) : '') + '.' +
+      (R.left_out ? ' Nothing outside the US is in these figures. The largest excluded country, ' + esc(R.left_out.country) + ', logged ' + num(R.left_out.users) + ' “users” averaging ' + esc(secs(R.left_out.avgSeconds)) + ' each, which is almost certainly automated.' : '') + '</p>' +
+      '<p class="cp-src">' + esc(S.source) + ' &middot; ' + esc(span(S.start, S.end)) + ' &middot; ' + esc(R.source) + '</p></div>';
+
+    /* reach beyond the visit */
+    var sr = a.search || {}, ai = a.ai;
+    if (sr.google || sr.bing || ai) {
+      h += '<div class="cp-reach">';
+      if (sr.google) h += '<div><em>Google search</em><b>' + num(sr.google.clicks) + '</b><span>clicks to AGSIST from ' + num(sr.google.impressions) + ' page appearances in Google results, about ' + num(perDay(sr.google.clicks, sr.google.start, sr.google.end)) + ' clicks a day, worldwide</span><small>' + esc(span(sr.google.start, sr.google.end)) + ' &middot; ' + esc(sr.google.source) + '</small></div>';
+      if (sr.bing) h += '<div><em>Bing search</em><b>' + num(sr.bing.clicks) + '</b><span>clicks from ' + num(sr.bing.impressions) + ' appearances in ' + esc(sr.bing.days) + ' days, about ' + num(perDay(sr.bing.clicks, sr.bing.start, sr.bing.end)) + ' a day, worldwide</span><small>' + esc(span(sr.bing.start, sr.bing.end)) + ' &middot; ' + esc(sr.bing.source) + '</small></div>';
+      if (ai) h += '<div><em>AI answers</em><b>' + num(ai.perDay) + '/day</b><span>times Copilot and Bing answers cited AGSIST, ' + num(ai.citations) + ' in ' + esc(ai.days) + ' days' +
+        (ai.earlier ? ', up from ' + num(ai.earlier.perDay) + '/day over ' + esc(span(ai.earlier.start, ai.earlier.end)) : '') + '</span><small>' + esc(span(ai.start, ai.end)) + ' &middot; ' + esc(ai.source) + '</small></div>';
+      h += '</div><p class="cp-note">Search and AI figures count appearances and citations, not people, and the windows differ, so compare them by the per-day figures. They are shown for reach only and none of them is counted in the readers above.</p>';
+    }
+    return h + '</section>';
+  }
+
+  function wireAudience(d) {
+    var a = d.__aud; if (!a) return;
+    var by = {}; (a.states.rows || []).forEach(function (r) { by[r.code] = r; });
+    var card = document.getElementById('cp-aud-card'), tip = document.getElementById('cp-tip');
+    var lic = Array.isArray(d.licensedStates) ? d.licensedStates : [];
+    function show(el) {
+      var c = el.getAttribute('data-st'), r = by[c];
+      tip.innerHTML = r
+        ? '<b>' + esc(r.name) + (lic.indexOf(c) >= 0 ? ' &middot; licensed' : '') + '</b>Engaged visits <span>' + num(r.engaged) + '</span><br>Readers <span>' + num(r.users) +
+          '</span><br>Time per reader <span>' + esc(secs(r.avgSeconds)) + '</span>' + (r.flag === 'server' ? '<br>Includes server traffic' : r.flag === 'home' ? '<br>Includes our own visits' : '')
+        : '<b>' + esc(c) + '</b>No readers in this window';
+      tip.hidden = false;
+      var cb = card.getBoundingClientRect(), eb = el.getBoundingClientRect();
+      var x = eb.left - cb.left + eb.width / 2 - tip.offsetWidth / 2, y = eb.top - cb.top - tip.offsetHeight - 8;
+      x = Math.max(6, Math.min(x, cb.width - tip.offsetWidth - 6));
+      if (y < 6) y = eb.bottom - cb.top + 8;
+      tip.style.left = x + 'px'; tip.style.top = y + 'px';
+    }
+    function hide() { tip.hidden = true; }
+    [].forEach.call(card.querySelectorAll('.cp-tile'), function (el) {
+      el.addEventListener('mouseenter', function () { show(el); });
+      el.addEventListener('focus', function () { show(el); });
+      el.addEventListener('click', function () { show(el); });
+      el.addEventListener('mouseleave', hide);
+      el.addEventListener('blur', hide);
+    });
+    var more = document.getElementById('cp-aud-more'), t = document.getElementById('cp-aud-t');
+    if (more) more.addEventListener('click', function () {
+      var on = t.classList.toggle('is-all');
+      more.setAttribute('aria-expanded', String(on));
+      more.textContent = on ? 'Show top 15' : 'Show all ' + (a.states.rows || []).length;
+    });
+  }
+
   function draw(d) {
     var s = state(d);
     document.title = (d.sponsor ? d.sponsor + ' · ' : '') + 'Campaign portal · AGSIST';
     /* The ad comes before the results while there is nothing to report: the
        first thing a sponsor needs to do here is read and approve it. */
-    var body = d.pending ? adSection(d, s) + results(d, s) : results(d, s) + adSection(d, s);
-    root.innerHTML = hero(d, s) + nav() + body + whereSection(d, s) + billingSection(d, s) + linksSection(d, s) + howSection(d) + contact(d);
+    var aud = audience(d);
+    var body = d.pending ? adSection(d, s) + aud + results(d, s) : results(d, s) + aud + adSection(d, s);
+    root.innerHTML = hero(d, s) + nav(!!aud) + body + whereSection(d, s) + billingSection(d, s) + linksSection(d, s) + howSection(d) + contact(d);
     wireAd(d, s);
+    wireAudience(d);
   }
 })();
 </script>

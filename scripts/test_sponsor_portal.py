@@ -188,6 +188,52 @@ def main():
     check("sr-ad-head" not in html and "sr-ad-cta" not in html,
           "the portal keeps no lookalike of its own")
 
+    # ---- WHO READS AGSIST ---------------------------------------------------
+    # The audience section is what a sponsor quotes to their own boss. Every
+    # number on it must come from data/audience.json, carry its window, and a
+    # missing or malformed file must leave the portal exactly as it was.
+    print("\nthe audience section says only what the file says")
+    check("/data/audience.json" in html, "the portal reads data/audience.json")
+    check("a.schema === 'agsist-audience/1'" in html,
+          "a file of the wrong shape is treated as absent, not drawn",
+          "a half-drawn audience block is worse than none")
+    check(".catch(function () { return null; })" in html,
+          "an unreachable audience file cannot break the sponsor's link")
+    check("x[0] !== '#audience'" in html, "no nav link points at a section that was not drawn")
+    for s_, what in (("14,340", "the US reader count"), ("1501", "a state's count")):
+        check(s_ not in html, "no audience figure is typed into the page (%s)" % what)
+    af = ROOT / "data" / "audience.json"
+    if af.exists():
+        a = json.loads(af.read_text())
+        R, S = a.get("readers") or {}, a.get("states") or {}
+        rows = S.get("rows") or []
+        check(a.get("schema") == "agsist-audience/1", "audience.json declares its schema")
+        check(bool(R.get("start") and R.get("end") and R.get("source")),
+              "the reader count carries its window and its report")
+        check(bool(S.get("start") and S.get("end") and S.get("source")),
+              "the state table carries its window and its report")
+        check(len({r["code"] for r in rows}) == len(rows) <= 51, "one row per state, at most 50 and DC")
+        check(all(rows[i]["engaged"] >= rows[i + 1]["engaged"] for i in range(len(rows) - 1)),
+              "states are ranked by engaged visits")
+        ranked = [r["rank"] for r in rows if r.get("flag") != "home"]
+        check(ranked == list(range(1, len(ranked) + 1)), "ranks run 1..n with no gaps")
+        check(all(r["rank"] is None for r in rows if r.get("flag") == "home"),
+              "the home state is shown and not ranked -- its numbers are partly our own visits")
+        check(S.get("rowsSumEngaged") == sum(r["engaged"] for r in rows),
+              "the engaged-visits sum on the page is the rows' own sum")
+        check(S.get("rowsSumUsers") == sum(r["users"] for r in rows),
+              "the 'rows add up to' figure on the page is the rows' own sum")
+        fr = S.get("flagRule") or {}
+        bad = [r["code"] for r in rows if r.get("flag") != "home" and
+               ((r.get("flag") == "server") != (r["users"] >= fr.get("minReaders", 0) and r["avgSeconds"] < fr.get("seconds", 0)))]
+        check(not bad, "every server-traffic flag follows the printed rule, and nothing else is flagged", bad)
+        check(not any(r.get("flag") == "server" and "cut" in r for r in rows),
+              "a flagged state keeps its reported numbers")
+    conf_ls = [sp_.get("licensed_states") for sp_ in conf.get("sponsors", [])]
+    for v in conf_ls:
+        if v is not None:
+            check(bsr.licensed_states(v) is not None, "a typed licensed-states list is valid US codes")
+
     print()
     if FAILED:
         print("FAILED (%d): %s" % (len(FAILED), "; ".join(FAILED)))
