@@ -56,6 +56,12 @@ SCHEMA = "agsist-audience/2"
 SERVER_SECONDS = 10     # average engagement per reader, seconds
 SERVER_MIN = 20         # readers, over the 90-day window
 HOME_STATE = "WI"       # AGSIST is run from Chetek; shown, not ranked
+# Windows end LAG days ago. Measured on the first live run (2026-09-22, 11:39
+# CT): yesterday came back with 256 users and ZERO engaged sessions -- GA4 had
+# counted the visits and not yet processed the engagement -- and Search Console
+# and Bing had no row for it at all. One day behind put a false cliff at the end
+# of every chart and dragged the 7-day engagement rate from about 62% to 52%.
+LAG = 2
 UA = "AGSIST-automation/1.0 (+https://agsist.com; sig@farmers1st.com)"
 
 STATES = {
@@ -81,9 +87,10 @@ def log(msg):
 
 # ── the windows ───────────────────────────────────────────────────────────
 def ranges(today):
-    """Every window ends YESTERDAY: GA4 keeps revising today for hours, and a
-    number that moves after a sponsor looked at it is worse than one a day old."""
-    end = today - timedelta(days=1)
+    """Every window ends LAG days ago, on the last day all three sources have
+    finished: a number that moves after a sponsor looked at it is worse than one
+    a day older."""
+    end = today - timedelta(days=LAG)
     jan1 = date(end.year, 1, 1)
     out = [("7d", "7 days", end - timedelta(days=6)),
            ("28d", "28 days", end - timedelta(days=27)),
@@ -95,7 +102,7 @@ def ranges(today):
 def series_start(today):
     """The daily series reaches back to Jan 1, or 90 days in January-March, so
     every range on the picker has its days."""
-    end = today - timedelta(days=1)
+    end = today - timedelta(days=LAG)
     return min(date(end.year, 1, 1), end - timedelta(days=89))
 
 
@@ -313,7 +320,7 @@ def bing_section(get, rg, today):
         a["clicks"] += int(r.get("Clicks") or 0)
         a["impr"] += int(r.get("Impressions") or 0)
     rows = sorted(agg.values(), key=lambda x: (-x["clicks"], -x["impr"]))[:20]
-    q = ({"start": weeks[0].isoformat(), "end": min(weeks[-1] + timedelta(days=width - 1), today - timedelta(days=1)).isoformat(),
+    q = ({"start": weeks[0].isoformat(), "end": min(weeks[-1] + timedelta(days=width - 1), today - timedelta(days=LAG)).isoformat(),
           "rows": rows} if weeks else None)
     return {"site": site, "days": days, "queries": q}
 
@@ -378,10 +385,9 @@ def build(today, prev, ga=None, gsc=None, bing=None, email=None, errors=None):
     b_days = carry("b", bing["days"] if bing else None)
     if ga_days or g_days or b_days:
         s_end = rg[0]["end"]      # fresh search days are kept even while GA4 is failing
-        out["series"] = {"start": series_start(date.fromisoformat(s_end) + timedelta(days=1)).isoformat(),
-                         "end": s_end,
-                         "days": merge_series(ga_days, g_days, b_days,
-                                              series_start(date.fromisoformat(s_end) + timedelta(days=1)).isoformat(), s_end)}
+        s_start = series_start(date.fromisoformat(s_end) + timedelta(days=LAG)).isoformat()
+        out["series"] = {"start": s_start, "end": s_end,
+                         "days": merge_series(ga_days, g_days, b_days, s_start, s_end)}
 
     q = dict(prev.get("queries") or {})
     if gsc:
@@ -501,11 +507,11 @@ def selftest():
         print(("  ok    " if c else "  FAIL  ") + name)
         ok = ok and bool(c)
 
-    today = date(2026, 9, 23)
+    today = date(2026, 9, 24)
     rg = ranges(today)
-    t(all(r["end"] == "2026-09-22" for r in rg), "every window ends yesterday")
+    t(all(r["end"] == "2026-09-22" for r in rg), "every window ends LAG days back, on the last finished day")
     t(rg[0]["start"] == "2026-09-16" and rg[3]["start"] == "2026-01-01", "7 days is seven days; the year starts Jan 1")
-    t(series_start(date(2026, 2, 1)) == date(2025, 11, 3), "in January the series still covers 90 days")
+    t(series_start(date(2026, 2, 1)) == date(2025, 11, 2), "in January the series still covers 90 days")
 
     # A fake GA4 client that answers from a table and records every request.
     class V:
@@ -639,7 +645,7 @@ def selftest():
     t("searchStatic" not in o3 and o3["ai"] == {"perDay": 1}, "live search replaces the export's search card; AI citations carry")
     o5 = build(today, dict(exp, searchStatic={"google": {"c": 1}, "bing": {"c": 2}}), None, None, b, None)
     t(o5["searchStatic"] == {"google": {"c": 1}}, "Bing live alone removes only the Bing export card")
-    t(o5["series"]["end"] == "2026-09-22", "the series ends at yesterday even when GA4 carried older windows")
+    t(o5["series"]["end"] == "2026-09-22", "the series ends at the last finished day even when GA4 carried older windows")
     t(is_ours("sc-domain:agsist.com") and is_ours("https://www.agsist.com/") and not is_ours("https://notagsist.com/")
       and not is_ours("https://agsist.com.evil.io/"), "only agsist.com itself is taken as ours")
 

@@ -1017,8 +1017,17 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
         b += '<div class="cp-keys">' + seg.map(function (s_) { return '<span><i style="background:' + s_[2] + ';height:8px;width:8px"></i>' + s_[1] + ' ' + num(dv[s_[0]] || 0) + '</span>'; }).join('') + '</div>';
       }
       if (ch && ch.length) {
+        /* GA4's channel names in plain words. "Unassigned" and "Cross-network"
+           mean nothing to a sponsor; they are GA4's leftovers, so they fold
+           into "Other" rather than being renamed into a claim. */
+        var CHN = { 'Organic Search': 'Search engines', 'Direct': 'Typed in or bookmarked', 'Email': 'The email briefing',
+          'Referral': 'Links from other sites', 'AI Assistant': 'AI assistants', 'Organic Social': 'Social media' };
+        var fold = {}, order = [];
+        ch.forEach(function (c) { var k = CHN[c.channel] || 'Other'; if (!(k in fold)) { fold[k] = 0; order.push(k); } fold[k] += c.sessions; });
+        ch = order.map(function (k) { return { channel: k, sessions: fold[k] }; }).sort(function (a, b) {
+          return (a.channel === 'Other') - (b.channel === 'Other') || b.sessions - a.sessions; });
         var cm = Math.max.apply(null, ch.map(function (c) { return c.sessions; }).concat([1]));
-        b += '<ul class="cp-rows" style="margin-top:.4rem">' + ch.slice(0, 6).map(function (c) {
+        b += '<ul class="cp-rows" style="margin-top:.4rem">' + ch.slice(0, 7).map(function (c) {
           return '<li><div class="r"><span>' + esc(c.channel) + '</span><span class="n">' + num(c.sessions) + '</span></div><div class="cp-bar"><i style="width:' + (100 * c.sessions / cm).toFixed(1) + '%"></i></div></li>'; }).join('') + '</ul>';
       }
       right = card('How they arrive', esc(span(R.start, R.end)), b);
