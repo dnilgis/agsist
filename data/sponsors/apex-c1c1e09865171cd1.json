@@ -93,7 +93,7 @@
   ]
  },
  "approveTo": "sig@farmers1st.com",
- "creativeRefreshed": "2026-09-22T15:30:57+00:00",
+ "creativeRefreshed": "2026-09-22T15:54:24+00:00",
  "approval": null,
  "billing": {
   "tier": "founding",
@@ -107,5 +107,6 @@
   "daily_page",
   "archive",
   "daily_email"
- ]
+ ],
+ "licensedStates": null
 }
