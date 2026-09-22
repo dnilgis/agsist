@@ -14,69 +14,84 @@
    "kb":0.9
   },
   "AR":{
-   "rows":60,
-   "facilities":6,
-   "kb":2.9
+   "rows":77,
+   "facilities":12,
+   "kb":3.8
   },
   "CO":{
-   "rows":83,
-   "facilities":5,
-   "kb":4.2
+   "rows":146,
+   "facilities":19,
+   "kb":7.1
   },
   "DE":{
    "rows":5,
    "facilities":1,
    "kb":0.5
   },
+  "FL":{
+   "rows":2,
+   "facilities":1,
+   "kb":0.3
+  },
   "GA":{
-   "rows":10,
-   "facilities":3,
-   "kb":0.7
+   "rows":25,
+   "facilities":5,
+   "kb":1.4
   },
   "IA":{
-   "rows":6405,
-   "facilities":407,
-   "kb":260.9
+   "rows":8565,
+   "facilities":591,
+   "kb":359.2
   },
   "ID":{
-   "rows":66,
-   "facilities":1,
-   "kb":3.1
+   "rows":68,
+   "facilities":2,
+   "kb":3.2
   },
   "IL":{
-   "rows":3956,
-   "facilities":246,
-   "kb":159.3
+   "rows":5310,
+   "facilities":339,
+   "kb":224.2
   },
   "IN":{
-   "rows":1077,
-   "facilities":64,
-   "kb":43.0
+   "rows":1688,
+   "facilities":100,
+   "kb":70.9
   },
   "KS":{
-   "rows":3298,
-   "facilities":206,
-   "kb":132.6
+   "rows":4737,
+   "facilities":316,
+   "kb":197.5
+  },
+  "KY":{
+   "rows":64,
+   "facilities":4,
+   "kb":3.3
+  },
+  "LA":{
+   "rows":5,
+   "facilities":1,
+   "kb":0.5
   },
   "MI":{
-   "rows":477,
-   "facilities":26,
-   "kb":20.1
+   "rows":650,
+   "facilities":36,
+   "kb":28.0
   },
   "MN":{
-   "rows":3478,
-   "facilities":168,
-   "kb":143.7
+   "rows":5087,
+   "facilities":271,
+   "kb":214.6
   },
   "MO":{
-   "rows":864,
-   "facilities":67,
-   "kb":36.2
+   "rows":959,
+   "facilities":77,
+   "kb":40.8
   },
   "MT":{
-   "rows":158,
-   "facilities":5,
-   "kb":7.2
+   "rows":184,
+   "facilities":9,
+   "kb":8.4
   },
   "NC":{
    "rows":17,
@@ -84,69 +99,79 @@
    "kb":1.0
   },
   "ND":{
-   "rows":1678,
-   "facilities":65,
-   "kb":68.9
+   "rows":2167,
+   "facilities":97,
+   "kb":92.4
   },
   "NE":{
-   "rows":2989,
-   "facilities":134,
-   "kb":118.1
+   "rows":4589,
+   "facilities":242,
+   "kb":187.2
+  },
+  "NY":{
+   "rows":2,
+   "facilities":1,
+   "kb":0.3
   },
   "OH":{
-   "rows":2052,
-   "facilities":129,
-   "kb":82.8
+   "rows":2456,
+   "facilities":161,
+   "kb":101.6
   },
   "OK":{
-   "rows":303,
-   "facilities":22,
-   "kb":12.9
+   "rows":426,
+   "facilities":25,
+   "kb":18.1
   },
   "ON":{
-   "rows":8,
-   "facilities":1,
-   "kb":0.6
+   "rows":24,
+   "facilities":5,
+   "kb":1.6
   },
   "OR":{
    "rows":28,
    "facilities":1,
    "kb":1.4
   },
+  "PA":{
+   "rows":5,
+   "facilities":1,
+   "kb":0.6
+  },
   "SD":{
-   "rows":1570,
-   "facilities":75,
-   "kb":63.9
+   "rows":2738,
+   "facilities":133,
+   "kb":118.3
   },
   "TN":{
-   "rows":79,
-   "facilities":7,
-   "kb":3.8
+   "rows":119,
+   "facilities":10,
+   "kb":5.7
   },
   "TX":{
-   "rows":46,
-   "facilities":3,
-   "kb":2.3
+   "rows":95,
+   "facilities":5,
+   "kb":4.3
   },
   "VA":{
-   "rows":28,
+   "rows":29,
    "facilities":2,
    "kb":1.5
   },
   "WA":{
-   "rows":363,
-   "facilities":14,
-   "kb":15.9
+   "rows":415,
+   "facilities":22,
+   "kb":18.8
   },
   "WI":{
-   "rows":1356,
-   "facilities":97,
-   "kb":55.7
+   "rows":1631,
+   "facilities":133,
+   "kb":68.3
   },
   "WY":{
-   "rows":41,
-   "facilities":4,
-   "kb":2.1
+   "rows":49,
+   "facilities":5,
+   "kb":2.6
   }
  }
 }
