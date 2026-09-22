@@ -1,18 +1,18 @@
 {
- "generated": "2026-09-22T19:04:14Z",
+ "generated": "2026-09-22T21:59:48Z",
  "from": "bids-full.json",
  "complete": false,
  "note": "Directory only: who operates a facility and where. No prices, no basis, no symbols, no delivery windows.",
  "counts": {
-  "facilities": 2500,
-  "states": 33,
+  "facilities": 2493,
+  "states": 32,
   "with_address": 0,
   "with_coords": 0,
   "with_url": 0,
-  "with_phone": 1781,
+  "with_phone": 1788,
   "saturated_zips": 0,
   "failed_zips": 0,
-  "rows_read": 27406
+  "rows_read": 27480
  },
  "saturated": [],
  "failed": [],
@@ -239,6 +239,15 @@
   },
   {
    "facility": "Roggen Farmers Elevator Association",
+   "branch": "Roggen Elevator - Main Office",
+   "city": "Roggen",
+   "state": "CO",
+   "zip": "80652",
+   "phone": "(303) 849-5506",
+   "source": "barchart"
+  },
+  {
+   "facility": "Roggen Farmers Elevator Association",
    "branch": "Watkins",
    "city": "Watkins",
    "state": "CO",
@@ -262,13 +271,6 @@
    "state": "DE",
    "zip": "19956",
    "phone": "N/A",
-   "source": "barchart"
-  },
-  {
-   "facility": "ScoularView",
-   "city": "Lake City",
-   "state": "FL",
-   "lat": 30.18137,
    "source": "barchart"
   },
   {
@@ -4682,14 +4684,6 @@
    "source": "barchart"
   },
   {
-   "facility": "ScoularView",
-   "city": "Hancock",
-   "state": "IA",
-   "zip": "51536",
-   "lat": 41.3832,
-   "source": "barchart"
-  },
-  {
    "facility": "Seaboard Foods",
    "branch": "Iowa Falls",
    "city": "Iowa Falls",
@@ -5056,13 +5050,6 @@
    "state": "ID",
    "zip": "83832",
    "phone": "208-285-1141",
-   "source": "barchart"
-  },
-  {
-   "facility": "ScoularView",
-   "city": "Jerome",
-   "state": "ID",
-   "lat": 42.7178,
    "source": "barchart"
   },
   {
@@ -5964,14 +5951,6 @@
    "source": "barchart"
   },
   {
-   "facility": "Cissna Park Co-op",
-   "city": "Cissna Park Woodworth & Rankin",
-   "state": "IL",
-   "zip": "60924",
-   "lat": 40.5858,
-   "source": "barchart"
-  },
-  {
    "facility": "Consolidated Grain & Barge",
    "branch": "CGB ALBANY",
    "city": "Albany",
@@ -6359,6 +6338,15 @@
    "city": "Delavan",
    "state": "IL",
    "zip": "61734",
+   "phone": "309-244-7541",
+   "source": "barchart"
+  },
+  {
+   "facility": "Encompass Grain & Rail Co-op",
+   "branch": "Havana",
+   "city": "Havana",
+   "state": "IL",
+   "zip": "62644",
    "phone": "309-244-7541",
    "source": "barchart"
   },
@@ -7375,6 +7363,15 @@
   },
   {
    "facility": "Seatonville Elevator Co",
+   "branch": "Marquis",
+   "city": "Hennepin",
+   "state": "IL",
+   "zip": "61327",
+   "phone": "815-925-9590",
+   "source": "barchart"
+  },
+  {
+   "facility": "Seatonville Elevator Co",
    "city": "Marquis",
    "state": "IL",
    "source": "barchart"
@@ -7390,6 +7387,15 @@
    "city": "Seatonville",
    "state": "IL",
    "lat": 41.3613,
+   "source": "barchart"
+  },
+  {
+   "facility": "Seatonville Elevator Co",
+   "branch": "River",
+   "city": "Spring Valley",
+   "state": "IL",
+   "zip": "62705",
+   "phone": "815-894-2013",
    "source": "barchart"
   },
   {
@@ -10179,6 +10185,38 @@
    "source": "barchart"
   },
   {
+   "facility": "Farmers Coop Columbus",
+   "city": "BAXTER SPRINGS",
+   "state": "KS",
+   "zip": "66713",
+   "lat": 37.0281,
+   "source": "barchart"
+  },
+  {
+   "facility": "Farmers Coop Columbus",
+   "city": "COLUMBUS",
+   "state": "KS",
+   "zip": "66725",
+   "lat": 37.1699,
+   "source": "barchart"
+  },
+  {
+   "facility": "Farmers Coop Columbus",
+   "city": "COLUMBUS EAST",
+   "state": "KS",
+   "zip": "66739",
+   "lat": 37.1699,
+   "source": "barchart"
+  },
+  {
+   "facility": "Farmers Coop Columbus",
+   "city": "FAULKNER",
+   "state": "KS",
+   "zip": "67336",
+   "lat": 37.0418,
+   "source": "barchart"
+  },
+  {
    "facility": "Farmers Coop Conway Springs",
    "branch": "BELLE PLAINE",
    "city": "Belle Plaine",
@@ -11261,68 +11299,21 @@
    "source": "barchart"
   },
   {
-   "facility": "ScoularView",
-   "city": "Ada",
-   "state": "KS",
-   "lat": 39.1295,
-   "source": "barchart"
-  },
-  {
-   "facility": "ScoularView",
-   "city": "Brewster",
-   "state": "KS",
-   "lat": 39.3655,
-   "source": "barchart"
-  },
-  {
-   "facility": "ScoularView",
-   "city": "Cullison",
-   "state": "KS",
-   "lat": 37.6502,
-   "source": "barchart"
-  },
-  {
-   "facility": "ScoularView",
-   "city": "Greensburg",
-   "state": "KS",
-   "lat": 37.5915,
-   "source": "barchart"
-  },
-  {
-   "facility": "ScoularView",
-   "city": "Levant",
-   "state": "KS",
-   "lat": 39.3841,
-   "source": "barchart"
-  },
-  {
-   "facility": "ScoularView",
-   "city": "Lincoln",
-   "state": "KS",
-   "lat": 39.1027,
-   "source": "barchart"
-  },
-  {
-   "facility": "ScoularView",
-   "city": "Minneapolis",
-   "state": "KS",
-   "lat": 39.1295,
-   "source": "barchart"
-  },
-  {
-   "facility": "ScoularView",
-   "city": "Monument",
-   "state": "KS",
-   "lat": 39.07,
-   "source": "barchart"
-  },
-  {
    "facility": "Sek Coop Inc.",
    "branch": "Severy",
    "city": "Severy",
    "state": "KS",
    "zip": "67137",
    "phone": "620-736-2011",
+   "source": "barchart"
+  },
+  {
+   "facility": "Skyland Grain",
+   "branch": "Cunningham Area",
+   "city": "Cunningham",
+   "state": "KS",
+   "zip": "67035",
+   "phone": "(620) 298-2011",
    "source": "barchart"
   },
   {
@@ -11386,6 +11377,15 @@
    "state": "KS",
    "zip": "67490",
    "phone": "N/A",
+   "source": "barchart"
+  },
+  {
+   "facility": "The Scoular Company",
+   "branch": "Scoular Pittsburg Cash Bids",
+   "city": "Pittsburg",
+   "state": "KS",
+   "zip": "66762",
+   "phone": "620-232-5800",
    "source": "barchart"
   },
   {
@@ -13149,14 +13149,6 @@
   },
   {
    "facility": "KBQ Inc.",
-   "city": "KBQ Inc.",
-   "state": "MN",
-   "zip": "56159",
-   "lat": 43.939,
-   "source": "barchart"
-  },
-  {
-   "facility": "KBQ Inc.",
    "branch": "KBQ Inc.",
    "city": "Mountain Lake",
    "state": "MN",
@@ -13462,6 +13454,15 @@
    "state": "MN",
    "zip": "55918",
    "phone": "507-567-2234",
+   "source": "barchart"
+  },
+  {
+   "facility": "Nexus Cooperative",
+   "branch": "CONGER, MN",
+   "city": "Conger",
+   "state": "MN",
+   "zip": "56020",
+   "phone": "507-265-3231",
    "source": "barchart"
   },
   {
@@ -17288,42 +17289,6 @@
    "source": "barchart"
   },
   {
-   "facility": "ScoularView",
-   "city": "Big Springs",
-   "state": "NE",
-   "lat": 41.0696,
-   "source": "barchart"
-  },
-  {
-   "facility": "ScoularView",
-   "city": "Brandon",
-   "state": "NE",
-   "source": "barchart"
-  },
-  {
-   "facility": "ScoularView",
-   "city": "Fremont",
-   "state": "NE",
-   "zip": "68025",
-   "lat": 41.4416,
-   "source": "barchart"
-  },
-  {
-   "facility": "ScoularView",
-   "city": "Lamar",
-   "state": "NE",
-   "lat": 40.46,
-   "source": "barchart"
-  },
-  {
-   "facility": "ScoularView",
-   "city": "Madrid",
-   "state": "NE",
-   "zip": "69150",
-   "lat": 40.854,
-   "source": "barchart"
-  },
-  {
    "facility": "The Scoular Company",
    "branch": "Fremont, NE",
    "city": "Fremont",
@@ -18420,13 +18385,6 @@
    "source": "barchart"
   },
   {
-   "facility": "ScoularView",
-   "city": "COVINGTON",
-   "state": "OH",
-   "lat": 40.1176,
-   "source": "barchart"
-  },
-  {
    "facility": "Smithfield Grain - East",
    "branch": "Harpster",
    "city": "Harpster",
@@ -18603,6 +18561,14 @@
    "state": "OH",
    "zip": "43512",
    "phone": "(419) 497-2101",
+   "source": "barchart"
+  },
+  {
+   "facility": "The Jewell Grain Co.",
+   "city": "The Jewell Grain Co.",
+   "state": "OH",
+   "zip": "43512",
+   "lat": 41.2799,
    "source": "barchart"
   },
   {
@@ -21148,11 +21114,11 @@
    "source": "barchart"
   },
   {
-   "facility": "Pilgrims Gold N Plump",
-   "branch": "Arcadia",
+   "facility": "Pilgrims Gold N' Plump",
    "city": "Arcadia",
    "state": "WI",
    "zip": "54612",
+   "lat": 44.2539,
    "phone": "320-202-7451",
    "source": "barchart"
   },
