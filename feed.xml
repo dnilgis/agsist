@@ -5,13 +5,24 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Tue, 22 Sep 2026 11:13:40 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 23 Sep 2026 11:15:34 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/agsist.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>GRAINS GIVE BACK THE CHINA POP AHEAD OF XI SUMMIT</title>
+      <link>https://agsist.com/daily/2026-09-23</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-09-23</guid>
+      <pubDate>Wed, 23 Sep 2026 05:00:00 -0600</pubDate>
+      <description>Corn settled $5.29, down 3½ cents, wheat down a penny and three-quarters, both giving back Monday's China-hope pop before Thursday's Trump-Xi summit even opens. Cattle fell 0.8% to $219.35 the day after a 2.4% jump on record-low placements, that's real profit-taking, not a reversal of the placements story.
+Action: Corn: no action above $5.29, but a settle below $5.27 says the China pop is fully unwound, price the next 10%.
+• Grains Fade The Summit Pop
+• Cattle Cool After Placement Pop
+Read more: https://agsist.com/daily/2026-09-23</description>
+    </item>
     <item>
       <title>CORN RALLIES ON CHINA HOPES; CATTLE JUMP 2.4%</title>
       <link>https://agsist.com/daily/2026-09-22</link>
@@ -376,20 +387,6 @@ WTI fell 3.3% as Iran sanctions and Malacca pledges reshuffled the energy story;
   → Unpriced new-crop corn above $5.10 December: this window stays open through the Pro Farmer tour. Do not wait for combines to force your hand.
 • CRUDE LEADS LOWER
 Read more: https://agsist.com/daily/2026-08-25</description>
-    </item>
-    <item>
-      <title>CORN HOLDS 52-WEEK HIGH; CROP PROGRESS AT 3 PM</title>
-      <link>https://agsist.com/daily/2026-08-24</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-08-24</guid>
-      <pubDate>Mon, 24 Aug 2026 05:00:00 -0600</pubDate>
-      <description>December corn is sitting at $5.22, at the top of its 52-week range, and doing nothing dramatic while the market waits on Crop Progress at 3 PM CT today. Indiana took nearly 15 inches of rain last week, which is either a late-season quality story or a harvest delay story depending on which fields got hit. The report decides which conversation starts this week.
-December corn at $5.22 waits on today's USDA Crop Progress report while Indiana flooding and Iran-Hormuz tensions set up a complicated week.
-• CORN WAITS ON THE REPORT
-  → If December holds above $5.22 after the 3 PM report, the pricing window Friday's briefing flagged is still open. Do not wait for combines.
-• CATTLE ABSORB TWO-SIDED NEWS
-  → Cattle feeders: hold major pricing decisions until import volume mechanics and the Douglas reopening pace are clearer this week.
-• ENERGY: HORMUZ BACK ON WATCH
-Read more: https://agsist.com/daily/2026-08-24</description>
     </item>
   </channel>
 </rss>
