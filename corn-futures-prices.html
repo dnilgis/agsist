@@ -1502,9 +1502,21 @@ function findBestBidForCrop(bids,nearestGridResult,cropKey){
      file carry a deliveryStart of 2012 against a correct end date and a
      correct month label; ordering on start handed those rows every fallback in
      the file. Every deliveryEnd in that file is a real future date. */
+  /* The reader's own calendar day, not UTC: whether a delivery window is
+     still open is a question about where he is standing. */
+  var TODAY_ISO=(function(){var n=new Date();
+    return n.getFullYear()+'-'+('0'+(n.getMonth()+1)).slice(-2)+'-'+('0'+n.getDate()).slice(-2);})();
+  /* ONE SORTABLE STRING, THREE TIERS, so bestBid's existing `wa<wb` is
+     unchanged and still a total order:
+       '0'+date  the window is still open  -- soonest first, as before
+       '2'       no date at all            -- after every open window
+       '9'+date  the window has closed     -- last, and it can no longer win
+     WAS: '9999-99-99' for a missing date and the raw date otherwise, with no
+     floor, so a row whose window shut in 2016 beat every real one. */
   function bidWhen(b){
-    var w=b.deliveryEnd||b.deliveryStart||'9999-99-99';
-    return String(w).slice(0,10);
+    var w=String(b.deliveryEnd||b.deliveryStart||'').slice(0,10);
+    if(!w)return '2';
+    return (w>=TODAY_ISO?'0':'9')+w;
   }
   function bestBid(rows){
     var best=rows[0];
@@ -1518,7 +1530,16 @@ function findBestBidForCrop(bids,nearestGridResult,cropKey){
   if(nearestGridResult&&nearestGridResult.grid){
     var ng=nearestGridResult.grid;
     var local=[];
-    for(var j=0;j<cropBids.length;j++){ if(nearGrid(cropBids[j],ng.zip))local.push(cropBids[j]); }
+    for(var j=0;j<cropBids.length;j++){
+      if(!nearGrid(cropBids[j],ng.zip))continue;
+      /* bidWhen tags a closed window with '9'. Such a row may not be this
+         reader's LOCAL bid even when it is the only local row: the card
+         prints one price under "Local Cash Bid", and a window that shut in
+         April is not one. Falling through says "not near you", which is
+         true, instead of naming a price he cannot get. */
+      if(bidWhen(cropBids[j]).charAt(0)==='9')continue;
+      local.push(cropBids[j]);
+    }
     if(local.length)return{bid:bestBid(local),distance:nearestGridResult.distance};
   }
 
@@ -1599,17 +1620,28 @@ function renderBasisCard(data){
     var bidPrice=bidCash(b);
     if(bidPrice===-Infinity)bidPrice=null;
     var basis=b.basis!=null?b.basis:b.bidBasis;
-    var deliveryStr=b.delivery||b.delivery_str||b.deliveryDescription||(b.delivery_start?b.delivery_start+(b.delivery_end?' \u2013 '+b.delivery_end:''):null);
+    /* deliveryMonth IS THE FIELD THIS FILE ACTUALLY HAS.
+       `delivery` is the board's own words and exists only on rows read
+       straight from an elevator, so it stays first. deliveryMonth is on every
+       row and was missing from this chain, which is why 90 of 150 cards drew
+       an em dash where the row in hand said "Sep26". The snake_case names are
+       kept last: they are not in today's payload but cost nothing. */
+    var deliveryStr=b.delivery||b.deliveryMonth||b.delivery_str||b.deliveryDescription||
+      (b.deliveryStart?String(b.deliveryStart).slice(0,10)+(b.deliveryEnd?' \u2013 '+String(b.deliveryEnd).slice(0,10):''):null)||
+      (b.delivery_start?b.delivery_start+(b.delivery_end?' \u2013 '+b.delivery_end:''):null);
 
     // Resolve the BID\'s actual location for the header label.
     var bidGrid=null;
     if(b.zip){
       for(var i=0;i<grid.length;i++)if(grid[i].zip===b.zip){bidGrid=grid[i];break;}
     }
-    if(!bidGrid&&b.lat!=null&&b.lng!=null){
+    /* lon, not lng. The feed writes lat/lon; zero of 584 rows have an
+       `lng` key, so this branch was reached 142 times in 150 and ran 0. */
+    var bLng=(b.lng!=null)?b.lng:b.lon;
+    if(!bidGrid&&b.lat!=null&&bLng!=null){
       var nd=Infinity;
       for(var j=0;j<grid.length;j++){
-        var d=haversineMi(b.lat,b.lng,grid[j].lat,grid[j].lng);
+        var d=haversineMi(b.lat,bLng,grid[j].lat,grid[j].lng);
         if(d<nd){nd=d;bidGrid=grid[j];}
       }
     }
@@ -1665,7 +1697,8 @@ function renderBasisCard(data){
       var interp;
       if(basis!=null){
         var bvi=Number(basis),absV=Math.abs(bvi).toFixed(2);
-        if(bvi>=0)interp='Cash is <strong>$'+absV+' above its board futures contract</strong>. Positive basis signals firm local demand \u2014 buyers are willing to pay above the exchange to attract bushels.';
+        if(bvi===0)interp='Cash is <strong>level with its board futures contract</strong>. A flat basis is neither a premium nor a discount \u2014 the elevator is paying the exchange price.';
+        else if(bvi>0)interp='Cash is <strong>$'+absV+' above its board futures contract</strong>. Positive basis signals firm local demand \u2014 buyers are willing to pay above the exchange to attract bushels.';
         else if(bvi>=-0.20)interp='Cash is <strong>$'+absV+' below futures</strong>. A tight basis like this is firm \u2014 typical of strong local demand or proximity to a processor.';
         else if(bvi>=-0.40)interp='Cash is <strong>$'+absV+' below futures</strong>. Roughly typical interior-state basis. Compare against your usual local levels to gauge whether the elevator is bidding up.';
         else interp='Cash is <strong>$'+absV+' below futures</strong>. A wide negative basis suggests heavy local supply or soft buyer demand. Storing through to a basis improvement may pay if you have bin space.';
