@@ -63,6 +63,8 @@
    Every fallback below is the same colour .cp uses. */
 #cp-mailfb{--acc:var(--ad-orange,#e8743a);--acc-rgb:var(--ad-orange-rgb,232,116,58);
   --ok:#4ade80;--ok-rgb:74,222,128;color:var(--text,#e8ece9)}
+.cp-appr-out{flex-basis:100%;margin:.6rem 0 0}
+.cp-appr-out p{margin:0}
 #cp-mailfb[hidden]{display:none}
 #cp-mailfb{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;padding:1rem}
 #cp-mailfb *{box-sizing:border-box}
@@ -492,6 +494,65 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
       '&body=' + encodeURIComponent('Here is what we would like changed:\n\n');
   }
 
+  /* ───────────────────────── approve, without email ────────────────────
+     Everything the approval needs is already on the page -- the proof code,
+     the advertiser, the headline, the button and its link, the phone. There
+     is nothing for the sponsor to type, so there is no reason to make him
+     open a mail program to send it. */
+  var APPROVE_FORM = 'https://formspree.io/f/xnjbwepn';
+  function approveSentKey(code) { return 'agsist_approved_' + (code || ''); }
+  function approveSentAt(code) {
+    try { return localStorage.getItem(approveSentKey(code)) || ''; } catch (e) { return ''; }
+  }
+  function rememberApproveSent(code) {
+    /* Remembered per browser ONLY so a reload does not look as though the
+       press did nothing. It is not a record of approval -- the record is
+       data/sponsors.json, which Sig writes -- and the wording below says so
+       rather than claiming this page knows. */
+    try { localStorage.setItem(approveSentKey(code), new Date().toISOString()); } catch (e) {}
+  }
+  function approveSay(el, html) {
+    var box = el.parentNode.querySelector('.cp-appr-out');
+    if (!box) {
+      box = document.createElement('div');
+      box.className = 'cp-appr-out';
+      box.setAttribute('role', 'status');
+      box.setAttribute('aria-live', 'polite');
+      el.parentNode.appendChild(box);
+    }
+    box.innerHTML = html;
+    return box;
+  }
+  function sendApproval(el, d, s) {
+    var href = el.getAttribute('data-mail') || '';
+    var m = mailParts(href);
+    var was = el.textContent;
+    el.disabled = true; el.textContent = 'Sending\u2026';
+    var fd = new FormData();
+    fd.append('_subject', m.subject);
+    fd.append('request', 'Approval');
+    fd.append('sponsor', d.sponsor || '');
+    fd.append('proof', s.code || '');
+    fd.append('message', m.body);
+    fetch(APPROVE_FORM, { method: 'POST', body: fd, headers: { Accept: 'application/json' } })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (j) {
+        if (!j || j.ok === false || j.errors) throw 0;
+        rememberApproveSent(s.code);
+        el.hidden = true;
+        approveSay(el, '<p class="cp-req-ok"><b>Approval sent.</b> Sig has it, with proof code ' +
+          esc(s.code || '') + '. He confirms by email, and this page says <b>Approved</b> once it is on record. ' +
+          'Nothing runs before then.</p>');
+      })
+      .catch(function () {
+        el.disabled = false; el.textContent = was;
+        /* THE PATH THAT HAS ALWAYS WORKED. No network, no mail client. */
+        approveSay(el, '<p class="cp-req-bad"><b>That did not go through.</b> Send it yourself instead \u2014 ' +
+          'the message is written out for you.</p>');
+        openMailFallback(href);
+      });
+  }
+
   /* ─────────────────────── the approval fallback ──────────────────────
      A mailto: opens nothing at all on a machine with no mail client, and
      says nothing when it fails. This panel carries the identical message so
@@ -619,7 +680,7 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
     }
     h += '<div class="cp-status' + (st.ok ? ' is-ok' : '') + '" role="status"><span class="cp-status-dot" aria-hidden="true"></span>' +
          '<div class="cp-status-txt"><div class="cp-status-h">' + st.h + '</div><p class="cp-status-p">' + st.p + '</p></div>' +
-         (st.btn ? '<a class="cp-btn" href="' + approveHref(d, s) + '">Approve proof ' + esc(s.code) + ' &rarr;</a>' : '') + '</div>';
+         (st.btn ? '<button class="cp-btn" type="button" data-mail="' + esc(approveHref(d, s)) + '">Approve proof ' + esc(s.code) + ' &rarr;</button>' : '') + '</div>';
 
     /* THE FIVE STEPS. Each is done, now, or next; none is decoration. */
     var steps = [
@@ -742,8 +803,8 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
     h += '<div class="cp-proof"><div><div class="cp-eyebrow">Proof code</div><div class="cp-code">' + esc(s.code) + '</div>' +
          '<p class="cp-note" style="margin-top:.35rem">A fingerprint of every word, number, link and phone number in this ad. Change one character and the code changes, so an approval can only ever cover what you saw.</p></div>' +
          '<div class="cp-proof-acts">' +
-         (s.approved ? '<span class="cp-btn cp-btn--ghost">✓ Approved</span>' : '<a class="cp-btn" href="' + approveHref(d, s) + '">Approve this ad &rarr;</a>') +
-         '<a class="cp-btn cp-btn--ghost" href="' + changesHref(d, s) + '">Request a change</a></div></div>';
+         (s.approved ? '<span class="cp-btn cp-btn--ghost">✓ Approved</span>' : '<button class="cp-btn" type="button" data-mail="' + esc(approveHref(d, s)) + '">Approve this ad &rarr;</button>') +
+         '<a class="cp-btn cp-btn--ghost" href="#requests" data-goto-request="1">Request a change</a></div></div>';
     h += '<details style="margin-top:.6rem"><summary class="cp-eyebrow cp-sum">Every field, word for word</summary><dl class="cp-fields">';
     [['advertiser', 'Advertiser'], ['headline', 'Headline'], ['body', 'Body'], ['facts', 'Facts row'], ['cta_text', 'Button'],
      ['cta_url', 'Button goes to'], ['phone', 'Phone'], ['logo', 'Logo file'], ['disclosure', 'Disclosure']].forEach(function (k) {
@@ -869,6 +930,43 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
     h += '<p class="cp-small" style="margin-top:.9rem">Rather talk? <a href="tel:+17157972428">715-797-2428</a> or <a href="mailto:' + esc(d.approveTo || 'sig@farmers1st.com') + '">' + esc(d.approveTo || 'sig@farmers1st.com') + '</a></p>';
     return h + '</form></section>';
   }
+  function wireApprove(d, s) {
+    [].forEach.call(document.querySelectorAll('button.cp-btn[data-mail]'), function (el) {
+      if (el.getAttribute('data-wired')) return;
+      el.setAttribute('data-wired', '1');
+      el.addEventListener('click', function () { sendApproval(el, d, s); });
+      var when = approveSentAt(s.code);
+      if (when && !s.approved) {
+        el.hidden = true;
+        /* fmt() is built for the feed's own date shapes and returns nothing
+           for an ISO timestamp, so the day is printed plainly instead of
+           being dropped. */
+        var day = fmt(when, true) || (function () {
+          try { return new Date(when).toLocaleDateString(undefined,
+            { month: 'short', day: 'numeric', year: 'numeric' }); } catch (e) { return ''; }
+        })();
+        approveSay(el, '<p class="cp-req-ok"><b>Approval sent</b> from this browser' +
+          (day ? ' on ' + esc(day) : '') + ', proof ' + esc(s.code || '') +
+          '. Sig confirms by email, and this page says <b>Approved</b> once it is on record.</p>');
+      }
+    });
+    /* REQUEST A CHANGE IS NOT AN EMAIL EITHER. It used to open a mail client
+       with an empty "here is what we would like changed" and nothing else.
+       The Requests box below is built for exactly that and validates what it
+       sends, so the button goes there and puts the cursor in the field. */
+    [].forEach.call(document.querySelectorAll('a.cp-btn[data-goto-request]'), function (a) {
+      a.addEventListener('click', function (e) {
+        e.preventDefault();
+        var f = document.getElementById('cp-req'); if (!f) return;
+        var b = f.querySelector('[data-act="change"]'); if (b) b.click();
+        var sec = document.getElementById('requests');
+        if (sec) sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        var t = f.querySelector('#cp-req-msg');
+        if (t) setTimeout(function () { t.focus(); }, 400);
+      });
+    });
+  }
+
   function wireRequests(d, s) {
     var f = document.getElementById('cp-req'); if (!f) return;
     var act = ACTS[0][0], tiers = (d.rateCard && d.rateCard.tiers) || [];
@@ -909,7 +1007,10 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
       var body = lines.join('\n');
       var subj = 'AGSIST portal: ' + A[1] + ' (' + (d.sponsor || '') + ')';
       var to = d.approveTo || 'sig@farmers1st.com';
-      var mail = 'mailto:' + encodeURIComponent(to) + '?subject=' + encodeURIComponent(subj) + '&body=' + encodeURIComponent(body);
+      /* The address goes in the path as written -- the third place in this
+         file that builds a mailto, and the one that was missed when the other
+         two were corrected. */
+      var mail = 'mailto:' + to + '?subject=' + encodeURIComponent(subj) + '&body=' + encodeURIComponent(body);
       var go = f.querySelector('#cp-req-send'); go.disabled = true; go.textContent = 'Sending…';
       var fd = new FormData();
       fd.append('_subject', subj); fd.append('request', A[1]); fd.append('sponsor', d.sponsor || ''); fd.append('message', body);
@@ -1302,6 +1403,7 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
     root.innerHTML = hero(d, s) + nav(!!aud) + body + whereSection(d, s) + billingSection(d, s) + requestsSection(d, s) + linksSection(d, s) + howSection(d) + contact(d);
     wireAd(d, s);
     wireAudience();
+    wireApprove(d, s);
     wireRequests(d, s);
   }
 })();
