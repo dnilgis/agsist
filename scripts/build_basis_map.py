@@ -3,15 +3,17 @@
 build_basis_map.py — National basis map for the AGSIST cash-bids page.
 
 Reads data/bids.json (produced by fetch_bids.py from Barchart OnDemand),
-aggregates the Barchart-provided `basis` ($/bu, cash minus nearby futures)
-by location -> state -> commodity for corn, soybeans, and wheat, and writes
+aggregates the Barchart-provided `basis` ($/bu, cash minus the futures month
+that board quoted -- NOT necessarily the nearby contract, and this script
+averages every delivery month a location posts) by location -> state ->
+commodity for corn, soybeans, and the three wheat classes, and writes
 data/basis-map.json, consumed by the "National Basis" section of cash-bids.html.
 
 Barchart returns `basis` directly on each bid, so no futures lookup or
 cents conversion is needed here. No API key required — this runs on the
 already-fetched bids.json. In a GitHub Action, run it right after fetch_bids.py.
 """
-import json, os, sys
+import json, os, re, sys
 from datetime import datetime, timezone
 from collections import defaultdict
 
@@ -23,9 +25,52 @@ BIDS_FULL_PATH = os.environ.get("BIDS_FULL_PATH", "bids-full.json")
 BIDS_PATH = "data/bids.json"
 OUT_PATH  = "data/basis-map.json"
 COMMODITIES = ["corn", "soybeans", "wheat"]
-FUTURES_REF = {"corn": "nearby CBOT futures",
-               "soybeans": "nearby CBOT futures",
-               "wheat": "nearby CBOT wheat"}
+# WHAT THE NUMBER IS AGAINST, IN THE BOARD'S OWN TERMS. This script averages
+# every delivery month a location posts, so none of these is a nearby basis
+# and none of them says it is.
+FUTURES_REF = {"corn": "each board's posted futures month \u2014 CBOT corn (ZC)",
+               "soybeans": "each board's posted futures month \u2014 CBOT soybeans (ZS)",
+               "wheat-srw": "each board's posted futures month \u2014 Chicago SRW (CBOT, ZW)",
+               "wheat-hrw": "each board's posted futures month \u2014 KC HRW (CBOT, KE)",
+               "wheat-hrs": "each board's posted futures month \u2014 spring wheat (MGEX, MWE)",
+               "wheat-sww": "each board's own reference \u2014 soft white has no CBOT, KC or MGEX contract; not comparable with the tabs above",
+               "wheat-unstated": "each board's own reference \u2014 these boards did not say which wheat; not comparable with the tabs above"}
+
+# Order matters: durum and spring are tested before the winter patterns so
+# "Hard Red Spring" cannot be caught by a rule meant for "Hard Red Winter",
+# and soft WHITE before soft RED so "Soft White Wheat" is not filed as SRW.
+_WHEAT_RX = [
+    ("durum",     re.compile(r"\bdurum\b", re.I)),
+    # Hard white is a Plains crop priced off KC, not a Pacific soft white,
+    # and it is tested before both white rules so neither can claim it.
+    ("hdw",       re.compile(r"\b(hdw|hard\s*white)\b", re.I)),
+    ("wheat-hrs", re.compile(r"\b(hrsw?|dns|dark\s*northern|mgex|mgx|spring)\b", re.I)),
+    # "Soft 10.5% White" is the same crop with the protein written between
+    # the two words; without the middle alternative it falls to unstated.
+    ("sww",       re.compile(r"\b(sww|soft\s*white|soft\s*\d+(?:\.\d+)?%?\s*white|white\s*wheat|club)\b", re.I)),
+    # hrww is an ordinary board abbreviation for hard red winter wheat, and
+    # \bhrw\b could not match it -- the second w leaves no word boundary.
+    ("wheat-hrw", re.compile(r"\b(hrww?|kcbt|kc|hard\s*red\s*winter)\b", re.I)),
+    # NO BARE "soft". It does not name a class: it caught "WHEAT (SOFT)" and
+    # would catch "Soft 10.5% White". A row that only says soft says nothing.
+    ("wheat-srw", re.compile(r"\b(srw|soft\s*red)\b", re.I)),
+]
+
+# Which wheat this row is, read off the board's own words. Returns
+# "wheat-srw", "wheat-hrw", "wheat-hrs", "durum", "sww", or None when the
+# label names no class. Only the first three go on the map: durum and soft
+# white have no contract among the three this page names, and a basis printed
+# against an unnamed reference is the thing being fixed here.
+def wheat_class(label):
+    s = str(label or "")
+    for name, rx in _WHEAT_RX:
+        if rx.search(s):
+            return name
+    return None
+# What the map actually publishes, after wheat is split by class. A pooled
+# `wheat` block is deliberately absent: one wheat number is the bug this fixes.
+MAP_COMMODITIES = ["corn", "soybeans", "wheat-srw", "wheat-hrw", "wheat-hrs",
+                   "wheat-sww", "wheat-unstated"]
 MIN_STATE_LOC = 2   # a state needs at least this many distinct locations to show
 
 STATE_NAMES = {
@@ -97,6 +142,17 @@ def load_cash_bids(path=None):
             continue
         city = (b.get("city") or "").strip()
         name = f"{city}, {state}" if city else (b.get("facility") or state)
+        # WHEAT IS SPLIT HERE, where the record is made, so nothing
+        # downstream can pool it again by accident. A row whose class the
+        # board did not state is counted and never mapped.
+        if cat == "wheat":
+            wc = wheat_class(b.get("commodity"))
+            if wc in ("wheat-srw", "wheat-hrw", "wheat-hrs"):
+                cat = wc
+            elif wc:
+                cat = "wheat-" + wc
+            else:
+                cat = "wheat-unstated"
         out.append({"commodity": cat, "state": state, "city": city,
                     "facility": b.get("facility", ""), "name": name,
                     "basis": round(basis, 4)})
@@ -104,7 +160,14 @@ def load_cash_bids(path=None):
 
 def build(records):
     commodities = {}
-    for c in COMMODITIES:
+    withheld = {}
+    for r in records:
+        # Durum and hard white are the only two left off entirely: neither is
+        # priced off any contract this map names, and between them they are a
+        # handful of rows. Everything else is published under its own label.
+        if r["commodity"] in ("wheat-durum", "wheat-hdw"):
+            withheld[r["commodity"]] = withheld.get(r["commodity"], 0) + 1
+    for c in MAP_COMMODITIES:
         recs = [r for r in records if r["commodity"] == c]
         # location-level average (dedupe repeated delivery rows at one place)
         loc = defaultdict(list); loc_state = {}
@@ -123,7 +186,7 @@ def build(records):
                          key=lambda x: x["basis"], reverse=True)
         commodities[c] = {"futures_ref": FUTURES_REF[c],
                           "states": states, "locations": loclist}
-    return commodities
+    return commodities, withheld
 
 def main():
     # resolve_bids_path() is the gate now: it refuses the slim browser copy
@@ -131,8 +194,8 @@ def main():
     # slim file straight through.
     src = resolve_bids_path()
     records = load_cash_bids(src)
-    commodities = build(records)
-    has_data = any(commodities[c]["states"] for c in COMMODITIES)
+    commodities, withheld = build(records)
+    has_data = any(commodities[c]["states"] for c in MAP_COMMODITIES)
     # AUDIT 2026-08-11: `updated` reflects the AGE OF THE BIDS, not the
     # build clock — rebuilding stale bids every 30 min used to relabel old
     # data as fresh. Falls back to build time only if bids carry no stamp.
@@ -144,15 +207,22 @@ def main():
         pass
     out = {"updated": _src_ts or datetime.now(timezone.utc).strftime("%Y-%m-%d"),
            "sample": (not has_data),
-           "commodities": commodities}
+           "commodities": commodities,
+           # Beside `commodities`, not inside it: every value in there is
+           # {futures_ref, states, locations} and a consumer that iterates
+           # the dict should not meet something else.
+           "withheld": withheld}
     os.makedirs(os.path.dirname(OUT_PATH) or ".", exist_ok=True)
     with open(OUT_PATH, "w") as f:
         json.dump(out, f, separators=(",", ":"))
-    total_states = sum(len(commodities[c]["states"]) for c in COMMODITIES)
+    total_states = sum(len(commodities[c]["states"]) for c in MAP_COMMODITIES)
     print(f"[basis-map] {len(records)} basis records -> {total_states} state rows")
-    for c in COMMODITIES:
+    for c in MAP_COMMODITIES:
         print(f"  {c}: {len(commodities[c]['states'])} states, "
               f"{len(commodities[c]['locations'])} locations")
+    # The rows that carry a basis and are deliberately not on the map.
+    for k, n in sorted(withheld.items()):
+        print(f"  withheld {k}: {n} records (priced off no contract this map names)")
     print(f"[basis-map] sample={out['sample']} -> wrote {OUT_PATH}")
 
 if __name__ == "__main__":
