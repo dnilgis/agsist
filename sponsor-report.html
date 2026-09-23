@@ -52,6 +52,34 @@
 .cp-status-txt{flex:1 1 280px;min-width:0}
 .cp-status-h{font-weight:800;font-size:1.08rem;line-height:1.25}
 .cp-status-p{color:var(--text-dim,#a9b3ae);font-size:.9rem;margin:.2rem 0 0;line-height:1.5}
+/* THE PANEL CARRIES ITS OWN TOKENS. It is appended to <body>, OUTSIDE .cp,
+   and .cp is where --acc and --ok are declared. Without these two lines
+   `background:var(--acc)` on the copy button resolves to nothing and the
+   button renders near-black on a near-black panel -- which is the mistake
+   the comment at the top of this stylesheet already records once, when an
+   earlier version invented its own token and shipped white-on-white.
+   Adding class="cp" instead would drag in max-width and padding and fight
+   the fixed overlay, so the tokens are repeated rather than inherited.
+   Every fallback below is the same colour .cp uses. */
+#cp-mailfb{--acc:var(--ad-orange,#e8743a);--acc-rgb:var(--ad-orange-rgb,232,116,58);
+  --ok:#4ade80;--ok-rgb:74,222,128;color:var(--text,#e8ece9)}
+#cp-mailfb[hidden]{display:none}
+#cp-mailfb{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;padding:1rem}
+#cp-mailfb *{box-sizing:border-box}
+.cp-mailfb-back{position:absolute;inset:0;background:rgba(0,0,0,.66)}
+.cp-mailfb-box{position:relative;max-width:640px;width:100%;max-height:88vh;overflow:auto;
+  background:var(--surface,#141918);border:1px solid var(--border,#2a3230);border-radius:14px;padding:1.4rem 1.3rem}
+.cp-mailfb-x{position:absolute;top:.5rem;right:.6rem;background:none;border:0;color:var(--text-muted,#7d8782);
+  font-size:1.6rem;line-height:1;cursor:pointer;min-height:44px;min-width:44px}
+.cp-mailfb-h{margin:.25rem 0 .5rem;font-size:1.15rem}
+.cp-mailfb-dl{display:grid;grid-template-columns:auto 1fr;gap:.25rem .7rem;margin:.9rem 0 .6rem;font-size:.85rem}
+.cp-mailfb-dl dt{color:var(--text-muted,#7d8782)}
+.cp-mailfb-dl dd{margin:0;overflow-wrap:anywhere;user-select:all}
+.cp-mailfb-body{width:100%;font:inherit;font-size:.85rem;line-height:1.5;
+  background:var(--bg,#0e1211);color:var(--text,#e8ece9);border:1px solid var(--border,#2a3230);
+  border-radius:10px;padding:.7rem}
+.cp-mailfb-acts{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.8rem}
+@media(max-width:520px){.cp-mailfb-acts .cp-btn{width:100%}}
 .cp-btn{display:inline-flex;align-items:center;justify-content:center;gap:.45rem;min-height:44px;padding:.65rem 1.15rem;
   border-radius:10px;background:var(--acc);color:#0d1117;text-decoration:none;border:0;cursor:pointer;
   font-family:var(--font-mono,'JetBrains Mono',monospace);font-size:.8rem;font-weight:800;letter-spacing:.05em;
@@ -450,14 +478,111 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
     var body = 'I approve the ad on my AGSIST campaign page with proof code ' + (s.code || '') + '.\n\n' +
       'Headline: ' + (f.headline || '') + '\nButton: ' + (f.cta_text || '') + ' -> ' + (f.cta_url || '') +
       (f.phone ? '\nPhone: ' + f.phone : '') + '\n\nIf the copy changes, this approval does not carry over.\n\n';
-    return 'mailto:' + encodeURIComponent(to) + '?subject=' + encodeURIComponent(subj) + '&body=' + encodeURIComponent(body);
+    /* The address goes in the path AS WRITTEN. encodeURIComponent() here
+       turned the @ into %40, which some handlers fill into To: verbatim. The
+       subject and body are still encoded -- they are query values and must
+       be. The plain contact link lower down this page has always written the
+       address unencoded; this makes the two agree. */
+    return 'mailto:' + to + '?subject=' + encodeURIComponent(subj) + '&body=' + encodeURIComponent(body);
   }
   function changesHref(d, s) {
     var to = d.approveTo || 'sig@farmers1st.com';
-    return 'mailto:' + encodeURIComponent(to) + '?subject=' +
+    return 'mailto:' + to + '?subject=' +
       encodeURIComponent('Changes to our AGSIST ad (proof ' + (s.code || '') + ')') +
       '&body=' + encodeURIComponent('Here is what we would like changed:\n\n');
   }
+
+  /* ─────────────────────── the approval fallback ──────────────────────
+     A mailto: opens nothing at all on a machine with no mail client, and
+     says nothing when it fails. This panel carries the identical message so
+     the sponsor can copy it and send it himself. It is opened BY the same
+     click that fires the mailto, so a working mail client and a missing one
+     both end somewhere useful. */
+  function mailParts(href) {
+    var q = href.indexOf('?');
+    var to = decodeURIComponent(href.slice('mailto:'.length, q < 0 ? href.length : q));
+    var p = new URLSearchParams(q < 0 ? '' : href.slice(q + 1));
+    return { to: to, subject: p.get('subject') || '', body: p.get('body') || '' };
+  }
+  function ensurePanel() {
+    var el = document.getElementById('cp-mailfb');
+    if (el) return el;
+    el = document.createElement('div');
+    el.id = 'cp-mailfb';
+    el.setAttribute('role', 'dialog');
+    el.setAttribute('aria-modal', 'true');
+    el.setAttribute('aria-label', 'Send this message');
+    el.hidden = true;
+    el.innerHTML =
+      '<div class="cp-mailfb-back"></div>' +
+      '<div class="cp-mailfb-box">' +
+        '<button class="cp-mailfb-x" type="button" aria-label="Close">&times;</button>' +
+        '<div class="cp-eyebrow">Your email program should have opened</div>' +
+        '<h3 class="cp-mailfb-h">If it did not, send this instead</h3>' +
+        '<p class="cp-note">Nothing on this page sends mail by itself. Copy the message below and send it from whatever you normally use \u2014 phone, webmail, anything. It counts the same.</p>' +
+        '<dl class="cp-mailfb-dl">' +
+          '<dt>To</dt><dd><span class="cp-mailfb-to"></span></dd>' +
+          '<dt>Subject</dt><dd><span class="cp-mailfb-subj"></span></dd>' +
+        '</dl>' +
+        '<textarea class="cp-mailfb-body" readonly rows="8"></textarea>' +
+        '<div class="cp-mailfb-acts">' +
+          '<button class="cp-btn cp-mailfb-copy" type="button">Copy the message</button>' +
+          '<a class="cp-btn cp-btn--ghost cp-mailfb-open" href="#">Try my email program again</a>' +
+        '</div>' +
+        '<p class="cp-note cp-mailfb-said" aria-live="polite"></p>' +
+      '</div>';
+    document.body.appendChild(el);
+    function close() { el.hidden = true; }
+    el.querySelector('.cp-mailfb-x').addEventListener('click', close);
+    el.querySelector('.cp-mailfb-back').addEventListener('click', close);
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') close(); });
+    el.querySelector('.cp-mailfb-copy').addEventListener('click', function () {
+      var said = el.querySelector('.cp-mailfb-said');
+      var txt = 'To: ' + el.querySelector('.cp-mailfb-to').textContent + '\n' +
+                'Subject: ' + el.querySelector('.cp-mailfb-subj').textContent + '\n\n' +
+                el.querySelector('.cp-mailfb-body').value;
+      /* navigator.clipboard is undefined on a page served over plain http and
+         can be refused even over https, so the textarea selection is the
+         fallback and it is the thing that actually works everywhere. */
+      var done = function (ok) {
+        said.textContent = ok ? 'Copied. Paste it into a new email to ' +
+          el.querySelector('.cp-mailfb-to').textContent + '.'
+          : 'Could not copy automatically \u2014 select the text above and copy it.';
+      };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(txt).then(function () { done(true); }, function () { done(false); });
+      } else {
+        try {
+          var ta = el.querySelector('.cp-mailfb-body');
+          ta.select(); ta.setSelectionRange(0, ta.value.length);
+          done(document.execCommand && document.execCommand('copy'));
+        } catch (e) { done(false); }
+      }
+    });
+    return el;
+  }
+  function openMailFallback(href) {
+    var m = mailParts(href), el = ensurePanel();
+    el.querySelector('.cp-mailfb-to').textContent = m.to;
+    el.querySelector('.cp-mailfb-subj').textContent = m.subject;
+    el.querySelector('.cp-mailfb-body').value = m.body;
+    el.querySelector('.cp-mailfb-open').setAttribute('href', href);
+    el.querySelector('.cp-mailfb-said').textContent = '';
+    el.hidden = false;
+  }
+  /* Delegated, so it covers both approve buttons and the change button
+     however many times the page re-renders. */
+  document.addEventListener('click', function (e) {
+    var a = e.target && e.target.closest && e.target.closest('a.cp-btn[href^="mailto:"]');
+    /* ONLY THE ACTION BUTTONS. The plain "sig@farmers1st.com" link further
+       down is a bare address with no subject and no body -- opening a panel
+       for it showed an empty subject and an empty message, which is worse
+       than doing nothing. An action button always carries a subject. */
+    if (!a || a.getAttribute('href').indexOf('?subject=') < 0) return;
+    /* The link is NOT prevented: a machine with a mail client still opens it.
+       The panel opens a moment later for the machine that did not. */
+    setTimeout(function () { openMailFallback(a.getAttribute('href')); }, 400);
+  });
 
   /* ───────────────────────────── hero ───────────────────────────── */
   function hero(d, s) {
