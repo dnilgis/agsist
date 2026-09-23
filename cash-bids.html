@@ -500,6 +500,11 @@ button,a,[role="button"],input,select{touch-action:manipulation}
 <a href="#main" class="skip">Skip to content</a>
 <noscript><div style="text-align:center;padding:2rem;font-family:sans-serif;color:#ccc;background:#111;margin:1rem">JavaScript is required to search for cash grain bids. Please enable JavaScript in your browser.</div></noscript>
 <div id="cb-toast" class="cb-toast" role="status" aria-live="polite"></div>
+<!-- ANNOUNCEMENTS. In the DOM from load, because a live region created and
+     written in the same task is not announced: the region was not in the
+     accessibility tree before the mutation, so the first message of every
+     search was silent. -->
+<div id="cb-live" aria-live="polite" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap"></div>
 <div id="site-header">
   <!-- Static crawlable header: loader.js replaceWith() swaps this for the live dropdown nav on JS;
        non-JS crawlers (Bing, AI) read these links; also a working fallback if the fetch fails. -->
@@ -604,7 +609,7 @@ button,a,[role="button"],input,select{touch-action:manipulation}
         <button id="cb-use-detect" style="display:none">Use detected ZIP</button>
       </div>
     </div>
-    <div id="cb-status" class="cb-status" style="display:none" aria-live="polite">
+    <div id="cb-status" class="cb-status" style="display:none">
       <div class="cb-status-loc">
         <span aria-hidden="true"><svg class="ic" aria-hidden="true"><use href="#i-map-pin"/></svg></span>
         <span id="cb-status-label">Showing bids near&#8230;</span>
@@ -733,6 +738,11 @@ button,a,[role="button"],input,select{touch-action:manipulation}
         </div>
       </div>
     </div>
+    <!-- SAID OUT LOUD, ABOVE THE RESULTS RATHER THAN INSTEAD OF THEM.
+         When the licensed feed fails, the elevators AGSIST reads itself are
+         still on the page, and the reader is entitled to know the board is
+         short rather than to be told nothing or told everything is fine. -->
+    <p id="cb-degraded" style="display:none;margin:0 0 .75rem;padding:.6rem .8rem;border:1px solid var(--gold,#d4a23f);border-radius:8px;font-size:.92rem;line-height:1.5;color:var(--text-dim,#8a948f)"></p>
     <div id="cb-results" role="region" aria-label="Cash bid results">
       <div class="cb-empty">
         <div class="cb-empty-icon" aria-hidden="true"><svg class="ic" aria-hidden="true"><use href="#i-map-pin"/></svg></div>
@@ -1358,12 +1368,39 @@ function tidyBranch(v){
 function mapsUrl(name,city,state){return'https://maps.apple.com/?q='+encodeURIComponent((name||'')+(city?' '+city:'')+(state?' '+state:''));}
 function isSpotDelivery(del){return!del||/(spot|cash|immediate)/i.test(del);}
 
+/* THE MONTH A PERSON CAN HAUL INTO, AS ONE SORTABLE STRING.
+   '0'+key  a month at or ahead of this one, ascending -- the sellable rows
+   '2'      no month this page will claim to know ("Fall 26", "2026-10/2026-11")
+   '9'+key  a month already gone, last
+   Three prefixes rather than a number so the comparator is a total order on
+   strings and can never be inconsistent. */
+function monthFloorKey(){
+  var n=new Date();
+  return n.getFullYear()+'-'+('0'+(n.getMonth()+1)).slice(-2);
+}
+function deliveryRank(b){
+  var k=delKey(b);
+  if(!k)return '2';
+  return (k>=monthFloorKey()?'0':'9')+k;
+}
+/* WAS: new Date(deliveryStart||deliveryMonth).
+   netRowsFrom sets deliveryStart to '' for every row read from an elevator's
+   own board, so this parsed the PRINTED LABEL. new Date("Jan 27") is the 27th
+   of January 2001, and new Date("Sep 26") is the 26th of September 2001, so
+   January 2027 sorted ahead of September 2026 and the nearest bid sorted last.
+   Measured 2026-09-22 on the live feed: 1,662 of 12,336 rows parsed to a
+   pre-2020 date, 1,668 more to NaN; 313 of 919 corn places showed the wrong
+   nearest price, median 12 cents a bushel. Heartland Co-op Cambridge posts
+   Sep 26 at $4.96 and Jan 27 at $5.06, and six of the twelve visible Worth the
+   Drive rows were Heartland branches priced at January 2027 under a footnote
+   promising the nearest month.
+   delKey() reads deliveryPeriod, which is on every row, and was already right.
+   It was never called from here. */
 function deliverySort(a,b){
-  var da=a.deliveryStart||a.deliveryMonth||'ZZZZ';
-  var db=b.deliveryStart||b.deliveryMonth||'ZZZZ';
-  var ta=new Date(da).getTime(),tb=new Date(db).getTime();
-  if(!isNaN(ta)&&!isNaN(tb))return ta-tb;
-  return da.localeCompare(db);
+  var ra=deliveryRank(a),rb=deliveryRank(b);
+  if(ra!==rb)return ra<rb?-1:1;
+  var la=String(a.deliveryMonth||''),lb=String(b.deliveryMonth||'');
+  return la<lb?-1:la>lb?1:0;
 }
 function getNearestBid(elev,comm){
   var bids=(elev.commodities[comm]||[]).filter(function(b){return b.cashPrice!=null;});
@@ -1464,8 +1501,7 @@ function syncDeliveryOptions(bids){
      dropping somebody's posted bid on our own judgement is a bigger sin than
      showing an odd date. What is withheld is the OFFER to filter to a month
      that has already gone, which nobody can haul into. */
-  var now=new Date();
-  var floorKey=now.getFullYear()+'-'+('0'+(now.getMonth()+1)).slice(-2);
+  var floorKey=monthFloorKey();
   var seen={},keys=[];
   (bids||[]).forEach(function(b){var k=delKey(b);if(k&&k>=floorKey&&!seen[k]){seen[k]=1;keys.push(k);}});
   keys.sort();
@@ -1677,7 +1713,7 @@ function renderWTD(){
     var dcls=delta>5?'pos':delta<-5?'neg':'flat';
     var dstr=refRow.elev.key===r.elev.key?'<span style="font-size:0.763rem;color:var(--text-muted)">reference</span>':(delta>=0?'+':'')+fmtMoney(delta);
     var cs=(r.elev.city||'')+(r.elev.city&&r.elev.state?', ':'')+(r.elev.state||''); /* same precedence bug fixed at renderBestBids 2026-07-20; this copy was missed */
-    var subTxt=cs+(r.delivery?(cs?' &middot; ':'')+escH(r.delivery):'');
+    var subTxt=escH(cs)+(r.delivery?(cs?' &middot; ':'')+escH(r.delivery):'');
     html+='<tr class="'+(i===0?'wtd-w':'')+'">';
     /* 1 2 3 4, not 1 2 3 4. -- the first three came from a medal list that no
        longer holds medals, and only the fourth onwards got a full stop. */
@@ -1738,7 +1774,7 @@ function openCompareModal(){
   var COMMS=['corn','soybeans','wheat','other'];
   var COMM_LABELS={corn:'<svg class="ic" aria-hidden="true"><use href="#i-sprout"/></svg> Corn',soybeans:'<svg class="ic" aria-hidden="true"><use href="#i-bean"/></svg> Soybeans',wheat:'<svg class="ic" aria-hidden="true"><use href="#i-wheat"/></svg> Wheat',other:'<svg class="ic" aria-hidden="true"><use href="#i-leaf"/></svg> Other Grains'};
   var html='<thead><tr><th>Row</th>';
-  elevs.forEach(function(e){html+='<th>'+escH(e.facility)+'<br><span style="font-size:0.755rem;color:var(--text-muted);font-weight:400">'+(e.city||'')+(e.state?', '+e.state:'')+'</span></th>';});
+  elevs.forEach(function(e){html+='<th>'+escH(e.facility)+'<br><span style="font-size:0.755rem;color:var(--text-muted);font-weight:400">'+escH((e.city||'')+(e.state?', '+e.state:''))+'</span></th>';});
   html+='</tr></thead><tbody>';
   html+='<tr><td class="compare-rl">Distance</td>';
   elevs.forEach(function(e){html+='<td>'+(e.distance!=null?e.distance.toFixed(0)+' mi':'&mdash;')+'</td>';});html+='</tr>';
@@ -2077,7 +2113,7 @@ function netPlacesWithin(index,coord,radiusMi,cap){
    where the reader is standing. */
 function netRowsFrom(shard,distanceMi){
   if(!shard||!Array.isArray(shard.bids))return [];
-  var rows=[];
+  var rows=[],nonUsd=0;
   shard.bids.forEach(function(b){
     if(!b)return;
     var cash=(typeof b.cash==='number'&&isFinite(b.cash))?b.cash:null;
@@ -2086,6 +2122,15 @@ function netRowsFrom(shard,distanceMi){
        basis on a board as "unknown" and sorted it below minus eighty cents. */
     var basis=(typeof b.basis==='number'&&isFinite(b.basis))?b.basis:null;
     if(cash===null&&basis===null)return;
+    /* A PRICE IN ANOTHER CURRENCY IS NOT A PRICE THIS PAGE CAN DRAW.
+       The feed declares it; this function did not read it, and the render is
+       '$'+price. Sixteen Ontario rows in Canadian dollars were reaching US ZIP
+       searches: at 48161 Monroe MI, default radius, ADM Maidstone showed as
+       BEST WHEAT at $8.85 against ADM Toledo at $7.13, and the banner offered
+       $2,019 of net gain that was entirely the exchange rate. Dropped rather
+       than converted: there is no rate on this page and inventing one is
+       worse than leaving the elevator out of a US ZIP search. */
+    if((b.currency||'USD')!=='USD'){nonUsd++;return;}
     rows.push({
       facility:b.operator||shard.operator||'Unknown',
       branch:b.branch||'',
@@ -2115,6 +2160,7 @@ function netRowsFrom(shard,distanceMi){
       via:'direct'
     });
   });
+  if(nonUsd)netLog('withheld',nonUsd,'row(s) not priced in USD at',shard.operator||shard.place||'(unnamed board)');
   return rows;
 }
 
@@ -2258,31 +2304,80 @@ function renderNetworkNote(){
     '\u201Cdirect from the elevator\u201D. ';
   p.style.display='';
 }
+/* HOW LONG THE LICENSED FEED GETS BEFORE THE PAGE GOES ON WITHOUT IT.
+   Longer than the network leg's 3.5s, because unlike the shards this is one
+   request to one worker and a slow answer is still worth having. What it is
+   NOT is unbounded, which is what it was. */
+var BARCHART_DEADLINE_MS=15000;
+function barchartHuman(err){
+  var msg=String(err);
+  return msg.indexOf('429')>=0?'Too many requests \u2014 wait a moment and try again.':
+         msg.indexOf('timeout')>=0?'Barchart did not answer in time.':
+         /HTTP 5/.test(msg)?'Barchart data service is temporarily unavailable. Try again shortly.':
+         msg.indexOf('Failed to fetch')>=0||msg.indexOf('NetworkError')>=0||msg.indexOf('TypeError')>=0||msg.indexOf('abort')>=0?'Couldn\u2019t reach the bid service \u2014 it may be busy or briefly down (it\u2019s usually not your signal). Tap Retry in a few seconds.':
+         'Could not load bids \u2014 please try again.';
+}
+/* THE TWO FEEDS ARE PEERS. Neither one failing may delete the other.
+   Until 2026-09-22 the licensed feed was the outer promise and the AGSIST
+   network was consumed inside its .then(), so one Barchart outage drew
+   "Unable to Load Bids" over sixty elevators whose shards had already
+   downloaded. callback's third argument is the warning to show ABOVE results
+   that did arrive, rather than instead of them. */
 function fetchBids(zip,radius,callback){
   var url=BASE_URL+'?zipCode='+encodeURIComponent(zip)+'&maxDistance='+(radius||50)+'&getAllBids=1';
   var net=fetchNetwork(zip,radius||50);
-  fetch(url).then(function(r){return r.ok?r.json():Promise.reject('HTTP '+r.status);}).then(function(data){var bids=flatten(data);bids=bids.filter(function(b){return b.cashPrice!==null||b.basis!==null;});
-    return net.then(function(n){
-      var merged=netMerge(bids,n.rows);
-      cbNetStats={places:n.places,rows:n.rows.length,duplicatesResolved:merged.duplicatesResolved,nationalPlaces:n.nationalPlaces};
-      netLog('result:',n.places+' places, '+n.rows.length+' rows, '+
-             merged.duplicatesResolved+' duplicate(s) resolved; Barchart contributed '+
-             bids.length+' rows; the page will draw '+merged.rows.length,
-             NET_ON?'':'(NETWORK IS SWITCHED OFF)');
-      renderNetStats();
-      callback(null,merged.rows);
-    });
-  }).catch(function(err){
-    var msg=String(err);
-    var human=msg.indexOf('429')>=0?'Too many requests \u2014 wait a moment and try again.':msg.indexOf('5')>=0&&/HTTP 5/.test(msg)?'Barchart data service is temporarily unavailable. Try again shortly.':msg.indexOf('Failed to fetch')>=0||msg.indexOf('NetworkError')>=0||msg.indexOf('TypeError')>=0?'Couldn\u2019t reach the bid service \u2014 it may be busy or briefly down (it\u2019s usually not your signal). Tap Retry in a few seconds.':'Could not load bids \u2014 please try again.';
-    console.warn('[AGSIST]',err);callback(new Error(human),[]);
+  var bcErr=null,ctl=null,killer=null;
+  try{if(typeof AbortController==='function')ctl=new AbortController();}catch(e){}
+  var live=fetch(url,ctl?{signal:ctl.signal}:undefined)
+    .then(function(r){return r.ok?r.json():Promise.reject('HTTP '+r.status);})
+    .then(function(data){return flatten(data).filter(function(b){return b.cashPrice!==null||b.basis!==null;});})
+    .catch(function(err){bcErr=bcErr||err||'error';return [];});
+  /* The deadline RESOLVES rather than rejects, and aborts the request where
+     AbortController exists, so a worker that never answers cannot hold the
+     page open. Without AbortController the fetch is simply left to finish
+     into nothing, which is still better than waiting for it. */
+  var capped=Promise.race([live,new Promise(function(res){
+    killer=setTimeout(function(){
+      bcErr=bcErr||'timeout';
+      if(ctl){try{ctl.abort();}catch(e){}}
+      res([]);
+    },BARCHART_DEADLINE_MS);
+  })]);
+  Promise.all([capped,net]).then(function(out){
+    if(killer){clearTimeout(killer);killer=null;}
+    var bids=out[0]||[],n=out[1]||{rows:[],places:0,nationalPlaces:null};
+    var merged=netMerge(bids,n.rows);
+    cbNetStats={places:n.places,rows:n.rows.length,duplicatesResolved:merged.duplicatesResolved,nationalPlaces:n.nationalPlaces};
+    netLog('result:',n.places+' places, '+n.rows.length+' rows, '+
+           merged.duplicatesResolved+' duplicate(s) resolved; Barchart contributed '+
+           bids.length+' rows; the page will draw '+merged.rows.length,
+           bcErr?('(BARCHART FAILED: '+bcErr+')'):'',
+           NET_ON?'':'(NETWORK IS SWITCHED OFF)');
+    if(bcErr)console.warn('[AGSIST]',bcErr);
+    if(!merged.rows.length){
+      cbNetStats={places:0,rows:0,duplicatesResolved:0,nationalPlaces:null};
+      callback(bcErr?new Error(barchartHuman(bcErr)):null,[]);
+      return;
+    }
+    renderNetStats();
+    callback(null,merged.rows,bcErr?'Barchart is not answering. These are the '+
+      n.places+' elevator'+(n.places===1?'':'s')+' AGSIST reads directly from their own boards.':null);
   });
+}
+
+function renderDegraded(msg){
+  var el=document.getElementById('cb-degraded');
+  if(!el)return;
+  if(!msg){el.style.display='none';el.textContent='';return;}
+  el.textContent=msg;
+  el.style.display='block';
 }
 
 var _annEl=null;
 function announce(txt){
   // v2 (panel): results/errors/empty states were silent to screen readers —
   // one persistent live region, in the DOM from load, announces every state.
+  if(!_annEl)_annEl=document.getElementById('cb-live');
   if(!_annEl){_annEl=document.createElement('div');_annEl.setAttribute('aria-live','polite');_annEl.style.cssText='position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)';document.body.appendChild(_annEl);}
   _annEl.textContent=txt;
 }
@@ -2292,16 +2387,37 @@ function doSearch(zip){
   zipInput.value=zip;zipInput.style.borderColor='';
   goBtn.disabled=true;goBtn.textContent='Searching\u2026';
   bestSec.style.display='none';internalLinks.style.display='none';
+  /* aria-busy, because the skeleton is four empty divs: a screen reader
+     navigating into the results region during a search found nothing at all
+     and no way to tell a slow search from a finished empty one. */
+  results.setAttribute('aria-busy','true');
   results.innerHTML='<div class="cb-skeleton"><div class="cb-skel"></div><div class="cb-skel"></div><div class="cb-skel"></div><div class="cb-skel"></div></div>';
   var radius=parseInt(radiusSel.value,10)||50;
   gaEvent('bids_search',{zip:zip,radius:radius});
   announce('Searching for bids near '+zip+'\u2026');
-  fetchBids(zip,radius,function(err,bids){
+  fetchBids(zip,radius,function(err,bids,warn){
     goBtn.disabled=false;
+    results.removeAttribute('aria-busy');
+    renderDegraded(null);
     if(err&&!bids.length){
       goBtn.textContent=hasSearched?'\u21BB Refresh':'Search';
-      results.innerHTML='<div class="cb-empty"><div class="cb-empty-icon" aria-hidden="true"><svg class="ic" aria-hidden="true"><use href="#i-triangle-alert"/></svg></div><h2>Unable to Load Bids</h2><p>'+escH(err.message)+'</p><p><button type="button" class="cb-go" style="min-height:44px;padding:.5rem 1.4rem" onclick="doSearch()">Retry</button></p></div>';announce('Error: unable to load bids. '+err.message);return;
+      /* THE HEADER CANNOT KEEP CLAIMING ELEVATORS THE PAGE IS NOT SHOWING.
+         This branch used to return before touching the status bar, so a
+         failed Refresh left “59 elevators · 59 read direct” sitting directly
+         above “Unable to Load Bids”, with every filter still enabled. */
+      statusBar.style.display='none';
+      toolbar.style.display='none';
+      cbNetStats={places:0,rows:0,duplicatesResolved:0,nationalPlaces:null};
+      renderNetStats();
+      results.innerHTML='<div class="cb-empty"><div class="cb-empty-icon" aria-hidden="true"><svg class="ic" aria-hidden="true"><use href="#i-triangle-alert"/></svg></div><h2>Unable to Load Bids</h2><p>'+escH(err.message)+'</p><p><button type="button" class="cb-go" id="cb-retry" style="min-height:44px;padding:.5rem 1.4rem">Retry</button></p></div>';
+      /* NOT an inline onclick. doSearch lives inside this file’s IIFE under
+         ‘use strict’ and is not on window, so onclick="doSearch()" threw
+         ReferenceError and the only way out of the error state did nothing. */
+      var rb=document.getElementById('cb-retry');
+      if(rb){rb.addEventListener('click',function(){doSearch();});rb.focus();}
+      announce('Error: unable to load bids. '+err.message);return;
     }
+    if(warn)renderDegraded(warn);
     hasSearched=true;
     lastFetchTime=new Date();
     setTimeout(function(){ announce((bids.length||0)+' elevator listings loaded. Results below.'); }, 400);
@@ -2408,7 +2524,9 @@ function doGeo(){
       if(zip){
         detectedLabel=label||('ZIP '+zip);
         showGeoDot();
-        geoTxt.innerHTML=(label||'ZIP '+zip);
+        /* textContent, not innerHTML: this string is built from a
+           third-party reverse-geocode response. */
+        geoTxt.textContent=(label||'ZIP '+zip);
         geoUseBtn.style.display='inline';
         geoUseBtn.textContent='Use '+zip;
         geoUseBtn.onclick=function(){zipInput.value=zip;gaEvent('geo_used');doSearch(zip);};
@@ -2459,6 +2577,10 @@ if(window.AGSIST_STATE&&window.AGSIST_STATE.lat&&window.AGSIST_STATE.zip){
 <script>
 (function(){
   var DATA=null,current='corn';
+  /* This block is its own IIFE in its own <script>, so the page's escH() is
+     not in scope. State and location names come from data/basis-map.json and
+     are interpolated into innerHTML below; they are escaped here. */
+  function escB(s){return s?String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'):''}
   function fmtB(n){var s=(n>=0?'+':'\u2212');return s+'$'+Math.abs(n).toFixed(2);}
   function color(b,min,max){var t=(max>min)?(b-min)/(max-min):0.5;var h=Math.round(t*130);return {bg:'hsl('+h+' 42% 18%)',bd:'hsl('+h+' 55% 38%)',tx:'hsl('+h+' 60% 70%)'};}
   function render(c){
@@ -2466,10 +2588,10 @@ if(window.AGSIST_STATE&&window.AGSIST_STATE.lat&&window.AGSIST_STATE.zip){
     if(!blk||!blk.states||!blk.states.length){grid.innerHTML='<div class="bm-err">No basis reported for '+c+' right now.</div>';document.getElementById('bm-board').innerHTML='';return;}
     var states=blk.states.slice().sort(function(a,b){return b.basis-a.basis;});
     var vals=states.map(function(s){return s.basis;}),min=Math.min.apply(null,vals),max=Math.max.apply(null,vals);
-    grid.innerHTML=states.map(function(s){var col=color(s.basis,min,max);return '<div class="bm-tile" style="background:'+col.bg+';border-color:'+col.bd+'"><div class="st">'+s.state+'</div><div class="bs" style="color:'+col.tx+'">'+fmtB(s.basis)+'</div><div class="nm">'+(s.name||'')+(s.n?(' \u00b7 '+s.n+' loc'):'')+'</div></div>';}).join('');
+    grid.innerHTML=states.map(function(s){var col=color(s.basis,min,max);return '<div class="bm-tile" style="background:'+col.bg+';border-color:'+col.bd+'"><div class="st">'+escB(s.state)+'</div><div class="bs" style="color:'+col.tx+'">'+fmtB(s.basis)+'</div><div class="nm">'+escB(s.name||'')+(s.n?(' \u00b7 '+s.n+' loc'):'')+'</div></div>';}).join('');
     document.getElementById('bm-meta').textContent='Basis vs '+(blk.futures_ref||'nearby futures')+'  \u00b7  '+states.length+' states  \u00b7  as of '+(DATA.updated||'');
     var locs=(blk.locations||[]).slice().sort(function(a,b){return b.basis-a.basis;}),strong=locs.slice(0,5),weak=locs.slice(-5).reverse();
-    function li(x){return '<div class="bm-li"><span>'+x.name+'</span><span class="b">'+fmtB(x.basis)+'</span></div>';}
+    function li(x){return '<div class="bm-li"><span>'+escB(x.name||'')+'</span><span class="b">'+fmtB(x.basis)+'</span></div>';}
     document.getElementById('bm-board').innerHTML='<div class="bm-col"><h4>Strongest basis</h4>'+(strong.map(li).join('')||'<div class="bm-err">&mdash;</div>')+'</div><div class="bm-col"><h4>Weakest basis</h4>'+(weak.map(li).join('')||'<div class="bm-err">&mdash;</div>')+'</div>';
   }
   var tg=document.getElementById('bm-toggle');
