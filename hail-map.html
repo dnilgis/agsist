@@ -85,6 +85,33 @@
     .hm-point-head h2{margin:0;font-size:1.05rem}
     .hm-point-acts{display:flex;gap:.4rem;flex-wrap:wrap}
     .hm-point-acts button{display:inline-flex;align-items:center;gap:.35rem;min-height:40px;background:none;border:1px solid var(--border,rgba(132,160,168,.25));border-radius:8px;color:var(--text,#e6ebe9);font-family:'JetBrains Mono',monospace;font-size:0.78rem;font-weight:700;padding:.45rem .7rem;cursor:pointer}
+    @media(prefers-reduced-motion:reduce){
+      .hm-live24::before,.hm-warnbtn.hot::before{animation:none}
+      *{scroll-behavior:auto}
+    }
+    #hm-point{scroll-margin-top:90px}
+    /* :focus-visible, not :focus -- the heading is focused programmatically
+       after every lookup, and a mouse user should not get a box drawn round
+       it. A keyboard user still does. */
+    #hm-point-title:focus{outline:none}
+    #hm-point-title:focus-visible{outline:2px solid var(--brand,#d4a23f);outline-offset:3px}
+    .hm-biasnote{max-width:70ch;margin:.9rem 0 0;font-size:.88rem;line-height:1.6;color:var(--text-dim,#8a948f);
+      border-left:2px solid var(--border,#2a3230);padding-left:.8rem}
+    .hm-point-asof{margin:0 0 .6rem;font-size:.84rem;line-height:1.5;color:var(--text-muted,#7d8782)}
+    .hm-lq{display:flex;flex-wrap:wrap;gap:.5rem 1.4rem;margin:.2rem 0 .8rem;font-size:.86rem}
+    .hm-lq-row{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap}
+    .hm-lq label,.hm-lq #hm-lq-rl{color:var(--text-muted,#7d8782);font-family:var(--font-mono,'JetBrains Mono',monospace);
+      font-size:.72rem;letter-spacing:.1em;text-transform:uppercase}
+    .hm-lq input[type=date]{font:inherit;background:var(--surface,#141918);color:var(--text,#e8ece9);
+      border:1px solid var(--border,#2a3230);border-radius:8px;padding:.35rem .5rem;min-height:44px}
+    .hm-lq-radius{display:inline-flex;gap:.35rem}
+    .hm-lq-radius button{font-family:var(--font-mono,'JetBrains Mono',monospace);font-size:.78rem;min-height:44px;
+      padding:.3rem .7rem;border-radius:999px;background:var(--surface,#141918);color:var(--text-dim,#8a948f);
+      border:1px solid var(--border,#2a3230);cursor:pointer}
+    .hm-lq-radius button.on{background:var(--brand,#d4a23f);color:#10201a;border-color:var(--brand,#d4a23f);font-weight:700}
+    .hm-lq-h{color:var(--text-muted,#7d8782);font-size:.78rem}
+    .hm-linkbtn2{background:none;border:0;padding:0;font:inherit;font-size:.78rem;color:var(--brand,#d4a23f);
+      text-decoration:underline;cursor:pointer;min-height:44px}
     .hm-verdict{margin:0 0 .7rem;padding:.6rem .75rem;border-radius:8px;font-size:.9rem;line-height:1.5;border:1px solid var(--border,rgba(132,160,168,.2))}
     .hm-verdict.hit{border-color:rgba(227,26,28,.45);background:rgba(227,26,28,.07)}
     .hm-verdict.quiet{color:var(--text-dim,#8a948f)}
@@ -260,7 +287,7 @@
   }]}</script>
 
   <script type="application/ld+json">
-  {"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Where does hail happen most in the US?", "acceptedAnswer": {"@type": "Answer", "text": "Hail is most frequent across the Great Plains. The corridor running from west Texas and the Oklahoma/Kansas panhandles north through Nebraska, eastern Colorado, and into Wyoming — often called \"hail alley\" — sees the most large-hail days in the country. The Front Range of Colorado and the southern Plains light up year after year on this map."}}, {"@type": "Question", "name": "What is \"hail alley\"?", "acceptedAnswer": {"@type": "Answer", "text": "\"Hail alley\" is the informal name for the high-frequency hail region centered on northeastern Colorado, southeastern Wyoming, and western Nebraska, where some areas average seven to nine or more hail days a year. The combination of altitude, strong updrafts, and a freezing level close to the ground produces frequent, often large hail."}}, {"@type": "Question", "name": "When is hail season?", "acceptedAnswer": {"@type": "Answer", "text": "Hail tracks the severe-thunderstorm season. Across most of the country the peak runs spring through mid-summer, generally April–July, with May and June the busiest in the central Plains. The southern Plains and Southeast can begin earlier in spring."}}, {"@type": "Question", "name": "Is this map every hailstorm that happened?", "acceptedAnswer": {"@type": "Answer", "text": "No. It shows reported hail — National Weather Service Local Storm Reports called in by spotters, law enforcement, and the public. Reporting is denser where more people and trained spotters are, so the map carries a population bias. The persistent geographic corridors, though, are physically real and line up with radar-based hail climatologies such as NSSL's MESH analyses."}}, {"@type": "Question", "name": "Did it hail at my address? How do I check?", "acceptedAnswer": {"@type": "Answer", "text": "Use the search box above the map: type your address, town, or ZIP (or tap the pin button to use your location) and the page pulls every National Weather Service hail report within 25 miles over the last five years — dates, reported stone sizes, and distances — with a printable report. Reports are town-level precision, so use them to confirm the day and the neighborhood; your own photos confirm the property."}}, {"@type": "Question", "name": "How big does hail have to be to cause damage?", "acceptedAnswer": {"@type": "Answer", "text": "Rules of thumb from insurance and agronomy experience: 1″ (quarter size) can damage asphalt shingles, siding, and tender crops; 1.5″ (ping-pong) is the common “damaging” threshold used on this page and dents vehicles and roofs reliably; 2″+ (hen egg and up) breaks windows, strips crops to stalks, and totals roofs. Damage also depends on wind, stone density, and duration — a long soft-hail event can shred a bean field that a brief hard-hail event leaves alone."}}, {"@type": "Question", "name": "Is there a hail forecast on this page?", "acceptedAnswer": {"@type": "Answer", "text": "No — this page is the record, not the forecast. It shows where hail was actually reported, which is what claims, history checks, and risk decisions need. For whether conditions favor severe weather in the next few days, use the NWS Storm Prediction Center outlooks; for whether the next few days are workable on your ground, the AGSIST spray advisory reads the local forecast for you."}}, {"@type": "Question", "name": "What's the largest hail ever recorded in the US?", "acceptedAnswer": {"@type": "Answer", "text": "The US record stone fell at Vivian, South Dakota on July 23, 2010 — 8.0″ in diameter, 18.62″ in circumference, just under 2 pounds. Grapefruit-class stones (4″+) show up somewhere on the Plains most years; this map's size legend tops out at baseball+ because that's already roof-totaling, crop-stripping hail."}}, {"@type": "Question", "name": "What time of day does hail usually fall?", "acceptedAnswer": {"@type": "Answer", "text": "Mostly mid-afternoon through evening — roughly 3–9 PM local — when daytime heating peaks and thunderstorm updrafts are strongest. Overnight hail happens, especially with organized storm complexes on the Plains, but if you're planning around exposure (equipment out, cattle moves, a roofing job), the afternoon is the window that matters."}}, {"@type": "Question", "name": "Does hail damage metal roofs?", "acceptedAnswer": {"@type": "Answer", "text": "Metal resists puncture far better than asphalt shingle, but it dents — 1″ stones can cosmetically dent softer metal panels, and 2″+ can dent nearly any residential metal roof. Many policies distinguish cosmetic from functional metal-roof damage, which is exactly why a dated report from this page plus your own photos beats memory in a claim conversation."}}, {"@type": "Question", "name": "What's the difference between hail, sleet, and graupel?", "acceptedAnswer": {"@type": "Answer", "text": "Hail is layered ice built by thunderstorm updrafts — warm-season, can be huge. Sleet is small frozen raindrops from winter storms — never large, never from thunderstorms. Graupel (\"soft hail\") is snow pellets coated in rime — soft, crushable, harmless. If it's summer, it's a thunderstorm, and it bounces hard off the driveway — it's hail, and it belongs on this map."}}, {"@type": "Question", "name": "How fast does hail fall?", "acceptedAnswer": {"@type": "Answer", "text": "Terminal velocity scales with size: penny hail falls around 20–25 mph, golf balls around 50 mph, baseballs near 75 mph, and softball-class stones can exceed 100 mph. That speed, more than the weight alone, is why 2″ hail breaks what 1″ hail only dents."}}, {"@type": "Question", "name": "How is hail damage to crops insured?", "acceptedAnswer": {"@type": "Answer", "text": "Hail is covered by crop-hail insurance, a named-peril product that's separate from federal Multi-Peril Crop Insurance (MPCI). Because hail risk is so geographically concentrated, growers on the high-frequency corridors often carry crop-hail to cover the gap. If your ground sits in a bright zone here, that's a conversation worth having with any crop-hail writer. Full disclosure: Farmers First Agri Service — the shop behind AGSIST — writes crop-hail in WI and MN. This mention is ours, it's disclosed, and it never counts against the sponsor slot: if an insurance sponsor takes this page, the category is exclusively theirs."}}, {"@type": "Question", "name": "How is this different from paid hail map subscriptions?", "acceptedAnswer": {"@type": "Answer", "text": "The paid services (roughly $999–$1,999 a year) bundle the same public NOAA radar data with sales tools for contractors: canvassing apps, purchased homeowner contact lists, territory management. If that’s your business, they may earn their price. If you need the hail record itself — swaths, 70 years of history, dated reports, alerts, a printable address report — all of that is free on this page, with every estimate labeled as an estimate. A full comparison table is above."}}, {"@type": "Question", "name": "Can I get free hail alerts for my address?", "acceptedAnswer": {"@type": "Answer", "text": "Yes — free, no account. Search or tap your spot on the map above, pick a 1-, 5-, 10-, or 25-mile radius, and save your email. Any morning radar-estimated hail (MESH) touched that radius the day before, you get one plain email with the band size and a link to the dated swath map. It’s an estimate, flagged as an estimate. Unsubscribe with one click."}}]}
+  {"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Where does hail happen most in the US?", "acceptedAnswer": {"@type": "Answer", "text": "Hail is most frequent across the Great Plains. The corridor running from west Texas and the Oklahoma/Kansas panhandles north through Nebraska, eastern Colorado, and into Wyoming — often called \"hail alley\" — sees the most large-hail days in the country. The Front Range of Colorado and the southern Plains light up year after year on this map."}}, {"@type": "Question", "name": "What is \"hail alley\"?", "acceptedAnswer": {"@type": "Answer", "text": "\"Hail alley\" is the informal name for the high-frequency hail region centered on northeastern Colorado, southeastern Wyoming, and western Nebraska, where some areas average seven to nine or more hail days a year. The combination of altitude, strong updrafts, and a freezing level close to the ground produces frequent, often large hail."}}, {"@type": "Question", "name": "When is hail season?", "acceptedAnswer": {"@type": "Answer", "text": "Hail tracks the severe-thunderstorm season. Across most of the country the peak runs spring through mid-summer, generally April–July, with May and June the busiest in the central Plains. The southern Plains and Southeast can begin earlier in spring."}}, {"@type": "Question", "name": "Is this map every hailstorm that happened?", "acceptedAnswer": {"@type": "Answer", "text": "No. It shows reported hail — National Weather Service Local Storm Reports called in by spotters, law enforcement, and the public. Reporting is denser where more people and trained spotters are, so the map carries a population bias. The persistent geographic corridors, though, are physically real and line up with radar-based hail climatologies such as NSSL's MESH analyses."}}, {"@type": "Question", "name": "Did it hail at my address? How do I check?", "acceptedAnswer": {"@type": "Answer", "text": "Use the search box above the map: type your address, town, or ZIP (or tap the pin button to use your location) and the page pulls every National Weather Service hail report within 25 miles over the last five years — dates, reported stone sizes, and distances — with a printable report. Reports are town-level precision, so use them to confirm the day and the neighborhood; your own photos confirm the property."}}, {"@type": "Question", "name": "How big does hail have to be to cause damage?", "acceptedAnswer": {"@type": "Answer", "text": "Rules of thumb from insurance and agronomy experience: 1″ (quarter size) can damage asphalt shingles, siding, and tender crops; 1.5″ (ping-pong) is the common “damaging” threshold used on this page and dents vehicles and roofs reliably; 2″+ (hen egg and up) breaks windows, strips crops to stalks, and totals roofs. Damage also depends on wind, stone density, and duration — a long soft-hail event can shred a bean field that a brief hard-hail event leaves alone."}}, {"@type": "Question", "name": "Is there a hail forecast on this page?", "acceptedAnswer": {"@type": "Answer", "text": "No — this page is the record, not the forecast. It shows where hail was actually reported, which is what claims, history checks, and risk decisions need. For whether conditions favor severe weather in the next few days, use the NWS Storm Prediction Center outlooks; for whether the next few days are workable on your ground, the AGSIST spray advisory reads the local forecast for you."}}, {"@type": "Question", "name": "What's the largest hail ever recorded in the US?", "acceptedAnswer": {"@type": "Answer", "text": "The US record stone fell at Vivian, South Dakota on July 23, 2010 — 8.0″ in diameter, 18.62″ in circumference, just under 2 pounds. Grapefruit-class stones (4″+) show up somewhere on the Plains most years; this map's size legend tops out at baseball+ because that's already roof-totaling, crop-stripping hail."}}, {"@type": "Question", "name": "What time of day does hail usually fall?", "acceptedAnswer": {"@type": "Answer", "text": "Mostly mid-afternoon through evening — roughly 3–9 PM local — when daytime heating peaks and thunderstorm updrafts are strongest. Overnight hail happens, especially with organized storm complexes on the Plains, but if you're planning around exposure (equipment out, cattle moves, a roofing job), the afternoon is the window that matters."}}, {"@type": "Question", "name": "Does hail damage metal roofs?", "acceptedAnswer": {"@type": "Answer", "text": "Metal resists puncture far better than asphalt shingle, but it dents — 1″ stones can cosmetically dent softer metal panels, and 2″+ can dent nearly any residential metal roof. Many policies distinguish cosmetic from functional metal-roof damage, which is exactly why a dated report from this page plus your own photos beats memory in a claim conversation."}}, {"@type": "Question", "name": "What's the difference between hail, sleet, and graupel?", "acceptedAnswer": {"@type": "Answer", "text": "Hail is layered ice built by thunderstorm updrafts — warm-season, can be huge. Sleet is small frozen raindrops from winter storms — never large, never from thunderstorms. Graupel (\"soft hail\") is snow pellets coated in rime — soft, crushable, harmless. If it's summer, it's a thunderstorm, and it bounces hard off the driveway — it's hail, and it belongs on this map."}}, {"@type": "Question", "name": "How fast does hail fall?", "acceptedAnswer": {"@type": "Answer", "text": "Terminal velocity scales with size: penny hail falls around 20–25 mph, golf balls around 50 mph, baseballs near 75 mph, and softball-class stones can exceed 100 mph. That speed, more than the weight alone, is why 2″ hail breaks what 1″ hail only dents."}}, {"@type": "Question", "name": "How is hail damage to crops insured?", "acceptedAnswer": {"@type": "Answer", "text": "Hail is covered by crop-hail insurance, a named-peril product that's separate from federal Multi-Peril Crop Insurance (MPCI). Because hail risk is so geographically concentrated, growers on the high-frequency corridors often carry crop-hail to cover the gap. If your ground sits in a bright zone here, that's a conversation worth having with any crop-hail writer. Full disclosure: Farmers First Agri Service — the shop behind AGSIST — writes crop-hail in WI and MN. This mention is ours, it's disclosed, and it never counts against the sponsor slot: if an insurance sponsor takes this page, the category is exclusively theirs."}}, {"@type": "Question", "name": "How is this different from paid hail map subscriptions?", "acceptedAnswer": {"@type": "Answer", "text": "The paid services (roughly $999–$1,999 a year) bundle the same public NOAA radar data with sales tools for contractors: canvassing apps, purchased homeowner contact lists, territory management. If that’s your business, they may earn their price. If you need the hail record itself — swaths, The long record (1955\u20132020), dated reports, alerts, a printable address report — all of that is free on this page, with every estimate labeled as an estimate. A full comparison table is above."}}, {"@type": "Question", "name": "Can I get free hail alerts for my address?", "acceptedAnswer": {"@type": "Answer", "text": "Yes — free, no account. Search or tap your spot on the map above, pick a 1-, 5-, 10-, or 25-mile radius, and save your email. Any morning radar-estimated hail (MESH) touched that radius the day before, you get one plain email with the band size and a link to the dated swath map. It’s an estimate, flagged as an estimate. Unsubscribe with one click."}}]}
   </script>
 </head>
 <body>
@@ -316,7 +343,7 @@
 
       <div class="hm-meta">
         <span><span class="hm-count" id="hm-count">&hellip;</span> hail reports <span id="hm-scope"></span></span>
-        <span class="hm-legend" id="hm-legend-freq"><span>Less</span><span class="hm-legend-bar" aria-hidden="true"></span><span>More frequent</span></span>
+        <span class="hm-legend" id="hm-legend-freq"><span>Fewer reports</span><span class="hm-legend-bar" aria-hidden="true"></span><span>More reports</span></span>
         <span class="hm-legend hm-legend-mesh" id="hm-legend-mesh" hidden>
           <span class="hm-dot" style="background:#7cd2ff"></span>&ge;0.75&Prime; est.
           <span class="hm-dot" style="background:#fed976"></span>&ge;1&Prime;
@@ -333,7 +360,7 @@
 
       <div id="hm-banner" class="hm-banner" role="status" hidden></div>
 
-      <section class="hm-point" id="hm-point" hidden aria-live="polite">
+      <section class="hm-point" id="hm-point" hidden>
         <div class="hm-point-head">
           <h2 id="hm-point-title">Hail history at this spot</h2>
           <div class="hm-point-acts">
@@ -342,6 +369,23 @@
             <button type="button" id="hm-point-link"><svg class="ic-sp" aria-hidden="true"><use href="#sp-link"/></svg> Copy link</button>
           </div>
         </div>
+        <div class="hm-lq" role="group" aria-label="Narrow this report">
+          <div class="hm-lq-row">
+            <label for="hm-lq-date">Date of loss</label>
+            <input type="date" id="hm-lq-date" aria-describedby="hm-lq-date-h">
+            <button type="button" id="hm-lq-clear" class="hm-linkbtn2" hidden>clear</button>
+            <span class="hm-lq-h" id="hm-lq-date-h">one day, plus the radar swath for it</span>
+          </div>
+          <div class="hm-lq-row">
+            <span id="hm-lq-rl">Within</span>
+            <span class="hm-lq-radius" role="group" aria-labelledby="hm-lq-rl">
+              <button type="button" data-lr="5">5 mi</button>
+              <button type="button" data-lr="10">10 mi</button>
+              <button type="button" data-lr="25">25 mi</button>
+            </span>
+          </div>
+        </div>
+        <p class="hm-point-asof" id="hm-point-asof" hidden></p>
         <div id="hm-verdict" class="hm-verdict" hidden role="status"></div>
           <div class="hm-point-stats" id="hm-point-stats"></div>
         <div class="hm-longterm" id="hm-longterm" hidden></div>
@@ -357,7 +401,7 @@
       <div class="hm-alerts hm-alerts--bar" id="hm-alerts">
           <div class="hm-alerts-h">Hail alerts for this spot <span class="hm-alerts-soon">free</span></div>
           <p class="hm-alerts-p">Search or tap your spot, pick a radius, drop your email — any morning radar-estimated hail touches it, one plain email with the dated map. An estimate, flagged as an estimate. Your email and pin, never sold. Free.</p>
-          <div class="hm-alerts-radius" role="radiogroup" aria-label="Alert radius">
+          <div class="hm-alerts-radius" role="group" aria-label="Alert radius">
             <span class="hm-alerts-radius-l">Radius</span>
             <button type="button" class="hm-rchip" data-r="1" aria-pressed="false">1 mi</button>
             <button type="button" class="hm-rchip" data-r="5" aria-pressed="true">5 mi</button>
@@ -375,6 +419,8 @@
 
 
       
+
+      <p class="hm-biasnote" id="hm-biasnote">Colour is <strong>report density</strong>, not hail risk. A Local Storm Report exists because somebody called it in, so cities glow: of the ten densest cells on this map, nine are metro areas. Counted by hail <em>days</em> instead, the busiest ground in the country is eastern Colorado, western Nebraska and western South Dakota \u2014 the &ldquo;hail alley&rdquo; described in the questions below. <strong>For your own place, use the lookup above</strong> \u2014 it counts reports near a point and checks the radar, neither of which cares how many neighbours you have.</p>
 
       <p class="hm-about">Five years of National Weather Service hail reports on one map. Step through the years or hit play, and watch the same hail corridors light up season after season &mdash; the High Plains, the Front Range, the southern Plains. Risk has a geography. This is it. Crops, roofs, equipment, whole towns &mdash; if you’re checking hail, the record is here — and when a storm is running, the live warning layer below shows it as the Weather Service issues it. No charge, no login.</p>
 
@@ -427,7 +473,8 @@
       <thead><tr><th></th><th>Paid services</th><th>AGSIST (this page)</th></tr></thead>
       <tbody>
         <tr><td>Radar hail swaths</td><td>Yes</td><td>Yes — same public NOAA MRMS data, estimates labeled as estimates</td></tr>
-        <tr><td>Historical depth</td><td>Typically since 2011</td><td>Since 1955 (NCEI archive) + 5-yr dated report record</td></tr>
+        <tr><td>Radar swath archive</td><td>Typically since 2011</td><td>Rolling archive of recent storm days \u2014 shallower, and said so</td></tr>
+        <tr><td>Ground-report archive</td><td>Varies</td><td>NCEI 1955\u20132020, plus a dated report record 2022\u20132026 (2021 is in neither)</td></tr>
         <tr><td>Same-day awareness</td><td>Live updates</td><td>Rolling last-24h layer, refreshed through the day, marked in progress</td></tr>
         <tr><td>Hail alerts</td><td>Subscription</td><td>Free — pin + radius, one email per storm day, none on quiet days</td></tr>
         <tr><td>Address hail report</td><td>Branded PDF</td><td>Printable, sourced, free</td></tr>
@@ -465,7 +512,7 @@
           <p>Terminal velocity scales with size: penny hail falls around <strong>20&ndash;25 mph</strong>, golf balls around <strong>50 mph</strong>, baseballs near <strong>75 mph</strong>, and softball-class stones can exceed <strong>100 mph</strong>. That speed, more than the weight alone, is why 2&Prime; hail breaks what 1&Prime; hail only dents.</p></details>
         <details><summary>How is hail damage to crops insured?</summary>
           <p>Hail is covered by <strong>crop-hail insurance</strong>, a named-peril product that's separate from federal Multi-Peril Crop Insurance (MPCI). Because hail risk is so geographically concentrated, growers on the high-frequency corridors often carry crop-hail to cover the gap. If your ground sits in a bright zone here, that's a conversation worth having with any crop-hail writer. Full disclosure: <a href="https://farmers1st.com/" target="_blank" rel="noopener">Farmers First Agri Service</a> — the shop behind AGSIST — writes crop-hail in WI and MN. This mention is ours, it's disclosed, and it never counts against the sponsor slot: if an insurance sponsor takes this page, the category is exclusively theirs.</p></details>
-      <details><summary>How is this different from paid hail map subscriptions?</summary><p>The paid services (roughly $999&ndash;$1,999 a year) bundle the same public NOAA radar data with sales tools for contractors: canvassing apps, purchased homeowner contact lists, territory management. If that&rsquo;s your business, they may earn their price. If you need the hail record itself &mdash; swaths, 70 years of history, dated reports, alerts, a printable address report &mdash; all of that is free on this page, with every estimate labeled as an estimate. A full comparison table is above.</p></details>
+      <details><summary>How is this different from paid hail map subscriptions?</summary><p>The paid services (roughly $999&ndash;$1,999 a year) bundle the same public NOAA radar data with sales tools for contractors: canvassing apps, purchased homeowner contact lists, territory management. If that&rsquo;s your business, they may earn their price. If you need the hail record itself &mdash; swaths, The long record (1955\u20132020), dated reports, alerts, a printable address report &mdash; all of that is free on this page, with every estimate labeled as an estimate. A full comparison table is above.</p></details>
     <details><summary>Can I get free hail alerts for my address?</summary><p>Yes &mdash; free, no account. Search or tap your spot on the map above, pick a 1-, 5-, 10-, or 25-mile radius, and save your email. Any morning radar-estimated hail (MESH) touched that radius the day before, you get one plain email with the band size and a link to the dated swath map. It&rsquo;s an estimate, flagged as an estimate. Unsubscribe with one click.</p></details>
       </section>
     </div>
@@ -577,7 +624,14 @@
 
       fetch(DATA+'mesh/index.json', {cache:'no-cache'})
         .then(function(r){ return r.ok ? r.json() : null; })
-        .then(function(ix){ if(ix && ix.dates && ix.dates.length){ meshIdx=ix; if(manifest) buildControls(); } wireLive24(); })
+        .then(function(ix){
+          if(ix && ix.dates && ix.dates.length){ meshIdx=ix; if(manifest) buildControls(); }
+          wireLive24();
+          /* If a lookup already ran -- a deep link beats this fetch more often
+             than not -- it was answered without the radar check. Answer it
+             again now that the index is here. */
+          if(lastLookup) wireSwathCheck();
+        })
         .catch(function(){});
 
       fetch(DATA+'manifest.json', {cache:'no-cache'})
@@ -635,7 +689,7 @@
           }
           var srcline='<div class="hm-longterm-src">'+nceiIdx.source+'. Ends '+y1+'; the live record above starts '+liveStart+'.'+gapNote+' The two are never mixed. Older events can carry town-level location precision.</div>';
           if(!evs.length){
-            box.innerHTML=head+'<div class="hm-longterm-big">No archived hail events within 10 miles of this point \u2014 genuinely quiet ground, as far as '+span+' years of records can say.</div>'+srcline;
+            box.innerHTML=head+'<div class="hm-longterm-big">No archived hail events within 10 miles of this point \u2014 thin evidence, not a quiet sky: before the mid-1990s this archive is sparse and county-keyed, so an empty result says more about reporting than about hail, as far as '+span+' years of records can say.</div>'+srcline;
             box.hidden=false; return;
           }
           var maxE=evs[0]; evs.forEach(function(e){ if(e[1]>maxE[1]) maxE=e; });
@@ -690,6 +744,7 @@
         }, function(){ banner('Couldn\u2019t get your location &mdash; search by town or ZIP instead.'); });
       });
     }
+    var focusAnswer=true;   /* false while a control re-runs the same lookup */
     function runLookup(lat,lon,label){
       ga('hm_lookup',{});
       if(pin) map.removeLayer(pin);
@@ -734,12 +789,18 @@
           return got;
         });
     }
+    /* THE LOOKUP RADIUS. A hail swath is 2-10 miles wide, so 25 miles is
+       four storms away; it was hard-coded in the filter, the tile label and
+       the print report. 10 is the default because it is the smallest radius
+       that still catches the town-level imprecision of an LSR. */
+    var lookupMi = 10;
+    var lookupDay = '';
     function renderLookupStatic(evFiles,lat,lon,label){
       var ev=[];
       evFiles.forEach(function(f){
         (f.ev||[]).forEach(function(e){
           var mi=haversineMi(lat,lon,e[0],e[1]);
-          if(mi>25) return;
+          if(mi>lookupMi) return;
           ev.push({date:f.year+'-'+String(e[3]).replace(/\//g,'-'), mi:mi, mag:(e[2]!=null?+e[2]:null), place:''});
         });
       });
@@ -764,9 +825,15 @@
       ev.sort(function(a,b){ return a.date<b.date?1:-1; });
       paintLookup(ev,lat,lon,label);
     }
-    function paintLookup(ev,lat,lon,label){
+    function paintLookup(evAll,lat,lon,label){
       var st=document.getElementById('hm-point-stats'), tb=document.getElementById('hm-point-table'),
           ttl=document.getElementById('hm-point-title');
+      /* A DATE OF LOSS. The adjuster's question is "was there hail here on
+         the 14th", not "in the last five years". When a day is set the
+         panel answers for that day; the full list stays in lastLookup so
+         the CSV, the print report and the radar check still see everything. */
+      var ev = lookupDay ? evAll.filter(function(e){ return e.date===lookupDay; }) : evAll;
+      var dayMode = !!lookupDay;
       var days={}; ev.forEach(function(e){ if(e.date) days[e.date]=1; });
       var nDays=Object.keys(days).length;
       var maxEv=null, nearEv=null;
@@ -776,9 +843,18 @@
       });
       var maxMag=maxEv?maxEv.mag:0;
       var newest=ev.length?ev[0]:null;
-      if(ttl) ttl.textContent='Hail history \u2014 '+(label||('tapped spot \u00b7 '+lat.toFixed(2)+'\u00b0, '+lon.toFixed(2)+'\u00b0'));
-      if(st) st.innerHTML=
-        '<div class="hm-point-stat"><div class="v">'+ev.length+'</div><div class="l">reports \u00b7 25 mi \u00b7 5 yrs</div></div>'+
+      if(ttl) ttl.textContent=(dayMode?'Hail on '+fmtDate(lookupDay)+' \u2014 ':'Hail history \u2014 ')+
+        (label||('tapped spot \u00b7 '+lat.toFixed(4)+'\u00b0, '+lon.toFixed(4)+'\u00b0'));
+      if(st && dayMode){
+        /* One day. A count of hail days and a per-year rate are meaningless
+           here, so they are not printed rather than printed as 1 and 0.2. */
+        st.innerHTML=
+          '<div class="hm-point-stat"><div class="v">'+ev.length+'</div><div class="l">reports \u00b7 '+lookupMi+' mi \u00b7 '+esc(fmtDate(lookupDay))+'</div></div>'+
+          '<div class="hm-point-stat"><div class="v">'+(maxMag?maxMag.toFixed(2)+'\u2033':'\u2014')+'</div><div class="l">largest'+(maxEv?' \u00b7 '+Math.round(maxEv.mi)+' mi away':' reported')+'</div></div>'+
+          '<div class="hm-point-stat"><div class="v">'+(nearEv?nearEv.mi.toFixed(0)+' mi':'\u2014')+'</div><div class="l">nearest report that day</div></div>';
+      }
+      else if(st) st.innerHTML=
+        '<div class="hm-point-stat"><div class="v">'+ev.length+'</div><div class="l">reports \u00b7 '+lookupMi+' mi \u00b7 '+(manifest&&manifest.years?manifest.years.length:5)+' yrs</div></div>'+
         '<div class="hm-point-stat"><div class="v">'+nDays+'</div><div class="l">hail days ('+(nDays/yrSpan()).toFixed(1)+'/yr)</div></div>'+
         '<div class="hm-point-stat"><div class="v">'+(maxMag?maxMag.toFixed(2)+'\u2033':'\u2014')+'</div><div class="l">largest'+(maxEv?' \u00b7 '+esc(fmtDate(maxEv.date))+' \u00b7 '+Math.round(maxEv.mi)+' mi away':' reported')+'</div></div>'+
         '<div class="hm-point-stat"><div class="v">'+(newest?esc(fmtDate(newest.date)):'\u2014')+'</div><div class="l">most recent'+(newest&&newest.mag!=null?' \u00b7 '+newest.mag.toFixed(2)+'\u2033':'')+(newest?' \u00b7 '+Math.round(newest.mi)+' mi away':'')+'</div></div>'+
@@ -803,7 +879,29 @@
             (ev.length>40?'<tbody><tr><td colspan="4" class="hm-cty-empty">'+(ev.length-40)+' older reports not shown \u2014 print the report for the full record.</td></tr></tbody>':'');
         }
       }
-      lastLookup={lat:lat,lon:lon,label:label,ev:ev,nDays:nDays,maxMag:maxMag}; renderLongTerm(lat,lon);
+      /* ev is what the panel shows -- the chosen day when there is one, so
+         the CSV and the print report describe the same thing the reader is
+         looking at. evAll keeps the unfiltered set beside it. */
+      lastLookup={lat:lat,lon:lon,label:label,ev:ev,evAll:evAll,day:lookupDay,nDays:nDays,maxMag:maxMag};
+      wireLookupQuery();
+      /* WHERE THE GROUND RECORD STOPS. These come from a monthly rebuild, so
+         there is always a tail of days they cannot contain -- and the panel
+         used to present its "most recent" as though it were current. */
+      if(focusAnswer && ttl){
+        try{ ttl.setAttribute('tabindex','-1'); setTimeout(function(){ ttl.focus({preventScroll:false}); },60); }catch(e){}
+      }
+      focusAnswer=true;
+      var asOfEl=document.getElementById('hm-point-asof');
+      if(asOfEl){
+        var gen=(manifest && manifest.generated) ? String(manifest.generated).slice(0,10) : '';
+        if(gen){
+          var behind=Math.round((Date.now()-Date.parse(gen+'T12:00:00Z'))/86400000);
+          asOfEl.innerHTML='NWS ground reports on file through <strong>'+esc(fmtDate(gen))+'</strong>'+
+            (behind>2 ? ' \u2014 the '+behind+' days since are not in these numbers yet. For a storm in that window use the radar check below.' : '.');
+          asOfEl.hidden=false;
+        }
+      }
+      renderLongTerm(lat,lon);
       wirePointActs();
       wireSwathCheck();
       wireAlerts();
@@ -883,37 +981,145 @@
       v.hidden=true;
       if(!meshIdx || !meshIdx.dates || !meshIdx.dates.length) return;
       var cutoff=new Date(Date.now()-30*86400000).toISOString().slice(0,10);
-      var recent=meshIdx.dates.filter(function(d){ return d>=cutoff; });
+      var recent=verdictDates();
       var myLat=la, myLon=lo;
+      /* WHAT THE ARCHIVE ACTUALLY COVERS. MESH days are vectorised the next
+         morning, so today is never on file and a missed run means yesterday
+         is not either. Without this the page answered "no hail in the last
+         30 days" about days it had never seen. */
+      var lastDay = meshIdx.dates[meshIdx.dates.length-1] || '';
+      var today   = new Date().toISOString().slice(0,10);
+      var yest    = new Date(Date.now()-86400000).toISOString().slice(0,10);
+      var coversYesterday = lastDay >= yest;
       Promise.all(recent.map(function(d){
         if(meshCache[d]) return Promise.resolve({d:d,fc:meshCache[d]});
         return fetch(DATA+'mesh/'+d+'.json').then(function(r){ return r.ok?r.json():null; })
           .then(function(fc){ if(fc) meshCache[d]=fc; return {d:d,fc:fc}; })
           .catch(function(){ return {d:d,fc:null}; });
       })).then(function(arr){
+        return (live24P||Promise.resolve(null)).catch(function(){ return null; }).then(function(){ return arr; });
+      }).then(function(arr){
         if(!lastLookup || lastLookup.lat!==myLat) return;   // user moved on
-        var hits=[];
-        arr.forEach(function(x){ if(!x.fc) return; var b=maxBandAt(myLat,myLon,x.fc); if(b!=null) hits.push({d:x.d,band:b}); });
+        var hits=[], failed=0;
+        arr.forEach(function(x){
+          if(!x.fc){ failed++; return; }
+          var b=maxBandAt(myLat,myLon,x.fc); if(b!=null) hits.push({d:x.d,band:b});
+        });
+        var checked = recent.length - failed;
         var liveHit=null;
         if(live24 && live24.features){ var lb=maxBandAt(myLat,myLon,live24); if(lb!=null) liveHit={band:lb}; }
         hits.sort(function(a,b){ return a.d<b.d?1:-1; });
+        /* THE CELL, NOT THE POINT. MESH is a radar algorithm on a ~1 km grid,
+           as this page's own method section says. "At this exact point" was a
+           site-specific claim the data cannot support, and an adjuster reads
+           it as one. */
+        var WHERE = 'in the ~1 km radar cell covering this point';
+        var BIAS  = ' Radar estimate, not a ground measurement \u2014 MRMS MESH typically runs <strong>larger</strong> than stones measured on the ground.';
         if(liveHit){
           v.className='hm-verdict hit';
-          v.innerHTML='<strong>Radar has estimated '+sizeWord(liveHit.band)+' hail at this exact spot in the LAST 24 HOURS.</strong> An estimate, not a measurement \u2014 bands can still grow. '+(hits.length?'Also hit on '+esc(fmtDate(hits[0].d))+'.':'');
+          v.innerHTML='<strong>Radar has estimated '+sizeWord(liveHit.band)+' hail '+WHERE+' in the LAST 24 HOURS.</strong>'+BIAS;
           v.hidden=false;
         } else if(hits.length){
           var h=hits[0];
           v.className='hm-verdict hit';
-          v.innerHTML='<strong>Yes \u2014 radar estimated '+sizeWord(h.band)+' hail at this exact spot on '+esc(fmtDate(h.d))+'.</strong> <a href="/hail-map?swath='+h.d+'&lat='+myLat.toFixed(4)+'&lon='+myLon.toFixed(4)+'">See that day\u2019s swath \u2192</a>'+(hits.length>1?' ('+(hits.length-1)+' more day'+(hits.length>2?'s':'')+' in the last 30 \u2014 run the full check below.)':'')+' Radar estimate, not a ground measurement.';
+          v.innerHTML='<strong>Yes \u2014 radar estimated '+sizeWord(h.band)+' hail '+WHERE+' on '+esc(fmtDate(h.d))+'.</strong> <a href="/hail-map?swath='+h.d+'&lat='+myLat.toFixed(4)+'&lon='+myLon.toFixed(4)+'">See that day\u2019s swath \u2192</a>'+BIAS;
+          v.hidden=false;
+        } else if(lookupDay && !recent.length){
+          /* The user named a date and the radar archive has no such day --
+             either it is outside the archive or that day's run never
+             produced one. Saying "no hail" would answer a question that was
+             never asked of the data. */
+          v.className='hm-verdict';
+          v.innerHTML='<strong>'+esc(fmtDate(lookupDay))+' is not in the radar-swath archive.</strong> '+
+            'That day was either outside the archive or never processed, so the radar check cannot speak to it. '+
+            'The NWS ground reports for that day, if any, are listed below.';
+          v.hidden=false;
+        } else if(!checked){
+          /* NOTHING WAS CHECKED. Every day's file failed to load, so there is
+             no negative to give -- only the fact that the check did not run.
+             Printing "no hail" here would be a wrong answer dressed as a
+             complete one. */
+          v.className='hm-verdict';
+          v.innerHTML='<strong>The radar check could not run.</strong> None of the '+recent.length+
+            ' storm day'+(recent.length===1?'':'s')+' on file would load just now, so this says nothing '+
+            'about whether it hailed here. Try again in a minute \u2014 the 5-year report history below is unaffected.';
+          v.hidden=false;
+        } else if(!coversYesterday){
+          /* THE CASE THAT USED TO PRINT A FLAT NO. The storm the user came
+             about may be in the gap. Say where the record stops; do not
+             answer for days that were never checked. */
+          v.className='hm-verdict';
+          v.innerHTML='<strong>The radar record here stops at '+esc(fmtDate(lastDay))+'.</strong> '+
+            'Anything since then has not been processed yet, so this is <strong>not an answer</strong> about it. '+
+            'Finished days post the following morning. Nothing '+WHERE+' on the '+checked+' storm day'+(checked===1?'':'s')+
+            ' that are on file back to '+esc(fmtDate(recent[0]||lastDay))+'.'+
+            (failed?' '+failed+' day'+(failed===1?'':'s')+' could not be loaded.':'');
+          v.hidden=false;
+        } else if(lookupDay){
+          v.className='hm-verdict quiet';
+          v.innerHTML='No radar-estimated hail \u22650.75\u2033 '+WHERE+' on <strong>'+esc(fmtDate(lookupDay))+'</strong>.'+
+            (failed?' (That day\u2019s swath file would not load, so this is not a complete check.)':'')+
+            ' Radar estimate \u2014 MRMS MESH typically runs larger than stones measured on the ground, so a miss here is not proof nothing fell. '+
+            'NWS ground reports for the day, if any, are listed below.';
           v.hidden=false;
         } else {
           v.className='hm-verdict quiet';
-          v.textContent='No radar-estimated hail \u22650.75\u2033 at this exact point in the last 30 days ('+recent.length+' storm day'+(recent.length===1?'':'s')+' checked). Full 5-year report history below.';
+          /* Scoped to the days actually on file, and it says where today
+             stands rather than letting "last 30 days" imply this morning. */
+          v.innerHTML='No radar-estimated hail \u22650.75\u2033 '+WHERE+' on the '+
+            checked+' storm day'+(checked===1?'':'s')+' on file, through '+esc(fmtDate(lastDay))+'.'+
+            (failed?' <strong>'+failed+' day'+(failed===1?'':'s')+' could not be loaded</strong>, so this is not a complete check.':'')+
+            ((!live24 || live24Stale) ? ' <strong>Today is not on file yet</strong> \u2014 it posts tomorrow morning.' : '')+
+            ' Full 5-year report history below.';
           v.hidden=false;
         }
       });
     }
+    /* Both controls re-run the lookup that is already on screen. The date
+       additionally narrows the table and points the radar check at that one
+       day, which is the question an adjuster actually has. */
+    var lqWired=false;
+    function wireLookupQuery(){
+      var box=document.querySelector('.hm-lq'); if(!box) return;
+      var dt=document.getElementById('hm-lq-date');
+      var cl=document.getElementById('hm-lq-clear');
+      [].forEach.call(box.querySelectorAll('[data-lr]'), function(b){
+        b.classList.toggle('on', +b.getAttribute('data-lr')===lookupMi);
+        b.setAttribute('aria-pressed', String(+b.getAttribute('data-lr')===lookupMi));
+      });
+      if(dt && manifest && manifest.years && manifest.years.length){
+        dt.min = manifest.years[0]+'-01-01';
+        dt.max = new Date().toISOString().slice(0,10);
+      }
+      if(cl) cl.hidden = !lookupDay;
+      if(lqWired) return; lqWired=true;
+      [].forEach.call(box.querySelectorAll('[data-lr]'), function(b){
+        b.addEventListener('click', function(){
+          lookupMi = +b.getAttribute('data-lr');
+          focusAnswer=false;
+          if(lastLookup) runLookup(lastLookup.lat, lastLookup.lon, lastLookup.label);
+        });
+      });
+      if(dt) dt.addEventListener('change', function(){
+        lookupDay = dt.value || '';
+        focusAnswer=false;
+        if(lastLookup) runLookup(lastLookup.lat, lastLookup.lon, lastLookup.label);
+      });
+      if(cl) cl.addEventListener('click', function(){
+        lookupDay=''; if(dt) dt.value='';
+        if(lastLookup) runLookup(lastLookup.lat, lastLookup.lon, lastLookup.label);
+      });
+    }
     var swathWired=false;
+    /* runVerdict answers for the chosen day when there is one, instead of
+       sweeping the last 30. This is the whole point of the date field: an
+       adjuster with a date of loss gets an answer about THAT DAY. */
+    function verdictDates(){
+      if(!meshIdx || !meshIdx.dates) return [];
+      if(lookupDay) return meshIdx.dates.filter(function(d){ return d===lookupDay; });
+      var cutoff=new Date(Date.now()-30*86400000).toISOString().slice(0,10);
+      return meshIdx.dates.filter(function(d){ return d>=cutoff; });
+    }
     function wireSwathCheck(){
       var box=document.getElementById('hm-swathcheck');
       if(!box) return;
@@ -922,6 +1128,7 @@
       var bt=document.getElementById('hm-swath-btn-t');
       if(bt) bt.textContent='Check radar swaths at this pin ('+meshIdx.dates.length+' storm days on file)';
       var out=document.getElementById('hm-swath-out'); if(out) out.innerHTML='';
+      wireLookupQuery();
       if(lastLookup) runVerdict(lastLookup.lat, lastLookup.lon);
       if(swathWired) return; swathWired=true;
       document.getElementById('hm-swath-btn').addEventListener('click', runSwathCheck);
@@ -1042,7 +1249,8 @@
         if(!w){ banner('Allow pop-ups to print the report.'); return; }
         w.document.write('<!DOCTYPE html><html><head><title>Hail History Report</title><style>body{font-family:Georgia,serif;color:#1a1a1a;max-width:720px;margin:2rem auto;padding:0 1rem}h1{font-size:1.4rem;border-bottom:2px solid #6b5a13;padding-bottom:.4rem}table{width:100%;border-collapse:collapse;font-size:.9rem;margin-top:1rem}th,td{border-bottom:1px solid #ccc;text-align:left;padding:.35rem .5rem}th{font-size:.75rem;text-transform:uppercase;letter-spacing:.05em}.meta{color:#555;font-size:.85rem}.foot{margin-top:1.5rem;font-size:.75rem;color:#666;border-top:1px solid #ccc;padding-top:.6rem;line-height:1.5}</style></head><body>'+
           '<h1>Hail History Report</h1>'+
-          '<p class="meta">Location: '+esc(L.label||L.lat.toFixed(4)+', '+L.lon.toFixed(4))+' &middot; Radius: 25 miles &middot; Window: last 5 years &middot; Generated '+new Date().toLocaleDateString()+'</p>'+
+          '<p class="meta">Location: '+esc(L.label?L.label+' ':'')+'('+L.lat.toFixed(4)+', '+L.lon.toFixed(4)+')'+
+          ' &middot; Radius: '+lookupMi+' miles &middot; Window: '+(L.day?fmtDate(L.day):'last '+(manifest&&manifest.years?manifest.years.length:5)+' years')+' &middot; Generated '+new Date().toLocaleDateString()+'</p>'+
           '<p><strong>'+L.ev.length+'</strong> NWS hail reports on <strong>'+L.nDays+'</strong> distinct days ('+(L.nDays/5).toFixed(1)+'/yr average). Largest reported stone: <strong>'+(L.maxMag?L.maxMag.toFixed(2)+'&Prime;':'none recorded')+'</strong>.</p>'+
           ((L.swaths&&L.swaths.hits&&L.swaths.hits.length)?('<h2 style="font-size:1.05rem;margin-top:1.2rem">Radar-estimated swaths at this point (NOAA MRMS MESH)</h2><ul>'+L.swaths.hits.map(function(h){ return '<li>'+esc(h.d)+' &mdash; inside the &ge;'+h.band+'&Prime; estimated band</li>'; }).join('')+'</ul><p style="font-size:.85rem;color:#555">Radar estimates, not measurements; checked against '+L.swaths.checked+' archived storm days.</p>'):'')+
           '<table><thead><tr><th>Date</th><th>Size</th><th>Distance</th><th>Near</th></tr></thead><tbody>'+rows+'</tbody></table>'+
@@ -1203,17 +1411,24 @@
 
     // ── Storm swaths: radar-estimated MESH bands by day ──
     var live24=null;
+    var live24P=null, live24Stale=false;
     function wireLive24(){
-      fetch(DATA+'mesh/today-partial.json?t='+Date.now()).then(function(r){ return r.ok? r.json():null; })
+      /* Returns its promise so runVerdict() can wait for it. Without this the
+         verdict could resolve before the last-24h layer was known either way
+         and quietly omit the one branch that matters most. */
+      live24P = fetch(DATA+'mesh/today-partial.json?t='+Date.now()).then(function(r){ return r.ok? r.json():null; })
         .catch(function(){ return null; })
         .then(function(fc){
-          if(!fc || !fc.meta || !fc.meta.as_of) return;
+          if(!fc || !fc.meta || !fc.meta.as_of){ live24Stale=true; return; }
           var age=(Date.now()-Date.parse(fc.meta.as_of))/36e5;
-          if(age>5) return;                        // stale partial: stay hidden
+          /* Too old to trust -- but the verdict must SAY so rather than
+             answer as though today were covered. */
+          if(age>5){ live24Stale=true; return; }
           live24=fc;
           var b=document.getElementById('hm-live24');
           if(b){ b.hidden=false; b.addEventListener('click', showLive24); }
         });
+      return live24P;
     }
     function showLive24(){
       if(!live24) return;
