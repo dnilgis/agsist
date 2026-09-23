@@ -63,6 +63,12 @@
    Every fallback below is the same colour .cp uses. */
 #cp-mailfb{--acc:var(--ad-orange,#e8743a);--acc-rgb:var(--ad-orange-rgb,232,116,58);
   --ok:#4ade80;--ok-rgb:74,222,128;color:var(--text,#e8ece9)}
+/* .cp-btn sets display:inline-flex, which beats the UA's [hidden] rule, so
+   the attribute alone does nothing here. Same reason #cp-mailfb needs its
+   own; this is the second place in this file that needs saying. */
+.cp-btn[hidden]{display:none}
+.cp-linkbtn{background:none;border:0;padding:0;font:inherit;color:var(--acc,#e8743a);
+  text-decoration:underline;cursor:pointer;min-height:0}
 .cp-appr-out{flex-basis:100%;margin:.6rem 0 0}
 .cp-appr-out p{margin:0}
 #cp-mailfb[hidden]{display:none}
@@ -511,6 +517,27 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
        rather than claiming this page knows. */
     try { localStorage.setItem(approveSentKey(code), new Date().toISOString()); } catch (e) {}
   }
+  /* An approval with no way back is a trap: one stray click and the button
+     is gone in that browser while the page insists something was sent. This
+     cannot unsend the message -- nothing in a static page can -- so it says
+     so plainly and puts the button back. */
+  function undoLine() {
+    return '<p class="cp-small cp-appr-undo" style="margin:.5rem 0 0">' +
+      'Pressed that by mistake? <button type="button" class="cp-linkbtn" data-appr-undo="1">Put the button back</button> ' +
+      '\u2014 the message already sent cannot be recalled, so say so in <a href="#requests">Requests</a> and Sig will ignore it.</p>';
+  }
+  function wireUndo(d, s) {
+    document.addEventListener('click', function (e) {
+      var b = e.target && e.target.closest && e.target.closest('[data-appr-undo]');
+      if (!b) return;
+      try { localStorage.removeItem(approveSentKey(s.code)); } catch (err) {}
+      var out = b.closest('.cp-appr-out');
+      var btn = out && out.parentNode.querySelector('button.cp-btn[data-mail]');
+      if (btn) { btn.hidden = false; btn.disabled = false; }
+      if (out) out.innerHTML = '';
+    });
+  }
+
   function approveSay(el, html) {
     var box = el.parentNode.querySelector('.cp-appr-out');
     if (!box) {
@@ -539,10 +566,10 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
       .then(function (j) {
         if (!j || j.ok === false || j.errors) throw 0;
         rememberApproveSent(s.code);
-        el.hidden = true;
+        el.textContent = was; el.disabled = false; el.hidden = true;
         approveSay(el, '<p class="cp-req-ok"><b>Approval sent.</b> Sig has it, with proof code ' +
           esc(s.code || '') + '. He confirms by email, and this page says <b>Approved</b> once it is on record. ' +
-          'Nothing runs before then.</p>');
+          'Nothing runs before then.</p>' + undoLine());
       })
       .catch(function () {
         el.disabled = false; el.textContent = was;
@@ -947,7 +974,7 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
         })();
         approveSay(el, '<p class="cp-req-ok"><b>Approval sent</b> from this browser' +
           (day ? ' on ' + esc(day) : '') + ', proof ' + esc(s.code || '') +
-          '. Sig confirms by email, and this page says <b>Approved</b> once it is on record.</p>');
+          '. Sig confirms by email, and this page says <b>Approved</b> once it is on record.</p>' + undoLine());
       }
     });
     /* REQUEST A CHANGE IS NOT AN EMAIL EITHER. It used to open a mail client
@@ -1404,6 +1431,7 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
     wireAd(d, s);
     wireAudience();
     wireApprove(d, s);
+    wireUndo(d, s);
     wireRequests(d, s);
   }
 })();
