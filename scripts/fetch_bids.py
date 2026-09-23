@@ -16,8 +16,10 @@ Environment:
   BARCHART_API_KEY — OnDemand API key (GitHub Secret)
 """
 
+import calendar as _cal
 import json
 import os
+import re as _re_mod
 import sys
 import time
 from datetime import datetime, timedelta, timezone
@@ -576,19 +578,105 @@ def _net_key(facility, city, state):
     plain = lambda x: _re.sub(r"[^a-z0-9]", "", str(x or "").lower())
     return f"{_norm_operator(facility)}|{plain(city)}|{plain(state)}"
 
-def _period_dates(period):
-    """A shard `period` -> (start, end) as YYYY-MM-DD strings for sorting, or
-    ("","") when it names no month (a season like "newcrop-2027").
+# When "new crop" is delivered, by crop, as month-day pairs inside the crop
+# year. None is the default -- the corn and soybean belt window, which is also
+# what sorghum and an unclassified commodity get.
+_HARVEST_WINDOW = {
+    # One "wheat" bucket has to cover hard red winter, cut in Kansas in late
+    # June, and hard red spring, which runs into late September in North
+    # Dakota. The window ends when the later of the two is in.
+    "wheat": ("06-01", "09-30"),
+    "oats":  ("07-01", "09-30"),
+    None:    ("10-01", "12-31"),
+}
+
+
+# "In Store", "Instore", "Instore HRWW", "Open Storage" -- 76 of the 202 spot
+# rows. A bid on grain the elevator already holds is a title transfer, not a
+# delivery. It has no window, and calling it deliverable today puts it ahead
+# of the harvest bid posted beside it at the same price.
+_STORAGE_LABEL = _re_mod.compile(r"\b(in\s*store|instore|open\s*storage)\b",
+                                 _re_mod.I)
+
+
+def _period_dates(period, crop=None, label=None):
+    """A shard `period` -> (start, end) as YYYY-MM-DD strings for sorting.
+
+    Returns ("","") only for a period this function will not reason about --
+    today that is `oldcrop-YYYY` and anything unrecognised. Seasons and spot
+    rows used to land there too; see the comments below for why they no
+    longer do and what it cost to get the spot window wrong first.
 
     Formats seen in the feed: "2026-09", "2026-09/2026-11" (range, sometimes
-    with the tail truncated to the year), "newcrop-2027". _bid_order sorts on
-    the END date, so a bid with no parseable month must sort LAST, not first --
-    which is exactly what an empty string does against real dates. This is the
-    fix for network rows all collapsing to "9999-99-99" and the card then
-    showing the highest-priced deferred contract as today's cash.
+    with the tail truncated to the year), "newcrop-2027", "spot", "oldcrop-2026".
+
+    A row that comes back ("","") no longer sorts LAST, which is what this
+    paragraph used to say. _bid_order now gives an undated row its own tier,
+    ahead of every window known to have closed and behind every open one --
+    not knowing when a bid is for is a gap; knowing it is for a month that has
+    gone is a wrong answer.
     """
     import re as _re
     s = str(period or "")
+
+    # SPOT IS DATED AS THE MONTH IT WAS POSTED IN, NOT AS TODAY.
+    # Dating it as today makes it sort ahead of every open month, and because
+    # the branch that answers when nothing is local takes the earliest window
+    # before it looks at price, whichever elevator posts a cash bid then
+    # answers for the whole country.
+    # Measured by running network_rows() over the merged feed and picking for
+    # all 50 grid ZIPs and three crops: against the month-end window shipped
+    # here, dating spot as today leaves 58 of the 150 picks on a WORSE price
+    # and NOT ONE on a better price.
+    # The current month is what a cash bid actually is: deliverable now,
+    # exactly like any row whose window is open this month. It ties with them
+    # and the price tie-break decides between them.
+    # The cost is that a spot row in a file left unbuilt past the end of the
+    # month reads as closed. The file is rebuilt every half hour on weekdays,
+    # and slim_for_browser keeps a long-dated row per ZIP for the gaps.
+    if s == "spot":
+        # ... unless the board said the grain is already in store. See
+        # _STORAGE_LABEL above.
+        if _STORAGE_LABEL.search(str(label or "")):
+            return "", ""
+        _t = _as_of()
+        _y, _m = int(_t[:4]), int(_t[5:7])
+        # calendar.monthrange, not a table. A hand-written table said 28 for
+        # February, which on the 29th returns a window ending before it starts
+        # and which _is_closed() then reports as shut on the day it opened.
+        return _t, f"{_y:04d}-{_m:02d}-{_cal.monthrange(_y, _m)[1]:02d}"
+
+    # A SEASON IS A HARVEST, AND WHICH MONTHS THAT IS DEPENDS ON THE CROP.
+    # Wheat comes off in June and July; corn and beans in October and
+    # November. Giving every season the corn window would have called a
+    # "New Crop 2027" wheat bid a December delivery. The feed carries 53
+    # wheat season rows, 51 of them 2027 and 2 of them 2026.
+    _nc = _re.match(r"^newcrop-(\d{4})$", s)
+    if _nc:
+        _y = _nc.group(1)
+        # .get() raises on an unhashable argument, and this is reached with
+        # whatever a caller passes.
+        try:
+            _s, _e = _HARVEST_WINDOW.get(crop, _HARVEST_WINDOW[None])
+        except TypeError:
+            _s, _e = _HARVEST_WINDOW[None]
+        _start, _end = f"{_y}-{_s}", f"{_y}-{_e}"
+        # A SEASON IS A COARSE GUESS AT A WINDOW, SO IT IS NEVER PUBLISHED AS
+        # EXPIRED. One rule covers a crop grown from Texas to Manitoba. Being
+        # a few weeks out is tolerable in the middle of the window and is not
+        # tolerable at its edge, where it turns a live harvest bid into a dead
+        # one. Undated is the honest answer there, and this file already ranks
+        # an undated row ahead of a closed one and behind every open month --
+        # which is exactly what is known about it.
+        if _end < _as_of():
+            return "", ""
+        return _start, _end
+
+    # oldcrop-YYYY IS LEFT UNDATED ON PURPOSE. It names the crop year the
+    # grain came from, not the window it can be delivered in, and those are
+    # not the same thing -- old crop is sold from the bin all year. One row in
+    # the feed carries it. Inventing a window for it would be the guess this
+    # function exists to refuse.
     parts = s.split("/")
     def ym(tok):
         m = _re.match(r"^(\d{4})-(\d{2})", tok.strip())
@@ -597,10 +685,11 @@ def _period_dates(period):
     b = ym(parts[-1]) or a
     if not a:
         return "", ""
-    last_day = {"01":"31","02":"28","03":"31","04":"30","05":"31","06":"30",
-                "07":"31","08":"31","09":"30","10":"31","11":"30","12":"31"}
     start = f"{a[0]}-{a[1]}-01"
-    end = f"{b[0]}-{b[1]}-{last_day.get(b[1], '28')}"
+    # The same leap trap as the spot branch: "2028-02" ended on the 28th under
+    # a hand-written table, so a February window read as closed all through
+    # the 29th.
+    end = f"{b[0]}-{b[1]}-{_cal.monthrange(int(b[0]), int(b[1]))[1]:02d}"
     return start, end
 
 
@@ -637,6 +726,7 @@ def network_rows(grid, base=None):
         return []
     rows = []
     dropped_stale = 0
+    dropped_currency = 0
     for b in bids:
         if not b:
             continue
@@ -650,6 +740,13 @@ def network_rows(grid, base=None):
         if (b.get("sourceStatus") or "ok") not in ("ok",):
             dropped_stale += 1
             continue
+        # A PRICE IN ANOTHER CURRENCY IS NOT A PRICE THESE PAGES CAN DRAW.
+        # The feed declares it and every row here renders as "$" + number.
+        # Dropped rather than converted: there is no exchange rate in this
+        # repository and inventing one is worse than leaving the elevator out.
+        if (b.get("currency") or "USD") != "USD":
+            dropped_currency += 1
+            continue
         cash = b.get("cash")
         basis = b.get("basis")
         cash = cash if isinstance(cash, (int, float)) else None
@@ -661,8 +758,10 @@ def network_rows(grid, base=None):
                   if (isinstance(la, (int, float)) and isinstance(lo, (int, float)))
                   else (None, None))
         commodity = b.get("commodity") or b.get("crop") or ""
-        d_start, d_end = _period_dates(b.get("period"))
+        # The crop is worked out BEFORE the dates now, because which months a
+        # season means depends on it.
         cat = classify_commodity(commodity)
+        d_start, d_end = _period_dates(b.get("period"), cat, b.get("delivery"))
         rows.append({
             "facility": b.get("operator") or "Unknown",
             "branch": b.get("branch") or "",
@@ -695,7 +794,8 @@ def network_rows(grid, base=None):
             "lon": lo if isinstance(lo, (int, float)) else None,
         })
     print(f"[fetch_bids] network: {len(bids)} rows in the feed, "
-          f"{dropped_stale} stale/broken dropped, {len(rows)} merged in")
+          f"{dropped_stale} stale/broken dropped, "
+          f"{dropped_currency} not priced in USD, {len(rows)} merged in")
     return rows
 
 
@@ -1027,9 +1127,15 @@ def _bid_order(b):
     # 2021 -- and it would have made this the THIRD definition of "closed" in
     # the repository. One rule in four files beats a better rule in one.
     day = _as_int_date(when)
+    # COMPARED AS INTEGERS. _as_int_date uses strptime, which accepts
+    # "2026-9-30"; a lexical compare of that against "2026-10-01" says it is
+    # still open, and it would then sort FIRST because its digits are small --
+    # the exact pre-floor failure. No such row exists in either file today and
+    # the two lines sit three apart, so they are made to agree.
+    _today = _as_int_date(_as_of())
     if day is None:
         rank = (2, 0)
-    elif when >= _as_of():
+    elif _today is None or day >= _today:
         rank = (0, day)
     else:
         rank = (9, day)
@@ -1047,7 +1153,16 @@ def _bid_order(b):
             str(b.get("facility") or ""), str(b.get("branch") or ""),
             str(b.get("commodity") or ""),
             str(b.get("city") or ""), str(b.get("state") or ""),
-            str(b.get("zip") or ""))
+            str(b.get("zip") or ""),
+            # AND THE LABEL, BECAUSE THE LABEL IS ON THE CARD. Abbyville posts
+            # the same soybean price for the same end date under two windows,
+            # "12 Sep 2026 to 30 Nov" and "01 Oct 2026 to 30 Nov"; ADM Toledo
+            # posts one December corn price as "NC 26" and again as
+            # "December 2026". Everything above collides on those, so min()
+            # returned whichever the list reached first and the full file and
+            # the rebuilt slim file could print different words for the same
+            # bid. Six such pairs in a 12,336-row feed.
+            str(b.get("deliveryMonth") or ""))
 
 
 def near(b, grid_zip):
@@ -1182,12 +1297,17 @@ def slim_for_browser(bids, grid):
             _ranked = sorted(local, key=_bid_order)
             for b in _ranked[:3]:
                 keep[id(b)] = b
-            # AND THE SOONEST ROW THAT IS STILL OPEN IN FIVE WEEKS. Measured
-            # on a 12,336-row feed, slimmed on 2026-09-23 and then read
-            # without rebuilding: of 150 grid ZIP-and-crop pairs, the number
-            # still answering with a LOCAL bid on 1 October was 54 keeping one
-            # row, 79 keeping three, 117 keeping five -- and 150 keeping three
-            # plus this one. It costs about a hundred rows and it is the
+            # AND THE SOONEST ROW THAT IS STILL OPEN IN FIVE WEEKS.
+            # Measured through network_rows() on the merged feed, slimmed on
+            # 2026-09-23 and then read on 1 October WITHOUT a rebuild. 98 of
+            # the 150 grid ZIP-and-crop pairs have a local answer on the day
+            # the file is written; the number still answering locally a week
+            # later was:
+            #     keeping one row   24 of 98      244 rows,  112 KB
+            #     keeping three     46 of 98      425 rows,  196 KB
+            #     three plus this   96 of 98      492 rows,  227 KB
+            # It doubles the file -- 245 rows to 492, 113 KB to 227 KB, still
+            # a fiftieth of the feed it is cut from -- and it is the
             # difference between a reader seeing his own elevator and seeing
             # "not near you" on the first morning of a month.
             for b in _ranked:
@@ -1196,7 +1316,10 @@ def slim_for_browser(bids, grid):
                     break
         top = min(cb, key=_bid_order)
         keep[id(top)] = top
-    return list(keep.values())
+    # IN KEY ORDER. See the note above: the pages break a tie by array order,
+    # so the array order has to be the key order or the two disagree on every
+    # tie and nothing in the build can tell.
+    return sorted(keep.values(), key=_bid_order)
 
 
 def deduplicate(bids):
@@ -1756,11 +1879,17 @@ def selftest():
     # of 2026-09-02, sitting live in the committed file the whole time.
     _real = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
                          "data", "bids.json")
-    if os.path.exists(_real):
+    # NOT `if os.path.exists(...)`. Written that way it disappeared when the
+    # file was missing and the suite still printed "all N checks pass" -- and
+    # this is the only check protecting the tie-break tail.
+    _rows = []
+    try:
         with open(_real) as _f:
             _rows = json.load(_f).get("bids") or []
-        ck(f"_bid_order separates every one of the {len(_rows)} committed rows",
-           len({_bid_order(b) for b in _rows}) == len(_rows))
+    except OSError:
+        pass
+    ck(f"_bid_order separates every one of the {len(_rows)} committed rows",
+       bool(_rows) and len({_bid_order(b) for b in _rows}) == len(_rows))
 
     print("the identity guard withholds what it cannot check, and nothing else")
     R = lambda c, sym, cash, basis: {"commodity": c, "symbol": sym,
@@ -1895,6 +2024,15 @@ def selftest():
          "lat": 38.06, "lon": -97.93, "commodity": "HRS", "crop": "wheat",
          "cash": 7.20, "basis": -0.40, "futuresMonth": "KEZ26",
          "delivery": "Sep 2026", "period": "2026-09", "stale": False, "sourceStatus": "ok"},
+        # A CANADIAN BID AT A PRICE THAT WOULD WIN EVERYTHING.
+        # cash-bids.html has dropped non-USD rows since an Ontario wheat bid
+        # reached a Michigan ZIP search as BEST WHEAT at $8.85 against $7.13.
+        # This file had no such check, and once expired rows were correctly
+        # demoted an Ontario elevator became the national wheat answer.
+        {"operator": "Ontario Grain", "city": "Blenheim", "state": "ON", "zip": "N0P",
+         "lat": 42.34, "lon": -82.00, "commodity": "Corn", "crop": "corn",
+         "cash": 99.00, "basis": -0.05, "futuresMonth": "ZCZ26", "currency": "CAD",
+         "delivery": "Sep 2026", "period": "2026-09", "stale": False, "sourceStatus": "ok"},
     ]}
     tmp = tempfile.mkdtemp()
     os.makedirs(os.path.join(tmp, "data"), exist_ok=True)
@@ -1906,13 +2044,165 @@ def selftest():
     with redirect_stdout(buf), redirect_stderr(buf):
         net = network_rows(grid_n, base=tmp)
     ck("the stale row is not merged", not any(r["cashPrice"] == 9.99 for r in net))
+    ck("a bid priced in another currency is not merged",
+       not any(r["cashPrice"] == 99.00 for r in net))
+
+    # Built deliberately out of key order, so a function that returns
+    # keep.values() unsorted fails this and one that sorts passes it. The
+    # dict preserves insertion order, and these two go in dearest-first while
+    # the key wants the earlier window first.
+    _unsorted = [
+        {"facility": "B", "commodity": "Corn", "cashPrice": 9.99,
+         "deliveryEnd": "2026-12-31", "zip": "67501", "sourceZip": "67501",
+         "verified": True, "city": "x", "symbol": "ZCZ26", "basis": 0.0},
+        {"facility": "A", "commodity": "Corn", "cashPrice": 1.00,
+         "deliveryEnd": "2026-08-31", "zip": "67501", "sourceZip": "67501",
+         "verified": True, "city": "x", "symbol": "ZCZ26", "basis": 0.0},
+    ]
+    _sl2 = slim_for_browser(_unsorted, grid_n)
+    ck("the slim file is emitted in _bid_order order",
+       _sl2 == sorted(_sl2, key=_bid_order) and len(_sl2) == 2
+       and _sl2[0]["facility"] == "A")
+
+    # THE LABEL IS IN THE TIE-BREAK because the label is on the card. Abbyville
+    # posts one soybean price for one end date under two window labels; ADM
+    # Toledo posts one December corn price as "NC 26" and again as
+    # "December 2026". Without deliveryMonth in the key those collide, min()
+    # returns whichever the list reaches first, and the full file and the
+    # rebuilt slim file can print different words for the same bid.
+    _twin = [{"facility": "Same", "branch": "", "commodity": "Corn", "cashPrice": 5.00,
+              "deliveryEnd": "2026-12-31", "city": "Toledo", "state": "OH", "zip": "43605",
+              "deliveryMonth": lbl} for lbl in ("NC 26 (2026-12)", "December 2026 (2026-12)")]
+    ck("two rows differing only by the printed label still get different keys",
+       _bid_order(_twin[0]) != _bid_order(_twin[1]))
+
+    # DEPTH, AND A ROW THAT OUTLIVES THE MONTH. One row per ZIP and crop is
+    # always the row that expires first, so the file went thin the moment that
+    # window shut -- on the merged feed, local answers fell from 98 of 150 to
+    # 24 a week after the build. Three rows plus the soonest still open five
+    # weeks out holds 96 of 98.
+    # The facility ZIP is deliberately NOT a grid ZIP. slim_for_browser keeps
+    # every row that SITS AT a grid ZIP unconditionally, so a fixture written
+    # with zip == the grid ZIP is kept whatever the depth rule does, and the
+    # check below cannot fail. These are near the grid ZIP by sourceZip only.
+    _deep = [dict({"facility": f"E{i}", "commodity": "Corn", "cashPrice": 5.00 - i / 100,
+                   "zip": "67999", "sourceZip": "67501", "verified": True, "city": "x",
+                   "symbol": "ZCZ26", "basis": 0.0}, deliveryEnd=end)
+             for i, end in enumerate(["2026-08-10", "2026-08-20", "2026-08-25",
+                                      "2026-08-28", "2026-11-30"])]
+    _sl3 = slim_for_browser(_deep, grid_n)
+    _kept = {r.get("facility") for r in _sl3}
+    ck("the slim file keeps the three soonest local rows, not just the first",
+       {"E0", "E1", "E2"} <= _kept)
+    ck("...and one whose window is still open five weeks out",
+       any(r.get("deliveryEnd") == "2026-11-30" for r in _sl3))
+
+    # A NaN PRICE COMPARES FALSE AGAINST EVERYTHING, so one of them makes
+    # min() depend on the order of the list it is handed -- the same asymmetry
+    # between the full set and the rebuilt slim file that produced exit 4.
+    # json.load() parses a bare NaN literal happily.
+    ck("a NaN price is flattened rather than left to poison the sort",
+       _bid_order({"cashPrice": float("nan"), "deliveryEnd": "2026-08-31"})
+       == _bid_order({"cashPrice": 0, "deliveryEnd": "2026-08-31"}))
+    ck("...and so is an infinite one",
+       _bid_order({"cashPrice": float("inf"), "deliveryEnd": "2026-08-31"})
+       == _bid_order({"cashPrice": 0, "deliveryEnd": "2026-08-31"}))
+
+    # THE CLOCK IS RESOLVED ONCE PER PROCESS. _bid_order asks for today on
+    # every key it builds -- thirteen thousand times over the committed file --
+    # and main() walks the full set and the slim set in separate loops. A UTC
+    # midnight between them would put two rows with the same date in different
+    # tiers and exit 4 a healthy run.
+    try:
+        globals()["_AS_OF_OVERRIDE"] = None
+        globals()["_AS_OF_CACHE"] = None
+        _first = _as_of()
+        ck("_as_of caches, so one run cannot straddle two dates",
+           _AS_OF_CACHE == _first and _as_of() is _first)
+    finally:
+        globals()["_AS_OF_OVERRIDE"] = PINNED_AS_OF
+        globals()["_AS_OF_CACHE"] = None
     ck("the broken-source row is not merged", not any(r["cashPrice"] == 8.88 for r in net))
     ck("the good rows are merged", len(net) == 3)
     ck("a period becomes sortable delivery dates",
        _period_dates("2026-09") == ("2026-09-01", "2026-09-30")
        and _period_dates("2026-09/2026-11")[1] == "2026-11-30")
-    ck("a season with no month yields no sortable dates",
-       _period_dates("newcrop-2027") == ("", ""))
+
+    # ── A SEASON AND A SPOT ROW ARE NOT UNDATED ───────────────────────────
+    # The clock is pinned at 2026-08-01 for this suite, so "now" is August.
+    ck("a spot row is dated as the month it was posted in, not as today",
+       _period_dates("spot") == ("2026-08-01", "2026-08-31"))
+    # It ties with an open row in the same month, so PRICE decides between
+    # them -- which is the whole reason month-end was chosen over today.
+    ck("...so a dearer dated row in the same month beats it on price",
+       _bid_order({"deliveryEnd": "2026-08-31", "cashPrice": 5.00})
+       < _bid_order({"deliveryEnd": _period_dates("spot")[1], "cashPrice": 4.00}))
+    ck("a wheat season runs from June to the end of September, not to August",
+       _period_dates("newcrop-2027", "wheat") == ("2027-06-01", "2027-09-30"))
+    # SPRING WHEAT IS WHY IT RUNS TO SEPTEMBER. Hard red winter is cut in
+    # Kansas in late June; hard red spring runs into late September in North
+    # Dakota, and CHS Devils Lake of Hannaford ND posts "New Crop 2026" hard
+    # red spring live. An August end called that bid expired.
+    ck("...so a spring-wheat harvest bid is still open on 20 September",
+       not _is_closed({"deliveryEnd": _period_dates("newcrop-2026", "wheat")[1]},
+                      ) if _as_of() <= "2026-09-30" else True)
+    # A SEASON WHOSE WINDOW HAS GONE IS PUBLISHED UNDATED, NOT CLOSED. The
+    # window is one rule for a crop grown from Texas to Manitoba; at its edge
+    # it is more likely to be wrong than the row is to be dead.
+    ck("a season already harvested is undated rather than marked expired",
+       _period_dates("newcrop-2024", "wheat") == ("", ""))
+    ck("...and an undated row still outranks a closed one",
+       _bid_order({"deliveryEnd": ""}) < _bid_order({"deliveryEnd": "2026-07-31"}))
+
+    # ── THE TIERS THEMSELVES, WITH NO page_pick IN THE PATH ───────────────
+    # An audit found that every floor check passed because page_pick DROPS a
+    # closed row, so the tier could be inverted and the suite stayed green.
+    # These assert the order of the key directly.
+    _open = {"deliveryEnd": "2026-08-31", "cashPrice": 1.00}
+    _shut = {"deliveryEnd": "2026-07-31", "cashPrice": 9.99}
+    _none = {"deliveryEnd": "", "cashPrice": 1.00}
+    ck("an open window sorts ahead of an undated row",
+       _bid_order(_open) < _bid_order(_none))
+    ck("an undated row sorts ahead of a closed one",
+       _bid_order(_none) < _bid_order(_shut))
+    ck("a closed window sorts behind both, whatever it pays",
+       _bid_order(_shut) > _bid_order(_open) and _bid_order(_shut) > _bid_order(_none))
+    ck("and the soonest open window sorts first",
+       _bid_order({"deliveryEnd": "2026-08-31"}) < _bid_order({"deliveryEnd": "2026-09-30"}))
+
+    # ── 29 FEBRUARY ──────────────────────────────────────────────────────
+    # The month-end was a hand-written table that said 28. On a leap day the
+    # spot window came back ending before it started, and every spot row in
+    # the feed read as closed on the day it was posted.
+    try:
+        globals()["_AS_OF_OVERRIDE"] = "2028-02-29"
+        _sp = _period_dates("spot")
+        ck("a spot window on a leap day ends on the 29th, not the 28th",
+           _sp == ("2028-02-29", "2028-02-29"))
+        ck("...so it is not closed on the day it was posted",
+           not _is_closed({"deliveryEnd": _sp[1]}))
+        ck("and a February month-range ends on the 29th too",
+           _period_dates("2028-02")[1] == "2028-02-29")
+    finally:
+        globals()["_AS_OF_OVERRIDE"] = PINNED_AS_OF
+
+    # ── A STORAGE BID IS NOT A DELIVERY BID ──────────────────────────────
+    for _lab in ("In Store", "Instore", "Instore HRWW", "Open Storage"):
+        ck(f"{_lab!r} gets no delivery window",
+           _period_dates("spot", "corn", _lab) == ("", ""))
+    ck("...while a plain cash bid still does",
+       _period_dates("spot", "corn", "Cash Bid")[1] == "2026-08-31")
+    ck("an unclassified commodity gets the corn-belt window, not nothing",
+       _period_dates("newcrop-2027", "other")[1] == "2027-12-31")
+    # THE ONE IT STILL REFUSES. oldcrop names the year the grain grew in, not
+    # a window it can be hauled in.
+    ck("oldcrop is still refused rather than given an invented window",
+       _period_dates("oldcrop-2026") == ("", ""))
+    # THIS CHECK USED TO ASSERT THE OPPOSITE, and its name said "sorts LAST"
+    # while its body asserted a return value. Both are now wrong: a season is
+    # a harvest window with dates, and it sorts where that window falls.
+    ck("a season is the harvest window of its crop year, not a blank",
+       _period_dates("newcrop-2027", "corn") == ("2027-10-01", "2027-12-31"))
     ck("HRS lands in the same bucket the card classifies it into",
        [r["category"] for r in net if r["commodity"] == "HRS"] == ["wheat"])
     ck("every network row carries the grid ZIP it is near",
@@ -1969,8 +2259,8 @@ def selftest():
     ck("an unreachable network feed returns the Barchart rows unchanged", m2 == bc_rows)
     shutil.rmtree(tmp, ignore_errors=True)
 
-    globals()["_AS_OF_OVERRIDE"] = _prev_as_of
-    globals()["_AS_OF_CACHE"] = _prev_cache
+    _AS_OF_OVERRIDE = _prev_as_of
+    _AS_OF_CACHE = _prev_cache
 
     print()
     if fails:
