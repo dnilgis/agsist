@@ -1,18 +1,18 @@
 {
- "generated": "2026-09-22T21:59:48Z",
+ "generated": "2026-09-23T15:25:16Z",
  "from": "bids-full.json",
  "complete": false,
  "note": "Directory only: who operates a facility and where. No prices, no basis, no symbols, no delivery windows.",
  "counts": {
-  "facilities": 2493,
-  "states": 32,
+  "facilities": 2529,
+  "states": 33,
   "with_address": 0,
   "with_coords": 0,
   "with_url": 0,
   "with_phone": 1788,
   "saturated_zips": 0,
   "failed_zips": 0,
-  "rows_read": 27480
+  "rows_read": 27702
  },
  "saturated": [],
  "failed": [],
@@ -68,6 +68,61 @@
    "state": "AR",
    "zip": "72160",
    "phone": "(870) 673-5342",
+   "source": "barchart"
+  },
+  {
+   "facility": "Riceland Foods",
+   "city": "Corning",
+   "state": "AR",
+   "lat": 36.4155,
+   "source": "barchart"
+  },
+  {
+   "facility": "Riceland Foods",
+   "city": "Des Arc",
+   "state": "AR",
+   "lat": 34.9751,
+   "source": "barchart"
+  },
+  {
+   "facility": "Riceland Foods",
+   "city": "Hazen",
+   "state": "AR",
+   "lat": 34.7838,
+   "source": "barchart"
+  },
+  {
+   "facility": "Riceland Foods",
+   "city": "Hickory Ridge",
+   "state": "AR",
+   "lat": 35.3995,
+   "source": "barchart"
+  },
+  {
+   "facility": "Riceland Foods",
+   "city": "Newport",
+   "state": "AR",
+   "lat": 35.5988,
+   "source": "barchart"
+  },
+  {
+   "facility": "Riceland Foods",
+   "city": "Pendleton",
+   "state": "AR",
+   "source": "barchart"
+  },
+  {
+   "facility": "Riceland Foods",
+   "city": "Tuckerman",
+   "state": "AR",
+   "lat": 35.7307,
+   "source": "barchart"
+  },
+  {
+   "facility": "Riceland Foods",
+   "city": "Weiner",
+   "state": "AR",
+   "lat": 35.6291,
    "source": "barchart"
   },
   {
@@ -271,6 +326,13 @@
    "state": "DE",
    "zip": "19956",
    "phone": "N/A",
+   "source": "barchart"
+  },
+  {
+   "facility": "ScoularView",
+   "city": "Lake City",
+   "state": "FL",
+   "lat": 30.18137,
    "source": "barchart"
   },
   {
@@ -1321,33 +1383,6 @@
   },
   {
    "facility": "Farmers Win Coop",
-   "branch": "Granger",
-   "city": "Cresco",
-   "state": "IA",
-   "zip": "52136",
-   "phone": "563-547-4349",
-   "source": "barchart"
-  },
-  {
-   "facility": "Farmers Win Coop",
-   "branch": "Cresco East",
-   "city": "Cresco",
-   "state": "IA",
-   "zip": "52136",
-   "phone": "N/A",
-   "source": "barchart"
-  },
-  {
-   "facility": "Farmers Win Coop",
-   "branch": "Cresco",
-   "city": "Cresco",
-   "state": "IA",
-   "zip": "52136",
-   "phone": "563-547-5404",
-   "source": "barchart"
-  },
-  {
-   "facility": "Farmers Win Coop",
    "branch": "Poet Fairbank",
    "city": "Fairbank",
    "state": "IA",
@@ -1362,15 +1397,6 @@
    "state": "IA",
    "zip": "50630",
    "phone": "563-237-5324",
-   "source": "barchart"
-  },
-  {
-   "facility": "Farmers Win Coop",
-   "branch": "Hawkeye",
-   "city": "Hawkeye",
-   "state": "IA",
-   "zip": "52147",
-   "phone": "563-427-3214",
    "source": "barchart"
   },
   {
@@ -1402,15 +1428,6 @@
   },
   {
    "facility": "Farmers Win Coop",
-   "branch": "Ridgeway",
-   "city": "Ridgeway",
-   "state": "IA",
-   "zip": "52165",
-   "phone": "563-737-2244",
-   "source": "barchart"
-  },
-  {
-   "facility": "Farmers Win Coop",
    "branch": "Poet Shell Rock",
    "city": "Shell Rock",
    "state": "IA",
@@ -1429,20 +1446,135 @@
   },
   {
    "facility": "Farmers Win Coop",
-   "branch": "Sumner",
-   "city": "Sumner",
-   "state": "IA",
-   "zip": "50674",
-   "phone": "563-578-3432",
-   "source": "barchart"
-  },
-  {
-   "facility": "Farmers Win Coop",
    "branch": "Bremer",
    "city": "Waverly",
    "state": "IA",
    "zip": "50677",
    "phone": "319-352-1354",
+   "source": "barchart"
+  },
+  {
+   "facility": "Farmers Win Cooperative",
+   "city": "AGP - Mason City",
+   "state": "IA",
+   "zip": "50401",
+   "lat": 43.1499,
+   "source": "barchart"
+  },
+  {
+   "facility": "Farmers Win Cooperative",
+   "city": "Bremer",
+   "state": "IA",
+   "zip": "50677",
+   "lat": 42.7748,
+   "source": "barchart"
+  },
+  {
+   "facility": "Farmers Win Cooperative",
+   "city": "Cresco",
+   "state": "IA",
+   "zip": "52136",
+   "lat": 43.363,
+   "phone": "563-547-4349",
+   "source": "barchart"
+  },
+  {
+   "facility": "Farmers Win Cooperative",
+   "city": "Cresco East",
+   "state": "IA",
+   "zip": "52136",
+   "lat": 43.363,
+   "source": "barchart"
+  },
+  {
+   "facility": "Farmers Win Cooperative",
+   "city": "F'Burg",
+   "state": "IA",
+   "zip": "50630",
+   "lat": 42.9593,
+   "source": "barchart"
+  },
+  {
+   "facility": "Farmers Win Cooperative",
+   "city": "Granger",
+   "state": "IA",
+   "zip": "52136",
+   "lat": 43.363,
+   "source": "barchart"
+  },
+  {
+   "facility": "Farmers Win Cooperative",
+   "city": "Hawkeye",
+   "state": "IA",
+   "zip": "52147",
+   "lat": 42.9487,
+   "phone": "563-427-3214",
+   "source": "barchart"
+  },
+  {
+   "facility": "Farmers Win Cooperative",
+   "city": "Homeland",
+   "state": "IA",
+   "zip": "52154",
+   "lat": 43.0932,
+   "source": "barchart"
+  },
+  {
+   "facility": "Farmers Win Cooperative",
+   "city": "Poet Fairbank",
+   "state": "IA",
+   "zip": "50629",
+   "lat": 42.6162,
+   "source": "barchart"
+  },
+  {
+   "facility": "Farmers Win Cooperative",
+   "city": "Poet Shell Rock",
+   "state": "IA",
+   "zip": "50670",
+   "lat": 42.7061,
+   "source": "barchart"
+  },
+  {
+   "facility": "Farmers Win Cooperative",
+   "city": "Ridgeway",
+   "state": "IA",
+   "zip": "52165",
+   "lat": 43.2979,
+   "phone": "563-737-2244",
+   "source": "barchart"
+  },
+  {
+   "facility": "Farmers Win Cooperative",
+   "city": "SRSP",
+   "state": "IA",
+   "zip": "50670",
+   "lat": 42.7061,
+   "source": "barchart"
+  },
+  {
+   "facility": "Farmers Win Cooperative",
+   "city": "Sumner",
+   "state": "IA",
+   "zip": "50674",
+   "lat": 42.8419,
+   "phone": "563-578-3432",
+   "source": "barchart"
+  },
+  {
+   "facility": "Farmers Win Cooperative",
+   "city": "Valero",
+   "state": "IA",
+   "zip": "50616",
+   "lat": 43.0683,
+   "source": "barchart"
+  },
+  {
+   "facility": "Farmers Win Cooperative",
+   "city": "Viserion",
+   "state": "IA",
+   "zip": "52157",
+   "lat": 43.0237,
    "source": "barchart"
   },
   {
@@ -4684,6 +4816,14 @@
    "source": "barchart"
   },
   {
+   "facility": "ScoularView",
+   "city": "Hancock",
+   "state": "IA",
+   "zip": "51536",
+   "lat": 41.3832,
+   "source": "barchart"
+  },
+  {
    "facility": "Seaboard Foods",
    "branch": "Iowa Falls",
    "city": "Iowa Falls",
@@ -4717,14 +4857,6 @@
    "state": "IA",
    "zip": "51250",
    "phone": "712-722-4904",
-   "source": "barchart"
-  },
-  {
-   "facility": "Siouxland Energy Cooperative",
-   "city": "Siouxland Energy",
-   "state": "IA",
-   "zip": "51250",
-   "lat": 43.07667,
    "source": "barchart"
   },
   {
@@ -5050,6 +5182,13 @@
    "state": "ID",
    "zip": "83832",
    "phone": "208-285-1141",
+   "source": "barchart"
+  },
+  {
+   "facility": "ScoularView",
+   "city": "Jerome",
+   "state": "ID",
+   "lat": 42.7178,
    "source": "barchart"
   },
   {
@@ -5948,6 +6087,14 @@
    "state": "IL",
    "zip": "60924",
    "phone": "815-457-2181",
+   "source": "barchart"
+  },
+  {
+   "facility": "Cissna Park Co-op",
+   "city": "Cissna Park Woodworth & Rankin",
+   "state": "IL",
+   "zip": "60924",
+   "lat": 40.5858,
    "source": "barchart"
   },
   {
@@ -8514,6 +8661,15 @@
    "source": "barchart"
   },
   {
+   "facility": "Iroquois Bio-Energy",
+   "branch": "IBEC",
+   "city": "Rensselaer",
+   "state": "IN",
+   "zip": "47978",
+   "phone": "(219) 866-5990",
+   "source": "barchart"
+  },
+  {
    "facility": "Kentland Elevator & Supply Inc.",
    "branch": "Kentland",
    "city": "Kentland ",
@@ -8545,6 +8701,12 @@
    "state": "IN",
    "zip": "46041",
    "phone": "765-249-2258",
+   "source": "barchart"
+  },
+  {
+   "facility": "Keystone Cooperative",
+   "city": "Fremont MI",
+   "state": "IN",
    "source": "barchart"
   },
   {
@@ -8583,6 +8745,12 @@
    "state": "IN",
    "zip": "47980",
    "phone": "219-984-5682",
+   "source": "barchart"
+  },
+  {
+   "facility": "Keystone Cooperative",
+   "city": "Scircleville Grain",
+   "state": "IN",
    "source": "barchart"
   },
   {
@@ -10726,7 +10894,6 @@
    "facility": "Kanza Cooperative",
    "city": "ANNESS",
    "state": "KS",
-   "lat": 37.4401,
    "source": "barchart"
   },
   {
@@ -10801,7 +10968,6 @@
    "facility": "Kanza Cooperative",
    "city": "DILLWYN",
    "state": "KS",
-   "lat": 37.9433,
    "source": "barchart"
   },
   {
@@ -10894,7 +11060,6 @@
    "facility": "Kanza Cooperative",
    "city": "VARNER",
    "state": "KS",
-   "lat": 37.7783,
    "source": "barchart"
   },
   {
@@ -11296,6 +11461,62 @@
    "state": "KS",
    "zip": "66762",
    "phone": "620-232-5800",
+   "source": "barchart"
+  },
+  {
+   "facility": "ScoularView",
+   "city": "Ada",
+   "state": "KS",
+   "lat": 39.1295,
+   "source": "barchart"
+  },
+  {
+   "facility": "ScoularView",
+   "city": "Brewster",
+   "state": "KS",
+   "lat": 39.3655,
+   "source": "barchart"
+  },
+  {
+   "facility": "ScoularView",
+   "city": "Cullison",
+   "state": "KS",
+   "lat": 37.6502,
+   "source": "barchart"
+  },
+  {
+   "facility": "ScoularView",
+   "city": "Greensburg",
+   "state": "KS",
+   "lat": 37.5915,
+   "source": "barchart"
+  },
+  {
+   "facility": "ScoularView",
+   "city": "Levant",
+   "state": "KS",
+   "lat": 39.3841,
+   "source": "barchart"
+  },
+  {
+   "facility": "ScoularView",
+   "city": "Lincoln",
+   "state": "KS",
+   "lat": 39.1027,
+   "source": "barchart"
+  },
+  {
+   "facility": "ScoularView",
+   "city": "Minneapolis",
+   "state": "KS",
+   "lat": 39.1295,
+   "source": "barchart"
+  },
+  {
+   "facility": "ScoularView",
+   "city": "Monument",
+   "state": "KS",
+   "lat": 39.07,
    "source": "barchart"
   },
   {
@@ -12972,38 +13193,38 @@
    "source": "barchart"
   },
   {
-   "facility": "Farmers Win Coop",
-   "branch": "Houston",
+   "facility": "Farmers Win Cooperative",
    "city": "Houston",
    "state": "MN",
    "zip": "55943",
+   "lat": 43.7929,
    "phone": "507-896-3147",
    "source": "barchart"
   },
   {
-   "facility": "Farmers Win Coop",
-   "branch": "Mabel",
+   "facility": "Farmers Win Cooperative",
    "city": "Mabel",
    "state": "MN",
    "zip": "55954",
+   "lat": 43.5446,
    "phone": "507-493-5070",
    "source": "barchart"
   },
   {
-   "facility": "Farmers Win Coop",
-   "branch": "Rushford",
+   "facility": "Farmers Win Cooperative",
    "city": "Rushford",
    "state": "MN",
    "zip": "55971",
+   "lat": 43.8216,
    "phone": "507-864-2161",
    "source": "barchart"
   },
   {
-   "facility": "Farmers Win Coop",
-   "branch": "Spring Grove",
+   "facility": "Farmers Win Cooperative",
    "city": "Spring Grove",
    "state": "MN",
    "zip": "55974",
+   "lat": 43.5623,
    "phone": "507-498-5321",
    "source": "barchart"
   },
@@ -13145,6 +13366,14 @@
    "state": "MN",
    "zip": "56573",
    "phone": "218-346-4700",
+   "source": "barchart"
+  },
+  {
+   "facility": "KBQ Inc.",
+   "city": "KBQ Inc.",
+   "state": "MN",
+   "zip": "56159",
+   "lat": 43.939,
    "source": "barchart"
   },
   {
@@ -15147,6 +15376,15 @@
    "state": "ND",
    "zip": "58048",
    "phone": "701-874-2112",
+   "source": "barchart"
+  },
+  {
+   "facility": "Iroquois Bio-Energy",
+   "branch": "Blue Flint",
+   "city": "Underwood",
+   "state": "ND",
+   "zip": "58576",
+   "phone": "701-442-7500",
    "source": "barchart"
   },
   {
@@ -17289,6 +17527,42 @@
    "source": "barchart"
   },
   {
+   "facility": "ScoularView",
+   "city": "Big Springs",
+   "state": "NE",
+   "lat": 41.0696,
+   "source": "barchart"
+  },
+  {
+   "facility": "ScoularView",
+   "city": "Brandon",
+   "state": "NE",
+   "source": "barchart"
+  },
+  {
+   "facility": "ScoularView",
+   "city": "Fremont",
+   "state": "NE",
+   "zip": "68025",
+   "lat": 41.4416,
+   "source": "barchart"
+  },
+  {
+   "facility": "ScoularView",
+   "city": "Lamar",
+   "state": "NE",
+   "lat": 40.46,
+   "source": "barchart"
+  },
+  {
+   "facility": "ScoularView",
+   "city": "Madrid",
+   "state": "NE",
+   "zip": "69150",
+   "lat": 40.854,
+   "source": "barchart"
+  },
+  {
    "facility": "The Scoular Company",
    "branch": "Fremont, NE",
    "city": "Fremont",
@@ -17701,10 +17975,9 @@
   },
   {
    "facility": "Heartland Feeds",
-   "branch": "West Mansfield",
    "city": "West Mansfield",
    "state": "OH",
-   "zip": "43358",
+   "lat": 40.43216,
    "phone": "937-355-3094",
    "source": "barchart"
   },
@@ -18385,6 +18658,13 @@
    "source": "barchart"
   },
   {
+   "facility": "ScoularView",
+   "city": "COVINGTON",
+   "state": "OH",
+   "lat": 40.1176,
+   "source": "barchart"
+  },
+  {
    "facility": "Smithfield Grain - East",
    "branch": "Harpster",
    "city": "Harpster",
@@ -18690,6 +18970,12 @@
   },
   {
    "facility": "United Equity,Inc.",
+   "city": "DELPHOS MAIN",
+   "state": "OH",
+   "source": "barchart"
+  },
+  {
+   "facility": "United Equity,Inc.",
    "branch": "DELPHOS MAIN",
    "city": "Delphos",
    "state": "OH",
@@ -18699,10 +18985,16 @@
   },
   {
    "facility": "United Equity,Inc.",
-   "branch": "SPENCERVILLE",
-   "city": "Spencerville",
+   "city": "NEPTUNE",
    "state": "OH",
-   "zip": "45887",
+   "lat": 40.48932,
+   "source": "barchart"
+  },
+  {
+   "facility": "United Equity,Inc.",
+   "city": "SPENCERVILLE",
+   "state": "OH",
+   "lat": 40.71417,
    "phone": "419-647-4148",
    "source": "barchart"
   },
@@ -18978,42 +19270,6 @@
    "zip": "74801",
    "phone": "405-214-3333",
    "source": "barchart"
-  },
-  {
-   "facility": "ADM",
-   "city": "Blenheim",
-   "state": "ON",
-   "zip": "NOP1A",
-   "lat": 42.33503,
-   "source": "barchart",
-   "country": "CA"
-  },
-  {
-   "facility": "ADM",
-   "city": "Maidstone",
-   "state": "ON",
-   "zip": "ON N0",
-   "lat": 42.21064,
-   "source": "barchart",
-   "country": "CA"
-  },
-  {
-   "facility": "Addis Grain",
-   "city": "Addis Grain Ltd.",
-   "state": "ON",
-   "zip": "L0L 2",
-   "lat": 44.44829,
-   "source": "barchart",
-   "country": "CA"
-  },
-  {
-   "facility": "Bacres Grain",
-   "city": "Alvinston",
-   "state": "ON",
-   "zip": "N0N 1",
-   "lat": 42.85362,
-   "source": "barchart",
-   "country": "CA"
   },
   {
    "facility": "Greenfield Global",
@@ -21086,13 +21342,6 @@
    "state": "WI",
    "zip": "54642",
    "lat": 44.1382,
-   "source": "barchart"
-  },
-  {
-   "facility": "Meyer Brothers Grain",
-   "city": "Elk Mound",
-   "state": "WI",
-   "lat": 44.87792,
    "source": "barchart"
   },
   {
