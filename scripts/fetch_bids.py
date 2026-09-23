@@ -20,7 +20,7 @@ import json
 import os
 import sys
 import time
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from urllib.request import urlopen, Request
 from urllib.error import URLError, HTTPError
 from urllib.parse import urlencode
@@ -852,6 +852,88 @@ def verified_only(bids):
     a page that never had the guard."""
     return [b for b in bids if b.get("verified", True)]
 
+def _is_closed(b):
+    """Has this row's delivery window already shut, as of this run?
+
+    Reads the same tier _bid_order() assigns, so the two can never drift."""
+    return _bid_order(b)[0][0] == 9
+
+
+# THE DAY THIS RUN IS FOR, AND THE ONLY PLACE ANYTHING ASKS.
+# _bid_order() below has to know today to tell an open delivery window from a
+# closed one, and a function that reads the wall clock cannot be tested: the
+# fixtures in selftest() were written when 2026-08-31 was still in the future.
+# The selftest pins this and puts it back. Nothing else assigns it, and when it
+# is None the real date is used.
+_AS_OF_OVERRIDE = None
+
+
+_AS_OF_CACHE = None
+
+# The date selftest() stops the clock at. Named once so the suite and the
+# fixtures it protects cannot drift apart.
+PINNED_AS_OF = "2026-08-01"
+
+
+def _as_of():
+    """Today, as YYYY-MM-DD, unless a test has pinned it.
+
+    RESOLVED ONCE PER PROCESS, AND THAT IS NOT AN OPTIMISATION. _bid_order()
+    calls this for every key it builds -- thirteen thousand times over the
+    committed file, hundreds of thousands over a full feed -- and main()
+    computes the full-file picks and the slim-file picks in separate loops. If
+    UTC midnight fell between two of those calls, two rows with the SAME
+    deliveryEnd would land in different tiers, min() would be comparing keys
+    built against two different todays, and the guard at the end of main()
+    would exit 4 on a run where nothing was wrong. fetch_bids.yml runs every
+    half hour, so one run a day sits on that boundary."""
+    global _AS_OF_CACHE
+    if _AS_OF_OVERRIDE:
+        return _AS_OF_OVERRIDE
+    if _AS_OF_CACHE is None:
+        _AS_OF_CACHE = datetime.now(timezone.utc).date().isoformat()
+    return _AS_OF_CACHE
+
+
+def _plus_days(n):
+    """The as-of date plus n days, as YYYY-MM-DD.
+
+    Used only by slim_for_browser, to keep one row per ZIP and crop whose
+    window is still open well after this file is written. The file is a
+    snapshot and the browser applies its own floor when it is read; without
+    some depth the two drift apart the moment the soonest window shuts."""
+    return (datetime.strptime(_as_of(), "%Y-%m-%d").date()
+            + timedelta(days=n)).isoformat()
+
+
+def _as_int_date(when):
+    """YYYY-MM-DD -> 20260923, or None when there is no readable date.
+
+    580 of the 584 rows in the committed file parse. THE FOUR THAT DO NOT ARE
+    NOT A MYSTERY AND THEY ARE NOT STALE: all four are ADM Hutchinson, Kansas,
+    posting "Fall 2026 (2026-12)" and "Cash (2026-12)" -- real new-crop
+    windows that _period_dates() cannot turn into dates, so they arrive with
+    deliveryEnd and deliveryStart both empty. Tier 2 is the right place for
+    them, but for that reason and not because the bid is unknowable.
+
+    Do NOT try to recover the month from the "(2026-12)" in deliveryMonth.
+    That parenthetical is the FUTURES CONTRACT month, not the delivery window:
+    ADM Mankato posts "September (2026-11)" against a deliveryEnd of
+    2026-09-30, and 25 rows in the committed file have a label month that
+    differs from their end month for exactly this reason. Reading it would
+    move a September bid to November.
+
+    strptime rather than a length check, so 2026-13-45 is refused instead of
+    being filed as a window that never closes."""
+    if not when or when == "9999-99-99":
+        return None
+    try:
+        d = datetime.strptime(when, "%Y-%m-%d")
+    except (ValueError, TypeError):
+        return None
+    return d.year * 10000 + d.month * 100 + d.day
+
+
 def _bid_order(b):
     """Sort key: nearest delivery first, then the best price inside it.
 
@@ -875,8 +957,28 @@ def _bid_order(b):
     TRUSTWORTHY. Eight rows in the committed file -- both Producer Ag
     locations -- carry a `deliveryStart` of 2012-02-28 or 2012-05-01 against a
     correct end date and a correct month label. Ordering on start handed those
-    rows every fallback in the file. Every `deliveryEnd` in the same file is a
-    real future date. Start is kept only as a substitute when end is missing.
+    rows every fallback in the file. Start is kept only as a substitute when
+    end is missing.
+
+    AND "EVERY deliveryEnd IS A REAL FUTURE DATE" IS WHAT THIS PARAGRAPH USED
+    TO SAY NEXT. It was true of the Barchart-only file and the AGSIST network
+    merge of 2026-09-22 ended it. Measured on data/bids.json of 2026-09-23,
+    17 of its 584 rows carry a window that has already closed:
+
+        2026-08-31  6      2026-01-31  2      2021-09-30  1
+        2026-03-31  3      2026-04-30  1      2016-09-30  1
+        2025-09-30  2      2026-05-31  1
+
+    The last two are a day of the month read as a year upstream. Because the
+    order was ascending with no floor, those rows did not merely appear,
+    THEY WON: 45 of the 150 grid ZIP-and-crop picks in that file landed on a
+    closed window, and so did all three national fallbacks -- the corn one on
+    a window that shut on 30 September 2021.
+
+    So the key is floored at _as_of() below. An expired row is still published
+    -- dropping an elevator's posted bid on our own judgement is the bigger
+    sin -- but it is ranked behind every window a person can still deliver
+    into, which is what taking the earliest was always meant to mean.
 
     IT IS A TOTAL ORDER, AND IT WAS NOT.
     The key was (deliveryEnd, -price) and nothing else, so it could not separate
@@ -901,13 +1003,51 @@ def _bid_order(b):
     999 against 999.
     """
     when = str(b.get("deliveryEnd") or b.get("deliveryStart") or "9999-99-99")[:10]
+    # THREE TIERS, NOT A BARE DATE, BECAUSE ASCENDING ORDER PUT THE WORST ROWS
+    # FIRST. See the paragraph above: the further in the past a window is, the
+    # smaller its date sorts, so "nearest delivery first" handed the card to
+    # the most expired row on the board. A prefix keeps this a plain tuple
+    # comparison and keeps it a total order.
+    #   "0"+date  a window still open, earliest first  -- what a seller can use
+    #   "2"       no date on the row at all
+    #   "9"+date  a window that has closed, last
+    # A ROW WITH NO DATE OUTRANKS A ROW KNOWN TO BE SHUT. Not knowing when a
+    # bid is for is a gap; knowing it is for a month that has gone is a wrong
+    # answer. The old key sorted the undated row ("9999-99-99") behind every
+    # closed one.
+    #   (0, d)   a window still open, soonest first  -- what a seller can use
+    #   (2, 0)   no usable date on the row at all
+    #   (9, d)   a window that has closed, last
+    # THE CLOSED TIER IS ASCENDING BECAUSE THE THREE PAGES THAT READ THIS FILE
+    # ARE ASCENDING. bidWhen() in corn/soybean/wheat-futures-prices.html
+    # returns '9'+date and sorts it as a string; so does deliveryRank() in
+    # cash-bids.html. Ordering the stale rows least-stale-first here would be
+    # defensible on its own -- among rows nobody can deliver into, the one that
+    # shut last week says more about this elevator than the one that shut in
+    # 2021 -- and it would have made this the THIRD definition of "closed" in
+    # the repository. One rule in four files beats a better rule in one.
+    day = _as_int_date(when)
+    if day is None:
+        rank = (2, 0)
+    elif when >= _as_of():
+        rank = (0, day)
+    else:
+        rank = (9, day)
     try:
         price = float(b.get("cashPrice") or 0)
     except (TypeError, ValueError):
         price = 0.0
-    return (when, -price,
+    # NaN COMPARES FALSE AGAINST EVERYTHING, so one NaN price makes min()
+    # depend on the order of the list it is handed -- the same asymmetry
+    # between the full set and the rebuilt slim file that produced exit 4 on
+    # 2026-09-02. json.load() parses a bare NaN literal happily.
+    if price != price or price in (float("inf"), float("-inf")):
+        price = 0.0
+    return (rank, -price,
             str(b.get("facility") or ""), str(b.get("branch") or ""),
-            str(b.get("commodity") or ""))
+            str(b.get("commodity") or ""),
+            str(b.get("city") or ""), str(b.get("state") or ""),
+            str(b.get("zip") or ""))
 
 
 def near(b, grid_zip):
@@ -989,7 +1129,12 @@ def page_pick(bids, grid_zip, crop):
         return None
 
     if grid_zip:
-        local = [b for b in crop_bids if near(b, grid_zip)]
+        # A CLOSED WINDOW IS NOT A LOCAL BID. The pages drop it here rather
+        # than rank it, and fall through to the national branch, which labels
+        # itself honestly. A price nobody can deliver into is worse under a
+        # heading that says it is nearby than an out-of-state price that says
+        # it is far.
+        local = [b for b in crop_bids if near(b, grid_zip) and not _is_closed(b)]
         if local:
             return min(local, key=_bid_order)
 
@@ -1030,8 +1175,25 @@ def slim_for_browser(bids, grid):
             continue
         for z in gz:
             local = [b for b in cb if near(b, z)]
-            if local:
-                keep[id(min(local, key=_bid_order))] = min(local, key=_bid_order)
+            # THREE, NOT ONE, AND ONE WITH A LONG WINDOW. One row per ZIP and
+            # crop is always the row that expires first, so the file went thin
+            # the moment that window shut. Ranked, so the first is still
+            # exactly what page_pick would have kept.
+            _ranked = sorted(local, key=_bid_order)
+            for b in _ranked[:3]:
+                keep[id(b)] = b
+            # AND THE SOONEST ROW THAT IS STILL OPEN IN FIVE WEEKS. Measured
+            # on a 12,336-row feed, slimmed on 2026-09-23 and then read
+            # without rebuilding: of 150 grid ZIP-and-crop pairs, the number
+            # still answering with a LOCAL bid on 1 October was 54 keeping one
+            # row, 79 keeping three, 117 keeping five -- and 150 keeping three
+            # plus this one. It costs about a hundred rows and it is the
+            # difference between a reader seeing his own elevator and seeing
+            # "not near you" on the first morning of a month.
+            for b in _ranked:
+                if not _is_closed(b) and str(b.get("deliveryEnd") or "")[:10] >= _plus_days(35):
+                    keep[id(b)] = b
+                    break
         top = min(cb, key=_bid_order)
         keep[id(top)] = top
     return list(keep.values())
@@ -1266,6 +1428,26 @@ def selftest():
     import io
     from contextlib import redirect_stdout, redirect_stderr
 
+    # THE CLOCK IS PINNED, AND THAT IS THE POINT OF THIS LINE.
+    # These fixtures were written when 2026-08-31 was a future delivery
+    # window; it is not one any more, and _bid_order() now knows the
+    # difference. A suite whose answers change with the calendar is a suite
+    # that goes red on a morning when nothing was broken -- and, worse, one
+    # that can go green on a morning when something is.
+    #
+    # WHAT HAPPENS IF A CHECK RAISES, SAID PLAINLY. ck() evaluates its
+    # condition at the call site and does not catch, so an exception walks out
+    # of this function past the restore at the bottom, with the clock still
+    # stopped in August. That is survivable ONLY because the single caller is
+    # `sys.exit(selftest())` -- the process dies and nothing can observe the
+    # pin. The moment anything calls selftest() in-process, wrap the body in
+    # try/finally. It is not wrapped today because that is a 500-line
+    # re-indent for a hazard that does not exist yet, and a re-indent is how
+    # you lose a check without noticing.
+    global _AS_OF_OVERRIDE, _AS_OF_CACHE
+    _prev_as_of, _prev_cache = _AS_OF_OVERRIDE, _AS_OF_CACHE
+    _AS_OF_OVERRIDE = PINNED_AS_OF
+
     checks = 0
     fails = []
 
@@ -1435,6 +1617,13 @@ def selftest():
         N("53705", "50010", "Corn", 4.40),   # sits AT Madison, returned by Ames's query
         N("50010", "50010", "Corn", 4.75),   # at Ames
         N("99999", "99999", "Corn", 9.99),   # the national top, nowhere near anyone
+        # Four more inside Madison's query, all below 4.61 so the winner above
+        # does not move, and enough depth that slim_for_browser has something
+        # to leave behind now that it keeps three per ZIP and crop.
+        N("53575", "53705", "Corn", 4.50),
+        N("53711", "53705", "Corn", 4.45),
+        N("53562", "53705", "Corn", 4.40),
+        N("53527", "53705", "Corn", 4.35),
     ]
     verify_bids(rows2)
     for r in rows2:
@@ -1486,6 +1675,92 @@ def selftest():
                 dict(D("2026-01-01", 4.90, fac="dear"), deliveryEnd=None, deliveryStart=None)]
     ck("with no dates at all it falls back to price and does not crash",
        page_pick(no_dates, "53705", "corn")["facility"] == "dear")
+
+    # ── A WINDOW THAT HAS CLOSED SORTS LAST ────────────────────────────────
+    # The clock is pinned at 2026-08-01 above, so 2026-07-31 is yesterday and
+    # 2026-08-31 is a month out. Before the floor these rows did not merely
+    # appear on the page, they WON: the key was the bare date ascending, so
+    # the further in the past a window was, the more certainly it was picked.
+    # On data/bids.json of 2026-09-23, 45 of the 150 grid ZIP-and-crop picks
+    # landed on a closed window, and so did all three national fallbacks --
+    # the corn one on a window that shut in 2021.
+    shut = [D("2026-07-31 00:00:00", 9.99, fac="expired"),
+            D("2026-08-31 00:00:00", 4.72, fac="open")]
+    ck("a window that closed yesterday loses to one still open, at any price",
+       page_pick(shut, "53705", "corn")["facility"] == "open")
+
+    # WHEN EVERY ROW IS CLOSED there is no local branch left to take -- it
+    # drops them, as the pages do -- so the national fallback answers, and it
+    # orders closed rows the way bidWhen() in the three futures pages orders
+    # them: ascending, oldest first. Least-stale-first would read better and
+    # would have made this the third definition of "closed" in the repository.
+    # This check exists to pin the agreement, not to bless the order.
+    two_shut = [D("2021-09-30 00:00:00", 5.17, fac="five-years-gone"),
+                D("2026-07-31 00:00:00", 4.50, fac="last-month")]
+    ck("with every row closed, the order matches bidWhen() in the pages",
+       page_pick(two_shut, "53705", "corn")["facility"] == "five-years-gone")
+
+    # AND A CLOSED LOCAL ROW IS NOT SHOWN AS LOCAL AT ALL. The pages skip it
+    # and fall through to "best anywhere"; page_pick has to do the same or the
+    # exit-4 guard certifies a rule no browser runs.
+    local_shut = [dict(D("2026-07-31 00:00:00", 9.99, fac="local-but-shut"),
+                       zip="53705", sourceZip="53705"),
+                  dict(D("2026-08-31 00:00:00", 4.10, fac="far-but-open"),
+                       zip="99999", sourceZip="99999")]
+    ck("a closed local row falls through to the national branch, as the pages do",
+       page_pick(local_shut, "53705", "corn")["facility"] == "far-but-open")
+
+    # NOT KNOWING BEATS KNOWING IT IS SHUT. The old key gave an undated row
+    # "9999-99-99", which sorted behind every closed window in the file.
+    undated = [dict(D("2026-01-01", 4.10, fac="undated"), deliveryEnd=None, deliveryStart=None),
+               D("2026-07-31 00:00:00", 9.99, fac="expired")]
+    ck("a row with no delivery date outranks one whose window has closed",
+       page_pick(undated, "53705", "corn")["facility"] == "undated")
+
+    # AND AN OPEN WINDOW STILL BEATS AN UNDATED ROW, which is the half of the
+    # old behaviour that was right.
+    open_vs_undated = [dict(D("2026-01-01", 9.99, fac="undated"), deliveryEnd=None, deliveryStart=None),
+                       D("2026-08-31 00:00:00", 4.10, fac="open")]
+    ck("an open window still beats a row with no date at all",
+       page_pick(open_vs_undated, "53705", "corn")["facility"] == "open")
+
+    # THE TOTAL-ORDER PROPERTY SURVIVES THE PREFIX. It was hard won -- see
+    # _bid_order's docstring and the eleven-ZIP build failure of 2026-09-02 --
+    # and a three-tier key is exactly the kind of change that could lose it.
+    mixed = [D("2026-07-31 00:00:00", 9.99, fac="expired"),
+             D("2026-08-31 00:00:00", 4.72, fac="open"),
+             D("2021-09-30 00:00:00", 5.17, fac="five-years-gone"),
+             D("2027-06-30 00:00:00", 5.23, fac="deferred"),
+             dict(D("2026-01-01", 4.10, fac="undated"), deliveryEnd=None, deliveryStart=None)]
+    ck("_bid_order is still a total order across open, closed and undated rows",
+       len({_bid_order(b) for b in mixed}) == len(mixed))
+
+    # THE FLOOR MOVES WITH THE CLOCK, not with the data. Same rows, a pinned
+    # date on either side of the window, opposite answers -- which is also
+    # what proves the pin above is doing something.
+    try:
+        globals()["_AS_OF_OVERRIDE"] = "2026-07-01"
+        ck("with the clock set before it, that same window is open and wins on price",
+           page_pick(shut, "53705", "corn")["facility"] == "expired")
+    finally:
+        globals()["_AS_OF_OVERRIDE"] = PINNED_AS_OF
+    ck("and set back after it, the open row wins again",
+       page_pick(shut, "53705", "corn")["facility"] == "open")
+
+    # THE KEY MUST SEPARATE EVERY ROW THE FILE ACTUALLY CONTAINS, and a
+    # five-row fixture cannot show that. Agtegra posts the same corn price for
+    # the same month at Grebner and at West Terminal; both carry a blank
+    # branch, so facility+branch+commodity collided and the key was NOT a
+    # total order -- 577 distinct keys over 584 rows before city, state and
+    # zip were appended. That is the mechanism of the eleven-ZIP build failure
+    # of 2026-09-02, sitting live in the committed file the whole time.
+    _real = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+                         "data", "bids.json")
+    if os.path.exists(_real):
+        with open(_real) as _f:
+            _rows = json.load(_f).get("bids") or []
+        ck(f"_bid_order separates every one of the {len(_rows)} committed rows",
+           len({_bid_order(b) for b in _rows}) == len(_rows))
 
     print("the identity guard withholds what it cannot check, and nothing else")
     R = lambda c, sym, cash, basis: {"commodity": c, "symbol": sym,
@@ -1636,7 +1911,7 @@ def selftest():
     ck("a period becomes sortable delivery dates",
        _period_dates("2026-09") == ("2026-09-01", "2026-09-30")
        and _period_dates("2026-09/2026-11")[1] == "2026-11-30")
-    ck("a season with no month sorts LAST rather than first",
+    ck("a season with no month yields no sortable dates",
        _period_dates("newcrop-2027") == ("", ""))
     ck("HRS lands in the same bucket the card classifies it into",
        [r["category"] for r in net if r["commodity"] == "HRS"] == ["wheat"])
@@ -1693,6 +1968,9 @@ def selftest():
         m2 = merge_network(bc_rows, grid_n, base=os.path.join(tmp, "does-not-exist"))
     ck("an unreachable network feed returns the Barchart rows unchanged", m2 == bc_rows)
     shutil.rmtree(tmp, ignore_errors=True)
+
+    globals()["_AS_OF_OVERRIDE"] = _prev_as_of
+    globals()["_AS_OF_CACHE"] = _prev_cache
 
     print()
     if fails:
