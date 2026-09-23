@@ -143,6 +143,15 @@
     .hm-sponsor-p{margin:0;font-size:.88rem;line-height:1.6;color:var(--text,#e6ebe9)}
     .hm-sponsor-p a{color:var(--brand,#d4a23f);font-weight:700}
     .hm-controls{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;margin:.9rem 0 .4rem}
+    .hm-mapstack{display:flex;flex-direction:column}
+    .hm-mapstack .hm-controls{margin:.5rem 0 .6rem}
+    @media(max-width:640px){
+      /* DOM order is controls-then-map so the tab sequence runs down the
+         page. On a phone July wants them under the map, so they are PUSHED
+         down with order instead of the map being pulled up -- same pixels,
+         and focus still follows the page. */
+      .hm-mapstack .hm-controls{order:1;margin:.4rem 0 0}
+    }
     .hm-chip{font-family:inherit;font-size:.86rem;background:var(--surface);color:var(--text-dim);border:1px solid var(--border);border-radius:999px;padding:.42rem .8rem;cursor:pointer;transition:.12s;white-space:nowrap;min-height:44px}
     .hm-search #hm-gps{min-height:44px;min-width:44px}
     .hm-meshnav button{min-height:44px}
@@ -181,8 +190,9 @@
     .hm-banner{background:var(--surface);border:1px dashed var(--border);border-radius:10px;padding:1rem;color:var(--text-dim);text-align:center;margin-top:.6rem}
     @media(max-width:640px){#hm-map{height:54vh}}
     .hm-mapwrap{position:relative}
+.hm-about{max-width:70ch;margin:.9rem 0 0;color:var(--text-muted,#7d8782);font-size:.92rem;line-height:1.6}
     .hm-yearbadge{position:absolute;top:10px;right:14px;z-index:450;pointer-events:none;
-      font-family:var(--font-display);font-weight:700;font-size:clamp(1.6rem,4.5vw,3rem);
+      font-family:var(--font-display);font-weight:700;font-size:clamp(1rem,2.1vw,1.5rem);
       line-height:1;color:#15240d;text-shadow:0 1px 10px rgba(255,255,255,.95),0 0 3px rgba(255,255,255,.95);
       letter-spacing:.02em;opacity:.95;transition:opacity .25s}
     .hm-yearbadge small{display:block;text-align:right;font-size:.32em;font-weight:600;letter-spacing:.12em;text-transform:uppercase;opacity:.85}
@@ -238,7 +248,7 @@
     }
 </style>
 
-  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"HowTo","name":"How to check if it hailed at your address","step":[{"@type":"HowToStep","name":"Search your location","text":"Enter your address, town, or ZIP in the search box above the AGSIST hail map, or tap the pin button to use your current location."},{"@type":"HowToStep","name":"Read the report list","text":"The page lists every National Weather Service hail report within 25 miles over the last five years, with dates, reported stone sizes, and distances."},{"@type":"HowToStep","name":"Check the radar swaths","text":"Tap Check radar swaths at this pin to test your exact point against every archived radar-estimated (MESH) hail swath — an estimate, not a ground measurement — with a dated map link for every day that touched your location."},{"@type":"HowToStep","name":"Share or save the record","text":"Copy link produces a shareable URL that reopens the exact same lookup for anyone you send it to."},{"@type":"HowToStep","name":"Print the report","text":"Use Print report for a dated, sourced document to pair with your own photos for any claim conversation."}]},{"@type":"Dataset","dateModified":"2026-09-23",
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"HowTo","name":"How to check if it hailed at your address","step":[{"@type":"HowToStep","name":"Search your location","text":"Enter your address, town, or ZIP in the search box above the AGSIST hail map, or tap the pin button to use your current location."},{"@type":"HowToStep","name":"Read the report list","text":"The page lists every National Weather Service hail report within 25 miles over the last five years, with dates, reported stone sizes, and distances."},{"@type":"HowToStep","name":"Check the radar swaths","text":"Tap Check radar swaths at this pin to test your exact point against every archived radar-estimated (MESH) hail swath — an estimate, not a ground measurement — with a dated map link for every day that touched your location."},{"@type":"HowToStep","name":"Share or save the record","text":"Copy link produces a shareable URL that reopens the exact same lookup for anyone you send it to."},{"@type":"HowToStep","name":"Print the report","text":"Use Print report for a dated, sourced document to pair with your own photos for any claim conversation."}]},{"@type":"Dataset","dateModified":"2026-09-22",
     "name":"AGSIST National Hail Map",
     "description":"Interactive heatmap of five years of US National Weather Service hail Local Storm Reports, showing the geographic frequency of hail across the country.",
     "url":"https://agsist.com/hail-map",
@@ -271,7 +281,7 @@
 
       <div class="hm-head">
         <h1 class="hm-title">National Hail Map &mdash; <em>did it hail at your place?</em></h1>
-        <p class="hm-sub"><span id="hm-seed-stats"><!--SEED:hailstats-->64,059 NWS hail reports on the map (2022–2026) · 682 in the last 30 days · data through 2026-09-01<!--/SEED--></span> Five years of National Weather Service hail reports on one map. Step through the years or hit play, and watch the same hail corridors light up season after season &mdash; the High Plains, the Front Range, the southern Plains. Risk has a geography. This is it. Crops, roofs, equipment, whole towns &mdash; if you’re checking hail, the record is here — and when a storm is running, the live warning layer below shows it as the Weather Service issues it. No charge, no login.</p>
+        <p class="hm-sub"><span id="hm-seed-stats"><!--SEED:hailstats-->64,059 NWS hail reports on the map (2022–2026) · 703 in the last 30 days · data through 2026-09-01<!--/SEED--></span></p>
               </div>
 
       <div class="hm-search" role="search">
@@ -281,12 +291,14 @@
         <button type="button" id="hm-gps" title="Use my location" aria-label="Use my location"><svg class="ic-sp" aria-hidden="true"><use href="#sp-map-pin"/></svg></button>
       </div>
 
+      <div class="hm-mapstack">
+      <div class="hm-controls" id="hm-controls" role="group" aria-label="Select view"></div>
       <div class="hm-mapwrap">
-        <div id="hm-map" role="application" aria-label="National hail report map. Use the buttons below to change the year or switch to recent reports."></div>
+        <div id="hm-map" role="application" aria-label="National hail report map. Use the year and view buttons to change what it shows."></div>
         <div class="hm-yearbadge" id="hm-yearbadge" aria-hidden="true"></div>
       </div>
 
-      <div class="hm-controls" id="hm-controls" role="group" aria-label="Select view"></div>
+      </div>
 
       <div class="hm-meshnav" id="hm-meshnav" hidden role="group" aria-label="Storm swath date">
         <button type="button" id="hm-mesh-prev" aria-label="Previous storm day">&#9664;</button>
@@ -321,25 +333,6 @@
 
       <div id="hm-banner" class="hm-banner" role="status" hidden></div>
 
-      <div class="hm-alerts hm-alerts--bar" id="hm-alerts">
-          <div class="hm-alerts-h">Hail alerts for this spot <span class="hm-alerts-soon">free</span></div>
-          <p class="hm-alerts-p">Search or tap your spot, pick a radius, drop your email — any morning radar-estimated hail touches it, one plain email with the dated map. An estimate, flagged as an estimate. Your email and pin, never sold. Free.</p>
-          <div class="hm-alerts-radius" role="radiogroup" aria-label="Alert radius">
-            <span class="hm-alerts-radius-l">Radius</span>
-            <button type="button" class="hm-rchip" data-r="1" aria-pressed="false">1 mi</button>
-            <button type="button" class="hm-rchip" data-r="5" aria-pressed="true">5 mi</button>
-            <button type="button" class="hm-rchip" data-r="10" aria-pressed="false">10 mi</button>
-            <button type="button" class="hm-rchip" data-r="25" aria-pressed="false">25 mi</button>
-          </div>
-          <div class="hm-alerts-row">
-            <input type="email" id="hm-alert-email" placeholder="you@example.com" autocomplete="email" aria-label="Email for hail alerts">
-            <button type="button" id="hm-alert-btn">Save my spot</button>
-          </div>
-          <div class="hm-alerts-status" id="hm-alert-status" aria-live="polite"></div>
-        </div>
-      <aside class="hm-sponsor hm-sponsor--ribbon" id="hm-sponsor"><span class="hm-sponsor-tag">Sponsor this map</span> 573 people pulled a county hail lookup here last month &mdash; one category-exclusive slot on this page, and your name on the alert emails it sends. Prefer just your state? Any of the 51 state hail pages can carry its own exclusive ribbon. <a href="/sponsor?slot=hail-map&amp;utm_source=hail-map&amp;utm_medium=slot" id="hm-sponsor-cta">Put your name here &rarr;</a></aside>
-
-
       <section class="hm-point" id="hm-point" hidden aria-live="polite">
         <div class="hm-point-head">
           <h2 id="hm-point-title">Hail history at this spot</h2>
@@ -361,7 +354,29 @@
         <p class="hm-point-note">Reports are National Weather Service Local Storm Reports within <strong>25 miles</strong> of the pin &mdash; called in by spotters, law enforcement, and the public, so location is town-level precision (roughly 1&ndash;5 miles), not parcel-exact, and quiet years can mean nobody reported, not that nothing fell. Farming this ground? <a href="/field-scout">Draw the field in Field Scout</a> for the per-field read with satellite vigor.</p>
       </section>
 
+      <div class="hm-alerts hm-alerts--bar" id="hm-alerts">
+          <div class="hm-alerts-h">Hail alerts for this spot <span class="hm-alerts-soon">free</span></div>
+          <p class="hm-alerts-p">Search or tap your spot, pick a radius, drop your email — any morning radar-estimated hail touches it, one plain email with the dated map. An estimate, flagged as an estimate. Your email and pin, never sold. Free.</p>
+          <div class="hm-alerts-radius" role="radiogroup" aria-label="Alert radius">
+            <span class="hm-alerts-radius-l">Radius</span>
+            <button type="button" class="hm-rchip" data-r="1" aria-pressed="false">1 mi</button>
+            <button type="button" class="hm-rchip" data-r="5" aria-pressed="true">5 mi</button>
+            <button type="button" class="hm-rchip" data-r="10" aria-pressed="false">10 mi</button>
+            <button type="button" class="hm-rchip" data-r="25" aria-pressed="false">25 mi</button>
+          </div>
+          <div class="hm-alerts-row">
+            <input type="email" id="hm-alert-email" placeholder="you@example.com" autocomplete="email" aria-label="Email for hail alerts">
+            <button type="button" id="hm-alert-btn">Save my spot</button>
+          </div>
+          <div class="hm-alerts-status" id="hm-alert-status" aria-live="polite"></div>
+        </div>
+      <aside class="hm-sponsor hm-sponsor--ribbon" id="hm-sponsor"><span class="hm-sponsor-tag">Sponsor this map</span> 573 people pulled a county hail lookup here last month &mdash; one category-exclusive slot on this page, and your name on the alert emails it sends. Prefer just your state? Any of the 51 state hail pages can carry its own exclusive ribbon. <a href="/sponsor?slot=hail-map&amp;utm_source=hail-map&amp;utm_medium=slot" id="hm-sponsor-cta">Put your name here &rarr;</a></aside>
+
+
+
       
+
+      <p class="hm-about">Five years of National Weather Service hail reports on one map. Step through the years or hit play, and watch the same hail corridors light up season after season &mdash; the High Plains, the Front Range, the southern Plains. Risk has a geography. This is it. Crops, roofs, equipment, whole towns &mdash; if you’re checking hail, the record is here — and when a storm is running, the live warning layer below shows it as the Weather Service issues it. No charge, no login.</p>
 
       <div class="hm-note">
         <strong>What you're looking at.</strong> Each point is a hail report logged by a National Weather Service office &mdash; a trained spotter, law enforcement, or the public called it in. Brighter areas got more reports. Because reporting tracks population and storm spotters too, this is a map of <em>reported</em> hail, not a perfect physical record &mdash; but the persistent corridors are real, and they're exactly the ground where hail coverage earns its keep.
@@ -504,7 +519,13 @@
     function init(){
       if(typeof L==='undefined' || typeof L.heatLayer==='undefined'){ banner('The map library failed to load &mdash; refresh the page.'); return; }
       map = L.map('hm-map', { zoomControl:true, minZoom:3, maxZoom:12, worldCopyJump:false, preferCanvas:true })
-        .setView([39.5, -98.35], 4); // CONUS
+        .setView([39.5, -98.35], 4); // CONUS -- the seed view fitBounds needs
+      /* Zoom 4 fitted North America, not the country the data is in. These
+         are the lower 48; Leaflet picks the zoom that holds them in whatever
+         shape this container is, phone or desktop. Anything that wants a
+         different view -- ?state=, ?lat=/?lon=, a lookup -- runs after this
+         and wins. */
+      fitConus();
       /* NO TILE VENDOR. The basemap is data/us-states.geo.json in this
          repository. CARTO began serving a watermarked "API KEY REQUIRED" tile
          with a 200 status in September 2026, which no check here could see
@@ -604,7 +625,15 @@
           });
           var y0=nceiIdx.years[0], y1=nceiIdx.cutoff, span=(y1-y0+1);
           var head='<div class="hm-longterm-h">Long-term record \u00b7 '+y0+'\u2013'+y1+' \u00b7 within 10 mi</div>';
-          var srcline='<div class="hm-longterm-src">'+nceiIdx.source+'. Ends '+y1+' where the live 5-year record above begins \u2014 the two are never mixed. Older events can carry town-level location precision.</div>';
+          /* The live window rolls forward every year while this archive's
+             cutoff stays put, so the hole between them grows. Name it. */
+          var liveStart=(manifest && manifest.years && manifest.years.length) ? manifest.years[0] : null;
+          var gapNote='';
+          if(liveStart && liveStart > y1+1){
+            gapNote = ' ' + (liveStart-1 > y1+1 ? (y1+1)+'\u2013'+(liveStart-1) : String(y1+1)) +
+                      (liveStart-1 > y1+1 ? ' are' : ' is') + ' in neither record.';
+          }
+          var srcline='<div class="hm-longterm-src">'+nceiIdx.source+'. Ends '+y1+'; the live record above starts '+liveStart+'.'+gapNote+' The two are never mixed. Older events can carry town-level location precision.</div>';
           if(!evs.length){
             box.innerHTML=head+'<div class="hm-longterm-big">No archived hail events within 10 miles of this point \u2014 genuinely quiet ground, as far as '+span+' years of records can say.</div>'+srcline;
             box.hidden=false; return;
@@ -750,9 +779,9 @@
       if(ttl) ttl.textContent='Hail history \u2014 '+(label||('tapped spot \u00b7 '+lat.toFixed(2)+'\u00b0, '+lon.toFixed(2)+'\u00b0'));
       if(st) st.innerHTML=
         '<div class="hm-point-stat"><div class="v">'+ev.length+'</div><div class="l">reports \u00b7 25 mi \u00b7 5 yrs</div></div>'+
-        '<div class="hm-point-stat"><div class="v">'+nDays+'</div><div class="l">hail days ('+(nDays/5).toFixed(1)+'/yr)</div></div>'+
-        '<div class="hm-point-stat"><div class="v">'+(maxMag?maxMag.toFixed(2)+'\u2033':'\u2014')+'</div><div class="l">largest'+(maxEv?' \u00b7 '+esc(fmtDate(maxEv.date)):' reported')+'</div></div>'+
-        '<div class="hm-point-stat"><div class="v">'+(newest?esc(fmtDate(newest.date)):'\u2014')+'</div><div class="l">most recent'+(newest&&newest.mag!=null?' \u00b7 '+newest.mag.toFixed(2)+'\u2033':'')+'</div></div>'+
+        '<div class="hm-point-stat"><div class="v">'+nDays+'</div><div class="l">hail days ('+(nDays/yrSpan()).toFixed(1)+'/yr)</div></div>'+
+        '<div class="hm-point-stat"><div class="v">'+(maxMag?maxMag.toFixed(2)+'\u2033':'\u2014')+'</div><div class="l">largest'+(maxEv?' \u00b7 '+esc(fmtDate(maxEv.date))+' \u00b7 '+Math.round(maxEv.mi)+' mi away':' reported')+'</div></div>'+
+        '<div class="hm-point-stat"><div class="v">'+(newest?esc(fmtDate(newest.date)):'\u2014')+'</div><div class="l">most recent'+(newest&&newest.mag!=null?' \u00b7 '+newest.mag.toFixed(2)+'\u2033':'')+(newest?' \u00b7 '+Math.round(newest.mi)+' mi away':'')+'</div></div>'+
         '<div class="hm-point-stat"><div class="v">'+(nearEv?nearEv.mi.toFixed(1)+' mi':'\u2014')+'</div><div class="l">nearest report'+(nearEv?' \u00b7 '+esc(fmtDate(nearEv.date)):'')+'</div></div>';
       if(tb){
         if(!ev.length){ tb.innerHTML='<tbody><tr><td class="hm-cty-empty">No NWS hail reports within 25 miles in the last 5 years \u2014 which means none were <em>reported</em>, a genuinely quiet stretch by the record.</td></tr></tbody>'; }
@@ -813,7 +842,42 @@
     // Panel finding: most visitors arrive asking "what happened at MY spot LAST NIGHT" —
     // so on every lookup we auto-test the last 30 days of archived swaths (plus the
     // rolling last-24h layer if loaded) at the pin and lead with the answer.
-    function sizeWord(b){ return b>=2?'baseball-class (2\u2033+)':b>=1.5?'golf-ball-class (1.5\u2033+)':b>=1?'quarter-size or larger (1\u2033+)':'penny-size or larger (0.75\u2033+)'; }
+    /* NWS size classes, the same ones markerStyle(), #hm-legend-size and the
+       FAQ on this page already use: 1.00 quarter, 1.50 ping-pong, 1.75 golf
+       ball, 2.00 hen egg, 2.75 baseball. This function used to call 2.00
+       "baseball-class" and 1.50 "golf-ball-class" -- one to two classes high,
+       in the sentence a homeowner repeats to an adjuster. */
+    /* The elapsed span of the live record, not the number of files. On
+       2026-09-23 with data through 2026-09-01 that is 4.67 years, not 5, and
+       dividing by 5 understated the rate by 7% -- more every January. */
+    function yrSpan(){
+      try{
+        var ys=(manifest&&manifest.years)||[];
+        if(!ys.length) return 5;
+        var start=new Date(ys[0]+'-01-01T12:00:00Z');
+        var end=manifest.generated?new Date(manifest.generated):new Date();
+        var y=(end-start)/(365.2425*86400000);
+        return (isFinite(y)&&y>0.5)?y:ys.length;
+      }catch(e){ return 5; }
+    }
+    /* THE LOWER 48, FITTED TO WHAT IS VISIBLE. On a phone the sticky
+       control bar covers the bottom of the map -- measured at 221px of 614
+       -- so the country is fitted above it rather than under it. Called once
+       at startup, and again once the bar exists to be measured. */
+    var refitDone = false;
+    function fitConus(){
+      if(!map) return;
+      try{
+        var pad=8, bar=0;
+        if(window.matchMedia && window.matchMedia('(max-width:640px)').matches){
+          var c=document.getElementById('hm-controls');
+          bar=(c && c.offsetHeight ? c.offsetHeight : 210) + 16;
+        }
+        map.fitBounds([[24.4,-124.8],[49.4,-66.9]],
+          { paddingTopLeft:[pad,pad], paddingBottomRight:[pad,pad+bar], animate:false });
+      }catch(e){}
+    }
+    function sizeWord(b){ return b>=2.75?'baseball-class (2.75\u2033+)':b>=2?'hen-egg-class (2\u2033+)':b>=1.75?'golf-ball-class (1.75\u2033+)':b>=1.5?'ping-pong-class (1.5\u2033+)':b>=1?'quarter-size or larger (1\u2033+)':'penny-size or larger (0.75\u2033+)'; }
     function runVerdict(la,lo){
       var v=document.getElementById('hm-verdict'); if(!v) return;
       v.hidden=true;
@@ -933,7 +997,6 @@
         btn.disabled=true; stx.textContent='Saving\u2026';
         var rc=document.querySelector('.hm-rchip[aria-pressed="true"]');
         var radius=rc?parseInt(rc.getAttribute('data-r'),10):5;
-        ga('hm_alert_signup',{radius_mi:radius});
         fetch('https://agsist-subs.dnilgis.workers.dev/alert-subscribe',{
           method:'POST',
           headers:{ 'Content-Type':'application/json', 'Accept':'application/json' },
@@ -942,7 +1005,11 @@
             place:lastLookup.label||'', radius_mi:radius })
         }).then(function(r){
           btn.disabled=false;
-          if(r.ok){ stx.textContent='Watching this spot \u2014 '+radius+' mi radius. Alerts arrive the morning after radar-estimated hail touches it.'; em.value=''; }
+          /* Counted here, not before the fetch: an attempt the worker
+             refused is not a signup, and a button wired to nothing produces
+             no event at all rather than a clean-looking number. */
+          if(r.ok){ ga('hm_alert_signup',{radius_mi:radius});
+                    stx.textContent='Watching this spot \u2014 '+radius+' mi radius. Alerts arrive the morning after radar-estimated hail touches it.'; em.value=''; }
           else{ stx.textContent='Couldn\u2019t save just now \u2014 try again in a minute.'; }
         }).catch(function(){ btn.disabled=false; stx.textContent='Couldn\u2019t save just now \u2014 try again in a minute.'; });
       }
@@ -1023,6 +1090,14 @@
         b.addEventListener('click', function(){ stopAnim(); setView(b.getAttribute('data-key')); });
       });
       document.getElementById('hm-play').addEventListener('click', toggleAnim);
+      /* innerHTML above threw away the .on class. This runs again whenever
+         the mesh index lands after the manifest, so without this the strip
+         ends up with nothing selected. */
+      if(current) markActive(current);
+      /* The first fitBounds ran before this strip existed, so on a phone it
+         guessed the bar height. Now it can be measured -- but only re-fit
+         while the user is still on the view the page opened with. */
+      if(!refitDone && current==='all' && !lastLookup){ refitDone=true; fitConus(); }
     }
 
     function markActive(key){
@@ -1241,7 +1316,10 @@
     // that had been down for an hour. Say stale instead of pretending live.
     function markWarnStale(){
       var btn=document.getElementById('hm-warnbtn');
-      if(btn && /NOW$/.test(btn.textContent||'')){
+      /* Was /NOW$/ -- which matches "...WARNINGS NOW" and never matches
+         "No hail warnings right now". The guard covered the alarming state
+         and left the reassuring one standing after the feed died. */
+      if(btn){
         btn.classList.remove('hot');
         btn.textContent='Warning feed unreachable — last count stale';
       }
