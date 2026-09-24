@@ -213,6 +213,18 @@ async function render(browser, port, page, sc) {
   try {
     await p.goto(`http://127.0.0.1:${port}/${page}`, { waitUntil: 'domcontentloaded', timeout: 30000 });
     await p.waitForTimeout(WAIT);
+    /* Scroll the whole page before capturing. Anything gated on an
+       IntersectionObserver does not exist until it is scrolled to, and a
+       gate that only ever sees the first screen is not a gate. */
+    await p.evaluate(async () => {
+      const step = Math.max(200, window.innerHeight - 100);
+      for (let y = 0; y < document.body.scrollHeight + step; y += step) {
+        window.scrollTo(0, y);
+        await new Promise(r => setTimeout(r, 120));
+      }
+      window.scrollTo(0, 0);
+    });
+    await p.waitForTimeout(WAIT);
     const r = await p.evaluate(() => ({
       text: document.body ? document.body.innerText : '',
       sw: document.documentElement.scrollWidth, iw: window.innerWidth,
@@ -310,8 +322,9 @@ if (!pages.length) {
       continue;
     }
     /* One baseline render discovers the page's own data dependencies. */
-    const probe = await render(browser, A.port, page, { id: 'probe', width: 1280, height: 900 });
-    const deps = probe.dataFiles.slice(0, 10);
+    const probeA = await render(browser, A.port, page, { id: 'probe', width: 1280, height: 900 });
+    const probeB = await render(browser, B.port, page, { id: 'probe', width: 1280, height: 900 });
+    const deps = [...new Set([...probeA.dataFiles, ...probeB.dataFiles])].sort().slice(0, 14);
     console.log(`\n  ${page} — ${deps.length} data file(s), ${scenarios(deps).length} scenarios`);
 
     for (const sc of scenarios(deps)) {

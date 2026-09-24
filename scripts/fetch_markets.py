@@ -434,16 +434,22 @@ def _crude_why(title, yes_pct, time_left):
     t = title.lower()
     is_low = ('low' in t) or ('drop below' in t) or ('below' in t and 'hit' in t)
 
-    direction = "drop below" if is_low else "reach"
-    strike_str = f"${strike:.0f}" if strike else "the strike"
+    direction = "dropping below" if is_low else "reaching"
+    if strike:
+        strike_str = f"${strike:.0f}"
+    elif "all-time high" in t:
+        strike_str = "a new all-time high"
+    else:
+        strike_str = "the level in the contract"
 
     # Conviction language based on probability
     if yes_pct >= 60:
-        open_line = f"Market pricing {yes_pct}% odds crude will {direction} {strike_str}"
+        verb = "drop below" if is_low else "reach"
+        open_line = f"Market pricing {yes_pct}% odds crude will {verb} {strike_str}"
     elif yes_pct >= 40:
-        open_line = f"Near coin-flip odds ({yes_pct}% YES) crude {direction} {strike_str}"
+        open_line = f"Near coin-flip odds ({yes_pct}% YES) on crude {direction} {strike_str}"
     elif yes_pct >= 15:
-        open_line = f"Lower-probability outcome ({yes_pct}%) that crude {direction} {strike_str}"
+        open_line = f"Lower-probability outcome ({yes_pct}%) of crude {direction} {strike_str}"
     else:
         open_line = f"Tail-risk bet ({yes_pct}% odds) on crude {direction} {strike_str}"
 
@@ -469,11 +475,38 @@ def _ukraine_why(title, yes_pct, time_left, close_time):
     return f"{opener}. {follow}"
 
 
+_RATE_TAIL = ("Lower rates reduce operating loan and land interest carrying cost -- "
+              "historically supportive of commodity prices via weaker dollar.")
+
+
 def _fed_why(title, yes_pct):
-    """Contextual why for Fed/rate markets."""
+    """Contextual why for Fed/rate markets.
+
+    BUG FIXED 2026-09-24: any title containing "cut" got
+    "{yes}% odds of a rate cut", so "Will NO Fed rate cuts happen in 2026?"
+    at 96% YES shipped as "96% odds of a rate cut" -- the opposite of what
+    the contract pays on. The text now follows the contract's own wording.
+    """
     t = title.lower()
     if 'cut' in t:
-        return f"{yes_pct}% odds of a rate cut. Lower rates reduce operating loan and land interest carrying cost -- historically supportive of commodity prices via weaker dollar."
+        m = re.search(r'\b(no|zero|one|two|three|four|\d+)\s+(?:fed\s+)?(?:rate\s+)?cuts?\b', t)
+        if m:
+            n = m.group(1)
+            if n in ('no', 'zero'):
+                return (f"{yes_pct}% odds of NO rate cut over the contract window. Rates holding "
+                        "where they are keeps operating-loan and land-carrying cost at today's level "
+                        "and leaves the dollar without that source of downward pressure.")
+            words = {'one': '1', 'two': '2', 'three': '3', 'four': '4'}
+            n = words.get(n, n)
+            unit = "cut" if n == '1' else "cuts"
+            return f"{yes_pct}% odds of exactly {n} rate {unit} over the contract window. {_RATE_TAIL}"
+        # "How many Fed rate cuts in 2026?" is one leg of a multi-outcome
+        # event, so its price is not the probability of a cut. Anything
+        # else with "cut" in it and no count is a plain yes/no on a cut.
+        if 'how many' in t:
+            return (f"{yes_pct}% on this leg. Read the question text -- this is one outcome "
+                    "of a multi-outcome Fed event, not the chance of a cut.")
+        return f"{yes_pct}% odds of a rate cut. {_RATE_TAIL}"
     if 'hike' in t or 'raise' in t:
         return f"{yes_pct}% odds of a rate hike. Tighter policy strengthens the dollar and pressures grain export competitiveness."
     return f"Fed policy moves ripple through the dollar and farm lending -- {yes_pct}% YES on this outcome."
@@ -706,6 +739,11 @@ def _process_kalshi_items(items, markets, seen):
             "close_time": close_time,
             "time_left": tl,
             "url": f"https://kalshi.com/markets/{ep.lower()}",
+            # The page groups legs of one event onto one card. Polymarket rows
+            # carry the event slug; Kalshi rows carried nothing, so every leg
+            # of a Kalshi event rendered as its own independent market.
+            "event": ev or ep,
+            "event_title": "",
             "relevance": score,
             "tier": tier,
             "category": get_category(search_text),
@@ -801,7 +839,7 @@ def _parse_poly_prob(m):
     return prob if prob and 0 < prob < 100 else None
 
 
-def _make_poly_record(m, question, seen, event_slug=""):
+def _make_poly_record(m, question, seen, event_slug="", event_title=""):
     mid = str(m.get("id") or m.get("condition_id") or m.get("conditionId") or "").strip()
     if not mid or mid in seen:
         return None
@@ -852,6 +890,7 @@ def _make_poly_record(m, question, seen, event_slug=""):
         "time_left": tl,
         "url": url,
         "slug": slug,
+        "event_title": event_title,
         "relevance": score,
         "tier": tier,
         "category": get_category(question),
@@ -871,12 +910,12 @@ def _process_poly_events(events, markets, seen):
                 q = (m.get("question") or m.get("title") or ev_title).strip()
                 if not q:
                     continue
-                rec = _make_poly_record(m, q, seen, ev.get("slug", ""))
+                rec = _make_poly_record(m, q, seen, ev.get("slug", ""), ev_title)
                 if rec:
                     markets.append(rec)
                     added += 1
         elif ev_title:
-            rec = _make_poly_record(ev, ev_title, seen, ev.get("slug", ""))
+            rec = _make_poly_record(ev, ev_title, seen, ev.get("slug", ""), ev_title)
             if rec:
                 markets.append(rec)
                 added += 1
@@ -1118,16 +1157,34 @@ def main():
         elif r >= 70: tc[70]  += 1
         else:         tc[40]  += 1
 
+    tp = {100: 0, 70: 0, 40: 0}
+    for m in top:
+        r = m.get("relevance", 0)
+        if r >= 100:  tp[100] += 1
+        elif r >= 70: tp[70]  += 1
+        else:         tp[40]  += 1
+
     output = {
         "fetched":        now.strftime("%Y-%m-%dT%H:%M:%SZ"),
         "version":        5,
         "count":          len(top),
         "total_found":    len(combined),
+        # tier_breakdown counts the RAW SCAN (total_found rows). It is not a
+        # description of what this file publishes: on 2026-09-23 it read
+        # {0, 15, 7} over 22 scanned rows while `markets` held 9.
+        # components/geo.js prints it beside total_found, which is correct
+        # there, so the key keeps its meaning and the published count is new.
         "tier_breakdown": {
             "direct_ag":     tc[100],
             "trade_energy":  tc[70],
             "macro_weather": tc[40],
         },
+        "published_tier_breakdown": {
+            "direct_ag":     tp[100],
+            "trade_energy":  tp[70],
+            "macro_weather": tp[40],
+        },
+        "published_event_count": len({(m.get("slug") or m.get("event") or m["ticker"]) for m in top}),
         "categories": cats,
         "markets":    top,
     }
@@ -1143,7 +1200,10 @@ def main():
     print(f"  After ladders: {len(collapsed)}")
     print(f"  Deduped:     {len(deduped)}")
     print(f"  Top saved:   {len(top)}")
-    print(f"  Direct ag:   {tc[100]}  Trade/energy: {tc[70]}  Macro: {tc[40]}")
+    print(f"  Scanned:     direct ag {tc[100]}  trade/energy {tc[70]}  macro {tc[40]}  (of {len(combined)})")
+    print(f"  Published:   direct ag {tp[100]}  trade/energy {tp[70]}  macro {tp[40]}  (of {len(top)})")
+    if not tp[100]:
+        print("  NOTE: no direct-ag contract published -- the page will say so at the top.")
     print(f"  Categories:  " + ", ".join(f"{k}({len(v)})" for k, v in cats.items()))
     if top:
         print(f"\n  Top 10:")

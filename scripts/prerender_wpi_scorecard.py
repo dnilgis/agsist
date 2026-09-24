@@ -368,72 +368,156 @@ def bias_cell(b):
             f'{sign}{b:.2f}% {"high" if hi else "low"}</span></span>')
 
 
-def board_row(r, rank, min_n):
-    """One row of the board. Ranked rows carry a number; building rows are
-    greyed and say how many calls they still need."""
-    qualified = bool(r.get("qualified", True))
+def spread_note(r):
+    """THE SPREAD TRAVELS WITH THE MEAN. 2.11% over four calls that ran 1.60%
+    to 2.46% and 2.11% over four that all landed on 2.11% are different
+    records, and the board printed them the same way."""
+    lo, hi = r.get("err_min"), r.get("err_max")
+    if lo is None or hi is None:
+        return ""
+    if (r.get("n") or 0) < 2 or (hi - lo) < 0.005:
+        return ""
+    return u'<span class="as-spread">calls ran %.2f\u2013%.2f%%</span>' % (lo, hi)
+
+
+def wins_badge(r):
+    """CLOSEST OF WHO FILED IS NOT A WIN. Both badges this board had ever
+    awarded sat on forecasts FURTHER from the print than the free consensus
+    two columns to the left."""
+    wins = r.get("wins") or 0
+    if r.get("closest_n") is None:
+        # An older scorecard file, where `wins` counted closest alone.
+        if not wins:
+            return ""
+        return (u'<span class="as-wins mut" title="Closest of the forecasters who filed a '
+                u'number for that metric. It does not mean the call beat the trade '
+                u'consensus.">%d\u00d7 closest filed</span>' % wins)
+    out = ""
+    if wins:
+        out += (u'<span class="as-wins" title="Closest of everyone on record for that metric, '
+                u'and closer to the print than the trade consensus.">%d\u00d7 closest, beat '
+                u'trade</span>' % wins)
+    only = (r.get("closest_n") or 0) - wins
+    if only > 0:
+        out += (u'<span class="as-wins mut" title="Closest of the forecasters who filed a number '
+                u'for that metric, but still further from the print than the free trade '
+                u'consensus. That is not a win.">%d\u00d7 closest filed, wider than '
+                u'trade</span>' % only)
+    return out
+
+
+def board_row(r, rank, min_n, show_rank):
     beat_cls = "as-beat" if (r.get("beat_rate") is not None and r["beat_rate"] >= 50) else "as-beat lo"
-    beat = ('<span class="as-mut" title="None of this forecaster\u2019s scored calls had a '
-            'trade estimate to beat">no trade to beat</span>'
-            if r.get("beat_rate") is None
-            else (f'<span class="{beat_cls}">{r["beat_rate"]}%</span>'
-                  + (f'<span class="as-mut"> of {r["beat_n"]}</span>'
-                     if r.get("beat_n") is not None and r.get("beat_n") != r.get("n") else '')))
-    calls = str(r["n"]) if qualified else f'{r["n"]} of {min_n}'
-    wins = (f'<span class="as-wins" title="Closest of everyone on record for that metric">'
-            f'{r["wins"]}\u00d7 closest</span>') if r.get("wins") else ""
-    # We run this board AND we are on it. Say so on the row, not only in the firm
-    # line -- a reader scanning names should not have to notice the domain.
-    ours = ('<span class="as-ours" title="This is our own model. We run this board '
-            'and score it, and the same rules apply to us.">ours</span>'
+    # THE COUNT, NOT ONLY THE RATE. "0%" over three calls and "0%" over thirty
+    # are not the same claim about a forecaster.
+    if r.get("beat_yes") is not None and r.get("beat_n") is not None:
+        cnt = u'<span class="as-mut"> &middot; %d of %d</span>' % (r["beat_yes"], r["beat_n"])
+    elif r.get("beat_n") is not None and r.get("beat_n") != r.get("n"):
+        cnt = u'<span class="as-mut"> of %d</span>' % r["beat_n"]
+    else:
+        cnt = ""
+    if r.get("beat_rate") is None:
+        beat = (u'<span class="as-mut" title="None of this forecaster\u2019s scored calls had a '
+                u'trade estimate to beat">no trade to beat</span>')
+    else:
+        beat = (u'<span class="as-cell"><span class="%s">%s%%</span>%s</span>'
+                % (beat_cls, r["beat_rate"], cnt))
+    qualified = bool(r.get("qualified", True))
+    calls = str(r["n"]) if qualified else u"%s of %s" % (r["n"], min_n)
+    # We run this board AND we are on it. Say so on the row, not only in the
+    # firm line -- a reader scanning names should not have to notice the domain.
+    ours = (u'<span class="as-ours" title="This is our own model. We run this board and score '
+            u'it, and the same rules apply to us.">ours</span>'
             if "agsist.com" in (r.get("firm") or "").lower() else "")
-    cls = "" if qualified else ' class="as-building"'
-    return (f'<tr{cls}><td class="rk" data-label="#">{rank if rank else "&mdash;"}</td>'
-            f'<td data-label="Analyst"><span class="who">{esc(r["analyst"])}</span>{ours}'
-            f'<span class="firm">{esc(r["firm"])}</span>{wins}</td>'
-            f'<td class="num" data-label="Calls">{calls}</td>'
-            f'<td class="num" data-label="Avg error"><span class="as-acc">{r["mape"]:.2f}%</span></td>'
-            f'<td class="num" data-label="Beat trade">{beat}</td>'
-            f'<td class="num" data-label="Bias">{bias_cell(r.get("bias"))}</td></tr>')
+    rk = (u'<td class="rk" data-label="#">%s</td>' % (rank if rank else u"&mdash;")) if show_rank else ""
+    return (u'<tr%s>%s'
+            u'<td data-label="Analyst"><span class="who">%s</span>%s<span class="firm">%s</span>%s</td>'
+            u'<td class="num" data-label="Calls">%s</td>'
+            u'<td class="num" data-label="Avg error"><span class="as-cell">'
+            u'<span class="as-acc">%.2f%%</span>%s</span></td>'
+            u'<td class="num" data-label="Beat trade">%s</td>'
+            u'<td class="num" data-label="Bias">%s</td></tr>'
+            % ("" if qualified else ' class="as-building"', rk,
+               esc(r["analyst"]), ours, esc(r["firm"]), wins_badge(r),
+               calls, r["mape"], spread_note(r), beat, bias_cell(r.get("bias"))))
 
 
-def board_tbl(rows, building, min_n=3):
-    """EVERYONE WHO HAS BEEN SCORED, on one table.
+ORD_MIN = 10
 
-    The building rows used to render only when the ranked table was empty, so
-    on 2026-09-09 the page showed one forecaster — the least accurate on record
-    — ranked first and alone, with three better records in a hidden array."""
+
+def board_tbl(rows, building, min_n=3, cls=None, ord_min=None):
+    """ONE TABLE PER METRIC CLASS, AND NO ORDINAL IT CANNOT SUPPORT.
+
+    score() used to add every error percentage into one mean regardless of
+    metric, so one soybean ending-stocks call at 2.58% off carried a
+    forecaster over the 3-call bar and he printed "#1" on a record that was
+    really two yield calls. And "#1 1.81%" over "#2 2.11%" is a finishing
+    order asserted on three and four observations with a 0.30-point gap.
+    Ordinals now need two qualifying forecasters AND ord_min calls each;
+    under that the "#" column is not rendered at all, because a column of
+    dashes still tells a reader a place exists and is being withheld.
+    """
     min_n = min_n or 3
+    ord_min = ord_min or ORD_MIN
     rows = rows or []
     building = building or []
-    head = ('<table class="as-tbl"><thead><tr><th>#</th><th>Analyst</th>'
-            '<th class="num">Calls</th><th class="num">Avg error</th>'
-            '<th class="num">Beat trade</th><th class="num">Bias</th></tr></thead><tbody>')
     if not rows and not building:
         return '<div class="as-err">No forecasters scored yet.</div>'
-    # A single qualified forecaster is not a ranking. On 2026-09-09 the one row
-    # that cleared min_n held the LEAST accurate record on the board and printed
-    # "#1" above three better ones. A place needs somebody to be ahead of.
-    ranked = len(rows) > 1
-    body = "".join(board_row(r, (i + 1) if ranked else None, min_n)
-                   for i, r in enumerate(rows))
-    brows = "".join(board_row(r, None, min_n) for r in building)
-    note = ""
-    if building:
-        note = ('<tr class="as-split"><td colspan="6">Still building &mdash; ranked once a '
-                f'forecaster has <b>{min_n} scored calls</b>. Their accuracy so far is real and '
-                f'is shown; their position is not, because {min_n - 1} calls is not a record.'
-                '</td></tr>')
-    if not rows:
-        lead = ('<div class="as-err" style="margin-bottom:.6rem">Nobody has '
-                f'{min_n} scored calls yet &mdash; building records below.</div>')
-    elif not ranked:
-        lead = ('<div class="as-err" style="margin-bottom:.6rem">A ranking needs at least two '
-                f'forecasters with {min_n} scored calls. One has cleared that so far, so this '
-                'board shows records, not places.</div>')
+    if cls and cls.get("ordinals_ok") is not None:
+        ordinals = bool(cls["ordinals_ok"])
     else:
-        lead = ""
-    return f'{lead}{head}{body}{note}{brows}</tbody></table>'
+        ordinals = len(rows) > 1 and all((r.get("n") or 0) >= ord_min for r in rows)
+    span = 6 if ordinals else 5
+    head = (u'<table class="as-tbl"><thead><tr>'
+            + (u'<th>#</th>' if ordinals else u'')
+            + u'<th>Analyst</th><th class="num">Calls</th><th class="num">Avg error</th>'
+              u'<th class="num">Beat trade</th><th class="num">Bias</th></tr></thead><tbody>')
+    cap = ""
+    if cls and cls.get("label"):
+        n_calls = cls.get("calls")
+        cap = (u'<tr class="as-cap"><td colspan="%d"><b>%s</b>%s. Errors are averaged inside '
+               u'this group only \u2014 a 2%% miss on a yield and a 2%% miss on ending stocks are '
+               u'not the same miss, and this page does not add them together.</td></tr>'
+               % (span, esc(cls["label"]),
+                  (u' \u00b7 %d scored call%s' % (n_calls, "" if n_calls == 1 else "s"))
+                  if n_calls is not None else u""))
+    body = u"".join(board_row(r, (i + 1) if ordinals else None, min_n, ordinals)
+                    for i, r in enumerate(rows))
+    brows = u"".join(board_row(r, None, min_n, ordinals) for r in building)
+    note = u""
+    if building and rows:
+        note = (u'<tr class="as-split"><td colspan="%d">Still building \u2014 listed above the '
+                u'line once a forecaster has <b>%d scored calls in this group</b>. Their accuracy '
+                u'so far is real and is shown; their position is not, because %d calls is not a '
+                u'record.</td></tr>' % (span, min_n, min_n - 1))
+    lead = u""
+    if not rows:
+        lead = (u'<div class="as-err" style="margin-bottom:.6rem">Nobody has %d scored calls in '
+                u'this group yet \u2014 building records below.</div>' % min_n)
+    elif len(rows) == 1:
+        lead = (u'<div class="as-err" style="margin-bottom:.6rem">A ranking needs at least two '
+                u'forecasters with %d scored calls in the same group. One has cleared that so '
+                u'far, so this board shows records, not places.</div>' % min_n)
+    elif not ordinals:
+        lead = (u'<div class="as-err" style="margin-bottom:.6rem">Listed by average error, with '
+                u'no places. This page prints a finishing order only once every forecaster above '
+                u'the line has <b>%d scored calls</b> in the same group. Under that, the gap '
+                u'between two averages sits inside the spread of each one\u2019s own calls '
+                u'\u2014 shown beside every average \u2014 and an order would be a coin flip '
+                u'written as a fact.</div>' % ord_min)
+    return lead + head + cap + body + note + brows + u'</tbody></table>'
+
+
+def primary_class(asd):
+    """The class the main board renders, matching the page's own choice."""
+    classes = asd.get("classes") or None
+    if not classes:
+        return None
+    key = asd.get("primary_class") or classes[0].get("key")
+    for c in classes:
+        if c.get("key") == key:
+            return c
+    return classes[0]
 
 
 # ── Scorecard renderers ────────────────────────────────────────────────────
@@ -548,8 +632,10 @@ def bake_wpi(check_only=False):
     src = replace_region(src, "wp-farmbox", farm_box(wpi.get("upcoming")), WPI_HTML)
     src = replace_region(src, "wp-next", next_card(wpi.get("upcoming")), WPI_HTML)
     src = replace_region(src, "wp-history", history_el(wpi.get("history")), WPI_HTML)
+    pcls = primary_class(asd)
     src = replace_region(src, "as-board",
-                         board_tbl(asd.get("leaderboard"), asd.get("building"), asd.get("min_n")),
+                         board_tbl(asd.get("leaderboard"), asd.get("building"),
+                                   asd.get("min_n"), pcls, asd.get("ordinal_min_n")),
                          WPI_HTML)
     if wpi.get("updated"):
         src = re.sub(r'("dateModified":")(\d{4}-\d{2}-\d{2})(")',
@@ -625,7 +711,8 @@ def ao_summary(d):
         return ""
     fetched = (d.get("fetched") or "")[:10]
     return (f'Prediction-market odds as of {esc(fetched)}: ' + "; ".join(items)
-            + ". Live odds refresh below; sources are real-money markets (Polymarket and similar).")
+            + ". These are the readings from the pull stamped above, not a live feed. "
+              "The board below re-renders the same pull in your browser.")
 
 
 def bake_cot():

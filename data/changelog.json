@@ -1,7 +1,66 @@
 {
-  "updated": "2026-09-23",
+  "updated": "2026-09-24",
   "note": "Curated by hand each work session. Dates are the day the change was built; uploads usually land the same day or the next. Machine-refreshed data (prices, bids, weather, briefings) is not logged here — that updates continuously.",
   "entries": [
+    {
+      "date": "2026-09-24",
+      "items": [
+        {
+          "tag": "fixed",
+          "page": "/ag-odds",
+          "name": "The Fed card said the opposite of the contract",
+          "text": "“Will no Fed rate cuts happen in 2026?” was trading at 96 cents and this page printed “96% odds of a rate cut” beside it. It is a contract that pays if there is NO cut, so the sentence was backwards, and the same fault turned “Will 1 Fed rate cut happen in 2026?” into another reading of the same thing. Every one of these now reads off the question it belongs to. This was ours."
+        },
+        {
+          "tag": "improved",
+          "page": "/ag-odds",
+          "name": "Four legs of one market now sit on one card",
+          "text": "The board showed nine cards for what were four markets. Four of them were price steps on a single crude-oil contract, printed as if they were four separate bets, and their percentages looked like they should add up to something. They are now one card, with the note that a lower step is already inside a higher one, so the numbers are not meant to be added."
+        },
+        {
+          "tag": "fixed",
+          "page": "/whats-priced-in",
+          "name": "A #1 that was built on two different kinds of call",
+          "text": "The forecaster board averaged a soybean ending-stocks miss and a corn yield miss into one accuracy number, which is how one name reached the top of the board on a record that was really two yield calls. Yield calls and supply calls are now scored in separate groups and the page says which group a table is showing. It also stops printing a finishing order at all until there are enough scored calls to support one."
+        },
+        {
+          "tag": "improved",
+          "page": "/whats-priced-in",
+          "name": "Closest of who filed is not the same as beating the market",
+          "text": "Both “closest” badges this board had ever awarded sat on forecasts that landed further from the USDA print than the free trade consensus in the column beside them. A badge now only says a forecast beat the trade when it did; the rest say, in words, that it was the closest of those who filed and still wider than the consensus. Every average now carries the spread of the calls behind it."
+        },
+        {
+          "tag": "new",
+          "page": "/cash-bids",
+          "name": "Where do I take this load",
+          "text": "Put in your bushels, your grain and the delivery window and you get every elevator in our snapshot that posts for it, in dollars for the load rather than cents a bushel, ranked by what you would actually take home. Put in what a mile costs you and the haul comes off both ways. It says which distances are measured from a door and which from a town centre, and it says how many elevators it left out and why."
+        },
+        {
+          "tag": "new",
+          "page": "/",
+          "name": "Your county's final planting date",
+          "text": "The homepage now shows the crop-insurance final planting dates for corn and soybeans in the county it has located you in, with the days left, taken from the USDA Risk Management Agency's published dates for the current crop year. It shows nothing at all for a county it does not have on file rather than falling back on a state or a regional guess."
+        },
+        {
+          "tag": "fixed",
+          "page": "/breakeven",
+          "name": "The price you typed is the price it keeps",
+          "text": "The calculator seeds the price box from the live board. If you then typed your own price and changed crop, or came back to the page later, the live number wrote over what you had entered. Your price now stays yours, and the live number is only used until you replace it."
+        },
+        {
+          "tag": "fixed",
+          "page": "/",
+          "name": "The 52-week low and high were rounded into the range",
+          "text": "The small low and high labels under each price were rounded to whole dollars, which pulled them inside the range that actually traded. Class III milk showed a $15 low against a real low of $14.53 and feeders showed $300 against $299.52. They now carry the same precision as the price above them and are rounded outward, so the range shown always contains the one that happened. The dollar index also had a dollar sign on it, which it should never have had."
+        },
+        {
+          "tag": "fixed",
+          "page": "/conditions-yield",
+          "name": "What the accuracy number is measuring",
+          "text": "The page said the model explained a share “of final yield”. It does not. It explains that share of how Iowa's final yield differs from its trend, which is a much narrower claim and the one the number actually supports. The wording is corrected everywhere it appeared on the page."
+        }
+      ]
+    },
     {
       "date": "2026-09-23",
       "items": [

@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# math is used for the nearest-rank percentile in run_crop().
+import math
 """build_yield_nowcast.py — the AGSIST Yield Nowcast.
 
 WHAT: a weekly national corn + soybean yield estimate built from Monday's
@@ -186,7 +188,10 @@ def run_crop(crop, cond, fit_states, nass_dir="data/nass"):
         raise SystemExit(f"FATAL {crop}: backtest produced only {len(errors)} years")
     abs_err = sorted(abs(e) for e in errors)
     mae = sum(abs_err) / len(abs_err)
-    band80 = abs_err[max(0, int(0.8 * len(abs_err)) - 1)]
+    # Nearest-rank p80. int(0.8*n)-1 lands one index low -- with n=16 it
+    # returned the 12th of 16 sorted errors, which is the 75th percentile,
+    # under a label that says 80%.
+    band80 = abs_err[max(0, math.ceil(0.8 * len(abs_err)) - 1)]
 
     # trend-only baseline (no ratings): what "nobody knows in July" implies
     trend_errs = []

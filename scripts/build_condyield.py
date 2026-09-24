@@ -126,7 +126,7 @@ def render_tiles(data, rows):
     if ia:
         t.append(f'<div class="cy-stat"><div class="v">{round(ia["r2"]*100)}%</div>'
                  f'<div class="l">Iowa corn, this week (wk {ia["week"]})</div>'
-                 f'<div class="s">of final yield explained by G+E</div></div>')
+                 f'<div class="s">of yield deviation from trend explained by G+E</div></div>')
         t.append(f'<div class="cy-stat"><div class="v">{round(ia["peak_r2"]*100)}%</div>'
                  f'<div class="l">Iowa corn by week {ia["peak_wk"]}</div>'
                  f'<div class="s">the season seals it late</div></div>')
@@ -148,7 +148,10 @@ def render_seed(data, rows):
     bits = [f"week {wk} of {yr}: corn ratings currently explain "]
     parts = []
     if ia:
-        parts.append(f'{round(ia["r2"]*100)}% of Iowa&rsquo;s final yield')
+        # r2 is the fit on DETRENDED yield; r2_raw (0.29 for IA wk38) is the
+        # share of the yield itself. Saying "of final yield" claims the second
+        # while printing the first.
+        parts.append(f'{round(ia["r2"]*100)}% of how Iowa&rsquo;s final yield differs from trend')
     if il:
         parts.append(f'{round(il["r2"]*100)}% of Illinois&rsquo;s')
     if top and top["st"] not in ("IA", "IL"):
@@ -171,8 +174,8 @@ def faq_answer(rows):
     if not ia or not top:
         return None
     return (f"Partially, late, and it depends where you farm. In week {ia['week']}, the "
-            f"Good+Excellent share explains about {round(ia['r2'] * 100)}% of Iowa's final corn "
-            f"yield variation - but by week {ia['peak_wk']} it explains roughly "
+            f"Good+Excellent share explains about {round(ia['r2'] * 100)}% of how Iowa's final corn "
+            f"yield differs from its trend - but by week {ia['peak_wk']} it explains roughly "
             f"{round(ia['peak_r2'] * 100)}%. In {top['name']}, this week's ratings already explain "
             f"{round(top['r2'] * 100)}%. This page computes the number for every state and week "
             f"instead of asserting it.")
@@ -183,9 +186,9 @@ def meta_desc(rows):
     top = rows[0] if rows else None
     if not ia or not top:
         return None
-    return (f"Corn ratings in week {ia['week']} explain {round(ia['r2']*100)}% of Iowa's final "
-            f"yield. By week {ia['peak_wk']}: {round(ia['peak_r2']*100)}%. The real R&sup2; of G+E "
-            f"vs yield, every state, every week, from USDA data.")
+    return (f"Corn ratings in week {ia['week']} explain {round(ia['r2']*100)}% of how Iowa's final "
+            f"yield differs from trend. By week {ia['peak_wk']}: {round(ia['peak_r2']*100)}%. The real "
+            f"R&sup2; of G+E vs yield deviation, every state, every week, from USDA data.")
 
 
 # ── splice + gauntlet ─────────────────────────────────────────────────────
@@ -293,8 +296,14 @@ def main():
     baked = splice(baked, "stamp", f"Data refreshed {stamp_date(data)}.")
     md = meta_desc(rows)
     if md:
-        pat = re.compile(r'(<meta name="description" content=")[^"]*(">)')
-        assert len(pat.findall(baked)) == 1, "expected exactly 1 meta description"
+        pat = re.compile(
+            r'((?:<meta name="description"|<meta property="og:description"'
+            r'|<meta name="twitter:description") content=")[^"]*(">)')
+        # og: and twitter: carried the old sentence while name="description"
+        # was corrected, so every social share rendered the wording this
+        # baker exists to fix. The old assert checked for exactly 1 and read
+        # as proof of coverage.
+        assert len(pat.findall(baked)) == 3, "expected description, og:description, twitter:description"
         baked = pat.sub(lambda m: m.group(1) + md + m.group(2), baked)
     baked = bake_faq(baked, rows)
 

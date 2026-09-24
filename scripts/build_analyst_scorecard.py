@@ -11,15 +11,32 @@ and emits data/analyst-scorecard.json in the shape the page consumes:
   { updated, sample, min_n, upcoming{...}, leaderboard[...], building[...], reports[...] }
 
 THREE SCORING VIEWS, all scale-free so corn (bil bu), wheat (mil bu) and yield
-(bu/acre) can be aggregated in one table:
+(bu/acre) can be expressed in the same units of error:
   • Accuracy   — mean absolute % error vs the USDA actual (lower is better)
   • Beat-trade — % of metrics where the analyst was closer than the trade consensus
   • Bias       — mean SIGNED % error (positive = runs high, negative = runs low)
 
+SCALE-FREE IS NOT THE SAME AS COMPARABLE. A percentage makes corn carryout and
+corn yield printable in one column; it does not make a 2% miss on each the same
+miss. report_bands.py already says so in the only place that matters — it calls
+a print "in line" within 2% of the trade on ending stocks and within 0.5% on a
+yield, because that is how hard each one is. This file used to add every error
+percentage into one running mean regardless of metric, and the result was a
+board on which one soybean ending-stocks call (318 vs 310, 2.58% off) carried a
+forecaster over the 3-call bar and printed him "#1" on two yield calls that
+would not have qualified on their own.
+
+Errors are therefore pooled ONLY inside a metric class — the two classes are the
+two bands report_bands.py already draws — and MIN_N is required WITHIN a class.
+A forecaster with two yield calls and one stocks call has no qualifying record.
+
 Only metrics with a real `actual` are scored. Analysts need >= MIN_N scored
-calls before they appear ranked (a 2-call leaderboard is noise). Everyone else
-sits in `building` with their running count. No backtest is fabricated — the
-file simply accrues as you fill real numbers each cycle.
+calls IN ONE CLASS before they appear above the line (a 2-call leaderboard is
+noise). Everyone else sits in `building` with their running count. Places are a
+further step up: this file emits ORDINAL_MIN_N and the page prints no ordinals
+until every qualifying forecaster clears it, because a few tenths of a point
+between two three-call averages is not a finish order. No backtest is fabricated
+— the file simply accrues as you fill real numbers each cycle.
 
 Stdlib only. No secrets, no network.
 """
@@ -34,10 +51,29 @@ from datetime import datetime, timezone
 # scripts/report_bands.py, which also explains why a yield gets a tighter band.
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from report_bands import surprise as band_surprise  # noqa: E402
+from report_bands import band_for, IN_LINE_PCT_YIELD  # noqa: E402
 
 EST_PATH = "data/analyst-estimates.json"
 OUT_PATH = "data/analyst-scorecard.json"
-MIN_N = 3   # scored calls required before an analyst is ranked
+MIN_N = 3   # scored calls required, WITHIN ONE METRIC CLASS, to be listed above the line
+
+# Ordinals are a much stronger claim than a record, and this is the sample size
+# at which the page is allowed to make it. Nothing here reaches it yet, which is
+# the point: on 3 and 4 calls the board printed "#1" and "#2" over a 0.30-point
+# gap. The threshold lives here so the builder, the page and the static bake all
+# read one number.
+ORDINAL_MIN_N = 10
+
+# THE TWO CLASSES ARE THE TWO BANDS report_bands.py ALREADY DRAWS. Deriving the
+# class from band_for() rather than a second keyword list means a metric can
+# never land in one bucket for "in line" and another for scoring.
+CLASS_LABELS = {"yield": "Yield calls",
+                "supply": "Ending stocks & production calls"}
+
+
+def metric_class(metric_label):
+    """Which pool this metric's error is allowed to be averaged into."""
+    return "yield" if band_for(metric_label) == IN_LINE_PCT_YIELD else "supply"
 
 # ── THE MODEL'S OWN CALLS, WHICH WERE NEVER ON ITS OWN BOARD ─────────────────
 #
@@ -183,6 +219,8 @@ def score(data, roster, today):
             if actual is None:
                 continue   # not released / scored yet
             any_scored = True
+            label = met.get("label", met.get("key", ""))
+            cls = metric_class(label)
             ests = [e for e in met.get("estimates", []) if e.get("value") is not None]
             # find closest for this metric
             # A NUMBER WE COMPUTED CANNOT WIN A CONTEST OF WHAT PEOPLE SAID.
@@ -210,6 +248,14 @@ def score(data, roster, today):
                 # The badge was counting coverage, not accuracy.
                 closest = (best_err is not None) and (not e.get("derived")) \
                     and (abs(err - best_err) < 1e-9) and len(judged) >= 2
+                # CLOSEST OF WHO FILED IS NOT A WIN. Both stars this board had
+                # ever awarded went to forecasts FURTHER from the print than the
+                # free trade consensus printed two columns to the left: Sep 11
+                # corn, AGSIST 182.6 at 2.30% off, starred over a consensus that
+                # was 0.22% off; Aug 12 soybeans, Suderman at 0.57% starred over
+                # a consensus at 0.38%. Both rows already carried "beat": false
+                # in this same file. A star now requires both.
+                star = bool(closest and beat)
                 aid = e.get("id")
                 info = roster.get(aid, {"analyst": aid, "firm": ""})
                 results.append({"analyst": info["analyst"], "firm": info["firm"],
@@ -229,21 +275,31 @@ def score(data, roster, today):
                                 "source_note": e.get("source_note"),
                                 "derived": bool(e.get("derived")),
                                 "locked_on": e.get("locked_on"),
-                                "closest": closest})
-                a = agg.setdefault(aid, {"analyst": info["analyst"], "firm": info["firm"],
-                                         "n": 0, "err_sum": 0.0, "signed_sum": 0.0,
-                                         "beat_yes": 0, "beat_n": 0, "wins": 0})
+                                "closest": closest,
+                                "star": star})
+                # KEYED ON THE CLASS TOO. One dict per analyst per class, so a
+                # yield error is never added to a stocks error.
+                a = agg.setdefault((aid, cls),
+                                   {"analyst": info["analyst"], "firm": info["firm"],
+                                    "cls": cls, "n": 0, "err_sum": 0.0, "signed_sum": 0.0,
+                                    "errs": [], "beat_yes": 0, "beat_n": 0,
+                                    "wins": 0, "closest_n": 0})
                 a["n"] += 1
                 a["err_sum"] += err_pct
                 a["signed_sum"] += signed_pct
+                a["errs"].append(err_pct)
                 if consensus is not None:
                     a["beat_n"] += 1
                     if beat:
                         a["beat_yes"] += 1
-                if closest and len(judged) >= 2:
+                if closest:
+                    a["closest_n"] += 1
+                # `wins` counts only calls that were closest AND beat the trade.
+                # It used to count closest alone, which put a gold badge on two
+                # forecasts that lost to the consensus.
+                if star:
                     a["wins"] += 1
             results.sort(key=lambda x: x["err_pct"])
-            label = met.get("label", met.get("key", ""))
             rep_metrics.append({"label": label,
                                 "unit": met.get("unit", ""), "consensus": consensus,
                                 "actual": actual,
@@ -254,6 +310,16 @@ def score(data, roster, today):
                                 # for any number it printed.
                                 "consensus_source": met.get("consensus_source"),
                                 "consensus_range": met.get("consensus_range"),
+                                # HOW FAR THE FREE CONSENSUS ITSELF LANDED FROM
+                                # THE PRINT. Without it a reader cannot tell
+                                # that the "closest" forecast on a metric was
+                                # beaten by the number in the same line above.
+                                "consensus_err_pct": (None if consensus is None
+                                                      else round(abs(consensus - actual)
+                                                                 / abs(actual) * 100, 2)),
+                                # WHICH POOL THIS METRIC'S ERRORS GO INTO.
+                                "metric_class": cls,
+                                "class_label": CLASS_LABELS.get(cls, cls),
                                 # HOW MANY FORECASTERS WERE ON IT. A metric with
                                 # one estimate and a metric with eight are not
                                 # the same evidence and used to look identical.
@@ -263,24 +329,47 @@ def score(data, roster, today):
             scored_reports.append({"report": r.get("report", ""), "date": r.get("date", ""),
                                    "metrics": rep_metrics})
 
-    leaderboard, building = [], []
-    for aid, a in agg.items():
+    classes = {}
+    for (aid, cls), a in agg.items():
         row = {"analyst": a["analyst"], "firm": a["firm"], "n": a["n"],
                "mape": round(a["err_sum"] / a["n"], 2),
                "bias": round(a["signed_sum"] / a["n"], 2),
+               # THE SPREAD, BESIDE THE MEAN. A mean of 2.11% over four calls
+               # that ran 1.60% to 2.46% is a different object from a mean of
+               # 2.11% over four calls that all landed there, and the board
+               # printed them identically before ordering forecasters by it.
+               "err_min": round(min(a["errs"]), 2),
+               "err_max": round(max(a["errs"]), 2),
                "wins": a["wins"],
+               "closest_n": a["closest_n"],
                "beat_rate": (round(a["beat_yes"] / a["beat_n"] * 100) if a["beat_n"] else None),
+               # THE COUNT, NOT ONLY THE RATE. A rounded percentage cannot be
+               # turned back into "0 of 4" by the page, and "0 of 4" is the
+               # sentence the board has to be able to write.
+               "beat_yes": a["beat_yes"],
                # HOW MANY OF THIS ANALYST'S CALLS HAD A TRADE ESTIMATE TO BEAT.
                # beat_rate is None when none of them did, and the page printed a
                # bare dash for it, which reads as a zero to anybody skimming.
                "beat_n": a["beat_n"],
+               "metric_class": cls,
+               "class_label": CLASS_LABELS.get(cls, cls),
                "qualified": a["n"] >= MIN_N,
                "needs": max(0, MIN_N - a["n"])}
-        (leaderboard if a["n"] >= MIN_N else building).append(row)
-    leaderboard.sort(key=lambda x: x["mape"])
-    building.sort(key=lambda x: (-x["n"], x["analyst"].lower()))
+        c = classes.setdefault(cls, {"key": cls, "label": CLASS_LABELS.get(cls, cls),
+                                     "calls": 0, "leaderboard": [], "building": []})
+        c["calls"] += a["n"]
+        (c["leaderboard"] if a["n"] >= MIN_N else c["building"]).append(row)
+    for c in classes.values():
+        c["leaderboard"].sort(key=lambda x: x["mape"])
+        c["building"].sort(key=lambda x: (-x["n"], x["analyst"].lower()))
+        # THE PAGE IS TOLD WHETHER IT MAY PRINT PLACES, AND IT IS NOT A CLOSE
+        # CALL HERE: two qualifying forecasters is the floor, ORDINAL_MIN_N
+        # calls each is the bar, and nothing on this board is near it.
+        c["ordinals_ok"] = (len(c["leaderboard"]) > 1
+                            and all(r["n"] >= ORDINAL_MIN_N for r in c["leaderboard"]))
+    class_list = sorted(classes.values(), key=lambda c: (-c["calls"], c["key"]))
     scored_reports.sort(key=lambda x: x.get("date") or "", reverse=True)
-    return leaderboard, building, scored_reports
+    return class_list, scored_reports
 
 
 def build_pipeline(reports, roster, today):
@@ -338,20 +427,36 @@ def main():
 
     upcoming = build_upcoming(data.get("reports", []), roster, today)
     pipeline = build_pipeline(data.get("reports", []), roster, today)
-    leaderboard, building, reports = score(data, roster, today)
+    classes, reports = score(data, roster, today)
     has_scored = bool(reports)
+    # `leaderboard`/`building` stay in the file and stay the shape every reader
+    # already expects -- they are now the LARGEST class only, never a pool of
+    # two. Any other class rides in `classes` and the page gives it its own
+    # table under its own name. Older readers of this file (the static bake in
+    # scripts/prerender_wpi_scorecard.py) therefore render one honest class
+    # instead of a mixture, without being changed.
+    primary = classes[0] if classes else None
+    leaderboard = primary["leaderboard"] if primary else []
+    building = primary["building"] if primary else []
 
     out = {"updated": today, "sample": (not has_scored), "min_n": MIN_N,
+           "ordinal_min_n": ORDINAL_MIN_N,
            "roster": [{"analyst": v["analyst"], "firm": v["firm"]} for v in roster.values()],
            "upcoming": upcoming, "pipeline": pipeline, "leaderboard": leaderboard,
-           "building": building, "reports": reports}
+           "building": building,
+           "primary_class": (primary["key"] if primary else None),
+           "classes": classes, "reports": reports}
     os.makedirs(os.path.dirname(OUT_PATH) or ".", exist_ok=True)
     with open(OUT_PATH, "w") as f:
         json.dump(out, f, separators=(",", ":"))
 
     nx = (upcoming["report"] + " " + upcoming["date"]) if upcoming else "none scheduled"
-    print(f"[analyst-scorecard] upcoming={nx} | ranked={len(leaderboard)} "
+    print(f"[analyst-scorecard] upcoming={nx} | qualified={len(leaderboard)} "
           f"building={len(building)} | scored_reports={len(reports)} | sample={out['sample']}")
+    for c in classes:
+        print(f"[analyst-scorecard] class {c['key']}: {c['calls']} calls | "
+              f"qualified={len(c['leaderboard'])} building={len(c['building'])} | "
+              f"ordinals_ok={c['ordinals_ok']}")
     print(f"[analyst-scorecard] locked model calls merged={merged} refused={refused}")
 
 
@@ -420,6 +525,73 @@ def _selftest():
     good = merge_locked_model_calls(report(), "/nonexistent-nowcast.json") == (0, 0)
     ok &= good
     print(("  ok    " if good else "  FAIL  ") + "a missing nowcast file is not fatal")
+
+    # ── THE PARTITION, on the numbers that produced it ───────────────────────
+    print()
+    print("errors are pooled inside a metric class, never across")
+    good = (metric_class("2026/27 corn yield") == "yield"
+            and metric_class("2026/27 soybean yield") == "yield"
+            and metric_class("2026/27 soybean ending stocks") == "supply"
+            and metric_class("2026/27 winter wheat production") == "supply"
+            and metric_class("") == "supply")
+    ok &= good
+    print(("  ok    " if good else "  FAIL  ") + "a yield and a stocks metric land in different classes")
+
+    # Arlan Suderman's real record as of 2026-09-23: two yield calls (2.27%,
+    # 0.57%) and one soybean ending-stocks call (2.58%). Pooled, that is three
+    # calls at 1.81% and it printed "#1". Partitioned, it is two yield calls and
+    # one stocks call, and neither reaches MIN_N.
+    roster = {"sud": {"analyst": "Arlan Suderman", "firm": "StoneX"},
+              "bot": {"analyst": "House", "firm": "agsist.com (model)"}}
+    data = {"reports": [
+        {"report": "August WASDE", "date": "2026-08-12", "metrics": [
+            {"label": "2026/27 corn yield", "consensus": 182.0, "actual": 180.7,
+             "estimates": [{"id": "sud", "value": 184.8}, {"id": "bot", "value": 183.6}]},
+            {"label": "2026/27 soybean yield", "consensus": 52.9, "actual": 52.7,
+             "estimates": [{"id": "sud", "value": 53.0}, {"id": "bot", "value": 53.8}]}]},
+        {"report": "June WASDE", "date": "2026-06-11", "metrics": [
+            {"label": "2026/27 soybean ending stocks", "consensus": 312, "actual": 310,
+             "estimates": [{"id": "sud", "value": 318}]}]}]}
+    classes, reps = score(data, roster, "2026-09-23")
+    by = {c["key"]: c for c in classes}
+    good = (set(by) == {"yield", "supply"}
+            and by["yield"]["calls"] == 4 and by["supply"]["calls"] == 1
+            and [r["analyst"] for r in by["yield"]["leaderboard"]] == []
+            and sorted(r["n"] for r in by["yield"]["building"]) == [2, 2]
+            and by["supply"]["leaderboard"] == [])
+    ok &= good
+    print(("  ok    " if good else "  FAIL  ") +
+          "two yield calls plus one stocks call is not a 3-call record")
+
+    good = all(not c["ordinals_ok"] for c in classes)
+    ok &= good
+    print(("  ok    " if good else "  FAIL  ") + "no class with a thin record may print places")
+
+    # The spread rides with the mean.
+    row = [r for r in by["yield"]["building"] if r["analyst"] == "Arlan Suderman"][0]
+    good = (row["mape"] == 1.42 and row["err_min"] == 0.57 and row["err_max"] == 2.27
+            and row["beat_yes"] == 0 and row["beat_n"] == 2)
+    ok &= good
+    print(("  ok    " if good else "  FAIL  ") + "the mean carries its own spread and beat count")
+
+    # A star needs the consensus beaten, not just the field.
+    met = [m for m in reps[0]["metrics"] if "soybean yield" in m["label"]][0]
+    sud = [x for x in met["results"] if x["analyst"] == "Arlan Suderman"][0]
+    good = (sud["closest"] is True and sud["beat"] is False and sud["star"] is False
+            and met["consensus_err_pct"] == 0.38)
+    ok &= good
+    print(("  ok    " if good else "  FAIL  ") +
+          "closest but further off than the trade gets no star")
+
+    # And a call that is both gets one.
+    data2 = {"reports": [{"report": "August WASDE", "date": "2026-08-12", "metrics": [
+        {"label": "2026/27 corn yield", "consensus": 182.0, "actual": 180.7,
+         "estimates": [{"id": "sud", "value": 180.8}, {"id": "bot", "value": 183.6}]}]}]}
+    _c2, reps2 = score(data2, roster, "2026-09-23")
+    win = [x for x in reps2[0]["metrics"][0]["results"] if x["analyst"] == "Arlan Suderman"][0]
+    good = win["closest"] is True and win["beat"] is True and win["star"] is True
+    ok &= good
+    print(("  ok    " if good else "  FAIL  ") + "closest AND closer than the trade does get one")
 
     print()
     print("analyst-scorecard: " + ("all passed" if ok else "FAILURES ABOVE"))

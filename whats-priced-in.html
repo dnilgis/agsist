@@ -188,6 +188,24 @@
 .as-tbl tr.as-split td{border-bottom:none;padding-top:.9rem;color:var(--as-mut);
   font-size:.78rem;line-height:1.5;border-top:1px solid var(--as-line)}
 .as-wins{display:block;font-size:.72rem;color:var(--as-gold2,#d4a23f);margin-top:.1rem}
+/* A closest call that still lost to the trade consensus is not gold. */
+.as-wins.mut{color:var(--as-mut)}
+/* THE SPREAD, UNDER THE MEAN. Printed for every average of more than one call
+   so a reader can see how much of the gap between two averages is just range. */
+.as-spread{display:block;font-family:'JetBrains Mono',monospace;font-size:.7rem;
+  font-weight:400;color:var(--as-mut);margin-top:.12rem;white-space:nowrap}
+/* One flex item per cell in the mobile card layout, or the two halves of a
+   number ("0%" and "0 of 4") get pushed to opposite ends of the row. */
+.as-cell{display:inline-block;text-align:right}
+/* The row that names what is being averaged. Same shape as as-split. */
+.as-tbl tr.as-cap td{border-bottom:1px solid var(--as-line);border-top:none;
+  color:var(--as-mut);font-size:.78rem;line-height:1.5;padding-top:.2rem}
+.as-tbl tr.as-cap td b{color:var(--as-txt)}
+.as-boardnote{background:var(--as-panel);border:1px solid var(--as-line);
+  border-left:3px solid var(--as-gold2);border-radius:8px;padding:.7rem .85rem;
+  margin:.7rem 0 0;font-size:.85rem;line-height:1.55;color:var(--as-mut)}
+.as-boardnote b{color:var(--as-txt)}
+.as-otherblk{margin-top:1.1rem}
 .as-ours{display:inline-block;font-size:.66rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--as-gold2,#d4a23f);border:1px solid var(--as-gold2,#d4a23f);border-radius:3px;padding:0 .28rem;margin-left:.35rem;vertical-align:.06em}
 .as-mut{color:var(--as-mut);font-size:.82rem}
 .as-tbl .firm{display:block;font-weight:400;font-size:.8rem;color:var(--as-mut);}
@@ -256,6 +274,11 @@
   .as-tbl tr.as-split{background:none;border:none;padding:0 .2rem;margin:-.25rem 0 .7rem;}
   .as-tbl tr.as-split td{display:block;text-align:left;border-top:none;padding:0;}
   .as-tbl tr.as-split td::before{display:none;}
+  .as-tbl tr.as-cap{background:none;border:none;padding:0 .2rem;margin:0 0 .6rem;}
+  .as-tbl tr.as-cap td{display:block;text-align:left;border:none;padding:0;}
+  .as-tbl tr.as-cap td::before{display:none;}
+  /* The spread sits under a right-aligned number in the card layout. */
+  .as-spread{text-align:right}
 }
 .as-sub{font-family:var(--font-display);font-weight:600;font-size:1.05rem;margin:1.5rem 0 .5rem;color:var(--wp-txt);}
 .as-pl-rep{background:var(--wp-panel);border:1px solid var(--wp-line);border-radius:12px;padding:.9rem 1rem;margin-bottom:.7rem;}
@@ -313,19 +336,21 @@
   <div id="wp-result"><!-- PRERENDER:wp-result --><!-- /PRERENDER:wp-result --></div>
 
   <h2 id="next-report"><!-- PRERENDER:wp-nexthead -->Next report: what the trade expects from the October WASDE<!-- /PRERENDER:wp-nexthead --></h2>
-  <div id="wp-next"><!-- PRERENDER:wp-next --><div class="wp-card"><div class="hd"><span class="rpt">October WASDE</span><span class="cd">2026-10-09 · 12:00 PM ET · 16 days out</span></div><div class="wp-metric">Corn — 2026/27 corn yield</div><div class="wp-exp">USDA&#x27;s fourth survey-based corn and soybean yields of the season, and the first to fold in October&#x27;s harvest results. The pre-report trade survey usually publishes one to two days ahead; its numbers are typed in from it when it does.</div><div class="wp-gap"><b>No trade range yet:</b> No pre-report trade survey is on file for this report yet. The survey usually publishes one to two days ahead of the release; the range is typed in from it and is never estimated here.</div><div class="wp-gap"><b>No market odds:</b> No prediction market is quoting this report. When one is, its odds appear here with the venue named.</div><div class="wp-gap"><b>No surprise thresholds:</b> The thresholds are the ends of the trade range, so they arrive with it.</div><div class="wp-pos">Fund positioning: Managed money: Corn net long 414,460 contracts, up 1 on the week and the biggest of the last 52 weeks; Soybeans net long 241,501 contracts, down 15,757 on the week. CFTC Commitments of Traders, positions as of September 15, 2026.</div></div><!-- /PRERENDER:wp-next --></div>
+  <div id="wp-next"><!-- PRERENDER:wp-next --><div class="wp-card"><div class="hd"><span class="rpt">October WASDE</span><span class="cd">2026-10-09 · 12:00 PM ET · 15 days out</span></div><div class="wp-metric">Corn — 2026/27 corn yield</div><div class="wp-exp">USDA&#x27;s fourth survey-based corn and soybean yields of the season, and the first to fold in October&#x27;s harvest results. The pre-report trade survey usually publishes one to two days ahead; its numbers are typed in from it when it does.</div><div class="wp-gap"><b>No trade range yet:</b> No pre-report trade survey is on file for this report yet. The survey usually publishes one to two days ahead of the release; the range is typed in from it and is never estimated here.</div><div class="wp-gap"><b>No market odds:</b> No prediction market is quoting this report. When one is, its odds appear here with the venue named.</div><div class="wp-gap"><b>No surprise thresholds:</b> The thresholds are the ends of the trade range, so they arrive with it.</div><div class="wp-pos">Fund positioning: Managed money: Corn net long 414,460 contracts, up 1 on the week and the biggest of the last 52 weeks; Soybeans net long 241,501 contracts, down 15,757 on the week. CFTC Commitments of Traders, positions as of September 15, 2026.</div></div><!-- /PRERENDER:wp-next --></div>
 
   <h2 id="track-record">Track record</h2>
   <p class="wp-lede" style="margin-bottom:.4rem">How the expectation lined up against the actual print, and which way price moved. <span style="color:var(--wp-mut)">The July WASDE went unscored &mdash; expectations were not filed that window; the gap stays on the record.</span></p>
   <div id="wp-history"><!-- PRERENDER:wp-history --><div class="wp-hg"><div class="wp-hg-hd"><span class="wp-hg-rpt">September WASDE</span><span class="wp-hg-meta"><span class="wp-hg-pill surp">1 surprise</span><span class="wp-hg-date">2026-09-11</span></span></div><div class="wp-hr"><div class="wp-hr-top"><span class="wp-hr-metric">2026/27 soybean yield</span><span class="wp-tag bear">bearish</span></div><div class="wp-hr-nums">52.5 bu/acre <span class="wp-arrow">→</span> <b class="bear">52.8 bu/acre</b></div><div class="wp-hr-gap">+0.6% vs trade</div><div class="wp-hr-gap">No note written on how the market took it.</div></div><div class="wp-hr"><div class="wp-hr-top"><span class="wp-hr-metric">2026/27 corn yield</span><span class="wp-tag flat">in line</span></div><div class="wp-hr-nums">178.1 bu/acre <span class="wp-arrow">→</span> <b class="flat">178.5 bu/acre</b></div><div class="wp-hr-gap">+0.2% vs trade</div><div class="wp-hr-gap">No note written on how the market took it.</div></div></div><div class="wp-hg"><div class="wp-hg-hd"><span class="wp-hg-rpt">August WASDE</span><span class="wp-hg-meta"><span class="wp-hg-pill surp">1 surprise</span><span class="wp-hg-date">2026-08-12</span></span></div><div class="wp-hr"><div class="wp-hr-top"><span class="wp-hr-metric">2026/27 corn yield</span><span class="wp-tag bull">bullish</span></div><div class="wp-hr-nums">182.0 bu/acre <span class="wp-arrow">→</span> <b class="bull">180.7 bu/acre</b></div><div class="wp-hr-gap">-0.7% vs trade</div><div class="wp-hr-reaction">USDA&#x27;s first survey-based corn yield came in at 180.7 — 2.3 under July and 1.3 under the trade&#x27;s 182.0. More acres (planted up 1.4M to 96.7M) kept production near-record at 16.013B bu, but the market traded the yield cut and the 1.653B carryout (down from 1.79B): December corn settled up 15 cents at $4.78.</div></div><div class="wp-hr"><div class="wp-hr-top"><span class="wp-hr-metric">2026/27 soybean yield</span><span class="wp-tag flat">in line</span></div><div class="wp-hr-nums">52.9 bu/acre <span class="wp-arrow">→</span> <b class="flat">52.7 bu/acre</b></div><div class="wp-hr-gap">-0.4% vs trade</div><div class="wp-hr-reaction">Soybean yield printed 52.7 — a couple tenths under both July and the trade, effectively in line. The acreage add (planted up 1.4M to 86.8M) still makes 4.519B bu the largest soybean crop on record, and carryout ticked up to 320M. November beans settled up 12 cents at $11.84, riding corn&#x27;s coattails more than their own numbers.</div></div></div><div class="wp-hg"><div class="wp-hg-hd"><span class="wp-hg-rpt">June WASDE</span><span class="wp-hg-meta"><span class="wp-hg-pill surp">1 surprise</span><span class="wp-hg-date">2026-06-11</span></span></div><div class="wp-hr"><div class="wp-hr-top"><span class="wp-hr-metric">2026/27 wheat ending stocks</span><span class="wp-tag bull">bullish</span></div><div class="wp-hr-nums">765 mil bu <span class="wp-arrow">→</span> <b class="bull">744 mil bu</b></div><div class="wp-hr-gap">-2.7% vs trade</div><div class="wp-hr-reaction">The report&#x27;s one real surprise: new-crop wheat carryout cut to 744M — 21M below the trade and 18M under May — on a smaller Hard Red Winter crop (all-wheat production trimmed to 1,543M, yield 47.0). Bullish wheat; farm price cut $0.50 to $6.00.</div></div><div class="wp-hr"><div class="wp-hr-top"><span class="wp-hr-metric">2025/26 corn ending stocks</span><span class="wp-tag flat">in line</span></div><div class="wp-hr-nums">2.138 bil bu <span class="wp-arrow">→</span> <b class="flat">2.145 bil bu</b></div><div class="wp-hr-gap">+0.3% vs trade</div><div class="wp-hr-reaction">Old-crop carryout landed right on the trade guess — a non-event for corn.</div></div><div class="wp-hr"><div class="wp-hr-top"><span class="wp-hr-metric">2026/27 corn ending stocks</span><span class="wp-tag flat">in line</span></div><div class="wp-hr-nums">1.947 bil bu <span class="wp-arrow">→</span> <b class="flat">1.96 bil bu</b></div><div class="wp-hr-gap">+0.7% vs trade</div><div class="wp-hr-reaction">New-crop carryout nudged up fractionally on old-crop demand tweaks; essentially unchanged at $4.40.</div></div><div class="wp-hr"><div class="wp-hr-top"><span class="wp-hr-metric">2025/26 soybean ending stocks</span><span class="wp-tag flat">in line</span></div><div class="wp-hr-nums">338 mil bu <span class="wp-arrow">→</span> <b class="flat">340 mil bu</b></div><div class="wp-hr-gap">+0.6% vs trade</div><div class="wp-hr-reaction">Old-crop beans unchanged from May and on top of the trade — no reaction.</div></div><div class="wp-hr"><div class="wp-hr-top"><span class="wp-hr-metric">2026/27 soybean ending stocks</span><span class="wp-tag flat">in line</span></div><div class="wp-hr-nums">312 mil bu <span class="wp-arrow">→</span> <b class="flat">310 mil bu</b></div><div class="wp-hr-gap">-0.6% vs trade</div><div class="wp-hr-reaction">New-crop beans held at 310, a hair under the trade — quietly friendly but no fireworks.</div></div><div class="wp-hr"><div class="wp-hr-top"><span class="wp-hr-metric">2025/26 wheat ending stocks</span><span class="wp-tag flat">in line</span></div><div class="wp-hr-nums">942 mil bu <span class="wp-arrow">→</span> <b class="flat">935 mil bu</b></div><div class="wp-hr-gap">-0.7% vs trade</div><div class="wp-hr-reaction">Old-crop wheat held at 935, just under the trade guess.</div></div></div><div class="wp-hg"><div class="wp-hg-hd"><span class="wp-hg-rpt">May WASDE</span><span class="wp-hg-meta"><span class="wp-hg-pill surp">2 surprises</span><span class="wp-hg-date">2026-05-12</span></span></div><div class="wp-hr"><div class="wp-hr-top"><span class="wp-hr-metric">2026/27 winter wheat production</span><span class="wp-tag bull">bullish</span></div><div class="wp-hr-nums">1208 mil bu <span class="wp-arrow">→</span> <b class="bull">1048 mil bu</b></div><div class="wp-hr-gap">-13.2% vs trade</div><div class="wp-hr-reaction">Smallest winter wheat crop in six decades on Southern Plains drought - July KC wheat ran limit-up and futures hit 2-yr highs.</div></div><div class="wp-hr"><div class="wp-hr-top"><span class="wp-hr-metric">2026/27 soybean ending stocks</span><span class="wp-tag bull">bullish</span></div><div class="wp-hr-nums">355 mil bu <span class="wp-arrow">→</span> <b class="bull">310 mil bu</b></div><div class="wp-hr-gap">-12.7% vs trade</div><div class="wp-hr-reaction">Trade looked for a higher carryout; the tighter print pushed Nov beans to a 2-yr high near $12.</div></div><div class="wp-hr"><div class="wp-hr-top"><span class="wp-hr-metric">2026/27 corn ending stocks</span><span class="wp-tag flat">in line</span></div><div class="wp-hr-nums">1.922 bil bu <span class="wp-arrow">→</span> <b class="flat">1.957 bil bu</b></div><div class="wp-hr-gap">+1.8% vs trade</div><div class="wp-hr-reaction">New-crop carryout landed near the trade guess - ample supply into 2027 capped the upside.</div></div><div class="wp-hr"><div class="wp-hr-top"><span class="wp-hr-metric">2025/26 soybean ending stocks</span><span class="wp-tag flat">in line</span></div><div class="wp-hr-nums">345 mil bu <span class="wp-arrow">→</span> <b class="flat">340 mil bu</b></div><div class="wp-hr-gap">-1.4% vs trade</div><div class="wp-hr-reaction">Old-crop carryout close to the trade estimate - little reaction.</div></div><div class="wp-hr"><div class="wp-hr-top"><span class="wp-hr-metric">2025/26 corn ending stocks</span><span class="wp-tag flat">in line</span></div><div class="wp-hr-nums">2.131 bil bu <span class="wp-arrow">→</span> <b class="flat">2.14 bil bu</b></div><div class="wp-hr-gap">+0.4% vs trade</div><div class="wp-hr-reaction">Old-crop carryout in line - the week&#x27;s move came from the new-crop sheets.</div></div></div><!-- /PRERENDER:wp-history --></div>
 
   <h2 id="analyst-board">Analyst estimates, graded &mdash; corn &amp; soybean yield forecasts</h2>
-  <p class="wp-lede" style="margin-bottom:.6rem">Who calls these reports best &mdash; public forecasters scored against the actual print on how far off they were, how often they beat the trade consensus, and which way they lean.</p>
-  <div class="as-ribbon" id="as-ribbon" style="display:none">Scoring begins with the June 11 WASDE &mdash; the ranked board posts once the first report is scored against the actual print. Below is who's tracked and on record.</div>
+  <p class="wp-lede" style="margin-bottom:.6rem">Who went on record, and how it landed &mdash; public forecasters scored against the actual print on how far off they were, how often they beat the trade consensus, and which way they lean. Yield calls and ending-stocks calls are scored in separate groups, and no order is printed until a record is long enough to support one.</p>
+  <div class="as-ribbon" id="as-ribbon" style="display:none">Scoring begins with the June 11 WASDE &mdash; the board posts once the first report is scored against the actual print. Below is who's tracked and on record.</div>
 
-  <h3 class="as-sub">Leaderboard</h3>
-  <div id="as-board"><!-- PRERENDER:as-board --><table class="as-tbl"><thead><tr><th>#</th><th>Analyst</th><th class="num">Calls</th><th class="num">Avg error</th><th class="num">Beat trade</th><th class="num">Bias</th></tr></thead><tbody><tr><td class="rk" data-label="#">1</td><td data-label="Analyst"><span class="who">Arlan Suderman</span><span class="firm">StoneX</span><span class="as-wins" title="Closest of everyone on record for that metric">1× closest</span></td><td class="num" data-label="Calls">3</td><td class="num" data-label="Avg error"><span class="as-acc">1.81%</span></td><td class="num" data-label="Beat trade"><span class="as-beat lo">0%</span></td><td class="num" data-label="Bias"><span class="as-bias"><span class="hi">+1.81% high</span></span></td></tr><tr><td class="rk" data-label="#">2</td><td data-label="Analyst"><span class="who">AGSIST Yield Nowcast</span><span class="as-ours" title="This is our own model. We run this board and score it, and the same rules apply to us.">ours</span><span class="firm">agsist.com (model)</span><span class="as-wins" title="Closest of everyone on record for that metric">1× closest</span></td><td class="num" data-label="Calls">4</td><td class="num" data-label="Avg error"><span class="as-acc">2.11%</span></td><td class="num" data-label="Beat trade"><span class="as-beat lo">0%</span></td><td class="num" data-label="Bias"><span class="as-bias"><span class="hi">+2.11% high</span></span></td></tr><tr class="as-split"><td colspan="6">Still building &mdash; ranked once a forecaster has <b>3 scored calls</b>. Their accuracy so far is real and is shown; their position is not, because 2 calls is not a record.</td></tr><tr class="as-building"><td class="rk" data-label="#">&mdash;</td><td data-label="Analyst"><span class="who">Robert McClure</span><span class="firm">McClure Trades</span><span class="as-wins" title="Closest of everyone on record for that metric">1× closest</span></td><td class="num" data-label="Calls">2 of 3</td><td class="num" data-label="Avg error"><span class="as-acc">0.98%</span></td><td class="num" data-label="Beat trade"><span class="as-beat">50%</span></td><td class="num" data-label="Bias"><span class="as-bias"><span class="lo">-0.92% low</span></span></td></tr><tr class="as-building"><td class="rk" data-label="#">&mdash;</td><td data-label="Analyst"><span class="who">Jerry Gulke</span><span class="firm">Gulke Group</span></td><td class="num" data-label="Calls">1 of 3</td><td class="num" data-label="Avg error"><span class="as-acc">0.03%</span></td><td class="num" data-label="Beat trade"><span class="as-beat">100%</span></td><td class="num" data-label="Bias"><span class="as-bias">&#8776; even</span></td></tr><tr class="as-building"><td class="rk" data-label="#">&mdash;</td><td data-label="Analyst"><span class="who">Pro Farmer</span><span class="firm">Pro Farmer</span></td><td class="num" data-label="Calls">1 of 3</td><td class="num" data-label="Avg error"><span class="as-acc">2.97%</span></td><td class="num" data-label="Beat trade"><span class="as-beat lo">0%</span></td><td class="num" data-label="Bias"><span class="as-bias"><span class="lo">-2.97% low</span></span></td></tr></tbody></table><!-- /PRERENDER:as-board --></div>
-  <div class="as-legend" id="as-legend"><b>Avg error</b> = average % off the USDA actual (lower is better, the ranking driver). <b>Beat trade</b> = share of calls closer than the trade consensus. <b>Bias</b> = average signed % error &mdash; <span style="color:var(--wp-dn)">high</span> means systematically over, <span style="color:var(--wp-up)">low</span> means under. <b>Calls</b> = scored metrics; an analyst needs <span id="as-minn">3</span>+ before being ranked. <b class="as-ours" style="margin-left:0">ours</b> marks our own model, which is scored by the same rules as everyone else and is not exempt from them.</div>
+  <h3 class="as-sub">Scored records</h3>
+  <div id="as-board"><!-- PRERENDER:as-board --><div class="as-err" style="margin-bottom:.6rem">Listed by average error, with no places. This page prints a finishing order only once every forecaster above the line has <b>10 scored calls</b> in the same group. Under that, the gap between two averages sits inside the spread of each one’s own calls — shown beside every average — and an order would be a coin flip written as a fact.</div><table class="as-tbl"><thead><tr><th>Analyst</th><th class="num">Calls</th><th class="num">Avg error</th><th class="num">Beat trade</th><th class="num">Bias</th></tr></thead><tbody><tr><td data-label="Analyst"><span class="who">Arlan Suderman</span><span class="firm">StoneX</span><span class="as-wins mut" title="Closest of the forecasters who filed a number for that metric. It does not mean the call beat the trade consensus.">1× closest filed</span></td><td class="num" data-label="Calls">3</td><td class="num" data-label="Avg error"><span class="as-cell"><span class="as-acc">1.81%</span></span></td><td class="num" data-label="Beat trade"><span class="as-cell"><span class="as-beat lo">0%</span></span></td><td class="num" data-label="Bias"><span class="as-bias"><span class="hi">+1.81% high</span></span></td></tr><tr><td data-label="Analyst"><span class="who">AGSIST Yield Nowcast</span><span class="as-ours" title="This is our own model. We run this board and score it, and the same rules apply to us.">ours</span><span class="firm">agsist.com (model)</span><span class="as-wins mut" title="Closest of the forecasters who filed a number for that metric. It does not mean the call beat the trade consensus.">1× closest filed</span></td><td class="num" data-label="Calls">4</td><td class="num" data-label="Avg error"><span class="as-cell"><span class="as-acc">2.11%</span></span></td><td class="num" data-label="Beat trade"><span class="as-cell"><span class="as-beat lo">0%</span></span></td><td class="num" data-label="Bias"><span class="as-bias"><span class="hi">+2.11% high</span></span></td></tr><tr class="as-split"><td colspan="5">Still building — listed above the line once a forecaster has <b>3 scored calls in this group</b>. Their accuracy so far is real and is shown; their position is not, because 2 calls is not a record.</td></tr><tr class="as-building"><td data-label="Analyst"><span class="who">Robert McClure</span><span class="firm">McClure Trades</span><span class="as-wins mut" title="Closest of the forecasters who filed a number for that metric. It does not mean the call beat the trade consensus.">1× closest filed</span></td><td class="num" data-label="Calls">2 of 3</td><td class="num" data-label="Avg error"><span class="as-cell"><span class="as-acc">0.98%</span></span></td><td class="num" data-label="Beat trade"><span class="as-cell"><span class="as-beat">50%</span></span></td><td class="num" data-label="Bias"><span class="as-bias"><span class="lo">-0.92% low</span></span></td></tr><tr class="as-building"><td data-label="Analyst"><span class="who">Jerry Gulke</span><span class="firm">Gulke Group</span></td><td class="num" data-label="Calls">1 of 3</td><td class="num" data-label="Avg error"><span class="as-cell"><span class="as-acc">0.03%</span></span></td><td class="num" data-label="Beat trade"><span class="as-cell"><span class="as-beat">100%</span></span></td><td class="num" data-label="Bias"><span class="as-bias">&#8776; even</span></td></tr><tr class="as-building"><td data-label="Analyst"><span class="who">Pro Farmer</span><span class="firm">Pro Farmer</span></td><td class="num" data-label="Calls">1 of 3</td><td class="num" data-label="Avg error"><span class="as-cell"><span class="as-acc">2.97%</span></span></td><td class="num" data-label="Beat trade"><span class="as-cell"><span class="as-beat lo">0%</span></span></td><td class="num" data-label="Bias"><span class="as-bias"><span class="lo">-2.97% low</span></span></td></tr></tbody></table><!-- /PRERENDER:as-board --></div>
+  <p class="as-boardnote" id="as-board-note">Read the <b>Beat trade</b> column before the Avg error column. A forecast that landed further from the USDA print than the free trade consensus did not beat anything, however close to the print it looks on its own; the count of calls that did beat it is printed beside every record on this board.</p>
+  <div id="as-other"></div>
+  <div class="as-legend" id="as-legend"><b>Avg error</b> = average % off the USDA actual, averaged <b>within one group only</b>: a yield miss is never added to an ending-stocks miss, because the trade does not read them at the same scale (<a href="#methodology" style="color:var(--as-gold2)">why</a>). <b>Calls ran</b> = the best and worst single call behind that average. <b>Beat trade</b> = share of calls closer to the print than the trade consensus, with the raw count beside it. <b>Bias</b> = average signed % error &mdash; <span style="color:var(--wp-dn)">high</span> means systematically over, <span style="color:var(--wp-up)">low</span> means under. <b>Calls</b> = scored metrics in that group; a forecaster needs <span id="as-minn">3</span>+ in one group to be listed above the line, and this page prints no places at all until two or more forecasters have <span id="as-ordmin">10</span>+ each &mdash; on three or four calls the gap between two averages is inside their own spread. <b class="as-ours" style="margin-left:0">ours</b> marks our own model, which is scored by the same rules as everyone else and is not exempt from them.</div>
 
   <h3 class="as-sub">Filed for the next report</h3>
   <p class="as-legend" style="margin:.1rem 0 .5rem">Every forecast already filed for an upcoming report &mdash; timestamped now, graded automatically once USDA prints. Lean is versus the trade consensus, or USDA's standing projection where no survey exists yet.</p>
@@ -335,10 +360,10 @@
   <div id="as-roster"></div>
 
   <h3 class="as-sub">Scored, by report</h3>
-  <p class="as-legend" style="margin:.1rem 0 .5rem">Forecasters who went on record, scored against the print. &#9733; marks the closest call; &ldquo;beat trade&rdquo; means closer than the consensus.</p>
+  <p class="as-legend" style="margin:.1rem 0 .5rem">Forecasters who went on record, scored against the print. Every metric line shows how far the trade consensus itself landed from the print, so you can see what each forecast was up against. &#9733; marks a call that was both the closest filed <i>and</i> closer than the consensus &mdash; closest-of-those-who-filed is not a win on its own and does not get a star.</p>
   <div id="as-reports"></div>
 
-  <p class="as-legend" style="margin-top:1rem"><b>How forecasters are scored.</b> Public pre-report forecasts measured against the USDA actual &mdash; avg error is the mean absolute % miss, beat-trade is the share landing closer than the consensus, bias is the mean signed % error. A forecaster needs 3+ scored calls to be ranked. It tracks the most <i>public</i> forecasters, not necessarily the best. It is a record of who called what, not advice or an endorsement.</p>
+  <p class="as-legend" style="margin-top:1rem"><b>How forecasters are scored.</b> Public pre-report forecasts measured against the USDA actual &mdash; avg error is the mean absolute % miss, beat-trade is the share landing closer than the consensus, bias is the mean signed % error. Errors are pooled only inside a metric group &mdash; yield with yield, ending stocks and production with each other &mdash; because a 2% miss on a 180 bu yield and a 2% miss on a 310 million bushel carryout are not the same miss; the site&rsquo;s own in-line bands (0.5% for yields, 2% for stocks) have said so since August. A forecaster needs 3+ scored calls <i>in one group</i> to be listed above the line, and this page prints no finishing order until at least two of them have 10+ each. It tracks the most <i>public</i> forecasters, not necessarily the best. It is a record of who called what, not advice or an endorsement.</p>
 
 
   <h2 id="methodology">Methodology</h2>
@@ -606,44 +631,149 @@ window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);
      ranking, which still needs three scored calls to enter — a two-call
      leaderboard is noise and that threshold is not moving. Below it are the
      records still building, greyed, with how many calls each still needs. */
-  function boardRow(r,rank,minN){
+  /* THE SPREAD TRAVELS WITH THE MEAN. 2.11% over four calls that ran 1.60% to
+     2.46% and 2.11% over four calls that all landed on 2.11% are different
+     records, and the board printed them the same way while ordering people by
+     the first two digits. */
+  function spreadNote(r){
+    if(r.err_min==null||r.err_max==null)return '';
+    if((r.n||0)<2||(r.err_max-r.err_min)<0.005)return '';
+    return '<span class="as-spread">calls ran '+r.err_min.toFixed(2)+'\u2013'+r.err_max.toFixed(2)+'%</span>';
+  }
+  /* CLOSEST OF WHO FILED IS NOT A WIN. Both badges this board had ever awarded
+     sat on forecasts that were FURTHER from the print than the free consensus
+     two columns to the left. `wins` now counts only closest-and-beat-the-trade;
+     anything that was merely closest says so in grey, in words. */
+  function winsBadge(r){
+    if(r.closest_n==null){
+      /* An older scorecard file, where `wins` counted closest alone. Say the
+         weaker thing rather than the thing the number cannot support. */
+      return r.wins?('<span class="as-wins mut" title="Closest of the forecasters who filed a number for that metric. It does not mean the call beat the trade consensus.">'+r.wins+'\u00d7 closest filed</span>'):'';
+    }
+    var out='';
+    if(r.wins)out+='<span class="as-wins" title="Closest of everyone on record for that metric, and closer to the print than the trade consensus.">'+r.wins+'\u00d7 closest, beat trade</span>';
+    var only=r.closest_n-r.wins;
+    if(only>0)out+='<span class="as-wins mut" title="Closest of the forecasters who filed a number for that metric, but still further from the print than the free trade consensus. That is not a win.">'+only+'\u00d7 closest filed, wider than trade</span>';
+    return out;
+  }
+  function boardRow(r,rank,minN,showRank){
     var beatCls=(r.beat_rate!=null&&r.beat_rate>=50)?'as-beat':'as-beat lo';
+    /* THE COUNT, NOT ONLY THE RATE. "0%" over three calls and "0%" over thirty
+       are not the same claim about a forecaster. */
+    var cnt=(r.beat_yes!=null&&r.beat_n!=null)?('<span class="as-mut"> &middot; '+r.beat_yes+' of '+r.beat_n+'</span>')
+      :((r.beat_n!=null&&r.beat_n!==r.n)?('<span class="as-mut"> of '+r.beat_n+'</span>'):'');
     var beat=(r.beat_rate==null)
       ? '<span class="as-mut" title="None of this forecaster\u2019s scored calls had a trade estimate to beat">no trade to beat</span>'
-      : '<span class="'+beatCls+'">'+r.beat_rate+'%</span>'
-        +((r.beat_n!=null&&r.beat_n!==r.n)?'<span class="as-mut"> of '+r.beat_n+'</span>':'');
+      : '<span class="as-cell"><span class="'+beatCls+'">'+r.beat_rate+'%</span>'+cnt+'</span>';
     var calls=r.qualified?String(r.n):(r.n+' of '+minN);
     return '<tr'+(r.qualified?'':' class="as-building"')+'>'
-      +'<td class="rk" data-label="#">'+(rank||'&mdash;')+'</td>'
+      +(showRank?('<td class="rk" data-label="#">'+(rank||'&mdash;')+'</td>'):'')
       +'<td data-label="Analyst"><span class="who">'+esc(r.analyst)+'</span>'
       +(/agsist\.com/i.test(r.firm||'')?'<span class="as-ours" title="This is our own model. We run this board and score it, and the same rules apply to us.">ours</span>':'')
       +'<span class="firm">'+esc(r.firm)+'</span>'
-      +((r.wins)?'<span class="as-wins" title="Closest of everyone on record for that metric">'+r.wins+'\u00d7 closest</span>':'')+'</td>'
+      +winsBadge(r)+'</td>'
       +'<td class="num" data-label="Calls">'+calls+'</td>'
-      +'<td class="num" data-label="Avg error"><span class="as-acc">'+r.mape.toFixed(2)+'%</span></td>'
+      +'<td class="num" data-label="Avg error"><span class="as-cell"><span class="as-acc">'+r.mape.toFixed(2)+'%</span>'+spreadNote(r)+'</span></td>'
       +'<td class="num" data-label="Beat trade">'+beat+'</td>'
       +'<td class="num" data-label="Bias">'+biasCell(r.bias)+'</td></tr>';
   }
-  function boardTbl(rows,building,minN){
-    minN=minN||3;
+  /* ── ONE TABLE PER METRIC CLASS, AND NO ORDINAL IT CANNOT SUPPORT ────────
+     Two separate things were wrong here. The first was upstream: score() added
+     every error percentage into one mean regardless of metric, so one soybean
+     ending-stocks call at 2.58% off carried a forecaster over the 3-call bar
+     and he printed "#1" on a record that was really two yield calls. That is
+     fixed in build_analyst_scorecard.py; this side now renders one class at a
+     time and says on the table which class it is.
+
+     The second was here: "#1  1.81%" over "#2  2.11%" is a finishing order
+     asserted on three and four observations with a 0.30-point gap and no
+     interval anywhere on the page. Ordinals now need two qualifying
+     forecasters AND ordinal_min_n scored calls each; under that the records
+     print in order of average error with the spread beside each one, and the
+     column of places is not rendered at all -- a "#" column full of dashes
+     still tells a reader that a place exists and is merely being withheld. */
+  var ORD_MIN=10;
+  function boardTbl(rows,building,minN,cls,ordMin){
+    minN=minN||3;ordMin=ordMin||ORD_MIN;
     rows=rows||[];building=building||[];
     if(!rows.length&&!building.length)return '<div class="as-err">No forecasters scored yet.</div>';
-    var head='<table class="as-tbl"><thead><tr><th>#</th><th>Analyst</th><th class="num">Calls</th><th class="num">Avg error</th><th class="num">Beat trade</th><th class="num">Bias</th></tr></thead><tbody>';
-    /* A single qualified forecaster is not a ranking -- see board_tbl() in
-       scripts/prerender_wpi_scorecard.py. Keep these two in step. */
-    var ranked=rows.length>1;
-    var body=rows.map(function(r,i){return boardRow(r,ranked?i+1:null,minN);}).join('');
-    var brows=building.map(function(r){return boardRow(r,null,minN);}).join('');
+    var ordinals=(cls&&cls.ordinals_ok!=null)
+      ? !!cls.ordinals_ok
+      : (rows.length>1&&rows.every(function(r){return (r.n||0)>=ordMin;}));
+    var span=ordinals?6:5;
+    var head='<table class="as-tbl"><thead><tr>'+(ordinals?'<th>#</th>':'')+'<th>Analyst</th><th class="num">Calls</th><th class="num">Avg error</th><th class="num">Beat trade</th><th class="num">Bias</th></tr></thead><tbody>';
+    var cap='';
+    if(cls&&cls.label){
+      cap='<tr class="as-cap"><td colspan="'+span+'"><b>'+esc(cls.label)+'</b>'
+        +((cls.calls!=null)?(' \u00b7 '+cls.calls+' scored call'+(cls.calls===1?'':'s')):'')
+        +'. Errors are averaged inside this group only \u2014 a 2% miss on a yield and a 2% miss on '
+        +'ending stocks are not the same miss, and this page does not add them together.</td></tr>';
+    }
+    var body=rows.map(function(r,i){return boardRow(r,ordinals?i+1:null,minN,ordinals);}).join('');
+    var brows=building.map(function(r){return boardRow(r,null,minN,ordinals);}).join('');
     var note='';
-    if(building.length){
-      note='<tr class="as-split"><td colspan="6">Still building \u2014 ranked once a forecaster has '
-        +'<b>'+minN+' scored calls</b>. Their accuracy so far is real and is shown; '
+    if(building.length&&rows.length){
+      note='<tr class="as-split"><td colspan="'+span+'">Still building \u2014 listed above the line once a forecaster has '
+        +'<b>'+minN+' scored calls in this group</b>. Their accuracy so far is real and is shown; '
         +'their position is not, because '+(minN-1)+' calls is not a record.</td></tr>';
     }
     var lead='';
-    if(!rows.length){lead='<div class="as-err" style="margin-bottom:.6rem">Nobody has '+minN+' scored calls yet \u2014 building records below.</div>';}
-    else if(!ranked){lead='<div class="as-err" style="margin-bottom:.6rem">A ranking needs at least two forecasters with '+minN+' scored calls. One has cleared that so far, so this board shows records, not places.</div>';}
-    return lead+head+body+note+brows+'</tbody></table>';
+    if(!rows.length){lead='<div class="as-err" style="margin-bottom:.6rem">Nobody has '+minN+' scored calls in this group yet \u2014 building records below.</div>';}
+    else if(rows.length===1){lead='<div class="as-err" style="margin-bottom:.6rem">A ranking needs at least two forecasters with '+minN+' scored calls in the same group. One has cleared that so far, so this board shows records, not places.</div>';}
+    else if(!ordinals){lead='<div class="as-err" style="margin-bottom:.6rem">Listed by average error, with no places. This page prints a finishing order only once every forecaster above the line has <b>'+ordMin+' scored calls</b> in the same group. Under that, the gap between two averages sits inside the spread of each one\u2019s own calls \u2014 shown beside every average \u2014 and an order would be a coin flip written as a fact.</div>';}
+    return lead+head+cap+body+note+brows+'</tbody></table>';
+  }
+  /* ── WHAT THE BOARD'S OWN NUMBERS SAY, IN ONE LINE, UNDER THE BOARD ──────
+     Under a heading about who calls these reports well, every qualifying
+     forecaster on this board has a beat-trade rate of 0% -- the page's own
+     column said so and the page never said what it meant. It says it here, and
+     it is computed, so it changes on its own the day somebody beats it. */
+  function beatNote(qrows,brows){
+    qrows=qrows||[];brows=brows||[];
+    if(!qrows.length)return '';
+    var yes=0,n=0,counted=true;
+    qrows.forEach(function(r){
+      if(r.beat_n==null)return;
+      n+=r.beat_n;
+      if(r.beat_yes==null)counted=false;else yes+=r.beat_yes;
+    });
+    if(!n)return '<b>No forecaster above the line has a call with a trade consensus on file</b>, so nothing here has been measured against the free number yet.';
+    /* An older scorecard file carries the rounded rate but not the raw count.
+       A rounded rate cannot be turned back into "3 of 17" -- but every rate
+       being exactly 0 does settle the only question this sentence asks, so the
+       sentence still gets written, without the counts it cannot prove. */
+    if(!counted){
+      var allZero=qrows.every(function(r){return r.beat_rate===0;});
+      if(!allZero)return '';
+      return '<b>No forecaster with enough scored calls to be listed above the line has beaten the trade consensus.</b> '
+        +'Not one of the '+n+' graded call'+(n===1?'':'s')+' with a consensus on file landed closer to the USDA print '
+        +'than the free trade estimate in the \u201cBeat trade\u201d column.';
+    }
+    var tail='';
+    var byes=0,bn=0,bok=true;
+    brows.forEach(function(r){
+      if(r.beat_n==null)return;
+      bn+=r.beat_n;
+      if(r.beat_yes==null)bok=false;else byes+=r.beat_yes;
+    });
+    if(bok&&byes>0)tail=' Below the line, records still building have landed closer than the consensus on '+byes+' of '+bn+' calls.';
+    if(yes===0){
+      return '<b>No forecaster with enough scored calls to be listed above the line has beaten the trade consensus.</b> '
+        +'Of the '+n+' graded call'+(n===1?'':'s')+' with a consensus on file, 0 landed closer to the USDA print than '
+        +'the free trade estimate in the \u201cBeat trade\u201d column. The consensus is the number a forecast has to beat '
+        +'to be worth anything.'+tail;
+    }
+    return 'Forecasters above the line have landed closer to the print than the trade consensus on <b>'+yes+' of '+n+'</b> graded calls.'+tail;
+  }
+  /* Every metric class that is not the main board still gets a table. Sig's
+     rule is that misses stay on the record; the stocks call that used to carry
+     a forecaster onto the leaderboard is still here, scored on its own. */
+  function otherClasses(classes,primary,minN,ordMin){
+    if(!classes||!classes.length)return '';
+    var rest=classes.filter(function(c){return c.key!==primary;});
+    if(!rest.length)return '';
+    return '<div class="as-legend" style="margin-top:1.2rem">Scored separately, because the errors are not comparable:</div>'
+      +rest.map(function(c){return '<div class="as-otherblk">'+boardTbl(c.leaderboard,c.building,minN,c,ordMin)+'</div>';}).join('');
   }
   // WHEN THE CALL WAS LOCKED, SHOWN NEXT TO IT. A forecast filed the morning of
   // a report and one filed three weeks out are not the same claim, and the board
@@ -706,8 +836,20 @@ window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);
              on source_note marked every properly-sourced call as derived --
              a false claim about four forecasters to disclose one. */
           var note=x.derived?(' <span class="as-res-derived" title="'+esc(x.source_note||'')+'">midpoint of a stated range</span>'):'';
-          return '<div class="as-res-row"><span class="as-res-who'+(x.closest?' best':'')+'">'+(x.closest?'\u2605 ':'')+esc(x.analyst)+note+'</span>'
-            +'<span class="as-res-stat">'+esc(x.value)+' &middot; '+x.err_pct.toFixed(2)+'% off'+(x.beat?' &middot; <span class="as-res-beat">beat trade</span>':'')+'</span></div>';
+          /* THE STAR IS A WIN OR IT IS NOTHING. It used to mark the closest
+             number filed, and both stars on this page sat on forecasts that
+             were further from the print than the free consensus: Sep 11 corn,
+             182.6 at 2.30% off, starred over a consensus 0.22% off; Aug 12
+             soybeans, 0.57% starred over a consensus at 0.38%. Both rows
+             already carried "beat": false in the same JSON. Closest-of-those-
+             who-filed now says exactly that, in grey, in words. */
+          var star=(x.star!=null)?!!x.star:!!(x.closest&&x.beat);
+          var mark=star?('\u2605 '):'';
+          var tail=x.beat
+            ? ' &middot; <span class="as-res-beat">beat trade</span>'
+            : (x.closest?' &middot; <span class="as-mut">closest filed, wider than the trade</span>':'');
+          return '<div class="as-res-row"><span class="as-res-who'+(star?' best':'')+'">'+mark+esc(x.analyst)+note+'</span>'
+            +'<span class="as-res-stat">'+esc(x.value)+' &middot; '+x.err_pct.toFixed(2)+'% off'+tail+'</span></div>';
         }).join('');
         /* THE TRADE NUMBER, AND WHERE IT CAME FROM. `trade &mdash;` told a
            reader nothing about why there was no consensus, and the source link
@@ -718,8 +860,12 @@ window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);
               ? '<a href="'+esc(m.consensus_source)+'" target="_blank" rel="noopener" class="as-pl-link">trade '+esc(m.consensus)+'</a>'
               : 'trade '+esc(m.consensus));
         var n=(m.n_estimates!=null)?('<span class="as-mut"> &middot; '+m.n_estimates+' forecaster'+(m.n_estimates===1?'':'s')+' on record</span>'):'';
+        /* WHAT EVERY FORECAST ON THIS METRIC WAS UP AGAINST. Without it the
+           reader cannot tell that the closest call listed below lost to the
+           consensus printed in the line above it. */
+        var ce=(m.consensus_err_pct!=null)?('<span class="as-mut"> &middot; trade missed by '+m.consensus_err_pct.toFixed(2)+'%</span>'):'';
         return '<div class="as-met"><div class="as-met-hd"><span class="ml">'+esc(m.label)+'</span><span class="as-tag '+cls+'">'+esc(m.surprise||'no trade estimate')+'</span></div>'
-          +'<div class="mc">'+cons+' <span class="as-arrow">\u2192</span> actual '+esc(m.actual)+(m.unit?('\u00a0'+esc(m.unit)):'')+n+'</div>'+res+'</div>';
+          +'<div class="mc">'+cons+' <span class="as-arrow">\u2192</span> actual '+esc(m.actual)+(m.unit?('\u00a0'+esc(m.unit)):'')+ce+n+'</div>'+res+'</div>';
       }).join('');
       return '<div class="as-rep"><div class="hd"><span class="rpt">'+esc(r.report)+'</span><span class="cd">'+esc(r.date)+'</span></div>'+ms+'</div>';
     }).filter(Boolean).join('');
@@ -727,15 +873,36 @@ window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);
   }
   fetch('/data/analyst-scorecard.json',{cache:'no-store'}).then(function(r){if(!r.ok)throw 0;return r.json();}).then(function(d){
     if(d.sample){document.getElementById('as-ribbon').style.display='block';}
-    document.getElementById('as-board').innerHTML=boardTbl(d.leaderboard,d.building,d.min_n);
-    if(d.leaderboard&&d.leaderboard.length){document.getElementById('as-legend').style.display='block';document.getElementById('as-minn').textContent=d.min_n||3;}
+    var minN=d.min_n||3,ordMin=d.ordinal_min_n||ORD_MIN;
+    var classes=(d.classes&&d.classes.length)?d.classes:null;
+    var primary=d.primary_class||(classes?classes[0].key:null);
+    var pcls=null;
+    if(classes){pcls=classes.filter(function(c){return c.key===primary;})[0]||classes[0];}
+    document.getElementById('as-board').innerHTML=boardTbl(d.leaderboard,d.building,minN,pcls,ordMin);
+    /* The note is computed over EVERY class, not just the one on the main
+       table, so a forecaster cannot be quietly excluded from the sentence by
+       sitting in a second group. */
+    var qrows=[],brows=[];
+    if(classes){classes.forEach(function(c){qrows=qrows.concat(c.leaderboard||[]);brows=brows.concat(c.building||[]);});}
+    else{qrows=(d.leaderboard||[]).slice();brows=(d.building||[]).slice();}
+    document.getElementById('as-board-note').innerHTML=beatNote(qrows,brows);
+    document.getElementById('as-board-note').style.display=document.getElementById('as-board-note').innerHTML?'':'none';
+    document.getElementById('as-other').innerHTML=classes?otherClasses(classes,primary,minN,ordMin):'';
+    if(d.leaderboard&&d.leaderboard.length){document.getElementById('as-legend').style.display='block';document.getElementById('as-minn').textContent=minN;document.getElementById('as-ordmin').textContent=ordMin;}
     document.getElementById('as-upcoming').innerHTML=pipelineEl(d.pipeline);
     document.getElementById('as-roster').innerHTML=rosterEl(d.roster)||'<div class="as-err">Roster loading&hellip;</div>';
     document.getElementById('as-reports').innerHTML=reportsEl(d.reports);
     try{var s=document.getElementById('as-dataset-ld');if(s&&d.updated){var ld=JSON.parse(s.textContent);ld.dateModified=d.updated;s.textContent=JSON.stringify(ld);}}catch(e){}
     gaEvent('scorecard_view',{ranked:(d.leaderboard||[]).length,scored_reports:(d.reports||[]).length});
   }).catch(function(){
+    /* THE BAKED TABLE IS A CLAIM, AND IT GOES WITH THE FILE IT CAME FROM.
+       The static copy below is only true of the scorecard that produced it, so
+       when the scorecard cannot be read, the sentence under the board and the
+       second class table are cleared too rather than left standing beside an
+       error message. */
     document.getElementById('as-board').innerHTML='<div class="as-err">The analyst board is briefly unavailable. See the <a href="#track-record" style="color:var(--as-gold2)">track record</a> above and the <a href="/usda-calendar" style="color:var(--as-gold2)">USDA calendar</a>.</div>';
+    var bn=document.getElementById('as-board-note');if(bn){bn.innerHTML='';bn.style.display='none';}
+    var ob=document.getElementById('as-other');if(ob)ob.innerHTML='';
   });
   var wrap=document.querySelector('.as-wrap');
   if(wrap)wrap.addEventListener('click',function(e){var a=e.target.closest('a[href^="/"]');if(a)gaEvent('scorecard_link',{to:a.getAttribute('href'),page:'analyst-scorecard'});});

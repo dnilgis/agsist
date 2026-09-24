@@ -751,6 +751,130 @@ button,a,[role="button"],input,select{touch-action:manipulation}
         <p>Enter your ZIP code above, or allow location access, to see live cash bids from grain elevators near your farm.</p>
       </div>
     </div>
+<style id="lo-css">
+/* Where do I take this load? — scoped to .lo-* so nothing above can shift. */
+.lo-sec{margin:2rem 0 2.5rem;padding:1.15rem 1.15rem 1.3rem;border:1px solid var(--border,rgba(132,160,168,.13));border-radius:var(--r-lg,14px);background:var(--surface,#101415);box-shadow:var(--glow-card,none)}
+.lo-h{font-family:var(--font-display,inherit);font-size:1.15rem;font-weight:700;text-transform:uppercase;letter-spacing:.03em;color:var(--text,#e9edeb);margin:0 0 .35rem}
+.lo-intro{margin:0 0 1rem;font-size:.95rem;line-height:1.6;color:var(--text-dim)}
+.lo-form{display:grid;grid-template-columns:repeat(auto-fit,minmax(168px,1fr));gap:.8rem 1rem;margin:0 0 1.1rem}
+.lo-ig{min-width:0}
+.lo-lab{display:block;font-size:.76rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-muted);margin:0 0 .3rem}
+.lo-opt{text-transform:none;letter-spacing:0;font-weight:400;opacity:.75}
+.lo-in{width:100%;box-sizing:border-box;min-height:44px;padding:.5rem .6rem;font:inherit;font-size:1rem;color:var(--text);background:var(--bg2,var(--bg,#0a0c0d));border:1px solid var(--border);border-radius:var(--r-sm,6px)}
+.lo-in:focus-visible{outline:2px solid var(--gold,#d4a23f);outline-offset:1px}
+.lo-hint{margin:.3rem 0 0;font-size:.78rem;line-height:1.45;color:var(--text-muted)}
+.lo-head{margin:0 0 .7rem;font-size:1rem;line-height:1.55;color:var(--text)}
+.lo-head b{color:var(--text)}
+.lo-verdict{margin:0 0 1rem;padding:.7rem .85rem;border:1px solid var(--border-g,rgba(212,162,63,.3));border-radius:var(--r-sm,6px);font-size:.97rem;line-height:1.6;color:var(--text-dim)}
+.lo-verdict strong{color:var(--text)}
+.lo-money{color:var(--green,#5fc28a);font-weight:700}
+.lo-say{margin:0 0 1rem;padding:.7rem .85rem;border:1px solid var(--border);border-radius:var(--r-sm,6px);font-size:.95rem;line-height:1.6;color:var(--text-dim)}
+.lo-tw{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.lo-tbl{width:100%;border-collapse:collapse;font-size:.9rem}
+.lo-tbl th{text-align:left;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-muted);padding:.35rem .5rem;border-bottom:1px solid var(--border);white-space:nowrap}
+.lo-tbl th.r,.lo-tbl td.r{text-align:right}
+.lo-tbl td{padding:.55rem .5rem;border-bottom:1px solid var(--border);vertical-align:top;color:var(--text-dim)}
+.lo-tbl tr.lo-top td{background:rgba(var(--gold-rgb,212,162,63),.07)}
+.lo-nm{color:var(--text);font-weight:600;line-height:1.35}
+.lo-sub{font-size:.78rem;color:var(--text-muted);line-height:1.45;margin-top:.15rem}
+.lo-big{font-variant-numeric:tabular-nums;color:var(--text);font-weight:600;white-space:nowrap}
+.lo-rank{color:var(--text-muted);font-variant-numeric:tabular-nums;width:1.6rem}
+.lo-up{color:var(--green,#5fc28a)}
+.lo-dn{color:var(--red,#e0685f)}
+.lo-mid{color:var(--text-muted)}
+.lo-notes{margin:1rem 0 0;font-size:.82rem;line-height:1.6;color:var(--text-muted)}
+.lo-notes p{margin:0 0 .5rem}
+.lo-notes p:last-child{margin-bottom:0}
+.lo-notes b{color:var(--text-dim)}
+@media(max-width:699px){
+  .lo-sec{padding:.95rem .8rem 1.1rem}
+  .lo-form{grid-template-columns:1fr 1fr}
+  .lo-tw{overflow-x:visible}
+  .lo-tbl,.lo-tbl tbody,.lo-tbl tr,.lo-tbl td{display:block;width:100%;box-sizing:border-box}
+  .lo-tbl thead{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+  .lo-tbl tr{border:1px solid var(--border);border-radius:var(--r-sm,6px);margin:0 0 .6rem;padding:.55rem .65rem}
+  .lo-tbl td{border:0;padding:.18rem 0;text-align:left}
+  .lo-tbl td.r{text-align:left}
+  .lo-tbl td[data-l]:before{content:attr(data-l) " ";font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-muted);margin-right:.4rem}
+  .lo-tbl td.lo-rank{display:none}
+  .lo-tbl tr.lo-top{border-color:var(--border-g,rgba(212,162,63,.3))}
+  .lo-tbl tr.lo-top td{background:transparent}
+}
+@media(max-width:379px){.lo-form{grid-template-columns:1fr}}
+</style>
+    <!-- ===== WHERE DO I TAKE THIS LOAD? (added 2026-09-24) =====
+         The page above answers "what is everyone near me paying". It does not
+         answer the question a man with a full bin actually asks, which is
+         "where do I take THIS load, what is the cheque, and is the extra drive
+         worth it". Three things stop the block above from answering it:
+
+           1. Worth the Drive ranks each elevator on the SOONEST delivery it
+              will take, which is a different month at different elevators. Its
+              own note says so and asks the reader to go and fix the filter.
+              This block takes one grain and ONE delivery window and compares
+              only elevators that will take that window.
+           2. Worth the Drive only exists after the licensed feed answers. This
+              block reads the committed snapshot, so it works when Barchart is
+              down, and it is stamped with the hour it was read.
+           3. Nothing on the page said whether a basis is good or bad. This
+              block says where each posted basis sits against the MIDDLE of the
+              elevators in the same table - same grain, same window, same
+              snapshot. It does NOT say "versus normal for this week of the
+              year", because the basis history in this repo starts 9 June 2026
+              and there is no previous year in it to be normal against.
+
+         ADDITIVE BY CONSTRUCTION. display:none until both data files parse and
+         at least one bid survives. Every failure - 404, malformed, no rows -
+         leaves the page exactly as it was. ===== -->
+    <section id="lo-sec" class="lo-sec" aria-labelledby="lo-h" style="display:none">
+      <h2 class="lo-h" id="lo-h">Where do I take this load?</h2>
+      <p class="lo-intro">One grain, one delivery window, every elevator in AGSIST&rsquo;s snapshot that will take it &mdash; in dollars for your load rather than cents a bushel. Read from AGSIST&rsquo;s committed snapshot, so it answers even when the live feed above does not.</p>
+
+      <div class="lo-form">
+        <div class="lo-ig">
+          <label class="lo-lab" for="lo-bu">Bushels in the bin</label>
+          <input class="lo-in" id="lo-bu" type="number" inputmode="numeric" min="0" max="5000000" step="100" placeholder="e.g. 5000" autocomplete="off">
+          <div class="lo-hint">Leave it empty and you get cents a bushel instead of dollars.</div>
+        </div>
+        <div class="lo-ig">
+          <label class="lo-lab" for="lo-crop">Grain</label>
+          <select class="lo-in" id="lo-crop">
+            <option value="corn">Corn</option>
+            <option value="soybeans">Soybeans</option>
+            <option value="wheat">Wheat</option>
+          </select>
+          <div class="lo-hint">Each row shows the grade the elevator posted.</div>
+        </div>
+        <div class="lo-ig">
+          <label class="lo-lab" for="lo-area">Nearest town in the snapshot</label>
+          <select class="lo-in" id="lo-area"></select>
+          <div class="lo-hint">Miles below are measured from here, not from your yard.</div>
+        </div>
+        <div class="lo-ig">
+          <label class="lo-lab" for="lo-rad">How far you would haul</label>
+          <select class="lo-in" id="lo-rad">
+            <option value="25">25 miles</option>
+            <option value="50" selected>50 miles</option>
+            <option value="75">75 miles</option>
+            <option value="100">100 miles</option>
+          </select>
+          <div class="lo-hint">Straight line, not road miles.</div>
+        </div>
+        <div class="lo-ig">
+          <label class="lo-lab" for="lo-win">Delivery window</label>
+          <select class="lo-in" id="lo-win"></select>
+          <div class="lo-hint">A bid for next July is not a bid for today.</div>
+        </div>
+        <div class="lo-ig">
+          <label class="lo-lab" for="lo-permi">What a mile costs you <span class="lo-opt">optional</span></label>
+          <input class="lo-in" id="lo-permi" type="number" inputmode="decimal" min="0" max="20" step="0.05" placeholder="$ per mile" autocomplete="off">
+          <div class="lo-hint">Your number. AGSIST does not have one and will not invent one.</div>
+        </div>
+      </div>
+
+      <div id="lo-out" class="lo-out" role="region" aria-live="polite" aria-labelledby="lo-h"></div>
+      <div id="lo-notes" class="lo-notes"></div>
+    </section>
         <!-- ===== NATIONAL BASIS (merged from /basis-map) ===== -->
     <section id="national-basis" class="bm-section" aria-label="National grain basis by state">
       <h2 class="bm-h">Where basis is strongest nationally</h2>
@@ -2712,6 +2836,476 @@ if(window.AGSIST_STATE&&window.AGSIST_STATE.lat&&window.AGSIST_STATE.zip){
   var tg=document.getElementById('bm-toggle');
   if(tg)tg.addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;current=b.getAttribute('data-c');this.querySelectorAll('button').forEach(function(x){x.setAttribute('aria-pressed',x===b?'true':'false');});render(current);if(window.gaEvent)gaEvent('basis_commodity',{commodity:current,page:'cash-bids'});});
   fetch('/data/basis-map.json',{cache:'no-store'}).then(function(r){if(!r.ok)throw 0;return r.json();}).then(function(d){DATA=d;if(d.sample){var s=document.getElementById('bm-sample');if(s)s.style.display='block';}buildToggle();render(current);if(window.gaEvent)gaEvent('basis_view',{page:'cash-bids'});}).catch(function(){var g=document.getElementById('bm-grid');if(g)g.innerHTML='<div class="bm-err">National basis data is briefly unavailable.</div>';});
+})();
+</script>
+<script>
+/* ===== WHERE DO I TAKE THIS LOAD? =====================================
+   Reads two files that are already in this repository and nothing else:
+
+     data/bids.json            the committed cash-bid snapshot. 889 rows,
+                               301 facilities, 28 states, stamped with the
+                               minute it was read.
+     data/elevator-coverage.json  where each of those facilities is, and how
+                               precisely: a street address, a town centre or
+                               a county centre. Carried through to the miles
+                               column, because "23 miles" from a county
+                               centroid is not the same claim as from a door.
+
+   WHAT THIS DELIBERATELY DOES NOT SAY. "Is this basis normal for late
+   September" is the question a seller most wants answered and this repo
+   cannot answer it. data/basis/*.json begins 2026-06-09. There is no
+   previous September in it, so there is no normal, so no percentile, no
+   "strong for the date", no seasonal anything is printed here. What is
+   printed instead is where each posted basis sits against the MIDDLE of the
+   elevators in the same table, which is a fact about this snapshot and is
+   labelled as one.
+
+   FAILURE IS SILENCE. The section is display:none in the markup. It is shown
+   only after both files parse and at least one bid survives the filters. A
+   404, a truncated file, a facility nobody can place - each one leaves the
+   page byte-for-byte what it was.
+   ===================================================================== */
+(function(){
+'use strict';
+var SEC=document.getElementById('lo-sec');
+if(!SEC||!window.fetch||!Array.prototype.filter)return;
+
+var $=function(id){return document.getElementById(id);};
+var elBu=$('lo-bu'),elCrop=$('lo-crop'),elArea=$('lo-area'),elRad=$('lo-rad'),
+    elWin=$('lo-win'),elPerMi=$('lo-permi'),elOut=$('lo-out'),elNotes=$('lo-notes');
+if(!elBu||!elCrop||!elArea||!elRad||!elWin||!elPerMi||!elOut||!elNotes)return;
+
+var MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+var MONL=['January','February','March','April','May','June','July','August','September','October','November','December'];
+var PREC={street:'street address',town:'town centre',county:'county centre'};
+
+function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function ymd(iso){var m=/^(\d{4})-(\d{2})-(\d{2})/.exec(String(iso||''));return m?{y:+m[1],mo:+m[2],d:+m[3]}:null;}
+function key(p){return p?(p.y*10000+p.mo*100+p.d):0;}
+function todayKey(){var n=new Date();return n.getFullYear()*10000+(n.getMonth()+1)*100+n.getDate();}
+function one(p){return p?(p.d+' '+MON[p.mo-1]+' '+p.y):'';}
+/* A delivery window, written the way a board writes it. Never a Date object,
+   so there is no path to "Invalid Date" on a row with a bad string. */
+function win(a,b){
+  var A=ymd(a),B=ymd(b);
+  if(!A&&!B)return '';
+  if(!A||!B)return one(A||B);
+  if(A.y===B.y&&A.mo===B.mo)return (A.d===B.d?A.d:A.d+'–'+B.d)+' '+MON[A.mo-1]+' '+A.y;
+  if(A.y===B.y)return A.d+' '+MON[A.mo-1]+' – '+B.d+' '+MON[B.mo-1]+' '+A.y;
+  return one(A)+' – '+one(B);
+}
+function money(v){
+  if(typeof v!=='number'||!isFinite(v))return '';
+  var neg=v<0,n=Math.abs(v),s;
+  try{s=n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});}
+  catch(e){s=n.toFixed(2);}
+  return (neg?'−$':'$')+s;
+}
+function money0(v){
+  if(typeof v!=='number'||!isFinite(v))return '';
+  var neg=v<0,n=Math.round(Math.abs(v)),s;
+  try{s=n.toLocaleString('en-US');}catch(e){s=String(n);}
+  return (neg?'−$':'$')+s;
+}
+function count(n){try{return n.toLocaleString('en-US');}catch(e){return String(n);}}
+/* Basis arrives as dollars a bushel in bids.json and is spoken in cents. */
+function cents(dollars){
+  var c=Math.round(dollars*10000)/100,s=Math.abs(c).toFixed(2).replace(/\.?0+$/,'');
+  return (c<0?'−':c>0?'+':'')+s+'¢';
+}
+function centsPlain(c){var s=Math.abs(c).toFixed(2).replace(/\.?0+$/,'');return s+'¢';}
+function price(v){return '$'+v.toFixed(4).replace(/(\.\d\d)0+$/,'$1')+'/bu';}
+function miles(d){return (d<10?d.toFixed(1):String(Math.round(d)))+' mi';}
+function haversine(la1,lo1,la2,lo2){
+  var R=3958.7613,T=Math.PI/180;
+  var dLa=(la2-la1)*T,dLo=(lo2-lo1)*T;
+  var h=Math.sin(dLa/2)*Math.sin(dLa/2)+Math.cos(la1*T)*Math.cos(la2*T)*Math.sin(dLo/2)*Math.sin(dLo/2);
+  return 2*R*Math.asin(Math.min(1,Math.sqrt(h)));
+}
+function median(a){
+  if(!a.length)return null;
+  var s=a.slice().sort(function(x,y){return x-y;}),m=s.length>>1;
+  return s.length%2?s[m]:(s[m-1]+s[m])/2;
+}
+/* A number the page can do arithmetic on. Anything that is not a positive
+   finite number is nothing, and nothing is capped far above any real farm
+   so that a pasted 1e400 cannot turn a dollar figure into Infinity. */
+function num(el,cap){var v=parseFloat(el.value);return isFinite(v)&&v>0?Math.min(v,cap):0;}
+
+/* ---------------------------------------------------------------- state */
+var ROWS=[],AREAS=[],STAMP='',SOURCE='',DROP={unver:0,unit:0,noprice:0,noplace:0,nowindow:0},READY=false;
+var CROPS={corn:'Corn',soybeans:'Soybeans',wheat:'Wheat'};
+
+function get(u){
+  return fetch(u,{cache:'default'}).then(function(r){
+    if(!r.ok)throw new Error('HTTP '+r.status);
+    return r.json();
+  });
+}
+
+Promise.all([get('/data/bids.json'),get('/data/elevator-coverage.json')])
+  .then(function(v){build(v[0],v[1]);})
+  .catch(function(){/* the page stays exactly as it was */});
+
+function build(bids,cov){
+  if(!bids||!bids.bids||!bids.bids.length||!cov||!cov.places||!cov.places.length)return;
+  STAMP=String(bids.fetched||'');
+  SOURCE=String(bids.source||'');
+
+  /* WHERE EACH FACILITY IS. coverage lists places, each carrying the
+     facilities at it; the join is facility + city + state, which places
+     880 of the 889 rows in this snapshot. */
+  var place={};
+  for(var i=0;i<cov.places.length;i++){
+    var p=cov.places[i],a=p.a||[];
+    if(typeof p.y!=='number'||typeof p.x!=='number')continue;
+    for(var j=0;j<a.length;j++){
+      var k=String(a[j][0]||'').trim().toUpperCase()+'|'+String(a[j][1]||'').trim().toUpperCase()+'|'+String(p.s||'');
+      if(!place[k])place[k]={y:p.y,x:p.x,p:String(p.p||'')};
+    }
+  }
+
+  /* WHAT IS ALLOWED INTO THE TABLE.
+       - corn, soybeans or wheat: the three a man has in a bin. Sorghum and
+         "other" are in the file but too thin here to rank.
+       - verified only. The snapshot marks a row unverified when cash minus
+         basis disagrees with every other facility quoting the same contract,
+         and says such a row is never selected. It is not selected here.
+       - a posted basis further than $3.00/bu from futures is not a basis, it
+         is a unit mismatch on somebody's board: one Washington elevator posts
+         spring wheat at $13.73 with a basis of +643c while its neighbours pay
+         $7.75. Ten rows in the file look like that. They are withheld and
+         counted rather than ranked at the top of somebody's list. */
+  var raw=bids.bids,grp={},order=[];
+  for(i=0;i<raw.length;i++){
+    var b=raw[i];
+    if(!CROPS[b.category])continue;
+    if(!b.verified){DROP.unver++;continue;}
+    if(typeof b.cashPrice!=='number'||!isFinite(b.cashPrice)){DROP.noprice++;continue;}
+    if(typeof b.basis==='number'&&Math.abs(b.basis)>3){DROP.unit++;continue;}
+    var ds=String(b.deliveryStart||'').slice(0,10),de=String(b.deliveryEnd||'').slice(0,10);
+    /* A BID WITH NO WINDOW CANNOT BE COMPARED LIKE FOR LIKE, so it is not
+       quietly filed under whatever month happens to be on screen. It is
+       dropped and counted, and the count is printed under the table. */
+    if(!/^\d{4}-\d{2}-\d{2}$/.test(ds)||!ymd(ds)){DROP.nowindow++;continue;}
+    /* THE SAME BID, TWICE. The snapshot carries two spellings of most rows:
+       one with branch:"" and the SITE name sitting in city, one with the site
+       in branch and the real town in city -
+
+         {branch:"",        city:"Grebner",  zip:57401, 6.39, basis -0.90, "09/01/2026"}
+         {branch:"Grebner", city:"Aberdeen", zip:57401, 6.38, basis -0.90, "Sep26"}
+
+       - which is one Agtegra elevator in Aberdeen, read twice a cent apart,
+       not two elevators half a mile from each other. The identity of a
+       delivery point is therefore ZIP + operator + SITE, where the site is
+       whichever of branch and city is carrying it, and the bid is that plus
+       the grade, the contract, the basis and the window. Price is NOT in the
+       key, because the price is exactly what drifts between the two reads.
+       Where they disagree the LOWER is kept: a page that quotes a man the
+       higher of two numbers his elevator may or may not honour has made him
+       a promise out of a rounding difference. */
+    var site=String(b.branch||'').trim()||String(b.city||'').trim();
+    var g=(String(b.zip||'').toUpperCase())+'|'+String(b.facility||'').toUpperCase()+'|'+site.toUpperCase()+'|'+
+          String(b.commodity||'').trim().toUpperCase()+'|'+String(b.symbol||'').trim().toUpperCase()+'|'+
+          b.category+'|'+(typeof b.basis==='number'?b.basis.toFixed(4):'-')+'|'+ds+'|'+de;
+    if(!grp[g]){grp[g]=[];order.push(g);}
+    grp[g].push(b);
+  }
+  for(i=0;i<order.length;i++){
+    var set=grp[order[i]],pick=null,pos=null,low=null;
+    for(var m=0;m<set.length;m++){
+      var c=set[m];
+      if(low===null||c.cashPrice<low)low=c.cashPrice;
+      var q=place[String(c.facility||'').trim().toUpperCase()+'|'+String(c.city||'').trim().toUpperCase()+'|'+String(c.state||'')];
+      if(q&&(!pick||String(c.branch||'').trim())){pick=c;pos=q;if(String(c.branch||'').trim())break;}
+    }
+    if(!pick){DROP.noplace++;continue;}
+    ROWS.push({
+      fac:String(pick.facility||''),br:String(pick.branch||''),city:String(pick.city||''),
+      st:String(pick.state||''),comm:String(pick.commodity||''),cat:pick.category,
+      cash:low,basis:(typeof pick.basis==='number'?pick.basis:null),
+      sym:String(pick.symbol||'').trim().toUpperCase(),
+      label:String(pick.deliveryMonth||''),
+      ds:String(pick.deliveryStart||'').slice(0,10),de:String(pick.deliveryEnd||'').slice(0,10),
+      src:String(pick.sourceZip||''),y:pos.y,x:pos.x,prec:pos.p
+    });
+  }
+  if(!ROWS.length)return;
+
+  /* THE TOWNS THE SNAPSHOT WAS PULLED AROUND. Only those with a surviving
+     row, so the list never offers an area with nothing behind it. */
+  var live={};
+  for(i=0;i<ROWS.length;i++)live[ROWS[i].src]=1;
+  var grid=bids.zip_grid||[];
+  for(i=0;i<grid.length;i++){
+    var z=grid[i];
+    if(!live[z.zip]||typeof z.lat!=='number'||typeof z.lng!=='number')continue;
+    AREAS.push({zip:String(z.zip),lat:z.lat,lng:z.lng,label:String(z.label||z.zip)});
+  }
+  if(!AREAS.length)return;
+  AREAS.sort(function(a,b){
+    var sa=a.label.slice(-2),sb=b.label.slice(-2);
+    return sa<sb?-1:sa>sb?1:(a.label<b.label?-1:a.label>b.label?1:0);
+  });
+
+  var html='';
+  for(i=0;i<AREAS.length;i++)html+='<option value="'+i+'">'+esc(AREAS[i].label)+' · '+esc(AREAS[i].zip)+'</option>';
+  elArea.innerHTML=html;
+
+  /* If the reader already searched a ZIP at the top of this page and it is
+     one of these towns, start there. Otherwise start at the first and say
+     plainly, in the hint under the box, that the miles are from that town. */
+  var saved='';
+  try{saved=localStorage.getItem('agsist_zip')||'';}catch(e){}
+  if(!saved&&$('cb-zip'))saved=($('cb-zip').value||'').trim();
+  for(i=0;i<AREAS.length;i++)if(AREAS[i].zip===saved){elArea.value=String(i);break;}
+
+  READY=true;
+  SEC.style.display='';
+  [elCrop,elArea,elRad,elWin].forEach(function(el){el.addEventListener('change',draw);});
+  [elBu,elPerMi].forEach(function(el){el.addEventListener('input',draw);});
+  draw();
+  try{if(window.gaEvent)window.gaEvent('loadout_view',{page:'cash-bids',rows:ROWS.length,areas:AREAS.length});}catch(e){}
+}
+
+/* ------------------------------------------------------------ selection */
+function area(){var i=parseInt(elArea.value,10);return AREAS[isFinite(i)&&AREAS[i]?i:0];}
+function candidates(){
+  var a=area(),rad=parseFloat(elRad.value)||50,crop=elCrop.value,out=[];
+  if(!a)return out;
+  for(var i=0;i<ROWS.length;i++){
+    var r=ROWS[i];
+    if(r.cat!==crop)continue;
+    var d=haversine(a.lat,a.lng,r.y,r.x);
+    if(!(d<=rad))continue;
+    out.push({r:r,d:d,mo:r.ds.slice(0,7)});
+  }
+  return out;
+}
+function months(list){
+  var seen={},out=[];
+  for(var i=0;i<list.length;i++){
+    var m=list[i].mo;
+    if(!/^\d{4}-\d{2}$/.test(m))continue;
+    if(!seen[m]){seen[m]={m:m,n:0,last:0};out.push(seen[m]);}
+    seen[m].n++;
+    var k=key(ymd(list[i].r.de));
+    if(k>seen[m].last)seen[m].last=k;
+  }
+  out.sort(function(a,b){return a.m<b.m?-1:a.m>b.m?1:0;});
+  return out;
+}
+
+/* ----------------------------------------------------------------- draw */
+function draw(){
+  if(!READY)return;
+  var list=candidates(),ms=months(list),a=area();
+  var want=elWin.value;
+  var have=false,i;
+  for(i=0;i<ms.length;i++)if(ms[i].m===want)have=true;
+  if(!have){
+    want='';
+    var tk=todayKey();
+    for(i=0;i<ms.length;i++){if(ms[i].last>=tk){want=ms[i].m;break;}}
+    if(!want&&ms.length)want=ms[ms.length-1].m;
+  }
+  var opt='';
+  for(i=0;i<ms.length;i++){
+    var p=ymd(ms[i].m+'-01'),nm=p?(MONL[p.mo-1]+' '+p.y):ms[i].m;
+    opt+='<option value="'+esc(ms[i].m)+'"'+(ms[i].m===want?' selected':'')+'>'+esc(nm)+
+         ' · '+ms[i].n+' bid'+(ms[i].n===1?'':'s')+(ms[i].last&&ms[i].last<todayKey()?' · closed':'')+'</option>';
+  }
+  if(!opt)opt='<option value="">—</option>';
+  elWin.innerHTML=opt;
+  if(want)elWin.value=want;
+
+  var rows=[];
+  for(i=0;i<list.length;i++)if(list[i].mo===want)rows.push(list[i]);
+
+  var bu=Math.floor(num(elBu,1e9)),permi=num(elPerMi,1e6),useMoney=bu>0,useHaul=useMoney&&permi>0;
+  for(i=0;i<rows.length;i++){
+    var c=rows[i];
+    c.gross=useMoney?bu*c.r.cash:null;
+    c.haul=useHaul?2*c.d*permi:null;
+    c.net=useHaul?(c.gross-c.haul):c.gross;
+  }
+  rows.sort(function(p,q){
+    var d=useHaul?(q.net-p.net):(q.r.cash-p.r.cash);
+    return d||(p.d-q.d);
+  });
+
+  var crop=CROPS[elCrop.value]||elCrop.value,rad=parseFloat(elRad.value)||50;
+  var mp=ymd(want+'-01'),winName=mp?(MONL[mp.mo-1]+' '+mp.y):'this window';
+  var where=a?a.label:'';
+  var head='<p class="lo-head"><b>'+(useMoney?esc(count(bu))+' bu of ':'')+esc(crop.toLowerCase())+
+           '</b>'+(mp?(' for <b>'+esc(winName)+' delivery</b>'):'')+', within '+rad+' miles of <b>'+esc(where)+'</b>.</p>';
+
+  if(!rows.length){
+    elOut.innerHTML=head+'<div class="lo-say">No elevator in this snapshot is posting '+esc(crop.toLowerCase())+
+      (mp?(' for '+esc(winName)):'')+' within '+rad+' miles of '+esc(where)+
+      '. Widen the distance, pick another delivery window, or try the town next door \u2014 and use the live search at the top of this page, which reaches elevators this snapshot does not.</div>';
+    notes(rows,false,false,false);
+    return;
+  }
+
+  /* A WINDOW THAT HAS ALREADY SHUT IS NOT SOMEWHERE TO TAKE A LOAD.
+     Four of the nineteen soybean bids around Rochester on 24 September ended
+     on the 23rd. They stay in the table, because a man may want to see what
+     the board beside him said yesterday, but they come OUT of the
+     best-against-nearest comparison: naming a bid he cannot take as the one
+     worth the drive is the failure this whole block exists to avoid. */
+  var cmp=[],shut=0;
+  for(i=0;i<rows.length;i++){
+    var ek=key(ymd(rows[i].r.de));
+    if(ek&&ek<todayKey())shut++;else cmp.push(rows[i]);
+  }
+  if(shut===rows.length){
+    head+='<div class="lo-say">Every one of these delivery windows had already closed by today. '+
+      'They are what the elevators were posting when this snapshot was read, and nothing below is a bid you can still take. '+
+      'Pick a later window, or use the live search at the top of this page.</div>';
+    cmp=rows;
+  }
+  var near=cmp[0];
+  for(i=1;i<cmp.length;i++)if(cmp[i].d<near.d)near=cmp[i];
+  var best=cmp[0];
+  var shutNote=(shut&&shut<rows.length)?(' '+shut+' more in the table below '+(shut===1?'has a window':'have windows')+
+    ' that closed before today, and '+(shut===1?'is':'are')+' left out of this comparison.'):'';
+
+  /* THE MIDDLE, AND WHAT IT IS ALLOWED TO BE THE MIDDLE OF.
+     A basis is a number of cents against A NAMED FUTURES CONTRACT. Walla
+     Walla posts +45c against Kansas City wheat and +45c against Minneapolis
+     spring wheat on the same board; those two 45s are not the same fact and
+     their average is not a market. So the middle is taken per contract
+     symbol and never across them, and a median of two is not a middle of
+     anything - below three posted bases on one contract nothing is drawn,
+     and the note under the table says why. */
+  var peers={},mids={},anyMid=false,sy;
+  for(i=0;i<rows.length;i++){
+    var pr=rows[i].r;
+    if(!pr.sym||pr.basis===null)continue;
+    (peers[pr.sym]=peers[pr.sym]||[]).push(pr.basis);
+  }
+  for(sy in peers)if(peers.hasOwnProperty(sy)&&peers[sy].length>=3){mids[sy]={v:median(peers[sy]),n:peers[sy].length};anyMid=true;}
+
+  var v='';
+  if(cmp.length===1){
+    v='<div class="lo-say">Only one elevator in this snapshot posts '+esc(crop.toLowerCase())+' for '+esc(winName)+
+      ' within '+rad+' miles of '+esc(where)+' on a window still open, so there is nothing here to compare it against. '+
+      'Widen the distance to put a second one beside it.'+shutNote+'</div>';
+  }else if(best===near){
+    v='<div class="lo-verdict">The closest of these '+cmp.length+' is also the best paying: <strong>'+esc(best.r.fac)+
+      '</strong>'+(best.r.br?' \u00B7 '+esc(best.r.br):best.r.city?' \u00B7 '+esc(best.r.city):'')+
+      ', '+esc(miles(best.d))+' out'+(useMoney?', <span class="lo-money">'+money(useHaul?best.net:best.gross)+'</span> for the load':', '+price(best.r.cash))+
+      '. Nothing here to drive past it for.'+shutNote+'</div>';
+  }else{
+    var extra=best.d-near.d;
+    var gap=useHaul?(best.net-near.net):useMoney?(best.gross-near.gross):((best.r.cash-near.r.cash)*100);
+    var sameGrade=best.r.comm.trim().toUpperCase()===near.r.comm.trim().toUpperCase();
+    var gapTxt=gap<0.005?'<strong>It is a dead heat on money</strong>':
+      '<strong><span class="lo-money">'+(useMoney?money(gap):centsPlain(gap))+'</span>'+
+      (useHaul?' more after your hauling cost':useMoney?' more on the load':' a bushel more')+'</strong>';
+    v='<div class="lo-verdict"><strong>'+esc(best.r.fac)+'</strong>'+(best.r.br?' \u00B7 '+esc(best.r.br):'')+
+      ' pays the most of these '+cmp.length+': '+esc(miles(best.d))+' out'+
+      (useMoney?', '+money(useHaul?best.net:best.gross)+' for the load':', '+price(best.r.cash))+
+      '. The closest is <strong>'+esc(near.r.fac)+'</strong>'+(near.r.br?' \u00B7 '+esc(near.r.br):'')+' at '+esc(miles(near.d))+
+      (useMoney?', '+money(useHaul?near.net:near.gross):', '+price(near.r.cash))+
+      '. '+gapTxt+', for '+esc(extra>=0.05?miles(extra)+' further each way':'no further')+' in a straight line.'+
+      (sameGrade?'':' <span class="lo-dn">But that is \u201C'+esc(best.r.comm.trim()||'an unnamed grade')+
+        '\u201D against \u201C'+esc(near.r.comm.trim()||'an unnamed grade')+
+        '\u201D \u2014 not the same grain, so the difference is only yours if both will take what is in your bin.</span>')+
+      shutNote+
+      (useHaul?' Your '+esc('$'+permi.toFixed(2))+' a mile is already taken off both.':
+       useMoney?' Your fuel, your time and your road miles come out of that \u2014 put a cost per mile in the box above and it will be taken off.':
+       ' Put your bushels in the box above to see that in dollars.')+
+      '</div>';
+  }
+
+  var t='<div class="lo-tw"><table class="lo-tbl"><thead><tr>'+
+    '<th class="lo-rank"></th><th>Elevator</th><th>Delivery window</th><th class="r">Bid &amp; basis</th>'+
+    '<th class="r">Distance</th>'+(useMoney?'<th class="r">Your load</th>':'')+
+    (useHaul?'<th class="r">Haul, both ways</th><th class="r">Left over</th>':'')+'</tr></thead><tbody>';
+  for(i=0;i<rows.length;i++){
+    var x=rows[i].r,d=rows[i].d;
+    var closed=key(ymd(x.de))&&key(ymd(x.de))<todayKey();
+    var bTxt,mm=(x.basis===null||!x.sym)?null:mids[x.sym];
+    if(x.basis===null){bTxt='basis not posted';}
+    else if(mm){
+      var dc=Math.round((x.basis-mm.v)*10000)/100;
+      bTxt='basis '+cents(x.basis)+' \u00B7 '+(Math.abs(dc)<0.005?'at':
+        '<span class="'+(dc>0?'lo-up':'lo-dn')+'">'+centsPlain(dc)+' '+(dc>0?'over':'under')+'</span>')+
+        ' the middle of the '+mm.n+' here on '+esc(x.sym);
+    }
+    else{bTxt='basis '+cents(x.basis)+(x.sym?' on '+esc(x.sym):'');}
+    t+='<tr class="'+(i===0&&rows.length>1?'lo-top':'')+'">'+
+      '<td class="lo-rank">'+(i+1)+'</td>'+
+      '<td><div class="lo-nm">'+esc(x.fac)+'</div><div class="lo-sub">'+
+        esc([x.br,x.city].filter(Boolean).join(' · '))+(x.st?', '+esc(x.st):'')+
+        '<br>posted as &ldquo;'+esc(x.comm.trim()||'not named')+'&rdquo;</div></td>'+
+      '<td data-l="Delivery"><div>'+esc(win(x.ds,x.de)||'not posted')+(closed?' <span class="lo-dn">(window closed)</span>':'')+'</div>'+
+        '<div class="lo-sub">board says &ldquo;'+esc(x.label||'nothing')+'&rdquo;</div></td>'+
+      '<td class="r" data-l="Bid"><div class="lo-big">'+price(x.cash)+'</div>'+
+        '<div class="lo-sub">'+bTxt+'</div></td>'+
+      '<td class="r" data-l="Distance"><div class="lo-big">'+esc(miles(d))+'</div>'+
+        '<div class="lo-sub">to its '+esc(PREC[x.prec]||'recorded place')+'</div></td>'+
+      (useMoney?'<td class="r lo-big" data-l="Your load">'+money(rows[i].gross)+'</td>':'')+
+      (useHaul?'<td class="r lo-big" data-l="Haul, both ways">−'+money(rows[i].haul)+'</td><td class="r lo-big" data-l="Left over">'+money(rows[i].net)+'</td>':'')+
+      '</tr>';
+  }
+  t+='</tbody></table></div>';
+  elOut.innerHTML=head+v+t;
+  notes(rows,anyMid,useMoney,useHaul);
+}
+
+/* ---------------------------------------------------------------- notes */
+function notes(rows,anyMid,useMoney,useHaul){
+  var a=area(),n={},grades={},i,g=[];
+  for(i=0;i<rows.length;i++){
+    n[rows[i].r.prec]=(n[rows[i].r.prec]||0)+1;
+    var c=rows[i].r.comm.trim().toUpperCase();
+    if(c&&!grades[c]){grades[c]=1;g.push(rows[i].r.comm.trim());}
+  }
+  var parts=[];
+  for(var k in n)if(n.hasOwnProperty(k))parts.push(n[k]+' to a '+(PREC[k]||'recorded place'));
+  var out='';
+
+  if(rows.length){
+    out+='<p><b>The miles.</b> Straight-line distance from the centre of '+esc(a?a.label:'the town above')+
+      ' to where AGSIST records each elevator &mdash; '+esc(parts.join(', '))+
+      '. It is not measured from your yard and it is not road miles, which are always longer.</p>';
+  }
+  if(g.length>1){
+    out+='<p><b>Not all one grade.</b> These elevators posted '+g.length+' different names for this grain ('+
+      esc(g.slice(0,6).join(', '))+(g.length>6?', and more':'')+
+      '). A white-corn or high-protein bid is not a bid for what is in your bin. Each row shows the name the elevator posted; check it before you haul.</p>';
+  }
+  if(rows.length>=2){
+    out+='<p><b>&ldquo;The middle&rdquo;.</b> '+(anyMid?
+      'The median posted basis of the elevators in this table pricing against the same futures contract, in the same delivery window, in the same snapshot. A basis on Kansas City wheat and a basis on Minneapolis wheat are not the same measurement, so they are never averaged together. ':
+      'Not shown here: fewer than three of these elevators posted a basis against any one futures contract, and the median of two numbers is not the middle of a market. ')+
+      'Either way it is <b>not</b> a comparison with a normal late September. AGSIST&rsquo;s basis history begins 9 June 2026 and holds no previous year, so nothing on this page can tell you whether a basis is good for the date.</p>';
+  }
+  if(rows.length){
+    out+='<p><b>Hauling.</b> '+(useHaul?
+      'Your cost per mile \u00D7 the straight-line distance \u00D7 2, there and back. The number is yours; AGSIST supplies no cents-per-mile, and the straight line understates the road.':
+      useMoney?'Nothing is taken off for the drive. Put your own cost per mile in the box above and it will be, at straight-line miles \u00D7 2.':
+      'Put your bushels in and these become dollars; add a cost per mile and the drive comes off them.')+'</p>';
+  }
+
+  var d=[];
+  if(DROP.unver)d.push(count(DROP.unver)+' whose cash minus basis disagreed with every other facility quoting the same contract');
+  if(DROP.unit)d.push(count(DROP.unit)+' posting a basis further than $3.00 a bushel from futures, which is a unit mismatch on the board rather than a basis');
+  if(DROP.noplace)d.push(count(DROP.noplace)+' AGSIST cannot place on a map, so no honest distance can be given');
+  if(DROP.noprice)d.push(count(DROP.noprice)+' carrying no cash price');
+  if(DROP.nowindow)d.push(count(DROP.nowindow)+' whose delivery window AGSIST cannot read, which cannot be put beside anything like for like');
+  if(d.length)out+='<p><b>Left out of this snapshot entirely.</b> '+esc(d.join('; '))+'.</p>';
+
+  var st=ymd(STAMP),hm=/T(\d{2}):(\d{2})/.exec(String(STAMP));
+  out+='<p><b>Where these came from.</b> '+esc(SOURCE||'AGSIST')+', read '+
+    (st?esc(one(st)+(hm?' at '+hm[1]+':'+hm[2]+' UTC':'')):'before this page was built')+
+    '. It is a snapshot taken around '+esc(String(AREAS.length))+' town'+(AREAS.length===1?'':'s')+', not every elevator in the country, and it reaches roughly a hundred miles from each of them &mdash; the live search at the top of this page reaches further and is fresher. '+
+    'These are posted bids, not offers. Ring the elevator before you load.</p>';
+  elNotes.innerHTML=out;
+}
 })();
 </script>
 </body>

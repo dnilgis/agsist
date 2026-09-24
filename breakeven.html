@@ -14,7 +14,7 @@
   <link rel="apple-touch-icon"                    href="/img/apple-touch-icon.png">
   <link rel="manifest"                            href="/manifest.json">
   <title>Break-Even Price Calculator — Corn, Soybeans, Wheat | AGSIST</title>
-  <meta name="description" content="Corn is near $5.29. Enter your cost per acre and your yield to get your break-even price per bushel, and the acres where the board stops covering them.">
+  <meta name="description" content="Corn is near $5.30. Enter your cost per acre and your yield to get your break-even price per bushel, and the acres where the board stops covering them.">
   <meta name="author" content="Sigurd Lindquist">
   <meta name="keywords"    content="farm break even calculator, farmer corn break even calculator, soybean break even price, cost per bushel calculator, crop profit calculator, farm cost analysis, break-even price corn">
   <meta name="robots"      content="index, follow, max-snippet:-1, max-image-preview:large">
@@ -23,7 +23,7 @@
   <meta property="og:site_name"    content="AGSIST">
   <meta property="og:locale"       content="en_US">
   <meta property="og:title"        content="Break-Even Price Calculator — Corn, Soybeans, Wheat | AGSIST">
-  <meta property="og:description"  content="Corn is near $5.29. Enter your cost per acre and your yield to get your break-even price per bushel, and the acres where the board stops covering them.">
+  <meta property="og:description"  content="Corn is near $5.30. Enter your cost per acre and your yield to get your break-even price per bushel, and the acres where the board stops covering them.">
   <meta property="og:url"          content="https://agsist.com/breakeven">
   <meta property="og:image"        content="https://agsist.com/img/og/breakeven.jpg">
   <meta property="og:image:width"  content="1200">
@@ -33,7 +33,7 @@
   <meta name="twitter:site"        content="@agsist">
   <meta name="twitter:creator"     content="@agsist">
   <meta name="twitter:title"       content="Break-Even Price Calculator — Corn, Soybeans, Wheat | AGSIST">
-  <meta name="twitter:description" content="Corn is near $5.29. Enter your cost per acre and your yield to get your break-even price per bushel, and the acres where the board stops covering them.">
+  <meta name="twitter:description" content="Corn is near $5.30. Enter your cost per acre and your yield to get your break-even price per bushel, and the acres where the board stops covering them.">
   <meta name="twitter:image"       content="https://agsist.com/img/og/breakeven.jpg">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
@@ -325,11 +325,32 @@
   function closeAllHints(){document.querySelectorAll('.hint-popup.hint-open').forEach(function(p){p.classList.remove('hint-open');p.setAttribute('inert','');});document.querySelectorAll('.hint-icon.active').forEach(function(i){i.classList.remove('active');});}
   (function(){document.querySelectorAll('.hint-icon').forEach(function(icon){icon.addEventListener('click',function(e){e.preventDefault();e.stopPropagation();var popup=this.closest('.input-wrap').querySelector('.hint-popup');if(!popup)return;var wasOpen=popup.classList.contains('hint-open');closeAllHints();if(!wasOpen){popup.classList.add('hint-open');popup.removeAttribute('inert');this.classList.add('active');}});});document.addEventListener('click',function(e){if(!e.target.closest('.hint-icon')&&!e.target.closest('.hint-popup'))closeAllHints();});})();
   var FIELD_KEYS=['yield','price','basis','seed','fertilizer','chemicals','insurance','machinery','labor','land','overhead','rentAcres','rentRate','ownAcres','ownRate'];
-  function saveState(){try{var st=JSON.parse(localStorage.getItem('agsist-breakeven')||'{}');var crop=document.getElementById('crop').value;st.crop=crop;st.perCrop=st.perCrop||{};var o={};FIELD_KEYS.forEach(function(k){var el=document.getElementById(k);if(el)o[k]=el.value;});st.perCrop[crop]=o;st.acres=document.getElementById('acres').value;localStorage.setItem('agsist-breakeven',JSON.stringify(st));}catch(e){}}
-  function restoreState(){try{var st=JSON.parse(localStorage.getItem('agsist-breakeven')||'null');if(!st)return;if(st.crop)document.getElementById('crop').value=st.crop;var crop=document.getElementById('crop').value;var o=(st.perCrop||{})[crop];if(o)FIELD_KEYS.forEach(function(k){var el=document.getElementById(k);if(el&&o[k]!=null&&o[k]!=='')el.value=o[k];});if(st.acres)document.getElementById('acres').value=st.acres;}catch(e){}}
+  /* A seeded price is the board's number, not the reader's. Persisting it
+     froze day one's quote and showed it back to him under a live bar that had
+     moved on. */
+  var _suppressSeed=false;
+  function priceIsSeeded(){var el=document.getElementById('price');return !!(el&&el.dataset.seeded==='1');}
+  function saveState(){try{var st=JSON.parse(localStorage.getItem('agsist-breakeven')||'{}');var crop=document.getElementById('crop').value;st.crop=crop;st.perCrop=st.perCrop||{};var o={};FIELD_KEYS.forEach(function(k){var el=document.getElementById(k);if(el)o[k]=el.value;});
+    /* The seeded price is the board's, not his. Saving it froze day one's
+       quote and handed it back to him as his own the next morning. */
+    if(priceIsSeeded())delete o.price;
+    st.perCrop[crop]=o;st.acres=document.getElementById('acres').value;localStorage.setItem('agsist-breakeven',JSON.stringify(st));}catch(e){}}
+  function markPriceOwnedIfSaved(crop){
+    try{
+      var st=JSON.parse(localStorage.getItem('agsist-breakeven')||'null');
+      var o=st&&st.perCrop&&st.perCrop[crop];
+      var el=document.getElementById('price'); if(!el)return;
+      if(o&&o.price!=null&&o.price!==''){ el.dataset.userEdited='1'; delete el.dataset.seeded; }
+      else { delete el.dataset.userEdited; }
+    }catch(e){}
+  }
+  function restoreState(){try{var st=JSON.parse(localStorage.getItem('agsist-breakeven')||'null');if(!st)return;if(st.crop)document.getElementById('crop').value=st.crop;var crop=document.getElementById('crop').value;var o=(st.perCrop||{})[crop];if(o)FIELD_KEYS.forEach(function(k){var el=document.getElementById(k);if(el&&o[k]!=null&&o[k]!=='')el.value=o[k];});markPriceOwnedIfSaved(crop);if(st.acres)document.getElementById('acres').value=st.acres;}catch(e){}}
   function applyDefaults(crop){var d=CROP_DEFAULTS[crop];Object.keys(d).forEach(function(k){var el=document.getElementById(k);if(el)el.value=d[k];});}
-  function onCropChange(){var crop=document.getElementById('crop').value;applyDefaults(crop);try{var st=JSON.parse(localStorage.getItem('agsist-breakeven')||'null');var o=st&&st.perCrop&&st.perCrop[crop];if(o)FIELD_KEYS.forEach(function(k){var el=document.getElementById(k);if(el&&o[k]!=null&&o[k]!=='')el.value=o[k];});}catch(e){}updateLiveBar();calcBreakeven();}
-  function resetDefaults(){var crop=document.getElementById('crop').value;try{var st=JSON.parse(localStorage.getItem('agsist-breakeven')||'{}');if(st.perCrop)delete st.perCrop[crop];localStorage.setItem('agsist-breakeven',JSON.stringify(st));}catch(e){}applyDefaults(crop);updateLiveBar();calcBreakeven();}
+  function onCropChange(){var crop=document.getElementById('crop').value;applyDefaults(crop);try{var st=JSON.parse(localStorage.getItem('agsist-breakeven')||'null');var o=st&&st.perCrop&&st.perCrop[crop];if(o)FIELD_KEYS.forEach(function(k){var el=document.getElementById(k);if(el&&o[k]!=null&&o[k]!=='')el.value=o[k];});}catch(e){}markPriceOwnedIfSaved(crop);updateLiveBar();calcBreakeven();}
+  function resetDefaults(){var crop=document.getElementById('crop').value;try{var st=JSON.parse(localStorage.getItem('agsist-breakeven')||'{}');if(st.perCrop)delete st.perCrop[crop];localStorage.setItem('agsist-breakeven',JSON.stringify(st));}catch(e){}applyDefaults(crop);
+    var _pe=document.getElementById('price'); if(_pe){delete _pe.dataset.userEdited;delete _pe.dataset.seeded;}
+    _suppressSeed=true; try{ updateLiveBar(); } finally { _suppressSeed=false; }
+    calcBreakeven();}
   var _statusT=null;
   function calcBreakeven(){
     var yldVal=parseFloat(document.getElementById('yield').value)||0,price=parseFloat(document.getElementById('price').value)||0,costs={};
@@ -423,7 +444,40 @@
   var _pricesFetched=null;
   function fetchLivePrices(){fetch('/data/prices.json',{cache:'no-store'}).then(function(r){if(!r.ok)throw new Error(r.status);return r.json();}).then(function(data){_livePrices=data.quotes||{};_pricesFetched=data.fetched||null;updateLiveBar();}).catch(function(){});}
   function updateLiveBar(){var bar=document.getElementById('live-bar');if(!_livePrices){bar.style.display='none';return;}var crop=document.getElementById('crop').value,q=_livePrices[CROP_PRICE_KEY[crop]];if(!q||q.close==null){bar.style.display='none';return;}var priceDollars=(q.close/100).toFixed(2);document.getElementById('live-price-val').textContent='$'+priceDollars+'/bu';document.getElementById('live-crop-name').textContent=CROP_CONTRACT[crop]||CROP_NAMES[crop];bar.dataset.price=priceDollars;var chgEl=document.getElementById('live-chg-val');var meta='';if(_pricesFetched){try{var ft=new Date(_pricesFetched),ageMin=Math.round((Date.now()-ft.getTime())/60000);meta=(ageMin<90)?(' · as of '+ft.toLocaleTimeString([],{hour:'numeric',minute:'2-digit'})):' · last close';}catch(e){}}
-    if(q.pctChange!=null){var pct=q.pctChange;chgEl.textContent=(pct>=0?'▲':'▼')+' '+Math.abs(pct).toFixed(2)+'%'+meta;chgEl.className='chg-tag '+(pct>=0?'up':'dn');}else{chgEl.textContent=meta.replace(' · ','');}bar.style.display='flex';}
+    if(q.pctChange!=null){var pct=q.pctChange;chgEl.textContent=(pct>=0?'▲':'▼')+' '+Math.abs(pct).toFixed(2)+'%'+meta;chgEl.className='chg-tag '+(pct>=0?'up':'dn');}else{chgEl.textContent=meta.replace(' · ','');}bar.style.display='flex';
+    seedLivePriceIfUntouched();}
+  /* THE DEFAULT IS ONLY A DEFAULT UNTIL THE BOARD LOADS. CROP_DEFAULTS
+     carries 4.50 for corn; Dec corn is $5.29. Leaving the stale number in
+     the field told every first-time visitor he was $95/acre under water on a
+     day he was $47/acre in the money. If the reader has not touched the field
+     and has nothing saved, the live quote is the honest starting point. */
+  function seedLivePriceIfUntouched(){
+    try{
+      var el=document.getElementById('price'); if(!el) return;
+      var crop=(document.getElementById('crop')||{}).value;
+      var def=(typeof CROP_DEFAULTS!=='undefined'&&CROP_DEFAULTS[crop])?CROP_DEFAULTS[crop].price:null;
+      if(def==null) return;
+      if(_suppressSeed) return;
+      /* Provenance, not value. Comparing the field to the default cannot tell
+         "still the default" from "his number happens to equal the default",
+         and dataset.userEdited is DOM state that does not survive a reload. */
+      if(el.dataset.userEdited==='1') return;
+      if(Math.abs(parseFloat(el.value)-parseFloat(def))>0.0001) return;
+      if(typeof useLivePrice==='function'){ el.dataset.seeded='1'; useLivePrice(); }
+    }catch(e){}
+  }
+
+  (function(){
+    /* Capture phase on document: this runs BEFORE the field's own bubble-phase
+       handlers, which call calcBreakeven() -> saveState(). Registered the
+       other way round, saveState saw a price still marked "seeded" and
+       dropped the number the reader had just typed. */
+    document.addEventListener('input',function(ev){
+      var t=ev&&ev.target;
+      if(t&&t.id==='price'){ t.dataset.userEdited='1'; delete t.dataset.seeded; }
+    },true);
+  })();
+
   function useLivePrice(){var p=document.getElementById('live-bar').dataset.price;if(p){document.getElementById('price').value=p;calcBreakeven();}}
   document.addEventListener('click',function(e){var seg=e.target.closest('.cost-bar-seg');if(!seg)return;var tip=seg.querySelector('.seg-tip');if(!tip)return;e.stopPropagation();document.querySelectorAll('.seg-tip.seg-open').forEach(function(t){if(t!==tip)t.classList.remove('seg-open');});tip.classList.toggle('seg-open');if(tip.classList.contains('seg-open'))setTimeout(function(){tip.classList.remove('seg-open');},3000);});
   if(window.matchMedia('(hover:none)').matches){document.querySelectorAll('input[type="number"],select').forEach(function(input){input.addEventListener('focus',function(){closeAllHints();setTimeout(function(){input.scrollIntoView({behavior:'smooth',block:'center'});},300);});});}

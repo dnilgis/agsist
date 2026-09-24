@@ -13,6 +13,167 @@
 <link rel="stylesheet" href="/components/sponsor-ad.css?v=1">
 <script src="/components/sponsor-ad.js?v=1"></script>
   <script src="/components/util.js?v=16"></script>
+<script>
+/* LTE SHIM -- two cheap wins on a first visit. Nothing visible changes.
+
+   Measured here at 390x844 on a 1 Mbps / 200 ms link before this existed:
+   32 requests and 199.1 KB over the wire with the reader still on the first
+   screen, and nothing below 844 px on it.
+
+   (1) DEDUPE. /data/prices.json was requested three times (geo.js for the
+   ticker, THE READ, the MARKET PRICES grid), /data/daily.json twice (geo.js
+   for the sponsor slot, the briefing) and /data/cot.json twice (THE READ, the
+   COT widget). Three of those carry cache:'no-store', so the HTTP cache does
+   not collapse them. A file cannot change during one page load, so the second
+   caller now gets a clone of the first response instead of a second trip.
+   Nobody waits longer: the earliest caller still starts the request at the
+   same moment, and later callers resolve no later than they did.
+
+   (2) GATE. Seven JSON files feed widgets sitting between 4,332 px and
+   10,088 px down (measured at DOMContentLoaded, before any of them fills).
+   They stay off the wire until the element that needs them is within ~900 px
+   of the viewport. Nothing above the fold is on that list -- the ticker
+   (prices, markets), the briefing (daily) and THE READ (prices, price-stats,
+   cot) are untouched and start exactly when they used to.
+
+   /data/news.json is deliberately NOT here. Its band carries [hidden] until
+   the file fills it, so at DOMContentLoaded it has no box to observe, the
+   fallback below fires the request at once, and gating it saved nothing
+   measurable. Left as it was.
+
+   FAILURE IS THE OLD PAGE. No IntersectionObserver, an anchor missing from the
+   DOM, a box with no geometry, or anything throwing: the request goes out
+   immediately, as before. A gated file that 404s 404s the same way, at the
+   same call site, into the same catch. Printing flushes everything first. */
+(function (w, d) {
+  'use strict';
+  var nativeFetch = w.fetch;
+  if (typeof nativeFetch !== 'function') return;
+
+  /* path -> id of the element that cannot render without it, with the depth
+     that element sits at, at DOMContentLoaded, on a 390 x 844 screen. */
+  var GATE = {
+    '/data/rma-planting-dates.json':'rma-widget',     /*  4332, 24 KB gz */
+    '/data/yield-nowcast.json':     'nowcast-widget', /*  5876 */
+    '/data/crop-progress.json':     'crop-widget',    /*  6777 */
+    '/data/export-sales.json':      'export-widget',  /*  7092 */
+    '/data/tariffs.json':           'tariff-widget',  /*  7436, 5 KB gz */
+    '/data/fertilizer.json':        'fert-widget',    /*  7654 */
+    '/data/rma-discovery.json':     'pdw-state'       /* 10088 */
+  };
+  var MARGIN = '900px 0px';
+
+  var lteMemo   = Object.create(null); /* path -> Promise<Response> */
+  var lteParked = [];                  /* gated calls held until their anchor is near */
+  var lteDomReady = false;             /* DOM parsed: anchors can be looked up */
+  var lteIo = null, lteByEl = null;
+
+  /* Only plain same-origin /data/*.json strings are handled. A Request
+     object, a cross-origin URL or a query string falls straight through. */
+  function ltePathOf(u) {
+    if (typeof u !== 'string') return null;
+    if (u.charAt(0) !== '/' || u.charAt(1) === '/') return null;
+    if (u.indexOf('?') >= 0 || u.indexOf('#') >= 0) return null;
+    return (u.indexOf('/data/') === 0 && u.slice(-5) === '.json') ? u : null;
+  }
+
+  function ltePlainGet(opts) {
+    if (!opts) return true;
+    if (opts.body != null) return false;
+    var m = opts.method;
+    return (m == null || String(m).toUpperCase() === 'GET');
+  }
+
+  /* Every caller gets its own clone; the stored Response is never read, so
+     cloning it stays legal for the life of the page. */
+  function lteShared(path, args) {
+    var p = lteMemo[path];
+    if (!p) {
+      p = lteMemo[path] = nativeFetch.apply(w, args);
+      p['catch'](function () { delete lteMemo[path]; });
+    }
+    return p.then(function (r) { return r.clone(); });
+  }
+
+  function lteFlush(list) {
+    for (var i = 0; i < list.length; i++) {
+      try { list[i].go(); } catch (e) { /* the call site's own catch handles it */ }
+    }
+  }
+
+  function lteFlushAll() {
+    var l = lteParked; lteParked = [];
+    if (lteIo) { try { lteIo.disconnect(); } catch (e) {} lteIo = null; }
+    lteFlush(l);
+  }
+
+  function lteObserve(el, lteJob) {
+    if (!lteIo) {
+      lteByEl = new w.Map();
+      lteIo = new w.IntersectionObserver(function (entries) {
+        for (var i = 0; i < entries.length; i++) {
+          if (!entries[i].isIntersecting) continue;
+          var el2 = entries[i].target, lteJobs = lteByEl.get(el2);
+          lteByEl['delete'](el2);
+          try { lteIo.unobserve(el2); } catch (e) {}
+          if (!lteJobs) continue;
+          for (var j = 0; j < lteJobs.length; j++) {
+            var k = lteParked.indexOf(lteJobs[j]); if (k >= 0) lteParked.splice(k, 1);
+          }
+          lteFlush(lteJobs);
+        }
+      }, { rootMargin: MARGIN });
+    }
+    var cur = lteByEl.get(el);
+    if (cur) { cur.push(lteJob); return; }
+    lteByEl.set(el, [lteJob]);
+    lteIo.observe(el);
+  }
+
+  function ltePlace(lteJob) {
+    var el = null;
+    try { el = d.getElementById(lteJob.anchor); } catch (e) {}
+    if (!el) { lteJob.go(); return; }                  /* anchor gone -> as before */
+    var r = el.getBoundingClientRect();
+    if (!r || (!r.height && !r.width)) { lteJob.go(); return; }  /* no box -> as before */
+    lteParked.push(lteJob);
+    lteObserve(el, lteJob);
+  }
+
+  function lteReady() {
+    if (lteDomReady) return;
+    lteDomReady = true;
+    var l = lteParked; lteParked = [];
+    for (var i = 0; i < l.length; i++) ltePlace(l[i]);
+  }
+
+  var lteCanGate = (typeof w.IntersectionObserver === 'function' && typeof w.Map === 'function');
+  if (lteCanGate) {
+    if (d.readyState === 'loading') d.addEventListener('DOMContentLoaded', lteReady);
+    else lteReady();
+    try { w.addEventListener('beforeprint', lteFlushAll); } catch (e) {}
+  }
+
+  w.fetch = function (u, opts) {
+    var path;
+    try { path = ltePathOf(u); } catch (e) { path = null; }
+    if (!path || !ltePlainGet(opts)) return nativeFetch.apply(w, arguments);
+
+    var args = arguments;
+    if (!lteCanGate || !GATE[path] || lteMemo[path]) return lteShared(path, args);
+
+    /* Gated: the call site gets its promise now, the request goes later. */
+    return new w.Promise(function (res, rej) {
+      var lteSent = false;
+      var lteJob = { anchor: GATE[path], go: function () {
+        if (lteSent) return; lteSent = true;
+        lteShared(path, args).then(res, rej);
+      } };
+      if (lteDomReady) ltePlace(lteJob); else lteParked.push(lteJob);
+    });
+  };
+})(window, document);
+</script>
 <link rel="icon" type="image/x-icon"            href="/img/favicon.ico">
 <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
@@ -1228,6 +1389,34 @@
               </div>
             </div>
           </a>
+          <style>
+            .rma-w{border-left:3px solid var(--gold,#d4a23f)!important}
+            .rma-dates{display:flex;gap:.9rem;flex-wrap:wrap;margin:.35rem 0 0}
+            .rma-d{min-width:9rem}
+            .rma-d-l{display:block;font-size:.78rem;color:var(--text-muted,#7d8782)}
+            .rma-d-v{font-family:var(--font-mono,'JetBrains Mono',monospace);font-weight:700;font-size:.95rem}
+            .rma-d-v.past{color:var(--text-muted,#7d8782);font-weight:600}
+            .rma-d-v.soon{color:#e8743a}
+            .rma-est{font-size:.72rem;color:var(--text-muted,#7d8782);display:block;margin-top:.1rem}
+            .rma-src{font-size:.74rem;color:var(--text-muted,#7d8782);margin:.5rem 0 0;line-height:1.5}
+            .rma-src a{color:var(--gold,#d4a23f)}
+          </style>
+          <div class="tool-widget rma-w" id="rma-widget" hidden>
+            <div class="tool-widget-inner">
+              <div class="tool-widget-top">
+                <span class="tool-widget-icon"><svg class="ic" aria-hidden="true"><use href="#i-sprout"/></svg></span>
+                <div class="tool-widget-body"><span class="tool-widget-status" id="rma-title">Final planting dates</span></div>
+                <span class="tool-widget-badge" id="rma-loc"></span>
+              </div>
+              <div class="tool-widget-bottom">
+                <div class="rma-dates">
+                  <div class="rma-d"><span class="rma-d-l">Corn</span><span class="rma-d-v" id="rma-corn"></span></div>
+                  <div class="rma-d"><span class="rma-d-l">Soybeans</span><span class="rma-d-v" id="rma-bean"></span><span class="rma-est" id="rma-bean-est" hidden></span></div>
+                </div>
+                <p class="rma-src" id="rma-src"></p>
+              </div>
+            </div>
+          </div>
           <a href="/spray" id="wsp-spray" class="tool-widget">
             <div class="tool-widget-inner">
               <div class="tool-widget-top">
@@ -1555,7 +1744,10 @@
         if($(pre+'-sub'))$(pre+'-sub').textContent=ord(pct)+' pctile';
         if($(pre+'-tag'))$(pre+'-tag').textContent=tag;
         if($(pre+'-price'))$(pre+'-price').textContent='$'+cur.toFixed(2)+' \u00b7 range $'+lo.toFixed(2)+'\u2013$'+hi.toFixed(2);
-        bar(pre,(cur-lo)/(hi-lo)*100);
+        /* The bar used to be a linear range position beside a distribution
+           percentile -- wheat read "71st percentile" over a bar filled to 26%.
+           Same quantity in both now. */
+        bar(pre,pct);
         if($(pre+'-read'))$(pre+'-read').innerHTML='<b>'+rd[0]+'</b> '+rd[1];
       });
       var le=px.cattle,gf=px.feeders,lc=cot.livecattle,pre='sig-cattle';
@@ -1566,7 +1758,19 @@
         if($(pre+'-price'))$(pre+'-price').textContent='Live $'+le.close.toFixed(2)+' \u00b7 Feeder $'+gf.close.toFixed(2);
         var cp=null;if(lc&&lc.min52!=null&&lc.max52!=null&&lc.max52>lc.min52){cp=Math.round((lc.net-lc.min52)/(lc.max52-lc.min52)*100);cp=Math.max(0,Math.min(100,cp));}
         bar(pre,cp!=null?cp:50);
-        if(cp!=null){if($(pre+'-tag'))$(pre+'-tag').textContent='COT';if($(pre+'-read'))$(pre+'-read').innerHTML='<b>Funds '+(lc.net>=0?'net long':'net short')+' fed cattle</b> ('+cp+'%) &mdash; feeders near a 52-wk low.';}
+        if(cp!=null){if($(pre+'-tag'))$(pre+'-tag').textContent='COT';/* "feeders near a 52-wk low" used to be a literal printed every day
+             whatever feeders did, next to a percentage that is the LIVE CATTLE
+             COT position. It is now computed from the feeder quote, or left
+             off when there is nothing to compute it from. */
+          var _fq=(px&&px.feeders)||null, _fclause='.';
+          if(_fq&&_fq.close!=null&&_fq.wk52_lo!=null&&_fq.wk52_hi!=null&&_fq.wk52_hi>_fq.wk52_lo){
+            /* Clamped, like pct and cp above. This site already has a quote
+               sitting outside its own 52-week range (treasury10 closed 5.114
+               against a 5.016 high), so an unclamped version prints "123%". */
+            var _fp=Math.max(0,Math.min(100,Math.round(((+_fq.close-+_fq.wk52_lo)/(+_fq.wk52_hi-+_fq.wk52_lo))*100)));
+            _fclause=' &mdash; feeders '+(_fp>=80?'near the top of':_fp<=20?'near the bottom of':'mid-range in')+' their 52-wk range ('+_fp+'%).';
+          }
+          if($(pre+'-read'))$(pre+'-read').innerHTML='<b>Funds '+(lc.net>=0?'net long':'net short')+' fed cattle</b> ('+cp+'%)'+_fclause;}
         else{if($(pre+'-tag'))$(pre+'-tag').textContent='RATIO';if($(pre+'-read'))$(pre+'-read').innerHTML='<b>Feeder/live '+ratio.toFixed(2)+':1.</b> Value split between cow-calf and feedlots.';}
       }
     });
@@ -1966,13 +2170,33 @@
   function renderRanges(q){
     var GR={'corn':1,'corn-dec':1,'beans':1,'beans-nov':1,'wheat':1,'oats':1};
     var SYMS=['corn','corn-dec','beans','beans-nov','wheat','oats','meal','cattle','feeders','hogs','milk','crude','natgas','dollar','sp500','treasury10','gold','silver','bitcoin','ripple','kaspa'];
-    function fmt(sym,v){
-      if(sym==='treasury10')return v.toFixed(1)+'%';
-      if(sym==='kaspa')return '$'+v.toFixed(3);
-      if(sym==='ripple'||sym==='natgas'||sym==='dollar'||GR[sym])return '$'+v.toFixed(2);
-      if(sym==='sp500')return Math.round(v).toLocaleString();
-      if(sym==='bitcoin'||sym==='gold'||sym==='meal')return '$'+Math.round(v).toLocaleString();
-      return '$'+Math.round(v);
+    /* CORRECTION 2026-09-24. These two labels are the 52-week LOW and the
+       52-week HIGH, and they were being rounded to whole dollars, which moved
+       them INSIDE the range that actually traded. Class III milk printed a
+       $15 low against a real low of $14.53; feeders printed $300 against
+       $299.52; the ten-year printed a 3.9% low against 3.947%. A low nobody
+       ever traded at is a wrong number on the page, and it is wrong in the
+       direction that makes the range look tighter than it was.
+
+       The low now rounds DOWN and the high rounds UP at the precision each
+       quote is actually quoted in, so the printed range always contains the
+       real one. The dollar index also loses the "$" it never should have
+       carried -- DX-Y.NYB is an index, not a price in dollars, and the
+       headline number above these labels has never had one. */
+    function fmt(sym,v,dir){
+      function snap(d){
+        var f=Math.pow(10,d);
+        return dir<0?Math.floor(v*f)/f:(dir>0?Math.ceil(v*f)/f:Math.round(v*f)/f);
+      }
+      function usd(d){
+        return '$'+snap(d).toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d});
+      }
+      if(sym==='treasury10')return snap(2).toFixed(2)+'%';
+      if(sym==='dollar')return snap(2).toFixed(2);
+      if(sym==='kaspa')return usd(3);
+      if(sym==='sp500')return snap(0).toLocaleString('en-US');
+      if(sym==='bitcoin')return usd(0);
+      return usd(2);
     }
     for(var i=0;i<SYMS.length;i++){
       var sym=SYMS[i],x=q[sym];
@@ -1985,8 +2209,8 @@
       var elHi=document.getElementById('pcrl-'+sym+'-hi');
       var elF=document.getElementById('pcrf-'+sym);
       var elD=document.getElementById('pcrd-'+sym);
-      if(elLo)elLo.textContent=fmt(sym,lo);
-      if(elHi)elHi.textContent=fmt(sym,hi);
+      if(elLo)elLo.textContent=fmt(sym,lo,-1);
+      if(elHi)elHi.textContent=fmt(sym,hi,1);
       if(elF)elF.style.width=pct.toFixed(1)+'%';
       if(elD)elD.style.left=pct.toFixed(1)+'%';
     }
@@ -2970,76 +3194,139 @@ window.hydrateDaily = function(data) {
 <script>
 (function(){
 'use strict';
-// RMA final planting dates — most-common per-state value. County specifics vary.
-// Sources: vinevestnorth.com, dtnpf.com/ProAg, farmprogress.com (2025 planting season articles).
-var RMA_STATE_DATES={
-  'ND':{corn:'2026-05-25',cornLabel:'May 25',beans:'2026-06-10',beansLabel:'Jun 10'},
-  'SD':{corn:'2026-05-25',cornLabel:'May 25',beans:'2026-06-10',beansLabel:'Jun 10'},
-  'MN':{corn:'2026-05-31',cornLabel:'May 31',beans:'2026-06-10',beansLabel:'Jun 10'},
-  'WI':{corn:'2026-05-31',cornLabel:'May 31',beans:'2026-06-10',beansLabel:'Jun 10'},
-  'IA':{corn:'2026-05-31',cornLabel:'May 31',beans:'2026-06-15',beansLabel:'Jun 15'},
-  'NE':{corn:'2026-05-25',cornLabel:'May 25',beans:'2026-06-10',beansLabel:'Jun 10'},
-  'MO':{corn:'2026-05-31',cornLabel:'May 31',beans:'2026-06-20',beansLabel:'Jun 20'},
-  'KS':{corn:'2026-05-25',cornLabel:'May 25',beans:'2026-06-25',beansLabel:'Jun 25'},
-  'IL':{corn:'2026-06-05',cornLabel:'Jun 5',beans:'2026-06-20',beansLabel:'Jun 20'},
-  'IN':{corn:'2026-06-05',cornLabel:'Jun 5',beans:'2026-06-20',beansLabel:'Jun 20'},
-  'OH':{corn:'2026-06-05',cornLabel:'Jun 5',beans:'2026-06-20',beansLabel:'Jun 20'},
-  'MI':{corn:'2026-06-05',cornLabel:'Jun 5',beans:'2026-06-15',beansLabel:'Jun 15'},
-  'KY':{corn:'2026-05-31',cornLabel:'May 31',beans:'2026-06-20',beansLabel:'Jun 20'},
-  'TN':{corn:'2026-05-31',cornLabel:'May 31',beans:'2026-06-25',beansLabel:'Jun 25'},
-  'AR':{corn:'2026-05-25',cornLabel:'May 25',beans:'2026-06-25',beansLabel:'Jun 25'}
-};
-// Fallback if state not detected: national "most Corn Belt" values (what was previously hardcoded)
-var RMA_DEFAULT={corn:'2026-05-31',cornLabel:'May 31',beans:'2026-06-20',beansLabel:'Jun 20'};
-// Rough lat/lon bounding boxes for primary ag states. Border accuracy is ±1 county.
-function stateFromLatLon(lat,lon){
-  if(lat==null||lon==null||isNaN(+lat)||isNaN(+lon))return null;
-  var boxes=[
-    ['WI',42.5,47.1,-92.9,-86.8],['MN',43.5,49.4,-97.2,-89.5],['IA',40.4,43.5,-96.6,-90.1],
-    ['ND',45.9,49.0,-104.1,-96.6],['SD',42.5,45.9,-104.1,-96.4],['NE',40.0,43.0,-104.1,-95.3],
-    ['KS',37.0,40.0,-102.1,-94.6],['MO',36.0,40.6,-95.8,-89.1],['IL',37.0,42.5,-91.5,-87.5],
-    ['IN',37.8,41.8,-88.1,-84.8],['OH',38.4,42.0,-84.8,-80.5],['MI',41.7,48.3,-90.5,-82.4],
-    ['KY',36.5,39.2,-89.6,-81.9],['TN',35.0,36.7,-90.3,-81.6],['AR',33.0,36.5,-94.6,-89.6]
-  ];
-  for(var i=0;i<boxes.length;i++){var b=boxes[i];if(+lat>=b[1]&&+lat<=b[2]&&+lon>=b[3]&&+lon<=b[4])return b[0];}
-  return null;
-}
-function applyPlantingDates(lat,lon){
-  // Fast sync pass: render state-level (or national) defaults instantly
-  var st=stateFromLatLon(lat,lon);
-  var dates=(st&&RMA_STATE_DATES[st])||RMA_DEFAULT;
-  renderPlantingDates(dates,null,st);
-  // Slow async pass: upgrade to county-level dates from /data/rma-planting-dates.json
-  if(lat!=null&&lon!=null&&!isNaN(+lat)&&!isNaN(+lon)){
-    Promise.all([loadRmaCountyData(),waitForGeoCounty()]).then(function(res){
-      var rma=res[0],loc=res[1];
-      if(!rma||!loc||!loc.state||!loc.county)return;
-      var key=loc.state+'|'+normalizeCountyName(loc.county);
-      var entry=rma.index[key];
-      if(!entry){console.info('[AGSIST] county not in RMA dataset:',loc.county,loc.state,'(key:',key+')');return;}
-      renderPlantingDates({corn:entry.corn,cornLabel:entry.cornLabel,beans:entry.beans,beansLabel:entry.beansLabel},entry.countyName,entry.state);
+/* FINAL PLANTING DATES -- COUNTY OR NOTHING.
+   This used to hold one date per state scraped from 2025 farm-magazine
+   articles, plus a "national Corn Belt" pair for the 35 states its bounding
+   boxes did not cover, and it rendered both under the label "RMA Final
+   Planting Dates". The real RMA file disagrees inside almost every state it
+   covered (17 Kansas counties are May 15 against a May 25 state default) and
+   is wrong by six weeks outside them (Texas: 82 counties at Apr 15, shown
+   May 31). Missing a final planting date costs a grower his revenue
+   guarantee, so nothing is shown unless his own county is in the file. */
+var _rmaWatching=false;
+  function applyPlantingDates(lat,lon){
+    /* No sync pass any more -- there is nothing truthful to render until the
+       county is known, so the widget stays hidden until then.
+       It also no longer needs lat/lon. Those were only ever used by the
+       state-guessing that has been deleted; the county comes from
+       waitForGeoCounty(), which polls what geo.js already resolved. Keeping
+       the old guard meant the widget never appeared on the call that does not
+       pass coordinates -- caught by rendering it, not by reading it. */
+    if(_rmaWatching)return null; _rmaWatching=true;
+    /* The county can arrive late (permission prompt + fix + reverse-geocode)
+       and can CHANGE -- geo.js publishes a cached county first and corrects it
+       when the real one resolves. Latching the first value showed a grower in
+       Iowa a Texas deadline that had already passed. So: no deadline, and
+       re-render whenever the pair changes. */
+    var _rmaSeen='';
+    (function watch(){
+      var w=window.AGSIST_STATE&&window.AGSIST_STATE.weather;
+      var key=w&&w.state&&w.county?(w.state+'|'+w.county):'';
+      if(key&&key!==_rmaSeen){ _rmaSeen=key; renderForCounty(w.state,w.county); }
+      setTimeout(watch,400);
+    })();
+    return null;
+  }
+
+  function renderForCounty(state,county){
+    Promise.all([loadRmaCountyData()]).then(function(res){
+      var rma=res[0];
+      var loc={state:state,county:county};
+      if(!rma||!loc.state||!loc.county)return;
+      if(!rma.index||!Object.keys(rma.index).length){ showRmaBroken(rma.data); return; }
+      var entry=lookupCounty(rma.index,loc.state,loc.county);
+      if(!entry){
+        /* A miss used to be a console.info and nothing else, which left a
+           guessed state date standing on screen with no way to know the
+           lookup had failed. Now it says so and points at the source. */
+        showRmaMiss(loc.county,loc.state,rma.data);
+        return;
+      }
+      renderPlantingDates(entry,rma.data);
     }).catch(function(e){console.warn('[AGSIST] county RMA lookup failed:',e);});
+    return null;
   }
-  return st;
-}
-function renderPlantingDates(dates,countyName,state){
-  var qtCorn=document.getElementById('qt-corn-days'),qtBean=document.getElementById('qt-bean-days');
-  var qtCornLbl=document.getElementById('qt-corn-label'),qtBeanLbl=document.getElementById('qt-bean-label');
-  if(qtCornLbl)qtCornLbl.innerHTML='<svg class="ic" aria-hidden="true"><use href="#i-sprout"/></svg> Corn ('+dates.cornLabel+')';
-  if(qtBeanLbl)qtBeanLbl.innerHTML='<svg class="ic" aria-hidden="true"><use href="#i-bean"/></svg> Soybeans ('+dates.beansLabel+')';
-  var cornDays=daysUntil(dates.corn),beanDays=daysUntil(dates.beans);
-  if(qtCorn){qtCorn.textContent=formatCountdown(cornDays);qtCorn.classList.toggle('urgent',cornDays!=null&&cornDays<14);}
-  if(qtBean){qtBean.textContent=formatCountdown(beanDays);qtBean.classList.toggle('urgent',beanDays!=null&&beanDays<14);}
-  if(countyName&&state){
-    var locLabel=document.getElementById('plant-dates-loc');
-    if(locLabel){
-      var _st=window.AGSIST_STATE,_city=_st&&_st.weather&&_st.weather.city;
-      // Show city (if available) + County, ST — eg "Chetek · Barron County, WI"
-      locLabel.innerHTML='<svg class="ic" aria-hidden="true"><use href="#i-map-pin"/></svg> ';locLabel.appendChild(document.createTextNode((_city?_city+' \u00B7 ':'')+countyName+' County, '+state));
+
+  function rmaSourceLine(data,extra){
+    var url=(data&&data.source_url)||'https://public-rma.fpac.usda.gov/apps/mapviewer/dates';
+    var up=(data&&data.updated)||'';
+    return (extra?extra+' ':'')+
+      'USDA RMA Revenue Protection final planting dates, '+((data&&data.crop_year)||'')+' crop year'+
+      (up?', updated '+up:'')+'. <a href="'+url+'" target="_blank" rel="noopener">Check the RMA map viewer</a> '+
+      'and confirm with your crop insurance agent before you plant.';
+  }
+
+  function showRmaBroken(data){
+    /* An empty index is a pipeline failure, not a county that is missing.
+       Telling a grower in a covered county "your county is not in this
+       dataset" tells him to stop looking. */
+    var w=document.getElementById('rma-widget');if(!w)return;
+    var t=document.getElementById('rma-title'),l=document.getElementById('rma-loc'),
+        c=document.getElementById('rma-corn'),b=document.getElementById('rma-bean'),
+        e=document.getElementById('rma-bean-est'),src=document.getElementById('rma-src');
+    if(t)t.textContent='Final planting dates';
+    if(l)l.textContent='';
+    if(c)c.textContent='\u2014'; if(b)b.textContent='\u2014'; if(e)e.hidden=true;
+    if(src)src.innerHTML=rmaSourceLine(data,'<strong>The planting-date file could not be read.</strong>');
+    w.hidden=false;
+  }
+
+  function showRmaMiss(county,state,data){
+    var w=document.getElementById('rma-widget');if(!w)return;
+    var t=document.getElementById('rma-title'),l=document.getElementById('rma-loc'),
+        c=document.getElementById('rma-corn'),b=document.getElementById('rma-bean'),
+        e=document.getElementById('rma-bean-est'),src=document.getElementById('rma-src');
+    if(t)t.textContent='Final planting dates';
+    if(l)l.textContent=String(county||'')+', '+String(state||'');
+    if(c)c.textContent='\u2014';
+    if(b)b.textContent='\u2014';
+    if(e)e.hidden=true;
+    if(src)src.innerHTML=rmaSourceLine(data,'<strong>Your county is not in this dataset.</strong>');
+    w.hidden=false;
+  }
+
+  function renderPlantingDates(entry,data){
+    var w=document.getElementById('rma-widget');if(!w)return;
+    var t=document.getElementById('rma-title'),l=document.getElementById('rma-loc'),
+        c=document.getElementById('rma-corn'),b=document.getElementById('rma-bean'),
+        e=document.getElementById('rma-bean-est'),src=document.getElementById('rma-src');
+    /* THE CROP YEAR IS READ. parseMonthDayIso() used to stamp "May 31" with
+       whatever year the browser happened to be in, so on 2027-03-01 a 2026
+       file would have counted down to a 2027 deadline that may not exist.
+       Dates are built from the file's own crop_year, and when that is not the
+       current year the countdown is suppressed and the year is stated. */
+    var cy=+((data&&data.crop_year)||0)||null;
+    var nowY=new Date().getFullYear();
+    var current=(cy===nowY);
+    if(t)t.textContent='Final planting dates'+(cy?' \u00b7 '+cy+' crop':'');
+    if(l)l.textContent=entry.countyName+' County, '+entry.state;
+
+    function put(el,label,iso,isEstimate){
+      if(!el)return;
+      if(!label){el.textContent='\u2014';return;}
+      var d=current?daysUntil(iso):null;
+      el.className='rma-d-v'+(d!=null&&d<0?' past':(d!=null&&d<=14?' soon':''));
+      el.textContent=label+(d!=null?' \u00b7 '+formatCountdown(d):'');
     }
+    put(c,entry.cornLabel,entry.corn,false);
+    /* PROVENANCE, SHOWN. 1,786 of the 2,320 soybean dates in this file are
+       not RMA dates -- 618 are "corn + 20 days" and the file itself says
+       "verify at source_url". The source field was indexed and never read,
+       so all four classes rendered identically. An estimated date gets no
+       countdown, because a countdown is what makes it look like a deadline. */
+    var soyIsReal=(entry.source==='RMA');
+    if(soyIsReal){ put(b,entry.beansLabel,entry.beans,false); if(e)e.hidden=true; }
+    else {
+      if(b){ b.className='rma-d-v'; b.textContent=entry.beansLabel||'\u2014'; }
+      if(e){ e.textContent='estimated, not an RMA date \u2014 confirm it'; e.hidden=false; }
+    }
+    if(src)src.innerHTML=rmaSourceLine(data, current?'':'<strong>'+
+      (cy?'These are '+cy+' crop-year dates and it is now '+nowY+'.'
+         :'This file does not state a crop year, so no countdown is shown.')+'</strong>');
+    w.hidden=false;
   }
-}
-// County-level RMA data: fetched once per page, cached, indexed by state+normalized-county-name.
+
+  // County-level RMA data: fetched once per page, cached, indexed by state+normalized-county-name.
 var _rmaDataPromise=null;
 function loadRmaCountyData(){
   if(_rmaDataPromise)return _rmaDataPromise;
@@ -3048,13 +3335,16 @@ function loadRmaCountyData(){
     return r.json();
   }).then(function(data){
     var counties=(data&&data.counties)||{},idx={};
+    var cy=(data&&data.crop_year)||null;
     for(var fips in counties){
       var e=counties[fips];if(!e||!e.state||!e.county)continue;
-      idx[e.state+'|'+normalizeCountyName(e.county)]={
-        corn:parseMonthDayIso(e.corn),cornLabel:e.corn,
-        beans:parseMonthDayIso(e.soybeans),beansLabel:e.soybeans,
+      var row={
+        corn:parseMonthDayIso(e.corn,cy),cornLabel:e.corn,
+        beans:parseMonthDayIso(e.soybeans,cy),beansLabel:e.soybeans,
         fips:fips,countyName:e.county,state:e.state,source:e.source
       };
+      var ks=countyKeys(e.state,e.county);
+      for(var i=0;i<ks.length;i++){ if(!idx[ks[i]]) idx[ks[i]]=row; }
     }
     return {data:data,index:idx};
   }).catch(function(err){console.warn('[AGSIST] RMA county data load failed:',err);_rmaDataPromise=null;return null;});
@@ -3066,13 +3356,38 @@ function normalizeCountyName(n){
     .replace(/^saint\s+/,'st ').replace(/\bst\.\s*/g,'st ')
     .replace(/\./g,'').replace(/[^a-z0-9 ]/g,'').replace(/\s+/g,' ').trim();
 }
-function parseMonthDayIso(s){
-  // "May 31" → "2026-05-31". Uses current year for comparison-to-today math.
+function parseMonthDayIso(s,yr){
+  /* "May 31" -> "2026-05-31". The year is the FILE'S crop_year, passed in.
+     This used to use new Date().getFullYear(), so a 2026 file silently
+     re-stamped itself every January and counted down to a deadline that had
+     already passed or had moved. */
   var m=String(s||'').match(/^(\w+)\s+(\d+)$/);if(!m)return null;
   var MO={jan:1,feb:2,mar:3,apr:4,may:5,jun:6,jul:7,aug:8,sep:9,oct:10,nov:11,dec:12};
   var mon=MO[m[1].toLowerCase().slice(0,3)];if(!mon)return null;
-  var day=+m[2],yr=new Date().getFullYear();
-  return yr+'-'+(mon<10?'0':'')+mon+'-'+(day<10?'0':'')+day;
+  var day=+m[2];
+  var y=+yr||new Date().getFullYear();
+  return y+'-'+(mon<10?'0':'')+mon+'-'+(day<10?'0':'')+day;
+}
+
+/* COUNTY NAMES DO NOT MATCH ON THE NOSE. The RMA file spells "O Brien",
+   "De Witt", "St Genevieve"; the reverse-geocoder returns "O'Brien County",
+   "DeWitt County", "Ste. Genevieve County". Normalising both sides still
+   leaves "o brien" against "obrien", so every one of those counties missed
+   and the reader was shown a state guess with no sign anything had failed.
+   Each row is therefore indexed under its spaced form AND its de-spaced
+   form, and the lookup tries both. */
+function countyKeys(state,name){
+  var n=normalizeCountyName(name);
+  var flat=n.replace(/\s+/g,'');
+  var ste=n.replace(/^ste\s+/,'st ');
+  var out=[state+'|'+n, state+'|'+flat];
+  if(ste!==n){ out.push(state+'|'+ste, state+'|'+ste.replace(/\s+/g,'')); }
+  return out;
+}
+function lookupCounty(idx,state,county){
+  var ks=countyKeys(state,county);
+  for(var i=0;i<ks.length;i++){ if(idx[ks[i]]) return idx[ks[i]]; }
+  return null;
 }
 // v2: geo.js populates window.AGSIST_STATE.weather.{state,county} after its own
 // Nominatim reverse-geocode resolves (~1–2s after geo). We poll briefly rather
@@ -3092,7 +3407,17 @@ function waitForGeoCounty(timeoutMs){
 }
 var GDU_BASE_MAX=86,GDU_BASE_MIN=50;
 function calcGDU(tMaxC,tMinC){var tMaxF=(tMaxC*9/5)+32,tMinF=(tMinC*9/5)+32;var hi=Math.min(tMaxF,GDU_BASE_MAX),lo=Math.max(tMinF,GDU_BASE_MIN);return Math.max(0,(hi+lo)/2-GDU_BASE_MIN);}
-function daysUntil(iso){if(!iso)return null;var t=new Date(iso+'T12:00:00').getTime()-Date.now();return Math.ceil(t/86400000);}
+function daysUntil(iso){
+  /* Calendar-date difference. The old noon-anchored Math.ceil made the answer
+     a function of the time of day: a 31 May deadline read "1 day" at 07:00 on
+     31 May and "Today" at 07:00 on 1 June. Same fix as whats-priced-in.html,
+     which has carried it since the 2026-08-11 audit. */
+  if(!iso)return null;
+  var p=String(iso).split('-'); if(p.length!==3)return null;
+  var t=new Date(+p[0],+p[1]-1,+p[2]).getTime(); if(isNaN(t))return null;
+  var n=new Date(); n.setHours(0,0,0,0);
+  return Math.round((t-n.getTime())/86400000);
+}
 function formatCountdown(days){if(days==null)return'\u2014';if(days<0)return'Past';if(days===0)return'Today';return days+' day'+(days===1?'':'s');}
 function waitForGeo(cb,retries){retries=retries||0;if(retries>20)return;var st=window.AGSIST_STATE;if(st&&st.weather&&st.weather.lat!=null){cb(st);}else{setTimeout(function(){waitForGeo(cb,retries+1);},400);}}
 
