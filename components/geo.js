@@ -238,6 +238,40 @@ function showZipEntry() {
   if (ze) ze.style.display = 'block';
 }
 
+/* ONE ZIP FOR THE WHOLE PAGE.
+   Every ZIP entry on the homepage -- the weather card, the cash-bids card and
+   the band at the top -- calls this. It writes the value into every box so
+   they never disagree, then runs the existing weather chain, which is what
+   propagates the location and loads the bids. */
+window.agsistSetZip = function(zip) {
+  zip = String(zip == null ? '' : zip).trim();
+  if (zip.length !== 5 || isNaN(zip)) return;
+  ['wx-zip', 'bids-zip', 'tb-zip-in'].forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el && el.value !== zip) el.value = zip;
+  });
+  _bidsLoadedThisSession = false;
+  loadWeatherZip();
+};
+
+/* Put the remembered ZIP in every box, so nobody retypes what the page
+   already knows. Called on load and again after a location resolves. */
+window.agsistFillZip = function() {
+  var zip = '';
+  try {
+    var raw = localStorage.getItem('agsist-wx-loc');
+    if (raw) { var o = JSON.parse(raw); if (o && o.zip) zip = String(o.zip); }
+  } catch (e) {}
+  if (!zip && window.AGSIST_STATE && window.AGSIST_STATE.weather && window.AGSIST_STATE.weather.zip)
+    zip = String(window.AGSIST_STATE.weather.zip);
+  if (zip.length !== 5) return '';
+  ['wx-zip', 'bids-zip', 'tb-zip-in'].forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el && !el.value) el.value = zip;
+  });
+  return zip;
+};
+
 function loadWeatherZip() {
   var zip = (document.getElementById('wx-zip') || {}).value;
   if (!zip || zip.length !== 5 || isNaN(zip)) return;
@@ -810,18 +844,34 @@ function update52WeekRange(priceElId, price, wk52Lo, wk52Hi, isGrain, prefix) {
   var lo = parseFloat(wk52Lo), hi = parseFloat(wk52Hi);
   if (isNaN(lo) || isNaN(hi) || hi <= lo) return;
   var pfx = prefix || '';
+
+  /* THE LOW ROUNDS DOWN AND THE HIGH ROUNDS UP.
+     These two labels are the bottom and the top of the range that actually
+     traded, and rounding them to the nearest moves them inside it. Corn's
+     December low is 425.75 cents; .toFixed(2) printed $4.26, which is above
+     a low that really happened. Class III milk printed a $15 low against
+     $14.53 and feeders $300 against $299.52 before the same rule was applied
+     in index.html -- where it was then overwritten by this function, because
+     this one runs second. Rounding outward means the printed range always
+     contains the real one. */
+  function snapLo(v, d) { var f = Math.pow(10, d); return Math.floor(v * f) / f; }
+  function snapHi(v, d) { var f = Math.pow(10, d); return Math.ceil(v * f) / f; }
+  function fixed(v, d) { return v.toFixed(d); }
+  function grouped(v, d) {
+    return Number(v.toFixed(d)).toLocaleString('en-US', {minimumFractionDigits: d, maximumFractionDigits: d});
+  }
   if (isGrain) {
-    labels[0].textContent = '$' + (lo / 100).toFixed(2);
-    labels[2].textContent = '$' + (hi / 100).toFixed(2);
+    labels[0].textContent = '$' + fixed(snapLo(lo / 100, 2), 2);
+    labels[2].textContent = '$' + fixed(snapHi(hi / 100, 2), 2);
   } else if (hi >= 10000) {
-    labels[0].textContent = pfx + Math.round(lo).toLocaleString('en-US');
-    labels[2].textContent = pfx + Math.round(hi).toLocaleString('en-US');
+    labels[0].textContent = pfx + grouped(snapLo(lo, 0), 0);
+    labels[2].textContent = pfx + grouped(snapHi(hi, 0), 0);
   } else if (hi >= 100) {
-    labels[0].textContent = pfx + lo.toFixed(2);
-    labels[2].textContent = pfx + hi.toFixed(2);
+    labels[0].textContent = pfx + fixed(snapLo(lo, 2), 2);
+    labels[2].textContent = pfx + fixed(snapHi(hi, 2), 2);
   } else {
-    labels[0].textContent = pfx + (lo < 1 ? lo.toFixed(4) : lo.toFixed(2));
-    labels[2].textContent = pfx + (hi < 1 ? hi.toFixed(4) : hi.toFixed(2));
+    labels[0].textContent = pfx + (lo < 1 ? fixed(snapLo(lo, 4), 4) : fixed(snapLo(lo, 2), 2));
+    labels[2].textContent = pfx + (hi < 1 ? fixed(snapHi(hi, 4), 4) : fixed(snapHi(hi, 2), 2));
   }
   var pct = Math.min(100, Math.max(0, ((price - lo) / (hi - lo)) * 100));
   fill.style.width = pct + '%';

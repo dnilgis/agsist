@@ -181,6 +181,41 @@
     return html;
   }
 
+  // ── What was found, published once, for the band at the top of the page ──
+  // The summary is built from the rows this loader already parsed. Nothing is
+  // published unless a corn bid with a real cash price came back, so the band
+  // cannot show a stale or invented number: no bid, no line.
+  function publishSummary(label, zip, bids, elevators){
+    try{
+      var best = null;
+      for(var i = 0; i < bids.length; i++){
+        var b = bids[i];
+        /* flattenBarchartResponse has already classified every row; using
+           its `category` avoids a second copy of the rule. */
+        if(b.category !== 'corn') continue;
+        if(b.cashPrice == null) continue;
+        if(!best || b.cashPrice > best.cashPrice) best = b;
+      }
+      if(!best) return;
+      var sum = {
+        label: label || ('ZIP ' + zip),
+        zip: zip,
+        crop: 'corn',
+        cash: best.cashPrice,
+        basis: (best.basis == null ? null : best.basis),
+        where: (best.facility || '') + (best.branch ? ' \u00b7 ' + best.branch : ''),
+        city: (best.city || '') + (best.state ? ', ' + best.state : ''),
+        miles: (best.distance == null ? null : best.distance),
+        elevators: elevators.length,
+        ts: Date.now()
+      };
+      window.AGSIST_STATE = window.AGSIST_STATE || {};
+      window.AGSIST_STATE.bids = sum;
+      try{ window.dispatchEvent(new CustomEvent('agsist:bids', { detail: sum })); }
+      catch(e){ var ev = document.createEvent('Event'); ev.initEvent('agsist:bids', false, false); window.dispatchEvent(ev); }
+    }catch(e){}
+  }
+
   // ── Main load function ──────────────────────────────────────────
   function loadHomepageBids(lat, lng, label, zip){
     var area = document.getElementById('bids-list-area');
@@ -252,6 +287,7 @@
         html += '</a>';
 
         area.innerHTML = html;
+        publishSummary(label, zip, bids, elevators);
         console.log('[AGSIST] Homepage bids: ' + top.length + ' elevators (' + bids.length + ' total bids)');
       })
       .catch(function(err){
@@ -266,6 +302,11 @@
     var zipEl = document.getElementById('bids-zip');
     var zip = zipEl ? zipEl.value.trim() : '';
     if(!zip || zip.length !== 5 || isNaN(zip)) return;
+
+    /* A ZIP typed here used to load bids and nothing else, so the weather
+       card two hundred pixels above it kept showing somewhere else. Hand it
+       to the one entry point, which fills every box and runs both. */
+    if(typeof window.agsistSetZip === 'function'){ window.agsistSetZip(zip); return; }
 
     // Intent signal: a deliberate ZIP search on the homepage bid card.
     // Same event name as the cash-bids page so reporting unifies.
