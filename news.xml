@@ -8,25 +8,17 @@
     <lastBuildDate>Tue, 22 Sep 2026 00:49:14 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/news.xml" rel="self" type="application/rss+xml"/>
     <item>
-      <title>Corn closed at a 52-week high</title>
+      <title>Corn took its 52-week high to $5.43</title>
       <link>https://agsist.com/corn-futures-prices</link>
-      <description>$5.43 a bushel, taking out the $5.39 top of its range.</description>
+      <description>$5.43 a bushel, 7.0 cents above the $5.36 it made on 16 September.</description>
       <guid isPermaLink="false">agsist-news-px:2026-09-22:corn:hi</guid>
       <pubDate>Tue, 22 Sep 2026 12:00:00 +0000</pubDate>
       <source url="https://agsist.com/news.xml">CME settlement via the AGSIST board</source>
     </item>
     <item>
-      <title>Corn closed at a 52-week high</title>
+      <title>Corn took its 52-week high to $5.36</title>
       <link>https://agsist.com/corn-futures-prices</link>
-      <description>$5.43 a bushel, taking out the $5.39 top of its range.</description>
-      <guid isPermaLink="false">agsist-news-px:2026-09-21:corn:hi</guid>
-      <pubDate>Mon, 21 Sep 2026 12:00:00 +0000</pubDate>
-      <source url="https://agsist.com/news.xml">CME settlement via the AGSIST board</source>
-    </item>
-    <item>
-      <title>Corn closed at a 52-week high</title>
-      <link>https://agsist.com/corn-futures-prices</link>
-      <description>$5.36 a bushel, taking out the $5.26 top of its range.</description>
+      <description>$5.36 a bushel, 2.0 cents above the $5.34 it made on 15 September.</description>
       <guid isPermaLink="false">agsist-news-px:2026-09-16:corn:hi</guid>
       <pubDate>Wed, 16 Sep 2026 12:00:00 +0000</pubDate>
       <source url="https://agsist.com/news.xml">CME settlement via the AGSIST board</source>
@@ -34,18 +26,10 @@
     <item>
       <title>Soybeans closed at a 52-week high</title>
       <link>https://agsist.com/soybean-futures-prices</link>
-      <description>$13.19 a bushel, taking out the $13.18 top of its range.</description>
+      <description>$13.19 a bushel, the highest it has settled in a year.</description>
       <guid isPermaLink="false">agsist-news-px:2026-09-16:beans:hi</guid>
       <pubDate>Wed, 16 Sep 2026 12:00:00 +0000</pubDate>
       <source url="https://agsist.com/news.xml">CME settlement via the AGSIST board</source>
-    </item>
-    <item>
-      <title>Managed money holds its biggest corn net long in a year</title>
-      <link>https://agsist.com/cot</link>
-      <description>Net +414,460 contracts as of September 15, 2026, from +414,459 the week before.</description>
-      <guid isPermaLink="false">agsist-news-cot:September 15, 2026:corn:max</guid>
-      <pubDate>Tue, 15 Sep 2026 12:00:00 +0000</pubDate>
-      <source url="https://agsist.com/news.xml">CFTC Commitments of Traders</source>
     </item>
     <item>
       <title>Managed money flipped net short in chicago wheat</title>
@@ -56,7 +40,7 @@
       <source url="https://agsist.com/news.xml">CFTC Commitments of Traders</source>
     </item>
     <item>
-      <title>Managed money holds its biggest soybean meal net long in a year</title>
+      <title>Managed money pushed its soybean meal net long to another one-year high</title>
       <link>https://agsist.com/cot</link>
       <description>Net +183,111 contracts as of September 15, 2026, from +157,689 the week before.</description>
       <guid isPermaLink="false">agsist-news-cot:September 15, 2026:soymeal:max</guid>
@@ -64,17 +48,9 @@
       <source url="https://agsist.com/news.xml">CFTC Commitments of Traders</source>
     </item>
     <item>
-      <title>Soybeans closed at a 52-week high</title>
-      <link>https://agsist.com/soybean-futures-prices</link>
-      <description>$13.19 a bushel, taking out the $13.18 top of its range.</description>
-      <guid isPermaLink="false">agsist-news-px:2026-09-15:beans:hi</guid>
-      <pubDate>Tue, 15 Sep 2026 12:00:00 +0000</pubDate>
-      <source url="https://agsist.com/news.xml">CME settlement via the AGSIST board</source>
-    </item>
-    <item>
       <title>Corn closed at a 52-week high</title>
       <link>https://agsist.com/corn-futures-prices</link>
-      <description>$5.34 a bushel, taking out the $5.26 top of its range.</description>
+      <description>$5.34 a bushel, the highest it has settled in a year.</description>
       <guid isPermaLink="false">agsist-news-px:2026-09-15:corn:hi</guid>
       <pubDate>Tue, 15 Sep 2026 12:00:00 +0000</pubDate>
       <source url="https://agsist.com/news.xml">CME settlement via the AGSIST board</source>

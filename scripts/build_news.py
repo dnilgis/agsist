@@ -63,6 +63,48 @@ MOVE_HIGH = 4.0
 # A crop rating swing. USDA reports whole points; three in a week is a real move.
 RATING_POINTS = 3
 
+# AN EXTREME IS NOT AN EVENT. THE MOVE THAT MADE IT IS.
+#
+# cot.json's `max52` and `min52` INCLUDE the current week. So `net >= max52` is
+# not a test, it is an identity: it is true every single week the series sits at
+# the top of its year. Through a grinding uptrend the wire therefore published
+# "Managed money holds its biggest corn net long in a year" every week, and on
+# 15 September 2026 it published it for a move of ONE CONTRACT:
+#
+#     Net +414,460 contracts as of September 15, 2026, from +414,459 the week
+#     before.
+#
+# One contract in 414,460 is 0.0002%. It is a true sentence and it is not news,
+# and it is the reason four of the thirteen items on the wire that week were the
+# same headline.
+#
+# THE BOUND IS THE SERIES' OWN 52-WEEK RANGE, which cot.json already carries, so
+# no number is invented here. Measured on data/cot.json of 24 September 2026,
+# the week's move as a fraction of each series' own range:
+#
+#     corn      0.0002%      kcwheat   3.66%
+#     soyoil    4.16%        beans     5.46%
+#     wheat     6.65%        soymeal   8.43%
+#
+# The junk item and the real ones are four orders of magnitude apart, so this
+# threshold is not load-bearing: anything from 0.01% to 3% gives the same
+# answer on this file. 1% sits in the middle of that gap.
+COT_MOVE_FRACTION = 0.01
+
+# AND THE SAME TRAP ON THE PRICE BOARD. `wk52_hi` includes today's close, so
+# `close >= wk52_hi` is true every day a market closes at its top. Corn
+# published "closed at a 52-week high" on 15, 16, 21 and 22 September; the 21st
+# and the 22nd were word for word identical -- "$5.43 a bushel, taking out the
+# $5.39 top of its range" -- and the second one could not be true, because by
+# then the top of the range was $5.43.
+#
+# So a new high is measured against the last high THIS WIRE PUBLISHED, kept in
+# `state` below, and it has to clear it by 1% of the contract's own 52-week
+# band. Replayed over those four days, two publish (the 8-cent break on the
+# 15th and the 9-cent break on the 21st) and two are withheld (a 2-cent nudge
+# and a repeat that moved nothing).
+PX_BREAKOUT_FRACTION = 0.01
+
 
 def load(name):
     p = os.path.join(ROOT, "data", name)
@@ -111,9 +153,19 @@ def cents(v):
     return f"${v/100:.2f}" if v is not None else None
 
 
+def say_day(iso):
+    """'2026-09-22' -> '22 September'. Returns None rather than guessing, so a
+    caller with an unreadable stamp leaves the clause out instead of printing
+    a date nobody can check."""
+    try:
+        return datetime.strptime(str(iso)[:10], "%Y-%m-%d").strftime("%-d %B")
+    except (ValueError, TypeError):
+        return None
+
+
 # ── detectors ──────────────────────────────────────────────────────────────
 
-def wasde(out):
+def wasde(out, state, held):
     d = load("whats-priced-in.json")
     lr = (d or {}).get("latest_result")
     if not lr or not lr.get("date") or not lr.get("report"):
@@ -137,11 +189,12 @@ def wasde(out):
             "high", "/whats-priced-in", "USDA WASDE, graded against the pre-report survey", iso_day(date)))
 
 
-def positioning(out):
+def positioning(out, state, held):
     d = load("cot.json")
     if not d or not d.get("report_date"):
         return
     rd = d["report_date"]
+    cot = state.setdefault("cot", {})
     for key, name in COT_NAMES.items():
         c = d.get(key)
         if not isinstance(c, dict):
@@ -150,17 +203,38 @@ def positioning(out):
         hi, lo = c.get("max52"), c.get("min52")
         if net is None:
             continue
-        if hi is not None and net >= hi:
+        # See COT_MOVE_FRACTION. An extreme reached by standing still is the
+        # series sitting where it already was, not a week that did something.
+        rng = (hi - lo) if (hi is not None and lo is not None and hi > lo) else None
+        moved = None if prev is None else abs(net - prev)
+        material = (rng is not None and moved is not None
+                    and moved >= rng * COT_MOVE_FRACTION)
+        if (hi is not None and net >= hi) or (lo is not None and net <= lo):
+            if not material:
+                held.append(
+                    f"{name}: at its 52-week "
+                    + ("high" if (hi is not None and net >= hi) else "low")
+                    + f" but the week moved {moved if moved is not None else 0:+,} "
+                    + (f"of a {rng:,} range" if rng else "on an unreadable range"))
+        if hi is not None and net >= hi and material:
+            _again = (cot.get(key) or {}).get("side") == "max"
+            cot[key] = {"side": "max", "rd": rd}
             out.append(item(
                 f"cot:{rd}:{key}:max", "positioning",
-                f"Managed money holds its biggest {name.lower()} net long in a year",
+                (f"Managed money pushed its {name.lower()} net long to another "
+                 f"one-year high" if _again else
+                 f"Managed money holds its biggest {name.lower()} net long in a year"),
                 f"Net {net:+,} contracts as of {rd}"
                 + (f", from {prev:+,} the week before." if prev is not None else "."),
                 "high", "/cot", "CFTC Commitments of Traders", iso_day(rd)))
-        elif lo is not None and net <= lo:
+        elif lo is not None and net <= lo and material:
+            _again = (cot.get(key) or {}).get("side") == "min"
+            cot[key] = {"side": "min", "rd": rd}
             out.append(item(
                 f"cot:{rd}:{key}:min", "positioning",
-                f"Managed money holds its biggest {name.lower()} net short in a year",
+                (f"Managed money pushed its {name.lower()} net short to another "
+                 f"one-year high" if _again else
+                 f"Managed money holds its biggest {name.lower()} net short in a year"),
                 f"Net {net:+,} contracts as of {rd}"
                 + (f", from {prev:+,} the week before." if prev is not None else "."),
                 "high", "/cot", "CFTC Commitments of Traders", iso_day(rd)))
@@ -173,28 +247,70 @@ def positioning(out):
                 "notable", "/cot", "CFTC Commitments of Traders", iso_day(rd)))
 
 
-def board(out):
+def board(out, state, held):
     d = load("prices.json")
     q = (d or {}).get("quotes") or {}
     day = str((d or {}).get("fetched") or "")[:10]
     if not day:
         return
+    px = state.setdefault("px", {})
     for key, (name, url) in CROPS.items():
         v = q.get(key)
         if not isinstance(v, dict):
             continue
         close, pct = v.get("close"), v.get("pctChange")
         hi, lo = v.get("wk52_hi"), v.get("wk52_lo")
+        # See PX_BREAKOUT_FRACTION. `band` is the contract's own 52-week spread,
+        # so a penny break on a $1.46 range is withheld and a dime is not, and a
+        # $13 bean board is held to the same standard as a $5 corn board.
+        band = (hi - lo) if (hi is not None and lo is not None and hi > lo) else None
+        mark = px.get(key) or {}
         if close is not None and hi is not None and close >= hi:
+            last = mark.get("hi")
+            if last is None:
+                # Nothing published yet. Seed on the range's own top, once.
+                detail = f"{cents(close)} a bushel, the highest it has settled in a year."
+            elif band is not None and close - last >= band * PX_BREAKOUT_FRACTION:
+                when = say_day(mark.get("hi_day"))
+                detail = (f"{cents(close)} a bushel, {close - last:.1f} cents above the "
+                          f"{cents(last)} it made"
+                          + (f" on {when}." if when else "."))
+            else:
+                held.append(f"{name}: at a 52-week high, {close - last:+.1f} cents "
+                            f"on the {cents(last)} already published")
+                continue
+            # A RUN OF NEW HIGHS IS A DEVELOPING STORY, NOT ONE STORY FILED
+            # FOUR TIMES. Corn made a new high on the 15th, the 16th, the 21st
+            # and the 22nd of September and the wire printed the same six words
+            # each time. Three of those were real breaks; what was wrong was
+            # that the headline could not tell the first from the fourth.
+            # Naming the high it took out needs no threshold and no memory of
+            # how long ago it was -- it is simply what happened.
             out.append(item(f"px:{day}:{key}:hi", "board",
-                            f"{name} closed at a 52-week high",
-                            f"{cents(close)} a bushel, taking out the {cents(hi)} top of its range.",
+                            (f"{name} closed at a 52-week high" if last is None
+                             else f"{name} took its 52-week high to {cents(close)}"),
+                            detail,
                             "high", url, "CME settlement via the AGSIST board", iso_day(day)))
+            px[key] = dict(mark, hi=close, hi_day=day)
         elif close is not None and lo is not None and close <= lo:
+            last = mark.get("lo")
+            if last is None:
+                detail = f"{cents(close)} a bushel, the lowest it has settled in a year."
+            elif band is not None and last - close >= band * PX_BREAKOUT_FRACTION:
+                when = say_day(mark.get("lo_day"))
+                detail = (f"{cents(close)} a bushel, {last - close:.1f} cents under the "
+                          f"{cents(last)} it made"
+                          + (f" on {when}." if when else "."))
+            else:
+                held.append(f"{name}: at a 52-week low, {close - last:+.1f} cents "
+                            f"on the {cents(last)} already published")
+                continue
             out.append(item(f"px:{day}:{key}:lo", "board",
-                            f"{name} closed at a 52-week low",
-                            f"{cents(close)} a bushel, under the {cents(lo)} floor of its range.",
+                            (f"{name} closed at a 52-week low" if last is None
+                             else f"{name} took its 52-week low to {cents(close)}"),
+                            detail,
                             "high", url, "CME settlement via the AGSIST board", iso_day(day)))
+            px[key] = dict(mark, lo=close, lo_day=day)
         if pct is None or abs(pct) < MOVE_NOTABLE:
             continue
         direction = "up" if pct > 0 else "down"
@@ -209,7 +325,7 @@ def board(out):
                         url, "CME settlement via the AGSIST board", iso_day(day)))
 
 
-def ratings(out):
+def ratings(out, state, held):
     d = load("crop-progress.json")
     if not d or not d.get("in_season"):
         return
@@ -239,15 +355,29 @@ DETECTORS = (wasde, positioning, board, ratings)
 
 
 def build():
+    old = load("news.json") or {}
+    kept = old.get("items") or []
+    # THE WIRE'S MEMORY OF WHAT IT HAS ALREADY SAID, and the only reason the
+    # 52-week detectors can tell a breakout from the same breakout reported
+    # again. It rides in news.json because that is the one file this script
+    # owns and the one thing already committed when an item fires -- a mark
+    # only ever changes on the run that publishes the item it belongs to, so
+    # it can never drift away from what the file says.
+    state = dict(old.get("state") or {})
+    # WHAT WAS DETECTED AND DELIBERATELY NOT PUBLISHED. A quiet wire and a
+    # broken one read the same in the run log, and on 22-24 September 2026 the
+    # wire went 65 hours without an item and nothing said whether it was
+    # working. It was: it found four things and had already published all
+    # four. This is that sentence, printed.
+    held = []
+
     fresh = []
     for fn in DETECTORS:
         try:
-            fn(fresh)
+            fn(fresh, state, held)
         except Exception as e:                       # one broken reader must not
             print(f"detector {fn.__name__} failed: {e}", file=sys.stderr)  # take the wire down
 
-    old = load("news.json") or {}
-    kept = old.get("items") or []
     seen = {i.get("id") for i in kept}
     # THE SAME SENTENCE IS NOT NEWS TWICE. The id carries the date, so a
     # headline and detail repeated on the next day were two different ids
@@ -278,9 +408,13 @@ def build():
                     if changed else (old.get("updated") or "")),
         "count": len(items),
         "added": len(added),
+        # The marks move only on a run that publishes, so this cannot make a
+        # diff on its own and cannot reintroduce the empty-commit problem the
+        # paragraph above solved.
+        "state": (state if changed else (old.get("state") or state)),
         "items": items,
     }
-    return out, added, changed
+    return out, added, changed, held
 
 
 
@@ -369,7 +503,7 @@ def _selftest():
     board_data = {"fetched": "2026-09-12T00:00:00", "quotes": {
         "corn": {"close": 600.0, "pctChange": 5.0, "netChange": 28, "wk52_hi": 599.0, "wk52_lo": 400.0}}}
     globals()["load"] = lambda n: board_data if n == "prices.json" else None
-    board(o)
+    board(o, {}, [])
     check(len(o) == 2, "a new high and a 5% move are two separate items")
     check(any(i["id"].endswith(":hi") for i in o), "the 52-week high is detected from the file's own bound")
     check(all(i["significance"] == "high" for i in o), "a 5% move is high, not notable")
@@ -377,31 +511,108 @@ def _selftest():
     o = []
     globals()["load"] = lambda n: {"fetched": "2026-09-12T00:00:00", "quotes": {
         "corn": {"close": 500.0, "pctChange": 1.0, "wk52_hi": 599.0, "wk52_lo": 400.0}}} if n == "prices.json" else None
-    board(o)
+    board(o, {}, [])
     check(o == [], "a 1% move is not news")
+
+    # ── the two traps that put the same sentence on the wire four times ──
+    print("an extreme reached by standing still is not an event")
+    # THE REAL ROW, from data/cot.json of 2026-09-24. max52 includes this week,
+    # so net >= max52 was an identity and this published as "biggest corn net
+    # long in a year" for a one-contract week.
+    o, held = [], []
+    globals()["load"] = lambda n: {"report_date": "2026-09-15", "corn": {
+        "net": 414460, "prev": 414459, "max52": 414460, "min52": -187992}} if n == "cot.json" else None
+    positioning(o, {}, held)
+    check(o == [], "one contract on 414,459 does not make a year's biggest net long")
+    check(len(held) == 1 and "414,460" not in held[0].split("moved")[0],
+          "...and the run says it was withheld, with the figures")
+
+    # AND THE ONE THAT MUST STILL GET THROUGH: soybean meal the same week,
+    # +25,422 on a 301,584 range.
+    o = []
+    globals()["load"] = lambda n: {"report_date": "2026-09-15", "soymeal": {
+        "net": 183111, "prev": 157689, "max52": 183111, "min52": -118473}} if n == "cot.json" else None
+    positioning(o, {}, [])
+    check(len(o) == 1 and o[0]["id"].endswith(":max"),
+          "a 25,422-contract week at the same extreme is still news")
+
+    # A flip is an event whatever its size, and must not be swallowed by the
+    # floor that sits above it in the chain.
+    o = []
+    globals()["load"] = lambda n: {"report_date": "2026-09-15", "wheat": {
+        "net": -3674, "prev": 4873, "max52": 14904, "min52": -113560}} if n == "cot.json" else None
+    positioning(o, {}, [])
+    check(len(o) == 1 and o[0]["id"].endswith(":flip"), "crossing zero survives the floor")
+
+    print("a 52-week high is measured against the last one this wire published")
+    _px = {"fetched": "2026-09-22T00:00:00", "quotes": {
+        "corn": {"close": 543.0, "pctChange": 0.1, "wk52_hi": 543.0, "wk52_lo": 398.5}}}
+    globals()["load"] = lambda n: _px if n == "prices.json" else None
+    o, st = [], {}
+    board(o, st, [])
+    check(len(o) == 1, "with nothing published yet it fires once and seeds the mark")
+    check(st["px"]["corn"]["hi"] == 543.0, "...and the mark is what it published")
+    # THE 22 SEPTEMBER REPEAT. Same close, same top, nothing moved.
+    o, held = [], []
+    board(o, st, held)
+    check(o == [], "the same high on the next day is not the news a second time")
+    check(len(held) == 1, "...and the run says so")
+    # A REAL BREAK: 9 cents on a 144.5-cent band is 6.2%.
+    _px["quotes"]["corn"].update(close=552.0, wk52_hi=552.0)
+    _px["fetched"] = "2026-09-23T00:00:00"
+    o = []
+    board(o, st, [])
+    check(len(o) == 1, "a 9-cent break does publish")
+    check("543" in o[0]["detail"] or "5.43" in o[0]["detail"],
+          "...and it names the high it took out rather than repeating a range bound")
+    # A ONE-CENT NUDGE on the same band is 0.7% and is not a second story.
+    _px["quotes"]["corn"].update(close=553.0, wk52_hi=553.0)
+    _px["fetched"] = "2026-09-24T00:00:00"
+    o = []
+    board(o, st, [])
+    check(o == [], "a one-cent nudge above it is not")
+
+    # AND THE HEADLINE HAS TO SAY WHICH OF THE FOUR IT IS. Replaying the four
+    # September corn highs end to end is the whole complaint in one check.
+    print("a run of new highs reads as a developing story, not one filed four times")
+    _run = {"fetched": "", "quotes": {"corn": {"close": 0, "pctChange": 0.1,
+                                               "wk52_hi": 0, "wk52_lo": 398.5}}}
+    globals()["load"] = lambda n: _run if n == "prices.json" else None
+    o, st = [], {}
+    for _day, _close in (("2026-09-15", 534.0), ("2026-09-16", 536.0),
+                         ("2026-09-21", 543.0), ("2026-09-22", 543.0)):
+        _run["fetched"] = _day + "T00:00:00"
+        _run["quotes"]["corn"].update(close=_close, wk52_hi=_close)
+        board(o, st, [])
+    heads = [i["headline"] for i in o]
+    check(len(heads) == 3, "the 22 September repeat is gone and the three breaks remain")
+    check(len(set(heads)) == 3, "and no two of them are the same sentence")
+    check(heads[0] == "Corn closed at a 52-week high", "the first one is the break")
+    check(all(h.startswith("Corn took its 52-week high to") for h in heads[1:]),
+          "and the ones after it say where they took it")
 
     o = []
     globals()["load"] = lambda n: {"report_date": "2026-09-08", "corn": {
         "net": 414459, "prev": 401003, "max52": 414459, "min52": -187992}} if n == "cot.json" else None
-    positioning(o)
+    positioning(o, {}, [])
     check(len(o) == 1 and o[0]["id"].endswith(":max"), "net at max52 is a one-year extreme")
 
     o = []
     globals()["load"] = lambda n: {"report_date": "2026-09-08", "corn": {
         "net": 1000, "prev": -2000, "max52": 99999, "min52": -99999}} if n == "cot.json" else None
-    positioning(o)
+    positioning(o, {}, [])
     check(len(o) == 1 and o[0]["id"].endswith(":flip"), "crossing zero is a flip")
 
     o = []
     globals()["load"] = lambda n: {"in_season": True, "report_date": "2026-08-30", "corn": {
         "good_excellent": 57, "good_excellent_prev_week": 57}} if n == "crop-progress.json" else None
-    ratings(o)
+    ratings(o, {}, [])
     check(o == [], "an unchanged rating is not news")
 
     o = []
     globals()["load"] = lambda n: None
     for fn in DETECTORS:
-        fn(o)
+        fn(o, {}, [])
     check(o == [], "every detector writes nothing when its file is missing")
 
     # A run that finds nothing must leave the files alone, or the wire commits a
@@ -411,7 +622,7 @@ def _selftest():
                          "headline": "h", "detail": "d", "significance": "notable",
                          "url": "/", "source": "s", "day_only": True}]}
     globals()["load"] = lambda n: _prior if n == "news.json" else None
-    _d, _a, _ch = build()
+    _d, _a, _ch, _held = build()
     check(_ch is False, "an unchanged item list reports no change")
     check(_a == [], "and nothing was added")
     check(_d["updated"] == "2026-09-01T00:00:00+00:00",
@@ -435,10 +646,15 @@ def _selftest():
 if __name__ == "__main__":
     if "--selftest" in sys.argv:
         _selftest(); raise SystemExit(0)
-    data, added, changed = build()
+    data, added, changed, held = build()
     # the workflow reads this line rather than the file, so a run that writes
     # nothing cannot leave a stale "added" behind for the next one to act on
     print(f"added={len(added)}")
+    for _h in held:
+        print(f"  withheld  {_h}")
+    if held:
+        print(f"::notice title=wire withheld {len(held)}::"
+              + "; ".join(held))
     if not changed:
         print(f"news.json: {data['count']} items, nothing new — files left alone")
         raise SystemExit(0)

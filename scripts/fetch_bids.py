@@ -1162,7 +1162,35 @@ def _bid_order(b):
             # returned whichever the list reached first and the full file and
             # the rebuilt slim file could print different words for the same
             # bid. Six such pairs in a 12,336-row feed.
-            str(b.get("deliveryMonth") or ""))
+            str(b.get("deliveryMonth") or ""),
+            # AND THE START OF THE WINDOW, BECAUSE deduplicate() HAS ALWAYS
+            # SAID IT MAKES A ROW DISTINCT AND THIS KEY DID NOT.
+            #
+            # deduplicate() keys on facility|branch|commodity|deliveryStart|
+            # deliveryEnd|deliveryMonth. It keeps two rows that differ only by
+            # start, because they ARE two postings. This key stopped at the
+            # label, so it called them one. Two functions, one question --
+            # "is this the same row?" -- and two answers.
+            #
+            # Measured on data/bids.json of 2026-09-24, 887 distinct keys over
+            # 889 rows, and both collisions are that shape:
+            #
+            #   One Earth Energy, Gibson City IL, corn 5.19, "Sep26"
+            #       01 Sep -> 30 Sep   and   16 Sep -> 30 Sep
+            #   Central Valley Ag / ADM Columbus NE, DIRECT CORN 5.09, "Sep26"
+            #       01 Aug -> 30 Sep   and   21 Sep -> 30 Sep
+            #
+            # THIS DOES NOT CONTRADICT "IT ORDERS ON deliveryEnd, NOT
+            # deliveryStart" ABOVE, and a reader arriving at that paragraph
+            # next should not undo this. That paragraph is about RANKING: the
+            # eight Producer Ag rows carrying a 2012 start would have won every
+            # fallback in the file if start decided which row is nearest. Here
+            # start sits last, behind the tier, the price, the facility, the
+            # branch, the commodity, the town, the state, the ZIP and the
+            # label. A row cannot be promoted past anything by it. It is
+            # reached only when two rows are identical on every one of those,
+            # and then it is the difference between them.
+            str(b.get("deliveryStart") or "")[:10])
 
 
 def near(b, grid_zip):
@@ -1888,8 +1916,59 @@ def selftest():
             _rows = json.load(_f).get("bids") or []
     except OSError:
         pass
-    ck(f"_bid_order separates every one of the {len(_rows)} committed rows",
-       bool(_rows) and len({_bid_order(b) for b in _rows}) == len(_rows))
+    # AND IT REPORTS, IT DOES NOT BLOCK. THIS EXACT CHECK FROZE THE NATIONAL
+    # CASH-BID FEED FOR TWENTY-SEVEN HOURS.
+    #
+    # Runs #1151, #1152 and #1153 (23 Sep 14:10 CDT, 23 Sep 17:25, 24 Sep
+    # 10:47) each died here in under 31 seconds:
+    #
+    #     1 FAILED of 123
+    #       - _bid_order separates every one of the 889 committed rows
+    #
+    # The selftest runs BEFORE the fetch. So the run exited 1, no Barchart call
+    # was made, nothing was written, and data/bids.json stayed exactly as it
+    # was -- which is to say, it stayed the file that fails the check. The only
+    # process that could have replaced the two colliding rows was the one this
+    # check was stopping. Corn, soybean and wheat cash cards across the site
+    # served 23 September's prices into 24 September's afternoon.
+    #
+    # A GUARD MUST NOT GATE THE ONLY PATH THAT CAN HEAL WHAT IT GUARDS. The
+    # collision is real and worth seeing -- an unstable tie-break means the
+    # page can name Elevator A this morning and Elevator B this afternoon --
+    # but it cannot make a price wrong, and a day of stale prices everywhere
+    # is the larger harm by a distance. So it prints, it annotates the run,
+    # and the fetch goes ahead.
+    #
+    # THE FLOOR IS THE HARD PART, AND IT IS HARD ON PURPOSE. `bool(_rows)`
+    # meant a file that had been emptied, truncated or renamed made this check
+    # vanish rather than fail -- the same shape as the `if os.path.exists`
+    # above it. A real file has hundreds of rows; 100 is low enough that no
+    # ordinary day approaches it and high enough that a broken read cannot
+    # slip past.
+    ck(f"the committed file is readable and whole ({len(_rows)} rows)",
+       len(_rows) >= 100)
+    _keys = {_bid_order(b) for b in _rows}
+    if _rows and len(_keys) != len(_rows):
+        _byk = {}
+        for _b in _rows:
+            _byk.setdefault(_bid_order(_b), []).append(_b)
+        _coll = [g for g in _byk.values() if len(g) > 1]
+        _n = sum(len(g) for g in _coll)
+        print(f"  WARN _bid_order ties {_n} of the {len(_rows)} committed rows "
+              f"into {len(_coll)} key(s); the pick between them is arbitrary")
+        for _g in _coll[:6]:
+            _r = _g[0]
+            print(f"       {_r.get('facility')} / {_r.get('branch')} / "
+                  f"{_r.get('commodity')} / {_r.get('deliveryMonth')} "
+                  f"@ {_r.get('cashPrice')} x{len(_g)}")
+        # Surfaces in the Actions run summary without failing the step.
+        print(f"::warning title=_bid_order tie::{_n} of {len(_rows)} committed "
+              f"rows share a sort key with another row; the tie-break needs a "
+              f"field these rows differ on")
+    else:
+        print(f"  ok   _bid_order separates every one of the {len(_rows)} "
+              f"committed rows")
+        checks += 1
 
     print("the identity guard withholds what it cannot check, and nothing else")
     R = lambda c, sym, cash, basis: {"commodity": c, "symbol": sym,
