@@ -49,15 +49,15 @@
    ]}},
   {"@type":"FAQPage","mainEntity":[
     {"@type":"Question","name":"Which grain elevators does AGSIST cover?",
-     "acceptedAnswer":{"@type":"Answer","text":"AGSIST displays cash bids from elevators, co-ops, and grain facilities across the Corn Belt, Great Plains, Delta, Southeast, and Pacific Northwest sourced from the Barchart OnDemand API. Coverage includes independent elevators, co-operative grain facilities, and major grain company locations. Enter your ZIP code on the cash bids page to see available bids near you."}},
+     "acceptedAnswer":{"@type":"Answer","text":"AGSIST displays cash bids from elevators, co-ops, and grain facilities across the Corn Belt, Great Plains, Delta, Southeast, and Pacific Northwest, read from elevators' own posted boards and a licensed feed. Coverage includes independent elevators, co-operative grain facilities, and major grain company locations. Enter your ZIP code on the cash bids page to see available bids near you."}},
     {"@type":"Question","name":"How do I find my local elevator's grain price on AGSIST?",
-     "acceptedAnswer":{"@type":"Answer","text":"Go to agsist.com/cash-bids and enter your 5-digit ZIP code. AGSIST will show available corn, soybean, and wheat bids from grain facilities within your area, sorted by distance. Bids are sourced from Barchart OnDemand and updated throughout the trading day."}},
+     "acceptedAnswer":{"@type":"Answer","text":"Go to agsist.com/cash-bids and enter your 5-digit ZIP code. AGSIST will show available corn, soybean, and wheat bids from grain facilities within your area, sorted by distance. Bids come from elevators' own posted boards and a licensed feed, and are updated throughout the trading day."}},
     {"@type":"Question","name":"How current are the cash bid prices?",
-     "acceptedAnswer":{"@type":"Answer","text":"Cash bids are sourced from the Barchart OnDemand API and reflect elevator-posted prices updated during trading hours. Prices may lag real-time futures by minutes depending on when the elevator last posted. Always confirm the current bid directly with the elevator before loading or hauling grain."}},
+     "acceptedAnswer":{"@type":"Answer","text":"Cash bids come from elevators' own posted boards and a licensed feed, and reflect elevator-posted prices updated during trading hours. Prices may lag real-time futures by minutes depending on when the elevator last posted. Always confirm the current bid directly with the elevator before loading or hauling grain."}},
     {"@type":"Question","name":"My elevator isn't showing up. What can I do?",
-     "acceptedAnswer":{"@type":"Answer","text":"Coverage depends on whether your elevator posts bids through the Barchart data network. Some smaller independent elevators may not participate. If your elevator isn't listed, email sig@farmers1st.com and I'll investigate whether it's available and can be added. I'm actively working to expand coverage across the Corn Belt."}},
+     "acceptedAnswer":{"@type":"Answer","text":"Coverage depends on whether AGSIST reads your elevator's board or it reaches us through a licensed feed. Some smaller independent elevators may not participate. If your elevator isn't listed, email sig@farmers1st.com and I'll investigate whether it's available and can be added. I'm actively working to expand coverage across the Corn Belt."}},
     {"@type":"Question","name":"Is AGSIST affiliated with any elevator or grain company?",
-     "acceptedAnswer":{"@type":"Answer","text":"No. AGSIST is an independent agricultural intelligence dashboard built and operated by Sigurd Lindquist, a crop insurance agent and grain farmer. It has no ownership, financial, or commercial relationship with any elevator, co-op, or grain company. Cash bid data is sourced neutrally from the Barchart OnDemand API."}}
+     "acceptedAnswer":{"@type":"Answer","text":"No. AGSIST is an independent agricultural intelligence dashboard built and operated by Sigurd Lindquist, a crop insurance agent and grain farmer. It has no ownership, financial, or commercial relationship with any elevator, co-op, or grain company. Cash bid data is gathered neutrally, with no elevator paying for placement."}}
   ]}
 ]}
 </script>
@@ -191,7 +191,7 @@ button,a,[role="button"]{touch-action:manipulation}
     <div class="el-eyebrow"><svg class="lic el-eyebrow-ic" aria-hidden="true"><use href="#i-warehouse"></use></svg>Live Grain Elevator Cash Bids</div>
     <h1>Grain Elevators by State</h1>
 <style></style><aside class="ag-sponsor-ribbon" id="ag-sponsor"><span class="ag-sponsor-tag">Sponsor this page</span> Every visitor is deciding where to haul &mdash; one category-exclusive slot. <a href="/sponsor?slot=elevators&amp;utm_source=elevators&amp;utm_medium=slot">Put your name here &rarr;</a></aside>
-    <p>Live cash grain bids from elevators, co-ops, and grain facilities across the Corn Belt, Great Plains, Delta, Southeast, and Pacific Northwest &mdash; sourced from the Barchart OnDemand API. Enter your ZIP code to see bids near you. Mobile-first, no account or subscription required.</p>
+    <p>Live cash grain bids from elevators, co-ops, and grain facilities across the Corn Belt, Great Plains, Delta, Southeast, and Pacific Northwest &mdash; read from elevators' own posted boards and a licensed feed. Enter your ZIP code to see bids near you. Mobile-first, no account or subscription required.</p>
     <form class="el-zip" action="/cash-bids" method="get" id="el-zip-form">
       <div class="el-zip-field">
         <label class="el-zip-lbl" for="el-zip-in">Your ZIP code</label>
@@ -213,7 +213,7 @@ button,a,[role="button"]{touch-action:manipulation}
   <div class="el-cov">
     <div class="el-cov-item"><div class="el-cov-k">Commodities</div><div class="el-cov-v"><strong>Corn, soybeans, wheat</strong> &mdash; plus specialty grades (white &amp; food-grade corn, food-grade soybeans, milo) where elevators post them.</div></div>
     <div class="el-cov-item"><div class="el-cov-k">Geography</div><div class="el-cov-v"><strong>Nationwide.</strong> Bids appear wherever elevators post them &mdash; Corn Belt, Northern &amp; Southern Plains, Delta, Southeast, and Pacific Northwest.</div></div>
-    <div class="el-cov-item"><div class="el-cov-k">Source</div><div class="el-cov-v">Two feeds, merged. Where AGSIST reads an elevator&rsquo;s <strong>own posted bid board</strong> &mdash; marked <em>direct from the elevator</em> on the results &mdash; that board wins. Everything else comes from the <strong>Barchart OnDemand API</strong>, the same elevator-posted feed merchandisers use. The map below shows which is which.</div></div>
+    <div class="el-cov-item"><div class="el-cov-k">Source</div><div class="el-cov-v">Two feeds, merged. Where AGSIST reads an elevator&rsquo;s <strong>own posted bid board</strong> &mdash; marked <em>direct from the elevator</em> on the results &mdash; that board wins. Everything else comes from a <strong>licensed cash-bid feed</strong>, the same elevator-posted data merchandisers use. The map below shows which is which.</div></div>
     <div class="el-cov-item"><div class="el-cov-k">Freshness</div><div class="el-cov-v">Updated <strong>through the trading day</strong>, during market hours.</div></div>
     <div class="el-cov-item"><div class="el-cov-k">Each bid shows</div><div class="el-cov-v"><strong>Cash price</strong> (futures + basis), contract month, delivery window, and distance from your ZIP.</div></div>
   </div>
@@ -248,7 +248,7 @@ button,a,[role="button"]{touch-action:manipulation}
       <div class="el-field"><label for="el-city">City</label><input id="el-city" name="city" type="text" required></div>
       <div class="el-field"><label for="el-state-in">State</label><input id="el-state-in" name="state" type="text" required></div>
       <div class="el-field"><label for="el-zip">ZIP</label><input id="el-zip" name="zip" type="text" inputmode="numeric" required></div>
-      <div class="el-field full"><label for="el-source">Where are your bids posted today? (DTN, Barchart, your website&hellip;)</label><input id="el-source" name="bid_source" type="text"></div>
+      <div class="el-field full"><label for="el-source">Where are your bids posted today? (DTN, your website, a feed&hellip;)</label><input id="el-source" name="bid_source" type="text"></div>
       <div class="el-field"><label for="el-name">Your name</label><input id="el-name" name="contact_name" type="text" required></div>
       <div class="el-field"><label for="el-role">Your role</label><input id="el-role" name="role" type="text" placeholder="Manager, merchandiser&hellip;"></div>
       <div class="el-field"><label for="el-email">Email</label><input id="el-email" name="email" type="email" required></div>
@@ -271,28 +271,28 @@ button,a,[role="button"]{touch-action:manipulation}
     <div class="el-faq-hd">Frequently Asked Questions</div>
     <div class="el-faq-item">
       <div class="el-faq-q" role="button" tabindex="0" aria-expanded="false">Which grain elevators does AGSIST cover?</div>
-      <div class="el-faq-a"><div class="el-faq-ai">AGSIST displays cash bids from elevators, co-ops, and grain facilities across the Corn Belt, Great Plains, Delta, Southeast, and Pacific Northwest sourced from the Barchart OnDemand API. Coverage includes independent elevators, co-operative grain facilities, and major grain company locations. Enter your ZIP code on the cash bids page to see available bids near you.</div></div>
+      <div class="el-faq-a"><div class="el-faq-ai">AGSIST displays cash bids from elevators, co-ops, and grain facilities across the Corn Belt, Great Plains, Delta, Southeast, and Pacific Northwest, read from elevators' own posted boards and a licensed feed. Coverage includes independent elevators, co-operative grain facilities, and major grain company locations. Enter your ZIP code on the cash bids page to see available bids near you.</div></div>
     </div>
     <div class="el-faq-item">
       <div class="el-faq-q" role="button" tabindex="0" aria-expanded="false">How do I find my local elevator&rsquo;s grain price on AGSIST?</div>
-      <div class="el-faq-a"><div class="el-faq-ai">Go to agsist.com/cash-bids and enter your 5-digit ZIP code. AGSIST will show available corn, soybean, and wheat bids from grain facilities within your area, sorted by distance. Bids are sourced from Barchart OnDemand and updated throughout the trading day.</div></div>
+      <div class="el-faq-a"><div class="el-faq-ai">Go to agsist.com/cash-bids and enter your 5-digit ZIP code. AGSIST will show available corn, soybean, and wheat bids from grain facilities within your area, sorted by distance. Bids come from elevators' own posted boards and a licensed feed, and are updated throughout the trading day.</div></div>
     </div>
     <div class="el-faq-item">
       <div class="el-faq-q" role="button" tabindex="0" aria-expanded="false">How current are the cash bid prices?</div>
-      <div class="el-faq-a"><div class="el-faq-ai">Cash bids are sourced from the Barchart OnDemand API and reflect elevator-posted prices updated during trading hours. Prices may lag real-time futures by minutes depending on when the elevator last posted. Always confirm the current bid directly with the elevator before loading or hauling grain.</div></div>
+      <div class="el-faq-a"><div class="el-faq-ai">Cash bids come from elevators' own posted boards and a licensed feed, and reflect elevator-posted prices updated during trading hours. Prices may lag real-time futures by minutes depending on when the elevator last posted. Always confirm the current bid directly with the elevator before loading or hauling grain.</div></div>
     </div>
     <div class="el-faq-item">
       <div class="el-faq-q" role="button" tabindex="0" aria-expanded="false">My elevator isn&rsquo;t showing up. What can I do?</div>
-      <div class="el-faq-a"><div class="el-faq-ai">Coverage depends on whether your elevator posts bids through the Barchart data network. Some smaller independent elevators may not participate. If your elevator isn&rsquo;t listed, email sig@farmers1st.com &mdash; I&rsquo;ll investigate whether it&rsquo;s available and can be added. I&rsquo;m actively working to expand coverage across the Corn Belt.</div></div>
+      <div class="el-faq-a"><div class="el-faq-ai">Coverage depends on whether AGSIST reads your elevator's board or it reaches us through a licensed feed. Some smaller independent elevators may not participate. If your elevator isn&rsquo;t listed, email sig@farmers1st.com &mdash; I&rsquo;ll investigate whether it&rsquo;s available and can be added. I&rsquo;m actively working to expand coverage across the Corn Belt.</div></div>
     </div>
     <div class="el-faq-item">
       <div class="el-faq-q" role="button" tabindex="0" aria-expanded="false">Is AGSIST affiliated with any elevator or grain company?</div>
-      <div class="el-faq-a"><div class="el-faq-ai">No. AGSIST is an independent agricultural intelligence dashboard built and operated by Sigurd Lindquist, a crop insurance agent and grain farmer. It has no ownership, financial, or commercial relationship with any elevator, co-op, or grain company. Cash bid data is sourced neutrally from the Barchart OnDemand API.</div></div>
+      <div class="el-faq-a"><div class="el-faq-ai">No. AGSIST is an independent agricultural intelligence dashboard built and operated by Sigurd Lindquist, a crop insurance agent and grain farmer. It has no ownership, financial, or commercial relationship with any elevator, co-op, or grain company. Cash bid data is gathered neutrally, with no elevator paying for placement.</div></div>
     </div>
   </div>
 
   <div class="el-disc">
-    Cash bid data sourced from Barchart OnDemand API. Bids are elevator-posted prices and may not reflect real-time changes. Verify all prices directly with the elevator before delivery. AGSIST is not a licensed commodity broker and this is not trading advice. Contact: <a href="mailto:sig@farmers1st.com" style="color:var(--gold)">sig@farmers1st.com</a> &middot; <a href="tel:+17157972428" style="color:var(--gold)">715-797-2428</a>
+    Cash bid data comes from elevators' own posted boards and a licensed feed. Bids are elevator-posted prices and may not reflect real-time changes. Verify all prices directly with the elevator before delivery. AGSIST is not a licensed commodity broker and this is not trading advice. Contact: <a href="mailto:sig@farmers1st.com" style="color:var(--gold)">sig@farmers1st.com</a> &middot; <a href="tel:+17157972428" style="color:var(--gold)">715-797-2428</a>
   </div>
 </main>
 <div id="site-footer"></div>

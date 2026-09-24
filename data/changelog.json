@@ -6,6 +6,12 @@
    "date": "2026-09-24",
    "items": [
     {
+     "tag": "improved",
+     "page": "/corn-futures-prices",
+     "name": "Your nearest cash bid is now read minutes ago, not yesterday",
+     "text": "The cash bid card on the corn, soybean and wheat pages read a file that a job rewrote about twice an hour. When that job stopped, the card kept showing the last thing it had written — and it stopped for a day. It now reads the elevator boards AGSIST polls every ten minutes, directly. A reader at Chetek, Wisconsin was being shown a bid in Rochester, Indiana labelled “not near you”; the same reader now gets an elevator 52 miles away read twelve minutes ago. Where there is no elevator within seventy-five miles — outside the twenty-nine states we read — the card falls back to the licensed feed exactly as before, and says which one it used."
+    },
+    {
      "tag": "fixed",
      "page": "/news",
      "name": "The wire kept filing the same story",

@@ -528,7 +528,7 @@ h2.snap-lbl,h2.basis-title,h2.crop-title{margin:0;display:inline-block}
       <a href="/cash-bids">See full cash bid map →</a>
       <button type="button" id="basis-zip-btn">Set my ZIP</button>
     </div>
-    <div class="basis-src" id="basis-src">Cash bids from the AGSIST elevator network and Barchart OnDemand</div>
+    <div class="basis-src" id="basis-src">Cash bids from the AGSIST elevator network</div>
   </div>
   <div class="crop-card" id="crop-card">
     <div class="crop-head">
@@ -727,6 +727,7 @@ h2.snap-lbl,h2.basis-title,h2.crop-title{margin:0;display:inline-block}
 </main>
 
 <div id="site-footer"></div>
+<script src="/components/bids-network.js?v=1" defer></script>
 <script src="/components/loader.js?v=16" defer></script>
 <script src="/components/geo.js?v=17" defer></script>
 <script>
@@ -1562,15 +1563,44 @@ function fmtBidTime(ts){
 }
 
 function fetchAndRenderBasis(){
-  fetch('/data/bids.json',{cache:'no-store'})
-    .then(function(r){return r.ok?r.json():null;})
-    .then(function(data){
-      if(!data)return;
-      renderBasisCard(data);
+  /* LIVE FIRST, COMMITTED FILE SECOND.
+   *
+   * This used to read /data/bids.json and nothing else. That file is written
+   * by fetch_bids.yml, which runs about twice an hour, and on 2026-09-23 it
+   * stopped writing for 27 hours -- so this card served Wednesday's prices
+   * into Thursday afternoon while dnilgis/bids was reading 1,096 elevator
+   * boards every ten minutes and publishing them.
+   *
+   * components/bids-network.js reads that published scrape directly, in one
+   * request, and hands back the same { fetched, bids, zip_grid } shape this
+   * renderer already takes. So the renderer below is untouched: every rule it
+   * carries about what to show and what to withhold still applies, to fresher
+   * rows.
+   *
+   * THE COMMITTED FILE IS STILL THE FALLBACK AND HAS TO BE. The scrape covers
+   * 1,002 places in 29 states; the committed file also carries Barchart, which
+   * is where a reader outside that footprint gets an answer at all. A reader
+   * in Florida gets null from the network and the old path runs untouched.
+   *
+   * Nothing here can leave the card empty that would not have left it empty
+   * before: every failure path falls through to the same fetch this function
+   * used to begin with.
+   */
+  function committed(){
+    return fetch('/data/bids.json',{cache:'no-store'})
+      .then(function(r){return r.ok?r.json():null;})
+      .then(function(data){ if(data)renderBasisCard(data); });
+  }
+  var loc=null;
+  try{loc=getUserLoc();}catch(e){}
+  if(!window.AGSIST_BIDS_NET||!loc){ committed().catch(function(){}); return; }
+  window.AGSIST_BIDS_NET.snapshotForLoc(loc)
+    .then(function(live){
+      if(live&&live.bids&&live.bids.length){renderBasisCard(live);return;}
+      return committed();
     })
-    .catch(function(){
-      // No bids feed — leave card hidden
-    });
+    .catch(function(){ return committed(); })
+    .catch(function(){ /* no feed at all - leave the card as it was */ });
 }
 
 function renderBasisCard(data){
@@ -1579,7 +1609,14 @@ function renderBasisCard(data){
 
   var grid=data.zip_grid||[];
   var bids=data.bids||[];
-  var userLoc=getUserLoc();
+  /* A NETWORK SNAPSHOT BRINGS THE COORDINATE IT SEARCHED FROM.
+     getUserLoc() returns {source:'saved', zip} with no lat/lng whenever the
+     reader has saved a ZIP, and three things below need a coordinate: the
+     nearest-grid lookup, the local test, and the "X mi from you" label. Left
+     to the saved ZIP alone this card told a reader at Chetek that a bid 50
+     miles away was "not near you". The committed file carries no origin, so
+     that path is unchanged. */
+  var userLoc=(data&&data.origin)||getUserLoc();
   var nearest=findNearestGridZip(userLoc,grid);
 
   // Show the card
@@ -1603,7 +1640,7 @@ function renderBasisCard(data){
       emptyEl.style.display='block';
       emptyEl.innerHTML='<strong>Set your ZIP to see your nearest cash bid.</strong> AGSIST samples 50 ZIP locations across the grain belt for representative '+CROP_LABEL.toLowerCase()+' cash bids and basis vs CBOT futures. Tap \u201cSet my ZIP\u201d below to find your nearest sample.';
     }
-    if(srcEl){srcEl.innerHTML='Cash bids from the AGSIST elevator network and <a href="https://www.barchart.com/ondemand" target="_blank" rel="noopener">Barchart OnDemand</a>';}
+    if(srcEl){srcEl.innerHTML='Cash bids from the AGSIST elevator network';}
     return;
   }
 
@@ -1716,7 +1753,7 @@ function renderBasisCard(data){
       // Barchart. The merged feed marks network rows source=='network'.
       srcLine+= (b.source==='network')
         ? ' \u00b7 AGSIST elevator network'
-        : ' \u00b7 <a href="https://www.barchart.com/ondemand" target="_blank" rel="noopener">Barchart OnDemand</a>';
+        : ' \u00b7 a licensed cash-bid feed';
       srcEl.innerHTML=srcLine;
     }
 
@@ -1759,7 +1796,7 @@ function renderBasisCard(data){
       emptyEl.innerHTML=msg;
     }
     if(srcEl){
-      srcEl.innerHTML='Cash bids from the AGSIST elevator network and <a href="https://www.barchart.com/ondemand" target="_blank" rel="noopener">Barchart OnDemand</a>';
+      srcEl.innerHTML='Cash bids from the AGSIST elevator network';
     }
   }
 }

@@ -213,7 +213,7 @@
         }
       },
       {
-        name:'Cash Grain Bids', desc:'Local elevator bids by ZIP, pulled from Barchart on weekday business hours.',
+        name:'Cash Grain Bids', desc:'Local elevator bids by ZIP, read on weekday business hours.',
         url:'/data/bids.json', tsKey:'fetched',
         check:function(d,age){
           if(!bidsHours()) return {state:'idle', label:'Off-hours', age:'last update '+ago(age)};

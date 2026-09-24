@@ -1503,7 +1503,7 @@ def main():
 
     output = {
         "fetched": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
-        "source": "Barchart OnDemand getGrainBids + AGSIST elevator network (dnilgis/bids)",
+        "source": "AGSIST elevator network (dnilgis/bids) + a licensed cash-bid feed",
         "zip_grid": zip_index,
         "stats": {
             "total_bids": len(all_bids),

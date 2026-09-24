@@ -91,7 +91,7 @@ CURATED = {
 }
 
 # ── feeds another repository publishes, and this one only reads ─────────────
-# cash-bids.html merges two sources: Barchart, and the elevator boards that
+# cash-bids.html merges two sources: a licensed feed, and the elevator boards that
 # dnilgis/bids reads itself. The second is published by that repository's own
 # workflows to GitHub Pages, with CORS open, and NOTHING in this repository
 # writes it — which is exactly right, and which the manifest would otherwise
@@ -117,7 +117,8 @@ EXTERNAL = {
         "published by dnilgis/bids, refreshed with the boards",
         "The elevator bid network. dnilgis/bids reads ~650 boards and publishes "
         "this index and its shards to dnilgis.github.io/bids on its own "
-        "schedule. cash-bids.html fetches it and falls back to Barchart alone "
+        "schedule. cash-bids.html fetches it and falls back to the licensed "
+        "feed alone "
         "if it is unreachable, so a stale or missing feed costs coverage and "
         "never breaks the page."),
 }
