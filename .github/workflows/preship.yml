@@ -1,0 +1,59 @@
+name: preship
+
+# Runs after files land on main and says, within a couple of minutes, whether
+# the upload did anything the previous commit did not: a new page error under a
+# missing data file, a countdown that changes with the clock, a page that
+# renders half of what it used to, or the word NaN appearing where it did not.
+#
+# It compares HEAD against HEAD~1. It does not know what "correct" is -- only
+# what changed for the worse. That is enough: every regression this repo
+# shipped in September was a page doing something new and bad under a condition
+# nobody had rendered.
+#
+# Red here means: open the run, read the FAIL lines, and revert the file named
+# in them. It is never a reason to guess.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '**.html'
+      - 'components/**'
+  workflow_dispatch:
+    inputs:
+      base:
+        description: 'git ref to compare against (default HEAD~1)'
+        required: false
+        default: 'HEAD~1'
+
+jobs:
+  preship:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2          # HEAD and HEAD~1, nothing more
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Playwright Chromium
+        run: |
+          npm i -D playwright@1.47.0
+          npx playwright install --with-deps chromium
+
+      - name: Run preship
+        run: |
+          node scripts/preship.mjs \
+            --git-base "${{ github.event.inputs.base || 'HEAD~1' }}" \
+            --json preship-report.json
+
+      - name: Upload the report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: preship-report
+          path: preship-report.json
+          if-no-files-found: ignore
