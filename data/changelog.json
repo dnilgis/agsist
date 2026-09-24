@@ -58,6 +58,54 @@
           "page": "/conditions-yield",
           "name": "What the accuracy number is measuring",
           "text": "The page said the model explained a share “of final yield”. It does not. It explains that share of how Iowa's final yield differs from its trend, which is a much narrower claim and the one the number actually supports. The wording is corrected everywhere it appeared on the page."
+        },
+        {
+          "tag": "improved",
+          "page": "/",
+          "name": "The homepage says what this is",
+          "text": "The one line on the page that named the site was hidden — it was styled so only screen readers could reach it, and it sat more than two screens down. Somebody arriving from a search saw a briefing, a sponsor slot and a sign-up box before anything told them whose site this is. It now sits at the top, in plain type, with where the futures, the cash bids and the weather each come from."
+        },
+        {
+          "tag": "fixed",
+          "page": "/",
+          "name": "The prediction-market panel was empty every day",
+          "text": "The homepage panel said “No ag-relevant markets found today” while the file behind it held nine contracts and the full page showed them. The panel was looking for the price under a field name the file stopped using. It reads them again."
+        },
+        {
+          "tag": "improved",
+          "page": "/",
+          "name": "One contract, one card",
+          "text": "For the part of the year when the front month and the new-crop contract are the same contract — right now corn is December on both — the board printed them as two cards side by side with the same price, the same change and the same symbol. There is one card now, and it says it is the new crop as well. When the front month rolls, the second card comes back."
+        },
+        {
+          "tag": "fixed",
+          "page": "/",
+          "name": "A price cut in half on a phone",
+          "text": "The 52-week low and high under each price ran out of room on a phone and broke across two lines mid-number: soybeans read “$10.4 / 8” and corn ran the low into the caption as “$4.2552-Wk Range”. The caption is gone on a narrow screen — the two figures sit at either end of the range bar — and neither number breaks now."
+        },
+        {
+          "tag": "fixed",
+          "page": "/",
+          "name": "Export sales showed an empty bar instead of a reason",
+          "text": "USDA has not published a 2026/27 export forecast, so there is nothing to measure the pace against. The page drew a bar at zero and a dash, which reads as nothing sold. It now prints what is actually known — 17.4 million tonnes of corn booked so far — and says plainly that there is no target to measure it against."
+        },
+        {
+          "tag": "improved",
+          "page": "/",
+          "name": "The market health score is off the page",
+          "text": "A score that has never been published was printed in three places, twice as a large panel under the grain prices, each time to say there was no number. It is gone until there is something to put in it."
+        },
+        {
+          "tag": "fixed",
+          "page": "/",
+          "name": "The same headline twice on two days",
+          "text": "The wire carried “Corn closed at a 52-week high — $5.43 a bushel, taking out the $5.39 top of its range” on two consecutive days, word for word, and the same doubling for soybeans. Each was true the day it was written, but the second one could not be: by then the top of the range was $5.43. A headline already on the wire is not posted again."
+        },
+        {
+          "tag": "improved",
+          "page": "/sponsor",
+          "name": "Ad space is always orange",
+          "text": "Sponsor slots were drawn in the same gold as our own headings and links, so paid space looked like part of the site. Every slot on every page now carries the orange used for advertising and an orange edge, so you can tell at a glance what somebody paid for and what is ours."
         }
       ]
     },

@@ -249,8 +249,17 @@ def build():
     old = load("news.json") or {}
     kept = old.get("items") or []
     seen = {i.get("id") for i in kept}
+    # THE SAME SENTENCE IS NOT NEWS TWICE. The id carries the date, so a
+    # headline and detail repeated on the next day were two different ids
+    # and both published. On 21 and 22 September the wire carried "Corn
+    # closed at a 52-week high / $5.43 a bushel, taking out the $5.39 top
+    # of its range." twice, word for word, and the second one could not be
+    # true: by then the top of the range was $5.43.
+    said = {(i.get("headline"), i.get("detail")) for i in kept}
     # An item already published keeps the words it was published with.
-    added = [i for i in fresh if i.get("id") not in seen]
+    added = [i for i in fresh
+             if i.get("id") not in seen
+             and (i.get("headline"), i.get("detail")) not in said]
     items = sorted(added + kept, key=lambda i: (i.get("ts") or ""), reverse=True)[:KEEP]
 
     # Write only when the ITEMS changed. On 2026-09-13 the first live run added

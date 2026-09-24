@@ -42,6 +42,13 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
 
 :root {
+  /* AD ORANGE. Paid space never wears the house gold. Anything a
+     sponsor bought -- the large unit, the thin ribbon, the house pitch for
+     an unsold slot -- is drawn in this and nothing else is. */
+  --ad-orange:     #e8743a;
+  --ad-orange-rgb: 232,116,58;
+  --ad-orange-hi:  #f2935f;
+  --ad-orange-ink: #a8380a;   /* the same hue at 4.5:1 on a light page */
   --gold:     #d4a23f;
   --gold-rgb: 212,162,63;
   --green:    #5fc28a;
@@ -298,24 +305,24 @@ button:focus:not(:focus-visible), a:focus:not(:focus-visible) { outline: none }
 
 /* ── MAIN, CARDS, PRICE CARDS ─────────────────────────────────────── */
 .main { max-width: 1400px; margin: 0 auto; padding: var(--sp-xl) var(--sp-lg); min-width: 0; overflow-x: clip; overflow-wrap: anywhere; }
-.sec-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.1rem; gap: .5rem }
+.sec-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: .6rem; gap: .5rem }
 .sec-title { display: flex; align-items: center; gap: .6rem; font-family: 'JetBrains Mono', monospace; font-size:0.78rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--brand); margin: 0; }
 .sec-title img { height: 24px; width: 24px; object-fit: contain; border-radius: 3px; background: #f5f1e8; padding: 2px }
 .sec-all { font-size: .8rem; color: var(--text-muted); transition: color .15s; white-space: nowrap; flex-shrink: 0 }
 .sec-all:hover { color: var(--brand) }
 /* Homepage H1: kept in the DOM for SEO + screen readers, visually hidden per design */
 .home-h1 { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
-.dash-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); gap: var(--sp-lg); margin-bottom: var(--sp-xl); }
+.dash-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); gap: var(--sp-md, 1rem); margin-bottom: var(--sp-lg); }
 .dash-grid > .fade-up { display: flex; flex-direction: column; min-width: 0 }
 .dash-grid > .fade-up > .card { flex: 1; display: flex; flex-direction: column }
 .dash-grid > .fade-up > .card > .card-body { flex: 1; display: flex; flex-direction: column; justify-content: center }
 .card { background: var(--surface); border: 2px solid var(--border); border-radius: var(--r-md); overflow: hidden; transition: border-color .2s; min-width: 0; }
 .card:hover { border-color: var(--border-g) }
-.card-body { padding: 1.1rem 1.2rem; min-width: 0 }
-.price-cards-section { margin-bottom: var(--sp-xl) }
+.card-body { padding: .8rem 1rem; min-width: 0 }
+.price-cards-section { margin-bottom: var(--sp-lg) }
 .pc-section-lbl { font-family: 'JetBrains Mono', monospace; font-size:0.755rem; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; color: var(--text-muted); margin: .25rem 0 .65rem; padding: .2rem 0; border-bottom: 2px solid var(--border); }
-.price-cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr)); gap: 1rem; margin-bottom: 1rem; }
-.price-cards-grid-2 { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr)); gap: 1rem; margin-bottom: .5rem; }
+.price-cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr)); gap: .7rem; margin-bottom: .7rem; }
+.price-cards-grid-2 { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr)); gap: .7rem; margin-bottom: .5rem; }
 .pc { background: var(--surface); border: 2px solid var(--border); border-radius: var(--r-md); padding: 1.1rem 1.2rem; transition: border-color .2s; cursor: default; position: relative; overflow: hidden; min-width: 0; min-height: 0; display: flex; flex-direction: column; }
 /* price-card hover glow — restored from legacy root stylesheet so /components/ is a complete superset */
 .pc::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 200px 100px at 50% 0%, rgba(230,176,66,.04) 0%, transparent 70%); opacity: 0; transition: opacity .25s; pointer-events: none; }
@@ -365,14 +372,14 @@ button:focus:not(:focus-visible), a:focus:not(:focus-visible) { outline: none }
 
 /* ── TOOL WIDGETS ─────────────────────────────────────────────────── */
 .tool-list { display: flex; flex-direction: column; gap: .55rem }
-.tool-btn { display: flex; align-items: center; justify-content: space-between; padding: .75rem .9rem; background: var(--surface2); border: 2px solid var(--border); border-radius: var(--r-md); font-size: .88rem; color: var(--text-dim); transition: border-color .2s, color .15s, background .15s; min-width: 0; }
+.tool-btn { display: flex; align-items: center; justify-content: space-between; padding: .55rem .9rem; background: var(--surface2); border: 2px solid var(--border); border-radius: var(--r-md); font-size: .88rem; color: var(--text-dim); transition: border-color .2s, color .15s, background .15s; min-width: 0; }
 .tool-btn:hover { border-color: var(--brand); color: var(--text); background: var(--surface3) }
 .tool-name { display: flex; align-items: center; gap: .55rem; min-width: 0; overflow: hidden; text-overflow: ellipsis }
 .tool-arr { color: var(--text-muted); transition: transform .2s, color .15s; flex-shrink: 0 }
 .tool-btn:hover .tool-arr { transform: translateX(3px); color: var(--brand) }
 .tool-widget { display: block; text-decoration: none; color: inherit; transition: border-color .2s; max-width: 100%; overflow: hidden; }
 .tool-widget:hover { border-color: var(--border-g) }
-.tool-widget-inner { display: flex; flex-wrap: wrap; align-items: center; gap: .3rem .75rem; padding: .75rem .9rem; background: var(--surface2); border: 2px solid var(--border); border-radius: var(--r-md); transition: border-color .2s, background .15s; min-width: 0; max-width: 100%; overflow: hidden; }
+.tool-widget-inner { display: flex; flex-wrap: wrap; align-items: center; gap: .3rem .75rem; padding: .55rem .9rem; background: var(--surface2); border: 2px solid var(--border); border-radius: var(--r-md); transition: border-color .2s, background .15s; min-width: 0; max-width: 100%; overflow: hidden; }
 .tool-widget-top { display: flex; align-items: center; gap: .55rem; width: 100%; min-width: 0; }
 .tool-widget-bottom { width: 100%; min-width: 0; padding-top: .3rem; margin-top: .1rem; border-top: 1px solid var(--border); }
 .tool-widget:hover .tool-widget-inner { border-color: var(--brand); background: var(--surface3); }
@@ -410,7 +417,7 @@ button:focus:not(:focus-visible), a:focus:not(:focus-visible) { outline: none }
 .drought-fallback a { color: var(--brand); font-weight: 700; font-size: .85rem }
 .cal-strip { display: flex; gap: .75rem; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; padding-bottom: .25rem; margin-bottom: 2rem; scroll-snap-type: x mandatory; scroll-padding: 0 1rem }
 .cal-strip::-webkit-scrollbar { display: none }
-.cal-card { flex-shrink: 0; background: var(--surface); border: 2px solid var(--border); border-radius: var(--r-md); padding: .85rem 1.1rem; min-width: 190px; transition: border-color .2s; scroll-snap-align: start }
+.cal-card { flex-shrink: 0; background: var(--surface); border: 2px solid var(--border); border-radius: var(--r-md); padding: .6rem .95rem; min-width: 190px; transition: border-color .2s; scroll-snap-align: start }
 .cal-card:hover { border-color: var(--border-g) }
 .cal-card.today { border-color: var(--brand); background: rgba(var(--brand-rgb),.03) }
 .cal-today-badge { font-family: 'JetBrains Mono', monospace; display: inline-block; font-size:0.75rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: #0a1206; background: var(--brand); padding: .12rem .4rem; border-radius: 3px; margin-bottom: .35rem; }
@@ -564,8 +571,8 @@ main.tool-main, main#main-content { max-width: 1100px; margin: 0 auto; padding: 
 @media (max-width: 520px) {
   .nav-inner { height: 60px; padding: 0 .9rem }
   .nav-logo img { height: 44px }
-  .main { padding: 1.25rem .9rem }
-  .signup { padding: 1.75rem 1rem }
+  .main { padding: .85rem .9rem }
+  .signup { padding: 1.15rem 1rem }
   .signup-input { padding: .55rem .8rem; font-size: .82rem }
   .signup-submit { padding: .55rem 1rem; font-size: .82rem }
   .signup-headline { font-size: clamp(1.5rem, 3vw, 2rem) !important }
@@ -580,7 +587,7 @@ main.tool-main, main#main-content { max-width: 1100px; margin: 0 auto; padding: 
   .ticker-outer { height: 38px }
   .t-price { font-size: .8rem } .t-label { font-size:0.76rem }
   .daily-hero { width: 100vw; margin-left: calc(50% - 50vw); margin-right: calc(50% - 50vw) }
-  .daily-hero-inner { padding: 1.25rem .9rem }
+  .daily-hero-inner { padding: .9rem .9rem }
   .daily-greeting { font-size: 1rem; margin-bottom: .35rem }
   .daily-eyebrow { font-size:0.75rem; padding: .18rem .5rem; margin-bottom: .5rem }
   .daily-date { font-size:0.77rem; margin-bottom: .35rem }
@@ -604,12 +611,23 @@ main.tool-main, main#main-content { max-width: 1100px; margin: 0 auto; padding: 
   .watch-item { padding: .3rem 0 } .watch-time { font-size:0.78rem; min-width: 52px } .watch-desc { font-size:1rem; line-height: 1.4 }
   .hero-sidebar { gap: .6rem }
   .hero-sidebar > .s-card:last-child { display: none }
-  .price-cards-grid { grid-template-columns: repeat(2, 1fr); gap: .6rem }
-  .price-cards-grid-2 { grid-template-columns: repeat(2, 1fr); gap: .6rem }
-  .pc { padding: .6rem .65rem } .pc-head { margin-bottom: .4rem } .pc-name { font-size:0.78rem }
-  .pc-contract { font-size:0.745rem; padding: .1rem .3rem } .pc-price { font-size: 1.5rem }
+  .price-cards-grid { grid-template-columns: repeat(2, 1fr); gap: .45rem }
+  .price-cards-grid-2 { grid-template-columns: repeat(2, 1fr); gap: .45rem }
+  .pc { padding: .45rem .6rem } .pc-head { margin-bottom: .4rem } .pc-name { font-size:0.78rem }
+  .pc-contract { font-size:0.745rem; padding: .1rem .3rem;
+    /* The contract label can gain a suffix when the front month and the
+       new-crop contract are the same one. nowrap + flex-shrink:0 ran it
+       off the right edge of the card instead of wrapping it. */
+    white-space: normal; flex-shrink: 1 } .pc-price { font-size: 1.5rem }
   .pc-sm .pc-price { font-size: 1.25rem } .pc-chg-val { font-size: .85rem } .pc-prev { font-size:0.75rem }
-  .pc-range-labels { font-size:0.737rem } .pc-range-dot { width: 9px; height: 9px } .pc-section-lbl { font-size:0.75rem }
+  .pc-range-labels { font-size:0.737rem; gap:.4rem; flex-wrap:nowrap }
+  /* At 390px the three-part row ran out of width and wrapped mid-number:
+     "$10.4 52-Wk $13.3 / 8 Range 6" on the bean card, and "$4.2552-Wk
+     Range$5.50" with no gap at all on corn. The caption is the part that
+     can go -- the two figures sit either end of a range bar. */
+  .pc-range-labels > span { white-space: nowrap }
+  .pc-range-labels > span:nth-child(2) { display: none }
+  .pc-range-dot { width: 9px; height: 9px } .pc-section-lbl { font-size:0.75rem }
   .footer-bottom { flex-direction: column; align-items: center; gap: .3rem }
   .pc-name { font-size:0.77rem; gap: .3rem; } .pc-name-icon { font-size: .85rem; }
   .pc-contract { font-size:0.73rem; padding: .08rem .25rem; }
@@ -618,7 +636,7 @@ main.tool-main, main#main-content { max-width: 1100px; margin: 0 auto; padding: 
 @media (max-width: 380px) {
   .price-cards-grid { grid-template-columns: repeat(2, 1fr); gap: .5rem }
   .price-cards-grid-2 { grid-template-columns: repeat(2, 1fr); gap: .5rem }
-  .pc { padding: .5rem .55rem } .pc-price { font-size: 1.3rem } .pc-sm .pc-price { font-size: 1.1rem }
+  .pc { padding: .4rem .5rem } .pc-price { font-size: 1.3rem } .pc-sm .pc-price { font-size: 1.1rem }
   .pc-name { font-size:0.755rem; gap: .25rem; } .pc-contract { font-size:0.72rem; padding: .06rem .2rem; }
   .pc-range { display: none }
   .daily-headline { font-size: 1.4rem } .one-num { font-size: 2rem }
@@ -827,9 +845,11 @@ td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;
    ─────────────────────────────────────────────────────────────────────── */
 
 /* Sponsor ribbon — was declared on 32 pages in 3 versions. Pages that hide it keep their own override; only the shared definition moved. */
-.ag-sponsor-ribbon{display:block;font-size:0.785rem;padding:.45rem .85rem;margin:1rem 0;border:1px solid rgba(132,160,168,.18);border-radius:8px;color:#8a948f;line-height:1.6}
-.ag-sponsor-ribbon .ag-sponsor-tag{font-family:'JetBrains Mono',monospace;font-size:0.75rem;letter-spacing:.12em;text-transform:uppercase;color:#d4a23f;margin-right:.5rem}
-.ag-sponsor-ribbon a{color:#d4a23f}
+.ag-sponsor-ribbon{display:block;font-size:0.785rem;padding:.45rem .85rem .45rem 1rem;margin:1rem 0;border:1px solid rgba(var(--ad-orange-rgb,232,116,58),.34);border-left:4px solid var(--ad-orange,#e8743a);border-radius:8px;background:rgba(var(--ad-orange-rgb,232,116,58),.05);color:var(--text-dim,#8a948f);line-height:1.6}
+.ag-sponsor-ribbon .ag-sponsor-tag{font-family:'JetBrains Mono',monospace;font-size:0.75rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--ad-orange,#e8743a);margin-right:.5rem}
+.ag-sponsor-ribbon a{color:var(--ad-orange,#e8743a);font-weight:600}
+[data-theme="light"] .ag-sponsor-ribbon .ag-sponsor-tag,[data-theme="light"] .ag-sponsor-ribbon a{color:var(--ad-orange-ink,#a8380a)}
+
 
 /* Inline icon sprite — was on 14 pages, identical every time. */
 .ic{width:1em;height:1em;display:inline-block;vertical-align:-0.14em;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
