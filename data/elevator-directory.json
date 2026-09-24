@@ -1,18 +1,18 @@
 {
- "generated": "2026-09-24T19:57:52Z",
+ "generated": "2026-09-24T23:10:17Z",
  "from": "bids-full.json",
  "complete": false,
  "note": "Directory only: who operates a facility and where. No prices, no basis, no symbols, no delivery windows.",
  "counts": {
-  "facilities": 2494,
+  "facilities": 2490,
   "states": 33,
   "with_address": 0,
   "with_coords": 0,
   "with_url": 0,
-  "with_phone": 1788,
+  "with_phone": 1786,
   "saturated_zips": 0,
   "failed_zips": 0,
-  "rows_read": 27498
+  "rows_read": 27400
  },
  "saturated": [],
  "failed": [],
@@ -5661,15 +5661,6 @@
   },
   {
    "facility": "B.A.B. Grain",
-   "branch": "Auburn",
-   "city": "Auburn",
-   "state": "IL",
-   "zip": "62615",
-   "phone": "217-438-3316",
-   "source": "barchart"
-  },
-  {
-   "facility": "B.A.B. Grain",
    "branch": "DEL ADM Decatur",
    "city": "Decatur",
    "state": "IL",
@@ -5683,6 +5674,15 @@
    "city": "Waverly",
    "state": "IL",
    "zip": "62692",
+   "phone": "217-438-3316",
+   "source": "barchart"
+  },
+  {
+   "facility": "BAB Grain",
+   "city": "Auburn",
+   "state": "IL",
+   "zip": "62615",
+   "lat": 39.59214,
    "phone": "217-438-3316",
    "source": "barchart"
   },
@@ -8535,15 +8535,6 @@
    "source": "barchart"
   },
   {
-   "facility": "Iroquois Bio-Energy",
-   "branch": "IBEC",
-   "city": "Rensselaer",
-   "state": "IN",
-   "zip": "47978",
-   "phone": "(219) 866-5990",
-   "source": "barchart"
-  },
-  {
    "facility": "Kentland Elevator & Supply Inc.",
    "branch": "Kentland",
    "city": "Kentland ",
@@ -10214,38 +10205,6 @@
    "source": "barchart"
   },
   {
-   "facility": "Farmers Coop Columbus",
-   "city": "BAXTER SPRINGS",
-   "state": "KS",
-   "zip": "66713",
-   "lat": 37.0281,
-   "source": "barchart"
-  },
-  {
-   "facility": "Farmers Coop Columbus",
-   "city": "COLUMBUS",
-   "state": "KS",
-   "zip": "66725",
-   "lat": 37.1699,
-   "source": "barchart"
-  },
-  {
-   "facility": "Farmers Coop Columbus",
-   "city": "COLUMBUS EAST",
-   "state": "KS",
-   "zip": "66739",
-   "lat": 37.1699,
-   "source": "barchart"
-  },
-  {
-   "facility": "Farmers Coop Columbus",
-   "city": "FAULKNER",
-   "state": "KS",
-   "zip": "67336",
-   "lat": 37.0418,
-   "source": "barchart"
-  },
-  {
    "facility": "Farmers Coop Conway Springs",
    "branch": "BELLE PLAINE",
    "city": "Belle Plaine",
@@ -11387,6 +11346,15 @@
    "state": "KS",
    "zip": "67137",
    "phone": "620-736-2011",
+   "source": "barchart"
+  },
+  {
+   "facility": "Skyland Grain",
+   "branch": "Cunningham Area",
+   "city": "Cunningham",
+   "state": "KS",
+   "zip": "67035",
+   "phone": "(620) 298-2011",
    "source": "barchart"
   },
   {
@@ -13218,6 +13186,14 @@
    "state": "MN",
    "zip": "56573",
    "phone": "218-346-4700",
+   "source": "barchart"
+  },
+  {
+   "facility": "KBQ Inc.",
+   "city": "KBQ Inc.",
+   "state": "MN",
+   "zip": "56159",
+   "lat": 43.939,
    "source": "barchart"
   },
   {
@@ -15214,15 +15190,6 @@
    "source": "barchart"
   },
   {
-   "facility": "Iroquois Bio-Energy",
-   "branch": "Blue Flint",
-   "city": "Underwood",
-   "state": "ND",
-   "zip": "58576",
-   "phone": "701-442-7500",
-   "source": "barchart"
-  },
-  {
    "facility": "James Valley Grain, LLC",
    "branch": "Oakes",
    "city": "Oakes",
@@ -15599,6 +15566,13 @@
    "state": "NE",
    "zip": "68361",
    "phone": "402-759-3370",
+   "source": "barchart"
+  },
+  {
+   "facility": "Aurora Cooperative",
+   "city": "Superior",
+   "state": "NE",
+   "lat": 40.01635,
    "source": "barchart"
   },
   {
@@ -21107,11 +21081,11 @@
    "source": "barchart"
   },
   {
-   "facility": "Pilgrims Gold N Plump",
-   "branch": "Arcadia",
+   "facility": "Pilgrims Gold N' Plump",
    "city": "Arcadia",
    "state": "WI",
    "zip": "54612",
+   "lat": 44.2539,
    "phone": "320-202-7451",
    "source": "barchart"
   },
@@ -21363,15 +21337,6 @@
    "state": "WI",
    "zip": "54725",
    "phone": "7158746593",
-   "source": "barchart"
-  },
-  {
-   "facility": "Wheaton Grain",
-   "branch": "Chippewa Falls",
-   "city": "Chippewa Falls",
-   "state": "WI",
-   "zip": "54729",
-   "phone": "715-874-659",
    "source": "barchart"
   },
   {
