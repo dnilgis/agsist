@@ -1,10 +1,10 @@
 {
- "generated": "2026-09-23T15:25:16Z",
+ "generated": "2026-09-24T18:56:34Z",
  "from": "bids-full.json",
  "complete": false,
  "note": "Directory only: who operates a facility and where. No prices, no basis, no symbols, no delivery windows.",
  "counts": {
-  "facilities": 2529,
+  "facilities": 2490,
   "states": 33,
   "with_address": 0,
   "with_coords": 0,
@@ -12,7 +12,7 @@
   "with_phone": 1788,
   "saturated_zips": 0,
   "failed_zips": 0,
-  "rows_read": 27702
+  "rows_read": 27307
  },
  "saturated": [],
  "failed": [],
@@ -68,61 +68,6 @@
    "state": "AR",
    "zip": "72160",
    "phone": "(870) 673-5342",
-   "source": "barchart"
-  },
-  {
-   "facility": "Riceland Foods",
-   "city": "Corning",
-   "state": "AR",
-   "lat": 36.4155,
-   "source": "barchart"
-  },
-  {
-   "facility": "Riceland Foods",
-   "city": "Des Arc",
-   "state": "AR",
-   "lat": 34.9751,
-   "source": "barchart"
-  },
-  {
-   "facility": "Riceland Foods",
-   "city": "Hazen",
-   "state": "AR",
-   "lat": 34.7838,
-   "source": "barchart"
-  },
-  {
-   "facility": "Riceland Foods",
-   "city": "Hickory Ridge",
-   "state": "AR",
-   "lat": 35.3995,
-   "source": "barchart"
-  },
-  {
-   "facility": "Riceland Foods",
-   "city": "Newport",
-   "state": "AR",
-   "lat": 35.5988,
-   "source": "barchart"
-  },
-  {
-   "facility": "Riceland Foods",
-   "city": "Pendleton",
-   "state": "AR",
-   "source": "barchart"
-  },
-  {
-   "facility": "Riceland Foods",
-   "city": "Tuckerman",
-   "state": "AR",
-   "lat": 35.7307,
-   "source": "barchart"
-  },
-  {
-   "facility": "Riceland Foods",
-   "city": "Weiner",
-   "state": "AR",
-   "lat": 35.6291,
    "source": "barchart"
   },
   {
@@ -1383,6 +1328,33 @@
   },
   {
    "facility": "Farmers Win Coop",
+   "branch": "Granger",
+   "city": "Cresco",
+   "state": "IA",
+   "zip": "52136",
+   "phone": "563-547-4349",
+   "source": "barchart"
+  },
+  {
+   "facility": "Farmers Win Coop",
+   "branch": "Cresco East",
+   "city": "Cresco",
+   "state": "IA",
+   "zip": "52136",
+   "phone": "N/A",
+   "source": "barchart"
+  },
+  {
+   "facility": "Farmers Win Coop",
+   "branch": "Cresco",
+   "city": "Cresco",
+   "state": "IA",
+   "zip": "52136",
+   "phone": "563-547-5404",
+   "source": "barchart"
+  },
+  {
+   "facility": "Farmers Win Coop",
    "branch": "Poet Fairbank",
    "city": "Fairbank",
    "state": "IA",
@@ -1397,6 +1369,15 @@
    "state": "IA",
    "zip": "50630",
    "phone": "563-237-5324",
+   "source": "barchart"
+  },
+  {
+   "facility": "Farmers Win Coop",
+   "branch": "Hawkeye",
+   "city": "Hawkeye",
+   "state": "IA",
+   "zip": "52147",
+   "phone": "563-427-3214",
    "source": "barchart"
   },
   {
@@ -1428,6 +1409,15 @@
   },
   {
    "facility": "Farmers Win Coop",
+   "branch": "Ridgeway",
+   "city": "Ridgeway",
+   "state": "IA",
+   "zip": "52165",
+   "phone": "563-737-2244",
+   "source": "barchart"
+  },
+  {
+   "facility": "Farmers Win Coop",
    "branch": "Poet Shell Rock",
    "city": "Shell Rock",
    "state": "IA",
@@ -1446,135 +1436,20 @@
   },
   {
    "facility": "Farmers Win Coop",
+   "branch": "Sumner",
+   "city": "Sumner",
+   "state": "IA",
+   "zip": "50674",
+   "phone": "563-578-3432",
+   "source": "barchart"
+  },
+  {
+   "facility": "Farmers Win Coop",
    "branch": "Bremer",
    "city": "Waverly",
    "state": "IA",
    "zip": "50677",
    "phone": "319-352-1354",
-   "source": "barchart"
-  },
-  {
-   "facility": "Farmers Win Cooperative",
-   "city": "AGP - Mason City",
-   "state": "IA",
-   "zip": "50401",
-   "lat": 43.1499,
-   "source": "barchart"
-  },
-  {
-   "facility": "Farmers Win Cooperative",
-   "city": "Bremer",
-   "state": "IA",
-   "zip": "50677",
-   "lat": 42.7748,
-   "source": "barchart"
-  },
-  {
-   "facility": "Farmers Win Cooperative",
-   "city": "Cresco",
-   "state": "IA",
-   "zip": "52136",
-   "lat": 43.363,
-   "phone": "563-547-4349",
-   "source": "barchart"
-  },
-  {
-   "facility": "Farmers Win Cooperative",
-   "city": "Cresco East",
-   "state": "IA",
-   "zip": "52136",
-   "lat": 43.363,
-   "source": "barchart"
-  },
-  {
-   "facility": "Farmers Win Cooperative",
-   "city": "F'Burg",
-   "state": "IA",
-   "zip": "50630",
-   "lat": 42.9593,
-   "source": "barchart"
-  },
-  {
-   "facility": "Farmers Win Cooperative",
-   "city": "Granger",
-   "state": "IA",
-   "zip": "52136",
-   "lat": 43.363,
-   "source": "barchart"
-  },
-  {
-   "facility": "Farmers Win Cooperative",
-   "city": "Hawkeye",
-   "state": "IA",
-   "zip": "52147",
-   "lat": 42.9487,
-   "phone": "563-427-3214",
-   "source": "barchart"
-  },
-  {
-   "facility": "Farmers Win Cooperative",
-   "city": "Homeland",
-   "state": "IA",
-   "zip": "52154",
-   "lat": 43.0932,
-   "source": "barchart"
-  },
-  {
-   "facility": "Farmers Win Cooperative",
-   "city": "Poet Fairbank",
-   "state": "IA",
-   "zip": "50629",
-   "lat": 42.6162,
-   "source": "barchart"
-  },
-  {
-   "facility": "Farmers Win Cooperative",
-   "city": "Poet Shell Rock",
-   "state": "IA",
-   "zip": "50670",
-   "lat": 42.7061,
-   "source": "barchart"
-  },
-  {
-   "facility": "Farmers Win Cooperative",
-   "city": "Ridgeway",
-   "state": "IA",
-   "zip": "52165",
-   "lat": 43.2979,
-   "phone": "563-737-2244",
-   "source": "barchart"
-  },
-  {
-   "facility": "Farmers Win Cooperative",
-   "city": "SRSP",
-   "state": "IA",
-   "zip": "50670",
-   "lat": 42.7061,
-   "source": "barchart"
-  },
-  {
-   "facility": "Farmers Win Cooperative",
-   "city": "Sumner",
-   "state": "IA",
-   "zip": "50674",
-   "lat": 42.8419,
-   "phone": "563-578-3432",
-   "source": "barchart"
-  },
-  {
-   "facility": "Farmers Win Cooperative",
-   "city": "Valero",
-   "state": "IA",
-   "zip": "50616",
-   "lat": 43.0683,
-   "source": "barchart"
-  },
-  {
-   "facility": "Farmers Win Cooperative",
-   "city": "Viserion",
-   "state": "IA",
-   "zip": "52157",
-   "lat": 43.0237,
    "source": "barchart"
   },
   {
@@ -1884,475 +1759,282 @@
    "source": "barchart"
   },
   {
-   "facility": "Heartland Co-op",
+   "facility": "Heartland Coop",
+   "branch": "ALLEMAN",
    "city": "Alleman",
    "state": "IA",
    "zip": "50007",
-   "lat": 41.8159,
    "phone": "515-383-4345",
    "source": "barchart"
   },
   {
-   "facility": "Heartland Co-op",
+   "facility": "Heartland Coop",
+   "branch": "BOONEVILLE",
    "city": "Booneville",
    "state": "IA",
    "zip": "50038",
-   "lat": 41.5242,
    "phone": "515-996-2295",
    "source": "barchart"
   },
   {
-   "facility": "Heartland Co-op",
+   "facility": "Heartland Coop",
+   "branch": "BROOKLYN",
    "city": "Brooklyn",
    "state": "IA",
    "zip": "52211",
-   "lat": 41.7321,
    "phone": "641-522-7521",
    "source": "barchart"
   },
   {
-   "facility": "Heartland Co-op",
+   "facility": "Heartland Coop",
+   "branch": "CAMBRIDGE",
    "city": "Cambridge",
    "state": "IA",
    "zip": "50046",
-   "lat": 41.9025,
    "phone": "515-383-4345",
    "source": "barchart"
   },
   {
-   "facility": "Heartland Co-op",
+   "facility": "Heartland Coop",
    "branch": "AVON",
    "city": "Carlisle",
    "state": "IA",
    "zip": "50047",
-   "lat": 41.4814,
    "phone": "515-266-4215",
    "source": "barchart"
   },
   {
-   "facility": "Heartland Co-op",
+   "facility": "Heartland Coop",
+   "branch": "COLO",
    "city": "Colo",
    "state": "IA",
    "zip": "50056",
-   "lat": 42.0131,
    "phone": "641-377-2253",
    "source": "barchart"
   },
   {
-   "facility": "Heartland Co-op",
-   "city": "Conroy",
-   "state": "IA",
-   "lat": 41.7292,
-   "source": "barchart"
-  },
-  {
-   "facility": "Heartland Co-op",
+   "facility": "Heartland Coop",
+   "branch": "COUNCIL BLUFFS",
    "city": "Council Bluffs",
    "state": "IA",
    "zip": "51501",
-   "lat": 41.2324,
    "phone": "712-325-2700",
    "source": "barchart"
   },
   {
-   "facility": "Heartland Co-op",
+   "facility": "Heartland Coop",
+   "branch": "DALLAS CENTER",
    "city": "Dallas Center",
    "state": "IA",
    "zip": "50063",
-   "lat": 41.6862,
    "phone": "515-992-3767",
    "source": "barchart"
   },
   {
-   "facility": "Heartland Co-op",
+   "facility": "Heartland Coop",
+   "branch": "DEXTER",
    "city": "Dexter",
    "state": "IA",
    "zip": "50070",
-   "lat": 41.5198,
    "phone": "515-789-4230",
    "source": "barchart"
   },
   {
-   "facility": "Heartland Co-op",
+   "facility": "Heartland Coop",
+   "branch": "EARLHAM",
    "city": "Earlham",
    "state": "IA",
    "zip": "50072",
-   "lat": 41.4709,
    "phone": "515-758-2221",
    "source": "barchart"
   },
   {
-   "facility": "Heartland Co-op",
+   "facility": "Heartland Coop",
    "branch": "EARLHAM FEED MILL",
    "city": "Earlham",
    "state": "IA",
    "zip": "50072",
-   "lat": 41.4709,
    "phone": "515-758-2221",
    "source": "barchart"
   },
   {
-   "facility": "Heartland Co-op",
+   "facility": "Heartland Coop",
+   "branch": "ELBERON",
    "city": "Elberon",
    "state": "IA",
    "zip": "52225",
-   "lat": 42.0088,
    "phone": "319-439-5382",
    "source": "barchart"
   },
   {
-   "facility": "Heartland Co-op",
-   "city": "Fairfield",
-   "state": "IA",
-   "lat": 41.01025,
-   "source": "barchart"
-  },
-  {
-   "facility": "Heartland Co-op",
+   "facility": "Heartland Coop",
    "branch": "PICKERING",
    "city": "Gilman",
    "state": "IA",
    "zip": "50106",
-   "lat": 41.9012,
    "phone": "800-542-7887",
    "source": "barchart"
   },
   {
-   "facility": "Heartland Co-op",
+   "facility": "Heartland Coop",
+   "branch": "GRUNDY CENTER",
    "city": "Grundy Center",
    "state": "IA",
    "zip": "50638",
-   "lat": 42.3672,
    "phone": "319-824-5466",
    "source": "barchart"
   },
   {
-   "facility": "Heartland Co-op",
-   "city": "Guernsey",
-   "state": "IA",
-   "lat": 41.6378,
-   "source": "barchart"
-  },
-  {
-   "facility": "Heartland Co-op",
+   "facility": "Heartland Coop",
+   "branch": "HENDERSON",
    "city": "Henderson",
    "state": "IA",
    "zip": "51541",
-   "lat": 41.1254,
    "phone": "712-825-3561",
    "source": "barchart"
   },
   {
-   "facility": "Heartland Co-op",
+   "facility": "Heartland Coop",
    "branch": "VOORHIES",
    "city": "Hudson",
    "state": "IA",
    "zip": "50643",
-   "lat": 42.3905,
    "phone": "(319) 988-3880",
    "source": "barchart"
   },
   {
-   "facility": "Heartland Co-op",
+   "facility": "Heartland Coop",
+   "branch": "INDIANOLA",
    "city": "Indianola",
    "state": "IA",
    "zip": "50125",
-   "lat": 41.3143,
    "phone": "515-961-2505",
    "source": "barchart"
   },
   {
-   "facility": "Heartland Co-op",
+   "facility": "Heartland Coop",
+   "branch": "JEWELL",
    "city": "Jewell",
    "state": "IA",
    "zip": "50130",
-   "lat": 42.3139,
    "phone": "515-827-5431",
    "source": "barchart"
   },
   {
-   "facility": "Heartland Co-op",
+   "facility": "Heartland Coop",
+   "branch": "KELLOGG",
    "city": "Kellogg",
    "state": "IA",
    "zip": "50135",
-   "lat": 41.7184,
    "phone": "641-526-8236",
    "source": "barchart"
   },
   {
-   "facility": "Heartland Co-op",
+   "facility": "Heartland Coop",
+   "branch": "LINCOLN",
    "city": "Lincoln",
    "state": "IA",
    "zip": "50652",
-   "lat": 42.2643,
    "phone": "N/A",
    "source": "barchart"
   },
   {
-   "facility": "Heartland Co-op",
+   "facility": "Heartland Coop",
    "branch": "RIVER SIOUX",
    "city": "Little Sioux",
    "state": "IA",
    "zip": "51545",
-   "lat": 41.8083,
    "phone": "712.649.2281",
    "source": "barchart"
   },
   {
-   "facility": "Heartland Co-op",
+   "facility": "Heartland Coop",
+   "branch": "LUTHER",
    "city": "Luther",
    "state": "IA",
    "zip": "50152",
-   "lat": 41.9387,
    "phone": "515-795-2386",
    "source": "barchart"
   },
   {
-   "facility": "Heartland Co-op",
+   "facility": "Heartland Coop",
+   "branch": "MADRID",
    "city": "Madrid",
    "state": "IA",
    "zip": "50156",
-   "lat": 41.8841,
    "phone": "515-438-2100",
    "source": "barchart"
   },
   {
-   "facility": "Heartland Co-op",
+   "facility": "Heartland Coop",
+   "branch": "MALCOM",
    "city": "Malcom",
    "state": "IA",
    "zip": "50157",
-   "lat": 41.7695,
    "phone": "641-528-2535",
    "source": "barchart"
   },
   {
-   "facility": "Heartland Co-op",
+   "facility": "Heartland Coop",
+   "branch": "MARENGO",
    "city": "Marengo",
    "state": "IA",
    "zip": "52301",
-   "lat": 41.7863,
    "phone": "319- 642-5538",
    "source": "barchart"
   },
   {
-   "facility": "Heartland Co-op",
+   "facility": "Heartland Coop",
+   "branch": "MELBOURNE",
    "city": "Melbourne",
    "state": "IA",
    "zip": "50162",
-   "lat": 41.9323,
    "phone": "641-482-3206",
    "source": "barchart"
   },
   {
-   "facility": "Heartland Co-op",
+   "facility": "Heartland Coop",
+   "branch": "MINBURN",
    "city": "Minburn",
    "state": "IA",
    "zip": "50167",
-   "lat": 41.7562,
    "phone": "515-677-2256",
    "source": "barchart"
   },
   {
-   "facility": "Heartland Co-op",
+   "facility": "Heartland Coop",
+   "branch": "MINGO",
    "city": "Mingo",
    "state": "IA",
    "zip": "50168",
-   "lat": 41.7898,
    "phone": "641-363-4250",
    "source": "barchart"
   },
   {
-   "facility": "Heartland Co-op",
+   "facility": "Heartland Coop",
    "branch": "MO VALLEY",
    "city": "Missouri Valley",
    "state": "IA",
    "zip": "51555",
-   "lat": 41.5644,
    "phone": "712-642-3737",
    "source": "barchart"
   },
   {
-   "facility": "Heartland Co-op",
+   "facility": "Heartland Coop",
+   "branch": "MITCHELLVILLE",
    "city": "Mitchellville",
    "state": "IA",
    "zip": "50169",
-   "lat": 41.6609,
    "phone": "515.967.4288",
    "source": "barchart"
   },
   {
-   "facility": "Heartland Co-op",
+   "facility": "Heartland Coop",
+   "branch": "MODALE",
    "city": "Modale",
    "state": "IA",
    "zip": "51556",
-   "lat": 41.6371,
    "phone": " 712-645-2081",
-   "source": "barchart"
-  },
-  {
-   "facility": "Heartland Co-op",
-   "city": "Mondamin",
-   "state": "IA",
-   "zip": "51557",
-   "lat": 41.7089,
-   "source": "barchart"
-  },
-  {
-   "facility": "Heartland Co-op",
-   "city": "Monroe",
-   "state": "IA",
-   "zip": "50170",
-   "lat": 41.5222,
-   "phone": "641.259.2157",
-   "source": "barchart"
-  },
-  {
-   "facility": "Heartland Co-op",
-   "city": "Montezuma",
-   "state": "IA",
-   "lat": 41.5928,
-   "source": "barchart"
-  },
-  {
-   "facility": "Heartland Co-op",
-   "city": "Newton",
-   "state": "IA",
-   "zip": "50208",
-   "lat": 41.6992,
-   "phone": "641-792-5169",
-   "source": "barchart"
-  },
-  {
-   "facility": "Heartland Co-op",
-   "city": "Prairie City",
-   "state": "IA",
-   "zip": "50228",
-   "lat": 41.5854,
-   "phone": "+1 515-994-2651",
-   "source": "barchart"
-  },
-  {
-   "facility": "Heartland Co-op",
-   "city": "Randall",
-   "state": "IA",
-   "zip": "50231",
-   "lat": 42.2383,
-   "phone": "515-328-2315",
-   "source": "barchart"
-  },
-  {
-   "facility": "Heartland Co-op",
-   "city": "Randolph",
-   "state": "IA",
-   "zip": "51649",
-   "lat": 40.8704,
-   "phone": "712.625.3111",
-   "source": "barchart"
-  },
-  {
-   "facility": "Heartland Co-op",
-   "city": "Redfield",
-   "state": "IA",
-   "zip": "50233",
-   "lat": 41.5873,
-   "phone": "N/A",
-   "source": "barchart"
-  },
-  {
-   "facility": "Heartland Co-op",
-   "city": "Reinbeck",
-   "state": "IA",
-   "zip": "50669",
-   "lat": 42.3131,
-   "phone": "319.788.6831",
-   "source": "barchart"
-  },
-  {
-   "facility": "Heartland Co-op",
-   "city": "Slater",
-   "state": "IA",
-   "zip": "50244",
-   "lat": 41.8765,
-   "phone": "N/A",
-   "source": "barchart"
-  },
-  {
-   "facility": "Heartland Co-op",
-   "city": "Stanhope",
-   "state": "IA",
-   "zip": "50246",
-   "lat": 42.2904,
-   "phone": "515.826.3226",
-   "source": "barchart"
-  },
-  {
-   "facility": "Heartland Co-op",
-   "city": "Traer",
-   "state": "IA",
-   "zip": "50675",
-   "lat": 42.1847,
-   "phone": "888-243-2149",
-   "source": "barchart"
-  },
-  {
-   "facility": "Heartland Co-op",
-   "city": "Victor",
-   "state": "IA",
-   "zip": "52347",
-   "lat": 41.729,
-   "phone": "319--647-3222",
-   "source": "barchart"
-  },
-  {
-   "facility": "Heartland Co-op",
-   "city": "Washburn",
-   "state": "IA",
-   "zip": "50706",
-   "lat": 42.4,
-   "phone": "319.296.1392",
-   "source": "barchart"
-  },
-  {
-   "facility": "Heartland Co-op",
-   "city": "Waukee",
-   "state": "IA",
-   "zip": "50263",
-   "lat": 41.593,
-   "phone": "515-987-4511",
-   "source": "barchart"
-  },
-  {
-   "facility": "Heartland Co-op",
-   "city": "Wever",
-   "state": "IA",
-   "lat": 40.7067,
-   "source": "barchart"
-  },
-  {
-   "facility": "Heartland Co-op",
-   "city": "Winterset",
-   "state": "IA",
-   "zip": "50273",
-   "lat": 41.3391,
-   "phone": "515.462.4611",
-   "source": "barchart"
-  },
-  {
-   "facility": "Heartland Co-op",
-   "city": "Woodbine",
-   "state": "IA",
-   "zip": "51579",
-   "lat": 41.7373,
-   "phone": "712.647.2511",
-   "source": "barchart"
-  },
-  {
-   "facility": "Heartland Co-op",
-   "city": "Woodward",
-   "state": "IA",
-   "zip": "50276",
-   "lat": 41.8452,
-   "phone": "515-438-2100",
    "source": "barchart"
   },
   {
@@ -2362,6 +2044,150 @@
    "state": "IA",
    "zip": "51557",
    "phone": "712-646-2411",
+   "source": "barchart"
+  },
+  {
+   "facility": "Heartland Coop",
+   "branch": "MONROE",
+   "city": "Monroe",
+   "state": "IA",
+   "zip": "50170",
+   "phone": "641.259.2157",
+   "source": "barchart"
+  },
+  {
+   "facility": "Heartland Coop",
+   "branch": "NEWTON",
+   "city": "Newton",
+   "state": "IA",
+   "zip": "50208",
+   "phone": "641-792-5169",
+   "source": "barchart"
+  },
+  {
+   "facility": "Heartland Coop",
+   "branch": "PRAIRIE CITY",
+   "city": "Prairie City",
+   "state": "IA",
+   "zip": "50228",
+   "phone": "+1 515-994-2651",
+   "source": "barchart"
+  },
+  {
+   "facility": "Heartland Coop",
+   "branch": "RANDALL",
+   "city": "Randall",
+   "state": "IA",
+   "zip": "50231",
+   "phone": "515-328-2315",
+   "source": "barchart"
+  },
+  {
+   "facility": "Heartland Coop",
+   "branch": "RANDOLPH",
+   "city": "Randolph",
+   "state": "IA",
+   "zip": "51649",
+   "phone": "712.625.3111",
+   "source": "barchart"
+  },
+  {
+   "facility": "Heartland Coop",
+   "branch": "REDFIELD",
+   "city": "Redfield",
+   "state": "IA",
+   "zip": "50233",
+   "phone": "N/A",
+   "source": "barchart"
+  },
+  {
+   "facility": "Heartland Coop",
+   "branch": "REINBECK",
+   "city": "Reinbeck",
+   "state": "IA",
+   "zip": "50669",
+   "phone": "319.788.6831",
+   "source": "barchart"
+  },
+  {
+   "facility": "Heartland Coop",
+   "branch": "SLATER",
+   "city": "Slater",
+   "state": "IA",
+   "zip": "50244",
+   "phone": "N/A",
+   "source": "barchart"
+  },
+  {
+   "facility": "Heartland Coop",
+   "branch": "STANHOPE",
+   "city": "Stanhope",
+   "state": "IA",
+   "zip": "50246",
+   "phone": "515.826.3226",
+   "source": "barchart"
+  },
+  {
+   "facility": "Heartland Coop",
+   "branch": "TRAER",
+   "city": "Traer",
+   "state": "IA",
+   "zip": "50675",
+   "phone": "888-243-2149",
+   "source": "barchart"
+  },
+  {
+   "facility": "Heartland Coop",
+   "branch": "VICTOR",
+   "city": "Victor",
+   "state": "IA",
+   "zip": "52347",
+   "phone": "319--647-3222",
+   "source": "barchart"
+  },
+  {
+   "facility": "Heartland Coop",
+   "branch": "WASHBURN",
+   "city": "Washburn",
+   "state": "IA",
+   "zip": "50706",
+   "phone": "319.296.1392",
+   "source": "barchart"
+  },
+  {
+   "facility": "Heartland Coop",
+   "branch": "WAUKEE",
+   "city": "Waukee",
+   "state": "IA",
+   "zip": "50263",
+   "phone": "515-987-4511",
+   "source": "barchart"
+  },
+  {
+   "facility": "Heartland Coop",
+   "branch": "WINTERSET",
+   "city": "Winterset",
+   "state": "IA",
+   "zip": "50273",
+   "phone": "515.462.4611",
+   "source": "barchart"
+  },
+  {
+   "facility": "Heartland Coop",
+   "branch": "WOODBINE",
+   "city": "Woodbine",
+   "state": "IA",
+   "zip": "51579",
+   "phone": "712.647.2511",
+   "source": "barchart"
+  },
+  {
+   "facility": "Heartland Coop",
+   "branch": "WOODWARD",
+   "city": "Woodward",
+   "state": "IA",
+   "zip": "50276",
+   "phone": "515-438-2100",
    "source": "barchart"
   },
   {
@@ -5591,6 +5417,13 @@
   },
   {
    "facility": "Ag-Land FS",
+   "city": "Green  Valley",
+   "state": "IL",
+   "lat": 40.4198,
+   "source": "barchart"
+  },
+  {
+   "facility": "Ag-Land FS",
    "city": "Monica",
    "state": "IL",
    "source": "barchart"
@@ -8749,12 +8582,6 @@
   },
   {
    "facility": "Keystone Cooperative",
-   "city": "Scircleville Grain",
-   "state": "IN",
-   "source": "barchart"
-  },
-  {
-   "facility": "Keystone Cooperative",
    "city": "Union Mills",
    "state": "IN",
    "lat": 41.4602,
@@ -10353,38 +10180,6 @@
    "source": "barchart"
   },
   {
-   "facility": "Farmers Coop Columbus",
-   "city": "BAXTER SPRINGS",
-   "state": "KS",
-   "zip": "66713",
-   "lat": 37.0281,
-   "source": "barchart"
-  },
-  {
-   "facility": "Farmers Coop Columbus",
-   "city": "COLUMBUS",
-   "state": "KS",
-   "zip": "66725",
-   "lat": 37.1699,
-   "source": "barchart"
-  },
-  {
-   "facility": "Farmers Coop Columbus",
-   "city": "COLUMBUS EAST",
-   "state": "KS",
-   "zip": "66739",
-   "lat": 37.1699,
-   "source": "barchart"
-  },
-  {
-   "facility": "Farmers Coop Columbus",
-   "city": "FAULKNER",
-   "state": "KS",
-   "zip": "67336",
-   "lat": 37.0418,
-   "source": "barchart"
-  },
-  {
    "facility": "Farmers Coop Conway Springs",
    "branch": "BELLE PLAINE",
    "city": "Belle Plaine",
@@ -11526,15 +11321,6 @@
    "state": "KS",
    "zip": "67137",
    "phone": "620-736-2011",
-   "source": "barchart"
-  },
-  {
-   "facility": "Skyland Grain",
-   "branch": "Cunningham Area",
-   "city": "Cunningham",
-   "state": "KS",
-   "zip": "67035",
-   "phone": "(620) 298-2011",
    "source": "barchart"
   },
   {
@@ -13193,38 +12979,38 @@
    "source": "barchart"
   },
   {
-   "facility": "Farmers Win Cooperative",
+   "facility": "Farmers Win Coop",
+   "branch": "Houston",
    "city": "Houston",
    "state": "MN",
    "zip": "55943",
-   "lat": 43.7929,
    "phone": "507-896-3147",
    "source": "barchart"
   },
   {
-   "facility": "Farmers Win Cooperative",
+   "facility": "Farmers Win Coop",
+   "branch": "Mabel",
    "city": "Mabel",
    "state": "MN",
    "zip": "55954",
-   "lat": 43.5446,
    "phone": "507-493-5070",
    "source": "barchart"
   },
   {
-   "facility": "Farmers Win Cooperative",
+   "facility": "Farmers Win Coop",
+   "branch": "Rushford",
    "city": "Rushford",
    "state": "MN",
    "zip": "55971",
-   "lat": 43.8216,
    "phone": "507-864-2161",
    "source": "barchart"
   },
   {
-   "facility": "Farmers Win Cooperative",
+   "facility": "Farmers Win Coop",
+   "branch": "Spring Grove",
    "city": "Spring Grove",
    "state": "MN",
    "zip": "55974",
-   "lat": 43.5623,
    "phone": "507-498-5321",
    "source": "barchart"
   },
@@ -14999,15 +14785,6 @@
   },
   {
    "facility": "CHS - Dakota Plains Ag",
-   "branch": "Delivered Tharaldson",
-   "city": "Casselton",
-   "state": "ND",
-   "zip": "58012",
-   "phone": "701-428-3134",
-   "source": "barchart"
-  },
-  {
-   "facility": "CHS - Dakota Plains Ag",
    "branch": "Kindred Terminal",
    "city": "Kindred",
    "state": "ND",
@@ -15758,88 +15535,12 @@
    "source": "barchart"
   },
   {
-   "facility": "Aurora Cooperative",
-   "city": "Aurora South",
-   "state": "NE",
-   "lat": 40.8528,
-   "source": "barchart"
-  },
-  {
-   "facility": "Aurora Cooperative",
-   "city": "Byron",
-   "state": "NE",
-   "lat": 40.0269,
-   "source": "barchart"
-  },
-  {
-   "facility": "Aurora Cooperative",
-   "city": "Central City",
-   "state": "NE",
-   "lat": 41.11595,
-   "source": "barchart"
-  },
-  {
-   "facility": "Aurora Cooperative",
-   "city": "Chapman",
-   "state": "NE",
-   "lat": 40.9856,
-   "source": "barchart"
-  },
-  {
-   "facility": "Aurora Cooperative",
-   "city": "Clay Center",
-   "state": "NE",
-   "lat": 40.52182,
-   "source": "barchart"
-  },
-  {
-   "facility": "Aurora Cooperative",
+   "facility": "Aurora Coop",
+   "branch": "Geneva",
    "city": "Geneva",
    "state": "NE",
-   "lat": 40.52565,
+   "zip": "68361",
    "phone": "402-759-3370",
-   "source": "barchart"
-  },
-  {
-   "facility": "Aurora Cooperative",
-   "city": "Grand Island",
-   "state": "NE",
-   "lat": 40.93452,
-   "source": "barchart"
-  },
-  {
-   "facility": "Aurora Cooperative",
-   "city": "Harvard",
-   "state": "NE",
-   "lat": 40.61704,
-   "source": "barchart"
-  },
-  {
-   "facility": "Aurora Cooperative",
-   "city": "Hubbell",
-   "state": "NE",
-   "lat": 40.00623,
-   "source": "barchart"
-  },
-  {
-   "facility": "Aurora Cooperative",
-   "city": "Keene",
-   "state": "NE",
-   "lat": 40.42506,
-   "source": "barchart"
-  },
-  {
-   "facility": "Aurora Cooperative",
-   "city": "Marquette",
-   "state": "NE",
-   "lat": 41.01,
-   "source": "barchart"
-  },
-  {
-   "facility": "Aurora Cooperative",
-   "city": "Murphy",
-   "state": "NE",
-   "lat": 40.88231,
    "source": "barchart"
   },
   {
@@ -21342,6 +21043,13 @@
    "state": "WI",
    "zip": "54642",
    "lat": 44.1382,
+   "source": "barchart"
+  },
+  {
+   "facility": "Meyer Brothers Grain",
+   "city": "Elk Mound",
+   "state": "WI",
+   "lat": 44.87792,
    "source": "barchart"
   },
   {

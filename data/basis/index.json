@@ -1,5 +1,5 @@
 {
- "generated":"2026-09-23",
+ "generated":"2026-09-24",
  "units":"integer cents per bushel",
  "note":"Per elevator, per commodity, per contract, per delivery month: the basis now, the basis before it, and the day it changed. Rebuildable in full from the changes-*.json files beside this.",
  "states":{
@@ -39,9 +39,9 @@
    "kb":1.5
   },
   "IA":{
-   "rows":8578,
+   "rows":8603,
    "facilities":591,
-   "kb":360.2
+   "kb":361.8
   },
   "ID":{
    "rows":68,
@@ -49,24 +49,24 @@
    "kb":3.2
   },
   "IL":{
-   "rows":5336,
-   "facilities":339,
-   "kb":225.1
+   "rows":5360,
+   "facilities":340,
+   "kb":227.0
   },
   "IN":{
-   "rows":1699,
+   "rows":1706,
    "facilities":102,
-   "kb":71.4
+   "kb":71.7
   },
   "KS":{
-   "rows":5066,
+   "rows":5065,
    "facilities":316,
    "kb":211.2
   },
   "KY":{
    "rows":64,
    "facilities":4,
-   "kb":3.3
+   "kb":3.2
   },
   "LA":{
    "rows":5,
@@ -79,14 +79,14 @@
    "kb":28.1
   },
   "MN":{
-   "rows":5088,
+   "rows":5096,
    "facilities":271,
-   "kb":214.6
+   "kb":214.8
   },
   "MO":{
-   "rows":960,
+   "rows":970,
    "facilities":77,
-   "kb":40.9
+   "kb":41.3
   },
   "MT":{
    "rows":187,
@@ -104,9 +104,9 @@
    "kb":92.4
   },
   "NE":{
-   "rows":4765,
+   "rows":4750,
    "facilities":242,
-   "kb":194.0
+   "kb":193.6
   },
   "NY":{
    "rows":2,
@@ -114,14 +114,14 @@
    "kb":0.3
   },
   "OH":{
-   "rows":2499,
+   "rows":2502,
    "facilities":164,
-   "kb":103.5
+   "kb":103.6
   },
   "OK":{
    "rows":452,
    "facilities":25,
-   "kb":19.3
+   "kb":19.4
   },
   "ON":{
    "rows":24,
@@ -139,19 +139,19 @@
    "kb":0.6
   },
   "SD":{
-   "rows":2743,
+   "rows":2745,
    "facilities":133,
-   "kb":118.4
+   "kb":118.5
   },
   "TN":{
-   "rows":121,
+   "rows":129,
    "facilities":10,
-   "kb":5.8
+   "kb":6.0
   },
   "TX":{
    "rows":107,
    "facilities":5,
-   "kb":4.8
+   "kb":4.9
   },
   "VA":{
    "rows":29,
@@ -166,7 +166,7 @@
   "WI":{
    "rows":1635,
    "facilities":133,
-   "kb":69.1
+   "kb":69.0
   },
   "WY":{
    "rows":49,
