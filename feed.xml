@@ -5,13 +5,25 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Wed, 23 Sep 2026 11:15:34 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 24 Sep 2026 11:08:57 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/agsist.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>CRUDE RUNS TO $93 AS HORMUZ TRAFFIC STAYS THIN</title>
+      <link>https://agsist.com/daily/2026-09-24</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-09-24</guid>
+      <pubDate>Thu, 24 Sep 2026 05:00:00 -0600</pubDate>
+      <description>Crude added 2.1% to $93.19 and it isn't demand talking, it's one vessel crossing the Strait of Hormuz Wednesday, stuck below the 10-day average with the Iran-Hormuz cycle still refusing to fully unwind.
+Action: Lock diesel needs now; a close above $6.55 on the rack price is the next reason to pre-buy fall fuel, not wait.
+• Crude Runs On Thin Hormuz Traffic
+• Grains Give Back More Ground
+• Cattle Grind Higher Again
+Read more: https://agsist.com/daily/2026-09-24</description>
+    </item>
     <item>
       <title>GRAINS GIVE BACK THE CHINA POP AHEAD OF XI SUMMIT</title>
       <link>https://agsist.com/daily/2026-09-23</link>
@@ -374,19 +386,6 @@ USDA's Monday condition cut gave corn and beans a foothold; cattle absorbed a do
 • CATTLE ABSORB A DOUBLE HIT
 • ENERGY: CORRIDOR TALKS CAP THE BOUNCE
 Read more: https://agsist.com/daily/2026-08-26</description>
-    </item>
-    <item>
-      <title>CRUDE BREAKS; CORN AND BEANS HOLD THEIR GROUND</title>
-      <link>https://agsist.com/daily/2026-08-25</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-08-25</guid>
-      <pubDate>Tue, 25 Aug 2026 05:00:00 -0600</pubDate>
-      <description>Crude oil had its biggest single-session drop in weeks, off 3.3% to $82.61, as new U.S. sanctions on Iran and Malacca Strait reassurances pulled the Hormuz premium out of the barrel. Corn and beans barely flinched: December corn eased 3 cents to $5.15, November beans off 4.5 cents to $12.19. The grain market is telling you the yield story matters more than the energy story right now.
-WTI fell 3.3% as Iran sanctions and Malacca pledges reshuffled the energy story; grains gave back pennies, not momentum.
-• CRUDE LEADS LOWER
-• GRAINS HOLD, CROP TOUR LOOMS
-  → Unpriced new-crop corn above $5.10 December: this window stays open through the Pro Farmer tour. Do not wait for combines to force your hand.
-• CRUDE LEADS LOWER
-Read more: https://agsist.com/daily/2026-08-25</description>
     </item>
   </channel>
 </rss>
