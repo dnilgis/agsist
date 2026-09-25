@@ -71,6 +71,13 @@ jobs:
         env:
           BARCHART_API_KEY: ${{ secrets.BARCHART_API_KEY }}
         run: |
+          # No key is a normal state once the subscription is cancelled
+          # (2026-09-25). The directory already written stays exactly as it
+          # is; this run says so and ends green instead of failing monthly.
+          if [ -z "$BARCHART_API_KEY" ]; then
+            echo "::notice::No BARCHART_API_KEY. Nothing harvested; data/elevator-directory.json is unchanged."
+            exit 0
+          fi
           python scripts/extract_directory.py \
             ${{ inputs.probe_cap && '--probe-cap' || '' }} \
             --max-distance "${{ inputs.max_distance || '75' }}" \

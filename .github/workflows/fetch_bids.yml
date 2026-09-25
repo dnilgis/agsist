@@ -144,8 +144,17 @@ jobs:
       - name: Check fetch_bids
         run: python scripts/fetch_bids.py --selftest
 
+      - name: Check the directory extractor
+        run: python scripts/extract_directory.py --selftest
+
+      # CUTTING THE CORD (2026-09-25). With no BARCHART_API_KEY, or with
+      # BARCHART_MODE=off, this runs on the AGSIST elevator network alone and
+      # exits green. `barchart_live` says whether Barchart contributed a row;
+      # a dead key shows up as a warning on this run, not as a stopped feed.
       - name: Fetch grain bids
+        id: fetch
         env:
+          BARCHART_MODE: ${{ vars.BARCHART_MODE }}
           BARCHART_API_KEY: ${{ secrets.BARCHART_API_KEY }}
           BARCHART_TOTAL_LOCATIONS: ${{ github.event.inputs.total_locations }}
         run: python scripts/fetch_bids.py
@@ -167,6 +176,11 @@ jobs:
       # continue-on-error because a missing directory must never cost the run
       # its prices.
       - name: Extract the elevator directory (no prices, no extra API calls)
+        # Only when Barchart contributed rows. Without them bids-full.json is
+        # the network's own places, and writing those over the harvested
+        # Barchart roster would replace the very list the cutover is measured
+        # against.
+        if: steps.fetch.outputs.barchart_live == 'true'
         continue-on-error: true
         run: python scripts/extract_directory.py --from-bids
 
@@ -208,6 +222,16 @@ jobs:
           git commit -m "Update grain bids + basis map + basis history $(date -u +%Y-%m-%dT%H:%M:%SZ)"
           git pull --rebase origin main
           git push
+
+      # A live key that returns nothing is a paid feed that stopped working
+      # while the site stayed green on the network alone. Turn the run red
+      # AFTER the data has shipped. Silent once BARCHART_MODE=off or the key
+      # is removed, because then Barchart is not asked.
+      - name: Barchart was asked and answered nothing
+        if: always() && steps.fetch.outputs.barchart_asked == 'true' && steps.fetch.outputs.barchart_live != 'true'
+        run: |
+          echo "::error::Barchart was asked and returned no bids. Data shipped from the network alone. Fix the key, or set repository variable BARCHART_MODE=off."
+          exit 1
 
       - name: Say why nothing was committed
         if: github.event.inputs.dry_run == 'true'
