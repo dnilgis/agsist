@@ -1,18 +1,18 @@
 {
- "generated": "2026-09-24T23:10:17Z",
+ "generated": "2026-09-25T15:48:03Z",
  "from": "bids-full.json",
  "complete": false,
  "note": "Directory only: who operates a facility and where. No prices, no basis, no symbols, no delivery windows.",
  "counts": {
-  "facilities": 2490,
-  "states": 33,
+  "facilities": 2488,
+  "states": 32,
   "with_address": 0,
   "with_coords": 0,
   "with_url": 0,
-  "with_phone": 1786,
+  "with_phone": 1784,
   "saturated_zips": 0,
   "failed_zips": 0,
-  "rows_read": 27400
+  "rows_read": 27464
  },
  "saturated": [],
  "failed": [],
@@ -5466,13 +5466,6 @@
   },
   {
    "facility": "Ag-Land FS",
-   "city": "Green  Valley",
-   "state": "IL",
-   "lat": 40.4198,
-   "source": "barchart"
-  },
-  {
-   "facility": "Ag-Land FS",
    "city": "Monica",
    "state": "IL",
    "source": "barchart"
@@ -5972,6 +5965,14 @@
    "source": "barchart"
   },
   {
+   "facility": "Cissna Park Co-op",
+   "city": "Cissna Park Woodworth & Rankin",
+   "state": "IL",
+   "zip": "60924",
+   "lat": 40.5858,
+   "source": "barchart"
+  },
+  {
    "facility": "Consolidated Grain & Barge",
    "branch": "CGB ALBANY",
    "city": "Albany",
@@ -6334,14 +6335,6 @@
    "state": "IL",
    "zip": "62634",
    "phone": "217-947-2751",
-   "source": "barchart"
-  },
-  {
-   "facility": "Encompass Grain",
-   "city": "Delavan",
-   "state": "IL",
-   "zip": "61734",
-   "lat": 40.369,
    "source": "barchart"
   },
   {
@@ -8186,7 +8179,7 @@
    "city": "Mount Vernon",
    "state": "IN",
    "zip": "47620",
-   "lat": 37.92823,
+   "lat": 37.91824,
    "source": "barchart"
   },
   {
@@ -10202,6 +10195,38 @@
    "state": "KS",
    "zip": "67152",
    "phone": "N/A",
+   "source": "barchart"
+  },
+  {
+   "facility": "Farmers Coop Columbus",
+   "city": "BAXTER SPRINGS",
+   "state": "KS",
+   "zip": "66713",
+   "lat": 37.0281,
+   "source": "barchart"
+  },
+  {
+   "facility": "Farmers Coop Columbus",
+   "city": "COLUMBUS",
+   "state": "KS",
+   "zip": "66725",
+   "lat": 37.1699,
+   "source": "barchart"
+  },
+  {
+   "facility": "Farmers Coop Columbus",
+   "city": "COLUMBUS EAST",
+   "state": "KS",
+   "zip": "66739",
+   "lat": 37.1699,
+   "source": "barchart"
+  },
+  {
+   "facility": "Farmers Coop Columbus",
+   "city": "FAULKNER",
+   "state": "KS",
+   "zip": "67336",
+   "lat": 37.0418,
    "source": "barchart"
   },
   {
@@ -13190,14 +13215,6 @@
   },
   {
    "facility": "KBQ Inc.",
-   "city": "KBQ Inc.",
-   "state": "MN",
-   "zip": "56159",
-   "lat": 43.939,
-   "source": "barchart"
-  },
-  {
-   "facility": "KBQ Inc.",
    "branch": "KBQ Inc.",
    "city": "Mountain Lake",
    "state": "MN",
@@ -13894,14 +13911,6 @@
    "state": "MN",
    "zip": "55973",
    "lat": 43.809,
-   "source": "barchart"
-  },
-  {
-   "facility": "ADM",
-   "city": "Carthage",
-   "state": "MO",
-   "zip": "64836",
-   "lat": 37.18219,
    "source": "barchart"
   },
   {
@@ -15437,14 +15446,6 @@
   },
   {
    "facility": "ADM",
-   "city": "Norfolk",
-   "state": "NE",
-   "zip": "68701",
-   "lat": 41.8967,
-   "source": "barchart"
-  },
-  {
-   "facility": "ADM",
    "city": "Wisner",
    "state": "NE",
    "zip": "68791",
@@ -15566,6 +15567,13 @@
    "state": "NE",
    "zip": "68361",
    "phone": "402-759-3370",
+   "source": "barchart"
+  },
+  {
+   "facility": "Aurora Cooperative",
+   "city": "Aurora South",
+   "state": "NE",
+   "lat": 40.8528,
    "source": "barchart"
   },
   {
@@ -17363,14 +17371,6 @@
   },
   {
    "facility": "ADM",
-   "city": "Buffalo",
-   "state": "NY",
-   "zip": "14204",
-   "lat": 42.86313,
-   "source": "barchart"
-  },
-  {
-   "facility": "ADM",
    "city": "Columbus",
    "state": "OH",
    "zip": "43232",
@@ -18448,15 +18448,6 @@
   },
   {
    "facility": "Sunrise Cooperative",
-   "branch": "Star of West-Willard",
-   "city": "Fremont",
-   "state": "OH",
-   "zip": "43420",
-   "phone": "419-332-6468",
-   "source": "barchart"
-  },
-  {
-   "facility": "Sunrise Cooperative",
    "branch": "Crestline",
    "city": "Galion",
    "state": "OH",
@@ -18480,24 +18471,6 @@
    "state": "OH",
    "zip": "44854",
    "phone": "419-492-2548",
-   "source": "barchart"
-  },
-  {
-   "facility": "Sunrise Cooperative",
-   "branch": "South Charleston",
-   "city": "South Charleston",
-   "state": "OH",
-   "zip": "45368",
-   "phone": "937-462-8341 ",
-   "source": "barchart"
-  },
-  {
-   "facility": "Sunrise Cooperative",
-   "branch": "Uniopolis",
-   "city": "Uniopolis",
-   "state": "OH",
-   "zip": "45888",
-   "phone": "419-568-2467 ",
    "source": "barchart"
   },
   {
@@ -18560,6 +18533,14 @@
    "state": "OH",
    "zip": "43512",
    "phone": "(419) 497-2101",
+   "source": "barchart"
+  },
+  {
+   "facility": "The Jewell Grain Co.",
+   "city": "The Jewell Grain Co.",
+   "state": "OH",
+   "zip": "43512",
+   "lat": 41.2799,
    "source": "barchart"
   },
   {
@@ -20140,14 +20121,6 @@
   },
   {
    "facility": "ADM",
-   "city": "Finley",
-   "state": "TN",
-   "zip": "38030",
-   "lat": 36.05252,
-   "source": "barchart"
-  },
-  {
-   "facility": "ADM",
    "city": "Jackson",
    "state": "TN",
    "zip": "38301",
@@ -21337,6 +21310,15 @@
    "state": "WI",
    "zip": "54725",
    "phone": "7158746593",
+   "source": "barchart"
+  },
+  {
+   "facility": "Wheaton Grain",
+   "branch": "Chippewa Falls",
+   "city": "Chippewa Falls",
+   "state": "WI",
+   "zip": "54729",
+   "phone": "715-874-659",
    "source": "barchart"
   },
   {

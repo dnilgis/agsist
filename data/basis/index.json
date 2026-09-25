@@ -1,5 +1,5 @@
 {
- "generated":"2026-09-24",
+ "generated":"2026-09-25",
  "units":"integer cents per bushel",
  "note":"Per elevator, per commodity, per contract, per delivery month: the basis now, the basis before it, and the day it changed. Rebuildable in full from the changes-*.json files beside this.",
  "states":{
@@ -39,9 +39,9 @@
    "kb":1.5
   },
   "IA":{
-   "rows":8603,
+   "rows":8627,
    "facilities":591,
-   "kb":361.2
+   "kb":362.5
   },
   "ID":{
    "rows":68,
@@ -49,19 +49,19 @@
    "kb":3.2
   },
   "IL":{
-   "rows":5363,
+   "rows":5365,
    "facilities":340,
    "kb":227.2
   },
   "IN":{
-   "rows":1709,
+   "rows":1711,
    "facilities":102,
-   "kb":71.8
+   "kb":71.9
   },
   "KS":{
-   "rows":5069,
+   "rows":5081,
    "facilities":316,
-   "kb":211.2
+   "kb":212.0
   },
   "KY":{
    "rows":64,
@@ -79,9 +79,9 @@
    "kb":28.1
   },
   "MN":{
-   "rows":5096,
+   "rows":5098,
    "facilities":271,
-   "kb":214.8
+   "kb":214.9
   },
   "MO":{
    "rows":970,
@@ -99,14 +99,14 @@
    "kb":1.0
   },
   "ND":{
-   "rows":2167,
+   "rows":2183,
    "facilities":97,
-   "kb":92.4
+   "kb":93.1
   },
   "NE":{
-   "rows":4757,
+   "rows":4760,
    "facilities":242,
-   "kb":193.8
+   "kb":194.7
   },
   "NY":{
    "rows":2,
@@ -114,14 +114,14 @@
    "kb":0.3
   },
   "OH":{
-   "rows":2503,
+   "rows":2506,
    "facilities":164,
-   "kb":103.7
+   "kb":104.1
   },
   "OK":{
    "rows":452,
    "facilities":25,
-   "kb":19.3
+   "kb":19.4
   },
   "ON":{
    "rows":24,
@@ -139,19 +139,19 @@
    "kb":0.6
   },
   "SD":{
-   "rows":2747,
+   "rows":2779,
    "facilities":133,
-   "kb":118.5
+   "kb":119.9
   },
   "TN":{
    "rows":129,
    "facilities":10,
-   "kb":6.0
+   "kb":6.1
   },
   "TX":{
    "rows":107,
    "facilities":5,
-   "kb":4.8
+   "kb":4.9
   },
   "VA":{
    "rows":29,
@@ -161,12 +161,12 @@
   "WA":{
    "rows":415,
    "facilities":22,
-   "kb":18.8
+   "kb":18.9
   },
   "WI":{
-   "rows":1635,
+   "rows":1641,
    "facilities":133,
-   "kb":69.0
+   "kb":69.3
   },
   "WY":{
    "rows":49,
