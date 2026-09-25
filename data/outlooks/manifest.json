@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-09-25T01:32:32+00:00",
+  "fetched_at": "2026-09-25T18:38:54+00:00",
   "files": {
     "noaa_prcp_30day.gif": {
       "bytes": 217405,
@@ -36,7 +36,12 @@
       "status": "ok"
     },
     "usdm_latest.png": {
-      "status": "failed: 20260825: <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: certificate has expired (_ssl.c:1016)>"
+      "bytes": 405165,
+      "changed": false,
+      "data_valid": "2026-09-22",
+      "sha256": "54ec444bd0bf699f57dc0c1c27c81d8a0150aebe405a691d0df94cccc51f9020",
+      "source": "https://droughtmonitor.unl.edu/data/png/20260922/20260922_usdm.png",
+      "status": "ok"
     }
   }
 }
