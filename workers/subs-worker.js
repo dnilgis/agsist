@@ -1,4 +1,16 @@
 /**
+ * v5.0 (2026-09-25): WATCH A COUNTY (Farmland Atlas). Double opt-in.
+ *   POST /watch-subscribe {email, fips}      pending only; nothing is sent from here.
+ *   GET/POST /watch-confirm?e=&f=&t=         GET shows a button and changes nothing;
+ *                                            POST confirms (same scanner-safe split as unsubscribe).
+ *   GET/POST /watch-unsubscribe?e=&t=[&f=]   all watches, or one county with &f=.
+ *   GET  /watch-list?token=                  for the sender job (scripts/send_watch.py).
+ *   POST /watch-mark?token=                  sender records what it mailed / the figures last reported.
+ *   KV key watch:<email> = {pend:{fips:{ts,m}}, w:{fips:{k,s}|null}}. At most 5 counties per address.
+ *   The confirmation email is sent by the Actions job, not here (Gmail SMTP), so it can lag up to 30 minutes.
+ *   All v4.2 routes are unchanged.
+ */
+/**
  * AGSIST subscriptions worker v4.2 — daily-briefing list + HAIL ALERT watch areas.
  * v4.2 (2026-08-02): accept the 25-mile alert radius the hail-map UI offers.
  *   v4.1 validated radius_mi against {1,5,10} — a farmer who picked 25 was
@@ -189,6 +201,76 @@ export default {
       }
     }
 
+
+    // ---------- WATCH A COUNTY ----------
+    const WATCH_MAX = 5, PEND_TTL = 14 * 864e5;
+    async function getWatch(e) {
+      const v = await env.SUBS.get("watch:" + e);
+      const r = v ? JSON.parse(v) : {};
+      r.pend = r.pend || {}; r.w = r.w || {};
+      return r;
+    }
+    async function putWatch(e, r) {
+      if (!Object.keys(r.pend).length && !Object.keys(r.w).length) await env.SUBS.delete("watch:" + e);
+      else await env.SUBS.put("watch:" + e, JSON.stringify(r));
+    }
+
+    if (path === "/watch-subscribe" && req.method === "POST") {
+      let b = {};
+      try { b = await req.json(); } catch (e) { /* validation below */ }
+      if (b._gotcha) return json({ ok: true }, 200, cors(req));
+      const email = String(b.email || "").trim().toLowerCase();
+      const fips = String(b.fips || "").trim();
+      if (!EMAIL_RE.test(email) || email.length > 254)
+        return json({ ok: false, error: "invalid email" }, 400, cors(req));
+      if (!/^\d{5}$/.test(fips))
+        return json({ ok: false, error: "invalid county" }, 400, cors(req));
+      const r = await getWatch(email);
+      const now = Date.now();
+      for (const f of Object.keys(r.pend)) if (now - r.pend[f].ts > PEND_TTL) delete r.pend[f];
+      // Same answer whether or not the address is already watching: the reply must not tell a
+      // stranger who is on the list.
+      if (!(fips in r.w) && !(fips in r.pend)) {
+        if (Object.keys(r.w).length + Object.keys(r.pend).length >= WATCH_MAX)
+          return json({ ok: false, error: "limit" }, 429, cors(req));
+        r.pend[fips] = { ts: now, m: 0 };
+        await putWatch(email, r);
+      }
+      return json({ ok: true }, 200, cors(req));
+    }
+
+    if (path === "/watch-confirm" || path === "/watch-unsubscribe") {
+      const e = (url.searchParams.get("e") || "").trim().toLowerCase();
+      const f = (url.searchParams.get("f") || "").trim();
+      const t = url.searchParams.get("t") || "";
+      const conf = path === "/watch-confirm";
+      const fOk = conf ? /^\d{5}$/.test(f) : (f === "" || /^\d{5}$/.test(f));
+      const want = await hmac16(e + (conf ? "|c|" + f : (f ? "|w|" + f : "|w")), env.UNSUB_SECRET);
+      if (!(EMAIL_RE.test(e) && fOk && t === want)) return htmlPage("That link isn't valid.");
+      const action = path + "?e=" + encodeURIComponent(e) + (f ? "&f=" + f : "") + "&t=" + encodeURIComponent(t);
+      if (req.method === "GET") {
+        return htmlPage(
+          conf ? "Watch county " + escHtml(f) + " on AGSIST?" : (f ? "Stop watching county " + escHtml(f) + "?" : "Stop all county watches for this address?"),
+          "<p>" + escHtml(e) + "</p><form method=\"POST\" action=\"" + action + "\">" +
+          "<button type=\"submit\" style=\"font:inherit;padding:10px 22px;cursor:pointer\">" +
+          (conf ? "Yes, watch it" : "Yes, stop") + "</button></form>" +
+          "<p style=\"color:#666\">Nothing happens until you press the button.</p>");
+      }
+      if (req.method === "POST") {
+        const r = await getWatch(e);
+        if (conf) {
+          if (!(f in r.pend)) return htmlPage("This confirmation link has expired. Sign up again on the county page.");
+          delete r.pend[f];
+          r.w[f] = null;                       // the sender records the baseline figures on its next run
+          await putWatch(e, r);
+          return htmlPage("You are watching this county. You will get an email when its published figures change.");
+        }
+        if (f) { delete r.pend[f]; delete r.w[f]; } else { r.pend = {}; r.w = {}; }
+        await putWatch(e, r);
+        return htmlPage(f ? "Stopped. No more emails about this county." : "Stopped. No more county watch emails.");
+      }
+    }
+
     // ---------- authed routes ----------
     const token = url.searchParams.get("token") || "";
     const authed = env.LIST_TOKEN && token === env.LIST_TOKEN;
@@ -216,6 +298,36 @@ export default {
       // v4.1 (2026-07-20): open CORS like /list — the endpoint is already
       // token-gated, and Sig's local subscriber dashboard reads it in-browser.
       return json(out, 200, { "Access-Control-Allow-Origin": "*" });
+    }
+
+
+    if (path === "/watch-list" && req.method === "GET") {
+      if (!authed) return json({ ok: false }, 403);
+      const keys = await listKeys(env, "watch:");
+      const out = [];
+      for (const k of keys) {
+        const v = await env.SUBS.get(k);
+        if (v) { const rec = JSON.parse(v); rec.email = k.slice(6); out.push(rec); }
+      }
+      return json(out, 200);
+    }
+
+    if (path === "/watch-mark" && req.method === "POST") {
+      if (!authed) return json({ ok: false }, 403);
+      let b = {};
+      try { b = await req.json(); } catch (e) { return json({ ok: false, error: "bad json" }, 400); }
+      const email = String(b.email || "").trim().toLowerCase(), fips = String(b.fips || "");
+      if (!EMAIL_RE.test(email) || !/^\d{5}$/.test(fips)) return json({ ok: false, error: "bad args" }, 400);
+      const r = await getWatch(email);
+      if (b.confirm_mailed) {
+        if (!(fips in r.pend)) return json({ ok: true, skipped: true });
+        r.pend[fips].m = 1;
+      } else {
+        if (!(fips in r.w)) return json({ ok: true, skipped: true });   // unsubscribed while the job ran
+        r.w[fips] = { k: String(b.k || ""), s: b.s || {} };
+      }
+      await putWatch(email, r);
+      return json({ ok: true });
     }
 
     if (path === "/flag") {

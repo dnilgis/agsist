@@ -759,8 +759,41 @@ CSS = """
 .ap .ch .s0{stroke:var(--gold)}.ap .ch .s1{stroke:var(--blue)}.ap .ch .ln.s1{stroke-dasharray:4 3}
 .ap .ch text.tl{font-weight:700;stroke:none}.ap .ch text.tl.s0{fill:var(--gold)}.ap .ch text.tl.s1{fill:var(--blue)}
 .ap .loc .lm{fill:var(--gold);stroke:var(--bg);stroke-width:1.2}.ap .loc .ln0{fill:var(--surface3);stroke:var(--bg);stroke-width:.7}
-@media print{.ap .act,#site-header,#site-footer{display:none}}
+.ap .watch{margin:0 0 1rem;padding:.8rem 1rem;border:1px solid var(--border);border-radius:10px;background:var(--surface,#12161a)}
+.ap .watch b{display:block;font-size:.9rem;margin-bottom:.15rem}.ap .watch p{margin:0 0 .5rem;font-size:.8rem;color:var(--text-muted)}
+.ap .watch .wr{display:flex;flex-wrap:wrap;gap:.5rem}.ap .watch input[type=email]{flex:1 1 220px;min-width:0;font:inherit;font-size:.9rem;color:var(--text);background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:.5rem .7rem;min-height:40px}
+.ap .watch button{font:inherit;font-size:.82rem;font-weight:700;color:var(--text);background:var(--surface,#12161a);border:1px solid var(--gold);border-radius:8px;padding:.5rem .95rem;min-height:40px;cursor:pointer}
+.ap .watch button:hover{color:var(--gold)}.ap .watch .wm{margin:.5rem 0 0;font-size:.82rem;color:var(--text)}.ap .watch .hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+@media print{.ap .act,.ap .watch,#site-header,#site-footer{display:none}}
 """
+POSTAL = "AGSIST, PO Box 243, Chetek, WI 54728"
+WATCH_JS = """(function(){var U='https://agsist-subs.dnilgis.workers.dev/watch-subscribe';
+document.querySelectorAll('form.watch').forEach(function(F){F.addEventListener('submit',function(ev){
+ev.preventDefault();var m=F.querySelector('.wm'),b=F.querySelector('button'),em=F.elements.email.value.trim();
+if(!em)return;b.disabled=true;m.textContent='Sending...';
+fetch(U,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:em,fips:F.getAttribute('data-fips'),_gotcha:F.elements._gotcha.value})})
+.then(function(r){return r.json().then(function(j){return{s:r.status,j:j}})})
+.then(function(o){b.disabled=false;
+if(o.s===200){m.textContent='Check your inbox for a confirmation link. It can take up to 30 minutes. Look in spam if it is not there.';F.elements.email.value='';try{gaEvent('watch_county',{fips:F.getAttribute('data-fips')})}catch(e){}}
+else if(o.s===429){m.textContent='One address can watch up to 5 counties.'}
+else{m.textContent='That did not go through. Check the address and try again.'}})
+.catch(function(){b.disabled=false;m.textContent='That did not go through. Try again in a minute.'});});});})();
+"""
+WATCH_V = hashlib.sha1(WATCH_JS.encode()).hexdigest()[:8]
+
+
+def watch_form(f, lab, stn):
+    """Watch-a-county signup. The worker stores it as pending; a confirmation email comes first."""
+    return (f'<form class="watch" data-fips="{esc(f)}" aria-label="Watch {esc(lab)}">'
+            f'<b>Watch this county</b>'
+            f'<p>Get an email when the published figures for {esc(lab)}, {esc(stn)} change. Usually once or twice a year. '
+            f'You confirm by email first, and every email has a one-tap stop. {esc(POSTAL)}.</p>'
+            f'<div class="wr"><input type="email" name="email" placeholder="you@example.com" autocomplete="email" required aria-label="Email address">'
+            f'<input class="hp" type="text" name="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true">'
+            f'<button type="submit">Watch this county</button></div>'
+            f'<div class="wm" role="status" aria-live="polite"></div></form>'
+            f'<script defer src="/farmland-atlas/watch.js?v={WATCH_V}"></script>')
+
 CSS_FILE = "atlas-pages.css"
 CSS_V = hashlib.sha1(CSS.encode()).hexdigest()[:8]
 
@@ -1245,6 +1278,7 @@ def county_page(W, f, d, stamp):
   <button type="button" id="dl">Download CSV</button>
   <button type="button" id="cp">Copy link</button>
 </div>
+{watch_form(f, lab, stn)}
 {warn}{read_html}
 <div class="two"><div><section class="keys" aria-label="Key figures">{keys}</section></div><div>{locator_svg(W, f)}</div></div>
 {S1}{S2}{S3}{S4}{S5}{S6}{ND}
@@ -1297,7 +1331,8 @@ try{{gaEvent('atlas_county_page',{{fips:rec.fips}});}}catch(e){{}}
                   rec["corn_yield_median_bu_ac"], rec["claims_per_100_usd"])
     W.cards["counties"][f] = {"n": lab, "s": stn, "st": st, "r": rec["rent_dry_usd_ac"], "ry": rec["rent_dry_year"],
                               "v": rec["value_usd_ac"], "vy": rec["value_year"], "vf": bool(rec["value_flag"]),
-                              "y": rec["corn_yield_median_bu_ac"], "c": rec["claims_per_100_usd"], "k": ck}
+                              "y": rec["corn_yield_median_bu_ac"], "c": rec["claims_per_100_usd"], "k": ck,
+                              "u": "/%s/%s" % (OUT, W.slug[f])}
     return head(title, desc, url, ld, image="/%s/og/%s.png?v=%s" % (OUT, f, ck),
                 alt="%s, %s: dry cash rent %s an acre, land and buildings %s, median corn yield %s" % (
                     lab, stn, money(rec["rent_dry_usd_ac"]), "read with care" if rec["value_flag"] else money(rec["value_usd_ac"]),
@@ -1520,6 +1555,7 @@ def build(root=".", out_root=None, only=None, quiet=False):
         prev = {}
     stamps = {}
     write(os.path.join(out_root, OUT, CSS_FILE), CSS)
+    write(os.path.join(out_root, OUT, "watch.js"), WATCH_JS)
     for f in sorted(W.C):
         if only and f not in only:
             continue
