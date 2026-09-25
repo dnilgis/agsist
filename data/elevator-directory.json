@@ -1,18 +1,18 @@
 {
- "generated": "2026-09-25T19:59:13Z",
+ "generated": "2026-09-25T23:14:36Z",
  "from": "bids-full.json",
  "complete": false,
  "note": "Directory only: who operates a facility and where. No prices, no basis, no symbols, no delivery windows.",
  "counts": {
-  "facilities": 2480,
+  "facilities": 2497,
   "states": 32,
   "with_address": 0,
   "with_coords": 0,
   "with_url": 0,
-  "with_phone": 1765,
+  "with_phone": 1787,
   "saturated_zips": 0,
   "failed_zips": 0,
-  "rows_read": 27400
+  "rows_read": 27489
  },
  "saturated": [],
  "failed": [],
@@ -1256,14 +1256,6 @@
    "state": "IA",
    "zip": "52732",
    "phone": "5632425251",
-   "source": "barchart"
-  },
-  {
-   "facility": "Faas Feed & Grain",
-   "city": "Webster/Keswick",
-   "state": "IA",
-   "zip": "50595",
-   "lat": 41.4364,
    "source": "barchart"
   },
   {
@@ -5016,6 +5008,42 @@
    "source": "barchart"
   },
   {
+   "facility": "The Scoular Company",
+   "branch": "Emerson, IA",
+   "city": "Emerson",
+   "state": "IA",
+   "zip": "51533",
+   "phone": "712-824-7307",
+   "source": "barchart"
+  },
+  {
+   "facility": "The Scoular Company",
+   "branch": "Griswold, IA",
+   "city": "Griswold",
+   "state": "IA",
+   "zip": "51535",
+   "phone": "712-778-2701",
+   "source": "barchart"
+  },
+  {
+   "facility": "The Scoular Company",
+   "branch": "Hancock, IA",
+   "city": "Hancock",
+   "state": "IA",
+   "zip": "51536",
+   "phone": "712-741-5437",
+   "source": "barchart"
+  },
+  {
+   "facility": "The Scoular Company",
+   "branch": "Corley, IA",
+   "city": "Harlan",
+   "state": "IA",
+   "zip": "51537",
+   "phone": "712-755-3192",
+   "source": "barchart"
+  },
+  {
    "facility": "Two Rivers Coop IA",
    "branch": "MONROE",
    "city": "Monroe",
@@ -6399,14 +6427,6 @@
    "source": "barchart"
   },
   {
-   "facility": "Encompass Grain",
-   "city": "Delavan",
-   "state": "IL",
-   "zip": "61734",
-   "lat": 40.369,
-   "source": "barchart"
-  },
-  {
    "facility": "Encompass Grain & Rail Co-op",
    "branch": "Allen Station",
    "city": "Allen Station - San Jose",
@@ -7614,6 +7634,42 @@
    "source": "barchart"
   },
   {
+   "facility": "The Scoular Company",
+   "branch": "Palmyra, IL - Elevator",
+   "city": "Palmyra",
+   "state": "IL",
+   "zip": "62674",
+   "phone": "217-435-2361",
+   "source": "barchart"
+  },
+  {
+   "facility": "The Scoular Company",
+   "branch": "Pisgah, IL - Elevator",
+   "city": "Pisgah",
+   "state": "IL",
+   "zip": " 6265",
+   "phone": " 217-243-7511",
+   "source": "barchart"
+  },
+  {
+   "facility": "The Scoular Company",
+   "branch": "Waverly, IL - Shuttle",
+   "city": "Waverly",
+   "state": "IL",
+   "zip": "62692",
+   "phone": "2174352361",
+   "source": "barchart"
+  },
+  {
+   "facility": "The Scoular Company",
+   "branch": "Waverly, IL - Elevator",
+   "city": "Waverly",
+   "state": "IL",
+   "zip": "62692",
+   "phone": "217-435-2361",
+   "source": "barchart"
+  },
+  {
    "facility": "Top Flight Grain Co-operative",
    "branch": "MON",
    "city": " Monticello",
@@ -7687,20 +7743,20 @@
   },
   {
    "facility": "Top Flight Grain Co-operative",
-   "branch": "JOS",
-   "city": "Lincoln",
-   "state": "IL",
-   "zip": "62656",
-   "phone": "217-732-4277",
-   "source": "barchart"
-  },
-  {
-   "facility": "Top Flight Grain Co-operative",
    "branch": "KRU",
    "city": "Lincoln",
    "state": "IL",
    "zip": "62656",
    "phone": "217-735-1178",
+   "source": "barchart"
+  },
+  {
+   "facility": "Top Flight Grain Co-operative",
+   "branch": "JOS",
+   "city": "Lincoln",
+   "state": "IL",
+   "zip": "62656",
+   "phone": "217-732-4277",
    "source": "barchart"
   },
   {
@@ -11319,6 +11375,15 @@
    "source": "barchart"
   },
   {
+   "facility": "Scoular Company - Missouri",
+   "branch": "Scoular Pittsburg Cash Bids",
+   "city": "Pittsburg",
+   "state": "KS",
+   "zip": "66762",
+   "phone": "620-232-5800",
+   "source": "barchart"
+  },
+  {
    "facility": "ScoularView",
    "city": "Ada",
    "state": "KS",
@@ -11453,6 +11518,33 @@
    "state": "KS",
    "zip": "67490",
    "phone": "N/A",
+   "source": "barchart"
+  },
+  {
+   "facility": "The Scoular Company",
+   "branch": "Scoular Pittsburg Cash Bids",
+   "city": "Pittsburg",
+   "state": "KS",
+   "zip": "66762",
+   "phone": "620-232-5800",
+   "source": "barchart"
+  },
+  {
+   "facility": "The Scoular Company",
+   "branch": "Pratt, KS",
+   "city": "Pratt",
+   "state": "KS",
+   "zip": "67124",
+   "phone": "620-933-2440",
+   "source": "barchart"
+  },
+  {
+   "facility": "The Scoular Company",
+   "branch": "Salina, KS",
+   "city": "Salina",
+   "state": "KS",
+   "zip": "67401",
+   "phone": "785-823-6001",
    "source": "barchart"
   },
   {
@@ -13198,14 +13290,6 @@
   },
   {
    "facility": "KBQ Inc.",
-   "city": "KBQ Inc.",
-   "state": "MN",
-   "zip": "56159",
-   "lat": 43.939,
-   "source": "barchart"
-  },
-  {
-   "facility": "KBQ Inc.",
    "branch": "KBQ Inc.",
    "city": "Mountain Lake",
    "state": "MN",
@@ -14500,6 +14584,15 @@
    "source": "barchart"
   },
   {
+   "facility": "Scoular Company - Missouri",
+   "branch": "Scoular Butterfield Cash Bids",
+   "city": "Butterfield",
+   "state": "MO",
+   "zip": "65734",
+   "phone": "417-697-4014",
+   "source": "barchart"
+  },
+  {
    "facility": "Show-Me MFA Agri Services",
    "branch": "CENTRALIA",
    "city": "Centralia",
@@ -15060,13 +15153,6 @@
    "source": "barchart"
   },
   {
-   "facility": "Country Grain Cooperative",
-   "city": "Eldridge",
-   "state": "ND",
-   "lat": 46.921,
-   "source": "barchart"
-  },
-  {
    "facility": "Country Pride Coop",
    "branch": "Strasburg",
    "city": "Strasburg",
@@ -15082,6 +15168,24 @@
    "state": "ND",
    "zip": "58712",
    "phone": "701-465-3900",
+   "source": "barchart"
+  },
+  {
+   "facility": "Dakota Midland Grain",
+   "branch": "Surrey",
+   "city": "Norwich",
+   "state": "ND",
+   "zip": "58768",
+   "phone": "701-728-6430",
+   "source": "barchart"
+  },
+  {
+   "facility": "Dakota Midland Grain",
+   "branch": "Voltaire",
+   "city": "Volitaire",
+   "state": "ND",
+   "zip": "58792",
+   "phone": "701-338-2530",
    "source": "barchart"
   },
   {
@@ -17247,6 +17351,69 @@
    "source": "barchart"
   },
   {
+   "facility": "The Scoular Company",
+   "branch": "Fremont, NE",
+   "city": "Fremont",
+   "state": "NE",
+   "zip": "68025",
+   "phone": "402-721-9767",
+   "source": "barchart"
+  },
+  {
+   "facility": "The Scoular Company",
+   "branch": "South Grant, NE",
+   "city": "Grant",
+   "state": "NE",
+   "zip": "69140",
+   "phone": "308-352-4914",
+   "source": "barchart"
+  },
+  {
+   "facility": "The Scoular Company",
+   "branch": "Madrid, NE",
+   "city": "Madrid",
+   "state": "NE",
+   "zip": "69150",
+   "phone": "308-326-4206",
+   "source": "barchart"
+  },
+  {
+   "facility": "The Scoular Company",
+   "branch": "North Grant, NE",
+   "city": "Ogallala",
+   "state": "NE",
+   "zip": "69153",
+   "phone": "308-447-5531",
+   "source": "barchart"
+  },
+  {
+   "facility": "The Scoular Company",
+   "branch": "Scoular Paxton, NE Bids",
+   "city": "Paxton",
+   "state": "NE",
+   "zip": "69155",
+   "phone": "308-239-4995",
+   "source": "barchart"
+  },
+  {
+   "facility": "The Scoular Company",
+   "branch": "Wallace, NE",
+   "city": "Wallace",
+   "state": "NE",
+   "zip": "69169",
+   "phone": "308-387-4301",
+   "source": "barchart"
+  },
+  {
+   "facility": "The Scoular Company",
+   "branch": "Grainton Cash Bids",
+   "city": "Wallace",
+   "state": "NE",
+   "zip": "69169",
+   "phone": "308-228-2417",
+   "source": "barchart"
+  },
+  {
    "facility": "Thomas Livestock Co",
    "branch": "Thomas Livestock Co.",
    "city": " Broken Bow",
@@ -18454,14 +18621,6 @@
    "state": "OH",
    "zip": "43512",
    "phone": "(419) 497-2101",
-   "source": "barchart"
-  },
-  {
-   "facility": "The Jewell Grain Co.",
-   "city": "The Jewell Grain Co.",
-   "state": "OH",
-   "zip": "43512",
-   "lat": 41.2799,
    "source": "barchart"
   },
   {
@@ -20975,11 +21134,11 @@
    "source": "barchart"
   },
   {
-   "facility": "Pilgrims Gold N' Plump",
+   "facility": "Pilgrims Gold N Plump",
+   "branch": "Arcadia",
    "city": "Arcadia",
    "state": "WI",
    "zip": "54612",
-   "lat": 44.2539,
    "phone": "320-202-7451",
    "source": "barchart"
   },
