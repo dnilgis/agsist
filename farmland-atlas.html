@@ -523,7 +523,7 @@ details.fa-arith .body a{color:var(--gold)}
       <p class="sr-only" id="fa-p-status" role="status"></p>
       <div class="fa-p-head">
         <div><h2 id="fa-p-name" tabindex="-1">—</h2><div class="fa-sub" id="fa-p-sub"></div></div>
-        <div class="fa-ptools"><button type="button" id="fa-p-copy">Copy link</button><button type="button" id="fa-p-map">Back to the map</button><a id="fa-p-print" href="/farmland-atlas/sheet" target="_blank" rel="noopener">Printable county sheet</a><a id="fa-p-scout" href="/field-scout">Scout a field in this county</a><span class="fa-note" id="fa-p-copied" role="status"></span></div>
+        <div class="fa-ptools"><button type="button" id="fa-p-copy">Copy link</button><button type="button" id="fa-p-map">Back to the map</button><a id="fa-p-print" href="/farmland-atlas/sheet" target="_blank" rel="noopener">Printable county sheet</a><a id="fa-p-page" href="/farmland-atlas/states/">All counties by state</a><a id="fa-p-scout" href="/field-scout">Scout a field in this county</a><a id="fa-p-cmp" href="/farmland-atlas/compare">Compare counties</a><span class="fa-note" id="fa-p-copied" role="status"></span></div>
       </div>
       <div class="fa-strip" id="fa-p-strip"></div>
       <div id="fa-p-read" hidden></div>
@@ -1212,6 +1212,14 @@ function renderRail(){
   var x=$('fa-cc-x'); if(x) x.addEventListener('click',function(){ deselect(); writeHash(); try{ $('fa-map-title').focus({preventScroll:true}); }catch(e){} });
   var go=$('fa-cc-go'); if(go) go.addEventListener('click',function(){ $('fa-panel').scrollIntoView({behavior:'smooth',block:'start'}); });
   var mo=$('fa-rk-more'); if(mo) mo.addEventListener('click',function(){ RAIL_MORE=!RAIL_MORE; renderRail(); });
+}
+var PAGES=null;   // fips -> static page path, from the generated index; the link stays on the state hub until it loads
+var PAGE_FIPS='';
+function pageLink(fips){
+  PAGE_FIPS=fips;
+  function set(){ if(fips!==PAGE_FIPS) return; var c=$('fa-p-cmp'); if(c) c.href='/farmland-atlas/compare#'+fips; var a=$('fa-p-page'); if(!a) return; var p=PAGES&&PAGES[fips]; a.href=p||'/farmland-atlas/states/'; a.textContent=p?'County page':'All counties by state'; a.title=p?'A page of its own for this county, with a link you can share':''; }
+  set(); if(PAGES) return;
+  fetch('/farmland-atlas/data/counties-index.json').then(function(r){ if(!r.ok) throw new Error('index'); return r.json(); }).then(function(a){ var m={}; for(var i=0;i<a.length;i++) m[a[i][0]]=a[i][2]; PAGES=m; set(); }).catch(function(){ PAGES=null; });
 }
 function layerOff(l){ if(l.side) return false; var st=get(ATLAS,'layers',l.needs,'status'); if(!st) return l.needs==='practices'; return st!=='ok'; }   // a layer the data file does not know yet is dimmed, not drawn empty
 function layerOf(k){ return LAYERS.filter(function(l){return l.key===k;})[0]; }
@@ -1907,6 +1915,7 @@ function select(fips,how){
   writeHash(); markLegend(); renderRail();
   var pl=$('fa-p-print'); if(pl) pl.href='/farmland-atlas/sheet#'+fips;
   var ps=$('fa-p-scout'); if(ps) ps.href=scoutHref(fips);
+  pageLink(fips);
   if(how==='map'||how==='rail'||how==='search'){
     if(!window.matchMedia('(min-width:1280px)').matches){
       // keep the bottom of the map on screen so the county stays in view above its card

@@ -1,7 +1,48 @@
 {
- "updated": "2026-09-24",
+ "updated": "2026-09-25",
  "note": "Curated by hand each work session. Dates are the day the change was built; uploads usually land the same day or the next. Machine-refreshed data (prices, bids, weather, briefings) is not logged here — that updates continuously.",
  "entries": [
+  {
+   "date": "2026-09-25",
+   "items": [
+    {
+     "tag": "new",
+     "page": "/farmland-atlas/states/",
+     "name": "Every U.S. county now has a page of its own",
+     "text": "3,148 county pages and 50 state pages, each with cash rent, census land value, corn yield, the crop insurance record and drought weeks, and a link you can send someone. The figures match the Atlas sheet: 500 counties were checked against it, 13,485 values, no differences. A state page carries a map where every county is a link, and a table you can sort. A blank is a figure the source withheld, never a zero."
+    },
+    {
+     "tag": "new",
+     "page": "/farmland-atlas/compare",
+     "name": "Compare up to three counties side by side",
+     "text": "Pick counties by name; the link keeps your choice so you can share it. Nothing is scored and no county is called the winner."
+    },
+    {
+     "tag": "new",
+     "page": "/farmland-atlas/data",
+     "name": "The whole county table as a download, with the sources and the citation",
+     "text": "One row per county as CSV or JSON, every column with its unit and source, and a line to cite. A CSV for each state too."
+    },
+    {
+     "tag": "new",
+     "page": "/farmland-atlas/states/",
+     "name": "Every county page now has its own share image",
+     "text": "Paste a county link into a text or a post and the preview shows that county: its name, dry cash rent, land value and corn yield, and its shape on the map. States show a map of every county shaded by rent. A figure the source withheld shows a dash and the reason, never a zero."
+    },
+    {
+     "tag": "improved",
+     "page": "/farmland-atlas/data",
+     "name": "The Atlas data is free to reuse with credit",
+     "text": "The county pages and downloads are licensed Creative Commons Attribution 4.0. Use them, including commercially, and credit the AGSIST Farmland Atlas with a link. The underlying federal figures stay in the public domain."
+    },
+    {
+     "tag": "fixed",
+     "page": "/farm-bill",
+     "name": "The Farm Bill share image was a broken link",
+     "text": "The page pointed at an image path that did not exist, so a shared link showed no picture. About 300 pages also lacked the tags that let X show a large image; those are added."
+    }
+   ]
+  },
   {
    "date": "2026-09-24",
    "items": [

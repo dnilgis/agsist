@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#0a0c0d">
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');function gaEvent(n,p){try{gtag('event',n,p||{});}catch(e){}}</script>
+  <link rel="preload" href="/components/styles.css?v=16" as="style">
+  <link rel="stylesheet" href="/components/styles.css?v=16">
+  <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
+  <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
+  <link rel="manifest" href="/manifest.json">
+  <title>Compare Counties: Farmland Rent, Value, Yield and Risk Side by Side</title>
+  <meta name="description" content="Put up to three U.S. counties side by side: cash rent, land value, corn yield, crop insurance record and drought. Every figure sourced, nothing scored.">
+  <link rel="canonical" href="https://agsist.com/farmland-atlas/compare">
+
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="AGSIST">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:title" content="Compare Counties: Farmland Rent, Value, Yield and Risk Side by Side">
+  <meta property="og:description" content="Put up to three U.S. counties side by side: cash rent, land value, corn yield, crop insurance record and drought. Every figure sourced, nothing scored.">
+  <meta property="og:url" content="https://agsist.com/farmland-atlas/compare">
+  <meta property="og:image" content="https://agsist.com/farmland-atlas/og/compare.png?v=1">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:alt" content="Compare up to three U.S. counties side by side: rent, land value, yield, claims and drought">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@agsist">
+  <meta name="twitter:title" content="Compare Counties: Farmland Rent, Value, Yield and Risk Side by Side">
+  <meta name="twitter:description" content="Put up to three U.S. counties side by side: cash rent, land value, corn yield, crop insurance record and drought. Every figure sourced, nothing scored.">
+  <meta name="twitter:image" content="https://agsist.com/farmland-atlas/og/compare.png?v=1">
+  <meta name="twitter:image:alt" content="Compare up to three U.S. counties side by side: rent, land value, yield, claims and drought">
+  <script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@graph": [
+  {
+   "@type": "BreadcrumbList",
+   "itemListElement": [
+    {
+     "@type": "ListItem",
+     "position": 1,
+     "name": "AGSIST",
+     "item": "https://agsist.com/"
+    },
+    {
+     "@type": "ListItem",
+     "position": 2,
+     "name": "Farmland Atlas",
+     "item": "https://agsist.com/farmland-atlas"
+    },
+    {
+     "@type": "ListItem",
+     "position": 3,
+     "name": "Compare"
+    }
+   ]
+  }
+ ]
+}
+  </script>
+  <link rel="stylesheet" href="/farmland-atlas/atlas-pages.css">
+<style>
+#out{overflow-x:auto;-webkit-overflow-scrolling:touch}
+#out table{min-width:560px}
+#out thead th{text-align:left;text-transform:none;letter-spacing:0;font-size:.86rem;vertical-align:bottom}
+#out th[scope=row]{position:sticky;left:0;background:var(--bg);width:30%;min-width:120px;text-align:left;text-transform:none;letter-spacing:0;font-weight:600;font-size:.8rem;color:var(--text-dim)}
+#out td{min-width:118px;font-family:var(--font-mono);font-size:.84rem}
+#out td small{display:block;font-family:inherit;font-size:.72rem;color:var(--text-dim);margin-top:.15rem}
+</style>
+</head>
+<body>
+<div id="site-header"></div>
+
+<main class="ap">
+<nav class="bc" aria-label="Breadcrumb"><a href="/">AGSIST</a><i>/</i><a href="/farmland-atlas">Farmland Atlas</a><i>/</i><span aria-current="page">Compare</span></nav>
+<div class="kick">Farmland Atlas</div>
+<h1>Compare counties</h1>
+<p class="sub">Up to three counties, side by side. Every figure names its survey year and source on the county page. A dash is a figure the source withheld or the record does not carry, never a zero. Nothing is added into a score and no county is declared the winner.</p>
+<input type="search" id="q" list="ql" placeholder="Add a county, e.g. Story, IA" aria-label="Add a county to compare" autocomplete="off"><datalist id="ql"></datalist>
+<p class="note" id="m" role="status">Pick a county from the list to add it.</p>
+<div class="act" id="chips"></div>
+<p class="note" id="sw">On a phone, swipe the table sideways to see every county.</p>
+<div class="tw" id="out"></div>
+<p class="note">Rents are USDA NASS cash rent survey county averages. Land value is the Census of Agriculture, operators' own estimate of land and buildings, not a sale price. A land value that moved against its neighbours since 2017 is withheld here and read with care on the county page. Claims are RMA crop insurance indemnity per $100 of liability over the last ten closed crop years. <a href="/farmland-atlas/data">Columns, units and sources</a>. Link ends in the counties you picked, so you can share it.</p>
+</main>
+<script>
+(function(){
+var IDX=[],ROWS=null,COLS=null,SEL=[],q=document.getElementById('q'),dl=document.getElementById('ql'),m=document.getElementById('m'),chips=document.getElementById('chips'),out=document.getElementById('out');
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+function norm(s){return String(s).toLowerCase().replace(/[^a-z0-9]+/g,' ').replace(/\b(county|parish|borough|census area)\b/g,' ').replace(/\s+/g,' ').trim();}
+function n(x,k){return Number(x).toLocaleString('en-US',{maximumFractionDigits:k,minimumFractionDigits:0});}
+function nf(x,k){return Number(x).toLocaleString('en-US',{maximumFractionDigits:k,minimumFractionDigits:k});}
+var usd=function(v){return '$'+n(Math.floor(v+0.5),0);};
+var DASH='\u2014';
+// [label, column(s), formatter(row) -> string or null, why-blank]
+var SPEC=[
+ ['Dry cash rent',function(r){return r.rent_dry_usd_ac==null?null:usd(r.rent_dry_usd_ac)+' ('+r.rent_dry_year+')';},'no published county rent'],
+ ['Rent change over ten years',function(r){return r.rent_dry_chg10_pct==null?null:(r.rent_dry_chg10_pct>0?'+':r.rent_dry_chg10_pct<0?'\u2212':'')+n(Math.abs(r.rent_dry_chg10_pct),1)+'%';},'needs two published surveys ten years apart'],
+ ['Irrigated cash rent',function(r){return r.rent_irr_usd_ac==null?null:usd(r.rent_irr_usd_ac)+' ('+r.rent_irr_year+')';},'no published irrigated rent'],
+ ['Pasture rent',function(r){return r.rent_pasture_usd_ac==null?null:usd(r.rent_pasture_usd_ac);},'no published pasture rent'],
+ ['Land and buildings, census',function(r){return r.value_flag?'flag':(r.value_usd_ac==null?null:usd(r.value_usd_ac)+' ('+r.value_year+')');},'census value withheld'],
+ ['Dry rent as % of land value',function(r){return (r.value_flag||r.rent_to_value_pct==null)?null:nf(r.rent_to_value_pct,2)+'%';},'needs a rent and an unflagged land value'],
+ ['Median corn yield, bu/ac',function(r){return r.corn_yield_median_bu_ac==null?null:nf(r.corn_yield_median_bu_ac,1)+' ('+r.corn_yield_years+' yrs)';},'fewer than the published years needed'],
+ ['Claims per $100 of coverage',function(r){return r.claims_per_100_usd==null?null:'$'+nf(r.claims_per_100_usd,2);},'no crop insurance record'],
+ ['Loss ratio, last ten years',function(r){return r.loss_ratio_last10==null?null:nf(r.loss_ratio_last10,2);},'no crop insurance record'],
+ ['Years claims exceeded premium',function(r){return r.years_loss_over_1==null?null:String(r.years_loss_over_1);},'no crop insurance record'],
+ ['Drought weeks (D2 or worse)',function(r){return r.d2_week_share_pct==null?null:n(r.d2_week_share_pct,0)+'%';},'no drought record'],
+ ['Farmland rented from others',function(r){return r.rented_share_2022==null?null:n(r.rented_share_2022*100,0)+'%';},'not in the 2022 census'],
+ ['Cropland drained by tile',function(r){return r.tile_share_2022==null?null:n(r.tile_share_2022*100,0)+'%';},'not reported'],
+ ['Cropland farmed no-till',function(r){return r.notill_share_2022==null?null:n(r.notill_share_2022*100,0)+'%';},'not reported'],
+ ['CRP enrolled, acres',function(r){return r.crp_acres==null?null:n(r.crp_acres,0);},'no CRP record'],
+ ['Hail days, 1 inch or larger, a year',function(r){return r.hail_1in_days_yr==null?null:n(r.hail_1in_days_yr,1);},'no storm record'],
+ ['Growing season rain, inches',function(r){return r.gs_rain_normal_in==null?null:n(r.gs_rain_normal_in,1);},'no climate record']
+];
+function rowOf(f){var a=ROWS.filter(function(x){return x[0]===f;})[0]; if(!a) return null; var o={}; for(var i=0;i<COLS.length;i++) o[COLS[i]]=a[i]; return o;}
+function nameOf(f){for(var i=0;i<IDX.length;i++) if(IDX[i][0]===f) return IDX[i];return null;}
+function write(){try{history.replaceState(null,'',SEL.length?'#'+SEL.join(','):location.pathname);}catch(e){}}
+function render(){
+  chips.innerHTML=SEL.map(function(f){var x=nameOf(f);return '<button type="button" data-f="'+esc(f)+'" aria-label="Remove '+esc(x?x[1]:f)+'">'+esc(x?x[1]:f)+' \u00d7</button>';}).join('');
+  if(!SEL.length||!ROWS){out.innerHTML='';return;}
+  var rs=SEL.map(rowOf), th='<th></th>', body='';
+  rs.forEach(function(r,i){var x=nameOf(SEL[i]);th+='<th>'+(x?'<a href="'+esc(x[2])+'">'+esc(x[1])+'</a>':esc(SEL[i]))+'</th>';});
+  SPEC.forEach(function(s){
+    var cells='',any=false;
+    rs.forEach(function(r){
+      if(!r){cells+='<td>'+DASH+'</td>';return;}
+      var v=s[1](r);
+      if(v==='flag'){cells+='<td>'+DASH+' <small>read with care: see the county page</small></td>';any=true;}
+      else if(v==null) cells+='<td>'+DASH+' <small>'+esc(s[2])+'</small></td>';
+      else {cells+='<td>'+esc(v)+'</td>';any=true;}
+    });
+    body+='<tr><th scope="row">'+esc(s[0])+'</th>'+cells+(any?'':'')+'</tr>';
+  });
+  out.innerHTML='<table><thead><tr>'+th+'</tr></thead><tbody>'+body+'</tbody></table>';
+}
+function add(f){if(!f||SEL.indexOf(f)>-1) return; if(SEL.length>=3){m.textContent='Three counties at most. Remove one first.';return;} SEL.push(f); m.textContent=''; write(); render(); try{gaEvent('atlas_compare_add',{fips:f});}catch(e){}}
+chips.addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;SEL=SEL.filter(function(x){return x!==b.getAttribute('data-f');});write();render();});
+function fromHash(){var h=location.hash.replace('#','').split(',').filter(function(x,i,a){return /^[0-9]{5}$/.test(x)&&a.indexOf(x)===i&&(!IDX.length||nameOf(x));}).slice(0,3);SEL=h;render();}
+q.addEventListener('input',function(){var t=norm(q.value);if(t.length<2){dl.innerHTML='';return;}
+  var hits=IDX.filter(function(x){return norm(x[1]).indexOf(t)>-1;}).slice(0,12);
+  dl.innerHTML=hits.map(function(x){return '<option value="'+esc(x[1])+'">';}).join('');
+  var ex=IDX.filter(function(x){return x[1].toLowerCase()===q.value.trim().toLowerCase();})[0];
+  if(ex){add(ex[0]);q.value='';dl.innerHTML='';}});
+window.addEventListener('hashchange',fromHash);
+fetch('/farmland-atlas/data/counties-index.json').then(function(r){return r.json();}).then(function(a){IDX=a;fromHash();}).catch(function(){m.textContent='The county list did not load. Reload the page.';});
+fetch('/farmland-atlas/data/counties.json').then(function(r){return r.json();}).then(function(d){COLS=d.columns;ROWS=d.rows;render();}).catch(function(){m.textContent='The county figures did not load. Reload the page.';});
+fromHash();
+})();
+</script>
+
+<div id="site-footer"></div>
+<script src="/components/loader.js?v=14"></script>
+</body>
+</html>

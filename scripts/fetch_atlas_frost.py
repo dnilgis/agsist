@@ -118,12 +118,16 @@ def find_columns(names, sample):
     """names: column names; sample: {name: [first values]} -> (date_col, fips_col, tmax_col, tmin_col) or raise."""
     low = {n.lower(): n for n in names}
     dcol = low.get("date")
-    hi = low.get("tmax")
-    lo = low.get("tmin")
+    hi = low.get("tmax") or next((n for n in names if n.lower().startswith("tmax")), None)
+    lo = low.get("tmin") or next((n for n in names if n.lower().startswith("tmin")), None)
     fcol = None
-    order = [n for n in names if "fips" in n.lower()] + [n for n in names if n.lower() in ("region_code", "code", "county_code")]
+    named = [n for n in names if "fips" in n.lower()] + [n for n in names if n.lower() in ("region_code", "code", "county_code", "geoid", "county")]
+    # last resort: any other column whose first values are all 4-5 digit codes (a numeric 19169.0 counts).
+    # NOAA's county file was never read from here, so the name is not assumed.
+    order = named + [n for n in names if n not in named and n not in (dcol, hi, lo)]
     for n in order:
         vals = [str(v).strip() for v in sample.get(n, []) if v is not None]
+        vals = [v[:-2] if v.endswith(".0") else v for v in vals]
         if vals and all(v.isdigit() and 4 <= len(v) <= 5 for v in vals):
             fcol = n
             break
@@ -137,7 +141,12 @@ def to_date(v):
         return v.date()
     if isinstance(v, date):
         return v
-    s = str(v).strip()[:10]
+    s = str(v).strip()
+    if s.endswith(".0"):
+        s = s[:-2]
+    if s.isdigit() and len(s) == 8:               # 19960301
+        return date(int(s[0:4]), int(s[4:6]), int(s[6:8]))
+    s = s[:10]
     return date(int(s[0:4]), int(s[5:7]), int(s[8:10]))
 
 
@@ -185,6 +194,17 @@ def selftest():
     except RuntimeError:
         pass
     assert to_date("2021-07-04") == date(2021, 7, 4)
+    # the column finder must cope with names it was not told about (corrected 2026-09-25: the real schema was never read)
+    c = find_columns(["date", "GEOID", "tmax_f", "tmin_f"], {"GEOID": ["19169", "01001"], "date": ["1996-03-01"]})
+    assert c == ("date", "GEOID", "tmax_f", "tmin_f"), c
+    c = find_columns(["obs", "cty", "TMAX", "TMIN", "date"], {"cty": [19169.0, 1001.0], "obs": ["x"]})
+    assert c[1] == "cty", c
+    assert to_date(19960301) == date(1996, 3, 1) and to_date("1996-03-01 00:00:00") == date(1996, 3, 1)
+    try:
+        find_columns(["date", "tmax", "tmin", "name"], {"name": ["Story"]})
+        raise SystemExit("selftest: a column with no county code was accepted")
+    except RuntimeError:
+        pass
     log("selftest ok")
 
 

@@ -12,3 +12,4 @@ Disallow: /dev/
 
 # Sitemaps
 Sitemap: https://agsist.com/sitemap.xml
+Sitemap: https://agsist.com/sitemap-atlas.xml
