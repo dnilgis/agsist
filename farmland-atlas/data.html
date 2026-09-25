@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#0a0c0d">
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');function gaEvent(n,p){try{gtag('event',n,p||{});}catch(e){}}</script>
+  <link rel="preload" href="/components/styles.css?v=16" as="style">
+  <link rel="stylesheet" href="/components/styles.css?v=16">
+  <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
+  <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
+  <link rel="manifest" href="/manifest.json">
+  <title>Farmland Atlas Data: County CSV and How to Cite | AGSIST</title>
+  <meta name="description" content="One row per U.S. county: cash rent, land value, corn yield, crop insurance loss ratio, drought and more, as a CSV. Every column, its unit and its source.">
+  <link rel="canonical" href="https://agsist.com/farmland-atlas/data">
+
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="AGSIST">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:title" content="Farmland Atlas Data: County CSV and How to Cite">
+  <meta property="og:description" content="One row per U.S. county: cash rent, land value, corn yield, crop insurance loss ratio, drought and more, as a CSV. Every column, its unit and its source.">
+  <meta property="og:url" content="https://agsist.com/farmland-atlas/data">
+  <meta property="og:image" content="https://agsist.com/farmland-atlas/og/data.png?v=1">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:alt" content="AGSIST Farmland Atlas county data: one row per U.S. county, free to download">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@agsist">
+  <meta name="twitter:title" content="Farmland Atlas Data: County CSV and How to Cite">
+  <meta name="twitter:description" content="One row per U.S. county: cash rent, land value, corn yield, crop insurance loss ratio, drought and more, as a CSV. Every column, its unit and its source.">
+  <meta name="twitter:image" content="https://agsist.com/farmland-atlas/og/data.png?v=1">
+  <meta name="twitter:image:alt" content="AGSIST Farmland Atlas county data: one row per U.S. county, free to download">
+  <script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@graph": [
+  {
+   "@type": "BreadcrumbList",
+   "itemListElement": [
+    {
+     "@type": "ListItem",
+     "position": 1,
+     "name": "AGSIST",
+     "item": "https://agsist.com/"
+    },
+    {
+     "@type": "ListItem",
+     "position": 2,
+     "name": "Farmland Atlas",
+     "item": "https://agsist.com/farmland-atlas"
+    },
+    {
+     "@type": "ListItem",
+     "position": 3,
+     "name": "Data"
+    }
+   ]
+  },
+  {
+   "@type": "Dataset",
+   "@id": "https://agsist.com/farmland-atlas/data#dataset",
+   "name": "AGSIST Farmland Atlas: county table",
+   "description": "One row per U.S. county: cash rent, land value, corn yield, crop insurance loss ratio, drought and more, as a CSV. Every column, its unit and its source.",
+   "url": "https://agsist.com/farmland-atlas/data",
+   "isAccessibleForFree": true,
+   "license": "https://creativecommons.org/licenses/by/4.0/",
+   "creditText": "AGSIST Farmland Atlas, agsist.com/farmland-atlas",
+   "creator": {
+    "@type": "Organization",
+    "name": "AGSIST",
+    "url": "https://agsist.com"
+   },
+   "dateModified": "2026-09-20",
+   "spatialCoverage": {
+    "@type": "Place",
+    "name": "United States"
+   },
+   "variableMeasured": [
+    {
+     "@type": "PropertyValue",
+     "name": "rent_dry_usd_ac",
+     "unitText": "$/acre"
+    },
+    {
+     "@type": "PropertyValue",
+     "name": "rent_dry_year",
+     "unitText": "year"
+    },
+    {
+     "@type": "PropertyValue",
+     "name": "rent_dry_chg10_pct",
+     "unitText": "%"
+    },
+    {
+     "@type": "PropertyValue",
+     "name": "rent_irr_usd_ac",
+     "unitText": "$/acre"
+    },
+    {
+     "@type": "PropertyValue",
+     "name": "rent_irr_year",
+     "unitText": "year"
+    },
+    {
+     "@type": "PropertyValue",
+     "name": "rent_pasture_usd_ac",
+     "unitText": "$/acre"
+    },
+    {
+     "@type": "PropertyValue",
+     "name": "value_usd_ac",
+     "unitText": "$/acre"
+    },
+    {
+     "@type": "PropertyValue",
+     "name": "value_year",
+     "unitText": "year"
+    },
+    {
+     "@type": "PropertyValue",
+     "name": "value_flag",
+     "unitText": ""
+    },
+    {
+     "@type": "PropertyValue",
+     "name": "value_cagr_pct",
+     "unitText": "% a year"
+    },
+    {
+     "@type": "PropertyValue",
+     "name": "rent_to_value_pct",
+     "unitText": "%"
+    },
+    {
+     "@type": "PropertyValue",
+     "name": "corn_yield_median_bu_ac",
+     "unitText": "bu/acre"
+    },
+    {
+     "@type": "PropertyValue",
+     "name": "corn_yield_years",
+     "unitText": "years"
+    },
+    {
+     "@type": "PropertyValue",
+     "name": "corn_yield_trend_bu_yr",
+     "unitText": "bu/acre/yr"
+    },
+    {
+     "@type": "PropertyValue",
+     "name": "claims_per_100_usd",
+     "unitText": "$"
+    },
+    {
+     "@type": "PropertyValue",
+     "name": "loss_ratio_last10",
+     "unitText": "ratio"
+    },
+    {
+     "@type": "PropertyValue",
+     "name": "loss_ratio_all",
+     "unitText": "ratio"
+    },
+    {
+     "@type": "PropertyValue",
+     "name": "years_loss_over_1",
+     "unitText": "years"
+    },
+    {
+     "@type": "PropertyValue",
+     "name": "d2_week_share_pct",
+     "unitText": "%"
+    },
+    {
+     "@type": "PropertyValue",
+     "name": "jul_low_recent_f",
+     "unitText": "°F"
+    },
+    {
+     "@type": "PropertyValue",
+     "name": "jul_low_normal_f",
+     "unitText": "°F"
+    },
+    {
+     "@type": "PropertyValue",
+     "name": "jul_low_trend_f_decade",
+     "unitText": "°F/decade"
+    },
+    {
+     "@type": "PropertyValue",
+     "name": "irrigated_share_2022",
+     "unitText": "ratio"
+    },
+    {
+     "@type": "PropertyValue",
+     "name": "tile_share_2022",
+     "unitText": "ratio"
+    },
+    {
+     "@type": "PropertyValue",
+     "name": "notill_share_2022",
+     "unitText": "ratio"
+    },
+    {
+     "@type": "PropertyValue",
+     "name": "crp_acres",
+     "unitText": "acres"
+    },
+    {
+     "@type": "PropertyValue",
+     "name": "crp_share_pct",
+     "unitText": "%"
+    },
+    {
+     "@type": "PropertyValue",
+     "name": "crp_expiring_next3_acres",
+     "unitText": "acres"
+    },
+    {
+     "@type": "PropertyValue",
+     "name": "rented_share_2022",
+     "unitText": "ratio"
+    },
+    {
+     "@type": "PropertyValue",
+     "name": "solar_mw",
+     "unitText": "MW"
+    },
+    {
+     "@type": "PropertyValue",
+     "name": "wind_mw",
+     "unitText": "MW"
+    },
+    {
+     "@type": "PropertyValue",
+     "name": "gs_rain_normal_in",
+     "unitText": "inches"
+    },
+    {
+     "@type": "PropertyValue",
+     "name": "hail_1in_days_yr",
+     "unitText": "days/year"
+    },
+    {
+     "@type": "PropertyValue",
+     "name": "cattle_2022",
+     "unitText": "head"
+    }
+   ],
+   "distribution": [
+    {
+     "@type": "DataDownload",
+     "encodingFormat": "text/csv",
+     "contentUrl": "https://agsist.com/farmland-atlas/data/counties.csv"
+    },
+    {
+     "@type": "DataDownload",
+     "encodingFormat": "application/json",
+     "contentUrl": "https://agsist.com/farmland-atlas/data/counties.json"
+    }
+   ]
+  }
+ ]
+}
+  </script>
+  <link rel="stylesheet" href="/farmland-atlas/atlas-pages.css?v=553f6f8b">
+</head>
+<body>
+<div id="site-header"></div>
+
+<main class="ap">
+<nav class="bc" aria-label="Breadcrumb"><a href="/">AGSIST</a><i>/</i><a href="/farmland-atlas">Farmland Atlas</a><i>/</i><span aria-current="page">Data</span></nav>
+<div class="kick">Farmland Atlas</div>
+<h1>County data and how to cite it</h1>
+<p class="sub">One row per U.S. county: cash rent, land value, corn yield, crop insurance loss ratio, drought and more, as a CSV. Every column, its unit and its source. Built 2026-09-20. The files are rebuilt from the Atlas each month.</p>
+<div class="act"><a href="/farmland-atlas/data/counties.csv" download>All 3,148 counties, CSV</a><a href="/farmland-atlas/data/counties.json" download>Same rows, JSON</a><a href="/data/atlas/atlas.json" download>Full Atlas record, JSON</a></div>
+<h2>By state</h2>
+<p class="note"><a href="/farmland-atlas/data/ak.csv" download>AK</a> <a href="/farmland-atlas/data/al.csv" download>AL</a> <a href="/farmland-atlas/data/ar.csv" download>AR</a> <a href="/farmland-atlas/data/az.csv" download>AZ</a> <a href="/farmland-atlas/data/ca.csv" download>CA</a> <a href="/farmland-atlas/data/co.csv" download>CO</a> <a href="/farmland-atlas/data/ct.csv" download>CT</a> <a href="/farmland-atlas/data/de.csv" download>DE</a> <a href="/farmland-atlas/data/fl.csv" download>FL</a> <a href="/farmland-atlas/data/ga.csv" download>GA</a> <a href="/farmland-atlas/data/hi.csv" download>HI</a> <a href="/farmland-atlas/data/ia.csv" download>IA</a> <a href="/farmland-atlas/data/id.csv" download>ID</a> <a href="/farmland-atlas/data/il.csv" download>IL</a> <a href="/farmland-atlas/data/in.csv" download>IN</a> <a href="/farmland-atlas/data/ks.csv" download>KS</a> <a href="/farmland-atlas/data/ky.csv" download>KY</a> <a href="/farmland-atlas/data/la.csv" download>LA</a> <a href="/farmland-atlas/data/ma.csv" download>MA</a> <a href="/farmland-atlas/data/md.csv" download>MD</a> <a href="/farmland-atlas/data/me.csv" download>ME</a> <a href="/farmland-atlas/data/mi.csv" download>MI</a> <a href="/farmland-atlas/data/mn.csv" download>MN</a> <a href="/farmland-atlas/data/mo.csv" download>MO</a> <a href="/farmland-atlas/data/ms.csv" download>MS</a> <a href="/farmland-atlas/data/mt.csv" download>MT</a> <a href="/farmland-atlas/data/nc.csv" download>NC</a> <a href="/farmland-atlas/data/nd.csv" download>ND</a> <a href="/farmland-atlas/data/ne.csv" download>NE</a> <a href="/farmland-atlas/data/nh.csv" download>NH</a> <a href="/farmland-atlas/data/nj.csv" download>NJ</a> <a href="/farmland-atlas/data/nm.csv" download>NM</a> <a href="/farmland-atlas/data/nv.csv" download>NV</a> <a href="/farmland-atlas/data/ny.csv" download>NY</a> <a href="/farmland-atlas/data/oh.csv" download>OH</a> <a href="/farmland-atlas/data/ok.csv" download>OK</a> <a href="/farmland-atlas/data/or.csv" download>OR</a> <a href="/farmland-atlas/data/pa.csv" download>PA</a> <a href="/farmland-atlas/data/ri.csv" download>RI</a> <a href="/farmland-atlas/data/sc.csv" download>SC</a> <a href="/farmland-atlas/data/sd.csv" download>SD</a> <a href="/farmland-atlas/data/tn.csv" download>TN</a> <a href="/farmland-atlas/data/tx.csv" download>TX</a> <a href="/farmland-atlas/data/ut.csv" download>UT</a> <a href="/farmland-atlas/data/va.csv" download>VA</a> <a href="/farmland-atlas/data/vt.csv" download>VT</a> <a href="/farmland-atlas/data/wa.csv" download>WA</a> <a href="/farmland-atlas/data/wi.csv" download>WI</a> <a href="/farmland-atlas/data/wv.csv" download>WV</a> <a href="/farmland-atlas/data/wy.csv" download>WY</a></p>
+<h2>Cite this</h2>
+<div class="cite"><code>AGSIST Farmland Atlas, county data, built 2026-09-20. https://agsist.com/farmland-atlas/data</code><br>Cite the county page for a single county's figures: each carries its own build date. The underlying figures are U.S. government data (USDA NASS, RMA and FSA, NOAA, the U.S. Drought Monitor); AGSIST compiles, matches and ranks them. A blank cell is a figure the source withheld or the record does not carry, never a zero.</div>
+<h2>Licence</h2>
+<p class="note">AGSIST's compilation, the county pages and these files are licensed <a href="https://creativecommons.org/licenses/by/4.0/" rel="license">Creative Commons Attribution 4.0</a>: use them, including commercially, with credit to "AGSIST Farmland Atlas, agsist.com/farmland-atlas" and a link. The underlying figures are U.S. government data and stay in the public domain. The AGSIST name, logo and page design are not part of the licence. Data is provided as is.</p>
+<h2>Columns</h2>
+<div class="tw"><table class="dl"><thead><tr><th scope="col">Column</th><th scope="col">Unit</th><th scope="col">Source</th><th scope="col">What it is</th></tr></thead><tbody><tr><td><code>fips</code></td><td></td><td>Census</td><td>five-digit county code</td></tr><tr><td><code>state</code></td><td></td><td>Census</td><td>state abbreviation</td></tr><tr><td><code>county</code></td><td></td><td>Census</td><td>county name</td></tr><tr><td><code>rent_dry_usd_ac</code></td><td>$/acre</td><td>NASS Cash Rents Survey</td><td>non-irrigated cropland cash rent, county average</td></tr><tr><td><code>rent_dry_year</code></td><td>year</td><td>NASS Cash Rents Survey</td><td>survey year of that rent</td></tr><tr><td><code>rent_dry_chg10_pct</code></td><td>%</td><td>NASS Cash Rents Survey</td><td>change in dry rent over ten years, nominal</td></tr><tr><td><code>rent_irr_usd_ac</code></td><td>$/acre</td><td>NASS Cash Rents Survey</td><td>irrigated cropland cash rent</td></tr><tr><td><code>rent_irr_year</code></td><td>year</td><td>NASS Cash Rents Survey</td><td>survey year of that rent</td></tr><tr><td><code>rent_pasture_usd_ac</code></td><td>$/acre</td><td>NASS Cash Rents Survey</td><td>permanent pasture cash rent</td></tr><tr><td><code>value_usd_ac</code></td><td>$/acre</td><td>Census of Agriculture</td><td>land and buildings, operators&#x27; own estimate, not a sale price</td></tr><tr><td><code>value_year</code></td><td>year</td><td>Census of Agriculture</td><td>census year of that value</td></tr><tr><td><code>value_flag</code></td><td></td><td>AGSIST</td><td>rose or fell when the 2022 value moved against its neighbours; the change, ratio and rank are withheld</td></tr><tr><td><code>value_cagr_pct</code></td><td>% a year</td><td>Census of Agriculture</td><td>compound annual change between the last two censuses, nominal</td></tr><tr><td><code>rent_to_value_pct</code></td><td>%</td><td>NASS and Census</td><td>dry rent divided by census value, same year</td></tr><tr><td><code>corn_yield_median_bu_ac</code></td><td>bu/acre</td><td>NASS county yields</td><td>median published county corn yield</td></tr><tr><td><code>corn_yield_years</code></td><td>years</td><td>NASS county yields</td><td>published years behind that median</td></tr><tr><td><code>corn_yield_trend_bu_yr</code></td><td>bu/acre/yr</td><td>NASS county yields</td><td>least-squares trend over the published years</td></tr><tr><td><code>claims_per_100_usd</code></td><td>$</td><td>RMA Summary of Business</td><td>indemnity per $100 of liability, last ten closed crop years</td></tr><tr><td><code>loss_ratio_last10</code></td><td>ratio</td><td>RMA Summary of Business</td><td>indemnity over total premium (farmer share plus subsidy), last ten closed years</td></tr><tr><td><code>loss_ratio_all</code></td><td>ratio</td><td>RMA Summary of Business</td><td>the same, 1989 to the last closed year</td></tr><tr><td><code>years_loss_over_1</code></td><td>years</td><td>RMA Summary of Business</td><td>years in which claims exceeded premium</td></tr><tr><td><code>d2_week_share_pct</code></td><td>%</td><td>U.S. Drought Monitor</td><td>share of weeks with half the county or more in D2 (severe) drought or worse, 2000 on</td></tr><tr><td><code>jul_low_recent_f</code></td><td>°F</td><td>NOAA nClimDiv</td><td>July average of daily lows, most recent ten years</td></tr><tr><td><code>jul_low_normal_f</code></td><td>°F</td><td>NOAA nClimDiv</td><td>July average of daily lows, 1991 to 2020 normal</td></tr><tr><td><code>jul_low_trend_f_decade</code></td><td>°F/decade</td><td>NOAA nClimDiv</td><td>trend in July lows since 1976</td></tr><tr><td><code>irrigated_share_2022</code></td><td>ratio</td><td>Census of Agriculture</td><td>share of harvested cropland irrigated</td></tr><tr><td><code>tile_share_2022</code></td><td>ratio</td><td>Census of Agriculture</td><td>share of cropland drained by tile</td></tr><tr><td><code>notill_share_2022</code></td><td>ratio</td><td>Census of Agriculture</td><td>share of cropland farmed no-till</td></tr><tr><td><code>crp_acres</code></td><td>acres</td><td>FSA</td><td>CRP acres enrolled, latest year</td></tr><tr><td><code>crp_share_pct</code></td><td>%</td><td>FSA and Census</td><td>CRP acres over CRP plus harvested cropland</td></tr><tr><td><code>crp_expiring_next3_acres</code></td><td>acres</td><td>FSA</td><td>CRP acres with contracts ending in the next three fiscal years</td></tr><tr><td><code>rented_share_2022</code></td><td>ratio</td><td>Census of Agriculture</td><td>share of farmland rented from others</td></tr><tr><td><code>solar_mw</code></td><td>MW</td><td>EIA Form 860</td><td>operating solar nameplate</td></tr><tr><td><code>wind_mw</code></td><td>MW</td><td>EIA Form 860</td><td>operating wind nameplate</td></tr><tr><td><code>gs_rain_normal_in</code></td><td>inches</td><td>NOAA nClimDiv</td><td>April to September rain, 1991 to 2020 normal</td></tr><tr><td><code>hail_1in_days_yr</code></td><td>days/year</td><td>NOAA Storm Events</td><td>days a year with a report of hail 1 inch or larger (reports, not storms)</td></tr><tr><td><code>cattle_2022</code></td><td>head</td><td>Census of Agriculture</td><td>cattle and calves</td></tr></tbody></table></div>
+<p class="note">Years are printed beside every figure that is not the latest survey. Ratios are 0 to 1 unless the unit says percent. Ranks are not in the file: they depend on the comparison group and are shown on each page with the group named.</p>
+<h2>Source files and when they were pulled</h2>
+<div class="tw"><table class="dl"><thead><tr><th scope="col">Layer</th><th scope="col">Source</th><th scope="col">Retrieved</th><th scope="col">Latest year</th></tr></thead><tbody><tr><td>climate</td><td>NOAA NCEI nClimDiv county monthly precipitation (climdiv-pcpncy) and maximum temperature (climdiv-tmaxcy)</td><td>2026-09-20</td><td>—</td></tr><tr><td>crp</td><td>USDA FSA CRP statistics: enrollment by county 1986-2025 and contract expirations by county</td><td>2026-09-19</td><td>—</td></tr><tr><td>drought</td><td>U.S. Drought Monitor county statistics API (NDMC/UNL), cumulative area percent, weekly maps since 2000-01-04</td><td>2026-09-19</td><td>2026</td></tr><tr><td>energy</td><td>EIA Form 860 2025 (Plant and Generator workbooks, Operable and Proposed tabs)</td><td>2026-09-19</td><td>—</td></tr><tr><td>frost</td><td></td><td>—</td><td>—</td></tr><tr><td>heat</td><td>NOAA NCEI nClimDiv county monthly minimum temperature</td><td>2026-09-19</td><td>2026</td></tr><tr><td>livestock</td><td>USDA Census of Agriculture 2017 and 2022, county level (NASS Quick Stats): cattle and calves, beef cows, milk cows, cattle on feed, hogs and pigs, permanent pas</td><td>2026-09-20</td><td>—</td></tr><tr><td>loss</td><td>USDA RMA Summary of Business, Cause of Loss (colsom_YYYY.zip)</td><td>2026-09-19</td><td>2026</td></tr><tr><td>practices</td><td>USDA Census of Agriculture 2017 and 2022, county level (NASS Quick Stats): land drained by tile and by ditches, cropland, no-till and other conservation tillage</td><td>2026-09-19</td><td>—</td></tr><tr><td>rent</td><td>USDA NASS Cash Rents Survey (county), via data/cash-rent</td><td>2026-09-16</td><td>—</td></tr><tr><td>sob</td><td>USDA RMA Summary of Business, state/county/crop/coverage (sobcov_YYYY.zip)</td><td>2026-09-19</td><td>2026</td></tr><tr><td>storms</td><td>NOAA NCEI Storm Events Database, details files (county-coded hail, thunderstorm wind, tornado)</td><td>2026-09-20</td><td>—</td></tr><tr><td>value</td><td>USDA Census of Agriculture 2012, 2017, 2022, county level (NASS Quick Stats): AG LAND, INCL BUILDINGS - ASSET VALUE, MEASURED IN $ / ACRE</td><td>2026-09-19</td><td>—</td></tr><tr><td>water</td><td>USDA Census of Agriculture 2022 (NASS Quick Stats) + USGS Estimated Use of Water 2015 county data (usco2015v2.0.xlsx)</td><td>2026-09-19</td><td>2022</td></tr><tr><td>wells</td><td>Nebraska DNR registered groundwater wells (gis.ne.gov) + Kansas DWR WIMAS points of diversion (services.kgs.ku.edu)</td><td>2026-09-20</td><td>—</td></tr><tr><td>wells_states</td><td>State well registers: AZ Arizona DWR well registry (Wells55), not cancelled; CA California DWR well completion reports (new wells); ID Idaho DWR well records; M</td><td>2026-09-20</td><td>—</td></tr><tr><td>yield</td><td>USDA NASS county corn yield, all practices; trend fitted here on every published year since 2008</td><td>2026-09-16</td><td>—</td></tr></tbody></table></div>
+<h2>Not in the file, on purpose</h2>
+<p class="note">No combined score of any kind, no estimate of what a farm is worth, and no owner names. The Atlas shows what the public record says about a county and leaves the judgement to the reader. <a href="/farmland-atlas/methods">Methods</a>.</p>
+</main>
+
+<div id="site-footer"></div>
+<script src="/components/loader.js?v=14"></script>
+</body>
+</html>

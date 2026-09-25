@@ -1,0 +1,6 @@
+fips,state,county,rent_dry_usd_ac,rent_dry_year,rent_dry_chg10_pct,rent_irr_usd_ac,rent_irr_year,rent_pasture_usd_ac,value_usd_ac,value_year,value_flag,value_cagr_pct,rent_to_value_pct,corn_yield_median_bu_ac,corn_yield_years,corn_yield_trend_bu_yr,claims_per_100_usd,loss_ratio_last10,loss_ratio_all,years_loss_over_1,d2_week_share_pct,jul_low_recent_f,jul_low_normal_f,jul_low_trend_f_decade,irrigated_share_2022,tile_share_2022,notill_share_2022,crp_acres,crp_share_pct,crp_expiring_next3_acres,rented_share_2022,solar_mw,wind_mw,gs_rain_normal_in,hail_1in_days_yr,cattle_2022
+15001,HI,Hawaii County,,,,,,,8886,2022,,5.1,,,,,2.03,1.94,1.09,11,7.6,58.8,57.7,,,0.004,0.034,6172,17.2,602,0.5748,74.8,31.6,28.6,0.1,100946.0
+15003,HI,Honolulu County,,,,,,,29887,2022,,3.8,,,,,,,,,0.8,71.2,69.8,,0.858,,0.053,84,,0,0.5591,354.7,126.6,22.4,0.2,3335.0
+15005,HI,Kalawao County,,,,,,,,,,,,,,,,,,,7.3,69.3,68.5,,,,,,,,,0.0,0.0,17.1,0.0,0.0
+15007,HI,Kauai County,,,,,,,13236,2022,,8.1,,,,,,,,,0.2,68.4,67.0,,,0.002,0.021,0,,,0.2248,80.0,0.0,31.4,0.0,13893.0
+15009,HI,Maui County,,,,,,,12084,2022,,1.1,,,,,6.11,3.25,2.25,,8.7,67.2,66.4,,0.863,,0.008,7,,0,0.1929,68.5,75.0,21.7,0.1,13442.0

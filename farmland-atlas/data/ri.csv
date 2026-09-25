@@ -1,0 +1,6 @@
+fips,state,county,rent_dry_usd_ac,rent_dry_year,rent_dry_chg10_pct,rent_irr_usd_ac,rent_irr_year,rent_pasture_usd_ac,value_usd_ac,value_year,value_flag,value_cagr_pct,rent_to_value_pct,corn_yield_median_bu_ac,corn_yield_years,corn_yield_trend_bu_yr,claims_per_100_usd,loss_ratio_last10,loss_ratio_all,years_loss_over_1,d2_week_share_pct,jul_low_recent_f,jul_low_normal_f,jul_low_trend_f_decade,irrigated_share_2022,tile_share_2022,notill_share_2022,crp_acres,crp_share_pct,crp_expiring_next3_acres,rented_share_2022,solar_mw,wind_mw,gs_rain_normal_in,hail_1in_days_yr,cattle_2022
+44001,RI,Bristol County,,,,,,,49530,2022,,1.9,,,,,,,,,2.8,66.6,64.8,0.87,0.025,0.0,0.049,0,,,0.4148,15.7,0.0,22.7,0.1,150.0
+44003,RI,Kent County,,,,,,,14822,2022,,0.9,,,,,,,,,3.5,64.4,62.6,0.88,0.169,0.0,0.098,0,,,0.0305,132.9,15.0,23.5,0.4,243.0
+44005,RI,Newport County,,,,,,,35737,2022,,7.9,,,,,,,,,2.9,66.0,64.4,0.84,,0.021,0.096,0,,,0.3265,41.2,1.5,22.1,0.1,1573.0
+44007,RI,Providence County,,,,,,,18606,2022,,5.5,,,,,,,1.43,,3.7,63.9,62.2,0.88,,0.014,0.07,0,,0,0.0996,130.9,30.0,24.0,0.5,1073.0
+44009,RI,Washington County,,,,,,,24586,2022,,12.6,,,,,,,,,3.7,65.1,63.2,0.93,0.502,0.001,0.078,0,,,0.2169,130.8,31.5,22.4,0.5,832.0
