@@ -1,9 +1,9 @@
 {
  "schema": "agsist-render-audit/1",
  "base": "https://agsist.com",
- "ran": "2026-09-24T15:57:38.802Z",
+ "ran": "2026-09-25T15:58:31.951Z",
  "pages": 16,
- "seconds": 203,
+ "seconds": 201,
  "high": 0,
  "med": 0,
  "findings": [
@@ -17,7 +17,7 @@
    "page": "/status",
    "sev": "expected",
    "kind": "expected-404",
-   "detail": "desktop: 404  /data/dairy-data.json?_t=1790265382407"
+   "detail": "desktop: 404  /data/dairy-data.json?_t=1790351837478"
   },
   {
    "page": "/status",
@@ -29,7 +29,7 @@
    "page": "/status",
    "sev": "expected",
    "kind": "expected-404",
-   "detail": "mobile: 404  /data/dairy-data.json?_t=1790265388788"
+   "detail": "mobile: 404  /data/dairy-data.json?_t=1790351843503"
   }
  ]
 }
