@@ -217,6 +217,10 @@ def selftest():
     assert c == ("date", "GEOID", "tmax_f", "tmin_f"), c
     c = find_columns(["obs", "cty", "TMAX", "TMIN", "date"], {"cty": [19169.0, 1001.0], "obs": ["x"]})
     assert c[1] == "cty", c
+    try:
+        to_date(None); raise SystemExit('to_date(None) should raise')
+    except (ValueError, TypeError):
+        pass
     assert num("78.3") == 78.3 and num("") is None and num("NaN") is None and num(None) is None and num("x") is None and num(-999.99) == -999.99
     assert to_date(19960301) == date(1996, 3, 1) and to_date("1996-03-01 00:00:00") == date(1996, 3, 1)
     try:
@@ -236,6 +240,7 @@ def main():
     last = now.year - 1                       # a season ends Nov 30; the current year is never whole
     seasons = {}
     cols = None
+    bad_dates = 0
     fahrenheit = None
     skipped = []
     for year in range(FIRST_YEAR, last + 1):
@@ -283,9 +288,15 @@ def main():
                     continue
                 hi = conv(h) if h is not None and h > -900 else None
                 lo = conv(l) if l is not None and l > -900 else None
-                dd = to_date(d)
+                try:
+                    dd = to_date(d)
+                except (ValueError, TypeError):
+                    bad_dates += 1              # a row with no usable date; its day stays uncounted
+                    continue
                 seasons.setdefault(fips, {}).setdefault(year, Season()).add(dd, hi, lo)
         log(f"  {year}: {sum(1 for c in seasons.values() if year in c)} counties")
+    if bad_dates:
+        log(f"  {bad_dates} rows had no usable date and were skipped")
     if fahrenheit is None:
         sys.exit("never read a file; nothing written")
     early = [s for s in skipped if int(s[:4]) < last]
