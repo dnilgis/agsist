@@ -765,11 +765,14 @@ def build_read(c):
         where = "with no history to rank it against"
     cap = c["capacity"]
     if net > 0 and cap["room_down"] > 0:
-        tail = (f"It would take {cap['room_down']:,} contracts of selling to get back to "
-                f"the record low.")
+        # 2026-09-25 audit: room_down is the distance to the record-low SHARE of open interest, converted at
+        # today's open interest. It is not the record-low net in contracts (corn: 835,308 against a true
+        # 770,875 to the -356,415 low). Name the measure.
+        tail = (f"At today's open interest, it would take {cap['room_down']:,} contracts of selling "
+                f"to get back to the record-low share of open interest.")
     elif net < 0 and cap["room_up"] > 0:
-        tail = (f"It would take {cap['room_up']:,} contracts of buying to get back to "
-                f"the record high.")
+        tail = (f"At today's open interest, it would take {cap['room_up']:,} contracts of buying "
+                f"to get back to the record-high share of open interest.")
     else:
         tail = ""
     return f"{lab}: funds are net {side} {abs(net):,} contracts{share}, {where}. {tail}".strip()
@@ -894,6 +897,25 @@ def attach_adjusted_prices(deep):
           f"{joined} rows joined, {missing} without one")
 
 
+# 2026-09-25 audit. contract_calendar.py puts lean hogs on MONTH_END and says so ("UNVERIFIED ... a
+# placeholder"). CME lean hogs stop trading on the 10th business day of the contract month, about the 14th,
+# so the roll repair drops the wrong day. Measured in cot-deep.json: weekly steps of -23.4%, -17.6%, -15.0%,
+# -10.6%, -17.7%, -14.6% and -15.8% sit in the Aug/Oct expiry weeks since 2023, raw and adjusted identical.
+# The hogs "-14.5% over 13 weeks" was the Aug 18 2026 roll. A price read built on that is wrong, so it is
+# withheld (the same path Minneapolis wheat already takes: no price series, so no price-conditioned read)
+# until the calendar rule is fixed and the archive rebuilt.
+UNREPAIRED_ROLL = {"leanhogs": "roll rule not yet in the calendar"}
+
+
+def withhold_unrepaired_prices(deep):
+    for key in UNREPAIRED_ROLL:
+        b = (deep.get("commodities") or deep).get(key)
+        if b and b.get("dates"):
+            n = len(b["dates"])
+            for f in ("px_tue", "px_adj", "px_entry"):
+                b[f] = [None] * n
+
+
 def main():
     if "--selftest" in sys.argv:
         return selftest()
@@ -902,6 +924,7 @@ def main():
         return 1
     with open(DEEP_PATH) as f:
         deep = json.load(f)
+    withhold_unrepaired_prices(deep)
 
     family, out = [], {}
     for key, block in deep["commodities"].items():
@@ -944,8 +967,8 @@ def main():
         "method": {
             "source": "CFTC Disaggregated Commitments of Traders, futures only, all contract months.",
             "entry": ("Forward returns start at the first session close after CFTC published, "
-                      "using each week's real publication date. Federal holidays delay the "
-                      "release, and roughly one week in seven is not a Friday."),
+                      "using each week's real publication date. A federal holiday on the Wednesday, Thursday or Friday of the report week delays the "
+                      "release to the Monday, about six weeks a year."),
             "price": ("Front-month continuous futures with the roll steps removed. The return "
                       "across each front-month change is dropped rather than counted, so an "
                       "old-crop-to-new-crop roll is not read as a rally."),
@@ -1045,8 +1068,8 @@ def selftest():
 
     from datetime import date as _d
     ckt("entry is after the release", CAL.entry_date(_d(2026, 9, 1)) > CAL.release_date(_d(2026, 9, 1)))
-    ckt("a holiday in the report week delays the release",
-        CAL.release_date(_d(2026, 9, 8)) == _d(2026, 9, 14))
+    ckt("a Wed-Fri holiday in the report week delays the release; a Monday holiday does not",
+        CAL.release_date(_d(2026, 11, 24)) == _d(2026, 11, 30) and CAL.release_date(_d(2026, 9, 8)) == _d(2026, 9, 11))
 
     rng = random.Random(1)
     ckt("bootstrap on a flat series is not significant",

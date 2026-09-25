@@ -2197,8 +2197,10 @@
     var dotEl=document.getElementById('cot-'+key+'-dot'),minEl=document.getElementById('cot-'+key+'-min'),maxEl=document.getElementById('cot-'+key+'-max');
     var net=d.net,prev=d.prev,min52=d.min52,max52=d.max52,range=(max52-min52)||1;
     var isLong=net>=0;
-    if(netEl){netEl.textContent=fmtK(net);netEl.style.color=isLong?'var(--green)':'#ef4444';}
-    if(dirEl){dirEl.textContent=isLong?'LONG':'SHORT';dirEl.className='cot-dir '+(isLong?'long':'short');}
+    /* 2026-09-25 audit: /cot labels a net inside +/-5,000 contracts FLAT; this row said SHORT for wheat at -3,674. Same threshold, same word. */
+    var isFlat=Math.abs(net)<5000;
+    if(netEl){netEl.textContent=fmtK(net);netEl.style.color=isFlat?'var(--text-muted)':isLong?'var(--green)':'#ef4444';}
+    if(dirEl){dirEl.textContent=isFlat?'FLAT':isLong?'LONG':'SHORT';dirEl.className='cot-dir '+(isFlat?'':isLong?'long':'short');dirEl.style.color=isFlat?'var(--text-muted)':'';}
     if(chgEl&&prev!=null){var chg=net-prev;chgEl.textContent=(chg>=0?'\u25b2':'\u25bc')+fmtK(Math.abs(chg)).replace(/^[+-]/,'');chgEl.className='cot-chg '+(chg>0?'up':chg<0?'dn':'nc');}
     if(minEl)minEl.textContent=fmtKShort(min52);if(maxEl)maxEl.textContent=fmtKShort(max52);
     var zeroPct=Math.max(0,Math.min(100,((0-min52)/range)*100));
@@ -2232,7 +2234,8 @@
       dateEl.innerHTML='As of '+_cDisp+' ('+ageNote+') \u00b7 CFTC <span id="cot-countdown" style="color:var(--gold);font-weight:700"></span>';
       if(daysOld!=null&&daysOld>=14){dateEl.style.color='#f0913a';}
       (function(){
-        function nx(now){var t=new Date(Date.UTC(new Date(now).getUTCFullYear(),new Date(now).getUTCMonth(),new Date(now).getUTCDate(),21,30,0));while(t.getUTCDay()!==5||t.getTime()<=now){t=new Date(t.getTime()+86400000);t.setUTCHours(21,30,0,0);}return t.getTime();}
+        /* 2026-09-25 audit: this counted to Friday 21:30 UTC, two hours after the 3:30pm ET release in summer (19:30 UTC) and one hour after it in winter (20:30 UTC). CFTC publishes at 3:30pm New York time; ask the browser what New York's clock says instead of fixing a UTC hour. */
+        function nx(now){for(var i=0;i<9;i++){var d=new Date(now+i*86400000);if(d.getUTCDay()!==5)continue;var t=Date.UTC(d.getUTCFullYear(),d.getUTCMonth(),d.getUTCDate(),20,30,0);var h=+new Intl.DateTimeFormat('en-US',{timeZone:'America/New_York',hour:'numeric',hourCycle:'h23'}).format(new Date(t));if(h===16)t-=3600000;if(t>now)return t;}return now+604800000;}
         function fmt(ms){if(ms<=0)return null;var s=Math.floor(ms/1000),d=Math.floor(s/86400),h=Math.floor((s%86400)/3600),m=Math.floor((s%3600)/60);return d>0?d+'d '+h+'h':h>0?h+'h '+m+'m':(m>0?m+'m':'<1m');}
         function tick(){var el=document.getElementById('cot-countdown');if(!el)return;var now=Date.now(),f=fmt(nx(now)-now);el.textContent=f?('\u00b7 next in '+f):'\u00b7 update due';}
         tick();setInterval(tick,60000);

@@ -104,12 +104,19 @@ def next_business_day(d):
 def release_date(as_of):
     """The date CFTC published the report for this Tuesday as-of date.
 
-    Base case: the Friday of the same week. Each federal holiday falling
-    Monday-to-Friday of that week pushes it one business day, capped at two,
-    which is the delay CFTC's own schedule note describes.
+    Base case: the Friday of the same week. A federal holiday on the Wednesday,
+    Thursday or Friday of that week pushes it one business day (to the Monday).
+    A holiday on the MONDAY does not: the Tuesday data still goes out that Friday.
+
+    Corrected 2026-09-25. This counted Monday-to-Friday, so a Monday holiday
+    delayed a release CFTC does not delay. Two independent pieces of evidence
+    against it: cot.yml quotes CFTC's 2026 schedule as six Monday releases
+    (Jan 5, Jun 22, Jul 6, Nov 16, Nov 30, Dec 28), every one a Wed-Fri holiday
+    week; and the repo's own release commit for the Sep 8 report (Labor Day was
+    Mon Sep 7) is dated Fri Sep 11, not Mon Sep 14. Checked against all six.
     """
     monday = as_of - timedelta(days=as_of.weekday())
-    delay = sum(1 for i in range(5) if is_federal_holiday(monday + timedelta(days=i)))
+    delay = sum(1 for i in (2, 3, 4) if is_federal_holiday(monday + timedelta(days=i)))
     d = as_of + timedelta(days=3)                     # the Friday
     for _ in range(min(delay, 2)):
         d = next_business_day(d)
@@ -231,8 +238,15 @@ def selftest():
     ck("but Labor Day pushes the entry to Tuesday", entry_date(date(2026, 9, 1)), date(2026, 9, 8))
 
     # A holiday INSIDE the report week delays the release itself.
-    ck("holiday week release slips", release_date(date(2026, 9, 8)), date(2026, 9, 14))
-    ck("holiday week entry slips", entry_date(date(2026, 9, 8)), date(2026, 9, 15))
+    ck("a Monday holiday does not slip the release (Labor Day 2026: released Fri Sep 11)", release_date(date(2026, 9, 8)), date(2026, 9, 11))
+    ck("a Monday-holiday week enters the next Monday after the Friday release", entry_date(date(2026, 9, 8)), date(2026, 9, 14))
+    ck("a Thanksgiving week slips: released Mon Nov 30, entry Tue Dec 1", entry_date(date(2026, 11, 24)), date(2026, 12, 1))
+    for _ao, _rel in [(date(2025, 12, 30), date(2026, 1, 5)), (date(2026, 6, 16), date(2026, 6, 22)),
+                      (date(2026, 6, 30), date(2026, 7, 6)), (date(2026, 11, 10), date(2026, 11, 16)),
+                      (date(2026, 11, 24), date(2026, 11, 30)), (date(2026, 12, 22), date(2026, 12, 28))]:
+        ck("CFTC's six 2026 Monday releases: as-of %s" % _ao, release_date(_ao), _rel)
+    _mon = [d for d in (date(2026, 1, 6) + timedelta(days=7 * k) for k in range(52)) if release_date(d).weekday() == 0]
+    ck("2026 has exactly six Monday releases", len(_mon), 6)
     ck("thanksgiving week release", release_date(date(2026, 11, 24)), date(2026, 11, 30))
     ck("release day that IS the holiday moves", release_date(date(2026, 12, 29)), date(2027, 1, 4))
     ck("entry is always after the release", entry_date(date(2026, 12, 29)) > release_date(date(2026, 12, 29)), True)
