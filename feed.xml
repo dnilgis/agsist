@@ -5,13 +5,24 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Thu, 24 Sep 2026 11:08:57 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 25 Sep 2026 11:16:24 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/agsist.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>GRAINS SIT STILL, CATTLE SLIP AGAIN BEFORE COF</title>
+      <link>https://agsist.com/daily/2026-09-25</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-09-25</guid>
+      <pubDate>Fri, 25 Sep 2026 05:00:00 -0600</pubDate>
+      <description>Corn eased to $5.17, beans barely moved at $13.04, and neither market gave you a reason to do anything today. Cattle is the real story: down 0.8% to $218.95, a second straight session lower with USDA's Cattle on Feed still hours away at 2:00 PM CT.
+Action: Live cattle at $218.95: nothing to do ahead of Cattle on Feed at 2:00 PM CT, but a close under $216.50 is the next sell.
+• Cattle Slips Again, Report Looms
+• Grains Stay Parked
+Read more: https://agsist.com/daily/2026-09-25</description>
+    </item>
     <item>
       <title>CRUDE RUNS TO $93 AS HORMUZ TRAFFIC STAYS THIN</title>
       <link>https://agsist.com/daily/2026-09-24</link>
@@ -373,19 +384,6 @@ Weekly export sales print at 7:30 AM CT; soybean oil leads the complex higher ov
 • SOYOIL BREAKS FROM THE COMPLEX
 • CATTLE FIRM, SCREWWORM CLOCK TICKING
 Read more: https://agsist.com/daily/2026-08-27</description>
-    </item>
-    <item>
-      <title>CROP RATINGS DIP; GRAINS FIRM, CATTLE SLIDE</title>
-      <link>https://agsist.com/daily/2026-08-26</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-08-26</guid>
-      <pubDate>Wed, 26 Aug 2026 05:00:00 -0600</pubDate>
-      <description>Monday's crop progress report clipped good-to-excellent ratings on both corn and soybeans, and the market noticed: December corn settled at $5.29, November beans at $12.41, wheat at $6.98. None of these are violent moves, but all three firmed on the same catalyst, a USDA condition nudge lower with dough-stage corn and pod-filling beans still weeks from a final verdict. The Pro Farmer tour number Friday is the next real test.
-USDA's Monday condition cut gave corn and beans a foothold; cattle absorbed a double hit from fund selling and the Douglas reopening.
-• GRAINS FIRM ON RATINGS CUT
-  → Unpriced new-crop corn with December above $5.25: the window from last week is still open. Do not let the Pro Farmer tour be the moment that closes it for you.
-• CATTLE ABSORB A DOUBLE HIT
-• ENERGY: CORRIDOR TALKS CAP THE BOUNCE
-Read more: https://agsist.com/daily/2026-08-26</description>
     </item>
   </channel>
 </rss>

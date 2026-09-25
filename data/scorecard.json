@@ -1,18 +1,18 @@
 {
- "updated": "2026-09-24T11:08:58+00:00",
- "total": 132,
+ "updated": "2026-09-25T11:16:24+00:00",
+ "total": 133,
  "played_out": 43,
- "didnt": 83,
+ "didnt": 84,
  "pending": 6,
- "hit_rate": 34.1,
+ "hit_rate": 33.9,
  "by_method": {
   "deterministic": {
    "played": 17,
-   "missed": 73,
-   "graded": 90,
-   "hit_rate": 18.9,
+   "missed": 74,
+   "graded": 91,
+   "hit_rate": 18.7,
    "first": "2026-06-25",
-   "last": "2026-09-24"
+   "last": "2026-09-25"
   },
   "self_reported": {
    "played": 26,
@@ -34,17 +34,17 @@
   },
   "v2": {
    "played": 11,
-   "missed": 30,
-   "graded": 41,
-   "hit_rate": 26.8,
+   "missed": 31,
+   "graded": 42,
+   "hit_rate": 26.2,
    "first": "2026-08-12",
-   "last": "2026-09-24"
+   "last": "2026-09-25"
   }
  },
  "direction_only": {
   "right_way": 42,
-  "graded": 90,
-  "rate": 46.7
+  "graded": 91,
+  "rate": 46.2
  },
  "by_instrument": {
   "wheat": {
@@ -64,8 +64,8 @@
   },
   "crude": {
    "played": 3,
-   "graded": 6,
-   "hit_rate": 50.0
+   "graded": 7,
+   "hit_rate": 42.9
   },
   "hogs": {
    "played": 0,
@@ -104,19 +104,35 @@
  "current_streak": 0,
  "records": [
   {
-   "made": "2026-09-24",
+   "made": "2026-09-25",
    "judged": null,
-   "call": "Called crude up toward $94.50 ($93.19 when the call was made).",
+   "call": "Called cattle down toward $216.50 ($218.95 when the call was made).",
    "outcome": "pending",
    "method": "deterministic",
    "mismatch": false,
    "note": "Open: no session has settled since this call was made.",
+   "instrument": "cattle",
+   "direction": "down",
+   "level": "216.50",
+   "p0": 218.95,
+   "p1": null,
+   "design": "v2"
+  },
+  {
+   "made": "2026-09-24",
+   "judged": "2026-09-25",
+   "call": "Called crude up toward $94.50 ($93.19 when the call was made). It closed at $92.96.",
+   "outcome": "didnt",
+   "method": "deterministic",
+   "mismatch": false,
+   "note": "Crude drifted to $92.96, not the $94.50 line; the Hormuz premium is still failing to build despite the thin traffic count.",
    "instrument": "crude",
    "direction": "up",
    "level": "94.50",
    "p0": 93.19,
-   "p1": null,
-   "design": "v2"
+   "p1": 92.96,
+   "design": "v2",
+   "direction_ok": false
   },
   {
    "made": "2026-09-23",

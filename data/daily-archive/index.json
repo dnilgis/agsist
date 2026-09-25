@@ -1,6 +1,18 @@
 {
   "briefings": [
     {
+      "date": "2026-09-25",
+      "date_display": "Friday, September 25, 2026",
+      "headline": "GRAINS SIT STILL, CATTLE SLIP AGAIN BEFORE COF",
+      "teaser": "Grains go quiet, cattle keeps sliding into a Cattle on Feed report that hasn't printed yet.",
+      "market_mood": "cautious",
+      "surprise_count": 0,
+      "sections": 2,
+      "url": "/daily/2026-09-25",
+      "market_closed": false,
+      "yc_outcome": "didnt"
+    },
+    {
       "date": "2026-09-24",
       "date_display": "Thursday, September 24, 2026",
       "headline": "CRUDE RUNS TO $93 AS HORMUZ TRAFFIC STAYS THIN",
@@ -2254,6 +2266,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-09-24T11:08:49.434740+00:00",
-  "count": 196
+  "updated": "2026-09-25T11:16:16.311383+00:00",
+  "count": 197
 }
