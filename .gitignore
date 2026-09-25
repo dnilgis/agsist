@@ -8,3 +8,7 @@ __pycache__/
 # gitignored since 2026-08-19 and it was not, and one `git add -A` by hand
 # would have put 6 MB into the repo. Now the claim is true.
 bids-full.json
+
+# Barchart's rows alone, before the network is merged in. Same lifetime as
+# bids-full.json: written and read inside one job, never committed.
+barchart-raw.json
