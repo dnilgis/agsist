@@ -1,0 +1,92 @@
+name: farmland-atlas-pages
+
+# Rebuilds the static Farmland Atlas pages: one page per county (3,148), one per
+# state (50), /farmland-atlas/states/, /farmland-atlas/data, the CSV and JSON
+# downloads, the share images (farmland-atlas/og/) and sitemap-atlas.xml. OFFLINE: reads data/atlas/ and data/tenure/,
+# calls no API, needs no key. MACHINE-OWNED: never hand-edit the emitted files,
+# edit scripts/build_atlas_pages.py.
+#
+# Runs after the "farmland-atlas" data workflow finishes (a bot push cannot
+# trigger another workflow, so workflow_run is how this one hears about new
+# data), plus a weekly backstop, plus a button. It commits only when output
+# actually changed. Each page carries a content-hash stamp, so a county whose
+# figures did not change keeps its "Figures as of" date and its sitemap lastmod.
+on:
+  workflow_run:
+    workflows: ["farmland-atlas"]
+    types: [completed]
+  schedule:
+    - cron: "41 11 * * 3"      # Wednesdays 11:41 UTC, backstop
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: farmland-atlas-pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    # a failed data run must not rebuild the pages from half a refresh
+    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install the card renderer
+        run: |
+          pip install --quiet playwright pillow
+          python -m playwright install --with-deps chromium
+
+      - name: Selftest (gate)
+        run: |
+          python scripts/build_atlas_pages.py --selftest
+          python scripts/build_atlas_cards.py --selftest
+
+      - name: Build pages
+        run: python scripts/build_atlas_pages.py
+
+      # One share image per county, state, the hub and the data page, drawn from
+      # data/cards.json. Only cards whose figures changed are redrawn: the first
+      # run draws about 3,200 (about 7 minutes, 64 MB), later runs a few.
+      # Uses the Chromium that Playwright installed above.
+      - name: Draw share images
+        run: python scripts/build_atlas_cards.py
+
+      - name: Commit if changed
+        id: commit
+        run: |
+          git config user.name "AGSIST Bot"
+          git config user.email "bot@agsist.com"
+          git add farmland-atlas sitemap-atlas.xml
+          # the two hand-owned files in that folder are never staged by this job
+          git reset -q -- farmland-atlas/compare.html farmland-atlas/sheet.html || true
+          if git diff --staged --quiet; then echo "no change"; echo "changed=0" >> "$GITHUB_OUTPUT"; exit 0; fi
+          git commit -m "pages: rebuild Farmland Atlas county and state pages"
+          # other workflows commit to main all day; rebase and retry rather than
+          # lose the build to one rejected push
+          for i in 1 2 3 4; do
+            git rebase --abort 2>/dev/null || true
+            if git pull --rebase --autostash origin main && git push; then
+              echo "changed=1" >> "$GITHUB_OUTPUT"; exit 0
+            fi
+            sleep $((30 * i))
+          done
+          echo "push failed after 4 attempts"; exit 1
+
+      - name: IndexNow ping (best-effort)
+        if: steps.commit.outputs.changed == '1'
+        continue-on-error: true
+        run: |
+          curl -s -X POST "https://api.indexnow.org/indexnow" \
+            -H "Content-Type: application/json; charset=utf-8" \
+            -d '{"host":"agsist.com","key":"f4a81c26db974e0f92c35b7a6e10d8c4","keyLocation":"https://agsist.com/f4a81c26db974e0f92c35b7a6e10d8c4.txt","urlList":["https://agsist.com/farmland-atlas/states/","https://agsist.com/sitemap-atlas.xml"]}' \
+            || echo "IndexNow ping failed - harmless"

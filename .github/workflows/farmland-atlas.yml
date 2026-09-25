@@ -238,6 +238,14 @@ jobs:
         continue-on-error: true
         run: python scripts/fetch_atlas_frost.py
 
+      # continue-on-error hides a failed fetch behind a green run; say so out loud
+      - name: Frost fetch check
+        if: steps.which.outputs.frost == '1'
+        run: |
+          if [ ! -s data/atlas/raw/frost.json ]; then
+            echo "::warning title=Frost layer::data/atlas/raw/frost.json was not written. Open the step 'Fetch freeze dates and heat units' and read its last lines."
+          fi
+
       # First run pulls every year since 1989, the same shape as loss; after
       # that the raw file exists and only the last two years are refetched.
       - name: Fetch premium book (RMA Summary of Business)
