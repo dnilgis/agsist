@@ -964,6 +964,10 @@ button,a,[role="button"],input,select{touch-action:manipulation}
 'use strict';
 // Cash bids load from the AGSIST data proxy; no credentials ship in the client.
 var BASE_URL='https://agsist-barchart.dnilgis.workers.dev/barchart/getGrainBids';
+/* Set to false the day the Barchart subscription ends (cancelling: 2026-09-25).
+   Off means off: the proxy is not called and no "licensed feed is not answering"
+   banner is drawn, because nothing is failing. The AGSIST network is the feed. */
+var LICENSED_FEED=true;
 var currentBids=[],currentElevators=[],currentFilter='all',currentSort='distance',currentDelivery='all',pinnedKeys=[],wtdComm='corn';
 var hasSearched=false,detectedLabel='',preFilter='all',lastFetchTime=null;
 var radiusTimer=null;
@@ -2447,7 +2451,7 @@ function netMerge(feedRows,networkRows){
 
 /* Never rejects. Resolves to an empty result on any failure at all. */
 function fetchNetwork(zip,radiusMi){
-  var empty={rows:[],places:0,duplicatesResolved:0,nationalPlaces:null};
+  var empty={rows:[],places:0,duplicatesResolved:0,nationalPlaces:null,failed:true};
   /* Off means off: no request is made at all, not merely ignored. */
   if(!NET_ON)return Promise.resolve(empty);
   /* THE DEADLINE WRAPS EVERYTHING BELOW. Whichever settles first wins, and the
@@ -2528,6 +2532,7 @@ var FEED_DEADLINE_MS=15000;
 function feedHuman(err){
   var msg=String(err);
   return msg.indexOf('429')>=0?'Too many requests \u2014 wait a moment and try again.':
+         msg.indexOf('network unreachable')>=0?'Couldn\u2019t reach the elevator boards just now. Try again shortly.':
          msg.indexOf('timeout')>=0?'The licensed feed did not answer in time.':
          /HTTP 5/.test(msg)?'That feed is temporarily unavailable. Try again shortly.':
          msg.indexOf('Failed to fetch')>=0||msg.indexOf('NetworkError')>=0||msg.indexOf('TypeError')>=0||msg.indexOf('abort')>=0?'Couldn\u2019t reach the bid service \u2014 it may be busy or briefly down (it\u2019s usually not your signal). Tap Retry in a few seconds.':
@@ -2544,7 +2549,7 @@ function fetchBids(zip,radius,callback){
   var net=fetchNetwork(zip,radius||50);
   var bcErr=null,ctl=null,killer=null;
   try{if(typeof AbortController==='function')ctl=new AbortController();}catch(e){}
-  var live=fetch(url,ctl?{signal:ctl.signal}:undefined)
+  var live=!LICENSED_FEED?Promise.resolve([]):fetch(url,ctl?{signal:ctl.signal}:undefined)
     .then(function(r){return r.ok?r.json():Promise.reject('HTTP '+r.status);})
     .then(function(data){return flatten(data).filter(function(b){return b.cashPrice!==null||b.basis!==null;});})
     .catch(function(err){bcErr=bcErr||err||'error';return [];});
@@ -2552,7 +2557,7 @@ function fetchBids(zip,radius,callback){
      AbortController exists, so a worker that never answers cannot hold the
      page open. Without AbortController the fetch is simply left to finish
      into nothing, which is still better than waiting for it. */
-  var capped=Promise.race([live,new Promise(function(res){
+  var capped=!LICENSED_FEED?live:Promise.race([live,new Promise(function(res){
     killer=setTimeout(function(){
       bcErr=bcErr||'timeout';
       if(ctl){try{ctl.abort();}catch(e){}}
@@ -2572,6 +2577,9 @@ function fetchBids(zip,radius,callback){
     if(bcErr)console.warn('[AGSIST]',bcErr);
     if(!merged.rows.length){
       cbNetStats={places:0,rows:0,duplicatesResolved:0,nationalPlaces:null};
+      /* Nothing came back AND the only source that could have answered did not:
+         say so. "No bids found" would tell the reader there are none near them. */
+      if(!bcErr&&n.failed&&!LICENSED_FEED)bcErr='network unreachable';
       callback(bcErr?new Error(feedHuman(bcErr)):null,[]);
       return;
     }

@@ -719,6 +719,8 @@ def network_rows(grid, base=None):
         print(f"[fetch_bids] network feed unreachable ({type(e).__name__}: {e}); "
               f"Barchart only this run", file=sys.stderr)
         return []
+    global _NET_GENERATED
+    _NET_GENERATED = str(doc.get("generated") or "") if isinstance(doc, dict) else ""
     bids = (doc.get("bids") if isinstance(doc, dict) else None) or []
     if not bids:
         print("[fetch_bids] network feed carried no bids; Barchart only this run",
@@ -1363,13 +1365,45 @@ def deduplicate(bids):
     return list(seen.values())
 
 
-def main():
-    if not API_KEY:
-        print("ERROR: BARCHART_API_KEY not set", file=sys.stderr)
-        sys.exit(1)
+def _barchart_wanted():
+    """True when this run should ask Barchart at all.
 
-    print(f"[fetch_bids] Starting — {len(ZIP_GRID)} ZIP codes, "
-          f"max {MAX_DISTANCE}mi radius, up to {TOTAL_LOCATIONS} locations each")
+    The subscription is being cancelled (Sig, 2026-09-25). A missing key used
+    to be a hard error here, which meant the day it lapsed data/bids.json, the
+    basis map and the basis history would all have stopped -- an outage, when
+    the AGSIST network already covers most of it. Now a missing key, or
+    BARCHART_MODE=off, is a normal way to run: the feed is the network alone.
+    """
+    if os.environ.get("BARCHART_MODE", "auto").strip().lower() == "off":
+        return False, "BARCHART_MODE=off"
+    if not API_KEY:
+        return False, "no BARCHART_API_KEY"
+    return True, ""
+
+
+_NET_GENERATED = ""   # `generated` of the network file this run read
+
+
+def _say_barchart_live(live, asked=False):
+    """Tell the workflow whether this run had Barchart rows (so the directory
+    harvest can skip) and whether Barchart was ASKED. asked and not live is a
+    dead key: the workflow's last step turns that red, because a green run
+    that quietly stopped using the paid feed is the failure nobody sees."""
+    out = os.environ.get("GITHUB_OUTPUT")
+    if out:
+        with open(out, "a") as f:
+            f.write(f"barchart_live={'true' if live else 'false'}\n")
+            f.write(f"barchart_asked={'true' if asked else 'false'}\n")
+
+
+def main():
+    barchart_on, off_why = _barchart_wanted()
+    if barchart_on:
+        print(f"[fetch_bids] Starting — {len(ZIP_GRID)} ZIP codes, "
+              f"max {MAX_DISTANCE}mi radius, up to {TOTAL_LOCATIONS} locations each")
+    else:
+        print(f"[fetch_bids] NETWORK-ONLY ({off_why}): Barchart is not asked. "
+              f"The feed is the AGSIST elevator network alone.")
 
     all_bids = []
     errors = 0
@@ -1378,7 +1412,7 @@ def main():
     saturated = []   # ZIPs that came back at the ceiling — the ceiling bound
     degraded = []    # ZIPs that fell back to the 30-location default
 
-    for entry in ZIP_GRID:
+    for entry in (ZIP_GRID if barchart_on else []):
         z = entry["zip"]
         print(f"  📍 {entry['label']} ({z})…", end=" ")
         data, fell_back = fetch_bids_for_zip(z)
@@ -1407,8 +1441,9 @@ def main():
 
     # Report the ceiling BEFORE the dedup summary, because it is the finding
     # that decides whether this grid is complete or merely full.
-    print(f"\n[fetch_bids] {loc_total} locations across {len(ZIP_GRID)} ZIPs")
-    if degraded:
+    if barchart_on:
+        print(f"\n[fetch_bids] {loc_total} locations across {len(ZIP_GRID)} ZIPs")
+    if barchart_on and degraded:
         print(f"[fetch_bids] ⚠ {len(degraded)} ZIP(s) fell back to Barchart's "
               f"default 30-location cap: {', '.join(degraded)}")
         if len(degraded) == len(ZIP_GRID):
@@ -1424,26 +1459,48 @@ def main():
             print(f"[fetch_bids]     {label} ({z}): {n}")
         print("[fetch_bids] Until that is clear, 'absent from Barchart' is "
               "NOT a safe claim for anything near these ZIPs.")
-    else:
+    elif barchart_on:
         print(f"[fetch_bids] No ZIP reached {TOTAL_LOCATIONS} locations — the "
               f"ceiling did not bind, so this grid saw everything Barchart "
               f"has within {MAX_DISTANCE} miles of each point.")
 
-    if not all_bids:
-        # Fail LOUD: zero bids across every ZIP = dead/expired BARCHART_API_KEY
-        # or total outage. Writing an empty bids.json at exit 0 once meant the
-        # cash-bids page could go blank silently. Red workflow instead.
-        print("[fetch_bids] FATAL: 0 bids collected across all ZIPs — failing loud", flush=True)
-        raise SystemExit(1)
+    barchart_live = bool(all_bids)
+    if barchart_on and not barchart_live:
+        # A dead or expired key, or a Barchart outage. This used to exit 1 and
+        # stop the whole feed. The network can carry it, so say so as a
+        # workflow annotation (visible on the run) and carry on; the guard
+        # that refuses to publish an EMPTY file still runs after the merge.
+        print("::warning::Barchart returned 0 bids across every ZIP (dead key, "
+              "expired subscription or outage). Publishing the AGSIST network alone.",
+              flush=True)
+    elif barchart_on and errors > len(ZIP_GRID) // 4:
+        print(f"::warning::Barchart failed for {errors} of {len(ZIP_GRID)} ZIPs "
+              f"(rate limit or plan change?). Its rows are partial this run.",
+              flush=True)
     before = len(all_bids)
     all_bids = deduplicate(all_bids)
     print(f"\n[fetch_bids] {before} kept → {len(all_bids)} after dedup")
+
+    # BARCHART'S ROWS ALONE, BEFORE THE NETWORK GOES IN. The directory step
+    # (extract_directory.py --from-bids) needs to know which elevators
+    # Barchart sells. bids-full.json cannot say: since 2026-09-23 it is the
+    # merged feed, and reading it filed 964 of our own places under
+    # source=barchart, which inflated the roster the cancellation is measured
+    # against. The merge also drops a Barchart row whenever the network wins
+    # it, so even the genuine rows went missing from the merged file.
+    raw_path = os.environ.get("BARCHART_RAW_PATH", "barchart-raw.json")
+    if barchart_live:
+        with open(raw_path, "w") as f:
+            json.dump({"bids": all_bids}, f, separators=(",", ":"))
+    elif os.path.exists(raw_path):
+        os.remove(raw_path)
 
     # Fold in the AGSIST elevator network so every surface reading these
     # files shows both sources. Barchart-only if the network is unreachable.
     grid_for_merge = [{"zip": e["zip"], "lat": e["lat"], "lng": e["lng"]} for e in ZIP_GRID]
     all_bids = merge_network(all_bids, grid_for_merge)
-    print(f"[fetch_bids] Errors: {errors}/{len(ZIP_GRID)} ZIPs")
+    if barchart_on:
+        print(f"[fetch_bids] Errors: {errors}/{len(ZIP_GRID)} ZIPs")
 
     all_bids.sort(key=lambda b: (b.get("state") or "", b.get("city") or "", b.get("commodity") or ""))
 
@@ -1491,19 +1548,24 @@ def main():
     # Either way: do NOT overwrite a good committed bids.json with an
     # empty one. Exit non-zero so the Action fails loudly instead of
     # going green-while-empty (the bug that hid for weeks).
-    if errors == len(ZIP_GRID):
-        print(f"ERROR: all {errors} ZIPs failed to fetch — not overwriting "
-              f"{OUTPUT_PATH}", file=sys.stderr)
-        sys.exit(2)
     if not all_bids:
-        print("ERROR: fetch succeeded but ZERO bids parsed — likely a "
-              "response-shape/field-name change. Refusing to overwrite "
-              f"{OUTPUT_PATH} with an empty file.", file=sys.stderr)
+        # Neither feed produced a row: Barchart is off or dead AND the network
+        # is unreachable or empty. Publishing that would blank three pages.
+        print(f"ERROR: no bids from Barchart ({errors}/{len(ZIP_GRID)} ZIPs "
+              f"failed) and none from the network — not overwriting "
+              f"{OUTPUT_PATH}", file=sys.stderr)
         sys.exit(3)
 
     output = {
         "fetched": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
-        "source": "AGSIST elevator network (dnilgis/bids) + a licensed cash-bid feed",
+        "source": ("AGSIST elevator network (dnilgis/bids) + a licensed cash-bid feed"
+                   if barchart_live else "AGSIST elevator network (dnilgis/bids)"),
+        "barchart": {"live": barchart_live,
+                     "mode": ("on" if barchart_on else "off"),
+                     "zips_failed": errors if barchart_on else None,
+                     "network_generated": _NET_GENERATED,
+                     "note": ("" if barchart_live else
+                              (off_why if not barchart_on else "asked, returned nothing"))},
         "zip_grid": zip_index,
         "stats": {
             "total_bids": len(all_bids),
@@ -1567,6 +1629,7 @@ def main():
           f"— not committed; build_basis_map.py reads it in this job")
     print(f"[fetch_bids] {len(all_bids)} bids, {len(facilities)} facilities, {len(states)} states")
     print(f"[fetch_bids] Commodities: {commodities}")
+    _say_barchart_live(barchart_live, asked=barchart_on)
 
 
 def selftest():
@@ -2336,6 +2399,101 @@ def selftest():
     with redirect_stdout(buf), redirect_stderr(buf):
         m2 = merge_network(bc_rows, grid_n, base=os.path.join(tmp, "does-not-exist"))
     ck("an unreachable network feed returns the Barchart rows unchanged", m2 == bc_rows)
+
+    # ---- CUTTING THE CORD (2026-09-25) --------------------------------------
+    # main() end to end, in a scratch directory, with the module's globals
+    # pointed at the fixture. What must hold the day the subscription lapses:
+    # the feed keeps being written from the network alone, says so in its own
+    # header, and still refuses to publish when NOTHING came from anywhere.
+    g = globals()
+    saved = {k: g[k] for k in ("API_KEY", "ZIP_GRID", "BIDS_NETWORK_BASE",
+                               "FULL_PATH", "fetch_bids_for_zip", "flatten",
+                               "location_count")}
+    saved_env = {k: os.environ.get(k) for k in ("BARCHART_MODE", "GITHUB_OUTPUT")}
+    cwd0 = os.getcwd()
+
+    def run_main(key, net_base, mode=None, barchart_rows=None, fail_zips=False):
+        d = tempfile.mkdtemp()
+        os.makedirs(os.path.join(d, "data"), exist_ok=True)
+        gho = os.path.join(d, "gho")
+        os.chdir(d)
+        g["API_KEY"] = key
+        g["ZIP_GRID"] = [{"zip": "67501", "lat": 38.06, "lng": -97.93, "label": "Hutchinson KS"}]
+        g["BIDS_NETWORK_BASE"] = net_base
+        g["FULL_PATH"] = os.path.join(d, "bids-full.json")
+        if fail_zips:
+            g["fetch_bids_for_zip"] = lambda z: (None, False)
+        elif barchart_rows is not None:
+            g["fetch_bids_for_zip"] = lambda z: ({"results": []}, False)
+            g["flatten"] = lambda data, z: [dict(r) for r in barchart_rows]
+            g["location_count"] = lambda data: 1
+        if mode is None:
+            os.environ.pop("BARCHART_MODE", None)
+        else:
+            os.environ["BARCHART_MODE"] = mode
+        os.environ["GITHUB_OUTPUT"] = gho
+        code = 0
+        b2 = io.StringIO()
+        try:
+            with redirect_stdout(b2), redirect_stderr(b2):
+                main()
+        except SystemExit as e:
+            code = e.code
+        finally:
+            os.chdir(cwd0)
+            for k, v in saved.items():
+                g[k] = v
+            for k, v in saved_env.items():
+                if v is None:
+                    os.environ.pop(k, None)
+                else:
+                    os.environ[k] = v
+        out = None
+        op = os.path.join(d, "data", "bids.json")
+        if os.path.exists(op):
+            with open(op) as f:
+                out = json.load(f)
+        flag = open(gho).read() if os.path.exists(gho) else ""
+        rp = os.path.join(d, "barchart-raw.json")
+        run_main.raw = json.load(open(rp))["bids"] if os.path.exists(rp) else None
+        shutil.rmtree(d, ignore_errors=True)
+        return code, out, flag, b2.getvalue()
+
+    code, out, flag, log = run_main("", tmp)
+    ck("no key: the feed is still written, exit 0", code == 0 and out is not None)
+    ck("no key: every row is the network's",
+       out is not None and out["bids"] and all(r.get("source") == "network" for r in out["bids"]))
+    ck("no key: the header says the licensed feed is not in it",
+       out is not None and out["barchart"]["live"] is False
+       and "licensed" not in out["source"] and out["barchart"]["note"] == "no BARCHART_API_KEY")
+    ck("no key: the workflow is told to skip the Barchart-only steps",
+       "barchart_live=false" in flag)
+    ck("no key: Barchart is never asked", "📍" not in log and "locations across" not in log)
+
+    ck("no key: no barchart-raw.json is left for the directory step", run_main.raw is None)
+
+    code, out, flag, log = run_main("a-real-looking-key", tmp, mode="off")
+    ck("BARCHART_MODE=off beats a key that is set",
+       code == 0 and out is not None and out["barchart"]["mode"] == "off" and "📍" not in log)
+
+    code, out, flag, log = run_main("dead-key", tmp, fail_zips=True)
+    ck("a dead key degrades to the network instead of stopping the feed",
+       code == 0 and out is not None and out["barchart"]["live"] is False
+       and out["barchart"]["mode"] == "on")
+    ck("a dead key is a workflow WARNING on the run, not a silent green",
+       "::warning::Barchart returned 0 bids" in log)
+
+    code, out, flag, log = run_main("live-key", tmp, barchart_rows=bc_rows)
+    ck("a live key still merges both and reports live",
+       code == 0 and out is not None and out["barchart"]["live"] is True
+       and "licensed" in out["source"] and "barchart_live=true" in flag)
+    ck("a live key writes Barchart's rows alone to barchart-raw.json, before the merge",
+       run_main.raw is not None and len(run_main.raw) == len(bc_rows)
+       and not any(r.get("source") == "network" for r in run_main.raw))
+
+    code, out, flag, log = run_main("", os.path.join(tmp, "does-not-exist"))
+    ck("nothing from anywhere REFUSES to publish an empty file (exit 3)",
+       code == 3 and out is None)
     shutil.rmtree(tmp, ignore_errors=True)
 
     _AS_OF_OVERRIDE = _prev_as_of

@@ -1602,7 +1602,108 @@
     '</div>';
   }
 
-  // ── 5. CASH BIDS (AGSIST proxy → Barchart getGrainBids) ─────────────
+  // ── 5. CASH BIDS (AGSIST elevator network first, licensed feed to fill) ──
+  // 2026-09-25: the Barchart subscription is being cancelled. The network
+  // (dnilgis/bids, read in the browser by components/bids-network.js) is the
+  // primary source and wins on price where both name the same elevator. The
+  // licensed feed, through the proxy so the key is never in the page, fills
+  // what the network does not cover. Neither failing empties the card. Set
+  // FS_LICENSED_FEED = false the day the subscription ends and the proxy is
+  // never called.
+  var FS_LICENSED_FEED = true;
+  var FS_LEGAL = {llc:1,lc:1,inc:1,incorporated:1,co:1,corp:1,corporation:1,ltd:1,limited:1,lp:1,llp:1,company:1};
+  function fsKey(name, city, state){
+    var t = String(name||'').toLowerCase().replace(/[^a-z0-9]+/g,' ').replace(/co op/g,'coop').replace(/co operative/g,'cooperative').split(' ').filter(Boolean);
+    while(t.length && FS_LEGAL[t[t.length-1]]) t.pop();
+    var FOLD={bros:'brother',brothers:'brother',brother:'brother',st:'saint',mt:'mount',ft:'fort',farmers:'farmer',assn:'association',assoc:'association',elev:'elevator',elevators:'elevator'};
+    t = t.map(function(x){ return (x==='cooperative'||x==='coops')?'coop':x; })
+         .map(function(x){ return FOLD[x]||x; })
+         .map(function(x){ return (x.length>3&&x.charAt(x.length-1)==='s')?x.slice(0,-1):x; });
+    var pl=function(x){ return String(x||'').toLowerCase().replace(/[^a-z0-9]/g,''); };
+    return t.join('')+'|'+pl(city)+'|'+pl(state);
+  }
+  // 'YYYY-MM' or 'YYYY-MM/YYYY-MM' -> first and last day, as the licensed feed writes them
+  function fsPeriodDates(period){
+    var parts = String(period||'').split('/'), s0 = parts[0], e0 = parts[1] || parts[0];
+    var sm = /^(\d{4})-(\d{2})/.exec(s0), em = /^(\d{4})-(\d{2})/.exec(e0);
+    if(!sm || !em) return { start:'', end:'' };
+    var last = new Date(+em[1], +em[2], 0).getDate();
+    return { start: sm[1]+'-'+sm[2]+'-01', end: em[1]+'-'+em[2]+'-'+(last<10?'0':'')+last };
+  }
+  function fsEnsureNet(){
+    return new Promise(function(resolve){
+      if(window.AGSIST_BIDS_NET) return resolve(window.AGSIST_BIDS_NET);
+      var done=false; function fin(){ if(!done){ done=true; resolve(window.AGSIST_BIDS_NET||null); } }
+      try{ var sc=document.createElement('script'); sc.src='/components/bids-network.js?v=1'; sc.async=true; sc.onload=fin; sc.onerror=fin; document.head.appendChild(sc); }catch(e){ return fin(); }
+      setTimeout(fin, 3000);
+    });
+  }
+  // Each feed resolves to {rows, ok}: ok false = could not be read at all,
+  // null = not asked. An empty answer from a feed that answered is ok.
+  var FS_CROP_NAME={corn:'Corn',soybeans:'Soybeans',wheat:'Wheat'};
+  function fsFromNetwork(zip){
+    return fsEnsureNet().then(function(NET){
+      if(!NET || typeof NET.snapshotForZip!=='function') return {rows:[], ok:false};
+      return NET.snapshotForZip(zip, { radiusMi: 75 }).then(function(snap){
+        if(!snap || !snap.bids){
+          return (typeof NET.reachable==='function' ? NET.reachable() : Promise.resolve(true))
+            .then(function(up){ return {rows:[], ok:!!up}; });
+        }
+        var by={}, order=[];
+        snap.bids.forEach(function(r){
+          var k = fsKey(r.facility, r.city, r.state);
+          if(!by[k]){ by[k]={ company:r.facility, location:r.branch||'', city:r.city, state:r.state, distance:r.distance, _net:true, bids:[] }; order.push(k); }
+          var d = fsPeriodDates(r.period);
+          // The board's own label can be a code ("Yc", "Sww"); the crop key is what the network knows.
+          var nm = r.commodity||'';
+          if(FS_CROP_NAME[r.crop] && !/corn|soy|bean|wheat/i.test(nm)) nm = FS_CROP_NAME[r.crop];
+          by[k].bids.push({ commodity:nm, cashprice:r.cashPrice,
+            basis:(r.basisCents!=null ? r.basisCents : null),   // cents, like the licensed feed
+            currency:'USD', delivery:r.delivery||'', delivery_start:d.start, delivery_end:d.end });
+        });
+        return {rows: order.map(function(k){ return by[k]; }), ok:true};
+      });
+    }).catch(function(){ return {rows:[], ok:false}; });
+  }
+  function fsFromLicensed(zip){
+    if(!FS_LICENSED_FEED) return Promise.resolve({rows:[], ok:null});
+    return fetchT(BIDS_PROXY+'/barchart/getGrainBids?zipCode='+encodeURIComponent(zip)+'&maxDistance=75&getAllBids=1', 15000)
+      .then(function(r){ if(!r.ok) throw new Error(r.status); return r.json(); })
+      .then(function(d){ var raw=(d&&(d.results||d.bids||d.data))||[]; return {rows:(Array.isArray(raw)?raw:[]), ok:true}; })
+      .catch(function(){ return {rows:[], ok:false}; });
+  }
+  function fsCrop(n){ n=String(n||''); return /corn/i.test(n)?'corn':(/soy|bean/i.test(n)?'soybeans':(/wheat|hrw|srw|hrs/i.test(n)?'wheat':'other')); }
+  // Ours wins on price where the network prices the same crop at the same
+  // elevator. A crop the network lacks there is kept from the licensed feed.
+  function fsMerge(net, lic){
+    var mine={};
+    net.forEach(function(x){
+      var k=fsKey(x.company, x.city, x.state); mine[k]=mine[k]||{};
+      (x.bids||[]).forEach(function(b){ mine[k][fsCrop(b.commodity)]=true; });
+    });
+    // Barchart's unit is decided over ITS rows alone, then everything is cents.
+    var lb=[]; lic.forEach(function(x){
+      if(x.bids && Array.isArray(x.bids)) x.bids.forEach(function(b){ if(b.basis!=null&&b.basis!==''&&!isNaN(parseFloat(b.basis))) lb.push(parseFloat(b.basis)); });
+      else if(x.basis!=null&&x.basis!==''&&!isNaN(parseFloat(x.basis))) lb.push(parseFloat(x.basis));
+    });
+    var licDollars = lb.length>0 && lb.every(function(v){ return Math.abs(v)<2; }) && lb.some(function(v){ return v!==Math.round(v); });
+    if(licDollars) lic = lic.map(function(x){
+      var y={}; for(var q in x) y[q]=x[q];
+      var cv=function(b){ var c={}; for(var q in b) c[q]=b[q]; if(c.basis!=null&&c.basis!==''&&!isNaN(parseFloat(c.basis))) c.basis=Math.round(parseFloat(c.basis)*1000)/10; return c; };
+      if(x.bids && Array.isArray(x.bids)) y.bids=x.bids.map(cv); else y=cv(y);
+      return y;
+    });
+    var extra=[];
+    lic.forEach(function(x){
+      var k=fsKey(x.company||x.name||x.locationName, x.city, x.state);
+      if(!mine[k]){ extra.push(x); return; }
+      if(x.bids && Array.isArray(x.bids)){
+        var keep=x.bids.filter(function(b){ return !mine[k][fsCrop(b.commodity||b.commodity_display_name||b.commodityName)]; });
+        if(keep.length){ var y={}; for(var q in x) y[q]=x[q]; y.bids=keep; extra.push(y); }
+      } else if(!mine[k][fsCrop(x.commodity||x.commodityName)]) extra.push(x);
+    });
+    return { results: net.concat(extra), unitsResolved: true };
+  }
   function loadBids(c){
     var gen = fieldGen;
     // Reverse-geocode to a ZIP, then the same call cash-bids.html uses.
@@ -1611,12 +1712,16 @@
         if(gen !== fieldGen) return;
         var zip = g && g.address ? (g.address.postcode||'').slice(0,5) : '';
         if(!zip){ if(FIELD){ FIELD.bids={corn:null,bean:null,zip:'',count:0}; recomputeInsight(); } setBody('fs-bids','<div class="fs-src">This field sits far enough from a mapped ZIP that we can\u2019t pull nearby bids for it &mdash; common for remote parcels. Try the cash-bids page directly for your area.</div>'); return; }
-        return fetchT(BIDS_PROXY+'/barchart/getGrainBids?zipCode='+encodeURIComponent(zip)+'&maxDistance=75&getAllBids=1', 15000)
-          .then(function(r){ if(!r.ok) throw new Error(r.status); return r.json(); })
-          .then(function(d){ if(gen!==fieldGen) return; renderBids(d, zip, gen); });
+        return Promise.all([fsFromNetwork(zip), fsFromLicensed(zip)])
+          .then(function(x){
+            if(gen!==fieldGen) return;
+            if(x[0].ok===false && x[1].ok!==true) throw new Error('no bid feed reachable');   // say so; do not report "no elevators"
+            renderBids(fsMerge(x[0].rows, x[1].rows), zip, gen);
+          });
       })
       .catch(function(){ if(gen!==fieldGen) return; if(FIELD){ FIELD.bids={corn:null,bean:null,zip:'',count:0}; recomputeInsight(); } setErr('fs-bids','Couldn\u2019t reach the cash-bid feed just now.'); });
   }
+  window.__fsBidsInternals = { fsKey:fsKey, fsPeriodDates:fsPeriodDates, fsMerge:fsMerge, loadBids:loadBids };
   function bidDate(v){ if(!v) return null; var m=/^(\d{4})-(\d{2})-(\d{2})/.exec(String(v)); return m?new Date(+m[1],+m[2]-1,+m[3]):null; }
   function monthIdx(t){ var d=new Date(t); return d.getFullYear()*12+d.getMonth(); }
   var MON3=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
@@ -1705,7 +1810,7 @@
     // Barchart quotes basis in cents. Decide the unit once for the whole reply: only if every
     // basis is under 2 in size is the feed in dollars. (Per-row guessing turned -1.5 cents into -150.)
     var bs=flat.filter(function(x){ return x.basis!=null && !isNaN(x.basis); });
-    var inDollars = bs.length>0 && bs.every(function(x){ return Math.abs(x.basis)<2; }) && bs.some(function(x){ return x.basis!==Math.round(x.basis); });
+    var inDollars = !(d && d.unitsResolved) && bs.length>0 && bs.every(function(x){ return Math.abs(x.basis)<2; }) && bs.some(function(x){ return x.basis!==Math.round(x.basis); });
     var html = shown.slice(0,6).map(function(x){
       var bC = (x.basis!=null && !isNaN(x.basis)) ? (inDollars ? x.basis*100 : x.basis) : null;
       var bTxt = bC!=null ? (Math.abs(bC%1)>=0.05 ? Math.abs(bC).toFixed(1) : String(Math.round(Math.abs(bC)))) : '';

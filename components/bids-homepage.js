@@ -1,10 +1,12 @@
 // ═══════════════════════════════════════════════════════════════════
 // bids-homepage.js — Homepage Cash Bids Preview
 //
-// Barchart API key is held server-side by the Cloudflare Worker proxy.
-// Worker source: /worker/worker.js (deployed to Cloudflare Workers).
-// If the proxy is unreachable, the bids list shows an error state —
-// the raw API key is NEVER exposed to the client.
+// TWO FEEDS, ONE CARD (2026-09-25). The AGSIST elevator network (dnilgis/bids,
+// read in the browser by components/bids-network.js) is the primary source and
+// wins on price. The licensed Barchart feed, reached through the Cloudflare
+// Worker proxy so the key is never in the page, fills what the network does
+// not cover. Neither failing empties the card. When the subscription is
+// cancelled set LICENSED_FEED = false below and the request is never made.
 //
 // Groups results by elevator, shows top 3 nearest with commodity rows.
 //
@@ -19,6 +21,12 @@
 
   // Cloudflare Worker proxy — API key is held server-side, never exposed.
   var PROXY_URL = 'https://agsist-barchart.dnilgis.workers.dev/barchart/getGrainBids';
+
+  // Set to false the day the Barchart subscription ends. Off means off: the
+  // proxy is not called at all, rather than called and ignored.
+  var LICENSED_FEED = true;
+  var LICENSED_DEADLINE_MS = 6000;
+  var NET_SCRIPT = '/components/bids-network.js?v=1';
 
   var MAX_ELEVATORS = 3;
   var MAX_BIDS_PER_COMMODITY = 3;
@@ -216,8 +224,128 @@
     }catch(e){}
   }
 
+  // ── The two feeds ───────────────────────────────────────────────
+  // The dedupe is the rule /cash-bids already uses (netKey): same operator
+  // name once legal words and plurals are stripped, same town, same state.
+  // It does NOT merge "ADM Grain" with "ADM": a repeated elevator is visible
+  // and fixable, a wrong merge hides a real one.
+  var LEGAL = {llc:1,lc:1,inc:1,incorporated:1,co:1,corp:1,corporation:1,ltd:1,limited:1,lp:1,llp:1,company:1};
+  function normOperator(name){
+    var t = String(name || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ')
+      .replace(/co op/g, 'coop').replace(/co operative/g, 'cooperative')
+      .split(' ').filter(function(x){ return x; });
+    while(t.length && LEGAL[t[t.length - 1]]) t.pop();
+    t = t.map(function(x){ return (x === 'cooperative' || x === 'coops') ? 'coop' : x; });
+    var FOLD = {bros:'brother',brothers:'brother',brother:'brother',st:'saint',mt:'mount',ft:'fort',
+                farmers:'farmer',assn:'association',assoc:'association',elev:'elevator',elevators:'elevator'};
+    t = t.map(function(x){ return FOLD[x] || x; });
+    t = t.map(function(x){ return (x.length > 3 && x.charAt(x.length - 1) === 's') ? x.slice(0, -1) : x; });
+    return t.join('');
+  }
+  function plain(x){ return String(x || '').toLowerCase().replace(/[^a-z0-9]/g, ''); }
+  function rowKey(r){ return normOperator(r.facility) + '|' + plain(r.city) + '|' + plain(r.state); }
+
+  // Load bids-network.js on demand so index.html does not have to carry it.
+  // Resolves to the API, or null. Never rejects, never waits past 3 seconds.
+  function ensureNet(){
+    return new Promise(function(resolve){
+      if(window.AGSIST_BIDS_NET) return resolve(window.AGSIST_BIDS_NET);
+      var done = false;
+      function finish(){ if(!done){ done = true; resolve(window.AGSIST_BIDS_NET || null); } }
+      try{
+        var sc = document.createElement('script');
+        sc.src = NET_SCRIPT; sc.async = true;
+        sc.onload = finish; sc.onerror = finish;
+        document.head.appendChild(sc);
+      }catch(e){ return finish(); }
+      setTimeout(finish, 3000);
+    });
+  }
+
+  var MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  // "2026-10" -> "Oct 2026". The board's own text ("Sept 26 Corn", "09/01/2026")
+  // reads as a day, so the label is built from the period, not the board.
+  function periodLabel(p){
+    var m = /^(\d{4})-(\d{2})/.exec(p || '');
+    return m && MON[+m[2] - 1] ? MON[+m[2] - 1] + ' ' + m[1] : '';
+  }
+  function thisMonth(){ var d = new Date(); return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2); }
+
+  // Each feed resolves to {rows, ok}. ok is false when the feed could not be
+  // read at all; an empty answer from a feed that answered is ok.
+  function fromNetwork(zip){
+    return ensureNet().then(function(NET){
+      if(!NET || typeof NET.snapshotForZip !== 'function') return {rows: [], ok: false};
+      return NET.snapshotForZip(zip, { radiusMi: 50 }).then(function(snap){
+        if(!snap || !snap.bids){
+          return (typeof NET.reachable === 'function' ? NET.reachable() : Promise.resolve(true))
+            .then(function(up){ return {rows: [], ok: !!up}; });
+        }
+        var now = thisMonth();
+        var rows = [];
+        snap.bids.forEach(function(r){
+          // A delivery window that has closed is not a bid.
+          if(/^\d{4}-\d{2}/.test(r.period || '') && r.period.slice(0, 7) < now) return;
+          var cat = /^(corn|soybeans|wheat)$/.test(r.crop || '') ? r.crop : classifyCommodity(r.commodity);
+          rows.push({
+            facility: r.facility || '', branch: r.branch || '',
+            city: r.city || '', state: r.state || '',
+            distance: r.distance == null ? null : r.distance,
+            phone: r.phone || '', commodity: r.commodity || '',
+            cashPrice: r.cashPrice == null ? null : r.cashPrice,
+            basis: r.basis == null ? null : r.basis,
+            deliveryMonth: periodLabel(r.period) || r.delivery || '',
+            deliveryStart: r.period || '',
+            category: cat, source: 'network'
+          });
+        });
+        return {rows: rows, ok: true};
+      });
+    }).catch(function(){ return {rows: [], ok: false}; });
+  }
+
+  function fromLicensed(zip){
+    if(!LICENSED_FEED) return Promise.resolve({rows: [], ok: null});   // not asked
+    var url = PROXY_URL + '?zipCode=' + encodeURIComponent(zip) + '&maxDistance=50&getAllBids=1';
+    var live = fetch(url)
+      .then(function(r){ return r.ok ? r.json() : Promise.reject('HTTP ' + r.status); })
+      .then(function(data){ return {rows: flattenBarchartResponse(data), ok: true}; })
+      .catch(function(err){ console.warn('[AGSIST] licensed bid feed:', err); return {rows: [], ok: false}; });
+    return Promise.race([live, new Promise(function(res){ setTimeout(function(){ res({rows: [], ok: false}); }, LICENSED_DEADLINE_MS); })]);
+  }
+
+  // Ours wins on price. A licensed row is dropped only where the network
+  // already prices that SAME crop at that elevator; a crop the network lacks
+  // there is kept. The licensed row lends its phone number either way.
+  function mergeFeeds(net, lic){
+    var mine = {}, out = net.slice();
+    net.forEach(function(r){ (mine[rowKey(r)] = mine[rowKey(r)] || []).push(r); });
+    lic.forEach(function(r){
+      var k = rowKey(r), mates = mine[k];
+      if(mates){
+        mates.forEach(function(o){ if(!o.phone && r.phone) o.phone = r.phone; });
+        var has = mates.some(function(o){ return o.category === r.category; });
+        if(has) return;
+      }
+      out.push(r);
+    });
+    return out;
+  }
+
+  function loadAllBids(zip){
+    return Promise.all([fromNetwork(zip), fromLicensed(zip)]).then(function(x){
+      // Neither feed could be read: say so. An empty list here would tell the
+      // reader there are no elevators near them, which is not what happened.
+      if(x[0].ok === false && (x[1].ok === false || x[1].ok === null)) throw new Error('no bid feed reachable');
+      return mergeFeeds(x[0].rows, x[1].rows).filter(function(b){ return b.cashPrice !== null || b.basis !== null; });
+    });
+  }
+  window.__agsistHomeBidsInternals = { mergeFeeds: mergeFeeds, rowKey: rowKey, fromNetwork: fromNetwork };
+
   // ── Main load function ──────────────────────────────────────────
+  var loadSeq = 0;
   function loadHomepageBids(lat, lng, label, zip){
+    var mySeq = ++loadSeq;
     var area = document.getElementById('bids-list-area');
     var geoTxt = document.getElementById('bids-geo-txt');
     if(!area) return;
@@ -241,16 +369,10 @@
       + '<div style="height:36px;background:var(--surface2);border-radius:6px;opacity:.3"></div>'
       + '</div>';
 
-    // ── Proxy request (no API key in query — server-side only) ─────
-    var url = PROXY_URL
-      + '?zipCode=' + encodeURIComponent(zip)
-      + '&maxDistance=50&getAllBids=1';
-
-    fetch(url)
-      .then(function(r){ return r.ok ? r.json() : Promise.reject('HTTP ' + r.status); })
-      .then(function(data){
-        var bids = flattenBarchartResponse(data);
-        bids = bids.filter(function(b){ return b.cashPrice !== null || b.basis !== null; });
+    // ── Both feeds, in parallel; neither failing empties the card ───
+    loadAllBids(zip)
+      .then(function(bids){
+        if(mySeq !== loadSeq) return;   // a newer ZIP was asked while this loaded
 
         if(bids.length === 0){
           area.innerHTML = '<div style="text-align:center;padding:1rem;font-size:.82rem;color:var(--text-muted)">'
@@ -291,6 +413,7 @@
         console.log('[AGSIST] Homepage bids: ' + top.length + ' elevators (' + bids.length + ' total bids)');
       })
       .catch(function(err){
+        if(mySeq !== loadSeq) return;
         console.warn('[AGSIST] Homepage bids fetch failed:', err);
         area.innerHTML = '<div style="text-align:center;padding:1rem;font-size:.82rem;color:var(--text-muted)">'
           + 'Cash bids unavailable right now.<br><a href="/cash-bids" style="color:var(--gold)">Search cash bids \u2192</a></div>';

@@ -208,6 +208,7 @@
       sourceZip: anchor || p.zip || k,
       lat: p.lat, lon: p.lon,
       commodity: n.commodity || crop,
+      crop: crop,
       cashPrice: n.cash, basis: n.basis,
       basisCents: n.basisCents,
       delivery: n.delivery || '', period: n.period || '',
@@ -302,7 +303,15 @@
     return Promise.resolve(null);
   }
 
+  /* Did the network's index load? snapshot() answers null both for "nothing
+     near you" and for "could not read it"; a caller that must tell a reader
+     which one happened asks here. */
+  function reachable() {
+    return index().then(function (idx) { return !!(idx && idx.places); }).catch(function () { return false; });
+  }
+
   window.AGSIST_BIDS_NET = {
+    reachable: reachable,
     snapshot: snapshot,
     snapshotForZip: snapshotForZip,
     snapshotForLoc: snapshotForLoc,

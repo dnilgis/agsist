@@ -87,6 +87,9 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 FULL = ROOT / "bids-full.json"
+# fetch_bids.py writes the Barchart rows ALONE here, before the network is merged
+# in. See from_bids() for why that file exists.
+RAW = ROOT / "barchart-raw.json"
 SLIM = ROOT / "data" / "bids.json"
 GRID = ROOT / "data" / "zip-grid.json"
 OUT = ROOT / "data" / "elevator-directory.json"
@@ -189,17 +192,106 @@ def ask(zip_code, key, max_distance, total, timeout):
     return res if isinstance(res, list) else []
 
 
+def _norm_name(x):
+    t = re.sub(r"[^a-z0-9]+", " ", str(x or "").lower()).replace("co op", "coop").split()
+    legal = {"llc", "lc", "inc", "incorporated", "co", "corp", "corporation", "ltd", "company"}
+    while t and t[-1] in legal:
+        t.pop()
+    return "".join("coop" if w in ("cooperative", "coops") else w for w in t)
+
+
+def name_key(r):
+    """Company + branch + town + state, spelling-tolerant. The second way to say
+    'the same elevator', for when one record carries Barchart's ids and the
+    other, read off a price pull, does not."""
+    plain = lambda v: re.sub(r"[^a-z0-9]", "", str(v or "").lower())
+    return "%s|%s|%s|%s" % (_norm_name(r.get("company") or r.get("facility")),
+                            _norm_name(r.get("branch") or r.get("location")),
+                            plain(r.get("city")), plain(r.get("state")))
+
+
+def contaminated(r):
+    """A record the AGSIST network wrote into the roster while wearing
+    source=barchart.
+
+    From 2026-09-23 fetch_bids.py merged the elevator network into
+    bids-full.json, and from_bids() read that file and stamped every row
+    "barchart". 964 of 970 rows with no branch matched a network place by
+    operator, town and state; on 2026-09-22, before the merge, all 1,807 rows
+    carried a branch. Barchart's own rows always have a branch, a location, an
+    elevatorId or a locationId; ours never do."""
+    if r.get("source") != "barchart":
+        return False
+    return not any(r.get(k) for k in ("branch", "location", "elevatorId", "locationId", "address"))
+
+
+def union(prior, fresh):
+    """The roster only ever grows. Barchart's answer changes from run to run
+    (and drops a row whenever the network displaces it in the merge), and a
+    directory rewritten from each run's answer forgot 289 elevators in three
+    days. Fields from the fresh record win where they are non-empty; a prior
+    record nothing has replaced is kept as it was."""
+    by_id, by_name, out = {}, {}, []
+    for r in prior:
+        by_id[ident(r)] = r
+        by_name.setdefault(name_key(r), r)
+        out.append(r)
+    for f in fresh:
+        hit = by_id.get(ident(f))
+        if hit is None:
+            cand = by_name.get(name_key(f))
+            # Two records that each carry a DIFFERENT Barchart id are two
+            # yards, whatever their spelling says.
+            fi, ci = ident(f), (ident(cand) if cand else None)
+            both_ids = (f.get("elevatorId") or f.get("locationId")) and cand and \
+                       (cand.get("elevatorId") or cand.get("locationId"))
+            if cand is not None and not (both_ids and fi != ci):
+                hit = cand
+        if hit is not None:
+            hit.update({k: v for k, v in f.items() if v not in (None, "")})
+            by_id[ident(hit)] = hit
+            by_id[ident(f)] = hit
+            continue
+        by_id[ident(f)] = f
+        by_name.setdefault(name_key(f), f)
+        out.append(f)
+    return out
+
+
+def prior_roster():
+    """What is already in the file, minus anything that was never Barchart's."""
+    try:
+        rows = json.loads(OUT.read_text()).get("elevators") or []
+    except (OSError, ValueError):
+        return [], 0
+    keep = [r for r in rows if isinstance(r, dict) and not contaminated(r)]
+    dropped = len(rows) - len(keep)
+    if len(rows) >= 100 and dropped > 0.25 * len(rows):
+        # Never delete a quarter of the roster on a rule's say-so. Stop and
+        # let a person look.
+        raise SystemExit("refusing to drop %d of %d roster records as the network's; "
+                         "check contaminated()" % (dropped, len(rows)))
+    return keep, dropped
+
+
 def from_bids():
     """No extra calls: squeeze what we can out of a price pull we already made.
-    Fewer fields, because the price endpoint returns fewer by default."""
-    src = FULL if FULL.exists() else SLIM
+    Fewer fields, because the price endpoint returns fewer by default.
+
+    BARCHART'S ROWS ONLY. bids-full.json is the merged feed, and since
+    2026-09-23 it carries the AGSIST network too; reading it as-is put our own
+    places into the roster of what Barchart sells, which is the list the
+    cancellation is measured against. fetch_bids.py now writes
+    barchart-raw.json before the merge, and that is read first. Failing that,
+    rows stamped source=network are skipped."""
+    src = RAW if RAW.exists() else (FULL if FULL.exists() else SLIM)
     if not src.exists():
         return None, [], 0
     d = json.loads(src.read_text())
     rows = d if isinstance(d, list) else (d.get("bids") or d.get("rows") or [])
     fac = {}
     for r in rows:
-        if isinstance(r, dict) and r.get("city") and r.get("state"):
+        if isinstance(r, dict) and r.get("source") != "network" and r.get("city") and r.get("state"):
             fac.setdefault(ident(r), {}).update({k: v for k, v in tidy(r).items() if v})
     return src.name, list(fac.values()), len(rows)
 
@@ -282,8 +374,12 @@ def main():
         if not key and not a.from_bids:
             print("no BARCHART_API_KEY — falling back to the price pull on disk")
         source, got, rows_read = from_bids()
-        for f in got:
+        prior, dropped = prior_roster()
+        for f in union(prior, got):
             facilities[ident(f)] = f
+        if dropped:
+            print("dropped %d records that were the AGSIST network's, not Barchart's" % dropped)
+        print("kept %d prior records, %d read from this pull -> %d" % (len(prior), len(got), len(facilities)))
         complete = False
     else:
         # ONE POINT, BECAUSE THE ANSWER IS THE SAME FROM ANY OF THEM. Kept as a
@@ -323,6 +419,18 @@ def main():
         # COMPLETE MEANS "everything this key will give", which is now a
         # question about the call succeeding, not about grid coverage.
         complete = bool(facilities) and not failed
+        # A live key that returns nothing (subscription lapsed, key still set)
+        # must not overwrite the roster with an empty one. Union with what we
+        # have, and refuse to write if the answer is thin.
+        prior, dropped = prior_roster()
+        if len(facilities) < 0.5 * len(prior):
+            print("ERROR: Barchart returned %d facilities against %d on file; "
+                  "not overwriting the roster." % (len(facilities), len(prior)))
+            return 1
+        merged = {}
+        for f in union(prior, list(facilities.values())):
+            merged[ident(f)] = f
+        facilities = merged
         print("\nfields Barchart actually returned: %s" % ", ".join(sorted(seen_fields)))
         for want in ("address", "lat", "lng", "url", "phone", "elevatorId"):
             print("   %-11s %s" % (want, "yes" if want in seen_fields else "NOT RETURNED"))
@@ -361,5 +469,84 @@ def main():
     return 0
 
 
+def selftest():
+    fails = []
+
+    def ck(name, cond):
+        print("  %s   %s" % ("ok" if cond else "FAIL", name))
+        if not cond:
+            fails.append(name)
+
+    barchart = {"facility": "Kanza Co-op", "branch": "Iuka", "city": "Iuka", "state": "KS",
+                "zip": "67066", "phone": "620-555-0101", "source": "barchart"}
+    ours = {"facility": "Kanza Cooperative", "city": "Iuka", "state": "KS", "zip": "67066",
+            "lat": 37.7, "source": "barchart"}      # what the old step wrote for a network place
+    harvest = {"company": "Kanza Co-op", "location": "Iuka", "city": "Iuka", "state": "KS",
+               "address": "1 Main St", "lat": 37.71, "lng": -98.7, "elevatorId": 7,
+               "locationId": 70, "phone": "620-555-0101"}
+    ck("a record with a branch is Barchart's", not contaminated(barchart))
+    ck("a record with an elevatorId is Barchart's", not contaminated(harvest))
+    ck("a record with none of them was written by the network", contaminated(ours))
+    ck("a record that never claimed Barchart is not called contaminated",
+       not contaminated({"facility": "X", "source": "registry"}))
+    ck("Co-op and Cooperative are one name", name_key(barchart) == name_key(harvest))
+
+    got = union([harvest], [tidy(dict(barchart, company="Kanza Co-op"))])
+    ck("a harvested record and a price-pull record of the same elevator become one", len(got) == 1)
+    ck("the harvest's address survives the merge", got[0].get("address") == "1 Main St")
+    ck("the harvest's ids survive the merge", got[0].get("elevatorId") == 7)
+    ck("fresh fields win where they are present", got[0].get("phone") == "620-555-0101")
+
+    other = {"facility": "Central Valley Ag", "branch": "York", "city": "York", "state": "NE",
+             "source": "barchart"}
+    kept = union([tidy(other)], [])
+    ck("a prior record no run replaced is kept: the roster only grows", len(kept) == 1)
+
+    two = union([tidy(other)], [tidy(dict(other, branch="Waco", city="Waco"))])
+    ck("two branches of one company are two records", len(two) == 2)
+
+    # from_bids() end to end against a scratch directory
+    import tempfile, shutil
+    g = globals()
+    keep = {k: g[k] for k in ("RAW", "FULL", "SLIM", "OUT")}
+    d = Path(tempfile.mkdtemp())
+    try:
+        g["RAW"], g["FULL"], g["SLIM"], g["OUT"] = d / "raw.json", d / "full.json", d / "slim.json", d / "dir.json"
+        rows = [dict(barchart), dict(ours, source="network"),
+                {"facility": "Ours Only", "city": "Ames", "state": "IA", "source": "network"}]
+        g["FULL"].write_text(json.dumps({"bids": rows}))
+        name, fac, n = from_bids()
+        ck("no raw file: network rows in the merged file are skipped",
+           name == "full.json" and len(fac) == 1 and fac[0]["facility"] == "Kanza Co-op")
+        g["RAW"].write_text(json.dumps({"bids": [dict(barchart)]}))
+        name, fac, n = from_bids()
+        ck("the raw Barchart file is read first", name == "raw.json" and len(fac) == 1)
+        g["OUT"].write_text(json.dumps({"elevators": [tidy(ours), tidy(harvest)]}))
+        prior, dropped = prior_roster()
+        ck("the prior file loses only the network's records", len(prior) == 1 and dropped == 1)
+    finally:
+        for k, v in keep.items():
+            g[k] = v
+        shutil.rmtree(d, ignore_errors=True)
+
+    # two yards of one company in one town, each with its own Barchart id
+    a = {"company": "AGP", "city": "Manning", "state": "IA", "elevatorId": 1, "branch": "Manning"}
+    b = {"company": "AGP", "city": "Manning", "state": "IA", "elevatorId": 2, "branch": "Manning"}
+    ck("two different Barchart ids stay two records", len(union([dict(a)], [dict(b)])) == 2)
+    # a record that gains an id by name match is findable by that id afterwards
+    old = {"company": "Kanza Co-op", "city": "Iuka", "state": "KS", "branch": "Iuka", "source": "barchart"}
+    new1 = {"company": "Kanza Co-op", "city": "Iuka", "state": "KS", "branch": "Iuka", "elevatorId": 7}
+    new2 = {"company": "Kanza Co-op", "city": "Iuka", "state": "KS", "branch": "Iuka", "elevatorId": 7, "phone": "1"}
+    ck("a later row with a learned id does not duplicate", len(union([old], [new1, new2])) == 1)
+    print()
+    if fails:
+        print("%d FAILED" % len(fails))
+        return 1
+    print("all extract_directory checks pass")
+    return 0
+
+
 if __name__ == "__main__":
+    if "--selftest" in sys.argv:
+        sys.exit(selftest())
     sys.exit(main())
