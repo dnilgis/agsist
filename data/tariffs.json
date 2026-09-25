@@ -1,9 +1,9 @@
 {
-  "updated": "2026-09-02",
+  "updated": "2026-09-25",
   "status": "mixed",
-  "status_label": "Truce Holding — China 10% Levy May Lift Oct 1; USMCA Origin No Longer Shields",
-  "status_note": "WHAT APPLIES TODAY. US soybeans into China face roughly 13% (3% MFN + China's broad 10% 'Liberation Day' retaliatory levy); corn and wheat about 11%, pork about 22%. The March 2025 retaliatory tranche of up to 15% was lifted on Nov 10, 2025 under the Busan truce, which has been extended through Nov 10, 2026. A May 18, 2026 deal added at least $17B/yr of US ag purchases through 2028 on top of Busan's 25 MMT/yr of soybeans; as of Aug 10, 2026 China was roughly a quarter of the way through the 2026 soybean commitment — behind pace, with buying accelerating into an expected September Trump-Xi meeting.\n\nTHE ONE TO WATCH. On July 6, 2026 it was reported that the US would end its 10% fentanyl tariff and China would reciprocate by dropping its 10% levy on US ag, aimed at cargoes arriving after Oct 1, 2026. China's Ministry of Commerce confirmed it; USTR had not. That levy is the whole difference between 13% and 3% on soybeans, so treat the Oct 1 date as reported, not settled.\n\nTARIFF AUTHORITY. SCOTUS voided the IEEPA tariffs on Feb 20, 2026. The Section 122 surcharge that replaced them was ruled invalid by the Court of International Trade on May 7, 2026 (under appeal) and lapsed around July 24. Section 301 'forced labor' duties took effect July 24, 2026 at 10-12.5% across 60 trading partners and about 99.4% of US imports, with a transit grace period to July 28. Farm inputs are explicitly exempt: in-quota sugar, fertilizer and pesticides, and certain planting seeds.\n\nNORTH AMERICA. The Administration signalled in July that it will not renew USMCA and will negotiate a successor; bilateral talks resumed in Mexico City the week of Jul 20. Then in August the US imposed 50% Section 338 duties on about $20B of Canadian imports — dairy, alcoholic beverages and motor vehicles, with a covered list reaching honey, certain planting seeds, molasses and fructose syrups. Sources differ on the operative date (Aug 19 per counsel, 12:01 a.m. ET Aug 22 per customs brokers). Bulk grain and oilseeds are not covered, so the 0% rows above are unchanged — but USMCA origin did NOT exempt covered goods, which is the first outright override of USMCA duty-free treatment and it happened mid-renegotiation. Canada retaliated on Aug 25 with $27.6B in counter-tariffs: 50% on certain steel and aluminum, 25% on fish and tools. No bulk ag on either list.\n\nUNCONFIRMED — one trade tracker lists a further Canadian counter-tariff tranche of 15-50% effective Sept 8, 2026. We found no second source and are not putting a number to it; if you ship to Canada, confirm directly.\n\nBRAZIL. A 25% tariff on Brazilian goods including ethanol landed mid-July after a Section 301 investigation — an inbound tariff that structurally favours US corn ethanol at home.\n\nVerify against USTR and the Federal Register before any trading decision.",
-  "headline": "China's retained 10% levy still keeps US soybeans near 13%, but a reported deal would drop it for cargoes arriving after Oct 1. Section 301 forced-labor duties are in effect at 10-12.5% with fertilizer and pesticides exempt. New 50% Section 338 duties on Canadian dairy, alcohol and vehicles did NOT spare USMCA-originating goods — grain is untouched, but the precedent matters while USMCA is renegotiated.",
+  "status_label": "Truce Extended to Jan 10, 2027 — China's 10% Still On; US Import Bans on Some Canadian Goods Sep 29",
+  "status_note": "WHAT APPLIES TODAY. US soybeans into China face roughly 13% (3% MFN + China's broad 10% retaliatory levy); corn and wheat about 11%, pork about 22%. The July 6 report that China would drop the 10% for cargoes arriving after Oct 1 has NOT been borne out: on Sep 24, 2026, with the Trump-Xi meeting under way, the rate on US soybeans was still described as 13%. Treat it as unresolved rather than imminent.\n\nTHE TRUCE RUNS LONGER. On Sep 24, 2026 Treasury Secretary Scott Bessent said the Busan agreement, due to end Nov 10, would be extended to Jan 10, 2027 — \"to give us more time to see what we can do on the economic front.\" Trump and Xi met Sep 24-25. China's purchase commitment is 25 MMT of soybeans a year for 2026-2028, and it was roughly halfway through the 2026 figure by Sep 17 after buying about 1 MMT in a week. A further roughly $17B a year of other US farm purchases remains behind pace.\n\nTARIFF AUTHORITY. SCOTUS voided the IEEPA tariffs on Feb 20, 2026. The Section 122 surcharge that replaced them was ruled invalid by the Court of International Trade on May 7, 2026 (under appeal) and lapsed around Jul 24. Section 301 'forced labor' duties took effect Jul 24, 2026 at 10-12.5% across 60 trading partners and about 99.4% of US imports. Farm inputs are explicitly exempt: in-quota sugar, fertilizer and pesticides, and certain planting seeds.\n\nNORTH AMERICA, AND THIS IS THE LIVE ONE. Canada's counter-tariffs took effect Sep 8, 2026 — C$27.6B of US imports at 15%, 25% and 50%, covering steel, dairy, appliances, agricultural equipment, pulp and paper and electronics. Dairy runs 25-50%; honey and molasses are at 50%. Bulk grain, oilseeds, soybeans, corn, wheat, fertilizer and seeds are NOT on the list, so the 0% rows above are unchanged. The same day the President signed five Section 338 proclamations responding to it: import BANS on certain Canadian alcohol and dairy effective Sep 29, 2026, and list changes effective Sep 15 that removed rock salt and cement and added all-terrain vehicles and further dairy. This is an escalation cycle running through a USMCA renegotiation, and August's 50% Section 338 duties already overrode USMCA origin once.\n\nBRAZIL. A 25% tariff on Brazilian goods including ethanol landed mid-July after a Section 301 investigation — an inbound tariff that structurally favours US corn ethanol at home.\n\nVerify against USTR, the Federal Register and Canada's Department of Finance before any trading decision.",
+  "headline": "The Oct 1 removal of China's 10% levy did NOT happen: US soybeans still face about 13% as of Sep 24, and Treasury has extended the Busan truce from Nov 10, 2026 to Jan 10, 2027. China is roughly halfway through its 25 MMT soybean commitment. Canada's C$27.6B counter-tariffs took effect Sep 8 and do not touch bulk grain, oilseeds, fertilizer or seeds; US import bans on certain Canadian alcohol and dairy follow on Sep 29.",
   "rows": [
     {
       "commodity": "Soybeans",
@@ -12,9 +12,9 @@
       "rate": "~13%",
       "baseline": "3%",
       "status": "mixed",
-      "note": "China lifted its March 2025 retaliatory 10% on soybeans under the Busan agreement (effective Nov 10, 2025) but kept its broad 10% 'Liberation Day' retaliatory levy — so US soybeans face roughly 13% (3% MFN + 10%), a persistent disadvantage vs. Brazil. A Section 301 investigation is pending and could re-escalate. Watch: a reported Jul 6 deal would drop this 10% for cargoes arriving after Oct 1 — China's MOFCOM confirmed it, USTR had not.",
+      "note": "China lifted its March 2025 retaliatory 10% on soybeans under the Busan agreement (effective Nov 10, 2025) but kept its broad 10% 'Liberation Day' retaliatory levy — so US soybeans face roughly 13% (3% MFN + 10%), a persistent disadvantage vs. Brazil. A Section 301 investigation is pending and could re-escalate. Watch: the reported Jul 6 deal would have dropped this 10% for cargoes arriving after Oct 1. It has not happened — the rate was still being quoted at its current level on Sep 24, 2026, and the Busan truce now runs to Jan 10, 2027.",
       "effective": "2025-11-10",
-      "source_url": "https://www.congress.gov/crs-product/R48549"
+      "source_url": "https://www.spglobal.com/energy/en/news-research/latest-news/agriculture/092426-us-says-trade-truce-with-china-extended-till-jan-10-2027-ahead-of-trump-xi-meet"
     },
     {
       "commodity": "Corn",
@@ -23,9 +23,9 @@
       "rate": "~11%",
       "baseline": "1%",
       "status": "mixed",
-      "note": "China suspended its March 2025 retaliatory 15% on corn under the Busan agreement but kept the broad 10% retaliatory levy, leaving roughly 11% (1% MFN + 10%). China purchases remain below pre-trade-war levels; Brazil retains market share. Watch: a reported Jul 6 deal would drop this 10% for cargoes arriving after Oct 1 — China's MOFCOM confirmed it, USTR had not.",
+      "note": "China suspended its March 2025 retaliatory 15% on corn under the Busan agreement but kept the broad 10% retaliatory levy, leaving roughly 11% (1% MFN + 10%). China purchases remain below pre-trade-war levels; Brazil retains market share. Watch: the reported Jul 6 deal would have dropped this 10% for cargoes arriving after Oct 1. It has not happened — the rate was still being quoted at its current level on Sep 24, 2026, and the Busan truce now runs to Jan 10, 2027.",
       "effective": "2025-11-10",
-      "source_url": "https://www.congress.gov/crs-product/R48549"
+      "source_url": "https://www.spglobal.com/energy/en/news-research/latest-news/agriculture/092426-us-says-trade-truce-with-china-extended-till-jan-10-2027-ahead-of-trump-xi-meet"
     },
     {
       "commodity": "Wheat",
@@ -34,9 +34,9 @@
       "rate": "~11%",
       "baseline": "1%",
       "status": "mixed",
-      "note": "March 2025 retaliatory 15% suspended under the Busan agreement; the broad 10% retaliatory levy remains (~11% = 1% MFN + 10%). US wheat has modest direct China exposure — global trade flows matter more than this rate. Watch: a reported Jul 6 deal would drop this 10% for cargoes arriving after Oct 1 — China's MOFCOM confirmed it, USTR had not.",
+      "note": "March 2025 retaliatory 15% suspended under the Busan agreement; the broad 10% retaliatory levy remains (~11% = 1% MFN + 10%). US wheat has modest direct China exposure — global trade flows matter more than this rate. Watch: the reported Jul 6 deal would have dropped this 10% for cargoes arriving after Oct 1. It has not happened — the rate was still being quoted at its current level on Sep 24, 2026, and the Busan truce now runs to Jan 10, 2027.",
       "effective": "2025-11-10",
-      "source_url": "https://www.congress.gov/crs-product/R48549"
+      "source_url": "https://www.spglobal.com/energy/en/news-research/latest-news/agriculture/092426-us-says-trade-truce-with-china-extended-till-jan-10-2027-ahead-of-trump-xi-meet"
     },
     {
       "commodity": "Pork",
@@ -45,9 +45,9 @@
       "rate": "~22%",
       "baseline": "12%",
       "status": "mixed",
-      "note": "March 2025 retaliatory 10% suspended under the Busan agreement; the broad 10% retaliatory levy remains (~22% = 12% MFN + 10%). China resumed US beef and poultry access under the May 18, 2026 deal and remains a major US pork market. Watch: a reported Jul 6 deal would drop this 10% for cargoes arriving after Oct 1 — China's MOFCOM confirmed it, USTR had not.",
+      "note": "March 2025 retaliatory 10% suspended under the Busan agreement; the broad 10% retaliatory levy remains (~22% = 12% MFN + 10%). China resumed US beef and poultry access under the May 18, 2026 deal and remains a major US pork market. Watch: the reported Jul 6 deal would have dropped this 10% for cargoes arriving after Oct 1. It has not happened — the rate was still being quoted at its current level on Sep 24, 2026, and the Busan truce now runs to Jan 10, 2027.",
       "effective": "2025-11-10",
-      "source_url": "https://www.congress.gov/crs-product/R48549"
+      "source_url": "https://www.spglobal.com/energy/en/news-research/latest-news/agriculture/092426-us-says-trade-truce-with-china-extended-till-jan-10-2027-ahead-of-trump-xi-meet"
     },
     {
       "commodity": "Soybeans",
@@ -56,9 +56,9 @@
       "rate": "0%",
       "baseline": "0%",
       "status": "normal",
-      "note": "USMCA-compliant, duty-free. USMCA joint review underway (US-Mexico bilateral rounds began May 2026). Penn Wharton: USMCA exemption share reached 86.3% of Canada/Mexico imports by February 2026. USMCA renegotiation opened July 2026 — rates unchanged so far, but the framework itself is now in play. Aug 2026: 50% Section 338 duties on Canadian dairy, alcohol and vehicles applied DESPITE USMCA origin. Grain is not covered and this rate is unchanged.",
+      "note": "USMCA-compliant, duty-free. USMCA joint review underway (US-Mexico bilateral rounds began May 2026). Penn Wharton: USMCA exemption share reached 86.3% of Canada/Mexico imports by February 2026. USMCA renegotiation opened July 2026 — rates unchanged so far, but the framework itself is now in play. Aug 2026: 50% Section 338 duties on Canadian dairy, alcohol and vehicles applied DESPITE USMCA origin. Canada's C$27.6B counter-tariffs then took effect Sep 8 at 15-50% on steel, dairy, appliances, agricultural equipment, pulp and paper and electronics — bulk grain, oilseeds, fertilizer and seeds are NOT on the list, confirmed against Canada's own published schedule, so this rate is unchanged. US import bans on certain Canadian alcohol and dairy follow Sep 29.",
       "effective": "2020-07-01",
-      "source_url": "https://ustr.gov/trade-agreements/free-trade-agreements/united-states-mexico-canada-agreement"
+      "source_url": "https://www.canada.ca/en/department-finance/news/2026/08/list-of-products-from-the-united-states-subject-to-counter-tariffs-effective-september-8-2026.html"
     },
     {
       "commodity": "Corn",
@@ -67,9 +67,9 @@
       "rate": "0%",
       "baseline": "0%",
       "status": "normal",
-      "note": "USMCA-compliant, duty-free. Mexico remains the top US corn export destination; Canadian demand steady. USMCA joint review underway. USMCA renegotiation opened July 2026 — rates unchanged so far, but the framework itself is now in play. Aug 2026: 50% Section 338 duties on Canadian dairy, alcohol and vehicles applied DESPITE USMCA origin. Grain is not covered and this rate is unchanged.",
+      "note": "USMCA-compliant, duty-free. Mexico remains the top US corn export destination; Canadian demand steady. USMCA joint review underway. USMCA renegotiation opened July 2026 — rates unchanged so far, but the framework itself is now in play. Aug 2026: 50% Section 338 duties on Canadian dairy, alcohol and vehicles applied DESPITE USMCA origin. Canada's C$27.6B counter-tariffs then took effect Sep 8 at 15-50% on steel, dairy, appliances, agricultural equipment, pulp and paper and electronics — bulk grain, oilseeds, fertilizer and seeds are NOT on the list, confirmed against Canada's own published schedule, so this rate is unchanged. US import bans on certain Canadian alcohol and dairy follow Sep 29.",
       "effective": "2020-07-01",
-      "source_url": "https://ustr.gov/trade-agreements/free-trade-agreements/united-states-mexico-canada-agreement"
+      "source_url": "https://www.canada.ca/en/department-finance/news/2026/08/list-of-products-from-the-united-states-subject-to-counter-tariffs-effective-september-8-2026.html"
     },
     {
       "commodity": "Ethanol",
@@ -84,6 +84,30 @@
     }
   ],
   "timeline": [
+    {
+      "date": "2026-09-24",
+      "impact": "high",
+      "source_url": "https://www.spglobal.com/energy/en/news-research/latest-news/agriculture/092426-us-says-trade-truce-with-china-extended-till-jan-10-2027-ahead-of-trump-xi-meet",
+      "event": "Treasury Secretary Scott Bessent says the Busan truce, due to end Nov 10, will be extended to Jan 10, 2027. US soybeans into China are still quoted at 13% (10% reciprocal + 3% MFN) as Trump and Xi meet Sep 24-25 — the reported Oct 1 removal of the 10% has not taken effect."
+    },
+    {
+      "date": "2026-09-17",
+      "impact": "medium",
+      "source_url": "https://www.upi.com/Top_News/World-News/2026/09/17/china-soybean-purchases/4421789590419",
+      "event": "China is roughly halfway through its 25 MMT 2026 soybean commitment after buying about 1 MMT in a week. The 10% levy still makes US beans less attractive to private Chinese crushers."
+    },
+    {
+      "date": "2026-09-08",
+      "impact": "high",
+      "source_url": "https://www.whitehouse.gov/fact-sheets/2026/09/fact-sheet-president-donald-j-trump-responds-to-canadas-retaliation/",
+      "event": "The President signs five Section 338 proclamations in response to Canada: import bans on certain Canadian alcohol and dairy effective Sep 29, 2026, plus list changes effective Sep 15 removing rock salt and cement and adding all-terrain vehicles and further dairy products."
+    },
+    {
+      "date": "2026-09-08",
+      "impact": "high",
+      "source_url": "https://www.canada.ca/en/department-finance/news/2026/08/list-of-products-from-the-united-states-subject-to-counter-tariffs-effective-september-8-2026.html",
+      "event": "Canada's counter-tariffs take effect: C$27.6B of US imports at 15%, 25% and 50% across steel, dairy, appliances, agricultural equipment, pulp and paper and electronics. Bulk grain, oilseeds, fertilizer and seeds are not on the published list."
+    },
     {
       "date": "2026-08-25",
       "impact": "medium",
@@ -170,7 +194,7 @@
     },
     {
       "date": "2025-10-30",
-      "event": "Trump-Xi meeting in Busan, South Korea: tariff truce reached. China commits to buy 12 MMT of US soybeans in late 2025 and 25 MMT/yr in 2026-2028; the truce is later extended through Nov 10, 2026.",
+      "event": "Trump-Xi meeting in Busan, South Korea: tariff truce reached. China commits to buy 12 MMT of US soybeans in late 2025 and 25 MMT/yr in 2026-2028; the truce is later extended through Nov 10, 2026, and again to Jan 10, 2027.",
       "impact": "high",
       "source_url": "https://www.whitehouse.gov/presidential-actions/"
     },
