@@ -1,8 +1,56 @@
 {
- "updated": "2026-09-22T00:49:14+00:00",
- "count": 10,
- "added": 1,
+ "updated": "2026-09-25T20:23:01+00:00",
+ "count": 12,
+ "added": 2,
+ "state": {
+  "px": {
+   "corn": {
+    "hi": 543.0,
+    "hi_day": "2026-09-22"
+   },
+   "beans": {
+    "hi": 1319.0,
+    "hi_day": "2026-09-16"
+   }
+  },
+  "cot": {
+   "corn": {
+    "side": "max",
+    "rd": "September 08, 2026"
+   },
+   "beans": {
+    "side": "max",
+    "rd": "September 22, 2026"
+   },
+   "soymeal": {
+    "side": "max",
+    "rd": "September 22, 2026"
+   }
+  }
+ },
  "items": [
+  {
+   "id": "cot:September 22, 2026:beans:max",
+   "kind": "positioning",
+   "headline": "Managed money pushed its soybeans net long to another one-year high",
+   "detail": "Net +265,159 contracts as of September 22, 2026, from +241,501 the week before.",
+   "significance": "high",
+   "url": "/cot",
+   "source": "CFTC Commitments of Traders",
+   "day_only": true,
+   "ts": "2026-09-22T12:00:00+00:00"
+  },
+  {
+   "id": "cot:September 22, 2026:soymeal:max",
+   "kind": "positioning",
+   "headline": "Managed money pushed its soybean meal net long to another one-year high",
+   "detail": "Net +191,087 contracts as of September 22, 2026, from +183,111 the week before.",
+   "significance": "high",
+   "url": "/cot",
+   "source": "CFTC Commitments of Traders",
+   "day_only": true,
+   "ts": "2026-09-22T12:00:00+00:00"
+  },
   {
    "id": "px:2026-09-22:corn:hi",
    "kind": "board",
@@ -113,31 +161,5 @@
    "day_only": true,
    "ts": "2026-09-08T12:00:00+00:00"
   }
- ],
- "state": {
-  "px": {
-   "corn": {
-    "hi": 543.0,
-    "hi_day": "2026-09-22"
-   },
-   "beans": {
-    "hi": 1319.0,
-    "hi_day": "2026-09-16"
-   }
-  },
-  "cot": {
-   "corn": {
-    "side": "max",
-    "rd": "September 08, 2026"
-   },
-   "beans": {
-    "side": "max",
-    "rd": "September 08, 2026"
-   },
-   "soymeal": {
-    "side": "max",
-    "rd": "September 15, 2026"
-   }
-  }
- }
+ ]
 }

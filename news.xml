@@ -5,8 +5,24 @@
     <link>https://agsist.com/news</link>
     <description>Dated grain and livestock market events the moment they are measurable: USDA report surprises, one-year positioning extremes, 52-week highs and lows, crop rating swings. Measured, not aggregated.</description>
     <language>en-us</language>
-    <lastBuildDate>Tue, 22 Sep 2026 00:49:14 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 25 Sep 2026 20:23:01 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/news.xml" rel="self" type="application/rss+xml"/>
+    <item>
+      <title>Managed money pushed its soybeans net long to another one-year high</title>
+      <link>https://agsist.com/cot</link>
+      <description>Net +265,159 contracts as of September 22, 2026, from +241,501 the week before.</description>
+      <guid isPermaLink="false">agsist-news-cot:September 22, 2026:beans:max</guid>
+      <pubDate>Tue, 22 Sep 2026 12:00:00 +0000</pubDate>
+      <source url="https://agsist.com/news.xml">CFTC Commitments of Traders</source>
+    </item>
+    <item>
+      <title>Managed money pushed its soybean meal net long to another one-year high</title>
+      <link>https://agsist.com/cot</link>
+      <description>Net +191,087 contracts as of September 22, 2026, from +183,111 the week before.</description>
+      <guid isPermaLink="false">agsist-news-cot:September 22, 2026:soymeal:max</guid>
+      <pubDate>Tue, 22 Sep 2026 12:00:00 +0000</pubDate>
+      <source url="https://agsist.com/news.xml">CFTC Commitments of Traders</source>
+    </item>
     <item>
       <title>Corn took its 52-week high to $5.43</title>
       <link>https://agsist.com/corn-futures-prices</link>
