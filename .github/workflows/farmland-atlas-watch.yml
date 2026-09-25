@@ -1,0 +1,57 @@
+name: Farmland Atlas watch emails
+# Watch a county. Every 30 minutes: mail confirmation links to new watchers, and mail a short note to
+# anyone whose watched county's published figures changed since the last note. The list lives in the
+# subs worker (KV). Also runs when the pages workflow finishes, because that is when figures change.
+# Secrets (already used by the hail alert and briefing jobs): LIST_URL, LIST_TOKEN, UNSUB_SECRET,
+# SMTP_USER, SMTP_PASS. Optional: SMTP_HOST, SMTP_PORT, FROM_ADDR, FROM_NAME, REPLY_TO.
+
+on:
+  schedule:
+    - cron: '11,41 * * * *'
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Report what would be sent; send and record nothing"
+        type: boolean
+        default: false
+  workflow_run:
+    workflows: ["farmland-atlas-pages"]
+    types: [completed]
+
+concurrency:
+  group: farmland-atlas-watch
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  watch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Checks (gate)
+        run: |
+          python3 scripts/send_watch.py --selftest
+          node scripts/test_watch_worker.mjs
+      - name: Send
+        env:
+          LIST_URL: ${{ secrets.LIST_URL }}
+          LIST_TOKEN: ${{ secrets.LIST_TOKEN }}
+          UNSUB_SECRET: ${{ secrets.UNSUB_SECRET }}
+          SMTP_HOST: ${{ secrets.SMTP_HOST }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SMTP_USER: ${{ secrets.SMTP_USER || secrets.GMAIL_USER }}
+          SMTP_PASS: ${{ secrets.SMTP_PASS || secrets.GMAIL_APP_PASS }}
+          FROM_ADDR: ${{ secrets.FROM_ADDR }}
+          FROM_NAME: ${{ secrets.FROM_NAME }}
+          REPLY_TO: ${{ secrets.REPLY_TO }}
+          DRY_RUN: ${{ inputs.dry_run == true && '1' || '' }}
+        run: python3 scripts/send_watch.py

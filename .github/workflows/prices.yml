@@ -178,5 +178,29 @@ jobs:
             [ "$REMAIN" -le 60 ] && { echo "session window done, exiting"; break; }
             SLEEP=1800; [ "$SLEEP" -gt "$REMAIN" ] && SLEEP="$REMAIN"
             echo "sleeping ${SLEEP}s until next fetch…"
-            sleep "$SLEEP"
+            # ── THE COT RELEASE CLOCK ───────────────────────────────────
+            #
+            # cot-release-watch.yml asks GitHub's scheduler for a probe every
+            # five minutes from 19:00 UTC. GitHub delivered that workflow two
+            # hours after CFTC published on both of the last two Fridays (21:27
+            # and 21:34 UTC against a 19:30 release). This loop is the one thing
+            # here GitHub does deliver, so it does the asking: in the release
+            # window, Mon-Fri 19:00-21:59 UTC (3:00-4:59pm EDT, 2:00-3:59pm EST,
+            # which holds 3:30pm ET in both), the half-hour sleep is cut into
+            # five-minute pieces and the watcher is dispatched after each one.
+            # The watcher probes CFTC itself and stops in about twenty seconds
+            # unless the report date moved. The sleep still totals $SLEEP, so
+            # the price cadence does not change. `|| true` style: a failed
+            # dispatch is a warning, never a failed price fetch.
+            SLEPT=0
+            while [ "$SLEPT" -lt "$SLEEP" ]; do
+              STEP=$(( SLEEP - SLEPT )); [ "$STEP" -gt 300 ] && STEP=300
+              sleep "$STEP"; SLEPT=$(( SLEPT + STEP ))
+              DOW=$(date -u +%u); HR=$(( 10#$(date -u +%H) ))
+              if [ "$DOW" -le 5 ] && [ "$HR" -ge 19 ] && [ "$HR" -le 21 ]; then
+                gh workflow run cot-release-watch.yml \
+                  && echo "COT watcher started $(date -u +%H:%M:%SZ)" \
+                  || echo "::warning::COT watcher could not be started"
+              fi
+            done
           done
