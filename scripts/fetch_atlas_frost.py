@@ -136,6 +136,24 @@ def find_columns(names, sample):
     return dcol, fcol, hi, lo
 
 
+def num(x):
+    """A temperature as a float, or None. The real EpiNOAA file (read from the run log 2026-09-25)
+    stores tmax and tmin as STRINGS, so '' , 'NA' and 'nan' must come out as missing, not raise."""
+    if x is None:
+        return None
+    if isinstance(x, (int, float)):
+        v = float(x)
+    else:
+        s = str(x).strip()
+        if not s or s.lower() in ("na", "nan", "null", "none", "--"):
+            return None
+        try:
+            v = float(s)
+        except ValueError:
+            return None
+    return v if v == v and abs(v) != float("inf") else None
+
+
 def to_date(v):
     if isinstance(v, datetime):
         return v.date()
@@ -199,6 +217,7 @@ def selftest():
     assert c == ("date", "GEOID", "tmax_f", "tmin_f"), c
     c = find_columns(["obs", "cty", "TMAX", "TMIN", "date"], {"cty": [19169.0, 1001.0], "obs": ["x"]})
     assert c[1] == "cty", c
+    assert num("78.3") == 78.3 and num("") is None and num("NaN") is None and num(None) is None and num("x") is None and num(-999.99) == -999.99
     assert to_date(19960301) == date(1996, 3, 1) and to_date("1996-03-01 00:00:00") == date(1996, 3, 1)
     try:
         find_columns(["date", "tmax", "tmin", "name"], {"name": ["Story"]})
@@ -243,6 +262,7 @@ def main():
                 log(f"  using date={cols[0]} county={cols[1]} high={cols[2]} low={cols[3]}")
             dcol, fcol, hcol, lcol = cols
             D, F, H, L = (t.column(c).to_pylist() for c in cols)
+            H, L = [num(x) for x in H], [num(x) for x in L]
             if fahrenheit is None:
                 # decided on the FIRST file read, before any day is used: a median county high
                 # above 40 is Fahrenheit in any month from March to November (in Celsius it
