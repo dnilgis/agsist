@@ -1,25 +1,25 @@
 {
- "generated": "2026-09-25T15:48:03Z",
+ "generated": "2026-09-25T19:59:13Z",
  "from": "bids-full.json",
  "complete": false,
  "note": "Directory only: who operates a facility and where. No prices, no basis, no symbols, no delivery windows.",
  "counts": {
-  "facilities": 2488,
+  "facilities": 2480,
   "states": 32,
   "with_address": 0,
   "with_coords": 0,
   "with_url": 0,
-  "with_phone": 1784,
+  "with_phone": 1765,
   "saturated_zips": 0,
   "failed_zips": 0,
-  "rows_read": 27464
+  "rows_read": 27400
  },
  "saturated": [],
  "failed": [],
  "elevators": [
   {
    "facility": "Agrex Inc",
-   "branch": "Agrex-Montgomery",
+   "branch": "Montgomery",
    "city": "Montgomery",
    "state": "AL",
    "zip": "36104",
@@ -68,6 +68,26 @@
    "state": "AR",
    "zip": "72160",
    "phone": "(870) 673-5342",
+   "source": "barchart"
+  },
+  {
+   "facility": "Riceland Foods",
+   "city": "Des Arc",
+   "state": "AR",
+   "lat": 34.9751,
+   "source": "barchart"
+  },
+  {
+   "facility": "Riceland Foods",
+   "city": "Pendleton",
+   "state": "AR",
+   "source": "barchart"
+  },
+  {
+   "facility": "Riceland Foods",
+   "city": "Tuckerman",
+   "state": "AR",
+   "lat": 35.7307,
    "source": "barchart"
   },
   {
@@ -239,15 +259,6 @@
   },
   {
    "facility": "Roggen Farmers Elevator Association",
-   "branch": "Roggen Elevator - Main Office",
-   "city": "Roggen",
-   "state": "CO",
-   "zip": "80652",
-   "phone": "(303) 849-5506",
-   "source": "barchart"
-  },
-  {
-   "facility": "Roggen Farmers Elevator Association",
    "branch": "Watkins",
    "city": "Watkins",
    "state": "CO",
@@ -290,11 +301,27 @@
   },
   {
    "facility": "AGrowStar",
+   "city": "BONAIRE",
+   "state": "GA",
+   "zip": "31047",
+   "lat": 32.4672,
+   "source": "barchart"
+  },
+  {
+   "facility": "AGrowStar",
    "branch": "BONAIRE, GA",
    "city": "Bonaire",
    "state": "GA",
    "zip": "31047",
    "phone": "478-225-4465",
+   "source": "barchart"
+  },
+  {
+   "facility": "AGrowStar",
+   "city": "DAVISBORO",
+   "state": "GA",
+   "zip": "31038",
+   "lat": 33.1421,
    "source": "barchart"
   },
   {
@@ -1290,6 +1317,7 @@
    "state": "IA",
    "zip": "52401",
    "lat": 41.9743,
+   "phone": "N/A",
    "source": "barchart"
   },
   {
@@ -1328,33 +1356,6 @@
   },
   {
    "facility": "Farmers Win Coop",
-   "branch": "Granger",
-   "city": "Cresco",
-   "state": "IA",
-   "zip": "52136",
-   "phone": "563-547-4349",
-   "source": "barchart"
-  },
-  {
-   "facility": "Farmers Win Coop",
-   "branch": "Cresco East",
-   "city": "Cresco",
-   "state": "IA",
-   "zip": "52136",
-   "phone": "N/A",
-   "source": "barchart"
-  },
-  {
-   "facility": "Farmers Win Coop",
-   "branch": "Cresco",
-   "city": "Cresco",
-   "state": "IA",
-   "zip": "52136",
-   "phone": "563-547-5404",
-   "source": "barchart"
-  },
-  {
-   "facility": "Farmers Win Coop",
    "branch": "Poet Fairbank",
    "city": "Fairbank",
    "state": "IA",
@@ -1369,15 +1370,6 @@
    "state": "IA",
    "zip": "50630",
    "phone": "563-237-5324",
-   "source": "barchart"
-  },
-  {
-   "facility": "Farmers Win Coop",
-   "branch": "Hawkeye",
-   "city": "Hawkeye",
-   "state": "IA",
-   "zip": "52147",
-   "phone": "563-427-3214",
    "source": "barchart"
   },
   {
@@ -1409,15 +1401,6 @@
   },
   {
    "facility": "Farmers Win Coop",
-   "branch": "Ridgeway",
-   "city": "Ridgeway",
-   "state": "IA",
-   "zip": "52165",
-   "phone": "563-737-2244",
-   "source": "barchart"
-  },
-  {
-   "facility": "Farmers Win Coop",
    "branch": "Poet Shell Rock",
    "city": "Shell Rock",
    "state": "IA",
@@ -1436,20 +1419,127 @@
   },
   {
    "facility": "Farmers Win Coop",
-   "branch": "Sumner",
-   "city": "Sumner",
-   "state": "IA",
-   "zip": "50674",
-   "phone": "563-578-3432",
-   "source": "barchart"
-  },
-  {
-   "facility": "Farmers Win Coop",
    "branch": "Bremer",
    "city": "Waverly",
    "state": "IA",
    "zip": "50677",
    "phone": "319-352-1354",
+   "source": "barchart"
+  },
+  {
+   "facility": "Farmers Win Cooperative",
+   "city": "AGP - Mason City",
+   "state": "IA",
+   "zip": "50401",
+   "lat": 43.1499,
+   "source": "barchart"
+  },
+  {
+   "facility": "Farmers Win Cooperative",
+   "city": "Bremer",
+   "state": "IA",
+   "zip": "50677",
+   "lat": 42.7748,
+   "source": "barchart"
+  },
+  {
+   "facility": "Farmers Win Cooperative",
+   "city": "Cresco",
+   "state": "IA",
+   "zip": "52136",
+   "lat": 43.363,
+   "phone": "563-547-4349",
+   "source": "barchart"
+  },
+  {
+   "facility": "Farmers Win Cooperative",
+   "city": "F'Burg",
+   "state": "IA",
+   "zip": "50630",
+   "lat": 42.9593,
+   "source": "barchart"
+  },
+  {
+   "facility": "Farmers Win Cooperative",
+   "city": "Granger",
+   "state": "IA",
+   "zip": "52136",
+   "lat": 43.363,
+   "source": "barchart"
+  },
+  {
+   "facility": "Farmers Win Cooperative",
+   "city": "Hawkeye",
+   "state": "IA",
+   "zip": "52147",
+   "lat": 42.9487,
+   "phone": "563-427-3214",
+   "source": "barchart"
+  },
+  {
+   "facility": "Farmers Win Cooperative",
+   "city": "Homeland",
+   "state": "IA",
+   "zip": "52154",
+   "lat": 43.0932,
+   "source": "barchart"
+  },
+  {
+   "facility": "Farmers Win Cooperative",
+   "city": "Poet Fairbank",
+   "state": "IA",
+   "zip": "50629",
+   "lat": 42.6162,
+   "source": "barchart"
+  },
+  {
+   "facility": "Farmers Win Cooperative",
+   "city": "Poet Shell Rock",
+   "state": "IA",
+   "zip": "50670",
+   "lat": 42.7061,
+   "source": "barchart"
+  },
+  {
+   "facility": "Farmers Win Cooperative",
+   "city": "Ridgeway",
+   "state": "IA",
+   "zip": "52165",
+   "lat": 43.2979,
+   "phone": "563-737-2244",
+   "source": "barchart"
+  },
+  {
+   "facility": "Farmers Win Cooperative",
+   "city": "SRSP",
+   "state": "IA",
+   "zip": "50670",
+   "lat": 42.7061,
+   "source": "barchart"
+  },
+  {
+   "facility": "Farmers Win Cooperative",
+   "city": "Sumner",
+   "state": "IA",
+   "zip": "50674",
+   "lat": 42.8419,
+   "phone": "563-578-3432",
+   "source": "barchart"
+  },
+  {
+   "facility": "Farmers Win Cooperative",
+   "city": "Valero",
+   "state": "IA",
+   "zip": "50616",
+   "lat": 43.0683,
+   "source": "barchart"
+  },
+  {
+   "facility": "Farmers Win Cooperative",
+   "city": "Viserion",
+   "state": "IA",
+   "zip": "52157",
+   "lat": 43.0237,
    "source": "barchart"
   },
   {
@@ -1508,20 +1598,20 @@
   },
   {
    "facility": "Five Star Cooperative",
-   "branch": "Reicks View Milling",
-   "city": "Lime Springs",
-   "state": "IA",
-   "zip": "52155",
-   "phone": "N/A",
-   "source": "barchart"
-  },
-  {
-   "facility": "Five Star Cooperative",
    "branch": "Lime Springs",
    "city": "Lime Springs",
    "state": "IA",
    "zip": "52155",
    "phone": "563-566-2291",
+   "source": "barchart"
+  },
+  {
+   "facility": "Five Star Cooperative",
+   "branch": "Reicks View Milling",
+   "city": "Lime Springs",
+   "state": "IA",
+   "zip": "52155",
+   "phone": "N/A",
    "source": "barchart"
   },
   {
@@ -4926,42 +5016,6 @@
    "source": "barchart"
   },
   {
-   "facility": "The Scoular Company",
-   "branch": "Emerson, IA",
-   "city": "Emerson",
-   "state": "IA",
-   "zip": "51533",
-   "phone": "712-824-7307",
-   "source": "barchart"
-  },
-  {
-   "facility": "The Scoular Company",
-   "branch": "Griswold, IA",
-   "city": "Griswold",
-   "state": "IA",
-   "zip": "51535",
-   "phone": "712-778-2701",
-   "source": "barchart"
-  },
-  {
-   "facility": "The Scoular Company",
-   "branch": "Hancock, IA",
-   "city": "Hancock",
-   "state": "IA",
-   "zip": "51536",
-   "phone": "712-741-5437",
-   "source": "barchart"
-  },
-  {
-   "facility": "The Scoular Company",
-   "branch": "Corley, IA",
-   "city": "Harlan",
-   "state": "IA",
-   "zip": "51537",
-   "phone": "712-755-3192",
-   "source": "barchart"
-  },
-  {
    "facility": "Two Rivers Coop IA",
    "branch": "MONROE",
    "city": "Monroe",
@@ -5462,6 +5516,13 @@
    "city": "Elmwood",
    "state": "IL",
    "lat": 40.7726,
+   "source": "barchart"
+  },
+  {
+   "facility": "Ag-Land FS",
+   "city": "Green  Valley",
+   "state": "IL",
+   "lat": 40.4198,
    "source": "barchart"
   },
   {
@@ -6335,6 +6396,14 @@
    "state": "IL",
    "zip": "62634",
    "phone": "217-947-2751",
+   "source": "barchart"
+  },
+  {
+   "facility": "Encompass Grain",
+   "city": "Delavan",
+   "state": "IL",
+   "zip": "61734",
+   "lat": 40.369,
    "source": "barchart"
   },
   {
@@ -7545,42 +7614,6 @@
    "source": "barchart"
   },
   {
-   "facility": "The Scoular Company",
-   "branch": "Palmyra, IL - Elevator",
-   "city": "Palmyra",
-   "state": "IL",
-   "zip": "62674",
-   "phone": "217-435-2361",
-   "source": "barchart"
-  },
-  {
-   "facility": "The Scoular Company",
-   "branch": "Pisgah, IL - Elevator",
-   "city": "Pisgah",
-   "state": "IL",
-   "zip": " 6265",
-   "phone": " 217-243-7511",
-   "source": "barchart"
-  },
-  {
-   "facility": "The Scoular Company",
-   "branch": "Waverly, IL - Shuttle",
-   "city": "Waverly",
-   "state": "IL",
-   "zip": "62692",
-   "phone": "2174352361",
-   "source": "barchart"
-  },
-  {
-   "facility": "The Scoular Company",
-   "branch": "Waverly, IL - Elevator",
-   "city": "Waverly",
-   "state": "IL",
-   "zip": "62692",
-   "phone": "217-435-2361",
-   "source": "barchart"
-  },
-  {
    "facility": "Top Flight Grain Co-operative",
    "branch": "MON",
    "city": " Monticello",
@@ -8317,7 +8350,7 @@
   },
   {
    "facility": "Agrex Inc",
-   "branch": "Oracle Pork Nutrition LLC",
+   "branch": "OP Nutrition",
    "city": "Peru",
    "state": "IN",
    "zip": "46970",
@@ -9571,6 +9604,15 @@
    "source": "barchart"
   },
   {
+   "facility": "Cardinal Ethanol",
+   "branch": "Cardinal Colwich",
+   "city": "Colwich",
+   "state": "KS",
+   "zip": "67030",
+   "phone": "(316) 789-2500",
+   "source": "barchart"
+  },
+  {
    "facility": "Cargill US",
    "branch": "Hutchinson East, CAH",
    "city": "Hutchinson",
@@ -10198,38 +10240,6 @@
    "source": "barchart"
   },
   {
-   "facility": "Farmers Coop Columbus",
-   "city": "BAXTER SPRINGS",
-   "state": "KS",
-   "zip": "66713",
-   "lat": 37.0281,
-   "source": "barchart"
-  },
-  {
-   "facility": "Farmers Coop Columbus",
-   "city": "COLUMBUS",
-   "state": "KS",
-   "zip": "66725",
-   "lat": 37.1699,
-   "source": "barchart"
-  },
-  {
-   "facility": "Farmers Coop Columbus",
-   "city": "COLUMBUS EAST",
-   "state": "KS",
-   "zip": "66739",
-   "lat": 37.1699,
-   "source": "barchart"
-  },
-  {
-   "facility": "Farmers Coop Columbus",
-   "city": "FAULKNER",
-   "state": "KS",
-   "zip": "67336",
-   "lat": 37.0418,
-   "source": "barchart"
-  },
-  {
    "facility": "Farmers Coop Conway Springs",
    "branch": "BELLE PLAINE",
    "city": "Belle Plaine",
@@ -10479,6 +10489,15 @@
    "state": "KS",
    "zip": "67135",
    "phone": "316-796-0367",
+   "source": "barchart"
+  },
+  {
+   "facility": "Farmers Cooperative Equity Company",
+   "branch": "Isabel",
+   "city": "Isabel",
+   "state": "KS",
+   "zip": "67065",
+   "phone": "620-739-4335",
    "source": "barchart"
   },
   {
@@ -11300,15 +11319,6 @@
    "source": "barchart"
   },
   {
-   "facility": "Scoular Company - Missouri",
-   "branch": "Scoular Pittsburg Cash Bids",
-   "city": "Pittsburg",
-   "state": "KS",
-   "zip": "66762",
-   "phone": "620-232-5800",
-   "source": "barchart"
-  },
-  {
    "facility": "ScoularView",
    "city": "Ada",
    "state": "KS",
@@ -11443,33 +11453,6 @@
    "state": "KS",
    "zip": "67490",
    "phone": "N/A",
-   "source": "barchart"
-  },
-  {
-   "facility": "The Scoular Company",
-   "branch": "Scoular Pittsburg Cash Bids",
-   "city": "Pittsburg",
-   "state": "KS",
-   "zip": "66762",
-   "phone": "620-232-5800",
-   "source": "barchart"
-  },
-  {
-   "facility": "The Scoular Company",
-   "branch": "Pratt, KS",
-   "city": "Pratt",
-   "state": "KS",
-   "zip": "67124",
-   "phone": "620-933-2440",
-   "source": "barchart"
-  },
-  {
-   "facility": "The Scoular Company",
-   "branch": "Salina, KS",
-   "city": "Salina",
-   "state": "KS",
-   "zip": "67401",
-   "phone": "785-823-6001",
    "source": "barchart"
   },
   {
@@ -13038,38 +13021,38 @@
    "source": "barchart"
   },
   {
-   "facility": "Farmers Win Coop",
-   "branch": "Houston",
+   "facility": "Farmers Win Cooperative",
    "city": "Houston",
    "state": "MN",
    "zip": "55943",
+   "lat": 43.7929,
    "phone": "507-896-3147",
    "source": "barchart"
   },
   {
-   "facility": "Farmers Win Coop",
-   "branch": "Mabel",
+   "facility": "Farmers Win Cooperative",
    "city": "Mabel",
    "state": "MN",
    "zip": "55954",
+   "lat": 43.5446,
    "phone": "507-493-5070",
    "source": "barchart"
   },
   {
-   "facility": "Farmers Win Coop",
-   "branch": "Rushford",
+   "facility": "Farmers Win Cooperative",
    "city": "Rushford",
    "state": "MN",
    "zip": "55971",
+   "lat": 43.8216,
    "phone": "507-864-2161",
    "source": "barchart"
   },
   {
-   "facility": "Farmers Win Coop",
-   "branch": "Spring Grove",
+   "facility": "Farmers Win Cooperative",
    "city": "Spring Grove",
    "state": "MN",
    "zip": "55974",
+   "lat": 43.5623,
    "phone": "507-498-5321",
    "source": "barchart"
   },
@@ -13211,6 +13194,14 @@
    "state": "MN",
    "zip": "56573",
    "phone": "218-346-4700",
+   "source": "barchart"
+  },
+  {
+   "facility": "KBQ Inc.",
+   "city": "KBQ Inc.",
+   "state": "MN",
+   "zip": "56159",
+   "lat": 43.939,
    "source": "barchart"
   },
   {
@@ -14509,15 +14500,6 @@
    "source": "barchart"
   },
   {
-   "facility": "Scoular Company - Missouri",
-   "branch": "Scoular Butterfield Cash Bids",
-   "city": "Butterfield",
-   "state": "MO",
-   "zip": "65734",
-   "phone": "417-697-4014",
-   "source": "barchart"
-  },
-  {
    "facility": "Show-Me MFA Agri Services",
    "branch": "CENTRALIA",
    "city": "Centralia",
@@ -15103,24 +15085,6 @@
    "source": "barchart"
   },
   {
-   "facility": "Dakota Midland Grain",
-   "branch": "Surrey",
-   "city": "Norwich",
-   "state": "ND",
-   "zip": "58768",
-   "phone": "701-728-6430",
-   "source": "barchart"
-  },
-  {
-   "facility": "Dakota Midland Grain",
-   "branch": "Voltaire",
-   "city": "Volitaire",
-   "state": "ND",
-   "zip": "58792",
-   "phone": "701-338-2530",
-   "source": "barchart"
-  },
-  {
    "facility": "Embden Grain Company",
    "branch": "Embden Grain Co.",
    "city": "Embden",
@@ -15161,6 +15125,15 @@
    "state": "ND",
    "zip": "58053",
    "phone": "17015384617",
+   "source": "barchart"
+  },
+  {
+   "facility": "Fullerton Farmers Elevator",
+   "branch": "Fullerton Elevator",
+   "city": "Fullerton",
+   "state": "ND",
+   "zip": "58441",
+   "phone": "8887656965",
    "source": "barchart"
   },
   {
@@ -16028,24 +16001,6 @@
    "source": "barchart"
   },
   {
-   "facility": "Country Partners Coop",
-   "branch": "Farnam",
-   "city": "Farnam",
-   "state": "NE",
-   "zip": "69029",
-   "phone": "308-569-2461",
-   "source": "barchart"
-  },
-  {
-   "facility": "Country Partners Coop",
-   "branch": "Gothenburg",
-   "city": "Gothenburg",
-   "state": "NE",
-   "zip": "69138",
-   "phone": "308-537-7141",
-   "source": "barchart"
-  },
-  {
    "facility": "Country Partners Cooperative",
    "city": "AGP-David City",
    "state": "NE",
@@ -16085,6 +16040,7 @@
    "city": "Farnam",
    "state": "NE",
    "lat": 40.7129,
+   "phone": "308-569-2461",
    "source": "barchart"
   },
   {
@@ -16092,6 +16048,7 @@
    "city": "Gothenburg",
    "state": "NE",
    "lat": 40.93005,
+   "phone": "308-537-7141",
    "source": "barchart"
   },
   {
@@ -17290,69 +17247,6 @@
    "source": "barchart"
   },
   {
-   "facility": "The Scoular Company",
-   "branch": "Fremont, NE",
-   "city": "Fremont",
-   "state": "NE",
-   "zip": "68025",
-   "phone": "402-721-9767",
-   "source": "barchart"
-  },
-  {
-   "facility": "The Scoular Company",
-   "branch": "South Grant, NE",
-   "city": "Grant",
-   "state": "NE",
-   "zip": "69140",
-   "phone": "308-352-4914",
-   "source": "barchart"
-  },
-  {
-   "facility": "The Scoular Company",
-   "branch": "Madrid, NE",
-   "city": "Madrid",
-   "state": "NE",
-   "zip": "69150",
-   "phone": "308-326-4206",
-   "source": "barchart"
-  },
-  {
-   "facility": "The Scoular Company",
-   "branch": "North Grant, NE",
-   "city": "Ogallala",
-   "state": "NE",
-   "zip": "69153",
-   "phone": "308-447-5531",
-   "source": "barchart"
-  },
-  {
-   "facility": "The Scoular Company",
-   "branch": "Scoular Paxton, NE Bids",
-   "city": "Paxton",
-   "state": "NE",
-   "zip": "69155",
-   "phone": "308-239-4995",
-   "source": "barchart"
-  },
-  {
-   "facility": "The Scoular Company",
-   "branch": "Wallace, NE",
-   "city": "Wallace",
-   "state": "NE",
-   "zip": "69169",
-   "phone": "308-387-4301",
-   "source": "barchart"
-  },
-  {
-   "facility": "The Scoular Company",
-   "branch": "Grainton Cash Bids",
-   "city": "Wallace",
-   "state": "NE",
-   "zip": "69169",
-   "phone": "308-228-2417",
-   "source": "barchart"
-  },
-  {
    "facility": "Thomas Livestock Co",
    "branch": "Thomas Livestock Co.",
    "city": " Broken Bow",
@@ -18431,7 +18325,7 @@
   {
    "facility": "Sunrise Cooperative",
    "branch": "Botkins",
-   "city": "Botkins, Ohio ",
+   "city": "Botkins",
    "state": "OH",
    "zip": "45306",
    "phone": "937-693-2043 ",
@@ -18444,6 +18338,15 @@
    "state": "OH",
    "zip": "43410",
    "phone": "419-547-9588",
+   "source": "barchart"
+  },
+  {
+   "facility": "Sunrise Cooperative",
+   "branch": "Star of West-Willard",
+   "city": "Fremont",
+   "state": "OH",
+   "zip": "43420",
+   "phone": "419-332-6468",
    "source": "barchart"
   },
   {
@@ -18471,6 +18374,24 @@
    "state": "OH",
    "zip": "44854",
    "phone": "419-492-2548",
+   "source": "barchart"
+  },
+  {
+   "facility": "Sunrise Cooperative",
+   "branch": "South Charleston",
+   "city": "South Charleston",
+   "state": "OH",
+   "zip": "45368",
+   "phone": "937-462-8341 ",
+   "source": "barchart"
+  },
+  {
+   "facility": "Sunrise Cooperative",
+   "branch": "Uniopolis",
+   "city": "Uniopolis",
+   "state": "OH",
+   "zip": "45888",
+   "phone": "419-568-2467 ",
    "source": "barchart"
   },
   {
@@ -21310,15 +21231,6 @@
    "state": "WI",
    "zip": "54725",
    "phone": "7158746593",
-   "source": "barchart"
-  },
-  {
-   "facility": "Wheaton Grain",
-   "branch": "Chippewa Falls",
-   "city": "Chippewa Falls",
-   "state": "WI",
-   "zip": "54729",
-   "phone": "715-874-659",
    "source": "barchart"
   },
   {

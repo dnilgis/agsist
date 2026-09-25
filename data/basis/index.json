@@ -9,9 +9,9 @@
    "kb":0.7
   },
   "AL":{
-   "rows":16,
+   "rows":18,
    "facilities":1,
-   "kb":0.9
+   "kb":1.0
   },
   "AR":{
    "rows":82,
@@ -19,9 +19,9 @@
    "kb":4.1
   },
   "CO":{
-   "rows":159,
+   "rows":157,
    "facilities":19,
-   "kb":7.7
+   "kb":7.6
   },
   "DE":{
    "rows":5,
@@ -34,14 +34,14 @@
    "kb":0.3
   },
   "GA":{
-   "rows":28,
-   "facilities":5,
-   "kb":1.5
+   "rows":34,
+   "facilities":7,
+   "kb":1.8
   },
   "IA":{
-   "rows":8627,
+   "rows":8659,
    "facilities":591,
-   "kb":362.5
+   "kb":363.6
   },
   "ID":{
    "rows":68,
@@ -49,9 +49,9 @@
    "kb":3.2
   },
   "IL":{
-   "rows":5365,
+   "rows":5367,
    "facilities":340,
-   "kb":227.2
+   "kb":227.3
   },
   "IN":{
    "rows":1711,
@@ -59,9 +59,9 @@
    "kb":71.9
   },
   "KS":{
-   "rows":5081,
+   "rows":5070,
    "facilities":316,
-   "kb":212.0
+   "kb":211.3
   },
   "KY":{
    "rows":64,
@@ -79,9 +79,9 @@
    "kb":28.1
   },
   "MN":{
-   "rows":5098,
+   "rows":5107,
    "facilities":271,
-   "kb":214.9
+   "kb":215.2
   },
   "MO":{
    "rows":970,
@@ -89,9 +89,9 @@
    "kb":41.3
   },
   "MT":{
-   "rows":187,
+   "rows":192,
    "facilities":9,
-   "kb":8.5
+   "kb":8.8
   },
   "NC":{
    "rows":17,
@@ -99,14 +99,14 @@
    "kb":1.0
   },
   "ND":{
-   "rows":2183,
+   "rows":2207,
    "facilities":97,
-   "kb":93.1
+   "kb":94.1
   },
   "NE":{
-   "rows":4760,
+   "rows":4761,
    "facilities":242,
-   "kb":194.7
+   "kb":194.8
   },
   "NY":{
    "rows":2,
@@ -114,14 +114,14 @@
    "kb":0.3
   },
   "OH":{
-   "rows":2506,
-   "facilities":164,
-   "kb":104.1
+   "rows":2532,
+   "facilities":165,
+   "kb":105.1
   },
   "OK":{
    "rows":452,
    "facilities":25,
-   "kb":19.4
+   "kb":19.3
   },
   "ON":{
    "rows":24,
@@ -139,9 +139,9 @@
    "kb":0.6
   },
   "SD":{
-   "rows":2779,
+   "rows":2782,
    "facilities":133,
-   "kb":119.9
+   "kb":120.0
   },
   "TN":{
    "rows":129,
@@ -151,7 +151,7 @@
   "TX":{
    "rows":107,
    "facilities":5,
-   "kb":4.9
+   "kb":4.8
   },
   "VA":{
    "rows":29,
@@ -161,7 +161,7 @@
   "WA":{
    "rows":415,
    "facilities":22,
-   "kb":18.9
+   "kb":18.8
   },
   "WI":{
    "rows":1641,
