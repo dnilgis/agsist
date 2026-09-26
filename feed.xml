@@ -5,13 +5,24 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Fri, 25 Sep 2026 11:16:24 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 26 Sep 2026 14:34:33 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/agsist.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>GRAINS CLIMB FRIDAY, CATTLE STALL BEFORE COF WEEK</title>
+      <link>https://agsist.com/daily/2026-09-26</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-09-26</guid>
+      <pubDate>Sat, 26 Sep 2026 05:00:00 -0600</pubDate>
+      <description>Corn closed Friday at $5.29, up 1.7% on the week's last session, and wheat gained 1.8% to $7.04 on nothing more than a bearish China trade story running out of sellers. Cattle held flat at $218.85 with a Cattle on Feed report still ahead.
+Action: Nothing to do at $5.29 corn; a close back below $5.20 confirms Friday's bounce was just short-covering.
+• Grains Bounce On Empty News
+• Cattle Flat, Feeders Firm Ahead Of COF
+Read more: https://agsist.com/daily/2026-09-26</description>
+    </item>
     <item>
       <title>GRAINS SIT STILL, CATTLE SLIP AGAIN BEFORE COF</title>
       <link>https://agsist.com/daily/2026-09-25</link>
@@ -371,19 +382,6 @@ A forecasted heatwave into Labor Day lit up wheat and meal Friday while corn eas
   → December corn at $5.36: if you have unpriced new-crop bushels, this is the window. Combines are coming.
 • CATTLE MARK TIME; SCREWWORM CLOCK TICKS
 Read more: https://agsist.com/daily/2026-08-28</description>
-    </item>
-    <item>
-      <title>EXPORT SALES AT 7:30; SOYOIL RUNS, CORN EASES</title>
-      <link>https://agsist.com/daily/2026-08-27</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-08-27</guid>
-      <pubDate>Thu, 27 Aug 2026 05:00:00 -0600</pubDate>
-      <description>Corn eased to $5.08 overnight as seed company commentary about warm-night yield drag circulates, and the market is positioning ahead of this morning's export sales at 7:30 AM CT. Soybeans are barely green at $12.53, holding gains from Wednesday's ratings-cut bid. Soybean oil ran 2.6% higher and is the one number worth watching before the report prints.
-Weekly export sales print at 7:30 AM CT; soybean oil leads the complex higher overnight while corn gives back a nickel on mid-season stress fears.
-• GRAINS: CORN SOFT, BEANS HOLD
-  → December corn at $5.32: if you have unpriced new-crop bushels, the window is still open but narrowing. Do not wait for combines.
-• SOYOIL BREAKS FROM THE COMPLEX
-• CATTLE FIRM, SCREWWORM CLOCK TICKING
-Read more: https://agsist.com/daily/2026-08-27</description>
     </item>
   </channel>
 </rss>

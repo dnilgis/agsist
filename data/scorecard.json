@@ -1,18 +1,18 @@
 {
- "updated": "2026-09-25T11:16:24+00:00",
+ "updated": "2026-09-26T14:34:34+00:00",
  "total": 133,
  "played_out": 43,
- "didnt": 84,
- "pending": 6,
- "hit_rate": 33.9,
+ "didnt": 85,
+ "pending": 5,
+ "hit_rate": 33.6,
  "by_method": {
   "deterministic": {
    "played": 17,
-   "missed": 74,
-   "graded": 91,
-   "hit_rate": 18.7,
+   "missed": 75,
+   "graded": 92,
+   "hit_rate": 18.5,
    "first": "2026-06-25",
-   "last": "2026-09-25"
+   "last": "2026-09-26"
   },
   "self_reported": {
    "played": 26,
@@ -34,17 +34,17 @@
   },
   "v2": {
    "played": 11,
-   "missed": 31,
-   "graded": 42,
-   "hit_rate": 26.2,
+   "missed": 32,
+   "graded": 43,
+   "hit_rate": 25.6,
    "first": "2026-08-12",
-   "last": "2026-09-25"
+   "last": "2026-09-26"
   }
  },
  "direction_only": {
-  "right_way": 42,
-  "graded": 91,
-  "rate": 46.2
+  "right_way": 43,
+  "graded": 92,
+  "rate": 46.7
  },
  "by_instrument": {
   "wheat": {
@@ -84,7 +84,7 @@
   },
   "cattle": {
    "played": 0,
-   "graded": 2,
+   "graded": 3,
    "hit_rate": 0.0
   }
  },
@@ -105,18 +105,19 @@
  "records": [
   {
    "made": "2026-09-25",
-   "judged": null,
-   "call": "Called cattle down toward $216.50 ($218.95 when the call was made).",
-   "outcome": "pending",
+   "judged": "2026-09-26",
+   "call": "Called cattle down toward $216.50 ($218.95 when the call was made). It closed at $218.85001.",
+   "outcome": "didnt",
    "method": "deterministic",
    "mismatch": false,
-   "note": "Open: no session has settled since this call was made.",
+   "note": "Cattle never got near $216.50; Friday held flat at $218.85, the de-risking read was right but the level was too aggressive.",
    "instrument": "cattle",
    "direction": "down",
    "level": "216.50",
    "p0": 218.95,
-   "p1": null,
-   "design": "v2"
+   "p1": 218.85001,
+   "design": "v2",
+   "direction_ok": true
   },
   {
    "made": "2026-09-24",
