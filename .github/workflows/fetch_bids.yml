@@ -220,6 +220,7 @@ jobs:
       - name: Sizes
         run: |
           ls -lh data/bids.json data/basis-map.json bids-full.json
+          ls -lh data/bids-withheld.json 2>/dev/null || echo "no data/bids-withheld.json this run"
           du -sh data/basis 2>/dev/null || true
 
       - name: Commit and push
@@ -230,6 +231,9 @@ jobs:
           # bids-full.json is gitignored. Adding it explicitly here would put
           # 6 MB into every commit, which is the whole thing this avoids.
           git add data/bids.json data/basis-map.json data/basis data/elevator-directory.json
+          # The withheld-rows report is written by fetch_bids.py inside a try/except,
+          # so it can be missing. A missing file must never cost the run its commit.
+          [ -f data/bids-withheld.json ] && git add data/bids-withheld.json || true
           git diff --staged --quiet && echo "No changes" && exit 0
           git commit -m "Update grain bids + basis map + basis history $(date -u +%Y-%m-%dT%H:%M:%SZ)"
           git pull --rebase origin main
