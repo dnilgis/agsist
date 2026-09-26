@@ -49,9 +49,9 @@
    "kb":3.2
   },
   "IL":{
-   "rows":5369,
-   "facilities":340,
-   "kb":227.5
+   "rows":5373,
+   "facilities":341,
+   "kb":227.7
   },
   "IN":{
    "rows":1711,
@@ -61,7 +61,7 @@
   "KS":{
    "rows":5087,
    "facilities":316,
-   "kb":212.1
+   "kb":212.0
   },
   "KY":{
    "rows":64,
@@ -84,9 +84,9 @@
    "kb":216.4
   },
   "MO":{
-   "rows":966,
-   "facilities":77,
-   "kb":41.4
+   "rows":970,
+   "facilities":78,
+   "kb":41.6
   },
   "MT":{
    "rows":192,
@@ -99,14 +99,14 @@
    "kb":1.0
   },
   "ND":{
-   "rows":2229,
-   "facilities":98,
-   "kb":95.0
+   "rows":2241,
+   "facilities":99,
+   "kb":95.7
   },
   "NE":{
-   "rows":4761,
+   "rows":4773,
    "facilities":242,
-   "kb":194.8
+   "kb":195.2
   },
   "NY":{
    "rows":2,
