@@ -39,9 +39,9 @@
    "kb":1.8
   },
   "IA":{
-   "rows":8844,
-   "facilities":594,
-   "kb":371.6
+   "rows":8854,
+   "facilities":595,
+   "kb":372.1
   },
   "ID":{
    "rows":68,
@@ -104,9 +104,9 @@
    "kb":100.5
   },
   "NE":{
-   "rows":5438,
-   "facilities":251,
-   "kb":234.5
+   "rows":5474,
+   "facilities":253,
+   "kb":235.9
   },
   "NY":{
    "rows":2,
@@ -114,9 +114,9 @@
    "kb":0.3
   },
   "OH":{
-   "rows":2564,
-   "facilities":166,
-   "kb":106.8
+   "rows":2565,
+   "facilities":167,
+   "kb":106.9
   },
   "OK":{
    "rows":457,
