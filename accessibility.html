@@ -105,33 +105,40 @@
   <main id="main" tabindex="-1">
     <div class="legal-page">
       <h1>Accessibility Statement</h1>
-      <p class="updated">Last updated: April 2026</p>
+      <p class="updated">Last reviewed: September 26, 2026</p>
 
       <h2>Commitment</h2>
-      <p>AGSIST is built and maintained by one person with the goal of being usable by everyone — including people with disabilities. Accessibility isn't an afterthought here; it's part of the build standard on every page.</p>
+      <p>AGSIST is built and maintained by one person with the goal of being usable by everyone, including people with disabilities.</p>
 
-      <h2>Standards</h2>
-      <p>AGSIST targets WCAG 2.1 Level AA compliance. Every page in the site is built with:</p>
+      <h2>Conformance status</h2>
+      <p>AGSIST <strong>partially conforms</strong> to WCAG 2.1 Level AA. That is the target, and it is not yet met on every page. This page was last reviewed on September 26, 2026. The review covered the site&rsquo;s pages at phone and desktop widths in the dark theme. It does not cover the light theme, and an automated check does not catch everything.</p>
+
+      <h2>What was found to be in place</h2>
       <ul>
-        <li>A skip-to-main-content link at the top of every page</li>
-        <li>Sufficient color contrast in dark mode (the primary interface)</li>
-        <li>Full keyboard navigation support</li>
-        <li>Descriptive alt text on all images</li>
-        <li>ARIA labels on interactive elements</li>
-        <li>Proper landmark regions (<code>main</code>, <code>nav</code>, <code>footer</code>)</li>
-        <li>Responsive layout that works at all zoom levels</li>
-        <li><code>touch-action: manipulation</code> on all interactive elements to prevent iOS double-tap delay</li>
-        <li>Minimum font size of .62rem enforced across all components</li>
+        <li>Descriptive alt text on the images.</li>
+        <li>Landmark regions (<code>main</code>, <code>nav</code>, <code>footer</code>) on the content pages.</li>
+        <li>A skip-to-content link on most pages.</li>
+        <li>A responsive layout that has no sideways page scroll at phone width.</li>
+        <li>A visible focus outline on links and buttons.</li>
       </ul>
 
-      <h2>Known Limitations</h2>
-      <p>Some real-time data tables and embedded charts (radar, drought monitor) have limited screen reader support. These are identified as areas actively being improved. No content on this site is exclusively communicated through color alone.</p>
+      <h2>Known gaps</h2>
+      <ul>
+        <li><strong>Colour contrast.</strong> Some pairs fall below 4.5:1: white text on the green buttons, the labels on the coloured state tiles, and some small labels on the USDA calendar and What&rsquo;s Priced In pages.</li>
+        <li><strong>Colour alone.</strong> Links inside paragraphs are told apart from the text by colour only on many pages. Some tables and tiles use colour to show high, low or missing values, with the value written out beside it in most but not all cases.</li>
+        <li><strong>Small text.</strong> A few pages (COT, Farmland Atlas, sponsor proofs) set some text at 9 to 10 pixels.</li>
+        <li><strong>Labels.</strong> Some form controls and icon buttons have no accessible name, including a few selects on the conditions, grain bin, spray and cash lease tools.</li>
+        <li><strong>Keyboard.</strong> Some scrolling tables cannot be scrolled from the keyboard, and some pages carry two skip links. A few pages, mostly redirects and the sponsor proof page, have none.</li>
+        <li><strong>Touch targets.</strong> Footer links, menu items and some small buttons are smaller than 44 pixels.</li>
+        <li><strong>Charts and maps.</strong> Real-time tables, charts, radar and the drought monitor have limited screen reader support.</li>
+      </ul>
 
       <h2>Feedback</h2>
       <p>If you run into an accessibility barrier on AGSIST, please contact me directly. I'm a solo developer and I take these reports seriously — it's the fastest way to get something fixed.</p>
 
       <div class="contact-line">
         <strong style="color:var(--text)">Sigurd Lindquist</strong> — AGSIST / Farmers First Agri Service<br>
+        <a href="mailto:sig@farmers1st.com">sig@farmers1st.com</a> &nbsp;·&nbsp;
         <a href="tel:+17157972428">715-797-2428</a> &nbsp;·&nbsp;
         <a href="/contact">Contact page</a> &nbsp;·&nbsp;
         <a href="https://farmers1st.com" target="_blank" rel="noopener">farmers1st.com</a>

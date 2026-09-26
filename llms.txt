@@ -35,7 +35,7 @@ specific page. Each daily briefing has a permanent dated URL.
 - [Cattle Futures](https://agsist.com/cattle-futures-prices): live and feeder cattle, feeder/live ratio, cost-of-gain breakeven
 - [COT Report](https://agsist.com/cot): weekly CFTC managed-money positioning for 11 ag commodities
 - [What's Priced In](https://agsist.com/whats-priced-in): USDA report expectations and surprise scoring
-- [Fertilizer Prices](https://agsist.com/fertilizer): weekly urea, MAP, potash, AMS benchmarks
+- [Fertilizer Prices](https://agsist.com/fertilizer): Midwest dealer quotes for urea, MAP, potash, AMS, dated per row
 
 ## Tools
 
@@ -66,3 +66,6 @@ specific page. Each daily briefing has a permanent dated URL.
 - [Data Sources](https://agsist.com/data-sources): where every number comes from
 - [About](https://agsist.com/about): who builds AGSIST and why
 - [Contact](https://agsist.com/contact): sig@farmers1st.com
+- [Grower Pulse](https://agsist.com/grower-pulse): weekly one-question poll of US farmers, this week's result and every past week
+- [Status](https://agsist.com/status): live status of AGSIST's data feeds and tools
+- [Changelog](https://agsist.com/changelog): dated list of site changes

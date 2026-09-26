@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#111a0a">
   <title>Data Sources: Yahoo Finance, Open-Meteo, USDA NASS | AGSIST</title>
-  <meta name="description" content="Where AGSIST gets its data: Yahoo Finance for commodity prices, Open-Meteo for weather, USDA NASS for reports, a licensed feed for cash bids, Kalshi & Polymarket.">
+  <meta name="description" content="Where AGSIST gets its data: Yahoo Finance for commodity prices, Open-Meteo for weather, USDA NASS for reports, a second feed for cash bids, Polymarket.">
   <meta name="keywords"    content="AGSIST data sources, agricultural data transparency, grain price data source, farm weather data, yfinance commodity prices">
   <meta name="author"      content="Sigurd Lindquist — Farmers First Agri Service">
   <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
@@ -15,7 +15,7 @@
   <meta property="og:site_name"    content="AGSIST">
   <meta property="og:locale"       content="en_US">
   <meta property="og:title"        content="Data Sources: Yahoo Finance, Open-Meteo, USDA NASS | AGSIST">
-  <meta property="og:description"  content="Where AGSIST gets its data: Yahoo Finance for commodity prices, Open-Meteo for weather, USDA NASS for reports, a licensed feed for cash bids, Kalshi & Polymarket.">
+  <meta property="og:description"  content="Where AGSIST gets its data: Yahoo Finance for commodity prices, Open-Meteo for weather, USDA NASS for reports, a second feed for cash bids, Polymarket.">
   <meta property="og:url"          content="https://agsist.com/data-sources">
   <meta property="og:image"        content="https://agsist.com/img/og/agsist.jpg">
   <meta property="og:image:width"  content="1200">
@@ -25,7 +25,7 @@
   <meta name="twitter:site"        content="@agsist">
   <meta name="twitter:creator"     content="@agsist">
   <meta name="twitter:title"       content="Data Sources | AGSIST">
-  <meta name="twitter:description" content="Where AGSIST gets its data: Yahoo Finance, Open-Meteo, USDA NASS, Kalshi, Polymarket.">
+  <meta name="twitter:description" content="Where AGSIST gets its data: Yahoo Finance, Open-Meteo, USDA NASS, Polymarket.">
   <meta name="twitter:image"       content="https://agsist.com/img/og/agsist.jpg">
 
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H"></script>
@@ -102,34 +102,30 @@
   <main id="main" tabindex="-1">
     <div class="info-page">
       <h1>Data Sources</h1>
-      <p class="sub">Full transparency on where every number on AGSIST comes from.</p>
+      <p class="sub">Where the numbers on AGSIST come from. Last reviewed September 26, 2026.</p>
 
       <h2>Commodity Prices</h2>
       <div class="info-card">
         <h3><svg class="ic-sp" aria-hidden="true"><use href="#sp-chart-column"/></svg> Yahoo Finance (via yfinance)</h3>
         <p><strong>Used for:</strong> Corn, soybean, wheat, live cattle, lean hog, crude oil, natural gas, gold, silver, Dollar Index, and 10-yr Treasury futures.</p>
         <p><strong>Delay:</strong> 15 minutes minimum during market hours.</p>
-        <p><strong>Update frequency:</strong> Every 30 minutes during weekday trading hours.</p>
+        <p><strong>Update frequency:</strong> About every 30 minutes while futures markets trade, Sunday evening to Friday afternoon.</p>
         <p><a href="https://finance.yahoo.com" target="_blank" rel="noopener">finance.yahoo.com</a> — market data via the yfinance Python library.</p>
       </div>
 
-      <div class="info-card">
-        <h3><svg class="ic-sp" aria-hidden="true"><use href="#sp-coins"/></svg> CoinGecko</h3>
-        <p><strong>Used for:</strong> Cryptocurrency prices (Bitcoin, Ethereum, and other coins shown on the dashboard).</p>
-        <p><a href="https://www.coingecko.com" target="_blank" rel="noopener">coingecko.com</a></p>
-      </div>
+      <p>Bitcoin, XRP and Kaspa quotes on the dashboard come from the same Yahoo Finance feed.</p>
 
       <h2>Weather</h2>
       <div class="info-card">
         <h3><svg class="ic-sp" aria-hidden="true"><use href="#sp-cloud-sun"/></svg> Open-Meteo</h3>
         <p><strong>Used for:</strong> Hourly temperature, wind speed, wind direction, humidity, precipitation probability, and derived spray/urea risk calculations.</p>
-        <p><strong>Update frequency:</strong> Every hour.</p>
+        <p><strong>Update frequency:</strong> Fetched by your browser each time you open a page or tool that shows weather.</p>
         <p><a href="https://open-meteo.com" target="_blank" rel="noopener">open-meteo.com</a> — open-source weather API.</p>
       </div>
       <div class="info-card">
-        <h3><svg class="ic-sp" aria-hidden="true"><use href="#sp-cloud-rain"/></svg> NOAA / National Weather Service</h3>
-        <p><strong>Used for:</strong> Radar imagery via Windy.com embed.</p>
-        <p><a href="https://weather.gov" target="_blank" rel="noopener">weather.gov</a></p>
+        <h3><svg class="ic-sp" aria-hidden="true"><use href="#sp-cloud-rain"/></svg> Windy.com</h3>
+        <p><strong>Used for:</strong> The radar map on the home page, embedded from Windy, a private company. Windy draws its radar layer from national weather services, and AGSIST does not process it.</p>
+        <p><a href="https://www.windy.com" target="_blank" rel="noopener">windy.com</a></p>
       </div>
       <div class="info-card">
         <h3><svg class="ic-sp" aria-hidden="true"><use href="#sp-map"/></svg> NOAA Drought Monitor</h3>
@@ -156,9 +152,9 @@
 
       <h2>Prediction Markets</h2>
       <div class="info-card">
-        <h3><svg class="ic-sp" aria-hidden="true"><use href="#sp-target"/></svg> Kalshi &amp; Polymarket</h3>
-        <p><strong>Used for:</strong> Agricultural and economic event probabilities on the Ag Odds page. Data fetched server-side from Kalshi's trading API and Polymarket's Gamma API.</p>
-        <p><a href="https://kalshi.com" target="_blank" rel="noopener">kalshi.com</a> · <a href="https://polymarket.com" target="_blank" rel="noopener">polymarket.com</a></p>
+        <h3><svg class="ic-sp" aria-hidden="true"><use href="#sp-target"/></svg> Polymarket</h3>
+        <p><strong>Used for:</strong> Event probabilities on the Ag Odds page and the home page. The Ag Odds page reads a file that AGSIST collects once a day from Polymarket's Gamma API on the server. The home page also asks that API directly from your browser. Every contract published today is from Polymarket.</p>
+        <p><a href="https://polymarket.com" target="_blank" rel="noopener">polymarket.com</a></p>
       </div>
 
       <h2>USDA Reports</h2>
@@ -168,22 +164,58 @@
         <p><a href="https://www.usda.gov" target="_blank" rel="noopener">usda.gov</a> — public APIs.</p>
       </div>
 
+      <h2>More USDA and Government Data</h2>
+      <div class="info-card">
+        <h3><svg class="ic-sp" aria-hidden="true"><use href="#sp-wheat"/></svg> USDA NASS Quick Stats and Census of Agriculture</h3>
+        <p><strong>Used for:</strong> Yields, acres, cash rents and land values by state and county, including the Census of Agriculture figures on the Farmland Atlas. Pulled from the Quick Stats API.</p>
+        <p><a href="https://quickstats.nass.usda.gov" target="_blank" rel="noopener">quickstats.nass.usda.gov</a></p>
+      </div>
+      <div class="info-card">
+        <h3><svg class="ic-sp" aria-hidden="true"><use href="#sp-wheat"/></svg> USDA RMA and FSA</h3>
+        <p><strong>Used for:</strong> Crop insurance planting dates, prices and Summary of Business data (Risk Management Agency), and Conservation Reserve Program acres (Farm Service Agency).</p>
+        <p><a href="https://www.rma.usda.gov" target="_blank" rel="noopener">rma.usda.gov</a> &middot; <a href="https://www.fsa.usda.gov" target="_blank" rel="noopener">fsa.usda.gov</a></p>
+      </div>
+      <div class="info-card">
+        <h3><svg class="ic-sp" aria-hidden="true"><use href="#sp-chart-line"/></svg> USDA FAS Export Sales</h3>
+        <p><strong>Used for:</strong> Weekly export sales by commodity, from the Foreign Agricultural Service open data API.</p>
+        <p><a href="https://apps.fas.usda.gov/OpenData/api/esr/" target="_blank" rel="noopener">apps.fas.usda.gov</a></p>
+      </div>
+      <div class="info-card">
+        <h3><svg class="ic-sp" aria-hidden="true"><use href="#sp-cloud-sun"/></svg> NOAA NCEI and Climate Prediction Center</h3>
+        <p><strong>Used for:</strong> Long-run county and state climate records (NCEI) and the 6-10 and 8-14 day outlooks (CPC).</p>
+        <p><a href="https://www.ncei.noaa.gov" target="_blank" rel="noopener">ncei.noaa.gov</a> &middot; <a href="https://www.cpc.ncep.noaa.gov" target="_blank" rel="noopener">cpc.ncep.noaa.gov</a></p>
+      </div>
+      <div class="info-card">
+        <h3><svg class="ic-sp" aria-hidden="true"><use href="#sp-cloud-rain"/></svg> Iowa Environmental Mesonet</h3>
+        <p><strong>Used for:</strong> National Weather Service local storm reports, including hail reports, on the Hail Map.</p>
+        <p><a href="https://mesonet.agron.iastate.edu" target="_blank" rel="noopener">mesonet.agron.iastate.edu</a></p>
+      </div>
+      <div class="info-card">
+        <h3><svg class="ic-sp" aria-hidden="true"><use href="#sp-chart-line"/></svg> U.S. Energy Information Administration</h3>
+        <p><strong>Used for:</strong> Power plant data on the Farmland Atlas (survey EIA-860) and the energy news feed behind the briefing.</p>
+        <p><a href="https://www.eia.gov" target="_blank" rel="noopener">eia.gov</a></p>
+      </div>
+      <div class="info-card">
+        <h3><svg class="ic-sp" aria-hidden="true"><use href="#sp-map"/></svg> Field Scout: USDA soils and Copernicus Sentinel</h3>
+        <p><strong>Used for:</strong> Soil maps (SSURGO), crop history (Cropland Data Layer) and Sentinel-1 and Sentinel-2 satellite layers on <a href="/field-scout">Field Scout</a>, requested through AGSIST&rsquo;s own Cloudflare Worker.</p>
+      </div>
+
+      <h2>Audience Numbers</h2>
+      <div class="info-card">
+        <h3><svg class="ic-sp" aria-hidden="true"><use href="#sp-chart-column"/></svg> Google Analytics, Search Console and Bing Webmaster Tools</h3>
+        <p><strong>Used for:</strong> The reader and search figures on the <a href="/sponsor">sponsor page</a>, read from AGSIST&rsquo;s own analytics accounts. The Bing Webmaster figure counts Bing and Copilot answers only.</p>
+      </div>
+
       <h2>Geocoding</h2>
       <div class="info-card">
         <h3><svg class="ic-sp" aria-hidden="true"><use href="#sp-map-pin"/></svg> Nominatim / OpenStreetMap</h3>
         <p><strong>Used for:</strong> Reverse geocoding browser lat/lng to city, state, and ZIP code. No personal location data is stored on my servers.</p>
       </div>
 
-      <h2>Farmers First Ag Index (FFAI)</h2>
-      <div class="info-card">
-        <h3><svg class="ic-sp" aria-hidden="true"><use href="#sp-chart-line"/></svg> Farmers First Agri Service — Proprietary</h3>
-        <p>The FFAI is a composite index calculated by Sigurd Lindquist at Farmers First Agri Service from publicly available agricultural economic data. <a href="https://farmers1st.com" target="_blank" rel="noopener">farmers1st.com →</a></p>
-      </div>
-
       <h2>Cash Bids</h2>
       <div class="info-card">
-        <h3><svg class="ic-sp" aria-hidden="true"><use href="#sp-tractor"/></svg> Licensed cash-bid feed</h3>
-        <p>Local elevator cash bids that AGSIST does not read itself come from a licensed feed.</p>
+        <h3><svg class="ic-sp" aria-hidden="true"><use href="#sp-tractor"/></svg> Second cash-bid feed</h3>
+        <p>Local elevator cash bids that AGSIST does not read itself come from a second cash-bid feed.</p>
       </div>
 
       <p>See a data issue? <a href="/contact">Contact me directly</a>.</p>

@@ -23,7 +23,8 @@ Regions:
                          + Dataset JSON-LD dateModified stamp
   scorecard.html       : PRERENDER:sc-nextrep (next-report pointer box)
                          PRERENDER:sc-stats   (hit rate / W-L-pending / streak / total)
-                         PRERENDER:sc-prose-hit (the "A NN% hit rate" sentence number)
+                         PRERENDER:sc-prose-hit (the machine-checked hit rate in the sentence)
+                         PRERENDER:sc-sample / sc-selfrow (sample beside the hero; self-graded row)
                          PRERENDER:sc-list    (latest 25 graded calls + archive pointer)
 
 Idempotent: same JSON in, byte-identical file out.  --check verifies sync (CI).
@@ -564,17 +565,45 @@ def sc_row(r):
             f'<div class="sc-call">{esc(r.get("call"))}</div>{note}</div>')
 
 
+def _sc_det(d):
+    """The machine-checked series. The headline never blends it with the
+    self-graded era (two methods, not comparable)."""
+    return (d.get("by_method") or {}).get("deterministic") or {}
+
+
 def sc_stats_html(d):
-    hit = f'{d["hit_rate"]}%' if d.get("hit_rate") is not None else "—"
+    det = _sc_det(d)
+    g, p = det.get("graded"), det.get("played")
+    hit = f'{det["hit_rate"]}%' if det.get("hit_rate") is not None else "—"
     cs = d.get("current_streak") or 0
     streak = f'{cs} win{"" if cs == 1 else "s"}' if cs > 0 else "none"
-    total = (d.get("played_out") or 0) + (d.get("didnt") or 0)
+    if g is None:
+        rec, total = "—", "—"
+    else:
+        rec = f'{p or 0}&ndash;{det.get("missed") or 0}&ndash;{d.get("pending") or 0}'
+        total = str(g)
     return (
-        f'<div class="sc-stat"><div class="sc-stat-num" id="sc-hit">{hit}</div><div class="sc-stat-lbl">Hit rate</div></div>\n'
-        f'        <div class="sc-stat"><div class="sc-stat-num" id="sc-record">{d.get("played_out") or 0}&ndash;{d.get("didnt") or 0}&ndash;{d.get("pending") or 0}</div><div class="sc-stat-lbl">W &ndash; L &ndash; pending</div></div>\n'
+        f'<div class="sc-stat"><div class="sc-stat-num" id="sc-hit">{hit}</div><div class="sc-stat-lbl">Hit rate, graded by rule</div></div>\n'
+        f'        <div class="sc-stat"><div class="sc-stat-num" id="sc-record">{rec}</div><div class="sc-stat-lbl">W &ndash; L &ndash; pending</div></div>\n'
         f'        <div class="sc-stat"><div class="sc-stat-num" id="sc-streak">{streak}</div><div class="sc-stat-lbl">Current win streak</div></div>\n'
         f'        <div class="sc-stat"><div class="sc-stat-num" id="sc-total">{total}</div><div class="sc-stat-lbl">Calls graded</div></div>'
     )
+
+
+def sc_sample_html(d):
+    det = _sc_det(d)
+    if not det.get("graded"):
+        return "—"
+    return (f'{det["played"]} of {det["graded"]} calls, '
+            f'{fdate(det.get("first"))} to {fdate(det.get("last"))}')
+
+
+def sc_self_html(d):
+    sr = (d.get("by_method") or {}).get("self_reported") or {}
+    if not sr.get("graded"):
+        return "—"
+    return (f'{sr["played"]} of {sr["graded"]} ({sr["hit_rate"]}%), '
+            f'{fdate(sr.get("first"))} to {fdate(sr.get("last"))}')
 
 
 def sc_eras_html(d):
@@ -587,7 +616,7 @@ def sc_eras_html(d):
         if p is None or not g:
             return f"{label}, not yet scored"
         return f"{label}, {p} of {g} ({round(100.0 * p / g, 1)}%)"
-    return ("<b>" + part("self-graded", sr) + ". " + part("Machine-checked", det) + ".</b>")
+    return ("<b>" + part("Self-graded", sr) + ". " + part("Graded against the settlement price by rule", det) + ".</b>")
 
 
 def sc_list_html(d, limit=25):
@@ -660,8 +689,10 @@ def bake_scorecard(check_only=False):
     src = replace_region(src, "sc-stats", "\n        " + sc_stats_html(sc) + "\n      ", SC_HTML)
     src = replace_region(src, "sc-list", sc_list_html(sc), SC_HTML)
     src = replace_region(src, "sc-eras", sc_eras_html(sc), SC_HTML)
-    if sc.get("hit_rate") is not None:
-        src = replace_region(src, "sc-prose-hit", f"{round(sc['hit_rate'])}%", SC_HTML)
+    src = replace_region(src, "sc-sample", sc_sample_html(sc), SC_HTML)
+    src = replace_region(src, "sc-selfrow", sc_self_html(sc), SC_HTML)
+    if _sc_det(sc).get("hit_rate") is not None:
+        src = replace_region(src, "sc-prose-hit", f"{_sc_det(sc)['hit_rate']}%", SC_HTML)
     return orig, src, SC_HTML
 
 

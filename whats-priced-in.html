@@ -460,7 +460,10 @@ window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);
         else if(r.surprise==='bearish')tag='<span class="v bear">bearish</span>';
         else if(r.surprise==='in line')tag='<span class="v flat">in line</span>';
         else tag='<span class="v flat" title="'+esc(r.why||'')+'">no call</span>';
-        printed='<td class="n"><b>'+r.actual+u+'</b>'+tag+'</td>';
+        /* A print past the average band can still sit inside the survey's own range: say so. */
+        var inRng=(r.low!=null&&r.high!=null&&r.actual>=r.low&&r.actual<=r.high&&(r.surprise==='bullish'||r.surprise==='bearish'))
+          ?'<div style="font-size:.72rem;color:var(--wp-mut)">inside the trade range</div>':'';
+        printed='<td class="n"><b>'+r.actual+u+'</b>'+tag+inRng+'</td>';
       }
       return '<tr><td>'+esc(r.label)+rng+'</td><td class="n">'+exp+'</td><td class="n">'+now+'</td>'+printed+'</tr>';
     }).join('');
@@ -535,10 +538,20 @@ window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);
     var big='';
     if(b.metric && !lr.all_in_line){
       var gp=(b.gap_pct!=null)?((b.gap_pct>0?'+':'')+b.gap_pct+'% vs trade'):'';
+      /* Bearish/bullish here is against the trade AVERAGE. If the print is still inside the
+         survey's own low-high range, say so and give the size of the gap. */
+      var bn=(lr.numbers||[]).filter(function(x){return x.label===b.metric;})[0];
+      var inNote='';
+      if(bn&&bn.low!=null&&bn.high!=null&&b.actual!=null&&b.expected!=null&&b.actual>=bn.low&&b.actual<=bn.high&&(b.surprise==='bullish'||b.surprise==='bearish')){
+        var df=Math.round(Math.abs(b.actual-b.expected)*1000)/1000;
+        var un=(b.unit==='bu/acre')?'bu':(b.unit||'');
+        inNote=df+(un?(' '+un):'')+(b.actual>b.expected?' above':' below')+' the trade average, inside the trade range ('+bn.low+' to '+bn.high+').';
+      }
       big='<div class="wp-res-big">'
         +'<div class="wp-res-row"><span class="wp-res-metric">'+b.metric+'</span>'
         +'<span class="wp-res-tag '+sc+'">'+(b.surprise||'in line')+'</span></div>'
         +'<div class="wp-res-nums"><b>'+num(b.actual,b.unit)+'</b> actual &middot; '+num(b.expected,b.unit)+' expected'+(gp?(' &middot; '+gp):'')+'</div>'
+        +(inNote?'<div class="wp-res-reaction">'+inNote+'</div>':'')
         +(b.reaction?'<div class="wp-res-reaction">'+b.reaction+'</div>':'')+'</div>';
     }
     /* THE WALK-THROUGH LIVES HERE NOW, not only on the next-report card.

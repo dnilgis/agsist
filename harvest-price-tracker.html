@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#0a0c0d">
-<title>2026 Harvest vs Projected Price: Corn &amp; Soybean Insurance | AGSIST</title>
+<title>2026 Harvest vs Projected Price: Crop Insurance | AGSIST</title>
 <meta name="description" content="The 2026 RMA projected and harvest prices for corn and soybeans &mdash; the numbers behind Revenue Protection guarantees, plus 15 years of history.">
 <link rel="canonical" href="https://agsist.com/harvest-price-tracker">
   <meta property="og:image" content="https://agsist.com/img/og/agsist.jpg">
@@ -38,6 +38,7 @@
 .pd-num{font-family:var(--pd-mono);}
 
 /* ── the one control ─────────────────────────────────────────────── */
+[hidden]{display:none !important}
 .pd-pick{display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;background:var(--pd-p1);
   border:1px solid var(--pd-line);border-radius:12px;padding:.7rem .8rem;margin:0 0 1.3rem;}
 .pd-pick label{font-family:var(--pd-mono);font-size:.72rem;font-weight:700;letter-spacing:.08em;
@@ -292,12 +293,13 @@ table.hp-hist td.up{color:var(--pd-green);} table.hp-hist td.dn{color:var(--pd-r
   </div>
 
   <!-- Filled from data/rma-prices.json. The baked block below it is what a
-       crawler and a reader with JS off get, and it is true for the Corn Belt. -->
+       crawler and a reader with JS off get. -->
   <div id="pd-your"></div>
   <div id="pd-open"></div>
   <div id="pd-other"></div>
 
   <div id="pd-fallback">
+    <div id="pd-disc">
     <!--SEED:discovery-->
       <div class="pd-sect">In discovery right now &middot; 2026 crop year</div>
       <p class="hp-lede" style="margin-bottom:.7rem">USDA RMA is averaging settlements for <b>11</b> crop and type combinations today, the earliest closing <b>September 30</b> (5 days left). Figures are RMA&rsquo;s own running average to date, mirrored without recalculation, and <b>none is final until its window closes</b>. Conventional and Organic are priced separately. <b>Pick your state above</b> and this page will show only yours, state by state.</p>
@@ -316,16 +318,18 @@ table.hp-hist td.up{color:var(--pd-green);} table.hp-hist td.dn{color:var(--pd-r
       </tbody></table></div>
       <div class="dn-st">Harvest price leg. Source: USDA RMA Price Discovery, read September 25, 2026. The official price is RMA&rsquo;s.</div>
       <!--/SEED:discovery-->
+    <p class="pd-note" id="pd-disc-note">These states only. Pick your state for your price.</p>
+    </div>
     <div class="pd-sect">Corn and soybeans, 2026 crop year</div>
-    <div class="pd-crop">
+    <div class="pd-crop" data-bake="Corn">
       <div class="pd-crop-top"><h3 class="pd-cname">Corn</h3>
         <span class="pd-pill wait">October</span></div>
-      <p class="pd-say">The projected price is <b class="pd-num">$4.62 /bu</b>, the February average of December CBOT corn settlements. The harvest price is the same contract averaged across October 1&ndash;31. Your guarantee is locked at the projected price and rises only if October finishes above it.</p>
+      <p class="pd-say">The projected price is <b class="pd-num">$4.62 /bu</b>, the February average of December CBOT corn settlements. The harvest price is the same contract averaged across October 1&ndash;31. With Revenue Protection (with harvest price), your guarantee is set at the projected price and rises only if October finishes above it.</p>
     </div>
-    <div class="pd-crop">
+    <div class="pd-crop" data-bake="Soybeans">
       <div class="pd-crop-top"><h3 class="pd-cname">Soybeans</h3>
         <span class="pd-pill wait">October</span></div>
-      <p class="pd-say">The projected price is <b class="pd-num">$11.09 /bu</b>, the February average of November CBOT soybean settlements. The harvest price is that contract averaged across October 1&ndash;31, on the same up-only rule.</p>
+      <p class="pd-say">The projected price is <b class="pd-num">$11.09 /bu</b>, the February average of November CBOT soybean settlements. The harvest price is that contract averaged across October 1&ndash;31, on the same rule for Revenue Protection (with harvest price).</p>
     </div>
     <div class="hp-cards">
     <!--SEED:hpcards-->
@@ -338,7 +342,7 @@ table.hp-hist td.up{color:var(--pd-green);} table.hp-hist td.dn{color:var(--pd-r
   </div>
 
   <h2 id="guarantee-math">What your guarantee is worth</h2>
-  <p class="hp-lede" style="margin-bottom:.6rem">Revenue Protection starts at <b>APH yield &times; coverage level &times; projected price</b>, and rises to the harvest price if that average finishes higher. It never recalculates down.</p>
+  <p class="hp-lede" style="margin-bottom:.6rem">Revenue Protection starts at <b>APH yield &times; coverage level &times; projected price</b>, and rises to the harvest price if that average finishes higher. It never recalculates down. Revenue Protection with Harvest Price Exclusion and Yield Protection do not raise the guarantee. The harvest price counts up to 200% of the projected price.</p>
   <div class="pd-calc">
     <div class="pd-r3">
       <div><label for="pd-crop">Crop</label><select id="pd-crop"></select></div>
@@ -389,7 +393,7 @@ table.hp-hist td.up{color:var(--pd-green);} table.hp-hist td.dn{color:var(--pd-r
   <h2>Common questions</h2>
   <div class="hp-faq" id="hp-faq">
     <details><summary>How is the projected price set?</summary><p>It's the average daily settlement of the December corn (or November soybean) futures contract across every trading day in February, rounded to the nearest cent. That number, times your coverage level, times your APH yield, is your minimum per-acre revenue guarantee &mdash; under Revenue Protection it rises to the harvest price if October averages higher.</p></details>
-    <details><summary>How is the harvest price set?</summary><p>The same contract, averaged across every trading day in October. Revenue Protection uses the higher of the projected or harvest price, so an October rally raises your guarantee; a decline does not lower it.</p></details>
+    <details><summary>How is the harvest price set?</summary><p>The same contract, averaged across every trading day in October. Revenue Protection uses the higher of the projected or harvest price, so an October rally raises your guarantee; a decline does not lower it. The harvest price counts up to 200% of the projected price. Revenue Protection with Harvest Price Exclusion and Yield Protection do not raise the guarantee.</p></details>
     <details><summary>How often does the harvest price come in below the projected price?</summary><p>Across 2011&ndash;2025, corn&rsquo;s harvest price finished below its projected price in 10 of 15 crop years, and soybeans&rsquo; in 10 of 15. A lower harvest price never lowers a Revenue Protection guarantee &mdash; the policy uses the higher of the two &mdash; but it is central to how price-loss indemnities are figured. The full year-by-year table is on this page; verify official figures at prices.rma.usda.gov and talk to your own agent about what it means for your policy.</p></details>
     <details><summary>Why do other crops show different months?</summary><p>Each crop &mdash; and sometimes each region within a crop &mdash; has its own contract and discovery window under RMA's Commodity Exchange Price Provisions. Winter wheat keys off the July contract of harvest year &mdash; Kansas City for hard red winter states, Chicago for soft red &mdash; discovered in a late-summer window before planting; spring wheat keys off September Minneapolis futures. Exact windows vary by state; those tracks are added here once verified.</p></details>
     <details><summary>What about cotton and peanuts?</summary><p>Both are here, and pick your state to see them. Cotton discovers against the ICE December contract in 17 states &mdash; a projected price of <b>$0.6900 /lb</b> set January 15 to February 14, and a harvest window that is September, October or November depending on the state. Peanuts run on the same calendar in 13 states, priced separately by type: Runners <b>$0.2455 /lb</b>, Virginia <b>$0.2848</b>, Spanish <b>$0.3191</b>. The difference is that peanuts have no exchange and no contract month behind them &mdash; RMA sets that price without a futures board, so there is a window but nothing to watch trade during it.</p></details>
@@ -425,7 +429,7 @@ table.hp-hist td.up{color:var(--pd-green);} table.hp-hist td.dn{color:var(--pd-r
 }
 </script>
 <script type="application/ld+json">
-{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "How is the projected price set?", "acceptedAnswer": {"@type": "Answer", "text": "It's the average daily settlement of the December corn (or November soybean) futures contract across every trading day in February, rounded to the nearest cent. That number, times your coverage level, times your APH yield, is your minimum per-acre revenue guarantee — under Revenue Protection it rises to the harvest price if October averages higher."}}, {"@type": "Question", "name": "How is the harvest price set?", "acceptedAnswer": {"@type": "Answer", "text": "The same contract, averaged across every trading day in October. Revenue Protection uses the higher of the projected or harvest price, so an October rally raises your guarantee; a decline does not lower it."}}, {"@type": "Question", "name": "How often does the harvest price come in below the projected price?", "acceptedAnswer": {"@type": "Answer", "text": "Across 2011–2025, corn’s harvest price finished below its projected price in 10 of 15 crop years, and soybeans’ in 10 of 15. A lower harvest price never lowers a Revenue Protection guarantee — the policy uses the higher of the two — but it is central to how price-loss indemnities are figured. The full year-by-year table is on this page; verify official figures at prices.rma.usda.gov and talk to your own agent about what it means for your policy."}}, {"@type": "Question", "name": "Why do other crops show different months?", "acceptedAnswer": {"@type": "Answer", "text": "Each crop — and sometimes each region within a crop — has its own contract and discovery window under RMA's Commodity Exchange Price Provisions. Winter wheat keys off the July contract of harvest year — Kansas City for hard red winter states, Chicago for soft red — discovered in a late-summer window before planting; spring wheat keys off September Minneapolis futures. Exact windows vary by state; those tracks are added here once verified."}}, {"@type": "Question", "name": "What about cotton and peanuts?", "acceptedAnswer": {"@type": "Answer", "text": "Both are here, and pick your state to see them. Cotton discovers against the ICE December contract in 17 states — a projected price of $0.6900 /lb set January 15 to February 14, and a harvest window that is September, October or November depending on the state. Peanuts run on the same calendar in 13 states, priced separately by type: Runners $0.2455 /lb, Virginia $0.2848, Spanish $0.3191. The difference is that peanuts have no exchange and no contract month behind them — RMA sets that price without a futures board, so there is a window but nothing to watch trade during it."}}, {"@type": "Question", "name": "Are these the official RMA prices?", "acceptedAnswer": {"@type": "Answer", "text": "No. These are RMA's own published figures, mirrored from their price discovery service. While a window is open, the figure is RMA's running average to date, not a final price, and it is labelled that way. The official price is RMA's alone — verify at prices.rma.usda.gov and talk to your agent."}}]}
+{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "How is the projected price set?", "acceptedAnswer": {"@type": "Answer", "text": "It's the average daily settlement of the December corn (or November soybean) futures contract across every trading day in February, rounded to the nearest cent. That number, times your coverage level, times your APH yield, is your minimum per-acre revenue guarantee — under Revenue Protection it rises to the harvest price if October averages higher."}}, {"@type": "Question", "name": "How is the harvest price set?", "acceptedAnswer": {"@type": "Answer", "text": "The same contract, averaged across every trading day in October. Revenue Protection uses the higher of the projected or harvest price, so an October rally raises your guarantee; a decline does not lower it. The harvest price counts up to 200% of the projected price. Revenue Protection with Harvest Price Exclusion and Yield Protection do not raise the guarantee."}}, {"@type": "Question", "name": "How often does the harvest price come in below the projected price?", "acceptedAnswer": {"@type": "Answer", "text": "Across 2011–2025, corn’s harvest price finished below its projected price in 10 of 15 crop years, and soybeans’ in 10 of 15. A lower harvest price never lowers a Revenue Protection guarantee — the policy uses the higher of the two — but it is central to how price-loss indemnities are figured. The full year-by-year table is on this page; verify official figures at prices.rma.usda.gov and talk to your own agent about what it means for your policy."}}, {"@type": "Question", "name": "Why do other crops show different months?", "acceptedAnswer": {"@type": "Answer", "text": "Each crop — and sometimes each region within a crop — has its own contract and discovery window under RMA's Commodity Exchange Price Provisions. Winter wheat keys off the July contract of harvest year — Kansas City for hard red winter states, Chicago for soft red — discovered in a late-summer window before planting; spring wheat keys off September Minneapolis futures. Exact windows vary by state; those tracks are added here once verified."}}, {"@type": "Question", "name": "What about cotton and peanuts?", "acceptedAnswer": {"@type": "Answer", "text": "Both are here, and pick your state to see them. Cotton discovers against the ICE December contract in 17 states — a projected price of $0.6900 /lb set January 15 to February 14, and a harvest window that is September, October or November depending on the state. Peanuts run on the same calendar in 13 states, priced separately by type: Runners $0.2455 /lb, Virginia $0.2848, Spanish $0.3191. The difference is that peanuts have no exchange and no contract month behind them — RMA sets that price without a futures board, so there is a window but nothing to watch trade during it."}}, {"@type": "Question", "name": "Are these the official RMA prices?", "acceptedAnswer": {"@type": "Answer", "text": "No. These are RMA's own published figures, mirrored from their price discovery service. While a window is open, the figure is RMA's running average to date, not a final price, and it is labelled that way. The official price is RMA's alone — verify at prices.rma.usda.gov and talk to your agent."}}]}
 </script>
 
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H"></script>
@@ -538,7 +542,10 @@ window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);
     return order.map(function(k){return m[k];}).filter(function(g){return g.p!=null;});
   }
   function isOpen(g){ return d(g.hs)<=TODAY && TODAY<=d(g.he); }
-  function isDone(g){ return d(g.he)<TODAY; }
+  function isClosed(g){ return d(g.he)<TODAY; }
+  // A window that has ended is only "final" once RMA has released the price.
+  function isDone(g){ return isClosed(g) && g.hstatus==='Released'; }
+  function stWord(g){ return isDone(g)?'final':(isOpen(g)?'running':'last posted'); }
   function rank(g){ return (LEAD[g.crop]||99); }
   function pct(g){ return (g.h!=null&&g.p) ? (g.h-g.p)/g.p*100 : null; }
 
@@ -549,25 +556,27 @@ window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);
       var dayN=days(d(g.hs),TODAY)+1, spanN=days(d(g.hs),d(g.he))+1;
       now='<b class="pd-num">Day '+dayN+' / '+spanN+'</b>'+
           '<i>open — RMA has not posted an average yet</i>';
+    }else if(isClosed(g)){
+      now='<b class="pd-num">Closed</b><i>window closed, RMA has not released the final price</i>';
     }else{
-      now='<b class="pd-num">'+days(TODAY,d(g.hs))+' days</b><i>until discovery opens</i>';
+      now='<b class="pd-num">'+days(TODAY,d(g.hs))+' day'+(days(TODAY,d(g.hs))===1?'':'s')+'</b><i>until discovery opens</i>';
     }
     return '<div class="pd-steps">'+
       '<div class="pd-step done"><span class="pd-dot">✓</span>'+
         '<h4>Projected price</h4><p>'+shortd(g.ps)+' – '+shortd(g.pe)+' '+py+'</p>'+
-        '<b class="pd-num">'+money(g.p,unitOf(g))+'</b><i>locked — this is your guarantee</i></div>'+
+        '<b class="pd-num">'+money(g.p,unitOf(g))+'</b><i>the price your guarantee starts from</i></div>'+
       '<div class="pd-step now"><span class="pd-dot"></span>'+
         '<h4>Today</h4><p>'+shortd(iso(TODAY))+'</p>'+now+'</div>'+
       '<div class="pd-step'+(open?' done':'')+'"><span class="pd-dot"></span>'+
         '<h4>Harvest price</h4><p>'+shortd(g.hs)+' – '+shortd(g.he)+'</p>'+
-        '<b>'+(contract(g)?esc(contract(g)):'set by RMA')+'</b><i>sets what you actually get</i></div>'+
+        '<b>'+(contract(g)?esc(contract(g)):'set by RMA')+'</b><i>sets the price your production is valued at</i></div>'+
       '</div>';
   }
   function iso(x){ var m=x.getMonth()+1,dd=x.getDate();
     return x.getFullYear()+'-'+(m<10?'0':'')+m+'-'+(dd<10?'0':'')+dd; }
 
   function bar(g){
-    var diff=g.h-g.p, up=diff>=0, p=pct(g), live=d(g.he)>=TODAY;
+    var diff=g.h-g.p, up=diff>=0, p=pct(g), live=!isDone(g), sw=stWord(g);
     var pad=Math.max(Math.abs(diff)*1.6, g.p*0.045);
     var lo=Math.min(g.p,g.h)-pad, hi=Math.max(g.p,g.h)+pad;
     var at=function(v){ return (v-lo)/(hi-lo)*100; };
@@ -577,11 +586,11 @@ window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);
     var mean = up
       ? 'If the window closed today your revenue guarantee would revise up <b>'+
         Math.abs(p).toFixed(1)+'%</b>, to <b class="pd-num">'+money(g.h,unitOf(g))+per(g)+'</b>.'
-      : 'A '+(live?'running':'final')+' average below the projected price does not cut your '+
+      : 'A '+sw+' average below the projected price does not cut your '+
         'guarantee — it stays at <b class="pd-num">'+money(g.p,unitOf(g))+per(g)+'</b>. '+
         'It changes what your crop is worth against that guarantee.';
     return '<div class="pd-pb">'+
-      '<div class="pd-pb-h">'+(live?'Running average':'Final harvest price')+
+      '<div class="pd-pb-h">'+(sw==='final'?'Final harvest price':(sw==='running'?'Running average':'Last posted average'))+
         ' against your guarantee</div>'+
       '<div class="pd-track">'+
         '<div class="pd-gap '+cls+'" style="left:'+l+'%;width:'+w+'%"></div>'+
@@ -591,10 +600,10 @@ window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);
         '<div class="pd-tag'+(gx>60?' r':'')+'" style="'+side(gx)+'">'+
           '<b class="pd-num">'+money(g.p,unitOf(g))+'</b><br>guarantee</div>'+
         '<div class="pd-tag '+cls+(hx>60?' r':'')+'" style="'+side(hx)+'">'+
-          '<b class="pd-num">'+money(g.h,unitOf(g))+'</b><br>'+(live?'running':'final')+'</div></div>'+
+          '<b class="pd-num">'+money(g.h,unitOf(g))+'</b><br>'+sw+'</div></div>'+
       '<div class="pd-pct '+cls+'"><b>'+(up?'+':'−')+Math.abs(p).toFixed(1)+'%</b>'+
         '<span>'+(up?'+':'−')+money(Math.abs(diff),unitOf(g))+per(g)+' · '+
-        (up?'above':'below')+' your '+money(g.p,unitOf(g))+' guarantee'+(live?' so far':'')+'</span></div>'+
+        (up?'above':'below')+' your '+money(g.p,unitOf(g))+' guarantee'+(sw==='running'?' so far':'')+'</span></div>'+
       '<p class="pd-mean">'+mean+'</p></div>';
   }
 
@@ -605,23 +614,27 @@ window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);
       var dayN=days(d(g.hs),TODAY)+1;
       var ct=contract(g);
       big='<div class="pd-big"><b>Day '+dayN+'</b><i>/'+spanN+'</i>'+
-          '<span>'+(spanN-dayN)+' days left'+(ct?' · '+esc(ct)+' contract':'')+
+          '<span>'+(spanN-dayN)+' day'+((spanN-dayN)===1?'':'s')+' left'+(ct?' · '+esc(ct)+' contract':'')+
           '</span></div>';
       say='Every trading day between now and '+shortd(g.he)+' moves this average. Your '+
-          'guarantee follows it up if it finishes above the projected price — it never '+
+          'guarantee follows it up if it finishes above the projected price (Revenue Protection with harvest price) — it never '+
           'follows it down.';
     }else if(done){
       big='<div class="pd-big"><b>Set</b><span>window closed '+shortd(g.he)+'</span></div>';
       say='Discovery is finished for this crop. The figure below is what RMA published.';
+    }else if(isClosed(g)){
+      big='<div class="pd-big"><b>Closed</b><span>window closed '+shortd(g.he)+
+          ', RMA has not released the final price</span></div>';
+      say='The window closed, but RMA has not released the final price. Any figure below is the last average RMA posted, not final.';
     }else{
-      big='<div class="pd-big"><b>'+days(TODAY,d(g.hs))+'</b><i> days</i>'+
+      big='<div class="pd-big"><b>'+days(TODAY,d(g.hs))+'</b><i> day'+(days(TODAY,d(g.hs))===1?'':'s')+'</i>'+
           '<span>until your harvest price starts</span></div>';
       var ct2=contract(g);
       say = ct2
         ? esc(st)+' averages the '+esc(ct2)+' contract every trading day of that '+
-          'window. Your guarantee is already locked and can only go up — never down.'
+          'window. With Revenue Protection (with harvest price), your guarantee is already set and can only go up, never down.'
         : 'RMA sets this price without a futures contract behind it — there is no board '+
-          'to watch, only the window. Your guarantee is already locked and can only go '+
+          'to watch, only the window. With Revenue Protection (with harvest price), your guarantee is already set and can only go '+
           'up, never down.';
     }
     var scd = g.scd.length ? '<p class="pd-note" style="margin-top:.5rem">Applies where the '+
@@ -634,7 +647,7 @@ window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);
       '<div class="pd-crop-top"><h3 class="pd-cname">'+esc(g.crop)+
         (realType(g.type)?' <small>· '+esc(realType(g.type))+'</small>':'')+'</h3>'+
         '<span class="pd-pill '+(open?'open':'wait')+'">'+
-        (open?'in discovery now':(done?'window closed':'opens '+shortd(g.hs)))+'</span></div>'+
+        (open?'in discovery now':(isClosed(g)?(done?'window closed':'closed, not released'):'opens '+shortd(g.hs)))+'</span></div>'+
       big+'<p class="pd-say">'+say+'</p>'+
       (g.h!=null ? bar(g) : steps(g)) + scd + org + '</div>';
   }
@@ -649,7 +662,7 @@ window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);
       '<td class="n">'+money(g.p,unitOf(g))+'</td>'+
       '<td class="n">'+(g.h!=null?money(g.h,unitOf(g)):'—')+'</td>'+
       '<td class="n '+cls+'">'+vs+'</td>'+
-      '<td class="n">'+(open?days(TODAY,d(g.he)):'opens '+shortd(g.hs))+'</td></tr>';
+      '<td class="n">'+(open?days(TODAY,d(g.he)):(isClosed(g)?'closed':'opens '+shortd(g.hs)))+'</td></tr>';
   }
   function table(list){
     return '<div class="pd-tw"><table class="pd-t"><thead><tr><th scope="col">Crop</th>'+
@@ -707,19 +720,31 @@ window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);
     if(!lead.length){ lead=groups.slice(0,1); rest=groups.slice(1); }
 
     var c0=lead[0];
-    if(isOpen(c0)){
-      $('pd-verdict-h').innerHTML='Your '+esc(c0.crop.toLowerCase())+
+    var openL=lead.filter(isOpen), pendL=lead.filter(function(g){return !isDone(g);});
+    function crops(list){ var o=[]; list.forEach(function(g){
+      var c=g.crop.toLowerCase(); if(o.indexOf(c)<0) o.push(c); }); return o.join(' and '); }
+    if(openL.length){
+      var o0=openL[0];
+      $('pd-verdict-h').innerHTML='Your '+esc(crops(openL))+
         ' price is being set <em>right now</em>.';
-      $('pd-verdict-p').textContent=name+' is day '+(days(d(c0.hs),TODAY)+1)+' of a '+
-        (days(d(c0.hs),d(c0.he))+1)+'-day window.';
-    }else if(isDone(c0)){
-      $('pd-verdict-h').innerHTML='Your '+esc(c0.crop.toLowerCase())+' price is <em>set</em>.';
+      $('pd-verdict-p').textContent=name+' is day '+(days(d(o0.hs),TODAY)+1)+' of a '+
+        (days(d(o0.hs),d(o0.he))+1)+'-day window'+
+        (openL.length>1?' ('+openL.length+' windows are open).':'.');
+    }else if(!pendL.length){
+      $('pd-verdict-h').innerHTML='Your '+esc(crops(lead))+' price is <em>set</em>.';
       $('pd-verdict-p').textContent=name+' · discovery closed '+shortd(c0.he)+'.';
     }else{
-      $('pd-verdict-h').innerHTML='Your '+esc(c0.crop.toLowerCase())+
-        ' price is set in <em>'+MON[d(c0.hs).getMonth()]+'</em>.';
-      $('pd-verdict-p').textContent=name+' · '+groups.length+' crop'+
-        (groups.length>1?'s':'')+' with a revenue price this year.';
+      var n0=pendL.slice().sort(function(a,b){return d(a.hs)-d(b.hs);})[0];
+      if(isClosed(n0)){
+        $('pd-verdict-h').innerHTML='Your '+esc(n0.crop.toLowerCase())+
+          ' window closed. RMA has not released the final price.';
+        $('pd-verdict-p').textContent=name+' · discovery closed '+shortd(n0.he)+'.';
+      }else{
+        $('pd-verdict-h').innerHTML='Your '+esc(n0.crop.toLowerCase())+
+          ' price is set in <em>'+MON[d(n0.hs).getMonth()]+'</em>.';
+        $('pd-verdict-p').textContent=name+' · '+groups.length+' crop'+
+          (groups.length>1?'s':'')+' with a revenue price this year.';
+      }
     }
 
     $('pd-your').innerHTML='<div class="pd-sect">Your window</div>'+
@@ -779,17 +804,23 @@ window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);
     var cu=unitOf(g);
     $('pd-aphu').textContent = cu ? '('+(cu==='lb'?'lb/ac':'bu/ac')+')' : '(per acre)';
     if(seed) $('pd-aph').value = APH[g.crop]||100;
-    var aph=+$('pd-aph').value||0, cov=+$('pd-cov').value||0;
+    var raw=String($('pd-aph').value).trim(), aph=Number(raw), cov=+$('pd-cov').value||0;
+    if(!raw||!isFinite(aph)||aph<1||aph>20000){
+      out.textContent='—';
+      sub.textContent = (raw&&isFinite(aph)&&aph>20000)
+        ? 'Enter your APH yield, 1 to 20,000.' : 'Enter your APH yield';
+      box.className='pd-out2 flat'; box.innerHTML=''; return;
+    }
     var val=aph*cov*g.p;
     out.textContent='$'+Math.round(val).toLocaleString('en-US')+' /ac';
     sub.innerHTML=aph.toLocaleString('en-US')+(cu?' '+cu:'')+' × '+(cov*100).toFixed(0)+
       '% × <b class="pd-num">'+money(g.p,unitOf(g))+'</b> — '+esc(label(g))+
       ' projected price, locked '+shortd(g.ps)+'–'+shortd(g.pe)+'.';
     if(g.h!=null && g.h>g.p){
-      var v2=aph*cov*g.h, p=(g.h-g.p)/g.p*100, live=d(g.he)>=TODAY;
+      var v2=aph*cov*g.h, p=(g.h-g.p)/g.p*100, live=isOpen(g), sw=stWord(g);
       box.className='pd-out2 up';
       box.innerHTML='<b class="pd-num">$'+Math.round(v2).toLocaleString('en-US')+' /ac</b>'+
-        '<span>at the '+(live?'running':'final')+' harvest price of <b class="pd-num">'+
+        '<span>at the '+sw+' harvest price of <b class="pd-num">'+
         money(g.h,unitOf(g))+'</b> — up <b>+'+p.toFixed(1)+'%</b>, or <b class="pd-num">$'+
         Math.round(v2-val).toLocaleString('en-US')+' /ac</b>.'+
         (live?' That average is still moving.':'')+'</span>';
@@ -798,12 +829,13 @@ window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);
       box.innerHTML='<b>No change</b><span>The harvest average is '+
         Math.abs((g.h-g.p)/g.p*100).toFixed(1)+'% below the projected price, so your '+
         'guarantee stays at <b class="pd-num">$'+Math.round(val).toLocaleString('en-US')+
-        ' /ac</b>. A revenue guarantee revises up only.</span>';
+        ' /ac</b>. Revenue Protection (with harvest price) revises up only. Harvest Price Exclusion and Yield Protection do not raise the guarantee.</span>';
     }else{
       box.className='pd-out2 flat';
       box.innerHTML='<b>Not set yet</b><span>'+esc(label(g))+' harvest discovery '+
         (isOpen(g) ? 'opened '+shortd(g.hs)+' and RMA has not posted a running average yet'
-                   : 'opens '+shortd(g.hs))+
+                   : (isClosed(g) ? 'closed '+shortd(g.he)+' and RMA has not released the final price'
+                                  : 'opens '+shortd(g.hs)))+
         '. If that average finishes above <b class="pd-num">'+money(g.p,unitOf(g))+
         '</b>, this figure goes up with it.</span>';
     }
@@ -861,6 +893,68 @@ window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);
     '44':'RI','45':'SC','46':'SD','47':'TN','48':'TX','49':'UT','50':'VT','51':'VA',
     '53':'WA','54':'WV','55':'WI','56':'WY','72':'PR'};
 
+  /* Rewrite the baked blocks from the loaded data and TODAY, so a page cached
+     or baked days ago never shows a stale count, date or "pending". */
+  function refreshBaked(){
+    var disc=ROWS.filter(function(r){return r.h_status==='In Discovery' && r.h_end && d(r.h_end)>=TODAY;});
+    var box=$('pd-disc');
+    if(box){
+      var byKey={}, combos={}, earliest='';
+      disc.forEach(function(r){
+        var k=r.crop+' · '+r.type;
+        var ab=FIPS[String(r.st)]||String(r.st);
+        (byKey[k]=byKey[k]||{end:r.h_end,st:[]});
+        if(byKey[k].st.indexOf(ab)<0) byKey[k].st.push(ab);
+        if(r.h_end<byKey[k].end) byKey[k].end=r.h_end;
+        combos[k]=1; if(!earliest||r.h_end<earliest) earliest=r.h_end;
+      });
+      var trs=box.querySelectorAll('tbody tr'), kept=0;
+      Array.prototype.forEach.call(trs,function(tr){
+        var nm=tr.querySelector('.dn-cn'), stc=tr.querySelector('.c-st'), cx=tr.querySelector('.dn-cx');
+        var k=nm?nm.textContent.trim():'', e=byKey[k];
+        if(!e){ tr.parentNode.removeChild(tr); return; }
+        kept++;
+        e.st.sort();
+        if(stc){ stc.textContent=e.st.join(', '); stc.title=e.st.length+' states'; }
+        if(cx) cx.textContent=cx.textContent.replace(/closes .*$/,'closes '+shortd(e.end));
+      });
+      var lede=box.querySelector('.hp-lede');
+      if(!kept){
+        box.hidden=true;
+      }else{
+        box.hidden=false;
+        var left=days(TODAY,d(earliest));
+        if(lede) lede.innerHTML='USDA RMA is averaging settlements for <b>'+Object.keys(combos).length+
+          '</b> crop and type combinations today, the earliest closing <b>'+shortd(earliest)+'</b> ('+
+          (left<0?'window ended':(left===0?'closes today':left+' day'+(left===1?'':'s')+' left'))+
+          '). Figures are RMA&rsquo;s own running average to date, mirrored without recalculation, and <b>none is final until its window closes</b>. Conventional and Organic are priced separately. <b>Pick your state above</b> and this page will show only yours, state by state.';
+      }
+    }
+    // corn and soybean blocks: status from the Iowa windows, not from the baked text
+    ['Corn','Soybeans'].forEach(function(crop){
+      var ref=group(BYST.IA||[]).filter(function(g){return g.crop===crop;})[0];
+      var blk=document.querySelector('#pd-fallback .pd-crop[data-bake="'+crop+'"]');
+      var card=null;
+      Array.prototype.forEach.call(document.querySelectorAll('#pd-fallback .hp-card-s'),function(c){
+        var t=c.querySelector('.hpc-t'); if(t&&t.textContent.indexOf(crop)===0) card=c; });
+      if(!ref){ if(blk) blk.hidden=true; if(card) card.hidden=true; return; }
+      var pill=blk&&blk.querySelector('.pd-pill');
+      if(pill){ pill.className='pd-pill '+(isOpen(ref)?'open':'wait');
+        pill.textContent=isOpen(ref)?'in discovery now':(isClosed(ref)?(isDone(ref)?'window closed':'closed, not released'):MON[d(ref.hs).getMonth()]); }
+      var pend=card&&card.querySelector('.hpc-pend');
+      if(pend){
+        var tx;
+        if(isDone(ref)&&ref.h!=null) tx=money(ref.h,unitOf(ref))+' (final)';
+        else if(isClosed(ref)) tx='window closed, RMA has not released the final price';
+        else if(isOpen(ref)) tx=(ref.h!=null?money(ref.h,unitOf(ref))+' running average, ':'')+'day '+(days(d(ref.hs),TODAY)+1)+' of '+(days(d(ref.hs),d(ref.he))+1);
+        else tx='pending — discovery opens '+shortd(ref.hs);
+        pend.textContent=tx; pend.style.whiteSpace='normal'; pend.style.textAlign='right';
+        var lg=card.querySelectorAll('.hpc-l')[1];
+        if(lg) lg.textContent='Harvest price ('+MON[d(ref.hs).getMonth()]+(isDone(ref)?' · final':'')+')';
+      }
+    });
+  }
+
   function boot(rows){
     ROWS=rows;
     BYST={};
@@ -871,6 +965,7 @@ window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);
     });
     var codes=Object.keys(BYST).sort(function(a,b){
       return BYST[a][0].state.localeCompare(BYST[b][0].state); });
+    refreshBaked();
     var sel=$('pd-state');
     sel.innerHTML='<option value="">Choose your state</option>'+codes.map(function(c){
       return '<option value="'+esc(c)+'">'+esc(BYST[c][0].state)+'</option>'; }).join('');
@@ -908,9 +1003,17 @@ window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);
     if(!j||!j.rows||!j.rows.length) throw new Error('empty');
     boot(j.rows);
   }).catch(function(){
-    // No file, no personalisation. The baked Corn Belt block stays, because it
-    // is true, and a broken picker is worse than no picker.
+    // No file, no personalisation. A broken picker is worse than no picker,
+    // so it is hidden and the calculator says the data did not load.
     var p=document.querySelector('.pd-pick'); if(p) p.hidden=true;
+    var dsc=$('pd-disc'); if(dsc) dsc.hidden=true;
+    Array.prototype.forEach.call(document.querySelectorAll('.hpc-pend'),function(x){ x.textContent='price data did not load, see prices.rma.usda.gov'; });
+    var msg='Price data did not load. Try again.';
+    $('pd-verdict-h').textContent=msg; $('pd-verdict-p').textContent='';
+    $('pd-gout').textContent='—'; $('pd-gsub').textContent=msg;
+    $('pd-gout2').className='pd-out2 flat'; $('pd-gout2').innerHTML='';
+    var cs=$('pd-crop'); if(cs){ cs.innerHTML='<option value="">Price data did not load</option>'; cs.disabled=true; }
+    var pa=$('pd-aph'); if(pa) pa.disabled=true;
   });
 })();
 </script>

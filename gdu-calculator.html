@@ -46,7 +46,7 @@
 {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
   {"@type":"Question","name":"What is a growing degree unit (GDU)?","acceptedAnswer":{"@type":"Answer","text":"A growing degree unit (GDU), also called a growing degree day (GDD), measures daily heat accumulation above a base temperature of 50\u00b0F for corn. Formula: GDU/day = ((min(daily high, 86\u00b0F) + max(daily low, 50\u00b0F)) / 2) - 50. GDUs accumulate daily from planting and determine crop growth stage progression."}},
   {"@type":"Question","name":"How many GDUs does corn need to reach black layer?","acceptedAnswer":{"@type":"Answer","text":"Corn GDU requirement to physiological maturity (black layer) is approximately (Relative Maturity \u00d7 22) + 250, per Purdue Extension and Pioneer catalog analysis. Example: a 108-day RM hybrid needs roughly 2,626 GDUs; a 110-day hybrid roughly 2,670. This is a rule of thumb \u2014 always verify with your seed company\u2019s published GDU requirement for your specific hybrid."}},
-  {"@type":"Question","name":"What GDU accumulation does the US Corn Belt average per season?","acceptedAnswer":{"@type":"Answer","text":"May 1 through September 30 GDU accumulation ranges roughly 2,000 (northern Minnesota, Upper Peninsula) to 3,200+ (southern Illinois, Missouri, Kentucky). Central Iowa, Indiana, and Ohio typically accumulate 2,700\u20133,000. Northern Wisconsin and Minnesota run 2,000\u20132,400; southern Wisconsin 2,400\u20132,600. Corn hybrids should be matched to your location\u2019s typical GDU accumulation."}},
+  {"@type":"Question","name":"What GDU accumulation does the US Corn Belt average per season?","acceptedAnswer":{"@type":"Answer","text":"May 1 through September 30 GDU accumulation ranges roughly 2,000 (northern Minnesota, Upper Peninsula) to 3,200+ (southern Illinois, Missouri, Kentucky). Corn hybrids should be matched to your location\u2019s typical GDU accumulation."}},
   {"@type":"Question","name":"What is the difference between GDU and GDD?","acceptedAnswer":{"@type":"Answer","text":"Growing Degree Units (GDU) and Growing Degree Days (GDD) are the same thing \u2014 different names for the same calculation. Both use a base temperature of 50\u00b0F for corn with a maximum cap at 86\u00b0F. GDU is the more common term in Corn Belt Extension publications; GDD is used interchangeably."}},
   {"@type":"Question","name":"How do I use this GDU calculator?","acceptedAnswer":{"@type":"Answer","text":"Enter your planting date and click \u2018Fetch Real GDUs\u2019 \u2014 the calculator automatically retrieves historical weather data for your location and computes exact accumulated GDUs from planting to today. Or enter your relative maturity and average daily temperatures for a manual estimate."}}
 ]}
@@ -360,7 +360,7 @@
     <!-- WI Monthly Averages -->
     <div class="gdu-card">
       <div class="gdu-card-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-calendar"/></svg> Upper Midwest GDU Reference (WI example)</div>
-      <div class="tblscroll"><table class="wi-avg-table">
+      <div class="tblscroll" tabindex="0" role="region" aria-label="Wisconsin monthly GDU averages, scrollable table"><table class="wi-avg-table">
         <thead><tr><th>Month</th><th>Avg Hi</th><th>Avg Lo</th><th>GDU/Day</th><th>Monthly</th></tr></thead>
         <tbody>
           <tr><td>May</td>     <td>65&deg;F</td><td>44&deg;F</td><td>7.5</td> <td>232</td></tr>
@@ -419,7 +419,7 @@
       <div class="mat-grid">
         <div class="mat-card"><div class="mat-card-lbl">GDU Target</div><div class="mat-card-val" id="r-target">&mdash;</div><div class="mat-card-sub">to maturity</div></div>
         <div class="mat-card"><div class="mat-card-lbl">GDUs Left</div><div class="mat-card-val" id="r-remaining">&mdash;</div><div class="mat-card-sub">remaining</div></div>
-        <div class="mat-card"><div class="mat-card-lbl">Days Left</div><div class="mat-card-val" id="r-days-left">&mdash;</div><div class="mat-card-sub">at current rate</div></div>
+        <div class="mat-card"><div class="mat-card-lbl">Days Left</div><div class="mat-card-val" id="r-days-left">&mdash;</div><div class="mat-card-sub">at monthly-average rate</div></div>
       </div>
       <div class="r-row" style="margin-top:.6rem"><span class="r-lbl">Progress to maturity</span><span class="r-val gold" id="r-pct">&mdash;</span></div>
       <div class="r-row"><span class="r-lbl" id="r-mat-lbl">Est. maturity (black layer)</span><span class="r-val green" id="r-mat-date">&mdash;</span></div>
@@ -442,14 +442,14 @@
 <div class="ref-layout">
   <div class="gdu-card">
     <div class="gdu-card-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-wheat"/></svg> Corn Stage Reference</div>
-    <div class="ref-table-wrap">
+    <div class="ref-table-wrap" tabindex="0" role="region" aria-label="Corn stage reference, scrollable table">
     <table class="ref-table">
     <thead><tr><th>Stage</th><th>GDUs</th><th>Key Event</th><th>Management</th></tr></thead>
     <tbody>
-      <tr><td>VE</td><td>~100</td><td>Emergence</td><td>Stand count; scout black cutworm V1&ndash;V3</td></tr>
+      <tr><td>VE</td><td>~120</td><td>Emergence</td><td>Stand count; scout black cutworm V1&ndash;V3</td></tr>
       <tr><td>V2</td><td>~200</td><td>Growing point below soil</td><td>Side-dress N window opens (V3&ndash;V6 optimal)</td></tr>
-      <tr><td>V4</td><td>~345</td><td>Ear shoots initiated</td><td>Row number per ear determined here</td></tr>
-      <tr><td>V6</td><td>~475</td><td>Growing point above soil</td><td>Last pre-emerge herbicide; rapid growth begins</td></tr>
+      <tr><td>V4</td><td>~345</td><td>Ear shoots initiated</td><td>&mdash;</td></tr>
+      <tr><td>V6</td><td>~475</td><td>Growing point above soil</td><td>Post-emerge herbicide window closes on many labels: read yours; rapid growth begins</td></tr>
       <tr><td>V8</td><td>~610</td><td>Kernel rows determined</td><td>S and micronutrient uptake peaks; ECB scouting</td></tr>
       <tr><td>V10</td><td>~740</td><td>Ear size potential being set</td><td>Tassel forming inside stalk</td></tr>
       <tr class="hi"><td>VT</td><td>~1135</td><td>Tasseling &mdash; pollen shed</td><td>Critical drought window; fungicide timing</td></tr>
@@ -466,7 +466,7 @@
 
   <div class="gdu-card">
     <div class="gdu-card-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-leaf"/></svg> Soybean Stage Reference</div>
-    <div class="ref-table-wrap">
+    <div class="ref-table-wrap" tabindex="0" role="region" aria-label="Soybean stage reference, scrollable table">
     <table class="ref-table">
     <thead><tr><th>Stage</th><th>GDUs</th><th>Key Event</th><th>Management</th></tr></thead>
     <tbody>
@@ -524,6 +524,29 @@
     <a href="/planting-date" style="display:inline-flex;align-items:center;gap:.4rem;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:.4rem .8rem;font-size:0.785rem;font-weight:600;color:var(--text);text-decoration:none;min-height:44px"><svg class="ic-sp" aria-hidden="true"><use href="#sp-calendar"/></svg> Planting Date Tool</a>
   </div>
 </div>
+
+<!--FAQ:START-->
+<style>
+.agf{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.1rem 1.2rem;margin:1.5rem 0 0}
+.agf-t{font-family:var(--font-display);font-size:.95rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text);margin:0 0 .4rem}
+.agf details{border-top:1px solid var(--border)}
+.agf details:first-of-type{border-top:0}
+.agf summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:baseline;gap:.75rem;padding:.85rem 0;font-size:1rem;font-weight:600;line-height:1.4;color:var(--text)}
+.agf summary::-webkit-details-marker{display:none}
+.agf summary::after{content:"+";color:var(--gold);font-weight:700;flex-shrink:0}
+.agf details[open] summary::after{content:"\2212"}
+.agf summary:focus-visible{outline:2px solid var(--gold);outline-offset:2px;border-radius:4px}
+.agf-a{font-size:1rem;line-height:1.65;color:var(--text-dim);padding:0 0 .95rem}
+</style>
+<section class="faq agf" aria-labelledby="agf-t">
+<h2 class="agf-t" id="agf-t">Common questions</h2>
+<details><summary>What is a growing degree unit (GDU)?</summary><div class="agf-a">A growing degree unit (GDU), also called a growing degree day (GDD), measures daily heat accumulation above a base temperature of 50°F for corn. Formula: GDU/day = ((min(daily high, 86°F) + max(daily low, 50°F)) / 2) - 50. GDUs accumulate daily from planting and determine crop growth stage progression.</div></details>
+<details><summary>How many GDUs does corn need to reach black layer?</summary><div class="agf-a">Corn GDU requirement to physiological maturity (black layer) is approximately (Relative Maturity × 22) + 250, per Purdue Extension and Pioneer catalog analysis. Example: a 108-day RM hybrid needs roughly 2,626 GDUs; a 110-day hybrid roughly 2,670. This is a rule of thumb — always verify with your seed company’s published GDU requirement for your specific hybrid.</div></details>
+<details><summary>What GDU accumulation does the US Corn Belt average per season?</summary><div class="agf-a">May 1 through September 30 GDU accumulation ranges roughly 2,000 (northern Minnesota, Upper Peninsula) to 3,200+ (southern Illinois, Missouri, Kentucky). Corn hybrids should be matched to your location’s typical GDU accumulation.</div></details>
+<details><summary>What is the difference between GDU and GDD?</summary><div class="agf-a">Growing Degree Units (GDU) and Growing Degree Days (GDD) are the same thing — different names for the same calculation. Both use a base temperature of 50°F for corn with a maximum cap at 86°F. GDU is the more common term in Corn Belt Extension publications; GDD is used interchangeably.</div></details>
+<details><summary>How do I use this GDU calculator?</summary><div class="agf-a">Enter your planting date and click ‘Fetch Real GDUs’ — the calculator automatically retrieves historical weather data for your location and computes exact accumulated GDUs from planting to today. Or enter your relative maturity and average daily temperatures for a manual estimate.</div></details>
+</section>
+<!--FAQ:END-->
 
 <div class="gdu-source">
   Formula: USDA / Purdue / UW-Extension &middot; Weather data: <a href="https://open-meteo.com" target="_blank" rel="noopener">Open-Meteo</a> (ERA5 archive) &middot;
@@ -585,7 +608,12 @@ var BEAN_STAGES=[
   {s:'R7', gdu:1900, key:true,  icon:'', desc:'Beginning maturity'},
   {s:'R8', gdu:2000, key:true,  icon:'<svg class="ic-sp" aria-hidden="true"><use href="#sp-circle-check"/></svg>', desc:'Full maturity'},
 ];
-var WI_HIST=[7.5,15.5,21.5,19.5,10.0]; // May-Sep avg GDU/day
+// May-Sep avg GDU/day (WI). SHARED TABLE: /planting-date carries the same constant with
+// identical values (its "GDUs by planting date" card counts from this table). If you change
+// a value here, change it there too. Days per month for May-Sep are in WI_DAYS.
+var WI_HIST=[7.5,15.5,21.5,19.5,10.0];
+var WI_DAYS=[31,30,31,31,30];
+function localISO(d){var m=d.getMonth()+1,dd=d.getDate();return d.getFullYear()+'-'+(m<10?'0':'')+m+'-'+(dd<10?'0':'')+dd;}
 
 /* ─── STATE ─────────────────────────────────────────────────────────── */
 var crop='corn';
@@ -593,16 +621,19 @@ var realAccum=null; // set when fetch succeeds
 var realDays=null;  // actual measured days from the archive (excludes pending/missing)
 var realThrough=null; // last date with real data
 var userLat=null, userLon=null;
+var zipTouched=false; // true once the user has typed in the ZIP box
 var ready=false; // gates persistence so initial defaults don't clobber saved state
 
 /* ─── INIT ──────────────────────────────────────────────────────────── */
 (function(){
   var today=new Date();
   var plant=new Date(today.getFullYear(),4,1); // May 1
-  document.getElementById('g-today').value=today.toISOString().slice(0,10);
-  document.getElementById('g-plant').value=plant.toISOString().slice(0,10);
+  // Local calendar date, not toISOString (UTC): after ~7pm CDT the UTC date is tomorrow.
+  document.getElementById('g-today').value=localISO(today);
+  document.getElementById('g-plant').value=localISO(plant);
   // Try to use geo state
   setTimeout(function(){
+    if(zipTouched)return; // user already typed a location; do not overwrite it
     if(window.AGSIST_STATE&&window.AGSIST_STATE.lat){
       userLat=window.AGSIST_STATE.lat;
       userLon=window.AGSIST_STATE.lon;
@@ -641,7 +672,7 @@ document.getElementById('pill-bean').addEventListener('click',function(){
   document.getElementById('pill-corn').classList.remove('active');
   document.getElementById('pill-corn').setAttribute('aria-pressed','false');
   document.getElementById('rm-lbl').textContent='Maturity Group (e.g. 3.0)';
-  document.getElementById('rm-hint').textContent='MG 0.5\u20135.5 range \u00b7 GDU to maturity \u2248 MG \u00d7 500 + 800';
+  document.getElementById('rm-hint').textContent='MG 0.5\u20135.5 range \u00b7 GDU to maturity \u2248 MG \u00d7 500 + 800 (estimate)';
   (function(e){if(e){e.min=0.5;e.max=5.5;e.step=0.1;}})(document.getElementById('g-rm'));
   document.getElementById('g-rm').value=3;
   document.getElementById('ms-title').textContent='Key Growth Stage Milestones';
@@ -749,7 +780,7 @@ document.getElementById('g-fetch-btn').addEventListener('click',function(){
     setStatus('\u2717 '+err.message,'err');
   }).finally(function(){
     btn.disabled=false;
-    btn.innerHTML='<span>\u26A1</span> Fetch Real GDUs from Weather Data';
+    btn.innerHTML='<span><svg class="ic-sp" aria-hidden="true"><use href="#sp-zap"/></svg></span> Fetch Real GDUs from Weather Data';
   });
 });
 
@@ -762,6 +793,16 @@ document.getElementById('g-fetch-btn').addEventListener('click',function(){
     var badge=document.getElementById('live-badge');if(badge)badge.style.display='none';
     calcGDU();
   });
+});
+// Typing a new ZIP/city drops the old coordinates and the old fetched data, so the
+// next Fetch geocodes what is in the box (the same handler exists in /planting-date).
+document.getElementById('g-zip').addEventListener('input',function(){
+  zipTouched=true;
+  userLat=null;userLon=null;
+  realAccum=null;realDays=null;realThrough=null;
+  var badge=document.getElementById('live-badge');if(badge)badge.style.display='none';
+  document.getElementById('g-loc-display').textContent='Your location appears here after fetching';
+  calcGDU();
 });
 // Inputs that DO NOT invalidate real weather data (RM, manual fields)
 ['g-rm','g-hi','g-lo','g-cumgdu','g-frost'].forEach(function(id){
@@ -778,6 +819,7 @@ function calcGDU(){
   var daysSincePlant=Math.max(0,Math.round((todayD-plantD)/86400000));
 
   var accumGDU=0,gduPerDay=0;
+  var bad=null; // reason string when an input cannot be used: show an em dash, never a default
 
   if(realAccum!=null){
     accumGDU=realAccum;
@@ -785,7 +827,11 @@ function calcGDU(){
   } else {
     var method=document.getElementById('g-method').value;
     if(method==='cumulative'){
-      accumGDU=parseFloat(document.getElementById('g-cumgdu').value)||0;
+      var cumRaw=parseFloat(String(document.getElementById('g-cumgdu').value).replace(/,/g,''));
+      if(!isFinite(cumRaw)){bad='Enter your GDU total so far.';}
+      else if(cumRaw<0){bad='GDU total cannot be negative.';}
+      else if(cumRaw>4000){bad='GDU total is above 4,000, the top of the range this field accepts.';}
+      else{accumGDU=cumRaw;}
       gduPerDay=daysSincePlant>0?accumGDU/daysSincePlant:0;
     } else if(method==='wi_hist'){
       var d=new Date(plantD);
@@ -797,26 +843,47 @@ function calcGDU(){
       gduPerDay=daysSincePlant>0?accumGDU/daysSincePlant:0;
       document.getElementById('r-source').textContent='WI 30-yr historical avg';
     } else {
-      var hi2=Math.min(parseFloat(document.getElementById('g-hi').value)||82,86);
-      var lo2=Math.max(parseFloat(document.getElementById('g-lo').value)||58,50);
-      gduPerDay=Math.max(0,(hi2+lo2)/2-50);
-      accumGDU=gduPerDay*daysSincePlant;
+      var hiRaw=parseFloat(document.getElementById('g-hi').value);
+      var loRaw=parseFloat(document.getElementById('g-lo').value);
+      if(!isFinite(hiRaw)||!isFinite(loRaw)){bad='Enter both the average daily high and low.';}
+      else if(hiRaw<50||hiRaw>110){bad='Average high must be 50 to 110°F.';}
+      else if(loRaw<30||loRaw>85){bad='Average low must be 30 to 85°F.';}
+      else if(loRaw>hiRaw){bad='Average low cannot be above the average high.';}
+      else{
+        var hi2=Math.min(hiRaw,86);
+        var lo2=Math.max(loRaw,50);
+        gduPerDay=Math.max(0,(hi2+lo2)/2-50);
+        accumGDU=gduPerDay*daysSincePlant;
+      }
       document.getElementById('r-source').textContent='Manual avg temp entry';
     }
   }
 
-  var _rmRaw=parseFloat(document.getElementById('g-rm').value);
-  var _rmOK=isFinite(_rmRaw)&&_rmRaw>0;
-  var rm=_rmOK?_rmRaw:(crop==='corn'?108:2.8);
+  // Hybrid / variety maturity. No silent default: blank or out of range is an em dash.
+  var rm=parseFloat(document.getElementById('g-rm').value);
+  if(!bad){
+    if(crop==='corn'&&!(isFinite(rm)&&rm>=70&&rm<=135)){bad='Enter a corn relative maturity from 70 to 135 days.';}
+    else if(crop!=='corn'&&!(isFinite(rm)&&rm>=0.5&&rm<=5.5)){bad='Enter a soybean maturity group from 0.5 to 5.5.';}
+  }
+  if(bad){
+    function d0(id,v){var el=document.getElementById(id);if(el)el.textContent=v;}
+    ['r-total','r-stage','r-days','r-gdu-day','r-target','r-remaining','r-days-left','r-pct','r-mat-date'].forEach(function(id){d0(id,'—');});
+    d0('r-mat-lbl',crop==='corn'?'Est. maturity (black layer)':'Est. full maturity (R8)');
+    var fv0=document.getElementById('r-frost-verdict');if(fv0){fv0.textContent='—';fv0.style.color='var(--text-muted)';}
+    d0('r-mat-note',bad);
+    var arc0=document.getElementById('arc-fill');if(arc0)arc0.style.strokeDashoffset='257';
+    var pf0=document.getElementById('prog-fill');if(pf0)pf0.style.width='0%';
+    var pm0=document.getElementById('prog-marker');if(pm0)pm0.style.left='0%';
+    saveState();
+    return;
+  }
   var stages=crop==='corn'?CORN_STAGES:BEAN_STAGES;
   var gduTarget;
   if(crop==='corn'){
     gduTarget=Math.round(rm*22+250);
   } else {
+    // Estimate only. /planting-date uses this same formula.
     gduTarget=Math.round(rm*500+800);
-    // Was clamped to [1600,2400], i.e. MG 1.6-3.2, so an MG 5.5 rendered exactly like an
-    // MG 3.2 while the hint above advertised 0.5-5.5 and printed this very formula. The
-    // bound below only catches an out-of-range entry, it no longer collapses the range.
     gduTarget=Math.min(Math.max(gduTarget,1050),3550);
   }
   // Reconcile the stage table to THIS hybrid: scale every threshold so the final
@@ -828,7 +895,21 @@ function calcGDU(){
 
   var gduRemaining=Math.max(0,gduTarget-accumGDU);
   var pctDone=Math.min(100,(accumGDU/gduTarget)*100);
-  var daysLeft=gduPerDay>0?Math.round(gduRemaining/gduPerDay):null;
+  // Days left: walk forward day by day from tomorrow using the monthly rates in WI_HIST
+  // (July runs ~21 GDU/day, September ~10, October 0 in this table), not the season
+  // average. Nothing is counted after Sep 30, so a crop that does not finish by then
+  // gets no date (null) instead of an October date.
+  var daysLeft=null;
+  if(gduRemaining<=0){daysLeft=0;}
+  else{
+    var proj=accumGDU,pd=new Date(todayD),endD=new Date(todayD.getFullYear(),8,30),n=0;
+    while(pd<endD){
+      pd.setDate(pd.getDate()+1);n++;
+      var pm2=pd.getMonth()-4;
+      if(pm2>=0&&pm2<5)proj+=WI_HIST[pm2];
+      if(proj>=gduTarget){daysLeft=n;break;}
+    }
+  }
   var matDate=daysLeft!=null?new Date(todayD.getTime()+daysLeft*86400000):null;
 
   // Physiological maturity = black layer (R6) = the hybrid GDU target. Same event; no separate hardcoded value.
@@ -864,7 +945,8 @@ function calcGDU(){
   var note='';
   if(pctDone>=100){note='Crop has reached physiological maturity. Monitor for harvest timing.';}
   else if(daysLeft!=null&&daysLeft<14){note='Approaching maturity. Scout for stalk integrity and harvest timing.';}
-  else if(daysLeft!=null){note='Projection based on current GDU/day rate. Rate varies with weather.';}
+  else if(daysLeft!=null){note='Projection uses the Wisconsin monthly average GDU per day from tomorrow on (the September rate is about half of July). Weather changes it.';}
+  else{note='Not reached by Sep 30 at the Wisconsin monthly average rates, so no maturity date is shown. Frost may come first.';}
   s('r-mat-note',note);
 
   // Arc gauge
@@ -914,7 +996,7 @@ function restoreState(){
   if(!src)return;
   var c=val('crop'); if(c==='bean'){var pb=document.getElementById('pill-bean'); if(pb)pb.click();}
   var p=val('plant'); if(p)document.getElementById('g-plant').value=p;
-  var t=val('today'); if(t)document.getElementById('g-today').value=t;
+  var t=(src==='url')?val('today'):null; if(t)document.getElementById('g-today').value=t; // only a shared link may set the end date
   var r=val('rm'); if(r)document.getElementById('g-rm').value=r;
   var z=val('zip'); if(z)document.getElementById('g-zip').value=z;
   var f=val('frost'); if(f)document.getElementById('g-frost').value=f;
@@ -922,7 +1004,7 @@ function restoreState(){
 function saveState(){
   if(!ready)return;
   try{ localStorage.setItem('agsist_gdu',JSON.stringify({
-    crop:crop, plant:document.getElementById('g-plant').value, today:document.getElementById('g-today').value,
+    crop:crop, plant:document.getElementById('g-plant').value, // 'today' is never saved: a stored end date would freeze the results on an old day
     rm:document.getElementById('g-rm').value, zip:(document.getElementById('g-zip').value||'').trim(),
     frost:document.getElementById('g-frost').value })); }catch(e){}
 }

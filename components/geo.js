@@ -4,9 +4,8 @@
  * Price sources (all free, no API keys, no trials):
  *   1. data/prices.json  — pre-fetched every 30min by GitHub Actions (yfinance)
  *      Includes all commodities, indices, AND crypto (BTC, XRP, KAS)
- *   2. Farmers First API  — FFAI Index
- *   3. Open-Meteo         — weather
- *   4. Nominatim OSM      — reverse geocoding
+ *   2. Open-Meteo         — weather
+ *   3. Nominatim OSM      — reverse geocoding
  *
  * v17 — 2026-05-06
  *   FIX: Cash bids stuck at "Detecting your location…" on iPhone, requiring
@@ -985,33 +984,6 @@ function fetchAllPrices() {
 }
 
 // ─────────────────────────────────────────────────────────────────
-// FFAI INDEX
-// ─────────────────────────────────────────────────────────────────
-function fetchFFAILive() {
-  fetch('https://farmers1st.com/api/v3/current.json')
-    .then(function(r) { return r.json(); })
-    .then(function(d) {
-      var score = d.composite;
-      var prev  = d.previous ? d.previous.composite : null;
-      var diff  = prev !== null ? parseFloat((score - prev).toFixed(1)) : null;
-      var dir   = diff && diff > 0 ? 'up' : 'dn';
-      var sign  = diff && diff > 0 ? '\u25B2' : '\u25BC';
-      var priceTxt = score.toFixed(1);
-      var chgTxt   = diff ? sign + ' ' + Math.abs(diff) + ' pts' : '--';
-
-      document.querySelectorAll('[data-sym="ffai"]').forEach(function(el) {
-        var pe = el.querySelector('.t-price');
-        var ce = el.querySelector('.t-chg');
-        if (pe) { pe.textContent = priceTxt; pe.style.color = 'var(--blue)'; }
-        if (ce && diff) { ce.className = 't-chg ' + dir; ce.textContent = chgTxt; }
-      });
-
-      var compactEl = document.getElementById('ffai-score-compact');
-      if (compactEl) compactEl.textContent = priceTxt;
-    }).catch(function() {});
-}
-
-// ─────────────────────────────────────────────────────────────────
 // TICKER
 // ─────────────────────────────────────────────────────────────────
 var _tickerRebuildTimer = null;
@@ -1085,7 +1057,7 @@ function fetchKalshiMarkets() {
           + ''
           + '<div style="font-size:.88rem;font-weight:600;color:var(--text);margin-bottom:.35rem">No active prediction markets right now</div>'
           + '<div style="font-size:.78rem;color:var(--text-muted);line-height:1.5;max-width:32rem;margin:0 auto">'
-          + 'We scan Kalshi and Polymarket every 2 hours for events that affect agriculture \u2014 tariffs, weather, trade, energy, USDA reports, and more.</div>'
+          + 'We scan Kalshi and Polymarket once a day for events that affect agriculture \u2014 tariffs, weather, trade, energy, USDA reports, and more.</div>'
           + '<div style="margin-top:.75rem;font-size:.78rem">'
           + '<a href="https://kalshi.com/markets" target="_blank" rel="noopener" style="color:var(--gold)">Browse Kalshi \u2192</a>'
           + '<span style="color:var(--text-muted);margin:0 .5rem">\u00B7</span>'
@@ -1400,7 +1372,6 @@ function loadDailyBriefing() {
   function init() {
     rebuildTickerLoop();
     fetchAllPrices();
-    fetchFFAILive();
     if (document.getElementById('dv3-headline') || document.getElementById('daily-headline')) loadDailyBriefing();
 
     var _kg = document.getElementById('kalshi-grid');
@@ -1410,8 +1381,7 @@ function loadDailyBriefing() {
 
     setInterval(function() {
       fetchAllPrices();
-      fetchFFAILive();
-    }, 5 * 60 * 1000);
+      }, 5 * 60 * 1000);
 
     // v16/v17: Stale-cache-aware boot. Read cache for instant render only if it
     // has a timestamp and is within WX_CACHE_TTL_MS. Always fire a background

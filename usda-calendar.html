@@ -20,14 +20,14 @@
   <link rel="canonical" href="https://agsist.com/usda-calendar">
 
   <title>Next WASDE: Oct 9, 2026 — USDA Report Calendar | AGSIST</title>
-  <meta name="description" content="The next WASDE lands Oct 9, 2026, in 14 days. Every 2026 USDA report date — WASDE, Crop Production, Grain Stocks, Cattle on Feed — with what each one moves.">
+  <meta name="description" content="The next WASDE lands Oct 9, 2026, in 13 days. Every 2026 USDA report date — WASDE, Crop Production, Grain Stocks, Cattle on Feed — with what each one moves.">
   <meta name="keywords" content="USDA report dates, WASDE calendar, crop progress dates, USDA calendar 2026, agricultural report schedule, prospective plantings, export sales report, market impact rating">
 
   <meta property="og:type"         content="website">
   <meta property="og:site_name"    content="AGSIST">
   <meta property="og:locale"       content="en_US">
   <meta property="og:title"        content="Next WASDE: Oct 9, 2026 — USDA Report Calendar | AGSIST">
-  <meta property="og:description"  content="The next WASDE lands Oct 9, 2026, in 14 days. Every 2026 USDA report date — WASDE, Crop Production, Grain Stocks, Cattle on Feed — with what each one moves.">
+  <meta property="og:description"  content="The next WASDE lands Oct 9, 2026, in 13 days. Every 2026 USDA report date — WASDE, Crop Production, Grain Stocks, Cattle on Feed — with what each one moves.">
   <meta property="og:url"          content="https://agsist.com/usda-calendar">
   <meta property="og:image"        content="https://agsist.com/img/og/agsist.jpg">
   <meta property="og:image:width"  content="1200">
@@ -37,7 +37,7 @@
   <meta name="twitter:site"        content="@agsist">
   <meta name="twitter:creator"     content="@agsist">
   <meta name="twitter:title"       content="Next WASDE: Oct 9, 2026 — USDA Report Calendar | AGSIST">
-  <meta name="twitter:description" content="The next WASDE lands Oct 9, 2026, in 14 days. Every 2026 USDA report date — WASDE, Crop Production, Grain Stocks, Cattle on Feed — with what each one moves.">
+  <meta name="twitter:description" content="The next WASDE lands Oct 9, 2026, in 13 days. Every 2026 USDA report date — WASDE, Crop Production, Grain Stocks, Cattle on Feed — with what each one moves.">
   <meta name="twitter:image"       content="https://agsist.com/img/og/agsist.jpg">
 
   <script type="application/ld+json">
@@ -45,7 +45,7 @@
     "@context":"https://schema.org","@graph":[
       {"@type":"WebPage","url":"https://agsist.com/usda-calendar","name":"USDA Report Calendar 2025\u20132026 \u2014 WASDE & Crop Dates | AGSIST","description":"Complete USDA agricultural report calendar with market impact ratings for corn and soybean producers. WASDE, Crop Progress, Prospective Plantings, Grain Stocks, Acreage, and Export Sales dates for 2025\u20132026.","dateModified":"2026-06-16","isPartOf":{"@type":"WebSite","url":"https://agsist.com/"},"breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://agsist.com/"},{"@type":"ListItem","position":2,"name":"USDA Calendar","item":"https://agsist.com/usda-calendar"}]}},
       {"@type":"FAQPage","mainEntity":[
-        {"@type":"Question","name":"When is the WASDE report released?","acceptedAnswer":{"@type":"Answer","text":"The USDA WASDE report is released monthly, typically around the 10th of each month at 12:00 PM Eastern Time (11:00 AM Central). It frequently moves corn and soybean futures 10\u201340 cents at release."}},
+        {"@type":"Question","name":"When is the WASDE report released?","acceptedAnswer":{"@type":"Answer","text":"The USDA WASDE report is released monthly, typically around the 10th of each month at 12:00 PM Eastern Time (11:00 AM Central). It can move corn and soybean futures sharply at release."}},
         {"@type":"Question","name":"When is the USDA Export Sales report released?","acceptedAnswer":{"@type":"Answer","text":"The USDA Export Sales report is released every Thursday at 8:30 AM Eastern Time by the USDA Foreign Agricultural Service. It covers weekly net export sales of corn, soybeans, and wheat."}},
         {"@type":"Question","name":"When is the Prospective Plantings report?","acceptedAnswer":{"@type":"Answer","text":"The USDA Prospective Plantings report is typically released in late March \u2014 usually the last business day of the month. It surveys farmers on intended corn, soybean, and wheat planting acres and is one of the most market-moving reports of the year."}},
         {"@type":"Question","name":"When is Crop Progress released?","acceptedAnswer":{"@type":"Answer","text":"USDA Crop Progress is released every Monday at 4:00 PM Eastern Time during the growing season, from early April through late November. It provides weekly condition ratings and planting and harvest progress percentages by state."}}
@@ -90,7 +90,7 @@
     .leg-item{display:flex;align-items:center;gap:.4rem;font-size:0.775rem;color:var(--text-dim);}
     .leg-dot{width:9px;height:9px;border-radius:2px;flex-shrink:0;}
     .cal-month{background:var(--surface);border:2px solid var(--border);border-radius:var(--r8);margin-bottom:.85rem;overflow:hidden;}
-    .cal-month.is-past{opacity:.62;}
+    .cal-month.is-past{opacity:.85;}
     .cal-month-head{background:var(--bg);padding:.7rem 1rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
     .cal-mname{font-family:var(--font-display);font-size:.95rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--text-dim);}
     .cal-mname.cur{color:var(--gold);}
@@ -98,7 +98,8 @@
     .cal-row{display:flex;align-items:flex-start;gap:.85rem;padding:.7rem 1rem;border-bottom:1px solid var(--border);border-left:3px solid transparent;transition:background .12s;}
     .cal-row:last-child{border-bottom:none;}
     .cal-row:hover{background:rgba(255,255,255,.02);}
-    .cal-row.is-past{opacity:.5;}
+    .cal-row.is-past{opacity:.85;}
+    .cal-month.is-past .cal-row.is-past{opacity:1;}
     .cal-row.is-today{background:rgba(var(--gold-rgb),.07);border-left-color:var(--gold);}
     .cal-row.is-next{background:rgba(var(--gold-rgb),.04);border-left-color:rgba(var(--gold-rgb),.45);}
     .cal-date{flex-shrink:0;min-width:46px;text-align:center;background:var(--surface2);border-radius:var(--r6);padding:.35rem .4rem;}
@@ -119,6 +120,15 @@
     .tag-supply  {background:rgba(248,113,113,.12);color:#f87171;}
     .tag-outlook {background:rgba(34,211,238,.12); color:#22d3ee;}
     .tag-export  {background:rgba(74,222,128,.12); color:#4ade80;}
+    /* light theme: the dark-theme pastels fail contrast on white (1.5-2.4:1); darker inks of the same hues */
+    [data-theme="light"] .tag-wasde,[data-theme="light"] .tag-supply,[data-theme="light"] .imp-lbl.extreme{color:#a3231b;}
+    [data-theme="light"] .tag-intl,[data-theme="light"] .tag-census{color:#5b32b8;}
+    [data-theme="light"] .tag-croprog,[data-theme="light"] .tag-export{color:#14652f;}
+    [data-theme="light"] .tag-plantings,[data-theme="light"] .imp-lbl.high{color:#7a5709;}
+    [data-theme="light"] .tag-stocks{color:#1a55a8;}
+    [data-theme="light"] .tag-outlook{color:#0b6b80;}
+    [data-theme="light"] .imp-lbl.moderate{color:#1f5e3a;}
+    [data-theme="light"] .cal-month.is-past,[data-theme="light"] .cal-row.is-past{opacity:1;}
     .cal-meta-row{display:flex;align-items:center;gap:.75rem;flex-wrap:wrap;}
     .cal-time{font-family:'JetBrains Mono',monospace;font-size:0.763rem;color:var(--text-muted);}
     .cal-desc{font-size:1rem;color:var(--text-muted);margin-top:.18rem;line-height:1.5;}
@@ -234,7 +244,7 @@
         <div class="cal-cd-more">
           <a href="/usda-calendar.ics" download="usda-reports-agsist.ics" onclick="try{gtag('event','ics_download')}catch(e){}">Apple&nbsp;/&nbsp;Outlook (.ics)</a>
           <span aria-hidden="true">&middot;</span>
-          <a href="webcal://agsist.com/usda-calendar.ics" onclick="try{gtag('event','ics_subscribe')}catch(e){}">Subscribe &mdash; auto-updates</a>
+          <a href="webcal://agsist.com/usda-calendar.ics" onclick="try{gtag('event','ics_subscribe')}catch(e){}">Subscribe (monthly reports only)</a>
         </div>
         <a class="cal-cd-wpi" id="next-wpi" href="/whats-priced-in" hidden>What are analysts expecting? &rarr;</a>
       </div>
@@ -314,10 +324,32 @@
         </div>
       </div>
 
+<!--FAQ:START-->
+<style>
+.agf{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.1rem 1.2rem;margin:1.5rem 0 0}
+.agf-t{font-family:var(--font-display);font-size:.95rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text);margin:0 0 .4rem}
+.agf details{border-top:1px solid var(--border)}
+.agf details:first-of-type{border-top:0}
+.agf summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:baseline;gap:.75rem;padding:.85rem 0;font-size:1rem;font-weight:600;line-height:1.4;color:var(--text)}
+.agf summary::-webkit-details-marker{display:none}
+.agf summary::after{content:"+";color:var(--gold);font-weight:700;flex-shrink:0}
+.agf details[open] summary::after{content:"\2212"}
+.agf summary:focus-visible{outline:2px solid var(--gold);outline-offset:2px;border-radius:4px}
+.agf-a{font-size:1rem;line-height:1.65;color:var(--text-dim);padding:0 0 .95rem}
+</style>
+<section class="faq agf" aria-labelledby="agf-t">
+<h2 class="agf-t" id="agf-t">Common questions</h2>
+<details><summary>When is the WASDE report released?</summary><div class="agf-a">The USDA WASDE report is released monthly, typically around the 10th of each month at 12:00 PM Eastern Time (11:00 AM Central). It can move corn and soybean futures sharply at release.</div></details>
+<details><summary>When is the USDA Export Sales report released?</summary><div class="agf-a">The USDA Export Sales report is released every Thursday at 8:30 AM Eastern Time by the USDA Foreign Agricultural Service. It covers weekly net export sales of corn, soybeans, and wheat.</div></details>
+<details><summary>When is the Prospective Plantings report?</summary><div class="agf-a">The USDA Prospective Plantings report is typically released in late March — usually the last business day of the month. It surveys farmers on intended corn, soybean, and wheat planting acres and is one of the most market-moving reports of the year.</div></details>
+<details><summary>When is Crop Progress released?</summary><div class="agf-a">USDA Crop Progress is released every Monday at 4:00 PM Eastern Time during the growing season, from early April through late November. It provides weekly condition ratings and planting and harvest progress percentages by state.</div></details>
+</section>
+<!--FAQ:END-->
+
       <div class="cal-foot">
         Release times are approximate. USDA may shift dates around holidays.
         Always verify at <a href="https://www.usda.gov/media/agency-reports" target="_blank" rel="noopener">usda.gov</a>.
-        Dates verified against issuing-agency calendars. All times Eastern unless noted.<br>Sources: <a href="https://www.usda.gov/oce/commodity-markets/wasde" target="_blank" rel="noopener">USDA WASDE</a> &middot; <a href="https://www.nass.usda.gov/Publications/Calendar/" target="_blank" rel="noopener">NASS</a> &middot; <a href="https://www.gov.br/conab" target="_blank" rel="noopener">CONAB</a> &middot; <a href="https://www150.statcan.gc.ca/n1/dai-quo/cal1-eng.htm" target="_blank" rel="noopener">StatCan</a>.
+        All times Eastern unless noted.<br>Sources: <a href="https://www.usda.gov/oce/commodity-markets/wasde" target="_blank" rel="noopener">USDA WASDE</a> &middot; <a href="https://www.nass.usda.gov/Publications/Calendar/" target="_blank" rel="noopener">NASS</a> &middot; <a href="https://www.gov.br/conab" target="_blank" rel="noopener">CONAB</a> &middot; <a href="https://www150.statcan.gc.ca/n1/dai-quo/cal1-eng.htm" target="_blank" rel="noopener">StatCan</a>.
       </div>
     </div>
   </main>
@@ -380,27 +412,34 @@
     {date:'2026-12-04',name:'StatCan Crop Production (Canada)',type:'intl',time:'8:30 AM ET',desc:'Final 2026 Canadian production \u2014 wheat, canola, barley \u2014 Statistics Canada'},
   ];
 
+  /* US federal holidays 2025-2026 (observed dates). A weekly release that falls on one is marked
+     "holiday week: date may shift, check USDA" instead of being listed as a release day. USDA's
+     actual shifted dates are not asserted here. */
+  const FED_HOLIDAYS=new Set(['2025-01-01','2025-01-20','2025-02-17','2025-05-26','2025-06-19','2025-07-04','2025-09-01','2025-10-13','2025-11-11','2025-11-27','2025-12-25','2026-01-01','2026-01-19','2026-02-16','2026-05-25','2026-06-19','2026-07-03','2026-09-07','2026-10-12','2026-11-11','2026-11-26','2026-12-25']);
+  const HOLIDAY_NOTE='Holiday week: date may shift, check USDA';
+  function isoUTC(d){return d.toISOString().slice(0,10);}
+  /* all date math in UTC so the weekday never depends on the reader's time zone */
   (function(){
-    const end=new Date('2026-12-31');
-    let cur=new Date('2025-01-02');
-    while(cur.getDay()!==4)cur.setDate(cur.getDate()+1);
-    while(cur<=end){
-      REPORTS.push({date:cur.toISOString().slice(0,10),name:'Export Sales Report',type:'export',time:'8:30 AM ET',desc:'Weekly net export sales \u2014 corn, soybeans, wheat \u2014 USDA FAS'});
-      cur.setDate(cur.getDate()+7);
+    const end=Date.UTC(2026,11,31);
+    let cur=new Date(Date.UTC(2025,0,2));
+    while(cur.getUTCDay()!==4)cur.setUTCDate(cur.getUTCDate()+1);
+    while(cur.getTime()<=end){
+      const iso=isoUTC(cur),hol=FED_HOLIDAYS.has(iso);
+      REPORTS.push({date:iso,name:'Export Sales Report',type:'export',time:hol?HOLIDAY_NOTE:'8:30 AM ET',holiday:hol,desc:'Weekly net export sales \u2014 corn, soybeans, wheat \u2014 USDA FAS'});
+      cur.setUTCDate(cur.getUTCDate()+7);
     }
   })();
 
   (function(){
     const seasons=[{start:'2025-04-07',end:'2025-11-24'},{start:'2026-04-06',end:'2026-11-23'}];
     seasons.forEach(function(s){
-      let cur=new Date(s.start),end=new Date(s.end);
-      const yr=cur.getFullYear();
-      while(cur<=end){
-        const iso=cur.toISOString().slice(0,10);
+      let cur=new Date(s.start+'T00:00:00Z'),end=new Date(s.end+'T00:00:00Z');
+      while(cur.getTime()<=end.getTime()){
+        const iso=isoUTC(cur),hol=FED_HOLIDAYS.has(iso);
         if(!REPORTS.find(r=>r.date===iso&&r.type==='croprog')){
-          REPORTS.push({date:iso,name:'Crop Progress Report',type:'croprog',time:'4:00 PM ET',desc:'Weekly condition ratings and planting/harvest progress by state'});
+          REPORTS.push({date:iso,name:'Crop Progress Report',type:'croprog',time:hol?HOLIDAY_NOTE:'4:00 PM ET',holiday:hol,desc:'Weekly condition ratings and planting/harvest progress by state'});
         }
-        cur.setDate(cur.getDate()+7);
+        cur.setUTCDate(cur.getUTCDate()+7);
       }
     });
   })();
@@ -466,7 +505,7 @@
 
     const sorted=[...REPORTS].sort((a,b)=>a.date.localeCompare(b.date));
     let next=null;
-    for(const r of sorted){const d=new Date(r.date+'T12:00:00');if(d>=today){next=r;break;}}
+    for(const r of sorted){if(r.holiday)continue;const d=new Date(r.date+'T12:00:00');if(d>=today){next=r;break;}}
     if(next){
       const d=new Date(next.date+'T12:00:00');
       const diff=Math.ceil((d-today)/86400000);

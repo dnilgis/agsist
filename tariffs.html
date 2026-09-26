@@ -103,7 +103,7 @@
         {
           "@type": "Question",
           "name": "How do tariffs flow through to my local elevator basis?",
-          "acceptedAnswer": { "@type": "Answer", "text": "Export-tariff stress shows up in local cash prices through the basis channel rather than CBOT futures. When China imposes retaliatory tariffs on US soybeans, basis at interior elevators connected to Gulf export rails can widen 15–40 cents within weeks, meaning the cash price farmers receive falls faster than Chicago Board of Trade futures. Corn basis softens similarly when ethanol exports or feed shipments lose tariff competitiveness. Soybean-heavy regions feel this most acutely because soybeans depend more heavily on export demand than corn or wheat." }
+          "acceptedAnswer": { "@type": "Answer", "text": "Export-tariff stress shows up in local cash prices through the basis channel rather than CBOT futures. When China imposes retaliatory tariffs on US soybeans, basis at interior elevators connected to Gulf export rails can widen noticeably within weeks, meaning the cash price farmers receive falls faster than Chicago Board of Trade futures. Corn basis softens similarly when ethanol exports or feed shipments lose tariff competitiveness. Soybean-heavy regions feel this most acutely because soybeans depend more heavily on export demand than corn or wheat." }
         }
       ]
     }
@@ -277,6 +277,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,[role="button"]:focus-v
 .tt-watch{display:block;margin-top:.35rem;font-size:0.765rem;color:var(--text-dim);line-height:1.55}
 .tt-watch a{color:var(--green);text-decoration:none;font-weight:700;white-space:nowrap}
 .tt-watch a:hover{text-decoration:underline}
+[data-theme="light"]{--on-green:#fff}
 </style>
 </head>
 <body>
@@ -440,6 +441,29 @@ a:focus-visible,button:focus-visible,input:focus-visible,[role="button"]:focus-v
     <a href="/usda-calendar"><svg class="ic" aria-hidden="true"><use href="#i-calendar"/></svg> USDA Calendar</a>
   </div>
 
+<!--FAQ:START-->
+<style>
+.agf{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.1rem 1.2rem;margin:1.5rem 0 0}
+.agf-t{font-family:var(--font-display);font-size:.95rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text);margin:0 0 .4rem}
+.agf details{border-top:1px solid var(--border)}
+.agf details:first-of-type{border-top:0}
+.agf summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:baseline;gap:.75rem;padding:.85rem 0;font-size:1rem;font-weight:600;line-height:1.4;color:var(--text)}
+.agf summary::-webkit-details-marker{display:none}
+.agf summary::after{content:"+";color:var(--gold);font-weight:700;flex-shrink:0}
+.agf details[open] summary::after{content:"\2212"}
+.agf summary:focus-visible{outline:2px solid var(--gold);outline-offset:2px;border-radius:4px}
+.agf-a{font-size:1rem;line-height:1.65;color:var(--text-dim);padding:0 0 .95rem}
+</style>
+<section class="faq agf" aria-labelledby="agf-t">
+<h2 class="agf-t" id="agf-t">Common questions</h2>
+<details><summary>How do tariffs affect corn and soybean prices?</summary><div class="agf-a">When a major buyer like China imposes retaliatory tariffs, US grain becomes more expensive in that market. Buyers shift to Brazil, Argentina, or Ukraine instead. This reduces US export demand, puts pressure on basis, and ultimately flows through to lower cash prices at the elevator — even for grain that was never destined for export.</div></details>
+<details><summary>What do elevated tariff rates mean for farmers?</summary><div class="agf-a">Elevated means tariffs are significantly above baseline — export demand is impaired. Mixed means partial exemptions or uncertainty. Normal means trade is flowing at standard rates. Even a resolved tariff dispute may not restore prior purchase volumes quickly, keeping pressure on basis longer than the tariff itself.</div></details>
+<details><summary>Why are soybeans most exposed to tariffs?</summary><div class="agf-a">China buys roughly 60% of globally traded soybeans. When US-China tariffs are elevated, Brazil and Argentina pick up US market share. This is not temporary — buyers build new supply chains. Even a deal may not restore prior purchase levels quickly, which keeps pressure on soybean basis longer than the tariff itself.</div></details>
+<details><summary>What should farmers watch to track tariff impacts?</summary><div class="agf-a">Monitor USDA export sales reports every Thursday at 8:30am ET to watch whether weekly net sales are holding up. Watch Brazil's harvest pace and currency — a cheap Brazilian real with high tariffs on US beans is a double headwind. Consider selling into any tariff-relief rally rather than waiting for a full resolution.</div></details>
+<details><summary>How do tariffs flow through to my local elevator basis?</summary><div class="agf-a">Export-tariff stress shows up in local cash prices through the basis channel rather than CBOT futures. When China imposes retaliatory tariffs on US soybeans, basis at interior elevators connected to Gulf export rails can widen noticeably within weeks, meaning the cash price farmers receive falls faster than Chicago Board of Trade futures. Corn basis softens similarly when ethanol exports or feed shipments lose tariff competitiveness. Soybean-heavy regions feel this most acutely because soybeans depend more heavily on export demand than corn or wheat.</div></details>
+</section>
+<!--FAQ:END-->
+
   <div class="tariff-source">
     Data sourced from <a href="https://ustr.gov" target="_blank" rel="noopener">USTR</a>,
     <a href="https://www.usda.gov/topics/trade" target="_blank" rel="noopener">USDA Trade</a>, and confirmed news reports.
@@ -447,7 +471,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,[role="button"]:focus-v
     <a href="/">← AGSIST Dashboard</a>
   </div>
 
-<div id="signup-card" style="max-width:640px;margin:1.5rem auto;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.1rem 1.2rem"><div style="font-size:.92rem;font-weight:700;color:var(--text);margin-bottom:.5rem"><svg class="ic" aria-hidden="true"><use href="#i-mail"/></svg> Get trade-policy alerts in the daily</div><div id="signup-form" style="display:flex;flex-direction:column;gap:.5rem"><p style="font-size:.8rem;color:var(--text-dim);line-height:1.6;margin:0">When tariffs or trade policy shift, you’ll see it in the morning briefing with what it means for grain basis and demand. Available at no charge.</p><div style="display:flex;gap:.5rem;flex-wrap:wrap"><input type="email" id="signup-email" placeholder="your@email.com" autocomplete="email" inputmode="email" aria-label="Email address" style="flex:1;min-width:180px;box-sizing:border-box;padding:.6rem .7rem;background:var(--surface2,rgba(255,255,255,.03));border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:1rem;min-height:44px"><button id="signup-btn" type="button" style="padding:.6rem 1.1rem;background:var(--green);color:#fff;border:none;border-radius:6px;font-size:.85rem;font-weight:700;cursor:pointer;min-height:44px;touch-action:manipulation">Subscribe Free →</button></div><div style="font-size:0.765rem;color:var(--text-muted);line-height:1.5">Unsubscribe any time. I never sell your data. <a href="/privacy" style="color:var(--text-muted)">Privacy</a>.</div></div></div>
+<div id="signup-card" style="max-width:640px;margin:1.5rem auto;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.1rem 1.2rem"><div style="font-size:.92rem;font-weight:700;color:var(--text);margin-bottom:.5rem"><svg class="ic" aria-hidden="true"><use href="#i-mail"/></svg> Get trade-policy alerts in the daily</div><div id="signup-form" style="display:flex;flex-direction:column;gap:.5rem"><p style="font-size:.8rem;color:var(--text-dim);line-height:1.6;margin:0">When tariffs or trade policy shift, you’ll see it in the morning briefing with what it means for grain basis and demand. Available at no charge.</p><div style="display:flex;gap:.5rem;flex-wrap:wrap"><input type="email" id="signup-email" placeholder="your@email.com" autocomplete="email" inputmode="email" aria-label="Email address" style="flex:1;min-width:180px;box-sizing:border-box;padding:.6rem .7rem;background:var(--surface2,rgba(255,255,255,.03));border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:1rem;min-height:44px"><button id="signup-btn" type="button" style="padding:.6rem 1.1rem;background:var(--green);color:var(--on-green,#06110b);border:none;border-radius:6px;font-size:.85rem;font-weight:700;cursor:pointer;min-height:44px;touch-action:manipulation">Subscribe Free →</button></div><div style="font-size:0.765rem;color:var(--text-muted);line-height:1.5">Unsubscribe any time. I never sell your data. <a href="/privacy" style="color:var(--text-muted)">Privacy</a>.</div></div></div>
 </main>
 <script>(function(){function _su(){try{return document.cookie.indexOf('agsist_subscribed=')>-1||localStorage.getItem('agsist_subscribed')==='1';}catch(e){return false;}}function _ss(){try{var x=new Date();x.setFullYear(x.getFullYear()+2);document.cookie='agsist_subscribed=1;expires='+x.toUTCString()+';path=/;SameSite=Lax';localStorage.setItem('agsist_subscribed','1');}catch(e){}}var card=document.getElementById('signup-card');if(!card)return;if(_su()){card.style.display='none';return;}var btn=document.getElementById('signup-btn'),inp=document.getElementById('signup-email'),form=document.getElementById('signup-form');function submit(){var email=(inp&&inp.value||'').trim();if(email.indexOf('@')<1)return;_ss();try{if(typeof gaEvent==='function')gaEvent('email_signup',{source:'tariffs'});}catch(e){}if(form){form.innerHTML='<div style=\"text-align:center;padding:.4rem 0\"><div style=\"font-size:1.6rem;color:var(--green)\"><svg class=\"ic\" aria-hidden=\"true\"><use href=\"#i-circle-check\"/></svg></div><div style=\"font-size:.85rem;font-weight:700;color:var(--text);margin-top:.2rem\">You\u2019re subscribed!</div><div style=\"font-size:.74rem;color:var(--text-muted);line-height:1.5;margin-top:.2rem\">The AGSIST Daily arrives by 6am CT on weekdays.</div></div>';}fetch('https://agsist-subs.dnilgis.workers.dev/subscribe',{method:'POST',body:JSON.stringify({email:email,source:'tariffs'}),headers:{'Content-Type':'application/json','Accept':'application/json'}}).catch(function(){});}if(btn)btn.addEventListener('click',function(e){e.preventDefault();submit();});if(inp)inp.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();submit();}});})();</script>
 

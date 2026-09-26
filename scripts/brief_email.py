@@ -631,6 +631,7 @@ def render_html(daily, site_href, unsub_url=None, date_display=None):
                  'Unsubscribe</a>') % (_href(unsub_url), MUTE)
     else:
         foot += "<br>To unsubscribe, reply with subject line: unsubscribe"
+    foot += "<br>PO Box 243, Chetek, WI 54728"
     body.append(_rule(26))
     body.append('<tr><td class="mute" style="padding:12px 0 0;font-family:%s;font-size:12px;'
                 'line-height:1.6;color:%s">%s</td></tr>' % (SANS, MUTE, foot))
@@ -767,4 +768,5 @@ def render_text(daily, site, unsub_url=None, date_display=None):
           "AGSIST, free US ag market intelligence, agsist.com"]
     L.append("Unsubscribe: " + unsub_url if unsub_url
              else "To unsubscribe, reply with subject line: unsubscribe")
+    L.append("PO Box 243, Chetek, WI 54728")
     return "\n".join(L) + "\n"

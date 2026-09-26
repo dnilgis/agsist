@@ -15,19 +15,19 @@
 <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
 <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
 <link rel="manifest" href="/manifest.json">
-<title>CME Feeder Cattle Futures $335.00 &amp; Live Cattle $218.85 | AGSIST</title>
+<title>CME Feeder Cattle Futures $335.00 &amp; Live $218.85 | AGSIST</title>
 <meta name="description" content="Feeder cattle last closed $335.00, live cattle Oct '26 $218.85. CME futures every 30 min, with 5-year ranges, the feeder-to-live ratio and cost of gain.">
 <meta name="keywords" content="live cattle futures price, feeder cattle futures price, cattle futures today, CME cattle futures, LE futures, GF futures, feeder to live ratio, cattle feeding breakeven, cost of gain calculator, cattle on feed, cattle price per cwt, fed cattle price">
 <meta name="author" content="Sigurd Lindquist">
 <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
 <link rel="canonical" href="https://agsist.com/cattle-futures-prices">
 <meta property="og:type" content="website"><meta property="og:site_name" content="AGSIST"><meta property="og:locale" content="en_US">
-<meta property="og:title" content="CME Feeder Cattle Futures $335.00 &amp; Live Cattle $218.85 | AGSIST">
+<meta property="og:title" content="CME Feeder Cattle Futures $335.00 &amp; Live $218.85 | AGSIST">
 <meta property="og:description" content="Feeder cattle last closed $335.00, live cattle Oct '26 $218.85. CME futures every 30 min, with 5-year ranges, the feeder-to-live ratio and cost of gain.">
 <meta property="og:url" content="https://agsist.com/cattle-futures-prices">
 <meta property="og:image" content="https://agsist.com/img/og/cattle-futures-prices.jpg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="AGSIST Live and Feeder Cattle Futures Prices Today">
 <meta name="twitter:card" content="summary_large_image"><meta name="twitter:site" content="@agsist"><meta name="twitter:creator" content="@agsist">
-<meta name="twitter:title" content="CME Feeder Cattle Futures $335.00 &amp; Live Cattle $218.85 | AGSIST">
+<meta name="twitter:title" content="CME Feeder Cattle Futures $335.00 &amp; Live $218.85 | AGSIST">
 <meta name="twitter:description" content="Feeder cattle last closed $335.00, live cattle Oct '26 $218.85. CME futures every 30 min, with 5-year ranges, the feeder-to-live ratio and cost of gain.">
 <meta name="twitter:image" content="https://agsist.com/img/og/cattle-futures-prices.jpg">
 <script type="application/ld+json">{"@context":"https://schema.org","@graph":[
@@ -98,7 +98,7 @@
 .signup-form{display:flex;gap:6px;max-width:420px;margin:0 auto;flex-wrap:wrap}
 .signup-form input{flex:1;min-width:180px;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:10px 12px;font-size:1rem;color:var(--text);min-height:40px}
 .signup-form input:focus{outline:1px solid var(--gold);border-color:var(--gold)}
-.signup-form button{background:var(--green);color:#fff;border:none;border-radius:6px;padding:10px 16px;font-size:0.795rem;font-weight:700;cursor:pointer;min-height:40px}
+.signup-form button{background:var(--green);color:#06110b;border:none;border-radius:6px;padding:10px 16px;font-size:0.795rem;font-weight:700;cursor:pointer;min-height:40px}[data-theme="light"] .signup-form button{color:#fff}
 .signup-form button:hover{background:var(--brand,#d4a23f)}
 .signup-ok{color:var(--green);font-size:0.795rem;margin-top:8px;font-weight:600;display:none}
 .signup-sub{font-size:0.755rem;color:var(--text-dim);margin-top:6px}
@@ -235,7 +235,7 @@
         <div style="display:flex;justify-content:space-between;align-items:baseline"><span class="lbl">Live Cattle</span><span class="tk">LE=F · $/cwt</span></div>
         <div class="ct-price" id="le-price">—</div>
         <div class="ct-chg" id="le-chg"></div>
-        <div class="ct-rng"><div class="ct-rng-lbl">52-Week Range</div>
+        <div class="ct-rng"><div class="ct-rng-lbl" id="le-rng-lbl">52-Week Range</div>
           <div class="ct-bar"><div class="ct-fill" id="le-fill"></div><div class="ct-dot" id="le-dot"></div></div>
           <div class="ct-rng-vals"><span class="lo" id="le-lo">—</span><span class="cur" id="le-cur">—</span><span class="hi" id="le-hi">—</span></div>
         </div>
@@ -245,7 +245,7 @@
         <div style="display:flex;justify-content:space-between;align-items:baseline"><span class="lbl">Feeder Cattle</span><span class="tk">GF=F · $/cwt</span></div>
         <div class="ct-price" id="gf-price">—</div>
         <div class="ct-chg" id="gf-chg"></div>
-        <div class="ct-rng"><div class="ct-rng-lbl">52-Week Range</div>
+        <div class="ct-rng"><div class="ct-rng-lbl" id="gf-rng-lbl">52-Week Range</div>
           <div class="ct-bar"><div class="ct-fill" id="gf-fill"></div><div class="ct-dot" id="gf-dot"></div></div>
           <div class="ct-rng-vals"><span class="lo" id="gf-lo">—</span><span class="cur" id="gf-cur">—</span><span class="hi" id="gf-hi">—</span></div>
         </div>
@@ -268,7 +268,7 @@
   </section>
   <script>
   (function(){
-    var FWD=[{k:"cattle",m:"Front",idx:318},{k:"cattle-aug26",m:"Aug 26",idx:320},{k:"cattle-oct26",m:"Oct 26",idx:322},{k:"cattle-dec26",m:"Dec 26",idx:324},{k:"cattle-feb27",m:"Feb 27",idx:326},{k:"cattle-apr27",m:"Apr 27",idx:328},{k:"cattle-jun27",m:"Jun 27",idx:330}];
+    var FWD=[{k:"cattle-oct26",m:"Oct 26",idx:322},{k:"cattle-dec26",m:"Dec 26",idx:324},{k:"cattle-feb27",m:"Feb 27",idx:326},{k:"cattle-apr27",m:"Apr 27",idx:328},{k:"cattle-jun27",m:"Jun 27",idx:330}];
     var card=document.getElementById('fwd-card');
     fetch('/data/prices.json',{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).then(function(d){
       if(!d||!d.quotes)return;var q=d.quotes,pts=[];
@@ -292,10 +292,12 @@
       });
       a.push('</svg>');
       if(svg)svg.outerHTML=a.join('');
-      var first=pts[0],last=pts[pts.length-1],diff=last.price-first.price,span=last.idx-first.idx;if(span<=0)span=1;var perMo=diff/span;
+      var first=pts[0],last=pts[pts.length-1],peak=pts.reduce(function(m,p){return p.price>m.price?p:m;},pts[0]);
+      var diff=peak.price-first.price,span=peak.idx-first.idx;if(span<=0)span=1;var perMo=diff/span;
+      var lastDiff=last.price-first.price;
       var st,it;
-      if(diff>1){st='upward / contango';it='<strong>Deferred live cattle trade $'+diff.toFixed(2)+'/cwt above the front</strong> (about $'+perMo.toFixed(2)+'/cwt per month) — the board expects firmer fed prices into '+last.label+', often seasonal strength or tighter future supply. You can lock higher hedges on cattle marketed later.';}
-      else if(diff<-1){st='inverted / backwardation';it='<strong>The front month is $'+Math.abs(diff).toFixed(2)+'/cwt above '+last.label+'</strong> — the board expects fed prices to ease from here. Current cash is tight; hedging deferred months locks in less than the spot, so marketing sooner can pay.';}
+      if(diff>1){st='upward / contango';it='<strong>The curve peaks at $'+peak.price.toFixed(2)+'/cwt in '+peak.label+', $'+diff.toFixed(2)+' above the '+first.label+' contract</strong> (about $'+perMo.toFixed(2)+'/cwt per month over '+span+' months)'+(peak===last?'.':'; later months ease back to $'+last.price.toFixed(2)+' in '+last.label+'.')+' You can lock higher hedges on cattle marketed later.';}
+      else if(lastDiff<-1){st='inverted / backwardation';it='<strong>The '+first.label+' contract is $'+Math.abs(lastDiff).toFixed(2)+'/cwt above '+last.label+'</strong> — the board expects fed prices to ease from here. Current cash is tight; hedging deferred months locks in less than the spot, so marketing sooner can pay.';}
       else{st='flat';it='<strong>Flat curve</strong> — deferred contracts price near the front month. The board is neutral on where fed cattle head from here.';}
       if(shape)shape.textContent=st;if(interp)interp.innerHTML=it;
     }).catch(function(){if(card)card.style.display='none';});
@@ -352,21 +354,27 @@
   </section>
 
   <!-- ░░ seasonal price tendency ░░ -->
-  <section class="seas-wrap" aria-label="Cattle seasonal price tendency">
+  <section class="seas-wrap" id="seas-wrap" aria-label="Cattle seasonal price tendency" style="display:none">
     <div class="seas-head">
       <span class="seas-title"><svg class="ic" aria-hidden="true"><use href="#i-calendar"/></svg> Cattle Seasonal Price Tendency</span>
-      <span class="seas-note">Typical pattern · live cattle · current month highlighted</span>
+      <span class="seas-note">Live cattle, continuous series &middot; current month highlighted</span>
     </div>
     <div id="seas-chart" class="seas-chart"></div>
-    <div class="seas-caption">Fed cattle prices typically peak in spring (Mar–Apr) on grilling-season demand and tight winter-fed supplies, then soften to a fall low (Oct–Nov). Feeder cattle follow a similar path but bottom harder in fall, when the calf run floods the market — historically a weak window to sell calves and a stronger one to buy them. Typical seasonal tendency only; weather, herd size, and feed costs move any single year.</div>
+    <div class="seas-caption" id="seas-caption">Average weekly close by calendar month over the last 5 years, scaled 0&ndash;100. Cattle rose through this window, which lifts later months relative to earlier ones, so read it as a description of these five years, not a forecast.</div>
   </section>
   <script>
   (function(){
-    var SEAS=[58,78,92,100,88,70,55,50,58,45,40,52];
-    var TIPS=['Winter demand building','Spring rally underway','Spring high approaching','Seasonal peak — grilling demand, tight fed supply','Strong but fading','Summer slide begins','Midsummer softness','Late-summer low','Fall recovery attempt','Fall placement pressure','Seasonal low — heaviest marketings','Year-end firming'];
     var MOS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-    var cm=new Date().getMonth(),ch=document.getElementById('seas-chart');
-    if(ch){SEAS.forEach(function(v,i){var c=document.createElement('div');c.className='seas-col'+(i===cm?' cur':'');c.title=MOS[i]+': '+TIPS[i];c.innerHTML='<div style="flex:1"></div><div class="seas-bar" style="height:'+Math.max(4,v*.5)+'px"></div><div class="seas-mo">'+MOS[i]+'</div>';ch.appendChild(c);});}
+    fetch('/data/price-stats.json',{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).then(function(d){
+      var c=d&&d.cattle,SEAS=c&&c.seasonality;
+      var ch=document.getElementById('seas-chart'),wrap=document.getElementById('seas-wrap');
+      if(!ch||!wrap||!SEAS||SEAS.length!==12)return;
+      var cm=new Date().getMonth();
+      SEAS.forEach(function(v,i){var e=document.createElement('div');e.className='seas-col'+(i===cm?' cur':'');e.title=MOS[i]+': '+v+'/100';e.innerHTML='<div style="flex:1"></div><div class="seas-bar" style="height:'+Math.max(4,v*.5)+'px"></div><div class="seas-mo">'+MOS[i]+'</div>';ch.appendChild(e);});
+      var cap=document.getElementById('seas-caption');
+      if(cap&&c.n)cap.textContent='Average weekly close by calendar month over the last '+(c.years||5)+' years, scaled 0\u2013100 (n='+c.n+' weeks). Cattle rose through this window, which lifts later months relative to earlier ones, so read it as a description of these years, not a forecast.';
+      wrap.style.display='';
+    }).catch(function(){});
   })();
   </script>
 
@@ -443,7 +451,7 @@
     <h3><svg class="ic" aria-hidden="true"><use href="#i-mail"/></svg> Daily market briefing, direct from me</h3>
     <p>Weekday market read with the numbers, the USDA calendar, and the context — no fluff, no affiliate links. Written by a farmer, for farmers.</p>
     <form class="signup-form" id="signup-form" novalidate>
-      <input type="email" name="email" placeholder="you@example.com" required autocomplete="email">
+      <input type="email" name="email" placeholder="you@example.com" required autocomplete="email" aria-label="Email address">
       <button type="submit">Subscribe</button>
     </form>
     <div class="signup-ok" id="signup-ok">✓ Subscribed. Next briefing arrives weekday 6am CT.</div>
@@ -492,7 +500,14 @@
     setRange(pre,q);
   }
   fetch('/data/prices.json',{cache:'no-store'}).then(function(r){return r.json();}).then(function(d){
-    var q=d.quotes||{},le=q.cattle,gf=q.feeders;
+    var q=d.quotes||{};
+    /* the 52-week range must belong to the contract shown: use the dated contract (it carries its own range) and name it; else say continuous series */
+    var nLE=q['cattle-nearby'],nGF=q['feeders-oct26'];
+    var le=(nLE&&nLE.close!=null&&nLE.wk52_lo!=null)?nLE:q.cattle,gf=(nGF&&nGF.close!=null&&nGF.wk52_lo!=null)?nGF:q.feeders;
+    var gfm=/-([a-z]{3})(\d\d)$/.exec('feeders-oct26');
+    var lbL=$('le-rng-lbl'),lbG=$('gf-rng-lbl');
+    if(lbL)lbL.textContent=(le===nLE&&nLE.contract)?'52-Week Range \u00b7 '+nLE.contract+' contract':'52-Week Range \u00b7 continuous series';
+    if(lbG)lbG.textContent=(gf===nGF&&gfm)?'52-Week Range \u00b7 '+gfm[1].charAt(0).toUpperCase()+gfm[1].slice(1)+" '"+gfm[2]+' contract':'52-Week Range \u00b7 continuous series';
     setQuote('le',le);setQuote('gf',gf);
     var st=$('status');var dot='<span class="ps-dot" aria-hidden="true"></span>';
     if(d.fetched){var t=new Date(d.fetched);if(st)st.innerHTML=dot+'Live CME futures · updated '+t.toLocaleString('en-US',{hour:'numeric',minute:'2-digit',month:'short',day:'numeric'});}
@@ -593,7 +608,7 @@
       pct=Math.round((d.net-d.min52)/(d.max52-d.min52)*100);pct=Math.max(0,Math.min(100,pct));
       $(pre+'-cot-dot').style.left='calc('+pct+'% - 6px)';
       $(pre+'-cot-lo').textContent=fmtK(d.min52);$(pre+'-cot-hi').textContent=fmtK(d.max52);
-      $(pre+'-cot-pct').innerHTML='<strong>'+pct+ord(pct)+' percentile</strong> of 52-wk range';
+      $(pre+'-cot-pct').innerHTML='<strong>'+pct+'%</strong> of the way up its 52-wk range';
     }
     if(d.prev!=null){var dl=d.net-d.prev,dir;
       if(dl>0&&d.net>=0)dir='added longs';else if(dl>0)dir='covered shorts';
@@ -607,8 +622,8 @@
     var card=$('cot-cattle');if(card)card.style.display='block';
     if(d.report_date&&$('cot-asof'))$('cot-asof').textContent='As of '+d.report_date;
     var lp=one('le',le),fp=one('gf',gf),parts=[];
-    if(le&&le.net!=null&&lp!=null)parts.push('Funds are <strong>net '+(le.net>=0?'long':'short')+' live cattle</strong> at the '+lp+ord(lp)+' percentile of the 52-week range');
-    if(gf&&gf.net!=null&&fp!=null)parts.push((parts.length?'and ':'Funds are ')+'<strong>'+(fp<=20?'near the 52-week low':fp>=80?'near the 52-week high':'mid-range')+'</strong> on feeders ('+fp+ord(fp)+' percentile)');
+    if(le&&le.net!=null&&lp!=null)parts.push('Funds are <strong>net '+(le.net>=0?'long':'short')+' live cattle</strong> at '+lp+'% of the way up the 52-week range');
+    if(gf&&gf.net!=null&&fp!=null)parts.push((parts.length?'and ':'Funds are ')+'<strong>'+(fp<=20?'near the 52-week low':fp>=80?'near the 52-week high':'mid-range')+'</strong> on feeders ('+fp+'% of the range)');
     var t=parts.join(' ')+'. High net-long positioning can amplify the downside if funds liquidate; a low reading leaves room for them to add. This is positioning, not a price forecast.';
     if($('cot-interp'))$('cot-interp').innerHTML=t;
   }).catch(function(){});

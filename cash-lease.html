@@ -17,7 +17,7 @@
   <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
   <link rel="manifest" href="/manifest.json">
 
-  <title>Farm Cash Lease Agreement: Free Fillable &amp; Printable Form | AGSIST</title>
+  <title>Farm Cash Lease: Free Fillable &amp; Printable Form | AGSIST</title>
   <meta name="description" content="Free fillable, printable cash farm lease with state termination deadlines, plus every lease type explained in plain English.">
   <link rel="canonical" href="https://agsist.com/cash-lease">
   <meta property="og:type" content="website">
@@ -78,6 +78,8 @@
     .lf-xs{width:72px}
     .lf-area{display:block;width:100%;background:transparent;border:1px solid #3a4345;border-radius:6px;color:#e6ebe9;font:inherit;padding:8px 10px;min-height:74px;margin-top:6px}
     .lf-area:focus{outline:none;border-color:#d4a23f}
+    .pm{display:none}
+    .cl-fmsg{color:#d4a23f;font-size:.8em;margin-left:6px}
     .lease .sig-grid{display:grid;grid-template-columns:1fr 1fr;gap:26px;margin-top:26px}
     .lease .sig td{padding-top:34px}
     .sigline{border-bottom:1px solid #3a4345;height:34px}
@@ -110,6 +112,13 @@
       .lease .lease-sub{color:#333}
       .lease h3{color:#000;border-bottom:1px solid #000;padding-bottom:2px}
       .lf,.lf-area{color:#000;border-color:#000 !important}
+      .lf::placeholder,.lf-area::placeholder{color:transparent !important}
+      .lf{width:auto;min-width:0;max-width:100%}
+      .lf-area{height:auto;min-height:74px;overflow:visible}
+      .pm-hide{display:none !important}
+      .pm{display:inline;white-space:pre-wrap;overflow-wrap:anywhere;color:#000;border-bottom:1px solid #000;padding:0 4px}
+      div.pm{display:block;border:1px solid #000;border-radius:6px;padding:8px 10px;margin-top:6px}
+      .cl-fmsg{display:none !important}
       .sigline{border-bottom-color:#000}
       .siglbl{color:#333}
       .lease-print-foot{display:block !important;margin-top:20px;font-size:7.5pt;color:#666;
@@ -215,7 +224,7 @@
           <li>$<input class="lf lf-sm" data-k="pay1" inputmode="decimal" placeholder="amount" aria-label="First payment amount"> on or before <input class="lf lf-sm" data-k="pay1_date" placeholder="date" aria-label="First payment date">, and</li>
           <li>$<input class="lf lf-sm" data-k="pay2" inputmode="decimal" placeholder="amount" aria-label="Second payment amount"> on or before <input class="lf lf-sm" data-k="pay2_date" placeholder="date" aria-label="Second payment date">,</li>
         </ol>
-        <p>by <input class="lf lf-med" data-k="pay_method" placeholder="check / ACH / other" aria-label="Payment method">. Rent unpaid ten (10) days after it is due bears interest at the lesser of <input class="lf lf-xs" data-k="late_pct" inputmode="decimal" placeholder="__"> % per year or the maximum rate state law allows.</p>
+        <p>by <input class="lf lf-med" data-k="pay_method" placeholder="check / ACH / other" aria-label="Payment method">. Rent unpaid <span title="Sample default: change it to match your deal">ten (10)</span> days after it is due bears interest at the lesser of <input class="lf lf-xs" data-k="late_pct" inputmode="decimal" placeholder="__" aria-label="Late interest percent"> % per year or the maximum rate state law allows.</p>
 
         <h3>5 &middot; Tenant agrees to</h3>
         <ol>
@@ -247,13 +256,14 @@
           Tenant <span class="lf lf-xs" style="display:inline-block;border-bottom:1px solid #3a4345">&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
 
         <h3>11 &middot; Termination &amp; holdover</h3>
-        <p>Either party may end this lease at the end of the term by written notice delivered by the deadline <strong>state law requires</strong>. Where no statute sets a deadline, notice is due at least <input class="lf lf-xs" data-k="notice_days" inputmode="numeric" placeholder="90"> days before the term ends. If Tenant holds over with Owner&rsquo;s consent, the holdover continues on these same terms as state law provides.</p>
+        <p>Either party may end this lease at the end of the term by written notice delivered by the deadline <strong>state law requires</strong>. Where no statute sets a deadline, notice is due at least <input class="lf lf-xs" data-k="notice_days" inputmode="numeric" placeholder="90" title="Sample default: change it to match your deal" aria-label="Notice days (90 is a sample default)"> days before the term ends. If Tenant holds over with Owner&rsquo;s consent, the holdover continues on these same terms as state law provides.</p>
         <p id="cl-state-rule" style="display:none"><em id="cl-state-rule-text"></em></p>
 
         <h3>12 &middot; Default</h3>
         <p>If either party materially breaks this lease and does not cure within thirty (30) days of written notice, the other party may pursue any remedy state law allows, including termination.</p>
 
         <h3>13 &middot; Additional terms</h3>
+        <p>Government program payments (ARC, PLC and similar) go to <input class="lf lf-med" data-k="gov_pay" placeholder="owner / tenant / split" aria-label="Government payments go to">.</p>
         <textarea class="lf-area" data-k="additional" placeholder="Fall tillage, fertility maintenance, manure, cover crops, grain storage use, anything else both sides want in writing&hellip;" aria-label="Additional terms"></textarea>
 
         <h3>14 &middot; Signatures</h3>
@@ -276,7 +286,7 @@
 
   <div class="cl-warn"><strong>Check your state&rsquo;s termination deadline.</strong> Several states set a hard statutory date by which written notice must be delivered or a farm lease automatically continues another year &mdash; Iowa&rsquo;s September&nbsp;1 deadline is the famous one, and it forgives nobody. Your extension office or attorney can tell you your state&rsquo;s rule in one phone call. Make the call before you need it.</div>
 
-  <div class="cl-warn"><strong>This is an educational sample, not legal advice.</strong> It covers the plain terms most simple cash leases share, and deliberately nothing exotic. Farm lease law is state law: notice deadlines, oral-lease rules, landlord lien rights, and crop-share specifics all vary. Have your own attorney read anything before you sign it. That single hour of review is the cheapest insurance in farming.</div>
+  <div class="cl-warn"><strong>This is an educational sample, not legal advice.</strong> The 10-day late-rent period and the 90-day notice are sample defaults: change them to match your deal. It covers the plain terms most simple cash leases share, and deliberately nothing exotic. Farm lease law is state law: notice deadlines, oral-lease rules, landlord lien rights, and crop-share specifics all vary. Have your own attorney read anything before you sign it. That single hour of review is the cheapest insurance in farming.</div>
 
   <section class="cl-panel cl-faq-panel" aria-labelledby="cl-faq-t">
     <div class="cl-panel-hd"><span class="cl-panel-t" id="cl-faq-t">Questions people actually ask</span></div>
@@ -312,7 +322,7 @@
        (absent = no farm-specific deadline widely cited)
      Statutes change. This is information, not legal advice. */
   var RULES={
-    IA:{n:'Iowa',t:'firm',d:'Written termination notice by SEPTEMBER 1 or the lease automatically continues another crop year — even if the lease has its own end date.'},
+    IA:{n:'Iowa',t:'firm',d:'Written termination notice by SEPTEMBER 1 or the lease automatically continues another crop year. This applies to a year-to-year lease. A written lease with its own end date is governed by its terms.'},
     IL:{n:'Illinois',t:'firm',d:'Year-to-year tenancy: written notice at least 4 MONTHS before the end of the lease year (for a Feb-end lease year, late October).'},
     KS:{n:'Kansas',t:'firm',d:'Written notice at least 30 DAYS BEFORE MARCH 1 for farm tenancies (roughly end of January).'},
     NE:{n:'Nebraska',t:'firm',d:'Verbal/year-to-year leases: notice 6 months before the end of the lease year — in practice by SEPTEMBER 1. Written leases: the lease controls.'},
@@ -336,7 +346,7 @@
     TX:{n:'Texas',t:'none',d:'Practices vary too much to summarize honestly — put the deadline in the lease and confirm with a local attorney.'}
   };
   var STATES='AL AK AZ AR CA CO CT DE FL GA HI ID IL IN IA KS KY LA ME MD MA MI MN MS MO MT NE NV NH NJ NM NY NC ND OH OK OR PA RI SC SD TN TX UT VT VA WA WV WI WY'.split(' ');
-  var TIER_LBL={firm:'Statutory deadline (widely documented)',cited:'Commonly cited — verify the current statute'};
+  var TIER_LBL={firm:'Statutory deadline (widely documented)',cited:'Commonly cited — verify the current statute',none:'No single deadline widely cited'};
 
   function stateRuleText(ab){
     var r=RULES[ab];
@@ -373,19 +383,56 @@
     try{ d=JSON.parse(localStorage.getItem(KEY)||'{}'); }catch(e){ d={}; }
     fields.forEach(function(f){ if(d[f.dataset.k]!=null) f.value=d[f.dataset.k]; });
   }
+  function numOf(k,max){
+    var el=$('[data-k="'+k+'"]'); var raw=String((el||{}).value||'').trim();
+    if(!raw) return {v:null,bad:false};
+    var v=Number(raw.replace(/[$,\s]/g,''));
+    if(!isFinite(v)||v<=0||v>max) return {v:null,bad:true};
+    return {v:v,bad:false};
+  }
+  function fmsg(k,text){
+    var el=$('[data-k="'+k+'"]'); if(!el) return;
+    var m=el.nextElementSibling;
+    if(!m||!m.classList||!m.classList.contains('cl-fmsg')){
+      m=document.createElement('span'); m.className='cl-fmsg'; m.setAttribute('role','status');
+      el.parentNode.insertBefore(m,el.nextSibling);
+    }
+    m.textContent=text||'';
+  }
   function totals(){
-    var acres=parseFloat(($('[data-k="acres"]')||{}).value)||0;
-    var rate=parseFloat(($('[data-k="rate"]')||{}).value)||0;
+    var a=numOf('acres',100000), r=numOf('rate',10000);
+    var acres=a.v, rate=r.v;
+    fmsg('acres',a.bad?'Enter acres as a number above 0 (up to 100,000)':'');
+    fmsg('rate',r.bad?'Enter the rate as a number above 0 (up to 10,000)':'');
     $('#cl-acres-echo').textContent = acres ? acres.toLocaleString() : '____';
+    $('#cl-total').removeAttribute('data-print-blank');
     $('#cl-total').textContent = (acres&&rate)
-      ? (acres*rate).toLocaleString(undefined,{maximumFractionDigits:0}) : '______';
-    // convenience: suggest the classic half-and-half split if untouched
+      ? (acres*rate).toLocaleString(undefined,{maximumFractionDigits:0}) : '\u2014';
     var p1=$('[data-k="pay1"]'), p2=$('[data-k="pay2"]');
     if(acres&&rate&&p1&&p2&&!p1.value&&!p2.value&&document.activeElement!==p1&&document.activeElement!==p2){
       var half=Math.round(acres*rate/2);
       p1.placeholder=half.toLocaleString(); p2.placeholder=(Math.round(acres*rate)-half).toLocaleString();
-    }
+    } else if(p1&&p2&&!(acres&&rate)){ p1.placeholder='amount'; p2.placeholder='amount'; }
   }
+  // print: inputs cannot wrap, so show each typed value in a wrapping mirror
+  function clearMirrors(){
+    document.querySelectorAll('.pm-tmp').forEach(function(m){m.remove();});
+    document.querySelectorAll('.pm-hide').forEach(function(f){f.classList.remove('pm-hide');});
+    var t=document.getElementById('cl-total');
+    if(t&&t.getAttribute('data-print-blank')==='1'){ t.textContent='\u2014'; t.removeAttribute('data-print-blank'); }
+  }
+  window.addEventListener('beforeprint',function(){
+    clearMirrors();
+    var tt=document.getElementById('cl-total');
+    if(tt&&tt.textContent==='\u2014'){ tt.textContent='______'; tt.setAttribute('data-print-blank','1'); }
+    document.querySelectorAll('#lease-form input.lf[data-k], #lease-form textarea.lf-area').forEach(function(f){
+      if(!f.value) return;
+      var m=document.createElement(f.tagName==='TEXTAREA'?'div':'span');
+      m.className='pm pm-tmp'; m.textContent=f.value;
+      f.classList.add('pm-hide'); f.parentNode.insertBefore(m,f.nextSibling);
+    });
+  });
+  window.addEventListener('afterprint',clearMirrors);
   fields.forEach(function(f){ f.addEventListener('input', function(){ save(); totals(); }); });
   restore(); totals();
 

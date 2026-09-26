@@ -79,6 +79,15 @@
       }
     })();
 
+    // ── One skip link ────────────────────────────────────────────
+    // header.html supplies a.skip-link; many pages also carry an inline
+    // a.skip. Two tab stops for one action: drop the page copy once the
+    // header copy exists. Pages on the header fallback keep their own.
+    (function () {
+      if (!document.querySelector('a.skip-link')) return;
+      document.querySelectorAll('a.skip').forEach(function (a) { a.remove(); });
+    })();
+
     // ── Theme toggle ─────────────────────────────────────────────
     function applyTheme(th) {
       document.documentElement.setAttribute('data-theme', th);

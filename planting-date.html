@@ -39,11 +39,11 @@
 
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
-  {"@type":"Question","name":"When should I plant corn in Wisconsin?","acceptedAnswer":{"@type":"Answer","text":"The optimal corn planting window in Wisconsin is April 25 \u2013 May 15. Soil temperature at 2\" depth should be at least 50\u00b0F for 3 consecutive days before planting. Yield loss typically begins around May 20 at roughly 1% per day, and steepens through June — UW measures about 3% per day for early-June plantings. Northern Wisconsin should target May 1\u201310 to ensure adequate GDU accumulation before fall frost."}},
-  {"@type":"Question","name":"When should I plant soybeans in Wisconsin?","acceptedAnswer":{"@type":"Answer","text":"The optimal soybean planting window in Wisconsin is May 1 \u2013 May 20. Soybean germination requires soil temps above 50\u00b0F. Planting before May 1 in cold, wet soils increases Sudden Death Syndrome (SDS) risk. Soybeans tolerate later planting better than corn \u2014 minimal yield penalty up to May 20, then roughly 0.5 bu/day after that."}},
+  {"@type":"Question","name":"When should I plant corn in Wisconsin?","acceptedAnswer":{"@type":"Answer","text":"The optimal corn planting window in Wisconsin is April 25 \u2013 May 10. Soil temperature at 2\" depth should be at least 50\u00b0F for 3 consecutive days before planting. Yield is about 5% down by May 20 and loses roughly 1% per day from there, then 2 to 3 points a day in June. Northern Wisconsin should target May 1\u201310 to ensure adequate GDU accumulation before fall frost."}},
+  {"@type":"Question","name":"When should I plant soybeans in Wisconsin?","acceptedAnswer":{"@type":"Answer","text":"The optimal soybean planting window in Wisconsin is May 1 \u2013 May 20. Soybean germination requires soil temps above 50\u00b0F. Planting before May 1 in cold, wet soils increases Sudden Death Syndrome (SDS) risk. Soybeans tolerate later planting better than corn \u2014 minimal yield penalty up to May 20, then about 0.3 bu/day after that."}},
   {"@type":"Question","name":"What soil temperature do I need to plant corn?","acceptedAnswer":{"@type":"Answer","text":"Corn should be planted when soil temperature at 2\" depth reaches a consistent 50\u00b0F or above for at least 3 consecutive days with a warming trend. Planting into cold (below 50\u00b0F) soils risks imbibitional chilling injury, uneven emergence, and increased seedling disease pressure."}},
-  {"@type":"Question","name":"How much yield do I lose for late corn planting?","acceptedAnswer":{"@type":"Answer","text":"Corn yield loss for late planting in Wisconsin: roughly 1% per day after May 20, about 1.5% per day through late May, and steepening sharply in June \u2014 UW-Madison measures about 3% per day for early-June plantings. A delay from May 1 to June 1 costs on the order of 35 bu/acre in a 200 bu field, and June 10 is the last practical grain planting date for southern Wisconsin. Early planting (before May 1 in warm years) can boost yield 5\u201310 bu/acre versus May 10."}},
-  {"@type":"Question","name":"What is the last frost date in Wisconsin?","acceptedAnswer":{"@type":"Answer","text":"Last frost probability dates vary by Wisconsin zone: Southern WI (Madison area) \u2014 50% probability of last frost by April 22, 90% by May 5. Central WI \u2014 50% by May 2, 90% by May 15. Northern WI \u2014 50% by May 15, 90% by May 28. These dates are approximate freeze percentiles; an August 2026 audit found them running one to two weeks earlier than NOAA station normals, so verify against your nearest NOAA station — actual dates vary year to year."}}
+  {"@type":"Question","name":"How much yield do I lose for late corn planting?","acceptedAnswer":{"@type":"Answer","text":"Corn yield loss for late planting in Wisconsin: about 5% down by May 20, roughly 1% per day from May 20 to June 1, then 2 to 3 points a day in June. A delay from May 1 to June 1 costs on the order of 35 bu/acre in a 200 bu field, and June 10 is the last practical grain planting date for southern Wisconsin. On this page\u2019s table, April 25 yields 2% more than May 10."}},
+  {"@type":"Question","name":"What is the last frost date in Wisconsin?","acceptedAnswer":{"@type":"Answer","text":"Last frost probability dates vary by Wisconsin zone: Southern WI (Madison area) \u2014 50% probability of last frost by April 22, 90% by May 5. Central WI \u2014 50% by May 2, 90% by May 15. Northern WI \u2014 50% by May 15, 90% by May 28. These dates are approximate freeze percentiles and run 1–2 weeks earlier than NOAA normals, so verify against your nearest NOAA station — actual dates vary year to year."}}
 ]}
 </script>
 
@@ -235,10 +235,10 @@
       </div>
 
       <div class="f-group">
-        <label class="f-label">Your Location</label>
+        <label class="f-label" for="pd-zip">Your Location</label>
         <div style="display:flex;gap:.4rem">
-          <input class="f-input" id="pd-zip" type="text" placeholder="ZIP code or city" maxlength="40" style="flex:1">
-          <button id="pd-auto-btn" style="padding:.42rem .7rem;border-radius:6px;border:2px solid var(--border);background:var(--surface);color:var(--gold);font-size:0.775rem;font-weight:700;cursor:pointer;min-height:44px"><svg class="ic-sp" aria-hidden="true"><use href="#sp-globe"/></svg></button>
+          <input class="f-input" id="pd-zip" type="text" placeholder="ZIP code or city" maxlength="40" style="flex:1" aria-label="ZIP code or city">
+          <button id="pd-auto-btn" type="button" aria-label="Use my location" title="Use my location" style="padding:.42rem .7rem;border-radius:6px;border:2px solid var(--border);background:var(--surface);color:var(--gold);font-size:0.775rem;font-weight:700;cursor:pointer;min-height:44px"><svg class="ic-sp" aria-hidden="true"><use href="#sp-globe"/></svg></button>
         </div>
         <div class="f-hint" id="pd-loc-display">Enter location for live soil temperature</div>
       </div>
@@ -291,7 +291,7 @@
     <!-- GDU Projection Compare -->
     <div class="pd-card">
       <div class="pd-card-title" id="cmp-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-chart-line"/></svg> GDU Accumulation by Planting Date &mdash; Central WI Average</div>
-      <p style="font-size:0.787rem;color:var(--text-dim);line-height:1.55;margin:0 0 .75rem">Estimated total GDU accumulation by September 30 from four different planting dates. Earlier planting = more heat units captured before frost. Uses WI 30-year normal GDU accumulation rates.</p>
+      <p style="font-size:0.787rem;color:var(--text-dim);line-height:1.55;margin:0 0 .75rem">Estimated total GDU accumulation from each planting date to the zone's 50% first-fall-frost date, for four different planting dates. Earlier planting = more heat units captured before frost. Uses WI 30-year normal GDU accumulation rates.</p>
       <div class="cmp-grid" id="cmp-grid"></div>
       <div class="f-hint" style="margin-top:.65rem" id="cmp-note"></div>
     </div>
@@ -342,6 +342,29 @@
   </div>
 </div>
 
+<!--FAQ:START-->
+<style>
+.agf{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.1rem 1.2rem;margin:1.5rem 0 0}
+.agf-t{font-family:var(--font-display);font-size:.95rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text);margin:0 0 .4rem}
+.agf details{border-top:1px solid var(--border)}
+.agf details:first-of-type{border-top:0}
+.agf summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:baseline;gap:.75rem;padding:.85rem 0;font-size:1rem;font-weight:600;line-height:1.4;color:var(--text)}
+.agf summary::-webkit-details-marker{display:none}
+.agf summary::after{content:"+";color:var(--gold);font-weight:700;flex-shrink:0}
+.agf details[open] summary::after{content:"\2212"}
+.agf summary:focus-visible{outline:2px solid var(--gold);outline-offset:2px;border-radius:4px}
+.agf-a{font-size:1rem;line-height:1.65;color:var(--text-dim);padding:0 0 .95rem}
+</style>
+<section class="faq agf" aria-labelledby="agf-t">
+<h2 class="agf-t" id="agf-t">Common questions</h2>
+<details><summary>When should I plant corn in Wisconsin?</summary><div class="agf-a">The optimal corn planting window in Wisconsin is April 25 – May 10. Soil temperature at 2" depth should be at least 50°F for 3 consecutive days before planting. Yield is about 5% down by May 20 and loses roughly 1% per day from there, then 2 to 3 points a day in June. Northern Wisconsin should target May 1–10 to ensure adequate GDU accumulation before fall frost.</div></details>
+<details><summary>When should I plant soybeans in Wisconsin?</summary><div class="agf-a">The optimal soybean planting window in Wisconsin is May 1 – May 20. Soybean germination requires soil temps above 50°F. Planting before May 1 in cold, wet soils increases Sudden Death Syndrome (SDS) risk. Soybeans tolerate later planting better than corn — minimal yield penalty up to May 20, then about 0.3 bu/day after that.</div></details>
+<details><summary>What soil temperature do I need to plant corn?</summary><div class="agf-a">Corn should be planted when soil temperature at 2" depth reaches a consistent 50°F or above for at least 3 consecutive days with a warming trend. Planting into cold (below 50°F) soils risks imbibitional chilling injury, uneven emergence, and increased seedling disease pressure.</div></details>
+<details><summary>How much yield do I lose for late corn planting?</summary><div class="agf-a">Corn yield loss for late planting in Wisconsin: about 5% down by May 20, roughly 1% per day from May 20 to June 1, then 2 to 3 points a day in June. A delay from May 1 to June 1 costs on the order of 35 bu/acre in a 200 bu field, and June 10 is the last practical grain planting date for southern Wisconsin. On this page’s table, April 25 yields 2% more than May 10.</div></details>
+<details><summary>What is the last frost date in Wisconsin?</summary><div class="agf-a">Last frost probability dates vary by Wisconsin zone: Southern WI (Madison area) — 50% probability of last frost by April 22, 90% by May 5. Central WI — 50% by May 2, 90% by May 15. Northern WI — 50% by May 15, 90% by May 28. These dates are approximate freeze percentiles and run 1–2 weeks earlier than NOAA normals, so verify against your nearest NOAA station — actual dates vary year to year.</div></details>
+</section>
+<!--FAQ:END-->
+
 <div class="pd-source">
   Frost data: approximate freeze-percentile dates (audit 2026-08-11: these run ~1&ndash;2 weeks EARLIER than NOAA station normals &mdash; treat the safe-side columns as optimistic and check your nearest station) &middot; Soil temp: Open-Meteo (ERA5-Land) &middot; Yield penalty: UW-Extension &amp; UMN Extension &middot;
   <a href="/">&#8592; AGSIST Dashboard</a> &middot; Built by <a href="/about">Sigurd Lindquist</a> &middot; <a href="tel:+17157972428">715-797-2428</a>
@@ -357,6 +380,7 @@
 /* ─── DATA ─────────────────────────────────────────────────────────── */
 var crop = 'corn';
 var userLat = null, userLon = null;
+var zipTouched = false; // true once the user has typed or located; stops the delayed geo prefill
 
 // WI/MN 30-year last frost probability dates (month/day as day-of-year approx)
 var FROST_DATA = {
@@ -368,14 +392,29 @@ var FROST_DATA = {
   nmn:    {zone:'Northern Minnesota (Brainerd)',     spring10:'Apr 29', spring50:'May 13', spring90:'May 27', fall10:'Sep 20',fall50:'Sep 9',  fall90:'Aug 29'},
 };
 
-// WI historical GDU accumulation from May 1 baseline (cumulative by date)
-// Approximate season total GDUs from a May 1 planting through Sep 30
-var WI_SEASON_GDU = {
-  'Apr 15': 2780, 'Apr 20': 2750, 'Apr 25': 2720,
-  'May 1':  2700, 'May 5':  2650, 'May 10': 2590,
-  'May 15': 2510, 'May 20': 2410, 'May 25': 2290,
-  'Jun 1':  2100, 'Jun 10': 1880, 'Jun 15': 1750,
-};
+// SHARED TABLE: average GDU per day by month, May-Sep, Wisconsin. /gdu-calculator carries the
+// same constant (WI_HIST) with identical values; if you change one, change the other.
+// The "GDUs by planting date" card below counts day by day from this table, from the planting
+// date up to the 50% first-fall-frost date of the selected zone. There is no April rate in the
+// table, so the card starts at May 1.
+var WI_HIST = [7.5, 15.5, 21.5, 19.5, 10.0];
+var WI_DAYS = [31, 30, 31, 31, 30];
+var MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+// GDU from (startMon startDay) up to, not including, (endMon endDay). Months are 0-based.
+function gduBetween(sm, sd, em, ed){
+  var total = 0;
+  for(var mo = 4; mo <= 8; mo++){
+    if(mo < sm || mo > em) continue;
+    var first = (mo === sm) ? sd : 1;
+    var last = (mo === em) ? ed - 1 : WI_DAYS[mo-4];
+    if(last >= first) total += (last - first + 1) * WI_HIST[mo-4];
+  }
+  return total;
+}
+function parseMD(str){
+  var m = /^([A-Za-z]{3}) (\d{1,2})$/.exec(str);
+  return m ? {mo: MONTHS.indexOf(m[1]), d: parseInt(m[2],10)} : null;
+}
 
 // Corn planting date yield penalty (% of maximum yield)
 var CORN_PENALTY = [
@@ -388,9 +427,9 @@ var CORN_PENALTY = [
   {label:'May 15', pct:97, note:'Good'},
   {label:'May 20', pct:95, note:'Moderate — yield drag begins'},
   {label:'May 25', pct:90, note:'Noticeable — about 1%/day now'},
-  {label:'Jun 1',  pct:83, note:'Significant — roughly 1.5%/day'},
-  {label:'Jun 10', pct:62, note:'Major — UW measures about 3%/day into June; last grain date for southern WI'},
-  {label:'Jun 15', pct:47, note:'Past the grain window statewide — silage or prevent plant territory'},
+  {label:'Jun 1',  pct:83, note:'Significant — about 1%/day in the week before, faster after'},
+  {label:'Jun 10', pct:62, note:'Major — this table drops 2 to 3 points a day in June; last grain date for southern WI'},
+  {label:'Jun 15', pct:47, note:'Past every WI and MN final planting date (RMA) — check silage and prevented-planting options'},
 ];
 
 // Soybean planting date yield penalty
@@ -402,10 +441,10 @@ var BEAN_PENALTY = [
   {label:'May 15', pct:100,note:'Optimal — still peak'},
   {label:'May 20', pct:99, note:'Very good — minimal drag'},
   {label:'May 25', pct:97, note:'Good — slight reduction'},
-  {label:'Jun 1',  pct:93, note:'Moderate — ~0.5 bu/day loss'},
+  {label:'Jun 1',  pct:93, note:'Moderate — about 0.3 bu/day on the 55 bu baseline'},
   {label:'Jun 10', pct:87, note:'Significant — consider earlier MG'},
   {label:'Jun 15', pct:82, note:'Major reduction expected'},
-  {label:'Jun 20', pct:75, note:'Severe — replant threshold risk'},
+  {label:'Jun 20', pct:75, note:'Severe — past the final planting date in every WI and MN county (RMA)'},
 ];
 
 var DISEASE_CORN = [
@@ -428,6 +467,7 @@ var DISEASE_BEAN = [
   renderGDUCompare();
   renderDiseaseCards();
   setTimeout(function(){
+    if(zipTouched)return;
     if(window.AGSIST_STATE&&window.AGSIST_STATE.lat){
       userLat=window.AGSIST_STATE.lat;
       userLon=window.AGSIST_STATE.lon;
@@ -451,7 +491,7 @@ document.getElementById('pill-corn').addEventListener('click',function(){
   document.getElementById('pd-rm-hint').textContent='108-day corn typical for south-central WI \u00b7 95\u201398 for north WI';
   var rmEl=document.getElementById('pd-rm');
   rmEl.min=70; rmEl.max=135; rmEl.step=1; rmEl.value=108;
-  renderWindowBars(); renderPenaltyTable(); renderGDUCompare(); renderDiseaseCards();
+  renderWindowBars(); renderPenaltyTable(); renderGDUCompare(); renderDiseaseCards(); runVerdict();
 });
 document.getElementById('pill-bean').addEventListener('click',function(){
   crop='bean';
@@ -461,7 +501,7 @@ document.getElementById('pill-bean').addEventListener('click',function(){
   document.getElementById('pd-rm-hint').textContent='MG 3.0\u20133.5 typical for south WI \u00b7 MG 1.5\u20132.5 for north WI/MN';
   var mgEl=document.getElementById('pd-rm');
   mgEl.min=0; mgEl.max=6; mgEl.step=0.5; mgEl.value=3;
-  renderWindowBars(); renderPenaltyTable(); renderGDUCompare(); renderDiseaseCards();
+  renderWindowBars(); renderPenaltyTable(); renderGDUCompare(); renderDiseaseCards(); runVerdict();
 });
 
 /* ─── FROST TABLE ───────────────────────────────────────────────────── */
@@ -479,7 +519,7 @@ function renderFrostTable(zone){
     +'<tr><td>Last spring frost</td><td class="p10">'+d.spring10+'</td><td class="p50">'+d.spring50+'</td><td class="p90">'+d.spring90+'</td></tr>'
     +'<tr><td>First fall frost</td><td class="p10">'+d.fall10+'</td><td class="p50">'+d.fall50+'</td><td class="p90">'+d.fall90+'</td></tr>'
     +'</tbody></table>'
-    +'<div class="f-hint" style="margin-top:.4rem">These are percentiles of the freeze date itself, not planting advice. In spring the last freeze has already happened by the 10% date in only 1 year of 10, by the 50% date in half of years, and by the 90% date in 9 of 10 &mdash; so the 90% column is the one to plant behind if you want to be safe. Read the fall row the same way, earliest date first. These dates are approximate and audit-checked to run one to two weeks earlier than NOAA station normals for several stations — verify against your nearest NOAA station before betting a stand on them.</div>';
+    +'<div class="f-hint" style="margin-top:.4rem">These are percentiles of the freeze date itself, not planting advice. In spring the last freeze has already happened by the 10% date in only 1 year of 10, by the 50% date in half of years, and by the 90% date in 9 of 10 &mdash; so the 90% column is the one to plant behind if you want to be safe. In the fall row the dates run latest to earliest (the 10% column is the latest date, the 90% column the earliest), so read it against the NOAA table, not by the spring rule. These dates are approximate and may run one to two weeks earlier than NOAA station normals. The freeze temperature behind them is not stated here (the GDU calculator uses 28\u00b0F for its frost date hint). Verify against your nearest NOAA station before betting a stand on them.</div>';
   var el = document.getElementById('frost-table-wrap');
   if(el)el.innerHTML=html;
 }
@@ -491,13 +531,13 @@ function renderWindowBars(){
   if(titleEl)titleEl.textContent=(isCorn?'Corn':'Soybean')+' Planting Window \u2014 Wisconsin';
 
   var windows = isCorn ? [
-    {label:'Optimal',     dates:'Apr 25 \u2013 May 15', pct:100, cls:'green', tip:'Peak yield potential. Plant when soil \u226550\u00b0F.'},
-    {label:'Good',        dates:'May 15 \u2013 May 20', pct:75,  cls:'gold',  tip:'Still very good. Yield drag minimal (<3%).'},
+    {label:'Optimal',     dates:'Apr 25 \u2013 May 10', pct:100, cls:'green', tip:'98% or more of peak yield on the table below. Plant when soil \u226550\u00b0F.'},
+    {label:'Good',        dates:'May 10 \u2013 May 20', pct:75,  cls:'gold',  tip:'Still good. Down 2 to 5% by May 20.'},
     {label:'Acceptable',  dates:'May 20 \u2013 Jun 1',  pct:50,  cls:'gold',  tip:'~1% yield loss per day. Shorter hybrid may help.'},
     {label:'Late',        dates:'After Jun 1',           pct:25,  cls:'red',   tip:'Significant yield loss. Consider replanting with 90-day hybrid.'},
   ] : [
     {label:'Optimal',     dates:'May 1 \u2013 May 20',  pct:100, cls:'green', tip:'Peak yield. Watch soil temp to avoid SDS risk.'},
-    {label:'Good',        dates:'May 20 \u2013 Jun 1',  pct:70,  cls:'gold',  tip:'Still good. Yield drag begins at ~0.5 bu/day.'},
+    {label:'Good',        dates:'May 20 \u2013 Jun 1',  pct:70,  cls:'gold',  tip:'Still good. Yield drag is about 0.3 bu/day.'},
     {label:'Acceptable',  dates:'Jun 1 \u2013 Jun 10',  pct:45,  cls:'gold',  tip:'Moderate loss. Consider earlier maturity group.'},
     {label:'Late',        dates:'After Jun 10',          pct:20,  cls:'red',   tip:'Significant yield penalty. Consider shorter MG.'},
   ];
@@ -512,15 +552,15 @@ function renderWindowBars(){
 
   var rowsHtml = '';
   if(isCorn){
-    rowsHtml = '<div class="r-row"><span class="r-lbl">Optimal window</span><span class="r-val green">Apr 25 \u2013 May 15</span></div>'
+    rowsHtml = '<div class="r-row"><span class="r-lbl">Optimal window</span><span class="r-val green">Apr 25 \u2013 May 10</span></div>'
       +'<div class="r-row"><span class="r-lbl">Soil temp target</span><span class="r-val gold">\u226550\u00b0F at 2" depth</span></div>'
-      +'<div class="r-row"><span class="r-lbl">Yield loss begins</span><span class="r-val">~May 20 (\u22481%/day)</span></div>'
+      +'<div class="r-row"><span class="r-lbl">Yield loss begins</span><span class="r-val">By May 20 (5% down)</span></div>'
       +'<div class="r-row"><span class="r-lbl">Yield loss accelerates</span><span class="r-val red">Jun 1 (\u22482%/day)</span></div>';
   } else {
     rowsHtml = '<div class="r-row"><span class="r-lbl">Optimal window</span><span class="r-val green">May 1 \u2013 May 20</span></div>'
       +'<div class="r-row"><span class="r-lbl">Soil temp target</span><span class="r-val gold">\u226550\u00b0F at 2" depth</span></div>'
       +'<div class="r-row"><span class="r-lbl">SDS risk period</span><span class="r-val">Before May 5 in cold wet soil</span></div>'
-      +'<div class="r-row"><span class="r-lbl">Yield loss begins</span><span class="r-val">~May 25 (\u22480.5 bu/day)</span></div>';
+      +'<div class="r-row"><span class="r-lbl">Yield loss begins</span><span class="r-val">~May 25 (\u22480.3 bu/day)</span></div>';
   }
 
   var barsEl = document.getElementById('win-bars');
@@ -560,41 +600,47 @@ function renderPenaltyTable(){
 
 /* ─── GDU COMPARE ────────────────────────────────────────────────────── */
 function renderGDUCompare(){
-  // Wisconsin average GDU accumulation to Sep 30 from different planting dates
-  var dates = crop==='corn'
-    ? [{d:'Apr 25',gdu:2720,cls:'best'},{d:'May 5',gdu:2650,cls:'good'},{d:'May 15',gdu:2510,cls:'warn'},{d:'Jun 1',gdu:2100,cls:'late'}]
-    : [{d:'May 1',gdu:2700,cls:'best'},{d:'May 10',gdu:2590,cls:'good'},{d:'May 20',gdu:2410,cls:'warn'},{d:'Jun 1',gdu:2100,cls:'late'}];
+  // GDU from each planting date to the selected zone's 50% first-fall-frost date, counted day by
+  // day from the shared monthly table (WI_HIST, same values as /gdu-calculator). Same dates for
+  // both crops: the table has no April rate.
+  var zoneKey = document.getElementById('pd-zone') ? document.getElementById('pd-zone').value : 'cw_wi';
+  var fz = FROST_DATA[zoneKey] || FROST_DATA.cw_wi;
+  var frost = parseMD(fz.fall50);
+  var dates = [{d:'May 1',m:4,dd:1,cls:'best'},{d:'May 10',m:4,dd:10,cls:'good'},{d:'May 20',m:4,dd:20,cls:'warn'},{d:'Jun 1',m:5,dd:1,cls:'late'}];
+  dates.forEach(function(x){ x.gdu = Math.round(gduBetween(x.m, x.dd, frost.mo, frost.d)); });
 
-  // isFinite, not ||: this input doubles as soybean Maturity Group, and
-  // MG 0 (the real northern groups 000/00/0) is falsy — `||108` turned a
-  // typed MG 0 into a 29,580-GDU target. Blank still gets the default.
+  // Blank or out-of-range maturity is an em dash, never a default (MG 0 is a real group).
   var _rmv = parseFloat(document.getElementById('pd-rm').value);
-  var rm = isFinite(_rmv)&&_rmv>=0 ? _rmv : 108;
-  // Purdue: ~22 GDD per point of relative maturity. The site's own
-  // /gdu-calculator uses the same rm*22+250; an earlier rm*9+375 here returned
-  // roughly half the real requirement - low enough that the "does it finish?"
-  // check could never fire for any RM the input allows. Soybeans run on
-  // photoperiod as much as heat, so the MG number is only a coarse band.
-  var gduTarget = crop==='corn' ? Math.round(rm*22+250) : Math.round(rm*260+1500);
+  var rmOK = crop==='corn' ? (isFinite(_rmv)&&_rmv>=70&&_rmv<=135) : (isFinite(_rmv)&&_rmv>=0&&_rmv<=6);
+  var rm = rmOK ? _rmv : null;
+  // Corn: Purdue ~22 GDD per point of RM, same rm*22+250 as /gdu-calculator.
+  // Soybean: same rm*500+800 (clamped 1050-3550) as /gdu-calculator. It is a rough estimate:
+  // soybeans run on photoperiod as much as heat.
+  var gduTarget = null;
+  if(rm!==null){
+    gduTarget = crop==='corn' ? Math.round(rm*22+250) : Math.min(Math.max(Math.round(rm*500+800),1050),3550);
+  }
 
   var html = dates.map(function(d,i){
     var delta = i===0?0:d.gdu-dates[0].gdu;
-    var pct = Math.min(100,(d.gdu/gduTarget*100)).toFixed(0);
-    var covered = d.gdu>=gduTarget;
     return '<div class="cmp-card '+d.cls+'">'
       +'<div class="cmp-date">Plant '+d.d+'</div>'
       +'<div class="cmp-gdu">'+d.gdu.toLocaleString()+'</div>'
-      +'<div class="cmp-label">GDUs by Sep 30</div>'
+      +'<div class="cmp-label">GDUs to '+fz.fall50+'</div>'
       +(i>0?'<div class="cmp-delta neg">'+delta+' vs earliest</div>':'<div class="cmp-delta pos">Baseline</div>')
-      +'<div style="font-size:0.75rem;margin-top:.3rem;color:'+(covered?'var(--green)':'#e05c5c')+'">'+(covered?'✓ Reaches maturity':'<svg class="ic-sp" aria-hidden="true"><use href="#sp-triangle-alert"/></svg> '+pct+'% of target')+'</div>'
       +'</div>';
   }).join('');
 
   var noteEl = document.getElementById('cmp-note');
-  if(noteEl)noteEl.textContent='GDU target for '+rm+(crop==='corn'?'-day RM corn':'MG soybean')+': '+gduTarget.toLocaleString()+' GDUs. Central WI 30-year average accumulation through Sep 30.';
+  if(noteEl){
+    var tgt;
+    if(gduTarget===null){ tgt = crop==='corn' ? '\u2014 Enter a corn relative maturity from 70 to 135.' : '\u2014 Enter a soybean maturity group from 0 to 6.'; }
+    else { tgt = 'GDU target for '+rm+(crop==='corn'?'-day RM corn':' MG soybean')+': '+gduTarget.toLocaleString()+' GDUs (a formula figure for reference)'+(crop==='corn'?'.':', a rough estimate.'); }
+    noteEl.textContent = 'These counts come from a Wisconsin monthly-average table. They are an estimate: check your hybrid\u2019s rating. GDUs are counted from the planting date to the 50% first-fall-frost date for '+fz.zone+' ('+fz.fall50+'). Only the frost date changes with the zone. The table has no April rate, so it starts at May 1. '+tgt;
+  }
 
   var titleEl = document.getElementById('cmp-title');
-  if(titleEl)titleEl.textContent='\u25B2 GDU Accumulation by Planting Date \u2014 Central WI Average';
+  if(titleEl)titleEl.textContent='\u25B2 GDU Accumulation by Planting Date \u2014 Wisconsin Monthly Averages';
 
   var el = document.getElementById('cmp-grid');
   if(el)el.innerHTML=html;
@@ -614,15 +660,26 @@ function renderDiseaseCards(){
 }
 
 /* ─── AUTO LOCATION ─────────────────────────────────────────────────── */
+var autoBtnHTML=document.getElementById('pd-auto-btn').innerHTML; // the globe icon, restored after geolocation
 document.getElementById('pd-auto-btn').addEventListener('click',function(){
   if(!navigator.geolocation)return;
   var btn=this;btn.textContent='...';
   navigator.geolocation.getCurrentPosition(function(pos){
+    zipTouched=true;
     userLat=pos.coords.latitude;userLon=pos.coords.longitude;
     document.getElementById('pd-loc-display').textContent='Location: '+userLat.toFixed(3)+'\u00b0N, '+Math.abs(userLon).toFixed(3)+'\u00b0W';
-    btn.textContent='\uD83D\uDDF7\uFE0F';
+    document.getElementById('pd-zip').value='';
+    btn.innerHTML=autoBtnHTML;
     fetchSoilTemp();
-  },function(){btn.textContent='\uD83D\uDDF7\uFE0F';});
+  },function(){btn.innerHTML=autoBtnHTML;});
+});
+
+// Typing a new ZIP/city drops the old coordinates so the next load geocodes what is in the
+// box (the same handler exists in /gdu-calculator). Without it the first location stuck.
+document.getElementById('pd-zip').addEventListener('input',function(){
+  zipTouched=true;
+  userLat=null;userLon=null;
+  document.getElementById('pd-loc-display').textContent='Enter location for live soil temperature';
 });
 
 function geocodeZip(q){
@@ -641,7 +698,7 @@ document.getElementById('pd-fetch-btn').addEventListener('click',function(){
   var btn=this;btn.disabled=true;btn.textContent='Loading\u2026';
   setStatus('Fetching data\u2026','');
   var p = (userLat&&userLon) ? Promise.resolve() : (zipVal ? geocodeZip(zipVal) : Promise.reject(new Error('Enter location or use Auto')));
-  p.then(fetchSoilTemp).catch(function(e){setStatus('\u2717 '+e.message,'err');}).finally(function(){btn.disabled=false;btn.innerHTML='\uD83C\uDF06 Load Soil Temp &amp; Conditions';});
+  p.then(fetchSoilTemp).catch(function(e){setStatus('\u2717 '+e.message,'err');}).finally(function(){btn.disabled=false;btn.innerHTML='<svg class="ic-sp" aria-hidden="true"><use href="#sp-wheat"/></svg> Load Soil Temp &amp; Conditions';});
 });
 
 function setStatus(msg,cls){
@@ -650,6 +707,52 @@ function setStatus(msg,cls){
 }
 
 /* ─── SOIL TEMP FETCH ───────────────────────────────────────────────── */
+/* Verdict from the last soil reading. Re-run when the crop pill changes. */
+var lastSoil=null;
+function runVerdict(){
+  if(lastSoil==null)return;
+    var soilNum=parseFloat(lastSoil);
+    var verdict,cls,noteText;
+    // Soil temperature alone said "Plant Now" in August, because nothing here
+    // looked at the calendar. Corn and beans have a planting window; outside
+    // it, a warm 2-inch reading is not a green light.
+    var _mo=new Date().getMonth()+1, _dy=new Date().getDate();
+    var _md=_mo*100+_dy;
+    var _isBeans=(typeof crop!=='undefined'&&crop!=='corn');
+    // End of the window this page covers: corn Jun 15 (the latest corn final planting date in
+    // the RMA file, any state), soybeans Jun 30.
+    var _tooLate=_md>(_isBeans?630:615);
+    var _tooEarly=_mo<4;
+    // Latest RMA final planting date in any WI or MN county: corn May 31, soybeans Jun 15
+    // (data/rma-planting-dates.json: WI/MN corn May 25 or 31, soybeans Jun 10 or 15).
+    var _pastFinal=_md>(_isBeans?615:531);
+    if(_tooLate||_tooEarly){
+      verdict='Out of the planting window';
+      cls='wait';
+      noteText=_tooLate
+        ? 'The soil reading below is real, but this is past the '+(_isBeans?'soybean':'corn')+' planting window this page covers for Wisconsin and Minnesota. It is not a green light. The yield table above is the honest read on late planting, and insurance final planting dates are earlier still.'
+        : 'Too early in the year for this call to mean anything. Come back once soils are working in spring.';
+    }
+    else if(soilNum>=55){verdict='\u2713 Plant Now \u2014 Soil temp ideal (\u226555\u00b0F)';cls='go';noteText='Excellent planting conditions. Proceed when field is fit.';}
+    else if(soilNum>=50){verdict='\u2713 Acceptable \u2014 Soil temp at threshold (50\u201354\u00b0F)';cls='go';noteText='Plant if forecast shows warming trend. Monitor for cold rain within 24 hrs.';}
+    else if(soilNum>=46){verdict='Wait \u2014 Soil temp marginal (46\u201349\u00b0F)';cls='wait';noteText='Wait 2\u20133 days. Cold soil risk of imbibitional chilling and Pythium.';}
+    else{verdict='\u2717 Do Not Plant \u2014 Soil too cold (<46\u00b0F)';cls='no';noteText='Significant stand and disease risk. Wait for sustained warming.';}
+    // Warm soil past the last WI/MN final planting date is not a green light.
+    if(_pastFinal&&!_tooLate&&!_tooEarly&&cls==='go'){
+      verdict='Late \u2014 soil ok, check your insurance final planting date';
+      cls='wait';
+      noteText='Final planting dates are earlier than this in every WI and MN county (RMA): check your county. The yield table above shows the loss from planting this late.';
+    }
+    // The days just before the last final date: some WI/MN counties are already past theirs.
+    var _inFinalWeek=_md>(_isBeans?610:525)&&!_pastFinal&&!_tooLate&&!_tooEarly;
+    if(_inFinalWeek)noteText+=' Final planting dates in WI and MN are '+(_isBeans?'Jun 10 or Jun 15':'May 25 or May 31')+' (RMA): check your county.';
+    if(!_tooEarly)noteText+=' Soil temperature is a model estimate at about 2 inches for this hour, not a probe reading.';
+    var vw=document.getElementById('st-verdict-wrap');
+    if(vw)vw.innerHTML='<div class="st-verdict '+cls+'">'+verdict+'</div>';
+    var nEl=document.getElementById('st-note');
+    if(nEl)nEl.textContent=noteText;
+}
+
 function fetchSoilTemp(){
   if(!userLat||!userLon){setStatus('No location set','err');return Promise.resolve();}
   // Open-Meteo ERA5-Land has soil temp at 0-7cm depth
@@ -665,8 +768,8 @@ function fetchSoilTemp(){
     var st6=cur.soil_temperature_6cm!=null?cur.soil_temperature_6cm.toFixed(1):null;
     // Use 6cm (≈2") as our primary; fallback to air-based estimate
     var soil2in=st6||st0;
-    var soilDisplay=soil2in?soil2in+'\u00b0F':'--';
-    var airDisplay=air?air+'\u00b0F':'--';
+    var soilDisplay=soil2in?soil2in+'\u00b0F':'\u2014';
+    var airDisplay=air?air+'\u00b0F':'\u2014';
     document.getElementById('st-2in').textContent=soilDisplay;
     document.getElementById('st-air').textContent=airDisplay;
     var badge=document.getElementById('st-badge');if(badge)badge.style.display='inline-flex';
@@ -675,6 +778,7 @@ function fetchSoilTemp(){
     // that into 0°F, printing "✗ Do Not Plant — Soil too cold" directly under
     // a soil-temp display honestly showing "--". No data, no verdict.
     if(soil2in==null){
+      lastSoil=null;
       var vw0=document.getElementById('st-verdict-wrap');
       if(vw0)vw0.innerHTML='<div class="st-verdict wait">Soil reading unavailable</div>';
       var nEl0=document.getElementById('st-note');
@@ -682,31 +786,8 @@ function fetchSoilTemp(){
       setStatus('✓ Loaded (no soil reading at this location)','ok');
       return;
     }
-    var soilNum=parseFloat(soil2in);
-    var verdict,cls,noteText;
-    // Soil temperature alone said "Plant Now" in August, because nothing here
-    // looked at the calendar. Corn and beans have a planting window; outside
-    // it, a warm 2-inch reading is not a green light.
-    var _mo=new Date().getMonth()+1, _dy=new Date().getDate();
-    var _isBeans=(typeof crop!=='undefined'&&crop!=='corn');
-    var _lastDay=_isBeans?{m:6,d:30}:{m:6,d:20};
-    var _tooLate=(_mo>_lastDay.m)||(_mo===_lastDay.m&&_dy>_lastDay.d);
-    var _tooEarly=_mo<4;
-    if(_tooLate||_tooEarly){
-      verdict='Out of the planting window';
-      cls='wait';
-      noteText=_tooLate
-        ? 'The soil reading below is real, but the '+(_isBeans?'soybean':'corn')+' planting window closed weeks ago. Nothing here is a green light this time of year \u2014 the yield table above is the honest read on late planting.'
-        : 'Too early in the year for this call to mean anything. Come back once soils are working in spring.';
-    }
-    else if(soilNum>=55){verdict='\u2713 Plant Now \u2014 Soil temp ideal (\u226555\u00b0F)';cls='go';noteText='Excellent planting conditions. Proceed when field is fit.';}
-    else if(soilNum>=50){verdict='\u2713 Acceptable \u2014 Soil temp at threshold (50\u201354\u00b0F)';cls='go';noteText='Plant if forecast shows warming trend. Monitor for cold rain within 24 hrs.';}
-    else if(soilNum>=46){verdict='Wait \u2014 Soil temp marginal (46\u201349\u00b0F)';cls='wait';noteText='Wait 2\u20133 days. Cold soil risk of imbibitional chilling and Pythium.';}
-    else{verdict='\u2717 Do Not Plant \u2014 Soil too cold (<46\u00b0F)';cls='no';noteText='Significant stand and disease risk. Wait for sustained warming.';}
-    var vw=document.getElementById('st-verdict-wrap');
-    if(vw)vw.innerHTML='<div class="st-verdict '+cls+'">'+verdict+'</div>';
-    var nEl=document.getElementById('st-note');
-    if(nEl)nEl.textContent=noteText;
+    lastSoil=soil2in;
+    runVerdict();
     setStatus('\u2713 Soil temperature loaded','ok');
   }).catch(function(e){setStatus('\u2717 '+e.message,'err');});
 }

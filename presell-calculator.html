@@ -37,6 +37,7 @@
 .ib-field input:focus-visible,.ib-field select:focus-visible{outline:2px solid var(--ib-green);outline-offset:1px;border-color:var(--ib-green);}
 .ib-field .hint{font-size:0.785rem;color:var(--ib-mut);margin:.3rem 0 0;}
 .ib-out{margin-top:1.2rem;display:grid;grid-template-columns:1fr 1fr 1fr;gap:.8rem;}
+.ib-out[hidden],.ib-readout[hidden]{display:none!important}
 @media(max-width:560px){.ib-out{grid-template-columns:1fr;}}
 .ib-stat{background:var(--ib-panel2);border:1px solid var(--ib-line);border-radius:12px;padding:.9rem .9rem 1rem;border-top:3px solid var(--ib-green);}
 .ib-stat .k{font-size:0.79rem;text-transform:uppercase;letter-spacing:.03em;color:var(--ib-mut);}
@@ -76,13 +77,13 @@
         <select id="ib-crop">
           <option value="corn" data-pp="4.62">Corn</option>
           <option value="soybeans" data-pp="11.09">Soybeans</option>
-          <option value="wheat" data-pp="6.00">Wheat</option>
+          <option value="wheat" data-pp="">Wheat</option>
         </select>
         <p class="hint">Sets a starting projected-price suggestion.</p>
       </div>
       <div class="ib-field">
         <label for="ib-aph">APH yield (bu/acre)</label>
-        <input id="ib-aph" type="number" inputmode="decimal" min="1" step="1" value="200">
+        <input id="ib-aph" type="number" inputmode="decimal" min="1" max="1000" step="1" value="200">
         <p class="hint">Your approved yield on the policy.</p>
       </div>
       <div class="ib-field">
@@ -97,9 +98,9 @@
       </div>
       <div class="ib-field">
         <label for="ib-pp">Projected price ($/bu)</label>
-        <input id="ib-pp" type="number" inputmode="decimal" min="0" step="0.01" value="4.62">
+        <input id="ib-pp" type="number" inputmode="decimal" min="0" max="100" step="0.01" value="4.62">
         <p class="hint"><span id="ib-pp-hint">From the February discovery period.</span><span id="ib-pp-link"> <a href="/harvest-price-tracker" style="color:var(--ib-gold2)">See current</a>.</span></p>
-        <p class="hint" id="ib-wheat-warn" hidden style="color:var(--ib-gold2);margin-top:.35rem">No verified wheat track on the tracker yet.</p>
+        <p class="hint" id="ib-wheat-warn" hidden style="color:var(--ib-gold2);margin-top:.35rem">Wheat has no starting price here. Enter the projected price from your policy.</p>
       </div>
     </div>
     <button class="ib-btn" id="ib-calc" type="button">Calculate my floor</button>
@@ -116,9 +117,9 @@
         <div class="s">coverage level &times; APH</div>
       </div>
       <div class="ib-stat">
-        <div class="k">Floor on those bu</div>
+        <div class="k" id="ib-floor-k">Floor on your guaranteed bu</div>
         <div class="v" id="ib-floor">&mdash;</div>
-        <div class="s">price your guarantee defends</div>
+        <div class="s">$/bu your guarantee defends on those bushels</div>
       </div>
     </div>
 
@@ -192,9 +193,10 @@ window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);
     // Panel 1 belongs to the inputs it was calculated from. Once any of them move it is
     // no longer an answer, so it goes away rather than sitting above a live panel 2
     // computed from different numbers.
-    var o=$('ib-out'), r=$('ib-readout');
+    var o=$('ib-out'), r=$('ib-readout'), h=$('ib-hp-readout');
     if(o&&!o.hidden){o.hidden=true;}
     if(r&&!r.hidden){r.hidden=true;}
+    if(h&&!h.hidden){h.hidden=true;}
   }
   ['ib-aph','ib-cov','ib-pp','ib-crop'].forEach(function(id){
     var el=$(id); if(!el)return;
@@ -205,20 +207,19 @@ window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);
   $('ib-crop').addEventListener('change',function(){
     var pp=this.options[this.selectedIndex].getAttribute('data-pp');
     if(pp)$('ib-pp').value=pp;
+    else if(this.value==='wheat')$('ib-pp').value='';
     var hp=$('ib-hp'); if(hp){hp.value='';var hro=$('ib-hp-readout'); if(hro)hro.hidden=true;}
     cropCopy();
   });
 
   // Nothing in this file used to branch on crop except the price copy above, so a wheat
   // grower was told to look up a February projected price and an October harvest price.
-  // Neither exists for wheat: it keys off the July contract, discovered in a late-summer
-  // window before planting, per harvest-price-tracker.html. We do not have those dates
-  // verified, so the page now says so instead of printing the corn ones.
+  // Neither exists for wheat, so the page leaves the price blank and asks for the policy figure.
   function cropCopy(){
     var c=$('ib-crop')?$('ib-crop').value:'corn';
     var isW=(c==='wheat');
     var t={
-      pphint: isW ? 'Wheat discovers off the July contract in a late-summer window, not February. The $6.00 shown is a placeholder — check your policy.'
+      pphint: isW ? 'Wheat discovers off its own contract and window, not February. Enter the projected price from your policy.'
                   : 'From the February discovery period.',
       hplede: isW ? 'the harvest price for your wheat contract'
                   : 'the October harvest price'
@@ -235,7 +236,7 @@ window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);
     var aph=parseFloat($('ib-aph').value);
     var cov=parseFloat($('ib-cov').value);
     var pp=parseFloat($('ib-pp').value);
-    if(!(aph>0)||!(cov>0)||!(pp>0)){return null;}
+    if(!(aph>0)||!(cov>0)||!(pp>0)||aph>1000||pp>100){return null;}
     var guarBu=cov*aph;
     var guarRev=guarBu*pp;
     return {aph:aph,cov:cov,pp:pp,guarBu:guarBu,guarRev:guarRev};
@@ -243,10 +244,19 @@ window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);
 
   $('ib-calc').addEventListener('click',function(){
     var r=compute();
-    if(!r){$('ib-readout').hidden=true;$('ib-out').hidden=true;return;}
+    if(!r){
+      var pv=parseFloat($('ib-pp').value), av=parseFloat($('ib-aph').value);
+      var why=pv>100?'projected price above 100':av>1000?'APH above 1000':!(pv>0)?'enter your projected price':(av>0?'enter a coverage level':'enter your APH yield');
+      $('ib-guar').textContent='\u2014';$('ib-bu').textContent='\u2014';$('ib-floor').textContent='\u2014';
+      $('ib-floor-k').textContent='Floor on your guaranteed bu';
+      $('ib-out').hidden=false;
+      var rn=$('ib-readout');rn.textContent='\u2014 '+why+'.';rn.hidden=false;
+      return;
+    }
     $('ib-guar').textContent=fmtUSD(r.guarRev);
     $('ib-bu').textContent=fmtBu(r.guarBu);
     $('ib-floor').textContent='$'+r.pp.toFixed(2);
+    $('ib-floor-k').textContent='Floor on your '+r.guarBu.toLocaleString('en-US',{maximumFractionDigits:1})+' guaranteed bu';
     $('ib-out').hidden=false;
     var ro=$('ib-readout');
     ro.innerHTML='At <b>'+Math.round(r.cov*100)+'%</b> coverage on a <b>'+r.aph+' bu/acre</b> APH, your revenue guarantee is about <b>'+fmtUSD(r.guarRev)+'/acre</b>. That floor covers roughly <b>'+fmtBu(r.guarBu)+'/acre</b> at <b>$'+r.pp.toFixed(2)+'</b>. Those are the bushels you can forward-price with a revenue backstop underneath &mdash; many growers keep pre-harvest sales at or below that level.';
@@ -254,22 +264,28 @@ window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);
     gaEvent('calc_use',{tool:'presell',coverage:r.cov,aph:r.aph});
   });
 
-  $('ib-hp').addEventListener('input',function(){
-    var hp=parseFloat(this.value);
+  function hpUpdate(){
+    var hp=parseFloat($('ib-hp').value);
     var pp=parseFloat($('ib-pp').value);
     var aph=parseFloat($('ib-aph').value);
     var cov=parseFloat($('ib-cov').value);
     var ro=$('ib-hp-readout');
-    if(!(hp>0)||!(pp>0)||!(aph>0)||!(cov>0)){ro.hidden=true;return;}
-    var hi=Math.max(hp,pp);
+    if(!(hp>0)){ro.hidden=true;return;}
+    if(!(pp>0)||!(aph>0)||!(cov>0)||aph>1000||pp>100){
+      ro.textContent=(pp>100||aph>1000)?'\u2014 '+(pp>100?'projected price above 100':'APH above 1000')+'.':'\u2014 enter your '+(!(pp>0)?'projected price':(!(aph>0)?'APH yield':'coverage level'))+' above.';
+      ro.hidden=false;return;
+    }
+    var hi=Math.min(Math.max(hp,pp),2*pp);
+    var capped=hp>2*pp;
     var base=cov*aph*pp, esc=cov*aph*hi;
     if(hp>pp){
-      ro.innerHTML='Harvest price <b>$'+hp.toFixed(2)+'</b> is above your projected <b>$'+pp.toFixed(2)+'</b>, so RP raises your guarantee to about <b>'+fmtUSD(esc)+'/acre</b> &mdash; up '+fmtUSD(esc-base)+' from the projected-price floor.';
+      ro.innerHTML='Harvest price <b>$'+hp.toFixed(2)+'</b> is above your projected <b>$'+pp.toFixed(2)+'</b>, so RP raises your guarantee to about <b>'+fmtUSD(esc)+'/acre</b> &mdash; up '+fmtUSD(esc-base)+' from the projected-price floor.'+(capped?' Harvest price counts up to 200% of the projected price.':'');
     } else {
       ro.innerHTML='Harvest price <b>$'+hp.toFixed(2)+'</b> is at or below your projected <b>$'+pp.toFixed(2)+'</b>, so your guarantee stays at the projected-price floor of about <b>'+fmtUSD(base)+'/acre</b>. This is where the price protection does its work.';
     }
     ro.hidden=false;
-  });
+  }
+  $('ib-hp').addEventListener('input',hpUpdate);
 
   cropCopy();
 

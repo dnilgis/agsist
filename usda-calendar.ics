@@ -4,7 +4,7 @@ PRODID:-//AGSIST//USDA Report Calendar//EN
 CALSCALE:GREGORIAN
 METHOD:PUBLISH
 X-WR-CALNAME:USDA Reports - AGSIST
-X-WR-CALDESC:Every major USDA report date with what it moves. agsist.com/usda-calendar
+X-WR-CALDESC:WASDE, Crop Production, Grain Stocks and international report dates. Weekly Crop Progress and Export Sales are not included. agsist.com/usda-calendar
 X-PUBLISHED-TTL:PT48H
 REFRESH-INTERVAL;VALUE=DURATION:PT48H
 BEGIN:VEVENT

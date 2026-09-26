@@ -127,7 +127,7 @@
     <div class="legal-page">
 
       <h1>Privacy Policy</h1>
-      <p class="updated">Last updated: March 2026</p>
+      <p class="updated">Last updated: September 26, 2026</p>
 
       <div class="tldr">
         <strong>Plain English</strong>
@@ -137,8 +137,8 @@
       <h2>What Is Collected</h2>
       <ul>
         <li><strong>Location</strong> — your browser's geolocation or a ZIP code you type in. Used to show local weather and cash bids. For those features your coordinates are sent to the services that answer the question &mdash; Open-Meteo for weather, OpenStreetMap Nominatim to turn coordinates into a place name, and a Cloudflare Worker that fetches nearby cash bids &mdash; and your last location is kept in your browser&rsquo;s local storage so the site remembers it. Hail alerts are different: the coordinates you pick are stored on the server alongside your email address, because there is no other way to tell you it hailed there.</li>
-        <li><strong>Email</strong> — only if you subscribe to the AGSIST Daily or FFAI newsletter, or ask to watch a county in the Farmland Atlas. Used to send you exactly what you signed up for. A county watch stores your email and the county codes you watch, starts only after you confirm from a link we email you, and stops with one tap from any email.</li>
-        <li><strong>Analytics</strong> — anonymous page views via Google Analytics 4. No names, no personal info.</li>
+        <li><strong>Email</strong> — only if you subscribe to the AGSIST Daily newsletter, ask to watch a county in the Farmland Atlas, or join the Parcel Report waitlist (that address goes to Formspree, and to me). Used to send you exactly what you signed up for. A county watch stores your email and the county codes you watch, starts only after you confirm from a link we email you, and stops with one tap from any email.</li>
+        <li><strong>Analytics</strong> — page views via Google Analytics 4, tied to a random ID cookie and your IP address as Google sees it. No names, no email addresses.</li>
       </ul>
 
       <h2>What It's Used For</h2>
@@ -146,12 +146,21 @@
       <p>Your information is not sold, rented, or shared with anyone for any reason.</p>
 
       <h2>Third-Party Services</h2>
-      <p>AGSIST uses these services to function. None of them receive your personal information:</p>
+      <p>AGSIST uses these services to function. These services receive only what they need to work, described above and below. Every service your browser talks to also sees your IP address, as any website does.</p>
       <ul>
-        <li><strong>Google Analytics 4</strong> — anonymous usage stats</li>
-        <li><strong>Open-Meteo</strong> — weather data</li>
-        <li><strong>Cloudflare (Workers and KV &mdash; where email signups and hail-alert locations are stored)</strong> — processes signup forms</li>
-        <li><strong>CoinGecko</strong> — cryptocurrency prices</li>
+        <li><strong>Google Analytics 4</strong> &mdash; page views and usage stats, using a random ID cookie (see below).</li>
+        <li><strong>Google Fonts</strong> &mdash; the typefaces, loaded from Google&rsquo;s servers on most pages.</li>
+        <li><strong>Open-Meteo</strong> &mdash; weather data. It receives the coordinates of the place you asked about.</li>
+        <li><strong>OpenStreetMap Nominatim</strong> &mdash; turns an address, ZIP or coordinates into a place name.</li>
+        <li><strong>National Weather Service (api.weather.gov) and Iowa Environmental Mesonet</strong> &mdash; the hail map loads live storm warnings and the last 24 hours of storm reports directly from these two services. Your browser contacts them, so they see your IP address like any website. The requests carry no location from you.</li>
+        <li><strong>Cloudflare (Workers and KV)</strong> &mdash; processes signup forms and stores email signups and hail-alert locations. It also runs the cash-bid lookup.</li>
+        <li><strong>TradingView</strong> &mdash; the price charts on the corn, soybean and wheat futures pages.</li>
+        <li><strong>Windy</strong> &mdash; the radar map on the home page.</li>
+        <li><strong>Polymarket</strong> &mdash; the prediction-market odds on the home page, requested by your browser.</li>
+        <li><strong>Formspree</strong> &mdash; receives the email address you type into the Parcel Report waitlist form on the Farmland Atlas and the approval form on sponsor proofs.</li>
+        <li><strong>Gmail (Google)</strong> &mdash; sends the AGSIST Daily and county-watch emails, so Google handles those messages in transit.</li>
+        <li><strong>Field Scout</strong> &mdash; when you draw or look up a field, its outline or coordinates go to AGSIST&rsquo;s Cloudflare Worker, which asks USDA (soils, crop history) and Copernicus Sentinel (imagery). Map tiles come from Esri (satellite) and CARTO (base map).</li>
+        <li><strong>jsDelivr, cdnjs and unpkg</strong> &mdash; host the map and chart code some pages load.</li>
       </ul>
 
       <h2>Cookies &amp; Local Storage</h2>
@@ -169,7 +178,7 @@
       <p>Want off the email list? Reply "unsubscribe" to any AGSIST email, or contact me directly. Want anything else deleted? Same deal — just ask.</p>
 
       <div class="contact-line">
-        Questions about this policy? <strong style="color:var(--text)">Sigurd Lindquist</strong> — <a href="tel:+17157972428">715-797-2428</a> · <a href="mailto:sig@farmers1st.com">sig@farmers1st.com</a>
+        Questions about this policy? <strong style="color:var(--text)">Sigurd Lindquist</strong> — <a href="tel:+17157972428">715-797-2428</a> · <a href="mailto:sig@farmers1st.com">sig@farmers1st.com</a><br>AGSIST, PO Box 243, Chetek, WI 54728
       </div>
 
     </div>

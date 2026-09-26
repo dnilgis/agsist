@@ -71,7 +71,12 @@ def wheat_class(label):
 # `wheat` block is deliberately absent: one wheat number is the bug this fixes.
 MAP_COMMODITIES = ["corn", "soybeans", "wheat-srw", "wheat-hrw", "wheat-hrs",
                    "wheat-sww", "wheat-unstated"]
-MIN_STATE_LOC = 2   # a state needs at least this many distinct locations to show
+# A state needs at least this many distinct locations to show. It was 2, and
+# TX (5 locations), WY (3) and WA (6) then ranked above IA (361) on a handful
+# of boards. Five keeps a tile from being one or two elevators.
+MIN_STATE_LOC = 5
+# Products that are not priced per bushel never enter a basis average.
+NOT_PER_BUSHEL = re.compile(r"\b(meal|hulls?|pellets?|oil|flour|ddg|distillers|gluten|canola|peas?)\b", re.I)
 
 STATE_NAMES = {
  "AL":"Alabama","AK":"Alaska","AZ":"Arizona","AR":"Arkansas","CA":"California",
@@ -114,6 +119,17 @@ def resolve_bids_path():
     raise SystemExit(f"[build_basis_map] no bids file at {BIDS_FULL_PATH} or {BIDS_PATH}")
 
 
+TODAY_MONTH = datetime.now(timezone.utc).strftime("%Y-%m")
+
+def delivery_month(b):
+    """YYYY-MM the row delivers in, from the window end (the last day a bid can
+    still be taken), else the window start. '' when the row states neither."""
+    for k in ("deliveryEnd", "deliveryStart"):
+        m = re.match(r"^(\d{4})-(\d{2})", str(b.get(k) or ""))
+        if m:
+            return m.group(1) + "-" + m.group(2)
+    return ""
+
 def load_cash_bids(path=None):
     """Adapter over fetch_bids.py output. Returns basis records:
     {commodity, state, city, facility, name, basis}. Keeps only bids with a
@@ -130,6 +146,12 @@ def load_cash_bids(path=None):
         basis = b.get("basis")
         if cat not in COMMODITIES:      continue
         if state not in STATE_NAMES:    continue
+        # Not US dollars, or not a bushel price: not a basis this map can rank.
+        if str(b.get("currency") or "USD").upper() != "USD": continue
+        if NOT_PER_BUSHEL.search(str(b.get("commodity") or "")): continue
+        # A delivery month that has already gone is not a bid anyone can take.
+        _mo = delivery_month(b)
+        if _mo and _mo < TODAY_MONTH:   continue
         if basis is None:               continue
         try:    basis = float(basis)
         except (TypeError, ValueError): continue
@@ -155,7 +177,7 @@ def load_cash_bids(path=None):
                 cat = "wheat-unstated"
         out.append({"commodity": cat, "state": state, "city": city,
                     "facility": b.get("facility", ""), "name": name,
-                    "basis": round(basis, 4)})
+                    "basis": round(basis, 4), "month": _mo})
     return out
 
 def build(records):
@@ -205,7 +227,13 @@ def main():
             _src_ts = (json.load(_f).get("fetched") or "")[:10] or None
     except Exception:
         pass
+    # THE WINDOW THE AVERAGE COVERS, printed on the map. Every future delivery
+    # month a location posts is still averaged together, so the page must say
+    # which months those are rather than imply a nearby basis.
+    _months = sorted({r["month"] for r in records if r.get("month")})
     out = {"updated": _src_ts or datetime.now(timezone.utc).strftime("%Y-%m-%d"),
+           "window": ({"from": _months[0], "to": _months[-1]} if _months else None),
+           "min_locations": MIN_STATE_LOC,
            "sample": (not has_data),
            "commodities": commodities,
            # Beside `commodities`, not inside it: every value in there is

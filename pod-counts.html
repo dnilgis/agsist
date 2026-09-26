@@ -344,10 +344,13 @@
         <tr><td>Pods &rarr; soybean yield, pooled</td><td class="n"><span class="pc-lbl" aria-hidden="true">n</span>28</td><td class="n"><span class="pc-lbl" aria-hidden="true">r</span>+0.85</td><td class="n"><span class="pc-lbl" aria-hidden="true">R&sup2;</span>0.72</td><td class="n"><span class="pc-lbl" aria-hidden="true">Typical miss</span>3.95 bu</td><td class="n"><span class="pc-lbl" aria-hidden="true">of mean yield</span>7.2%</td></tr>
         <tr><td>Year-on-year % change in pods</td><td class="n"><span class="pc-lbl" aria-hidden="true">n</span>21</td><td class="n"><span class="pc-lbl" aria-hidden="true">r</span>+0.70</td><td class="n"><span class="pc-lbl" aria-hidden="true">R&sup2;</span>0.49</td><td class="n"><span class="pc-lbl" aria-hidden="true">Typical miss</span>5.6 pts</td><td><span class="pc-lbl" aria-hidden="true">of mean yield</span>&mdash;</td></tr>
         </tbody></table></div>
+      <p class="pc-src">The misses above are in-sample. Each state&rsquo;s mean, which the within-state fit
+      subtracts, includes the year being predicted, so a call made ahead of the count would miss by
+      more than 2.54 bu.</p>
 
       <div class="pc-note"><p style="margin:0"><b>The answer.</b> Pod counts are about
       <b>1.8&times; looser</b> than the tour&rsquo;s corn reading &mdash; a typical miss of 4.6% of
-      mean yield against 2.6%. That is worse, and it is nothing like useless. The tour measures
+      mean yield against 2.6%, in-sample. That is worse, and it is nothing like useless. The tour measures
       corn directly and never measures a soybean yield at all, so a factor of 1.8 is a small price
       for a number that is only ever counted, never weighed. Pod counts deserve to be quoted. They
       deserve to be quoted with a band around them.</p></div>
@@ -358,13 +361,17 @@
       attached her own warning: <em>&ldquo;I just wouldn&rsquo;t put too much stock in that yield
       estimate&rsquo;s accuracy.&rdquo;</em> It is not a Pro Farmer number and never was.</p>
       <p>Our twenty-eight state-years put it at <span class="pc-k">22.0</span> as a simple ratio of
-      pods to bushels, and <span class="pc-k">23.5</span> as the marginal slope of the fit. Both sit
+      pods to bushels, and <span class="pc-k">23.5</span> as the slope of the pooled fit, which mixes
+      differences between states with changes within a state. To turn one state&rsquo;s change in
+      pods into bushels, use the within-state fit from the table above instead: about
+      <span class="pc-k">44</span> pods to the bushel (0.0227 bu per pod). The 22.0 and 23.5 sit
       inside the 21.8&ndash;25.8 range implied by Pro Farmer&rsquo;s own published national pairs.
       Three independent routes, one answer, and 27 is not it.</p>
       <p>Worth knowing if you are tempted by a textbook: the extension formulas &mdash; Purdue,
       Ohio State, Iowa State, and USDA&rsquo;s own objective-yield conversion &mdash; all give
-      <span class="pc-k">15 to 18</span> on this basis. Apply any of them to a Pro Farmer count and
-      you will overstate yield by 55 to 60%, because Pro Farmer counts <em>any pod a quarter-inch or
+      <span class="pc-k">15 to 18</span> on this basis. Divide a Pro Farmer count by 15 and you
+      will overstate yield by 47 to 57% (22.0 and 23.5 against 15); at 18 the overstatement is 22
+      to 31%. The reason is that Pro Farmer counts <em>any pod a quarter-inch or
       larger</em> off three plants on fields chosen by the route. Different scale, on purpose. Never
       import those constants.</p>
 

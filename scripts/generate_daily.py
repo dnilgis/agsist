@@ -1857,6 +1857,7 @@ VOCABULARY: avoid these (academic register / AI tells):
 - "market participants" → "the funds," "merchandisers," "producers" (be specific)
 - "it's worth noting that" / "crucially" / "notably" / "underscores" → AI-tell phrases, never use
 - "in conclusion" / "ultimately" → never use
+- "robust" / "leverage" / "deep dive" / "delve" → AI-tell words, never use ("strong," "firm," "use," "a close look")
 
 ══ BANNED PHRASES (regression markers, DO NOT USE) ══
 These are the specific clichés that signal you've drifted into trader-blog wire-service voice. Each one must be rewritten plainer. NO exceptions.
@@ -3036,10 +3037,10 @@ html,body{{overflow-x:hidden;overflow-x:clip;width:100%;}}
 .dv3-eyebrow{{display:inline-flex;align-items:center;gap:.5rem;font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--green);margin-bottom:.75rem;padding:.3rem .75rem;background:rgba(74,171,76,.06);border:1px solid rgba(74,171,76,.18);border-radius:3px}}
 .dv3-eyebrow-dot{{width:7px;height:7px;border-radius:50%;background:var(--text-muted)}}
 .dv3-date{{font-family:'JetBrains Mono',monospace;font-size:.78rem;color:var(--text-muted);letter-spacing:.08em;margin-bottom:.6rem;text-transform:uppercase}}
-.dv3-spattr{{display:inline-flex;align-items:center;gap:.35rem;font-family:'JetBrains Mono',monospace;font-size:.7rem;font-weight:600;letter-spacing:.04em;color:var(--gold);text-decoration:none;padding:.3rem .65rem;border:1px solid rgba(218,165,32,.25);border-radius:4px;background:rgba(218,165,32,.04);margin-bottom:.85rem;transition:border-color .15s,background .15s,color .15s}}
-.dv3-spattr:hover{{border-color:var(--gold);background:rgba(218,165,32,.10);color:var(--gold)}}
+.dv3-spattr{{display:inline-flex;align-items:center;gap:.35rem;font-family:'JetBrains Mono',monospace;font-size:.7rem;font-weight:600;letter-spacing:.04em;color:var(--ad-orange);text-decoration:none;padding:.3rem .65rem;border:1px solid rgba(var(--ad-orange-rgb),.34);border-radius:4px;background:rgba(var(--ad-orange-rgb),.06);margin-bottom:.85rem;transition:border-color .15s,background .15s,color .15s}}
+.dv3-spattr:hover{{border-color:var(--ad-orange);background:rgba(var(--ad-orange-rgb),.12);color:var(--ad-orange)}}
 .dv3-spattr--house{{opacity:.75;color:var(--text-muted);border-color:var(--border)}}
-.dv3-spattr--house:hover{{opacity:1;color:var(--gold);border-color:rgba(218,165,32,.4)}}
+.dv3-spattr--house:hover{{opacity:1;color:var(--ad-orange);border-color:rgba(var(--ad-orange-rgb),.4)}}
 .dv3-spattr strong{{color:var(--text);font-weight:700}}
 .dv3-headline{{font-family:'Oswald',sans-serif;font-size:clamp(2rem,4vw,3rem);font-weight:700;line-height:1.15;color:var(--text);margin-bottom:.6rem;letter-spacing:-.01em;text-transform:uppercase}}
 .dv3-subheadline{{font-size:.92rem;color:var(--gold);font-weight:600;margin-bottom:.75rem}}
@@ -3148,8 +3149,6 @@ html,body{{overflow-x:hidden;overflow-x:clip;width:100%;}}
 .dv3-nav a{{display:inline-flex;align-items:center;gap:.35rem;font-size:.85rem;font-weight:600;color:var(--green);transition:opacity .15s}}
 .dv3-nav a:hover{{opacity:.8}}
 .dv3-nav-center{{font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.1em}}
-.dv3-sponsor{{background:linear-gradient(135deg,var(--surface) 0%,rgba(218,165,32,.04) 100%);border:2px solid rgba(218,165,32,.30);border-radius:8px;padding:1.4rem 1.6rem;margin-bottom:1.75rem;position:relative;overflow:hidden}}
-.dv3-sponsor::before{{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--gold) 0%,rgba(218,165,32,.3) 60%,transparent 100%)}}
 
 /* WEEKLY THREAD chapter marker, sits above the lead */
 .dv3-thread{{display:flex;align-items:center;gap:.65rem;padding:.45rem .85rem;background:rgba(74,143,186,.06);border:1px solid rgba(74,143,186,.20);border-radius:6px;margin-bottom:1rem;flex-wrap:wrap}}
@@ -3164,15 +3163,6 @@ html,body{{overflow-x:hidden;overflow-x:clip;width:100%;}}
 .dv3-yc-summary{{font-size:.92rem;color:var(--text);line-height:1.65;font-weight:600;margin-bottom:.35rem}}
 .dv3-yc-note{{font-size:.85rem;color:var(--text-dim);line-height:1.65}}
 
-.dv3-sponsor--house{{border-style:dashed;border-color:rgba(218,165,32,.34)}}
-.dv3-sponsor-label-row{{display:flex;align-items:center;justify-content:space-between;gap:.6rem;margin-bottom:.65rem;flex-wrap:wrap}}
-.dv3-sponsor-label{{font-family:'JetBrains Mono',monospace;font-size:.6rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);padding:.2rem .6rem;border:1px solid rgba(218,165,32,.42);border-radius:3px;background:rgba(218,165,32,.06)}}
-.dv3-sponsor-by{{font-family:'JetBrains Mono',monospace;font-size:.7rem;font-weight:600;color:var(--text-muted);letter-spacing:.04em}}
-.dv3-sponsor-headline{{font-family:'Oswald',sans-serif;font-size:1.2rem;font-weight:700;color:var(--text);line-height:1.3;margin-bottom:.6rem;letter-spacing:-.005em}}
-.dv3-sponsor-body{{font-size:.93rem;line-height:1.7;color:var(--text-dim);margin-bottom:.95rem}}
-.dv3-sponsor-cta{{display:inline-flex;align-items:center;gap:.4rem;font-family:'JetBrains Mono',monospace;font-size:.78rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;text-decoration:none;color:#0a1a0a;background:var(--gold);padding:.65rem 1.05rem;border-radius:6px;transition:background .15s,transform .1s;min-height:44px}}
-.dv3-sponsor-cta:hover{{background:#c9941d;transform:translateY(-1px)}}
-.dv3-sponsor-disclosure{{font-size:.66rem;color:var(--text-muted);margin-top:.7rem;letter-spacing:.02em;line-height:1.5}}
 .dv3-forward{{display:flex;align-items:center;gap:1rem;padding:1rem 1.2rem;background:rgba(58,139,60,.05);border:1px solid rgba(58,139,60,.22);border-radius:8px;margin:1.25rem 0 .75rem;flex-wrap:wrap}}
 .dv3-forward-icon{{font-size:1.5rem;flex-shrink:0;line-height:1}}
 .dv3-forward-content{{flex:1;min-width:200px}}
@@ -3184,7 +3174,7 @@ html,body{{overflow-x:hidden;overflow-x:clip;width:100%;}}
 .dv3-byline strong{{color:var(--text);font-weight:700}}
 .dv3-byline a{{color:var(--gold);text-decoration:none}}
 .dv3-byline a:hover{{text-decoration:underline}}
-@media(max-width:640px){{.dv3-page{{padding:1.25rem .9rem}}.dv3-topbar{{grid-template-columns:minmax(0,1fr)}}.dv3-one-number-val{{font-size:2.4rem}}.dv3-sec{{padding:.85rem 1rem}}.dv3-sponsor{{padding:1.1rem 1.2rem}}.dv3-sponsor-headline{{font-size:1.05rem}}.dv3-forward{{flex-direction:column;align-items:flex-start;gap:.7rem}}.dv3-forward-cta{{width:100%;justify-content:center}}}}
+@media(max-width:640px){{.dv3-page{{padding:1.25rem .9rem}}.dv3-topbar{{grid-template-columns:minmax(0,1fr)}}.dv3-one-number-val{{font-size:2.4rem}}.dv3-sec{{padding:.85rem 1rem}}.dv3-forward{{flex-direction:column;align-items:flex-start;gap:.7rem}}.dv3-forward-cta{{width:100%;justify-content:center}}}}
 @media(max-width:380px){{.dv3-headline{{font-size:1.6rem}}.dv3-one-number-val{{font-size:2rem}}.dv3-sec-action{{display:none}}}}
 </style>
 </head>

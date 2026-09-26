@@ -17,14 +17,14 @@
   <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
   <link rel="manifest" href="/manifest.json">
 
-  <title>Cash Rent by County: What the Ground Can Actually Pay | AGSIST</title>
+  <title>Cash Rent by County: What the Ground Can Pay | AGSIST</title>
   <meta name="description" content="USDA county cash rent mapped for every published county, with history and rent as a share of what the acre can really gross. Free, sources shown.">
   <link rel="canonical" href="https://agsist.com/cash-rent">
 
   <meta property="og:type" content="article">
   <meta property="og:site_name" content="AGSIST">
   <meta property="og:locale" content="en_US">
-  <meta property="og:title" content="Cash Rent by County: What the Ground Can Actually Pay">
+  <meta property="og:title" content="Cash Rent by County: What the Ground Can Pay">
   <meta property="og:description" content="Everybody knows their rent. Almost nobody knows their rent as a share of gross revenue. County cash rent against county trend yield and the board.">
   <meta property="og:url" content="https://agsist.com/cash-rent">
   <meta property="og:image" content="https://agsist.com/img/og/agsist.jpg">
@@ -34,7 +34,7 @@
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:site" content="@agsist">
   <meta name="twitter:creator" content="@agsist">
-  <meta name="twitter:title" content="Cash Rent by County: What the Ground Can Actually Pay">
+  <meta name="twitter:title" content="Cash Rent by County: What the Ground Can Pay">
   <meta name="twitter:description" content="County cash rent against county trend yield and the board — the ratio that actually decides a lease.">
   <meta name="twitter:image" content="https://agsist.com/img/og/agsist.jpg">
 
@@ -232,7 +232,7 @@
   <section class="cr-panel" aria-labelledby="cr-map-t" style="margin-top:28px">
     <div class="cr-panel-hd">
       <span class="cr-panel-t" id="cr-map-t">Every county USDA publishes</span>
-      <p style="font-size:13.4px;line-height:1.7;color:#8a948f;margin:6px 0 0" id="cr-stats"><!--SEED:crstats-->2,877 counties in 47 states with a published 2026 rent &middot; median county rate $63.00/acre (non-irrigated where available) &middot; rent-to-revenue ratio computed for 2,040 counties (2008&ndash;2025) &middot; data refreshed 2026-09-23<!--/SEED--></p>
+      <p style="font-size:13.4px;line-height:1.7;color:#8a948f;margin:6px 0 0" id="cr-stats"><!--SEED:crstats-->2,400 counties in 47 states with a published 2026 rent &middot; median county rate $70.25/acre (non-irrigated where available) &middot; rent-to-revenue ratio computed for 2,040 counties (2008&ndash;2025) &middot; data refreshed 2026-09-23<!--/SEED--></p>
       <div class="cr-mtabs" role="tablist">
         <button class="cr-mtab on" id="cr-mt-rent" role="tab" aria-selected="true">Rent $/ac</button>
         <button class="cr-mtab" id="cr-mt-pct" role="tab" aria-selected="false">Share of gross</button>
@@ -596,7 +596,8 @@
     el.className='cr-ratio-v '+(pct>=35?'neg':pct>=30?'warn':'pos');
     m.innerHTML='rent <b>'+money(rent)+'</b> &divide; ( <b>'+y.toFixed(1)+'</b> bu &times; <b>$'+net.toFixed(2)+'</b> ) = <b>'+money(Math.round(gross))+'</b> gross/ac &rarr; <b>'+pct.toFixed(1)+'%</b>';
     var left=gross-rent;
-    x.innerHTML='At <strong>'+y.toFixed(0)+' bu</strong> and <strong>$'+net.toFixed(2)+'</strong> cash, this acre grosses <strong>'+money(Math.round(gross))+'</strong>. Rent takes <strong>'+money(rent)+'</strong>, leaving <strong>'+money(Math.round(left))+'</strong> to cover everything else and pay you. Compare that share to your own county\u2019s history below \u2014 not to a rule of thumb.';
+    var bpx=boardPrice(),pLbl=(!b&&bpx&&Math.abs(p-bpx)<0.005)?'nearby corn futures, before basis':(b?'price plus basis':'your price');
+    x.innerHTML='At <strong>'+y.toFixed(0)+' bu</strong> and <strong>$'+net.toFixed(2)+'</strong> ('+pLbl+'), this acre grosses <strong>'+money(Math.round(gross))+'</strong>. Rent takes <strong>'+money(rent)+'</strong>, leaving <strong>'+money(Math.round(left))+'</strong> to cover everything else and pay you. Compare that share to your own county\u2019s history below \u2014 not to a rule of thumb.';
   }
 
   // ---- history chart: honest gaps, no interpolation across missing years ----
@@ -676,8 +677,15 @@
       h+='<div class="cr-mleg-i"><div class="cr-mleg-s" style="background:'+RAMP[i]+'"></div><div class="cr-mleg-t">'+lab+'</div></div>';
     }
     h+='<div class="cr-mleg-i"><div class="cr-mleg-s" style="background:#1a1f20"></div><div class="cr-mleg-t">n/a</div></div>';
-    var n=(mode==='pct')?nat.n_pct:nat.n_rent;
-    h+='<span class="cr-mleg-l">'+n.toLocaleString()+' counties'+(mode==='pct'&&nat.pct_years?' \u00b7 '+(nat.pct_years[0]===nat.pct_years[1]?nat.pct_years[0]:nat.pct_years[0]+'\u2013'+nat.pct_years[1])+' \u00b7 corn':'')+'</span>';
+    var n=nat.n_pct,lat=0,nm=' counties';
+    if(mode!=='pct'){
+      /* Same rule as the stats line (seed_static.py): only counties whose rent is from the latest survey year. n_rent also counts older carried-forward rents. */
+      var cs=nat.counties||{};n=0;
+      for(var k in cs){if((cs[k].ry||0)>lat)lat=cs[k].ry||0;}
+      for(var k2 in cs){if(cs[k2].ry===lat&&typeof cs[k2].r==='number')n++;}
+      nm=' counties with a '+lat+' rent';
+    }
+    h+='<span class="cr-mleg-l">'+n.toLocaleString()+nm+(mode==='pct'&&nat.pct_years?' \u00b7 '+(nat.pct_years[0]===nat.pct_years[1]?nat.pct_years[0]:nat.pct_years[0]+'\u2013'+nat.pct_years[1])+' \u00b7 corn':'')+'</span>';
     $('cr-mleg').innerHTML=h;
   }
   function style(f){

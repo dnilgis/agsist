@@ -248,14 +248,18 @@ def seed_cashrent(today):
     except Exception:
         return False
     counties = d.get("counties") or {}
-    vals = sorted(v["r"] for v in counties.values() if isinstance(v.get("r"), (int, float)))
+    # Only counties whose rent is from the latest survey year count. Older
+    # carried-forward rents (ry < latest) must not enter the count or the median.
+    latest_ry = max((v.get("ry") or 0) for v in counties.values())
+    cur = [v for v in counties.values()
+           if v.get("ry") == latest_ry and isinstance(v.get("r"), (int, float))]
+    vals = sorted(v["r"] for v in cur)
     if not vals:
         return False
     med = vals[len(vals) // 2] if len(vals) % 2 else (vals[len(vals)//2 - 1] + vals[len(vals)//2]) / 2
-    states = len({v.get("s") for v in counties.values()})
-    latest_ry = max(v.get("ry", 0) for v in counties.values())
+    states = len({v.get("s") for v in cur})
     years = d.get("pct_years") or [None, None]
-    line = (f"{d.get('n_rent', len(counties)):,} counties in {states} states with a published "
+    line = (f"{len(cur):,} counties in {states} states with a published "
             f"{latest_ry} rent &middot; median county rate ${med:.2f}/acre (non-irrigated where "
             f"available) &middot; rent-to-revenue ratio computed for {d.get('n_pct', 0):,} counties "
             f"({years[0]}&ndash;{years[-1]}) &middot; data refreshed {d.get('generated', today)}")
@@ -316,6 +320,9 @@ def main():
         fq = quotes.get(crop_key + "-nearby") or quotes.get(crop_key)
         mon = (fq or {}).get("contract")   # e.g. "Sep '26"; None on fallback
         bq = quotes.get(bench_key)
+        # the benchmark is often the same contract as the nearby (Dec corn in Sep); list it once
+        if mon and bq and bench_label[:3].lower() == mon[:3].lower():
+            bq = None
         f_usd = grain_dollars(fq)
         b_usd = grain_dollars(bq)
         changed = False

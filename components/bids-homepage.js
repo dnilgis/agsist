@@ -5,8 +5,9 @@
 // read in the browser by components/bids-network.js) is the primary source and
 // wins on price. The licensed Barchart feed, reached through the Cloudflare
 // Worker proxy so the key is never in the page, fills what the network does
-// not cover. Neither failing empties the card. When the subscription is
-// cancelled set LICENSED_FEED = false below and the request is never made.
+// not cover. Neither failing empties the card. When the second feed ends set
+// LICENSED_FEED = false below and the request is never made (that cutover is
+// the owner's decision; this file does not make it).
 //
 // Groups results by elevator, shows top 3 nearest with commodity rows.
 //
@@ -22,7 +23,7 @@
   // Cloudflare Worker proxy — API key is held server-side, never exposed.
   var PROXY_URL = 'https://agsist-barchart.dnilgis.workers.dev/barchart/getGrainBids';
 
-  // Set to false the day the Barchart subscription ends. Off means off: the
+  // Set to false the day the second feed ends. Off means off: the
   // proxy is not called at all, rather than called and ignored.
   var LICENSED_FEED = true;
   var LICENSED_DEADLINE_MS = 6000;
@@ -32,8 +33,35 @@
   var MAX_BIDS_PER_COMMODITY = 3;
 
   // ── Helpers ─────────────────────────────────────────────────────
+  // Meal, hulls, pellets, oil and flour are priced per ton, not per bushel, and
+  // "soybean meal" contains "soy". They are never filed under the grain.
+  var NOT_PER_BUSHEL = /\b(meal|hulls?|pellets?|oil|flour|ddg|distillers|gluten|canola|peas?)\b/i;
+  function notPerBushel(b){ return NOT_PER_BUSHEL.test(String(b && b.commodity || '')); }
+  // White, non-GMO, organic, feed, durum and spring wheat are different products
+  // from the commodity the futures price. Words are the ones the feed carries.
+  var SPECIAL_GRADE = /non[- ]?gmo|organic|\bwhite\b|\bfeed\b|durum|\bsww\b|spring|\bhrs\b|\bdns\b|dark northern|mgex/i;
+  function isSpecialGrade(b){ return SPECIAL_GRADE.test(String(b && b.commodity || '')); }
+  var PPU_BAND = { corn:[2,12], soybeans:[6,32], wheat:[3,20] };
+  function ppu(raw){ return raw == null ? null : (raw > 30 ? raw / 100 : raw); }
+  // A row outside its own commodity's band is a unit mismatch, not a price.
+  function plausible(b){
+    var band = PPU_BAND[b.category];
+    if(!band) return true;
+    var p = ppu(b.cashPrice);
+    return p != null && p >= band[0] && p <= band[1];
+  }
+  var US_STATES = 'AL AK AZ AR CA CO CT DE DC FL GA HI ID IL IN IA KS KY LA ME MD MA MI MN MS MO MT NE NV NH NJ NM NY NC ND OH OK OR PA RI SC SD TN TX UT VT VA WA WV WI WY'.split(' ');
+  // A blank state is kept (the feed does not always carry one); a state that
+  // is not a US state (an Ontario row, say) is not a US bid.
+  function inScope(b){
+    var st = String(b.state || '').trim().toUpperCase();
+    if(st && US_STATES.indexOf(st) < 0) return false;
+    if(b.currency && String(b.currency).toUpperCase() !== 'USD') return false;
+    return true;
+  }
   function classifyCommodity(name){
     var n = (name || '').toLowerCase();
+    if(NOT_PER_BUSHEL.test(n)) return 'other';
     if(n.indexOf('corn') >= 0) return 'corn';
     if(n.indexOf('soy') >= 0 || n.indexOf('bean') >= 0) return 'soybeans';
     if(n.indexOf('wheat') >= 0 || n.indexOf('hrw') >= 0 || n.indexOf('srw') >= 0 || n.indexOf('hrs') >= 0) return 'wheat';
@@ -54,15 +82,18 @@
     var cents = basisCents(bN);
     if(cents == null) return { str:'\u2014', cls:'muted' };
     return {
-      str: (cents >= 0 ? '+' : '') + cents.toFixed(0) + '\u00a2',
+      str: (cents >= 0 ? '+' : '\u2212') + Math.abs(cents).toFixed(0) + '\u00a2',
       cls: cents > 0 ? 'pos' : cents < 0 ? 'neg' : 'muted'
     };
   }
 
   var COMM_ORDER = ['corn','soybeans','wheat','other'];
-  var COMM_ICONS = { corn:'\ud83c\udf3d', soybeans:'\ud83e\udeb6', wheat:'\ud83c\udf3e', other:'\ud83c\udf31' };
   var COMM_NAMES = { corn:'Corn', soybeans:'Soybeans', wheat:'Wheat', other:'Other' };
   var COMM_COLORS = { corn:'var(--gold)', soybeans:'var(--green)', wheat:'#ca8a3c', other:'var(--text-muted)' };
+
+  // NOT `parseFloat(x) || null`: a FLAT basis is exactly 0 and 0 is falsy, so
+  // the strongest basis on a board was published as "unknown".
+  function flatNum(v){ var n = parseFloat(v); return isFinite(n) ? n : null; }
 
   // ── Flatten Barchart response (same logic as /cash-bids) ───────
   function flattenBarchartResponse(data){
@@ -82,7 +113,7 @@
             phone: item.phone || '',
             commodity: bid.commodity || bid.commodity_display_name || bid.commodityName || '',
             cashPrice: parseFloat(bid.cashprice || bid.cashPrice) || null,
-            basis: parseFloat(bid.basis) || null,
+            basis: flatNum(bid.basis),
             deliveryMonth: bid.deliveryMonth || bid.delivery_month || '',
             deliveryStart: bid.deliveryStart || bid.delivery_start || '',
             category: classifyCommodity(bid.commodity || bid.commodity_display_name || bid.commodityName || '')
@@ -97,7 +128,7 @@
           phone: item.phone || '',
           commodity: item.commodity || item.commodity_display_name || item.commodityName || '',
           cashPrice: parseFloat(item.cashprice || item.cashPrice) || null,
-          basis: parseFloat(item.basis) || null,
+          basis: flatNum(item.basis),
           deliveryMonth: item.deliveryMonth || item.delivery_month || '',
           deliveryStart: item.deliveryStart || item.delivery_start || '',
           category: classifyCommodity(item.commodity || item.commodity_display_name || item.commodityName || '')
@@ -108,6 +139,8 @@
   }
 
   // ── Group flat bids → elevator objects ──────────────────────────
+  // The feed sends "N/A" for boards with no phone. Not a number: no Call button.
+  function hasPhone(p){ return String(p || '').replace(/\D/g, '').length >= 7; }
   function groupByElevator(bids){
     var map = {};
     bids.forEach(function(b){
@@ -116,11 +149,12 @@
         map[key] = {
           facility: b.facility, branch: b.branch,
           city: b.city, state: b.state,
-          distance: b.distance, phone: b.phone,
+          distance: b.distance, phone: hasPhone(b.phone) ? b.phone : '',
           commodities: {}
         };
       }
       var elev = map[key];
+      if(!hasPhone(elev.phone) && hasPhone(b.phone)) elev.phone = b.phone;
       var cat = b.category || 'other';
       if(!elev.commodities[cat]) elev.commodities[cat] = [];
       elev.commodities[cat].push(b);
@@ -163,20 +197,27 @@
 
       // Commodity label
       html += '<div style="display:flex;align-items:center;gap:.3rem;margin:.2rem 0 .1rem;font-size:.58rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:' + COMM_COLORS[cat] + '">'
-        + '<span style="font-size:.72rem">' + COMM_ICONS[cat] + '</span> ' + COMM_NAMES[cat]
+        + COMM_NAMES[cat]
         + '</div>';
 
       // Bid rows
       shown.forEach(function(bid){
-        var cashStr = bid.cashPrice != null ? '$' + bid.cashPrice.toFixed(2) : '\u2014';
-        var basis = formatBasis(bid.basis);
+        var perTon = notPerBushel(bid);
+        var pp = perTon ? null : ppu(bid.cashPrice);
+        var cashStr = pp != null ? '$' + pp.toFixed(2) : '\u2014';
+        var basis = perTon ? { str:'\u2014', cls:'muted' } : formatBasis(bid.basis);
         var del = bid.deliveryMonth || bid.deliveryStart || 'Spot';
+        var grade = String(bid.commodity || '').trim();
+        var gradeTxt = grade + (perTon ? (grade ? ' \u00b7 ' : '') + 'per ton, not per bushel' : '');
         var bColor = basis.cls === 'pos' ? 'var(--green)' : basis.cls === 'neg' ? 'var(--red,#ef4444)' : 'var(--text-muted)';
 
         html += '<div style="display:grid;grid-template-columns:1fr auto auto;gap:.1rem .45rem;align-items:baseline;padding:.1rem .15rem">';
         html += '<span style="font-size:.7rem;color:var(--text-dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + escHtml(del) + '</span>';
         html += '<span style="font-family:\'JetBrains Mono\',monospace;font-size:.82rem;font-weight:700;color:var(--text);text-align:right;white-space:nowrap">' + cashStr + '</span>';
         html += '<span style="font-family:\'JetBrains Mono\',monospace;font-size:.68rem;font-weight:700;color:' + bColor + ';text-align:right;white-space:nowrap;min-width:40px">' + basis.str + '</span>';
+        if(gradeTxt){
+          html += '<span style="grid-column:1/-1;font-size:.62rem;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + escHtml(gradeTxt) + '</span>';
+        }
         html += '</div>';
       });
 
@@ -195,14 +236,27 @@
   // cannot show a stale or invented number: no bid, no line.
   function publishSummary(label, zip, bids, elevators){
     try{
-      var best = null;
+      /* THE NEAREST OPEN MONTH FIRST, THEN THE HIGHEST PRICE INSIDE IT. The
+         highest corn price across every month is an elevator's 2027 forward
+         beating today's spot. White corn and other special grades never set
+         the headline. A row with no month is used only if no row has one. */
+      var best = null, bestKey = '', nowKey = thisMonth(), pool = [], keyed = [];
       for(var i = 0; i < bids.length; i++){
         var b = bids[i];
         /* flattenBarchartResponse has already classified every row; using
            its `category` avoids a second copy of the rule. */
         if(b.category !== 'corn') continue;
-        if(b.cashPrice == null) continue;
-        if(!best || b.cashPrice > best.cashPrice) best = b;
+        if(b.cashPrice == null || notPerBushel(b) || isSpecialGrade(b)) continue;
+        pool.push(b);
+        var k = rowMonthKey(b);
+        if(k && k >= nowKey) keyed.push({b: b, k: k});
+      }
+      if(keyed.length){
+        keyed.forEach(function(x){ if(!bestKey || x.k < bestKey) bestKey = x.k; });
+        pool = keyed.filter(function(x){ return x.k === bestKey; }).map(function(x){ return x.b; });
+      }
+      for(var j = 0; j < pool.length; j++){
+        if(!best || pool[j].cashPrice > best.cashPrice) best = pool[j];
       }
       if(!best) return;
       var sum = {
@@ -227,8 +281,9 @@
   // ── The two feeds ───────────────────────────────────────────────
   // The dedupe is the rule /cash-bids already uses (netKey): same operator
   // name once legal words and plurals are stripped, same town, same state.
-  // It does NOT merge "ADM Grain" with "ADM": a repeated elevator is visible
-  // and fixable, a wrong merge hides a real one.
+  // Names that differ by a real word ("ADM Grain" / "ADM") are merged only by
+  // isTwin() below, under much stricter conditions: a repeated elevator is
+  // visible and fixable, a wrong merge hides a real one.
   var LEGAL = {llc:1,lc:1,inc:1,incorporated:1,co:1,corp:1,corporation:1,ltd:1,limited:1,lp:1,llp:1,company:1};
   function normOperator(name){
     var t = String(name || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ')
@@ -286,7 +341,7 @@
         snap.bids.forEach(function(r){
           // A delivery window that has closed is not a bid.
           if(/^\d{4}-\d{2}/.test(r.period || '') && r.period.slice(0, 7) < now) return;
-          var cat = /^(corn|soybeans|wheat)$/.test(r.crop || '') ? r.crop : classifyCommodity(r.commodity);
+          var cat = notPerBushel(r) ? 'other' : (/^(corn|soybeans|wheat)$/.test(r.crop || '') ? r.crop : classifyCommodity(r.commodity));
           rows.push({
             facility: r.facility || '', branch: r.branch || '',
             city: r.city || '', state: r.state || '',
@@ -296,7 +351,7 @@
             basis: r.basis == null ? null : r.basis,
             deliveryMonth: periodLabel(r.period) || r.delivery || '',
             deliveryStart: r.period || '',
-            category: cat, source: 'network'
+            category: cat, source: 'network', currency: r.currency || ''
           });
         });
         return {rows: rows, ok: true};
@@ -314,6 +369,32 @@
     return Promise.race([live, new Promise(function(res){ setTimeout(function(){ res({rows: [], ok: false}); }, LICENSED_DEADLINE_MS); })]);
   }
 
+  // The delivery month of a row as YYYY-MM: from the label ("Nov 2026",
+  // "Sep26", "Sept '26") first, then from the period / window start.
+  function rowMonthKey(r){
+    var mm = /^([A-Za-z]{3})[A-Za-z]*\s*'?(\d{2}|\d{4})$/.exec(String(r.deliveryMonth || '').trim());
+    var i = mm ? MON.map(function(x){ return x.toLowerCase(); }).indexOf(mm[1].toLowerCase()) : -1;
+    if(i >= 0) return (mm[2].length === 2 ? '20' + mm[2] : mm[2]) + '-' + ('0' + (i + 1)).slice(-2);
+    var m = /^(\d{4})-(\d{2})/.exec(String(r.deliveryStart || ''));
+    return m ? m[1] + '-' + m[2] : '';
+  }
+  // The same elevator under a longer name ("ADM" and "ADM Grain" at Mankato):
+  // same town, state, crop, delivery month, one whole normalised name a prefix
+  // of the other, cash within one cent. Same rule as netIsTwin() in /cash-bids;
+  // anything looser merges different companies (CHS Ag Terminals sits 5c under
+  // ADM Mankato).
+  function isTwin(a, b){
+    if(a.category !== b.category || a.cashPrice == null || b.cashPrice == null) return false;
+    if(Math.abs(a.cashPrice - b.cashPrice) > 0.01) return false;
+    var ca = plain(a.city);
+    if(!ca || ca !== plain(b.city) || !plain(a.state) || plain(a.state) !== plain(b.state)) return false;
+    var ka = rowMonthKey(a);
+    if(!ka || ka !== rowMonthKey(b)) return false;
+    var na = normOperator(a.facility), nb = normOperator(b.facility);
+    if(na.length < 3 || nb.length < 3) return false;
+    return na.indexOf(nb) === 0 || nb.indexOf(na) === 0;
+  }
+
   // Ours wins on price. A licensed row is dropped only where the network
   // already prices that SAME crop at that elevator; a crop the network lacks
   // there is kept. The licensed row lends its phone number either way.
@@ -327,6 +408,9 @@
         var has = mates.some(function(o){ return o.category === r.category; });
         if(has) return;
       }
+      for(var i = 0; i < net.length; i++){
+        if(isTwin(net[i], r)){ if(!net[i].phone && r.phone) net[i].phone = r.phone; return; }
+      }
       out.push(r);
     });
     return out;
@@ -337,7 +421,9 @@
       // Neither feed could be read: say so. An empty list here would tell the
       // reader there are no elevators near them, which is not what happened.
       if(x[0].ok === false && (x[1].ok === false || x[1].ok === null)) throw new Error('no bid feed reachable');
-      return mergeFeeds(x[0].rows, x[1].rows).filter(function(b){ return b.cashPrice !== null || b.basis !== null; });
+      return mergeFeeds(x[0].rows, x[1].rows).filter(function(b){
+        return (b.cashPrice !== null || b.basis !== null) && inScope(b) && plausible(b);
+      });
     });
   }
   window.__agsistHomeBidsInternals = { mergeFeeds: mergeFeeds, rowKey: rowKey, fromNetwork: fromNetwork };
@@ -359,7 +445,7 @@
 
     // Update geo bar
     if(geoTxt){
-      geoTxt.textContent = label ? ('\ud83d\udccd ' + label) : ('\ud83d\udccd ZIP ' + zip);
+      geoTxt.textContent = label ? label : ('ZIP ' + zip);
     }
 
     // Show loading skeleton
@@ -376,7 +462,6 @@
 
         if(bids.length === 0){
           area.innerHTML = '<div style="text-align:center;padding:1rem;font-size:.82rem;color:var(--text-muted)">'
-            + '<div style="font-size:1.2rem;margin-bottom:.3rem">\ud83d\udccd</div>'
             + 'No elevator bids found within 50 mi.<br>'
             + '<a href="/cash-bids?zip=' + escHtml(zip) + '" style="color:var(--gold)">Try wider search \u2192</a></div>';
           return;

@@ -43,7 +43,7 @@ const grab = (name) => {
    would be a second source of truth for exactly the number in dispute. */
 const bandLine = h.match(/var PPU_BAND=\{[^}]*\};/);
 if (!bandLine) throw new Error("no PPU_BAND");
-const src = ["classify", "ppu", "basisCents", "plausible", "futuresOf", "contractLabel", "contractStrip"].map(grab).join("\n")
+const src = ["normSym", "classify", "ppu", "basisCents", "plausible", "futuresOf", "contractLabel", "contractStrip"].map(grab).join("\n")
   + "\n" + bandLine[0];
 const M = new Function(src + "; return {classify,ppu,basisCents,plausible,futuresOf,contractLabel,contractStrip};")();
 

@@ -46,8 +46,7 @@
     {"@type":"WebPage","url":"https://agsist.com/usda-quick-stats","name":"U.S. Crop Data — Yields, Acres & Prices by State (USDA NASS) | AGSIST","description":"National USDA crop data dashboard with 2025 production and record yields, season-average prices, and multi-year state-level yield, acreage, and price series from USDA NASS, plus a query builder.","dateModified":"2026-06-16","isPartOf":{"@type":"WebSite","url":"https://agsist.com/"},"breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://agsist.com/"},{"@type":"ListItem","position":2,"name":"USDA Quick Stats","item":"https://agsist.com/usda-quick-stats"}]}},
     {"@type":"Dataset","name":"U.S. Corn, Soybean & Wheat Production, Yield, Acreage & Price (USDA NASS)","description":"National and state-level USDA NASS data: corn, soybean, and winter wheat yields and planted acres by state, plus national season-average prices received, 2010 to present, with U.S. totals for the latest crop year.","temporalCoverage":"2010/2025","spatialCoverage":"United States","url":"https://agsist.com/usda-quick-stats","isAccessibleForFree":true,"license":"https://www.usda.gov/policies-and-links","creator":{"@type":"GovernmentOrganization","name":"USDA National Agricultural Statistics Service","url":"https://www.nass.usda.gov"},"distribution":{"@type":"DataDownload","encodingFormat":"text/csv","contentUrl":"https://agsist.com/usda-quick-stats"}},
     {"@type":"FAQPage","mainEntity":[
-      {"@type":"Question","name":"How much corn, soybeans, and wheat did the U.S. produce in 2025?","acceptedAnswer":{"@type":"Answer","text":"In the 2025 crop year, U.S. farmers produced a record 17.0 billion bushels of corn (186.5 bu/acre, a record yield), 4.26 billion bushels of soybeans (a record 53.0 bu/acre), and about 1.99 billion bushels of all wheat (52.6 bu/acre), according to USDA NASS Crop Production 2025 Summary."}},
-      {"@type":"Question","name":"What is the season-average farm price for corn, soybeans, and wheat?","acceptedAnswer":{"@type":"Answer","text":"For the 2025/26 marketing year, USDA's season-average farm price estimates are about $4.15 per bushel for corn, $10.50 for soybeans, and $5.00 for all wheat. These are marketing-year estimates and are revised monthly in the WASDE report."}},
+      {"@type":"Question","name":"How much corn, soybeans, and wheat did the U.S. produce in 2025?","acceptedAnswer":{"@type":"Answer","text":"In the 2025 crop year, U.S. farmers produced a record 17.0 billion bushels of corn (186.5 bu/acre, a record yield), 4.26 billion bushels of soybeans (a record 53.0 bu/acre), and about 1.99 billion bushels of all wheat (53.3 bu/acre), according to USDA NASS Crop Production 2025 Summary."}},
       {"@type":"Question","name":"How do I get historical corn yield data by state?","acceptedAnswer":{"@type":"Answer","text":"AGSIST's Data Explorer shows USDA NASS corn, soybean, and wheat yields and planted acres by state from 2010 to present, with CSV export. For any other commodity, geography, or year, use the built-in query builder or open USDA NASS Quick Stats directly."}},
       {"@type":"Question","name":"Does USDA NASS have a free API?","acceptedAnswer":{"@type":"Answer","text":"Yes. USDA NASS offers a free API at quickstats.nass.usda.gov/api. A free API key is required. The API returns JSON, CSV, or XML using the same query parameters as the web query builder."}}
     ]}
@@ -282,15 +281,15 @@
     <div class="qs-main">
       <nav class="qs-bc" aria-label="Breadcrumb"><a href="/">Home</a> &rarr; USDA Quick Stats</nav>
 
-      <h2 class="qs-sh"><svg class="ic" aria-hidden="true"><use href="#i-chart-column"/></svg>The National Numbers <span>&middot; 2025</span></h2>
-      <p class="qs-ss">Where the U.S. crop stands this year — the headline production, record yields, and season-average prices producers are pricing off of.</p>
+      <h2 class="qs-sh"><svg class="ic" aria-hidden="true"><use href="#i-chart-column"/></svg>Last Year&rsquo;s Crop <span>&middot; 2025</span></h2>
+      <p class="qs-ss">Last year&rsquo;s crop (2025/26 estimate) — the headline production, yields, and marketing-year average prices. The 2026 crop is still in the field; state forecasts are in the table further down.</p>
       <div class="snap-grid">
       <div class="snap-card">
         <div class="snap-head"><svg class="ic" aria-hidden="true"><use href="#i-sprout"/></svg><span class="snap-name">Corn</span><span class="snap-badge"><svg class="ic" aria-hidden="true"><use href="#i-award"/></svg>Record yield</span></div>
         <div class="snap-prod"><span class="snap-prod-num">17.0</span><span class="snap-prod-unit">B&nbsp;bu</span><span class="snap-prod-yoy up">&#9650; +14% vs &rsquo;24</span></div>
         <div class="snap-rows">
           <div class="snap-row"><span class="snap-rl">Avg yield</span><span class="snap-rv">186.5 bu/ac<span class="yoy up">&#9650; +7.2</span></span></div>
-          <div class="snap-row"><span class="snap-rl">Season-avg price</span><span class="snap-rv">$4.15/bu<span class="snap-rl" style="font-weight:400"> &middot; 2025/26 est.</span></span></div>
+          <div class="snap-row"><span class="snap-rl">Marketing-year avg price</span><span class="snap-rv">$4.15/bu<span class="snap-rl" style="font-weight:400"> &middot; 2025/26 est.</span></span></div>
           <div class="snap-row"><span class="snap-rl">Harvested</span><span class="snap-rv">91.3 M ac</span></div>
         </div>
         <div class="spark-wrap" id="sparkwrap-corn" style="display:none"><span class="spark-lbl">Yield &rsquo;10&ndash;&rsquo;25</span><span class="spark" id="spark-corn"></span></div>
@@ -300,7 +299,7 @@
         <div class="snap-prod"><span class="snap-prod-num">4.26</span><span class="snap-prod-unit">B&nbsp;bu</span><span class="snap-prod-yoy down">&#9660; &minus;3% vs &rsquo;24</span></div>
         <div class="snap-rows">
           <div class="snap-row"><span class="snap-rl">Avg yield</span><span class="snap-rv">53.0 bu/ac<span class="yoy up">&#9650; +2.3</span></span></div>
-          <div class="snap-row"><span class="snap-rl">Season-avg price</span><span class="snap-rv">$10.50/bu<span class="snap-rl" style="font-weight:400"> &middot; 2025/26 est.</span></span></div>
+          <div class="snap-row"><span class="snap-rl">Marketing-year avg price</span><span class="snap-rv">$10.50/bu<span class="snap-rl" style="font-weight:400"> &middot; 2025/26 est.</span></span></div>
           <div class="snap-row"><span class="snap-rl">Harvested</span><span class="snap-rv">80.4 M ac</span></div>
         </div>
         <div class="spark-wrap" id="sparkwrap-soy" style="display:none"><span class="spark-lbl">Yield &rsquo;10&ndash;&rsquo;25</span><span class="spark" id="spark-soy"></span></div>
@@ -309,14 +308,14 @@
         <div class="snap-head"><svg class="ic" aria-hidden="true"><use href="#i-wheat"/></svg><span class="snap-name">Wheat (all)</span></div>
         <div class="snap-prod"><span class="snap-prod-num">1.99</span><span class="snap-prod-unit">B&nbsp;bu</span><span class="snap-prod-yoy up">&#9650; flat vs &rsquo;24</span></div>
         <div class="snap-rows">
-          <div class="snap-row"><span class="snap-rl">Avg yield</span><span class="snap-rv">52.6 bu/ac<span class="yoy up">&#9650; +1.4</span></span></div>
-          <div class="snap-row"><span class="snap-rl">Season-avg price</span><span class="snap-rv">$5.00/bu<span class="snap-rl" style="font-weight:400"> &middot; 2025/26 est.</span></span></div>
+          <div class="snap-row"><span class="snap-rl">Avg yield</span><span class="snap-rv">53.3 bu/ac<span class="yoy up">&#9650; +2.1</span></span></div>
+          <div class="snap-row"><span class="snap-rl">Marketing-year avg price</span><span class="snap-rv">$5.00/bu<span class="snap-rl" style="font-weight:400"> &middot; 2025/26 est.</span></span></div>
           <div class="snap-row"><span class="snap-rl">Harvested</span><span class="snap-rv">38.0 M ac</span></div>
         </div>
         <div class="spark-wrap" id="sparkwrap-wheat" style="display:none"><span class="spark-lbl">Yield &rsquo;10&ndash;&rsquo;25</span><span class="spark" id="spark-wheat"></span></div>
       </div>
       </div>
-      <p class="snap-src">Production, yield &amp; harvested acres: USDA NASS <em>Crop Production 2025 Summary</em> (final, Jan 2026). Season-average farm prices: USDA WASDE 2025/26 marketing-year estimates (revised monthly). Yield trend lines are drawn from the national series below when available.</p>
+      <p class="snap-src">Production, yield &amp; harvested acres: USDA NASS <em>Crop Production 2025 Summary</em> (final, Jan 2026). Marketing-year average farm prices: USDA WASDE 2025/26 estimates, a fixed snapshot that WASDE revises monthly. The price tabs in the Data Explorer below are calendar-year averages, so they differ from these marketing-year figures. Yield trend lines are drawn from the national series below when available.</p>
 
       <hr class="qs-hr">
 
@@ -348,8 +347,8 @@
           <button class="ds-tab" data-ds="wheat-yield"        onclick="loadDS('wheat-yield')"><svg class="ic" aria-hidden="true"><use href="#i-wheat"/></svg> Wheat Yield</button>
           <button class="ds-tab" data-ds="corn-acres"         onclick="loadDS('corn-acres')"><svg class="ic" aria-hidden="true"><use href="#i-ruler"/></svg> Corn Acres</button>
           <button class="ds-tab" data-ds="soy-acres"          onclick="loadDS('soy-acres')"><svg class="ic" aria-hidden="true"><use href="#i-ruler"/></svg> Soy Acres</button>
-          <button class="ds-tab" data-ds="corn-price"         onclick="loadDS('corn-price')"><svg class="ic" aria-hidden="true"><use href="#i-banknote"/></svg> Corn Price</button>
-          <button class="ds-tab" data-ds="soy-price"          onclick="loadDS('soy-price')"><svg class="ic" aria-hidden="true"><use href="#i-banknote"/></svg> Soy Price</button>
+          <button class="ds-tab" data-ds="corn-price"         onclick="loadDS('corn-price')"><svg class="ic" aria-hidden="true"><use href="#i-banknote"/></svg> Corn Price (calendar yr)</button>
+          <button class="ds-tab" data-ds="soy-price"          onclick="loadDS('soy-price')"><svg class="ic" aria-hidden="true"><use href="#i-banknote"/></svg> Soy Price (calendar yr)</button>
         </div>
         <div class="nass-chart-wrap" id="nass-chart-wrap"></div>
         <div class="exp-bar">
@@ -452,12 +451,12 @@
         </div>
         <div class="pq-card">
           <h3><svg class="ic" aria-hidden="true"><use href="#i-banknote"/></svg>Corn Prices Received — U.S.</h3>
-          <p>Season-average prices received by U.S. farmers — compare against futures and break-even targets.</p>
+          <p>Prices received by U.S. farmers — compare against futures and break-even targets.</p>
           <a class="pq-link" href="https://quickstats.nass.usda.gov/results/?commodity_desc=CORN&statisticcat_desc=PRICE+RECEIVED&agg_level_desc=NATIONAL&year__GE=2010" target="_blank" rel="noopener">Run Query <svg class="ic" aria-hidden="true"><use href="#i-external-link"/></svg></a>
         </div>
         <div class="pq-card">
           <h3><svg class="ic" aria-hidden="true"><use href="#i-banknote"/></svg>Soybean Prices Received — U.S.</h3>
-          <p>National season-average soybean prices — track multi-year price cycles for forward marketing.</p>
+          <p>National soybean prices received — track multi-year price cycles for forward marketing.</p>
           <a class="pq-link" href="https://quickstats.nass.usda.gov/results/?commodity_desc=SOYBEANS&statisticcat_desc=PRICE+RECEIVED&agg_level_desc=NATIONAL&year__GE=2010" target="_blank" rel="noopener">Run Query <svg class="ic" aria-hidden="true"><use href="#i-external-link"/></svg></a>
         </div>
         <div class="pq-card">
@@ -520,6 +519,27 @@
         </div>
       </div>
 
+<!--FAQ:START-->
+<style>
+.agf{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.1rem 1.2rem;margin:1.5rem 0 0}
+.agf-t{font-family:var(--font-display);font-size:.95rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text);margin:0 0 .4rem}
+.agf details{border-top:1px solid var(--border)}
+.agf details:first-of-type{border-top:0}
+.agf summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:baseline;gap:.75rem;padding:.85rem 0;font-size:1rem;font-weight:600;line-height:1.4;color:var(--text)}
+.agf summary::-webkit-details-marker{display:none}
+.agf summary::after{content:"+";color:var(--gold);font-weight:700;flex-shrink:0}
+.agf details[open] summary::after{content:"\2212"}
+.agf summary:focus-visible{outline:2px solid var(--gold);outline-offset:2px;border-radius:4px}
+.agf-a{font-size:1rem;line-height:1.65;color:var(--text-dim);padding:0 0 .95rem}
+</style>
+<section class="faq agf" aria-labelledby="agf-t">
+<h2 class="agf-t" id="agf-t">Common questions</h2>
+<details><summary>How much corn, soybeans, and wheat did the U.S. produce in 2025?</summary><div class="agf-a">In the 2025 crop year, U.S. farmers produced a record 17.0 billion bushels of corn (186.5 bu/acre, a record yield), 4.26 billion bushels of soybeans (a record 53.0 bu/acre), and about 1.99 billion bushels of all wheat (53.3 bu/acre), according to USDA NASS Crop Production 2025 Summary.</div></details>
+<details><summary>How do I get historical corn yield data by state?</summary><div class="agf-a">AGSIST's Data Explorer shows USDA NASS corn, soybean, and wheat yields and planted acres by state from 2010 to present, with CSV export. For any other commodity, geography, or year, use the built-in query builder or open USDA NASS Quick Stats directly.</div></details>
+<details><summary>Does USDA NASS have a free API?</summary><div class="agf-a">Yes. USDA NASS offers a free API at quickstats.nass.usda.gov/api. A free API key is required. The API returns JSON, CSV, or XML using the same query parameters as the web query builder.</div></details>
+</section>
+<!--FAQ:END-->
+
     </div>
   </main>
 
@@ -543,8 +563,8 @@
     'wheat-yield': {file:'/data/nass/wheat-yield.json',  us:'/data/nass/wheat-yield-us.json', label:'Winter Wheat Yield',    unit:'bu/acre'},
     'corn-acres':  {file:'/data/nass/corn-acres.json',   agg:'sum',                           label:'Corn Acres Planted',    unit:'M acres'},
     'soy-acres':   {file:'/data/nass/soy-acres.json',    agg:'sum',                           label:'Soybean Acres Planted', unit:'M acres'},
-    'corn-price':  {file:'/data/nass/corn-price.json',   agg:'avg',                           label:'Corn Price Received',   unit:'$/bu'},
-    'soy-price':   {file:'/data/nass/soy-price.json',    agg:'avg',                           label:'Soybean Price Received',unit:'$/bu'}
+    'corn-price':  {file:'/data/nass/corn-price.json',   agg:'avg',                           label:'Corn Price Received (calendar-year avg)',   unit:'$/bu'},
+    'soy-price':   {file:'/data/nass/soy-price.json',    agg:'avg',                           label:'Soybean Price Received (calendar-year avg)',unit:'$/bu'}
   };
   var currentKey = 'corn-yield';
   var currentData = null;
@@ -692,6 +712,7 @@
       h += '<tr><td class="td-state">'+r.state+'</td>';
       years.forEach(function(y){
         var v = r.values ? r.values[y] : null;
+        if (v!=null && +v<=0) v = null; /* 0 = no report (e.g. Other States), not a zero yield */
         h += v!=null ? '<td class="td-val">'+(+v).toLocaleString()+'</td>' : '<td class="td-null">\u2014</td>';
       });
       h += '</tr>';
@@ -713,7 +734,7 @@
     } else {
       csv = ['State,'+years.join(',')];
       (currentData.rows||[]).forEach(function(r){
-        csv.push(r.state + ',' + years.map(function(y){ return (r.values && r.values[y]!=null) ? r.values[y] : ''; }).join(','));
+        csv.push(r.state + ',' + years.map(function(y){ return (r.values && r.values[y]!=null && +r.values[y]>0) ? r.values[y] : ''; }).join(','));
       });
     }
     var blob = new Blob([csv.join('\n')], {type:'text/csv'});

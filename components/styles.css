@@ -285,7 +285,6 @@ button:focus:not(:focus-visible), a:focus:not(:focus-visible) { outline: none }
 .s-card { background: var(--surface); border: 2px solid var(--border); border-radius: var(--r-md); padding: 1.2rem; position: relative; overflow: hidden; transition: border-color .2s; min-width: 0; }
 .s-card:hover { border-color: var(--border-g) }
 .s-card--gold { border-color: var(--border-g) }
-.s-card--ffai { border-color: rgba(74,143,186,0.25); background: linear-gradient(135deg, var(--surface) 0%, rgba(74,143,186,0.04) 100%) }
 .s-card-label { font-family: 'JetBrains Mono', monospace; font-size:0.76rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--brand); margin-bottom: .7rem; opacity: .9; }
 .one-num { font-family: var(--font-display); font-size: 4rem; font-weight: 700; color: var(--gold); line-height: 1; margin-bottom: .2rem; letter-spacing: -.01em }
 .one-num-unit { font-size: .88rem; color: var(--text-dim); margin-bottom: .5rem }
@@ -396,7 +395,7 @@ button:focus:not(:focus-visible), a:focus:not(:focus-visible) { outline: none }
 @media (max-width: 520px) { .tool-widget-inner { padding: .6rem .75rem; gap: .25rem .5rem } .tool-widget-icon { font-size: 1.2rem } .tool-widget-status { font-size: .8rem } .tool-widget-detail { font-size:0.763rem } .tool-widget-score { font-size: 1.3rem } .tool-widget-badge { font-size:0.75rem } .tool-widget-rec { font-size:0.77rem; line-height: 1.45 } .tool-widget-top { gap: .45rem } }
 @media (max-width: 380px) { .tool-widget-inner { padding: .5rem .6rem } .tool-widget-icon { font-size: 1.05rem } .tool-widget-status { font-size:0.785rem } .tool-widget-detail { font-size:0.75rem } .tool-widget-score { font-size: 1.15rem } .tool-widget-badge { font-size:0.74rem; padding: .12rem .32rem } .tool-widget-rec { font-size:0.76rem } .tool-widget-arr { font-size:0.78rem } .tool-widget-top { gap: .35rem } }
 
-/* ── RADAR, DROUGHT, CALENDAR, FFAI, MARKETS ─────────────────────── */
+/* ── RADAR, DROUGHT, CALENDAR, MARKETS ─────────────────────── */
 .radar-section { margin-bottom: var(--sp-xl) }
 .radar-grid { display: grid; grid-template-columns: 3fr 2fr; gap: 1.25rem; align-items: stretch; min-height: 420px }
 .radar-card { background: var(--surface); border: 2px solid var(--border); border-radius: var(--r-md); overflow: hidden; display: flex; flex-direction: column; min-height: 380px }
@@ -425,17 +424,6 @@ button:focus:not(:focus-visible), a:focus:not(:focus-visible) { outline: none }
 .cal-name { font-size: .88rem; font-weight: 700; color: var(--text); margin-bottom: .2rem }
 .cal-time { font-family: 'JetBrains Mono', monospace; font-size:0.78rem; color: var(--text-muted); }
 @media (max-width: 520px) { .cal-strip { gap: .45rem; margin-bottom: 1.25rem } .cal-card { min-width: 140px; padding: .5rem .65rem; border-radius: var(--r-sm) } .cal-today-badge { font-size:0.737rem; padding: .08rem .3rem; margin-bottom: .2rem } .cal-date { font-size:0.755rem; margin-bottom: .15rem } .cal-name { font-size:0.787rem; margin-bottom: .1rem } .cal-time { font-size:0.755rem; line-height: 1.3 } }
-.ffai-score { font-family: var(--font-display); font-size: 3.8rem; font-weight: 700; color: var(--blue); line-height: 1; margin-bottom: .35rem }
-.ffai-bar-wrap { height: 5px; background: var(--surface3); border-radius: 3px; overflow: hidden; margin-bottom: .5rem }
-.ffai-bar-fill { height: 100%; background: linear-gradient(to right, var(--blue), #6aafda); border-radius: 3px; transition: width .8s cubic-bezier(.4,0,.2,1) }
-.ffai-meta { display: flex; align-items: center; justify-content: space-between; margin-bottom: .45rem }
-.ffai-prev { font-family: 'JetBrains Mono', monospace; font-size:0.79rem; color: var(--text-muted); }
-.ffai-prev strong { color: var(--text-dim) }
-.ffai-change { font-family: 'JetBrains Mono', monospace; font-size: .8rem; font-weight: 700; }
-.ffai-change.up { color: var(--green) } .ffai-change.dn { color: var(--red) }
-.ffai-desc { font-size:1rem; line-height: 1.55; color: var(--text-dim); margin-bottom: .5rem }
-.ffai-link { font-size:0.78rem; color: var(--blue); opacity: .8; transition: opacity .15s; display: block }
-.ffai-link:hover { opacity: 1 }
 .market-card { transition: border-color .2s } .market-card:hover { border-color: var(--border-g) }
 
 /* ── SIGNUP ───────────────────────────────────────────────────────── */
@@ -466,7 +454,7 @@ button:focus:not(:focus-visible), a:focus:not(:focus-visible) { outline: none }
 .signup--compact .scu-input::placeholder { color: var(--text-muted) } .signup--compact .scu-input:focus { border-color: var(--brand) }
 .signup--compact .scu-btn { padding: .6rem 1.1rem; background: var(--brand); color: #0a1206; border: none; border-radius: var(--r-sm); font-family: 'JetBrains Mono', monospace; font-size: .82rem; font-weight: 700; white-space: nowrap; text-transform: uppercase; letter-spacing: .5px; transition: background .15s; }
 .signup--compact .scu-btn:hover { filter: brightness(.9) }
-.signup--compact .scu-dismiss { margin-left: auto; font-size:0.78rem; color: var(--text-muted); background: none; border: none; white-space: nowrap; flex-shrink: 0 }
+.signup--compact .scu-dismiss { min-height: 44px; padding: 0 .5rem; margin-left: auto; font-size:0.78rem; color: var(--text-muted); background: none; border: none; white-space: nowrap; flex-shrink: 0 }
 .signup--compact .scu-dismiss:hover { color: var(--text-dim) }
 .signup--slim { display: flex; align-items: center; gap: .75rem; flex-wrap: wrap; margin-bottom: 1.5rem; padding: .55rem 1rem; border-top: 2px solid var(--border); border-bottom: 2px solid var(--border) }
 .signup--slim .scs-text { font-size:0.795rem; color: var(--text-muted); flex: 1; min-width: 0 }
@@ -484,7 +472,7 @@ button:focus:not(:focus-visible), a:focus:not(:focus-visible) { outline: none }
 .footer-status { display: flex; align-items: center; gap: .4rem; font-size:0.78rem; color: var(--text-dim) }
 .status-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--brand); animation: blink 2s ease-in-out infinite }
 .footer-cols { display: grid; grid-template-columns: repeat(5, 1fr); gap: 1.5rem; padding-bottom: .75rem; border-bottom: 1px solid var(--border); margin-bottom: .75rem }
-.footer-col h4 { font-family: 'JetBrains Mono', monospace; font-size:0.76rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--brand); margin-bottom: .45rem; opacity: .9; }
+.footer-col h4, .footer-col h2 { line-height: 1.65; font-family: 'JetBrains Mono', monospace; font-size:0.76rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--brand); margin-bottom: .45rem; opacity: .9; }
 .footer-col a { display: block; font-size: .82rem; color: var(--text-dim); padding: .38rem 0; transition: color .15s }
 .footer-col a:hover { color: var(--text) }
 .footer-net { padding-bottom: .75rem; border-bottom: 1px solid var(--border); margin-bottom: .6rem }
@@ -536,7 +524,8 @@ button:focus:not(:focus-visible), a:focus:not(:focus-visible) { outline: none }
 .panel-body { padding: 16px }
 .panel label { display: block; font-family: 'JetBrains Mono', monospace; font-size:0.77rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 5px; font-weight: 700; }
 .panel input[type="number"], .panel input[type="text"], .panel select { width: 100%; padding: 10px 12px; font-family: 'JetBrains Mono', monospace; font-size: .88rem; background: var(--bg); border: 2px solid var(--border); border-radius: var(--r-sm); color: var(--text); box-sizing: border-box; transition: border-color .2s; }
-.panel input:focus, .panel select:focus { outline: none; border-color: var(--brand) }
+.panel input:focus, .panel select:focus { border-color: var(--brand) }
+.panel input:focus-visible, .panel select:focus-visible { outline: 2px solid var(--gold, var(--brand)); outline-offset: 2px }
 .result-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--border) }
 .result-row:last-child { border-bottom: none }
 .result-label { font-size: .8rem; color: var(--text-dim) }
@@ -607,7 +596,6 @@ main.tool-main, main#main-content { max-width: 1100px; margin: 0 auto; padding: 
   .s-card { padding: .7rem .8rem }
   .s-card-label { font-size:0.75rem; margin-bottom: .4rem }
   .one-num { font-size: 2.4rem } .one-num-unit { font-size:0.78rem } .one-num-ctx { font-size:0.787rem; line-height: 1.45 }
-  .ffai-score { font-size: 2.4rem }
   .watch-item { padding: .3rem 0 } .watch-time { font-size:0.78rem; min-width: 52px } .watch-desc { font-size:1rem; line-height: 1.4 }
   .hero-sidebar { gap: .6rem }
   .hero-sidebar > .s-card:last-child { display: none }
@@ -975,3 +963,21 @@ body { overflow-x: hidden; overflow-x: clip; width: 100%; }
    gold, 2s and 1.8s, and one of them called .live-dot-sm. */
 .live-dot,.live-dot-sm{display:inline-block;width:6px;height:6px;border-radius:50%;
   background:var(--green);animation:pulse 2s infinite;flex-shrink:0}
+
+/* fixG 2026-09-26 accessibility pass */
+/* the hidden attribute must beat component display rules (.ib-out, .tool-widget, .rma-est, .cal-cd-wpi, .ff-strip) */
+[hidden]{display:none!important}
+/* one skip link: header.html supplies it; loader.js drops the per-page duplicate */
+/* links inside running text are underlined, so colour is not the only cue */
+:is(main,.main) :is(p,li,dd) a:not([class]):not(:has(svg)),:is(main,.main) :is(p,li,dd) a[class=""]:not(:has(svg)){text-decoration:underline;text-underline-offset:2px;text-decoration-thickness:1px}
+a[href^="mailto:"]:not([class]):not(:has(svg)),a[href^="tel:"]:not([class]):not(:has(svg)),.lt-note a{text-decoration:underline;text-underline-offset:2px;text-decoration-thickness:1px}
+/* tap targets: footer links 32px (WCAG 2.2 AA asks 24px; 44px is AAA and kept for primary controls) */
+.footer-col a{padding:.38rem 0;min-height:32px}
+.draw-item{min-height:44px}
+/* heat-map tiles: dark ink only on the fills where it passes 4.5:1 (#a8823c 5.53, #2f9963 5.47); light ink elsewhere */
+.vp-tile[style*="#a8823c"] .vp-tst,.vp-tile[style*="#a8823c"] .vp-tge,.vp-tile[style*="#2f9963"] .vp-tst,.vp-tile[style*="#2f9963"] .vp-tge{color:#0a0c0d}
+.vp-tile.dim{opacity:1}
+.vp-tile.dim .vp-tst{color:#8a948f}
+/* white text on --green is 2.19:1 in the dark theme; use dark ink there (light theme --green #2e7d4f keeps white) */
+:root:not([data-theme="light"]) :is(.signup-form button,#signup-btn,.sp-support-cta:hover){color:#06110b!important}
+:root:not([data-theme="light"]) :is(.dv3-subscribe-btn,.dv3-modal-submit):not(:hover){color:#06110b!important}

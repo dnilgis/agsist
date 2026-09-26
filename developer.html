@@ -13,8 +13,8 @@
 <link rel="manifest"                            href="/manifest.json">
 
 <title>Developer Docs — AGSIST Widget Embeds &amp; Data Feeds</title>
-<meta name="description" content="Embed the AGSIST GDU calculator, crop calendar, and daily briefing with one script, or pull live JSON market-data feeds. No account needed.">
-<meta name="keywords"    content="AGSIST developer docs, agricultural widget embed, GDU calculator widget, crop calendar embed, daily briefing widget, farm market data JSON feed">
+<meta name="description" content="Embed the AGSIST GDU calculator with one script, or pull open JSON market-data feeds. No account needed.">
+<meta name="keywords"    content="AGSIST developer docs, agricultural widget embed, GDU calculator widget, farm market data JSON feed">
 <meta name="author"      content="Sigurd Lindquist">
 <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
 <link rel="canonical"    href="https://agsist.com/developer">
@@ -23,7 +23,7 @@
 <meta property="og:site_name"    content="AGSIST">
 <meta property="og:locale"       content="en_US">
 <meta property="og:title"        content="Developer Docs — AGSIST Widget Embeds &amp; Data Feeds">
-<meta property="og:description"  content="Embed agricultural tools — GDU calculator, crop calendar, daily briefing — with one script, or pull live JSON market-data feeds.">
+<meta property="og:description"  content="Embed the AGSIST GDU calculator with one script, or pull open JSON market-data feeds.">
 <meta property="og:url"          content="https://agsist.com/developer">
 <meta property="og:image"        content="https://agsist.com/img/og/agsist.jpg">
 <meta property="og:image:width"  content="1200">
@@ -33,7 +33,7 @@
 <meta name="twitter:site"        content="@agsist">
 <meta name="twitter:creator"     content="@agsist">
 <meta name="twitter:title"       content="Developer Docs — AGSIST Widget Embeds &amp; Data Feeds">
-<meta name="twitter:description" content="Embed the GDU calculator, crop calendar, and daily briefing with one script — or pull live JSON market-data feeds.">
+<meta name="twitter:description" content="Embed the GDU calculator with one script, or pull open JSON market-data feeds.">
 <meta name="twitter:image"       content="https://agsist.com/img/og/agsist.jpg">
 
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H"></script>
@@ -110,9 +110,9 @@
 <div class="dev-page">
 
 <h1>Developer Docs</h1>
-<p class="sub">AGSIST publishes embeddable agricultural tools and open JSON market-data feeds for ag media, extension services, co-ops, and farm websites. Add a widget with one script, or consume the data feeds directly to build your own UI. Want a custom build or early access to a rolling-out widget? Reach out.</p>
+<p class="sub">AGSIST publishes embeddable agricultural tools and open JSON market-data feeds for ag media, extension services, co-ops, and farm websites. Add a widget with one script, or consume the data feeds directly to build your own UI. Want a custom build? Reach out.</p>
 
-<div class="dev-lead"><strong>One script, one div.</strong> Every widget loads from a single file — <code>https://agsist.com/embed.js</code>. Add the script once, then drop a <code>data-agsist-widget</code> div wherever you want a tool. The script injects the live tool in an iframe, adds a crawlable &ldquo;Powered by AGSIST&rdquo; backlink in your page, and auto-resizes the frame. Prefer copy-paste? The <a href="/embed">embed gallery</a> has ready snippets and live previews.</div>
+<div class="dev-lead"><strong>One script, one div.</strong> The GDU calculator is the only widget the script serves today. It loads from a single file — <code>https://agsist.com/embed.js</code>. Add the script once, then drop a <code>data-agsist-widget</code> div wherever you want it. The script injects the live tool in an iframe, adds a crawlable &ldquo;Powered by AGSIST&rdquo; backlink in your page, and auto-resizes the frame. Prefer copy-paste? The <a href="/embed">embed gallery</a> has ready snippets and live previews.</div>
 
 <pre>&lt;div data-agsist-widget="gdu"&gt;&lt;/div&gt;
 &lt;script async src="https://agsist.com/embed.js"&gt;&lt;/script&gt;</pre>
@@ -130,7 +130,7 @@
         <span class="wc-name">GDU Calculator</span>
         <span class="wc-tag wc-tag--live">Live</span>
       </div>
-      <p class="wc-desc">Auto-fetches growing degree units from a planting date and location, tracks corn &amp; soybean stage, projects black layer, and flags first-frost risk. The most-used tool on AGSIST. The iframe gives your visitors the full live calculator; the injected anchor is the real backlink.</p>
+      <p class="wc-desc">Auto-fetches growing degree units from a planting date and location, tracks corn &amp; soybean stage, projects black layer, and flags first-frost risk. The iframe gives your visitors the full live calculator; the injected anchor is the real backlink.</p>
     </div>
   </div>
   <div class="wc-body">
@@ -141,48 +141,6 @@
   <div class="wc-footer">
     <span class="wc-endpoint">iframe: /embed/gdu</span>
     <a href="/gdu-calculator">View live GDU Calculator →</a>
-  </div>
-</div>
-
-<!-- ── Crop Calendar ─────────────────────────────────────────────── -->
-<div class="widget-card widget-card--soon">
-  <div class="wc-head">
-    <div class="wc-icon"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/><path d="M8 14h.01"/><path d="M12 14h.01"/><path d="M16 14h.01"/><path d="M8 18h.01"/><path d="M12 18h.01"/><path d="M16 18h.01"/></svg></div>
-    <div class="wc-meta">
-      <div class="wc-title-row">
-        <span class="wc-name">Crop Calendar</span>
-        <span class="wc-tag wc-tag--soon">Rolling out</span>
-      </div>
-      <p class="wc-desc">Corn &amp; soybean growth-stage reference with GDU thresholds and management notes. Wiring is in <code>embed.js</code> now; the embeddable view is rolling out. Email me if you want it on your site early.</p>
-    </div>
-  </div>
-  <div class="wc-body">
-    <p class="wc-key">widget key&nbsp; <b>data-agsist-widget="calendar"</b></p>
-  </div>
-  <div class="wc-footer">
-    <span class="wc-endpoint">iframe: /embed/calendar</span>
-    <a href="/fast-facts">View Crop Calendar →</a>
-  </div>
-</div>
-
-<!-- ── Daily Briefing ────────────────────────────────────────────── -->
-<div class="widget-card widget-card--soon">
-  <div class="wc-head">
-    <div class="wc-icon"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8"/><path d="M15 18h-5"/><path d="M10 6h8v4h-8V6Z"/></svg></div>
-    <div class="wc-meta">
-      <div class="wc-title-row">
-        <span class="wc-name">Daily Briefing</span>
-        <span class="wc-tag wc-tag--soon">Rolling out</span>
-      </div>
-      <p class="wc-desc">A compact card from the AGSIST Daily morning briefing — headline, date, and the day&rsquo;s takeaway, with a link to the full read. Published before the market open on weekday mornings. The raw briefing is also available as a JSON feed below for custom rendering.</p>
-    </div>
-  </div>
-  <div class="wc-body">
-    <p class="wc-key">widget key&nbsp; <b>data-agsist-widget="briefing"</b></p>
-  </div>
-  <div class="wc-footer">
-    <span class="wc-endpoint">iframe: /embed/briefing &nbsp;·&nbsp; /data/daily.json</span>
-    <a href="/daily">View AGSIST Daily →</a>
   </div>
 </div>
 
@@ -198,17 +156,14 @@
       <span class="ep-method">GET</span>
       <span class="ep-path">https://agsist.com/data/prices.json</span>
     </div>
-    <p class="ep-desc">Delayed commodity futures prices for corn, soybeans, wheat, live cattle, lean hogs, crude oil, natural gas, gold, silver, Dollar Index, 10-yr Treasury, and crypto. Updated every 30 min on weekdays. <strong>Grain prices are in cents per bushel — divide by 100 for dollar display.</strong></p>
+    <p class="ep-desc">Delayed commodity futures prices for corn, soybeans, wheat, live cattle, lean hogs, crude oil, natural gas, gold, silver, Dollar Index, 10-yr Treasury, and a few crypto quotes (Bitcoin, XRP, Kaspa). Updated about every 30 minutes while futures markets trade, Sunday evening to Friday afternoon. <strong>Grain prices are in cents per bushel — divide by 100 for dollar display.</strong></p>
 <pre>{
-  "updated": "2026-04-09T11:30:00Z",
+  "fetched": "2026-09-25T22:55:59Z",
   "quotes": {
-    "corn":   { "price": 44525, "change": -200,  "pct": -0.45, "unit": "c/bu" },
-    "beans":  { "price": 102350,"change":  125,   "pct":  0.12, "unit": "c/bu" },
-    "wheat":  { "price": 56400, "change":  -75,   "pct": -0.13, "unit": "c/bu" },
-    "crude":  { "price": 6842,  "change": -118,   "pct": -1.69, "unit": "$/bbl" },
-    "natgas": { "price": 214,   "change":    3,   "pct":  1.42, "unit": "$/MMBtu" },
-    "gold":   { "price": 318450,"change":  820,   "pct":  0.26, "unit": "$/oz" }
-    // ... cattle, hogs, silver, dxy, treasury, btc, eth
+    "corn": { "ticker": "ZC=F", "close": 528.75, "open": 519.75, "netChange": 9.0, "pctChange": 1.7316, "wk52_hi": 544.5, "wk52_lo": 398.5 },
+    "beans": { "ticker": "ZS=F", "close": 1320.0, "open": 1305.5, "netChange": 14.5, "pctChange": 1.1107, "wk52_hi": 1332.25, "wk52_lo": 993.75 },
+    "crude": { "ticker": "CL=F", "close": 92.44, "open": 93.12, "netChange": -0.68, "pctChange": -0.7302, "wk52_hi": 119.48, "wk52_lo": 54.98 }
+    // ... one object per key: wheat, cattle, hogs, natgas, gold, and the rest
   }
 }</pre>
   </div>
@@ -218,17 +173,14 @@
       <span class="ep-method">GET</span>
       <span class="ep-path">https://agsist.com/data/daily.json</span>
     </div>
-    <p class="ep-desc">Today's AGSIST Daily briefing in JSON. Generated from live market data and agricultural news feeds. Published before the market open on weekday mornings. Use this to build a daily market headline block for any ag-facing page.</p>
+    <p class="ep-desc">Today's AGSIST Daily briefing in JSON. Generated from live market data and agricultural news feeds. Rebuilt each morning, every day of the week. Use this to build a daily market headline block for any ag-facing page.</p>
 <pre>{
-  "date":      "2026-04-09",
-  "headline":  "Corn holds overnight losses heading into WASDE week",
-  "summary":   "December corn settled lower for the second straight session ...",
-  "markets": {
-    "corn_close":  445.25,
-    "beans_close": 1023.50,
-    "wheat_close": 564.00
-  },
-  "published": "2026-04-09T11:00:00Z"
+  "date":     "Saturday, September 26, 2026",
+  "headline": "GRAINS CLIMB FRIDAY, CATTLE STALL BEFORE COF WEEK",
+  "lead":     "Corn closed Friday at $5.29, up 1.7% on the week's last session, and w ...",
+  "locked_prices": { "corn": 5.2875, "beans": 13.2, ... },
+  "generated_at": "2026-09-26T14:34:23.999766+00:00"
+  // ... plus sections, watch_list, yesterdays_call and more
 }</pre>
   </div>
 
@@ -237,19 +189,29 @@
       <span class="ep-method">GET</span>
       <span class="ep-path">https://agsist.com/data/markets.json</span>
     </div>
-    <p class="ep-desc">Active prediction-market contracts from Kalshi and Polymarket covering agricultural and economic events — WASDE outcomes, crop production estimates, weather events. Updated daily. Only active contracts with meaningful volume are included.</p>
+    <p class="ep-desc">Prediction-market contracts from Polymarket that bear on farm inputs, energy and the economy. Updated daily. Only active contracts with meaningful volume are included. Odds (<code>yes</code>, <code>no</code>) are percentages, not fractions.</p>
 <pre>{
-  "updated": "2026-04-09T06:00:00Z",
-  "markets": [
-    {
-      "title":  "Corn ending stocks above 1.8B bu (May WASDE)",
-      "source": "kalshi",
-      "prob":   0.38,
-      "volume": 14200,
-      "url":    "https://kalshi.com/..."
-    }
-    // ...
-  ]
+  "fetched": "2026-09-26T13:47:06Z",
+  "version": 5,
+  "count": 10,
+  // ...more summary fields
+  "categories": {
+    "Energy &amp; Inputs": [
+      {
+        "platform":   "Polymarket",
+        "ticker":     "2126461",
+        "title":      "Will Crude Oil reach a new all-time high by December 31?",
+        "yes":        12,
+        "no":         88,
+        "volume_24h": 1427605.4982939998,
+        "close_time": "2027-01-01T04:59:00Z",
+        "url":        "https://polymarket.com/event/crude-oil-all-time-high-by"
+        // ...more fields
+      }
+      // ...
+    ],
+    "Economy &amp; Markets": [ /* ... */ ]
+  }
 }</pre>
   </div>
 
@@ -266,9 +228,13 @@
   <li>All price data is delayed a minimum of 15 minutes during market hours. Do not use for live trading decisions.</li>
 </ul>
 
+<!-- ═══ LICENCE ═══════════════════════════════════════════════════════ -->
+<h2 id="licence">Licence</h2>
+<p>AGSIST&#8217;s own writing, design, code, name, and logo are &copy; Sigurd Lindquist, all rights reserved. AGSIST-compiled datasets (the Farmland Atlas and its CSV files) are CC BY 4.0: credit &#8220;AGSIST (agsist.com)&#8221; with a link. Third-party data shown on the site (Yahoo Finance prices, elevator bids, Polymarket odds, Open-Meteo and NWS weather) is not AGSIST&#8217;s to license and no right to redistribute it is granted. Full wording: <a href="/terms#licence">Terms</a>.</p>
+
 <!-- ═══ DATA SOURCES ══════════════════════════════════════════════════ -->
 <h2>Data Sources</h2>
-<p>Prices via Yahoo Finance / yfinance. Weather via Open-Meteo. Prediction markets via Kalshi and Polymarket APIs. See the <a href="/data-sources">full data sources page</a> for complete attribution details.</p>
+<p>Prices via Yahoo Finance / yfinance. Weather via Open-Meteo. Prediction markets via the Polymarket API. See the <a href="/data-sources">full data sources page</a> for complete attribution details.</p>
 
 <!-- ═══ CONTACT ═══════════════════════════════════════════════════════ -->
 <h2>Questions &amp; Licensing</h2>

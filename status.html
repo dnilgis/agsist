@@ -257,7 +257,7 @@
         }
       },
       {
-        name:'AGSIST Daily Briefing', desc:'The pre-market note, published before the open every weekday.',
+        name:'AGSIST Daily Briefing', desc:'The pre-market note, published before the open every morning, weekends included.',
         url:'/data/daily.json', tsKey:'generated_at',
         check:function(d,age){
           if(!briefingDue()) return {state:'idle', label:'No briefing due', age:'last one '+ago(age)};

@@ -1,7 +1,102 @@
 {
- "updated": "2026-09-25",
+ "updated": "2026-09-26",
  "note": "Curated by hand each work session. Dates are the day the change was built; uploads usually land the same day or the next. Machine-refreshed data (prices, bids, weather, briefings) is not logged here — that updates continuously.",
  "entries": [
+  {
+   "date": "2026-09-26",
+   "items": [
+    {
+     "tag": "fixed",
+     "page": "/yield-estimator",
+     "name": "The corn estimate had a test weight term that is not part of the method",
+     "text": "That was our mistake. The standard ear-count method uses ears, rows and kernels only, and we had added a test weight adjustment on top. It is removed: 34 ears by 16 rows by 32 kernels now gives 193 bushels at any test weight, where it used to move by as much as 20. The earlier note about 173 at 50 pound test weight no longer applies."
+    },
+    {
+     "tag": "fixed",
+     "page": "/presell-calculator",
+     "name": "Harvest price now counts up to 200% of the projected price, and wheat no longer starts on $6.00",
+     "text": "Revenue protection lets the harvest price count up to twice the projected price, and the calculator stopped short of that. It now counts up to 200% and says when the cap applies. Wheat also opened with a $6.00 price we had made up; it now starts blank until you enter one."
+    },
+    {
+     "tag": "fixed",
+     "page": "/fertilizer",
+     "name": "A missing fertilizer price no longer shows as $0.00 or wins cheapest",
+     "text": "We printed $0.00 for a product with no quote, and that row could be picked as the cheapest. A missing price now shows a dash, is left out of the ranking, and every row shows the date of its quote."
+    },
+    {
+     "tag": "fixed",
+     "page": "/urea",
+     "name": "The stabilizer break-even was wrong arithmetic",
+     "text": "We said an $8 to $12 an acre stabilizer pays for itself if it saves about 10 pounds of nitrogen. At $0.55 to $0.70 a pound of nitrogen it takes roughly 11 to 22 pounds. The page and its FAQ now say that."
+    },
+    {
+     "tag": "fixed",
+     "page": "/storage-crunch",
+     "name": "The on-farm share column showed the off-farm share",
+     "text": "The column headed on-farm share was printing the other half. Iowa read 43% and is 57%: 2.05 billion bushels of on-farm space out of 3.59 billion in total. All states are corrected."
+    },
+    {
+     "tag": "fixed",
+     "page": "/scorecard",
+     "name": "The headline hit rate is now the machine-checked calls only, and weekend repeats count once",
+     "text": "The headline blended older calls we had graded by hand with the ones checked by machine, which flattered the number. It now shows only the machine-checked calls: 17 of 83, or 20.5%. The older calls are listed separately. Weekend briefings that repeated Friday's call were counted two or three times against the same Monday close; 9 repeats are now counted once."
+    },
+    {
+     "tag": "fixed",
+     "page": "/sponsor",
+     "name": "Sponsor page figures now come from the audience file, and one claim was credited to the wrong source",
+     "text": "The audience numbers were typed in by hand and had drifted. They are now filled from the audience file. We also said our pages were being cited by several named answer engines. The count we had came from Bing and Copilot only, and the page now says that."
+    },
+    {
+     "tag": "fixed",
+     "page": "/spray",
+     "name": "The dicamba headline now follows the page's own rules",
+     "text": "The top line could say go while the sunrise and sunset window or the 95 degree limit further down the page said no. The headline now uses the same rules as the rest of the page."
+    },
+    {
+     "tag": "fixed",
+     "page": "/planting-date",
+     "name": "Planting date and the GDU calculator now use one heat-unit table",
+     "text": "The planting date page and the GDU calculator each carried their own heat-unit table, and they disagreed: 2,700 on one and 2,268 on the other. Both now read one shared table."
+    },
+    {
+     "tag": "fixed",
+     "page": "/cash-bids",
+     "name": "Bids show each elevator once, with the grade named, and per-ton products are no longer shown per bushel",
+     "text": "ADM Mankato was drawn twice. It now appears once. Grade names are shown next to each bid, and products quoted per ton are no longer labeled per bushel."
+    },
+    {
+     "tag": "fixed",
+     "page": "/cash-rent",
+     "name": "The county count and median use 2026 rents only",
+     "text": "We mixed older years into the headline: 2,877 counties and a $63.00 median. Counting only counties with a 2026 rent gives 2,400 counties and a $70.25 median per acre."
+    },
+    {
+     "tag": "fixed",
+     "page": "/usda-calendar",
+     "name": "Holiday weeks are flagged, and export sales show on Thursday in every time zone",
+     "text": "Weekly reports that fall on a federal holiday are now marked as holiday weeks, with the date to be checked against USDA, instead of listed as a normal release day. Weekly export sales are shown on Thursday for readers in any time zone."
+    },
+    {
+     "tag": "fixed",
+     "page": "/milk-prices",
+     "name": "Old placeholder prices in the milk table are replaced by dashes",
+     "text": "The price cells showed old placeholder prices, such as $16.92 for Class III milk, until live data loaded. They now show a dash until a real price arrives."
+    },
+    {
+     "tag": "improved",
+     "page": "/terms",
+     "name": "Licence terms now say what is ours and what is not",
+     "text": "The terms now state which parts of AGSIST are all rights reserved, which datasets are CC BY 4.0, and that third-party data is not ours to license."
+    },
+    {
+     "tag": "fixed",
+     "page": "/",
+     "name": "The FFAI score is removed from the site",
+     "text": "We removed the FFAI score from the site, including the homepage. It no longer appears anywhere."
+    }
+   ]
+  },
   {
    "date": "2026-09-25",
    "items": [

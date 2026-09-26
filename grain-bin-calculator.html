@@ -41,14 +41,7 @@
   {"@context":"https://schema.org","@graph":[
     {"@type":"SoftwareApplication","name":"Grain Bin Calculator","description":"Free grain bin storage calculator for bushel capacity, moisture shrink, drying cost, and net market value.","url":"https://agsist.com/grain-bin-calculator","applicationCategory":"UtilitiesApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}},
     {"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://agsist.com/"},{"@type":"ListItem","position":2,"name":"Tools","item":"https://agsist.com/tools"},{"@type":"ListItem","position":3,"name":"Grain Bin Calculator","item":"https://agsist.com/grain-bin-calculator"}]},
-    {"@type":"FAQPage","mainEntity":[
-      {"@type":"Question","name":"How many bushels does a 30-foot grain bin hold?","acceptedAnswer":{"@type":"Answer","text":"A 30-foot diameter round bin with a 24-foot eave height holds approximately 13,600 bushels at level fill (one bushel = 1.244 cubic feet). Adding a peaked cone surface brings it to roughly 14,950 bushels."}},
-      {"@type":"Question","name":"What is the grain shrink formula?","acceptedAnswer":{"@type":"Answer","text":"The standard formula is: Shrink % = (Moisture In minus Standard Moisture) times 1.3. For corn at 18% moisture, shrink = (18 - 15.5) x 1.3 = 3.25%. This accounts for both water removal and handling loss."}},
-      {"@type":"Question","name":"What is pack factor in a grain bin?","acceptedAnswer":{"@type":"Answer","text":"Pack factor is the additional compaction of grain that occurs as the bin fills and grain settles over time. For corn, a typical pack factor is 0.5 to 1.5%. Leave it at 0 if you want a conservative baseline estimate."}},
-      {"@type":"Question","name":"What size grain bin do I need for 50,000 bushels?","acceptedAnswer":{"@type":"Answer","text":"About a 48-foot diameter bin with a 35-foot eave height, or two 36-foot bins at a 31-foot eave (level fill, 1 bushel = 1.244 cubic feet). The calculator's bin-sizing mode lists workable diameter and eave-height combinations for any target bushel amount."}},
-      {"@type":"Question","name":"How do hopper-bottom bins differ from flat-floor bins?","acceptedAnswer":{"@type":"Answer","text":"Hopper-bottom bins have an inverted cone at the bottom that empties grain by gravity, so they need no sweep auger. That cone also stores grain, so for the same diameter and cylinder (wall) height a hopper-bottom bin actually holds somewhat more than a flat-floor bin — this calculator adds the hopper cone to the cylinder volume. Hopper bins are usually chosen for hands-off gravity unloading and are most common at smaller diameters, not for extra capacity."}},
-      {"@type":"Question","name":"How is drying cost calculated for corn?","acceptedAnswer":{"@type":"Answer","text":"Drying cost is typically quoted in dollars per point (1 percentage point of moisture) per bushel. A common range is $0.03 to $0.05 per point per bushel. To dry corn from 18% to 15.5% costs 2.5 points, so roughly $0.09 per bushel at $0.035/point."}}
-    ]}
+    {"@type":"FAQPage","mainEntity":[{"@type": "Question", "name": "How many bushels in a 30-foot bin?", "acceptedAnswer": {"@type": "Answer", "text": "A 30×24 ft round bin holds about 13,600 bu level-fill (1 bu = 1.244 ft³). Add a peaked cone surface for ~14,950 bu."}}, {"@type": "Question", "name": "What is the grain shrink formula?", "acceptedAnswer": {"@type": "Answer", "text": "Shrink % = (moisture in minus standard moisture) times a factor. Corn is commonly figured at about 1.2 to 1.4 per point. This page defaults to 1.3 and lets you edit it."}}, {"@type": "Question", "name": "What is pack factor?", "acceptedAnswer": {"@type": "Answer", "text": "Grain settles 0.5–1.5% over time as kernels compact. Leave it at 0 for a conservative estimate. Use 1% for a bin that’ll sit all winter."}}, {"@type": "Question", "name": "Hopper bottom vs. flat floor?", "acceptedAnswer": {"@type": "Answer", "text": "A hopper bin’s cone stores grain below the cylinder, so for the same wall height it actually holds a bit more than a flat floor — the calculator adds that cone volume. Hoppers are chosen for gravity unloading (no sweep auger), usually at smaller diameters."}}, {"@type": "Question", "name": "What size bin do I need for 50,000 bushels?", "acceptedAnswer": {"@type": "Answer", "text": "Roughly a 48-ft diameter bin with a 35-ft eave, or two 36-ft bins at a 31-ft eave. Use the “Sizing New Storage?” box above — enter your target bushels and it lists workable diameter-and-eave combos."}}, {"@type": "Question", "name": "How do I figure drying cost?", "acceptedAnswer": {"@type": "Answer", "text": "Multiply points to dry × $/pt/bu. Drying from 18% to 15.5% = 2.5 pts. At $0.035/pt: 2.5 × $0.035 = $0.0875/bu."}}]}
   ]}
   </script>
   <style>
@@ -67,7 +60,7 @@
     .pill-group label { flex: 1; padding: 8px 6px; text-align: center; cursor: pointer; font-family: 'JetBrains Mono', monospace; font-size:0.77rem; font-weight: 700; letter-spacing: .03em; color: var(--text-dim); background: var(--surface); border-right: 1px solid var(--border); transition: background 0.15s, color 0.15s; user-select: none; min-height: 44px; display: flex; align-items: center; justify-content: center; }
     .pill-group label:last-child { border-right: none; }
     .pill-group input { display: none; }
-    .pill-group input:checked + label { background: var(--green); color: #fff; }
+    .pill-group input:checked + label { background: var(--green); color: #06110b; }
     /* v2: minmax(0,1fr) on ALL grid column definitions — bare 1fr can overflow on iOS Safari */
     .input-grid { display: grid; gap: 12px; margin-bottom: 16px; }
     .input-grid.cols-2 { grid-template-columns: repeat(2, minmax(0,1fr)); }
@@ -114,11 +107,11 @@
     .sticky-bar-bu { font-family: 'JetBrains Mono', monospace; font-size: 1.1rem; font-weight: 700; color: #fff; }
     .sticky-bar-val { font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; color: var(--gold); }
     .sticky-bar-label { font-family: 'JetBrains Mono', monospace; font-size:0.75rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: .06em; }
-    .sticky-bar-copy { font-family: 'JetBrains Mono', monospace; font-size:0.78rem; font-weight: 700; padding: 6px 12px; background: var(--green); color: #fff; border: none; border-radius: 6px; cursor: pointer; white-space: nowrap; min-height: 40px; touch-action: manipulation; }
+    .sticky-bar-copy { font-family: 'JetBrains Mono', monospace; font-size:0.78rem; font-weight: 700; padding: 6px 12px; background: var(--green); color: #06110b; border: none; border-radius: 6px; cursor: pointer; white-space: nowrap; min-height: 40px; touch-action: manipulation; }
     /* v2: reset + copy buttons */
     .action-row { display: flex; gap: 8px; margin-top: 14px; }
     .btn-reset { flex: 1; font-family: 'JetBrains Mono', monospace; font-size:0.795rem; font-weight: 700; padding: 9px 12px; background: none; color: var(--text-dim); border: 2px solid var(--border); border-radius: 6px; cursor: pointer; min-height: 40px; touch-action: manipulation; }
-    .btn-copy  { flex: 2; font-family: 'JetBrains Mono', monospace; font-size:0.795rem; font-weight: 700; padding: 9px 12px; background: var(--green); color: #fff; border: 2px solid var(--green); border-radius: 6px; cursor: pointer; min-height: 40px; touch-action: manipulation; }
+    .btn-copy  { flex: 2; font-family: 'JetBrains Mono', monospace; font-size:0.795rem; font-weight: 700; padding: 9px 12px; background: var(--green); color: #06110b; border: 2px solid var(--green); border-radius: 6px; cursor: pointer; min-height: 40px; touch-action: manipulation; }
     /* v2: SEO content section */
     .content-section { max-width: 1100px; margin: 24px auto 0; }
     .content-section h2 { font-family:var(--font-display); font-size: 1.1rem; color: var(--text); margin-bottom: 8px; font-weight: 600; }
@@ -165,11 +158,11 @@
   <div class="sticky-bar" id="sticky-bar" role="status" aria-live="polite" aria-label="Quick result summary">
     <div>
       <div class="sticky-bar-label">Total Bushels</div>
-      <div class="sticky-bar-bu" id="sb-bu">--</div>
+      <div class="sticky-bar-bu" id="sb-bu">&mdash;</div>
     </div>
     <div>
       <div class="sticky-bar-label">Net Value</div>
-      <div class="sticky-bar-val" id="sb-val">--</div>
+      <div class="sticky-bar-val" id="sb-val">&mdash;</div>
     </div>
     <button class="sticky-bar-copy" id="sb-copy" onclick="copyResult()">Copy</button>
   </div>
@@ -184,7 +177,7 @@
         <div class="panel-head"><h1><svg class="ic-sp" aria-hidden="true"><use href="#sp-wheat"/></svg> GRAIN BIN CALCULATOR</h1></div>
         <div class="panel-body">
 
-          <div class="section-label">Crop Type</div>
+          <label class="section-label" for="crop" style="display:block">Crop Type</label>
           <select id="crop" class="crop-select" onchange="onCropChange();calc()">
             <option value="corn">Corn (56 lb/bu &mdash; 15.5% std)</option>
             <option value="soybeans">Soybeans (60 lb/bu &mdash; 13.0% std)</option>
@@ -334,7 +327,7 @@
                 <line x1="236" y1="245" x2="244" y2="245" stroke="#6a6a62" stroke-width="1"/>
                 <text id="dim-h" x="258" y="160" text-anchor="middle" transform="rotate(90,258,160)">24 ft</text>
               </g>
-              <text id="cap-num" x="140" y="200" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="18" font-weight="700" fill="#fff" opacity="0.9">--</text>
+              <text id="cap-num" x="140" y="200" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="18" font-weight="700" fill="#fff" opacity="0.9">&mdash;</text>
               <text id="cap-unit" x="140" y="216" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="9" font-weight="700" fill="#daa520" opacity="0.7">BUSHELS</text>
             </svg>
           </div>
@@ -379,30 +372,31 @@
         <div class="panel-head"><h2>Calculated Capacity &amp; Value</h2></div>
         <!-- v2: aria-live so screen readers hear result updates -->
         <div class="panel-body" aria-live="polite" aria-atomic="true">
+          <div id="calc-err" class="field-hint" role="alert" style="display:none;color:#e05c5c;font-weight:700;margin-bottom:8px"></div>
 
           <div class="section-label">Bushels &amp; Weight</div>
-          <div class="result-row"><span class="result-label">Total Bushels</span><span class="result-value highlight" id="rTotBu" style="font-size:1.2rem">--</span></div>
-          <div class="result-row"><span class="result-label">Weight</span><span class="result-value" id="rWeight">--</span></div>
+          <div class="result-row"><span class="result-label">Total Bushels</span><span class="result-value highlight" id="rTotBu" style="font-size:1.2rem">&mdash;</span></div>
+          <div class="result-row"><span class="result-label">Weight</span><span class="result-value" id="rWeight">&mdash;</span></div>
 
           <!-- v2: volume details collapsed by default — engineering internals hidden -->
           <button class="vol-toggle" onclick="toggleVol(this)" aria-expanded="false">&#9654; Show volume breakdown</button>
           <div class="vol-detail" id="vol-detail">
-            <div class="result-row"><span class="result-label" id="rShapeLabel">Cylinder Volume</span><span class="result-value" id="rCylVol">--</span></div>
-            <div class="result-row"><span class="result-label" id="rAdjLabel">Surface Adj.</span><span class="result-value" id="rAdjVol">--</span></div>
-            <div class="result-row"><span class="result-label">Total Volume</span><span class="result-value" id="rTotVol">--</span></div>
+            <div class="result-row"><span class="result-label" id="rShapeLabel">Cylinder Volume</span><span class="result-value" id="rCylVol">&mdash;</span></div>
+            <div class="result-row"><span class="result-label" id="rAdjLabel">Surface Adj.</span><span class="result-value" id="rAdjVol">&mdash;</span></div>
+            <div class="result-row"><span class="result-label">Total Volume</span><span class="result-value" id="rTotVol">&mdash;</span></div>
           </div>
 
           <div style="height:12px"></div>
           <div class="section-label">Moisture Shrink</div>
-          <div class="result-row"><span class="result-label">Shrink Factor</span><span class="result-value" id="rShrink">--</span></div>
-          <div class="result-row"><span class="result-label">Dry Bushels</span><span class="result-value" id="rDryBu">--</span></div>
-          <div class="result-row"><span class="result-label">Bushels Lost</span><span class="result-value negative" id="rLost">--</span></div>
+          <div class="result-row"><span class="result-label">Shrink Factor</span><span class="result-value" id="rShrink">&mdash;</span></div>
+          <div class="result-row"><span class="result-label">Dry Bushels</span><span class="result-value" id="rDryBu">&mdash;</span></div>
+          <div class="result-row"><span class="result-label">Bushels Lost</span><span class="result-value negative" id="rLost">&mdash;</span></div>
 
           <div class="value-box">
-            <div class="result-row"><span class="result-label">Gross Value (wet bu)</span><span class="result-value" id="rGrossVal">--</span></div>
-            <div class="result-row"><span class="result-label">Value After Shrink</span><span class="result-value positive" id="rDryVal">--</span></div>
-            <div class="result-row" id="drying-row" style="display:none"><span class="result-label">Drying Cost</span><span class="result-value negative" id="rDryCost">--</span></div>
-            <div class="result-row" style="border-top:2px solid var(--border);padding-top:8px;margin-top:4px"><span class="result-label" style="font-weight:700;color:var(--text)">Net Value</span><span class="result-value" id="rNetVal" style="font-size:1.1rem;font-weight:700;color:var(--gold)">--</span></div>
+            <div class="result-row"><span class="result-label">Gross Value (wet bu)</span><span class="result-value" id="rGrossVal">&mdash;</span></div>
+            <div class="result-row"><span class="result-label">Value After Shrink</span><span class="result-value positive" id="rDryVal">&mdash;</span></div>
+            <div class="result-row" id="drying-row" style="display:none"><span class="result-label">Drying Cost</span><span class="result-value negative" id="rDryCost">&mdash;</span></div>
+            <div class="result-row" style="border-top:2px solid var(--border);padding-top:8px;margin-top:4px"><span class="result-label" style="font-weight:700;color:var(--text)">Net Value</span><span class="result-value" id="rNetVal" style="font-size:1.1rem;font-weight:700;color:var(--gold)">&mdash;</span></div>
           </div>
 
           <div style="margin-top:20px">
@@ -435,13 +429,17 @@
       <p>Enter your bin diameter and eave height (or length, width, and depth for rectangular storage), choose your crop, and the calculator instantly shows total bushel capacity, weight, and &mdash; if you enter a market price &mdash; estimated net value after moisture shrink and drying costs. The depth slider lets you model a partially filled bin. Use the Hopper option for bins with an inverted-cone floor; the calculator automatically adds the hopper cone volume to your total.</p>
 
       <h2>Understanding Moisture Shrink</h2>
-      <p>Grain delivered above standard moisture loses weight &mdash; and value &mdash; during drying. The industry standard shrink formula is <strong>(Moisture In &minus; Standard Moisture) &times; 1.3</strong>. The 1.3 multiplier covers both the water removed and a small handling loss allowance. Corn at 18% moisture heading into a 15.5%-standard market shrinks 3.25%, costing roughly 85 to 100 bushels on a 3,000-bushel truckload. For a complete picture, enter a drying cost (typically $0.03&ndash;$0.05 per point per bushel) to see your true net value after all shrink and drying charges. <a href="/cash-bids">Check local cash bids &rarr;</a></p>
+      <p>Grain delivered above standard moisture loses weight &mdash; and value &mdash; during drying. The industry standard shrink formula is <strong>(Moisture In &minus; Target Moisture) &times; 1.3</strong>, where the target defaults to the crop&rsquo;s standard moisture. The 1.3 multiplier covers both the water removed and a small handling loss allowance. Corn at 18% moisture heading into a 15.5%-standard market shrinks 3.25%, costing roughly 85 to 100 bushels on a 3,000-bushel truckload. For a complete picture, enter a drying cost (typically $0.03&ndash;$0.05 per point per bushel) to see your true net value after all shrink and drying charges. <a href="/cash-bids">Check local cash bids &rarr;</a></p>
 
       <h2>Common Questions</h2>
       <dl class="faq-grid">
         <div class="faq-item">
           <dt>How many bushels in a 30-foot bin?</dt>
           <dd>A 30&times;24 ft round bin holds about 13,600 bu level-fill (1 bu = 1.244 ft&sup3;). Add a peaked cone surface for ~14,950 bu.</dd>
+        </div>
+        <div class="faq-item">
+          <dt>What is the grain shrink formula?</dt>
+          <dd>Shrink % = (moisture in minus standard moisture) times a factor. Corn is commonly figured at about 1.2 to 1.4 per point. This page defaults to 1.3 and lets you edit it.</dd>
         </div>
         <div class="faq-item">
           <dt>What is pack factor?</dt>
@@ -491,6 +489,7 @@
     sorghum: {lb:56,std:14.0}
   };
   var BU_PER_CUFT=0.8036, TAN_25=0.4663;
+  var NA='\u2014'; // missing / unusable input: em dash plus a reason, never 0
   var _rafPending=false;
 
   function $(id){return document.getElementById(id);}
@@ -552,9 +551,42 @@
     return pct/100*maxH;
   }
 
+  // Returns a reason string when an input cannot be used, else null. Negative sizes, moisture
+  // of 100% or more and a hopper angle of 80 degrees or more used to produce numbers
+  // (a -30 ft bin held 12,308 bu; 100% moisture gave negative dry bushels; an 89 degree
+  // hopper gave 174,261 bu). The min/max attributes do not stop typing.
+  function inputError(sh){
+    var f=function(id){return parseFloat($(id).value);};
+    var neg=function(id,label){var v=f(id);return (isFinite(v)&&v<0)?label+' cannot be negative.':null;};
+    var e=null;
+    if(sh==='round') e=neg('diameter','Diameter')||neg('height','Eave height');
+    else if(sh==='hopper'){
+      e=neg('hdiameter','Diameter')||neg('hcylheight','Cylinder height');
+      if(!e){var a=f('hopperangle'); if(!isFinite(a)||a<=0||a>=80) e='Hopper angle must be above 0 and below 80 degrees.';}
+    } else e=neg('rlength','Length')||neg('rwidth','Width')||neg('rheight','Depth');
+    if(e) return e;
+    var mi=f('moistIn'), mt=f('moistTarget');
+    if(isFinite(mi)&&(mi<0||mi>=100)) return 'Moisture in must be from 0 to under 100%.';
+    if(isFinite(mt)&&(mt<0||mt>=100)) return 'Target moisture must be from 0 to under 100%.';
+    var pk=f('pack'); if(isFinite(pk)&&pk<0) return 'Pack cannot be negative.';
+    var dc=f('dryingCost'); if(isFinite(dc)&&dc<0) return 'Drying cost cannot be negative.';
+    var mp=f('mktPrice'); if(isFinite(mp)&&mp<0) return 'Price cannot be negative.';
+    return null;
+  }
+
   function calc(){
     syncDepth();
     var crop=$('crop').value, sh=shape(), sf=surface(), cr=CROPS[crop];
+    var _err=inputError(sh), _errEl=$('calc-err');
+    if(_err){
+      _errEl.textContent=NA+' '+_err; _errEl.style.display='';
+      ['rCylVol','rAdjVol','rTotVol','rTotBu','rWeight','rShrink','rDryBu','rLost','rGrossVal','rDryVal','rNetVal','sb-bu','sb-val'].forEach(function(id){$(id).textContent=NA;});
+      $('drying-row').style.display='none';
+      $('cap-num').textContent=NA;
+      saveState();
+      return;
+    }
+    _errEl.style.display='none';
     var moistIn   = parseFloat($('moistIn').value)    || cr.std;
     var moistTgt  = parseFloat($('moistTarget').value)|| cr.std;
     var dryCostPt = parseFloat($('dryingCost').value) || 0;
@@ -641,13 +673,13 @@
       }
       $('rNetVal').textContent='$'+fN(netVal);
     }else{
-      $('rGrossVal').textContent=$('rDryVal').textContent=$('rNetVal').textContent='--';
+      $('rGrossVal').textContent=$('rDryVal').textContent=$('rNetVal').textContent=NA;
       $('drying-row').style.display='none';
     }
 
     // Update sticky bar
     $('sb-bu').textContent=fN(packedBu)+' bu';
-    $('sb-val').textContent=netVal!==null?'$'+fN(netVal):(mktP>0?'--':'enter price');
+    $('sb-val').textContent=netVal!==null?'$'+fN(netVal):(mktP>0?NA:'enter price');
 
     // v2: rAF-wrapped SVG draw — avoids blocking main thread on every slider pixel
     if(!_rafPending){
@@ -719,7 +751,7 @@
     var tY=fillR>0.25?(grainY+BB)/2:BB-20;
     $('cap-num').setAttribute('y',tY);
     $('cap-unit').setAttribute('y',tY+17);
-    $('cap-num').textContent=bu>0?fN(bu):'--';
+    $('cap-num').textContent=bu>0?fN(bu):NA;
     $('cap-num').setAttribute('opacity',fillR>0.12?'0.9':'0.35');
     $('cap-unit').setAttribute('opacity',fillR>0.12?'0.7':'0.25');
   }
@@ -738,7 +770,7 @@
     var net=$('rNetVal').textContent;
     var shrink=$('rShrink').textContent;
     var crop=$('crop').options[$('crop').selectedIndex].text.split(' ')[0];
-    var line='AGSIST Grain Bin | '+crop+' | '+bu+' wet bu | '+dry+' dry bu | Shrink: '+shrink+(net!=='--'?' | Net: '+net:'');
+    var line='AGSIST Grain Bin | '+crop+' | '+bu+' wet bu | '+dry+' dry bu | Shrink: '+shrink+(net!==NA?' | Net: '+net:'');
     if(navigator.clipboard){navigator.clipboard.writeText(line).then(function(){showCopied();});}
     else{var t=document.createElement('textarea');t.value=line;document.body.appendChild(t);t.select();document.execCommand('copy');document.body.removeChild(t);showCopied();}
   }
@@ -848,20 +880,20 @@
       '<tr><td>Crop</td><td>'+crop+'</td></tr>'+
       '<tr><td>Bin</td><td>'+dims+'</td></tr>'+
       '<tr><td>Fill</td><td>'+pct+'% ('+fD(grainFt(),1)+' ft of grain)</td></tr>'+
-      '<tr><td>Moisture in / target</td><td>'+($('moistIn').value||'--')+'% / '+($('moistTarget').value||'--')+'%</td></tr>'+
+      '<tr><td>Moisture in / target</td><td>'+($('moistIn').value||NA)+'% / '+($('moistTarget').value||NA)+'%</td></tr>'+
       '<tr><td>Shrink factor / pack</td><td>'+($('shrinkFactor').value||'1.3')+' &times;/pt / '+($('pack').value||0)+'%</td></tr>'+
       '<tr><td>Total bushels</td><td class="pr-big">'+$('rTotBu').textContent+'</td></tr>'+
       '<tr><td>Weight</td><td>'+$('rWeight').textContent+'</td></tr>'+
       '<tr><td>Shrink / dry bushels</td><td>'+$('rShrink').textContent+' &rarr; '+$('rDryBu').textContent+' ('+$('rLost').textContent+' lost)</td></tr>';
-    if($('rNetVal').textContent!=='--'){
-      rowsHtml+='<tr><td>Price used</td><td>$'+($('mktPrice').value||'--')+'/bu</td></tr>'+
+    if($('rNetVal').textContent!==NA){
+      rowsHtml+='<tr><td>Price used</td><td>$'+($('mktPrice').value||NA)+'/bu</td></tr>'+
                 '<tr><td>Net value after shrink'+($('drying-row').style.display!=='none'?' &amp; drying':'')+'</td><td class="pr-big">'+$('rNetVal').textContent+'</td></tr>';
     }
     $('print-record-wrap').innerHTML=
       '<h1>AGSIST &mdash; GRAIN BIN RECORD</h1>'+
       '<p class="pr-sub">Printed '+now.toLocaleDateString()+' &middot; agsist.com/grain-bin-calculator</p>'+
       '<table><thead><tr><th>Item</th><th>Value</th></tr></thead><tbody>'+rowsHtml+'</tbody></table>'+
-      '<p class="pr-note">Estimates from stated dimensions at 1 bu = 1.244 ft&sup3;. Shrink = (moisture in &minus; standard) &times; shrink factor. Not a scale ticket &mdash; settle on delivered weight. Free calculator: agsist.com/grain-bin-calculator</p>';
+      '<p class="pr-note">Estimates from stated dimensions at 1 bu = 1.244 ft&sup3;. Shrink = (moisture in &minus; target moisture) &times; shrink factor, the same points the drying charge uses. Not a scale ticket &mdash; settle on delivered weight. Free calculator: agsist.com/grain-bin-calculator</p>';
   }
   function printRecord(){buildPrintRecord(); window.print();}
   window.addEventListener('beforeprint', buildPrintRecord);

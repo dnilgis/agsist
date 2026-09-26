@@ -16,23 +16,23 @@
   <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
   <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
   <link rel="manifest" href="/manifest.json">
-  <title>Do Crop Ratings Predict Yield? The Real R&amp;sup2; | AGSIST</title>
-  <meta name="description" content="Iowa corn: Good+Excellent in week 39 explains 64% of final yield deviation over 26 years. Every state, every week — including the weeks that explain nothing.">
+  <title>Do Crop Ratings Predict Yield? The Real R² | AGSIST</title>
+  <meta name="description" content="Iowa corn: Good+Excellent in its best week (week 39) explains 64% of yield deviation (26 years, in-sample R²). Every state and week shown.">
   <link rel="canonical" href="https://agsist.com/conditions-yield">
   <meta property="og:type" content="article">
   <meta property="og:site_name" content="AGSIST">
   <meta property="og:locale" content="en_US">
-  <meta property="og:title" content="Do Crop Ratings Predict Yield? The Real R&amp;sup2; | AGSIST">
-  <meta property="og:description" content="Iowa corn: Good+Excellent in week 39 explains 64% of final yield deviation over 26 years. Every state, every week — including the weeks that explain nothing.">
+  <meta property="og:title" content="Do Crop Ratings Predict Yield? The Real R² | AGSIST">
+  <meta property="og:description" content="Iowa corn: Good+Excellent in its best week (week 39) explains 64% of yield deviation (26 years, in-sample R²). Every state and week shown.">
   <meta property="og:url" content="https://agsist.com/conditions-yield">
   <meta property="og:image" content="https://agsist.com/img/og/agsist.jpg">
-  <meta property="og:image:alt" content="Do Crop Ratings Predict Yield? The Real R&amp;sup2; | AGSIST">
+  <meta property="og:image:alt" content="Do Crop Ratings Predict Yield? The Real R² | AGSIST">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:site" content="@agsist">
-  <meta name="twitter:title" content="Do Crop Ratings Predict Yield? The Real R&amp;sup2; | AGSIST">
-  <meta name="twitter:description" content="Iowa corn: Good+Excellent in week 39 explains 64% of final yield deviation over 26 years. Every state, every week — including the weeks that explain nothing.">
+  <meta name="twitter:title" content="Do Crop Ratings Predict Yield? The Real R² | AGSIST">
+  <meta name="twitter:description" content="Iowa corn: Good+Excellent in its best week (week 39) explains 64% of yield deviation (26 years, in-sample R²). Every state and week shown.">
   <meta name="twitter:image" content="https://agsist.com/img/og/agsist.jpg">
   <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Dataset","@id":"https://agsist.com/conditions-yield#dataset","name":"Crop Condition Ratings vs Final Yield: Explanatory Power by State and Week","description":"R-squared of USDA weekly Good+Excellent crop condition share against detrended final state yield, corn and soybeans, per ISO week, 2000-present.","url":"https://agsist.com/conditions-yield","license":"https://www.usa.gov/government-works","isAccessibleForFree":true,"creator":{"@type":"Organization","name":"AGSIST","url":"https://agsist.com"},"temporalCoverage":"2000/..","spatialCoverage":{"@type":"Place","name":"United States"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"AGSIST","item":"https://agsist.com/"},{"@type":"ListItem","position":2,"name":"Do Ratings Predict Yield?","item":"https://agsist.com/conditions-yield"}]},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Do USDA crop condition ratings actually predict final yield?","acceptedAnswer":{"@type":"Answer","text":"Partially, late, and it depends where you farm. In week 38, the Good+Excellent share explains about 62% of how Iowa's final corn yield differs from its trend - but by week 39 it explains roughly 64%. In Kentucky, this week's ratings already explain 88%. This page computes the number for every state and week instead of asserting it."}},{"@type":"Question","name":"Why do the ratings explain so little in early summer?","acceptedAnswer":{"@type":"Answer","text":"Because the yield isn't made yet. July corn in Iowa can rate 80% Good+Excellent and then hit August heat during grain fill. Ratings measure how the crop looks; yield is decided by what happens next. The R-squared curve rising through the season is literally the crop's fate being sealed week by week."}},{"@type":"Question","name":"What does the slope number mean?","acceptedAnswer":{"@type":"Answer","text":"It's the historical relationship: how many bushels per acre of yield deviation (from that state's long-term trend) has come with each 1-point move in Good+Excellent share, at that week. Illinois at week 39: about +0.86 bu/ac per G+E point."}},{"@type":"Question","name":"Why detrend the yields?","acceptedAnswer":{"@type":"Answer","text":"State yields rise about two bushels per acre per year from genetics and agronomy alone. Without removing that trend, the fit confuses 'years got later' with 'ratings got better' and reports fake signal. We fit ratings against each year's deviation from trend; the raw fit is kept in the data for transparency."}},{"@type":"Question","name":"So should I trade off Monday's crop conditions number?","acceptedAnswer":{"@type":"Answer","text":"This page shows exactly how much that number has historically been worth in your state at this week — often less than the market reaction implies. That gap between reaction and information is your edge to keep or spend. See what's already priced on the What's Priced In page."}}]}]}</script>
   <style>
@@ -52,14 +52,16 @@
     .lt-bar .y{width:48px;color:#8a948f}
     .lt-bar .b{height:13px;border-radius:3px;min-width:2px}
     .lt-bar .v{color:#e6ebe9}
-    .lt-bar .mut2{color:#5a6467;font-size:0.775rem}
+    #cy-seed::first-letter{text-transform:uppercase}
+    .vp-tile:focus-visible,.rs-t th:focus-visible{outline:2px solid #d4a23f;outline-offset:2px}
+    .lt-bar .mut2{color:#7d8a8e;font-size:0.775rem}
     table.rs-t{width:100%;border-collapse:collapse;font-size:.85rem;margin:10px 0}
     .rs-t th{text-align:right;color:#8a948f;font-size:0.77rem;letter-spacing:.07em;text-transform:uppercase;padding:7px 9px;border-bottom:1px solid #1a1f20;cursor:pointer;white-space:nowrap;user-select:none}
     .rs-t th:first-child,.rs-t td:first-child{text-align:left}
     .rs-t td{padding:6px 9px;border-bottom:1px solid #14181a;text-align:right;font-family:'JetBrains Mono',monospace;white-space:nowrap;color:#e6ebe9}
     .rs-t td:first-child{font-family:var(--font-display)}
     .rs-t tr:hover td{background:#101415}
-    .rs-t .mut{color:#5a6467}
+    .rs-t .mut{color:#7d8a8e}
     .cy-sel{background:none;border:none;color:#e6ebe9;cursor:pointer;font:inherit;padding:.5rem 0;min-height:40px;border-bottom:1px dotted #2a3133}
     .cy-sel:hover{color:#d4a23f}
     .lt-note{background:#101415;border:1px solid #1a1f20;border-left:3px solid #d4a23f;border-radius:8px;padding:12px 15px;font-size:1rem;line-height:1.65;color:#8a948f;margin:14px 0}
@@ -111,7 +113,7 @@
   <p class="sub">Every Monday afternoon the market trades the condition report like gospel. Nobody shows you how much
   that number has historically been <i>worth</i>. This page computes it: the share of final-yield variation the
   Good+Excellent rating has explained, for every state, at every week of the season, since 2000.
-  <span id="cy-seed"><!--SEED:cystats-->week 38 of 2026: corn ratings currently explain 62% of how Iowa&rsquo;s final yield differs from trend, 72% of Illinois&rsquo;s, 88% of Kentucky&rsquo;s &middot; by week 39 Illinois peaks at 76% &middot; fits vs detrended yield, 2000&ndash;2025, n&ge;15 &middot; data refreshed 2026-09-22<!--/SEED--></span></p>
+  <span id="cy-seed" style="display:block;margin-top:6px"><!--SEED:cystats-->Week 38 of 2026: corn ratings currently explain 62% of how Iowa&rsquo;s final yield differs from trend, 72% of Illinois&rsquo;s, 88% of Kentucky&rsquo;s &middot; by week 39 Illinois peaks at 76% &middot; fits vs detrended yield, 2000&ndash;2025, n&ge;15 &middot; data refreshed 2026-09-22<!--/SEED--></span></p>
   <aside class="ag-sponsor-ribbon"><span class="ag-sponsor-tag">Sponsor this page</span> Everyone here second-guesses Monday&rsquo;s number &mdash; one category-exclusive slot. <a href="/sponsor?slot=conditions-yield&amp;utm_source=conditions-yield&amp;utm_medium=slot">Put your name here &rarr;</a></aside>
   <section id="cy-nowcast" style="display:none;background:linear-gradient(135deg,#101415 0%,rgba(212,162,63,.05) 100%);border:2px solid rgba(212,162,63,.35);border-radius:12px;padding:18px 20px;margin:18px 0">
     <div style="display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:10px">
@@ -128,8 +130,8 @@
   <script>
   (function(){
     fetch('/data/yield-nowcast.json').then(function(r){return r.ok?r.json():null;}).then(function(d){
-      if(!d||!d.crops)return;
       var box=document.getElementById('cy-nowcast'); if(!box)return;
+      if(!d||!d.crops){ nowcastFail(box); return; }
       function cell(id,label,c){
         var el=document.getElementById(id); if(!el||!c)return;
         var diff=c.nowcast-c.trend;
@@ -140,14 +142,20 @@
           +'<div style="font-family:\'JetBrains Mono\',monospace;font-size:1.9rem;font-weight:800;color:#e6ebe9;line-height:1">'+c.nowcast.toFixed(1)+' <span style="font-size:.8rem;font-weight:400;color:#8a948f">bu/ac</span></div>'
           +'<div style="font-family:\'JetBrains Mono\',monospace;font-size:0.78rem;color:#8a948f;margin-top:5px">80% band \u00b1'+c.band80.toFixed(1)+' \u00b7 trend '+c.trend.toFixed(1)+'</div>'
           +'<div style="font-size:0.787rem;margin-top:5px">'+vs+'</div>'
-          +'<div style="font-size:0.765rem;color:#8a948f;margin-top:5px">backtest at this week: MAE '+c.mae.toFixed(1)+' vs '+c.trend_mae.toFixed(1)+' trend-only ('+c.skill_pct+'% better), '+c.backtest_years+' yrs, '+c.states+' states</div>';
+          +'<div style="font-size:0.765rem;color:#8a948f;margin-top:5px">backtest average, not this week\u2019s number: MAE '+c.mae.toFixed(1)+' vs '+c.trend_mae.toFixed(1)+' trend-only ('+c.skill_pct+'% better), '+c.backtest_years+' yrs, '+c.states+' states</div>';
       }
       cell('cyn-corn','Corn \u2014 2026 national yield',d.crops.corn);
       cell('cyn-beans','Soybeans \u2014 2026 national yield',d.crops.soybeans);
       var wk=document.getElementById('cyn-week');
       if(wk&&d.crops.corn)wk.textContent='ratings week ending '+d.crops.corn.week_ending+' \u00b7 updates Tuesdays';
       box.style.display='block';
-    }).catch(function(){});
+    }).catch(function(){ var b=document.getElementById('cy-nowcast'); if(b)nowcastFail(b); });
+    function nowcastFail(box){
+      var a=document.getElementById('cyn-corn'), b=document.getElementById('cyn-beans');
+      if(a)a.innerHTML='<div style="font-size:0.9rem;color:#8a948f">\u2014 Nowcast data did not load</div>';
+      if(b)b.style.display='none';
+      box.style.display='block';
+    }
 
     // ON THE RECORD: the model's directional call against USDA's next print,
     // locked before each WASDE and graded by arithmetic after it. The ledger
@@ -192,8 +200,8 @@
   <script>
   (function(){
     fetch('/data/yield-panel.json').then(function(r){return r.ok?r.json():null;}).then(function(d){
-      if(!d||!d.crops)return;
       var wrap=document.getElementById('cyp-crops'); if(!wrap)return;
+      if(!d||!d.crops){ panelFail(); return; }
       var LABEL={corn:'Corn',soybeans:'Soybeans'};
       
       /* A GAP IS INFORMATION. A forecaster who published no number for a crop
@@ -226,7 +234,7 @@
             +(sp.spread!=null&&sp.spread>0?', '+Math.abs(sp.ours_vs_low).toFixed(1)+' over the lowest':''));
         }
       });
-      if(!blocks.length)return;
+      if(!blocks.length){ panelFail(); return; }
       wrap.innerHTML=blocks.join('');
       /* THE VERDICT IN WORDS, ABOVE THE NUMBERS. Being the outlier is the
          thing a reader should take away, and it should not need arithmetic. */
@@ -244,7 +252,12 @@
         foot.textContent=bits.join(' ');
       }
       document.getElementById('cy-panel').style.display='block';
-    }).catch(function(){});
+    }).catch(function(){ panelFail(); });
+    function panelFail(){
+      var v=document.getElementById('cyp-verdict'), sec=document.getElementById('cy-panel');
+      if(v)v.textContent='\u2014 Forecast comparison data did not load';
+      if(sec)sec.style.display='block';
+    }
   })();
   </script>
 
@@ -257,6 +270,7 @@
   <div class="vp-grid" id="vp-grid"></div>
   <div class="vp-leg"><span><b style="background:#b85a4a"></b>mostly noise</span><span><b style="background:#a8823c"></b>weak</span><span><b style="background:#3f7a58"></b>meaningful</span><span><b style="background:#2f9963"></b>strong</span><span><b style="background:#14181a;border:1px dashed #2a3133"></b>no fit</span></div>
 
+  <p class="sub" style="font-size:0.787rem;margin:4px 0 0">Every R&sup2; on this page is an in-sample fit over each state&rsquo;s own paired years (the count is shown as n or Years). A peak is the best of the weeks tested, so it is flattered by the choice.</p>
   <div class="cy-hero">
     <!-- CY:tiles --><div class="cy-stat"><div class="v">62%</div><div class="l">Iowa corn, this week (wk 38)</div><div class="s">of yield deviation from trend explained by G+E</div></div><div class="cy-stat"><div class="v">64%</div><div class="l">Iowa corn by week 39</div><div class="s">the season seals it late</div></div><div class="cy-stat"><div class="v">88%</div><div class="l">Kentucky, this week</div><div class="s">the clearest read in the country right now</div></div><div class="cy-stat"><div class="v">n&ge;15</div><div class="l">years per fit, minimum</div><div class="s">thin fits refused</div></div><!-- /CY:tiles -->
   </div>
@@ -265,17 +279,17 @@
   <div class="cy-ctl">
     <button class="cy-btn on" id="cy-corn">Corn</button>
     <button class="cy-btn" id="cy-soy">Soybeans</button>
-    <select class="cy-btn" id="cy-state"></select>
-    <span style="font-size:0.78rem;color:#5a6467">gold outline = current week</span>
+    <select class="cy-btn" id="cy-state" aria-label="Pick a state"></select>
+    <span style="font-size:0.78rem;color:#7d8a8e">gold outline = current week</span>
   </div>
   <p class="sub">Each bar: R&sup2; of that week&rsquo;s G+E share vs final yield (detrended), across all years with data.
   Green &ge;50% &middot; gold &ge;25% &middot; grey = mostly noise.</p>
-  <div id="cy-bars"><div class="lt-bar"><span class="y">wk 22</span><div class="b" style="background:#3a4144;width:1.5%"></div><span class="v">0%</span><span class="mut2">n=26</span></div><div class="lt-bar"><span class="y">wk 23</span><div class="b" style="background:#3a4144;width:2.7%"></div><span class="v">3%</span><span class="mut2">n=26</span></div><div class="lt-bar"><span class="y">wk 24</span><div class="b" style="background:#3a4144;width:3.7%"></div><span class="v">4%</span><span class="mut2">n=26</span></div><div class="lt-bar"><span class="y">wk 25</span><div class="b" style="background:#3a4144;width:5.0%"></div><span class="v">6%</span><span class="mut2">n=26</span></div><div class="lt-bar"><span class="y">wk 26</span><div class="b" style="background:#3a4144;width:8.1%"></div><span class="v">9%</span><span class="mut2">n=26</span></div><div class="lt-bar"><span class="y">wk 27</span><div class="b" style="background:#3a4144;width:19.3%"></div><span class="v">21%</span><span class="mut2">n=26</span></div><div class="lt-bar"><span class="y">wk 28</span><div class="b" style="background:#3a4144;outline:1.5px solid #d4a23f;outline-offset:1px;width:20.9%"></div><span class="v">23%</span><span class="mut2">n=26</span></div><div class="lt-bar"><span class="y">wk 29</span><div class="b" style="background:#d4a23f;width:29.0%"></div><span class="v">32%</span><span class="mut2">n=26</span></div><div class="lt-bar"><span class="y">wk 30</span><div class="b" style="background:#d4a23f;width:34.3%"></div><span class="v">38%</span><span class="mut2">n=26</span></div><div class="lt-bar"><span class="y">wk 31</span><div class="b" style="background:#d4a23f;width:41.2%"></div><span class="v">46%</span><span class="mut2">n=26</span></div><div class="lt-bar"><span class="y">wk 32</span><div class="b" style="background:#5fc28a;width:45.4%"></div><span class="v">50%</span><span class="mut2">n=26</span></div><div class="lt-bar"><span class="y">wk 33</span><div class="b" style="background:#5fc28a;width:53.5%"></div><span class="v">59%</span><span class="mut2">n=26</span></div><div class="lt-bar"><span class="y">wk 34</span><div class="b" style="background:#5fc28a;width:54.8%"></div><span class="v">61%</span><span class="mut2">n=26</span></div><div class="lt-bar"><span class="y">wk 35</span><div class="b" style="background:#5fc28a;width:53.5%"></div><span class="v">60%</span><span class="mut2">n=26</span></div><div class="lt-bar"><span class="y">wk 36</span><div class="b" style="background:#5fc28a;width:50.1%"></div><span class="v">56%</span><span class="mut2">n=26</span></div><div class="lt-bar"><span class="y">wk 37</span><div class="b" style="background:#5fc28a;width:50.8%"></div><span class="v">56%</span><span class="mut2">n=26</span></div><div class="lt-bar"><span class="y">wk 38</span><div class="b" style="background:#5fc28a;width:55.4%"></div><span class="v">62%</span><span class="mut2">n=26</span></div><div class="lt-bar"><span class="y">wk 39</span><div class="b" style="background:#5fc28a;width:57.7%"></div><span class="v">64%</span><span class="mut2">n=26</span></div><div class="lt-bar"><span class="y">wk 40</span><div class="b" style="background:#d4a23f;width:32.1%"></div><span class="v">36%</span><span class="mut2">n=22</span></div></div>
+  <div id="cy-bars" aria-live="polite"><div class="lt-bar"><span class="y">wk 22</span><div class="b" style="background:#3a4144;width:1.5%"></div><span class="v">0%</span><span class="mut2">n=26</span></div><div class="lt-bar"><span class="y">wk 23</span><div class="b" style="background:#3a4144;width:2.7%"></div><span class="v">3%</span><span class="mut2">n=26</span></div><div class="lt-bar"><span class="y">wk 24</span><div class="b" style="background:#3a4144;width:3.7%"></div><span class="v">4%</span><span class="mut2">n=26</span></div><div class="lt-bar"><span class="y">wk 25</span><div class="b" style="background:#3a4144;width:5.0%"></div><span class="v">6%</span><span class="mut2">n=26</span></div><div class="lt-bar"><span class="y">wk 26</span><div class="b" style="background:#3a4144;width:8.1%"></div><span class="v">9%</span><span class="mut2">n=26</span></div><div class="lt-bar"><span class="y">wk 27</span><div class="b" style="background:#3a4144;width:19.3%"></div><span class="v">21%</span><span class="mut2">n=26</span></div><div class="lt-bar"><span class="y">wk 28</span><div class="b" style="background:#3a4144;outline:1.5px solid #d4a23f;outline-offset:1px;width:20.9%"></div><span class="v">23%</span><span class="mut2">n=26</span></div><div class="lt-bar"><span class="y">wk 29</span><div class="b" style="background:#d4a23f;width:29.0%"></div><span class="v">32%</span><span class="mut2">n=26</span></div><div class="lt-bar"><span class="y">wk 30</span><div class="b" style="background:#d4a23f;width:34.3%"></div><span class="v">38%</span><span class="mut2">n=26</span></div><div class="lt-bar"><span class="y">wk 31</span><div class="b" style="background:#d4a23f;width:41.2%"></div><span class="v">46%</span><span class="mut2">n=26</span></div><div class="lt-bar"><span class="y">wk 32</span><div class="b" style="background:#5fc28a;width:45.4%"></div><span class="v">50%</span><span class="mut2">n=26</span></div><div class="lt-bar"><span class="y">wk 33</span><div class="b" style="background:#5fc28a;width:53.5%"></div><span class="v">59%</span><span class="mut2">n=26</span></div><div class="lt-bar"><span class="y">wk 34</span><div class="b" style="background:#5fc28a;width:54.8%"></div><span class="v">61%</span><span class="mut2">n=26</span></div><div class="lt-bar"><span class="y">wk 35</span><div class="b" style="background:#5fc28a;width:53.5%"></div><span class="v">60%</span><span class="mut2">n=26</span></div><div class="lt-bar"><span class="y">wk 36</span><div class="b" style="background:#5fc28a;width:50.1%"></div><span class="v">56%</span><span class="mut2">n=26</span></div><div class="lt-bar"><span class="y">wk 37</span><div class="b" style="background:#5fc28a;width:50.8%"></div><span class="v">56%</span><span class="mut2">n=26</span></div><div class="lt-bar"><span class="y">wk 38</span><div class="b" style="background:#5fc28a;width:55.4%"></div><span class="v">62%</span><span class="mut2">n=26</span></div><div class="lt-bar"><span class="y">wk 39</span><div class="b" style="background:#5fc28a;width:57.7%"></div><span class="v">64%</span><span class="mut2">n=26</span></div><div class="lt-bar"><span class="y">wk 40</span><div class="b" style="background:#d4a23f;width:32.1%"></div><span class="v">36%</span><span class="mut2">n=22</span></div></div>
 
   <h2>Every state, corn &mdash; ranked by what this week&rsquo;s number is worth</h2>
   <p class="sub">Click a state for its full-season curve; click a column to sort. Slope: bu/ac of yield deviation per
   1-point G+E move, at that state&rsquo;s peak week.</p>
-  <div class="tblscroll"><table class="rs-t" id="rs-table"><thead><tr><th>State</th><th>This week&rsquo;s R&sup2;</th><th>Peak R&sup2;</th><th>Slope @ peak</th><th>Years</th></tr></thead>
+  <div class="tblscroll"><table class="rs-t" id="rs-table"><thead><tr><th>State</th><th>This week&rsquo;s R&sup2;</th><th>Peak R&sup2; <span style="text-transform:none;letter-spacing:0">(best week tested)</span></th><th>Slope @ peak</th><th>Years</th></tr></thead>
   <tbody><!-- CY:table --><tr><td><button class="cy-sel" data-st="KY">Kentucky</button></td><td data-v="0.877" style="color:#5fc28a">88%</td><td data-v="0.903">90% <span class="mut" style="font-size:0.775rem">wk 37</span></td><td data-v="1.029">+1.03</td><td data-v="26">26</td></tr><tr><td><button class="cy-sel" data-st="OH">Ohio</button></td><td data-v="0.873" style="color:#5fc28a">87%</td><td data-v="0.892">89% <span class="mut" style="font-size:0.775rem">wk 39</span></td><td data-v="0.828">+0.83</td><td data-v="26">26</td></tr><tr><td><button class="cy-sel" data-st="TN">Tennessee</button></td><td data-v="0.873" style="color:#5fc28a">87%</td><td data-v="0.904">90% <span class="mut" style="font-size:0.775rem">wk 40</span></td><td data-v="0.710">+0.71</td><td data-v="26">26</td></tr><tr><td><button class="cy-sel" data-st="NC">North Carolina</button></td><td data-v="0.840" style="color:#5fc28a">84%</td><td data-v="0.854">85% <span class="mut" style="font-size:0.775rem">wk 35</span></td><td data-v="0.769">+0.77</td><td data-v="26">26</td></tr><tr><td><button class="cy-sel" data-st="MO">Missouri</button></td><td data-v="0.797" style="color:#5fc28a">80%</td><td data-v="0.797">80% <span class="mut" style="font-size:0.775rem">wk 38</span></td><td data-v="0.902">+0.90</td><td data-v="26">26</td></tr><tr><td><button class="cy-sel" data-st="KS">Kansas</button></td><td data-v="0.791" style="color:#5fc28a">79%</td><td data-v="0.791">79% <span class="mut" style="font-size:0.775rem">wk 38</span></td><td data-v="0.713">+0.71</td><td data-v="26">26</td></tr><tr><td><button class="cy-sel" data-st="PA">Pennsylvania</button></td><td data-v="0.773" style="color:#5fc28a">77%</td><td data-v="0.813">81% <span class="mut" style="font-size:0.775rem">wk 34</span></td><td data-v="0.763">+0.76</td><td data-v="26">26</td></tr><tr><td><button class="cy-sel" data-st="IN">Indiana</button></td><td data-v="0.743" style="color:#5fc28a">74%</td><td data-v="0.755">76% <span class="mut" style="font-size:0.775rem">wk 39</span></td><td data-v="0.894">+0.89</td><td data-v="26">26</td></tr><tr><td><button class="cy-sel" data-st="TX">Texas</button></td><td data-v="0.726" style="color:#5fc28a">73%</td><td data-v="0.757">76% <span class="mut" style="font-size:0.775rem">wk 40</span></td><td data-v="0.690">+0.69</td><td data-v="26">26</td></tr><tr><td><button class="cy-sel" data-st="IL">Illinois</button></td><td data-v="0.724" style="color:#5fc28a">72%</td><td data-v="0.759">76% <span class="mut" style="font-size:0.775rem">wk 39</span></td><td data-v="0.857">+0.86</td><td data-v="26">26</td></tr><tr><td><button class="cy-sel" data-st="NE">Nebraska</button></td><td data-v="0.715" style="color:#5fc28a">72%</td><td data-v="0.726">73% <span class="mut" style="font-size:0.775rem">wk 39</span></td><td data-v="0.599">+0.60</td><td data-v="26">26</td></tr><tr><td><button class="cy-sel" data-st="SD">South Dakota</button></td><td data-v="0.710" style="color:#5fc28a">71%</td><td data-v="0.710">71% <span class="mut" style="font-size:0.775rem">wk 38</span></td><td data-v="0.686">+0.69</td><td data-v="26">26</td></tr><tr><td><button class="cy-sel" data-st="MI">Michigan</button></td><td data-v="0.621" style="color:#5fc28a">62%</td><td data-v="0.761">76% <span class="mut" style="font-size:0.775rem">wk 37</span></td><td data-v="0.537">+0.54</td><td data-v="26">26</td></tr><tr><td><button class="cy-sel" data-st="IA">Iowa</button></td><td data-v="0.615" style="color:#5fc28a">62%</td><td data-v="0.641">64% <span class="mut" style="font-size:0.775rem">wk 39</span></td><td data-v="0.663">+0.66</td><td data-v="26">26</td></tr><tr><td><button class="cy-sel" data-st="MN">Minnesota</button></td><td data-v="0.473" style="color:#d4a23f">47%</td><td data-v="0.529">53% <span class="mut" style="font-size:0.775rem">wk 39</span></td><td data-v="0.513">+0.51</td><td data-v="26">26</td></tr><tr><td><button class="cy-sel" data-st="WI">Wisconsin</button></td><td data-v="0.452" style="color:#d4a23f">45%</td><td data-v="0.483">48% <span class="mut" style="font-size:0.775rem">wk 39</span></td><td data-v="0.448">+0.45</td><td data-v="26">26</td></tr><tr><td><button class="cy-sel" data-st="ND">North Dakota</button></td><td data-v="0.390" style="color:#d4a23f">39%</td><td data-v="0.443">44% <span class="mut" style="font-size:0.775rem">wk 39</span></td><td data-v="0.545">+0.55</td><td data-v="26">26</td></tr><tr><td><button class="cy-sel" data-st="CO">Colorado</button></td><td data-v="0.076" style="color:#3a4144">8%</td><td data-v="0.211">21% <span class="mut" style="font-size:0.775rem">wk 25</span></td><td data-v="0.273">+0.27</td><td data-v="26">26</td></tr><!-- /CY:table --></tbody></table></div>
 
   <div class="lt-note"><b>What this can&rsquo;t tell you.</b> R&sup2; is <b>explanation, not prediction</b> &mdash; and a late-season
@@ -330,16 +344,19 @@
     gaEvent('cond_yield_view',{crop:crop,st:state});
   }
   fetch('/data/cond-yield/fit.json',{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).then(function(j){
-    if(!j)return; data=j;
+    if(!j){ fitFail(); return; } data=j;
     var sts=Object.keys(j.crops.corn.states).sort(function(a,b){return (ST_NAME[a]||a).localeCompare(ST_NAME[b]||b);});
     var sel=$('cy-state'); sel.innerHTML=sts.map(function(s){return '<option value="'+s+'"'+(s==='IA'?' selected':'')+'>'+(ST_NAME[s]||s)+'</option>';}).join('');
     sel.addEventListener('change',function(){ state=this.value; render(); });
-  }).catch(function(){});
+  }).catch(function(){ fitFail(); });
+  function fitFail(){ $('cy-bars').innerHTML='<p class="sub">\u2014 Data did not load</p>'; }
   $('cy-corn').addEventListener('click',function(){ crop='corn'; this.classList.add('on'); $('cy-soy').classList.remove('on'); render(); });
   $('cy-soy').addEventListener('click',function(){ crop='soybeans'; this.classList.add('on'); $('cy-corn').classList.remove('on'); render(); });
   document.addEventListener('click',function(e){ var b=e.target.closest('.cy-sel'); if(b&&data){ state=b.getAttribute('data-st'); $('cy-state').value=state; render(); $('cy-bars').scrollIntoView({behavior:'smooth',block:'nearest'}); } });
   var t=document.getElementById('rs-table');
   if(t){ var ths=t.tHead.rows[0].cells,dir=1,last=-1;
+    for(let i=0;i<ths.length;i++){ ths[i].setAttribute('role','button'); ths[i].setAttribute('tabindex','0');
+      ths[i].addEventListener('keydown',function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); this.click(); } }); }
     for(let i=0;i<ths.length;i++)ths[i].addEventListener('click',function(){
       dir=(last===i)?-dir:(i===0?1:-1);last=i;
       var rows=[].slice.call(t.tBodies[0].rows);
@@ -374,12 +391,18 @@
     var g=el('vp-grid');
     if(g){ var h='';
       Object.keys(TILE).forEach(function(ab){ var t=TILE[ab], s=VD[ab];
-        if(s){ h+='<div class="vp-tile'+(ab===picked?' sel':'')+'" data-st="'+ab+'" style="--gc:'+t[0]+';--gr:'+t[1]+';background:'+s.tile+'"><div class="vp-tst">'+ab+'</div><div class="vp-tge">'+s.tval+'</div></div>'; }
+        if(s){ h+='<div class="vp-tile'+(ab===picked?' sel':'')+'" data-st="'+ab+'" role="button" tabindex="0" aria-pressed="'+(ab===picked)+'" aria-label="'+(__A2F[ab]||ab)+', '+s.tval+'" style="--gc:'+t[0]+';--gr:'+t[1]+';background:'+s.tile+'"><div class="vp-tst">'+ab+'</div><div class="vp-tge">'+s.tval+'</div></div>'; }
         else { h+='<div class="vp-tile dim" style="--gc:'+t[0]+';--gr:'+t[1]+'"><div class="vp-tst">'+ab+'</div></div>'; } });
       g.innerHTML=h; }
   }
   document.addEventListener('click',function(e){ var t=e.target.closest('.vp-tile[data-st]');
     if(t){ picked=t.dataset.st; geoNote=''; render(); try{gaEvent('verdict_tap',{st:picked,page:location.pathname});}catch(x){} } });
+  document.addEventListener('keydown',function(e){
+    if(e.key!=='Enter'&&e.key!==' ')return;
+    var t=e.target.closest&&e.target.closest('.vp-tile[data-st]'); if(!t)return;
+    e.preventDefault(); picked=t.dataset.st; geoNote=''; render();
+    var n=document.querySelector('.vp-tile[data-st="'+picked+'"]'); if(n)n.focus();
+    try{gaEvent('verdict_tap',{st:picked,page:location.pathname});}catch(x){} });
   document.addEventListener('change',function(e){ if(e.target&&e.target.id==='vp-sel'){ picked=e.target.value; geoNote=''; render(); } });
   function buildVerdicts(j){
     var out={}, sts=(j.crops.corn||{}).states||{};
@@ -396,13 +419,14 @@
       else {word='STRONG SIGNAL';c='#5fc28a';t='#2f9963';}
       out[st]={big:(r2==null?'\u2014':Math.round(r2*100)+'\u0025'),word:word,col:c,tile:t,
         tval:(r2==null?'\u2014':Math.round(r2*100)+'\u0025'),
-        sent:'This week\u2019s corn rating explains <b style="color:'+c+'">'+(r2==null?'almost none':Math.round(r2*100)+'\u0025')+'</b> of how '+(__A2F[st]||st)+'\u2019s final yield will differ from trend, based on '+(w?w.n:'-')+' years of history. By week '+pkw+' it peaks at <b>'+Math.round(pk.r2*100)+'\u0025</b>. Trade Monday\u2019s number accordingly.'};
+        sent:'This week\u2019s corn rating has explained <b style="color:'+c+'">'+(r2==null?'almost none':Math.round(r2*100)+'\u0025')+'</b> of how '+(__A2F[st]||st)+'\u2019s final yield differed from trend, over '+(w?w.n:'-')+' years, in-sample. The best of the weeks tested was week '+pkw+' at <b>'+Math.round(pk.r2*100)+'\u0025</b>. That is a historical fit, not a forecast.'};
     });
     return out;
   }
   fetch('/data/cond-yield/fit.json',{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).then(function(j){
-    if(!j)return; VD=buildVerdicts(j); render();
-  }).catch(function(){});
+    if(!j){ vpFail(); return; } VD=buildVerdicts(j); render();
+  }).catch(function(){ vpFail(); });
+  function vpFail(){ var a=document.getElementById('vp-big'),b=document.getElementById('vp-sent'); if(a)a.textContent='\u2014'; if(b)b.textContent='\u2014 Data did not load'; }
 })();
 
 </script>

@@ -286,6 +286,27 @@ def main():
     # explicitly rather than relying on the order they happened to run in.
     records.sort(key=lambda r: (r.get("judged") or r.get("made") or ""))
 
+    # ── ONE OUTCOME IS ONE CALL ──────────────────────────────────────────────
+    # Weekend briefings repeat Friday's call (same instrument, direction, level
+    # and prices) and are all graded against the same Monday close, so one
+    # outcome was counted 2-3 times. Keep the earliest row of each identical
+    # set; pending rows and rows without a structured call are never merged.
+    _seen = set()
+    _deduped = []
+    _dropped = 0
+    for r in records:
+        if r["outcome"] != "pending" and r.get("instrument"):
+            _k = (r.get("instrument"), r.get("direction"), str(r.get("level")),
+                  r.get("p0"), r.get("p1"), r.get("judged"))
+            if _k in _seen:
+                _dropped += 1
+                continue
+            _seen.add(_k)
+        _deduped.append(r)
+    records = _deduped
+    if _dropped:
+        print(f"[scorecard] {_dropped} repeated weekend calls counted once")
+
     played = sum(1 for r in records if r["outcome"] == "played_out")
     missed = sum(1 for r in records if r["outcome"] == "didnt")
     pending = sum(1 for r in records if r["outcome"] == "pending")
@@ -377,6 +398,7 @@ def main():
     out = {
         "updated": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "total": len(records),
+        "repeats_merged": _dropped,
         "played_out": played,
         "didnt": missed,
         "pending": pending,

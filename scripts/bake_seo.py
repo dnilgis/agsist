@@ -259,10 +259,9 @@ def seo_cond_yield(c):
     n = best.get("n")
     if r2 is None or not n:
         return None
-    return ("Do Crop Ratings Predict Yield? The Real R&sup2;" + SUFFIX,
-            f"Iowa corn: Good+Excellent in week {wk} explains {r2 * 100:.0f}% of final yield "
-            f"deviation over {n} years. Every state, every week — including the weeks "
-            f"that explain nothing.")
+    return ("Do Crop Ratings Predict Yield? The Real R²" + SUFFIX,
+            f"Iowa corn: Good+Excellent in its best week (week {wk}) explains {r2 * 100:.0f}% of yield "
+            f"deviation ({n} years, in-sample R²). Every state and week shown.")
 
 
 def seo_conditions(c):
@@ -277,7 +276,7 @@ def seo_conditions(c):
     soy = (d.get("soybeans") or {}).get("good_excellent")
     vs = f" against {prev}% a year ago" if prev is not None else ""
     also = f", soybeans {soy}%" if soy is not None else ""
-    return (f"Crop Conditions: Corn {ge:g}% Good-Excellent — USDA Ratings{SUFFIX}",
+    return (f"USDA Crop Conditions: Corn {ge:g}% Good-Excellent{SUFFIX}",
             f"US corn is {ge:g}% good to excellent{also},{vs}. Every state's rating ranked "
             f"against the same week since 2000 — a percentile, not a feel.")
 
@@ -327,11 +326,11 @@ def seo_breakeven(c):
 
 FUTURES = {
     "corn-futures-prices.html":
-        ("CBOT", "Corn", "corn", "Live Prices Today"),
+        ("CBOT", "Corn", "corn", "Live Prices"),
     "soybean-futures-prices.html":
-        ("CBOT", "Soybean", "beans", "Live ZS Prices"),
+        ("CBOT", "Soybean", "beans", "Live Prices"),
     "wheat-futures-prices.html":
-        ("CBOT", "Wheat", "wheat", "Chicago SRW & KC HRW"),
+        ("CBOT", "Wheat", "wheat", "SRW & KC HRW"),
 }
 
 # Cattle is its own case twice over. seed_static.py does NOT write a
