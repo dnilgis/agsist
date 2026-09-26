@@ -69,6 +69,7 @@ def _env_int(name, default):
 TOTAL_LOCATIONS = _env_int("BARCHART_TOTAL_LOCATIONS", 200)
 OUTPUT_PATH = "data/bids.json"        # SLIM. Browsers fetch this one.
 FULL_PATH = os.environ.get("BIDS_FULL_PATH", "bids-full.json")  # never committed
+DIRECTORY_PATH = "data/elevator-directory.json"  # the Barchart roster: who and where
 
 # ── Why there are two files now ──────────────────────────────────
 # data/bids.json is fetched CLIENT-SIDE by /corn-futures-prices,
@@ -578,6 +579,123 @@ def _net_key(facility, city, state):
     plain = lambda x: _re.sub(r"[^a-z0-9]", "", str(x or "").lower())
     return f"{_norm_operator(facility)}|{plain(city)}|{plain(state)}"
 
+# ── A ROW WITHOUT A STATE CANNOT BE FILED ────────────────────────
+# build_basis_history.py writes one shard per state and the page can only
+# fetch /data/basis/{STATE}.json, so a row with no state is history nobody can
+# open. The 2026-09-26 run left 120 of them, from two places:
+#   - Barchart rows whose `state` came back empty (Hillside Grain of Golden
+#     City, One Earth Energy of Gibson City);
+#   - network places whose place record has no state and no coordinate
+#     (CHS Big Sky, CHS Primeland, Premier Cooperative's Fairbanks and others).
+# The roster in data/elevator-directory.json knows the first kind. Nothing in
+# this repository knows the second, so those stay empty and are named.
+#
+# A state already on the row is never replaced. A fill needs the roster to
+# give ONE state. Two facilities of one name in one town in two states is not
+# one state, so that row stays empty too. There is no ZIP-to-state table here
+# and none is invented.
+_CITY_TAIL = _re_mod.compile(r"^(.*?),\s*[A-Za-z]{2}\s*$")
+
+
+def _plain_city(city):
+    """A city as a key. Barchart sometimes writes 'Golden City, MO' in the
+    city field; the ', MO' is not part of the town."""
+    c = str(city or "")
+    m = _CITY_TAIL.match(c)
+    if m:
+        c = m.group(1)
+    return _re_mod.sub(r"[^a-z0-9]", "", c.lower())
+
+
+def load_roster(path=None):
+    """The roster as three lookups, each key -> the set of states seen.
+    Empty when the file cannot be read. Never load-bearing: without it rows
+    keep the state they came with and the rest stay empty."""
+    idx = {"id": {}, "name": {}, "zip": {}}
+    try:
+        with open(path or DIRECTORY_PATH) as f:
+            elevators = json.load(f).get("elevators") or []
+    except (OSError, ValueError, AttributeError):
+        return idx
+    for e in elevators:
+        if not isinstance(e, dict):
+            continue
+        st = str(e.get("state") or "").strip().upper()
+        if not st:
+            continue
+        for k in ("elevatorId", "locationId"):
+            v = e.get(k)
+            if v not in (None, "", 0):
+                idx["id"].setdefault(f"{k}:{v}", set()).add(st)
+        city = _plain_city(e.get("city"))
+        if not city:
+            continue
+        for nm in (e.get("company"), e.get("facility")):
+            if nm:
+                idx["name"].setdefault((_norm_operator(nm), city), set()).add(st)
+        z = str(e.get("zip") or "").strip()[:5]
+        if z:
+            idx["zip"].setdefault((z, city), set()).add(st)
+    return idx
+
+
+def fill_states(rows, roster):
+    """Give a row with no state the roster's state, in place.
+
+    Order: the row's own state (only trimmed and upper-cased), the roster by
+    elevatorId or locationId, the roster by operator and town, then the roster
+    by ZIP and town. The first step that has any answer decides: if it names
+    two states the row is left empty, it does not fall through to a weaker
+    step. Returns counts and the names still empty."""
+    filled = ambiguous = 0
+    left = {}
+    for r in rows:
+        raw = r.get("state")
+        st = str(raw or "").strip().upper()
+        if st:
+            if st != raw:
+                r["state"] = st
+            continue
+        city = _plain_city(r.get("city"))
+        z = str(r.get("zip") or "").strip()[:5]
+        found = set()
+        for k in ("elevatorId", "locationId"):
+            v = r.get(k)
+            if v not in (None, "", 0):
+                found = roster["id"].get(f"{k}:{v}", set())
+                if found:
+                    break
+        if not found and city:
+            found = roster["name"].get((_norm_operator(r.get("facility")), city), set())
+        if not found and city and z:
+            found = roster["zip"].get((z, city), set())
+        if len(found) == 1:
+            r["state"] = next(iter(found))
+            filled += 1
+            c = str(r.get("city") or "")
+            if len(c) > 4 and c[-4:-2] == ", " and c[-2:].upper() == r["state"]:
+                r["city"] = c[:-4].strip()
+            continue
+        if len(found) > 1:
+            ambiguous += 1
+        left[f"{r.get('facility') or 'Unknown'} | {r.get('city') or 'no city'}"] = 1
+        r["state"] = ""
+    return {"filled": filled, "ambiguous": ambiguous,
+            "still_empty": sum(1 for r in rows if not r.get("state")),
+            "names": sorted(left)}
+
+
+def _say_states(res, when):
+    if not (res["filled"] or res["still_empty"]):
+        return
+    print(f"[fetch_bids] state {when}: {res['filled']} row(s) filled from the roster, "
+          f"{res['still_empty']} still without one"
+          + (f" ({res['ambiguous']} ambiguous)" if res["ambiguous"] else ""))
+    if res["names"]:
+        print("[fetch_bids]   no state for: " + "; ".join(res["names"][:10])
+              + (f"; ... and {len(res['names']) - 10} more" if len(res["names"]) > 10 else ""))
+
+
 # When "new crop" is delivered, by crop, as month-day pairs inside the crop
 # year. None is the default -- the corn and soybean belt window, which is also
 # what sorghum and an unclassified commodity get.
@@ -801,13 +919,20 @@ def network_rows(grid, base=None):
     return rows
 
 
-def merge_network(barchart_rows, grid, base=None):
+def merge_network(barchart_rows, grid, base=None, roster=None):
     """Barchart rows plus the network, deduped. Ours wins on price; Barchart's
     phone crosses to the network row that displaced it. Barchart-only on any
     network failure."""
     net = network_rows(grid, base=base)
     if not net:
         return barchart_rows
+    if roster:
+        # Same states on both sides before keying, or one place becomes two.
+        try:
+            fill_states(net, roster)
+        except Exception as e:
+            print(f"[fetch_bids] state fill on network rows skipped: {type(e).__name__}: {e}",
+                  file=sys.stderr)
     by_key = {}
     for r in net:
         by_key.setdefault(_net_key(r["facility"], r["city"], r["state"]), []).append(r)
@@ -828,11 +953,17 @@ def merge_network(barchart_rows, grid, base=None):
     return kept
 
 
-def verify_bids(bids):
+def verify_bids(bids, detail=None):
     """Mark every row `verified` true or false. Returns (n_ok, n_bad).
 
     Mutates the rows in place and never changes a price. See the block above
     for what the two legs are and what was measured to choose them.
+
+    `detail` is optional and is only ever WRITTEN TO. Pass a dict and it comes
+    back holding, for each withheld row, id(row) -> what the guard measured
+    (kind, cohort size, cohort futures, envelope). It reads nothing back and
+    no decision depends on it, so a call with and without it marks the same
+    rows the same way. withheld_report() turns it into data/bids-withheld.json.
 
     THE COHORT LEG IS KEYED ON THE SYMBOL ALONE, NOT ON THE CROP. Central
     Prairie's MILO quotes against ZCZ26 and implies 5.37, the same figure the
@@ -912,28 +1043,37 @@ def verify_bids(bids):
         sym = _norm_symbol(b.get("symbol"))
         cat = classify_commodity(b.get("commodity"))
         why = None
+        kind = cohort_n = cohort_fut = span_seen = None
 
         if v is None:
+            kind = "no_price"
             why = ("the row carries no cash price or no basis, so it states no "
                    "futures price to check")
         elif not sym:
+            kind = "no_symbol"
             why = ("the row names no contract, so there is nothing its cash "
                    "minus basis can be compared against")
         else:
             cohort = by_symbol.get(sym, [])
+            cohort_n = len(cohort)
             if len(cohort) >= VERIFY_MIN_COHORT:
                 med = sym_median[sym]
+                cohort_fut = med
                 if abs(v - med) > VERIFY_COHORT_TOL:
+                    kind = "off_cohort"
                     why = (f"cash {b.get('cashPrice')} minus basis {b.get('basis')} "
                            f"implies {v} for {sym}, but the other {len(cohort) - 1} "
                            f"facility rows quoting {sym} imply {med}")
             else:
                 span = cat_span.get(cat)
+                span_seen = span
                 if span is None:
+                    kind = "no_cohort"
                     why = (f"{sym} is quoted by only {len(cohort)} row(s) and no "
                            f"{cat} contract in this file is quoted by enough "
                            f"facilities to state a price, so nothing here can check it")
                 elif not (span[0] * VERIFY_ENVELOPE_LO <= v <= span[1] * VERIFY_ENVELOPE_HI):
+                    kind = "outside_envelope"
                     why = (f"cash {b.get('cashPrice')} minus basis {b.get('basis')} "
                            f"implies {v} for {sym}, and every {cat} contract this "
                            f"file can check implies {span[0]} to {span[1]}")
@@ -945,6 +1085,9 @@ def verify_bids(bids):
         else:
             b["unverifiedWhy"] = why
             n_bad += 1
+            if detail is not None:
+                detail[id(b)] = {"kind": kind, "implied": v, "cohortRows": cohort_n,
+                                 "cohortFutures": cohort_fut, "span": span_seen}
     return n_ok, n_bad
 
 
@@ -953,6 +1096,96 @@ def verified_only(bids):
     verify_bids() has simply not been run, and this must not silently empty
     a page that never had the guard."""
     return [b for b in bids if b.get("verified", True)]
+
+# ── WHAT THE GUARD WITHHELD, WRITTEN DOWN ─────────────────────────────────
+# The run log prints twelve withheld rows and then "... and N more". The rest
+# were unreadable, so nobody could say which were bad data, which were honest
+# rows the guard had nothing to check against, and which were good bids lost.
+# This writes them all to one small file that each run overwrites.
+#
+# IT CHANGES NO DECISION. It reads what verify_bids() already measured and
+# writes it out. The classes are the guard's own branches, not a new opinion:
+#
+#   no_cohort         nothing here can check it. Rice, barley, millet, durum,
+#                     peas, delivered-basis quotes. Not shown to be wrong.
+#   off_cohort        three or more facilities quote the contract and this row
+#                     implies a different futures price.
+#   outside_envelope  a thin contract, and the row is outside the crop's span.
+#   no_price, no_symbol   the row has nothing to check.
+#
+# `basisAsCentsFits` is a measurement, not a verdict: true when the row would
+# match its cohort if its basis were cents instead of dollars. A basis of -3.0
+# is read as three dollars; the same figure in cents is three cents.
+#
+# Rows are grouped: the same elevator, crop, contract, cash and basis in
+# several delivery months is one entry with the months listed. Sorted, no
+# clock in the file, so a run with nothing new writes the same bytes.
+WITHHELD_PATH = os.environ.get("WITHHELD_PATH", "data/bids-withheld.json")
+WITHHELD_MAX_GROUPS = 600      # a cap on the listing; the counts are never capped
+
+
+def withheld_report(bids, detail):
+    """The withheld rows, grouped and sorted, as a dict ready for json.dump."""
+    groups = {}
+    by_kind = {}
+    by_cat = {}
+    total = 0
+    for b in bids:
+        if b.get("verified", True):
+            continue
+        d = detail.get(id(b)) or {}
+        kind = d.get("kind") or "unknown"
+        total += 1
+        by_kind[kind] = by_kind.get(kind, 0) + 1
+        cat = b.get("category") or "other"
+        by_cat[cat] = by_cat.get(cat, 0) + 1
+        cash, basis = b.get("cashPrice"), b.get("basis")
+        key = (b.get("facility") or "", b.get("city") or "", b.get("state") or "",
+               b.get("commodity") or "", b.get("symbol") or "", cash, basis)
+        g = groups.get(key)
+        if g is None:
+            fut, imp = d.get("cohortFutures"), d.get("implied")
+            gap = None if (fut is None or imp is None) else round(abs(imp - fut), 4)
+            cents = None
+            if fut is not None and cash is not None and basis is not None:
+                try:
+                    cents = abs(float(cash) - float(basis) / 100.0 - fut) <= VERIFY_COHORT_TOL
+                except (TypeError, ValueError):
+                    cents = None
+            g = groups[key] = {
+                "facility": key[0], "city": key[1], "state": key[2],
+                "commodity": key[3], "category": cat, "symbol": key[4],
+                "cash": cash, "basis": basis, "implied": imp,
+                "cohortRows": d.get("cohortRows"), "cohortFutures": fut,
+                "gap": gap, "basisAsCentsFits": cents, "kind": kind,
+                "rows": 0, "months": [],
+            }
+        g["rows"] += 1
+        m = b.get("deliveryMonth")
+        if m and m not in g["months"]:
+            g["months"].append(m)
+    order = {"off_cohort": 0, "outside_envelope": 1, "no_price": 2,
+             "no_symbol": 3, "no_cohort": 4}
+    rows = sorted(groups.values(),
+                  key=lambda g: (order.get(g["kind"], 9), g["state"], g["facility"],
+                                 g["commodity"], g["symbol"], str(g["cash"]), str(g["basis"])))
+    for g in rows:
+        g["months"].sort()
+    return {
+        "note": ("Rows the identity guard in scripts/fetch_bids.py kept out of "
+                 "selection on the run that wrote data/bids.json. Overwritten "
+                 "every run. no_cohort rows are not shown to be wrong: nothing "
+                 "in the file can check them."),
+        "tolerance": VERIFY_COHORT_TOL,
+        "minCohort": VERIFY_MIN_COHORT,
+        "withheldRows": total,
+        "byKind": dict(sorted(by_kind.items())),
+        "byCategory": dict(sorted(by_cat.items())),
+        "groups": len(rows),
+        "truncated": len(rows) > WITHHELD_MAX_GROUPS,
+        "withheld": rows[:WITHHELD_MAX_GROUPS],
+    }
+
 
 def _is_closed(b):
     """Has this row's delivery window already shut, as of this run?
@@ -1497,8 +1730,20 @@ def main():
 
     # Fold in the AGSIST elevator network so every surface reading these
     # files shows both sources. Barchart-only if the network is unreachable.
+    # States first, so a Barchart row and the network's copy of it share a key.
+    try:
+        roster = load_roster()
+        _say_states(fill_states(all_bids, roster), "on Barchart rows")
+    except Exception as e:
+        roster = None
+        print(f"[fetch_bids] state fill skipped: {type(e).__name__}: {e}", file=sys.stderr)
     grid_for_merge = [{"zip": e["zip"], "lat": e["lat"], "lng": e["lng"]} for e in ZIP_GRID]
-    all_bids = merge_network(all_bids, grid_for_merge)
+    all_bids = merge_network(all_bids, grid_for_merge, roster=roster)
+    if roster:
+        try:
+            _say_states(fill_states(all_bids, roster), "after the merge")
+        except Exception as e:
+            print(f"[fetch_bids] state fill skipped: {type(e).__name__}: {e}", file=sys.stderr)
     if barchart_on:
         print(f"[fetch_bids] Errors: {errors}/{len(ZIP_GRID)} ZIPs")
 
@@ -1507,7 +1752,8 @@ def main():
     # THE IDENTITY GUARD runs on the FULL set, before anything is cut. Cohorts
     # are the whole point and the slim file has already thrown most of them
     # away, so verifying after slimming would be verifying against a handful.
-    n_ok, n_bad = verify_bids(all_bids)
+    withheld_detail = {}
+    n_ok, n_bad = verify_bids(all_bids, detail=withheld_detail)
     print(f"[fetch_bids] identity guard: {n_ok} verified, {n_bad} withheld from "
           f"selection ({100.0 * n_bad / max(1, n_ok + n_bad):.1f}%)")
     if n_bad:
@@ -1555,6 +1801,22 @@ def main():
               f"failed) and none from the network — not overwriting "
               f"{OUTPUT_PATH}", file=sys.stderr)
         sys.exit(3)
+
+    # WHAT WAS WITHHELD, IN FULL. Never load-bearing: a failure here costs the
+    # listing and nothing else. See withheld_report().
+    try:
+        os.makedirs(os.path.dirname(WITHHELD_PATH) or ".", exist_ok=True)
+        rep = withheld_report(all_bids, withheld_detail)
+        text = json.dumps(rep, separators=(",", ":")) + "\n"
+        with open(WITHHELD_PATH + ".tmp", "w") as f:
+            f.write(text)
+        os.replace(WITHHELD_PATH + ".tmp", WITHHELD_PATH)
+        print(f"[fetch_bids] Wrote {WITHHELD_PATH} ({rep['withheldRows']} rows in "
+              f"{rep['groups']} groups, {os.path.getsize(WITHHELD_PATH) / 1024:.1f} KB; "
+              f"by kind {rep['byKind']})")
+    except Exception as e:
+        print(f"[fetch_bids] could not write {WITHHELD_PATH}: {type(e).__name__}: {e}",
+              file=sys.stderr)
 
     output = {
         "fetched": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
@@ -2083,6 +2345,52 @@ def selftest():
        lone["verified"] is False and "120" not in lone["unverifiedWhy"]
        and "nothing here can check it" in lone["unverifiedWhy"])
 
+    print("the withheld list says what the guard measured and changes nothing")
+    _fix = [R("Corn", "ZCZ26", 4.60, -0.77), R("Corn", "ZCZ26", 4.85, -0.52),
+            R("Corn", "ZCZ26", 5.00, -0.37), R("Corn", "N27", 12.92, -0.20),
+            R("Soybeans", "ZSX26", 12.85, -3.0),                 # three cents, read as dollars
+            R("Soybeans", "ZSX26", 12.88, 0.0), R("Soybeans", "ZSX26", 12.90, 0.02),
+            R("Soybeans", "ZSX26", 12.86, -0.02),
+            R("Rice", "ZRX6", 13.5, 0.5), R("Rice", "ZRX6", 13.5, 0.5),
+            R("Canola", "RSX26", 6.956, -133.0)]
+    _fix[9]["deliveryMonth"] = "Oct26"
+    _fix[8]["deliveryMonth"] = "Sep26"
+    _fix[8]["facility"] = _fix[9]["facility"] = "Riceland"
+    _a = [dict(r) for r in _fix]
+    _b = [dict(r) for r in _fix]
+    _det = {}
+    verify_bids(_a)
+    verify_bids(_b, detail=_det)
+    ck("asking for detail marks every row exactly as it did before",
+       [(r["verified"], r.get("unverifiedWhy")) for r in _a]
+       == [(r["verified"], r.get("unverifiedWhy")) for r in _b])
+    _rep = withheld_report(_b, _det)
+    _wh = {(g["commodity"], g["symbol"], g["cash"]): g for g in _rep["withheld"]}
+    ck("every withheld row is counted and no verified row is listed",
+       _rep["withheldRows"] == sum(1 for r in _b if not r["verified"])
+       and sum(_rep["byKind"].values()) == _rep["withheldRows"]
+       and sum(g["rows"] for g in _rep["withheld"]) == _rep["withheldRows"])
+    ck("rice with no cohort is no_cohort, and the same rice in two months is one entry",
+       _wh[("Rice", "ZRX6", 13.5)]["kind"] == "no_cohort"
+       and _wh[("Rice", "ZRX6", 13.5)]["rows"] == 2
+       and _wh[("Rice", "ZRX6", 13.5)]["months"] == ["Oct26", "Sep26"])
+    ck("a row that misses a real cohort is off_cohort and carries the cohort's futures",
+       _wh[("Soybeans", "ZSX26", 12.85)]["kind"] == "off_cohort"
+       and _wh[("Soybeans", "ZSX26", 12.85)]["cohortRows"] == 4
+       and _wh[("Soybeans", "ZSX26", 12.85)]["cohortFutures"] == 12.88)
+    ck("a basis that fits the cohort as cents is flagged, and the flag decides nothing",
+       _wh[("Soybeans", "ZSX26", 12.85)]["basisAsCentsFits"] is True
+       and _wh[("Soybeans", "ZSX26", 12.85)]["cash"] == 12.85)
+    ck("the report is the same bytes twice", json.dumps(withheld_report(_b, _det))
+       == json.dumps(withheld_report(_b, _det)))
+    _cap = globals()["WITHHELD_MAX_GROUPS"]
+    globals()["WITHHELD_MAX_GROUPS"] = 1
+    _small = withheld_report(_b, _det)
+    globals()["WITHHELD_MAX_GROUPS"] = _cap
+    ck("a capped listing says so and still counts every row",
+       _small["truncated"] is True and len(_small["withheld"]) == 1
+       and _small["withheldRows"] == _rep["withheldRows"])
+
     print("dedup still collapses the overlap a bigger radius creates")
     dup = [
         {"facility": "A", "branch": "", "commodity": "Corn", "deliveryStart": "",
@@ -2400,6 +2708,69 @@ def selftest():
         m2 = merge_network(bc_rows, grid_n, base=os.path.join(tmp, "does-not-exist"))
     ck("an unreachable network feed returns the Barchart rows unchanged", m2 == bc_rows)
 
+    # ---- A ROW WITHOUT A STATE (2026-09-26) ---------------------------------
+    # 120 basis rows a run could not be filed because no state came with them.
+    # The roster fills what it can say once; everything else stays empty.
+    rp = os.path.join(tmp, "roster.json")
+    with open(rp, "w") as f:
+        json.dump({"elevators": [
+            {"company": "Hillside Grain, LLC", "city": "Golden City", "state": "MO",
+             "zip": "64748", "elevatorId": 3263, "locationId": 87820},
+            {"facility": "Kanza Co-op", "city": "Iuka", "state": "KS", "zip": "67066"},
+            {"facility": "Twin City Grain", "city": "Union", "state": "IA", "zip": "50258"},
+            {"facility": "Twin City Grain", "city": "Union", "state": "OR", "zip": "97883"},
+            {"facility": "Alliance Grain Co.", "city": "Gibson City", "state": "IL", "zip": "60936"},
+            {"company": "One Earth Energy", "city": "Gibson City", "zip": "60936"},
+            {"facility": "Moved Elevator", "city": "Elsewhere", "state": "NE", "zip": "68001",
+             "elevatorId": 9},
+        ]}, f)
+    ros = load_roster(rp)
+
+    def one(**kw):
+        r = {"facility": "", "city": "", "state": "", "zip": ""}
+        r.update(kw)
+        res = fill_states([r], ros)
+        return r["state"], res
+
+    st, res = one(facility="Kanza Co-op", city="Iuka", state="KS")
+    ck("a state already on the row is left alone", st == "KS" and res["filled"] == 0)
+    st, res = one(facility="Kanza Co-op", city="Iuka", state="NE")
+    ck("a fill never overrides a present state, even one the roster disagrees with",
+       st == "NE" and res["filled"] == 0)
+    st, res = one(facility="Anything", city="Nowhere", elevatorId=3263)
+    ck("a missing state is filled from the roster by elevatorId", st == "MO" and res["filled"] == 1)
+    st, res = one(facility="Anything", city="Nowhere", locationId=87820)
+    ck("...and by locationId", st == "MO")
+    st, res = one(facility="Hillside Grain", city="Golden City")
+    ck("a missing state is filled by operator and city, spelling-tolerant",
+       st == "MO" and res["filled"] == 1)
+    st, res = one(facility="Hillside Grain, LLC", city="Golden City, MO")
+    ck("...and a ', MO' written into the city does not defeat the match", st == "MO")
+    st, res = one(facility="Nobody", city="Golden City")
+    ck("an unknown operator with no match stays empty and is counted",
+       st == "" and res["still_empty"] == 1 and res["filled"] == 0
+       and res["names"] == ["Nobody | Golden City"])
+    st, res = one(facility="Twin City Grain", city="Union")
+    ck("two states for one operator and town: left empty, counted as ambiguous",
+       st == "" and res["ambiguous"] == 1 and res["still_empty"] == 1)
+    st, res = one(facility="One Earth Energy", city="Gibson City", zip="60936")
+    ck("a roster entry with no state of its own fills nothing; the ZIP and town then say IL",
+       st == "IL")
+    st, res = one(facility="One Earth Energy", city="Gibson City", zip="99999")
+    ck("...but a ZIP the roster does not know for that town stays empty", st == "")
+    st, res = one(facility="Moved Elevator", city="Elsewhere", elevatorId=9, state="  ne ")
+    ck("a padded lower-case state is trimmed and upper-cased, not replaced", st == "NE")
+    st, res = one(facility="Kanza Co-op", city="Iuka", state="on")
+    ck("a Canadian province passes through", st == "ON")
+    rows = [{"facility": "CHS Big Sky", "city": "Havre", "state": "", "zip": ""},
+            {"facility": "CHS Big Sky", "city": "Havre", "state": None, "zip": None}]
+    res = fill_states(rows, ros)
+    ck("a network place the roster has never heard of stays empty, each row counted, named once",
+       res["still_empty"] == 2 and res["names"] == ["CHS Big Sky | Havre"])
+    ck("an unreadable roster fills nothing and does not raise",
+       fill_states([{"facility": "Kanza Co-op", "city": "Iuka", "state": ""}],
+                   load_roster(os.path.join(tmp, "nope.json")))["filled"] == 0)
+
     # ---- CUTTING THE CORD (2026-09-25) --------------------------------------
     # main() end to end, in a scratch directory, with the module's globals
     # pointed at the fixture. What must hold the day the subscription lapses:
@@ -2454,6 +2825,8 @@ def selftest():
             with open(op) as f:
                 out = json.load(f)
         flag = open(gho).read() if os.path.exists(gho) else ""
+        wp = os.path.join(d, "data", "bids-withheld.json")
+        run_main.withheld = json.load(open(wp)) if os.path.exists(wp) else None
         rp = os.path.join(d, "barchart-raw.json")
         run_main.raw = json.load(open(rp))["bids"] if os.path.exists(rp) else None
         shutil.rmtree(d, ignore_errors=True)
@@ -2491,9 +2864,14 @@ def selftest():
        run_main.raw is not None and len(run_main.raw) == len(bc_rows)
        and not any(r.get("source") == "network" for r in run_main.raw))
 
+    ck("a live run writes the withheld list, and its counts add up",
+       run_main.withheld is not None
+       and sum(run_main.withheld["byKind"].values()) == run_main.withheld["withheldRows"])
+
     code, out, flag, log = run_main("", os.path.join(tmp, "does-not-exist"))
     ck("nothing from anywhere REFUSES to publish an empty file (exit 3)",
        code == 3 and out is None)
+    ck("...and leaves the withheld list alone too", run_main.withheld is None)
     shutil.rmtree(tmp, ignore_errors=True)
 
     _AS_OF_OVERRIDE = _prev_as_of

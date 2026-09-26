@@ -1791,7 +1791,7 @@ function renderBasisCard(data){
       if(hasBidsAtAll){
         msg='<strong>No '+CROP_LABEL.toLowerCase()+' cash bids in the current sample for your area.</strong> Bids vary by elevator, season, and delivery period \u2014 check the full cash bid map for nearby alternatives. '+fetched;
       }else{
-        msg='<strong>Cash bid samples are being collected.</strong> AGSIST polls 50 ZIP locations across the grain belt for representative cash bids and basis vs CBOT futures. Bids update during weekday market hours. '+fetched;
+        msg='<strong>Cash bid samples are being collected.</strong> AGSIST polls 50 ZIP locations across the grain belt for representative cash bids and basis vs CBOT futures. Bids refresh every 15 minutes, day and night. '+fetched;
       }
       emptyEl.innerHTML=msg;
     }

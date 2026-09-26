@@ -54,6 +54,7 @@
   .st-more-lede{margin:0 0 .8rem;color:var(--text-muted,#9bb0a3);font-size:.9rem;max-width:62ch;}
   #st-grid-more .st-desc em{font-style:normal;display:inline-block;margin-top:.2rem;
     color:var(--text-muted,#9bb0a3);}
+  #st-grid .st-desc em{font-style:normal;display:inline-block;margin-top:.2rem;color:var(--text-muted,#9bb0a3);}
   .st-card{display:flex;align-items:center;gap:.85rem;background:var(--card,#161b14);border:1px solid var(--border,#2a3324);border-radius:12px;padding:.9rem 1rem;}
   .st-card .dot{width:11px;height:11px;border-radius:50%;flex-shrink:0;background:var(--text-muted,#9bb0a3);}
   .st-card .dot.ok{background:var(--green,#4aab4c);box-shadow:0 0 0 3px rgba(74,171,76,.15);}
@@ -216,13 +217,43 @@
         }
       },
       {
-        name:'Cash Grain Bids', desc:'Local elevator bids by ZIP, read on weekday business hours.',
+        /* Cash bids run every 15 minutes, every day, round the clock (two
+           clocks: cron-job.org and the GitHub cron; a run takes about 75 s and
+           the freshness check skips a run under 5 minutes old). So there is no
+           off-hours state here any more. The limits below are chosen, not
+           measured: ok under 40 min = one missed fire plus a slow run; warn
+           under 2 h = both clocks missed several fires; beyond that, down.
+           data/bids.json also says whether Barchart answered and how old the
+           merged network file is. Those go in the same row, as a note: two
+           rows built on one file would both go amber together and trip the
+           "several feeds behind" banner for a single fault. */
+        name:'Cash Grain Bids', desc:'Local elevator bids by ZIP. Fetched every 15 minutes, day and night.',
         url:'/data/bids.json', tsKey:'fetched',
         check:function(d,age){
-          if(!bidsHours()) return {state:'idle', label:'Off-hours', age:'last update '+ago(age)};
-          if(age < 3*3600000) return {state:'ok', label:'Live', age:ago(age)};
-          if(age < 8*3600000) return {state:'warn', label:'Delayed', age:ago(age)};
-          return {state:'down', label:'Stalled', age:ago(age)};
+          var MIN=60000, res;
+          if(age < -10*MIN) res={state:'warn', label:'Clock off', age:'file is ahead of your clock'};
+          else if(age < 40*MIN) res={state:'ok', label:'Live', age:ago(age)};
+          else if(age < 120*MIN) res={state:'warn', label:'Delayed', age:ago(age)};
+          else res={state:'down', label:'Stalled', age:ago(age)};
+
+          // The barchart block is absent in older files: say nothing then.
+          var bc=(d&&typeof d.barchart==='object'&&d.barchart)?d.barchart:null;
+          if(!bc) return res;
+          var issues=[];
+          var mode=String(bc.mode).toLowerCase();
+          var live=(bc.live===true||String(bc.live).toLowerCase()==='true');
+          var failed=Number(bc.zips_failed);
+          var net=parseTs(bc.network_generated), netMin=(net==null)?null:Math.round((Date.now()-net)/MIN);
+          if(mode==='on' && bc.live!=null && !live) issues.push(['Barchart down','Barchart is on but returned nothing. The key may be dead. Bids are from the network only.']);
+          else if(failed>0) issues.push(['Partial','Barchart failed for '+Math.round(failed)+' ZIP'+(Math.round(failed)===1?'':'s')+' on the last run.']);
+          if(netMin!=null && netMin>75) issues.push(['Network old','Network file is '+(netMin<180?netMin+' min':Math.round(netMin/60)+' h')+' old. The fetch is fresh, the bids in it are not.']);
+          if(issues.length){
+            if(res.state==='ok'){ res.state='warn'; res.label=issues[0][0]; }
+            res.note=issues.map(function(i){return i[1];}).join(' ');
+          } else if(mode==='off'){
+            res.note='Barchart is off. Bids come from the elevator network.';
+          }
+          return res;
         }
       },
       {
@@ -305,7 +336,7 @@
       var el=document.createElement('div'); el.className='st-card';
       el.innerHTML='<span class="dot wait"></span><div class="st-body"><div class="st-name">'+c.name+'</div><div class="st-desc">'+c.desc+'</div></div><div class="st-right"><div class="st-state wait">Checking</div><div class="st-age">&nbsp;</div></div>';
       grid.appendChild(el);
-      return {c:c, el:el, dot:el.querySelector('.dot'), state:el.querySelector('.st-state'), age:el.querySelector('.st-age')};
+      return {c:c, el:el, desc:el.querySelector('.st-desc'), dot:el.querySelector('.dot'), state:el.querySelector('.st-state'), age:el.querySelector('.st-age')};
     });
 
     function paint(row, res){
@@ -313,6 +344,13 @@
       row.state.className='st-state '+(res.state==='idle'?'ok':res.state);
       row.state.textContent=res.label;
       row.age.textContent=res.age||'';
+      if(row.desc){                                  // optional second line under the description
+        if(res.note){
+          row.desc.textContent=row.c.desc;
+          var em=document.createElement('em'); em.textContent=res.note;
+          row.desc.appendChild(document.createElement('br')); row.desc.appendChild(em); row.noted=true;
+        } else if(row.noted){ row.desc.innerHTML=row.c.desc; row.noted=false; }
+      }
     }
 
     function checkOne(row){
@@ -425,7 +463,7 @@
         bs.textContent='Most of AGSIST is working normally, but one feed isn’t responding. Details are marked in red below.';
       } else if(worst>=2){
         b.className='st-banner warn'; bm.textContent='One feed is running behind';
-        bs.textContent='Everything is online; a single feed is a little behind its usual refresh. It should catch up on its own.';
+        bs.textContent='Everything is online; one feed is behind or partly degraded. Details are marked below.';
       } else {
         b.className='st-banner ok'; bm.textContent='All systems normal';
         bs.textContent='Every AGSIST feed is current for this time of day. Idle items are simply off-hours — markets closed or no briefing due — not a problem.';
