@@ -1,6 +1,6 @@
 {
- "generated": "2026-09-25T16:31:40Z",
- "from": "restored 2026-09-25: the 2026-09-22 roster (before the network was merged in), the 2026-08-27 harvest, and every Barchart-origin record since",
+ "generated": "2026-09-26T00:53:09Z",
+ "from": "barchart-raw.json",
  "complete": false,
  "note": "Directory only: who operates a facility and where. No prices, no basis, no symbols, no delivery windows.",
  "counts": {
@@ -9,10 +9,10 @@
   "with_address": 722,
   "with_coords": 725,
   "with_url": 703,
-  "with_phone": 2155,
+  "with_phone": 2156,
   "saturated_zips": 0,
   "failed_zips": 0,
-  "rows_read": null
+  "rows_read": 18486
  },
  "saturated": [],
  "failed": [],
@@ -1832,7 +1832,10 @@
    "facility_type": "Direct Ship",
    "locationId": 84551,
    "elevatorId": 1392,
-   "source": "barchart"
+   "source": "barchart",
+   "facility": "Farmers Elevator & Exchange, Inc.",
+   "branch": "Cedar Rapids",
+   "phone": "N/A"
   },
   {
    "facility": "Farmers Feed & Grain Co Inc.",
@@ -2372,66 +2375,6 @@
    "source": "barchart"
   },
   {
-   "facility": "Heartland Co-op",
-   "branch": "AVON",
-   "city": "Carlisle",
-   "state": "IA",
-   "zip": "50047",
-   "phone": "515-266-4215",
-   "source": "barchart",
-   "lat": 41.4814
-  },
-  {
-   "facility": "Heartland Co-op",
-   "branch": "EARLHAM FEED MILL",
-   "city": "Earlham",
-   "state": "IA",
-   "zip": "50072",
-   "phone": "515-758-2221",
-   "source": "barchart",
-   "lat": 41.4709
-  },
-  {
-   "facility": "Heartland Co-op",
-   "branch": "PICKERING",
-   "city": "Gilman",
-   "state": "IA",
-   "zip": "50106",
-   "phone": "800-542-7887",
-   "source": "barchart",
-   "lat": 41.9012
-  },
-  {
-   "facility": "Heartland Co-op",
-   "branch": "VOORHIES",
-   "city": "Hudson",
-   "state": "IA",
-   "zip": "50643",
-   "phone": "(319) 988-3880",
-   "source": "barchart",
-   "lat": 42.3905
-  },
-  {
-   "facility": "Heartland Co-op",
-   "branch": "RIVER SIOUX",
-   "city": "Little Sioux",
-   "state": "IA",
-   "zip": "51545",
-   "phone": "712.649.2281",
-   "source": "barchart",
-   "lat": 41.8083
-  },
-  {
-   "facility": "Heartland Co-op",
-   "branch": "MO VALLEY",
-   "city": "Missouri Valley",
-   "state": "IA",
-   "zip": "51555",
-   "phone": "712-642-3737",
-   "source": "barchart",
-   "lat": 41.5644
-  },
-  {
    "facility": "Heartland Coop",
    "branch": "ALLEMAN",
    "city": "Alleman",
@@ -2466,6 +2409,16 @@
    "zip": "50046",
    "phone": "515-383-4345",
    "source": "barchart"
+  },
+  {
+   "facility": "Heartland Coop",
+   "branch": "AVON",
+   "city": "Carlisle",
+   "state": "IA",
+   "zip": "50047",
+   "phone": "515-266-4215",
+   "source": "barchart",
+   "lat": 41.4814
   },
   {
    "facility": "Heartland Coop",
@@ -2505,6 +2458,16 @@
   },
   {
    "facility": "Heartland Coop",
+   "branch": "EARLHAM FEED MILL",
+   "city": "Earlham",
+   "state": "IA",
+   "zip": "50072",
+   "phone": "515-758-2221",
+   "source": "barchart",
+   "lat": 41.4709
+  },
+  {
+   "facility": "Heartland Coop",
    "branch": "EARLHAM",
    "city": "Earlham",
    "state": "IA",
@@ -2523,6 +2486,16 @@
   },
   {
    "facility": "Heartland Coop",
+   "branch": "PICKERING",
+   "city": "Gilman",
+   "state": "IA",
+   "zip": "50106",
+   "phone": "800-542-7887",
+   "source": "barchart",
+   "lat": 41.9012
+  },
+  {
+   "facility": "Heartland Coop",
    "branch": "GRUNDY CENTER",
    "city": "Grundy Center",
    "state": "IA",
@@ -2538,6 +2511,16 @@
    "zip": "51541",
    "phone": "712-825-3561",
    "source": "barchart"
+  },
+  {
+   "facility": "Heartland Coop",
+   "branch": "VOORHIES",
+   "city": "Hudson",
+   "state": "IA",
+   "zip": "50643",
+   "phone": "(319) 988-3880",
+   "source": "barchart",
+   "lat": 42.3905
   },
   {
    "facility": "Heartland Coop",
@@ -2574,6 +2557,16 @@
    "zip": "50652",
    "phone": "N/A",
    "source": "barchart"
+  },
+  {
+   "facility": "Heartland Coop",
+   "branch": "RIVER SIOUX",
+   "city": "Little Sioux",
+   "state": "IA",
+   "zip": "51545",
+   "phone": "712.649.2281",
+   "source": "barchart",
+   "lat": 41.8083
   },
   {
    "facility": "Heartland Coop",
@@ -2637,6 +2630,16 @@
    "zip": "50168",
    "phone": "641-363-4250",
    "source": "barchart"
+  },
+  {
+   "facility": "Heartland Coop",
+   "branch": "MO VALLEY",
+   "city": "Missouri Valley",
+   "state": "IA",
+   "zip": "51555",
+   "phone": "712-642-3737",
+   "source": "barchart",
+   "lat": 41.5644
   },
   {
    "facility": "Heartland Coop",
@@ -5041,7 +5044,7 @@
    "branch": "Postville",
    "city": "Postville",
    "state": "IA",
-   "zip": " 5216",
+   "zip": "52162",
    "phone": "563-864-7234",
    "source": "barchart"
   },
@@ -9946,7 +9949,7 @@
    "branch": "Glenwood",
    "city": "Glenwood",
    "state": "IN",
-   "zip": " 4613",
+   "zip": "46133",
    "phone": "N/A",
    "source": "barchart"
   },
@@ -26796,7 +26799,7 @@
    "source": "barchart"
   },
   {
-   "facility": "CHS Sun Basin Growers",
+   "facility": "CHS SunBasin Growers",
    "branch": "Connell Elevator",
    "city": "Connell",
    "state": "WA",
@@ -26804,16 +26807,6 @@
    "phone": "509-234-2641",
    "source": "barchart",
    "lat": 46.65742
-  },
-  {
-   "facility": "CHS Sun Basin Growers",
-   "branch": "Bruce Elevator",
-   "city": "Othello",
-   "state": "WA",
-   "zip": "99344",
-   "phone": "509-488-3118",
-   "source": "barchart",
-   "lat": 46.83608
   },
   {
    "facility": "CHS SunBasin Growers",
@@ -26825,7 +26818,7 @@
    "source": "barchart"
   },
   {
-   "facility": "CHS Sun Basin Growers",
+   "facility": "CHS SunBasin Growers",
    "branch": "Wheeler Elevator ML",
    "city": "Moses Lake",
    "state": "WA",
@@ -26845,6 +26838,16 @@
    "facility_type": "Country Elevator",
    "locationId": 86454,
    "elevatorId": 3203
+  },
+  {
+   "facility": "CHS SunBasin Growers",
+   "branch": "Bruce Elevator",
+   "city": "Othello",
+   "state": "WA",
+   "zip": "99344",
+   "phone": "509-488-3118",
+   "source": "barchart",
+   "lat": 46.83608
   },
   {
    "facility": "Eppich Grain Inc",
