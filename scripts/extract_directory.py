@@ -356,8 +356,8 @@ def main():
             same_everywhere = all(sets[k] == base for k in keys)
             print("\n   every probe returned the SAME set: %s" % same_everywhere)
             biggest = max(len(v) for v in sets.values())
-            union = set().union(*sets.values())
-            print("   largest single answer: %d   union of all probes: %d" % (biggest, len(union)))
+            union_all = set().union(*sets.values())
+            print("   largest single answer: %d   union of all probes: %d" % (biggest, len(union_all)))
             if same_everywhere:
                 print("\n   ==> Neither the ZIP nor the cap changes the answer. %d is what this\n"
                       "       key is entitled to, and no sweep design will get a %dth. Everything\n"
@@ -524,6 +524,28 @@ def selftest():
         g["OUT"].write_text(json.dumps({"elevators": [tidy(ours), tidy(harvest)]}))
         prior, dropped = prior_roster()
         ck("the prior file loses only the network's records", len(prior) == 1 and dropped == 1)
+
+        # main() ITSELF, the way the workflow runs it. 2026-09-26: every helper
+        # passed its tests and main() crashed on the runner, because a probe
+        # branch assigned a local named `union` and shadowed the function for
+        # the whole of main(). Calling helpers never touches that.
+        import io, contextlib
+        g["RAW"].write_text(json.dumps({"bids": [dict(barchart)]}))
+        g["OUT"].write_text(json.dumps({"elevators": [tidy(ours), tidy(harvest)]}))
+        argv0 = sys.argv
+        sys.argv = ["extract_directory.py", "--from-bids"]
+        buf = io.StringIO()
+        try:
+            with contextlib.redirect_stdout(buf):
+                rc = main()
+        except Exception as ex:
+            rc = "raised %s: %s" % (type(ex).__name__, ex)
+        finally:
+            sys.argv = argv0
+        after = json.loads(g["OUT"].read_text()).get("elevators", [])
+        ck("main --from-bids runs to the end", rc == 0)
+        ck("main --from-bids writes the roster with no network records in it",
+           len(after) >= 1 and not any(contaminated(r) for r in after) and not any((r.get("facility") or "") == "Ours Only" for r in after))
     finally:
         for k, v in keep.items():
             g[k] = v
