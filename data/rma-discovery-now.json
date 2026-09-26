@@ -1,7 +1,7 @@
 {
  "_note": "Derived from data/rma-prices.json. 'open' = a discovery window containing today; 'next' = one opening within 75 days. Price range is Conventional practice.",
- "updated": "2026-09-25T00:46:46Z",
- "as_of": "2026-09-25",
+ "updated": "2026-09-26T00:46:51Z",
+ "as_of": "2026-09-26",
  "crop_year": 2026,
  "open": [
   {
@@ -22,7 +22,7 @@
    "contract": [
     "December"
    ],
-   "day": 25,
+   "day": 26,
    "span": 30,
    "in_days": null
   },
@@ -50,7 +50,7 @@
    "contract": [
     "November"
    ],
-   "day": 25,
+   "day": 26,
    "span": 30,
    "in_days": null
   },
@@ -77,7 +77,7 @@
    "contract": [
     "November"
    ],
-   "day": 25,
+   "day": 26,
    "span": 30,
    "in_days": null
   },
@@ -101,7 +101,7 @@
    "contract": [
     "December"
    ],
-   "day": 25,
+   "day": 26,
    "span": 30,
    "in_days": null
   },
@@ -123,7 +123,7 @@
    "contract": [
     "December"
    ],
-   "day": 25,
+   "day": 26,
    "span": 30,
    "in_days": null
   },
@@ -141,15 +141,15 @@
     "South Dakota"
    ],
    "n_states": 5,
-   "lo": 16.12,
-   "hi": 16.12,
+   "lo": 16.11,
+   "hi": 16.11,
    "exch": [
     "ICE"
    ],
    "contract": [
     "November"
    ],
-   "day": 25,
+   "day": 26,
    "span": 30,
    "in_days": null
   },
@@ -174,7 +174,7 @@
    "contract": [
     "December"
    ],
-   "day": 25,
+   "day": 26,
    "span": 30,
    "in_days": null
   },
@@ -190,15 +190,15 @@
     "Maine"
    ],
    "n_states": 3,
-   "lo": 4.21,
-   "hi": 5.41,
+   "lo": 4.2,
+   "hi": 5.4,
    "exch": [
     "CBOT"
    ],
    "contract": [
     "December"
    ],
-   "day": 25,
+   "day": 26,
    "span": 30,
    "in_days": null
   },
@@ -215,15 +215,15 @@
     "Texas"
    ],
    "n_states": 4,
-   "lo": 0.159,
-   "hi": 0.159,
+   "lo": 0.16,
+   "hi": 0.16,
    "exch": [
     "CBOT"
    ],
    "contract": [
     "November"
    ],
-   "day": 25,
+   "day": 26,
    "span": 30,
    "in_days": null
   },
@@ -240,15 +240,15 @@
     "Texas"
    ],
    "n_states": 4,
-   "lo": 0.191,
-   "hi": 0.191,
+   "lo": 0.192,
+   "hi": 0.192,
    "exch": [
     "CBOT"
    ],
    "contract": [
     "November"
    ],
-   "day": 25,
+   "day": 26,
    "span": 30,
    "in_days": null
   },
@@ -262,15 +262,15 @@
     "Texas"
    ],
    "n_states": 1,
-   "lo": 13.15,
-   "hi": 13.15,
+   "lo": 13.16,
+   "hi": 13.16,
    "exch": [
     "CBOT"
    ],
    "contract": [
     "November"
    ],
-   "day": 25,
+   "day": 26,
    "span": 30,
    "in_days": null
   }
@@ -329,7 +329,7 @@
    ],
    "day": null,
    "span": null,
-   "in_days": 6
+   "in_days": 5
   },
   {
    "crop": "Corn",
@@ -357,7 +357,7 @@
    ],
    "day": null,
    "span": null,
-   "in_days": 6
+   "in_days": 5
   },
   {
    "crop": "Cotton",
@@ -392,7 +392,7 @@
    ],
    "day": null,
    "span": null,
-   "in_days": 6
+   "in_days": 5
   },
   {
    "crop": "Grain Sorghum",
@@ -438,7 +438,7 @@
    ],
    "day": null,
    "span": null,
-   "in_days": 6
+   "in_days": 5
   },
   {
    "crop": "Peanuts",
@@ -468,7 +468,7 @@
    "contract": [],
    "day": null,
    "span": null,
-   "in_days": 6
+   "in_days": 5
   },
   {
    "crop": "Peanuts",
@@ -494,7 +494,7 @@
    "contract": [],
    "day": null,
    "span": null,
-   "in_days": 6
+   "in_days": 5
   },
   {
    "crop": "Peanuts",
@@ -521,7 +521,7 @@
    "contract": [],
    "day": null,
    "span": null,
-   "in_days": 6
+   "in_days": 5
   },
   {
    "crop": "Peanuts",
@@ -543,7 +543,7 @@
    "contract": [],
    "day": null,
    "span": null,
-   "in_days": 6
+   "in_days": 5
   },
   {
    "crop": "Popcorn",
@@ -576,7 +576,7 @@
    ],
    "day": null,
    "span": null,
-   "in_days": 6
+   "in_days": 5
   },
   {
    "crop": "Rice",
@@ -602,7 +602,7 @@
    ],
    "day": null,
    "span": null,
-   "in_days": 6
+   "in_days": 5
   },
   {
    "crop": "Rice",
@@ -628,7 +628,7 @@
    ],
    "day": null,
    "span": null,
-   "in_days": 6
+   "in_days": 5
   },
   {
    "crop": "Soybeans",
@@ -677,7 +677,7 @@
    ],
    "day": null,
    "span": null,
-   "in_days": 6
+   "in_days": 5
   },
   {
    "crop": "Sunflowers",
@@ -708,7 +708,7 @@
    ],
    "day": null,
    "span": null,
-   "in_days": 6
+   "in_days": 5
   },
   {
    "crop": "Sunflowers",
@@ -739,7 +739,7 @@
    ],
    "day": null,
    "span": null,
-   "in_days": 6
+   "in_days": 5
   },
   {
    "crop": "Corn",
@@ -764,7 +764,7 @@
    ],
    "day": null,
    "span": null,
-   "in_days": 37
+   "in_days": 36
   },
   {
    "crop": "Cotton",
@@ -788,7 +788,7 @@
    ],
    "day": null,
    "span": null,
-   "in_days": 37
+   "in_days": 36
   },
   {
    "crop": "Popcorn",
@@ -810,7 +810,7 @@
    ],
    "day": null,
    "span": null,
-   "in_days": 37
+   "in_days": 36
   },
   {
    "crop": "Soybeans",
@@ -841,7 +841,7 @@
    ],
    "day": null,
    "span": null,
-   "in_days": 37
+   "in_days": 36
   }
  ]
 }
