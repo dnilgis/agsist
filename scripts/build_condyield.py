@@ -31,6 +31,7 @@ Usage:
 """
 
 import argparse
+import html as H
 import json
 import re
 import sys
@@ -175,7 +176,7 @@ def faq_answer(rows):
         return None
     return (f"Partially, late, and it depends where you farm. In week {ia['week']}, the "
             f"Good+Excellent share explains about {round(ia['r2'] * 100)}% of how Iowa's final corn "
-            f"yield differs from its trend - but by week {ia['peak_wk']} it explains roughly "
+            f"yield differs from its trend. Iowa's fit peaks at week {ia['peak_wk']}, at about "
             f"{round(ia['peak_r2'] * 100)}%. In {top['name']}, this week's ratings already explain "
             f"{round(top['r2'] * 100)}%. This page computes the number for every state and week "
             f"instead of asserting it.")
@@ -243,7 +244,13 @@ def bake_faq(html, rows):
     assert hit == 1, f"expected exactly 1 FAQ answer to update, matched {hit}"
     assert "<" not in ans, "a < inside a script block would end it early"
     body = json.dumps(doc, ensure_ascii=False, separators=(",", ":"))
-    return html[:m.start()] + m.group(1) + body + m.group(3) + html[m.end():]
+    out = html[:m.start()] + m.group(1) + body + m.group(3) + html[m.end():]
+    # The visible answer must be the same string as the markup. It was
+    # hand-written once and drifted (week 28 / North Carolina vs the baked schema).
+    vis = re.compile(r'(<summary>Do USDA crop condition ratings actually predict final yield\?</summary>'
+                     r'<div class="lt-faq-a">)[^<]*(</div>)')
+    assert len(vis.findall(out)) == 1, "expected exactly 1 visible FAQ answer to update"
+    return vis.sub(lambda v: v.group(1) + H.escape(ans, quote=False) + v.group(2), out)
 
 
 def gauntlet(html, rows):
