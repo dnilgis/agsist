@@ -1,5 +1,5 @@
 {
- "updated": "2026-09-27T02:05:40Z",
+ "updated": "2026-09-27T02:21:33Z",
  "class_month": "August 2026",
  "class_month_key": "2026-08",
  "class_release": "2026-09-02",
@@ -31,8 +31,165 @@
  },
  "status": {
   "class": "ok",
-  "all_milk": "failed",
-  "note": "all_milk: NASS fetch failed: TimeoutError: The read operation timed out; all_milk_states: NASS fetch failed: TimeoutError: The read operation timed out",
-  "all_milk_states": "failed"
+  "all_milk": "ok",
+  "all_milk_states": "ok"
+ },
+ "all_milk": {
+  "value": 20.3,
+  "month": "July 2026",
+  "month_key": "2026-07",
+  "source": "NASS Agricultural Prices",
+  "prev_month": 21.1,
+  "year_ago": 20.8
+ },
+ "all_milk_states": {
+  "month": "July 2026",
+  "month_key": "2026-07",
+  "rows": [
+   {
+    "state": "Arizona",
+    "value": 20.4,
+    "prev_month": 20.8,
+    "year_ago": 21.0
+   },
+   {
+    "state": "California",
+    "value": 21.0,
+    "prev_month": 22.0,
+    "year_ago": 20.6
+   },
+   {
+    "state": "Colorado",
+    "value": 18.6,
+    "prev_month": 19.6,
+    "year_ago": 20.2
+   },
+   {
+    "state": "Florida",
+    "value": 27.5,
+    "prev_month": 28.0,
+    "year_ago": 25.3
+   },
+   {
+    "state": "Georgia",
+    "value": 27.7,
+    "prev_month": 28.6,
+    "year_ago": 25.7
+   },
+   {
+    "state": "Idaho",
+    "value": 19.2,
+    "prev_month": 19.7,
+    "year_ago": 20.6
+   },
+   {
+    "state": "Illinois",
+    "value": 20.3,
+    "prev_month": 21.6,
+    "year_ago": 21.0
+   },
+   {
+    "state": "Indiana",
+    "value": 22.5,
+    "prev_month": 23.5,
+    "year_ago": 22.0
+   },
+   {
+    "state": "Iowa",
+    "value": 18.1,
+    "prev_month": 18.7,
+    "year_ago": 19.5
+   },
+   {
+    "state": "Kansas",
+    "value": 18.3,
+    "prev_month": 19.9,
+    "year_ago": 19.6
+   },
+   {
+    "state": "Michigan",
+    "value": 20.7,
+    "prev_month": 22.2,
+    "year_ago": 20.9
+   },
+   {
+    "state": "Minnesota",
+    "value": 18.7,
+    "prev_month": 18.7,
+    "year_ago": 20.2
+   },
+   {
+    "state": "New Mexico",
+    "value": 19.9,
+    "prev_month": 19.6,
+    "year_ago": 19.5
+   },
+   {
+    "state": "New York",
+    "value": 21.7,
+    "prev_month": 23.2,
+    "year_ago": 21.6
+   },
+   {
+    "state": "Ohio",
+    "value": 22.3,
+    "prev_month": 23.3,
+    "year_ago": 22.4
+   },
+   {
+    "state": "Oregon",
+    "value": 20.3,
+    "prev_month": 20.6,
+    "year_ago": 21.4
+   },
+   {
+    "state": "Pennsylvania",
+    "value": 21.5,
+    "prev_month": 22.7,
+    "year_ago": 21.3
+   },
+   {
+    "state": "South Dakota",
+    "value": 18.0,
+    "prev_month": 18.5,
+    "year_ago": 19.9
+   },
+   {
+    "state": "Texas",
+    "value": 21.4,
+    "prev_month": 21.4,
+    "year_ago": 21.2
+   },
+   {
+    "state": "Utah",
+    "value": 20.2,
+    "prev_month": 20.6,
+    "year_ago": 20.2
+   },
+   {
+    "state": "Vermont",
+    "value": 21.9,
+    "prev_month": 23.2,
+    "year_ago": 22.3
+   },
+   {
+    "state": "Virginia",
+    "value": 26.8,
+    "prev_month": 27.4,
+    "year_ago": 25.2
+   },
+   {
+    "state": "Washington",
+    "value": 21.2,
+    "prev_month": 22.1,
+    "year_ago": 21.7
+   },
+   {
+    "state": "Wisconsin",
+    "value": 18.2,
+    "prev_month": 18.6,
+    "year_ago": 19.8
+   }
+  ]
  }
 }
