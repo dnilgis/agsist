@@ -1,16 +1,17 @@
 {
- "updated": "2026-09-26T14:34:34+00:00",
- "total": 133,
+ "updated": "2026-09-27T00:04:42+00:00",
+ "total": 124,
+ "repeats_merged": 9,
  "played_out": 43,
- "didnt": 85,
+ "didnt": 76,
  "pending": 5,
- "hit_rate": 33.6,
+ "hit_rate": 36.1,
  "by_method": {
   "deterministic": {
    "played": 17,
-   "missed": 75,
-   "graded": 92,
-   "hit_rate": 18.5,
+   "missed": 66,
+   "graded": 83,
+   "hit_rate": 20.5,
    "first": "2026-06-25",
    "last": "2026-09-26"
   },
@@ -26,41 +27,41 @@
  "by_design": {
   "v1": {
    "played": 6,
-   "missed": 43,
-   "graded": 49,
-   "hit_rate": 12.2,
+   "missed": 36,
+   "graded": 42,
+   "hit_rate": 14.3,
    "first": "2026-06-25",
    "last": "2026-08-11"
   },
   "v2": {
    "played": 11,
-   "missed": 32,
-   "graded": 43,
-   "hit_rate": 25.6,
+   "missed": 30,
+   "graded": 41,
+   "hit_rate": 26.8,
    "first": "2026-08-12",
    "last": "2026-09-26"
   }
  },
  "direction_only": {
-  "right_way": 43,
-  "graded": 92,
-  "rate": 46.7
+  "right_way": 40,
+  "graded": 83,
+  "rate": 48.2
  },
  "by_instrument": {
   "wheat": {
    "played": 2,
-   "graded": 19,
-   "hit_rate": 10.5
+   "graded": 18,
+   "hit_rate": 11.1
   },
   "corn": {
    "played": 2,
-   "graded": 25,
-   "hit_rate": 8.0
+   "graded": 19,
+   "hit_rate": 10.5
   },
   "beans": {
    "played": 9,
-   "graded": 29,
-   "hit_rate": 31.0
+   "graded": 27,
+   "hit_rate": 33.3
   },
   "crude": {
    "played": 3,
@@ -95,9 +96,9 @@
  },
  "mismatched": 2,
  "band_flags": {
-  "too_near": 6,
+  "too_near": 4,
   "too_near_wins": 2,
-  "too_far": 57,
+  "too_far": 51,
   "too_far_wins": 10,
   "note": "Calls whose level sat outside the one-session band computed from that instrument's own realized moves. Counted in the hit rate exactly like every other call; flagged so they can be read separately."
  },
@@ -262,24 +263,6 @@
    "p1": 13.0025,
    "design": "v2",
    "direction_ok": false
-  },
-  {
-   "made": "2026-09-13",
-   "judged": "2026-09-15",
-   "call": "Called soybeans down toward $12.85 ($12.99 when the call was made). It closed at $13.0025.",
-   "outcome": "didnt",
-   "method": "deterministic",
-   "mismatch": false,
-   "note": "",
-   "instrument": "beans",
-   "direction": "down",
-   "level": 12.85,
-   "p0": 12.99,
-   "p1": 13.0025,
-   "design": "v2",
-   "direction_ok": false,
-   "band": "too_far",
-   "band_detail": "beans: level $12.85 is 14¢ from close $12.99; one-session band is 3¢–8¢"
   },
   {
    "made": "2026-09-12",
@@ -480,24 +463,6 @@
    "p1": 12.755,
    "design": "v2",
    "direction_ok": true
-  },
-  {
-   "made": "2026-08-30",
-   "judged": "2026-09-01",
-   "call": "Called wheat up toward $7.67 ($7.67 when the call was made). It closed at $7.5975.",
-   "outcome": "didnt",
-   "method": "deterministic",
-   "mismatch": false,
-   "note": "",
-   "instrument": "wheat",
-   "direction": "up",
-   "level": "7.67",
-   "p0": 7.67,
-   "p1": 7.5975,
-   "design": "v2",
-   "direction_ok": false,
-   "band": "too_near",
-   "band_detail": "wheat: level $7.67 is only 0.0¢ from close $7.67; band minimum is 4¢ — a level this close grades as noise"
   },
   {
    "made": "2026-08-29",
@@ -972,24 +937,6 @@
    "band_detail": "wheat: level $6.55 is 15¢ from close $6.4025; one-session band is 3¢–11¢"
   },
   {
-   "made": "2026-08-02",
-   "judged": "2026-08-04",
-   "call": "Called corn down toward $4.41 ($4.4075 when the call was made). It closed at $4.47.",
-   "outcome": "didnt",
-   "method": "deterministic",
-   "mismatch": false,
-   "note": "",
-   "instrument": "corn",
-   "direction": "down",
-   "level": 4.41,
-   "p0": 4.4075,
-   "p1": 4.47,
-   "design": "v1",
-   "direction_ok": false,
-   "band": "too_near",
-   "band_detail": "corn: level $4.41 is only 0.3¢ from close $4.4075; band minimum is 1¢ — a level this close grades as noise"
-  },
-  {
    "made": "2026-08-01",
    "judged": "2026-08-04",
    "call": "Called corn down toward $4.41 ($4.4075 when the call was made). It closed at $4.47.",
@@ -1096,22 +1043,6 @@
    "direction_ok": false,
    "band": "too_far",
    "band_detail": "beans: level $12.47 is 27¢ from close $12.2025; one-session band is 3¢–11¢"
-  },
-  {
-   "made": "2026-07-26",
-   "judged": "2026-07-28",
-   "call": "Called soybeans up toward $12.54 ($12.48 when the call was made). It closed at $12.0825.",
-   "outcome": "didnt",
-   "method": "deterministic",
-   "mismatch": false,
-   "note": "",
-   "instrument": "beans",
-   "direction": "up",
-   "level": 12.54,
-   "p0": 12.48,
-   "p1": 12.0825,
-   "design": "v1",
-   "direction_ok": false
   },
   {
    "made": "2026-07-25",
@@ -1450,60 +1381,6 @@
    "band_detail": "beans: level $12.1 is 29¢ from close $11.815; one-session band is 4¢–12¢"
   },
   {
-   "made": "2026-07-06",
-   "judged": "2026-07-07",
-   "call": "Called corn up toward $4.42 ($4.25 when the call was made). It closed at $4.395.",
-   "outcome": "didnt",
-   "method": "deterministic",
-   "mismatch": false,
-   "note": "",
-   "instrument": "corn",
-   "direction": "up",
-   "level": "4.42",
-   "p0": 4.25,
-   "p1": 4.395,
-   "design": "v1",
-   "direction_ok": true,
-   "band": "too_far",
-   "band_detail": "corn: level $4.42 is 17¢ from close $4.25; one-session band is 1.0¢–3¢"
-  },
-  {
-   "made": "2026-07-05",
-   "judged": "2026-07-07",
-   "call": "Called corn up toward $4.42 ($4.25 when the call was made). It closed at $4.395.",
-   "outcome": "didnt",
-   "method": "deterministic",
-   "mismatch": false,
-   "note": "",
-   "instrument": "corn",
-   "direction": "up",
-   "level": 4.42,
-   "p0": 4.25,
-   "p1": 4.395,
-   "design": "v1",
-   "direction_ok": true,
-   "band": "too_far",
-   "band_detail": "corn: level $4.42 is 17¢ from close $4.25; one-session band is 1.0¢–3¢"
-  },
-  {
-   "made": "2026-07-04",
-   "judged": "2026-07-07",
-   "call": "Called corn up toward $4.42 ($4.25 when the call was made). It closed at $4.395.",
-   "outcome": "didnt",
-   "method": "deterministic",
-   "mismatch": false,
-   "note": "",
-   "instrument": "corn",
-   "direction": "up",
-   "level": "4.42",
-   "p0": 4.25,
-   "p1": 4.395,
-   "design": "v1",
-   "direction_ok": true,
-   "band": "too_far",
-   "band_detail": "corn: level $4.42 is 17¢ from close $4.25; one-session band is 1¢–3¢"
-  },
-  {
    "made": "2026-07-03",
    "judged": "2026-07-07",
    "call": "Called corn up toward $4.42 ($4.25 when the call was made). It closed at $4.395.",
@@ -1574,42 +1451,6 @@
    "direction_ok": false,
    "band": "too_far",
    "band_detail": "corn: level $3.95 is 8¢ from close $4.035; one-session band is 0.8¢–3¢"
-  },
-  {
-   "made": "2026-06-29",
-   "judged": "2026-06-30",
-   "call": "Called corn up toward $4.42 ($4.1275 when the call was made). It closed at $4.035.",
-   "outcome": "didnt",
-   "method": "deterministic",
-   "mismatch": false,
-   "note": "",
-   "instrument": "corn",
-   "direction": "up",
-   "level": "4.42",
-   "p0": 4.1275,
-   "p1": 4.035,
-   "design": "v1",
-   "direction_ok": false,
-   "band": "too_far",
-   "band_detail": "corn: level $4.42 is 29¢ from close $4.1275; one-session band is 0.7¢–2¢"
-  },
-  {
-   "made": "2026-06-28",
-   "judged": "2026-06-30",
-   "call": "Called corn up toward $4.42 ($4.1275 when the call was made). It closed at $4.035.",
-   "outcome": "didnt",
-   "method": "deterministic",
-   "mismatch": false,
-   "note": "",
-   "instrument": "corn",
-   "direction": "up",
-   "level": 4.42,
-   "p0": 4.1275,
-   "p1": 4.035,
-   "design": "v1",
-   "direction_ok": false,
-   "band": "too_far",
-   "band_detail": "corn: level $4.42 is 29¢ from close $4.1275; one-session band is 0.7¢–2¢"
   },
   {
    "made": "2026-06-27",
