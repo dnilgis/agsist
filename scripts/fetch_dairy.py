@@ -152,7 +152,9 @@ def fetch_nass(key, year_now, opener=None, sleep=time.sleep, agg="NATIONAL", raw
     if not key:
         return None, "no NASS_API_KEY"
     url = NASS_API + "?" + urllib.parse.urlencode(nass_params(key, year_now, agg))
-    raw, err = http_get(url, opener=opener, sleep=sleep)
+    # Quick Stats is slow. The repo's own NASS builder waits 90 s and retries 4x;
+    # the first live run of this script timed out on both queries at 30 s x 3.
+    raw, err = http_get(url, opener=opener, sleep=sleep, tries=4, timeout=120)
     if raw is None:
         return None, "NASS fetch failed: %s" % err.replace(key, "***")
     if raw_out is not None:

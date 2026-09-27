@@ -5,11 +5,6 @@
    "match": "agsist-subs.dnilgis.workers.dev/",
    "status": 404,
    "reason": "status.html pings the subscription Worker's root to see if it is alive. The Worker has no route for '/', so it answers 404 — and a 404 IS an answer, which is what the ping is testing. The check treats any response as reachable, so this works exactly as intended and the status row reads Online."
-  },
-  {
-   "match": "/data/dairy-data.json",
-   "status": 404,
-   "reason": "TEMPORARY, until the dairy workflow (.github/workflows/dairy.yml) makes its first successful run. Until then the file does not exist; milk-prices.html falls back field by field to the seed in the page, and status.html shows the row as Planned. Once data/dairy-data.json is committed this entry is inert (the request returns 200) and should be deleted, so a later 404 shows up as a real failure. scripts/audit_pages.py already stops honouring its own exception when data/dairy-history.json exists."
   }
  ]
 }
