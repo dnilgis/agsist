@@ -1,0 +1,18 @@
+{
+ "months": {
+  "2026-08": {
+   "class3": 16.64,
+   "class4": 17.36,
+   "class2": 18.71,
+   "butterfat": 1.5107,
+   "protein": 2.8281,
+   "nonfat_solids": 1.3456,
+   "other_solids": 0.4052,
+   "butter": 1.4747,
+   "ndm": 1.5985,
+   "cheese": 1.6203,
+   "whey": 0.6602,
+   "release": "2026-09-02"
+  }
+ }
+}

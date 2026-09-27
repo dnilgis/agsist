@@ -1,0 +1,38 @@
+{
+ "updated": "2026-09-27T02:05:40Z",
+ "class_month": "August 2026",
+ "class_month_key": "2026-08",
+ "class_release": "2026-09-02",
+ "class2": 18.71,
+ "class3": 16.64,
+ "class4": 17.36,
+ "class2_prev": 21.89,
+ "class3_prev": 15.52,
+ "class4_prev": 18.34,
+ "class3_label": "announced · Aug 2026",
+ "class4_label": "announced · Aug 2026",
+ "components": {
+  "butterfat": 1.5107,
+  "protein": 2.8281,
+  "nonfat_solids": 1.3456,
+  "other_solids": 0.4052
+ },
+ "butter": 1.4747,
+ "ndm": 1.5985,
+ "cheese": 1.6203,
+ "whey": 0.6602,
+ "spot_date": "USDA survey avg · Aug 2026",
+ "survey_cheese": 1.6203,
+ "survey_whey": 0.6602,
+ "survey_fat": 1.5107,
+ "sources": {
+  "class": "https://www.ams.usda.gov/mnreports/dymclassprices.pdf",
+  "all_milk": "https://quickstats.nass.usda.gov/"
+ },
+ "status": {
+  "class": "ok",
+  "all_milk": "failed",
+  "note": "all_milk: NASS fetch failed: TimeoutError: The read operation timed out; all_milk_states: NASS fetch failed: TimeoutError: The read operation timed out",
+  "all_milk_states": "failed"
+ }
+}
