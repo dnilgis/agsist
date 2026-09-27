@@ -2,13 +2,33 @@
  "schema": "agsist-feeds/1",
  "generated_by": "scripts/build_feeds.py",
  "note": "Derived from the repository, never typed. Pages come from a grep of every .html; the writer and its cadence come from the workflow that names the file or runs the script that names it.",
- "count": 53,
- "with_known_cadence": 53,
+ "count": 56,
+ "with_known_cadence": 56,
  "feeds": [
   {
    "path": "data/afida/county.json",
    "pages": [
+    "farmland-atlas.html",
     "foreign-land.html"
+   ],
+   "written_by": [],
+   "touched_by": [
+    "Rebuild Feed Manifest"
+   ],
+   "cadence": "maintained by hand, not on a schedule",
+   "curated": true,
+   "planned": false,
+   "external": false,
+   "url": null,
+   "crons": [],
+   "max_gap_hours": null,
+   "quiet": null,
+   "why_quiet": null
+  },
+  {
+   "path": "data/afida/national.json",
+   "pages": [
+    "farmland-atlas.html"
    ],
    "written_by": [],
    "touched_by": [
@@ -57,9 +77,11 @@
     "farmland-atlas.html"
    ],
    "written_by": [
+    "farmland-atlas-pages",
     "farmland-atlas"
    ],
    "touched_by": [
+    "farmland-atlas-pages",
     "farmland-atlas"
    ],
    "cadence": "on demand",
@@ -69,6 +91,53 @@
    "url": null,
    "crons": [],
    "max_gap_hours": null,
+   "quiet": null,
+   "why_quiet": null
+  },
+  {
+   "path": "data/atlas/more.json",
+   "pages": [
+    "farmland-atlas.html"
+   ],
+   "written_by": [
+    "farmland-atlas-pages",
+    "farmland-atlas"
+   ],
+   "touched_by": [
+    "farmland-atlas-pages",
+    "farmland-atlas"
+   ],
+   "cadence": "on demand",
+   "curated": false,
+   "planned": false,
+   "external": false,
+   "url": null,
+   "crons": [],
+   "max_gap_hours": null,
+   "quiet": null,
+   "why_quiet": null
+  },
+  {
+   "path": "data/audience.json",
+   "pages": [
+    "sponsor-report.html",
+    "sponsor.html"
+   ],
+   "written_by": [
+    "Sponsor reports \u2014 yesterday's numbers, from GA4"
+   ],
+   "touched_by": [
+    "Sponsor reports \u2014 yesterday's numbers, from GA4"
+   ],
+   "cadence": "1 launch every day at about 6am Central",
+   "curated": false,
+   "planned": false,
+   "external": false,
+   "url": null,
+   "crons": [
+    "12 11 * * *"
+   ],
+   "max_gap_hours": 24.0,
    "quiet": null,
    "why_quiet": null
   },
@@ -85,16 +154,15 @@
     "Build National Basis Map",
     "Fetch Grain Bids"
    ],
-   "cadence": "2 launches on a fixed schedule at about 6am Central",
+   "cadence": "1 launch every day at about 7pm Central",
    "curated": false,
    "planned": false,
    "external": false,
    "url": null,
    "crons": [
-    "7,37 11-21 * * 1-5",
-    "37 11 * * 6"
+    "7,22,37,52 * * * *"
    ],
-   "max_gap_hours": 47.5,
+   "max_gap_hours": 0.2,
    "quiet": null,
    "why_quiet": null
   },
@@ -117,7 +185,7 @@
     "Fetch Export Sales",
     "Fetch Grain Bids"
    ],
-   "cadence": "6 launches on a fixed schedule at about 6am, 7am, 8am, 9am Central",
+   "cadence": "5 launches on a fixed schedule at about 7am, 8am, 9am, 7pm Central",
    "curated": false,
    "planned": false,
    "external": false,
@@ -127,10 +195,9 @@
     "45 13 * * 4",
     "30 14 * * 4",
     "20 13 * * 5",
-    "7,37 11-21 * * 1-5",
-    "37 11 * * 6"
+    "7,22,37,52 * * * *"
    ],
-   "max_gap_hours": 47.5,
+   "max_gap_hours": 0.2,
    "quiet": null,
    "why_quiet": null
   },
@@ -260,6 +327,7 @@
     "index.html",
     "soybean-futures-prices.html",
     "status.html",
+    "test-index.html",
     "wheat-futures-prices.html"
    ],
    "written_by": [
@@ -303,6 +371,7 @@
     "corn-futures-prices.html",
     "index.html",
     "soybean-futures-prices.html",
+    "test-index.html",
     "wheat-futures-prices.html"
    ],
    "written_by": [
@@ -367,7 +436,9 @@
     "developer.html",
     "index.html",
     "soybean-futures-prices.html",
+    "sponsor.html",
     "status.html",
+    "test-index.html",
     "wheat-futures-prices.html"
    ],
    "written_by": [
@@ -398,23 +469,30 @@
     "milk-prices.html",
     "status.html"
    ],
-   "written_by": [],
+   "written_by": [
+    "Dairy prices"
+   ],
    "touched_by": [
+    "Dairy prices",
     "Rebuild Feed Manifest"
    ],
-   "cadence": "maintained by hand, not on a schedule",
-   "curated": true,
-   "planned": true,
+   "cadence": "2 launches on a fixed schedule at about 9am, 10am Central",
+   "curated": false,
+   "planned": false,
    "external": false,
    "url": null,
-   "crons": [],
+   "crons": [
+    "37 15 3-9 * *",
+    "11 14 * * 2"
+   ],
    "max_gap_hours": null,
-   "quiet": "planned",
-   "why_quiet": "The dairy pipeline is not built yet. milk-prices.html expects this and falls back field by field when it is missing, on purpose."
+   "quiet": null,
+   "why_quiet": null
   },
   {
    "path": "data/elevator-coverage.json",
    "pages": [
+    "cash-bids.html",
     "elevators.html"
    ],
    "written_by": [
@@ -439,6 +517,7 @@
    "path": "data/export-sales.json",
    "pages": [
     "index.html",
+    "test-index.html",
     "wheat-futures-prices.html"
    ],
    "written_by": [
@@ -468,7 +547,9 @@
    "pages": [
     "fast-facts.html",
     "fertilizer.html",
-    "index.html"
+    "index.html",
+    "test-index.html",
+    "urea.html"
    ],
    "written_by": [
     "Fertilizer \u2014 update dealer prices"
@@ -565,7 +646,8 @@
    "pages": [
     "ag-odds.html",
     "developer.html",
-    "index.html"
+    "index.html",
+    "test-index.html"
    ],
    "written_by": [
     "Fetch Markets"
@@ -609,7 +691,7 @@
    "crons": [],
    "max_gap_hours": null,
    "quiet": null,
-   "why_quiet": "The elevator bid network. dnilgis/bids reads ~650 boards and publishes this index and its shards to dnilgis.github.io/bids on its own schedule. cash-bids.html fetches it and falls back to Barchart alone if it is unreachable, so a stale or missing feed costs coverage and never breaks the page."
+   "why_quiet": "The elevator bid network. dnilgis/bids reads ~650 boards and publishes this index and its shards to dnilgis.github.io/bids on its own schedule. cash-bids.html fetches it and falls back to the licensed feed alone if it is unreachable, so a stale or missing feed costs coverage and never breaks the page."
   },
   {
    "path": "data/nass/corn-acres.json",
@@ -825,7 +907,8 @@
    "path": "data/news.json",
    "pages": [
     "index.html",
-    "news.html"
+    "news.html",
+    "test-index.html"
    ],
    "written_by": [
     "The wire"
@@ -893,31 +976,13 @@
    "why_quiet": null
   },
   {
-   "path": "data/poll.json",
-   "pages": [
-    "grower-pulse.html"
-   ],
-   "written_by": [],
-   "touched_by": [
-    "Rebuild Feed Manifest"
-   ],
-   "cadence": "maintained by hand, not on a schedule",
-   "curated": true,
-   "planned": false,
-   "external": false,
-   "url": null,
-   "crons": [],
-   "max_gap_hours": null,
-   "quiet": null,
-   "why_quiet": null
-  },
-  {
    "path": "data/price-stats.json",
    "pages": [
     "cattle-futures-prices.html",
     "corn-futures-prices.html",
     "index.html",
     "soybean-futures-prices.html",
+    "test-index.html",
     "wheat-futures-prices.html"
    ],
    "written_by": [
@@ -950,8 +1015,10 @@
     "fertilizer.html",
     "index.html",
     "markets.html",
+    "milk-prices.html",
     "soybean-futures-prices.html",
     "status.html",
+    "test-index.html",
     "wheat-futures-prices.html",
     "yield-estimator.html"
    ],
@@ -990,32 +1057,10 @@
    "why_quiet": null
   },
   {
-   "path": "data/rate-card.json",
-   "pages": [
-    "sponsor-report.html"
-   ],
-   "written_by": [
-    "Sponsor reports \u2014 yesterday's numbers, from GA4"
-   ],
-   "touched_by": [
-    "Sponsor reports \u2014 yesterday's numbers, from GA4"
-   ],
-   "cadence": "1 launch every day at about 6am Central",
-   "curated": false,
-   "planned": false,
-   "external": false,
-   "url": null,
-   "crons": [
-    "12 11 * * *"
-   ],
-   "max_gap_hours": 24.0,
-   "quiet": null,
-   "why_quiet": null
-  },
-  {
    "path": "data/rma-discovery.json",
    "pages": [
-    "index.html"
+    "index.html",
+    "test-index.html"
    ],
    "written_by": [],
    "touched_by": [
@@ -1034,7 +1079,9 @@
   {
    "path": "data/rma-planting-dates.json",
    "pages": [
-    "index.html"
+    "index.html",
+    "planting-date.html",
+    "test-index.html"
    ],
    "written_by": [],
    "touched_by": [
@@ -1109,6 +1156,53 @@
    "why_quiet": null
   },
   {
+   "path": "data/sponsor.json",
+   "pages": [
+    "index.html",
+    "test-index.html"
+   ],
+   "written_by": [
+    "Sponsor reports \u2014 yesterday's numbers, from GA4"
+   ],
+   "touched_by": [
+    "Sponsor reports \u2014 yesterday's numbers, from GA4"
+   ],
+   "cadence": "1 launch every day at about 6am Central",
+   "curated": false,
+   "planned": false,
+   "external": false,
+   "url": null,
+   "crons": [
+    "12 11 * * *"
+   ],
+   "max_gap_hours": 24.0,
+   "quiet": null,
+   "why_quiet": null
+  },
+  {
+   "path": "data/sponsors.json",
+   "pages": [
+    "sponsor-report.html"
+   ],
+   "written_by": [
+    "Sponsor reports \u2014 yesterday's numbers, from GA4"
+   ],
+   "touched_by": [
+    "Sponsor reports \u2014 yesterday's numbers, from GA4"
+   ],
+   "cadence": "1 launch every day at about 6am Central",
+   "curated": false,
+   "planned": false,
+   "external": false,
+   "url": null,
+   "crons": [
+    "12 11 * * *"
+   ],
+   "max_gap_hours": 24.0,
+   "quiet": null,
+   "why_quiet": null
+  },
+  {
    "path": "data/state-stats.json",
    "pages": [
     "fast-facts.html",
@@ -1155,7 +1249,8 @@
    "path": "data/tariffs.json",
    "pages": [
     "index.html",
-    "tariffs.html"
+    "tariffs.html",
+    "test-index.html"
    ],
    "written_by": [
     "Tariff data check"
@@ -1177,12 +1272,15 @@
   {
    "path": "data/tenure/tenure.json",
    "pages": [
+    "farmland-atlas.html",
     "land-tenure.html"
    ],
    "written_by": [
     "tenure"
    ],
    "touched_by": [
+    "farmland-atlas-pages",
+    "farmland-atlas",
     "tenure"
    ],
    "cadence": "on demand",
@@ -1301,7 +1399,8 @@
    "pages": [
     "conditions-yield.html",
     "index.html",
-    "status.html"
+    "status.html",
+    "test-index.html"
    ],
    "written_by": [
     "cond-yield",
