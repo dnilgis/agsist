@@ -1,0 +1,78 @@
+name: Dairy prices
+
+# Writes data/dairy-data.json and data/dairy-history.json for milk-prices.html.
+# Source: USDA AMS "Announcement of Class and Component Prices" (posted about the
+# 5th) plus the NASS all-milk price. No CME, no Barchart.
+#
+# The monthly cron covers days 3-9 so the announcement is caught whichever day it
+# posts; the weekly one is a catch-up. The script is idempotent: a re-run with
+# nothing new commits nothing.
+#
+# FIRST RUN: dispatch this once with "probe" ticked. It saves what the AMS and
+# NASS servers actually returned to data/dairy-raw/ and commits it, so the real
+# PDF layout can be read. Then dispatch again without probe.
+
+on:
+  workflow_dispatch:
+    inputs:
+      probe:
+        description: "Probe only: save the raw AMS text and NASS response to data/dairy-raw/ and commit them"
+        type: boolean
+        default: false
+  schedule:
+    - cron: '37 15 3-9 * *'   # monthly window, days 3-9
+    - cron: '11 14 * * 2'     # weekly catch-up, Tuesdays
+
+permissions:
+  contents: write
+
+concurrency:
+  group: dairy
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install pypdf (fallback if pdftotext is missing)
+        run: pip install pypdf
+      - name: Selftest
+        run: python scripts/fetch_dairy.py --selftest
+      - name: Probe (raw source capture)
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.probe }}
+        env:
+          NASS_API_KEY: ${{ secrets.NASS_API_KEY }}
+        run: python scripts/fetch_dairy.py --probe
+      - name: Fetch and write data/dairy-data.json
+        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.probe) }}
+        env:
+          NASS_API_KEY: ${{ secrets.NASS_API_KEY }}
+        run: python scripts/fetch_dairy.py
+      - name: Commit if changed (race-tolerant)
+        run: |
+          set -e
+          git config user.name "AGSIST Bot"
+          git config user.email "bot@agsist.com"
+          FILES="data/dairy-data.json data/dairy-history.json data/dairy-raw"
+          rm -rf /tmp/dairy && mkdir -p /tmp/dairy
+          for f in $FILES; do
+            [ -e "$f" ] && cp -r --parents "$f" /tmp/dairy/ || true
+          done
+          [ -n "$(ls -A /tmp/dairy)" ] || { echo "No output; nothing to commit."; exit 0; }
+          BR="${GITHUB_REF_NAME:-main}"
+          for i in 1 2 3 4 5; do
+            git fetch origin "$BR"
+            git reset --hard "origin/$BR"
+            mkdir -p data && cp -r /tmp/dairy/data/. data/
+            for f in $FILES; do [ -e "$f" ] && git add "$f" || true; done
+            if git diff --staged --quiet; then echo "No change."; exit 0; fi
+            git commit -m "Update dairy prices $(date -u +%Y-%m-%dT%H:%M:%SZ) [skip ci]"
+            if git push origin "HEAD:$BR"; then echo "Pushed on attempt $i."; exit 0; fi
+            echo "Push race on attempt $i; re-syncing to origin/$BR..."
+            sleep $((RANDOM % 4 + 2))
+          done
+          echo "Failed to push after 5 attempts."; exit 1
