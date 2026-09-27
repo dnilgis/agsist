@@ -82,6 +82,9 @@ QUIET = {
 CURATED = {
     "data/tariffs.json", "data/poll.json",
     "data/afida/county.json", "data/rma-discovery.json",
+    # Written by hand-run scripts/process_afida.py from the USDA FSA AFIDA
+    # download (the sibling of county.json above). No workflow runs it.
+    "data/afida/national.json",
     "data/rma-planting-dates.json",
     # State outlines for the Atlas map. Shipped once; state borders do not move,
     # so there is no cadence to read and nothing to refresh. Without this line
@@ -234,7 +237,7 @@ def main():
     # ── which pages fetch which feed ─────────────────────────────────────────
     readers = defaultdict(set)
     for p in sorted(glob.glob("*.html")) + sorted(glob.glob("components/*.html")):
-        for m in set(re.findall(r"data/[\w/.-]+\.json", read(p))):
+        for m in set(re.findall(r"(?<!\}/)(?<!atlas/)data/[\w/.-]+\.json", read(p))):   # "/farmland-atlas/data/x.json" and "/{OUT}/data/x.json" are the Atlas's own files, not data/x.json
             # THE MANIFEST IS NOT ONE OF THE FEEDS IT DESCRIBES. status.html
             # reads it, so a plain grep enrolled it in its own list — with no
             # writer, which failed the "every feed has a cadence" check on the
