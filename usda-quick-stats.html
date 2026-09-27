@@ -586,6 +586,18 @@
       + '<polyline points="'+pts.join(' ')+'" fill="none" stroke="'+color+'" stroke-width="1.6" vector-effect="non-scaling-stroke" stroke-linecap="round" stroke-linejoin="round"/></svg>';
   }
 
+  /* NASS combined row ("Other States", or the OT code): not a state, no yield. */
+  function isCombined(n){ return /^(other states|other|ot)$/i.test(String(n||'').trim()); }
+  /* A yield of 0 is never a yield. Acres 0 on a real state can be a real zero;
+     on a combined row it is no report. Null and both cases return null here. */
+  function cellVal(r, y, unit){
+    var v = r.values ? r.values[y] : null;
+    if (v==null) return null;
+    if (+v<=0 && (isCombined(r.state) || unit!=='M acres')) return null;
+    return v;
+  }
+  function nullWhy(r){ return isCombined(r.state) ? 'No report: NASS publishes no figure for the Other States group' : 'NASS published no figure for this year'; }
+
   function fmtVal(v, unit){ return unit === '$/bu' ? ('$'+(+v).toFixed(2)) : (+v).toLocaleString(); }
 
   function renderChart(){
@@ -603,8 +615,11 @@
       cap = 'United States (USDA national series)';
     } else {
       var sums={}, cnts={};
+      var mode0 = DS[currentKey].agg || 'avg';
       (currentData.rows||[]).forEach(function(r){
-        years.forEach(function(y){ var v = r.values ? r.values[y] : null; if (v!=null){ sums[y]=(sums[y]||0)+(+v); cnts[y]=(cnts[y]||0)+1; } });
+        /* an average of states never includes the combined row; a sum may */
+        if (mode0 !== 'sum' && isCombined(r.state)) return;
+        years.forEach(function(y){ var v = cellVal(r, y, currentData.unit); if (v!=null){ sums[y]=(sums[y]||0)+(+v); cnts[y]=(cnts[y]||0)+1; } });
       });
       var mode = DS[currentKey].agg || 'avg';
       years.forEach(function(y){
@@ -708,16 +723,18 @@
     var h = '<table class="nass-tbl"><thead><tr><th>State</th>';
     years.forEach(function(y){ h += '<th>'+y+'</th>'; });
     h += '</tr></thead><tbody>';
+    var anyNull = false;
     rows.forEach(function(r){
-      h += '<tr><td class="td-state">'+r.state+'</td>';
+      h += '<tr><td class="td-state">'+r.state+(isCombined(r.state)?' <small title="Combined group of small states">(group)</small>':'')+'</td>';
       years.forEach(function(y){
-        var v = r.values ? r.values[y] : null;
-        if (v!=null && +v<=0) v = null; /* 0 = no report (e.g. Other States), not a zero yield */
-        h += v!=null ? '<td class="td-val">'+(+v).toLocaleString()+'</td>' : '<td class="td-null">\u2014</td>';
+        var v = cellVal(r, y, currentData.unit);
+        if (v==null) anyNull = true;
+        h += v!=null ? '<td class="td-val">'+(+v).toLocaleString()+'</td>' : '<td class="td-null" title="'+nullWhy(r)+'">\u2014</td>';
       });
       h += '</tr>';
     });
     h += '</tbody></table>';
+    if (anyNull) h += '<p class="qs-ss" style="margin:.5rem 0 0">\u2014 = NASS published no figure (no report or withheld). It is not a zero. Other States is a combined group and has no yield.</p>';
     wrap.innerHTML = h;
     el('dl-btn').disabled = false;
   }
@@ -734,7 +751,7 @@
     } else {
       csv = ['State,'+years.join(',')];
       (currentData.rows||[]).forEach(function(r){
-        csv.push(r.state + ',' + years.map(function(y){ return (r.values && r.values[y]!=null && +r.values[y]>0) ? r.values[y] : ''; }).join(','));
+        csv.push(r.state + ',' + years.map(function(y){ var cv = cellVal(r, y, currentData.unit); return cv!=null ? cv : ''; }).join(','));
       });
     }
     var blob = new Blob([csv.join('\n')], {type:'text/csv'});
@@ -807,8 +824,8 @@
     // print "latest final USDA NASS crop year 2026" over the top of them.
     var arr = Object.keys(ss).map(function(k){
       return { name: ss[k].name || k, prod: ss[k][cmd+'_prod'], yld: ss[k][cmd+'_yield'],
-               year: ss[k].year, fc: !!ss[k].forecast };
-    }).filter(function(x){ return x.prod != null && +x.prod > 0; })
+               year: ss[k].year, fc: !!ss[k].forecast, combined: !!ss[k].combined || isCombined(k) };
+    }).filter(function(x){ return x.prod != null && +x.prod > 0 && !x.combined && !isCombined(x.name); })
       .sort(function(a,b){ return b.prod - a.prod; }).slice(0,10);
     var list = el('ts-list');
     if (!arr.length){ list.innerHTML = '<p class="qs-ss" style="margin:0">No data for this crop in the current USDA release.</p>'; return; }

@@ -325,7 +325,7 @@ def emit_national():
     used 2019 numbers for a third of the country would be a lie of omission.
     """
     files = [f for f in sorted(os.listdir(OUTDIR)) if re.match(r"^[A-Z]{2}\.json$", f)]
-    out, rents, pcts, yrs = {}, [], [], []
+    out, rents, pcts, yrs, rent_yrs = {}, [], [], [], []
     for fn in files:
         d = json.load(open(os.path.join(OUTDIR, fn)))
         prices = d.get("prices", {}).get("corn", {})
@@ -337,6 +337,7 @@ def emit_national():
             ry = max(rent, key=lambda y: int(y))
             rec = {"r": rent[ry], "ry": int(ry), "s": d["state"], "n": c["name"]}
             rents.append(rent[ry])
+            rent_yrs.append(int(ry))
             yh = (c.get("yield", {}).get("corn") or {}).get("hist") or {}
             common = [y for y in rent if y in yh and y in prices]
             if common:
@@ -364,7 +365,12 @@ def emit_national():
         "rent_breaks": breaks(rents),
         "pct_breaks": breaks(pcts),
         "pct_years": (sorted(set(yrs))[0], sorted(set(yrs))[-1]) if yrs else None,
+        # n_rent = counties with ANY rent, including older carried-forward
+        # ones (2877 vs 2400 from the latest survey on 2026-09-23). Pages that
+        # say "counties with a <year> rent" must use n_rent_latest.
         "n_rent": len(rents),
+        "rent_year": max(rent_yrs) if rent_yrs else None,
+        "n_rent_latest": sum(1 for y in rent_yrs if y == max(rent_yrs)) if rent_yrs else 0,
         "n_pct": len(pcts),
         "note": "Ratio year varies by county: each county uses its own latest year in which rent, county corn yield and state price received all exist. Rent is the latest published rent, non-irrigated where available.",
     }
@@ -497,16 +503,22 @@ def selftest():
                     "yield": {"corn": {"hist": {"2016": 203.0, "2024": 205.0}}}},
           "19153": {"fips": "19153", "name": "Polk",          # rent but no yield -> rent only
                     "rent": {"nonirr": {"2024": 240.0}}, "yield": {}},
+          "19001": {"fips": "19001", "name": "Adair",         # only an older rent, carried forward
+                    "rent": {"nonirr": {"2019": 200.0}}, "yield": {}},
       }
       write_state("IA", counties2, {"corn": {"2016": 3.36, "2024": 4.35}})
       nat = emit_national()
-      assert nat["n_rent"] == 2, nat["n_rent"]
+      # Derived by hand from counties2: three counties have a rent (Story 2024,
+      # Polk 2024, Adair 2019 carried forward), so n_rent = 3; only two are from
+      # the newest year in the file (2024), so n_rent_latest = 2.
+      assert nat["n_rent"] == 3, nat["n_rent"]
+      assert nat["rent_year"] == 2024 and nat["n_rent_latest"] == 2, nat
       assert nat["n_pct"] == 1, "county without yield must have rent but NO ratio"
       s = nat["counties"]["19169"]
       assert abs(s["p"] - (269.0 / (205.0 * 4.35) * 100)) < 0.05, s
       assert s["py"] == 2024 and s["ry"] == 2024
       assert "p" not in nat["counties"]["19153"], "ratio invented for a county with no yield"
-      log(f"  national roll-up OK ({nat['n_rent']} rent, {nat['n_pct']} ratio, "
+      log(f"  national roll-up OK ({nat['n_rent']} rent, {nat['n_rent_latest']} in {nat['rent_year']}, {nat['n_pct']} ratio, "
           f"Story={nat['counties']['19169']['p']}%)")
       os.remove(os.path.join(OUTDIR, "IA.json")); os.remove(os.path.join(OUTDIR, "national.json"))
     # AND IT LEAVES THE REPOSITORY EXACTLY AS IT FOUND IT. The fault this
@@ -570,7 +582,7 @@ def main():
         }, fh, separators=(",", ":"))
 
     nat = emit_national()
-    log(f"national layer: {nat['n_rent']} counties with rent, {nat['n_pct']} with a ratio"
+    log(f"national layer: {nat['n_rent']} counties with any rent ({nat['n_rent_latest']} from {nat['rent_year']}), {nat['n_pct']} with a ratio"
         + (f", ratio years {nat['pct_years'][0]}\u2013{nat['pct_years'][1]}" if nat["pct_years"] else ""))
 
     log(f"\nDONE: {totals['counties']} counties across {len(index)} states, "

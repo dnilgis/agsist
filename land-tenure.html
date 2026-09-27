@@ -207,7 +207,7 @@
   </section>
   <div class="vp-maplab">Every state: share of farmland rented &mdash; tap a state</div>
   <div class="vp-grid" id="vp-grid"></div>
-  <div class="vp-leg"><span><b style="background:#b85a4a"></b>mostly rented</span><span><b style="background:#a8823c"></b>about half</span><span><b style="background:#3a4144"></b>a third</span><span><b style="background:#3f7a58"></b>mostly owner-farmed</span><span><b style="background:#14181a;border:1px dashed #2a3133"></b>no data</span></div>
+  <div class="vp-leg"><span><b style="background:#9c4b3d"></b>mostly rented</span><span><b style="background:#a8823c"></b>about half</span><span><b style="background:#5a656a"></b>a third</span><span><b style="background:#396d4f"></b>mostly owner-farmed</span><span><b style="background:#14181a;border:1px dashed #2a3133"></b>no data</span></div>
 
   <div class="lt-hero">
     <div class="lt-stat"><div class="v">39.3%</div><div class="l">of U.S. farmland is rented</div><div class="s">346M of 880M acres &middot; 2022 census</div></div>
@@ -361,10 +361,10 @@
       var p=100*y[1]/(y[0]+y[1]);
       var d97=(y97&&y97[0]!=null&&y97[1]!=null)?(p-100*y97[1]/(y97[0]+y97[1])):null;
       var w,c,t;
-      if(p>=55){w='MOSTLY RENTED GROUND';c='#e0685f';t='#b85a4a';}
+      if(p>=55){w='MOSTLY RENTED GROUND';c='#e0685f';t='#9c4b3d';}
       else if(p>=45){w='ABOUT HALF RENTED';c='#d4a23f';t='#a8823c';}
-      else if(p>=30){w='A THIRD RENTED';c='#8a948f';t='#3a4144';}
-      else {w='MOSTLY OWNER-FARMED';c='#5fc28a';t='#3f7a58';}
+      else if(p>=30){w='A THIRD RENTED';c='#8a948f';t='#5a656a';}
+      else {w='MOSTLY OWNER-FARMED';c='#5fc28a';t='#396d4f';}
       out[st]={big:Math.round(p)+'\u0025',word:w,col:c,tile:t,tval:Math.round(p)+'\u0025',
         sent:'<b style="color:'+c+'">'+Math.round(p)+'\u0025 of '+(__A2F[st]||st)+'\u2019s farmland</b> \u2014 '+(y[1]/1e6).toFixed(1)+' million of '+((y[0]+y[1])/1e6).toFixed(1)+' million acres \u2014 is farmed by someone who doesn\u2019t own it (2022 census)'+(d97!=null?(', '+(d97>=0?'up ':'down ')+Math.abs(d97).toFixed(1)+' points since 1997'):'')+'. Tap the county map below for your county\u2019s 25-year history.'};
     });

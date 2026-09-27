@@ -45,7 +45,10 @@ STATE_NAMES = {
  "OR":"Oregon","PA":"Pennsylvania","RI":"Rhode Island","SC":"South Carolina","SD":"South Dakota",
  "TN":"Tennessee","TX":"Texas","UT":"Utah","VT":"Vermont","VA":"Virginia","WA":"Washington",
  "WV":"West Virginia","WI":"Wisconsin","WY":"Wyoming",
+ # NASS combined rows. Not a state: never ranked, never a map cell.
+ "OT":"Other States",
 }
+COMBINED = {"OT"}
 
 def parse_val(v):
     """NASS values are comma-formatted strings; suppressed flags ((D),(NA),(Z),(X)) -> None."""
@@ -65,6 +68,8 @@ def convert(field, raw):
     div, dig = CONV[field]
     val = raw / div
     val = round(val, dig)
+    if raw > 0 and val == 0 and dig != 0:      # tiny real acres must not read as 0.0
+        val = round(raw / div, dig + 2)
     return int(val) if dig == 0 else val
 
 def fetch_series(key, short_desc, year_ge, _opener=None):
@@ -265,6 +270,8 @@ def assemble(raw_by_field, year, by_state=None):
                 break
         rec = {"name": STATE_NAMES.get(sa, sa), "meta": status_label(yr, ref),
                "year": yr, "forecast": bool(is_forecast(ref, yr))}
+        if sa in COMBINED:
+            rec["combined"] = True
         has = False
         for field in SERIES:
             cells = by_state.get(field, {}).get(sa, {}).get(yr) or {}
@@ -488,6 +495,12 @@ def selftest():
     assert st4["NE"]["corn_yield"] == 183.0
     assert st4["NE"]["corn_acres_planted"] is None, "borrowed a number from another vintage"
 
+    # a combined row is named and flagged; tiny acres never round to zero
+    assert STATE_NAMES["OT"] == "Other States" and "OT" in COMBINED
+    assert convert("corn_acres_harvested", 30000.0) == 0.03, convert("corn_acres_harvested", 30000.0)
+    assert convert("corn_acres_harvested", 0.0) == 0.0
+    ot = assemble(None, 2025, by_state={"corn_yield": {"OT": {2025: {"YEAR": 150.0}}}, "bean_yield": {}, "corn_prod": {}, "bean_prod": {}})
+    assert ot["OT"]["combined"] is True and ot["OT"]["name"] == "Other States", ot
     print("selftest OK:", json.dumps(stats["IA"], separators=(",", ":")))
     print("  forecast label:", st["IA"]["meta"])
     print("  non-forecast state kept:", st["AZ"]["meta"])

@@ -22,8 +22,8 @@ DATASETS = {
     "corn-yield":  dict(short="CORN, GRAIN - YIELD, MEASURED IN BU / ACRE",          agg="STATE",    div=1,   dig=1, unit="bu/acre"),
     "soy-yield":   dict(short="SOYBEANS - YIELD, MEASURED IN BU / ACRE",             agg="STATE",    div=1,   dig=1, unit="bu/acre"),
     "wheat-yield": dict(short="WHEAT, WINTER - YIELD, MEASURED IN BU / ACRE",        agg="STATE",    div=1,   dig=1, unit="bu/acre"),
-    "corn-acres":  dict(short="CORN - ACRES PLANTED",                                agg="STATE",    div=1e6, dig=2, unit="M acres"),
-    "soy-acres":   dict(short="SOYBEANS - ACRES PLANTED",                            agg="STATE",    div=1e6, dig=2, unit="M acres"),
+    "corn-acres":  dict(short="CORN - ACRES PLANTED",                                agg="STATE",    div=1e6, dig=2, unit="M acres", zero_ok=True),
+    "soy-acres":   dict(short="SOYBEANS - ACRES PLANTED",                            agg="STATE",    div=1e6, dig=2, unit="M acres", zero_ok=True),
     "corn-price":  dict(short="CORN, GRAIN - PRICE RECEIVED, MEASURED IN $ / BU",    agg="NATIONAL", div=1,   dig=2, unit="$/bu"),
     "soy-price":   dict(short="SOYBEANS - PRICE RECEIVED, MEASURED IN $ / BU",       agg="NATIONAL", div=1,   dig=2, unit="$/bu"),
     "wheat-price": dict(short="WHEAT - PRICE RECEIVED, MEASURED IN $ / BU",          agg="NATIONAL", div=1,   dig=2, unit="$/bu"),
@@ -44,10 +44,19 @@ def parse_val(v):
     except ValueError:
         return None
 
+def is_combined(state_name):
+    """NASS combined rows ("OTHER STATES") are not a state and carry no yield."""
+    return str(state_name or "").strip().upper() in ("OTHER STATES", "OTHER", "OT")
+
+
 def conv(raw, div, dig):
     if raw is None:
         return None
     val = round(raw / div, dig)
+    # A small real figure must not round to a zero the reader takes as "none".
+    # 3,000 acres is 0.003 M acres: show two more digits, never 0.00.
+    if raw > 0 and val == 0 and dig != 0:
+        val = round(raw / div, dig + 2)
     return int(val) if dig == 0 else val
 
 def fetch(key, short, agg, year_ge, _opener=None):
@@ -132,7 +141,7 @@ def is_forecast(row):
         return True
 
 
-def shape_state(rows, div, dig):
+def shape_state(rows, div, dig, zero_ok=False):
     by_state, years = {}, set()
     for r in rows:
         st = r.get("state_name")
@@ -142,7 +151,13 @@ def shape_state(rows, div, dig):
         if is_forecast(r):
             IN_SEASON_SKIPPED["n"] += 1
             continue
-        val = conv(parse_val(r.get("Value")), div, dig)
+        raw = parse_val(r.get("Value"))
+        # A zero is no report where NASS cannot have a figure: a yield of 0
+        # bu/acre, or any number on a combined "Other States" row. Only a
+        # per-state acres 0 is kept, because that can be a real zero.
+        if raw is not None and raw <= 0 and (is_combined(st) or not zero_ok):
+            raw = None
+        val = conv(raw, div, dig)
         if val is None:
             continue
         by_state.setdefault(st.title(), {})[yr] = val
@@ -173,7 +188,7 @@ def build_one(key, spec, key_api, outdir):
     rows = fetch(key_api, spec["short"], spec["agg"], START_YEAR)
     now = datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
     if spec["agg"] == "STATE":
-        years, out_rows = shape_state(rows, spec["div"], spec["dig"])
+        years, out_rows = shape_state(rows, spec["div"], spec["dig"], spec.get("zero_ok", False))
         if not years:
             print(f"  - {key}: no data, skipped"); return False
         payload = {"type": "state", "updated": now, "unit": spec["unit"],
@@ -199,7 +214,28 @@ def build(key_api, outdir):
     wrote = sum(build_one(k, s, key_api, outdir) for k, s in DATASETS.items())
     print(f"[nass-series] wrote {wrote}/{len(DATASETS)} datasets to {outdir} "
           f"| in-season forecast rows excluded: {IN_SEASON_SKIPPED['n']}")
+    if wrote and check_data(outdir):
+        return 1
     return 0 if wrote else 1
+
+def check_data(outdir):
+    """Fail if a written file has a zero where NASS published no figure.
+
+    Not part of --selftest: the selftest runs before the build in the
+    workflow, so a stale file would block its own regeneration.
+    """
+    bad = []
+    for fn in sorted(os.listdir(outdir)):
+        if not fn.endswith(".json"):
+            continue
+        dd = json.load(open(os.path.join(outdir, fn)))
+        for r in dd.get("rows", []):
+            for y, v in r["values"].items():
+                if v is not None and v <= 0 and (is_combined(r["state"]) or "yield" in fn):
+                    bad.append(f"{fn}: {r['state']} {y} = {v}")
+    for line in bad[:20]:
+        print("  ! zero for a no-report:", line, file=sys.stderr)
+    return 1 if bad else 0
 
 # ---- offline self-test ---------------------------------------------------
 def selftest():
@@ -282,6 +318,21 @@ def selftest():
             assert "Do not publish it" in str(e), e
     assert "YEAR" in SCOPE and "January" in SCOPE, "the scope must state the rule it applied"
 
+    # ---- 2026-09-27: a zero is not a report --------------------------------
+    # Shipped files had "Other States" at 0 for corn/soy/wheat yield and acres.
+    zr = [{"state_name": "OTHER STATES", "year": "2020", "Value": "0"},
+          {"state_name": "OTHER STATES", "year": "2021", "Value": "4,000,000"},
+          {"state_name": "IOWA", "year": "2020", "Value": "0"},
+          {"state_name": "RHODE ISLAND", "year": "2020", "Value": "0"}]
+    _, o = shape_state(zr, 1e6, 2, zero_ok=True)
+    d = {r["state"]: r["values"] for r in o}
+    assert "2020" not in d.get("Other States", {}), d
+    assert d["Iowa"] == {"2020": 0} or d["Iowa"] == {"2020": 0.0}, "real per-state acres zero kept"
+    _, o = shape_state(zr, 1, 1)                      # yield: zero is never a yield
+    assert all("2020" not in r["values"] for r in o), o
+    assert conv(3000.0, 1e6, 2) == 0.003, conv(3000.0, 1e6, 2)
+    assert conv(0.0, 1e6, 2) == 0.0
+    assert is_combined("Other States") and not is_combined("Iowa")
     print("selftest OK — shaping, suppression, US-exclusion, conversion, "
           "in-season forecast exclusion")
     return 0
@@ -289,6 +340,8 @@ def selftest():
 if __name__ == "__main__":
     if "--selftest" in sys.argv:
         sys.exit(selftest())
+    if "--check-data" in sys.argv:
+        sys.exit(check_data(os.environ.get("OUT_DIR", "data/nass")))
     api_key = os.environ.get("NASS_API_KEY", "").strip()
     if not api_key:
         print("ERROR: NASS_API_KEY not set.", file=sys.stderr); sys.exit(2)

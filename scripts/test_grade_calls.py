@@ -229,6 +229,48 @@ def main():
         check("an empty block on the same day raises no call-outcome failure",
               "call-outcome" not in {c for sev, c, _m in iss2 if sev == "FAIL"})
 
+    # --- float residue at the level: hand-worked boundary cases --------------
+    print("float boundaries")
+    # 0.1 + 0.2 is 0.30000000000000004 in binary; as a level it is $0.30.
+    noisy = 0.1 + 0.2
+    check("premise: 0.1+0.2 != 0.3 as floats", noisy != 0.3)
+    up = {"instrument": "corn", "direction": "up", "level": 0.3}
+    check("up: close 0.30000000000000004 on level 0.30 counts as reached",
+          gc.compute_outcome(up, 0.25, noisy) == "played_out")
+    down = {"instrument": "corn", "direction": "down", "level": noisy}
+    check("down: close exactly 0.30 on level 0.30000000000000004 counts as reached",
+          gc.compute_outcome(down, 0.35, 0.3) == "played_out")
+    # 36.099999999999994 is 36.1 minus one ulp-scale error (e.g. 36.3 - 0.2)
+    resid = 36.3 - 0.2
+    check("premise: 36.3-0.2 != 36.1", resid != 36.1)
+    check("up: level 36.1, close 36.3-0.2 is a hit",
+          gc.compute_outcome({"instrument": "cattle", "direction": "up", "level": 36.1}, 35.0, resid) == "played_out")
+    check("down: level 36.1, close 36.1 is a hit",
+          gc.compute_outcome({"instrument": "cattle", "direction": "down", "level": 36.1}, 37.0, 36.1) == "played_out")
+    # real misses stay misses: one tick short is short
+    check("up: close 5.00 vs level 5.01 stays a miss",
+          gc.compute_outcome({"instrument": "corn", "direction": "up", "level": 5.01}, 4.90, 5.00) == "didnt")
+    check("down: close 5.01 vs level 5.00 stays a miss",
+          gc.compute_outcome({"instrument": "corn", "direction": "down", "level": 5.00}, 5.10, 5.01) == "didnt")
+    # direction: a close equal to the call-time close is not a move, noise or not
+    check("direction: 0.1+0.2 vs 0.3 is no move (up, level below)",
+          gc.compute_outcome({"instrument": "corn", "direction": "up", "level": 0.2}, 0.3, noisy) == "didnt")
+    check("direction: 0.3 vs 0.1+0.2 is no move (down)",
+          gc.compute_outcome({"instrument": "corn", "direction": "down", "level": 0.4}, noisy, 0.3) == "didnt")
+    check("explain agrees with compute_outcome at the boundary",
+          "level ok" in gc.explain(up, 0.25, noisy, "played_out"))
+    # reader text carries no residue
+    line = gc.plain_call({"instrument": "cattle", "direction": "up", "level": 36.1}, 35.0, resid)
+    check("plain_call prints 36.1, not 36.099999999999994", "36.099" not in line and "$36.1." in line, line)
+    check("plain_call unchanged for clean values",
+          gc.plain_call({"instrument": "beans", "direction": "down", "level": 12.85}, 12.99, 12.99)
+          == "Called soybeans down toward $12.85 ($12.99 when the call was made). It closed at $12.99.")
+    # rates
+    check("pct 13/36 = 36.1", gc.pct(13, 36) == 36.1)
+    check("pct 43/119 = 36.1", gc.pct(43, 119) == 36.1)
+    check("pct 1/16 = 6.25 rounds half-up to 6.3 (float round() gives 6.2)", gc.pct(1, 16) == 6.3)
+    check("pct of nothing is None", gc.pct(0, 0) is None)
+
     print()
     print(f"grade_calls selftest: {PASS} passed, {FAIL} failed")
     return 1 if FAIL else 0

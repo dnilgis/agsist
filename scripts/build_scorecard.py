@@ -35,6 +35,15 @@ try:
     import grade_calls
 except Exception:
     grade_calls = None
+
+
+def _pct(part, whole):
+    """Rate to one decimal, half-up (grade_calls.pct owns the rule)."""
+    if grade_calls is not None:
+        return grade_calls.pct(part, whole)
+    return round(100.0 * part / whole, 1) if whole else None
+
+
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -241,7 +250,7 @@ def main():
             # so readers can see whether misses were wrong-way or just
             # short-of-level — the two failure modes mean different things.
             if _p0v is not None and _p1v is not None and rec["direction"] in ("up", "down"):
-                rec["direction_ok"] = (_p1v > _p0v) if rec["direction"] == "up" else (_p1v < _p0v)
+                rec["direction_ok"] = grade_calls.direction_level_ok(rec["direction"], _p0v, _p1v, _p1v)[0]
             # ── A LEVEL SET INSIDE THE NOISE IS NOT A CALL ───────────────────
             # Six graded calls put the level within a cent or less of the price
             # when the call was made -- "wheat up toward $7.67" written with
@@ -311,7 +320,7 @@ def main():
     missed = sum(1 for r in records if r["outcome"] == "didnt")
     pending = sum(1 for r in records if r["outcome"] == "pending")
     graded = played + missed
-    hit_rate = round(100.0 * played / graded, 1) if graded else None
+    hit_rate = _pct(played, graded) if graded else None
 
     # Published so the count is checkable without reading 123 rows. Both halves
     # matter: a level too NEAR grades as noise, a level too FAR was never a
@@ -340,7 +349,7 @@ def main():
         ms = sum(1 for r in rs if r["outcome"] == "didnt")
         g = pl + ms
         return {"played": pl, "missed": ms, "graded": g,
-                "hit_rate": round(100.0 * pl / g, 1) if g else None,
+                "hit_rate": _pct(pl, g) if g else None,
                 # Span of the GRADED rows: a pending row has no judged date and
                 # must not blank out the era's range.
                 "first": next((r["judged"] for r in rs if r.get("judged")), None),
@@ -365,7 +374,7 @@ def main():
     direction_only = {
         "right_way": sum(1 for r in dgr if r["direction_ok"]),
         "graded": len(dgr),
-        "rate": round(100.0 * sum(1 for r in dgr if r["direction_ok"]) / len(dgr), 1) if dgr else None,
+        "rate": _pct(sum(1 for r in dgr if r["direction_ok"]), len(dgr)) if dgr else None,
     }
     by_instrument = {}
     for r in det:
@@ -377,13 +386,13 @@ def main():
             g["graded"] += 1
             g["played"] += 1 if r["outcome"] == "played_out" else 0
     for g in by_instrument.values():
-        g["hit_rate"] = round(100.0 * g["played"] / g["graded"], 1) if g["graded"] else None
+        g["hit_rate"] = _pct(g["played"], g["graded"]) if g["graded"] else None
     # trailing-20: the drift needle for "is the briefing getting better".
     t20 = [r for r in det if r["outcome"] in ("played_out", "didnt")][-20:]
     trailing20 = {
         "played": sum(1 for r in t20 if r["outcome"] == "played_out"),
         "graded": len(t20),
-        "hit_rate": round(100.0 * sum(1 for r in t20 if r["outcome"] == "played_out") / len(t20), 1) if t20 else None,
+        "hit_rate": _pct(sum(1 for r in t20 if r["outcome"] == "played_out"), len(t20)) if t20 else None,
     }
 
     streak = 0
@@ -403,6 +412,10 @@ def main():
         "didnt": missed,
         "pending": pending,
         "hit_rate": hit_rate,
+        "hit_rate_note": ("Blended across both grading eras (self-reported + deterministic) "
+                           "for backward compatibility only. The page's headline, and the "
+                           "number to judge this briefing on, is by_method.deterministic.hit_rate — "
+                           "see by_method for why the two are not added together."),
         "by_method": by_method,
         "by_design": by_design,
         "direction_only": direction_only,

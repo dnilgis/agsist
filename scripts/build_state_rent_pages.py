@@ -476,7 +476,7 @@ def build_hub(states, stats, generated):
     def quint_color(v, ptype="nonirr"):
         peers = meds_by_type.get(ptype, meds)
         i = sum(1 for m in peers if m < v) / max(1, len(peers))
-        return "#c94b42" if i >= .8 else ("#b85a4a" if i >= .6 else ("#a8823c" if i >= .4 else ("#3a4144" if i >= .2 else "#3f7a58")))
+        return "#af3a32" if i >= .8 else ("#9c4b3d" if i >= .6 else ("#a8823c" if i >= .4 else ("#5a656a" if i >= .2 else "#396d4f")))
     tiles = []
     for ab, (c, r) in TILE.items():
         if ab in stats:
@@ -488,9 +488,9 @@ def build_hub(states, stats, generated):
         f'Median county rent per acre, {yr} &mdash; tap a state for every county. Color ranks each state against states reporting the SAME land type (cropland vs pasture states are not comparable dollar-for-dollar)</div>'
         '<div class="rh-grid">' + "".join(tiles) + '</div>'
         '<div style="display:flex;gap:14px;justify-content:center;margin:12px 0 0;font-size:.74rem;color:#8a948f;flex-wrap:wrap">'
-        '<span><b style="display:inline-block;width:13px;height:13px;border-radius:3px;vertical-align:-2px;margin-right:5px;background:#c94b42"></b>priciest fifth</span>'
+        '<span><b style="display:inline-block;width:13px;height:13px;border-radius:3px;vertical-align:-2px;margin-right:5px;background:#af3a32"></b>priciest fifth</span>'
         '<span><b style="display:inline-block;width:13px;height:13px;border-radius:3px;vertical-align:-2px;margin-right:5px;background:#a8823c"></b>middle</span>'
-        '<span><b style="display:inline-block;width:13px;height:13px;border-radius:3px;vertical-align:-2px;margin-right:5px;background:#3f7a58"></b>cheapest fifth</span>'
+        '<span><b style="display:inline-block;width:13px;height:13px;border-radius:3px;vertical-align:-2px;margin-right:5px;background:#396d4f"></b>cheapest fifth</span>'
         '<span><b style="display:inline-block;width:13px;height:13px;border-radius:3px;vertical-align:-2px;margin-right:5px;background:#14181a;border:1px dashed #2a3133"></b>no data</span></div>')
     rows = []
     for st in sorted(states, key=lambda s: STATE_NAMES[s]):

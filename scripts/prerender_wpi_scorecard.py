@@ -40,6 +40,7 @@ import html as htmlmod
 import json
 import re
 import sys
+from pathlib import Path
 from datetime import datetime, timezone
 
 WPI_HTML = "whats-priced-in.html"
@@ -521,6 +522,10 @@ def primary_class(asd):
     return classes[0]
 
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from grade_calls import pct as _pct   # one rounding rule, shared with build_scorecard
+
+
 # ── Scorecard renderers ────────────────────────────────────────────────────
 
 def fdate(iso):
@@ -615,7 +620,7 @@ def sc_eras_html(d):
         p, g = o.get("played"), o.get("graded")
         if p is None or not g:
             return f"{label}, not yet scored"
-        return f"{label}, {p} of {g} ({round(100.0 * p / g, 1)}%)"
+        return f"{label}, {p} of {g} ({_pct(p, g)}%)"
     return ("<b>" + part("Self-graded", sr) + ". " + part("Graded against the settlement price by rule", det) + ".</b>")
 
 

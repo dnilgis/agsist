@@ -139,7 +139,7 @@
   </section>
   <div class="vp-maplab">Foreign-held agricultural acres by state &mdash; tap a state</div>
   <div class="vp-grid" id="vp-grid"></div>
-  <div class="vp-leg"><span><b style="background:#c94b42"></b>most acres</span><span><b style="background:#a8823c"></b>middle</span><span><b style="background:#3f7a58"></b>least</span><span><b style="background:#14181a;border:1px dashed #2a3133"></b>no data</span></div>
+  <div class="vp-leg"><span><b style="background:#af3a32"></b>most acres</span><span><b style="background:#a8823c"></b>middle</span><span><b style="background:#396d4f"></b>least</span><span><b style="background:#14181a;border:1px dashed #2a3133"></b>no data</span></div>
 
 
   <section class="fl-panel" aria-labelledby="fl-map-t">
@@ -468,7 +468,7 @@
       else if(ch!=null&&ch>=10){word='GROWING';c='#d4a23f';}
       else if(ch!=null&&ch>-10){word='HOLDING STEADY';c='#8a948f';}
       else {word='SHRINKING';c='#5fc28a';}
-      var qq=q(cur), t=qq>=0.8?'#c94b42':(qq>=0.6?'#b85a4a':(qq>=0.4?'#a8823c':(qq>=0.2?'#3a4144':'#3f7a58')));
+      var qq=q(cur), t=qq>=0.8?'#af3a32':(qq>=0.6?'#9c4b3d':(qq>=0.4?'#a8823c':(qq>=0.2?'#3a4144':'#396d4f')));
       var lab=cur>=1e6?(cur/1e6).toFixed(1)+'M':Math.round(cur/1e3)+'k';
       out[st]={big:lab,word:word,col:c,tile:t,tval:lab,
         sent:'Foreign entities report holding <b style="color:'+c+'">'+lab+' acres</b> of '+(__A2F[st]||st)+' agricultural land ('+latestYr+' AFIDA filings)'+(ch!=null?(' \u2014 '+(ch>=0?'up ':'down ')+Math.abs(ch).toFixed(0)+'\u0025 since '+(by[st]['2015']?'2015':'the earliest filing')):'')+'. Tap the county map below to see exactly where, and whose.'};

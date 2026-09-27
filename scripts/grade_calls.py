@@ -26,6 +26,7 @@ this script writes the same thing as its own workflow step; the scorecard
 prints it for every row. There is no second copy.
 """
 import json, sys
+from decimal import Decimal, ROUND_HALF_UP
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -59,6 +60,43 @@ INSTRUMENT_TO_LOCKED = {
 def locked_key(instrument):
     return INSTRUMENT_TO_LOCKED.get((instrument or "").strip().lower())
 
+# FLOAT NOISE. Prices and levels are decimal quotes ($5.00, $12.85) but reach
+# us as binary floats, and any arithmetic upstream (0.1 + 0.2 = 0.30000000000000004,
+# a sum of rounded values) leaves a residue below the tick. A bare `p1 >= L`
+# would then grade a close that sat exactly on the level as a miss. Every
+# price is snapped to 6 decimals (far finer than any tick, far coarser than
+# float error) and compared as Decimal, so equality means equality.
+def q(x):
+    """A price or level as an exact Decimal, float residue removed."""
+    return Decimal(str(round(float(x), 6)))
+
+
+def fmt_price(x):
+    """A price for reader-facing text: no float residue (36.099999999999994
+    prints as 36.1). Non-floats and clean floats print exactly as before."""
+    if isinstance(x, float):
+        return str(round(x, 6))
+    return x
+
+
+def pct(part, whole, places=1):
+    """100 * part / whole, rounded half-up to `places`, as a float. Half-up
+    matches what the page's toFixed shows; float round() sends exact ties
+    such as 1/16 = 6.25 to 6.2."""
+    if not whole:
+        return None
+    r = Decimal(100 * part) / Decimal(whole)
+    return float(r.quantize(Decimal(1).scaleb(-places), rounding=ROUND_HALF_UP))
+
+
+def direction_level_ok(d, p0, p1, L):
+    """(direction_ok, level_ok) with float residue removed."""
+    p0, p1, L = q(p0), q(p1), q(L)
+    if d == "up":
+        return p1 > p0, p1 >= L
+    return p1 < p0, p1 <= L
+
+
 def compute_outcome(call, p0, p1):
     """call={instrument,direction,level}; p0=close when made; p1=close when judged.
     Returns 'played_out' | 'didnt' | 'pending'."""
@@ -72,12 +110,7 @@ def compute_outcome(call, p0, p1):
         p0 = float(p0); p1 = float(p1); L = float(L)
     except (TypeError, ValueError):
         return "pending"
-    if d == "up":
-        direction_ok = p1 > p0
-        level_ok = p1 >= L
-    else:
-        direction_ok = p1 < p0
-        level_ok = p1 <= L
+    direction_ok, level_ok = direction_level_ok(d, p0, p1, L)
     return "played_out" if (direction_ok and level_ok) else "didnt"
 
 # reader-facing names for the instruments the call can be about
@@ -99,18 +132,22 @@ def plain_call(call, p0, p1, outcome=None):
     d = (call.get("direction") or "").lower()
     lvl = call.get("level")
     way = "up toward" if d == "up" else "down toward"
-    got = f" It closed at ${p1}." if p1 is not None else ""
-    made = f" (${p0} when the call was made)" if p0 is not None else ""
-    return f"Called {inst} {way} ${lvl}{made}.{got}"
+    got = f" It closed at ${fmt_price(p1)}." if p1 is not None else ""
+    made = f" (${fmt_price(p0)} when the call was made)" if p0 is not None else ""
+    return f"Called {inst} {way} ${fmt_price(lvl)}{made}.{got}"
 
 
 def explain(call, p0, p1, outcome):
     d = (call.get("direction") or "").lower(); L = call.get("level")
     arrow = "above" if d == "up" else "below"
-    return (f"{call.get('instrument')}: called {d} to {arrow} ${L} "
-            f"(made ${p0}); closed ${p1} -> {outcome} "
-            f"[direction {'ok' if ((p1>p0) if d=='up' else (p1<p0)) else 'missed'}, "
-            f"level {'ok' if ((p1>=float(L)) if d=='up' else (p1<=float(L))) else 'missed'}]")
+    try:
+        dok, lok = direction_level_ok(d, p0, p1, L)
+    except (TypeError, ValueError):
+        dok = lok = False
+    return (f"{call.get('instrument')}: called {d} to {arrow} ${fmt_price(L)} "
+            f"(made ${fmt_price(p0)}); closed ${fmt_price(p1)} -> {outcome} "
+            f"[direction {'ok' if dok else 'missed'}, "
+            f"level {'ok' if lok else 'missed'}]")
 
 def _locked(daily, instrument):
     lp = daily.get("locked_prices") or {}

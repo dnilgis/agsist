@@ -164,7 +164,7 @@
   </section>
   <div class="vp-maplab">Every state: grain grown vs total bin space &mdash; tap a state</div>
   <div class="vp-grid" id="vp-grid"></div>
-  <div class="vp-leg"><span><b style="background:#c94b42"></b>overflowing</span><span><b style="background:#a8823c"></b>tight</span><span><b style="background:#3a4144"></b>manageable</span><span><b style="background:#3f7a58"></b>room to spare</span><span><b style="background:#14181a;border:1px dashed #2a3133"></b>no data</span></div>
+  <div class="vp-leg"><span><b style="background:#af3a32"></b>overflowing</span><span><b style="background:#a8823c"></b>tight</span><span><b style="background:#5a656a"></b>manageable</span><span><b style="background:#396d4f"></b>room to spare</span><span><b style="background:#14181a;border:1px dashed #2a3133"></b>no data</span></div>
 
   <div class="sc-hero">
     <div class="sc-stat"><div class="v">94%</div><div class="l">of U.S. storage, grown in 2025</div><div class="s">production &divide; total capacity</div></div>
@@ -309,11 +309,11 @@
       }
       var tot=(cap[0]+(cap[1]||0))/1e6;
       var w,c,t;
-      if(r>=1.3){w='OVERFLOWING';c='#e0685f';t='#c94b42';}
-      else if(r>=1.0){w='MORE GRAIN THAN BINS';c='#e0685f';t='#b85a4a';}
+      if(r>=1.3){w='OVERFLOWING';c='#e0685f';t='#af3a32';}
+      else if(r>=1.0){w='MORE GRAIN THAN BINS';c='#e0685f';t='#9c4b3d';}
       else if(r>=0.9){w='TIGHT';c='#d4a23f';t='#a8823c';}
-      else if(r>=0.75){w='MANAGEABLE';c='#8a948f';t='#3a4144';}
-      else {w='ROOM TO SPARE';c='#5fc28a';t='#3f7a58';}
+      else if(r>=0.75){w='MANAGEABLE';c='#8a948f';t='#5a656a';}
+      else {w='ROOM TO SPARE';c='#5fc28a';t='#396d4f';}
       var pct=Math.round(r*100);
       out[st]={big:pct+'\u0025',word:w,col:c,tile:t,tval:pct+'\u0025',
         sent:(__A2F[st]||st)+' grew <b style="color:'+c+'">'+prod.toFixed(0)+' million bushels</b> of grain in '+lat+' against <b>'+tot.toFixed(0)+' million bushels</b> of total bin space (on-farm + elevators) \u2014 <b style="color:'+c+'">'+pct+'\u0025 full</b> if nothing moved. Grain has to move, and moving costs basis.'};

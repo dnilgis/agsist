@@ -85,7 +85,7 @@ def rows_for(data, crop):
             "week": int(wk), "year": latest.get("year"),
             "r2": cur["r2"], "n": cur.get("n"),
             "peak_r2": peak["r2"], "peak_wk": peak_wk,
-            "peak_slope": peak.get("slope"),
+            "peak_slope": peak.get("slope"), "peak_n": peak.get("n"),
         })
     out.sort(key=lambda r: (-r["r2"], r["name"]))
     return out
@@ -187,9 +187,13 @@ def meta_desc(rows):
     top = rows[0] if rows else None
     if not ia or not top:
         return None
-    return (f"Corn ratings in week {ia['week']} explain {round(ia['r2']*100)}% of how Iowa's final "
-            f"yield differs from trend. By week {ia['peak_wk']}: {round(ia['peak_r2']*100)}%. The real "
-            f"R&sup2; of G+E vs yield deviation, every state, every week, from USDA data.")
+    # Same sentence scripts/bake_seo.py writes (its seo_cond_yield); the two
+    # used to differ and the daily bake flipped the page. Keep them identical.
+    if not ia.get("peak_n"):
+        return None
+    return (f"Iowa corn: Good+Excellent in its best week (week {ia['peak_wk']}) explains "
+            f"{ia['peak_r2'] * 100:.0f}% of yield deviation ({ia['peak_n']} years, "
+            f"in-sample R\u00b2). Every state and week shown.")
 
 
 # ── splice + gauntlet ─────────────────────────────────────────────────────
