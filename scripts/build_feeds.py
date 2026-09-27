@@ -80,7 +80,7 @@ QUIET = {
 # (ours to ship)". A curated feed with no cron is correct, and calling it
 # "unknown" would put a permanent false warning on the status page.
 CURATED = {
-    "data/tariffs.json", "data/dairy-data.json", "data/poll.json",
+    "data/tariffs.json", "data/poll.json",
     "data/afida/county.json", "data/rma-discovery.json",
     "data/rma-planting-dates.json",
     # State outlines for the Atlas map. Shipped once; state borders do not move,
@@ -123,16 +123,23 @@ EXTERNAL = {
         "never breaks the page."),
 }
 
-# ── feeds a page is ready for but nothing publishes yet ──────────────────────
-# Declared, not guessed: milk-prices.html says so in its own source — "Loads
-# /data/dairy-data.json when the pipeline ships it. Every field falls back" —
-# and it fetches with `r.ok ? r.json() : null`. The page degrades on purpose.
-# Painting that red on the status page would be crying wolf about the one thing
-# built not to break.
+# ── feeds a page is ready for whose FIRST RUN has not happened yet ───────────
+# data/dairy-data.json is now written by .github/workflows/dairy.yml
+# (scripts/fetch_dairy.py), so it has a writer and a cadence read off the cron.
+# But the file does not exist until that workflow's first successful run, and
+# milk-prices.html falls back field by field until then, on purpose (it fetches
+# with `r.ok ? r.json() : null`). Painting that red would be crying wolf.
+#
+# So "planned" is true ONLY WHILE THE FILE IS ABSENT. The moment the first run
+# commits it, the flag and the quiet state drop out and status.html checks the
+# feed like any other: a real age against a real cadence. Nothing here is
+# removed by hand later, and a deleted feed is not hidden forever.
+# After that first run, press "Rebuild Feed Manifest" once so data/feeds.json
+# catches up (feeds-guard will say so if it is forgotten).
 PLANNED = {
     "data/dairy-data.json": ("planned",
-        "The dairy pipeline is not built yet. milk-prices.html expects this and "
-        "falls back field by field when it is missing, on purpose."),
+        "The dairy pipeline has not made its first run yet. milk-prices.html "
+        "falls back field by field until it does, on purpose."),
 }
 
 CENTRAL_OFFSET_H = -5   # CDT. Enough to name an hour in a sentence; the status
@@ -298,7 +305,8 @@ def main():
         ws = sorted(wf_writes.get(f, []))
         touched = sorted(set(wf_touch.get(f, [])) | set(wf_writes.get(f, [])))
         crons = [c for w in ws for c in wf_cron[w]]
-        state, why = QUIET.get(f, PLANNED.get(f, (None, None)))
+        pending = PLANNED.get(f) if not os.path.exists(f) else None
+        state, why = QUIET.get(f, pending or (None, None))
         ext = EXTERNAL.get(f)
         feeds.append({
             "path": f,
@@ -310,7 +318,7 @@ def main():
                             else "maintained by hand, not on a schedule" if f in CURATED
                             else "on demand" if ws else "unknown")),
             "curated": f in CURATED,
-            "planned": f in PLANNED,
+            "planned": pending is not None,
             "external": bool(ext),
             # Absolute, so nothing has to guess the host. Null for our own
             # feeds, which are correctly fetched relative to this site.

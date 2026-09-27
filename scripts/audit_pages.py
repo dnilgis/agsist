@@ -126,9 +126,23 @@ def strip_tags(html):
 QUOTES_DEFECTS = {"changelog.html"}
 
 # Known, deliberate, documented. milk-prices fetches a dairy feed that does not
-# exist yet and falls back to its seed on purpose -- the fix is a pipeline, not
-# deleting the fetch (HANDOFF-MASTER-2026-08-15 section 9).
+# exist until the dairy workflow's first successful run
+# (.github/workflows/dairy.yml -> scripts/fetch_dairy.py). The page falls back to
+# its seed on purpose (HANDOFF-MASTER-2026-08-15 section 9).
+#
+# The exception is honoured ONLY WHILE THE FIRST RUN IS PENDING: the workflow
+# exists and data/dairy-history.json (written by the same run as the feed) does
+# not. Once history exists, a missing data/dairy-data.json is a real HIGH finding.
 KNOWN = {("milk-prices.html", "missing-data", "/data/dairy-data.json")}
+
+
+def known_missing(page, path):
+    if (page, "missing-data", path) not in KNOWN:
+        return False
+    if path == "/data/dairy-data.json":
+        return (REPO / ".github/workflows/dairy.yml").exists() and \
+               not (REPO / "data/dairy-history.json").exists()
+    return True
 
 # Future years read and cleared on 2026-08-16. Each is a date fixed in law or a
 # published projection, not a forecast that aged into a claim. Re-read these
@@ -342,7 +356,7 @@ def data_refs_exist(page, html):
     for m in re.finditer(r"['\"](/?data/[a-zA-Z0-9_\-/]+\.json)['\"]", html):
         rel = m.group(1).lstrip("/")
         if not (REPO / rel).exists():
-            if (page, "missing-data", m.group(1)) in KNOWN:
+            if known_missing(page, m.group(1)):
                 continue
             out.append(Finding(page, "HIGH", "missing-data",
                                f"fetches {m.group(1)} which does not exist"))

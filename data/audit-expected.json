@@ -9,7 +9,7 @@
   {
    "match": "/data/dairy-data.json",
    "status": 404,
-   "reason": "A planned feed nobody publishes yet. milk-prices.html falls back field by field to the seed already in the page, and status.html renders the row as 'Planned — not published yet' rather than red. Declared planned:true in data/feeds.json; the page is built not to break on it."
+   "reason": "TEMPORARY, until the dairy workflow (.github/workflows/dairy.yml) makes its first successful run. Until then the file does not exist; milk-prices.html falls back field by field to the seed in the page, and status.html shows the row as Planned. Once data/dairy-data.json is committed this entry is inert (the request returns 200) and should be deleted, so a later 404 shows up as a real failure. scripts/audit_pages.py already stops honouring its own exception when data/dairy-history.json exists."
   }
  ]
 }
