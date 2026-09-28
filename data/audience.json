@@ -1,92 +1,92 @@
 {
  "schema": "agsist-audience/2",
- "built": "2026-09-27T15:39:06+00:00",
+ "built": "2026-09-28T18:35:41+00:00",
  "ranges": [
   {
    "id": "7d",
    "label": "7 days",
-   "start": "2026-09-19",
-   "end": "2026-09-25"
+   "start": "2026-09-20",
+   "end": "2026-09-26"
   },
   {
    "id": "28d",
    "label": "28 days",
-   "start": "2026-08-29",
-   "end": "2026-09-25"
+   "start": "2026-08-30",
+   "end": "2026-09-26"
   },
   {
    "id": "90d",
    "label": "90 days",
-   "start": "2026-06-28",
-   "end": "2026-09-25"
+   "start": "2026-06-29",
+   "end": "2026-09-26"
   },
   {
    "id": "ytd",
    "label": "2026",
    "start": "2026-01-01",
-   "end": "2026-09-25"
+   "end": "2026-09-26"
   }
  ],
  "homeState": "WI",
  "totals": {
   "ytd": {
-   "users": 13073,
-   "engaged": 15839,
-   "sessions": 24240,
-   "views": 47946,
-   "newUsers": 12908,
-   "avgSeconds": 140.3,
+   "users": 13137,
+   "engaged": 15993,
+   "sessions": 24498,
+   "views": 48180,
+   "newUsers": 13006,
+   "avgSeconds": 140.6,
    "engagementRate": 0.653
   },
   "90d": {
-   "users": 10761,
-   "engaged": 12092,
-   "sessions": 17996,
-   "views": 29067,
-   "newUsers": 10463,
-   "avgSeconds": 125.7,
-   "engagementRate": 0.672
+   "users": 10821,
+   "engaged": 12196,
+   "sessions": 18129,
+   "views": 29235,
+   "newUsers": 10530,
+   "avgSeconds": 125.9,
+   "engagementRate": 0.673
   },
   "28d": {
-   "users": 4310,
-   "engaged": 4564,
-   "sessions": 6952,
-   "views": 10582,
-   "newUsers": 4048,
-   "avgSeconds": 123.6,
-   "engagementRate": 0.657
+   "users": 4309,
+   "engaged": 4553,
+   "sessions": 6972,
+   "views": 10584,
+   "newUsers": 4044,
+   "avgSeconds": 123.9,
+   "engagementRate": 0.653
   },
   "7d": {
-   "users": 1200,
-   "engaged": 1201,
-   "sessions": 1806,
-   "views": 2905,
-   "newUsers": 1042,
-   "avgSeconds": 164.6,
-   "engagementRate": 0.665
+   "users": 1207,
+   "engaged": 1190,
+   "sessions": 1824,
+   "views": 2912,
+   "newUsers": 1043,
+   "avgSeconds": 165.9,
+   "engagementRate": 0.652
   }
  },
  "states": {
   "ytd": [
    {
-    "users": 1572,
-    "engaged": 2345,
-    "sessions": 3598,
-    "views": 7996,
-    "newUsers": 1440,
-    "avgSeconds": 138.8,
+    "users": 1578,
+    "engaged": 2352,
+    "sessions": 3606,
+    "views": 8016,
+    "newUsers": 1444,
+    "avgSeconds": 141.6,
     "engagementRate": 0.652,
     "code": "IL",
     "name": "Illinois",
     "rank": 1
    },
    {
-    "users": 662,
-    "engaged": 1731,
-    "sessions": 2328,
-    "views": 9458,
-    "newUsers": 578,
-    "avgSeconds": 363.7,
+    "users": 665,
+    "engaged": 1741,
+    "sessions": 2340,
+    "views": 9474,
+    "newUsers": 581,
+    "avgSeconds": 362.8,
     "engagementRate": 0.744,
     "code": "WI",
     "name": "Wisconsin",
@@ -94,70 +94,70 @@
     "flag": "home"
    },
    {
-    "users": 1094,
-    "engaged": 1397,
-    "sessions": 1986,
-    "views": 3862,
-    "newUsers": 1005,
+    "users": 1101,
+    "engaged": 1406,
+    "sessions": 1997,
+    "views": 3879,
+    "newUsers": 1011,
     "avgSeconds": 132.7,
-    "engagementRate": 0.703,
+    "engagementRate": 0.704,
     "code": "MN",
     "name": "Minnesota",
     "rank": 2
    },
    {
-    "users": 1000,
-    "engaged": 1043,
-    "sessions": 1599,
-    "views": 2550,
-    "newUsers": 927,
-    "avgSeconds": 141.3,
-    "engagementRate": 0.652,
+    "users": 1005,
+    "engaged": 1047,
+    "sessions": 1604,
+    "views": 2557,
+    "newUsers": 931,
+    "avgSeconds": 140.7,
+    "engagementRate": 0.653,
     "code": "IA",
     "name": "Iowa",
     "rank": 3
    },
    {
-    "users": 971,
-    "engaged": 989,
-    "sessions": 1542,
-    "views": 2511,
-    "newUsers": 830,
-    "avgSeconds": 88.5,
-    "engagementRate": 0.641,
+    "users": 977,
+    "engaged": 993,
+    "sessions": 1551,
+    "views": 2519,
+    "newUsers": 833,
+    "avgSeconds": 88.1,
+    "engagementRate": 0.64,
     "code": "TX",
     "name": "Texas",
     "rank": 4
    },
    {
-    "users": 624,
-    "engaged": 758,
-    "sessions": 1095,
-    "views": 1724,
-    "newUsers": 541,
-    "avgSeconds": 143.2,
-    "engagementRate": 0.692,
+    "users": 631,
+    "engaged": 771,
+    "sessions": 1113,
+    "views": 1767,
+    "newUsers": 548,
+    "avgSeconds": 143.8,
+    "engagementRate": 0.693,
     "code": "MO",
     "name": "Missouri",
     "rank": 5
    },
    {
-    "users": 539,
-    "engaged": 702,
-    "sessions": 976,
-    "views": 1531,
-    "newUsers": 478,
-    "avgSeconds": 89.6,
-    "engagementRate": 0.719,
+    "users": 544,
+    "engaged": 708,
+    "sessions": 984,
+    "views": 1542,
+    "newUsers": 480,
+    "avgSeconds": 90.3,
+    "engagementRate": 0.72,
     "code": "KS",
     "name": "Kansas",
     "rank": 6
    },
    {
     "users": 505,
-    "engaged": 654,
-    "sessions": 952,
-    "views": 1419,
+    "engaged": 655,
+    "sessions": 953,
+    "views": 1420,
     "newUsers": 445,
     "avgSeconds": 119.6,
     "engagementRate": 0.687,
@@ -166,47 +166,47 @@
     "rank": 7
    },
    {
-    "users": 511,
-    "engaged": 625,
-    "sessions": 853,
-    "views": 1616,
-    "newUsers": 449,
-    "avgSeconds": 149.0,
-    "engagementRate": 0.733,
+    "users": 512,
+    "engaged": 630,
+    "sessions": 857,
+    "views": 1622,
+    "newUsers": 450,
+    "avgSeconds": 149.4,
+    "engagementRate": 0.735,
     "code": "IN",
     "name": "Indiana",
     "rank": 8
    },
    {
-    "users": 511,
-    "engaged": 530,
-    "sessions": 764,
-    "views": 1218,
-    "newUsers": 472,
-    "avgSeconds": 135.8,
-    "engagementRate": 0.694,
+    "users": 516,
+    "engaged": 537,
+    "sessions": 773,
+    "views": 1230,
+    "newUsers": 476,
+    "avgSeconds": 135.1,
+    "engagementRate": 0.695,
     "code": "OH",
     "name": "Ohio",
     "rank": 9
    },
    {
-    "users": 369,
-    "engaged": 378,
-    "sessions": 509,
-    "views": 978,
-    "newUsers": 335,
-    "avgSeconds": 151.0,
-    "engagementRate": 0.743,
+    "users": 373,
+    "engaged": 382,
+    "sessions": 513,
+    "views": 988,
+    "newUsers": 339,
+    "avgSeconds": 153.9,
+    "engagementRate": 0.745,
     "code": "SD",
     "name": "South Dakota",
     "rank": 10
    },
    {
-    "users": 484,
-    "engaged": 372,
-    "sessions": 626,
-    "views": 823,
-    "newUsers": 429,
+    "users": 487,
+    "engaged": 374,
+    "sessions": 630,
+    "views": 826,
+    "newUsers": 431,
     "avgSeconds": 50.9,
     "engagementRate": 0.594,
     "code": "CA",
@@ -214,25 +214,25 @@
     "rank": 11
    },
    {
-    "users": 414,
-    "engaged": 349,
-    "sessions": 590,
-    "views": 814,
-    "newUsers": 341,
-    "avgSeconds": 78.5,
-    "engagementRate": 0.592,
+    "users": 418,
+    "engaged": 354,
+    "sessions": 596,
+    "views": 819,
+    "newUsers": 344,
+    "avgSeconds": 78.0,
+    "engagementRate": 0.594,
     "code": "NY",
     "name": "New York",
     "rank": 12
    },
    {
-    "users": 331,
-    "engaged": 340,
-    "sessions": 530,
-    "views": 792,
-    "newUsers": 275,
-    "avgSeconds": 78.2,
-    "engagementRate": 0.642,
+    "users": 333,
+    "engaged": 342,
+    "sessions": 532,
+    "views": 795,
+    "newUsers": 277,
+    "avgSeconds": 78.4,
+    "engagementRate": 0.643,
     "code": "MI",
     "name": "Michigan",
     "rank": 13
@@ -240,59 +240,59 @@
    {
     "users": 237,
     "engaged": 328,
-    "sessions": 456,
-    "views": 761,
+    "sessions": 457,
+    "views": 762,
     "newUsers": 218,
     "avgSeconds": 200.1,
-    "engagementRate": 0.719,
+    "engagementRate": 0.718,
     "code": "ND",
     "name": "North Dakota",
     "rank": 14
    },
    {
-    "users": 493,
-    "engaged": 311,
-    "sessions": 600,
-    "views": 789,
-    "newUsers": 467,
-    "avgSeconds": 66.9,
-    "engagementRate": 0.518,
+    "users": 497,
+    "engaged": 312,
+    "sessions": 604,
+    "views": 793,
+    "newUsers": 471,
+    "avgSeconds": 66.4,
+    "engagementRate": 0.517,
     "code": "CO",
     "name": "Colorado",
     "rank": 15
    },
    {
-    "users": 325,
-    "engaged": 308,
-    "sessions": 457,
-    "views": 593,
-    "newUsers": 263,
+    "users": 327,
+    "engaged": 310,
+    "sessions": 459,
+    "views": 595,
+    "newUsers": 265,
     "avgSeconds": 75.4,
-    "engagementRate": 0.674,
+    "engagementRate": 0.675,
     "code": "FL",
     "name": "Florida",
     "rank": 16
    },
    {
-    "users": 302,
+    "users": 303,
     "engaged": 294,
-    "sessions": 415,
-    "views": 526,
-    "newUsers": 229,
-    "avgSeconds": 72.2,
-    "engagementRate": 0.708,
+    "sessions": 417,
+    "views": 528,
+    "newUsers": 230,
+    "avgSeconds": 71.9,
+    "engagementRate": 0.705,
     "code": "OK",
     "name": "Oklahoma",
     "rank": 17
    },
    {
-    "users": 250,
-    "engaged": 282,
-    "sessions": 482,
-    "views": 662,
-    "newUsers": 217,
-    "avgSeconds": 147.7,
-    "engagementRate": 0.585,
+    "users": 251,
+    "engaged": 284,
+    "sessions": 486,
+    "views": 667,
+    "newUsers": 218,
+    "avgSeconds": 147.2,
+    "engagementRate": 0.584,
     "code": "PA",
     "name": "Pennsylvania",
     "rank": 18
@@ -300,23 +300,23 @@
    {
     "users": 266,
     "engaged": 271,
-    "sessions": 406,
-    "views": 603,
+    "sessions": 408,
+    "views": 605,
     "newUsers": 218,
     "avgSeconds": 114.8,
-    "engagementRate": 0.667,
+    "engagementRate": 0.664,
     "code": "GA",
     "name": "Georgia",
     "rank": 19
    },
    {
-    "users": 272,
-    "engaged": 244,
-    "sessions": 376,
-    "views": 539,
-    "newUsers": 220,
+    "users": 273,
+    "engaged": 245,
+    "sessions": 380,
+    "views": 542,
+    "newUsers": 221,
     "avgSeconds": 72.9,
-    "engagementRate": 0.649,
+    "engagementRate": 0.645,
     "code": "TN",
     "name": "Tennessee",
     "rank": 20
@@ -346,61 +346,61 @@
     "rank": 22
    },
    {
-    "users": 202,
-    "engaged": 203,
-    "sessions": 313,
-    "views": 458,
+    "users": 203,
+    "engaged": 204,
+    "sessions": 314,
+    "views": 459,
     "newUsers": 150,
-    "avgSeconds": 88.0,
-    "engagementRate": 0.649,
+    "avgSeconds": 87.7,
+    "engagementRate": 0.65,
     "code": "AL",
     "name": "Alabama",
     "rank": 23
    },
    {
-    "users": 190,
-    "engaged": 199,
-    "sessions": 275,
-    "views": 469,
+    "users": 191,
+    "engaged": 200,
+    "sessions": 276,
+    "views": 470,
     "newUsers": 152,
-    "avgSeconds": 105.2,
-    "engagementRate": 0.724,
+    "avgSeconds": 104.7,
+    "engagementRate": 0.725,
     "code": "KY",
     "name": "Kentucky",
     "rank": 24
    },
    {
-    "users": 222,
+    "users": 254,
     "engaged": 195,
-    "sessions": 333,
-    "views": 568,
-    "newUsers": 199,
-    "avgSeconds": 74.7,
-    "engagementRate": 0.586,
+    "sessions": 366,
+    "views": 600,
+    "newUsers": 231,
+    "avgSeconds": 65.3,
+    "engagementRate": 0.533,
     "code": "AZ",
     "name": "Arizona",
     "rank": 25
    },
    {
-    "users": 221,
-    "engaged": 171,
-    "sessions": 260,
-    "views": 365,
-    "newUsers": 174,
-    "avgSeconds": 71.9,
-    "engagementRate": 0.658,
+    "users": 223,
+    "engaged": 173,
+    "sessions": 262,
+    "views": 372,
+    "newUsers": 175,
+    "avgSeconds": 71.8,
+    "engagementRate": 0.66,
     "code": "NC",
     "name": "North Carolina",
     "rank": 26
    },
    {
-    "users": 241,
-    "engaged": 169,
-    "sessions": 290,
-    "views": 374,
-    "newUsers": 208,
-    "avgSeconds": 44.1,
-    "engagementRate": 0.583,
+    "users": 245,
+    "engaged": 172,
+    "sessions": 294,
+    "views": 378,
+    "newUsers": 212,
+    "avgSeconds": 43.9,
+    "engagementRate": 0.585,
     "code": "VA",
     "name": "Virginia",
     "rank": 27
@@ -418,13 +418,13 @@
     "rank": 28
    },
    {
-    "users": 130,
-    "engaged": 140,
-    "sessions": 191,
-    "views": 233,
-    "newUsers": 117,
-    "avgSeconds": 79.8,
-    "engagementRate": 0.733,
+    "users": 133,
+    "engaged": 143,
+    "sessions": 194,
+    "views": 236,
+    "newUsers": 120,
+    "avgSeconds": 78.9,
+    "engagementRate": 0.737,
     "code": "MT",
     "name": "Montana",
     "rank": 29
@@ -466,13 +466,13 @@
     "rank": 32
    },
    {
-    "users": 112,
-    "engaged": 76,
-    "sessions": 136,
-    "views": 196,
-    "newUsers": 94,
-    "avgSeconds": 74.3,
-    "engagementRate": 0.559,
+    "users": 113,
+    "engaged": 77,
+    "sessions": 137,
+    "views": 197,
+    "newUsers": 95,
+    "avgSeconds": 73.9,
+    "engagementRate": 0.562,
     "code": "SC",
     "name": "South Carolina",
     "rank": 33
@@ -538,13 +538,13 @@
     "rank": 38
    },
    {
-    "users": 59,
+    "users": 60,
     "engaged": 51,
-    "sessions": 72,
-    "views": 115,
+    "sessions": 73,
+    "views": 116,
     "newUsers": 45,
-    "avgSeconds": 78.2,
-    "engagementRate": 0.708,
+    "avgSeconds": 77.0,
+    "engagementRate": 0.699,
     "code": "NV",
     "name": "Nevada",
     "rank": 39
@@ -610,13 +610,13 @@
     "rank": 44
    },
    {
-    "users": 44,
-    "engaged": 31,
-    "sessions": 51,
-    "views": 63,
-    "newUsers": 29,
-    "avgSeconds": 28.6,
-    "engagementRate": 0.608,
+    "users": 47,
+    "engaged": 32,
+    "sessions": 54,
+    "views": 65,
+    "newUsers": 31,
+    "avgSeconds": 28.0,
+    "engagementRate": 0.593,
     "code": "ME",
     "name": "Maine",
     "rank": 45
@@ -646,13 +646,13 @@
     "rank": 47
    },
    {
-    "users": 10,
+    "users": 11,
     "engaged": 16,
-    "sessions": 20,
-    "views": 32,
-    "newUsers": 8,
-    "avgSeconds": 201.2,
-    "engagementRate": 0.8,
+    "sessions": 21,
+    "views": 33,
+    "newUsers": 9,
+    "avgSeconds": 182.9,
+    "engagementRate": 0.762,
     "code": "RI",
     "name": "Rhode Island",
     "rank": 48
@@ -684,86 +684,86 @@
   ],
   "90d": [
    {
-    "users": 1234,
-    "engaged": 1471,
-    "sessions": 2196,
-    "views": 3264,
-    "newUsers": 1105,
-    "avgSeconds": 105.3,
+    "users": 1238,
+    "engaged": 1474,
+    "sessions": 2201,
+    "views": 3277,
+    "newUsers": 1107,
+    "avgSeconds": 108.9,
     "engagementRate": 0.67,
     "code": "IL",
     "name": "Illinois",
     "rank": 1
    },
    {
-    "users": 860,
-    "engaged": 923,
-    "sessions": 1248,
-    "views": 1879,
-    "newUsers": 782,
-    "avgSeconds": 112.1,
-    "engagementRate": 0.74,
+    "users": 863,
+    "engaged": 928,
+    "sessions": 1255,
+    "views": 1890,
+    "newUsers": 784,
+    "avgSeconds": 112.4,
+    "engagementRate": 0.739,
     "code": "MN",
     "name": "Minnesota",
     "rank": 2
    },
    {
-    "users": 846,
-    "engaged": 891,
-    "sessions": 1357,
-    "views": 2033,
-    "newUsers": 774,
-    "avgSeconds": 140.2,
+    "users": 850,
+    "engaged": 893,
+    "sessions": 1359,
+    "views": 2036,
+    "newUsers": 777,
+    "avgSeconds": 139.1,
     "engagementRate": 0.657,
     "code": "IA",
     "name": "Iowa",
     "rank": 3
    },
    {
-    "users": 500,
-    "engaged": 799,
-    "sessions": 1055,
-    "views": 2716,
-    "newUsers": 425,
-    "avgSeconds": 178.7,
-    "engagementRate": 0.757,
+    "users": 502,
+    "engaged": 804,
+    "sessions": 1063,
+    "views": 2727,
+    "newUsers": 427,
+    "avgSeconds": 178.6,
+    "engagementRate": 0.756,
     "code": "WI",
     "name": "Wisconsin",
     "rank": null,
     "flag": "home"
    },
    {
-    "users": 773,
+    "users": 775,
     "engaged": 782,
-    "sessions": 1180,
-    "views": 1816,
+    "sessions": 1184,
+    "views": 1820,
     "newUsers": 648,
-    "avgSeconds": 88.6,
-    "engagementRate": 0.663,
+    "avgSeconds": 88.4,
+    "engagementRate": 0.66,
     "code": "TX",
     "name": "Texas",
     "rank": 4
    },
    {
-    "users": 513,
-    "engaged": 652,
-    "sessions": 907,
-    "views": 1460,
-    "newUsers": 434,
-    "avgSeconds": 154.0,
-    "engagementRate": 0.719,
+    "users": 519,
+    "engaged": 665,
+    "sessions": 924,
+    "views": 1502,
+    "newUsers": 440,
+    "avgSeconds": 154.8,
+    "engagementRate": 0.72,
     "code": "MO",
     "name": "Missouri",
     "rank": 5
    },
    {
-    "users": 462,
-    "engaged": 617,
-    "sessions": 838,
-    "views": 1274,
+    "users": 465,
+    "engaged": 623,
+    "sessions": 844,
+    "views": 1283,
     "newUsers": 401,
-    "avgSeconds": 87.9,
-    "engagementRate": 0.736,
+    "avgSeconds": 89.1,
+    "engagementRate": 0.738,
     "code": "KS",
     "name": "Kansas",
     "rank": 6
@@ -781,241 +781,241 @@
     "rank": 7
    },
    {
-    "users": 407,
-    "engaged": 493,
+    "users": 405,
+    "engaged": 494,
     "sessions": 664,
     "views": 1220,
-    "newUsers": 344,
-    "avgSeconds": 147.3,
-    "engagementRate": 0.742,
+    "newUsers": 345,
+    "avgSeconds": 148.0,
+    "engagementRate": 0.744,
     "code": "IN",
     "name": "Indiana",
     "rank": 8
    },
    {
-    "users": 433,
-    "engaged": 426,
-    "sessions": 608,
-    "views": 914,
-    "newUsers": 391,
-    "avgSeconds": 130.0,
+    "users": 437,
+    "engaged": 432,
+    "sessions": 616,
+    "views": 925,
+    "newUsers": 395,
+    "avgSeconds": 129.6,
     "engagementRate": 0.701,
     "code": "OH",
     "name": "Ohio",
     "rank": 9
    },
    {
-    "users": 329,
-    "engaged": 337,
-    "sessions": 457,
-    "views": 852,
-    "newUsers": 296,
-    "avgSeconds": 149.1,
-    "engagementRate": 0.737,
+    "users": 331,
+    "engaged": 339,
+    "sessions": 459,
+    "views": 860,
+    "newUsers": 298,
+    "avgSeconds": 153.1,
+    "engagementRate": 0.739,
     "code": "SD",
     "name": "South Dakota",
     "rank": 10
    },
    {
-    "users": 383,
-    "engaged": 294,
-    "sessions": 478,
-    "views": 580,
-    "newUsers": 334,
-    "avgSeconds": 48.1,
+    "users": 385,
+    "engaged": 295,
+    "sessions": 480,
+    "views": 582,
+    "newUsers": 335,
+    "avgSeconds": 48.2,
     "engagementRate": 0.615,
     "code": "CA",
     "name": "California",
     "rank": 11
    },
    {
-    "users": 207,
-    "engaged": 285,
-    "sessions": 398,
-    "views": 633,
-    "newUsers": 184,
-    "avgSeconds": 197.5,
-    "engagementRate": 0.716,
-    "code": "ND",
-    "name": "North Dakota",
-    "rank": 12
-   },
-   {
-    "users": 330,
-    "engaged": 284,
-    "sessions": 483,
-    "views": 639,
-    "newUsers": 261,
-    "avgSeconds": 71.6,
+    "users": 331,
+    "engaged": 286,
+    "sessions": 486,
+    "views": 641,
+    "newUsers": 262,
+    "avgSeconds": 70.3,
     "engagementRate": 0.588,
     "code": "NY",
     "name": "New York",
+    "rank": 12
+   },
+   {
+    "users": 207,
+    "engaged": 285,
+    "sessions": 399,
+    "views": 634,
+    "newUsers": 184,
+    "avgSeconds": 197.5,
+    "engagementRate": 0.714,
+    "code": "ND",
+    "name": "North Dakota",
     "rank": 13
    },
    {
-    "users": 280,
-    "engaged": 277,
-    "sessions": 422,
-    "views": 608,
-    "newUsers": 226,
-    "avgSeconds": 76.5,
-    "engagementRate": 0.656,
+    "users": 282,
+    "engaged": 279,
+    "sessions": 424,
+    "views": 611,
+    "newUsers": 228,
+    "avgSeconds": 76.7,
+    "engagementRate": 0.658,
     "code": "MI",
     "name": "Michigan",
     "rank": 14
    },
    {
-    "users": 410,
+    "users": 413,
     "engaged": 262,
-    "sessions": 500,
-    "views": 645,
-    "newUsers": 386,
-    "avgSeconds": 63.3,
-    "engagementRate": 0.524,
+    "sessions": 503,
+    "views": 648,
+    "newUsers": 389,
+    "avgSeconds": 62.8,
+    "engagementRate": 0.521,
     "code": "CO",
     "name": "Colorado",
     "rank": 15
    },
    {
-    "users": 266,
-    "engaged": 253,
-    "sessions": 370,
-    "views": 439,
-    "newUsers": 214,
+    "users": 268,
+    "engaged": 255,
+    "sessions": 372,
+    "views": 441,
+    "newUsers": 216,
     "avgSeconds": 68.9,
-    "engagementRate": 0.684,
+    "engagementRate": 0.685,
     "code": "FL",
     "name": "Florida",
     "rank": 16
    },
    {
-    "users": 215,
-    "engaged": 252,
-    "sessions": 431,
-    "views": 599,
-    "newUsers": 183,
-    "avgSeconds": 145.8,
-    "engagementRate": 0.585,
+    "users": 214,
+    "engaged": 254,
+    "sessions": 433,
+    "views": 602,
+    "newUsers": 182,
+    "avgSeconds": 146.5,
+    "engagementRate": 0.587,
     "code": "PA",
     "name": "Pennsylvania",
     "rank": 17
    },
    {
-    "users": 263,
-    "engaged": 250,
-    "sessions": 352,
+    "users": 264,
+    "engaged": 249,
+    "sessions": 353,
     "views": 439,
-    "newUsers": 195,
-    "avgSeconds": 72.8,
-    "engagementRate": 0.71,
+    "newUsers": 196,
+    "avgSeconds": 72.4,
+    "engagementRate": 0.705,
     "code": "OK",
     "name": "Oklahoma",
     "rank": 18
    },
    {
-    "users": 224,
-    "engaged": 231,
+    "users": 222,
+    "engaged": 229,
     "sessions": 347,
-    "views": 479,
-    "newUsers": 179,
-    "avgSeconds": 111.2,
-    "engagementRate": 0.666,
+    "views": 478,
+    "newUsers": 177,
+    "avgSeconds": 112.0,
+    "engagementRate": 0.66,
     "code": "GA",
     "name": "Georgia",
     "rank": 19
    },
    {
     "users": 236,
-    "engaged": 206,
-    "sessions": 303,
-    "views": 444,
+    "engaged": 207,
+    "sessions": 306,
+    "views": 446,
     "newUsers": 186,
-    "avgSeconds": 72.0,
-    "engagementRate": 0.68,
+    "avgSeconds": 72.3,
+    "engagementRate": 0.676,
     "code": "TN",
     "name": "Tennessee",
     "rank": 20
    },
    {
     "users": 180,
-    "engaged": 203,
-    "sessions": 290,
-    "views": 411,
+    "engaged": 202,
+    "sessions": 288,
+    "views": 409,
     "newUsers": 143,
     "avgSeconds": 111.8,
-    "engagementRate": 0.7,
+    "engagementRate": 0.701,
     "code": "AR",
     "name": "Arkansas",
     "rank": 21
    },
    {
-    "users": 168,
-    "engaged": 177,
-    "sessions": 229,
-    "views": 408,
+    "users": 169,
+    "engaged": 178,
+    "sessions": 230,
+    "views": 409,
     "newUsers": 133,
-    "avgSeconds": 104.2,
-    "engagementRate": 0.773,
+    "avgSeconds": 103.7,
+    "engagementRate": 0.774,
     "code": "KY",
     "name": "Kentucky",
     "rank": 22
    },
    {
-    "users": 192,
+    "users": 224,
     "engaged": 176,
-    "sessions": 295,
-    "views": 374,
-    "newUsers": 173,
-    "avgSeconds": 71.8,
-    "engagementRate": 0.597,
+    "sessions": 327,
+    "views": 406,
+    "newUsers": 205,
+    "avgSeconds": 61.5,
+    "engagementRate": 0.538,
     "code": "AZ",
     "name": "Arizona",
     "rank": 23
    },
    {
-    "users": 173,
-    "engaged": 168,
-    "sessions": 255,
-    "views": 391,
-    "newUsers": 156,
-    "avgSeconds": 109.6,
-    "engagementRate": 0.659,
+    "users": 172,
+    "engaged": 167,
+    "sessions": 254,
+    "views": 389,
+    "newUsers": 155,
+    "avgSeconds": 110.2,
+    "engagementRate": 0.657,
     "code": "WA",
     "name": "Washington",
     "rank": 24
    },
    {
-    "users": 169,
-    "engaged": 151,
-    "sessions": 230,
-    "views": 336,
+    "users": 170,
+    "engaged": 152,
+    "sessions": 231,
+    "views": 337,
     "newUsers": 123,
-    "avgSeconds": 88.1,
-    "engagementRate": 0.657,
+    "avgSeconds": 87.7,
+    "engagementRate": 0.658,
     "code": "AL",
     "name": "Alabama",
     "rank": 25
    },
    {
-    "users": 176,
-    "engaged": 149,
-    "sessions": 211,
-    "views": 305,
+    "users": 177,
+    "engaged": 151,
+    "sessions": 212,
+    "views": 311,
     "newUsers": 132,
-    "avgSeconds": 81.8,
-    "engagementRate": 0.706,
+    "avgSeconds": 81.9,
+    "engagementRate": 0.712,
     "code": "NC",
     "name": "North Carolina",
     "rank": 26
    },
    {
     "users": 196,
-    "engaged": 144,
+    "engaged": 146,
     "sessions": 233,
-    "views": 308,
+    "views": 306,
     "newUsers": 170,
-    "avgSeconds": 41.2,
-    "engagementRate": 0.618,
+    "avgSeconds": 41.4,
+    "engagementRate": 0.627,
     "code": "VA",
     "name": "Virginia",
     "rank": 27
@@ -1033,13 +1033,13 @@
     "rank": 28
    },
    {
-    "users": 121,
-    "engaged": 133,
-    "sessions": 180,
-    "views": 212,
-    "newUsers": 107,
-    "avgSeconds": 79.1,
-    "engagementRate": 0.739,
+    "users": 124,
+    "engaged": 136,
+    "sessions": 183,
+    "views": 215,
+    "newUsers": 110,
+    "avgSeconds": 78.1,
+    "engagementRate": 0.743,
     "code": "MT",
     "name": "Montana",
     "rank": 29
@@ -1047,11 +1047,11 @@
    {
     "users": 106,
     "engaged": 103,
-    "sessions": 141,
-    "views": 174,
+    "sessions": 140,
+    "views": 173,
     "newUsers": 76,
     "avgSeconds": 56.6,
-    "engagementRate": 0.73,
+    "engagementRate": 0.736,
     "code": "LA",
     "name": "Louisiana",
     "rank": 30
@@ -1096,9 +1096,9 @@
     "users": 95,
     "engaged": 63,
     "sessions": 114,
-    "views": 151,
-    "newUsers": 81,
-    "avgSeconds": 65.6,
+    "views": 152,
+    "newUsers": 82,
+    "avgSeconds": 65.4,
     "engagementRate": 0.553,
     "code": "SC",
     "name": "South Carolina",
@@ -1165,13 +1165,13 @@
     "rank": 39
    },
    {
-    "users": 47,
+    "users": 48,
     "engaged": 41,
-    "sessions": 58,
-    "views": 84,
+    "sessions": 59,
+    "views": 85,
     "newUsers": 35,
-    "avgSeconds": 59.7,
-    "engagementRate": 0.707,
+    "avgSeconds": 58.5,
+    "engagementRate": 0.695,
     "code": "NV",
     "name": "Nevada",
     "rank": 40
@@ -1213,27 +1213,27 @@
     "rank": 43
    },
    {
-    "users": 23,
+    "users": 40,
     "engaged": 27,
-    "sessions": 36,
-    "views": 52,
-    "newUsers": 14,
-    "avgSeconds": 90.9,
-    "engagementRate": 0.75,
-    "code": "NH",
-    "name": "New Hampshire",
+    "sessions": 43,
+    "views": 43,
+    "newUsers": 24,
+    "avgSeconds": 25.1,
+    "engagementRate": 0.628,
+    "code": "ME",
+    "name": "Maine",
     "rank": 44
    },
    {
-    "users": 37,
-    "engaged": 26,
-    "sessions": 40,
-    "views": 41,
-    "newUsers": 22,
-    "avgSeconds": 25.7,
-    "engagementRate": 0.65,
-    "code": "ME",
-    "name": "Maine",
+    "users": 22,
+    "engaged": 27,
+    "sessions": 35,
+    "views": 51,
+    "newUsers": 14,
+    "avgSeconds": 95.0,
+    "engagementRate": 0.771,
+    "code": "NH",
+    "name": "New Hampshire",
     "rank": 45
    },
    {
@@ -1261,13 +1261,13 @@
     "rank": 47
    },
    {
-    "users": 8,
+    "users": 9,
     "engaged": 14,
-    "sessions": 17,
-    "views": 29,
-    "newUsers": 5,
-    "avgSeconds": 247.4,
-    "engagementRate": 0.824,
+    "sessions": 18,
+    "views": 30,
+    "newUsers": 6,
+    "avgSeconds": 219.9,
+    "engagementRate": 0.778,
     "code": "RI",
     "name": "Rhode Island",
     "rank": 48
@@ -1299,230 +1299,230 @@
   ],
   "28d": [
    {
-    "users": 524,
-    "engaged": 528,
-    "sessions": 836,
-    "views": 1212,
-    "newUsers": 457,
-    "avgSeconds": 85.6,
-    "engagementRate": 0.632,
+    "users": 519,
+    "engaged": 520,
+    "sessions": 827,
+    "views": 1198,
+    "newUsers": 448,
+    "avgSeconds": 93.0,
+    "engagementRate": 0.629,
     "code": "IL",
     "name": "Illinois",
     "rank": 1
    },
    {
-    "users": 335,
+    "users": 332,
     "engaged": 327,
-    "sessions": 443,
-    "views": 649,
-    "newUsers": 285,
-    "avgSeconds": 95.0,
-    "engagementRate": 0.738,
+    "sessions": 444,
+    "views": 650,
+    "newUsers": 282,
+    "avgSeconds": 96.3,
+    "engagementRate": 0.736,
     "code": "MN",
     "name": "Minnesota",
     "rank": 2
    },
    {
-    "users": 231,
-    "engaged": 309,
-    "sessions": 411,
-    "views": 681,
-    "newUsers": 189,
-    "avgSeconds": 179.8,
-    "engagementRate": 0.752,
+    "users": 236,
+    "engaged": 318,
+    "sessions": 422,
+    "views": 715,
+    "newUsers": 196,
+    "avgSeconds": 178.9,
+    "engagementRate": 0.754,
     "code": "MO",
     "name": "Missouri",
     "rank": 3
    },
    {
-    "users": 210,
-    "engaged": 300,
-    "sessions": 389,
-    "views": 820,
-    "newUsers": 175,
-    "avgSeconds": 129.2,
-    "engagementRate": 0.771,
+    "users": 209,
+    "engaged": 302,
+    "sessions": 391,
+    "views": 821,
+    "newUsers": 173,
+    "avgSeconds": 127.5,
+    "engagementRate": 0.772,
     "code": "WI",
     "name": "Wisconsin",
     "rank": null,
     "flag": "home"
    },
    {
-    "users": 349,
-    "engaged": 265,
-    "sessions": 476,
-    "views": 653,
-    "newUsers": 298,
-    "avgSeconds": 82.1,
-    "engagementRate": 0.557,
+    "users": 345,
+    "engaged": 260,
+    "sessions": 468,
+    "views": 636,
+    "newUsers": 294,
+    "avgSeconds": 81.2,
+    "engagementRate": 0.556,
     "code": "IA",
     "name": "Iowa",
     "rank": 4
    },
    {
     "users": 283,
-    "engaged": 258,
-    "sessions": 403,
-    "views": 508,
+    "engaged": 257,
+    "sessions": 405,
+    "views": 509,
     "newUsers": 222,
-    "avgSeconds": 63.7,
-    "engagementRate": 0.64,
+    "avgSeconds": 63.6,
+    "engagementRate": 0.635,
     "code": "TX",
     "name": "Texas",
     "rank": 5
    },
    {
-    "users": 172,
-    "engaged": 205,
-    "sessions": 271,
-    "views": 537,
-    "newUsers": 142,
-    "avgSeconds": 162.3,
-    "engagementRate": 0.756,
-    "code": "IN",
-    "name": "Indiana",
+    "users": 204,
+    "engaged": 206,
+    "sessions": 297,
+    "views": 478,
+    "newUsers": 176,
+    "avgSeconds": 165.7,
+    "engagementRate": 0.694,
+    "code": "OH",
+    "name": "Ohio",
     "rank": 6
    },
    {
-    "users": 202,
-    "engaged": 200,
-    "sessions": 293,
-    "views": 471,
-    "newUsers": 176,
-    "avgSeconds": 165.7,
-    "engagementRate": 0.683,
-    "code": "OH",
-    "name": "Ohio",
+    "users": 168,
+    "engaged": 203,
+    "sessions": 265,
+    "views": 530,
+    "newUsers": 137,
+    "avgSeconds": 162.6,
+    "engagementRate": 0.766,
+    "code": "IN",
+    "name": "Indiana",
     "rank": 7
    },
    {
-    "users": 194,
-    "engaged": 195,
+    "users": 192,
+    "engaged": 196,
     "sessions": 275,
-    "views": 404,
-    "newUsers": 165,
-    "avgSeconds": 74.8,
-    "engagementRate": 0.709,
+    "views": 401,
+    "newUsers": 161,
+    "avgSeconds": 78.4,
+    "engagementRate": 0.713,
     "code": "KS",
     "name": "Kansas",
     "rank": 8
    },
    {
-    "users": 183,
+    "users": 181,
     "engaged": 192,
-    "sessions": 258,
-    "views": 373,
-    "newUsers": 141,
-    "avgSeconds": 97.4,
-    "engagementRate": 0.744,
+    "sessions": 257,
+    "views": 372,
+    "newUsers": 140,
+    "avgSeconds": 98.3,
+    "engagementRate": 0.747,
     "code": "NE",
     "name": "Nebraska",
     "rank": 9
    },
    {
-    "users": 147,
-    "engaged": 148,
-    "sessions": 198,
-    "views": 434,
-    "newUsers": 127,
-    "avgSeconds": 188.7,
-    "engagementRate": 0.747,
+    "users": 149,
+    "engaged": 151,
+    "sessions": 199,
+    "views": 441,
+    "newUsers": 129,
+    "avgSeconds": 197.0,
+    "engagementRate": 0.759,
     "code": "SD",
     "name": "South Dakota",
     "rank": 10
    },
    {
-    "users": 205,
+    "users": 206,
     "engaged": 112,
-    "sessions": 240,
-    "views": 323,
-    "newUsers": 194,
-    "avgSeconds": 57.9,
-    "engagementRate": 0.467,
+    "sessions": 241,
+    "views": 324,
+    "newUsers": 195,
+    "avgSeconds": 57.6,
+    "engagementRate": 0.465,
     "code": "CO",
     "name": "Colorado",
     "rank": 11
    },
    {
-    "users": 110,
-    "engaged": 105,
-    "sessions": 153,
-    "views": 183,
-    "newUsers": 83,
-    "avgSeconds": 62.1,
-    "engagementRate": 0.686,
+    "users": 112,
+    "engaged": 109,
+    "sessions": 157,
+    "views": 186,
+    "newUsers": 84,
+    "avgSeconds": 62.2,
+    "engagementRate": 0.694,
     "code": "NY",
     "name": "New York",
     "rank": 12
    },
    {
-    "users": 136,
-    "engaged": 104,
-    "sessions": 169,
-    "views": 213,
-    "newUsers": 121,
-    "avgSeconds": 48.4,
-    "engagementRate": 0.615,
+    "users": 138,
+    "engaged": 106,
+    "sessions": 171,
+    "views": 215,
+    "newUsers": 122,
+    "avgSeconds": 48.7,
+    "engagementRate": 0.62,
     "code": "CA",
     "name": "California",
     "rank": 13
    },
    {
-    "users": 89,
-    "engaged": 104,
-    "sessions": 144,
-    "views": 219,
-    "newUsers": 71,
-    "avgSeconds": 165.4,
-    "engagementRate": 0.722,
-    "code": "ND",
-    "name": "North Dakota",
+    "users": 84,
+    "engaged": 101,
+    "sessions": 216,
+    "views": 274,
+    "newUsers": 66,
+    "avgSeconds": 119.3,
+    "engagementRate": 0.468,
+    "code": "PA",
+    "name": "Pennsylvania",
     "rank": 14
    },
    {
-    "users": 85,
-    "engaged": 100,
-    "sessions": 214,
-    "views": 271,
+    "users": 84,
+    "engaged": 99,
+    "sessions": 140,
+    "views": 207,
     "newUsers": 67,
-    "avgSeconds": 118.7,
-    "engagementRate": 0.467,
-    "code": "PA",
-    "name": "Pennsylvania",
+    "avgSeconds": 158.7,
+    "engagementRate": 0.707,
+    "code": "ND",
+    "name": "North Dakota",
     "rank": 15
    },
    {
-    "users": 93,
-    "engaged": 99,
-    "sessions": 147,
-    "views": 189,
-    "newUsers": 70,
-    "avgSeconds": 95.5,
-    "engagementRate": 0.673,
+    "users": 89,
+    "engaged": 94,
+    "sessions": 143,
+    "views": 179,
+    "newUsers": 66,
+    "avgSeconds": 93.1,
+    "engagementRate": 0.657,
     "code": "GA",
     "name": "Georgia",
     "rank": 16
    },
    {
-    "users": 86,
-    "engaged": 88,
-    "sessions": 122,
-    "views": 200,
-    "newUsers": 68,
-    "avgSeconds": 88.8,
-    "engagementRate": 0.721,
+    "users": 84,
+    "engaged": 85,
+    "sessions": 119,
+    "views": 191,
+    "newUsers": 67,
+    "avgSeconds": 85.7,
+    "engagementRate": 0.714,
     "code": "MI",
     "name": "Michigan",
     "rank": 17
    },
    {
     "users": 98,
-    "engaged": 85,
-    "sessions": 119,
-    "views": 145,
+    "engaged": 84,
+    "sessions": 120,
+    "views": 146,
     "newUsers": 72,
-    "avgSeconds": 63.3,
-    "engagementRate": 0.714,
+    "avgSeconds": 63.1,
+    "engagementRate": 0.7,
     "code": "OK",
     "name": "Oklahoma",
     "rank": 18
@@ -1530,35 +1530,35 @@
    {
     "users": 79,
     "engaged": 81,
-    "sessions": 106,
-    "views": 188,
-    "newUsers": 61,
-    "avgSeconds": 97.0,
-    "engagementRate": 0.764,
+    "sessions": 105,
+    "views": 184,
+    "newUsers": 59,
+    "avgSeconds": 96.5,
+    "engagementRate": 0.771,
     "code": "KY",
     "name": "Kentucky",
     "rank": 19
    },
    {
-    "users": 86,
+    "users": 84,
     "engaged": 80,
-    "sessions": 109,
-    "views": 151,
-    "newUsers": 69,
-    "avgSeconds": 54.4,
-    "engagementRate": 0.734,
+    "sessions": 107,
+    "views": 148,
+    "newUsers": 67,
+    "avgSeconds": 55.2,
+    "engagementRate": 0.748,
     "code": "FL",
     "name": "Florida",
     "rank": 20
    },
    {
-    "users": 105,
-    "engaged": 79,
+    "users": 103,
+    "engaged": 76,
     "sessions": 123,
-    "views": 174,
-    "newUsers": 79,
-    "avgSeconds": 63.9,
-    "engagementRate": 0.642,
+    "views": 173,
+    "newUsers": 78,
+    "avgSeconds": 62.9,
+    "engagementRate": 0.618,
     "code": "TN",
     "name": "Tennessee",
     "rank": 21
@@ -1576,25 +1576,25 @@
     "rank": 22
    },
    {
-    "users": 81,
-    "engaged": 65,
-    "sessions": 120,
-    "views": 140,
-    "newUsers": 74,
-    "avgSeconds": 44.3,
-    "engagementRate": 0.542,
+    "users": 112,
+    "engaged": 63,
+    "sessions": 150,
+    "views": 170,
+    "newUsers": 105,
+    "avgSeconds": 28.6,
+    "engagementRate": 0.42,
     "code": "AZ",
     "name": "Arizona",
     "rank": 23
    },
    {
-    "users": 72,
-    "engaged": 65,
-    "sessions": 93,
-    "views": 158,
-    "newUsers": 65,
-    "avgSeconds": 148.1,
-    "engagementRate": 0.699,
+    "users": 70,
+    "engaged": 63,
+    "sessions": 91,
+    "views": 156,
+    "newUsers": 63,
+    "avgSeconds": 150.9,
+    "engagementRate": 0.692,
     "code": "WA",
     "name": "Washington",
     "rank": 24
@@ -1603,85 +1603,73 @@
     "users": 67,
     "engaged": 59,
     "sessions": 88,
-    "views": 127,
-    "newUsers": 50,
-    "avgSeconds": 104.7,
+    "views": 130,
+    "newUsers": 49,
+    "avgSeconds": 94.6,
     "engagementRate": 0.67,
     "code": "NC",
     "name": "North Carolina",
     "rank": 25
    },
    {
-    "users": 56,
-    "engaged": 51,
-    "sessions": 74,
-    "views": 88,
-    "newUsers": 37,
-    "avgSeconds": 31.4,
-    "engagementRate": 0.689,
-    "code": "MS",
-    "name": "Mississippi",
+    "users": 47,
+    "engaged": 53,
+    "sessions": 63,
+    "views": 73,
+    "newUsers": 42,
+    "avgSeconds": 78.6,
+    "engagementRate": 0.841,
+    "code": "MT",
+    "name": "Montana",
     "rank": 26
    },
    {
-    "users": 65,
-    "engaged": 50,
-    "sessions": 75,
-    "views": 93,
-    "newUsers": 56,
-    "avgSeconds": 48.7,
-    "engagementRate": 0.667,
+    "users": 66,
+    "engaged": 52,
+    "sessions": 76,
+    "views": 94,
+    "newUsers": 58,
+    "avgSeconds": 50.1,
+    "engagementRate": 0.684,
     "code": "VA",
     "name": "Virginia",
     "rank": 27
    },
    {
-    "users": 44,
-    "engaged": 50,
-    "sessions": 60,
-    "views": 70,
-    "newUsers": 39,
-    "avgSeconds": 81.4,
-    "engagementRate": 0.833,
-    "code": "MT",
-    "name": "Montana",
+    "users": 54,
+    "engaged": 49,
+    "sessions": 72,
+    "views": 85,
+    "newUsers": 37,
+    "avgSeconds": 32.5,
+    "engagementRate": 0.681,
+    "code": "MS",
+    "name": "Mississippi",
     "rank": 28
    },
    {
-    "users": 63,
-    "engaged": 45,
-    "sessions": 80,
-    "views": 100,
-    "newUsers": 50,
-    "avgSeconds": 76.1,
-    "engagementRate": 0.562,
+    "users": 62,
+    "engaged": 44,
+    "sessions": 79,
+    "views": 99,
+    "newUsers": 48,
+    "avgSeconds": 77.3,
+    "engagementRate": 0.557,
     "code": "AL",
     "name": "Alabama",
     "rank": 29
    },
    {
-    "users": 44,
-    "engaged": 37,
-    "sessions": 54,
-    "views": 63,
-    "newUsers": 31,
-    "avgSeconds": 39.2,
-    "engagementRate": 0.685,
+    "users": 43,
+    "engaged": 36,
+    "sessions": 53,
+    "views": 62,
+    "newUsers": 30,
+    "avgSeconds": 39.0,
+    "engagementRate": 0.679,
     "code": "LA",
     "name": "Louisiana",
     "rank": 30
-   },
-   {
-    "users": 39,
-    "engaged": 36,
-    "sessions": 49,
-    "views": 70,
-    "newUsers": 34,
-    "avgSeconds": 91.8,
-    "engagementRate": 0.735,
-    "code": "ID",
-    "name": "Idaho",
-    "rank": 31
    },
    {
     "users": 25,
@@ -1693,16 +1681,28 @@
     "engagementRate": 0.632,
     "code": "NM",
     "name": "New Mexico",
+    "rank": 31
+   },
+   {
+    "users": 38,
+    "engaged": 35,
+    "sessions": 48,
+    "views": 69,
+    "newUsers": 34,
+    "avgSeconds": 93.6,
+    "engagementRate": 0.729,
+    "code": "ID",
+    "name": "Idaho",
     "rank": 32
    },
    {
-    "users": 33,
-    "engaged": 33,
-    "sessions": 45,
-    "views": 57,
-    "newUsers": 27,
-    "avgSeconds": 53.5,
-    "engagementRate": 0.733,
+    "users": 32,
+    "engaged": 32,
+    "sessions": 44,
+    "views": 55,
+    "newUsers": 26,
+    "avgSeconds": 50.8,
+    "engagementRate": 0.727,
     "code": "OR",
     "name": "Oregon",
     "rank": 33
@@ -1724,8 +1724,8 @@
     "engaged": 20,
     "sessions": 35,
     "views": 52,
-    "newUsers": 25,
-    "avgSeconds": 50.6,
+    "newUsers": 26,
+    "avgSeconds": 51.3,
     "engagementRate": 0.571,
     "code": "SC",
     "name": "South Carolina",
@@ -1735,36 +1735,36 @@
     "users": 17,
     "engaged": 14,
     "sessions": 22,
-    "views": 26,
-    "newUsers": 15,
-    "avgSeconds": 47.1,
+    "views": 29,
+    "newUsers": 9,
+    "avgSeconds": 59.5,
     "engagementRate": 0.636,
-    "code": "MA",
-    "name": "Massachusetts",
+    "code": "NV",
+    "name": "Nevada",
     "rank": 36
    },
    {
-    "users": 17,
-    "engaged": 14,
+    "users": 18,
+    "engaged": 13,
     "sessions": 18,
-    "views": 40,
-    "newUsers": 15,
-    "avgSeconds": 111.4,
-    "engagementRate": 0.778,
-    "code": "MD",
-    "name": "Maryland",
+    "views": 20,
+    "newUsers": 9,
+    "avgSeconds": 16.4,
+    "engagementRate": 0.722,
+    "code": "ME",
+    "name": "Maine",
     "rank": 37
    },
    {
     "users": 16,
-    "engaged": 14,
-    "sessions": 21,
-    "views": 28,
-    "newUsers": 9,
-    "avgSeconds": 63.2,
-    "engagementRate": 0.667,
-    "code": "NV",
-    "name": "Nevada",
+    "engaged": 13,
+    "sessions": 20,
+    "views": 23,
+    "newUsers": 14,
+    "avgSeconds": 37.6,
+    "engagementRate": 0.65,
+    "code": "MA",
+    "name": "Massachusetts",
     "rank": 38
    },
    {
@@ -1782,13 +1782,13 @@
    {
     "users": 15,
     "engaged": 12,
-    "sessions": 15,
-    "views": 18,
-    "newUsers": 7,
-    "avgSeconds": 16.0,
-    "engagementRate": 0.8,
-    "code": "ME",
-    "name": "Maine",
+    "sessions": 16,
+    "views": 38,
+    "newUsers": 14,
+    "avgSeconds": 117.9,
+    "engagementRate": 0.75,
+    "code": "MD",
+    "name": "Maryland",
     "rank": 40
    },
    {
@@ -1804,13 +1804,13 @@
     "rank": 41
    },
    {
-    "users": 13,
+    "users": 12,
     "engaged": 12,
-    "sessions": 31,
-    "views": 31,
-    "newUsers": 10,
-    "avgSeconds": 37.8,
-    "engagementRate": 0.387,
+    "sessions": 30,
+    "views": 30,
+    "newUsers": 9,
+    "avgSeconds": 40.9,
+    "engagementRate": 0.4,
     "code": "DC",
     "name": "District of Columbia",
     "rank": 42
@@ -1852,18 +1852,6 @@
     "rank": 45
    },
    {
-    "users": 11,
-    "engaged": 6,
-    "sessions": 12,
-    "views": 14,
-    "newUsers": 8,
-    "avgSeconds": 14.5,
-    "engagementRate": 0.5,
-    "code": "CT",
-    "name": "Connecticut",
-    "rank": 46
-   },
-   {
     "users": 6,
     "engaged": 6,
     "sessions": 7,
@@ -1873,7 +1861,31 @@
     "engagementRate": 0.857,
     "code": "NH",
     "name": "New Hampshire",
+    "rank": 46
+   },
+   {
+    "users": 9,
+    "engaged": 5,
+    "sessions": 10,
+    "views": 13,
+    "newUsers": 7,
+    "avgSeconds": 15.7,
+    "engagementRate": 0.5,
+    "code": "CT",
+    "name": "Connecticut",
     "rank": 47
+   },
+   {
+    "users": 1,
+    "engaged": 0,
+    "sessions": 2,
+    "views": 2,
+    "newUsers": 1,
+    "avgSeconds": 0.0,
+    "engagementRate": 0.0,
+    "code": "RI",
+    "name": "Rhode Island",
+    "rank": 48
    },
    {
     "users": 0,
@@ -1885,7 +1897,7 @@
     "engagementRate": null,
     "code": "AK",
     "name": "Alaska",
-    "rank": 48
+    "rank": 49
    },
    {
     "users": 0,
@@ -1897,415 +1909,403 @@
     "engagementRate": null,
     "code": "HI",
     "name": "Hawaii",
-    "rank": 49
-   },
-   {
-    "users": 0,
-    "engaged": 0,
-    "sessions": 1,
-    "views": 1,
-    "newUsers": 0,
-    "avgSeconds": null,
-    "engagementRate": 0.0,
-    "code": "RI",
-    "name": "Rhode Island",
     "rank": 50
    }
   ],
   "7d": [
    {
-    "users": 134,
-    "engaged": 127,
-    "sessions": 198,
-    "views": 290,
-    "newUsers": 109,
-    "avgSeconds": 91.8,
-    "engagementRate": 0.641,
+    "users": 125,
+    "engaged": 122,
+    "sessions": 191,
+    "views": 289,
+    "newUsers": 99,
+    "avgSeconds": 136.4,
+    "engagementRate": 0.639,
     "code": "IL",
     "name": "Illinois",
     "rank": 1
    },
    {
-    "users": 60,
-    "engaged": 85,
-    "sessions": 112,
-    "views": 291,
+    "users": 75,
+    "engaged": 88,
+    "sessions": 118,
+    "views": 199,
+    "newUsers": 53,
+    "avgSeconds": 106.6,
+    "engagementRate": 0.746,
+    "code": "MO",
+    "name": "Missouri",
+    "rank": 2
+   },
+   {
+    "users": 62,
+    "engaged": 87,
+    "sessions": 117,
+    "views": 278,
     "newUsers": 48,
-    "avgSeconds": 134.9,
-    "engagementRate": 0.759,
+    "avgSeconds": 127.8,
+    "engagementRate": 0.744,
     "code": "WI",
     "name": "Wisconsin",
     "rank": null,
     "flag": "home"
    },
    {
-    "users": 71,
-    "engaged": 81,
-    "sessions": 106,
-    "views": 165,
-    "newUsers": 50,
-    "avgSeconds": 109.3,
-    "engagementRate": 0.764,
-    "code": "MO",
-    "name": "Missouri",
-    "rank": 2
-   },
-   {
-    "users": 87,
+    "users": 86,
     "engaged": 79,
-    "sessions": 111,
-    "views": 147,
-    "newUsers": 69,
-    "avgSeconds": 72.1,
-    "engagementRate": 0.712,
+    "sessions": 112,
+    "views": 152,
+    "newUsers": 68,
+    "avgSeconds": 78.6,
+    "engagementRate": 0.705,
     "code": "MN",
     "name": "Minnesota",
     "rank": 3
    },
    {
-    "users": 70,
-    "engaged": 74,
-    "sessions": 109,
-    "views": 164,
-    "newUsers": 60,
-    "avgSeconds": 80.7,
-    "engagementRate": 0.679,
+    "users": 75,
+    "engaged": 77,
+    "sessions": 114,
+    "views": 168,
+    "newUsers": 62,
+    "avgSeconds": 76.6,
+    "engagementRate": 0.675,
     "code": "TX",
     "name": "Texas",
     "rank": 4
    },
    {
-    "users": 59,
+    "users": 58,
     "engaged": 68,
     "sessions": 87,
-    "views": 181,
-    "newUsers": 38,
-    "avgSeconds": 154.5,
+    "views": 183,
+    "newUsers": 37,
+    "avgSeconds": 157.9,
     "engagementRate": 0.782,
     "code": "IN",
     "name": "Indiana",
     "rank": 5
    },
    {
-    "users": 109,
-    "engaged": 64,
+    "users": 110,
+    "engaged": 65,
     "sessions": 138,
-    "views": 167,
-    "newUsers": 88,
-    "avgSeconds": 79.3,
-    "engagementRate": 0.464,
+    "views": 164,
+    "newUsers": 89,
+    "avgSeconds": 78.2,
+    "engagementRate": 0.471,
     "code": "IA",
     "name": "Iowa",
     "rank": 6
    },
    {
-    "users": 58,
-    "engaged": 57,
-    "sessions": 72,
-    "views": 146,
-    "newUsers": 47,
-    "avgSeconds": 213.6,
-    "engagementRate": 0.792,
+    "users": 57,
+    "engaged": 58,
+    "sessions": 73,
+    "views": 144,
+    "newUsers": 45,
+    "avgSeconds": 199.8,
+    "engagementRate": 0.795,
     "code": "OH",
     "name": "Ohio",
     "rank": 7
    },
    {
-    "users": 46,
-    "engaged": 48,
-    "sessions": 57,
-    "views": 74,
-    "newUsers": 32,
-    "avgSeconds": 116.1,
-    "engagementRate": 0.842,
+    "users": 42,
+    "engaged": 46,
+    "sessions": 54,
+    "views": 70,
+    "newUsers": 29,
+    "avgSeconds": 123.2,
+    "engagementRate": 0.852,
     "code": "NE",
     "name": "Nebraska",
     "rank": 8
    },
    {
-    "users": 49,
-    "engaged": 47,
-    "sessions": 73,
-    "views": 101,
-    "newUsers": 37,
-    "avgSeconds": 55.1,
-    "engagementRate": 0.644,
+    "users": 46,
+    "engaged": 45,
+    "sessions": 65,
+    "views": 92,
+    "newUsers": 33,
+    "avgSeconds": 69.9,
+    "engagementRate": 0.692,
     "code": "KS",
     "name": "Kansas",
     "rank": 9
    },
    {
-    "users": 34,
+    "users": 43,
     "engaged": 40,
-    "sessions": 78,
-    "views": 97,
-    "newUsers": 23,
-    "avgSeconds": 176.4,
-    "engagementRate": 0.513,
-    "code": "PA",
-    "name": "Pennsylvania",
+    "sessions": 53,
+    "views": 132,
+    "newUsers": 34,
+    "avgSeconds": 240.4,
+    "engagementRate": 0.755,
+    "code": "SD",
+    "name": "South Dakota",
     "rank": 10
    },
    {
-    "users": 41,
-    "engaged": 38,
-    "sessions": 51,
-    "views": 124,
-    "newUsers": 32,
-    "avgSeconds": 212.2,
-    "engagementRate": 0.745,
-    "code": "SD",
-    "name": "South Dakota",
+    "users": 34,
+    "engaged": 39,
+    "sessions": 79,
+    "views": 97,
+    "newUsers": 23,
+    "avgSeconds": 142.0,
+    "engagementRate": 0.494,
+    "code": "PA",
+    "name": "Pennsylvania",
     "rank": 11
    },
    {
     "users": 45,
-    "engaged": 35,
+    "engaged": 36,
     "sessions": 51,
     "views": 61,
     "newUsers": 34,
-    "avgSeconds": 48.8,
-    "engagementRate": 0.686,
+    "avgSeconds": 39.9,
+    "engagementRate": 0.706,
     "code": "CA",
     "name": "California",
     "rank": 12
    },
    {
-    "users": 58,
-    "engaged": 31,
-    "sessions": 65,
-    "views": 90,
-    "newUsers": 51,
-    "avgSeconds": 57.8,
-    "engagementRate": 0.477,
-    "code": "CO",
-    "name": "Colorado",
+    "users": 30,
+    "engaged": 30,
+    "sessions": 36,
+    "views": 53,
+    "newUsers": 24,
+    "avgSeconds": 52.6,
+    "engagementRate": 0.833,
+    "code": "FL",
+    "name": "Florida",
     "rank": 13
    },
    {
-    "users": 32,
-    "engaged": 31,
-    "sessions": 40,
-    "views": 60,
-    "newUsers": 25,
-    "avgSeconds": 46.8,
-    "engagementRate": 0.775,
-    "code": "FL",
-    "name": "Florida",
+    "users": 54,
+    "engaged": 29,
+    "sessions": 61,
+    "views": 83,
+    "newUsers": 47,
+    "avgSeconds": 62.2,
+    "engagementRate": 0.475,
+    "code": "CO",
+    "name": "Colorado",
     "rank": 14
    },
    {
-    "users": 28,
-    "engaged": 27,
-    "sessions": 34,
-    "views": 56,
-    "newUsers": 23,
-    "avgSeconds": 145.6,
-    "engagementRate": 0.794,
-    "code": "ND",
-    "name": "North Dakota",
+    "users": 23,
+    "engaged": 28,
+    "sessions": 39,
+    "views": 41,
+    "newUsers": 19,
+    "avgSeconds": 24.2,
+    "engagementRate": 0.718,
+    "code": "NY",
+    "name": "New York",
     "rank": 15
    },
    {
-    "users": 26,
+    "users": 27,
     "engaged": 26,
-    "sessions": 40,
-    "views": 53,
-    "newUsers": 17,
-    "avgSeconds": 109.5,
-    "engagementRate": 0.65,
-    "code": "GA",
-    "name": "Georgia",
+    "sessions": 34,
+    "views": 56,
+    "newUsers": 22,
+    "avgSeconds": 146.9,
+    "engagementRate": 0.765,
+    "code": "ND",
+    "name": "North Dakota",
     "rank": 16
    },
    {
-    "users": 22,
-    "engaged": 26,
-    "sessions": 37,
-    "views": 40,
-    "newUsers": 19,
-    "avgSeconds": 20.8,
-    "engagementRate": 0.703,
-    "code": "NY",
-    "name": "New York",
+    "users": 24,
+    "engaged": 24,
+    "sessions": 38,
+    "views": 48,
+    "newUsers": 15,
+    "avgSeconds": 113.8,
+    "engagementRate": 0.632,
+    "code": "GA",
+    "name": "Georgia",
     "rank": 17
    },
    {
-    "users": 23,
-    "engaged": 24,
-    "sessions": 28,
-    "views": 46,
-    "newUsers": 18,
-    "avgSeconds": 105.2,
-    "engagementRate": 0.857,
+    "users": 20,
+    "engaged": 22,
+    "sessions": 25,
+    "views": 44,
+    "newUsers": 15,
+    "avgSeconds": 114.7,
+    "engagementRate": 0.88,
     "code": "KY",
     "name": "Kentucky",
     "rank": 18
    },
    {
-    "users": 31,
-    "engaged": 23,
-    "sessions": 36,
-    "views": 46,
-    "newUsers": 20,
-    "avgSeconds": 51.5,
-    "engagementRate": 0.639,
+    "users": 29,
+    "engaged": 21,
+    "sessions": 34,
+    "views": 44,
+    "newUsers": 19,
+    "avgSeconds": 52.7,
+    "engagementRate": 0.618,
     "code": "OK",
     "name": "Oklahoma",
     "rank": 19
    },
    {
-    "users": 24,
-    "engaged": 23,
-    "sessions": 33,
-    "views": 77,
-    "newUsers": 20,
-    "avgSeconds": 155.9,
-    "engagementRate": 0.697,
-    "code": "WA",
-    "name": "Washington",
+    "users": 25,
+    "engaged": 20,
+    "sessions": 28,
+    "views": 43,
+    "newUsers": 13,
+    "avgSeconds": 92.6,
+    "engagementRate": 0.714,
+    "code": "NC",
+    "name": "North Carolina",
     "rank": 20
    },
    {
-    "users": 25,
-    "engaged": 21,
-    "sessions": 29,
-    "views": 44,
-    "newUsers": 15,
-    "avgSeconds": 140.0,
-    "engagementRate": 0.724,
-    "code": "NC",
-    "name": "North Carolina",
+    "users": 30,
+    "engaged": 19,
+    "sessions": 38,
+    "views": 60,
+    "newUsers": 19,
+    "avgSeconds": 67.5,
+    "engagementRate": 0.5,
+    "code": "TN",
+    "name": "Tennessee",
     "rank": 21
    },
    {
-    "users": 31,
+    "users": 20,
     "engaged": 19,
-    "sessions": 36,
-    "views": 59,
-    "newUsers": 20,
-    "avgSeconds": 63.8,
-    "engagementRate": 0.528,
-    "code": "TN",
-    "name": "Tennessee",
+    "sessions": 27,
+    "views": 66,
+    "newUsers": 17,
+    "avgSeconds": 183.8,
+    "engagementRate": 0.704,
+    "code": "WA",
+    "name": "Washington",
     "rank": 22
    },
    {
-    "users": 22,
-    "engaged": 17,
-    "sessions": 25,
-    "views": 37,
-    "newUsers": 14,
-    "avgSeconds": 87.4,
-    "engagementRate": 0.68,
-    "code": "AR",
-    "name": "Arkansas",
+    "users": 14,
+    "engaged": 18,
+    "sessions": 23,
+    "views": 23,
+    "newUsers": 12,
+    "avgSeconds": 97.0,
+    "engagementRate": 0.783,
+    "code": "MT",
+    "name": "Montana",
     "rank": 23
    },
    {
-    "users": 13,
-    "engaged": 17,
-    "sessions": 22,
-    "views": 23,
-    "newUsers": 11,
-    "avgSeconds": 116.9,
-    "engagementRate": 0.773,
-    "code": "MT",
-    "name": "Montana",
+    "users": 21,
+    "engaged": 16,
+    "sessions": 24,
+    "views": 32,
+    "newUsers": 13,
+    "avgSeconds": 75.5,
+    "engagementRate": 0.667,
+    "code": "AR",
+    "name": "Arkansas",
     "rank": 24
    },
    {
     "users": 17,
-    "engaged": 15,
-    "sessions": 23,
+    "engaged": 16,
+    "sessions": 18,
     "views": 30,
-    "newUsers": 12,
-    "avgSeconds": 42.7,
-    "engagementRate": 0.652,
-    "code": "MS",
-    "name": "Mississippi",
+    "newUsers": 15,
+    "avgSeconds": 83.5,
+    "engagementRate": 0.889,
+    "code": "MI",
+    "name": "Michigan",
     "rank": 25
    },
    {
-    "users": 15,
-    "engaged": 15,
-    "sessions": 17,
-    "views": 20,
-    "newUsers": 8,
-    "avgSeconds": 48.3,
-    "engagementRate": 0.882,
+    "users": 12,
+    "engaged": 13,
+    "sessions": 14,
+    "views": 17,
+    "newUsers": 7,
+    "avgSeconds": 54.2,
+    "engagementRate": 0.929,
     "code": "OR",
     "name": "Oregon",
     "rank": 26
    },
    {
     "users": 15,
-    "engaged": 14,
+    "engaged": 12,
     "sessions": 17,
-    "views": 28,
-    "newUsers": 13,
-    "avgSeconds": 80.9,
-    "engagementRate": 0.824,
-    "code": "MI",
-    "name": "Michigan",
+    "views": 21,
+    "newUsers": 12,
+    "avgSeconds": 112.6,
+    "engagementRate": 0.706,
+    "code": "VA",
+    "name": "Virginia",
     "rank": 27
    },
    {
-    "users": 15,
+    "users": 14,
     "engaged": 12,
-    "sessions": 16,
-    "views": 16,
+    "sessions": 18,
+    "views": 22,
     "newUsers": 10,
-    "avgSeconds": 38.3,
-    "engagementRate": 0.75,
-    "code": "LA",
-    "name": "Louisiana",
+    "avgSeconds": 40.9,
+    "engagementRate": 0.667,
+    "code": "MS",
+    "name": "Mississippi",
     "rank": 28
    },
    {
-    "users": 11,
-    "engaged": 9,
-    "sessions": 13,
-    "views": 17,
-    "newUsers": 8,
-    "avgSeconds": 140.8,
-    "engagementRate": 0.692,
-    "code": "VA",
-    "name": "Virginia",
+    "users": 14,
+    "engaged": 11,
+    "sessions": 15,
+    "views": 15,
+    "newUsers": 9,
+    "avgSeconds": 36.8,
+    "engagementRate": 0.733,
+    "code": "LA",
+    "name": "Louisiana",
     "rank": 29
    },
    {
-    "users": 12,
-    "engaged": 8,
-    "sessions": 16,
-    "views": 17,
+    "users": 13,
+    "engaged": 9,
+    "sessions": 17,
+    "views": 18,
     "newUsers": 8,
-    "avgSeconds": 69.2,
-    "engagementRate": 0.5,
+    "avgSeconds": 64.9,
+    "engagementRate": 0.529,
     "code": "AL",
     "name": "Alabama",
     "rank": 30
    },
    {
-    "users": 10,
+    "users": 42,
     "engaged": 8,
-    "sessions": 13,
-    "views": 15,
-    "newUsers": 7,
-    "avgSeconds": 74.1,
-    "engagementRate": 0.615,
+    "sessions": 45,
+    "views": 47,
+    "newUsers": 39,
+    "avgSeconds": 17.6,
+    "engagementRate": 0.178,
     "code": "AZ",
     "name": "Arizona",
     "rank": 31
    },
    {
-    "users": 8,
+    "users": 7,
     "engaged": 8,
-    "sessions": 14,
-    "views": 19,
-    "newUsers": 5,
-    "avgSeconds": 274.9,
-    "engagementRate": 0.571,
+    "sessions": 13,
+    "views": 18,
+    "newUsers": 4,
+    "avgSeconds": 313.9,
+    "engagementRate": 0.615,
     "code": "NM",
     "name": "New Mexico",
     "rank": 32
@@ -2313,62 +2313,50 @@
    {
     "users": 7,
     "engaged": 5,
-    "sessions": 7,
-    "views": 7,
-    "newUsers": 6,
-    "avgSeconds": 22.0,
-    "engagementRate": 0.714,
-    "code": "ID",
-    "name": "Idaho",
+    "sessions": 9,
+    "views": 6,
+    "newUsers": 2,
+    "avgSeconds": 26.0,
+    "engagementRate": 0.556,
+    "code": "NV",
+    "name": "Nevada",
     "rank": 33
    },
    {
-    "users": 6,
-    "engaged": 5,
-    "sessions": 8,
-    "views": 5,
-    "newUsers": 2,
-    "avgSeconds": 30.2,
-    "engagementRate": 0.625,
-    "code": "NV",
-    "name": "Nevada",
-    "rank": 34
-   },
-   {
-    "users": 6,
+    "users": 7,
     "engaged": 5,
     "sessions": 7,
-    "views": 13,
-    "newUsers": 4,
-    "avgSeconds": 101.5,
+    "views": 8,
+    "newUsers": 6,
+    "avgSeconds": 34.7,
     "engagementRate": 0.714,
-    "code": "UT",
-    "name": "Utah",
-    "rank": 35
-   },
-   {
-    "users": 4,
-    "engaged": 5,
-    "sessions": 5,
-    "views": 11,
-    "newUsers": 3,
-    "avgSeconds": 141.2,
-    "engagementRate": 1.0,
-    "code": "VT",
-    "name": "Vermont",
-    "rank": 36
+    "code": "SC",
+    "name": "South Carolina",
+    "rank": 34
    },
    {
     "users": 6,
     "engaged": 4,
     "sessions": 6,
-    "views": 7,
+    "views": 6,
     "newUsers": 5,
-    "avgSeconds": 36.5,
+    "avgSeconds": 25.7,
     "engagementRate": 0.667,
-    "code": "SC",
-    "name": "South Carolina",
-    "rank": 37
+    "code": "ID",
+    "name": "Idaho",
+    "rank": 35
+   },
+   {
+    "users": 6,
+    "engaged": 4,
+    "sessions": 6,
+    "views": 6,
+    "newUsers": 5,
+    "avgSeconds": 11.0,
+    "engagementRate": 0.667,
+    "code": "ME",
+    "name": "Maine",
+    "rank": 36
    },
    {
     "users": 5,
@@ -2380,7 +2368,7 @@
     "engagementRate": 0.667,
     "code": "MD",
     "name": "Maryland",
-    "rank": 38
+    "rank": 37
    },
    {
     "users": 5,
@@ -2392,7 +2380,7 @@
     "engagementRate": 0.8,
     "code": "NJ",
     "name": "New Jersey",
-    "rank": 39
+    "rank": 38
    },
    {
     "users": 4,
@@ -2404,7 +2392,31 @@
     "engagementRate": 0.571,
     "code": "MA",
     "name": "Massachusetts",
+    "rank": 39
+   },
+   {
+    "users": 3,
+    "engaged": 4,
+    "sessions": 4,
+    "views": 9,
+    "newUsers": 2,
+    "avgSeconds": 170.7,
+    "engagementRate": 1.0,
+    "code": "VT",
+    "name": "Vermont",
     "rank": 40
+   },
+   {
+    "users": 5,
+    "engaged": 3,
+    "sessions": 5,
+    "views": 11,
+    "newUsers": 3,
+    "avgSeconds": 100.0,
+    "engagementRate": 0.6,
+    "code": "UT",
+    "name": "Utah",
+    "rank": 41
    },
    {
     "users": 5,
@@ -2416,18 +2428,6 @@
     "engagementRate": 0.5,
     "code": "WY",
     "name": "Wyoming",
-    "rank": 41
-   },
-   {
-    "users": 3,
-    "engaged": 3,
-    "sessions": 3,
-    "views": 4,
-    "newUsers": 3,
-    "avgSeconds": 3.7,
-    "engagementRate": 1.0,
-    "code": "ME",
-    "name": "Maine",
     "rank": 42
    },
    {
@@ -2443,18 +2443,6 @@
     "rank": 43
    },
    {
-    "users": 3,
-    "engaged": 2,
-    "sessions": 4,
-    "views": 3,
-    "newUsers": 2,
-    "avgSeconds": 33.3,
-    "engagementRate": 0.5,
-    "code": "WV",
-    "name": "West Virginia",
-    "rank": 44
-   },
-   {
     "users": 2,
     "engaged": 2,
     "sessions": 2,
@@ -2464,7 +2452,7 @@
     "engagementRate": 1.0,
     "code": "CT",
     "name": "Connecticut",
-    "rank": 45
+    "rank": 44
    },
    {
     "users": 2,
@@ -2476,7 +2464,7 @@
     "engagementRate": 1.0,
     "code": "DE",
     "name": "Delaware",
-    "rank": 46
+    "rank": 45
    },
    {
     "users": 2,
@@ -2488,7 +2476,31 @@
     "engagementRate": 0.143,
     "code": "DC",
     "name": "District of Columbia",
+    "rank": 46
+   },
+   {
+    "users": 2,
+    "engaged": 1,
+    "sessions": 3,
+    "views": 2,
+    "newUsers": 1,
+    "avgSeconds": 0.0,
+    "engagementRate": 0.333,
+    "code": "WV",
+    "name": "West Virginia",
     "rank": 47
+   },
+   {
+    "users": 1,
+    "engaged": 0,
+    "sessions": 1,
+    "views": 1,
+    "newUsers": 1,
+    "avgSeconds": 0.0,
+    "engagementRate": 0.0,
+    "code": "RI",
+    "name": "Rhode Island",
+    "rank": 48
    },
    {
     "users": 0,
@@ -2500,7 +2512,7 @@
     "engagementRate": null,
     "code": "AK",
     "name": "Alaska",
-    "rank": 48
+    "rank": 49
    },
    {
     "users": 0,
@@ -2512,18 +2524,6 @@
     "engagementRate": null,
     "code": "HI",
     "name": "Hawaii",
-    "rank": 49
-   },
-   {
-    "users": 0,
-    "engaged": 0,
-    "sessions": 0,
-    "views": 0,
-    "newUsers": 0,
-    "avgSeconds": null,
-    "engagementRate": null,
-    "code": "RI",
-    "name": "Rhode Island",
     "rank": 50
    }
   ]
@@ -2533,89 +2533,89 @@
    {
     "path": "/cash-bids",
     "title": "Local Cash Grain Bids Today \u2014 Elevator Prices Near You",
-    "views": 2436
+    "views": 2403
    },
    {
     "path": "/",
     "title": "Corn, Soybean & Wheat Prices Today",
-    "views": 1720
+    "views": 1724
    },
    {
     "path": "/corn-futures-prices",
     "title": "CBOT Corn Futures: Sep '26 $5.12 \u2014 Live Prices Today",
-    "views": 357
+    "views": 360
    },
    {
     "path": "/yield-estimator",
     "title": "Corn Yield Estimator \u2014 Ear Count Method (Free)",
-    "views": 322
+    "views": 317
    },
    {
     "path": "/cattle-futures-prices",
     "title": "CME Feeder Cattle Futures $337.88 & Live Cattle $219.62",
-    "views": 310
+    "views": 309
    },
    {
     "path": "/hail-map",
     "title": "Live Hail Map & Tracker \u2014 US Swaths, Warnings & History",
-    "views": 300
+    "views": 297
    },
    {
     "path": "/markets",
     "title": "Ag Markets Today \u2014 Grain, Livestock & Energy Prices",
-    "views": 284
+    "views": 288
    },
    {
     "path": "/usda-calendar",
     "title": "Next WASDE: Sep 11, 2026 \u2014 USDA Report Calendar",
-    "views": 281
+    "views": 275
    },
    {
     "path": "/rent/illinois",
     "title": "Illinois Cash Rent by County 2025",
-    "views": 255
+    "views": 248
    },
    {
     "path": "/usda-quick-stats",
     "title": "Corn & Soybean Yields by State \u2014 USDA NASS Data",
-    "views": 201
+    "views": 199
    },
    {
     "path": "/rent/south-dakota",
     "title": "South Dakota Cash Rent by County 2025",
-    "views": 198
-   },
-   {
-    "path": "/soybean-futures-prices",
-    "title": "CBOT Soybean Futures: Sep '26 $12.96 \u2014 Live ZS Prices",
-    "views": 182
+    "views": 197
    },
    {
     "path": "/rent/minnesota",
     "title": "Minnesota Cash Rent by County 2025",
-    "views": 181
+    "views": 184
    },
    {
-    "path": "/gdu-calculator",
-    "title": "GDU Calculator \u2014 Corn & Soybean Degree Units",
-    "views": 158
+    "path": "/soybean-futures-prices",
+    "title": "CBOT Soybean Futures: Sep '26 $12.96 \u2014 Live ZS Prices",
+    "views": 183
    },
    {
     "path": "/cash-rent",
     "title": "Cash Rent by County: What the Ground Can Actually Pay",
-    "views": 153
+    "views": 154
+   },
+   {
+    "path": "/gdu-calculator",
+    "title": "GDU Calculator \u2014 Corn & Soybean Degree Units",
+    "views": 152
    }
   ],
   "90d": [
    {
     "path": "/cash-bids",
     "title": "Local Cash Grain Bids Today \u2014 Elevator Prices Near You",
-    "views": 5857
+    "views": 5859
    },
    {
     "path": "/",
     "title": "Corn, Soybean & Wheat Prices Today",
-    "views": 4962
+    "views": 4975
    },
    {
     "path": "/crop-tour",
@@ -2625,32 +2625,32 @@
    {
     "path": "/usda-calendar",
     "title": "USDA Report Calendar 2026 \u2014 WASDE & Crop Dates",
-    "views": 1066
+    "views": 1064
    },
    {
     "path": "/hail-map",
     "title": "Live Hail Map & Tracker \u2014 US Swaths, Warnings & History",
-    "views": 1009
+    "views": 1013
    },
    {
     "path": "/corn-futures-prices",
     "title": "Corn Futures Prices Today \u2014 Live CBOT Chart",
-    "views": 850
+    "views": 857
    },
    {
     "path": "/usda-quick-stats",
     "title": "U.S. Crop Data: Yields, Acres & Prices by State (USDA NASS)",
-    "views": 819
+    "views": 814
    },
    {
     "path": "/cattle-futures-prices",
     "title": "Live Cattle & Feeder Cattle Futures Prices Today",
-    "views": 813
+    "views": 814
    },
    {
     "path": "/wheat-futures-prices",
     "title": "Wheat Prices Today \u2014 Live CBOT Futures & Cash Bids",
-    "views": 801
+    "views": 798
    },
    {
     "path": "/soybean-futures-prices",
@@ -2660,52 +2660,52 @@
    {
     "path": "/yield-estimator",
     "title": "Corn Yield Estimator \u2014 Ear Count Method (Free)",
-    "views": 510
+    "views": 518
    },
    {
     "path": "/gdu-calculator",
     "title": "GDU Calculator \u2014 Corn & Soybean Degree Units",
-    "views": 492
+    "views": 494
    },
    {
     "path": "/markets",
     "title": "Ag Markets Today \u2014 Grain, Livestock & Energy Prices",
-    "views": 480
+    "views": 486
    },
    {
     "path": "/rent/illinois",
     "title": "Illinois Cash Rent by County 2025",
-    "views": 398
+    "views": 399
    },
    {
-    "path": "/fertilizer",
-    "title": "Fertilizer Prices \u2014 Urea, MAP, Potash, AMS",
-    "views": 334
+    "path": "/cash-rent",
+    "title": "Cash Rent by County: What the Ground Can Actually Pay",
+    "views": 335
    }
   ]
  },
  "devices": {
   "ytd": {
-   "desktop": 8112,
-   "mobile": 4595,
-   "tablet": 268,
+   "desktop": 8168,
+   "mobile": 4631,
+   "tablet": 270,
    "smart tv": 1
   },
   "90d": {
-   "desktop": 6646,
-   "mobile": 3816,
+   "desktop": 6691,
+   "mobile": 3837,
    "tablet": 227,
    "smart tv": 0
   },
   "28d": {
-   "desktop": 2621,
-   "mobile": 1598,
-   "tablet": 95,
+   "desktop": 2633,
+   "mobile": 1586,
+   "tablet": 94,
    "smart tv": 0
   },
   "7d": {
-   "desktop": 728,
-   "mobile": 447,
+   "desktop": 741,
+   "mobile": 441,
    "tablet": 28,
    "smart tv": 0
   }
@@ -2714,11 +2714,11 @@
   "ytd": [
    {
     "channel": "Organic Search",
-    "sessions": 16821
+    "sessions": 16930
    },
    {
     "channel": "Direct",
-    "sessions": 4626
+    "sessions": 4691
    },
    {
     "channel": "Referral",
@@ -2726,15 +2726,15 @@
    },
    {
     "channel": "Email",
-    "sessions": 665
+    "sessions": 667
    },
    {
     "channel": "Unassigned",
-    "sessions": 657
+    "sessions": 663
    },
    {
     "channel": "AI Assistant",
-    "sessions": 108
+    "sessions": 115
    },
    {
     "channel": "Organic Social",
@@ -2744,15 +2744,15 @@
   "90d": [
    {
     "channel": "Organic Search",
-    "sessions": 13626
+    "sessions": 13684
    },
    {
     "channel": "Direct",
-    "sessions": 3061
+    "sessions": 3088
    },
    {
     "channel": "Email",
-    "sessions": 665
+    "sessions": 667
    },
    {
     "channel": "Unassigned",
@@ -2764,7 +2764,7 @@
    },
    {
     "channel": "AI Assistant",
-    "sessions": 100
+    "sessions": 107
    },
    {
     "channel": "Organic Social",
@@ -2774,27 +2774,27 @@
   "28d": [
    {
     "channel": "Organic Search",
-    "sessions": 5144
+    "sessions": 5112
    },
    {
     "channel": "Direct",
-    "sessions": 1249
+    "sessions": 1293
    },
    {
     "channel": "Email",
-    "sessions": 196
+    "sessions": 194
    },
    {
     "channel": "Unassigned",
-    "sessions": 183
+    "sessions": 186
    },
    {
     "channel": "Referral",
-    "sessions": 76
+    "sessions": 69
    },
    {
     "channel": "AI Assistant",
-    "sessions": 41
+    "sessions": 46
    },
    {
     "channel": "Organic Social",
@@ -2804,23 +2804,23 @@
   "7d": [
    {
     "channel": "Organic Search",
-    "sessions": 1326
+    "sessions": 1310
    },
    {
     "channel": "Direct",
-    "sessions": 331
+    "sessions": 366
    },
    {
     "channel": "Unassigned",
-    "sessions": 64
+    "sessions": 65
    },
    {
     "channel": "Email",
-    "sessions": 63
+    "sessions": 56
    },
    {
     "channel": "AI Assistant",
-    "sessions": 11
+    "sessions": 17
    },
    {
     "channel": "Referral",
@@ -2840,26 +2840,26 @@
   "window": {
    "id": "90d",
    "label": "90 days",
-   "start": "2026-06-28",
-   "end": "2026-09-25"
+   "start": "2026-06-29",
+   "end": "2026-09-26"
   },
   "towns": [
    {
     "city": "Ashburn",
     "region": "Virginia",
-    "users": 651,
+    "users": 659,
     "avgSeconds": 5.3
    },
    {
     "city": "San Jose",
     "region": "California",
-    "users": 263,
+    "users": 265,
     "avgSeconds": 5.1
    },
    {
     "city": "The Dalles",
     "region": "Oregon",
-    "users": 230,
+    "users": 233,
     "avgSeconds": 2.4
    },
    {
@@ -2871,7 +2871,7 @@
    {
     "city": "Moses Lake",
     "region": "Washington",
-    "users": 163,
+    "users": 162,
     "avgSeconds": 7.8
    },
    {
@@ -2895,7 +2895,7 @@
    {
     "city": "Aquia Harbour",
     "region": "Virginia",
-    "users": 36,
+    "users": 31,
     "avgSeconds": 0.0
    },
    {
@@ -2905,11 +2905,11 @@
     "avgSeconds": 0.2
    }
   ],
-  "users": 1759
+  "users": 1766
  },
  "series": {
   "start": "2026-01-01",
-  "end": "2026-09-25",
+  "end": "2026-09-26",
   "days": [
    {
     "d": "2026-01-01",
@@ -5318,47 +5318,56 @@
     "d": "2026-09-25",
     "users": 187,
     "engaged": 178,
-    "gClicks": null,
-    "gImpr": null,
+    "gClicks": 52,
+    "gImpr": 1477,
     "bClicks": 81,
     "bImpr": 3086
+   },
+   {
+    "d": "2026-09-26",
+    "users": 126,
+    "engaged": 88,
+    "gClicks": null,
+    "gImpr": null,
+    "bClicks": null,
+    "bImpr": null
    }
   ]
  },
  "queries": {
   "google": {
-   "start": "2026-08-29",
-   "end": "2026-09-25",
+   "start": "2026-08-30",
+   "end": "2026-09-26",
    "rows": [
     {
      "q": "soybean yield calculator",
-     "clicks": 79,
-     "impr": 1155,
-     "pos": 5.2
+     "clicks": 80,
+     "impr": 1114,
+     "pos": 5.1
+    },
+    {
+     "q": "agsist",
+     "clicks": 21,
+     "impr": 49,
+     "pos": 1
     },
     {
      "q": "cash rents by county per acre",
      "clicks": 21,
-     "impr": 242,
-     "pos": 6.0
-    },
-    {
-     "q": "agsist",
-     "clicks": 20,
-     "impr": 50,
-     "pos": 1
+     "impr": 244,
+     "pos": 5.9
     },
     {
      "q": "hail map",
      "clicks": 14,
-     "impr": 124,
+     "impr": 123,
      "pos": 7.8
     },
     {
      "q": "cash rents by county",
-     "clicks": 9,
-     "impr": 110,
-     "pos": 6.4
+     "clicks": 10,
+     "impr": 111,
+     "pos": 6.3
     },
     {
      "q": "hail map today",
@@ -5367,46 +5376,52 @@
      "pos": 5.4
     },
     {
-     "q": "soybean yield estimate calculator",
-     "clicks": 6,
-     "impr": 70,
-     "pos": 4.9
+     "q": "usda cash rent by county",
+     "clicks": 7,
+     "impr": 76,
+     "pos": 4.2
     },
     {
-     "q": "usda cash rent by county",
+     "q": "soybean yield estimate calculator",
      "clicks": 6,
-     "impr": 75,
-     "pos": 4.4
+     "impr": 68,
+     "pos": 4.9
     },
     {
      "q": "hail tracker",
      "clicks": 5,
-     "impr": 116,
+     "impr": 121,
      "pos": 8.4
     },
     {
      "q": "hail map near me",
      "clicks": 4,
-     "impr": 17,
-     "pos": 2.5
+     "impr": 16,
+     "pos": 2.6
+    },
+    {
+     "q": "pasture rental rates by county",
+     "clicks": 4,
+     "impr": 33,
+     "pos": 5.6
     },
     {
      "q": "soybean yeild calculator",
      "clicks": 4,
-     "impr": 11,
-     "pos": 5.2
+     "impr": 12,
+     "pos": 5.1
     },
     {
      "q": "current hail map",
      "clicks": 3,
-     "impr": 28,
-     "pos": 9.5
+     "impr": 30,
+     "pos": 9.4
     },
     {
      "q": "hail map live",
      "clicks": 3,
-     "impr": 20,
-     "pos": 4.8
+     "impr": 21,
+     "pos": 4.6
     },
     {
      "q": "hail radar",
@@ -5417,20 +5432,14 @@
     {
      "q": "live hail map",
      "clicks": 3,
-     "impr": 36,
-     "pos": 6.1
-    },
-    {
-     "q": "pasture rental rates by county",
-     "clicks": 3,
-     "impr": 32,
-     "pos": 5.7
+     "impr": 37,
+     "pos": 6.2
     },
     {
      "q": "south dakota cash rents by county map pdf",
      "clicks": 3,
-     "impr": 39,
-     "pos": 7.8
+     "impr": 40,
+     "pos": 7.9
     },
     {
      "q": "soybean yield estimate",
@@ -5441,21 +5450,21 @@
     {
      "q": "fertilizer prices",
      "clicks": 2,
-     "impr": 73,
-     "pos": 17.1
+     "impr": 75,
+     "pos": 17.3
     },
     {
      "q": "grain prices at local elevators",
      "clicks": 2,
-     "impr": 66,
-     "pos": 4.8
+     "impr": 65,
+     "pos": 4.6
     }
    ],
    "country": "US"
   },
   "bing": {
    "start": "2026-09-04",
-   "end": "2026-09-25",
+   "end": "2026-09-26",
    "rows": [
     {
      "q": "feeder cattle futures",
@@ -5563,7 +5572,7 @@
  },
  "email": {
   "subscribers": 119,
-  "asOf": "2026-09-27"
+  "asOf": "2026-09-28"
  },
  "ai": {
   "source": "Bing Webmaster \u00b7 AI Performance (Copilot and Bing answers)",
@@ -5943,22 +5952,22 @@
  "sources": {
   "ga4": {
    "ok": true,
-   "through": "2026-09-25",
-   "fetched": "2026-09-27T15:39:06+00:00"
+   "through": "2026-09-26",
+   "fetched": "2026-09-28T18:35:41+00:00"
   },
   "gsc": {
    "ok": true,
    "site": "sc-domain:agsist.com",
-   "fetched": "2026-09-27T15:39:06+00:00"
+   "fetched": "2026-09-28T18:35:41+00:00"
   },
   "bing": {
    "ok": true,
    "site": "https://agsist.com/",
-   "fetched": "2026-09-27T15:39:06+00:00"
+   "fetched": "2026-09-28T18:35:41+00:00"
   },
   "email": {
    "ok": true,
-   "fetched": "2026-09-27T15:39:06+00:00"
+   "fetched": "2026-09-28T18:35:41+00:00"
   }
  }
 }
