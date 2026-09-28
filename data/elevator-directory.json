@@ -1,5 +1,5 @@
 {
- "generated": "2026-09-28T16:23:51Z",
+ "generated": "2026-09-28T16:38:13Z",
  "from": "barchart-raw.json",
  "complete": false,
  "note": "Directory only: who operates a facility and where. No prices, no basis, no symbols, no delivery windows.",
@@ -7762,7 +7762,7 @@
    "branch": "Fountain Creek",
    "city": "Hoopeston",
    "state": "IL",
-   "zip": " 6094",
+   "zip": "60942",
    "phone": "217-375-4410",
    "source": "barchart"
   },
