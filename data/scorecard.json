@@ -1,11 +1,12 @@
 {
- "updated": "2026-09-27T00:04:42+00:00",
- "total": 124,
+ "updated": "2026-09-28T11:11:40+00:00",
+ "total": 125,
  "repeats_merged": 9,
  "played_out": 43,
  "didnt": 76,
- "pending": 5,
+ "pending": 6,
  "hit_rate": 36.1,
+ "hit_rate_note": "Blended across both grading eras (self-reported + deterministic) for backward compatibility only. The page's headline, and the number to judge this briefing on, is by_method.deterministic.hit_rate — see by_method for why the two are not added together.",
  "by_method": {
   "deterministic": {
    "played": 17,
@@ -104,6 +105,21 @@
  },
  "current_streak": 0,
  "records": [
+  {
+   "made": "2026-09-28",
+   "judged": null,
+   "call": "Called crude up toward $98.50 ($96.13 when the call was made).",
+   "outcome": "pending",
+   "method": "deterministic",
+   "mismatch": false,
+   "note": "Open: no session has settled since this call was made.",
+   "instrument": "crude",
+   "direction": "up",
+   "level": "98.50",
+   "p0": 96.13,
+   "p1": null,
+   "design": "v2"
+  },
   {
    "made": "2026-09-25",
    "judged": "2026-09-26",
