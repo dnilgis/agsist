@@ -1,5 +1,5 @@
 {
-  "fetched": "2026-09-28T20:07:49Z",
+  "fetched": "2026-09-28T20:38:13Z",
   "ok": 68,
   "failed": 1,
   "stale_keys": [],
@@ -296,20 +296,20 @@
     },
     "milk": {
       "ticker": "DC=F",
-      "close": 16.11,
+      "close": 16.1,
       "open": 16.12,
-      "netChange": -0.01,
-      "pctChange": -0.062,
+      "netChange": -0.02,
+      "pctChange": -0.1241,
       "wk52_hi": 17.79,
       "wk52_lo": 14.53,
       "repaired_from": "milk-sep26",
       "repair_reason": "continuous-roll-contamination",
       "_orig": {
         "ticker": "DC=F",
-        "close": 15.47,
+        "close": 15.46,
         "open": 15.72,
-        "netChange": -0.25,
-        "pctChange": -1.5903
+        "netChange": -0.26,
+        "pctChange": -1.6539
       }
     },
     "cattle-oct26": {
@@ -539,10 +539,10 @@
     },
     "milk-sep26": {
       "ticker": "DCU26.CME",
-      "close": 16.11,
+      "close": 16.1,
       "open": 16.12,
-      "netChange": -0.01,
-      "pctChange": -0.062,
+      "netChange": -0.02,
+      "pctChange": -0.1241,
       "wk52_hi": 19.41,
       "wk52_lo": 16.07
     },
@@ -557,19 +557,19 @@
     },
     "milk-nov26": {
       "ticker": "DCX26.CME",
-      "close": 15.47,
+      "close": 15.46,
       "open": 15.72,
-      "netChange": -0.25,
-      "pctChange": -1.5903,
+      "netChange": -0.26,
+      "pctChange": -1.6539,
       "wk52_hi": 18.95,
       "wk52_lo": 15.76
     },
     "milk-dec26": {
       "ticker": "DCZ26.CME",
-      "close": 15.88,
+      "close": 15.84,
       "open": 16.04,
-      "netChange": -0.16,
-      "pctChange": -0.9975,
+      "netChange": -0.2,
+      "pctChange": -1.2469,
       "wk52_hi": 18.42,
       "wk52_lo": 16.01
     },
@@ -620,46 +620,46 @@
     },
     "crude": {
       "ticker": "CL=F",
-      "close": 93.0,
+      "close": 93.08,
       "open": 93.99,
-      "netChange": -0.99,
-      "pctChange": -1.0533,
+      "netChange": -0.91,
+      "pctChange": -0.9682,
       "wk52_hi": 119.48,
       "wk52_lo": 54.98
     },
     "natgas": {
       "ticker": "NG=F",
-      "close": 3.142,
+      "close": 3.148,
       "open": 3.112,
-      "netChange": 0.03,
-      "pctChange": 0.964,
+      "netChange": 0.036,
+      "pctChange": 1.1568,
       "wk52_hi": 7.827,
       "wk52_lo": 2.483
     },
     "gold": {
       "ticker": "GC=F",
-      "close": 4157.7002,
+      "close": 4150.7002,
       "open": 4230.5,
-      "netChange": -72.7998,
-      "pctChange": -1.7208,
+      "netChange": -79.7998,
+      "pctChange": -1.8863,
       "wk52_hi": 5586.2002,
       "wk52_lo": 3785.5
     },
     "silver": {
       "ticker": "SI=F",
-      "close": 61.25,
+      "close": 61.085,
       "open": 62.47,
-      "netChange": -1.22,
-      "pctChange": -1.9529,
+      "netChange": -1.385,
+      "pctChange": -2.2171,
       "wk52_hi": 121.3,
       "wk52_lo": 45.385
     },
     "dollar": {
       "ticker": "DX-Y.NYB",
-      "close": 101.217,
+      "close": 101.198,
       "open": 101.118,
-      "netChange": 0.099,
-      "pctChange": 0.0979,
+      "netChange": 0.08,
+      "pctChange": 0.0791,
       "wk52_hi": 101.8,
       "wk52_lo": 95.55
     },
@@ -683,28 +683,28 @@
     },
     "bitcoin": {
       "ticker": "BTC-USD",
-      "close": 83510.65625,
+      "close": 83487.78125,
       "open": 84462.13281,
-      "netChange": -951.47656,
-      "pctChange": -1.1265,
+      "netChange": -974.35156,
+      "pctChange": -1.1536,
       "wk52_hi": 126198.0703,
       "wk52_lo": 57747.7656
     },
     "ripple": {
       "ticker": "XRP-USD",
-      "close": 1.4901,
+      "close": 1.4908,
       "open": 1.5161,
-      "netChange": -0.026,
-      "pctChange": -1.7149,
+      "netChange": -0.0253,
+      "pctChange": -1.6688,
       "wk52_hi": 3.0993,
       "wk52_lo": 0.9884
     },
     "kaspa": {
       "ticker": "KAS-USD",
-      "close": 0.04469,
+      "close": 0.045,
       "open": 0.04687,
-      "netChange": -0.00218,
-      "pctChange": -4.6512,
+      "netChange": -0.00187,
+      "pctChange": -3.9898,
       "wk52_hi": 0.0819,
       "wk52_lo": 0.0139
     },
