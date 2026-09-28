@@ -79,14 +79,14 @@
    "kb":29.5
   },
   "MN":{
-   "rows":5263,
+   "rows":5273,
    "facilities":276,
-   "kb":222.2
+   "kb":222.6
   },
   "MO":{
-   "rows":973,
-   "facilities":80,
-   "kb":41.8
+   "rows":977,
+   "facilities":81,
+   "kb":42.1
   },
   "MT":{
    "rows":192,
@@ -164,9 +164,9 @@
    "kb":18.9
   },
   "WI":{
-   "rows":1652,
+   "rows":1658,
    "facilities":135,
-   "kb":70.0
+   "kb":70.3
   },
   "WY":{
    "rows":49,
