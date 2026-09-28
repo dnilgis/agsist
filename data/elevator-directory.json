@@ -1,5 +1,5 @@
 {
- "generated": "2026-09-28T21:08:19Z",
+ "generated": "2026-09-28T21:23:16Z",
  "from": "barchart-raw.json",
  "complete": false,
  "note": "Directory only: who operates a facility and where. No prices, no basis, no symbols, no delivery windows.",
@@ -22086,10 +22086,10 @@
   {
    "facility": "Thomas Livestock Co",
    "branch": "Thomas Livestock Co.",
-   "city": " Broken Bow",
+   "city": "Broken Bow",
    "state": "NE",
    "zip": "68822",
-   "phone": " (308) 872-2020",
+   "phone": "308-872-2020",
    "source": "barchart",
    "company": "Thomas Livestock Co",
    "location": "Thomas Livestock Co.",
