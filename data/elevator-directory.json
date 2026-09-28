@@ -1,5 +1,5 @@
 {
- "generated": "2026-09-28T21:38:10Z",
+ "generated": "2026-09-28T21:53:13Z",
  "from": "barchart-raw.json",
  "complete": false,
  "note": "Directory only: who operates a facility and where. No prices, no basis, no symbols, no delivery windows.",
@@ -12,7 +12,7 @@
   "with_phone": 2157,
   "saturated_zips": 0,
   "failed_zips": 0,
-  "rows_read": 18447
+  "rows_read": 18446
  },
  "saturated": [],
  "failed": [],
@@ -2856,7 +2856,7 @@
   {
    "facility": "Homeland Energy Solutions",
    "branch": "Homeland Energy",
-   "city": " Lawler",
+   "city": "Lawler",
    "state": "IA",
    "zip": "52154",
    "phone": "563-238-5555",
@@ -3552,15 +3552,6 @@
   },
   {
    "facility": "Landus Cooperative",
-   "branch": "Mitchellville, IA",
-   "city": " Mitchellville",
-   "state": "IA",
-   "zip": "50169",
-   "phone": "(515) 967-4288",
-   "source": "barchart"
-  },
-  {
-   "facility": "Landus Cooperative",
    "branch": "Aredale, IA",
    "city": "Aredale",
    "state": "IA",
@@ -3728,6 +3719,15 @@
    "state": "IA",
    "zip": "51454",
    "phone": "712-654-2012",
+   "source": "barchart"
+  },
+  {
+   "facility": "Landus Cooperative",
+   "branch": "Mitchellville, IA",
+   "city": "Mitchellville",
+   "state": "IA",
+   "zip": "50169",
+   "phone": "(515) 967-4288",
    "source": "barchart"
   },
   {
@@ -8972,15 +8972,6 @@
   },
   {
    "facility": "Top Flight Grain Co-operative",
-   "branch": "MON",
-   "city": " Monticello",
-   "state": "IL",
-   "zip": "61856",
-   "phone": "217-762-2163",
-   "source": "barchart"
-  },
-  {
-   "facility": "Top Flight Grain Co-operative",
    "branch": "ATL",
    "city": "Atlanta",
    "state": "IL",
@@ -9076,6 +9067,15 @@
    "state": "IL",
    "zip": "61855",
    "phone": "217-763-6311",
+   "source": "barchart"
+  },
+  {
+   "facility": "Top Flight Grain Co-operative",
+   "branch": "MON",
+   "city": "Monticello",
+   "state": "IL",
+   "zip": "61856",
+   "phone": "217-762-2163",
    "source": "barchart"
   },
   {
@@ -10091,7 +10091,7 @@
   {
    "facility": "Inco Grain, Ltd.",
    "branch": "Inco Grain",
-   "city": " Goodland",
+   "city": "Goodland",
    "state": "IN",
    "zip": "47948",
    "phone": "219-233-5975",
@@ -13122,15 +13122,6 @@
   },
   {
    "facility": "Producer Ag",
-   "branch": "LIBERTY",
-   "city": " Liberty",
-   "state": "KS",
-   "zip": "67351",
-   "phone": "620-485-3215",
-   "source": "barchart"
-  },
-  {
-   "facility": "Producer Ag",
    "branch": "ABILENE",
    "city": "Abilene",
    "state": "KS",
@@ -13289,6 +13280,15 @@
    "state": "KS",
    "zip": "67460",
    "phone": "620-241-8010",
+   "source": "barchart"
+  },
+  {
+   "facility": "Producer Ag",
+   "branch": "LIBERTY",
+   "city": "Liberty",
+   "state": "KS",
+   "zip": "67351",
+   "phone": "620-485-3215",
    "source": "barchart"
   },
   {
@@ -15195,28 +15195,6 @@
   },
   {
    "facility": "Central Farm Service",
-   "branch": "St James Feedmill",
-   "city": " St. James",
-   "state": "MN",
-   "zip": "56081",
-   "phone": "507-375-1411",
-   "source": "barchart",
-   "company": "Central Farm Service",
-   "location": "St James Feedmill",
-   "address": "34697 720th Ave.",
-   "county": "Watonwan County",
-   "county_code": "MN-27-165-H1",
-   "fips_code": 27165,
-   "crop_district": "D80",
-   "lat": 43.920184,
-   "lng": -94.633707,
-   "url": "www.cfscoop.com",
-   "facility_type": "Feed Mill",
-   "locationId": 57689,
-   "elevatorId": 2093
-  },
-  {
-   "facility": "Central Farm Service",
    "branch": "Clarks Grove",
    "city": "Clarks Grove",
    "state": "MN",
@@ -15286,6 +15264,28 @@
    "zip": "55065",
    "phone": "507-263-2050",
    "source": "barchart"
+  },
+  {
+   "facility": "Central Farm Service",
+   "branch": "St James Feedmill",
+   "city": "St. James",
+   "state": "MN",
+   "zip": "56081",
+   "phone": "507-375-1411",
+   "source": "barchart",
+   "company": "Central Farm Service",
+   "location": "St James Feedmill",
+   "address": "34697 720th Ave.",
+   "county": "Watonwan County",
+   "county_code": "MN-27-165-H1",
+   "fips_code": 27165,
+   "crop_district": "D80",
+   "lat": 43.920184,
+   "lng": -94.633707,
+   "url": "www.cfscoop.com",
+   "facility_type": "Feed Mill",
+   "locationId": 57689,
+   "elevatorId": 2093
   },
   {
    "facility": "Central Farm Service",
@@ -16885,15 +16885,6 @@
   },
   {
    "facility": "United Farmers Cooperative (UFC)",
-   "branch": "WINTHROP",
-   "city": " Winthrop",
-   "state": "MN",
-   "zip": "55396",
-   "phone": "507-232-1064",
-   "source": "barchart"
-  },
-  {
-   "facility": "United Farmers Cooperative (UFC)",
    "branch": "Bird Island",
    "city": "Bird Island",
    "state": "MN",
@@ -17012,6 +17003,15 @@
    "facility_type": "Country Elevator",
    "locationId": 86876,
    "elevatorId": 2083
+  },
+  {
+   "facility": "United Farmers Cooperative (UFC)",
+   "branch": "WINTHROP",
+   "city": "Winthrop",
+   "state": "MN",
+   "zip": "55396",
+   "phone": "507-232-1064",
+   "source": "barchart"
   },
   {
    "facility": "Valley United Co-op",
