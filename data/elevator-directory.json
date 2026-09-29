@@ -1,18 +1,18 @@
 {
- "generated": "2026-09-29T21:08:11Z",
+ "generated": "2026-09-29T21:23:11Z",
  "from": "barchart-raw.json",
  "complete": false,
  "note": "Directory only: who operates a facility and where. No prices, no basis, no symbols, no delivery windows.",
  "counts": {
-  "facilities": 2234,
+  "facilities": 2235,
   "states": 38,
   "with_address": 722,
   "with_coords": 725,
   "with_url": 703,
-  "with_phone": 2167,
+  "with_phone": 2168,
   "saturated_zips": 0,
   "failed_zips": 0,
-  "rows_read": 18670
+  "rows_read": 18684
  },
  "saturated": [],
  "failed": [],
@@ -17990,6 +17990,15 @@
    "state": "MO",
    "zip": "65018",
    "phone": "573-796-2153",
+   "source": "barchart"
+  },
+  {
+   "facility": "MFA Inc",
+   "branch": "Center",
+   "city": "Center",
+   "state": "MO",
+   "zip": "63436",
+   "phone": "N/A",
    "source": "barchart"
   },
   {
