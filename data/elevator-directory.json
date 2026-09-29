@@ -1,5 +1,5 @@
 {
- "generated": "2026-09-29T16:23:18Z",
+ "generated": "2026-09-29T16:38:13Z",
  "from": "barchart-raw.json",
  "complete": false,
  "note": "Directory only: who operates a facility and where. No prices, no basis, no symbols, no delivery windows.",
@@ -448,7 +448,7 @@
    "city": "Pierce",
    "state": "CO",
    "zip": "80650",
-   "phone": " 970-381-4402",
+   "phone": "970-381-4402",
    "source": "barchart"
   },
   {
@@ -5107,7 +5107,7 @@
    "city": "Manson",
    "state": "IA",
    "zip": "50563",
-   "phone": " 800-788-3383",
+   "phone": "800-788-3383",
    "source": "barchart"
   },
   {
@@ -8551,7 +8551,7 @@
    "city": "Blackstone",
    "state": "IL",
    "zip": "61313",
-   "phone": " 815-265-6720",
+   "phone": "815-265-6720",
    "source": "barchart",
    "company": "Ruff Brothers Grain",
    "location": "Budd & Blackstone",
