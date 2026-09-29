@@ -1,5 +1,5 @@
 {
- "generated": "2026-09-29T02:38:12Z",
+ "generated": "2026-09-29T02:53:10Z",
  "from": "barchart-raw.json",
  "complete": false,
  "note": "Directory only: who operates a facility and where. No prices, no basis, no symbols, no delivery windows.",
@@ -2656,7 +2656,7 @@
    "city": "Modale",
    "state": "IA",
    "zip": "51556",
-   "phone": " 712-645-2081",
+   "phone": "712-645-2081",
    "source": "barchart"
   },
   {
@@ -3413,7 +3413,7 @@
    "city": "Marshalltown",
    "state": "IA",
    "zip": "50158",
-   "phone": " 641-479-2800",
+   "phone": "641-479-2800",
    "source": "barchart"
   },
   {
@@ -8183,7 +8183,7 @@
    "city": "Sidney",
    "state": "IL",
    "zip": "61877",
-   "phone": " 217-469-7600",
+   "phone": "217-469-7600",
    "source": "barchart"
   },
   {
@@ -18598,7 +18598,7 @@
    "city": "Choteau",
    "state": "MT",
    "zip": "59422",
-   "phone": " 406-466-5371",
+   "phone": "406-466-5371",
    "source": "barchart"
   },
   {
@@ -18634,7 +18634,7 @@
    "city": "Great Falls",
    "state": "MT",
    "zip": "59401",
-   "phone": " 406-771-8139",
+   "phone": "406-771-8139",
    "source": "barchart"
   },
   {
@@ -18925,7 +18925,7 @@
    "city": "Gwinner",
    "state": "ND",
    "zip": "58040",
-   "phone": " 701-538-4585",
+   "phone": "701-538-4585",
    "source": "barchart"
   },
   {
@@ -27944,7 +27944,7 @@
    "city": "Adams",
    "state": "WI",
    "zip": "53910",
-   "phone": " 608-339-0357",
+   "phone": "608-339-0357",
    "source": "barchart"
   },
   {
