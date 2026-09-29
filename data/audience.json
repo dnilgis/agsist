@@ -1,6 +1,6 @@
 {
  "schema": "agsist-audience/2",
- "built": "2026-09-28T18:35:41+00:00",
+ "built": "2026-09-29T01:31:34+00:00",
  "ranges": [
   {
    "id": "7d",
@@ -5327,10 +5327,10 @@
     "d": "2026-09-26",
     "users": 126,
     "engaged": 88,
-    "gClicks": null,
-    "gImpr": null,
-    "bClicks": null,
-    "bImpr": null
+    "gClicks": 28,
+    "gImpr": 1302,
+    "bClicks": 30,
+    "bImpr": 984
    }
   ]
  },
@@ -5341,21 +5341,21 @@
    "rows": [
     {
      "q": "soybean yield calculator",
-     "clicks": 80,
-     "impr": 1114,
-     "pos": 5.1
+     "clicks": 82,
+     "impr": 1140,
+     "pos": 5.2
+    },
+    {
+     "q": "cash rents by county per acre",
+     "clicks": 22,
+     "impr": 249,
+     "pos": 5.9
     },
     {
      "q": "agsist",
      "clicks": 21,
-     "impr": 49,
+     "impr": 50,
      "pos": 1
-    },
-    {
-     "q": "cash rents by county per acre",
-     "clicks": 21,
-     "impr": 244,
-     "pos": 5.9
     },
     {
      "q": "hail map",
@@ -5366,8 +5366,8 @@
     {
      "q": "cash rents by county",
      "clicks": 10,
-     "impr": 111,
-     "pos": 6.3
+     "impr": 112,
+     "pos": 6.2
     },
     {
      "q": "hail map today",
@@ -5378,13 +5378,13 @@
     {
      "q": "usda cash rent by county",
      "clicks": 7,
-     "impr": 76,
+     "impr": 78,
      "pos": 4.2
     },
     {
      "q": "soybean yield estimate calculator",
      "clicks": 6,
-     "impr": 68,
+     "impr": 70,
      "pos": 4.9
     },
     {
@@ -5404,6 +5404,12 @@
      "clicks": 4,
      "impr": 33,
      "pos": 5.6
+    },
+    {
+     "q": "south dakota cash rents by county map pdf",
+     "clicks": 4,
+     "impr": 41,
+     "pos": 7.8
     },
     {
      "q": "soybean yeild calculator",
@@ -5436,12 +5442,6 @@
      "pos": 6.2
     },
     {
-     "q": "south dakota cash rents by county map pdf",
-     "clicks": 3,
-     "impr": 40,
-     "pos": 7.9
-    },
-    {
      "q": "soybean yield estimate",
      "clicks": 3,
      "impr": 66,
@@ -5450,8 +5450,8 @@
     {
      "q": "fertilizer prices",
      "clicks": 2,
-     "impr": 75,
-     "pos": 17.3
+     "impr": 76,
+     "pos": 17.2
     },
     {
      "q": "grain prices at local elevators",
@@ -5953,21 +5953,21 @@
   "ga4": {
    "ok": true,
    "through": "2026-09-26",
-   "fetched": "2026-09-28T18:35:41+00:00"
+   "fetched": "2026-09-29T01:31:34+00:00"
   },
   "gsc": {
    "ok": true,
    "site": "sc-domain:agsist.com",
-   "fetched": "2026-09-28T18:35:41+00:00"
+   "fetched": "2026-09-29T01:31:34+00:00"
   },
   "bing": {
    "ok": true,
    "site": "https://agsist.com/",
-   "fetched": "2026-09-28T18:35:41+00:00"
+   "fetched": "2026-09-29T01:31:34+00:00"
   },
   "email": {
    "ok": true,
-   "fetched": "2026-09-28T18:35:41+00:00"
+   "fetched": "2026-09-29T01:31:34+00:00"
   }
  }
 }
