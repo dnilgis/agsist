@@ -1,5 +1,5 @@
 {
- "generated": "2026-09-29T16:38:13Z",
+ "generated": "2026-09-29T16:53:22Z",
  "from": "barchart-raw.json",
  "complete": false,
  "note": "Directory only: who operates a facility and where. No prices, no basis, no symbols, no delivery windows.",
@@ -2134,7 +2134,7 @@
    "city": "Nashua",
    "state": "IA",
    "zip": "50658",
-   "phone": "(641)435-4665",
+   "phone": "641-435-4665",
    "source": "barchart"
   },
   {
@@ -2143,7 +2143,7 @@
    "city": "New Hampton",
    "state": "IA",
    "zip": "50659",
-   "phone": "(641)394-3052",
+   "phone": "641-394-3052",
    "source": "barchart"
   },
   {
@@ -2161,7 +2161,7 @@
    "city": "Rockwell",
    "state": "IA",
    "zip": "50469",
-   "phone": "(641)822-3221",
+   "phone": "641-822-3221",
    "source": "barchart"
   },
   {
@@ -11611,7 +11611,7 @@
    "city": "Wichita",
    "state": "KS",
    "zip": "67214",
-   "phone": "(785) 452 - 3339",
+   "phone": "785-452-3339",
    "source": "barchart"
   },
   {
@@ -27354,7 +27354,7 @@
    "city": "Tomah",
    "state": "WI",
    "zip": "54660",
-   "phone": "(608) 847-372-2090",
+   "phone": "608-372-2090",
    "source": "barchart"
   },
   {
