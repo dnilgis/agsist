@@ -380,11 +380,31 @@
 
   // ── SAVED FIELDS (localStorage — on this device only, never our servers) ──
   var SAVE_KEY = 'agsist-fs-fields';
+  // Photos: canvas-resized to 800px wide and re-encoded JPEG q0.6 before they ever
+  // touch localStorage (see compressPhoto). That typically lands 80-150KB each, but
+  // localStorage quotas vary by browser (commonly 5-10MB total, shared with every
+  // other site on the origin), so PHOTO_CAP is a soft guard, not the real limit —
+  // the real limit is whatever write() actually accepts. tryPersistFields() below
+  // catches the quota error live and backs the photo out rather than lying about
+  // how much room is left.
+  var PHOTO_CAP = 6;
   function loadSavedFields(){
-    try { return JSON.parse(localStorage.getItem(SAVE_KEY) || '[]'); } catch(e){ return []; }
+    try {
+      var arr = JSON.parse(localStorage.getItem(SAVE_KEY) || '[]');
+      if(!Array.isArray(arr)) return [];
+      // upgrade old-schema rows in place: fields saved before notes/photos existed
+      // just get the defaults, no data lost, no throw on a malformed photo entry.
+      return arr.map(function(f){
+        return {
+          id:f.id, name:f.name, pts:f.pts, acres:f.acres,
+          notes: typeof f.notes==='string' ? f.notes : '',
+          photos: Array.isArray(f.photos) ? f.photos.filter(function(p){ return p && typeof p.dataUrl==='string'; }) : []
+        };
+      });
+    } catch(e){ return []; }
   }
   function persistSavedFields(arr){
-    try { localStorage.setItem(SAVE_KEY, JSON.stringify(arr.slice(0,30))); } catch(e){}
+    try { localStorage.setItem(SAVE_KEY, JSON.stringify(arr.slice(0,30))); return true; } catch(e){ return false; }
   }
   function saveCurrentField(){
     if(!activePoly) return;
@@ -392,18 +412,144 @@
     if(name===null) return;
     var pts = latlngs(activePoly).map(function(p){ return [+p.lat.toFixed(6), +p.lng.toFixed(6)]; });
     var arr = loadSavedFields();
-    arr.unshift({ id:Date.now(), name:(name||'Untitled').slice(0,40), pts:pts, acres:+polyAcres(activePoly).toFixed(1) });
+    arr.unshift({ id:Date.now(), name:(name||'Untitled').slice(0,40), pts:pts, acres:+polyAcres(activePoly).toFixed(1), notes:'', photos:[] });
     persistSavedFields(arr);
     _activeFieldId = arr[0].id;        // start tracking this field for changed-since
     saveSnap(_activeFieldId, fieldSnapshot());  // baseline = current conditions
     renderSavedFields();
+    renderNotesSectionInPlace();       // the "save this field first" hint becomes the real editor
     ga('field_saved', {});
+  }
+
+  // ── SCOUTING NOTES + PHOTOS (attached to a saved field, same localStorage row) ──
+  var _notesSaveTimer=null;
+  function currentSavedField(){
+    if(_activeFieldId==null) return null;
+    return loadSavedFields().filter(function(x){ return x.id===_activeFieldId; })[0] || null;
+  }
+  function notesSectionHTML(){
+    var f = currentSavedField();
+    if(!f){
+      return '<div class="fs-section" id="fs-notes-wrap">'+
+        '<div class="fs-section-h" role="heading" aria-level="3"><span class="ico" aria-hidden="true">'+ICONS.notes+'</span>Scouting Notes</div>'+
+        '<div class="fs-section-body">'+
+          '<p class="fs-notes-hint">Save this field to attach notes and photos &mdash; they live on this device, right alongside the field.</p>'+
+          '<button type="button" class="fs-save-btn" id="fs-notes-save-prompt">Save field</button>'+
+        '</div>'+
+      '</div>';
+    }
+    var photos = f.photos || [];
+    var atCap = photos.length >= PHOTO_CAP;
+    return '<div class="fs-section" id="fs-notes-wrap">'+
+      '<div class="fs-section-h" role="heading" aria-level="3"><span class="ico" aria-hidden="true">'+ICONS.notes+'</span>Scouting Notes</div>'+
+      '<div class="fs-section-body">'+
+        '<textarea id="fs-notes-text" class="fs-notes-area" maxlength="4000" placeholder="Emergence, stand count, weed pressure, whatever you want on file for this field&hellip;">'+esc(f.notes||'')+'</textarea>'+
+        (photos.length ? '<div class="fs-notes-photos" id="fs-notes-photos">'+photos.map(photoThumbHTML).join('')+'</div>' : '')+
+        '<div class="fs-notes-row">'+
+          '<label class="fs-save-btn fs-notes-add" for="fs-notes-photo-input">Add photo</label>'+
+          '<input type="file" accept="image/*" id="fs-notes-photo-input" style="display:none"'+(atCap?' disabled':'')+'>'+
+          '<span class="fs-notes-meta">'+photos.length+' of '+PHOTO_CAP+' photos</span>'+
+        '</div>'+
+        (atCap ? '<p class="fs-notes-cap">Photo cap reached ('+PHOTO_CAP+' per field) &mdash; delete one below to add another.</p>' : '')+
+        '<p class="fs-notes-note">Notes and photos save on this device only, with the field &mdash; not sent anywhere. Photos are resized and compressed to fit.</p>'+
+      '</div>'+
+    '</div>';
+  }
+  function photoThumbHTML(p){
+    return '<span class="fs-notes-thumb"><img src="'+p.dataUrl+'" alt="Field photo" loading="lazy">'+
+      '<button type="button" class="fs-notes-thumb-del" data-photo="'+esc(p.id)+'" aria-label="Remove photo">&times;</button></span>';
+  }
+  function wireNotesSection(){
+    var sp=document.getElementById('fs-notes-save-prompt'); if(sp) sp.addEventListener('click', saveCurrentField);
+    var ta=document.getElementById('fs-notes-text');
+    if(ta){
+      ta.addEventListener('input', function(){ clearTimeout(_notesSaveTimer); _notesSaveTimer=setTimeout(saveNotesText, 600); });
+      ta.addEventListener('blur', saveNotesText);
+    }
+    var fi=document.getElementById('fs-notes-photo-input');
+    if(fi) fi.addEventListener('change', function(){ var file=fi.files&&fi.files[0]; fi.value=''; if(file) handlePhotoFile(file); });
+    document.querySelectorAll('.fs-notes-thumb-del').forEach(function(b){
+      b.addEventListener('click', function(){ deletePhoto(b.getAttribute('data-photo')); });
+    });
+  }
+  function renderNotesSectionInPlace(){
+    var el=document.getElementById('fs-notes-wrap');
+    if(!el) return;
+    el.outerHTML = notesSectionHTML();
+    wireNotesSection();
+  }
+  function saveNotesText(){
+    var f=currentSavedField(); var ta=document.getElementById('fs-notes-text');
+    if(!f || !ta) return;
+    var arr=loadSavedFields();
+    var row=arr.filter(function(x){ return x.id===_activeFieldId; })[0]; if(!row) return;
+    row.notes = ta.value.slice(0,4000);
+    persistSavedFields(arr);
+  }
+  // Resize to maxWidth (keeping aspect) and re-encode as JPEG at `quality` so a
+  // phone photo (often 3-8MB) shrinks to something localStorage can actually hold.
+  function compressPhoto(file, maxWidth, quality){
+    return new Promise(function(resolve, reject){
+      if(!file || !/^image\//.test(file.type)){ reject(new Error('not an image')); return; }
+      var reader = new FileReader();
+      reader.onerror = function(){ reject(reader.error||new Error('read failed')); };
+      reader.onload = function(){
+        var img = new Image();
+        img.onerror = function(){ reject(new Error('bad image')); };
+        img.onload = function(){
+          var w=img.naturalWidth||img.width, h=img.naturalHeight||img.height;
+          if(!w||!h){ reject(new Error('bad image')); return; }
+          if(w>maxWidth){ h=Math.round(h*(maxWidth/w)); w=maxWidth; }
+          var canvas=document.createElement('canvas'); canvas.width=w; canvas.height=h;
+          var ctx=canvas.getContext('2d');
+          ctx.drawImage(img,0,0,w,h);
+          try{ resolve(canvas.toDataURL('image/jpeg', quality)); }
+          catch(e){ reject(e); }
+        };
+        img.src=reader.result;
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+  function handlePhotoFile(file){
+    var f=currentSavedField();
+    if(!f){ flashHint('Save this field first, then attach photos.'); return; }
+    if((f.photos||[]).length>=PHOTO_CAP){ flashHint('Up to '+PHOTO_CAP+' photos per field &mdash; delete one to add another.'); return; }
+    // A full-resolution phone photo can run 20-50MB; reading that whole to a
+    // dataURL before the canvas resize kicks in is real memory pressure on a
+    // low-end phone. Reject up front rather than risk a freeze.
+    if(file && file.size>26214400){ flashHint('That photo is too large — try a smaller one (under 25MB).'); return; }
+    compressPhoto(file, 800, 0.6).then(function(dataUrl){
+      var arr=loadSavedFields();
+      var row=arr.filter(function(x){ return x.id===_activeFieldId; })[0]; if(!row) return;
+      row.photos = row.photos || [];
+      if(row.photos.length>=PHOTO_CAP){ flashHint('Up to '+PHOTO_CAP+' photos per field.'); return; }
+      row.photos.push({ id:Date.now().toString(36)+Math.random().toString(36).slice(2,7), dataUrl:dataUrl, addedAt:Date.now() });
+      if(!persistSavedFields(arr)){
+        // the browser's quota said no — back the photo out and say so plainly, no invented ceiling
+        flashHint('Storage on this device is full for saved photos — delete a photo or a saved field to add more.');
+        return;
+      }
+      renderNotesSectionInPlace();
+      renderSavedFields();
+      ga('field_photo_added', {});
+    }).catch(function(){ flashHint('Couldn’t read that photo — try a different file.'); });
+  }
+  function deletePhoto(photoId){
+    if(_activeFieldId==null || !photoId) return;
+    var arr=loadSavedFields();
+    var row=arr.filter(function(x){ return x.id===_activeFieldId; })[0]; if(!row) return;
+    row.photos=(row.photos||[]).filter(function(p){ return String(p.id)!==String(photoId); });
+    persistSavedFields(arr);
+    renderNotesSectionInPlace();
+    renderSavedFields();
   }
   function deleteSavedField(id){
     var f=loadSavedFields().filter(function(x){ return x.id===id; })[0];
     if(!window.confirm('Delete "'+((f&&f.name)||'this field')+'"? This can\u2019t be undone.')) return;
     persistSavedFields(loadSavedFields().filter(function(x){ return x.id!==id; }));
     try{ localStorage.removeItem('agsist-fs-snap-'+id); }catch(e){}
+    if(_activeFieldId===id){ _activeFieldId=null; renderNotesSectionInPlace(); }
     renderSavedFields();
   }
   function openSavedField(id){
@@ -430,8 +576,9 @@
     wrap.hidden = false;
     wrap.innerHTML = '<div class="fs-saved-label">Your saved fields <small>(this device only)</small></div>' +
       '<div class="fs-saved-list">' + arr.map(function(f){
+        var hasNotes = !!((f.notes&&f.notes.trim()) || (f.photos&&f.photos.length));
         return '<span class="fs-saved-chip" role="group">'+
-          '<button class="fs-saved-open" data-id="'+f.id+'" type="button" title="Open '+esc(f.name)+'">'+esc(f.name)+' <small>'+f.acres+'ac</small></button>'+
+          '<button class="fs-saved-open" data-id="'+f.id+'" type="button" title="Open '+esc(f.name)+(hasNotes?' — has notes':'')+'">'+esc(f.name)+' <small>'+f.acres+'ac</small>'+(hasNotes?' <small class="fs-saved-note-ind" aria-hidden="true">&#9998;</small>':'')+'</button>'+
           '<button class="fs-saved-del" data-del="'+f.id+'" type="button" aria-label="Delete '+esc(f.name)+'">&times;</button>'+
         '</span>';
       }).join('') + '</div>';
@@ -812,6 +959,63 @@
       navigator.clipboard.writeText(url).then(done, function(){ window.prompt('Copy this field link:', url); });
     } else { window.prompt('Copy this field link:', url); }
   }
+
+  // ── Boundary export: GeoJSON / KML, straight from the drawn polygon's own
+  // coordinates. Client-side only — a Blob, an object URL, and a click. ──
+  function currentFieldName(){
+    var f=currentSavedField();
+    return (f && f.name) || 'Field';
+  }
+  function fileBase(name){
+    return (String(name||'field').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'')) || 'field';
+  }
+  function ringCoords(poly){
+    var pts = latlngs(poly).map(function(p){ return [+p.lng.toFixed(6), +p.lat.toFixed(6)]; });
+    if(pts.length && (pts[0][0]!==pts[pts.length-1][0] || pts[0][1]!==pts[pts.length-1][1])) pts.push(pts[0]); // close the ring
+    return pts;
+  }
+  function fieldGeoJSON(poly, name){
+    return {
+      type:'FeatureCollection',
+      features:[{
+        type:'Feature',
+        properties:{ name:name||'Field', acres:+polyAcres(poly).toFixed(1), source:'AGSIST Field Scout', exported:new Date().toISOString() },
+        geometry:{ type:'Polygon', coordinates:[ringCoords(poly)] }
+      }]
+    };
+  }
+  function fieldKML(poly, name){
+    var coordStr = ringCoords(poly).map(function(p){ return p[0]+','+p[1]+',0'; }).join(' ');
+    var nm = esc(name||'Field'), desc = esc(polyAcres(poly).toFixed(1)+' acres — exported from AGSIST Field Scout');
+    return '<?xml version="1.0" encoding="UTF-8"?>\n'+
+      '<kml xmlns="http://www.opengis.net/kml/2.2"><Document>\n'+
+      '<name>'+nm+'</name>\n'+
+      '<Placemark><name>'+nm+'</name><description>'+desc+'</description>\n'+
+      '<Style><LineStyle><color>ff3fa2d4</color><width>3</width></LineStyle><PolyStyle><fill>0</fill></PolyStyle></Style>\n'+
+      '<Polygon><outerBoundaryIs><LinearRing><coordinates>'+coordStr+'</coordinates></LinearRing></outerBoundaryIs></Polygon>\n'+
+      '</Placemark>\n</Document></kml>';
+  }
+  function downloadBlob(content, filename, mime){
+    var blob = new Blob([content], { type:mime });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href=url; a.download=filename;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(function(){ try{ URL.revokeObjectURL(url); }catch(e){} }, 1000);
+  }
+  function exportGeoJSON(){
+    if(!activePoly) return;
+    var name = currentFieldName();
+    downloadBlob(JSON.stringify(fieldGeoJSON(activePoly, name), null, 2), fileBase(name)+'.geojson', 'application/geo+json');
+    ga('field_export_geojson', {});
+  }
+  function exportKML(){
+    if(!activePoly) return;
+    var name = currentFieldName();
+    downloadBlob(fieldKML(activePoly, name), fileBase(name)+'.kml', 'application/vnd.google-earth.kml+xml');
+    ga('field_export_kml', {});
+  }
+
   function restoreFromLink(){
     var m=/^#f=(.+)$/.exec(location.hash||''); if(!m) return false;
     try {
@@ -911,6 +1115,7 @@
     R.hidden=false;
     R.innerHTML =
       fieldHead(acres, c) +
+      notesSectionHTML() +
       '<div class="fs-section fs-insight-section" id="fs-insight-wrap" hidden>'+
         '<div class="fs-section-h" role="heading" aria-level="3"><span class="ico" aria-hidden="true">'+ICONS.read+'</span>The Read on This Field</div>'+
         '<div class="fs-section-body" id="fs-insight"></div>'+
@@ -942,6 +1147,9 @@
     var sb=document.getElementById('fs-save'); if(sb) sb.addEventListener('click', saveCurrentField);
     var shb=document.getElementById('fs-share'); if(shb) shb.addEventListener('click', shareField);
     var rb=document.getElementById('fs-report'); if(rb) rb.addEventListener('click', generateReport);
+    var gjb=document.getElementById('fs-export-geojson'); if(gjb) gjb.addEventListener('click', exportGeoJSON);
+    var kmlb=document.getElementById('fs-export-kml'); if(kmlb) kmlb.addEventListener('click', exportKML);
+    wireNotesSection();
     loadSoil(poly);
     loadRotation(poly);
     loadWeather(c);
@@ -962,6 +1170,8 @@
         '<button class="fs-save-btn" id="fs-save" type="button"><svg class="fs-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5l2.6 5.3 5.9.9-4.2 4.1 1 5.8L12 17l-5.3 2.8 1-5.8L3.5 9.7l5.9-.9z"/></svg>Save field</button>'+
         '<button class="fs-save-btn" id="fs-share" type="button"><svg class="fs-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>Share</button>'+
         '<button class="fs-save-btn" id="fs-report" type="button"><svg class="fs-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11m0 0l-4-4m4 4l4-4M5 19h14"/></svg>Field report</button>'+
+        '<button class="fs-save-btn" id="fs-export-geojson" type="button" title="Download this boundary as GeoJSON">'+ICONS.dl+'GeoJSON</button>'+
+        '<button class="fs-save-btn" id="fs-export-kml" type="button" title="Download this boundary as KML">'+ICONS.dl+'KML</button>'+
         '</div>'+
       '</div>'+
     '</div>';
@@ -985,7 +1195,9 @@
     rent:  SVG+'<path d="M3 21h18"/><path d="M5 21V7l7-4 7 4v14"/><path d="M9 21v-6h6v6"/></svg>',
     market:SVG+'<path d="M5 21V9"/><path d="M19 21V9"/><path d="M2 9l10-6 10 6"/><path d="M9 21v-8h6v8"/><path d="M2 21h20"/></svg>',
     hood:  SVG+'<circle cx="9" cy="8" r="3"/><path d="M3 21v-2a6 6 0 0 1 12 0v2"/><circle cx="17.5" cy="9.5" r="2.5"/><path d="M16 21v-1.5a4.5 4.5 0 0 1 6 0V21"/></svg>',
-    cond:  SVG+'<path d="M12 22V8"/><path d="M12 8C12 5 10 3 6 3c0 3 2 5 6 5Z"/><path d="M12 13c0-3 2-5 6-5 0 3-2 5-6 5Z"/></svg>'
+    cond:  SVG+'<path d="M12 22V8"/><path d="M12 8C12 5 10 3 6 3c0 3 2 5 6 5Z"/><path d="M12 13c0-3 2-5 6-5 0 3-2 5-6 5Z"/></svg>',
+    notes: SVG+'<path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2Z"/><path d="M9 13h6M9 17h6"/></svg>',
+    dl:    SVG+'<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg>'
   };
   function setBody(id, html){ var el=document.getElementById(id); if(el) el.innerHTML=html; }
   function setErr(id, msg){ var el=document.getElementById(id); if(el) el.innerHTML='<div class="fs-err">'+msg+'</div>'; }
@@ -1317,15 +1529,19 @@
       var plantMD = c.lat>=44 ? '05-05' : c.lat>=41 ? '04-28' : c.lat>=38 ? '04-18' : '04-08';
       var acc={};        // year → {precip, gdu, gduP (from planting proxy)}
       var cumMap={};     // year → { 'MM-DD': cumulativePrecip }
+      // year → { 'MM-DD': cumulative GDU from planting } — lets stageAtDate() (hail
+      // swath tie-in) answer "what stage was the crop at" for any past date this
+      // season, not just gPlant's single as-of-today total.
+      var gCumMap={};
       for(var i=0;i<t.length;i++){
         var md=t[i].slice(5); if(md>cutoff) continue;       // MM-DD sorts chronologically
         var yr=+t[i].slice(0,4);
         var p=(pr[i]==null?0:pr[i]);
         var g=0;
         if(tx[i]!=null && tn[i]!=null){ var hi=Math.min(tx[i],86), lo=Math.max(tn[i],50); g=Math.max(0,(hi+lo)/2-50); }
-        if(!acc[yr]){ acc[yr]={precip:0,gdu:0,gduP:0}; cumMap[yr]={}; }
+        if(!acc[yr]){ acc[yr]={precip:0,gdu:0,gduP:0}; cumMap[yr]={}; gCumMap[yr]={}; }
         acc[yr].precip+=p; acc[yr].gdu+=g;
-        if(md>=plantMD) acc[yr].gduP+=g;
+        if(md>=plantMD){ acc[yr].gduP+=g; gCumMap[yr][md]=acc[yr].gduP; }
         cumMap[yr][md]=acc[yr].precip;
       }
       var ys=Object.keys(acc).map(Number).sort(function(a,b){return a-b;});
@@ -1337,7 +1553,7 @@
       FIELD.season = { thru:t[t.length-1], year:cur, n:prior.length,
         pNow:acc[cur].precip, pNorm:pNorm, pDep:acc[cur].precip-pNorm,
         gNow:acc[cur].gdu, gNorm:gNorm, gDep:acc[cur].gdu-gNorm,
-        gPlant:acc[cur].gduP, plantMD:plantMD };
+        gPlant:acc[cur].gduP, plantMD:plantMD, gCumMap:gCumMap[cur]||null };
       recomputeInsight(); renderRisk();
       setBody('fs-season', seasonHtml(FIELD.season, cumMap, cur, prior));
     }).catch(function(){ if(gen!==fieldGen) return; setErr('fs-season','Couldn\u2019t reach the weather archive just now.'); });
@@ -1505,8 +1721,174 @@
   function _hvsMi(a,b,c,d){ var R=3958.8,p=Math.PI/180,x=(c-a)*p,y=(d-b)*p,
     s=Math.sin(x/2)*Math.sin(x/2)+Math.cos(a*p)*Math.cos(c*p)*Math.sin(y/2)*Math.sin(y/2);
     return R*2*Math.atan2(Math.sqrt(s),Math.sqrt(1-s)); }
+
+  // ── Radar hail swath verification (ported from hail-map.html) ───────
+  // hail-map.html tests one pin against the MESH archive with pointInRing()
+  // + maxBandAt() — a point-in-polygon walk. A field is a polygon, not a
+  // pin, so the same ring test is extended here to a full boundary test:
+  // the field's drawn edge intersects a swath cell if either shape has a
+  // vertex inside the other, or an edge of one crosses an edge of the
+  // other. pointInRing() itself is copied verbatim; maxBandAt()'s walk
+  // over features/thresholds is the same, it just calls the new ring test.
+  var meshIdxFS = null, meshCacheFS = {}, _meshFetching = false;
+  var MESH_COLORS_FS = {0.75:'#7cd2ff', 1:'#fed976', 1.5:'#fd8d3c', 2:'#e31a1c'};
+  function fetchMeshIndex(){
+    if(meshIdxFS !== null || _meshFetching) return;
+    _meshFetching = true;
+    fetch('/data/hail/mesh/index.json').then(function(r){ return r.ok ? r.json() : null; })
+      .then(function(ix){ meshIdxFS = (ix && ix.dates && ix.dates.length) ? ix : false; renderRisk(); })
+      .catch(function(){ meshIdxFS = false; });
+  }
+  function _hmPointInRing(lat,lon,ring){
+    var inside=false;
+    for(var i=0,j=ring.length-1;i<ring.length;j=i++){
+      var xi=ring[i][0],yi=ring[i][1],xj=ring[j][0],yj=ring[j][1];
+      if(((yi>lat)!==(yj>lat)) && (lon < (xj-xi)*(lat-yi)/(yj-yi)+xi)) inside=!inside;
+    }
+    return inside;
+  }
+  function _hmRingBbox(ring){
+    var mnx=Infinity,mxx=-Infinity,mny=Infinity,mxy=-Infinity;
+    for(var i=0;i<ring.length;i++){ var x=ring[i][0],y=ring[i][1];
+      if(x<mnx)mnx=x; if(x>mxx)mxx=x; if(y<mny)mny=y; if(y>mxy)mxy=y; }
+    return {minLon:mnx,maxLon:mxx,minLat:mny,maxLat:mxy};
+  }
+  function _hmBboxHit(p,q){ return p.minLon<=q.maxLon && p.maxLon>=q.minLon && p.minLat<=q.maxLat && p.maxLat>=q.minLat; }
+  function _hmSegXing(ax,ay,bx,by,cx,cy,dx,dy){
+    function ccw(px,py,qx,qy,rx,ry){ return (ry-py)*(qx-px) - (qy-py)*(rx-px); }
+    var d1=ccw(cx,cy,dx,dy,ax,ay), d2=ccw(cx,cy,dx,dy,bx,by);
+    var d3=ccw(ax,ay,bx,by,cx,cy), d4=ccw(ax,ay,bx,by,dx,dy);
+    return ((d1>0)!==(d2>0)) && ((d3>0)!==(d4>0));
+  }
+  // True boundary-to-boundary test: containment either way, or any edge crossing.
+  // A bbox reject first, since almost every swath ring on a given day is nowhere
+  // near a given field and shouldn't pay for the edge-crossing double loop.
+  function _hmRingsCross(fieldRing, fieldBbox, swathRing){
+    if(!_hmBboxHit(fieldBbox, _hmRingBbox(swathRing))) return false;
+    var i;
+    for(i=0;i<fieldRing.length;i++){ if(_hmPointInRing(fieldRing[i][1],fieldRing[i][0],swathRing)) return true; }
+    for(i=0;i<swathRing.length;i++){ if(_hmPointInRing(swathRing[i][1],swathRing[i][0],fieldRing)) return true; }
+    for(i=0;i<fieldRing.length;i++){
+      var a=fieldRing[i], b=fieldRing[(i+1)%fieldRing.length];
+      for(var k=0;k<swathRing.length;k++){
+        var c2=swathRing[k], d2=swathRing[(k+1)%swathRing.length];
+        if(_hmSegXing(a[0],a[1],b[0],b[1],c2[0],c2[1],d2[0],d2[1])) return true;
+      }
+    }
+    return false;
+  }
+  // NOTE: only the exterior ring of each Polygon/MultiPolygon (mp[p][0]) is
+  // tested. An interior ring (a hole — e.g. a coverage gap inside a merged
+  // storm's swath) is never subtracted, so a field sitting in such a hole
+  // would be reported as hit. MESH swath polygons haven't been observed to
+  // carry holes in this archive, so this is a documented assumption, not an
+  // oversight — revisit if a holed swath ever ships.
+  function maxBandAtField(fieldRing, fc){
+    var fieldBbox=_hmRingBbox(fieldRing), best=null;
+    (fc.features||[]).forEach(function(f){
+      var th=f.properties&&f.properties.thresh_in;
+      if(th==null || (best!=null && th<=best)) return;
+      var mp=f.geometry&&f.geometry.type==='MultiPolygon'?f.geometry.coordinates:
+             (f.geometry&&f.geometry.type==='Polygon'?[f.geometry.coordinates]:[]);
+      for(var p=0;p<mp.length;p++){
+        if(mp[p][0] && _hmRingsCross(fieldRing, fieldBbox, mp[p][0])){ best=th; break; }
+      }
+    });
+    return best;
+  }
+  function fsFieldRing(poly){ return latlngs(poly).map(function(p){ return [p.lng, p.lat]; }); }
+
+  // Crop stage AT A PAST DATE, not "as of now" — estCornStage() below answers
+  // the latter. This reads the same CORN_STAGES table against the season's
+  // own day-by-day GDU accumulation (FIELD.season.gCumMap, built in
+  // loadSeason()), so a hail day only gets a stage when this field's actual
+  // weather record covers that date. No stage is invented for a date outside
+  // what the weather archive has, or for a year other than the one on file.
+  function stageAtDate(dateStr){
+    var se = FIELD && FIELD.season;
+    if(!se || !se.gCumMap || !thisYearCorn()) return null;
+    var yr = +dateStr.slice(0,4), md = dateStr.slice(5);
+    if(yr !== se.year) return null;
+    if(md < se.plantMD) return { pre:true };
+    var g = se.gCumMap[md];
+    if(g == null) return null;
+    var label='pre-emergence';
+    for(var i=0;i<CORN_STAGES.length;i++){ if(g>=CORN_STAGES[i][0]) label=CORN_STAGES[i][1]; }
+    return { label:label };
+  }
+  function runFieldSwathCheck(){
+    if(!activePoly || !meshIdxFS || !meshIdxFS.dates || !FIELD || !FIELD.hail || FIELD.hail.err) return;
+    var gen = fieldGen;
+    FIELD.hail.swath = { running:true };
+    renderRisk();
+    ga('fs_hail_swath_check', {});
+    var ring = fsFieldRing(activePoly);
+    Promise.all(meshIdxFS.dates.map(function(d){
+      if(meshCacheFS[d]) return Promise.resolve({d:d,fc:meshCacheFS[d]});
+      return fetch('/data/hail/mesh/'+d+'.json').then(function(r){ return r.ok?r.json():null; })
+        .then(function(fc){ if(fc) meshCacheFS[d]=fc; return {d:d,fc:fc}; })
+        .catch(function(){ return {d:d,fc:null}; });
+    })).then(function(daysArr){
+      if(gen!==fieldGen || !FIELD || !FIELD.hail) return;   // a new field was drawn while this ran
+      var hits=[], failed=0;
+      daysArr.forEach(function(x){
+        if(!x.fc){ failed++; return; }
+        var b=maxBandAtField(ring, x.fc);
+        if(b!=null) hits.push({d:x.d, band:b});
+      });
+      hits.sort(function(a,b){ return a.d<b.d?1:-1; });
+      FIELD.hail.swath = { checked:meshIdxFS.dates.length-failed, failed:failed, hits:hits };
+      renderRisk();
+    });
+  }
+  function hailSwathHtml(){
+    if(!FIELD || !FIELD.hail || FIELD.hail.err || !activePoly) return '';
+    if(meshIdxFS===null || meshIdxFS===false) return '';
+    var sw = FIELD.hail.swath;
+    if(!sw){
+      return '<div class="fs-swathcheck" id="fs-swathcheck">'+
+        '<button type="button" class="fs-swath-btn" id="fs-swath-btn">Check radar hail swaths against this field’s drawn boundary '+
+        '<small>('+meshIdxFS.dates.length+' storm days on file, since '+esc(ixDate(meshIdxFS.dates[0]))+' · a swath is NOAA’s radar-estimated hail footprint, not a confirmed report · may take a few seconds on a slow connection)</small></button></div>';
+    }
+    if(sw.running){
+      return '<div class="fs-swathcheck" id="fs-swathcheck"><span class="fs-swath-status"><span class="fs-spin"></span>'+
+        'Testing '+meshIdxFS.dates.length+' storm days against the field boundary…</span></div>';
+    }
+    var body;
+    if(!sw.hits.length){
+      body = '<strong>No radar-estimated hail ≥0.75″ crossed this field’s drawn boundary</strong> on any of the '+
+        sw.checked+' storm day'+(sw.checked===1?'':'s')+' in the archive'+(sw.failed?' ('+sw.failed+' day'+(sw.failed===1?'':'s')+' couldn’t load)':'')+
+        '. Nearby reports above may still be real — swaths are ~1 km radar estimates, and the archive starts '+esc(ixDate(meshIdxFS.dates[0]))+'.';
+    } else {
+      body = '<strong>'+sw.hits.length+' storm day'+(sw.hits.length===1?'':'s')+' put a radar-estimated hail swath across this field’s drawn boundary:</strong>'+
+        sw.hits.map(function(h){
+          var c=MESH_COLORS_FS[h.band]||'#fed976';
+          var stage=stageAtDate(h.d), stageNote='';
+          if(stage){
+            var se0 = FIELD && FIELD.season;
+            var plantHedge0 = se0 && se0.plantMD ? ' and a typical ~'+({'04-08':'Apr 8','04-18':'Apr 18','04-28':'Apr 28','05-05':'May 5'}[se0.plantMD]||se0.plantMD)+' planting' : '';
+            stageNote = stage.pre
+              ? ' — before this field’s estimated planting window, so no corn was up yet'
+              : ' — <span class="fs-swath-stage">estimated corn stage at the time: '+esc(stage.label)+
+                '</span> <span class="fs-approx">(approximate — modeled from temperature'+plantHedge0+', not field scouting)</span>';
+          }
+          return '<div class="fs-swath-hit"><span class="fs-swath-dot" style="background:'+c+'"></span>'+
+            '<span class="fs-swath-date">'+esc(ixDate(h.d))+'</span> — inside the ≥'+h.band+'″ estimated band'+stageNote+
+            ' <a href="/hail-map?swath='+h.d+'&lat='+FIELD.lat.toFixed(4)+'&lon='+FIELD.lng.toFixed(4)+'" target="_blank" rel="noopener" class="fs-act-link">view that day’s swath →</a></div>';
+        }).join('')+
+        '<div class="fs-src">Radar estimate (NOAA MRMS MESH — Maximum Estimated Size of Hail), not a ground measurement · MESH typically runs larger than stones measured on the ground · '+
+        'tested against the field’s actual drawn boundary, not just its center point'+(sw.failed?' · '+sw.failed+' day'+(sw.failed===1?'':'s')+' could not be loaded':'')+'</div>';
+    }
+    return '<div class="fs-swathcheck" id="fs-swathcheck"><div class="fs-swath-out">'+body+'</div></div>';
+  }
+  document.addEventListener('click', function(e){
+    var b=e.target && e.target.closest && e.target.closest('#fs-swath-btn'); if(!b) return;
+    runFieldSwathCheck();
+  });
+
   function loadHailData(c){
     var gen = fieldGen;
+    fetchMeshIndex();
     var yNow = new Date().getFullYear();
     var yrs = [yNow-4, yNow-3, yNow-2, yNow-1, yNow];
     Promise.all(yrs.map(function(y){ return _hailYearFile(y).catch(function(){ return null; }); }))
@@ -1588,7 +1970,7 @@
       setBody('fs-risk','<div class="fs-src">'+note+'</div>');
       return;
     }
-    setBody('fs-risk', rows.join('') +
+    setBody('fs-risk', rows.join('') + hailSwathHtml() +
       '<div class="fs-src" style="margin-top:.5rem">A starting risk read from public data &mdash; not an underwriting decision. Questions? <a href="mailto:sig@farmers1st.com" style="color:var(--brand,var(--gold))">Sigurd Lindquist &rarr;</a></div>');
   }
   function riskRow(label, level, color, detail, link){
@@ -2897,6 +3279,14 @@
     function kv(label,val){ return val?('<tr><th>'+esc(label)+'</th><td>'+val+'</td></tr>'):''; }
     function sect(title,body){ return body?('<section class="r-sec"><h2>'+esc(title)+'</h2>'+body+'</section>'):''; }
 
+    var notesHtml='';
+    var savedF = currentSavedField();
+    if(savedF && ((savedF.notes&&savedF.notes.trim()) || (savedF.photos&&savedF.photos.length))){
+      var notesTxt = savedF.notes ? '<p class="r-p r-notes-txt">'+esc(savedF.notes)+'</p>' : '';
+      var notesPhotos = (savedF.photos&&savedF.photos.length) ? '<div class="r-photos">'+savedF.photos.map(function(p){ return '<img class="r-photo" src="'+p.dataUrl+'" alt="Field photo">'; }).join('')+'</div>' : '';
+      notesHtml = sect('Scouting notes', notesTxt+notesPhotos);
+    }
+
     var verdictHtml = (rd&&rd.verdict) ? '<div class="r-verdict"><span>Bottom line</span>'+esc(rd.verdict.charAt(0).toUpperCase()+rd.verdict.slice(1))+'.</div>' : '';
     var lead = (rd&&rd.lines&&rd.lines.length) ? rd.lines.map(function(l){return '<p class="r-p">'+strip(l)+'</p>';}).join('') : '';
     var flagsHtml = (rd&&rd.flags&&rd.flags.length) ? '<ul class="r-flags">'+rd.flags.map(function(f){return '<li>'+strip(f)+'</li>';}).join('')+'</ul>' : '';
@@ -3051,6 +3441,8 @@
       +'.r-sec,.r-band,.r-verdict,.r-kv tr,.r-tbl tr{break-inside:avoid;page-break-inside:avoid}h2{break-after:avoid;page-break-after:avoid}'
       +'.r-cols{columns:2;column-gap:24px}.r-cols .r-sec{break-inside:avoid;page-break-inside:avoid}.r-cols .r-kv th{width:52%}.r-cols h2:first-child{margin-top:4px}'
       +'@media(max-width:640px){.r-cols{columns:1}}'
+      +'.r-notes-txt{white-space:pre-wrap}.r-photos{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}'
+      +'.r-photo{width:108px;height:108px;object-fit:cover;border-radius:6px;border:1px solid #e5e0cf}'
       +'@page{size:letter;margin:.5in}'
       +'@media print{.no-print{display:none}body{padding:0;max-width:none;font-size:11.5px;line-height:1.4}h2{margin:12px 0 5px}.r-p{margin:.15em 0}.r-kv,.r-tbl{font-size:11.5px}.r-kv th,.r-kv td,.r-tbl td{padding:2px 6px 2px 0}.r-foot{margin-top:12px}}';
 
@@ -3059,7 +3451,7 @@
       +'<div class="r-actions no-print"><button type="button" onclick="window.print()">\u2399 Print / Save as PDF</button></div>'
       +'<div class="r-head"><div class="r-brand">AGSIST \u00b7 Field Scout</div><div class="r-date">'+esc(dateStr)+'</div></div>'
       +'<div class="r-top">'+outline+'<div class="r-top-t"><h1>'+d.acres.toFixed(1)+'-acre field'+(cy&&cy.name?' — '+esc(cy.name)+' County, '+esc(cy.st):'')+'</h1><div class="r-loc">Center '+d.lat.toFixed(4)+', '+d.lng.toFixed(4)+'</div>'
-      +verdictHtml+'</div></div>'+fieldBand+lead+flagsHtml+bandHtml
+      +verdictHtml+'</div></div>'+fieldBand+lead+flagsHtml+notesHtml+bandHtml
       +sect('Soil & productivity', soilHtml)
       +'<div class="r-cols">'
       +sect('Crop vigor & moisture (satellite)', vigorHtml)

@@ -484,6 +484,19 @@
     .fs-risk-label small{display:block;font-family:'JetBrains Mono',monospace;font-size:0.765rem;color:var(--text-muted);font-weight:400;margin-top:.15rem}
     .fs-risk-badge{font-family:'JetBrains Mono',monospace;font-size:0.77rem;font-weight:700;letter-spacing:.04em;padding:.22rem .6rem;border-radius:20px;flex-shrink:0}
 
+    /* Radar swath check — verifies the field's drawn boundary against MESH, not just a nearby-report count */
+    .fs-swathcheck{margin-top:.65rem;padding-top:.6rem;border-top:1px solid rgba(255,255,255,.06)}
+    .fs-swath-btn{display:inline-flex;align-items:center;gap:.4rem;flex-wrap:wrap;padding:.5rem .8rem;background:transparent;border:1px solid var(--brand,var(--gold));border-radius:8px;color:var(--brand,var(--gold));font-family:'JetBrains Mono',monospace;font-size:0.78rem;font-weight:700;cursor:pointer;min-height:44px;text-align:left}
+    .fs-swath-btn:hover{background:var(--brand,var(--gold));color:#0a1206}
+    .fs-swath-btn small{font-weight:400;opacity:.8}
+    .fs-swath-status{display:inline-flex;align-items:center;font-family:'JetBrains Mono',monospace;font-size:0.78rem;color:var(--text-muted)}
+    .fs-swath-out{font-size:.85rem;line-height:1.6;color:var(--text)}
+    .fs-swath-hit{display:flex;align-items:baseline;flex-wrap:wrap;gap:.15rem .4rem;padding:.4rem 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:.83rem}
+    .fs-swath-hit:last-of-type{border-bottom:none}
+    .fs-swath-dot{display:inline-block;width:9px;height:9px;border-radius:50%;flex-shrink:0}
+    .fs-swath-date{font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--text)}
+    .fs-swath-stage{color:var(--brand,var(--gold));font-weight:600}
+
     /* "How it works" strip below */
     .fs-how{margin-top:2rem;display:grid;grid-template-columns:repeat(4,1fr);gap:.8rem}
 
@@ -637,6 +650,22 @@
     .fs-related ul{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:.5rem}
     .fs-related a{display:inline-flex;align-items:center;min-height:40px;padding:.4rem .8rem;border:1px solid var(--line-2);border-radius:var(--r-sm);color:var(--text);font-size:.88rem;text-decoration:none}
     .fs-related a:hover{border-color:var(--brand);color:var(--brand)}
+
+    /* ── Scouting notes + photos (attached to a saved field) ─────────── */
+    .fs-notes-hint{font-size:.86rem;color:var(--text-dim);line-height:1.55;margin:0 0 .7rem}
+    .fs-notes-area{width:100%;min-height:92px;resize:vertical;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:var(--font-body);font-size:.88rem;line-height:1.55;padding:.6rem .7rem;box-sizing:border-box}
+    .fs-notes-area:focus{outline:none;border-color:var(--brand,var(--gold))}
+    .fs-notes-photos{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.7rem}
+    .fs-notes-thumb{position:relative;width:72px;height:72px;border-radius:8px;overflow:hidden;border:1px solid var(--border);flex:0 0 auto}
+    .fs-notes-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+    .fs-notes-thumb-del{position:absolute;top:2px;right:2px;width:20px;height:20px;border-radius:50%;background:rgba(10,14,13,.72);border:none;color:#fff;font-size:.85rem;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0}
+    .fs-notes-thumb-del:hover{background:var(--red)}
+    .fs-notes-row{display:flex;align-items:center;gap:.7rem;margin-top:.7rem;flex-wrap:wrap}
+    .fs-notes-add{cursor:pointer;min-height:38px}
+    .fs-notes-meta{font-family:var(--font-mono);font-size:0.76rem;color:var(--text-muted)}
+    .fs-notes-cap{font-size:0.8rem;color:var(--brand,var(--gold));margin-top:.6rem;line-height:1.5}
+    .fs-notes-note{font-size:0.78rem;color:var(--text-muted);line-height:1.5;margin-top:.7rem}
+    .fs-saved-note-ind{color:var(--brand,var(--gold));margin-left:.2rem}
 </style>
 
   <script type="application/ld+json">
@@ -791,7 +820,9 @@
           <li><strong>Drought status</strong> &mdash; the <a href="https://droughtmonitor.unl.edu/" target="_blank" rel="noopener">US Drought Monitor</a>, the nationally-recognized D0&ndash;D4 scale.</li>
           <li><strong>Hail history</strong> &mdash; severe-storm reports via the <a href="https://mesonet.agron.iastate.edu/" target="_blank" rel="noopener">Iowa Environmental Mesonet</a>, sourced from NOAA.</li>
           <li><strong>Cash grain bids</strong> &mdash; AGSIST's own cash-bid feed, showing the nearest posting elevators.</li>
-          <li><strong>Crop vigor, nitrogen &amp; moisture layers</strong> &mdash; <a href="https://dataspace.copernicus.eu/" target="_blank" rel="noopener">Sentinel-2 / Copernicus</a> imagery (NDVI, NDRE, NDMI), cloud-masked and averaged over your field for each pass.</li>
+          <li><strong>Crop vigor map layer (NDVI)</strong> &mdash; <a href="https://dataspace.copernicus.eu/" target="_blank" rel="noopener">Sentinel-2 / Copernicus</a> imagery, cloud-masked and averaged over your field for each pass.</li>
+          <li><strong>Moisture map layer</strong> &mdash; Sentinel-1 radar backscatter, a soil-wetness proxy independent of cloud cover.</li>
+          <li><strong>Nitrogen &amp; canopy-moisture trend (NDRE, NDMI)</strong> &mdash; Sentinel-2 red-edge and shortwave-infrared bands, cloud-masked and tracked pass to pass. These feed the numeric trend read in "The Read," not a separate map layer.</li>
           <li><strong>State crop condition</strong> &mdash; <a href="https://www.nass.usda.gov/Publications/National_Crop_Progress/" target="_blank" rel="noopener">USDA NASS Crop Progress</a>, the weekly good-to-excellent rating for your state, set against past seasons.</li>
           <li><strong>Owned vs rented ground</strong> &mdash; <a href="https://www.nass.usda.gov/AgCensus/" target="_blank" rel="noopener">USDA Census of Agriculture</a> land tenure for your county.</li>
           <li><strong>Foreign-held acres</strong> &mdash; USDA AFIDA filings (Agricultural Foreign Investment Disclosure Act), county totals.</li>

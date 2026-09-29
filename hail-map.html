@@ -129,6 +129,13 @@
     .hm-longterm-dec span{flex:1;background:var(--brand,#d4a23f);opacity:.65;min-height:2px}
     .hm-longterm-dl{display:flex;justify-content:space-between;font-family:'JetBrains Mono',monospace;font-size:0.74rem;color:var(--text-dim,#8a948f)}
     .hm-longterm-src{font-family:'JetBrains Mono',monospace;font-size:0.755rem;color:var(--text-dim,#8a948f);margin-top:.45rem;line-height:1.5}
+    .hm-trend{margin:.7rem 0 .9rem;padding:.7rem .85rem;border:1px solid var(--border,rgba(132,160,168,.25));border-radius:10px}
+    .hm-trend-bars{display:flex;gap:3px;align-items:flex-end;height:64px;margin:.55rem 0 .15rem}
+    .hm-trend-bars span{flex:1;min-height:2px;border-radius:2px 2px 0 0}
+    .hm-trend-bars .hm-trend-miss{flex:.55;min-height:100%;background:none;border:1px dashed var(--border,rgba(132,160,168,.4));border-radius:3px}
+    .hm-trend-dl{display:flex;justify-content:space-between;font-family:'JetBrains Mono',monospace;font-size:0.72rem;color:var(--text-dim,#8a948f)}
+    .hm-trend-dl span:first-child{flex:.55;text-align:left}
+    .hm-trend-legend{display:flex;flex-wrap:wrap;gap:.3rem 1rem;margin-top:.5rem;font-size:.76rem;color:var(--text-dim,#8a948f)}
     .hm-alerts--bar{margin:.7rem 0 .35rem;padding:.7rem .85rem}
     .hm-alerts--bar .hm-alerts-h{font-size:.8rem;margin-bottom:.25rem}
     .hm-alerts--bar .hm-alerts-p{font-size:0.795rem;margin:.2rem 0 .5rem;line-height:1.55}
@@ -391,6 +398,7 @@
         <div id="hm-verdict" class="hm-verdict" hidden role="status"></div>
           <div class="hm-point-stats" id="hm-point-stats"></div>
         <div class="hm-longterm" id="hm-longterm" hidden></div>
+        <div class="hm-trend" id="hm-trend" hidden></div>
         <div class="hm-point-tablewrap"><table class="hm-cty-table" id="hm-point-table"></table></div>
         <div class="hm-swathcheck" id="hm-swathcheck" hidden>
           <button type="button" id="hm-swath-btn"><svg class="ic-sp" aria-hidden="true"><use href="#sp-search"/></svg> <span id="hm-swath-btn-t">Check radar swaths at this pin</span></button>
@@ -904,6 +912,7 @@
         }
       }
       renderLongTerm(lat,lon);
+      renderTrend(evAll);
       wirePointActs();
       wireSwathCheck();
       wireAlerts();
@@ -913,6 +922,44 @@
       var d=new Date(s+'T12:00:00Z');
       if(isNaN(d.getTime())) return s;   // never print "Invalid Date" — the raw string beats a lie
       return d.toLocaleDateString(undefined,{year:'numeric',month:'short',day:'numeric'});
+    }
+    /* YEAR-BY-YEAR TREND. Same evAll the panel and the CSV already use —
+       radius-filtered, not day-filtered, so the chart answers "how has this
+       spot trended" even when a date-of-loss narrows the table above it.
+       Bars come from manifest.years, the same file list the heatmap loads,
+       so a year with zero reports IN RANGE prints a real zero bar; a year
+       the live record doesn't reach at all (before manifest.years[0]) gets
+       one dashed marker, never a fabricated zero. */
+    function renderTrend(evAll){
+      var box=document.getElementById('hm-trend'); if(!box) return;
+      var yrs=(manifest&&manifest.years)||[];
+      if(!yrs.length || !evAll){ box.hidden=true; return; }
+      var byYear={};
+      evAll.forEach(function(e){
+        var y=e.date?String(e.date).slice(0,4):null;
+        if(!y) return;
+        if(!byYear[y]) byYear[y]={n:0,max:null};
+        byYear[y].n++;
+        if(e.mag!=null && (byYear[y].max==null || e.mag>byYear[y].max)) byYear[y].max=e.mag;
+      });
+      var peak=1;
+      yrs.forEach(function(y){ var d=byYear[y]; if(d && d.n>peak) peak=d.n; });
+      var anyMag = yrs.some(function(y){ return byYear[y] && byYear[y].max!=null; });
+      var bars = yrs.map(function(y){
+        var d=byYear[y], n=d?d.n:0;
+        var h=Math.max(4,Math.round(n/peak*100));
+        var c=(d && d.max!=null) ? warnColor(d.max) : '#3a423e';
+        var t=n+' report'+(n===1?'':'s')+' in '+y+(d&&d.max!=null?' · largest '+d.max.toFixed(2)+'″':(n?' · no size on file':''));
+        return '<span style="height:'+h+'%;background:'+c+'" title="'+esc(t)+'"></span>';
+      }).join('');
+      var firstYr=yrs[0];
+      var miss = '<span class="hm-trend-miss" title="No data before '+esc(firstYr)+' — the live record starts '+esc(firstYr)+'"></span>';
+      box.innerHTML = '<div class="hm-longterm-h">Year by year · within '+lookupMi+' mi</div>'
+        + '<div class="hm-trend-bars">'+miss+bars+'</div>'
+        + '<div class="hm-trend-dl"><span>before '+esc(firstYr)+'</span>'+yrs.map(function(y){ return '<span>'+esc(y)+'</span>'; }).join('')+'</div>'
+        + (anyMag ? '<div class="hm-trend-legend"><span><span class="hm-dot" style="background:#7cd2ff"></span>pea–penny</span><span><span class="hm-dot" style="background:#fed976"></span>quarter+</span><span><span class="hm-dot" style="background:#fd8d3c"></span>golf ball+</span><span><span class="hm-dot" style="background:#e31a1c"></span>baseball+</span><span><span class="hm-dot" style="background:#3a423e"></span>no size on file</span></div>' : '')
+        + '<div class="hm-longterm-src">Bar height is report count that year; colour is that year’s largest reported stone. Dashed marker: no data before '+esc(firstYr)+', not a zero. Source: NWS Local Storm Reports via the Iowa Environmental Mesonet.</div>';
+      box.hidden=false;
     }
     // ── Swath verdict: was THIS pin inside a radar-estimated band, and when? ──
     // Ray-cast against each band's MultiPolygon outer rings. The pipeline emits
@@ -1266,11 +1313,13 @@
         if(!lastLookup) return;
         ga('hm_report_csv',{});
         var L=lastLookup;
-        var lines=['date,size_in,distance_mi,near_place'];
+        var lines=['date,size_in,distance_mi,near_place,source'];
         L.ev.forEach(function(e){
-          lines.push([e.date,(e.mag!=null?e.mag.toFixed(2):''),e.mi.toFixed(1),'"'+String(e.place||'').replace(/"/g,'""')+'"'].join(','));
+          lines.push([e.date,(e.mag!=null?e.mag.toFixed(2):''),e.mi.toFixed(1),'"'+String(e.place||'').replace(/"/g,'""')+'"','LSR'].join(','));
         });
-        lines.push(''); lines.push('# NWS Local Storm Reports (hail) within 25 mi of '+L.lat.toFixed(4)+','+L.lon.toFixed(4)+' \u00b7 last 5 years');
+        lines.push(''); lines.push('# NWS Local Storm Reports (hail) within '+lookupMi+' mi of '+L.lat.toFixed(4)+','+L.lon.toFixed(4)+
+          ' \u00b7 '+(L.day?fmtDate(L.day):(manifest&&manifest.years?manifest.years.length:5)+' years, '+(manifest&&manifest.years&&manifest.years.length?manifest.years[0]+'\u2013'+manifest.years[manifest.years.length-1]:'')));
+        lines.push('# source = LSR (NWS Local Storm Report); this list carries no MESH radar or NCEI long-term events');
         lines.push('# Source: NWS LSRs via Iowa Environmental Mesonet \u00b7 agsist.com/hail-map \u00b7 town-level precision, not parcel-exact');
         var blob=new Blob([lines.join('\n')],{type:'text/csv'});
         var a=document.createElement('a');
