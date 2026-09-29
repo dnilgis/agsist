@@ -5,13 +5,24 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Mon, 28 Sep 2026 11:11:40 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 29 Sep 2026 10:56:55 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/agsist.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>CRUDE PULLS BACK 2.1% AS YANBU REOPENS</title>
+      <link>https://agsist.com/daily/2026-09-29</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-09-29</guid>
+      <pubDate>Tue, 29 Sep 2026 05:00:00 -0600</pubDate>
+      <description>WTI settled $92.12, down 2.1%, the first real give-back after two days running toward $96 on Iran-Hormuz fear. Saudi Arabia just restarted loadings at Yanbu on the Red Sea after the East-West pipeline came back partial, and that's a supply story beating a fear story today.
+Action: Diesel buyers: WTI at **$92.12** is the cheapest print in three sessions; lock the next fuel load now before any bounce back to $94.
+• Crude Gives Back The Fear Premium
+• Grains Drift On Empty China Wires
+Read more: https://agsist.com/daily/2026-09-29</description>
+    </item>
     <item>
       <title>CRUDE RUNS TO $96 AS BEANS SLIP AGAIN</title>
       <link>https://agsist.com/daily/2026-09-28</link>
@@ -367,19 +378,6 @@ Grains closed the week strong, cattle are low on the range, and three market-mov
 • CATTLE: STILL LOW, STILL WAITING
 • INPUTS: PHOSPHATE AND DIESEL INTO HARVEST
 Read more: https://agsist.com/daily/2026-08-30</description>
-    </item>
-    <item>
-      <title>WHEAT LEADS THE WEEK; CORN PRICED FOR HARVEST</title>
-      <link>https://agsist.com/daily/2026-08-29</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-08-29</guid>
-      <pubDate>Sat, 29 Aug 2026 05:00:00 -0600</pubDate>
-      <description>Wheat ended the week at $7.67, up 22 cents Friday on heat-driven supply stress, the biggest one-day move in the complex. Beans tagged along at $12.76, near a 52-week high. The story this week: the August WASDE cut yields, the Pro Farmer tour confirmed stress, and December corn at $5.37 is pricing a tighter crop. The question now is whether September has a reason to add to that premium.
-Chicago wheat closed up 22 cents Friday, beans followed, and December corn held $5.37 as combines roll toward the Belt.
-• GRAINS: WHEAT LEADS, BEANS HOLD
-  → December corn at $5.365: if Friday's window did not move you, this is the same price. Harvest pressure arrives before the September WASDE does.
-• CATTLE: LOW ON THE RANGE, WATCHING AUG 24
-• INPUTS: DIESEL AND PHOSPHATE HEAD INTO HARVEST
-Read more: https://agsist.com/daily/2026-08-29</description>
     </item>
   </channel>
 </rss>
