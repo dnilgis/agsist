@@ -1,15 +1,15 @@
 {
  "_comment": "AGSIST farm-bill page data. Edit this, then run build_farmbill.py (or push — the GitHub Action bakes it). Values are baked into static HTML so AI crawlers see them. HTML entities allowed in text fields. Keep <b> for emphasis.",
- "updated": "2026-08-16",
- "updated_display": "Aug 16, 2026",
+ "updated": "2026-09-29",
+ "updated_display": "Sep 29, 2026",
  "pills": [
   {
    "cls": "live",
    "html": "House passed <b>224&ndash;200</b> &middot; Apr 30, 2026"
   },
   {
-   "cls": "warn",
-   "html": "Senate markup <b>failed on party lines</b> &middot; Aug 6 &mdash; revote in Sept"
+   "cls": "live",
+   "html": "Senate Ag Committee <b>passed 12&ndash;11</b> &middot; Sep 16, 2026"
   },
   {
    "cls": "warn",
@@ -19,7 +19,7 @@
  "tldr": [
   {
    "k": "Status",
-   "v": "The House passed <b>H.R. 7567</b> (224&ndash;200). The Senate Ag Committee <b>voted down</b> its <b>Agricultural Act of 2026</b> on Aug 6 along party lines &mdash; it did not advance. <b>Neither is law.</b>"
+   "v": "The House passed <b>H.R. 7567</b> (224&ndash;200). The Senate Ag Committee <b>passed</b> its <b>Agricultural Act of 2026</b> 12&ndash;11 on Sep 16, with Sen. McConnell returning to cast the deciding Republican vote. <b>Neither is law.</b>"
   },
   {
    "k": "The money",
@@ -35,7 +35,7 @@
   },
   {
    "k": "Next step",
-   "v": "Chairman Boozman recessed rather than adjourned and vowed <b>another committee vote in September</b>, after the Senate's summer break. Then 60 floor votes and a conference with the House."
+   "v": "The Senate bill still needs a <b>full Senate floor vote</b> (60 votes) and a <b>conference with the House</b> before it can reach the President. Reporting as of Sep 16 said a floor vote before the Senate's pre-midterm recess was unlikely."
   },
   {
    "k": "Not in either bill",
@@ -46,7 +46,7 @@
   {
    "k": "Status &amp; length",
    "h": "Passed the House 224&ndash;200 on Apr 30; ~800 pages; CBO-scored.",
-   "s": "Draft Jun 23; revised text Aug 1; committee <b>markup failed Aug 6</b> on a party-line vote (SNAP dispute) &mdash; revote expected September; not yet CBO-scored."
+   "s": "Draft Jun 23; revised text Aug 1; committee markup failed Aug 6, then <b>passed 12&ndash;11 on Sep 16</b> along party lines after Sen. McConnell returned to vote; not yet CBO-scored; awaits a full Senate floor vote."
   },
   {
    "k": "Overall cost",
@@ -117,9 +117,15 @@
   },
   {
    "stage": "Senate revote",
-   "desc": "Boozman vowed another committee vote after the Senate returns from summer break &mdash; expected <b>September</b>",
+   "desc": "Committee <b>passed it 12&ndash;11</b> along party lines on Sep 16 &mdash; Sen. McConnell returned to cast the deciding Republican vote",
+   "mk": "done",
+   "label": "passed"
+  },
+  {
+   "stage": "Senate floor",
+   "desc": "Needs 60 votes to pass the full Senate. As of Sep 16 a floor vote before the Senate's pre-midterm recess looked unlikely; no date set",
    "mk": "now",
-   "label": "Sept"
+   "label": "pending"
   },
   {
    "stage": "Conference",

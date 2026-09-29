@@ -133,7 +133,16 @@ QUOTES_DEFECTS = {"changelog.html"}
 # The exception is honoured ONLY WHILE THE FIRST RUN IS PENDING: the workflow
 # exists and data/dairy-history.json (written by the same run as the feed) does
 # not. Once history exists, a missing data/dairy-data.json is a real HIGH finding.
-KNOWN = {("milk-prices.html", "missing-data", "/data/dairy-data.json")}
+KNOWN = {("milk-prices.html", "missing-data", "/data/dairy-data.json"),
+         # cash-bids.html never fetches this path locally. netGet() joins it to
+         # NET_BASE = 'https://dnilgis.github.io/bids/' before calling fetch(),
+         # so the real request is to the dnilgis/bids repo's own GitHub Pages,
+         # not to this repo's data/ directory (build_feeds.py documents the
+         # same feed as EXTERNAL for status.html, for the identical reason).
+         # The regex that finds this finding only sees the string literal
+         # 'data/merged-index.json' and cannot see the NET_BASE concatenation,
+         # so it will always misread this one as a local path. Permanent.
+         ("cash-bids.html", "missing-data", "data/merged-index.json")}
 
 
 def known_missing(page, path):
@@ -255,9 +264,18 @@ def static_checks(page, html, today):
                            f"copy mentions {sorted(future)} — check it is a real forecast"))
 
     # ---- a crop year cannot be final before the following January --------
+    # "final" must describe the crop year itself (e.g. "2026 crop year ...
+    # final"), not a sub-window inside a parenthetical like "Projected price
+    # (February . final)" -- RMA sets that one number once, in February, and
+    # it is genuinely final even while the crop year as a whole is not. If
+    # "final" sits inside an unclosed "(" opened after the year, it is
+    # describing that parenthetical's own subject, not the crop year, so skip.
     for m in re.finditer(r"(20[12][0-9])[^.]{0,40}\bfinal\b", text, re.I):
         y = int(m.group(1))
         if quotes:
+            continue
+        between = m.group(0)[len(m.group(1)):]
+        if between.count("(") > between.count(")"):
             continue
         if y >= today.year and (today.year, today.month, today.day) < (y + 1, 1, 10):
             out.append(Finding(page, "HIGH", "standing-crop-final",
@@ -401,11 +419,15 @@ def audit(pages, today):
         findings += static_checks(page, html, today)
         findings += link_targets_exist(page, html)
         findings += data_refs_exist(page, html)
+        # A noindex page (a working copy, a sponsor's own link) can't compete
+        # with anything for ranking, so a title/description it shares with a
+        # real page is not a finding.
+        noindexed = bool(re.search(r'<meta name="robots"\s+content="noindex', html))
         t = re.search(r"<title>(.*?)</title>", html, re.S)
         d = re.search(r'<meta name="description"\s+content="([^"]*)"', html)
-        if t:
+        if t and not noindexed:
             titles.setdefault(re.sub(r"\s+", " ", t.group(1)).strip(), []).append(page)
-        if d:
+        if d and not noindexed:
             descs.setdefault(d.group(1).strip(), []).append(page)
     for t, pgs in titles.items():
         if len(pgs) > 1:
@@ -451,6 +473,10 @@ def selftest():
        "standing-crop-final" in codes("<p>2026 crop year · USDA NASS final</p>"))
     ck("...but a real prior-year final is fine",
        "standing-crop-final" not in codes("<p>2025 crop year · USDA NASS final</p>"))
+    ck("...and a closed sub-window in parens is not the crop year itself",
+       "standing-crop-final" not in codes(
+           "<div>Corn · Dec '26 · 2026 crop year</div>"
+           "<span>Projected price (February · final)</span>"))
     ck("$0.00 in copy", "bad-value" in codes("<p>Harvest price $0.00</p>"))
     ck("NaN in copy", "bad-value" in codes("<p>Yield NaN bu</p>"))
     ck("broken JSON-LD",
@@ -498,6 +524,8 @@ def selftest():
     ck("a fetch of a missing data file is caught", any(x.code == "missing-data" for x in f))
     f = data_refs_exist("x.html", "fetch('/data/changelog.json')")
     ck("a fetch of a real data file is quiet", not f)
+    f = data_refs_exist("cash-bids.html", "netGet('data/merged-index.json')")
+    ck("cash-bids.html's external bids-network path is not a local miss", not f)
 
     print()
     if fails:
