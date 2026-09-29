@@ -1,18 +1,18 @@
 {
- "generated": "2026-09-29T14:08:12Z",
+ "generated": "2026-09-29T14:23:24Z",
  "from": "barchart-raw.json",
  "complete": false,
  "note": "Directory only: who operates a facility and where. No prices, no basis, no symbols, no delivery windows.",
  "counts": {
-  "facilities": 2225,
+  "facilities": 2228,
   "states": 38,
   "with_address": 722,
   "with_coords": 725,
   "with_url": 703,
-  "with_phone": 2158,
+  "with_phone": 2161,
   "saturated_zips": 0,
   "failed_zips": 0,
-  "rows_read": 18504
+  "rows_read": 18534
  },
  "saturated": [],
  "failed": [],
@@ -22476,6 +22476,15 @@
   },
   {
    "facility": "Countyline Cooperative Inc.",
+   "branch": "Gibsonburg",
+   "city": "Gibsonburg",
+   "state": "OH",
+   "zip": "43431",
+   "phone": "(419) 637-2204",
+   "source": "barchart"
+  },
+  {
+   "facility": "Countyline Cooperative Inc.",
    "branch": "Countyline Co-op",
    "city": "Pemberville",
    "state": "OH",
@@ -22495,6 +22504,24 @@
    "facility_type": "Country Elevator",
    "locationId": 36982,
    "elevatorId": 1474
+  },
+  {
+   "facility": "Countyline Cooperative Inc.",
+   "branch": "Pemberville",
+   "city": "Pemberville",
+   "state": "OH",
+   "zip": "43450",
+   "phone": "(419) 287-3241",
+   "source": "barchart"
+  },
+  {
+   "facility": "Countyline Cooperative Inc.",
+   "branch": "Risingsun",
+   "city": "Risingsun",
+   "state": "OH",
+   "zip": "43457",
+   "phone": "(419) 457-2111",
+   "source": "barchart"
   },
   {
    "company": "Deerfield Ag Service",
