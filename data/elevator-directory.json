@@ -1,5 +1,5 @@
 {
- "generated": "2026-09-29T18:08:08Z",
+ "generated": "2026-09-29T18:23:14Z",
  "from": "barchart-raw.json",
  "complete": false,
  "note": "Directory only: who operates a facility and where. No prices, no basis, no symbols, no delivery windows.",
@@ -10982,7 +10982,7 @@
    "city": "Abbyville",
    "state": "KS",
    "zip": "67510",
-   "phone": "16202865201",
+   "phone": "620-286-5201",
    "source": "barchart",
    "company": "Abbyville Farmers Co-op Grain Co.",
    "location": "Abbyville",
