@@ -1,0 +1,75 @@
+name: Weekend daily-briefing heartbeat
+
+# THE MYSTERY: 2026-09-27, a Sunday, shipped no daily briefing and sent no
+# alert. No "AGSIST Daily — 2026-09-27" commit exists at all -- not late, not
+# malformed, just absent. Root-caused 2026-09-29 by reading the actual commit
+# history, not guessing: daily.yml's three own crons (10:19, 11:41, 13:23
+# UTC) are its ONLY chance on a Saturday or Sunday morning. On a weekday,
+# prices.yml's heartbeat dispatch adds many more chances every 30 minutes
+# starting 13:17 UTC -- but prices.yml only runs '* * 1-5' (weekdays), because
+# there is no fresh futures data to fetch before Sunday evening's session
+# reopens. Checked: zero "💹 Prices" commits landed on 2026-09-26 or
+# 2026-09-27, confirming the heartbeat genuinely never fires on a weekend
+# morning. So a weekend's entire briefing depends on GitHub's cron firing at
+# least one of three specific minutes -- and this repo already measured, in
+# daily.yml's own header, that GitHub's schedule silently drops fires often
+# enough to have broken the briefing twice before by itself.
+#
+# THE FIX adds the exact same insurance weekdays already have, scoped to just
+# Saturday and Sunday: two more workflow_dispatch fires, off-:00 minutes, each
+# a heartbeat=true dispatch -- IDENTICAL to what the price loop already sends
+# every weekday morning -- so it obeys daily.yml's existing floor,
+# published-check, and late-arrival rules exactly. This file adds no new
+# logic to daily.yml or its gate; it only knocks on the same door twice more,
+# on the two days nothing else knocks at all.
+#
+# BOTH TIMES SIT AFTER daily.yml's OWN LAST CRON (13:23 UTC), on purpose.
+# That cron is already daily.yml's "last resort, still a morning briefing" --
+# by its own header, 08:23 CDT / 07:23 CST, comfortably past the 05:45 floor
+# in either season. Anything placed after 13:23 UTC inherits that: zero wait
+# needed, in either season, no dual-season floor arithmetic to get right here.
+# Landing a fire BEFORE 10:19 UTC (daily.yml's first cron) was considered and
+# rejected -- close enough to the 05:45 CST floor (11:45 UTC) that the gate's
+# 40-minute wait budget could run out before the floor does, wasting the fire
+# entirely, exactly the kind of subtly-wrong schedule this repo has already
+# shipped once. Same reasoning kept both new times off :00/:15/:30/:45 and at
+# least 45 minutes apart, matching scripts/test_daily_schedule.py's existing
+# rule for daily.yml's own crons.
+#
+# NOT COVERED: a weekday that is also a market holiday (Thanksgiving, July 4,
+# Christmas, ...) has the same gap -- prices.yml still fires on 'schedule',
+# but futures don't trade so it likely pushes nothing and sends no
+# heartbeat -- and this file doesn't reach that case. Flagged, not solved
+# here; would need an actual trading-calendar check, which contract_calendar.py
+# already has and could be extended to cover.
+on:
+  schedule:
+    - cron: '11 14 * * 0,6'   # 14:11 UTC Sat/Sun -- 48min after daily.yml's last cron
+    - cron: '2 15 * * 0,6'    # 15:02 UTC Sat/Sun -- 51min after the fire above
+  workflow_dispatch:
+
+permissions:
+  actions: write
+
+jobs:
+  knock:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Dispatch daily.yml as a heartbeat
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -uo pipefail
+          echo "Dispatching daily.yml (heartbeat=true) — $(date -u +%FT%TZ)"
+          # send_email=true matches prices.yml's own heartbeat exactly (see its
+          # fetch-loop step): the gate is what decides whether anything actually
+          # publishes and mails today, same as every weekday heartbeat. `|| true`
+          # for the same reason prices.yml gives its own dispatch: a missed
+          # heartbeat here is not worth failing the run over -- there is a second
+          # one along in about 90 minutes, same shape as the price loop's excuse.
+          gh workflow run daily.yml \
+            --repo "${{ github.repository }}" \
+            --ref main \
+            -f heartbeat=true -f send_email=true \
+            && echo "weekend heartbeat sent" \
+            || echo "::warning::weekend heartbeat could not be sent"

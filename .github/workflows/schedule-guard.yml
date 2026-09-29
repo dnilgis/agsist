@@ -24,11 +24,13 @@ on:
       - '.github/workflows/daily.yml'
       - '.github/workflows/prices.yml'
       - '.github/workflows/schedule-guard.yml'
+      - '.github/workflows/weekend-heartbeat.yml'
       - 'scripts/test_daily_schedule.py'
       - 'scripts/test_briefing_gate.py'
   pull_request:
     paths:
       - '.github/workflows/daily.yml'
+      - '.github/workflows/weekend-heartbeat.yml'
       - 'scripts/test_daily_schedule.py'
   # Off-:00, low frequency — the shape this repository has measured as the one
   # GitHub actually delivers. Monday 09:37 Central.
