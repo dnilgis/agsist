@@ -1,18 +1,18 @@
 {
- "generated": "2026-09-29T02:08:13Z",
+ "generated": "2026-09-29T02:17:44Z",
  "from": "barchart-raw.json",
  "complete": false,
  "note": "Directory only: who operates a facility and where. No prices, no basis, no symbols, no delivery windows.",
  "counts": {
-  "facilities": 2224,
+  "facilities": 2225,
   "states": 38,
   "with_address": 722,
   "with_coords": 725,
   "with_url": 703,
-  "with_phone": 2157,
+  "with_phone": 2158,
   "saturated_zips": 0,
   "failed_zips": 0,
-  "rows_read": 18488
+  "rows_read": 18496
  },
  "saturated": [],
  "failed": [],
@@ -9913,7 +9913,7 @@
    "city": "Marion",
    "state": "IN",
    "zip": "46952",
-   "phone": "?(888) 384-2676",
+   "phone": "888-384-2676",
    "source": "barchart"
   },
   {
@@ -20149,6 +20149,15 @@
    "state": "NE",
    "zip": "69028",
    "phone": "(308) 486-3221",
+   "source": "barchart"
+  },
+  {
+   "facility": "Ag Valley Co-op",
+   "branch": "HERSHEY",
+   "city": "Hershey",
+   "state": "NE",
+   "zip": "69143",
+   "phone": "308-368-7676",
    "source": "barchart"
   },
   {
