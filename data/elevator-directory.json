@@ -1,5 +1,5 @@
 {
- "generated": "2026-09-29T17:08:13Z",
+ "generated": "2026-09-29T17:23:16Z",
  "from": "barchart-raw.json",
  "complete": false,
  "note": "Directory only: who operates a facility and where. No prices, no basis, no symbols, no delivery windows.",
@@ -12,7 +12,7 @@
   "with_phone": 2161,
   "saturated_zips": 0,
   "failed_zips": 0,
-  "rows_read": 18536
+  "rows_read": 18529
  },
  "saturated": [],
  "failed": [],
@@ -160,7 +160,7 @@
    "city": "Des Arc",
    "state": "AR",
    "zip": "72040",
-   "phone": "(870)256-4125",
+   "phone": "870-256-4125",
    "source": "barchart"
   },
   {
@@ -17628,7 +17628,7 @@
    "city": "Centralia",
    "state": "MO",
    "zip": "65240",
-   "phone": "(855)505-5165",
+   "phone": "855-505-5165",
    "source": "barchart"
   },
   {
@@ -27372,7 +27372,7 @@
    "city": "Johnson Creek",
    "state": "WI",
    "zip": "53038",
-   "phone": "(920)515-0578",
+   "phone": "920-515-0578",
    "source": "barchart",
    "company": "Aztalan Bio LLC",
    "location": "Aztalan Bio LLC",
