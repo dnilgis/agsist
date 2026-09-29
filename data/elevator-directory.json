@@ -1,18 +1,18 @@
 {
- "generated": "2026-09-29T20:03:53Z",
+ "generated": "2026-09-29T20:23:17Z",
  "from": "barchart-raw.json",
  "complete": false,
  "note": "Directory only: who operates a facility and where. No prices, no basis, no symbols, no delivery windows.",
  "counts": {
-  "facilities": 2230,
+  "facilities": 2232,
   "states": 38,
   "with_address": 722,
   "with_coords": 725,
   "with_url": 703,
-  "with_phone": 2163,
+  "with_phone": 2165,
   "saturated_zips": 0,
   "failed_zips": 0,
-  "rows_read": 18602
+  "rows_read": 18646
  },
  "saturated": [],
  "failed": [],
@@ -7153,6 +7153,15 @@
   },
   {
    "facility": "FS Grain",
+   "branch": "Holder",
+   "city": "Downs, IL 61736",
+   "state": "IL",
+   "zip": "61736",
+   "phone": "309-724-8312",
+   "source": "barchart"
+  },
+  {
+   "facility": "FS Grain",
    "branch": "Grand Ridge",
    "city": "Grand Ridge",
    "state": "IL",
@@ -7195,6 +7204,15 @@
    "state": "IL",
    "zip": "60444",
    "phone": "(815) 448-2175",
+   "source": "barchart"
+  },
+  {
+   "facility": "FS Grain",
+   "branch": "McLean",
+   "city": "McLean",
+   "state": "IL",
+   "zip": "61754",
+   "phone": "309-874-2771",
    "source": "barchart"
   },
   {
