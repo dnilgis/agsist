@@ -1,5 +1,5 @@
 {
- "generated": "2026-09-29T16:08:15Z",
+ "generated": "2026-09-29T16:23:18Z",
  "from": "barchart-raw.json",
  "complete": false,
  "note": "Directory only: who operates a facility and where. No prices, no basis, no symbols, no delivery windows.",
@@ -12,7 +12,7 @@
   "with_phone": 2161,
   "saturated_zips": 0,
   "failed_zips": 0,
-  "rows_read": 18531
+  "rows_read": 18536
  },
  "saturated": [],
  "failed": [],
@@ -23916,7 +23916,7 @@
    "city": "Johnstown",
    "state": "OH",
    "zip": "43031",
-   "phone": " 740-967-0145",
+   "phone": "740-967-0145",
    "source": "barchart"
   },
   {
