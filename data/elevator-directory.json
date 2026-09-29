@@ -1,18 +1,18 @@
 {
- "generated": "2026-09-29T17:38:15Z",
+ "generated": "2026-09-29T17:53:10Z",
  "from": "barchart-raw.json",
  "complete": false,
  "note": "Directory only: who operates a facility and where. No prices, no basis, no symbols, no delivery windows.",
  "counts": {
-  "facilities": 2228,
+  "facilities": 2230,
   "states": 38,
   "with_address": 722,
   "with_coords": 725,
   "with_url": 703,
-  "with_phone": 2161,
+  "with_phone": 2163,
   "saturated_zips": 0,
   "failed_zips": 0,
-  "rows_read": 18529
+  "rows_read": 18535
  },
  "saturated": [],
  "failed": [],
@@ -7892,6 +7892,15 @@
    "facility_type": "Country Elevator",
    "locationId": 79839,
    "elevatorId": 3043,
+   "source": "barchart"
+  },
+  {
+   "facility": "One Earth Energy",
+   "branch": "One Earth Energy",
+   "city": "Gibson City",
+   "state": "IL",
+   "zip": "60936",
+   "phone": "(217) 784-5321",
    "source": "barchart"
   },
   {
@@ -21394,6 +21403,15 @@
    "state": "NE",
    "zip": "68632",
    "phone": "+1 402-367-3582",
+   "source": "barchart"
+  },
+  {
+   "facility": "Frontier Cooperative",
+   "branch": "David City - Elevator",
+   "city": "David City",
+   "state": "NE",
+   "zip": "68632",
+   "phone": "402-367-3019",
    "source": "barchart"
   },
   {
