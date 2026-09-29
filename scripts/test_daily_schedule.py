@@ -428,6 +428,54 @@ def main():
           "the price loop dispatches without send_email, so the page updates "
           "and the inbox stays empty — the complaint that started all of this")
 
+    # ── THE WEEKEND GAP, 2026-09-27 ─────────────────────────────────────────
+    # No "AGSIST Daily — 2026-09-27" commit exists. Root cause: daily.yml's
+    # three crons are a weekend's ONLY chance, because prices.yml (the source
+    # of every weekday heartbeat) is `* * 1-5` and sends nothing on a
+    # Saturday or Sunday morning. weekend-heartbeat.yml exists to plug that;
+    # this checks its shape the same way the rest of this file checks
+    # daily.yml's, so an edit that quietly breaks it fails loudly instead of
+    # waiting for the next dropped Sunday to be noticed.
+    print("\nthe weekend gap — daily.yml's own crons are not enough on Sat/Sun")
+    WKPATH = WF.parent / "weekend-heartbeat.yml"
+    check(WKPATH.exists(),
+          "weekend-heartbeat.yml exists",
+          "without it, Saturday and Sunday have no heartbeat at all — see 2026-09-27")
+    if WKPATH.exists():
+        wk = WKPATH.read_text()
+        wkcrons = re.findall(r"- cron:\s*'([^']+)'", wk)
+        check(len(wkcrons) >= 1, "it fires at least once", "found %d crons" % len(wkcrons))
+
+        wk_minutes = []
+        for c in wkcrons:
+            parts = c.split()
+            m, h, dow = parts[0], parts[1], parts[4]
+            check(dow in ("0,6", "6,0"),
+                  "…scoped to Saturday and Sunday only (%r has dow=%r)" % (c, dow),
+                  "a weekday fire here duplicates prices.yml's own heartbeat")
+            if m.isdigit() and h.isdigit():
+                wk_minutes.append(int(h) * 60 + int(m))
+        wk_minutes.sort()
+
+        wk_busy = ["%02d:%02d" % divmod(t, 60) for t in wk_minutes if t % 60 in BUSY_MINUTES]
+        check(not wk_busy,
+              "no weekend fire sits on :00, :15, :30 or :45 either",
+              "%s — same reliability problem as a busy-minute daily.yml cron" % ", ".join(wk_busy))
+
+        all_fires = sorted(morning + wk_minutes)
+        wk_gaps = [b - a for a, b in zip(all_fires, all_fires[1:])]
+        check(not wk_gaps or min(wk_gaps) >= 45,
+              "every weekend fire is >=45 minutes from its neighbour, "
+              "daily.yml's own crons included",
+              "closest pair in the combined weekend schedule is %d minutes apart"
+              % (min(wk_gaps) if wk_gaps else 0))
+
+        check("heartbeat=true" in wk and "send_email=true" in wk,
+              "the weekend dispatch is a real heartbeat, not a silent one",
+              "without send_email=true a weekend recovery publishes and mails nobody")
+        check(re.search(r"actions:\s*write", wk) is not None and "GH_TOKEN" in wk,
+              "…and it has the permission and the token to send it")
+
     print()
     if FAILED:
         print("FAILED (%d): %s" % (len(FAILED), "; ".join(FAILED)))
