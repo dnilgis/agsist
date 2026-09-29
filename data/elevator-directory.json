@@ -1,5 +1,5 @@
 {
- "generated": "2026-09-29T02:17:44Z",
+ "generated": "2026-09-29T02:38:12Z",
  "from": "barchart-raw.json",
  "complete": false,
  "note": "Directory only: who operates a facility and where. No prices, no basis, no symbols, no delivery windows.",
@@ -4958,7 +4958,7 @@
    "city": "Shell Rock",
    "state": "IA",
    "zip": "50670",
-   "phone": " (319) 820-2600",
+   "phone": "319-820-2600",
    "source": "barchart"
   },
   {
@@ -6227,7 +6227,7 @@
    "city": "Palmer",
    "state": "IL",
    "zip": "62556",
-   "phone": " (217) 526-3114",
+   "phone": "217-526-3114",
    "source": "barchart"
   },
   {
@@ -16252,7 +16252,7 @@
    "city": "Gaylord",
    "state": "MN",
    "zip": "55334",
-   "phone": " (507) 237-4600",
+   "phone": "507-237-4600",
    "source": "barchart",
    "company": "Michael Foods",
    "location": "Gaylord, MN",
@@ -27213,7 +27213,7 @@
    "city": "Osseo",
    "state": "WI",
    "zip": "54758",
-   "phone": " (715) 597-3328",
+   "phone": "715-597-3328",
    "source": "barchart"
   },
   {
@@ -28156,7 +28156,7 @@
    "city": "Wausau",
    "state": "WI",
    "zip": "54401",
-   "phone": " (715) 870-2455",
+   "phone": "715-870-2455",
    "source": "barchart"
   },
   {
