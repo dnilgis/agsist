@@ -1,18 +1,18 @@
 {
- "generated": "2026-09-30T18:53:12Z",
+ "generated": "2026-09-30T19:08:12Z",
  "from": "barchart-raw.json",
  "complete": false,
  "note": "Directory only: who operates a facility and where. No prices, no basis, no symbols, no delivery windows.",
  "counts": {
-  "facilities": 2235,
+  "facilities": 2236,
   "states": 38,
   "with_address": 722,
   "with_coords": 725,
   "with_url": 703,
-  "with_phone": 2168,
+  "with_phone": 2169,
   "saturated_zips": 0,
   "failed_zips": 0,
-  "rows_read": 17220
+  "rows_read": 17227
  },
  "saturated": [],
  "failed": [],
@@ -10273,6 +10273,15 @@
    "state": "IN",
    "zip": "46011",
    "phone": "765-754-7541",
+   "source": "barchart"
+  },
+  {
+   "facility": "Kokomo Grain Co.",
+   "branch": "Burlington",
+   "city": "Burlington",
+   "state": "IN",
+   "zip": "46915",
+   "phone": "(765) 566-3376",
    "source": "barchart"
   },
   {
