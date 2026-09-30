@@ -665,11 +665,50 @@ main#main{display:flex;flex-direction:column}
 #wire-band{order:3}
 #harvest-band{order:4}
 #pdw{order:5}
-#dash-grid,#f-radar,#f-prices{background:radial-gradient(ellipse at top, rgba(58,139,60,.06), transparent 65%);border-radius:12px;padding-top:.4rem}
-#f-cot-intel{background:radial-gradient(ellipse at top, rgba(74,144,217,.07), transparent 65%);border-radius:12px;padding-top:.4rem}
-.idx1-zone-label{font-family:'JetBrains Mono',monospace;font-size:.7rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--text-muted);margin:1.1rem 0 .3rem;padding-left:.15rem}
-.idx1-preview-flag{position:sticky;top:0;z-index:500;background:#d08a3c;color:#0a0c0d;font-family:'JetBrains Mono',monospace;font-size:.76rem;font-weight:700;text-align:center;padding:.4rem .6rem;letter-spacing:.03em}
-#idx1-trust-ledger{font-size:.72rem;color:var(--text-muted);margin-top:.55rem;text-align:center}
+
+/* Density pass: nothing here wraps a section in a second box. Real cards
+   already have their own 2px border and radius (components/styles.css
+   .card) -- a padded, bordered panel around a group of them was a container
+   around containers, and it's gone. Zone identity is a thin colored rule
+   above the section instead, and every spacing var that controls the gap
+   between sections/cards/rows is tightened, scoped to this page only (these
+   are the live site's own custom properties, redefined here, not edited in
+   components/styles.css, so nothing else on the site is affected). */
+body{--sp-md:.6rem;--sp-lg:.85rem;--sp-xl:1.1rem;--sp-2xl:1.5rem}
+.card-body{padding:.6rem .75rem}
+.sec-head{margin-bottom:.35rem}
+.dash-grid{grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:.7rem}
+.price-cards-grid{grid-template-columns:repeat(auto-fill,minmax(min(100%,200px),1fr));gap:.55rem}
+.price-cards-grid-2{grid-template-columns:repeat(auto-fill,minmax(min(100%,180px),1fr));gap:.5rem}
+.ratio-cot-grid{gap:.7rem}
+.pc-price{font-size:1.9rem}
+.daily-hero{margin-bottom:.6rem}
+.daily-teaser{padding:.55rem .9rem}
+/* The real site's "brief" state still shows the full headline + lead
+   paragraph (by design -- confirmed, not a bug) at up to 3.6rem type, which
+   alone was over 1,300px tall and pushed every dashboard widget below the
+   fold. That's real editorial content on the live homepage and stays
+   untouched there. Here, where the point is density, collapsed means
+   collapsed: just the one-line teaser pill until a reader clicks it open --
+   the click handler already lives in index.html's own script and still
+   works, since it only ever toggles the `is-brief` class. */
+#daily-hero.is-brief .daily-full{display:none}
+/* .daily-teaser is display:none by default on the real site -- it only
+   shows once a reader actively dismisses the briefing (.dismissed class).
+   Hiding .daily-full above left nothing at all in its place. Force the
+   one-line teaser pill visible here instead, so there's still a compact
+   entry point into the real briefing rather than an empty gap. */
+#daily-hero.is-brief .daily-teaser{display:flex!important}
+
+.idx1-zone-label{display:flex;align-items:center;gap:.5rem;font-family:'JetBrains Mono',monospace;font-size:.72rem;font-weight:800;letter-spacing:.11em;text-transform:uppercase;margin:0 0 .5rem;padding-top:.5rem;border-top:2px solid}
+.idx1-zone-label::before{content:'';width:7px;height:7px;border-radius:50%;flex:none}
+.idx1-zone-label.idx1-zone-live{border-top-color:#4caf50;color:#8fd98f}
+.idx1-zone-label.idx1-zone-live::before{background:#4caf50}
+.idx1-zone-label.idx1-zone-intel{border-top-color:#4a90d9;color:#9ecbf5}
+.idx1-zone-label.idx1-zone-intel::before{background:#4a90d9}
+.idx1-zone-label small{font-weight:600;letter-spacing:0;text-transform:none;opacity:.7;font-size:.85em}
+.idx1-preview-flag{position:sticky;top:0;z-index:500;background:#d08a3c;color:#0a0c0d;font-family:'JetBrains Mono',monospace;font-size:.7rem;font-weight:700;text-align:center;padding:.28rem .6rem;letter-spacing:.03em}
+#idx1-trust-ledger{font-size:.74rem;color:var(--gold);font-weight:600;margin-top:.4rem;text-align:center;padding:.3rem;background:rgba(212,162,63,.08);border-radius:6px}
 </style>
 <meta name="robots" content="noindex,nofollow"><!-- index1.html preview build: never index this URL -->
 </head>
@@ -1098,7 +1137,7 @@ main#main{display:flex;flex-direction:column}
     </div>
   </div>
 
-  <div class="idx1-zone-label">Live Now</div>
+  <div class="idx1-zone-label idx1-zone-live">Live Now <small>&mdash; your location, your bids, right now</small></div>
   <div class="dash-grid" id="dash-grid">
     <div class="fade-up" id="f2" style="transition-delay:.08s">
       <div class="sec-head"><h2 class="sec-title">Local Conditions</h2></div>
@@ -1383,7 +1422,7 @@ main#main{display:flex;flex-direction:column}
     </div>
   </div>
   
-  <div class="idx1-zone-label">Market Intelligence</div>
+  <div class="idx1-zone-label idx1-zone-intel">Market Intelligence <small>&mdash; where the money's actually positioned</small></div>
   <div class="fade-up" id="f-cot-intel">
     <div class="sec-head"><h2 class="sec-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:1.05em;height:1.05em;vertical-align:-.13em;margin-right:.34em;flex:none"><path d="M3 3v16a2 2 0 0 0 2 2h16" /> <path d="m19 9-5 5-4-4-3 3" /></svg>Market Intelligence</h2><a href="/cot" class="sec-all">Full COT Chart &rarr;</a></div>
     <div class="ratio-cot-grid">
