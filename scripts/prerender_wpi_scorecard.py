@@ -176,7 +176,19 @@ def numbers_el(rows):
                 tag = '<span class="v flat">in line</span>'
             else:
                 tag = '<span class="v flat" title="' + _esc4(r.get("why") or "") + '">no call</span>'
-            printed = '<td class="n"><b>' + _sig(r["actual"]) + u + "</b>" + tag + "</td>"
+            # A print past the average band can still sit inside the survey's
+            # own range: say so. Line-for-line port of numbersEl()'s inRng in
+            # whats-priced-in.html -- this is the exact parity gap
+            # test/wpi-numbers-strip.test.mjs exists to catch (found missing
+            # here on 2026-09-30, after it had already shipped on the real
+            # September soybean yield row: bearish by the tight yield band,
+            # but still inside the survey's own low-high range).
+            in_rng = ""
+            if (r.get("low") is not None and r.get("high") is not None
+                    and r["low"] <= r["actual"] <= r["high"]
+                    and sur in ("bullish", "bearish")):
+                in_rng = '<div style="font-size:.72rem;color:var(--wp-mut)">inside the trade range</div>'
+            printed = '<td class="n"><b>' + _sig(r["actual"]) + u + "</b>" + tag + in_rng + "</td>"
         body.append("<tr><td>" + _esc4(r.get("label")) + rng + '</td><td class="n">' + exp
                     + '</td><td class="n">' + now + "</td>" + printed + "</tr>")
     src = next((r.get("source") for r in rows if r.get("source")), None)
