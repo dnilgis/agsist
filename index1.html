@@ -650,21 +650,27 @@
 </style>
 
 <style>
-/* ===== index1 preview: Option-B zoning. CSS reorders the real top-level
-   sections via `order`; the one physical move (COT+Nowcast out of #f-prices
-   into #f-cot-intel, done in this file's build step, not by hand) keeps every
-   widget's ids and scripts untouched -- getElementById does not care where in
-   the DOM a node sits. */
-main#main{display:flex;flex-direction:column}
-#dash-grid{order:-3}
-#f-radar{order:-2}
-#f-prices{order:-1}
-#f-cot-intel{order:0}
-#f5{order:1}
-#f-noaa{order:2}
-#wire-band{order:3}
-#harvest-band{order:4}
-#pdw{order:5}
+/* ===== 2026-09-30: real two-column page shell, replacing the Option-B
+   `order:` hack above. .idx1-shell is a sibling wrapper inside <main>
+   holding .idx1-content (everything that used to be main's direct
+   children, now in real DOM order — no more CSS reordering) and a real
+   <aside class="intel-rail"> that runs the FULL height of the page next
+   to it, not just one grafted row. minmax(0,1fr) on the content track,
+   same reasoning as the old .idx1-intel-row fix this replaces: a bare 1fr
+   track's implicit minimum is its content's max-content width, which is
+   how the 390px scrollWidth bug happened before. Collapses to one column
+   under 900px; DOM order (content, then aside) is unchanged at that
+   breakpoint, so a first-time mobile visitor still hits price/weather
+   content before the rail — same call the mockup's own comment makes for
+   reverting rail-first-on-mobile. ===== */
+.idx1-shell{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:1.1rem;align-items:start}
+.idx1-content{min-width:0;display:flex;flex-direction:column}
+.intel-rail{display:flex;flex-direction:column;gap:1.1rem;min-width:0}
+@media(max-width:900px){.idx1-shell{grid-template-columns:minmax(0,1fr)}}
+/* Inside the 340px rail, COT + Nowcast stack (they sat side-by-side only
+   when the row was 2x as wide as it is now as a standalone rail column). */
+.intel-rail .ratio-cot-grid{grid-template-columns:1fr}
+.intel-rail #f-cot-intel .sec-head,.intel-rail #f5 .sec-head{margin-bottom:.35rem}
 
 /* Density pass: nothing here wraps a section in a second box. Real cards
    already have their own 2px border and radius (components/styles.css
@@ -704,23 +710,7 @@ body{--sp-md:.6rem;--sp-lg:.85rem;--sp-xl:1.1rem;--sp-2xl:1.5rem}
 .idx1-zone-label::before{content:'';width:7px;height:7px;border-radius:50%;flex:none}
 .idx1-zone-label.idx1-zone-live{border-top-color:#4caf50;color:#8fd98f}
 .idx1-zone-label.idx1-zone-live::before{background:#4caf50}
-.idx1-zone-label.idx1-zone-intel{border-top-color:var(--blue);color:var(--blue)}
-.idx1-zone-label.idx1-zone-intel::before{background:var(--blue)}
 .idx1-zone-label small{font-weight:600;letter-spacing:0;text-transform:none;opacity:.7;font-size:.85em}
-/* 2026-09-30: COT + Grain Stocks/USDA side by side, ported from the Design
-   canvas mockup's main+rail split. #f-cot-intel keeps its own internal
-   .ratio-cot-grid (nowcast + COT widget side by side); this just gives the
-   PAIR of top-level sections a second, outer column next to it. minmax(0,1fr)
-   on the left stops the COT widget's own grid from overflowing its track. */
-.idx1-intel-row{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:1rem;align-items:start}
-/* minmax(0,...) on BOTH rules, not bare 1fr: a bare 1fr track's implicit
-   minimum is its content's max-content width, so a wide flex row inside
-   (the I-raise toggle, the COT bar labels) keeps the track -- and the whole
-   page -- from ever actually shrinking to the viewport. Found by the
-   project's own 390px scrollWidth check: docScrollWidth was 492 against a
-   390 viewport before this fix, traced to gridTemplateColumns computing to
-   ~1525px instead of 390px. */
-@media(max-width:900px){.idx1-intel-row{grid-template-columns:minmax(0,1fr)}}
 .visually-hidden{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}
 fieldset.visually-hidden{border:0;margin:0;padding:0;min-width:0}
 /* "I raise" toggle -- see the fieldset's own comment for why it lives where
@@ -739,13 +729,58 @@ fieldset:has(#i-raise-cattle:checked) ~ * .cot-row-cattle,
 fieldset:has(#i-raise-mixed:checked) ~ * .cot-row-cattle{order:-1;box-shadow:0 0 0 1px var(--green) inset;border-radius:8px}
 fieldset:has(#i-raise-cattle:checked) ~ * .cot-rows::before{content:'Showing Cattle first';display:block;order:-2;font-size:.68rem;color:var(--green);margin-bottom:.3rem}
 fieldset:has(#i-raise-mixed:checked) ~ * .cot-rows::before{content:'Cattle pinned, crops still shown';display:block;order:-2;font-size:.68rem;color:var(--green);margin-bottom:.3rem}
+fieldset:has(#i-raise-cattle:checked) ~ * #nowcast-widget{display:none}
+fieldset:has(#i-raise-cattle:checked) ~ * .idx1-nowcast-na{display:block!important}
 .idx1-preview-flag{position:sticky;top:0;z-index:500;background:#d08a3c;color:#0a0c0d;font-family:'JetBrains Mono',monospace;font-size:.7rem;font-weight:700;text-align:center;padding:.28rem .6rem;letter-spacing:.03em}
 #idx1-trust-ledger{font-size:.74rem;color:var(--gold);font-weight:600;margin-top:.4rem;text-align:center;padding:.3rem;background:rgba(212,162,63,.08);border-radius:6px}
+/* ===== 2026-09-30: secondary bar under the real global header -- ZIP
+   quick-access chip, ported from the Design canvas mockup's top-bar
+   concept. Deliberately does NOT carry the mockup's "last 18h" example
+   delta chips (up 6 cents / funds flipped short beans / frost advisory):
+   no real feed on this page computes an 18-hour delta for those three
+   things in one place, and honest-numbers says drop a chip rather than
+   invent one. The ZIP chip is real: it focuses the actual bids-zip input
+   already wired to live data below, it does not display or imply any
+   number of its own.
+   FIX 2026-09-30, round one: this block was first wrapped in its own
+   nested style element, spliced in front of this page's already-open
+   style element's own closing tag. Browsers do not parse nested style
+   elements -- the HTML tokenizer stays in raw-text mode from the real
+   opening tag and scans for the next literal closing-tag string, so that
+   inner opening tag just became plain text inside the stylesheet, sitting
+   in front of the idx1-subbar selector with no semicolon or brace between
+   them; the CSS parser folded both into one invalid prelude and silently
+   dropped that rule. Fixed by removing the inner tag pair.
+   FIX 2026-09-30, round two: the fix above then repeated the same mistake
+   one level up, inside this very comment, by spelling out that literal
+   closing-tag text three times in prose. The HTML tokenizer has no idea
+   CSS comments exist; once it is scanning raw text after a real style
+   opening tag it ends that element at the first occurrence of that exact
+   literal string it meets anywhere, even inside a slash-star comment.
+   That first occurrence sat in this paragraph, truncating the whole style
+   element right there and dumping every rule written after it back out as
+   unstyled tag soup -- including idx1-subbar itself, again, silently,
+   with no console error either time. Caught only by asking the real
+   browser for its parsed stylesheet rules and finding none. Fixed by
+   describing the tag in words from here on rather than ever spelling out
+   that literal bracketed sequence inside a style element again. ===== */
+.idx1-subbar{width:100%;box-sizing:border-box;padding:.5rem 1rem;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:.6rem;flex-wrap:wrap}
+.idx1-zip-chip{display:inline-flex;align-items:center;gap:.4rem;padding:.3rem .7rem;background:var(--surface2,rgba(255,255,255,.03));border:1px solid var(--border-2,var(--border));border-radius:20px;font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--text-muted);cursor:pointer;min-height:30px}
+.idx1-zip-chip:hover{border-color:var(--blue)}
+.idx1-zip-chip .idx1-zip-label{color:var(--text-muted)}
+.idx1-zip-chip .idx1-zip-val{color:var(--text);font-weight:600}
+.idx1-zip-chip .idx1-zip-change{color:var(--blue);margin-left:.2rem}
+@media(max-width:640px){.idx1-subbar{padding:.4rem .75rem}}
 </style>
 <meta name="robots" content="noindex,nofollow"><!-- index1.html preview build: never index this URL -->
 </head>
 <body><div class="idx1-preview-flag">PREVIEW BUILD — index1.html — layout test only, not linked from the site, does not affect agsist.com’s live homepage</div>
 <a href="#main" class="skip">Skip to content</a>
+<a href="#market-intel" class="idx1-skip-rail">Skip to Market Intelligence</a>
+<style>
+.idx1-skip-rail{position:absolute;left:-9999px;top:0;z-index:1000;background:var(--brand);color:var(--bg);font-family:var(--font-mono,'JetBrains Mono',monospace);font-size:.8rem;font-weight:700;padding:.6rem 1rem;border-radius:0 0 var(--r-sm) 0;text-decoration:none}
+.idx1-skip-rail:focus{left:110px}
+</style>
 <noscript><div class="noscript-banner">AGSIST requires JavaScript for live prices and weather. Please enable JavaScript.</div></noscript>
 <div id="site-header">
   <!-- Static crawlable header: loader.js replaceWith() swaps this for the live dropdown nav on JS;
@@ -762,6 +797,43 @@ fieldset:has(#i-raise-mixed:checked) ~ * .cot-rows::before{content:'Cattle pinne
     </div>
   </header>
 </div>
+<div class="idx1-subbar">
+  <button type="button" id="idx1-zip-chip" class="idx1-zip-chip" aria-label="Jump to Cash Bids ZIP lookup">
+    <span class="idx1-zip-label">ZIP</span>
+    <span class="idx1-zip-val" id="idx1-zip-val">Not set</span>
+    <span class="idx1-zip-change">Set / change &rarr;</span>
+  </button>
+  <a href="#market-intel" class="idx1-zip-chip" style="text-decoration:none">
+    <span class="idx1-zip-label">Market Intelligence</span>
+    <span class="idx1-zip-change">Jump to COT / Nowcast &darr;</span>
+  </a>
+</div>
+<script>
+/* Real behavior, no fabricated data: reads the same ZIP the Cash Bids
+   widget already stores (bids-homepage.js's own localStorage key, if any)
+   only to DISPLAY it here; clicking always scrolls to and focuses the
+   real #bids-zip field rather than opening a second, parallel ZIP flow. */
+(function(){
+  function paint(){
+    var out = document.getElementById('idx1-zip-val');
+    if(!out) return;
+    var z = '';
+    try { z = localStorage.getItem('agsist_zip') || localStorage.getItem('bids_zip') || ''; } catch(e){}
+    out.textContent = z ? z : 'Not set';
+  }
+  var chip = document.getElementById('idx1-zip-chip');
+  if(chip){
+    chip.addEventListener('click', function(){
+      var field = document.getElementById('bids-zip');
+      var target = field || document.getElementById('dash-grid');
+      if(target && target.scrollIntoView){ target.scrollIntoView({behavior:'smooth', block:'center'}); }
+      if(field && field.focus){ setTimeout(function(){ field.focus(); }, 350); }
+    });
+  }
+  paint();
+  window.addEventListener('storage', paint);
+})();
+</script>
 <div class="prices-strip" aria-label="Live commodity prices" role="region">
   <div class="ticker-outer">
     <div class="ticker-live"><div class="live-dot" aria-hidden="true"></div><span id="ticker-age">LIVE</span></div>
@@ -1128,6 +1200,7 @@ fieldset:has(#i-raise-mixed:checked) ~ * .cot-rows::before{content:'Cattle pinne
   <input type="radio" name="idx1-raise" id="i-raise-cattle">
   <input type="radio" name="idx1-raise" id="i-raise-mixed">
 </fieldset>
+<div class="idx1-shell"><div class="idx1-content">
   <h1 class="home-h1">Corn, Soybean &amp; Wheat Prices, Farm Weather &amp; Cash Bids</h1>
   <div class="signup--compact fade-up" id="signup-compact" style="display:none">
     <span class="scu-eyebrow"><svg class="ic" aria-hidden="true"><use href="#i-newspaper"/></svg> AGSIST Daily</span>
@@ -1512,97 +1585,7 @@ fieldset:has(#i-raise-mixed:checked) ~ * .cot-rows::before{content:'Cattle pinne
     </div>
   </div>
   
-  <div class="idx1-zone-label idx1-zone-intel">Market Intelligence <small>&mdash; where the money's actually positioned</small></div>
-  <!-- 2026-09-30: side-by-side intel rail, ported from the Design canvas
-       mockup's two-column layout. COT (the wider, denser widget) takes the
-       main column; the Grain Stocks/USDA card rides alongside it as a
-       narrower rail, the same relationship the mockup gives COT and its
-       WASDE card. Both sections keep every real id and script hook
-       untouched -- this only changes where CSS places them, nothing about
-       how they're populated. Collapses to one column under 900px. -->
-  <div class="idx1-intel-row">
-  <div class="fade-up" id="f-cot-intel">
-    <div class="sec-head"><h2 class="sec-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:1.05em;height:1.05em;vertical-align:-.13em;margin-right:.34em;flex:none"><path d="M3 3v16a2 2 0 0 0 2 2h16" /> <path d="m19 9-5 5-4-4-3 3" /></svg>Market Intelligence</h2><a href="/cot" class="sec-all">Full COT Chart &rarr;</a></div>
-    <div class="ratio-cot-grid">
-      <div class="ratio-widget" id="nowcast-widget">
-        <div class="ratio-widget-head"><span class="ratio-widget-title"><svg class="ic" aria-hidden="true"><use href="#i-sprout"/></svg><svg class="ic" aria-hidden="true"><use href="#i-bean"/></svg> AGSIST Yield Nowcast &mdash; This Year&rsquo;s Crop, Called Weekly</span><span class="ratio-verdict neutral" id="nc-verdict">Loading&hellip;</span></div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:.7rem;margin:.15rem 0 .55rem">
-          <div style="text-align:center;padding:.55rem .4rem;background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:9px">
-            <div style="font-size:0.75rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.25rem">Corn</div>
-            <div style="font-family:'JetBrains Mono',monospace;font-size:1.55rem;font-weight:800;line-height:1;color:var(--text)" id="nc-corn">--</div>
-            <div style="font-family:'JetBrains Mono',monospace;font-size:0.765rem;color:var(--text-muted);margin-top:.3rem">bu/ac &middot; 80% band &plusmn;<span id="nc-corn-band">--</span></div>
-            <div style="font-size:0.765rem;margin-top:.25rem" id="nc-corn-vs">&nbsp;</div>
-          </div>
-          <div style="text-align:center;padding:.55rem .4rem;background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:9px">
-            <div style="font-size:0.75rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.25rem">Soybeans</div>
-            <div style="font-family:'JetBrains Mono',monospace;font-size:1.55rem;font-weight:800;line-height:1;color:var(--text)" id="nc-beans">--</div>
-            <div style="font-family:'JetBrains Mono',monospace;font-size:0.765rem;color:var(--text-muted);margin-top:.3rem">bu/ac &middot; 80% band &plusmn;<span id="nc-beans-band">--</span></div>
-            <div style="font-size:0.765rem;margin-top:.25rem" id="nc-beans-vs">&nbsp;</div>
-          </div>
-        </div>
-        <div style="font-size:0.755rem;color:var(--text-muted);line-height:1.55;margin-bottom:.35rem">Built from Monday&rsquo;s USDA crop ratings, state by state, weighted by acres. The band isn&rsquo;t a guess &mdash; it&rsquo;s how far the same model actually missed at this week of the season, backtested <span id="nc-years">16</span> years. Tightens as the season ages. USDA&rsquo;s first survey forecast doesn&rsquo;t land until mid-August.</div>
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:.5rem;flex-wrap:wrap">
-          <span style="font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:var(--text-muted)" id="nc-week">Ratings week: &mdash;</span>
-          <a href="/conditions-yield" class="ratio-link"><svg class="ic" aria-hidden="true"><use href="#i-chart-column"/></svg> How it&rsquo;s computed &rarr;</a>
-        </div>
-      </div>
-      <div class="cot-widget" id="cot-widget">
-        <div class="idx1-raise-toggle"><span>I RAISE</span><label for="i-raise-crops">Row Crops</label><label for="i-raise-cattle">Cattle Only</label><label for="i-raise-mixed">Mixed</label></div>
-        <div class="cot-widget-head"><span class="cot-widget-title"><svg class="ic" aria-hidden="true"><use href="#i-chart-column"/></svg> CFTC COT &mdash; Fund Positioning</span><span class="cot-verdict mixed" id="cot-verdict">Loading&hellip;</span></div>
-        <div class="cot-caption">Net contracts held long vs short by large money managers. Bar shows where that position sits within the past 52 weeks. Interpretation of public CFTC data, not a trading signal.</div>
-        <div class="cot-rows" id="cot-rows">
-          <div class="cot-row-corn"><div class="cot-row-top"><div class="cot-label"><span class="cot-comm-icon"><svg class="ic" aria-hidden="true"><use href="#i-sprout"/></svg></span><span class="cot-comm-name">Corn</span></div><div class="cot-right"><span class="cot-dir nc" id="cot-corn-dir">--</span><span class="cot-net" id="cot-corn-net">--</span><span class="cot-chg nc" id="cot-corn-chg">--</span></div></div><div class="cot-bar-wrap"><div class="cot-bar-fill" id="cot-corn-fill"></div><div class="cot-zero-mark" id="cot-corn-zero"></div><div class="cot-bar-dot" id="cot-corn-dot" style="background:var(--text-muted)"></div></div><div class="cot-bar-labels"><span id="cot-corn-min">--</span><span>52-wk range</span><span id="cot-corn-max">--</span></div></div>
-          <div class="cot-row-beans"><div class="cot-row-top"><div class="cot-label"><span class="cot-comm-icon"><svg class="ic" aria-hidden="true"><use href="#i-bean"/></svg></span><span class="cot-comm-name">Soybeans</span></div><div class="cot-right"><span class="cot-dir nc" id="cot-beans-dir">--</span><span class="cot-net" id="cot-beans-net">--</span><span class="cot-chg nc" id="cot-beans-chg">--</span></div></div><div class="cot-bar-wrap"><div class="cot-bar-fill" id="cot-beans-fill"></div><div class="cot-zero-mark" id="cot-beans-zero"></div><div class="cot-bar-dot" id="cot-beans-dot" style="background:var(--text-muted)"></div></div><div class="cot-bar-labels"><span id="cot-beans-min">--</span><span>52-wk range</span><span id="cot-beans-max">--</span></div></div>
-          <div class="cot-row-wheat"><div class="cot-row-top"><div class="cot-label"><span class="cot-comm-icon"><svg class="ic" aria-hidden="true"><use href="#i-wheat"/></svg></span><span class="cot-comm-name">Wheat</span></div><div class="cot-right"><span class="cot-dir nc" id="cot-wheat-dir">--</span><span class="cot-net" id="cot-wheat-net">--</span><span class="cot-chg nc" id="cot-wheat-chg">--</span></div></div><div class="cot-bar-wrap"><div class="cot-bar-fill" id="cot-wheat-fill"></div><div class="cot-zero-mark" id="cot-wheat-zero"></div><div class="cot-bar-dot" id="cot-wheat-dot" style="background:var(--text-muted)"></div></div><div class="cot-bar-labels"><span id="cot-wheat-min">--</span><span>52-wk range</span><span id="cot-wheat-max">--</span></div></div>
-          <!-- 2026-09-29: cattle added — data/cot.json has carried "livecattle" all along, the widget just never showed it. Ranchers were reading a corn-belt-only panel. -->
-          <div class="cot-row-cattle"><div class="cot-row-top"><div class="cot-label"><span class="cot-comm-icon"><svg class="ic" aria-hidden="true"><use href="#i-beef"/></svg></span><span class="cot-comm-name">Cattle</span></div><div class="cot-right"><span class="cot-dir nc" id="cot-cattle-dir">--</span><span class="cot-net" id="cot-cattle-net">--</span><span class="cot-chg nc" id="cot-cattle-chg">--</span></div></div><div class="cot-bar-wrap"><div class="cot-bar-fill" id="cot-cattle-fill"></div><div class="cot-zero-mark" id="cot-cattle-zero"></div><div class="cot-bar-dot" id="cot-cattle-dot" style="background:var(--text-muted)"></div></div><div class="cot-bar-labels"><span id="cot-cattle-min">--</span><span>52-wk range</span><span id="cot-cattle-max">--</span></div></div>
-        </div>
-        <div class="cot-footer">
-          <span class="cot-date" id="cot-date">CFTC &middot; Updated weekly</span>
-          <a href="/cot" class="cot-full-link">Full Chart &rarr;</a>
-        </div>
-      </div>
-    </div>
-  </div>
-<div class="fade-up" id="f5">
-    <div class="sec-head"><h2 class="sec-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:1.05em;height:1.05em;vertical-align:-.13em;margin-right:.34em;flex:none"><path d="M8 2v4" /> <path d="M16 2v4" /> <rect width="18" height="18" x="3" y="4" rx="2" /> <path d="M3 10h18" /></svg>Upcoming USDA Reports</h2><a href="/usda-calendar" class="sec-all">Full Calendar &rarr;</a></div>
-    <!-- 2026-09-30: today's real September Grain Stocks print, the most
-         recent USDA report and the one a reader landing here right after
-         release would look for first. Static card, not client-fetched --
-         this is the same three actuals already graded on /whats-priced-in
-         (data/wpi-history.json), copied by hand at build time rather than
-         fetched again, since a homepage card re-deriving its own grading
-         logic client-side is exactly the "two files disagreeing" risk the
-         project's honest-numbers rule warns about. Update this card by hand
-         alongside the next report, the same way the calendar strip below
-         it is hand-maintained. -->
-    <div class="usda-cal-card" style="margin-bottom:.7rem;padding:.85rem 1rem;display:flex;flex-direction:column;gap:.5rem">
-      <div style="display:flex;align-items:center;justify-content:space-between;gap:.5rem;flex-wrap:wrap">
-        <div style="font-size:.8rem;font-weight:700;color:var(--text)">September Grain Stocks &mdash; released today</div>
-        <a href="/whats-priced-in" style="font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--text-muted);background:rgba(255,255,255,.04);padding:.2rem .5rem;border-radius:5px;text-decoration:none">USDA OFFICIAL &middot; graded &rarr;</a>
-      </div>
-      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem">
-        <div>
-          <div style="font-size:.72rem;color:var(--text-muted)">Corn stocks</div>
-          <div style="font-family:'JetBrains Mono',monospace;font-size:1.3rem;font-weight:800;color:var(--text)">2.095<span style="font-size:.7rem;font-weight:600;color:var(--text-muted)">B bu</span></div>
-          <div style="font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--red)">above trade range</div>
-        </div>
-        <div>
-          <div style="font-size:.72rem;color:var(--text-muted)">Soybean stocks</div>
-          <div style="font-family:'JetBrains Mono',monospace;font-size:1.3rem;font-weight:800;color:var(--text)">0.315<span style="font-size:.7rem;font-weight:600;color:var(--text-muted)">B bu</span></div>
-          <div style="font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--green)">bullish, in range</div>
-        </div>
-        <div>
-          <div style="font-size:.72rem;color:var(--text-muted)">Wheat stocks</div>
-          <div style="font-family:'JetBrains Mono',monospace;font-size:1.3rem;font-weight:800;color:var(--text)">1.846<span style="font-size:.7rem;font-weight:600;color:var(--text-muted)">B bu</span></div>
-          <div style="font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--text-muted)">no trade estimate</div>
-        </div>
-      </div>
-      <div style="font-size:.7rem;color:var(--text-muted)">Corn printed above the entire pre-report trade range (1.843&ndash;2.005B). Soybeans printed inside the survey range but below average. Full grading, every number, and sourcing: <a href="/whats-priced-in" style="color:var(--text-muted);text-decoration:underline">What's Priced In &rarr;</a></div>
-    </div>
-    <div class="usda-cal-card"><div class="cal-strip" id="usda-cal-strip" role="list" tabindex="0" aria-label="Upcoming USDA report dates — scroll for more"></div></div>
-  </div>
-  </div>
+  
   <div class="fade-up" id="f-noaa">
     <div class="sec-head"><h2 class="sec-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:1.05em;height:1.05em;vertical-align:-.13em;margin-right:.34em;flex:none"><path d="M14 4v10.54a4 4 0 1 1-4 0V4a2 2 0 0 1 4 0Z" /></svg>NOAA Seasonal Outlooks</h2><a href="https://www.cpc.ncep.noaa.gov/products/predictions/long_range/" target="_blank" rel="noopener" class="sec-all">CPC Full Outlooks &rarr;</a></div>
     <div class="noaa-tabs" id="noaa-tabs">
@@ -1809,6 +1792,18 @@ fieldset:has(#i-raise-mixed:checked) ~ * .cot-rows::before{content:'Cattle pinne
     <div id="kalshi-grid" data-markets-handled="true" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(268px,100%),1fr));gap:.65rem;margin-bottom:.5rem"><div id="kalshi-loading" style="grid-column:1/-1;text-align:center;padding:1.2rem;font-size:.8rem;color:var(--text-muted)"><svg class="ic" aria-hidden="true"><use href="#i-hourglass"/></svg> Loading markets&hellip;</div></div>
     <div id="kalshi-footer" style="display:none;padding:.25rem 0 .15rem;text-align:right"><a href="/ag-odds" style="font-size:0.78rem;color:var(--gold);text-decoration:none;font-weight:600">View all ag prediction markets &rarr;</a></div>
   </div>
+  <div class="fade-up" id="idx1-discovery">
+    <h2 class="mono" style="margin:0 0 .5rem;font-size:.72rem;font-weight:700;letter-spacing:.11em;color:var(--text-muted);text-transform:uppercase">More on AGSIST</h2>
+    <ul class="idx1-discovery-grid" style="list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;border-top:1px solid var(--border);border-left:1px solid var(--border)">
+      <li style="border-right:1px solid var(--border);border-bottom:1px solid var(--border)"><a href="/farmland-atlas" class="card-link" style="display:flex;align-items:center;gap:.5rem;padding:.7rem .8rem;font-size:.82rem;color:var(--text);text-decoration:none"><svg class="ic" aria-hidden="true" style="flex:none"><use href="#i-map-pin"/></svg>Farmland Atlas</a></li>
+      <li style="border-right:1px solid var(--border);border-bottom:1px solid var(--border)"><a href="/hail-map" class="card-link" style="display:flex;align-items:center;gap:.5rem;padding:.7rem .8rem;font-size:.82rem;color:var(--text);text-decoration:none"><svg class="ic" aria-hidden="true" style="flex:none"><use href="#i-cloud-lightning"/></svg>Hail Map</a></li>
+      <li style="border-right:1px solid var(--border);border-bottom:1px solid var(--border)"><a href="/cash-rent" class="card-link" style="display:flex;align-items:center;gap:.5rem;padding:.7rem .8rem;font-size:.82rem;color:var(--text);text-decoration:none"><svg class="ic" aria-hidden="true" style="flex:none"><use href="#i-landmark"/></svg>Cash Rent by County</a></li>
+      <li style="border-right:1px solid var(--border);border-bottom:1px solid var(--border)"><a href="/harvest-price-tracker" class="card-link" style="display:flex;align-items:center;gap:.5rem;padding:.7rem .8rem;font-size:.82rem;color:var(--text);text-decoration:none"><svg class="ic" aria-hidden="true" style="flex:none"><use href="#i-chart-column"/></svg>Harvest Price Tracker</a></li>
+      <li style="border-right:1px solid var(--border);border-bottom:1px solid var(--border)"><a href="/milk-prices" class="card-link" style="display:flex;align-items:center;gap:.5rem;padding:.7rem .8rem;font-size:.82rem;color:var(--text);text-decoration:none"><svg class="ic" aria-hidden="true" style="flex:none"><use href="#i-beef"/></svg>Milk Prices</a></li>
+      <li style="border-right:1px solid var(--border);border-bottom:1px solid var(--border)"><a href="/ag-odds" class="card-link" style="display:flex;align-items:center;gap:.5rem;padding:.7rem .8rem;font-size:.82rem;color:var(--text);text-decoration:none"><svg class="ic" aria-hidden="true" style="flex:none"><use href="#i-hourglass"/></svg>Ag Prediction Markets</a></li>
+    </ul>
+  </div>
+  <style>@media(max-width:640px){.idx1-discovery-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}}</style>
   <section class="fade-up" id="f-faq" aria-labelledby="faq-heading">
     <style>
       #f-faq .faq-list{margin-top:.5rem;}
@@ -1916,6 +1911,127 @@ fieldset:has(#i-raise-mixed:checked) ~ * .cot-rows::before{content:'Cattle pinne
   });
 })();
 </script>
+</div>
+<aside class="intel-rail" aria-label="Market intelligence" id="market-intel">
+<div class="fade-up" id="f-cot-intel">
+    <div class="sec-head"><h2 class="sec-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:1.05em;height:1.05em;vertical-align:-.13em;margin-right:.34em;flex:none"><path d="M3 3v16a2 2 0 0 0 2 2h16" /> <path d="m19 9-5 5-4-4-3 3" /></svg>Market Intelligence</h2><a href="/cot" class="sec-all">Full COT Chart &rarr;</a></div>
+    <div class="ratio-cot-grid">
+      <div class="idx1-nowcast-na" style="display:none;padding:.6rem .1rem;font-size:.78rem;color:var(--text-muted)">Yield Nowcast (corn/soybean bu/ac) isn&rsquo;t shown for a cattle-only operation &mdash; switch to Row Crops or Mixed to see it.</div>
+      <div class="ratio-widget" id="nowcast-widget">
+        <div class="ratio-widget-head"><span class="ratio-widget-title"><svg class="ic" aria-hidden="true"><use href="#i-sprout"/></svg><svg class="ic" aria-hidden="true"><use href="#i-bean"/></svg> AGSIST Yield Nowcast &mdash; This Year&rsquo;s Crop, Called Weekly</span><span class="ratio-verdict neutral" id="nc-verdict">Loading&hellip;</span></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:.7rem;margin:.15rem 0 .55rem">
+          <div style="text-align:center;padding:.55rem .4rem;background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:9px">
+            <div style="font-size:0.75rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.25rem">Corn</div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:1.55rem;font-weight:800;line-height:1;color:var(--text)" id="nc-corn">--</div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:0.765rem;color:var(--text-muted);margin-top:.3rem">bu/ac &middot; 80% band &plusmn;<span id="nc-corn-band">--</span></div>
+            <div style="font-size:0.765rem;margin-top:.25rem" id="nc-corn-vs">&nbsp;</div>
+          </div>
+          <div style="text-align:center;padding:.55rem .4rem;background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:9px">
+            <div style="font-size:0.75rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.25rem">Soybeans</div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:1.55rem;font-weight:800;line-height:1;color:var(--text)" id="nc-beans">--</div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:0.765rem;color:var(--text-muted);margin-top:.3rem">bu/ac &middot; 80% band &plusmn;<span id="nc-beans-band">--</span></div>
+            <div style="font-size:0.765rem;margin-top:.25rem" id="nc-beans-vs">&nbsp;</div>
+          </div>
+        </div>
+        <div style="font-size:0.755rem;color:var(--text-muted);line-height:1.55;margin-bottom:.35rem">Built from Monday&rsquo;s USDA crop ratings, state by state, weighted by acres. The band isn&rsquo;t a guess &mdash; it&rsquo;s how far the same model actually missed at this week of the season, backtested <span id="nc-years">16</span> years. Tightens as the season ages. USDA&rsquo;s first survey forecast doesn&rsquo;t land until mid-August.</div>
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:.5rem;flex-wrap:wrap">
+          <span style="font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:var(--text-muted)" id="nc-week">Ratings week: &mdash;</span>
+          <a href="/conditions-yield" class="ratio-link"><svg class="ic" aria-hidden="true"><use href="#i-chart-column"/></svg> How it&rsquo;s computed &rarr;</a>
+        </div>
+      </div>
+      <div class="cot-widget" id="cot-widget">
+        <div class="idx1-raise-toggle"><span>I RAISE</span><label for="i-raise-crops">Row Crops</label><label for="i-raise-cattle">Cattle Only</label><label for="i-raise-mixed">Mixed</label></div>
+        <div class="cot-widget-head"><span class="cot-widget-title"><svg class="ic" aria-hidden="true"><use href="#i-chart-column"/></svg> CFTC COT &mdash; Fund Positioning</span><span class="cot-verdict mixed" id="cot-verdict">Loading&hellip;</span></div>
+        <div class="cot-caption">Net contracts held long vs short by large money managers. Bar shows where that position sits within the past 52 weeks (not the 3-yr COT Index some desks use \u2014 this window runs shorter, which can read positioning as more extreme). The badge above averages all four commodities&rsquo; position-in-range, not a headcount of who&rsquo;s long or short \u2014 one row can run the other way. Interpretation of public CFTC data, not a trading signal.</div>
+        <div class="cot-rows" id="cot-rows">
+          <div class="cot-row-corn"><div class="cot-row-top"><div class="cot-label"><span class="cot-comm-icon"><svg class="ic" aria-hidden="true"><use href="#i-sprout"/></svg></span><span class="cot-comm-name">Corn</span></div><div class="cot-right"><span class="cot-dir nc" id="cot-corn-dir">--</span><span class="cot-net" id="cot-corn-net">--</span><span class="cot-chg nc" id="cot-corn-chg">--</span></div></div><div class="cot-bar-wrap"><div class="cot-bar-fill" id="cot-corn-fill"></div><div class="cot-zero-mark" id="cot-corn-zero"></div><div class="cot-bar-dot" id="cot-corn-dot" style="background:var(--text-muted)"></div></div><div class="cot-bar-labels"><span id="cot-corn-min">--</span><span>52-wk range</span><span id="cot-corn-max">--</span></div></div>
+          <div class="cot-row-beans"><div class="cot-row-top"><div class="cot-label"><span class="cot-comm-icon"><svg class="ic" aria-hidden="true"><use href="#i-bean"/></svg></span><span class="cot-comm-name">Soybeans</span></div><div class="cot-right"><span class="cot-dir nc" id="cot-beans-dir">--</span><span class="cot-net" id="cot-beans-net">--</span><span class="cot-chg nc" id="cot-beans-chg">--</span></div></div><div class="cot-bar-wrap"><div class="cot-bar-fill" id="cot-beans-fill"></div><div class="cot-zero-mark" id="cot-beans-zero"></div><div class="cot-bar-dot" id="cot-beans-dot" style="background:var(--text-muted)"></div></div><div class="cot-bar-labels"><span id="cot-beans-min">--</span><span>52-wk range</span><span id="cot-beans-max">--</span></div></div>
+          <div class="cot-row-wheat"><div class="cot-row-top"><div class="cot-label"><span class="cot-comm-icon"><svg class="ic" aria-hidden="true"><use href="#i-wheat"/></svg></span><span class="cot-comm-name">Wheat</span></div><div class="cot-right"><span class="cot-dir nc" id="cot-wheat-dir">--</span><span class="cot-net" id="cot-wheat-net">--</span><span class="cot-chg nc" id="cot-wheat-chg">--</span></div></div><div class="cot-bar-wrap"><div class="cot-bar-fill" id="cot-wheat-fill"></div><div class="cot-zero-mark" id="cot-wheat-zero"></div><div class="cot-bar-dot" id="cot-wheat-dot" style="background:var(--text-muted)"></div></div><div class="cot-bar-labels"><span id="cot-wheat-min">--</span><span>52-wk range</span><span id="cot-wheat-max">--</span></div></div>
+          <!-- 2026-09-29: cattle added — data/cot.json has carried "livecattle" all along, the widget just never showed it. Ranchers were reading a corn-belt-only panel. -->
+          <div class="cot-row-cattle"><div class="cot-row-top"><div class="cot-label"><span class="cot-comm-icon"><svg class="ic" aria-hidden="true"><use href="#i-beef"/></svg></span><span class="cot-comm-name">Cattle</span></div><div class="cot-right"><span class="cot-dir nc" id="cot-cattle-dir">--</span><span class="cot-net" id="cot-cattle-net">--</span><span class="cot-chg nc" id="cot-cattle-chg">--</span></div></div><div class="cot-bar-wrap"><div class="cot-bar-fill" id="cot-cattle-fill"></div><div class="cot-zero-mark" id="cot-cattle-zero"></div><div class="cot-bar-dot" id="cot-cattle-dot" style="background:var(--text-muted)"></div></div><div class="cot-bar-labels"><span id="cot-cattle-min">--</span><span>52-wk range</span><span id="cot-cattle-max">--</span></div></div>
+        </div>
+        <div class="cot-footer">
+          <span class="cot-date" id="cot-date">CFTC &middot; Updated weekly</span>
+          <a href="/cot" class="cot-full-link">Full Chart &rarr;</a>
+        </div>
+      </div>
+    </div>
+  </div>
+<div class="fade-up" id="f5">
+    <div class="sec-head"><h2 class="sec-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:1.05em;height:1.05em;vertical-align:-.13em;margin-right:.34em;flex:none"><path d="M8 2v4" /> <path d="M16 2v4" /> <rect width="18" height="18" x="3" y="4" rx="2" /> <path d="M3 10h18" /></svg>Upcoming USDA Reports</h2><a href="/usda-calendar" class="sec-all">Full Calendar &rarr;</a></div>
+    <!-- 2026-09-30: today's real September Grain Stocks print, the most
+         recent USDA report and the one a reader landing here right after
+         release would look for first. Static card, not client-fetched --
+         this is the same three actuals already graded on /whats-priced-in
+         (data/wpi-history.json), copied by hand at build time rather than
+         fetched again, since a homepage card re-deriving its own grading
+         logic client-side is exactly the "two files disagreeing" risk the
+         project's honest-numbers rule warns about. Update this card by hand
+         alongside the next report, the same way the calendar strip below
+         it is hand-maintained. -->
+    <div class="usda-cal-card" style="margin-bottom:.7rem;padding:.85rem 1rem;display:flex;flex-direction:column;gap:.5rem">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:.5rem;flex-wrap:wrap">
+        <div style="font-size:.8rem;font-weight:700;color:var(--text)">September Grain Stocks &mdash; released today</div>
+        <a href="/whats-priced-in" style="font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--text-muted);background:rgba(255,255,255,.04);padding:.2rem .5rem;border-radius:5px;text-decoration:none">USDA OFFICIAL &middot; graded &rarr;</a>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem">
+        <div>
+          <div style="font-size:.72rem;color:var(--text-muted)">Corn stocks</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:1.3rem;font-weight:800;color:var(--text)">2.095<span style="font-size:.7rem;font-weight:600;color:var(--text-muted)">B bu</span></div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--red)">above trade range</div>
+        </div>
+        <div>
+          <div style="font-size:.72rem;color:var(--text-muted)">Soybean stocks</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:1.3rem;font-weight:800;color:var(--text)">0.315<span style="font-size:.7rem;font-weight:600;color:var(--text-muted)">B bu</span></div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--green)">bullish, in range</div>
+        </div>
+        <div>
+          <div style="font-size:.72rem;color:var(--text-muted)">Wheat stocks</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:1.3rem;font-weight:800;color:var(--text)">1.846<span style="font-size:.7rem;font-weight:600;color:var(--text-muted)">B bu</span></div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--text-muted)">no trade estimate</div>
+        </div>
+      </div>
+      <div style="font-size:.7rem;color:var(--text-muted)">Corn printed above the entire pre-report trade range (1.843&ndash;2.005B). Soybeans printed inside the survey range but below average. Full grading, every number, and sourcing: <a href="/whats-priced-in" style="color:var(--text-muted);text-decoration:underline">What's Priced In &rarr;</a></div>
+    </div>
+    <div class="usda-cal-card"><div class="cal-strip" id="usda-cal-strip" role="list" tabindex="0" aria-label="Upcoming USDA report dates — scroll for more"></div></div>
+  </div>
+<div class="fade-up" id="f-rail-scorecard">
+    <div class="sec-head"><h2 class="sec-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:1.05em;height:1.05em;vertical-align:-.13em;margin-right:.34em;flex:none"><use href="#i-target"/></svg>AGSIST Call Scorecard</h2><a href="/scorecard" class="sec-all">Full Record &rarr;</a></div>
+    <div class="usda-cal-card" style="padding:.85rem 1rem">
+      <div style="display:flex;align-items:baseline;justify-content:space-between;gap:.5rem;margin-bottom:.45rem">
+        <span style="font-family:var(--font-display);font-weight:700;font-size:1.95rem;line-height:1;color:var(--text)" id="rsc-hit">&mdash;</span>
+        <span style="font-size:.735rem;color:var(--text-muted);text-align:right;line-height:1.3">Hit rate,<br>graded by rule</span>
+      </div>
+      <div style="font-size:.8rem;color:var(--text-dim);line-height:1.5" id="rsc-verdict">Loading&hellip;</div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:.735rem;color:var(--text-muted);margin-top:.55rem;display:flex;justify-content:space-between;gap:.5rem" id="rsc-stats">
+        <span id="rsc-record">&mdash;</span>
+        <span id="rsc-sample">&mdash;</span>
+      </div>
+    </div>
+    <p style="font-size:.735rem;color:var(--text-muted);margin:.4rem .1rem 0;line-height:1.45">Every forward call this site's own daily briefing makes, graded against the next settlement, misses included. Not a trading signal &mdash; a public record of whether the calls actually played out.</p>
+  </div>
+  <script>
+  (function(){
+    fetch('/data/scorecard.json',{cache:'no-store'}).then(function(r){if(!r.ok)throw new Error('no-scorecard');return r.json();}).then(function(d){
+      var det=(d&&d.by_method&&d.by_method.deterministic)||null;
+      var dirOnly=(d&&d.direction_only)||null;
+      if(!det||det.hit_rate==null){document.getElementById('rsc-verdict').textContent='Scorecard unavailable right now.';return;}
+      document.getElementById('rsc-hit').textContent=det.hit_rate.toFixed(1)+'%';
+      var pending=(d.pending!=null)?d.pending:0;
+      document.getElementById('rsc-record').textContent=det.played+'\u2013'+det.missed+'\u2013'+pending;
+      document.getElementById('rsc-sample').textContent=det.graded+' calls graded';
+      var v='Hitting the called price level about 1 in 5 times.';
+      if(dirOnly&&dirOnly.rate!=null){
+        v='Right on direction about '+Math.round(dirOnly.rate)+'% of the time &mdash; hitting the exact level called, only '+det.hit_rate.toFixed(0)+'%.';
+      }
+      document.getElementById('rsc-verdict').innerHTML=v;
+    }).catch(function(){
+      document.getElementById('rsc-verdict').textContent='Scorecard unavailable right now.';
+    });
+  })();
+  </script>
+</aside>
+</div>
 </main>
 <div class="main" style="padding:0 1rem 1rem;max-width:1400px;margin:0 auto">
   <div style="font-size:0.77rem;color:var(--text-muted);line-height:1.65;border-top:1px solid var(--border);padding-top:.75rem;margin-top:.5rem;display:flex;flex-wrap:wrap;gap:.4rem .9rem;align-items:center">
@@ -2180,7 +2296,7 @@ fieldset:has(#i-raise-mixed:checked) ~ * .cot-rows::before{content:'Cattle pinne
 (function() {
   'use strict';
   function loadYieldNowcast(){
-    fetch('/data/yield-nowcast.json').then(function(r){return r.ok?r.json():null;}).then(function(d){
+    fetch('/data/yield-nowcast.json').then(function(r){if(!r.ok)throw new Error('no-nowcast');return r.json();}).then(function(d){
       if(!d||!d.crops)return;
       var map={corn:'nc-corn',soybeans:'nc-beans'};
       var above=0,below=0;
@@ -2207,10 +2323,22 @@ fieldset:has(#i-raise-mixed:checked) ~ * .cot-rows::before{content:'Cattle pinne
         v.textContent=above&&!below?'Above trend':below&&!above?'Below trend':'Near trend';
       }
       var wk=document.getElementById('nc-week');
-      if(wk&&d.crops.corn)wk.textContent='Ratings week ending '+d.crops.corn.week_ending+' \u00b7 updates Tuesdays';
+      if(wk&&d.crops.corn){
+        var _wkEnd=d.crops.corn.week_ending;
+        var _rd=/^\d{4}-\d{2}-\d{2}$/.test(String(_wkEnd))?new Date(_wkEnd+'T12:00:00'):new Date(_wkEnd);
+        var _daysOld=(_rd&&!isNaN(_rd.getTime()))?Math.round((Date.now()-_rd.getTime())/86400000):null;
+        var _age=_daysOld==null?'':_daysOld<=13?'':' <svg class="ic" aria-hidden="true"><use href="#i-triangle-alert"/></svg> '+_daysOld+'d old';
+        wk.innerHTML='Ratings week ending '+_wkEnd+' \u00b7 updates Tuesdays'+_age;
+        if(_daysOld!=null&&_daysOld>=14){wk.style.color='#f0913a';}
+      }
       var yr=document.getElementById('nc-years');
       if(yr&&d.crops.corn)yr.textContent=d.crops.corn.backtest_years;
-    }).catch(function(){});
+    }).catch(function(){
+      var v=document.getElementById('nc-verdict');
+      if(v){v.className='ratio-verdict neutral';v.textContent='Data unavailable';}
+      var wk=document.getElementById('nc-week');
+      if(wk){wk.textContent='Could not load this week\u2019s ratings.';wk.style.color='';}
+    });
   }
   loadYieldNowcast();
   function blankRanges(){

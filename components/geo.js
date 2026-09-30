@@ -788,7 +788,25 @@ function fmtPrice(val, dec, grain, suffix, prefix, comma) {
 // Farmers read the move in cents first, percent second ("corn's down 16 and a
 // quarter") — a reader called this out on 2026-07-20. Grains print quarter-cent
 // fractions like the pit did; everything else prints the plain point move.
-function fmtCentsDiff(d){var a=Math.abs(d),w=Math.floor(a),f=Math.round((a-w)*4);if(f===4){w++;f=0;}var fr=f===1?'\u00bc':f===2?'\u00bd':f===3?'\u00be':'';return (w||!fr?w:'')+fr+'\u00a2';}
+// FIX 2026-09-30: this used the single-character Unicode vulgar-fraction
+// glyphs (¼ ½ ¾, U+00BC/BD/BE). Those are the right characters — the bug
+// isn't the codepoint, it's how JetBrains Mono renders U+00BE at small
+// sizes: "20¾¢" was visually reading as "20%¢" in the homepage ticker,
+// confirmed by rendering it and looking at the actual pixels, not by
+// reading the DOM text and assuming a correct codepoint means a legible
+// glyph. A farmer skimming a price ticker in 90 seconds could misread a
+// normal 4%-of-a-point move as "down 20%." Switched to a spelled-out
+// slash fraction ("20 3/4¢") instead of a single glyph — same pit
+// convention the comment above already asks for, unambiguous at any
+// size because every character in it is an ordinary digit or slash.
+function fmtCentsDiff(d){
+  var a=Math.abs(d), w=Math.floor(a), f=Math.round((a-w)*4);
+  if(f===4){w++;f=0;}
+  var fr=f===1?'1/4':f===2?'1/2':f===3?'3/4':'';
+  var whole=(w||!fr)?String(w):'';
+  var sep=(whole&&fr)?' ':'';
+  return whole+sep+fr+'\u00a2';
+}
 function fmtChange(close, open, grain, netChg, pctChg) {
   var c = parseFloat(close), o = parseFloat(open);
   if (isNaN(c) || isNaN(o)) return {text:'--', cls:'nc'};
