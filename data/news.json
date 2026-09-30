@@ -1,7 +1,7 @@
 {
- "updated": "2026-09-30T16:49:05+00:00",
- "count": 15,
- "added": 3,
+ "updated": "2026-09-30T17:57:24+00:00",
+ "count": 16,
+ "added": 1,
  "state": {
   "px": {
    "corn": {
@@ -29,6 +29,17 @@
   }
  },
  "items": [
+  {
+   "id": "px:2026-09-30:wheat:move",
+   "kind": "board",
+   "headline": "Wheat down 2.7% on the day",
+   "detail": "Settled $6.76, -18.5 cents on the session.",
+   "significance": "notable",
+   "url": "/wheat-futures-prices",
+   "source": "CME settlement via the AGSIST board",
+   "day_only": true,
+   "ts": "2026-09-30T12:00:00+00:00"
+  },
   {
    "id": "wasde:2026-09-30:Corn stocks, all positions, Sept 1",
    "kind": "usda",
