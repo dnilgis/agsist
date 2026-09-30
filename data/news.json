@@ -1,7 +1,7 @@
 {
- "updated": "2026-09-25T20:23:01+00:00",
- "count": 12,
- "added": 2,
+ "updated": "2026-09-30T16:49:05+00:00",
+ "count": 15,
+ "added": 3,
  "state": {
   "px": {
    "corn": {
@@ -29,6 +29,39 @@
   }
  },
  "items": [
+  {
+   "id": "wasde:2026-09-30:Corn stocks, all positions, Sept 1",
+   "kind": "usda",
+   "headline": "September Grain Stocks: Corn stocks, all positions, Sept 1 came in bearish",
+   "detail": "Trade looked for 1.918 B bu; USDA printed 2.095 B bu — +9.2% versus the survey.",
+   "significance": "high",
+   "url": "/whats-priced-in",
+   "source": "USDA WASDE, graded against the pre-report survey",
+   "day_only": true,
+   "ts": "2026-09-30T12:00:00+00:00"
+  },
+  {
+   "id": "px:2026-09-30:corn:move",
+   "kind": "board",
+   "headline": "Corn down 3.2% on the day",
+   "detail": "Settled $5.05, -16.5 cents on the session.",
+   "significance": "notable",
+   "url": "/corn-futures-prices",
+   "source": "CME settlement via the AGSIST board",
+   "day_only": true,
+   "ts": "2026-09-30T12:00:00+00:00"
+  },
+  {
+   "id": "px:2026-09-30:corn-dec:move",
+   "kind": "board",
+   "headline": "December corn down 3.2% on the day",
+   "detail": "Settled $5.05, -16.5 cents on the session.",
+   "significance": "notable",
+   "url": "/corn-futures-prices",
+   "source": "CME settlement via the AGSIST board",
+   "day_only": true,
+   "ts": "2026-09-30T12:00:00+00:00"
+  },
   {
    "id": "cot:September 22, 2026:beans:max",
    "kind": "positioning",

@@ -5,8 +5,32 @@
     <link>https://agsist.com/news</link>
     <description>Dated grain and livestock market events the moment they are measurable: USDA report surprises, one-year positioning extremes, 52-week highs and lows, crop rating swings. Measured, not aggregated.</description>
     <language>en-us</language>
-    <lastBuildDate>Fri, 25 Sep 2026 20:23:01 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 30 Sep 2026 16:49:05 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/news.xml" rel="self" type="application/rss+xml"/>
+    <item>
+      <title>September Grain Stocks: Corn stocks, all positions, Sept 1 came in bearish</title>
+      <link>https://agsist.com/whats-priced-in</link>
+      <description>Trade looked for 1.918 B bu; USDA printed 2.095 B bu — +9.2% versus the survey.</description>
+      <guid isPermaLink="false">agsist-news-wasde:2026-09-30:Corn stocks, all positions, Sept 1</guid>
+      <pubDate>Wed, 30 Sep 2026 12:00:00 +0000</pubDate>
+      <source url="https://agsist.com/news.xml">USDA WASDE, graded against the pre-report survey</source>
+    </item>
+    <item>
+      <title>Corn down 3.2% on the day</title>
+      <link>https://agsist.com/corn-futures-prices</link>
+      <description>Settled $5.05, -16.5 cents on the session.</description>
+      <guid isPermaLink="false">agsist-news-px:2026-09-30:corn:move</guid>
+      <pubDate>Wed, 30 Sep 2026 12:00:00 +0000</pubDate>
+      <source url="https://agsist.com/news.xml">CME settlement via the AGSIST board</source>
+    </item>
+    <item>
+      <title>December corn down 3.2% on the day</title>
+      <link>https://agsist.com/corn-futures-prices</link>
+      <description>Settled $5.05, -16.5 cents on the session.</description>
+      <guid isPermaLink="false">agsist-news-px:2026-09-30:corn-dec:move</guid>
+      <pubDate>Wed, 30 Sep 2026 12:00:00 +0000</pubDate>
+      <source url="https://agsist.com/news.xml">CME settlement via the AGSIST board</source>
+    </item>
     <item>
       <title>Managed money pushed its soybeans net long to another one-year high</title>
       <link>https://agsist.com/cot</link>
