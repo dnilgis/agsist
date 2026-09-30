@@ -166,12 +166,11 @@ def head(title, desc, path, jsonld):
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#0a0c0d">
-  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <!-- 2026-09-30: fonts are self-hosted in styles.css now, no preconnect needed -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){{dataLayer.push(arguments);}}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');function gaEvent(n,p){{try{{gtag('event',n,p||{{}});}}catch(e){{}}}}</script>
-  <link rel="preload" href="/components/styles.css?v=12" as="style">
-  <link rel="stylesheet" href="/components/styles.css?v=12">
+  <link rel="preload" href="/components/styles.css?v=17" as="style">
+  <link rel="stylesheet" href="/components/styles.css?v=17">
   <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
   <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">

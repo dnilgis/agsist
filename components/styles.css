@@ -39,7 +39,32 @@
      --text-muted light: opacity 0.40 → 0.50
    ═══════════════════════════════════════════════════════════════════ */
 /* TYPE REWORK 2026-07-30: Archivo dropped (display face is now Inter heavy) */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+/* 2026-09-30: self-hosted, replacing a Google Fonts @import. @import forces a
+   serial chain -- fetch this file, parse it, discover the font CSS URL inside
+   it, fetch that, then discover and fetch the font files -- instead of the
+   parallel discovery a <link> in <head> gets, and every page loads this file,
+   so the fix has to live here rather than in any one page's <head>. Files are
+   Inter and JetBrains Mono (SIL Open Font License), latin subset, woff2, from
+   /fonts/ alongside this file. Weights match what was requested from Google:
+   Inter 400/500/600/700/800/900, JetBrains Mono 400/500/600/700. */
+@font-face{font-family:'Inter';font-style:normal;font-weight:400;font-display:swap;src:url('/fonts/inter-400.woff2') format('woff2')}
+@font-face{font-family:'Inter';font-style:normal;font-weight:500;font-display:swap;src:url('/fonts/inter-500.woff2') format('woff2')}
+@font-face{font-family:'Inter';font-style:normal;font-weight:600;font-display:swap;src:url('/fonts/inter-600.woff2') format('woff2')}
+@font-face{font-family:'Inter';font-style:normal;font-weight:700;font-display:swap;src:url('/fonts/inter-700.woff2') format('woff2')}
+@font-face{font-family:'Inter';font-style:normal;font-weight:800;font-display:swap;src:url('/fonts/inter-800.woff2') format('woff2')}
+@font-face{font-family:'Inter';font-style:normal;font-weight:900;font-display:swap;src:url('/fonts/inter-900.woff2') format('woff2')}
+@font-face{font-family:'JetBrains Mono';font-style:normal;font-weight:400;font-display:swap;src:url('/fonts/jetbrains-mono-400.woff2') format('woff2')}
+@font-face{font-family:'JetBrains Mono';font-style:normal;font-weight:500;font-display:swap;src:url('/fonts/jetbrains-mono-500.woff2') format('woff2')}
+@font-face{font-family:'JetBrains Mono';font-style:normal;font-weight:600;font-display:swap;src:url('/fonts/jetbrains-mono-600.woff2') format('woff2')}
+@font-face{font-family:'JetBrains Mono';font-style:normal;font-weight:700;font-display:swap;src:url('/fonts/jetbrains-mono-700.woff2') format('woff2')}
+/* Oswald: the /daily/ archive pages (scripts/generate_daily.py) loaded this
+   from a second, separate fonts.googleapis.com stylesheet of their own,
+   independent of the @import above -- same problem, just not caught by the
+   original finding since it only named this file. Self-hosted here too, so
+   every page's font loading, not just the homepage's, comes from one place. */
+@font-face{font-family:'Oswald';font-style:normal;font-weight:500;font-display:swap;src:url('/fonts/oswald-500.woff2') format('woff2')}
+@font-face{font-family:'Oswald';font-style:normal;font-weight:600;font-display:swap;src:url('/fonts/oswald-600.woff2') format('woff2')}
+@font-face{font-family:'Oswald';font-style:normal;font-weight:700;font-display:swap;src:url('/fonts/oswald-700.woff2') format('woff2')}
 
 :root {
   /* AD ORANGE. Paid space never wears the house gold. Anything a

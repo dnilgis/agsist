@@ -2684,7 +2684,7 @@ def render_outside_the_pit_html(items, market_closed=False):
     if not rendered_items:
         return ""
     label_text = "WEEK AHEAD IN AG" if market_closed else "OUTSIDE THE PIT"
-    label_sub = ("News not moving prices today but in the calculus."
+    label_sub = ("Not moving prices today, but worth knowing."
                  if not market_closed else
                  "What's brewing for next week.")
     return (f'<div class="dv3-otp" aria-label="{label_text}">'
@@ -3002,12 +3002,12 @@ def generate_archive_html(briefing, date_iso, prev_date=None, next_date=None,
 <meta name="twitter:title" content="AGSIST Daily &mdash; {html_esc(date_display)}">
 <meta name="twitter:description" content="{og_description}">
 <meta name="twitter:image" content="{og_image_url}">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preload" href="/components/styles.css?v=10" as="style">
-<link rel="stylesheet" href="/components/styles.css?v=10">
+<link rel="preload" href="/components/styles.css?v=17" as="style">
+<link rel="stylesheet" href="/components/styles.css?v=17">
 <link rel="stylesheet" href="/components/sponsor-ad.css?v=1">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Oswald:wght@500;600;700&display=swap">
+<!-- 2026-09-30: JetBrains Mono and Oswald are self-hosted in styles.css now
+     (see components/styles.css) -- no more separate Google Fonts fetch here,
+     and no preconnect to an origin nothing fetches from anymore. -->
 <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
 <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">

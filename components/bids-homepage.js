@@ -493,7 +493,35 @@
         }
         html += '</a>';
 
+        // 2026-09-30: a successful ZIP lookup is the single most personalized
+        // moment on the homepage. Growth panel finding: the interaction ends
+        // there with no ask. One line, only for a reader not already signed
+        // up (window.isSignedUp, exposed by index.html; if it's not there
+        // yet, fail open rather than block a real feature on that).
+        var alreadySignedUp = (typeof window.isSignedUp === 'function') && window.isSignedUp();
+        if(!alreadySignedUp){
+          html += '<div style="margin-top:.5rem;padding:.6rem .7rem;background:var(--surface2);border:1px solid var(--border);border-radius:6px;text-align:center">'
+            + '<a href="#signup-compact" id="bids-cta-link" style="color:var(--gold);font-weight:600;font-size:.82rem;text-decoration:none">'
+            + 'Get ' + escHtml(zip) + ' prices in your inbox every morning →</a></div>';
+        }
+
         area.innerHTML = html;
+
+        if(!alreadySignedUp){
+          var ctaLink = document.getElementById('bids-cta-link');
+          if(ctaLink){
+            ctaLink.addEventListener('click', function(e){
+              e.preventDefault();
+              var su = document.getElementById('signup-compact');
+              if(!su) return;
+              su.style.display = 'flex';
+              su.scrollIntoView({behavior:'smooth', block:'center'});
+              var em = document.getElementById('compact-email');
+              if(em) setTimeout(function(){ em.focus(); }, 400);
+            });
+          }
+        }
+
         publishSummary(label, zip, bids, elevators);
         console.log('[AGSIST] Homepage bids: ' + top.length + ' elevators (' + bids.length + ' total bids)');
       })
