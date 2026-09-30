@@ -1,4 +1,20 @@
 /**
+ * v5.1 (2026-09-30): WATCH AN ELEVATOR (cash bids). Double opt-in, same shape
+ *   as WATCH A COUNTY below, kept as a parallel system rather than merged into
+ *   it -- the county watch already works and this must not risk it.
+ *   POST /elevator-watch-subscribe {email, wid, label}   pending only.
+ *   GET/POST /elevator-watch-confirm?e=&w=&t=            GET shows a button,
+ *                                                         changes nothing.
+ *   GET/POST /elevator-watch-unsubscribe?e=&t=[&w=]       all watches, or one.
+ *   GET  /elevator-watch-list?token=     for scripts/send_elevator_watch.py.
+ *   POST /elevator-watch-mark?token=     sender records what it mailed / basis.
+ *   KV key ewatch:<email> = {pend:{wid:{ts,m,label}}, w:{wid:{label,k,s}|null}}.
+ *   wid is a short hex id the homepage derives from
+ *   state|facility|city|commodity -- there is no natural 5-digit id for an
+ *   elevator the way a county has a FIPS code, so this worker never parses a
+ *   facility name out of a URL; it only ever sees the hash and the label the
+ *   subscribe call sent along with it. At most 5 elevators per address.
+ *
  * v5.0 (2026-09-25): WATCH A COUNTY (Farmland Atlas). Double opt-in.
  *   POST /watch-subscribe {email, fips}      pending only; nothing is sent from here.
  *   GET/POST /watch-confirm?e=&f=&t=         GET shows a button and changes nothing;
@@ -327,6 +343,118 @@ export default {
         r.w[fips] = { k: String(b.k || ""), s: b.s || {} };
       }
       await putWatch(email, r);
+      return json({ ok: true });
+    }
+
+    // ---------- WATCH AN ELEVATOR (cash bids) ----------
+    // Same shape as WATCH A COUNTY above, deliberately kept as a separate,
+    // parallel system rather than folded into it: the county watch is live,
+    // tested, and mailing real readers -- changing its key format to also
+    // carry elevators risks the one that already works. An elevator has no
+    // natural 5-digit id the way a county has a FIPS code, so the homepage
+    // hashes state|facility|city|commodity into a short id (`wid`) client
+    // side and sends the human-readable label along with it, so this worker
+    // never has to parse a facility name out of a URL.
+    const EWATCH_MAX = 5, EPEND_TTL = 14 * 864e5;
+    async function getEWatch(e) {
+      const v = await env.SUBS.get("ewatch:" + e);
+      const r = v ? JSON.parse(v) : {};
+      r.pend = r.pend || {}; r.w = r.w || {};
+      return r;
+    }
+    async function putEWatch(e, r) {
+      if (!Object.keys(r.pend).length && !Object.keys(r.w).length) await env.SUBS.delete("ewatch:" + e);
+      else await env.SUBS.put("ewatch:" + e, JSON.stringify(r));
+    }
+
+    if (path === "/elevator-watch-subscribe" && req.method === "POST") {
+      let b = {};
+      try { b = await req.json(); } catch (e) { /* validation below */ }
+      if (b._gotcha) return json({ ok: true }, 200, cors(req));
+      const email = String(b.email || "").trim().toLowerCase();
+      const wid = String(b.wid || "").trim().toLowerCase();
+      const label = String(b.label || "").trim().slice(0, 120);
+      if (!EMAIL_RE.test(email) || email.length > 254)
+        return json({ ok: false, error: "invalid email" }, 400, cors(req));
+      if (!/^[a-f0-9]{8,16}$/.test(wid))
+        return json({ ok: false, error: "invalid elevator id" }, 400, cors(req));
+      if (!label)
+        return json({ ok: false, error: "invalid label" }, 400, cors(req));
+      const r = await getEWatch(email);
+      const now = Date.now();
+      for (const w of Object.keys(r.pend)) if (now - r.pend[w].ts > EPEND_TTL) delete r.pend[w];
+      // Same answer whether or not the address is already watching: the reply must not tell a
+      // stranger who is on the list.
+      if (!(wid in r.w) && !(wid in r.pend)) {
+        if (Object.keys(r.w).length + Object.keys(r.pend).length >= EWATCH_MAX)
+          return json({ ok: false, error: "limit" }, 429, cors(req));
+        r.pend[wid] = { ts: now, m: 0, label };
+        await putEWatch(email, r);
+      }
+      return json({ ok: true }, 200, cors(req));
+    }
+
+    if (path === "/elevator-watch-confirm" || path === "/elevator-watch-unsubscribe") {
+      const e = (url.searchParams.get("e") || "").trim().toLowerCase();
+      const w = (url.searchParams.get("w") || "").trim().toLowerCase();
+      const t = url.searchParams.get("t") || "";
+      const conf = path === "/elevator-watch-confirm";
+      const wOk = conf ? /^[a-f0-9]{8,16}$/.test(w) : (w === "" || /^[a-f0-9]{8,16}$/.test(w));
+      const want = await hmac16(e + (conf ? "|ec|" + w : (w ? "|ew|" + w : "|ew")), env.UNSUB_SECRET);
+      if (!(EMAIL_RE.test(e) && wOk && t === want)) return htmlPage("That link isn't valid.");
+      const rPeek = await getEWatch(e);
+      const label = (w && (rPeek.pend[w] || rPeek.w[w] || {}).label) || "this elevator";
+      const action = path + "?e=" + encodeURIComponent(e) + (w ? "&w=" + w : "") + "&t=" + encodeURIComponent(t);
+      if (req.method === "GET") {
+        return htmlPage(
+          conf ? "Watch " + escHtml(label) + " on AGSIST?" : (w ? "Stop watching " + escHtml(label) + "?" : "Stop all elevator watches for this address?"),
+          "<p>" + escHtml(e) + "</p><form method=\"POST\" action=\"" + action + "\">" +
+          "<button type=\"submit\" style=\"font:inherit;padding:10px 22px;cursor:pointer\">" +
+          (conf ? "Yes, watch it" : "Yes, stop") + "</button></form>" +
+          "<p style=\"color:#666\">Nothing happens until you press the button.</p>");
+      }
+      if (req.method === "POST") {
+        const r = await getEWatch(e);
+        if (conf) {
+          if (!(w in r.pend)) return htmlPage("This confirmation link has expired. Ask to watch it again on the elevator's bid card.");
+          const pendLabel = r.pend[w].label;
+          delete r.pend[w];
+          r.w[w] = { label: pendLabel, k: null, s: null };   // the sender records the baseline basis on its next run
+          await putEWatch(e, r);
+          return htmlPage("You are watching " + escHtml(pendLabel) + ". You will get an email when its posted basis changes.");
+        }
+        if (w) { delete r.pend[w]; delete r.w[w]; } else { r.pend = {}; r.w = {}; }
+        await putEWatch(e, r);
+        return htmlPage(w ? "Stopped. No more emails about " + escHtml(label) + "." : "Stopped. No more elevator watch emails.");
+      }
+    }
+
+    if (path === "/elevator-watch-list" && req.method === "GET") {
+      if (!authed) return json({ ok: false }, 403);
+      const keys = await listKeys(env, "ewatch:");
+      const out = [];
+      for (const k of keys) {
+        const v = await env.SUBS.get(k);
+        if (v) { const rec = JSON.parse(v); rec.email = k.slice(7); out.push(rec); }
+      }
+      return json(out, 200);
+    }
+
+    if (path === "/elevator-watch-mark" && req.method === "POST") {
+      if (!authed) return json({ ok: false }, 403);
+      let b = {};
+      try { b = await req.json(); } catch (e) { return json({ ok: false, error: "bad json" }, 400); }
+      const email = String(b.email || "").trim().toLowerCase(), wid = String(b.wid || "").trim().toLowerCase();
+      if (!EMAIL_RE.test(email) || !/^[a-f0-9]{8,16}$/.test(wid)) return json({ ok: false, error: "bad args" }, 400);
+      const r = await getEWatch(email);
+      if (b.confirm_mailed) {
+        if (!(wid in r.pend)) return json({ ok: true, skipped: true });
+        r.pend[wid].m = 1;
+      } else {
+        if (!(wid in r.w)) return json({ ok: true, skipped: true });   // unsubscribed while the job ran
+        r.w[wid] = { label: (r.w[wid] && r.w[wid].label) || String(b.label || ""), k: String(b.k || ""), s: b.s || {} };
+      }
+      await putEWatch(email, r);
       return json({ ok: true });
     }
 

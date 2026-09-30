@@ -1,0 +1,13 @@
+name = "agsist-barchart"
+main = "barchart-proxy.js"
+compatibility_date = "2026-09-30"
+
+# Secrets (BARCHART_API_KEY) live on the Worker itself in the dashboard
+# under Settings -> Variables and Secrets. Not part of this file, untouched
+# by connecting Git.
+#
+# The old workers/wrangler.toml in this folder names this Worker
+# "agsist-prices" -- that doesn't match the live Worker
+# (agsist-barchart.dnilgis.workers.dev) and was never actually used to
+# deploy anything. Safe to delete once this file is in place; kept
+# untouched here so nothing breaks before you've seen this note.

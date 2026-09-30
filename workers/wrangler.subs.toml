@@ -1,0 +1,9 @@
+name = "agsist-subs"
+main = "subs-worker.js"
+compatibility_date = "2026-09-30"
+
+# Secrets/vars (GMAIL_USER, GMAIL_APP_PASS, UNSUB_SECRET, LIST_TOKEN, etc. --
+# whatever this Worker already has set) live on the Worker itself in the
+# dashboard under Settings -> Variables and Secrets. They are NOT part of
+# this file and are untouched by connecting Git -- Git integration only
+# replaces the code on each push, never the secrets.

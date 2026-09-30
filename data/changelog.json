@@ -16,6 +16,30 @@
      "page": "/whats-priced-in",
      "name": "Grain Stocks joins What's Priced In",
      "text": "What's Priced In covered WASDE only. It now also carries the quarterly Grain Stocks report \u2014 today's corn and soybean trade estimates, graded against the actual print once USDA releases it, the same way WASDE already is. No usable wheat trade estimate was found for this cycle, so wheat is shown withheld rather than guessed."
+    },
+    {
+     "tag": "new",
+     "page": "/",
+     "name": "Store-or-sell calculator and a nearby-basis check, right after your ZIP search",
+     "text": "Look up cash bids on the homepage and two new things appear: a calculator that weighs your storage cost and expected carry against selling now at the bid you found, and a line comparing that bid's basis to the average of the other nearby bids the same search turned up. Also new: a one-line recap of what changed since your last visit, and a prompt to add AGSIST to your home screen."
+    },
+    {
+     "tag": "new",
+     "page": "/",
+     "name": "Market Intelligence: a real basis history chart, an I raise toggle, and September Grain Stocks on the front page",
+     "text": "The homepage Commitment of Traders panel now sits beside the USDA report calendar as a two-column strip, and a new September Grain Stocks card sits above it with today's real print (corn 2.095B bu, soybeans 0.315B, wheat 1.846B) linked through to the full grading on What's Priced In. An \"I raise\" toggle lets you pin Cattle first in the COT list if that is the position you actually hold. When your ZIP bid lookup finds a match, a basis history chart now draws from this elevator's own logged basis changes — real change-points only, going back to June 10 where we have them, never a smoothed or invented line — and elevators read through the AGSIST network feed are now marked \"direct from elevator\" so you can tell which numbers came straight from the board."
+    },
+    {
+     "tag": "new",
+     "page": "/",
+     "name": "A 25-mile basis comparison, and Watch this elevator",
+     "text": "The nearby-bids comparison on the homepage only ever averaged whatever bids happened to fall inside your ZIP search radius. When your search returns an elevator with real coordinates, the page now also compares its basis to every other located bid within a fixed 25-mile ring around it — a constant distance, not one that shifts with where you searched from. Separately, elevators with a posted corn basis now carry a \"Watch this elevator — free\" link: enter your email, confirm it once, and you get a message when that elevator's posted basis changes. Unsubscribe any time from the link in every email."
+    },
+    {
+     "tag": "new",
+     "page": "/field-scout",
+     "name": "Field Scout: a Nitrogen map layer",
+     "text": "Crop Vigor & Moisture already computed NDRE, the satellite index tied to nitrogen status, as a single number per field. It's now also a map layer you can switch on, next to Vigor and Moisture — because nitrogen stress is rarely even across a field, and a single number can't show you where. Same satellite source as the Vigor layer (Sentinel-2), and the color bands match the number exactly, so the map and the figure never disagree about the same field."
     }
    ]
   },

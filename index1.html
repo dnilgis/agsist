@@ -704,9 +704,41 @@ body{--sp-md:.6rem;--sp-lg:.85rem;--sp-xl:1.1rem;--sp-2xl:1.5rem}
 .idx1-zone-label::before{content:'';width:7px;height:7px;border-radius:50%;flex:none}
 .idx1-zone-label.idx1-zone-live{border-top-color:#4caf50;color:#8fd98f}
 .idx1-zone-label.idx1-zone-live::before{background:#4caf50}
-.idx1-zone-label.idx1-zone-intel{border-top-color:#4a90d9;color:#9ecbf5}
-.idx1-zone-label.idx1-zone-intel::before{background:#4a90d9}
+.idx1-zone-label.idx1-zone-intel{border-top-color:var(--blue);color:var(--blue)}
+.idx1-zone-label.idx1-zone-intel::before{background:var(--blue)}
 .idx1-zone-label small{font-weight:600;letter-spacing:0;text-transform:none;opacity:.7;font-size:.85em}
+/* 2026-09-30: COT + Grain Stocks/USDA side by side, ported from the Design
+   canvas mockup's main+rail split. #f-cot-intel keeps its own internal
+   .ratio-cot-grid (nowcast + COT widget side by side); this just gives the
+   PAIR of top-level sections a second, outer column next to it. minmax(0,1fr)
+   on the left stops the COT widget's own grid from overflowing its track. */
+.idx1-intel-row{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:1rem;align-items:start}
+/* minmax(0,...) on BOTH rules, not bare 1fr: a bare 1fr track's implicit
+   minimum is its content's max-content width, so a wide flex row inside
+   (the I-raise toggle, the COT bar labels) keeps the track -- and the whole
+   page -- from ever actually shrinking to the viewport. Found by the
+   project's own 390px scrollWidth check: docScrollWidth was 492 against a
+   390 viewport before this fix, traced to gridTemplateColumns computing to
+   ~1525px instead of 390px. */
+@media(max-width:900px){.idx1-intel-row{grid-template-columns:minmax(0,1fr)}}
+.visually-hidden{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}
+fieldset.visually-hidden{border:0;margin:0;padding:0;min-width:0}
+/* "I raise" toggle -- see the fieldset's own comment for why it lives where
+   it does. Underline tabs, not pills: matches how the rest of the page
+   marks state (hairlines), not generic component-library chrome. */
+.idx1-raise-toggle{display:flex;align-items:baseline;gap:.9rem;margin-bottom:.6rem;flex-wrap:wrap;border-bottom:1px solid var(--border);padding-bottom:.5rem;min-width:0}
+.idx1-raise-toggle span{font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--text-muted);letter-spacing:.1em}
+.idx1-raise-toggle label{cursor:pointer;padding:.15rem 0 .35rem;font-size:.78rem;color:var(--text-muted);border-bottom:2px solid transparent}
+fieldset:has(#i-raise-crops:checked) ~ * .idx1-raise-toggle label[for="i-raise-crops"],
+fieldset:has(#i-raise-cattle:checked) ~ * .idx1-raise-toggle label[for="i-raise-cattle"],
+fieldset:has(#i-raise-mixed:checked) ~ * .idx1-raise-toggle label[for="i-raise-mixed"]{color:var(--text);border-bottom-color:var(--blue)}
+fieldset:has(#i-raise-crops:focus-visible) ~ * label[for="i-raise-crops"],
+fieldset:has(#i-raise-cattle:focus-visible) ~ * label[for="i-raise-cattle"],
+fieldset:has(#i-raise-mixed:focus-visible) ~ * label[for="i-raise-mixed"]{outline:2px solid var(--blue);outline-offset:2px}
+fieldset:has(#i-raise-cattle:checked) ~ * .cot-row-cattle,
+fieldset:has(#i-raise-mixed:checked) ~ * .cot-row-cattle{order:-1;box-shadow:0 0 0 1px var(--green) inset;border-radius:8px}
+fieldset:has(#i-raise-cattle:checked) ~ * .cot-rows::before{content:'Showing Cattle first';display:block;order:-2;font-size:.68rem;color:var(--green);margin-bottom:.3rem}
+fieldset:has(#i-raise-mixed:checked) ~ * .cot-rows::before{content:'Cattle pinned, crops still shown';display:block;order:-2;font-size:.68rem;color:var(--green);margin-bottom:.3rem}
 .idx1-preview-flag{position:sticky;top:0;z-index:500;background:#d08a3c;color:#0a0c0d;font-family:'JetBrains Mono',monospace;font-size:.7rem;font-weight:700;text-align:center;padding:.28rem .6rem;letter-spacing:.03em}
 #idx1-trust-ledger{font-size:.74rem;color:var(--gold);font-weight:600;margin-top:.4rem;text-align:center;padding:.3rem;background:rgba(212,162,63,.08);border-radius:6px}
 </style>
@@ -792,6 +824,27 @@ body{--sp-md:.6rem;--sp-lg:.85rem;--sp-xl:1.1rem;--sp-2xl:1.5rem}
 .dh-fc--stop{background:rgba(239,68,68,.1);color:#ef4444;border:1px solid rgba(239,68,68,.2)}
 @media(min-width:700px){.dh{--dh-pad:1.75rem}.dh-headline{font-size:2.2rem}}
 @media(min-width:1000px){.dh-headline{font-size:2.6rem}}
+<style>
+.idx1-extras-card{margin-top:1rem;padding:.85rem 1rem;background:var(--surface2,rgba(255,255,255,.02));border:1px solid var(--border);border-radius:8px}
+.idx1-extras-title{display:flex;align-items:center;gap:.4rem;font-size:.88rem;font-weight:700;color:var(--text);margin-bottom:.3rem}
+.idx1-extras-sub{font-size:.78rem;color:var(--text-dim);margin-bottom:.65rem;line-height:1.5}
+.idx1-extras-row{display:flex;flex-wrap:wrap;gap:.65rem;margin-bottom:.6rem}
+.idx1-extras-field{display:flex;flex-direction:column;gap:.25rem;font-size:.74rem;color:var(--text-muted)}
+.idx1-extras-field input{width:110px;font-family:'JetBrains Mono',monospace;font-size:.82rem;color:var(--text);background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:.4rem .5rem}
+#idx1-calc-result{font-family:'JetBrains Mono',monospace;font-size:.86rem;font-weight:700;color:var(--text-dim)}
+.idx1-extras-fine{font-size:.72rem;color:var(--text-muted);margin-top:.4rem;line-height:1.5}
+.idx1-extras-line{max-width:1400px;margin:.4rem auto 0;padding:0 1rem;font-family:'JetBrains Mono',monospace;font-size:.76rem;color:var(--text-dim)}
+.idx1-home-prompt{display:flex;align-items:center;gap:.6rem;max-width:1400px;margin:0 auto;padding:.55rem 1rem;background:var(--surface);border-bottom:1px solid var(--border)}
+.idx1-last-visit{display:flex;align-items:center;gap:.5rem;max-width:1400px;margin:.5rem auto 0;padding:0 1rem;font-family:'JetBrains Mono',monospace;font-size:.78rem;color:var(--text-dim)}
+.idx1-last-visit .idx1-badge{font-size:.66rem;color:#0a0c0d;background:var(--blue,#4a90d9);padding:1px 5px;border-radius:3px;font-weight:700}
+</style>
+<div id="idx1-home-prompt" class="idx1-home-prompt" style="display:none">
+  <svg class="ic" aria-hidden="true" style="flex:none"><use href="#i-banknote"/></svg>
+  <div style="flex-grow:1;font-size:.82rem;color:var(--text)">Add AGSIST to your home screen — one tap from the field, no app store.</div>
+  <button type="button" id="idx1-home-add" style="font-size:.78rem;font-weight:700;color:#0a0c0d;background:var(--gold);border:none;border-radius:6px;padding:.4rem .7rem;flex:none;cursor:pointer">Add</button>
+  <button type="button" id="idx1-home-dismiss" aria-label="Dismiss" style="font-size:1rem;color:var(--text-muted);background:none;border:none;padding:.2rem .3rem;flex:none;cursor:pointer">&times;</button>
+</div>
+<div id="idx1-last-visit" class="idx1-last-visit" style="display:none"></div>
 </style>
 <section class="daily-hero is-brief" id="daily-hero" aria-label="AGSIST Daily Briefing" aria-expanded="false">
   <div class="daily-teaser" id="daily-teaser" role="button" tabindex="0" aria-label="Expand AGSIST Daily briefing" aria-controls="daily-full">
@@ -1058,6 +1111,23 @@ body{--sp-md:.6rem;--sp-lg:.85rem;--sp-xl:1.1rem;--sp-2xl:1.5rem}
   <path d="M9.8 4.4A2 2 0 1 1 11 8H2" /></symbol><symbol id="i-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18" />
   <path d="m6 6 12 12" /></symbol><symbol id="i-zap" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z" /></symbol><symbol id="i-rotate-ccw" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 2v6h6"/><path d="M3 8a9 9 0 1 0 3-7L3 8"/></symbol><symbol id="i-chevron-up" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></symbol></defs></svg><style></style>
 <main id="main" class="main" role="main" tabindex="-1">
+<!-- 2026-09-30: "I raise" -- real, no-JS operation toggle, ported from the
+     Design canvas mockup. Placed as the first child of <main> so the
+     fieldset:has() rule below can reach every later top-level section
+     (the COT widget's cattle row, deep inside #f-cot-intel) through the
+     general-sibling + descendant combinator, without any script. Visually
+     hidden but a real fieldset/legend, not display:none, so a keyboard or
+     screen-reader user tabbing into <main> hears "I raise, radio group"
+     first. Scoped to what's actually real on this page: reorders the COT
+     panel (real, live cattle data already on the widget) -- does NOT swap
+     in a cattle cash-bid card, since no real cattle bid feed exists yet
+     (same gap flagged in the last kit). -->
+<fieldset class="visually-hidden">
+  <legend class="visually-hidden">I raise — pins cattle first in Market Intelligence when selected</legend>
+  <input type="radio" name="idx1-raise" id="i-raise-crops" checked>
+  <input type="radio" name="idx1-raise" id="i-raise-cattle">
+  <input type="radio" name="idx1-raise" id="i-raise-mixed">
+</fieldset>
   <h1 class="home-h1">Corn, Soybean &amp; Wheat Prices, Farm Weather &amp; Cash Bids</h1>
   <div class="signup--compact fade-up" id="signup-compact" style="display:none">
     <span class="scu-eyebrow"><svg class="ic" aria-hidden="true"><use href="#i-newspaper"/></svg> AGSIST Daily</span>
@@ -1269,6 +1339,26 @@ body{--sp-md:.6rem;--sp-lg:.85rem;--sp-xl:1.1rem;--sp-2xl:1.5rem}
           </div>
         </div>
         <div id="bids-list-area"><div class="bids-skeleton" aria-label="Loading cash bids"><div class="bids-skel-row"></div><div class="bids-skel-row"></div><div class="bids-skel-row"></div></div></div>
+        <div style="font-size:.66rem;color:var(--text-muted);margin-top:.5rem;padding-top:.45rem;border-top:1px solid var(--border)">Posted cash price, not a contract. Freight, moisture and grade discounts are set by the elevator, not shown here &mdash; call to confirm before you haul. <a href="/contact" style="color:var(--text-muted);text-decoration:underline">See a wrong number? Tell us &rarr;</a></div>
+        <div id="idx1-store-sell" class="idx1-extras-card" style="display:none">
+          <div class="idx1-extras-title"><svg class="ic" aria-hidden="true"><use href="#i-clipboard-list"/></svg> Store, or sell at this price now?</div>
+          <div class="idx1-extras-sub">Plug in your own bin or commercial-storage numbers. Cash price fills in from your bid lookup above; edit it if it does not match what you would actually haul.</div>
+          <div class="idx1-extras-row">
+            <label class="idx1-extras-field">Cash price now ($/bu)<input id="idx1-calc-price" type="number" step="0.01" min="0" inputmode="decimal"></label>
+            <label class="idx1-extras-field">Storage cost ($/bu/mo)<input id="idx1-calc-cost" type="number" step="0.01" min="0" placeholder="e.g. 0.03" inputmode="decimal"></label>
+            <label class="idx1-extras-field">Months you would store<input id="idx1-calc-months" type="number" step="1" min="0" placeholder="e.g. 3" inputmode="decimal"></label>
+            <label class="idx1-extras-field">Carry you expect ($/bu)<input id="idx1-calc-carry" type="number" step="0.01" min="0" placeholder="e.g. 0.10" inputmode="decimal"></label>
+          </div>
+          <div id="idx1-calc-result" role="status">Enter your numbers above.</div>
+          <div class="idx1-extras-fine">Storage cost over your months vs. the carry you are betting on — that is it. Does not include interest on the money tied up, shrink, or quality risk; call your elevator for their exact terms.</div>
+        </div>
+        <div id="idx1-search-compare" class="idx1-extras-line" style="display:none"></div>
+        <div id="idx1-distance-compare" class="idx1-extras-line" style="display:none"></div>
+        <div id="idx1-basis-chart" class="idx1-extras-card" style="display:none">
+          <div class="idx1-extras-title"><svg class="ic" aria-hidden="true"><use href="#i-trending-up"/></svg> Basis history at this elevator</div>
+          <svg id="idx1-basis-svg" viewBox="0 0 300 70" preserveAspectRatio="none" style="width:100%;height:70px;display:block;margin:.3rem 0"></svg>
+          <div id="idx1-basis-chart-fine" class="idx1-extras-fine"></div>
+        </div>
         <div id="idx1-trust-ledger">—</div>
       </div></div>
     </div>
@@ -1423,6 +1513,14 @@ body{--sp-md:.6rem;--sp-lg:.85rem;--sp-xl:1.1rem;--sp-2xl:1.5rem}
   </div>
   
   <div class="idx1-zone-label idx1-zone-intel">Market Intelligence <small>&mdash; where the money's actually positioned</small></div>
+  <!-- 2026-09-30: side-by-side intel rail, ported from the Design canvas
+       mockup's two-column layout. COT (the wider, denser widget) takes the
+       main column; the Grain Stocks/USDA card rides alongside it as a
+       narrower rail, the same relationship the mockup gives COT and its
+       WASDE card. Both sections keep every real id and script hook
+       untouched -- this only changes where CSS places them, nothing about
+       how they're populated. Collapses to one column under 900px. -->
+  <div class="idx1-intel-row">
   <div class="fade-up" id="f-cot-intel">
     <div class="sec-head"><h2 class="sec-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:1.05em;height:1.05em;vertical-align:-.13em;margin-right:.34em;flex:none"><path d="M3 3v16a2 2 0 0 0 2 2h16" /> <path d="m19 9-5 5-4-4-3 3" /></svg>Market Intelligence</h2><a href="/cot" class="sec-all">Full COT Chart &rarr;</a></div>
     <div class="ratio-cot-grid">
@@ -1449,14 +1547,15 @@ body{--sp-md:.6rem;--sp-lg:.85rem;--sp-xl:1.1rem;--sp-2xl:1.5rem}
         </div>
       </div>
       <div class="cot-widget" id="cot-widget">
+        <div class="idx1-raise-toggle"><span>I RAISE</span><label for="i-raise-crops">Row Crops</label><label for="i-raise-cattle">Cattle Only</label><label for="i-raise-mixed">Mixed</label></div>
         <div class="cot-widget-head"><span class="cot-widget-title"><svg class="ic" aria-hidden="true"><use href="#i-chart-column"/></svg> CFTC COT &mdash; Fund Positioning</span><span class="cot-verdict mixed" id="cot-verdict">Loading&hellip;</span></div>
         <div class="cot-caption">Net contracts held long vs short by large money managers. Bar shows where that position sits within the past 52 weeks. Interpretation of public CFTC data, not a trading signal.</div>
         <div class="cot-rows" id="cot-rows">
-          <div><div class="cot-row-top"><div class="cot-label"><span class="cot-comm-icon"><svg class="ic" aria-hidden="true"><use href="#i-sprout"/></svg></span><span class="cot-comm-name">Corn</span></div><div class="cot-right"><span class="cot-dir nc" id="cot-corn-dir">--</span><span class="cot-net" id="cot-corn-net">--</span><span class="cot-chg nc" id="cot-corn-chg">--</span></div></div><div class="cot-bar-wrap"><div class="cot-bar-fill" id="cot-corn-fill"></div><div class="cot-zero-mark" id="cot-corn-zero"></div><div class="cot-bar-dot" id="cot-corn-dot" style="background:var(--text-muted)"></div></div><div class="cot-bar-labels"><span id="cot-corn-min">--</span><span>52-wk range</span><span id="cot-corn-max">--</span></div></div>
-          <div><div class="cot-row-top"><div class="cot-label"><span class="cot-comm-icon"><svg class="ic" aria-hidden="true"><use href="#i-bean"/></svg></span><span class="cot-comm-name">Soybeans</span></div><div class="cot-right"><span class="cot-dir nc" id="cot-beans-dir">--</span><span class="cot-net" id="cot-beans-net">--</span><span class="cot-chg nc" id="cot-beans-chg">--</span></div></div><div class="cot-bar-wrap"><div class="cot-bar-fill" id="cot-beans-fill"></div><div class="cot-zero-mark" id="cot-beans-zero"></div><div class="cot-bar-dot" id="cot-beans-dot" style="background:var(--text-muted)"></div></div><div class="cot-bar-labels"><span id="cot-beans-min">--</span><span>52-wk range</span><span id="cot-beans-max">--</span></div></div>
-          <div><div class="cot-row-top"><div class="cot-label"><span class="cot-comm-icon"><svg class="ic" aria-hidden="true"><use href="#i-wheat"/></svg></span><span class="cot-comm-name">Wheat</span></div><div class="cot-right"><span class="cot-dir nc" id="cot-wheat-dir">--</span><span class="cot-net" id="cot-wheat-net">--</span><span class="cot-chg nc" id="cot-wheat-chg">--</span></div></div><div class="cot-bar-wrap"><div class="cot-bar-fill" id="cot-wheat-fill"></div><div class="cot-zero-mark" id="cot-wheat-zero"></div><div class="cot-bar-dot" id="cot-wheat-dot" style="background:var(--text-muted)"></div></div><div class="cot-bar-labels"><span id="cot-wheat-min">--</span><span>52-wk range</span><span id="cot-wheat-max">--</span></div></div>
+          <div class="cot-row-corn"><div class="cot-row-top"><div class="cot-label"><span class="cot-comm-icon"><svg class="ic" aria-hidden="true"><use href="#i-sprout"/></svg></span><span class="cot-comm-name">Corn</span></div><div class="cot-right"><span class="cot-dir nc" id="cot-corn-dir">--</span><span class="cot-net" id="cot-corn-net">--</span><span class="cot-chg nc" id="cot-corn-chg">--</span></div></div><div class="cot-bar-wrap"><div class="cot-bar-fill" id="cot-corn-fill"></div><div class="cot-zero-mark" id="cot-corn-zero"></div><div class="cot-bar-dot" id="cot-corn-dot" style="background:var(--text-muted)"></div></div><div class="cot-bar-labels"><span id="cot-corn-min">--</span><span>52-wk range</span><span id="cot-corn-max">--</span></div></div>
+          <div class="cot-row-beans"><div class="cot-row-top"><div class="cot-label"><span class="cot-comm-icon"><svg class="ic" aria-hidden="true"><use href="#i-bean"/></svg></span><span class="cot-comm-name">Soybeans</span></div><div class="cot-right"><span class="cot-dir nc" id="cot-beans-dir">--</span><span class="cot-net" id="cot-beans-net">--</span><span class="cot-chg nc" id="cot-beans-chg">--</span></div></div><div class="cot-bar-wrap"><div class="cot-bar-fill" id="cot-beans-fill"></div><div class="cot-zero-mark" id="cot-beans-zero"></div><div class="cot-bar-dot" id="cot-beans-dot" style="background:var(--text-muted)"></div></div><div class="cot-bar-labels"><span id="cot-beans-min">--</span><span>52-wk range</span><span id="cot-beans-max">--</span></div></div>
+          <div class="cot-row-wheat"><div class="cot-row-top"><div class="cot-label"><span class="cot-comm-icon"><svg class="ic" aria-hidden="true"><use href="#i-wheat"/></svg></span><span class="cot-comm-name">Wheat</span></div><div class="cot-right"><span class="cot-dir nc" id="cot-wheat-dir">--</span><span class="cot-net" id="cot-wheat-net">--</span><span class="cot-chg nc" id="cot-wheat-chg">--</span></div></div><div class="cot-bar-wrap"><div class="cot-bar-fill" id="cot-wheat-fill"></div><div class="cot-zero-mark" id="cot-wheat-zero"></div><div class="cot-bar-dot" id="cot-wheat-dot" style="background:var(--text-muted)"></div></div><div class="cot-bar-labels"><span id="cot-wheat-min">--</span><span>52-wk range</span><span id="cot-wheat-max">--</span></div></div>
           <!-- 2026-09-29: cattle added — data/cot.json has carried "livecattle" all along, the widget just never showed it. Ranchers were reading a corn-belt-only panel. -->
-          <div><div class="cot-row-top"><div class="cot-label"><span class="cot-comm-icon"><svg class="ic" aria-hidden="true"><use href="#i-beef"/></svg></span><span class="cot-comm-name">Cattle</span></div><div class="cot-right"><span class="cot-dir nc" id="cot-cattle-dir">--</span><span class="cot-net" id="cot-cattle-net">--</span><span class="cot-chg nc" id="cot-cattle-chg">--</span></div></div><div class="cot-bar-wrap"><div class="cot-bar-fill" id="cot-cattle-fill"></div><div class="cot-zero-mark" id="cot-cattle-zero"></div><div class="cot-bar-dot" id="cot-cattle-dot" style="background:var(--text-muted)"></div></div><div class="cot-bar-labels"><span id="cot-cattle-min">--</span><span>52-wk range</span><span id="cot-cattle-max">--</span></div></div>
+          <div class="cot-row-cattle"><div class="cot-row-top"><div class="cot-label"><span class="cot-comm-icon"><svg class="ic" aria-hidden="true"><use href="#i-beef"/></svg></span><span class="cot-comm-name">Cattle</span></div><div class="cot-right"><span class="cot-dir nc" id="cot-cattle-dir">--</span><span class="cot-net" id="cot-cattle-net">--</span><span class="cot-chg nc" id="cot-cattle-chg">--</span></div></div><div class="cot-bar-wrap"><div class="cot-bar-fill" id="cot-cattle-fill"></div><div class="cot-zero-mark" id="cot-cattle-zero"></div><div class="cot-bar-dot" id="cot-cattle-dot" style="background:var(--text-muted)"></div></div><div class="cot-bar-labels"><span id="cot-cattle-min">--</span><span>52-wk range</span><span id="cot-cattle-max">--</span></div></div>
         </div>
         <div class="cot-footer">
           <span class="cot-date" id="cot-date">CFTC &middot; Updated weekly</span>
@@ -1467,7 +1566,42 @@ body{--sp-md:.6rem;--sp-lg:.85rem;--sp-xl:1.1rem;--sp-2xl:1.5rem}
   </div>
 <div class="fade-up" id="f5">
     <div class="sec-head"><h2 class="sec-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:1.05em;height:1.05em;vertical-align:-.13em;margin-right:.34em;flex:none"><path d="M8 2v4" /> <path d="M16 2v4" /> <rect width="18" height="18" x="3" y="4" rx="2" /> <path d="M3 10h18" /></svg>Upcoming USDA Reports</h2><a href="/usda-calendar" class="sec-all">Full Calendar &rarr;</a></div>
+    <!-- 2026-09-30: today's real September Grain Stocks print, the most
+         recent USDA report and the one a reader landing here right after
+         release would look for first. Static card, not client-fetched --
+         this is the same three actuals already graded on /whats-priced-in
+         (data/wpi-history.json), copied by hand at build time rather than
+         fetched again, since a homepage card re-deriving its own grading
+         logic client-side is exactly the "two files disagreeing" risk the
+         project's honest-numbers rule warns about. Update this card by hand
+         alongside the next report, the same way the calendar strip below
+         it is hand-maintained. -->
+    <div class="usda-cal-card" style="margin-bottom:.7rem;padding:.85rem 1rem;display:flex;flex-direction:column;gap:.5rem">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:.5rem;flex-wrap:wrap">
+        <div style="font-size:.8rem;font-weight:700;color:var(--text)">September Grain Stocks &mdash; released today</div>
+        <a href="/whats-priced-in" style="font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--text-muted);background:rgba(255,255,255,.04);padding:.2rem .5rem;border-radius:5px;text-decoration:none">USDA OFFICIAL &middot; graded &rarr;</a>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem">
+        <div>
+          <div style="font-size:.72rem;color:var(--text-muted)">Corn stocks</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:1.3rem;font-weight:800;color:var(--text)">2.095<span style="font-size:.7rem;font-weight:600;color:var(--text-muted)">B bu</span></div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--red)">above trade range</div>
+        </div>
+        <div>
+          <div style="font-size:.72rem;color:var(--text-muted)">Soybean stocks</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:1.3rem;font-weight:800;color:var(--text)">0.315<span style="font-size:.7rem;font-weight:600;color:var(--text-muted)">B bu</span></div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--green)">bullish, in range</div>
+        </div>
+        <div>
+          <div style="font-size:.72rem;color:var(--text-muted)">Wheat stocks</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:1.3rem;font-weight:800;color:var(--text)">1.846<span style="font-size:.7rem;font-weight:600;color:var(--text-muted)">B bu</span></div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--text-muted)">no trade estimate</div>
+        </div>
+      </div>
+      <div style="font-size:.7rem;color:var(--text-muted)">Corn printed above the entire pre-report trade range (1.843&ndash;2.005B). Soybeans printed inside the survey range but below average. Full grading, every number, and sourcing: <a href="/whats-priced-in" style="color:var(--text-muted);text-decoration:underline">What's Priced In &rarr;</a></div>
+    </div>
     <div class="usda-cal-card"><div class="cal-strip" id="usda-cal-strip" role="list" tabindex="0" aria-label="Upcoming USDA report dates — scroll for more"></div></div>
+  </div>
   </div>
   <div class="fade-up" id="f-noaa">
     <div class="sec-head"><h2 class="sec-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:1.05em;height:1.05em;vertical-align:-.13em;margin-right:.34em;flex:none"><path d="M14 4v10.54a4 4 0 1 1-4 0V4a2 2 0 0 1 4 0Z" /></svg>NOAA Seasonal Outlooks</h2><a href="https://www.cpc.ncep.noaa.gov/products/predictions/long_range/" target="_blank" rel="noopener" class="sec-all">CPC Full Outlooks &rarr;</a></div>
@@ -2041,6 +2175,7 @@ body{--sp-md:.6rem;--sp-lg:.85rem;--sp-xl:1.1rem;--sp-2xl:1.5rem}
 <script src="/components/loader.js?v=16" defer></script>
 <script src="/components/geo.js?v=17" defer></script>
 <script src="/components/bids-homepage.js?v=14" defer></script>
+<script src="/components/homepage-extras.js?v=1" defer></script>
 <script>
 (function() {
   'use strict';

@@ -1,0 +1,7 @@
+name = "agsist-clock"
+main = "agsist-clock.js"
+compatibility_date = "2026-09-30"
+
+# Secrets (FIRE_KEY, GH_TOKEN) live on the Worker itself in the dashboard
+# under Settings -> Variables and Secrets. Not part of this file, untouched
+# by connecting Git.

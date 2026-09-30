@@ -1,0 +1,6 @@
+name = "atlas-rma-proxy"
+main = "atlas-rma-proxy.js"
+compatibility_date = "2026-09-30"
+
+# No secrets known to be required by this Worker as of this file; if one
+# gets added later it lives on the Worker itself in the dashboard, not here.

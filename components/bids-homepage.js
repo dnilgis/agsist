@@ -73,6 +73,23 @@
     return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   }
 
+  // Short, stable id for "watch this elevator" -- FNV-1a 32-bit over
+  // state|facility|city|commodity, uppercased. Must stay byte-identical to
+  // scripts/send_elevator_watch.py's wid_for(), which is why it uses
+  // Math.imul rather than `*`: h can exceed 2^53 partway through a long
+  // facility name, and plain multiplication silently rounds at that point --
+  // caught by cross-checking this against the Python hash on a real string,
+  // not assumed safe because both "look like" the same formula.
+  function widFor(state, facility, city, commodity){
+    var s = [state, facility, city, commodity].map(function(x){ return String(x || '').trim().toUpperCase(); }).join('|');
+    var h = 0x811c9dc5;
+    for(var i = 0; i < s.length; i++){
+      h ^= s.charCodeAt(i);
+      h = Math.imul(h, 0x01000193);
+    }
+    return ('00000000' + (h >>> 0).toString(16)).slice(-8);
+  }
+
   function basisCents(bN){
     if(bN == null) return null;
     return Math.abs(bN) < 5 ? bN * 100 : bN;
@@ -150,11 +167,17 @@
           facility: b.facility, branch: b.branch,
           city: b.city, state: b.state,
           distance: b.distance, phone: hasPhone(b.phone) ? b.phone : '',
+          fromNetwork: false,
           commodities: {}
         };
       }
       var elev = map[key];
       if(!hasPhone(elev.phone) && hasPhone(b.phone)) elev.phone = b.phone;
+      // A real, existing distinction (line ~375): the AGSIST elevator network
+      // feed tags its own rows `source:'network'`. Barchart rows carry no
+      // `source` at all. This is the only honest "where did this number come
+      // from" signal in the data -- not an invented verification badge.
+      if(b.source === 'network') elev.fromNetwork = true;
       var cat = b.category || 'other';
       if(!elev.commodities[cat]) elev.commodities[cat] = [];
       elev.commodities[cat].push(b);
@@ -174,7 +197,9 @@
     html += '<div style="min-width:0;overflow:hidden">';
     html += '<div style="font-size:.82rem;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + escHtml(elev.facility) + '</div>';
     if(cityState){
-      html += '<div style="font-size:.62rem;color:var(--text-muted)">' + escHtml(cityState) + '</div>';
+      html += '<div style="font-size:.62rem;color:var(--text-muted)">' + escHtml(cityState)
+        + (elev.fromNetwork ? ' <span style="color:var(--green)">&middot; direct from elevator</span>' : '')
+        + '</div>';
     }
     html += '</div>';
     if(distStr){
@@ -226,8 +251,33 @@
       }
     });
 
+    // Watch this elevator. Scoped to corn -- the page's headline commodity --
+    // and only offered when this elevator actually has a real, priced corn
+    // bid; there is nothing honest to watch at an elevator with no corn row.
+    var cornBids = elev.commodities.corn;
+    if(cornBids && cornBids.length && elev.state && elev.facility){
+      var wid = widFor(elev.state, elev.facility, elev.city, 'corn');
+      var label = escHtml(elev.facility + (cityState ? ', ' + cityState : '') + ' — corn');
+      html += '<div class="watch-elevator-wrap" data-wid="' + wid + '" data-label="' + label + '" style="margin-top:.35rem">'
+        + '<button type="button" class="watch-elevator-btn" style="background:none;border:none;padding:0;font-size:.66rem;color:var(--text-muted);text-decoration:underline;cursor:pointer;min-height:24px">Watch this elevator — free</button>'
+        + '</div>';
+    }
+
     html += '</div>';
     return html;
+  }
+
+  // ── Distance between two real points, in miles ──────────────────────────
+  // Plain haversine. Used only when both bids carry real network-fed
+  // coordinates -- never estimated, never backed into from a ZIP centroid.
+  var NEARBY_RADIUS_MI = 25;
+  function milesBetween(lat1, lon1, lat2, lon2){
+    var R = 3958.8, toRad = Math.PI / 180;
+    var dLat = (lat2 - lat1) * toRad, dLon = (lon2 - lon1) * toRad;
+    var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(lat1 * toRad) * Math.cos(lat2 * toRad) *
+      Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   }
 
   // ── What was found, published once, for the band at the top of the page ──
@@ -259,6 +309,69 @@
         if(!best || pool[j].cashPrice > best.cashPrice) best = pool[j];
       }
       if(!best) return;
+
+      /* Guarantee same-month before either comparison is built, regardless
+         of which path picked `best` above. The `keyed.length` branch already
+         narrows `pool` to one month when at least one row parses -- but if
+         EVERY row's deliveryMonth is unparseable, or every contract on offer
+         is already behind `nowKey` (a real rollover-season case), `keyed`
+         stays empty and `pool` silently falls back to every corn row across
+         every month mixed together. Re-filtering here to best's own month
+         closes that gap no matter how `best` was reached.
+         A `best` with NO parseable month of its own (bestMonthKey === '')
+         is the one case this can't fix by filtering: two unparseable rows
+         matching on "both blank" is not evidence their delivery windows
+         actually agree, so there is nothing safe to average -- pool is
+         emptied instead of grouping them on a shared blank. Withhold, don't
+         guess, per the site's own honest-numbers rule. */
+      var bestMonthKey = rowMonthKey(best);
+      pool = bestMonthKey ? pool.filter(function(p){ return rowMonthKey(p) === bestMonthKey; }) : [];
+
+      /* Real, honest "how does this compare" data: average basis across
+         every OTHER corn bid this same search already pulled in, at the
+         same delivery month as the headline bid. Not a county average (no
+         county field exists in this feed) and not a new fetch -- pool is
+         the exact same qualifying-bid list the headline number above was
+         picked from. Left null/0 when there is nothing to average, which
+         the renderer must treat as "don't show this line", never as $0. */
+      var basisVals = [];
+      for(var bi = 0; bi < pool.length; bi++){
+        if(pool[bi] === best) continue;
+        if(pool[bi].basis != null) basisVals.push(pool[bi].basis);
+      }
+      var avgBasis = null;
+      if(basisVals.length){
+        var sumB = 0;
+        for(var bj = 0; bj < basisVals.length; bj++) sumB += basisVals[bj];
+        avgBasis = sumB / basisVals.length;
+      }
+      /* Nearby average, by real distance -- not a county, not the ZIP search
+         radius the headline bid itself came from. A fixed ring (25 miles)
+         drawn around the headline elevator's own coordinates, compared
+         against every OTHER bid in the same pool that also carries real
+         coordinates and falls inside that ring. A bid with no coordinates,
+         or one further than the ring, is left out rather than assumed to
+         match. If the headline bid itself has no coordinates, these fields
+         stay unset and the line never appears -- the honest outcome for a
+         Barchart-only search, not a bug. Computed before the event below so
+         the one dispatch this function makes carries the real numbers --
+         this used to run after the dispatch and silently never reached the
+         page; caught by actually rendering the page, not by the event
+         payload alone. */
+      var nearbyRadiusMiles, avgBasisNearby, avgBasisNearbyCount;
+      if(typeof best.lat === 'number' && typeof best.lon === 'number'){
+        var nearVals = [];
+        for(var ni = 0; ni < pool.length; ni++){
+          var np = pool[ni];
+          if(np === best) continue;
+          if(typeof np.lat !== 'number' || typeof np.lon !== 'number' || np.basis == null) continue;
+          if(milesBetween(best.lat, best.lon, np.lat, np.lon) <= NEARBY_RADIUS_MI) nearVals.push(np.basis);
+        }
+        nearbyRadiusMiles = NEARBY_RADIUS_MI;
+        avgBasisNearby = nearVals.length ? (nearVals.reduce(function(a, b){ return a + b; }, 0) / nearVals.length) : null;
+        avgBasisNearbyCount = nearVals.length;
+      }
+
       var sum = {
         label: label || ('ZIP ' + zip),
         zip: zip,
@@ -268,6 +381,11 @@
         where: (best.facility || '') + (best.branch ? ' \u00b7 ' + best.branch : ''),
         city: (best.city || '') + (best.state ? ', ' + best.state : ''),
         miles: (best.distance == null ? null : best.distance),
+        avgBasis: avgBasis,
+        avgBasisCount: basisVals.length,
+        nearbyRadiusMiles: nearbyRadiusMiles,
+        avgBasisNearby: avgBasisNearby,
+        avgBasisNearbyCount: avgBasisNearbyCount,
         elevators: elevators.length,
         ts: Date.now()
       };
@@ -351,7 +469,13 @@
             basis: r.basis == null ? null : r.basis,
             deliveryMonth: periodLabel(r.period) || r.delivery || '',
             deliveryStart: r.period || '',
-            category: cat, source: 'network', currency: r.currency || ''
+            category: cat, source: 'network', currency: r.currency || '',
+            // Real coordinates, not a geocode -- bids-network.js already carries
+            // each elevator's own lat/lon (it needs them to compute distance).
+            // The licensed feed never gives us coordinates, so Barchart rows
+            // leave these null and are simply left out of the nearby average.
+            lat: typeof r.lat === 'number' ? r.lat : null,
+            lon: typeof r.lon === 'number' ? r.lon : null
           });
         });
         return {rows: rows, ok: true};
@@ -426,7 +550,7 @@
       });
     });
   }
-  window.__agsistHomeBidsInternals = { mergeFeeds: mergeFeeds, rowKey: rowKey, fromNetwork: fromNetwork };
+  window.__agsistHomeBidsInternals = { mergeFeeds: mergeFeeds, rowKey: rowKey, fromNetwork: fromNetwork, widFor: widFor, publishSummary: publishSummary };
 
   // ── Main load function ──────────────────────────────────────────
   var loadSeq = 0;

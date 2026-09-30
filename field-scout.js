@@ -48,7 +48,9 @@
   var activePoly = null;
   // God-layer overlays
   var godLayer = null;          // current Leaflet tileLayer overlay
-  var godActive = '';           // '', 'ndvi', 'moisture'
+  var godActive = '';           // '', 'ndvi', 'ndre', 'moisture'
+  var GOD_LABEL = { ndvi: 'crop vigor', ndre: 'nitrogen status', moisture: 'soil moisture' };
+  var GOD_ATTR  = { ndvi: 'NDVI: Sentinel-2 / Copernicus', ndre: 'NDRE: Sentinel-2 / Copernicus', moisture: 'Moisture: Sentinel-1 / Copernicus' };
   var godOpacity = 0.75;
   var godDate = null;           // YYYY-MM-DD for the time-scrubber
   var hailLayer = null;
@@ -185,10 +187,10 @@
     openSheetFor(which);
     var url = FS_WORKER + '/' + which + '/{z}/{x}/{y}';
     godLayer = L.tileLayer(url, { opacity:godOpacity, maxZoom:18, minZoom:9, tileSize:256, crossOrigin:true,
-      attribution: which==='ndvi' ? 'NDVI: Sentinel-2 / Copernicus' : 'Moisture: Sentinel-1 / Copernicus' }).addTo(map);
+      attribution: GOD_ATTR[which] || '' }).addTo(map);
     // These layers only render at field scale (zoom 9+): a national-view request
     // would fire dozens of Sentinel tiles at once and hit the processing rate limit.
-    if(map.getZoom() < 9){ flashHint('Zoom in to your field to see '+(which==='ndvi'?'crop vigor':'soil moisture')); }
+    if(map.getZoom() < 9){ flashHint('Zoom in to your field to see '+(GOD_LABEL[which] || 'this layer')); }
     renderPassTimeline();
     ga('god_layer', { layer: which });
   }
@@ -204,7 +206,7 @@
       var sc=document.getElementById('fs-scrub'); if(sc) sc.value=0;
       var sv=document.getElementById('fs-scrub-val'); if(sv) sv.textContent='Latest';
     }
-    if(which!=='ndvi'){ var pw=document.getElementById('fs-passes'); if(pw){ pw.hidden=true; pw.innerHTML=''; } }
+    if(which!=='ndvi' && which!=='ndre'){ var pw=document.getElementById('fs-passes'); if(pw){ pw.hidden=true; pw.innerHTML=''; } }
   }
   function syncSheet(){
     if(godActive){ openSheetFor(godActive); return; }
@@ -214,20 +216,27 @@
 
   // ── Season replay: one tappable chip per real clear satellite pass ──
   // The /indices series carries the actual pass dates; tapping a date reloads the
-  // vigor tiles for that pass, so the season plays back like a flipbook.
+  // tile for that pass, so the season plays back like a flipbook. Works for NDVI
+  // (its own crop-stage-aware word/color) and NDRE (idxRead's fixed thresholds,
+  // the same ones the tile ramp uses) -- every other layer has no matching tile
+  // series to replay, so the strip stays hidden there.
   function renderPassTimeline(){
     var wrap=document.getElementById('fs-passes'); if(!wrap) return;
     var s = FIELD && FIELD.indices && FIELD.indices.series;
-    if(godActive!=='ndvi' || !s || !s.length){ wrap.hidden=true; wrap.innerHTML=''; return; }
+    var k = godActive;
+    if((k!=='ndvi' && k!=='ndre') || !s || !s.length){ wrap.hidden=true; wrap.innerHTML=''; return; }
+    var kLabel = k==='ndvi' ? 'NDVI' : 'NDRE';
     var sel = godDate || s[s.length-1].date;
     var cur=null; for(var i=0;i<s.length;i++){ if(s[i].date===sel){ cur=s[i]; break; } }
+    function word(v){ return k==='ndvi' ? vigorWord(v) : ((idxRead(k,v)||{}).w || ''); }
+    function color(v){ return k==='ndvi' ? vigorColor(v) : ((idxRead(k,v)||{}).c || 'var(--dim)'); }
     wrap.hidden=false;
     wrap.innerHTML =
       '<div class="fs-passes-l">Season replay &middot; '+s.length+' clear pass'+(s.length===1?'':'es')+
-        (cur && cur.ndvi!=null ? ' &middot; <b>NDVI '+(+cur.ndvi).toFixed(2)+'</b> ('+vigorWord(+cur.ndvi)+') on '+passLbl(sel) : '')+'</div>'+
+        (cur && cur[k]!=null ? ' &middot; <b>'+kLabel+' '+(+cur[k]).toFixed(2)+'</b> ('+word(+cur[k])+') on '+passLbl(sel) : '')+'</div>'+
       '<div class="fs-passes-row">'+ s.map(function(p){
         var on = p.date===sel;
-        var v = p.ndvi!=null ? '<span class="fs-pass-v" style="color:'+(on?'#0a1206':vigorColor(+p.ndvi))+'">'+(+p.ndvi).toFixed(2)+'</span>' : '';
+        var v = p[k]!=null ? '<span class="fs-pass-v" style="color:'+(on?'#0a1206':color(+p[k]))+'">'+(+p[k]).toFixed(2)+'</span>' : '';
         return '<button type="button" class="fs-pass'+(on?' on':'')+'" data-date="'+esc(p.date)+'"><span class="fs-pass-d">'+passLbl(p.date)+'</span>'+v+'</button>';
       }).join('') + '</div>';
     wrap.querySelectorAll('.fs-pass').forEach(function(b){
@@ -255,6 +264,12 @@
         '<div class="fs-leg-bar" style="background:linear-gradient(90deg,#8c6638,#b79a3c,#6aa83a,#1f7a2e)"></div>'+
         '<div class="fs-leg-ends"><span>Bare / stressed</span><span>Healthy / lush</span></div>'+
         '<div class="fs-leg-say">Greener means more living crop. Brown and tan are bare soil, residue, or a struggling stand &mdash; those are the spots worth walking.</div>';
+    } else if(which==='ndre'){
+      el.hidden=false;
+      el.innerHTML='<div class="fs-leg-top"><span class="fs-leg-ttl">Nitrogen (NDRE)</span><span class="fs-leg-tag">red-edge, most useful after canopy closes</span></div>'+
+        '<div class="fs-leg-bar" style="background:linear-gradient(90deg,#e0685f,#d4a23f,#5fc28a)"></div>'+
+        '<div class="fs-leg-ends"><span>Low</span><span>Strong</span></div>'+
+        '<div class="fs-leg-say">Once the canopy closes, NDVI flattens out and stops showing variation &mdash; NDRE keeps reading chlorophyll and nitrogen status underneath it. Red/gold patches are where nitrogen is most likely limiting, worth a soil or tissue test before you trust it.</div>';
     } else if(which==='moisture'){
       el.hidden=false;
       el.innerHTML='<div class="fs-leg-top"><span class="fs-leg-ttl">Soil moisture</span><span class="fs-leg-tag">radar surface wetness</span></div>'+

@@ -8,6 +8,10 @@
  *                               Holds the OAuth secret, mints + caches the
  *                               short-lived token, renders the false-color
  *                               vigor tile via the Processing API.
+ *   1b. /ndre/{z}/{x}/{y}     → Sentinel-2 NDRE nitrogen/red-edge tiles, same
+ *                               pipeline as NDVI. Useful after canopy closes,
+ *                               when NDVI flattens out and stops showing
+ *                               within-field variation.
  *   2. /moisture/{z}/{x}/{y}  → Sentinel-1 radar soil-moisture proxy tiles.
  *   3. /soil                  → USDA SSURGO spatial query (fixes browser CORS).
  *   4. /cdl                   → USDA Cropland Data Layer crop history. One ArcGIS
@@ -32,7 +36,7 @@
  */
 
 // Build stamp — bump on every paste so /health proves which code is live.
-const BUILD = 'fs-2026-09-20c';
+const BUILD = 'fs-2026-09-30a';
 
 const CDSE_TOKEN_URL = 'https://identity.dataspace.copernicus.eu/auth/realms/CDSE/protocol/openid-connect/token';
 const SH_PROCESS_URL = 'https://sh.dataspace.copernicus.eu/api/v1/process';
@@ -114,6 +118,7 @@ export default {
       const seg = path.split('/');
 
       if (seg[0] === 'ndvi')     return await tileNDVI(seg, url, env, ctx, cors);
+      if (seg[0] === 'ndre')     return await tileNDRE(seg, url, env, ctx, cors);
       if (seg[0] === 'moisture') return await tileMoisture(seg, url, env, ctx, cors);
       if (seg[0] === 'soil')     return await proxySoil(request, cors);
       if (seg[0] === 'indices')  return await indicesStats(request, env, ctx, cors);
@@ -206,6 +211,86 @@ function evaluatePixel(s) {
   else if (ndvi < 0.5) { r=0.55; g=0.78; b=0.25; }      // moderate
   else if (ndvi < 0.7) { r=0.20; g=0.65; b=0.20; }      // good
   else                 { r=0.05; g=0.40; b=0.10; }      // lush
+  return [r, g, b, s.dataMask];
+}`;
+
+  const to = qDate ? qDate : new Date().toISOString().slice(0,10);
+  const fromDate = new Date(new Date(to).getTime() - 30*864e5).toISOString().slice(0,10);
+
+  const payload = {
+    input: {
+      bounds: { bbox, properties: { crs: 'http://www.opengis.net/def/crs/EPSG/0/4326' } },
+      data: [{
+        type: 'sentinel-2-l2a',
+        dataFilter: {
+          timeRange: { from: fromDate + 'T00:00:00Z', to: to + 'T23:59:59Z' },
+          maxCloudCoverage: 40,
+          mosaickingOrder: 'mostRecent',
+        },
+      }],
+    },
+    output: { width: 256, height: 256, responses: [{ identifier: 'default', format: { type: 'image/png' } }] },
+    evalscript,
+  };
+
+  const res = await fetchRetry(SH_PROCESS_URL, {
+    method: 'POST',
+    headers: {
+      'Authorization': 'Bearer ' + token,
+      'Content-Type': 'application/json',
+      'Accept': 'image/png',
+    },
+    body: JSON.stringify(payload),
+  }, 15000);
+  if (!res.ok) {
+    const t = await res.text();
+    return json({ error: 'sentinel-hub ' + res.status, detail: t.slice(0, 300) }, cors, 502);
+  }
+  const buf = await res.arrayBuffer();
+  const out = new Response(buf, {
+    status: 200,
+    headers: Object.assign({}, cors, {
+      'Content-Type': 'image/png',
+      'Cache-Control': 'public, max-age=86400', // 1 day edge cache
+    }),
+  });
+  ctx.waitUntil(cache.put(cacheKey, out.clone()));
+  return out;
+}
+
+// ── 1b. NDRE nitrogen/red-edge tile, same pipeline as NDVI ────────────────
+// Same bands source (Sentinel-2 L2A), same 30-day mostRecent mosaic, same
+// caching shape as tileNDVI -- only the band math and the color ramp differ.
+// Ramp thresholds match idxRead('ndre', v) in field-scout.js exactly (low
+// <0.15, moderate <0.30, strong >=0.30) so the tile a farmer sees on the map
+// never disagrees with the single NDRE number printed in Crop Vigor & Moisture
+// for the same field -- two views of one read, not two different claims.
+async function tileNDRE(seg, url, env, ctx, cors) {
+  const z = +seg[1], x = +seg[2], y = +(seg[3] || '').split('.')[0];
+  if (!Number.isFinite(z) || !Number.isFinite(x) || !Number.isFinite(y)) {
+    return json({ error: 'bad tile coords' }, cors, 400);
+  }
+  const qDate = (url.searchParams.get('date') || '').match(/^\d{4}-\d{2}-\d{2}$/) ? url.searchParams.get('date') : null;
+  const cacheKey = new Request('https://fs-cache/ndre/' + z + '/' + x + '/' + y + (qDate ? ('?date=' + qDate) : ''));
+  const cache = caches.default;
+  const hit = await cache.match(cacheKey);
+  if (hit) return withCors(hit, cors);
+
+  const token = await getToken(env);
+  const bbox = tileBBox(z, x, y);
+
+  const evalscript = `//VERSION=3
+function setup() {
+  return { input: ["B05","B08","dataMask"], output: { bands: 4 } };
+}
+function evaluatePixel(s) {
+  let ndre = (s.B08 - s.B05) / (s.B08 + s.B05);
+  // low <0.15(red) → moderate <0.30(gold) → strong >=0.30(green) -- matches
+  // idxRead('ndre', v) in field-scout.js, not a separately invented scale.
+  let r, g, b;
+  if (ndre < 0.15)      { r=0.878; g=0.408; b=0.373; }  // low
+  else if (ndre < 0.30) { r=0.831; g=0.635; b=0.247; }  // moderate
+  else                  { r=0.373; g=0.761; b=0.541; }  // strong
   return [r, g, b, s.dataMask];
 }`;
 

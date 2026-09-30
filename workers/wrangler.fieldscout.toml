@@ -1,0 +1,7 @@
+name = "agsist-fieldscout"
+main = "fieldscout-worker.js"
+compatibility_date = "2026-09-30"
+
+# Secrets (SH_CLIENT_ID, SH_CLIENT_SECRET -- the Copernicus OAuth creds) live
+# on the Worker itself in the dashboard under Settings -> Variables and
+# Secrets. Not part of this file, untouched by connecting Git.
