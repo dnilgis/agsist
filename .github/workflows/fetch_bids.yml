@@ -217,11 +217,20 @@ jobs:
         continue-on-error: true
         run: python scripts/build_basis_history.py
 
+      # Reads the change-log build_basis_history.py just wrote (and every day
+      # before it) and re-derives one compact per-state sparkline file per
+      # facility/commodity/contract -- real change-points only, nothing
+      # interpolated. Same continue-on-error reasoning as the step above: a
+      # failure here must not cost the bids.
+      - name: Rebuild basis sparklines
+        continue-on-error: true
+        run: python scripts/build_basis_sparklines.py
+
       - name: Sizes
         run: |
           ls -lh data/bids.json data/basis-map.json bids-full.json
           ls -lh data/bids-withheld.json 2>/dev/null || echo "no data/bids-withheld.json this run"
-          du -sh data/basis 2>/dev/null || true
+          du -sh data/basis data/basis-sparklines 2>/dev/null || true
 
       - name: Commit and push
         if: github.event.inputs.dry_run != 'true'
@@ -230,7 +239,7 @@ jobs:
           git config user.email "bot@agsist.com"
           # bids-full.json is gitignored. Adding it explicitly here would put
           # 6 MB into every commit, which is the whole thing this avoids.
-          git add data/bids.json data/basis-map.json data/basis data/elevator-directory.json
+          git add data/bids.json data/basis-map.json data/basis data/basis-sparklines data/elevator-directory.json
           # The withheld-rows report is written by fetch_bids.py inside a try/except,
           # so it can be missing. A missing file must never cost the run its commit.
           [ -f data/bids-withheld.json ] && git add data/bids-withheld.json || true
