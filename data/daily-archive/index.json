@@ -1,6 +1,18 @@
 {
   "briefings": [
     {
+      "date": "2026-10-01",
+      "date_display": "Thursday, October 1, 2026",
+      "headline": "CORN RUNS 1.1% AHEAD OF STOCKS, CRUDE UP ON GULF FLOWS",
+      "teaser": "Corn and wheat both ran higher ahead of Quarterly Stocks, crude gained 3.3% on Gulf flow reports, nothing's confirmed yet.",
+      "market_mood": "mixed",
+      "surprise_count": 1,
+      "sections": 2,
+      "url": "/daily/2026-10-01",
+      "market_closed": false,
+      "yc_outcome": "didnt"
+    },
+    {
       "date": "2026-09-30",
       "date_display": "Wednesday, September 30, 2026",
       "headline": "GRAINS TICK HIGHER AHEAD OF STOCKS DATA AT 11 CT",
@@ -2313,6 +2325,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-09-30T11:00:27.394313+00:00",
-  "count": 201
+  "updated": "2026-10-01T11:23:09.724144+00:00",
+  "count": 202
 }
