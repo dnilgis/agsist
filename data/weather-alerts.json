@@ -1,0 +1,12 @@
+{
+  "fetched": "2026-10-01T17:21:42+00:00",
+  "source": "api.weather.gov/alerts/active",
+  "events_requested": [
+    "Frost Advisory",
+    "Freeze Watch",
+    "Freeze Warning",
+    "Hard Freeze Warning"
+  ],
+  "count": 0,
+  "alerts": []
+}
