@@ -1,281 +1,9 @@
 {
  "_note": "Derived from data/rma-prices.json. 'open' = a discovery window containing today; 'next' = one opening within 75 days. Price range is Conventional practice.",
- "updated": "2026-09-30T01:37:45Z",
- "as_of": "2026-09-30",
+ "updated": "2026-10-01T02:30:11Z",
+ "as_of": "2026-10-01",
  "crop_year": 2026,
  "open": [
-  {
-   "crop": "Barley",
-   "type": "Spring",
-   "leg": "harvest",
-   "start": "2026-09-01",
-   "end": "2026-09-30",
-   "states": [
-    "Alaska"
-   ],
-   "n_states": 1,
-   "lo": 6.24,
-   "hi": 6.24,
-   "exch": [
-    "CBOT"
-   ],
-   "contract": [
-    "December"
-   ],
-   "day": 30,
-   "span": 30,
-   "in_days": null
-  },
-  {
-   "crop": "Canola",
-   "type": "Spring",
-   "leg": "harvest",
-   "start": "2026-09-01",
-   "end": "2026-09-30",
-   "states": [
-    "Idaho",
-    "Minnesota",
-    "Montana",
-    "North Dakota",
-    "Oregon",
-    "South Dakota",
-    "Washington"
-   ],
-   "n_states": 7,
-   "lo": 0.27,
-   "hi": 0.27,
-   "exch": [
-    "ICE"
-   ],
-   "contract": [
-    "November"
-   ],
-   "day": 30,
-   "span": 30,
-   "in_days": null
-  },
-  {
-   "crop": "Canola",
-   "type": "Spring Rapeseed",
-   "leg": "harvest",
-   "start": "2026-09-01",
-   "end": "2026-09-30",
-   "states": [
-    "Idaho",
-    "Montana",
-    "North Dakota",
-    "Oregon",
-    "South Dakota",
-    "Washington"
-   ],
-   "n_states": 6,
-   "lo": 0.296,
-   "hi": 0.296,
-   "exch": [
-    "ICE"
-   ],
-   "contract": [
-    "November"
-   ],
-   "day": 30,
-   "span": 30,
-   "in_days": null
-  },
-  {
-   "crop": "Corn",
-   "type": "All (Non-High Amylose)",
-   "leg": "harvest",
-   "start": "2026-09-01",
-   "end": "2026-09-30",
-   "states": [
-    "North Carolina",
-    "Oklahoma",
-    "Texas"
-   ],
-   "n_states": 3,
-   "lo": 5.34,
-   "hi": 5.34,
-   "exch": [
-    "CBOT"
-   ],
-   "contract": [
-    "December"
-   ],
-   "day": 30,
-   "span": 30,
-   "in_days": null
-  },
-  {
-   "crop": "Cotton",
-   "type": "All",
-   "leg": "harvest",
-   "start": "2026-09-01",
-   "end": "2026-09-30",
-   "states": [
-    "Texas"
-   ],
-   "n_states": 1,
-   "lo": 0.85,
-   "hi": 0.85,
-   "exch": [
-    "ICE"
-   ],
-   "contract": [
-    "December"
-   ],
-   "day": 30,
-   "span": 30,
-   "in_days": null
-  },
-  {
-   "crop": "Flax",
-   "type": "Spring",
-   "leg": "harvest",
-   "start": "2026-09-01",
-   "end": "2026-09-30",
-   "states": [
-    "Idaho",
-    "Minnesota",
-    "Montana",
-    "North Dakota",
-    "South Dakota"
-   ],
-   "n_states": 5,
-   "lo": 16.06,
-   "hi": 16.06,
-   "exch": [
-    "ICE"
-   ],
-   "contract": [
-    "November"
-   ],
-   "day": 30,
-   "span": 30,
-   "in_days": null
-  },
-  {
-   "crop": "Grain Sorghum",
-   "type": "All",
-   "leg": "harvest",
-   "start": "2026-09-01",
-   "end": "2026-09-30",
-   "states": [
-    "Arkansas",
-    "Louisiana",
-    "Mississippi",
-    "Texas"
-   ],
-   "n_states": 4,
-   "lo": 5.33,
-   "hi": 5.33,
-   "exch": [
-    "CBOT"
-   ],
-   "contract": [
-    "December"
-   ],
-   "day": 30,
-   "span": 30,
-   "in_days": null
-  },
-  {
-   "crop": "Oats",
-   "type": "Spring",
-   "leg": "harvest",
-   "start": "2026-09-01",
-   "end": "2026-09-30",
-   "states": [
-    "Alaska",
-    "California",
-    "Maine"
-   ],
-   "n_states": 3,
-   "lo": 4.18,
-   "hi": 5.37,
-   "exch": [
-    "CBOT"
-   ],
-   "contract": [
-    "December"
-   ],
-   "day": 30,
-   "span": 30,
-   "in_days": null
-  },
-  {
-   "crop": "Rice",
-   "type": "Long Grain",
-   "leg": "harvest",
-   "start": "2026-09-01",
-   "end": "2026-09-30",
-   "states": [
-    "Arkansas",
-    "Florida",
-    "Mississippi",
-    "Texas"
-   ],
-   "n_states": 4,
-   "lo": 0.16,
-   "hi": 0.16,
-   "exch": [
-    "CBOT"
-   ],
-   "contract": [
-    "November"
-   ],
-   "day": 30,
-   "span": 30,
-   "in_days": null
-  },
-  {
-   "crop": "Rice",
-   "type": "Short/Medium Grain",
-   "leg": "harvest",
-   "start": "2026-09-01",
-   "end": "2026-09-30",
-   "states": [
-    "Arkansas",
-    "Florida",
-    "Mississippi",
-    "Texas"
-   ],
-   "n_states": 4,
-   "lo": 0.192,
-   "hi": 0.192,
-   "exch": [
-    "CBOT"
-   ],
-   "contract": [
-    "November"
-   ],
-   "day": 30,
-   "span": 30,
-   "in_days": null
-  },
-  {
-   "crop": "Soybeans",
-   "type": "All",
-   "leg": "harvest",
-   "start": "2026-09-01",
-   "end": "2026-09-30",
-   "states": [
-    "Texas"
-   ],
-   "n_states": 1,
-   "lo": 13.14,
-   "hi": 13.14,
-   "exch": [
-    "CBOT"
-   ],
-   "contract": [
-    "November"
-   ],
-   "day": 30,
-   "span": 30,
-   "in_days": null
-  }
- ],
- "next": [
   {
    "crop": "Corn",
    "type": "All (Non-High Amylose)",
@@ -327,9 +55,9 @@
    "contract": [
     "December"
    ],
-   "day": null,
-   "span": null,
-   "in_days": 1
+   "day": 1,
+   "span": 31,
+   "in_days": null
   },
   {
    "crop": "Corn",
@@ -355,9 +83,9 @@
    "contract": [
     "December"
    ],
-   "day": null,
-   "span": null,
-   "in_days": 1
+   "day": 1,
+   "span": 31,
+   "in_days": null
   },
   {
    "crop": "Cotton",
@@ -390,9 +118,9 @@
    "contract": [
     "December"
    ],
-   "day": null,
-   "span": null,
-   "in_days": 1
+   "day": 1,
+   "span": 31,
+   "in_days": null
   },
   {
    "crop": "Grain Sorghum",
@@ -436,9 +164,9 @@
    "contract": [
     "December"
    ],
-   "day": null,
-   "span": null,
-   "in_days": 1
+   "day": 1,
+   "span": 31,
+   "in_days": null
   },
   {
    "crop": "Peanuts",
@@ -466,9 +194,9 @@
    "hi": null,
    "exch": [],
    "contract": [],
-   "day": null,
-   "span": null,
-   "in_days": 1
+   "day": 1,
+   "span": 31,
+   "in_days": null
   },
   {
    "crop": "Peanuts",
@@ -492,9 +220,9 @@
    "hi": null,
    "exch": [],
    "contract": [],
-   "day": null,
-   "span": null,
-   "in_days": 1
+   "day": 1,
+   "span": 31,
+   "in_days": null
   },
   {
    "crop": "Peanuts",
@@ -519,9 +247,9 @@
    "hi": null,
    "exch": [],
    "contract": [],
-   "day": null,
-   "span": null,
-   "in_days": 1
+   "day": 1,
+   "span": 31,
+   "in_days": null
   },
   {
    "crop": "Peanuts",
@@ -541,9 +269,9 @@
    "hi": null,
    "exch": [],
    "contract": [],
-   "day": null,
-   "span": null,
-   "in_days": 1
+   "day": 1,
+   "span": 31,
+   "in_days": null
   },
   {
    "crop": "Popcorn",
@@ -574,9 +302,9 @@
    "contract": [
     "December"
    ],
-   "day": null,
-   "span": null,
-   "in_days": 1
+   "day": 1,
+   "span": 31,
+   "in_days": null
   },
   {
    "crop": "Rice",
@@ -600,9 +328,9 @@
    "contract": [
     "November"
    ],
-   "day": null,
-   "span": null,
-   "in_days": 1
+   "day": 1,
+   "span": 31,
+   "in_days": null
   },
   {
    "crop": "Rice",
@@ -626,9 +354,9 @@
    "contract": [
     "November"
    ],
-   "day": null,
-   "span": null,
-   "in_days": 1
+   "day": 1,
+   "span": 31,
+   "in_days": null
   },
   {
    "crop": "Soybeans",
@@ -675,9 +403,9 @@
    "contract": [
     "November"
    ],
-   "day": null,
-   "span": null,
-   "in_days": 1
+   "day": 1,
+   "span": 31,
+   "in_days": null
   },
   {
    "crop": "Sunflowers",
@@ -706,9 +434,9 @@
    "contract": [
     "December"
    ],
-   "day": null,
-   "span": null,
-   "in_days": 1
+   "day": 1,
+   "span": 31,
+   "in_days": null
   },
   {
    "crop": "Sunflowers",
@@ -737,10 +465,12 @@
    "contract": [
     "December"
    ],
-   "day": null,
-   "span": null,
-   "in_days": 1
-  },
+   "day": 1,
+   "span": 31,
+   "in_days": null
+  }
+ ],
+ "next": [
   {
    "crop": "Corn",
    "type": "All (Non-High Amylose)",
@@ -764,7 +494,7 @@
    ],
    "day": null,
    "span": null,
-   "in_days": 32
+   "in_days": 31
   },
   {
    "crop": "Cotton",
@@ -788,7 +518,7 @@
    ],
    "day": null,
    "span": null,
-   "in_days": 32
+   "in_days": 31
   },
   {
    "crop": "Popcorn",
@@ -810,7 +540,7 @@
    ],
    "day": null,
    "span": null,
-   "in_days": 32
+   "in_days": 31
   },
   {
    "crop": "Soybeans",
@@ -841,7 +571,7 @@
    ],
    "day": null,
    "span": null,
-   "in_days": 32
+   "in_days": 31
   }
  ]
 }
