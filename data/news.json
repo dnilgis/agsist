@@ -1,7 +1,7 @@
 {
- "updated": "2026-09-30T17:57:24+00:00",
- "count": 16,
- "added": 1,
+ "updated": "2026-10-01T01:17:03+00:00",
+ "count": 19,
+ "added": 3,
  "state": {
   "px": {
    "corn": {
@@ -29,6 +29,39 @@
   }
  },
  "items": [
+  {
+   "id": "px:2026-10-01:corn:move",
+   "kind": "board",
+   "headline": "Corn down 3.8% on the day",
+   "detail": "Settled $5.02, -20 cents on the session.",
+   "significance": "notable",
+   "url": "/corn-futures-prices",
+   "source": "CME settlement via the AGSIST board",
+   "day_only": true,
+   "ts": "2026-10-01T12:00:00+00:00"
+  },
+  {
+   "id": "px:2026-10-01:corn-dec:move",
+   "kind": "board",
+   "headline": "December corn down 3.8% on the day",
+   "detail": "Settled $5.02, -20 cents on the session.",
+   "significance": "notable",
+   "url": "/corn-futures-prices",
+   "source": "CME settlement via the AGSIST board",
+   "day_only": true,
+   "ts": "2026-10-01T12:00:00+00:00"
+  },
+  {
+   "id": "px:2026-10-01:wheat:move",
+   "kind": "board",
+   "headline": "Wheat down 2.5% on the day",
+   "detail": "Settled $6.77, -17.5 cents on the session.",
+   "significance": "notable",
+   "url": "/wheat-futures-prices",
+   "source": "CME settlement via the AGSIST board",
+   "day_only": true,
+   "ts": "2026-10-01T12:00:00+00:00"
+  },
   {
    "id": "px:2026-09-30:wheat:move",
    "kind": "board",
