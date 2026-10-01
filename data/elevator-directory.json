@@ -1,5 +1,5 @@
 {
- "generated": "2026-10-01T17:23:04Z",
+ "generated": "2026-10-01T17:38:29Z",
  "from": "barchart-raw.json",
  "complete": false,
  "note": "Directory only: who operates a facility and where. No prices, no basis, no symbols, no delivery windows.",
@@ -12,7 +12,7 @@
   "with_phone": 2170,
   "saturated_zips": 0,
   "failed_zips": 0,
-  "rows_read": 16714
+  "rows_read": 16722
  },
  "saturated": [],
  "failed": [],
@@ -25657,7 +25657,7 @@
    "city": "Emery",
    "state": "SD",
    "zip": "57332",
-   "phone": "507-825-8012",
+   "phone": "605-653-7005",
    "source": "barchart"
   },
   {
@@ -25666,7 +25666,7 @@
    "city": "Yankton",
    "state": "SD",
    "zip": "57078",
-   "phone": "507-825-8012",
+   "phone": "605-653-7005",
    "source": "barchart"
   },
   {
