@@ -1279,7 +1279,7 @@ function basisCents(b){if(b==null)return null;return Math.abs(b)<5?b*100:b;}
    column of +48c and -52c never sat straight, and it sat next to money and
    basis-change lines that were already using U+2212. Three glyphs for one
    arithmetic sign on one card. */
-function formatBasis(b){var c=basisCents(b);if(c==null)return{str:'&mdash;',cls:'flat'};return{str:(c>=0?'+':'&minus;')+Math.abs(c).toFixed(0)+'&#162;',cls:c>0?'pos':c<0?'neg':'flat'};}
+function formatBasis(b){var c=basisCents(b);if(c==null)return{str:'&mdash;',cls:'flat'};return{str:c===0?'even':(c>0?'+':'&minus;')+Math.abs(c).toFixed(0)+'&#162;',cls:c>0?'pos':c<0?'neg':'flat'};}
 /* A PRICE THAT CANNOT BE A BUSHEL PRICE IS NOT SHOWN AS ONE.
    ppu() divides anything over 30 by 100 because some feeds quote cents. That is
    a reasonable rule for a cents-quoted bushel and a silent disaster for a

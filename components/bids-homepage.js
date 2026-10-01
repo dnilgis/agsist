@@ -99,7 +99,8 @@
     var cents = basisCents(bN);
     if(cents == null) return { str:'\u2014', cls:'muted' };
     return {
-      str: (cents >= 0 ? '+' : '\u2212') + Math.abs(cents).toFixed(0) + '\u00a2',
+      /* 2026-10-01: a flat basis is "even", not "+0c". */
+      str: cents === 0 ? 'even' : (cents > 0 ? '+' : '\u2212') + Math.abs(cents).toFixed(0) + '\u00a2',
       cls: cents > 0 ? 'pos' : cents < 0 ? 'neg' : 'muted'
     };
   }
@@ -626,7 +627,10 @@
         if(!alreadySignedUp){
           html += '<div style="margin-top:.5rem;padding:.6rem .7rem;background:var(--surface2);border:1px solid var(--border);border-radius:6px;text-align:center">'
             + '<a href="#signup-compact" id="bids-cta-link" style="color:var(--gold);font-weight:600;font-size:.82rem;text-decoration:none">'
-            + 'Get ' + escHtml(zip) + ' prices in your inbox every morning →</a></div>';
+            /* 2026-10-01: this said "Get <ZIP> prices in your inbox". The
+               signup it opens posts {email, source} -- no ZIP -- and the
+               Daily is national. Promise what the form delivers. */
+            + 'Get the AGSIST Daily in your inbox every morning →</a></div>';
         }
 
         area.innerHTML = html;

@@ -230,11 +230,23 @@ function requestGeo() {
   );
 }
 
+// v18 (2026-10-01): the Spray Advisory and Urea tiles are only ever written
+// on the weather success path, so a denied location or a failed fetch left
+// them saying "LOADING... Waiting for weather data" for the life of the page.
+function _wspNoWeather() {
+  [['wsp-spray-status', 'No weather'], ['wsp-spray-detail', 'Set a ZIP above to get a spray window'],
+   ['wsp-urea-badge', 'No weather'], ['wsp-urea-rec', 'Set a ZIP above to get a volatilization read']].forEach(function(p) {
+    var e = document.getElementById(p[0]);
+    if (e && /Loading|Waiting for weather/.test(e.textContent || '')) { e.textContent = p[1]; e.style.color = 'var(--text-muted)'; }
+  });
+}
+
 function showZipEntry() {
   var wl = document.getElementById('wx-loading');
   var ze = document.getElementById('wx-zip-entry');
   if (wl) wl.style.display = 'none';
   if (ze) ze.style.display = 'block';
+  _wspNoWeather(); // v18
 }
 
 /* ONE ZIP FOR THE WHOLE PAGE.
@@ -522,6 +534,7 @@ function fetchWeather(lat, lon, label) {
       }
       // v17: weather failed but propagateLocation already kicked off above,
       // so bids autoload still happens once Nominatim resolves.
+      _wspNoWeather(); // v18
     });
 
   renderForecast(lat, lon);

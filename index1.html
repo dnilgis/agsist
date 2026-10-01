@@ -362,6 +362,8 @@
   .noaa-note a,.drought-source-note a{text-decoration:underline;}
   @media(max-width:640px){
     .pc-contract{font-size:0.787rem!important;}
+  /* 2026-10-01: section links measured 22px tall at 390px; 44px is the floor. */
+  .sec-head .sec-all{display:inline-flex;align-items:center;min-height:44px}
     .pc-range-labels span{font-size:0.763rem!important;}
     .sec-head{flex-wrap:wrap;gap:.3rem;}
     .cal-card .cal-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:130px;}
@@ -1584,7 +1586,7 @@ fieldset:has(#i-raise-cattle:checked) ~ * .idx1-nowcast-na{display:block!importa
         <div class="crop-footer"><span class="crop-footer-date" id="crop-date">USDA NASS &middot; Weekly</span><a href="/usda-calendar" class="crop-full-link">Full Calendar &rarr;</a></div>
       </div>
       <div class="export-widget" id="export-widget">
-        <div class="export-widget-head"><span class="export-widget-title"><svg class="ic" aria-hidden="true"><use href="#i-package"/></svg> Export Sales &mdash; Cumulative Pace</span><span class="export-mkt-yr" id="export-mkt-yr">USDA FAS &middot; Thu 8:30am</span></div>
+        <div class="export-widget-head"><span class="export-widget-title"><svg class="ic" aria-hidden="true"><use href="#i-package"/></svg> Export Sales &mdash; Cumulative Bookings</span><span class="export-mkt-yr" id="export-mkt-yr">USDA FAS &middot; Thu 8:30am</span></div>
         <div class="export-rows" id="export-rows">
           <div><div class="export-row-head"><div class="export-comm-label"><span class="export-comm-icon"><svg class="ic" aria-hidden="true"><use href="#i-sprout"/></svg></span><span class="export-comm-name">Corn</span></div><span class="export-weekly"><span id="exp-corn-wk">--</span> <span class="export-wk-lbl">this wk</span></span></div><div class="export-pace-row"><div class="export-pace-bar"><div class="export-pace-fill on-track" id="exp-corn-bar" style="width:0%"></div></div><span class="export-pace-pct on-track" id="exp-corn-pct">--%</span></div><div class="export-cumul" id="exp-corn-cumul"></div><div class="export-withheld" id="exp-corn-why" hidden></div></div>
           <div><div class="export-row-head"><div class="export-comm-label"><span class="export-comm-icon"><svg class="ic" aria-hidden="true"><use href="#i-bean"/></svg></span><span class="export-comm-name">Soybeans</span></div><span class="export-weekly"><span id="exp-bean-wk">--</span> <span class="export-wk-lbl">this wk</span></span></div><div class="export-pace-row"><div class="export-pace-bar"><div class="export-pace-fill on-track" id="exp-bean-bar" style="width:0%"></div></div><span class="export-pace-pct on-track" id="exp-bean-pct">--%</span></div><div class="export-cumul" id="exp-bean-cumul"></div><div class="export-withheld" id="exp-bean-why" hidden></div></div>
@@ -1792,19 +1794,20 @@ fieldset:has(#i-raise-cattle:checked) ~ * .idx1-nowcast-na{display:block!importa
         var g=GR[k],pre='sig-'+k,st=stats[g.sk],q=px[k],pct,lo,hi,cur,tag,rd;
         if(st&&st.pct!=null){pct=st.pct;lo=st.lo;hi=st.hi;cur=st.cur;tag='5-YR';rd=r5(pct);}
         else if(q&&q.close!=null&&q.wk52_hi!=null&&q.wk52_lo!=null&&q.wk52_hi>q.wk52_lo){cur=q.close*g.s;lo=q.wk52_lo*g.s;hi=q.wk52_hi*g.s;pct=Math.round((q.close-q.wk52_lo)/(q.wk52_hi-q.wk52_lo)*100);tag='52-WK';rd=r52(pct);}
-        else return;
+        else{if($(pre+'-tag'))$(pre+'-tag').textContent='CACHED';return;}
         pct=Math.max(0,Math.min(100,pct));
         if($(pre+'-num'))$(pre+'-num').textContent=pct;
         if($(pre+'-sub'))$(pre+'-sub').textContent=ord(pct)+' pctile';
         if($(pre+'-tag'))$(pre+'-tag').textContent=tag;
-        if($(pre+'-price'))$(pre+'-price').textContent='$'+cur.toFixed(2)+' \u00b7 range $'+lo.toFixed(2)+'\u2013$'+hi.toFixed(2);
+        if($(pre+'-price'))$(pre+'-price').textContent='$'+cur.toFixed(2)+' \u00b7 '+(tag==='5-YR'?'5-yr':'52-wk')+' range $'+lo.toFixed(2)+'\u2013$'+hi.toFixed(2);
         /* The bar used to be a linear range position beside a distribution
            percentile -- wheat read "71st percentile" over a bar filled to 26%.
            Same quantity in both now. */
         bar(pre,pct);
-        if($(pre+'-read'))$(pre+'-read').innerHTML='<b>'+rd[0]+'</b> '+rd[1];
+        if($(pre+'-read'))$(pre+'-read').innerHTML='<b>'+rd[0]+'</b>'+(rd[1]==='.'?'':' ')+rd[1];
       });
       var le=px.cattle,gf=px.feeders,lc=cot.livecattle,pre='sig-cattle';
+      if(!(le&&gf&&le.close!=null&&gf.close!=null)){if($(pre+'-price'))$(pre+'-price').textContent='Unavailable right now';if($(pre+'-tag'))$(pre+'-tag').textContent='CACHED';}
       if(le&&gf&&le.close!=null&&gf.close!=null){
         var ratio=gf.close/le.close;
         if($(pre+'-num'))$(pre+'-num').textContent=ratio.toFixed(2);
@@ -1824,7 +1827,9 @@ fieldset:has(#i-raise-cattle:checked) ~ * .idx1-nowcast-na{display:block!importa
             var _fp=Math.max(0,Math.min(100,Math.round(((+_fq.close-+_fq.wk52_lo)/(+_fq.wk52_hi-+_fq.wk52_lo))*100)));
             _fclause=' &mdash; feeders '+(_fp>=80?'near the top of':_fp<=20?'near the bottom of':'mid-range in')+' their 52-wk range ('+_fp+'%).';
           }
-          if($(pre+'-read'))$(pre+'-read').innerHTML='<b>Funds '+(lc.net>=0?'net long':'net short')+' fed cattle</b> ('+cp+'%)'+_fclause;}
+          /* "(2%)" read as "2% net long". It is the position's place in its own 52-week range. Say the position and say what the percentage is. */
+          var _netTxt=(Math.abs(lc.net)>=1000?(Math.abs(lc.net)/1000).toFixed(1)+'k':String(Math.abs(lc.net)));
+          if($(pre+'-read'))$(pre+'-read').innerHTML='<b>Funds '+(lc.net>=0?'net long':'net short')+' fed cattle</b> '+_netTxt+' contracts, '+cp+ord(cp)+' pctile of its 52-wk range'+(_fclause==='.'?'.':_fclause);}
         else{if($(pre+'-tag'))$(pre+'-tag').textContent='RATIO';if($(pre+'-read'))$(pre+'-read').innerHTML='<b>Feeder/live '+ratio.toFixed(2)+':1.</b> Value split between cow-calf and feedlots.';}
       }
     });
@@ -2478,8 +2483,8 @@ fieldset:has(#i-raise-cattle:checked) ~ * .idx1-nowcast-na{display:block!importa
   })();
   </script>
 <script src="/components/loader.js?v=16" defer></script>
-<script src="/components/geo.js?v=17" defer></script>
-<script src="/components/bids-homepage.js?v=14" defer></script>
+<script src="/components/geo.js?v=18" defer></script>
+<script src="/components/bids-homepage.js?v=15" defer></script>
 <script src="/components/homepage-extras.js?v=1" defer></script>
 <script>
 (function() {
@@ -2541,8 +2546,8 @@ fieldset:has(#i-raise-cattle:checked) ~ * .idx1-nowcast-na{display:block!importa
      different keys and a symbol match in the data would not prove the reader
      is looking at the same two numbers. */
   var FORWARD_YEAR={
-    'corn-dec':{dataKey:'corn-dec27',rangeId:'corn-dec',label:"Dec '27"},
-    'bean-nov':{dataKey:'beans-nov27',rangeId:'beans-nov',label:"Nov '27"}
+    'corn-dec':{dataKey:'corn-dec27',rangeId:'corn-dec',sym:'corn-dec',label:"Dec '27",tick:"Corn Dec '27"},
+    'bean-nov':{dataKey:'beans-nov27',rangeId:'beans-nov',sym:'beans-nov',label:"Nov '27",tick:"Beans Nov '27"}
   };
   function applyForwardYear(domSuffix,fwd){
     var q=window.AGSIST_PRICE_DATA||{};
@@ -2567,6 +2572,18 @@ fieldset:has(#i-raise-cattle:checked) ~ * .idx1-nowcast-na{display:block!importa
       if(elHi)elHi.textContent='$'+hi.toFixed(2);
       if(elF)elF.style.width=pct.toFixed(1)+'%';
       if(elD)elD.style.left=pct.toFixed(1)+'%';
+    }
+    /* The ticker carries the same contract under the same key. Roll every
+       copy (rebuildTickerLoop clones the strip) so the strip does not read
+       "Corn Dec '26 $5.01" beside "Corn (front) $5.01". */
+    if(typeof fmtTickerPrice==='function'&&typeof fmtTickerChange==='function'){
+      var tp=fmtTickerPrice(fq.close,true,2), tc=fmtTickerChange(fq.close,fq.open,true,fq.netChange,fq.pctChange);
+      document.querySelectorAll('[data-sym="'+fwd.sym+'"]').forEach(function(el){
+        var le=el.querySelector('.t-label'), pe=el.querySelector('.t-price'), ce=el.querySelector('.t-chg');
+        if(le)le.textContent=fwd.tick;
+        if(pe)pe.textContent=tp;
+        if(ce){ce.textContent=tc.text;ce.className='t-chg '+tc.cls;}
+      });
     }
     return true;
   }
@@ -2596,16 +2613,63 @@ fieldset:has(#i-raise-cattle:checked) ~ * .idx1-nowcast-na{display:block!importa
       while(keep&&keep!==document.body&&(' '+(keep.className||'')+' ').indexOf(' pc ')<0)keep=keep.parentNode;
       var lbl=keep&&keep.querySelector?keep.querySelector('.pc-contract'):null;
       if(lbl){
-        var base=(lbl.getAttribute('data-base')||lbl.textContent||'').trim();
-        lbl.setAttribute('data-base',base);
-        lbl.textContent=(same&&!swapped)?(base+' + new crop'):base;
+        /* geo.js names the contract on this chip ("Dec '26 - nearby") after
+           prices load. The old code cached the chip's FIRST text ("Front
+           Month") and wrote it back on every re-run, so the contract name
+           never survived. Only the suffix is ours; the base is whatever is
+           on the chip right now. */
+        var NEW_CROP_SUFFIX=' + new crop';
+        var cur=(lbl.textContent||'').trim();
+        var base=cur.slice(-NEW_CROP_SUFFIX.length)===NEW_CROP_SUFFIX?cur.slice(0,-NEW_CROP_SUFFIX.length):cur;
+        var want=(same&&!swapped)?(base+NEW_CROP_SUFFIX):base;
+        if(cur!==want)lbl.textContent=want;
       }
       if(same&&swapped){
         var bLbl=card.querySelector&&card.querySelector('.pc-contract');
-        if(bLbl)bLbl.textContent=fwd.label;
+        if(bLbl&&bLbl.textContent!==fwd.label)bLbl.textContent=fwd.label;
       }
     });
   }
+  /* THE ACTION names a price. The briefing is written at 6:00 AM CT and the
+     board moves all day; by evening a reader can be told "nothing to do at
+     $5.25 corn" under a ticker that says $5.01. daily.json already carries
+     locked_prices (what the writer saw) and todays_call (which contract the
+     action is about); nothing on this page read either. This prints both
+     prices, and the gap, under the action. It never rewrites the action. */
+  window.agsistFrameAction=function(){
+    var d=window.AGSIST_DAILY, q=window.AGSIST_PRICE_DATA;
+    if(!d||!q)return;
+    var ta=document.getElementById('daily-takeaway');
+    if(!ta||ta.style.display==='none')return;
+    var call=d.todays_call||{}, lp=d.locked_prices||{};
+    var key=call.instrument||'corn';
+    var NAMES={corn:'corn',beans:'beans',wheat:'wheat',oats:'oats',cattle:'live cattle',feeders:'feeders',hogs:'hogs',milk:'Class III milk',meal:'soy meal',crude:'crude',natgas:'natural gas'};
+    var GRAIN={corn:1,beans:1,wheat:1,oats:1,'corn-dec':1,'beans-nov':1};
+    var was=lp[key], live=q[key];
+    if(was==null||!live||live.close==null)return;
+    var now=GRAIN[key]?live.close/100:+live.close;
+    if(!isFinite(now)||!isFinite(+was))return;
+    /* Subtract the two PRINTED prices, so the gap a reader checks by hand
+       is the gap on the line ($5.25 - $5.01 = 24c, not the 23.25c of the
+       unrounded values). */
+    var diff=parseFloat((+now).toFixed(2))-parseFloat((+was).toFixed(2)), txt;
+    if(GRAIN[key]){
+      var c=Math.round(diff*100);
+      txt=c===0?'unchanged since':(c>0?'+':'\u2212')+Math.abs(c)+'\u00a2 since';
+    }else{
+      txt=Math.abs(diff)<0.005?'unchanged since':(diff>0?'+':'\u2212')+'$'+Math.abs(diff).toFixed(2)+' since';
+    }
+    var fmt=function(v){return '$'+(+v).toFixed(2);};
+    var line=document.getElementById('daily-takeaway-frame');
+    if(!line){
+      line=document.createElement('p');
+      line.id='daily-takeaway-frame';
+      line.className='daily-takeaway-frame';
+      line.setAttribute('style',"font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--text-muted);margin:.5rem 0 0;letter-spacing:.02em");
+      ta.appendChild(line);
+    }
+    line.textContent='Written at '+fmt(was)+' '+(NAMES[key]||key)+' \u00b7 now '+fmt(now)+' ('+txt+')';
+  };
   /* Run it again whenever any of the four values it reads changes. The first
      version ran once, straight after renderRanges, and compared price text a
      different code path writes -- so on about half of loads the values were
@@ -2689,8 +2753,11 @@ fieldset:has(#i-raise-cattle:checked) ~ * .idx1-nowcast-na{display:block!importa
       var nb=q[c+'-nearby'];
       if(nb&&nb.close!=null)q[c]=nb;
     });
+    /* Published BEFORE the collapse runs: the forward-year roll reads it. */
+    window.AGSIST_PRICE_DATA=q;
     renderRanges(q);
     watchSameContract();
+    if(typeof window.agsistFrameAction==='function')window.agsistFrameAction();
     // Update "prices-age" label with actual fetch time
     if(data.fetched){
       var _pa=document.getElementById('prices-age');
@@ -2713,8 +2780,7 @@ fieldset:has(#i-raise-cattle:checked) ~ * .idx1-nowcast-na{display:block!importa
       }
     }
     // Wire sparklines if geo.js hasn't already — REMOVED (sparklines disabled)
-    // window.AGSIST_PRICE_DATA exposed for any future charting
-    window.AGSIST_PRICE_DATA=q;
+    // window.AGSIST_PRICE_DATA is set above, before renderRanges.
     // ---- staleness: ratio-widget flag + GA (per-tile dimming handled authoritatively in geo.js) ----
     try{
       var __sk=(data.stale_keys||[]);
@@ -2937,7 +3003,7 @@ function fmtDate(iso){if(!iso)return'\u2014';try{var d=new Date(iso+'T12:00:00')
 fetch('/data/export-sales.json')
   .then(function(r){if(!r.ok)throw new Error('no-exp');return r.json();})
   .then(function(data){
-    var dateEl=document.getElementById('exp-date');if(dateEl)dateEl.textContent='Week of '+fmtDate(data.report_date)+' \u00b7 FAS';
+    var dateEl=document.getElementById('exp-date');if(dateEl)dateEl.textContent='Week ending '+fmtDate(data.report_date)+' \u00b7 FAS';
     var mktEl=document.getElementById('export-mkt-yr');if(mktEl&&data.marketing_year)mktEl.textContent=data.marketing_year+' mkt yr';
     var map={'corn':'corn','soybeans':'bean','wheat':'wheat'};
     Object.keys(map).forEach(function(comm){
@@ -2984,7 +3050,7 @@ fetch('/data/export-sales.json')
           /* The booked total is a real number and was being discarded
              because its denominator is missing. Print it, and say the
              denominator is missing. */
-          cumEl.textContent=(d.cumulative_mt/1e6).toFixed(1)+'M MT booked \u00b7 no USDA target published'+(EX_MY?' for '+EX_MY:'')+', so no pace to measure it against';
+          cumEl.textContent=(d.cumulative_mt/1e6).toFixed(1)+'M MT booked \u00b7 AGSIST has not loaded USDA\u2019s'+(EX_MY?' '+EX_MY:'')+' export projection yet, so no pace shown';
         }
       }
       var whyEl=document.getElementById('exp-'+key+'-why');
@@ -3106,9 +3172,9 @@ gj('/data/markets.json').then(function(cached){
   var d=new Date();
   var TODAY_KEY='agsist-daily-'+d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
   window.TODAY_KEY=TODAY_KEY;
-  function dismissDaily(){try{localStorage.setItem(TODAY_KEY,'1');}catch(e){}var hero=document.getElementById('daily-hero');if(hero){hero.classList.add('dismissed');hero.setAttribute('aria-expanded','false');}document.documentElement.classList.add('daily-pre-dismissed');setTimeout(function(){window.scrollTo({top:0,behavior:'smooth'});},50);}
+  function dismissDaily(){try{localStorage.setItem(TODAY_KEY,'1');}catch(e){}var hero=document.getElementById('daily-hero');if(hero){hero.classList.add('dismissed');hero.setAttribute('aria-expanded','false');}document.documentElement.classList.add('daily-pre-dismissed');setTimeout(function(){window.scrollTo({top:0,behavior:'smooth'});var t=document.getElementById('daily-teaser');if(t&&t.focus)t.focus();},50);}
   window.dismissDaily=dismissDaily;
-  function expandDaily(){try{localStorage.removeItem(TODAY_KEY);}catch(e){}var hero=document.getElementById('daily-hero');if(hero){hero.classList.remove('dismissed');hero.setAttribute('aria-expanded','true');}document.documentElement.classList.remove('daily-pre-dismissed');}
+  function expandDaily(){try{localStorage.removeItem(TODAY_KEY);}catch(e){}var hero=document.getElementById('daily-hero');if(hero){hero.classList.remove('dismissed');hero.setAttribute('aria-expanded','true');}document.documentElement.classList.remove('daily-pre-dismissed');var h=document.getElementById('daily-headline');if(h){if(!h.hasAttribute('tabindex'))h.setAttribute('tabindex','-1');try{h.focus({preventScroll:true});}catch(e){h.focus();}}}
   window.expandDaily=expandDaily;
   try{if(localStorage.getItem(TODAY_KEY)==='1'){var hero=document.getElementById('daily-hero');if(hero)hero.classList.add('dismissed');}}catch(e){}
   window.addEventListener('resize',function(){var single=document.getElementById('ticker-items-single'),track=document.getElementById('ticker-track');if(!single||!track)return;var w=single.scrollWidth||single.offsetWidth;if(w<200)return;track.style.animationDuration=Math.max(20,Math.round(w/45))+'s';});
@@ -3182,7 +3248,8 @@ gj('/data/markets.json').then(function(cached){
     var strip=document.getElementById('usda-cal-strip');if(!strip)return;var now=new Date(),events=[];
     var curYr=now.getFullYear();
     var reports=[{name:'Export Sales',weekday:4,time:'8:30am ET',note:''},{name:'Crop Progress',weekday:1,time:'4:00pm ET',note:'Growing season'},{name:'Export Inspections',weekday:1,time:'11:00am ET',note:''}];
-    var majors=[{name:'WASDE',date:'2026-05-12',time:'11:00am ET',note:'Market-moving'},{name:'WASDE',date:'2026-06-11',time:'11:00am ET',note:'Market-moving'},{name:'Acreage Report',date:'2026-06-30',time:'11:00am ET',note:'Planted acres'},{name:'Grain Stocks',date:'2026-06-30',time:'11:00am ET',note:''},{name:'WASDE',date:'2026-07-10',time:'11:00am ET',note:'Market-moving'},{name:'WASDE',date:'2026-08-12',time:'11:00am ET',note:'Market-moving'},{name:'Crop Production',date:'2026-08-12',time:'11:00am ET',note:'First corn est.'},{name:'WASDE',date:'2026-09-11',time:'11:00am ET',note:'Market-moving'},{name:'Crop Production',date:'2026-09-11',time:'11:00am ET',note:''},{name:'WASDE',date:'2026-10-09',time:'11:00am ET',note:'Market-moving'},{name:'Crop Production',date:'2026-10-09',time:'11:00am ET',note:'Final corn est.'},{name:'WASDE',date:'2026-11-10',time:'11:00am ET',note:'Market-moving'},{name:'WASDE',date:'2026-12-10',time:'11:00am ET',note:'Market-moving'}];
+    /* NASS and WAOB release WASDE, Crop Production, Grain Stocks and Acreage at 12:00 noon ET; this page's own FAQ and /usda-calendar already said so, this list said 11:00am. October Crop Production is a yield update; the final corn estimate is January's Annual Crop Production. */
+    var majors=[{name:'WASDE',date:'2026-05-12',time:'12:00pm ET',note:'Market-moving'},{name:'WASDE',date:'2026-06-11',time:'12:00pm ET',note:'Market-moving'},{name:'Acreage Report',date:'2026-06-30',time:'12:00pm ET',note:'Planted acres'},{name:'Grain Stocks',date:'2026-06-30',time:'12:00pm ET',note:''},{name:'WASDE',date:'2026-07-10',time:'12:00pm ET',note:'Market-moving'},{name:'WASDE',date:'2026-08-12',time:'12:00pm ET',note:'Market-moving'},{name:'Crop Production',date:'2026-08-12',time:'12:00pm ET',note:'First corn est.'},{name:'WASDE',date:'2026-09-11',time:'12:00pm ET',note:'Market-moving'},{name:'Crop Production',date:'2026-09-11',time:'12:00pm ET',note:''},{name:'WASDE',date:'2026-10-09',time:'12:00pm ET',note:'Market-moving'},{name:'Crop Production',date:'2026-10-09',time:'12:00pm ET',note:'Oct yield update'},{name:'WASDE',date:'2026-11-10',time:'12:00pm ET',note:'Market-moving'},{name:'WASDE',date:'2026-12-10',time:'12:00pm ET',note:'Market-moving'}];
     for(var w=0;w<4;w++){reports.forEach(function(r){var dt=new Date(now);dt.setDate(dt.getDate()+((r.weekday-dt.getDay()+7)%7)+(w*7));if(dt<now&&w===0)dt.setDate(dt.getDate()+7);events.push({name:r.name,date:dt,time:r.time,note:r.note});});}
     majors.forEach(function(m){var dt=new Date(m.date+'T12:00:00');if(dt>=new Date(now.getFullYear(),now.getMonth(),now.getDate()))events.push({name:m.name,date:dt,time:m.time,note:m.note});});
     events.sort(function(a,b){return a.date-b.date;});var seen={},unique=[];events.forEach(function(e){var k=e.name+'-'+e.date.toDateString();if(!seen[k]){seen[k]=true;unique.push(e);}});events=unique.slice(0,10);
@@ -3228,7 +3295,7 @@ gj('/data/markets.json').then(function(cached){
     if(visits<=24){var el=document.getElementById('signup-full');if(el)el.style.display='block';}
     else if(visits>=50&&!isDismissed('agsist_signup_slim_dismissed')){var el3=document.getElementById('signup-slim');if(el3)el3.style.display='flex';}
   })();
-  var btnCompactDismiss=document.getElementById('btn-compact-dismiss');if(btnCompactDismiss)btnCompactDismiss.addEventListener('click',function(){setDismissed('agsist_signup_compact_dismissed');var el=document.getElementById('signup-compact');if(el)el.style.display='none';});
+  var btnCompactDismiss=document.getElementById('btn-compact-dismiss');if(btnCompactDismiss)btnCompactDismiss.addEventListener('click',function(){setDismissed('agsist_signup_compact_dismissed');var el=document.getElementById('signup-compact');if(el)el.style.display='none';var m=document.getElementById('main');if(m&&m.focus){try{m.focus({preventScroll:true});}catch(e){}}});
   var btnSlimDismiss=document.getElementById('btn-slim-dismiss');if(btnSlimDismiss)btnSlimDismiss.addEventListener('click',function(){setDismissed('agsist_signup_slim_dismissed');var el=document.getElementById('signup-slim');if(el)el.style.display='none';});
   function showSignupSuccess(formId,icon,headline,sub){var formEl=document.getElementById(formId);if(!formEl)return;formEl.innerHTML='<div style="text-align:center;padding:.9rem 0"><div style="font-size:2rem;margin-bottom:.4rem">'+icon+'</div><div style="font-size:1rem;font-weight:700;color:var(--text);margin-bottom:.25rem">'+headline+'</div><div style="font-size:.82rem;color:var(--text-muted);line-height:1.5">'+sub+'</div></div>';formEl.style.display='block';}
   var btnEmailSignup=document.getElementById('btn-email-signup');
@@ -3306,6 +3373,8 @@ window.hydrateDaily = function(data) {
   var taLbl=taEl&&taEl.querySelector('.daily-takeaway-label');
   if(taLbl)taLbl.innerHTML='<svg class="ic" aria-hidden="true"><use href="#i-target"/></svg> '+taLabel;
   if(taEl){if(takeaway){if(taText)taText.innerHTML=mdInline(takeaway);taEl.style.display='block';}else{taEl.style.display='none';}}
+  window.AGSIST_DAILY=data;
+  if(typeof window.agsistFrameAction==='function')window.agsistFrameAction();
 
   // v4.3: Copy The Number button — copies "VALUE UNIT" to clipboard
   var dnCopyBtn=el('daily-number-copy');
@@ -3656,6 +3725,9 @@ window.hydrateDaily = function(data) {
     // implies nothing has loaded yet. Leaving the element alone; wireShare()
     // below reads whatever's already there, so it picks up the correct baked
     // headline for the share links instead of the fake "loading" text.
+    // The sidebar is NOT baked, so its placeholders must not say "Loading" forever.
+    var _wl=document.getElementById('daily-watch-list');
+    if(_wl)_wl.innerHTML='<li class="watch-item"><span class="watch-time">&mdash;</span><span class="watch-desc">Watch list unavailable \u2014 see <a href="/daily" style="color:var(--gold)">today\u2019s briefing</a></span></li>';
     wireShare();
   });
   // Share strip wiring — runs after hydrateDaily so headline reflects current briefing
@@ -4597,7 +4669,7 @@ setTimeout(function(){
     hero.classList.remove('is-brief');
     btn.setAttribute('aria-expanded','true');
     var s=hero.querySelector('.daily-sections');
-    if(s) s.scrollIntoView({block:'start',behavior:'smooth'});
+    if(s){s.scrollIntoView({block:'start',behavior:'smooth'});if(!s.hasAttribute('tabindex'))s.setAttribute('tabindex','-1');try{s.focus({preventScroll:true});}catch(e){}}
     if(window.gaEvent) gaEvent('daily_expand',{});
   });
 })();

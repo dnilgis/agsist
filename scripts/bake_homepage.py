@@ -174,7 +174,7 @@ def main():
         if cur is not None and lo is not None and hi is not None:
             html, _ = replace_inner(
                 html, rf'<div class="sig-price" id="sig-{sig}-price">', "</div>",
-                f"${cur:.2f} &middot; range ${lo:.2f}&ndash;${hi:.2f}",
+                f"${cur:.2f} &middot; 5-yr range ${lo:.2f}&ndash;${hi:.2f}",
                 f"{sig}-price")
         html, _ = replace_inner(
             html, rf'<div class="sig-read" id="sig-{sig}-read">', "</div>",

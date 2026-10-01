@@ -40,6 +40,11 @@ import json
 import os
 import sys
 from datetime import datetime, timezone
+try:
+    from zoneinfo import ZoneInfo
+    _CT = ZoneInfo("America/Chicago")
+except Exception:                                 # pragma: no cover
+    _CT = None
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT = os.path.join(ROOT, "data", "news.json")
@@ -247,17 +252,55 @@ def positioning(out, state, held):
                 "notable", "/cot", "CFTC Commitments of Traders", iso_day(rd)))
 
 
+def session_stamp(fetched):
+    """The trading day a prices.json fetch belongs to, and whether its prices
+    are a settlement.
+
+    The fetch time is UTC. An 8pm Central run on 30 September is stamped
+    1 October in UTC, so the Wire dated a Sep 30 move "Oct 1" and ran it
+    beside the Sep 30 item it had already published for the same session --
+    the same session's move, twice, one of them dated tomorrow. The day is
+    the Central calendar date of the fetch.
+
+    "Settled" is only true after the 1:20pm CT grain settle and before the
+    7pm reopen on a weekday. Every other fetch is a last trade, and says so.
+    Returns (iso_day, settled) or (None, False) when the stamp is unreadable."""
+    s = str(fetched or "").strip()
+    if not s:
+        return None, False
+    try:
+        t = datetime.fromisoformat(s.replace("Z", "+00:00"))
+    except ValueError:
+        return (s[:10] if len(s) >= 10 else None), False
+    if t.tzinfo is None:
+        t = t.replace(tzinfo=timezone.utc)
+    if _CT is None:
+        return t.date().isoformat(), False
+    ct = t.astimezone(_CT)
+    minutes = ct.hour * 60 + ct.minute
+    settled = ct.weekday() < 5 and 13 * 60 + 20 <= minutes < 19 * 60
+    return ct.date().isoformat(), settled
+
+
 def board(out, state, held):
     d = load("prices.json")
     q = (d or {}).get("quotes") or {}
-    day = str((d or {}).get("fetched") or "")[:10]
+    day, settled = session_stamp((d or {}).get("fetched"))
     if not day:
         return
     px = state.setdefault("px", {})
+    seen_quotes = []
     for key, (name, url) in CROPS.items():
         v = q.get(key)
         if not isinstance(v, dict):
             continue
+        # "Corn down 3.8%" and "December corn down 3.8%" were the same
+        # contract twice: from early fall the front month IS December. One
+        # quote, one item.
+        sig = (v.get("close"), v.get("open"), v.get("netChange"))
+        if sig in seen_quotes:
+            continue
+        seen_quotes.append(sig)
         close, pct = v.get("close"), v.get("pctChange")
         hi, lo = v.get("wk52_hi"), v.get("wk52_lo")
         # See PX_BREAKOUT_FRACTION. `band` is the contract's own 52-week spread,
@@ -315,7 +358,8 @@ def board(out, state, held):
             continue
         direction = "up" if pct > 0 else "down"
         nc = v.get("netChange")
-        detail = f"Settled {cents(close)}" if close is not None else "Settled"
+        verb = "Settled" if settled else "Last"
+        detail = f"{verb} {cents(close)}" if close is not None else verb
         if nc is not None:
             detail += f", {'+' if nc > 0 else ''}{nc:g} cents on the session"
         out.append(item(f"px:{day}:{key}:move", "board",
@@ -425,6 +469,21 @@ def build():
     # true: by then the top of the range was $5.43.
     said = {(i.get("headline"), i.get("detail")) for i in kept}
     # An item already published keeps the words it was published with.
+    # The one exception: a session move published off an intraday print
+    # ("Last $5.05") is replaced once by the same day's settlement ("Settled
+    # $5.02"), so the Wire ends the day saying what the board settled at.
+    by_id = {i.get("id"): i for i in kept}
+    upgraded = set()
+    for i in fresh:
+        old_i = by_id.get(i.get("id"))
+        if (old_i and str(i.get("id", "")).endswith(":move")
+                and str(i.get("detail", "")).startswith("Settled")
+                and str(old_i.get("detail", "")).startswith("Last")):
+            upgraded.add(i.get("id"))
+    if upgraded:
+        kept = [i for i in kept if i.get("id") not in upgraded]
+        seen = {i.get("id") for i in kept}
+        said = {(i.get("headline"), i.get("detail")) for i in kept}
     added = [i for i in fresh
              if i.get("id") not in seen
              and (i.get("headline"), i.get("detail")) not in said]
@@ -551,6 +610,32 @@ def _selftest():
         "corn": {"close": 500.0, "pctChange": 1.0, "wk52_hi": 599.0, "wk52_lo": 400.0}}} if n == "prices.json" else None
     board(o, {}, [])
     check(o == [], "a 1% move is not news")
+
+    print("a session move is dated the Central day it happened and says Last until it settles")
+    # THE REAL STAMP from 30 September 2026: fetched 01:57Z on 1 October is
+    # 8:57pm Central on 30 September. The Wire dated it 1 October.
+    check(session_stamp("2026-10-01T01:57:02Z") == ("2026-09-30", False),
+          "an evening fetch belongs to the Central day, and is not a settlement")
+    check(session_stamp("2026-09-30T19:05:00Z") == ("2026-09-30", True),
+          "2:05pm CT on a Wednesday is a settlement")
+    check(session_stamp("2026-09-30T17:30:00Z") == ("2026-09-30", False),
+          "12:30pm CT is still trading")
+    check(session_stamp("2026-10-03T19:05:00Z") == ("2026-10-03", False),
+          "Saturday afternoon is not a settlement")
+    check(session_stamp("") == (None, False), "no stamp, no item")
+    _mv = {"fetched": "2026-10-01T01:57:02Z", "quotes": {
+        "corn":     {"close": 501.5, "open": 522.0, "pctChange": -3.93, "netChange": -20.5, "wk52_hi": 549.75, "wk52_lo": 425.75},
+        "corn-dec": {"close": 501.5, "open": 522.0, "pctChange": -3.93, "netChange": -20.5, "wk52_hi": 549.75, "wk52_lo": 425.75}}}
+    globals()["load"] = lambda n: _mv if n == "prices.json" else None
+    o = []
+    board(o, {}, [])
+    check(len(o) == 1, "corn and December corn carrying one quote is one item, not two")
+    check(o[0]["id"] == "px:2026-09-30:corn:move", "...dated 30 September, not 1 October")
+    check(o[0]["detail"].startswith("Last $5.01"), "...and an evening print is a Last, not a Settled")
+    _mv["fetched"] = "2026-09-30T19:05:00Z"
+    o = []
+    board(o, {}, [])
+    check(o[0]["detail"].startswith("Settled $5.01"), "a post-settle fetch says Settled")
 
     # ── the two traps that put the same sentence on the wire four times ──
     print("an extreme reached by standing still is not an event")
@@ -707,6 +792,28 @@ def _selftest():
     check(_a == [], "and nothing was added")
     check(_d["updated"] == "2026-09-01T00:00:00+00:00",
           "updated keeps the moment the last item arrived, not the moment the job ran")
+
+    print("an intraday Last is replaced once by the same day's Settled")
+    _prior2 = {"updated": "2026-09-30T18:00:00+00:00",
+               "items": [{"id": "px:2026-09-30:corn:move", "ts": "2026-09-30T12:00:00+00:00", "kind": "board",
+                          "headline": "Corn down 3.2% on the day", "detail": "Last $5.05, -16.5 cents on the session.",
+                          "significance": "notable", "url": "/corn-futures-prices", "source": "s", "day_only": True}]}
+    _px2 = {"fetched": "2026-09-30T19:05:00Z", "quotes": {
+        "corn": {"close": 501.5, "open": 522.0, "pctChange": -3.93, "netChange": -20.5, "wk52_hi": 549.75, "wk52_lo": 425.75}}}
+    globals()["load"] = lambda n: _prior2 if n == "news.json" else (_px2 if n == "prices.json" else None)
+    _d2, _a2, _ch2, _held2 = build()
+    _moves = [i for i in _d2["items"] if i["id"] == "px:2026-09-30:corn:move"]
+    check(len(_moves) == 1, "one move item for the day, not two")
+    check(_moves[0]["detail"].startswith("Settled $5.01"), "...and it is the settlement")
+    check(_ch2 is True, "...which counts as a change")
+    # And the settle, once published, is not replaced by a later evening Last.
+    _px2["fetched"] = "2026-10-01T01:57:02Z"
+    _prior3 = dict(_prior2, items=_d2["items"])
+    globals()["load"] = lambda n: _prior3 if n == "news.json" else (_px2 if n == "prices.json" else None)
+    _d3, _a3, _ch3, _held3 = build()
+    _moves3 = [i for i in _d3["items"] if i["id"] == "px:2026-09-30:corn:move"]
+    check(len(_moves3) == 1 and _moves3[0]["detail"].startswith("Settled"),
+          "an evening Last does not overwrite the published settle")
 
     check(_rfc822("2026-09-11T12:00:00+00:00") == "Fri, 11 Sep 2026 12:00:00 +0000",
           "_rfc822 renders a pubDate RSS readers accept")

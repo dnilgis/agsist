@@ -1,7 +1,42 @@
 {
- "updated": "2026-09-30",
+ "updated": "2026-10-01",
  "note": "Curated by hand each work session. Dates are the day the change was built; uploads usually land the same day or the next. Machine-refreshed data (prices, bids, weather, briefings) is not logged here \u2014 that updates continuously.",
  "entries": [
+  {
+   "date": "2026-10-01",
+   "items": [
+    {
+     "tag": "improved",
+     "page": "/",
+     "name": "Two corn tiles and two bean tiles, all year",
+     "text": "From early fall to year end the front month is the harvest contract, and the homepage used to hide the second corn and bean tile and write \"+ new crop\" on the first. The second tile now rolls to next year's harvest contract, December 2027 corn and November 2027 beans, so a grower pricing next year's crop sees it without leaving the page. The ticker rolls with it."
+    },
+    {
+     "tag": "fixed",
+     "page": "/",
+     "name": "USDA report times on the homepage calendar",
+     "text": "The Upcoming USDA Reports strip listed WASDE, Crop Production, Grain Stocks and Acreage at 11:00am ET. USDA releases them at 12:00 noon ET, which the full calendar page already said. The October 9 Crop Production was also labelled the final corn estimate; the final is January's."
+    },
+    {
+     "tag": "fixed",
+     "page": "/",
+     "name": "Export Sales no longer blames USDA for a missing target",
+     "text": "The export panel said no USDA target had been published for 2026/27. USDA has published one in every WASDE since May. AGSIST's own target table had not been updated, and the line now says so. The panel is titled Cumulative Bookings until the target is loaded, and the date reads \"week ending\" rather than \"week of\"."
+    },
+    {
+     "tag": "improved",
+     "page": "/",
+     "name": "The Action says what corn was when it was written",
+     "text": "The briefing is written at 6:00 AM CT and the board moves all day. The Action now prints the price it was written at and the price now, with the gap, so a reader arriving in the evening is not told to sit tight at a price that no longer exists."
+    },
+    {
+     "tag": "fixed",
+     "page": "/cash-bids",
+     "name": "A flat basis reads \"even\"",
+     "text": "A bid posted at the futures price showed \"+0\u00a2\". It now reads \"even\", on the homepage card and on Cash Bids."
+    }
+   ]
+  },
   {
    "date": "2026-09-30",
    "items": [
@@ -27,19 +62,19 @@
      "tag": "new",
      "page": "/",
      "name": "Market Intelligence: a real basis history chart, an I raise toggle, and September Grain Stocks on the front page",
-     "text": "The homepage Commitment of Traders panel now sits beside the USDA report calendar as a two-column strip, and a new September Grain Stocks card sits above it with today's real print (corn 2.095B bu, soybeans 0.315B, wheat 1.846B) linked through to the full grading on What's Priced In. An \"I raise\" toggle lets you pin Cattle first in the COT list if that is the position you actually hold. When your ZIP bid lookup finds a match, a basis history chart now draws from this elevator's own logged basis changes — real change-points only, going back to June 10 where we have them, never a smoothed or invented line — and elevators read through the AGSIST network feed are now marked \"direct from elevator\" so you can tell which numbers came straight from the board."
+     "text": "The homepage Commitment of Traders panel now sits beside the USDA report calendar as a two-column strip, and a new September Grain Stocks card sits above it with today's real print (corn 2.095B bu, soybeans 0.315B, wheat 1.846B) linked through to the full grading on What's Priced In. An \"I raise\" toggle lets you pin Cattle first in the COT list if that is the position you actually hold. When your ZIP bid lookup finds a match, a basis history chart now draws from this elevator's own logged basis changes \u2014 real change-points only, going back to June 10 where we have them, never a smoothed or invented line \u2014 and elevators read through the AGSIST network feed are now marked \"direct from elevator\" so you can tell which numbers came straight from the board."
     },
     {
      "tag": "new",
      "page": "/",
      "name": "A 25-mile basis comparison, and Watch this elevator",
-     "text": "The nearby-bids comparison on the homepage only ever averaged whatever bids happened to fall inside your ZIP search radius. When your search returns an elevator with real coordinates, the page now also compares its basis to every other located bid within a fixed 25-mile ring around it — a constant distance, not one that shifts with where you searched from. Separately, elevators with a posted corn basis now carry a \"Watch this elevator — free\" link: enter your email, confirm it once, and you get a message when that elevator's posted basis changes. Unsubscribe any time from the link in every email."
+     "text": "The nearby-bids comparison on the homepage only ever averaged whatever bids happened to fall inside your ZIP search radius. When your search returns an elevator with real coordinates, the page now also compares its basis to every other located bid within a fixed 25-mile ring around it \u2014 a constant distance, not one that shifts with where you searched from. Separately, elevators with a posted corn basis now carry a \"Watch this elevator \u2014 free\" link: enter your email, confirm it once, and you get a message when that elevator's posted basis changes. Unsubscribe any time from the link in every email."
     },
     {
      "tag": "new",
      "page": "/field-scout",
      "name": "Field Scout: a Nitrogen map layer",
-     "text": "Crop Vigor & Moisture already computed NDRE, the satellite index tied to nitrogen status, as a single number per field. It's now also a map layer you can switch on, next to Vigor and Moisture — because nitrogen stress is rarely even across a field, and a single number can't show you where. Same satellite source as the Vigor layer (Sentinel-2), and the color bands match the number exactly, so the map and the figure never disagree about the same field."
+     "text": "Crop Vigor & Moisture already computed NDRE, the satellite index tied to nitrogen status, as a single number per field. It's now also a map layer you can switch on, next to Vigor and Moisture \u2014 because nitrogen stress is rarely even across a field, and a single number can't show you where. Same satellite source as the Vigor layer (Sentinel-2), and the color bands match the number exactly, so the map and the figure never disagree about the same field."
     }
    ]
   },
