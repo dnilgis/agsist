@@ -1,4 +1,27 @@
 /**
+ * v5.2 (2026-10-01): WATCH A PRICE TARGET (futures). Double opt-in, same
+ *   shape as WATCH AN ELEVATOR and WATCH A COUNTY below -- a third parallel
+ *   system, not merged into either, for the same reason: the other two
+ *   already work and must not be put at risk by this one. Different
+ *   lifecycle, though: a price target is a ONE-SHOT alert (like a resting
+ *   limit order), not a recurring "tell me every time this changes" watch --
+ *   it fires once and removes itself, it does not keep mailing every move
+ *   after the target is hit.
+ *   POST /price-watch-subscribe {email, pid, symbol, direction, target_cents, label}
+ *     pending only; nothing is sent from here. pid is a short hex id the
+ *     homepage derives client-side from symbol|direction|target_cents (same
+ *     FNV-1a scheme as the elevator wid) -- the worker never has to parse or
+ *     validate what the alert means, only store what the homepage already
+ *     computed and labeled, exactly like the elevator watch.
+ *   GET/POST /price-watch-confirm?e=&p=&t=      GET shows a button, changes nothing.
+ *   GET/POST /price-watch-unsubscribe?e=&t=[&p=]  all alerts, or one.
+ *   GET  /price-watch-list?token=     for scripts/send_price_watch.py.
+ *   POST /price-watch-mark?token=     sender records a confirm-mail send, or
+ *     removes the alert once fired ({fired:true}) -- never re-arms itself.
+ *   KV key pwatch:<email> = {pend:{pid:{ts,m,symbol,direction,target_cents,label}},
+ *                            w:{pid:{symbol,direction,target_cents,label}}}.
+ *   At most 5 price alerts per address, same cap as the other two watches.
+ *
  * v5.1 (2026-09-30): WATCH AN ELEVATOR (cash bids). Double opt-in, same shape
  *   as WATCH A COUNTY below, kept as a parallel system rather than merged into
  *   it -- the county watch already works and this must not risk it.
@@ -455,6 +478,127 @@ export default {
         r.w[wid] = { label: (r.w[wid] && r.w[wid].label) || String(b.label || ""), k: String(b.k || ""), s: b.s || {} };
       }
       await putEWatch(email, r);
+      return json({ ok: true });
+    }
+
+    // ---------- WATCH A PRICE TARGET (futures) ----------
+    const PWATCH_MAX = 5, PPEND_TTL = 14 * 864e5;
+    // Real, fetched contracts only -- must match ALLOWED_SYMBOLS in
+    // scripts/send_price_watch.py exactly, or a confirmed alert can sit
+    // forever because the sender has no quote for its symbol. Widen both
+    // lists together, never just one.
+    const PWATCH_SYMBOLS = new Set(["corn", "corn-dec", "beans", "beans-nov", "wheat", "cattle"]);
+    async function getPWatch(e) {
+      const v = await env.SUBS.get("pwatch:" + e);
+      const r = v ? JSON.parse(v) : {};
+      r.pend = r.pend || {}; r.w = r.w || {};
+      return r;
+    }
+    async function putPWatch(e, r) {
+      if (!Object.keys(r.pend).length && !Object.keys(r.w).length) await env.SUBS.delete("pwatch:" + e);
+      else await env.SUBS.put("pwatch:" + e, JSON.stringify(r));
+    }
+
+    if (path === "/price-watch-subscribe" && req.method === "POST") {
+      let b = {};
+      try { b = await req.json(); } catch (e) { /* validation below */ }
+      if (b._gotcha) return json({ ok: true }, 200, cors(req));
+      const email = String(b.email || "").trim().toLowerCase();
+      const pid = String(b.pid || "").trim().toLowerCase();
+      const symbol = String(b.symbol || "").trim().toLowerCase();
+      const direction = String(b.direction || "").trim().toLowerCase();
+      const target_cents = Number(b.target_cents);
+      const label = String(b.label || "").trim().slice(0, 120);
+      if (!EMAIL_RE.test(email) || email.length > 254)
+        return json({ ok: false, error: "invalid email" }, 400, cors(req));
+      if (!/^[a-f0-9]{8,16}$/.test(pid))
+        return json({ ok: false, error: "invalid alert id" }, 400, cors(req));
+      if (!PWATCH_SYMBOLS.has(symbol))
+        return json({ ok: false, error: "invalid symbol" }, 400, cors(req));
+      if (direction !== "above" && direction !== "below")
+        return json({ ok: false, error: "invalid direction" }, 400, cors(req));
+      if (!Number.isFinite(target_cents) || target_cents <= 0 || target_cents > 100000)
+        return json({ ok: false, error: "invalid target" }, 400, cors(req));
+      if (!label)
+        return json({ ok: false, error: "invalid label" }, 400, cors(req));
+      const r = await getPWatch(email);
+      const now = Date.now();
+      for (const p of Object.keys(r.pend)) if (now - r.pend[p].ts > PPEND_TTL) delete r.pend[p];
+      // Same answer whether or not the address already has this alert: the reply must not tell a
+      // stranger who is on the list.
+      if (!(pid in r.w) && !(pid in r.pend)) {
+        if (Object.keys(r.w).length + Object.keys(r.pend).length >= PWATCH_MAX)
+          return json({ ok: false, error: "limit" }, 429, cors(req));
+        r.pend[pid] = { ts: now, m: 0, symbol, direction, target_cents: Math.round(target_cents), label };
+        await putPWatch(email, r);
+      }
+      return json({ ok: true }, 200, cors(req));
+    }
+
+    if (path === "/price-watch-confirm" || path === "/price-watch-unsubscribe") {
+      const e = (url.searchParams.get("e") || "").trim().toLowerCase();
+      const p = (url.searchParams.get("p") || "").trim().toLowerCase();
+      const t = url.searchParams.get("t") || "";
+      const conf = path === "/price-watch-confirm";
+      const pOk = conf ? /^[a-f0-9]{8,16}$/.test(p) : (p === "" || /^[a-f0-9]{8,16}$/.test(p));
+      const want = await hmac16(e + (conf ? "|pc|" + p : (p ? "|pw|" + p : "|pw")), env.UNSUB_SECRET);
+      if (!(EMAIL_RE.test(e) && pOk && t === want)) return htmlPage("That link isn't valid.");
+      const rPeek = await getPWatch(e);
+      const label = (p && (rPeek.pend[p] || rPeek.w[p] || {}).label) || "this alert";
+      const action = path + "?e=" + encodeURIComponent(e) + (p ? "&p=" + p : "") + "&t=" + encodeURIComponent(t);
+      if (req.method === "GET") {
+        return htmlPage(
+          conf ? "Set the price alert for " + escHtml(label) + "?" : (p ? "Cancel the price alert for " + escHtml(label) + "?" : "Cancel all price alerts for this address?"),
+          "<p>" + escHtml(e) + "</p><form method=\"POST\" action=\"" + action + "\">" +
+          "<button type=\"submit\" style=\"font:inherit;padding:10px 22px;cursor:pointer\">" +
+          (conf ? "Yes, set it" : "Yes, cancel") + "</button></form>" +
+          "<p style=\"color:#666\">Nothing happens until you press the button.</p>");
+      }
+      if (req.method === "POST") {
+        const r = await getPWatch(e);
+        if (conf) {
+          if (!(p in r.pend)) return htmlPage("This confirmation link has expired. Set the alert again on the homepage.");
+          const rec = r.pend[p];
+          delete r.pend[p];
+          r.w[p] = { symbol: rec.symbol, direction: rec.direction, target_cents: rec.target_cents, label: rec.label };
+          await putPWatch(e, r);
+          return htmlPage("Alert set for " + escHtml(rec.label) + ". You will get one email the day it crosses your price, then it clears itself.");
+        }
+        if (p) { delete r.pend[p]; delete r.w[p]; } else { r.pend = {}; r.w = {}; }
+        await putPWatch(e, r);
+        return htmlPage(p ? "Cancelled. No email for " + escHtml(label) + "." : "Cancelled. No more price alert emails.");
+      }
+    }
+
+    if (path === "/price-watch-list" && req.method === "GET") {
+      if (!authed) return json({ ok: false }, 403);
+      const keys = await listKeys(env, "pwatch:");
+      const out = [];
+      for (const k of keys) {
+        const v = await env.SUBS.get(k);
+        if (v) { const rec = JSON.parse(v); rec.email = k.slice(7); out.push(rec); }
+      }
+      return json(out, 200);
+    }
+
+    if (path === "/price-watch-mark" && req.method === "POST") {
+      if (!authed) return json({ ok: false }, 403);
+      let b = {};
+      try { b = await req.json(); } catch (e) { return json({ ok: false, error: "bad json" }, 400); }
+      const email = String(b.email || "").trim().toLowerCase(), pid = String(b.pid || "").trim().toLowerCase();
+      if (!EMAIL_RE.test(email) || !/^[a-f0-9]{8,16}$/.test(pid)) return json({ ok: false, error: "bad args" }, 400);
+      const r = await getPWatch(email);
+      if (b.confirm_mailed) {
+        if (!(pid in r.pend)) return json({ ok: true, skipped: true });
+        r.pend[pid].m = 1;
+      } else if (b.fired) {
+        // one-shot: the sender already mailed the hit, so the alert never re-arms.
+        if (!(pid in r.w)) return json({ ok: true, skipped: true });   // cancelled while the job ran
+        delete r.w[pid];
+      } else {
+        return json({ ok: false, error: "nothing to record" }, 400);
+      }
+      await putPWatch(email, r);
       return json({ ok: true });
     }
 

@@ -351,7 +351,45 @@ def ratings(out, state, held):
                         "/conditions", "USDA NASS Crop Progress", iso_day(rd)))
 
 
-DETECTORS = (wasde, positioning, board, ratings)
+def weather(out, state, held):
+    """2026-10-01: frost/freeze alerts, read from data/weather-alerts.json
+    (scripts/fetch_weather_alerts.py, which reads NWS's own public alerts
+    feed). No invented temperature threshold -- NWS has already decided what
+    counts as a Frost Advisory versus a Freeze Warning; this only turns an
+    active one into a dated Wire item.
+
+    The id carries the alert's effective/expires window, not just its NWS
+    id, so an alert NWS updates (extends, upgrades Advisory to Warning under
+    a new VTEC product) reads as a new item through the normal id-based
+    dedupe in build() -- the same mechanism every other detector here relies
+    on -- while an unchanged alert polled again produces the same id and is
+    correctly dropped as nothing new to say.
+    """
+    d = load("weather-alerts.json")
+    if not d:
+        return
+    fetched_day = iso_day(d.get("fetched"))
+    for a in (d.get("alerts") or []):
+        aid, event, area = a.get("id"), a.get("event"), a.get("area")
+        if not (aid and event and area):
+            continue
+        eff, exp = a.get("effective"), a.get("expires")
+        uid = f"wx:{aid}:{eff}:{exp}"
+        short_area = area if len(area) <= 70 else area[:67] + "..."
+        detail = a.get("headline") or f"{event} for {area}."
+        eff_day, exp_day = say_day(iso_day(eff)), say_day(iso_day(exp))
+        if eff_day and exp_day:
+            detail += f" In effect {eff_day} through {exp_day}."
+        elif exp_day:
+            detail += f" In effect through {exp_day}."
+        out.append(item(
+            uid, "weather", f"{event}: {short_area}", detail,
+            "high" if "Warning" in event else "notable",
+            a.get("url") or "https://www.weather.gov/alerts",
+            "National Weather Service", fetched_day))
+
+
+DETECTORS = (wasde, positioning, board, ratings, weather)
 
 
 def build():
@@ -608,6 +646,48 @@ def _selftest():
         "good_excellent": 57, "good_excellent_prev_week": 57}} if n == "crop-progress.json" else None
     ratings(o, {}, [])
     check(o == [], "an unchanged rating is not news")
+
+    print("frost/freeze alerts: no invented threshold, no invented page")
+    _wx = {"fetched": "2026-10-02T00:00:00+00:00", "alerts": [
+        {"id": "urn:oid:2.49.0.1.840.0.abc", "event": "Freeze Warning",
+         "area": "Boone, IA; Story, IA; Marshall, IA",
+         "headline": "Freeze Warning issued for central Iowa",
+         "effective": "2026-10-05T03:00:00-05:00", "expires": "2026-10-05T13:00:00-05:00",
+         "url": "https://api.weather.gov/alerts/urn:oid:2.49.0.1.840.0.abc"}]}
+    globals()["load"] = lambda n: _wx if n == "weather-alerts.json" else None
+    o = []
+    weather(o, {}, [])
+    check(len(o) == 1, "an active alert with its required fields becomes one item")
+    check(o[0]["kind"] == "weather", "tagged with its own kind, not folded into crop")
+    check(o[0]["significance"] == "high", "a Warning is high significance")
+    check(o[0]["url"].startswith("https://api.weather.gov/"),
+          "links to NWS's own alert page -- no internal frost page exists to link to instead")
+    check("Boone" in o[0]["detail"] or "central Iowa" in o[0]["detail"],
+          "the detail names the real area, not a placeholder")
+
+    # The same alert, polled again with nothing changed, must be the same id
+    # (so build()'s own dedupe drops it) -- not re-published every ten minutes
+    # for the whole week it stays active.
+    o2 = []
+    weather(o2, {}, [])
+    check(o2[0]["id"] == o[0]["id"], "an unchanged alert keeps the same id across polls")
+
+    # NWS extends or upgrades an alert under the same id -- that IS new
+    # information and must read as a different id.
+    _wx["alerts"][0]["expires"] = "2026-10-06T13:00:00-05:00"
+    o3 = []
+    weather(o3, {}, [])
+    check(o3[0]["id"] != o[0]["id"], "an extended window is a different id, so it can publish again")
+
+    o4 = []
+    globals()["load"] = lambda n: {"fetched": "2026-10-02T00:00:00+00:00", "alerts": []} if n == "weather-alerts.json" else None
+    weather(o4, {}, [])
+    check(o4 == [], "an empty active-alerts list is a clean, honest no-news state")
+
+    o5 = []
+    globals()["load"] = lambda n: None
+    weather(o5, {}, [])
+    check(o5 == [], "a missing weather-alerts.json writes nothing rather than guessing")
 
     o = []
     globals()["load"] = lambda n: None
