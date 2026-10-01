@@ -274,8 +274,14 @@ jobs:
       # data/cot-analysis.json hide themselves when it is stale, so a silent
       # failure here is a page that loses half its content with nothing in the
       # Actions list to say why.
+      # 2026-10-01: this used to fire on every ordinary "nothing moved" run --
+      # steps.selftest.outcome == 'skipped' is also true when the probe found
+      # no new report and the three steps above correctly never ran, which is
+      # 29 of every 30 five-minute checks. Added the moved/force guard so this
+      # only evaluates on the runs where the analysis pipeline was actually
+      # supposed to execute.
       - name: Analysis result
-        if: steps.deep.outcome == 'failure' || steps.selftest.outcome == 'failure' || steps.analysis.outcome == 'failure' || steps.selftest.outcome == 'skipped'
+        if: (steps.probe.outputs.moved == 'true' || inputs.force == true) && (steps.deep.outcome == 'failure' || steps.selftest.outcome == 'failure' || steps.analysis.outcome == 'failure' || steps.selftest.outcome == 'skipped')
         run: |
           echo "The COT data published, but the analysis pipeline did not complete."
           echo "  deep append : ${{ steps.deep.outcome }}"
