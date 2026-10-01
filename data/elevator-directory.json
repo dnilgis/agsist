@@ -1,18 +1,18 @@
 {
- "generated": "2026-10-01T17:08:16Z",
+ "generated": "2026-10-01T17:23:04Z",
  "from": "barchart-raw.json",
  "complete": false,
  "note": "Directory only: who operates a facility and where. No prices, no basis, no symbols, no delivery windows.",
  "counts": {
-  "facilities": 2236,
+  "facilities": 2237,
   "states": 38,
   "with_address": 722,
   "with_coords": 725,
   "with_url": 703,
-  "with_phone": 2169,
+  "with_phone": 2170,
   "saturated_zips": 0,
   "failed_zips": 0,
-  "rows_read": 16561
+  "rows_read": 16714
  },
  "saturated": [],
  "failed": [],
@@ -7092,6 +7092,15 @@
    "facility_type": "River Terminal",
    "locationId": 50360,
    "elevatorId": 1773
+  },
+  {
+   "facility": "Encompass Grain & Rail Co-op",
+   "branch": "ICP/Pacific",
+   "city": "Pekin",
+   "state": "IL",
+   "zip": "61554",
+   "phone": "309-244-7541",
+   "source": "barchart"
   },
   {
    "facility": "Evergreen FS",
