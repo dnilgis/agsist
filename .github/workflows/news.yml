@@ -41,6 +41,20 @@ jobs:
       - name: Test the detectors before trusting them
         run: python scripts/build_news.py --selftest
 
+      - name: Test the weather-alert reader before trusting it
+        run: python scripts/fetch_weather_alerts.py --selftest
+
+      # 2026-10-01: frost/freeze alerts, read from NWS's own public feed. This
+      # is a new external dependency the rest of the wire does not have, so it
+      # runs with continue-on-error -- the same convention as every other
+      # non-critical step in this pipeline. A failed pull leaves the existing
+      # data/weather-alerts.json in place (fetch_weather_alerts.py's own rule:
+      # never overwrite good data with empty), so the wire still has whatever
+      # it last fetched successfully rather than silently losing the section.
+      - name: Pull active frost/freeze alerts
+        continue-on-error: true
+        run: python scripts/fetch_weather_alerts.py
+
       - name: Build the wire
         id: build
         run: |
@@ -65,13 +79,19 @@ jobs:
           git config user.email "bot@agsist.com"
           cp data/news.json /tmp/news.json
           cp news.xml       /tmp/news.xml
+          # Optional: absent on a run where the pull step above failed and no
+          # file has ever been written yet (continue-on-error already made
+          # that a non-fatal case, not a reason to fail the commit step too).
+          cp data/weather-alerts.json /tmp/weather-alerts.json 2>/dev/null || true
           BR="${GITHUB_REF_NAME:-main}"
           for i in 1 2 3 4 5; do
             git fetch origin "$BR"
             git reset --hard "origin/$BR"
             cp /tmp/news.json data/news.json
             cp /tmp/news.xml  news.xml
+            [ -f /tmp/weather-alerts.json ] && cp /tmp/weather-alerts.json data/weather-alerts.json
             git add data/news.json news.xml
+            git add data/weather-alerts.json 2>/dev/null || true
             if git diff --staged --quiet; then echo "No change."; echo "pushed=0" >> "$GITHUB_OUTPUT"; exit 0; fi
             git commit -m "wire: $(date -u +%Y-%m-%dT%H:%M:%SZ)"
             if git push origin "HEAD:$BR"; then echo "pushed=1" >> "$GITHUB_OUTPUT"; exit 0; fi

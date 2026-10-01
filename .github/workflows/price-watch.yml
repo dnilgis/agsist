@@ -1,0 +1,64 @@
+name: Price alert emails
+# Watch a price target, from the homepage's "Price Alert" widget in the
+# intel rail. Every 30 minutes: mail confirmation links to new alerts, and a
+# one-time hit email to anyone whose target has been crossed -- then that
+# alert clears itself (one-shot, like a resting limit order; it never mails
+# twice for the same alert). Also runs when Fetch Prices finishes, because
+# that is the moment a target could actually have been crossed.
+# Same KV worker as the elevator watch and county watch (a separate prefix,
+# pwatch:, not the same keys -- see workers/subs-worker.js's WATCH A PRICE
+# TARGET block for why these three stay parallel rather than merged).
+# Secrets (already used by the other watch jobs): LIST_URL, LIST_TOKEN,
+# UNSUB_SECRET, SMTP_USER, SMTP_PASS. Optional: SMTP_HOST, SMTP_PORT,
+# FROM_ADDR, FROM_NAME, REPLY_TO.
+
+on:
+  schedule:
+    - cron: '21,51 * * * *'
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Report what would be sent; send and record nothing"
+        type: boolean
+        default: false
+  workflow_run:
+    workflows: ["Fetch Prices"]
+    types: [completed]
+
+concurrency:
+  group: price-watch
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  watch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Checks (gate)
+        run: |
+          python3 scripts/send_price_watch.py --selftest
+          node scripts/test_price_watch.mjs
+      - name: Send
+        env:
+          LIST_URL: ${{ secrets.LIST_URL }}
+          LIST_TOKEN: ${{ secrets.LIST_TOKEN }}
+          UNSUB_SECRET: ${{ secrets.UNSUB_SECRET }}
+          SMTP_HOST: ${{ secrets.SMTP_HOST }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SMTP_USER: ${{ secrets.SMTP_USER || secrets.GMAIL_USER }}
+          SMTP_PASS: ${{ secrets.SMTP_PASS || secrets.GMAIL_APP_PASS }}
+          FROM_ADDR: ${{ secrets.FROM_ADDR }}
+          FROM_NAME: ${{ secrets.FROM_NAME }}
+          REPLY_TO: ${{ secrets.REPLY_TO }}
+          DRY_RUN: ${{ inputs.dry_run == true && '1' || '' }}
+        run: python3 scripts/send_price_watch.py
