@@ -2,8 +2,8 @@
  "schema": "agsist-feeds/1",
  "generated_by": "scripts/build_feeds.py",
  "note": "Derived from the repository, never typed. Pages come from a grep of every .html; the writer and its cadence come from the workflow that names the file or runs the script that names it.",
- "count": 56,
- "with_known_cadence": 56,
+ "count": 57,
+ "with_known_cadence": 57,
  "feeds": [
   {
    "path": "data/afida/county.json",
@@ -171,6 +171,7 @@
    "pages": [
     "cash-bids.html",
     "corn-futures-prices.html",
+    "index1.html",
     "soybean-futures-prices.html",
     "status.html",
     "wheat-futures-prices.html"
@@ -325,6 +326,7 @@
     "corn-futures-prices.html",
     "cot.html",
     "index.html",
+    "index1.html",
     "soybean-futures-prices.html",
     "status.html",
     "test-index.html",
@@ -370,6 +372,7 @@
    "pages": [
     "corn-futures-prices.html",
     "index.html",
+    "index1.html",
     "soybean-futures-prices.html",
     "test-index.html",
     "wheat-futures-prices.html"
@@ -435,6 +438,7 @@
     "daily.html",
     "developer.html",
     "index.html",
+    "index1.html",
     "soybean-futures-prices.html",
     "sponsor.html",
     "status.html",
@@ -517,6 +521,7 @@
    "path": "data/export-sales.json",
    "pages": [
     "index.html",
+    "index1.html",
     "test-index.html",
     "wheat-futures-prices.html"
    ],
@@ -548,6 +553,7 @@
     "fast-facts.html",
     "fertilizer.html",
     "index.html",
+    "index1.html",
     "test-index.html",
     "urea.html"
    ],
@@ -647,6 +653,7 @@
     "ag-odds.html",
     "developer.html",
     "index.html",
+    "index1.html",
     "test-index.html"
    ],
    "written_by": [
@@ -907,6 +914,7 @@
    "path": "data/news.json",
    "pages": [
     "index.html",
+    "index1.html",
     "news.html",
     "test-index.html"
    ],
@@ -981,6 +989,7 @@
     "cattle-futures-prices.html",
     "corn-futures-prices.html",
     "index.html",
+    "index1.html",
     "soybean-futures-prices.html",
     "test-index.html",
     "wheat-futures-prices.html"
@@ -1014,6 +1023,7 @@
     "fast-facts.html",
     "fertilizer.html",
     "index.html",
+    "index1.html",
     "markets.html",
     "milk-prices.html",
     "soybean-futures-prices.html",
@@ -1060,6 +1070,7 @@
    "path": "data/rma-discovery.json",
    "pages": [
     "index.html",
+    "index1.html",
     "test-index.html"
    ],
    "written_by": [],
@@ -1080,6 +1091,7 @@
    "path": "data/rma-planting-dates.json",
    "pages": [
     "index.html",
+    "index1.html",
     "planting-date.html",
     "test-index.html"
    ],
@@ -1124,6 +1136,7 @@
   {
    "path": "data/scorecard.json",
    "pages": [
+    "index1.html",
     "scorecard.html"
    ],
    "written_by": [
@@ -1159,6 +1172,7 @@
    "path": "data/sponsor.json",
    "pages": [
     "index.html",
+    "index1.html",
     "test-index.html"
    ],
    "written_by": [
@@ -1249,6 +1263,7 @@
    "path": "data/tariffs.json",
    "pages": [
     "index.html",
+    "index1.html",
     "tariffs.html",
     "test-index.html"
    ],
@@ -1395,10 +1410,35 @@
    "why_quiet": null
   },
   {
+   "path": "data/wpi-history.json",
+   "pages": [
+    "index1.html"
+   ],
+   "written_by": [
+    "WASDE watch \u2014 grade the report as it lands",
+    "Build What's Priced In"
+   ],
+   "touched_by": [
+    "COT Release Watch",
+    "WASDE watch \u2014 grade the report as it lands",
+    "Build What's Priced In"
+   ],
+   "cadence": "on demand",
+   "curated": false,
+   "planned": false,
+   "external": false,
+   "url": null,
+   "crons": [],
+   "max_gap_hours": null,
+   "quiet": null,
+   "why_quiet": null
+  },
+  {
    "path": "data/yield-nowcast.json",
    "pages": [
     "conditions-yield.html",
     "index.html",
+    "index1.html",
     "status.html",
     "test-index.html"
    ],
