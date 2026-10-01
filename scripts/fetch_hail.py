@@ -370,7 +370,21 @@ def main():
         print("[counties] no fresh rows — keeping existing state-counties.json", file=sys.stderr)
 
     # ── Recent hail events (last 30 days) for the markers layer ──
+    # The daily --recent mode (above) stamps the manifest with
+    # "recent_generated", and status.html reads that key as the feed's
+    # timestamp. This monthly full rebuild rewrote the manifest WITHOUT it,
+    # so on the 1st of every month the key vanished until the next daily run
+    # put it back -- and scripts/test_feeds.py went red for the day
+    # (2026-10-01: 'data/hail/manifest.json has no "recent_generated"').
+    # Same stamp here, and if the recent fetch fails keep the old one rather
+    # than claim a refresh that did not happen.
     recent_count = None
+    recent_generated = None
+    try:
+        with open("%s/manifest.json" % OUT_DIR) as fh:
+            recent_generated = json.load(fh).get("recent_generated")
+    except (OSError, ValueError):
+        pass
     try:
         recent = reduce_recent(fetch_recent())
         with open("%s/recent.json" % OUT_DIR, "w") as fh:
@@ -379,6 +393,7 @@ def main():
                 "days": RECENT_DAYS, "count": len(recent), "reports": recent,
             }, fh, separators=(",", ":"))
         recent_count = len(recent)
+        recent_generated = datetime.now(timezone.utc).strftime("%Y-%m-%d")
         print("[recent] %d hail reports in the last %d days" % (recent_count, RECENT_DAYS))
     except (urllib.error.URLError, TimeoutError, ValueError, OSError) as e:
         print("[recent] fetch failed: %s (keeping any existing recent.json)" % e, file=sys.stderr)
@@ -389,6 +404,7 @@ def main():
         "counts": counts,
         "recent_days": RECENT_DAYS,
         "recent_count": recent_count,
+        "recent_generated": recent_generated,
     }
     with open("%s/manifest.json" % OUT_DIR, "w") as fh:
         json.dump(manifest, fh, separators=(",", ":"))

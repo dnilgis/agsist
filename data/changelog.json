@@ -34,6 +34,12 @@
      "page": "/cash-bids",
      "name": "A flat basis reads \"even\"",
      "text": "A bid posted at the futures price showed \"+0\u00a2\". It now reads \"even\", on the homepage card and on Cash Bids."
+    },
+    {
+     "tag": "fixed",
+     "page": "/status",
+     "name": "Hail feed timestamp survives the monthly rebuild",
+     "text": "On the first of each month the hail data rebuild rewrote its manifest without the recent-reports timestamp the status page reads, so the hail feed showed no refresh time for a day and the feed check went red. The rebuild now carries the timestamp."
     }
    ]
   },
