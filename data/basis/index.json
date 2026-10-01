@@ -1,5 +1,5 @@
 {
- "generated":"2026-09-30",
+ "generated":"2026-10-01",
  "units":"integer cents per bushel",
  "note":"Per elevator, per commodity, per contract, per delivery month: the basis now, the basis before it, and the day it changed. Rebuildable in full from the changes-*.json files beside this.",
  "states":{
@@ -16,7 +16,7 @@
   "AR":{
    "rows":82,
    "facilities":15,
-   "kb":4.1
+   "kb":4.2
   },
   "CO":{
    "rows":167,
@@ -41,7 +41,7 @@
   "IA":{
    "rows":9118,
    "facilities":595,
-   "kb":383.9
+   "kb":384.6
   },
   "ID":{
    "rows":68,
@@ -51,17 +51,17 @@
   "IL":{
    "rows":5542,
    "facilities":352,
-   "kb":235.0
+   "kb":235.7
   },
   "IN":{
    "rows":1730,
    "facilities":102,
-   "kb":72.9
+   "kb":73.4
   },
   "KS":{
-   "rows":5127,
+   "rows":5120,
    "facilities":317,
-   "kb":214.1
+   "kb":214.4
   },
   "KY":{
    "rows":64,
@@ -84,29 +84,29 @@
    "kb":230.6
   },
   "MO":{
-   "rows":1009,
+   "rows":1004,
    "facilities":82,
-   "kb":43.3
+   "kb":43.2
   },
   "MT":{
    "rows":192,
    "facilities":9,
-   "kb":8.8
+   "kb":8.9
   },
   "NC":{
    "rows":17,
    "facilities":2,
-   "kb":1.0
+   "kb":1.1
   },
   "ND":{
    "rows":2403,
    "facilities":104,
-   "kb":102.8
+   "kb":103.0
   },
   "NE":{
-   "rows":5650,
+   "rows":5643,
    "facilities":256,
-   "kb":246.2
+   "kb":246.0
   },
   "NY":{
    "rows":2,
@@ -116,12 +116,12 @@
   "OH":{
    "rows":2631,
    "facilities":169,
-   "kb":110.7
+   "kb":111.4
   },
   "OK":{
-   "rows":454,
+   "rows":453,
    "facilities":27,
-   "kb":19.6
+   "kb":19.7
   },
   "ON":{
    "rows":24,
@@ -131,7 +131,7 @@
   "OR":{
    "rows":38,
    "facilities":2,
-   "kb":1.9
+   "kb":2.0
   },
   "PA":{
    "rows":10,
@@ -139,9 +139,9 @@
    "kb":0.9
   },
   "SD":{
-   "rows":2875,
+   "rows":2871,
    "facilities":136,
-   "kb":124.1
+   "kb":123.9
   },
   "TN":{
    "rows":129,
@@ -161,12 +161,12 @@
   "WA":{
    "rows":440,
    "facilities":22,
-   "kb":20.0
+   "kb":20.1
   },
   "WI":{
    "rows":1671,
    "facilities":135,
-   "kb":70.9
+   "kb":71.1
   },
   "WY":{
    "rows":52,
