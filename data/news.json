@@ -1,7 +1,7 @@
 {
- "updated": "2026-10-01T01:17:03+00:00",
- "count": 19,
- "added": 3,
+ "updated": "2026-10-02T22:05:54+00:00",
+ "count": 20,
+ "added": 1,
  "state": {
   "px": {
    "corn": {
@@ -24,7 +24,7 @@
    },
    "soymeal": {
     "side": "max",
-    "rd": "September 22, 2026"
+    "rd": "September 29, 2026"
    }
   }
  },
@@ -105,6 +105,17 @@
    "source": "CME settlement via the AGSIST board",
    "day_only": true,
    "ts": "2026-09-30T12:00:00+00:00"
+  },
+  {
+   "id": "cot:September 29, 2026:soymeal:max",
+   "kind": "positioning",
+   "headline": "Managed money pushed its soybean meal net long to another one-year high",
+   "detail": "Net +207,578 contracts as of September 29, 2026, from +191,087 the week before.",
+   "significance": "high",
+   "url": "/cot",
+   "source": "CFTC Commitments of Traders",
+   "day_only": true,
+   "ts": "2026-09-29T12:00:00+00:00"
   },
   {
    "id": "cot:September 22, 2026:beans:max",

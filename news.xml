@@ -5,7 +5,7 @@
     <link>https://agsist.com/news</link>
     <description>Dated grain and livestock market events the moment they are measurable: USDA report surprises, one-year positioning extremes, 52-week highs and lows, crop rating swings. Measured, not aggregated.</description>
     <language>en-us</language>
-    <lastBuildDate>Thu, 01 Oct 2026 01:17:03 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 02 Oct 2026 22:05:54 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/news.xml" rel="self" type="application/rss+xml"/>
     <item>
       <title>Corn down 3.8% on the day</title>
@@ -62,6 +62,14 @@
       <guid isPermaLink="false">agsist-news-px:2026-09-30:corn-dec:move</guid>
       <pubDate>Wed, 30 Sep 2026 12:00:00 +0000</pubDate>
       <source url="https://agsist.com/news.xml">CME settlement via the AGSIST board</source>
+    </item>
+    <item>
+      <title>Managed money pushed its soybean meal net long to another one-year high</title>
+      <link>https://agsist.com/cot</link>
+      <description>Net +207,578 contracts as of September 29, 2026, from +191,087 the week before.</description>
+      <guid isPermaLink="false">agsist-news-cot:September 29, 2026:soymeal:max</guid>
+      <pubDate>Tue, 29 Sep 2026 12:00:00 +0000</pubDate>
+      <source url="https://agsist.com/news.xml">CFTC Commitments of Traders</source>
     </item>
     <item>
       <title>Managed money pushed its soybeans net long to another one-year high</title>
