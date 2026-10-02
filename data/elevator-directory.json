@@ -1,18 +1,18 @@
 {
- "generated": "2026-10-02T20:08:42Z",
+ "generated": "2026-10-02T20:23:10Z",
  "from": "barchart-raw.json",
  "complete": false,
  "note": "Directory only: who operates a facility and where. No prices, no basis, no symbols, no delivery windows.",
  "counts": {
-  "facilities": 2249,
+  "facilities": 2251,
   "states": 38,
   "with_address": 722,
   "with_coords": 725,
   "with_url": 703,
-  "with_phone": 2182,
+  "with_phone": 2184,
   "saturated_zips": 0,
   "failed_zips": 0,
-  "rows_read": 16984
+  "rows_read": 16993
  },
  "saturated": [],
  "failed": [],
@@ -11436,6 +11436,24 @@
    "source": "barchart"
   },
   {
+   "facility": "Agri Trails Coop",
+   "branch": "White City",
+   "city": "White City",
+   "state": "KS",
+   "zip": "66872",
+   "phone": "N/A",
+   "source": "barchart"
+  },
+  {
+   "facility": "Agri Trails Coop",
+   "branch": "Woodbine",
+   "city": "Woodbine",
+   "state": "KS",
+   "zip": "67492",
+   "phone": "785-257-3315",
+   "source": "barchart"
+  },
+  {
    "company": "Alliance Ag & Grain, LLC",
    "location": "Englewood",
    "address": "3 Mulberry St",
@@ -14860,7 +14878,7 @@
    "city": "Albert Lea",
    "state": "MN",
    "zip": "56007",
-   "phone": "5073733133",
+   "phone": "507-373-3133",
    "source": "barchart",
    "company": "Albert Lea Elevator",
    "location": "Albert Lea",
@@ -27371,7 +27389,7 @@
    "city": "Fall River",
    "state": "WI",
    "zip": "53932",
-   "phone": "608.819.3475",
+   "phone": "608-819-3475",
    "source": "barchart"
   },
   {
@@ -27380,7 +27398,7 @@
    "city": "Hager City ",
    "state": "WI",
    "zip": "54014",
-   "phone": "N/A",
+   "phone": "715-760-9965",
    "source": "barchart"
   },
   {
@@ -27407,7 +27425,7 @@
    "city": "New Richmond",
    "state": "WI",
    "zip": "54017",
-   "phone": "715.246.9580",
+   "phone": "715-246-9580",
    "source": "barchart",
    "company": "ALCIVIA",
    "location": "Four Corners (New Richmond)",
