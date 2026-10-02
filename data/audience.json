@@ -1,6 +1,6 @@
 {
  "schema": "agsist-audience/2",
- "built": "2026-10-01T17:21:55+00:00",
+ "built": "2026-10-02T00:36:00+00:00",
  "ranges": [
   {
    "id": "7d",
@@ -5354,8 +5354,8 @@
     "d": "2026-09-29",
     "users": 257,
     "engaged": 202,
-    "gClicks": null,
-    "gImpr": null,
+    "gClicks": 53,
+    "gImpr": 2026,
     "bClicks": null,
     "bImpr": null
    }
@@ -5368,21 +5368,21 @@
    "rows": [
     {
      "q": "soybean yield calculator",
-     "clicks": 67,
-     "impr": 974,
-     "pos": 5.1
+     "clicks": 69,
+     "impr": 999,
+     "pos": 5.2
     },
     {
      "q": "agsist",
-     "clicks": 22,
-     "impr": 51,
+     "clicks": 23,
+     "impr": 53,
      "pos": 1
     },
     {
      "q": "cash rents by county per acre",
-     "clicks": 22,
-     "impr": 242,
-     "pos": 5.8
+     "clicks": 23,
+     "impr": 258,
+     "pos": 5.7
     },
     {
      "q": "hail map",
@@ -5393,8 +5393,8 @@
     {
      "q": "cash rents by county",
      "clicks": 9,
-     "impr": 93,
-     "pos": 6.0
+     "impr": 97,
+     "pos": 5.8
     },
     {
      "q": "hail map today",
@@ -5405,19 +5405,19 @@
     {
      "q": "usda cash rent by county",
      "clicks": 7,
-     "impr": 75,
-     "pos": 3.8
+     "impr": 80,
+     "pos": 3.9
     },
     {
      "q": "hail tracker",
      "clicks": 5,
-     "impr": 111,
+     "impr": 115,
      "pos": 8.3
     },
     {
      "q": "soybean yield estimate calculator",
      "clicks": 5,
-     "impr": 60,
+     "impr": 63,
      "pos": 4.6
     },
     {
@@ -5429,14 +5429,14 @@
     {
      "q": "soybean yeild calculator",
      "clicks": 4,
-     "impr": 12,
-     "pos": 5.1
+     "impr": 13,
+     "pos": 5.2
     },
     {
      "q": "current hail map",
      "clicks": 3,
-     "impr": 27,
-     "pos": 8.7
+     "impr": 28,
+     "pos": 8.6
     },
     {
      "q": "hail map live",
@@ -5453,14 +5453,14 @@
     {
      "q": "live hail map",
      "clicks": 3,
-     "impr": 36,
-     "pos": 6.2
+     "impr": 37,
+     "pos": 6.0
     },
     {
      "q": "pasture rental rates by county",
      "clicks": 3,
-     "impr": 38,
-     "pos": 5.5
+     "impr": 42,
+     "pos": 5.3
     },
     {
      "q": "south dakota cash rents by county map pdf",
@@ -5471,20 +5471,20 @@
     {
      "q": "soybean yield estimate",
      "clicks": 3,
-     "impr": 66,
-     "pos": 9.4
+     "impr": 67,
+     "pos": 9.3
     },
     {
      "q": "usda cash rent by county per acre",
      "clicks": 3,
-     "impr": 32,
-     "pos": 3.4
+     "impr": 36,
+     "pos": 3.2
     },
     {
      "q": "fertilizer prices",
      "clicks": 2,
-     "impr": 70,
-     "pos": 17.3
+     "impr": 72,
+     "pos": 17.1
     }
    ],
    "country": "US"
@@ -5980,21 +5980,21 @@
   "ga4": {
    "ok": true,
    "through": "2026-09-29",
-   "fetched": "2026-10-01T17:21:55+00:00"
+   "fetched": "2026-10-02T00:36:00+00:00"
   },
   "gsc": {
    "ok": true,
    "site": "sc-domain:agsist.com",
-   "fetched": "2026-10-01T17:21:55+00:00"
+   "fetched": "2026-10-02T00:36:00+00:00"
   },
   "bing": {
    "ok": true,
    "site": "https://agsist.com/",
-   "fetched": "2026-10-01T17:21:55+00:00"
+   "fetched": "2026-10-02T00:36:00+00:00"
   },
   "email": {
    "ok": true,
-   "fetched": "2026-10-01T17:21:55+00:00"
+   "fetched": "2026-10-02T00:36:00+00:00"
   }
  }
 }
