@@ -64,9 +64,9 @@
    "kb":298.4
   },
   "KY":{
-   "rows":72,
+   "rows":74,
    "facilities":5,
-   "kb":3.6
+   "kb":3.7
   },
   "LA":{
    "rows":5,
@@ -99,14 +99,14 @@
    "kb":1.0
   },
   "ND":{
-   "rows":2653,
+   "rows":2655,
    "facilities":111,
-   "kb":114.2
+   "kb":114.3
   },
   "NE":{
-   "rows":7378,
+   "rows":7452,
    "facilities":324,
-   "kb":322.9
+   "kb":327.0
   },
   "NY":{
    "rows":2,

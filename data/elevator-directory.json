@@ -1,18 +1,18 @@
 {
- "generated": "2026-10-02T19:08:09Z",
+ "generated": "2026-10-02T19:23:08Z",
  "from": "barchart-raw.json",
  "complete": false,
  "note": "Directory only: who operates a facility and where. No prices, no basis, no symbols, no delivery windows.",
  "counts": {
-  "facilities": 2238,
+  "facilities": 2241,
   "states": 38,
   "with_address": 722,
   "with_coords": 725,
   "with_url": 703,
-  "with_phone": 2171,
+  "with_phone": 2174,
   "saturated_zips": 0,
   "failed_zips": 0,
-  "rows_read": 17248
+  "rows_read": 17274
  },
  "saturated": [],
  "failed": [],
@@ -11305,6 +11305,33 @@
    "state": "KS",
    "zip": "66619",
    "phone": "785-862-8605",
+   "source": "barchart"
+  },
+  {
+   "facility": "Agri Trails Coop",
+   "branch": "Carlton",
+   "city": "Carlton",
+   "state": "KS",
+   "zip": "67429",
+   "phone": "785-949-2222",
+   "source": "barchart"
+  },
+  {
+   "facility": "Agri Trails Coop",
+   "branch": "Chapman",
+   "city": "Chapman",
+   "state": "KS",
+   "zip": "67431",
+   "phone": "785-922-6505",
+   "source": "barchart"
+  },
+  {
+   "facility": "Agri Trails Coop",
+   "branch": "Council Grove",
+   "city": "Council Grove",
+   "state": "KS",
+   "zip": "66846",
+   "phone": "620-767-5105",
    "source": "barchart"
   },
   {
