@@ -78,6 +78,24 @@ def ordinal(n):
     return f"{n}{suf}"
 
 
+def read_line(pct, updated):
+    """Same text the homepage script writes for The Read."""
+    from datetime import datetime
+    from zoneinfo import ZoneInfo
+    if pct is None:
+        return ""
+    p = int(round(pct))
+    band = ("Near a 5-year low." if p < 10 else "Historically low: below most of the last 5 years." if p < 25
+            else "Near a 5-year high." if p >= 90 else "Historically high: above most of the last 5 years." if p >= 75 else "")
+    when = ""
+    try:
+        d = datetime.fromisoformat(str(updated).replace("Z", "+00:00")).astimezone(ZoneInfo("America/Chicago"))
+        when = " at " + d.strftime("%b ") + str(d.day) + ", " + str(d.hour % 12 or 12) + d.strftime(":%M ") + ("AM" if d.hour < 12 else "PM") + " CT"
+    except Exception:
+        pass
+    return (("<b>" + band + "</b> ") if band else "") + "Ranked" + when + " against 5 years of weekly front-month closes."
+
+
 def replace_inner(html, open_pat, close_tag, new_inner, tag, required=True):
     """Replace everything between an element's opening tag (regex) and its
     next close_tag with new_inner. Returns (html, ok)."""
@@ -164,24 +182,32 @@ def main():
             continue
         pct = st.get("pct")
         html, _ = replace_inner(
-            html, rf'<span id="sig-{sig}-num">', "</span>",
-            esc(pct), f"{sig}-num")
+            # the number now holds a nested ordinal span, so the inner text
+            # runs to the span that closes right before the sub label
+            html, rf'<span id="sig-{sig}-num">', f'</span><small id="sig-{sig}-sub">',
+            # 2026-10-01 bake-read: number + ordinal, as the page script writes it
+            (esc(int(round(pct))) + '<span class="r7-ord">' + ordinal(round(pct))[len(str(int(round(pct)))):] + '</span>') if pct is not None else "",
+            f"{sig}-num")
         html, _ = replace_inner(
             html, rf'<small id="sig-{sig}-sub">', "</small>",
-            esc(ordinal(pct) + " pctile") if pct is not None else "",
+            "percentile" if pct is not None else "",
             f"{sig}-sub")
-        cur, lo, hi = st.get("cur"), st.get("lo"), st.get("hi")
-        if cur is not None and lo is not None and hi is not None:
+        # The file's own price is its build time, not the board: bake the
+        # range only; the page script adds the live board price on load.
+        lo, hi = st.get("lo"), st.get("hi")
+        if lo is not None and hi is not None:
             html, _ = replace_inner(
                 html, rf'<div class="sig-price" id="sig-{sig}-price">', "</div>",
-                f"${cur:.2f} &middot; 5-yr range ${lo:.2f}&ndash;${hi:.2f}",
+                f"5-year range ${lo:.2f}&ndash;${hi:.2f}",
                 f"{sig}-price")
         html, _ = replace_inner(
             html, rf'<div class="sig-read" id="sig-{sig}-read">', "</div>",
-            esc(st["read"]), f"{sig}-read")
+            read_line(st.get("pct"), stats.get("updated")), f"{sig}-read")
         baked.append(f"read:{key}")
 
-    cattle = stats.get("cattle") or {}
+    # cattle tile is a feeder/live ratio now: empty the old sentence
+    html, _ = replace_inner(html, r'<div class="sig-read" id="sig-cattle-read">', "</div>", "", "cattle-read")
+    cattle = {}
     if cattle.get("read"):
         html, _ = replace_inner(
             html, r'<div class="sig-read" id="sig-cattle-read">', "</div>",

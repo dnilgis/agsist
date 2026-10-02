@@ -4,10 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#111a0a">
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H"></script>
+  <script>/* agsist-ga-guard 2026-10-01: Google Analytics loads only when the browser sends no Global Privacy Control or Do Not Track signal and the off switch on /privacy is not set. dataLayer and gtag always exist, so page code that calls them never throws. */(function(w,d,n){var off=false,v,i,s;w.dataLayer=w.dataLayer||[];if(typeof w.gtag!=='function'){w.gtag=function(){w.dataLayer.push(arguments);};}try{off=w.localStorage.getItem('agsist-ga-off')==='1';}catch(e){}if(n.globalPrivacyControl===true){off=true;}v=[n.doNotTrack,w.doNotTrack,n.msDoNotTrack];for(i=0;i<v.length;i++){if(v[i]==='1'||v[i]==='yes'){off=true;}}w.agsistGaOff=off;w.gtag('set','allow_google_signals',false);w.gtag('set','allow_ad_personalization_signals',false);if(off){return;}s=d.createElement('script');s.async=true;s.src='https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H';(d.head||d.documentElement).appendChild(s);})(window,document,navigator);</script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
   <title>Privacy Policy — AGSIST</title>
-  <meta name="description" content="Privacy Policy for AGSIST. Short version: almost nothing is collected, nothing is sold, and your location never leaves your browser.">
+  <meta name="description" content="What AGSIST collects, who processes it, how long it is kept, and how to turn analytics off. Global Privacy Control and Do Not Track are honored. Nothing is sold.">
   <meta name="author" content="Sigurd Lindquist — Farmers First Agri Service">
   <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
   <link rel="canonical" href="https://agsist.com/privacy">
@@ -15,7 +15,7 @@
   <meta property="og:site_name" content="AGSIST">
   <meta property="og:locale" content="en_US">
   <meta property="og:title" content="Privacy Policy — AGSIST">
-  <meta property="og:description" content="AGSIST collects almost nothing, sells nothing, and respects your time. Location stays in your browser. Email only used to deliver what you signed up for.">
+  <meta property="og:description" content="What AGSIST collects, who processes it, and how to turn analytics off. Global Privacy Control and Do Not Track are honored. Nothing is sold.">
   <meta property="og:url" content="https://agsist.com/privacy">
   <meta property="og:image" content="https://agsist.com/img/og/agsist.jpg">
   <meta property="og:image:width" content="1200">
@@ -25,7 +25,7 @@
   <meta name="twitter:site" content="@agsist">
   <meta name="twitter:creator" content="@agsist">
   <meta name="twitter:title" content="Privacy Policy — AGSIST">
-  <meta name="twitter:description" content="AGSIST collects almost nothing and sells nothing. Your location never leaves your browser.">
+  <meta name="twitter:description" content="What AGSIST collects and how to turn analytics off. Global Privacy Control and Do Not Track are honored. Nothing is sold.">
   <meta name="twitter:image" content="https://agsist.com/img/og/agsist.jpg">
   <link rel="preload" href="/components/styles.css?v=17" as="style">
   <link rel="stylesheet" href="/components/styles.css?v=17">
@@ -109,6 +109,17 @@
       font-size: .85rem;
       color: var(--text-dim);
     }
+    /* 2026-10-01 consent B: the analytics switch. Hairlines, no new colours. */
+    .ga-switch { margin: .5rem 0 1.5rem; padding: 4px 0 12px; border-bottom: 1px solid var(--border) }
+    .ga-switch .ga-state { color: var(--text); font-size: .88rem; line-height: 1.6; margin: 0 0 12px }
+    .ga-switch .ga-note { color: var(--text-muted); font-size: .82rem; line-height: 1.6; margin: 12px 0 0 }
+    .ga-switch button { min-height: 44px; padding: 8px 16px; font: inherit; font-size: .88rem; font-weight: 600; color: var(--text); background: transparent; border: 1px solid var(--border); border-radius: 6px; cursor: pointer }
+    .ga-switch button:hover { border-color: var(--text-dim) }
+    .ga-switch button:active { transform: translateY(1px) }
+    .ga-switch button:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px }
+    .ga-switch button:disabled { opacity: .5; cursor: not-allowed }
+    .legal-page .keys li { margin-bottom: .2rem }
+    @media (max-width: 520px) { .ga-switch button { width: 100%; font-size: 16px } }
     @media (max-width: 520px) {
       .legal-page { padding: 1.5rem .9rem 3rem }
       .legal-page h1 { font-size: 1.4rem }
@@ -127,63 +138,173 @@
     <div class="legal-page">
 
       <h1>Privacy Policy</h1>
-      <p class="updated">Last updated: September 26, 2026</p>
+      <p class="updated">Last updated: Oct 1, 2026</p>
 
       <div class="tldr">
         <strong>Plain English</strong>
-        Almost nothing is collected. Your location stays in your browser. If you give me your email, I use it to send you what you asked for. Nothing is sold to anyone. That's it.
+        AGSIST counts visits with Google Analytics, unless your browser asks not to be tracked or you turn it off below. If you give me your email, it is used for what you signed up for and kept until you stop. Some features send what they need, like a ZIP code, to the services named on this page. Nothing is sold.
       </div>
+
+      <h2 id="analytics">Analytics: On or Off</h2>
+      <div class="ga-switch" id="ga-switch">
+        <p class="ga-state" id="ga-state" role="status" aria-live="polite">Checking this browser&hellip;</p>
+        <button type="button" id="ga-toggle" aria-pressed="false" disabled>Turn analytics off</button>
+        <p class="ga-note" id="ga-signal" hidden>Your browser sends a do-not-track signal, and that keeps analytics off on every AGSIST page. The switch comes back if you turn the signal off in your browser.</p>
+        <noscript><p class="ga-note">The switch needs JavaScript. With JavaScript off, Google Analytics does not load either.</p></noscript>
+      </div>
+      <p>The switch is saved in this browser only, under the name <code>agsist-ga-off</code>. It does not follow you to another browser or device, and clearing your browser data clears it.</p>
 
       <h2>What Is Collected</h2>
       <ul>
-        <li><strong>Location</strong> — your browser's geolocation or a ZIP code you type in. Used to show local weather and cash bids. For those features your coordinates are sent to the services that answer the question &mdash; Open-Meteo for weather, OpenStreetMap Nominatim to turn coordinates into a place name, and a Cloudflare Worker that fetches nearby cash bids &mdash; and your last location is kept in your browser&rsquo;s local storage so the site remembers it. Hail alerts are different: the coordinates you pick are stored on the server alongside your email address, because there is no other way to tell you it hailed there.</li>
-        <li><strong>Email</strong> — only if you subscribe to the AGSIST Daily newsletter, ask to watch a county in the Farmland Atlas, or join the Parcel Report waitlist (that address goes to Formspree, and to me). Used to send you exactly what you signed up for. A county watch stores your email and the county codes you watch, starts only after you confirm from a link we email you, and stops with one tap from any email.</li>
-        <li><strong>Analytics</strong> — page views via Google Analytics 4, tied to a random ID cookie and your IP address as Google sees it. No names, no email addresses.</li>
+        <li><strong>Visits, through Google Analytics 4.</strong> Only when analytics is on. Google records the pages you open, the site that sent you, your device, browser and screen size, a rough location it works out from your IP address, and events such as a click on a module, a calculator used, or a sponsor seen. Cookies with a random ID let repeat visits count as one reader. Google signals and ad personalization are switched off in the site&rsquo;s code. On the cash bids page and the basis box on the corn, soybean and wheat futures pages, the ZIP code you search is sent along with the search event.</li>
+        <li><strong>Settings in your browser.</strong> Your last location and ZIP, calculator inputs, saved Field Scout fields, theme and similar choices are kept in your browser&rsquo;s local storage so the tools remember your work. They stay on your device. The full list is under Cookies and Local Storage below.</li>
+        <li><strong>A location you give.</strong> Your browser&rsquo;s location, if you allow it, or a ZIP code you type. It is sent to the service that answers the question (weather, a place name, nearby cash bids), as listed below.</li>
+        <li><strong>Your email, if you sign up.</strong> For the AGSIST Daily, a price alert, an elevator watch, a county watch or a hail alert, together with what you asked to watch. Details are under Alerts and Watches below.</li>
+        <li><strong>What you send me.</strong> Emails you write to me, and three forms that go through Formspree: the Parcel Report waitlist, the sponsor approval form, and the elevator claim form on the <a href="/elevators">elevators page</a>. The claim form sends the business name, town and state, a contact name and role, a work email, a phone number and bid-page address if you give them, and whether you want to hear about a hosted bid board.</li>
       </ul>
 
-      <h2>What It's Used For</h2>
-      <p>Delivering weather, local bids, and market data relevant to where you farm. Sending the daily briefing if you asked for it. That's the complete list.</p>
-      <p>Your information is not sold, rented, or shared with anyone for any reason.</p>
-
-      <h2>Third-Party Services</h2>
-      <p>AGSIST uses these services to function. These services receive only what they need to work, described above and below. Every service your browser talks to also sees your IP address, as any website does.</p>
+      <h2>What Is Not Collected</h2>
       <ul>
-        <li><strong>Google Analytics 4</strong> &mdash; page views and usage stats, using a random ID cookie (see below).</li>
-        <li><strong>Google Fonts</strong> &mdash; the typefaces, loaded from Google&rsquo;s servers on most pages.</li>
-        <li><strong>Open-Meteo</strong> &mdash; weather data. It receives the coordinates of the place you asked about.</li>
-        <li><strong>OpenStreetMap Nominatim</strong> &mdash; turns an address, ZIP or coordinates into a place name.</li>
-        <li><strong>National Weather Service (api.weather.gov) and Iowa Environmental Mesonet</strong> &mdash; the hail map loads live storm warnings and the last 24 hours of storm reports directly from these two services. Your browser contacts them, so they see your IP address like any website. The requests carry no location from you.</li>
-        <li><strong>Cloudflare (Workers and KV)</strong> &mdash; processes signup forms and stores email signups and hail-alert locations. It also runs the cash-bid lookup.</li>
-        <li><strong>TradingView</strong> &mdash; the price charts on the corn, soybean and wheat futures pages.</li>
-        <li><strong>Windy</strong> &mdash; the radar map on the home page.</li>
-        <li><strong>Polymarket</strong> &mdash; the prediction-market odds on the home page, requested by your browser.</li>
-        <li><strong>Formspree</strong> &mdash; receives the email address you type into the Parcel Report waitlist form on the Farmland Atlas and the approval form on sponsor proofs.</li>
-        <li><strong>Gmail (Google)</strong> &mdash; sends the AGSIST Daily and county-watch emails, so Google handles those messages in transit.</li>
-        <li><strong>Field Scout</strong> &mdash; when you draw or look up a field, its outline or coordinates go to AGSIST&rsquo;s Cloudflare Worker, which asks USDA (soils, crop history) and Copernicus Sentinel (imagery). Map tiles come from Esri (satellite) and CARTO (base map).</li>
-        <li><strong>jsDelivr, cdnjs and unpkg</strong> &mdash; host the map and chart code some pages load.</li>
+        <li>No accounts, no passwords, no payment details.</li>
+        <li>No advertising cookies, no retargeting pixels, no cross-site ad tracking.</li>
+        <li>Your data is not sold or rented. Sponsors never get your email, your location or what you watch.</li>
       </ul>
 
-      <h2>Cookies &amp; Local Storage</h2>
-      <p>AGSIST uses no advertising cookies, no cross-site tracking and no retargeting pixels. It does keep a fair amount in your browser&rsquo;s own local storage so the tools remember your work: your last location and ZIP, your break-even and grain-bin inputs, saved Field Scout fields and snapshots, GDU and spray settings, your theme, and whether you have signed up or dismissed the signup bar. None of it is sent anywhere except where this page says so, and clearing your browser data removes all of it. One first-party cookie, agsist_subscribed, remembers for two years that you already signed up so the bar stops appearing.</p>
+      <h2>Who Processes It</h2>
+      <p>These services handle part of what the site does. Each one gets only what that feature needs. Every service your browser talks to also sees your IP address, as any website does.</p>
       <ul>
-        <li><strong>Theme preference</strong> &mdash; <code>agsist-theme</code> in <code>localStorage</code> stores your dark/light choice. It never leaves your browser and holds no personal data.</li>
-        <li><strong>Google Analytics</strong> &mdash; <code>_ga</code> (2-year expiry, distinguishes users) and <code>_ga_*</code> (session persistence). No personally identifiable information. Opt out with the <a href="https://tools.google.com/dlpage/gaoptout" target="_blank" rel="noopener">Google Analytics Opt-out Add-on</a>.</li>
+        <li><strong>GitHub Pages</strong> &mdash; hosts the site itself.</li>
+        <li><strong>Google Analytics</strong> &mdash; the visit counts described above, when analytics is on.</li>
+        <li><strong>Gmail (Google)</strong> &mdash; sends the AGSIST Daily, the alert and watch emails, and their confirmation emails, so Google handles those messages in transit.</li>
+        <li><strong>Cloudflare</strong> &mdash; runs AGSIST&rsquo;s small server programs (Workers). They take signups and store your email with what you watch (Cloudflare KV), look up cash bids by ZIP, and answer Field Scout requests. Cloudflare&rsquo;s cdnjs also hosts some code the pages load.</li>
+        <li><strong>Barchart</strong> &mdash; the second cash-bid feed. When you look up bids by ZIP, your browser sends the ZIP and search radius to AGSIST&rsquo;s Cloudflare Worker, and the worker asks Barchart for bids near that ZIP. Barchart gets the ZIP from the worker, not from your browser.</li>
+        <li><strong>Open-Meteo</strong> &mdash; weather. It receives the coordinates of the place you asked about, and turns a ZIP into a place on the home page&rsquo;s bid search.</li>
+        <li><strong>OpenStreetMap Nominatim</strong> &mdash; turns coordinates into a place name.</li>
+        <li><strong>National Weather Service (api.weather.gov) and Iowa Environmental Mesonet</strong> &mdash; the hail map loads live storm warnings and the last 24 hours of storm reports from them. The requests carry no location from you.</li>
+        <li><strong>Field Scout services</strong> &mdash; a field you draw or look up goes to AGSIST&rsquo;s Cloudflare Worker, which asks USDA (soils, crop history) and Copernicus Sentinel (imagery). Map tiles come from Esri (satellite) and CARTO (base map).</li>
+        <li><strong>TradingView</strong> &mdash; the price charts on the corn, soybean and wheat futures pages load from TradingView.</li>
+        <li><strong>Windy</strong> &mdash; the radar map on the home page is a frame from Windy.</li>
+        <li><strong>Formspree</strong> &mdash; receives the Parcel Report waitlist form on the Farmland Atlas, the approval form on sponsor proofs, and the elevator claim form on the elevators page.</li>
+        <li><strong>Google Fonts</strong> &mdash; older Daily archive pages and two Farmland Atlas pages load typefaces from Google. Other pages use fonts served by AGSIST.</li>
+        <li><strong>jsDelivr, cdnjs and unpkg</strong> &mdash; host map and chart code some pages load.</li>
       </ul>
-      <p>You can clear all cookies and localStorage anytime in your browser settings; clearing localStorage resets your theme to dark.</p>
+      <p>Futures prices (Yahoo Finance) and prediction-market odds are fetched by AGSIST&rsquo;s own scheduled jobs and saved as files on this site. Your browser does not contact those services, and they learn nothing about you.</p>
 
-      <h2>Data Retention</h2>
-      <p>Location data: your last location stays in your browser until you clear it. Hail-alert locations are stored on the server with your email until you unsubscribe, then deleted. Email: kept until you unsubscribe. Analytics: retained per Google's defaults (14 months).</p>
+      <h2 id="alerts">Alerts and Watches</h2>
+      <p>Each of these stores your email address on Cloudflare together with what you asked for, and nothing else.</p>
+      <ul>
+        <li><strong>AGSIST Daily</strong> &mdash; your email, the page you signed up on, and when.</li>
+        <li><strong>Price alerts</strong> &mdash; your email, the contract, above or below, and your target price. An alert fires once and is then deleted.</li>
+        <li><strong>Elevator watch</strong> &mdash; your email and the elevator you picked.</li>
+        <li><strong>County watch</strong> (Farmland Atlas) &mdash; your email and the county codes you watch.</li>
+        <li><strong>Hail alerts</strong> &mdash; your email, the spot you pinned, its place name and the radius you chose.</li>
+      </ul>
+      <p>Price alerts, elevator watches and county watches start only after you confirm from a link in an email. An unconfirmed request is not mailed again, and its link stops working after 14 days. Up to five of each per address.</p>
+      <p>Everything is kept until you stop it. Every email carries an unsubscribe link: it opens a page with one button, and pressing it removes you right away. Watch and alert emails let you stop one item or all of them. Mail apps that offer a one-click unsubscribe use the same route. You can also email me and I will remove you by hand. Your browser also keeps its own list of elevators you watch (<code>agsist_watching</code>) so the page can mark them; that list never leaves your device.</p>
+
+      <h2 id="sponsors">Sponsor Impression Counting</h2>
+      <p>Sponsors pay to be seen, so the site counts when a sponsor slot is actually seen: at least half of it on screen for one continuous second. When that happens, the page sends one event to Google Analytics with the slot name, the page, and how long the slot was in view. A click on a sponsor link sends a click event the same way.</p>
+      <p>It sets no cookie of its own, uses no ID, and stores nothing. Sponsors see totals for their own slots, never anything about one reader. When analytics is off, nothing is counted.</p>
+
+      <h2 id="dnt">Do Not Track and Global Privacy Control</h2>
+      <p>If your browser sends Global Privacy Control or Do Not Track, Google Analytics is not loaded at all, on any AGSIST page. No analytics cookies are set, your visit is not counted, and sponsor views are not counted. Everything else on the site works the same. There is no cookie banner because there is nothing to accept: the browser signal and the switch above are the choice.</p>
+
+      <h2 id="cookies">Cookies and Local Storage</h2>
+      <p>Cookies:</p>
+      <ul>
+        <li><code>_ga</code> and <code>_ga_&lt;ID&gt;</code> &mdash; set by Google Analytics, only when analytics is on. They hold a random ID; Google keeps <code>_ga</code> for up to two years.</li>
+        <li><code>agsist_subscribed</code> &mdash; set by AGSIST when you sign up for the Daily, for two years, so the signup prompts stop. It is never sent to another site.</li>
+      </ul>
+      <p>Local storage (stays in your browser):</p>
+      <ul class="keys">
+        <li>Location: <code>agsist-wx-loc</code>, <code>agsist_user_zip</code>, <code>agsist_zip</code>, <code>agsist_state</code></li>
+        <li>Tools: <code>agsist-breakeven</code>, <code>agsist-be-split</code>, <code>agsist_be_&lt;crop&gt;</code>, <code>agsist_priced_&lt;crop&gt;</code>, <code>agsist_gdu</code>, <code>agsist_gbc_v1</code>, <code>agsist-urea-field</code>, <code>agsist-spray-product</code>, <code>agsist-fs-fields</code>, <code>agsist-fs-snap-&lt;id&gt;</code>, <code>agsist-lease-draft</code>, <code>agsist-pd-state</code>, <code>agsist-rma-state</code>, <code>agsist_delivery</code>, <code>cot_market</code></li>
+        <li>Display: <code>agsist-theme</code>, <code>agsist-daily-&lt;date&gt;</code>, <code>agsist_visits</code>, <code>agsist_watching</code></li>
+        <li>Prompts: <code>agsist_subscribed</code>, <code>agsist_bar_snooze</code>, <code>agsist_pwa_dismissed</code>, <code>agsist_home_prompt_dismissed_v1</code>, <code>agsist_signup_slim_dismissed</code>, <code>agsist_signup_compact_dismissed</code></li>
+        <li>Sponsor proofs: <code>agsist_approved_&lt;code&gt;</code></li>
+        <li>Privacy: <code>agsist-ga-off</code> (the switch above)</li>
+      </ul>
+      <p>Clearing your browser data removes all of it. Clearing local storage also resets the theme to dark.</p>
+
+      <h2>How Long It Is Kept</h2>
+      <ul>
+        <li>Emails and what you watch: until you unsubscribe. A price alert also ends when it fires.</li>
+        <li>Browser settings: until you clear them.</li>
+        <li>Google Analytics: detailed records for at most 14 months, the longest Google allows for this kind of account.</li>
+        <li>Emails you send me: in my mailbox, as with any email.</li>
+      </ul>
 
       <h2>Your Rights</h2>
-      <p>Want off the email list? Reply "unsubscribe" to any AGSIST email, or contact me directly. Want anything else deleted? Same deal — just ask.</p>
+      <p>You can ask what I hold about you, ask me to correct it, or ask me to delete it. Email <a href="mailto:sig@farmers1st.com">sig@farmers1st.com</a> from the address in question and I will answer myself. You can turn analytics off above, unsubscribe from any email with its link, and clear your browser storage at any time. Your data is not sold or shared for advertising, so there is no sale to opt out of.</p>
+
+      <h2>Who Runs AGSIST</h2>
+      <p>AGSIST is run by Sigurd Lindquist, PO Box 243, Chetek, WI 54728. He also owns Farmers First Agri Service LLC (crop insurance, agronomy and ag technology services) and Loke Drone LC (agricultural drone spraying). See the <a href="/about">About page</a>.</p>
+
+      <h2>Changes</h2>
+      <p>When this page changes, the date at the top changes with it.</p>
 
       <div class="contact-line">
-        Questions about this policy? <strong style="color:var(--text)">Sigurd Lindquist</strong> — <a href="tel:+17157972428">715-797-2428</a> · <a href="mailto:sig@farmers1st.com">sig@farmers1st.com</a><br>AGSIST, PO Box 243, Chetek, WI 54728
+        Questions about this policy? <strong style="color:var(--text)">Sigurd Lindquist</strong> &mdash; <a href="tel:+17157972428">715-797-2428</a> &middot; <a href="mailto:sig@farmers1st.com">sig@farmers1st.com</a><br>AGSIST, PO Box 243, Chetek, WI 54728
       </div>
 
     </div>
   </main>
   <div id="site-footer"></div>
   <script src="/components/loader.js?v=16" defer></script>
+<script>
+/* 2026-10-01 consent B: the analytics switch. Sets or clears localStorage
+   'agsist-ga-off'; the guard in every page's head reads the same key. */
+(function () {
+  var K = 'agsist-ga-off', ID = 'G-6KXCTD5Z9H';
+  var st = document.getElementById('ga-state'), btn = document.getElementById('ga-toggle'), note = document.getElementById('ga-signal');
+  if (!st || !btn) return;
+  var offAtLoad = window.agsistGaOff === true;
+  function signal() {
+    var n = navigator, v = [n.doNotTrack, window.doNotTrack, n.msDoNotTrack], i;
+    if (n.globalPrivacyControl === true) return 'Global Privacy Control';
+    for (i = 0; i < v.length; i++) if (v[i] === '1' || v[i] === 'yes') return 'Do Not Track';
+    return '';
+  }
+  function stored() {
+    try { return window.localStorage.getItem(K) === '1'; } catch (e) { return null; }
+  }
+  function paint() {
+    var s = signal(), o = stored();
+    note.hidden = !s;
+    if (o === null) {
+      btn.disabled = true;
+      btn.textContent = 'Turn analytics off';
+      btn.setAttribute('aria-pressed', 'false');
+      st.textContent = s ? 'Off. Your browser sends ' + s + ', so Google Analytics does not load on any AGSIST page.'
+                         : 'This browser blocks site storage, so the switch cannot be saved here.';
+      return;
+    }
+    btn.disabled = false;
+    btn.textContent = o ? 'Turn analytics back on' : 'Turn analytics off';
+    btn.setAttribute('aria-pressed', o ? 'true' : 'false');
+    if (s) {
+      /* The browser signal wins. A live switch here would flip to 'back on'
+         while analytics stays off, so it is shown off and disabled. */
+      btn.disabled = true;
+      btn.textContent = 'Kept off by your browser';
+      btn.setAttribute('aria-pressed', 'true');
+      st.textContent = 'Off. Your browser sends ' + s + ', so Google Analytics does not load on any AGSIST page.';
+    }
+    else if (o) st.textContent = 'Off in this browser. Google Analytics does not load on AGSIST pages.';
+    else if (offAtLoad) st.textContent = 'On. Google Analytics loads from the next AGSIST page you open.';
+    else st.textContent = 'On. Google Analytics loads on AGSIST pages in this browser.';
+  }
+  btn.addEventListener('click', function () {
+    var o = stored();
+    try {
+      if (o) window.localStorage.removeItem(K);
+      else window.localStorage.setItem(K, '1');
+    } catch (e) {}
+    window['ga-disable-' + ID] = !o;   /* stops this page's tag at once, if it loaded */
+    paint();
+  });
+  paint();
+})();
+</script>
 </body>
 </html>

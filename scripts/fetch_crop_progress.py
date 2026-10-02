@@ -122,6 +122,46 @@ def latest_planting(rows: list[dict]) -> dict | None:
     return {"date": valid[0][0], "pct": valid[0][1]}
 
 
+def same_week_prev(rows: list[dict], cur_date: str | None) -> int | None:
+    """2026-10-01 harvest pace: last year's value for the week nearest to 364 days before
+    cur_date (within 4 days), not last year's final number."""
+    if not cur_date:
+        return None
+    try:
+        target = datetime.strptime(cur_date, "%Y-%m-%d") - timedelta(days=364)
+    except ValueError:
+        return None
+    best = None
+    for r in rows:
+        try:
+            wk = datetime.strptime(r.get("week_ending", ""), "%Y-%m-%d")
+            val = int(str(r.get("Value", "")).replace(",", "").strip())
+        except ValueError:
+            continue
+        gap = abs((wk - target).days)
+        if gap <= 4 and (best is None or gap < best[0]):
+            best = (gap, val)
+    return best[1] if best else None
+
+
+def ge_same_week_prev(rows: list[dict], cur_date: str | None) -> int | None:
+    """2026-10-01 same-week: good + excellent for last year's week nearest 364 days before
+    cur_date (within 4 days), not last year's final week."""
+    if not cur_date:
+        return None
+    by_week: dict[str, int] = {}
+    for r in rows:
+        week = r.get("week_ending", "")
+        unit = r.get("unit_desc", "").upper()
+        try:
+            val = int(str(r.get("Value", "")).replace(",", "").strip())
+        except ValueError:
+            continue
+        if week and ("EXCELLENT" in unit or "GOOD" in unit):
+            by_week[week] = by_week.get(week, 0) + val
+    return same_week_prev([{"week_ending": w, "Value": str(v)} for w, v in by_week.items()], cur_date)
+
+
 def is_in_season() -> bool:
     """Crop Progress runs April through November."""
     m = datetime.now().month
@@ -205,10 +245,29 @@ def main():
             "good_excellent":           cur["good_excellent"] if cur else None,
             "report_date":              cur["date"] if cur else None,
             "good_excellent_prev_week": ge_prev_week,
-            "good_excellent_prev_year": prev["good_excellent"] if prev else None,
+            "good_excellent_prev_year": ge_same_week_prev(cond_prev, cur["date"]) if cur else None,
             "planting_pct":             lp_cur["pct"] if lp_cur else None,
-            "planting_prev_year":       lp_prev["pct"] if lp_prev else None,
+            "planting_prev_year":       same_week_prev(plant_prev, lp_cur["date"]) if lp_cur else None,
         }
+
+        # Harvest pace (2026-10-01 harvest pace). Fail-soft: null on any error.
+        try:
+            h_rows = [r for r in fetch_progress(commodity, year, "PCT HARVESTED")
+                      if "SILAGE" not in str(r.get("short_desc", "")).upper()]
+            h_cur = latest_planting(h_rows)
+            h_prev_rows = [r for r in fetch_progress(commodity, year1, "PCT HARVESTED")
+                           if "SILAGE" not in str(r.get("short_desc", "")).upper()] if h_cur else []
+            result[key]["harvest_pct"] = h_cur["pct"] if h_cur else None
+            result[key]["harvest_date"] = h_cur["date"] if h_cur else None
+            result[key]["harvest_prev_year"] = same_week_prev(h_prev_rows, h_cur["date"]) if h_cur else None
+            if commodity == "CORN":
+                m_cur = latest_planting(fetch_progress(commodity, year, "PCT MATURE"))
+                result[key]["mature_pct"] = m_cur["pct"] if m_cur else None
+            print(f"  Harvested: {result[key]['harvest_pct']}% (same week last year {result[key]['harvest_prev_year']}%)", flush=True)
+        except Exception as e:
+            print(f"  {commodity} harvest fetch failed (non-fatal): {e}", flush=True)
+            for k in ("harvest_pct", "harvest_date", "harvest_prev_year"):
+                result[key].setdefault(k, None)
 
         # Set overall report date from corn
         if key == "corn" and cur:
@@ -233,14 +292,14 @@ def main():
             prev = latest_ge(cond_prev)
 
             h_cur  = latest_planting(fetch_progress("WHEAT", year, prog_unit, class_desc=cls))
-            h_prev = latest_planting(fetch_progress("WHEAT", year1, prog_unit, class_desc=cls))
+            h_prev_rows = fetch_progress("WHEAT", year1, prog_unit, class_desc=cls)
 
             result[key] = {
                 "good_excellent":           cur["good_excellent"] if cur else None,
                 "report_date":              cur["date"] if cur else (h_cur["date"] if h_cur else None),
-                "good_excellent_prev_year": prev["good_excellent"] if prev else None,
+                "good_excellent_prev_year": ge_same_week_prev(cond_prev, cur["date"]) if cur else None,
                 "harvest_pct":              h_cur["pct"] if h_cur else None,
-                "harvest_prev_year":        h_prev["pct"] if h_prev else None,
+                "harvest_prev_year":        same_week_prev(h_prev_rows, h_cur["date"]) if h_cur else None,
             }
             print(f"  G/E: {result[key]['good_excellent']}% (prev yr {result[key]['good_excellent_prev_year']}%) | "
                   f"harvested: {result[key]['harvest_pct']}% (prev yr {result[key]['harvest_prev_year']}%)", flush=True)

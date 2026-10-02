@@ -797,7 +797,7 @@ def watch_form(f, lab, stn):
 CSS_FILE = "atlas-pages.css"
 CSS_V = hashlib.sha1(CSS.encode()).hexdigest()[:8]
 
-GA = ("<script async src=\"https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H\"></script>\n"
+GA = ("<script>/* agsist-ga-guard 2026-10-01: Google Analytics loads only when the browser sends no Global Privacy Control or Do Not Track signal and the off switch on /privacy is not set. dataLayer and gtag always exist, so page code that calls them never throws. */(function(w,d,n){var off=false,v,i,s;w.dataLayer=w.dataLayer||[];if(typeof w.gtag!=='function'){w.gtag=function(){w.dataLayer.push(arguments);};}try{off=w.localStorage.getItem('agsist-ga-off')==='1';}catch(e){}if(n.globalPrivacyControl===true){off=true;}v=[n.doNotTrack,w.doNotTrack,n.msDoNotTrack];for(i=0;i<v.length;i++){if(v[i]==='1'||v[i]==='yes'){off=true;}}w.agsistGaOff=off;w.gtag('set','allow_google_signals',false);w.gtag('set','allow_ad_personalization_signals',false);if(off){return;}s=d.createElement('script');s.async=true;s.src='https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H';(d.head||d.documentElement).appendChild(s);})(window,document,navigator);</script>\n"
       "  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');function gaEvent(n,p){try{gtag('event',n,p||{});}catch(e){}}</script>")
 
 

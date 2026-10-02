@@ -2396,13 +2396,39 @@ def sponsor_cta_urls(sponsor):
         return {}
 
 
+# 2026-10-01 owner disclosure: an insurance sponsor may compete with the
+# owner's own agency, so every surface fed from here (homepage, archive,
+# RSS, the email) says so next to the sponsor's own disclosure.
+OWNER_SPONSOR_NOTE = "AGSIST's founder also owns Farmers First Agri Service LLC in Chetek, WI (crop insurance, agronomy and ag technology services; a licensed crop-insurance agency) and Loke Drone LC (agricultural drone spraying), which may compete with this sponsor. Sponsors never change data, rankings or bid order."
+
+
+OWNER_SPONSOR_RX = "insurance|spray|drone|aerial|agronom|fertili"
+
+
+def _owner_note_text(sp):
+    disc = sp.get("disclosure") or ""
+    if sp.get("is_house_ad"):
+        return disc
+    hay = " ".join(str(sp.get(k) or "") for k in ("advertiser", "headline", "body", "disclosure"))
+    if re.search(OWNER_SPONSOR_RX, hay, re.I) and "Farmers First" not in disc:
+        return (disc + " " + OWNER_SPONSOR_NOTE) if disc else OWNER_SPONSOR_NOTE
+    return disc
+
+
+def _owner_note(d):
+    note = _owner_note_text(d)
+    if note:
+        d["disclosure"] = note
+    return d
+
+
 def build_sponsor_block():
     if SPONSOR_OVERRIDE:
         out = dict(SPONSOR_OVERRIDE)
         out.setdefault("label", "SPONSORED"); out.setdefault("active", True)
         out.setdefault("is_house_ad", False)
         out["cta_urls"] = sponsor_cta_urls(out)
-        return out
+        return _owner_note(out)
     sponsor_path = REPO_ROOT / "data" / "sponsor.json"
     if sponsor_path.exists():
         try:
@@ -2410,7 +2436,7 @@ def build_sponsor_block():
             if data.get("active"):
                 data.setdefault("label", "SPONSORED"); data.setdefault("is_house_ad", False)
                 data["cta_urls"] = sponsor_cta_urls(data)
-                return data
+                return _owner_note(data)
         except Exception as e:
             print(f"  [warn] sponsor.json unreadable: {e}", file=sys.stderr)
     return dict(SPONSOR_HOUSE_AD)
@@ -2568,8 +2594,8 @@ def render_sponsor_block_html(sponsor, surface="archive", slot=None):
         h.append(f'<a class="sa-phone" href="{t}" rel="sponsored"{click}>'
                  f'<span class="sa-phone-k">or call</span> {html_esc(sp.get("phone"))}</a>')
     h.append("</div>")
-    if sp.get("disclosure"):
-        h.append(f'<p class="sa-disc">{html_esc(sp.get("disclosure"))}</p>')
+    if _owner_note_text(sp):
+        h.append(f'<p class="sa-disc">{html_esc(_owner_note_text(sp))}</p>')
     h.append("</aside>")
     return "".join(h)
 
@@ -3013,7 +3039,7 @@ def generate_archive_html(briefing, date_iso, prev_date=None, next_date=None,
 <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
 <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
 <link rel="manifest" href="/manifest.json">
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H"></script>
+<script>/* agsist-ga-guard 2026-10-01: Google Analytics loads only when the browser sends no Global Privacy Control or Do Not Track signal and the off switch on /privacy is not set. dataLayer and gtag always exist, so page code that calls them never throws. */(function(w,d,n){{var off=false,v,i,s;w.dataLayer=w.dataLayer||[];if(typeof w.gtag!=='function'){{w.gtag=function(){{w.dataLayer.push(arguments);}};}}try{{off=w.localStorage.getItem('agsist-ga-off')==='1';}}catch(e){{}}if(n.globalPrivacyControl===true){{off=true;}}v=[n.doNotTrack,w.doNotTrack,n.msDoNotTrack];for(i=0;i<v.length;i++){{if(v[i]==='1'||v[i]==='yes'){{off=true;}}}}w.agsistGaOff=off;w.gtag('set','allow_google_signals',false);w.gtag('set','allow_ad_personalization_signals',false);if(off){{return;}}s=d.createElement('script');s.async=true;s.src='https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H';(d.head||d.documentElement).appendChild(s);}})(window,document,navigator);</script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){{dataLayer.push(arguments);}}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
 <script type="application/ld+json">
 {{

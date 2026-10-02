@@ -30,6 +30,7 @@ from datetime import datetime, timedelta, timezone
 
 IEM = "https://mesonet.agron.iastate.edu/cgi-bin/request/gis/lsr.py"
 OUT_DIR = "data/hail"
+RECENT_PATH = "data/hail/recent.json"   # 2026-10-01 recent path: spelled out so build_feeds.py sees the writer
 YEARS_BACK = 5
 COORD_DP = 2          # ~1 km — plenty for a national heatmap, keeps files small
 TIMEOUT = 240         # a full year of national LSRs is a large response
@@ -288,7 +289,7 @@ def refresh_recent_only():
     layer must not make the 5-year archive claim a freshness it lacks."""
     os.makedirs(OUT_DIR, exist_ok=True)
     recent = reduce_recent(fetch_recent())   # let failures raise → nonzero exit, no commit
-    with open("%s/recent.json" % OUT_DIR, "w") as fh:
+    with open(RECENT_PATH, "w") as fh:
         json.dump({
             "generated": datetime.now(timezone.utc).strftime("%Y-%m-%d"),
             "days": RECENT_DAYS, "count": len(recent), "reports": recent,
@@ -387,7 +388,7 @@ def main():
         pass
     try:
         recent = reduce_recent(fetch_recent())
-        with open("%s/recent.json" % OUT_DIR, "w") as fh:
+        with open(RECENT_PATH, "w") as fh:
             json.dump({
                 "generated": datetime.now(timezone.utc).strftime("%Y-%m-%d"),
                 "days": RECENT_DAYS, "count": len(recent), "reports": recent,
