@@ -1,18 +1,18 @@
 {
- "generated": "2026-10-02T19:23:08Z",
+ "generated": "2026-10-02T19:38:09Z",
  "from": "barchart-raw.json",
  "complete": false,
  "note": "Directory only: who operates a facility and where. No prices, no basis, no symbols, no delivery windows.",
  "counts": {
-  "facilities": 2241,
+  "facilities": 2246,
   "states": 38,
   "with_address": 722,
   "with_coords": 725,
   "with_url": 703,
-  "with_phone": 2174,
+  "with_phone": 2179,
   "saturated_zips": 0,
   "failed_zips": 0,
-  "rows_read": 17274
+  "rows_read": 17314
  },
  "saturated": [],
  "failed": [],
@@ -11336,6 +11336,33 @@
   },
   {
    "facility": "Agri Trails Coop",
+   "branch": "Durham",
+   "city": "Durham",
+   "state": "KS",
+   "zip": "67438",
+   "phone": "620-732-3123",
+   "source": "barchart"
+  },
+  {
+   "facility": "Agri Trails Coop",
+   "branch": "Gypsum",
+   "city": "Gypsum",
+   "state": "KS",
+   "zip": "67448",
+   "phone": "785-536-4260",
+   "source": "barchart"
+  },
+  {
+   "facility": "Agri Trails Coop",
+   "branch": "Herington",
+   "city": "Herington",
+   "state": "KS",
+   "zip": "67449",
+   "phone": "785-258-2286",
+   "source": "barchart"
+  },
+  {
+   "facility": "Agri Trails Coop",
    "branch": "Hope",
    "city": "Hope",
    "state": "KS",
@@ -11361,6 +11388,24 @@
    "facility_type": "Country Elevator",
    "locationId": 30117,
    "elevatorId": 1645,
+   "source": "barchart"
+  },
+  {
+   "facility": "Agri Trails Coop",
+   "branch": "Dillon",
+   "city": "Hope",
+   "state": "KS",
+   "zip": "67451",
+   "phone": "785-366-7228",
+   "source": "barchart"
+  },
+  {
+   "facility": "Agri Trails Coop",
+   "branch": "Lincolnville",
+   "city": "Lincolnville",
+   "state": "KS",
+   "zip": "66858",
+   "phone": "620-924-5228",
    "source": "barchart"
   },
   {
