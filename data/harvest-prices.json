@@ -1,49 +1,59 @@
 {
-  "crop_year": 2026,
-  "updated": "2026-06-08",
-  "source": "CBOT futures settlements averaged per RMA Commodity Exchange Price Provisions",
-  "commodities": [
-    {
-      "label": "Corn",
-      "contract": "Dec '26",
-      "exchange": "CBOT",
-      "projected": {
-        "status": "final",
-        "price": 4.62,
-        "window": "February",
-        "series": [],
-        "days_total": 19
-      },
-      "harvest": {
-        "status": "pending",
-        "price": null,
-        "running_avg": null,
-        "window": "October",
-        "series": [],
-        "days_counted": 0,
-        "days_total": 22
-      }
-    },
-    {
-      "label": "Soybeans",
-      "contract": "Nov '26",
-      "exchange": "CBOT",
-      "projected": {
-        "status": "final",
-        "price": 11.09,
-        "window": "February",
-        "series": [],
-        "days_total": 19
-      },
-      "harvest": {
-        "status": "pending",
-        "price": null,
-        "running_avg": null,
-        "window": "October",
-        "series": [],
-        "days_counted": 0,
-        "days_total": 22
-      }
-    }
-  ]
+ "crop_year": 2026,
+ "updated": "2026-10-01",
+ "source": "CBOT futures settlements averaged per RMA Commodity Exchange Price Provisions",
+ "commodities": [
+  {
+   "label": "Corn",
+   "contract": "Dec '26",
+   "exchange": "CBOT",
+   "projected": {
+    "status": "final",
+    "price": 4.62,
+    "window": "February",
+    "series": [],
+    "days_total": 19
+   },
+   "harvest": {
+    "status": "running",
+    "price": null,
+    "running_avg": 5.0,
+    "window": "October",
+    "series": [
+     {
+      "d": "2026-10-01",
+      "s": 4.995
+     }
+    ],
+    "days_counted": 1,
+    "days_total": 22
+   }
+  },
+  {
+   "label": "Soybeans",
+   "contract": "Nov '26",
+   "exchange": "CBOT",
+   "projected": {
+    "status": "final",
+    "price": 11.09,
+    "window": "February",
+    "series": [],
+    "days_total": 19
+   },
+   "harvest": {
+    "status": "running",
+    "price": null,
+    "running_avg": 12.78,
+    "window": "October",
+    "series": [
+     {
+      "d": "2026-10-01",
+      "s": 12.78
+     }
+    ],
+    "days_counted": 1,
+    "days_total": 22
+   }
+  }
+ ]
 }
