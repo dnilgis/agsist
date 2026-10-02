@@ -1,6 +1,7 @@
 /**
  * AGSIST homepage extras — added 2026-09-30.
- * Four real, wired features that were prototyped as a design-canvas mockup
+ * r7-bids 2026-10-01: carry prefilled from the Dec-Mar corn futures spread.
+ * Three real, wired features that were prototyped as a design-canvas mockup
  * and are now live here, reading real site data instead of illustrative
  * placeholders:
  *   1. Store-or-sell calculator, anchored to the real cash bid the ZIP
@@ -9,11 +10,9 @@
  *   2. "vs. nearby elevators" basis comparison, computed from the same
  *      bid pool bids-homepage.js already fetched — no new request, no
  *      invented county-average number.
- *   3. "Since your last visit" — real this time. This is the live site, not
- *      the sandboxed design-canvas artifact, so localStorage actually
- *      persists between visits. Stores a snapshot of the day's basis
- *      headline (from data/daily.json, already fetched elsewhere on this
- *      page) and diffs it against the next visit's snapshot.
+ *   (3, "since your last visit", removed 2026-10-01: it keyed on
+ *   data/daily.json `basis.headline`, a field the Daily never writes, so it
+ *   refetched the Daily on every load and could never display.)
  *   4. Add-to-home-screen banner, wired to the real `beforeinstallprompt`
  *      event — the actual browser API, not a fake button. manifest.json and
  *      sw.js are already registered site-wide; this only adds the UI.
@@ -56,16 +55,16 @@
       resultEl.textContent = 'Price, storage cost, months, and carry can’t be negative.';
       return;
     }
-    var totalCost = cost * months, net = carry - totalCost;
+    var totalCost = cost * months, net = carry - totalCost, cav = carryCaveat(months);
     if(net > 0.001){
       resultEl.style.color = 'var(--green)';
-      resultEl.textContent = 'Storing pencils out by +$' + net.toFixed(2) + '/bu over selling at $' + price.toFixed(2) + ' now, if your carry estimate holds.';
+      resultEl.textContent = 'Storing pencils out by +$' + net.toFixed(2) + '/bu over selling at $' + price.toFixed(2) + ' now, if your carry estimate holds.' + cav;
     } else if(net < -0.001){
       resultEl.style.color = 'var(--red,#ef4444)';
-      resultEl.textContent = 'Storing costs $' + Math.abs(net).toFixed(2) + '/bu more than selling at $' + price.toFixed(2) + ' now, at these numbers.';
+      resultEl.textContent = 'Storing costs $' + Math.abs(net).toFixed(2) + '/bu more than selling at $' + price.toFixed(2) + ' now, at these numbers.' + cav;
     } else {
       resultEl.style.color = 'var(--text)';
-      resultEl.textContent = 'Breakeven — storing and selling now cost the same at these numbers.';
+      resultEl.textContent = 'Breakeven — storing and selling now cost the same at these numbers.' + cav;
     }
   }
   var calcDebounce = null;
@@ -75,8 +74,72 @@
   }
   ['idx1-calc-price', 'idx1-calc-cost', 'idx1-calc-months', 'idx1-calc-carry'].forEach(function(id){
     var el = $(id);
-    if(el) el.addEventListener('input', calcStoreOrSellDebounced);
+    if(el) el.addEventListener('input', function(){ el.dataset.autofilled = 'false'; calcStoreOrSellDebounced(); });
   });
+
+
+  /* r7-bids 2026-10-01 (7b): THE CARRY BOX STARTS FROM THE ELEVATOR'S OWN
+     BOARD. When the looked-up elevator posts a later delivery for the same
+     crop (bids-homepage.js publishes it as sum.boardCarry), that difference
+     is the carry, labelled with both periods. Only when the board posts no
+     later period does it fall back to the Dec-to-Mar corn futures spread,
+     labelled as futures carry with basis change excluded. Either way the
+     note says which months the carry covers, and the result line says so
+     when "months you would store" differs. Nothing is scaled. */
+  var carryCover = null;   // {months, from, to} of the prefilled carry
+  function carryCaveat(months){
+    var el = $('idx1-calc-carry');
+    if(!carryCover || !el || el.dataset.autofilled !== 'true' || carryCover.months == null || months === carryCover.months) return '';
+    return ' The carry above covers ' + carryCover.from + ' to ' + carryCover.to + ' (' + carryCover.months + ' month' + (carryCover.months === 1 ? '' : 's') + '), not your ' + months + '; it is not scaled.';
+  }
+  function qc(c){ var a = Math.abs(c), w = Math.floor(a + 1e-9), f = Math.round((a - w) * 4); if(f === 4){ w++; f = 0; } return w + (f ? ' ' + ['', '1/4', '1/2', '3/4'][f] : '') + '¢'; }
+  function prefillCarry(sum){
+    var carryEl = $('idx1-calc-carry'), card = $('idx1-store-sell');
+    if(!carryEl || !card || !sum || sum.crop !== 'corn') return;
+    var note = $('idx1-calc-carry-src');
+    if(!note){ note = document.createElement('div'); note.id = 'idx1-calc-carry-src'; note.className = 'idx1-extras-fine';
+      var res = $('idx1-calc-result'); if(res && res.parentNode) res.parentNode.insertBefore(note, res); }
+    function fill(v){
+      if(carryEl.value === '' || carryEl.dataset.autofilled === 'true'){
+        carryEl.value = v; carryEl.dataset.autofilled = 'true';
+      }
+      calcStoreOrSell();
+    }
+    var bc = sum.boardCarry;
+    if(bc && bc.from && bc.to && isFinite(bc.cents)){
+      if(bc.cents <= 0){
+        carryCover = null;
+        note.textContent = 'This elevator’s board pays ' + qc(bc.cents) + ' less for ' + bc.to + ' than ' + bc.from + ': no carry on its own board, so the box is left for your number.';
+        return;
+      }
+      carryCover = { months: bc.months, from: bc.from, to: bc.to };
+      note.textContent = 'Carry from the board at ' + String(sum.where || 'this elevator') + ' (the bid filled above): ' + bc.from + ' $' + (+bc.fromCash).toFixed(2) + ' → ' + bc.to + ' $' + (+bc.toCash).toFixed(2) + ', +' + qc(bc.cents) + ' per bu' + (bc.months != null ? ', covering ' + bc.months + ' month' + (bc.months === 1 ? '' : 's') : '') + '.';
+      fill((bc.cents / 100).toFixed(4).replace(/0+$/, '').replace(/\.$/, ''));
+      return;
+    }
+    var p = window.__agsistPricesP || (window.__agsistPricesP = fetch('/data/prices.json', { cache: 'no-store' })
+      .then(function(r){ return r.ok ? r.json() : null; }).catch(function(){ return null; }));
+    p.then(function(pd){
+      var q = (pd && pd.quotes) || {}, dec = q['corn-dec'];
+      var m = dec && /^ZCZ(\d{2})\./.exec(String(dec.ticker || ''));
+      var my = m ? ('0' + (+m[1] + 1)).slice(-2) : '';
+      var mar = m ? q['corn-mar' + my] : null;
+      if(!dec || dec.close == null || !mar || mar.close == null){
+        carryCover = null;
+        note.textContent = 'Carry: this elevator posts no later corn bid, and the futures spread is not loaded yet. Enter your own.'; return;
+      }
+      var c = mar.close - dec.close, yy = m[1], when = '';
+      try{ var d = new Date(pd.fetched); if(!isNaN(d)) when = d.toLocaleString('en-US', {month:'short', day:'numeric', hour:'numeric', minute:'2-digit', timeZone:'America/Chicago'}) + ' CT'; }catch(e){}
+      if(c <= 0){
+        carryCover = null;
+        note.textContent = 'This elevator posts no later corn bid, and Mar \'' + my + ' corn futures are ' + qc(c) + ' under Dec \'' + yy + ': no futures carry either. Enter your own.';
+        return;
+      }
+      carryCover = { months: 3, from: 'Dec \'' + yy, to: 'Mar \'' + my };
+      note.textContent = 'This elevator posts no later corn bid. Futures carry Dec \'' + yy + ' → Mar \'' + my + ' only, ' + qc(c) + ' per bu' + (when ? ' at ' + when : '') + '; basis gain not included.';
+      fill((c / 100).toFixed(4).replace(/0+$/, '').replace(/\.$/, ''));
+    });
+  }
 
   function onBidsPublished(evt){
     var sum = (evt && evt.detail) || (window.AGSIST_STATE && window.AGSIST_STATE.bids);
@@ -105,12 +168,12 @@
 
     var cmp = $('idx1-search-compare');
     if(cmp){
-      if(sum.avgBasis != null && sum.avgBasisCount >= MIN_COMPARE_N && sum.basis != null){
+      if(sum.avgBasis != null && (sum.avgBasisElevators || 0) >= 3 && sum.basis != null){
         var diff = sum.basis - sum.avgBasis;
         var cents = Math.abs(Math.round(diff * 100));
         var verb = diff > 0.005 ? 'better' : diff < -0.005 ? 'worse' : 'even with';
         var clause = (diff > 0.005 || diff < -0.005) ? (cents + '¢/bu ' + verb + ' than') : verb;
-        cmp.innerHTML = '<strong>This search, any distance:</strong> basis is <strong style="color:' + (diff > 0.005 ? 'var(--green)' : diff < -0.005 ? 'var(--red,#ef4444)' : 'var(--text-dim)') + '">' + clause + '</strong> the average of ' + sum.avgBasisCount + ' other corn bid' + (sum.avgBasisCount === 1 ? '' : 's') + ' found.';
+        cmp.innerHTML = '<strong>Best bid vs. this search:</strong> basis is <strong style="color:' + (diff > 0.005 ? 'var(--green)' : diff < -0.005 ? 'var(--red,#ef4444)' : 'var(--text-dim)') + '">' + clause + '</strong> the average at ' + sum.avgBasisElevators + ' other elevators within 50 mi, same delivery month.';
         cmp.style.display = 'block';
       } else {
         cmp.style.display = 'none';
@@ -118,18 +181,19 @@
     }
     var ccmp = $('idx1-distance-compare');
     if(ccmp){
-      if(sum.nearbyRadiusMiles && sum.avgBasisNearbyCount >= MIN_COMPARE_N && sum.avgBasisNearby != null && sum.basis != null){
+      if(sum.nearbyRadiusMiles && (sum.avgBasisNearbyElevators || 0) >= MIN_COMPARE_N && sum.avgBasisNearby != null && sum.basis != null){
         var cdiff = sum.basis - sum.avgBasisNearby;
         var ccents = Math.abs(Math.round(cdiff * 100));
         var cverb = cdiff > 0.005 ? 'better' : cdiff < -0.005 ? 'worse' : 'even with';
         var cclause = (cdiff > 0.005 || cdiff < -0.005) ? (ccents + '¢/bu ' + cverb + ' than') : cverb;
-        ccmp.innerHTML = '<strong>Within ' + sum.nearbyRadiusMiles + ' mi, straight-line:</strong> basis is <strong style="color:' + (cdiff > 0.005 ? 'var(--green)' : cdiff < -0.005 ? 'var(--red,#ef4444)' : 'var(--text-dim)') + '">' + cclause + '</strong> the average of ' + sum.avgBasisNearbyCount + ' other bid' + (sum.avgBasisNearbyCount === 1 ? '' : 's') + ' in that fixed ring, not road miles.';
+        ccmp.innerHTML = '<strong>Within ' + sum.nearbyRadiusMiles + ' mi, straight-line:</strong> basis is <strong style="color:' + (cdiff > 0.005 ? 'var(--green)' : cdiff < -0.005 ? 'var(--red,#ef4444)' : 'var(--text-dim)') + '">' + cclause + '</strong> the average at ' + sum.avgBasisNearbyElevators + ' other elevators in that fixed ring, not road miles.';
         ccmp.style.display = 'block';
       } else {
         ccmp.style.display = 'none';
       }
     }
     renderBasisChart(sum);
+    prefillCarry(sum);
   }
   window.addEventListener('agsist:bids', onBidsPublished);
   // In case bids already loaded before this script attached its listener.
@@ -163,24 +227,32 @@
 
     fetchSparklines(state).then(function(data){
       if(!data || !data.series){ card.style.display = 'none'; return; }
-      var best = null, bestLen = 0;
+      var best = null, bestLen = 0, bestMon = '', wantMon = '';
+      var MM = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+      var mk = /^(\d{4})-(\d{2})$/.exec(sum.monthKey || '');
+      if(mk) wantMon = MM[+mk[2] - 1] + mk[1].slice(2);
+      var bestMatch = false;
       Object.keys(data.series).forEach(function(key){
         var parts = key.split('|');
         if(parts.length < 6) return;
         var fac = parts[1], city = parts[2], commodity = parts[3];
         if(commodity !== 'corn') return;
         if(normKey(fac) !== wantFac || normKey(city) !== wantCity) return;
-        var pts = data.series[key];
-        if(pts.length > bestLen){ best = pts; bestLen = pts.length; }
+        var pts = data.series[key], match = !!wantMon && parts[5] === wantMon;
+        if((match && !bestMatch) || (match === bestMatch && pts.length > bestLen)){ best = pts; bestLen = pts.length; bestMon = parts[5]; bestMatch = match; }
       });
       if(!best || best.length < 2){ card.style.display = 'none'; return; }
 
       var pts = best.slice(-20); // most recent real change-points only
       var cents = pts.map(function(p){ return p.cents; });
       var lo = Math.min.apply(null, cents), hi = Math.max.apply(null, cents);
+      var rawLo = lo, rawHi = hi;   // printed; lo/hi below may be widened for drawing only
       if(lo === hi){ lo -= 1; hi += 1; }
       var w = 300, h = 70, pad = 4;
-      var xs = pts.map(function(_, i){ return pts.length === 1 ? w / 2 : pad + i * (w - 2 * pad) / (pts.length - 1); });
+      /* x by date, so a three-month gap looks like one. */
+      var tms = pts.map(function(p){ return Date.parse(p.date); });
+      var t0 = tms[0], t1 = tms[tms.length - 1];
+      var xs = tms.map(function(tm, i){ return (pts.length === 1 || !(t1 > t0)) ? pad + i * (w - 2 * pad) / Math.max(1, pts.length - 1) : pad + (tm - t0) * (w - 2 * pad) / (t1 - t0); });
       var ys = cents.map(function(c){ return h - pad - (c - lo) * (h - 2 * pad) / (hi - lo); });
       var zeroY = (lo <= 0 && hi >= 0) ? (h - pad - (0 - lo) * (h - 2 * pad) / (hi - lo)) : null;
       var poly = xs.map(function(x, i){ return x.toFixed(1) + ',' + ys[i].toFixed(1); }).join(' ');
@@ -194,53 +266,15 @@
       svgHtml += '<polyline points="' + poly + '" fill="none" stroke="' + lineColor + '" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>';
       svg.innerHTML = svgHtml;
       svg.setAttribute('role', 'img');
-      svg.setAttribute('aria-label', 'Basis at this elevator ranged from ' + lo + ' to ' + hi + ' cents over the last ' + pts.length + ' logged changes, most recently ' + last + ' cents.');
+      svg.setAttribute('aria-label', 'Basis at this elevator ranged from ' + rawLo + ' to ' + rawHi + ' cents over the last ' + pts.length + ' logged changes, most recently ' + last + ' cents.');
 
       var firstDate = pts[0].date;
-      fine.textContent = pts.length + ' real basis change' + (pts.length === 1 ? '' : 's') + ' logged at this elevator since ' + firstDate + '. Corn only; the delivery month here may not match the month quoted above.';
+      var monTxt = /^[A-Z]{3}\d{2}$/.test(bestMon) ? bestMon.charAt(0) + bestMon.slice(1, 3).toLowerCase() + ' \u2019' + bestMon.slice(3) + ' delivery' : 'one delivery month';
+      fine.textContent = pts.length + ' basis change' + (pts.length === 1 ? '' : 's') + ' logged at this elevator for ' + monTxt + ', ' + firstDate + ' through ' + pts[pts.length - 1].date + ', ' + rawLo + '\u00a2 to ' + rawHi + '\u00a2.'
+        + (bestMatch ? '' : ' Not the month quoted above.');
       card.style.display = 'block';
     });
   }
-
-  // ── 3: since your last visit ────────────────────────────────────────
-  // Real persistence this time (the live site has localStorage; the earlier
-  // design-canvas artifact this was prototyped in does not). Stores just
-  // enough to say something true next time, nothing that looks like an
-  // invented number if the fetch fails.
-  var LAST_VISIT_KEY = 'agsist_last_visit_snapshot_v1';
-  function loadDailyForSnapshot(){
-    fetch('/data/daily.json', { cache: 'no-store' })
-      .then(function(r){ return r.ok ? r.json() : null; })
-      .then(function(data){
-        if(!data) return;
-        var basisHeadline = (data.basis && data.basis.headline) || null;
-        var todayKey = data.date || null;
-        var el = $('idx1-last-visit');
-        var raw = null;
-        try { raw = window.localStorage.getItem(LAST_VISIT_KEY); } catch(e){ /* private mode etc — degrade silently */ }
-        var prev = null;
-        if(raw){ try { prev = JSON.parse(raw); } catch(e){ prev = null; } }
-
-        if(prev && prev.date && todayKey && prev.date !== todayKey && el){
-          var parts = [];
-          if(prev.basisHeadline && basisHeadline && prev.basisHeadline !== basisHeadline){
-            parts.push('basis: ' + basisHeadline);
-          }
-          if(parts.length){
-            el.innerHTML = '<svg class="ic" aria-hidden="true" style="flex:none"><use href="#i-calendar"/></svg> Since your last visit (' + prev.date + '): ' + parts.join(', ') + '.';
-            el.style.display = 'flex';
-          }
-        }
-
-        if(todayKey){
-          try {
-            window.localStorage.setItem(LAST_VISIT_KEY, JSON.stringify({ date: todayKey, basisHeadline: basisHeadline }));
-          } catch(e){ /* storage full/blocked — nothing to show next time, not an error to surface */ }
-        }
-      })
-      .catch(function(){ /* data/daily.json unreachable — recap line just stays hidden */ });
-  }
-  loadDailyForSnapshot();
 
   // ── 4: add-to-home-screen, wired to the real browser install prompt ───
   var DISMISS_KEY = 'agsist_home_prompt_dismissed_v1';

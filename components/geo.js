@@ -1029,6 +1029,8 @@ function rebuildTickerLoop() {
     var c = single.cloneNode(true);
     c.id = 'ticker-items-clone';
     c.setAttribute('aria-hidden', 'true');
+    c.inert = true;
+    Array.prototype.forEach.call(c.querySelectorAll('a'), function(a){ a.tabIndex = -1; });
     track.appendChild(c);
     track.style.animation = 'none';
     track.offsetHeight;

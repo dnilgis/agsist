@@ -1,5 +1,6 @@
 // ═══════════════════════════════════════════════════════════════════
 // bids-homepage.js — Homepage Cash Bids Preview
+// r7-bids 2026-10-01: rows grouped by delivery period, basis contract named, straight-line miles.
 //
 // TWO FEEDS, ONE CARD (2026-09-25). The AGSIST elevator network (dnilgis/bids,
 // read in the browser by components/bids-network.js) is the primary source and
@@ -27,7 +28,7 @@
   // proxy is not called at all, rather than called and ignored.
   var LICENSED_FEED = true;
   var LICENSED_DEADLINE_MS = 6000;
-  var NET_SCRIPT = '/components/bids-network.js?v=1';
+  var NET_SCRIPT = '/components/bids-network.js?v=3';
 
   var MAX_ELEVATORS = 3;
   var MAX_BIDS_PER_COMMODITY = 3;
@@ -105,6 +106,28 @@
     };
   }
 
+  /* 2026-10-01: the futures month a basis is quoted against, read from the
+     symbol the licensed feed sends (ZCZ26 -> Dec). The elevator network
+     rows carry no symbol, so they print no month rather than a guessed one. */
+  var FUT_MON = {F:'Jan',G:'Feb',H:'Mar',J:'Apr',K:'May',M:'Jun',N:'Jul',Q:'Aug',U:'Sep',V:'Oct',X:'Nov',Z:'Dec'};
+  var WHEAT_EXCH = {KE:'KC', ZW:'Chi', MW:'MGEX'};
+  function refMonth(sym){
+    var m = /^([A-Z]{1,3})([FGHJKMNQUVXZ])(\d{2})$/.exec(String(sym || '').trim().toUpperCase());
+    if(!m) return '';
+    var crop = /^Z[CS]$/.test(m[1]) ? (m[1] === 'ZC' ? ' corn' : ' soybeans') : (WHEAT_EXCH[m[1]] ? ' ' + WHEAT_EXCH[m[1]] + ' wheat' : '');
+    return FUT_MON[m[2]] + ' \'' + m[3] + crop;
+  }
+  function ctTime(iso){
+    var d = new Date(iso); if(!iso || isNaN(d)) return '';
+    try{
+      var t = d.toLocaleTimeString('en-US', {hour:'numeric', minute:'2-digit', timeZone:'America/Chicago'});
+      var day = d.toLocaleDateString('en-US', {month:'short', day:'numeric', timeZone:'America/Chicago'});
+      var today = new Date().toLocaleDateString('en-US', {month:'short', day:'numeric', timeZone:'America/Chicago'});
+      return (day === today ? '' : day + ' ') + t + ' CT';
+    }catch(e){ return ''; }
+  }
+  var feedTimes = { network: null, licensed: null };
+
   var COMM_ORDER = ['corn','soybeans','wheat','other'];
   var COMM_NAMES = { corn:'Corn', soybeans:'Soybeans', wheat:'Wheat', other:'Other' };
   var COMM_COLORS = { corn:'var(--gold)', soybeans:'var(--green)', wheat:'#ca8a3c', other:'var(--text-muted)' };
@@ -112,6 +135,7 @@
   // NOT `parseFloat(x) || null`: a FLAT basis is exactly 0 and 0 is falsy, so
   // the strongest basis on a board was published as "unknown".
   function flatNum(v){ var n = parseFloat(v); return isFinite(n) ? n : null; }
+  function licBasis(v){ var n = flatNum(v); if(n == null) return null; var a = Math.abs(n); return a < 1 ? n : a >= 5 ? n / 100 : null; }
 
   // ── Flatten Barchart response (same logic as /cash-bids) ───────
   function flattenBarchartResponse(data){
@@ -131,9 +155,11 @@
             phone: item.phone || '',
             commodity: bid.commodity || bid.commodity_display_name || bid.commodityName || '',
             cashPrice: parseFloat(bid.cashprice || bid.cashPrice) || null,
-            basis: flatNum(bid.basis),
+            basis: licBasis(bid.basis),
             deliveryMonth: bid.deliveryMonth || bid.delivery_month || '',
             deliveryStart: bid.deliveryStart || bid.delivery_start || '',
+            symbol: bid.symbol || item.symbol || '',
+            deliveryEnd: bid.deliveryEnd || bid.delivery_end || '',
             category: classifyCommodity(bid.commodity || bid.commodity_display_name || bid.commodityName || '')
           });
         });
@@ -146,9 +172,11 @@
           phone: item.phone || '',
           commodity: item.commodity || item.commodity_display_name || item.commodityName || '',
           cashPrice: parseFloat(item.cashprice || item.cashPrice) || null,
-          basis: flatNum(item.basis),
+          basis: licBasis(item.basis),
           deliveryMonth: item.deliveryMonth || item.delivery_month || '',
           deliveryStart: item.deliveryStart || item.delivery_start || '',
+          symbol: item.symbol || '',
+          deliveryEnd: item.deliveryEnd || item.delivery_end || '',
           category: classifyCommodity(item.commodity || item.commodity_display_name || item.commodityName || '')
         });
       }
@@ -162,7 +190,7 @@
   function groupByElevator(bids){
     var map = {};
     bids.forEach(function(b){
-      var key = (b.facility||'') + '||' + (b.branch||'') + '||' + (b.city||'');
+      var key = (b.facility||'') + '||' + (b.branch||'') + '||' + (b.city||'') + '||' + (b.source === 'network' ? 'n' : 'l');
       if(!map[key]){
         map[key] = {
           facility: b.facility, branch: b.branch,
@@ -187,70 +215,102 @@
   }
 
   // ── Render one elevator (compact, for homepage card) ────────────
+  /* r7-bids 2026-10-01: rows are grouped by DELIVERY PERIOD inside each
+     elevator ("Oct 2026", then the crops priced for it), so the period is
+     said once and a reader compares crops for the same haul. The distance
+     sits on the town line and says what it is: the elevator network's miles
+     are straight-line (haversine in bids-network.js), not road miles. The
+     licensed feed's distance is its own and is labelled as from the ZIP. */
+  function delLabel(b){ return b.deliveryMonth || b.deliveryStart || 'Spot'; }
   function renderElevatorHTML(elev){
-    var distStr = elev.distance != null ? elev.distance.toFixed(0) + ' mi' : '';
     var cityState = (elev.city||'') + (elev.city && elev.state ? ', ' : '') + (elev.state||'');
+    var distStr = elev.distance != null
+      ? elev.distance.toFixed(0) + ' mi ' + (elev.fromNetwork ? 'straight-line' : 'from your ZIP')
+      : '';
 
-    var html = '<div style="padding:.55rem 0;border-bottom:1px solid var(--border)">';
+    var html = '<div class="bh-elev" style="padding:.55rem 0;border-bottom:1px solid var(--border)">';
 
     // Elevator header
-    html += '<div style="display:flex;align-items:baseline;justify-content:space-between;gap:.4rem;margin-bottom:.3rem">';
-    html += '<div style="min-width:0;overflow:hidden">';
-    html += '<div style="font-size:.82rem;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + escHtml(elev.facility) + '</div>';
-    if(cityState){
-      html += '<div style="font-size:.62rem;color:var(--text-muted)">' + escHtml(cityState)
-        + (elev.fromNetwork ? ' <span style="color:var(--green)">&middot; direct from elevator</span>' : '')
-        + '</div>';
-    }
-    html += '</div>';
-    if(distStr){
-      html += '<span style="font-family:\'JetBrains Mono\',monospace;font-size:.62rem;font-weight:700;color:var(--text-muted);white-space:nowrap;flex-shrink:0">' + distStr + '</span>';
-    }
+    html += '<div style="min-width:0;margin-bottom:.3rem">';
+    html += '<div style="font-size:.95rem;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + escHtml(elev.facility) + '</div>';
+    var sub = [];
+    if(cityState) sub.push(escHtml(cityState));
+    if(distStr) sub.push('<span class="r7-mi" style="font-family:\'JetBrains Mono\',monospace">' + distStr + '</span>');
+    if(elev.fromNetwork) sub.push('<span style="color:var(--green)">direct from elevator</span>');
+    if(sub.length) html += '<div style="font-size:.75rem;color:var(--text-muted)">' + sub.join(' &middot; ') + '</div>';
     html += '</div>';
 
-    // Commodity sections
+    // Every shown row, capped per crop as before, then grouped by period.
+    var rows = [], over = [];
     COMM_ORDER.forEach(function(cat){
-      var catBids = elev.commodities[cat];
-      if(!catBids || catBids.length === 0) return;
-
-      // Sort by delivery date
+      var catBids = (elev.commodities[cat] || []).slice();
+      if(!catBids.length) return;
       catBids.sort(function(a,b){
-        return (a.deliveryStart||a.deliveryMonth||'').localeCompare(b.deliveryStart||b.deliveryMonth||'');
+        return (rowMonthKey(a) || '9999').localeCompare(rowMonthKey(b) || '9999') || delLabel(a).localeCompare(delLabel(b));
       });
+      catBids.slice(0, MAX_BIDS_PER_COMMODITY).forEach(function(b){ rows.push({ b: b, cat: cat }); });
+      if(catBids.length > MAX_BIDS_PER_COMMODITY) over.push((catBids.length - MAX_BIDS_PER_COMMODITY) + ' more ' + COMM_NAMES[cat].toLowerCase());
+    });
+    var groups = [], byLabel = {};
+    rows.forEach(function(r){
+      var lab = delLabel(r.b);
+      if(!byLabel[lab]){ byLabel[lab] = { label: lab, key: rowMonthKey(r.b) || '9999', rows: [] }; groups.push(byLabel[lab]); }
+      byLabel[lab].rows.push(r);
+    });
+    groups.sort(function(a,b){ return a.key.localeCompare(b.key) || a.label.localeCompare(b.label); });
 
-      var shown = catBids.slice(0, MAX_BIDS_PER_COMMODITY);
-      var overflow = catBids.length - shown.length;
-
-      // Commodity label
-      html += '<div style="display:flex;align-items:center;gap:.3rem;margin:.2rem 0 .1rem;font-size:.58rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:' + COMM_COLORS[cat] + '">'
-        + COMM_NAMES[cat]
-        + '</div>';
-
-      // Bid rows
-      shown.forEach(function(bid){
+    groups.forEach(function(g){
+      html += '<div class="r7-per" style="font-family:\'JetBrains Mono\',monospace;font-size:.75rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted);margin:.45rem 0 .1rem">' + escHtml(g.label) + '</div>';
+      g.rows.sort(function(a,b){ return COMM_ORDER.indexOf(a.cat) - COMM_ORDER.indexOf(b.cat); });
+      g.rows.forEach(function(r){
+        var bid = r.b, cat = r.cat;
         var perTon = notPerBushel(bid);
         var pp = perTon ? null : ppu(bid.cashPrice);
-        var cashStr = pp != null ? '$' + pp.toFixed(2) : '\u2014';
-        var basis = perTon ? { str:'\u2014', cls:'muted' } : formatBasis(bid.basis);
-        var del = bid.deliveryMonth || bid.deliveryStart || 'Spot';
+        var cashStr = pp != null ? '$' + pp.toFixed(2) : '—';
+        var basis = perTon ? { str:'—', cls:'muted' } : formatBasis(bid.basis);
         var grade = String(bid.commodity || '').trim();
-        var gradeTxt = grade + (perTon ? (grade ? ' \u00b7 ' : '') + 'per ton, not per bushel' : '');
-        var bColor = basis.cls === 'pos' ? 'var(--green)' : basis.cls === 'neg' ? 'var(--red,#ef4444)' : 'var(--text-muted)';
+        var special = isSpecialGrade(bid);
+        var sameAsCrop = grade.toLowerCase() === String(COMM_NAMES[cat] || '').toLowerCase() || grade.toLowerCase() === cat;
+        var cropTxt = (cat === 'other' && grade) ? grade : COMM_NAMES[cat];
+        var gradeTxt = cat === 'other'
+          ? (perTon ? 'per ton, not per bushel' : special ? 'special grade' : '')
+          : (sameAsCrop && !perTon && !special) ? '' : grade
+            + (perTon ? (grade ? ' · ' : '') + 'per ton, not per bushel' : '')
+            + (special && !perTon ? (grade ? ' · ' : '') + 'special grade' : '');
+        /* A special grade's basis is not the futures grade's basis: no red or green on it. */
+        var bColor = special ? 'var(--text-muted)' : basis.cls === 'pos' ? 'var(--green)' : basis.cls === 'neg' ? 'var(--red,#ef4444)' : 'var(--text-muted)';
+        /* The contract the basis is against: named by the licensed feed's
+           symbol when it sends one, otherwise checked against the page's
+           own futures file by fillRefs() below. Never guessed. */
+        var refAttr = '', refTxt = '';
+        if(!perTon && !special && basis.str !== '—'){
+          var rm = refMonth(bid.symbol);
+          if(rm) refTxt = 'basis vs ' + rm;
+          else if(pp != null && bid.basis != null && REF_KEY[cat]){
+            var ek = refEndKey(bid, cat);
+            if(ek) refAttr = ' data-ref-crop="' + cat + '" data-ref-end="' + ek + '" data-ref-imp="' + (pp - basisCents(bid.basis) / 100).toFixed(4) + '"' + (bid.checkedAt ? ' data-ref-read="' + escHtml(String(bid.checkedAt)) + '"' : '');
+          }
+        }
 
-        html += '<div style="display:grid;grid-template-columns:1fr auto auto;gap:.1rem .45rem;align-items:baseline;padding:.1rem .15rem">';
-        html += '<span style="font-size:.7rem;color:var(--text-dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + escHtml(del) + '</span>';
-        html += '<span style="font-family:\'JetBrains Mono\',monospace;font-size:.82rem;font-weight:700;color:var(--text);text-align:right;white-space:nowrap">' + cashStr + '</span>';
-        html += '<span style="font-family:\'JetBrains Mono\',monospace;font-size:.68rem;font-weight:700;color:' + bColor + ';text-align:right;white-space:nowrap;min-width:40px">' + basis.str + '</span>';
+        html += '<div style="display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:.1rem .6rem;align-items:baseline;padding:.15rem 0">';
+        html += '<span style="min-width:0"><span style="display:block;font-size:.85rem;color:var(--text-dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + escHtml(cropTxt) + '</span>'
+          + '<span class="r7-ref"' + refAttr + ' style="display:block;font-size:.75rem;color:var(--text-muted)">' + escHtml(refTxt) + '</span></span>';
+        html += '<span style="font-family:\'JetBrains Mono\',monospace;font-size:1.05rem;font-weight:700;color:var(--text);text-align:right;white-space:nowrap">' + cashStr + '</span>';
+        html += '<span style="font-family:\'JetBrains Mono\',monospace;font-size:.85rem;font-weight:700;color:' + bColor + ';text-align:right;white-space:nowrap;min-width:48px">' + basis.str + '</span>';
         if(gradeTxt){
-          html += '<span style="grid-column:1/-1;font-size:.62rem;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + escHtml(gradeTxt) + '</span>';
+          html += '<span style="grid-column:1/-1;font-size:.75rem;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + escHtml(gradeTxt) + '</span>';
+        }
+        var bc = perTon || special ? null : boardCarry(bid);
+        if(bc){
+          html += '<span class="r7-carry" style="grid-column:1/-1;font-size:.75rem;color:var(--text-muted)">Board carry ' + escHtml(bc.from) + ' \u2192 ' + escHtml(bc.to) + ': <span style="font-family:\'JetBrains Mono\',monospace;color:var(--text-dim)">' + bc.txt + '</span> (this elevator\u2019s board)</span>';
         }
         html += '</div>';
       });
-
-      if(overflow > 0){
-        html += '<div style="font-size:.6rem;color:var(--text-muted);padding:.02rem .15rem">+' + overflow + ' more</div>';
-      }
     });
+
+    if(over.length){
+      html += '<div style="font-size:.75rem;color:var(--text-muted);padding:.1rem 0">+' + escHtml(over.join(', ')) + '</div>';
+    }
 
     // Watch this elevator. Scoped to corn -- the page's headline commodity --
     // and only offered when this elevator actually has a real, priced corn
@@ -260,12 +320,106 @@
       var wid = widFor(elev.state, elev.facility, elev.city, 'corn');
       var label = escHtml(elev.facility + (cityState ? ', ' + cityState : '') + ' — corn');
       html += '<div class="watch-elevator-wrap" data-wid="' + wid + '" data-label="' + label + '" style="margin-top:.35rem">'
-        + '<button type="button" class="watch-elevator-btn" style="background:none;border:none;padding:0;font-size:.66rem;color:var(--text-muted);text-decoration:underline;cursor:pointer;min-height:24px">Watch this elevator — free</button>'
+        + '<button type="button" class="watch-elevator-btn" style="background:none;border:none;padding:0;font-size:.75rem;color:var(--text-muted);text-decoration:underline;cursor:pointer;min-height:44px">Watch this elevator — free</button>'
         + '</div>';
     }
 
     html += '</div>';
     return html;
+  }
+
+  /* r7-bids 2026-10-01: THE FUTURES MONTH A NETWORK BASIS IS QUOTED AGAINST.
+     The elevator boards do not name it. The month the trade prices a
+     delivery against is the first listed contract month on or after the end
+     of the delivery window (corn Mar May Jul Sep Dec; soybeans Jan Mar May
+     Jul Aug Sep Nov; Chicago wheat Mar May Jul Sep Dec). That month is
+     printed only when the board's own cash minus its own basis lands within
+     REF_TOL of that contract in data/prices.json. A Kansas HRW board quoted
+     off Kansas City fails the Chicago check and prints nothing, which is
+     right: the page has no dated KC contract to name. */
+  var REF_CYCLE = { corn:[3,5,7,9,12], soybeans:[1,3,5,7,8,9,11], wheat:[3,5,7,9,12] };
+  var REF_KEY = { corn:'corn', soybeans:'beans', wheat:'wheat' };
+  var REF_TOL = 0.08;
+  var MON_LC = ['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'];
+  function refEndKey(b, cat){
+    var p = String(b.deliveryStart || '');
+    var m = /^(\d{4})-(\d{2})(?:\/(\d{4})-(\d{2}))?/.exec(p);
+    if(m) return m[3] ? m[3] + '-' + m[4] : m[1] + '-' + m[2];
+    var nc = /^newcrop-(\d{4})$/.exec(p);
+    if(nc) return nc[1] + (cat === 'wheat' ? '-07' : '-10');
+    return rowMonthKey(b) || '';
+  }
+  function refCandidate(cat, endKey){
+    var m = /^(\d{4})-(\d{2})$/.exec(endKey || ''); if(!m || !REF_CYCLE[cat]) return null;
+    var y = +m[1], mo = +m[2], cyc = REF_CYCLE[cat], pick = null;
+    for(var i = 0; i < cyc.length; i++){ if(cyc[i] >= mo){ pick = cyc[i]; break; } }
+    if(pick == null){ pick = cyc[0]; y += 1; }
+    var yy = String(y).slice(-2);
+    return { key: REF_KEY[cat] + '-' + MON_LC[pick - 1] + yy, label: MON[pick - 1] + ' \'' + yy + ' ' + (cat === 'soybeans' ? 'soybeans' : cat) };
+  }
+  /* r7-bids 7b: THE ELEVATOR'S OWN CARRY. merged-index.json carries, per
+     place and crop, `now` (nearest open delivery) and `best` (its top cash
+     across every period it posts). When `best` is a LATER period at the same
+     board, the difference is the carry that elevator is paying today, in its
+     own numbers. Earlier or same-period `best` says nothing about carry and
+     is not used. */
+  function periodStart(p){ var m = /^(\d{4})-(\d{2})/.exec(String(p || '')); return m ? m[1] + '-' + m[2] : ''; }
+  function periodEnd(p){ var m = /^(\d{4})-(\d{2})(?:\/(\d{4})-(\d{2}))?/.exec(String(p || '')); return m ? (m[3] ? m[3] + '-' + m[4] : m[1] + '-' + m[2]) : ''; }
+  function shortMon(k){ var m = /^(\d{4})-(\d{2})$/.exec(k || ''); return m ? MON[+m[2] - 1] + ' \'' + m[1].slice(2) : ''; }
+  function monthsApart(a, b){ var x = /^(\d{4})-(\d{2})$/.exec(a), y = /^(\d{4})-(\d{2})$/.exec(b); return (x && y) ? (+y[1] - +x[1]) * 12 + (+y[2] - +x[2]) : null; }
+  function quarterCents(c){ var a = Math.abs(c), w = Math.floor(a + 1e-9), f = Math.round((a - w) * 4); if(f === 4){ w++; f = 0; } return w + (f ? ' ' + ['', '1/4', '1/2', '3/4'][f] : ''); }
+  function boardCarry(b){
+    if(b.source !== 'network' || b.bestCash == null || b.cashPrice == null) return null;
+    var s0 = periodStart(b.deliveryStart), e0 = periodEnd(b.deliveryStart), s1 = periodStart(b.bestPeriod);
+    if(!s0 || !s1 || s1 <= e0) return null;
+    /* A later period in the NEXT crop year (wheat from June, corn and
+       soybeans from September) is new crop, not storage carry. */
+    var y0 = +s0.slice(0, 4), m0 = +s0.slice(5, 7), ncm = b.category === 'wheat' ? 6 : 9;
+    if(b.category !== 'corn' && b.category !== 'soybeans' && b.category !== 'wheat') return null;
+    if(s1 >= (m0 < ncm ? y0 : y0 + 1) + '-' + (ncm < 10 ? '0' : '') + ncm) return null;
+    var c = (b.bestCash - b.cashPrice) * 100;
+    return { from: shortMon(s0), to: shortMon(s1), fromKey: s0, toKey: s1, months: monthsApart(s0, s1),
+             cents: c, fromCash: b.cashPrice, toCash: b.bestCash,
+             txt: Math.abs(c) < 0.125 ? 'even' : (c > 0 ? '+' : '−') + quarterCents(c) + '¢' };
+  }
+  function pricesOnce(){
+    if(!window.__agsistPricesP){
+      window.__agsistPricesP = fetch('/data/prices.json', { cache: 'no-store' })
+        .then(function(r){ return r.ok ? r.json() : null; }).catch(function(){ return null; });
+    }
+    return window.__agsistPricesP;
+  }
+  function fillRefs(area){
+    pricesOnce().then(function(pd){
+      var q = (pd && pd.quotes) || {}, n = 0, used = {}, oldest = '';
+      var els = area.querySelectorAll('.r7-ref[data-ref-crop]');
+      for(var i = 0; i < els.length; i++){
+        var el = els[i], crop = el.getAttribute('data-ref-crop'), cand = refCandidate(crop, el.getAttribute('data-ref-end'));
+        var imp = parseFloat(el.getAttribute('data-ref-imp'));
+        var fq = cand && q[cand.key];
+        if(!fq || fq.close == null || !isFinite(imp)) continue;
+        /* 7b: the conventional month must also be the NEAREST listed
+           contract to cash minus basis, and within 8 cents. Dec and Mar
+           corn sit 14 1/4 cents apart; 15 cents could not tell them apart. */
+        var best = null, bestD = Infinity, re = new RegExp('^' + REF_KEY[crop] + '-[a-z]{3}\\d{2}$');
+        Object.keys(q).forEach(function(k){ if(!re.test(k) || !q[k] || q[k].close == null) return; var d = Math.abs(q[k].close / 100 - imp); if(d < bestD){ bestD = d; best = k; } });
+        if(best !== cand.key || bestD > REF_TOL) continue;
+        el.textContent = 'basis vs ' + cand.label;
+        used[cand.label] = fq.close / 100;
+        var rdt = el.getAttribute('data-ref-read') || ''; if(rdt && (!oldest || rdt < oldest)) oldest = rdt;
+        n++;
+      }
+      var note = area.querySelector('.r7-ref-note');
+      if(note && n){
+        /* 7b: the boards and the futures file are read at different times;
+           say both, with the futures level the page actually has. */
+        var fut = Object.keys(used).map(function(l){ return l + ' $' + used[l].toFixed(2); }).join(', ');
+        var ft = ctTime(pd && pd.fetched), bt = ctTime(oldest);
+        note.textContent = 'A basis month is shown only where the board\u2019s cash minus its basis is nearest that futures contract on this page, within 8\u00a2.'
+          + (ft ? ' Futures on this page: ' + fut + ' at ' + ft + (bt ? '; the boards were read ' + bt + ', so cash minus basis will not equal those prices exactly.' : '.') : '');
+        note.hidden = false;
+      }
+    });
   }
 
   // ── Distance between two real points, in miles ──────────────────────────
@@ -335,10 +489,10 @@
          the exact same qualifying-bid list the headline number above was
          picked from. Left null/0 when there is nothing to average, which
          the renderer must treat as "don't show this line", never as $0. */
-      var basisVals = [];
+      var basisVals = [], basisElev = {};
       for(var bi = 0; bi < pool.length; bi++){
-        if(pool[bi] === best) continue;
-        if(pool[bi].basis != null) basisVals.push(pool[bi].basis);
+        if(pool[bi] === best || rowKey(pool[bi]) === rowKey(best)) continue;
+        if(pool[bi].basis != null){ basisVals.push(basisCents(pool[bi].basis) / 100); basisElev[rowKey(pool[bi])] = 1; }
       }
       var avgBasis = null;
       if(basisVals.length){
@@ -359,18 +513,19 @@
          this used to run after the dispatch and silently never reached the
          page; caught by actually rendering the page, not by the event
          payload alone. */
-      var nearbyRadiusMiles, avgBasisNearby, avgBasisNearbyCount;
+      var nearbyRadiusMiles, avgBasisNearby, avgBasisNearbyCount, avgBasisNearbyElevators;
       if(typeof best.lat === 'number' && typeof best.lon === 'number'){
-        var nearVals = [];
+        var nearVals = [], nearElev = {};
         for(var ni = 0; ni < pool.length; ni++){
           var np = pool[ni];
-          if(np === best) continue;
+          if(np === best || rowKey(np) === rowKey(best)) continue;
           if(typeof np.lat !== 'number' || typeof np.lon !== 'number' || np.basis == null) continue;
-          if(milesBetween(best.lat, best.lon, np.lat, np.lon) <= NEARBY_RADIUS_MI) nearVals.push(np.basis);
+          if(milesBetween(best.lat, best.lon, np.lat, np.lon) <= NEARBY_RADIUS_MI){ nearVals.push(basisCents(np.basis) / 100); nearElev[rowKey(np)] = 1; }
         }
         nearbyRadiusMiles = NEARBY_RADIUS_MI;
         avgBasisNearby = nearVals.length ? (nearVals.reduce(function(a, b){ return a + b; }, 0) / nearVals.length) : null;
         avgBasisNearbyCount = nearVals.length;
+        avgBasisNearbyElevators = Object.keys(nearElev).length;
       }
 
       var sum = {
@@ -378,16 +533,20 @@
         zip: zip,
         crop: 'corn',
         cash: best.cashPrice,
-        basis: (best.basis == null ? null : best.basis),
+        basis: (best.basis == null ? null : basisCents(best.basis) / 100),
+        monthKey: bestMonthKey,
         where: (best.facility || '') + (best.branch ? ' \u00b7 ' + best.branch : ''),
         city: (best.city || '') + (best.state ? ', ' + best.state : ''),
         miles: (best.distance == null ? null : best.distance),
         avgBasis: avgBasis,
         avgBasisCount: basisVals.length,
+        avgBasisElevators: Object.keys(basisElev).length,
+        avgBasisNearbyElevators: avgBasisNearbyElevators,
         nearbyRadiusMiles: nearbyRadiusMiles,
         avgBasisNearby: avgBasisNearby,
         avgBasisNearbyCount: avgBasisNearbyCount,
         elevators: elevators.length,
+        boardCarry: boardCarry(best),   // r7-bids 7b
         ts: Date.now()
       };
       window.AGSIST_STATE = window.AGSIST_STATE || {};
@@ -440,10 +599,15 @@
   // "2026-10" -> "Oct 2026". The board's own text ("Sept 26 Corn", "09/01/2026")
   // reads as a day, so the label is built from the period, not the board.
   function periodLabel(p){
-    var m = /^(\d{4})-(\d{2})/.exec(p || '');
-    return m && MON[+m[2] - 1] ? MON[+m[2] - 1] + ' ' + m[1] : '';
+    var m = /^(\d{4})-(\d{2})(?:\/(\d{4})-(\d{2}))?/.exec(p || '');
+    if(!m || !MON[+m[2] - 1]) return '';
+    /* A window: \"Aug\u2013Nov 2026\", so an open Aug-Nov bid does not read as August. */
+    if(m[3] && (m[3] !== m[1] || m[4] !== m[2]) && MON[+m[4] - 1])
+      return MON[+m[2] - 1] + (m[3] === m[1] ? '' : ' ' + m[1]) + '\u2013' + MON[+m[4] - 1] + ' ' + m[3];
+    return MON[+m[2] - 1] + ' ' + m[1];
   }
-  function thisMonth(){ var d = new Date(); return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2); }
+  function ctToday(){ try{ return new Date().toLocaleDateString('en-CA', {timeZone:'America/Chicago'}); }catch(e){ return new Date().toISOString().slice(0, 10); } }
+  function thisMonth(){ return ctToday().slice(0, 7); }
 
   // Each feed resolves to {rows, ok}. ok is false when the feed could not be
   // read at all; an empty answer from a feed that answered is ok.
@@ -457,9 +621,11 @@
         }
         var now = thisMonth();
         var rows = [];
+        feedTimes.network = snap.fetched || null;
         snap.bids.forEach(function(r){
           // A delivery window that has closed is not a bid.
-          if(/^\d{4}-\d{2}/.test(r.period || '') && r.period.slice(0, 7) < now) return;
+          var pEnd = String(r.period || '').split('/').pop();
+          if(/^\d{4}-\d{2}/.test(pEnd) && pEnd.slice(0, 7) < now) return;
           var cat = notPerBushel(r) ? 'other' : (/^(corn|soybeans|wheat)$/.test(r.crop || '') ? r.crop : classifyCommodity(r.commodity));
           rows.push({
             facility: r.facility || '', branch: r.branch || '',
@@ -467,14 +633,17 @@
             distance: r.distance == null ? null : r.distance,
             phone: r.phone || '', commodity: r.commodity || '',
             cashPrice: r.cashPrice == null ? null : r.cashPrice,
-            basis: r.basis == null ? null : r.basis,
+            // The network says its basis in cents; carry that, no unit guess.
+            basis: r.basisCents != null && isFinite(r.basisCents) ? r.basisCents / 100 : (r.basis == null ? null : r.basis),
             deliveryMonth: periodLabel(r.period) || r.delivery || '',
+            checkedAt: r.checkedAt || null,
             deliveryStart: r.period || '',
             category: cat, source: 'network', currency: r.currency || '',
             // Real coordinates, not a geocode -- bids-network.js already carries
             // each elevator's own lat/lon (it needs them to compute distance).
             // The licensed feed never gives us coordinates, so Barchart rows
             // leave these null and are simply left out of the nearby average.
+            bestCash: r.bestCash == null ? null : r.bestCash, bestPeriod: r.bestPeriod || '',   // r7-bids 7b: the board's own later period
             lat: typeof r.lat === 'number' ? r.lat : null,
             lon: typeof r.lon === 'number' ? r.lon : null
           });
@@ -489,7 +658,10 @@
     var url = PROXY_URL + '?zipCode=' + encodeURIComponent(zip) + '&maxDistance=50&getAllBids=1';
     var live = fetch(url)
       .then(function(r){ return r.ok ? r.json() : Promise.reject('HTTP ' + r.status); })
-      .then(function(data){ return {rows: flattenBarchartResponse(data), ok: true}; })
+      .then(function(data){ feedTimes.licensed = new Date().toISOString(); var today = ctToday();
+        /* A delivery window that ended before today is not a bid (Sep 26 corn on Oct 1). */
+        var rows = flattenBarchartResponse(data).filter(function(b){ var e = String(b.deliveryEnd || '').slice(0, 10); return !(/^\d{4}-\d{2}-\d{2}$/.test(e) && e < today); });
+        return {rows: rows, ok: true}; })
       .catch(function(err){ console.warn('[AGSIST] licensed bid feed:', err); return {rows: [], ok: false}; });
     return Promise.race([live, new Promise(function(res){ setTimeout(function(){ res({rows: [], ok: false}); }, LICENSED_DEADLINE_MS); })]);
   }
@@ -500,8 +672,12 @@
     var mm = /^([A-Za-z]{3})[A-Za-z]*\s*'?(\d{2}|\d{4})$/.exec(String(r.deliveryMonth || '').trim());
     var i = mm ? MON.map(function(x){ return x.toLowerCase(); }).indexOf(mm[1].toLowerCase()) : -1;
     if(i >= 0) return (mm[2].length === 2 ? '20' + mm[2] : mm[2]) + '-' + ('0' + (i + 1)).slice(-2);
-    var m = /^(\d{4})-(\d{2})/.exec(String(r.deliveryStart || ''));
-    return m ? m[1] + '-' + m[2] : '';
+    var m = /^(\d{4})-(\d{2})(?:\/(\d{4})-(\d{2}))?/.exec(String(r.deliveryStart || ''));
+    if(!m) return '';
+    var st = m[1] + '-' + m[2], nw = thisMonth();
+    /* An open window counts as this month, not the month it opened. */
+    if(m[3] && st < nw && (m[3] + '-' + m[4]) >= nw) return nw;
+    return st;
   }
   // The same elevator under a longer name ("ADM" and "ADM Grain" at Mankato):
   // same town, state, crop, delivery month, one whole normalised name a prefix
@@ -571,6 +747,9 @@
     // Update geo bar
     if(geoTxt){
       geoTxt.textContent = label ? label : ('ZIP ' + zip);
+      /* r7-bids 7b: a ZIP is set, so the button changes it. */
+      var zb = document.getElementById('bids-enter-zip-btn');
+      if(zb){ zb.textContent = 'Change ZIP'; zb.setAttribute('aria-label', 'Change the ZIP code for nearby cash bids'); }
     }
 
     // Show loading skeleton
@@ -599,14 +778,31 @@
         var totalElevators = elevators.length;
 
         // Column labels
-        // FIX: .65rem font-size for readability (was .5rem — too small)
-        var html = '<div style="display:grid;grid-template-columns:1fr auto auto;gap:.1rem .45rem;padding:0 .15rem .15rem;'
-          + 'font-family:\'JetBrains Mono\',monospace;font-size:.65rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);opacity:.75">'
-          + '<span>Delivery</span><span style="text-align:right">Cash</span><span style="text-align:right">Basis</span></div>';
+        // 2026-10-01: column labels at .75rem; the rows below are what a
+        // farmer reads in a truck (cash 1.05rem, basis and month .85rem).
+        var html = '<div style="display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:.1rem .6rem;padding:0 0 .2rem;'
+          + 'font-family:\'JetBrains Mono\',monospace;font-size:.75rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted)">'
+          + '<span>Crop</span><span style="text-align:right">Cash</span><span style="text-align:right">Basis</span></div>';
 
         top.forEach(function(elev){
           html += renderElevatorHTML(elev);
         });
+
+        // When these numbers were read. Only feeds that put a row on the card.
+        var anyNet = top.some(function(e){ return e.fromNetwork; });
+        var anyLic = top.some(function(e){ return !e.fromNetwork; });
+        var when = [];
+        /* Each network board carries the time it was last read (checkedAt).
+           The file's build time is not that, so it is not printed here. */
+        var oldest = null;
+        top.forEach(function(e){ if(!e.fromNetwork) return; COMM_ORDER.forEach(function(c){ (e.commodities[c] || []).forEach(function(b){ if(b.checkedAt && (!oldest || b.checkedAt < oldest)) oldest = b.checkedAt; }); }); });
+        if(anyNet && ctTime(oldest)) when.push('Elevator boards read ' + ctTime(oldest) + (top.filter(function(e){ return e.fromNetwork; }).length > 1 ? ' or later' : ''));
+        if(anyLic && ctTime(feedTimes.licensed)) when.push((when.length ? 'other quotes' : 'quotes') + ' read ' + ctTime(feedTimes.licensed));
+        if(when.length){
+          var w = when.join(' \u00b7 ');
+          html += '<div class="r7-ref-note" hidden>A basis month is shown only where the board\u2019s cash minus its basis matches that futures contract on this page, within 15\u00a2.</div>';
+          html += '<div class="bids-read-time" style="font-family:\'JetBrains Mono\',monospace;font-size:.75rem;color:var(--text-muted);padding:.45rem 0 0">' + escHtml(w.charAt(0).toUpperCase() + w.slice(1)) + '</div>';
+        }
 
         // Footer link
         var extra = totalElevators - MAX_ELEVATORS;
@@ -625,15 +821,16 @@
         // yet, fail open rather than block a real feature on that).
         var alreadySignedUp = (typeof window.isSignedUp === 'function') && window.isSignedUp();
         if(!alreadySignedUp){
-          html += '<div style="margin-top:.5rem;padding:.6rem .7rem;background:var(--surface2);border:1px solid var(--border);border-radius:6px;text-align:center">'
+          html += '<div style="margin-top:.5rem;padding:.5rem 0 0;border-top:1px solid var(--border);text-align:center">'
             + '<a href="#signup-compact" id="bids-cta-link" style="color:var(--gold);font-weight:600;font-size:.82rem;text-decoration:none">'
             /* 2026-10-01: this said "Get <ZIP> prices in your inbox". The
                signup it opens posts {email, source} -- no ZIP -- and the
                Daily is national. Promise what the form delivers. */
-            + 'Get the AGSIST Daily in your inbox every morning →</a></div>';
+            + 'Get the AGSIST Daily in your inbox every weekday →</a></div>';
         }
 
         area.innerHTML = html;
+        fillRefs(area);
 
         if(!alreadySignedUp){
           var ctaLink = document.getElementById('bids-cta-link');
@@ -643,6 +840,7 @@
               var su = document.getElementById('signup-compact');
               if(!su) return;
               su.style.display = 'flex';
+              su.classList.add('is-asked');
               su.scrollIntoView({behavior:'smooth', block:'center'});
               var em = document.getElementById('compact-email');
               if(em) setTimeout(function(){ em.focus(); }, 400);

@@ -1,4 +1,5 @@
 /* bids-network.js — read the live elevator scrape, in the browser.
+ * r7-bids 2026-10-01: rows also carry the board's own later-period bid (best).
  *
  * WHY THIS EXISTS
  *
@@ -211,6 +212,13 @@
       crop: crop,
       cashPrice: n.cash, basis: n.basis,
       basisCents: n.basisCents,
+      /* r7-bids: the same board's top bid across its posted periods, and
+         which period. The card uses it only when that period is LATER
+         than this row's: the elevator's own carry, in its own numbers. */
+      bestCash: (p.best && p.best[crop] && p.best[crop].cash != null) ? p.best[crop].cash : null,
+      bestPeriod: (p.best && p.best[crop] && p.best[crop].period) || '',
+      /* When this elevator's own board was last read. */
+      checkedAt: p.checkedAt || p.pricedAt || null,
       delivery: n.delivery || '', period: n.period || '',
       distance: dist == null ? null : Math.round(dist * 10) / 10,
       source: 'network', via: 'scrape'

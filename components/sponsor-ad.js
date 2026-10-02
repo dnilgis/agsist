@@ -99,9 +99,23 @@
     }
     h += '</div>';
 
-    if (sp.disclosure) h += '<p class="sa-disc">' + esc(sp.disclosure) + '</p>';
+    var disc = ownerNote(sp);
+    if (disc) h += '<p class="sa-disc">' + esc(disc) + '</p>';
     h += '</aside>';
     return h;
+  }
+
+  /* 2026-10-01 owner disclosure: an insurance sponsor may compete with the
+     owner's own agency. Said next to the sponsor's disclosure, every time.
+     generate_daily.build_sponsor_block adds the same sentence upstream; this
+     skips it when it is already there. */
+  var OWNER_NOTE = "AGSIST's founder also owns Farmers First Agri Service LLC in Chetek, WI (crop insurance, agronomy and ag technology services; a licensed crop-insurance agency) and Loke Drone LC (agricultural drone spraying), which may compete with this sponsor. Sponsors never change data, rankings or bid order.";
+  function ownerNote(sp) {
+    var d = sp.disclosure || '';
+    if (sp.is_house_ad) return d;
+    var hay = [sp.advertiser, sp.headline, sp.body, d].join(' ');
+    if (/insurance|spray|drone|aerial|agronom|fertili/i.test(hay) && d.indexOf('Farmers First') < 0) return d ? d + ' ' + OWNER_NOTE : OWNER_NOTE;
+    return d;
   }
 
   var api = { render: render, esc: esc };
