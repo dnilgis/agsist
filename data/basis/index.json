@@ -39,9 +39,9 @@
    "kb":2.1
   },
   "IA":{
-   "rows":11622,
-   "facilities":737,
-   "kb":510.8
+   "rows":11633,
+   "facilities":738,
+   "kb":511.3
   },
   "ID":{
    "rows":70,
@@ -79,9 +79,9 @@
    "kb":30.5
   },
   "MN":{
-   "rows":6416,
-   "facilities":323,
-   "kb":275.5
+   "rows":6422,
+   "facilities":324,
+   "kb":275.8
   },
   "MO":{
    "rows":1138,
@@ -104,9 +104,9 @@
    "kb":113.8
   },
   "NE":{
-   "rows":6177,
-   "facilities":302,
-   "kb":270.6
+   "rows":6298,
+   "facilities":324,
+   "kb":276.4
   },
   "NY":{
    "rows":2,
