@@ -1,18 +1,18 @@
 {
- "generated": "2026-10-02T19:53:05Z",
+ "generated": "2026-10-02T20:08:42Z",
  "from": "barchart-raw.json",
  "complete": false,
  "note": "Directory only: who operates a facility and where. No prices, no basis, no symbols, no delivery windows.",
  "counts": {
-  "facilities": 2248,
+  "facilities": 2249,
   "states": 38,
   "with_address": 722,
   "with_coords": 725,
   "with_url": 703,
-  "with_phone": 2181,
+  "with_phone": 2182,
   "saturated_zips": 0,
   "failed_zips": 0,
-  "rows_read": 17327
+  "rows_read": 16984
  },
  "saturated": [],
  "failed": [],
@@ -11424,6 +11424,15 @@
    "state": "KS",
    "zip": "66858",
    "phone": "620-924-5228",
+   "source": "barchart"
+  },
+  {
+   "facility": "Agri Trails Coop",
+   "branch": "Tampa",
+   "city": "Tampa",
+   "state": "KS",
+   "zip": "67483",
+   "phone": "785-965-2221",
    "source": "barchart"
   },
   {
