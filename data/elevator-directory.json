@@ -1,18 +1,18 @@
 {
- "generated": "2026-10-02T21:08:10Z",
+ "generated": "2026-10-02T21:23:09Z",
  "from": "barchart-raw.json",
  "complete": false,
  "note": "Directory only: who operates a facility and where. No prices, no basis, no symbols, no delivery windows.",
  "counts": {
-  "facilities": 2251,
+  "facilities": 2252,
   "states": 38,
   "with_address": 722,
   "with_coords": 725,
   "with_url": 703,
-  "with_phone": 2184,
+  "with_phone": 2185,
   "saturated_zips": 0,
   "failed_zips": 0,
-  "rows_read": 17012
+  "rows_read": 17013
  },
  "saturated": [],
  "failed": [],
@@ -16039,6 +16039,15 @@
   {
    "facility": "Farmward Cooperative",
    "branch": "Farmward Cooperative - Morgan",
+   "city": "Morgan",
+   "state": "MN",
+   "zip": "56266",
+   "phone": "N/A",
+   "source": "barchart"
+  },
+  {
+   "facility": "Farmward Cooperative",
+   "branch": "Farmward Cooperative - Direct Ship",
    "city": "Morgan",
    "state": "MN",
    "zip": "56266",
