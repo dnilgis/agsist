@@ -7,18 +7,6 @@
    "items": [
     {
      "tag": "new",
-     "page": "/",
-     "name": "A new homepage, built for a phone",
-     "text": "Your cash bids come first, then the futures board, then your weather and the Wire. On a phone the longer panels fold shut and open with a tap. On a wide screen, Upcoming USDA Reports, COT positioning and the Yield Nowcast run down the right side beside your bids. Every price carries its contract month and unit, the ticker says \"Delayed 15 min\" while the market is open and \"Settle\" after the close, and the secondary contracts are one ruled table instead of a wall of tiles."
-    },
-    {
-     "tag": "new",
-     "page": "/",
-     "name": "October on the farm",
-     "text": "The top of the page now changes with the month. In October it shows the insurance harvest price against the spring projected price (on October 1, December corn at $5.02 against a projected $4.62), harvest progress, the next frost, whether soil is cool enough for fall anhydrous, and the next major USDA report. Out-of-season tiles step back on their own: planting dates after they pass, hail from October to March."
-    },
-    {
-     "tag": "new",
      "page": "/elevators",
      "name": "Elevators can claim their board, free",
      "text": "An elevator or co-op can now claim its listing from the elevators page: we check the name and town with them, put their phone on the call button and read their own board through the day. It is free. Payment never changes bid order or ranking."
@@ -28,30 +16,6 @@
      "page": "/privacy",
      "name": "Analytics respects your browser's privacy signal",
      "text": "If your browser sends Global Privacy Control or Do Not Track, the site no longer loads Google Analytics at all, and the privacy page has a switch to turn it off yourself. Google signals and ad personalization are off for everyone. The privacy page was rewritten so every line is true, and the about and sponsor pages now say that the founder also owns Farmers First Agri Service LLC and Loke Drone LC."
-    },
-    {
-     "tag": "new",
-     "page": "/",
-     "name": "Land and the Farmland Atlas on the homepage",
-     "text": "A new band leads with your county from the Farmland Atlas (cash rent and land value, with the year each number is from), and links to cash rent, land tenure, cash lease, crop tour, basis vs normal, the farm bill, storage and foreign-held land."
-    },
-    {
-     "tag": "fixed",
-     "page": "/",
-     "name": "Futures ranges came from the wrong contract",
-     "text": "The 52-week range beside a dated contract came from the rolling front-month series. Lean hogs October 2026 showed a range of $77.35 to $103.35; that contract's own range is $77.98 to $94.40, and it closed at a new low. Each range now comes from the contract named on its row."
-    },
-    {
-     "tag": "fixed",
-     "page": "/",
-     "name": "The storage calculator now uses your elevator's own carry",
-     "text": "The store-or-sell calculator filled in the December-to-March futures spread as the carry, which leaves out the basis gain an elevator pays to wait. It now uses the elevator's own posted later bid when it has one: on October 1, CDR Farms paid $4.31 for October corn and $4.46 for March, a 15\u00a2 carry, and the calculator names the board it used."
-    },
-    {
-     "tag": "fixed",
-     "page": "/",
-     "name": "The Wire contradicted the board",
-     "text": "On October 1 the Wire said \"Corn down 3.8% on the day\" while the board showed corn up 3\u00bd\u00a2. That item was September 30's move, stamped a day late. The homepage now shows a price-move item only for today's session and only when it agrees with the board, drops older one-year-high items, and says how old the Wire is."
     },
     {
      "tag": "fixed",
