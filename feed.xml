@@ -5,13 +5,25 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Thu, 01 Oct 2026 11:23:11 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 02 Oct 2026 10:58:16 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/agsist.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>CRUDE DROPS 3.5% AS GRAINS GRIND HIGHER ON NO NEWS</title>
+      <link>https://agsist.com/daily/2026-10-02</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-10-02</guid>
+      <pubDate>Fri, 02 Oct 2026 05:00:00 -0600</pubDate>
+      <description>Corn held $5.00 flat, beans ticked up to $12.77, and crude fell 3.5% to $89.37 on Gulf export flow that's actually working this time. That's the real story today: oil giving back the fear premium while grains just sit there, unbothered.
+Action: Crude under $89.37 and falling: lock any diesel needs now, this Gulf-flow story isn't done unwinding.
+• Crude Gives Back More Ground
+• Grains Sit On Their Hands
+• Cattle Firm, Cull Cows Don't
+Read more: https://agsist.com/daily/2026-10-02</description>
+    </item>
     <item>
       <title>CORN RUNS 1.1% AHEAD OF STOCKS, CRUDE UP ON GULF FLOWS</title>
       <link>https://agsist.com/daily/2026-10-01</link>
@@ -362,19 +374,6 @@ Trump's lean beef import expansion and Mexico feeder resumption hit cattle marke
 • BEANS AND OIL FIRM HARD
 • WHEAT DROPS; OATS RUN
 Read more: https://agsist.com/daily/2026-09-02</description>
-    </item>
-    <item>
-      <title>WHEAT FIRMS; EPA BIOFUEL EXEMPTIONS HIT THE BOARD</title>
-      <link>https://agsist.com/daily/2026-09-01</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-09-01</guid>
-      <pubDate>Tue, 01 Sep 2026 05:00:00 -0600</pubDate>
-      <description>Wheat is the only grain doing anything today, up nearly 15 cents to $7.60 while corn barely twitched and beans gave back three cents. The real story isn't the price action: it's the EPA quietly handing 18 refineries full RFS exemptions this morning, removing 1.76 billion gallons of biofuel obligation from the 2025 compliance year. Corn's ethanol demand argument just got smaller.
-Chicago wheat rose 1.9% on overnight momentum while EPA granted 1.76 billion gallons of RFS exemptions, a direct hit to ethanol demand math.
-• WHEAT LEADS; CORN IGNORES EPA
-  → December corn at $5.37 with harvest beginning: the EPA exemption is a demand headwind the board hasn't moved on yet. If you have unpriced new-crop, the September WASDE on the 10th is your next real window, but don't assume the price holds there.
-• HOGS FIRM; CATTLE HOLD
-• CRUDE UP; NATGAS SLIPS
-Read more: https://agsist.com/daily/2026-09-01</description>
     </item>
   </channel>
 </rss>

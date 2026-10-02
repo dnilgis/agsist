@@ -1,6 +1,18 @@
 {
   "briefings": [
     {
+      "date": "2026-10-02",
+      "date_display": "Friday, October 2, 2026",
+      "headline": "CRUDE DROPS 3.5% AS GRAINS GRIND HIGHER ON NO NEWS",
+      "teaser": "Crude drops 3.5% on Gulf flows while corn and beans barely blink at $5.00 and $12.77.",
+      "market_mood": "mixed",
+      "surprise_count": 1,
+      "sections": 3,
+      "url": "/daily/2026-10-02",
+      "market_closed": false,
+      "yc_outcome": "didnt"
+    },
+    {
       "date": "2026-10-01",
       "date_display": "Thursday, October 1, 2026",
       "headline": "CORN RUNS 1.1% AHEAD OF STOCKS, CRUDE UP ON GULF FLOWS",
@@ -2325,6 +2337,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-10-01T11:23:09.724144+00:00",
-  "count": 202
+  "updated": "2026-10-02T10:58:01.058273+00:00",
+  "count": 203
 }

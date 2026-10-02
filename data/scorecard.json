@@ -1,20 +1,20 @@
 {
- "updated": "2026-10-01T11:23:11+00:00",
- "total": 128,
+ "updated": "2026-10-02T10:58:16+00:00",
+ "total": 129,
  "repeats_merged": 9,
  "played_out": 44,
- "didnt": 78,
+ "didnt": 79,
  "pending": 6,
- "hit_rate": 36.1,
+ "hit_rate": 35.8,
  "hit_rate_note": "Blended across both grading eras (self-reported + deterministic) for backward compatibility only. The page's headline, and the number to judge this briefing on, is by_method.deterministic.hit_rate — see by_method for why the two are not added together.",
  "by_method": {
   "deterministic": {
    "played": 18,
-   "missed": 68,
-   "graded": 86,
-   "hit_rate": 20.9,
+   "missed": 69,
+   "graded": 87,
+   "hit_rate": 20.7,
    "first": "2026-06-25",
-   "last": "2026-10-01"
+   "last": "2026-10-02"
   },
   "self_reported": {
    "played": 26,
@@ -36,17 +36,17 @@
   },
   "v2": {
    "played": 12,
-   "missed": 32,
-   "graded": 44,
-   "hit_rate": 27.3,
+   "missed": 33,
+   "graded": 45,
+   "hit_rate": 26.7,
    "first": "2026-08-12",
-   "last": "2026-10-01"
+   "last": "2026-10-02"
   }
  },
  "direction_only": {
   "right_way": 41,
-  "graded": 86,
-  "rate": 47.7
+  "graded": 87,
+  "rate": 47.1
  },
  "by_instrument": {
   "wheat": {
@@ -56,8 +56,8 @@
   },
   "corn": {
    "played": 2,
-   "graded": 20,
-   "hit_rate": 10.0
+   "graded": 21,
+   "hit_rate": 9.5
   },
   "beans": {
    "played": 9,
@@ -106,19 +106,35 @@
  "current_streak": 0,
  "records": [
   {
-   "made": "2026-10-01",
+   "made": "2026-10-02",
    "judged": null,
-   "call": "Called corn up toward $5.09 ($5.0375 when the call was made).",
+   "call": "Called crude down toward $87.5 ($89.37 when the call was made).",
    "outcome": "pending",
    "method": "deterministic",
    "mismatch": false,
    "note": "Open: no session has settled since this call was made.",
+   "instrument": "crude",
+   "direction": "down",
+   "level": 87.5,
+   "p0": 89.37,
+   "p1": null,
+   "design": "v2"
+  },
+  {
+   "made": "2026-10-01",
+   "judged": "2026-10-02",
+   "call": "Called corn up toward $5.09 ($5.0375 when the call was made). It closed at $5.0.",
+   "outcome": "didnt",
+   "method": "deterministic",
+   "mismatch": false,
+   "note": "Corn never got near $5.09; it sat flat at $5.00 all session, the breakout thesis stalled cold.",
    "instrument": "corn",
    "direction": "up",
    "level": 5.09,
    "p0": 5.0375,
-   "p1": null,
-   "design": "v2"
+   "p1": 5.0,
+   "design": "v2",
+   "direction_ok": false
   },
   {
    "made": "2026-09-30",
