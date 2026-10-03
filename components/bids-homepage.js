@@ -285,7 +285,7 @@
         var refAttr = '', refTxt = '';
         if(!perTon && !special && basis.str !== '—'){
           var rm = refMonth(bid.symbol);
-          if(rm) refTxt = 'basis vs ' + rm;
+          if(rm) refTxt = 'basis vs ' + rm.replace(/ (corn|soybeans)$/, '');
           else if(pp != null && bid.basis != null && REF_KEY[cat]){
             var ek = refEndKey(bid, cat);
             if(ek) refAttr = ' data-ref-crop="' + cat + '" data-ref-end="' + ek + '" data-ref-imp="' + (pp - basisCents(bid.basis) / 100).toFixed(4) + '"' + (bid.checkedAt ? ' data-ref-read="' + escHtml(String(bid.checkedAt)) + '"' : '');
@@ -404,7 +404,7 @@
         var best = null, bestD = Infinity, re = new RegExp('^' + REF_KEY[crop] + '-[a-z]{3}\\d{2}$');
         Object.keys(q).forEach(function(k){ if(!re.test(k) || !q[k] || q[k].close == null) return; var d = Math.abs(q[k].close / 100 - imp); if(d < bestD){ bestD = d; best = k; } });
         if(best !== cand.key || bestD > REF_TOL) continue;
-        el.textContent = 'basis vs ' + cand.label;
+        el.textContent = 'basis vs ' + cand.label.replace(/ (corn|soybeans)$/, '');
         used[cand.label] = fq.close / 100;
         var rdt = el.getAttribute('data-ref-read') || ''; if(rdt && (!oldest || rdt < oldest)) oldest = rdt;
         n++;
