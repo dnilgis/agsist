@@ -246,30 +246,53 @@ def unit_guard(quotes):
 CLASS_SPREADS = {"kcwheat": "KC HRW", "mplswheat": "MGEX HRS"}
 
 
-def class_spreads(quotes, now=None):
-    """KC HRW and MGEX HRS minus Chicago SRW (2026-10-03, wave1-C).
+def first_notice_day(yr, mon):
+    """CBOT first notice day for a grain contract month: the last business day
+    of the month BEFORE delivery. Dec 2026 -> Mon Nov 30 2026. Business day is
+    contract_calendar.is_trading_day, the one definition of a session, so an
+    exchange holiday on the last weekday pushes it a day earlier."""
+    from datetime import date, timedelta
+    from contract_calendar import is_trading_day
+    d = date(yr, mon, 1) - timedelta(days=1)
+    while not is_trading_day(d):
+        d -= timedelta(days=1)
+    return d
 
-    Month against month first: the nearest unexpired delivery month for
-    which BOTH <class>-<mon><yy> and wheat-<mon><yy> carry a fresh close.
-    A spread between two continuous series is only a spread if both sit on
-    the same month, and Yahoo's continuous series follow volume, so they can
-    straddle a roll. Fallback, flagged `basis: "most-active"`: the two
-    continuous quotes, only when neither is stale and Chicago is not inside
-    a roll window. Otherwise cents is None and `reason` says why.
-    Pure function of its inputs; selftested in scripts/test_class_spreads.py.
+
+def class_spreads(quotes, now=None):
+    """KC HRW and MGEX HRS minus Chicago SRW (2026-10-03, wave1-C; wave3-J).
+
+    Month against month only: the nearest delivery month for which BOTH
+    <class>-<mon><yy> and wheat-<mon><yy> carry a fresh close, and which has
+    not reached first notice day. From first notice day the month is in
+    delivery and thinly traded, so it no longer stands for the class; the next
+    month is used.
+
+    There is no fallback to the two continuous series. KE=F and ZW=F follow
+    volume, so they can sit on different months (KC on March while Chicago is
+    still on December), and the difference is then a calendar spread printed
+    as a class spread. When no same-month pair is on file, cents is None and
+    `reason` says why. Pure function of its inputs; selftested in
+    scripts/test_class_spreads.py.
     """
     def fresh(q):
         return isinstance(q, dict) and q.get("close") is not None and not q.get("stale")
 
+    today = (now or datetime.now(timezone.utc)).date()
     out = {}
     for cls, name in CLASS_SPREADS.items():
         months = []
+        past_notice = []
         for k in quotes:
             if not k.startswith(cls + "-"):
                 continue
             suffix = k[len(cls) + 1:]
             exp = expiry_date(k)
             if exp is None or is_expired(k, now):
+                continue
+            mon, yr = month_num(suffix[:3]), 2000 + int(suffix[3:])
+            if today >= first_notice_day(yr, mon):
+                past_notice.append(_month_label(k))
                 continue
             months.append((exp, suffix))
         months.sort()
@@ -283,21 +306,15 @@ def class_spreads(quotes, now=None):
                        "class_close": a["close"], "chicago_close": b["close"]}
                 break
         if hit is None:
-            a, b = quotes.get(cls), quotes.get("wheat")
-            if fresh(a) and fresh(b) and not b.get("roll") and not a.get("roll"):
-                hit = {"cents": round(float(a["close"]) - float(b["close"]), 4),
-                       "basis": "most-active", "month": None,
-                       "class_key": cls, "chicago_key": "wheat",
-                       "class_close": a["close"], "chicago_close": b["close"],
-                       "note": f"{name} and Chicago most-active continuous series; "
-                               "no same-month pair on file, so the months are not confirmed"}
-            elif not fresh(a):
-                hit = {"cents": None, "reason": f"no current {name} quote on file"}
-            elif not fresh(b):
-                hit = {"cents": None, "reason": "no current Chicago SRW quote on file"}
+            if not months and not past_notice and not fresh(quotes.get(cls)):
+                reason = f"no current {name} quote on file"
             else:
-                hit = {"cents": None, "reason": "Chicago is inside a contract roll and no "
-                                                "same-month pair is on file"}
+                reason = (f"no current {name} and Chicago SRW quotes for the same delivery "
+                          f"month on file; the most-active series can sit on different "
+                          f"months, so they are not subtracted")
+                if past_notice:
+                    reason += f" ({', '.join(past_notice)} past first notice day)"
+            hit = {"cents": None, "reason": reason}
         out[cls] = hit
     return out
 
@@ -772,7 +789,7 @@ def main():
         # prints (UNIT_RANGE). Named with the reason, never silently dropped.
         "withheld_keys": withheld_keys,
         # KC HRW and MGEX HRS minus Chicago SRW, cents per bushel. See
-        # class_spreads(): same-month first, flagged fallback, or a reason.
+        # class_spreads(): a same-month pair before first notice day, or a reason.
         "spreads":    spreads,
         "quotes":     quotes
     }
