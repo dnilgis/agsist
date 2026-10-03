@@ -95,6 +95,13 @@ EDITS = [
     # only while the skeleton is showing.
     ("html.has-zip #bids-list-area{min-height:820px}", "html.has-zip #bids-list-area:has(.bids-skeleton){min-height:820px}"),
     ("html.has-zip #bids-list-area{min-height:760px}", "html.has-zip #bids-list-area:has(.bids-skeleton){min-height:760px}"),
+    # The two price tables side by side only where both fit (1,036px of
+    # content at 1240+); at 1100-1239 the 52-week ends ran out of their cells.
+    ("@media(min-width:1100px){\n  .r7-ledgers{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:32px;align-items:start}",
+     "@media(min-width:1240px){\n  .r7-ledgers{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:32px;align-items:start}"),
+    # Four key contracts in one row only where four fit (151px each at 1024).
+    ("@media(min-width:901px){\n  /* Four key contracts on one row, no empty fifth column. */",
+     "@media(min-width:1240px){\n  /* Four key contracts on one row, no empty fifth column. */"),
     (".s7-month{grid-column:1/3;grid-row:1;align-self:start;margin-bottom:48px}",
      ".s7-month{grid-column:1/3;grid-row:1;align-self:start;margin-bottom:24px}"),
 ]
@@ -155,6 +162,29 @@ CSS = r"""<style id="r10">
 .sec-title>span,.m-fold>summary.m-fold-sum small{color:var(--text-muted)!important}
 /* The store-or-sell fold sits inside the bids card; it is not a section. */
 .m-fold--calc>summary.m-fold-sum>span{color:var(--text-dim)!important}
+/* Price cards. The price is a flex item with min-width:0, so at 1024-1280
+   it shrank below its own digits and the fraction ran under "per bu"
+   ("$12.77 1/4per bu", the 1/4 struck through). The price keeps its width
+   and the unit wraps; under 1240 the cards are two across, not four at
+   151px each. */
+.r7-pl{flex-wrap:wrap;row-gap:0}
+.r7-pl .pc-price{flex:none!important}
+@media(min-width:601px) and (max-width:1239px){.price-cards-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
+/* Four across at 1240-1599 is 222-300px a card: "per bu" wrapped on three
+   cards and not the fourth. It sits on its own line on all four there. */
+@media(min-width:1240px) and (max-width:1599px){.price-cards-grid .r7-pl .r7-unit{flex-basis:100%}}
+/* At 901-1000 the price-table rows are narrowest; the 52-week high ran
+   14px out of its cell at 901. Up to 960 they stack, as on a phone. */
+@media(min-width:901px) and (max-width:1000px){#f-prices .r7-led .pc.r7-row{column-gap:8px!important}}
+@media(min-width:901px) and (max-width:960px){
+  #f-prices .r7-lh{display:none!important}
+  #f-prices .r7-led .pc.r7-row{grid-template-columns:minmax(0,1fr) auto auto!important;grid-template-areas:"nm last last" "rg ch pc";row-gap:6px}
+  #f-prices .r7-nm{grid-area:nm}#f-prices .r7-last{grid-area:last}#f-prices .r7-ch{grid-area:ch}#f-prices .r7-pc{grid-area:pc}#f-prices .r7-rg{grid-area:rg}
+}
+/* "+4 basis points" ran past its column at 768-1280. */
+#f-prices .r7-chg{white-space:normal;overflow-wrap:anywhere}
+/* A tip longer than the screen scrolls inside itself. */
+.tip-t{max-height:min(60vh,420px);overflow:auto}
 /* Spray windows were stretched across 1,000px. */
 .spray-days{max-width:640px}
 </style>

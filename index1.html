@@ -1112,7 +1112,7 @@ body{--hair:rgba(132,160,168,.12);--sp-md:12px;--sp-lg:16px;--sp-xl:24px;--sp-2x
 @media(min-width:1240px){
   #dash-grid>#f-prices{grid-row:3}
 }
-@media(min-width:901px){
+@media(min-width:1240px){
   /* Four key contracts on one row, no empty fifth column. */
   #f-prices .price-cards-grid{grid-template-columns:repeat(4,minmax(0,1fr))!important}
 }
@@ -1259,7 +1259,7 @@ html[data-theme="light"] #daily-teaser-sponsor{color:var(--ad-orange-ink)!import
 
 /* Ledger rows: one alignment line, hairlines, no boxes. */
 .r7-ledgers{margin:0 0 8px}
-@media(min-width:1100px){
+@media(min-width:1240px){
   .r7-ledgers{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:32px;align-items:start}
   .r7-ledgers>.m-fold{margin:0}
 }
@@ -1542,11 +1542,10 @@ details>summary:hover{color:var(--text)}
 .idx1-shell input:not([type=checkbox]):not([type=radio]):not([type=range]),.idx1-shell select{border-color:var(--ui-field)!important}
 #bids-zip:focus,#wx-zip:focus{outline:2px solid var(--gold)!important;outline-offset:2px}
 
-/* Range tracks. The price-card track was a red-gold-green gradient: red and
-   green are the same lightness, so it said nothing to a colour-blind
-   reader, and it read low = bad, which is backwards for a buyer. One
-   neutral track, label on its own line instead of an ellipsis. */
-.idx1-shell .pc-range-track{background:var(--ui-track)!important;height:3px}
+/* Range tracks. The price-card track keeps its red-gold-green gradient
+   (Sig, 2026-10-03: "i like the color gradient for 52wk range bar, my
+   personal preference"); the label sits on its own line instead of an
+   ellipsis. */
 .idx1-shell .pc-range-labels{display:grid!important;grid-template-columns:auto 1fr auto;row-gap:2px}
 .idx1-shell .pc-range-labels>span:nth-child(2){grid-row:1;grid-column:1/-1;text-align:left!important;overflow:visible!important;text-overflow:clip!important;white-space:normal!important}
 .idx1-shell .pc-range-labels>span:first-child{grid-row:2;grid-column:1}
@@ -1697,6 +1696,29 @@ details.wr>summary,details.hbz>summary{align-items:center!important}
 .sec-title>span,.m-fold>summary.m-fold-sum small{color:var(--text-muted)!important}
 /* The store-or-sell fold sits inside the bids card; it is not a section. */
 .m-fold--calc>summary.m-fold-sum>span{color:var(--text-dim)!important}
+/* Price cards. The price is a flex item with min-width:0, so at 1024-1280
+   it shrank below its own digits and the fraction ran under "per bu"
+   ("$12.77 1/4per bu", the 1/4 struck through). The price keeps its width
+   and the unit wraps; under 1240 the cards are two across, not four at
+   151px each. */
+.r7-pl{flex-wrap:wrap;row-gap:0}
+.r7-pl .pc-price{flex:none!important}
+@media(min-width:601px) and (max-width:1239px){.price-cards-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
+/* Four across at 1240-1599 is 222-300px a card: "per bu" wrapped on three
+   cards and not the fourth. It sits on its own line on all four there. */
+@media(min-width:1240px) and (max-width:1599px){.price-cards-grid .r7-pl .r7-unit{flex-basis:100%}}
+/* At 901-1000 the price-table rows are narrowest; the 52-week high ran
+   14px out of its cell at 901. Up to 960 they stack, as on a phone. */
+@media(min-width:901px) and (max-width:1000px){#f-prices .r7-led .pc.r7-row{column-gap:8px!important}}
+@media(min-width:901px) and (max-width:960px){
+  #f-prices .r7-lh{display:none!important}
+  #f-prices .r7-led .pc.r7-row{grid-template-columns:minmax(0,1fr) auto auto!important;grid-template-areas:"nm last last" "rg ch pc";row-gap:6px}
+  #f-prices .r7-nm{grid-area:nm}#f-prices .r7-last{grid-area:last}#f-prices .r7-ch{grid-area:ch}#f-prices .r7-pc{grid-area:pc}#f-prices .r7-rg{grid-area:rg}
+}
+/* "+4 basis points" ran past its column at 768-1280. */
+#f-prices .r7-chg{white-space:normal;overflow-wrap:anywhere}
+/* A tip longer than the screen scrolls inside itself. */
+.tip-t{max-height:min(60vh,420px);overflow:auto}
 /* Spray windows were stretched across 1,000px. */
 .spray-days{max-width:640px}
 </style>

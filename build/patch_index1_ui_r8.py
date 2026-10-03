@@ -42,11 +42,10 @@ CSS = r"""<style id="ui-r8">
 .idx1-shell input:not([type=checkbox]):not([type=radio]):not([type=range]),.idx1-shell select{border-color:var(--ui-field)!important}
 #bids-zip:focus,#wx-zip:focus{outline:2px solid var(--gold)!important;outline-offset:2px}
 
-/* Range tracks. The price-card track was a red-gold-green gradient: red and
-   green are the same lightness, so it said nothing to a colour-blind
-   reader, and it read low = bad, which is backwards for a buyer. One
-   neutral track, label on its own line instead of an ellipsis. */
-.idx1-shell .pc-range-track{background:var(--ui-track)!important;height:3px}
+/* Range tracks. The price-card track keeps its red-gold-green gradient
+   (Sig, 2026-10-03: "i like the color gradient for 52wk range bar, my
+   personal preference"); the label sits on its own line instead of an
+   ellipsis. */
 .idx1-shell .pc-range-labels{display:grid!important;grid-template-columns:auto 1fr auto;row-gap:2px}
 .idx1-shell .pc-range-labels>span:nth-child(2){grid-row:1;grid-column:1/-1;text-align:left!important;overflow:visible!important;text-overflow:clip!important;white-space:normal!important}
 .idx1-shell .pc-range-labels>span:first-child{grid-row:2;grid-column:1}
