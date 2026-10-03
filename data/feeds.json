@@ -747,17 +747,22 @@
     "cash-bids.html",
     "status.html"
    ],
-   "written_by": [],
+   "written_by": [
+    "Elevator watch emails"
+   ],
    "touched_by": [
+    "Elevator watch emails",
     "Rebuild Feed Manifest"
    ],
-   "cadence": "published by dnilgis/bids, refreshed with the boards",
+   "cadence": "1 launch every day at about 7pm Central",
    "curated": false,
    "planned": false,
    "external": true,
    "url": "https://dnilgis.github.io/bids/data/merged-index.json",
-   "crons": [],
-   "max_gap_hours": null,
+   "crons": [
+    "16,46 * * * *"
+   ],
+   "max_gap_hours": 0.5,
    "quiet": null,
    "why_quiet": "The elevator bid network. dnilgis/bids reads ~650 boards and publishes this index and its shards to dnilgis.github.io/bids on its own schedule. cash-bids.html fetches it and falls back to the licensed feed alone if it is unreachable, so a stale or missing feed costs coverage and never breaks the page."
   },
