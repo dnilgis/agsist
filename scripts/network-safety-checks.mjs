@@ -17,13 +17,21 @@ function lift(name) {
   }
 }
 const NAMES = ["classify", "netGet", "netZipCoord", "netDistanceMi", "netPlacesWithin",
-               "netRowsFrom", "netKey", "netMerge", "fetchNetwork"];
+               "netRowsFrom", "netKey", "netMerge", "fetchNetwork",
+               /* The helpers netRowsFrom and netKey call. Missing, every row
+                  threw a ReferenceError here that the page never throws (the
+                  same gap as network-checks.mjs). */
+               "usScope", "netNormOperator", "netPlain", "netIsTwin"];
+/* Their tables, read off the page so a changed list is a changed test. */
+const pageVar = (name) => { const m = new RegExp(`var ${name}=([^;]+);`).exec(PAGE);
+  if (!m) throw new Error("missing var " + name); return `var ${name}=${m[1]};\n`; };
 let fetchImpl, calls = 0;
 const mk = (netOn) => new Function(
   "fetch", "setTimeout", "clearTimeout", "Promise", "Math", "Number", "String",
   "Array", "JSON", "isFinite", "location",
   `var NET_ON=${netOn};\nvar NET_BASE='https://dnilgis.github.io/bids/';\n` +
   `var NET_MAX_PLACES=60;var NET_TIMEOUT_MS=2500;var NET_DEADLINE_MS=3500;var NET_INHERIT=['phone'];var NET_DEBUG=false;function netLog(){}\n` +
+  pageVar("US_STATES_OK") + pageVar("NET_LEGAL") +
   NAMES.map(lift).join("\n")+"\n"+lift("_fetchNetworkInner") + `\nreturn {fetchNetwork,netMerge};`
 )((...a) => { calls++; return fetchImpl(...a); },
   setTimeout, clearTimeout, Promise, Math, Number, String, Array, JSON, isFinite,

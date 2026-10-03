@@ -43,7 +43,11 @@ function lift(name) {
 
 const NAMES = ["classify", "netZipCoord", "netDistanceMi", "netPlacesWithin",
                "netRowsFrom", "netKey", "netMerge", "fetchNetwork",
-               "_fetchNetworkInner", "netGet"];
+               "_fetchNetworkInner", "netGet",
+               /* netRowsFrom drops non-US rows through usScope() (added with the
+                  US-only scope); without it every row threw "usScope is not
+                  defined" here, and only here: the page defines it. */
+               "usScope", "netNormOperator", "netPlain", "netIsTwin"];
 const sources = {};
 for (const n of NAMES) {
   sources[n] = lift(n);
@@ -77,6 +81,8 @@ const body = NAMES.map((n) => sources[n]).join("\n") +
   /* The list of fields ours inherits when it displaces a Barchart row. Read
      off the page so adding one is a changed test, not a stale one. */
   `\nvar NET_INHERIT=${constOf("NET_INHERIT")};` +
+  `\nvar US_STATES_OK=${constOf("US_STATES_OK")};` +
+  `\nvar NET_LEGAL=${constOf("NET_LEGAL")};` +
   `\nvar NET_DEBUG=false;function netLog(){}` +
   `\nreturn {${NAMES.join(",")}};`;
 const F = new Function(...Object.keys(sandbox), body);
