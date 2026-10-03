@@ -472,11 +472,33 @@
     // Watch this elevator. Scoped to corn -- the page's headline commodity --
     // and only offered when this elevator actually has a real, priced corn
     // bid; there is nothing honest to watch at an elevator with no corn row.
+    /* WAVE2-G 2026-10-03: ALERT OPTIONS. data-opts lists the rows this card
+       just drew that the alert sender can read back: network rows (the bids
+       repo's merged index, the same `now` row, with the board's own posting
+       time), per bushel, standard grade, with a cash price and a basis.
+       Licensed-feed rows send no posting time and cannot be read from the
+       sender, so they are never offered. Each row's id is widFor() over its
+       own state, operator, town and crop key -- the same hash
+       scripts/send_elevator_watch.py builds from merged-index.json. */
+    var opts = [];
+    rows.forEach(function(r){
+      var b = r.b;
+      if(b.source !== 'network' || notPerBushel(b) || isSpecialGrade(b)) return;
+      if(!/^(corn|soybeans|wheat|sorghum|oats)$/.test(b.netCrop || '') || !b.deliveryStart) return;
+      var pp = ppu(b.cashPrice), bc = basisCents(b.basis);
+      if(pp == null || bc == null || !b.pricedAt) return;
+      opts.push({ w: widFor(b.state || elev.state, b.facility || elev.facility, b.city || elev.city, b.netCrop),
+        c: b.netCrop, n: COMM_NAMES[b.netCrop], p: b.deliveryStart, l: delLabel(b),
+        cash: Math.round(pp * 100), basis: Math.round(bc), t: ctTime(b.pricedAt) });
+    });
     var cornBids = elev.commodities.corn;
-    if(cornBids && cornBids.length && elev.state && elev.facility){
-      var wid = widFor(elev.state, elev.facility, elev.city, 'corn');
-      var label = escHtml(elev.facility + (elev.city ? ', ' + elev.city + (elev.state ? ', ' + elev.state : '') : '') + ' — corn');
-      html += '<div class="watch-elevator-wrap" data-wid="' + wid + '" data-label="' + label + '" style="margin-top:.35rem">'
+    var hasCorn = !!(cornBids && cornBids.length);
+    if((hasCorn || opts.length) && elev.state && elev.facility){
+      var wid = hasCorn ? widFor(elev.state, elev.facility, elev.city, 'corn') : '';
+      var name = elev.facility + (elev.city ? ', ' + elev.city + (elev.state ? ', ' + elev.state : '') : '');
+      var label = escHtml(name + ' — corn');
+      html += '<div class="watch-elevator-wrap" data-wid="' + wid + '" data-label="' + label + '" data-name="' + escHtml(name) + '"'
+        + (opts.length ? ' data-opts="' + escHtml(JSON.stringify(opts)) + '"' : '') + ' style="margin-top:.35rem">'
         + '<button type="button" class="watch-elevator-btn" style="background:none;border:none;padding:0;font-size:.75rem;color:var(--text-muted);text-decoration:underline;cursor:pointer;min-height:44px">Watch this elevator</button>'
         + '</div>';
     }

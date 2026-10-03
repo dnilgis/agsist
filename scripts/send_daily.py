@@ -156,6 +156,30 @@ def fetch_recipients():
     return env("RECIPIENTS", required=True)
 
 
+# WAVE2-G: "Your elevators" -- address -> lines, filled once by main() from
+# the elevator-watch list and the posted boards (send_elevator_watch.py). A
+# module-level map, so the send loop below (which test_send_loops.py lifts by
+# its own text) is not touched. Any failure leaves it empty: the briefing
+# goes out exactly as before, without the block.
+ELEVATOR_LINES = {}
+
+
+def load_elevator_lines():
+    base, token = (os.environ.get("LIST_URL") or "").strip(), (os.environ.get("LIST_TOKEN") or "").strip()
+    if not (base and token):
+        return {}
+    try:
+        import send_elevator_watch as sew
+        watchers = sew.worker(base.rstrip("/"), "elevator-watch-list", token)
+        now_ms = time.time() * 1000
+        lines = sew.daily_lines(watchers, sew.load_net_index(sew.fetch_net_index(), now_ms), sew.load_basis_index())
+        print("your-elevators block for " + str(len(lines)) + " address(es)")
+        return lines
+    except Exception as ex:
+        print("your-elevators block skipped (" + type(ex).__name__ + ")")
+        return {}
+
+
 def build_email(day, b, to_addr, from_name, from_addr, reply_to):
     """One issue, two bodies, one message.
 
@@ -190,10 +214,11 @@ def build_email(day, b, to_addr, from_name, from_addr, reply_to):
     else:
         msg["List-Unsubscribe"] = "<mailto:" + unsub + "?subject=unsubscribe>"
 
-    text = brief_email.render_text(b, issue_url(b), unsub_url=uurl, date_display=date_display)
+    mine = ELEVATOR_LINES.get(str(to_addr).strip().lower()) or None
+    text = brief_email.render_text(b, issue_url(b), unsub_url=uurl, date_display=date_display, elevators=mine)
     _issue = issue_url(b)
     hbody = brief_email.render_html(b, _issue.replace("&", "&amp;"),
-                                    unsub_url=uurl, date_display=date_display)
+                                    unsub_url=uurl, date_display=date_display, elevators=mine)
 
     # set_content first, add_alternative second: that ordering is what makes it
     # multipart/alternative with the HTML preferred and the text a real
@@ -219,6 +244,7 @@ def main():
         print("FATAL: RECIPIENTS parsed to zero addresses")
         return 1
     print("briefing " + day + " · recipients " + str(len(recipients)) + " · dry_run " + str(dry))
+    ELEVATOR_LINES.update(load_elevator_lines())
 
     if dry:
         m = build_email(day, b, recipients[0], from_name, from_addr, reply_to)
