@@ -74,6 +74,9 @@
 /* Before first paint: a reader with a saved ZIP gets bids, so the bids box
    reserves its height (phone CLS measured 0.32 without this). */
 try{var _w=JSON.parse(localStorage.getItem('agsist-wx-loc')||'null');if(_w&&/^\d{5}$/.test(_w.zip||''))document.documentElement.classList.add('has-zip');}catch(e){}
+/* wave1-E: theme before first paint. Saved choice first, else the device's
+   prefers-color-scheme, else dark. components/loader.js applies the same rule. */
+try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.setAttribute('data-theme',_t);}catch(e){}
 </script>
 
 
@@ -200,6 +203,13 @@ try{var _w=JSON.parse(localStorage.getItem('agsist-wx-loc')||'null');if(_w&&/^\d
         </div>
       </div>
     </div>
+    <!-- wave1-E: a visible pause for the moving ticker (WCAG 2.2.2). The choice is
+         remembered; with reduced motion the track does not move, so no button. -->
+    <button type="button" class="ticker-pause" id="ticker-pause" aria-controls="ticker-track" aria-pressed="false">Pause</button>
+    <script>(function(){var b=document.getElementById('ticker-pause'),h=document.documentElement;if(!b)return;
+      function set(p){h.classList.toggle('ticker-paused',p);b.setAttribute('aria-pressed',p?'true':'false');b.textContent=p?'Play':'Pause';b.setAttribute('aria-label',p?'Play the price ticker':'Pause the price ticker');}
+      var p=false;try{p=localStorage.getItem('agsist-ticker-paused')==='1';}catch(e){}set(p);
+      b.addEventListener('click',function(){p=!h.classList.contains('ticker-paused');set(p);try{if(p)localStorage.setItem('agsist-ticker-paused','1');else localStorage.removeItem('agsist-ticker-paused');}catch(e){}});})();</script>
   </div>
 </div>
 <div id="idx1-home-prompt" class="idx1-home-prompt" style="display:none">
@@ -527,7 +537,7 @@ try{var _w=JSON.parse(localStorage.getItem('agsist-wx-loc')||'null');if(_w&&/^\d
         </div>
         
         <div id="bids-list-area"><div class="bids-skeleton" aria-label="Loading cash bids"><div class="bids-skel-row"></div><div class="bids-skel-row"></div><div class="bids-skel-row"></div></div></div>
-        <div style="font-size:.706rem;color:var(--text-muted);margin-top:.5rem;padding-top:.45rem;border-top:1px solid var(--border)">Posted prices, not contracts. Freight, moisture and grade discounts are the elevator&rsquo;s; call before you haul. <a href="/contact" style="color:var(--text-muted);text-decoration:underline">Wrong number? Tell us</a></div>
+        <div style="font-size:.706rem;color:var(--text-muted);margin-top:.5rem;padding-top:.45rem;border-top:1px solid var(--border)"><span class="tip"><button type="button" class="tip-b" aria-expanded="false" aria-describedby="tip-basis">What is basis?</button><span id="tip-basis" role="tooltip" class="tip-t" hidden>Basis is the cash bid minus the futures price it is quoted against. A basis of &minus;30 means 30 cents under futures. Less negative is stronger.</span></span> Posted prices, not contracts. Freight, moisture and grade discounts are the elevator&rsquo;s; call before you haul. <a href="/contact" style="color:var(--text-muted);text-decoration:underline">Wrong number? Tell us</a></div>
         <details class="m-fold m-fold--calc" open><summary class="m-fold-sum"><span>Store or sell?</span></summary>
         <div id="idx1-store-sell" class="idx1-extras-card" style="display:none">
           <div class="idx1-extras-title"><svg class="ic" aria-hidden="true"><use href="#i-clipboard-list"/></svg> Store or sell?</div>
@@ -546,7 +556,7 @@ try{var _w=JSON.parse(localStorage.getItem('agsist-wx-loc')||'null');if(_w&&/^\d
           </div>
           <div id="idx1-calc-result" role="status">Enter your numbers above.</div>
           <details class="idx1-calc-mathbox" hidden><summary>Show the math</summary><pre id="idx1-calc-math"></pre></details>
-          <div class="idx1-extras-fine">Carry minus storage, interest on the cash price over your months, and bushels lost to shrink. <span class="tip"><button type="button" class="tip-b" aria-expanded="false" aria-describedby="tip-calc">What&rsquo;s not counted</button><span id="tip-calc" role="tooltip" class="tip-t" hidden>Interest and shrink count only when you enter them. Quality risk, drying and handling charges are not included. Call your elevator for their exact terms.</span></span></div>
+          <div class="idx1-extras-fine">Carry minus storage, interest on the cash price over your months, and bushels lost to shrink. <span class="tip"><button type="button" class="tip-b" aria-expanded="false" aria-describedby="tip-calc">What&rsquo;s not counted</button><span id="tip-calc" role="tooltip" class="tip-t" hidden>Interest and shrink count only when you enter them. Quality risk, drying and handling charges are not included. Call your elevator for their exact terms.</span></span> <span class="tip"><button type="button" class="tip-b" aria-expanded="false" aria-describedby="tip-carry">What is carry?</button><span id="tip-carry" role="tooltip" class="tip-t" hidden>Carry is how much more a later delivery month pays than today, per bushel. It is what the market pays you to store.</span></span></div>
         </div>
         <div id="idx1-search-compare" class="idx1-extras-line" style="display:none"></div>
         <div id="idx1-distance-compare" class="idx1-extras-line" style="display:none"></div>
@@ -773,9 +783,14 @@ try{var _w=JSON.parse(localStorage.getItem('agsist-wx-loc')||'null');if(_w&&/^\d
         if(st&&cty){for(var k in d.counties){var c=d.counties[k];if(c.st===st&&String(c.n||'').replace(/\s+County$/i,'').toLowerCase()===cty.toLowerCase()){hit=c;break;}}}
         if(hit&&hit.r!=null){
           var a=$('land-atlas');if(a&&hit.u)a.href=hit.u;
-          show('land-atlas',hit.n+', '+hit.st+': cash rent '+n('$'+Math.round(hit.r))+'/ac'+(hit.ry?' ('+hit.ry+')':''),
-            (hit.v!=null?'Land $'+Math.round(hit.v).toLocaleString('en-US')+'/ac'+(hit.vy?' ('+hit.vy+' Census)':''):'')
-            +(d.states&&d.states[st]&&d.states[st].r!=null?' · '+(d.states[st].n||st)+' average rent $'+Math.round(d.states[st].r)+'/ac':''));
+          /* wave1-E: the county is the weather ZIP's; land is the census "land and buildings" figure,
+             the operators' own estimate; the state figure is a median of counties, with the
+             low and high computed by build_atlas_pages.py from the same counties. */
+          var S=d.states&&d.states[st],D=function(x){return '$'+Math.round(x).toLocaleString('en-US');};
+          show('land-atlas',hit.n+', '+hit.st+' (your weather ZIP): dry cash rent '+n(D(hit.r))+'/ac'+(hit.ry?', '+hit.ry:''),
+            (hit.v!=null?'Land and buildings '+(hit.vf?'read with care':D(hit.v)+'/ac')+(hit.vy?', '+hit.vy+' Census of Agriculture, operators\u2019 estimate':'')+'. ':'')
+            +(S&&S.r!=null?(S.n||st)+' median cash rent '+D(S.r)+'/ac'+(S.rl!=null&&S.rh!=null?' ('+(S.rn?S.rn+' counties, ':'counties ')+D(S.rl)+'\u2013'+D(S.rh)+')':'')+'. ':'')
+            +'Rent: USDA NASS county survey.');
         } else {
           show('land-atlas',n(Object.keys(d.counties).length.toLocaleString('en-US'))+' counties: rent, land value and risk','Open the map');
         }
@@ -1120,6 +1135,11 @@ try{var _w=JSON.parse(localStorage.getItem('agsist-wx-loc')||'null');if(_w&&/^\d
         var pe=$(pre+'-price');
         if(pe){pe.textContent=(live!=null?(mon?mon+' ':'')+qp(q.close)+' on the board · ':'')+(tag==='5-year'?'5-year':'52-week')+' range $'+lo.toFixed(2)+'–$'+hi.toFixed(2);pe.setAttribute('data-r7','1');}
         bar(pre,pct);
+        /* wave1-E: in the 5-year case the dot is the percentile of weekly closes, not the
+           price's place between the low and high printed above, so the bar says so. */
+        var _sc=$(pre+'-scale'),_sbr=document.querySelector('#'+pre+' .sig-bar');
+        if(!_sc&&_sbr){_sc=document.createElement('div');_sc.id=pre+'-scale';_sc.className='r7-barcap r7-scale';_sbr.parentNode.insertBefore(_sc,_sbr.nextSibling);}
+        if(_sc)_sc.innerHTML=tag==='5-year'?'<span>0</span><span>percentile of 5-yr weekly closes</span><span>100</span>':'<span>low</span><span>place in 52-week range</span><span>high</span>';
         if($(pre+'-read'))$(pre+'-read').innerHTML=rd;
       });
       var le=px.cattle,gf=px.feeders,lc=cot.livecattle,pre='sig-cattle';
@@ -1258,7 +1278,9 @@ try{var _w=JSON.parse(localStorage.getItem('agsist-wx-loc')||'null');if(_w&&/^\d
          logic client-side is exactly the "two files disagreeing" risk the
          project's honest-numbers rule warns about. Update this card by hand
          alongside the next report, the same way the calendar strip below
-         it is hand-maintained. -->
+         it is hand-maintained. The words under each figure are
+         report_bands.describe(): the trade range is graded first, and a
+         print inside it carries no bullish or bearish label (wave1-E). -->
     <div class="usda-cal-card" style="margin-bottom:.7rem;padding:.85rem 1rem;display:flex;flex-direction:column;gap:.5rem">
       <div style="display:flex;align-items:center;justify-content:space-between;gap:.5rem;flex-wrap:wrap">
         <div style="font-size:.824rem;font-weight:700;color:var(--text)">September Grain Stocks &mdash; released Sep 30</div>
@@ -1268,12 +1290,12 @@ try{var _w=JSON.parse(localStorage.getItem('agsist-wx-loc')||'null');if(_w&&/^\d
         <div>
           <div style="font-size:.706rem;color:var(--text-muted)">Corn stocks</div>
           <div style="font-family:'JetBrains Mono',monospace;font-size:1.294rem;font-weight:800;color:var(--text)">2.095<span style="display:block;font-size:.706rem;font-weight:600;color:var(--text-muted)">billion bu</span></div>
-          <div style="font-family:'JetBrains Mono',monospace;font-size:.706rem;color:var(--red)">above trade range, bearish</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:.706rem;color:var(--red)">above the trade range, bearish</div>
         </div>
         <div>
           <div style="font-size:.706rem;color:var(--text-muted)">Soybean stocks</div>
           <div style="font-family:'JetBrains Mono',monospace;font-size:1.294rem;font-weight:800;color:var(--text)">0.315<span style="display:block;font-size:.706rem;font-weight:600;color:var(--text-muted)">billion bu</span></div>
-          <div style="font-family:'JetBrains Mono',monospace;font-size:.706rem;color:var(--green)">bullish, in range</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:.706rem;color:var(--text-muted)">below average, inside the range</div>
         </div>
         <div>
           <div style="font-size:.706rem;color:var(--text-muted)">Wheat stocks</div>
@@ -1291,7 +1313,7 @@ try{var _w=JSON.parse(localStorage.getItem('agsist-wx-loc')||'null');if(_w&&/^\d
       <div class="cot-widget" id="cot-widget">
         <div class="idx1-raise-toggle"><span>I RAISE</span><label for="i-raise-crops">Row Crops</label><label for="i-raise-cattle">Cattle Only</label><label for="i-raise-mixed">Mixed</label></div>
         <div class="cot-widget-head"><span class="cot-widget-title"><svg class="ic" aria-hidden="true"><use href="#i-chart-column"/></svg> CFTC COT &mdash; Managed Money</span><span class="cot-verdict mixed" id="cot-verdict">Loading&hellip;</span></div>
-        <div class="cot-caption">Managed money&rsquo;s net position (CFTC disaggregated report), placed within its past 52 weeks. <span class="tip"><button type="button" class="tip-b" aria-expanded="false" aria-describedby="tip-cot">How to read</button><span id="tip-cot" role="tooltip" class="tip-t" hidden>Net futures contracts held long vs short by the &ldquo;managed money&rdquo; group in CFTC&rsquo;s disaggregated report (hedge funds and commodity trading advisers). Bar shows where that position sits within the past 52 weeks (not the 3-yr COT Index some desks use — this window runs shorter, which can read positioning as more extreme). The badge above averages the first four rows&rsquo; position-in-range (corn, soybeans, Chicago wheat, live cattle), not a headcount of who&rsquo;s long or short — one row can run the other way. Interpretation of public CFTC data, not a trading signal.</span></span></div>
+        <div class="cot-caption">Managed money&rsquo;s net position (CFTC disaggregated report), placed within its past 52 weeks. <span class="tip"><button type="button" class="tip-b" aria-expanded="false" aria-describedby="tip-cot">How to read</button><span id="tip-cot" role="tooltip" class="tip-t" hidden>COT is the CFTC&rsquo;s weekly Commitments of Traders report, positions as of Tuesday. Managed money means hedge funds and commodity trading advisers. Net futures contracts held long vs short by the &ldquo;managed money&rdquo; group in CFTC&rsquo;s disaggregated report (hedge funds and commodity trading advisers). Bar shows where that position sits within the past 52 weeks (not the 3-yr COT Index some desks use — this window runs shorter, which can read positioning as more extreme). The badge above averages the first four rows&rsquo; position-in-range (corn, soybeans, Chicago wheat, live cattle), not a headcount of who&rsquo;s long or short — one row can run the other way. Interpretation of public CFTC data, not a trading signal.</span></span></div>
         <div class="cot-rows" id="cot-rows">
           <div class="cot-row-corn"><div class="cot-row-top"><div class="cot-label"><span class="cot-comm-name">Corn</span></div><div class="cot-right"><span class="cot-dir nc" id="cot-corn-dir">--</span><span class="cot-net" id="cot-corn-net">--</span><span class="cot-chg nc" id="cot-corn-chg">--</span></div></div><div class="cot-bar-wrap"><div class="cot-bar-fill" id="cot-corn-fill"></div><div class="cot-zero-mark" id="cot-corn-zero"></div><div class="cot-bar-dot" id="cot-corn-dot" style="background:var(--text-muted)"></div></div><div class="cot-bar-labels"><span id="cot-corn-min">--</span><span>52-week range</span><span id="cot-corn-max">--</span></div></div>
           <div class="cot-row-beans"><div class="cot-row-top"><div class="cot-label"><span class="cot-comm-name">Soybeans</span></div><div class="cot-right"><span class="cot-dir nc" id="cot-beans-dir">--</span><span class="cot-net" id="cot-beans-net">--</span><span class="cot-chg nc" id="cot-beans-chg">--</span></div></div><div class="cot-bar-wrap"><div class="cot-bar-fill" id="cot-beans-fill"></div><div class="cot-zero-mark" id="cot-beans-zero"></div><div class="cot-bar-dot" id="cot-beans-dot" style="background:var(--text-muted)"></div></div><div class="cot-bar-labels"><span id="cot-beans-min">--</span><span>52-week range</span><span id="cot-beans-max">--</span></div></div>
@@ -1321,7 +1343,7 @@ try{var _w=JSON.parse(localStorage.getItem('agsist-wx-loc')||'null');if(_w&&/^\d
             <div style="font-size:.824rem;margin-top:.25rem" id="nc-beans-vs">&nbsp;</div>
           </div>
         </div>
-        <div style="font-size:.706rem;color:var(--text-muted);line-height:1.55;margin-bottom:.35rem">Weekly, from USDA crop ratings. <span class="tip"><button type="button" class="tip-b" aria-expanded="false" aria-describedby="tip-nowcast">How it works</button><span id="tip-nowcast" role="tooltip" class="tip-t" hidden>Built from Monday&rsquo;s USDA crop ratings, state by state, weighted by acres. The band isn&rsquo;t a guess &mdash; it&rsquo;s how far the same model actually missed at this week of the season, backtested <span id="nc-years">16</span> years. Tightens as the season ages.</span></span></div>
+        <div style="font-size:.706rem;color:var(--text-muted);line-height:1.55;margin-bottom:.35rem">Weekly, from USDA crop ratings. <span class="tip"><button type="button" class="tip-b" aria-expanded="false" aria-describedby="tip-nowcast">How it works</button><span id="tip-nowcast" role="tooltip" class="tip-t" hidden>Built from Monday&rsquo;s USDA crop ratings, state by state, weighted by acres. 80% band: in 8 of every 10 years backtested (<span id="nc-years">16</span> years, each left out in turn), the model at this week of the season missed USDA&rsquo;s final yield by no more than this. Tightens as the season ages.</span></span></div>
         <div style="display:flex;align-items:center;justify-content:space-between;gap:.5rem;flex-wrap:wrap">
           <span style="font-family:'JetBrains Mono',monospace;font-size:.706rem;color:var(--text-muted)" id="nc-week">Ratings week: &mdash;</span>
           <a href="/conditions-yield" class="ratio-link"><svg class="ic" aria-hidden="true"><use href="#i-chart-column"/></svg> How it&rsquo;s computed</a>
@@ -2538,20 +2560,29 @@ fetch('/data/fertilizer.json')
        once. NH3, UAN and DAP are not in fertilizer.json, so they are not
        shown. */
     var dateEl=document.getElementById('fert-date');if(dateEl)dateEl.textContent='Updated '+fmtDate(data.updated);
-    var srcEl=document.getElementById('fert-src-note');if(srcEl)srcEl.textContent='Midwest dealer quotes, dollars per ton';
+    /* wave1-E: the source as the file names it, not a line typed here. */
+    var srcEl=document.getElementById('fert-src-note');if(srcEl)srcEl.textContent=(data.source?String(data.source).replace(/[.\s]+$/,''):'Dealer quotes')+'. Dollars per ton.';
     var grid=document.getElementById('fert-grid');if(!grid||!data.prices||!data.prices.length)return;
     function age(iso){var t=new Date((iso||'')+'T12:00:00').getTime();return isNaN(t)?null:Math.floor((Date.now()-t)/86400000);}
     var fresh=[],old=[];
     data.prices.forEach(function(p){if(p.price==null)return;var a=age(p.as_of||data.updated);if(a==null||a>45)old.push(p);else fresh.push(p);});
     grid.classList.add('r7-fert');
     var h='<div class="r7-fh" aria-hidden="true"><span>Product</span><span>Per ton</span><span>Change</span><span>Quoted</span></div>';
+    /* short date in the table: "Sep 1", with the year only when it is not this year */
+    var thisYr=new Date().getFullYear(),stale=[];
+    function sd(iso){var d=new Date((iso||'')+'T12:00:00');if(isNaN(d))return '\u2014';return d.toLocaleDateString('en-US',d.getFullYear()===thisYr?{month:'short',day:'numeric'}:{month:'short',day:'numeric',year:'numeric'});}
     h+=fresh.map(function(p){
       var chg=p.prev!=null?p.price-p.prev:null;
       var cls=chg==null?'nc':chg>0?'up':chg<0?'dn':'nc';
       var cs=chg==null?'':chg===0?'unch':(chg>0?'\u25b2 +$':'\u25bc \u2212$')+Math.abs(chg);
-      return '<div class="r7-fr"><span class="r7-fn">'+esc(p.name)+' <small>'+esc(p.symbol||'')+'</small></span><span class="r7-fp">$'+esc(String(p.price))+'</span><span class="r7-fc fert-chg-val '+cls+'">'+esc(cs)+'</span><span class="r7-fd">'+esc(fmtDate(p.as_of||data.updated))+'</span></div>';
+      /* wave1-E: the change names the quote it is measured from (prev_as_of,
+         written by update_fertilizer.py); a quote over 30 days old says so. */
+      var since=(chg!=null&&p.prev_as_of)?'<small class="r7-fs">since '+esc(sd(p.prev_as_of))+'</small>':'';
+      var a30=age(p.as_of||data.updated);if(a30!=null&&a30>30)stale.push(p.name);
+      return '<div class="r7-fr"><span class="r7-fn">'+esc(p.name)+' <small>'+esc(p.symbol||'')+'</small></span><span class="r7-fp">$'+esc(String(p.price))+'</span><span class="r7-fc fert-chg-val '+cls+'">'+esc(cs)+since+'</span><span class="r7-fd">'+esc(sd(p.as_of||data.updated))+'</span></div>';
     }).join('');
     if(!fresh.length)h+='<div class="r7-fnote">Not loaded yet.</div>';
+    if(stale.length)h+='<div class="r7-fnote">'+(stale.length===fresh.length?(stale.length===1?'This quote is':'All '+stale.length+' quotes above are'):esc(stale.join(', '))+(stale.length===1?' is':' are'))+' more than 30 days old.</div>';
     if(old.length){
       var ds={};old.forEach(function(p){ds[fmtDate(p.as_of||data.updated)]=1;});
       h+='<div class="r7-fnote">'+old.length+(old.length===1?' older quote':' older quotes')+' not shown ('+esc(old.map(function(p){return p.name;}).join(', '))+', last quoted '+esc(Object.keys(ds).join(', '))+').</div>';
@@ -2776,6 +2807,8 @@ gj('/data/markets.json').then(function(cached){
          of that week is described, not moved. */
       var last=shown.length?shown[shown.length-1].day:todayIso,hd=Object.keys(HOL).sort().filter(function(h){return h>=todayIso&&h<=last;})[0];
       var hn=document.getElementById('r7-cal-hol'),host=strip.parentNode;
+      /* wave1-E: a card dated on the holiday already says so; one note, not two. */
+      if(hd&&shown.some(function(ev){return ev.day===hd;}))hd=null;
       if(hd){if(!hn){hn=document.createElement('p');hn.id='r7-cal-hol';host.parentNode.insertBefore(hn,host.nextSibling);}
         var hp=hd.split('-');hn.textContent='Federal holiday '+months[+hp[1]-1]+' '+(+hp[2])+': release dates that week may shift, check USDA.';}
       else if(hn){hn.parentNode.removeChild(hn);}
@@ -4934,7 +4967,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
       var st=l.state,cty=String(l.county||'').replace(/\s+County$/i,'').toLowerCase(),hit=null;
       for(var k in d.counties){var c=d.counties[k];if(c.st===st&&String(c.n||'').replace(/\s+County$/i,'').toLowerCase()===cty){hit=c;break;}}
       if(hit&&hit.r!=null)put('rent','$'+Math.round(hit.r)+' <small>per acre'+(hit.ry?', '+hit.ry:'')+'</small>',esc(hit.n+', '+hit.st+'. USDA NASS county cash rent.'));
-      else if(d.states&&d.states[st]&&d.states[st].r!=null)put('rent','$'+Math.round(d.states[st].r)+' <small>per acre, state average</small>',esc((d.states[st].n||st)+'. USDA NASS cash rent.'));
+      else if(d.states&&d.states[st]&&d.states[st].r!=null)put('rent','$'+Math.round(d.states[st].r)+' <small>per acre, state median of counties</small>',esc((d.states[st].n||st)+'. USDA NASS county cash rent survey.'));
       else put('rent',NL(),'Farmland Atlas');
     });
   }

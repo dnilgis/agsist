@@ -514,13 +514,15 @@
     "Dairy prices",
     "Rebuild Feed Manifest"
    ],
-   "cadence": "2 launches on a fixed schedule at about 9am, 10am Central",
+   "cadence": "4 launches on a fixed schedule at about 9am, 10am, 4pm Central",
    "curated": false,
    "planned": false,
    "external": false,
    "url": null,
    "crons": [
-    "37 15 3-9 * *",
+    "37 15 1-9 * *",
+    "37 21 1-9 * *",
+    "37 15 28-31 * *",
     "11 14 * * 2"
    ],
    "max_gap_hours": null,

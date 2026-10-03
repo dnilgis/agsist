@@ -54,8 +54,8 @@
      "acceptedAnswer":{"@type":"Answer","text":"Cash bids come from elevators' own posted boards and a second feed, and reflect elevator-posted prices updated during trading hours. Prices may lag real-time futures by minutes depending on when the elevator last posted. Always confirm the current bid directly with the elevator before loading or hauling grain."}},
     {"@type":"Question","name":"My elevator isn’t showing up. What can I do?",
      "acceptedAnswer":{"@type":"Answer","text":"Coverage depends on whether AGSIST reads your elevator's board or it reaches us through a second feed. Some smaller independent elevators may not participate. If your elevator isn’t listed, email sig@farmers1st.com — I’ll investigate whether it’s available and can be added. I’m actively working to expand coverage across the Corn Belt."}},
-    {"@type":"Question","name":"Is AGSIST affiliated with any elevator or grain company?",
-     "acceptedAnswer":{"@type":"Answer","text":"No. AGSIST is an independent agricultural intelligence dashboard built and operated by Sigurd Lindquist, a crop insurance agent and grain farmer. It has no ownership, financial, or commercial relationship with any elevator, co-op, or grain company. Cash bid data is gathered neutrally, with no elevator paying for placement."}},
+    {"@type":"Question","name":"How are bids ordered?",
+     "acceptedAnswer":{"@type":"Answer","text":"Nearest first, by distance from the ZIP you enter. On the Cash Bids page you can sort by best cash price, best basis or name instead. No elevator pays for placement."}},
     {"@type":"Question","name":"Can an elevator pay to rank higher?",
      "acceptedAnswer":{"@type":"Answer","text":"No. Listing is free, and payment never changes bid order or ranking. Bids are shown as the elevator posted them, with the time they were read. Elevators can claim their board to check their name, town and phone."}}
   ]}
@@ -436,8 +436,8 @@ button,a,[role="button"]{touch-action:manipulation}
       <div class="el-faq-a"><div class="el-faq-ai">Coverage depends on whether AGSIST reads your elevator's board or it reaches us through a second feed. Some smaller independent elevators may not participate. If your elevator isn&rsquo;t listed, email sig@farmers1st.com &mdash; I&rsquo;ll investigate whether it&rsquo;s available and can be added. I&rsquo;m actively working to expand coverage across the Corn Belt.</div></div>
     </div>
     <div class="el-faq-item">
-      <div class="el-faq-q" role="button" tabindex="0" aria-expanded="false">Is AGSIST affiliated with any elevator or grain company?</div>
-      <div class="el-faq-a"><div class="el-faq-ai">No. AGSIST is an independent agricultural intelligence dashboard built and operated by Sigurd Lindquist, a crop insurance agent and grain farmer. It has no ownership, financial, or commercial relationship with any elevator, co-op, or grain company. Cash bid data is gathered neutrally, with no elevator paying for placement.</div></div>
+      <div class="el-faq-q" role="button" tabindex="0" aria-expanded="false">How are bids ordered?</div>
+      <div class="el-faq-a"><div class="el-faq-ai">Nearest first, by distance from the ZIP you enter. On the Cash Bids page you can sort by best cash price, best basis or name instead. No elevator pays for placement.</div></div>
     </div>
     <div class="el-faq-item">
       <div class="el-faq-q" role="button" tabindex="0" aria-expanded="false">Can an elevator pay to rank higher?</div>
@@ -795,7 +795,9 @@ document.addEventListener('click',function(e){var a=e.target.closest&&e.target.c
     var when = fmtCT(d.directoryGenerated || d.generated);
     el.innerHTML = 'In the read ' + (when ? 'of ' + esc(when) : 'this page was built from') +
       ', AGSIST read <span class="num">' + n.read.toLocaleString('en-US') + '</span> elevator boards direct. ' +
-      'It knows <span class="num">' + n.known.toLocaleString('en-US') + '</span> more elevators whose boards it does not read yet. ' +
+      /* wave1-E: the quiet boards are counted too, from the same file (counts.quiet). */
+      (typeof n.quiet === 'number' && n.quiet > 0 ? '<span class="num">' + n.quiet.toLocaleString('en-US') + '</span> more have a reader that did not answer that pass. ' : '') +
+      'It knows <span class="num">' + n.known.toLocaleString('en-US') + '</span> more elevators that have no reader yet. ' +
       '<a href="#coverage-map">See the map</a>.';
   }
   /* /elevators#claim: the map and its counts load after the browser has

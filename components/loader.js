@@ -2,11 +2,19 @@
 (function () {
   'use strict';
 
-  // Apply saved theme immediately (before paint)
-  try {
-    var t = localStorage.getItem('agsist-theme') || 'dark';
-    document.documentElement.setAttribute('data-theme', t);
-  } catch (e) {}
+  // Apply the saved theme; with no saved choice, follow the device
+  // (prefers-color-scheme). Dark stays the fallback when the device says nothing.
+  // wave1-E 2026-10-03: a first visit used to be forced dark, and the toggle
+  // init below then saved that, so the device setting was never heard.
+  function deviceTheme() {
+    try { return window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark'; }
+    catch (e) { return 'dark'; }
+  }
+  function savedTheme() {
+    try { var s = localStorage.getItem('agsist-theme'); return s === 'light' || s === 'dark' ? s : null; }
+    catch (e) { return null; }
+  }
+  try { document.documentElement.setAttribute('data-theme', savedTheme() || deviceTheme()); } catch (e) {}
 
   var BASE = (function () {
     var m = document.querySelector('meta[name="agsist-base"]');
@@ -89,9 +97,10 @@
     })();
 
     // ── Theme toggle ─────────────────────────────────────────────
-    function applyTheme(th) {
+    function applyTheme(th, save) {
       document.documentElement.setAttribute('data-theme', th);
-      try { localStorage.setItem('agsist-theme', th); } catch (e) {}
+      // only a press of the toggle is a choice worth remembering
+      if (save) { try { localStorage.setItem('agsist-theme', th); } catch (e) {} }
       // Icon (moon/sun) is now a CSS-toggled SVG pair keyed off [data-theme];
       // no textContent here so the inline <svg>s aren't clobbered on toggle.
       var lbl  = th === 'light' ? 'Switch to dark mode' : 'Switch to light mode';
@@ -100,12 +109,19 @@
         if (btn) btn.setAttribute('aria-label', lbl);
       });
     }
-    applyTheme(document.documentElement.getAttribute('data-theme') || 'dark');
+    applyTheme(savedTheme() || deviceTheme(), false);
+    // no saved choice: keep following the device if it switches (dusk, settings)
+    try {
+      var mq = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)');
+      var onDev = function () { if (!savedTheme()) applyTheme(deviceTheme(), false); };
+      if (mq && mq.addEventListener) mq.addEventListener('change', onDev);
+      else if (mq && mq.addListener) mq.addListener(onDev);
+    } catch (e) {}
 
     ['theme-btn', 'theme-btn-d'].forEach(function (id) {
       var btn = document.getElementById(id);
       if (btn) btn.addEventListener('click', function () {
-        applyTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+        applyTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark', true);
       });
     });
 

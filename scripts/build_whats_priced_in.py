@@ -199,7 +199,8 @@ def build_report_numbers(upcoming, path=ANALYST_PATH):
             "high": hi,
             "usda_current": m.get("usda_current"),
             "actual": act,
-            "surprise": band_surprise(exp, act, label),
+            # graded against the survey's range first, then the band (report_bands)
+            "surprise": band_surprise(exp, act, label, lo, hi),
             "gap_pct": band_gap_pct(exp, act),
             "why": why,
             "source": m.get("consensus_source"),
@@ -324,12 +325,36 @@ def score(expected, actual, metric=""):
     return band_surprise(expected, actual, metric)
 
 
-def build_history(rows):
+def survey_ranges(path=None):
+    """{(date, metric label): (low, high)} from data/analyst-estimates.json.
+
+    The track record rows in wpi-history.json carry the average but not the
+    survey's low and high. Those already live in analyst-estimates.json, typed
+    from the survey once; they are read from there rather than copied, so a
+    print is graded against the same range the report card showed."""
+    try:
+        with open(path or ANALYST_PATH) as f:
+            book = json.load(f)
+    except (OSError, ValueError):
+        return {}
+    out = {}
+    for rpt in book.get("reports") or []:
+        for m in rpt.get("metrics") or []:
+            rng = m.get("consensus_range") or []
+            if m.get("label") and len(rng) == 2 and None not in rng:
+                out[(rpt.get("date"), m["label"])] = (rng[0], rng[1])
+    return out
+
+
+def build_history(rows, ranges=None):
+    ranges = ranges or {}
     out = []
     for r in rows:
         row = {k: r.get(k) for k in HISTORY_FIELDS}
+        lo, hi = ranges.get((r.get("date"), r.get("metric") or r.get("label")), (None, None))
+        row["low"], row["high"] = lo, hi
         if not row.get("surprise"):
-            row["surprise"] = score(r.get("expected"), r.get("actual"), r.get("metric") or r.get("label") or "")
+            row["surprise"] = band_surprise(r.get("expected"), r.get("actual"), r.get("metric") or r.get("label") or "", lo, hi)
         # HOW FAR OFF, ON EVERY ROW. This was computed for the one report in the
         # result banner and nowhere else, so the track record showed "765 -> 744"
         # and left the reader to do the arithmetic on thirteen rows.
@@ -386,7 +411,7 @@ def main():
     upcoming = build_upcoming(reports, today, cot)
     if upcoming:
         upcoming["numbers"] = build_report_numbers(upcoming)
-    history = build_history(hist_rows)
+    history = build_history(hist_rows, survey_ranges())
     latest_result = build_latest_result(history)
 
     # ── THE WALK-THROUGH HAS TO OUTLIVE THE REPORT IT WALKS THROUGH ──────
@@ -486,6 +511,24 @@ def _selftest():
     finally:
         _os.unlink(path)
 
+    # ── THE TRADE RANGE IS GRADED FIRST, IN THE TRACK RECORD TOO ────────────
+    # September 2026 Grain Stocks soybeans: average 0.324, range 0.304-0.349,
+    # print 0.315. -2.8% clears the 2% band; inside the range it is not bullish.
+    rk = {("2026-09-30", "Soybean stocks, all positions, Sept 1"): (0.304, 0.349),
+          ("2026-09-30", "Corn stocks, all positions, Sept 1"): (1.843, 2.005)}
+    h = {x["metric"]: x for x in build_history([
+        {"date": "2026-09-30", "metric": "Soybean stocks, all positions, Sept 1", "expected": 0.324, "actual": 0.315},
+        {"date": "2026-09-30", "metric": "Corn stocks, all positions, Sept 1", "expected": 1.918, "actual": 2.095},
+        {"date": "2026-06-11", "metric": "2026/27 wheat ending stocks", "expected": 765, "actual": 744}], rk)}
+    assert h["Soybean stocks, all positions, Sept 1"]["surprise"] == "in line", h
+    assert h["Soybean stocks, all positions, Sept 1"]["low"] == 0.304
+    assert h["Corn stocks, all positions, Sept 1"]["surprise"] == "bearish"
+    # no range on file: the 2% band still decides (765 -> 744 is -2.7%)
+    assert h["2026/27 wheat ending stocks"]["surprise"] == "bullish" and h["2026/27 wheat ending stocks"]["low"] is None
+    real = survey_ranges()
+    if real:
+        assert real.get(("2026-09-30", "Soybean stocks, all positions, Sept 1")) == (0.304, 0.349), "the range is read, not retyped"
+
     # ── THE CARD NEVER GOES BLANK BECAUSE THE LIST RAN OUT ──────────────────
     reps = [{"report": "September WASDE", "date": "2026-09-11", "metric": "corn yield"}]
 
@@ -565,7 +608,9 @@ def _selftest():
                             "result banner, not the next card: got %r" % (nums,))
     got = {r["key"]: (r["actual"], r["surprise"]) for r in nums}
     assert got["corn_yield_2627"] == (178.5, "in line"), got
-    assert got["soy_yield_2627"] == (52.8, "bearish"), got
+    # corrected 2026-10-03: 52.8 is inside the survey's 51.5-53.3, and the range is
+    # graded first now, so this print is in line (it was "bearish" off the 0.5% band)
+    assert got["soy_yield_2627"] == (52.8, "in line"), got
     # and the September rows are NOT also hanging off October's card, which
     # would put the same figures under the wrong report's heading.
     assert built["upcoming"]["date"] != "2026-09-11"

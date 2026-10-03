@@ -7,8 +7,14 @@ not an API). This makes the update one command — or one GitHub Actions form
 
 Rules (honest-numbers doctrine):
   - Only products passed on the CLI change; everything else carries flat.
-  - EVERY product's `prev` becomes the last sheet's price, so the site's
-    up/down arrows always compare against the previous published sheet.
+  - A product passed on the CLI was quoted on this sheet: its `prev` becomes
+    its last price, `prev_as_of` the date of that last quote, and `as_of`
+    today. Type the same number to record a re-quote at an unchanged price.
+  - A product left blank was not re-quoted: price, prev, prev_as_of and as_of
+    all stay as they were, so its change keeps naming the dates it is between.
+    (Changed 2026-10-03, wave1-E. Before, a blank row's `prev` was overwritten
+    with its own price, which erased its last change and printed "unch" for a
+    product nobody had quoted.)
   - `updated` = today (UTC), `source` month follows.
   - Sanity guard: a new price that moves more than 60% from the last sheet is
     almost certainly a typo ($69 for urea, $6950...). Refused unless --force.
@@ -39,10 +45,14 @@ def apply(data, changes, force=False, now=None):
     if unknown:
         raise ValueError(f"unknown product(s): {sorted(unknown)} — knowns: {sorted(names)}")
     notes = []
+    today = now.strftime("%Y-%m-%d")
     for p in data["prices"]:
         old = p["price"]
-        p["prev"] = old
         if p["name"] in changes:
+            p["prev"] = old
+            # the date the old price was quoted: its own as_of, else the sheet date
+            p["prev_as_of"] = p.get("as_of") or data.get("updated")
+            p["as_of"] = today
             new = float(changes[p["name"]])
             if new <= 0:
                 raise ValueError(f"{p['name']}: price {new} — not a price")
@@ -54,15 +64,15 @@ def apply(data, changes, force=False, now=None):
             notes.append(f"{p['name']}: {old} -> {p['price']}")
         else:
             notes.append(f"{p['name']}: {old} (no change)")
-    data["updated"] = now.strftime("%Y-%m-%d")
+    data["updated"] = today
     data["source"] = f"Midwest dealer benchmark — {now.strftime('%B %Y')}"
     return data, notes
 
 
 def _selftest():
     base = {"updated": "2026-06-08", "source": "x", "prices": [
-        {"name": "Urea", "price": 760, "prev": 830},
-        {"name": "Potash", "price": 450, "prev": 450}]}
+        {"name": "Urea", "price": 760, "prev": 830, "as_of": "2026-06-08", "prev_as_of": "2026-05-04"},
+        {"name": "Potash", "price": 450, "prev": 440, "as_of": "2026-06-08", "prev_as_of": "2026-05-04"}]}
     T = datetime(2026, 7, 20, tzinfo=timezone.utc)
     ok = True
     def chk(c, m):
@@ -72,8 +82,17 @@ def _selftest():
     d, _ = apply(json.loads(json.dumps(base)), {"Urea": 695}, now=T)
     u = next(p for p in d["prices"] if p["name"] == "Urea")
     k = next(p for p in d["prices"] if p["name"] == "Potash")
-    chk(u["price"] == 695 and u["prev"] == 760, "changed product: price set, prev = last sheet")
-    chk(k["price"] == 450 and k["prev"] == 450, "unchanged product: flat, prev = last sheet")
+    chk(u["price"] == 695 and u["prev"] == 760, "changed product: price set, prev = its last quote")
+    chk(u["as_of"] == "2026-07-20" and u["prev_as_of"] == "2026-06-08", "changed product: quoted today, change since its last quote date")
+    # corrected 2026-10-03: a blank row was not quoted, so nothing about it moves
+    chk(k["price"] == 450 and k["prev"] == 440 and k["as_of"] == "2026-06-08" and k["prev_as_of"] == "2026-05-04",
+        "blank product: price, prev and both dates untouched")
+    d3, _ = apply(json.loads(json.dumps(base)), {"Potash": 450}, now=T)
+    k3 = next(p for p in d3["prices"] if p["name"] == "Potash")
+    chk(k3["prev"] == 450 and k3["as_of"] == "2026-07-20" and k3["prev_as_of"] == "2026-06-08",
+        "a re-quote at the same price is unchanged since the last quote date")
+    d4, _ = apply({"updated": "2026-06-08", "source": "x", "prices": [{"name": "Urea", "price": 760, "prev": 830}]}, {"Urea": 700}, now=T)
+    chk(d4["prices"][0]["prev_as_of"] == "2026-06-08", "a row with no as_of takes the last sheet date for prev_as_of")
     chk(d["updated"] == "2026-07-20" and "July 2026" in d["source"], "date + source month stamped")
     for bad, why in (({"Urea": 69}, "10x-low typo"), ({"Urea": 6950}, "10x-high typo"),
                      ({"Urea": -5}, "negative"), ({"Nitrogen": 500}, "unknown product")):
