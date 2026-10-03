@@ -4487,12 +4487,14 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
   if(grid&&S){
     var h=$('s7-month-h');if(h)h.textContent=MONTH[M-1]+' on the farm';
     var k=$('s7-month-k');if(k)k.textContent='Changes with the month';
-    var cols=S.lead.map(function(m){return m==='insurance'?'minmax(0,2fr)':'minmax(0,1fr)';}).join(' ');
+    /* The insurance cell takes a full row of its own (one row per crop inside it). */
+    var cols=S.lead.filter(function(m){return m!=='insurance';}).map(function(){return 'minmax(0,1fr)';}).join(' ');
     grid.style.gridTemplateColumns=cols;
     S.lead.forEach(function(m){
-      var a=document.createElement('a');
-      a.className='s7-c'+(m==='insurance'?' s7-wide':'');a.href=HREF[m]||'#';a.setAttribute('data-track','season');a.id='s7-c-'+m;
-      a.innerHTML='<span class="s7-ck">'+LABEL[m]+'</span><span class="s7-cv">'+NL()+'</span><span class="s7-cm" hidden></span><span class="s7-cs"></span>';
+      /* The insurance cell holds a state picker and links, so it is a div. */
+      var ins=m==='insurance',a=document.createElement(ins?'div':'a');
+      a.className='s7-c'+(ins?' s7-wide':'');if(!ins)a.href=HREF[m]||'#';a.setAttribute('data-track','season');a.id='s7-c-'+m;
+      a.innerHTML=(ins?'<span class="s7-ck"><a href="'+HREF[m]+'">'+LABEL[m]+'</a></span><label class="s7-ins-pick"><span class="visually-hidden">Your state</span><select id="s7-ins-state"></select></label>':'<span class="s7-ck">'+LABEL[m]+'</span>')+'<span class="s7-cv">'+NL()+'</span><span class="s7-cm" hidden></span><span class="s7-cs"></span>';
       grid.appendChild(a);cells[m]=a;
     });
     grid.addEventListener('click',function(e){
@@ -4514,6 +4516,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
   function once(key,fn){return P[key]||(P[key]=fn());}
   function prices(){return once('prices',function(){return get('/data/prices.json');});}
   function rma(){return once('rma',function(){return get('/data/rma-prices.json');});}
+  function hprices(){return once('hp',function(){return get('/data/harvest-prices.json');});}
   function progress(){return once('cp',function(){return get('/data/crop-progress.json');});}
   function calendar(){return once('ics',function(){return getText('/usda-calendar.ics').then(parseIcs);});}
   function parseIcs(t){
@@ -4536,13 +4539,20 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
   /* ---------- A1 insurance harvest price ---------- */
   var AB={AL:"Alabama",AK:"Alaska",AZ:"Arizona",AR:"Arkansas",CA:"California",CO:"Colorado",CT:"Connecticut",DE:"Delaware",FL:"Florida",GA:"Georgia",HI:"Hawaii",ID:"Idaho",IL:"Illinois",IN:"Indiana",IA:"Iowa",KS:"Kansas",KY:"Kentucky",LA:"Louisiana",ME:"Maine",MD:"Maryland",MA:"Massachusetts",MI:"Michigan",MN:"Minnesota",MS:"Mississippi",MO:"Missouri",MT:"Montana",NE:"Nebraska",NV:"Nevada",NH:"New Hampshire",NJ:"New Jersey",NM:"New Mexico",NY:"New York",NC:"North Carolina",ND:"North Dakota",OH:"Ohio",OK:"Oklahoma",OR:"Oregon",PA:"Pennsylvania",RI:"Rhode Island",SC:"South Carolina",SD:"South Dakota",TN:"Tennessee",TX:"Texas",UT:"Utah",VT:"Vermont",VA:"Virginia",WA:"Washington",WV:"West Virginia",WI:"Wisconsin",WY:"Wyoming"};
   var MCODE={January:'F',February:'G',March:'H',April:'J',May:'K',June:'M',July:'N',August:'Q',September:'U',October:'V',November:'X',December:'Z'};
+  /* The reader's state, by full name. An explicit pick (this box, the old
+     #pdw widget, or the tracker's own picker) wins; a weather location is a
+     guess and is never written back. */
   function stateName(){
     var picked=null;try{picked=localStorage.getItem('agsist-rma-state');}catch(e){}
     if(picked)return picked;
+    var pd=null;try{pd=localStorage.getItem('agsist-pd-state');}catch(e){}
+    if(pd&&AB[pd])return AB[pd];
     var l=loc(),raw=l&&l.state?String(l.state).trim():'';
     if(raw.length===2)return AB[raw.toUpperCase()]||null;
-    return raw||null;
+    for(var k in AB){if(AB[k].toLowerCase()===raw.toLowerCase())return AB[k];}
+    return null;
   }
+  function stateCode(name){for(var k in AB){if(AB[k]===name)return k;}return '';}
   function dayStart(s){var m=/^(\d{4})-(\d{2})-(\d{2})/.exec(s||'');return m?new Date(+m[1],+m[2]-1,+m[3]):null;}
   function quoteFor(q,root2,mon,yr){
     /* The futures quote whose ticker is that exact contract (e.g. ZCZ26). */
@@ -4565,80 +4575,184 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
   /* The RMA price discovery block below the outlooks uses the same count. */
   window.S7TD=function(a,b,t){return 'trading day '+tradingDays(a,t)+' of '+tradingDays(a,b);};
   [].forEach.call(document.querySelectorAll('.s7-td'),function(x){x.textContent=window.S7TD(new Date(+x.getAttribute('data-a')),new Date(+x.getAttribute('data-b')),new Date(+x.getAttribute('data-t')));});
-  function money(c){var a=Math.abs(c);return sgn(c)+(a>=100?'$'+(a/100).toFixed(2):a+'¢');}
-  function crops2(l){return l.length>1?l[0]+' and '+l[1].toLowerCase():l[0];}
+  /* One row per crop the state has in rma-prices.json, each with its own
+     window, its own status and its own date. Conventional practice only;
+     organic is priced separately and lives on the tracker. */
+  var INS_CROPS=['Corn','Soybeans','Wheat','Grain Sorghum','Cotton','Rice','Peanuts'];
+  var PER_LB={Rice:1,Cotton:1,Peanuts:1};
+  var ROOT={Corn:'ZC',Soybeans:'ZS'};
+  function unitOf(crop){return PER_LB[crop]?'lb':'bu';}
+  function usd(v,u){return '$'+v.toFixed(u==='lb'?4:2);}
+  function gap(diff,u){
+    var c=u==='lb'?Math.round(diff*10000)/100:Math.round(diff*100),a=Math.abs(c);
+    if(!c)return 'at projected';
+    var t=(u==='bu'&&a>=100)?'$'+(a/100).toFixed(2):String(a)+'¢';
+    return t+' '+(c>0?'above':'below')+' projected';
+  }
+  /* "Yet To Start" ships as 0. A zero is not a price. */
+  function priceOf(v,status){var x=Number(v);if(v==null||!isFinite(x)||x<=0||/yet to start/i.test(status||''))return null;return x;}
+  function rng(a,b){return MON[a.getMonth()]+' '+a.getDate()+'–'+(a.getMonth()===b.getMonth()?'':MON[b.getMonth()]+' ')+b.getDate();}
+  function md(d){return MON[d.getMonth()]+' '+d.getDate();}
+  function realType(t){return (t&&!/^all\b/i.test(String(t)))?String(t):'';}
+  /* The site's own average of the settles, from data/harvest-prices.json
+     (scripts/fetch_harvest_prices.py computes it; the tracker bakes the same
+     figure). Only when that file covers this exact contract and window. */
+  function ownAvg(hp,crop,pick,hs,he,today){
+    if(!hp||!hp.commodities||!hs||!he)return null;
+    var c=null;hp.commodities.forEach(function(x){if(x.label===crop)c=x;});
+    var leg=c&&c.harvest;if(!leg||!leg.series||!leg.series.length)return null;
+    var want=String(pick.h_mon||'').slice(0,3)+" '"+String(pick.h_yr).slice(-2);
+    var monthEnd=new Date(hs.getFullYear(),hs.getMonth()+1,0);
+    if(c.contract!==want||hp.crop_year!==hs.getFullYear()||leg.window!==MONTH[hs.getMonth()]||hs.getDate()!==1||+he!==+monthEnd)return null;
+    var avg=leg.status==='final'?leg.price:leg.running_avg;
+    if(avg==null)return null;
+    var last=dayStart(leg.series[leg.series.length-1].d);
+    if(!last||last>today||last<hs)return null;
+    return {avg:avg,days:leg.days_counted,series:leg.series};
+  }
+  /* How many settles RMA's posted figure holds: the day whose running
+     average (the pipeline writes it as "a") equals RMA's price. Only a single
+     match counts; otherwise the count is not printed. */
+  function rmaDays(own,h){
+    if(!own)return null;var hit=[];
+    own.series.forEach(function(s,i){if(s.a!=null&&Math.round(s.a*100)===Math.round(h*100))hit.push(i+1);});
+    return hit.length===1?hit[0]:null;
+  }
+  function dayWord(n){return n+' day'+(n===1?'':'s');}
+  function pickerFill(states,st){
+    var c=cells.insurance,sel=c&&c.querySelector?c.querySelector('#s7-ins-state'):null;if(!sel)return;
+    if(!sel.options.length||sel.options.length<2){
+      sel.innerHTML='<option value="">Pick your state</option>'+states.map(function(s){return '<option>'+esc(s)+'</option>';}).join('');
+      sel.addEventListener('change',function(){
+        var v=sel.value;
+        try{
+          if(v){localStorage.setItem('agsist-rma-state',v);localStorage.setItem('agsist-pd-state',stateCode(v));}
+          else{localStorage.removeItem('agsist-rma-state');localStorage.removeItem('agsist-pd-state');}
+        }catch(e){}
+        if(window.gaEvent)try{gaEvent('ins_state_pick',{state:v||'none'});}catch(e){}
+        insurance();
+      });
+    }
+    sel.value=(st&&states.indexOf(st)>=0)?st:'';
+  }
   function insurance(){
     if(!cells.insurance)return;
-    Promise.all([rma(),prices()]).then(function(r){
-      var d=r[0],px=r[1];
+    Promise.all([rma(),prices(),hprices()]).then(function(r){
+      var d=r[0],px=r[1],hp=r[2];
       if(!d||!d.rows){put('insurance',NL(),'USDA RMA price discovery');return;}
-      var st=stateName(),today=new Date(NOW.getFullYear(),NOW.getMonth(),NOW.getDate());
-      var crops=[['Corn','ZC','Corn'],['Soybeans','ZS','Soybeans']],lines=[],up=[],down=[],miss=[],subs=[],legNote='',hold=false,endTxt='',varies=false;
-      function key(x){return x.p_price+'|'+x.h_start+'|'+x.h_end;}
-      crops.forEach(function(c){
-        var rows=d.rows.filter(function(x){return x.crop===c[0]&&x.practice==='Conventional'&&/^All/.test(x.type||'')&&x.year===d.crop_year;});
-        var pick=null,scope='';
-        if(st){
-          var mine=rows.filter(function(x){return x.state===st;});
-          if(mine.length){
-            /* Several windows (by county sales closing date): use the one whose
-               harvest discovery contains today, or the one they all share;
-               otherwise it varies by county and the reader is sent to the tracker. */
-            var now=mine.filter(function(x){var a=dayStart(x.h_start),b=dayStart(x.h_end);return a&&b&&today>=a&&today<=b;});
-            var pool=now.length?now:mine,ks={};pool.forEach(function(x){ks[key(x)]=1;});
-            if(Object.keys(ks).length===1){pick=pool[0];scope=st;}
-            else{lines.push('<span class="s7-line">'+c[2]+' <small>varies by county in '+esc(st)+'</small></span>');varies=true;return;}
-          }
-        }
-        if(!pick&&rows.length){
-          /* No state known: the window most states share. */
-          var cnt={};rows.forEach(function(x){if(x.p_price!=null){var kk=key(x);cnt[kk]=(cnt[kk]||0)+1;}});
-          var best=null;for(var kk in cnt){if(!best||cnt[kk]>cnt[best])best=kk;}
-          if(best){pick=rows.filter(function(x){return key(x)===best;})[0];scope='most states';}
-        }
-        if(!pick||pick.p_price==null){lines.push('<span class="s7-line">'+c[2]+' '+NL()+'</span>');miss.push(c[2]);return;}
-        var hs=dayStart(pick.h_start),he=dayStart(pick.h_end),ps=dayStart(pick.p_start),pe=dayStart(pick.p_end);
-        var cm=(pick.h_mon||'').slice(0,3)+' ’'+String(pick.h_yr).slice(-2);
-        var q=px&&px.quotes?quoteFor(px.quotes,c[1],pick.h_mon,pick.h_yr):null;
-        var proj='$'+pick.p_price.toFixed(2),inWin=hs&&he&&today>=hs&&today<=he;
-        if(he&&!endTxt)endTxt=MON[he.getMonth()]+' '+he.getDate();
-        if(pick.h_price!=null&&pick.h_status==='Released'){
-          var dc=Math.round((pick.h_price-pick.p_price)*100);
-          lines.push('<span class="s7-line">'+c[2]+' '+money(dc)+' <small>per bu</small></span><span class="s7-line"><small>Harvest price $'+pick.h_price.toFixed(2)+' vs projected '+proj+'</small></span>');
-          (dc>=0?up:down).push(c[2]);
-        } else if(he&&today>he){
-          lines.push('<span class="s7-line">'+c[2]+' <small>harvest price not loaded yet; projected '+proj+'</small></span>');miss.push(c[2]);
-        } else if(inWin&&pick.h_price!=null){
-          /* RMA's running average to date (status In Discovery). */
-          var dr=Math.round((pick.h_price-pick.p_price)*100);hold=true;
-          lines.push('<span class="s7-line">'+c[2]+' '+money(dr)+' <small>per bu</small></span><span class="s7-line"><small>RMA posted average $'+pick.h_price.toFixed(2)+' vs projected '+proj+'</small></span>');
-          (dr>=0?up:down).push(c[2]);
-        } else if(q){
-          var fut=q.close/100,diff=Math.round(fut*100-pick.p_price*100);hold=true;
-          lines.push('<span class="s7-line">'+c[2]+' '+money(diff)+' <small>per bu</small></span><span class="s7-line"><small>Today’s '+cm+' futures $'+fut.toFixed(2)+', not the harvest price yet. Projected '+proj+'.</small></span>');
-          (diff>=0?up:down).push(c[2]);
-        } else {
-          lines.push('<span class="s7-line">'+c[2]+' <small>projected '+proj+'; '+cm+' futures not loaded yet</small></span>');miss.push(c[2]);
-        }
-        if(!legNote&&hs&&he){
-          var tot=tradingDays(hs,he),rng=MON[hs.getMonth()]+' '+hs.getDate()+'–'+(hs.getMonth()===he.getMonth()?'':MON[he.getMonth()]+' ')+he.getDate();
-          if(inWin){var nth=tradingDays(hs,today);legNote=rng+' average, '+(isTrading(today)?'trading day '+nth+' of '+tot:nth+' of '+tot+' trading days done')+'. RMA\u2019s posted average can trail the latest settle by a day.';}
-          else if(today<hs)legNote='Harvest price discovery runs '+rng+' ('+tot+' trading days).';
-          else legNote='Harvest price discovery closed '+isoDay(pick.h_end)+'.';
-          if(ps&&pe&&today>=ps&&today<=pe)legNote='Projected price discovery: '+isoDay(pick.p_start).replace(/, \d{4}$/,'')+' to '+isoDay(pick.p_end)+'.';
-        }
-        if(!subs.length)subs.push('Projected: '+(scope||'')+', '+MON[ps?ps.getMonth():0]+' '+(ps?ps.getFullYear():'')+'.');
+      var today=new Date(NOW.getFullYear(),NOW.getMonth(),NOW.getDate());
+      var conv=d.rows.filter(function(x){return x.practice==='Conventional'&&x.year===d.crop_year;});
+      var states=[];conv.forEach(function(x){if(x.state&&states.indexOf(x.state)<0)states.push(x.state);});states.sort();
+      var st=stateName();if(st&&states.indexOf(st)<0)st=null;
+      pickerFill(states,st);
+      function wkey(x){return x.p_price+'|'+x.h_start+'|'+x.h_end;}
+      var groups=[],usedFut=false,extra=0;
+      if(st){
+        var mine=conv.filter(function(x){return x.state===st;}),byCT={},order=[];
+        mine.forEach(function(x){
+          if(INS_CROPS.indexOf(x.crop)<0){extra++;return;}
+          if(/^high amylose/i.test(x.type||''))return;
+          var k=x.crop+'|'+x.type;if(!byCT[k]){byCT[k]={};order.push(k);}
+          byCT[k][wkey(x)]=x;
+        });
+        order.forEach(function(k){
+          var ws=Object.keys(byCT[k]).map(function(w){return byCT[k][w];});
+          if(ws.length>1)groups.push({crop:ws[0].crop,type:ws[0].type,varies:ws.length});
+          else groups.push({crop:ws[0].crop,type:ws[0].type,row:ws[0]});
+        });
+      } else {
+        /* No state known: corn and soybeans, the window most states share. */
+        ['Corn','Soybeans'].forEach(function(c){
+          var rows=conv.filter(function(x){return x.crop===c&&/^All/.test(x.type||'');}),cnt={},best=null;
+          rows.forEach(function(x){if(x.p_price!=null){var kk=wkey(x);cnt[kk]=(cnt[kk]||0)+1;}});
+          for(var kk in cnt){if(!best||cnt[kk]>cnt[best])best=kk;}
+          if(best)groups.push({crop:c,type:'',row:rows.filter(function(x){return wkey(x)===best;})[0]});
+        });
+      }
+      /* Status per group. rank: 0 in window, 1 not open yet or not released, 2 varies, 3 final. */
+      groups.forEach(function(g){
+        if(g.varies){g.rank=2;return;}
+        var x=g.row,hs=dayStart(x.h_start),he=dayStart(x.h_end);
+        g.hs=hs;g.he=he;g.p=priceOf(x.p_price,x.p_status);g.h=priceOf(x.h_price,x.h_status);
+        if(hs&&he&&today>=hs&&today<=he)g.st='open';
+        else if(hs&&today<hs)g.st='soon';
+        else if(x.h_status==='Released'&&g.h!=null)g.st='final';
+        else g.st='closed';
+        g.rank={open:0,soon:1,closed:1,final:3}[g.st];
       });
-      var parts=[];
-      if(up.length)parts.push(crops2(up)+(up.length>1?' are':' is')+' above projected, so the Revenue Protection guarantee rises with the harvest price.');
-      if(down.length)parts.push(crops2(down)+(down.length>1?' are':' is')+' below projected. The guarantee stays at the projected price.');
-      if(up.length||down.length)parts.push('A claim pays when yield × harvest price falls below it.');
-      if(miss.length)parts.push(crops2(miss)+': price not loaded yet.');
-      if(varies)parts.push('Windows differ by county sales closing date; open the tracker for yours.');
-      var meaning=parts.join(' ');
-      if(meaning&&hold&&(up.length||down.length))meaning='If prices hold through '+(endTxt||'the window')+': '+meaning;
-      var asof=px&&px.fetched?'Futures '+dateLong(new Date(px.fetched)).replace(/, \d{4}$/,'')+', '+timeIn(new Date(px.fetched),'America/Chicago')+' CT, delayed.':'';
-      put('insurance',lines.join(''),[legNote,subs.join(''),asof].filter(Boolean).map(esc).join(' '),meaning?esc(meaning):'');
+      /* Types of one crop with no posted price and the same window (peanuts)
+         read as one row. */
+      var merged=[];
+      groups.forEach(function(g){
+        var m=null;
+        if(!g.varies&&g.h==null)merged.forEach(function(o){if(!o.varies&&o.h==null&&o.crop===g.crop&&o.st===g.st&&+o.hs===+g.hs&&+o.he===+g.he)m=o;});
+        if(m){(m.types=m.types||[{type:m.type,p:m.p}]).push({type:g.type,p:g.p});}else merged.push(g);
+      });
+      /* Every crop whose window depends on the county reads as one row. */
+      var vs=merged.filter(function(g){return g.varies;});
+      if(vs.length){
+        var at=merged.indexOf(vs[0]);merged=merged.filter(function(g){return !g.varies;});
+        var nm=[];vs.forEach(function(g){var c=g.crop.toLowerCase();if(nm.indexOf(c)<0)nm.push(c);});
+        merged.splice(at,0,{varies:1,crop:vs[0].crop,names:nm,rank:2});
+      }
+      merged.sort(function(a,b){return a.rank-b.rank||INS_CROPS.indexOf(a.crop)-INS_CROPS.indexOf(b.crop)||String(a.type).localeCompare(String(b.type));});
+      var anyCmp=false;
+      var rows=merged.map(function(g){
+        var u=unitOf(g.crop),name=esc(g.crop)+(realType(g.type)&&!g.types?' <small>'+esc(realType(g.type))+'</small>':''),tag='',big='',det=[];
+        if(g.varies){
+          var nl=g.names.map(function(c,i){return i?c:c.charAt(0).toUpperCase()+c.slice(1);});
+          name=nl.length>1?nl.slice(0,-1).join(', ')+' and '+nl[nl.length-1]:nl[0];
+          big='varies by county';
+          det.push('the window depends on your county’s sales closing date. <a href="/harvest-price-tracker">Find yours on the tracker</a>');
+          return [name,tag,big,det];
+        }
+        var x=g.row,hs=g.hs,he=g.he,ex=!!(x.h_exch&&String(x.h_exch).trim());
+        var tot=ex&&hs&&he?tradingDays(hs,he):0;
+        var proj=g.types?g.types.map(function(t){return esc(realType(t.type)||g.crop)+' '+(t.p!=null?usd(t.p,u):'—');}).join(', ')+' per '+u:(g.p!=null?usd(g.p,u):'—');
+        var projTxt='projected '+proj;
+        if(g.st==='open'){
+          tag='in window';
+          var own=(g.p!=null)?ownAvg(hp,g.crop,x,hs,he,today):null;
+          var win=hs&&he?rng(hs,he):'';
+          if(tot){var nth=tradingDays(hs,today);win+=': '+(isTrading(today)?'trading day '+nth+' of '+tot:nth+' of '+tot+' trading days done');}
+          else if(win)win='window '+win;
+          if(g.h!=null&&g.p!=null){
+            anyCmp=true;big=gap(g.h-g.p,u);tag='so far';
+            var k=rmaDays(own,g.h);
+            det.push('RMA '+usd(g.h,u)+(k?' ('+dayWord(k)+')':', can trail a day'));
+            if(own)det.push('our average '+usd(own.avg,u)+' ('+dayWord(own.days)+')');
+            det.push(projTxt);
+          } else if(own&&g.p!=null){
+            anyCmp=true;big=gap(own.avg-g.p,u);tag='so far';
+            det.push('our average '+usd(own.avg,u)+' ('+dayWord(own.days)+'); RMA has not posted one');det.push(projTxt);
+          } else {
+            big='no RMA average yet';det.push(projTxt);
+          }
+          det.push(win);
+        } else if(g.st==='soon'){
+          big='opens '+md(hs);
+          det.push(projTxt);
+          var q=(ROOT[g.crop]&&px&&px.quotes)?quoteFor(px.quotes,ROOT[g.crop],x.h_mon,x.h_yr):null;
+          if(q){usedFut=true;det.push((x.h_mon||'').slice(0,3)+' ’'+String(x.h_yr).slice(-2)+' futures '+usd(q.close/100,u)+' today, not the harvest price');}
+          det.push(rng(hs,he)+(tot?', '+tot+' trading days':''));
+        } else if(g.st==='final'){
+          tag='final';
+          if(g.p!=null){anyCmp=true;big=gap(g.h-g.p,u);}else big=usd(g.h,u);
+          det.push('harvest price '+usd(g.h,u));det.push(projTxt);det.push(rng(hs,he));
+        } else {
+          tag='closed';big='not released yet';
+          det.push('window closed '+md(he)+'; RMA has not released the final price');det.push(projTxt);
+        }
+        return [name,tag,big,det];
+      });
+      var html=rows.map(function(r){
+        return '<span class="s7-ir"><span class="s7-ir-k">'+r[0]+(r[1]?' <small>'+r[1]+'</small>':'')+'</span><span class="s7-ir-v">'+r[2]+'</span><small class="s7-ir-d">'+r[3].filter(Boolean).join(' · ')+'</small></span>';
+      }).join('');
+      if(!rows.length)html='<span class="s7-nl">No revenue price for '+esc(st||'this state')+' in RMA’s '+d.crop_year+' data</span>';
+      var meaning=anyCmp?'Revenue Protection guarantees use the higher of the two prices; RP with Harvest Price Exclusion and Yield Protection stay at projected. RP pays when a unit’s revenue to count (production × harvest price) falls below its revenue guarantee.':'';
+      var asof=usedFut&&px&&px.fetched?' Futures '+dateLong(new Date(px.fetched)).replace(/, \d{4}$/,'')+', '+timeIn(new Date(px.fetched),'America/Chicago')+' CT, delayed.':'';
+      var sub=(st?'':'Most states. ')+'Conventional (non-organic) prices, USDA RMA.'+asof+' <a href="/harvest-price-tracker">'+(extra?'Other crops, organic and counties':'Organic and counties')+' on the tracker</a>';
+      put('insurance','<span class="s7-irs">'+html+'</span>',sub,meaning);
     });
   }
 

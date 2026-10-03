@@ -646,6 +646,7 @@
    "path": "data/harvest-prices.json",
    "pages": [
     "corn-futures-prices.html",
+    "index1.html",
     "soybean-futures-prices.html",
     "status.html",
     "wheat-futures-prices.html"

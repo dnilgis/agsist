@@ -29,6 +29,9 @@ jobs:
       - name: Install yfinance
         run: pip install yfinance --quiet
 
+      - name: Selftest
+        run: python3 scripts/fetch_harvest_prices.py --selftest
+
       - name: Update discovery prices
         run: python3 scripts/fetch_harvest_prices.py
 

@@ -1823,6 +1823,21 @@ details.wr>summary,details.hbz>summary{align-items:center!important}
 .idx1-calc-mathbox>summary{cursor:pointer;min-height:44px;display:flex;align-items:center;color:var(--text-dim)}
 .idx1-calc-mathbox pre{margin:.2rem 0 0;padding:.5rem .6rem;white-space:pre-wrap;word-break:break-word;font-family:'JetBrains Mono',monospace;font-size:.72rem;line-height:1.5;color:var(--text-dim);background:var(--surface2);border:1px solid var(--border);border-radius:6px}
 #bids-list-area .bh-call-a:focus-visible,#bids-list-area .bh-crop:focus-visible,#bids-list-area .bh-retry:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+/* ===== WAVE1-B: insurance harvest price box, one row per crop + state picker */
+#s7-c-insurance:hover .s7-cv{text-decoration:none}
+#s7-c-insurance .s7-ck a{color:inherit;text-decoration:none}
+#s7-c-insurance .s7-ck a:hover,#s7-c-insurance .s7-ck a:focus-visible{text-decoration:underline}
+#s7-c-insurance a{color:var(--gold)}
+.s7-ins-pick{display:block;max-width:100%}
+.s7-ins-pick select{max-width:100%;min-height:44px;padding:6px 10px;font:700 1rem/1.3 Inter,system-ui,sans-serif;color:var(--text);background:var(--surface);border:1px solid var(--border);border-radius:6px}
+#s7-grid>.s7-c.s7-wide{grid-column:1/-1}
+.s7-irs{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(260px,100%),1fr));column-gap:24px}
+.s7-ir{display:flex;flex-wrap:wrap;column-gap:10px;row-gap:1px;align-items:baseline;align-content:flex-start;padding:6px 0;border-top:1px solid var(--hair,var(--border));min-width:0}
+.s7-ir-v{white-space:nowrap}
+.s7-ir-k{font:600 .824rem/1.35 Inter,system-ui,sans-serif;color:var(--text);min-width:0;overflow-wrap:anywhere}
+.s7-ir-k small{font-weight:500;color:var(--text-muted)}
+.s7-ir-v{font-family:'JetBrains Mono',monospace;font-size:1rem;font-weight:700;line-height:1.35;color:var(--text);min-width:0;max-width:100%}
+.s7-cv .s7-ir-d{flex-basis:100%;font:500 .706rem/1.45 Inter,system-ui,sans-serif;color:var(--text-dim);min-width:0;overflow-wrap:anywhere}
 
 /* ===== THE LOOK (2026-10-03) ==========================================
    Sig: "lots of still monotone and hard to differentiate one thing from
