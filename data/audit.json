@@ -1,9 +1,9 @@
 {
  "schema": "agsist-render-audit/1",
  "base": "https://agsist.com",
- "ran": "2026-10-02T16:52:02.126Z",
+ "ran": "2026-10-03T15:17:14.983Z",
  "pages": 16,
- "seconds": 200,
+ "seconds": 197,
  "high": 0,
  "med": 0,
  "findings": [
