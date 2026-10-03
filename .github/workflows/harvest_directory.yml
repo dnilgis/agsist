@@ -113,12 +113,22 @@ jobs:
                   print("- `%s` %s" % (f["zip"], f["why"]))
           PY
 
+      # WAVE1-A: the per-state phone and facility-type shards the homepage
+      # cash card reads, rebuilt from the directory this run wrote.
+      - name: Elevator contacts for the homepage card
+        if: ${{ !inputs.probe_cap }}
+        continue-on-error: true
+        run: |
+          python scripts/build_elevator_contacts.py --selftest
+          python scripts/build_elevator_contacts.py
+
       - name: Commit the directory
         if: ${{ !inputs.probe_cap }}
         run: |
           git config user.name  "agsist-bot"
           git config user.email "bot@agsist.com"
           git add data/elevator-directory.json data/zip-grid.json
+          [ -d data/elevator-contacts ] && git add -A data/elevator-contacts || true
           git diff --cached --quiet && { echo "the directory did not change"; exit 0; }
           n=$(python -c "import json;print(json.load(open('data/elevator-directory.json'))['counts']['facilities'])")
           git commit -m "directory: $n elevators [skip ci]"

@@ -33,38 +33,68 @@
   // with everything both features need in `detail`.
   var lastBid = null;
 
+  /* WAVE1-A 2026-10-03: INTEREST AND SHRINK, OPTIONAL, AND THE MATH SHOWN.
+       net per bushel stored = carry
+                             - storage cost x months
+                             - price now x annual rate x months / 12   (money tied up, simple interest)
+                             - shrink % x (price now + carry)          (bushels lost before the later sale)
+     A blank optional box is left out and the result says it was not
+     counted; it is never treated as a zero someone typed. */
+  function money(v){ return '$' + Math.abs(v).toFixed(2); }
   function calcStoreOrSell(){
     var priceEl = $('idx1-calc-price'), costEl = $('idx1-calc-cost'),
         monthsEl = $('idx1-calc-months'), carryEl = $('idx1-calc-carry'),
-        resultEl = $('idx1-calc-result');
+        resultEl = $('idx1-calc-result'), rateEl = $('idx1-calc-rate'), shrinkEl = $('idx1-calc-shrink'),
+        mathEl = $('idx1-calc-math');
     if(!priceEl || !costEl || !monthsEl || !carryEl || !resultEl) return;
+    function math(t){ if(mathEl){ mathEl.textContent = t; var w = mathEl.closest && mathEl.closest('details'); if(w) w.hidden = !t; } }
     var priceRaw = priceEl.value, costRaw = costEl.value, monthsRaw = monthsEl.value, carryRaw = carryEl.value;
+    var rateRaw = rateEl ? rateEl.value : '', shrinkRaw = shrinkEl ? shrinkEl.value : '';
     if(priceRaw === '' || costRaw === '' || monthsRaw === '' || carryRaw === ''){
       resultEl.style.color = 'var(--text-dim)';
       resultEl.textContent = 'Enter your numbers above.';
+      math('');
       return;
     }
     var price = parseFloat(priceRaw), cost = parseFloat(costRaw), months = parseFloat(monthsRaw), carry = parseFloat(carryRaw);
-    if(!isFinite(price) || !isFinite(cost) || !isFinite(months) || !isFinite(carry)){
+    var rate = rateRaw === '' ? null : parseFloat(rateRaw), shrink = shrinkRaw === '' ? null : parseFloat(shrinkRaw);
+    if(!isFinite(price) || !isFinite(cost) || !isFinite(months) || !isFinite(carry) || (rate !== null && !isFinite(rate)) || (shrink !== null && !isFinite(shrink))){
       resultEl.style.color = 'var(--red,#ef4444)';
       resultEl.textContent = 'That number is out of range — try a realistic $/bu or month value.';
+      math('');
       return;
     }
-    if(price < 0 || cost < 0 || months < 0 || carry < 0){
+    if(price < 0 || cost < 0 || months < 0 || carry < 0 || (rate !== null && (rate < 0 || rate > 30)) || (shrink !== null && (shrink < 0 || shrink > 20))){
       resultEl.style.color = 'var(--red,#ef4444)';
-      resultEl.textContent = 'Price, storage cost, months, and carry can’t be negative.';
+      resultEl.textContent = 'Price, storage cost, months and carry can’t be negative; interest runs 0 to 30% a year and shrink 0 to 20%.';
+      math('');
       return;
     }
-    var totalCost = cost * months, net = carry - totalCost, cav = carryCaveat(months);
+    var totalCost = cost * months;
+    var interest = rate === null ? 0 : price * (rate / 100) * months / 12;
+    var shrinkLoss = shrink === null ? 0 : (shrink / 100) * (price + carry);
+    var net = carry - totalCost - interest - shrinkLoss, cav = carryCaveat(months);
+    var left = [];
+    if(rate === null) left.push('interest');
+    if(shrink === null) left.push('shrink');
+    var notCounted = left.length ? ' ' + left.join(' and ').replace(/^./, function(c){ return c.toUpperCase(); }) + ' not counted.' : '';
+    var lines = ['Carry you expect          +' + money(carry),
+      '− storage ' + money(cost) + ' × ' + months + ' mo     −' + money(totalCost)];
+    lines.push(rate === null ? '− interest                not counted (no rate entered)'
+      : '− interest ' + money(price) + ' × ' + rate + '% × ' + months + '/12   −' + money(interest));
+    lines.push(shrink === null ? '− shrink                  not counted (no shrink entered)'
+      : '− shrink ' + shrink + '% × (' + money(price) + ' + ' + money(carry) + ')   −' + money(shrinkLoss));
+    lines.push('= ' + (net >= 0 ? '+' : '−') + money(net) + ' per bushel stored, against selling at ' + money(price) + ' now');
+    math(lines.join('\n'));
     if(net > 0.001){
       resultEl.style.color = 'var(--green)';
-      resultEl.textContent = 'Storing pencils out by +$' + net.toFixed(2) + '/bu over selling at $' + price.toFixed(2) + ' now, if your carry estimate holds.' + cav;
+      resultEl.textContent = 'Storing pencils out by +$' + net.toFixed(2) + '/bu over selling at $' + price.toFixed(2) + ' now, if your carry estimate holds.' + notCounted + cav;
     } else if(net < -0.001){
       resultEl.style.color = 'var(--red,#ef4444)';
-      resultEl.textContent = 'Storing costs $' + Math.abs(net).toFixed(2) + '/bu more than selling at $' + price.toFixed(2) + ' now, at these numbers.' + cav;
+      resultEl.textContent = 'Storing costs $' + Math.abs(net).toFixed(2) + '/bu more than selling at $' + price.toFixed(2) + ' now, at these numbers.' + notCounted + cav;
     } else {
       resultEl.style.color = 'var(--text)';
-      resultEl.textContent = 'Breakeven — storing and selling now cost the same at these numbers.' + cav;
+      resultEl.textContent = 'Breakeven — storing and selling now cost the same at these numbers.' + notCounted + cav;
     }
   }
   var calcDebounce = null;
@@ -72,7 +102,7 @@
     clearTimeout(calcDebounce);
     calcDebounce = setTimeout(calcStoreOrSell, 400);
   }
-  ['idx1-calc-price', 'idx1-calc-cost', 'idx1-calc-months', 'idx1-calc-carry'].forEach(function(id){
+  ['idx1-calc-price', 'idx1-calc-cost', 'idx1-calc-months', 'idx1-calc-carry', 'idx1-calc-rate', 'idx1-calc-shrink'].forEach(function(id){
     var el = $(id);
     if(el) el.addEventListener('input', function(){ el.dataset.autofilled = 'false'; calcStoreOrSellDebounced(); });
   });
@@ -95,7 +125,7 @@
   function qc(c){ var a = Math.abs(c), w = Math.floor(a + 1e-9), f = Math.round((a - w) * 4); if(f === 4){ w++; f = 0; } return w + (f ? ' ' + ['', '1/4', '1/2', '3/4'][f] : '') + '¢'; }
   function prefillCarry(sum){
     var carryEl = $('idx1-calc-carry'), card = $('idx1-store-sell');
-    if(!carryEl || !card || !sum || sum.crop !== 'corn') return;
+    if(!carryEl || !card || !sum) return;
     var note = $('idx1-calc-carry-src');
     if(!note){ note = document.createElement('div'); note.id = 'idx1-calc-carry-src'; note.className = 'idx1-extras-fine';
       var res = $('idx1-calc-result'); if(res && res.parentNode) res.parentNode.insertBefore(note, res); }
@@ -115,6 +145,15 @@
       carryCover = { months: bc.months, from: bc.from, to: bc.to };
       note.textContent = String(sum.where || 'This elevator') + ' board (the bid filled above): ' + bc.from + ' $' + (+bc.fromCash).toFixed(2) + ' → ' + bc.to + ' $' + (+bc.toCash).toFixed(2) + ', +' + qc(bc.cents) + ' per bu' + (bc.months != null ? ' over ' + bc.months + ' month' + (bc.months === 1 ? '' : 's') : '') + '.';
       fill((bc.cents / 100).toFixed(4).replace(/0+$/, '').replace(/\.$/, ''));
+      return;
+    }
+    /* WAVE1-A: the futures-spread fallback is corn only; another crop with no
+       later bid on its own board leaves the box for the reader. */
+    if(sum.crop !== 'corn'){
+      carryCover = null;
+      if(carryEl.dataset.autofilled === 'true'){ carryEl.value = ''; carryEl.dataset.autofilled = 'false'; }
+      note.textContent = 'Carry: this elevator posts no later ' + String(sum.cropName || sum.crop || 'bid').toLowerCase() + ' bid. Enter your own.';
+      calcStoreOrSell();
       return;
     }
     var p = window.__agsistPricesP || (window.__agsistPricesP = fetch('/data/prices.json', { cache: 'no-store' })
@@ -157,6 +196,7 @@
         calcStoreOrSell();
       }
     }
+    var picked = fillPicker(sum);
 
     /* Both comparison lines require at least 2 OTHER bids before showing a
        "better/worse" verdict -- "the average of 1 other bid" is just one
@@ -192,8 +232,57 @@
         ccmp.style.display = 'none';
       }
     }
-    renderBasisChart(sum);
-    prefillCarry(sum);
+    renderBasisChart(picked);
+    prefillCarry(picked);
+  }
+
+  /* WAVE1-A: WHICH BID FILLED THE CALCULATOR, AND WHY, AND A CHOICE.
+     bids-homepage.js picks the highest corn cash among bids for the nearest
+     open delivery month (sum.pickRule, sum.pickCount) and lists every
+     elevator's nearest open bid per crop in sum.options. */
+  var pickOptions = [];
+  function optLabel(o){
+    return o.where + (townOf(o) ? ', ' + townOf(o) : '') + ' · ' + o.cropName + ' ' + o.monthLabel + ' · $' + (+o.cash).toFixed(2) + (o.miles != null ? ' · ' + Math.round(o.miles) + ' mi' : '');
+  }
+  /* Said only when a listed elevator with the same crop is actually closer. */
+  function nearer(o){
+    return o.miles != null && pickOptions.some(function(x){ return x !== o && x.crop === o.crop && x.miles != null && x.miles < o.miles; });
+  }
+  function townOf(o){
+    var c = String(o.city || ''), t = c.replace(/,\s*[A-Z]{2}$/, '');
+    return t && t.toLowerCase() === String(o.where || '').toLowerCase() ? c.replace(/^.*?,\s*/, '') : c;
+  }
+  function whyText(o, sum){
+    if(o.isBest) return 'Filled from ' + o.where + (o.city ? ' (' + o.city + ')' : '') + ': the ' + (sum.pickRule || 'highest corn bid nearby')
+      + (sum.monthLabel ? ' for ' + sum.monthLabel + ' delivery' : '') + (sum.pickCount ? ', out of ' + sum.pickCount + ' corn bid' + (sum.pickCount === 1 ? '' : 's') + ' for that month' : '') + '.' + (nearer(o) ? ' Not the nearest elevator; pick another above.' : ' Pick another elevator above.');
+    return 'Filled from ' + o.where + (o.city ? ' (' + o.city + ')' : '') + ', your pick: ' + o.cropName.toLowerCase() + ' for ' + o.monthLabel + ' delivery.';
+  }
+  function fillPicker(sum){
+    var sel = $('idx1-calc-pick'), why = $('idx1-calc-why');
+    pickOptions = (sum.options || []).filter(function(o){ return o && o.cash != null && isFinite(o.cash); });
+    var best = null;
+    pickOptions.forEach(function(o){ if(o.isBest) best = o; });
+    if(!best) best = { where: sum.where, city: sum.city, crop: 'corn', cropName: 'Corn', cash: sum.cash, monthKey: sum.monthKey, monthLabel: sum.monthLabel || '', boardCarry: sum.boardCarry, miles: sum.miles, isBest: true };
+    if(sel){
+      sel.innerHTML = '';
+      (pickOptions.length ? pickOptions : [best]).forEach(function(o, i){
+        var op = document.createElement('option'); op.value = String(i); op.textContent = optLabel(o) + (o.isBest ? ' (filled)' : '');
+        if(o === best) op.selected = true; sel.appendChild(op);
+      });
+      if(!pickOptions.length) pickOptions = [best];
+      sel.onchange = function(){
+        var o = pickOptions[+sel.value]; if(!o) return;
+        var priceEl = $('idx1-calc-price');
+        if(priceEl){ priceEl.value = (+o.cash).toFixed(2); priceEl.dataset.autofilled = 'true'; }
+        var carryEl = $('idx1-calc-carry'); if(carryEl && carryEl.dataset.autofilled !== 'false') carryEl.dataset.autofilled = 'true';
+        if(why) why.textContent = whyText(o, sum);
+        renderBasisChart(o);
+        prefillCarry(o);
+        calcStoreOrSell();
+      };
+    }
+    if(why) why.textContent = whyText(best, sum);
+    return best;
   }
   window.addEventListener('agsist:bids', onBidsPublished);
   // In case bids already loaded before this script attached its listener.
@@ -207,6 +296,21 @@
   // stays hidden. Never interpolates or fills a gap.
   var sparkCache = {};
   function normKey(s){ return String(s || '').toUpperCase().replace(/[^A-Z0-9]/g, ''); }
+  /* WAVE1-A: the network writes "Badger Grain Supply, LLC" and the basis log
+     writes "BADGER GRAIN SUPPLY", so the exact match never found the chart.
+     Case, punctuation, "&"/"and", and trailing legal words and co-op words
+     are dropped before comparing. The town must still match exactly. */
+  var FAC_TAIL = {LLC:1,LC:1,INC:1,INCORPORATED:1,CO:1,CORP:1,CORPORATION:1,LTD:1,LIMITED:1,LP:1,LLP:1,COMPANY:1,COOP:1,COOPERATIVE:1,ASSN:1,ASSOCIATION:1};
+  function normFac(s){
+    var t = String(s || '').toUpperCase().replace(/&/g, ' AND ').replace(/\bCO[\s.-]*OP\b/g, 'COOP')
+      .replace(/[^A-Z0-9]+/g, ' ').trim().split(' ').filter(function(x){ return x; });
+    while(t.length > 1 && FAC_TAIL[t[t.length - 1]]) t.pop();
+    return t.join('');
+  }
+  function foldTitle(withChart){
+    var f = $('idx1-basis-chart'), d = f && f.closest && f.closest('details'), sp = d && d.querySelector('summary span');
+    if(sp) sp.textContent = withChart ? 'Store or sell? Basis history' : 'Store or sell?';
+  }
   function fetchSparklines(state){
     if(sparkCache[state]) return sparkCache[state];
     sparkCache[state] = fetch('/data/basis-sparklines/' + state + '.json')
@@ -217,16 +321,19 @@
   function renderBasisChart(sum){
     var card = $('idx1-basis-chart'), svg = $('idx1-basis-svg'), fine = $('idx1-basis-chart-fine');
     if(!card || !svg || !fine) return;
+    var hide = function(){ card.style.display = 'none'; foldTitle(false); };
+    var wantCrop = sum.crop || 'corn';
+    if(['corn','soybeans','wheat'].indexOf(wantCrop) < 0){ hide(); return; }
     var cityState = String(sum.city || '');
     var m = /^(.*?),\s*([A-Z]{2})$/.exec(cityState.trim());
-    if(!m){ card.style.display = 'none'; return; }
+    if(!m){ hide(); return; }
     var cityName = m[1], state = m[2];
     var facilityName = String(sum.where || '').split('·')[0].trim();
-    if(!facilityName){ card.style.display = 'none'; return; }
-    var wantFac = normKey(facilityName), wantCity = normKey(cityName);
+    if(!facilityName){ hide(); return; }
+    var wantFac = normFac(facilityName), wantCity = normKey(cityName);
 
     fetchSparklines(state).then(function(data){
-      if(!data || !data.series){ card.style.display = 'none'; return; }
+      if(!data || !data.series){ hide(); return; }
       var best = null, bestLen = 0, bestMon = '', wantMon = '';
       var MM = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
       var mk = /^(\d{4})-(\d{2})$/.exec(sum.monthKey || '');
@@ -236,12 +343,12 @@
         var parts = key.split('|');
         if(parts.length < 6) return;
         var fac = parts[1], city = parts[2], commodity = parts[3];
-        if(commodity !== 'corn') return;
-        if(normKey(fac) !== wantFac || normKey(city) !== wantCity) return;
+        if(commodity !== wantCrop) return;
+        if(normFac(fac) !== wantFac || normKey(city) !== wantCity) return;
         var pts = data.series[key], match = !!wantMon && parts[5] === wantMon;
         if((match && !bestMatch) || (match === bestMatch && pts.length > bestLen)){ best = pts; bestLen = pts.length; bestMon = parts[5]; bestMatch = match; }
       });
-      if(!best || best.length < 2){ card.style.display = 'none'; return; }
+      if(!best || best.length < 2){ hide(); return; }
 
       var pts = best.slice(-20); // most recent real change-points only
       var cents = pts.map(function(p){ return p.cents; });
@@ -257,7 +364,8 @@
       var zeroY = (lo <= 0 && hi >= 0) ? (h - pad - (0 - lo) * (h - 2 * pad) / (hi - lo)) : null;
       var poly = xs.map(function(x, i){ return x.toFixed(1) + ',' + ys[i].toFixed(1); }).join(' ');
       var last = cents[cents.length - 1];
-      var lineColor = last >= 0 ? 'var(--green)' : 'var(--red,#ef4444)';
+      /* WAVE1-A: one colour. A negative basis is not bad news by itself. */
+      var lineColor = 'var(--gold)';
 
       var svgHtml = '';
       if(zeroY != null){
@@ -272,7 +380,10 @@
       var monTxt = /^[A-Z]{3}\d{2}$/.test(bestMon) ? bestMon.charAt(0) + bestMon.slice(1, 3).toLowerCase() + ' \u2019' + bestMon.slice(3) + ' delivery' : 'one delivery month';
       fine.textContent = pts.length + ' basis change' + (pts.length === 1 ? '' : 's') + ' logged at this elevator for ' + monTxt + ', ' + firstDate + ' through ' + pts[pts.length - 1].date + ', ' + rawLo + '\u00a2 to ' + rawHi + '\u00a2.'
         + (bestMatch ? '' : ' Not the month quoted above.');
+      var ttl = card.querySelector('.idx1-extras-title');
+      if(ttl && ttl.lastChild && ttl.lastChild.nodeType === 3) ttl.lastChild.textContent = ' Basis history at this elevator, ' + wantCrop;
       card.style.display = 'block';
+      foldTitle(true);
     });
   }
 

@@ -159,6 +159,11 @@ jobs:
       - name: Check the directory extractor
         run: python scripts/extract_directory.py --selftest
 
+      - name: Check the daily-change and contacts builders
+        run: |
+          python scripts/build_bids_prev.py --selftest
+          python scripts/build_elevator_contacts.py --selftest
+
       # CUTTING THE CORD (2026-09-25). With no BARCHART_API_KEY, or with
       # BARCHART_MODE=off, this runs on the AGSIST elevator network alone and
       # exits green. `barchart_live` says whether Barchart contributed a row;
@@ -196,6 +201,13 @@ jobs:
         continue-on-error: true
         run: python scripts/extract_directory.py --from-bids
 
+      # WAVE1-A: phone and facility type per state, for the homepage card's
+      # Call link and buyer tag, from the directory as it now stands. Only
+      # rewrites a shard that changed. Must never cost the run its prices.
+      - name: Elevator contacts for the homepage card
+        continue-on-error: true
+        run: python scripts/build_elevator_contacts.py
+
       - name: Build the national basis map
         run: python scripts/build_basis_map.py
 
@@ -226,6 +238,16 @@ jobs:
         continue-on-error: true
         run: python scripts/build_basis_sparklines.py
 
+      # WAVE1-A: THE NETWORK'S LAST PRICE ON EACH RECENT TRADING DAY, so the
+      # homepage can print a day's change. The browser reads the network's
+      # live index, which carries only "now"; this keeps a few days of it,
+      # per place, crop and delivery period, in data/bids-prev/<ST>.json.
+      # Weekends are not recorded. Same continue-on-error reasoning as the
+      # basis history: a failure here costs a day's change, never the bids.
+      - name: Keep the network's last price per trading day
+        continue-on-error: true
+        run: python scripts/build_bids_prev.py
+
       - name: Sizes
         run: |
           ls -lh data/bids.json data/basis-map.json bids-full.json
@@ -243,6 +265,9 @@ jobs:
           # The withheld-rows report is written by fetch_bids.py inside a try/except,
           # so it can be missing. A missing file must never cost the run its commit.
           [ -f data/bids-withheld.json ] && git add data/bids-withheld.json || true
+          # WAVE1-A: the day-change record and the contacts shards.
+          [ -d data/bids-prev ] && git add -A data/bids-prev || true
+          [ -d data/elevator-contacts ] && git add -A data/elevator-contacts || true
           git diff --staged --quiet && echo "No changes" && exit 0
           git commit -m "Update grain bids + basis map + basis history $(date -u +%Y-%m-%dT%H:%M:%SZ)"
           git pull --rebase origin main

@@ -63,6 +63,13 @@ def week_of_year(date_s):
 
 def same_week_avg(rows_by_year_week, week, latest_year, value_key):
     """Average of this ISO-week's value over the prior AVG_YEARS years."""
+    return same_week_avg_n(rows_by_year_week, week, latest_year, value_key)[0]
+
+
+def same_week_avg_n(rows_by_year_week, week, latest_year, value_key):
+    """(average, years found). WAVE1-A: the homepage prints the sample beside
+    the comparison and withholds it under three years, so the count travels
+    with the average."""
     vals = []
     for y in range(latest_year - AVG_YEARS, latest_year):
         # accept the exact week or a neighbour (weekly series wobble)
@@ -71,7 +78,7 @@ def same_week_avg(rows_by_year_week, week, latest_year, value_key):
             if v is not None:
                 vals.append(v)
                 break
-    return round(sum(vals) / len(vals), 3) if vals else None
+    return (round(sum(vals) / len(vals), 3) if vals else None), len(vals)
 
 
 def series_stats(rows, key_fields, value_field, date_field="date"):
@@ -90,11 +97,12 @@ def series_stats(rows, key_fields, value_field, date_field="date"):
         latest_date, latest = pts[-1]
         y, w = int(latest_date[:4]), week_of_year(latest_date)
         byw = {(int(d[:4]), week_of_year(d)): {"v": v} for d, v in pts}
-        avg5 = same_week_avg(byw, w, y, "v")
+        avg5, avg5_n = same_week_avg_n(byw, w, y, "v")
         out["|".join(k)] = {
             "latest": round(latest, 3),
             "date": latest_date,
             "avg5": avg5,
+            "avg5_n": avg5_n,
             "delta": round(latest - avg5, 3) if avg5 is not None else None,
             "hist": [[d, round(v, 3)] for d, v in pts[-HIST_WEEKS:]],
         }
@@ -185,6 +193,11 @@ def selftest():
     assert s[k]["avg5"] is not None, "same-week avg failed"
     assert abs(s[k]["delta"] - (-0.05)) < 0.011, f"delta wrong: {s[k]['delta']}"
     assert len(s[k]["hist"]) == HIST_WEEKS, "history window wrong"
+    # WAVE1-A: the sample travels with the average. 2020-2024 behind 2025: five.
+    assert s[k]["avg5_n"] == 5, f"avg5_n wrong: {s[k]['avg5_n']}"
+    short = [r for r in rows if r["date"][:4] in ("2023", "2024", "2025")]
+    s2 = series_stats(short, ["commodity", "market_name", "market_type"], "basis")
+    assert s2[k]["avg5_n"] == 2, f"two prior years should count two: {s2[k]['avg5_n']}"
     # fail-loud path: empty dataset must raise
     try:
         build(fetch=lambda ds, p: [])

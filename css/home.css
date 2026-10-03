@@ -1813,6 +1813,17 @@ details.wr>summary,details.hbz>summary{align-items:center!important}
 .pdw-ft{font-size:.824rem;color:var(--text-muted);line-height:1.5;margin:.55rem 0 0}
 .pdw-ft a{color:var(--brand)}
 
+/* ===== WAVE1-A: cash bids card, store-or-sell picker, interest and shrink, the math */
+.idx1-calc-pickwrap{margin:0 0 .6rem}
+.idx1-calc-pickfield{width:100%}
+.idx1-calc-pickfield select{width:100%;max-width:100%;min-height:44px;box-sizing:border-box;font-family:'JetBrains Mono',monospace;font-size:.8rem;color:var(--text);background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:.4rem .5rem;text-overflow:ellipsis}
+#idx1-calc-why{margin-top:.3rem}
+.idx1-opt{font-size:.66rem;color:var(--text-muted);font-weight:400;text-transform:none;letter-spacing:0}
+.idx1-calc-mathbox{margin:.35rem 0 0;font-size:.75rem;color:var(--text-muted)}
+.idx1-calc-mathbox>summary{cursor:pointer;min-height:44px;display:flex;align-items:center;color:var(--text-dim)}
+.idx1-calc-mathbox pre{margin:.2rem 0 0;padding:.5rem .6rem;white-space:pre-wrap;word-break:break-word;font-family:'JetBrains Mono',monospace;font-size:.72rem;line-height:1.5;color:var(--text-dim);background:var(--surface2);border:1px solid var(--border);border-radius:6px}
+#bids-list-area .bh-call-a:focus-visible,#bids-list-area .bh-crop:focus-visible,#bids-list-area .bh-retry:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+
 /* ===== THE LOOK (2026-10-03) ==========================================
    Sig: "lots of still monotone and hard to differentiate one thing from
    another". Every top-level section belongs to a family, and the page
