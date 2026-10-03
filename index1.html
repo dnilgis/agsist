@@ -127,7 +127,16 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
     <span class="idx1-zip-label">This month</span>
     <span class="idx1-zip-change" id="s7-jump-m">Season</span><span class="idx1-zip-change" aria-hidden="true">&darr;</span>
   </a>
+  <!-- WAVE2-F: "What do you raise?" One pick, the whole page follows. -->
+  <button type="button" id="pk-btn" class="idx1-zip-chip pk-btn" aria-expanded="false" aria-controls="pk-panel">
+    <span class="idx1-zip-label" id="pk-lead">What do you raise?</span>
+    <span class="idx1-zip-val" id="pk-val"></span>
+    <span class="idx1-zip-change" id="pk-chg">Pick to put it first</span>
+  </button>
 </div>
+<div class="pk-panel" id="pk-panel" hidden></div>
+<div class="visually-hidden" id="pk-say" role="status" aria-live="polite"></div>
+<script src="/components/raise-picker.js?v=1"></script>
 <script>
 /* Real behavior, no fabricated data: reads the same ZIP the Cash Bids
    widget already stores (bids-homepage.js's own localStorage key, if any)
@@ -484,23 +493,6 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
   <path d="M17.5 8a2.5 2.5 0 1 1 2 4H2" />
   <path d="M9.8 4.4A2 2 0 1 1 11 8H2" /></symbol><symbol id="i-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18" />
   <path d="m6 6 12 12" /></symbol><symbol id="i-zap" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z" /></symbol><symbol id="i-rotate-ccw" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 2v6h6"/><path d="M3 8a9 9 0 1 0 3-7L3 8"/></symbol><symbol id="i-chevron-up" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></symbol></defs></svg><main id="main" class="main" role="main" tabindex="-1">
-<!-- 2026-09-30: "I raise" -- real, no-JS operation toggle, ported from the
-     Design canvas mockup. Placed as the first child of <main> so the
-     fieldset:has() rule below can reach every later top-level section
-     (the COT widget's cattle row, deep inside #f-cot-intel) through the
-     general-sibling + descendant combinator, without any script. Visually
-     hidden but a real fieldset/legend, not display:none, so a keyboard or
-     screen-reader user tabbing into <main> hears "I raise, radio group"
-     first. Scoped to what's actually real on this page: reorders the COT
-     panel (real, live cattle data already on the widget) -- does NOT swap
-     in a cattle cash-bid card, since no real cattle bid feed exists yet
-     (same gap flagged in the last kit). -->
-<fieldset class="visually-hidden">
-  <legend class="visually-hidden">I raise — pins cattle first in Market Intelligence when selected</legend>
-  <input type="radio" name="idx1-raise" id="i-raise-crops" checked>
-  <input type="radio" name="idx1-raise" id="i-raise-cattle">
-  <input type="radio" name="idx1-raise" id="i-raise-mixed">
-</fieldset>
 <div class="idx1-shell"><div class="idx1-content">
   <h1 class="home-h1">Corn, Soybean &amp; Wheat Prices, Farm Weather &amp; Cash Bids</h1>
   <section class="s7-month" id="s7-month" aria-labelledby="s7-month-h" data-track="season">
@@ -1311,7 +1303,6 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
     <div class="sec-head"><h2 class="sec-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:1.05em;height:1.05em;vertical-align:-.13em;margin-right:.34em;flex:none"><path d="M3 3v16a2 2 0 0 0 2 2h16" /> <path d="m19 9-5 5-4-4-3 3" /></svg>Market Intelligence</h2><a href="/cot" class="sec-all">Full COT Chart</a></div>
     <div class="ratio-cot-grid">
       <div class="cot-widget" id="cot-widget">
-        <div class="idx1-raise-toggle"><span>I RAISE</span><label for="i-raise-crops">Row Crops</label><label for="i-raise-cattle">Cattle Only</label><label for="i-raise-mixed">Mixed</label></div>
         <div class="cot-widget-head"><span class="cot-widget-title"><svg class="ic" aria-hidden="true"><use href="#i-chart-column"/></svg> CFTC COT &mdash; Managed Money</span><span class="cot-verdict mixed" id="cot-verdict">Loading&hellip;</span></div>
         <div class="cot-caption">Managed money&rsquo;s net position (CFTC disaggregated report), placed within its past 52 weeks. <span class="tip"><button type="button" class="tip-b" aria-expanded="false" aria-describedby="tip-cot">How to read</button><span id="tip-cot" role="tooltip" class="tip-t" hidden>COT is the CFTC&rsquo;s weekly Commitments of Traders report, positions as of Tuesday. Managed money means hedge funds and commodity trading advisers. Net futures contracts held long vs short by the &ldquo;managed money&rdquo; group in CFTC&rsquo;s disaggregated report (hedge funds and commodity trading advisers). Bar shows where that position sits within the past 52 weeks (not the 3-yr COT Index some desks use — this window runs shorter, which can read positioning as more extreme). The badge above averages the first four rows&rsquo; position-in-range (corn, soybeans, Chicago wheat, live cattle), not a headcount of who&rsquo;s long or short — one row can run the other way. Interpretation of public CFTC data, not a trading signal.</span></span></div>
         <div class="cot-rows" id="cot-rows">
@@ -4835,7 +4826,9 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
         var nm=[];vs.forEach(function(g){var c=g.crop.toLowerCase();if(nm.indexOf(c)<0)nm.push(c);});
         merged.splice(at,0,{varies:1,crop:vs[0].crop,names:nm,rank:2});
       }
-      merged.sort(function(a,b){return a.rank-b.rank||INS_CROPS.indexOf(a.crop)-INS_CROPS.indexOf(b.crop)||String(a.type).localeCompare(String(b.type));});
+      /* WAVE2-F: crops the reader picked in "What do you raise?" come first. */
+      var PREF=window.AGSIST_INS_PREF||[],pf=function(c){var i=PREF.indexOf(c);return i<0?99:i;};
+      merged.sort(function(a,b){return pf(a.crop)-pf(b.crop)||a.rank-b.rank||INS_CROPS.indexOf(a.crop)-INS_CROPS.indexOf(b.crop)||String(a.type).localeCompare(String(b.type));});
       var anyCmp=false;
       var rows=merged.map(function(g){
         var u=unitOf(g.crop),name=esc(g.crop)+(realType(g.type)&&!g.types?' <small>'+esc(realType(g.type))+'</small>':''),tag='',big='',det=[];
@@ -4895,6 +4888,8 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
       put('insurance','<span class="s7-irs">'+html+'</span>',sub,meaning);
     });
   }
+
+  window.AGSIST_INS_RENDER=insurance;   /* WAVE2-F: the picker re-sorts the rows */
 
   /* ---------- A2 harvest progress / condition / planting ---------- */
   function cropLine(name,o,key,prev){
