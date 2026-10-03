@@ -1,6 +1,18 @@
 {
   "briefings": [
     {
+      "date": "2026-10-03",
+      "date_display": "Saturday, October 3, 2026",
+      "headline": "CRUDE SPLITS FROM DIESEL AS HARVEST STALLS IN THE RAIN",
+      "teaser": "Diesel is pricing like a shortage while crude isn't, and harvest rain just made that gap matter.",
+      "market_mood": "mixed",
+      "surprise_count": 0,
+      "sections": 2,
+      "url": "/daily/2026-10-03",
+      "market_closed": true,
+      "yc_outcome": "didnt"
+    },
+    {
       "date": "2026-10-02",
       "date_display": "Friday, October 2, 2026",
       "headline": "CRUDE DROPS 3.5% AS GRAINS GRIND HIGHER ON NO NEWS",
@@ -2337,6 +2349,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-10-02T10:58:01.058273+00:00",
-  "count": 203
+  "updated": "2026-10-03T14:46:26.530260+00:00",
+  "count": 204
 }
