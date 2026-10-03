@@ -82,6 +82,7 @@ jobs:
           python scripts/test_mark_rolls.py
           python scripts/test_preflight_limits.py
           python scripts/test_class_spreads.py
+          python scripts/test_prev_close.py
 
       - name: Fetch loop (every 30 min for the session)
         env:

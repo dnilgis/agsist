@@ -486,31 +486,63 @@ SYMBOLS = {
 }
 
 
+def close_and_prev(bars):
+    """The printed close and the close the day-change is measured against,
+    both from the daily bars (2026-10-03, wave3-J).
+
+    `bars` is a list of (date_iso, close) in date order, as history() returns
+    them. NaN/None closes are dropped first. Returns
+    (close, prev, close_date, prev_date); prev and prev_date are None when
+    fewer than two bars carry a close.
+
+    WHY: fast_info.previous_close was wrong. On 2026-10-02 it said 1276.5 for
+    Nov beans when the Oct 1 settle was 1284 (harvest-prices.json and RMA
+    agree), so beans printed up 3/4 on a day they fell 6 3/4. The previous
+    close is the second-to-last daily bar, the same way
+    fetch_harvest_prices.py reads settles. The close comes from the last bar
+    of the SAME series, so the pair always belongs to two adjacent sessions
+    of one source. Pure function; selftested in scripts/test_prev_close.py.
+    """
+    clean = [(str(d)[:10], _num(c)) for d, c in bars]
+    clean = [(d, c) for d, c in clean if c is not None]
+    if not clean:
+        return None, None, None, None
+    close_date, close = clean[-1]
+    if len(clean) < 2:
+        return close, None, close_date, None
+    prev_date, prev = clean[-2]
+    return close, prev, close_date, prev_date
+
+
+def _bars(t):
+    """Daily (date_iso, close) pairs for the last ten days, oldest first."""
+    hist = t.history(period="10d", interval="1d", auto_adjust=False)
+    if hist is None or len(hist) == 0:
+        return []
+    return [(idx.strftime("%Y-%m-%d"), v) for idx, v in hist["Close"].items()]
+
+
 def fetch_quote(key, ticker):
     try:
         t = yf.Ticker(ticker)
         info = t.fast_info
 
-        # _num() short-circuits None/NaN/inf to None so downstream math
-        # never sees a poisoned value. Two-step fallback (instead of `a or b`)
-        # is needed because a legitimate 0.0 close should not trigger fallback.
-        close = _num(getattr(info, 'last_price', None))
+        # Close AND previous close come from the daily bars (close_and_prev).
+        # fast_info.previous_close is not used: it disagreed with the
+        # exchange settle (see close_and_prev). _num() short-circuits
+        # None/NaN/inf to None so downstream math never sees a poisoned value.
+        close, prev, close_date, prev_date = close_and_prev(_bars(t))
+        live = _num(getattr(info, 'last_price', None))
         if close is None:
-            close = _num(getattr(info, 'regular_market_price', None))
-        prev = _num(getattr(info, 'previous_close', None))
-        if prev is None:
-            prev = _num(getattr(info, 'regular_market_previous_close', None))
+            # No bars at all: the live quote is the only close there is, and
+            # there is no previous close to measure a change against.
+            close = live
+        elif live is not None and close and abs(live - close) / abs(close) > 0.0025:
+            print(f"  NOTE {key} ({ticker}): last_price {live} differs from the last "
+                  f"daily bar {close} ({close_date}); the bar pair is used")
         # 52-week range — available on fast_info, no slow .info() call needed
         wk52_hi = _num(getattr(info, 'year_high', None))
         wk52_lo = _num(getattr(info, 'year_low', None))
-
-        if close is None:
-            # fallback: last 2 days of history
-            hist = t.history(period="2d", interval="1d")
-            if len(hist) >= 1:
-                close = _num(hist['Close'].iloc[-1])
-                if close is not None and len(hist) >= 2:
-                    prev = _num(hist['Close'].iloc[-2])
 
         if close is None:
             print(f"  SKIP {key} ({ticker}) — no price data")
@@ -538,10 +570,49 @@ def fetch_quote(key, ticker):
             "pctChange": pct,
             "wk52_hi":   wk52_hi,
             "wk52_lo":   wk52_lo,
+            # The sessions the two numbers belong to, so a reader (and
+            # harvest_crosscheck) can match the change to an exchange settle.
+            "close_date": close_date,
+            "prev_date":  prev_date,
         }
     except Exception as e:
         print(f"  ERR  {key} ({ticker}): {e}")
         return None
+
+
+# harvest-prices.json labels -> the dated prices.json key prefix.
+_HARVEST_PREFIX = {"Corn": "corn", "Soybeans": "beans"}
+
+
+def harvest_crosscheck(quotes, harvest):
+    """Compare each dated quote's previous close with the CBOT settle that
+    fetch_harvest_prices.py recorded for the same contract and date.
+
+    `harvest` is data/harvest-prices.json loaded. Contract "Dec '26" for Corn
+    maps to quotes["corn-dec26"]. Only a quote whose prev_date appears in that
+    contract's projected or harvest series is compared. Returns a list of
+    mismatch strings (settles in dollars x 100 = cents; tolerance a tenth of a
+    cent). Pure function; selftested in scripts/test_prev_close.py.
+    """
+    out = []
+    for c in (harvest or {}).get("commodities", []):
+        prefix = _HARVEST_PREFIX.get(c.get("label"))
+        contract = str(c.get("contract", ""))
+        parts = contract.replace("'", " ").split()
+        if not prefix or len(parts) != 2:
+            continue
+        key = f"{prefix}-{parts[0].lower()}{parts[1]}"
+        q = quotes.get(key)
+        if not isinstance(q, dict) or not q.get("prev_date") or q.get("open") is None:
+            continue
+        for leg in ("projected", "harvest"):
+            for row in (c.get(leg) or {}).get("series") or []:
+                if row.get("d") == q["prev_date"] and row.get("s") is not None:
+                    settle = round(float(row["s"]) * 100, 4)
+                    if abs(settle - float(q["open"])) > 0.1:
+                        out.append(f"{key}: previous close {q['open']} on {q['prev_date']} "
+                                   f"but the CBOT settle in harvest-prices.json is {settle}")
+    return out
 
 
 def _days_since(iso):
@@ -629,6 +700,16 @@ def main():
             for c, v in rolls.items()))
 
     nearby = add_nearby(quotes, SYMBOLS)
+
+    # Cross-check the previous close against the settles fetch_harvest_prices
+    # recorded for the same contract and day. Reported, never "repaired": the
+    # two writers run on different schedules, so a miss is for a human.
+    try:
+        with open("data/harvest-prices.json") as f:
+            for _m in harvest_crosscheck(quotes, json.load(f)):
+                print(f"::warning title=previous close disagrees with the settle::{_m}")
+    except FileNotFoundError:
+        pass
 
     withheld_keys = unit_guard(quotes)
     for _k, _why in withheld_keys.items():
