@@ -34,7 +34,9 @@ for old, new in [("if(rm) refTxt = 'basis vs ' + rm;", "if(rm) refTxt = 'basis v
     if old in js:
         assert js.count(old) == 1, old
         js = js.replace(old, new)
-    elif new not in js:
+    elif new not in js and "cand.label.replace(" not in js:
+        # The second line was later rewritten (2026-10-03 wave 1: a sorghum
+        # bid keeps "corn" in its label); either form counts as applied.
         sys.exit("bids-homepage.js: anchor not found: " + old)
 js_p.write_text(js, encoding="utf-8")
 print(f"restyled: look={look}, css/home.css {len(css)} bytes")
