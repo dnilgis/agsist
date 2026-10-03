@@ -1782,12 +1782,17 @@ def main():
     commodities = {}
     states = {}
     facilities = set()
+    # WAVE1-A: `facilities` is distinct facility NAMES ("ADM Grain" in forty
+    # towns is one). The homepage printed it as "locations". `locations` counts
+    # name + town + state, which is what that word means.
+    locations = set()
     for b in all_bids:
         cat = b.get("category", "other")
         commodities[cat] = commodities.get(cat, 0) + 1
         st = b.get("state", "??")
         states[st] = states.get(st, 0) + 1
         facilities.add(b.get("facility", ""))
+        locations.add(location_key(b))
 
     # ── Safety guard ───────────────────────────────────────────────
     # Every ZIP errored, OR the feed returned bids but parsing kept none.
@@ -1832,6 +1837,7 @@ def main():
         "stats": {
             "total_bids": len(all_bids),
             "facilities": len(facilities),
+            "locations": len(locations),
             "states": len(states),
             "by_commodity": commodities,
             "by_state": dict(sorted(states.items())),
@@ -1894,6 +1900,12 @@ def main():
     _say_barchart_live(barchart_live, asked=barchart_on)
 
 
+def location_key(b):
+    """One elevator location: facility name, town, state, case and spacing folded."""
+    f = lambda v: " ".join(str(v or "").lower().split())
+    return (f(b.get("facility")), f(b.get("city")), f(b.get("state")))
+
+
 def selftest():
     """Offline checks. No API key, no network.
 
@@ -1901,6 +1913,11 @@ def selftest():
     only safety net was two end-of-run guards, both of which fire long after
     a parsing mistake has already been made.
     """
+    # WAVE1-A: one name in two towns is two locations; one town spelled two
+    # ways in case or spacing is one.
+    assert len({location_key({"facility": "ADM Grain", "city": "Mankato", "state": "MN"}),
+                location_key({"facility": "ADM Grain", "city": "Clinton", "state": "IA"}),
+                location_key({"facility": "ADM  grain", "city": "MANKATO", "state": "mn"})}) == 2
     import io
     from contextlib import redirect_stdout, redirect_stderr
 

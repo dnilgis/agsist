@@ -71,8 +71,6 @@
      three times is still a card that arrives late. */
   var DEADLINE_MS = 4000;
 
-  var indexCache = null;      // one fetch per page view, shared by every caller
-  var zipCache = {};
 
   function log() {
     try {
@@ -81,21 +79,53 @@
     } catch (e) {}
   }
 
+  /* WAVE1-A 2026-10-03: A TIMEOUT IS AN ANSWER FOR THIS CALL, NEVER FOR THE
+     PAGE VIEW. The old get() resolved null at DEADLINE_MS and index() and
+     zipCache kept that null for the rest of the visit, so one slow request on
+     a phone made the card say "unavailable", or worse "No elevator bids found
+     within 50 mi", until a reload. Measured with /tmp/c18/race.py.
+
+     Now each file has one in-flight fetch. The caller still gets null at the
+     deadline, but the fetch keeps running; when it lands late it fills the
+     cache and fires `agsist:bids-net-ready` so the card can draw again. A
+     fetch that FAILS is dropped from the cache, so the next call tries again.
+     status() says which of the two a null was. */
+  var inflight = {};          // path -> {p: Promise(json|null), state: 'pending'|'ok'|'failed'}
+  function fire(path) {
+    try { window.dispatchEvent(new CustomEvent('agsist:bids-net-ready', { detail: { path: path } })); } catch (e) {}
+  }
+  function fetchOnce(path) {
+    var e = inflight[path];
+    if (e && e.state !== 'failed') return e;
+    e = inflight[path] = { state: 'pending', late: false, p: null };
+    e.p = fetch(BASE + path, { cache: 'default' })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .catch(function () { return null; })
+      .then(function (j) {
+        e.state = j ? 'ok' : 'failed';
+        if (!j) log('failed', path);
+        else if (e.late) { log('late arrival', path); fire(path); }
+        return j;
+      });
+    return e;
+  }
   function get(path) {
+    var e = fetchOnce(path);
+    if (e.state === 'ok') return e.p;
     return new Promise(function (resolve) {
       var done = false;
       var t = setTimeout(function () {
-        if (!done) { done = true; log('timeout', path); resolve(null); }
+        if (!done) { done = true; e.late = true; log('timeout', path); resolve(null); }
       }, DEADLINE_MS);
-      fetch(BASE + path, { cache: 'default' })
-        .then(function (r) { return r.ok ? r.json() : null; })
-        .then(function (j) {
-          if (!done) { done = true; clearTimeout(t); resolve(j); }
-        })
-        .catch(function () {
-          if (!done) { done = true; clearTimeout(t); log('failed', path); resolve(null); }
-        });
+      e.p.then(function (j) { if (!done) { done = true; clearTimeout(t); resolve(j); } });
     });
+  }
+  /* 'ok' | 'pending' | 'failed' | 'none' (never asked) */
+  function stateOf(path) { return inflight[path] ? inflight[path].state : 'none'; }
+  /* Forget every failure, so a "Try again" press or the `online` event
+     re-asks. In-flight and loaded files are kept. */
+  function reset() {
+    for (var k in inflight) if (Object.prototype.hasOwnProperty.call(inflight, k) && inflight[k].state === 'failed') delete inflight[k];
   }
 
   function miles(lat1, lon1, lat2, lon2) {
@@ -113,13 +143,9 @@
   function zipCoord(zip) {
     var z = String(zip == null ? '' : zip).trim().slice(0, 5);
     if (!/^\d{5}$/.test(z)) return Promise.resolve(null);
-    var k = z.slice(0, 2);
-    if (zipCache[k]) {
-      return zipCache[k].then(function (tbl) { return readZip(tbl, z); });
-    }
-    zipCache[k] = get('data/zips/' + k + '.json');
-    return zipCache[k].then(function (tbl) { return readZip(tbl, z); });
+    return get('data/zips/' + z.slice(0, 2) + '.json').then(function (tbl) { return readZip(tbl, z); });
   }
+  function zipPath(zip) { return 'data/zips/' + String(zip || '').trim().slice(0, 2) + '.json'; }
 
   function readZip(tbl, z) {
     if (!tbl) return null;
@@ -133,10 +159,8 @@
     return { lat: lat, lon: lon };
   }
 
-  function index() {
-    if (!indexCache) indexCache = get('data/merged-index.json');
-    return indexCache;
-  }
+  var INDEX = 'data/merged-index.json';
+  function index() { return get(INDEX); }
 
   /* A STABLE JOIN KEY THAT CANNOT BE READ AS A POSTCODE.
      The cash card matches a row to a grid entry on `sourceZip` or `zip`, and
@@ -219,6 +243,13 @@
       bestPeriod: (p.best && p.best[crop] && p.best[crop].period) || '',
       /* When this elevator's own board was last read. */
       checkedAt: p.checkedAt || p.pricedAt || null,
+      /* WAVE1-A: when the board's prices last changed (the bids repo's
+         pricedAt), printed per row as "posted"; the join key for the daily
+         change file; and the board's source id, whose own file in the bids
+         repo carries the phone number the elevator publishes. */
+      pricedAt: p.pricedAt || null,
+      place: p.place || null,
+      sourceId: p.source || null,
       delivery: n.delivery || '', period: n.period || '',
       distance: dist == null ? null : Math.round(dist * 10) / 10,
       source: 'network', via: 'scrape'
@@ -318,8 +349,30 @@
     return index().then(function (idx) { return !!(idx && idx.places); }).catch(function () { return false; });
   }
 
+  /* WAVE1-A: why a snapshotForZip() came back null. 'ok' means both files
+     loaded and there really is nothing within the radius; 'pending' means one
+     is still on its way (a late arrival fires agsist:bids-net-ready);
+     'failed' means one could not be read. */
+  function status(zip) {
+    var a = stateOf(INDEX), b = zip ? stateOf(zipPath(zip)) : 'ok';
+    if (a === 'failed' || b === 'failed') return 'failed';
+    if (a === 'pending' || b === 'pending') return 'pending';
+    if (a === 'ok' && (b === 'ok' || b === 'none')) return 'ok';
+    return 'none';
+  }
+
+  /* The board's own file, for the phone number it publishes. One small file
+     per elevator actually shown, never the whole directory. */
+  function sourceFile(id) {
+    if (!/^[a-z0-9][a-z0-9._-]{0,120}$/i.test(String(id || ''))) return Promise.resolve(null);
+    return get('data/' + id + '.json');
+  }
+
   window.AGSIST_BIDS_NET = {
     reachable: reachable,
+    status: status,
+    reset: reset,
+    sourceFile: sourceFile,
     snapshot: snapshot,
     snapshotForZip: snapshotForZip,
     snapshotForLoc: snapshotForLoc,
