@@ -1838,6 +1838,18 @@ details.wr>summary,details.hbz>summary{align-items:center!important}
 .s7-ir-k small{font-weight:500;color:var(--text-muted)}
 .s7-ir-v{font-family:'JetBrains Mono',monospace;font-size:1rem;font-weight:700;line-height:1.35;color:var(--text);min-width:0;max-width:100%}
 .s7-cv .s7-ir-d{flex-basis:100%;font:500 .706rem/1.45 Inter,system-ui,sans-serif;color:var(--text-dim);min-width:0;overflow-wrap:anywhere}
+/* ===== WAVE1-C: national markets (wheat classes, southern crops, COT rows, crop progress, export pace) */
+#f-prices .r7-row[data-r7k="kcwheat"] .r7-cm,#f-prices .r7-row[data-r7k="mplswheat"] .r7-cm,
+#f-prices .r7-row[data-r7k="cotton"] .r7-cm,#f-prices .r7-row[data-r7k="rice"] .r7-cm{white-space:normal}
+.cot-more{margin-top:.15rem}
+.cot-more>summary{cursor:pointer;font-size:.706rem;color:var(--text-muted);padding:.3rem 0;list-style:none}
+.cot-more>summary::-webkit-details-marker{display:none}
+.cot-more>summary::before{content:'+ ';color:var(--gold)}
+.cot-more[open]>summary::before{content:'\2212  '}
+.cot-more .cot-rows-more{display:flex;flex-direction:column;gap:.5rem;margin-top:.2rem}
+.w1c-cp{display:block;font-size:.706rem;color:var(--text-muted);line-height:1.45}
+.w1c-cp b{color:var(--text);font-weight:600}
+.export-cumul .w1c-ly,.export-withheld.w1c-cls{display:block;font-size:.706rem;color:var(--text-muted);line-height:1.45}
 
 /* ===== THE LOOK (2026-10-03) ==========================================
    Sig: "lots of still monotone and hard to differentiate one thing from

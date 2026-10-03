@@ -212,6 +212,96 @@ def add_nearby(quotes, symbols, now=None):
     return nearby
 
 
+# ── Unit guard for the symbols no run has confirmed yet (2026-10-03) ─────────
+# key -> (low, high, unit the page prints). A close outside the range means
+# Yahoo is quoting in a different unit than the page labels (cents vs dollars),
+# and printing it would be a wrong number under a right-looking label. The
+# quote is left out of `quotes` and named in `withheld_keys` with the reason,
+# so the page prints an em dash and says why. Ranges are deliberately wide:
+# they only separate units, they do not judge the price.
+UNIT_RANGE = {
+    "cotton": (20.0, 250.0, "cents per lb"),
+    "rice":   (5.0, 50.0, "dollars per cwt"),
+}
+
+
+def unit_guard(quotes):
+    """Drop quotes whose close is outside UNIT_RANGE; return {key: reason}.
+    Pure function of its inputs; selftested in scripts/test_class_spreads.py."""
+    withheld = {}
+    for key, (lo, hi, unit) in UNIT_RANGE.items():
+        q = quotes.get(key)
+        if not isinstance(q, dict) or q.get("close") is None:
+            continue
+        c = float(q["close"])
+        if not (lo <= c <= hi):
+            withheld[key] = (f"{q.get('ticker', key)} closed at {c}, outside {lo}-{hi}; "
+                             f"the page prints {unit}, so the quote is held back until the "
+                             f"unit is confirmed")
+            del quotes[key]
+    return withheld
+
+
+# The two other wheat classes against Chicago SRW, in cents per bushel.
+CLASS_SPREADS = {"kcwheat": "KC HRW", "mplswheat": "MGEX HRS"}
+
+
+def class_spreads(quotes, now=None):
+    """KC HRW and MGEX HRS minus Chicago SRW (2026-10-03, wave1-C).
+
+    Month against month first: the nearest unexpired delivery month for
+    which BOTH <class>-<mon><yy> and wheat-<mon><yy> carry a fresh close.
+    A spread between two continuous series is only a spread if both sit on
+    the same month, and Yahoo's continuous series follow volume, so they can
+    straddle a roll. Fallback, flagged `basis: "most-active"`: the two
+    continuous quotes, only when neither is stale and Chicago is not inside
+    a roll window. Otherwise cents is None and `reason` says why.
+    Pure function of its inputs; selftested in scripts/test_class_spreads.py.
+    """
+    def fresh(q):
+        return isinstance(q, dict) and q.get("close") is not None and not q.get("stale")
+
+    out = {}
+    for cls, name in CLASS_SPREADS.items():
+        months = []
+        for k in quotes:
+            if not k.startswith(cls + "-"):
+                continue
+            suffix = k[len(cls) + 1:]
+            exp = expiry_date(k)
+            if exp is None or is_expired(k, now):
+                continue
+            months.append((exp, suffix))
+        months.sort()
+        hit = None
+        for exp, suffix in months:
+            a, b = quotes.get(f"{cls}-{suffix}"), quotes.get(f"wheat-{suffix}")
+            if fresh(a) and fresh(b):
+                hit = {"cents": round(float(a["close"]) - float(b["close"]), 4),
+                       "basis": "same-month", "month": _month_label(f"{cls}-{suffix}"),
+                       "class_key": f"{cls}-{suffix}", "chicago_key": f"wheat-{suffix}",
+                       "class_close": a["close"], "chicago_close": b["close"]}
+                break
+        if hit is None:
+            a, b = quotes.get(cls), quotes.get("wheat")
+            if fresh(a) and fresh(b) and not b.get("roll") and not a.get("roll"):
+                hit = {"cents": round(float(a["close"]) - float(b["close"]), 4),
+                       "basis": "most-active", "month": None,
+                       "class_key": cls, "chicago_key": "wheat",
+                       "class_close": a["close"], "chicago_close": b["close"],
+                       "note": f"{name} and Chicago most-active continuous series; "
+                               "no same-month pair on file, so the months are not confirmed"}
+            elif not fresh(a):
+                hit = {"cents": None, "reason": f"no current {name} quote on file"}
+            elif not fresh(b):
+                hit = {"cents": None, "reason": "no current Chicago SRW quote on file"}
+            else:
+                hit = {"cents": None, "reason": "Chicago is inside a contract roll and no "
+                                                "same-month pair is on file"}
+        out[cls] = hit
+    return out
+
+
 def candidates(spec):
     """A SYMBOLS value may be a single ticker string or a list of fallback
     tickers to try in order (first that returns data wins). Lets a delisted
@@ -231,8 +321,26 @@ SYMBOLS = {
     # Continuous most-active series, same as ZW=F. Tickers match the ones
     # enrich_cot_prices.py already resolves via yfinance.
     "kcwheat":    "KE=F",     # KC HRW (hard red winter)
-    "mplswheat":  "MWE=F",    # MGEX HRS (hard red spring)
+    # MGEX HRS (hard red spring). MWE=F has never landed in prices.json, and
+    # cot_deep.py's first run logged "Quote not found for symbol: MWE=F" for
+    # MW=F and MWE=F alike after MGEX became MIAX Futures. Kept as a fallback
+    # list so the first symbol Yahoo serves wins; until then the key is absent
+    # and the homepage prints an em dash with that reason.
+    "mplswheat":  ["MWE=F", "MW=F"],
     "oats":       "ZO=F",
+
+    # ── Southern crops (2026-10-03, wave1-C) ──
+    # UNVERIFIED: neither symbol appears anywhere else in this repo or in its
+    # data, so the first Actions run is what confirms them. Same continuous
+    # root=F pattern as ZC=F/ZW=F/ZO=F above. A symbol Yahoo does not serve
+    # logs LOST and nothing else breaks; the homepage prints an em dash.
+    # UNIT_RANGE below withholds a quote that arrives in a unit the page does
+    # not expect, instead of printing it under the wrong unit.
+    "cotton":     "CT=F",     # ICE cotton No. 2, cents per lb
+    "rice":       "ZR=F",     # CBOT rough rice, dollars per cwt
+    # Canola (ICE) left out: no canola symbol is used anywhere in this
+    # pipeline, so there is nothing to follow. Sorghum and peanuts have no
+    # liquid US futures; the site carries them through cash bids and RMA.
 
     # ── Grain forward curve (year-explicit; UPDATE ANNUALLY) ──
     # Corn active months: Mar (H), May (K), Jul (N), Sep (U), Dec (Z)
@@ -266,6 +374,16 @@ SYMBOLS = {
     "wheat-may27":"ZWK27.CBT",
     "wheat-jul27":"ZWN27.CBT",
     "wheat-dec27":"ZWZ27.CBT",
+
+    # KC HRW dated contracts (2026-10-03, wave1-C), so the KC-Chicago spread
+    # is taken month against month (class_spreads below) instead of between
+    # two continuous series that may sit on different months. UNVERIFIED:
+    # same {ROOT}{MONTH}{YY}.CBT form as the Chicago curve, not yet seen in a
+    # live response. If they log LOST the spread falls back to the continuous
+    # pair and says so. Same five-month cycle as Chicago. UPDATE ANNUALLY.
+    "kcwheat-dec26":"KEZ26.CBT",
+    "kcwheat-mar27":"KEH27.CBT",
+    "kcwheat-may27":"KEK27.CBT",
 
     # ── Livestock ──
     "cattle":     "LE=F",
@@ -512,6 +630,13 @@ def main():
 
     nearby = add_nearby(quotes, SYMBOLS)
 
+    withheld_keys = unit_guard(quotes)
+    for _k, _why in withheld_keys.items():
+        print(f"  WITHHELD {_k}: {_why}")
+    spreads = class_spreads(quotes)
+    for _k, _v in spreads.items():
+        print(f"  SPREAD {_k}-wheat: {_v.get('cents')} ({_v.get('basis') or _v.get('reason')})")
+
     # ── derived-field normalization (2026-08-10) ──────────────────────────
     # net/pct are DERIVED here as close - open (open = the prior close), so the
     # identity net == close - open must hold for everything we write. It stopped
@@ -562,6 +687,12 @@ def main():
         # Named, not hidden: a consumer that wants corn-jul26 should be able to
         # see it was retired on purpose rather than wonder why the key vanished.
         "retired_keys": retired,
+        # Quotes left out because they arrived outside the unit the page
+        # prints (UNIT_RANGE). Named with the reason, never silently dropped.
+        "withheld_keys": withheld_keys,
+        # KC HRW and MGEX HRS minus Chicago SRW, cents per bushel. See
+        # class_spreads(): same-month first, flagged fallback, or a reason.
+        "spreads":    spreads,
         "quotes":     quotes
     }
 
