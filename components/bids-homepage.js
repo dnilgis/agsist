@@ -302,7 +302,7 @@
         }
         var bc = perTon || special ? null : boardCarry(bid);
         if(bc){
-          html += '<span class="r7-carry" style="grid-column:1/-1;font-size:.75rem;color:var(--text-muted)">Board carry ' + escHtml(bc.from) + ' \u2192 ' + escHtml(bc.to) + ': <span style="font-family:\'JetBrains Mono\',monospace;color:var(--text-dim)">' + bc.txt + '</span> (this elevator\u2019s board)</span>';
+          html += '<span class="r7-carry" style="grid-column:1/-1;font-size:.75rem;color:var(--text-muted)">Elevator carry ' + escHtml(bc.from) + ' \u2192 ' + escHtml(bc.to) + ': <span style="font-family:\'JetBrains Mono\',monospace;color:var(--text-dim)">' + bc.txt + '</span></span>';
         }
         html += '</div>';
       });
@@ -320,7 +320,7 @@
       var wid = widFor(elev.state, elev.facility, elev.city, 'corn');
       var label = escHtml(elev.facility + (cityState ? ', ' + cityState : '') + ' — corn');
       html += '<div class="watch-elevator-wrap" data-wid="' + wid + '" data-label="' + label + '" style="margin-top:.35rem">'
-        + '<button type="button" class="watch-elevator-btn" style="background:none;border:none;padding:0;font-size:.75rem;color:var(--text-muted);text-decoration:underline;cursor:pointer;min-height:44px">Watch this elevator — free</button>'
+        + '<button type="button" class="watch-elevator-btn" style="background:none;border:none;padding:0;font-size:.75rem;color:var(--text-muted);text-decoration:underline;cursor:pointer;min-height:44px">Watch this elevator</button>'
         + '</div>';
     }
 
@@ -415,8 +415,8 @@
            say both, with the futures level the page actually has. */
         var fut = Object.keys(used).map(function(l){ return l + ' $' + used[l].toFixed(2); }).join(', ');
         var ft = ctTime(pd && pd.fetched), bt = ctTime(oldest);
-        note.textContent = 'A basis month is shown only where the board\u2019s cash minus its basis is nearest that futures contract on this page, within 8\u00a2.'
-          + (ft ? ' Futures on this page: ' + fut + ' at ' + ft + (bt ? '; the boards were read ' + bt + ', so cash minus basis will not equal those prices exactly.' : '.') : '');
+        note.textContent = 'Basis month shown where cash minus basis lands within 8\u00a2 of that contract.'
+          + (ft ? ' Futures ' + fut + ' at ' + ft + (bt ? ', read at a different time than the boards, so the two will not match exactly.' : '.') : '');
         note.hidden = false;
       }
     });

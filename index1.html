@@ -1138,8 +1138,8 @@ try{var _w=JSON.parse(localStorage.getItem('agsist-wx-loc')||'null');if(_w&&/^\d
 <style>
 /* ===== 2026-10-01 round 5: second panel ===== */
 /* Reserve the bids card's height for a returning reader. */
-html.has-zip #bids-list-area{min-height:820px}
-@media(min-width:901px){html.has-zip #bids-list-area{min-height:760px}}
+html.has-zip #bids-list-area:has(.bids-skeleton){min-height:820px}
+@media(min-width:901px){html.has-zip #bids-list-area:has(.bids-skeleton){min-height:760px}}
 /* Tooltip: a visible text trigger, tap or Enter opens, Esc closes. */
 .tip{position:relative;display:inline-block}
 .tip-b{font:500 .706rem/24px 'JetBrains Mono',monospace;color:var(--text-dim);background:none;border:0;border-bottom:1px dotted currentColor;padding:0 2px;min-height:24px;cursor:pointer;letter-spacing:0;text-transform:none}
@@ -1365,7 +1365,7 @@ html[data-theme="light"] #daily-teaser-sponsor{color:var(--ad-orange-ink)!import
 /* Desktop: the strip shares row 1 of the main columns with the "Live now"
    label, which sits at the bottom of that row. The shell grid is unchanged. */
 @media(min-width:1240px){
-  .idx1-content>.s7-month{grid-column:1/3;grid-row:1;align-self:start;margin-bottom:48px}
+  .idx1-content>.s7-month{grid-column:1/3;grid-row:1;align-self:start;margin-bottom:24px}
   .idx1-content>.idx1-zone-label{align-self:end}
 }
 /* C: chips. Plain words, 44px tap targets on a phone. */
@@ -1524,6 +1524,181 @@ details>summary:hover{color:var(--text)}
 }
 
 .idx1-preview-flag{position:sticky;top:0;z-index:500;background:#d08a3c;color:#0a0c0d;font-family:'JetBrains Mono',monospace;font-size:.7rem;font-weight:700;text-align:center;padding:.28rem .6rem;letter-spacing:.03em}
+</style>
+<style id="ui-r8">
+/* UI round 8 (2026-10-03). Scoped to this page; see build/patch_index1_ui_r8.py. */
+
+/* Tokens. Light-theme muted text was rgba(22,26,24,.66): 4.06:1 on the menu
+   panel. .74 clears 4.5:1 on every light surface. Field borders and range
+   tracks get their own tokens so they reach 3:1 (WCAG 1.4.11). */
+:root{--ui-field:rgba(132,160,168,.6);--ui-track:rgba(132,160,168,.5)}
+[data-theme="light"]{--text-muted:rgba(22,26,24,.74);--ui-field:rgba(20,30,28,.5);--ui-track:rgba(20,30,28,.42)}
+/* Light gold #a87d1e is 3.5:1 as text; #86600f (already used on the
+   briefing link) is 4.96:1. Text only; fills keep the brand gold. */
+[data-theme="light"] #bids-cta-link,[data-theme="light"] .daily-eyebrow{color:#86600f!important}
+
+/* Form fields: visible edges, and a real focus ring on the two ZIP boxes
+   (their inline outline:none beat the page's :focus-visible). */
+.idx1-shell input:not([type=checkbox]):not([type=radio]):not([type=range]),.idx1-shell select{border-color:var(--ui-field)!important}
+#bids-zip:focus,#wx-zip:focus{outline:2px solid var(--gold)!important;outline-offset:2px}
+
+/* Range tracks. The price-card track was a red-gold-green gradient: red and
+   green are the same lightness, so it said nothing to a colour-blind
+   reader, and it read low = bad, which is backwards for a buyer. One
+   neutral track, label on its own line instead of an ellipsis. */
+.idx1-shell .pc-range-track{background:var(--ui-track)!important;height:3px}
+.idx1-shell .pc-range-labels{display:grid!important;grid-template-columns:auto 1fr auto;row-gap:2px}
+.idx1-shell .pc-range-labels>span:nth-child(2){grid-row:1;grid-column:1/-1;text-align:left!important;overflow:visible!important;text-overflow:clip!important;white-space:normal!important}
+.idx1-shell .pc-range-labels>span:first-child{grid-row:2;grid-column:1}
+.idx1-shell .pc-range-labels>span:last-child{grid-row:2;grid-column:3;text-align:right}
+.cot-bar-wrap{box-shadow:inset 0 0 0 1px var(--ui-track)}
+.crop-plant-bar{box-shadow:inset 0 0 0 1px var(--ui-track)}
+.crop-plant-fill{opacity:1}
+#f-prices .r7-bar{background:var(--ui-track)}
+
+/* The bids card was the one large box on a hairline page. */
+#f1>.card{border:0!important;border-top:1px solid var(--border-2)!important;border-radius:0!important;background:transparent!important;box-shadow:none!important}
+#f1>.card>.card-body{padding-left:0!important;padding-right:0!important}
+
+/* One type scale (12/14/17/22). The bids card is built by a shared script
+   with its own sizes (12.75, 14.45, 16.15, 17.85px); snap them here. */
+#bids-list-area [style*="font-size:.75rem"]{font-size:.706rem!important}
+#bids-list-area [style*="font-size:.82rem"],#bids-list-area [style*="font-size:.85rem"]{font-size:.824rem!important}
+#bids-list-area [style*="font-size:.95rem"],#bids-list-area [style*="font-size:1.05rem"]{font-size:1rem!important}
+#bids-list-area .r7-per{font-size:.706rem!important}
+.spray-day-name,.spray-day-reason,.spray-day-status{font-size:.706rem!important}
+.wx-7day-name{font-size:.824rem!important}
+.t-item .r7-frac{font-size:.706rem!important}
+.idx1-zone-label small{font-size:.706rem!important}
+#bids-list-area a[style*="font-size:.76rem"]{font-size:.824rem!important}
+[data-theme="light"] #bids-list-area a[style*="color:var(--gold)"]{color:#86600f!important}
+#s7-usdm-valid,summary small{font-size:.706rem!important}
+.footer-adspace .adspace-lbl,.ad-slot-tag{font-size:.706rem!important}
+.footer-adspace .adspace-sub,.ad-slot-cta{font-size:.824rem!important}
+
+/* Mono for numbers, not for sentences. */
+.bids-read-time,.r7-cov,#idx1-trust-ledger,.s7-line small{font-family:var(--font-body,'Inter',system-ui,sans-serif)!important}
+
+/* Section labels: tracking .14em to .08em. Same words, less shouting. */
+.sec-title,.daily-eyebrow{letter-spacing:.08em!important}
+
+/* Header: the briefing eyebrow was a bordered chip that looked like a
+   button and did nothing. The empty "Become a sponsor" row was a strip of
+   its own; the same offer sits in the briefing header. A sold slot is not
+   empty-state and still shows. */
+.daily-eyebrow,.teaser-badge{border:0!important;padding:0!important;background:none!important}
+.teaser-line1{flex-wrap:wrap;row-gap:.2rem}
+.teaser-badge{white-space:nowrap}
+.teaser-left{flex:0 1 auto!important;overflow:visible!important}
+.s7-adrow:has(>#daily-teaser-sponsor.empty-state){display:none}
+
+/* Cut-off text. */
+.bidnet-txt{white-space:normal!important;overflow:visible!important;text-overflow:clip!important}
+@media(max-width:600px){
+  #daily-teaser-text{white-space:normal!important;overflow:hidden!important;text-overflow:clip!important;display:-webkit-box!important;-webkit-line-clamp:3;-webkit-box-orient:vertical}
+  /* Phone: the ZIP bar repeated the bids card's own "Change ZIP" and ran
+     off the screen at "Funds and yield". Its two jump links go to sections
+     that are folded on a phone, so the bar goes with them. */
+  .idx1-subbar{display:none!important}
+  /* USDA report cards scrolled sideways with no hint, cut at "Expor". */
+  #usda-cal-strip{display:grid!important;grid-template-columns:1fr 1fr;overflow:visible!important}
+  #usda-cal-strip .cal-card{min-width:0!important}
+}
+
+/* Tabs: one style. NOAA's boxed tabs now match the underline tabs above. */
+.noaa-tab{border:0!important;border-bottom:2px solid transparent!important;border-radius:0!important;background:none!important;padding:.4rem .1rem!important;margin-right:1rem}
+.noaa-tab.active{border-bottom-color:var(--text)!important}
+
+/* Folds: one open/close mark, the same "+" and minus the phone folds use. */
+details.wr>summary::after,details.hbz>summary::after{content:'+'!important;font-size:1rem!important;font-family:inherit!important}
+details.wr[open]>summary::after,details.hbz[open]>summary::after{content:'\2212'!important}
+details.wr>summary,details.hbz>summary{align-items:center!important}
+
+/* The newsletter headline was the only all-caps headline on the page. */
+.signup-headline{text-transform:none!important;letter-spacing:-.01em!important}
+.signup-eyebrow{letter-spacing:.08em!important}
+/* The Privacy link was a 44px flex box inside a sentence, which doubled the
+   line height. A link inside a sentence is exempt from the target-size
+   minimum (WCAG 2.5.8), so it is a plain inline link again. */
+#signup-full .signup-disc a{display:inline!important;min-height:0!important;padding:0!important}
+
+/* Quick tools: one row pattern; the gold left bar marked nothing. */
+.tool-widget--scout{border-left:0!important;padding-left:0!important}
+
+/* Fertilizer rises used #ef4444, off the palette. */
+.fert-chg-val.up{color:var(--red)!important}
+</style>
+<style id="copy-r9">
+/* Round 9 (2026-10-03): sections that only repeated another one. Hidden,
+   not deleted, so the scripts that fill them still find them. */
+#s7-month-k{display:none!important}          /* "Changes with the month" */
+#harvest-band{display:none!important}        /* 4 of 5 links repeat Quick Tools; the 5th moved there */
+#pdw{display:none!important}                 /* 4th insurance harvest price on the page; October grid links the tracker */
+#s7-hp-link{display:none!important}          /* Quick Tools insurance row, same */
+#s7-falln-rec{display:none!important}        /* fall-N paragraph, printed in full in the October grid */
+#wsp-spray-detail{display:none!important}    /* "Today: wind up to..." also in Local conditions */
+#rsc-sample{display:none!important}          /* "87 calls graded": the headline is "41 of 87" */
+#f1>.bidnet-note,.bidnet-note{display:none!important}         /* "NEW" strip from Sep 5; the network line and claim link stay */
+#bids-list-area div:has(>#bids-cta-link){display:none!important} /* newsletter ask inside the bids card; the signup block is on the page */
+</style>
+<style id="r10">
+/* Round 10 (2026-10-03): the bids card without the air. */
+/* Crop and its basis contract on one line. */
+#bids-list-area span[style="min-width:0"]>span{display:inline!important}
+#bids-list-area span[style="min-width:0"]>.r7-ref:not(:empty)::before{content:"\00a0\00b7\00a0";color:var(--text-muted)}
+#bids-list-area .r7-per{margin:.35rem 0 0!important}
+#bids-list-area .r7-carry{margin-top:-.1rem}
+#bids-list-area .bh-elev{position:relative;padding:.45rem 0!important}
+/* "Watch this elevator" had its own 44px row under every elevator. */
+@media(min-width:601px){
+  #bids-list-area .bh-elev>div:first-child{padding-right:10rem}
+  #bids-list-area .watch-elevator-wrap{position:absolute;top:.45rem;right:0;margin:0!important}
+  #bids-list-area .watch-elevator-btn{min-height:32px!important}
+}
+@media(max-width:600px){
+  #bids-list-area .watch-elevator-wrap{margin-top:0!important}
+  #bids-list-area .watch-elevator-btn{min-height:36px!important}
+}
+/* The footnote stack under the elevators. */
+#bids-list-area .r7-ref-note,#bids-list-area .bids-read-time{margin:.25rem 0 0!important;padding:0!important;line-height:1.45}
+#bids-list-area a[href^="/cash-bids?zip="]{text-align:left!important;padding:.35rem 0 .1rem!important}
+#f1 .r7-claim{display:inline-block!important;min-height:0!important;margin:.25rem 0 0!important;padding:.35rem 0!important;border:0!important}
+#idx1-trust-ledger{margin-top:.25rem!important}
+/* Store or sell: four inputs across on desktop instead of 3 + 1. */
+@media(min-width:601px){
+  .idx1-extras-row{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr));gap:.6rem}
+  .idx1-extras-field input{width:100%!important;box-sizing:border-box}
+  .idx1-extras-field{justify-content:flex-end}
+}
+/* With the card tighter, bids (1,177px at 1440) and weather (1,139px) are
+   nearly level; the Wire under weather left 350px of nothing under bids.
+   It runs full width beneath both now, two items side by side. */
+@media(min-width:1240px){
+  #f1{grid-row:2/3!important}
+  #wire-band{grid-column:1/3!important;grid-row:3!important}
+  #wire-g{grid-template-columns:repeat(2,minmax(0,1fr))!important;column-gap:24px}
+}
+/* Fund positioning with no data: no markers pinned at the left of a bar. */
+.cot-na .cot-bar-wrap{visibility:hidden}
+/* Quick Tools: plain links three across on wide screens. */
+@media(min-width:1240px){
+  .tool-list{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr));column-gap:24px}
+  .tool-list>.tool-widget,.tool-list>.tool-widget--scout{grid-column:1/-1}
+}
+/* The NOAA source line ran into The Read heading. */
+#f-noaa,.m-fold--noaa{margin-bottom:24px}
+/* Section headers read as content (Sig: "cash bids & basis ... blends in
+   with the content, it should jump out as a header"). Headers take the
+   accent: gold text and icon on dark (#d4a23f, 8:1 on the page), #86600f on
+   light (4.96:1; the light brand gold #a87d1e is 3.5:1 as text). The phone
+   fold titles are the same headers, so they match. */
+.sec-title,.m-fold>summary.m-fold-sum>span,.wr-k{color:var(--gold)!important}
+[data-theme="light"] .sec-title,[data-theme="light"] .m-fold>summary.m-fold-sum>span,[data-theme="light"] .wr-k{color:#86600f!important}
+.sec-title>span,.m-fold>summary.m-fold-sum small{color:var(--text-muted)!important}
+/* The store-or-sell fold sits inside the bids card; it is not a section. */
+.m-fold--calc>summary.m-fold-sum>span{color:var(--text-dim)!important}
+/* Spray windows were stretched across 1,000px. */
+.spray-days{max-width:640px}
 </style>
 </head>
 <body><div class="idx1-preview-flag">PREVIEW BUILD. The new homepage, not live yet. agsist.com still shows the current homepage.</div>
@@ -1710,7 +1885,7 @@ details>summary:hover{color:var(--text)}
               <h2 class="dsp-headline">Sponsor the AGSIST Daily Briefing.</h2>
               <p class="dsp-pitch">One ag company per issue. Your message reaches working US producers across grain, cattle, dairy, and specialty operations &mdash; read before the market open. <strong>First 2 weeks free, then $100/week &mdash; founding rate locked 12 months. No minimum, cancel anytime.</strong></p>
               <div class="dsp-actions">
-                <a class="dsp-cta-primary" href="/sponsor"><svg class="ic" aria-hidden="true"><use href="#i-newspaper"/></svg> See the founding sponsor pitch &rarr;</a>
+                <a class="dsp-cta-primary" href="/sponsor"><svg class="ic" aria-hidden="true"><use href="#i-newspaper"/></svg> See the founding sponsor pitch</a>
               </div>
               <div class="dsp-contact">
                 <a href="mailto:sig@farmers1st.com" aria-label="Email Sigurd at sig@farmers1st.com">sig@farmers1st.com</a>
@@ -1725,12 +1900,12 @@ details>summary:hover{color:var(--text)}
             <div class="dsp-filled" id="dsp-filled" style="display:none" data-sponsor-slot="daily-briefing"></div>
           </div>
           <div id="daily-yc" class="daily-yc">
-            <div class="daily-yc-head"><span class="daily-yc-label">YESTERDAY'S CALL</span><span class="daily-yc-pill yc-pill--pending" id="daily-yc-pill">--</span><a href="/scorecard" style="margin-left:auto;font-size:.824rem;font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--text-muted)" aria-label="Full call track record">Track record &rarr;</a></div>
+            <div class="daily-yc-head"><span class="daily-yc-label">YESTERDAY'S CALL</span><span class="daily-yc-pill yc-pill--pending" id="daily-yc-pill">--</span><a href="/scorecard" style="margin-left:auto;font-size:.824rem;font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--text-muted)" aria-label="Full call track record">Track record</a></div>
             <div class="daily-yc-body"><span id="daily-yc-summary"></span><span id="daily-yc-note" class="daily-yc-note"></span></div>
           </div>
           <div class="daily-more">
             <button type="button" data-daily-more aria-expanded="false">Read today's full briefing &rarr;</button>
-            <a class="daily-more-alt" href="/daily">Every briefing &rarr;</a>
+            <a class="daily-more-alt" href="/daily">Every briefing</a>
           </div>
           <div class="daily-sections">
             <div id="daily-sec-1" class="daily-sec" style="position:relative"><span id="daily-section-1-icon" class="daily-sec-icon"></span><div><div class="daily-sec-label-row"><div id="daily-section-1-title" class="daily-sec-label">Grains Run Ahead Of Stocks</div><span id="daily-section-1-conviction" class="daily-sec-conviction"></span></div><div id="daily-section-1-vs" class="daily-sec-vs" style="display:none"><span class="daily-sec-vs-icon"><svg class="ic" aria-hidden="true"><use href="#i-rotate-ccw"/></svg></span><span class="daily-sec-vs-text" id="daily-section-1-vs-text"></span></div><div id="daily-section-1-catalyst" class="daily-sec-catalyst" style="display:none"><span class="daily-sec-catalyst-icon"><svg class="ic" aria-hidden="true"><use href="#i-satellite-dish"/></svg></span><span class="daily-sec-catalyst-label">DRIVER</span><span class="daily-sec-catalyst-text" id="daily-section-1-catalyst-text"></span></div><div id="daily-section-1-body" class="daily-sec-text"><ul style="list-style:none;margin:0;padding:0"><li style="position:relative;padding-left:1rem;margin:0 0 .35rem"><span style="position:absolute;left:0;top:.55em;width:.36rem;height:.36rem;border-radius:2px;background:rgba(218,165,32,.55)"></span>Corn added a penny over a nickel to <strong>$5.04</strong> and wheat gained 8 cents to $6.80, both moving hours before Quarterly Stocks prints at 11 CT today.</li><li style="position:relative;padding-left:1rem;margin:0 0 .35rem"><span style="position:absolute;left:0;top:.55em;width:.36rem;height:.36rem;border-radius:2px;background:rgba(218,165,32,.55)"></span>Feedstuffs flagged corn &quot;stumbled significantly lower&quot; in midweek trade, so today's bounce is a reversal of that, not a continuation.</li></ul></div><div id="daily-section-1-bottomline" class="daily-sec-bottomline"></div><div id="daily-section-1-action" class="daily-sec-action"></div></div></div>
@@ -1966,11 +2141,11 @@ details>summary:hover{color:var(--text)}
     <div class="s7-head"><h2 class="s7-h" id="s7-month-h">This month</h2><span class="s7-k" id="s7-month-k">What leads the page this month</span></div>
     <div class="s7-grid" id="s7-grid"></div>
   </section>
-  <div class="idx1-zone-label idx1-zone-live" style="order:-1">Live Now <small>&mdash; your location, your bids</small></div>
+  
   <div class="dash-grid" id="dash-grid" style="order:-1">
     <div class="fade-up" id="f1" style="order:-2;grid-column:1/-1">
 
-      <div class="sec-head"><h2 class="sec-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:1.05em;height:1.05em;vertical-align:-.13em;margin-right:.34em;flex:none"><rect width="20" height="12" x="2" y="6" rx="2" /> <circle cx="12" cy="12" r="2" /> <path d="M6 12h.01M18 12h.01" /></svg>Cash Bids &amp; Basis <span style="font-size:.706rem;font-weight:600;color:var(--gold);letter-spacing:.04em">+ Worth the Drive&trade;</span></h2><a href="/cash-bids" class="sec-all">Find Elevators &rarr;</a></div>
+      <div class="sec-head"><h2 class="sec-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:1.05em;height:1.05em;vertical-align:-.13em;margin-right:.34em;flex:none"><rect width="20" height="12" x="2" y="6" rx="2" /> <circle cx="12" cy="12" r="2" /> <path d="M6 12h.01M18 12h.01" /></svg>Cash Bids &amp; Basis</h2></div>
       <!-- THE ANNOUNCEMENT. Added 2026-09-05: the bid network went live and
            nothing on the homepage said so — /changelog was reachable only from
            the footer, and the word "changelog" appeared nowhere on this page.
@@ -1994,13 +2169,13 @@ details>summary:hover{color:var(--text)}
             <button id="bids-lookup-btn" style="padding:.7rem 1rem;background:var(--gold);color:#0a0c0d;border:none;border-radius:6px;font-family:'JetBrains Mono',monospace;font-size:.824rem;font-weight:700;cursor:pointer;white-space:nowrap;transition:background .15s">Find Bids &rarr;</button>
           </div>
         </div>
-        <div class="idx1-bids-hint" style="font-size:.706rem;color:var(--text-muted);margin-bottom:.55rem">Look up your bid below to unlock a store-or-sell calculator and that elevator’s basis history.</div>
+        
         <div id="bids-list-area"><div class="bids-skeleton" aria-label="Loading cash bids"><div class="bids-skel-row"></div><div class="bids-skel-row"></div><div class="bids-skel-row"></div></div></div>
-        <div style="font-size:.706rem;color:var(--text-muted);margin-top:.5rem;padding-top:.45rem;border-top:1px solid var(--border)">Posted price, not a contract. Freight, moisture and grade discounts are the elevator&rsquo;s; call before you haul. <a href="/contact" style="color:var(--text-muted);text-decoration:underline">See a wrong number? Tell us &rarr;</a></div>
+        <div style="font-size:.706rem;color:var(--text-muted);margin-top:.5rem;padding-top:.45rem;border-top:1px solid var(--border)">Posted prices, not contracts. Freight, moisture and grade discounts are the elevator&rsquo;s; call before you haul. <a href="/contact" style="color:var(--text-muted);text-decoration:underline">Wrong number? Tell us</a></div>
         <details class="m-fold m-fold--calc" open><summary class="m-fold-sum"><span>Store or sell? Basis history</span></summary>
         <div id="idx1-store-sell" class="idx1-extras-card" style="display:none">
-          <div class="idx1-extras-title"><svg class="ic" aria-hidden="true"><use href="#i-clipboard-list"/></svg> Store, or sell at this price now?</div>
-          <div class="idx1-extras-sub">Your own bin or storage numbers. Cash price fills from your bid; change it to match your haul.</div>
+          <div class="idx1-extras-title"><svg class="ic" aria-hidden="true"><use href="#i-clipboard-list"/></svg> Store or sell?</div>
+          <div class="idx1-extras-sub">Cash price fills from your bid. Change any number to match your bin.</div>
           <div class="idx1-extras-row">
             <label class="idx1-extras-field">Cash price now ($/bu)<input id="idx1-calc-price" type="number" step="0.01" min="0" inputmode="decimal"></label>
             <label class="idx1-extras-field">Storage cost ($/bu/mo)<input id="idx1-calc-cost" type="number" step="0.01" min="0" placeholder="e.g. 0.03" inputmode="decimal"></label>
@@ -2019,12 +2194,12 @@ details>summary:hover{color:var(--text)}
         </div>
         </details>
         <div id="idx1-trust-ledger">—</div>
-        <a class="r7-claim" href="/elevators#claim" data-track="claim_board">Run an elevator? Claim your board, free.</a>
+        <a class="r7-claim" href="/elevators#claim" data-track="claim_board">Run an elevator? Claim your board.</a>
       </div></div>
     </div>
   <div class="price-cards-section fade-up" id="f-prices">
 
-    <div class="sec-head"><h2 class="sec-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:1.05em;height:1.05em;vertical-align:-.13em;margin-right:.34em;flex:none"><path d="M9 5v4" /> <rect width="4" height="6" x="7" y="9" rx="1" /> <path d="M9 15v2" /> <path d="M17 3v2" /> <rect width="4" height="8" x="15" y="5" rx="1" /> <path d="M17 13v3" /> <path d="M3 3v16a2 2 0 0 0 2 2h16" /></svg>Market Prices</h2><div style="display:flex;align-items:center;gap:.75rem"><span id="prices-age" style="font-family:'JetBrains Mono',monospace;font-size:.706rem;color:var(--text-muted)">Updated every 30 min</span><a href="/corn-futures-prices" class="sec-all">All Charts &rarr;</a></div></div>
+    <div class="sec-head"><h2 class="sec-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:1.05em;height:1.05em;vertical-align:-.13em;margin-right:.34em;flex:none"><path d="M9 5v4" /> <rect width="4" height="6" x="7" y="9" rx="1" /> <path d="M9 15v2" /> <path d="M17 3v2" /> <rect width="4" height="8" x="15" y="5" rx="1" /> <path d="M17 13v3" /> <path d="M3 3v16a2 2 0 0 0 2 2h16" /></svg>Market Prices</h2><div style="display:flex;align-items:center;gap:.75rem"><span id="prices-age" style="font-family:'JetBrains Mono',monospace;font-size:.706rem;color:var(--text-muted)">Updated every 30 min</span><a href="/corn-futures-prices" class="sec-all">All Charts</a></div></div>
     <div class="pc-section-lbl">Grains &mdash; Key Contracts</div>
     <div class="price-cards-grid">
       <div class="pc pc--highlight" data-spark="corn"><div class="pc-head"><span class="pc-name">Corn</span><span class="pc-contract"></span></div><div class="r7-pl"><div class="pc-price" id="pcp-corn-near"></div><span class="r7-unit">per bu</span></div><div class="pc-change"><span class="pc-chg-val nc" id="pcc-corn-near"></span></div><div class="pc-prev" id="pcprev-corn-near"></div><div class="pc-range"><div class="pc-range-labels"><span id="pcrl-corn-lo"></span><span>52-week range</span><span id="pcrl-corn-hi"></span></div><div class="pc-range-track"><div class="pc-range-fill" id="pcrf-corn"></div><div class="pc-range-dot" id="pcrd-corn"></div></div></div></div>
@@ -2041,7 +2216,7 @@ details>summary:hover{color:var(--text)}
           <div><div class="crop-row-head"><div class="crop-comm-label"><span class="crop-comm-name">Corn</span></div><span class="crop-ge-val fair" id="crop-corn-ge">--</span></div><div class="crop-chg-row"><span class="crop-chg nc" id="crop-corn-wk">--</span><span class="crop-chg-lbl">week</span><span class="crop-chg nc" id="crop-corn-yr">--</span><span class="crop-chg-lbl">vs last year</span></div><div class="crop-plant-row"><span class="crop-plant-pct" id="crop-corn-plant">--%</span><span class="crop-plant-lbl">planted</span><div class="crop-plant-bar"><div class="crop-plant-fill" id="crop-corn-bar" style="width:0%"></div></div></div></div>
           <div><div class="crop-row-head"><div class="crop-comm-label"><span class="crop-comm-name">Soybeans</span></div><span class="crop-ge-val fair" id="crop-bean-ge">--</span></div><div class="crop-chg-row"><span class="crop-chg nc" id="crop-bean-wk">--</span><span class="crop-chg-lbl">week</span><span class="crop-chg nc" id="crop-bean-yr">--</span><span class="crop-chg-lbl">vs last year</span></div><div class="crop-plant-row"><span class="crop-plant-pct" id="crop-bean-plant">--%</span><span class="crop-plant-lbl">planted</span><div class="crop-plant-bar"><div class="crop-plant-fill" id="crop-bean-bar" style="width:0%"></div></div></div></div>
         </div>
-        <div class="crop-footer"><span class="crop-footer-date" id="crop-date">USDA NASS &middot; Weekly</span><a href="/usda-calendar" class="crop-full-link">Full Calendar &rarr;</a></div>
+        <div class="crop-footer"><span class="crop-footer-date" id="crop-date">USDA NASS &middot; Weekly</span><a href="/usda-calendar" class="crop-full-link">Full Calendar</a></div>
       </div>
       <div class="export-widget" id="export-widget">
         <div class="export-widget-head"><span class="export-widget-title"><svg class="ic" aria-hidden="true"><use href="#i-package"/></svg> Export Sales &mdash; Commitments</span><span class="export-mkt-yr" id="export-mkt-yr">USDA FAS &middot; Thu 8:30am</span></div>
@@ -2050,19 +2225,19 @@ details>summary:hover{color:var(--text)}
           <div><div class="export-row-head"><div class="export-comm-label"><span class="export-comm-name">Soybeans</span></div><span class="export-weekly"><span id="exp-bean-wk">--</span> <span class="export-wk-lbl">net sales this week</span></span></div><div class="export-pace-row"><div class="export-pace-bar"><div class="export-pace-fill on-track" id="exp-bean-bar" style="width:0%"></div></div><span class="export-pace-pct on-track" id="exp-bean-pct">--%</span></div><div class="export-cumul" id="exp-bean-cumul"></div><div class="export-withheld" id="exp-bean-why" hidden></div></div>
           <div><div class="export-row-head"><div class="export-comm-label"><span class="export-comm-name">Wheat</span></div><span class="export-weekly"><span id="exp-wheat-wk">--</span> <span class="export-wk-lbl">net sales this week</span></span></div><div class="export-pace-row"><div class="export-pace-bar"><div class="export-pace-fill on-track" id="exp-wheat-bar" style="width:0%"></div></div><span class="export-pace-pct on-track" id="exp-wheat-pct">--%</span></div><div class="export-cumul" id="exp-wheat-cumul"></div><div class="export-withheld" id="exp-wheat-why" hidden></div></div>
         </div>
-        <div class="export-footer"><span class="export-footer-date" id="exp-date">USDA FAS &middot; Weekly</span><span class="tip r7-tip"><button type="button" class="tip-b" aria-expanded="false" aria-describedby="tip-export">No pace yet</button><span id="tip-export" role="tooltip" class="tip-t" hidden>Pace is commitments against USDA&rsquo;s export projection for this marketing year. That projection is not loaded on this site yet, so no pace is shown rather than one against last year&rsquo;s target.</span></span><span class="tip r7-tip"><button type="button" class="tip-b" aria-expanded="false" aria-describedby="tip-r7-bu">Bushels</button><span id="tip-r7-bu" role="tooltip" class="tip-t" hidden>USDA reports export sales in metric tons. Converted at 39.368 bushels per metric ton for corn and 36.744 for soybeans and wheat. Commitments are shipments so far plus sales not yet shipped.</span></span><a href="https://www.fas.usda.gov/programs/export-sales-reporting-program" target="_blank" rel="noopener" class="export-full-link">FAS Data &rarr;</a></div>
+        <div class="export-footer"><span class="export-footer-date" id="exp-date">USDA FAS &middot; Weekly</span><span class="tip r7-tip"><button type="button" class="tip-b" aria-expanded="false" aria-describedby="tip-export">No pace yet</button><span id="tip-export" role="tooltip" class="tip-t" hidden>Pace is commitments against USDA&rsquo;s export projection for this marketing year. That projection is not loaded on this site yet, so no pace is shown rather than one against last year&rsquo;s target.</span></span><span class="tip r7-tip"><button type="button" class="tip-b" aria-expanded="false" aria-describedby="tip-r7-bu">Bushels</button><span id="tip-r7-bu" role="tooltip" class="tip-t" hidden>USDA reports export sales in metric tons. Converted at 39.368 bushels per metric ton for corn and 36.744 for soybeans and wheat. Commitments are shipments so far plus sales not yet shipped.</span></span><a href="https://www.fas.usda.gov/programs/export-sales-reporting-program" target="_blank" rel="noopener" class="export-full-link">FAS Data</a></div>
       </div>
     </div>
     <div class="tariff-fert-grid fade-up">
       <div class="tariff-widget" id="tariff-widget">
         <div class="tariff-widget-head"><span class="tariff-widget-title"><svg class="ic" aria-hidden="true"><use href="#i-landmark"/></svg> Ag Tariff Tracker &mdash; US Export Rates</span><span class="tariff-status-badge elevated" id="tariff-badge">Loading&hellip;</span></div>
         <div class="tariff-rows" id="tariff-rows"><div class="tariff-row" style="justify-content:center;color:var(--text-muted);font-size:.824rem">Loading tariff data&hellip;</div></div>
-        <div class="tariff-footer"><span class="tariff-footer-date" id="tariff-date">Updated &mdash;</span><a href="/tariffs" class="tariff-full-link">Full Tracker &rarr;</a></div>
+        <div class="tariff-footer"><span class="tariff-footer-date" id="tariff-date">Updated &mdash;</span><a href="/tariffs" class="tariff-full-link">Full Tracker</a></div>
       </div>
       <div class="fert-widget" id="fert-widget">
         <div class="fert-widget-head"><span class="fert-widget-title"><svg class="ic" aria-hidden="true"><use href="#i-flask-conical"/></svg> Fertilizer Prices</span><span class="crop-week-badge" id="fert-date">Updated &mdash;</span></div>
         <div class="fert-grid" id="fert-grid"><div class="fert-card" style="grid-column:1/-1;text-align:center;padding:.75rem;color:var(--text-muted);font-size:.824rem">Loading&hellip;</div></div>
-        <div class="fert-footer"><span class="fert-footer-note" id="fert-src-note">Midwest dealer quotes, dollars per ton</span><a href="/fertilizer" class="fert-full-link">Price History &rarr;</a></div>
+        <div class="fert-footer"><span class="fert-footer-note" id="fert-src-note">Midwest dealer quotes, dollars per ton</span><a href="/fertilizer" class="fert-full-link">Price History</a></div>
       </div>
     </div>
     </details>
@@ -2203,7 +2378,7 @@ details>summary:hover{color:var(--text)}
     <summary class="wr-summary"><span class="wr-k">The wire</span><span class="wr-sub" id="wire-sub"></span></summary>
     <div class="wr-body">
       <div class="wr-g" id="wire-g"></div>
-      <a class="wr-all" href="/news">Everything that moved &rarr;</a>
+      <a class="wr-all" href="/news">Everything that moved</a>
     </div>
   </details>
 
@@ -2218,7 +2393,7 @@ details>summary:hover{color:var(--text)}
     </div>
   </div>
   <section class="fade-up idx1-land" id="idx1-land" aria-labelledby="land-h">
-    <div class="sec-head"><h2 class="sec-title" id="land-h">Land, Storage &amp; Risk</h2><a href="/farmland-atlas" class="sec-all" data-track="land">Farmland Atlas &rarr;</a></div>
+    <div class="sec-head"><h2 class="sec-title" id="land-h">Land, Storage &amp; Risk</h2></div>
     <div class="land-grid">
       <a class="land-cell land-lead" id="land-atlas" href="/farmland-atlas" data-track="land"><span class="land-k">Farmland Atlas</span><span class="land-v" id="land-atlas-v">Rent, land value and risk for every US county</span><span class="land-s" id="land-atlas-s">Open the map</span></a>
       <a class="land-cell" id="land-hail" href="/hail-map" data-track="land" hidden><span class="land-k">Hail, 30 days</span><span class="land-v" id="land-hail-v"></span><span class="land-s" id="land-hail-s"></span></a>
@@ -2235,7 +2410,7 @@ details>summary:hover{color:var(--text)}
       <li><a href="/ag-odds" data-track="land">Prediction markets</a></li>
       <li><a href="/storage-crunch" data-track="land">Storage crunch</a></li>
       <li><a href="/foreign-land" data-track="land">Foreign-held land</a></li>
-      <li><a href="/archive" data-track="land">Every Daily briefing</a></li>
+      <li><a href="/archive" data-track="land">Daily archive</a></li>
     </ul>
   </section>
   <script>
@@ -2295,7 +2470,7 @@ details>summary:hover{color:var(--text)}
                 <span class="tool-widget-arr">&rarr;</span>
               </div>
               <div class="tool-widget-bottom">
-                <span class="tool-widget-rec">Soil, 5-year crop history, satellite crop-vigor &amp; local cash bids for any field you draw</span>
+                <span class="tool-widget-rec">Soil, 5-year crop history, satellite crop vigor and nearby cash bids.</span>
               </div>
             </div>
           </a>
@@ -2370,6 +2545,7 @@ details>summary:hover{color:var(--text)}
             </div>
           </a>
           <a href="/harvest-price-tracker" class="tool-btn" id="s7-hp-link" data-track="season" hidden><span class="tool-name"><svg class="ic" aria-hidden="true"><use href="#i-calendar"/></svg> Insurance harvest price</span><span class="tool-arr">&rarr;</span></a>
+          <a href="/yield-estimator" class="tool-btn"><span class="tool-name"><svg class="ic" aria-hidden="true"><use href="#i-ruler"/></svg> Yield Estimator</span><span class="tool-arr">&rarr;</span></a>
           <a href="/breakeven" class="tool-btn"><span class="tool-name"><svg class="ic" aria-hidden="true"><use href="#i-ruler"/></svg> Break-Even Calculator</span><span class="tool-arr">&rarr;</span></a>
           <a href="/grain-bin-calculator" class="tool-btn"><span class="tool-name"><svg class="ic" aria-hidden="true"><use href="#i-construction"/></svg> Grain Bin Calculator</span><span class="tool-arr">&rarr;</span></a>
           <a href="/gdu-calculator" class="tool-btn"><span class="tool-name"><svg class="ic" aria-hidden="true"><use href="#i-thermometer"/></svg> GDU Calculator</span><span class="tool-arr">&rarr;</span></a>
@@ -2416,9 +2592,9 @@ details>summary:hover{color:var(--text)}
   })();
   </script>
 
-  <details class="m-fold m-fold--radar" open><summary class="m-fold-sum"><span>Radar, Forecast &amp; Drought</span></summary>
+  <details class="m-fold m-fold--radar" open><summary class="m-fold-sum"><span>Radar &amp; Drought</span></summary>
   <div class="radar-section fade-up" id="f-radar">
-    <div class="sec-head"><h2 class="sec-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:1.05em;height:1.05em;vertical-align:-.13em;margin-right:.34em;flex:none"><path d="M12 2v2" /> <path d="m4.93 4.93 1.41 1.41" /> <path d="M20 12h2" /> <path d="m19.07 4.93-1.41 1.41" /> <path d="M15.947 12.65a4 4 0 0 0-5.925-4.128" /> <path d="M3 20a5 5 0 1 1 8.9-4H13a3 3 0 0 1 2 5.24" /> <path d="M11 20v2" /> <path d="M7 19v2" /></svg>Radar, Forecast &amp; Drought</h2><a href="/drought-monitor" class="sec-all">Drought Monitor &rarr;</a></div>
+    <div class="sec-head"><h2 class="sec-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:1.05em;height:1.05em;vertical-align:-.13em;margin-right:.34em;flex:none"><path d="M12 2v2" /> <path d="m4.93 4.93 1.41 1.41" /> <path d="M20 12h2" /> <path d="m19.07 4.93-1.41 1.41" /> <path d="M15.947 12.65a4 4 0 0 0-5.925-4.128" /> <path d="M3 20a5 5 0 1 1 8.9-4H13a3 3 0 0 1 2 5.24" /> <path d="M11 20v2" /> <path d="M7 19v2" /></svg>Radar &amp; Drought</h2><a href="/drought-monitor" class="sec-all">Drought Monitor</a></div>
     <div class="radar-grid">
       <div class="radar-card">
         <div style="padding:.6rem 1rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
@@ -2436,8 +2612,8 @@ details>summary:hover{color:var(--text)}
              for free, nothing hidden, just closed until asked for. -->
         <details class="drought-embed" style="flex:1;display:flex;flex-direction:column;">
           <summary style="padding:.6rem 1rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;cursor:pointer;list-style:none">
-            <span style="font-size:.824rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold)">Drought Monitor <small style="font-weight:400;color:var(--text-muted);text-transform:none;letter-spacing:0">&mdash; <span id="s7-usdm-valid"></span>tap to view</small></span>
-            <a href="/drought-monitor" style="font-size:.824rem;color:var(--text-muted)" onclick="event.stopPropagation()">Full Map &rarr;</a>
+            <span style="font-size:.824rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold)">Drought Monitor <small style="font-weight:400;color:var(--text-muted);text-transform:none;letter-spacing:0">&mdash; <span id="s7-usdm-valid"></span></small></span>
+            <a href="/drought-monitor" style="font-size:.824rem;color:var(--text-muted)" onclick="event.stopPropagation()">Full Map</a>
           </summary>
           <a href="https://droughtmonitor.unl.edu" target="_blank" rel="noopener" title="View full interactive drought map" style="flex:1;display:flex;align-items:center;">
             <img id="drought-img" src="" alt="US Drought Monitor &mdash; current week" style="display:block;width:100%;height:auto" loading="lazy">
@@ -2445,10 +2621,10 @@ details>summary:hover{color:var(--text)}
           <div id="drought-fallback" class="drought-fallback" style="display:none">
             <span style="font-size:1.294rem"><svg class="ic" aria-hidden="true"><use href="#i-sun"/></svg></span>
             <span style="font-size:.824rem;color:var(--text-dim)">Not loaded yet</span>
-            <a href="https://droughtmonitor.unl.edu" target="_blank" rel="noopener">View on droughtmonitor.unl.edu &rarr;</a>
+            <a href="https://droughtmonitor.unl.edu" target="_blank" rel="noopener">View on droughtmonitor.unl.edu</a>
           </div>
           <div style="padding:.4rem .8rem;font-size:.824rem;color:var(--text-muted);text-align:right;border-top:1px solid var(--border)">
-            Source: USDA NDMC &middot; Updated Thursday &middot; <a href="https://droughtmonitor.unl.edu" target="_blank" rel="noopener" style="color:var(--gold);text-decoration:underline;">Full Interactive Map &rarr;</a>
+            Source: USDA NDMC &middot; Updated Thursday &middot; <a href="https://droughtmonitor.unl.edu" target="_blank" rel="noopener" style="color:var(--gold);text-decoration:underline;">Full Interactive Map</a>
           </div>
         </details>
       </div>
@@ -2461,16 +2637,16 @@ details>summary:hover{color:var(--text)}
 
   <details class="m-fold m-fold--noaa" open><summary class="m-fold-sum"><span>NOAA Seasonal Outlooks</span></summary>
   <div class="fade-up" id="f-noaa">
-    <div class="sec-head"><h2 class="sec-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:1.05em;height:1.05em;vertical-align:-.13em;margin-right:.34em;flex:none"><path d="M14 4v10.54a4 4 0 1 1-4 0V4a2 2 0 0 1 4 0Z" /></svg>NOAA Seasonal Outlooks</h2><a href="https://www.cpc.ncep.noaa.gov/products/predictions/long_range/" target="_blank" rel="noopener" class="sec-all">CPC Full Outlooks &rarr;</a></div>
+    <div class="sec-head"><h2 class="sec-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:1.05em;height:1.05em;vertical-align:-.13em;margin-right:.34em;flex:none"><path d="M14 4v10.54a4 4 0 1 1-4 0V4a2 2 0 0 1 4 0Z" /></svg>NOAA Seasonal Outlooks</h2><a href="https://www.cpc.ncep.noaa.gov/products/predictions/long_range/" target="_blank" rel="noopener" class="sec-all">CPC Full Outlooks</a></div>
     <div class="noaa-tabs" id="noaa-tabs">
       <button class="noaa-tab active" data-period="30" data-label="1-Month (30-Day)">1-Month</button>
       <button class="noaa-tab" data-period="90" data-label="3-Month (Seasonal)">3-Month</button>
     </div>
     <div class="noaa-grid">
-      <div class="noaa-card"><div class="noaa-card-head temp"><svg class="ic" aria-hidden="true"><use href="#i-thermometer"/></svg> Temperature Outlook</div><img id="noaa-temp-img" data-src="/data/outlooks/noaa_temp_30day.gif" alt="NOAA 1-month temperature outlook" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="noaa-img-err"><span><svg class="ic" aria-hidden="true"><use href="#i-thermometer"/></svg> Image unavailable</span><a href="https://www.cpc.ncep.noaa.gov/products/predictions/30day/" target="_blank" rel="noopener">View on NOAA CPC &rarr;</a></div></div>
-      <div class="noaa-card"><div class="noaa-card-head precip"><svg class="ic" aria-hidden="true"><use href="#i-cloud-rain"/></svg> Precipitation Outlook</div><img id="noaa-precip-img" data-src="/data/outlooks/noaa_prcp_30day.gif" alt="NOAA 1-month precipitation outlook" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="noaa-img-err"><span><svg class="ic" aria-hidden="true"><use href="#i-cloud-rain"/></svg> Image unavailable</span><a href="https://www.cpc.ncep.noaa.gov/products/predictions/30day/" target="_blank" rel="noopener">View on NOAA CPC &rarr;</a></div></div>
+      <div class="noaa-card"><div class="noaa-card-head temp"><svg class="ic" aria-hidden="true"><use href="#i-thermometer"/></svg> Temperature Outlook</div><img id="noaa-temp-img" data-src="/data/outlooks/noaa_temp_30day.gif" alt="NOAA 1-month temperature outlook" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="noaa-img-err"><span><svg class="ic" aria-hidden="true"><use href="#i-thermometer"/></svg> Image unavailable</span><a href="https://www.cpc.ncep.noaa.gov/products/predictions/30day/" target="_blank" rel="noopener">View on NOAA CPC</a></div></div>
+      <div class="noaa-card"><div class="noaa-card-head precip"><svg class="ic" aria-hidden="true"><use href="#i-cloud-rain"/></svg> Precipitation Outlook</div><img id="noaa-precip-img" data-src="/data/outlooks/noaa_prcp_30day.gif" alt="NOAA 1-month precipitation outlook" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="noaa-img-err"><span><svg class="ic" aria-hidden="true"><use href="#i-cloud-rain"/></svg> Image unavailable</span><a href="https://www.cpc.ncep.noaa.gov/products/predictions/30day/" target="_blank" rel="noopener">View on NOAA CPC</a></div></div>
     </div>
-    <div class="noaa-note">Source: <a href="https://www.cpc.ncep.noaa.gov/" target="_blank" rel="noopener">NOAA Climate Prediction Center</a> &middot; <span id="s7-noaa-dates">Issue dates: Not loaded yet</span> &middot; <span id="noaa-period-label">1-Month (30-Day)</span></div>
+    <div class="noaa-note">Source: <a href="https://www.cpc.ncep.noaa.gov/" target="_blank" rel="noopener">NOAA Climate Prediction Center</a> &middot; <span id="s7-noaa-dates">Issue dates: Not loaded yet</span><span id="noaa-period-label" hidden>1-Month (30-Day)</span></div>
   </div>
   </details>
   <div class="pdw fade-up" id="pdw">
@@ -2478,7 +2654,7 @@ details>summary:hover{color:var(--text)}
     <select id="pdw-state" class="pdw-sel"><option value="">Select your state</option></select>
     <div id="pdw-geo" style="font-size:.824rem;color:var(--text-muted);margin:-.3rem 0 .45rem"></div>
     <div id="pdw-out"></div>
-    <p class="pdw-ft">RMA&rsquo;s discovery windows build your revenue guarantee &mdash; and they differ by state and by your county&rsquo;s sales closing date. <a href="/harvest-price-tracker">Full tracker, live averages and 15&#8209;year history &rarr;</a></p>
+    <p class="pdw-ft">RMA&rsquo;s discovery windows build your revenue guarantee &mdash; and they differ by state and by your county&rsquo;s sales closing date. <a href="/harvest-price-tracker">Full tracker, live averages and 15&#8209;year history</a></p>
   </div>
   <script>
   /* Compact price-discovery status. Same data file as /harvest-price-tracker
@@ -2592,10 +2768,10 @@ details>summary:hover{color:var(--text)}
     </style>
     <div class="sec-head"><h2 class="sec-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:1.05em;height:1.05em;vertical-align:-.13em;margin-right:.34em;flex:none"><circle cx="6" cy="15" r="4" /> <circle cx="18" cy="15" r="4" /> <path d="M14 15a2 2 0 0 0-2-2 2 2 0 0 0-2 2" /> <path d="M2.5 13 5 7c.7-1.3 1.4-2 3-2" /> <path d="M21.5 13 19 7c-.7-1.3-1.5-2-3-2" /></svg>The Read</h2><span class="read-sub">What today's prices mean</span></div>
     <div class="sig-grid">
-      <a href="/corn-futures-prices" class="sig" id="sig-corn"><div class="sig-top"><span class="sig-name">Corn</span><span class="sig-tag" id="sig-corn-tag">&middot;</span></div><div class="sig-num"><span id="sig-corn-num">61<span class="r7-ord">st</span></span><small id="sig-corn-sub">percentile</small></div><div class="sig-price" id="sig-corn-price">5-year range $3.68&ndash;$8.18</div><div class="sig-bar"><div class="sig-fill" id="sig-corn-fill" style="width:0"></div><div class="sig-dot" id="sig-corn-dot" style="left:-5px"></div></div><div class="sig-read" id="sig-corn-read">Ranked at Sep 30, 7:47 PM CT against 5 years of weekly front-month closes.</div><div class="sig-link">Full corn read &rarr;</div></a>
-      <a href="/soybean-futures-prices" class="sig" id="sig-beans"><div class="sig-top"><span class="sig-name">Soybeans</span><span class="sig-tag" id="sig-beans-tag">&middot;</span></div><div class="sig-num"><span id="sig-beans-num">60<span class="r7-ord">th</span></span><small id="sig-beans-sub">percentile</small></div><div class="sig-price" id="sig-beans-price">5-year range $9.39&ndash;$17.45</div><div class="sig-bar"><div class="sig-fill" id="sig-beans-fill" style="width:0"></div><div class="sig-dot" id="sig-beans-dot" style="left:-5px"></div></div><div class="sig-read" id="sig-beans-read">Ranked at Sep 30, 7:47 PM CT against 5 years of weekly front-month closes.</div><div class="sig-link">Full soybean read &rarr;</div></a>
-      <a href="/wheat-futures-prices" class="sig" id="sig-wheat"><div class="sig-top"><span class="sig-name">Wheat</span><span class="sig-tag" id="sig-wheat-tag">&middot;</span></div><div class="sig-num"><span id="sig-wheat-num">65<span class="r7-ord">th</span></span><small id="sig-wheat-sub">percentile</small></div><div class="sig-price" id="sig-wheat-price">5-year range $4.99&ndash;$13.48</div><div class="sig-bar"><div class="sig-fill" id="sig-wheat-fill" style="width:0"></div><div class="sig-dot" id="sig-wheat-dot" style="left:-5px"></div></div><div class="sig-read" id="sig-wheat-read">Ranked at Sep 30, 7:47 PM CT against 5 years of weekly front-month closes.</div><div class="sig-link">Full wheat read &rarr;</div></a>
-      <a href="/cattle-futures-prices" class="sig" id="sig-cattle"><div class="sig-top"><span class="sig-name">Cattle</span><span class="sig-tag" id="sig-cattle-tag">&middot;</span></div><div class="sig-num"><span id="sig-cattle-num">&mdash;</span><small id="sig-cattle-sub"></small></div><div class="sig-price" id="sig-cattle-price">Loading&hellip;</div><div class="sig-bar"><div class="sig-fill" id="sig-cattle-fill" style="width:0"></div><div class="sig-dot" id="sig-cattle-dot" style="left:-5px"></div></div><div class="sig-read" id="sig-cattle-read"></div><div class="sig-link">Full cattle read &rarr;</div></a>
+      <a href="/corn-futures-prices" class="sig" id="sig-corn"><div class="sig-top"><span class="sig-name">Corn</span><span class="sig-tag" id="sig-corn-tag">&middot;</span></div><div class="sig-num"><span id="sig-corn-num">61<span class="r7-ord">st</span></span><small id="sig-corn-sub">percentile</small></div><div class="sig-price" id="sig-corn-price">5-year range $3.68&ndash;$8.18</div><div class="sig-bar"><div class="sig-fill" id="sig-corn-fill" style="width:0"></div><div class="sig-dot" id="sig-corn-dot" style="left:-5px"></div></div><div class="sig-read" id="sig-corn-read">Ranked at Sep 30, 7:47 PM CT against 5 years of weekly front-month closes.</div><div class="sig-link">Full corn read</div></a>
+      <a href="/soybean-futures-prices" class="sig" id="sig-beans"><div class="sig-top"><span class="sig-name">Soybeans</span><span class="sig-tag" id="sig-beans-tag">&middot;</span></div><div class="sig-num"><span id="sig-beans-num">60<span class="r7-ord">th</span></span><small id="sig-beans-sub">percentile</small></div><div class="sig-price" id="sig-beans-price">5-year range $9.39&ndash;$17.45</div><div class="sig-bar"><div class="sig-fill" id="sig-beans-fill" style="width:0"></div><div class="sig-dot" id="sig-beans-dot" style="left:-5px"></div></div><div class="sig-read" id="sig-beans-read">Ranked at Sep 30, 7:47 PM CT against 5 years of weekly front-month closes.</div><div class="sig-link">Full soybean read</div></a>
+      <a href="/wheat-futures-prices" class="sig" id="sig-wheat"><div class="sig-top"><span class="sig-name">Wheat</span><span class="sig-tag" id="sig-wheat-tag">&middot;</span></div><div class="sig-num"><span id="sig-wheat-num">65<span class="r7-ord">th</span></span><small id="sig-wheat-sub">percentile</small></div><div class="sig-price" id="sig-wheat-price">5-year range $4.99&ndash;$13.48</div><div class="sig-bar"><div class="sig-fill" id="sig-wheat-fill" style="width:0"></div><div class="sig-dot" id="sig-wheat-dot" style="left:-5px"></div></div><div class="sig-read" id="sig-wheat-read">Ranked at Sep 30, 7:47 PM CT against 5 years of weekly front-month closes.</div><div class="sig-link">Full wheat read</div></a>
+      <a href="/cattle-futures-prices" class="sig" id="sig-cattle"><div class="sig-top"><span class="sig-name">Cattle</span><span class="sig-tag" id="sig-cattle-tag">&middot;</span></div><div class="sig-num"><span id="sig-cattle-num">&mdash;</span><small id="sig-cattle-sub"></small></div><div class="sig-price" id="sig-cattle-price">Loading&hellip;</div><div class="sig-bar"><div class="sig-fill" id="sig-cattle-fill" style="width:0"></div><div class="sig-dot" id="sig-cattle-dot" style="left:-5px"></div></div><div class="sig-read" id="sig-cattle-read"></div><div class="sig-link">Full cattle read</div></a>
     </div>
   </section>
   </details>
@@ -2641,7 +2817,7 @@ details>summary:hover{color:var(--text)}
         if($(pre+'-read'))$(pre+'-read').innerHTML=rd;
       });
       var le=px.cattle,gf=px.feeders,lc=cot.livecattle,pre='sig-cattle';
-      if(!(le&&gf&&le.close!=null&&gf.close!=null)){if($(pre+'-price'))$(pre+'-price').textContent='Unavailable right now';if($(pre+'-tag'))$(pre+'-tag').textContent='CACHED';}
+      if(!(le&&gf&&le.close!=null&&gf.close!=null)){if($(pre+'-price'))$(pre+'-price').textContent='Unavailable right now';if($(pre+'-tag'))$(pre+'-tag').textContent='';}
       if(le&&gf&&le.close!=null&&gf.close!=null){
         var ratio=gf.close/le.close;
         if($(pre+'-num'))$(pre+'-num').textContent=ratio.toFixed(2);
@@ -2662,7 +2838,7 @@ details>summary:hover{color:var(--text)}
                sitting outside its own 52-week range (treasury10 closed 5.114
                against a 5.016 high), so an unclamped version prints "123%". */
             var _fp=Math.max(0,Math.min(100,Math.round(((+_fq.close-+_fq.wk52_lo)/(+_fq.wk52_hi-+_fq.wk52_lo))*100)));
-            _fclause=' &mdash; feeders '+(_fp>=80?'near the top of':_fp<=20?'near the bottom of':'mid-range in')+' their 52-week range ('+_fp+'%).';
+            _fclause='. Feeder futures sit at '+_fp+'% of their 52-week range.';
           }
           /* "(2%)" read as "2% net long". It is the position's place in its own 52-week range. Say the position and say what the percentage is. */
           var _netTxt=(Math.abs(lc.net)>=1000?(Math.abs(lc.net)/1000).toFixed(1)+'k':String(Math.abs(lc.net)));
@@ -2674,9 +2850,9 @@ details>summary:hover{color:var(--text)}
   </script>
   <details class="m-fold m-fold--kalshi" open><summary class="m-fold-sum"><span>What&rsquo;s Moving Agriculture</span></summary>
   <div class="fade-up" id="f-kalshi">
-    <div class="sec-head"><h2 class="sec-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:1.05em;height:1.05em;vertical-align:-.13em;margin-right:.34em;flex:none"><path d="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2" /></svg>What's Moving Agriculture</h2><a href="/ag-odds" class="sec-all">All Markets &rarr;</a></div>
+    <div class="sec-head"><h2 class="sec-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:1.05em;height:1.05em;vertical-align:-.13em;margin-right:.34em;flex:none"><path d="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2" /></svg>What's Moving Agriculture</h2><a href="/ag-odds" class="sec-all">All Markets</a></div>
     <div id="kalshi-grid" data-markets-handled="true" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(268px,100%),1fr));gap:.65rem;margin-bottom:.5rem"><div id="kalshi-loading" style="grid-column:1/-1;text-align:center;padding:1.2rem;font-size:.824rem;color:var(--text-muted)"><svg class="ic" aria-hidden="true"><use href="#i-hourglass"/></svg> Loading markets&hellip;</div></div>
-    <div id="kalshi-footer" style="display:none;padding:.25rem 0 .15rem;text-align:right"><a href="/ag-odds" style="font-size:.824rem;color:var(--gold);text-decoration:none;font-weight:600">View all ag prediction markets &rarr;</a></div>
+    <div id="kalshi-footer" style="display:none;padding:.25rem 0 .15rem;text-align:right"><a href="/ag-odds" style="font-size:.824rem;color:var(--gold);text-decoration:none;font-weight:600">View all ag prediction markets</a></div>
   </div>
   </details>
   <details class="m-fold m-fold--faq" open><summary class="m-fold-sum"><span>Frequently Asked Questions</span></summary>
@@ -2752,33 +2928,33 @@ details>summary:hover{color:var(--text)}
 .pdw-ft{font-size:.824rem;color:var(--text-muted);line-height:1.5;margin:.55rem 0 0}
 .pdw-ft a{color:var(--brand)}
 </style>
-    <div class="sec-head"><h2 class="sec-title" id="faq-heading"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:1.05em;height:1.05em;vertical-align:-.13em;margin-right:.34em;flex:none"><circle cx="12" cy="12" r="10" /> <path d="M12 16v-4" /> <path d="M12 8h.01" /></svg>Frequently Asked Questions</h2><a href="/cash-bids" class="sec-all">Cash bids near you &rarr;</a></div>
+    <div class="sec-head"><h2 class="sec-title" id="faq-heading"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:1.05em;height:1.05em;vertical-align:-.13em;margin-right:.34em;flex:none"><circle cx="12" cy="12" r="10" /> <path d="M12 16v-4" /> <path d="M12 8h.01" /></svg>Frequently Asked Questions</h2><a href="/cash-bids" class="sec-all">Cash bids near you</a></div>
     <div class="faq-list">
-      <details class="faq-item"><summary>What are corn futures prices today?</summary><div class="faq-a">AGSIST displays CBOT corn futures prices from Yahoo Finance, delayed about 15 minutes and updated every 30 minutes. The front-month contract and the next December contract are both shown, each labelled with its contract month (for example Dec &rsquo;26), with net change, percent change, and 52-week range. Prices are in dollars per bushel. <a href="/corn-futures-prices">See full corn futures &rarr;</a></div></details>
-      <details class="faq-item"><summary>How do I find cash grain bids near me?</summary><div class="faq-a">Enter any US ZIP code on AGSIST's Cash Bids page at agsist.com/cash-bids to see live corn, soybean, and wheat elevator prices from grain elevators within 50 miles of that ZIP by default. You can widen the search up to 250 miles. Basis is shown alongside cash price for each location. <a href="/cash-bids">Find cash bids &rarr;</a></div></details>
+      <details class="faq-item"><summary>What are corn futures prices today?</summary><div class="faq-a">AGSIST displays CBOT corn futures prices from Yahoo Finance, delayed about 15 minutes and updated every 30 minutes. The front-month contract and the next December contract are both shown, each labelled with its contract month (for example Dec &rsquo;26), with net change, percent change, and 52-week range. Prices are in dollars per bushel. <a href="/corn-futures-prices">See full corn futures</a></div></details>
+      <details class="faq-item"><summary>How do I find cash grain bids near me?</summary><div class="faq-a">Enter any US ZIP code on AGSIST's Cash Bids page at agsist.com/cash-bids to see live corn, soybean, and wheat elevator prices from grain elevators within 50 miles of that ZIP by default. You can widen the search up to 250 miles. Basis is shown alongside cash price for each location. <a href="/cash-bids">Find cash bids</a></div></details>
       <details class="faq-item"><summary>Is AGSIST free?</summary><div class="faq-a">Yes. AGSIST is available at no charge with no account or subscription required. Tools on the site &mdash; spray advisory, urea volatilization risk monitor, break-even calculator, grain bin calculator, cash bids, and the AGSIST Daily briefing &mdash; are available at no charge for non-commercial use.</div></details>
       <details class="faq-item"><summary>How often are grain prices updated on AGSIST?</summary><div class="faq-a">Grain futures prices on AGSIST are updated about every 30 minutes while futures markets trade, from Sunday evening to Friday afternoon, Central time. The AGSIST Daily briefing is published every weekday morning with overnight market analysis.</div></details>
-      <details class="faq-item"><summary>What is urea volatilization risk?</summary><div class="faq-a">Urea volatilization is the loss of nitrogen fertilizer as ammonia gas when urea is surface-applied without incorporation. Risk is highest when soil temperatures exceed 50&deg;F, humidity is high, and no rain is forecast within 2&ndash;4 days. AGSIST's free urea risk monitor scores your real-time local conditions from 0&ndash;100. <a href="/urea">Check urea risk &rarr;</a></div></details>
+      <details class="faq-item"><summary>What is urea volatilization risk?</summary><div class="faq-a">Urea volatilization is the loss of nitrogen fertilizer as ammonia gas when urea is surface-applied without incorporation. Risk is highest when soil temperatures exceed 50&deg;F, humidity is high, and no rain is forecast within 2&ndash;4 days. AGSIST's free urea risk monitor scores your real-time local conditions from 0&ndash;100. <a href="/urea">Check urea risk</a></div></details>
       <details class="faq-item"><summary>What is grain basis and why does it matter?</summary><div class="faq-a">Grain basis is the difference between your local cash elevator price and the futures contract it is quoted against. A basis of −30 cents means the elevator pays 30 cents below futures. Stronger (less negative) basis signals higher local demand. AGSIST displays live basis alongside cash price for every elevator in the cash bids tool.</div></details>
-      <details class="faq-item"><summary>When is the WASDE report released?</summary><div class="faq-a">The USDA WASDE (World Agricultural Supply and Demand Estimates) report is released monthly, typically around the 10th of each month at 12:00 PM Eastern Time. AGSIST's USDA Calendar tracks all report dates with market impact ratings. <a href="/usda-calendar">USDA calendar &rarr;</a></div></details>
-      <details class="faq-item"><summary>What is the corn-to-soybean price ratio and how do farmers use it?</summary><div class="faq-a">The corn-to-soybean price ratio is November soybean futures divided by December corn futures. A higher ratio leans toward soybeans and a lower one toward corn, but where the line falls depends on your own yields, input costs, and basis, so run break-even math on your own numbers. Both contract prices update every 30 minutes on AGSIST’s corn and soybean futures pages. <a href="/breakeven">Break-even calculator &rarr;</a></div></details>
+      <details class="faq-item"><summary>When is the WASDE report released?</summary><div class="faq-a">The USDA WASDE (World Agricultural Supply and Demand Estimates) report is released monthly, typically around the 10th of each month at 12:00 PM Eastern Time. AGSIST's USDA Calendar tracks all report dates with market impact ratings. <a href="/usda-calendar">USDA calendar</a></div></details>
+      <details class="faq-item"><summary>What is the corn-to-soybean price ratio and how do farmers use it?</summary><div class="faq-a">The corn-to-soybean price ratio is November soybean futures divided by December corn futures. A higher ratio leans toward soybeans and a lower one toward corn, but where the line falls depends on your own yields, input costs, and basis, so run break-even math on your own numbers. Both contract prices update every 30 minutes on AGSIST’s corn and soybean futures pages. <a href="/breakeven">Break-even calculator</a></div></details>
     </div>
   </section>
   </details>
   <div class="signup fade-up" id="signup-full" style="display:none">
     <div class="signup-inner">
       <div class="signup-icon" aria-hidden="true"></div>
-      <span class="signup-eyebrow">AGSIST Daily &mdash; Free Delivery Every Weekday</span>
-      <h2 class="signup-headline">Start every day knowing <br>what moves your markets.</h2>
-      <p class="signup-sub">Get the AGSIST Daily briefing before the market open &mdash; overnight markets, what to watch, one number to know, and farm weather &mdash; for farmers across the US.</p>
+      <span class="signup-eyebrow">AGSIST Daily</span>
+      <h2 class="signup-headline">Market news before the open.</h2>
+      <p class="signup-sub">Every weekday before the open: overnight markets, what to watch, and farm weather.</p>
       <div class="signup-tabs"><button class="signup-tab active" id="tab-email" aria-controls="form-email"><svg class="ic" aria-hidden="true"><use href="#i-mail"/></svg> Email</button></div>
-      <div class="signup-form" id="form-email" role="tabpanel"><div class="signup-row"><input type="email" class="signup-input" placeholder="your@email.com" autocomplete="email" aria-label="Email address" required><button class="signup-submit" id="btn-email-signup">Subscribe &rarr;</button></div><div class="signup-disc">Available at no charge. Unsubscribe any time. We never sell your data. <a href="/privacy">Privacy Policy</a>.</div></div>
+      <div class="signup-form" id="form-email" role="tabpanel"><div class="signup-row"><input type="email" class="signup-input" placeholder="your@email.com" autocomplete="email" aria-label="Email address" required><button class="signup-submit" id="btn-email-signup">Subscribe &rarr;</button></div><div class="signup-disc">Free. Unsubscribe any time. We never sell your data. <a href="/privacy">Privacy Policy</a>.</div></div>
       
     </div>
   </div>
   <div class="signup--slim fade-up" id="signup-slim" style="display:none;padding-bottom:max(.5rem,env(safe-area-inset-bottom))">
     <span class="scs-text">Get the AGSIST Daily briefing every weekday &mdash; markets, weather, one number to know. Free for farmers everywhere.</span>
-    <a href="/daily">Subscribe free &rarr;</a>
+    <a href="/daily">Subscribe free</a>
     <span style="font-size:.706rem;color:var(--text-muted)">&middot; <a href="/privacy">Privacy Policy</a></span>
     <button id="btn-slim-dismiss" aria-label="Dismiss" style="background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:.824rem;padding:0 0 0 .5rem;line-height:1"><svg class="ic" aria-hidden="true"><use href="#i-x"/></svg></button>
   </div>
@@ -2803,7 +2979,7 @@ details>summary:hover{color:var(--text)}
     if(!k || typeof k.read !== 'number' || typeof k.elevators !== 'number'){ cov.textContent = 'Elevator network: Not loaded yet'; return; }
     var t = new Date(c.generated);
     var w = isNaN(t.getTime()) ? '' : ' \u00b7 ' + t.toLocaleString('en-US', {month:'short', day:'numeric', hour:'numeric', minute:'2-digit', timeZone:'America/Chicago'}) + ' CT';
-    cov.textContent = 'Elevator network: ' + k.read.toLocaleString('en-US') + ' boards read directly, of ' + k.elevators.toLocaleString('en-US') + ' elevators known' + w;
+    cov.textContent = k.read.toLocaleString('en-US') + ' elevator boards read directly, of ' + k.elevators.toLocaleString('en-US') + ' known' + w;
   }).catch(function(){ cov.textContent = 'Elevator network: Not loaded yet'; });
   fetch('/data/bids.json').then(function(r){
     if(!r.ok) throw new Error('bids.json ' + r.status);
@@ -2819,7 +2995,7 @@ details>summary:hover{color:var(--text)}
        this file counts every location in the national pull, not only
        the boards the elevator network reads itself. */
     var when = isNaN(dt.getTime()) ? d.fetched : dt.toLocaleString('en-US', {month:'short', day:'numeric', hour:'numeric', minute:'2-digit', timeZone:'America/Chicago'}) + ' CT';
-    el.textContent = 'Second bid feed: ' + stats.total_bids.toLocaleString('en-US') + ' bids from '
+    el.textContent = 'Second feed: ' + stats.total_bids.toLocaleString('en-US') + ' bids from '
       + stats.facilities.toLocaleString('en-US') + ' locations · ' + when;
   }).catch(function(){
     el.textContent = '— elevator-board stats unavailable this load';
@@ -2829,7 +3005,7 @@ details>summary:hover{color:var(--text)}
 </div>
 <aside class="intel-rail" aria-label="Market intelligence" id="market-intel" tabindex="-1" style="outline:none">
 <div class="fade-up" id="f5">
-    <div class="sec-head"><h2 class="sec-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:1.05em;height:1.05em;vertical-align:-.13em;margin-right:.34em;flex:none"><path d="M8 2v4" /> <path d="M16 2v4" /> <rect width="18" height="18" x="3" y="4" rx="2" /> <path d="M3 10h18" /></svg>Upcoming USDA Reports</h2><a href="/usda-calendar" class="sec-all">Full Calendar &rarr;</a></div>
+    <div class="sec-head"><h2 class="sec-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:1.05em;height:1.05em;vertical-align:-.13em;margin-right:.34em;flex:none"><path d="M8 2v4" /> <path d="M16 2v4" /> <rect width="18" height="18" x="3" y="4" rx="2" /> <path d="M3 10h18" /></svg>Upcoming USDA Reports</h2><a href="/usda-calendar" class="sec-all">Full Calendar</a></div>
     <div class="usda-cal-card"><div class="cal-strip" id="usda-cal-strip" role="list" tabindex="0" aria-label="Upcoming USDA report dates — scroll for more"></div></div>
     <!-- 2026-09-30: today's real September Grain Stocks print, the most
          recent USDA report and the one a reader landing here right after
@@ -2844,7 +3020,7 @@ details>summary:hover{color:var(--text)}
     <div class="usda-cal-card" style="margin-bottom:.7rem;padding:.85rem 1rem;display:flex;flex-direction:column;gap:.5rem">
       <div style="display:flex;align-items:center;justify-content:space-between;gap:.5rem;flex-wrap:wrap">
         <div style="font-size:.824rem;font-weight:700;color:var(--text)">September Grain Stocks &mdash; released Sep 30</div>
-        <a href="/whats-priced-in" style="font-family:'JetBrains Mono',monospace;font-size:.706rem;color:var(--text-muted);background:rgba(255,255,255,.04);padding:.2rem .5rem;border-radius:5px;text-decoration:none">USDA OFFICIAL &middot; graded &rarr;</a>
+        <a href="/whats-priced-in" style="font-family:'JetBrains Mono',monospace;font-size:.706rem;color:var(--text-muted);background:rgba(255,255,255,.04);padding:.2rem .5rem;border-radius:5px;text-decoration:none">USDA OFFICIAL &middot; graded</a>
       </div>
       <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem">
         <div>
@@ -2863,12 +3039,12 @@ details>summary:hover{color:var(--text)}
           <div style="font-family:'JetBrains Mono',monospace;font-size:.706rem;color:var(--text-muted)">no trade estimate</div>
         </div>
       </div>
-      <div style="font-size:.706rem;color:var(--text-muted)">Corn printed above the entire pre-report trade range (1.843&ndash;2.005 billion bu). Soybeans printed inside the survey range but below average. Full grading, every number, and sourcing: <a href="/whats-priced-in" style="color:var(--text-muted);text-decoration:underline">What's Priced In &rarr;</a></div>
+      <div style="font-size:.706rem;color:var(--text-muted)">Corn printed above the whole trade range (1.843&ndash;2.005 billion bu). Soybeans printed inside it, below average. <a href="/whats-priced-in" style="color:var(--text-muted);text-decoration:underline">What's Priced In</a></div>
     </div>
   </div>
 <details class="m-fold m-fold--cot" open><summary class="m-fold-sum"><span>Market Intelligence <small>COT positioning &middot; yield nowcast</small></span></summary>
 <div class="fade-up" id="f-cot-intel">
-    <div class="sec-head"><h2 class="sec-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:1.05em;height:1.05em;vertical-align:-.13em;margin-right:.34em;flex:none"><path d="M3 3v16a2 2 0 0 0 2 2h16" /> <path d="m19 9-5 5-4-4-3 3" /></svg>Market Intelligence</h2><a href="/cot" class="sec-all">Full COT Chart &rarr;</a></div>
+    <div class="sec-head"><h2 class="sec-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:1.05em;height:1.05em;vertical-align:-.13em;margin-right:.34em;flex:none"><path d="M3 3v16a2 2 0 0 0 2 2h16" /> <path d="m19 9-5 5-4-4-3 3" /></svg>Market Intelligence</h2><a href="/cot" class="sec-all">Full COT Chart</a></div>
     <div class="ratio-cot-grid">
       <div class="cot-widget" id="cot-widget">
         <div class="idx1-raise-toggle"><span>I RAISE</span><label for="i-raise-crops">Row Crops</label><label for="i-raise-cattle">Cattle Only</label><label for="i-raise-mixed">Mixed</label></div>
@@ -2883,7 +3059,7 @@ details>summary:hover{color:var(--text)}
         </div>
         <div class="cot-footer">
           <span class="cot-date" id="cot-date">CFTC &middot; Updated weekly</span>
-          <a href="/cot" class="cot-full-link">Full Chart &rarr;</a>
+          
         </div>
       </div>
       <div class="idx1-nowcast-na" style="display:none;padding:.6rem .1rem;font-size:.824rem;color:var(--text-muted)">Yield Nowcast (corn/soybean bu/ac) isn&rsquo;t shown for a cattle-only operation &mdash; switch to Row Crops or Mixed to see it.</div>
@@ -2906,14 +3082,14 @@ details>summary:hover{color:var(--text)}
         <div style="font-size:.706rem;color:var(--text-muted);line-height:1.55;margin-bottom:.35rem">Weekly, from USDA crop ratings. <span class="tip"><button type="button" class="tip-b" aria-expanded="false" aria-describedby="tip-nowcast">How it works</button><span id="tip-nowcast" role="tooltip" class="tip-t" hidden>Built from Monday&rsquo;s USDA crop ratings, state by state, weighted by acres. The band isn&rsquo;t a guess &mdash; it&rsquo;s how far the same model actually missed at this week of the season, backtested <span id="nc-years">16</span> years. Tightens as the season ages.</span></span></div>
         <div style="display:flex;align-items:center;justify-content:space-between;gap:.5rem;flex-wrap:wrap">
           <span style="font-family:'JetBrains Mono',monospace;font-size:.706rem;color:var(--text-muted)" id="nc-week">Ratings week: &mdash;</span>
-          <a href="/conditions-yield" class="ratio-link"><svg class="ic" aria-hidden="true"><use href="#i-chart-column"/></svg> How it&rsquo;s computed &rarr;</a>
+          <a href="/conditions-yield" class="ratio-link"><svg class="ic" aria-hidden="true"><use href="#i-chart-column"/></svg> How it&rsquo;s computed</a>
         </div>
       </div>
     </div>
   </div>
 </details>
 <div class="fade-up" id="f-rail-scorecard" aria-live="polite" aria-atomic="true">
-    <div class="sec-head"><h2 class="sec-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:1.05em;height:1.05em;vertical-align:-.13em;margin-right:.34em;flex:none"><use href="#i-target"/></svg>AGSIST Call Scorecard</h2><a href="/scorecard" class="sec-all">Full Record &rarr;</a></div>
+    <div class="sec-head"><h2 class="sec-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:1.05em;height:1.05em;vertical-align:-.13em;margin-right:.34em;flex:none"><use href="#i-target"/></svg>AGSIST Call Scorecard</h2><a href="/scorecard" class="sec-all">Full Record</a></div>
     <div class="usda-cal-card" style="padding:.85rem 1rem">
       <div style="display:flex;align-items:baseline;justify-content:space-between;gap:.5rem;margin-bottom:.45rem">
         <span style="font-family:var(--font-display);font-weight:700;font-size:1.882rem;line-height:1;color:var(--text)" id="rsc-hit">&mdash;</span>
@@ -2921,7 +3097,7 @@ details>summary:hover{color:var(--text)}
       </div>
       <div style="font-size:.824rem;color:var(--text-dim);line-height:1.5" id="rsc-verdict">Loading&hellip;</div>
       <div style="font-family:'JetBrains Mono',monospace;font-size:.706rem;color:var(--text-muted);margin-top:.55rem;display:flex;justify-content:space-between;gap:.5rem" id="rsc-stats">
-        <span><span id="rsc-record">&mdash;</span> <span style="opacity:.75">W&ndash;L&ndash;Pending</span></span>
+        <span><span id="rsc-record">&mdash;</span> <span style="opacity:.75">reached&ndash;missed&ndash;pending</span></span>
         <span id="rsc-sample">&mdash;</span>
       </div>
       <div style="font-size:.706rem;color:var(--text-muted);margin-top:.25rem" id="rsc-asof">&nbsp;</div>
@@ -2929,9 +3105,9 @@ details>summary:hover{color:var(--text)}
     <p style="font-size:.706rem;color:var(--text-muted);margin:8px 0 0;line-height:1.45"><span class="tip"><button type="button" class="tip-b" aria-expanded="false" aria-describedby="tip-score">What&rsquo;s graded</button><span id="tip-score" role="tooltip" class="tip-t" hidden>Every forward call this site's own daily briefing makes, graded against the next settlement, misses included. Not a trading signal; a public record of whether the calls played out.</span></span></p>
   </div>
 <div class="fade-up" id="f-price-alert">
-    <div class="sec-head"><h2 class="sec-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:1.05em;height:1.05em;vertical-align:-.13em;margin-right:.34em;flex:none"><path d="M12 2v20"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>Price Alert &mdash; free</h2></div>
+    <div class="sec-head"><h2 class="sec-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:1.05em;height:1.05em;vertical-align:-.13em;margin-right:.34em;flex:none"><path d="M12 2v20"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>Price Alert</h2></div>
     <div class="usda-cal-card" style="padding:.85rem 1rem">
-      <p style="font-size:.824rem;color:var(--text-muted);margin:0 0 8px;line-height:1.45">One email the first time the price we check every 30 minutes (delayed about 15 minutes) is at or past your target. Then it clears. <span class="tip"><button type="button" class="tip-b" aria-expanded="false" aria-describedby="tip-alert">Not a cash bid</button><span id="tip-alert" role="tooltip" class="tip-t" hidden>This watches the futures price, not your elevator&rsquo;s bid. Check your local basis separately.</span></span></p>
+      <p style="font-size:.824rem;color:var(--text-muted);margin:0 0 8px;line-height:1.45">One email when the futures price reaches your target, then it clears. Checked every 30 minutes, delayed about 15. <span class="tip"><button type="button" class="tip-b" aria-expanded="false" aria-describedby="tip-alert">Not a cash bid</button><span id="tip-alert" role="tooltip" class="tip-t" hidden>This watches the futures price, not your elevator&rsquo;s bid. Check your local basis separately.</span></span></p>
       <div id="pa-form" style="display:flex;flex-direction:column;gap:.45rem">
         <div style="display:flex;gap:.4rem;flex-wrap:wrap">
           <select id="pa-symbol" aria-label="Contract" style="flex:1;min-width:120px;padding:.4rem .5rem;background:var(--surface2);border:1px solid var(--border);border-radius:5px;font-size:.706rem;color:var(--text)">
@@ -2953,7 +3129,7 @@ details>summary:hover{color:var(--text)}
         </div>
         <div id="r7-pa-now" aria-live="polite"></div>
         <input type="email" id="pa-email" placeholder="your@email.com" autocomplete="email" aria-label="Email for the alert" style="padding:.4rem .5rem;background:var(--surface2);border:1px solid var(--border);border-radius:5px;font-size:.706rem;color:var(--text)">
-        <button type="button" id="pa-go" style="padding:.5rem .7rem;background:var(--gold);color:#0a0c0d;border:none;border-radius:5px;font-size:.824rem;font-weight:700;cursor:pointer">Set alert &mdash; free</button>
+        <button type="button" id="pa-go" style="padding:.5rem .7rem;background:var(--gold);color:#0a0c0d;border:none;border-radius:5px;font-size:.824rem;font-weight:700;cursor:pointer">Set alert</button>
         <div id="pa-status" style="font-size:.706rem;color:var(--text-muted);min-height:1.1em"></div>
       </div>
     </div>
@@ -3007,7 +3183,7 @@ details>summary:hover{color:var(--text)}
           if(data&&data.error==='limit'){
             status.textContent='You already have 5 price alerts set — the most one address can track at once.';
             status.style.color='var(--red,#ef4444)';
-            go.disabled=false; go.textContent='Set alert — free';
+            go.disabled=false; go.textContent='Set alert';
             return;
           }
           document.getElementById('pa-form').innerHTML='<span style="font-size:.706rem;color:var(--green)">Check your email to confirm — nothing is sent until you do.</span>';
@@ -3015,7 +3191,7 @@ details>summary:hover{color:var(--text)}
         .catch(function(){
           status.textContent='Could not reach the alert service — try again in a minute.';
           status.style.color='var(--red,#ef4444)';
-          go.disabled=false; go.textContent='Set alert — free';
+          go.disabled=false; go.textContent='Set alert';
         });
     }
     go.addEventListener('click',submit);
@@ -3032,7 +3208,7 @@ details>summary:hover{color:var(--text)}
       var dirOk=!!(dirOnly&&typeof dirOnly.right_way==='number'&&dirOnly.graded);
       var lead=dirOk?(dirOnly.right_way+' of '+dirOnly.graded):det.hit_rate.toFixed(1)+'%';
       document.getElementById('rsc-hit').textContent=lead;
-      if(!dirOk){var _hl=document.getElementById('rsc-hit-lbl');if(_hl)_hl.innerHTML='Exact level right,<br>graded by rule';}
+      if(!dirOk){var _hl=document.getElementById('rsc-hit-lbl');if(_hl)_hl.innerHTML='Target reached,<br>graded by rule';}
       var rsctHit=document.getElementById('rsct-hit');
       if(rsctHit)rsctHit.textContent=lead;
       /* FIX 2026-09-30 (accessibility panel): played/missed weren't
@@ -3068,7 +3244,7 @@ details>summary:hover{color:var(--text)}
          as the "generous" half of the contrast without saying so reads,
          to a skeptical pro, as either not understanding the math or
          trying to paper over it. State the baseline plainly instead. */
-      var exact=haveRecord&&typeof det.graded==='number'?('Exact level right '+det.played+' of '+det.graded+' ('+det.hit_rate.toFixed(1)+'%).'):('Exact level right '+det.hit_rate.toFixed(1)+'% of the time.');
+      var exact=haveRecord&&typeof det.graded==='number'?('Target reached '+det.played+' of '+det.graded+' ('+det.hit_rate.toFixed(1)+'%).'):('Target reached '+det.hit_rate.toFixed(1)+'% of the time.');
       var v=exact;
       if(dirOk){var dr=dirOnly.rate!=null?dirOnly.rate:100*dirOnly.right_way/dirOnly.graded;
         v='Direction right '+dirOnly.right_way+' of '+dirOnly.graded+' times'+(dr>=40&&dr<=60?', a coin flip.':' ('+dr.toFixed(1)+'%).')+' '+exact;}
@@ -3437,7 +3613,7 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')close(true);
         if(vs){vs.textContent='USDA estimate not loaded yet';vs.style.color='var(--text-muted)';
           var tl=document.getElementById(map[crop]+'-trend');
           if(!tl){tl=document.createElement('div');tl.id=map[crop]+'-trend';tl.className='r7-nc-usda';vs.parentNode.insertBefore(tl,vs.nextSibling);}
-          tl.textContent='AGSIST trend, own '+(c.backtest_years||'')+'-year fit: '+c.trend.toFixed(1)+(typeof c.mae==='number'?' \u00b7 backtest miss averages '+c.mae.toFixed(1)+' bu':'');}
+          tl.textContent='Our '+(c.backtest_years||'')+'-year trend: '+c.trend.toFixed(1)+(typeof c.mae==='number'?' \u00b7 backtest miss averages '+c.mae.toFixed(1)+' bu':'');}
       });
       var v=document.getElementById('nc-verdict');
       if(v){v.className='ratio-verdict neutral';v.textContent='USDA not loaded yet';}
@@ -3446,7 +3622,7 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')close(true);
         var ab=0,bl=0,n=0;
         [['corn_yield','corn','nc-corn'],['soy_yield','soybeans','nc-beans']].forEach(function(p){var m=null;w.metrics.forEach(function(x){if(!m&&String(x.key).indexOf(p[0])===0&&typeof x.value==='number')m=x;});
           var vs=document.getElementById(p[2]+'-vs'),c=d.crops[p[1]];if(!m||!vs||!c)return;
-          var df=Math.round((c.nowcast-m.value)*10)/10;n++;if(df>0.4)ab++;else if(df<-0.4)bl++;
+          var df=Math.round((c.nowcast-m.value)*10)/10,bd=(typeof c.band80==='number'&&c.band80>0)?c.band80:0.4;n++;if(df>bd)ab++;else if(df<-bd)bl++;
           vs.style.color='var(--text-dim)';
           vs.textContent=(Math.abs(df)<0.05?'Even with':(Math.abs(df).toFixed(1)+' bu '+(df>0?'above':'below')))+' USDA\u2019s '+(rs?rs+' ':'')+'estimate ('+m.value.toFixed(1)+')';});
         if(v&&n){v.textContent=ab&&!bl?'Above USDA':bl&&!ab?'Below USDA':'Near USDA';}
@@ -3854,7 +4030,7 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')close(true);
     }
   }
   fetch('/data/cot.json').then(function(r){if(!r.ok)throw new Error('no-cot');return r.json();}).then(renderCOT).catch(function(){
-    var verdict=document.getElementById('cot-verdict');if(verdict){verdict.className='cot-verdict mixed';verdict.textContent='Updating\u2026';}
+    var verdict=document.getElementById('cot-verdict');if(verdict){verdict.className='cot-verdict mixed';verdict.textContent='Not loaded yet';}var _cw=document.getElementById('cot-widget');if(_cw)_cw.classList.add('cot-na');
     ['corn','beans','wheat','cattle'].forEach(function(k){
       var n=document.getElementById('cot-'+k+'-net');if(n)n.textContent='\u2014';
       var c=document.getElementById('cot-'+k+'-chg');if(c){c.textContent='pending';c.className='cot-chg nc';}
@@ -3930,7 +4106,7 @@ fetch('/data/tariffs.json')
     var container=document.getElementById('tariff-rows');
     if(container&&rows.length){container.innerHTML=rows.map(function(row){var sc=statusCls(row.status);return '<div class="tariff-row"><span class="tariff-row-comm">'+esc(row.commodity)+'</span><span class="tariff-row-dest">\u2192 '+esc(row.destination)+'</span><span class="tariff-row-rate '+sc+'">'+esc(row.rate)+'</span></div>';}).join('');}
   })
-  .catch(function(){var badge=document.getElementById('tariff-badge');if(badge){badge.className='tariff-status-badge mixed';badge.textContent='Data unavailable';}});
+  .catch(function(){var badge=document.getElementById('tariff-badge');if(badge){badge.className='tariff-status-badge mixed';badge.textContent='Data unavailable';}var _tr=document.getElementById('tariff-rows');if(_tr)_tr.innerHTML='';});
 })();
 </script>
 <script>
@@ -4098,7 +4274,7 @@ fetch('/data/fertilizer.json')
     }
     grid.innerHTML=h;
   })
-  .catch(function(){var d=document.getElementById('fert-date');if(d)d.textContent='Price data unavailable';});
+  .catch(function(){var d=document.getElementById('fert-date');if(d)d.textContent='Price data unavailable';var g=document.getElementById('fert-grid');if(g)g.innerHTML='';});
 })();
 </script>
 <script>
@@ -4294,10 +4470,11 @@ gj('/data/markets.json').then(function(cached){
     var events=[];
     for(var i=0;i<28;i++){
       var dd=new Date(Date.UTC(nowEt.y,nowEt.mo-1,nowEt.d+i)),y=dd.getUTCFullYear(),mo=dd.getUTCMonth()+1,da=dd.getUTCDate(),wd=dd.getUTCDay(),di=iso(y,mo,da);
+      var mon=new Date(dd.getTime()-((wd+6)%7)*864e5),holWk=!!HOL[iso(mon.getUTCFullYear(),mon.getUTCMonth()+1,mon.getUTCDate())];
       weekly.forEach(function(r){if(r.wd!==wd)return;var at=etToUtc(y,mo,da,r.h,r.mi),hol=!!HOL[di];
         /* A holiday row stays until its day is over: its time is not known. */
         if(hol?di<todayIso:at<=now)return;
-        events.push({name:r.name,day:di,mo:mo,da:da,at:at,time:hol?'Federal holiday · date may shift, check USDA':clock(r.h,r.mi)});});
+        events.push({name:r.name,day:di,mo:mo,da:da,at:at,time:hol?'Federal holiday · date may shift, check USDA':clock(r.h,r.mi)+(holWk?' · holiday week, may shift':'')});});
     }
     function render(list,note){
       list.sort(function(a,b){return a.at-b.at;});
@@ -4318,7 +4495,7 @@ gj('/data/markets.json').then(function(cached){
       if(hd){if(!hn){hn=document.createElement('p');hn.id='r7-cal-hol';host.parentNode.insertBefore(hn,host.nextSibling);}
         var hp=hd.split('-');hn.textContent='Federal holiday '+months[+hp[1]-1]+' '+(+hp[2])+': release dates that week may shift, check USDA.';}
       else if(hn){hn.parentNode.removeChild(hn);}
-      if(note){var n=document.createElement('div');n.className='cal-card';n.setAttribute('role','listitem');n.innerHTML='<div class="cal-name">'+note+'</div><div class="cal-time"><a href="/usda-calendar">Full calendar &rarr;</a></div>';strip.appendChild(n);}
+      if(note){var n=document.createElement('div');n.className='cal-card';n.setAttribute('role','listitem');n.innerHTML='<div class="cal-name">'+note+'</div><div class="cal-time"><a href="/usda-calendar">Full calendar</a></div>';strip.appendChild(n);}
     }
     render(events.slice(),'');
     fetch('/usda-calendar.ics',{cache:'no-store'}).then(function(r){if(!r.ok)throw new Error(r.status);return r.text();}).then(function(t){
@@ -5780,7 +5957,7 @@ setTimeout(function(){
     if(!items.length) return;
     items.sort(function(a,b){var s=(b.significance==='high')-(a.significance==='high');return s||String(b.ts||'').localeCompare(String(a.ts||''));});
     var shown=items.slice(0,4);   /* r7-bids: the count is what is shown, after the guards above */
-    if(sub) sub.textContent=shown.length===1?'1 thing the numbers said':shown.length+' things the numbers said';
+    if(sub) sub.textContent='latest '+shown.length;
     g.innerHTML=shown.map(function(i){
       return '<a class="wr-c'+(i.significance==='high'?' hi':'')+'" data-track="wire" href="'+esc(i.url||'/news')+'">'
         +'<span class="wr-when">'+esc(when(i.ts,i.day_only))+' &middot; '+esc(KIND[i.kind]||i.kind||'')+'</span>'
@@ -5795,7 +5972,7 @@ setTimeout(function(){
     band.hidden=false;
     /* r7-bids 7b: the header counts the cards visible at this width (the layout hides some). */
     var wcT=null;function wireCount(){var n=0;for(var c=g.firstElementChild;c;c=c.nextElementSibling){if(getComputedStyle(c).display!=='none')n++;}
-      if(sub)sub.textContent=n===1?'1 thing the numbers said':n+' things the numbers said';}
+      if(sub)sub.textContent='latest '+n;}
     wireCount();window.addEventListener('resize',function(){clearTimeout(wcT);wcT=setTimeout(wireCount,150);});
     if(window.gaEvent) gaEvent('wire_band_shown',{items:items.length,shown:Math.min(4,items.length)});
   }).catch(function(){ /* the band simply never appears */ });
@@ -6073,7 +6250,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
   /* ---------- the "This month" strip ---------- */
   var grid=$('s7-grid'), cells={};
   var LABEL={insurance:'Insurance harvest price',harvest:'Harvest progress',frost:'Frost',fallN:'Fall nitrogen window',
-    report:'Next major USDA report',rent:'Cash rent',condition:'Crop condition',planting:'Planting progress',
+    report:'Next USDA report',rent:'Cash rent',condition:'Crop condition',planting:'Planting progress',
     soilPlant:'Planting soil temperature',spray:'Spray today'};
   var HREF={insurance:'/harvest-price-tracker',harvest:'/conditions',frost:'/spray',fallN:'/urea',report:'/usda-calendar',
     rent:'/cash-rent',condition:'/conditions',planting:'/planting-date',soilPlant:'/planting-date',spray:'/spray'};
@@ -6204,7 +6381,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
         } else if(inWin&&pick.h_price!=null){
           /* RMA's running average to date (status In Discovery). */
           var dr=Math.round((pick.h_price-pick.p_price)*100);hold=true;
-          lines.push('<span class="s7-line">'+c[2]+' '+money(dr)+' <small>per bu</small></span><span class="s7-line"><small>RMA running average $'+pick.h_price.toFixed(2)+' vs projected '+proj+'</small></span>');
+          lines.push('<span class="s7-line">'+c[2]+' '+money(dr)+' <small>per bu</small></span><span class="s7-line"><small>RMA posted average $'+pick.h_price.toFixed(2)+' vs projected '+proj+'</small></span>');
           (dr>=0?up:down).push(c[2]);
         } else if(q){
           var fut=q.close/100,diff=Math.round(fut*100-pick.p_price*100);hold=true;
@@ -6215,7 +6392,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
         }
         if(!legNote&&hs&&he){
           var tot=tradingDays(hs,he),rng=MON[hs.getMonth()]+' '+hs.getDate()+'–'+(hs.getMonth()===he.getMonth()?'':MON[he.getMonth()]+' ')+he.getDate();
-          if(inWin){var nth=tradingDays(hs,today);legNote='Harvest price: '+rng+' average, trading day '+(isTrading(today)?nth:nth+' done')+' of '+tot+'.';}
+          if(inWin){var nth=tradingDays(hs,today);legNote=rng+' average, '+(isTrading(today)?'trading day '+nth+' of '+tot:nth+' of '+tot+' trading days done')+'. RMA\u2019s posted average can trail the latest settle by a day.';}
           else if(today<hs)legNote='Harvest price discovery runs '+rng+' ('+tot+' trading days).';
           else legNote='Harvest price discovery closed '+isoDay(pick.h_end)+'.';
           if(ps&&pe&&today>=ps&&today<=pe)legNote='Projected price discovery: '+isoDay(pick.p_start).replace(/, \d{4}$/,'')+' to '+isoDay(pick.p_end)+'.';
@@ -6223,9 +6400,9 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
         if(!subs.length)subs.push('Projected: '+(scope||'')+', '+MON[ps?ps.getMonth():0]+' '+(ps?ps.getFullYear():'')+'.');
       });
       var parts=[];
-      if(up.length)parts.push(crops2(up)+(up.length>1?' are':' is')+' above projected. With Revenue Protection, the guarantee rises with the harvest price.');
+      if(up.length)parts.push(crops2(up)+(up.length>1?' are':' is')+' above projected, so the Revenue Protection guarantee rises with the harvest price.');
       if(down.length)parts.push(crops2(down)+(down.length>1?' are':' is')+' below projected. The guarantee stays at the projected price.');
-      if(up.length||down.length)parts.push('A claim needs yield × harvest price below the guarantee.');
+      if(up.length||down.length)parts.push('A claim pays when yield × harvest price falls below it.');
       if(miss.length)parts.push(crops2(miss)+': price not loaded yet.');
       if(varies)parts.push('Windows differ by county sales closing date; open the tracker for yours.');
       var meaning=parts.join(' ');
@@ -6252,7 +6429,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
         var a=d&&cropLine('Corn',d.corn,'harvest_pct',hk(d.corn)),b=d&&cropLine('Soybeans',d.soybeans,'harvest_pct',hk(d.soybeans));
         var mt=d&&d.corn&&d.corn.mature_pct!=null?'<span class="s7-line"><small>Corn mature '+d.corn.mature_pct+'%</small></span>':'';
         var hd=d&&((d.corn&&d.corn.harvest_date)||(d.soybeans&&d.soybeans.harvest_date));
-        if(a||b)put('harvest',[a,b].filter(Boolean).map(function(x){return '<span class="s7-line">'+x+'</span>';}).join('')+mt,esc(hd?'Harvested. USDA Crop Progress, week ending '+isoDay(hd)+'.':asof));
+        if(a||b)put('harvest',[a,b].filter(Boolean).map(function(x){return '<span class="s7-line">'+x+'</span>';}).join('')+mt,esc(hd?'US harvested. USDA Crop Progress, week ending '+isoDay(hd)+'.':asof));
         else put('harvest',NL(),esc('Harvested share is not in our crop progress feed yet'+(d&&d.report_date?' (latest week: '+isoDay(d.report_date)+')':'')+'.'));
       }
       if(cells.condition){
@@ -6313,7 +6490,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
   function frostFlag(lo){return lo<=28?'Hard freeze':(lo<=32?'Frost likely':(lo<=36?'Frost possible':''));}
   function firstFrost(f){
     var d=f&&f.daily,t=d&&d.time,v=d&&d.temperature_2m_min;if(!t||!v)return null;
-    for(var i=1;i<t.length;i++){if(v[i]!=null&&v[i]<=32){var dd=dayStart(t[i]);return {day:dd?['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][dd.getDay()]:t[i],lo:Math.round(v[i])};}}
+    for(var i=1;i<t.length;i++){if(v[i]!=null&&v[i]<=36){var dd=dayStart(t[i]);return {day:dd?['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][dd.getDay()]:t[i],lo:Math.round(v[i])};}}
     return false;
   }
   function soil(f){
@@ -6351,7 +6528,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
       else if(lo!=null){
         var fl2=frostFlag(lo);
         put('frost','<span class="s7-line">'+lo+'°F <small>overnight low, air at 2 m</small></span>'+(fl2?'<span class="s7-line s7-warn">'+fl2+'</span>':''),
-          esc(ff?'First frost night in the forecast: '+ff.day+' morning, '+ff.lo+'°F.':(ff===false?'No frost in the 5-day forecast.':'')));
+          esc(ff?'First frost risk in the forecast: '+ff.day+' morning, '+ff.lo+'°F ('+frostFlag(ff.lo).toLowerCase()+').':(ff===false?'No frost in the 5-day forecast.':'')));
       } else if(WX.state!=='wait')put('frost',NL(),'Weather forecast');
     }
     if(cells.fallN||cells.soilPlant||$('s7-falln')){
@@ -6359,7 +6536,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
       if(noLoc){needZip('fallN');needZip('soilPlant');if(fb)fb.textContent='Set your ZIP';}
       else if(s){
         var v=fallVerdict(s);
-        var sub='Modelled. '+(s.deep!=null?'7 in (18 cm): '+s.deep+'°F. ':'')+(v.t==='In range'?'Both depths below 50°F through the 5-day forecast.':'5-day highs: '+s.max+'°F at 2.4 in'+(s.deepMax!=null?', '+s.deepMax+'°F at 7 in':'')+'.')+' University extension guidance: wait until soil at 4 in stays below 50°F. Not advised on sandy or poorly drained soils.';
+        var sub='Modelled. '+(s.deep!=null?'7 in (18 cm): '+s.deep+'°F. ':'')+(v.t==='In range'?'Both depths below 50°F through the 5-day forecast.':'5-day highs: '+s.max+'°F at 2.4 in'+(s.deepMax!=null?', '+s.deepMax+'°F at 7 in':'')+'.')+' Extension guidance: wait for 4 in soil to stay below 50°F; not on sandy or poorly drained soils.';
         put('fallN','<span class="s7-line'+(v.c?' '+v.c:'')+'">'+v.t+'</span><span class="s7-line">'+s.now+'°F <small>at 2.4 in, modelled</small></span>',esc(sub));
         put('soilPlant','<span class="s7-line">'+s.now+'°F <small>at 2.4 in</small></span><span class="s7-line">'+(s.now>=50?'At or above 50°F':'Below 50°F')+'</span>','Soil at 2.4 in (6 cm). Corn is commonly planted once soil holds near 50°F.');
         if(fb){fb.textContent=v.t+' · '+s.now+'°F';fb.style.color=v.c?'var(--green)':'var(--text)';}
@@ -6534,7 +6711,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
   get('/data/outlooks/manifest.json').then(function(mf){
     var f=mf&&mf.files||{};
     var u=f['usdm_latest.png'],dv=$('s7-usdm-valid');
-    if(dv)dv.textContent=(u&&u.data_valid)?'valid '+isoDay(u.data_valid)+' · ':'';
+    if(dv)dv.textContent=(u&&u.data_valid)?'valid '+isoDay(u.data_valid):'';
     var nd=$('s7-noaa-dates');if(!nd)return;
     function valid(lm,months){
       var d=new Date(lm);if(isNaN(d))return null;

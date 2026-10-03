@@ -113,7 +113,7 @@
         return;
       }
       carryCover = { months: bc.months, from: bc.from, to: bc.to };
-      note.textContent = 'Carry from the board at ' + String(sum.where || 'this elevator') + ' (the bid filled above): ' + bc.from + ' $' + (+bc.fromCash).toFixed(2) + ' → ' + bc.to + ' $' + (+bc.toCash).toFixed(2) + ', +' + qc(bc.cents) + ' per bu' + (bc.months != null ? ', covering ' + bc.months + ' month' + (bc.months === 1 ? '' : 's') : '') + '.';
+      note.textContent = String(sum.where || 'This elevator') + ' board (the bid filled above): ' + bc.from + ' $' + (+bc.fromCash).toFixed(2) + ' → ' + bc.to + ' $' + (+bc.toCash).toFixed(2) + ', +' + qc(bc.cents) + ' per bu' + (bc.months != null ? ' over ' + bc.months + ' month' + (bc.months === 1 ? '' : 's') : '') + '.';
       fill((bc.cents / 100).toFixed(4).replace(/0+$/, '').replace(/\.$/, ''));
       return;
     }
