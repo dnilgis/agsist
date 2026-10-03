@@ -123,6 +123,54 @@ def match_commodity(name: str):
     return None
 
 
+# Wheat by class (2026-10-03, wave1-C). ESR lists each class as its own
+# commodity beside all wheat. Matched by words, never by a typed code, and
+# logged; a class that does not resolve is simply absent from the file.
+WHEAT_CLASSES = [
+    ('hrw', 'HRW', r'hard\s*red\s*winter|\bhrw\b'),
+    ('srw', 'SRW', r'soft\s*red\s*winter|\bsrw\b'),
+    ('hrs', 'HRS', r'hard\s*red\s*spring|\bhrs\b'),
+    ('white', 'White', r'\bwhite\b'),
+    ('durum', 'Durum', r'\bdurum\b'),
+]
+
+
+def match_wheat_class(name: str):
+    import re
+    n = (name or '').strip().lower()
+    if 'wheat' not in n or n in ('all wheat', 'wheat'):
+        return None
+    for key, _label, pat in WHEAT_CLASSES:
+        if re.search(pat, n):
+            return key
+    return None
+
+
+def same_week_last_year(info_prev, latest, scale):
+    """Commitments in the prior marketing year's week nearest 364 days before
+    `latest` (within 4 days), scaled like the current figure. None if that
+    week is not in the records. Pure; selftested."""
+    if not info_prev or not info_prev.get('weekly_totals'):
+        return None, None
+    try:
+        cur = latest if isinstance(latest, date) else date.fromisoformat(str(latest)[:10])
+    except Exception:
+        return None, None
+    target = cur.toordinal() - 364
+    best = None
+    for wk, (cum, _net) in info_prev['weekly_totals'].items():
+        try:
+            o = date.fromisoformat(str(wk)[:10]).toordinal()
+        except Exception:
+            continue
+        gap = abs(o - target)
+        if gap <= 4 and (best is None or gap < best[0]):
+            best = (gap, wk, cum)
+    if not best:
+        return None, None
+    return round(best[2] * scale), str(best[1])[:10]
+
+
 def api_get(path: str):
     """GET the FAS ESR API. The api.data.gov key goes in the API_KEY header
     (confirmed FAS convention) — no ?api_key= query param, since an unexpected
@@ -157,6 +205,10 @@ def resolve_codes() -> dict:
     data = api_get('/commodities')
     codes = {}
     for rec in data:
+        ck = match_wheat_class(rec.get('commodityName', ''))
+        if ck and ('wheat_' + ck) not in codes and rec.get('commodityCode') is not None:
+            codes['wheat_' + ck] = rec.get('commodityCode')
+            log.info(f'resolved wheat class {ck:6s} -> code {rec.get("commodityCode")} ({rec.get("commodityName")!r})')
         key = match_commodity(rec.get('commodityName', ''))
         code = rec.get('commodityCode')
         if key and key not in codes and code is not None:
@@ -193,6 +245,15 @@ def fetch_year(code, year):
         return None
     latest = weeks[-1]
     lw = [r for r in recs if r.get('weekEndingDate') == latest]
+    # Every week's summed commitment, so the same week of the prior marketing
+    # year can be read back for the year-on-year comparison.
+    weekly_totals = {}
+    for r in recs:
+        wk = r.get('weekEndingDate')
+        if not wk:
+            continue
+        c, n = weekly_totals.get(wk, (0.0, 0.0))
+        weekly_totals[wk] = (c + _commit(r), n + _net(r))
     return {
         'year': year,
         'records': len(recs),
@@ -201,7 +262,36 @@ def fetch_year(code, year):
         'cumulative': sum(_commit(r) for r in lw),
         'weekly': sum(_net(r) for r in lw),
         'lw': lw,
+        'weekly_totals': weekly_totals,
     }
+
+
+def wheat_classes(codes, pick, wheat_row, fetch=None):
+    """Commitments by wheat class for the same marketing year and week as
+    all wheat, at all wheat's unit scale, with the same week last year.
+    Returns {} when no class resolves, or when the classes sum to more than
+    all wheat (a rollup row or a wrong year), so a bad split never ships."""
+    fetch = fetch or fetch_year
+    out = {}
+    for key, label, _pat in WHEAT_CLASSES:
+        code = codes.get('wheat_' + key)
+        if code is None:
+            continue
+        info = fetch(code, pick['year'])
+        if not info or str(info['latest'])[:10] != str(pick['latest'])[:10]:
+            log.warning(f'wheat class {key}: no week matching all wheat ({pick["latest"]})')
+            continue
+        prev = fetch(code, pick['year'] - 1)
+        ly, _wk = same_week_last_year(prev, pick['latest'], pick['scale'])
+        out[key] = {'label': label,
+                    'weekly_net_mt': round(info['weekly'] * pick['scale']),
+                    'cumulative_mt': round(info['cumulative'] * pick['scale']),
+                    'prev_year_cumulative_mt': ly}
+    total = sum(v['cumulative_mt'] for v in out.values())
+    if out and wheat_row.get('cumulative_mt') and total > wheat_row['cumulative_mt'] * 1.02:
+        log.warning(f'wheat classes sum {total:,} > all wheat {wheat_row["cumulative_mt"]:,}; classes not published')
+        return {}
+    return out
 
 
 def load_existing() -> dict:
@@ -374,6 +464,36 @@ def selftest():
     check(fresh['corn']['pct_of_target'] == 4.0 and 'withheld' not in fresh['corn'],
           "and the row is untouched")
 
+    print("\nSAME WEEK LAST YEAR")
+    prev = {'weekly_totals': {'2025-09-18': (100.0, 1.0), '2025-09-25': (120.0, 2.0),
+                              '2025-10-02': (150.0, 3.0)}}
+    mt, wk = same_week_last_year(prev, '2026-09-24', 1000)
+    check(mt == 120000 and wk == '2025-09-25',
+          "2026-09-24 less 364 days = 2025-09-25: 120 x 1000 = 120,000", str((mt, wk)))
+    check(same_week_last_year(prev, '2026-11-12', 1) == (None, None),
+          "no week within 4 days -> None, not the nearest far week")
+    check(same_week_last_year(None, '2026-09-24', 1) == (None, None), "no prior year fetched -> None")
+
+    print("\nWHEAT BY CLASS")
+    check(match_wheat_class('Wheat - Hard Red Winter') == 'hrw', "'Hard Red Winter' -> hrw")
+    check(match_wheat_class('Wheat - SRW') == 'srw', "'SRW' -> srw")
+    check(match_wheat_class('All Wheat') is None and match_wheat_class('Corn') is None,
+          "all wheat and corn are not classes")
+    pick = {'year': 2026, 'latest': '2026-09-24', 'scale': 1000}
+    def fake(code, yr):
+        base = {'h': 50.0, 's': 30.0}[code]
+        if yr == 2026:
+            return {'latest': '2026-09-24', 'cumulative': base, 'weekly': base / 10,
+                    'weekly_totals': {'2026-09-24': (base, base / 10)}}
+        return {'latest': '2026-05-28', 'cumulative': base * 2, 'weekly': 0,
+                'weekly_totals': {'2025-09-25': (base * 0.8, 0)}}
+    cl = wheat_classes({'wheat_hrw': 'h', 'wheat_srw': 's'}, pick, {'cumulative_mt': 90000}, fake)
+    check(cl.get('hrw', {}).get('cumulative_mt') == 50000 and cl['srw']['cumulative_mt'] == 30000,
+          "classes at all wheat's scale: 50,000 and 30,000", str(cl))
+    check(cl['hrw']['prev_year_cumulative_mt'] == 40000, "HRW same week last year 40 x 1000", str(cl['hrw']))
+    bad = wheat_classes({'wheat_hrw': 'h', 'wheat_srw': 's'}, pick, {'cumulative_mt': 60000}, fake)
+    check(bad == {}, "classes summing past all wheat are not published")
+
     print()
     if fails:
         print("FAILED (%d): %s" % (len(fails), "; ".join(fails)))
@@ -483,6 +603,11 @@ def main():
 
         rd = str(pick['latest'])[:10]
         report_dates.append(rd)
+        # SAME WEEK LAST YEAR (2026-10-03). The prior marketing year is the
+        # candidate one year below the pick, already fetched above. Its own
+        # scale is used, since the scale is detected per response.
+        prev_c = next((c for c in candidates if c['year'] == pick['year'] - 1), None)
+        ly_mt, ly_wk = same_week_last_year(prev_c, pick['latest'], prev_c['scale'] if prev_c else 1)
         out[comm] = {
             'weekly_net_mt':  pick['weekly_mt'],
             'cumulative_mt':  pick['cumul'],
@@ -490,7 +615,15 @@ def main():
             'pct_of_target':  pick['pct'] if target_current else None,
             'report_date':    rd,
             'marketing_year': my_label,
+            'prev_year_cumulative_mt': ly_mt,
+            'prev_year_week': ly_wk,
+            'vs_prev_year_pct': (round((pick['cumul'] - ly_mt) / ly_mt * 100, 1)
+                                 if ly_mt else None),
         }
+        if comm == 'wheat':
+            cls = wheat_classes(codes, pick, out[comm])
+            if cls:
+                out[comm]['classes'] = cls
         if not target_current:
             out[comm]['withheld'] = (
                 'USDA\'s export forecast on file is for %s (%s) and the marketing year '

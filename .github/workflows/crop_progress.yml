@@ -34,6 +34,9 @@ jobs:
         with:
           python-version: '3.11'
 
+      - name: Selftest (5-year average, state rows)
+        run: python scripts/fetch_crop_progress.py --selftest
+
       - name: Fetch USDA NASS Crop Progress
         env:
           NASS_API_KEY: ${{ secrets.NASS_API_KEY }}

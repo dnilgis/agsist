@@ -162,6 +162,182 @@ def ge_same_week_prev(rows: list[dict], cur_date: str | None) -> int | None:
     return same_week_prev([{"week_ending": w, "Value": str(v)} for w, v in by_week.items()], cur_date)
 
 
+# ── Five-year average and the reader's state (2026-10-03, wave1-C) ──────────
+#
+# The homepage printed "Corn 18% 18% a year ago" with nothing to say which
+# number was which, national only. NASS prints a 5-year average beside every
+# progress figure in the weekly report, but Quick Stats does not carry that
+# column, so it is computed here from the same weekly series:
+#
+#   for each of the five prior years, the value on the same calendar date,
+#   interpolated linearly between the two published weeks around it;
+#   then the plain mean of the five, rounded to a whole percent.
+#
+# That is the method NASS describes for its own column (prior years
+# interpolated to the current week-ending date), but it is OUR arithmetic and
+# can differ from the printed NASS figure by a point; the page says so. If any
+# of the five years has no published week on both sides of the date, the
+# average is withheld (None) rather than computed from four. One exception,
+# stated: a year whose last published week is before the date and already at
+# 100 counts as 100, because NASS stops publishing a crop once it is done.
+
+# (key, commodity_desc, unit_desc, class_desc or None)
+PROGRESS_SERIES = [
+    ("corn_harvested",          "CORN",     "PCT HARVESTED", None),
+    ("soybeans_harvested",      "SOYBEANS", "PCT HARVESTED", None),
+    ("winter_wheat_planted",    "WHEAT",    "PCT PLANTED",   "WINTER"),
+    ("winter_wheat_emerged",    "WHEAT",    "PCT EMERGED",   "WINTER"),
+    ("cotton_harvested",        "COTTON",   "PCT HARVESTED", None),
+    ("rice_harvested",          "RICE",     "PCT HARVESTED", None),
+    ("peanuts_harvested",       "PEANUTS",  "PCT HARVESTED", None),
+    ("sorghum_harvested",       "SORGHUM",  "PCT HARVESTED", None),
+]
+# A state's latest week older than this many days before the national report
+# week is a finished season (winter wheat HARVESTED in July), not this week.
+CURRENT_WINDOW_DAYS = 10
+
+
+def fetch_progress_all(commodity: str, unit: str, class_desc: str | None, since_year: int) -> list[dict]:
+    """National AND state rows for one progress series, since_year onward, in
+    one call. Filtered on week_ending dates downstream, never on `year`, so it
+    does not matter which year NASS files fall winter-wheat seeding under."""
+    p = {
+        "source_desc": "SURVEY",
+        "sector_desc": "CROPS",
+        "commodity_desc": commodity,
+        "statisticcat_desc": "PROGRESS",
+        "unit_desc": unit,
+        "freq_desc": "WEEKLY",
+        "year__GE": str(since_year),
+    }
+    if class_desc:
+        p["class_desc"] = class_desc
+    return nass_get(p)
+
+
+def _val(r):
+    try:
+        return int(str(r.get("Value", "")).replace(",", "").strip())
+    except ValueError:
+        return None
+
+
+def _wk(r):
+    try:
+        return datetime.strptime(r.get("week_ending", ""), "%Y-%m-%d")
+    except ValueError:
+        return None
+
+
+def clean_series(rows: list[dict]) -> dict[str, dict]:
+    """rows -> {loc: {date: value}}, loc = state_alpha or "US".
+
+    Drops silage rows, and when more than one short_desc survives (a crop
+    published under two descriptions) keeps the one with the most rows and
+    logs the rest, so two series can never be averaged into one."""
+    rows = [r for r in rows if "SILAGE" not in str(r.get("short_desc", "")).upper()]
+    descs: dict[str, int] = {}
+    for r in rows:
+        descs[r.get("short_desc", "")] = descs.get(r.get("short_desc", ""), 0) + 1
+    if len(descs) > 1:
+        keep = max(descs, key=descs.get)
+        print(f"    several series {sorted(descs)}; keeping {keep!r}", flush=True)
+        rows = [r for r in rows if r.get("short_desc", "") == keep]
+    out: dict[str, dict] = {}
+    for r in rows:
+        agg = str(r.get("agg_level_desc", "")).upper()
+        if agg == "NATIONAL":
+            loc = "US"
+        elif agg == "STATE":
+            loc = (r.get("state_alpha") or "").strip()
+        else:
+            continue
+        d, v = _wk(r), _val(r)
+        if not loc or d is None or v is None:
+            continue
+        out.setdefault(loc, {})[d] = v
+    return out
+
+
+def value_on(series: dict, target: datetime, season_days: int = 200):
+    """Value on `target` interpolated between the published weeks either side.
+    Only weeks within `season_days` of target count, so a different season of
+    the same year cannot bracket it. None if not bracketed, except a finished
+    crop: last week before target already at 100 -> 100."""
+    near = sorted((d, v) for d, v in series.items() if abs((d - target).days) <= season_days)
+    before = [(d, v) for d, v in near if d <= target]
+    after = [(d, v) for d, v in near if d >= target]
+    if before and before[-1][0] == target:
+        return float(before[-1][1])
+    if before and after:
+        (d0, v0), (d1, v1) = before[-1], after[0]
+        return v0 + (v1 - v0) * (target - d0).days / (d1 - d0).days
+    if before and not after and before[-1][1] >= 100:
+        return 100.0
+    return None
+
+
+def five_year_avg(series: dict, cur: datetime):
+    vals = []
+    for k in range(1, 6):
+        try:
+            t = cur.replace(year=cur.year - k)
+        except ValueError:          # 29 Feb
+            t = cur.replace(year=cur.year - k, day=28)
+        v = value_on(series, t)
+        if v is None:
+            return None
+        vals.append(v)
+    return int(sum(vals) / 5 + 0.5)
+
+
+def summarize(series: dict):
+    """{date: value} for one place -> latest week, its value, same week last
+    year (same rule as same_week_prev) and the 5-year average."""
+    if not series:
+        return None
+    cur = max(series)
+    prev = same_week_prev([{"week_ending": d.strftime("%Y-%m-%d"), "Value": str(v)}
+                           for d, v in series.items()], cur.strftime("%Y-%m-%d"))
+    return {"date": cur.strftime("%Y-%m-%d"), "pct": series[cur],
+            "prev_year": prev, "avg5": five_year_avg(series, cur)}
+
+
+def build_progress(fetch, year: int, report_date: str | None):
+    """Runs every PROGRESS_SERIES through `fetch` (injectable for the
+    selftest). Returns (national, states):
+      national: {key: summary}
+      states:   {ST: {key: summary}} -- only weeks within CURRENT_WINDOW_DAYS
+                of the national report week, so a state shows this week's
+                numbers or none."""
+    national, states = {}, {}
+    ref = None
+    if report_date:
+        try:
+            ref = datetime.strptime(report_date, "%Y-%m-%d")
+        except ValueError:
+            ref = None
+    for key, comm, unit, cls in PROGRESS_SERIES:
+        print(f"\n── progress {key} ──", flush=True)
+        try:
+            by_loc = clean_series(fetch(comm, unit, cls, year - 6))
+        except Exception as e:
+            print(f"  {key} failed (non-fatal): {e}", flush=True)
+            continue
+        for loc, series in by_loc.items():
+            sm = summarize(series)
+            if not sm:
+                continue
+            if loc == "US":
+                national[key] = sm
+                continue
+            if ref is not None and abs((datetime.strptime(sm["date"], "%Y-%m-%d") - ref).days) > CURRENT_WINDOW_DAYS:
+                continue
+            states.setdefault(loc, {})[key] = sm
+        print(f"  US {national.get(key)} | {sum(1 for s in states.values() if key in s)} states current", flush=True)
+    return national, states
+
+
 def is_in_season() -> bool:
     """Crop Progress runs April through November."""
     m = datetime.now().month
@@ -307,6 +483,25 @@ def main():
             print(f"  wheat {cls} fetch failed (non-fatal): {e}", flush=True)
             result[key] = None
 
+    # ── 5-year averages, more crops, and every state (2026-10-03) ──────────
+    # Fail-soft: an outage here leaves the new keys out; it never blocks the
+    # condition write above.
+    try:
+        national, states = build_progress(fetch_progress_all, year, result.get("report_date"))
+        for crop in ("corn", "soybeans"):
+            sm = national.get(crop + "_harvested")
+            if result.get(crop) and sm and sm["date"] == result[crop].get("harvest_date"):
+                result[crop]["harvest_5yr_avg"] = sm["avg5"]
+        result["progress"] = national
+        result["states"] = states
+        result["progress_method"] = (
+            "5-year average: AGSIST's arithmetic on the NASS weekly series, each of "
+            "the five prior years interpolated to the same calendar date, then "
+            "averaged; withheld if any year lacks a published week on both sides. "
+            "Can differ from the NASS-printed average by a point.")
+    except Exception as e:
+        print(f"  progress build failed (non-fatal): {e}", flush=True)
+
     if not result["corn"] and not result["soybeans"]:
         # Off-season (Nov–Mar): a placeholder is honest. In-season (Apr–Oct):
         # zero data means a dead key/outage — fail LOUD instead of silently
@@ -323,5 +518,89 @@ def main():
     print(f"\nWritten {OUT_FILE}")
 
 
+def selftest():
+    """Hand-worked, no network, no key."""
+    fails = []
+
+    def check(cond, label, detail=""):
+        print(("  ok    " if cond else "  FAIL  ") + label + ("" if cond else "  -- " + str(detail)))
+        if not cond:
+            fails.append(label)
+
+    D = lambda s: datetime.strptime(s, "%Y-%m-%d")
+
+    print("INTERPOLATION TO THE SAME DATE")
+    ser = {D("2025-09-21"): 10, D("2025-09-28"): 24}
+    check(value_on(ser, D("2025-09-27")) == 22.0, "Sep 27 between 10 (Sep 21) and 24 (Sep 28) = 22",
+          value_on(ser, D("2025-09-27")))
+    check(value_on(ser, D("2025-09-28")) == 24.0, "a published week is used as is")
+    check(value_on(ser, D("2025-09-14")) is None, "before the first week: not bracketed, None")
+    done = {D("2025-11-02"): 97, D("2025-11-09"): 100}
+    check(value_on(done, D("2025-11-20")) == 100.0, "after a finished crop's last week (100): 100")
+    check(value_on({D("2025-11-09"): 96}, D("2025-11-20")) is None, "after a last week below 100: None")
+
+    print("\nFIVE-YEAR AVERAGE")
+    # Each prior year has weeks a few days either side of Sep 27, values chosen
+    # so the interpolated value on Sep 27 is 10, 20, 30, 40, 50 -> mean 30.
+    series = {D("2026-09-27"): 18}
+    for k, v in zip(range(1, 6), (10, 20, 30, 40, 50)):
+        y = 2026 - k
+        series[D(f"{y}-09-24")] = v - 3
+        series[D(f"{y}-10-01")] = v + 4
+    check(five_year_avg(series, D("2026-09-27")) == 30, "mean of 10,20,30,40,50 = 30",
+          five_year_avg(series, D("2026-09-27")))
+    gap = dict(series); del gap[D("2021-09-24")]
+    check(five_year_avg(gap, D("2026-09-27")) is None, "one year not bracketed -> withheld, not a 4-year mean")
+    check(five_year_avg({D("2026-09-27"): 1, D("2025-09-27"): 2}, D("2026-09-27")) is None,
+          "fewer than five years -> withheld")
+    half = {D("2026-09-27"): 18}
+    for k in range(1, 6):
+        half[D(f"{2026-k}-09-20")] = 0
+        half[D(f"{2026-k}-10-04")] = 1
+    check(five_year_avg(half, D("2026-09-27")) == 1, "0.5 rounds up to 1 (half up, not banker's)",
+          five_year_avg(half, D("2026-09-27")))
+
+    print("\nSERIES CLEANING")
+    rows = [
+        {"agg_level_desc": "NATIONAL", "state_alpha": "US", "week_ending": "2026-09-27", "Value": "18",
+         "short_desc": "CORN, GRAIN - PROGRESS, MEASURED IN PCT HARVESTED"},
+        {"agg_level_desc": "STATE", "state_alpha": "WI", "week_ending": "2026-09-27", "Value": "6",
+         "short_desc": "CORN, GRAIN - PROGRESS, MEASURED IN PCT HARVESTED"},
+        {"agg_level_desc": "STATE", "state_alpha": "WI", "week_ending": "2026-09-27", "Value": "40",
+         "short_desc": "CORN, SILAGE - PROGRESS, MEASURED IN PCT HARVESTED"},
+        {"agg_level_desc": "STATE", "state_alpha": "IA", "week_ending": "2026-09-27", "Value": "(D)",
+         "short_desc": "CORN, GRAIN - PROGRESS, MEASURED IN PCT HARVESTED"},
+    ]
+    cs = clean_series(rows)
+    check(cs.get("US") == {D("2026-09-27"): 18}, "national row lands under US")
+    check(cs.get("WI") == {D("2026-09-27"): 6}, "silage is dropped, grain kept (6, not 40)", cs.get("WI"))
+    check("IA" not in cs, "a suppressed (D) value is not a zero")
+
+    print("\nSTATES SHOW THIS WEEK OR NOTHING")
+    def fake(comm, unit, cls, since):
+        if (comm, unit) == ("WHEAT", "PCT PLANTED"):
+            return [{"agg_level_desc": "STATE", "state_alpha": "KS", "week_ending": "2026-09-27",
+                     "Value": "41", "short_desc": "WHEAT, WINTER - PROGRESS, MEASURED IN PCT PLANTED"}]
+        if (comm, unit) == ("RICE", "PCT HARVESTED"):
+            return [{"agg_level_desc": "STATE", "state_alpha": "AR", "week_ending": "2026-08-02",
+                     "Value": "3", "short_desc": "RICE - PROGRESS, MEASURED IN PCT HARVESTED"}]
+        if comm == "PEANUTS":
+            raise RuntimeError("simulated outage")
+        return []
+    nat, st = build_progress(fake, 2026, "2026-09-27")
+    check(st.get("KS", {}).get("winter_wheat_planted", {}).get("pct") == 41, "Kansas wheat planted 41 kept")
+    check("AR" not in st, "a state week eight weeks old is not shown as this week", st.get("AR"))
+    check(st["KS"]["winter_wheat_planted"]["avg5"] is None, "no history -> 5-year avg withheld (None)")
+
+    print()
+    if fails:
+        print("FAILED (%d): %s" % (len(fails), "; ".join(fails)))
+        return 1
+    print("crop progress: all passed")
+    return 0
+
+
 if __name__ == "__main__":
+    if "--selftest" in sys.argv:
+        sys.exit(selftest())
     main()
