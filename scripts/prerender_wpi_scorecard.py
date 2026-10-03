@@ -789,7 +789,11 @@ def main():
     args = ap.parse_args()
 
     stale = []
-    for bake in (bake_wpi, bake_scorecard, bake_cot, bake_agodds):
+    # bake_scorecard is retired (2026-10-03). scorecard.html is now the
+    # prediction bot's page, which reads data/predictions.json and carries
+    # none of the old PRERENDER:sc-* regions. The old call scorecard's data
+    # (data/scorecard.json) stays in the repo as an archive, unshown.
+    for bake in (bake_wpi, bake_cot, bake_agodds):
         orig, new, fname = bake()
         if new != orig:
             if args.check:

@@ -1,0 +1,280 @@
+{
+ "updated": "2026-10-03T18:02:54Z",
+ "rules": {
+  "version": "bot-v1",
+  "registered": "2026-10-03",
+  "horizon_sessions": 20,
+  "trend_lookback_weeks": 13,
+  "trend_lookback_days": 91,
+  "cot_window_reports": 156,
+  "cot_crowded_long_pct": 90.0,
+  "cot_crowded_short_pct": 10.0,
+  "cot_max_age_days": 14,
+  "tie_rule": "a settlement equal to the entry is a miss",
+  "min_graded_for_rate": 40,
+  "min_spells_for_rate": 8,
+  "significance": 0.05
+ },
+ "live_start": "2026-10-05",
+ "crops": [
+  {
+   "key": "corn",
+   "label": "Corn"
+  },
+  {
+   "key": "beans",
+   "label": "Soybeans"
+  },
+  {
+   "key": "wheat",
+   "label": "Chicago wheat"
+  },
+  {
+   "key": "kcwheat",
+   "label": "KC wheat"
+  }
+ ],
+ "latest": {
+  "date": null,
+  "calls": []
+ },
+ "live": {
+  "records": {
+   "all": {
+    "graded": 0,
+    "hits": 0,
+    "hit_rate": null,
+    "spells": 0,
+    "spell_hits": 0,
+    "spell_hit_rate": null,
+    "p_luck": null,
+    "p_worse": null,
+    "rose": null,
+    "rose_of": null,
+    "rose_rate": null,
+    "first": null,
+    "last": null,
+    "gate_ok": false,
+    "p_luck_adjusted": null,
+    "p_worse_adjusted": null,
+    "verdict": "not_enough"
+   },
+   "corn": {
+    "graded": 0,
+    "hits": 0,
+    "hit_rate": null,
+    "spells": 0,
+    "spell_hits": 0,
+    "spell_hit_rate": null,
+    "p_luck": null,
+    "p_worse": null,
+    "rose": null,
+    "rose_of": null,
+    "rose_rate": null,
+    "first": null,
+    "last": null,
+    "gate_ok": false,
+    "p_luck_adjusted": null,
+    "p_worse_adjusted": null,
+    "verdict": "not_enough"
+   },
+   "beans": {
+    "graded": 0,
+    "hits": 0,
+    "hit_rate": null,
+    "spells": 0,
+    "spell_hits": 0,
+    "spell_hit_rate": null,
+    "p_luck": null,
+    "p_worse": null,
+    "rose": null,
+    "rose_of": null,
+    "rose_rate": null,
+    "first": null,
+    "last": null,
+    "gate_ok": false,
+    "p_luck_adjusted": null,
+    "p_worse_adjusted": null,
+    "verdict": "not_enough"
+   },
+   "wheat": {
+    "graded": 0,
+    "hits": 0,
+    "hit_rate": null,
+    "spells": 0,
+    "spell_hits": 0,
+    "spell_hit_rate": null,
+    "p_luck": null,
+    "p_worse": null,
+    "rose": null,
+    "rose_of": null,
+    "rose_rate": null,
+    "first": null,
+    "last": null,
+    "gate_ok": false,
+    "p_luck_adjusted": null,
+    "p_worse_adjusted": null,
+    "verdict": "not_enough"
+   },
+   "kcwheat": {
+    "graded": 0,
+    "hits": 0,
+    "hit_rate": null,
+    "spells": 0,
+    "spell_hits": 0,
+    "spell_hit_rate": null,
+    "p_luck": null,
+    "p_worse": null,
+    "rose": null,
+    "rose_of": null,
+    "rose_rate": null,
+    "first": null,
+    "last": null,
+    "gate_ok": false,
+    "p_luck_adjusted": null,
+    "p_worse_adjusted": null,
+    "verdict": "not_enough"
+   }
+  },
+  "tests_in_family": 0,
+  "open": 0,
+  "ungradeable": 0
+ },
+ "action_text": "",
+ "calls": [],
+ "skipped": [],
+ "backtest": {
+  "computed": "2026-10-03T18:02:54Z",
+  "source": "data/cot-deep.json (CFTC disaggregated COT; Yahoo continuous front-month, roll-repaired by cot_calendar.roll_adjust)",
+  "source_built": "append 2026-09-29",
+  "cutoff": "2026-10-02",
+  "rules_version": "bot-v1",
+  "rules_tested": 1,
+  "tests_in_family": 5,
+  "records": {
+   "all": {
+    "graded": 2848,
+    "hits": 1339,
+    "hit_rate": 47.0,
+    "spells": 712,
+    "spell_hits": 359,
+    "spell_hit_rate": 50.4,
+    "p_luck": 0.425689,
+    "p_worse": 0.603458,
+    "rose": 1379,
+    "rose_of": 2848,
+    "rose_rate": 48.4,
+    "first": "2013-01-04",
+    "last": "2026-08-24",
+    "gate_ok": true,
+    "p_luck_adjusted": 0.587675,
+    "p_worse_adjusted": 0.754323,
+    "verdict": "coin_flip"
+   },
+   "corn": {
+    "graded": 712,
+    "hits": 354,
+    "hit_rate": 49.7,
+    "spells": 178,
+    "spell_hits": 90,
+    "spell_hit_rate": 50.6,
+    "p_luck": 0.47014,
+    "p_worse": 0.588917,
+    "rose": 345,
+    "rose_of": 712,
+    "rose_rate": 48.5,
+    "first": "2013-01-04",
+    "last": "2026-08-24",
+    "gate_ok": true,
+    "p_luck_adjusted": 0.587675,
+    "p_worse_adjusted": 0.754323,
+    "verdict": "coin_flip"
+   },
+   "beans": {
+    "graded": 712,
+    "hits": 331,
+    "hit_rate": 46.5,
+    "spells": 178,
+    "spell_hits": 90,
+    "spell_hit_rate": 50.6,
+    "p_luck": 0.47014,
+    "p_worse": 0.588917,
+    "rose": 380,
+    "rose_of": 712,
+    "rose_rate": 53.4,
+    "first": "2013-01-04",
+    "last": "2026-08-24",
+    "gate_ok": true,
+    "p_luck_adjusted": 0.587675,
+    "p_worse_adjusted": 0.754323,
+    "verdict": "coin_flip"
+   },
+   "wheat": {
+    "graded": 712,
+    "hits": 335,
+    "hit_rate": 47.1,
+    "spells": 178,
+    "spell_hits": 95,
+    "spell_hit_rate": 53.4,
+    "p_luck": 0.204868,
+    "p_worse": 0.835062,
+    "rose": 336,
+    "rose_of": 712,
+    "rose_rate": 47.2,
+    "first": "2013-01-04",
+    "last": "2026-08-24",
+    "gate_ok": true,
+    "p_luck_adjusted": 0.587675,
+    "p_worse_adjusted": 0.835062,
+    "verdict": "coin_flip"
+   },
+   "kcwheat": {
+    "graded": 712,
+    "hits": 319,
+    "hit_rate": 44.8,
+    "spells": 178,
+    "spell_hits": 84,
+    "spell_hit_rate": 47.2,
+    "p_luck": 0.795132,
+    "p_worse": 0.250027,
+    "rose": 318,
+    "rose_of": 712,
+    "rose_rate": 44.7,
+    "first": "2013-01-04",
+    "last": "2026-08-24",
+    "gate_ok": true,
+    "p_luck_adjusted": 0.795132,
+    "p_worse_adjusted": 0.754323,
+    "verdict": "coin_flip"
+   }
+  },
+  "by_signal": {
+   "crowded_long": {
+    "graded": 305,
+    "hits": 138,
+    "hit_rate": 45.2
+   },
+   "crowded_short": {
+    "graded": 574,
+    "hits": 273,
+    "hit_rate": 47.6
+   },
+   "trend_up": {
+    "graded": 926,
+    "hits": 412,
+    "hit_rate": 44.5
+   },
+   "trend_down": {
+    "graded": 1043,
+    "hits": 516,
+    "hit_rate": 49.5
+   }
+  },
+  "skipped": {
+   "fewer than 156 prior reports": 624,
+   "exit close missing or not yet known": 16,
+   "entry close missing": 8
+  },
+  "calls_file": "data/predictions-backtest.json"
+ }
+}

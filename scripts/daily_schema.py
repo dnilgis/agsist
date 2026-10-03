@@ -24,6 +24,7 @@ same function the generator and critic use (briefing_cut.over_ceiling):
 this step is a hard stop in daily.yml, so a briefing over 450 words cannot
 reach the commit even if the earlier steps let it through.
 """
+import re
 import sys
 import json
 from pathlib import Path
@@ -49,7 +50,8 @@ REQUIRED_TOP_LEVEL = [
 
 OPTIONAL_TOP_LEVEL = [
     "subheadline",         # v5.1: retired from the model output; archived issues carry it
-    "action",              # v5.1: the one mandatory thresholded action (string)
+    "action",              # v5.5: the prediction bot's call, copied from data/predictions.json (string)
+    "bot_call",            # v5.5: {date, text, calls, record, backtest, source, url}
     "outside_the_pit",     # [{title, body, tag}] — one item since v5.1
     "teaser",
     "one_number",          # {value, unit, context}
@@ -271,12 +273,34 @@ def validate(data: dict) -> tuple[bool, list[str], list[str]]:
                         f"(got {yc.get('outcome')!r})"
                     )
 
-    # action (v5.1) — a string when present; required on open-market days
+    # action — a string when present. v5.1 required a model-written action
+    # every weekday. v5.5 (2026-10-03): The Action is the prediction bot's
+    # call, copied from data/predictions.json with a bot_call block beside it,
+    # and it is left out (not invented) when the bot has no fresh call. So an
+    # absent action is fine; an action without its bot_call on a v5.5 issue is
+    # the model writing trade instructions again, and fails.
     act = data.get("action")
     if act is not None and not isinstance(act, str):
         errors.append("'action' must be a string")
-    if data.get("market_closed") is False and not (act or "").strip():
-        errors.append("'action' is required on a weekday briefing (v5.1, RULE 11)")
+    bc = data.get("bot_call")
+    if bc is not None:
+        if not isinstance(bc, dict):
+            errors.append("'bot_call' must be an object")
+        elif bc:
+            if not isinstance(bc.get("calls"), list) or not bc.get("calls"):
+                errors.append("bot_call.calls must be a non-empty list")
+            if not bc.get("date"):
+                errors.append("bot_call.date is required")
+            if (act or "").strip() != (bc.get("text") or "").strip():
+                errors.append("'action' must be exactly bot_call.text (the bot's line, unedited)")
+    _gv = str(data.get("generator_version") or "")
+    _v55 = _gv[:1].isdigit() and tuple(int(x) for x in re.findall(r"\d+", _gv)[:2]) >= (5, 5)
+    if _v55 and (act or "").strip() and not bc:
+        errors.append("'action' present with no bot_call: from v5.5 only the prediction bot writes The Action")
+    if _v55 and data.get("todays_call"):
+        errors.append("'todays_call' present: retired in v5.5 (the old call scorecard is archived)")
+    if _v55 and (data.get("yesterdays_call") or {}):
+        errors.append("'yesterdays_call' present: retired in v5.5 (it printed model-written verdicts)")
 
     # word ceiling (v5.1) — the same function the generator enforces with
     if briefing_cut is not None:

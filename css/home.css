@@ -1850,6 +1850,21 @@ details.wr>summary,details.hbz>summary{align-items:center!important}
 .w1c-cp{display:block;font-size:.706rem;color:var(--text-muted);line-height:1.45}
 .w1c-cp b{color:var(--text);font-weight:600}
 .export-cumul .w1c-ly,.export-withheld.w1c-cls{display:block;font-size:.706rem;color:var(--text-muted);line-height:1.45}
+/* ===== WAVE1-D: prediction bot card + The Action source line */
+.daily-takeaway-src{margin:.5rem 0 0;font-size:.824rem;line-height:1.5;color:var(--text-muted)}
+.daily-takeaway-src a{color:var(--gold)}
+.pbc-verdict{margin:0 0 .55rem;font-size:.941rem;font-weight:700;line-height:1.4;color:var(--text)}
+.pbc-calls{list-style:none;margin:0 0 .55rem;padding:0;display:flex;flex-direction:column;gap:.3rem}
+.pbc-calls li{display:flex;align-items:baseline;flex-wrap:wrap;gap:.2rem .5rem;font-size:.824rem;line-height:1.4;color:var(--text-dim)}
+.pbc-crop{min-width:7.2em;color:var(--text);font-weight:600}
+.pbc-dir{min-width:3em;font-weight:700}
+.pbc-up{color:var(--green)}
+.pbc-down{color:var(--red)}
+.pbc-meta{font-family:var(--font-mono);font-size:.706rem;color:var(--text-muted)}
+.pbc-none{color:var(--text-muted)}
+.pbc-line{margin:.3rem 0 0;font-size:.765rem;line-height:1.5;color:var(--text-dim)}
+.pbc-asof{margin:.35rem 0 0;font-size:.706rem;color:var(--text-muted)}
+.pbc-foot{font-size:.706rem;color:var(--text-muted);margin:8px 0 0;line-height:1.45}
 
 /* ===== THE LOOK (2026-10-03) ==========================================
    Sig: "lots of still monotone and hard to differentiate one thing from

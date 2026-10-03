@@ -1,5 +1,14 @@
 name: Rebuild Call Scorecard
 
+# ── DISABLED 2026-10-03 ──────────────────────────────────────────────────
+# The old call scorecard is retired from the site. Its record
+# (data/scorecard.json) and scripts stay in the repo as an archive and are
+# no longer graded, rebuilt or shown. /scorecard is now the prediction
+# bot's page (predictions.yml). The job below is switched off with
+# `if: false` so a stray button press cannot rewrite the archive.
+# ─────────────────────────────────────────────────────────────────────────
+
+
 # Recompiles data/scorecard.json from the archive and re-bakes the numbers into
 # scorecard.html. Run it from the Actions tab after deploying the 2026-09-13
 # grading fix; after that the daily briefing keeps it current on its own and
@@ -26,6 +35,7 @@ concurrency:
 
 jobs:
   rebuild:
+    if: false   # disabled 2026-10-03, see the note at the top
     runs-on: ubuntu-latest
     steps:
       - name: Checkout

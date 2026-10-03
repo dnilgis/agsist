@@ -8,28 +8,28 @@
   <script>/* agsist-ga-guard 2026-10-01: Google Analytics loads only when the browser sends no Global Privacy Control or Do Not Track signal and the off switch on /privacy is not set. dataLayer and gtag always exist, so page code that calls them never throws. */(function(w,d,n){var off=false,v,i,s;w.dataLayer=w.dataLayer||[];if(typeof w.gtag!=='function'){w.gtag=function(){w.dataLayer.push(arguments);};}try{off=w.localStorage.getItem('agsist-ga-off')==='1';}catch(e){}if(n.globalPrivacyControl===true){off=true;}v=[n.doNotTrack,w.doNotTrack,n.msDoNotTrack];for(i=0;i<v.length;i++){if(v[i]==='1'||v[i]==='yes'){off=true;}}w.agsistGaOff=off;w.gtag('set','allow_google_signals',false);w.gtag('set','allow_ad_personalization_signals',false);if(off){return;}s=d.createElement('script');s.async=true;s.src='https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H';(d.head||d.documentElement).appendChild(s);})(window,document,navigator);</script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
 
-  <title>Grain Market Call Scorecard &mdash; AGSIST Daily Track Record</title>
-  <meta name="description" content="Every forward call the AGSIST Daily briefing has made — dated, graded the next trading day, misses included. The full public track record.">
+
+  <title>Prediction Bot Scorecard | AGSIST</title>
+  <meta name="description" content="AGSIST's statistical prediction bot calls corn, soybeans, Chicago wheat and KC wheat 20 trading sessions out, every trading day. Every call is graded by code against settlement prices. The backtest is shown beside the live record, never merged with it.">
   <meta name="author" content="Sigurd Lindquist &mdash; Farmers First Agri Service">
   <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
   <link rel="canonical" href="https://agsist.com/scorecard">
-
   <meta property="og:type"        content="website">
   <meta property="og:site_name"   content="AGSIST">
   <meta property="og:locale"      content="en_US">
-  <meta property="og:title"       content="Grain Market Call Scorecard &mdash; AGSIST Daily Track Record">
-  <meta property="og:description" content="Every forward call the AGSIST Daily briefing has made — dated, graded the next trading day, misses included.">
+  <meta property="og:title"       content="Prediction Bot Scorecard | AGSIST">
+  <meta property="og:description" content="One fixed rule, written down before the first call. Every call graded by code against settlement prices, misses included.">
   <meta property="og:url"         content="https://agsist.com/scorecard">
   <meta property="og:image"       content="https://agsist.com/img/og/agsist.jpg">
   <meta property="og:image:width"  content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt"    content="AGSIST Call Scorecard">
+  <meta property="og:image:alt"    content="AGSIST Prediction Bot Scorecard">
   <meta name="twitter:card"        content="summary_large_image">
   <meta name="twitter:site"        content="@agsist">
-  <meta name="twitter:creator"     content="@agsist">
-  <meta name="twitter:title"       content="Grain Market Call Scorecard &mdash; AGSIST Daily Track Record">
-  <meta name="twitter:description" content="Every forward call, dated and graded the next trading day — misses included.">
-  <meta name="twitter:image"       content="https://agsist.com/img/og/agsist.jpg">  <link rel="preload" href="/components/styles.css?v=17" as="style">
+  <meta name="twitter:title"       content="Prediction Bot Scorecard | AGSIST">
+  <meta name="twitter:description" content="One fixed rule. Every call graded by code against settlement prices, misses included.">
+  <meta name="twitter:image"       content="https://agsist.com/img/og/agsist.jpg">
+  <link rel="preload" href="/components/styles.css?v=17" as="style">
   <link rel="stylesheet" href="/components/styles.css?v=17">
   <script src="/components/util.js?v=16"></script>
   <link rel="icon" type="image/x-icon"            href="/img/favicon.ico">
@@ -37,216 +37,221 @@
   <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
   <link rel="apple-touch-icon"                    href="/img/apple-touch-icon.png">
   <link rel="manifest"                            href="/manifest.json">
-
   <style>
-    
-
-    .info-page{max-width:780px;margin:0 auto;padding:2.5rem 1.5rem 4rem}
-    .info-page h1{font-family:var(--font-display);font-size:clamp(1.8rem,4vw,2.4rem);font-weight:700;color:var(--gold);margin-bottom:.4rem;text-transform:uppercase;letter-spacing:.02em}
-    .info-page .sub{color:var(--text-dim);font-size:.95rem;line-height:1.7;margin-bottom:1.6rem;max-width:600px}
-    .info-page h2{font-size:1.05rem;color:var(--text);font-weight:700;margin:2rem 0 .6rem;padding-bottom:.35rem;border-bottom:1px solid var(--border)}
-    .info-page p,.info-page li{color:var(--text-dim);line-height:1.8;font-size:.92rem}
-    .info-page p+p{margin-top:.75rem}
-    .info-page a{color:var(--gold);transition:opacity .15s}
-    .info-page a:hover{opacity:.8}
-
-    .bc{font-family:'JetBrains Mono',monospace;font-size:0.775rem;color:var(--text-muted);margin-bottom:1.2rem}
-    .bc a{color:var(--text-muted);text-decoration:none}
-    .bc a:hover{color:var(--gold)}
-
-    .sc-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:.9rem;margin:0 0 1.8rem}
-    .sc-stat{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1rem 1.1rem;text-align:center}
-    .sc-stat-num{white-space:nowrap;font-family:var(--font-mono);font-size:clamp(1.35rem,5.2vw,2rem);font-weight:700;color:var(--gold);line-height:1.1}
-    .sc-stat-num.good{color:var(--green)}
-    .sc-stat-lbl{font-family:'JetBrains Mono',monospace;font-size:0.755rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin-top:.35rem}
-
-    .sc-honest{background:var(--surface);border-left:3px solid var(--gold);border-radius:0 8px 8px 0;padding:.9rem 1.1rem;margin:0 0 1.8rem;font-size:.88rem;color:var(--text-dim);line-height:1.7}
-
-    .sc-list{display:flex;flex-direction:column;gap:.6rem;margin-top:.4rem}
-    .sc-row{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.85rem 1rem}
-    .sc-row-top{display:flex;align-items:center;gap:.7rem;flex-wrap:wrap;margin-bottom:.35rem}
-    .sc-date{font-family:'JetBrains Mono',monospace;font-size:0.77rem;color:var(--text-muted)}
-    .sc-pill{font-family:'JetBrains Mono',monospace;font-size:0.755rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:.18rem .55rem;border-radius:20px;margin-left:auto}
-    .sc-pill--good{background:rgba(74,171,76,.14);color:var(--green);border:1px solid rgba(74,171,76,.35)}
-    .sc-pill--bad{background:rgba(200,86,46,.14);color:var(--red);border:1px solid rgba(200,86,46,.35)}
-    .sc-pill--pending{background:var(--surface2);color:var(--text-muted);border:1px solid var(--border)}
-    .sc-call{font-size:.9rem;color:var(--text);font-weight:600;line-height:1.55}
-    .sc-band{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.04em;text-transform:uppercase;color:var(--text-muted);border:1px solid var(--border);border-radius:3px;padding:.1rem .35rem;margin-left:.45rem;white-space:nowrap;}
-    .sc-note{font-size:.85rem;color:var(--text-dim);margin-top:.3rem;line-height:1.6}
-    .sc-note a{font-style:normal}
-    .sc-loading{color:var(--text-muted);font-size:.88rem;padding:1.2rem 0}
-    .sc-more{margin-top:1rem;width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text-dim);font-family:'JetBrains Mono',monospace;font-size:0.785rem;font-weight:700;padding:.7rem;min-height:44px}
-    .sc-more:hover{border-color:var(--gold);color:var(--text)}
-
-    .disc{font-size:0.795rem;color:var(--text-muted);line-height:1.7;border-top:1px solid var(--border);margin-top:2.2rem;padding-top:1rem}
-
-    @media(max-width:560px){
-      .sc-stats{grid-template-columns:repeat(2,1fr)}
-    }
+    .pb-page{max-width:860px;margin:0 auto;padding:2.2rem 1rem 4rem}
+    .pb-page h1{font-family:var(--font-display);font-size:clamp(1.6rem,4vw,2.2rem);font-weight:800;color:var(--text);margin:0 0 .4rem;letter-spacing:-.01em}
+    .pb-page h2{font-size:1.05rem;color:var(--text);font-weight:700;margin:2.2rem 0 .7rem;padding-bottom:.35rem;border-bottom:1px solid var(--border)}
+    .pb-page h3{font-size:.95rem;color:var(--text);font-weight:700;margin:1.2rem 0 .4rem}
+    .pb-page p,.pb-page li{color:var(--text-dim);line-height:1.7;font-size:.94rem}
+    .pb-page p+p{margin-top:.7rem}
+    .pb-page a{color:var(--gold)}
+    .pb-bc{font-family:var(--font-mono);font-size:.78rem;color:var(--text-muted);margin-bottom:1rem}
+    .pb-bc a{color:var(--text-muted);text-decoration:none}
+    .pb-sub{color:var(--text-dim);font-size:.98rem;max-width:640px}
+    .pb-verdicts{display:grid;grid-template-columns:1fr 1fr;gap:.9rem;margin:1.4rem 0 .4rem}
+    .pb-box{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1rem 1.1rem;min-width:0}
+    .pb-box-tag{font-family:var(--font-mono);font-size:.74rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.35rem}
+    .pb-verdict{font-size:1.3rem;font-weight:800;color:var(--text);line-height:1.25;margin:0 0 .45rem}
+    .pb-box p{font-size:.88rem;margin:0}
+    .pb-box p+p{margin-top:.45rem}
+    .pb-note{font-size:.82rem;color:var(--text-muted)}
+    .pb-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:.4rem 0}
+    .pb-table{width:100%;border-collapse:collapse;font-size:.86rem;min-width:520px}
+    .pb-table th{font-family:var(--font-mono);font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted);text-align:left;font-weight:700;padding:.45rem .5rem;border-bottom:1px solid var(--border)}
+    .pb-table td{padding:.5rem;border-bottom:1px solid var(--border);color:var(--text-dim);vertical-align:top}
+    .pb-table td.num,.pb-table th.num{text-align:right;font-family:var(--font-mono);white-space:nowrap}
+    .pb-up{color:var(--green);font-weight:700}
+    .pb-down{color:var(--red);font-weight:700}
+    .pb-hit{color:var(--green);font-weight:700}
+    .pb-miss{color:var(--red);font-weight:700}
+    .pb-open{color:var(--text-muted)}
+    .pb-math{border:1px solid var(--border);border-radius:8px;padding:.6rem .9rem;margin:.8rem 0;background:var(--surface)}
+    .pb-math summary{cursor:pointer;font-weight:700;color:var(--text);min-height:44px;display:flex;align-items:center}
+    .pb-math dl{margin:.4rem 0 0}
+    .pb-math dt{font-family:var(--font-mono);font-size:.76rem;color:var(--text-muted);margin-top:.6rem}
+    .pb-math dd{margin:.15rem 0 0;color:var(--text-dim);font-size:.9rem;line-height:1.6}
+    .pb-rules{margin:.4rem 0 0 1.1rem;padding:0}
+    .pb-more{margin-top:.8rem;width:100%;min-height:44px;background:var(--surface);border:1px solid var(--border);border-radius:8px;color:var(--text-dim);font-family:var(--font-mono);font-size:.8rem;font-weight:700;cursor:pointer}
+    .pb-disc{font-size:.8rem;color:var(--text-muted);line-height:1.7;border-top:1px solid var(--border);margin-top:2.4rem;padding-top:1rem}
+    @media(max-width:640px){.pb-verdicts{grid-template-columns:1fr}}
   </style>
 <script type="application/ld+json">
-{"@context":"https://schema.org","@graph":[{"@type":"WebPage","url":"https://agsist.com/scorecard","name":"Call Scorecard — AGSIST Daily Track Record","description":"Every forward call the AGSIST Daily briefing has made — dated, graded the next trading day, misses included.","isPartOf":{"@type":"WebSite","url":"https://agsist.com/","name":"AGSIST"},"author":{"@type":"Person","name":"Sigurd Lindquist","worksFor":{"@type":"Organization","name":"Farmers First Agri Service","url":"https://farmers1st.com"}},"breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"AGSIST","item":"https://agsist.com/"},{"@type":"ListItem","position":2,"name":"Call Scorecard","item":"https://agsist.com/scorecard"}]}},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is the AGSIST Call Scorecard?","acceptedAnswer":{"@type":"Answer","text":"Every briefing that carries a forward call is graded on the next trading day — played out, didn't, or pending. The scorecard is the complete, dated record of those calls and outcomes, misses included."}},{"@type":"Question","name":"Can past calls be edited?","acceptedAnswer":{"@type":"Answer","text":"Not silently. The scorecard is built from the same published archive that renders each day's briefing page. Where a grade was wrong, the row is re-scored against the actual closes and says so inline. The original briefing text is left as published."}},{"@type":"Question","name":"Is this trading advice?","acceptedAnswer":{"@type":"Answer","text":"No. The calls are short directional reads in a free morning briefing, published for context. They are not financial or trading advice — verify prices with your elevator or broker before making marketing decisions."}}]}]}
+{"@context":"https://schema.org","@graph":[{"@type":"WebPage","url":"https://agsist.com/scorecard","name":"Prediction Bot Scorecard","description":"AGSIST's statistical prediction bot: one fixed rule, every call graded by code against settlement prices.","isPartOf":{"@type":"WebSite","url":"https://agsist.com/","name":"AGSIST"},"breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"AGSIST","item":"https://agsist.com/"},{"@type":"ListItem","position":2,"name":"Prediction Bot Scorecard","item":"https://agsist.com/scorecard"}]}}]}
 </script>
 </head>
 <body>
   <a href="#main" class="skip">Skip to content</a>
   <div id="site-header"></div>
-
   <main id="main" tabindex="-1">
-<style>@media print{.ag-sponsor-ribbon{display:none!important}}</style>
-    <div class="info-page">
-      <aside class="ag-sponsor-ribbon" id="ag-sponsor"><span class="ag-sponsor-tag">Sponsor this page</span> Every call graded in public, wins and misses alike — one category-exclusive slot next to the record. <a href="/sponsor?slot=scorecard&amp;utm_source=scorecard&amp;utm_medium=slot">Put your name here &rarr;</a></aside>
+    <div class="pb-page">
+      <nav class="pb-bc" aria-label="Breadcrumb"><a href="/">AGSIST</a> &rsaquo; Prediction Bot Scorecard</nav>
+      <h1>Prediction Bot Scorecard</h1>
+      <p class="pb-sub">A simple statistical bot calls whether corn, soybeans, Chicago wheat and KC wheat will settle higher or lower 20 trading sessions from now. It makes one call per crop every trading day after the close. Code grades every call against the settlement price. Nobody edits the calls or picks which ones count.</p>
 
-      <nav class="bc" aria-label="Breadcrumb"><a href="/">AGSIST</a> &rsaquo; Call Scorecard</nav>
+      <noscript><p><strong>This page needs JavaScript to read the record.</strong> The raw file is <a href="/data/predictions.json">/data/predictions.json</a>.</p></noscript>
 
-      <h1>Call Scorecard</h1>
-      <p class="sub" style="font-size:.82rem;color:var(--text-dim);margin:.1rem 0 .5rem">This page grades <b>our own next-session price calls</b>. Looking for how outside forecasters did on USDA yield numbers? That is the <a href="/whats-priced-in#analyst-board" style="color:var(--gold)">analyst estimates board</a>.</p>
-      <p class="sub">Every briefing that carries a forward call is graded on the next trading day &mdash; in public, on the record. This is the complete list. Nothing edited, misses included.</p>
-
-      <div class="sc-stats" id="sc-stats" aria-live="polite"><!-- PRERENDER:sc-stats -->
-        <div class="sc-stat"><div class="sc-stat-num" id="sc-hit">20.5%</div><div class="sc-stat-lbl">Hit rate, graded by rule</div></div>
-        <div class="sc-stat"><div class="sc-stat-num" id="sc-record">18&ndash;70&ndash;5</div><div class="sc-stat-lbl">W &ndash; L &ndash; pending</div></div>
-        <div class="sc-stat"><div class="sc-stat-num" id="sc-streak">none</div><div class="sc-stat-lbl">Current win streak</div></div>
-        <div class="sc-stat"><div class="sc-stat-num" id="sc-total">88</div><div class="sc-stat-lbl">Calls graded</div></div>
-      <!-- /PRERENDER:sc-stats --></div>
-      <p style="font-family:'JetBrains Mono',monospace;font-size:.78rem;color:var(--text-dim);margin:-.9rem 0 .4rem">Sample: <span id="sc-sample"><!-- PRERENDER:sc-sample -->18 of 88 calls, Jun 25, 2026 to Oct 3, 2026<!-- /PRERENDER:sc-sample --></span>. Each call is checked against the settlement price by rule.</p>
-      <p style="font-family:'JetBrains Mono',monospace;font-size:.78rem;color:var(--text-dim);margin:0 0 1rem">Self-graded earlier, a separate series (the briefing scored itself): <span id="sc-selfrow"><!-- PRERENDER:sc-selfrow -->26 of 36 (72.2%), Apr 28, 2026 to Jun 23, 2026<!-- /PRERENDER:sc-selfrow --></span>.</p>
-
-      <p style="font-family:'JetBrains Mono',monospace;font-size:.78rem;color:var(--text-dim);margin:.2rem 0 1rem">Graded strict: right direction but level not hit still counts as a miss. The hit rate above is <span id="sc-prose-hit"><!-- PRERENDER:sc-prose-hit -->20.5%<!-- /PRERENDER:sc-prose-hit --></span>, counting only calls graded by rule.</p>
-      <div style="border:1px solid var(--border);border-left:2px solid var(--gold);border-radius:8px;padding:.7rem .9rem;margin:0 0 1rem;font-size:.9rem;line-height:1.55;color:var(--text-dim)"><!-- PRERENDER:sc-nextrep --><b style="color:var(--text)">Oct 9, 11:00 a.m. Central: </b>October WASDE &mdash; 2026/27 corn yield. See <a href="/whats-priced-in" style="color:var(--gold)">what the trade has priced in</a> before the number drops.<!-- /PRERENDER:sc-nextrep --></div>
-      <nav aria-label="Related pages" style="display:flex;flex-wrap:wrap;gap:.5rem;margin:0 0 1.1rem;font-size:.85rem"><a href="/whats-priced-in" style="display:inline-flex;align-items:center;min-height:44px;border:1px solid var(--border);border-radius:999px;padding:0 .8rem;color:var(--gold)">What's priced in</a><a href="/usda-calendar" style="display:inline-flex;align-items:center;min-height:44px;border:1px solid var(--border);border-radius:999px;padding:0 .8rem;color:var(--gold)">USDA calendar</a><a href="/daily" style="display:inline-flex;align-items:center;min-height:44px;border:1px solid var(--border);border-radius:999px;padding:0 .8rem;color:var(--gold)">Today's briefing</a></nav>
-      <div class="sc-honest">
-        <strong>How to read this:</strong> these are short directional reads from a free morning briefing, graded by rule against the next settlement price. The misses are listed exactly like the hits &mdash; that's the point. The full text of every briefing is in the <a href="/archive">archive</a>.
+      <div class="pb-verdicts" aria-live="polite">
+        <section class="pb-box" id="pb-live" aria-labelledby="pb-live-tag">
+          <div class="pb-box-tag" id="pb-live-tag">Live record</div>
+          <p class="pb-verdict" id="pb-live-verdict">Loading&hellip;</p>
+          <p id="pb-live-line"></p>
+          <p id="pb-live-luck"></p>
+        </section>
+        <section class="pb-box" id="pb-bt" aria-labelledby="pb-bt-tag">
+          <div class="pb-box-tag" id="pb-bt-tag">Backtest</div>
+          <p class="pb-verdict" id="pb-bt-verdict">Loading&hellip;</p>
+          <p id="pb-bt-line"></p>
+          <p id="pb-bt-luck"></p>
+          <p id="pb-bt-base"></p>
+        </section>
       </div>
+      <p class="pb-note">The two boxes are kept apart on purpose. The backtest is the rule replayed on history it was not tuned on. The live record is calls made in public before the outcome was known. Adding them together would let old history prop up the live number.</p>
 
-      <h2>The Record</h2>
-      <div class="sc-list" id="sc-list"><!-- PRERENDER:sc-list --><div class="sc-row"><div class="sc-row-top"><a href="/daily/2026-10-02" class="sc-date" aria-label="Read the briefing this call appeared in">Called Oct 2, 2026 · graded Oct 3, 2026</a><span class="sc-pill sc-pill--bad">✗ Didn’t</span></div><div class="sc-call">Called crude down toward $87.5 ($89.37 when the call was made). It closed at $91.26.</div><div class="sc-note">Crude closed $91.26, down again and under the $87.50 line&#x27;s spirit of the call; the Gulf-flow break kept extending into Friday.</div></div><div class="sc-row"><div class="sc-row-top"><a href="/daily/2026-10-01" class="sc-date" aria-label="Read the briefing this call appeared in">Called Oct 1, 2026 · graded Oct 2, 2026</a><span class="sc-pill sc-pill--bad">✗ Didn’t</span></div><div class="sc-call">Called corn up toward $5.09 ($5.0375 when the call was made). It closed at $5.0.</div><div class="sc-note">Corn never got near $5.09; it sat flat at $5.00 all session, the breakout thesis stalled cold.</div></div><div class="sc-row"><div class="sc-row-top"><a href="/daily/2026-09-30" class="sc-date" aria-label="Read the briefing this call appeared in">Called Sep 30, 2026 · graded Oct 1, 2026</a><span class="sc-pill sc-pill--bad">✗ Didn’t</span></div><div class="sc-call">Called corn up toward $5.29 ($5.2475 when the call was made). It closed at $5.0375.</div><div class="sc-note">Corn closed at $5.0375, short of the $5.29 target, so the directional call missed on level despite catching the move up.</div></div><div class="sc-row"><div class="sc-row-top"><a href="/daily/2026-09-29" class="sc-date" aria-label="Read the briefing this call appeared in">Called Sep 29, 2026 · graded Sep 30, 2026</a><span class="sc-pill sc-pill--good">✓ Played out</span></div><div class="sc-call">Called crude down toward $91.00 ($92.12 when the call was made). It closed at $90.38.</div><div class="sc-note">Crude broke through $91 as called, settling $90.38 on Trump&#x27;s no-sanctions-relief line on Iran; the down call played out clean.</div></div><div class="sc-row"><div class="sc-row-top"><a href="/daily/2026-09-28" class="sc-date" aria-label="Read the briefing this call appeared in">Called Sep 28, 2026 · graded Sep 29, 2026</a><span class="sc-pill sc-pill--bad">✗ Didn’t</span></div><div class="sc-call">Called crude up toward $98.50 ($96.13 when the call was made). It closed at $92.12.</div><div class="sc-note">Crude closed $92.12, down 2.1% and well under the $98.50 call; Yanbu supply news beat the Hormuz fear trade.</div></div><div class="sc-row"><div class="sc-row-top"><a href="/daily/2026-09-25" class="sc-date" aria-label="Read the briefing this call appeared in">Called Sep 25, 2026 · graded Sep 26, 2026</a><span class="sc-pill sc-pill--bad">✗ Didn’t</span></div><div class="sc-call">Called cattle down toward $216.50 ($218.95 when the call was made). It closed at $218.85001.</div><div class="sc-note">Cattle never got near $216.50; Friday held flat at $218.85, the de-risking read was right but the level was too aggressive.</div></div><div class="sc-row"><div class="sc-row-top"><a href="/daily/2026-09-24" class="sc-date" aria-label="Read the briefing this call appeared in">Called Sep 24, 2026 · graded Sep 25, 2026</a><span class="sc-pill sc-pill--bad">✗ Didn’t</span></div><div class="sc-call">Called crude up toward $94.50 ($93.19 when the call was made). It closed at $92.96.</div><div class="sc-note">Crude drifted to $92.96, not the $94.50 line; the Hormuz premium is still failing to build despite the thin traffic count.</div></div><div class="sc-row"><div class="sc-row-top"><a href="/daily/2026-09-23" class="sc-date" aria-label="Read the briefing this call appeared in">Called Sep 23, 2026 · graded Sep 24, 2026</a><span class="sc-pill sc-pill--bad">✗ Didn’t</span></div><div class="sc-call">Called corn down toward $5.27 ($5.29 when the call was made). It closed at $5.2925.</div><div class="sc-note">Corn held $5.29 instead of breaking below $5.27; the summit-fade thesis stalled a penny short of the line.</div></div><div class="sc-row"><div class="sc-row-top"><a href="/daily/2026-09-22" class="sc-date" aria-label="Read the briefing this call appeared in">Called Sep 22, 2026 · graded Sep 23, 2026</a><span class="sc-pill sc-pill--bad">✗ Didn’t</span></div><div class="sc-call">Called cattle up toward $222.00 ($221.15 when the call was made). It closed at $219.35.</div><div class="sc-note">Cattle closed $219.35, down 0.8% and well shy of $222, Monday&#x27;s placement-driven pop didn&#x27;t hold into today.</div></div><div class="sc-row"><div class="sc-row-top"><a href="/daily/2026-09-21" class="sc-date" aria-label="Read the briefing this call appeared in">Called Sep 21, 2026 · graded Sep 22, 2026</a><span class="sc-pill sc-pill--good">✓ Played out</span></div><div class="sc-call">Called crude down toward $91.50 ($92.97 when the call was made). It closed at $89.8.</div><div class="sc-note">Crude closed $89.80, down 3.4% on the day, not the level called, but Iran diplomacy hope is now pushing it back up, not down.</div></div><div class="sc-row"><div class="sc-row-top"><a href="/daily/2026-09-18" class="sc-date" aria-label="Read the briefing this call appeared in">Called Sep 18, 2026 · graded Sep 22, 2026</a><span class="sc-pill sc-pill--good">✓ Played out</span></div><div class="sc-call">Called soybeans up toward $13.1 ($13.03 when the call was made). It closed at $13.19.</div></div><div class="sc-row"><div class="sc-row-top"><a href="/daily/2026-09-17" class="sc-date" aria-label="Read the briefing this call appeared in">Called Sep 17, 2026 · graded Sep 18, 2026</a><span class="sc-pill sc-pill--bad">✗ Didn’t</span></div><div class="sc-call">Called soybeans up toward $13.42 ($13.2625 when the call was made). It closed at $13.03.</div><div class="sc-note">Miss; beans fell 7½ cents to $13.03, stopping 39 cents short of the line and closing at a session low.</div></div><div class="sc-row"><div class="sc-row-top"><a href="/daily/2026-09-16" class="sc-date" aria-label="Read the briefing this call appeared in">Called Sep 16, 2026 · graded Sep 17, 2026</a><span class="sc-pill sc-pill--bad">✗ Didn’t</span></div><div class="sc-call">Called soybeans up toward $13.35 ($13.285 when the call was made). It closed at $13.2625.</div><div class="sc-note">Miss; beans settled $13.26, a dime short of $13.35, and the chart stalled at the week&#x27;s high.</div></div><div class="sc-row"><div class="sc-row-top"><a href="/daily/2026-09-15" class="sc-date" aria-label="Read the briefing this call appeared in">Called Sep 15, 2026 · graded Sep 16, 2026</a><span class="sc-pill sc-pill--bad">✗ Didn’t</span></div><div class="sc-call">Called feeder cattle up toward $345.0 ($343.7 when the call was made). It closed at $340.05.</div><div class="sc-note">Feeders fell to $340.05 today, well under $345; the supply-tightness bid is fading as the Aug 24 Douglas reopening approaches.</div></div><div class="sc-row"><div class="sc-row-top"><a href="/daily/2026-09-14" class="sc-date" aria-label="Read the briefing this call appeared in">Called Sep 14, 2026 · graded Sep 15, 2026</a><span class="sc-pill sc-pill--bad">✗ Didn’t</span></div><div class="sc-call">Called soybeans down toward $12.8 ($12.945 when the call was made). It closed at $13.0025.</div><div class="sc-note">Miss. Beans ticked up a nickel to $13.00 instead of breaking lower; the line held and the thesis stays alive but unconfirmed.</div></div><div class="sc-row"><div class="sc-row-top"><a href="/daily/2026-09-12" class="sc-date" aria-label="Read the briefing this call appeared in">Called Sep 12, 2026 · graded Sep 15, 2026</a><span class="sc-band" title="beans: level $12.85 is 14¢ from close $12.99; one-session band is 3¢–8¢">level beyond one session</span><span class="sc-pill sc-pill--bad">✗ Didn’t</span></div><div class="sc-call">Called soybeans down toward $12.85 ($12.99 when the call was made). It closed at $13.0025.</div></div><div class="sc-row"><div class="sc-row-top"><a href="/daily/2026-09-11" class="sc-date" aria-label="Read the briefing this call appeared in">Called Sep 11, 2026 · graded Sep 12, 2026</a><span class="sc-pill sc-pill--bad">✗ Didn’t</span></div><div class="sc-call">Called beans up through $13.30. Beans closed Friday at $12.99, down 24 cents on the day. The call did not play out.</div><div class="sc-note">The WASDE was the miss. The September supply number was bearish enough to flush length, and the funds sold rather than held. Wrong direction, wrong read on the report.</div></div><div class="sc-row"><div class="sc-row-top"><a href="/daily/2026-09-10" class="sc-date" aria-label="Read the briefing this call appeared in">Called Sep 10, 2026 · graded Sep 11, 2026</a><span class="sc-band" title="beans: level $13.23 is 25¢ from close $12.98; one-session band is 5¢–21¢ [report-day band]">level beyond one session</span><span class="sc-pill sc-pill--bad">✗ Didn’t</span></div><div class="sc-call">Called beans up toward $13.23; beans closed today at $13.17, firmed but fell short of the line.</div><div class="sc-note">Direction was right, level wasn&#x27;t reached. The WASDE at 11 CT is now the next gate.</div></div><div class="sc-row"><div class="sc-row-top"><a href="/daily/2026-09-09" class="sc-date" aria-label="Read the briefing this call appeared in">Called Sep 9, 2026 · graded Sep 10, 2026</a><span class="sc-pill sc-pill--bad">✗ Didn’t</span></div><div class="sc-call">Called crude up, toward above $97.50; crude settled at $97.14 today, short of the line by 36 cents.</div><div class="sc-note">Close but no cigar: the level didn&#x27;t clear, so the call doesn&#x27;t score. Crude is still bid and the story is intact.</div></div><div class="sc-row"><div class="sc-row-top"><a href="/daily/2026-09-08" class="sc-date" aria-label="Read the briefing this call appeared in">Called Sep 8, 2026 · graded Sep 9, 2026</a><span class="sc-pill sc-pill--bad">✗ Didn’t</span></div><div class="sc-call">Called wheat up toward $7.30; wheat closed today at $7.27, up 11 cents, but still 3 cents short of the target line.</div><div class="sc-note">Direction was right, level wasn&#x27;t reached; war-premium buying moved wheat but not far enough.</div></div><div class="sc-row"><div class="sc-row-top"><a href="/daily/2026-09-06" class="sc-date" aria-label="Read the briefing this call appeared in">Called Sep 6, 2026 · graded Sep 9, 2026</a><span class="sc-band" title="wheat: level $7.16 is only 0.0¢ from close $7.16; band minimum is 8¢ [report-day band] — a level this close grades as noise">level inside the noise</span><span class="sc-pill sc-pill--good">✓ Played out</span></div><div class="sc-call">Called wheat up toward $7.16 ($7.16 when the call was made). It closed at $7.27.</div></div><div class="sc-row"><div class="sc-row-top"><a href="/daily/2026-09-05" class="sc-date" aria-label="Read the briefing this call appeared in">Called Sep 5, 2026 · graded Sep 9, 2026</a><span class="sc-pill sc-pill--bad">✗ Didn’t</span></div><div class="sc-call">Called wheat down toward $7.00 ($7.16 when the call was made). It closed at $7.27.</div></div><div class="sc-row"><div class="sc-row-top"><a href="/daily/2026-09-04" class="sc-date" aria-label="Read the briefing this call appeared in">Called Sep 4, 2026 · graded Sep 9, 2026</a><span class="sc-pill sc-pill--good">✓ Played out</span></div><div class="sc-call">Called wheat up toward $7.27 ($7.16 when the call was made). It closed at $7.27.</div></div><div class="sc-row"><div class="sc-row-top"><a href="/daily/2026-09-03" class="sc-date" aria-label="Read the briefing this call appeared in">Called Sep 3, 2026 · graded Sep 4, 2026</a><span class="sc-pill sc-pill--bad">✗ Didn’t</span></div><div class="sc-call">Called corn down toward $4.99. Corn closed $5.12 today, up from yesterday&#x27;s $5.075 settle -- nowhere near the target.</div><div class="sc-note">Miss. Harvest pressure is real but hasn&#x27;t been enough; $4.99 needs a weather-free WASDE confirmation the funds don&#x27;t have yet.</div></div><div class="sc-row"><div class="sc-row-top"><a href="/daily/2026-09-02" class="sc-date" aria-label="Read the briefing this call appeared in">Called Sep 2, 2026 · graded Sep 3, 2026</a><span class="sc-band" title="beans: level $13.12 is 18¢ from close $12.94; one-session band is 3¢–9¢">level beyond one session</span><span class="sc-pill sc-pill--bad">✗ Didn’t</span></div><div class="sc-call">Called beans up, toward above $13.12. Beans settled at $12.87 nearby, well short of the line.</div><div class="sc-note">Beans failed the level by 25 cents; today&#x27;s overnight pressure confirmed the direction was wrong.</div></div><p class="sc-note" style="margin-top:.7rem">Showing the latest 25 of 124 graded calls (5 pending) &mdash; the full record loads on this page with JavaScript, and every briefing is readable in the <a href="/archive">archive</a>.</p><!-- /PRERENDER:sc-list --></div>
+      <h2>Latest calls</h2>
+      <p id="pb-latest-when" class="pb-note"></p>
+      <div class="pb-wrap"><table class="pb-table" id="pb-latest" aria-describedby="pb-latest-when">
+        <thead><tr><th scope="col">Crop</th><th scope="col">Call</th><th scope="col">Contract</th><th scope="col" class="num">Entry settle</th><th scope="col">Graded on</th><th scope="col">Why</th></tr></thead>
+        <tbody><tr><td colspan="6">Loading&hellip;</td></tr></tbody>
+      </table></div>
 
-      <h2>Common questions</h2>
-      <details open style="border:1px solid var(--border);border-radius:8px;margin-bottom:.5rem;padding:.6rem .9rem"><summary style="cursor:pointer;font-weight:700">What is the AGSIST Call Scorecard?</summary><p style="margin:.5rem 0 0;font-size:.92rem;color:var(--text-dim)">Every briefing that carries a forward call is graded on the next trading day &mdash; played out, didn't, or pending. The scorecard is the complete, dated record of those calls and outcomes, misses included.</p></details>
-      <details style="border:1px solid var(--border);border-radius:8px;margin-bottom:.5rem;padding:.6rem .9rem"><summary style="cursor:pointer;font-weight:700">Can past calls be edited?</summary><p style="margin:.5rem 0 0;font-size:.92rem;color:var(--text-dim)">Not silently. The scorecard is built from the same published archive that renders each day's briefing page. Where a grade was wrong, the row is re-scored against the actual closes and says so inline. The original briefing text is left as published.</p></details>
-      <details style="border:1px solid var(--border);border-radius:8px;margin-bottom:1rem;padding:.6rem .9rem"><summary style="cursor:pointer;font-weight:700">Is this trading advice?</summary><p style="margin:.5rem 0 0;font-size:.92rem;color:var(--text-dim)">No. The calls are short directional reads in a free morning briefing, published for context. They are not financial or trading advice &mdash; verify prices with your elevator or broker before making marketing decisions.</p></details>
+      <h2>By crop</h2>
+      <div class="pb-wrap"><table class="pb-table" id="pb-bycrop">
+        <thead><tr><th scope="col">Crop</th><th scope="col" class="num">Live, right</th><th scope="col" class="num">Live spells</th><th scope="col" class="num">Backtest, right</th><th scope="col" class="num">Backtest spells</th><th scope="col">Backtest verdict</th></tr></thead>
+        <tbody><tr><td colspan="6">Loading&hellip;</td></tr></tbody>
+      </table></div>
+      <p class="pb-note" id="pb-bycrop-note"></p>
 
-      <h2>How It Works</h2>
-      <p>Each morning's briefing ends with a forward look at the next session. The next published briefing opens by grading it: <strong>played out</strong>, <strong>didn't</strong>, or <strong>pending</strong> when the verdict isn't in yet. That grading block has shipped on every briefing since late April 2026, and this page is simply those blocks collected in one place &mdash; the call, the date it was made, the date it was judged, and the one-line reasoning readers saw that morning.</p>
-      <p>Hit rate counts graded calls only (pending excluded). The streak is consecutive graded wins ending at the most recent graded call.</p>
-      <p><strong>Incident note (Aug 4, 2026):</strong> a date-handling bug from Jun 26 to Aug 4 caused the morning grading text to score the wrong session in some briefings. Outcomes from Jun 24 on are re-scored against the actual prior-day call and closes, and any row where that re-score changed the published grade says so inline. The bug is fixed; the original morning text stays as published &mdash; that's the deal.</p>
-      <p><strong>Two eras, and they do not read the same (Aug 8, 2026).</strong> Calls before Jun 24 could only be graded by the briefing's own account of itself, because no structured call was stored to check against. From Jun 24 on, every call is recomputed from the stated instrument, direction and level against the actual closes. Those two sets are not comparable, so they are not added together: <!-- PRERENDER:sc-eras --><b>Self-graded, 26 of 36 (72.2%). Graded against the settlement price by rule, 18 of 88 (20.5%).</b><!-- /PRERENDER:sc-eras --> The figure at the top counts only calls graded by rule. It is the number that can be verified, and it is the one to judge this briefing on.</p>
-      <p><strong>Weekend calls are counted once.</strong> A call made on a Saturday or Sunday is graded against the next trading close. Where several briefings repeated the same call (same market, direction, level and starting price) against the same close, the record keeps the first and counts that outcome once.</p>
-      <p><strong>Twenty-three rows describe a different call than the one graded (Aug 8, 2026).</strong> During the bug window the morning write-up sometimes discussed one market while the grade scored the call actually made the day before. Those rows now show the call that was really scored, built from the stored instrument, direction and level, and say so underneath. The original wording is still in that day's briefing, unedited.</p>
+      <h2>The rule</h2>
+      <p>Written down on <span id="pb-reg">2026-10-03</span>, before the first live call, as rule set <b id="pb-ver">bot-v1</b>. It is the only rule that was tested. It was not picked from a set of candidates. Any change gets a new version number and a new record of its own.</p>
+      <ol class="pb-rules">
+        <li><b>Crowding first.</b> Take the funds' (CFTC managed money) net position as a share of open interest, from the newest report a reader could have traded on by that close. Rank it against the <span data-rule="cot_window_reports">156</span> reports before it, about three years. At or above the <span data-rule="cot_crowded_long_pct">90</span>th percentile, the funds are crowded long: call <b>down</b>. At or below the <span data-rule="cot_crowded_short_pct">10</span>th, crowded short: call <b>up</b>.</li>
+        <li><b>Otherwise, trend.</b> If the front-month price is higher than <span data-rule="trend_lookback_weeks">13</span> weeks ago, call <b>up</b>; lower, call <b>down</b>; exactly flat, no call.</li>
+        <li><b>Grade.</b> An up call is right when the settlement <span data-rule="horizon_sessions">20</span> trading sessions later is above the entry settlement. A down call is right when it is below. A settlement equal to the entry is a miss.</li>
+      </ol>
+      <p>There is no seasonal signal. The seasonal figures the site has are built from all years at once, so using them would grade 2013 with knowledge from 2026.</p>
 
-      <h2>What This Is Not</h2>
-      <p>Not a trading system, not a signal service, and not advice. A one-session directional read is the lowest-stakes call in markets &mdash; the value here isn't the percentage, it's that the record exists at all, in public, with the losses left in. Verify prices with your elevator or broker before making marketing decisions.</p>
+      <h2>How the arithmetic works</h2>
+      <details class="pb-math">
+        <summary>Sources, dates, units and conventions</summary>
+        <dl>
+          <dt>Live prices</dt>
+          <dd>Settlement closes of the named contract (for example ZCZ26), from Yahoo Finance daily bars, read by the bot after the close. Grains are quoted in cents per bushel; the page shows them in dollars. The contract is the first listed month still trading on the grading day, so no live call spans a contract roll.</dd>
+          <dt>Trading sessions</dt>
+          <dd>Counted with the exchange holiday calendar in <code>scripts/contract_calendar.py</code>. The grading day is fixed when the call is made.</dd>
+          <dt>Positioning</dt>
+          <dd>CFTC Disaggregated Futures-Only Commitments of Traders, managed money long minus short, divided by open interest. A report counts from the first session after CFTC published it (it lands at 3:30 PM Eastern, after grains settle; a federal holiday delays it).</dd>
+          <dt>Backtest prices</dt>
+          <dd>The roll-repaired front-month index in <code>data/cot-deep.json</code>: Yahoo's continuous series with the return across each contract change dropped. It is an index, not a price. One call per weekly report, made at the first close after publication, graded at the same point four reports later (about 20 sessions). Decisions whose grading day falls after <span id="pb-cutoff">2026-10-02</span> are left out, so the backtest never overlaps the live record. The continuous series follows Yahoo's own roll, which can differ by a few days from the exchange calendar the repair uses.</dd>
+          <dt>Separate spells</dt>
+          <dd>Calls made a day or a week apart share most of their 20 sessions, so they are not independent. For each crop the bot takes the first call, then the first call made on or after that call's grading day, and so on. Those calls do not overlap. The coin-flip odds are computed on them only.</dd>
+          <dt>Coin-flip odds</dt>
+          <dd>The chance that pure guessing (a fair coin, one flip per separate spell) gets at least as many right. With <i>n</i> spells and <i>k</i> right, it is the sum of C(<i>n</i>,<i>j</i>)&nbsp;/&nbsp;2<sup><i>n</i></sup> for <i>j</i> from <i>k</i> to <i>n</i>. Five records are tested at once (all crops together and each crop), so the odds are adjusted for that with the Benjamini&ndash;Hochberg method before any record is called a finding. Crops move together, so the five are not independent tests.</dd>
+          <dt>Minimum before a rate is shown</dt>
+          <dd>At least <span data-rule="min_graded_for_rate">40</span> graded calls and <span data-rule="min_spells_for_rate">8</span> separate spells. Below that the page says &ldquo;Not enough calls yet&rdquo;.</dd>
+          <dt>Raw files</dt>
+          <dd><a href="/data/predictions.json">/data/predictions.json</a> (calls, record, rule) and <a href="/data/predictions-backtest.json">/data/predictions-backtest.json</a> (every backtest call). Code: <code>scripts/prediction_bot.py</code>; its selftests carry hand-worked answers.</dd>
+          <dt>Updated</dt>
+          <dd id="pb-updated">&mdash;</dd>
+        </dl>
+      </details>
 
-      <p class="disc">Not financial or trading advice. Questions: <a href="mailto:sig@farmers1st.com">sig@farmers1st.com</a> &middot; <a href="tel:+17157972428">715-797-2428</a>.</p>
+      <h2>Every live call</h2>
+      <div class="pb-wrap"><table class="pb-table" id="pb-log">
+        <thead><tr><th scope="col">Made</th><th scope="col">Crop</th><th scope="col">Call</th><th scope="col">Contract</th><th scope="col" class="num">Entry</th><th scope="col" class="num">Settle</th><th scope="col">Graded</th><th scope="col">Result</th></tr></thead>
+        <tbody><tr><td colspan="8">Loading&hellip;</td></tr></tbody>
+      </table></div>
+      <div id="pb-log-more"></div>
+      <h3>Days with no call</h3>
+      <p class="pb-note" id="pb-skipped">&mdash;</p>
 
+      <h2>The old call scorecard</h2>
+      <p>Until October 2026 this address showed a scorecard of calls the morning briefing wrote for itself. It has been retired. The briefing's &ldquo;The Action&rdquo; line now prints this bot's call instead.</p>
+
+      <p class="pb-disc">Not financial or trading advice. A 20-session direction call says nothing about where to price your grain. Verify prices with your elevator or broker. Questions: <a href="mailto:sig@farmers1st.com">sig@farmers1st.com</a>.</p>
     </div>
   </main>
-
   <div id="site-footer"></div>
   <script src="/components/loader.js?v=16" defer></script>
   <script>
   (function(){
     'use strict';
-    var PAGE = 25;
-    
-    function fdate(iso){
-      if(!iso)return '';
-      var p=iso.split('-');
-      var M=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-      return M[parseInt(p[1],10)-1]+' '+parseInt(p[2],10)+', '+p[0];
+    var M=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    var VERDICT={not_enough:'Not enough calls yet.',coin_flip:'Coin flip.',held_up:'This one held up.',worse_than_coin:'Worse than a coin flip.'};
+    var SIGNAL={crowded_long:'Funds crowded long',crowded_short:'Funds crowded short',trend_up:'13-week trend up',trend_down:'13-week trend down'};
+    function $(id){return document.getElementById(id);}
+    function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+    function fdate(iso){if(!iso)return '—';var p=iso.split('-');return M[+p[1]-1]+' '+(+p[2])+', '+p[0];}
+    function n(x){return x==null?'—':Number(x).toLocaleString('en-US');}
+    function rate(x){return x==null?'—':x.toFixed(1)+'%';}
+    function dollars(c){if(c==null)return '—';var s=(c/100).toFixed(4).replace(/0+$/,'');if(s.split('.')[1].length<2)s=(c/100).toFixed(2);return '$'+s;}
+    function ord(x){var v=x%100;if(v>=11&&v<=13)return x+'th';return x+({1:'st',2:'nd',3:'rd'}[x%10]||'th');}
+    function luck(p){if(p==null)return '—';if(p<0.01)return 'under 1 in 100';return 'about '+Math.round(p*100)+' in 100';}
+    function dirSpan(d){return d==='up'?'<span class="pb-up">Up</span>':(d==='down'?'<span class="pb-down">Down</span>':'—');}
+    function verdictLine(r,label){
+      if(!r)return {v:'—',line:'',luck:''};
+      var v=VERDICT[r.verdict]||'—';
+      if(r.verdict==='not_enough'){
+        return {v:v,line:n(r.graded)+' graded so far. A rate is shown from 40 graded calls and 8 separate spells.',luck:''};
+      }
+      return {v:v,
+        line:'Right on '+n(r.hits)+' of '+n(r.graded)+' '+label+' ('+rate(r.hit_rate)+'). Counting only calls that do not overlap: '+n(r.spell_hits)+' of '+n(r.spells)+' separate spells ('+rate(r.spell_hit_rate)+').',
+        luck:'Odds a run of pure luck does at least this well: '+luck(r.p_luck)+' ('+luck(r.p_luck_adjusted)+' after adjusting for five records tested at once).'};
     }
-    fetch('/data/scorecard.json',{cache:'no-cache'})
-      .then(function(r){if(!r.ok)throw new Error(r.status);return r.json();})
-      .then(function(d){
-        /* One outcome is one call: weekend briefings repeat Friday's call and are
-           graded against the same close. The generator merges these; this guard
-           does the same to a file written before that change. Pending rows and
-           rows without a structured call are never merged. */
-        var allRecs=Array.isArray(d.records)?d.records:[];
-        var seen={},recs=[];
-        for(var i=allRecs.length-1;i>=0;i--){
-          var r=allRecs[i];
-          if(r.outcome!=='pending'&&r.instrument){
-            var k=[r.instrument,r.direction,String(r.level),r.p0,r.p1,r.judged].join('|');
-            if(seen[k])continue;
-            seen[k]=1;
-          }
-          recs.unshift(r);
-        }
-        /* Headline = calls graded by rule only. Self-graded rows are a separate series. */
-        var det={played:0,missed:0,first:null,last:null},slf={played:0,missed:0,first:null,last:null},pend=0;
-        recs.forEach(function(r){
-          if(r.outcome==='pending'){pend++;return;}
-          var t=(r.method==='deterministic')?det:slf;
-          if(r.outcome==='played_out')t.played++;else if(r.outcome==='didnt')t.missed++;else return;
-          if(r.judged){if(!t.first||r.judged<t.first)t.first=r.judged;if(!t.last||r.judged>t.last)t.last=r.judged;}
-        });
-        var dg=det.played+det.missed,sg=slf.played+slf.missed;
-        var hasRecs=recs.length>0;
-        function pct(p,g){return g?(Math.round(1000*p/g)/10)+'%':'\u2014';}
-        var hit=document.getElementById('sc-hit');
-        if(hit)hit.textContent=hasRecs?pct(det.played,dg):'\u2014';
-        var ph=document.getElementById('sc-prose-hit');
-        if(ph)ph.textContent=hasRecs?pct(det.played,dg):'\u2014';
-        var smp=document.getElementById('sc-sample');
-        if(smp)smp.textContent=dg?(det.played+' of '+dg+' calls, '+fdate(det.first)+' to '+fdate(det.last)):'\u2014';
-        var sr=document.getElementById('sc-selfrow');
-        if(sr)sr.textContent=sg?(slf.played+' of '+sg+' ('+pct(slf.played,sg)+'), '+fdate(slf.first)+' to '+fdate(slf.last)):'\u2014';
-        var rec=document.getElementById('sc-record');
-        if(rec)rec.textContent=hasRecs?(det.played+'\u2013'+det.missed+'\u2013'+pend):'\u2014';
-        var st=document.getElementById('sc-streak');
-        if(st){var _cs=d.current_streak||0;st.textContent=_cs>0?(_cs+(_cs===1?' win':' wins')):'none';if(_cs===0)st.style.fontSize='1.6rem';} /* '0 calls' read like a bug; a cold streak is 'none' (2026-07-20) */
-        var tot=document.getElementById('sc-total');
-        if(tot)tot.textContent=hasRecs?String(dg):'\u2014';
+    fetch('/data/predictions.json',{cache:'no-cache'}).then(function(r){if(!r.ok)throw new Error(r.status);return r.json();}).then(function(d){
+      var labels={};(d.crops||[]).forEach(function(c){labels[c.key]=c.label;});
+      var R=d.rules||{};
+      document.querySelectorAll('[data-rule]').forEach(function(el){var k=el.getAttribute('data-rule');if(R[k]!=null)el.textContent=R[k];});
+      if(R.registered)$('pb-reg').textContent=R.registered;
+      if(R.version)$('pb-ver').textContent=R.version;
+      $('pb-updated').textContent=d.updated?d.updated.replace('T',' ').replace('Z',' UTC'):'—';
 
-        var list=document.getElementById('sc-list');
-        if(!list)return;
-        if(!recs.length){list.innerHTML='<div class="sc-loading">No graded calls yet \u2014 check back after the next briefing.</div>';return;}
-        var shown=0;
-        function pill(o){
-          if(o==='played_out')return '<span class="sc-pill sc-pill--good">\u2713 Played out</span>';
-          if(o==='didnt')return '<span class="sc-pill sc-pill--bad">\u2717 Didn\u2019t</span>';
-          return '<span class="sc-pill sc-pill--pending">\u23F3 Pending</span>';
-        }
-        function rowHtml(r){
-          var dateTxt = r.made
-            ? 'Called '+fdate(r.made)+' \u00b7 graded '+fdate(r.judged)
-            : 'Graded '+fdate(r.judged);
-          var madeLink = r.made ? '<a href="/daily/'+esc(r.made)+'" class="sc-date" aria-label="Read the briefing this call appeared in">'+esc(dateTxt)+'</a>'
-                                : '<span class="sc-date">'+esc(dateTxt)+'</span>';
-          // Same band tag the baked rows carry — see sc_row() in
-          // prerender_wpi_scorecard.py. One rule, two renderers.
-          var band = '';
-          if (r.band === 'too_far' || r.band === 'too_near') {
-            band = '<span class="sc-band" title="'+esc(r.band_detail||'')+'">level '
-                 + (r.band === 'too_far' ? 'beyond one session' : 'inside the noise')
-                 + '</span>';
-          }
-          return '<div class="sc-row">'+
-            '<div class="sc-row-top">'+madeLink+band+pill(r.outcome)+'</div>'+
-            '<div class="sc-call">'+esc(px2(r.call))+'</div>'+
-            (r.note?'<div class="sc-note">'+esc(px2(r.note))+'</div>':'')+
-          '</div>';
-        }
-        /* Round dollar figures with more than 2 decimals for display (218.85001 -> 218.85). */
-        function px2(t){return String(t==null?'':t).replace(/\$(\d+\.\d{3,})/g,function(m,n){return '$'+(Math.round(parseFloat(n)*100)/100).toFixed(2);});}
-        function render(){
-          var slice=recs.slice(0,shown+PAGE); shown=slice.length;
-          var html=slice.map(rowHtml).join('');
-          if(shown<recs.length){
-            html+='<button class="sc-more" id="sc-more" type="button">Show '+Math.min(PAGE,recs.length-shown)+' more ('+(recs.length-shown)+' remaining)</button>';
-          }
-          list.innerHTML=html;
-          var more=document.getElementById('sc-more');
-          if(more)more.addEventListener('click',render);
-        }
-        render();
-      })
-      .catch(function(){
-        var list=document.getElementById('sc-list');
-        if(list)list.innerHTML='<div class="sc-loading">Couldn\u2019t load the record right now \u2014 the full history is readable in the <a href="/archive">archive</a>.</div>';
-      });
+      var live=((d.live||{}).records||{}).all;
+      var L=verdictLine(live,'graded calls');
+      $('pb-live-verdict').textContent=L.v;$('pb-live-line').textContent=L.line;$('pb-live-luck').textContent=L.luck;
+      if(live&&live.verdict==='not_enough'){
+        var o=(d.live||{}).open;
+        $('pb-live-luck').textContent=(o?n(o)+' calls are waiting for their grading day. ':'')+'The first live calls are made after the '+fdate(d.live_start)+' close and graded 20 sessions later.';
+      }
+
+      var bt=d.backtest||{};var ba=(bt.records||{}).all;
+      var B=verdictLine(ba,'weekly calls');
+      $('pb-bt-verdict').textContent=B.v;
+      $('pb-bt-line').textContent=ba?(fdate(ba.first)+' to '+fdate(ba.last)+'. '+B.line):'Backtest not computed yet.';
+      $('pb-bt-luck').textContent=B.luck;
+      if(ba&&ba.rose_of){$('pb-bt-base').textContent='Prices rose in '+n(ba.rose)+' of those '+n(ba.rose_of)+' windows ('+rate(ba.rose_rate)+'). A bot that always said up would have been right that often.';}
+      if(bt.cutoff)$('pb-cutoff').textContent=bt.cutoff;
+
+      var lt=(d.latest||{}),lc=lt.calls||[];
+      $('pb-latest-when').textContent=lt.date?('Made after the '+fdate(lt.date)+' close.'):'No live call yet. The first calls are made after the '+fdate(d.live_start)+' close.';
+      var tb=$('pb-latest').querySelector('tbody');
+      tb.innerHTML=lc.length?lc.map(function(c){return '<tr><td>'+esc(labels[c.crop]||c.crop)+'</td><td>'+dirSpan(c.direction)+'</td><td>'+esc(c.contract)+'</td><td class="num">'+dollars(c.entry)+'</td><td>'+fdate(c.exit_day)+'</td><td>'+esc(SIGNAL[c.signal]||c.signal)+(c.cot_pct!=null?' (funds at the '+ord(Math.round(c.cot_pct))+' percentile)':'')+'</td></tr>';}).join(''):'<tr><td colspan="6">— No calls yet.</td></tr>';
+
+      var lr=(d.live||{}).records||{},br=bt.records||{};
+      var cb=$('pb-bycrop').querySelector('tbody');
+      cb.innerHTML=(d.crops||[]).map(function(c){var a=lr[c.key]||{},b=br[c.key]||{};
+        var lv=a.gate_ok?(n(a.hits)+' of '+n(a.graded)+' ('+rate(a.hit_rate)+')'):('— '+n(a.graded)+' graded');
+        var ls=a.gate_ok?(n(a.spell_hits)+' of '+n(a.spells)):'—';
+        var bv=b.graded?(n(b.hits)+' of '+n(b.graded)+' ('+rate(b.hit_rate)+')'):'—';
+        var bs=b.spells?(n(b.spell_hits)+' of '+n(b.spells)+' ('+rate(b.spell_hit_rate)+')'):'—';
+        return '<tr><td>'+esc(c.label)+'</td><td class="num">'+lv+'</td><td class="num">'+ls+'</td><td class="num">'+bv+'</td><td class="num">'+bs+'</td><td>'+esc(VERDICT[b.verdict]||'—')+'</td></tr>';}).join('');
+      $('pb-bycrop-note').textContent='Live figures show a dash until a crop has 40 graded calls and 8 separate spells. Backtest: '+n(bt.rules_tested)+' rule tested, '+n(bt.tests_in_family)+' records checked against a coin flip.';
+
+      var calls=(d.calls||[]).slice().sort(function(a,b){return a.made<b.made?1:(a.made>b.made?-1:(a.crop<b.crop?-1:1));});
+      var lb=$('pb-log').querySelector('tbody'),shown=0,PAGE=40;
+      function row(c){var res;
+        if(c.status==='graded')res=c.outcome==='hit'?'<span class="pb-hit">Right</span>':'<span class="pb-miss">Wrong</span>';
+        else if(c.status==='ungradeable')res='— '+esc(c.note||'no settlement in the feed');
+        else res='<span class="pb-open">Open</span>';
+        return '<tr><td>'+fdate(c.made)+'</td><td>'+esc(labels[c.crop]||c.crop)+'</td><td>'+dirSpan(c.direction)+'</td><td>'+esc(c.contract)+'</td><td class="num">'+dollars(c.entry)+'</td><td class="num">'+(c.exit!=null?dollars(c.exit):'—')+'</td><td>'+fdate(c.exit_day)+'</td><td>'+res+'</td></tr>';}
+      function render(){var s=calls.slice(0,shown+PAGE);shown=s.length;lb.innerHTML=s.length?s.map(row).join(''):'<tr><td colspan="8">— No live calls yet.</td></tr>';
+        var m=$('pb-log-more');m.innerHTML=shown<calls.length?'<button type="button" class="pb-more" id="pb-more-btn">Show '+Math.min(PAGE,calls.length-shown)+' more ('+(calls.length-shown)+' left)</button>':'';
+        var bb=$('pb-more-btn');if(bb)bb.addEventListener('click',render);}
+      render();
+      var sk=(d.skipped||[]).slice(-12).reverse();
+      $('pb-skipped').innerHTML=sk.length?sk.map(function(s){return esc(fdate(s.date))+', '+esc(labels[s.crop]||s.crop)+': '+esc(s.reason);}).join('<br>'):'None so far.';
+    }).catch(function(){
+      ['pb-live-verdict','pb-bt-verdict'].forEach(function(id){$(id).textContent='Could not load the record right now.';});
+    });
   })();
   </script>
 </body>

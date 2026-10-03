@@ -525,6 +525,38 @@ def cmd_rebuild(args):
     write_deep(blocks, f"rebuild {years[0]}–{years[-1]}")
 
 
+def rebase_to_stored(adj: dict, b: dict, upto: int) -> dict:
+    """Put a freshly chained index on the same base as the stored column.
+
+    roll_adjust() starts every series at 100 on its first close. --rebuild
+    chains from 2006, so the stored px_adj sits wherever twenty years of
+    returns left it (corn near 128, wheat near 37). --append chains only the
+    last thirty days, from 100 again. Written as-is, the appended week was a
+    different index under the same column name, and every ratio across the
+    seam (a 13-week trend, a 4-week forward return) was off by the base.
+
+    Anchor on the newest stored px_adj among rows [0, upto) whose date the
+    fresh series also covers, and scale the fresh series to match it. No
+    anchor inside the window: return {} so the caller writes null, never a
+    guess."""
+    if not adj:
+        return {}
+    first = min(adj)
+    for j in range(min(upto, len(b.get("px_adj", []))) - 1, -1, -1):
+        stored = b["px_adj"][j]
+        if stored is None:
+            continue
+        d = date.fromisoformat(b["dates"][j])
+        if d < first:
+            return {}
+        v, _ = close_on_or_before(adj, d)
+        if v:
+            k = stored / v
+            return {dd: vv * k for dd, vv in adj.items()}
+        return {}
+    return {}
+
+
 def cmd_append(args):
     deep = load_deep()
     if deep is None:
@@ -550,11 +582,12 @@ def cmd_append(args):
         r = rows[0]
         if b["dates"] and b["dates"][-1] >= latest.isoformat():
             continue
+        n_before = len(b["dates"])
         b["dates"].append(latest.isoformat())
         for f in FIELDS:
             b.setdefault(f, []).append(r.get(f, 0))
         raw = prices.get(key, {})
-        adj = CAL.roll_adjust(raw, key) if raw else {}
+        adj = rebase_to_stored(CAL.roll_adjust(raw, key), b, n_before) if raw else {}
         px, _ = close_on_or_before(raw, latest)
         aj, _ = close_on_or_before(adj, latest)
         b["px_tue"].append(px)
@@ -576,8 +609,13 @@ def cmd_append(args):
         raw = prices.get(key, {})
         if not raw:
             continue
-        adj = CAL.roll_adjust(raw, key)
-        for i in range(max(0, len(b["dates"]) - 8), len(b["dates"])):
+        lo = max(0, len(b["dates"]) - 8)
+        # Anchor below the rows being filled, so a value this loop writes is
+        # never the anchor for the next one.
+        adj = rebase_to_stored(CAL.roll_adjust(raw, key), b, lo + 1)
+        if not adj:
+            continue
+        for i in range(lo, len(b["dates"])):
             d = date.fromisoformat(b["dates"][i])
             if b["px_entry"][i] is None:
                 v, ed = close_on_or_after(adj, CAL.entry_date(d))
@@ -787,6 +825,7 @@ def selftest():
     global DEEP_PATH
     tmp = tempfile.mkdtemp()
     keep_path, keep_fetch = DEEP_PATH, globals()["fetch_socrata"]
+    keep_prices = globals()["load_price_frames"]
     try:
         DEEP_PATH = os.path.join(tmp, "cot-deep.json")
         write_deep(assemble(parse_rows(_fixture_csv(ARCHIVE_HEADERS, [d1])),
@@ -806,9 +845,32 @@ def selftest():
         # Running it twice must not duplicate the week.
         cmd_append(argparse.Namespace())
         ck("a second append is a no-op", len(load_deep()["commodities"]["corn"]["dates"]), 2)
+
+        # THE BASE. Stored history says corn's index was 128.0 on Tue Aug 25.
+        # Raw closes: 500 on Aug 25, 510 on Tue Sep 1, 520 on Tue Sep 8 (the
+        # entry: Labor Day pushes it past Monday). No corn roll in between
+        # (Sep contract dies the 15th). By hand: px_adj(Sep 1) = 128 * 510/500
+        # = 130.56, px_entry(Sep 1) = 128 * 520/500 = 133.12. Chained from
+        # 100 on the window's first close, as the old code did, it would have
+        # read 102.0 and 104.0.
+        write_deep(assemble(parse_rows(_fixture_csv(ARCHIVE_HEADERS, [d1])),
+                            {k: {} for k in COMMODITIES}), "fixture")
+        dd = load_deep()
+        dd["commodities"]["corn"]["px_adj"][0] = 128.0
+        write_deep(dd["commodities"], "fixture with a stored base")
+        raw = {d1: 500.0, date(2026, 8, 26): 502.0, date(2026, 8, 31): 505.0,
+               d2: 510.0, date(2026, 9, 2): 512.0, date(2026, 9, 8): 520.0}
+        globals()["load_price_frames"] = lambda start: {k: (dict(raw) if k == "corn" else {}) for k in COMMODITIES}
+        cmd_append(argparse.Namespace())
+        c = load_deep()["commodities"]["corn"]
+        ck("appended px_adj is on the stored base", round(c["px_adj"][-1], 3), 130.56)
+        ck("appended px_entry is on the stored base", round(c["px_entry"][-1], 3), 133.12)
+        ck("no anchor in the window means null", rebase_to_stored({date(2026, 9, 1): 100.0},
+           {"dates": ["2026-08-01"], "px_adj": [128.0]}, 1), {})
     finally:
         DEEP_PATH = keep_path
         globals()["fetch_socrata"] = keep_fetch
+        globals()["load_price_frames"] = keep_prices
         shutil.rmtree(tmp, ignore_errors=True)
 
     print()

@@ -261,6 +261,15 @@ def price_table(daily, prior, prior_day):
               'border="0" style="width:100%%">%s</table></td></tr>' % "".join(rows))
 
 
+# v5.5: the line under The Action when it is the prediction bot's call.
+BOT_SRC_HTML = ('<div class="mute" style="font-family:%s;font-size:12px;line-height:1.5;color:%s;'
+                'padding-top:6px">From the AGSIST prediction bot, a fixed statistical rule graded '
+                'by code. Not advice. <a href="https://agsist.com/scorecard" style="color:%s">'
+                'Record and method</a></div>')
+BOT_SRC_TEXT = ("From the AGSIST prediction bot, a fixed statistical rule graded by code. "
+                "Not advice. Record and method: https://agsist.com/scorecard")
+
+
 def call_card(daily):
     """Today's call, which until now reached nobody.
 
@@ -560,7 +569,7 @@ def render_html(daily, site_href, unsub_url=None, date_display=None):
         # Preheader: what the inbox preview shows. Hidden in the body itself so
         # it is not said twice.
         '<div class="mute" style="display:none;max-height:0;overflow:hidden;'
-        'opacity:0;color:transparent;font-size:1px;line-height:1px">%s</div>' % e(take or lead),
+        'opacity:0;color:transparent;font-size:1px;line-height:1px">%s</div>' % e(lead or take),
         '<tr><td style="font-family:%s;font-size:11px;font-weight:700;letter-spacing:.14em;'
         'text-transform:uppercase;color:%s" class="mute">%s</td></tr>' % (MONO, MUTE, mast),
         '<tr><td style="padding:2px 0 0;font-family:%s;font-size:12px;color:%s" class="mute">%s</td></tr>'
@@ -576,8 +585,9 @@ def render_html(daily, site_href, unsub_url=None, date_display=None):
         body.append('<tr><td style="padding:14px 0 0"><table role="presentation" width="100%%" '
                     'cellpadding="0" cellspacing="0" border="0"><tr><td style="border-left:3px solid %s;'
                     'padding:4px 0 4px 12px;font-family:%s;font-size:16px;line-height:1.55;color:%s" '
-                    'class="ink"><strong>%s</strong> %s</td></tr></table></td></tr>'
-                    % (GOLD, SANS, INK, e(take_label), e(take)))
+                    'class="ink"><strong>%s</strong> %s%s</td></tr></table></td></tr>'
+                    % (GOLD, SANS, INK, e(take_label), e(take), BOT_SRC_HTML % (SANS, MUTE, GOLD)
+                       if daily.get("bot_call") else ""))
 
     # THE SPONSOR SLOT, WHICH /sponsor SELLS AND THE EMAIL DID NOT CARRY.
     # The pitch page says, in these words: "Above the fold on every briefing
@@ -591,10 +601,11 @@ def render_html(daily, site_href, unsub_url=None, date_display=None):
     # for finding one and has no business in a subscriber's inbox. With
     # data/sponsor.json inactive this appends nothing and the email is
     # byte-identical to what it was.
+    # v5.5 (2026-10-03): the sponsor no longer sits under The Action, which
+    # is now the prediction bot's call. It follows the sections instead, so
+    # no reader takes an ad for part of the call or the call for part of the
+    # ad. Same block, same rule (real active sponsor only).
     sp = sponsor_block(daily)
-    if sp:
-        body.append(_rule())
-        body.append(sp)
 
     body.append(_rule())
     body.append(price_table(daily, prior, prior_day))
@@ -606,6 +617,9 @@ def render_html(daily, site_href, unsub_url=None, date_display=None):
     if sec:
         body.append(_rule())
         body.append(sec)
+    if sp:
+        body.append(_rule())
+        body.append(sp)
     watch = watch_html(daily)
     if watch:
         body.append(_rule())
@@ -688,6 +702,8 @@ def render_text(daily, site, unsub_url=None, date_display=None):
     take = strip_md(daily.get("action"))
     if take:
         L += ["", "THE ACTION: " + take]
+        if daily.get("bot_call"):
+            L.append(BOT_SRC_TEXT)
     else:
         take = strip_md(daily.get("the_takeaway"))
         if take:
@@ -696,6 +712,8 @@ def render_text(daily, site, unsub_url=None, date_display=None):
     # the house ad. A multipart message whose text half quietly drops the
     # sponsor is a message that shortchanges them for every reader whose
     # client shows text.
+    # v5.5: collected here, printed after the sections (see render_html).
+    _main, L = L, []
     _sp = daily.get("sponsor")
     if isinstance(_sp, dict) and _sp.get("active") and not _sp.get("is_house_ad"):
         _who = strip_md(_sp.get("advertiser")) or ""
@@ -716,6 +734,7 @@ def render_text(daily, site, unsub_url=None, date_display=None):
         _d = strip_md(_sp.get("disclosure"))
         if _d:
             L.append(_d)
+    _sponsor_lines, L = L, _main
 
     _b = (daily.get("board") or {})
     _ag = (_b.get("prev_close_session") if daily.get("locked_changes") else None) or prior_day
@@ -759,6 +778,7 @@ def render_text(daily, site, unsub_url=None, date_display=None):
             L.append("So what: " + bl)
         if ac:
             L.append("Action: " + ac)
+    L += _sponsor_lines
     wl = [w for w in (daily.get("watch_list") or [])[:3] if strip_md(w.get("desc"))]
     if wl:
         L += ["", "WHAT TO WATCH"]

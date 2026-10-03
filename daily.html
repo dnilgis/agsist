@@ -217,6 +217,8 @@ body{overflow-x:hidden;overflow-x:clip;width:100%;}
 .dv3-takeaway{margin:1rem 0 1.25rem;padding:1rem 1.15rem;background:linear-gradient(135deg,rgba(var(--gold-rgb),.08) 0%,rgba(var(--gold-rgb),.02) 60%,var(--surface2) 100%);border:1px solid rgba(var(--gold-rgb),.3);border-left:4px solid var(--gold);border-radius:8px;}
 .dv3-takeaway-label{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:0.75rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin-bottom:.4rem;}
 .dv3-takeaway-text{font-family:var(--font-display);font-size:1.05rem;line-height:1.45;color:var(--text);margin:0;font-weight:600;letter-spacing:-.005em;}
+.dv3-action-src{margin:.5rem 0 0;font-size:.8rem;line-height:1.5;color:var(--text-muted);}
+.dv3-action-src a{color:var(--gold);}
 @media(max-width:640px){.dv3-takeaway-text{font-size:.95rem;}}
 /* v4.3: per-section vs_yesterday continuity chip */
 .dv3-sec-vs{display:flex;align-items:center;gap:.4rem;font-family:'JetBrains Mono',monospace;font-size:0.765rem;color:var(--text-muted);margin:.4rem 0 .55rem;padding:.3rem .55rem;background:rgba(74,143,186,.04);border-left:2px solid rgba(74,143,186,.32);border-radius:0 4px 4px 0;}
@@ -640,6 +642,8 @@ function renderToday(data,why){
     takeaway='<div class="dv3-takeaway dv3-action" role="note" aria-label="Today\u2019s action">'+
       '<span class="dv3-takeaway-label"><svg class="dv3-ic" aria-hidden="true"><use href="#i-target"/></svg>THE ACTION</span>'+
       '<p class="dv3-takeaway-text">'+mdInline(actTxt)+'</p>'+
+      /* 2026-10-03: The Action is the prediction bot's call when bot_call is present. */
+      (data.bot_call?'<p class="dv3-action-src">From the AGSIST prediction bot, a fixed statistical rule graded by code. Not advice. <a href="/scorecard">Record and method \u2192</a></p>':'')+
     '</div>';
   } else if(taTxt){
     takeaway='<div class="dv3-takeaway" role="note" aria-label="Today\u2019s key takeaway">'+
@@ -861,7 +865,9 @@ function renderToday(data,why){
   var ycData=data.yesterdays_call||null;
   // v5.1: call_line from the grader; summary only on issues before the cut
   var ycLine=ycData?(ycData.call_line||ycData.summary||''):'';
-  if(ycData && ycLine && !marketClosed){
+  /* 2026-10-03: no Yesterday's Call on an issue that carries the bot's call
+     (v5.5+). The model wrote that note and it printed the wrong direction. */
+  if(ycData && ycLine && !marketClosed && !data.bot_call){
     var outcome=(ycData.outcome||'pending').toLowerCase();
     var outcomeMap={
       played_out:['PLAYED OUT','#4aab4c','rgba(74,171,76,.10)','rgba(74,171,76,.32)'],
@@ -923,7 +929,8 @@ function renderToday(data,why){
   var src='<div class="dv3-source">CME futures &middot; EIA energy data &middot; USDA crop data'+(compiled?' &middot; Compiled '+escHtml(compiled)+' CT':'')+'</div>';
   var perm=iso?'<div class="dv3-perm"><a href="/daily/'+escHtml(iso)+'">Permalink to this briefing \u2192</a></div>':'';
 
-  el.innerHTML=header+attribution+thread+ticker+surprise+takeaway+lead+sparks+topbar+sponsor+yc+sections+tmyk+watch+outsidePit+byline+cashbids+forward+share+src+perm;
+  /* 2026-10-03: the sponsor follows the sections, away from The Action. */
+  el.innerHTML=header+attribution+thread+ticker+surprise+takeaway+lead+sparks+topbar+yc+sections+sponsor+tmyk+watch+outsidePit+byline+cashbids+forward+share+src+perm;
 
   // Wire share buttons
   var btns=el.querySelectorAll('.dv3-share-btn');

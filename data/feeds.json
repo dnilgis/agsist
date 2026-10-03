@@ -2,8 +2,8 @@
  "schema": "agsist-feeds/1",
  "generated_by": "scripts/build_feeds.py",
  "note": "Derived from the repository, never typed. Pages come from a grep of every .html; the writer and its cadence come from the workflow that names the file or runs the script that names it.",
- "count": 59,
- "with_known_cadence": 59,
+ "count": 61,
+ "with_known_cadence": 61,
  "feeds": [
   {
    "path": "data/afida/county.json",
@@ -251,6 +251,43 @@
    "path": "data/cot-analysis.json",
    "pages": [
     "cot.html"
+   ],
+   "written_by": [
+    "COT Deep History Rebuild",
+    "COT Release Watch",
+    "Fetch COT Data"
+   ],
+   "touched_by": [
+    "COT Deep History Rebuild",
+    "COT Release Watch",
+    "Fetch COT Data"
+   ],
+   "cadence": "11 launches on a fixed schedule at about 4am, 2pm, 3pm, 4pm Central",
+   "curated": false,
+   "planned": false,
+   "external": false,
+   "url": null,
+   "crons": [
+    "20 9 * * 0",
+    "*/5 19-21 * * 1-5",
+    "45 19 * * 5",
+    "15 20 * * 5",
+    "45 20 * * 5",
+    "15 21 * * 5",
+    "45 19 * * 1",
+    "15 20 * * 1",
+    "45 20 * * 1",
+    "15 21 * * 1",
+    "30 21 * * *"
+   ],
+   "max_gap_hours": 23.6,
+   "quiet": null,
+   "why_quiet": null
+  },
+  {
+   "path": "data/cot-deep.json",
+   "pages": [
+    "scorecard.html"
    ],
    "written_by": [
     "COT Deep History Rebuild",
@@ -1006,6 +1043,57 @@
    "why_quiet": null
   },
   {
+   "path": "data/predictions-backtest.json",
+   "pages": [
+    "scorecard.html"
+   ],
+   "written_by": [
+    "Prediction bot \u2014 call and grade"
+   ],
+   "touched_by": [
+    "Prediction bot \u2014 call and grade"
+   ],
+   "cadence": "2 launches on a fixed schedule at about 5pm, 8pm Central",
+   "curated": false,
+   "planned": false,
+   "external": false,
+   "url": null,
+   "crons": [
+    "41 22 * * 1-5",
+    "17 1 * * 2-6"
+   ],
+   "max_gap_hours": 69.4,
+   "quiet": null,
+   "why_quiet": null
+  },
+  {
+   "path": "data/predictions.json",
+   "pages": [
+    "index1.html",
+    "scorecard.html"
+   ],
+   "written_by": [
+    "Prediction bot \u2014 call and grade"
+   ],
+   "touched_by": [
+    "Generate Daily Briefing",
+    "Prediction bot \u2014 call and grade",
+    "Rebuild Archive HTML (one-time)"
+   ],
+   "cadence": "2 launches on a fixed schedule at about 5pm, 8pm Central",
+   "curated": false,
+   "planned": false,
+   "external": false,
+   "url": null,
+   "crons": [
+    "41 22 * * 1-5",
+    "17 1 * * 2-6"
+   ],
+   "max_gap_hours": 69.4,
+   "quiet": null,
+   "why_quiet": null
+  },
+  {
    "path": "data/price-stats.json",
    "pages": [
     "cattle-futures-prices.html",
@@ -1151,41 +1239,6 @@
    "max_gap_hours": 24.0,
    "quiet": "seasonal",
    "why_quiet": "RMA price discovery runs in defined windows; outside them there is nothing to publish."
-  },
-  {
-   "path": "data/scorecard.json",
-   "pages": [
-    "index1.html",
-    "scorecard.html"
-   ],
-   "written_by": [
-    "Generate Daily Briefing",
-    "Rebuild Call Scorecard",
-    "Regrade Archive Pages"
-   ],
-   "touched_by": [
-    "Build Analyst Scorecard",
-    "Fetch COT Data",
-    "Generate Daily Briefing",
-    "Rebuild Call Scorecard",
-    "Regrade Archive Pages",
-    "WASDE watch \u2014 grade the report as it lands",
-    "Build What's Priced In"
-   ],
-   "cadence": "4 launches on a fixed schedule at about 5am, 6am, 8am, 3pm Central",
-   "curated": false,
-   "planned": false,
-   "external": false,
-   "url": null,
-   "crons": [
-    "19 10 * * *",
-    "41 11 * * *",
-    "23 13 * * *",
-    "0 20 * * 5"
-   ],
-   "max_gap_hours": 20.9,
-   "quiet": null,
-   "why_quiet": null
   },
   {
    "path": "data/sponsor.json",
