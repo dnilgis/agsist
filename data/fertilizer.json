@@ -10,7 +10,8 @@
    "prev": 695,
    "unit": "$/ton",
    "as_of": "2026-09-01",
-   "location": "Midwest dealer"
+   "location": "Midwest dealer",
+   "prev_as_of": "2026-07-20"
   },
   {
    "name": "Potash",
@@ -20,7 +21,8 @@
    "prev": 460,
    "unit": "$/ton",
    "as_of": "2026-09-01",
-   "location": "Midwest dealer"
+   "location": "Midwest dealer",
+   "prev_as_of": "2026-07-20"
   },
   {
    "name": "MAP + Sulfur",
@@ -30,7 +32,8 @@
    "prev": 930,
    "unit": "$/ton",
    "as_of": "2026-09-01",
-   "location": "Midwest dealer"
+   "location": "Midwest dealer",
+   "prev_as_of": "2026-07-20"
   },
   {
    "name": "Amm. Sulfate",
@@ -40,7 +43,8 @@
    "prev": 580,
    "unit": "$/ton",
    "as_of": "2026-09-01",
-   "location": "Midwest dealer"
+   "location": "Midwest dealer",
+   "prev_as_of": "2026-07-20"
   },
   {
    "name": "K-Mag Premium",
@@ -50,7 +54,8 @@
    "prev": 650,
    "unit": "$/ton",
    "as_of": "2026-07-20",
-   "location": "Midwest dealer"
+   "location": "Midwest dealer",
+   "prev_as_of": "2026-06-08"
   },
   {
    "name": "Pell Lime",
@@ -60,7 +65,8 @@
    "prev": 285,
    "unit": "$/ton",
    "as_of": "2026-07-20",
-   "location": "Midwest dealer"
+   "location": "Midwest dealer",
+   "prev_as_of": "2026-06-08"
   }
  ]
 }

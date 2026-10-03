@@ -4,8 +4,11 @@ name: Dairy prices
 # Source: USDA AMS "Announcement of Class and Component Prices" (posted about the
 # 5th) plus the NASS all-milk price. No CME, no Barchart.
 #
-# The monthly cron covers days 3-9 so the announcement is caught whichever day it
-# posts; the weekly one is a catch-up. The script is idempotent: a re-run with
+# AMS announces last month's class prices on or before the 5th (7 CFR 1000.53);
+# August 2026 posted Sep 2. The old window, days 3-9 once a day, missed an
+# announcement on the 1st or 2nd until the 3rd and depended on one scheduled run
+# that GitHub can delay or drop. Now: twice a day on days 1-9, once on 28-31,
+# plus the weekly catch-up. The script is idempotent: a re-run with
 # nothing new commits nothing.
 #
 # FIRST RUN: dispatch this once with "probe" ticked. It saves what the AMS and
@@ -20,7 +23,9 @@ on:
         type: boolean
         default: false
   schedule:
-    - cron: '37 15 3-9 * *'   # monthly window, days 3-9
+    - cron: '37 15 1-9 * *'     # announcement window, days 1-9, morning
+    - cron: '37 21 1-9 * *'     # and afternoon
+    - cron: '37 15 28-31 * *'   # an early announcement at month end
     - cron: '11 14 * * 2'     # weekly catch-up, Tuesdays
 
 permissions:

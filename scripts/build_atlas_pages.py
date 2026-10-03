@@ -1355,7 +1355,9 @@ def state_page(W, st):
             return True
         v = sorted(x for x in (W.m(key, f) for f in pool if keep(f)) if x is not None)
         n = len(v)
-        return None if n < 3 else (v[(n - 1) // 2] if n % 2 else (v[n // 2 - 1] + v[n // 2]) / 2), n
+        # the same counties give the median, the low and the high (the homepage prints all three)
+        return (None if n < 3 else (v[(n - 1) // 2] if n % 2 else (v[n // 2 - 1] + v[n // 2]) / 2), n,
+                v[0] if n >= 3 else None, v[-1] if n >= 3 else None)
 
     rows = ""
     for f in fs:
@@ -1372,8 +1374,9 @@ def state_page(W, st):
     smed = {}
     for label, key_, fm in (("Median dry cash rent", "rent", money), ("Median land and buildings, %s census" % get(W.atlas, "national", "value", "year"), "value", money),
                             ("Median corn yield", "yld", f1), ("Median claims per $100 of coverage", "cost", usd2)):
-        m, n = med(key_)
+        m, n, lo, hi = med(key_)
         smed[key_] = m
+        smed[key_ + "_n"], smed[key_ + "_lo"], smed[key_ + "_hi"] = (n, lo, hi) if m is not None else (None, None, None)
         why_ = {"rent": ", %s survey" % W.rent_latest, "value": ", value not flagged", "yld": ", 15+ published years"}.get(key_, "")
         facts += fact(label, fm(m) if m is not None else "—", ("median of %d counties with 10,000+ farm acres%s" % (n, why_)) if m is not None else "too few counties to give a median")
     crumb_vis, crumb_ld = crumbs([("AGSIST", "/"), ("Farmland Atlas", "/farmland-atlas"), ("By state", f"/{OUT}/states/"), (stn, None)])
@@ -1437,7 +1440,8 @@ var t=document.getElementById('t'),b=t.tBodies[0],dir={{}};
                      "spatialCoverage": {"@type": "Place", "name": "%s, United States" % stn},
                      "distribution": [{"@type": "DataDownload", "encodingFormat": "text/csv", "contentUrl": f"{SITE}/{OUT}/data/{st.lower()}.csv"}]}]
     sk = card_key(CARD_V, stn, len(fs), *[smed.get(k_) for k_ in ("rent", "value", "yld", "cost")])
-    W.cards["states"][st] = {"n": stn, "cnt": len(fs), "r": smed.get("rent"), "v": smed.get("value"), "y": smed.get("yld"), "c": smed.get("cost"), "k": sk}
+    W.cards["states"][st] = {"n": stn, "cnt": len(fs), "r": smed.get("rent"), "v": smed.get("value"), "y": smed.get("yld"), "c": smed.get("cost"), "k": sk,
+                           "rn": smed.get("rent_n"), "rl": smed.get("rent_lo"), "rh": smed.get("rent_hi"), "ry": W.rent_latest if smed.get("rent") is not None else None}
     return head(title, desc, url, ld, image="/%s/og/state-%s.png?v=%s" % (OUT, st.lower(), sk),
                 alt="%s farmland by county: median dry cash rent %s an acre across %d counties" % (stn, money(smed.get("rent")) if smed.get("rent") is not None else "not published", len(fs))) + body + FOOT
 
@@ -1711,6 +1715,16 @@ def selftest():
         for f in [f for f, c in W.C.items() if get(c, "value", "flag")][:5]:
             r = [x for x in rows if x[0] == f][0]
             check("flag withholds " + f, r[COLNAMES.index("value_cagr_pct")] == "" and r[COLNAMES.index("rent_to_value_pct")] == "")
+        # the homepage prints a state's median rent with its low and high: same counties, same survey year
+        cj = json.load(open(os.path.join(tmp, OUT, "data", "cards.json"), encoding="utf-8"))
+        sts = [s_ for s_ in cj["states"].values() if s_.get("r") is not None]
+        check("state rent range present", len(sts) >= 40)
+        check("state rent range brackets the median", all(s_["rl"] <= s_["r"] <= s_["rh"] and s_["rn"] >= 3 and s_["ry"] == cj["rent_latest"] for s_ in sts))
+        wi = cj["states"].get("WI")
+        if wi and wi.get("r") is not None:
+            pool_ = sorted(c["r"] for f_, c in cj["counties"].items() if c["st"] == "WI" and c["r"] is not None and c["ry"] == cj["rent_latest"]
+                           and W.mapped(f_) and W.is_farm(f_))
+            check("WI rent low/high are the county extremes", (wi["rl"], wi["rh"], wi["rn"]) == (pool_[0], pool_[-1], len(pool_)))
         check("sitemap", "<loc>%s/%s/data</loc>" % (SITE, OUT) in open(os.path.join(tmp, "sitemap-atlas.xml"), encoding="utf-8").read())
         # a second build over the first changes no byte: the stamp moves only with content
         before = open(os.path.join(tmp, W.path("19169")), "rb").read()

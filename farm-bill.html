@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<script>try{var t=localStorage.getItem('agsist-theme')||'dark';document.documentElement.setAttribute('data-theme',t);}catch(e){}</script>
+<script>try{var t=localStorage.getItem('agsist-theme');if(t!=='light'&&t!=='dark')t=window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.setAttribute('data-theme',t);}catch(e){}</script>
 <title>2026 Farm Bill: Status, House vs Senate &amp; the Money | AGSIST</title>
 <meta name="description" content="The 2026 Farm Bill in plain English: where it stands after the Sep 16 Senate committee vote, House vs Senate, and the Sep 30 deadline. Free, sources shown.">
 <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1">

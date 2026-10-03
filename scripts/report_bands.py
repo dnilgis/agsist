@@ -56,8 +56,28 @@ def band_for(metric_label):
     return IN_LINE_PCT_YIELD if any(w in label for w in YIELD_WORDS) else IN_LINE_PCT
 
 
-def surprise(expected, actual, metric_label=""):
+def _range(low, high):
+    """(lo, hi) when both bounds are usable numbers in order, else None."""
+    if low is None or high is None:
+        return None
+    try:
+        lo, hi = float(low), float(high)
+    except (TypeError, ValueError):
+        return None
+    return (lo, hi) if lo <= hi else None
+
+
+def surprise(expected, actual, metric_label="", low=None, high=None):
     """"bullish" | "bearish" | "in line" | "" — and "" means NOT COMPARABLE.
+
+    THE TRADE RANGE COMES FIRST (2026-10-03). When the survey's own low and high
+    are on file, a print outside them is the surprise and a print inside them is
+    not: some analyst on record expected that level. The September 2026 soybean
+    stocks print (0.315 against a 0.324 average, range 0.304-0.349) was called
+    "bullish, in range" because 2.8% under the average cleared the 2% band. That
+    told a reader two things at once. Inside the range there is no bullish or
+    bearish label now; describe() says which side of the average it fell.
+    Only when no range is on file does the percentage band below decide.
 
     A print BELOW the trade estimate is bullish (less supply than expected) and
     above it is bearish. That convention holds for ending stocks, production and
@@ -69,10 +89,42 @@ def surprise(expected, actual, metric_label=""):
     """
     if expected in (None, 0) or actual is None:
         return ""
+    rng = _range(low, high)
+    if rng:
+        if actual < rng[0]:
+            return "bullish"
+        if actual > rng[1]:
+            return "bearish"
+        return "in line"
     gap = (actual - expected) / abs(expected)
     if abs(gap) <= band_for(metric_label):
         return "in line"
     return "bullish" if actual < expected else "bearish"
+
+
+def describe(expected, actual, metric_label="", low=None, high=None):
+    """The words a card prints beside the grade. One function, so the homepage card
+    and What's Priced In cannot phrase the same print two ways.
+
+      outside the range -> "below the trade range, bullish" / "above the trade range, bearish"
+      inside the range  -> "below average, inside the range" (no bullish or bearish word)
+      no range on file  -> the band's verdict: "bullish" / "bearish" / "in line"
+      nothing to grade  -> "no trade estimate" / "not printed yet"
+    """
+    if actual is None:
+        return "not printed yet"
+    if expected in (None, 0):
+        return "no trade estimate"
+    v = surprise(expected, actual, metric_label, low, high)
+    rng = _range(low, high)
+    if not rng:
+        return v
+    if v == "bullish":
+        return "below the trade range, bullish"
+    if v == "bearish":
+        return "above the trade range, bearish"
+    side = "below average" if actual < expected else "above average" if actual > expected else "at the average"
+    return side + ", inside the range"
 
 
 def gap_pct(expected, actual):
@@ -111,6 +163,38 @@ def _selftest():
     # June corn 25/26: 2.138 -> 2.145 is +0.33%, inside 2%.
     check(surprise(2.138, 2.145, "2025/26 corn ending stocks"), "in line",
           "corn stocks 2.138 -> 2.145 is in line")
+
+    print("\nthe trade range is graded first (2026-10-03)")
+    # September 2026 Grain Stocks, Pro Farmer survey published 2026-09-26.
+    # Soybeans: average 0.324, range 0.304-0.349, print 0.315. -2.8% clears the 2%
+    # band, but 0.315 is inside 0.304-0.349: some analyst expected it.
+    check(surprise(0.324, 0.315, "Soybean stocks, all positions, Sept 1", 0.304, 0.349), "in line",
+          "soy stocks 0.315 inside 0.304-0.349 is not bullish")
+    check(surprise(0.324, 0.315, "Soybean stocks, all positions, Sept 1"), "bullish",
+          "the same print with no range on file falls back to the 2% band")
+    check(describe(0.324, 0.315, "Soybean stocks, all positions, Sept 1", 0.304, 0.349), "below average, inside the range",
+          "and is described as below average, inside the range")
+    # Corn: average 1.918, range 1.843-2.005, print 2.095, above the top of the range.
+    check(surprise(1.918, 2.095, "Corn stocks, all positions, Sept 1", 1.843, 2.005), "bearish",
+          "corn stocks 2.095 above 2.005 is bearish")
+    check(describe(1.918, 2.095, "Corn stocks, all positions, Sept 1", 1.843, 2.005), "above the trade range, bearish",
+          "and says it cleared the range")
+    # A print under the low end: hand-made, 0.300 under 0.304.
+    check(describe(0.324, 0.300, "soy stocks", 0.304, 0.349), "below the trade range, bullish",
+          "a print under the low end is bullish")
+    # The ends of the range are inside it.
+    check(surprise(0.324, 0.349, "soy stocks", 0.304, 0.349), "in line", "the high end itself is inside")
+    check(describe(0.324, 0.330, "soy stocks", 0.304, 0.349), "above average, inside the range",
+          "above average inside the range carries no bearish word")
+    # Inside the range wins over the tight yield band too: 182.0 -> 180.7 is 0.7%,
+    # outside 0.5%, but a hand-made range 179-185 contains it.
+    check(surprise(182.0, 180.7, "2026/27 corn yield", 179.0, 185.0), "in line",
+          "a yield inside its range is not bullish either")
+    # A half range or a reversed range is no range: the band decides.
+    check(surprise(182.0, 180.7, "2026/27 corn yield", 179.0, None), "bullish", "a missing high end means no range")
+    check(surprise(182.0, 180.7, "2026/27 corn yield", 185.0, 179.0), "bullish", "a reversed range is ignored")
+    check(describe(None, 1.846, "Wheat stocks", None, None), "no trade estimate", "wheat stocks with no estimate say so")
+    check(describe(0.324, None, "soy stocks", 0.304, 0.349), "not printed yet", "an unreleased print says so")
 
     print("\nno estimate is not the same as no surprise")
     check(surprise(None, 180.7, "2026/27 corn yield"), "",

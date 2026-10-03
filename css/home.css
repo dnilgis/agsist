@@ -1813,6 +1813,37 @@ details.wr>summary,details.hbz>summary{align-items:center!important}
 .pdw-ft{font-size:.824rem;color:var(--text-muted);line-height:1.5;margin:.55rem 0 0}
 .pdw-ft a{color:var(--brand)}
 
+/* ===== WAVE1-E: small fixes and presentation (2026-10-03) */
+/* The Read: the bar's ends name what the dot measures. */
+#f-read .r7-scale{display:flex;justify-content:space-between;gap:8px;margin:2px 0 0;line-height:1.3}
+#f-read .r7-scale span:nth-child(2){text-align:center;min-width:0}
+/* Layout shift: bids-homepage.js swaps the reserved skeleton for its own
+   loading rows (no .bids-skeleton class), and the box fell from 820px to 122px
+   and back. Hold the same height for that placeholder. */
+html.has-zip #bids-list-area:has(>[aria-label="Loading cash bids"]){min-height:820px}
+@media(min-width:901px){html.has-zip #bids-list-area:has(>[aria-label="Loading cash bids"]){min-height:760px}}
+/* Daily teaser on a phone: the date badge pushed "Read" to a second line once
+   the briefing loaded, and the preview grew from one line to three. Put the
+   action on its own line from the start and hold three lines of preview. */
+@media(max-width:700px){
+  .teaser-line1 .teaser-action{flex:0 0 100%}
+  #daily-teaser-text{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;overflow:hidden;line-height:1.45;min-height:4.35em}
+}
+/* Month grid: five columns left four of them about 89px at 1024. */
+@media(min-width:901px) and (max-width:1239px){
+  .s7-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+  .s7-c.s7-wide{grid-column:1/-1}
+}
+/* Ticker pause button. Reduced motion stops the track, so the button goes too. */
+.ticker-pause{flex:none;align-self:stretch;min-width:56px;padding:0 .7rem;background:var(--surface2);color:var(--text-dim);border:0;border-left:1px solid var(--border);font:600 .706rem/1 'JetBrains Mono',monospace;letter-spacing:.06em;text-transform:uppercase;cursor:pointer}
+.ticker-pause:hover,.ticker-pause:focus-visible{color:var(--text)}
+.ticker-pause:focus-visible{outline:2px solid var(--gold);outline-offset:-2px}
+html.ticker-paused .ticker-track{animation-play-state:paused!important}
+@media(prefers-reduced-motion:reduce){.ticker-pause{display:none}}
+/* Fertilizer: the date each change is measured from, and the 30-day flag. */
+#fert-grid .r7-fs{display:block;font-size:.706rem;font-weight:500;color:var(--text-muted);white-space:normal}
+#fert-widget .fert-full-link{white-space:nowrap;flex:none}
+
 /* ===== THE LOOK (2026-10-03) ==========================================
    Sig: "lots of still monotone and hard to differentiate one thing from
    another". Every top-level section belongs to a family, and the page

@@ -1035,6 +1035,11 @@
     function idxLong(i){return MONL[i%12]+' '+Math.floor(i/12);}
     function idxShort(i){return MONS[i%12]+' '+Math.floor(i/12);}
     var now=new Date(), nowIdx=now.getUTCFullYear()*12+now.getUTCMonth();
+    // wave1-E: last month's class prices are announced on or before the 5th
+    // (7 CFR 1000.53). Until the 6th, the month before that is still the newest
+    // one that has to exist, so it is current, not stale. This blanked the whole
+    // class block on Oct 1-5 while August was the newest announcement there was.
+    var clsDue=nowIdx-(now.getUTCDate()>5?1:2);
     function cwt(v){return '$'+v.toFixed(2);}
     function sg(v,dp){var r=Number(v.toFixed(dp));return (r>0?'+':r<0?MINUS:'')+'$'+Math.abs(r).toFixed(dp);}
     function arr(v){var r=Number(v.toFixed(4));return r>0?'▲':r<0?'▼':'–';}
@@ -1091,12 +1096,12 @@
 
     // ---- the class / component / product blocks ----
     function classBlock(d){
-      var seedStale=isFinite(seedIdx)&&seedIdx<nowIdx-1;
+      var seedStale=isFinite(seedIdx)&&seedIdx<clsDue;
       var updBad=!!(d&&d.updated!=null&&!isFinite(Date.parse(d.updated)));
       var ages=d&&d.updated?(Date.now()-Date.parse(d.updated))/864e5:NaN;
       var fIdx=d?(isFinite(keyIdx(d.class_month_key))?keyIdx(d.class_month_key):labelIdx(d.class_month)):NaN;
       var hasCls=d&&(pos(d.class3)||pos(d.class4)||pos(d.class2));
-      var fStale=!hasCls||!isFinite(fIdx)||fIdx<nowIdx-1||fIdx>nowIdx||updBad||(isFinite(ages)&&(ages>45||ages<-1))||(d.status&&d.status.class==='failed');
+      var fStale=!hasCls||!isFinite(fIdx)||fIdx<clsDue||fIdx>nowIdx||updBad||(isFinite(ages)&&(ages>45||ages<-1))||(d.status&&d.status.class==='failed');
       var useFeed=hasCls&&!fStale&&(!isFinite(seedIdx)||fIdx>=seedIdx);
       if(!useFeed){
         // feed absent, older than the seed, or too old: the dated seed stays, unless the clock makes it stale too
