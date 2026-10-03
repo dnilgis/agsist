@@ -69,6 +69,28 @@ def month_settlements(ticker, year, month):
     return out
 
 
+def with_running_avg(series):
+    """Stamp each settle with the running average through that day ("a"),
+    rounded to the cent like the headline figure. The last one IS the
+    running average. The homepage matches RMA's posted average against these
+    to say how many settles RMA's figure holds."""
+    tot = 0.0
+    for i, p in enumerate(series):
+        tot += p["s"]
+        p["a"] = round(tot / (i + 1), 2)
+    return series
+
+
+def selftest():
+    s = with_running_avg([{"d": "2026-10-01", "s": 5.0225}, {"d": "2026-10-02", "s": 4.9725}])
+    assert [p["a"] for p in s] == [5.02, 5.0], s
+    # the last stamp equals the old one-shot formula
+    t = [{"d": str(i), "s": v} for i, v in enumerate([12.84, 12.7725, 12.9, 13.0125])]
+    assert with_running_avg(t)[-1]["a"] == round(sum(p["s"] for p in t) / len(t), 2)
+    print("selftest ok")
+    return 0
+
+
 def month_over(year, month, today):
     return today > date(year, month, calendar.monthrange(year, month)[1])
 
@@ -83,7 +105,8 @@ def update_leg(commodity, leg_name, month, crop_year, today):
         return False
     ticker = contract_ticker(commodity)
     series = month_settlements(ticker, disc_year, month)
-    avg = round(sum(p["s"] for p in series) / len(series), 2)
+    with_running_avg(series)
+    avg = series[-1]["a"]
     changed = (series != leg.get("series") or leg.get("status") == "pending")
     leg["series"] = series
     leg["days_counted"] = len(series)
@@ -191,4 +214,4 @@ def main():
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    sys.exit(selftest() if "--selftest" in sys.argv else main())
