@@ -831,24 +831,6 @@ body{--sp-md:.6rem;--sp-lg:.85rem;--sp-xl:1.1rem;--sp-2xl:1.5rem}
 .idx1-zone-label small{font-weight:600;letter-spacing:0;text-transform:none;opacity:.7;font-size:.85em}
 .visually-hidden{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}
 fieldset.visually-hidden{border:0;margin:0;padding:0;min-width:0}
-/* "I raise" toggle -- see the fieldset's own comment for why it lives where
-   it does. Underline tabs, not pills: matches how the rest of the page
-   marks state (hairlines), not generic component-library chrome. */
-.idx1-raise-toggle{display:flex;align-items:baseline;gap:.9rem;margin-bottom:.6rem;flex-wrap:wrap;border-bottom:1px solid var(--border);padding-bottom:.5rem;min-width:0}
-.idx1-raise-toggle span{font-family:'JetBrains Mono',monospace;font-size:.706rem;color:var(--text-muted);letter-spacing:.1em}
-.idx1-raise-toggle label{cursor:pointer;padding:.15rem 0 .35rem;font-size:.824rem;color:var(--text-muted);border-bottom:2px solid transparent}
-fieldset:has(#i-raise-crops:checked) ~ * .idx1-raise-toggle label[for="i-raise-crops"],
-fieldset:has(#i-raise-cattle:checked) ~ * .idx1-raise-toggle label[for="i-raise-cattle"],
-fieldset:has(#i-raise-mixed:checked) ~ * .idx1-raise-toggle label[for="i-raise-mixed"]{color:var(--text);border-bottom-color:var(--blue)}
-fieldset:has(#i-raise-crops:focus-visible) ~ * label[for="i-raise-crops"],
-fieldset:has(#i-raise-cattle:focus-visible) ~ * label[for="i-raise-cattle"],
-fieldset:has(#i-raise-mixed:focus-visible) ~ * label[for="i-raise-mixed"]{outline:2px solid var(--blue);outline-offset:2px}
-fieldset:has(#i-raise-cattle:checked) ~ * .cot-row-cattle,
-fieldset:has(#i-raise-mixed:checked) ~ * .cot-row-cattle{order:-1;box-shadow:0 0 0 1px var(--green) inset;border-radius:8px}
-fieldset:has(#i-raise-cattle:checked) ~ * .cot-rows::before{content:'Showing Cattle first';display:block;order:-2;font-size:.706rem;color:var(--green);margin-bottom:.3rem}
-fieldset:has(#i-raise-mixed:checked) ~ * .cot-rows::before{content:'Cattle pinned, crops still shown';display:block;order:-2;font-size:.706rem;color:var(--green);margin-bottom:.3rem}
-fieldset:has(#i-raise-cattle:checked) ~ * #nowcast-widget{display:none}
-fieldset:has(#i-raise-cattle:checked) ~ * .idx1-nowcast-na{display:block!important}
 .idx1-extras-card .idx1-extras-title{margin-top:16px}
 #idx1-trust-ledger{font-family:'JetBrains Mono',monospace;font-size:.706rem;color:var(--text-muted);font-weight:400;margin-top:8px;text-align:left;padding:8px 0 0;border-top:1px solid var(--border)}
 /* ===== 2026-09-30: secondary bar under the real global header -- ZIP
@@ -1896,6 +1878,39 @@ html.ticker-paused .ticker-track{animation-play-state:paused!important}
 #fert-grid .r7-fs{display:block;font-size:.706rem;font-weight:500;color:var(--text-muted);white-space:normal}
 #fert-widget .fert-full-link{white-space:nowrap;flex:none}
 
+/* ===== WAVE2-F: "What do you raise?" picker */
+.pk-btn{cursor:pointer}
+.pk-btn .idx1-zip-val:empty{display:none}
+.pk-btn[aria-expanded="true"] .idx1-zip-change{color:var(--text)}
+.pk-btn:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+.pk-panel{box-sizing:border-box;width:100%;padding:12px 16px 14px;background:var(--surface);border-bottom:1px solid var(--border)}
+.pk-panel[hidden]{display:none}
+.pk-fs{border:0;margin:0 auto;padding:0;min-width:0;max-width:1400px}
+.pk-lg{padding:0;font-size:.941rem;font-weight:700;color:var(--text)}
+.pk-hint{margin:2px 0 10px;font-size:.824rem;color:var(--text-muted)}
+.pk-g{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px;padding:6px 0;border-top:1px solid var(--border)}
+.pk-gk{flex:0 0 180px;font-family:'JetBrains Mono',monospace;font-size:.706rem;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted)}
+.pk-opts{display:flex;flex-wrap:wrap;gap:4px 6px;min-width:0;flex:1 1 300px}
+.pk-o{display:inline-flex;align-items:center;gap:6px;min-height:36px;padding:0 12px 0 8px;border:1px solid var(--border);border-radius:999px;font-size:.824rem;color:var(--text-dim);cursor:pointer;user-select:none}
+.pk-o input{margin:0;width:16px;height:16px;accent-color:var(--gold);cursor:pointer}
+.pk-o:has(input:checked){border-color:var(--gold);color:var(--text)}
+.pk-o:has(input:focus-visible){outline:2px solid var(--blue);outline-offset:2px}
+.pk-act{display:flex;gap:8px;padding-top:10px;border-top:1px solid var(--border)}
+.pk-act button{min-height:36px;padding:0 16px;border-radius:6px;font-size:.824rem;font-weight:700;cursor:pointer}
+.pk-done{background:var(--gold);color:#0a0c0d;border:1px solid var(--gold)}
+.pk-clear{background:none;color:var(--text-dim);border:1px solid var(--border)}
+.pk-act button:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+#s7-grid>.s7-c.pk-off{display:none!important}
+.pk-led-lead{display:block!important}
+/* Phone: the ZIP bar is hidden, but the picker stays, alone on that row. */
+@media(max-width:600px){
+  body .idx1-subbar{display:flex!important}
+  body .idx1-subbar>.idx1-zip-chip:not(.pk-btn){display:none!important}
+  .pk-btn{min-height:44px;white-space:normal;text-align:left;flex:1 1 auto!important}
+  .pk-o{min-height:44px}
+  .pk-act button{min-height:44px}
+  .pk-gk{flex-basis:100%}
+}
 /* ===== THE LOOK (2026-10-03) ==========================================
    Sig: "lots of still monotone and hard to differentiate one thing from
    another". Every top-level section belongs to a family, and the page
