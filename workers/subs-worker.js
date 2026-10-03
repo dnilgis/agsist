@@ -1,4 +1,21 @@
 /**
+ * v5.3 (2026-10-03): ALERT OPTIONS ON A WATCHED ELEVATOR. Same ewatch: keys,
+ *   same routes, same cap of 5 per address. A subscribe may now carry `kind`:
+ *     any    the posted corn basis changes (the v5.1 watch; also what a body
+ *            with no `kind` means, so the older page keeps working unchanged)
+ *     cash   a cash price reaches a target: {ewid, crop, period, plabel,
+ *            direction above|below, target_cents 100..3200}
+ *     basis  a basis reaches a target: same fields, target_cents -300..300
+ *     move   a basis moves at least move_cents (1..100) from the last email
+ *   `wid` stays the alert's own id (the key under pend/w); `ewid` is the
+ *   elevator+crop hash the sender looks up (same FNV-1a as the v5.1 wid).
+ *   cash and basis are one-shot: the sender marks {fired:true} and the alert
+ *   is removed. move and any re-arm: the sender records the new level.
+ *   GET /elevator-watch-options   {ok, kinds, crops, max}. The page asks this
+ *     first and offers only "any change" when it fails, so the page works the
+ *     same before and after this worker is deployed.
+ *   /elevator-watch-mark keeps every option field when it records a level.
+ *
  * v5.2 (2026-10-01): WATCH A PRICE TARGET (futures). Double opt-in, same
  *   shape as WATCH AN ELEVATOR and WATCH A COUNTY below -- a third parallel
  *   system, not merged into either, for the same reason: the other two
@@ -379,6 +396,49 @@ export default {
     // side and sends the human-readable label along with it, so this worker
     // never has to parse a facility name out of a URL.
     const EWATCH_MAX = 5, EPEND_TTL = 14 * 864e5;
+    // v5.3 alert options. The crops are the card's own crop keys
+    // (merged-index.json `now`), the ranges are the card's per-bushel band
+    // ($1 to $32, components/bids-homepage.js PPU_BAND) and a basis range wide
+    // enough for any posted board. Anything else is refused, never coerced.
+    const EKINDS = ["any", "cash", "basis", "move"];
+    const ECROPS = ["corn", "soybeans", "wheat", "sorghum", "oats"];
+    const EOPT_FIELDS = ["kind", "ewid", "crop", "period", "plabel", "direction", "target_cents", "move_cents"];
+    function eOpts(rec) {
+      const o = {};
+      for (const f of EOPT_FIELDS) if (rec && rec[f] !== undefined) o[f] = rec[f];
+      return o;
+    }
+    function eValidate(b) {
+      const kind = (b.kind === undefined || b.kind === null || b.kind === "") ? "any" : String(b.kind).trim().toLowerCase();
+      if (!EKINDS.includes(kind)) return { error: "invalid kind" };
+      if (kind === "any") return { opt: {} };
+      const ewid = String(b.ewid || "").trim().toLowerCase();
+      const crop = String(b.crop || "").trim().toLowerCase();
+      const period = String(b.period || "").trim().toLowerCase();
+      const plabel = String(b.plabel || "").trim();
+      if (!/^[a-f0-9]{8,16}$/.test(ewid)) return { error: "invalid elevator id" };
+      if (!ECROPS.includes(crop)) return { error: "invalid crop" };
+      if (!/^[a-z0-9][a-z0-9\/-]{1,23}$/.test(period)) return { error: "invalid period" };
+      if (!plabel || plabel.length > 40) return { error: "invalid period label" };
+      const opt = { kind, ewid, crop, period, plabel };
+      if (kind === "move") {
+        const n = b.move_cents;
+        if (!Number.isInteger(n) || n < 1 || n > 100) return { error: "invalid move" };
+        opt.move_cents = n;
+      } else {
+        const direction = String(b.direction || "").trim().toLowerCase();
+        if (direction !== "above" && direction !== "below") return { error: "invalid direction" };
+        const t = b.target_cents;
+        const lo = kind === "cash" ? 100 : -300, hi = kind === "cash" ? 3200 : 300;
+        if (!Number.isInteger(t) || t < lo || t > hi) return { error: "invalid target" };
+        opt.direction = direction; opt.target_cents = t;
+      }
+      return { opt };
+    }
+
+    if (path === "/elevator-watch-options" && req.method === "GET") {
+      return json({ ok: true, kinds: EKINDS, crops: ECROPS, max: EWATCH_MAX }, 200, cors(req));
+    }
     async function getEWatch(e) {
       const v = await env.SUBS.get("ewatch:" + e);
       const r = v ? JSON.parse(v) : {};
@@ -403,6 +463,8 @@ export default {
         return json({ ok: false, error: "invalid elevator id" }, 400, cors(req));
       if (!label)
         return json({ ok: false, error: "invalid label" }, 400, cors(req));
+      const ev = eValidate(b);
+      if (ev.error) return json({ ok: false, error: ev.error }, 400, cors(req));
       const r = await getEWatch(email);
       const now = Date.now();
       for (const w of Object.keys(r.pend)) if (now - r.pend[w].ts > EPEND_TTL) delete r.pend[w];
@@ -411,7 +473,7 @@ export default {
       if (!(wid in r.w) && !(wid in r.pend)) {
         if (Object.keys(r.w).length + Object.keys(r.pend).length >= EWATCH_MAX)
           return json({ ok: false, error: "limit" }, 429, cors(req));
-        r.pend[wid] = { ts: now, m: 0, label };
+        r.pend[wid] = Object.assign({ ts: now, m: 0, label }, ev.opt);
         await putEWatch(email, r);
       }
       return json({ ok: true }, 200, cors(req));
@@ -441,10 +503,15 @@ export default {
         if (conf) {
           if (!(w in r.pend)) return htmlPage("This confirmation link has expired. Ask to watch it again on the elevator's bid card.");
           const pendLabel = r.pend[w].label;
+          const opt = eOpts(r.pend[w]);
           delete r.pend[w];
-          r.w[w] = { label: pendLabel, k: null, s: null };   // the sender records the baseline basis on its next run
+          r.w[w] = Object.assign(opt, { label: pendLabel, k: null, s: null });   // the sender records the baseline on its next run
           await putEWatch(e, r);
-          return htmlPage("You are watching " + escHtml(pendLabel) + ". You will get an email when its posted basis changes.");
+          const kind = opt.kind || "any";
+          return htmlPage("You are watching " + escHtml(pendLabel) + ". " + (
+            kind === "move" ? "You will get an email each time a new posting moves the basis " + opt.move_cents + "\u00a2 or more from the last email." :
+            kind === "cash" || kind === "basis" ? "You will get one email when a new posting reaches your target. Then the alert clears itself." :
+            "You will get an email when its posted basis changes."));
         }
         if (w) { delete r.pend[w]; delete r.w[w]; } else { r.pend = {}; r.w = {}; }
         await putEWatch(e, r);
@@ -473,9 +540,14 @@ export default {
       if (b.confirm_mailed) {
         if (!(wid in r.pend)) return json({ ok: true, skipped: true });
         r.pend[wid].m = 1;
+      } else if (b.fired) {
+        // v5.3 one-shot target: the sender already mailed the hit, so it is removed, never re-armed.
+        if (!(wid in r.w)) return json({ ok: true, skipped: true });   // unsubscribed while the job ran
+        delete r.w[wid];
       } else {
         if (!(wid in r.w)) return json({ ok: true, skipped: true });   // unsubscribed while the job ran
-        r.w[wid] = { label: (r.w[wid] && r.w[wid].label) || String(b.label || ""), k: String(b.k || ""), s: b.s || {} };
+        // v5.3: keep the alert's option fields; only the recorded level changes.
+        r.w[wid] = Object.assign(eOpts(r.w[wid]), { label: (r.w[wid] && r.w[wid].label) || String(b.label || ""), k: String(b.k || ""), s: b.s || {} });
       }
       await putEWatch(email, r);
       return json({ ok: true });

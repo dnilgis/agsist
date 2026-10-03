@@ -1911,6 +1911,12 @@ html.ticker-paused .ticker-track{animation-play-state:paused!important}
   .pk-act button{min-height:44px}
   .pk-gk{flex-basis:100%}
 }
+/* ===== WAVE2-G: elevator alert form */
+/* The closed "Watch this elevator" link sits top-right of the elevator (r10).
+   The open form needs the card's full width, so it drops back into the flow. */
+#bids-list-area .watch-elevator-wrap.we-open{position:static!important;margin:.4rem 0 .2rem!important;width:100%}
+#bids-list-area .we-form select,#bids-list-area .we-form input{max-width:100%}
+
 /* ===== THE LOOK (2026-10-03) ==========================================
    Sig: "lots of still monotone and hard to differentiate one thing from
    another". Every top-level section belongs to a family, and the page

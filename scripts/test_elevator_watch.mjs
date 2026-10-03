@@ -90,4 +90,91 @@ A(r.status == 200 && store.has('watch:c@x.com'), 'county watch v5.0 still works,
 r = await call('/subscribe', 'POST', { email: 'd@x.com' });
 A(store.has('sub:d@x.com'), 'v4 subscribe still works');
 
+// ---------- v5.3 alert options ----------
+r = await call('/elevator-watch-options');
+let O = await r.json();
+A(r.status == 200 && O.ok && O.kinds.join() === 'any,cash,basis,move' && O.max === 5, 'options route lists the kinds');
+A(r.headers.get('Access-Control-Allow-Origin') === 'https://agsist.com', 'options route answers the page (CORS)');
+
+const EW = 'e1e2e3e4', AID = 'f0f1f2f3';
+const CASH = { email: 'o@x.com', wid: AID, label: 'Adell Cooperative, Adell, WI — corn Oct 2026 cash at or above $4.50',
+  kind: 'cash', ewid: EW, crop: 'corn', period: '2026-10', plabel: 'Oct 2026', direction: 'above', target_cents: 450 };
+// Each refusal must be for its own reason: the error is checked, so a body
+// refused for some other field cannot pass as a test of this one.
+const bad = async (patch, why, err) => {
+  const before = store.get('ewatch:o@x.com');
+  const rr = await call('/elevator-watch-subscribe', 'POST', Object.assign({}, CASH, patch));
+  A(rr.status == 400, 'refused: ' + why);
+  A((await rr.json()).error === err, 'refused for the right reason: ' + why);
+  A(store.get('ewatch:o@x.com') === before, 'nothing stored: ' + why);
+};
+await bad({ kind: 'sideways', target_cents: 50 }, 'unknown kind', 'invalid kind');
+await bad({ ewid: 'zz' }, 'bad elevator id', 'invalid elevator id');
+await bad({ crop: 'barley' }, 'crop the card does not show', 'invalid crop');
+await bad({ period: 'Oct 2026!' }, 'bad period key', 'invalid period');
+await bad({ plabel: '' }, 'empty period label', 'invalid period label');
+await bad({ direction: 'sideways' }, 'bad direction', 'invalid direction');
+await bad({ target_cents: 99 }, 'cash under $1', 'invalid target');
+await bad({ target_cents: 3201 }, 'cash over $32', 'invalid target');
+await bad({ target_cents: 450.5 }, 'fractional cents', 'invalid target');
+await bad({ target_cents: '450' }, 'cents sent as a string', 'invalid target');
+await bad({ kind: 'basis', target_cents: -301 }, 'basis under -300', 'invalid target');
+await bad({ kind: 'basis', target_cents: 301 }, 'basis over +300', 'invalid target');
+await bad({ kind: 'move', move_cents: 0 }, 'move of 0', 'invalid move');
+await bad({ kind: 'move', move_cents: 101 }, 'move over 100', 'invalid move');
+
+// edges that must pass
+r = await call('/elevator-watch-subscribe', 'POST', Object.assign({}, CASH, { target_cents: 100, wid: 'a0000001' }));
+A(r.status == 200, 'cash $1.00 is allowed');
+r = await call('/elevator-watch-subscribe', 'POST', Object.assign({}, CASH, { kind: 'basis', target_cents: -300, wid: 'a0000002' }));
+A(r.status == 200, 'basis -300 is allowed');
+r = await call('/elevator-watch-subscribe', 'POST', Object.assign({}, CASH, { kind: 'move', move_cents: 100, direction: undefined, target_cents: undefined, wid: 'a0000003' }));
+A(r.status == 200, 'move of 100 is allowed, no direction needed');
+rec = JSON.parse(store.get('ewatch:o@x.com'));
+A(rec.pend.a0000003.kind === 'move' && rec.pend.a0000003.move_cents === 100 && !('target_cents' in rec.pend.a0000003), 'move stores only its own fields');
+
+r = await call('/elevator-watch-subscribe', 'POST', CASH);
+A(r.status == 200, 'cash target subscribe');
+rec = JSON.parse(store.get('ewatch:o@x.com'));
+let P = rec.pend[AID];
+A(P.kind === 'cash' && P.ewid === EW && P.crop === 'corn' && P.period === '2026-10' && P.plabel === 'Oct 2026' && P.direction === 'above' && P.target_cents === 450 && P.m === 0, 'pending carries every option field');
+
+// per-address cap counts option alerts too: 4 pending now, one more fits, the sixth does not
+r = await call('/elevator-watch-subscribe', 'POST', Object.assign({}, CASH, { wid: 'a0000004' }));
+A(r.status == 200, 'fifth alert fits');
+r = await call('/elevator-watch-subscribe', 'POST', Object.assign({}, CASH, { wid: 'a0000005' }));
+A(r.status == 429, 'sixth alert refused: cap of 5 per address');
+
+// confirm keeps the options and says what it will do
+t = tok('o@x.com|ec|' + AID);
+r = await call(`/elevator-watch-confirm?e=o@x.com&w=${AID}&t=${t}`, 'POST');
+let ctext = await r.text();
+A(ctext.includes('one email when a new posting reaches your target'), 'confirm page says one-shot');
+rec = JSON.parse(store.get('ewatch:o@x.com'));
+A(rec.w[AID].kind === 'cash' && rec.w[AID].target_cents === 450 && rec.w[AID].k === null && rec.w[AID].label === CASH.label, 'confirmed alert keeps its options, baseline pending');
+
+// mark records a level and keeps the options
+r = await call('/elevator-watch-mark?token=tok', 'POST', { email: 'o@x.com', wid: AID, k: 'x', s: { pa: '2026-10-03T18:00:00Z', v: 436 } });
+rec = JSON.parse(store.get('ewatch:o@x.com'));
+A(rec.w[AID].kind === 'cash' && rec.w[AID].target_cents === 450 && rec.w[AID].s.v === 436 && rec.w[AID].k === 'x', 'mark keeps option fields');
+
+// fired removes a one-shot, and a second fired is skipped
+r = await call('/elevator-watch-mark?token=tok', 'POST', { email: 'o@x.com', wid: AID, fired: true });
+A((await r.json()).ok && !(AID in JSON.parse(store.get('ewatch:o@x.com')).w), 'fired removes the alert');
+r = await call('/elevator-watch-mark?token=tok', 'POST', { email: 'o@x.com', wid: AID, fired: true });
+A((await r.json()).skipped, 'fired twice is skipped');
+
+// move: confirm, mark (re-arm) keeps move_cents
+t = tok('o@x.com|ec|a0000003');
+r = await call(`/elevator-watch-confirm?e=o@x.com&w=a0000003&t=${t}`, 'POST');
+A((await r.text()).includes('100¢ or more'), 'move confirm page names the size');
+await call('/elevator-watch-mark?token=tok', 'POST', { email: 'o@x.com', wid: 'a0000003', k: 'y', s: { pa: 'p', v: -60 } });
+rec = JSON.parse(store.get('ewatch:o@x.com'));
+A(rec.w.a0000003.kind === 'move' && rec.w.a0000003.move_cents === 100 && rec.w.a0000003.s.v === -60, 're-armed move keeps its size');
+
+// the older page's body (no kind) is still the plain watch
+r = await call('/elevator-watch-subscribe', 'POST', { email: 'old@x.com', wid: WID, label: LABEL });
+P = JSON.parse(store.get('ewatch:old@x.com')).pend[WID];
+A(r.status == 200 && !('kind' in P) && Object.keys(P).sort().join() === 'label,m,ts', 'old page body stores exactly what v5.1 stored');
+
 console.log('elevator-watch worker ok', ok, 'checks');

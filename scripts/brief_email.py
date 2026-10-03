@@ -396,6 +396,22 @@ def watch_html(daily, limit=3):
               'cellspacing="0" border="0">%s</table></td></tr>' % "".join(items))
 
 
+def elevators_html(lines):
+    """WAVE2-G: the subscriber's own watched elevators, one line each, as
+    send_elevator_watch.daily_lines() wrote them from the posted boards.
+    Nothing here computes a figure. No lines, no block."""
+    if not lines:
+        return ""
+    rows = "".join('<tr><td style="padding:6px 0 0;font-family:%s;font-size:14px;line-height:1.5;'
+                   'color:%s" class="ink">%s</td></tr>' % (SANS, INK, e(x)) for x in lines)
+    note = ('<tr><td class="mute" style="padding:6px 0 0;font-family:%s;font-size:12px;line-height:1.5;'
+            'color:%s">The elevators\' own posted boards, read when this email was sent. Not a contract. '
+            'Call to confirm before you haul.</td></tr>' % (SANS, MUTE))
+    return (_label("Your elevators")
+            + '<tr><td><table role="presentation" width="100%%" cellpadding="0" '
+              'cellspacing="0" border="0">%s%s</table></td></tr>' % (rows, note))
+
+
 # ── the whole thing ────────────────────────────────────────────────────────
 DARK = """
 :root{color-scheme:light dark;supported-color-schemes:light dark}
@@ -546,7 +562,7 @@ def sponsor_block(daily):
     return "".join(parts)
 
 
-def render_html(daily, site_href, unsub_url=None, date_display=None):
+def render_html(daily, site_href, unsub_url=None, date_display=None, elevators=None):
     prior, prior_day = prior_board(daily)
     head = strip_md(daily.get("headline"))
     lead = strip_md(daily.get("lead"))
@@ -624,6 +640,10 @@ def render_html(daily, site_href, unsub_url=None, date_display=None):
     if watch:
         body.append(_rule())
         body.append(watch)
+    mine = elevators_html(elevators)
+    if mine:
+        body.append(_rule())
+        body.append(mine)
 
     # Outlook's Word engine throws away padding and background on an inline
     # <a>, so a styled anchor arrives there as a bare blue link. The button is
@@ -682,7 +702,7 @@ def render_html(daily, site_href, unsub_url=None, date_display=None):
 
 
 
-def render_text(daily, site, unsub_url=None, date_display=None):
+def render_text(daily, site, unsub_url=None, date_display=None, elevators=None):
     """The plain-text alternative, and it is not an afterthought.
 
     Some clients show it, some readers prefer it, and a multipart message with a
@@ -784,6 +804,9 @@ def render_text(daily, site, unsub_url=None, date_display=None):
         L += ["", "WHAT TO WATCH"]
         for w in wl:
             L.append("  %s: %s" % (strip_md(w.get("time")), strip_md(w.get("desc"))))
+    if elevators:
+        L += ["", "YOUR ELEVATORS"] + ["  " + x for x in elevators]
+        L.append("  The elevators' own posted boards, read when this email was sent. Not a contract.")
     L += ["", "Charts, calls and the full issue: " + site, "",
           "AGSIST, free US ag market intelligence, agsist.com"]
     L.append("Unsubscribe: " + unsub_url if unsub_url
