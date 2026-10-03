@@ -10,8 +10,8 @@ them the critic could not ask for the one thing the cut needs:
   drop_section_N  remove a whole section (weakest material goes, not mush)
   trim            shorten named fields; every replacement must be SHORTER
                   than what it replaces or it is refused
-Plus `action` (the one mandatory thresholded action). yesterdays_call
-rewrites touch the note only; the call line is printed from the record.
+v5.5 (2026-10-03): `action` is the prediction bot's line and read-only;
+yesterdays_call is retired. Neither is sent to the editor or rewritten.
 After any rewrite, briefing_cut.enforce_budget() runs, so the critic cannot
 push the briefing back over the ceiling it was asked to enforce. The review
 payload carries measured word counts per field, so the editor scores Rule 8
@@ -145,11 +145,11 @@ The briefing is SHORT by design: about 400 words, 450 is a hard ceiling. The rea
 
 6. QUIET DAYS QUIET. Manufactured drama on a flat day is a serious failure. Did the briefing match the tape?
 
-7. YESTERDAY'S CALL HONESTY. `outcome` is computed deterministically from the closing prices by the grader and is GROUND TRUTH — you may NOT change it. The call itself is printed from the record as `call_line`; you may not change that either. You judge the NOTE only: (a) it must be about the instrument in `computed.instrument`; (b) it must be honest about `computed.outcome` (a "didnt" note owns the miss; a "played_out" note is accurate, not self-serving); (c) it is ONE sentence, 25 words max, and does not restate the call. A note about a different market or a miss written as a win scores 1-3 with target `yesterdays_call`.
+7. NO PAST-CALL VERDICTS. The briefing no longer grades its own past calls (that block printed a wrong direction once and is retired). Any sentence that says a previous call "played out", "missed", "was right" or "was wrong" scores 1-3, with the field holding it as the target (`lead`, `section_index_N` or `trim`). Score 10 when there is none.
 
-8. THE WORD BUDGET — THE CUT. The draft comes with MEASURED word counts per field (`word_counts`) and the total. Caps: lead 55; section body 55; so_what 15; one_number.context 30; action 25; yesterdays_call.note 25; outside_the_pit body 30; watch item 20; sections 2-3; outside_the_pit exactly 1; watch_list exactly 3. Score 10 when the total is at or under 400 and every field is inside its cap. Any field over its cap scores below 7 and names `trim` as the target, listing the fields. A fourth section scores below 7 and names `drop_section_N` for the weakest one. A total over 450 scores below 5. The rewrite CUTS the weakest material; it never compresses good sentences into mush.
+8. THE WORD BUDGET — THE CUT. The draft comes with MEASURED word counts per field (`word_counts`) and the total. Caps: lead 55; section body 55; so_what 15; one_number.context 30; outside_the_pit body 30; watch item 20; sections 2-3; outside_the_pit exactly 1; watch_list exactly 3. Score 10 when the total is at or under 400 and every field is inside its cap. Any field over its cap scores below 7 and names `trim` as the target, listing the fields. A fourth section scores below 7 and names `drop_section_N` for the weakest one. A total over 450 scores below 5. The rewrite CUTS the weakest material; it never compresses good sentences into mush.
 
-9. VOICE — THE BIGGEST ONE. Does it sound like a working ag operator (imperative, embedded thesis, vocabulary like "the funds got lost", "basis is talking", "the chart's bluffing") or does it read like a Bloomberg/Reuters wire summary? Wire-neutral prose scores BELOW 5 here. This rule has the lowest tolerance for drift.
+9. VOICE — THE BIGGEST ONE. Does it sound like a working ag operator (plain, direct, embedded thesis, vocabulary like "the funds got lost", "basis is talking", "the chart's bluffing") or does it read like a Bloomberg/Reuters wire summary? Wire-neutral prose scores BELOW 5 here. This rule has the lowest tolerance for drift.
 
 ADDITIONAL VOICE FAILURES (auto score below 5 if any present):
   - "binary" / "binary level" / "binary week" / "binary support" — trader-tech jargon
@@ -168,11 +168,11 @@ ADDITIONAL VOICE FAILURES (auto score below 5 if any present):
   - "bloodbath" / "carnage" / "meltdown" / "rout" — never appropriate
   - "vaulted" / "leaped" (in price context) — drama
 
-CNBC DRAMA VERB PRINCIPLE: AGSIST is a Wisconsin crop insurance guy talking to working farmers. Big moves get described by size and rarity ("biggest day in three weeks"), not by drama verbs. Any drama verb found in lead, sections, action, or one_number context = auto Rule 9 below 5 = forced rewrite.
+CNBC DRAMA VERB PRINCIPLE: AGSIST is a Wisconsin crop insurance guy talking to working farmers. Big moves get described by size and rarity ("biggest day in three weeks"), not by drama verbs. Any drama verb found in lead, sections, or one_number context = auto Rule 9 below 5 = forced rewrite.
 
 10. THE FORWARD TEST. Would a working farmer forward this LEAD with one line of context to another farmer? If the lead is forgettable, score below 6. If it's the kind of line a producer would screenshot and text to a buddy, score 9-10.
 
-11. ONE ACTION, THRESHOLDED. `action` is mandatory on a weekday: one sentence, 25 words max, naming an instrument, a level in the locked-price units, and what a producer does at that level. Missing, a mood ("stay cautious"), or no number: score 1-3 with target `action`. A level that contradicts locked_prices (see Rule 13) also fails here.
+11. NO TRADE INSTRUCTIONS. The briefing explains the market; it never tells the reader to buy, sell, price, lock, book, hedge, hold, wait on, store or forward-contract anything (grain, livestock, fuel, inputs). "Lock diesel now" or "price 10% here" anywhere scores 1-3, with the field holding it as the target (`lead`, `section_index_N` or `trim`); the rewrite describes the level or the risk instead. The Action box is written by the prediction bot, by a machine, after this pass: it is not in the draft you see, you do not score it and you may not target it.
 
 12. ONE FACT, ONE HOME. Scan the whole briefing for the same stat, story, or forecast told more than once. A pointer of six words or fewer is fine; a re-explanation is not. Any fact substantively explained twice scores below 5 and the rewrite deletes the weaker telling (`trim`, or `drop_section_N` when a whole section is the duplicate). Also disqualifying: internal field names in reader prose ("the one_number today") and impossible stats ("102% of the 52-week range").
 
@@ -186,7 +186,7 @@ CNBC DRAMA VERB PRINCIPLE: AGSIST is a Wisconsin crop insurance guy talking to w
   Example failure: value="1.4%", unit="live cattle decline" but the context paragraph describes feeders dropping 1.4%. Score 1.
   Example pass: value="$795 million", unit="Brazilian beef exports to US in Q1". Score 9.
 
-15. MARKDOWN NOT HTML — INDIVIDUALLY DISQUALIFYING. Body fields (lead, section.body, action, etc.) must use **markdown** for emphasis, NEVER literal <strong>...</strong> or <em>...</em> HTML tags. If you find <strong> or <em> anywhere in body fields, score 1.
+15. MARKDOWN NOT HTML — INDIVIDUALLY DISQUALIFYING. Body fields (lead, section.body, etc.) must use **markdown** for emphasis, NEVER literal <strong>...</strong> or <em>...</em> HTML tags. If you find <strong> or <em> anywhere in body fields, score 1.
 
 16. MACRO EVENT ANCHORING. The first time a briefing in a week references an ongoing geopolitical or macro event (Iran tensions, Hormuz disruption, election cycle, Fed pivot, trade war, etc.), it must include a one-clause anchor that establishes what the event is and roughly when it began. Score 10 if no macro events referenced.
 
@@ -214,7 +214,7 @@ Return ONLY valid JSON in this exact shape, no markdown:
     "rule_16_macro_anchoring": 0
   },
   "weakest_rule": "rule_X_xxx",
-  "weakest_target": "lead | section_index_N | drop_section_N | trim | yesterdays_call | one_number | action",
+  "weakest_target": "lead | section_index_N | drop_section_N | trim | one_number",
   "rewrite_needed": true | false,
   "reasoning": "1-3 sentences explaining which rules failed and why.",
   "rewritten_content": null | { ... see below ... }
@@ -225,14 +225,12 @@ REWRITE FORMAT — only include when rewrite_needed is true:
 If weakest_target is "lead": rewritten_content = {"lead": "new lead text"}  (55 words max; last sentence states a consequence already true)
 If weakest_target is "section_index_N": rewritten_content = {"section_index": N, "section": {"title": "...", "body": "- ...\\n- ...", "so_what": "...", "conviction_level": "...", "overnight_surprise": false}}
 If weakest_target is "drop_section_N": rewritten_content = {"drop_section": N}  — the section is removed; nothing else changes. Never drop below 2 sections.
-If weakest_target is "trim": rewritten_content = {"trim": {"lead": "...", "sections": [{"index": N, "body": "...", "so_what": "..."}], "one_number_context": "...", "action": "...", "yesterdays_call_note": "...", "outside_the_pit_body": "...", "watch_list": [{"time": "...", "desc": "..."}, ...]}}  — include ONLY the fields you are shortening. Every replacement MUST be shorter than the original or it is refused. Cut sentences and bullets, do not compress them.
-If weakest_target is "yesterdays_call": rewritten_content = {"yesterdays_call": {"note": "..."}}  — note only. outcome and call_line are read-only.
+If weakest_target is "trim": rewritten_content = {"trim": {"lead": "...", "sections": [{"index": N, "body": "...", "so_what": "..."}], "one_number_context": "...", "outside_the_pit_body": "...", "watch_list": [{"time": "...", "desc": "..."}, ...]}}  — include ONLY the fields you are shortening. Every replacement MUST be shorter than the original or it is refused. Cut sentences and bullets, do not compress them.
 If weakest_target is "one_number": rewritten_content = {"one_number": {"value": "...", "unit": "...", "context": "..."}}
-If weakest_target is "action": rewritten_content = {"action": "..."}  (25 words max; instrument + level + what to do)
 
 REWRITE STANDARD — when you rewrite, the new content must:
 - Hit the rule that was failing.
-- Use the AGSIST voice. Imperative, embedded thesis, operator vocabulary. NO wire-service neutral.
+- Use the AGSIST voice. Plain, embedded thesis, operator vocabulary, no trade instructions (Rule 11). NO wire-service neutral.
 - Cite only prices, levels, and conditions present in the original briefing's data — do NOT invent new prices.
 - For Rule 13 rewrites: use locked_prices values directly. If close > level being claimed broken, soften "broke" to "tested" or "right back to". If close < level being claimed held, soften "held above" to "tested" or "fell through".
 - For Rule 15 rewrites: replace any literal <strong>...</strong> with **...** and any <em>...</em> with *...*.
@@ -246,7 +244,7 @@ REWRITE THRESHOLD: rewrite_needed = true if ANY of:
   - Rule 8 (word budget) alone scores below 7 — length is a product rule
   - Rule 9 (voice) alone scores below 5
   - Rule 10 (forward test) alone scores below 5
-  - Rule 11 (action) alone scores below 5 — a briefing without a thresholded action is not finished
+  - Rule 11 (no trade instructions) alone scores below 5 — a briefing that tells farmers what to trade is not finished
   - Rule 13 (level coherence) alone scores below 7 — factual contradictions are individually disqualifying
   - Rule 15 (markdown not HTML) alone scores below 7 — JSON cleanliness is individually disqualifying
 
@@ -281,8 +279,8 @@ def critique_briefing(briefing, threshold=7):
         "headline": briefing.get("headline", ""),
         "lead": briefing.get("lead", ""),
         "one_number": briefing.get("one_number", {}),
-        "yesterdays_call": briefing.get("yesterdays_call", {}),
-        "action": briefing.get("action", ""),
+        # v5.5: no action and no yesterdays_call in the review. The Action is
+        # the prediction bot's line, read-only; yesterday's call is retired.
         "sections": sections_compact,
         "outside_the_pit": briefing.get("outside_the_pit", []),
         "watch_list": briefing.get("watch_list", []),
@@ -364,7 +362,8 @@ def _normalize_section(sec):
 
 def apply_rewrite(briefing, critique):
     """Apply rewritten_content to the briefing. Returns (modified_briefing, applied_target).
-    v2.0: drop_section_N, trim and action targets; yesterdays_call is note-only.
+    v2.0: drop_section_N and trim targets. v5.5: action and yesterdays_call
+    are refused (the bot's line is read-only; yesterday's call is retired).
     Whatever was applied, briefing_cut.enforce_budget runs afterwards so a
     rewrite can never leave the briefing over the ceiling."""
     target = critique.get("weakest_target", "")
@@ -410,13 +409,14 @@ def apply_rewrite(briefing, critique):
                 refused.append(f"{label} ({briefing_cut.wc(old)}w -> {briefing_cut.wc(new) if isinstance(new, str) else '?'}w)")
 
         take("lead", briefing.get("lead"), t.get("lead"), lambda v: briefing.__setitem__("lead", v))
-        take("action", briefing.get("action"), t.get("action"), lambda v: briefing.__setitem__("action", v))
+        # v5.5: The Action is the prediction bot's line and yesterday's call
+        # is retired. A trim that names either is refused, never applied.
+        for _ro in ("action", "yesterdays_call_note"):
+            if t.get(_ro) is not None:
+                refused.append(f"{_ro} (read-only)")
         on = briefing.get("one_number")
         if isinstance(on, dict):
             take("one_number.context", on.get("context"), t.get("one_number_context"), lambda v: on.__setitem__("context", v))
-        yc = briefing.get("yesterdays_call")
-        if isinstance(yc, dict):
-            take("yesterdays_call.note", yc.get("note"), t.get("yesterdays_call_note"), lambda v: yc.__setitem__("note", v))
         otp = briefing.get("outside_the_pit") or []
         if otp and isinstance(otp[0], dict):
             take("outside_the_pit[0].body", otp[0].get("body"), t.get("outside_the_pit_body"), lambda v: otp[0].__setitem__("body", v))
@@ -448,27 +448,16 @@ def apply_rewrite(briefing, critique):
         if done:
             applied = "trim: " + ", ".join(done)
 
-    # yesterdays_call: the critic may rewrite the NOTE and nothing else.
-    # outcome, computed and call_line are owned by grade_calls.py — a price
-    # function, not the model. (The 2026-06-26 send was blocked when a critic
-    # relabeled 'didnt' -> 'played_out' and the gate re-graded it.)
-    elif target == "yesterdays_call" and rewritten.get("yesterdays_call"):
-        existing = briefing.get("yesterdays_call") or {}
-        merged = dict(existing)
-        v = rewritten["yesterdays_call"].get("note")
-        if v is not None:
-            merged["note"] = v
-        merged.pop("summary", None)
-        briefing["yesterdays_call"] = merged
-        applied = "yesterdays_call.note"
-
     elif target == "one_number" and rewritten.get("one_number"):
         briefing["one_number"] = rewritten["one_number"]
         applied = "one_number"
 
-    elif target == "action" and rewritten.get("action"):
-        briefing["action"] = rewritten["action"]
-        applied = "action"
+    # v5.5: "action" and "yesterdays_call" are not targets any more. The
+    # Action is the prediction bot's line, copied from data/predictions.json
+    # and checked against bot_call.text by daily_schema; yesterday's call is
+    # retired. A critique naming either is refused here, not applied.
+    elif target in ("action", "yesterdays_call"):
+        print(f"  [warn] rewrite target {target!r} refused: read-only since v5.5")
 
     if applied:
         briefing, cut_log = briefing_cut.enforce_budget(briefing)

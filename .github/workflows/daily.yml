@@ -324,10 +324,13 @@ jobs:
       # is scored against a LATER SESSION, never against the board it was made
       # from. 20 of 81 graded calls were scored that way until 2026-09-13 and
       # nothing was red, so the rule is pinned here, ahead of the generator.
-      - name: GATE 0c — trading calendar + call grader selftests
+      # 2026-10-03: the old call grader is archived with the old scorecard;
+      # the briefing's call now comes from the prediction bot, whose own
+      # selftests run in predictions.yml. The trading calendar stays pinned
+      # here because the generator's market-status check imports it.
+      - name: GATE 0c — trading calendar selftest
         run: |
           python scripts/contract_calendar.py
-          python scripts/test_grade_calls.py
 
       # v5.3: the board comparison the email and the gate both read. One
       # definition; the copies it replaced all let a moving bitcoin pass a
@@ -372,11 +375,12 @@ jobs:
           BRIEFING_MODEL: ${{ vars.BRIEFING_MODEL }}
         run: python scripts/generate_daily.py
 
-      # Grade yesterday's call deterministically (direction AND level) from the
-      # actual closes, overriding any LLM-assigned outcome — so the public scorecard
-      # can never show a miss as a win. Before the critic + GATE 2 so they see truth.
-      - name: Grade yesterday's call
-        run: python scripts/grade_calls.py data/daily.json
+      # "Grade yesterday's call" was removed 2026-10-03. The model no longer
+      # writes a call (todays_call) or a verdict on one (yesterdays_call): The
+      # Action is the prediction bot's call, copied by the generator from
+      # the bot's own output file, and the bot grades its own calls by code in
+      # predictions.yml. scripts/grade_calls.py stays in the repo, unrun, as
+      # part of the old scorecard's archive.
 
       # v4.0: Critic pass — runs after generate, before schema validation.
       # Sends the briefing back to Claude as the editor, scores 1-10 on each
@@ -451,19 +455,16 @@ jobs:
         continue-on-error: true        # RSS is an enhancement; a feed error must never block the publish
         run: python scripts/generate_rss.py
 
-      # Strategic ladder (2026-06-12): public call scorecard, rebuilt from the
-      # archive JSONs after every briefing. Honest by construction — outcomes
-      # come straight from each day's yesterdays_call block, misses included.
-      # continue-on-error: the scorecard is an enhancement. A failure here
-      # must NEVER block the briefing from publishing.
-      - name: Build call scorecard
-        continue-on-error: true
-        run: python scripts/build_scorecard.py
+      # "Build call scorecard" was removed 2026-10-03: the old call scorecard
+      # is retired from the site. data/scorecard.json and build_scorecard.py
+      # stay in the repo as an archive and are no longer written or shown.
+      # /scorecard is now the prediction bot's page (predictions.yml).
 
-      # Bake the fresh scorecard + WPI numbers into their pages' static HTML
-      # (same crawler rationale as bake_homepage). Marker-based, idempotent.
-      # continue-on-error: a bake failure must never block the briefing.
-      - name: Prerender WPI + scorecard pages
+      # Bake the WPI numbers into their pages' static HTML (same crawler
+      # rationale as bake_homepage). Marker-based, idempotent. It no longer
+      # touches scorecard.html. continue-on-error: a bake failure must never
+      # block the briefing.
+      - name: Prerender WPI pages
         continue-on-error: true
         run: python scripts/prerender_wpi_scorecard.py
 
@@ -508,7 +509,7 @@ jobs:
           # preflight_prices.py --repair on it. Without it staged, the repair
           # was computed and thrown away every run, and the browser-facing
           # file kept shipping the contaminated continuous quotes.
-          git add data/daily.json data/daily-archive/ daily/ feed.xml sitemap.xml data/scorecard.json index.html data/social/ whats-priced-in.html scorecard.html cot.html ag-odds.html data/prices.json
+          git add data/daily.json data/daily-archive/ daily/ feed.xml sitemap.xml index.html data/social/ whats-priced-in.html cot.html ag-odds.html data/prices.json
           git diff --staged --quiet || git commit -m "AGSIST Daily — $(date -u +%Y-%m-%d)"
           # AUDIT 2026-08-11: three attempts — this is the repo's highest-
           # stakes push (a rejection here silently skips the daily email for

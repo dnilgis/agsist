@@ -1,5 +1,10 @@
 #!/usr/bin/env python3
 """
+ARCHIVED 2026-10-03. Part of the retired call scorecard. The site no longer
+runs or shows it: the briefing's call now comes from scripts/prediction_bot.py
+and /scorecard shows that bot. Kept, and run by no workflow step, so the old
+record (data/scorecard.json) can still be re-derived. Do not wire it back in.
+
 call_calibration.py — call-design v2: vol-scaled level bands + the feedback loop.
 
 WHY THIS EXISTS

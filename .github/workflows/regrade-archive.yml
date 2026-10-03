@@ -1,5 +1,14 @@
 name: Regrade Archive Pages
 
+# ── DISABLED 2026-10-03 ──────────────────────────────────────────────────
+# The old call scorecard is retired from the site. Its record
+# (data/scorecard.json) and scripts stay in the repo as an archive and are
+# no longer graded, rebuilt or shown. /scorecard is now the prediction
+# bot's page (predictions.yml). The job below is switched off with
+# `if: false` so a stray button press cannot rewrite the archive.
+# ─────────────────────────────────────────────────────────────────────────
+
+
 # Brings every archived issue's "yesterday's call" block onto the same rule
 # that grades the public record, then re-renders the pages it changed.
 #
@@ -36,6 +45,7 @@ concurrency:
 
 jobs:
   regrade:
+    if: false   # disabled 2026-10-03, see the note at the top
     runs-on: ubuntu-latest
     steps:
       - name: Checkout

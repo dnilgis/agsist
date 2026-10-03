@@ -1606,10 +1606,7 @@ def build_system_prompt(market_status, past_tmyk_topics, yesterdays_call=None, w
         if reason == "weekend" and "Saturday" in day:
             weekend_instructions = (
                 "\nWEEKEND MODE SATURDAY: Markets CLOSED. Write WEEK IN REVIEW + WEEKEND OUTLOOK. "
-                "Reference 'Friday's close'. No overnight language. Make NO todays_call "
-                "(omit it): the board you hold is Friday's close, the same board Friday's "
-                "issue called from. If a yesterdays_call block is briefed below, it is "
-                "because today's board scores it; write the note.\n"
+                "Reference 'Friday's close'. No overnight language.\n"
                 "RULE 17 ON WEEKENDS: the post-gen level-coherence validator checks every "
                 "'broke $X'/'below $X'/'above $X' claim against FRIDAY'S CLOSE (the only close "
                 "in locked_prices on weekends). Retrospective prose with explicit day-of-week "
@@ -1625,10 +1622,7 @@ def build_system_prompt(market_status, past_tmyk_topics, yesterdays_call=None, w
         elif reason == "weekend" and "Sunday" in day:
             weekend_instructions = (
                 "\nWEEKEND MODE SUNDAY: Markets CLOSED. Write SUNDAY PREVIEW + WEEK AHEAD. "
-                "Reference 'Friday's close'. No overnight language. Make NO todays_call "
-                "(omit it): the board you hold is Friday's close, the same board Friday's "
-                "issue called from. If a yesterdays_call block is briefed below, it is "
-                "because today's board scores it; write the note.\n"
+                "Reference 'Friday's close'. No overnight language.\n"
                 "RULE 17 ON SUNDAYS: forecast and conditional prose is the dominant mode "
                 "('if cattle break $X next week', 'a move below $Y would target $Z'). The "
                 "validator auto-skips claims wrapped in 'if/would/should/could/next week/might/may' "
@@ -1642,8 +1636,7 @@ def build_system_prompt(market_status, past_tmyk_topics, yesterdays_call=None, w
         else:
             weekend_instructions = (
                 f"\nHOLIDAY MODE {day.upper()}: Markets CLOSED. Holiday outlook framing. "
-                f"Make NO todays_call (omit it); the board is the last close, "
-                f"unchanged. Write the yesterdays_call note only if one is briefed below. "
+                f"The board is the last close, unchanged. "
                 f"Rule 17 (level coherence) references the most recent close in locked_prices. "
                 f"Rule 18 (macro anchoring) applies normally.\n"
             )
@@ -1658,55 +1651,13 @@ def build_system_prompt(market_status, past_tmyk_topics, yesterdays_call=None, w
     if past_phrases:
         overused_phrases = "OVERUSED PHRASES (appeared 3+ times in the last 2 briefings):\n  - " + "\n  - ".join(past_phrases) + "\nAvoid these exact phrases today. Reach for different framing."
 
-    # ══ TODAY'S CALL, design v2 (2026-08-13) ═════════════════════════════
-    # The v1 claim shape (direction AND level by the NEXT close, level chosen
-    # from the narrative) graded 4/43 = 9.3% once grading went deterministic —
-    # not a market-reading failure, a claim-design failure: levels averaged
-    # well beyond one session's realized move. v2 keeps the grading byte-for-
-    # byte identical and fixes the CLAIM: the level must sit inside a
-    # vol-scaled band (call_calibration.py), and the model now sees its own
-    # graded record (feedback loop) instead of starting from zero every day.
-    # Fails OPEN: if calibration/scorecard are unavailable this degrades to
-    # the v1 instruction text — a briefing is never blocked by its coach.
-    # Note this block no longer lives inside yesterdays_block: v1 silently
-    # dropped the whole call instruction on fresh-archive days (the
-    # "required every weekday" rule at the bottom of the prompt disagreed).
-    _V1_CALL_TEXT = ("══ TODAY'S CALL (the todays_call object) ══\n"
-        "Make ONE concrete, falsifiable directional call: {instrument, direction (up/down), level}. "
-        "It is graded automatically tomorrow against the actual close — BOTH the direction (did it move "
-        "your way vs today's close) AND the level (did it reach/hold your line) must hold to count as "
-        "played_out. The instrument MUST be the market your highest-conviction section is actually about — "
-        "if that section is a soybean story, your call is on soybeans, not corn. Take the level from that "
-        "same section and state a real number in LOCKED TABLE units. A vague call that can't be graded is "
-        "worse than a wrong one — commit. Omit todays_call only when the market is closed.")
+    # ══ TODAY'S CALL: RETIRED 2026-10-03 ═══════════════════════════════
+    # The model used to write a one-session call (todays_call) that grade_calls
+    # scored the next day; that was the old call scorecard, now retired and
+    # archived. The briefing's one call is the prediction bot's, inserted by
+    # insert_bot_call() after the model finishes. The model is told below not
+    # to write a call, an action or a trade instruction at all.
     call_block = ""
-    if not market_status["is_closed"]:
-        call_block = _V1_CALL_TEXT
-        try:
-            import call_calibration as _cal
-            _arch = str(REPO_ROOT / "data" / "daily-archive")
-            _is_report_day = bool((usda_release or "").strip())
-            _bands = _cal.bands_text(_arch, report_day=_is_report_day)
-            if _bands:
-                _regime = ("TODAY IS A USDA REPORT DAY — the bands below are WIDENED "
-                           "(report sessions run 2-4x a normal day; a quiet-day-sized "
-                           "level would be cleared by lunch and read as a gamed hit).\n"
-                           if _is_report_day else "")
-                call_block = (_V1_CALL_TEXT
-                    + "\n\nCALL DESIGN v2 — THE LEVEL MUST BE REACHABLE IN ONE SESSION.\n"
-                    + _regime
-                    + "One-session level bands, computed from each market's own last-20-day "
-                    + "average move (min–max distance from today's close):\n  " + _bands + "\n"
-                    + "Pick your level INSIDE the band for your instrument: at least the minimum "
-                    + "(closer is ungradeable noise), no more than the maximum (farther is a "
-                    + "multi-day thesis wearing a one-day grade — it scores as a miss even when "
-                    + "the idea is right). If your conviction is genuinely multi-day, call the "
-                    + "one-day step toward it and let the thesis live in the section prose.")
-            _fb = _cal.feedback_block(str(REPO_ROOT / "data" / "scorecard.json"))
-            if _fb:
-                call_block += "\n\n" + _fb
-        except Exception as _e:
-            print(f"  [call-v2] calibration unavailable, using v1 call text: {_e}")
 
     yesterdays_block = ""
     # v5.2: no is_closed condition. Saturday's issue holds Friday's closes and
@@ -1799,7 +1750,7 @@ Output as the yesterdays_call object in the JSON: {{"outcome": your best read ('
 
 ══ THE VOICE ══
 
-You are NOT a wire-service summarizer. You are the sharp friend who actually trades grain AND reads the WASDE, direct, opinionated, honest about uncertainty, willing to commit when the evidence is there. Plain language. Imperative when it matters. Embedded thesis in every paragraph. National scope.
+You are NOT a wire-service summarizer. You are the sharp friend who actually trades grain AND reads the WASDE, direct, opinionated, honest about uncertainty, willing to commit when the evidence is there. Plain language. Embedded thesis in every paragraph. National scope. You explain the market; you never tell the reader what to do with their grain, livestock, fuel or inputs (RULE 11).
 
 You write like THIS:
 
@@ -1807,7 +1758,7 @@ LEAD example (active day):
 "Corn's stuck at $4.85¼ for a fourth straight session and the funds are running out of patience. Open interest dropped 12,000 contracts Friday, somebody's taking profits, not adding conviction. The chart says coiled spring. The funds say maybe. Tuesday's planting print decides which one's right."
 
 LEAD example (quiet day, equally valid AGSIST voice):
-"Most days don't move markets. Today is one of them. Corn closed $4.62, off a penny. Beans flat at $11.74. Cattle held $248.50 with no real action. The story today is what didn't happen: no fund flow, no weather news, no surprise from yesterday's export sales. Days like this are how the market builds the next move. Wait."
+"Most days don't move markets. Today is one of them. Corn closed $4.62, off a penny. Beans flat at $11.74. Cattle held $248.50 with no real action. The story today is what didn't happen: no fund flow, no weather news, no surprise from yesterday's export sales. Days like this are how the market builds the next move."
 
 LEAD example (range-bound consolidation):
 "Wheat closed $5.91, the fifth straight session inside a 12-cent band. Range-bound isn't drama, but it's information: the funds aren't selling, the commercials aren't buying, and nobody has new news. When wheat decides which way it's leaving the range, it'll be on data the calendar already shows."
@@ -1831,17 +1782,14 @@ WATCH LIST example (conditional, not calendar, MAX 20 WORDS each):
 - "Tuesday: Crop Progress; corn above 40% planted keeps the Belt on pace, below 30% adds weather premium."
 - "Thursday: Export sales; soy under 300K MT keeps the chart in charge."
 
-ACTION examples (one per briefing, thresholded, MAX 25 WORDS):
-- "Unpriced new-crop beans: a settle below $12.85 is the sell signal. Do not wait for $12.70."
-- "Cattle: nothing to do at $248.50. A close above $251 is the first reason to price the fall calves."
-- "Quiet day, no action. Hold. Watch $4.62 corn; a close under it is the next decision point."
+NO ACTION FIELD. The briefing's one call ("The Action") is the AGSIST prediction bot's call, inserted by the machine after you finish, with its graded record beside it. You do not write it, preview it, agree or disagree with it, or mention it.
 
 VOCABULARY: use these:
 - "the funds got lost" / "the funds are out" / "funds rotating out of X into Y", be specific
 - "carry's working" / "carry's broken" (re: futures spread structure)
 - "basis is talking" / "basis is firming/widening/yelling"
 - "above/below [level] is the line"
-- "wait" / "watch" / "hold" / "lock", operator imperatives
+- "watch" for a level or a report (an observation, never an instruction to trade)
 - numbers with cents fractions when relevant: "$4.85¼" not "$4.85"
 - "drag-day" / "yield drag"
 - "the seasonal didn't price this"
@@ -1935,15 +1883,15 @@ For genuinely once-a-decade events, you may use "historic" once. Otherwise descr
 
 6. QUIET DAYS DESERVE QUIET BRIEFINGS. Do not manufacture drama. Acceptable: "Most days don't move markets. Today is one of them." Prefer 2 sections to 3. A reader who sees you call quiet days quiet trusts your loud days.
 
-7. CONTINUITY: REWARD THE REGULAR READER. When past briefings are provided, surface prior calls that today's data confirmed or invalidated. The yesterdays_call note is where that lives.
+7. CONTINUITY: REWARD THE REGULAR READER. When past briefings are provided, connect today's move to the story they told, using only prices from today's LOCKED TABLE. Do not grade or restate a past call: there is no yesterdays_call block any more, and a verdict written from memory has printed the wrong direction before.
 
-8. THE WORD BUDGET IS THE PRODUCT. The whole briefing is about 400 words of prose. 450 is a hard ceiling: anything over it is cut by a machine after you finish, weakest block first, and if it is still over, the run fails and nobody gets a briefing. It used to run 1,090 words and the reader who pays for this said he barely reads it. Per-field caps: lead 55; each section body 55; so_what 15; one_number.context 30; action 25; yesterdays_call.note 25; outside_the_pit body 30; each watch item 20. The way to hit budget is to CUT the weakest material, not to compress everything equally. A 2-section briefing at 350 words beats a 3-section briefing at 460.
+8. THE WORD BUDGET IS THE PRODUCT. The whole briefing is about 400 words of prose. 450 is a hard ceiling: anything over it is cut by a machine after you finish, weakest block first, and if it is still over, the run fails and nobody gets a briefing. It used to run 1,090 words and the reader who pays for this said he barely reads it. Per-field caps: lead 55; each section body 55; so_what 15; one_number.context 30; outside_the_pit body 30; each watch item 20. The way to hit budget is to CUT the weakest material, not to compress everything equally. A 2-section briefing at 350 words beats a 3-section briefing at 460.
 
 9. VOICE, ABSOLUTELY NON-NEGOTIABLE. The briefing must sound like the VOICE SAMPLES above. If a paragraph could appear unchanged in a Reuters or Bloomberg wire summary, REWRITE it with the operator vocabulary, embedded thesis, and imperative tone shown in the samples. The single most common failure mode is regression to wire-service neutral. Reject your own first draft if it reads neutral.
 
 10. THE FORWARD TEST. Before you finalize the lead, ask: would a working farmer forward this lead with one line of context to another farmer? If the answer is no, rewrite. The lead is the entire product.
 
-11. ONE ACTION, THRESHOLDED, EVERY DAY. The action field is MANDATORY: one sentence, MAX 25 WORDS, naming an instrument, a level in LOCKED TABLE units, and what a producer does at that level. "If new-crop beans settle below $12.85, price the first 10%." On a quiet day the action is still thresholded: "Nothing to do at $4.62; a close under it is the next decision point." An action with no number is not an action. An action that is a mood ("stay cautious") is not an action.
+11. NO TRADE INSTRUCTIONS, ANYWHERE. Never tell the reader to buy, sell, price, lock, book, hedge, hold, wait on, store or forward-contract anything, in any field: not grain, not livestock, not fuel, not fertilizer. No "price 10% here", no "lock diesel now", no "sell the rally". Describe what the market did, why, and which level or report matters next; the reader decides. Do NOT emit an action, todays_call or yesterdays_call field: The Action is the prediction bot's call, inserted by the machine, and a past call is graded by code, not by you.
 
 12. ONE FACT, ONE HOME. Every stat, story, and price move is told ONCE, in the one block where it does the most work. The one_number is NEVER re-explained in a section (a six-word pointer like "the Yanbu decline covered above" is the maximum). Weather forecasts get one full telling; every later mention is four words or fewer. Before finalizing, scan your own draft: any sentence that restates an earlier sentence gets deleted, not reworded. The Jul 24 issue told the same Saudi pipeline story twice word-for-word and mentioned the same heat forecast six times; that is the failure mode this rule exists to kill.
 
@@ -1968,7 +1916,7 @@ For genuinely once-a-decade events, you may use "historic" once. Otherwise descr
 
 15. MACRO EVENT ANCHORING. The first time any briefing in a given week references an ongoing geopolitical or macro event (Iran tensions, Hormuz disruption, election cycle, Fed pivot, trade war, etc.), include a single anchoring clause that establishes what the event is and roughly when it began. Example: "...as Iran-Iraq tensions over the Strait of Hormuz, ongoing since March, eased on diplomatic progress." Subsequent briefings in the same week can reference shorthand. The reader who lands on this briefing for the first time should be able to follow the macro thread.
 
-16. CLEAN OUTPUT MECHANICS. (a) NEVER write internal field names (one_number, watch_list, outside_the_pit, so_what) in reader-facing prose; say "today's number" or restructure the sentence. A published issue once printed "the one_number today". (b) Percent-of-range figures are 0-100 by definition; if a close sits at or beyond the top of its 52-week range, write "at the top of its 52-week range" or "a fresh 52-week high", never "102% of the range". (c) If the current spread/ratio setup (bean/corn ratio, carry structure) is genuinely at a decision threshold, it earns ONE bolded sentence inside the relevant section, with the acreage/storage logic stated CORRECTLY (a high bean/corn ratio pulls acres toward beans); there is no standalone spread block. (d) NEVER use emoji or pictographic symbols in ANY field — headline, titles, bodies, everywhere. Plain text only; the page chrome supplies its own glyphs. (e) THE LEAD MUST BE NEW. The headline, lead, action and teaser may only be built on something that happened since the previous briefing: an overnight or prior-session price move, a report released, a forecast that changed, a story in today's news block. A fact that was equally true a week ago cannot lead, however important it is. Two published failures, both caught by the reader and not by any check here: on 2026-08-26 the briefing promised a Pro Farmer number that had already been published, and on 2026-08-28 — eight days after the tour ended — it led with "PRO FARMER DONE; SEPTEMBER WASDE HOLDS THE ANSWER" over the sentence "The Pro Farmer tour is in the rearview." Nothing about that had changed in over a week. The seasonal and background context in this prompt exists to keep you from getting the CALENDAR wrong; it is not a source of stories, and an instruction telling you NOT to say something is never itself the thing to say. Before finalizing, ask of the headline: what changed to make this true today? If the honest answer is "nothing", the day is a quiet one — lead with the price action and say it was quiet. A quiet day reported as quiet is a good briefing. A stale fact dressed as news is not.
+16. CLEAN OUTPUT MECHANICS. (a) NEVER write internal field names (one_number, watch_list, outside_the_pit, so_what) in reader-facing prose; say "today's number" or restructure the sentence. A published issue once printed "the one_number today". (b) Percent-of-range figures are 0-100 by definition; if a close sits at or beyond the top of its 52-week range, write "at the top of its 52-week range" or "a fresh 52-week high", never "102% of the range". (c) If the current spread/ratio setup (bean/corn ratio, carry structure) is genuinely at a decision threshold, it earns ONE bolded sentence inside the relevant section, with the acreage/storage logic stated CORRECTLY (a high bean/corn ratio pulls acres toward beans); there is no standalone spread block. (d) NEVER use emoji or pictographic symbols in ANY field — headline, titles, bodies, everywhere. Plain text only; the page chrome supplies its own glyphs. (e) THE LEAD MUST BE NEW. The headline, lead and teaser may only be built on something that happened since the previous briefing: an overnight or prior-session price move, a report released, a forecast that changed, a story in today's news block. A fact that was equally true a week ago cannot lead, however important it is. Two published failures, both caught by the reader and not by any check here: on 2026-08-26 the briefing promised a Pro Farmer number that had already been published, and on 2026-08-28 — eight days after the tour ended — it led with "PRO FARMER DONE; SEPTEMBER WASDE HOLDS THE ANSWER" over the sentence "The Pro Farmer tour is in the rearview." Nothing about that had changed in over a week. The seasonal and background context in this prompt exists to keep you from getting the CALENDAR wrong; it is not a source of stories, and an instruction telling you NOT to say something is never itself the thing to say. Before finalizing, ask of the headline: what changed to make this true today? If the honest answer is "nothing", the day is a quiet one — lead with the price action and say it was quiet. A quiet day reported as quiet is a good briefing. A stale fact dressed as news is not.
 
 ══ OUTPUT, return valid JSON with EXACTLY these fields ══
 
@@ -1977,16 +1925,6 @@ For genuinely once-a-decade events, you may use "historic" once. Otherwise descr
   "lead": "2-3 sentences, MAX 55 WORDS (RULE 8). Specific price from table + synthesizing observation (RULE 1). Voice samples (RULE 9). Forward test (RULE 10). LAST SENTENCE states a consequence already true, never a pointer forward (RULE 3).",
   "teaser": "One punchy sentence, max 18 words, for the collapsed hero bar and the archive index.",
   "one_number": {{"value": "The day's most interesting number, see ONE NUMBER RUBRIC (RULE 14).", "unit": "3-6 words DESCRIBING WHAT THE VALUE IS. Must be coherent with value. Wrong: value=1.4%, unit='live cattle decline' when the actual mover was feeders. Right: value=1.4%, unit='feeder cattle decline'.", "context": "1-2 sentences, MAX 30 WORDS. Why this number matters today and what it tells you that prices alone don't. This is the ONLY place this stat gets explained (RULE 12)."}},
-  "yesterdays_call": {{
-    "outcome": "played_out | didnt | pending",
-    "note": "ONE sentence, MAX 25 WORDS: what the market did against the call and what it means today. The call itself is printed from the record; do not restate it. OMIT the whole object when no prior call was provided or the market is closed."
-  }},
-  "todays_call": {{
-    "instrument": "The ONE instrument this briefing makes its sharpest directional bet on: corn, beans, wheat, cattle, feeders, hogs, crude, or natgas. Match your highest-conviction section.",
-    "direction": "up | down",
-    "level": "Number only, in the SAME units as the LOCKED PRICE TABLE ($/bu grains, $/cwt livestock, $/bbl crude). The price line your call hinges on."
-  }},
-  "action": "MANDATORY. ONE sentence, MAX 25 WORDS. Instrument + level from the LOCKED TABLE + what a producer does at that level (RULE 11).",
   "sections": [
     {{"title": "3-5 words", "body": "2-3 BULLET LINES, MAX 55 WORDS TOTAL. Each line starts with '- ' and is ONE sentence, separated by newline (\\n). Exactly ONE **bold** number per section, the price or the threshold that matters (markdown bold, NEVER <strong>). All prices from LOCKED TABLE. VOICE. The news that drove the move is IN a bullet (NEWS DISCIPLINE), not a separate field. The so-what belongs in so_what, not a trailing bullet.",
       "so_what": "MAX 15 WORDS. Synthesis beyond the title (RULE 5).",
@@ -2011,9 +1949,7 @@ SECTIONS:
 - Quiet days: 2 sections (RULE 6).
 
 OMISSIONS, set fields to null or empty objects when not applicable:
-- yesterdays_call: omit when no prior call was provided (Mondays after long weekends, fresh archive) or when the market is closed. Otherwise required.
-- todays_call: required every weekday (a real direction+level call). Omit only when the market is closed.
-- action: NEVER omitted. Every day has a thresholded action, quiet days included (RULE 11).
+- action, todays_call, yesterdays_call: NEVER emit them (RULE 11). A machine deletes them if you do.
 - outside_the_pit: REQUIRED every day, weekday and weekend. EXACTLY 1 item. Pull from the news block.
 - watch_list: REQUIRED every day. EXACTLY 3 items.
 - Do NOT emit these fields at all; they are retired and a machine deletes them: subheadline, the_takeaway, the_more_you_know, weekly_thread, catalyst, vs_yesterday, bottom_line, farmer_action, summary.
@@ -2240,8 +2176,9 @@ def validate_briefing(briefing, locked_prices):
     for _i, _sec in enumerate(briefing.get("sections") or []):
         for _rf in briefing_cut.RETIRED_SECTION_FIELDS:
             if _sec.get(_rf): warnings.append(f"Retired field emitted: sections[{_i}].{_rf}")
-    if not briefing.get("market_closed") and not (briefing.get("action") or "").strip():
-        warnings.append("Action missing: every weekday briefing carries one thresholded action")
+    # v5.5: no "action missing" warning. The model no longer writes one; The
+    # Action is the prediction bot's line, inserted after this check by
+    # insert_bot_call(), and left out when the bot has no fresh call.
     _defer = briefing_cut.lede_defers(briefing.get("lead", ""))
     if _defer:
         warnings.append(f"Lede deferral: last sentence points forward | \"{_defer}\"")
@@ -2737,17 +2674,24 @@ def render_takeaway_block_html(takeaway):
             f'</div>')
 
 
-def render_action_block_html(action):
-    """v5.1: the one mandatory thresholded action, in the slot the takeaway
-    used to hold (same CSS, different label). Empty → no render."""
+def render_action_block_html(action, bot_call=None):
+    """THE ACTION, in the slot the takeaway used to hold. v5.5: the text is
+    the prediction bot's line (bot_call present), with a link to its record
+    and method. An archived pre-v5.5 issue has no bot_call and keeps its
+    original, model-written action as published. Empty → no render."""
     if not action or not isinstance(action, str):
         return ""
     text = action.strip()
     if not text:
         return ""
+    src = ""
+    if bot_call:
+        src = ('<p class="dv3-action-src">From the AGSIST prediction bot, a fixed statistical rule '
+               'graded by code. Not advice. <a href="/scorecard">Record and method &rarr;</a></p>')
     return (f'<div class="dv3-takeaway dv3-action" role="note" aria-label="Today\'s action">'
             f'<span class="dv3-takeaway-label">THE ACTION</span>'
             f'<p class="dv3-takeaway-text">{html_esc_preserve_strong(text)}</p>'
+            f'{src}'
             f'</div>')
 
 
@@ -2961,10 +2905,14 @@ def generate_archive_html(briefing, date_iso, prev_date=None, next_date=None,
     # v4.3: new render helpers
     # v5.1: the action takes the takeaway's slot. An archived issue from
     # before the cut has no action and keeps its takeaway.
-    takeaway_html = (render_action_block_html(briefing.get("action", ""))
+    takeaway_html = (render_action_block_html(briefing.get("action", ""), briefing.get("bot_call"))
                      or render_takeaway_block_html(briefing.get("the_takeaway", "")))
     cashbids_html = render_cashbids_footer_html(is_weekend_brief)
-    yc_html = render_yesterdays_call_block_html(briefing.get("yesterdays_call"), is_weekend_brief)
+    # v5.5: no "Yesterday's call" block on new issues (the model wrote its
+    # note, and it once printed the wrong direction). An archived issue
+    # re-rendered from its JSON keeps the block it was published with.
+    yc_html = ("" if briefing.get("bot_call") or str(briefing.get("generator_version") or "") >= "5.5"
+               else render_yesterdays_call_block_html(briefing.get("yesterdays_call"), is_weekend_brief))
     thread_html = render_thread_marker_html(briefing.get("weekly_thread"), is_weekend_brief)
     sponsor_attr_html = render_sponsor_attribution_html(sponsor)
     # v4.4: outside_the_pit (news in the calculus, not in today's prices)
@@ -3120,6 +3068,8 @@ html,body{{overflow-x:hidden;overflow-x:clip;width:100%;}}
 .dv3-takeaway{{margin:1.1rem 0 0;padding:1rem 1.15rem;background:linear-gradient(135deg,rgba(218,165,32,.08) 0%,rgba(218,165,32,.02) 60%,var(--surface2) 100%);border:1px solid rgba(218,165,32,.3);border-left:4px solid var(--gold);border-radius:8px}}
 .dv3-takeaway-label{{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:.6rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin-bottom:.45rem}}
 .dv3-takeaway-text{{font-family:'Oswald',sans-serif;font-size:1.1rem;line-height:1.45;color:var(--text);margin:0;font-weight:600;letter-spacing:-.005em}}
+.dv3-action-src{{margin:.5rem 0 0;font-size:.8rem;line-height:1.5;color:var(--text-muted)}}
+.dv3-action-src a{{color:var(--gold)}}
 @media(max-width:640px){{.dv3-takeaway-text{{font-size:1rem}}}}
 /* v4.3: per-section vs_yesterday continuity chip */
 .dv3-sec-vs{{display:flex;align-items:center;gap:.4rem;font-family:'JetBrains Mono',monospace;font-size:.66rem;color:var(--text-muted);margin:0 0 .55rem;padding:.3rem .55rem;background:rgba(74,143,186,.04);border-left:2px solid rgba(74,143,186,.32);border-radius:0 4px 4px 0}}
@@ -3228,9 +3178,9 @@ html,body{{overflow-x:hidden;overflow-x:clip;width:100%;}}
     </header>
     {sparks_html}
     {topbar_html}
-    {sponsor_html}
     {yc_html}
     <div class="dv3-sections">{sections_html}</div>
+    {sponsor_html}
     {tmyk_html}
     {watch_html}
     {outside_pit_html}
@@ -3995,10 +3945,75 @@ def strip_retired_fields(briefing):
         for k in briefing_cut.RETIRED_SECTION_FIELDS + ("farmer_action",):
             if k in sec:
                 dropped.append(f"sections[{i}].{k}"); sec.pop(k, None)
-    yc = briefing.get("yesterdays_call")
-    if isinstance(yc, dict) and "summary" in yc:
-        yc.pop("summary", None); dropped.append("yesterdays_call.summary")
+    # v5.5 (2026-10-03): the model may not write a call, an action, or a
+    # verdict on a past call. The prompt says so; this makes it true. The
+    # Action is put back by insert_bot_call() from data/predictions.json.
+    for k in MODEL_CALL_FIELDS:
+        if k in briefing:
+            dropped.append(k); briefing.pop(k, None)
     return briefing, dropped
+
+
+# Fields the model is not allowed to author from v5.5 on. "Yesterday's call"
+# printed false text (crude rose; the note said it fell), and the action was
+# an LLM-written trade instruction ("lock diesel now").
+MODEL_CALL_FIELDS = ("action", "todays_call", "yesterdays_call")
+
+PREDICTIONS_PATH = REPO_ROOT / "data" / "predictions.json"
+BOT_CALL_MAX_AGE_DAYS = 4   # Friday's call still prints on Tuesday morning if Monday's run dropped
+
+
+def insert_bot_call(briefing, today=None, path=None):
+    """THE ACTION, v5.5: the prediction bot's latest call and its record,
+    copied from data/predictions.json. Nothing here computes a statistic;
+    scripts/prediction_bot.py owns every number and wrote action_text.
+
+    Left out, never invented, when the file is missing, has no call yet, or
+    its latest call is older than BOT_CALL_MAX_AGE_DAYS. Every renderer hides
+    The Action box when the field is empty."""
+    today = today or datetime.now().date()
+    path = path or PREDICTIONS_PATH
+    try:
+        with open(path, encoding="utf-8") as f:
+            d = json.load(f)
+    except (OSError, ValueError) as e:
+        print(f"  [bot] no predictions file ({type(e).__name__}); The Action is left out")
+        return briefing
+    latest = d.get("latest") or {}
+    text = (d.get("action_text") or "").strip()
+    ld = latest.get("date")
+    if not text or not ld or not latest.get("calls"):
+        print("  [bot] the bot has made no call yet; The Action is left out")
+        return briefing
+    try:
+        age = (today - datetime.strptime(ld, "%Y-%m-%d").date()).days
+    except ValueError:
+        print(f"  [bot] unreadable call date {ld!r}; The Action is left out")
+        return briefing
+    if age > BOT_CALL_MAX_AGE_DAYS or age < 0:
+        print(f"  [bot] latest call is from {ld} ({age} days); too old to print. The Action is left out")
+        return briefing
+    labels = {c.get("key"): c.get("label") for c in d.get("crops") or []}
+    live = ((d.get("live") or {}).get("records") or {}).get("all") or {}
+    bt = (((d.get("backtest") or {}).get("records") or {}).get("all")) or {}
+    keep = ("graded", "hits", "hit_rate", "spells", "spell_hits", "p_luck", "gate_ok", "verdict")
+    briefing["action"] = text
+    briefing["bot_call"] = {
+        "date": ld,
+        "text": text,
+        "rules_version": (d.get("rules") or {}).get("version"),
+        "horizon_sessions": (d.get("rules") or {}).get("horizon_sessions"),
+        "calls": [{"crop": c.get("crop"), "label": labels.get(c.get("crop"), c.get("crop")),
+                   "direction": c.get("direction"), "contract": c.get("contract"),
+                   "exit_day": c.get("exit_day"), "signal": c.get("signal")}
+                  for c in latest["calls"]],
+        "record": {k: live.get(k) for k in keep},
+        "backtest": {k: bt.get(k) for k in keep},
+        "source": "data/predictions.json",
+        "url": "/scorecard",
+    }
+    print(f"  [bot] The Action: {text}")
+    return briefing
 
 
 def grade_in_generator(briefing, market_status):
@@ -4065,7 +4080,7 @@ def sanitize_weekend_blocks(briefing, market_status):
 
 
 def main():
-    print("=== AGSIST Daily Briefing Generator v5.1 (the cut) ===")
+    print("=== AGSIST Daily Briefing Generator v5.5 (the bot's call) ===")
     print(f"  Time: {datetime.now().isoformat()}")
     market_status = get_market_status()
     if market_status["is_closed"]:
@@ -4111,9 +4126,9 @@ def main():
     # unless a session has settled since the last issue, so Saturday grades
     # Friday's call and Sunday grades nothing. weekly_thread_ctx stays None (v5.1).
     weekly_thread_ctx = None
-    yesterdays_call_ctx = load_yesterdays_call_context()
-    if yesterdays_call_ctx:
-        print(f"  Yesterday's call: {yesterdays_call_ctx['section_title']!r} ({yesterdays_call_ctx['conviction']}) from {yesterdays_call_ctx['prior_date']}")
+    # v5.5: no yesterday's-call context. The model no longer grades a past
+    # call; the prediction bot grades its own by code (predictions.yml).
+    yesterdays_call_ctx = None
 
     print("  Fetching ag news...")
     news_block = fetch_ag_news()
@@ -4195,15 +4210,7 @@ def main():
     # by_method precedent — a methodology change never blends into the old
     # record). Stamped by the generator, not the model: the model cannot be
     # trusted to label its own methodology era.
-    _tc = briefing.get("todays_call")
-    if isinstance(_tc, dict) and _tc:
-        _tc["design"] = "v2"
-        if (usda_release or "").strip():
-            # Stamp report days so the gate's band check (and any later
-            # analysis) judges this call against the widened band it was
-            # actually briefed with — and so v2's record can be split by
-            # regime if report days turn out to grade differently.
-            _tc["report_day"] = True
+    # v5.5: the todays_call design stamp is gone with todays_call itself.
 
     # v4.2 (Phase 2 C4): enforce weekend block contract regardless of
     # what the model returned. On weekdays this is a no-op.
@@ -4285,9 +4292,10 @@ def main():
     except Exception as _e:
         briefing["board"] = {"fetched": _fetched}
         print(f"  [warn] board session stamp unavailable ({type(_e).__name__}: {_e})")
-    # v5.1: grade yesterday's call now that today's closes are on the briefing,
-    # so save_archive() below renders the verdict and call_line first time.
-    briefing = grade_in_generator(briefing, market_status)
+    # v5.5: The Action is the prediction bot's call. Inserted here, after the
+    # word cut and the validator, because neither is about it: its words and
+    # numbers are the bot's, not the model's, and they are not edited.
+    briefing = insert_bot_call(briefing)
     chart_series, chart_dates = build_chart_series(
         locked_prices, briefing.get("market_closed") is True)
     if chart_series:
@@ -4312,13 +4320,8 @@ def main():
     print(f"  Issue number for today: #{briefing['issue_number']}")
 
     # v5.1: log block presence for verification
-    _yc = briefing.get("yesterdays_call") or {}
-    if _yc.get("call_line"):
-        print(f"  Yesterday's call: {_yc['call_line']} -> {(_yc.get('outcome') or '?').upper()}")
-    if briefing.get("action"):
-        print(f"  Action: {briefing['action'][:90]}")
-    else:
-        print("  Action: MISSING" + (" (market closed)" if market_status["is_closed"] else " (model violated RULE 11)"))
+    if not briefing.get("action"):
+        print("  Action: none (the prediction bot has no fresh call)")
     otp = briefing.get("outside_the_pit") or []
     if otp:
         print(f"  Outside the Pit: {len(otp)} item(s)")
@@ -4330,7 +4333,7 @@ def main():
         print("  Outside the Pit: EMPTY (model violated the OMISSIONS contract)")
 
     briefing["generated_at"] = datetime.now(timezone.utc).isoformat()
-    briefing["generator_version"] = "5.1.0"
+    briefing["generator_version"] = "5.5.0"
     briefing["surprise_count"] = len(surprises)
     briefing["surprises"] = surprises
     briefing["price_validation_clean"] = is_clean

@@ -241,10 +241,13 @@ def section_one_number(daily):
 
 
 def section_action(daily):
-    """v5.1: the one thresholded action, right after the lead."""
+    """The Action, right after the lead. v5.5: the prediction bot's call."""
     a = strip_html(daily.get("action", ""))
     if not a:
         return None
+    if daily.get("bot_call"):
+        return (f"THE ACTION\n{a}\nFrom the AGSIST prediction bot, a fixed statistical rule "
+                f"graded by code. Not advice. Record and method: {SITE}/scorecard")
     return f"THE ACTION\n{a}"
 
 

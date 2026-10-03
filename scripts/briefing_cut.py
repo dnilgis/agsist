@@ -219,7 +219,12 @@ def enforce_budget(b):
             obj[key] = new
 
     clamp(b, "lead", CAP_LEAD, clamp_sentences, "lead")
-    clamp(b, "action", CAP_ACTION, clamp_words, "action")
+    # v5.5: the bot's line is never cut. It is written to fit CAP_ACTION
+    # (prediction_bot's selftest pins its longest form at 25 words), and a
+    # clipped copy would no longer match bot_call.text, which the schema
+    # check requires. An archived model-written action still clamps.
+    if not b.get("bot_call"):
+        clamp(b, "action", CAP_ACTION, clamp_words, "action")
     on = b.get("one_number")
     if isinstance(on, dict):
         clamp(on, "context", CAP_ONE_NUMBER_CONTEXT, clamp_sentences, "one_number.context")

@@ -2,7 +2,8 @@
 """build_social_card.py — render the day's briefing as a shareable PNG.
 
 Reads  : data/daily.json  (headline, one_number, meta.market_mood, date)
-         data/scorecard.json  (played_out / didnt — the public record)
+         data/predictions.json (the prediction bot's live record; v2026-10-03,
+                                replacing the retired call scorecard)
 Writes : data/social/card-YYYY-MM-DD.png   (dated, permanent)
          data/social/card-latest.png       (stable URL for og:image later)
 
@@ -21,8 +22,8 @@ network. A social card must never be the reason the briefing fails to
 publish — so main() traps everything and exits 0 with a loud message;
 daily.yml treats it as best-effort (continue-on-error as belt+braces).
 
-Failure honesty: if the scorecard can't be read, the footer says so rather
-than inventing a record. Same doctrine as everything else here: no number
+Failure honesty: if the bot's record can't be read, or is below its own
+minimum sample, the footer prints no number rather than inventing a record. Same doctrine as everything else here: no number
 appears unless it was measured.
 """
 import json
@@ -88,7 +89,7 @@ def _tracked(draw, xy, text, font, fill, tracking):
     return x - tracking  # right edge
 
 
-def build(daily_path="data/daily.json", scorecard_path="data/scorecard.json",
+def build(daily_path="data/daily.json", predictions_path="data/predictions.json",
           out_dir="data/social"):
     from PIL import Image, ImageDraw
 
@@ -100,15 +101,17 @@ def build(daily_path="data/daily.json", scorecard_path="data/scorecard.json",
     date_str = (daily.get("date") or datetime.now(timezone.utc).strftime("%A, %B %d, %Y")).upper()
     mood = str(((daily.get("meta") or {}).get("market_mood")) or "").upper().strip()
 
-    # Public record. Absent/broken scorecard -> honest fallback, never invented.
-    score_line = "WE GRADE OUR OWN CALLS — DAILY, IN PUBLIC. NO MEMORY-HOLING."
+    # Public record: the prediction bot's LIVE record, only once it clears the
+    # bot's own minimum sample (gate_ok). The backtest is never printed here,
+    # so history cannot stand in for calls made in public.
+    score_line = "A STATISTICAL BOT CALLS THE GRAINS DAILY. EVERY CALL GRADED BY CODE, IN PUBLIC."
     score_bold = None
     try:
-        sc = json.load(open(scorecard_path, encoding="utf-8"))
-        judged = int(sc["played_out"]) + int(sc["didnt"])
-        if judged > 0:
-            score_line = "WE GRADE OUR OWN CALLS — "
-            score_bold = "%d of %d" % (int(sc["played_out"]), judged)
+        pr = json.load(open(predictions_path, encoding="utf-8"))
+        live = pr["live"]["records"]["all"]
+        if live.get("gate_ok") and int(live["graded"]) > 0:
+            score_line = "PREDICTION BOT, LIVE: "
+            score_bold = "%d of %d" % (int(live["hits"]), int(live["graded"]))
     except Exception:
         pass
 
@@ -193,7 +196,7 @@ def build(daily_path="data/daily.json", scorecard_path="data/scorecard.json",
 
     if score_bold:
         segs = [(score_line, sans_38, MUTED), (score_bold, sans_b38, TEXT),
-                (" played out, judged daily in public. No memory-holing.",
+                (" calls right, graded by code against settlement prices.",
                  sans_38, MUTED)]
     else:
         segs = [(score_line, sans_38, MUTED)]
