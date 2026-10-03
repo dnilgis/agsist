@@ -369,7 +369,8 @@
     var fr = [];
     if(elev.fromNetwork){
       if(ctTime(elev.pricedAt)) fr.push('Posted ' + ctTime(elev.pricedAt));
-      if(ctTime(elev.checkedAt)) fr.push('checked ' + ctTime(elev.checkedAt));
+      /* Said once when the board was checked the same minute it posted. */
+      if(ctTime(elev.checkedAt) && ctTime(elev.checkedAt) !== ctTime(elev.pricedAt)) fr.push('checked ' + ctTime(elev.checkedAt));
     } else if(ctTime(feedTimes.licensed)){
       fr.push('Quotes read ' + ctTime(feedTimes.licensed) + ', no posting time sent');
     }
@@ -1097,7 +1098,7 @@
       + ' (same week, ' + s.avg5_n + '-year average ' + fmt(avg) + ', ' + s.avg5_n + ' of 5 years found).';
   }
   function fillNormal(area, st, crops){
-    var box = area.querySelector('.bh-normal'); if(!box) return;
+    var box = area.querySelector('.bh-normal'), how = area.querySelector('.bh-normal-how'); if(!box) return;
     var stName = STATE_NAME[st]; if(!stName || !crops.length){ box.hidden = true; return; }
     transportOnce().then(function(j){
       var ser = (j && j.series) || {}, lines = [], none = [];
@@ -1108,9 +1109,12 @@
         if(!sr){ none.push(cropTxt); return; }
         lines.push('<div style="margin-top:.2rem">' + normalLine(stName, cropTxt, sr) + '</div>');
       });
-      if(!j){ box.innerHTML = '<div class="bh-normal-h" style="font-weight:700;color:var(--text-dim)">Basis vs normal</div>\u2014 the USDA basis file did not load.'; box.hidden = false; return; }
+      /* With no comparison to print, the reason goes inside the fold. */
+      var target = (j && lines.length) || !how ? box : how;
+      if(!j){ target.innerHTML = '<div class="bh-normal-h" style="font-weight:700;color:var(--text-dim)">Basis vs normal</div>\u2014 the USDA basis file did not load.'; target.hidden = false; return; }
       var withData = lines.length;
       if(!withData && !none.length){ box.hidden = true; return; }
+      if(target !== box){ box.hidden = true; box = target; }
       /* Crops with no state series share one line, said once. */
       if(none.length) lines.push('<div style="margin-top:.2rem">' + normalLine(stName, none.join(' and '), null) + '</div>');
       box.innerHTML = '<div class="bh-normal-h" style="font-weight:700;color:var(--text-dim)">Basis vs normal</div>' + lines.join('')
@@ -1170,9 +1174,14 @@
 
     top.forEach(function(elev){ html += renderElevatorHTML(elev, crop); });
 
-    html += '<div class="r7-ref-note" hidden style="font-size:.72rem;color:var(--text-muted);padding:.45rem 0 0"></div>';
-    html += '<div class="bh-legend" style="font-size:.72rem;color:var(--text-muted);padding:.45rem 0 0">Chg: cash now against the board’s last price on the trading day before its latest change, same delivery period. Elevator network rows only; a dash means no earlier price is on record.</div>';
+    /* Basis vs normal prints here when a state series answers; the notes on
+       how to read the card sit behind one fold (2026-10-03: three footnote
+       paragraphs made the phone card a page long). */
     html += '<div class="bh-normal" hidden style="font-size:.75rem;color:var(--text-muted);padding:.45rem 0 0"></div>';
+    html += '<details class="bh-how" style="font-size:.72rem;color:var(--text-muted);padding:.45rem 0 0"><summary style="cursor:pointer;min-height:32px;display:flex;align-items:center;color:var(--text-dim);font-weight:600">How to read these bids</summary>'
+      + '<div class="r7-ref-note" hidden style="padding:.3rem 0 0"></div>'
+      + '<div class="bh-legend" style="padding:.3rem 0 0">Chg: cash now against the board’s last price on the trading day before its latest change, same delivery period. Elevator network rows only; a dash means no earlier price is on record.</div>'
+      + '<div class="bh-normal-how" hidden style="padding:.3rem 0 0"></div></details>';
 
     // Footer link
     var extra = list.length - MAX_ELEVATORS;

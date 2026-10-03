@@ -4316,8 +4316,8 @@ var TICK={corn:'Corn',beans:'Soybeans',wheat:'Chicago SRW wheat',kcwheat:'KC HRW
    (absent quotes, withheld_keys, spreads). Null until it loads. */
 var D=null;
 /* Why a row has no quote, in words, when the file says nothing more. */
-var NOQ={mplswheat:'No quote: Yahoo has not served it since MGEX became MIAX',
-  cotton:'No quote yet: symbol awaits its first price run',rice:'No quote yet: symbol awaits its first price run',
+var NOQ={mplswheat:'No quote: our price source does not carry this contract',
+  cotton:'No quote yet: first price run pending',rice:'No quote yet: first price run pending',
   kcwheat:'Not in this price run'};
 var Q={},NB={},have=false,timer=null;
 function qa(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s));}

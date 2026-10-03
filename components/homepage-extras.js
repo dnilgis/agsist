@@ -253,9 +253,13 @@
     return t && t.toLowerCase() === String(o.where || '').toLowerCase() ? c.replace(/^.*?,\s*/, '') : c;
   }
   function whyText(o, sum){
-    if(o.isBest) return 'Filled from ' + o.where + (o.city ? ' (' + o.city + ')' : '') + ': the ' + (sum.pickRule || 'highest corn bid nearby')
-      + (sum.monthLabel ? ' for ' + sum.monthLabel + ' delivery' : '') + (sum.pickCount ? ', out of ' + sum.pickCount + ' corn bid' + (sum.pickCount === 1 ? '' : 's') + ' for that month' : '') + '.' + (nearer(o) ? ' Not the nearest elevator; pick another above.' : ' Pick another elevator above.');
-    return 'Filled from ' + o.where + (o.city ? ' (' + o.city + ')' : '') + ', your pick: ' + o.cropName.toLowerCase() + ' for ' + o.monthLabel + ' delivery.';
+    /* The select above already names the elevator; this says why it was picked. */
+    if(o.isBest){
+      var r = sum.pickRule || 'highest corn bid nearby';
+      return r.charAt(0).toUpperCase() + r.slice(1) + (sum.monthLabel ? ' for ' + sum.monthLabel : '')
+        + (sum.pickCount ? ' (of ' + sum.pickCount + ')' : '') + '.' + (nearer(o) ? ' Not the nearest elevator.' : '');
+    }
+    return 'Your pick: ' + o.cropName.toLowerCase() + ', ' + o.monthLabel + ' delivery.';
   }
   function fillPicker(sum){
     var sel = $('idx1-calc-pick'), why = $('idx1-calc-why');
