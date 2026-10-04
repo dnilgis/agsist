@@ -5,13 +5,23 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Sat, 03 Oct 2026 14:46:27 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 04 Oct 2026 15:27:03 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/agsist.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>CORN CLOSES UNDER $5 WITH HARVEST STUCK IN THE RAIN</title>
+      <link>https://agsist.com/daily/2026-10-04</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-10-04</guid>
+      <pubDate>Sun, 04 Oct 2026 05:00:00 -0600</pubDate>
+      <description>Corn settled Friday at $4.97, soybeans at $12.77, both down 20 to 40 cents on the week by the wire's own math. Record El Nino rain has stalled harvest across the Corn Belt at the exact moment farmers need combines rolling and bins filling.
+• Grains Grind Lower Into Harvest
+• Cattle Soft, Hogs Firm
+Read more: https://agsist.com/daily/2026-10-04</description>
+    </item>
     <item>
       <title>CRUDE SPLITS FROM DIESEL AS HARVEST STALLS IN THE RAIN</title>
       <link>https://agsist.com/daily/2026-10-03</link>
@@ -359,19 +369,6 @@ Chicago wheat had its biggest single-session drop in weeks; corn and beans drift
 • BEANS AND MEAL SPLIT
 • CATTLE HOLDS; BEEF EXPORTS FIRM
 Read more: https://agsist.com/daily/2026-09-04</description>
-    </item>
-    <item>
-      <title>GRAINS BREAK HARD; EXPORT SALES ARRIVE AT 7:30</title>
-      <link>https://agsist.com/daily/2026-09-03</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-09-03</guid>
-      <pubDate>Thu, 03 Sep 2026 05:00:00 -0600</pubDate>
-      <description>Corn is at $5.08 and wheat at $7.56, both down sharply overnight, with December corn now $5.30 and harvest just starting to pull the rug out from under the board. Export sales print at 7:30 AM CT. The market is positioning right now, not reacting, and which way that report lands will tell you whether this morning's sell-off was front-running or the real thing.
-Corn drops 2%, wheat 2.5% overnight as harvest pressure builds and the market awaits Thursday's export sales data.
-• GRAINS BREAK INTO HARVEST
-  → December corn at $5.30 with harvest starting: if you have unpriced bushels, 7:30 export sales are your decision point. A weak number removes your excuse to wait.
-• BEANS HOLD BETTER; MEAL FIRMS
-• CATTLE SLIPS; PACKER MARGINS SHIFT
-Read more: https://agsist.com/daily/2026-09-03</description>
     </item>
   </channel>
 </rss>
