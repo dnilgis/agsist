@@ -1,6 +1,17 @@
 {
   "briefings": [
     {
+      "date": "2026-10-05",
+      "date_display": "Monday, October 5, 2026",
+      "headline": "CORN BACK ABOVE $5 AS RAIN KEEPS COMBINES PARKED",
+      "teaser": "Corn reclaims $5.00 as historic rain keeps the Belt's combines parked and harvest basis frozen.",
+      "market_mood": "mixed",
+      "surprise_count": 1,
+      "sections": 3,
+      "url": "/daily/2026-10-05",
+      "market_closed": false
+    },
+    {
       "date": "2026-10-04",
       "date_display": "Sunday, October 4, 2026",
       "headline": "CORN CLOSES UNDER $5 WITH HARVEST STUCK IN THE RAIN",
@@ -2360,6 +2371,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-10-04T15:27:02.775514+00:00",
-  "count": 205
+  "updated": "2026-10-05T10:57:13.703736+00:00",
+  "count": 206
 }
