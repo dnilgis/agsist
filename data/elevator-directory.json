@@ -1,18 +1,18 @@
 {
- "generated": "2026-10-05T18:23:12Z",
+ "generated": "2026-10-05T18:38:10Z",
  "from": "barchart-raw.json",
  "complete": false,
  "note": "Directory only: who operates a facility and where. No prices, no basis, no symbols, no delivery windows.",
  "counts": {
-  "facilities": 2259,
+  "facilities": 2260,
   "states": 38,
   "with_address": 722,
   "with_coords": 725,
   "with_url": 703,
-  "with_phone": 2192,
+  "with_phone": 2193,
   "saturated_zips": 0,
   "failed_zips": 0,
-  "rows_read": 17008
+  "rows_read": 17028
  },
  "saturated": [],
  "failed": [],
@@ -27393,6 +27393,15 @@
    "elevatorId": 2446
   },
   {
+   "facility": "ACE Ethanol",
+   "branch": "Ace Ethanol LLC",
+   "city": "Stanley",
+   "state": "WI",
+   "zip": "54768",
+   "phone": "715-644-2909",
+   "source": "barchart"
+  },
+  {
    "facility": "ALCIVIA",
    "branch": "BALDWIN",
    "city": "Baldwin",
@@ -27673,7 +27682,7 @@
    "city": "Wheeler",
    "state": "WI",
    "zip": "54772",
-   "phone": "715.632.2319 x3",
+   "phone": "715-704-0548",
    "source": "barchart",
    "company": "Badger Grain Supply",
    "location": "Badger Grain Supply",
