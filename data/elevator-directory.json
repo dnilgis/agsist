@@ -1,18 +1,18 @@
 {
- "generated": "2026-10-05T15:38:19Z",
+ "generated": "2026-10-05T15:53:15Z",
  "from": "barchart-raw.json",
  "complete": false,
  "note": "Directory only: who operates a facility and where. No prices, no basis, no symbols, no delivery windows.",
  "counts": {
-  "facilities": 2254,
+  "facilities": 2255,
   "states": 38,
   "with_address": 722,
   "with_coords": 725,
   "with_url": 703,
-  "with_phone": 2187,
+  "with_phone": 2188,
   "saturated_zips": 0,
   "failed_zips": 0,
-  "rows_read": 16950
+  "rows_read": 16958
  },
  "saturated": [],
  "failed": [],
@@ -7435,6 +7435,15 @@
    "state": "IL",
    "zip": "62546",
    "phone": "(217) 526-3123",
+   "source": "barchart"
+  },
+  {
+   "facility": "Gateway FS, Inc.",
+   "branch": "Rosamond",
+   "city": "Rosamond",
+   "state": "IL",
+   "zip": "62083",
+   "phone": "(217) 562-2363",
    "source": "barchart"
   },
   {
