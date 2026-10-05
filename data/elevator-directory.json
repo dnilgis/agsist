@@ -1,18 +1,18 @@
 {
- "generated": "2026-10-05T17:08:22Z",
+ "generated": "2026-10-05T17:23:09Z",
  "from": "barchart-raw.json",
  "complete": false,
  "note": "Directory only: who operates a facility and where. No prices, no basis, no symbols, no delivery windows.",
  "counts": {
-  "facilities": 2255,
+  "facilities": 2259,
   "states": 38,
   "with_address": 722,
   "with_coords": 725,
   "with_url": 703,
-  "with_phone": 2188,
+  "with_phone": 2192,
   "saturated_zips": 0,
   "failed_zips": 0,
-  "rows_read": 16940
+  "rows_read": 17006
  },
  "saturated": [],
  "failed": [],
@@ -18920,6 +18920,42 @@
    "facility_type": "Country Elevator",
    "locationId": 84584,
    "elevatorId": 3100,
+   "source": "barchart"
+  },
+  {
+   "facility": "Smithfield Grain - East",
+   "branch": "Bentonville, NC",
+   "city": "Bentonville",
+   "state": "NC",
+   "zip": "27524",
+   "phone": "919-689-2620",
+   "source": "barchart"
+  },
+  {
+   "facility": "Smithfield Grain - East",
+   "branch": "Clinton, NC",
+   "city": "Clinton",
+   "state": "NC",
+   "zip": "28328",
+   "phone": "910-592-2104",
+   "source": "barchart"
+  },
+  {
+   "facility": "Smithfield Grain - East",
+   "branch": "LaGrange, NC",
+   "city": "LaGrange",
+   "state": "NC",
+   "zip": "28551",
+   "phone": "910-277-8999",
+   "source": "barchart"
+  },
+  {
+   "facility": "Smithfield Grain - East",
+   "branch": "Walstonburg, NC",
+   "city": "Walstonburg",
+   "state": "NC",
+   "zip": "27888",
+   "phone": "252-753-4290",
    "source": "barchart"
   },
   {
