@@ -1,5 +1,5 @@
 {
- "generated": "2026-10-05T14:53:17Z",
+ "generated": "2026-10-05T15:08:17Z",
  "from": "barchart-raw.json",
  "complete": false,
  "note": "Directory only: who operates a facility and where. No prices, no basis, no symbols, no delivery windows.",
@@ -12,7 +12,7 @@
   "with_phone": 2186,
   "saturated_zips": 0,
   "failed_zips": 0,
-  "rows_read": 16935
+  "rows_read": 16939
  },
  "saturated": [],
  "failed": [],
