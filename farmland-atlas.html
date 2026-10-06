@@ -42,7 +42,7 @@
         "@type": "Dataset",
         "@id": "https://agsist.com/farmland-atlas#dataset",
         "name": "AGSIST Farmland Atlas: county night heat, water, loss record, land value, CRP, drought, energy and wells",
-        "description": "County-level records for the United States, county by county: July and August mean daily minimum temperature by decade since 1900 and the 50-year trend (NOAA NCEI nClimDiv county); irrigated share of harvested cropland (USDA Census of Agriculture 2022) and groundwater share of irrigation withdrawals (USGS 2015); crop insurance indemnities by cause of loss and the county loss ratio since 1989 (USDA RMA Summary of Business); census land and buildings value per acre 2012-2022 and rent-to-value; CRP acres by year and contract expirations (USDA FSA); weeks per year in severe drought since 2000 (U.S. Drought Monitor); solar, wind and battery MW operating and proposed (EIA Form 860); registered wells (Nebraska) and water rights (Kansas); county cash rent, the irrigated rent premium and county corn yield trend (USDA NASS). Layers are published separately and never combined into a score. Each layer covers the counties its own source publishes; the coverage of a layer is stated county by county, and several layers are still short of every county.",
+        "description": "County-level records for the United States, county by county: July and August mean daily minimum temperature by decade since 1900 and the trend since 1976 (NOAA NCEI nClimDiv county); irrigated share of harvested cropland (USDA Census of Agriculture 2022) and groundwater share of irrigation withdrawals (USGS 2015; crop irrigation where USGS splits it out, all irrigation including golf courses elsewhere); crop insurance indemnities by cause of loss and the county loss ratio since 1989 (USDA RMA Summary of Business); census land and buildings value per acre 2012-2022 and rent-to-value; CRP acres by year and contract expirations (USDA FSA); weeks per year in severe drought since 2000 (U.S. Drought Monitor); solar, wind and battery MW operating and proposed (EIA Form 860); registered wells (Nebraska) and water rights (Kansas); county cash rent, the irrigated rent premium and county corn yield trend (USDA NASS). Layers are published separately and never combined into a score. Each layer covers the counties its own source publishes; the coverage of a layer is stated county by county, and several layers are still short of every county.",
         "url": "https://agsist.com/farmland-atlas",
         "license": "https://www.usa.gov/government-works",
         "isAccessibleForFree": true,
@@ -535,18 +535,18 @@ details.fa-arith .body a{color:var(--gold)}
     <p class="fa-note">Every county in the Atlas, added up. Open a section for the table behind it.</p>
     <details class="fa-fold" id="fa-seedfold"><summary>The national figures, layer by layer</summary>
 <!--SEED:atlas-->
-<div id="fa-seed" data-built="2026-09-25T14:29:41Z" class="fa-seedbox">
-<p><strong>Across the Atlas</strong> · built 2026-09-25 · 3141 counties in 50 states.</p>
+<div id="fa-seed" data-built="2026-10-06T15:12:47Z" class="fa-seedbox">
+<p><strong>Across the Atlas</strong> · built 2026-10-06 · 3141 counties in 50 states.</p>
 <p>July nights: 2029 of 3135 counties are warming since 1976 with the 95% interval clear of zero, 0 cooling, 1106 with no clear direction; the median trend is +0.45 F per decade. In 2178 of 3140 counties the 2010s were the warmest complete decade since the 1900s (the 2020s are not complete and are not counted). </p>
-<p>Each county has 51 Julys since 1976, and a single county's trend has to be large to clear its own 95% interval. Fitted on every July since 1895 instead, 2616 of 3135 counties are warming with the interval clear of zero.</p>
-<p>Water: 608 of 2161 counties irrigate a quarter or more of their harvested cropland and 412 irrigate half or more; the median county irrigates 4%. In 886 of 2663 counties nine-tenths or more of the irrigation water is pumped from the ground.</p>
+<p>Each county has at most 51 Julys since 1976, and a single county's trend has to be large to clear its own 95% interval. Fitted on every July since 1895 instead, 2616 of 3135 counties are warming with the interval clear of zero.</p>
+<p>Water: 608 of 2161 counties irrigate a quarter or more of their harvested cropland and 412 irrigate half or more; the median county irrigates 4%. In 886 of 2663 counties nine-tenths or more of the irrigation water is pumped from the ground (USGS 2015: crop irrigation where USGS splits it out, 1672 counties; all irrigation including golf courses in the other 991).</p>
 <p>Loss record: $210.6 billion of crop insurance indemnities in closed crop years since 1989 across 2840 counties (nominal dollars; the crop year still being paid is left out; pasture and rangeland rainfall-index policies excluded). Heat and drought share by period: 1989-1999 27% · 2000-2009 42% · 2010-2019 42% · 2020-2025 46%. Paid for failure of irrigation supply or equipment: $3.4 billion.</p>
-<p>Irrigated against dry cash rent: 572 counties publish both with enough paired years. Measured as irrigated rent over dry rent, so general rent inflation cancels out, the multiple is rising in 77 and falling in 54, with the 95% interval clear of zero. Falling fastest: Box Butte County, NE: 8.10 times dry rent in 2013 to 5.34 in 2026; Thurston County, WA: 6.12 times dry rent in 2009 to 2.20 in 2026; Lawrence County, AR: 3.31 times dry rent in 2012 to 1.67 in 2026. Rising fastest: Sutter County, CA: 4.00 times dry rent in 2010 to 12.11 in 2023; Yolo County, CA: 5.09 times dry rent in 2009 to 10.23 in 2026; Independence County, AR: 1.84 times dry rent in 2009 to 4.21 in 2023.</p>
-<p>Loss ratio: across 2890 counties RMA has paid $210.6 billion of indemnity on $246.4 billion of premium in closed crop years since 1989, a loss ratio of 0.85; in 826 counties indemnities have exceeded premium over the whole record. By period: 1989-1999 1.02 · 2000-2009 0.79 · 2010-2019 0.86 · 2020-2025 0.86. The crop year still being paid is left out; rainfall-index pasture policies are excluded.</p>
+<p>Irrigated against dry cash rent: 475 counties publish both with enough paired years and enough dry rent to test (97 more are not tested: dry rent under $25). Measured as irrigated rent over dry rent, so general rent inflation cancels out, the multiple is rising in 77 and falling in 54, with the 95% interval clear of zero; by chance alone about 12 of 475 would be called each way. Falling fastest: Box Butte County, NE: 8.10 times dry rent in 2013 to 5.34 in 2026; Thurston County, WA: 6.12 times dry rent in 2009 to 2.20 in 2026; Lawrence County, AR: 3.31 times dry rent in 2012 to 1.67 in 2026. Rising fastest: Sutter County, CA: 4.00 times dry rent in 2010 to 12.11 in 2023; Yolo County, CA: 5.09 times dry rent in 2009 to 10.23 in 2026; Independence County, AR: 1.84 times dry rent in 2009 to 4.21 in 2023.</p>
+<p>Loss ratio: across 2890 counties RMA has paid $210.6 billion of indemnity on $246.4 billion of premium in closed crop years since 1989, a loss ratio of 0.85; in 826 of the 2475 counties with $1 million or more of premium, indemnities have exceeded premium over the whole record. By period: 1989-1999 1.02 · 2000-2009 0.79 · 2010-2019 0.86 · 2020-2025 0.86. The crop year still being paid is left out; rainfall-index pasture policies are excluded.</p>
 <p>Land value, 2022 census: the median county reports $4,382 an acre for land and buildings (range $325 to $2,551,600, 3067 counties). Non-irrigated cash rent as a share of that value is published for 933 counties, median 2.48%; under 2% in 263, over 4% in 12.</p>
-<p>CRP: 25,753,630 acres enrolled across 3110 counties in 2025; 3,276,727 acres expire in the three fiscal years from 2026. In 382 of 1923 counties CRP is a tenth or more of the cropland base.</p>
+<p>CRP: 25,753,630 acres enrolled across 3110 counties in 2025; 2,144,307 acres expire in the three fiscal years from 2027. In 382 of 1923 counties CRP is a tenth or more of the cropland base.</p>
 <p>Drought: summed over 3132 counties, the year with the most county-weeks with at least half the county in severe drought or worse since 2000 was 2012 (41,841 county-weeks). In 2025, the latest full year, 121 counties spent half the year or more in that condition.</p>
-<p>Solar and wind, Form 860 2025: 154,264 MW of solar in 1326 counties and 159,732 MW of wind in 518; 43,643 MW of batteries. Proposed to EIA: 140,162 MW solar and 28,250 MW wind, touching 825 counties.</p>
+<p>Solar and wind, Form 860 2025: 154,264 MW of solar in 1326 counties and 159,732 MW of wind in 518; 43,643 MW of batteries. Proposed to EIA: 140,162 MW solar and 28,250 MW wind in 730 counties (825 counties counting proposed batteries).</p>
 <p>Wells and rights. Nebraska: 267,654 registered wells, 105,341 of them irrigation wells not decommissioned, median county median depth 197 ft. Kansas: 111,420 points of diversion, 51,917 active irrigation, median county median priority year 1977.</p>
 </div>
 <!--/SEED:atlas-->
@@ -554,7 +554,7 @@ details.fa-arith .body a{color:var(--gold)}
 
     <details class="fa-fold" id="fa-bystate" hidden>
       <summary>Where July nights are warming, by state</summary>
-      <p>Each county has 51 Julys since 1976, so its own trend has to be large before the 95% interval clears zero. The whole-record fit, every July since 1895, has more years; in some states it finds warming in more counties and in others in fewer, because the early 1900s were warm in some regions. Both columns count counties whose own interval clears zero.</p>
+      <p>Each county has one July a year since 1976, so its own trend has to be large before the 95% interval clears zero. The whole-record fit, every July since 1895, has more years; in some states it finds warming in more counties and in others in fewer, because the early 1900s were warm in some regions. Both columns count counties whose own interval clears zero.</p>
       <div class="tblscroll"><table class="fa-table" id="fa-bystate-table"><thead><tr><th>State</th><th class="n">Counties</th><th class="n">Warming since 1976</th><th class="n">Warming since 1895</th><th class="n">Median trend since 1976, °F a decade</th></tr></thead><tbody></tbody></table></div>
     </details>
 
@@ -757,9 +757,9 @@ var LAYERS=[
  {key:'water_irr',grp:'Water',label:'Cropland irrigated',ramp:'water',unit:'%',pct:true,k:0,needs:'water',
   v:function(c){return get(c,'water','irrigated_share_2022','share');},title:'Share of harvested cropland irrigated, 2022 census'},
  {key:'water_gw',grp:'Water',label:'From groundwater',ramp:'water',unit:'%',pct:true,k:0,needs:'water',
-  v:function(c){return get(c,'water','groundwater_share_2015','share');},title:'Share of irrigation water pumped from groundwater, 2015'},
+  v:function(c){return get(c,'water','groundwater_share_2015','share');},title:'Share of irrigation water pumped from groundwater, 2015 (USGS: crop irrigation where USGS splits it out, all irrigation including golf courses elsewhere)'},
  {key:'water_applied',grp:'Water',label:'Water withdrawn',ramp:'water',unit:'ft/acre',k:2,needs:'water',
-  v:function(c){return get(c,'water','applied_2015','acre_ft_per_acre');},title:'Crop irrigation water withdrawn per irrigated acre, 2015 (acre-feet per acre, conveyance losses included)'},
+  v:function(c){return get(c,'water','applied_2015','acre_ft_per_acre');},title:'Irrigation water withdrawn per irrigated acre, 2015 (acre-feet per acre, conveyance losses included; USGS crop irrigation where it splits it out, all irrigation including golf courses elsewhere)'},
  {key:'prem_slope',grp:'Water',label:'Irrigated ÷ dry rent, trend',div:true,unit:'×/yr',k:3,needs:'water_premium',
   v:function(c){var w=c.water_premium; return ok(w)&&w.ratio_slope_per_year!=null?w.ratio_slope_per_year:null;},title:'Irrigated cash rent as a multiple of dry rent: fitted change per year'},
  {key:'loss_hd',grp:'Loss record',label:'Heat + drought share',ramp:'loss',unit:'%',pct:true,k:0,needs:'loss',
@@ -1738,8 +1738,10 @@ function renderPanel(fips,c){
     if(sh.share!=null&&sh.reported===false) f+=fact('Harvested cropland irrigated, 2022','none reported');
     else if(sh.share!=null) f+=fact('Harvested cropland irrigated, 2022', pct(sh.share,0), sh.irrigated_acres!=null?fmt(sh.irrigated_acres,0)+' of '+fmt(sh.harvested_acres,0)+' acres':'');
     else f+=fact('Harvested cropland irrigated, 2022','— '+why(sh),'',true);
-    if(gw.share!=null&&!tiny) f+=fact('Irrigation water from groundwater, 2015', pct(gw.share,0));
-    if(ap&&ap.acre_ft_per_acre!=null) f+=fact('Water withdrawn per irrigated acre, 2015', fmt(ap.acre_ft_per_acre,2)+' acre-ft');
+    var gwb=gw.basis==='IR'?'USGS all irrigation, golf courses included (no crop split for this county)':gw.basis==='IC'?'USGS crop irrigation':'';
+    if(gw.share!=null&&!tiny) f+=fact('Irrigation water from groundwater, 2015', pct(gw.share,0), gwb);
+    else if(gw.share==null&&!tiny) f+=fact('Irrigation water from groundwater, 2015','— '+why(gw),'',true);
+    if(ap&&ap.acre_ft_per_acre!=null) f+=fact('Water withdrawn per irrigated acre, 2015', fmt(ap.acre_ft_per_acre,2)+' acre-ft', gwb);
     else if(tiny) f+=fact('USGS 2015 water use','— under 1,000 irrigated acres, too little to measure','',true);
   } else f+=fact('Water','— '+why(W),'',true);
   var thin=ok(P)&&/^not called/.test(P.direction||'');
@@ -1806,7 +1808,7 @@ function renderPanel(fips,c){
     else if(C.rate&&C.rate.status) f+=fact('Average CRP rental payment','— '+why(C.rate),'',true);
   } else na.push(['CRP', why(C)]);
   var aw='Irrigated share: 2022 Census of Agriculture. Groundwater share and water withdrawn: USGS 2015 county water use; not shown under 1,000 irrigated acres. '
-    +'Rent multiple: irrigated ÷ non-irrigated cash rent in the same survey year, so general rent inflation cancels out; its direction is called only when the 95% interval of the fitted trend excludes zero'+(ok(P)&&P.ratio_slope_per_year!=null?' ('+sgn(P.ratio_slope_per_year,3)+' ± '+fmt(P.ratio_slope_ci95,3)+' a year, '+P.n_pairs+' paired years)':'')+'. '
+    +'Rent multiple: irrigated ÷ non-irrigated cash rent in the same survey year, so general rent inflation cancels out; its direction is called only when the 95% interval of the fitted trend excludes zero'+(ok(P)&&P.ratio_slope_per_year!=null?' ('+sgn(P.ratio_slope_per_year,4)+' ± '+fmt(P.ratio_slope_ci95,4)+' a year, '+P.n_pairs+' paired years)':'')+'. '
     +'Wells and rights: the Nebraska DNR and Kansas DWR registers. Energy: EIA Form 860. Tile, ditches, tillage and cover crops: 2017 and 2022 Census of Agriculture, as shares of the county\'s cropland; a share over 100% is withheld because the census counts drainage on all land in farms (<a href="/farmland-atlas/methods#m-practices">method</a>). <a href="/farmland-atlas/methods#m-water">Full method</a>';
   var water_band=band('fa-b-water','Water and land',f,ch,na,aw);
 

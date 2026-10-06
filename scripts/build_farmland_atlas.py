@@ -32,8 +32,8 @@ HONESTY RULES BAKED IN
   * The yield trend is the one already published on /cash-rent (15-year
     window, fitted by fetch_cash_rent.py). It is not refitted here so the two
     pages cannot disagree about one county's slope.
-  * The thesis test counts the whole search: four correlations are run, all
-    four are published, and the significance line is corrected for four.
+  * The thesis test counts the whole search: eight correlations are run, all
+    eight are published, and the significance line is corrected for eight.
 
 USAGE
   python scripts/build_farmland_atlas.py --selftest
@@ -224,14 +224,14 @@ MIN_PREMIUM_PAIRS = 6      # paired irrigated/non-irrigated rent years for a pre
 MIN_LEADER_PAIRS = 8       # and for a place on the fastest-rising / fastest-falling tables
 MIN_LEADER_DRY = 25        # $/acre of dry rent, both ends, before a county can lead the multiple tables
 MIN_YIELD_N = 8            # observed county yields for the worst-year line
-MIN_HEAT_TREND_N = 40      # Julys in the 50-year window for a trend
+MIN_HEAT_TREND_N = 40      # Julys in the window since HEAT_TREND_START for a trend
 MIN_HEAT_LEVEL_N = 8       # of the last 10 Julys for a recent level
 MIN_NORMAL_N = 27          # of 30 for a 1991-2020 normal
 MIN_LOSS_PREMIUM = 1_000_000   # dollars of premium in a period before a loss ratio is printed (phase 2)
 MIN_LOSS_INDEM = 100_000       # dollars of indemnity in a period before shares are printed
 MIN_THESIS_N = 200         # counties before a cross-county correlation is printed
 
-HEAT_TREND_START = 1976    # 50 Julys through 2025
+HEAT_TREND_START = 1976    # every July from here to the latest year (51 through 2026)
 HOT_JULY_F = 70.0          # a July whose average low was at or above this. Extension
                            # literature puts the harm line for corn at nightly lows above
                            # 70 F (Ohio State C.O.R.N. 2019-27; High Plains Journal 2026-09-03).
@@ -524,7 +524,7 @@ def heat_layer(h, latest_year, ran=False):
                                        "mean": round(sum(s[y] for y in norm_years) / len(norm_years), 1)}
         else:
             rec["normal_1991_2020"] = {"status": f"withheld: {len(norm_years)} of 30 years present, gate is {MIN_NORMAL_N}"}
-        # trend over the 50-year window, degrees F per decade
+        # trend since HEAT_TREND_START, degrees F per decade
         tw = [(y, s[y]) for y in range(HEAT_TREND_START, latest_year + 1) if y in s]
         if len(tw) >= MIN_HEAT_TREND_N:
             fit = ols(tw)
@@ -726,6 +726,7 @@ def national(counties, loss_latest):
     slopes = []
     warmest_last = 0
     hot_by_decade = {}
+    full_decades = set()      # decades some county has all ten Julys of; the current one is not among them
     n_hot = 0
     by_state = {}
     for c in counties.values():
@@ -752,6 +753,7 @@ def national(counties, loss_latest):
         if d:
             n_hot += 1
             full = {k: v for k, v in d.items() if v["n"] >= 10}      # complete decades only
+            full_decades.update(full)
             if full:
                 last = sorted(full)[-1]
                 if full[last]["mean"] >= max(v["mean"] for v in full.values()):
@@ -770,7 +772,7 @@ def national(counties, loss_latest):
         out["heat"] = {"counties_with_trend": trend_n, "warming": warming, "cooling": cooling,
                        "no_clear_direction": trend_n - warming - cooling,
                        "median_trend_per_decade": round(statistics.median(slopes), 2),
-                       "latest_full_decade": max((k for k, v in hot_by_decade.items()), default=None),
+                       "latest_full_decade": max(full_decades, default=None),
                        "latest_decade_is_warmest": warmest_last, "counties_with_decades": n_hot,
                        "hot_julys_by_decade": hot_by_decade}
     # water
@@ -778,17 +780,26 @@ def national(counties, loss_latest):
               if (c.get("water") or {}).get("status") == "ok" and (c["water"].get("irrigated_share_2022") or {}).get("share") is not None]
     gws = [c["water"]["groundwater_share_2015"]["share"] for c in counties.values()
            if (c.get("water") or {}).get("status") == "ok" and (c["water"].get("groundwater_share_2015") or {}).get("share") is not None]
+    gwb = [c["water"]["groundwater_share_2015"].get("basis", "IC") for c in counties.values()
+           if (c.get("water") or {}).get("status") == "ok" and (c["water"].get("groundwater_share_2015") or {}).get("share") is not None]
     if shares:
         out["water"] = {"counties_with_share": len(shares), "median_irrigated_share": round(statistics.median(shares), 3),
                         "over_half_irrigated": sum(1 for x in shares if x >= 0.5),
                         "over_quarter_irrigated": sum(1 for x in shares if x >= 0.25),
-                        "counties_with_gw_share": len(gws), "gw_over_90pct": sum(1 for x in gws if x >= 0.9)}
+                        "counties_with_gw_share": len(gws), "gw_over_90pct": sum(1 for x in gws if x >= 0.9),
+                        # USGS 2015 splits crop irrigation (IC) from golf (IG) in some states only; elsewhere
+                        # the county figure is all irrigation (IR). Both bases are counted so n adds up.
+                        "gw_basis_ic": sum(1 for b in gwb if b == "IC"), "gw_basis_ir": sum(1 for b in gwb if b == "IR")}
     # premium
-    prem = [c["water_premium"] for c in counties.values() if (c.get("water_premium") or {}).get("status") == "ok"]
-    if prem:
-        out["premium"] = {"counties": len(prem), "rising": sum(1 for p in prem if p["direction"] == "rising"),
+    prem_all = [c["water_premium"] for c in counties.values() if (c.get("water_premium") or {}).get("status") == "ok"]
+    # a county under the dry-rent gate is never tested ("not called: ..."), so it is
+    # neither in the count nor in the chance line: n is the number of tests run
+    prem = [p for p in prem_all if not str(p.get("direction", "")).startswith("not called")]
+    if prem_all:
+        out["premium"] = {"counties": len(prem), "not_called_dry_rent": len(prem_all) - len(prem),
+                          "rising": sum(1 for p in prem if p["direction"] == "rising"),
                           "falling": sum(1 for p in prem if p["direction"] == "falling"),
-                          # 284 separate 95% tests: about 2.5% would be called in each direction by luck
+                          # one separate 95% test per tested county: about 2.5% would be called in each direction by luck
                           "expected_by_chance_each_way": round(len(prem) * 0.025, 1)}
     # loss: dollars summed across counties, by period and group
     # dollars are summed from every county's per-year totals, gated or not, so
@@ -1831,6 +1842,14 @@ def _big(x):
     return _money(x)
 
 
+def _next_decade(d):
+    """'2010s' -> '2020s'; anything else -> 'current decade'."""
+    try:
+        return f"{int(d[:4]) + 10}s"
+    except (TypeError, ValueError):
+        return "current decade"
+
+
 def _pct(x):
     return f"{half_up(x * 100)}%"
 
@@ -1846,17 +1865,19 @@ def seed_html(out):
     if h:
         hb = h["hot_julys_by_decade"]
         dec = " · ".join(f"{k} {v['hot']}" for k, v in sorted(hb.items()) if k >= "1930s" and k <= "2010s")
-        parts.append(f'<p>July nights: {h["warming"]} of {h["counties_with_trend"]} counties are warming since 1976 with the 95% interval clear of zero, {h["cooling"]} cooling, {h["no_clear_direction"]} with no clear direction; the median trend is {h["median_trend_per_decade"]:+.2f} F per decade. In {h["latest_decade_is_warmest"]} of {h["counties_with_decades"]} counties the 2010s were the warmest complete decade since the 1900s (the 2020s are not complete and are not counted). </p>')
+        parts.append(f'<p>July nights: {h["warming"]} of {h["counties_with_trend"]} counties are warming since {HEAT_TREND_START} with the 95% interval clear of zero, {h["cooling"]} cooling, {h["no_clear_direction"]} with no clear direction; the median trend is {h["median_trend_per_decade"]:+.2f} F per decade. In {h["latest_decade_is_warmest"]} of {h["counties_with_decades"]} counties the {h["latest_full_decade"] or "latest complete decade"} were the warmest complete decade since the 1900s (the {_next_decade(h["latest_full_decade"])} are not complete and are not counted). </p>')
         bs = n.get("heat_by_state") or {}
         if bs:
             full = sum(v.get("warming_full", 0) for v in bs.values())
             nfull = sum(v.get("counties_full", 0) for v in bs.values())
-            parts.append(f'<p>Each county has 51 Julys since 1976, and a single county\'s trend has to be large to clear its own 95% interval. Fitted on every July since 1895 instead, {full} of {nfull} counties are warming with the interval clear of zero.</p>')
+            hl = ((out.get("layers") or {}).get("heat") or {}).get("latest_year")
+            nj = (hl - HEAT_TREND_START + 1) if hl else "—"
+            parts.append(f'<p>Each county has at most {nj} Julys since {HEAT_TREND_START}, and a single county\'s trend has to be large to clear its own 95% interval. Fitted on every July since 1895 instead, {full} of {nfull} counties are warming with the interval clear of zero.</p>')
     else:
         parts.append('<p>July nights: not yet measured.</p>')
     w = n.get("water")
     if w:
-        parts.append(f'<p>Water: {w["over_quarter_irrigated"]} of {w["counties_with_share"]} counties irrigate a quarter or more of their harvested cropland and {w["over_half_irrigated"]} irrigate half or more; the median county irrigates {_pct(w["median_irrigated_share"])}. In {w["gw_over_90pct"]} of {w["counties_with_gw_share"]} counties nine-tenths or more of the irrigation water is pumped from the ground.</p>')
+        parts.append(f'<p>Water: {w["over_quarter_irrigated"]} of {w["counties_with_share"]} counties irrigate a quarter or more of their harvested cropland and {w["over_half_irrigated"]} irrigate half or more; the median county irrigates {_pct(w["median_irrigated_share"])}. In {w["gw_over_90pct"]} of {w["counties_with_gw_share"]} counties nine-tenths or more of the irrigation water is pumped from the ground (USGS 2015: crop irrigation where USGS splits it out, {w.get("gw_basis_ic", "—")} counties; all irrigation including golf courses in the other {w.get("gw_basis_ir", "—")}).</p>')
     else:
         parts.append('<p>Water dependence: not yet measured.</p>')
     lo = n.get("loss")
@@ -1879,7 +1900,8 @@ def seed_html(out):
             if fr is None or lr is None:
                 return f'{_label(cc)}'
             return f'{_label(cc)}: {fr:.2f} times dry rent in {p["first"]["year"]} to {lr:.2f} in {p["latest"]["year"]}'
-        parts.append(f'<p>Irrigated against dry cash rent: {pr["counties"]} counties publish both with enough paired years. Measured as irrigated rent over dry rent, so general rent inflation cancels out, the multiple is rising in {pr["rising"]} and falling in {pr["falling"]}, with the 95% interval clear of zero. Falling fastest: ' + "; ".join(li(f, p) for f, p in narrow) + '. Rising fastest: ' + "; ".join(li(f, p) for f, p in wide) + '.</p>')
+        nc = pr.get("not_called_dry_rent")
+        parts.append(f'<p>Irrigated against dry cash rent: {pr["counties"]} counties publish both with enough paired years and enough dry rent to test' + (f' ({nc} more are not tested: dry rent under ${MIN_LEADER_DRY})' if nc else '') + f'. Measured as irrigated rent over dry rent, so general rent inflation cancels out, the multiple is rising in {pr["rising"]} and falling in {pr["falling"]}, with the 95% interval clear of zero; by chance alone about {pr["expected_by_chance_each_way"]:.0f} of {pr["counties"]} would be called each way. Falling fastest: ' + "; ".join(li(f, p) for f, p in narrow) + '. Rising fastest: ' + "; ".join(li(f, p) for f, p in wide) + '.</p>')
     parts.extend(seed_p1(n, _money, _pct))
     parts.append('</div>')
     return "\n".join(parts)
