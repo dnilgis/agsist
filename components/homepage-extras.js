@@ -302,7 +302,7 @@
     if(sel){
       sel.innerHTML = '';
       (pickOptions.length ? pickOptions : [best]).forEach(function(o, i){
-        var op = document.createElement('option'); op.value = String(i); op.textContent = optLabel(o) + (o.isBest ? ' (filled)' : '');
+        var op = document.createElement('option'); op.value = String(i); op.textContent = optLabel(o) + (o.isBest ? ' (in use)' : '');
         if(o === best) op.selected = true; sel.appendChild(op);
       });
       if(!pickOptions.length) pickOptions = [best];
@@ -655,7 +655,7 @@
           if(data && data.error === 'limit')
             return retry('This address already has 5 elevator alerts, the most one address can hold.', input);
           if(data && data.ok === false && data.error && r.status >= 400 && r.status < 500)
-            return retry('That alert was not accepted (' + String(data.error) + ').', /email/.test(String(data.error)) ? input : null);
+            return retry(/email/.test(String(data.error)) ? 'That email address was not accepted.' : 'That alert was not accepted.', /email/.test(String(data.error)) ? input : null);
           if(!r.ok || !data || data.ok !== true)
             return retry('The watch service did not confirm this' + (r.ok ? '' : ' (error ' + r.status + ')') + '. Nothing was saved. Try again in a minute.');
           if(wid) markWatched(wid);

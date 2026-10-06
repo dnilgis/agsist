@@ -527,7 +527,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
           </div>
         </div>
         
-        <div id="bids-list-area"><div class="bids-skeleton" aria-label="Loading cash bids"><div class="bids-skel-row"></div><div class="bids-skel-row"></div><div class="bids-skel-row"></div></div></div>
+        <div id="bids-list-area"><div class="bids-skeleton" role="status"><span class="visually-hidden">Loading cash bids</span><div class="bids-skel-row"></div><div class="bids-skel-row"></div><div class="bids-skel-row"></div></div></div>
         <div style="font-size:.706rem;color:var(--text-muted);margin-top:.5rem;padding-top:.45rem;border-top:1px solid var(--border)"><span class="tip"><button type="button" class="tip-b" aria-expanded="false" aria-describedby="tip-basis">What is basis?</button><span id="tip-basis" role="tooltip" class="tip-t" hidden>Basis is the cash bid minus the futures price it is quoted against. A basis of &minus;30 means 30 cents under futures. Less negative is stronger.</span></span> Posted prices, not contracts. Freight, moisture and grade discounts are the elevator&rsquo;s; call before you haul. <a href="/contact" style="color:var(--text-muted);text-decoration:underline">Wrong number? Tell us</a></div>
         <details class="m-fold m-fold--calc" open><summary class="m-fold-sum"><span>Store or sell?</span></summary>
         <div id="idx1-store-sell" class="idx1-extras-card" style="display:none">
@@ -675,7 +675,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
             <div class="wstat"><div class="wstat-lbl">Wind</div><div class="wstat-val" id="wx-wind">--</div></div>
             <div class="wstat"><div class="wstat-lbl">Humidity</div><div class="wstat-val" id="wx-humid">--</div></div>
             <div class="wstat"><div class="wstat-lbl">Precip Chance</div><div class="wstat-val" id="wx-precip">--</div></div>
-            <div class="wstat"><div class="wstat-lbl">Dew Point</div><div class="wstat-val" id="wx-dew">--</div></div><div class="wstat" id="s7-wx-low-w"><div class="wstat-lbl">Overnight low</div><div class="wstat-val" id="s7-wx-low"><span class="s7-nl">Not loaded yet</span></div></div><div class="wstat" id="s7-wx-soil-w"><div class="wstat-lbl">Soil, 2.4 in (6 cm), modelled</div><div class="wstat-val" id="s7-wx-soil"><span class="s7-nl">Not loaded yet</span></div></div>
+            <div class="wstat"><div class="wstat-lbl">Dew Point</div><div class="wstat-val" id="wx-dew">--</div></div><div class="wstat" id="s7-wx-low-w"><div class="wstat-lbl">Overnight low</div><div class="wstat-val" id="s7-wx-low"><span class="s7-nl">Not loaded yet</span></div></div><div class="wstat" id="s7-wx-soil-w"><div class="wstat-lbl">Soil, 2.4 in, modeled</div><div class="wstat-val" id="s7-wx-soil"><span class="s7-nl">Not loaded yet</span></div></div>
           </div>
                     <div class="wx-today" id="wx-today-summary"></div>
           <div id="wx-forecast" style="display:none"></div>
@@ -1127,7 +1127,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
         if($(pre+'-sub'))$(pre+'-sub').textContent=tag==='5-year'?'percentile':'of its 52-week range';
         if($(pre+'-tag'))$(pre+'-tag').textContent=tag;
         var pe=$(pre+'-price');
-        if(pe){pe.textContent=(live!=null?(mon?mon+' ':'')+qp(q.close)+' on the board · ':'')+(tag==='5-year'?'5-year':'52-week')+' range $'+lo.toFixed(2)+'–$'+hi.toFixed(2);pe.setAttribute('data-r7','1');}
+        if(pe){pe.textContent=(live!=null?(mon?mon+' ':'')+qp(q.close)+' · ':'')+(tag==='5-year'?'5-year':'52-week')+' range $'+lo.toFixed(2)+'–$'+hi.toFixed(2);pe.setAttribute('data-r7','1');}
         bar(pre,pct);
         /* wave1-E: in the 5-year case the dot is the percentile of weekly closes, not the
            price's place between the low and high printed above, so the bar says so. */
@@ -1197,7 +1197,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
       <div class="signup-icon" aria-hidden="true"></div>
       <span class="signup-eyebrow">AGSIST Daily</span>
       <h2 class="signup-headline">Market news before the open.</h2>
-      <p class="signup-sub">Every weekday before the open: overnight markets, what to watch, and farm weather.</p>
+      <p class="signup-sub">Overnight markets, what to watch, and farm weather, every weekday.</p>
       <div class="signup-tabs"><button class="signup-tab active" id="tab-email" aria-controls="form-email"><svg class="ic" aria-hidden="true"><use href="#i-mail"/></svg> Email</button></div>
       <div class="signup-form" id="form-email" role="tabpanel"><div class="signup-row"><input type="email" class="signup-input" placeholder="your@email.com" autocomplete="email" aria-label="Email address" required><button class="signup-submit" id="btn-email-signup">Subscribe &rarr;</button></div><div class="signup-disc">Free. Unsubscribe any time. We never sell your data. <a href="/privacy">Privacy Policy</a>.</div></div>
       
@@ -1230,7 +1230,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
     if(!k || typeof k.read !== 'number' || typeof k.elevators !== 'number'){ cov.textContent = 'Elevator network: Not loaded yet'; return; }
     var t = new Date(c.generated);
     var w = isNaN(t.getTime()) ? '' : ' \u00b7 ' + t.toLocaleString('en-US', {month:'short', day:'numeric', hour:'numeric', minute:'2-digit', timeZone:'America/Chicago'}) + ' CT';
-    cov.textContent = k.read.toLocaleString('en-US') + ' elevator boards read directly, of ' + k.elevators.toLocaleString('en-US') + ' known' + w;
+    cov.textContent = k.read.toLocaleString('en-US') + ' of ' + k.elevators.toLocaleString('en-US') + ' elevators read directly' + w;
   }).catch(function(){ cov.textContent = 'Elevator network: Not loaded yet'; });
   fetch('/data/bids.json').then(function(r){
     if(!r.ok) throw new Error('bids.json ' + r.status);
@@ -1253,7 +1253,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
     var where = typeof stats.locations === 'number'
       ? stats.locations.toLocaleString('en-US') + ' locations'
       : stats.facilities.toLocaleString('en-US') + ' elevator company names';
-    el.textContent = 'National bid file, both feeds: ' + stats.total_bids.toLocaleString('en-US') + ' bids from '
+    el.textContent = 'All feeds: ' + stats.total_bids.toLocaleString('en-US') + ' bids from '
       + where + ' · ' + when;
   }).catch(function(){
     el.textContent = '— elevator-board stats unavailable this load';
@@ -1440,7 +1440,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
           var r=res.r, data=res.data;
           if(data&&data.error==='limit') return fail('You already have 5 price alerts set, the most one address can track at once.',email);
           if(data&&data.ok===false&&data.error&&r.status>=400&&r.status<500)
-            return fail('That alert was not accepted ('+String(data.error)+').',/email/.test(String(data.error))?email:/target/.test(String(data.error))?tgt:null);
+            return fail(/email/.test(String(data.error))?'That email address was not accepted.':/target/.test(String(data.error))?'That target price was not accepted.':'That alert was not accepted.',/email/.test(String(data.error))?email:/target/.test(String(data.error))?tgt:null);
           if(!r.ok||!data||data.ok!==true)
             return fail('The alert service did not confirm this'+(r.ok?'':' (error '+r.status+')')+'. Nothing was saved. Try again in a minute.');
           document.getElementById('pa-form').innerHTML='<span id="pa-done" tabindex="-1" style="font-size:.706rem;color:var(--green)">Check your email to confirm. Nothing is sent until you do.</span>';
@@ -4349,7 +4349,7 @@ setTimeout(function(){
     var up=d.updated?new Date(d.updated):null;
     if(up&&!isNaN(up)){var hrs=Math.round((Date.now()-up.getTime())/36e5);
       if(hrs>36){return;} /* a wire older than a day and a half is not news */
-      var meta=document.createElement('p');meta.className='wr-meta';meta.textContent='Wire updated '+(hrs<1?'within the hour':hrs+' h ago');
+      var meta=document.createElement('p');meta.className='wr-meta';meta.textContent=hrs<1?'':'Updated '+hrs+' h ago';if(!meta.textContent)meta.hidden=true;
       var all=band.querySelector('.wr-all');if(all){all.parentNode.insertBefore(meta,all);}}
     band.hidden=false;
     /* r7-bids 7b: the header counts the cards visible at this width (the layout hides some). */
@@ -4839,7 +4839,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
     if(avg==null)return null;
     var last=dayStart(leg.series[leg.series.length-1].d);
     if(!last||last>today||last<hs)return null;
-    return {avg:avg,days:leg.days_counted,series:leg.series};
+    return {avg:avg,days:leg.days_counted,series:leg.series,last:leg.series[leg.series.length-1].d};
   }
   /* How many settles RMA's posted figure holds: the day whose running
      average (the pipeline writes it as "a") equals RMA's price. Only a single
@@ -4968,10 +4968,12 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
             var k=g.h!=null?rmaDays(own,g.h):null;
             var useOwn=!!own&&(g.h==null||k==null||own.days>=k);
             var lead=useOwn?own.avg:g.h,n=useOwn?own.days:k;
-            big=gap(lead-g.p,u)+(n&&tot?' · day '+n+' of '+tot:'');
+            /* One day count only, inside the line it describes; the window's own
+               position (trading day N of 22) sits in the sub-line. */
+            big=gap(lead-g.p,u);
             if(g.h!=null&&!k)trail=true;
             var rTxt=g.h!=null?'RMA '+usd(g.h,u)+(k?' ('+dayWord(k)+')':''):'RMA has not posted one';
-            var oTxt=own?'our average '+usd(own.avg,u)+' ('+dayWord(own.days)+')':'';
+            var oTxt=own?'our average '+usd(own.avg,u)+' ('+own.days+(tot?' of '+tot:'')+' days, through '+(function(d){var x=dayStart(d);return x?MON[x.getMonth()]+' '+x.getDate():d;})(own.last)+')':'';
             det=useOwn?[oTxt,rTxt]:[rTxt,oTxt];
             det.push(projTxt);
           } else if(g.h!=null){
@@ -5132,11 +5134,11 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
     /* Local Conditions cells */
     var lw=$('s7-wx-low'),sw=$('s7-wx-soil');
     if(lw){
-      if(lo!=null){var fl=frostFlag(lo);lw.innerHTML=lo+'°F'+(fl?'<span class="s7-flag s7-warn">'+fl+'</span>':'<span class="s7-sub">No frost tonight, air at 2 m</span>');}
+      if(lo!=null){var fl=frostFlag(lo);lw.innerHTML=lo+'°F'+(fl?'<span class="s7-flag s7-warn">'+fl+'</span>':'<span class="s7-sub">No frost tonight</span>');}
       else if(WX.state!=='wait')lw.innerHTML=NL();
     }
     if(sw){
-      if(s)sw.innerHTML=s.now+'°F'+(s.deep!=null?'<span class="s7-sub">7 in (18 cm): '+s.deep+'°F</span>':'');
+      if(s)sw.innerHTML=s.now+'°F'+(s.deep!=null?'<span class="s7-sub">7 in: '+s.deep+'°F</span>':'');
       else if(WX.state!=='wait')sw.innerHTML=NL();
     }
     /* Strip cells */
@@ -5144,7 +5146,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
       if(noLoc)needZip('frost');
       else if(lo!=null){
         var fl2=frostFlag(lo);
-        put('frost','<span class="s7-line">'+lo+'°F <small>overnight low, air at 2 m</small></span>'+(fl2?'<span class="s7-line s7-warn">'+fl2+'</span>':''),
+        put('frost','<span class="s7-line">'+lo+'°F <small>overnight low</small></span>'+(fl2?'<span class="s7-line s7-warn">'+fl2+'</span>':''),
           esc(ff?'First frost risk in the forecast: '+ff.day+' morning, '+ff.lo+'°F ('+frostFlag(ff.lo).toLowerCase()+').':(ff===false?'No frost in the 5-day forecast.':'')));
       } else if(WX.state!=='wait')put('frost',NL(),'Weather forecast');
     }
@@ -5153,11 +5155,11 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
       if(noLoc){needZip('fallN');needZip('soilPlant');if(fb)fb.textContent='Set your ZIP';}
       else if(s){
         var v=fallVerdict(s);
-        var sub=(s.deep!=null?'7 in (18 cm): '+s.deep+'°F. ':'')+(v.t==='In range'?'Both depths below 50°F through the 5-day forecast.':'5-day highs: '+s.max+'°F at 2.4 in'+(s.deepMax!=null?', '+s.deepMax+'°F at 7 in':'')+'.')+' Extension guidance: wait for 4 in soil to stay below 50°F; not on sandy or poorly drained soils.';
-        put('fallN','<span class="s7-line'+(v.c?' '+v.c:'')+'">'+v.t+'</span><span class="s7-line">'+s.now+'°F <small>at 2.4 in, modelled</small></span>',esc(sub));
+        var sub=(v.t==='In range'?'Both depths below 50°F through the 5-day forecast.':'5-day high '+Math.max(s.max,s.deepMax!=null?s.deepMax:-99)+'°F.')+' Apply once 4 in soil stays below 50°F. Not on sandy or poorly drained soils.';
+        put('fallN','<span class="s7-line'+(v.c?' '+v.c:'')+'">'+v.t+'</span><span class="s7-line">'+s.now+'°F <small>at 2.4 in, modeled</small></span>',esc(sub));
         put('soilPlant','<span class="s7-line">'+s.now+'°F <small>at 2.4 in</small></span><span class="s7-line">'+(s.now>=50?'At or above 50°F':'Below 50°F')+'</span>','Soil at 2.4 in (6 cm). Corn is commonly planted once soil holds near 50°F.');
         if(fb){fb.textContent=v.t+' · '+s.now+'°F';fb.style.color=v.c?'var(--green)':'var(--text)';}
-        if(fr)fr.textContent='Modelled. '+sub;   /* the cell already says "modelled" beside the reading */
+        if(fr)fr.textContent='Modeled. '+sub;   /* the cell already says "modelled" beside the reading */
       } else if(WX.state!=='wait'){put('fallN',NL(),'Soil temperature forecast');put('soilPlant',NL(),'');if(fb)fb.textContent='Not loaded yet';}
     }
     if(cells.spray){

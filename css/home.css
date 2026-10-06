@@ -1922,7 +1922,7 @@ html.ticker-paused .ticker-track{animation-play-state:paused!important}
 #idx1-store-sell input[aria-invalid="true"],#pa-form input[aria-invalid="true"],.we-form [aria-invalid="true"]{border-color:var(--red)!important}
 #pa-status:focus,#pa-done:focus,.watch-elevator-status:focus,.we-done:focus{outline:2px solid var(--gold);outline-offset:2px}
 /* ===== WAVE3-L: no-quote rows, failure lines, ranking note, COT badges */
-#f-prices .r7-row.r7-noq{display:none!important}
+#f-prices .r7-row.r7-noq,#f-prices .r7-led .pc.r7-row.r7-noq,#f-prices .r7-led .r7-row.r7-noq{display:none!important}
 .r7-noq-note{font-size:.72rem;color:var(--text-muted);margin:.3rem 0 0}
 .prices-strip .t-item.t-noq,.prices-strip .t-item.t-noq+.t-sep{display:none!important}
 .prices-strip.px-off{display:none!important}
@@ -1940,7 +1940,9 @@ html.ticker-paused .ticker-track{animation-play-state:paused!important}
    briefing furniture around them. */
 #daily-hero.daily-failed .daily-left>:not(#daily-headline):not(#daily-lead),
 #daily-hero.daily-failed .hero-sidebar,#daily-hero.daily-failed #daily-otp,
-#daily-hero.daily-failed #daily-cashbids-cta,#daily-hero.daily-failed #daily-surprise-banner{display:none!important}
+#daily-hero.daily-failed #daily-cashbids-cta,#daily-hero.daily-failed #daily-surprise-banner,#daily-hero.daily-failed #daily-share{display:none!important}
+/* Reduced motion: the ticker does not move, so let it scroll by hand instead of clipping. */
+@media (prefers-reduced-motion:reduce){.prices-strip .ticker-track-wrap{overflow-x:auto!important}}
 #daily-hero.daily-failed .daily-lead a{color:var(--gold);text-decoration:underline}
 
 /* ===== THE LOOK (2026-10-03) ==========================================

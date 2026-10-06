@@ -1061,16 +1061,16 @@
    "touched_by": [
     "Prediction bot \u2014 call and grade"
    ],
-   "cadence": "2 launches on a fixed schedule at about 5pm, 8pm Central",
+   "cadence": "2 launches weekdays at about 5pm, 6pm Central",
    "curated": false,
    "planned": false,
    "external": false,
    "url": null,
    "crons": [
     "41 22 * * 1-5",
-    "17 1 * * 2-6"
+    "41 23 * * 1-5"
    ],
-   "max_gap_hours": 69.4,
+   "max_gap_hours": 71.0,
    "quiet": null,
    "why_quiet": null
   },
@@ -1088,16 +1088,16 @@
     "Prediction bot \u2014 call and grade",
     "Rebuild Archive HTML (one-time)"
    ],
-   "cadence": "2 launches on a fixed schedule at about 5pm, 8pm Central",
+   "cadence": "2 launches weekdays at about 5pm, 6pm Central",
    "curated": false,
    "planned": false,
    "external": false,
    "url": null,
    "crons": [
     "41 22 * * 1-5",
-    "17 1 * * 2-6"
+    "41 23 * * 1-5"
    ],
-   "max_gap_hours": 69.4,
+   "max_gap_hours": 71.0,
    "quiet": null,
    "why_quiet": null
   },

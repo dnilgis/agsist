@@ -90,7 +90,7 @@
     if((p.cot||[]).length&&window.AGSIST_COT&&!window.AGSIST_COT.failed)return true;
     if((p.sig||[]).some(function(id){return !!document.getElementById(id);}))return true;
     if(p.bid&&q('#bids-list-area .bh-crop[data-crop="'+p.bid+'"]'))return true;
-    if(p.ins){var ic=q('#s7-grid');if(ic&&ic.textContent.indexOf(p.ins)>=0)return true;}
+    if(p.ins){var ic=q('#s7-grid'),nm=p.ins==='Grain Sorghum'?'Sorghum':p.ins;if(ic&&ic.textContent.indexOf(nm)>=0)return true;}
     return false;
   }
   function names(){return chosen.map(function(k){var p=BYK[k];return p.g==='w'?p.n+' wheat':p.n;});}
@@ -140,7 +140,8 @@
       else{
         var hit=[],none=[];
         chosen.forEach(function(k){(responds(BYK[k])?hit:none).push(BYK[k].g==='w'?BYK[k].n+' wheat':BYK[k].n);});
-        say.textContent='Saved. '+(hit.length?hit.join(', ')+' first.':'')+(none.length?' Nothing on this page for '+none.join(', ')+' yet.':'');
+        var saved=lsGet(KEY)===chosen.join(',');
+        say.textContent=[saved?'Saved.':'Applied for this visit; this browser blocks saving.',hit.length?hit.join(', ')+' first.':'',none.length?'Nothing on this page for '+none.join(', ')+' yet.':''].filter(Boolean).join(' ');
       }
     }
     if(window.gaEvent)try{window.gaEvent('raise_pick',{picks:chosen.join(',')||'none'});}catch(e){}

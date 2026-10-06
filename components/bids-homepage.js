@@ -443,7 +443,7 @@
           if(rm) refTxt = 'basis vs ' + rm.replace(/ (corn|soybeans)$/, '');
           else if(pp != null && bid.basis != null && refCropFor(bid, cat)){
             var rc = refCropFor(bid, cat), ek = refEndKey(bid, rc === 'kcwheat' ? 'wheat' : rc);
-            if(ek || rc === 'kcwheat') refAttr = ' data-ref-crop="' + rc + '" data-ref-for="' + cat + '" data-ref-end="' + (ek || '') + '" data-ref-imp="' + (pp - basisCents(bid.basis) / 100).toFixed(4) + '"' + (bid.pricedAt || bid.checkedAt ? ' data-ref-read="' + escHtml(String(bid.pricedAt || bid.checkedAt)) + '"' : '');
+            if(ek) refAttr = ' data-ref-crop="' + rc + '" data-ref-for="' + cat + '" data-ref-end="' + (ek || '') + '" data-ref-imp="' + (pp - basisCents(bid.basis) / 100).toFixed(4) + '"' + (bid.pricedAt || bid.checkedAt ? ' data-ref-read="' + escHtml(String(bid.pricedAt || bid.checkedAt)) + '"' : '');
           }
         }
         /* Day change: filled by fillChanges() from data/bids-prev/<ST>.json. */
@@ -467,7 +467,7 @@
         }
         var bc = perTon || special ? null : boardCarry(bid);
         if(bc){
-          html += '<span class="r7-carry" style="grid-column:1/-1;font-size:.75rem;color:var(--text-muted)">Elevator carry ' + escHtml(bc.from) + ' → ' + escHtml(bc.to) + ': <span style="font-family:\'JetBrains Mono\',monospace;color:var(--text-dim)">' + bc.txt + '</span></span>';
+          html += '<span class="r7-carry" style="grid-column:1/-1;font-size:.75rem;color:var(--text-muted)">Carry ' + escHtml(bc.from) + ' → ' + escHtml(bc.to) + ': <span style="font-family:\'JetBrains Mono\',monospace;color:var(--text-dim)">' + bc.txt + '</span></span>';
         }
         html += '</div>';
       });
@@ -524,8 +524,8 @@
      REF_TOL of that contract in data/prices.json. A Kansas HRW board quoted
      off Kansas City fails the Chicago check and prints nothing, which is
      right: the page has no dated KC contract to name. */
-  var REF_CYCLE = { corn:[3,5,7,9,12], soybeans:[1,3,5,7,8,9,11], wheat:[3,5,7,9,12], oats:[3,5,7,9,12] };
-  var REF_KEY = { corn:'corn', soybeans:'beans', wheat:'wheat', oats:'oats' };
+  var REF_CYCLE = { corn:[3,5,7,9,12], soybeans:[1,3,5,7,8,9,11], wheat:[3,5,7,9,12], oats:[3,5,7,9,12], kcwheat:[3,5,7,9,12] };
+  var REF_KEY = { corn:'corn', soybeans:'beans', wheat:'wheat', oats:'oats', kcwheat:'kcwheat' };
   /* WAVE1-A: WHICH FUTURES A ROW IS CHECKED AGAINST.
        sorghum   corn futures: milo is quoted off corn, and the label is only
                  printed when the board's cash minus basis lands on a corn
@@ -566,7 +566,7 @@
     for(var i = 0; i < cyc.length; i++){ if(cyc[i] >= mo){ pick = cyc[i]; break; } }
     if(pick == null){ pick = cyc[0]; y += 1; }
     var yy = String(y).slice(-2);
-    return { key: REF_KEY[cat] + '-' + MON_LC[pick - 1] + yy, label: MON[pick - 1] + ' \'' + yy + ' ' + (cat === 'soybeans' ? 'soybeans' : cat === 'wheat' ? 'Chicago wheat' : cat) };
+    return { key: REF_KEY[cat] + '-' + MON_LC[pick - 1] + yy, label: MON[pick - 1] + ' \'' + yy + ' ' + (cat === 'soybeans' ? 'soybeans' : cat === 'wheat' ? 'Chicago wheat' : cat === 'kcwheat' ? 'KC wheat' : cat) };
   }
   /* r7-bids 7b: THE ELEVATOR'S OWN CARRY. merged-index.json carries, per
      place and crop, `now` (nearest open delivery) and `best` (its top cash
@@ -608,15 +608,22 @@
         var el = els[i], crop = el.getAttribute('data-ref-crop'), forCrop = el.getAttribute('data-ref-for') || crop;
         var imp = parseFloat(el.getAttribute('data-ref-imp'));
         if(crop === 'kcwheat'){
-          /* WAVE1-A: KC front month only, named as an exchange. It must also
-             be nearer than every Chicago contract, which sits about 50c away. */
-          var kc = q.kcwheat, chiBest = Infinity;
-          Object.keys(q).forEach(function(k){ if(/^wheat-[a-z]{3}\d{2}$/.test(k) && q[k] && q[k].close != null) chiBest = Math.min(chiBest, Math.abs(q[k].close / 100 - imp)); });
-          if(!kc || kc.close == null || !isFinite(imp)) continue;
-          var kd = Math.abs(kc.close / 100 - imp);
-          if(kd > REF_TOL || kd >= chiBest) continue;
-          el.textContent = 'basis vs KC wheat, front month';
-          used['KC wheat front month'] = kc.close / 100;
+          /* 2026-10-05: a dated KC contract by the same delivery-month rule
+             as every other crop (the price file now carries kcwheat-dec26,
+             -mar27, -may27). Front month was wrong for a July new-crop bid.
+             It must be the nearest dated KC contract, within 8 cents, and
+             nearer than Chicago's SAME month; a month not on file prints
+             nothing. */
+          var kcand = refCandidate('kcwheat', el.getAttribute('data-ref-end'));
+          var kq = kcand && q[kcand.key];
+          if(!kq || kq.close == null || !isFinite(imp)) continue;
+          var kBest = null, kBestD = Infinity;
+          Object.keys(q).forEach(function(k){ if(!/^kcwheat-[a-z]{3}\d{2}$/.test(k) || !q[k] || q[k].close == null) return; var d = Math.abs(q[k].close / 100 - imp); if(d < kBestD){ kBestD = d; kBest = k; } });
+          if(kBest !== kcand.key || kBestD > REF_TOL) continue;
+          var chiSame = q[kcand.key.replace(/^kcwheat-/, 'wheat-')];
+          if(chiSame && chiSame.close != null && Math.abs(chiSame.close / 100 - imp) <= kBestD) continue;
+          el.textContent = 'basis vs ' + kcand.label;
+          used[kcand.label] = kq.close / 100;
           var kdt = el.getAttribute('data-ref-read') || ''; if(kdt && (!oldest || kdt < oldest)) oldest = kdt;
           n++;
           continue;
@@ -641,8 +648,8 @@
            say both, with the futures level the page actually has. */
         var fut = Object.keys(used).map(function(l){ return l + ' $' + used[l].toFixed(2); }).join(', ');
         var ft = ctTime(pd && pd.fetched), bt = ctTime(oldest);
-        note.textContent = 'Basis month shown where cash minus basis lands within 8\u00a2 of that contract.'
-          + (ft ? ' Futures ' + fut + ' at ' + ft + (bt ? ', read at a different time than the boards.' : '.') : '');
+        note.textContent = (ft ? 'Futures at ' + ft + ': ' + fut + '. Boards post at other times. ' : '')
+          + 'A basis month shows where cash minus basis lands within 8\u00a2 of that contract.';
         note.hidden = false;
       }
     });
