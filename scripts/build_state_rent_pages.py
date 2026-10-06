@@ -504,7 +504,7 @@ def build_state_page(st, d, s, all_states, aslug=None):
 </main>
 {explore_nav()}
 <div id="site-footer"></div>
-<script src="/components/loader.js?v=14"></script>
+<script src="/components/loader.js?v=17"></script>
 {SORT_JS}
 </body>
 </html>
@@ -586,7 +586,7 @@ def build_hub(states, stats, generated):
 </main>
 {explore_nav()}
 <div id="site-footer"></div>
-<script src="/components/loader.js?v=14"></script>
+<script src="/components/loader.js?v=17"></script>
 {SORT_JS}
 </body>
 </html>

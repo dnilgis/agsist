@@ -562,7 +562,46 @@ def sponsor_block(daily):
     return "".join(parts)
 
 
-def render_html(daily, site_href, unsub_url=None, date_display=None, elevators=None):
+# ── 2026-10-06: the reader's own top bid, and the two asks ─────────────────
+# `local` is built per reader by send_daily.py from scripts/local_bid.py, the
+# port of the homepage hero's top-bid rule. Two shapes, or None:
+#   {"head": "Near Chetek, WI: top corn bid ...", "detail": [...], "note": "..."}
+#   {"ask_url": "https://agsist.com/#signup-full"}   the reader gave no ZIP
+# Nothing here computes a figure. None (no centroid, bids unreadable) renders
+# nothing, so that reader's email is the one everybody got before.
+# `forward_url` is the plain sign-up link for a neighbour.
+def local_html(local):
+    if not local:
+        return ""
+    if local.get("ask_url"):
+        return ('<tr><td class="mute" style="padding:12px 0 0;font-family:%s;font-size:13px;line-height:1.5;'
+                'color:%s"><a href="%s" style="color:%s">Add your ZIP to get your local top bid</a> '
+                'at the top of this email.</td></tr>' % (SANS, MUTE, _href(local["ask_url"]), GOLD))
+    if not local.get("head"):
+        return ""
+    det = "".join('<br><span class="mute" style="font-size:13px;color:%s">%s</span>' % (MUTE, e(d))
+                  for d in (local.get("detail") or []))
+    note = ('<br><span class="mute" style="font-size:12px;color:%s">%s</span>' % (MUTE, e(local["note"]))
+            if local.get("note") else "")
+    return ('<tr><td style="padding:14px 0 0"><table role="presentation" width="100%%" cellpadding="0" '
+            'cellspacing="0" border="0"><tr><td class="ink" style="border-left:3px solid %s;padding:4px 0 4px 12px;'
+            'font-family:%s;font-size:15px;line-height:1.5;color:%s"><strong>%s</strong>%s%s</td></tr></table></td></tr>'
+            % (GOLD, SANS, INK, e(local["head"]), det, note))
+
+
+def local_text(local):
+    if not local:
+        return []
+    if local.get("ask_url"):
+        return ["", "Add your ZIP to get your local top bid at the top of this email: " + local["ask_url"]]
+    if not local.get("head"):
+        return []
+    return ["", local["head"]] + ["  " + d for d in (local.get("detail") or [])] + (
+        ["  " + local["note"]] if local.get("note") else [])
+
+
+def render_html(daily, site_href, unsub_url=None, date_display=None, elevators=None,
+                local=None, forward_url=None):
     prior, prior_day = prior_board(daily)
     head = strip_md(daily.get("headline"))
     lead = strip_md(daily.get("lead"))
@@ -591,6 +630,9 @@ def render_html(daily, site_href, unsub_url=None, date_display=None, elevators=N
         '<tr><td style="padding:2px 0 0;font-family:%s;font-size:12px;color:%s" class="mute">%s</td></tr>'
         % (SANS, MUTE, e(date_display)),
     ]
+    _loc = local_html(local)
+    if _loc and not local.get("ask_url"):
+        body.append(_loc)              # the reader's own bid opens the email
     if head:
         body.append('<tr><td class="ink" style="padding:14px 0 0;font-family:%s;font-size:25px;'
                     'line-height:1.22;font-weight:700;color:%s">%s</td></tr>' % (SANS, INK, e(head)))
@@ -658,6 +700,13 @@ def render_html(daily, site_href, unsub_url=None, date_display=None, elevators=N
                 'letter-spacing:.06em;display:inline-block">'
                 'Charts, calls and the full issue &rarr;</a></td></tr></table></td></tr>'
                 % (INK, INK, _href(site_href), MONO))
+    if _loc and local.get("ask_url"):
+        body.append(_loc)
+    if forward_url:
+        body.append('<tr><td class="mute" style="padding:12px 0 0;font-family:%s;font-size:13px;line-height:1.5;'
+                    'color:%s">Forward to a neighbor. Or send them the free sign-up link: '
+                    '<a href="%s" style="color:%s">%s</a></td></tr>'
+                    % (SANS, MUTE, _href(forward_url), GOLD, e(forward_url.split("://", 1)[-1])))
     foot = ('AGSIST &middot; free US ag market intelligence &middot; '
             '<a class="mute" href="https://agsist.com" style="color:%s">agsist.com</a>' % MUTE)
     if unsub_url:
@@ -702,7 +751,8 @@ def render_html(daily, site_href, unsub_url=None, date_display=None, elevators=N
 
 
 
-def render_text(daily, site, unsub_url=None, date_display=None, elevators=None):
+def render_text(daily, site, unsub_url=None, date_display=None, elevators=None,
+                local=None, forward_url=None):
     """The plain-text alternative, and it is not an afterthought.
 
     Some clients show it, some readers prefer it, and a multipart message with a
@@ -715,6 +765,8 @@ def render_text(daily, site, unsub_url=None, date_display=None, elevators=None):
     issue = daily.get("issue_number")
     L.append("AGSIST DAILY" + (" No. %s" % issue if issue else ""))
     L.append(strip_md(daily.get("date")) or (date_display or ""))
+    if local and not local.get("ask_url"):
+        L += local_text(local)
     for k in ("headline", "lead"):
         v = strip_md(daily.get(k))
         if v:
@@ -807,8 +859,12 @@ def render_text(daily, site, unsub_url=None, date_display=None, elevators=None):
     if elevators:
         L += ["", "YOUR ELEVATORS"] + ["  " + x for x in elevators]
         L.append("  The elevators' own posted boards, read when this email was sent. Not a contract.")
-    L += ["", "Charts, calls and the full issue: " + site, "",
-          "AGSIST, free US ag market intelligence, agsist.com"]
+    L += ["", "Charts, calls and the full issue: " + site]
+    if local and local.get("ask_url"):
+        L += local_text(local)
+    if forward_url:
+        L += ["", "Forward to a neighbor. Or send them the free sign-up link: " + forward_url]
+    L += ["", "AGSIST, free US ag market intelligence, agsist.com"]
     L.append("Unsubscribe: " + unsub_url if unsub_url
              else "To unsubscribe, reply with subject line: unsubscribe")
     L.append("PO Box 243, Chetek, WI 54728")

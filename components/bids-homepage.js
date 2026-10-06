@@ -560,6 +560,11 @@
     html += '</span>';
     cols.forEach(function(c){ html += cellHTML(elev, c, fr); });
     html += '<span class="bh-chev" aria-hidden="true"></span></button>';
+    /* 2026-10-06 signup: "Watch" sits on the row, no expand needed. It is a
+       sibling of the row button (a button cannot hold a button). Filled in
+       below once we know the row offers a watch; its tap opens the row and
+       runs the existing watch flow (components/homepage-extras.js). */
+    var watchAt = html.length;
 
     // Everything else, behind the tap
     html += '<div class="bh-more" id="' + xid + '"' + (isOpen ? '' : ' hidden') + '>';
@@ -670,6 +675,9 @@
         + (opts.length ? ' data-opts="' + escHtml(JSON.stringify(opts)) + '"' : '') + '>'
         + '<button type="button" class="watch-elevator-btn">Watch this elevator</button>'
         + '</div>';
+      html = html.slice(0, watchAt)
+        + '<button type="button" class="bh-watch" aria-controls="' + xid + '" aria-label="Watch this elevator: ' + escHtml(name) + '">Watch</button>'
+        + html.slice(watchAt);
     }
 
     html += '</div></div>';
@@ -1527,6 +1535,11 @@
     '#bids-list-area .bh-normal{margin-top:.4rem;font-size:.8125rem;color:var(--text-muted)}',
     '#bids-list-area .bh-normal[hidden]{display:none}',
     '#bids-list-area .bh-normal-h{font-weight:700;color:var(--text-dim)}',
+    '#bids-list-area .bh-elev{position:relative}',
+    '#bids-list-area .bh-elev:has(>.bh-watch) .bh-id{padding-right:3.6rem}',
+    '#bids-list-area .bh-watch{position:absolute;top:0;right:1.6rem;min-width:44px;min-height:44px;padding:0 .3rem;background:none;border:0;border-radius:6px;font-family:inherit;font-size:.875rem;font-weight:600;color:var(--gold);text-decoration:underline;text-underline-offset:3px;cursor:pointer}',
+    '[data-theme="light"] #bids-list-area .bh-watch{color:#86600f}',
+    '#bids-list-area .bh-watch:focus-visible{outline:2px solid var(--gold);outline-offset:0}',
     '#bids-list-area .watch-elevator-btn{min-height:44px;padding:0;background:none;border:0;font-family:inherit;font-size:.8125rem;color:var(--text-muted);text-decoration:underline;cursor:pointer}',
     '#bids-list-area .bh-foot{display:flex;justify-content:flex-end;align-items:center;padding:.35rem 0 0;font-size:.875rem}',
     '#bids-list-area .bh-links{display:flex;flex-wrap:wrap;align-items:center;column-gap:.4rem;font-size:.8125rem;color:var(--text-muted)}',
@@ -1558,6 +1571,8 @@
       P + '.bh-cash{font-size:1.25rem;line-height:1.25}',
       P + '.bh-head>.bh-chev{grid-column:-2}',
       P + '.bh-more{padding-right:calc(1.25rem + .75rem)}',
+      /* Watch sits at the right edge of the name column, clear of the price columns. */
+      P + '.bh-watch{right:calc(1.25rem + .75rem + var(--bh-k,2) * (6.5rem + .75rem))}',
       '}'].join('\n');
   }
   function ensureCSS(){
@@ -1806,6 +1821,15 @@
         if(p) p.hidden = !on;
         var el = btn.closest('.bh-elev'), k = el && el.getAttribute('data-ck');
         if(k){ if(on) openSet[k] = 1; else delete openSet[k]; }
+      });
+    });
+    Array.prototype.forEach.call(area.querySelectorAll('.bh-watch'), function(wb){
+      wb.addEventListener('click', function(){
+        var el = wb.closest('.bh-elev'), head = el && el.querySelector('.bh-head');
+        if(head && head.getAttribute('aria-expanded') !== 'true') head.click();
+        var inner = el && el.querySelector('.watch-elevator-wrap .watch-elevator-btn');
+        if(inner) inner.click();
+        else { var f = el && el.querySelector('.watch-elevator-email'); if(f) f.focus(); }
       });
     });
     var tb = area.querySelector('.bh-tipb');

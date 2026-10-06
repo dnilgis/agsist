@@ -748,6 +748,7 @@
    ],
    "written_by": [],
    "touched_by": [
+    "Generate Daily Briefing",
     "Rebuild Feed Manifest"
    ],
    "cadence": "published by dnilgis/bids, refreshed with the boards",
@@ -1315,7 +1316,8 @@
     "Freshness \u2014 seed static prices, dateModified, sitemap lastmod",
     "Morning brief \u2014 email Sigurd",
     "Build Price Stats (5-year percentile)",
-    "Fetch Prices"
+    "Fetch Prices",
+    "Report day \u2014 USDA vs the trade email"
    ],
    "cadence": "9 launches on a fixed schedule at about 5am, 6am, 8am, 11am Central",
    "curated": false,

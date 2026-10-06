@@ -866,7 +866,7 @@ def head(title, desc, canon, extra_ld=None, robots=None, image=None, alt=None, f
 
 FOOT = """
 <div id="site-footer"></div>
-<script src="/components/loader.js?v=14"></script>
+<script src="/components/loader.js?v=17"></script>
 </body>
 </html>
 """

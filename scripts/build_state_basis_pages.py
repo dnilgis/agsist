@@ -839,7 +839,7 @@ def build_state_page(st, rows_all, summ, ctx):
   <p class="bs-cloud">{cloud}</p>
 </main>
 {ftr}
-<script src="/components/loader.js?v=16" defer></script>
+<script src="/components/loader.js?v=17" defer></script>
 </body>
 </html>
 """

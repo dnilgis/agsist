@@ -552,7 +552,14 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
         <span class="hb-s" id="hb-wx-s"></span>
       </a>
     </div>
+    <!-- 2026-10-06 signup: one line under the bids. components/signup-ask.js
+         draws it, sends the saved ZIP with source "hero", and hides it for a
+         reader who already signed up. Loaded here, not deferred, so the line
+         is drawn (or hidden) before first paint and the bids card below
+         never jumps. -->
+    <div id="hb-ask" data-signup-ask="Get your top local bid by email every weekday morning" data-source="hero" data-variant="hero"></div>
   </section>
+  <script src="/components/signup-ask.js?v=2"></script>
   <script>
   (function(){
     'use strict';
@@ -980,7 +987,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
     <details class="s7-notes" id="s7-notes" hidden><summary>How these are figured</summary><div class="s7-notes-b" id="s7-notes-b"></div></details>
   </section>
   
-  <div class="signup--compact fade-up" id="signup-compact" style="display:none">
+  <div class="signup--compact fade-up" id="signup-compact" data-signup-hide style="display:none">
     <span class="scu-eyebrow"><svg class="ic" aria-hidden="true"><use href="#i-newspaper"/></svg> AGSIST Daily</span>
     <span class="scu-text"><strong>Free daily briefing</strong> &mdash; markets, weather, one number to know before the market open &mdash; for farmers across the US.</span>
     <div class="scu-form"><input type="email" class="scu-input" id="compact-email" placeholder="your@email.com" autocomplete="email" aria-label="Email for daily briefing"><button class="scu-btn" id="btn-compact-signup">Subscribe Free &rarr;</button></div>
@@ -1255,6 +1262,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
         </div>
         <div id="r7-pa-now" aria-live="polite"></div>
         <input type="email" id="pa-email" placeholder="your@email.com" autocomplete="email" aria-label="Email for the alert" style="padding:.4rem .5rem;background:var(--surface2);border:1px solid var(--border);border-radius:5px;font-size:.765rem;color:var(--text)">
+        <label class="sa-optin" id="pa-optin-l" data-signup-hide><input type="checkbox" id="pa-optin" checked> Also send me AGSIST Daily, free, every weekday morning</label>
         <button type="button" id="pa-go" style="padding:.5rem .7rem;background:var(--gold);color:#0a0c0d;border:none;border-radius:5px;font-size:.824rem;font-weight:700;cursor:pointer">Set alert</button>
         <div id="pa-status" role="status" tabindex="-1" style="font-size:.765rem;color:var(--text-muted);min-height:1.1em"></div>
       </div>
@@ -1316,8 +1324,18 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
             return fail(/email/.test(String(data.error))?'That email address was not accepted.':/target/.test(String(data.error))?'That target price was not accepted.':'That alert was not accepted.',/email/.test(String(data.error))?email:/target/.test(String(data.error))?tgt:null);
           if(!r.ok||!data||data.ok!==true)
             return fail('The alert service did not confirm this'+(r.ok?'':' (error '+r.status+')')+'. Nothing was saved. Try again in a minute.');
-          document.getElementById('pa-form').innerHTML='<span id="pa-done" tabindex="-1" style="font-size:.765rem;color:var(--green)">Check your email to confirm. Nothing is sent until you do.</span>';
+          /* 2026-10-06: the labelled daily opt-in, ticked by default. It is
+             read before the form is replaced, and only after the alert
+             itself was accepted. */
+          var oi=document.getElementById('pa-optin'), oiL=document.getElementById('pa-optin-l');
+          var wantDaily=!!(oi&&oi.checked&&oiL&&!oiL.hidden&&window.AgsistSignup&&!window.AgsistSignup.isSignedUp());
+          document.getElementById('pa-form').innerHTML='<span id="pa-done" tabindex="-1" style="font-size:.875rem;color:var(--green)">Check your email to confirm. Nothing is sent until you do.</span><div class="sa-optmsg" id="pa-optmsg" role="status"></div>';
           var done=document.getElementById('pa-done'); if(done) done.focus();
+          if(wantDaily) window.AgsistSignup.subscribe({email:addr,source:'watch-optin'}).then(function(res){
+            var m=document.getElementById('pa-optmsg'); if(!m) return;
+            m.className='sa-optmsg '+(res.ok?'is-ok':'is-err');
+            m.textContent=res.ok?'AGSIST Daily: '+window.AgsistSignup.okText():'AGSIST Daily: '+window.AgsistSignup.errText(res);
+          });
         });
     }
     go.addEventListener('click',submit);
@@ -1492,8 +1510,8 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
     </div>
   </section>
   </details>
-  <div class="signup fade-up" id="signup-full" style="display:none">
-    <div class="signup-inner">
+  <div class="signup fade-up" id="signup-full" data-signup-hide style="display:none">
+    <div class="signup-inner" id="signup">
       <div class="signup-icon" aria-hidden="true"></div>
       <span class="signup-eyebrow">AGSIST Daily</span>
       <h2 class="signup-headline">Market news before the open.</h2>
@@ -1503,12 +1521,8 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
       
     </div>
   </div>
-  <div class="signup--slim fade-up" id="signup-slim" style="display:none;padding-bottom:max(.5rem,env(safe-area-inset-bottom))">
-    <span class="scs-text">Get the AGSIST Daily briefing every weekday &mdash; markets, weather, one number to know. Free for farmers everywhere.</span>
-    <a href="/daily">Subscribe Free</a>
-    <span style="font-size:.765rem;color:var(--text-muted)">&middot; <a href="/privacy">Privacy Policy</a></span>
-    <button id="btn-slim-dismiss" aria-label="Dismiss" style="background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:.824rem;padding:0 0 0 .5rem;line-height:1"><svg class="ic" aria-hidden="true"><use href="#i-x"/></svg></button>
-  </div>
+  <!-- 2026-10-06: the visit-50 slim bar is gone; the second-visit bar in
+       components/signup-ask.js replaces it, sitewide. -->
 
 </div>
 <script>
@@ -1851,10 +1865,10 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')close(true);
        the real rule. Do not add a second counter here. */
   })();
   </script>
-<script src="/components/loader.js?v=16" defer></script>
+<script src="/components/loader.js?v=17" defer></script>
 <script src="/components/geo.js?v=21" defer></script>
-<script src="/components/bids-homepage.js?v=27" defer></script>
-<script src="/components/homepage-extras.js?v=9" defer></script>
+<script src="/components/bids-homepage.js?v=28" defer></script>
+<script src="/components/homepage-extras.js?v=10" defer></script>
 <script>
 (function() {
   'use strict';
@@ -2964,44 +2978,56 @@ gj('/data/markets.json').then(function(cached){
   function isDismissed(key){try{var v=parseInt(localStorage.getItem(key),10);if(!v)return false;return (Date.now()-v)<DISMISS_DAYS*24*60*60*1000;}catch(e){return false;}}
   function setDismissed(key){try{localStorage.setItem(key,String(Date.now()));}catch(e){}}
   (function(){
-    try{var n=parseInt(localStorage.getItem('agsist_visits')||'0',10)+1;localStorage.setItem('agsist_visits',String(n));}catch(e){}
+    /* 2026-10-06: a visit is a browser session, not a page load. The same
+       gate is in components/signup-ask.js (which loads earlier, under the
+       hero, and usually counts first); whichever runs first counts it. */
+    try{if(!sessionStorage.getItem('agsist_visit_counted')){sessionStorage.setItem('agsist_visit_counted','1');var n=parseInt(localStorage.getItem('agsist_visits')||'0',10)+1;localStorage.setItem('agsist_visits',String(n));}}catch(e){}
     if(isSignedUp())return;
     var visits=(function(){try{return parseInt(localStorage.getItem('agsist_visits')||'0',10);}catch(e){return 0;}})();
     // Jul 2026: email_signup fired once in 28 days — the compact one-field
     // signup now shows to EVERY non-subscriber, high on the page under the
     // briefing (it used to hide until visit #25, buried at the bottom).
     if(!isDismissed('agsist_signup_compact_dismissed')){var el2=document.getElementById('signup-compact');if(el2)el2.style.display='flex';}
-    if(visits<=24){var el=document.getElementById('signup-full');if(el)el.style.display='block';}
-    else if(visits>=50&&!isDismissed('agsist_signup_slim_dismissed')){var el3=document.getElementById('signup-slim');if(el3)el3.style.display='flex';}
+    /* The Daily email links to /#signup: show the band for that visit
+       whatever the count, and bring it into view. */
+    var toSignup=/^#signup(-full)?$/.test(location.hash);
+    if(visits<=24||toSignup){var el=document.getElementById('signup-full');if(el){el.style.display='block';if(toSignup)setTimeout(function(){try{el.scrollIntoView({block:'start'});}catch(e){}},0);}}
   })();
   var btnCompactDismiss=document.getElementById('btn-compact-dismiss');if(btnCompactDismiss)btnCompactDismiss.addEventListener('click',function(){setDismissed('agsist_signup_compact_dismissed');var el=document.getElementById('signup-compact');if(el)el.style.display='none';var m=document.getElementById('main');if(m&&m.focus){try{m.focus({preventScroll:true});}catch(e){}}});
-  var btnSlimDismiss=document.getElementById('btn-slim-dismiss');if(btnSlimDismiss)btnSlimDismiss.addEventListener('click',function(){setDismissed('agsist_signup_slim_dismissed');var el=document.getElementById('signup-slim');if(el)el.style.display='none';});
   function showSignupSuccess(formId,icon,headline,sub){var formEl=document.getElementById(formId);if(!formEl)return;formEl.innerHTML='<div style="text-align:center;padding:.9rem 0"><div style="font-size:1.882rem;margin-bottom:.4rem">'+icon+'</div><div style="font-size:1rem;font-weight:700;color:var(--text);margin-bottom:.25rem">'+headline+'</div><div style="font-size:.824rem;color:var(--text-muted);line-height:1.5">'+sub+'</div></div>';formEl.style.display='block';}
+  /* 2026-10-06: both homepage signups post through components/signup-ask.js
+     (source "signup-band", the saved ZIP, reports:true). Success needs HTTP
+     ok AND data.ok === true; anything else shows a plain error. */
+  function bandSignup(box,email,onOk,onFail){
+    var S=window.AgsistSignup;
+    if(!S){onFail('That did not go through. Reload the page and try again.');return;}
+    if(box)box.setAttribute('data-sa-busy','1');
+    S.subscribe({email:email,source:'signup-band'}).then(function(res){
+      if(box)box.removeAttribute('data-sa-busy');
+      if(res.ok){if(box)box.setAttribute('data-sa-done','1');onOk(S.okText());}
+      else onFail(S.errText(res));
+    });
+  }
+  var EMAIL_OK=/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
   var btnEmailSignup=document.getElementById('btn-email-signup');
-  if(btnEmailSignup){btnEmailSignup.addEventListener('click',function(e){e.preventDefault();var name=(document.querySelector('#form-email input[type="text"]')||{}).value||'';var email=(document.querySelector('#form-email input[type="email"]')||{}).value||'';if(!email.includes('@'))return;
-    /* Only claim success once the server has accepted the address. This used to
-       print "You're subscribed!" before the request left, so a rejected signup
-       looked exactly like a good one. */
-    var _b=this,_t=_b.textContent;_b.disabled=true;_b.textContent='Sending\u2026';
-    fetch('https://agsist-subs.dnilgis.workers.dev/subscribe',{method:'POST',body:JSON.stringify({name:name,email:email,source:'homepage-email'}),headers:{'Content-Type':'application/json','Accept':'application/json'}})
-      .then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);
-        setSignedUp();
-        showSignupSuccess('form-email','<svg class="ic" aria-hidden="true"><use href="#i-circle-check"/></svg>',"You’re subscribed!",'AGSIST Daily arrives every weekday morning. Check your spam folder once.');
-        var tabs=document.querySelector('#signup-full .signup-tabs');if(tabs)tabs.style.display='none';})
-      .catch(function(){_b.disabled=false;_b.textContent=_t;
-        var dsc=document.querySelector('#form-email .signup-disc');
-        if(dsc)dsc.innerHTML='<span style="color:var(--gold)">That did not go through. Try again, or email sig@farmers1st.com and I will add you by hand.</span>';});});}
+  if(btnEmailSignup){btnEmailSignup.addEventListener('click',function(e){e.preventDefault();var inp=document.querySelector('#form-email input[type="email"]');var email=((inp||{}).value||'').trim();
+    var dsc=document.querySelector('#form-email .signup-disc');
+    if(!EMAIL_OK.test(email)){if(dsc)dsc.innerHTML='<span style="color:var(--red)">Enter a real email address.</span>';if(inp)inp.focus();return;}
+    var _b=this,_t=_b.textContent;_b.disabled=true;_b.textContent='Sending…';
+    bandSignup(document.getElementById('signup-full'),email,function(txt){
+        showSignupSuccess('form-email','<svg class="ic" aria-hidden="true"><use href="#i-circle-check"/></svg>',txt,'AGSIST Daily, free, every weekday. Check your spam folder once.');
+        var tabs=document.querySelector('#signup-full .signup-tabs');if(tabs)tabs.style.display='none';},
+      function(msg){_b.disabled=false;_b.textContent=_t;
+        if(dsc){dsc.textContent='';var w=document.createElement('span');w.setAttribute('role','status');w.style.color='var(--red)';w.textContent=msg;dsc.appendChild(w);}});});}
   var btnCompactSignup=document.getElementById('btn-compact-signup'),compactEmail=document.getElementById('compact-email');
-  if(btnCompactSignup){btnCompactSignup.addEventListener('click',function(e){e.preventDefault();var email=compactEmail?compactEmail.value.trim():'';if(!email.includes('@'))return;
+  if(btnCompactSignup){btnCompactSignup.addEventListener('click',function(e){e.preventDefault();var email=compactEmail?compactEmail.value.trim():'';
+    var bar=document.getElementById('signup-compact');
+    function warn(msg){if(!bar)return;var w=bar.querySelector('.sc-warn');if(!w){w=document.createElement('span');w.className='sc-warn';w.setAttribute('role','status');w.style.cssText='font-size:.875rem;color:var(--red);display:block;margin-top:.3rem';bar.appendChild(w);}w.textContent=msg;}
+    if(!EMAIL_OK.test(email)){warn('Enter a real email address.');if(compactEmail)compactEmail.focus();return;}
     var _cb=this;_cb.disabled=true;
-    fetch('https://agsist-subs.dnilgis.workers.dev/subscribe',{method:'POST',body:JSON.stringify({email:email,source:'homepage-compact'}),headers:{'Content-Type':'application/json','Accept':'application/json'}})
-      .then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);
-        setSignedUp();
-        var bar=document.getElementById('signup-compact');
-        if(bar)bar.innerHTML='<span style="font-size:.824rem;color:var(--green);padding:.1rem 0"><svg class="ic" aria-hidden="true"><use href="#i-circle-check"/></svg> Subscribed! AGSIST Daily arrives before the market open on weekdays.</span>';})
-      .catch(function(){_cb.disabled=false;
-        var bar=document.getElementById('signup-compact');
-        if(bar&&!bar.querySelector('.sc-warn')){var w=document.createElement('span');w.className='sc-warn';w.style.cssText='font-size:.82rem;color:var(--gold);display:block;margin-top:.3rem';w.textContent='That did not go through \u2014 try again, or email sig@farmers1st.com.';bar.appendChild(w);}});});}
+    bandSignup(bar,email,function(txt){
+        if(bar){bar.innerHTML='<span class="sc-ok" tabindex="-1" style="font-size:.875rem;font-weight:700;color:var(--green);padding:.1rem 0"><svg class="ic" aria-hidden="true"><use href="#i-circle-check"/></svg> </span>';bar.querySelector('.sc-ok').appendChild(document.createTextNode(txt));}},
+      function(msg){_cb.disabled=false;warn(msg);});});}
   if(compactEmail)compactEmail.addEventListener('keydown',function(e){if(e.key==='Enter'&&btnCompactSignup)btnCompactSignup.click();});
 })();
 </script>

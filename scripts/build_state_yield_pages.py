@@ -590,7 +590,7 @@ def build_state_page(name, inp, ctx):
   <p class="yl-cloud">{cloud}</p>
 </main>
 {ftr}
-<script src="/components/loader.js?v=16" defer></script>
+<script src="/components/loader.js?v=17" defer></script>
 </body>
 </html>
 """

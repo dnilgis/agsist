@@ -1,4 +1,26 @@
 /**
+ * v5.4 (2026-10-06): ZIP AND REPORT-DAY OPT-IN ON THE DAILY LIST. Every
+ *   existing route answers exactly as before; only these change or are new.
+ *   POST /subscribe (JSON or form) takes three optional fields beside email:
+ *     zip      5 digits. Anything else is dropped, never rejected: the reader
+ *              is still subscribed, just without a ZIP.
+ *     reports  boolean (also "true"/"false", "1"/"0", "on"/"off" from a form),
+ *              default true. Opts into the report-day "USDA vs the trade" email.
+ *     source   as before, up to 60 chars (hero, bid-row, watch-optin,
+ *              page:<slug>, bar, footer, email-forward, signup-band).
+ *   A re-subscribe MERGES: the original `ts` is kept; zip, reports and src are
+ *   updated only when the new request carries them. The record under
+ *   sub:<email> becomes {ts, src, zip?, reports}. Records written by v5.3 and
+ *   earlier ({ts, src}) read as reports:true with no zip.
+ *   GET /list?token=&format=json   [{email, zip, src, ts, reports}] for
+ *     scripts/send_daily.py and scripts/send_report_day.py. Without `format`
+ *     the plain-text list is byte-for-byte what it was, so a sender that has
+ *     not been upgraded keeps working.
+ *   GET /count?token=   {ok, daily, daily_with_zip, alerts, ewatch, pwatch,
+ *     watch, by_source:{src:n}} for the private dashboard (open CORS like
+ *     /alert-list; token-gated). Never shown on the public site.
+ *   No new binding and no new secret.
+ *
  * v5.3 (2026-10-03): ALERT OPTIONS ON A WATCHED ELEVATOR. Same ewatch: keys,
  *   same routes, same cap of 5 per address. A subscribe may now carry `kind`:
  *     any    the posted corn basis changes (the v5.1 watch; also what a body
@@ -156,6 +178,34 @@ function escHtml(s) {
     .replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 }
 
+// v5.4: the daily list's optional fields. A ZIP is exactly five digits or it
+// is not kept; `reports` is a boolean or one of the words a form sends, and
+// anything else means "not given" (null), so the stored value is left alone.
+function subZip(v) {
+  const z = String(v == null ? "" : v).trim();
+  return /^\d{5}$/.test(z) ? z : "";
+}
+function subBool(v) {
+  if (v === true || v === false) return v;
+  if (v === 1 || v === 0) return v === 1;
+  const t = String(v == null ? "" : v).trim().toLowerCase();
+  if (["true", "1", "on", "yes"].includes(t)) return true;
+  if (["false", "0", "off", "no"].includes(t)) return false;
+  return null;
+}
+function subRecord(email, raw) {
+  let r = null;
+  try { r = raw ? JSON.parse(raw) : null; } catch (e) { r = null; }
+  if (!r || typeof r !== "object") r = {};
+  return {
+    email,
+    zip: subZip(r.zip) || null,
+    src: String(r.src || ""),
+    ts: Number.isFinite(r.ts) ? r.ts : null,
+    reports: r.reports !== false,
+  };
+}
+
 function htmlPage(msg, extraHtml) {
   return new Response(
     "<!doctype html><meta charset=utf-8><title>AGSIST</title>" +
@@ -194,23 +244,38 @@ export default {
 
     // ---------- daily briefing: subscribe ----------
     if (path === "/subscribe" && req.method === "POST") {
-      let email = "", src = "", trap = "";
+      let email = "", src = "", trap = "", zipIn = null, repIn = null;
       const ct = req.headers.get("Content-Type") || "";
       try {
         if (ct.includes("json")) {
           const b = await req.json();
           email = b.email || ""; src = b.source || ""; trap = b._gotcha || "";
+          zipIn = b.zip; repIn = b.reports;
         } else {
           const f = await req.formData();
           email = f.get("email") || ""; src = f.get("source") || ""; trap = f.get("_gotcha") || "";
+          zipIn = f.get("zip"); repIn = f.get("reports");
         }
       } catch (e) { /* validation below */ }
       email = String(email).trim().toLowerCase();
       if (trap) return json({ ok: true }, 200, cors(req));
       if (!EMAIL_RE.test(email) || email.length > 254)
         return json({ ok: false, error: "invalid email" }, 400, cors(req));
-      await env.SUBS.put("sub:" + email,
-        JSON.stringify({ ts: Date.now(), src: String(src).slice(0, 60) }));
+      // v5.4: merge into what is already there. A bad ZIP is dropped, never
+      // a reason to refuse the subscribe.
+      const zip = subZip(zipIn), reports = subBool(repIn);
+      src = String(src || "").slice(0, 60);
+      let prev = null;
+      try { const v = await env.SUBS.get("sub:" + email); prev = v ? JSON.parse(v) : null; } catch (e) { prev = null; }
+      if (!prev || typeof prev !== "object") prev = {};
+      const rec = {
+        ts: Number.isFinite(prev.ts) ? prev.ts : Date.now(),
+        src: src || String(prev.src || ""),
+      };
+      const keepZip = zip || subZip(prev.zip);
+      if (keepZip) rec.zip = keepZip;
+      rec.reports = reports !== null ? reports : prev.reports !== false;
+      await env.SUBS.put("sub:" + email, JSON.stringify(rec));
       return json({ ok: true }, 200, cors(req));
     }
 
@@ -345,9 +410,39 @@ export default {
     if (path === "/list" && req.method === "GET") {
       if (!authed) return json({ ok: false }, 403);
       const keys = await listKeys(env, "sub:");
+      if (url.searchParams.get("format") === "json") {
+        // v5.4: one record per address, for the per-reader email.
+        const out = [];
+        for (const k of keys) out.push(subRecord(k.slice(4), await env.SUBS.get(k)));
+        return json(out, 200, { "Access-Control-Allow-Origin": "*" });
+      }
       return new Response(keys.map(k => k.slice(4)).join("\n"),
         { headers: { "Content-Type": "text/plain;charset=utf-8",
                      "Access-Control-Allow-Origin": "*" } });
+    }
+
+    if (path === "/count" && req.method === "GET") {
+      // v5.4: totals for the private dashboard. Counts only, no addresses.
+      if (!authed) return json({ ok: false }, 403);
+      const subs = await listKeys(env, "sub:");
+      let withZip = 0;
+      const bySource = {};
+      for (const k of subs) {
+        const r = subRecord(k.slice(4), await env.SUBS.get(k));
+        if (r.zip) withZip++;
+        const s = r.src || "(none)";
+        bySource[s] = (bySource[s] || 0) + 1;
+      }
+      return json({
+        ok: true,
+        daily: subs.length,
+        daily_with_zip: withZip,
+        alerts: (await listKeys(env, "alert:")).length,
+        ewatch: (await listKeys(env, "ewatch:")).length,
+        pwatch: (await listKeys(env, "pwatch:")).length,
+        watch: (await listKeys(env, "watch:")).length,
+        by_source: bySource,
+      }, 200, { "Access-Control-Allow-Origin": "*" });
     }
 
     if (path === "/alert-list" && req.method === "GET") {
