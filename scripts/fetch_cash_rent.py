@@ -67,6 +67,12 @@ FIRST_YEAR = 2008
 NO_SURVEY_YEARS = {2015, 2018}    # NASS ran no county cash rents survey in 2015 or 2018
 TREND_WINDOW = 15                 # years of yield history for the trend fit
 MIN_TREND_N = 6                   # fewer real years than this -> no trend, no guess
+# A trend is not projected more than this many years past its last observed
+# year. NASS stopped the Nebraska practice series after 2018; a 2012-2018 dryland
+# fit (drought year first) projected to 2026 printed 287 bu for Adams NE dryland
+# corn, which yields ~150. Three covers the normal one-year publication lag
+# plus one missing survey year.
+MAX_TREND_GAP = 3
 
 RENT_KINDS = {
     "nonirr":  "RENT, CASH, CROPLAND, NON-IRRIGATED - EXPENSE, MEASURED IN $ / ACRE",
@@ -266,6 +272,11 @@ def yield_entry(pairs, cur):
     entry = {"hist": hist}
     recent = [p for p in pairs if p[0] > cur - TREND_WINDOW]
     fit = fit_trend(recent)
+    last_year = max((p[0] for p in recent), default=None)
+    if fit and cur - last_year > MAX_TREND_GAP:
+        entry["trend_w"] = (f"the county series ends in {last_year}; a trend is not "
+                            f"projected {cur - last_year} years past its last year")
+        fit = None
     if fit:
         slope, intercept, r2, n = fit
         entry.update({
@@ -414,6 +425,10 @@ def pair_county(c):
                 t = _trend_out(t_ni, "nonirr")
             elif not irrigated and t_all.get("trend") is not None:
                 t = _trend_out(t_all, "all")
+            elif t_ni.get("trend_w") and (irrigated or not t_all.get("hist")):
+                t = {"w": t_ni["trend_w"].replace("the county series", "the county's dryland yield series")}
+            elif not irrigated and t_all.get("trend_w"):
+                t = {"w": t_all["trend_w"]}
             elif irrigated and (t_all.get("hist") or t_ir.get("hist") or t_ni.get("hist")):
                 t = {"w": (REASON_MIXED if not t_ni.get("hist") else
                            f"fewer than {MIN_TREND_N} dryland county yields in the last {TREND_WINDOW} years, "
@@ -421,6 +436,8 @@ def pair_county(c):
         else:
             if t_ir.get("trend") is not None:
                 t = _trend_out(t_ir, "irr")
+            elif t_ir.get("trend_w"):
+                t = {"w": t_ir["trend_w"].replace("the county series", "the county's irrigated yield series")}
             elif t_ir.get("hist"):
                 t = {"w": f"fewer than {MIN_TREND_N} irrigated county yields in the last {TREND_WINDOW} years"}
             elif t_all.get("hist"):
@@ -664,6 +681,16 @@ def selftest():
     assert fit_trend([(2023, 180.0), (2024, 182.0)]) is None, "fit on 2 points!"
     assert fit_trend([(2020, 1.0)] * 8) is None, "zero variance produced a fit"
     log("  thin/degenerate data refused")
+
+    # --- a series that stopped must not be projected years past its end -----
+    # Adams NE dryland corn, 2012-2018 as NASS published it.
+    adams = [(2012, 51.2), (2013, 97.7), (2014, 111.4), (2015, 128.7),
+             (2016, 121.7), (2017, 147.5), (2018, 159.2)]
+    e = yield_entry(adams, 2026)
+    assert "trend" not in e and "2018" in e.get("trend_w", ""), e
+    e = yield_entry(adams, 2021)
+    assert e.get("trend") is not None and "trend_w" not in e, "a 3-year gap must still fit"
+    log("  stale practice series refused (Adams NE dryland, ended 2018)")
 
     # --- 2015 and 2018 must never survive the filter ------------------------
     recs = [{"state_fips_code": "19", "county_ansi": "169", "county_name": "STORY",
