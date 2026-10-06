@@ -238,12 +238,28 @@ def main():
     dmg_in = d.get("damaging_in", 1.5)
     states = d.get("states", {})
     os.makedirs(OUTDIR, exist_ok=True)
+    # LASTMOD MOVES ONLY WITH CONTENT. Every page carries a build date, so a
+    # plain "did the file change" test rewrote all 51 pages and stamped them all
+    # with today every month, data or no data. Render each page again with the
+    # date it last carried: if that equals the file on disk, nothing a reader
+    # sees has changed, so the file and its sitemap date are left alone.
+    try:
+        _sm = open(SITEMAP, encoding="utf-8").read()
+    except FileNotFoundError:
+        _sm = ""
+    prev_mod = dict(re.findall(r"<loc>https://agsist\.com/hail-map/([a-z-]+)</loc><lastmod>([0-9-]+)</lastmod>", _sm))
+    lastmod = {}
     made = []
     for abbr, name in STATE_NAME.items():
         rows = states.get(abbr) or []
-        html = page_html(abbr, name, rows, years, dmg_in, today)
         path = os.path.join(OUTDIR, slug(name) + ".html")
         prev = open(path).read() if os.path.exists(path) else None
+        old = prev_mod.get(slug(name))
+        if prev is not None and old and page_html(abbr, name, rows, years, dmg_in, old) == prev:
+            lastmod[slug(name)] = old
+            continue
+        html = page_html(abbr, name, rows, years, dmg_in, today)
+        lastmod[slug(name)] = today
         if prev != html:
             open(path, "w", encoding="utf-8").write(html)
             made.append(slug(name))
@@ -256,7 +272,7 @@ def main():
         print("sitemap.xml missing — skipped")
         return
     block = MARK_A + "".join(
-        "\n  <url><loc>https://agsist.com/hail-map/" + slug(n) + "</loc><lastmod>" + today +
+        "\n  <url><loc>https://agsist.com/hail-map/" + slug(n) + "</loc><lastmod>" + lastmod.get(slug(n), today) +
         "</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>"
         for n in STATE_NAME.values()) + "\n  " + MARK_B
     if MARK_A in sm and MARK_B in sm:

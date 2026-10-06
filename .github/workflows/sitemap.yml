@@ -36,7 +36,7 @@ jobs:
             files=$(git diff --name-only "$base" HEAD -- '*.html' | tr '\n' ' ')
             echo "changed HTML: ${files:-<none>}"
             if [ -n "$files" ]; then
-              python scripts/update_sitemap.py --changed $files --out /tmp/bumped.txt
+              python scripts/update_sitemap.py --changed $files --base "$base" --out /tmp/bumped.txt
             else
               echo "[sitemap] no HTML changes to map"; : > /tmp/bumped.txt
             fi

@@ -22,6 +22,7 @@ Stdlib only.
 import argparse
 import datetime
 import re
+import subprocess
 from pathlib import Path
 
 HOST = "https://agsist.com"
@@ -67,11 +68,49 @@ def file_to_url(fpath):
     return f"{HOST}/{slug}"
 
 
+_STRIP = [re.compile(p, re.S | re.I) for p in (
+    r"<head\b.*?</head>", r"<script\b.*?</script>", r"<style\b.*?</style>",
+    r"<noscript\b.*?</noscript>", r"<!--.*?-->",
+    r"<header\b.*?</header>", r"<footer\b.*?</footer>", r"<nav\b.*?</nav>",
+)]
+
+
+def visible_text(html):
+    """What a reader sees, roughly: no head, scripts, styles, comments, or the
+    site-wide header/footer/nav. Two versions of a page with the same visible
+    text have not changed for a reader, whatever their markup did."""
+    for rx in _STRIP:
+        html = rx.sub(" ", html)
+    html = re.sub(r"<[^>]+>", " ", html)
+    return re.sub(r"\s+", " ", html).strip()
+
+
+def content_changed(fpath, base):
+    """True unless the file existed at `base` with the same visible text.
+
+    2026-10-06: 91 URLs shared lastmod 2026-10-02 because one site-wide markup
+    edit touched every page and --changed bumped them all. A lastmod that moves
+    without the content moving teaches crawlers to ignore it."""
+    try:
+        old = subprocess.run(["git", "show", f"{base}:{fpath}"], capture_output=True,
+                             check=True).stdout.decode("utf-8", "replace")
+    except (subprocess.CalledProcessError, FileNotFoundError):
+        return True            # new file, or no git: treat as changed
+    try:
+        new = Path(fpath).read_text(encoding="utf-8")
+    except OSError:
+        return False           # deleted
+    return visible_text(old) != visible_text(new)
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--daily", action="store_true")
     ap.add_argument("--changed", nargs="*", default=[])
     ap.add_argument("--out", default=None, help="write bumped URLs here (for IndexNow)")
+    ap.add_argument("--base", default=None,
+                    help="with --changed: bump a page only if its visible text differs from "
+                         "this commit's version (markup-only edits do not move lastmod)")
     ap.add_argument("--priority", default=None,
                     help="priority for URLs inserted by --add (default 0.4, tuned for archive pages)")
     ap.add_argument("--changefreq", default=None,
@@ -86,7 +125,10 @@ def main():
     td = datetime.date.fromisoformat(today)
     content = Path(SITEMAP).read_text(encoding="utf-8")
 
-    changed_urls = set(u for u in (file_to_url(f) for f in args.changed) if u)
+    changed = [f for f in args.changed if not args.base or content_changed(f, args.base)]
+    if args.base and len(changed) != len(args.changed):
+        print(f"[sitemap] {len(args.changed) - len(changed)} file(s) changed markup only; lastmod kept")
+    changed_urls = set(u for u in (file_to_url(f) for f in changed) if u)
     bumped = []
 
     def should_bump(loc, cur_lastmod):

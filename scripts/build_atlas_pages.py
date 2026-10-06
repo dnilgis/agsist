@@ -1655,7 +1655,12 @@ def build(root=".", out_root=None, only=None, quiet=False):
             continue
         try:
             raw = county_page(W, f, d, "@@STAMP@@")
-            h = hashlib.sha1(raw.encode("utf-8")).hexdigest()[:12]
+            # The page promises '"Figures as of" ... moves only when a figure on
+            # the page does'. Hashing the whole page broke that promise: any
+            # template or wording change moved every county's date and its
+            # sitemap lastmod (2026-10-06). Hash the figures, not the markup.
+            h = hashlib.sha1(json.dumps(flat_record(W, f, d), sort_keys=True,
+                                        default=str).encode("utf-8")).hexdigest()[:12]
             date = prev[f][1] if f in prev and prev[f][0] == h else W.built
             stamps[f] = [h, date]
             write(os.path.join(out_root, W.path(f)), raw.replace("@@STAMP@@", date))
