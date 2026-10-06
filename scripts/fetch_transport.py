@@ -39,6 +39,15 @@ UA = {"User-Agent": "AGSIST/1.0 (+https://agsist.com)"}
 OUT_DIR = "data/transport"
 HIST_WEEKS = 26
 AVG_YEARS = 5
+# Plausible basis band, $/bu vs futures. USDA's weekly regional basis sits
+# well inside +/-$3 for every series this file carries; +/-$5 leaves room for
+# a real extreme and still catches a typo or a cents-for-dollars slip.
+# 2026-10-06: Soybeans|Atlantic Coast|30-Day to Arrive posted -10.248 for
+# 2026-07-10 between -0.248 (Jul 2) and -0.25 (Jul 17). The pipeline does no
+# unit conversion, so the figure came from the source as printed; it reads as
+# -0.248 with a stray leading "10". It is rejected, not repaired: we do not
+# guess what USDA meant.
+BASIS_BAND = 5.0
 
 
 def get_json(dataset, params):
@@ -87,6 +96,29 @@ def same_week_avg_n(rows_by_year_week, week, latest_year, value_key):
                 vals.append(v)
                 break
     return (round(sum(vals) / len(vals), 3) if vals else None), len(vals)
+
+
+def basis_guard(rows, band=BASIS_BAND):
+    """Split grain_basis rows into (kept, rejected). A row whose basis is not a
+    number is left for series_stats to skip as before; a number outside
+    +/-band is rejected with its reason, logged, and written to the JSON so the
+    pages can say a point was left out."""
+    kept, rejected = [], []
+    for r in rows:
+        try:
+            v = float(r["basis"])
+        except (KeyError, TypeError, ValueError):
+            kept.append(r)
+            continue
+        if v != v or abs(v) > band:
+            key = "|".join(str(r.get(f, "")).strip() for f in ("commodity", "market_name", "market_type"))
+            why = f"basis {v} $/bu is outside the plausible band of +/-{band} $/bu"
+            rejected.append({"series": key, "date": str(r.get("date", ""))[:10], "value": v, "reason": why})
+            print(f"  grain_basis: rejected {key} {str(r.get('date', ''))[:10]}: {why}", file=sys.stderr)
+            continue
+        kept.append(r)
+    rejected.sort(key=lambda x: (x["series"], x["date"]))
+    return kept, rejected
 
 
 def series_stats(rows, key_fields, value_field, date_field="date"):
@@ -157,6 +189,7 @@ def build(fetch=get_json):
     if _dupes:
         basis_rows = [r for r in basis_rows
                       if (r.get("commodity"), r.get("market_name")) not in _dupes]
+    basis_rows, rejected = basis_guard(basis_rows)
     basis = series_stats(basis_rows, ["commodity", "market_name", "market_type"], "basis")
     barge = series_stats(barge_rows, ["location"], "rate")
 
@@ -179,7 +212,7 @@ def build(fetch=get_json):
     note = ("Attribution is regional (named markets and origins), not any specific "
             "elevator. Basis in $/bu vs futures; barge rate is % of 1976 benchmark tariff.")
     basis_doc = {"generated": stamp, "source": "USDA AgTransport grain_basis v85y-3hep",
-                 "note": note, "series": basis}
+                 "note": note, "band": BASIS_BAND, "rejected": rejected, "series": basis}
     journey_doc = {"generated": stamp, "note": note,
                    "barge": barge,
                    "cost_index": {k: v for k, v in cost_latest.items()},
@@ -218,6 +251,20 @@ def selftest():
                     "basis": -0.50 if y == 2020 else -0.20})
     sj = series_stats(jan, ["commodity", "market_name", "market_type"], "basis")[k]
     assert sj["avg5_n"] == 5 and abs(sj["avg5"] - (-0.20)) < 1e-9, sj
+    # basis guard: the Atlantic Coast soybean typo is rejected and logged, the
+    # weeks around it are kept, and the same-week stats never see it.
+    atl = [{"date": d, "market_name": "Atlantic Coast", "market_type": "30-Day to Arrive",
+            "commodity": "Soybeans", "basis": b}
+           for d, b in (("2026-07-02", "-0.248"), ("2026-07-10", "-10.248"), ("2026-07-17", "-0.25"))]
+    kept, rej = basis_guard(atl + [{"date": "2026-07-10", "basis": "n/a"}])
+    assert [r["basis"] for r in kept[:2]] == ["-0.248", "-0.25"] and len(kept) == 3, kept
+    assert len(rej) == 1 and rej[0]["value"] == -10.248 and rej[0]["date"] == "2026-07-10", rej
+    assert rej[0]["series"] == "Soybeans|Atlantic Coast|30-Day to Arrive" and "band" in rej[0]["reason"]
+    sa = series_stats(kept, ["commodity", "market_name", "market_type"], "basis")
+    assert min(v for _, v in sa["Soybeans|Atlantic Coast|30-Day to Arrive"]["hist"]) == -0.25
+    # a real wide basis stays; a cents-for-dollars slip (-25 for -0.25) goes
+    assert len(basis_guard([{"basis": "-2.95"}, {"basis": "3.1"}])[0]) == 2
+    assert len(basis_guard([{"basis": "-25"}])[1]) == 1
     # fail-loud path: empty dataset must raise
     try:
         build(fetch=lambda ds, p: [])
