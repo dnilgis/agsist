@@ -404,7 +404,7 @@
       '.agt{display:inline-flex;align-items:center;gap:6px;font-family:"JetBrains Mono",ui-monospace,monospace;font-size:inherit;line-height:1.2;color:inherit;white-space:nowrap}' +
       '.agt-dot{display:inline-block;width:6px;height:6px;border-radius:50%;flex-shrink:0}' +
       '.agt-dot-live{background:var(--green,#3a8b3c);animation:agt-pulse 2s ease-in-out infinite}' +
-      '.agt-dot-stale{background:var(--gold,#daa520)}' +
+      '.agt-dot-stale{background:var(--gold-fill,var(--gold,#daa520))}' +
       '.agt-dot-offline{background:var(--red,#c8322e)}' +
       '.agt-stale{color:var(--gold,#daa520)}' +
       '.agt-offline{color:var(--red,#c8322e)}' +

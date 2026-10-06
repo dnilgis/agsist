@@ -9,8 +9,8 @@
   <link rel="preload" href="/fonts/inter-400.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/jetbrains-mono-700.woff2" as="font" type="font/woff2" crossorigin>
   <!-- /static-nav:fonts -->
-  <link rel="preload" href="/components/styles.css?v=17" as="style">
-<link rel="stylesheet" href="/components/styles.css?v=17">
+  <link rel="preload" href="/components/styles.css?v=18" as="style">
+<link rel="stylesheet" href="/components/styles.css?v=18">
 <link rel="icon" type="image/x-icon"            href="/img/favicon.ico">
 <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
@@ -119,13 +119,13 @@ button,a,[role="button"] { touch-action: manipulation; }
 /* Auto-detect banner */
 .dm-state-banner { display: flex; align-items: center; gap: .6rem; padding: .55rem .85rem; background: rgba(230,176,66,.06); border: 1px solid rgba(230,176,66,.18); border-radius: 8px; margin-bottom: 1rem; font-size:0.795rem; color: var(--text-dim); }
 .dm-state-banner strong { color: var(--gold); }
-.dm-state-banner button { margin-left: auto; padding: .25rem .7rem; background: var(--gold); color: #0a1a0a; border: none; border-radius: 20px; font-size:0.77rem; font-weight: 700; cursor: pointer; min-height: 28px; white-space: nowrap; }
+.dm-state-banner button { margin-left: auto; padding: .25rem .7rem; background: var(--gold-fill,var(--gold)); color: #0a1a0a; border: none; border-radius: 20px; font-size:0.77rem; font-weight: 700; cursor: pointer; min-height: 28px; white-space: nowrap; }
 
 /* Tabs */
 .dm-tabs { display: flex; gap: .4rem; flex-wrap: wrap; margin-bottom: 1.1rem; }
 .dm-tab { padding: .5rem 1rem; border-radius: 20px; border: 2px solid var(--border); background: var(--surface); color: var(--text-dim); font-size:0.795rem; font-weight: 600; cursor: pointer; transition: all .15s; white-space: nowrap; min-height: 44px; display: inline-flex; align-items: center; }
 .dm-tab:hover { border-color: var(--gold); color: var(--text); }
-.dm-tab.active { background: var(--gold); color: #0a1a0a; border-color: var(--gold); font-weight: 700; }
+.dm-tab.active { background: var(--gold-fill,var(--gold)); color: #0a1a0a; border-color: var(--gold); font-weight: 700; }
 
 /* Map */
 .dm-map-wrap { position: relative; width: 100%; background: var(--surface); border: 2px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 1.25rem; }

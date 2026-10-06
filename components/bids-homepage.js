@@ -1472,7 +1472,7 @@
     '#bids-list-area .bh-vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}',
     '#bids-list-area .bh-crops{display:flex;flex-wrap:wrap;gap:.35rem;margin:0 0 .5rem}',
     '#bids-list-area .bh-crop{min-height:36px;padding:.25rem .75rem;border-radius:999px;font-family:inherit;font-size:.8125rem;font-weight:700;cursor:pointer;border:1px solid var(--border);background:transparent;color:var(--text-dim)}',
-    '#bids-list-area .bh-crop[aria-pressed="true"]{border-color:var(--gold);background:var(--gold);color:#0a0c0d}',
+    '#bids-list-area .bh-crop[aria-pressed="true"]{border-color:var(--gold);background:var(--gold-fill,var(--gold));color:#0a0c0d}',
     '#bids-list-area .bh-degraded{font-size:.8125rem;color:var(--text-dim);margin:0 0 .4rem}',
     '#bids-list-area .bh-cols{display:none}',
     '#bids-list-area .bh-elev{border-bottom:1px solid var(--border)}',

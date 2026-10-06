@@ -32,8 +32,8 @@
   <link rel="preload" href="/fonts/inter-400.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/jetbrains-mono-700.woff2" as="font" type="font/woff2" crossorigin>
   <!-- /static-nav:fonts -->
-  <link rel="preload" href="/components/styles.css?v=17" as="style">
-  <link rel="stylesheet" href="/components/styles.css?v=17">
+  <link rel="preload" href="/components/styles.css?v=18" as="style">
+  <link rel="stylesheet" href="/components/styles.css?v=18">
   <script src="/components/util.js?v=16"></script>
 
   <!-- Leaflet (map engine) + Leaflet.heat (density heatmap) -->
@@ -61,7 +61,7 @@
     .hm-states-links a:hover{color:var(--brand,#d4a23f)}
     .hm-meshnav{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;margin:.7rem 0 .2rem;padding:.5rem .7rem;background:var(--surface,#101415);border:1px solid var(--border,rgba(132,160,168,.12));border-radius:8px}
     .hm-live24{border-color:var(--brand,#d4a23f)!important;color:var(--brand,#d4a23f)!important;position:relative}
-    .hm-live24::before{content:"";display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--brand,#d4a23f);margin-right:.45rem;animation:hmpulse 1.6s ease-in-out infinite}
+    .hm-live24::before{content:"";display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--brand-fill,var(--brand,#d4a23f));margin-right:.45rem;animation:hmpulse 1.6s ease-in-out infinite}
     @keyframes hmpulse{0%,100%{opacity:.35}50%{opacity:1}}
     .hm-meshnav button{min-height:40px;min-width:40px;background:none;border:1px solid var(--border,rgba(132,160,168,.25));border-radius:6px;color:var(--text,#e6ebe9);font-family:'JetBrains Mono',monospace;font-size:0.785rem;font-weight:700;cursor:pointer;padding:.35rem .6rem}
     .hm-meshnav button:disabled{opacity:.35;cursor:default}
@@ -78,7 +78,7 @@
     .hm-search{display:flex;align-items:center;gap:.5rem;margin:0 0 .7rem;background:var(--surface,#101415);border:1px solid var(--border,rgba(132,160,168,.12));border-radius:10px;padding:.35rem .35rem .35rem .7rem}
     .hm-search .ic-sp{color:var(--text-dim,#8a948f);flex-shrink:0}
     .hm-search input{flex:1;min-width:0;background:none;border:0;color:var(--text,#e6ebe9);font-size:16px;padding:.5rem .2rem;outline:none;font-family:Inter,system-ui,sans-serif}
-    .hm-search button{min-height:44px;border-radius:8px;border:1px solid var(--border,rgba(132,160,168,.2));background:var(--brand,#d4a23f);color:#141410;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:0.795rem;padding:.5rem .9rem;cursor:pointer}
+    .hm-search button{min-height:44px;border-radius:8px;border:1px solid var(--border,rgba(132,160,168,.2));background:var(--brand-fill,var(--brand,#d4a23f));color:#141410;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:0.795rem;padding:.5rem .9rem;cursor:pointer}
     .hm-search #hm-gps{background:none;color:var(--text-dim,#8a948f);padding:.5rem .6rem}
     .hm-point{margin:1rem 0 0;padding:1rem;background:var(--surface,#101415);border:1px solid var(--border,rgba(132,160,168,.12));border-left:3px solid var(--brand,#d4a23f);border-radius:10px}
     .hm-point-head{display:flex;align-items:center;justify-content:space-between;gap:.6rem;flex-wrap:wrap;margin-bottom:.6rem}
@@ -108,7 +108,7 @@
     .hm-lq-radius button{font-family:var(--font-mono,'JetBrains Mono',monospace);font-size:.78rem;min-height:44px;
       padding:.3rem .7rem;border-radius:999px;background:var(--surface,#141918);color:var(--text-dim,#8a948f);
       border:1px solid var(--border,#2a3230);cursor:pointer}
-    .hm-lq-radius button.on{background:var(--brand,#d4a23f);color:#10201a;border-color:var(--brand,#d4a23f);font-weight:700}
+    .hm-lq-radius button.on{background:var(--brand-fill,var(--brand,#d4a23f));color:#10201a;border-color:var(--brand,#d4a23f);font-weight:700}
     .hm-lq-h{color:var(--text-muted,#7d8782);font-size:.78rem}
     .hm-linkbtn2{background:none;border:0;padding:0;font:inherit;font-size:.78rem;color:var(--brand,#d4a23f);
       text-decoration:underline;cursor:pointer;min-height:44px}
@@ -126,7 +126,7 @@
     .hm-longterm-big{font-size:.95rem;line-height:1.55}
     .hm-longterm-big strong{font-family:'JetBrains Mono',monospace}
     .hm-longterm-dec{display:flex;gap:2px;align-items:flex-end;height:34px;margin:.55rem 0 .15rem}
-    .hm-longterm-dec span{flex:1;background:var(--brand,#d4a23f);opacity:.65;min-height:2px}
+    .hm-longterm-dec span{flex:1;background:var(--brand-fill,var(--brand,#d4a23f));opacity:.65;min-height:2px}
     .hm-longterm-dl{display:flex;justify-content:space-between;font-family:'JetBrains Mono',monospace;font-size:0.74rem;color:var(--text-dim,#8a948f)}
     .hm-longterm-src{font-family:'JetBrains Mono',monospace;font-size:0.755rem;color:var(--text-dim,#8a948f);margin-top:.45rem;line-height:1.5}
     .hm-trend{margin:.7rem 0 .9rem;padding:.7rem .85rem;border:1px solid var(--border,rgba(132,160,168,.25));border-radius:10px}
@@ -152,7 +152,7 @@
     .hm-rchip[aria-pressed="true"]{border-color:var(--brand,#d4a23f);color:var(--brand,#d4a23f)}
     .hm-alerts-row{display:flex;gap:.5rem;flex-wrap:wrap}
     .hm-alerts-row input{flex:1;min-width:200px;background:var(--surface,#101415);border:1px solid var(--border,rgba(132,160,168,.25));border-radius:8px;color:var(--text,#e6ebe9);font-size:16px;padding:.55rem .7rem;min-height:44px}
-    .hm-alerts-row button{min-height:44px;background:var(--brand,#d4a23f);border:0;border-radius:8px;color:#141410;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:0.795rem;padding:.55rem 1rem;cursor:pointer}
+    .hm-alerts-row button{min-height:44px;background:var(--brand-fill,var(--brand,#d4a23f));border:0;border-radius:8px;color:#141410;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:0.795rem;padding:.55rem 1rem;cursor:pointer}
     .hm-alerts-row button:disabled{opacity:.5;cursor:default}
     .hm-alerts-status{font-family:'JetBrains Mono',monospace;font-size:0.785rem;margin-top:.45rem;color:var(--text-dim,#8a948f)}
     .hm-swathcheck{margin:.8rem 0 0;padding-top:.7rem;border-top:1px solid var(--border,rgba(132,160,168,.12))}
@@ -190,7 +190,7 @@
     .hm-search #hm-gps{min-height:44px;min-width:44px}
     .hm-meshnav button{min-height:44px}
     .hm-chip:hover{color:var(--text)}
-    .hm-chip.on{background:var(--brand,var(--gold));color:#1a1206;border-color:var(--brand,var(--gold));font-weight:600}
+    .hm-chip.on{background:var(--brand-fill,var(--brand,var(--gold)));color:#1a1206;border-color:var(--brand,var(--gold));font-weight:600}
     .hm-chip[disabled]{opacity:.4;cursor:default}
     .hm-play{font-family:inherit;font-size:.86rem;background:var(--surface2,var(--surface));color:var(--text);border:1px solid var(--border);border-radius:999px;padding:.42rem .9rem;cursor:pointer}
     .hm-play.on{background:#7cd2ff;color:#04263a;border-color:#7cd2ff;font-weight:600}

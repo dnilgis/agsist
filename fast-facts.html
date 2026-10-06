@@ -7,8 +7,8 @@
   <link rel="preload" href="/fonts/inter-400.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/jetbrains-mono-700.woff2" as="font" type="font/woff2" crossorigin>
   <!-- /static-nav:fonts -->
-  <link rel="preload" href="/components/styles.css?v=17" as="style">
-<link rel="stylesheet" href="/components/styles.css?v=17">
+  <link rel="preload" href="/components/styles.css?v=18" as="style">
+<link rel="stylesheet" href="/components/styles.css?v=18">
 <link rel="icon" type="image/x-icon"            href="/img/favicon.ico">
 <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
@@ -93,7 +93,7 @@
 .ff-week a{color:var(--gold);text-decoration:none;font-weight:700}
 .ff-tab{padding:.4rem .8rem;border-radius:20px;border:1px solid var(--border);background:var(--surface);color:var(--text-dim);font-family:'JetBrains Mono',monospace;font-size:0.763rem;font-weight:700;letter-spacing:.06em;cursor:pointer;transition:background 0.15s,color 0.15s,border-color 0.15s;white-space:nowrap;min-height:44px;display:inline-flex;align-items:center;}
 .ff-tab:hover{border-color:var(--gold);color:var(--text);}
-.ff-tab.active{background:var(--gold);color:#0a1a0a;border-color:var(--gold);}
+.ff-tab.active{background:var(--gold-fill,var(--gold));color:#0a1a0a;border-color:var(--gold);}
 .ff-panel{display:none;}
 .ff-panel.active{display:block;}
 .ff-h2{font-family:var(--font-display);font-size:1.1rem;font-weight:700;text-transform:uppercase;color:var(--text);border-bottom:2px solid var(--border);padding-bottom:.5rem;margin:1.5rem 0 .75rem;}
@@ -168,9 +168,9 @@
 /* FIX: sv-mark min-height:44px — critical for gloved field use on a phone */
 .sv-mark{flex:1;min-width:36px;min-height:44px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;}
 .sv-dot{width:11px;height:11px;border-radius:50%;border:2px solid var(--border);background:var(--surface);margin-bottom:.2rem;transition:all .2s;flex-shrink:0;}
-.sv-mark:hover .sv-dot,.sv-mark.active .sv-dot{background:var(--gold);border-color:var(--gold);transform:scale(1.2);}
+.sv-mark:hover .sv-dot,.sv-mark.active .sv-dot{background:var(--gold-fill,var(--gold));border-color:var(--gold);transform:scale(1.2);}
 .sv-mark.key .sv-dot{background:var(--green);border-color:var(--green);}
-.sv-mark.key.active .sv-dot{background:var(--gold);border-color:var(--gold);}
+.sv-mark.key.active .sv-dot{background:var(--gold-fill,var(--gold));border-color:var(--gold);}
 .sv-lbl{font-family:'JetBrains Mono',monospace;font-size:0.755rem;font-weight:700;color:var(--text-dim);text-align:center;}
 .sv-gdu{font-size:0.755rem;color:var(--text-muted);text-align:center;}
 .sv-detail{background:rgba(230,176,66,.07);border:1px solid rgba(230,176,66,.2);border-radius:8px;padding:.75rem 1rem;margin-top:.6rem;min-height:60px;}
@@ -282,7 +282,7 @@
 .ff-sbtns{display:flex;flex-wrap:wrap;gap:.35rem;margin-top:.6rem;}
 .ff-sbtn{padding:.3rem .7rem;border-radius:20px;border:1px solid var(--border);background:var(--surface);color:var(--text-dim);font-size:0.78rem;font-weight:600;cursor:pointer;transition:all .15s;white-space:nowrap;min-height:44px;display:inline-flex;align-items:center;}
 .ff-sbtn:hover{border-color:var(--gold);color:var(--text);}
-.ff-sbtn.active{background:var(--gold);color:#0a1a0a;border-color:var(--gold);}
+.ff-sbtn.active{background:var(--gold-fill,var(--gold));color:#0a1a0a;border-color:var(--gold);}
 .ff-scontent{display:grid;grid-template-columns:minmax(0,1fr);gap:1rem;}
 @media(min-width:700px){.ff-scontent{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(min-width:1000px){.ff-scontent{grid-template-columns:repeat(3,minmax(0,1fr))}}
@@ -328,7 +328,7 @@
 </style>
 </head>
 <body>
-<noscript><div style="padding:1rem;background:#1a2a1a;color:#d4a23f;font-family:sans-serif;text-align:center;border-bottom:2px solid #5fc28a;font-size:.9rem">AGSIST requires JavaScript. Please enable JavaScript to use this agricultural reference tool.</div></noscript>
+<noscript><div style="padding:1rem;background:#1a2a1a;color:var(--gold);font-family:sans-serif;text-align:center;border-bottom:2px solid #5fc28a;font-size:.9rem">AGSIST requires JavaScript. Please enable JavaScript to use this agricultural reference tool.</div></noscript>
 <a href="#main" class="skip">Skip to content</a>
 <div id="site-header">
 <!-- static-nav:header (scripts/inject_static_nav.py; source components/header-fallback.html) -->
@@ -1226,7 +1226,7 @@ function loadFertPrices(){
     if(el&&data.updated){var d=new Date(data.updated+'T12:00:00');el.textContent='Updated '+d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
       // Honest staleness: dealer sheets older than 30 days get flagged, not passed off as current
       var ageDays=(Date.now()-d.getTime())/864e5;
-      if(ageDays>30){el.textContent+=' — check your dealer for current quotes';el.style.color='#d4a23f';}}
+      if(ageDays>30){el.textContent+=' — check your dealer for current quotes';el.style.color='var(--gold)';}}
     // Name-based lookups — fertilizer.json uses product name field, not legacy symbol codes
     function _pg(sym){if(!sym)return null;var a=String(sym).trim().split('-');if(a.length<3)return null;var n=parseFloat(a[0]),pp=parseFloat(a[1]),k=parseFloat(a[2]);if(isNaN(n)||isNaN(pp)||isNaN(k))return null;var g={N:n,P:pp,K:k,S:0,Mg:0};for(var i=3;i<a.length;i++){var m=String(a[i]).match(/([\d.]+)\s*([A-Za-z]+)/);if(m){var u=m[2].toLowerCase();if(u==='s')g.S=parseFloat(m[1]);else if(u==='mg')g.Mg=parseFloat(m[1]);}}return g;}
     function _find(nm,pred){return data.prices.find(function(p){return p.name===nm;})||data.prices.find(function(p){var g=_pg(p.symbol);return g?pred(g):false;});}

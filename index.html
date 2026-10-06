@@ -9,7 +9,7 @@
   <link rel="preload" href="/fonts/inter-400.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/jetbrains-mono-700.woff2" as="font" type="font/woff2" crossorigin>
   <!-- /static-nav:fonts -->
-  <link rel="stylesheet" href="/components/styles.css?v=17">
+  <link rel="stylesheet" href="/components/styles.css?v=18">
 <link rel="stylesheet" href="/components/sponsor-ad.css?v=1">
 <link rel="stylesheet" href="/css/home.css?v=7">
 <!-- 2026-09-30: sponsor-ad.js's one call site (AgsistAd.render(), below) is
@@ -231,7 +231,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
 <div id="idx1-home-prompt" class="idx1-home-prompt" style="display:none">
   <svg class="ic" aria-hidden="true" style="flex:none"><use href="#i-banknote"/></svg>
   <div style="flex-grow:1;font-size:.824rem;color:var(--text)">Add AGSIST to your home screen — one tap from the field, no app store.</div>
-  <button type="button" id="idx1-home-add" style="font-size:.824rem;font-weight:700;color:#0a0c0d;background:var(--gold);border:none;border-radius:6px;padding:.4rem .7rem;flex:none;cursor:pointer">Add</button>
+  <button type="button" id="idx1-home-add" style="font-size:.824rem;font-weight:700;color:#0a0c0d;background:var(--gold-fill,var(--gold));border:none;border-radius:6px;padding:.4rem .7rem;flex:none;cursor:pointer">Add</button>
   <button type="button" id="idx1-home-dismiss" aria-label="Dismiss" style="font-size:1rem;color:var(--text-muted);background:none;border:none;padding:.2rem .3rem;flex:none;cursor:pointer">&times;</button>
 </div>
 <section class="daily-hero is-brief" id="daily-hero" data-briefing-date="2026-10-06" aria-label="AGSIST Daily Briefing" aria-expanded="false">
@@ -751,14 +751,14 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
       <div class="sec-head"><h2 class="sec-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:1.05em;height:1.05em;vertical-align:-.13em;margin-right:.34em;flex:none"><rect width="20" height="12" x="2" y="6" rx="2" /> <circle cx="12" cy="12" r="2" /> <path d="M6 12h.01M18 12h.01" /></svg>Cash Bids &amp; Basis</h2></div>
       <div class="card"><div class="card-body">
         <div id="bids-geo-bar" style="display:flex;align-items:center;gap:.55rem;margin-bottom:.6rem;font-size:.824rem;color:var(--text-dim)">
-          <span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--gold);animation:blink 1.5s infinite" aria-hidden="true"></span>
+          <span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--gold-fill,var(--gold));animation:blink 1.5s infinite" aria-hidden="true"></span>
           <span id="bids-geo-txt">Detecting your location&hellip;</span>
           <button id="bids-enter-zip-btn" aria-label="Enter ZIP code to find nearby cash bids" style="margin-left:auto;background:none;border:none;color:var(--text-muted);font-size:.824rem;cursor:pointer;text-decoration:underline;padding:.4rem 0;min-height:44px;display:inline-flex;align-items:center;">Enter ZIP</button>
         </div>
         <div id="bids-zip-row" style="display:none;margin-bottom:1.1rem">
           <div style="display:flex;gap:.55rem;flex-wrap:wrap;min-width:0">
             <input type="text" id="bids-zip" placeholder="Enter your ZIP code" maxlength="5" inputmode="numeric" pattern="[0-9]{5}" autocomplete="postal-code" aria-label="ZIP code for cash bids" style="flex:1;padding:.7rem .9rem;background:var(--surface2);border:1px solid var(--border);border-radius:6px;font-family:'JetBrains Mono',monospace;font-size:1rem;color:var(--text);outline:none;transition:border-color .15s">
-            <button id="bids-lookup-btn" style="padding:.7rem 1rem;background:var(--gold);color:#0a0c0d;border:none;border-radius:6px;font-family:'JetBrains Mono',monospace;font-size:.824rem;font-weight:700;cursor:pointer;white-space:nowrap;transition:background .15s">Find Bids &rarr;</button>
+            <button id="bids-lookup-btn" style="padding:.7rem 1rem;background:var(--gold-fill,var(--gold));color:#0a0c0d;border:none;border-radius:6px;font-family:'JetBrains Mono',monospace;font-size:.824rem;font-weight:700;cursor:pointer;white-space:nowrap;transition:background .15s">Find Bids &rarr;</button>
           </div>
         </div>
         
@@ -814,13 +814,13 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
         <div id="wx-loading" style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1.5rem 0;gap:.65rem">
           <div style="font-size:1.882rem" aria-hidden="true"><svg class="ic" aria-hidden="true"><use href="#i-map-pin"/></svg></div>
           <div style="font-size:.824rem;color:var(--text-dim);text-align:center">Getting your local weather&hellip;</div>
-          <button id="btn-allow-loc" style="padding:.65rem 1.25rem;background:var(--gold);color:#0a0c0d;border:none;border-radius:6px;font-size:.824rem;font-weight:700;cursor:pointer;min-height:44px;">Allow Location</button>
+          <button id="btn-allow-loc" style="padding:.65rem 1.25rem;background:var(--gold-fill,var(--gold));color:#0a0c0d;border:none;border-radius:6px;font-size:.824rem;font-weight:700;cursor:pointer;min-height:44px;">Allow Location</button>
           <button id="btn-zip-instead" style="background:none;border:none;color:var(--text-muted);font-size:.824rem;cursor:pointer;text-decoration:underline;padding:.4rem 0;min-height:44px;display:inline-flex;align-items:center;">Enter ZIP instead</button>
         </div>
         <div id="wx-zip-entry" style="display:none;margin-bottom:.85rem">
           <div style="display:flex;gap:.5rem">
             <input type="text" id="wx-zip" placeholder="ZIP code" maxlength="5" inputmode="numeric" pattern="[0-9]{5}" autocomplete="postal-code" aria-label="ZIP code for weather" style="flex:1;padding:.65rem .85rem;background:var(--surface2);border:1px solid var(--border);border-radius:6px;font-family:'JetBrains Mono',monospace;font-size:1rem;color:var(--text);outline:none;transition:border-color .15s">
-            <button id="btn-wx-go" style="padding:.65rem 1rem;background:var(--gold);color:#0a0c0d;border:none;border-radius:6px;font-size:.824rem;font-weight:700;cursor:pointer;min-height:44px;">Go</button>
+            <button id="btn-wx-go" style="padding:.65rem 1rem;background:var(--gold-fill,var(--gold));color:#0a0c0d;border:none;border-radius:6px;font-size:.824rem;font-weight:700;cursor:pointer;min-height:44px;">Go</button>
           </div>
         </div>
         <div id="wx-data" style="display:none">
@@ -852,13 +852,13 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
           <div class="wx-chart-panel" id="gdu-chart-panel" role="region" aria-label="5-year GDU monthly history">
             <div class="wx-chart-title" id="gdu-chart-title">GDU by month &middot; Apr&ndash;Oct &middot; 5-yr avg vs this year</div>
             <div id="gdu-chart-svg"></div>
-            <div class="wx-chart-legend"><span><span class="wx-chart-legend-sw" style="background:rgba(58,139,60,.45)"></span>5-yr avg</span><span><span class="wx-chart-legend-sw" style="background:var(--gold)"></span>This year</span></div>
+            <div class="wx-chart-legend"><span><span class="wx-chart-legend-sw" style="background:rgba(58,139,60,.45)"></span>5-yr avg</span><span><span class="wx-chart-legend-sw" style="background:var(--gold-fill,var(--gold))"></span>This year</span></div>
             <div class="wx-chart-takeaway" id="gdu-takeaway"></div>
           </div>
           <div class="wx-chart-panel" id="precip-chart-panel" role="region" aria-label="5-year precipitation monthly history">
             <div class="wx-chart-title" id="precip-chart-title">Precip by month &middot; Jan&ndash;Dec &middot; 5-yr avg vs this year</div>
             <div id="precip-chart-svg"></div>
-            <div class="wx-chart-legend"><span><span class="wx-chart-legend-sw" style="background:rgba(58,139,60,.45)"></span>5-yr avg</span><span><span class="wx-chart-legend-sw" style="background:var(--gold)"></span>This year</span></div>
+            <div class="wx-chart-legend"><span><span class="wx-chart-legend-sw" style="background:rgba(58,139,60,.45)"></span>5-yr avg</span><span><span class="wx-chart-legend-sw" style="background:var(--gold-fill,var(--gold))"></span>This year</span></div>
             <div class="wx-chart-takeaway" id="precip-takeaway"></div>
           </div>
           <div class="wx-summary-card" style="margin-top:.85rem">
@@ -1263,7 +1263,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
         <div id="r7-pa-now" aria-live="polite"></div>
         <input type="email" id="pa-email" placeholder="your@email.com" autocomplete="email" aria-label="Email for the alert" style="padding:.4rem .5rem;background:var(--surface2);border:1px solid var(--border);border-radius:5px;font-size:.765rem;color:var(--text)">
         <label class="sa-optin" id="pa-optin-l" data-signup-hide><input type="checkbox" id="pa-optin" checked> Also send me AGSIST Daily, free, every weekday morning</label>
-        <button type="button" id="pa-go" style="padding:.5rem .7rem;background:var(--gold);color:#0a0c0d;border:none;border-radius:5px;font-size:.824rem;font-weight:700;cursor:pointer">Set alert</button>
+        <button type="button" id="pa-go" style="padding:.5rem .7rem;background:var(--gold-fill,var(--gold));color:#0a0c0d;border:none;border-radius:5px;font-size:.824rem;font-weight:700;cursor:pointer">Set alert</button>
         <div id="pa-status" role="status" tabindex="-1" style="font-size:.765rem;color:var(--text-muted);min-height:1.1em"></div>
       </div>
     </div>

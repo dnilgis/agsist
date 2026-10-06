@@ -13,8 +13,8 @@
   <link rel="preload" href="/fonts/inter-400.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/jetbrains-mono-700.woff2" as="font" type="font/woff2" crossorigin>
   <!-- /static-nav:fonts -->
-  <link rel="preload" href="/components/styles.css?v=17" as="style">
-<link rel="stylesheet" href="/components/styles.css?v=17">
+  <link rel="preload" href="/components/styles.css?v=18" as="style">
+<link rel="stylesheet" href="/components/styles.css?v=18">
 <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
 <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
@@ -1130,11 +1130,11 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
         </div>
         <div class="factors">
           <div class="fcard" id="fc-wind"><div class="fcard-head"><div class="fcard-name"><span class="fcard-icon" aria-hidden="true"><svg class="ic-sp" aria-hidden="true"><use href="#sp-wind"/></svg></span>Wind Speed</div><span class="fchip good" id="fc-wind-chip">Good</span></div><div class="fcard-val" id="fc-wind-val">-- mph</div><div class="fcard-desc" id="fc-wind-desc">Ideal: 3&ndash;10 mph. Below 3 mph, inversion risk rises. Above 10 mph, mechanical drift moves spray off-target.</div><div class="fcard-bar"><div class="fcard-bar-fill" id="fc-wind-bar" style="width:0%;background:var(--green)"></div></div></div>
-          <div class="fcard" id="fc-dir"><div class="fcard-head"><div class="fcard-name"><span class="fcard-icon" aria-hidden="true"><svg class="ic-sp" aria-hidden="true"><use href="#sp-compass"/></svg></span>Wind Direction</div><span class="fchip marginal" id="fc-dir-chip">Check</span></div><div class="fcard-val" id="fc-dir-val">--&deg;</div><div class="fcard-desc" id="fc-dir-desc">This one isn&rsquo;t scored &mdash; it&rsquo;s a reminder. Make sure the wind is blowing away from neighboring fields, waterways, homes, and sensitive crops.</div><div class="fcard-bar"><div class="fcard-bar-fill" id="fc-dir-bar" style="width:50%;background:var(--gold)"></div></div></div>
+          <div class="fcard" id="fc-dir"><div class="fcard-head"><div class="fcard-name"><span class="fcard-icon" aria-hidden="true"><svg class="ic-sp" aria-hidden="true"><use href="#sp-compass"/></svg></span>Wind Direction</div><span class="fchip marginal" id="fc-dir-chip">Check</span></div><div class="fcard-val" id="fc-dir-val">--&deg;</div><div class="fcard-desc" id="fc-dir-desc">This one isn&rsquo;t scored &mdash; it&rsquo;s a reminder. Make sure the wind is blowing away from neighboring fields, waterways, homes, and sensitive crops.</div><div class="fcard-bar"><div class="fcard-bar-fill" id="fc-dir-bar" style="width:50%;background:var(--gold-fill,var(--gold))"></div></div></div>
           <div class="fcard" id="fc-temp"><div class="fcard-head"><div class="fcard-name"><span class="fcard-icon" aria-hidden="true"><svg class="ic-sp" aria-hidden="true"><use href="#sp-thermometer"/></svg></span>Temperature</div><span class="fchip good" id="fc-temp-chip">Good</span></div><div class="fcard-val" id="fc-temp-val">--&deg;F</div><div class="fcard-desc" id="fc-temp-desc">Spray between 50&ndash;85&deg;F. Heat causes volatilization of dicamba/2,4-D; cold slows uptake and risks frost injury.</div><div class="fcard-bar"><div class="fcard-bar-fill" id="fc-temp-bar" style="width:0%;background:var(--green)"></div></div></div>
           <div class="fcard" id="fc-humid"><div class="fcard-head"><div class="fcard-name"><span class="fcard-icon" aria-hidden="true"><svg class="ic-sp" aria-hidden="true"><use href="#sp-droplet"/></svg></span>Humidity</div><span class="fchip good" id="fc-humid-chip">Good</span></div><div class="fcard-val" id="fc-humid-val">--%</div><div class="fcard-desc" id="fc-humid-desc">Target 40&ndash;90% RH. Below 40%, droplets evaporate before reaching the leaf. Above 90%, leaves may be wet or near dew &mdash; check the canopy before contact products.</div><div class="fcard-bar"><div class="fcard-bar-fill" id="fc-humid-bar" style="width:0%;background:var(--green)"></div></div></div>
           <div class="fcard" id="fc-dt"><div class="fcard-head"><div class="fcard-name"><span class="fcard-icon" aria-hidden="true"><svg class="ic-sp" aria-hidden="true"><use href="#sp-tornado"/></svg></span>Delta T</div><span class="fchip good" id="fc-dt-chip">Good</span></div><div class="fcard-val" id="fc-dt-val">&mdash;</div><div class="fcard-desc" id="fc-dt-desc">Delta T is a dryness score &mdash; how fast spray droplets shrink and blow away before they land. It&rsquo;s the number professional applicators watch. Ideal 2&ndash;8&deg;C. Above 10, droplets evaporate before reaching the target and drift; below 2 means very humid air or inversion risk.</div><div class="fcard-bar"><div class="fcard-bar-fill" id="fc-dt-bar" style="width:0%;background:var(--green)"></div></div></div>
-          <div class="fcard" id="fc-inv"><div class="fcard-head"><div class="fcard-name"><span class="fcard-icon" aria-hidden="true"><svg class="ic-sp" aria-hidden="true"><use href="#sp-cloud-fog"/></svg></span>Thermal Inversion</div><span class="fchip marginal" id="fc-inv-chip">Low Risk</span></div><div class="fcard-val" id="fc-inv-val">Low</div><div class="fcard-desc" id="fc-inv-desc">Inversions trap fine spray droplets near the ground, causing them to drift unpredictably &mdash; sometimes miles.</div><div class="fcard-bar"><div class="fcard-bar-fill" id="fc-inv-bar" style="width:25%;background:var(--gold)"></div></div></div>
+          <div class="fcard" id="fc-inv"><div class="fcard-head"><div class="fcard-name"><span class="fcard-icon" aria-hidden="true"><svg class="ic-sp" aria-hidden="true"><use href="#sp-cloud-fog"/></svg></span>Thermal Inversion</div><span class="fchip marginal" id="fc-inv-chip">Low Risk</span></div><div class="fcard-val" id="fc-inv-val">Low</div><div class="fcard-desc" id="fc-inv-desc">Inversions trap fine spray droplets near the ground, causing them to drift unpredictably &mdash; sometimes miles.</div><div class="fcard-bar"><div class="fcard-bar-fill" id="fc-inv-bar" style="width:25%;background:var(--gold-fill,var(--gold))"></div></div></div>
           <div class="fcard" id="fc-dew"><div class="fcard-head"><div class="fcard-name"><span class="fcard-icon" aria-hidden="true"><svg class="ic-sp" aria-hidden="true"><use href="#sp-leaf"/></svg></span>Dew Point Risk</div><span class="fchip good" id="fc-dew-chip">Good</span></div><div class="fcard-val" id="fc-dew-val">--&deg;F dew</div><div class="fcard-desc" id="fc-dew-desc">If temp approaches dew point, dew formation is imminent. Spraying onto wet leaves reduces efficacy of contact herbicides.</div><div class="fcard-bar"><div class="fcard-bar-fill" id="fc-dew-bar" style="width:0%;background:var(--green)"></div></div></div>
           <div class="fcard" id="fc-precip" style="display:none"><div class="fcard-head"><div class="fcard-name"><span class="fcard-icon" aria-hidden="true"><svg class="ic-sp" aria-hidden="true"><use href="#sp-cloud-rain"/></svg></span>Precipitation</div><span class="fchip poor" id="fc-precip-chip">Active</span></div><div class="fcard-val" id="fc-precip-val">Rain</div><div class="fcard-desc" id="fc-precip-desc">Active precipitation washes product off leaves before absorption. Wait for dry conditions and foliage to dry.</div><div class="fcard-bar"><div class="fcard-bar-fill" id="fc-precip-bar" style="width:90%;background:var(--red)"></div></div></div>
         </div>
@@ -1142,7 +1142,7 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
           <div class="window-head"><span aria-hidden="true"><svg class="ic-sp" aria-hidden="true"><use href="#sp-timer"/></svg></span> 24-Hour Spray Window</div>
           <div class="window-summary" id="window-summary" role="status" style="font-size:.85rem;color:var(--text-dim);margin:.15rem 0 .5rem;line-height:1.5"></div>
           <div class="hourly-scroll" id="hourly-strip"><div style="color:var(--text-muted);font-size:.82rem;padding:.5rem">Loading forecast&hellip;</div></div>
-          <div class="window-legend"><span class="wl-dot" style="background:var(--green,#4aab4c)"></span> Good window &middot; <span class="wl-dot" style="background:var(--gold,#d4a23f)"></span> Marginal &mdash; proceed with care &middot; <span class="wl-dot" style="background:var(--red,#e0685f)"></span> Do not spray &middot; <svg class="ic-sp" aria-hidden="true"><use href="#sp-snowflake"/></svg> Frozen &middot; Scroll to see full 24h</div>
+          <div class="window-legend"><span class="wl-dot" style="background:var(--green,#4aab4c)"></span> Good window &middot; <span class="wl-dot" style="background:var(--gold-fill,var(--gold,#d4a23f))"></span> Marginal &mdash; proceed with care &middot; <span class="wl-dot" style="background:var(--red,#e0685f)"></span> Do not spray &middot; <svg class="ic-sp" aria-hidden="true"><use href="#sp-snowflake"/></svg> Frozen &middot; Scroll to see full 24h</div>
         </div>
       </div>
       <div class="edu fade-up" id="section-factors">
@@ -1288,6 +1288,8 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
   .scal-res .det b{color:var(--c-txt);font-family:'JetBrains Mono',monospace;}
   .scal-rateunit{display:grid;grid-template-columns:1fr 1.2fr;gap:.5rem;}
   @media(max-width:520px){.smc-grid,.scal-grid{grid-template-columns:1fr;}.smc-kpis{grid-template-columns:1fr 1fr;}}
+  
+  [data-theme="light"] .smc,[data-theme="light"] .scal{--c-gold:#8a6514}
   </style>
 
   <h2 class="smc-h" id="smc-h"><span aria-hidden="true"><svg class="ic-sp" aria-hidden="true"><use href="#sp-calculator"/></svg></span> Spray Mix Calculator</h2>
@@ -1540,7 +1542,9 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
         .spr-prep ol li{margin-bottom:.4rem;} .spr-prep ol li b{color:var(--p-txt);}
         .spr-prep .dw{font-size:.88rem;color:var(--p-mut);line-height:1.55;background:var(--p-panel2);border:1px solid var(--p-line);border-left:3px solid var(--p-gold);border-radius:10px;padding:.7rem .85rem;}
         .spr-prep .dw a{color:var(--p-gold);font-weight:700;text-decoration:none;} .spr-prep .dw a:hover{text-decoration:underline;} .spr-prep .dw b{color:var(--p-txt);}
-        </style>
+        
+  [data-theme="light"] .spr-prep{--p-gold:#8a6514}
+  </style>
         <h3 id="spr-prep-h"><span aria-hidden="true"><svg class="ic-sp" aria-hidden="true"><use href="#sp-flask-conical"/></svg></span> Before you load the tank</h3>
         <details>
           <summary>How to run a jar test (compatibility check)</summary>

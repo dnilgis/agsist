@@ -8,8 +8,8 @@
   <link rel="preload" href="/fonts/inter-400.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/jetbrains-mono-700.woff2" as="font" type="font/woff2" crossorigin>
   <!-- /static-nav:fonts -->
-  <link rel="preload" href="/components/styles.css?v=17" as="style">
-<link rel="stylesheet" href="/components/styles.css?v=17">
+  <link rel="preload" href="/components/styles.css?v=18" as="style">
+<link rel="stylesheet" href="/components/styles.css?v=18">
   <script src="/components/util.js?v=16"></script>
 <link rel="icon" type="image/x-icon"            href="/img/favicon.ico">
 <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
@@ -248,7 +248,7 @@
   cursor: pointer; text-transform: uppercase; letter-spacing: .04em; transition: all .15s;
 }
 .cot-chart-tab:hover { border-color: var(--gold); color: var(--text); }
-.cot-chart-tab.active { background: var(--gold); color: #0a1a0a; border-color: var(--gold); }
+.cot-chart-tab.active { background: var(--gold-fill,var(--gold)); color: #0a1a0a; border-color: var(--gold); }
 
 .cot-legend { display: flex; gap: .9rem; flex-wrap: wrap; margin-bottom: .65rem; }
 .cot-legend-item { display: flex; align-items: center; gap: .3rem; font-size:0.77rem; color: var(--text-muted); }
@@ -2609,7 +2609,7 @@ cotTick(); setInterval(cotTick, 60000);
       var p = c.pctl.net_oi_all;
       el.textContent = (p === null ? 'no long-run ranking'
         : 'vs ' + (c.first_week ? c.first_week.slice(0,4) : 'record') + ', share of open: ' + crowdWord(p));
-      el.style.color = c.crowded === 'long' ? HOT : c.crowded === 'short' ? COLD : 'var(--text-muted)';
+      el.style.color = c.crowded === 'long' ? 'var(--gold)' : c.crowded === 'short' ? COLD : 'var(--text-muted)';
     }
   }
 

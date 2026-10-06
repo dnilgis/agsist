@@ -8,8 +8,8 @@
   <link rel="preload" href="/fonts/inter-400.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/jetbrains-mono-700.woff2" as="font" type="font/woff2" crossorigin>
   <!-- /static-nav:fonts -->
-  <link rel="preload" href="/components/styles.css?v=17" as="style">
-<link rel="stylesheet" href="/components/styles.css?v=17">
+  <link rel="preload" href="/components/styles.css?v=18" as="style">
+<link rel="stylesheet" href="/components/styles.css?v=18">
   <script src="/components/util.js?v=16"></script>
 <link rel="icon" type="image/x-icon"            href="/img/favicon.ico">
 <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
@@ -83,7 +83,7 @@ button,a,[role="button"]{touch-action:manipulation}
 .el-zip-lbl{font-family:var(--font-mono);font-size:0.745rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted)}
 .el-zip input{background:var(--bg);border:1px solid var(--border-2);border-radius:var(--r-sm);padding:.6rem .7rem;font-family:var(--font-mono);font-size:1rem;letter-spacing:.14em;color:var(--text);width:7.5rem;min-height:46px}
 .el-zip input:focus{outline:none;border-color:var(--gold)}
-.el-cta{display:inline-flex;align-items:center;gap:.5rem;padding:.72rem 1.4rem;border:0;border-radius:var(--r-sm);background:var(--gold);color:#0a0c0d;font-family:var(--font-mono);font-size:0.795rem;font-weight:700;text-decoration:none;letter-spacing:.03em;min-height:46px;cursor:pointer;transition:filter .15s,transform .15s}
+.el-cta{display:inline-flex;align-items:center;gap:.5rem;padding:.72rem 1.4rem;border:0;border-radius:var(--r-sm);background:var(--gold-fill,var(--gold));color:#0a0c0d;font-family:var(--font-mono);font-size:0.795rem;font-weight:700;text-decoration:none;letter-spacing:.03em;min-height:46px;cursor:pointer;transition:filter .15s,transform .15s}
 .el-cta:hover{filter:brightness(1.07);transform:translateY(-1px)}
 
 /* section heads */
@@ -202,7 +202,7 @@ button,a,[role="button"]{touch-action:manipulation}
 .cl-chk{grid-column:1/-1;display:flex;gap:.75rem;align-items:center;min-height:44px;font-size:.9rem;color:var(--text-dim);line-height:1.45;cursor:pointer}
 .cl-chk input{width:20px;height:20px;flex:none;margin:0;accent-color:var(--text)}
 .cl-go{grid-column:1/-1;display:flex;flex-wrap:wrap;align-items:center;gap:.75rem 1rem}
-.cl-btn{display:inline-flex;align-items:center;justify-content:center;padding:.75rem 1.4rem;border:0;border-radius:var(--r-sm);background:var(--gold);color:#0a0c0d;font-family:var(--font-mono);font-size:.85rem;font-weight:700;letter-spacing:.03em;cursor:pointer;min-height:44px;transition:filter .15s}
+.cl-btn{display:inline-flex;align-items:center;justify-content:center;padding:.75rem 1.4rem;border:0;border-radius:var(--r-sm);background:var(--gold-fill,var(--gold));color:#0a0c0d;font-family:var(--font-mono);font-size:.85rem;font-weight:700;letter-spacing:.03em;cursor:pointer;min-height:44px;transition:filter .15s}
 .cl-btn:hover{filter:brightness(1.07)}
 .cl-btn:active{filter:brightness(.92)}
 .cl-btn:disabled{opacity:.6;cursor:default}

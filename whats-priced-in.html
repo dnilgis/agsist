@@ -25,7 +25,7 @@
   <link rel="preload" href="/fonts/inter-400.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/jetbrains-mono-700.woff2" as="font" type="font/woff2" crossorigin>
   <!-- /static-nav:fonts -->
-  <link rel="stylesheet" href="/components/styles.css?v=17">
+  <link rel="stylesheet" href="/components/styles.css?v=18">
   <script src="/components/util.js?v=16"></script>
 <style>
 :root{--wp-green:#4aab4c;--wp-gold:var(--gold);--wp-gold2:#e6b042;--wp-bg:#0f1311;--wp-panel:#161b18;--wp-panel2:#1d2420;--wp-line:#2a332d;--wp-txt:#e7ece8;--wp-mut:#9bb0a3;--wp-up:#4aab4c;--wp-dn:#e8706c;}
@@ -302,6 +302,11 @@
 .as-pl-badge.bear{color:var(--wp-dn);background:rgba(217,83,79,.13);}
 .as-pl-badge.neut{color:var(--wp-mut);background:rgba(155,176,163,.1);}
 @media(max-width:560px){.as-pl-val{margin-left:0;}.as-pl-call{gap:.4rem;}}
+/* 2026-10-06 light-mode contrast: page gold text at 4.7:1+ */
+:root[data-theme="light"]{--wp-gold2:#8a6514;--as-gold2:#8a6514}
+/* 2026-10-06: these panels stay dark in light mode, so gold inside them
+   stays the bright gold (the page around them takes the darker text gold). */
+[data-theme="light"] .wp-farmbox,[data-theme="light"] .wp-xlink,[data-theme="light"] .wp-card,[data-theme="light"] .wp-hg,[data-theme="light"] .as-err,[data-theme="light"] .as-boardnote,[data-theme="light"] .as-pl-rep,[data-theme="light"] .as-chip,[data-theme="light"] .as-rep,[data-theme="light"] .wp-method{--gold:#d4a23f;--gold-fill:#d4a23f;--brand:#d4a23f;--brand-fill:#d4a23f;--pd-gold:#d4a23f;--ib-gold:#d4a23f;--ib-gold2:#d4a23f;--wp-gold2:#e6b042;--as-gold2:#e6b042}
 </style>
 </head>
 <body>

@@ -9,8 +9,8 @@
   <link rel="preload" href="/fonts/inter-400.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/jetbrains-mono-700.woff2" as="font" type="font/woff2" crossorigin>
   <!-- /static-nav:fonts -->
-  <link rel="preload" href="/components/styles.css?v=17" as="style">
-  <link rel="stylesheet" href="/components/styles.css?v=17">
+  <link rel="preload" href="/components/styles.css?v=18" as="style">
+  <link rel="stylesheet" href="/components/styles.css?v=18">
   <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
   <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
@@ -168,7 +168,7 @@ button,a,[role="button"]{touch-action:manipulation}
 .fa-subs{display:flex;flex-wrap:wrap;gap:.35rem;margin:0 0 .8rem;min-height:36px}
 .fa-maphead{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:.3rem 1rem}
 .fa-zoomout{flex:0 0 auto;margin:0 0 .45rem;padding:.35rem .7rem;border-radius:6px;border:1px solid rgba(233,237,235,.3);background:rgba(10,12,13,.78);color:#e9edeb;font-size:.75rem;font-weight:700;cursor:pointer;min-height:34px}
-.fa-zoomout:hover{border-color:#d4a23f;color:#d4a23f}
+.fa-zoomout:hover{border-color:#d4a23f;color:var(--gold)}
 .fa-ptools{display:flex;flex-wrap:wrap;gap:.4rem;margin:-.4rem 0 .9rem}
 .fa-ptools button,.fa-ptools a{padding:.3rem .7rem;border-radius:6px;border:1px solid var(--border-2);background:var(--bg2);color:var(--text-dim);font-size:.75rem;font-weight:600;cursor:pointer;text-decoration:none;min-height:32px;display:inline-flex;align-items:center}
 .fa-ptools button:hover,.fa-ptools a:hover{border-color:var(--gold);color:var(--text)}
@@ -187,7 +187,7 @@ details.fa-vd summary:hover{color:var(--gold)}
 .fa-grp-lbl{font-family:var(--font-mono);font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin-right:.2rem}
 .fa-tab{padding:.36rem .66rem;border-radius:999px;border:1px solid var(--border-2);background:var(--surface);color:var(--text-dim);font-size:.75rem;font-weight:600;cursor:pointer;min-height:34px;white-space:nowrap}
 .fa-tab:hover{border-color:var(--gold);color:var(--text)}
-.fa-tab.active{background:var(--gold);color:#0a0c0d;border-color:var(--gold);font-weight:700}
+.fa-tab.active{background:var(--gold-fill,var(--gold));color:#0a0c0d;border-color:var(--gold);font-weight:700}
 .fa-tab[disabled]{opacity:.28;cursor:not-allowed;border-style:dashed}
 .fa-tab[disabled]:hover{border-color:var(--border-2);color:var(--text-dim)}
 
@@ -241,7 +241,7 @@ details.fa-vd summary:hover{color:var(--gold)}
 .fa-cc-r{font-size:.78rem;color:var(--text-dim);line-height:1.5;margin:0 0 .5rem}
 .fa-nb-l{list-style:none;margin:0 0 .5rem;padding:0}
 .fa-nb-l button{grid-template-columns:12px minmax(0,1fr) auto}
-.fa-cc-go{width:100%;padding:.55rem .8rem;border-radius:8px;border:1px solid var(--gold);background:var(--gold);color:#111;font-weight:800;font-size:.8rem;cursor:pointer;min-height:40px}
+.fa-cc-go{width:100%;padding:.55rem .8rem;border-radius:8px;border:1px solid var(--gold);background:var(--gold-fill,var(--gold));color:#111;font-weight:800;font-size:.8rem;cursor:pointer;min-height:40px}
 .fa-cc-go:hover{filter:brightness(1.08)}
 .fa-cc-print{display:block;text-align:center;margin-top:.45rem;font-size:.78rem;font-weight:700;color:var(--gold);text-decoration:none;padding:.35rem;border:1px solid var(--border-2);border-radius:8px}
 .fa-cc-print:hover{border-color:var(--gold)}
@@ -254,7 +254,7 @@ details.fa-vd summary:hover{color:var(--gold)}
 @media (pointer:coarse){ .fa-sws,.fa-sws button{height:24px} }
 .fa-cls-out{font-size:.74rem;color:var(--text)}.fa-cls-out:empty{display:none}
 .fa-legend2{margin-top:-.2rem}.fa-legend2:empty{display:none}
-.fa-scale{align-self:flex-start;font-family:var(--font-mono);font-size:.66rem;letter-spacing:.08em;text-transform:uppercase;color:#111;background:var(--gold);border-radius:4px;padding:.1rem .4rem;margin-bottom:.2rem}
+.fa-scale{align-self:flex-start;font-family:var(--font-mono);font-size:.66rem;letter-spacing:.08em;text-transform:uppercase;color:#111;background:var(--gold-fill,var(--gold));border-radius:4px;padding:.1rem .4rem;margin-bottom:.2rem}
 #fa-method a{color:var(--gold);text-decoration:underline}
 #fa-panel a:not([class]),#fa-legend2 .fa-note a{text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:2px}   /* colour alone was 1.6:1 against body text */
 .fa-rail h3.fa-rk-h{font-weight:400}
@@ -352,7 +352,7 @@ details.fa-arith code{font-family:var(--font-mono);font-size:.74rem;color:var(--
 .fa-cta{border:1px solid var(--border-g);border-radius:12px;padding:1rem 1.1rem;background:linear-gradient(180deg,rgba(212,162,63,.06),transparent)}
 .fa-cta form{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.7rem}
 .fa-cta input[type=email]{flex:1;min-width:220px;background:var(--surface);color:var(--text);border:1px solid var(--border-2);border-radius:8px;padding:.55rem .8rem;font-size:.9rem;min-height:44px}
-.fa-cta button{padding:.5rem 1rem;border-radius:8px;border:none;background:var(--gold);color:#0a0c0d;font-weight:700;cursor:pointer;min-height:44px}
+.fa-cta button{padding:.5rem 1rem;border-radius:8px;border:none;background:var(--gold-fill,var(--gold));color:#0a0c0d;font-weight:700;cursor:pointer;min-height:44px}
 .fa-src{font-size:.78rem;color:var(--text-muted);line-height:1.7}
 .fa-src a{color:var(--gold);text-decoration:none}
 .fa-src a:hover{text-decoration:underline}
@@ -453,7 +453,7 @@ details.fa-arith .body a{color:var(--gold)}
 :root[data-theme="light"] .fa-page{--gold:#7a5a12}
 :root[data-theme="light"] .fa-nbt tr.me td:first-child{background:#f3ead6}
 :root[data-theme="light"] .fa-cc-go{color:#fff}
-:root[data-theme="light"] .fa-page .fa-tab.active{color:#fff}
+:root[data-theme="light"] .fa-page .fa-tab.active{color:#0a0c0d}
 @media (max-width:640px){
   .fa-strip{grid-template-columns:1fr 1fr}
   .fa-tile .v{font-size:1.15rem}

@@ -1061,7 +1061,7 @@ def patch_index1_r5(t):
     t = once(t, 'Corn, Soybean &amp; Wheat Prices Today | AGSIST</title>', 'Corn, Soybean &amp; Wheat Prices &amp; Cash Grain Bids Today | AGSIST</title>', 'title')
     t = once(t, '<meta name="description" content="Live corn, soybean & wheat futures updated every 30 min. Farm dashboard: spray advisory, urea risk, cash grain bids, USDA reports, daily briefing.">',
              '<meta name="description" content="Live corn, soybean and wheat futures, cash grain bids near you, farm weather, spray and urea risk, and USDA reports. Free, updated every 30 minutes.">', 'description')
-    t = once(t, '<link rel="preload" href="/components/styles.css?v=17" as="style">\n', '', 'redundant preload')
+    t = once(t, '<link rel="preload" href="/components/styles.css?v=18" as="style">\n', '', 'redundant preload')
     t = once(t, '"logo": {"@type": "ImageObject", "url": "https://agsist.com/img/og/agsist.jpg", "width": 1200, "height": 630}',
              '"logo": {"@type": "ImageObject", "url": "https://agsist.com/img/icon-512.png", "width": 512, "height": 512}', 'org logo')
     t = once(t, '{"@type": "ListItem", "position": 10, "name": "Ag Prediction Markets", "url": "https://agsist.com/ag-odds"}]}',

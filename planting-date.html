@@ -7,8 +7,8 @@
   <link rel="preload" href="/fonts/inter-400.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/jetbrains-mono-700.woff2" as="font" type="font/woff2" crossorigin>
   <!-- /static-nav:fonts -->
-  <link rel="preload" href="/components/styles.css?v=17" as="style">
-<link rel="stylesheet" href="/components/styles.css?v=17">
+  <link rel="preload" href="/components/styles.css?v=18" as="style">
+<link rel="stylesheet" href="/components/styles.css?v=18">
 <link rel="icon" type="image/x-icon"            href="/img/favicon.ico">
 <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
@@ -73,7 +73,7 @@
 .f-input:focus { border-color:var(--gold); }
 .f-group { margin-bottom:.85rem; }
 .f-hint { font-size:0.755rem; color:var(--text-muted); margin-top:.25rem; line-height:1.5; }
-.f-btn { width:100%; padding:.7rem 1rem; border-radius:8px; border:none; background:var(--gold); color:#0a1a0a; font-family:'JetBrains Mono',monospace; font-size:0.795rem; font-weight:900; cursor:pointer; transition:opacity .15s; min-height:48px; margin-bottom:.6rem; }
+.f-btn { width:100%; padding:.7rem 1rem; border-radius:8px; border:none; background:var(--gold-fill,var(--gold)); color:#0a1a0a; font-family:'JetBrains Mono',monospace; font-size:0.795rem; font-weight:900; cursor:pointer; transition:opacity .15s; min-height:48px; margin-bottom:.6rem; }
 .f-btn:hover { opacity:.88; }
 .f-btn:disabled { opacity:.4; cursor:not-allowed; }
 .f-status { font-size:0.77rem; color:var(--text-muted); text-align:center; min-height:1.1rem; }
@@ -106,7 +106,7 @@
 .window-bar { height:12px; background:var(--border); border-radius:6px; overflow:hidden; margin-bottom:.5rem; position:relative; }
 .window-bar-fill { height:100%; border-radius:6px; transition:width .5s ease; }
 .window-bar-fill.green { background:var(--green); }
-.window-bar-fill.gold  { background:var(--gold); }
+.window-bar-fill.gold  { background:var(--gold-fill,var(--gold)); }
 .window-bar-fill.red   { background:#e05c5c; }
 .window-bar-marker { position:absolute; top:-3px; width:3px; height:18px; background:#fff; border-radius:2px; transition:left .5s ease; }
 

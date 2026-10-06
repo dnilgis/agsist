@@ -21,8 +21,8 @@
   <link rel="preload" href="/fonts/inter-400.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/jetbrains-mono-700.woff2" as="font" type="font/woff2" crossorigin>
   <!-- /static-nav:fonts -->
-  <link rel="preload" href="/components/styles.css?v=17" as="style">
-<link rel="stylesheet" href="/components/styles.css?v=17">
+  <link rel="preload" href="/components/styles.css?v=18" as="style">
+<link rel="stylesheet" href="/components/styles.css?v=18">
   <script src="/components/util.js?v=16"></script>
 <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
 <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
@@ -79,7 +79,7 @@ button,a,[role="button"],input,select{touch-action:manipulation}
 .cb-radius-row label{font-weight:600}
 .cb-radius-row select{background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:1rem;padding:.3rem .55rem;cursor:pointer;outline:none;min-height:44px}
 .cb-geo-row{margin-top:.6rem;font-size:0.795rem;color:var(--text-muted);display:flex;align-items:center;gap:.4rem;flex-wrap:wrap}
-.cb-geo-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--gold);animation:gpulse 2s infinite}
+.cb-geo-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--gold-fill,var(--gold));animation:gpulse 2s infinite}
 @keyframes gpulse{0%,100%{opacity:.4}50%{opacity:1}}
 .cb-geo-row button{background:none;border:none;color:var(--gold);cursor:pointer;font-size:.82rem;padding:.5rem .2rem;text-decoration:underline;min-height:44px}
 .cb-status{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:.5rem;margin-bottom:1rem;padding:.6rem 0;border-bottom:2px solid var(--border)}
@@ -100,7 +100,7 @@ button,a,[role="button"],input,select{touch-action:manipulation}
 .cb-filters{display:flex;flex-wrap:wrap;gap:.4rem;flex:1}
 .cb-filt{padding:.45rem .85rem;border-radius:20px;border:2px solid var(--border);background:var(--surface);color:var(--text-dim);font-size:0.795rem;font-weight:600;cursor:pointer;transition:all .15s;white-space:nowrap;min-height:44px;display:inline-flex;align-items:center}
 .cb-filt:hover{border-color:var(--gold);color:var(--text)}
-.cb-filt.active{background:var(--gold);color:#0a1a0a;border-color:var(--gold)}
+.cb-filt.active{background:var(--gold-fill,var(--gold));color:#0a1a0a;border-color:var(--gold)}
 /* MEASURED AT 375px, iPhone SE: this row was 556px wide inside a 341px
    toolbar with flex-wrap:nowrap, so its children were crushed to their
    narrowest possible column. "Delivery:" rendered 10px wide and 178px TALL --
@@ -355,7 +355,7 @@ button,a,[role="button"],input,select{touch-action:manipulation}
 .compare-chip-x{cursor:pointer;color:var(--text-muted);flex-shrink:0;font-size:.9rem;min-width:44px;min-height:44px;display:inline-flex;align-items:center;justify-content:center;text-align:center}
 .compare-chip-x:hover{color:var(--text)}
 .compare-bar-actions{display:flex;gap:.5rem;flex-shrink:0}
-.compare-go-btn{padding:.55rem 1.1rem;background:var(--gold);color:#0a1a0a;border:none;border-radius:8px;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:0.795rem;cursor:pointer;text-transform:uppercase;letter-spacing:.05em;min-height:44px}
+.compare-go-btn{padding:.55rem 1.1rem;background:var(--gold-fill,var(--gold));color:#0a1a0a;border:none;border-radius:8px;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:0.795rem;cursor:pointer;text-transform:uppercase;letter-spacing:.05em;min-height:44px}
 .compare-go-btn:hover{background:#d4a032}
 .compare-clear-btn{padding:.55rem .9rem;background:none;border:1px solid var(--border);border-radius:8px;color:var(--text-muted);font-family:'JetBrains Mono',monospace;font-size:0.795rem;cursor:pointer;min-height:44px}
 .compare-clear-btn:hover{border-color:var(--text-muted);color:var(--text)}
@@ -450,7 +450,7 @@ button,a,[role="button"],input,select{touch-action:manipulation}
 .cb-comm-row-label{font-family:'JetBrains Mono',monospace;font-size:0.755rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);white-space:nowrap}
 .cb-comm-pills{display:flex;gap:.32rem;flex-wrap:wrap}
 .cb-comm-pill{padding:.3rem .65rem;border-radius:20px;border:1px solid var(--border);background:var(--surface2);color:var(--text-muted);font-family:'JetBrains Mono',monospace;font-size:0.77rem;font-weight:700;cursor:pointer;transition:all .15s;min-height:44px;display:inline-flex;align-items:center;gap:.2rem}
-.cb-comm-pill.active{background:var(--gold);color:#0a1a0a;border-color:var(--gold)}
+.cb-comm-pill.active{background:var(--gold-fill,var(--gold));color:#0a1a0a;border-color:var(--gold)}
 .cb-geo-link-btn{background:none;border:none;color:var(--gold);cursor:pointer;font-size:.82rem;padding:.5rem .2rem;text-decoration:underline;font-family:inherit;min-height:44px}
 .market-badge{font-family:'JetBrains Mono',monospace;font-size:0.75rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:.14rem .48rem;border-radius:20px;white-space:nowrap}
 .market-badge.open{background:rgba(58,139,60,.2);color:var(--green);border:1px solid rgba(58,139,60,.4)}
@@ -481,7 +481,7 @@ button,a,[role="button"],input,select{touch-action:manipulation}
 .bm-sample{display:none;font-size:.8rem;color:var(--brand,#d4a23f);background:rgba(var(--gold-rgb),.08);border:1px solid var(--brand,#d4a23f);border-radius:8px;padding:.5rem .75rem;margin:0 0 .8rem}
 .bm-toggle{display:flex;gap:.4rem;flex-wrap:wrap;margin:0 0 .8rem}
 .bm-toggle button{font-family:var(--font-display);font-weight:600;font-size:.88rem;background:var(--surface2);color:var(--text-muted);border:1px solid var(--border);border-radius:9px;padding:.5rem .95rem;min-height:44px;cursor:pointer}
-.bm-toggle button[aria-pressed="true"]{background:var(--brand,#d4a23f);color:#0a0c0d;border-color:var(--brand,#d4a23f)}
+.bm-toggle button[aria-pressed="true"]{background:var(--brand-fill,var(--brand,#d4a23f));color:#0a0c0d;border-color:var(--brand,#d4a23f)}
 .bm-meta{font-family:'JetBrains Mono',monospace;font-size:0.78rem;color:var(--text-muted);margin:0 0 .7rem}
 .bm-scale{display:flex;align-items:center;gap:.5rem;font-size:0.78rem;color:var(--text-muted);margin:0 0 .8rem}
 .bm-scale .bar{flex:1;height:8px;border-radius:4px;background:linear-gradient(90deg,hsl(0 60% 45%),hsl(48 60% 45%),hsl(130 55% 42%));max-width:240px}
@@ -2360,7 +2360,7 @@ try {
 } catch (e) {}
 function netLog(){
   if(!NET_DEBUG||typeof console==='undefined')return;
-  var a=['%c[bid network]','color:#d4a23f;font-weight:700'];
+  var a=['%c[bid network]','color:var(--gold);font-weight:700'];
   for(var i=0;i<arguments.length;i++)a.push(arguments[i]);
   console.log.apply(console,a);
 }

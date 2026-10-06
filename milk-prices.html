@@ -9,8 +9,8 @@
   <link rel="preload" href="/fonts/inter-400.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/jetbrains-mono-700.woff2" as="font" type="font/woff2" crossorigin>
   <!-- /static-nav:fonts -->
-  <link rel="preload" href="/components/styles.css?v=17" as="style">
-  <link rel="stylesheet" href="/components/styles.css?v=17">
+  <link rel="preload" href="/components/styles.css?v=18" as="style">
+  <link rel="stylesheet" href="/components/styles.css?v=18">
   <script src="/components/util.js?v=16"></script>
   <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
   <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
@@ -142,7 +142,7 @@
   .dp-fall-tab{font-family:'JetBrains Mono',monospace;font-size:0.765rem;font-weight:700;letter-spacing:.04em;
     padding:.5rem .8rem;border-radius:7px;border:1px solid var(--border-2);background:var(--surface2);
     color:var(--text-dim);cursor:pointer;min-height:38px;transition:border-color .15s,color .15s,background .15s;}
-  .dp-fall-tab.on{background:var(--gold);color:#0a1206;border-color:transparent;}
+  .dp-fall-tab.on{background:var(--gold-fill,var(--gold));color:#0a1206;border-color:transparent;}
   .dp-fall-tab:not(.on):hover{border-color:var(--gold);color:var(--text);}
 
   .dp-fall-month{font-family:'JetBrains Mono',monospace;font-size:0.755rem;font-weight:700;letter-spacing:.08em;
@@ -192,8 +192,8 @@
   .dp-slider{flex:1;-webkit-appearance:none;appearance:none;height:4px;border-radius:2px;
     background:var(--border-2);outline:none;min-width:0;}
   .dp-slider::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:18px;height:18px;
-    border-radius:50%;background:var(--gold);cursor:pointer;border:2px solid var(--surface);}
-  .dp-slider::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:var(--gold);
+    border-radius:50%;background:var(--gold-fill,var(--gold));cursor:pointer;border:2px solid var(--surface);}
+  .dp-slider::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:var(--gold-fill,var(--gold));
     cursor:pointer;border:2px solid var(--surface);}
   .dp-sandbox-note{font-size:1rem;color:var(--text-muted);line-height:1.5;margin:.6rem 0 0;}
   .dp-sandbox-reset{font-family:'JetBrains Mono',monospace;font-size:0.76rem;font-weight:700;color:var(--gold);
@@ -216,7 +216,7 @@
   .dp-tl-item{display:grid;grid-template-columns:auto 1fr;gap:1rem;padding:0 0 1.1rem;position:relative;}
   .dp-tl-item:not(:last-child)::before{content:'';position:absolute;left:5px;top:16px;bottom:-4px;
     width:1px;background:var(--border-2);}
-  .dp-tl-dot{width:11px;height:11px;border-radius:50%;background:var(--gold);margin-top:5px;flex-shrink:0;
+  .dp-tl-dot{width:11px;height:11px;border-radius:50%;background:var(--gold-fill,var(--gold));margin-top:5px;flex-shrink:0;
     box-shadow:0 0 0 3px rgba(var(--gold-rgb),.15);position:relative;z-index:1;}
   .dp-tl-body{min-width:0;}
   .dp-tl-date{font-family:'JetBrains Mono',monospace;font-size:0.75rem;font-weight:700;letter-spacing:.08em;
@@ -270,7 +270,7 @@
   .dp-ppd-tab{font-family:'JetBrains Mono',monospace;font-size:0.765rem;font-weight:700;padding:.5rem .8rem;
     border-radius:7px;border:1px solid var(--border-2);background:var(--surface2);color:var(--text-dim);
     cursor:pointer;min-height:38px;transition:all .15s;}
-  .dp-ppd-tab.on{background:var(--gold);color:#0a1206;border-color:transparent;}
+  .dp-ppd-tab.on{background:var(--gold-fill,var(--gold));color:#0a1206;border-color:transparent;}
   .dp-ppd-tab:not(.on):hover{border-color:var(--gold);color:var(--text);}
   .dp-ppd-scene{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-bottom:.9rem;}
   .dp-ppd-class{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:.75rem .85rem;}

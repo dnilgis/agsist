@@ -9,8 +9,8 @@
   <link rel="preload" href="/fonts/inter-400.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/jetbrains-mono-700.woff2" as="font" type="font/woff2" crossorigin>
   <!-- /static-nav:fonts -->
-  <link rel="preload" href="/components/styles.css?v=17" as="style">
-  <link rel="stylesheet" href="/components/styles.css?v=17">
+  <link rel="preload" href="/components/styles.css?v=18" as="style">
+  <link rel="stylesheet" href="/components/styles.css?v=18">
   <script src="/components/util.js?v=16"></script>
   <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
   <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
@@ -44,7 +44,7 @@
   <style>
     .bs-wrap{max-width:1140px;margin:0 auto;padding:24px 16px 60px}
     .bs-hero{padding:26px 0 2px}
-    .bs-kicker{font-family:'JetBrains Mono',monospace;font-size:0.77rem;letter-spacing:.16em;text-transform:uppercase;color:#d4a23f;margin:0 0 10px}
+    .bs-kicker{font-family:'JetBrains Mono',monospace;font-size:0.77rem;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin:0 0 10px}
     .bs-hero h1{font-family:var(--font-display);font-size:clamp(1.7rem,4.5vw,2.6rem);line-height:1.12;margin:0 0 12px;color:#e6ebe9}
     .bs-sub{font-size:1.02rem;line-height:1.7;color:#8a948f;max-width:820px;margin:0}
     .bs-sub strong{color:#e6ebe9}
@@ -53,15 +53,15 @@
     
     .bs-panel{background:#101415;border:1px solid #1a1f20;border-radius:12px;margin-top:26px;overflow:hidden}
     .bs-panel-hd{padding:14px 18px;border-bottom:1px solid #1a1f20;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;align-items:baseline}
-    .bs-panel-t{font-family:'JetBrains Mono',monospace;font-size:0.78rem;letter-spacing:.14em;text-transform:uppercase;color:#d4a23f}
+    .bs-panel-t{font-family:'JetBrains Mono',monospace;font-size:0.78rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}
     .bs-fresh{font-family:'JetBrains Mono',monospace;font-size:0.765rem;color:#8a948f}
     .bs-panel-b{padding:18px}
     .bs-seed{font-size:13.4px;line-height:1.7;color:#8a948f;margin:0 0 6px}
     .bs-tabs{display:flex;gap:8px;margin:0 0 14px}
     .bs-tab{font-family:'JetBrains Mono',monospace;font-size:0.775rem;letter-spacing:.1em;text-transform:uppercase;padding:6px 14px;border-radius:6px;border:1px solid #3a4345;background:transparent;color:#8a948f;cursor:pointer}
-    .bs-tab.on{border-color:#d4a23f;color:#d4a23f;background:rgba(212,162,63,.08)}
+    .bs-tab.on{border-color:#d4a23f;color:var(--gold);background:rgba(212,162,63,.08)}
     table.bs-tbl{width:100%;border-collapse:collapse;font-size:.9rem}
-    .bs-tbl th{font-family:'JetBrains Mono',monospace;font-size:0.755rem;letter-spacing:.12em;text-transform:uppercase;color:#d4a23f;text-align:left;padding:8px 10px;border-bottom:1px solid #1a1f20}
+    .bs-tbl th{font-family:'JetBrains Mono',monospace;font-size:0.755rem;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);text-align:left;padding:8px 10px;border-bottom:1px solid #1a1f20}
     .bs-tbl td{padding:8px 10px;border-bottom:1px solid rgba(132,160,168,.08);color:#c9d1cd}
     .bs-tbl td.num{font-family:'JetBrains Mono',monospace;text-align:right;white-space:nowrap;color:#e6ebe9}
     .neg{color:#e0685f !important}.pos{color:#5fc28a !important}
@@ -74,17 +74,17 @@
     .bs-barfill{position:absolute;top:2px;bottom:2px;left:0;background:#d4a23f;border-radius:3px;opacity:.85}
     .bs-barval{font-family:'JetBrains Mono',monospace;font-size:0.785rem;text-align:right;color:#e6ebe9}
     .bs-note{background:rgba(212,162,63,.06);border:1px solid rgba(212,162,63,.3);border-radius:10px;padding:12px 16px;font-size:1rem;line-height:1.7;color:#8a948f;margin:16px 0}
-    .bs-note strong{color:#d4a23f}
+    .bs-note strong{color:var(--gold)}
     .bs-walk{display:flex;flex-wrap:wrap;gap:10px;align-items:stretch}
     .bs-walkstep{flex:1;min-width:150px;background:#0d1112;border:1px solid #1a1f20;border-radius:10px;padding:12px 14px}
-    .bs-walk-l{font-family:'JetBrains Mono',monospace;font-size:0.75rem;letter-spacing:.12em;text-transform:uppercase;color:#d4a23f}
+    .bs-walk-l{font-family:'JetBrains Mono',monospace;font-size:0.75rem;letter-spacing:.12em;text-transform:uppercase;color:var(--gold)}
     .bs-walk-v{font-family:'JetBrains Mono',monospace;font-size:1.3rem;color:#e6ebe9;margin:4px 0 2px}
     .bs-walk-m{font-size:0.79rem;color:#8a948f;line-height:1.5}
     .bs-faq details{border-bottom:1px solid #1a1f20;padding:10px 0}
     .bs-faq summary{cursor:pointer;color:#e6ebe9;font-size:1rem}
     .bs-faq p{color:#8a948f;font-size:.9rem;line-height:1.7;margin:8px 0 2px}
     .bs-src{font-size:.8rem;color:#8a948f;line-height:1.7}
-    .bs-src a{color:#d4a23f}
+    .bs-src a{color:var(--gold)}
     @media (max-width:640px){.bs-barrow{grid-template-columns:96px 1fr 96px}.bs-spark{min-width:120px}}
     #bs-table th{white-space:nowrap} #bs-table th:last-child{white-space:normal;min-width:200px}
   
@@ -119,6 +119,9 @@
     }
 
 .tblscroll table{margin:0;min-width:520px}
+/* 2026-10-06: these panels stay dark in light mode, so gold inside them
+   stays the bright gold (the page around them takes the darker text gold). */
+[data-theme="light"] .vp-ver,[data-theme="light"] .bs-panel{--gold:#d4a23f;--gold-fill:#d4a23f;--brand:#d4a23f;--brand-fill:#d4a23f;--pd-gold:#d4a23f;--ib-gold:#d4a23f;--ib-gold2:#d4a23f;--wp-gold2:#e6b042;--as-gold2:#e6b042}
 </style>
 </head>
 <body>

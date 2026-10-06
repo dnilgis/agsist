@@ -3412,8 +3412,8 @@ def generate_archive_html(briefing, date_iso, prev_date=None, next_date=None,
 <meta name="twitter:title" content="{page_title}">
 <meta name="twitter:description" content="{og_description}">
 <meta name="twitter:image" content="{og_image_url}">
-<link rel="preload" href="/components/styles.css?v=17" as="style">
-<link rel="stylesheet" href="/components/styles.css?v=17">
+<link rel="preload" href="/components/styles.css?v=18" as="style">
+<link rel="stylesheet" href="/components/styles.css?v=18">
 <link rel="stylesheet" href="/components/sponsor-ad.css?v=1">
 <!-- 2026-09-30: JetBrains Mono and Oswald are self-hosted in styles.css now
      (see components/styles.css) -- no more separate Google Fonts fetch here,
@@ -3472,7 +3472,7 @@ html,body{{overflow-x:hidden;overflow-x:clip;width:100%;}}
 .dv3-sec{{background:var(--surface);border:2px solid var(--border);border-radius:8px;padding:1.2rem 1.4rem;position:relative;transition:border-color .2s}}
 .dv3-sec:hover{{border-color:var(--border-g)}}
 .dv3-sec--surprise{{border-color:rgba(218,165,32,.30)!important;background:linear-gradient(135deg,var(--surface) 0%,rgba(218,165,32,.03) 100%)}}
-.dv3-sec--surprise::before{{content:'! OVERNIGHT SURPRISE';position:absolute;top:-.55rem;right:.75rem;font-family:'JetBrains Mono',monospace;font-size:.5rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#fff;background:var(--gold);padding:.12rem .55rem;border-radius:2px}}
+.dv3-sec--surprise::before{{content:'! OVERNIGHT SURPRISE';position:absolute;top:-.55rem;right:.75rem;font-family:'JetBrains Mono',monospace;font-size:.5rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#fff;background:var(--gold-fill,var(--gold));padding:.12rem .55rem;border-radius:2px}}
 .dv3-sec--heat{{border-color:rgba(74,171,76,.35)!important}}
 .dv3-sec--heat::after{{content:'TOP STORY';position:absolute;top:-.55rem;left:.75rem;font-family:'JetBrains Mono',monospace;font-size:.5rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#fff;background:var(--green);padding:.12rem .55rem;border-radius:2px}}
 .dv3-sec-header{{display:flex;align-items:center;gap:.55rem;margin-bottom:.65rem}}
