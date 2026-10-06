@@ -860,6 +860,21 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
         </div>
       </div></div>
     </div>
+    <!-- 2026-10-06 EARN (Sig: "the radar kind of within the bids card. It
+         shouldn't be."). Radar is its own card. Wide desktop: the left column,
+         under cash bids, sized by the script after the windy loader so the left
+         column ends level with Local conditions (340-720px). Phone and narrow
+         desktop: a fold after Local conditions, closed by default. Nothing moves
+         it into another card; the iframe still loads only when it is on screen. -->
+    <details class="m-fold m-fold--radar" id="radar-fold" open><summary class="m-fold-sum"><span>Radar</span></summary>
+    <div class="radar-section fade-up" id="f-radar">
+      <div class="sec-head"><h2 class="sec-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:1.05em;height:1.05em;vertical-align:-.13em;margin-right:.34em;flex:none"><path d="M12 2v2" /> <path d="m4.93 4.93 1.41 1.41" /> <path d="M20 12h2" /> <path d="m19.07 4.93-1.41 1.41" /> <path d="M15.947 12.65a4 4 0 0 0-5.925-4.128" /> <path d="M3 20a5 5 0 1 1 8.9-4H13a3 3 0 0 1 2 5.24" /> <path d="M11 20v2" /> <path d="M7 19v2" /></svg>Radar</h2><span class="sec-all radar-by">Live, from Windy</span></div>
+      <div class="radar-card">
+        <div class="s7-radar-empty" aria-hidden="true">Not loaded yet</div>
+        <iframe id="windy-frame" src="" data-src="https://embed.windy.com/embed.html?type=map&location=coordinates&metricRain=in&metricTemp=%C2%B0F&metricWind=mph&zoom=5&overlay=radar&product=radar&level=surface&lat=42.0&lon=-93.5&detailLat=42.0&detailLon=-93.5&detail=false&pressure=false&menu=false&message=false&marker=false&calendar=now&thunder=false" width="100%" style="border:none;display:block;min-height:320px;height:100%;aspect-ratio:unset" loading="lazy" title="Live Radar &mdash; Windy" allow="geolocation; fullscreen" allowfullscreen></iframe>
+      </div>
+    </div>
+    </details>
   <details class="wr fade-up" id="wire-band" open hidden>
     <summary class="wr-summary"><span class="wr-k">The wire</span><span class="wr-sub" id="wire-sub"></span></summary>
     <div class="wr-body">
@@ -1167,18 +1182,9 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
   })();
   </script>
 
-  <details class="m-fold m-fold--radar" open><summary class="m-fold-sum"><span>Radar &amp; Drought</span></summary>
-  <div class="radar-section fade-up" id="f-radar">
-    <div class="sec-head"><h2 class="sec-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:1.05em;height:1.05em;vertical-align:-.13em;margin-right:.34em;flex:none"><path d="M12 2v2" /> <path d="m4.93 4.93 1.41 1.41" /> <path d="M20 12h2" /> <path d="m19.07 4.93-1.41 1.41" /> <path d="M15.947 12.65a4 4 0 0 0-5.925-4.128" /> <path d="M3 20a5 5 0 1 1 8.9-4H13a3 3 0 0 1 2 5.24" /> <path d="M11 20v2" /> <path d="M7 19v2" /></svg>Radar &amp; Drought</h2><a href="/drought-monitor" class="sec-all">Drought Monitor</a></div>
-    <div class="radar-grid">
-      <div class="radar-card">
-        <div style="padding:.6rem 1rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
-          <span style="font-size:.824rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold)"><span class="live-dot" style="display:inline-block" aria-hidden="true"></span> Live Radar</span>
-          <span style="font-size:.824rem;color:var(--text-muted)">Powered by Windy</span>
-        </div>
-        <div class="s7-radar-empty" aria-hidden="true">Not loaded yet</div>
-        <iframe id="windy-frame" src="" data-src="https://embed.windy.com/embed.html?type=map&location=coordinates&metricRain=in&metricTemp=%C2%B0F&metricWind=mph&zoom=5&overlay=radar&product=radar&level=surface&lat=42.0&lon=-93.5&detailLat=42.0&detailLon=-93.5&detail=false&pressure=false&menu=false&message=false&marker=false&calendar=now&thunder=false" width="100%" style="border:none;display:block;min-height:320px;height:100%;aspect-ratio:unset" loading="lazy" title="Live Radar &mdash; Windy" allow="geolocation; fullscreen" allowfullscreen></iframe>
-      </div>
+  <details class="m-fold m-fold--drought" open><summary class="m-fold-sum"><span>Drought</span></summary>
+  <div class="radar-section fade-up" id="f-drought">
+    <div class="sec-head"><h2 class="sec-title">Drought</h2><a href="/drought-monitor" class="sec-all">Drought Monitor</a></div>
       <div class="radar-sidebar" style="display:flex;flex-direction:column;">
         <!-- 2026-10-01: collapsed by default per Sig's call -- radar itself
              stays full baseline size (his pick over the shrink/cut options),
@@ -1203,7 +1209,6 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
           </div>
         </details>
       </div>
-    </div>
   </div>
   </details>
 
@@ -1812,10 +1817,14 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')close(true);
    a closed fold whose summary is hidden. */
 (function(){
   var mq = window.matchMedia ? window.matchMedia('(max-width:900px)') : null;
+  var wq = window.matchMedia ? window.matchMedia('(min-width:1240px)') : null;
   function apply(){
     var phone = !!(mq && mq.matches);
     var f = document.querySelectorAll('details.m-fold');
     for(var i = 0; i < f.length; i++){
+      /* 2026-10-06 EARN: Radar is a closed fold on a phone and on a narrow
+         desktop, and an open card beside the bids on a wide one. */
+      if(/\bm-fold--radar\b/.test(f[i].className)){ var w = !!(wq && wq.matches); if(w) f[i].open = true; else if(!f[i].hasAttribute('data-touched')) f[i].open = false; continue; }
       if(phone){ if(!f[i].hasAttribute('data-touched')) f[i].open = false; }
       /* 2026-10-06 HERO: Store or sell starts closed everywhere and shows
          its summary on desktop too (css/home.css), so it is left alone. */
@@ -1828,6 +1837,7 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')close(true);
   }, true);
   apply();
   if(mq){ if(mq.addEventListener) mq.addEventListener('change', apply); else if(mq.addListener) mq.addListener(apply); }
+  if(wq){ if(wq.addEventListener) wq.addEventListener('change', apply); else if(wq.addListener) wq.addListener(apply); }
 })();
 </script>
 </div>
@@ -2088,7 +2098,7 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')close(true);
   })();
   </script>
 <script src="/components/loader.js?v=16" defer></script>
-<script src="/components/geo.js?v=20" defer></script>
+<script src="/components/geo.js?v=21" defer></script>
 <script src="/components/bids-homepage.js?v=27" defer></script>
 <script src="/components/homepage-extras.js?v=9" defer></script>
 <script>
@@ -3155,36 +3165,30 @@ gj('/data/markets.json').then(function(cached){
       _wio.observe(_wf);
     } else { _wf.src=_wf.dataset.src; }
   })();
-  /* 2026-10-06 (Sig): on desktop the live radar fills the space under the
-     cash bids card. On phone it stays in the Radar & Drought fold. The card
-     moves; nothing is copied, so there is one iframe and one lazy loader. */
+  /* 2026-10-06 EARN: the radar is its own card. On wide desktop it sits in
+     the left column under cash bids; its height makes the left column end
+     level with Local conditions when that fits in 340-720px. It reads only
+     the two neighbours' own heights, so it never feeds back on itself. */
   (function(){
-    var card=document.querySelector('#f-radar .radar-card'), f1=document.getElementById('f1'), f2=document.getElementById('f2');
+    var fold=document.getElementById('radar-fold'), card=fold&&fold.querySelector('.radar-card'),
+        f1=document.getElementById('f1'), f2=document.getElementById('f2');
     if(!card||!f1||!f2||!window.matchMedia) return;
-    var home=document.createComment('radar-home'); card.parentNode.insertBefore(home,card);
-    var mq=window.matchMedia('(min-width:901px)');
-    var fold=document.querySelector('.m-fold--radar .m-fold-sum span');
-    var h2=document.querySelector('#f-radar .sec-title');
-    function label(t){ if(fold) fold.textContent=t; if(h2&&h2.lastChild&&h2.lastChild.nodeType===3) h2.lastChild.textContent=t; }
+    var wide=window.matchMedia('(min-width:1240px)');
     function size(){
-      if(card.parentNode!==f1) { card.style.height=''; return; }
-      var top=card.getBoundingClientRect().top, bottom=f2.getBoundingClientRect().bottom;
-      var h=Math.round(bottom-top); card.style.height=Math.max(340,Math.min(h,720))+'px';
+      if(!wide.matches||!fold.open){ card.style.height=''; return; }
+      var r1=f1.getBoundingClientRect(), r2=f2.getBoundingClientRect();
+      if(Math.abs(r1.top-r2.top)>40||r2.left<r1.right-4){ card.style.height=''; return; }
+      var gap=parseFloat(getComputedStyle(f1).marginBottom)||0;
+      var chrome=fold.getBoundingClientRect().height-card.getBoundingClientRect().height;
+      var h=Math.round(r2.height-r1.height-gap-chrome);
+      card.style.height=Math.max(340,Math.min(h,720))+'px';
     }
-    function sideBySide(){
-      if(!mq.matches) return false;
-      var a=f1.getBoundingClientRect(), b=f2.getBoundingClientRect();
-      return b.left >= a.right - 4 && Math.abs(b.top - a.top) < 40;
-    }
-    function place(){
-      if(sideBySide()){ if(card.parentNode!==f1){ f1.appendChild(card); card.classList.add('radar-in-f1'); label('Drought'); } }
-      else if(card.parentNode===f1){ home.parentNode.insertBefore(card,home.nextSibling); card.classList.remove('radar-in-f1'); label('Radar & Drought'); }
-      size();
-    }
-    place();
-    if(mq.addEventListener) mq.addEventListener('change',place); else if(mq.addListener) mq.addListener(place);
-    var t; window.addEventListener('resize',function(){clearTimeout(t);t=setTimeout(place,150);});
-    if('ResizeObserver' in window){ var ro=new ResizeObserver(function(){clearTimeout(t);t=setTimeout(size,100);}); ro.observe(f2); ro.observe(f1.firstElementChild||f1); }
+    var t; function soon(){clearTimeout(t);t=setTimeout(size,100);}
+    size();
+    if(wide.addEventListener) wide.addEventListener('change',soon); else if(wide.addListener) wide.addListener(soon);
+    window.addEventListener('resize',soon);
+    fold.addEventListener('toggle',soon);
+    if('ResizeObserver' in window){ var ro=new ResizeObserver(soon); ro.observe(f1); ro.observe(f2); }
   })();
   function isSignedUp(){try{return document.cookie.split(';').some(function(c){return c.trim().startsWith('agsist_subscribed=');})||localStorage.getItem('agsist_subscribed')==='1';}catch(e){return false;}}
   function setSignedUp(){try{var exp=new Date();exp.setFullYear(exp.getFullYear()+2);document.cookie='agsist_subscribed=1;expires='+exp.toUTCString()+';path=/;SameSite=Lax';localStorage.setItem('agsist_subscribed','1');}catch(e){}}
