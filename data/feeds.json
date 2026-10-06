@@ -82,7 +82,8 @@
     "farmland-atlas"
    ],
    "touched_by": [
-    "farmland-atlas"
+    "farmland-atlas",
+    "State yield pages"
    ],
    "cadence": "1 launch every day at about 4am Central",
    "curated": false,
@@ -886,18 +887,21 @@
     "usda-quick-stats.html"
    ],
    "written_by": [
-    "Build NASS Series"
+    "Build NASS Series",
+    "State yield pages"
    ],
    "touched_by": [
-    "Build NASS Series"
+    "Build NASS Series",
+    "State yield pages"
    ],
-   "cadence": "1 launch every day at about 7am Central",
+   "cadence": "2 launches every day at about 7am, 8am Central",
    "curated": false,
    "planned": false,
    "external": false,
    "url": null,
    "crons": [
-    "45 12 16 * *"
+    "45 12 16 * *",
+    "23 13 17 * *"
    ],
    "max_gap_hours": null,
    "quiet": null,
@@ -1459,7 +1463,8 @@
     "Build State Stats (USDA NASS)"
    ],
    "touched_by": [
-    "Build State Stats (USDA NASS)"
+    "Build State Stats (USDA NASS)",
+    "State yield pages"
    ],
    "cadence": "1 launch every day at about 7am Central",
    "curated": false,

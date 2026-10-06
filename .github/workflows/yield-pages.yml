@@ -1,0 +1,43 @@
+name: State yield pages
+
+# /yield/<state> is built from data/nass/*.json and data/state-stats.json.
+# Those are refreshed by nass-series.yml (16th) and state-stats.yml (15th);
+# a bot push does not trigger other workflows, so this runs on the 17th.
+on:
+  push:
+    branches: [main]
+    paths:
+      - "scripts/build_state_yield_pages.py"
+  schedule:
+    - cron: "23 13 17 * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: yield-pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Build /yield/<state>
+        run: |
+          python scripts/build_state_yield_pages.py --selftest
+          python scripts/build_state_yield_pages.py
+      - name: Commit if changed
+        run: |
+          git config user.name "AGSIST Bot"
+          git config user.email "bot@agsist.com"
+          python scripts/update_sitemap.py --add $(cat yield/_indexable.txt) --priority 0.6 --changefreq monthly
+          git add yield sitemap.xml
+          if git diff --staged --quiet; then echo "no change"; exit 0; fi
+          git commit -m "pages: rebuild /yield state yield pages"
+          git pull --rebase --autostash origin "${GITHUB_REF_NAME}" || true
+          git push origin "HEAD:${GITHUB_REF_NAME}"
