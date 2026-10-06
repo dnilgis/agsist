@@ -446,7 +446,22 @@ body{overflow-x:hidden;overflow-x:clip;width:100%;}
     <a href="/archive" style="font-size:0.77rem;color:var(--gold);font-weight:600;text-decoration:none;white-space:nowrap;">View all &#x2192;</a>
   </div>
   <div class="dv3-arc-grid" id="dv3-arc-grid">
-    <div style="grid-column:1/-1;color:var(--text-muted);font-size:.82rem;padding:.5rem 0">Loading archive&hellip;</div>
+<!--SEED:dailyrecent-->
+<a href="/daily/2026-10-06" class="dv3-arc-card" title="Tue Oct 6 briefing"><div class="dv3-arc-card-head"><span class="dv3-arc-card-date">Tue Oct 6</span><span class="dv3-arc-card-badge wkday">Market day</span></div><div class="dv3-arc-card-hl">Corn holds $5 as grain stocks come in heavy</div></a>
+<a href="/daily/2026-10-05" class="dv3-arc-card" title="Mon Oct 5 briefing"><div class="dv3-arc-card-head"><span class="dv3-arc-card-date">Mon Oct 5</span><span class="dv3-arc-card-badge wkday">Market day</span></div><div class="dv3-arc-card-hl">Corn back above $5 as rain keeps combines parked</div></a>
+<a href="/daily/2026-10-04" class="dv3-arc-card" title="Sun Oct 4 briefing"><div class="dv3-arc-card-head"><span class="dv3-arc-card-date">Sun Oct 4</span><span class="dv3-arc-card-badge wkend">Weekend</span></div><div class="dv3-arc-card-hl">Corn closes under $5 with harvest stuck in the rain</div></a>
+<a href="/daily/2026-10-03" class="dv3-arc-card" title="Sat Oct 3 briefing"><div class="dv3-arc-card-head"><span class="dv3-arc-card-date">Sat Oct 3</span><span class="dv3-arc-card-badge wkend">Weekend</span></div><div class="dv3-arc-card-hl">Crude splits from diesel as harvest stalls in the rain</div></a>
+<a href="/daily/2026-10-02" class="dv3-arc-card" title="Fri Oct 2 briefing"><div class="dv3-arc-card-head"><span class="dv3-arc-card-date">Fri Oct 2</span><span class="dv3-arc-card-badge wkday">Market day</span></div><div class="dv3-arc-card-hl">Crude drops 3.5% as grains grind higher on no news</div></a>
+<a href="/daily/2026-10-01" class="dv3-arc-card" title="Thu Oct 1 briefing"><div class="dv3-arc-card-head"><span class="dv3-arc-card-date">Thu Oct 1</span><span class="dv3-arc-card-badge wkday">Market day</span></div><div class="dv3-arc-card-hl">Corn runs 1.1% ahead of stocks, crude up on Gulf flows</div></a>
+<a href="/daily/2026-09-30" class="dv3-arc-card" title="Wed Sep 30 briefing"><div class="dv3-arc-card-head"><span class="dv3-arc-card-date">Wed Sep 30</span><span class="dv3-arc-card-badge wkday">Market day</span></div><div class="dv3-arc-card-hl">Grains tick higher ahead of stocks data at 11 CT</div></a>
+<a href="/daily/2026-09-29" class="dv3-arc-card" title="Tue Sep 29 briefing"><div class="dv3-arc-card-head"><span class="dv3-arc-card-date">Tue Sep 29</span><span class="dv3-arc-card-badge wkday">Market day</span></div><div class="dv3-arc-card-hl">Crude pulls back 2.1% as Yanbu reopens</div></a>
+<a href="/daily/2026-09-28" class="dv3-arc-card" title="Mon Sep 28 briefing"><div class="dv3-arc-card-head"><span class="dv3-arc-card-date">Mon Sep 28</span><span class="dv3-arc-card-badge wkday">Market day</span></div><div class="dv3-arc-card-hl">Crude runs to $96 as beans slip again</div></a>
+<a href="/daily/2026-09-26" class="dv3-arc-card" title="Sat Sep 26 briefing"><div class="dv3-arc-card-head"><span class="dv3-arc-card-date">Sat Sep 26</span><span class="dv3-arc-card-badge wkend">Weekend</span></div><div class="dv3-arc-card-hl">Grains climb Friday, cattle stall before COF week</div></a>
+<a href="/daily/2026-09-25" class="dv3-arc-card" title="Fri Sep 25 briefing"><div class="dv3-arc-card-head"><span class="dv3-arc-card-date">Fri Sep 25</span><span class="dv3-arc-card-badge wkday">Market day</span></div><div class="dv3-arc-card-hl">Grains sit still, cattle slip again before COF</div></a>
+<a href="/daily/2026-09-24" class="dv3-arc-card" title="Thu Sep 24 briefing"><div class="dv3-arc-card-head"><span class="dv3-arc-card-date">Thu Sep 24</span><span class="dv3-arc-card-badge wkday">Market day</span></div><div class="dv3-arc-card-hl">Crude runs to $93 as Hormuz traffic stays thin</div></a>
+<a href="/daily/2026-09-23" class="dv3-arc-card" title="Wed Sep 23 briefing"><div class="dv3-arc-card-head"><span class="dv3-arc-card-date">Wed Sep 23</span><span class="dv3-arc-card-badge wkday">Market day</span></div><div class="dv3-arc-card-hl">Grains give back the China pop ahead of Xi summit</div></a>
+<a href="/daily/2026-09-22" class="dv3-arc-card" title="Tue Sep 22 briefing"><div class="dv3-arc-card-head"><span class="dv3-arc-card-date">Tue Sep 22</span><span class="dv3-arc-card-badge wkday">Market day</span></div><div class="dv3-arc-card-hl">Corn rallies on China hopes; cattle jump 2.4%</div></a>
+<!--/SEED:dailyrecent-->
   </div>
 
   <div class="dv3-arc-label" style="margin-top:2rem"><span>FAQ</span></div>
@@ -982,7 +997,8 @@ function renderArchive(){
     .then(function(r){return r.ok?r.json():null;})
     .then(function(manifest){
       if(!manifest||!manifest.briefings||!manifest.briefings.length){
-        grid.innerHTML='<p style="color:var(--text-muted);font-size:.82rem;grid-column:1/-1">Archive not yet available.</p>';
+        // Keep the baked recent list (SEED:dailyrecent) if there is one.
+        if(!grid.querySelector('a.dv3-arc-card'))grid.innerHTML='<p style="color:var(--text-muted);font-size:.82rem;grid-column:1/-1">Archive not yet available.</p>';
         return;
       }
       // Hero meta: briefings published count
@@ -1021,7 +1037,7 @@ function renderArchive(){
       grid.innerHTML=html;
     })
     .catch(function(){
-      grid.innerHTML='<p style="color:var(--text-muted);font-size:.82rem;grid-column:1/-1">Archive unavailable.</p>';
+      if(!grid.querySelector('a.dv3-arc-card'))grid.innerHTML='<p style="color:var(--text-muted);font-size:.82rem;grid-column:1/-1">Archive unavailable.</p>';
     });
 }
 

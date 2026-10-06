@@ -2733,6 +2733,319 @@ def _nav_date_label(d):
         return d
 
 
+# ── SEO head for /daily/YYYY-MM-DD (2026-10-06) ─────────────────────────────
+# The title used to be "AGSIST Daily — Tuesday, October 6, 2026: <HEADLINE IN
+# CAPS>" — 67 to 101 characters, so Google cut every one before the headline
+# finished, and the part it kept was the same boilerplate on 207 pages. Now:
+# the headline first, in sentence case, then a short date and the brand.
+# The meta description used to be "<CAPS HEADLINE> — <lead cut at 160>", and
+# og/twitter used the one-line teaser (18 of them under 70 characters). One
+# description now serves all four, built from the day's own lead, ending on a
+# whole sentence or a word boundary with an ellipsis — never mid-word.
+# rebuild_daily_heads.py-style backfills import these same functions, so the
+# head a page was published with and the head a backfill writes cannot drift.
+DAILY_TITLE_MAX = 66
+DAILY_DESC_MIN, DAILY_DESC_MAX = 120, 160
+DAILY_AUTHOR = {"@type": "Person", "name": "Sigurd Lindquist", "url": "https://agsist.com/about"}
+
+_HL_ACRONYMS = {
+    "USDA", "WASDE", "CBOT", "CME", "COT", "COF", "CT", "ET", "PM", "AM", "US", "U.S.",
+    "EU", "UK", "EPA", "CHS", "ETF", "ZC", "ZS", "ZW", "ZM", "ZL",
+    "OPEC", "NASS", "FSA", "RFS", "EIA", "WTI", "LNG", "GDP", "CPI", "FOMC", "NOPA",
+    "FAO", "RMA", "PLC", "CFTC", "MGEX", "KC", "SRW", "HRW", "HRS", "DDGS",
+    "USMCA", "WTO", "IGC", "CONAB", "BAGE", "NOAA", "ENSO", "NWS", "USTR", "NAFTA",
+}
+_HL_PROPER = {w.upper(): w for w in (
+    "China Chinese Iran Iranian Hormuz Brent Saudi Yanbu Gulf Cargill Trump Xi "
+    "Brazil Brazilian Argentina Argentine Mexico Mexican Canada Canadian Ukraine "
+    "Russia Russian India Japan Europe European Midwest Washington Congress Senate "
+    "Israel Venezuela Australia Australian Tyson JBS ADM Bunge Deere Chicago "
+    "Monday Tuesday Wednesday Thursday Friday Saturday Sunday January February "
+    "March April June July August September October November December "
+    "Christmas Thanksgiving Easter"
+).split()}
+_HL_PROPER.update({"JBS": "JBS", "ADM": "ADM"})
+_HL_PHRASES = (("pro farmer", "Pro Farmer"), ("memorial day", "Memorial Day"),
+               ("labor day", "Labor Day"), ("corn belt", "Corn Belt"),
+               ("cattle on feed", "Cattle on Feed"), ("new year", "New Year"),
+               ("independence day", "Independence Day"), ("white house", "White House"),
+               ("supreme court", "Supreme Court"), ("black sea", "Black Sea"))
+_HL_DANGLING = {"a", "an", "and", "as", "at", "by", "for", "from", "in", "into", "of",
+                "on", "or", "the", "to", "with", "while", "after", "ahead", "before",
+                "than", "vs", "its", "their"}
+_MON_ABBR = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+
+
+def sentence_case_headline(h):
+    """ALL-CAPS headline -> sentence case, keeping acronyms and proper nouns.
+
+    A headline that already has lowercase letters is left as written (only its
+    first letter is raised). A token glued to a digit ("$700M", "7:30") is
+    left alone, and so is anything in _HL_ACRONYMS.
+    """
+    h = re.sub(r"\s+", " ", str(h or "")).strip()
+    if not h:
+        return ""
+    letters = [c for c in h if c.isalpha()]
+    upper = sum(1 for c in letters if c.isupper())
+    if letters and upper / len(letters) < 0.8:
+        return h[0].upper() + h[1:]
+
+    def word(m):
+        w = m.group(0)
+        start = m.start()
+        if start > 0 and h[start - 1].isdigit():
+            return w                                   # 700M, 52-WEEK stays as unit
+        core, tail = w, ""
+        pm = re.match(r"^(.*?)(['’]S)$", w)
+        if pm:
+            core, tail = pm.group(1), pm.group(2).lower()
+        if core in _HL_ACRONYMS or core.rstrip(".") in _HL_ACRONYMS:
+            return core + tail
+        if core in _HL_PROPER:
+            return _HL_PROPER[core] + tail
+        return core.lower() + tail
+
+    out = re.sub(r"[A-Za-z][A-Za-z.]*(?:['’][A-Za-z]+)?", word, h)
+    out = out.replace("U.s.", "U.S.")
+    low = out.lower()
+    for ph, rep in _HL_PHRASES:
+        i = low.find(ph)
+        while i != -1:
+            out = out[:i] + rep + out[i + len(ph):]
+            i = low.find(ph, i + len(ph))
+    # Words that are a name in one sense and an ordinary word in another:
+    # "May corn" vs "corn may test $5"; "the Fed" vs "fed cattle".
+    out = re.sub(r"\bmay (?=(?:corn|beans|soybeans|wheat|futures|contracts?|cattle|hogs|milk|meal|oil)\b)", "May ", out)
+    out = re.sub(r"\bfed\b(?! (?:cattle|steers?|heifers?|beef|hogs?))", "Fed", out)
+    for i, c in enumerate(out):
+        if c.isalpha():
+            out = out[:i] + c.upper() + out[i + 1:]
+            break
+    return out
+
+
+def _short_date(date_iso):
+    try:
+        d = datetime.strptime(date_iso, "%Y-%m-%d")
+        return f"{_MON_ABBR[d.month - 1]} {d.day}, {d.year}"
+    except Exception:
+        return date_iso
+
+
+def _trim_words(text, limit, ellipsis="…"):
+    """Cut text to <= limit chars at a word boundary, ending in an ellipsis.
+    Drops trailing punctuation and dangling little words so it never ends on
+    "…the other …" or "…support and…"."""
+    text = text.strip()
+    if len(text) <= limit:
+        return text
+    words = text[: limit - len(ellipsis) + 1].split(" ")
+    if len(words) > 1:
+        words = words[:-1]                     # last piece may be a half word
+    while len(words) > 1 and (words[-1].lower().strip(",;:—–-") in _HL_DANGLING
+                              or not words[-1].strip(",;:—–-.")):
+        words = words[:-1]
+    out = " ".join(words).rstrip(" ,;:—–-.")
+    return out + ellipsis
+
+
+def daily_page_title(briefing, date_iso):
+    """'Corn holds $5 as grain stocks come in heavy — Oct 6, 2026 | AGSIST'.
+    Plain text (escape it for HTML). Never longer than DAILY_TITLE_MAX."""
+    hl = sentence_case_headline(briefing.get("headline") or "") or "Daily ag market briefing"
+    hl = hl.rstrip(" .;:,")
+    dated = f" — {_short_date(date_iso)}"
+    brand = " | AGSIST"
+    # Headline first; the brand is the first thing to give way (Google shows
+    # the site name above the result anyway), the headline the last.
+    if len(hl) + len(dated) + len(brand) <= DAILY_TITLE_MAX:
+        return hl + dated + brand
+    if len(hl) + len(dated) > DAILY_TITLE_MAX:
+        hl = _trim_words(hl, DAILY_TITLE_MAX - len(dated))
+    return hl + dated
+
+
+def _plain(s):
+    s = re.sub(r"<[^>]+>", "", str(s or ""))
+    s = s.replace("**", "").replace("__", "")
+    return re.sub(r"\s+", " ", s).strip()
+
+
+def daily_page_description(briefing):
+    """120-160 chars of the day's own words: whole sentences of the lead when
+    they fit, else the lead plus the teaser, else the lead cut at a word
+    boundary with an ellipsis. Nothing here is written by this function."""
+    lead = _plain(briefing.get("lead"))
+    extras = [_plain(briefing.get(k)) for k in ("teaser", "subheadline")]
+    extras = [e for e in extras if e]
+    if not lead:
+        lead = " ".join(extras) or "AGSIST Daily morning ag market briefing: grain, livestock and dairy futures, weather and the reports to watch."
+        extras = []
+    sents = re.split(r"(?<=[.!?])\s+(?=[A-Z$0-9\"“])", lead)
+    acc = ""
+    for s in sents:
+        nxt = (acc + " " + s).strip()
+        if len(nxt) > DAILY_DESC_MAX:
+            break
+        acc = nxt
+    if len(acc) >= DAILY_DESC_MIN:
+        return acc
+    for e in extras:
+        if acc and e.lower() not in acc.lower():
+            e2 = e if e[-1:] in ".!?" else e + "."
+            cand = (acc + " " + e2).strip()
+            if DAILY_DESC_MIN <= len(cand) <= DAILY_DESC_MAX:
+                return cand
+    if len(lead) <= DAILY_DESC_MAX:
+        joined = lead
+        for e in extras:
+            e2 = e if e[-1:] in ".!?" else e + "."
+            if e.lower() not in joined.lower() and len(joined) + 1 + len(e2) <= DAILY_DESC_MAX:
+                joined += " " + e2
+        return joined
+    return _trim_words(lead, DAILY_DESC_MAX)
+
+
+def _jsonld(obj):
+    """JSON-LD for a <script> block: real JSON (not HTML-escaped text), with
+    "</" broken so no string can close the script element."""
+    return json.dumps(obj, ensure_ascii=False, indent=2).replace("</", "<\\/")
+
+
+def daily_page_jsonld(briefing, date_iso, description, og_image_url):
+    url = f"https://agsist.com/daily/{date_iso}"
+    hl = sentence_case_headline(briefing.get("headline") or "") or "AGSIST Daily briefing"
+    article = {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "headline": hl[:110],
+        "datePublished": date_iso,
+        "dateModified": briefing.get("generated_at") or date_iso,
+        "description": description,
+        "image": og_image_url,
+        "author": DAILY_AUTHOR,
+        "publisher": {"@type": "Organization", "name": "AGSIST", "url": "https://agsist.com"},
+        "mainEntityOfPage": {"@type": "WebPage", "@id": url},
+    }
+    crumbs = {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            {"@type": "ListItem", "position": 1, "name": "Home", "item": "https://agsist.com/"},
+            {"@type": "ListItem", "position": 2, "name": "Daily briefing archive", "item": "https://agsist.com/archive"},
+            {"@type": "ListItem", "position": 3, "name": _short_date(date_iso), "item": url},
+        ],
+    }
+    return ('<script type="application/ld+json">\n' + _jsonld(article) + '\n</script>\n'
+            '<script type="application/ld+json">\n' + _jsonld(crumbs) + '\n</script>')
+
+
+# ── Crawlable archive lists (2026-10-06) ────────────────────────────────────
+# Every /daily/YYYY-MM-DD page was reachable only through its neighbours'
+# prev/next links: archive.html and daily.html built their lists in JS from
+# index.json, so a crawler that does not run JS saw no briefing at all. These
+# bake plain <a href> lists between named SEED markers. save_archive() calls
+# refresh_archive_link_lists() after every write (the critic's re-save too),
+# so the lists follow each day's publish; the JS still upgrades them in place.
+ARCHIVE_PAGE = REPO_ROOT / "archive.html"
+DAILY_PAGE = REPO_ROOT / "daily.html"
+DAILY_RECENT_N = 14
+
+
+def _published_briefings():
+    """(date_iso, headline, market_closed) for every daily/YYYY-MM-DD.html that exists,
+    newest first. Headline from the archive JSON; a page with no readable JSON
+    is still listed (by date) so no published page goes unlinked."""
+    out = []
+    for p in sorted(ARCHIVE_HTML_DIR.glob("*.html"), reverse=True):
+        if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", p.stem):
+            continue
+        hl, closed = "", False
+        try:
+            with open(ARCHIVE_JSON_DIR / f"{p.stem}.json") as f:
+                b = json.load(f)
+            hl, closed = b.get("headline", ""), bool(b.get("market_closed"))
+        except Exception:
+            pass
+        out.append((p.stem, sentence_case_headline(hl), closed))
+    return out
+
+
+def _dow_label(date_iso):
+    try:
+        d = datetime.strptime(date_iso, "%Y-%m-%d")
+        return f"{d.strftime('%a')} {_MON_ABBR[d.month - 1]} {d.day}"
+    except Exception:
+        return date_iso
+
+
+def render_archive_static_list(items):
+    """Full list for archive.html, grouped by month, newest first."""
+    parts, cur = [], None
+    for d, hl, _closed in items:
+        mk = d[:7]
+        if mk != cur:
+            if cur is not None:
+                parts.append("</ul>")
+            try:
+                label = datetime.strptime(mk, "%Y-%m").strftime("%B %Y")
+            except Exception:
+                label = mk
+            parts.append(f'<h2 class="arc-static-month">{label}</h2>')
+            parts.append('<ul class="arc-static-list">')
+            cur = mk
+        y = d[:4]
+        parts.append(f'<li><a href="/daily/{d}"><time datetime="{d}">{_dow_label(d)}, {y}</time> '
+                     f'&middot; {html_esc(hl or "Daily briefing")}</a></li>')
+    if cur is not None:
+        parts.append("</ul>")
+    return "\n".join(parts)
+
+
+def render_daily_recent_list(items, n=DAILY_RECENT_N):
+    """Recent briefings for daily.html, as the same cards its JS draws."""
+    cards = []
+    for d, hl, closed in items[:n]:
+        try:
+            wk = closed or datetime.strptime(d, "%Y-%m-%d").weekday() >= 5
+        except Exception:
+            wk = closed
+        cls, badge = ("wkend", "Weekend") if wk else ("wkday", "Market day")
+        cards.append(f'<a href="/daily/{d}" class="dv3-arc-card" title="{_dow_label(d)} briefing">'
+                     f'<div class="dv3-arc-card-head"><span class="dv3-arc-card-date">{_dow_label(d)}</span>'
+                     f'<span class="dv3-arc-card-badge {cls}">{badge}</span></div>'
+                     f'<div class="dv3-arc-card-hl">{html_esc(hl or "Daily briefing")}</div></a>')
+    return "\n".join(cards)
+
+
+def _replace_seed(text, tag, body):
+    pat = re.compile(r"(<!--SEED:" + re.escape(tag) + r"-->)(.*?)(<!--/SEED:" + re.escape(tag) + r"-->)", re.S)
+    if not pat.search(text):
+        return text, False
+    return pat.sub(lambda m: m.group(1) + "\n" + body + "\n" + m.group(3), text, count=1), True
+
+
+def refresh_archive_link_lists():
+    """Rewrite the SEED:archivelist block in archive.html and SEED:dailyrecent
+    in daily.html. Idempotent; a missing marker is reported, never invented."""
+    items = _published_briefings()
+    for page, tag, body in ((ARCHIVE_PAGE, "archivelist", render_archive_static_list(items)),
+                            (DAILY_PAGE, "dailyrecent", render_daily_recent_list(items))):
+        try:
+            text = page.read_text(encoding="utf-8")
+        except Exception as e:
+            print(f"  [warn] {page.name}: {e}")
+            continue
+        new, ok = _replace_seed(text, tag, body)
+        if not ok:
+            print(f"  [warn] {page.name}: SEED:{tag} markers missing — list not refreshed")
+            continue
+        if new != text:
+            page.write_text(new, encoding="utf-8")
+        print(f"  {page.name}: SEED:{tag} lists {len(items) if tag == 'archivelist' else min(len(items), DAILY_RECENT_N)} briefings")
+
+
 def generate_archive_html(briefing, date_iso, prev_date=None, next_date=None,
                          og_require_file=False):
     date_display = briefing.get("date", date_iso)
@@ -2755,9 +3068,13 @@ def generate_archive_html(briefing, date_iso, prev_date=None, next_date=None,
     # wrong region or refuses the image outright.
     og_image_w, og_image_h = (("1200", "630") if og_image_url == OG_IMAGE_FALLBACK
                               else ("2400", "1350"))
-    og_description_raw = briefing.get("teaser") or briefing.get("lead") or briefing.get("subheadline") or "AGSIST Daily morning market briefing"
-    og_description = html_esc(og_description_raw[:180])
-    desc_escaped = html_esc(lead[:160]) if lead else og_description
+    # 2026-10-06 SEO: one title and one description for <title>, meta, og and
+    # twitter, built by daily_page_title / daily_page_description (see there).
+    page_title = html_esc(daily_page_title(briefing, date_iso))
+    page_desc_raw = daily_page_description(briefing)
+    og_description = html_esc(page_desc_raw)
+    desc_escaped = og_description
+    headline_sc = html_esc(sentence_case_headline(briefing.get("headline", "")) or "AGSIST Daily Briefing")
     issue_suffix = f" &middot; ISSUE #{issue_num}" if issue_num else ""
 
     surprise_html = ""
@@ -2954,28 +3271,28 @@ def generate_archive_html(briefing, date_iso, prev_date=None, next_date=None,
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#111a0a">
-<title>AGSIST Daily &mdash; {html_esc(date_display)}: {headline}</title>
-<meta name="description" content="{headline} &mdash; {desc_escaped}">
+<title>{page_title}</title>
+<meta name="description" content="{desc_escaped}">
 <meta name="author" content="Sigurd Lindquist">
 <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
 <link rel="canonical" href="https://agsist.com/daily/{date_iso}">
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="AGSIST">
 <meta property="og:locale" content="en_US">
-<meta property="og:title" content="AGSIST Daily &mdash; {html_esc(date_display)}: {headline}">
+<meta property="og:title" content="{page_title}">
 <meta property="og:description" content="{og_description}">
 <meta property="og:url" content="https://agsist.com/daily/{date_iso}">
 <meta property="og:image" content="{og_image_url}">
 <meta property="og:image:width" content="{og_image_w}">
 <meta property="og:image:height" content="{og_image_h}">
-<meta property="og:image:alt" content="AGSIST Daily &mdash; {headline}">
+<meta property="og:image:alt" content="AGSIST Daily &mdash; {headline_sc}">
 <meta property="article:published_time" content="{date_iso}">
 <meta property="article:modified_time" content="{gen_at}">
 <meta property="article:author" content="Sigurd Lindquist">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@agsist">
 <meta name="twitter:creator" content="@agsist">
-<meta name="twitter:title" content="AGSIST Daily &mdash; {html_esc(date_display)}">
+<meta name="twitter:title" content="{page_title}">
 <meta name="twitter:description" content="{og_description}">
 <meta name="twitter:image" content="{og_image_url}">
 <link rel="preload" href="/components/styles.css?v=17" as="style">
@@ -2991,20 +3308,7 @@ def generate_archive_html(briefing, date_iso, prev_date=None, next_date=None,
 <link rel="manifest" href="/manifest.json">
 <script>/* agsist-ga-guard 2026-10-01: Google Analytics loads only when the browser sends no Global Privacy Control or Do Not Track signal and the off switch on /privacy is not set. dataLayer and gtag always exist, so page code that calls them never throws. */(function(w,d,n){{var off=false,v,i,s;w.dataLayer=w.dataLayer||[];if(typeof w.gtag!=='function'){{w.gtag=function(){{w.dataLayer.push(arguments);}};}}try{{off=w.localStorage.getItem('agsist-ga-off')==='1';}}catch(e){{}}if(n.globalPrivacyControl===true){{off=true;}}v=[n.doNotTrack,w.doNotTrack,n.msDoNotTrack];for(i=0;i<v.length;i++){{if(v[i]==='1'||v[i]==='yes'){{off=true;}}}}w.agsistGaOff=off;w.gtag('set','allow_google_signals',false);w.gtag('set','allow_ad_personalization_signals',false);if(off){{return;}}s=d.createElement('script');s.async=true;s.src='https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H';(d.head||d.documentElement).appendChild(s);}})(window,document,navigator);</script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){{dataLayer.push(arguments);}}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
-<script type="application/ld+json">
-{{
-  "@context": "https://schema.org",
-  "@type": "Article",
-  "headline": "{headline}",
-  "datePublished": "{date_iso}",
-  "dateModified": "{gen_at}",
-  "description": "{html_esc(lead[:200])}",
-  "image": "{og_image_url}",
-  "author": {{"@type": "Person", "name": "Sigurd Lindquist", "url": "https://agsist.com"}},
-  "publisher": {{"@type": "Organization", "name": "AGSIST", "url": "https://agsist.com"}},
-  "mainEntityOfPage": {{"@type": "WebPage", "@id": "https://agsist.com/daily/{date_iso}"}}
-}}
-</script>
+{daily_page_jsonld(briefing, date_iso, page_desc_raw, og_image_url)}
 <style>
 button,a,[role="button"]{{touch-action:manipulation;}}
 html,body{{overflow-x:hidden;overflow-x:clip;width:100%;}}
@@ -3327,6 +3631,11 @@ def save_archive(briefing):
             print(f"  [warn] could not re-render {prev_d}: {e}")
     count = update_archive_index(briefing, date_iso)
     print(f"  Archive index: {count} briefings")
+    # Crawlable link lists on archive.html / daily.html (see refresh_archive_link_lists).
+    try:
+        refresh_archive_link_lists()
+    except Exception as e:
+        print(f"  [warn] archive link lists not refreshed: {e}")
 
 
 def sanitize_em_dashes(briefing):
@@ -4380,4 +4689,9 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    if "--refresh-archive-lists" in sys.argv:
+        # Rebake the crawlable lists on archive.html / daily.html only —
+        # no model call, no briefing. Safe to run any time.
+        refresh_archive_link_lists()
+    else:
+        main()
