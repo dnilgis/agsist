@@ -1512,7 +1512,7 @@ details.wr>summary,details.hbz>summary{align-items:center!important}
 #harvest-band{display:none!important}        /* 4 of 5 links repeat Quick Tools; the 5th moved there */
 #pdw{display:none!important}                 /* 4th insurance harvest price on the page; October grid links the tracker */
 #s7-hp-link{display:none!important}          /* Quick Tools insurance row, same */
-#s7-falln-rec{display:none!important}        /* fall-N paragraph, printed in full in the October grid */
+/* 2026-10-06 EARN: #s7-falln-rec shows again; the fall-N line in Local conditions is now its one place. */
 #wsp-spray-detail{display:none!important}    /* "Today: wind up to..." also in Local conditions */
 #rsc-sample{display:none!important}          /* "87 calls graded": the headline is "41 of 87" */
 #f1>.bidnet-note,.bidnet-note{display:none!important}         /* "NEW" strip from Sep 5; the network line and claim link stay */
@@ -2040,7 +2040,7 @@ h3:where(.pc-section-lbl,.idx1-extras-title,.s7-ck){font-family:inherit;letter-s
 .s7-ck,.wstat-lbl,.wx-extra-lbl,.pc-section-lbl,.land-k{font-weight:600;color:var(--text-dim)}
 main .tip-b{font-family:var(--font-body,Inter,system-ui,sans-serif)!important;letter-spacing:0!important}
 /* Section eyebrows stay mono; multi-word fold headers lose their tracking. */
-.m-fold:not(.m-fold--calc)>summary.m-fold-sum,.cot-verdict,.ratio-verdict,.tariff-status-badge,#land-h{letter-spacing:0!important}
+.m-fold:not(.m-fold--calc)>summary.m-fold-sum,.cot-verdict,.ratio-verdict,.tariff-status-badge{letter-spacing:0!important}
 .wx-7day-meta,.s7-cv .s7-line small{font-variant-numeric:tabular-nums}
 
 /* Say it once: what stays visible, and what moved behind a fold. */
@@ -2129,10 +2129,117 @@ html[data-look] #idx1-land .m-fold--lite>summary.m-fold-sum>span{color:var(--tex
   #daily-teaser-text,.daily-teaser .teaser-preview{-webkit-line-clamp:1!important}
 }
 
-/* 2026-10-06 radar under cash bids (desktop) */
-#f1>.radar-card.radar-in-f1{margin-top:16px;display:flex;flex-direction:column;border:1px solid var(--border-2);border-radius:8px;overflow:hidden;background:var(--surface);min-height:340px}
-#f1>.radar-card.radar-in-f1 iframe{flex:1;min-height:0!important;height:auto!important}
-#f1>.radar-card.radar-in-f1 .s7-radar-empty{flex:1}
+/* ===== 2026-10-06 EARN: "everything must earn its keep" =================
+   1. Radar is its own card. Wide desktop: left column, row 3, under cash
+      bids (index1.html sizes it 340-720px so the column ends level with
+      Local conditions). Phone and 901-1239px: a fold after Local conditions,
+      closed by default, its summary the header. Never inside #f1. */
+#radar-fold .radar-card{border:0!important;border-radius:0!important;background:none!important;display:flex;flex-direction:column;height:360px;min-height:0;overflow:hidden}
+#radar-fold .radar-card iframe{flex:1;min-height:0!important;height:auto!important}
+#radar-fold .radar-by{font-size:.824rem;color:var(--text-muted)}
+@media(max-width:1239px){
+  #radar-fold #f-radar>.sec-head{display:none}
+  #radar-fold[open]>summary.m-fold-sum{margin-bottom:12px!important}
+  #dash-grid>#radar-fold{grid-column:1/-1}
+}
+/* Folds that stay folds on a desktop (Radar at 901-1239px, the FAQ at
+   every width) show their summary there; it is the section header. */
+@media(min-width:901px) and (max-width:1239px){
+  #radar-fold>summary.m-fold-sum{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:48px;padding:12px 0;cursor:pointer;list-style:none}
+  #radar-fold>summary.m-fold-sum::-webkit-details-marker{display:none}
+  #radar-fold>summary.m-fold-sum::after{content:'+';font-size:1rem;color:var(--text-muted)}
+  #radar-fold[open]>summary.m-fold-sum::after{content:'\2212'}
+}
+@media(min-width:901px){
+  #faq-fold>summary.m-fold-sum{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:48px;padding:12px 0;cursor:pointer;list-style:none}
+  #faq-fold>summary.m-fold-sum::-webkit-details-marker{display:none}
+  #faq-fold>summary.m-fold-sum::after{content:'+';font-size:1rem;color:var(--text-muted)}
+  #faq-fold[open]>summary.m-fold-sum::after{content:'\2212'}
+}
+#faq-fold #f-faq>.sec-head{display:none}
+/* A closed fold is its header bar and nothing under it. */
+html[data-look] #main details.m-fold:not(.m-fold--calc):not([open]){padding-bottom:0!important}
+html[data-look] #main details.m-fold:not(.m-fold--calc):not([open])>summary.m-fold-sum{margin-bottom:0!important}
+@media(min-width:1240px){
+  #radar-fold{grid-column:1!important;grid-row:3!important;align-self:start}
+  #radar-fold .radar-card{height:420px}
+  #wire-band{grid-column:1/3!important;grid-row:4!important}
+  /* Every row sizes to its content; the one flexible row is after the rail,
+     so a rail longer than the main column never opens a gap between cards. */
+  .idx1-shell{grid-template-rows:repeat(10,auto) 1fr!important}
+  html[data-look] #market-intel{grid-row:2/12!important}
+}
+
+/* 2. One fact, one place (EARN). Fall nitrogen is one ruled line in Local
+   conditions; the 5-day spray read sits under the 5-day forecast; export
+   sales is the markets fold's one block; land is one row plus More tools. */
+.wx-falln{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;padding:10px 0;border-top:1px solid var(--hair);text-decoration:none;color:inherit;min-height:44px}
+.wx-falln[hidden]{display:none}
+.wx-falln:hover .wx-falln-v{text-decoration:underline}
+.wx-falln-k{font-size:.824rem;font-weight:600;color:var(--text-dim)}
+.wx-falln-v{font-size:.875rem;font-weight:700;color:var(--text)}
+.wx-falln-s{flex-basis:100%;font-size:.8125rem;line-height:1.45;color:var(--text-muted)}
+#f2 .spray-windows{margin:12px 0 4px;padding-top:10px;border-top:1px solid var(--hair)}
+#f2 .spray-windows-lbl{font-family:var(--font-body,Inter,system-ui,sans-serif)!important;font-size:.824rem;font-weight:600;letter-spacing:0;text-transform:none;color:var(--text-dim)}
+#f2 .spray-days{max-width:none;justify-content:space-between}
+.crop-export-grid--one{grid-template-columns:minmax(0,1fr)!important}
+#idx1-land .land-grid{grid-template-columns:minmax(0,1fr)}
+#idx1-land:not(:has(#land-hail:not([hidden]))) .land-grid,html.s7-no-hail #idx1-land .land-grid{grid-template-columns:minmax(0,1fr)!important}
+#idx1-land .land-lead{flex-direction:row;flex-wrap:wrap;align-items:baseline;gap:4px 12px;border-top:0;padding-top:0}
+#idx1-land .land-lead .land-v{font-size:1rem}
+#idx1-land .land-lead .land-s{font-size:.824rem;color:var(--text-dim)}
+.land-more{margin-top:4px;border-top:1px solid var(--hair);padding-top:10px}
+.land-more-h{margin:0 0 2px;font-size:.824rem;font-weight:600;color:var(--text-dim)}
+.land-more .land-links{margin-top:0}
+@media(max-width:900px){.land-more-h{display:none}.land-more{border-top:0;padding-top:0}}
+
+/* 3. Order, one story (EARN). Hero, [cash bids + radar | local conditions],
+   the Wire across the main column with two items side by side, markets,
+   the month, land and more tools, FAQ, signup. The rail runs beside rows 2
+   onward. On a phone the document order is the reading order: the rail
+   (calendar, market intelligence, bot, alert) comes after the month, and
+   .idx1-tail (land, FAQ, signup) after the rail. */
+.idx1-tail{min-width:0;display:flex;flex-direction:column}
+@media(min-width:901px) and (max-width:1239px){
+  .idx1-shell{grid-template-rows:auto 1fr}
+  .idx1-content{grid-column:1;grid-row:1}
+  #market-intel{grid-column:2;grid-row:1/3}
+  .idx1-tail{grid-column:1;grid-row:2;align-self:start}
+}
+@media(min-width:1240px){
+  .idx1-tail{display:contents!important}
+  .idx1-tail>*{grid-column:1/3!important}
+  html[data-look] .idx1-shell #f-prices{grid-row:5!important}
+  html[data-look] .idx1-shell .idx1-content>.s7-month{grid-column:1/3!important;grid-row:6!important}
+  .idx1-tail>#idx1-land{grid-row:7!important}
+  .idx1-tail>#faq-fold{grid-row:8!important}
+  .idx1-tail>#signup-full{grid-row:9!important}
+  .idx1-tail>#signup-slim{grid-row:10!important}
+  #wire-g{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+}
+
+/* 4. One section header (EARN). Every section, rail card and top-level
+   fold reads like the cash bids head: mono .824rem, bold, uppercase, .08em
+   tracking, on the band bar with its family rule (THE LOOK draws the bar).
+   October on the farm and the Wire now use the same .sec-head markup. A
+   fold's summary is its header, at the same size. Folds inside Market
+   prices are one level down: a ruled sub-head, no second bar. */
+html[data-look] .m-fold:not(.m-fold--calc)>summary.m-fold-sum{box-sizing:border-box;min-height:44px!important;padding-top:10px!important;padding-bottom:10px!important;border-top:0!important;font-family:'JetBrains Mono',monospace!important;text-transform:uppercase!important}
+html[data-look] .m-fold:not(.m-fold--calc)>summary.m-fold-sum>span{font-family:'JetBrains Mono',monospace!important;font-size:.824rem!important;font-weight:700!important;letter-spacing:.08em!important;text-transform:uppercase!important;line-height:1.6}
+html[data-look] .m-fold:not(.m-fold--calc)>summary.m-fold-sum>span small{font-family:var(--font-body,Inter,system-ui,sans-serif)!important;font-size:.765rem!important;font-weight:400!important;letter-spacing:0!important;text-transform:none!important;margin-left:6px}
+html[data-look] .m-fold:not(.m-fold--calc)[open]>summary.m-fold-sum{margin-bottom:12px!important}
+html[data-look] .m-fold:not(.m-fold--calc)>summary.m-fold-sum::after{line-height:1}
+html[data-look] #f-prices .m-fold>summary.m-fold-sum,html[data-look] #idx1-land .m-fold--lite>summary.m-fold-sum{background:none!important;margin:0!important;padding:10px 0!important;min-height:44px!important;border-radius:0!important;border-top:1px solid var(--hair)!important;border-bottom:0!important}
+html[data-look] #main #f-prices .m-fold>summary.m-fold-sum>span,html[data-look] #main #idx1-land .m-fold--lite>summary.m-fold-sum>span{font-family:var(--font-body,Inter,system-ui,sans-serif)!important;font-size:.875rem!important;font-weight:600!important;letter-spacing:0!important;text-transform:none!important;color:var(--text-dim)!important}
+html[data-look] #f-prices .m-fold[open]>summary.m-fold-sum{margin-bottom:4px!important}
+#wire-band .wr-sub{font-size:.824rem;color:var(--text-muted)}
+/* Equal gaps: every card carries the 16px gap below it, so the rail and the
+   shell add none of their own. */
+html[data-look] .intel-rail{gap:0}
+@media(max-width:1239px){html[data-look] .idx1-shell{row-gap:0}}
+@media(min-width:901px) and (max-width:1239px){html[data-look] #dash-grid{row-gap:0!important;margin-bottom:0!important}}
+@media(max-width:420px){html[data-look] .m-fold--cot>summary.m-fold-sum>span small{display:none}}
+#wire-band>.wr-body{padding-top:0}
 
 /* ===== THE LOOK (2026-10-03) ==========================================
    Sig: "lots of still monotone and hard to differentiate one thing from

@@ -7,7 +7,7 @@
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
 <link rel="stylesheet" href="/components/styles.css?v=17">
 <link rel="stylesheet" href="/components/sponsor-ad.css?v=1">
-<link rel="stylesheet" href="/css/home.css?v=4">
+<link rel="stylesheet" href="/css/home.css?v=5">
 <!-- 2026-09-30: sponsor-ad.js's one call site (AgsistAd.render(), below) is
      already guarded with window.AgsistAd? and runs inside a fetch .then(),
      well after a deferred script would finish — so defer is free here.
@@ -823,6 +823,10 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
             <div class="wstat"><div class="wstat-lbl">Dew Point</div><div class="wstat-val" id="wx-dew">--</div></div><div class="wstat" id="s7-wx-low-w"><div class="wstat-lbl">Overnight low</div><div class="wstat-val" id="s7-wx-low"><span class="s7-nl">Not loaded yet</span></div></div><div class="wstat" id="s7-wx-soil-w"><div class="wstat-lbl">Soil, 2.4 in, modeled</div><div class="wstat-val" id="s7-wx-soil"><span class="s7-nl">Not loaded yet</span></div></div>
           </div>
                     <div class="wx-today" id="wx-today-summary"></div>
+          <!-- 2026-10-06 EARN: the fall nitrogen read lives here once (a soil read).
+               Painted by S7 paintWx from the forecast the card already loads;
+               shown in the months SEASON marks fallN. -->
+          <a href="/urea" class="wx-falln" id="s7-falln" data-track="season" hidden><span class="wx-falln-k">Fall nitrogen</span><span class="wx-falln-v" id="s7-falln-badge">Not loaded yet</span><span class="wx-falln-s" id="s7-falln-rec">Soil temperature at 2.4 in (6 cm). Extension guidance: wait for fall anhydrous until soil at 4 in stays below 50&deg;F.</span></a>
           <div id="wx-forecast" style="display:none"></div>
           <div class="wx-data-extra">
             <div class="wx-extra-stat with-chart" id="gdu-stat" role="button" tabindex="0" aria-expanded="false" aria-controls="gdu-chart-panel"><div class="wx-extra-lbl"><svg class="ic" aria-hidden="true"><use href="#i-thermometer"/></svg> GDU Since Apr 1</div><div class="wx-extra-val" id="gdu-val">--</div><div class="wx-extra-ctx" id="gdu-ctx"></div><div class="wx-chart-toggle" id="gdu-chart-toggle">&#x25BC; History</div></div>
@@ -850,6 +854,10 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
               <div class="wx-7day-cell"><div class="wx-7day-name">&mdash;</div><div class="wx-7day-icon"><svg class="ic" aria-hidden="true"><use href="#i-cloud-sun"/></svg></div><div class="wx-7day-temps"><span class="hi">--&deg;</span><span class="lo">--&deg;</span></div><div class="wx-7day-meta">--</div></div>
               <div class="wx-7day-cell"><div class="wx-7day-name">&mdash;</div><div class="wx-7day-icon"><svg class="ic" aria-hidden="true"><use href="#i-cloud-sun"/></svg></div><div class="wx-7day-temps"><span class="hi">--&deg;</span><span class="lo">--&deg;</span></div><div class="wx-7day-meta">--</div></div>
             </div>
+            <div class="spray-windows" id="spray-windows">
+            <div class="spray-windows-lbl"><svg class="ic" aria-hidden="true"><use href="#i-wind"/></svg> Spray days <span class="tip"><button type="button" class="tip-b" aria-expanded="false" aria-describedby="tip-s7-spray">How it&rsquo;s rated</button><span id="tip-s7-spray" role="tooltip" class="tip-t" hidden>One rule for every spray verdict on this page, read from each day&rsquo;s forecast. Hold off: more than 0.25 in of rain, wind over 15 mph, or a high under 40&deg;F or over 90&deg;F. Use caution: wind over 10 mph, calm air under 3 mph in the early morning (5&ndash;9 AM) or evening (6&ndash;9 PM) in the hourly forecast (temperature inversion risk), rain chance over 50%, humidity over 85% or under 40%, a low under 45&deg;F, or a high over 85&deg;F. Otherwise OK. Gusts are shown, not rated. Always follow the product label.</span></span></div>
+            <div class="spray-days" id="spray-days-strip"></div>
+          </div>
             <button class="wx-hourly-toggle" id="wx-hourly-toggle" aria-expanded="false" aria-controls="wx-hourly-panel">&#x25BC; Hourly</button>
             <div class="wx-hourly-panel" id="wx-hourly-panel" role="region" aria-label="24-hour hourly forecast">
               <div class="wx-hourly-strip" id="wx-hourly-strip"></div>
@@ -860,13 +868,28 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
         </div>
       </div></div>
     </div>
-  <details class="wr fade-up" id="wire-band" open hidden>
-    <summary class="wr-summary"><span class="wr-k">The wire</span><span class="wr-sub" id="wire-sub"></span></summary>
+    <!-- 2026-10-06 EARN (Sig: "the radar kind of within the bids card. It
+         shouldn't be."). Radar is its own card. Wide desktop: the left column,
+         under cash bids, sized by the script after the windy loader so the left
+         column ends level with Local conditions (340-720px). Phone and narrow
+         desktop: a fold after Local conditions, closed by default. Nothing moves
+         it into another card; the iframe still loads only when it is on screen. -->
+    <details class="m-fold m-fold--radar" id="radar-fold" open><summary class="m-fold-sum"><span>Radar</span></summary>
+    <div class="radar-section fade-up" id="f-radar">
+      <div class="sec-head"><h2 class="sec-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:1.05em;height:1.05em;vertical-align:-.13em;margin-right:.34em;flex:none"><path d="M12 2v2" /> <path d="m4.93 4.93 1.41 1.41" /> <path d="M20 12h2" /> <path d="m19.07 4.93-1.41 1.41" /> <path d="M15.947 12.65a4 4 0 0 0-5.925-4.128" /> <path d="M3 20a5 5 0 1 1 8.9-4H13a3 3 0 0 1 2 5.24" /> <path d="M11 20v2" /> <path d="M7 19v2" /></svg>Radar</h2><span class="sec-all radar-by">Live, from Windy</span></div>
+      <div class="radar-card">
+        <div class="s7-radar-empty" aria-hidden="true">Not loaded yet</div>
+        <iframe id="windy-frame" src="" data-src="https://embed.windy.com/embed.html?type=map&location=coordinates&metricRain=in&metricTemp=%C2%B0F&metricWind=mph&zoom=5&overlay=radar&product=radar&level=surface&lat=42.0&lon=-93.5&detailLat=42.0&detailLon=-93.5&detail=false&pressure=false&menu=false&message=false&marker=false&calendar=now&thunder=false" width="100%" style="border:none;display:block;min-height:320px;height:100%;aspect-ratio:unset" loading="lazy" title="Live Radar &mdash; Windy" allow="geolocation; fullscreen" allowfullscreen></iframe>
+      </div>
+    </div>
+    </details>
+  <section class="wr fade-up" id="wire-band" aria-labelledby="wire-h" hidden>
+    <div class="sec-head"><h2 class="sec-title" id="wire-h">The Wire</h2><span class="sec-all wr-sub" id="wire-sub"></span></div>
     <div class="wr-body">
       <div class="wr-g" id="wire-g"></div>
       <a class="wr-all" href="/news">Everything That Moved</a>
     </div>
-  </details>
+  </section>
 
   <div class="price-cards-section fade-up" id="f-prices">
 
@@ -879,16 +902,12 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
       <div class="pc pc--highlight" data-spark="beans-nov"><div class="pc-head"><span class="pc-name">Soybeans deferred</span><span class="pc-contract"></span></div><div class="r7-pl"><div class="pc-price" id="pcp-bean-nov"></div><span class="r7-unit">per bu</span></div><div class="pc-change"><span class="pc-chg-val nc" id="pcc-bean-nov"></span></div><div class="pc-prev" id="pcprev-bean-nov"></div><div class="pc-range"><div class="pc-range-labels"><span id="pcrl-beans-nov-lo"></span><span>52-week range</span><span id="pcrl-beans-nov-hi"></span></div><div class="pc-range-track"><div class="pc-range-fill" id="pcrf-beans-nov"></div><div class="pc-range-dot" id="pcrd-beans-nov"></div></div></div></div>
     </div>
     
-    <details class="m-fold m-fold--usda" open><summary class="m-fold-sum"><span>Crops, exports, inputs <small>progress &middot; sales &middot; tariffs &middot; fertilizer</small></span></summary>
-    <div class="crop-export-grid" id="crop-export-grid-inner">
-      <div class="crop-widget" id="crop-widget">
-        <div class="crop-widget-head"><h3 class="crop-widget-title idx1-sub-h">Crop Condition &mdash; Good/Excellent</h3><span class="crop-week-badge" id="crop-week-badge">USDA &middot; Mondays 4:00 PM ET</span></div>
-        <div class="crop-rows" id="crop-rows">
-          <div><div class="crop-row-head"><div class="crop-comm-label"><span class="crop-comm-name">Corn</span></div><span class="crop-ge-val fair" id="crop-corn-ge">--</span></div><div class="crop-chg-row"><span class="crop-chg nc" id="crop-corn-wk">--</span><span class="crop-chg-lbl">week</span><span class="crop-chg nc" id="crop-corn-yr">--</span><span class="crop-chg-lbl">vs last year</span></div><div class="crop-plant-row"><span class="crop-plant-pct" id="crop-corn-plant">--%</span><span class="crop-plant-lbl">planted</span><div class="crop-plant-bar"><div class="crop-plant-fill" id="crop-corn-bar" style="width:0%"></div></div></div></div>
-          <div><div class="crop-row-head"><div class="crop-comm-label"><span class="crop-comm-name">Soybeans</span></div><span class="crop-ge-val fair" id="crop-bean-ge">--</span></div><div class="crop-chg-row"><span class="crop-chg nc" id="crop-bean-wk">--</span><span class="crop-chg-lbl">week</span><span class="crop-chg nc" id="crop-bean-yr">--</span><span class="crop-chg-lbl">vs last year</span></div><div class="crop-plant-row"><span class="crop-plant-pct" id="crop-bean-plant">--%</span><span class="crop-plant-lbl">planted</span><div class="crop-plant-bar"><div class="crop-plant-fill" id="crop-bean-bar" style="width:0%"></div></div></div></div>
-        </div>
-        <div class="crop-footer"><span class="crop-footer-date" id="crop-date">USDA NASS &middot; Weekly</span><a href="/usda-calendar" class="crop-full-link">Full Calendar</a></div>
-      </div>
+    <!-- 2026-10-06 EARN: export sales is the one block kept from "Crops, exports,
+         inputs". Crop condition moved into October on the farm (harvest cell);
+         the tariff tracker (approximate figures) and fertilizer (quotes over 30
+         days old) left the homepage and stay on /tariffs and /fertilizer. -->
+    <details class="m-fold m-fold--usda" open><summary class="m-fold-sum"><span>Export sales <small>USDA FAS, weekly</small></span></summary>
+    <div class="crop-export-grid crop-export-grid--one" id="crop-export-grid-inner">
       <div class="export-widget" id="export-widget">
         <div class="export-widget-head"><h3 class="export-widget-title idx1-sub-h"><svg class="ic" aria-hidden="true"><use href="#i-package"/></svg> Export Sales &mdash; Commitments</h3><span class="export-mkt-yr" id="export-mkt-yr">USDA FAS &middot; Thu 8:30am</span></div>
         <div class="export-rows" id="export-rows">
@@ -897,18 +916,6 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
           <div><div class="export-row-head"><div class="export-comm-label"><span class="export-comm-name">Wheat, all classes</span></div><span class="export-weekly"><span id="exp-wheat-wk">--</span> <span class="export-wk-lbl">net sales this week</span></span></div><div class="export-pace-row"><div class="export-pace-bar"><div class="export-pace-fill on-track" id="exp-wheat-bar" style="width:0%"></div></div><span class="export-pace-pct on-track" id="exp-wheat-pct">--%</span></div><div class="export-cumul" id="exp-wheat-cumul"></div><div class="export-withheld" id="exp-wheat-why" hidden></div></div>
         </div>
         <div class="export-footer"><span class="export-footer-date" id="exp-date">USDA FAS &middot; Weekly</span><span class="tip r7-tip"><button type="button" class="tip-b" aria-expanded="false" aria-describedby="tip-export">No pace yet</button><span id="tip-export" role="tooltip" class="tip-t" hidden>Pace is commitments against USDA&rsquo;s export projection for this marketing year. The projection is typed into the site&rsquo;s export-sales script after each WASDE, and the one on file is still last marketing year&rsquo;s, so no pace is shown rather than one against the wrong target. Each row compares with the same week last year instead.</span></span><span class="tip r7-tip"><button type="button" class="tip-b" aria-expanded="false" aria-describedby="tip-r7-bu">Bushels</button><span id="tip-r7-bu" role="tooltip" class="tip-t" hidden>USDA reports export sales in metric tons. Converted at 39.368 bushels per metric ton for corn and 36.744 for soybeans and wheat. Commitments are shipments so far plus sales not yet shipped.</span></span><a href="https://www.fas.usda.gov/programs/export-sales-reporting-program" target="_blank" rel="noopener" class="export-full-link">FAS Data</a></div>
-      </div>
-    </div>
-    <div class="tariff-fert-grid fade-up">
-      <div class="tariff-widget" id="tariff-widget">
-        <div class="tariff-widget-head"><h3 class="tariff-widget-title idx1-sub-h"><svg class="ic" aria-hidden="true"><use href="#i-landmark"/></svg> Ag Tariff Tracker &mdash; US Export Rates</h3><span class="tariff-status-badge elevated" id="tariff-badge">Loading&hellip;</span></div>
-        <div class="tariff-rows" id="tariff-rows"><div class="tariff-row" style="justify-content:center;color:var(--text-muted);font-size:.824rem">Loading tariff data&hellip;</div></div>
-        <div class="tariff-footer"><span class="tariff-footer-date" id="tariff-date">Updated &mdash;</span><a href="/tariffs" class="tariff-full-link">Full Tracker</a></div>
-      </div>
-      <div class="fert-widget" id="fert-widget">
-        <div class="fert-widget-head"><h3 class="fert-widget-title idx1-sub-h"><svg class="ic" aria-hidden="true"><use href="#i-flask-conical"/></svg> Fertilizer Prices</h3><span class="crop-week-badge" id="fert-date">Updated &mdash;</span></div>
-        <div class="fert-grid" id="fert-grid"><div class="fert-card" style="grid-column:1/-1;text-align:center;padding:.75rem;color:var(--text-muted);font-size:.824rem">Loading&hellip;</div></div>
-        <div class="fert-footer"><span class="fert-footer-note" id="fert-src-note">Midwest dealer quotes, dollars per ton</span><a href="/fertilizer" class="fert-full-link">Price History</a></div>
       </div>
     </div>
     </details>
@@ -954,18 +961,9 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
     </details>
     </div>
   </div>
-    <div class="fade-up" id="f-rail-scorecard-teaser">
-      <a href="/scorecard" class="rsc-teaser-link" aria-label="AGSIST prediction bot: latest calls and record">
-        <span class="rsc-teaser-num" id="rsct-hit">&mdash;</span>
-        <span class="rsc-teaser-body">
-          <span class="rsc-teaser-label" id="rsct-label">Prediction bot</span>
-          <span class="rsc-teaser-cta">Calls and Record &rarr;</span>
-        </span>
-      </a>
-    </div>
   </div>
   <section class="s7-month" id="s7-month" aria-labelledby="s7-month-h" data-track="season">
-    <div class="s7-head"><h2 class="s7-h" id="s7-month-h">This month</h2><span class="s7-k" id="s7-month-k">What leads the page this month</span></div>
+    <div class="sec-head"><h2 class="sec-title" id="s7-month-h">This month</h2></div>
     <div class="s7-grid" id="s7-grid"></div>
     <!-- 2026-10-06: each cell shows its figure and one short line; the rest of
          what used to sit under it (how it is figured, sources, the reader's
@@ -973,163 +971,6 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
     <details class="s7-notes" id="s7-notes" hidden><summary>How these are figured</summary><div class="s7-notes-b" id="s7-notes-b"></div></details>
   </section>
   
-  <section class="fade-up idx1-land" id="idx1-land" aria-labelledby="land-h">
-    <div class="sec-head"><h2 class="sec-title" id="land-h">Land, Storage &amp; Risk</h2></div>
-    <div class="land-grid">
-      <a class="land-cell land-lead" id="land-atlas" href="/farmland-atlas" data-track="land"><span class="land-k">Farmland Atlas</span><span class="land-v" id="land-atlas-v">Rent, land value and risk for every US county</span><span class="land-s" id="land-atlas-s">Open the map</span></a>
-      <a class="land-cell" id="land-hail" href="/hail-map" data-track="land" hidden><span class="land-k">Hail, 30 days</span><span class="land-v" id="land-hail-v"></span><span class="land-s" id="land-hail-s"></span></a>
-    </div>
-    <details class="m-fold m-fold--lite" open><summary class="m-fold-sum"><span>More land and market pages</span></summary>
-    <ul class="land-links">
-      <li><a href="/cash-rent" data-track="land">Cash Rent by County</a></li>
-      <li><a href="/land-tenure" data-track="land">Who Owns the Ground</a></li>
-      <li><a href="/cash-lease" data-track="land">Farm Cash Lease</a></li>
-      <li><a href="/harvest-price-tracker" data-track="land">Harvest Price Tracker</a></li>
-      <li class="s7-croptour"><a href="/crop-tour" data-track="land">Crop Tour</a></li>
-      <li><a href="/basis" data-track="land">Basis vs Normal</a></li>
-      <li><a href="/farm-bill" data-track="land">Farm Bill</a></li>
-      <li><a href="/milk-prices" data-track="land">Milk Prices</a></li>
-      <li><a href="/ag-odds" data-track="land">Ag Prediction Markets</a></li>
-      <li><a href="/storage-crunch" data-track="land">Storage Crunch</a></li>
-      <li><a href="/foreign-land" data-track="land">Foreign-Owned Farmland</a></li>
-      <li><a href="/archive" data-track="land">Briefing Archive</a></li>
-    </ul>
-    </details>
-  </section>
-  <script>
-  /* Land band. Every number comes from a file in /data or the Atlas build,
-     fetched only when the band is near the screen. A cell whose file fails
-     stays hidden; the Atlas cell keeps its plain text. */
-  (function(){
-    var band=document.getElementById('idx1-land'); if(!band) return;
-    function $(i){return document.getElementById(i);}
-    function get(u){return fetch(u).then(function(r){return r.ok?r.json():null;}).catch(function(){return null;});}
-    function show(id,v,s){var c=$(id),a=$(id+'-v'),b=$(id+'-s');if(!c||!a)return;a.innerHTML=v;if(b)b.textContent=s||'';c.hidden=false;}
-    function n(x){return '<span class="n">'+x+'</span>';}
-    var MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-    function day(s){var m=/^(\d{4})-(\d{2})-(\d{2})/.exec(s||'');return m?MON[+m[2]-1]+' '+(+m[3]):'';}
-    var loc=null;try{loc=JSON.parse(localStorage.getItem('agsist-wx-loc')||'null');}catch(e){}
-    var st=loc&&/^[A-Z]{2}$/.test(loc.state||'')?loc.state:'';
-    var cty=loc&&loc.county?String(loc.county).replace(/\s+County$/i,''):'';
-    function run(){
-      get('/farmland-atlas/data/cards.json').then(function(d){
-        if(!d||!d.counties)return;
-        var hit=null;
-        if(st&&cty){for(var k in d.counties){var c=d.counties[k];if(c.st===st&&String(c.n||'').replace(/\s+County$/i,'').toLowerCase()===cty.toLowerCase()){hit=c;break;}}}
-        if(hit&&hit.r!=null){
-          var a=$('land-atlas');if(a&&hit.u)a.href=hit.u;
-          /* wave1-E: the county is the weather ZIP's; land is the census "land and buildings" figure,
-             the operators' own estimate; the state figure is a median of counties, with the
-             low and high computed by build_atlas_pages.py from the same counties. */
-          var S=d.states&&d.states[st],D=function(x){return '$'+Math.round(x).toLocaleString('en-US');};
-          show('land-atlas',hit.n+', '+hit.st+': cash rent '+n(D(hit.r))+'/ac'+(hit.ry?', '+hit.ry:''),
-            (hit.v!=null?'Land and buildings '+(hit.vf?'read with care':D(hit.v)+'/ac')+(hit.vy?', '+hit.vy+' Census (owner estimate)':'')+'. ':'')
-            +(S&&S.r!=null?(S.n||st)+' median cash rent '+D(S.r)+'/ac'+(S.rl!=null&&S.rh!=null?' ('+(S.rn?S.rn+' counties, ':'counties ')+D(S.rl)+'\u2013'+D(S.rh)+')':'')+'. ':'')
-            +'Rent: USDA NASS county survey.');
-        } else {
-          show('land-atlas',n(Object.keys(d.counties).length.toLocaleString('en-US'))+' counties: rent, land value and risk','Open the map');
-        }
-      });
-      get('/data/hail/recent.json').then(function(h){
-        if(!h||!h.reports||!h.reports.length)return;
-        var big=h.reports.reduce(function(a,b){return (b.mag||0)>(a.mag||0)?b:a;});
-        var inSt=st?h.reports.filter(function(r){return r.st===st;}).length:null;
-        show('land-hail',n((h.count||h.reports.length).toLocaleString('en-US'))+' reports',
-          'Largest '+big.mag+' in, '+big.city+' '+big.st+', '+day(big.date)+(inSt!=null?' · '+st+': '+inSt+' report'+(inSt===1?'':'s'):''));
-      });
-      /* r7-season: storage and foreign-held land are linked below, not fetched here. */
-    }
-    if('IntersectionObserver' in window){var io=new IntersectionObserver(function(es){if(es.some(function(e){return e.isIntersecting;})){io.disconnect();run();}},{rootMargin:'600px'});io.observe(band);}
-    else run();
-  })();
-  </script>
-    <details class="m-fold m-fold--tools" open><summary class="m-fold-sum"><span>Quick Tools</span></summary>
-    <div class="fade-up" id="f3" style="transition-delay:.16s">
-      <div class="sec-head"><h2 class="sec-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:1.05em;height:1.05em;vertical-align:-.13em;margin-right:.34em;flex:none"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.106-3.105c.32-.322.863-.22.983.218a6 6 0 0 1-8.259 7.057l-7.91 7.91a1 1 0 0 1-2.999-3l7.91-7.91a6 6 0 0 1 7.057-8.259c.438.12.54.662.219.984z" /></svg>Quick Tools</h2></div>
-      <div class="card"><div class="card-body">
-        <div class="tool-list">
-                    <a href="/field-scout" class="tool-widget tool-widget--scout">
-            <div class="tool-widget-inner">
-              <div class="tool-widget-top">
-                <span class="tool-widget-icon"><svg class="ic" aria-hidden="true"><use href="#i-satellite"/></svg></span>
-                <div class="tool-widget-body"><span class="tool-widget-status">Field Scout</span></div>
-                <span class="tool-widget-badge">Draw your field</span>
-                <span class="tool-widget-arr">&rarr;</span>
-              </div>
-              <div class="tool-widget-bottom">
-                <span class="tool-widget-rec">Soil, 5-year crop history, satellite crop vigor and nearby cash bids.</span>
-              </div>
-            </div>
-          </a>
-                    <div class="tool-widget rma-w" id="rma-widget" hidden>
-            <div class="tool-widget-inner">
-              <div class="tool-widget-top">
-                                <div class="tool-widget-body"><span class="tool-widget-status" id="rma-title">Final planting dates</span></div>
-                <span class="tool-widget-badge" id="rma-loc"></span>
-              </div>
-              <div class="tool-widget-bottom">
-                <div class="rma-dates">
-                  <div class="rma-d"><span class="rma-d-l">Corn</span><span class="rma-d-v" id="rma-corn"></span></div>
-                  <div class="rma-d"><span class="rma-d-l">Soybeans</span><span class="rma-d-v" id="rma-bean"></span><span class="rma-est" id="rma-bean-est" hidden></span></div>
-                </div>
-                <p class="rma-src" id="rma-src"></p>
-              </div>
-            </div>
-          </div>
-          <a href="/spray" id="wsp-spray" class="tool-widget">
-            <div class="tool-widget-inner">
-              <div class="tool-widget-top">
-                <span class="tool-widget-icon" id="wsp-spray-icon"><svg class="ic" aria-hidden="true"><use href="#i-hourglass"/></svg></span>
-                <div class="tool-widget-body"><span class="tool-widget-status">Spray Advisory</span></div>
-                <span class="tool-widget-badge" id="wsp-spray-status">Loading&hellip;</span>
-                <span class="tool-widget-arr">&rarr;</span>
-              </div>
-              <div class="tool-widget-bottom">
-                <span class="tool-widget-rec" id="wsp-spray-detail">Waiting for weather data</span>
-              </div>
-            </div>
-          </a>
-          <div class="spray-windows" id="spray-windows">
-            <div class="spray-windows-lbl"><svg class="ic" aria-hidden="true"><use href="#i-wind"/></svg> 5-Day Spray Windows <span class="tip"><button type="button" class="tip-b" aria-expanded="false" aria-describedby="tip-s7-spray">How it&rsquo;s rated</button><span id="tip-s7-spray" role="tooltip" class="tip-t" hidden>One rule for every spray verdict on this page, read from each day&rsquo;s forecast. Hold off: more than 0.25 in of rain, wind over 15 mph, or a high under 40&deg;F or over 90&deg;F. Use caution: wind over 10 mph, calm air under 3 mph in the early morning (5&ndash;9 AM) or evening (6&ndash;9 PM) in the hourly forecast (temperature inversion risk), rain chance over 50%, humidity over 85% or under 40%, a low under 45&deg;F, or a high over 85&deg;F. Otherwise OK. Gusts are shown, not rated. Always follow the product label.</span></span></div>
-            <div class="spray-days" id="spray-days-strip"></div>
-          </div>
-          <a href="/urea" class="tool-widget tool-widget--urea">
-            <div class="tool-widget-inner">
-              <div class="tool-widget-top">
-                                <div class="tool-widget-body"><span class="tool-widget-status">Urea Volatilization Risk</span></div>
-                <span class="tool-widget-score" id="wsp-urea-score">--</span>
-                <span class="tool-widget-arr">&rarr;</span>
-              </div>
-              <div class="tool-widget-bottom">
-                <span class="tool-widget-badge" id="wsp-urea-badge">Loading&hellip;</span>
-                <span class="tool-widget-rec" id="wsp-urea-rec">Waiting for weather data</span>
-              </div>
-            </div>
-          </a>
-          <a href="/urea" class="tool-widget tool-widget--falln" id="s7-falln" data-track="season" hidden>
-            <div class="tool-widget-inner">
-              <div class="tool-widget-top">
-                <span class="tool-widget-icon"><svg class="ic" aria-hidden="true"><use href="#i-thermometer"/></svg></span>
-                <div class="tool-widget-body"><span class="tool-widget-status">Fall nitrogen window</span></div>
-                <span class="tool-widget-badge" id="s7-falln-badge">Not loaded yet</span>
-                <span class="tool-widget-arr">&rarr;</span>
-              </div>
-              <div class="tool-widget-bottom">
-                <span class="tool-widget-rec" id="s7-falln-rec">Soil temperature at 2.4 in (6 cm). Extension guidance: wait for fall anhydrous until soil at 4 in stays below 50&deg;F.</span>
-              </div>
-            </div>
-          </a>
-          <a href="/harvest-price-tracker" class="tool-btn" id="s7-hp-link" data-track="season" hidden><span class="tool-name"><svg class="ic" aria-hidden="true"><use href="#i-calendar"/></svg> Harvest Price Tracker</span><span class="tool-arr">&rarr;</span></a>
-          <a href="/yield-estimator" class="tool-btn"><span class="tool-name"><svg class="ic" aria-hidden="true"><use href="#i-ruler"/></svg> Yield Estimator</span><span class="tool-arr">&rarr;</span></a>
-          <a href="/breakeven" class="tool-btn"><span class="tool-name"><svg class="ic" aria-hidden="true"><use href="#i-ruler"/></svg> Break-Even Price Calculator</span><span class="tool-arr">&rarr;</span></a>
-          <a href="/grain-bin-calculator" class="tool-btn"><span class="tool-name"><svg class="ic" aria-hidden="true"><use href="#i-construction"/></svg> Grain Bin Calculator</span><span class="tool-arr">&rarr;</span></a>
-          <a href="/gdu-calculator" class="tool-btn"><span class="tool-name"><svg class="ic" aria-hidden="true"><use href="#i-thermometer"/></svg> GDU Calculator</span><span class="tool-arr">&rarr;</span></a>
-          <a href="/ag-odds" class="tool-btn"><span class="tool-name"><svg class="ic" aria-hidden="true"><use href="#i-target"/></svg> Ag Prediction Markets</span><span class="tool-arr">&rarr;</span></a>
-          <a href="/fast-facts" class="tool-btn"><span class="tool-name"><svg class="ic" aria-hidden="true"><use href="#i-zap"/></svg> Reference Tables</span><span class="tool-arr">&rarr;</span></a>
-        </div>
-      </div></div>
-    </div>
-    </details>
   <div class="signup--compact fade-up" id="signup-compact" style="display:none">
     <span class="scu-eyebrow"><svg class="ic" aria-hidden="true"><use href="#i-newspaper"/></svg> AGSIST Daily</span>
     <span class="scu-text"><strong>Free daily briefing</strong> &mdash; markets, weather, one number to know before the market open &mdash; for farmers across the US.</span>
@@ -1138,200 +979,12 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
     <button class="scu-dismiss" id="btn-compact-dismiss" aria-label="Dismiss signup"><svg class="ic" aria-hidden="true"><use href="#i-x"/></svg> No thanks</button>
   </div>
 
-  <!-- THE WIRE. Built 2026-09-13. Hidden until it has something: a wire with an
-       empty box on the homepage is worse than no wire, and a quiet market is a
-       real state, not a broken feed. Each card carries the DAY it happened, so a
-       three-day-old item cannot read as if it just landed. -->
-  <details class="hbz fade-up" id="harvest-band">
-    <summary class="hbz-summary"><span class="hbz-k" id="hbz-kicker">Harvest 2026</span></summary>
-    <div class="hbz-g">
-      <a class="hbz-c" href="/yield-estimator"><strong>What&rsquo;s the field going to make?</strong><em>Ear and pod counts to bushels</em></a>
-      <a class="hbz-c" href="/harvest-price-tracker"><strong>Your harvest price</strong><em>Discovery window, live daily average</em></a>
-      <a class="hbz-c" href="/grain-bin-calculator"><strong>Will it fit in the bin?</strong><em>Capacity, shrink, size a new one</em></a>
-      <a class="hbz-c" href="/breakeven"><strong>What do I need to sell at?</strong><em>Break-even by the bushel</em></a>
-      <a class="hbz-c" href="/storage-crunch"><strong>Store it or move it?</strong><em>Your state&rsquo;s storage squeeze</em></a>
-    </div>
-  </details>
-  <script>
-  /* Seasonal harvest band. Set HARVEST_BAND to 0 to hide it; nothing else
-     depends on it. It does not expire on its own — switch it off after
-     harvest so it cannot go stale. */
-  (function(){
-    var HARVEST_BAND = 1;
-    var el=document.getElementById('harvest-band'); if(!el) return;
-    if(!HARVEST_BAND){ el.style.display='none'; return; }
-    var k=document.getElementById('hbz-kicker'); if(!k) return;
-    var n=new Date(), t=new Date(n.getFullYear(),n.getMonth(),n.getDate());
-    var d=Math.round((new Date(n.getFullYear(),9,1)-t)/86400000);
-    k.textContent = d>0 ? 'Harvest 2026 \u00b7 '+d+' days to October price discovery' : 'Harvest 2026';
-  })();
-  </script>
-
-  <details class="m-fold m-fold--radar" open><summary class="m-fold-sum"><span>Radar &amp; Drought</span></summary>
-  <div class="radar-section fade-up" id="f-radar">
-    <div class="sec-head"><h2 class="sec-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:1.05em;height:1.05em;vertical-align:-.13em;margin-right:.34em;flex:none"><path d="M12 2v2" /> <path d="m4.93 4.93 1.41 1.41" /> <path d="M20 12h2" /> <path d="m19.07 4.93-1.41 1.41" /> <path d="M15.947 12.65a4 4 0 0 0-5.925-4.128" /> <path d="M3 20a5 5 0 1 1 8.9-4H13a3 3 0 0 1 2 5.24" /> <path d="M11 20v2" /> <path d="M7 19v2" /></svg>Radar &amp; Drought</h2><a href="/drought-monitor" class="sec-all">Drought Monitor</a></div>
-    <div class="radar-grid">
-      <div class="radar-card">
-        <div style="padding:.6rem 1rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
-          <span style="font-size:.824rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold)"><span class="live-dot" style="display:inline-block" aria-hidden="true"></span> Live Radar</span>
-          <span style="font-size:.824rem;color:var(--text-muted)">Powered by Windy</span>
-        </div>
-        <div class="s7-radar-empty" aria-hidden="true">Not loaded yet</div>
-        <iframe id="windy-frame" src="" data-src="https://embed.windy.com/embed.html?type=map&location=coordinates&metricRain=in&metricTemp=%C2%B0F&metricWind=mph&zoom=5&overlay=radar&product=radar&level=surface&lat=42.0&lon=-93.5&detailLat=42.0&detailLon=-93.5&detail=false&pressure=false&menu=false&message=false&marker=false&calendar=now&thunder=false" width="100%" style="border:none;display:block;min-height:320px;height:100%;aspect-ratio:unset" loading="lazy" title="Live Radar &mdash; Windy" allow="geolocation; fullscreen" allowfullscreen></iframe>
-      </div>
-      <div class="radar-sidebar" style="display:flex;flex-direction:column;">
-        <!-- 2026-10-01: collapsed by default per Sig's call -- radar itself
-             stays full baseline size (his pick over the shrink/cut options),
-             but the static drought image doesn't need to be open by default.
-             Native <details>, no JS: keyboard- and screen-reader-accessible
-             for free, nothing hidden, just closed until asked for. -->
-        <details class="drought-embed" style="flex:1;display:flex;flex-direction:column;">
-          <summary style="padding:.6rem 1rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;cursor:pointer;list-style:none">
-            <span style="font-size:.824rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold)">Drought Monitor <small style="font-weight:400;color:var(--text-muted);text-transform:none;letter-spacing:0">&mdash; <span id="s7-usdm-valid"></span></small></span>
-            <a href="/drought-monitor" style="font-size:.824rem;color:var(--text-muted)" onclick="event.stopPropagation()">Full Map</a>
-          </summary>
-          <a href="https://droughtmonitor.unl.edu" target="_blank" rel="noopener" title="View full interactive drought map" style="flex:1;display:flex;align-items:center;">
-            <img id="drought-img" src="" alt="US Drought Monitor &mdash; current week" style="display:block;width:100%;height:auto" loading="lazy">
-          </a>
-          <div id="drought-fallback" class="drought-fallback" style="display:none">
-            <span style="font-size:1.294rem"><svg class="ic" aria-hidden="true"><use href="#i-sun"/></svg></span>
-            <span style="font-size:.824rem;color:var(--text-dim)">Not loaded yet</span>
-            <a href="https://droughtmonitor.unl.edu" target="_blank" rel="noopener">View on droughtmonitor.unl.edu</a>
-          </div>
-          <div style="padding:.4rem .8rem;font-size:.824rem;color:var(--text-muted);text-align:right;border-top:1px solid var(--border)">
-            Source: USDA NDMC &middot; Updated Thursday &middot; <a href="https://droughtmonitor.unl.edu" target="_blank" rel="noopener" style="color:var(--gold);text-decoration:underline;">Full Interactive Map</a>
-          </div>
-        </details>
-      </div>
-    </div>
-  </div>
-  </details>
 
 
 
 
-  <details class="m-fold m-fold--noaa" open><summary class="m-fold-sum"><span>NOAA Seasonal Outlooks</span></summary>
-  <div class="fade-up" id="f-noaa">
-    <div class="sec-head"><h2 class="sec-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:1.05em;height:1.05em;vertical-align:-.13em;margin-right:.34em;flex:none"><path d="M14 4v10.54a4 4 0 1 1-4 0V4a2 2 0 0 1 4 0Z" /></svg>NOAA Seasonal Outlooks</h2><a href="https://www.cpc.ncep.noaa.gov/products/predictions/long_range/" target="_blank" rel="noopener" class="sec-all">CPC Full Outlooks</a></div>
-    <div class="noaa-tabs" id="noaa-tabs">
-      <button class="noaa-tab active" data-period="30" data-label="1-Month (30-Day)">1-Month</button>
-      <button class="noaa-tab" data-period="90" data-label="3-Month (Seasonal)">3-Month</button>
-    </div>
-    <div class="noaa-grid">
-      <div class="noaa-card"><div class="noaa-card-head temp"><svg class="ic" aria-hidden="true"><use href="#i-thermometer"/></svg> Temperature Outlook</div><img id="noaa-temp-img" data-src="/data/outlooks/noaa_temp_30day.gif" alt="NOAA 1-month temperature outlook" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="noaa-img-err"><span><svg class="ic" aria-hidden="true"><use href="#i-thermometer"/></svg> Image unavailable</span><a href="https://www.cpc.ncep.noaa.gov/products/predictions/30day/" target="_blank" rel="noopener">View on NOAA CPC</a></div></div>
-      <div class="noaa-card"><div class="noaa-card-head precip"><svg class="ic" aria-hidden="true"><use href="#i-cloud-rain"/></svg> Precipitation Outlook</div><img id="noaa-precip-img" data-src="/data/outlooks/noaa_prcp_30day.gif" alt="NOAA 1-month precipitation outlook" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="noaa-img-err"><span><svg class="ic" aria-hidden="true"><use href="#i-cloud-rain"/></svg> Image unavailable</span><a href="https://www.cpc.ncep.noaa.gov/products/predictions/30day/" target="_blank" rel="noopener">View on NOAA CPC</a></div></div>
-    </div>
-    <div class="noaa-note">Source: <a href="https://www.cpc.ncep.noaa.gov/" target="_blank" rel="noopener">NOAA Climate Prediction Center</a> &middot; <span id="s7-noaa-dates">Issue dates: Not loaded yet</span><span id="noaa-period-label" hidden>1-Month (30-Day)</span></div>
-  </div>
-  </details>
-  <div class="pdw fade-up" id="pdw">
-    <label for="pdw-state" style="display:block;font-family:'JetBrains Mono',monospace;font-size:.765rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--brand);margin-bottom:.4rem">Your RMA price discovery</label>
-    <select id="pdw-state" class="pdw-sel"><option value="">Select your state</option></select>
-    <div id="pdw-geo" style="font-size:.824rem;color:var(--text-muted);margin:-.3rem 0 .45rem"></div>
-    <div id="pdw-out"></div>
-    <p class="pdw-ft">RMA&rsquo;s discovery windows build your revenue guarantee &mdash; and they differ by state and by your county&rsquo;s sales closing date. <a href="/harvest-price-tracker">Full tracker, live averages and 15&#8209;year history</a></p>
-  </div>
-  <script>
-  /* Compact price-discovery status. Same data file as /harvest-price-tracker
-     (data/rma-discovery.json, every row read off RMA's CEPP) and the same
-     localStorage key, so a state picked in one place is remembered in the
-     other. Fails silent: no data, no widget. */
-  (function(){
-    var MO=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'], KEY='agsist-rma-state';
-    var sel=document.getElementById('pdw-state'), out=document.getElementById('pdw-out');
-    if(!sel||!out) return;
-    function mmdd(x){return {m:parseInt(x.slice(0,2),10),d:parseInt(x.slice(3),10)};}
-    function status(w){
-      var n=new Date(), y=n.getFullYear(), a=mmdd(w.start), b=mmdd(w.end);
-      var s=new Date(y,a.m-1,a.d), e=new Date(y,b.m-1,b.d);
-      if(e<s) e.setFullYear(y+1);
-      var t=new Date(n.getFullYear(),n.getMonth(),n.getDate());
-      if(t<s) return {k:'soon',t:'opens '+MO[a.m-1]+' '+a.d};
-      if(t>e) return {k:'done',t:'closed'};
-      var tot=Math.round((e-s)/86400000)+1, el=Math.round((t-s)/86400000)+1;
-      return {k:'open',t:'open now',day:el,total:tot,s:s,e:e,d0:t,pct:Math.max(4,Math.min(100,Math.round(el/tot*100)))};
-    }
-    fetch('/data/rma-discovery.json',{cache:'no-store'}).then(function(r){if(!r.ok)throw 0;return r.json();})
-    .then(function(d){
-      Object.keys(d.states||{}).sort().forEach(function(st){
-        var o=document.createElement('option'); o.value=st; o.textContent=st; sel.appendChild(o);
-      });
-      function render(st){
-        var g=d.states[st]; if(!g){ out.innerHTML=''; return; }
-        var html='';
-        [['corn','Corn'],['soybeans','Soybeans']].forEach(function(pr){
-          var arr=g[pr[0]]||[]; if(!arr.length) return;
-          var w=arr[0], hs=status(w.harvest);
-          html+='<div class="pdw-row"><span class="pdw-crop">'+pr[1]+
-            '<span class="pdw-pill '+hs.k+'">'+hs.t+'</span></span>'+
-            '<span class="pdw-win">'+w.harvest.label+' \u00b7 '+w.contract+'</span></div>';
-          if(hs.k==='open'){
-            html+='<div class="pdw-bar"><div style="height:100%;width:'+hs.pct+'%;background:var(--green)"></div></div>'+
-                  '<div style="font-size:.824rem;color:var(--text-muted);margin-top:.15rem">'+(window.S7TD?window.S7TD(hs.s,hs.e,hs.d0):(function(){function wd(a,b){var n=0,x=new Date(a);while(x<=b){var g=x.getDay();if(g&&g<6)n++;x.setDate(x.getDate()+1);}return n;}return '<span class="s7-td" data-a="'+(+hs.s)+'" data-b="'+(+hs.e)+'" data-t="'+(+hs.d0)+'">weekday '+wd(hs.s,hs.d0)+' of '+wd(hs.s,hs.e)+'</span>';})())+
-                  ' \u00b7 RMA averages trading days</div>';
-          }
-          if(arr.length>1){
-            html+='<div style="font-size:.824rem;color:var(--brand);margin-top:.15rem">'+arr.length+
-                  ' different windows in this state \u2014 depends on your county\u2019s sales closing date</div>';
-          }
-        });
-        out.innerHTML=html;
-      }
-      /* Auto-locate from the site's shared location (components/geo.js writes
-         'agsist-wx-loc'; `state` may be a full name or a 2-letter abbr). An
-         explicit pick always wins; a geo guess is never saved as one. */
-      var AB={AL:"Alabama",AK:"Alaska",AZ:"Arizona",AR:"Arkansas",CA:"California",CO:"Colorado",CT:"Connecticut",
-        DE:"Delaware",FL:"Florida",GA:"Georgia",HI:"Hawaii",ID:"Idaho",IL:"Illinois",IN:"Indiana",IA:"Iowa",
-        KS:"Kansas",KY:"Kentucky",LA:"Louisiana",ME:"Maine",MD:"Maryland",MA:"Massachusetts",MI:"Michigan",
-        MN:"Minnesota",MS:"Mississippi",MO:"Missouri",MT:"Montana",NE:"Nebraska",NV:"Nevada",NH:"New Hampshire",
-        NJ:"New Jersey",NM:"New Mexico",NY:"New York",NC:"North Carolina",ND:"North Dakota",OH:"Ohio",
-        OK:"Oklahoma",OR:"Oregon",PA:"Pennsylvania",RI:"Rhode Island",SC:"South Carolina",SD:"South Dakota",
-        TN:"Tennessee",TX:"Texas",UT:"Utah",VT:"Vermont",VA:"Virginia",WA:"Washington",WV:"West Virginia",
-        WI:"Wisconsin",WY:"Wyoming"};
-      function geoName(){
-        try{
-          var loc=JSON.parse(localStorage.getItem('agsist-wx-loc')||'{}');
-          var raw=String(loc.state||'').trim(); if(!raw) return null;
-          if(raw.length===2) return AB[raw.toUpperCase()]||null;
-          for(var k in AB){ if(AB[k].toLowerCase()===raw.toLowerCase()) return AB[k]; }
-        }catch(e){}
-        return null;
-      }
-      function applyGeo(){
-        var g=geoName(); if(!g||!d.states[g]) return false;
-        sel.value=g; render(g);
-        var n=document.getElementById('pdw-geo');
-        if(n) n.textContent='Set from your location — change it above.';
-        return true;
-      }
-      var picked=null; try{ picked=localStorage.getItem(KEY); }catch(e){}
-      if(picked&&d.states[picked]){ sel.value=picked; render(picked); }
-      else if(!applyGeo()){
-        window._AGSIST_GEO_CALLBACKS = window._AGSIST_GEO_CALLBACKS || [];
-        window._AGSIST_GEO_CALLBACKS.push(function(){ applyGeo(); });
-      }
-      sel.addEventListener('change',function(){
-        render(sel.value);
-        try{ localStorage.setItem(KEY,sel.value); }catch(e){}
-        var n=document.getElementById('pdw-geo'); if(n) n.textContent='';
-        if(window.gaEvent) gaEvent('pdw_state_pick',{state:sel.value||'none'});
-      });
-    }).catch(function(){});
-  })();
-  </script>
 
-  <details class="m-fold m-fold--read" open><summary class="m-fold-sum"><span>The Read <small>&mdash; what today&rsquo;s prices mean</small></span></summary>
-  <section class="fade-up" id="f-read" aria-labelledby="read-heading">
-        <div class="sec-head"><h2 class="sec-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:1.05em;height:1.05em;vertical-align:-.13em;margin-right:.34em;flex:none"><circle cx="6" cy="15" r="4" /> <circle cx="18" cy="15" r="4" /> <path d="M14 15a2 2 0 0 0-2-2 2 2 0 0 0-2 2" /> <path d="M2.5 13 5 7c.7-1.3 1.4-2 3-2" /> <path d="M21.5 13 19 7c-.7-1.3-1.5-2-3-2" /></svg>The Read</h2><span class="read-sub">What today’s prices mean</span></div>
-    <div class="sig-grid">
-      <a href="/corn-futures-prices" class="sig" id="sig-corn"><div class="sig-top"><span class="sig-name">Corn</span><span class="sig-tag" id="sig-corn-tag">5-year</span></div><div class="sig-num"><span id="sig-corn-num">61<span class="r7-ord">st</span></span><small id="sig-corn-sub">percentile</small></div><div class="sig-price" id="sig-corn-price">Range $3.68&ndash;$8.18</div><div class="sig-bar"><div class="sig-fill" id="sig-corn-fill" style="width:0"></div><div class="sig-dot" id="sig-corn-dot" style="left:-5px"></div></div><div class="sig-read" id="sig-corn-read"></div><div class="sig-link">Full corn read</div></a>
-      <a href="/soybean-futures-prices" class="sig" id="sig-beans"><div class="sig-top"><span class="sig-name">Soybeans</span><span class="sig-tag" id="sig-beans-tag">5-year</span></div><div class="sig-num"><span id="sig-beans-num">60<span class="r7-ord">th</span></span><small id="sig-beans-sub">percentile</small></div><div class="sig-price" id="sig-beans-price">Range $9.39&ndash;$17.45</div><div class="sig-bar"><div class="sig-fill" id="sig-beans-fill" style="width:0"></div><div class="sig-dot" id="sig-beans-dot" style="left:-5px"></div></div><div class="sig-read" id="sig-beans-read"></div><div class="sig-link">Full soybean read</div></a>
-      <a href="/wheat-futures-prices" class="sig" id="sig-wheat"><div class="sig-top"><span class="sig-name">Wheat, Chicago SRW</span><span class="sig-tag" id="sig-wheat-tag">5-year</span></div><div class="sig-num"><span id="sig-wheat-num">65<span class="r7-ord">th</span></span><small id="sig-wheat-sub">percentile</small></div><div class="sig-price" id="sig-wheat-price">Range $4.99&ndash;$13.48</div><div class="sig-bar"><div class="sig-fill" id="sig-wheat-fill" style="width:0"></div><div class="sig-dot" id="sig-wheat-dot" style="left:-5px"></div></div><div class="sig-read" id="sig-wheat-read"></div><div class="sig-link">Full wheat read</div></a>
-      <a href="/cattle-futures-prices" class="sig" id="sig-cattle"><div class="sig-top"><span class="sig-name">Cattle</span><span class="sig-tag" id="sig-cattle-tag">&middot;</span></div><div class="sig-num"><span id="sig-cattle-num">&mdash;</span><small id="sig-cattle-sub"></small></div><div class="sig-price" id="sig-cattle-price">Loading&hellip;</div><div class="sig-bar"><div class="sig-fill" id="sig-cattle-fill" style="width:0"></div><div class="sig-dot" id="sig-cattle-dot" style="left:-5px"></div></div><div class="sig-read" id="sig-cattle-read"></div><div class="sig-link">Full cattle read</div></a>
-    </div>
-    <p class="sig-asof" id="sig-asof" hidden></p>
-  </section>
-  </details>
+
   <script>
   (function(){
     var GR={corn:{s:0.01,sk:'corn'},beans:{s:0.01,sk:'soybean'},wheat:{s:0.01,sk:'wheat'}};
@@ -1341,6 +994,8 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
     function r5(p){if(p<10)return['Near a 5-yr low','&mdash; rare territory.'];if(p<25)return['Historically low','&mdash; below most of the last 5 years.'];if(p<45)return['Below the 5-yr midpoint','.'];if(p<=55)return['Around the 5-yr midpoint','.'];if(p<75)return['Above the 5-yr midpoint','.'];if(p<90)return['Historically high','&mdash; above most of the last 5 years.'];return['Near a 5-yr high','&mdash; rare territory.'];}
     function r52(p){if(p<25)return['Lower quartile','of its 52-week range.'];if(p<50)return['Lower half','of its 52-week range.'];if(p<75)return['Upper half','of its 52-week range.'];return['Upper quartile','of its 52-week range.'];}
     function get(u){return fetch(u,{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).catch(function(){return null;});}
+    /* 2026-10-06 EARN: The Read left the homepage (the daily briefing says it); nothing to fill. */
+    if(!document.getElementById('f-read'))return;
     Promise.all([(window.__agsistPricesP||(window.__agsistPricesP=get('/data/prices.json'))),get('/data/price-stats.json'),get('/data/cot.json')]).then(function(R){
       var px=(R[0]&&R[0].quotes)||{},stats=R[1]||{},cot=R[2]||{};
       /* price-stats.json is built after the close, not live: name the time. */
@@ -1420,39 +1075,6 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
     <div id="kalshi-footer" style="display:none;padding:.25rem 0 .15rem;text-align:right"><a href="/ag-odds" style="font-size:.824rem;color:var(--gold);text-decoration:none;font-weight:600">View All Ag Prediction Markets</a></div>
   </div>
   </details>
-  <details class="m-fold m-fold--faq" open><summary class="m-fold-sum"><span>Frequently Asked Questions</span></summary>
-  <section class="fade-up" id="f-faq" aria-labelledby="faq-heading">
-        <div class="sec-head"><h2 class="sec-title" id="faq-heading"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:1.05em;height:1.05em;vertical-align:-.13em;margin-right:.34em;flex:none"><circle cx="12" cy="12" r="10" /> <path d="M12 16v-4" /> <path d="M12 8h.01" /></svg>Frequently Asked Questions</h2><a href="/cash-bids" class="sec-all">Cash Bids Near You</a></div>
-    <div class="faq-list">
-      <details class="faq-item"><summary>What are corn futures prices today?</summary><div class="faq-a">AGSIST displays CBOT corn futures prices from Yahoo Finance, delayed about 15 minutes and updated every 30 minutes. The front-month contract and the next December contract are both shown, each labeled with its contract month (for example Dec &rsquo;26), with net change, percent change, and 52-week range. Prices are in dollars per bushel. <a href="/corn-futures-prices">See Full Corn Futures</a></div></details>
-      <details class="faq-item"><summary>How do I find cash grain bids near me?</summary><div class="faq-a">Enter any US ZIP code on AGSIST’s Cash Bids page at agsist.com/cash-bids to see posted corn, soybean, and wheat elevator prices from grain elevators within 50 miles of that ZIP by default. You can widen the search up to 250 miles. Basis is shown alongside cash price for each location. <a href="/cash-bids">Find Cash Bids</a></div></details>
-      <details class="faq-item"><summary>Is AGSIST free?</summary><div class="faq-a">Yes. AGSIST is available at no charge with no account or subscription required. Tools on the site &mdash; spray advisory, urea volatilization risk monitor, break-even calculator, grain bin calculator, cash bids, and the AGSIST Daily briefing &mdash; are available at no charge for non-commercial use.</div></details>
-      <details class="faq-item"><summary>How often are grain prices updated on AGSIST?</summary><div class="faq-a">Grain futures prices on AGSIST are updated about every 30 minutes while futures markets trade, from Sunday evening to Friday afternoon, Central time. The AGSIST Daily briefing is published every weekday morning with overnight market analysis.</div></details>
-      <details class="faq-item"><summary>What is urea volatilization risk?</summary><div class="faq-a">Urea volatilization is the loss of nitrogen fertilizer as ammonia gas when urea is surface-applied without incorporation. Risk is highest when soil temperatures exceed 50&deg;F, humidity is high, and no rain is forecast within 2&ndash;4 days. AGSIST’s free urea risk monitor scores your real-time local conditions from 0&ndash;100. <a href="/urea">Check Urea Volatilization Risk</a></div></details>
-      <details class="faq-item"><summary>What is grain basis and why does it matter?</summary><div class="faq-a">Grain basis is the difference between your local cash elevator price and the futures contract it is quoted against. A basis of −30 cents means the elevator pays 30 cents below futures. Stronger (less negative) basis signals higher local demand. AGSIST displays each elevator’s posted basis alongside its cash price in the cash bids tool.</div></details>
-      <details class="faq-item"><summary>When is the WASDE report released?</summary><div class="faq-a">The USDA WASDE (World Agricultural Supply and Demand Estimates) report is released monthly, typically around the 10th of each month at 12:00 PM Eastern Time. AGSIST’s USDA Calendar tracks all report dates with market impact ratings. <a href="/usda-calendar">USDA Report Calendar</a></div></details>
-      <details class="faq-item"><summary>What is the corn-to-soybean price ratio and how do farmers use it?</summary><div class="faq-a">The corn-to-soybean price ratio is November soybean futures divided by December corn futures. A higher ratio leans toward soybeans and a lower one toward corn, but where the line falls depends on your own yields, input costs, and basis, so run break-even math on your own numbers. Both contract prices update every 30 minutes on AGSIST’s corn and soybean futures pages. <a href="/breakeven">Break-Even Price Calculator</a></div></details>
-    </div>
-  </section>
-  </details>
-  <div class="signup fade-up" id="signup-full" style="display:none">
-    <div class="signup-inner">
-      <div class="signup-icon" aria-hidden="true"></div>
-      <span class="signup-eyebrow">AGSIST Daily</span>
-      <h2 class="signup-headline">Market news before the open.</h2>
-      <p class="signup-sub">Overnight markets, what to watch, and farm weather, every weekday.</p>
-      <div class="signup-tabs"><button class="signup-tab active" id="tab-email" aria-controls="form-email"><svg class="ic" aria-hidden="true"><use href="#i-mail"/></svg> Email</button></div>
-      <div class="signup-form" id="form-email" role="tabpanel"><div class="signup-row"><input type="email" class="signup-input" placeholder="your@email.com" autocomplete="email" aria-label="Email address" required><button class="signup-submit" id="btn-email-signup">Subscribe &rarr;</button></div><div class="signup-disc">Free. Unsubscribe any time. We never sell your data. <a href="/privacy">Privacy Policy</a>.</div></div>
-      
-    </div>
-  </div>
-  <div class="signup--slim fade-up" id="signup-slim" style="display:none;padding-bottom:max(.5rem,env(safe-area-inset-bottom))">
-    <span class="scs-text">Get the AGSIST Daily briefing every weekday &mdash; markets, weather, one number to know. Free for farmers everywhere.</span>
-    <a href="/daily">Subscribe Free</a>
-    <span style="font-size:.765rem;color:var(--text-muted)">&middot; <a href="/privacy">Privacy Policy</a></span>
-    <button id="btn-slim-dismiss" aria-label="Dismiss" style="background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:.824rem;padding:0 0 0 .5rem;line-height:1"><svg class="ic" aria-hidden="true"><use href="#i-x"/></svg></button>
-  </div>
-
 <script>
 (function(){
   var el = document.getElementById('idx1-trust-ledger');
@@ -1756,6 +1378,128 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
   })();
   </script>
 </aside>
+<!-- 2026-10-06 EARN: the page ends Land and more tools, FAQ (folded), signup.
+     They come after the rail in the document so a phone reads the rail
+     (calendar, market intelligence, bot, alert) before them; on a wide
+     desktop this wrapper is display:contents and each card has its row. -->
+<div class="idx1-tail">
+  <!-- 2026-10-06 EARN: one county fact and one row of links. The links take
+       in Field Scout and the pages of the sections that left the homepage
+       (fertilizer, tariffs, drought, NOAA outlooks); each page stays in the nav
+       and footer. -->
+  <section class="fade-up idx1-land" id="idx1-land" aria-labelledby="land-h">
+    <div class="sec-head"><h2 class="sec-title" id="land-h">Land and more tools</h2></div>
+    <div class="land-grid">
+      <a class="land-cell land-lead" id="land-atlas" href="/farmland-atlas" data-track="land"><span class="land-v" id="land-atlas-v">Rent, land value and risk for every US county</span><span class="land-s" id="land-atlas-s">Farmland Atlas</span></a>
+      <a class="land-cell" id="land-hail" href="/hail-map" data-track="land" hidden><span class="land-k">Hail, 30 days</span><span class="land-v" id="land-hail-v"></span><span class="land-s" id="land-hail-s"></span></a>
+    </div>
+    <nav class="land-more" aria-labelledby="land-more-h"><h3 class="land-more-h" id="land-more-h">More tools</h3>
+    <details class="m-fold m-fold--lite" open><summary class="m-fold-sum"><span>More tools</span></summary>
+    <ul class="land-links">
+      <li><a href="/field-scout" data-track="land">Field Scout</a></li>
+      <li><a href="/cash-rent" data-track="land">Cash Rent by County</a></li>
+      <li><a href="/cash-lease" data-track="land">Farm Cash Lease</a></li>
+      <li><a href="/harvest-price-tracker" data-track="land">Harvest Price Tracker</a></li>
+      <li><a href="/basis" data-track="land">Basis vs Normal</a></li>
+      <li><a href="/storage-crunch" data-track="land">Storage Crunch</a></li>
+      <li><a href="/breakeven" data-track="land">Break-Even</a></li>
+      <li><a href="/grain-bin-calculator" data-track="land">Grain Bin</a></li>
+      <li><a href="/yield-estimator" data-track="land">Yield Estimator</a></li>
+      <li><a href="/fertilizer" data-track="land">Fertilizer Prices</a></li>
+      <li><a href="/tariffs" data-track="land">Tariffs</a></li>
+      <li><a href="/drought-monitor" data-track="land">Drought Monitor</a></li>
+      <li><a href="https://www.cpc.ncep.noaa.gov/products/predictions/long_range/" target="_blank" rel="noopener" data-track="land">NOAA Outlooks</a></li>
+      <li><a href="/land-tenure" data-track="land">Who Owns the Ground</a></li>
+      <li><a href="/foreign-land" data-track="land">Foreign-Owned Farmland</a></li>
+      <li class="s7-croptour"><a href="/crop-tour" data-track="land">Crop Tour</a></li>
+      <li><a href="/farm-bill" data-track="land">Farm Bill</a></li>
+      <li><a href="/milk-prices" data-track="land">Milk Prices</a></li>
+      <li><a href="/ag-odds" data-track="land">Ag Prediction Markets</a></li>
+      <li><a href="/archive" data-track="land">Briefing Archive</a></li>
+    </ul>
+    </details>
+    </nav>
+  </section>
+  <script>
+  /* Land band. Every number comes from a file in /data or the Atlas build,
+     fetched only when the band is near the screen. A cell whose file fails
+     stays hidden; the Atlas cell keeps its plain text. */
+  (function(){
+    var band=document.getElementById('idx1-land'); if(!band) return;
+    function $(i){return document.getElementById(i);}
+    function get(u){return fetch(u).then(function(r){return r.ok?r.json():null;}).catch(function(){return null;});}
+    function show(id,v,s){var c=$(id),a=$(id+'-v'),b=$(id+'-s');if(!c||!a)return;a.innerHTML=v;if(b)b.textContent=s||'';c.hidden=false;}
+    function n(x){return '<span class="n">'+x+'</span>';}
+    var MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    function day(s){var m=/^(\d{4})-(\d{2})-(\d{2})/.exec(s||'');return m?MON[+m[2]-1]+' '+(+m[3]):'';}
+    var loc=null;try{loc=JSON.parse(localStorage.getItem('agsist-wx-loc')||'null');}catch(e){}
+    var st=loc&&/^[A-Z]{2}$/.test(loc.state||'')?loc.state:'';
+    var cty=loc&&loc.county?String(loc.county).replace(/\s+County$/i,''):'';
+    function run(){
+      get('/farmland-atlas/data/cards.json').then(function(d){
+        if(!d||!d.counties)return;
+        var hit=null;
+        if(st&&cty){for(var k in d.counties){var c=d.counties[k];if(c.st===st&&String(c.n||'').replace(/\s+County$/i,'').toLowerCase()===cty.toLowerCase()){hit=c;break;}}}
+        if(hit&&hit.r!=null){
+          var a=$('land-atlas');if(a&&hit.u)a.href=hit.u;
+          /* wave1-E: the county is the weather ZIP's; land is the census "land and buildings" figure,
+             the operators' own estimate; the state figure is a median of counties, with the
+             low and high computed by build_atlas_pages.py from the same counties. */
+          var S=d.states&&d.states[st],D=function(x){return '$'+Math.round(x).toLocaleString('en-US');};
+          /* 2026-10-06 EARN: one row. The county rent with its year and source;
+             land value and the state median are one tap away in the Atlas. */
+          show('land-atlas',hit.n+', '+hit.st+' cash rent '+n(D(hit.r))+'/ac'+(hit.ry?', '+hit.ry:''),'USDA NASS county survey \u00b7 Farmland Atlas \u2192');
+        } else {
+          show('land-atlas',n(Object.keys(d.counties).length.toLocaleString('en-US'))+' counties: rent, land value and risk','Farmland Atlas \u2192');
+        }
+      });
+      get('/data/hail/recent.json').then(function(h){
+        if(!h||!h.reports||!h.reports.length)return;
+        var big=h.reports.reduce(function(a,b){return (b.mag||0)>(a.mag||0)?b:a;});
+        var inSt=st?h.reports.filter(function(r){return r.st===st;}).length:null;
+        show('land-hail',n((h.count||h.reports.length).toLocaleString('en-US'))+' reports',
+          'Largest '+big.mag+' in, '+big.city+' '+big.st+', '+day(big.date)+(inSt!=null?' · '+st+': '+inSt+' report'+(inSt===1?'':'s'):''));
+      });
+      /* r7-season: storage and foreign-held land are linked below, not fetched here. */
+    }
+    if('IntersectionObserver' in window){var io=new IntersectionObserver(function(es){if(es.some(function(e){return e.isIntersecting;})){io.disconnect();run();}},{rootMargin:'600px'});io.observe(band);}
+    else run();
+  })();
+  </script>
+  <details class="m-fold m-fold--faq" id="faq-fold"><summary class="m-fold-sum"><span>Frequently Asked Questions</span></summary>
+  <section class="fade-up" id="f-faq" aria-labelledby="faq-heading">
+        <div class="sec-head"><h2 class="sec-title" id="faq-heading"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:1.05em;height:1.05em;vertical-align:-.13em;margin-right:.34em;flex:none"><circle cx="12" cy="12" r="10" /> <path d="M12 16v-4" /> <path d="M12 8h.01" /></svg>Frequently Asked Questions</h2><a href="/cash-bids" class="sec-all">Cash Bids Near You</a></div>
+    <div class="faq-list">
+      <details class="faq-item"><summary>What are corn futures prices today?</summary><div class="faq-a">AGSIST displays CBOT corn futures prices from Yahoo Finance, delayed about 15 minutes and updated every 30 minutes. The front-month contract and the next December contract are both shown, each labeled with its contract month (for example Dec &rsquo;26), with net change, percent change, and 52-week range. Prices are in dollars per bushel. <a href="/corn-futures-prices">See Full Corn Futures</a></div></details>
+      <details class="faq-item"><summary>How do I find cash grain bids near me?</summary><div class="faq-a">Enter any US ZIP code on AGSIST’s Cash Bids page at agsist.com/cash-bids to see posted corn, soybean, and wheat elevator prices from grain elevators within 50 miles of that ZIP by default. You can widen the search up to 250 miles. Basis is shown alongside cash price for each location. <a href="/cash-bids">Find Cash Bids</a></div></details>
+      <details class="faq-item"><summary>Is AGSIST free?</summary><div class="faq-a">Yes. AGSIST is available at no charge with no account or subscription required. Tools on the site &mdash; spray advisory, urea volatilization risk monitor, break-even calculator, grain bin calculator, cash bids, and the AGSIST Daily briefing &mdash; are available at no charge for non-commercial use.</div></details>
+      <details class="faq-item"><summary>How often are grain prices updated on AGSIST?</summary><div class="faq-a">Grain futures prices on AGSIST are updated about every 30 minutes while futures markets trade, from Sunday evening to Friday afternoon, Central time. The AGSIST Daily briefing is published every weekday morning with overnight market analysis.</div></details>
+      <details class="faq-item"><summary>What is urea volatilization risk?</summary><div class="faq-a">Urea volatilization is the loss of nitrogen fertilizer as ammonia gas when urea is surface-applied without incorporation. Risk is highest when soil temperatures exceed 50&deg;F, humidity is high, and no rain is forecast within 2&ndash;4 days. AGSIST’s free urea risk monitor scores your real-time local conditions from 0&ndash;100. <a href="/urea">Check Urea Volatilization Risk</a></div></details>
+      <details class="faq-item"><summary>What is grain basis and why does it matter?</summary><div class="faq-a">Grain basis is the difference between your local cash elevator price and the futures contract it is quoted against. A basis of −30 cents means the elevator pays 30 cents below futures. Stronger (less negative) basis signals higher local demand. AGSIST displays each elevator’s posted basis alongside its cash price in the cash bids tool.</div></details>
+      <details class="faq-item"><summary>When is the WASDE report released?</summary><div class="faq-a">The USDA WASDE (World Agricultural Supply and Demand Estimates) report is released monthly, typically around the 10th of each month at 12:00 PM Eastern Time. AGSIST’s USDA Calendar tracks all report dates with market impact ratings. <a href="/usda-calendar">USDA Report Calendar</a></div></details>
+      <details class="faq-item"><summary>What is the corn-to-soybean price ratio and how do farmers use it?</summary><div class="faq-a">The corn-to-soybean price ratio is November soybean futures divided by December corn futures. A higher ratio leans toward soybeans and a lower one toward corn, but where the line falls depends on your own yields, input costs, and basis, so run break-even math on your own numbers. Both contract prices update every 30 minutes on AGSIST’s corn and soybean futures pages. <a href="/breakeven">Break-Even Price Calculator</a></div></details>
+    </div>
+  </section>
+  </details>
+  <div class="signup fade-up" id="signup-full" style="display:none">
+    <div class="signup-inner">
+      <div class="signup-icon" aria-hidden="true"></div>
+      <span class="signup-eyebrow">AGSIST Daily</span>
+      <h2 class="signup-headline">Market news before the open.</h2>
+      <p class="signup-sub">Overnight markets, what to watch, and farm weather, every weekday.</p>
+      <div class="signup-tabs"><button class="signup-tab active" id="tab-email" aria-controls="form-email"><svg class="ic" aria-hidden="true"><use href="#i-mail"/></svg> Email</button></div>
+      <div class="signup-form" id="form-email" role="tabpanel"><div class="signup-row"><input type="email" class="signup-input" placeholder="your@email.com" autocomplete="email" aria-label="Email address" required><button class="signup-submit" id="btn-email-signup">Subscribe &rarr;</button></div><div class="signup-disc">Free. Unsubscribe any time. We never sell your data. <a href="/privacy">Privacy Policy</a>.</div></div>
+      
+    </div>
+  </div>
+  <div class="signup--slim fade-up" id="signup-slim" style="display:none;padding-bottom:max(.5rem,env(safe-area-inset-bottom))">
+    <span class="scs-text">Get the AGSIST Daily briefing every weekday &mdash; markets, weather, one number to know. Free for farmers everywhere.</span>
+    <a href="/daily">Subscribe Free</a>
+    <span style="font-size:.765rem;color:var(--text-muted)">&middot; <a href="/privacy">Privacy Policy</a></span>
+    <button id="btn-slim-dismiss" aria-label="Dismiss" style="background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:.824rem;padding:0 0 0 .5rem;line-height:1"><svg class="ic" aria-hidden="true"><use href="#i-x"/></svg></button>
+  </div>
+
+</div>
 <script>
 /* Tooltips: one open at a time; tap, click or Enter toggles; Esc closes and
    returns focus; a tap outside closes. */
@@ -1812,14 +1556,19 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')close(true);
    a closed fold whose summary is hidden. */
 (function(){
   var mq = window.matchMedia ? window.matchMedia('(max-width:900px)') : null;
+  var wq = window.matchMedia ? window.matchMedia('(min-width:1240px)') : null;
   function apply(){
     var phone = !!(mq && mq.matches);
     var f = document.querySelectorAll('details.m-fold');
     for(var i = 0; i < f.length; i++){
+      /* 2026-10-06 EARN: Radar is a closed fold on a phone and on a narrow
+         desktop, and an open card beside the bids on a wide one. */
+      if(/\bm-fold--radar\b/.test(f[i].className)){ var w = !!(wq && wq.matches); if(w) f[i].open = true; else if(!f[i].hasAttribute('data-touched')) f[i].open = false; continue; }
       if(phone){ if(!f[i].hasAttribute('data-touched')) f[i].open = false; }
       /* 2026-10-06 HERO: Store or sell starts closed everywhere and shows
          its summary on desktop too (css/home.css), so it is left alone. */
-      else if(!/\bm-fold--calc\b/.test(f[i].className)) f[i].open = true;
+      /* 2026-10-06 EARN: the FAQ is folded at every width; its summary is the header. */
+      else if(!/\bm-fold--(calc|faq)\b/.test(f[i].className)) f[i].open = true;
     }
   }
   document.addEventListener('click', function(e){
@@ -1828,6 +1577,7 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')close(true);
   }, true);
   apply();
   if(mq){ if(mq.addEventListener) mq.addEventListener('change', apply); else if(mq.addListener) mq.addListener(apply); }
+  if(wq){ if(wq.addEventListener) wq.addEventListener('change', apply); else if(wq.addListener) wq.addListener(apply); }
 })();
 </script>
 </div>
@@ -2088,7 +1838,7 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')close(true);
   })();
   </script>
 <script src="/components/loader.js?v=16" defer></script>
-<script src="/components/geo.js?v=20" defer></script>
+<script src="/components/geo.js?v=21" defer></script>
 <script src="/components/bids-homepage.js?v=27" defer></script>
 <script src="/components/homepage-extras.js?v=9" defer></script>
 <script>
@@ -2688,7 +2438,8 @@ function statusIcon(s){return s==='elevated'?'<svg class="ic" aria-hidden="true"
 function statusTxt(s){return s==='elevated'?'Trade War Active':s==='normal'?'Normal Trade':'Mixed';}
 function fmtDate(iso){if(!iso)return'\u2014';try{var d=new Date(iso+'T12:00:00');return d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});}catch(e){return iso;}}
 
-fetch('/data/tariffs.json')
+/* 2026-10-06 EARN: off the homepage; nothing to fill. */
+if(document.getElementById('tariff-rows'))fetch('/data/tariffs.json')
   .then(function(r){if(!r.ok)throw new Error('no-tariffs');return r.json();})
   .then(function(data){
     var badge=document.getElementById('tariff-badge'),cls=statusCls(data.status);
@@ -2709,7 +2460,8 @@ function fmtPct(n){return n==null?'--':n+'%';}
 function fmtChg(cur,prev,suffix){if(cur==null||prev==null)return{txt:'Not loaded yet',cls:'nc'};var d=cur-prev;if(d===0)return{txt:'unch',cls:'nc'};var a=Math.abs(d);return{txt:(d>0?'\u25b2 +':'\u25bc \u2212')+a+(suffix===' points'&&a===1?' point':(suffix||'')),cls:d>0?'up':'dn'};}
 function geClass(v){if(v==null)return'fair';return v>=60?'good':v>=40?'fair':'poor';}
 function fmtDate(iso){if(!iso)return'\u2014';try{var d=new Date(iso+'T12:00:00');return d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});}catch(e){return iso;}}
-fetch('/data/crop-progress.json')
+/* 2026-10-06 EARN: off the homepage; nothing to fill. */
+if(document.getElementById('crop-rows'))fetch('/data/crop-progress.json')
   .then(function(r){if(!r.ok)throw new Error('no-cp');return r.json();})
   .then(function(data){
     if(!data||typeof data!=='object'||(!data.corn&&!data.soybeans))throw new Error('cp malformed');
@@ -2859,7 +2611,8 @@ fetch('/data/export-sales.json')
 'use strict';
 function fmtDate(iso){if(!iso)return'\u2014';try{var d=new Date(iso+'T12:00:00');return d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});}catch(e){return iso;}}
 
-fetch('/data/fertilizer.json')
+/* 2026-10-06 EARN: off the homepage; nothing to fill. */
+if(document.getElementById('fert-grid'))fetch('/data/fertilizer.json')
   .then(function(r){if(!r.ok)throw new Error('no-fert');return r.json();})
   .then(function(data){
     /* r7-prices 2026-10-01: one row per product with its own quote date;
@@ -3155,36 +2908,30 @@ gj('/data/markets.json').then(function(cached){
       _wio.observe(_wf);
     } else { _wf.src=_wf.dataset.src; }
   })();
-  /* 2026-10-06 (Sig): on desktop the live radar fills the space under the
-     cash bids card. On phone it stays in the Radar & Drought fold. The card
-     moves; nothing is copied, so there is one iframe and one lazy loader. */
+  /* 2026-10-06 EARN: the radar is its own card. On wide desktop it sits in
+     the left column under cash bids; its height makes the left column end
+     level with Local conditions when that fits in 340-720px. It reads only
+     the two neighbours' own heights, so it never feeds back on itself. */
   (function(){
-    var card=document.querySelector('#f-radar .radar-card'), f1=document.getElementById('f1'), f2=document.getElementById('f2');
+    var fold=document.getElementById('radar-fold'), card=fold&&fold.querySelector('.radar-card'),
+        f1=document.getElementById('f1'), f2=document.getElementById('f2');
     if(!card||!f1||!f2||!window.matchMedia) return;
-    var home=document.createComment('radar-home'); card.parentNode.insertBefore(home,card);
-    var mq=window.matchMedia('(min-width:901px)');
-    var fold=document.querySelector('.m-fold--radar .m-fold-sum span');
-    var h2=document.querySelector('#f-radar .sec-title');
-    function label(t){ if(fold) fold.textContent=t; if(h2&&h2.lastChild&&h2.lastChild.nodeType===3) h2.lastChild.textContent=t; }
+    var wide=window.matchMedia('(min-width:1240px)');
     function size(){
-      if(card.parentNode!==f1) { card.style.height=''; return; }
-      var top=card.getBoundingClientRect().top, bottom=f2.getBoundingClientRect().bottom;
-      var h=Math.round(bottom-top); card.style.height=Math.max(340,Math.min(h,720))+'px';
+      if(!wide.matches||!fold.open){ card.style.height=''; return; }
+      var r1=f1.getBoundingClientRect(), r2=f2.getBoundingClientRect();
+      if(Math.abs(r1.top-r2.top)>40||r2.left<r1.right-4){ card.style.height=''; return; }
+      var gap=parseFloat(getComputedStyle(f1).marginBottom)||0;
+      var chrome=fold.getBoundingClientRect().height-card.getBoundingClientRect().height;
+      var h=Math.round(r2.height-r1.height-gap-chrome);
+      card.style.height=Math.max(340,Math.min(h,720))+'px';
     }
-    function sideBySide(){
-      if(!mq.matches) return false;
-      var a=f1.getBoundingClientRect(), b=f2.getBoundingClientRect();
-      return b.left >= a.right - 4 && Math.abs(b.top - a.top) < 40;
-    }
-    function place(){
-      if(sideBySide()){ if(card.parentNode!==f1){ f1.appendChild(card); card.classList.add('radar-in-f1'); label('Drought'); } }
-      else if(card.parentNode===f1){ home.parentNode.insertBefore(card,home.nextSibling); card.classList.remove('radar-in-f1'); label('Radar & Drought'); }
-      size();
-    }
-    place();
-    if(mq.addEventListener) mq.addEventListener('change',place); else if(mq.addListener) mq.addListener(place);
-    var t; window.addEventListener('resize',function(){clearTimeout(t);t=setTimeout(place,150);});
-    if('ResizeObserver' in window){ var ro=new ResizeObserver(function(){clearTimeout(t);t=setTimeout(size,100);}); ro.observe(f2); ro.observe(f1.firstElementChild||f1); }
+    var t; function soon(){clearTimeout(t);t=setTimeout(size,100);}
+    size();
+    if(wide.addEventListener) wide.addEventListener('change',soon); else if(wide.addListener) wide.addListener(soon);
+    window.addEventListener('resize',soon);
+    fold.addEventListener('toggle',soon);
+    if('ResizeObserver' in window){ var ro=new ResizeObserver(soon); ro.observe(f1); ro.observe(f2); }
   })();
   function isSignedUp(){try{return document.cookie.split(';').some(function(c){return c.trim().startsWith('agsist_subscribed=');})||localStorage.getItem('agsist_subscribed')==='1';}catch(e){return false;}}
   function setSignedUp(){try{var exp=new Date();exp.setFullYear(exp.getFullYear()+2);document.cookie='agsist_subscribed=1;expires='+exp.toUTCString()+';path=/;SameSite=Lax';localStorage.setItem('agsist_subscribed','1');}catch(e){}}
@@ -4979,6 +4726,12 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
        {lead:['rent','insurance','report'],planting:false,urea:false,fallN:false,gdu:false,hail:false,cropTour:false,band:'off',hailLead:false,hp:true}
   };
   var NOW=new Date(), M=NOW.getMonth()+1, S=SEASON[M];
+  /* 2026-10-06 EARN, one fact one place: the strip does not repeat what the
+     page already shows. Frost and the spray verdict are in Local conditions
+     and the hero, the fall nitrogen read is one line in Local conditions, and
+     the next USDA report is the calendar's first card. */
+  var ELSEWHERE={frost:1,fallN:1,report:1,spray:1};
+  if(S)S={lead:S.lead.filter(function(m){return !ELSEWHERE[m];}),planting:S.planting,urea:S.urea,fallN:S.fallN,gdu:S.gdu,hail:S.hail,cropTour:S.cropTour,band:S.band,hailLead:S.hailLead,hp:S.hp};
   var root=document.documentElement;
   function $(i){return document.getElementById(i);}
   function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
@@ -5406,7 +5159,11 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
         else{var so=d.states[st]||{},ks=Object.keys(SL).filter(function(k){return so[k]&&so[k].pct!=null;});
           stTxt=ks.length?ks.map(function(k){var o=so[k];return '<span class="w1c-cp"><b>'+esc(st)+' '+SL[k].toLowerCase()+' '+o.pct+'%</b>'+(o.prev_year!=null?', last year '+o.prev_year+'%':'')+(o.avg5!=null?', avg '+o.avg5+'%':'')+'</span>';}).join('')
             :'<span class="w1c-cp"><b>'+esc(st)+':</b> \u2014 NASS published no progress figure for this state this week.</span>';}
-        if(a||b)put('harvest',[a,b].filter(Boolean).map(function(x){return '<span class="s7-line">'+x+'</span>';}).join(''),esc(hd?'US, USDA week ending '+isoDay(hd)+'.'+avgWhy:asof),stTxt,mt);
+        /* 2026-10-06 EARN: crop condition (good or excellent) joins this cell,
+           from the same NASS file and week; it left the markets fold. */
+        var ge=[];if(!cells.condition&&d){[['Corn',d.corn],['soybeans',d.soybeans]].forEach(function(x){if(x[1]&&x[1].good_excellent!=null)ge.push(x[0]+' '+x[1].good_excellent+'%');});}
+        var gel=ge.length?'<span class="s7-line">Good or excellent <small>'+ge.join(' \u00b7 ')+'</small></span>':'';
+        if(a||b)put('harvest',[a,b].filter(Boolean).map(function(x){return '<span class="s7-line">'+x+'</span>';}).join('')+gel,esc(hd?'US, USDA week ending '+isoDay(hd)+'.'+avgWhy:asof),stTxt,mt);
         else put('harvest',NL(),esc('Harvested share is not in our crop progress feed yet'+(d&&d.report_date?' (latest week: '+isoDay(d.report_date)+')':'')+'.'),stTxt);
       }
       if(cells.condition){
