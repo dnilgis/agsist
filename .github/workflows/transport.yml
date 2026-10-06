@@ -28,6 +28,8 @@ jobs:
         run: python scripts/fetch_transport.py --selftest
       - name: Fetch
         run: python scripts/fetch_transport.py
+      - name: Basis band check on the written file
+        run: python scripts/test_basis_band.py
       - name: Commit
         run: |
           git config user.name "AGSIST Bot"
