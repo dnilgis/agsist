@@ -43,7 +43,7 @@
     {"@type":"WebPage","url":"https://agsist.com/usda-quick-stats","name":"U.S. Crop Data — Yields, Acres & Prices by State (USDA NASS) | AGSIST","description":"National USDA crop data dashboard with 2025 production and record yields, season-average prices, and multi-year state-level yield, acreage, and price series from USDA NASS, plus a query builder.","dateModified":"2026-06-16","isPartOf":{"@type":"WebSite","url":"https://agsist.com/"},"breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://agsist.com/"},{"@type":"ListItem","position":2,"name":"USDA Quick Stats","item":"https://agsist.com/usda-quick-stats"}]}},
     {"@type":"Dataset","name":"U.S. Corn, Soybean & Wheat Production, Yield, Acreage & Price (USDA NASS)","description":"National and state-level USDA NASS data: corn, soybean, and winter wheat yields and planted acres by state, plus national season-average prices received, 2010 to present, with U.S. totals for the latest crop year.","temporalCoverage":"2010/2025","spatialCoverage":"United States","url":"https://agsist.com/usda-quick-stats","isAccessibleForFree":true,"license":"https://www.usda.gov/policies-and-links","creator":{"@type":"GovernmentOrganization","name":"USDA National Agricultural Statistics Service","url":"https://www.nass.usda.gov"},"distribution":{"@type":"DataDownload","encodingFormat":"text/csv","contentUrl":"https://agsist.com/usda-quick-stats"}},
     {"@type":"FAQPage","mainEntity":[
-      {"@type":"Question","name":"How much corn, soybeans, and wheat did the U.S. produce in 2025?","acceptedAnswer":{"@type":"Answer","text":"In the 2025 crop year, U.S. farmers produced a record 17.0 billion bushels of corn (186.5 bu/acre, a record yield), 4.26 billion bushels of soybeans (a record 53.0 bu/acre), and about 1.99 billion bushels of all wheat (53.3 bu/acre), according to USDA NASS Crop Production 2025 Summary."}},
+      {"@type":"Question","name":"How much corn, soybeans, and wheat did the U.S. produce in 2025?","acceptedAnswer":{"@type":"Answer","text":"In the 2025 crop year, U.S. farmers produced a record 17.0 billion bushels of corn (186.5 bu/acre, a record yield), 4.26 billion bushels of soybeans (a record 53.0 bu/acre), and about 1.98 billion bushels of all wheat (53.3 bu/acre), according to USDA NASS Crop Production 2025 Summary and Small Grains 2025 Summary."}},
       {"@type":"Question","name":"How do I get historical corn yield data by state?","acceptedAnswer":{"@type":"Answer","text":"AGSIST's Data Explorer shows USDA NASS corn, soybean, and wheat yields and planted acres by state from 2010 to present, with CSV export. For any other commodity, geography, or year, use the built-in query builder or open USDA NASS Quick Stats directly."}},
       {"@type":"Question","name":"Does USDA NASS have a free API?","acceptedAnswer":{"@type":"Answer","text":"Yes. USDA NASS offers a free API at quickstats.nass.usda.gov/api. A free API key is required. The API returns JSON, CSV, or XML using the same query parameters as the web query builder."}}
     ]}
@@ -293,7 +293,7 @@
       </div>
       <div class="snap-card">
         <div class="snap-head"><svg class="ic" aria-hidden="true"><use href="#i-leaf"/></svg><span class="snap-name">Soybeans</span><span class="snap-badge"><svg class="ic" aria-hidden="true"><use href="#i-award"/></svg>Record yield</span></div>
-        <div class="snap-prod"><span class="snap-prod-num">4.26</span><span class="snap-prod-unit">B&nbsp;bu</span><span class="snap-prod-yoy down">&#9660; &minus;3% vs &rsquo;24</span></div>
+        <div class="snap-prod"><span class="snap-prod-num">4.26</span><span class="snap-prod-unit">B&nbsp;bu</span><span class="snap-prod-yoy down">&#9660; &minus;2% vs &rsquo;24</span></div>
         <div class="snap-rows">
           <div class="snap-row"><span class="snap-rl">Avg yield</span><span class="snap-rv">53.0 bu/ac<span class="yoy up">&#9650; +2.3</span></span></div>
           <div class="snap-row"><span class="snap-rl">Marketing-year avg price</span><span class="snap-rv">$10.50/bu<span class="snap-rl" style="font-weight:400"> &middot; 2025/26 est.</span></span></div>
@@ -303,11 +303,11 @@
       </div>
       <div class="snap-card">
         <div class="snap-head"><svg class="ic" aria-hidden="true"><use href="#i-wheat"/></svg><span class="snap-name">Wheat (all)</span></div>
-        <div class="snap-prod"><span class="snap-prod-num">1.99</span><span class="snap-prod-unit">B&nbsp;bu</span><span class="snap-prod-yoy up">&#9650; flat vs &rsquo;24</span></div>
+        <div class="snap-prod"><span class="snap-prod-num">1.98</span><span class="snap-prod-unit">B&nbsp;bu</span><span class="snap-prod-yoy up">&#9650; under 1% vs &rsquo;24</span></div>
         <div class="snap-rows">
           <div class="snap-row"><span class="snap-rl">Avg yield</span><span class="snap-rv">53.3 bu/ac<span class="yoy up">&#9650; +2.1</span></span></div>
           <div class="snap-row"><span class="snap-rl">Marketing-year avg price</span><span class="snap-rv">$5.00/bu<span class="snap-rl" style="font-weight:400"> &middot; 2025/26 est.</span></span></div>
-          <div class="snap-row"><span class="snap-rl">Harvested</span><span class="snap-rv">38.0 M ac</span></div>
+          <div class="snap-row"><span class="snap-rl">Harvested</span><span class="snap-rv">37.2 M ac</span></div>
         </div>
         <div class="spark-wrap" id="sparkwrap-wheat" style="display:none"><span class="spark-lbl">Yield &rsquo;10&ndash;&rsquo;25</span><span class="spark" id="spark-wheat"></span></div>
       </div>
@@ -531,7 +531,7 @@
 </style>
 <section class="faq agf" aria-labelledby="agf-t">
 <h2 class="agf-t" id="agf-t">Common questions</h2>
-<details><summary>How much corn, soybeans, and wheat did the U.S. produce in 2025?</summary><div class="agf-a">In the 2025 crop year, U.S. farmers produced a record 17.0 billion bushels of corn (186.5 bu/acre, a record yield), 4.26 billion bushels of soybeans (a record 53.0 bu/acre), and about 1.99 billion bushels of all wheat (53.3 bu/acre), according to USDA NASS Crop Production 2025 Summary.</div></details>
+<details><summary>How much corn, soybeans, and wheat did the U.S. produce in 2025?</summary><div class="agf-a">In the 2025 crop year, U.S. farmers produced a record 17.0 billion bushels of corn (186.5 bu/acre, a record yield), 4.26 billion bushels of soybeans (a record 53.0 bu/acre), and about 1.98 billion bushels of all wheat (53.3 bu/acre), according to USDA NASS Crop Production 2025 Summary and Small Grains 2025 Summary.</div></details>
 <details><summary>How do I get historical corn yield data by state?</summary><div class="agf-a">AGSIST's Data Explorer shows USDA NASS corn, soybean, and wheat yields and planted acres by state from 2010 to present, with CSV export. For any other commodity, geography, or year, use the built-in query builder or open USDA NASS Quick Stats directly.</div></details>
 <details><summary>Does USDA NASS have a free API?</summary><div class="agf-a">Yes. USDA NASS offers a free API at quickstats.nass.usda.gov/api. A free API key is required. The API returns JSON, CSV, or XML using the same query parameters as the web query builder.</div></details>
 </section>
@@ -549,7 +549,7 @@
 
   // us: the REAL national series where USDA publishes one. The chart must
   // never present a simple average of states as the US number — the 2025
-  // unweighted mean of 42 state corn yields is 173.6 bu while USDA's national
+  // unweighted mean of 41 state corn yields is 173.3 bu while USDA's national
   // figure is 186.7: Iowa counts the same as Alabama in a plain mean. Yields
   // chart the national file; acres chart the SUM of reporting states (a sum
   // is meaningful); prices have no national file here, so their average is
@@ -557,7 +557,7 @@
   var DS = {
     'corn-yield':  {file:'/data/nass/corn-yield.json',   us:'/data/nass/corn-yield-us.json',  label:'Corn Yield',            unit:'bu/acre'},
     'soy-yield':   {file:'/data/nass/soy-yield.json',    us:'/data/nass/soy-yield-us.json',   label:'Soybean Yield',         unit:'bu/acre'},
-    'wheat-yield': {file:'/data/nass/wheat-yield.json',  us:'/data/nass/wheat-yield-us.json', label:'Winter Wheat Yield',    unit:'bu/acre'},
+    'wheat-yield': {file:'/data/nass/wheat-yield.json',  /* no us: wheat-yield-us.json is ALL wheat; this tab is winter wheat */ label:'Winter Wheat Yield',    unit:'bu/acre'},
     'corn-acres':  {file:'/data/nass/corn-acres.json',   agg:'sum',                           label:'Corn Acres Planted',    unit:'M acres'},
     'soy-acres':   {file:'/data/nass/soy-acres.json',    agg:'sum',                           label:'Soybean Acres Planted', unit:'M acres'},
     'corn-price':  {file:'/data/nass/corn-price.json',   agg:'avg',                           label:'Corn Price Received (calendar-year avg)',   unit:'$/bu'},
@@ -827,10 +827,15 @@
     var list = el('ts-list');
     if (!arr.length){ list.innerHTML = '<p class="qs-ss" style="margin:0">No data for this crop in the current USDA release.</p>'; return; }
     var max = arr[0].prod;
+    // the crop year most listed states report; a row from another year says so
+    var yc = {}; arr.forEach(function(x){ if (x.year) yc[x.year] = (yc[x.year]||0)+1; });
+    var MODAL_YEAR = Object.keys(yc).sort(function(a,b){ return yc[b]-yc[a]; })[0];
+    if (MODAL_YEAR) MODAL_YEAR = isNaN(+MODAL_YEAR) ? MODAL_YEAR : (typeof arr[0].year === 'number' ? +MODAL_YEAR : MODAL_YEAR);
     list.innerHTML = arr.map(function(x,i){
       var pct = Math.max(2, (x.prod/max)*100);
       var y = x.yld != null ? ' <small>'+x.yld+' bu/ac</small>' : '';
-      var f = x.fc ? ' <small class="ts-fc" title="USDA NASS in-season forecast, not a final estimate">'+(x.year||'')+' est.</small>' : '';
+      var f = x.fc ? ' <small class="ts-fc" title="USDA NASS in-season forecast, not a final estimate">'+(x.year||'')+' est.</small>'
+        : (x.year && MODAL_YEAR && x.year !== MODAL_YEAR) ? ' <small class="ts-fc" title="A different crop year from most states in this list">'+x.year+' final</small>' : '';
       return '<div class="ts-row"><div class="ts-rank"><span>'+(i+1)+'</span><b>'+x.name+'</b>'+f+'</div>'
         + '<div class="ts-bar-track"><div class="ts-bar" style="width:'+pct.toFixed(1)+'%"></div></div>'
         + '<div class="ts-val">'+(+x.prod).toLocaleString()+' <small>M bu</small>'+y+'</div></div>';
@@ -858,7 +863,7 @@
               ? 'USDA NASS in-season forecast for the ' + span.join('/') + ' crop, not a final estimate'
               : nfc + ' of ' + vals.length + ' states are USDA NASS in-season forecasts (marked "est."); the rest are finals');
         src.innerHTML = 'Production in million bushels, ' + what
-          + '. Top 10 states; yield shown where reported. The yield table above is finals only, so a forecast state reads higher here.';
+          + '. Top 10 states; yield shown where reported. The yield table below shows finals only, so a state marked est. can differ from it in either direction.';
       }
       rankStates('corn');
     }).catch(function(){});
