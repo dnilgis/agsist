@@ -1942,6 +1942,7 @@ html.ticker-paused .ticker-track{animation-play-state:paused!important}
 #daily-hero.daily-failed .hero-sidebar,#daily-hero.daily-failed #daily-otp,
 #daily-hero.daily-failed #daily-cashbids-cta,#daily-hero.daily-failed #daily-surprise-banner{display:none!important}
 #daily-hero.daily-failed .daily-lead a{color:var(--gold);text-decoration:underline}
+
 /* ===== THE LOOK (2026-10-03) ==========================================
    Sig: "lots of still monotone and hard to differentiate one thing from
    another". Every top-level section belongs to a family, and the page

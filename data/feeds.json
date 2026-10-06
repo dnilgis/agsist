@@ -695,6 +695,7 @@
    ],
    "touched_by": [
     "Harvest price tracker",
+    "Fetch Prices",
     "Rebuild Feed Manifest"
    ],
    "cadence": "1 launch weekdays at about 4pm Central",
