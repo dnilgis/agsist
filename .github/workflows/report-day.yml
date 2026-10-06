@@ -1,0 +1,84 @@
+name: Report day — USDA vs the trade email
+
+# After WASDE, Crop Production and Grain Stocks publish (noon ET), email AGSIST
+# Daily readers who did not opt out of report-day mail. scripts/send_report_day.py
+# decides everything: it sends only when data/whats-priced-in.json (or
+# data/wasde.json) carries a USDA figure dated today, never before noon ET,
+# and never twice (one /flag day-marker per report in the subs worker).
+#
+# TWO DOORS, ONE SEND.
+#   * workflow_run: right after the jobs that write that data finish --
+#     wasde-watch.yml grades the WASDE as it lands (16-17 UTC, days 9-12),
+#     whats-priced-in.yml rebuilds the page data when a hand-typed print
+#     (Grain Stocks) is committed. A finished run with no new row is a
+#     cheap "nothing to send".
+#   * schedule: a backstop on weekdays in case a workflow_run is dropped.
+#     16:47 UTC is 12:47 EDT; 18:13 UTC is 1:13 PM EST / 2:13 PM EDT. Off :00,
+#     :15, :30, :45 on purpose (GitHub drops busy-minute crons; see prices.yml).
+#
+# Secrets: the briefing sender's (SMTP_USER/SMTP_PASS or GMAIL_*, LIST_URL,
+# LIST_TOKEN, UNSUB_SECRET; optional SMTP_HOST, SMTP_PORT, FROM_ADDR,
+# FROM_NAME, REPLY_TO). No new secret.
+
+on:
+  workflow_run:
+    workflows:
+      - "WASDE watch — grade the report as it lands"
+      - "Build What's Priced In"
+    types: [completed]
+  schedule:
+    - cron: "47 16 * * 1-5"
+    - cron: "13 18 * * 1-5"
+  workflow_dispatch:
+    inputs:
+      send_email:
+        description: "Email the list? A manual run is a dry run unless this is ticked."
+        type: boolean
+        default: false
+
+concurrency:
+  group: report-day-email
+  cancel-in-progress: false
+
+env:
+  TZ: America/Chicago
+
+permissions:
+  contents: read
+
+jobs:
+  send:
+    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      # History, without the blobs: the price move reads the last
+      # data/prices.json committed before the release out of git.
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+          filter: blob:none
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Test the sender and its loop
+        run: |
+          python scripts/send_report_day.py --selftest
+          python scripts/gmail_limit.py --selftest
+          python3 scripts/test_send_loops.py
+
+      - name: Send the report-day email
+        env:
+          SMTP_HOST:    ${{ secrets.SMTP_HOST }}
+          SMTP_PORT:    ${{ secrets.SMTP_PORT }}
+          SMTP_USER:    ${{ secrets.SMTP_USER || secrets.GMAIL_USER }}
+          SMTP_PASS:    ${{ secrets.SMTP_PASS || secrets.GMAIL_APP_PASS }}
+          FROM_ADDR:    ${{ secrets.FROM_ADDR }}
+          REPLY_TO:     ${{ secrets.REPLY_TO }}
+          LIST_URL:     ${{ secrets.LIST_URL }}
+          LIST_TOKEN:   ${{ secrets.LIST_TOKEN }}
+          UNSUB_SECRET: ${{ secrets.UNSUB_SECRET }}
+          DRY_RUN:      ${{ (github.event_name == 'workflow_dispatch' && inputs.send_email != true) && '1' || '' }}
+        run: python scripts/send_report_day.py
