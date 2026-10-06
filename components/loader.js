@@ -710,7 +710,7 @@
           localStorage.setItem('agsist_subscribed', '1');
         } catch (e2) {}
         try { if (typeof gtag === 'function') gtag('event', 'email_signup', { source: src }); } catch (e3) {}
-        bar.innerHTML = '<span class="agsb-ok">&#10003; You\'re in — the briefing lands before the market open, weekdays. Check spam once.</span>';
+        bar.innerHTML = '<span class="agsb-ok">&#10003; You’re in — the briefing lands before the market open, weekdays. Check spam once.</span>';
         setTimeout(function () { bar.classList.remove('agsb--in'); document.body.classList.remove('agsb-open'); setTimeout(function () { bar.remove(); }, 400); }, 4500);
       }).catch(function () {
         if (btn) { btn.disabled = false; btn.textContent = 'Get it free'; }

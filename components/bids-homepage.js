@@ -383,9 +383,17 @@
       fr.push('Quotes read ' + ctTime(feedTimes.licensed) + ', no posting time sent');
     }
     var st = elev.fromNetwork ? staleSince(elev.pricedAt) : '';
+    /* 2026-10-06: a stale board says it once. The posted time becomes the
+       warning ("Not updated since Oct 1, 1:31 PM CT") instead of a posted
+       line followed by a second "Not updated since Thu Oct 1". */
+    var staleTxt = '';
+    if(st){
+      if(fr.length && fr[0].indexOf('Posted ') === 0) staleTxt = 'Not updated since ' + fr.shift().slice(7);
+      else staleTxt = 'Not updated since ' + dayName(st);
+    }
     html += '<div class="bh-fresh" style="display:flex;flex-wrap:wrap;align-items:center;column-gap:.6rem;font-family:\'JetBrains Mono\',monospace;font-size:.72rem;color:var(--text-muted)">';
-    if(fr.length) html += '<span>' + escHtml(fr.join(' · ')) + '</span>';
-    if(st) html += '<span class="bh-stale" style="color:var(--orange);font-weight:700">Not updated since ' + escHtml(dayName(st)) + '</span>';
+    if(staleTxt) html += '<span class="bh-stale" style="color:var(--orange);font-weight:700">' + escHtml(staleTxt) + (fr.length ? '</span><span>' + escHtml(fr.join(' · ')) + '</span>' : '</span>');
+    else if(fr.length) html += '<span>' + escHtml(fr.join(' · ')) + '</span>';
     html += '<span class="bh-call">' + callLink(elev.phone) + '</span>';
     html += '</div>';
     html += '</div>';
