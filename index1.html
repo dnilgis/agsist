@@ -1469,13 +1469,14 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
          four weeks later. The verdict words come from the file. */
       var live=((d.live||{}).records||{}).all||null, bt=((d.backtest||{}).records||{}).all||null, R=d.rules||{};
       if(!live){fail();return;}
-      var btShort=bt&&bt.gate_ok?(bt.verdict==='held_up'?'held up':'no better than a coin flip'):'not computed yet';
+      var btShort=bt&&bt.gate_ok?(bt.verdict_text||V[bt.verdict]||'\u2014').replace(/\.$/,''):'not computed yet';
+      btShort=btShort.charAt(0).toLowerCase()+btShort.slice(1);
       $('pbc-verdict').textContent=live.gate_ok
         ?('Live record: '+(live.verdict_text||V[live.verdict]||'—'))
         :('Backtest: '+btShort+'. Too few live calls to grade.');
       var labels={};(d.crops||[]).forEach(function(c){labels[c.key]=c.label;});
       var lt=d.latest||{}, calls=lt.calls||[], ul=$('pbc-calls');
-      function px(c){return c.entry==null?'':' from $'+(Number(c.entry)/100).toFixed(2);}
+      function px(c){if(c.entry==null)return '';var q=Math.round(Number(c.entry)*4),w=Math.floor(q/4),f=q%4;return ' from $'+Math.floor(w/100)+'.'+('0'+(w%100)).slice(-2)+['','\u00bc','\u00bd','\u00be'][f];}
       ul.innerHTML=calls.length?calls.map(function(c){
         var up=c.direction==='up';
         return '<li><span class="pbc-crop">'+esc(labels[c.crop]||c.crop)+'</span><span class="pbc-dir '+(up?'pbc-up':'pbc-down')+'">'+(up?'Up':'Down')+'</span><span class="pbc-meta">'+esc(c.contract)+esc(px(c))+' &middot; grades '+fd(c.exit_day)+'</span></li>';
@@ -1485,7 +1486,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
         :(live.graded?('Live: '+n(live.graded)+' graded. A rate shows at '+n(R.min_graded_for_rate)+' calls and '+n(R.min_windows_for_rate)+' non-overlapping windows.'):'');
       $('pbc-live').hidden=!$('pbc-live').textContent;
       $('pbc-bt').textContent=bt&&bt.graded
-        ?('Backtest '+String(bt.first).slice(0,4)+'–'+String(bt.last).slice(0,4)+': right '+bt.hit_rate.toFixed(1)+'% ('+n(bt.hits)+' of '+n(bt.graded)+' weekly calls; non-overlapping '+bt.spell_rate_low.toFixed(1)+'–'+bt.spell_rate_high.toFixed(1)+'%). Always saying down: '+bt.fell_rate.toFixed(1)+'%.')
+        ?('Backtest '+String(bt.first).slice(0,4)+'–'+String(bt.last).slice(0,4)+': right '+bt.hit_rate.toFixed(1)+'% ('+n(bt.hits)+' of '+n(bt.graded)+' weekly calls; '+bt.spell_rate_low.toFixed(1)+'–'+bt.spell_rate_high.toFixed(1)+'% across four non-overlapping groups). Always saying down: '+bt.fell_rate.toFixed(1)+'%.')
         :'Backtest: not computed yet.';
       $('pbc-asof').textContent=lt.date?('Calls made at the '+fd(lt.date)+' close.'):'';
       var th=$('rsct-hit'), tl=$('rsct-label');

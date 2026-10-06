@@ -1,26 +1,27 @@
 name: Prediction bot — call and grade
 
-# The statistical prediction bot (scripts/prediction_bot.py, rule set bot-v1).
-# After each close it makes one 20-session direction call per crop (corn,
-# soybeans, Chicago wheat, KC wheat), grades every call whose 20th session has
-# settled, and recomputes the walk-forward backtest. Writes:
+# The statistical prediction bot (scripts/prediction_bot.py, rule set bot-v1.1).
+# Once per weekly CFTC report, at the first close a reader could trade on it,
+# it makes one direction call per crop (corn, soybeans, Chicago wheat, KC
+# wheat), graded at the entry close of the report four weeks later. Each run
+# also grades matured calls and recomputes the walk-forward backtest. Writes:
 #   data/predictions.json           calls, graded record, backtest summary
 #   data/predictions-backtest.json  every backtest call, for re-deriving it
 #
 # The briefing (daily.yml, 6 AM Central) prints the latest call from
-# predictions.json as "The Action"; /scorecard and the homepage card read it.
+# predictions.json as "BOT CALL"; /scorecard and the homepage card read it.
 #
 # Two fires, both off :00/:15/:30/:45 (the shape this repo has measured as the
-# one GitHub delivers). The second is a retry for a dropped first fire. Calls
-# are keyed by crop and session, so a second run on the same evening makes no
-# new call and never rewrites one.
-#   22:41 UTC Mon-Fri = 5:41 PM CDT / 4:41 PM CST, hours after the 1:15 PM settle
-#   01:17 UTC Tue-Sat = the same evenings, three hours later
+# one GitHub delivers), both before the 7 PM CT evening reopen: after it,
+# Yahoo's daily bar holds overnight trades and the bot refuses to call or grade.
+# Calls are keyed by crop and report, so a second run makes no new call.
+#   22:41 UTC Mon-Fri = 5:41 PM CDT / 4:41 PM CST
+#   23:41 UTC Mon-Fri = 6:41 PM CDT / 5:41 PM CST (retry)
 
 on:
   schedule:
     - cron: '41 22 * * 1-5'
-    - cron: '17 1 * * 2-6'
+    - cron: '41 23 * * 1-5'   # retry, before the 7 PM CT reopen in both seasons
   workflow_dispatch:
 
 permissions:

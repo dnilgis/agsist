@@ -110,7 +110,7 @@
       <h2>Latest calls</h2>
       <p id="pb-latest-when" class="pb-note"></p>
       <div class="pb-wrap"><table class="pb-table" id="pb-latest" aria-describedby="pb-latest-when">
-        <thead><tr><th scope="col">Crop</th><th scope="col">Call</th><th scope="col">Contract</th><th scope="col" class="num">Entry settle</th><th scope="col">Grades on</th><th scope="col">Why</th></tr></thead>
+        <thead><tr><th scope="col">Crop</th><th scope="col">Call</th><th scope="col">Contract</th><th scope="col" class="num">Entry close</th><th scope="col">Grades on</th><th scope="col">Why</th></tr></thead>
         <tbody><tr><td colspan="6">Loading&hellip;</td></tr></tbody>
       </table></div>
 
@@ -135,7 +135,7 @@
         <summary>Sources, dates, units and conventions</summary>
         <dl>
           <dt>Live prices</dt>
-          <dd>Settlement closes of the named contract (for example Dec &rsquo;26 corn), from Yahoo Finance daily bars, read by the bot after the close. Grains are quoted in cents per bushel; the page shows them in dollars. The contract is the first listed month still trading on the grading day, so no live call spans a contract roll.</dd>
+          <dd>The day&rsquo;s close of the named contract (for example Dec &rsquo;26 corn), from Yahoo Finance daily bars, read before the 7 PM Central evening reopen. After the reopen Yahoo folds overnight trades into the same day&rsquo;s bar, so the bot refuses to call or grade then. This is Yahoo&rsquo;s close, not the exchange&rsquo;s settlement file; on days checked they matched. The Oct 5, 2026 calls were first entered from an 8:34 PM read and corrected to the close before any grading; each says so in the log. Grains are quoted in cents per bushel; the page shows them in dollars. The contract is the first listed month still trading on the grading day, so no live call spans a contract roll.</dd>
           <dt>Entry and exit days</dt>
           <dd>Entry: the first session close after CFTC published the report. Exit: the entry close of the report four weeks later. Both are fixed when the call is made. Release dates: <code>scripts/cot_calendar.py</code>. CFTC publishes on the Friday of the report week at 3:30 PM Eastern, after grains settle; a federal holiday delays it. Reports held back by a government shutdown (2013, 2018&ndash;19, 2025) are skipped, because their real release dates are not all known.</dd>
           <dt>Positioning</dt>
@@ -143,7 +143,7 @@
           <dt>Backtest prices</dt>
           <dd>The roll-repaired front-month index in <code>data/cot-deep.json</code>: Yahoo's continuous series with the return across each contract change dropped. It is an index, not a price. One call per weekly report, same entry and exit days as live. Decisions whose grading day falls after <span id="pb-cutoff">2026-10-02</span> are left out, so the backtest never overlaps the live record. The continuous series follows Yahoo's own roll, which can differ by a few days from the exchange calendar the repair uses.</dd>
           <dt>Overlap, counted every way</dt>
-          <dd>Weekly calls on a four-week window overlap, and the four crops on one report are one bet on one month of markets. So the record is counted every way: all calls, tested with a Newey&ndash;West test that allows for the overlap; and non-overlapping calls taken from each of the four possible starting weeks. The page prints the range across those four. Picking one starting week would let the luckiest one stand in for all.</dd>
+          <dd>Weekly calls on a four-week window overlap, and the four crops on one report are one bet on one month of markets. So the record is counted every way: all calls, tested with a Newey&ndash;West test that allows for the overlap; and four disjoint groups, by report week counted mod 4, in which no two calls overlap. The page prints the range across the four groups. Picking one group would let the luckiest stand in for all.</dd>
           <dt>Coin-flip odds</dt>
           <dd>The chance that pure guessing does at least as well, from the Newey&ndash;West test on all calls. <span id="pb-family">Five</span> records are tested at once (all crops together and each crop), so the odds are adjusted with the Benjamini&ndash;Hochberg method before any record is called a finding.</dd>
           <dt>Baselines</dt>
@@ -152,14 +152,14 @@
           <dd>At least <span data-rule="min_graded_for_rate">40</span> graded calls and <span data-rule="min_windows_for_rate">30</span> non-overlapping four-week windows in time (crops on the same report share one window). Below that the page says &ldquo;Not enough calls yet&rdquo;.</dd>
           <dt>Raw files</dt>
           <dd><a href="/data/predictions.json">/data/predictions.json</a> (calls, record, rule) and <a href="/data/predictions-backtest.json">/data/predictions-backtest.json</a> (every backtest call). Code: <code>scripts/prediction_bot.py</code>; its selftests carry hand-worked answers.</dd>
-          <dt>Updated</dt>
+          <dt>Last changed</dt>
           <dd id="pb-updated">&mdash;</dd>
         </dl>
       </details>
 
       <h2>Every live call</h2>
       <div class="pb-wrap"><table class="pb-table" id="pb-log">
-        <thead><tr><th scope="col">Made</th><th scope="col">Crop</th><th scope="col">Call</th><th scope="col">Contract</th><th scope="col" class="num">Entry</th><th scope="col" class="num">Settle</th><th scope="col">Graded</th><th scope="col">Result</th></tr></thead>
+        <thead><tr><th scope="col">Made</th><th scope="col">Crop</th><th scope="col">Call</th><th scope="col">Contract</th><th scope="col" class="num">Entry</th><th scope="col" class="num">Exit close</th><th scope="col">Grades on</th><th scope="col">Result</th></tr></thead>
         <tbody><tr><td colspan="8">Loading&hellip;</td></tr></tbody>
       </table></div>
       <div id="pb-log-more"></div>
@@ -195,8 +195,8 @@
         return {v:VERDICT.not_enough,line:n(r.graded)+' graded so far. A rate is shown from '+n(R.min_graded_for_rate)+' graded calls and '+n(R.min_windows_for_rate)+' non-overlapping windows.',luck:''};
       }
       return {v:r.verdict_text||VERDICT[r.verdict]||'—',
-        line:'Right on '+n(r.hits)+' of '+n(r.graded)+' '+label+' ('+rate(r.hit_rate)+'). Non-overlapping calls, from each of the four starting weeks: '+rate(r.spell_rate_low)+' to '+rate(r.spell_rate_high)+' ('+n(r.windows)+' windows).',
-        luck:'Odds pure guessing does at least this well: '+luck(r.p_luck)+' ('+luck(r.p_luck_adjusted)+' after adjusting for the records tested at once).'};
+        line:'Right on '+n(r.hits)+' of '+n(r.graded)+' '+label+' ('+rate(r.hit_rate)+'). Across four non-overlapping groups of calls: '+rate(r.spell_rate_low)+' to '+rate(r.spell_rate_high)+' ('+n(r.windows)+' windows).',
+        luck:'Odds pure guessing does at least this well: '+luck(r.p_luck)+'; at least this badly: '+luck(r.p_worse)+' ('+luck(r.p_worse_adjusted)+' after adjusting for the records tested at once).'};
     }
     fetch('/data/predictions.json',{cache:'no-cache'}).then(function(r){if(!r.ok)throw new Error(r.status);return r.json();}).then(function(d){
       var labels={};(d.crops||[]).forEach(function(c){labels[c.key]=c.label;});
@@ -244,6 +244,7 @@
         if(c.status==='graded')res=c.outcome==='hit'?'<span class="pb-hit">Right</span>':'<span class="pb-miss">Wrong</span>';
         else if(c.status==='ungradeable')res='— '+esc(c.note||'no settlement in the feed');
         else res='<span class="pb-open">Open</span>';
+        if(c.note)res+='<br><small>'+esc(c.note)+'</small>';
         return '<tr><td>'+fdate(c.made)+'</td><td>'+esc(labels[c.crop]||c.crop)+'</td><td>'+dirSpan(c.direction)+'</td><td>'+esc(c.contract)+'</td><td class="num">'+dollars(c.entry)+'</td><td class="num">'+(c.exit!=null?dollars(c.exit):'—')+'</td><td>'+fdate(c.exit_day)+'</td><td>'+res+'</td></tr>';}
       function render(){var s=calls.slice(0,shown+PAGE);shown=s.length;lb.innerHTML=s.length?s.map(row).join(''):'<tr><td colspan="8">— No live calls yet.</td></tr>';
         var m=$('pb-log-more');m.innerHTML=shown<calls.length?'<button type="button" class="pb-more" id="pb-more-btn">Show '+Math.min(PAGE,calls.length-shown)+' more ('+(calls.length-shown)+' left)</button>':'';

@@ -101,6 +101,16 @@ def next_business_day(d):
     return d
 
 
+# Releases CFTC moved for a closure that is not a regular federal holiday.
+# Each entry is sourced; nothing here is inferred.
+#   2025-01-07 report: CFTC was closed Thu Jan 9, 2025 (National Day of
+#   Mourning for President Carter) and released it Mon Jan 13, 2025 (CFTC,
+#   "Commitments of Traders Updated Release Date", Jan 2025).
+RELEASE_OVERRIDE = {
+    date(2025, 1, 7): date(2025, 1, 13),
+}
+
+
 def release_date(as_of):
     """The date CFTC published the report for this Tuesday as-of date.
 
@@ -115,6 +125,8 @@ def release_date(as_of):
     week; and the repo's own release commit for the Sep 8 report (Labor Day was
     Mon Sep 7) is dated Fri Sep 11, not Mon Sep 14. Checked against all six.
     """
+    if as_of in RELEASE_OVERRIDE:
+        return RELEASE_OVERRIDE[as_of]
     monday = as_of - timedelta(days=as_of.weekday())
     delay = sum(1 for i in (2, 3, 4) if is_federal_holiday(monday + timedelta(days=i)))
     # Corrected 2026-10-03: the Friday OF THE AS-OF WEEK, not as_of + 3. When
@@ -299,6 +311,8 @@ def selftest():
     ck("release is never before the Friday of the as-of week",
        all(release_date(date(2010, 1, 4) + timedelta(days=k)) >= date(2010, 1, 4) + timedelta(days=k - (date(2010, 1, 4) + timedelta(days=k)).weekday() + 4)
            for k in range(0, 17 * 365) if (date(2010, 1, 4) + timedelta(days=k)).weekday() in (0, 1)), True)
+    ck("mourning-day closure: the 2025-01-07 report released Mon Jan 13", release_date(date(2025, 1, 7)), date(2025, 1, 13))
+    ck("and enters Tue Jan 14, not the Jan 13 close", entry_date(date(2025, 1, 7)), date(2025, 1, 14))
     ck("shutdown weeks are flagged: 2013-10-08", release_unknown(date(2013, 10, 8)), True)
     ck("shutdown weeks are flagged: 2018-12-24", release_unknown(date(2018, 12, 24)), True)
     ck("shutdown weeks are flagged: 2025-11-10", release_unknown(date(2025, 11, 10)), True)

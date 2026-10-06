@@ -273,6 +273,20 @@ def chain_spells(calls, offset=0):
     return out
 
 
+WEEK_EPOCH = date(2006, 1, 3)   # a Tuesday; any fixed Tuesday works
+
+
+def week_group(c, k_of=4):
+    """Which of the four report-week groups a call belongs to: the report's
+    week, counted from a fixed Tuesday, mod 4. Every call falls in exactly
+    one group, and calls in one group are four weeks apart, so their windows
+    do not overlap (2026-10-05: greedy chaining from four starting calls
+    re-synchronised after every gap, so the four "offsets" shared 648 of
+    about 688 calls and the printed range was far too narrow)."""
+    d = c.get("report") or c.get("cot_report") or c["made"]
+    return ((date.fromisoformat(d) - WEEK_EPOCH).days // 7) % k_of
+
+
 def chain_windows(calls, offset=0):
     """Non-overlapping windows in TIME, across crops: one window at a time.
     Calls made on the same day share one window (four crops on one report are
@@ -342,8 +356,8 @@ def record(calls):
 
     Counts the record every way it can honestly be counted:
       all calls       hits / graded, tested with hac_test (the verdict's test)
-      by offset       for k in 0..3, non-overlapping calls from the k-th one
-                      on; for one crop a binomial test is valid on them, for
+      by offset       for k in 0..3, the calls whose report week is k mod 4
+                      (four disjoint groups, no overlap inside one); for one crop a binomial test is valid on them, for
                       several crops it is not (same window, correlated), so
                       the pooled rows carry a rate and no binomial odds
       windows         independent windows in time across crops; the gate
@@ -358,9 +372,10 @@ def record(calls):
     single = len(crops) == 1
     offs = []
     for k in range(RULES["spell_offsets"]):
-        sp = chain_spells(g, k)
+        grp = [c for c in g if week_group(c, RULES["spell_offsets"]) == k]
+        sp = chain_spells(grp)                 # a no-op on clean weekly data; guards odd inputs
         sh = sum(1 for c in sp if c["outcome"] == "hit")
-        nw, _ = chain_windows(g, k)
+        nw, _ = chain_windows(grp)
         offs.append({
             "offset": k, "calls": len(sp), "hits": sh,
             "rate": round(100.0 * sh / len(sp), 1) if sp else None,
@@ -688,7 +703,7 @@ def make_call(crop, day, deep, fetch=yahoo_closes):
     }, why
 
 
-def grade_open(calls, today, fetch=yahoo_closes):
+def grade_open(calls, today, fetch=yahoo_closes, late=False):
     """Grade every open call whose exit day has settled. A call whose exit
     settlement never appears within 5 sessions is marked ungradeable: it is
     shown with a dash and a reason and never counted."""
@@ -696,8 +711,8 @@ def grade_open(calls, today, fetch=yahoo_closes):
         if c.get("status") != "open":
             continue
         xd = date.fromisoformat(c["exit_day"])
-        if xd > today:
-            continue
+        if xd > today or (late and xd == today):
+            continue                                  # after the evening reopen today's bar holds overnight trades
         px, _ = fetch([c["ticker"]], xd - timedelta(days=5))
         if xd in px:
             c["exit"] = px[xd]
@@ -718,7 +733,12 @@ def action_label(live_all):
 
 
 def _price(cents):
-    return f"${cents / 100:.2f}"
+    """Dollars with the quarter-cent fraction the board quotes, as one word:
+    497.5 -> $4.97½. Rounding a half cent with :.2f gave $4.97 for 497.5 and
+    $6.92 for 691.5 (binary floats), two answers to the same rule."""
+    q = int(round(cents * 4))
+    whole, frac = divmod(q, 4)
+    return f"${whole // 100}.{whole % 100:02d}" + ("", "\u00bc", "\u00bd", "\u00be")[frac]
 
 
 def action_text(latest, live_all, bt_all=None):
@@ -831,10 +851,21 @@ def cmd_live():
     deep = load_json(DEEP_PATH)
     if not deep:
         raise SystemExit("data/cot-deep.json missing")
+    # Yahoo's daily bar takes the evening session (grains reopen at 7 PM CT)
+    # into the same date, so after 6:55 PM CT today's "close" is no longer the
+    # day's close. Found 2026-10-05: an 8:34 PM run entered corn at 496.50
+    # against a 497.50 close. After that time no call is made and nothing
+    # exiting today is graded; the next run does it.
+    try:
+        from zoneinfo import ZoneInfo
+        _now = datetime.now(ZoneInfo("America/Chicago"))
+        late = (_now.hour, _now.minute) >= (18, 55)
+    except Exception:  # noqa: BLE001
+        late = False
     state = load_json(OUT_PATH, {}) or {}
     calls = state.get("calls", [])
     skipped = state.get("skipped", [])
-    grade_open(calls, today)
+    grade_open(calls, today, late=late)
     have = {c["id"] for c in calls}
     seen = {(s.get("crop"), s.get("report")) for s in skipped}
     start = date.fromisoformat(LIVE_START)
@@ -842,6 +873,8 @@ def cmd_live():
         print(f"{today}: before the live start ({LIVE_START}); no calls made")
     elif not CC.is_trading_day(today):
         print(f"{today}: not a trading day; no calls made")
+    elif late:
+        print(f"{today}: after 6:55 PM CT, the daily bar now holds evening trades; no calls made this run")
     else:
         for crop in CROPS:
             b = deep["commodities"].get(crop["key"]) or {}
@@ -1053,7 +1086,17 @@ def selftest():
     r = record([{"crop": "corn", "made": f"2026-01-0{i}", "exit_day": f"2026-02-0{i}", "outcome": "hit",
                  "entry": 100.0, "exit": 101.0} for i in range(1, 4)])
     ck("record counts", (r["graded"], r["hits"], r["hit_rate"], r["windows"]), (3, 3, 100.0, 0))
-    ck("record offset 0 takes the first call only", (r["by_offset"][0]["calls"], r["by_offset"][0]["windows"]), (1, 1))
+    ck("three overlapping calls in one week: one group holds them, its chain takes one",
+       sorted((o["calls"], o["windows"]) for o in r["by_offset"]), [(0, 0), (0, 0), (0, 0), (1, 1)])
+    # Four disjoint groups by report week mod 4. Weekly calls with a 4-week
+    # window, with a 5-week gap (a skipped month) in the middle: every call
+    # lands in exactly one group, and the groups do not re-synchronise.
+    wk = [date(2026, 1, 6) + timedelta(weeks=i) for i in list(range(0, 8)) + list(range(13, 21))]
+    gc = [{"crop": "corn", "report": d.isoformat(), "made": (d + timedelta(days=6)).isoformat(),
+           "exit_day": (d + timedelta(days=34)).isoformat(), "outcome": "hit", "entry": 1.0, "exit": 2.0} for d in wk]
+    rg = record(gc)
+    ck("16 weekly calls split 4/4/4/4 across week groups, gap or not", [o["calls"] for o in rg["by_offset"]], [4, 4, 4, 4])
+    ck("every call is in exactly one group", sum(o["calls"] for o in rg["by_offset"]), len(gc))
     ck("3 graded calls fail the gate", r["gate_ok"], False)
     ck("verdict below the gate", verdict(r, 0.0, 1.0), "not_enough")
     ck("baselines from entry and exit", (r["rose"], r["fell"], r["rose_rate"]), (3, 0, 100.0))
@@ -1069,6 +1112,9 @@ def selftest():
                        "by_offset": [{"rate": 50.4}, {"rate": 46.9}, {"rate": 46.6}, {"rate": 44.1}]})
     ck("verdict text", vt, "No better than a coin flip; below half in 4 of 5 ways of counting, "
                            "and worse than always saying down.")
+
+    ck("price keeps the quarter cent", [_price(497.5), _price(691.5), _price(742.25), _price(1281.0)],
+       ["$4.97\u00bd", "$6.91\u00bd", "$7.42\u00bc", "$12.81"])
 
     # NO LOOK-AHEAD. Build a synthetic deep file, take the backtest's decision
     # at row 170, then rewrite every row after the decision's own report
@@ -1176,7 +1222,7 @@ def selftest():
                      {"crop": "beans", "made": "2026-10-05", "direction": "down", "entry": 1020.5}],
                     {"gate_ok": False, "graded": 0, "hits": 0},
                     {"gate_ok": True, "verdict": "coin_flip"})
-    ck("action text", t, "Bot call, Oct 5 close, 4 weeks out: corn $4.97 up, soybeans $10.21 down."
+    ck("action text", t, "Bot call, Oct 5 close, 4 weeks out: corn $4.97 up, soybeans $10.20\u00bd down."
                          " Backtest: no edge.")
     ck("action text has no percent sign", "%" in t, False)
     # The briefing caps The Action at 25 words (briefing_cut.CAP_ACTION). The
@@ -1184,8 +1230,8 @@ def selftest():
     worst = action_text([{"crop": c["key"], "made": "2026-12-25", "direction": "down", "entry": 1234.5} for c in CROPS],
                         {"gate_ok": True, "verdict": "coin_flip"}, {"gate_ok": True, "verdict": "coin_flip"})
     ck("longest action text fits 25 words", len(worst.split()) <= 25, True)
-    ck("longest action text", worst, "Bot call, Dec 25 close, 4 weeks out: corn $12.35 down, soybeans $12.35 down,"
-                                     " Chicago wheat $12.35 down, KC wheat $12.35 down. Live: no edge.")
+    ck("longest action text", worst, "Bot call, Dec 25 close, 4 weeks out: corn $12.34\u00bd down, soybeans $12.34\u00bd down,"
+                                     " Chicago wheat $12.34\u00bd down, KC wheat $12.34\u00bd down. Live: no edge.")
     ck("label is BOT CALL until the live record holds up", action_label({"verdict": "coin_flip"}), "BOT CALL")
     ck("label is THE ACTION once it holds up", action_label({"verdict": "held_up"}), "THE ACTION")
 
