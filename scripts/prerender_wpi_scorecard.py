@@ -757,12 +757,19 @@ def cot_summary(d):
         if not isinstance(c, dict) or c.get("net") is None:
             continue
         net, prev = c["net"], c.get("prev")
-        side = "net long" if net >= 0 else "net short"
+        # The pipeline's side (fetch_cot.side_of), so this crawler text and the
+        # page's cards cannot disagree about a position inside the flat band.
+        sd = c.get("side") or ("long" if net >= 0 else "short")
         chg = ""
         if prev is not None:
             delta = net - prev
             chg = f', {"+" if delta >= 0 else "−"}{abs(delta):,} on the week'
-        rows.append(f'<b>{lbl}</b> funds {side} {abs(net):,} contracts{chg}')
+        if sd == "flat":
+            side_txt = (f"funds near flat (net {'long' if net >= 0 else 'short'} {abs(net):,} "
+                        f"contracts, under {d.get('flat_oi_pct', 2.0)}% of open interest)")
+        else:
+            side_txt = f"funds net {sd} {abs(net):,} contracts"
+        rows.append(f'<b>{lbl}</b> {side_txt}{chg}')
     if not rows:
         return ""
     return (f'Managed-money positioning as of the <b>{esc(d.get("report_date", ""))}</b> CFTC report: '

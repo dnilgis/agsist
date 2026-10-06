@@ -134,7 +134,9 @@ def seo_cot(c):
     if not corn or corn.get("net") is None:
         return None
     net = int(corn["net"])
-    side = _cot_side(net)
+    # The pipeline's side (fetch_cot.side_of): "flat" when |net| is under
+    # flat_oi_pct of open interest -- the same band the page's cards use.
+    side = corn.get("side") or _cot_side(net)
     k = abs(net) / 1000.0
     kk = f"{k:,.0f}k" if k >= 10 else f"{k:,.1f}k"
     rpt = d.get("report_date") or ""
@@ -145,12 +147,18 @@ def seo_cot(c):
         if delta:
             move = (f" Funds {'added' if (delta > 0) == (net >= 0) else 'cut'} "
                     f"{abs(delta):,} contracts week over week.")
-    head = (f"Managed money is net {side} {abs(net):,} corn contracts as of "
-            f"{rpt}.")
+    if side == "flat":
+        head = (f"Managed money is near flat in corn (net {_cot_side(net)} {abs(net):,} "
+                f"contracts, under {d.get('flat_oi_pct', 2.0)}% of open interest) as of {rpt}.")
+    else:
+        head = (f"Managed money is net {side} {abs(net):,} corn contracts as of "
+                f"{rpt}.")
     tail = " Weekly CFTC ag positioning, 11 commodities."
     desc = head + move + tail
     if len(desc) > DESC_MAX:          # the move clause is the optional one
         desc = head + tail
+    if side == "flat":
+        return (f"Managed Money Is Near Flat In Corn — CFTC COT{SUFFIX}", desc)
     return (f"Managed Money Is Net {side.title()} Corn {kk} — CFTC COT{SUFFIX}", desc)
 
 

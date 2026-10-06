@@ -28,6 +28,13 @@ import zipfile
 from datetime import datetime, timedelta
 import urllib.request
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+# One calendar and one definition of "flat" for the whole page: the release
+# date comes from cot_calendar (holiday weeks release on the Monday; CFTC's
+# 2026 schedule has six), and long/short/flat from cot_analysis.side_of().
+import cot_calendar as CAL                      # noqa: E402
+from cot_analysis import side_of, flat_band, FLAT_OI_PCT   # noqa: E402
+
 OUT_FILE     = "data/cot.json"
 HISTORY_FILE = "data/cot-history.json"
 CFTC_URL     = "https://www.cftc.gov/files/dea/history/fut_disagg_txt_{year}.zip"
@@ -136,6 +143,10 @@ def parse_rows(csv_text: str) -> list[dict]:
         if key is None:
             continue
         try:
+            try:
+                oi_all = int(row.get("Open_Interest_All", "") or 0) or None
+            except ValueError:
+                oi_all = None
             long_pos  = int(row.get("M_Money_Positions_Long_All",  0) or 0)
             short_pos = int(row.get("M_Money_Positions_Short_All", 0) or 0)
             net = long_pos - short_pos
@@ -148,7 +159,7 @@ def parse_rows(csv_text: str) -> list[dict]:
             if dt is None:
                 continue
             rows.append({"commodity": key, "date": date_str, "dt": dt,
-                         "net": net, "long": long_pos, "short": short_pos})
+                         "net": net, "long": long_pos, "short": short_pos, "oi": oi_all})
         except (ValueError, KeyError, TypeError) as e:
             print(f"  Parse error ({key}): {e}", flush=True)
     return rows
@@ -192,9 +203,15 @@ def main():
     print(f"\nLatest report date: {latest_dt.strftime('%Y-%m-%d')}", flush=True)
 
     # ── cot.json — current-week summary ─────────────────────────────────────
+    # When the NEXT report is due, from the calendar rather than "every Friday".
+    # The page's countdown reads this; a holiday week releases on the Monday.
+    nxt_asof = latest_dt.date() + timedelta(weeks=1)
     summary: dict = {
         "updated":     datetime.now().strftime("%Y-%m-%d"),
         "report_date": latest_dt.strftime("%B %d, %Y"),
+        "next_release": CAL.release_date(nxt_asof).isoformat(),
+        "next_release_time_et": "15:30",
+        "flat_oi_pct": FLAT_OI_PCT,
     }
 
     for key in COMMODITIES:
@@ -214,6 +231,10 @@ def main():
             "short": latest["short"],
             "min52": min(nets),
             "max52": max(nets),
+            "oi":    latest.get("oi"),
+            # long / short / flat, flat being under FLAT_OI_PCT of open interest
+            "side":  side_of(latest["net"], latest.get("oi")),
+            "flat_band": flat_band(latest.get("oi")),
         }
         chg = (latest["net"] - prior["net"]) if prior else 0
         print(f"  {key:12s}: net={fmt_k(latest['net']):>8s} chg={fmt_k(chg):>8s} | "

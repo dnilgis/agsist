@@ -84,7 +84,7 @@
   "@context": "https://schema.org",
   "@type": "FAQPage",
   "mainEntity": [
-    { "@type": "Question", "name": "What is the COT Report?", "acceptedAnswer": { "@type": "Answer", "text": "The CFTC publishes Commitments of Traders every Friday at 3:30pm Eastern, counting positions held as of the previous Tuesday. It splits the market into four reportable categories: managed money, producers and merchants, swap dealers and other reportables, plus a small-trader remainder. This page leads with managed money, which is the speculative money, and breaks out all five further down. Every contract has two sides, so the categories net to zero: when funds buy, somebody sold." } },
+    { "@type": "Question", "name": "What is the COT Report?", "acceptedAnswer": { "@type": "Answer", "text": "The CFTC publishes Commitments of Traders usually on Friday at 3:30 pm Eastern (when a federal holiday falls in the report week, on the Monday after), counting positions held as of the previous Tuesday. It splits the market into four reportable categories: managed money, producers and merchants, swap dealers and other reportables, plus a small-trader remainder. This page leads with managed money, which is the speculative money, and breaks out all five further down. Every contract has two sides, so the categories net to zero: when funds buy, somebody sold." } },
     { "@type": "Question", "name": "How to Use It", "acceptedAnswer": { "@type": "Answer", "text": "As a measure of who is exposed, not of where price is going. We tested that on the whole record and published the result above. Positioning and price move together in the week they are measured; the relationship with the next four to thirteen weeks is close to zero. What a crowded position does tell you is how much buying or selling could be forced if the market turns, which is a reason to protect unpriced bushels rather than a reason to predict a direction." } },
     { "@type": "Question", "name": "What \"Managed Money\" Means", "acceptedAnswer": { "@type": "Answer", "text": "CTAs, commodity pools and hedge funds. They do not own grain, they trade paper, and their buying and selling moves the futures leg. It does not follow that it moves your basis. Basis is your local cash price minus futures, and it is set by what is happening at your elevator: bushels arriving, space, freight and demand. Fund flow and basis frequently move in opposite directions." } },
     { "@type": "Question", "name": "Where The Position Sits", "acceptedAnswer": { "@type": "Answer", "text": "The bar on each card covers the last year. The sections above rank the same position against the whole record we hold, measured as a share of all open contracts, which is the comparison that survives a market doubling in size. When the card and the section disagree they are answering different questions: one about this year, one about the whole record." } }
@@ -537,7 +537,7 @@ canvas#cot-chart { width: 100%; height: 260px; display: block; }
     <div class="cot-eyebrow">Market Intelligence · Updated Weekly</div>
     <h1 class="cot-page-title">CFTC Commitment of Traders</h1>
     <p class="cot-page-sub">Every week the government publishes what the big speculative funds are betting on corn, beans, wheat, cattle, hogs and milk. These are hedge funds and commodity traders: they trade paper and never own a bushel. This page shows where they sit today, how crowded that is against every week of the same report we hold, and what it does and does not tell you about price.</p>
-  <p class="cot-page-sub" style="margin-top:.55rem"><b>It is not a forecast.</b> We tested that on the full record and published the result below. Crowded positioning tells you how much buying or selling could be forced if the market turns, not which way it turns. Positions are counted on <b>Tuesday</b> and published <b>Friday</b> afternoon, so they are three days old when they land and older every day after &mdash; the figures below carry their own age.</p>
+  <p class="cot-page-sub" style="margin-top:.55rem"><b>It is not a forecast.</b> We tested that on the full record and published the result below. Crowded positioning tells you how much buying or selling could be forced if the market turns, not which way it turns. Positions are counted on <b>Tuesday</b> and published <b>Friday</b> afternoon (the Monday after, in a federal holiday week), so they are at least three days old when they land and older every day after &mdash; the figures below carry their own age.</p>
   </div>
 
   <!-- The Read: single most important positioning signal -->
@@ -568,8 +568,9 @@ canvas#cot-chart { width: 100%; height: 260px; display: block; }
     <p class="cx-sub">Each market placed by how crowded fund positioning is against <b>its own
       record</b>, and by what price has done since. Position is measured as a share of all open
       contracts, so an old reading and a new one mean the same thing in a market that has since
-      changed size. Bottom right is the corner to watch: funds crowded long while price has already
-      turned down. <span id="cx-window"></span></p>
+      changed size. The dashed lines are the 20th and 80th percentiles; a dot is coloured only when the
+      market is crowded (top tenth of its record while net long, bottom tenth while net short). Bottom
+      right is the corner to watch: funds on the high side while price has already turned down. <span id="cx-window"></span></p>
     <p class="cx-stamp" id="cx-stamp"></p>
     <div class="cx-panel" style="margin-bottom:.9rem">
       <h3 class="cx-h4" style="margin-top:0">What moved this week</h3>
@@ -646,10 +647,10 @@ canvas#cot-chart { width: 100%; height: 260px; display: block; }
     <div class="cx-panel cx-method">
       <ol>
         <li><b>Measuring from a price that had not printed yet.</b> Positions are held as of Tuesday.
-          The report comes out Friday at 3:30pm Eastern, after the grains have settled for the week,
-          and later than that when a federal holiday falls in the report week. A study that measures
+          The report usually comes out Friday at 3:30 pm Eastern, after the grains have settled for
+          the week; federal holidays move it to the Monday. A study that measures
           from the Tuesday close gives itself three days of the move it claims to have predicted. Every
-          return here starts at the first close after the report existed.</li>
+          return here starts at the first close after the report existed.<span id="cx-shutdown"></span></li>
         <li><b>Reading a contract roll as a price move.</b> A continuous front-month chart steps by the
           whole spread when the front month changes. Corn's July to September roll is old crop to new
           crop and is routinely 20 to 50 cents. Those steps are removed here before anything is
@@ -658,9 +659,9 @@ canvas#cot-chart { width: 100%; height: 260px; display: block; }
         <li><b>Counting overlapping weeks as separate evidence.</b> Thirteen-week returns sampled every
           week share twelve weeks of the same price path. Eighty matches can be six actual spells. Each
           read below prints both numbers.</li>
-        <li><b>Searching until something is significant.</b> Around a hundred tests run every week. At
-          the usual threshold, five look real by chance alone. The whole batch is counted and
-          corrected before anything is called a finding.</li>
+        <li><b>Searching until something is significant.</b> Many tests run every week, and at the
+          usual threshold one in twenty looks real by chance alone. The whole batch is counted and
+          corrected before anything is called a finding.<span id="cx-family-count"></span></li>
       </ol>
       <p class="cx-family" id="cx-family"></p>
       <p class="cx-limits" id="cx-limits"></p>
@@ -673,7 +674,7 @@ canvas#cot-chart { width: 100%; height: 260px; display: block; }
     <div class="cot-explainer-grid">
       <div class="cot-explainer-item">
         <h3>What is the COT Report?</h3>
-        <p>The CFTC publishes Commitments of Traders every Friday at 3:30pm Eastern, counting positions held as of the previous Tuesday. It splits the market into four reportable categories: managed money, producers and merchants, swap dealers and other reportables, plus a small-trader remainder. This page leads with managed money, which is the speculative money, and breaks out all five further down. Every contract has two sides, so the categories net to zero: when funds buy, somebody sold.</p>
+        <p>The CFTC publishes Commitments of Traders usually on Friday at 3:30 pm Eastern (when a federal holiday falls in the report week, on the Monday after), counting positions held as of the previous Tuesday. It splits the market into four reportable categories: managed money, producers and merchants, swap dealers and other reportables, plus a small-trader remainder. This page leads with managed money, which is the speculative money, and breaks out all five further down. Every contract has two sides, so the categories net to zero: when funds buy, somebody sold.</p>
       </div>
       <div class="cot-explainer-item">
         <h3>How to Use It</h3>
@@ -706,7 +707,7 @@ canvas#cot-chart { width: 100%; height: 260px; display: block; }
   <!-- Source -->
   <div class="cot-source">
     Source: <a href="https://www.cftc.gov/MarketReports/CommitmentsofTraders/index.htm" target="_blank" rel="noopener">CFTC Commitments of Traders — Disaggregated Futures-Only</a> ·
-    Released every Friday by 3:30 PM ET · Refreshed here after each release ·
+    Released usually Friday 3:30 pm ET; federal holidays move it to Monday · Refreshed here after each release ·
     <a href="/">← AGSIST Dashboard</a>
   </div>
 
@@ -790,7 +791,8 @@ function buildLegend(keys,hasPrice){
   var el=document.getElementById('cot-legend'); if(!el) return;
   var h='';
   keys.forEach(function(k){ h+='<span class="cot-legend-item"><span class="cot-legend-dot" style="background:'+COLORS[k]+'"></span>'+LABELS[k]+'</span>'; });
-  if(hasPrice){ h+='<span class="cot-legend-item" id="legend-price"><span class="cot-legend-dot" style="background:rgba(240,240,235,.9)"></span>Price (right axis)</span>'; }
+  if(hasPrice){ h+='<span class="cot-legend-item" id="legend-price"><span class="cot-legend-dot" style="background:rgba(240,240,235,.9)"></span>'
+    +(hasPrice.adjusted?'Price, roll-adjusted to the current front month (right axis)':'Price, front-month continuous, not roll-adjusted: it jumps at contract changes (right axis)')+'</span>'; }
   h+='<span class="cot-legend-item" style="margin-left:auto;font-size:0.755rem">Contracts (thousands) \u00b7 Source: CFTC</span>';
   el.innerHTML=h;
 }
@@ -817,139 +819,54 @@ function fmtKShort(n) {
 }
 
 
-// ---- Positioning intelligence (computed from 52-week history; no price data) ----
-function pstdev(a){var m=a.reduce(function(x,y){return x+y;},0)/a.length;var v=a.reduce(function(s,y){return s+(y-m)*(y-m);},0)/a.length;return {mean:m,sd:Math.sqrt(v)};}
-function ordinal(n){var s=['th','st','nd','rd'],v=n%100;return n+(s[(v-20)%10]||s[v]||s[0]);}
-function computeInsight(key){
-  if(!historyData||!historyData.history||!historyData.history[key])return null;
-  var arr=historyData.history[key]; if(arr.length<6)return null;
-  var nets=arr.map(function(r){return r.net;});
-  var n=nets.length, last=arr[n-1], prev=arr[n-2], curNet=last.net;
-  // percentile within trailing window
-  var below=0; for(var i=0;i<n-1;i++){ if(nets[i]<curNet) below++; }
-  var pct=Math.round(below/(n-1)*100);
-  // z-score (population)
-  var ms=pstdev(nets); var z=ms.sd?((curNet-ms.mean)/ms.sd):0;
-  // weekly changes
-  var chgs=[]; for(var j=1;j<n;j++) chgs.push(arr[j].net-arr[j-1].net);
-  var curChg=chgs[chgs.length-1];
-  // weeks since an equal-or-larger move in the SAME direction (=> "sharpest in X weeks")
-  var weeksSince=chgs.length;
-  for(var p=chgs.length-2;p>=0;p--){
-    var prior=chgs.length-1-p;
-    if((curChg<0&&chgs[p]<=curChg)||(curChg>0&&chgs[p]>=curChg)){ weeksSince=prior; break; }
-  }
-  // streak of consecutive same-direction weekly moves
-  var streak=1;
-  for(var q=chgs.length-2;q>=0;q--){ if(chgs[q]!==0 && (chgs[q]>0)===(curChg>0)) streak++; else break; }
-  // long/short decomposition of this week's move
-  var dL=last.long-prev.long, dS=last.short-prev.short, driver, driverShort;
-  if(curChg<0){ if(Math.abs(dL)>=Math.abs(dS)){driver='long liquidation';driverShort='longs exiting';} else {driver='new short selling';driverShort='fresh shorts';} }
-  else if(curChg>0){ if(Math.abs(dL)>=Math.abs(dS)){driver='new long buying';driverShort='fresh buying';} else {driver='short covering';driverShort='shorts covering';} }
-  else {driver='no net change';driverShort='flat';}
-  var vel=n>=5?(arr[n-1].net-arr[n-5].net):null;
-  var crowded = pct>=85 ? 'long' : pct<=15 ? 'short' : null;
-  // most-recent net flip (zero cross) and weeks since
-  var flip=null, flipWks=[];
-  for(var f=n-1;f>0;f--){ if(nets[f]!==0&&nets[f-1]!==0&&((nets[f]>0)!==(nets[f-1]>0))){ flipWks.push(n-1-f); if(!flip) flip={date:arr[f].date,dir:(nets[f]>0?'bullish':'bearish'),weeksAgo:(n-1-f)}; } }
-  // 2026-09-25 audit: the lead sentence said "the first sign change in a while" unconditionally. Wheat had
-  // crossed zero two weeks earlier (and six times in the year). The sentence is now built from the crossings.
-  var nFlips=flipWks.length, prevFlipGap=(flipWks.length>1?(flipWks[1]-flipWks[0]):null);
-  // peak / trough within window
-  var mxI=0,mnI=0; for(var g=1;g<n;g++){ if(nets[g]>nets[mxI])mxI=g; if(nets[g]<nets[mnI])mnI=g; }
-  var peak=nets[mxI], trough=nets[mnI], wkSincePeak=(n-1-mxI), wkSinceTrough=(n-1-mnI), offPeak=peak-curNet, offTrough=curNet-trough;
-  return {key:key,net:curNet,chg:curChg,pct:pct,z:z,weeksSince:weeksSince,streak:streak,
-          dL:dL,dS:dS,driver:driver,driverShort:driverShort,vel:vel,crowded:crowded,total:n-1,
-          flip:flip,nFlips:nFlips,prevFlipGap:prevFlipGap,peak:peak,trough:trough,wkSincePeak:wkSincePeak,wkSinceTrough:wkSinceTrough,offPeak:offPeak,offTrough:offTrough};
-}
-function flipNote(x){
-  if(!x||!x.flip)return '';
-  if(x.nFlips<=1)return 'the only time in the last year the net has changed sign';
-  var g=x.prevFlipGap;
-  return 'the '+ordinal(x.nFlips)+' sign change in the last year, and the previous one was '+g+' week'+(g===1?'':'s')+' earlier';
-}
-function fmtSigned(n){var a=Math.abs(n);var s=(n<0?'-':'+');return s+(a>=1000?(a/1000).toFixed(0)+'k':a);}
-
-// ---- Price tier (activates only when records carry a 'price' field) ----
-function computePriceRead(key){
-  /* 2026-09-25 audit: lean hogs' roll steps (-15% to -23% in each Aug and Oct expiry week since 2023) are still in the price series, so its 4- and 13-week price moves were mostly roll. Withheld until the roll rule is fixed. */
-  if(key==='leanhogs')return null;
-  if(!historyData||!historyData.history||!historyData.history[key])return null;
-  var arr=historyData.history[key]; if(arr.length<6)return null;
-  // require price on the recent window
-  var withP=arr.filter(function(r){return typeof r.price==='number'&&isFinite(r.price);});
-  if(withP.length<6)return null;
-  var n=arr.length, W=4; if(n<W+2)return null;
-  var last=arr[n-1], base=arr[n-1-W];
-  if(typeof last.price!=='number'||typeof base.price!=='number')return null;
-  /* MEASURE THE MOVE, NOT THE ROLL. `price` is front-month continuous and is
-     not roll-adjusted -- enrich_cot_prices.py says so in its own docstring --
-     so across a contract change this read the whole old-crop/new-crop spread as
-     a price move. cot_analysis.py now joins the roll-repaired index onto these
-     rows as px_adj. When it is there, it is what gets measured; when it is not,
-     the card still shows a direction but the sentence says the figure is
-     unadjusted rather than passing it off as a clean move. */
-  var adj = (typeof last.px_adj==='number' && typeof base.px_adj==='number' && base.px_adj);
-  var pLast = adj ? last.px_adj : last.price;
-  var pBase = adj ? base.px_adj : base.price;
-  var netDir=last.net>base.net?1:last.net<base.net?-1:0;
-  var priceDir=pLast>pBase?1:pLast<pBase?-1:0;
-  var pPct=pBase?Math.round((pLast-pBase)/Math.abs(pBase)*1000)/10:0;
-  var div=null;
-  if(netDir>0&&priceDir<0)div='bearish';
-  else if(netDir<0&&priceDir>0)div='bullish';
-  else if(netDir>0&&priceDir>0)div='confirmed-up';
-  else if(netDir<0&&priceDir<0)div='confirmed-down';
-  // forward-return analogs: weeks at similar net-percentile, 4wk forward price move (observational)
-  var nets=arr.map(function(r){return r.net;});
-  var curNet=last.net;
-  var curPctl=0,b=0; for(var i=0;i<n-1;i++){ if(nets[i]<curNet)b++; } curPctl=b/(n-1)*100;
-  var aN=0,aDown=0,aUp=0,fwd=[];
-  for(var j=0;j<n-W;j++){
-    if(typeof arr[j].price!=='number'||typeof arr[j+W].price!=='number')continue;
-    var bj=0; for(var m=0;m<n-1;m++){ if(nets[m]<nets[j])bj++; } var pj=bj/(n-1)*100;
-    if(Math.abs(pj-curPctl)<=10){
-      var ch=arr[j+W].price-arr[j].price; fwd.push(ch); aN++;
-      if(ch<0)aDown++; else if(ch>0)aUp++;
-    }
-  }
-  var med=null; if(fwd.length){ var s=fwd.slice().sort(function(x,y){return x-y;}); var mid=Math.floor(s.length/2); med=s.length%2?s[mid]:(s[mid-1]+s[mid])/2; }
-  return {key:key,netDir:netDir,priceDir:priceDir,pPct:pPct,divergence:div,rollAdj:!!adj,
-          analogN:aN,analogDown:aDown,analogUp:aUp,analogMedian:med,curPctl:Math.round(curPctl),window:W};
-}
-/* DESCRIBE THE WINDOW, DO NOT NAME A SIGNAL. These four labels are computed
-   from nothing but the signs of the 4-week net change and the 4-week price
-   change. The same page reports the FORWARD correlation for that relationship
-   at 0.04 for corn, CI -0.085 to 0.146 -- zero -- eight hundred pixels below.
-   "Confirmed uptrend" in green is the most forecast-sounding phrase in the
-   trading vocabulary and the page spends four hundred lines earning the right
-   not to say it. The hit-rate sentence that used to sit beside these was
-   withdrawn on 2026-08-21 for exactly this reason; the coloured verdict it
-   decorated was left behind. */
+// ---- Card statistics and The Read: computed in scripts/cot_analysis.py ----
+/* MOVED TO THE PIPELINE 2026-10-06. Until then these were computed here, from
+   the 52-week history file, on a different convention from every other
+   percentile on the page (strictly below, against the prior 51 weeks, under a
+   "52wk" label, so a window low printed as "0th percentile"), with a "crowded"
+   flag at 85/15 on raw contracts that ignored the sign -- Feeder Cattle, net
+   LONG, was "crowded short" -- and The Read called a 270-contract net dip
+   "liquidation" when longs had risen 1,321. cot_analysis.py now writes
+   commodities[k].card (trailing 52 weekly reports, current week included,
+   percentile = share of weeks at or below) and the chosen Read. This file
+   renders them. They arrive with data/cot-analysis.json, which the second
+   script's vintage guard has already matched to the cards' report and nets;
+   when it has not, nothing here is shown. */
+var CX_A = null;              // the analysis file, once the guard has passed it
+var COT_SUMMARY = null;       // the cot.json payload on screen
+function ordinal(n){n=Math.round(n);var s=['th','st','nd','rd'],v=n%100;return n+(s[(v-20)%10]||s[v]||s[0]);}
+function fmtMagK(n){var a=Math.abs(n);return a>=1000?(a/1000).toFixed(0)+'k':String(a);}
 function divLabel(d){return d==='bearish'?'net rose while price fell':d==='bullish'?'net fell while price rose':d==='confirmed-up'?'net and price both rose':d==='confirmed-down'?'net and price both fell':'';}
-
-
-/* ── ONE WEEK, TWO FILES, NO AGREEMENT CHECK ──────────────────────────────
-   The card numbers come from data/cot.json. The sentence under each card, the
-   gold "The Read" panel and the chart all come from data/cot-history.json.
-   The two are fetched independently and NOTHING compared their vintages, so
-   whenever history lagged the summary -- a slow commit, a failed refresh, a
-   CDN serving one and not the other -- the page printed last week's move in
-   the present tense directly beneath this week's number. Measured: the corn
-   card's own cell said the week's move was 7.8k while the sentence inside the
-   same box said funds cut 19k "this week". Both were presented as this week;
-   one was a week old.
-
-   That is house rule 1. A reader cannot be shown a figure that misstates the
-   data, and "this week" attached to last week's number misstates it.
-
-   So the derived prose now has to earn its place: it renders only when the
-   history it is built from is the same report as the figures above it. When
-   it is not, it is withheld and the page says why. It repairs itself the
-   moment the history file catches up, because the poll re-reads both. */
-
-/* Everything derived from the history file goes through here, so the vintage
-   check cannot be bypassed by adding another caller later. */
+/* The analysis is used only while it is on the report the cards show. A poll
+   that brings a new cot.json before the new analysis would otherwise put last
+   week's sentences under this week's numbers. */
+function cxAligned(){
+  if (!CX_A || !CX_A.report_date || !COT_LOADED) return false;
+  var a = Date.parse(COT_LOADED + ' 12:00:00 GMT'), b = Date.parse(CX_A.report_date + 'T12:00:00Z');
+  return isFinite(a) && isFinite(b) && Math.abs(a - b) <= 86400000;
+}
+function cxCommodity(key){ return (cxAligned() && CX_A.commodities && CX_A.commodities[key]) || null; }
+/* Long, short or flat, as cot_analysis.side_of() decided it: flat is a net
+   under a fixed share of the market's own open interest, not a fixed number of
+   contracts (5,000 was 0.27% of corn and 13.9% of Class III milk). fetch_cot.py
+   writes the same field into cot.json from the same function. Without either,
+   only the sign is known and nothing is called flat. */
+function cotSide(key, d){
+  var c = cxCommodity(key);
+  if (c && c.side) return c.side;
+  if (d && d.side) return d.side;
+  if (!d || typeof d.net !== 'number') return null;
+  return d.net > 0 ? 'long' : d.net < 0 ? 'short' : 'flat';
+}
+window.cotSetAnalysis = function(cx){
+  CX_A = cx || null;
+  if (COT_SUMMARY) {
+    ALL_KEYS.forEach(function(k){ if (COT_SUMMARY[k]) renderCard(k, COT_SUMMARY[k]); });
+    renderVerdict(COT_SUMMARY);
+  }
+  cotRenderDerived();
+  if (historyData) drawChart(activeKey);
+};
 
 /* Blank a card the report did not carry, and say so on its face. */
 function cotMarkCard(key, present) {
@@ -961,9 +878,9 @@ function cotMarkCard(key, present) {
   var card = document.getElementById('card-' + key);
   if (card) card.classList.toggle('cot-card-absent', !present);
   if (present) return;
-  if (net) { net.textContent = '\u2014'; net.className = 'cot-card-net'; }
+  if (net) { net.textContent = '—'; net.className = 'cot-card-net'; }
   if (chg) { chg.textContent = 'not in this report'; chg.className = 'cot-card-chg nc'; }
-  if (vd)  { vd.textContent = '\u2014'; vd.className = 'cot-card-verdict'; }
+  if (vd)  { vd.textContent = '—'; vd.className = 'cot-card-verdict'; }
   if (pill) pill.textContent = '';
   if (ins)  ins.innerHTML = '';
   if (card) card.setAttribute('aria-label',
@@ -971,205 +888,76 @@ function cotMarkCard(key, present) {
 }
 
 function cotRenderDerived() {
-  var aligned = cotVintageAligned();
   var read = document.getElementById('cot-read');
-  var body = document.getElementById('cot-read-body');
-  var tag  = read ? read.querySelector('.cot-read-tag') : null;
-
-  if (aligned) {
-    if (read) read.classList.remove('cot-read-held');
-    if (tag && tag.dataset.orig) { tag.innerHTML = tag.dataset.orig; delete tag.dataset.orig; }
-    ALL_KEYS.forEach(renderInsight);
-    renderTheRead();
+  if (!cxAligned()) {
+    /* No analysis that matches the cards: say nothing rather than last week's
+       sentences under this week's numbers. */
+    ALL_KEYS.forEach(function (k) {
+      var el = document.getElementById('insight-' + k);
+      if (el) el.innerHTML = '';
+      var pl = document.getElementById('pctl-' + k);
+      if (pl) { pl.textContent = ''; pl.className = 'cot-pctl'; }
+    });
+    if (read) read.style.display = 'none';
     return;
   }
-
-  /* Withheld. Clear the sentences rather than leaving the previous week's on
-     screen, and say plainly which report the commentary was built from. */
-  ALL_KEYS.forEach(function (k) {
-    var el = document.getElementById('insight-' + k);
-    if (el) el.innerHTML = '';
-    /* THE PILL IS DERIVED FROM HISTORY TOO. The first version of this guard
-       cleared only the sentence, so all eleven cards kept last week's
-       "74th percentile \u00b7 52wk" sitting under this week's report date --
-       exactly the defect the guard exists to close, left in place by the fix
-       for it. Measured: net and change correct for Aug 18, pill still Aug 11. */
-    var pl = document.getElementById('pctl-' + k);
-    if (pl) { pl.textContent = ''; pl.className = 'cot-pctl'; }
-  });
-  if (read && body) {
-    if (tag && !tag.dataset.orig) { tag.dataset.orig = tag.innerHTML; tag.textContent = 'Holding'; }
-    read.classList.add('cot-read-held');
-    read.style.display = '';
-    body.textContent = cotVintageNote();
-  }
-}
-
-function cotReportISO() {
-  if (!COT_LOADED) return null;
-  var t = Date.parse(COT_LOADED + ' 12:00:00 GMT');
-  if (!isFinite(t)) return null;
-  var d = new Date(t);
-  var m = d.getUTCMonth() + 1, day = d.getUTCDate();
-  return d.getUTCFullYear() + '-' + (m < 10 ? '0' : '') + m + '-' + (day < 10 ? '0' : '') + day;
-}
-function cotHistoryISO() {
-  if (!historyData || !historyData.history) return null;
-  var newest = null;
-  for (var k in historyData.history) {
-    var a = historyData.history[k];
-    if (a && a.length && a[a.length - 1] && a[a.length - 1].date) {
-      var d = a[a.length - 1].date;
-      if (!newest || d > newest) newest = d;
-    }
-  }
-  return newest;
-}
-function cotVintageAligned() {
-  var r = cotReportISO(), h = cotHistoryISO();
-  /* Unknown is not the same as mismatched. If either file has not arrived we
-     are not in a position to accuse anything of being stale. */
-  if (!r || !h) return true;
-  return r === h;
-}
-function cotVintageNote() {
-  var h = cotHistoryISO();
-  var pretty = h;
-  var t = Date.parse(h + 'T12:00:00Z');
-  if (isFinite(t)) pretty = new Date(t).toLocaleDateString('en-US',
-    { month:'long', day:'numeric', timeZone:'UTC' });
-  return 'The written read is still on the ' + pretty + ' report. The figures above are ' +
-         COT_LOADED + ' \u2014 so the commentary is held back rather than shown against the wrong week.';
+  ALL_KEYS.forEach(renderInsight);
+  renderTheRead();
 }
 
 function renderInsight(key){
-  var ins=computeInsight(key); if(!ins)return null;
-  // percentile pill
+  var c = cxCommodity(key), k = c && c.card;
   var pill=document.getElementById('pctl-'+key);
+  var el=document.getElementById('insight-'+key);
+  if(!k){ if(pill) pill.textContent=''; if(el) el.innerHTML=''; return null; }
+  /* SAY WHAT IS BEING RANKED, over how long, and on how many weeks. This pill
+     ranks RAW NET CONTRACTS over the trailing year; the line beneath it ranks
+     net as a SHARE OF OPEN INTEREST over the whole record. Hue is reserved for
+     the line below, which uses the page's one definition of crowded. */
   if(pill){
-    /* SAY WHAT IS BEING RANKED, not just over how long. This pill ranks RAW NET
-       CONTRACTS over 52 weeks; the line directly beneath it ranks net as a SHARE
-       OF OPEN INTEREST since 2010, and the only thing separating them was the
-       window label. That mis-attributes the difference: over the full 870 weeks
-       soybeans is still the 99.9th percentile by contracts, so "vs 2010: high
-       side" is the normalisation talking, not the window.
-
-       And the hue: it was firing here on 52wk contracts and on the line below on
-       870wk share of open -- two thresholds, two quantities, nine pixels apart,
-       landing on opposite lines for Soybeans and Minneapolis Wheat. Hue says one
-       thing on this page. The line below uses the same measure as the banner,
-       the board and the moves table, so it keeps it. */
-    pill.textContent=ordinal(ins.pct)+' percentile \u00b7 52wk, contracts';
+    pill.textContent=ordinal(k.pct)+' percentile · last '+k.weeks+' weeks (n = '+k.weeks+'), contracts';
     pill.className='cot-pctl';
   }
-  // insight sentence
-  var el=document.getElementById('insight-'+key); if(!el)return ins;
-  var dirWord=ins.chg<0?'<span class="dn">cut</span>':ins.chg>0?'<span class="up">added</span>':'held';
-  var sharp='';
-  if(Math.abs(ins.chg)>=3000){
-    if(ins.weeksSince>=ins.total) sharp=' \u2014 the '+(ins.chg<0?'largest weekly exit':'largest weekly build')+' in the past year';
-    else if(ins.weeksSince>=4) sharp=' \u2014 sharpest '+(ins.chg<0?'exit':'build')+' in '+ins.weeksSince+' weeks';
+  if(!el) return k;
+  /* Direction of the NET, said as such. "Funds cut 8k" under a net short that
+     had just grown by 8k read as the opposite of what happened. */
+  var dirWord=k.chg<0?'<span class="dn">fell</span>':k.chg>0?'<span class="up">rose</span>':'was unchanged';
+  var sharp='', driveTxt='';
+  /* A move smaller than this market's typical week (the median absolute weekly
+     change over the same window) gets no adjective. */
+  if(k.significant_move){
+    if(k.largest_in_window) sharp=' \u2014 the largest weekly '+(k.chg<0?'fall':'rise')+' in net in the last '+k.weeks+' weeks';
+    else if(k.weeks_since_larger>=4) sharp=' \u2014 sharpest '+(k.chg<0?'fall':'rise')+' in net in '+k.weeks_since_larger+' weeks';
+    driveTxt=', driven by <b>'+esc(k.driver)+'</b>';
   }
-  var driveTxt = (Math.abs(ins.chg)>=3000)?(', driven by <b>'+ins.driver+'</b>'):'';
-  var flipTxt='';if(ins.flip&&ins.flip.weeksAgo<=6){flipTxt=' Funds flipped <b class="'+(ins.flip.dir==='bullish'?'up':'dn')+'">net '+(ins.flip.dir==='bullish'?'long':'short')+'</b> '+(ins.flip.weeksAgo===0?'this week':ins.flip.weeksAgo+' week'+(ins.flip.weeksAgo>1?'s':'')+' ago')+'.';}el.innerHTML='Funds '+dirWord+' <b>'+fmtSigned(Math.abs(ins.chg)).replace(/^[+]/,'')+'</b> contract'+(Math.abs(ins.chg)===1?'':'s')+' this week'+sharp+driveTxt+'. Net positioning sits at the <b>'+ordinal(ins.pct)+' percentile</b> of the last year.'+flipTxt;
-  var pr=computePriceRead(key);
-  if(pr&&pr.divergence){
-    var dvCls=(pr.divergence==='bearish'||pr.divergence==='confirmed-down')?'dn':(pr.divergence==='bullish'||pr.divergence==='confirmed-up')?'up':'';
-    var arrow=pr.priceDir>0?'\u2191':pr.priceDir<0?'\u2193':'\u2192';
-    var dvTxt=' Over 4 weeks, net is '+(pr.netDir>0?'rising':pr.netDir<0?'falling':'flat')+' while price is '+(pr.priceDir>0?'rising':pr.priceDir<0?'falling':'flat')+' ('+(pr.pPct>=0?'+':'')+pr.pPct+'%) \u2014 <b class="'+dvCls+'">'+divLabel(pr.divergence)+'</b>.';
-    /* WITHDRAWN 2026-08-21. This printed a historical hit rate -- "similar
-       positioning was followed by higher prices 4 weeks later in 6 of 8
-       cases" -- built two ways that the data does not support.
-
-       LOOKAHEAD: each historical week was selected by a percentile computed
-       over the WHOLE 54-week array, including every week AFTER the one being
-       scored. Re-running the same arithmetic causally, using only data that
-       existed at each date, INVERTS the corn card: shipped says higher in 6
-       of 8, causal says LOWER in 6 of 11. Corn is the card every reader sees.
-
-       OVERLAP: the "cases" are consecutive weeks of the same episode with
-       forward windows overlapping three weeks in four. Live cattle's "4 of 4"
-       is one late-2025 rally counted four times. The hedge underneath says
-       "small sample"; it does not say the sample was manufactured.
-
-       A farmer sizing a sale off "higher in 4 of 4 cases" is acting on a
-       strength of evidence the page invented. Everything else on the card --
-       the divergence, the percentile, the price move -- still renders. An
-       honest blank beats a fabricated hit rate. See the plan for how to
-       rebuild it by episode with a causal percentile. */
-    if(false && pr.analogN>=4){var lean=pr.analogDown>pr.analogUp?'lower':pr.analogUp>pr.analogDown?'higher':'mixed';dvTxt+=' <span style="color:var(--text-muted)">In the past year, similar positioning ('+pr.analogN+' weeks) was followed by '+lean+' prices 4 weeks later in '+Math.max(pr.analogDown,pr.analogUp)+' of '+pr.analogN+' cases \u2014 small sample, an observation, not a forecast.</span>';}
-    el.innerHTML+=dvTxt;
+  var f=(k.flips&&k.flips[0])||null, flipTxt='';
+  if(f&&f.weeks_ago<=6){ flipTxt=' Funds flipped <b class="'+(f.to==='long'?'up':'dn')+'">net '+f.to+'</b> '+(f.weeks_ago===0?'this week':f.weeks_ago+' week'+(f.weeks_ago>1?'s':'')+' ago')+'.'; }
+  var html='Net '+dirWord+(k.chg?' <b>'+fmtMagK(k.chg)+'</b> contract'+(Math.abs(k.chg)===1?'':'s'):'')+' this week'+sharp+driveTxt
+    +'. Net positioning sits at the <b>'+ordinal(k.pct)+' percentile</b> of the last '+k.weeks+' weeks, in contracts.'+flipTxt;
+  if(k.divergence){
+    var dvCls=(k.divergence==='bearish'||k.divergence==='confirmed-down')?'dn':'up';
+    var nd=k.chg4>0?'rising':k.chg4<0?'falling':'flat', pd=k.price4>0?'rising':k.price4<0?'falling':'flat';
+    html+=' Over 4 weeks, net is '+nd+' while price is '+pd+' ('+(k.price4>=0?'+':'−')+Math.abs(k.price4).toFixed(1)+'%, roll-repaired) — <b class="'+dvCls+'">'+divLabel(k.divergence)+'</b>.';
   }
-  return ins;
+  /* The withdrawn analog hit rate (2026-08-21) stays withdrawn: it selected
+     weeks with a percentile computed over the whole array, after the fact, and
+     counted overlapping weeks of one episode as separate cases. */
+  el.innerHTML=html;
+  return k;
 }
 function renderTheRead(){
-  var all=ALL_KEYS.map(computeInsight).filter(Boolean);
-  if(!all.length)return;
-  var LBL=LABELS;
-  // score each for "newsworthiness": extreme percentile + sharp move
-  function score(x){var s=0; if(x.crowded)s+=2; s+=Math.min(2,Math.abs(x.z)); if(x.weeksSince>=x.total)s+=3; else if(x.weeksSince>=8)s+=2; else if(x.weeksSince>=4)s+=1; if(Math.abs(x.chg)>=50000)s+=1; if(x.flip&&x.flip.weeksAgo<=2)s+=2; return s;}
-  all.sort(function(a,b){return score(b)-score(a);});
-  var x=all[0]; if(score(x)<2){document.getElementById('cot-read').style.display='none';return;}
-  // price divergence can override when present and meaningful
-  var LBL2=LABELS;
-  // v2 (panel): a fresh flip in a GRAIN market is the read of the week —
-  // it must not be buried under a milk divergence.
-  var gFlip=null;for(var gi=0;gi<all.length;gi++){var gx=all[gi];if(gx.flip&&gx.flip.weeksAgo<=1&&Math.abs(gx.net)>=5000&&['corn','beans','wheat','kcwheat']  /* NOT 'soybeans'/'kc_wheat': CFG defines 'beans' and 'kcwheat', so two of the four literals matched nothing and a KC wheat flip was dropped from The Read entirely */.indexOf(gx.key)>=0){gFlip=gx;break;}}
-  if(gFlip){
-    var x2=gFlip, flG=gFlip.flip;
-    document.getElementById('cot-read-body').innerHTML='<b>'+LABELS[x2.key]+'</b> funds just flipped <b>net '+(flG.dir==='bullish'?'long':'short')+'</b> '+(flG.weeksAgo===0?'this week':'last week')+' \u2014 '+flipNote(x2)+'. Positioning sits at the '+ordinal(x2.pct)+' percentile of the last year. A sign change is a fact about the week, not a signal about the next one.';
-    document.getElementById('cot-read').style.display='block';
-    return;
-  }
-  var divCand=ALL_KEYS.map(computePriceRead).filter(function(p){return p&&(p.divergence==='bearish'||p.divergence==='bullish');});
-  if(divCand.length){
-    var dc=divCand.sort(function(a,b){return Math.abs(b.pPct)-Math.abs(a.pPct);})[0];
-    var ci=computeInsight(dc.key);
-    if(ci&&(ci.crowded||Math.abs(ci.z)>=1)){
-      // v2 (panel): wording was sign-blind — a net-SHORT position with rising
-      // net was called 'adding to a long'. Use the actual net sign.
-      var _net=(ci&&typeof ci.net==='number')?ci.net:((ci&&ci.z>=0)?1:-1);
-      var _posWord=_net>=0?'net-long':'net-short';
-      var msg2='<b>'+LBL2[dc.key]+'</b>: funds are '+(dc.netDir>0?(_net>=0?'still adding to a '+ordinal(ci.pct)+'-percentile long':'covering shorts (still '+_posWord+', '+ordinal(ci.pct)+' percentile)'):'cutting their '+_posWord+' position')+' while price is '+(dc.priceDir>0?'rising':'falling')+' ('+(dc.pPct>=0?'+':'')+dc.pPct+'% over 4 weeks). '+(dc.divergence==='bearish'?'That is a long position price has stopped confirming. It describes the week behind, not the one ahead.':'Funds cutting a position while price rises is liquidation, not conviction: the market is going up without them.');
-      document.getElementById('cot-read-body').innerHTML=msg2;
-      document.getElementById('cot-read').style.display='block';
-      return;
-    }
-  }
-  var msg='';
-  if(x.flip&&x.flip.weeksAgo<=2&&Math.abs(x.net)>=5000){
-    var fl=x.flip;
-    msg='<b>'+LBL[x.key]+'</b> funds just flipped <b>net '+(fl.dir==='bullish'?'long':'short')+'</b> '+(fl.weeksAgo===0?'this week':fl.weeksAgo+' week'+(fl.weeksAgo>1?'s':'')+' ago')+' \u2014 '+flipNote(x)+'. Positioning now sits at the '+ordinal(x.pct)+' percentile of the last year. A sign change is a fact about the week, not a signal about the next one.';
-    document.getElementById('cot-read-body').innerHTML=msg;
-    document.getElementById('cot-read').style.display='block';
-    return;
-  }
-  var crowdTxt = x.crowded==='long' ? 'historically crowded long ('+ordinal(x.pct)+' percentile)' :
-                 x.crowded==='short'? 'historically crowded short ('+ordinal(x.pct)+' percentile)' :
-                 'at the '+ordinal(x.pct)+' percentile';
-  if(x.weeksSince>=x.total && Math.abs(x.chg)>=3000){
-    msg='<b>'+LBL[x.key]+'</b> funds just posted their '+(x.chg<0?'largest weekly exit':'largest weekly build')+' in the past year ('+fmtSigned(x.chg)+'), '+
-        (x.chg<0?'unwinding from':'pushing toward')+' a position that is '+crowdTxt+'. This move was driven by <b>'+x.driver+'</b>'+
-        (x.chg<0 && x.driver==='long liquidation'?' \u2014 existing longs leaving, rather than new shorts arriving.':
-         x.chg>0 && x.driver==='short covering'?' \u2014 existing shorts leaving, rather than new longs arriving.':'.');
-  } else if(x.weeksSince>=4 && Math.abs(x.chg)>=3000){
-    msg='<b>'+LBL[x.key]+'</b> funds '+(x.chg<0?'cut':'added')+' '+fmtSigned(Math.abs(x.chg)).replace(/^[+]/,'')+' contracts this week \u2014 the sharpest '+(x.chg<0?'exit':'build')+' in '+x.weeksSince+' weeks \u2014 from a position '+crowdTxt+', driven by <b>'+x.driver+'</b>.';
-  } else if(x.crowded){
-    msg='<b>'+LBL[x.key]+'</b> managed money is '+crowdTxt+' against the last year. '+
-        'That is a count of who is exposed, not a direction: it says how many contracts could be '+
-        'forced out if the market turns, not that it will.';
-  } else {
-    document.getElementById('cot-read').style.display='none'; return;
-  }
-  document.getElementById('cot-read-body').innerHTML=msg;
-  document.getElementById('cot-read').style.display='block';
+  var box=document.getElementById('cot-read'), body=document.getElementById('cot-read-body');
+  if(!box||!body) return;
+  var r=cxAligned()&&CX_A.read;
+  if(!r||!r.text){ box.style.display='none'; return; }
+  body.innerHTML='<b>'+esc(r.label)+'</b>: '+esc(r.text);
+  box.style.display='block';
 }
-
 function renderCard(key, d) {
   var net = d.net, prev = d.prev, min52 = d.min52, max52 = d.max52;
   var range = (max52 - min52) || 1;
   var isLong = net >= 0;
-  var cls = net > 5000 ? 'long' : net < -5000 ? 'short' : 'flat';
+  var cls = cotSide(key, d) || 'flat';
 
   /* Declared HERE, not thirty lines down inside the chg cell's own if-block.
      `var` hoists, so the accessible name below read it as undefined, isFinite()
@@ -1187,6 +975,10 @@ function renderCard(key, d) {
   if (vEl) {
     vEl.textContent = cls === 'long' ? 'Net Long' : cls === 'short' ? 'Net Short' : 'Flat';
     vEl.className = 'cot-card-verdict ' + cls;
+    var band = (cxCommodity(key) && cxCommodity(key).flat_band) || d.flat_band;
+    var fp = (cxAligned() && CX_A.thresholds && CX_A.thresholds.flat_oi_pct) || d.flat_oi_pct || (COT_SUMMARY && COT_SUMMARY.flat_oi_pct);
+    if (band && fp) vEl.title = 'Flat means a net within ±' + Number(band).toLocaleString('en-US')
+      + ' contracts (' + fp + '% of open interest)';
   }
 
   var chgEl = document.getElementById('chg-' + key);
@@ -1235,9 +1027,10 @@ function renderVerdict(summary) {
   var nLong = 0, nShort = 0, nFlat = 0, nTracked = 0;
   ALL_KEYS.forEach(function(k){
     if (!summary[k] || typeof summary[k].net !== 'number') return;
-    /* 2026-09-25 audit: a net inside +/-5,000 contracts is FLAT on its own card, but was counted as short here
-       (wheat at -3,674), so the headline said 8 long / 3 short over a card that said FLAT. */
-    nTracked++; if (Math.abs(summary[k].net) < 5000) nFlat++; else if (summary[k].net > 0) nLong++; else nShort++;
+    /* Counted with the same cotSide() the cards use, so the headline and the
+       card can never disagree about which markets are flat. */
+    nTracked++; var sd = cotSide(k, summary[k]);
+    if (sd === 'flat') nFlat++; else if (sd === 'long') nLong++; else nShort++;
   });
   var cls = 'mixed';
   var badgeTxt = nTracked ? (nLong + ' long / ' + nShort + ' short' + (nFlat ? ' / ' + nFlat + ' flat' : '')) : '—';
@@ -1246,6 +1039,8 @@ function renderVerdict(summary) {
        + 'net short in ' + nShort + (nFlat ? ', with ' + nFlat + ' too close to zero to call' : '') + '. Which way they lean is a measure of who is exposed, not of '
        + 'where price is going. The section below tests that on the full record.')
     : 'Loading fund positioning data…';
+  var fpct = (cxAligned() && CX_A.thresholds && CX_A.thresholds.flat_oi_pct) || summary.flat_oi_pct;
+  if (nTracked && nFlat && fpct) desc += ' Flat means a net position under ' + fpct + '% of that market\u2019s open interest.';
 
   if (banner) banner.className = 'cot-verdict-banner ' + cls;
   if (badge)  { badge.textContent = badgeTxt; badge.className = 'cvb-badge ' + cls; }
@@ -1439,7 +1234,20 @@ function drawChart(key) {
   var priceMeta=null;
   if(keys.length===1){
     var pk=keys[0], parr=history[pk]||[];
-    var pricedVis=[]; allDates.forEach(function(dt){ for(var z=0;z<parr.length;z++){ if(parr[z].date===dt&&typeof parr[z].price==='number'){pricedVis.push({date:dt,price:parr[z].price}); break;} } });
+    /* NOT THE RAW FRONT MONTH WHEN A REPAIRED SERIES EXISTS. `price` is
+       front-month continuous and steps by the whole spread at every contract
+       change; lean hogs drew -14.6% and -15.8% weekly "moves" that were rolls.
+       cot_analysis.py joins the roll-repaired index (px_adj) onto these rows.
+       When every priced row in view has it, the line is that index scaled so
+       its last point equals the last front-month close (a back-adjusted
+       series); otherwise it is the raw close and the legend says so. A market
+       whose price the pipeline withholds is not drawn at all. */
+    var wh=(cxCommodity(pk)&&cxCommodity(pk).price_withheld_reason)||null;
+    var pricedVis=[]; if(!wh) allDates.forEach(function(dt){ for(var z=0;z<parr.length;z++){ if(parr[z].date===dt&&typeof parr[z].price==='number'){pricedVis.push({date:dt,raw:parr[z].price,adj:(typeof parr[z].px_adj==='number'?parr[z].px_adj:null)}); break;} } });
+    var lastRaw=pricedVis.length?pricedVis[pricedVis.length-1]:null;
+    var useAdj=pricedVis.length>=2&&pricedVis.every(function(r){return r.adj!==null;})&&lastRaw&&lastRaw.adj;
+    var kAdj=useAdj?lastRaw.raw/lastRaw.adj:1;
+    pricedVis.forEach(function(r){ r.price=useAdj?Math.round(r.adj*kAdj*100)/100:r.raw; });
     if(pricedVis.length>=2){
       var pVals=pricedVis.map(function(r){return r.price;});
       var pMin=Math.min.apply(null,pVals), pMax=Math.max.apply(null,pVals);
@@ -1457,12 +1265,13 @@ function drawChart(key) {
       ctx.fillStyle=chartInk('.45'); ctx.font='9px JetBrains Mono, monospace'; ctx.textAlign='left';
       ctx.textAlign='right';
       for(var pt=0;pt<=3;pt++){ var pv=pMin+(pt/3)*pRange; var py=yOfP(pv); ctx.fillText(Math.round(pv).toString(), W-4, py+3); }
-      priceMeta={min:pMin,max:pMax,last:lastP.price,n:pricedVis.length};
+      priceMeta={min:pMin,max:pMax,last:lastP.price,n:pricedVis.length,adjusted:!!useAdj,
+                 byDate:pricedVis.reduce(function(m,r){m[r.date]=r;return m;},{})};
     }
   }
   CHART_GEO = { keys:keys, allDates:allDates, history:history, W:W, H:H,
     PADleft:PAD.left, cW:cW, xOf:xOf, yOf:yOf, colors:COLORS, labels:LABELS, priceMeta:priceMeta };
-  buildLegend(keys, !!priceMeta);
+  buildLegend(keys, priceMeta);
 }
 
 function setActiveTab(key) {
@@ -1505,7 +1314,7 @@ var CHART_GEO = null;
     g.keys.forEach(function(k){
       var arr=g.history[k]||[]; var rec=null;
       for(var j=0;j<arr.length;j++){ if(arr[j].date===date){rec=arr[j];break;} }
-      if(rec){ var line='<span style="color:'+g.colors[k]+'">\u25CF</span> '+g.labels[k]+': '+fmtTip(rec.net); if(g.keys.length===1&&typeof rec.price==='number'){ line+='  \u00b7  px '+rec.price; } rows.push(line); }
+      if(rec){ var line='<span style="color:'+g.colors[k]+'">\u25CF</span> '+g.labels[k]+': '+fmtTip(rec.net); var pm=g.priceMeta&&g.priceMeta.byDate&&g.priceMeta.byDate[date]; if(g.keys.length===1&&pm){ line+='  \u00b7  px '+pm.raw+(g.priceMeta.adjusted?' (adj '+pm.price+')':''); } rows.push(line); }
     });
     tip.innerHTML=rows.join('<br>');
     tip.style.display='block';
@@ -1553,12 +1362,17 @@ function cotApply(data, isPoll) {
      for <key>" and drops the key, and its only exit guard passes if ANY one
      commodity survived. A renamed exchange -- the fetcher's own docstring
      names MGEX -> MIAX as the live risk to spring wheat -- lands here. */
+  COT_SUMMARY = data;
+  /* Decide the report on screen BEFORE painting, so cxAligned() compares the
+     analysis with the report these cards are about to show, not the last one. */
+  var fresh = data.report_date || null;
+  var moved = isPoll && COT_LOADED && fresh && fresh !== COT_LOADED;
+  COT_LOADED = fresh;
   ALL_KEYS.forEach(function(k) {
     if (data[k]) { renderCard(k, data[k]); cotMarkCard(k, true); }
     else         { cotMarkCard(k, false); }
   });
   renderVerdict(data);
-  var fresh = data.report_date || null;
   try {
     document.documentElement.setAttribute('data-cot-report', fresh || '');
     /* The nets the cards are showing, so another block can check that a
@@ -1567,8 +1381,6 @@ function cotApply(data, isPoll) {
     ALL_KEYS.forEach(function(k){ if (data[k] && typeof data[k].net === 'number') _n[k] = data[k].net; });
     document.documentElement.setAttribute('data-cot-nets', JSON.stringify(_n));
   } catch (e) {}
-  var moved = isPoll && COT_LOADED && fresh && fresh !== COT_LOADED;
-  COT_LOADED = fresh;
   if (moved) {
     /* The chart and the written read are built from the history file, which
        has moved too. Re-read it rather than leaving last week's line under
@@ -1589,7 +1401,7 @@ function cotApply(data, isPoll) {
   }
   /* The summary can move without the history file moving, so the agreement
      has to be re-tested from this side too, not only when history loads. */
-  if (historyData) cotRenderDerived();
+  cotRenderDerived();
   cotTick();
 }
 
@@ -1697,6 +1509,15 @@ function cotEtInstant(y, m, d, hh, mm){
    nothing except a message that says we are still checking. */
 function cotNextRelease(loadedReportDate){
   if (!loadedReportDate) return null;
+  /* fetch_cot.py writes next_release from cot_calendar.release_date(): usually
+     the Friday, the Monday when a federal holiday falls Wednesday to Friday
+     (six weeks in CFTC's 2026 schedule). Trusted only when it belongs to the
+     report on screen; otherwise fall back to the plain Friday. */
+  var nr = COT_SUMMARY && COT_SUMMARY.report_date === loadedReportDate && COT_SUMMARY.next_release;
+  if (nr && /^\d{4}-\d{2}-\d{2}$/.test(nr)) {
+    var q = nr.split('-');
+    return { due: cotEtInstant(+q[0], +q[1] - 1, +q[2], 15, 30) };
+  }
   var t = Date.parse(loadedReportDate + ' 12:00:00 GMT');
   if (!isFinite(t)) return null;
   var nextTue = new Date(t + 7 * 86400000);
@@ -1809,7 +1630,7 @@ function cotTick(){
     ? 'this week\u2019s report is due \u2014 checking every couple of minutes'
     : 'this week\u2019s report hasn\u2019t landed here yet (' +
       (lateH < 24 ? lateH + 'h' : Math.floor(lateH / 24) + 'd') +
-      ') \u2014 still checking. Holiday weeks run a day later.');
+      ') \u2014 still checking. When a federal holiday falls Wednesday to Friday, CFTC releases on the Monday.');
 }
 cotTick(); setInterval(cotTick, 60000);
 
@@ -1892,7 +1713,10 @@ cotTick(); setInterval(cotTick, 60000);
   function narrow(){ return typeof window !== 'undefined' && window.innerWidth < 620; }
   /* Hue says one thing on this page: how crowded. Nothing between the tenth
      and ninetieth percentile gets a colour, because most weeks are ordinary. */
-  function tone(p){ return (p === null || p === undefined) ? MID : (p >= 90 ? HOT : p <= 10 ? COLD : MID); }
+  /* Coloured only when cot_analysis.py calls the market crowded: the full-record
+     percentile of net as a share of open interest at or beyond 90/10 AND the
+     position on that side of zero. One definition, computed in the pipeline. */
+  function tone(cr){ return cr === 'long' ? HOT : cr === 'short' ? COLD : MID; }
   /* Five bands, not three. With "ordinary" spanning the 11th to the 89th
      percentile, a market at the 14th -- a deep fund short -- read exactly the
      same as one at the 89th. */
@@ -1914,7 +1738,7 @@ cotTick(); setInterval(cotTick, 60000);
       var c = CX.commodities[key];
       var x = c.pctl && c.pctl.net_oi_all, y = c.momentum13;
       if (x === null || x === undefined || y === null || y === undefined) continue;
-      out.push({ key: key, label: c.label, x: x, y: y, net: c.net });
+      out.push({ key: key, label: c.label, x: x, y: y, net: c.net, crowded: c.crowded || null });
     }
     return out;
   }
@@ -1932,7 +1756,7 @@ cotTick(); setInterval(cotTick, 60000);
       var byX = pts.slice().sort(function(a,b){ return b.x - a.x; });
       list.innerHTML = byX.map(function(p){
         return '<li><button type="button" class="cx-rank" data-key="' + esc(p.key) + '">'
-          + '<span class="cx-rank-dot" style="background:' + tone(p.x) + '"></span>'
+          + '<span class="cx-rank-dot" style="background:' + tone(p.crowded) + '"></span>'
           + '<span class="cx-rank-name">' + esc(p.label) + '</span>'
           + '<span class="cx-rank-pctl">' + crowdWord(p.x) + '</span>'
           + '<span class="cx-rank-mom">' + sgn(p.y) + '% / 13wk</span></button></li>';
@@ -1952,15 +1776,15 @@ cotTick(); setInterval(cotTick, 60000);
       /* Only name a market as stretched if it actually is. Printing the three
          highest under "most crowded long" puts the word over markets this page
          calls ordinary two lines further down. */
-      var hot = b.stretched_long.filter(function(x){ return x.pctl >= 90; });
-      var cold = b.stretched_short.filter(function(x){ return x.pctl <= 10; });
+      var hot = b.stretched_long.filter(function(x){ return x.crowded === 'long'; });
+      var cold = b.stretched_short.filter(function(x){ return x.crowded === 'short'; });
       var name = function(a){ return a.map(function(x){ return esc(x.label) + ' (' + crowdWord(x.pctl) + ')'; }).join(', '); };
       var txt = 'Average positioning across ' + b.n + ' markets sits at the ' + ord(b.mean_pctl)
         + ' percentile of its own record. ';
       if (!hot.length && !cold.length) {
         txt += 'None of them is in the top or bottom tenth of its history this week.';
       } else {
-        txt += b.extremes + ' of them ' + (b.extremes === 1 ? 'is' : 'are') + ' in the top or bottom tenth. ';
+        txt += b.extremes + ' of them ' + (b.extremes === 1 ? 'is' : 'are') + ' crowded: in the top tenth of its record while net long, or the bottom tenth while net short. ';
         if (hot.length) txt += 'Crowded long: ' + name(hot) + '. ';
         if (cold.length) txt += 'Crowded short: ' + name(cold) + '.';
       }
@@ -1970,13 +1794,17 @@ cotTick(); setInterval(cotTick, 60000);
          the picture rather than leaving a hole. */
       var plotted = {};
       pts.forEach(function(q){ plotted[q.key] = 1; });
-      var absent = Object.keys(CX.commodities).filter(function(kk){ return !plotted[kk]; })
-        .map(function(kk){ return esc(CX.commodities[kk].label); });
+      var absent = Object.keys(CX.commodities).filter(function(kk){ return !plotted[kk]; });
       if (absent.length && !narrow()) {
-        txt += ' <b>Not on the plot: ' + absent.join(', ') + '</b> \u2014 we have no price series for '
-          + (absent.length === 1 ? 'it' : 'them') + ', so there is no price change to place '
+        /* The reason is the pipeline's, per market: Minneapolis wheat has no
+           price series, lean hogs has one that is withheld. Saying "we have no
+           price series" for both was wrong about hogs. */
+        txt += ' <b>Not on the plot:</b> ' + absent.map(function(kk){
+            var cc = CX.commodities[kk];
+            return '<b>' + esc(cc.label) + '</b> (' + esc(cc.price_withheld_reason || 'no 13-week price change this week') + ')';
+          }).join('; ') + '. There is no price change to place '
           + (absent.length === 1 ? 'it' : 'them') + ' against. The positioning figures are complete '
-          + 'and ' + (absent.length === 1 ? 'it is' : 'they are') + ' in the table below.';
+          + 'and in the table below.';
       }
       $('cx-board-note').innerHTML = txt;
     }
@@ -2014,15 +1842,15 @@ cotTick(); setInterval(cotTick, 60000);
     if (vt && b) {
       var top = mv.length ? mv[0] : null;
       vt.innerHTML = (b.extremes === 0
-          ? 'No market is in the top or bottom tenth of its own record since '
-            + String(CX.coverage.first_week).slice(0,4) + '. '
-          : b.extremes + ' of ' + b.n + ' markets sit in the top or bottom tenth of their own record '
-            + 'since ' + String(CX.coverage.first_week).slice(0,4) + '. ')
-        + (b.stretched_long.filter(function(x){return x.pctl>=90;}).length
-            ? 'Crowded long: ' + b.stretched_long.filter(function(x){return x.pctl>=90;})
+          ? 'No market is crowded against its own record since '
+            + String(CX.coverage.first_week).slice(0,4) + ' (top tenth while net long, bottom tenth while net short, as a share of open interest). '
+          : b.extremes + ' of ' + b.n + ' markets are crowded against their own record since '
+            + String(CX.coverage.first_week).slice(0,4) + ' (top tenth while net long, bottom tenth while net short, as a share of open interest). ')
+        + (b.stretched_long.filter(function(x){return x.crowded==='long';}).length
+            ? 'Crowded long: ' + b.stretched_long.filter(function(x){return x.crowded==='long';})
                 .map(function(x){ return esc(x.label); }).join(', ') + '. ' : '')
-        + (b.stretched_short.filter(function(x){return x.pctl<=10;}).length
-            ? 'Crowded short: ' + b.stretched_short.filter(function(x){return x.pctl<=10;})
+        + (b.stretched_short.filter(function(x){return x.crowded==='short';}).length
+            ? 'Crowded short: ' + b.stretched_short.filter(function(x){return x.crowded==='short';})
                 .map(function(x){ return esc(x.label); }).join(', ') + '. ' : '')
         + (top ? 'Biggest move: ' + esc(top.label) + ' ' + (top.chg >= 0 ? '+' : '\u2212')
                  + num(Math.abs(top.chg)) + ' contracts, ' + sgn(top.chg_oi, 2) + '% of open interest. ' : '')
@@ -2057,9 +1885,10 @@ cotTick(); setInterval(cotTick, 60000);
 
     s.push('<rect x="'+L+'" y="'+T+'" width="'+cw+'" height="'+ch+'" fill="rgba(128,128,128,.035)" rx="4"/>');
     /* The dividers sit at the 20th and 80th percentile, not the 50th. Half of
-       every market is above its own median by definition; calling that half
-       "crowded" would put the word over markets this page's own text calls
-       ordinary. */
+       every market is above its own median by definition. The corners are
+       "high side" and "low side", NOT "crowded": crowded is 90/10 with the
+       sign agreeing, the one definition every sentence on this page uses, and
+       it is carried by the dot colour. */
     [20, 80].forEach(function(v){
       s.push('<line class="cx-axis" x1="'+X(v)+'" y1="'+T+'" x2="'+X(v)+'" y2="'+(T+ch)+'" stroke-dasharray="3 4"/>');
     });
@@ -2074,10 +1903,10 @@ cotTick(); setInterval(cotTick, 60000);
     s.push('<text class="cx-axlab" x="'+(L+cw/2)+'" y="'+(H-14)+'" text-anchor="middle">Fund positioning, percentile of its own record since '+String(CX.coverage.first_week).slice(0,4)+' (share of open contracts)</text>');
     s.push('<text class="cx-axlab" transform="translate(11,'+(T+ch/2)+') rotate(-90)" text-anchor="middle">Price, 13 weeks</text>');
 
-    s.push('<text class="cx-quad" x="'+(L+cw-6)+'" y="'+(T+13)+'" text-anchor="end">Crowded long, price confirming</text>');
-    s.push('<text class="cx-quad" x="'+(L+cw-6)+'" y="'+(T+ch-6)+'" text-anchor="end">Crowded long, price falling</text>');
-    s.push('<text class="cx-quad" x="'+(L+6)+'" y="'+(T+13)+'">Crowded short, price turning up</text>');
-    s.push('<text class="cx-quad" x="'+(L+6)+'" y="'+(T+ch-6)+'">Crowded short, price still falling</text>');
+    s.push('<text class="cx-quad" x="'+(L+cw-6)+'" y="'+(T+13)+'" text-anchor="end">High side, price rising</text>');
+    s.push('<text class="cx-quad" x="'+(L+cw-6)+'" y="'+(T+ch-6)+'" text-anchor="end">High side, price falling</text>');
+    s.push('<text class="cx-quad" x="'+(L+6)+'" y="'+(T+13)+'">Low side, price rising</text>');
+    s.push('<text class="cx-quad" x="'+(L+6)+'" y="'+(T+ch-6)+'">Low side, price falling</text>');
     s.push('<text class="cx-quad" x="'+((X(20)+X(80))/2)+'" y="'+(T+ch/2-2)+'" text-anchor="middle" opacity=".5">Ordinary</text>');
 
     /* Every dot is named on the plot, so identity never depends on colour.
@@ -2091,10 +1920,10 @@ cotTick(); setInterval(cotTick, 60000);
        extremes are. */
     var placed = pts.map(function(q){ return [X(q.x)-8, Y(q.y)-8, X(q.x)+8, Y(q.y)+8]; });
     var QW = 5.1;
-    [['Crowded long, price confirming', L+cw-6, T+13, 'end'],
-     ['Crowded long, price rolling over', L+cw-6, T+ch-6, 'end'],
-     ['Crowded short, price turning up', L+6, T+13, 'start'],
-     ['Crowded short, price still falling', L+6, T+ch-6, 'start'],
+    [['High side, price rising', L+cw-6, T+13, 'end'],
+     ['High side, price falling', L+cw-6, T+ch-6, 'end'],
+     ['Low side, price rising', L+6, T+13, 'start'],
+     ['Low side, price falling', L+6, T+ch-6, 'start'],
      ['Ordinary', (X(20)+X(80))/2, T+ch/2-2, 'middle']].forEach(function(q){
       var w = q[0].length * QW;
       var x0 = q[3] === 'end' ? q[1] - w : q[3] === 'middle' ? q[1] - w/2 : q[1];
@@ -2125,7 +1954,7 @@ cotTick(); setInterval(cotTick, 60000);
         + (p.y>=0?'up ':'down ') + Math.abs(p.y).toFixed(1) + ' percent over 13 weeks. Opens this market below.">'
         + (Math.abs(ty - (py + 3.6)) > 7
             ? '<line x1="'+(right?px+4:px-4).toFixed(1)+'" y1="'+py.toFixed(1)+'" x2="'+lx.toFixed(1)+'" y2="'+(ty-3.4).toFixed(1)+'" stroke="var(--border)" stroke-width="1"/>' : '')
-        + '<circle cx="'+px.toFixed(1)+'" cy="'+py.toFixed(1)+'" r="6.5" fill="'+tone(p.x)+'"/>'
+        + '<circle cx="'+px.toFixed(1)+'" cy="'+py.toFixed(1)+'" r="6.5" fill="'+tone(p.crowded)+'"/>'
         + '<text x="'+lx.toFixed(1)+'" y="'+ty.toFixed(1)+'" text-anchor="'+(right?'start':'end')+'">'
         + esc(p.label) + '</text></g>');
     });
@@ -2160,10 +1989,15 @@ cotTick(); setInterval(cotTick, 60000);
       return band(mid(los), mid(his));
     };
     var o = [];
+    /* n beside every number: each tile is the median of n_markets markets,
+       each market's correlation on the stated range of weeks. */
+    var nw = p.n_weeks || {};
+    var nTxt = function(f){ var r = nw[f]; if (!r) return '';
+      return ' Median of ' + p.n_markets + ' markets, ' + (r[0] === r[1] ? num(r[0]) : num(r[0]) + '\u2013' + num(r[1])) + ' weeks each.'; };
     o.push('<div class="cx-three">'
-      + tile(sw, 'Fund buying against price, the same four weeks', med('same_week'))
-      + tile(fw, 'Fund buying against the next eight weeks', med('forward'))
-      + tile(lv, 'How stretched they already are, against the next thirteen weeks', med('level'))
+      + tile(sw, 'Fund buying against price, the same four weeks.' + nTxt('same_week_n'), med('same_week'))
+      + tile(fw, 'Fund buying against the next eight weeks.' + nTxt('forward_n'), med('forward'))
+      + tile(lv, 'How stretched they already are, against the next thirteen weeks.' + nTxt('level_n'), med('level'))
       + '</div>');
     o.push('<p class="cx-body">All three use the same measure of positioning, so the only thing that '
       + 'changes between them is the question. Fund flow and price move together in the four weeks '
@@ -2188,18 +2022,29 @@ cotTick(); setInterval(cotTick, 60000);
       var c = CX.commodities[key], cor = c.correlation;
       if (!cor) return;
       var f = cor.forward || {};
-      var cell = function(v){ return '<td>' + (v === null || v === undefined ? '\u2014' : v.toFixed(2)) + '</td>'; };
+      /* A correlation with its n, and a withheld one with its reason: an em
+         dash alone reads as "zero" or "broken", and hogs is neither. */
+      if (c.price_withheld_reason || !(cor.same_week && cor.same_week.r !== null && cor.same_week.r !== undefined)) {
+        rows.push('<tr><td>' + esc(c.label) + '</td><td colspan="5">\u2014 '
+          + esc(c.price_withheld_reason || 'fewer than 20 weeks with both a price and a position') + '</td></tr>');
+        return;
+      }
+      var cell = function(v, n){ return '<td>' + (v === null || v === undefined ? '\u2014' : v.toFixed(2))
+        + (n ? ' <span class="cx-dim">n ' + num(n) + '</span>' : '') + '</td>'; };
       rows.push('<tr><td>' + esc(c.label) + '</td>'
-        + cell(cor.same_week && cor.same_week.r)
-        + cell(f['4'] && f['4'].flow_r) + cell(f['8'] && f['8'].flow_r) + cell(f['13'] && f['13'].flow_r)
-        + cell(f['13'] && f['13'].level_r) + '</tr>');
+        + cell(cor.same_week && cor.same_week.r, cor.same_week && cor.same_week.n)
+        + cell(f['4'] && f['4'].flow_r, f['4'] && f['4'].flow_n) + cell(f['8'] && f['8'].flow_r, f['8'] && f['8'].flow_n)
+        + cell(f['13'] && f['13'].flow_r, f['13'] && f['13'].flow_n)
+        + cell(f['13'] && f['13'].level_r, f['13'] && f['13'].level_n) + '</tr>');
     });
     o.push('<div class="cx-tw"><table class="cx-table">' + rows.join('') + '</tbody></table></div>');
     o.push('<p class="cx-foot"><b>Same 4wk</b> is the four-week change in fund positioning against the '
       + 'price change over those same four weeks. <b>Flow</b> is that same four-week change against the '
       + 'price change over the period named, starting from the first close after the report was '
       + 'published. <b>Stretch</b> is how far positioning sits from normal now, against the next '
-      + 'thirteen weeks. All measured on the roll-repaired series.</p>');
+      + 'thirteen weeks. All measured on the roll-repaired series. <b>n</b> is the number of weeks with '
+      + 'both a position and a price; report weeks delayed by a government shutdown are not used as '
+      + 'starting points.</p>');
     host.innerHTML = o.join('');
   }
 
@@ -2335,30 +2180,33 @@ cotTick(); setInterval(cotTick, 60000);
     o.push('<p class="cx-body">' + esc(c.read) + '</p>');
 
     o.push('<dl class="cx-grid">');
-    var above = c.pctl.net_oi_all === null ? null : 100 - c.pctl.net_oi_all;
-    var crowdHead = c.is_record_high ? 'record long'
-                  : c.is_record_low ? 'record short'
+    var crowdHead = c.is_record_high && c.net > 0 ? 'record long'
+                  : c.is_record_low && c.net < 0 ? 'record short'
                   : crowdWord(c.pctl.net_oi_all);
-    /* Said as a share, "97% of weeks are above this" is true of a big SHORT and
-       reads like the opposite. Say which side, and count toward that side. */
+    /* ONE MEASURE IN THIS PANEL: net as a share of open interest, ranked over
+       the whole record and counted toward the side the position is on. The
+       rank used to be raw contracts ("Rank 1st of 874 by net position") beside
+       a share-of-open-interest percentile, and "No week carries a bigger net
+       long" fired on the second-highest week because 99.886 rounds to 99.9.
+       It now fires only on rank 1, the record itself. */
     var longSide = c.net > 0;
+    var ro = c.rank_oi;
+    var since = c.first_week.slice(0,4);
     var rarer = c.pctl.net_oi_all === null ? null
               : (longSide ? 100 - c.pctl.net_oi_all : c.pctl.net_oi_all);
-    o.push(stat('How crowded', crowdHead,
-      (rarer === null ? '' :
-        (rarer <= 0.1
-          ? 'No week since ' + c.first_week.slice(0,4) + ' carries a bigger net '
-            + (longSide ? 'long' : 'short') + ' than this one. '
-          : 'Funds have been this ' + (longSide ? 'long or longer' : 'short or shorter')
-            /* THE RANK CLAUSE BELOW SAYS "by net position"; this one said
-               nothing, so a reader applied the stated measure to both and read
-               "5% of weeks" (48 weeks, share of open interest) against "Rank 2nd
-               of 870" (contracts) as a contradiction. Both are true. Only one
-               of them said what it was counting. */
-            + ' in ' + (rarer < 1 ? 'under 1' : rarer.toFixed(0)) + '% of weeks, measured as a share of open interest, since '
-            + c.first_week.slice(0,4) + '. ')
-        + 'Rank ' + ord(c.rank.desc) + ' of ' + num(c.rank.of) + ' by net position.'
-        + (c.rank.last_higher ? ' Last higher ' + dt(c.rank.last_higher) + '.' : ''))));
+    var crowdNote = '';
+    if (ro && ro.rank === 1) {
+      crowdNote = 'No week since ' + since + ' carries a bigger net ' + ro.side + ' than this one, measured as a share of open interest ('
+        + num(ro.of) + ' weeks). ';
+    } else if (ro) {
+      crowdNote = 'Rank ' + ord(ro.rank) + ' of ' + num(ro.of) + ' weeks since ' + since + ' by size of net ' + ro.side
+        + ', measured as a share of open interest'
+        + (rarer === null ? '' : ': funds have held a bigger net ' + ro.side + ' in ' + num(ro.rank - 1) + ' of them')
+        + '.' + (ro.last_beyond ? ' Last bigger ' + dt(ro.last_beyond) + '.' : '') + ' ';
+    }
+    if (c.crowded) crowdNote += 'That is crowded: the ' + (c.crowded === 'long' ? 'top' : 'bottom')
+      + ' tenth of the record on the side the position is on.';
+    o.push(stat('How crowded', crowdHead, crowdNote));
     o.push(stat('Which way, and by how much', num(c.net),
       'contracts net ' + (c.net > 0 ? 'long' : 'short') + ', ' + pct(c.net_oi) + ' of all open contracts. '
       + (c.chg >= 0 ? 'Up ' : 'Down ') + num(Math.abs(c.chg)) + ' on the week'
@@ -2427,11 +2275,12 @@ cotTick(); setInterval(cotTick, 60000);
            the wrong book. */
         o.push(stat('Average size per ' + c.crowding.side + ' fund',
           num(Math.round(c.crowding.per_trader)),
-          'contracts each. ' + c.crowding.traders_long + ' funds hold the long side, '
-          + c.crowding.traders_short + ' the short. Measured against this market\u2019s own '
+          'contracts each. ' + trCount(c.crowding.traders_long) + ' hold the long side, '
+          + trCount(c.crowding.traders_short) + ' the short. Measured against this market\u2019s own '
           + 'average book over the last three years, that is the ' + ord(c.crowding.pctl) + ' percentile'
-          + (c.crowding.pctl >= 85 ? ': held by fewer, larger hands than usual.'
-             : c.crowding.pctl <= 15 ? ': unusually spread out.' : ', which is normal.')));
+          /* 90/10, the page's one cut-off for "unusual" positioning. */
+          + (c.crowding.pctl >= 90 ? ': held by fewer, larger hands than usual.'
+             : c.crowding.pctl <= 10 ? ': unusually spread out.' : ', which is normal.')));
       }
       if (c.seasonal) {
         o.push(stat('Vs this week of the year', sgn(c.seasonal.deviation, 1) + ' pts',
@@ -2452,12 +2301,12 @@ cotTick(); setInterval(cotTick, 60000);
        here would send a reader looking for more history that already exists.
        Say the real reason once and stop. */
     if (base && !base.n) {
-      o.push('<div class="cx-withheld"><b>No price series for ' + esc(c.label) + ', so there is '
-        + 'nothing to measure against.</b> The positioning above is CFTC\u2019s and is complete, all '
-        + num(c.weeks_of_history) + ' weeks of it. Everything on this page that needs a price \u2014 '
-        + 'what followed last time, the past weeks that look like today, the correlations \u2014 is '
-        + 'withheld for this market because our futures feed does not carry the contract. It is not '
-        + 'a thin sample; it is no sample.</div>');
+      o.push('<div class="cx-withheld"><b>No price read for ' + esc(c.label) + ': '
+        + esc(c.price_withheld_reason || 'no forward returns this week') + '.</b> The positioning above is '
+        + 'CFTC\u2019s and is complete, all ' + num(c.weeks_of_history) + ' weeks of it. Everything on this '
+        + 'page that needs a price \u2014 what followed last time, the past weeks that look like today, '
+        + 'the correlations \u2014 is withheld for this market for that reason. It is not a thin sample; '
+        + 'it is no sample.</div>');
       o.push('<details class="cx-details"><summary>Show the arithmetic behind this panel</summary>'
         + '<div class="cx-tw"><table class="cx-table"><tbody>'
         + row('Report', 'CFTC Disaggregated, futures only, all contract months')
@@ -2468,7 +2317,7 @@ cotTick(); setInterval(cotTick, 60000);
         + row('Net, long minus short', num(c.net))
         + row('Open interest', num(c.oi))
         + row('Net as a share of open interest', pct(c.net_oi, 2))
-        + row('Price series', 'none available')
+        + row('Price series', esc(c.price_withheld_reason || 'none available'))
         + '</tbody></table></div></details>');
       host.innerHTML = o.join('');
       return;
@@ -2499,9 +2348,9 @@ cotTick(); setInterval(cotTick, 60000);
          percentile. */
       var noPrice = (c.base && c.base['8'] && !c.base['8'].n);
       o.push('<div class="cx-withheld">' + (noPrice
-        ? '<b>No price series for ' + esc(c.label) + '.</b> The positioning figures above are CFTC\u2019s '
-          + 'and are complete. Everything that needs a price \u2014 what followed last time, the analogs, '
-          + 'the correlations \u2014 is withheld because our futures feed does not carry this contract.'
+        ? '<b>No price read for ' + esc(c.label) + ': ' + esc(c.price_withheld_reason || 'no forward returns this week')
+          + '.</b> The positioning figures above are CFTC\u2019s and are complete. Everything that needs a '
+          + 'price \u2014 what followed last time, the analogs, the correlations \u2014 is withheld for that reason.'
         : 'Positioning in ' + esc(c.label) + ' is close enough to normal this week that there is no '
           + 'unusual condition to test. That is the common case, and it is an answer rather than a '
           + 'blank.') + '</div>');
@@ -2564,6 +2413,8 @@ cotTick(); setInterval(cotTick, 60000);
       + row('Net, long minus short', num(c.net))
       + row('Open interest', num(c.oi))
       + row('Net as a share of open interest', pct(c.net_oi, 2))
+      + row('Rank by raw contracts (not size-adjusted)', ord(c.rank.desc) + ' highest of ' + num(c.rank.of) + ' weeks')
+      + row('Report weeks not used as entry points (shutdown, release date unknown)', num(c.shutdown_excluded))
       + row('One contract is', num(c.contract_size) + ' ' + esc(c.unit))
       + row('The net position in ' + esc(c.unit), num(Math.abs(c.net) * c.contract_size)
             + ' ' + esc(c.unit) + ' net ' + (c.net > 0 ? 'long' : 'short'))
@@ -2577,6 +2428,12 @@ cotTick(); setInterval(cotTick, 60000);
     });
   }
 
+  /* CFTC suppresses a trader count under four. The pipeline carries that as
+     null; it is never zero funds holding a position. */
+  function trCount(n){
+    return (n === null || n === undefined) ? 'Fewer than 4 funds (CFTC suppresses the count)'
+      : num(n) + ' fund' + (n === 1 ? '' : 's');
+  }
   function stat(label, value, note){
     return '<div class="cx-stat"><dt>' + esc(label) + '</dt><dd>' + value
       + (note ? '<span class="cx-note">' + note + '</span>' : '') + '</dd></div>';
@@ -2633,6 +2490,10 @@ cotTick(); setInterval(cotTick, 60000);
       var w = $('cx-window');
       if (w) w.textContent = 'The record starts ' + String(CX.coverage.first_week).slice(0,4) + '.';
     }
+    /* The cards, The Read and the chart read their statistics from this same
+       file. Hand it over FIRST: renderVerdict() rewrites the banner sentence,
+       and drawBoard() below must have the last word on it. */
+    if (window.cotSetAnalysis) window.cotSetAnalysis(CX);
     buildPicker();
     drawBoard();
     renderPredictive();
@@ -2669,6 +2530,20 @@ cotTick(); setInterval(cotTick, 60000);
     selectKey(CX_KEY || remembered || (CX.commodities.corn ? 'corn' : Object.keys(CX.commodities)[0]), false);
 
     var f = CX.family;
+    if (f && $('cx-family-count')) {
+      /* From the data: the old static line said "around a hundred tests" and
+         "five look real by chance" beside a live count of 46 and 2.3. */
+      $('cx-family-count').textContent = ' This week ' + f.tests + ' tests produced a result out of '
+        + f.attempted + ' attempted, so about ' + f.expected_by_chance + ' would look real by chance.';
+    }
+    var sx = CX.shutdown_excluded;
+    if (sx && $('cx-shutdown')) {
+      $('cx-shutdown').textContent = sx.rows
+        ? ' That rule removes ' + num(sx.rows) + ' report weeks across ' + sx.markets + ' markets as starting '
+          + 'points: weeks inside a government shutdown (2013, 2018\u201319, 2025), when CFTC published late on '
+          + 'a catch-up schedule and the date each report became public is not known.'
+        : '';
+    }
     if (f && $('cx-family')) {
       $('cx-family').innerHTML = 'This week: <b>' + f.tests + '</b> tests produced a result, out of '
         + f.attempted + ' attempted. Chance alone would make about <b>' + f.expected_by_chance
@@ -2718,11 +2593,16 @@ cotTick(); setInterval(cotTick, 60000);
       var p = c.pctl.net_oi_all;
       el.textContent = (p === null ? 'no long-run ranking'
         : 'vs ' + (c.first_week ? c.first_week.slice(0,4) : 'record') + ', share of open: ' + crowdWord(p));
-      el.style.color = p === null ? 'var(--text-muted)' : (p >= 90 ? HOT : p <= 10 ? COLD : 'var(--text-muted)');
+      el.style.color = c.crowded === 'long' ? HOT : c.crowded === 'short' ? COLD : 'var(--text-muted)';
     }
   }
 
-  function hideAll(){ SECTIONS.forEach(function(id){ var el = $(id); if (el) el.className = 'cx'; }); }
+  function hideAll(){
+    SECTIONS.forEach(function(id){ var el = $(id); if (el) el.className = 'cx'; });
+    /* The cards' sentences and The Read come from this file too; when it is
+       held back they are held back with it. */
+    if (window.cotSetAnalysis) window.cotSetAnalysis(null);
+  }
   /* 2026-09-25 audit: when the vintage guard hid these panels it logged to the console and said nothing on the
      page, while the intro above still said the result was "published below". A weekly page that loses half its
      content should say so. Shown only when the guard fires, not when the file is simply absent. */
