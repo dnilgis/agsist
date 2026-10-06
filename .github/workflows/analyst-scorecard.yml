@@ -2,6 +2,7 @@ name: Build Analyst Scorecard
 
 on:
   push:
+    branches: [main]   # these jobs commit and rebase onto main; on a PR branch that rebase fails (2026-10-06)
     paths:
       - "data/analyst-estimates.json"
       - "scripts/build_analyst_scorecard.py"
