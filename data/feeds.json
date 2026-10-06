@@ -55,19 +55,21 @@
    ],
    "touched_by": [
     "Build Analyst Scorecard",
-    "Fetch COT Data",
     "Generate Daily Briefing",
     "Rebuild Call Scorecard",
     "WASDE watch \u2014 grade the report as it lands",
     "Build What's Priced In"
    ],
-   "cadence": "on demand",
+   "cadence": "2 launches every day at about 6am Central",
    "curated": false,
    "planned": false,
    "external": false,
    "url": null,
-   "crons": [],
-   "max_gap_hours": null,
+   "crons": [
+    "25 11 * * *",
+    "*/5 16-17 9-12 * *"
+   ],
+   "max_gap_hours": 24.0,
    "quiet": null,
    "why_quiet": null
   },
@@ -77,19 +79,19 @@
     "farmland-atlas.html"
    ],
    "written_by": [
-    "farmland-atlas-pages",
     "farmland-atlas"
    ],
    "touched_by": [
-    "farmland-atlas-pages",
     "farmland-atlas"
    ],
-   "cadence": "on demand",
+   "cadence": "1 launch every day at about 4am Central",
    "curated": false,
    "planned": false,
    "external": false,
    "url": null,
-   "crons": [],
+   "crons": [
+    "17 9 12 * *"
+   ],
    "max_gap_hours": null,
    "quiet": null,
    "why_quiet": null
@@ -100,19 +102,19 @@
     "farmland-atlas.html"
    ],
    "written_by": [
-    "farmland-atlas-pages",
     "farmland-atlas"
    ],
    "touched_by": [
-    "farmland-atlas-pages",
     "farmland-atlas"
    ],
-   "cadence": "on demand",
+   "cadence": "1 launch every day at about 4am Central",
    "curated": false,
    "planned": false,
    "external": false,
    "url": null,
-   "crons": [],
+   "crons": [
+    "17 9 12 * *"
+   ],
    "max_gap_hours": null,
    "quiet": null,
    "why_quiet": null
@@ -177,25 +179,18 @@
     "wheat-futures-prices.html"
    ],
    "written_by": [
-    "Build National Basis Map",
-    "Fetch Export Sales",
     "Fetch Grain Bids"
    ],
    "touched_by": [
     "Build National Basis Map",
-    "Fetch Export Sales",
     "Fetch Grain Bids"
    ],
-   "cadence": "5 launches on a fixed schedule at about 7am, 8am, 9am, 7pm Central",
+   "cadence": "1 launch every day at about 7pm Central",
    "curated": false,
    "planned": false,
    "external": false,
    "url": null,
    "crons": [
-    "45 12 * * 4",
-    "45 13 * * 4",
-    "30 14 * * 4",
-    "20 13 * * 5",
     "7,22,37,52 * * * *"
    ],
    "max_gap_hours": 0.2,
@@ -213,13 +208,15 @@
    "touched_by": [
     "cond-yield"
    ],
-   "cadence": "on demand",
+   "cadence": "1 launch on a fixed schedule at about 10pm Central",
    "curated": false,
    "planned": false,
    "external": false,
    "url": null,
-   "crons": [],
-   "max_gap_hours": null,
+   "crons": [
+    "18 3 * * 2"
+   ],
+   "max_gap_hours": 168.0,
    "quiet": null,
    "why_quiet": null
   },
@@ -442,13 +439,11 @@
    ],
    "written_by": [
     "Generate Daily Briefing",
-    "Rebuild Call Scorecard",
-    "Generate RSS Feed"
+    "Regrade Archive Pages"
    ],
    "touched_by": [
     "Generate Daily Briefing",
-    "Rebuild Call Scorecard",
-    "Generate RSS Feed"
+    "Regrade Archive Pages"
    ],
    "cadence": "4 launches on a fixed schedule at about 5am, 6am, 8am, 3pm Central",
    "curated": false,
@@ -525,7 +520,7 @@
     "37 15 28-31 * *",
     "11 14 * * 2"
    ],
-   "max_gap_hours": null,
+   "max_gap_hours": 168.0,
    "quiet": null,
    "why_quiet": null
   },
@@ -614,18 +609,21 @@
     "status.html"
    ],
    "written_by": [
+    "Hail data refresh",
     "MESH radar hail swaths \u2014 daily"
    ],
    "touched_by": [
     "Freshness \u2014 seed static prices, dateModified, sitemap lastmod",
+    "Hail data refresh",
     "MESH radar hail swaths \u2014 daily"
    ],
-   "cadence": "1 launch every day at about 3am Central",
+   "cadence": "2 launches every day at about 1am, 3am Central",
    "curated": false,
    "planned": false,
    "external": false,
    "url": null,
    "crons": [
+    "41 6 1 * *",
     "25 8 * * *"
    ],
    "max_gap_hours": 24.0,
@@ -638,17 +636,20 @@
     "hail-map.html"
    ],
    "written_by": [
+    "Hail data refresh",
     "NCEI hail backfill"
    ],
    "touched_by": [
+    "Hail data refresh",
     "NCEI hail backfill"
    ],
-   "cadence": "1 launch every day at about 3am Central",
+   "cadence": "2 launches every day at about 1am, 3am Central",
    "curated": false,
    "planned": false,
    "external": false,
    "url": null,
    "crons": [
+    "41 6 1 * *",
     "47 8 15 1 *"
    ],
    "max_gap_hours": null,
@@ -677,7 +678,7 @@
     "41 6 1 * *",
     "25 8 * * *"
    ],
-   "max_gap_hours": null,
+   "max_gap_hours": 24.0,
    "quiet": null,
    "why_quiet": null
   },
@@ -723,7 +724,6 @@
    ],
    "touched_by": [
     "Build Analyst Scorecard",
-    "Fetch COT Data",
     "Generate Daily Briefing",
     "Fetch Markets",
     "Rebuild Call Scorecard",
@@ -748,22 +748,17 @@
     "cash-bids.html",
     "status.html"
    ],
-   "written_by": [
-    "Elevator watch emails"
-   ],
+   "written_by": [],
    "touched_by": [
-    "Elevator watch emails",
     "Rebuild Feed Manifest"
    ],
-   "cadence": "1 launch every day at about 7pm Central",
+   "cadence": "published by dnilgis/bids, refreshed with the boards",
    "curated": false,
    "planned": false,
    "external": true,
    "url": "https://dnilgis.github.io/bids/data/merged-index.json",
-   "crons": [
-    "16,46 * * * *"
-   ],
-   "max_gap_hours": 0.5,
+   "crons": [],
+   "max_gap_hours": null,
    "quiet": null,
    "why_quiet": "The elevator bid network. dnilgis/bids reads ~650 boards and publishes this index and its shards to dnilgis.github.io/bids on its own schedule. cash-bids.html fetches it and falls back to the licensed feed alone if it is unreachable, so a stale or missing feed costs coverage and never breaks the page."
   },
@@ -778,12 +773,14 @@
    "touched_by": [
     "Build NASS Series"
    ],
-   "cadence": "on demand",
+   "cadence": "1 launch every day at about 7am Central",
    "curated": false,
    "planned": false,
    "external": false,
    "url": null,
-   "crons": [],
+   "crons": [
+    "45 12 16 * *"
+   ],
    "max_gap_hours": null,
    "quiet": null,
    "why_quiet": null
@@ -799,12 +796,14 @@
    "touched_by": [
     "Build NASS Series"
    ],
-   "cadence": "on demand",
+   "cadence": "1 launch every day at about 7am Central",
    "curated": false,
    "planned": false,
    "external": false,
    "url": null,
-   "crons": [],
+   "crons": [
+    "45 12 16 * *"
+   ],
    "max_gap_hours": null,
    "quiet": null,
    "why_quiet": null
@@ -820,12 +819,14 @@
    "touched_by": [
     "Build NASS Series"
    ],
-   "cadence": "on demand",
+   "cadence": "1 launch every day at about 7am Central",
    "curated": false,
    "planned": false,
    "external": false,
    "url": null,
-   "crons": [],
+   "crons": [
+    "45 12 16 * *"
+   ],
    "max_gap_hours": null,
    "quiet": null,
    "why_quiet": null
@@ -841,12 +842,14 @@
    "touched_by": [
     "Build NASS Series"
    ],
-   "cadence": "on demand",
+   "cadence": "1 launch every day at about 7am Central",
    "curated": false,
    "planned": false,
    "external": false,
    "url": null,
-   "crons": [],
+   "crons": [
+    "45 12 16 * *"
+   ],
    "max_gap_hours": null,
    "quiet": null,
    "why_quiet": null
@@ -862,12 +865,14 @@
    "touched_by": [
     "Build NASS Series"
    ],
-   "cadence": "on demand",
+   "cadence": "1 launch every day at about 7am Central",
    "curated": false,
    "planned": false,
    "external": false,
    "url": null,
-   "crons": [],
+   "crons": [
+    "45 12 16 * *"
+   ],
    "max_gap_hours": null,
    "quiet": null,
    "why_quiet": null
@@ -883,12 +888,14 @@
    "touched_by": [
     "Build NASS Series"
    ],
-   "cadence": "on demand",
+   "cadence": "1 launch every day at about 7am Central",
    "curated": false,
    "planned": false,
    "external": false,
    "url": null,
-   "crons": [],
+   "crons": [
+    "45 12 16 * *"
+   ],
    "max_gap_hours": null,
    "quiet": null,
    "why_quiet": null
@@ -904,12 +911,14 @@
    "touched_by": [
     "Build NASS Series"
    ],
-   "cadence": "on demand",
+   "cadence": "1 launch every day at about 7am Central",
    "curated": false,
    "planned": false,
    "external": false,
    "url": null,
-   "crons": [],
+   "crons": [
+    "45 12 16 * *"
+   ],
    "max_gap_hours": null,
    "quiet": null,
    "why_quiet": null
@@ -925,12 +934,14 @@
    "touched_by": [
     "Build NASS Series"
    ],
-   "cadence": "on demand",
+   "cadence": "1 launch every day at about 7am Central",
    "curated": false,
    "planned": false,
    "external": false,
    "url": null,
-   "crons": [],
+   "crons": [
+    "45 12 16 * *"
+   ],
    "max_gap_hours": null,
    "quiet": null,
    "why_quiet": null
@@ -946,12 +957,14 @@
    "touched_by": [
     "Build NASS Series"
    ],
-   "cadence": "on demand",
+   "cadence": "1 launch every day at about 7am Central",
    "curated": false,
    "planned": false,
    "external": false,
    "url": null,
-   "crons": [],
+   "crons": [
+    "45 12 16 * *"
+   ],
    "max_gap_hours": null,
    "quiet": null,
    "why_quiet": null
@@ -967,12 +980,14 @@
    "touched_by": [
     "Build NASS Series"
    ],
-   "cadence": "on demand",
+   "cadence": "1 launch every day at about 7am Central",
    "curated": false,
    "planned": false,
    "external": false,
    "url": null,
-   "crons": [],
+   "crons": [
+    "45 12 16 * *"
+   ],
    "max_gap_hours": null,
    "quiet": null,
    "why_quiet": null
@@ -990,13 +1005,17 @@
    "touched_by": [
     "The wire"
    ],
-   "cadence": "on demand",
+   "cadence": "3 launches on a fixed schedule at about 5pm Central",
    "curated": false,
    "planned": false,
    "external": false,
    "url": null,
-   "crons": [],
-   "max_gap_hours": null,
+   "crons": [
+    "7,37 12-21 * * 1-5",
+    "22,52 12-21 * * 1-5",
+    "12 22,23,0,11 * * *"
+   ],
+   "max_gap_hours": 11.0,
    "quiet": null,
    "why_quiet": null
   },
@@ -1007,7 +1026,6 @@
     "status.html"
    ],
    "written_by": [
-    "Build Analyst Scorecard",
     "cond-yield"
    ],
    "touched_by": [
@@ -1015,13 +1033,15 @@
     "cond-yield",
     "WASDE watch \u2014 grade the report as it lands"
    ],
-   "cadence": "on demand",
+   "cadence": "1 launch on a fixed schedule at about 10pm Central",
    "curated": false,
    "planned": false,
    "external": false,
    "url": null,
-   "crons": [],
-   "max_gap_hours": null,
+   "crons": [
+    "18 3 * * 2"
+   ],
+   "max_gap_hours": 168.0,
    "quiet": null,
    "why_quiet": null
   },
@@ -1036,7 +1056,8 @@
     "Fetch Outlooks (NOAA + USDM)"
    ],
    "touched_by": [
-    "Fetch Outlooks (NOAA + USDM)"
+    "Fetch Outlooks (NOAA + USDM)",
+    "Rebuild Feed Manifest"
    ],
    "cadence": "1 launch every day at about 7pm Central",
    "curated": false,
@@ -1047,8 +1068,8 @@
     "15 * * * *"
    ],
    "max_gap_hours": 1.0,
-   "quiet": null,
-   "why_quiet": null
+   "quiet": "weekly",
+   "why_quiet": "Checked hourly; it changes when the sources do. The US Drought Monitor map is released Thursday mornings and the NOAA 30- and 90-day outlooks on the third Thursday of the month."
   },
   {
    "path": "data/predictions-backtest.json",
@@ -1085,8 +1106,7 @@
    ],
    "touched_by": [
     "Generate Daily Briefing",
-    "Prediction bot \u2014 call and grade",
-    "Rebuild Archive HTML (one-time)"
+    "Prediction bot \u2014 call and grade"
    ],
    "cadence": "2 launches weekdays at about 5pm, 6pm Central",
    "curated": false,
@@ -1150,7 +1170,6 @@
    ],
    "written_by": [
     "Generate Daily Briefing",
-    "Freshness \u2014 seed static prices, dateModified, sitemap lastmod",
     "Fetch Prices"
    ],
    "touched_by": [
@@ -1160,7 +1179,7 @@
     "Build Price Stats (5-year percentile)",
     "Fetch Prices"
    ],
-   "cadence": "11 launches on a fixed schedule at about 5am, 6am, 8am, 11am Central",
+   "cadence": "9 launches on a fixed schedule at about 5am, 6am, 8am, 11am Central",
    "curated": false,
    "planned": false,
    "external": false,
@@ -1170,8 +1189,6 @@
     "41 11 * * *",
     "23 13 * * *",
     "0 20 * * 5",
-    "35 13 * * 1-5",
-    "35 20 * * 1-5",
     "17 13 * * 1-5",
     "3 16 * * 1-5",
     "40 23 * * 0-4",
@@ -1254,21 +1271,18 @@
     "index.html",
     "index1.html"
    ],
-   "written_by": [
-    "Sponsor reports \u2014 yesterday's numbers, from GA4"
-   ],
+   "written_by": [],
    "touched_by": [
+    "Rebuild Feed Manifest",
     "Sponsor reports \u2014 yesterday's numbers, from GA4"
    ],
-   "cadence": "1 launch every day at about 6am Central",
-   "curated": false,
+   "cadence": "maintained by hand, not on a schedule",
+   "curated": true,
    "planned": false,
    "external": false,
    "url": null,
-   "crons": [
-    "12 11 * * *"
-   ],
-   "max_gap_hours": 24.0,
+   "crons": [],
+   "max_gap_hours": null,
    "quiet": null,
    "why_quiet": null
   },
@@ -1277,21 +1291,18 @@
    "pages": [
     "sponsor-report.html"
    ],
-   "written_by": [
-    "Sponsor reports \u2014 yesterday's numbers, from GA4"
-   ],
+   "written_by": [],
    "touched_by": [
+    "Rebuild Feed Manifest",
     "Sponsor reports \u2014 yesterday's numbers, from GA4"
    ],
-   "cadence": "1 launch every day at about 6am Central",
-   "curated": false,
+   "cadence": "maintained by hand, not on a schedule",
+   "curated": true,
    "planned": false,
    "external": false,
    "url": null,
-   "crons": [
-    "12 11 * * *"
-   ],
-   "max_gap_hours": 24.0,
+   "crons": [],
+   "max_gap_hours": null,
    "quiet": null,
    "why_quiet": null
   },
@@ -1307,12 +1318,14 @@
    "touched_by": [
     "Build State Stats (USDA NASS)"
    ],
-   "cadence": "on demand",
+   "cadence": "1 launch every day at about 7am Central",
    "curated": false,
    "planned": false,
    "external": false,
    "url": null,
-   "crons": [],
+   "crons": [
+    "30 12 15 * *"
+   ],
    "max_gap_hours": null,
    "quiet": null,
    "why_quiet": null
@@ -1328,12 +1341,14 @@
    "touched_by": [
     "storage"
    ],
-   "cadence": "on demand",
+   "cadence": "1 launch every day at about 2am Central",
    "curated": false,
    "planned": false,
    "external": false,
    "url": null,
-   "crons": [],
+   "crons": [
+    "35 7 20 1 *"
+   ],
    "max_gap_hours": null,
    "quiet": null,
    "why_quiet": null
@@ -1376,12 +1391,14 @@
     "farmland-atlas",
     "tenure"
    ],
-   "cadence": "on demand",
+   "cadence": "1 launch every day at about 1am Central",
    "curated": false,
    "planned": false,
    "external": false,
    "url": null,
-   "crons": [],
+   "crons": [
+    "25 6 15 2 *"
+   ],
    "max_gap_hours": null,
    "quiet": null,
    "why_quiet": null
@@ -1464,12 +1481,14 @@
    "touched_by": [
     "WASDE watch \u2014 grade the report as it lands"
    ],
-   "cadence": "on demand",
+   "cadence": "1 launch every day Central",
    "curated": false,
    "planned": false,
    "external": false,
    "url": null,
-   "crons": [],
+   "crons": [
+    "*/5 16-17 9-12 * *"
+   ],
    "max_gap_hours": null,
    "quiet": null,
    "why_quiet": null
@@ -1490,21 +1509,22 @@
    "touched_by": [
     "Build Analyst Scorecard",
     "COT Release Watch",
-    "Fetch COT Data",
     "Generate Daily Briefing",
     "Rebuild Call Scorecard",
     "WASDE watch \u2014 grade the report as it lands",
     "Build What's Priced In"
    ],
-   "cadence": "1 launch weekdays Central",
+   "cadence": "3 launches on a fixed schedule at about 6am Central",
    "curated": false,
    "planned": false,
    "external": false,
    "url": null,
    "crons": [
-    "*/5 19-21 * * 1-5"
+    "*/5 19-21 * * 1-5",
+    "*/5 16-17 9-12 * *",
+    "20 11 * * *"
    ],
-   "max_gap_hours": 69.1,
+   "max_gap_hours": 24.0,
    "quiet": null,
    "why_quiet": null
   },
@@ -1514,20 +1534,21 @@
     "index1.html"
    ],
    "written_by": [
-    "WASDE watch \u2014 grade the report as it lands",
-    "Build What's Priced In"
+    "WASDE watch \u2014 grade the report as it lands"
    ],
    "touched_by": [
     "COT Release Watch",
     "WASDE watch \u2014 grade the report as it lands",
     "Build What's Priced In"
    ],
-   "cadence": "on demand",
+   "cadence": "1 launch every day Central",
    "curated": false,
    "planned": false,
    "external": false,
    "url": null,
-   "crons": [],
+   "crons": [
+    "*/5 16-17 9-12 * *"
+   ],
    "max_gap_hours": null,
    "quiet": null,
    "why_quiet": null
@@ -1541,24 +1562,21 @@
     "status.html"
    ],
    "written_by": [
-    "cond-yield",
-    "bake crop tour",
-    "yield-panel"
+    "cond-yield"
    ],
    "touched_by": [
     "cond-yield",
-    "bake crop tour",
     "yield-panel"
    ],
-   "cadence": "1 launch every day at about 11pm Central",
+   "cadence": "1 launch on a fixed schedule at about 10pm Central",
    "curated": false,
    "planned": false,
    "external": false,
    "url": null,
    "crons": [
-    "24 4 * * *"
+    "18 3 * * 2"
    ],
-   "max_gap_hours": 24.0,
+   "max_gap_hours": 168.0,
    "quiet": null,
    "why_quiet": null
   },

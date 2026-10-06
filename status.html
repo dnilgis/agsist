@@ -267,9 +267,19 @@
         name:'Weather Outlooks', desc:'NOAA temperature & precip outlooks plus the Drought Monitor, refreshed through the day.',
         url:'/data/outlooks/manifest.json', tsKey:'fetched_at',
         check:function(d,age){
-          if(age < 18*3600000) return {state:'ok', label:'Current', age:ago(age)};
-          if(age < 36*3600000) return {state:'warn', label:'Delayed', age:ago(age)};
-          return {state:'down', label:'Stale', age:ago(age)};
+          /* JUDGED ON THE DROUGHT MONITOR'S OWN DATE, NOT fetched_at. 2026-10-06.
+             fetch_outlooks.py checks hourly but keeps fetched_at until a map
+             actually changes (so an unchanged map does not commit), which made
+             this read "Stale" at 36h every week between USDM releases -- 99h on
+             a day every run was green. USDM data is valid Tuesday and released
+             Thursday, so a healthy copy is at most ~9.5 days past data_valid. */
+          var u=d&&d.files&&d.files['usdm_latest.png'];
+          var v=u&&parseTs(u.data_valid);
+          if(v==null) return {state:'warn', label:'No map date', age:ago(age)};
+          var va=Date.now()-v, lbl='map valid '+ago(va);
+          if(va < 10*86400000) return {state:'ok', label:'Current', age:lbl};
+          if(va < 14*86400000) return {state:'warn', label:'Delayed', age:lbl};
+          return {state:'down', label:'Stale', age:lbl};
         }
       },
       {

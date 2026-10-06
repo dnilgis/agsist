@@ -205,7 +205,11 @@ def run_crop(crop, cond, fit_states, nass_dir="data/nass"):
     this_year = date.today().year
     est_now = {}
     for s, pairs in panel.items():
-        ge_now = cond["states"][s].get("ge")
+        # A state NASS has stopped rating for the season is absent, not null:
+        # 2026-09-29 crashed on KeyError 'OK' and the nowcast went 14 days
+        # without a run. Absent and null are the same fact -- no rating this
+        # week -- so the state is left out and `states` says how many remain.
+        ge_now = cond["states"].get(s, {}).get("ge")
         if ge_now is None:
             continue
         est_now[s] = state_estimate(pairs, this_year, float(ge_now))
