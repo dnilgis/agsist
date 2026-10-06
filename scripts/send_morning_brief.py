@@ -246,7 +246,7 @@ def section_action(daily):
     if not a:
         return None
     if daily.get("bot_call"):
-        return (f"THE ACTION\n{a}\nFrom the AGSIST prediction bot, a fixed statistical rule "
+        return (f"{daily['bot_call'].get('label') or 'BOT CALL'}\n{a}\nFrom the AGSIST prediction bot, a fixed statistical rule "
                 f"graded by code. Not advice. Record and method: {SITE}/scorecard")
     return f"THE ACTION\n{a}"
 

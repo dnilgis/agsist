@@ -640,7 +640,7 @@ function renderToday(data,why){
   var taTxt=(data.the_takeaway||'').trim();
   if(actTxt){
     takeaway='<div class="dv3-takeaway dv3-action" role="note" aria-label="Today\u2019s action">'+
-      '<span class="dv3-takeaway-label"><svg class="dv3-ic" aria-hidden="true"><use href="#i-target"/></svg>THE ACTION</span>'+
+      '<span class="dv3-takeaway-label"><svg class="dv3-ic" aria-hidden="true"><use href="#i-target"/></svg>'+((data.bot_call&&data.bot_call.label)||'THE ACTION')+'</span>'+
       '<p class="dv3-takeaway-text">'+mdInline(actTxt)+'</p>'+
       /* 2026-10-03: The Action is the prediction bot's call when bot_call is present. */
       (data.bot_call?'<p class="dv3-action-src">From the AGSIST prediction bot, a fixed statistical rule graded by code. Not advice. <a href="/scorecard">Record and method \u2192</a></p>':'')+

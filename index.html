@@ -2100,7 +2100,8 @@
     /* 2026-10-03: the bot's call names no morning-board price to frame. */
     if(d.bot_call){var _old=document.getElementById('daily-takeaway-frame');if(_old)_old.remove();return;}
     var call=d.todays_call||{}, lp=d.locked_prices||{};
-    var key=call.instrument||'corn';
+    if(!call.instrument){var _o=document.getElementById('daily-takeaway-frame');if(_o)_o.remove();return;}
+    var key=call.instrument;
     var NAMES={corn:'corn',beans:'beans',wheat:'wheat',oats:'oats',cattle:'live cattle',feeders:'feeders',hogs:'hogs',milk:'Class III milk',meal:'soy meal',crude:'crude',natgas:'natural gas'};
     var GRAIN={corn:1,beans:1,wheat:1,oats:1,'corn-dec':1,'beans-nov':1};
     var was=lp[key], live=q[key];
@@ -2805,7 +2806,7 @@ window.hydrateDaily = function(data) {
   // A daily.json from before the cut has no action and shows its takeaway
   // under the old label instead, so the block never goes blank on upload day.
   var takeaway=(data.action||'').trim();
-  var taLabel=takeaway?'THE ACTION':'THE TAKEAWAY';
+  var taLabel=takeaway?((data.bot_call&&data.bot_call.label)||'THE ACTION'):'THE TAKEAWAY';
   if(!takeaway)takeaway=(data.the_takeaway||'').trim();
   var taEl=el('daily-takeaway');
   var taText=el('daily-takeaway-text');

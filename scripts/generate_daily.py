@@ -2685,11 +2685,13 @@ def render_action_block_html(action, bot_call=None):
     if not text:
         return ""
     src = ""
+    label = "THE ACTION"
     if bot_call:
+        label = (bot_call.get("label") or "BOT CALL") if isinstance(bot_call, dict) else "BOT CALL"
         src = ('<p class="dv3-action-src">From the AGSIST prediction bot, a fixed statistical rule '
                'graded by code. Not advice. <a href="/scorecard">Record and method &rarr;</a></p>')
     return (f'<div class="dv3-takeaway dv3-action" role="note" aria-label="Today\'s action">'
-            f'<span class="dv3-takeaway-label">THE ACTION</span>'
+            f'<span class="dv3-takeaway-label">{label}</span>'
             f'<p class="dv3-takeaway-text">{html_esc_preserve_strong(text)}</p>'
             f'{src}'
             f'</div>')
@@ -3960,7 +3962,7 @@ def strip_retired_fields(briefing):
 MODEL_CALL_FIELDS = ("action", "todays_call", "yesterdays_call")
 
 PREDICTIONS_PATH = REPO_ROOT / "data" / "predictions.json"
-BOT_CALL_MAX_AGE_DAYS = 4   # Friday's call still prints on Tuesday morning if Monday's run dropped
+BOT_CALL_MAX_AGE_DAYS = 8   # bot-v1.1 calls once per weekly report; a call holds until the next report's (a holiday week enters a day late)
 
 
 def insert_bot_call(briefing, today=None, path=None):
@@ -3996,15 +3998,17 @@ def insert_bot_call(briefing, today=None, path=None):
     labels = {c.get("key"): c.get("label") for c in d.get("crops") or []}
     live = ((d.get("live") or {}).get("records") or {}).get("all") or {}
     bt = (((d.get("backtest") or {}).get("records") or {}).get("all")) or {}
-    keep = ("graded", "hits", "hit_rate", "spells", "spell_hits", "p_luck", "gate_ok", "verdict")
+    keep = ("graded", "hits", "hit_rate", "windows", "spell_rate_low", "spell_rate_high",
+            "fell_rate", "p_luck", "gate_ok", "verdict", "verdict_text")
     briefing["action"] = text
     briefing["bot_call"] = {
         "date": ld,
         "text": text,
         "rules_version": (d.get("rules") or {}).get("version"),
-        "horizon_sessions": (d.get("rules") or {}).get("horizon_sessions"),
+        "horizon": (d.get("rules") or {}).get("horizon_label"),
+        "label": d.get("action_label") or "BOT CALL",
         "calls": [{"crop": c.get("crop"), "label": labels.get(c.get("crop"), c.get("crop")),
-                   "direction": c.get("direction"), "contract": c.get("contract"),
+                   "direction": c.get("direction"), "contract": c.get("contract"), "entry": c.get("entry"),
                    "exit_day": c.get("exit_day"), "signal": c.get("signal")}
                   for c in latest["calls"]],
         "record": {k: live.get(k) for k in keep},

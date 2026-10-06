@@ -721,7 +721,7 @@ def render_text(daily, site, unsub_url=None, date_display=None, elevators=None):
             L += ["", v]
     take = strip_md(daily.get("action"))
     if take:
-        L += ["", "THE ACTION: " + take]
+        L += ["", ((daily.get("bot_call") or {}).get("label") or "THE ACTION") + ": " + take]
         if daily.get("bot_call"):
             L.append(BOT_SRC_TEXT)
     else:
