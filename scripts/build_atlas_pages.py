@@ -41,6 +41,7 @@ is a port, and the selftest compares against its rules)
 """
 import argparse
 import csv
+import glob
 import datetime
 import hashlib
 import html
@@ -245,6 +246,17 @@ class World:
                 base = f"{base}-{f}"
             used[(st_slug, base)] = f
             self.slug[f] = f"{st_slug}/{base}"
+        # states with a /rent/<state> page: build_state_rent_pages.py writes one
+        # for every data/cash-rent/<ST>.json that carries counties
+        self.rent_states = set()
+        for p_ in glob.glob(os.path.join(root, "data", "cash-rent", "[A-Z][A-Z].json")):
+            try:
+                rd_ = json.load(open(p_, encoding="utf-8"))
+            except Exception:
+                continue
+            if rd_.get("state") in STATE_NAMES and rd_.get("counties"):
+                self.rent_states.add(rd_["state"])
+        self.thin = set()     # county pages with few figures: noindex, out of the sitemap
         self.by_state = {}
         for f, c in self.C.items():
             self.by_state.setdefault(c["state"], []).append(f)
@@ -801,7 +813,7 @@ GA = ("<script>/* agsist-ga-guard 2026-10-01: Google Analytics loads only when t
       "  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');function gaEvent(n,p){try{gtag('event',n,p||{});}catch(e){}}</script>")
 
 
-def head(title, desc, canon, extra_ld=None, robots=None, image=None, alt=None):
+def head(title, desc, canon, extra_ld=None, robots=None, image=None, alt=None, full_title=None):
     image = image or "/img/og/agsist.jpg"
     alt = alt or "AGSIST Farmland Atlas: cash rent, land value and risk for every U.S. county"
     ld = json.dumps({"@context": "https://schema.org", "@graph": extra_ld or []}, ensure_ascii=False, indent=1)
@@ -821,7 +833,7 @@ def head(title, desc, canon, extra_ld=None, robots=None, image=None, alt=None):
   <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
   <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
   <link rel="manifest" href="/manifest.json">
-  <title>{esc(title + ' | AGSIST' if len(title) <= 50 else title)}</title>
+  <title>{esc(full_title or (title + ' | AGSIST' if len(title) <= 50 else title))}</title>
   <meta name="description" content="{esc(desc)}">
   <link rel="canonical" href="{esc(canon)}">
 {('  <meta name="robots" content="%s">' % robots) if robots else ''}
@@ -952,6 +964,62 @@ def lede(W, f, rec, first_year=None):
     return "%s, %s: %s." % (W.label[f], W.C[f]["state"], "; ".join(bits))
 
 
+def is_thin(rec):
+    """The page lede() calls 'few figures': no rent, land value, corn yield or
+    loss ratio. Kept reachable (state table, neighbours), but noindex and out
+    of the sitemap."""
+    return all(rec.get(k) is None for k in ("rent_dry_usd_ac", "rent_irr_usd_ac", "value_usd_ac",
+                                             "corn_yield_median_bu_ac", "loss_ratio_all"))
+
+
+SHORT_UNIT = ((" County", " Co."), (" planning region", " Region"), (" reporting district", " District"),
+              (" City and Borough", " City & Borough"))
+
+
+def county_title(W, f, rec, max_len=60):
+    """'<Label>, <State> Cash Rent <year>: $X/Acre | AGSIST' when a rent is
+    published (non-irrigated, else irrigated, named), with the survey year the
+    figure carries. No rent: a title that does not say rent. Shortened in
+    steps to stay within max_len where it can."""
+    c = W.C[f]
+    st = c["state"]
+    stn = STATE_NAMES.get(st, st)
+    lab = W.label[f]
+    short = lab
+    for a, b in SHORT_UNIT:
+        if short.endswith(a):
+            short = short[: -len(a)] + b
+            break
+    if rec["rent_dry_usd_ac"] is not None:
+        tail = " Cash Rent %s: %s/Acre" % (rec["rent_dry_year"], money(rec["rent_dry_usd_ac"]))
+    elif rec["rent_irr_usd_ac"] is not None:
+        tail = " Irrigated Cash Rent %s: %s/Acre" % (rec["rent_irr_year"], money(rec["rent_irr_usd_ac"]))
+    elif not is_thin(rec):
+        tail = ": Farmland Value and Risk"
+    else:
+        tail = ": Farmland Record"
+    tries = []
+    for l_, s_ in ((lab, stn), (short, stn), (lab, st), (short, st)):
+        t = "%s, %s%s" % (l_, s_, tail)
+        tries += [t + " | AGSIST", t]
+    for t in tries:
+        if len(t) <= max_len:
+            return t
+    return tries[-1]
+
+
+def county_desc(lede_text):
+    """Meta description, 120-160 characters where the record allows: the lede
+    (built only from the record), then words the page prints beside it."""
+    if len(lede_text) >= 120:
+        return lede_text
+    for tail in (" County averages from public records, not an appraisal of any farm.",
+                 " County averages from public records."):
+        if len(lede_text + tail) <= 160:
+            return lede_text + tail
+    return lede_text
+
+
 def county_page(W, f, d, stamp):
     c = W.C[f]
     st = c["state"]
@@ -982,10 +1050,16 @@ def county_page(W, f, d, stamp):
     fl = V.get("flag") if ok(V) else None
     crumb_vis, crumb_ld = crumbs([("AGSIST", "/"), ("Farmland Atlas", "/farmland-atlas"), (stn, f"/{OUT}/{slugify(stn)}/"), (lab, None)])
 
-    title = f"{lab}, {stn}: Farmland Rent, Value and Risk"
+    title = county_title(W, f, rec)
     desc = lede(W, f, rec, get(d, "loss", "first_year") if ok(d.get("loss")) else None)
     if len(desc) > 300:
         desc = desc[:297].rsplit(" ", 1)[0] + "..."
+    meta_desc = county_desc(desc)
+    thin = is_thin(rec)
+    if thin:
+        W.thin.add(f)
+    rent_link = ('<a href="/rent/%s">%s cash rent by county</a>' % (slugify(stn), esc(stn))) if st in W.rent_states else ""
+    act_rent = ("\n  " + rent_link) if rent_link else ""
 
     # ---- key tiles
     def val_sub():
@@ -1041,6 +1115,8 @@ def county_page(W, f, d, stamp):
     S1 += "<h2>Cash rent</h2>" + ch
     if ch:
         S1 += '<p class="note">Dollars per acre, USDA NASS county survey. A break in a line is a year with no published survey; nothing is drawn across it.</p>'
+    if rent_link:
+        S1 += '<p class="note">Every published %s county rate, side by side: %s.</p>' % (esc(stn), rent_link)
     if ok(R):
         if rv:
             S1 += fact("Non-irrigated, %s" % rv["year"], money(rv["value"]) + "/ac")
@@ -1273,7 +1349,7 @@ def county_page(W, f, d, stamp):
 <div class="act">
   <a href="/farmland-atlas#{esc(f)}">Open on the map</a>
   <a href="/farmland-atlas/compare#{esc(f)}">Compare</a>
-  <a href="/farmland-atlas/sheet#{esc(f)}">Printable sheet</a>
+  <a href="/farmland-atlas/sheet#{esc(f)}">Printable sheet</a>{act_rent}
   <button type="button" id="dl">Download CSV</button>
   <button type="button" id="cp">Copy link</button>
 </div>
@@ -1332,7 +1408,8 @@ try{{gaEvent('atlas_county_page',{{fips:rec.fips}});}}catch(e){{}}
                               "v": rec["value_usd_ac"], "vy": rec["value_year"], "vf": bool(rec["value_flag"]),
                               "y": rec["corn_yield_median_bu_ac"], "c": rec["claims_per_100_usd"], "k": ck,
                               "u": "/%s/%s" % (OUT, W.slug[f])}
-    return head(title, desc, url, ld, image="/%s/og/%s.png?v=%s" % (OUT, f, ck),
+    return head(title, meta_desc, url, ld, robots="noindex,follow" if thin else None, full_title=title,
+                image="/%s/og/%s.png?v=%s" % (OUT, f, ck),
                 alt="%s, %s: dry cash rent %s an acre, land and buildings %s, median corn yield %s" % (
                     lab, stn, money(rec["rent_dry_usd_ac"]), "read with care" if rec["value_flag"] else money(rec["value_usd_ac"]),
                     (f1(rec["corn_yield_median_bu_ac"]) + " bu/ac") if rec["corn_yield_median_bu_ac"] is not None else "not published")) + body + FOOT
@@ -1381,15 +1458,20 @@ def state_page(W, st):
         facts += fact(label, fm(m) if m is not None else "—", ("median of %d counties with 10,000+ farm acres%s" % (n, why_)) if m is not None else "too few counties to give a median")
     crumb_vis, crumb_ld = crumbs([("AGSIST", "/"), ("Farmland Atlas", "/farmland-atlas"), ("By state", f"/{OUT}/states/"), (stn, None)])
     smap, smbr = state_map(W, st, recs)
-    title = f"{stn} Farmland by County: Rent and Value"
-    desc = "%s: %d counties, each with USDA cash rent, census land value, corn yield, crop insurance claims and drought weeks. Free, sourced, updated monthly." % (stn, len(fs))
+    title = next((t for t in (f"{stn} Farmland Values by County: Land Value, Yield & Risk",
+                              f"{stn} Farmland Values by County: Value, Yield & Risk",
+                              f"{stn} Farmland Values by County: Yield & Risk") if len(t) <= 60),
+                 f"{stn} Farmland Values by County")
+    desc = "%s: %d counties, each with census land value, USDA cash rent, corn yield, crop insurance claims and drought weeks. Free, sourced, updated monthly." % (stn, len(fs))
+    rent_link = ('<a href="/rent/%s">%s cash rent by county</a>' % (slugify(stn), esc(stn))) if st in W.rent_states else ""
     body = f"""
 <main class="ap">
 {crumb_vis}
 <div class="kick">Farmland Atlas · state</div>
-<h1>{esc(stn)} farmland by county</h1>
+<h1>{esc(stn)} farmland values by county</h1>
 <p class="sub">{esc(desc)} Click a heading to sort.</p>
-<div class="act"><a href="/farmland-atlas#s={esc(st)}">Open {esc(stn)} on the map</a><a href="/{OUT}/data/{st.lower()}.csv" download>Download {esc(st)} CSV</a></div>
+{('<p class="sub">For cash rent, every published county rate and its history: ' + rent_link + '.</p>') if rent_link else ''}
+<div class="act">{rent_link}<a href="/farmland-atlas#s={esc(st)}">Open {esc(stn)} on the map</a><a href="/{OUT}/data/{st.lower()}.csv" download>Download {esc(st)} CSV</a></div>
 <h2>{esc(stn)} at a glance</h2>
 {facts}
 <h2>Map: every county is a link</h2>
@@ -1443,7 +1525,7 @@ var t=document.getElementById('t'),b=t.tBodies[0],dir={{}};
     W.cards["states"][st] = {"n": stn, "cnt": len(fs), "r": smed.get("rent"), "v": smed.get("value"), "y": smed.get("yld"), "c": smed.get("cost"), "k": sk,
                            "rn": smed.get("rent_n"), "rl": smed.get("rent_lo"), "rh": smed.get("rent_hi"), "ry": W.rent_latest if smed.get("rent") is not None else None}
     return head(title, desc, url, ld, image="/%s/og/state-%s.png?v=%s" % (OUT, st.lower(), sk),
-                alt="%s farmland by county: median dry cash rent %s an acre across %d counties" % (stn, money(smed.get("rent")) if smed.get("rent") is not None else "not published", len(fs))) + body + FOOT
+                alt="%s farmland values by county: median dry cash rent %s an acre across %d counties" % (stn, money(smed.get("rent")) if smed.get("rent") is not None else "not published", len(fs))) + body + FOOT
 
 
 def hub_page(W):
@@ -1619,8 +1701,9 @@ def build(root=".", out_root=None, only=None, quiet=False):
         extra = [f"{SITE}/{OUT}/compare"]
         lm = W.built
         by_url = {W.url(f): stamps[f][1] for f in stamps}
+        thin_urls = {W.url(f) for f in W.thin}
         body = "".join("  <url><loc>%s</loc><lastmod>%s</lastmod><changefreq>monthly</changefreq><priority>%s</priority></url>\n" % (
-            u, by_url.get(u, lm), "0.6" if u in by_url else "0.7") for u in urls + extra)
+            u, by_url.get(u, lm), "0.6" if u in by_url else "0.7") for u in urls + extra if u not in thin_urls)
         write(os.path.join(out_root, "sitemap-atlas.xml"),
               '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + body + "</urlset>\n")
     if not quiet:
@@ -1725,7 +1808,20 @@ def selftest():
             pool_ = sorted(c["r"] for f_, c in cj["counties"].items() if c["st"] == "WI" and c["r"] is not None and c["ry"] == cj["rent_latest"]
                            and W.mapped(f_) and W.is_farm(f_))
             check("WI rent low/high are the county extremes", (wi["rl"], wi["rh"], wi["rn"]) == (pool_[0], pool_[-1], len(pool_)))
-        check("sitemap", "<loc>%s/%s/data</loc>" % (SITE, OUT) in open(os.path.join(tmp, "sitemap-atlas.xml"), encoding="utf-8").read())
+        sm = open(os.path.join(tmp, "sitemap-atlas.xml"), encoding="utf-8").read()
+        check("sitemap", "<loc>%s/%s/data</loc>" % (SITE, OUT) in sm)
+        # a page with few figures is noindex and out of the sitemap, still written
+        for f in sorted(W.thin)[:5]:
+            t = open(os.path.join(tmp, W.path(f)), encoding="utf-8").read()
+            check(f + " thin noindex", '<meta name="robots" content="noindex,follow">' in t and "<loc>%s</loc>" % W.url(f) not in sm)
+        # titles never say "County County"; a rent in the title carries its survey year and matches the page
+        for f in list(W.C)[:400]:
+            t = open(os.path.join(tmp, W.path(f)), encoding="utf-8").read()
+            ti = t.split("<title>")[1].split("</title>")[0]
+            check(f + " title unit", not re.search(r"\b(County|Parish|Borough|City|Region) \1\b", ti, re.I))
+            m_ = re.search(r"Cash Rent (\d{4}): (\$[\d,]+)/Acre", html.unescape(ti))
+            check(f + " title rent on page", not m_ or ("cash rent %s an acre (%s)" % (m_.group(2), m_.group(1))) in html.unescape(t))
+            check(f + " no rent word without rent", m_ is not None or "Rent" not in ti)
         # a second build over the first changes no byte: the stamp moves only with content
         before = open(os.path.join(tmp, W.path("19169")), "rb").read()
         build(".", tmp, quiet=True)
