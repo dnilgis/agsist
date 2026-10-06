@@ -211,6 +211,9 @@
       +'</svg>';
   }
 
+  var NEWEST='';
+  function shortDate(iso){ var m=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'], p=String(iso).split('-');
+    return p.length===3?m[+p[1]-1]+' '+(+p[2]):String(iso); }
   function renderTable(){
     var rows=[];
     Object.keys(basis.series).forEach(function(k){
@@ -220,14 +223,23 @@
     });
     rows.sort(function(a,b){ return (a.s.delta==null?9:a.s.delta)-(b.s.delta==null?9:b.s.delta); });
     var dmax=0.1;
-    rows.forEach(function(r){ if(r.s.delta!=null) dmax=Math.max(dmax, Math.abs(r.s.delta)); });
+    rows.forEach(function(r){ if(r.s.delta!=null&&!((Date.parse(NEWEST)-Date.parse(r.s.date))/864e5>14)) dmax=Math.max(dmax, Math.abs(r.s.delta)); });
     var dom=dmax*1.05;
     var h='<tr><th>Region</th><th style="text-align:right">Basis now</th><th style="text-align:right">5-yr normal</th><th>Vs its own 5-yr normal, $/bu &nbsp;<span style="text-transform:none;letter-spacing:0;color:#8a948f">| = normal for this week &middot; <span style="color:#e0685f">\u25a0</span> weaker &middot; <span style="color:#5fc28a">\u25a0</span> stronger &middot; all rows same scale</span></th></tr>';
     rows.forEach(function(r){
       var d=r.s.delta;
-      h+='<tr><td>'+r.mkt+'</td><td class="num">'+fmt$(r.s.latest)+'</td>'
-        +'<td class="num" style="color:#8a948f">'+(r.s.avg5==null?'—':fmt$(r.s.avg5))+'</td>'
-        +'<td>'+spark(r.s.hist, r.s.avg5, dom)+'</td></tr>';
+      /* A ROW IS ONLY "NOW" IF USDA POSTED IT THIS WEEK. SRW Illinois was last
+         posted Sep 11 while the header said week of Sep 25, and it sat in the
+         "Basis now" column with no date. Older than the newest week: say when.
+         More than 14 days older: withhold it, with the reason. */
+      var age=(Date.parse(NEWEST)-Date.parse(r.s.date))/864e5, now;
+      if(!(age>0)) now=fmt$(r.s.latest);
+      else if(age>14) now='\u2014 <span style="color:#8a948f;font-size:12px">no USDA posting since '+shortDate(r.s.date)+'</span>';
+      else now=fmt$(r.s.latest)+' <span style="color:#8a948f;font-size:12px">as of '+shortDate(r.s.date)+'</span>';
+      var n5=r.s.avg5_n;
+      h+='<tr><td>'+r.mkt+'</td><td class="num">'+now+'</td>'
+        +'<td class="num" style="color:#8a948f">'+(r.s.avg5==null?'—':fmt$(r.s.avg5)+(n5!=null?' <span style="font-size:12px">n='+n5+' yrs</span>':''))+'</td>'
+        +'<td>'+(age>14?'':spark(r.s.hist, r.s.avg5, dom))+'</td></tr>';
     });
     $('bs-table').innerHTML = rows.length?h:'<tr><td style="color:#8a948f">No USDA series for this commodity</td></tr>';
   }
@@ -277,8 +289,9 @@
   ]).then(function(res){
     basis=res[0]; journey=res[1];
     if(!basis||!journey){ $('bs-table').innerHTML='<tr><td style="color:#8a948f">Data unavailable — try a refresh</td></tr>'; return; }
-    var anyKey=Object.keys(basis.series)[0];
-    $('bs-fresh').textContent='week of '+(basis.series[anyKey]?basis.series[anyKey].date:'');
+    // the header names the newest week any series reached, not whichever is listed first
+    Object.keys(basis.series).forEach(function(k){ var dt=basis.series[k].date; if(dt&&(!NEWEST||dt>NEWEST)) NEWEST=dt; });
+    $('bs-fresh').textContent='week of '+(NEWEST||'—');
     renderTabs(); renderTable(); renderBarge(); renderWalk();
   });
 })();
