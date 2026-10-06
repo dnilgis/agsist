@@ -38,7 +38,7 @@
   {"@context":"https://schema.org","@graph":[
     {"@type":"SoftwareApplication","name":"Grain Bin Calculator","description":"Free grain bin storage calculator for bushel capacity, moisture shrink, drying cost, and net market value.","url":"https://agsist.com/grain-bin-calculator","applicationCategory":"UtilitiesApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}},
     {"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://agsist.com/"},{"@type":"ListItem","position":2,"name":"Tools","item":"https://agsist.com/tools"},{"@type":"ListItem","position":3,"name":"Grain Bin Calculator","item":"https://agsist.com/grain-bin-calculator"}]},
-    {"@type":"FAQPage","mainEntity":[{"@type": "Question", "name": "How many bushels in a 30-foot bin?", "acceptedAnswer": {"@type": "Answer", "text": "A 30×24 ft round bin holds about 13,600 bu level-fill (1 bu = 1.244 ft³). Add a peaked cone surface for ~14,950 bu."}}, {"@type": "Question", "name": "What is the grain shrink formula?", "acceptedAnswer": {"@type": "Answer", "text": "Shrink % = (moisture in minus standard moisture) times a factor. Corn is commonly figured at about 1.2 to 1.4 per point. This page defaults to 1.3 and lets you edit it."}}, {"@type": "Question", "name": "What is pack factor?", "acceptedAnswer": {"@type": "Answer", "text": "Grain settles 0.5–1.5% over time as kernels compact. Leave it at 0 for a conservative estimate. Use 1% for a bin that’ll sit all winter."}}, {"@type": "Question", "name": "Hopper bottom vs. flat floor?", "acceptedAnswer": {"@type": "Answer", "text": "A hopper bin’s cone stores grain below the cylinder, so for the same wall height it actually holds a bit more than a flat floor — the calculator adds that cone volume. Hoppers are chosen for gravity unloading (no sweep auger), usually at smaller diameters."}}, {"@type": "Question", "name": "What size bin do I need for 50,000 bushels?", "acceptedAnswer": {"@type": "Answer", "text": "Roughly a 48-ft diameter bin with a 35-ft eave, or two 36-ft bins at a 31-ft eave. Use the “Sizing New Storage?” box above — enter your target bushels and it lists workable diameter-and-eave combos."}}, {"@type": "Question", "name": "How do I figure drying cost?", "acceptedAnswer": {"@type": "Answer", "text": "Multiply points to dry × $/pt/bu. Drying from 18% to 15.5% = 2.5 pts. At $0.035/pt: 2.5 × $0.035 = $0.0875/bu."}}]}
+    {"@type":"FAQPage","mainEntity":[{"@type": "Question", "name": "How many bushels in a 30-foot bin?", "acceptedAnswer": {"@type": "Answer", "text": "A 30×24 ft round bin holds about 13,600 bu level-fill (1 bu = 1.244 ft³). Add a peaked cone surface for ~14,950 bu."}}, {"@type": "Question", "name": "What is the grain shrink formula?", "acceptedAnswer": {"@type": "Answer", "text": "Shrink % = (moisture in minus standard moisture) times a factor. Corn is commonly figured at about 1.2 to 1.4 per point. This page defaults to 1.3 and lets you edit it."}}, {"@type": "Question", "name": "What is pack factor?", "acceptedAnswer": {"@type": "Answer", "text": "Grain compacts under its own weight — typically 2–6% for corn in farm bins, more in tall bins (K-State/USDA WPACKING). Leave at 0 for a conservative estimate. Use 3–5% for a full bin that has sat all winter."}}, {"@type": "Question", "name": "Hopper bottom vs. flat floor?", "acceptedAnswer": {"@type": "Answer", "text": "A hopper bin’s cone stores grain below the cylinder, so for the same wall height it actually holds a bit more than a flat floor — the calculator adds that cone volume. Hoppers are chosen for gravity unloading (no sweep auger), usually at smaller diameters."}}, {"@type": "Question", "name": "What size bin do I need for 50,000 bushels?", "acceptedAnswer": {"@type": "Answer", "text": "Roughly a 48-ft diameter bin with a 35-ft eave, or two 36-ft bins at a 31-ft eave. Use the “Sizing New Storage?” box above — enter your target bushels and it lists workable diameter-and-eave combos."}}, {"@type": "Question", "name": "How do I figure drying cost?", "acceptedAnswer": {"@type": "Answer", "text": "Multiply points to dry × $/pt/bu. Drying from 18% to 15.5% = 2.5 pts. At $0.035/pt: 2.5 × $0.035 = $0.0875/bu."}}]}
   ]}
   </script>
   <style>
@@ -260,11 +260,11 @@
               <input type="number" id="dryingCost" value="0" step="0.005" placeholder="e.g. 0.035" inputmode="decimal" oninput="calc()">
             </div>
             <div>
-              <label for="pack">Pack Factor (%) <span title="Grain settles 0.5-1.5% over time. Leave at 0 for conservative estimate." style="cursor:help;color:var(--text-dim)">&#9432;</span></label>
+              <label for="pack">Pack Factor (%) <span title="Grain compacts under its own weight — typically 2–6% for corn in farm bins, more in tall bins (K-State/USDA WPACKING). Leave at 0 for a conservative estimate." style="cursor:help;color:var(--text-dim)">&#9432;</span></label>
               <input type="number" id="pack" value="0" step="0.5" inputmode="decimal" oninput="calc()">
             </div>
           </div>
-          <div class="field-hint">Pack factor: industry norm 0.5&ndash;1.5% for corn after settling. Leave at 0 for conservative estimate.</div>
+          <div class="field-hint">Pack factor: grain compacts under its own weight &mdash; typically 2&ndash;6% for corn in farm bins, more in tall bins (K-State/USDA WPACKING). Leave at 0 for a conservative estimate.</div>
           <!-- v3: editable shrink factor -->
           <div class="input-grid cols-2">
             <div>
@@ -401,7 +401,7 @@
             <div class="moist-grid">
               <div class="moist-card"><div class="moist-card-label">Corn &mdash; 1 year</div><div class="moist-card-val">14%</div></div>
               <div class="moist-card"><div class="moist-card-label">Corn &mdash; long term</div><div class="moist-card-val">13%</div></div>
-              <div class="moist-card"><div class="moist-card-label">Soybeans</div><div class="moist-card-val">13%</div></div>
+              <div class="moist-card"><div class="moist-card-label">Soybeans &mdash; 1 year</div><div class="moist-card-val">12%</div></div>
               <div class="moist-card"><div class="moist-card-label">Wheat</div><div class="moist-card-val">13.5%</div></div>
             </div>
           </div>
@@ -426,7 +426,7 @@
       <p>Enter your bin diameter and eave height (or length, width, and depth for rectangular storage), choose your crop, and the calculator instantly shows total bushel capacity, weight, and &mdash; if you enter a market price &mdash; estimated net value after moisture shrink and drying costs. The depth slider lets you model a partially filled bin. Use the Hopper option for bins with an inverted-cone floor; the calculator automatically adds the hopper cone volume to your total.</p>
 
       <h2>Understanding Moisture Shrink</h2>
-      <p>Grain delivered above standard moisture loses weight &mdash; and value &mdash; during drying. The industry standard shrink formula is <strong>(Moisture In &minus; Target Moisture) &times; 1.3</strong>, where the target defaults to the crop&rsquo;s standard moisture. The 1.3 multiplier covers both the water removed and a small handling loss allowance. Corn at 18% moisture heading into a 15.5%-standard market shrinks 3.25%, costing roughly 85 to 100 bushels on a 3,000-bushel truckload. For a complete picture, enter a drying cost (typically $0.03&ndash;$0.05 per point per bushel) to see your true net value after all shrink and drying charges. <a href="/cash-bids">Check local cash bids &rarr;</a></p>
+      <p>Grain delivered above standard moisture loses weight &mdash; and value &mdash; during drying. The industry standard shrink formula is <strong>(Moisture In &minus; Target Moisture) &times; 1.3</strong>, where the target defaults to the crop&rsquo;s standard moisture. The 1.3 multiplier covers both the water removed and a small handling loss allowance. Corn at 18% moisture heading into a 15.5%-standard market shrinks 3.25%, costing roughly 85 to 100 bushels on 3,000 bushels (about three semi loads). For a complete picture, enter a drying cost (typically $0.03&ndash;$0.05 per point per bushel) to see your true net value after all shrink and drying charges. <a href="/cash-bids">Check local cash bids &rarr;</a></p>
 
       <h2>Common Questions</h2>
       <dl class="faq-grid">
@@ -440,7 +440,7 @@
         </div>
         <div class="faq-item">
           <dt>What is pack factor?</dt>
-          <dd>Grain settles 0.5&ndash;1.5% over time as kernels compact. Leave it at 0 for a conservative estimate. Use 1% for a bin that&rsquo;ll sit all winter.</dd>
+          <dd>Grain compacts under its own weight &mdash; typically 2&ndash;6% for corn in farm bins, more in tall bins (K-State/USDA WPACKING). Leave at 0 for a conservative estimate. Use 3&ndash;5% for a full bin that has sat all winter.</dd>
         </div>
         <div class="faq-item">
           <dt>Hopper bottom vs. flat floor?</dt>
@@ -554,7 +554,12 @@
   // hopper gave 174,261 bu). The min/max attributes do not stop typing.
   function inputError(sh){
     var f=function(id){return parseFloat($(id).value);};
-    var neg=function(id,label){var v=f(id);return (isFinite(v)&&v<0)?label+' cannot be negative.':null;};
+    // A blank or zero size is a missing value, not a 0 bu bin: it used to print "0 bu" in the
+    // headline while the drawing's #cap-num showed an em dash. Required sizes now take the
+    // em-dash-with-reason path like every other unusable input.
+    var neg=function(id,label){var v=f(id);
+      if(!isFinite(v)||v===0) return label+' is blank or zero; enter it to get bushels.';
+      return v<0?label+' cannot be negative.':null;};
     var e=null;
     if(sh==='round') e=neg('diameter','Diameter')||neg('height','Eave height');
     else if(sh==='hopper'){
@@ -563,7 +568,14 @@
     } else e=neg('rlength','Length')||neg('rwidth','Width')||neg('rheight','Depth');
     if(e) return e;
     var mi=f('moistIn'), mt=f('moistTarget');
-    if(isFinite(mi)&&(mi<0||mi>=100)) return 'Moisture in must be from 0 to under 100%.';
+    // No silent default for these two: a blank Moisture In used to become the crop standard
+    // (zero shrink) and a blank Shrink Factor became 1.3, so the page answered a question
+    // the reader had not asked.
+    if(!isFinite(mi)) return 'Moisture in is blank.';
+    var sfac=f('shrinkFactor');
+    if(!isFinite(sfac)) return 'Shrink factor is blank.';
+    if(sfac<0) return 'Shrink factor cannot be negative.';
+    if(mi<0||mi>=100) return 'Moisture in must be from 0 to under 100%.';
     if(isFinite(mt)&&(mt<0||mt>=100)) return 'Target moisture must be from 0 to under 100%.';
     var pk=f('pack'); if(isFinite(pk)&&pk<0) return 'Pack cannot be negative.';
     var dc=f('dryingCost'); if(isFinite(dc)&&dc<0) return 'Drying cost cannot be negative.';
@@ -580,12 +592,13 @@
       ['rCylVol','rAdjVol','rTotVol','rTotBu','rWeight','rShrink','rDryBu','rLost','rGrossVal','rDryVal','rNetVal','sb-bu','sb-val'].forEach(function(id){$(id).textContent=NA;});
       $('drying-row').style.display='none';
       $('cap-num').textContent=NA;
+      $('sb-val').textContent=_err;
       saveState();
       return;
     }
     _errEl.style.display='none';
-    var moistIn   = parseFloat($('moistIn').value)    || cr.std;
-    var moistTgt  = parseFloat($('moistTarget').value)|| cr.std;
+    var moistIn   = parseFloat($('moistIn').value);   // blank is rejected by inputError; a typed 0 stays 0
+    var moistTgt  = parseFloat($('moistTarget').value); if(!isFinite(moistTgt)) moistTgt=cr.std;
     var dryCostPt = parseFloat($('dryingCost').value) || 0;
     var pack      = parseFloat($('pack').value)        || 0;
     var mktP      = parseFloat($('mktPrice').value)    || 0;
@@ -594,17 +607,31 @@
     var cylVol=0, adjVol=0, hopperVol=0, adjLbl='Surface Adj.', r=0, eaveH=0, shapeLabel='Cylinder Volume';
 
     if(sh==='round'){
-      var d=parseFloat($('diameter').value)||0; eaveH=parseFloat($('height').value)||0; r=d/2;
+      var d=parseFloat($('diameter').value); eaveH=parseFloat($('height').value); r=d/2;
       cylVol=Math.PI*r*r*gH;
       var coneH=r*TAN_25, coneVol=(1/3)*Math.PI*r*r*coneH;
       if(sf==='peaked'){adjVol=coneVol; adjLbl='Peaked Cone (+)';}
-      else if(sf==='draw'){adjVol=-coneVol; adjLbl='Draw Cone (\u2212)';}
+      else if(sf==='draw'){
+        adjLbl='Draw Cone (\u2212)';
+        if(gH>=coneH){adjVol=-coneVol;}
+        else{
+          // The full inverted cone does not fit when grain at the wall is shallower than
+          // r*tan25: what remains is an annular wedge against the wall. Surface
+          // z(p)=gH-(r-p)*tan25 for p in [r-L, r], L=gH/tan25; volume = integral of 2*pi*p*z dp.
+          // (Subtracting the full cone went negative and clamped to ~0: a 30 ft bin with
+          // 2.4 ft at the wall printed 39 bu; the wedge is 516 ft3, about 414 bu.)
+          // Equals cylVol-coneVol at gH=coneH, so the two branches meet.
+          var L=gH/TAN_25;
+          var ann=2*Math.PI*(r*gH*L-(r*TAN_25+gH)*L*L/2+TAN_25*L*L*L/3);
+          adjVol=ann-cylVol;
+        }
+      }
       else{adjVol=0; adjLbl='Surface Adj.';}
 
     } else if(sh==='hopper'){
-      var hd=parseFloat($('hdiameter').value)||0;
-      var hcyl=parseFloat($('hcylheight').value)||0;
-      var hangle=parseFloat($('hopperangle').value)||45;
+      var hd=parseFloat($('hdiameter').value);
+      var hcyl=parseFloat($('hcylheight').value);
+      var hangle=parseFloat($('hopperangle').value);   // inputError guarantees 0 < angle < 80
       r=hd/2; eaveH=hcyl;
       // Hopper cone height = r * tan(angle)
       var hRad=hangle*Math.PI/180;
@@ -617,8 +644,8 @@
       shapeLabel='Cylinder + Hopper';
 
     } else {
-      var l=parseFloat($('rlength').value)||0, w=parseFloat($('rwidth').value)||0;
-      eaveH=parseFloat($('rheight').value)||0;
+      var l=parseFloat($('rlength').value), w=parseFloat($('rwidth').value);
+      eaveH=parseFloat($('rheight').value);
       cylVol=l*w*gH; adjVol=0; adjLbl='Surface Adj.';
     }
 
@@ -627,7 +654,7 @@
     var totVol=Math.max(0, cylVol+adjVol+hopperVol);
     var rawBu=totVol*BU_PER_CUFT;
     var packedBu=rawBu*(1+pack/100);
-    var shrinkFac=parseFloat($('shrinkFactor').value); if(isNaN(shrinkFac)||shrinkFac<0) shrinkFac=1.3;
+    var shrinkFac=parseFloat($('shrinkFactor').value);   // blank or negative is rejected by inputError
     // Shrink follows the points you actually remove (in -> target), the same points
     // the drying charge bills for. This read (moistIn - crop standard), so drying corn
     // 20% -> 13% billed 7 points of drying but only shrank 5, leaving bushels on the
@@ -683,6 +710,7 @@
       _rafPending=true;
       requestAnimationFrame(function(){
         _rafPending=false;
+        if($('calc-err').style.display!=='none') return;   // an input error arrived after this was queued
         drawBin(sh,sf,gH,eaveH,r,packedBu);
       });
     }
@@ -748,7 +776,7 @@
     var tY=fillR>0.25?(grainY+BB)/2:BB-20;
     $('cap-num').setAttribute('y',tY);
     $('cap-unit').setAttribute('y',tY+17);
-    $('cap-num').textContent=bu>0?fN(bu):NA;
+    $('cap-num').textContent=isFinite(bu)?fN(bu):NA;   // same figure as the headline, 0 included
     $('cap-num').setAttribute('opacity',fillR>0.12?'0.9':'0.35');
     $('cap-unit').setAttribute('opacity',fillR>0.12?'0.7':'0.25');
   }
@@ -767,7 +795,8 @@
     var net=$('rNetVal').textContent;
     var shrink=$('rShrink').textContent;
     var crop=$('crop').options[$('crop').selectedIndex].text.split(' ')[0];
-    var line='AGSIST Grain Bin | '+crop+' | '+bu+' wet bu | '+dry+' dry bu | Shrink: '+shrink+(net!==NA?' | Net: '+net:'');
+    var err=$('calc-err').style.display!=='none'?$('calc-err').textContent:'';
+    var line=err?'AGSIST Grain Bin | '+crop+' | '+err:'AGSIST Grain Bin | '+crop+' | '+bu+' wet bu | '+dry+' dry bu | Shrink: '+shrink+(net!==NA?' | Net: '+net:'');
     if(navigator.clipboard){navigator.clipboard.writeText(line).then(function(){showCopied();});}
     else{var t=document.createElement('textarea');t.value=line;document.body.appendChild(t);t.select();document.execCommand('copy');document.body.removeChild(t);showCopied();}
   }
