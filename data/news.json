@@ -1,6 +1,6 @@
 {
- "updated": "2026-10-02T22:05:54+00:00",
- "count": 20,
+ "updated": "2026-10-06T01:23:55+00:00",
+ "count": 21,
  "added": 1,
  "state": {
   "px": {
@@ -29,6 +29,17 @@
   }
  },
  "items": [
+  {
+   "id": "cond:2026-10-04:corn",
+   "kind": "crop",
+   "headline": "Corn ratings fell 3 points",
+   "detail": "54% good-to-excellent, 3 points down on the week.",
+   "significance": "notable",
+   "url": "/conditions",
+   "source": "USDA NASS Crop Progress",
+   "day_only": true,
+   "ts": "2026-10-04T12:00:00+00:00"
+  },
   {
    "id": "px:2026-10-01:corn:move",
    "kind": "board",
