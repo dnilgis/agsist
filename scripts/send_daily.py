@@ -27,6 +27,23 @@ tomorrow by changing three repo secrets — the script never changes:
     UNSUB_SECRET when set with LIST_URL, every email gets a signed
                 one-click unsubscribe link
     DRY_RUN     "1" = render and report, send nothing
+    BIDS_BASE   where the elevator bids are read for the local line
+                (default https://dnilgis.github.io/bids/; a local mirror
+                directory works for tests)
+    LOCAL_BIDS  "0" = leave the local line out for everyone (daily.yml sets
+                it when the port check against the homepage fails)
+
+YOUR LOCAL TOP BID (2026-10-06). The list is fetched as JSON (worker v5.4,
+scripts/subscribers.py). A reader with a ZIP gets the homepage hero's own
+answer for that ZIP at the top of the email -- "Near Chetek, WI: top corn bid
+$4.35 (Badger Grain Supply, LLC, 22 mi), soybeans ..." -- from
+scripts/local_bid.py, a port of the hero's rule that
+scripts/daily-local-bid-checks.mjs runs against the real JS. Each ZIP is
+computed once. A ZIP with no centroid, or bids that could not be read, gets
+nothing local (never "no bid within 50 mi" when the truth is "could not
+read"). A reader with no ZIP gets a one-line "Add your ZIP" link. An older
+worker that answers only the plain list: everyone gets the email as before.
+Every email carries a "Forward to a neighbor" sign-up link.
 
 Safety rails: refuses to send if the newest archived briefing is not dated
 today (weekend, holiday, or gate-blocked morning = silent skip, exit 0).
@@ -36,7 +53,6 @@ failures are reported and tolerated; total failure exits nonzero.
 """
 import json
 import os
-import re
 import hmac
 import hashlib
 import smtplib
@@ -52,6 +68,8 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import brief_email        # noqa: E402  (needs the path line above)
+import subscribers        # noqa: E402
+import gmail_limit        # noqa: E402
 
 REPO = Path(__file__).resolve().parent.parent
 ARCHIVE = REPO / "data" / "daily-archive"
@@ -65,6 +83,13 @@ SITE = "https://agsist.com/?d=1&utm_source=daily_email&utm_medium=email"
 # in an href is tolerated by most clients but is not valid HTML, and email
 # sanitisers are not something to gamble a send on.
 SITE_HREF = SITE.replace("&", "&amp;")
+# The site reads ?ref= and tags a signup from it as source "email-forward".
+FORWARD_URL = "https://agsist.com/?ref=email-forward"
+# The homepage's own sign-up box (index.html id="signup-full"). If the site
+# grows a #signup anchor, point this at it.
+ZIP_ASK_URL = "https://agsist.com/#signup-full"
+LOCAL_NOTE = ("The elevators' own posted boards, read when this email was sent. "
+              "Straight-line miles. Not a contract. Call before you haul.")
 
 
 def issue_url(daily):
@@ -144,16 +169,61 @@ def flag(day, set_it=False):
         return True
 
 
-def fetch_recipients():
+def fetch_subscribers():
+    """[{email, zip, reports, ...}], and whether zips are known ("json") or not
+    ("plain": an older worker, or the RECIPIENTS secret)."""
     base, token = (os.environ.get("LIST_URL") or "").strip() or None, (os.environ.get("LIST_TOKEN") or "").strip() or None
     if base and token:
-        u = base.rstrip("/") + "/list?token=" + urllib.parse.quote(token)
-        req_ = urllib.request.Request(u, headers={"User-Agent": "AGSIST-automation/1.0 (+https://agsist.com; sig@farmers1st.com)"})
-        with urllib.request.urlopen(req_, timeout=30) as r:
-            body = r.read().decode()
-        print("recipient list fetched live from worker")
-        return body
-    return env("RECIPIENTS", required=True)
+        recs, how = subscribers.fetch(base, token)
+        print("recipient list fetched live from worker (" + how + ")")
+        return recs, how
+    return subscribers.parse_plain(env("RECIPIENTS", required=True)), "plain"
+
+
+# Address -> the local block brief_email renders at the top (or the "add your
+# ZIP" line). Filled once by main(), read by build_email(), so the send loop
+# below (lifted by its own text in test_send_loops.py) is not touched.
+LOCAL_LINES = {}
+
+
+def load_local_lines(subs, how, bids_data=None):
+    """Group by ZIP, compute each ZIP once, and return (address -> block, counts)."""
+    import local_bid
+    counts = {"local": 0, "none_within": 0, "ask_zip": 0, "plain": 0, "no_centroid": 0, "unreadable": 0}
+    out = {}
+    if how != "json":
+        counts["plain"] = len(subs)
+        return out, counts
+    if (os.environ.get("LOCAL_BIDS") or "").strip() == "0":
+        print("local bid line OFF for this send (LOCAL_BIDS=0: the port check against the homepage did not pass)")
+        counts["plain"] = len(subs)
+        return out, counts
+    data = bids_data or local_bid.BidsData()
+    by_zip = {}
+    for r in subs:
+        by_zip.setdefault(r.get("zip") or "", []).append(r["email"].strip().lower())
+    for z, emails in by_zip.items():
+        if not z:
+            for em in emails:
+                out[em] = {"ask_url": ZIP_ASK_URL}
+            counts["ask_zip"] += len(emails)
+            continue
+        try:
+            top = local_bid.top_for_zip(data, z)
+        except Exception as ex:
+            print("local bid for ZIP %s failed (%s); those readers get no local line" % (z, type(ex).__name__))
+            top = {"status": "failed"}
+        lines = local_bid.email_lines(top)
+        if not lines:
+            counts["no_centroid" if top.get("status") == "nozip" else "unreadable"] += len(emails)
+            continue
+        block = {"head": lines["head"], "detail": lines["detail"], "note": LOCAL_NOTE if lines["status"] == "ok" else ""}
+        for em in emails:
+            out[em] = block
+        counts["local" if lines["status"] == "ok" else "none_within"] += len(emails)
+    print("local bid: %d zip(s) computed once each; %s" % (len([z for z in by_zip if z]),
+          ", ".join("%s %d" % (k, v) for k, v in counts.items() if v)))
+    return out, counts
 
 
 # WAVE2-G: "Your elevators" -- address -> lines, filled once by main() from
@@ -215,10 +285,13 @@ def build_email(day, b, to_addr, from_name, from_addr, reply_to):
         msg["List-Unsubscribe"] = "<mailto:" + unsub + "?subject=unsubscribe>"
 
     mine = ELEVATOR_LINES.get(str(to_addr).strip().lower()) or None
-    text = brief_email.render_text(b, issue_url(b), unsub_url=uurl, date_display=date_display, elevators=mine)
+    loc = LOCAL_LINES.get(str(to_addr).strip().lower()) or None
+    text = brief_email.render_text(b, issue_url(b), unsub_url=uurl, date_display=date_display, elevators=mine,
+                                   local=loc, forward_url=FORWARD_URL)
     _issue = issue_url(b)
     hbody = brief_email.render_html(b, _issue.replace("&", "&amp;"),
-                                    unsub_url=uurl, date_display=date_display, elevators=mine)
+                                    unsub_url=uurl, date_display=date_display, elevators=mine,
+                                    local=loc, forward_url=FORWARD_URL)
 
     # set_content first, add_alternative second: that ordering is what makes it
     # multipart/alternative with the HTML preferred and the text a real
@@ -238,15 +311,44 @@ def main():
     if not dry and flag(day):
         print("already sent for " + day + " (day-flag set) — skipping. exit 0")
         return 0
-    raw = fetch_recipients()
-    recipients = [r.strip() for r in re.split(r"[,\n]", raw) if r.strip() and "@" in r]
+    subs, how = fetch_subscribers()
+    recipients = [r["email"] for r in subs]
     if not recipients:
         print("FATAL: RECIPIENTS parsed to zero addresses")
         return 1
     print("briefing " + day + " · recipients " + str(len(recipients)) + " · dry_run " + str(dry))
     ELEVATOR_LINES.update(load_elevator_lines())
+    try:
+        _ll, _counts = load_local_lines(subs, how)
+    except Exception as ex:
+        # The local line is an extra. Anything wrong with it sends the
+        # briefing exactly as it went before, never no briefing.
+        print("local bid line skipped (" + type(ex).__name__ + ": " + str(ex)[:120] + ")")
+        _ll, _counts = {}, {"plain": len(subs)}
+    LOCAL_LINES.update(_ll)
+    gmail_limit.check(len(recipients), sum(1 for r in subs if r.get("reports") is not False),
+                      date.fromisoformat(day), dry=dry)
 
     if dry:
+        print("preview per recipient: %d with a local top bid, %d told nothing posted within 50 mi, "
+              "%d asked to add a ZIP, %d unchanged (%d older list without zips, %d ZIP with no centroid, "
+              "%d bids unreadable)" % (_counts.get("local", 0), _counts.get("none_within", 0),
+                                       _counts.get("ask_zip", 0),
+                                       _counts.get("plain", 0) + _counts.get("no_centroid", 0) + _counts.get("unreadable", 0),
+                                       _counts.get("plain", 0), _counts.get("no_centroid", 0), _counts.get("unreadable", 0)))
+        shown = set()
+        for r in subs:
+            kind = (r.get("zip") or "(no zip)")
+            if kind in shown or len(shown) >= 6:
+                continue
+            shown.add(kind)
+            mm = build_email(day, b, r["email"], from_name, from_addr, reply_to)
+            first = mm.get_body(("plain",)).get_content().split("\n")
+            print("--- first lines for %s (zip %s) ---" % (r["email"], kind))
+            print("\n".join(first[:8]))
+            tail = [ln for ln in first if ln.startswith("Add your ZIP") or ln.startswith("Forward to a neighbor")]
+            for ln in tail:
+                print("   ... " + ln)
         m = build_email(day, b, recipients[0], from_name, from_addr, reply_to)
         _prior, _pday = brief_email.prior_board(b)
         print("SUBJECT: " + str(m["Subject"]))

@@ -38,6 +38,7 @@ ROOT = Path(__file__).resolve().parent.parent
 SENDERS = [
     ("check_alerts.py", "hail alerts"),
     ("send_daily.py", "daily briefings"),
+    ("send_report_day.py", "report emails"),
 ]
 
 START = "    sent, failed = 0, []"
