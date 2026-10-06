@@ -490,30 +490,39 @@ function fetchWeather(lat, lon, label, known) {
   fetch(url)
     .then(function(r) { return r.json(); })
     .then(function(d) {
-      var c = d.current;
+      var c = d.current || {};
+      /* A MISSING VALUE IS A DASH. Math.round(null) is 0, so a forecast with no
+         temperature printed "0\u00B0F" and then "Do Not Spray \u2014 Frozen";
+         an absent one became NaN and rated spraying "good". */
+      function nr(v) { return (v == null || !isFinite(v)) ? null : Math.round(v); }
+      function dsh(v, sfx) { return v == null ? '\u2014' : v + sfx; }
       var code   = c.weather_code;
-      var tempF  = Math.round(c.temperature_2m);
-      var feelsF = Math.round(c.apparent_temperature);
-      var wind   = Math.round(c.wind_speed_10m);
-      var humid  = c.relative_humidity_2m;
-      var precip = c.precipitation_probability;
-      var dew    = Math.round(c.dew_point_2m);
+      var tempF  = nr(c.temperature_2m);
+      var feelsF = nr(c.apparent_temperature);
+      var wind   = nr(c.wind_speed_10m);
+      var humid  = nr(c.relative_humidity_2m);
+      var precip = nr(c.precipitation_probability);
+      var dew    = nr(c.dew_point_2m);
+      var rateable = tempF != null && humid != null && wind != null;
 
       var el;
-      el = document.getElementById('wx-temp');  if(el) el.textContent = tempF + '\u00B0F';
+      el = document.getElementById('wx-temp');  if(el) el.textContent = dsh(tempF, '\u00B0F');
       el = document.getElementById('wx-icon');  if(el) el.textContent = WX_ICONS[code] || '';
-      el = document.getElementById('wx-desc');  if(el) el.textContent = (WX_CODES[code]||'Current Conditions') + ' \u00B7 Feels ' + feelsF + '\u00B0';
-      el = document.getElementById('wx-wind');  if(el) el.textContent = degToCompass(c.wind_direction_10m) + ' ' + wind + ' mph';
-      el = document.getElementById('wx-humid'); if(el) el.textContent = humid + '%';
-      el = document.getElementById('wx-precip');if(el) el.textContent = precip + '%';
-      el = document.getElementById('wx-dew');   if(el) el.textContent = dew + '\u00B0F';
+      el = document.getElementById('wx-desc');  if(el) el.textContent = (WX_CODES[code]||'Current Conditions') + (feelsF == null ? '' : ' \u00B7 Feels ' + feelsF + '\u00B0');
+      el = document.getElementById('wx-wind');  if(el) el.textContent = wind == null ? '\u2014' : degToCompass(c.wind_direction_10m) + ' ' + wind + ' mph';
+      el = document.getElementById('wx-humid'); if(el) el.textContent = dsh(humid, '%');
+      el = document.getElementById('wx-precip');if(el) el.textContent = dsh(precip, '%');
+      el = document.getElementById('wx-dew');   if(el) el.textContent = dsh(dew, '\u00B0F');
 
       var spray = document.getElementById('wx-spray');
-      if (spray) {
+      if (spray && !rateable) {
+        spray.className = 'spray-badge';
+        spray.textContent = 'Spray rating \u2014 not in this forecast (temperature, humidity or wind missing) \u2192';
+      } else if (spray) {
         var sprayR = calcSprayRating(tempF, humid, wind);
         var sprayMsg;
         if (sprayR === 'poor') {
-          if (tempF < 32)       sprayMsg = 'Do Not Spray \u2014 Frozen (' + tempF + '\u00B0F) \u2192';
+          if (tempF < 32)       sprayMsg = 'Do Not Spray \u2014 Below freezing (' + tempF + '\u00B0F) \u2192';
           else if (tempF < 40)  sprayMsg = 'Do Not Spray \u2014 Too cold (' + tempF + '\u00B0F) \u2192';
           else if (wind > 15)   sprayMsg = 'Poor Spray Conditions \u2014 Wind too high (' + wind + ' mph) \u2192';
           else if (tempF > 90)  sprayMsg = 'Poor Spray Conditions \u2014 Too hot (' + tempF + '\u00B0F) \u2192';
@@ -528,10 +537,10 @@ function fetchWeather(lat, lon, label, known) {
       }
 
       var ureaWrap = document.getElementById('wx-urea');
-      if (ureaWrap) {
+      if (ureaWrap && rateable) {
         var u = calcUrea(tempF, humid, wind, precip);
         var uPalette = {frozen:'91,163,224', low:'62,207,110', moderate:'230,176,66', high:'240,145,58', extreme:'240,96,96'};
-        var uLabels  = {frozen:'Frozen \u2014 N/A', low:'Low', moderate:'Moderate', high:'High', extreme:'Extreme'};
+        var uLabels  = {frozen:'Below 32\u00B0F now', low:'Low', moderate:'Moderate', high:'High', extreme:'Extreme'};
         var uColors  = {frozen:'var(--blue)', low:'var(--green)', moderate:'var(--gold)', high:'#f0913a', extreme:'var(--red)'};
         var sEl = document.getElementById('wx-urea-score');
         var bEl = document.getElementById('wx-urea-badge');
@@ -698,6 +707,14 @@ window.AGSIST_GEO_READY = function(cb) {
 };
 
 function updateWidgetPreviews(tempF, humid, wind, pop) {
+  if (tempF == null || humid == null || wind == null || !isFinite(tempF) || !isFinite(humid) || !isFinite(wind)) {
+    ['wsp-spray-status', 'wsp-urea-badge'].forEach(function (id) {
+      var x = document.getElementById(id); if (x) x.textContent = '\u2014 not in this forecast';
+    });
+    var sd = document.getElementById('wsp-spray-detail'); if (sd) sd.textContent = 'Temperature, humidity or wind missing from the forecast';
+    var us = document.getElementById('wsp-urea-score'); if (us) us.textContent = '\u2014';
+    return;
+  }
   var sprayRating = calcSprayRating(tempF, humid, wind);
   var sprayDisplay = sprayRating === 'caution' ? 'marginal' : sprayRating;
   var sprayColors  = {good:'rgba(62,207,110,.08)',marginal:'rgba(230,176,66,.08)',poor:'rgba(240,96,96,.08)'};
@@ -730,8 +747,8 @@ function updateWidgetPreviews(tempF, humid, wind, pop) {
 
   var u = calcUrea(tempF, humid, wind, pop);
   var uPalette = {frozen:'91,163,224', low:'62,207,110', moderate:'230,176,66', high:'240,145,58', extreme:'240,96,96'};
-  var uLbls    = {frozen:'Frozen \u2014 No Risk', low:'Low Risk', moderate:'Moderate Risk', high:'High Risk', extreme:'Extreme Risk'};
-  var uRecs    = {frozen:'Ground frozen \u2014 urease inactive', low:'Favorable for application', moderate:'Consider NBPT stabilizer', high:'Use stabilizer or wait', extreme:'Do not apply without stabilizer'};
+  var uLbls    = {frozen:'Below freezing now \u2014 low risk', low:'Low Risk', moderate:'Moderate Risk', high:'High Risk', extreme:'Extreme Risk'};
+  var uRecs    = {frozen:'Air below 32\u00B0F right now; risk rises as it warms', low:'Favorable for application', moderate:'Consider NBPT stabilizer', high:'Use stabilizer or wait', extreme:'Do not apply without stabilizer'};
   var uColors  = {frozen:'var(--blue)', low:'var(--green)', moderate:'var(--gold)', high:'#f0913a', extreme:'var(--red)'};
   var uSc = document.getElementById('wsp-urea-score');
   var uBd = document.getElementById('wsp-urea-badge');
@@ -887,9 +904,11 @@ function fmtTickerChange(close, open, grain, netChg, pctChg) {
   var diff  = netChg !== undefined && netChg !== null ? parseFloat(netChg) : (c - o);
   var pct   = pctChg !== undefined && pctChg !== null ? parseFloat(pctChg) : (o !== 0 ? (diff/o)*100 : 0);
   var dir   = diff > 0 ? 'up' : diff < 0 ? 'dn' : 'nc';
-  var arrow = diff > 0 ? '\u25B2' : diff < 0 ? '\u25BC' : '';
+  if (diff === 0) return {text: 'unch', cls: 'nc'};
+  var arrow = diff > 0 ? '\u25B2' : '\u25BC';
+  var sgn   = diff > 0 ? '+' : '\u2212';      // a true minus, as fmtChange uses
   var mv    = grain ? fmtCentsDiff(diff) : Math.abs(diff).toFixed(2);
-  return {text: arrow + ' ' + mv + ' \u00b7 ' + Math.abs(pct).toFixed(1) + '%', cls: dir};
+  return {text: arrow + ' ' + sgn + mv + ' \u00b7 ' + sgn + Math.abs(pct).toFixed(1) + '%', cls: dir};
 }
 
 function fmtTickerPrice(val, grain, dec, prefix, comma) {
