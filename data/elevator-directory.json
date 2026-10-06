@@ -1,18 +1,18 @@
 {
- "generated": "2026-10-06T21:23:06Z",
+ "generated": "2026-10-06T21:38:08Z",
  "from": "barchart-raw.json",
  "complete": false,
  "note": "Directory only: who operates a facility and where. No prices, no basis, no symbols, no delivery windows.",
  "counts": {
-  "facilities": 2264,
+  "facilities": 2265,
   "states": 38,
   "with_address": 722,
   "with_coords": 725,
   "with_url": 703,
-  "with_phone": 2197,
+  "with_phone": 2198,
   "saturated_zips": 0,
   "failed_zips": 0,
-  "rows_read": 17184
+  "rows_read": 17185
  },
  "saturated": [],
  "failed": [],
@@ -17032,6 +17032,15 @@
    "facility_type": "Country Elevator",
    "locationId": 37438,
    "elevatorId": 2633
+  },
+  {
+   "facility": "Red Wing Grain",
+   "branch": "Red Wing Grain LLC",
+   "city": "Red Wing",
+   "state": "MN",
+   "zip": "55066",
+   "phone": "651-388-0731",
+   "source": "barchart"
   },
   {
    "facility": "Sargeant Grain Co.",
