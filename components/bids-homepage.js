@@ -108,9 +108,37 @@
     return ('00000000' + (h >>> 0).toString(16)).slice(-8);
   }
 
+  /* 2026-10-06: EVERY ROW'S `basis` ON THIS CARD IS DOLLARS A BUSHEL, fixed
+     at ingestion (licBasis for the licensed feed, basisCents/100 for the
+     network). The old rule here re-guessed the unit by size (|b| under 5 is
+     dollars) and read Ritzville Warehouse Co's +$6.23 spring wheat basis as
+     +6 cents. */
   function basisCents(bN){
-    if(bN == null) return null;
-    return Math.abs(bN) < 5 ? bN * 100 : bN;
+    if(bN == null || !isFinite(bN)) return null;
+    return Math.round(bN * 10000) / 100;
+  }
+  /* WHICH UNIT A RAW BASIS IS IN, READ FROM THE ROW'S OWN CASH. Same rule as
+     cash-bids.html basisUnit(): the unit that puts cash minus basis inside the
+     crop's price band. Both in band: a value finer than a quarter cent cannot
+     be a cents quote, so dollars; otherwise the old magnitude rule. Neither:
+     '?', the unit is unclear and no basis is shown. No band or no cash: null,
+     and the caller keeps its old rule. */
+  function basisUnitOf(n, cash, cat){
+    var band = PPU_BAND[cat], c = ppu(cash);
+    if(n == null || !isFinite(n) || !band || c == null) return null;
+    var fd = c - n, fc = c - n / 100, inD = fd >= band[0] && fd <= band[1], inC = fc >= band[0] && fc <= band[1];
+    if(inD && !inC) return 'd';
+    if(inC && !inD) return 'c';
+    if(!inD && !inC) return '?';
+    if(Math.abs(n * 4 - Math.round(n * 4)) > 1e-6) return 'd';
+    return Math.abs(n) < 5 ? 'd' : 'c';
+  }
+  /* A BASIS BEYOND $2.50 (CORN, SOYBEANS) OR $3.00 (WHEAT) IS NOT AN ORDINARY
+     BID -- the state basis pages' SANITY rule. Shown, flagged, never picked. */
+  var BASIS_SANE = { corn:2.5, soybeans:2.5, wheat:3 };
+  function basisOdd(b){
+    var cap = b && BASIS_SANE[b.category], c = b ? basisCents(b.basis) : null;
+    return cap != null && c != null && Math.abs(c) > cap * 100;
   }
 
   /* PANEL6 D6 2026-10-06: ONE QUARTER-CENT FORMATTER, for the card and the
@@ -134,9 +162,12 @@
     if(!w && !f) return 'even';
     return (cents < 0 ? '\u2212' : '+') + (w || !f ? String(w) : '') + (w && f ? ' ' : '') + (f ? ['', '1/4', '1/2', '3/4'][f] : '') + '\u00a2';
   }
-  function formatBasis(bN){
+  function formatBasis(bN, bid){
+    if(bid && bid.basisUnclear) return { str:'\u2014', cls:'muted', title:'basis unit unclear' };
     var cents = basisCents(bN);
     if(cents == null) return { str:'\u2014', cls:'muted' };
+    if(bid && basisOdd(bid)) return { str: (cents < 0 ? '\u2212' : '+') + '$' + (Math.abs(cents) / 100).toFixed(2), cls: 'muted', odd: true,
+      title: 'unusual basis \u2014 check with the elevator' };
     return {
       /* 2026-10-01: a flat basis is "even", not "+0c". */
       str: qCents(cents),
@@ -189,7 +220,15 @@
   // NOT `parseFloat(x) || null`: a FLAT basis is exactly 0 and 0 is falsy, so
   // the strongest basis on a board was published as "unknown".
   function flatNum(v){ var n = parseFloat(v); return isFinite(n) ? n : null; }
-  function licBasis(v){ var n = flatNum(v); if(n == null) return null; var a = Math.abs(n); return a < 1 ? n : a >= 5 ? n / 100 : null; }
+  function licBasis(v, cash, cat){
+    var n = flatNum(v); if(n == null) return null;
+    var u = basisUnitOf(n, cash, cat);
+    if(u === 'd') return n;
+    if(u === 'c') return n / 100;
+    if(u === '?') return null;
+    var a = Math.abs(n); return a < 1 ? n : a >= 5 ? n / 100 : null;
+  }
+  function licUnclear(v, cash, cat){ return basisUnitOf(flatNum(v), cash, cat) === '?'; }
 
   // ── Flatten Barchart response (same logic as /cash-bids) ───────
   function flattenBarchartResponse(data){
@@ -202,6 +241,8 @@
         var facName = item.company || item.name || item.locationName || 'Unknown';
         var branchName = (typeof item.location === 'string') ? item.location : '';
         item.bids.forEach(function(bid){
+          var lc = parseFloat(bid.cashprice || bid.cashPrice) || null;
+          var lk = classifyCommodity(bid.commodity || bid.commodity_display_name || bid.commodityName || '');
           flat.push({
             facility: facName, branch: branchName,
             city: item.city || '', state: item.state || '',
@@ -209,7 +250,7 @@
             phone: item.phone || '',
             commodity: bid.commodity || bid.commodity_display_name || bid.commodityName || '',
             cashPrice: parseFloat(bid.cashprice || bid.cashPrice) || null,
-            basis: licBasis(bid.basis),
+            basis: licBasis(bid.basis, lc, lk), basisUnclear: licUnclear(bid.basis, lc, lk),
             deliveryMonth: bid.deliveryMonth || bid.delivery_month || '',
             deliveryStart: bid.deliveryStart || bid.delivery_start || '',
             symbol: bid.symbol || item.symbol || '',
@@ -218,6 +259,8 @@
           });
         });
       } else if(item.commodity || item.commodityName || item.cashprice !== undefined || item.cashPrice !== undefined){
+        var ic = parseFloat(item.cashprice || item.cashPrice) || null;
+        var ik = classifyCommodity(item.commodity || item.commodity_display_name || item.commodityName || '');
         flat.push({
           facility: item.company || item.name || item.facility || item.locationName || 'Unknown',
           branch: (typeof item.location === 'string') ? item.location : '',
@@ -226,7 +269,7 @@
           phone: item.phone || '',
           commodity: item.commodity || item.commodity_display_name || item.commodityName || '',
           cashPrice: parseFloat(item.cashprice || item.cashPrice) || null,
-          basis: licBasis(item.basis),
+          basis: licBasis(item.basis, ic, ik), basisUnclear: licUnclear(item.basis, ic, ik),
           deliveryMonth: item.deliveryMonth || item.delivery_month || '',
           deliveryStart: item.deliveryStart || item.delivery_start || '',
           symbol: item.symbol || '',
@@ -386,7 +429,7 @@
   }
   /* The cell's bid: the nearest delivery month, per bushel, standard grade. */
   function pickCell(elev, cat){
-    var l = (elev.commodities[cat] || []).filter(function(b){ return !notPerBushel(b) && !isSpecialGrade(b) && ppu(b.cashPrice) != null && !rowExpired(b); });
+    var l = (elev.commodities[cat] || []).filter(function(b){ return !notPerBushel(b) && !isSpecialGrade(b) && !basisOdd(b) && ppu(b.cashPrice) != null && !rowExpired(b); });
     l.sort(byMonth);
     return l[0] || null;
   }
@@ -467,7 +510,7 @@
         : 'no standard ' + name.toLowerCase() + ' bid posted';
       return '<span class="bh-cell bh-cell--none" title="' + escHtml(why.charAt(0).toUpperCase() + why.slice(1)) + '"><span class="bh-ck">' + escHtml(name) + '</span><span class="bh-cash">—</span><span class="bh-vh">' + escHtml(why) + '</span></span>';
     }
-    var pp = ppu(b.cashPrice), bs = formatBasis(b.basis), wc = cat === 'wheat' ? wheatClass(b) : '';
+    var pp = ppu(b.cashPrice), bs = formatBasis(b.basis, b), wc = cat === 'wheat' ? wheatClass(b) : '';
     var mon = monthShort(rowMonthKey(b));
     var sub = '';
     if(mon) sub += '<span class="bh-mon"><span class="bh-vh">for </span>' + escHtml(mon) + '</span>';
@@ -554,7 +597,7 @@
         var perTon = notPerBushel(bid);
         var pp = perTon ? null : ppu(bid.cashPrice);
         var cashStr = pp != null ? qCash(pp) : '—';
-        var basis = perTon ? { str:'—', cls:'muted' } : formatBasis(bid.basis);
+        var basis = perTon ? { str:'—', cls:'muted' } : formatBasis(bid.basis, bid);
         var grade = String(bid.commodity || '').trim();
         var special = isSpecialGrade(bid);
         var wc = cat === 'wheat' ? wheatClass(bid) : '';
@@ -568,7 +611,8 @@
             + (special && !perTon ? (grade ? ' · ' : '') + 'special grade' : '');
         /* WAVE1-A: basis in one neutral colour; a negative basis is not bad news. */
         var refAttr = '', refTxt = '';
-        if(!perTon && !special && basis.str !== '—'){
+        if(basis.odd) gradeTxt = (gradeTxt ? gradeTxt + ' · ' : '') + 'unusual basis — check with the elevator';
+        if(!perTon && !special && !basis.odd && basis.str !== '—'){
           var rf = refFor(bid, cat, pp, staleDay(elev, fr, bid));
           refTxt = rf.label; refAttr = rf.attr;
         }
@@ -577,7 +621,7 @@
           + '<span class="r7-ref"' + refAttr + '>' + escHtml(refTxt) + '</span></span>';
         html += '<span class="bh-rcash">' + cashStr + '</span>';
         html += '<span class="bh-rchg">' + chgSpan(bid, perTon, special) + '</span>';
-        html += '<span class="bh-rbas' + (basis.cls === 'muted' || special ? ' is-muted' : '') + '">' + basis.str + '</span>';
+        html += '<span class="bh-rbas' + (basis.cls === 'muted' || special ? ' is-muted' : '') + '"' + (basis.title ? ' title="' + escHtml(basis.title) + '"' : '') + '>' + basis.str + '</span>';
         /* A row that only some of a merged card's towns post. */
         if(elev.towns && elev.towns.length > 1 && bid.towns && bid.towns.length && bid.towns.length < elev.towns.length){
           gradeTxt = (gradeTxt ? gradeTxt + ' · ' : '') + 'at ' + bid.towns.join(', ');
@@ -848,7 +892,7 @@
     var nowKey = thisMonth(), by = {};
     bids.forEach(function(b){
       if(['corn','soybeans','wheat','sorghum','oats'].indexOf(b.category) < 0) return;
-      if(b.cashPrice == null || notPerBushel(b) || isSpecialGrade(b)) return;
+      if(b.cashPrice == null || notPerBushel(b) || isSpecialGrade(b) || basisOdd(b)) return;
       var k = rowMonthKey(b); if(!k || k < nowKey) return;
       var id = rowKey(b) + '|' + b.category;
       var o = by[id];
@@ -1544,7 +1588,7 @@
     elevators.forEach(function(e){
       var fr = freshness(e);
       (e.commodities[cat] || []).forEach(function(b){
-        if(notPerBushel(b) || isSpecialGrade(b) || ppu(b.cashPrice) == null || rowExpired(b)) return;
+        if(notPerBushel(b) || isSpecialGrade(b) || basisOdd(b) || ppu(b.cashPrice) == null || rowExpired(b)) return;
         (fr.stale ? old : fresh).push({ e: e, b: b, stale: fr.stale, fr: fr });
       });
     });

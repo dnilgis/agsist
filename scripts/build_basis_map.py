@@ -4,8 +4,7 @@ build_basis_map.py — National basis map for the AGSIST cash-bids page.
 
 Reads data/bids.json (produced by fetch_bids.py from Barchart OnDemand),
 aggregates the Barchart-provided `basis` ($/bu, cash minus the futures month
-that board quoted -- NOT necessarily the nearby contract, and this script
-averages every delivery month a location posts) by location -> state ->
+that board quoted -- NOT necessarily the nearby contract) by location -> state ->
 commodity for corn, soybeans, and the three wheat classes, and writes
 data/basis-map.json, consumed by the "National Basis" section of cash-bids.html.
 
@@ -25,9 +24,9 @@ BIDS_FULL_PATH = os.environ.get("BIDS_FULL_PATH", "bids-full.json")
 BIDS_PATH = "data/bids.json"
 OUT_PATH  = "data/basis-map.json"
 COMMODITIES = ["corn", "soybeans", "wheat"]
-# WHAT THE NUMBER IS AGAINST, IN THE BOARD'S OWN TERMS. This script averages
-# every delivery month a location posts, so none of these is a nearby basis
-# and none of them says it is.
+# WHAT THE NUMBER IS AGAINST, IN THE BOARD'S OWN TERMS. Each location is read
+# at its own nearest delivery month (see nearest_only), which is not always
+# the nearby futures contract, so none of these says it is.
 FUTURES_REF = {"corn": "each board's posted futures month \u2014 CBOT corn (ZC)",
                "soybeans": "each board's posted futures month \u2014 CBOT soybeans (ZS)",
                "wheat-srw": "each board's posted futures month \u2014 Chicago SRW (CBOT, ZW)",
@@ -121,6 +120,37 @@ def resolve_bids_path():
 
 TODAY_MONTH = datetime.now(timezone.utc).strftime("%Y-%m")
 
+# 2026-10-06: THE HORIZON. data/basis-map.json shipped window
+# {from: "2026-10", to: "2067-01"} and the page printed "average of delivery
+# months: Oct 2026 to Jan 2067" -- one board's forty-year placeholder end date
+# set the window, and every far-forward month was averaged into its state.
+# A row delivering more than this many months after the build is dropped.
+HORIZON_MONTHS = 24
+# |basis| $/bu beyond this is a unit error or a different product, not a
+# market -- the same SANITY rule as build_state_basis_pages.py and the
+# "unusual basis" flag on cash-bids.html.
+SANITY = {"corn": 2.5, "soybeans": 2.5, "wheat": 3.0}
+
+def add_months(ym, n):
+    y, m = int(ym[:4]), int(ym[5:7]) - 1 + n
+    return f"{y + m // 12:04d}-{m % 12 + 1:02d}"
+
+HORIZON_MONTH = add_months(TODAY_MONTH, HORIZON_MONTHS)
+
+def nearest_only(records):
+    """Each location's NEAREST delivery month per crop, and nothing later.
+    Averaging every month a board posts made a state that posts out to 2028
+    incomparable with one that posts only the spot month (carry is in the
+    basis). Rows with no delivery month are kept only where the location
+    posts no dated row for that crop."""
+    first = {}
+    for r in records:
+        k = (r["commodity"], r["name"])
+        if r.get("month") and (k not in first or r["month"] < first[k]):
+            first[k] = r["month"]
+    return [r for r in records
+            if (r.get("month") or None) == first.get((r["commodity"], r["name"]))]
+
 def delivery_month(b):
     """YYYY-MM the row delivers in, from the window end (the last day a bid can
     still be taken), else the window start. '' when the row states neither."""
@@ -152,6 +182,8 @@ def load_cash_bids(path=None):
         # A delivery month that has already gone is not a bid anyone can take.
         _mo = delivery_month(b)
         if _mo and _mo < TODAY_MONTH:   continue
+        # Nor is one more than HORIZON_MONTHS out a basis to map today.
+        if _mo and _mo > HORIZON_MONTH: continue
         if basis is None:               continue
         try:    basis = float(basis)
         except (TypeError, ValueError): continue
@@ -160,7 +192,7 @@ def load_cash_bids(path=None):
         # one contaminated row poisons its state average AND the 'Strongest
         # basis' leaderboard. Grain basis in $/bu essentially never exceeds
         # ±$3.00; anything outside is a unit error, not a market.
-        if abs(basis) > 3.0:
+        if abs(basis) > SANITY[cat]:
             continue
         city = (b.get("city") or "").strip()
         # `town` is the bids merge's display town, present only when `city` is
@@ -218,7 +250,7 @@ def main():
     # and says why. The old bare os.path.exists check would have passed the
     # slim file straight through.
     src = resolve_bids_path()
-    records = load_cash_bids(src)
+    records = nearest_only(load_cash_bids(src))
     commodities, withheld = build(records)
     has_data = any(commodities[c]["states"] for c in MAP_COMMODITIES)
     # AUDIT 2026-08-11: `updated` reflects the AGE OF THE BIDS, not the
@@ -230,12 +262,13 @@ def main():
             _src_ts = (json.load(_f).get("fetched") or "")[:10] or None
     except Exception:
         pass
-    # THE WINDOW THE AVERAGE COVERS, printed on the map. Every future delivery
-    # month a location posts is still averaged together, so the page must say
-    # which months those are rather than imply a nearby basis.
+    # THE WINDOW THE MAP COVERS, printed on it: the earliest and latest of
+    # the nearest months actually used, after the horizon cut -- the true
+    # span, not a board's placeholder end date.
     _months = sorted({r["month"] for r in records if r.get("month")})
     out = {"updated": _src_ts or datetime.now(timezone.utc).strftime("%Y-%m-%d"),
-           "window": ({"from": _months[0], "to": _months[-1]} if _months else None),
+           "window": ({"from": _months[0], "to": _months[-1], "rule": "nearest",
+                       "horizon_months": HORIZON_MONTHS} if _months else None),
            "min_locations": MIN_STATE_LOC,
            "sample": (not has_data),
            "commodities": commodities,

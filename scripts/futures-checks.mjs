@@ -43,9 +43,11 @@ const grab = (name) => {
    would be a second source of truth for exactly the number in dispute. */
 const bandLine = h.match(/var PPU_BAND=\{[^}]*\};/);
 if (!bandLine) throw new Error("no PPU_BAND");
-const src = ["normSym", "classify", "ppu", "basisCents", "plausible", "futuresOf", "contractLabel", "contractStrip"].map(grab).join("\n")
-  + "\n" + bandLine[0];
-const M = new Function(src + "; return {classify,ppu,basisCents,plausible,futuresOf,contractLabel,contractStrip};")();
+const saneLine = h.match(/var BASIS_SANE=\{[^}]*\};/);
+if (!saneLine) throw new Error("no BASIS_SANE");
+const src = ["normSym", "classify", "ppu", "basisUnit", "basisCents", "basisUnusual", "basisUnclear", "formatBasis", "plausible", "futuresOf", "contractLabel", "contractStrip"].map(grab).join("\n")
+  + "\n" + bandLine[0] + "\n" + saneLine[0];
+const M = new Function(src + "; return {classify,ppu,basisUnit,basisCents,basisUnusual,basisUnclear,formatBasis,plausible,futuresOf,contractLabel,contractStrip};")();
 
 /* The captured board, verbatim in the fields the page reads. */
 const ROWS = [
@@ -144,6 +146,27 @@ eq(M.futuresOf(bid(["Z", "Corn", "ZCU26", "Sep 2026", "Aug26", "4.62", "-800.00"
 eq(cents(M.futuresOf(bid(["Z", "Corn", "ZCU26", "Sep 2026", "Aug26", "4.62", "-400.00"]))), 862, "and one INSIDE the band is published, wrong basis or not — the band is a floor, not a proof");
 eq(M.futuresOf({ category: "corn", cashPrice: 4.62, basis: null, symbol: "ZCU26" }), null, "no basis, no futures");
 eq(M.futuresOf({ category: "corn", cashPrice: null, basis: -52, symbol: "ZCU26" }), null, "no cash, no futures");
+
+/* ---- 5b. the basis unit, read from the row's own cash (2026-10-06) -------
+   Ritzville Warehouse Co, WA: spring wheat cash 13.40, basis 6.23 DOLLARS
+   (37 other MWZ26 rows imply $7.17). The magnitude rule printed +6c and
+   futures $13.34. The same bid arriving as 623 cents must read the same. */
+const RITZ = { category: "wheat", commodity: "Spring Wheat", symbol: "MWZ26", cashPrice: 13.40, basis: 6.23 };
+eq(M.basisCents(6.23, RITZ), 623, "Ritzville 6.23 is dollars: +623c, not +6c");
+eq(cents(M.futuresOf(RITZ)), 717, "and its futures derive to $7.17, not $13.34");
+eq(M.basisCents(623, { ...RITZ, basis: 623 }), 623, "the same bid in cents reads the same");
+ok(M.basisUnusual(RITZ), "a +$6.23 wheat basis is flagged unusual (beyond $3)");
+ok(/\+\$6\.23/.test(M.formatBasis(6.23, RITZ).str) && M.formatBasis(6.23, RITZ).odd, "printed +$6.23 and marked odd");
+const BEAN = { category: "soybeans", cashPrice: 10.30, basis: -20 };
+eq(M.basisCents(-20, BEAN), -20, "a -20c bean basis stays cents although $30.30 is inside the bean band");
+eq(M.basisCents(-0.2, { ...BEAN, basis: -0.2 }), -20, "and -0.20 dollars is the same basis");
+ok(!M.basisUnusual(BEAN), "an ordinary basis is not flagged");
+eq(M.basisCents(-52, { category: "corn", cashPrice: 4.62, basis: -52 }), -52, "live-feed cents unchanged");
+eq(M.basisCents(-800, { category: "corn", cashPrice: 4.62, basis: -800 }), null, "neither reading in band: unit unclear");
+ok(M.basisUnclear({ category: "corn", cashPrice: 4.62, basis: -800 }) && /unit unclear/.test(M.formatBasis(-800, { category: "corn", cashPrice: 4.62, basis: -800 }).str),
+   "and it prints a dash titled 'basis unit unclear'");
+ok(M.basisUnusual({ category: "corn", cashPrice: 4.62, basis: -2.6 }) && !M.basisUnusual({ category: "corn", cashPrice: 4.62, basis: -2.5 }),
+   "corn/soy cap is $2.50, exclusive -- the state basis pages' SANITY rule");
 
 /* ---- 6. the label -------------------------------------------------------- */
 eq(M.contractLabel({ basisMonth: "Dec 2026" }), "Dec26", "Dec 2026 -> Dec26");

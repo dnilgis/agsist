@@ -1758,10 +1758,10 @@ LEAD example (active day):
 "Corn's stuck at $4.85¼ for a fourth straight session and the funds are running out of patience. Open interest dropped 12,000 contracts Friday, somebody's taking profits, not adding conviction. The chart says coiled spring. The funds say maybe. Tuesday's planting print decides which one's right."
 
 LEAD example (quiet day, equally valid AGSIST voice):
-"Most days don't move markets. Today is one of them. Corn closed $4.62, off a penny. Beans flat at $11.74. Cattle held $248.50 with no real action. The story today is what didn't happen: no fund flow, no weather news, no surprise from yesterday's export sales. Days like this are how the market builds the next move."
+"Most days don't move markets. Today is one of them. Corn's at $4.62, off a penny from the last settle. Beans flat at $11.74. Cattle held $248.50 with no real action. The story today is what didn't happen: no fund flow, no weather news, no surprise from yesterday's export sales. Days like this are how the market builds the next move."
 
 LEAD example (range-bound consolidation):
-"Wheat closed $5.91, the fifth straight session inside a 12-cent band. Range-bound isn't drama, but it's information: the funds aren't selling, the commercials aren't buying, and nobody has new news. When wheat decides which way it's leaving the range, it'll be on data the calendar already shows."
+"Wheat's at $5.91, the fifth straight session inside a 12-cent band. Range-bound isn't drama, but it's information: the funds aren't selling, the commercials aren't buying, and nobody has new news. When wheat decides which way it's leaving the range, it'll be on data the calendar already shows."
 
 SECTION BODY example (medium conviction) — 2-3 bullet lines, each ONE sentence, "- " prefix, MAX 55 WORDS; the so-what goes in so_what, not in a trailing bullet:
 "- Soybeans ran into the 200-day at **$10.42** and bounced like they were supposed to, but the bounce is thin: funds still net long 64,000 contracts, crush margins eased a nickel.
@@ -1974,6 +1974,104 @@ def _loads_lenient(text):
     return json.loads(s)
 
 
+# ══ OVERNIGHT IS NOT A CLOSE (2026-10-06) ═══════════════════════════════════
+# The Oct 6 issue led "Corn closed $5.00, up 3 cents" from a board fetched at
+# 10:56Z -- 5:56 a.m. CT, the overnight session -- while the Oct 5 settle was
+# $4.97 1/2 (the bot call in the same issue said so). The price table never
+# told the model WHEN its numbers were from, so it called a live overnight
+# quote a close. quote_timing() says it; the prompt passes it on; and
+# validate_briefing() refuses a draft that calls an unsettled number "closed".
+CBOT_GRAIN_CLOSE_CT = (13, 20)   # 1:20 p.m. CT, the day session's close
+DAY_OPEN_CT = (8, 30)            # before this a live grain quote is overnight
+
+def _frac_price(v):
+    """$4.975 -> '$4.97½', the way the pit writes a bushel price."""
+    try:
+        c = round(float(v) * 400) / 4
+    except (TypeError, ValueError):
+        return ""
+    w = int(c + 1e-9); f = round((c - w) * 4)
+    if f == 4: w += 1; f = 0
+    return f"${w / 100:.2f}" + ("", "\u00bc", "\u00bd", "\u00be")[f]
+
+def quote_timing(fetched_iso, market_status=None, locked_changes=None):
+    """When the board's numbers are from, and whether they are settlements.
+    settled is True on a closed day (weekend/holiday), when the fetch is on a
+    later calendar day than the quote session, or at/after the CBOT grain
+    close. Otherwise the quotes are live: 'overnight' before 8:30 a.m. CT,
+    'intraday' after. prev_settles maps each locked key to its previous
+    settle (the feed's `open`, which holds the prior close)."""
+    out = {"settled": True, "phase": "settle", "as_of": "", "quote_session": None,
+           "prev_session": None, "prev_settles": {}}
+    for k, v in (locked_changes or {}).items():
+        if isinstance(v, dict) and v.get("prev") is not None:
+            out["prev_settles"][k] = float(v["prev"])
+    try:
+        dt = datetime.fromisoformat(str(fetched_iso).replace("Z", "+00:00"))
+        from zoneinfo import ZoneInfo
+        ct = dt.astimezone(ZoneInfo("America/Chicago"))
+    except Exception:
+        return out
+    try:
+        import market_board as _mb
+        qs, ps = _mb.quote_session(fetched_iso), _mb.prev_close_session(fetched_iso)
+    except Exception:
+        qs, ps = ct.date(), None
+    out["quote_session"], out["prev_session"] = qs, ps
+    out["as_of"] = ct.strftime("%-I:%M %p").replace("AM", "a.m.").replace("PM", "p.m.") + " CT"
+    if market_status and market_status.get("is_closed"):
+        return out
+    hm = (ct.hour, ct.minute)
+    if qs is not None and ct.date() == qs and hm < CBOT_GRAIN_CLOSE_CT:
+        out["settled"] = False
+        out["phase"] = "overnight" if hm < DAY_OPEN_CT else "intraday"
+    return out
+
+def price_timing_block(timing):
+    """The prompt's statement of when the prices are from. Empty when settled."""
+    if not timing or timing.get("settled"):
+        return ""
+    ps = timing.get("prev_session")
+    psl = (ps.strftime("%a %b ") + str(ps.day)) if ps else "the previous session"
+    lines = []
+    for k, label in COMMODITY_LABELS.items():
+        v = timing["prev_settles"].get(k)
+        if v is None: continue
+        lines.append(f"  {label}: " + (_frac_price(v) if k in GRAIN_KEYS else f"{v:,.2f}"))
+    return (f"PRICE TIMING (HARD RULE): the prices above are {timing['phase'].upper()} quotes, "
+            f"as of {timing['as_of']}, NOT settlements. The day session has not closed. "
+            f"NEVER write that any of them 'closed', 'settled' or 'finished' at a price; say "
+            f"'overnight', 'trading at', 'sits at' or 'as of {timing['as_of']}'. The change "
+            f"column is measured against the previous settle. The PREVIOUS SETTLES ({psl}), "
+            f"which are the only prices you may call a close or a settle:\n" + "\n".join(lines))
+
+_CLOSE_CLAIM_RE = re.compile(
+    r"\b(closed|closing|settled|settling|finished)\b"
+    r"((?:\s+(?:up|down|higher|lower|flat|unchanged|at|near|around|just|on|the\s+day|"
+    r"a\s+(?:penny|nickel|dime)|\d+(?:\s*[\u00bc\u00bd\u00be])?\s*cents?),?){0,5})"
+    r"\s*\$([0-9]+(?:\.[0-9]+)?)\s*(\u00bc|\u00bd|\u00be|\s1/4|\s1/2|\s3/4)?",
+    re.I)
+
+def close_claims_on_live_quotes(text, timing):
+    """Every 'closed $X' / 'settled at $X' in `text` whose X is not a previous
+    settle, while the board is live. [] when the board is settled."""
+    if not timing or timing.get("settled"):
+        return []
+    prevs = list(timing.get("prev_settles", {}).values())
+    bad = []
+    for m in _CLOSE_CLAIM_RE.finditer(text or ""):
+        x = float(m.group(3))
+        fr = (m.group(4) or "").strip()
+        x += {"\u00bc": .0025, "1/4": .0025, "\u00bd": .005, "1/2": .005, "\u00be": .0075, "3/4": .0075}.get(fr, 0)
+        # a written fraction must match to the quarter cent; a bare "$4.97" may be
+        # the settle rounded or truncated to the cent
+        tol = 0.0013 if fr else 0.0076
+        if any(abs(x - p) <= max(tol, abs(p) * 0.0002) for p in prevs):
+            continue
+        bad.append(m.group(0).strip())
+    return bad
+
+
 def call_claude(price_data, surprises, news_block, seasonal_ctx, todays_quote, past_dailies_block, past_tmyk_topics, market_status, yesterdays_call=None, weekly_thread=None, ongoing_situations="", editorial_notes="", past_one_number_topics=None, past_phrases=None, usda_release="", _parse_retry=True):
     api_key = os.environ.get("ANTHROPIC_API_KEY")
     if not api_key:
@@ -1992,6 +2090,10 @@ def call_claude(price_data, surprises, news_block, seasonal_ctx, todays_quote, p
         surprise_block = "No overnight surprises. Quiet days deserve quiet briefings (RULE 6). Fewer sections if warranted."
 
     locked_table = price_data.get("price_block", "Price data unavailable")
+    _timing = quote_timing(price_data.get("fetched", ""), market_status, price_data.get("locked_changes"))
+    _tb = price_timing_block(_timing)
+    if _tb:
+        locked_table += "\n\n" + _tb
     market_note = f"\nMARKET STATUS: {market_status['note']}\n" if market_status["is_closed"] else ""
     past_section = f"\n{past_dailies_block}\n" if past_dailies_block else ""
 
@@ -2136,7 +2238,7 @@ Apply all 16 IMPACT RULES. Voice samples are NON-NEGOTIABLE, no wire-service neu
         raise
 
 
-def validate_briefing(briefing, locked_prices):
+def validate_briefing(briefing, locked_prices, timing=None):
     warnings = []
     known_values = {k: v for k, v in locked_prices.items() if v and v > 0}
     # v5.1: the prose the price scan walks. Retired fields are read when
@@ -2182,6 +2284,13 @@ def validate_briefing(briefing, locked_prices):
     _defer = briefing_cut.lede_defers(briefing.get("lead", ""))
     if _defer:
         warnings.append(f"Lede deferral: last sentence points forward | \"{_defer}\"")
+    # 2026-10-06: a live overnight/intraday quote called a close. BLOCKS: it is a
+    # false statement of fact about a price, not a voice nit. "closed $X" is
+    # allowed only where X is a previous settle. The headline, lead, sections
+    # and so_what are all in full_text.
+    for _c in close_claims_on_live_quotes(full_text, timing):
+        warnings.append(f"Live quote called a close: \"{_c}\" -- the board is {timing['phase']} "
+                        f"as of {timing['as_of']}; only a previous settle may be called closed/settled")
     em = full_text.count("\u2014"); en = full_text.count("\u2013")
     if em: warnings.append(f"Em dash {em}x")
     if en: warnings.append(f"En dash {en}x")
@@ -4565,7 +4674,10 @@ def main():
     print(f"  Word count: {_wc_total} (target {briefing_cut.TARGET_WORDS}, ceiling {briefing_cut.HARD_CEILING})")
 
     locked_prices = price_data.get("locked_prices", {})
-    is_clean, val_warnings = validate_briefing(briefing, locked_prices)
+    _timing = quote_timing(price_data.get("fetched", ""), market_status, price_data.get("locked_changes"))
+    if not _timing.get("settled"):
+        print(f"  Quote timing: {_timing['phase']} as of {_timing['as_of']} (not settlements)")
+    is_clean, val_warnings = validate_briefing(briefing, locked_prices, _timing)
     # v4.5.0: deterministic level coherence check. Catches the math
     # contradiction class (close above $X paired with claim that $X was
     # broken) that hit Monday 2026-05-04 and propagated forward via the

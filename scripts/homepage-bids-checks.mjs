@@ -83,6 +83,28 @@ eq(F.townOf({ city: "Cameron Coop" }), "Cameron Coop", "no town field: city, not
 eq(placeLabel({ operator: "Cadott Grain", city: "Cadott Grain", town: "Cadott", state: "WI" }), "Cadott, WI", "placeLabel uses town");
 eq(placeLabel({ operator: "Allied", city: "Tomah", state: "WI" }), "Tomah, WI", "placeLabel unchanged without town");
 
+/* 3. the basis unit (2026-10-06): Ritzville Warehouse Co, WA spring wheat,
+   cash 13.40, basis +$6.23 (37 other MWZ26 rows imply $7.17). The licensed
+   feed sends 623 (cents); the old size rule printed +6c on this card. */
+const B = new Function([liftVar(HOME, "PPU_BAND"), liftVar(HOME, "BASIS_SANE"), lift(HOME, "ppu"), lift(HOME, "flatNum"),
+  lift(HOME, "basisCents"), lift(HOME, "basisUnitOf"), lift(HOME, "basisOdd"), lift(HOME, "licBasis"), lift(HOME, "licUnclear"),
+  lift(HOME, "qCents"), lift(HOME, "formatBasis"),
+  "return { basisCents, licBasis, licUnclear, basisOdd, formatBasis };"].join("\n"))();
+eq(B.licBasis(623, 13.40, "wheat"), 6.23, "Ritzville 623 from the licensed feed is $6.23");
+eq(B.licBasis(6.23, 13.40, "wheat"), 6.23, "and 6.23 is the same $6.23, not 6 cents");
+eq(B.basisCents(6.23), 623, "dollars to cents, whatever the size");
+const R = { category: "wheat", cashPrice: 13.40, basis: 6.23 };
+eq(B.basisOdd(R), true, "a +$6.23 wheat basis is unusual (beyond $3)");
+eq(B.formatBasis(6.23, R).str, "+$6.23", "printed in dollars");
+eq(B.licBasis(-20, 10.30, "soybeans"), -0.2, "a -20c bean basis stays cents");
+eq(B.licBasis(-52, 4.62, "corn"), -0.52, "live-feed cents unchanged");
+eq(B.licBasis(-0.52, 4.62, "corn"), -0.52, "dollars unchanged");
+eq(B.licBasis(-800, 4.62, "corn"), null, "neither reading in band: no basis");
+eq(B.licUnclear(-800, 4.62, "corn"), true, "and the row says the unit is unclear");
+eq(B.formatBasis(null, { basisUnclear: true }).title, "basis unit unclear", "printed as a dash titled so");
+eq(B.basisOdd({ category: "corn", basis: -0.52 }), false, "an ordinary basis is not flagged");
+eq(B.formatBasis(-0.52, { category: "corn", basis: -0.52 }).str, "\u221252\u00a2", "and prints in cents as before");
+
 if (fails.length) {
   console.log(`FAIL ${fails.length} of ${pass + fails.length}`);
   for (const f of fails) console.log("  x " + f);
