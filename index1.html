@@ -535,8 +535,9 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
         </div>
         
         <div id="bids-list-area"><div class="bids-skeleton" role="status"><span class="visually-hidden">Loading cash bids</span><div class="bids-skel-row"></div><div class="bids-skel-row"></div><div class="bids-skel-row"></div></div></div>
-        <div style="font-size:.706rem;color:var(--text-muted);margin-top:.5rem;padding-top:.45rem;border-top:1px solid var(--border)"><span class="tip"><button type="button" class="tip-b" aria-expanded="false" aria-describedby="tip-basis">What is basis?</button><span id="tip-basis" role="tooltip" class="tip-t" hidden>Basis is the cash bid minus the futures price it is quoted against. A basis of &minus;30 means 30 cents under futures. Less negative is stronger.</span></span> Posted prices, not contracts. Freight, moisture and grade discounts are the elevator&rsquo;s; call before you haul. <a href="/contact" style="color:var(--text-muted);text-decoration:underline">Wrong number? Tell us</a></div>
-        <details class="m-fold m-fold--calc" open><summary class="m-fold-sum"><span>Store or sell?</span></summary>
+        <!-- 2026-10-06 HERO: "What is basis?", the posted-prices note and
+             "Wrong number?" are in the card's own footer line (bids-homepage.js). -->
+        <details class="m-fold m-fold--calc"><summary class="m-fold-sum"><span>Store or sell?</span></summary>
         <div id="idx1-store-sell" class="idx1-extras-card" style="display:none">
           <h3 class="idx1-extras-title idx1-sub-h"><svg class="ic" aria-hidden="true"><use href="#i-clipboard-list"/></svg> Store or sell?</h3>
           <div class="idx1-extras-sub">Cash price fills from a bid above. Change any number to match your bin.</div>
@@ -1564,7 +1565,9 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')close(true);
     var f = document.querySelectorAll('details.m-fold');
     for(var i = 0; i < f.length; i++){
       if(phone){ if(!f[i].hasAttribute('data-touched')) f[i].open = false; }
-      else f[i].open = true;
+      /* 2026-10-06 HERO: Store or sell starts closed everywhere and shows
+         its summary on desktop too (css/home.css), so it is left alone. */
+      else if(!/\bm-fold--calc\b/.test(f[i].className)) f[i].open = true;
     }
   }
   document.addEventListener('click', function(e){
@@ -1834,7 +1837,7 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')close(true);
   </script>
 <script src="/components/loader.js?v=16" defer></script>
 <script src="/components/geo.js?v=20" defer></script>
-<script src="/components/bids-homepage.js?v=23" defer></script>
+<script src="/components/bids-homepage.js?v=24" defer></script>
 <script src="/components/homepage-extras.js?v=8" defer></script>
 <script>
 (function() {
