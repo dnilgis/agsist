@@ -202,7 +202,7 @@
         <li><strong>Open-Meteo</strong> &mdash; weather. It receives the coordinates of the place you asked about, and turns a ZIP into a place on the home page&rsquo;s bid search.</li>
         <li><strong>OpenStreetMap Nominatim</strong> &mdash; turns coordinates into a place name.</li>
         <li><strong>National Weather Service (api.weather.gov) and Iowa Environmental Mesonet</strong> &mdash; the hail map loads live storm warnings and the last 24 hours of storm reports from them. The requests carry no location from you.</li>
-        <li><strong>Field Scout services</strong> &mdash; a field you draw or look up goes to AGSIST&rsquo;s Cloudflare Worker, which asks USDA (soils, crop history) and Copernicus Sentinel (imagery). Map tiles come from Esri (satellite) and CARTO (base map).</li>
+        <li><strong>Field Scout services</strong> &mdash; a field you draw or look up goes to AGSIST&rsquo;s Cloudflare Worker, which asks USDA (soils, crop history), the FCC (county lookup), the U.S. Drought Monitor, Iowa Environmental Mesonet and Copernicus Sentinel (imagery). Weather history for the field is fetched by your browser from Open-Meteo, using the field&rsquo;s coordinates. Map tiles come from Esri (satellite) and CARTO (base map).</li>
         <li><strong>TradingView</strong> &mdash; the price charts on the corn, soybean and wheat futures pages load from TradingView.</li>
         <li><strong>Windy</strong> &mdash; the radar map on the home page is a frame from Windy.</li>
         <li><strong>Formspree</strong> &mdash; receives the Parcel Report waitlist form on the Farmland Atlas, the approval form on sponsor proofs, and the elevator claim form on the elevators page.</li>
@@ -235,11 +235,12 @@
       <ul>
         <li><code>_ga</code> and <code>_ga_&lt;ID&gt;</code> &mdash; set by Google Analytics, only when analytics is on. They hold a random ID; Google keeps <code>_ga</code> for up to two years.</li>
         <li><code>agsist_subscribed</code> &mdash; set by AGSIST when you sign up for the Daily, for two years, so the signup prompts stop. It is never sent to another site.</li>
+        <li>Embedded TradingView charts and the Windy radar run from those companies&rsquo; own sites and may set their own cookies under their own policies. The analytics switch on this page does not control them.</li>
       </ul>
       <p>Local storage (stays in your browser):</p>
       <ul class="keys">
         <li>Location: <code>agsist-wx-loc</code>, <code>agsist_user_zip</code>, <code>agsist_zip</code>, <code>agsist_state</code></li>
-        <li>Tools: <code>agsist-breakeven</code>, <code>agsist-be-split</code>, <code>agsist_be_&lt;crop&gt;</code>, <code>agsist_priced_&lt;crop&gt;</code>, <code>agsist_gdu</code>, <code>agsist_gbc_v1</code>, <code>agsist-urea-field</code>, <code>agsist-spray-product</code>, <code>agsist-fs-fields</code>, <code>agsist-fs-snap-&lt;id&gt;</code>, <code>agsist-lease-draft</code>, <code>agsist-pd-state</code>, <code>agsist-rma-state</code>, <code>agsist_delivery</code>, <code>cot_market</code></li>
+        <li>Tools: <code>agsist-breakeven</code>, <code>agsist-be-split</code>, <code>agsist_be_&lt;crop&gt;</code>, <code>agsist_priced_&lt;crop&gt;</code>, <code>agsist_gdu</code>, <code>agsist_gbc_v1</code>, <code>agsist-urea-field</code>, <code>agsist-spray-product</code>, <code>agsist-fs-fields</code>, <code>agsist-fs-snap-&lt;id&gt;</code>, <code>agsist-lease-draft</code>, <code>agsist-pd-state</code>, <code>agsist-rma-state</code>, <code>agsist_delivery</code>, <code>cot_market</code>, <code>agsist-raise</code>, <code>agsist-raise-bid</code>, <code>agsist_bids_crop</code>, <code>dp-milk-state</code></li>
         <li>Display: <code>agsist-theme</code>, <code>agsist-ticker-paused</code>, <code>agsist-daily-&lt;date&gt;</code>, <code>agsist_visits</code>, <code>agsist_watching</code></li>
         <li>Prompts: <code>agsist_subscribed</code>, <code>agsist_bar_snooze</code>, <code>agsist_pwa_dismissed</code>, <code>agsist_home_prompt_dismissed_v1</code>, <code>agsist_signup_slim_dismissed</code>, <code>agsist_signup_compact_dismissed</code></li>
         <li>Sponsor proofs: <code>agsist_approved_&lt;code&gt;</code></li>
