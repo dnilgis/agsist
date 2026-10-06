@@ -163,7 +163,10 @@ def load_cash_bids(path=None):
         if abs(basis) > 3.0:
             continue
         city = (b.get("city") or "").strip()
-        name = f"{city}, {state}" if city else (b.get("facility") or state)
+        # `town` is the bids merge's display town, present only when `city` is
+        # an elevator's name ("Cushing Coop" -> Cushing). `city` stays the key.
+        shown = (b.get("town") or "").strip() or city
+        name = f"{shown}, {state}" if shown else (b.get("facility") or state)
         # WHEAT IS SPLIT HERE, where the record is made, so nothing
         # downstream can pool it again by accident. A row whose class the
         # board did not state is counted and never mapped.

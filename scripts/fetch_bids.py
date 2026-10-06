@@ -886,6 +886,10 @@ def network_rows(grid, base=None):
             "facility": b.get("operator") or "Unknown",
             "branch": b.get("branch") or "",
             "city": b.get("city") or "",
+            # The bids merge's display town (2026-10-06): set only when `city`
+            # is an elevator's name and a ZIP or geocode table names the town.
+            # Printed, never keyed.
+            "town": b.get("town") or "",
             "state": (b.get("state") or "").upper(),
             "zip": b.get("zip") or "",
             "distance": round(gd, 1) if isinstance(gd, (int, float)) else None,
