@@ -4,17 +4,19 @@
   /* ── Ad Space showcase (Supporter tier) — replaces Farmers First Network ── */
   .footer-adspace{--ad:#e8743a;--ad-rgb:232,116,58;border-top:1px solid var(--border);margin-top:1.25rem;padding-top:1.25rem;}
   .adspace-head{display:flex;align-items:baseline;gap:.55rem;flex-wrap:wrap;margin-bottom:.85rem;}
-  .adspace-lbl{font-family:'JetBrains Mono',monospace;font-size:0.755rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--ad);}
+  .adspace-lbl{font-size:0.82rem;font-weight:600;color:var(--text-muted);}
   .adspace-sub{font-size:0.795rem;color:var(--text-dim);}
   .adspace-sub strong{color:var(--text);font-weight:600;}
   .adspace-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(168px,100%),1fr));gap:.6rem;}
   .ad-slot{display:flex;flex-direction:column;justify-content:space-between;gap:.5rem;min-height:96px;padding:.8rem .85rem;border-radius:8px;text-decoration:none;}
   .ad-slot--open{border:1px dashed rgba(var(--ad-rgb),.5);background:rgba(var(--ad-rgb),.03);transition:border-color .15s,background .15s,transform .15s;}
   .ad-slot--open:hover{border-color:var(--ad);background:rgba(var(--ad-rgb),.09);transform:translateY(-2px);}
-  .ad-slot--lead{border:1px solid var(--ad);background:var(--ad);justify-content:center;}
-  .ad-slot--lead:hover{border-color:var(--ad);background:var(--ad);opacity:.92;transform:translateY(-2px);}
-  .ad-slot--lead .ad-slot-pitch{color:var(--bg);font-size:1rem;font-weight:800;}
-  .ad-slot--lead .ad-slot-cta{color:var(--bg);opacity:.86;}
+  /* 2026-10-06 (Sig): toned down. One quiet dashed row, not an orange block. */
+  .ad-slot--lead{flex-direction:row;align-items:center;flex-wrap:wrap;gap:.35rem .9rem;min-height:0;padding:.6rem .85rem;border:1px dashed var(--border);background:transparent;}
+  .ad-slot--lead:hover{border-color:rgba(var(--ad-rgb),.6);background:transparent;transform:none;}
+  .ad-slot--lead .ad-slot-tag{display:none;}
+  .ad-slot--lead .ad-slot-pitch{color:var(--text-dim);font-size:.85rem;font-weight:500;}
+  .ad-slot--lead .ad-slot-cta{font-family:inherit;color:var(--text-muted);font-size:.82rem;font-weight:600;letter-spacing:0;}
   .ad-slot-tag{align-self:flex-start;font-family:'JetBrains Mono',monospace;font-size:0.735rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--ad);border:1px solid rgba(var(--ad-rgb),.45);border-radius:3px;padding:.1rem .4rem;}
   .ad-slot-pitch{font-size:.92rem;font-weight:700;color:var(--text);line-height:1.25;}
   .ad-slot-cta{font-family:'JetBrains Mono',monospace;font-size:0.767rem;font-weight:700;letter-spacing:.03em;color:var(--ad);}
@@ -115,16 +117,15 @@
 
     <div class="footer-adspace">
       <div class="adspace-head">
-        <span class="adspace-lbl">&#9656; Ad Space &middot; Supporter Tier</span>
-        <span class="adspace-sub"><strong>First 2 weeks free,</strong> then $25/week.</span>
+        <span class="adspace-lbl">Advertise on AGSIST</span>
       </div>
       <!-- loader.js can swap any .ad-slot--open for a filled advertiser card -->
       <div class="adspace-row" id="adspace-row">
 
         <a href="/sponsor#supporter" class="ad-slot ad-slot--open ad-slot--lead" onclick="if(typeof gtag==='function')gtag('event','sponsor_cta_click',{cta_source:'footer_adspace_slot1'})">
           <span class="ad-slot-tag">Open</span>
-          <span class="ad-slot-pitch">Your logo in this strip, on every page of the site. Category-exclusive per-page ribbons are priced separately.</span>
-          <span class="ad-slot-cta">First 2 weeks free &rarr;</span>
+          <span class="ad-slot-pitch">Your logo here, on every page. $25/week after 2 free weeks.</span>
+          <span class="ad-slot-cta">Details &rarr;</span>
         </a>
 
       </div>

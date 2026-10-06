@@ -1317,8 +1317,6 @@ html[data-theme="light"] #cot-rows .r7-up{color:#23663f}html[data-theme="light"]
 }
 /* Footer strip: the "Open" tag sat orange on the orange slot. Dark ink on
    the orange, both themes (the same #0d1117 the briefing's orange buttons use). */
-footer .ad-slot--lead .ad-slot-tag{color:#0d1117;border-color:rgba(13,17,23,.55)}
-html[data-theme="light"] footer .ad-slot--lead .ad-slot-pitch,html[data-theme="light"] footer .ad-slot--lead .ad-slot-cta{color:#0d1117}
 
 /* ===== block 12 of 23 ===== */
 /* ===== 2026-10-01 r7-design: gold budget, hairlines, states, phone order ===== */
@@ -1380,7 +1378,6 @@ html[data-theme="light"] .skip-link,html[data-theme="light"] .idx1-skip-rail{bac
 html[data-theme="light"] .idx1-zip-change{color:#2d5d82!important}
 html[data-theme="light"] .idx1-zone-live,html[data-theme="light"] .idx1-zone-live small{color:#276b43!important;opacity:1!important}
 html[data-theme="light"] .r7-dim,html[data-theme="light"] #rsc-stats span{color:var(--text-dim)!important}
-html[data-theme="light"] .adspace-lbl{color:var(--ad-orange-ink)!important}
 .rsc-teaser-cta{color:var(--text-dim)!important}
 /* The calculator tooltip sits inside the Cash Bids card, which clipped it
    (overflow:hidden); let it show. */

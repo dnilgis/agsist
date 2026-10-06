@@ -2,8 +2,8 @@
  "schema": "agsist-feeds/1",
  "generated_by": "scripts/build_feeds.py",
  "note": "Derived from the repository, never typed. Pages come from a grep of every .html; the writer and its cadence come from the workflow that names the file or runs the script that names it.",
- "count": 61,
- "with_known_cadence": 61,
+ "count": 60,
+ "with_known_cadence": 60,
  "feeds": [
   {
    "path": "data/afida/county.json",
@@ -171,7 +171,7 @@
    "pages": [
     "cash-bids.html",
     "corn-futures-prices.html",
-    "index1.html",
+    "index.html",
     "soybean-futures-prices.html",
     "status.html",
     "wheat-futures-prices.html"
@@ -363,7 +363,6 @@
     "corn-futures-prices.html",
     "cot.html",
     "index.html",
-    "index1.html",
     "soybean-futures-prices.html",
     "status.html",
     "wheat-futures-prices.html"
@@ -408,7 +407,6 @@
    "pages": [
     "corn-futures-prices.html",
     "index.html",
-    "index1.html",
     "soybean-futures-prices.html",
     "wheat-futures-prices.html"
    ],
@@ -473,7 +471,6 @@
     "daily.html",
     "developer.html",
     "index.html",
-    "index1.html",
     "soybean-futures-prices.html",
     "sponsor.html",
     "status.html",
@@ -534,7 +531,7 @@
    "pages": [
     "cash-bids.html",
     "elevators.html",
-    "index1.html"
+    "index.html"
    ],
    "written_by": [
     "Coverage map \u2014 the elevator directory, drawn"
@@ -558,7 +555,6 @@
    "path": "data/export-sales.json",
    "pages": [
     "index.html",
-    "index1.html",
     "wheat-futures-prices.html"
    ],
    "written_by": [
@@ -589,7 +585,6 @@
     "fast-facts.html",
     "fertilizer.html",
     "index.html",
-    "index1.html",
     "urea.html"
    ],
    "written_by": [
@@ -658,7 +653,7 @@
   {
    "path": "data/hail/recent.json",
    "pages": [
-    "index1.html"
+    "index.html"
    ],
    "written_by": [
     "Hail data refresh",
@@ -685,7 +680,7 @@
    "path": "data/harvest-prices.json",
    "pages": [
     "corn-futures-prices.html",
-    "index1.html",
+    "index.html",
     "soybean-futures-prices.html",
     "status.html",
     "wheat-futures-prices.html"
@@ -715,8 +710,7 @@
    "pages": [
     "ag-odds.html",
     "developer.html",
-    "index.html",
-    "index1.html"
+    "index.html"
    ],
    "written_by": [
     "Fetch Markets"
@@ -981,7 +975,6 @@
    "path": "data/news.json",
    "pages": [
     "index.html",
-    "index1.html",
     "news.html"
    ],
    "written_by": [
@@ -1029,7 +1022,7 @@
    "path": "data/outlooks/manifest.json",
    "pages": [
     "drought-monitor.html",
-    "index1.html",
+    "index.html",
     "status.html"
    ],
    "written_by": [
@@ -1077,7 +1070,7 @@
   {
    "path": "data/predictions.json",
    "pages": [
-    "index1.html",
+    "index.html",
     "scorecard.html"
    ],
    "written_by": [
@@ -1107,7 +1100,6 @@
     "cattle-futures-prices.html",
     "corn-futures-prices.html",
     "index.html",
-    "index1.html",
     "soybean-futures-prices.html",
     "wheat-futures-prices.html"
    ],
@@ -1140,7 +1132,6 @@
     "fast-facts.html",
     "fertilizer.html",
     "index.html",
-    "index1.html",
     "markets.html",
     "milk-prices.html",
     "soybean-futures-prices.html",
@@ -1183,29 +1174,9 @@
    "why_quiet": null
   },
   {
-   "path": "data/rma-discovery.json",
-   "pages": [
-    "index.html"
-   ],
-   "written_by": [],
-   "touched_by": [
-    "Rebuild Feed Manifest"
-   ],
-   "cadence": "maintained by hand, not on a schedule",
-   "curated": true,
-   "planned": false,
-   "external": false,
-   "url": null,
-   "crons": [],
-   "max_gap_hours": null,
-   "quiet": null,
-   "why_quiet": null
-  },
-  {
    "path": "data/rma-planting-dates.json",
    "pages": [
     "index.html",
-    "index1.html",
     "planting-date.html"
    ],
    "written_by": [],
@@ -1226,7 +1197,7 @@
    "path": "data/rma-prices.json",
    "pages": [
     "harvest-price-tracker.html",
-    "index1.html"
+    "index.html"
    ],
    "written_by": [
     "RMA price discovery"
@@ -1250,8 +1221,7 @@
   {
    "path": "data/sponsor.json",
    "pages": [
-    "index.html",
-    "index1.html"
+    "index.html"
    ],
    "written_by": [
     "Sponsor reports \u2014 yesterday's numbers, from GA4"
@@ -1341,7 +1311,6 @@
    "path": "data/tariffs.json",
    "pages": [
     "index.html",
-    "index1.html",
     "tariffs.html"
    ],
    "written_by": [
@@ -1455,7 +1424,7 @@
   {
    "path": "data/wasde.json",
    "pages": [
-    "index1.html"
+    "index.html"
    ],
    "written_by": [
     "WASDE watch \u2014 grade the report as it lands"
@@ -1510,7 +1479,7 @@
   {
    "path": "data/wpi-history.json",
    "pages": [
-    "index1.html"
+    "index.html"
    ],
    "written_by": [
     "WASDE watch \u2014 grade the report as it lands",
@@ -1536,7 +1505,6 @@
    "pages": [
     "conditions-yield.html",
     "index.html",
-    "index1.html",
     "status.html"
    ],
    "written_by": [
