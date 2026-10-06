@@ -41,7 +41,7 @@
 }
 
 /* --- panels ----------------------------------------------------------- */
-html[data-look="panels"] :is(#s7-month,#f1,#f2,#wire-band,#f-prices,#idx1-land,.m-fold--tools,.m-fold--radar,.m-fold--noaa,.m-fold--read,.m-fold--faq,#signup-full,#f5,.m-fold--cot,#f-rail-scorecard,#f-price-alert,#f-rail-scorecard-teaser){
+html[data-look="panels"] :is(#s7-month,#f1,#f2,#wire-band,#f-prices,#idx1-land,.m-fold--tools,.m-fold--radar,.m-fold--noaa,.m-fold--read,.m-fold--faq,#signup-full,#f5,.m-fold--cot,#f-rail-scorecard,.m-fold--alert,#f-rail-scorecard-teaser){
   background:var(--panel-bg)!important;border:1px solid var(--panel-line)!important;border-radius:10px!important;
   padding:var(--panel-pad)!important;margin-bottom:var(--sec-gap)!important;box-shadow:none!important}
 html[data-look="panels"] #f-prices>.m-fold--usda{border-top:1px solid var(--panel-line);margin-top:12px;padding-top:12px}
@@ -49,14 +49,14 @@ html[data-look="panels"] .sec-head{border-bottom:1px solid var(--panel-line)!imp
 html[data-look="panels"] .sec-title::before{content:"";width:3px;height:1.1em;background:var(--fam,var(--gold));border-radius:2px;flex:none;margin-right:2px}
 
 /* --- bands ------------------------------------------------------------ */
-html[data-look="bands"] :is(#s7-month,#f1,#f2,#wire-band,#f-prices,#idx1-land,.m-fold--tools,.m-fold--radar,.m-fold--noaa,.m-fold--read,.m-fold--faq,#signup-full,#f5,.m-fold--cot,#f-rail-scorecard,#f-price-alert,#f-rail-scorecard-teaser){
+html[data-look="bands"] :is(#s7-month,#f1,#f2,#wire-band,#f-prices,#idx1-land,.m-fold--tools,.m-fold--radar,.m-fold--noaa,.m-fold--read,.m-fold--faq,#signup-full,#f5,.m-fold--cot,#f-rail-scorecard,.m-fold--alert,#f-rail-scorecard-teaser){
   background:var(--panel-bg)!important;border:0!important;border-radius:0!important;
   padding:0 18px 16px!important;margin-bottom:var(--sec-gap)!important;box-shadow:none!important}
 html[data-look="bands"] .sec-head{background:var(--band-bar);margin:0 -18px 12px!important;padding:10px 18px!important;border-bottom:2px solid var(--fam,var(--gold))!important}
 html[data-look="bands"] .m-fold:not(.m-fold--calc)>summary.m-fold-sum{background:var(--band-bar);margin:0 -18px!important;padding-left:18px!important;padding-right:18px!important;border-bottom:2px solid var(--fam,var(--gold))!important}
 
 /* bands carries C's coloured header text and A's hairline and corners. */
-html[data-look="bands"] :is(#s7-month,#f1,#f2,#wire-band,#f-prices,#idx1-land,.m-fold--tools,.m-fold--radar,.m-fold--noaa,.m-fold--read,.m-fold--faq,#signup-full,#f5,.m-fold--cot,#f-rail-scorecard,#f-price-alert,#f-rail-scorecard-teaser){
+html[data-look="bands"] :is(#s7-month,#f1,#f2,#wire-band,#f-prices,#idx1-land,.m-fold--tools,.m-fold--radar,.m-fold--noaa,.m-fold--read,.m-fold--faq,#signup-full,#f5,.m-fold--cot,#f-rail-scorecard,.m-fold--alert,#f-rail-scorecard-teaser){
   border:1px solid var(--panel-line)!important;border-radius:8px!important}
 html[data-look="bands"] :is(#f1,#f2,#f-prices,#idx1-land,#f5,#f-rail-scorecard,#f-price-alert,#f-rail-scorecard-teaser,#signup-full)>.sec-head:first-child{border-radius:7px 7px 0 0}
 html[data-look="bands"] .m-fold:not(.m-fold--calc)>summary.m-fold-sum{border-radius:7px 7px 0 0}
@@ -81,7 +81,7 @@ html[data-look="bands"] #wire-band .wr-k{color:var(--fam)!important}
 @media(max-width:600px){html[data-look="bands"] :is(#s7-month>.s7-head,#wire-band>.wr-summary){margin-left:-14px!important;margin-right:-14px!important;padding-left:14px!important;padding-right:14px!important}}
 
 /* --- families --------------------------------------------------------- */
-html[data-look="families"] :is(#s7-month,#f1,#f2,#wire-band,#f-prices,#idx1-land,.m-fold--tools,.m-fold--radar,.m-fold--noaa,.m-fold--read,.m-fold--faq,#signup-full,#f5,.m-fold--cot,#f-rail-scorecard,#f-price-alert,#f-rail-scorecard-teaser){
+html[data-look="families"] :is(#s7-month,#f1,#f2,#wire-band,#f-prices,#idx1-land,.m-fold--tools,.m-fold--radar,.m-fold--noaa,.m-fold--read,.m-fold--faq,#signup-full,#f5,.m-fold--cot,#f-rail-scorecard,.m-fold--alert,#f-rail-scorecard-teaser){
   background:none!important;border:0!important;border-left:3px solid var(--fam,var(--gold))!important;border-radius:0!important;
   padding:2px 0 4px 14px!important;margin-bottom:28px!important;box-shadow:none!important}
 html[data-look="families"] :is(.sec-title,.m-fold>summary.m-fold-sum>span,.wr-k){color:var(--fam,var(--gold))!important}
@@ -98,7 +98,7 @@ html[data-look] #f1 .bh-elev>div:first-child>div:first-child{font-size:1rem;font
 @media(max-width:600px){
   :root{--panel-pad:14px 14px}
   html[data-look="bands"] .sec-head,html[data-look="bands"] .m-fold:not(.m-fold--calc)>summary.m-fold-sum{margin-left:-14px!important;margin-right:-14px!important;padding-left:14px!important;padding-right:14px!important}
-  html[data-look="bands"] :is(#s7-month,#f1,#f2,#wire-band,#f-prices,#idx1-land,.m-fold--tools,.m-fold--radar,.m-fold--noaa,.m-fold--read,.m-fold--faq,#signup-full,#f5,.m-fold--cot,#f-rail-scorecard,#f-price-alert,#f-rail-scorecard-teaser){padding:0 14px 14px!important}
+  html[data-look="bands"] :is(#s7-month,#f1,#f2,#wire-band,#f-prices,#idx1-land,.m-fold--tools,.m-fold--radar,.m-fold--noaa,.m-fold--read,.m-fold--faq,#signup-full,#f5,.m-fold--cot,#f-rail-scorecard,.m-fold--alert,#f-rail-scorecard-teaser){padding:0 14px 14px!important}
 }
 
 /* 52-week range bars in the price tables: the same red-to-gold-to-green

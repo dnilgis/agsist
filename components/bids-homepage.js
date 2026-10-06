@@ -422,9 +422,9 @@
     var sub = '';
     if(bs.str !== '—'){
       var rf = refFor(b, cat, pp);
-      /* "−62¢" until the contract is known, then "−62 Dec". */
-      var cents = bs.str === 'even' ? 'even' : bs.str.replace('¢', '');
-      var tail = rf.short ? ' ' + rf.short : (bs.str === 'even' ? '' : '¢');
+      /* "−62¢" until the contract is known, then "−62¢ Dec". Same unit either way. */
+      var cents = bs.str;
+      var tail = rf.short ? ' ' + rf.short : '';
       sub = '<span class="bh-bas"><span class="bh-vh">basis </span>' + cents + '<span class="bh-refm"' + rf.attr + '>' + escHtml(tail) + '</span></span>';
     }
     sub += chgSpan(b, false, false);
