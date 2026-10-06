@@ -512,7 +512,7 @@ document.getElementById('pill-bean').addEventListener('click',function(){
   document.getElementById('pd-rm-lbl').textContent='Maturity Group (e.g. 3.0)';
   document.getElementById('pd-rm-hint').textContent='MG 3.0\u20133.5 typical for south WI \u00b7 MG 1.5\u20132.5 for north WI/MN';
   var mgEl=document.getElementById('pd-rm');
-  mgEl.min=0; mgEl.max=6; mgEl.step=0.5; mgEl.value=3;
+  mgEl.min=0; mgEl.max=6; mgEl.step=0.5; mgEl.value=1;
   renderWindowBars(); renderPenaltyTable(); renderGDUCompare(); renderDiseaseCards(); runVerdict();
 });
 
@@ -640,7 +640,7 @@ function renderGDUCompare(){
   var _rmv = parseFloat(document.getElementById('pd-rm').value);
   var rmOK = crop==='corn' ? (isFinite(_rmv)&&_rmv>=70&&_rmv<=135) : (isFinite(_rmv)&&_rmv>=0&&_rmv<=6);
   var rm = rmOK ? _rmv : null;
-  // Corn: rm*22+250, an AGSIST approximation (same as /gdu-calculator).
+  // Corn: rm*22+250, an AGSIST line through K-State (110-day ~2,670) and Purdue (112-day ~2,700); same as /gdu-calculator.
   // Soybean: 1750 + 280*MG, a straight line through NDSU's soybean GDD model (planting to R8:
   // 1,694 for 00.8, 1,890 for 0.5, 2,058 for 1.1 RM), same as /gdu-calculator. Used ONLY for
   // MG -0.2 to 1.1; any other MG has no published figure, so no target is printed.
@@ -667,7 +667,7 @@ function renderGDUCompare(){
       if(rm===null) tgt = crop==='corn' ? '\u2014 Enter a corn relative maturity from 70 to 135.' : '\u2014 Enter a soybean maturity group from 0 to 6.';
       else tgt = 'Soybean GDU target: \u2014 \u00b7 no published GDD-to-maturity figure for MG '+rm+' (NDSU\u2019s model covers 00.8\u20131.1); soybean maturity is driven by day length \u2014 use the seed company\u2019s rating.';
     }
-    else { tgt = 'GDU target for '+rm+(crop==='corn'?'-day RM corn':' MG soybean')+': '+gduTarget.toLocaleString()+' GDUs'+(crop==='corn'?' (AGSIST approximation, a formula figure for reference).':' to R8 (NDSU soybean GDD model).'); }
+    else { tgt = 'GDU target for '+rm+(crop==='corn'?'-day RM corn':' MG soybean')+': '+gduTarget.toLocaleString()+' GDUs'+(crop==='corn'?' (AGSIST line through K-State 110-day &asymp; 2,670 and Purdue 112-day &asymp; 2,700; a reference figure).':' to R8 (NDSU soybean GDD model).'); }
     noteEl.textContent = 'These counts come from a Wisconsin monthly-average table. They are an estimate: check your hybrid\u2019s rating. GDUs are counted from the planting date to the 50% first-fall-frost date for '+fz.zone+' ('+fz.fall50+'). Only the frost date changes with the zone. The table has no April rate, so it starts at May 1. '+tgt;
   }
 

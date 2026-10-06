@@ -117,7 +117,7 @@ $('p-corn').addEventListener('click',function(){if(crop==='corn')return;crop='co
   $('rm-l').textContent='Relative Maturity';$('rm').value=108;calc();});
 $('p-bean').addEventListener('click',function(){if(crop==='bean')return;crop='bean';
   $('p-bean').setAttribute('aria-pressed','true');$('p-corn').setAttribute('aria-pressed','false');
-  $('rm-l').textContent='Maturity Group';$('rm').value=3;calc();});
+  $('rm-l').textContent='Maturity Group';$('rm').value=1;calc();});
 
 ['rm','frost'].forEach(function(id){$(id).addEventListener('input',calc);});
 $('plant').addEventListener('input',function(){realAccum=null;realDays=null;realThrough=null;calc();});

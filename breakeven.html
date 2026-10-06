@@ -382,19 +382,22 @@
         if(landEl.dataset.userVal!=null&&landEl.dataset.userVal!=='')landEl.value=landEl.dataset.userVal;
       }
     }
-    COST_KEYS.forEach(function(k){costs[k]=Math.max(0,parseFloat(document.getElementById(k).value)||0);});
+    // A BLANK COST LINE IS NOT $0. Clearing Land used to turn -$5/ac into +$245/ac
+    // with nothing on screen saying a line was missing. A typed 0 still counts.
+    var _cBlank=[];
+    COST_KEYS.forEach(function(k){var v=document.getElementById(k).value;if(String(v).trim()===''||!isFinite(parseFloat(v)))_cBlank.push(COST_LABELS[k]||k);costs[k]=Math.max(0,parseFloat(v)||0);});
     var totalCost=0;Object.keys(costs).forEach(function(k){totalCost+=costs[k];});
-    var _yBad=yldVal>1000, _pBad=price>100, _bBad=Math.abs(basis)>3, _cOK=totalCost>0;
+    var _yBad=yldVal>1000, _pBad=price>100, _bBad=Math.abs(basis)>3, _cOK=totalCost>0&&!_cBlank.length;
     var costPerBu=(yldVal>0&&!_yBad)?totalCost/yldVal:0,revenue=yldVal*cash,profit=revenue-totalCost,yldNeeded=cash>0?totalCost/cash:0,roiPct=totalCost>0?profit/totalCost*100:0,acres=parseFloat(document.getElementById('acres').value)||0,farmTotal=profit*acres;
     saveState();
     // $0.00/bu reads as "every price is profitable". A missing input is not a break-even.
     // A basis of -30 is cents typed into a dollars field; it turned $4.50 into -$25.50 cash. Break-even (cost / yield) does not use basis, so it still shows.
-    var _ok=yldVal>0&&!_yBad, _beOK=_ok&&_cOK, _pOK=price>0&&!_pBad&&!_bBad, _calc=_ok&&_pOK, DASH='\u2014', BWHY='basis looks like cents \u2014 enter dollars, e.g. -0.30', YWHY=_yBad?'yield above 1000':'enter a yield', WHYP=DASH+' \u00b7 '+(_pBad?'price above 100':_bBad?BWHY:'enter a price'), WHY=!_ok?DASH+' \u00b7 '+YWHY:WHYP, CWHY=DASH+' \u00b7 enter your costs', BEWHY=!_ok?DASH+' \u00b7 '+YWHY:CWHY, AWHY=DASH+' \u00b7 enter acres';
+    var _ok=yldVal>0&&!_yBad, _beOK=_ok&&_cOK, _pOK=price>0&&!_pBad&&!_bBad, _calc=_ok&&_pOK&&!_cBlank.length, DASH='\u2014', BWHY='basis looks like cents \u2014 enter dollars, e.g. -0.30', YWHY=_yBad?'yield above 1000':'enter a yield', WHYP=DASH+' \u00b7 '+(_pBad?'price above 100':_bBad?BWHY:'enter a price'), CWHY=DASH+' \u00b7 '+(_cBlank.length?(_cBlank.length===1?_cBlank[0]+' is blank':_cBlank.length+' cost lines are blank')+' \u2014 type 0 if none':'enter your costs'), WHY=!_ok?DASH+' \u00b7 '+YWHY:!_pOK?WHYP:_cBlank.length?CWHY:WHYP, BEWHY=!_ok?DASH+' \u00b7 '+YWHY:CWHY, AWHY=DASH+' \u00b7 enter acres';
     var fM=function(n){return (n<0?'-$':'$')+Math.abs(Math.round(n)).toLocaleString();};
-    document.getElementById('totalCost').textContent=fM(totalCost)+'/ac';
+    document.getElementById('totalCost').textContent=_cBlank.length?CWHY:fM(totalCost)+'/ac';
     document.getElementById('costPerBu').textContent=_beOK?'$'+costPerBu.toFixed(2)+'/bu':BEWHY;
     document.getElementById('yieldNeeded').textContent=!_pOK?WHYP:!_cOK?CWHY:(cash>0?Math.ceil(yldNeeded-1e-9)+' bu/ac':DASH+' \u00b7 basis is larger than the price');
-    document.getElementById('revenue').textContent=_calc?fM(revenue)+'/ac':WHY;
+    document.getElementById('revenue').textContent=(_ok&&_pOK)?fM(revenue)+'/ac':(!_ok?DASH+' \u00b7 '+YWHY:WHYP);
     var beEl=document.getElementById('breakeven');var beState=!_pOK?'':(cash>costPerBu&&costPerBu>0)?' · under market':(cash<costPerBu&&costPerBu>0)?' · over market':'';if(_ok&&beState&&basis===0)beState+=' · futures terms';var bsEl=document.getElementById('be-sub');if(bsEl){var _b0=_ok&&beState&&basis===0;bsEl.hidden=!_b0;bsEl.textContent=_b0?'Basis is 0, so cash and futures are the same.':'';}beEl.textContent=_beOK?('$'+costPerBu.toFixed(2)+'/bu'+beState):BEWHY;beEl.className='result-value be-highlight '+(!_calc||!_beOK?'highlight':cash>costPerBu&&costPerBu>0?'positive':cash<costPerBu&&costPerBu>0?'negative':'highlight');
     var fnEl=document.getElementById('futNeeded');if(fnEl)fnEl.textContent=!_beOK?BEWHY:_bBad?DASH+' \u00b7 '+BWHY:'$'+(costPerBu-basis).toFixed(2)+'/bu';
     var snEl=document.getElementById('split-note');
@@ -419,7 +422,7 @@
     var pspr=document.getElementById('ps-profit');if(pspr){pspr.textContent=_calc?(profit>=0?'+$':'-$')+Math.abs(Math.round(profit)).toLocaleString()+'/ac':WHY;pspr.className='print-stat-value '+(!_calc?'':profit>=0?'pos':'neg');}
     var psal=document.getElementById('ps-acres-label');if(psal)psal.textContent=Math.round(acres).toLocaleString();
     var psf=document.getElementById('ps-farm');if(psf){psf.textContent=!_calc?WHY:!_fOK?AWHY:(farmTotal>=0?'+$':'-$')+Math.abs(Math.round(farmTotal)).toLocaleString();psf.className='print-stat-value '+(!_fOK?'':farmTotal>=0?'pos':'neg');}
-    updateCostBar(costs,totalCost);updateGauge(_calc?profit:null,WHY.replace(' \u00b7 ',' '));updateSensitivity(costs,_ok?yldVal:0,_pOK?price:0,totalCost,basis);
+    updateCostBar(costs,totalCost);updateGauge(_calc?profit:null,WHY.replace(' \u00b7 ',' '));updateSensitivity(costs,_ok?yldVal:0,(_pOK&&!_cBlank.length)?price:0,totalCost,basis);
     var mb=document.getElementById('mini-bar');if(mb){mb.querySelector('#mb-be').textContent=_beOK?'$'+costPerBu.toFixed(2)+'/bu':BEWHY;var mbp=mb.querySelector('#mb-profit');mbp.textContent=_calc?(profit>=0?'+$':'-$')+Math.abs(Math.round(profit)).toLocaleString()+'/ac':WHY;mbp.style.color=!_calc?'':profit>=0?'var(--green)':'var(--red)';}
   }
   function updateCostBar(costs,total){if(total<=0){document.getElementById('cost-bar').innerHTML='';document.getElementById('cost-legend').innerHTML='';return;}var barHTML='',legendHTML='';COST_KEYS.forEach(function(k){var pct=costs[k]/total*100;if(pct<0.5)return;barHTML+='<div class="cost-bar-seg" style="width:'+pct.toFixed(1)+'%;background:'+COST_COLORS[k]+'"><span class="seg-tip">'+COST_LABELS[k]+': $'+Math.round(costs[k])+'/ac ('+pct.toFixed(0)+'%)</span></div>';legendHTML+='<span class="cost-legend-item"><span class="cost-legend-dot" style="background:'+COST_COLORS[k]+'"></span>'+COST_LABELS[k]+' $'+Math.round(costs[k])+' ('+pct.toFixed(0)+'%)</span>';});document.getElementById('cost-bar').innerHTML=barHTML;document.getElementById('cost-legend').innerHTML=legendHTML;}
@@ -429,7 +432,7 @@
     if(baseYield<=0||basePrice<=0){
       // Returning here used to leave the previous 36-cell grid on screen, green
       // "you are here" box and all, for a scenario the operator just edited away.
-      document.getElementById('sens-table').innerHTML='<tr><td class="sens-zero" style="padding:1rem;text-align:center">Enter a yield and a futures price to see the what-if grid.</td></tr>';
+      document.getElementById('sens-table').innerHTML='<tr><td class="sens-zero" style="padding:1rem;text-align:center">Enter a yield, a futures price and every cost line (0 if none) to see the what-if grid.</td></tr>';
       var sn0=document.getElementById('sens-note');if(sn0)sn0.textContent='';
       return;
     }
