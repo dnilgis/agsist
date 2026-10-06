@@ -286,7 +286,7 @@
         <div class="snap-prod"><span class="snap-prod-num">17.0</span><span class="snap-prod-unit">B&nbsp;bu</span><span class="snap-prod-yoy up">&#9650; +14% vs &rsquo;24</span></div>
         <div class="snap-rows">
           <div class="snap-row"><span class="snap-rl">Avg yield</span><span class="snap-rv">186.5 bu/ac<span class="yoy up">&#9650; +7.2</span></span></div>
-          <div class="snap-row"><span class="snap-rl">Marketing-year avg price</span><span class="snap-rv">$4.15/bu<span class="snap-rl" style="font-weight:400"> &middot; 2025/26 est.</span></span></div>
+          <div class="snap-row"><span class="snap-rl">Marketing-year avg price</span><span class="snap-rv" id="snap-myp-corn">$4.15/bu<span class="snap-rl" style="font-weight:400"> &middot; 2025/26 est.</span></span></div>
           <div class="snap-row"><span class="snap-rl">Harvested</span><span class="snap-rv">91.3 M ac</span></div>
         </div>
         <div class="spark-wrap" id="sparkwrap-corn" style="display:none"><span class="spark-lbl">Yield &rsquo;10&ndash;&rsquo;25</span><span class="spark" id="spark-corn"></span></div>
@@ -296,7 +296,7 @@
         <div class="snap-prod"><span class="snap-prod-num">4.26</span><span class="snap-prod-unit">B&nbsp;bu</span><span class="snap-prod-yoy down">&#9660; &minus;2% vs &rsquo;24</span></div>
         <div class="snap-rows">
           <div class="snap-row"><span class="snap-rl">Avg yield</span><span class="snap-rv">53.0 bu/ac<span class="yoy up">&#9650; +2.3</span></span></div>
-          <div class="snap-row"><span class="snap-rl">Marketing-year avg price</span><span class="snap-rv">$10.50/bu<span class="snap-rl" style="font-weight:400"> &middot; 2025/26 est.</span></span></div>
+          <div class="snap-row"><span class="snap-rl">Marketing-year avg price</span><span class="snap-rv" id="snap-myp-soy">$10.50/bu<span class="snap-rl" style="font-weight:400"> &middot; 2025/26 est.</span></span></div>
           <div class="snap-row"><span class="snap-rl">Harvested</span><span class="snap-rv">80.4 M ac</span></div>
         </div>
         <div class="spark-wrap" id="sparkwrap-soy" style="display:none"><span class="spark-lbl">Yield &rsquo;10&ndash;&rsquo;25</span><span class="spark" id="spark-soy"></span></div>
@@ -306,13 +306,13 @@
         <div class="snap-prod"><span class="snap-prod-num">1.98</span><span class="snap-prod-unit">B&nbsp;bu</span><span class="snap-prod-yoy up">&#9650; under 1% vs &rsquo;24</span></div>
         <div class="snap-rows">
           <div class="snap-row"><span class="snap-rl">Avg yield</span><span class="snap-rv">53.3 bu/ac<span class="yoy up">&#9650; +2.1</span></span></div>
-          <div class="snap-row"><span class="snap-rl">Marketing-year avg price</span><span class="snap-rv">$5.00/bu<span class="snap-rl" style="font-weight:400"> &middot; 2025/26 est.</span></span></div>
+          <div class="snap-row"><span class="snap-rl">Marketing-year avg price</span><span class="snap-rv" id="snap-myp-wheat">$5.00/bu<span class="snap-rl" style="font-weight:400"> &middot; 2025/26 est.</span></span></div>
           <div class="snap-row"><span class="snap-rl">Harvested</span><span class="snap-rv">37.2 M ac</span></div>
         </div>
         <div class="spark-wrap" id="sparkwrap-wheat" style="display:none"><span class="spark-lbl">Yield &rsquo;10&ndash;&rsquo;25</span><span class="spark" id="spark-wheat"></span></div>
       </div>
       </div>
-      <p class="snap-src">Production, yield &amp; harvested acres: USDA NASS <em>Crop Production 2025 Summary</em> (final, Jan 2026). Marketing-year average farm prices: USDA WASDE 2025/26 estimates, a fixed snapshot that WASDE revises monthly. The price tabs in the Data Explorer below are calendar-year averages, so they differ from these marketing-year figures. Yield trend lines are drawn from the national series below when available.</p>
+      <p class="snap-src">Production, yield &amp; harvested acres: USDA NASS <em>Crop Production 2025 Summary</em> (final, Jan 2026). <span id="snap-myp-src">Marketing-year average farm prices: USDA WASDE 2025/26 estimates, a fixed snapshot that WASDE revises monthly.</span> The price tabs in the Data Explorer below are calendar-year averages, so they differ from these marketing-year figures. Yield trend lines are drawn from the national series below when available.</p>
 
       <hr class="qs-hr">
 
@@ -557,9 +557,9 @@
   var DS = {
     'corn-yield':  {file:'/data/nass/corn-yield.json',   us:'/data/nass/corn-yield-us.json',  label:'Corn Yield',            unit:'bu/acre'},
     'soy-yield':   {file:'/data/nass/soy-yield.json',    us:'/data/nass/soy-yield-us.json',   label:'Soybean Yield',         unit:'bu/acre'},
-    'wheat-yield': {file:'/data/nass/wheat-yield.json',  /* no us: wheat-yield-us.json is ALL wheat; this tab is winter wheat */ label:'Winter Wheat Yield',    unit:'bu/acre'},
-    'corn-acres':  {file:'/data/nass/corn-acres.json',   agg:'sum',                           label:'Corn Acres Planted',    unit:'M acres'},
-    'soy-acres':   {file:'/data/nass/soy-acres.json',    agg:'sum',                           label:'Soybean Acres Planted', unit:'M acres'},
+    'wheat-yield': {file:'/data/nass/wheat-yield.json',  us:'/data/nass/wheat-winter-yield-us.json', /* wheat-yield-us.json is ALL wheat; this tab is winter wheat */ label:'Winter Wheat Yield',    unit:'bu/acre'},
+    'corn-acres':  {file:'/data/nass/corn-acres.json',   us:'/data/nass/corn-acres-us.json', agg:'sum',                           label:'Corn Acres Planted',    unit:'M acres'},
+    'soy-acres':   {file:'/data/nass/soy-acres.json',    us:'/data/nass/soy-acres-us.json', agg:'sum',                           label:'Soybean Acres Planted', unit:'M acres'},
     'corn-price':  {file:'/data/nass/corn-price.json',   agg:'avg',                           label:'Corn Price Received (calendar-year avg)',   unit:'$/bu'},
     'soy-price':   {file:'/data/nass/soy-price.json',    agg:'avg',                           label:'Soybean Price Received (calendar-year avg)',unit:'$/bu'}
   };
@@ -791,6 +791,23 @@
     {key:'soy',   yf:'/data/nass/soy-yield-us.json',   color:'var(--green)'},
     {key:'wheat', yf:'/data/nass/wheat-yield-us.json', color:'#c9a24a'}
   ];
+  /* MARKETING-YEAR PRICES: NASS's final replaces the WASDE snapshot once the
+     marketing year has closed and NASS has published it (corn and soybeans
+     Sep 30; wheat end of June). Until then the WASDE figure stays, labelled
+     as an estimate. */
+  function hydrateMYPrices(){
+    var got = 0, want = 0;
+    [['corn','/data/nass/corn-price-my.json'],['soy','/data/nass/soy-price-my.json'],['wheat','/data/nass/wheat-price-my.json']].forEach(function(c){
+      var node = el('snap-myp-'+c[0]); if (!node) return; want++;
+      fetch(c[1]).then(function(r){ return r.ok ? r.json() : null; }).then(function(d){
+        var v = d && d.values && d.values['2025'];
+        if (v == null) return;
+        node.innerHTML = '$'+(+v).toFixed(2)+'/bu<span class="snap-rl" style="font-weight:400"> &middot; 2025/26 final</span>';
+        if (++got === want){ var s = el('snap-myp-src'); if (s) s.textContent = 'Marketing-year average farm prices: USDA NASS final 2025/26 marketing-year averages (Agricultural Prices).'; }
+      }).catch(function(){});
+    });
+  }
+  hydrateMYPrices();
   function hydrateHero(){
     HERO.forEach(function(c){
       fetch(c.yf).then(function(r){ return r.ok ? r.json() : null; }).then(function(d){
@@ -821,7 +838,9 @@
     // print "latest final USDA NASS crop year 2026" over the top of them.
     var arr = Object.keys(ss).map(function(k){
       return { name: ss[k].name || k, prod: ss[k][cmd+'_prod'], yld: ss[k][cmd+'_yield'],
-               year: ss[k].year, fc: !!ss[k].forecast, combined: !!ss[k].combined || isCombined(k) };
+               year: (cmd==='wheat' && ss[k].wheat_year) ? ss[k].wheat_year : ss[k].year,
+               fc: (cmd==='wheat' && ss[k].wheat_year) ? !!ss[k].wheat_forecast : !!ss[k].forecast,
+               combined: !!ss[k].combined || isCombined(k) };
     }).filter(function(x){ return x.prod != null && +x.prod > 0 && !x.combined && !isCombined(x.name); })
       .sort(function(a,b){ return b.prod - a.prod; }).slice(0,10);
     var list = el('ts-list');
