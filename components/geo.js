@@ -460,12 +460,16 @@ function fetchWeather(lat, lon, label, known) {
   var frame = document.getElementById('windy-frame');
   if (frame) {
     var la = lat.toFixed(4), lo = lon.toFixed(4);
-    frame.src = 'https://embed.windy.com/embed.html?type=map&location=coordinates'
+    var wurl = 'https://embed.windy.com/embed.html?type=map&location=coordinates'
       + '&metricRain=in&metricTemp=%C2%B0F&metricWind=mph'
       + '&zoom=7&overlay=radar&product=radar&level=surface'
       + '&lat='+la+'&lon='+lo+'&detailLat='+la+'&detailLon='+lo
       + '&detail=false&pressure=false&menu=false&message=false&marker=false'
       + '&calendar=now&thunder=false';
+    /* 2026-10-06: a lazy frame (data-src and no src yet) keeps waiting for
+       its on-screen loader; only the place it will load changes. */
+    if (frame.hasAttribute('data-src') && !frame.getAttribute('src')) frame.setAttribute('data-src', wurl);
+    else frame.src = wurl;
   }
 
   (function() {

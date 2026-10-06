@@ -176,6 +176,11 @@ def main():
 
     # ── The Read (price-stats) ───────────────────────────────────────
     read_map = {"corn": "corn", "soybean": "beans", "wheat": "wheat"}
+    # 2026-10-06: the new homepage dropped The Read (the briefing covers it).
+    # No sig-* slots on the page means nothing to bake, not anchor drift.
+    if '<span id="sig-corn-num">' not in html:
+        read_map = {}
+        print("[bake] no Read slots on the page; skipping The Read")
     for key, sig in read_map.items():
         st = stats.get(key) or {}
         if not st.get("read"):
@@ -206,7 +211,7 @@ def main():
         baked.append(f"read:{key}")
 
     # cattle tile is a feeder/live ratio now: empty the old sentence
-    html, _ = replace_inner(html, r'<div class="sig-read" id="sig-cattle-read">', "</div>", "", "cattle-read")
+    html, _ = replace_inner(html, r'<div class="sig-read" id="sig-cattle-read">', "</div>", "", "cattle-read", required=False)
     cattle = {}
     if cattle.get("read"):
         html, _ = replace_inner(

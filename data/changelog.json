@@ -1,7 +1,30 @@
 {
- "updated": "2026-10-01",
+ "updated": "2026-10-06",
  "note": "Curated by hand each work session. Dates are the day the change was built; uploads usually land the same day or the next. Machine-refreshed data (prices, bids, weather, briefings) is not logged here \u2014 that updates continuously.",
  "entries": [
+  {
+   "date": "2026-10-06",
+   "items": [
+    {
+     "tag": "new",
+     "page": "/",
+     "name": "A new homepage",
+     "text": "The first screen now answers three things: the best corn and soybean bid near you (with the delivery month and basis), where December corn and November soybean futures stand, and whether it is a day to spray. Cash bids are one row per elevator; tap a row for the phone number, delivery months and carry. Weather and a live radar sit beside the bids. Each fact shows once, and things that were stale or approximate (fertilizer quotes, the tariff table) moved to their own pages."
+    },
+    {
+     "tag": "improved",
+     "page": "/cash-bids",
+     "name": "Elevator towns and harvest bids",
+     "text": "Elevators that listed their company name where the town belongs now show the real town, taken from their own ZIP. New-crop and spot bids now count as this month's bid during harvest, so the top bid near you is the true top."
+    },
+    {
+     "tag": "improved",
+     "page": "/",
+     "name": "Prediction bot replaces the old call scorecard",
+     "text": "The Action in the briefing is now a statistical bot's call, labelled BOT CALL, with a public backtest. It currently scores no better than a coin flip, and the page says so."
+    }
+   ]
+  },
   {
    "date": "2026-10-01",
    "items": [
