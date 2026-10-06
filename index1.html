@@ -539,8 +539,8 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
           <div class="idx1-extras-row">
             <label class="idx1-extras-field">Cash price now ($/bu)<input id="idx1-calc-price" type="number" step="0.01" min="0" inputmode="decimal"></label>
             <label class="idx1-extras-field">Storage cost ($/bu/mo)<input id="idx1-calc-cost" type="number" step="0.01" min="0" placeholder="e.g. 0.03" inputmode="decimal"></label>
-            <label class="idx1-extras-field">Months you would store<input id="idx1-calc-months" type="number" step="1" min="0" placeholder="e.g. 3" inputmode="decimal"></label>
-            <label class="idx1-extras-field">Carry you expect ($/bu)<input id="idx1-calc-carry" type="number" step="0.01" min="0" placeholder="e.g. 0.10" inputmode="decimal"></label>
+            <label class="idx1-extras-field">Months you would store<input id="idx1-calc-months" type="number" step="1" min="0" max="24" inputmode="numeric"></label>
+            <label class="idx1-extras-field">Carry you expect ($/bu)<input id="idx1-calc-carry" type="number" step="0.01" placeholder="e.g. 0.10" inputmode="decimal"></label>
           </div>
           <div class="idx1-extras-row idx1-calc-opt">
             <label class="idx1-extras-field">Interest rate (%/yr) <span class="idx1-opt">optional</span><input id="idx1-calc-rate" type="number" step="0.1" min="0" max="30" placeholder="e.g. 7.5" inputmode="decimal"></label>
@@ -555,6 +555,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
         <div id="idx1-basis-chart" class="idx1-extras-card" style="display:none">
           <div class="idx1-extras-title"><svg class="ic" aria-hidden="true"><use href="#i-trending-up"/></svg> Basis history at this elevator</div>
           <svg id="idx1-basis-svg" viewBox="0 0 300 70" preserveAspectRatio="none" style="width:100%;height:70px;display:block;margin:.3rem 0"></svg>
+          <div id="idx1-basis-ends" class="idx1-basis-ends"></div>
           <div id="idx1-basis-chart-fine" class="idx1-extras-fine"></div>
         </div>
         </details>
@@ -1380,7 +1381,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
         <div id="r7-pa-now" aria-live="polite"></div>
         <input type="email" id="pa-email" placeholder="your@email.com" autocomplete="email" aria-label="Email for the alert" style="padding:.4rem .5rem;background:var(--surface2);border:1px solid var(--border);border-radius:5px;font-size:.706rem;color:var(--text)">
         <button type="button" id="pa-go" style="padding:.5rem .7rem;background:var(--gold);color:#0a0c0d;border:none;border-radius:5px;font-size:.824rem;font-weight:700;cursor:pointer">Set alert</button>
-        <div id="pa-status" style="font-size:.706rem;color:var(--text-muted);min-height:1.1em"></div>
+        <div id="pa-status" role="status" tabindex="-1" style="font-size:.706rem;color:var(--text-muted);min-height:1.1em"></div>
       </div>
     </div>
   </div>
@@ -1406,19 +1407,21 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
         tgt=document.getElementById('pa-target'), email=document.getElementById('pa-email'),
         go=document.getElementById('pa-go'), status=document.getElementById('pa-status');
     if(!go) return;
+    /* WAVE3-H: a failure names its field (aria-invalid, described by the
+       status line) and moves focus there; success needs HTTP 2xx and ok:true. */
+    function fail(msg,field){
+      status.textContent=msg; status.style.color='var(--red,#ef4444)';
+      [tgt,email].forEach(function(f){ f.removeAttribute('aria-invalid'); });
+      if(field){ field.setAttribute('aria-invalid','true'); field.setAttribute('aria-describedby','pa-status'); field.focus(); }
+      else status.focus();
+      go.disabled=false; go.textContent='Set alert';
+    }
     function submit(){
       var dollars=parseFloat(tgt.value);
       var addr=(email.value||'').trim();
-      if(!(dollars>0&&dollars<=1000&&isFinite(dollars))){
-        status.textContent='Enter a target price between $0.01 and $1000.';
-        status.style.color='var(--red,#ef4444)';
-        return;
-      }
-      if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(addr)){
-        status.textContent='Enter a real email address.';
-        status.style.color='var(--red,#ef4444)';
-        return;
-      }
+      if(!(dollars>0&&dollars<=1000&&isFinite(dollars))) return fail('Enter a target price between $0.01 and $1000.',tgt);
+      if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(addr)) return fail('Enter a real email address.',email);
+      [tgt,email].forEach(function(f){ f.removeAttribute('aria-invalid'); });
       var symbol=sym.value, direction=dir.value;
       var targetCents=Math.round(dollars*100);
       var label=((window.__r7paLabel&&window.__r7paLabel(symbol))||PA_LABELS[symbol]||symbol)+' '+(direction==='above'?'above':'below')+' $'+dollars.toFixed(2);
@@ -1428,20 +1431,17 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
         method:'POST',
         headers:{'Content-Type':'application/json'},
         body:JSON.stringify({email:addr,pid:pid,symbol:symbol,direction:direction,target_cents:targetCents,label:label})
-      }).then(function(r){ return r.json().catch(function(){ return {}; }); })
-        .then(function(data){
-          if(data&&data.error==='limit'){
-            status.textContent='You already have 5 price alerts set — the most one address can track at once.';
-            status.style.color='var(--red,#ef4444)';
-            go.disabled=false; go.textContent='Set alert';
-            return;
-          }
-          document.getElementById('pa-form').innerHTML='<span style="font-size:.706rem;color:var(--green)">Check your email to confirm — nothing is sent until you do.</span>';
-        })
-        .catch(function(){
-          status.textContent='Could not reach the alert service — try again in a minute.';
-          status.style.color='var(--red,#ef4444)';
-          go.disabled=false; go.textContent='Set alert';
+      }).then(function(r){ return r.json().catch(function(){ return null; }).then(function(data){ return {r:r,data:data}; }); },function(){ return null; })
+        .then(function(res){
+          if(!res) return fail('Could not reach the alert service. Try again in a minute.');
+          var r=res.r, data=res.data;
+          if(data&&data.error==='limit') return fail('You already have 5 price alerts set, the most one address can track at once.',email);
+          if(data&&data.ok===false&&data.error&&r.status>=400&&r.status<500)
+            return fail('That alert was not accepted ('+String(data.error)+').',/email/.test(String(data.error))?email:/target/.test(String(data.error))?tgt:null);
+          if(!r.ok||!data||data.ok!==true)
+            return fail('The alert service did not confirm this'+(r.ok?'':' (error '+r.status+')')+'. Nothing was saved. Try again in a minute.');
+          document.getElementById('pa-form').innerHTML='<span id="pa-done" tabindex="-1" style="font-size:.706rem;color:var(--green)">Check your email to confirm. Nothing is sent until you do.</span>';
+          var done=document.getElementById('pa-done'); if(done) done.focus();
         });
     }
     go.addEventListener('click',submit);
@@ -1819,7 +1819,7 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')close(true);
 <script src="/components/loader.js?v=16" defer></script>
 <script src="/components/geo.js?v=19" defer></script>
 <script src="/components/bids-homepage.js?v=20" defer></script>
-<script src="/components/homepage-extras.js?v=5" defer></script>
+<script src="/components/homepage-extras.js?v=6" defer></script>
 <script>
 (function() {
   'use strict';

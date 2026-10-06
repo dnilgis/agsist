@@ -1917,6 +1917,11 @@ html.ticker-paused .ticker-track{animation-play-state:paused!important}
 #bids-list-area .watch-elevator-wrap.we-open{position:static!important;margin:.4rem 0 .2rem!important;width:100%}
 #bids-list-area .we-form select,#bids-list-area .we-form input{max-width:100%}
 
+/* ===== WAVE3-H: store-or-sell checks, basis chart end values, alert form errors */
+.idx1-basis-ends{display:flex;justify-content:space-between;gap:.5rem;font-family:'JetBrains Mono',monospace;font-size:.706rem;color:var(--text-dim);margin-top:-.15rem}
+#idx1-store-sell input[aria-invalid="true"],#pa-form input[aria-invalid="true"],.we-form [aria-invalid="true"]{border-color:var(--red)!important}
+#pa-status:focus,#pa-done:focus,.watch-elevator-status:focus,.we-done:focus{outline:2px solid var(--gold);outline-offset:2px}
+
 /* ===== THE LOOK (2026-10-03) ==========================================
    Sig: "lots of still monotone and hard to differentiate one thing from
    another". Every top-level section belongs to a family, and the page
