@@ -902,7 +902,7 @@ function fmtChange(close, open, grain, netChg, pctChg) {
   return {text: arrow + ' ' + sign + mv + ' (' + sign + Math.abs(pct).toFixed(1) + '%)', cls: dir};
 }
 
-function fmtTickerChange(close, open, grain, netChg, pctChg) {
+function fmtTickerChange(close, open, grain, netChg, pctChg, prefix) {
   var c = parseFloat(close), o = parseFloat(open);
   if (isNaN(c) || isNaN(o)) return {text:'--', cls:'nc'};
   var diff  = netChg !== undefined && netChg !== null ? parseFloat(netChg) : (c - o);
@@ -911,7 +911,8 @@ function fmtTickerChange(close, open, grain, netChg, pctChg) {
   if (diff === 0) return {text: 'unch', cls: 'nc'};
   var arrow = diff > 0 ? '\u25B2' : '\u25BC';
   var sgn   = diff > 0 ? '+' : '\u2212';      // a true minus, as fmtChange uses
-  var mv    = grain ? fmtCentsDiff(diff) : Math.abs(diff).toFixed(2);
+  // the board prints '+$3.83' for cattle; the ticker dropped the $ (prefix)
+  var mv    = grain ? fmtCentsDiff(diff) : (prefix || '') + Math.abs(diff).toFixed(2);
   return {text: arrow + ' ' + sgn + mv + ' \u00b7 ' + sgn + Math.abs(pct).toFixed(1) + '%', cls: dir};
 }
 
@@ -1008,7 +1009,7 @@ function applyPriceResult(key, q, close, open, netChg, pctChg) {
     }
   }
   var tickerPriceTxt = fmtTickerPrice(close, meta.grain, meta.dec, meta.prefix, meta.comma);
-  var tickerChgObj = fmtTickerChange(close, open, meta.grain, netChg, pctChg);
+  var tickerChgObj = fmtTickerChange(close, open, meta.grain, netChg, pctChg, meta.prefix);
   document.querySelectorAll('[data-sym="' + key + '"]').forEach(function(el) {
     var pe = el.querySelector('.t-price');
     var ce = el.querySelector('.t-chg');

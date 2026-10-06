@@ -2069,7 +2069,15 @@ def close_claims_on_live_quotes(text, timing):
         if any(abs(x - p) <= max(tol, abs(p) * 0.0002) for p in prevs):
             continue
         bad.append(m.group(0).strip())
+    # "the close didn't blink" (2026-10-06, an overnight board): the bare noun
+    # names a settle that has not happened. A named past session ("Monday's
+    # close", "Friday's settle") is fine and is not matched.
+    for m in _BARE_CLOSE_RE.finditer(text or ""):
+        bad.append(m.group(0).strip())
     return bad
+
+
+_BARE_CLOSE_RE = re.compile(r"\b(?:the|today'?s|today\u2019s|this)\s+(?:close|settle|settlement)\b", re.I)
 
 
 def call_claude(price_data, surprises, news_block, seasonal_ctx, todays_quote, past_dailies_block, past_tmyk_topics, market_status, yesterdays_call=None, weekly_thread=None, ongoing_situations="", editorial_notes="", past_one_number_topics=None, past_phrases=None, usda_release="", _parse_retry=True):
