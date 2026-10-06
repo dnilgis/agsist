@@ -1,18 +1,18 @@
 {
- "generated": "2026-10-06T17:08:07Z",
+ "generated": "2026-10-06T17:53:09Z",
  "from": "barchart-raw.json",
  "complete": false,
  "note": "Directory only: who operates a facility and where. No prices, no basis, no symbols, no delivery windows.",
  "counts": {
-  "facilities": 2260,
+  "facilities": 2264,
   "states": 38,
   "with_address": 722,
   "with_coords": 725,
   "with_url": 703,
-  "with_phone": 2193,
+  "with_phone": 2197,
   "saturated_zips": 0,
   "failed_zips": 0,
-  "rows_read": 17194
+  "rows_read": 17228
  },
  "saturated": [],
  "failed": [],
@@ -755,6 +755,15 @@
   },
   {
    "facility": "AGP",
+   "branch": "Eagle Grove, IA",
+   "city": "Eage Grove",
+   "state": "IA",
+   "zip": "50533",
+   "phone": "515-448-4711",
+   "source": "barchart"
+  },
+  {
+   "facility": "AGP",
    "branch": "AGP Mason City, IA",
    "city": "Mason City",
    "state": "IA",
@@ -764,11 +773,29 @@
   },
   {
    "facility": "AGP",
+   "branch": "Mason City, IA",
+   "city": "Mason City",
+   "state": "IA",
+   "zip": "50401",
+   "phone": "N/A",
+   "source": "barchart"
+  },
+  {
+   "facility": "AGP",
    "branch": "AGP Sheldon, IA",
    "city": "Sheldon",
    "state": "IA",
    "zip": "51201",
    "phone": "(800) 798-4282",
+   "source": "barchart"
+  },
+  {
+   "facility": "AGP",
+   "branch": "Sheldon, IA",
+   "city": "Sheldon",
+   "state": "IA",
+   "zip": "51201",
+   "phone": "N/A",
    "source": "barchart"
   },
   {
@@ -25463,6 +25490,15 @@
   {
    "facility": "AGP",
    "branch": "AGP Aberdeen, SD",
+   "city": "Aberdeen",
+   "state": "SD",
+   "zip": "57401",
+   "phone": "605-626-9005",
+   "source": "barchart"
+  },
+  {
+   "facility": "AGP",
+   "branch": "Aberdeen, SD",
    "city": "Aberdeen",
    "state": "SD",
    "zip": "57401",
