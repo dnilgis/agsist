@@ -210,7 +210,7 @@
       <span class="ep-method">GET</span>
       <span class="ep-path">https://agsist.com/data/markets.json</span>
     </div>
-    <p class="ep-desc">Prediction-market contracts from Polymarket that bear on farm inputs, energy and the economy. Updated daily. Only active contracts with meaningful volume are included. Odds (<code>yes</code>, <code>no</code>) are percentages, not fractions.</p>
+    <p class="ep-desc">Prediction-market contracts from Polymarket that bear on farm inputs, energy and the economy. Updated daily. Only active contracts that pass AGSIST&rsquo;s farm-relevance filter are included; there is no volume floor. <code>volume_24h</code> is the contract&rsquo;s 24-hour volume in USD where Polymarket reports one, otherwise its lifetime volume. Odds (<code>yes</code>, <code>no</code>) are percentages, not fractions.</p>
 <pre>{
   "fetched": "2026-09-26T13:47:06Z",
   "version": 5,
