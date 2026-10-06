@@ -12,11 +12,12 @@ on:
     branches: [main]
     paths:
       - '**.html'          # cash-bids.html is what network-checks.mjs lifts from
+      - 'components/bids-*.js'
       - '.github/workflows/**'
       - 'scripts/**'
       - 'data/feeds.json'
   pull_request:
-    paths: ['**.html', 'scripts/**', 'data/feeds.json']
+    paths: ['**.html', 'scripts/**', 'components/bids-*.js', 'data/feeds.json']
   schedule:
     - cron: '52 14 * * 2'
   workflow_dispatch:
@@ -80,6 +81,11 @@ jobs:
       # additive and the page can be made worse by something outside it.
       - name: A broken bid network leaves the page exactly as it is today
         run: node scripts/network-safety-checks.mjs
+
+      # The homepage card's old-crop window and the town it prints, lifted
+      # from components/bids-homepage.js and bids-network.js (2026-10-06).
+      - name: Homepage bids card -- old crop and display town
+        run: node scripts/homepage-bids-checks.mjs
 
       # Also run at the commit, not only at the next hail event.
       - name: Neither send loop can re-mail the whole list

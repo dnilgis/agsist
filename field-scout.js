@@ -2031,7 +2031,7 @@
     return new Promise(function(resolve){
       if(window.AGSIST_BIDS_NET) return resolve(window.AGSIST_BIDS_NET);
       var done=false; function fin(){ if(!done){ done=true; resolve(window.AGSIST_BIDS_NET||null); } }
-      try{ var sc=document.createElement('script'); sc.src='/components/bids-network.js?v=1'; sc.async=true; sc.onload=fin; sc.onerror=fin; document.head.appendChild(sc); }catch(e){ return fin(); }
+      try{ var sc=document.createElement('script'); sc.src='/components/bids-network.js?v=5'; sc.async=true; sc.onload=fin; sc.onerror=fin; document.head.appendChild(sc); }catch(e){ return fin(); }
       setTimeout(fin, 3000);
     });
   }
@@ -2049,7 +2049,7 @@
         var by={}, order=[];
         snap.bids.forEach(function(r){
           var k = fsKey(r.facility, r.city, r.state);
-          if(!by[k]){ by[k]={ company:r.facility, location:r.branch||'', city:r.city, state:r.state, distance:r.distance, _net:true, bids:[] }; order.push(k); }
+          if(!by[k]){ by[k]={ company:r.facility, location:r.branch||'', city:r.town||r.city, state:r.state, distance:r.distance, _net:true, bids:[] }; order.push(k); }
           var d = fsPeriodDates(r.period);
           // The board's own label can be a code ("Yc", "Sww"); the crop key is what the network knows.
           var nm = r.commodity||'';

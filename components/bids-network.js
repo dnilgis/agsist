@@ -188,7 +188,10 @@
    * underlying directory rows are the bids repo's to fix.
    */
   function placeLabel(p) {
-    var city = String(p.city == null ? '' : p.city).trim();
+    /* 2026-10-06: `town` (the bids merge's display town, only set when `city`
+       is an elevator's name and a ZIP or geocode table names one) is printed
+       in place of `city` when present. */
+    var city = String(p.town || (p.city == null ? '' : p.city)).trim();
     var st = String(p.state == null ? '' : p.state).trim();
     var op = String(p.operator == null ? '' : p.operator).trim();
     if (city && op && city.toLowerCase() === op.toLowerCase()) city = '';
@@ -215,7 +218,7 @@
     var k = keyFor(p);
     return {
       facility: p.operator || '', branch: p.branch || null,
-      city: p.city || '', state: p.state || '',
+      city: p.city || '', town: p.town || '', state: p.state || '',
       zip: p.zip || k,
       /* sourceZip IS "THE GRID ZIP WHOSE RADIUS QUERY RETURNED THIS ROW", and
          that is not a shape borrowed loosely -- it is what the field means in

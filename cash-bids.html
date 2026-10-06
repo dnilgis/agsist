@@ -1824,11 +1824,14 @@ function flatten(data){
 
 /* The feed sends "N/A" for boards with no phone. Not a number: no Call button. */
 function hasPhone(p){return String(p||'').replace(/\D/g,'').length>=7;}
+/* What a card prints for the town: the feed's display town when the place's
+   `city` is an elevator's name, else the city. Keys still use `city`. */
+function townOf(x){return String((x&&(x.town||x.city))||'');}
 function groupElevators(bids){
   var map={};
   bids.forEach(function(b){
     var key=(b.facility||'')+'||'+(b.branch||'')+'||'+(b.city||'');
-    if(!map[key])map[key]={key:key,facility:b.facility,branch:b.branch,city:b.city,state:b.state,distance:b.distance,phone:hasPhone(b.phone)?b.phone:'',commodities:{},bestCash:null,bestBasis:null,asOfT:null,via:null};
+    if(!map[key])map[key]={key:key,facility:b.facility,branch:b.branch,city:b.city,town:b.town||'',state:b.state,distance:b.distance,phone:hasPhone(b.phone)?b.phone:'',commodities:{},bestCash:null,bestBasis:null,asOfT:null,via:null};
     /* One row read straight from the board makes the elevator a direct read. */
     if(b.via==='direct')map[key].via='direct';
     /* AND ONE ROW WHOSE READ FAILED MAKES THE CARD SAY SO. Flagged, never
@@ -1912,7 +1915,7 @@ function renderBestBids(elevators){
     html+='<div class="bbc-comm">Best '+c.label+'</div>';
     if(best&&pp!=null&&topElev){
       var bf=formatBasis(best.basis);
-      var cs=(topElev.city||'')+(topElev.city&&topElev.state?', ':'')+(topElev.state||''); /* precedence bug swallowed the state — printed 'Clayton,' (fixed 2026-07-20) */
+      var cs=townOf(topElev)+(townOf(topElev)&&topElev.state?', ':'')+(topElev.state||''); /* precedence bug swallowed the state — printed 'Clayton,' (fixed 2026-07-20) */
       var del=delShow(best);
       var isSpot=isSpotDelivery(best.deliveryMonth||best.deliveryStart||'',best);
       html+='<div class="bbc-name" title="'+escH(topElev.facility)+'">'+escH(topElev.facility)+'</div>';
@@ -1927,7 +1930,7 @@ function renderBestBids(elevators){
       if(bfut!=null&&blab)html+='<div class="bbc-fut" title="Implied by this board: cash minus basis">vs '+escH(blab)+' $'+bfut.toFixed(2)+'</div>';
       html+='<div class="bbc-actions">';
       if(topElev.phone)html+='<a class="bbc-call-btn" href="tel:'+topElev.phone.replace(/[^\d]/g,'')+'" aria-label="Call '+escH(topElev.facility)+' on '+escH(fmtPhone(topElev.phone))+'"><svg class="ic" aria-hidden="true"><use href="#i-phone"/></svg> Call</a>';
-      html+='<a class="bbc-dir-btn" href="'+mapsUrl(topElev.facility,topElev.city,topElev.state)+'" target="_blank" rel="noopener" aria-label="Directions to '+escH(topElev.facility)+'"><svg class="ic" aria-hidden="true"><use href="#i-map-pin"/></svg> Directions</a>';
+      html+='<a class="bbc-dir-btn" href="'+mapsUrl(topElev.facility,townOf(topElev),topElev.state)+'" target="_blank" rel="noopener" aria-label="Directions to '+escH(topElev.facility)+'"><svg class="ic" aria-hidden="true"><use href="#i-map-pin"/></svg> Directions</a>';
       html+='</div>';
       html+='<div class="bbc-hint">Show in the list below</div>';
     }else{html+='<div class="bbc-none">No '+c.label+' bids found</div>';}
@@ -1978,7 +1981,7 @@ function renderWTD(){
     var delta=r.net-refNet;
     var dcls=delta>5?'pos':delta<-5?'neg':'flat';
     var dstr=refRow.elev.key===r.elev.key?'<span style="font-size:0.763rem;color:var(--text-muted)">reference</span>':(delta>=0?'+':'')+fmtMoney(delta);
-    var cs=(r.elev.city||'')+(r.elev.city&&r.elev.state?', ':'')+(r.elev.state||''); /* same precedence bug fixed at renderBestBids 2026-07-20; this copy was missed */
+    var cs=townOf(r.elev)+(townOf(r.elev)&&r.elev.state?', ':'')+(r.elev.state||''); /* same precedence bug fixed at renderBestBids 2026-07-20; this copy was missed */
     var subTxt=escH(cs)+(r.delivery?(cs?' &middot; ':'')+escH(r.delivery):'')
       +(r.elev.unread?' &middot; <span style="color:var(--warn,#e0a83a)">board not reached</span>':'');
     html+='<tr class="'+(i===0?'wtd-w':'')+'">';
@@ -2041,7 +2044,7 @@ function openCompareModal(){
   var COMMS=['corn','soybeans','wheat','other'];
   var COMM_LABELS={corn:'<svg class="ic" aria-hidden="true"><use href="#i-sprout"/></svg> Corn',soybeans:'<svg class="ic" aria-hidden="true"><use href="#i-bean"/></svg> Soybeans',wheat:'<svg class="ic" aria-hidden="true"><use href="#i-wheat"/></svg> Wheat',other:'<svg class="ic" aria-hidden="true"><use href="#i-leaf"/></svg> Other Grains'};
   var html='<thead><tr><th>Row</th>';
-  elevs.forEach(function(e){html+='<th>'+escH(e.facility)+'<br><span style="font-size:0.755rem;color:var(--text-muted);font-weight:400">'+escH((e.city||'')+(e.state?', '+e.state:''))+'</span></th>';});
+  elevs.forEach(function(e){html+='<th>'+escH(e.facility)+'<br><span style="font-size:0.755rem;color:var(--text-muted);font-weight:400">'+escH(townOf(e)+(e.state?', '+e.state:''))+'</span></th>';});
   html+='</tr></thead><tbody>';
   html+='<tr><td class="compare-rl">Distance</td>';
   elevs.forEach(function(e){html+='<td>'+(e.distance!=null?e.distance.toFixed(0)+' mi':'&mdash;')+'</td>';});html+='</tr>';
@@ -2133,7 +2136,7 @@ function renderBids(bids,keepLimit){
     });
     var seasonNames=[];
     seasonHeld.forEach(function(b){
-      var n=(b.facility||'')+(b.city?' — '+b.city:'');
+      var n=(b.facility||'')+(townOf(b)?' — '+townOf(b):'');
       if(n&&seasonNames.indexOf(n)<0)seasonNames.push(n);
     });
     filtered=filtered.filter(inDelivery);
@@ -2156,9 +2159,9 @@ function renderBids(bids,keepLimit){
   _bhRows=[];                       /* rebuilt every render; indices are into THIS pass */
   var html='<div class="cb-grid">';
   shown.forEach(function(elev){
-    var cs=(elev.city||'')+(elev.city&&elev.state?', ':'')+(elev.state||''); /* precedence bug swallowed the state — printed 'Clayton,' (fixed 2026-07-20) */
+    var cs=townOf(elev)+(townOf(elev)&&elev.state?', ':'')+(elev.state||''); /* precedence bug swallowed the state — printed 'Clayton,' (fixed 2026-07-20) */
     var isPinned=pinnedKeys.indexOf(elev.key)>=0;
-    var murl=mapsUrl(elev.facility,elev.city,elev.state);
+    var murl=mapsUrl(elev.facility,townOf(elev),elev.state);
     html+='<article class="elev-card'+(isPinned?' pinned':'')+'" data-elev-key="'+escH(elev.key)+'" aria-label="'+escH(elev.facility)+'">';
     html+='<div class="elev-head"><div class="elev-info"><div class="elev-name" title="'+escH(elev.facility)+'">'+escH(elev.facility)+'</div>';
     if(elev.branch&&elev.branch!==elev.facility)html+='<div class="elev-branch">'+escH(tidyBranch(elev.branch))+'</div>';
@@ -2423,6 +2426,10 @@ function netRowsFrom(shard,distanceMi){
       facility:b.operator||shard.operator||'Unknown',
       branch:b.branch||'',
       city:b.city||shard.city||'',
+      /* 2026-10-06: the town to PRINT when `city` is an elevator's name
+         ("Walsh Grain"). Published on the shard header by dnilgis/bids, only
+         from a ZIP or geocode table; empty otherwise. `city` stays the key. */
+      town:shard.town||'',
       state:b.state||shard.state||'',
       distance:(typeof distanceMi==='number'&&isFinite(distanceMi))?distanceMi:null,
       phone:'',
@@ -2575,7 +2582,7 @@ function netMerge(feedRows,networkRows){
       }
       if(twin){dropped++;inherit(twin,r);return;}
       /* Survives (a crop ours lacks): file it under our name for this place. */
-      r.facility=ours2.facility;r.branch=ours2.branch;r.city=ours2.city;
+      r.facility=ours2.facility;r.branch=ours2.branch;r.city=ours2.city;r.town=ours2.town||'';
       if(!ours2.phone&&r.phone)ours2.phone=r.phone;
       if(!r.phone&&ours2.phone)r.phone=ours2.phone;
     }
@@ -3181,7 +3188,7 @@ function build(bids,cov){
     }
     if(!pick){DROP.noplace++;continue;}
     ROWS.push({
-      fac:String(pick.facility||''),br:String(pick.branch||''),city:String(pick.city||''),
+      fac:String(pick.facility||''),br:String(pick.branch||''),city:String(pick.city||''),town:String(pick.town||''),
       st:String(pick.state||''),comm:String(pick.commodity||''),cat:pick.category,
       cash:low,basis:(typeof pick.basis==='number'?pick.basis:null),
       sym:String(pick.symbol||'').trim().toUpperCase(),
@@ -3380,7 +3387,7 @@ function draw(){
       'Widen the distance to put a second one beside it.'+shutNote+'</div>';
   }else if(best===near){
     v='<div class="lo-verdict">The closest of these '+cmp.length+' is also the best paying: <strong>'+esc(best.r.fac)+
-      '</strong>'+(best.r.br?' \u00B7 '+esc(best.r.br):best.r.city?' \u00B7 '+esc(best.r.city):'')+
+      '</strong>'+(best.r.br?' \u00B7 '+esc(best.r.br):(best.r.town||best.r.city)?' \u00B7 '+esc(best.r.town||best.r.city):'')+
       ', '+esc(miles(best.d))+' out'+(useMoney?', <span class="lo-money">'+money(useHaul?best.net:best.gross)+'</span> for the load':', '+price(best.r.cash))+
       '. Nothing here to drive past it for.'+shutNote+'</div>';
   }else{
@@ -3425,7 +3432,7 @@ function draw(){
     t+='<tr class="'+(i===0&&rows.length>1?'lo-top':'')+'">'+
       '<td class="lo-rank">'+(i+1)+'</td>'+
       '<td><div class="lo-nm">'+esc(x.fac)+'</div><div class="lo-sub">'+
-        esc([x.br,x.city].filter(Boolean).join(' · '))+(x.st?', '+esc(x.st):'')+
+        esc([x.br,x.town||x.city].filter(Boolean).join(' · '))+(x.st?', '+esc(x.st):'')+
         '<br>posted as &ldquo;'+esc(x.comm.trim()||'not named')+'&rdquo;</div></td>'+
       '<td data-l="Delivery"><div>'+esc(win(x.ds,x.de)||'not posted')+(closed?' <span class="lo-dn">(window closed)</span>':'')+'</div>'+
         '<div class="lo-sub">board says &ldquo;'+esc(x.label||'nothing')+'&rdquo;</div></td>'+

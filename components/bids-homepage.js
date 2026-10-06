@@ -30,7 +30,7 @@
   // proxy is not called at all, rather than called and ignored.
   var LICENSED_FEED = true;
   var LICENSED_DEADLINE_MS = 6000;
-  var NET_SCRIPT = '/components/bids-network.js?v=4';
+  var NET_SCRIPT = '/components/bids-network.js?v=5';
 
   var MAX_ELEVATORS = 3;
   var MAX_BIDS_PER_COMMODITY = 3;
@@ -248,7 +248,7 @@
       if(!map[key]){
         map[key] = {
           facility: b.facility, branch: b.branch,
-          city: b.city, state: b.state,
+          city: b.city, town: b.town || '', state: b.state,
           distance: b.distance, phone: hasPhone(b.phone) ? b.phone : '',
           fromNetwork: false,
           /* WAVE1-A: the board's own coordinates and times, and its source id. */
@@ -341,13 +341,19 @@
      same coordinates become one card. A row whose crop, period, cash and
      basis agree across towns is shown once; a row that differs (Morton's
      wheat is 15c over Dumas's) is kept and says which towns it is for. */
+  /* 2026-10-06 THE TOWN TO PRINT. About 150 places in the bids repo carry an
+     elevator's name in `city` ("Walsh Grain", "Melrose Farm Service"). The
+     bids merge now publishes `town` beside it, filled only from a ZIP or
+     geocode table, and null otherwise. `city` stays the key everywhere (board,
+     contact, watch and dedupe keys); only what is printed changes. */
+  function townOf(x){ return String((x && (x.town || x.city)) || ''); }
   function rowId(c, b){ return c + '|' + (b.deliveryStart || b.deliveryMonth || '') + '|' + b.cashPrice + '|' + b.basis + '|' + (b.commodity || ''); }
   function mergeOnePin(elevs){
     var seen = {}, out = [];
     elevs.forEach(function(e){
       if(!e.fromNetwork || typeof e.lat !== 'number' || typeof e.lon !== 'number'){ out.push(e); return; }
       var k = normOperator(e.facility) + '@' + e.lat.toFixed(4) + ',' + e.lon.toFixed(4) + '|' + plain(e.state);
-      var m = seen[k], town = e.city || '';
+      var m = seen[k], town = townOf(e);
       if(!m){
         e.towns = town ? [town] : [];
         COMM_ORDER.forEach(function(c){ (e.commodities[c] || []).forEach(function(b){ b.towns = town ? [town] : []; }); });
@@ -483,7 +489,7 @@
      data-board-key and into the hero summary, so the hero can open it. */
   function boardKey(elev){ return 'b' + fnv([elev.facility, elev.branch, elev.city, elev.state, elev.fromNetwork ? 'n' : 'l'].map(function(x){ return String(x || '').trim().toUpperCase(); }).join('|')); }
   function renderElevatorHTML(elev, cropPick, bothFeeds, cols, isOpen, topLabel){
-    var towns = (elev.towns && elev.towns.length > 1) ? elev.towns.join(', ') : (elev.city || '');
+    var towns = (elev.towns && elev.towns.length > 1) ? elev.towns.join(', ') : townOf(elev);
     var cityState = towns + (towns && elev.state ? ', ' : '') + (elev.state||'');
     /* WAVE3-I: "straight-line" is said once, in How to read. */
     var distStr = elev.distance != null
@@ -614,7 +620,7 @@
     var hasCorn = !!(cornBids && cornBids.length);
     if((hasCorn || opts.length) && elev.state && elev.facility){
       var wid = hasCorn ? widFor(elev.state, elev.facility, elev.city, 'corn') : '';
-      var name = elev.facility + (elev.city ? ', ' + elev.city + (elev.state ? ', ' + elev.state : '') : '');
+      var name = elev.facility + (townOf(elev) ? ', ' + townOf(elev) + (elev.state ? ', ' + elev.state : '') : '');
       var label = escHtml(name + ' — corn');
       html += '<div class="watch-elevator-wrap" data-wid="' + wid + '" data-label="' + label + '" data-name="' + escHtml(name) + '"'
         + (opts.length ? ' data-opts="' + escHtml(JSON.stringify(opts)) + '"' : '') + '>'
@@ -849,7 +855,7 @@
       if(o && (o.monthKey < k || (o.monthKey === k && o.cash >= b.cashPrice))) return;
       by[id] = { id: id, crop: b.category, cropName: COMM_NAMES[b.category] + (b.category === 'wheat' && wheatClass(b) ? ' ' + wheatClass(b) : ''),
         where: (b.facility || '') + (b.branch ? ' \u00b7 ' + b.branch : ''),
-        city: (b.city || '') + (b.state ? ', ' + b.state : ''),
+        city: townOf(b) + (b.state ? ', ' + b.state : ''),
         miles: b.distance == null ? null : b.distance,
         cash: ppu(b.cashPrice), monthKey: k, monthLabel: shortMon(k),
         boardCarry: boardCarry(b), isBest: b === best };
@@ -937,7 +943,7 @@
         basis: (best.basis == null ? null : basisCents(best.basis) / 100),
         monthKey: bestMonthKey,
         where: (best.facility || '') + (best.branch ? ' \u00b7 ' + best.branch : ''),
-        city: (best.city || '') + (best.state ? ', ' + best.state : ''),
+        city: townOf(best) + (best.state ? ', ' + best.state : ''),
         miles: (best.distance == null ? null : best.distance),
         avgBasis: avgBasis,
         avgBasisCount: basisVals.length,
@@ -1060,7 +1066,7 @@
           var cat = notPerBushel(r) ? 'other' : (/^(corn|soybeans|wheat|sorghum|oats)$/.test(r.crop || '') ? r.crop : classifyCommodity(r.commodity));
           rows.push({
             facility: r.facility || '', branch: r.branch || '',
-            city: r.city || '', state: r.state || '',
+            city: r.city || '', town: r.town || '', state: r.state || '',
             distance: r.distance == null ? null : r.distance,
             phone: r.phone || '', commodity: r.commodity || '',
             cashPrice: r.cashPrice == null ? null : r.cashPrice,
@@ -1111,12 +1117,29 @@
                      sorghum, Jun-Sep for wheat and oats. Inside it, the
                      current month; before it, the window start; after it,
                      expired.
-       oldcrop-YYYY  the current month, only before Sep of YYYY; expired after.
+       oldcrop-YYYY  the crop harvested in YYYY, inside its crop year: Jun YYYY
+                     to May YYYY+1 for wheat, oats and barley, Sep YYYY to
+                     Aug YYYY+1 for corn, soybeans and sorghum. Inside it, the
+                     current month; before it, its first month; after it,
+                     expired. (2026-10-06: it was "only before Sep of YYYY",
+                     which hid ADM Plains KS's $6.75 old-crop HRW wheat.)
+     YYYY IS THE HARVEST YEAR, measured on the bids repo's raw boards on
+     2026-10-06: Cooperative Elevator Co. posts "Corn 2025" as O/C corn and
+     "White Wheat 2026" as O/C wheat; FMN1 posts 2026 old-crop wheat for
+     10/01/2026 delivery; ADM Plains' "Old Crop Wheat" is oldcrop-2026 in Oct
+     2026. Same rule as deliveryMonth() in dnilgis/bids scripts/merge_bids.mjs.
+     A real delivery end date on the row (deliveryEnd, YYYY-MM-DD) beats the
+     token. The "(2026-12)" on a Gradable label is the FUTURES contract month,
+     not a delivery month, and is not read as one.
      An expired row is never a current bid (rowExpired); a row with no month
      at all is still used last, as before. */
   var NC_WIN = { corn:[9,12], soybeans:[9,12], sorghum:[9,12], wheat:[6,9], oats:[6,9] };
+  var CY_START = { wheat: 6, oats: 6, barley: 6 };
   function tokenMonth(r){
     var p = String(r.deliveryStart || '').trim().toLowerCase(), nw = thisMonth();
+    var tok = p === 'spot' || /^(newcrop|oldcrop)-\d{4}$/.test(p);
+    var de = tok ? /^(\d{4}-\d{2})-\d{2}$/.exec(String(r.deliveryEnd || '').trim()) : null;
+    if(de) return de[1] >= nw ? { key: de[1] } : { key: '', expired: true };
     if(p === 'spot') return { key: nw };
     var nc = /^newcrop-(\d{4})$/.exec(p);
     if(nc){
@@ -1128,7 +1151,14 @@
       return { key: '', expired: true };
     }
     var oc = /^oldcrop-(\d{4})$/.exec(p);
-    if(oc) return nw < oc[1] + '-09' ? { key: nw } : { key: '', expired: true };
+    if(oc){
+      var a = CY_START[r.category] || CY_START[r.netCrop] || 9, y = +oc[1];
+      var cs = y + '-' + ('0' + a).slice(-2);
+      var ce = a === 1 ? y + '-12' : (y + 1) + '-' + ('0' + (a - 1)).slice(-2);
+      if(nw < cs) return { key: cs };
+      if(nw <= ce) return { key: nw };
+      return { key: '', expired: true };
+    }
     return null;
   }
   function rowExpired(r){ var t = tokenMonth(r); return !!(t && t.expired); }
@@ -1554,7 +1584,7 @@
       basis: bc == null ? null : Math.round(bc * 100) / 10000,
       ref: ref,
       name: e.facility || '',
-      town: (e.city || '') + (e.city && e.state ? ', ' : '') + (e.state || ''),
+      town: townOf(e) + (townOf(e) && e.state ? ', ' : '') + (e.state || ''),
       mi: e.distance == null ? null : Math.round(e.distance * 10) / 10,
       posted: e.fromNetwork && e.pricedAt ? String(e.pricedAt) : null,
       stale: best.stale,
