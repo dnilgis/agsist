@@ -746,6 +746,7 @@
     "Elevator watch emails"
    ],
    "touched_by": [
+    "Generate Daily Briefing",
     "Elevator watch emails",
     "Rebuild Feed Manifest"
    ],
@@ -1149,7 +1150,8 @@
     "Freshness \u2014 seed static prices, dateModified, sitemap lastmod",
     "Morning brief \u2014 email Sigurd",
     "Build Price Stats (5-year percentile)",
-    "Fetch Prices"
+    "Fetch Prices",
+    "Report day \u2014 USDA vs the trade email"
    ],
    "cadence": "11 launches on a fixed schedule at about 5am, 6am, 8am, 11am Central",
    "curated": false,
