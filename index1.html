@@ -961,15 +961,6 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
     </details>
     </div>
   </div>
-    <div class="fade-up" id="f-rail-scorecard-teaser">
-      <a href="/scorecard" class="rsc-teaser-link" aria-label="AGSIST prediction bot: latest calls and record">
-        <span class="rsc-teaser-num" id="rsct-hit">&mdash;</span>
-        <span class="rsc-teaser-body">
-          <span class="rsc-teaser-label" id="rsct-label">Prediction bot</span>
-          <span class="rsc-teaser-cta">Calls and Record &rarr;</span>
-        </span>
-      </a>
-    </div>
   </div>
   <section class="s7-month" id="s7-month" aria-labelledby="s7-month-h" data-track="season">
     <div class="s7-head"><h2 class="s7-h" id="s7-month-h">This month</h2><span class="s7-k" id="s7-month-k">What leads the page this month</span></div>
@@ -980,89 +971,6 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
     <details class="s7-notes" id="s7-notes" hidden><summary>How these are figured</summary><div class="s7-notes-b" id="s7-notes-b"></div></details>
   </section>
   
-  <!-- 2026-10-06 EARN: one county fact and one row of links. The links take
-       in Field Scout and the pages of the sections that left the homepage
-       (fertilizer, tariffs, drought, NOAA outlooks); each page stays in the nav
-       and footer. -->
-  <section class="fade-up idx1-land" id="idx1-land" aria-labelledby="land-h">
-    <div class="sec-head"><h2 class="sec-title" id="land-h">Land and more tools</h2></div>
-    <div class="land-grid">
-      <a class="land-cell land-lead" id="land-atlas" href="/farmland-atlas" data-track="land"><span class="land-v" id="land-atlas-v">Rent, land value and risk for every US county</span><span class="land-s" id="land-atlas-s">Farmland Atlas</span></a>
-      <a class="land-cell" id="land-hail" href="/hail-map" data-track="land" hidden><span class="land-k">Hail, 30 days</span><span class="land-v" id="land-hail-v"></span><span class="land-s" id="land-hail-s"></span></a>
-    </div>
-    <nav class="land-more" aria-labelledby="land-more-h"><h3 class="land-more-h" id="land-more-h">More tools</h3>
-    <details class="m-fold m-fold--lite" open><summary class="m-fold-sum"><span>More tools</span></summary>
-    <ul class="land-links">
-      <li><a href="/field-scout" data-track="land">Field Scout</a></li>
-      <li><a href="/cash-rent" data-track="land">Cash Rent by County</a></li>
-      <li><a href="/cash-lease" data-track="land">Farm Cash Lease</a></li>
-      <li><a href="/harvest-price-tracker" data-track="land">Harvest Price Tracker</a></li>
-      <li><a href="/basis" data-track="land">Basis vs Normal</a></li>
-      <li><a href="/storage-crunch" data-track="land">Storage Crunch</a></li>
-      <li><a href="/breakeven" data-track="land">Break-Even</a></li>
-      <li><a href="/grain-bin-calculator" data-track="land">Grain Bin</a></li>
-      <li><a href="/yield-estimator" data-track="land">Yield Estimator</a></li>
-      <li><a href="/fertilizer" data-track="land">Fertilizer Prices</a></li>
-      <li><a href="/tariffs" data-track="land">Tariffs</a></li>
-      <li><a href="/drought-monitor" data-track="land">Drought Monitor</a></li>
-      <li><a href="https://www.cpc.ncep.noaa.gov/products/predictions/long_range/" target="_blank" rel="noopener" data-track="land">NOAA Outlooks</a></li>
-      <li><a href="/land-tenure" data-track="land">Who Owns the Ground</a></li>
-      <li><a href="/foreign-land" data-track="land">Foreign-Owned Farmland</a></li>
-      <li class="s7-croptour"><a href="/crop-tour" data-track="land">Crop Tour</a></li>
-      <li><a href="/farm-bill" data-track="land">Farm Bill</a></li>
-      <li><a href="/milk-prices" data-track="land">Milk Prices</a></li>
-      <li><a href="/ag-odds" data-track="land">Ag Prediction Markets</a></li>
-      <li><a href="/archive" data-track="land">Briefing Archive</a></li>
-    </ul>
-    </details>
-    </nav>
-  </section>
-  <script>
-  /* Land band. Every number comes from a file in /data or the Atlas build,
-     fetched only when the band is near the screen. A cell whose file fails
-     stays hidden; the Atlas cell keeps its plain text. */
-  (function(){
-    var band=document.getElementById('idx1-land'); if(!band) return;
-    function $(i){return document.getElementById(i);}
-    function get(u){return fetch(u).then(function(r){return r.ok?r.json():null;}).catch(function(){return null;});}
-    function show(id,v,s){var c=$(id),a=$(id+'-v'),b=$(id+'-s');if(!c||!a)return;a.innerHTML=v;if(b)b.textContent=s||'';c.hidden=false;}
-    function n(x){return '<span class="n">'+x+'</span>';}
-    var MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-    function day(s){var m=/^(\d{4})-(\d{2})-(\d{2})/.exec(s||'');return m?MON[+m[2]-1]+' '+(+m[3]):'';}
-    var loc=null;try{loc=JSON.parse(localStorage.getItem('agsist-wx-loc')||'null');}catch(e){}
-    var st=loc&&/^[A-Z]{2}$/.test(loc.state||'')?loc.state:'';
-    var cty=loc&&loc.county?String(loc.county).replace(/\s+County$/i,''):'';
-    function run(){
-      get('/farmland-atlas/data/cards.json').then(function(d){
-        if(!d||!d.counties)return;
-        var hit=null;
-        if(st&&cty){for(var k in d.counties){var c=d.counties[k];if(c.st===st&&String(c.n||'').replace(/\s+County$/i,'').toLowerCase()===cty.toLowerCase()){hit=c;break;}}}
-        if(hit&&hit.r!=null){
-          var a=$('land-atlas');if(a&&hit.u)a.href=hit.u;
-          /* wave1-E: the county is the weather ZIP's; land is the census "land and buildings" figure,
-             the operators' own estimate; the state figure is a median of counties, with the
-             low and high computed by build_atlas_pages.py from the same counties. */
-          var S=d.states&&d.states[st],D=function(x){return '$'+Math.round(x).toLocaleString('en-US');};
-          /* 2026-10-06 EARN: one row. The county rent with its year and source;
-             land value and the state median are one tap away in the Atlas. */
-          show('land-atlas',hit.n+', '+hit.st+' cash rent '+n(D(hit.r))+'/ac'+(hit.ry?', '+hit.ry:''),'USDA NASS county survey \u00b7 Farmland Atlas \u2192');
-        } else {
-          show('land-atlas',n(Object.keys(d.counties).length.toLocaleString('en-US'))+' counties: rent, land value and risk','Farmland Atlas \u2192');
-        }
-      });
-      get('/data/hail/recent.json').then(function(h){
-        if(!h||!h.reports||!h.reports.length)return;
-        var big=h.reports.reduce(function(a,b){return (b.mag||0)>(a.mag||0)?b:a;});
-        var inSt=st?h.reports.filter(function(r){return r.st===st;}).length:null;
-        show('land-hail',n((h.count||h.reports.length).toLocaleString('en-US'))+' reports',
-          'Largest '+big.mag+' in, '+big.city+' '+big.st+', '+day(big.date)+(inSt!=null?' · '+st+': '+inSt+' report'+(inSt===1?'':'s'):''));
-      });
-      /* r7-season: storage and foreign-held land are linked below, not fetched here. */
-    }
-    if('IntersectionObserver' in window){var io=new IntersectionObserver(function(es){if(es.some(function(e){return e.isIntersecting;})){io.disconnect();run();}},{rootMargin:'600px'});io.observe(band);}
-    else run();
-  })();
-  </script>
   <div class="signup--compact fade-up" id="signup-compact" style="display:none">
     <span class="scu-eyebrow"><svg class="ic" aria-hidden="true"><use href="#i-newspaper"/></svg> AGSIST Daily</span>
     <span class="scu-text"><strong>Free daily briefing</strong> &mdash; markets, weather, one number to know before the market open &mdash; for farmers across the US.</span>
@@ -1167,39 +1075,6 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
     <div id="kalshi-footer" style="display:none;padding:.25rem 0 .15rem;text-align:right"><a href="/ag-odds" style="font-size:.824rem;color:var(--gold);text-decoration:none;font-weight:600">View All Ag Prediction Markets</a></div>
   </div>
   </details>
-  <details class="m-fold m-fold--faq" open><summary class="m-fold-sum"><span>Frequently Asked Questions</span></summary>
-  <section class="fade-up" id="f-faq" aria-labelledby="faq-heading">
-        <div class="sec-head"><h2 class="sec-title" id="faq-heading"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:1.05em;height:1.05em;vertical-align:-.13em;margin-right:.34em;flex:none"><circle cx="12" cy="12" r="10" /> <path d="M12 16v-4" /> <path d="M12 8h.01" /></svg>Frequently Asked Questions</h2><a href="/cash-bids" class="sec-all">Cash Bids Near You</a></div>
-    <div class="faq-list">
-      <details class="faq-item"><summary>What are corn futures prices today?</summary><div class="faq-a">AGSIST displays CBOT corn futures prices from Yahoo Finance, delayed about 15 minutes and updated every 30 minutes. The front-month contract and the next December contract are both shown, each labeled with its contract month (for example Dec &rsquo;26), with net change, percent change, and 52-week range. Prices are in dollars per bushel. <a href="/corn-futures-prices">See Full Corn Futures</a></div></details>
-      <details class="faq-item"><summary>How do I find cash grain bids near me?</summary><div class="faq-a">Enter any US ZIP code on AGSIST’s Cash Bids page at agsist.com/cash-bids to see posted corn, soybean, and wheat elevator prices from grain elevators within 50 miles of that ZIP by default. You can widen the search up to 250 miles. Basis is shown alongside cash price for each location. <a href="/cash-bids">Find Cash Bids</a></div></details>
-      <details class="faq-item"><summary>Is AGSIST free?</summary><div class="faq-a">Yes. AGSIST is available at no charge with no account or subscription required. Tools on the site &mdash; spray advisory, urea volatilization risk monitor, break-even calculator, grain bin calculator, cash bids, and the AGSIST Daily briefing &mdash; are available at no charge for non-commercial use.</div></details>
-      <details class="faq-item"><summary>How often are grain prices updated on AGSIST?</summary><div class="faq-a">Grain futures prices on AGSIST are updated about every 30 minutes while futures markets trade, from Sunday evening to Friday afternoon, Central time. The AGSIST Daily briefing is published every weekday morning with overnight market analysis.</div></details>
-      <details class="faq-item"><summary>What is urea volatilization risk?</summary><div class="faq-a">Urea volatilization is the loss of nitrogen fertilizer as ammonia gas when urea is surface-applied without incorporation. Risk is highest when soil temperatures exceed 50&deg;F, humidity is high, and no rain is forecast within 2&ndash;4 days. AGSIST’s free urea risk monitor scores your real-time local conditions from 0&ndash;100. <a href="/urea">Check Urea Volatilization Risk</a></div></details>
-      <details class="faq-item"><summary>What is grain basis and why does it matter?</summary><div class="faq-a">Grain basis is the difference between your local cash elevator price and the futures contract it is quoted against. A basis of −30 cents means the elevator pays 30 cents below futures. Stronger (less negative) basis signals higher local demand. AGSIST displays each elevator’s posted basis alongside its cash price in the cash bids tool.</div></details>
-      <details class="faq-item"><summary>When is the WASDE report released?</summary><div class="faq-a">The USDA WASDE (World Agricultural Supply and Demand Estimates) report is released monthly, typically around the 10th of each month at 12:00 PM Eastern Time. AGSIST’s USDA Calendar tracks all report dates with market impact ratings. <a href="/usda-calendar">USDA Report Calendar</a></div></details>
-      <details class="faq-item"><summary>What is the corn-to-soybean price ratio and how do farmers use it?</summary><div class="faq-a">The corn-to-soybean price ratio is November soybean futures divided by December corn futures. A higher ratio leans toward soybeans and a lower one toward corn, but where the line falls depends on your own yields, input costs, and basis, so run break-even math on your own numbers. Both contract prices update every 30 minutes on AGSIST’s corn and soybean futures pages. <a href="/breakeven">Break-Even Price Calculator</a></div></details>
-    </div>
-  </section>
-  </details>
-  <div class="signup fade-up" id="signup-full" style="display:none">
-    <div class="signup-inner">
-      <div class="signup-icon" aria-hidden="true"></div>
-      <span class="signup-eyebrow">AGSIST Daily</span>
-      <h2 class="signup-headline">Market news before the open.</h2>
-      <p class="signup-sub">Overnight markets, what to watch, and farm weather, every weekday.</p>
-      <div class="signup-tabs"><button class="signup-tab active" id="tab-email" aria-controls="form-email"><svg class="ic" aria-hidden="true"><use href="#i-mail"/></svg> Email</button></div>
-      <div class="signup-form" id="form-email" role="tabpanel"><div class="signup-row"><input type="email" class="signup-input" placeholder="your@email.com" autocomplete="email" aria-label="Email address" required><button class="signup-submit" id="btn-email-signup">Subscribe &rarr;</button></div><div class="signup-disc">Free. Unsubscribe any time. We never sell your data. <a href="/privacy">Privacy Policy</a>.</div></div>
-      
-    </div>
-  </div>
-  <div class="signup--slim fade-up" id="signup-slim" style="display:none;padding-bottom:max(.5rem,env(safe-area-inset-bottom))">
-    <span class="scs-text">Get the AGSIST Daily briefing every weekday &mdash; markets, weather, one number to know. Free for farmers everywhere.</span>
-    <a href="/daily">Subscribe Free</a>
-    <span style="font-size:.765rem;color:var(--text-muted)">&middot; <a href="/privacy">Privacy Policy</a></span>
-    <button id="btn-slim-dismiss" aria-label="Dismiss" style="background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:.824rem;padding:0 0 0 .5rem;line-height:1"><svg class="ic" aria-hidden="true"><use href="#i-x"/></svg></button>
-  </div>
-
 <script>
 (function(){
   var el = document.getElementById('idx1-trust-ledger');
@@ -1503,6 +1378,128 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
   })();
   </script>
 </aside>
+<!-- 2026-10-06 EARN: the page ends Land and more tools, FAQ (folded), signup.
+     They come after the rail in the document so a phone reads the rail
+     (calendar, market intelligence, bot, alert) before them; on a wide
+     desktop this wrapper is display:contents and each card has its row. -->
+<div class="idx1-tail">
+  <!-- 2026-10-06 EARN: one county fact and one row of links. The links take
+       in Field Scout and the pages of the sections that left the homepage
+       (fertilizer, tariffs, drought, NOAA outlooks); each page stays in the nav
+       and footer. -->
+  <section class="fade-up idx1-land" id="idx1-land" aria-labelledby="land-h">
+    <div class="sec-head"><h2 class="sec-title" id="land-h">Land and more tools</h2></div>
+    <div class="land-grid">
+      <a class="land-cell land-lead" id="land-atlas" href="/farmland-atlas" data-track="land"><span class="land-v" id="land-atlas-v">Rent, land value and risk for every US county</span><span class="land-s" id="land-atlas-s">Farmland Atlas</span></a>
+      <a class="land-cell" id="land-hail" href="/hail-map" data-track="land" hidden><span class="land-k">Hail, 30 days</span><span class="land-v" id="land-hail-v"></span><span class="land-s" id="land-hail-s"></span></a>
+    </div>
+    <nav class="land-more" aria-labelledby="land-more-h"><h3 class="land-more-h" id="land-more-h">More tools</h3>
+    <details class="m-fold m-fold--lite" open><summary class="m-fold-sum"><span>More tools</span></summary>
+    <ul class="land-links">
+      <li><a href="/field-scout" data-track="land">Field Scout</a></li>
+      <li><a href="/cash-rent" data-track="land">Cash Rent by County</a></li>
+      <li><a href="/cash-lease" data-track="land">Farm Cash Lease</a></li>
+      <li><a href="/harvest-price-tracker" data-track="land">Harvest Price Tracker</a></li>
+      <li><a href="/basis" data-track="land">Basis vs Normal</a></li>
+      <li><a href="/storage-crunch" data-track="land">Storage Crunch</a></li>
+      <li><a href="/breakeven" data-track="land">Break-Even</a></li>
+      <li><a href="/grain-bin-calculator" data-track="land">Grain Bin</a></li>
+      <li><a href="/yield-estimator" data-track="land">Yield Estimator</a></li>
+      <li><a href="/fertilizer" data-track="land">Fertilizer Prices</a></li>
+      <li><a href="/tariffs" data-track="land">Tariffs</a></li>
+      <li><a href="/drought-monitor" data-track="land">Drought Monitor</a></li>
+      <li><a href="https://www.cpc.ncep.noaa.gov/products/predictions/long_range/" target="_blank" rel="noopener" data-track="land">NOAA Outlooks</a></li>
+      <li><a href="/land-tenure" data-track="land">Who Owns the Ground</a></li>
+      <li><a href="/foreign-land" data-track="land">Foreign-Owned Farmland</a></li>
+      <li class="s7-croptour"><a href="/crop-tour" data-track="land">Crop Tour</a></li>
+      <li><a href="/farm-bill" data-track="land">Farm Bill</a></li>
+      <li><a href="/milk-prices" data-track="land">Milk Prices</a></li>
+      <li><a href="/ag-odds" data-track="land">Ag Prediction Markets</a></li>
+      <li><a href="/archive" data-track="land">Briefing Archive</a></li>
+    </ul>
+    </details>
+    </nav>
+  </section>
+  <script>
+  /* Land band. Every number comes from a file in /data or the Atlas build,
+     fetched only when the band is near the screen. A cell whose file fails
+     stays hidden; the Atlas cell keeps its plain text. */
+  (function(){
+    var band=document.getElementById('idx1-land'); if(!band) return;
+    function $(i){return document.getElementById(i);}
+    function get(u){return fetch(u).then(function(r){return r.ok?r.json():null;}).catch(function(){return null;});}
+    function show(id,v,s){var c=$(id),a=$(id+'-v'),b=$(id+'-s');if(!c||!a)return;a.innerHTML=v;if(b)b.textContent=s||'';c.hidden=false;}
+    function n(x){return '<span class="n">'+x+'</span>';}
+    var MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    function day(s){var m=/^(\d{4})-(\d{2})-(\d{2})/.exec(s||'');return m?MON[+m[2]-1]+' '+(+m[3]):'';}
+    var loc=null;try{loc=JSON.parse(localStorage.getItem('agsist-wx-loc')||'null');}catch(e){}
+    var st=loc&&/^[A-Z]{2}$/.test(loc.state||'')?loc.state:'';
+    var cty=loc&&loc.county?String(loc.county).replace(/\s+County$/i,''):'';
+    function run(){
+      get('/farmland-atlas/data/cards.json').then(function(d){
+        if(!d||!d.counties)return;
+        var hit=null;
+        if(st&&cty){for(var k in d.counties){var c=d.counties[k];if(c.st===st&&String(c.n||'').replace(/\s+County$/i,'').toLowerCase()===cty.toLowerCase()){hit=c;break;}}}
+        if(hit&&hit.r!=null){
+          var a=$('land-atlas');if(a&&hit.u)a.href=hit.u;
+          /* wave1-E: the county is the weather ZIP's; land is the census "land and buildings" figure,
+             the operators' own estimate; the state figure is a median of counties, with the
+             low and high computed by build_atlas_pages.py from the same counties. */
+          var S=d.states&&d.states[st],D=function(x){return '$'+Math.round(x).toLocaleString('en-US');};
+          /* 2026-10-06 EARN: one row. The county rent with its year and source;
+             land value and the state median are one tap away in the Atlas. */
+          show('land-atlas',hit.n+', '+hit.st+' cash rent '+n(D(hit.r))+'/ac'+(hit.ry?', '+hit.ry:''),'USDA NASS county survey \u00b7 Farmland Atlas \u2192');
+        } else {
+          show('land-atlas',n(Object.keys(d.counties).length.toLocaleString('en-US'))+' counties: rent, land value and risk','Farmland Atlas \u2192');
+        }
+      });
+      get('/data/hail/recent.json').then(function(h){
+        if(!h||!h.reports||!h.reports.length)return;
+        var big=h.reports.reduce(function(a,b){return (b.mag||0)>(a.mag||0)?b:a;});
+        var inSt=st?h.reports.filter(function(r){return r.st===st;}).length:null;
+        show('land-hail',n((h.count||h.reports.length).toLocaleString('en-US'))+' reports',
+          'Largest '+big.mag+' in, '+big.city+' '+big.st+', '+day(big.date)+(inSt!=null?' · '+st+': '+inSt+' report'+(inSt===1?'':'s'):''));
+      });
+      /* r7-season: storage and foreign-held land are linked below, not fetched here. */
+    }
+    if('IntersectionObserver' in window){var io=new IntersectionObserver(function(es){if(es.some(function(e){return e.isIntersecting;})){io.disconnect();run();}},{rootMargin:'600px'});io.observe(band);}
+    else run();
+  })();
+  </script>
+  <details class="m-fold m-fold--faq" id="faq-fold"><summary class="m-fold-sum"><span>Frequently Asked Questions</span></summary>
+  <section class="fade-up" id="f-faq" aria-labelledby="faq-heading">
+        <div class="sec-head"><h2 class="sec-title" id="faq-heading"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:1.05em;height:1.05em;vertical-align:-.13em;margin-right:.34em;flex:none"><circle cx="12" cy="12" r="10" /> <path d="M12 16v-4" /> <path d="M12 8h.01" /></svg>Frequently Asked Questions</h2><a href="/cash-bids" class="sec-all">Cash Bids Near You</a></div>
+    <div class="faq-list">
+      <details class="faq-item"><summary>What are corn futures prices today?</summary><div class="faq-a">AGSIST displays CBOT corn futures prices from Yahoo Finance, delayed about 15 minutes and updated every 30 minutes. The front-month contract and the next December contract are both shown, each labeled with its contract month (for example Dec &rsquo;26), with net change, percent change, and 52-week range. Prices are in dollars per bushel. <a href="/corn-futures-prices">See Full Corn Futures</a></div></details>
+      <details class="faq-item"><summary>How do I find cash grain bids near me?</summary><div class="faq-a">Enter any US ZIP code on AGSIST’s Cash Bids page at agsist.com/cash-bids to see posted corn, soybean, and wheat elevator prices from grain elevators within 50 miles of that ZIP by default. You can widen the search up to 250 miles. Basis is shown alongside cash price for each location. <a href="/cash-bids">Find Cash Bids</a></div></details>
+      <details class="faq-item"><summary>Is AGSIST free?</summary><div class="faq-a">Yes. AGSIST is available at no charge with no account or subscription required. Tools on the site &mdash; spray advisory, urea volatilization risk monitor, break-even calculator, grain bin calculator, cash bids, and the AGSIST Daily briefing &mdash; are available at no charge for non-commercial use.</div></details>
+      <details class="faq-item"><summary>How often are grain prices updated on AGSIST?</summary><div class="faq-a">Grain futures prices on AGSIST are updated about every 30 minutes while futures markets trade, from Sunday evening to Friday afternoon, Central time. The AGSIST Daily briefing is published every weekday morning with overnight market analysis.</div></details>
+      <details class="faq-item"><summary>What is urea volatilization risk?</summary><div class="faq-a">Urea volatilization is the loss of nitrogen fertilizer as ammonia gas when urea is surface-applied without incorporation. Risk is highest when soil temperatures exceed 50&deg;F, humidity is high, and no rain is forecast within 2&ndash;4 days. AGSIST’s free urea risk monitor scores your real-time local conditions from 0&ndash;100. <a href="/urea">Check Urea Volatilization Risk</a></div></details>
+      <details class="faq-item"><summary>What is grain basis and why does it matter?</summary><div class="faq-a">Grain basis is the difference between your local cash elevator price and the futures contract it is quoted against. A basis of −30 cents means the elevator pays 30 cents below futures. Stronger (less negative) basis signals higher local demand. AGSIST displays each elevator’s posted basis alongside its cash price in the cash bids tool.</div></details>
+      <details class="faq-item"><summary>When is the WASDE report released?</summary><div class="faq-a">The USDA WASDE (World Agricultural Supply and Demand Estimates) report is released monthly, typically around the 10th of each month at 12:00 PM Eastern Time. AGSIST’s USDA Calendar tracks all report dates with market impact ratings. <a href="/usda-calendar">USDA Report Calendar</a></div></details>
+      <details class="faq-item"><summary>What is the corn-to-soybean price ratio and how do farmers use it?</summary><div class="faq-a">The corn-to-soybean price ratio is November soybean futures divided by December corn futures. A higher ratio leans toward soybeans and a lower one toward corn, but where the line falls depends on your own yields, input costs, and basis, so run break-even math on your own numbers. Both contract prices update every 30 minutes on AGSIST’s corn and soybean futures pages. <a href="/breakeven">Break-Even Price Calculator</a></div></details>
+    </div>
+  </section>
+  </details>
+  <div class="signup fade-up" id="signup-full" style="display:none">
+    <div class="signup-inner">
+      <div class="signup-icon" aria-hidden="true"></div>
+      <span class="signup-eyebrow">AGSIST Daily</span>
+      <h2 class="signup-headline">Market news before the open.</h2>
+      <p class="signup-sub">Overnight markets, what to watch, and farm weather, every weekday.</p>
+      <div class="signup-tabs"><button class="signup-tab active" id="tab-email" aria-controls="form-email"><svg class="ic" aria-hidden="true"><use href="#i-mail"/></svg> Email</button></div>
+      <div class="signup-form" id="form-email" role="tabpanel"><div class="signup-row"><input type="email" class="signup-input" placeholder="your@email.com" autocomplete="email" aria-label="Email address" required><button class="signup-submit" id="btn-email-signup">Subscribe &rarr;</button></div><div class="signup-disc">Free. Unsubscribe any time. We never sell your data. <a href="/privacy">Privacy Policy</a>.</div></div>
+      
+    </div>
+  </div>
+  <div class="signup--slim fade-up" id="signup-slim" style="display:none;padding-bottom:max(.5rem,env(safe-area-inset-bottom))">
+    <span class="scs-text">Get the AGSIST Daily briefing every weekday &mdash; markets, weather, one number to know. Free for farmers everywhere.</span>
+    <a href="/daily">Subscribe Free</a>
+    <span style="font-size:.765rem;color:var(--text-muted)">&middot; <a href="/privacy">Privacy Policy</a></span>
+    <button id="btn-slim-dismiss" aria-label="Dismiss" style="background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:.824rem;padding:0 0 0 .5rem;line-height:1"><svg class="ic" aria-hidden="true"><use href="#i-x"/></svg></button>
+  </div>
+
+</div>
 <script>
 /* Tooltips: one open at a time; tap, click or Enter toggles; Esc closes and
    returns focus; a tap outside closes. */
@@ -1570,7 +1567,8 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')close(true);
       if(phone){ if(!f[i].hasAttribute('data-touched')) f[i].open = false; }
       /* 2026-10-06 HERO: Store or sell starts closed everywhere and shows
          its summary on desktop too (css/home.css), so it is left alone. */
-      else if(!/\bm-fold--calc\b/.test(f[i].className)) f[i].open = true;
+      /* 2026-10-06 EARN: the FAQ is folded at every width; its summary is the header. */
+      else if(!/\bm-fold--(calc|faq)\b/.test(f[i].className)) f[i].open = true;
     }
   }
   document.addEventListener('click', function(e){

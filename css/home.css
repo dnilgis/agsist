@@ -2142,12 +2142,23 @@ html[data-look] #idx1-land .m-fold--lite>summary.m-fold-sum>span{color:var(--tex
   #radar-fold[open]>summary.m-fold-sum{margin-bottom:12px!important}
   #dash-grid>#radar-fold{grid-column:1/-1}
 }
+/* Folds that stay folds on a desktop (Radar at 901-1239px, the FAQ at
+   every width) show their summary there; it is the section header. */
 @media(min-width:901px) and (max-width:1239px){
   #radar-fold>summary.m-fold-sum{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:48px;padding:12px 0;cursor:pointer;list-style:none}
   #radar-fold>summary.m-fold-sum::-webkit-details-marker{display:none}
   #radar-fold>summary.m-fold-sum::after{content:'+';font-size:1rem;color:var(--text-muted)}
   #radar-fold[open]>summary.m-fold-sum::after{content:'\2212'}
 }
+@media(min-width:901px){
+  #faq-fold>summary.m-fold-sum{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:48px;padding:12px 0;cursor:pointer;list-style:none}
+  #faq-fold>summary.m-fold-sum::-webkit-details-marker{display:none}
+  #faq-fold>summary.m-fold-sum::after{content:'+';font-size:1rem;color:var(--text-muted)}
+  #faq-fold[open]>summary.m-fold-sum::after{content:'\2212'}
+}
+#faq-fold #f-faq>.sec-head{display:none}
+#faq-fold:not([open]){padding-bottom:0!important}
+#radar-fold:not([open]){padding-bottom:0!important}
 @media(min-width:1240px){
   #radar-fold{grid-column:1!important;grid-row:3!important;align-self:start}
   #radar-fold .radar-card{height:420px}
@@ -2180,6 +2191,31 @@ html[data-look] #idx1-land .m-fold--lite>summary.m-fold-sum>span{color:var(--tex
 .land-more-h{margin:0 0 2px;font-size:.824rem;font-weight:600;color:var(--text-dim)}
 .land-more .land-links{margin-top:0}
 @media(max-width:900px){.land-more-h{display:none}.land-more{border-top:0;padding-top:0}}
+
+/* 3. Order, one story (EARN). Hero, [cash bids + radar | local conditions],
+   the Wire across the main column with two items side by side, markets,
+   the month, land and more tools, FAQ, signup. The rail runs beside rows 2
+   onward. On a phone the document order is the reading order: the rail
+   (calendar, market intelligence, bot, alert) comes after the month, and
+   .idx1-tail (land, FAQ, signup) after the rail. */
+.idx1-tail{min-width:0;display:flex;flex-direction:column}
+@media(min-width:901px) and (max-width:1239px){
+  .idx1-shell{grid-template-rows:auto 1fr}
+  .idx1-content{grid-column:1;grid-row:1}
+  #market-intel{grid-column:2;grid-row:1/3}
+  .idx1-tail{grid-column:1;grid-row:2;align-self:start}
+}
+@media(min-width:1240px){
+  .idx1-tail{display:contents!important}
+  .idx1-tail>*{grid-column:1/3!important}
+  html[data-look] .idx1-shell #f-prices{grid-row:5!important}
+  html[data-look] .idx1-shell .idx1-content>.s7-month{grid-column:1/3!important;grid-row:6!important}
+  .idx1-tail>#idx1-land{grid-row:7!important}
+  .idx1-tail>#faq-fold{grid-row:8!important}
+  .idx1-tail>#signup-full{grid-row:9!important}
+  .idx1-tail>#signup-slim{grid-row:10!important}
+  #wire-g{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+}
 
 /* ===== THE LOOK (2026-10-03) ==========================================
    Sig: "lots of still monotone and hard to differentiate one thing from
