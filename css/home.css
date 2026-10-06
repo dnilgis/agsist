@@ -2040,7 +2040,7 @@ h3:where(.pc-section-lbl,.idx1-extras-title,.s7-ck){font-family:inherit;letter-s
 .s7-ck,.wstat-lbl,.wx-extra-lbl,.pc-section-lbl,.land-k{font-weight:600;color:var(--text-dim)}
 main .tip-b{font-family:var(--font-body,Inter,system-ui,sans-serif)!important;letter-spacing:0!important}
 /* Section eyebrows stay mono; multi-word fold headers lose their tracking. */
-.m-fold:not(.m-fold--calc)>summary.m-fold-sum,.cot-verdict,.ratio-verdict,.tariff-status-badge,#land-h{letter-spacing:0!important}
+.m-fold:not(.m-fold--calc)>summary.m-fold-sum,.cot-verdict,.ratio-verdict,.tariff-status-badge{letter-spacing:0!important}
 .wx-7day-meta,.s7-cv .s7-line small{font-variant-numeric:tabular-nums}
 
 /* Say it once: what stays visible, and what moved behind a fold. */
@@ -2157,8 +2157,9 @@ html[data-look] #idx1-land .m-fold--lite>summary.m-fold-sum>span{color:var(--tex
   #faq-fold[open]>summary.m-fold-sum::after{content:'\2212'}
 }
 #faq-fold #f-faq>.sec-head{display:none}
-#faq-fold:not([open]){padding-bottom:0!important}
-#radar-fold:not([open]){padding-bottom:0!important}
+/* A closed fold is its header bar and nothing under it. */
+html[data-look] #main details.m-fold:not(.m-fold--calc):not([open]){padding-bottom:0!important}
+html[data-look] #main details.m-fold:not(.m-fold--calc):not([open])>summary.m-fold-sum{margin-bottom:0!important}
 @media(min-width:1240px){
   #radar-fold{grid-column:1!important;grid-row:3!important;align-self:start}
   #radar-fold .radar-card{height:420px}
@@ -2216,6 +2217,29 @@ html[data-look] #idx1-land .m-fold--lite>summary.m-fold-sum>span{color:var(--tex
   .idx1-tail>#signup-slim{grid-row:10!important}
   #wire-g{grid-template-columns:repeat(2,minmax(0,1fr))!important}
 }
+
+/* 4. One section header (EARN). Every section, rail card and top-level
+   fold reads like the cash bids head: mono .824rem, bold, uppercase, .08em
+   tracking, on the band bar with its family rule (THE LOOK draws the bar).
+   October on the farm and the Wire now use the same .sec-head markup. A
+   fold's summary is its header, at the same size. Folds inside Market
+   prices are one level down: a ruled sub-head, no second bar. */
+html[data-look] .m-fold:not(.m-fold--calc)>summary.m-fold-sum{box-sizing:border-box;min-height:44px!important;padding-top:10px!important;padding-bottom:10px!important;border-top:0!important;font-family:'JetBrains Mono',monospace!important;text-transform:uppercase!important}
+html[data-look] .m-fold:not(.m-fold--calc)>summary.m-fold-sum>span{font-family:'JetBrains Mono',monospace!important;font-size:.824rem!important;font-weight:700!important;letter-spacing:.08em!important;text-transform:uppercase!important;line-height:1.6}
+html[data-look] .m-fold:not(.m-fold--calc)>summary.m-fold-sum>span small{font-family:var(--font-body,Inter,system-ui,sans-serif)!important;font-size:.765rem!important;font-weight:400!important;letter-spacing:0!important;text-transform:none!important;margin-left:6px}
+html[data-look] .m-fold:not(.m-fold--calc)[open]>summary.m-fold-sum{margin-bottom:12px!important}
+html[data-look] .m-fold:not(.m-fold--calc)>summary.m-fold-sum::after{line-height:1}
+html[data-look] #f-prices .m-fold>summary.m-fold-sum,html[data-look] #idx1-land .m-fold--lite>summary.m-fold-sum{background:none!important;margin:0!important;padding:10px 0!important;min-height:44px!important;border-radius:0!important;border-top:1px solid var(--hair)!important;border-bottom:0!important}
+html[data-look] #main #f-prices .m-fold>summary.m-fold-sum>span,html[data-look] #main #idx1-land .m-fold--lite>summary.m-fold-sum>span{font-family:var(--font-body,Inter,system-ui,sans-serif)!important;font-size:.875rem!important;font-weight:600!important;letter-spacing:0!important;text-transform:none!important;color:var(--text-dim)!important}
+html[data-look] #f-prices .m-fold[open]>summary.m-fold-sum{margin-bottom:4px!important}
+#wire-band .wr-sub{font-size:.824rem;color:var(--text-muted)}
+/* Equal gaps: every card carries the 16px gap below it, so the rail and the
+   shell add none of their own. */
+html[data-look] .intel-rail{gap:0}
+@media(max-width:1239px){html[data-look] .idx1-shell{row-gap:0}}
+@media(min-width:901px) and (max-width:1239px){html[data-look] #dash-grid{row-gap:0!important;margin-bottom:0!important}}
+@media(max-width:420px){html[data-look] .m-fold--cot>summary.m-fold-sum>span small{display:none}}
+#wire-band>.wr-body{padding-top:0}
 
 /* ===== THE LOOK (2026-10-03) ==========================================
    Sig: "lots of still monotone and hard to differentiate one thing from

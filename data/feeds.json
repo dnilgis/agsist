@@ -1185,8 +1185,7 @@
   {
    "path": "data/rma-discovery.json",
    "pages": [
-    "index.html",
-    "index1.html"
+    "index.html"
    ],
    "written_by": [],
    "touched_by": [

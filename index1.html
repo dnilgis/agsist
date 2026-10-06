@@ -7,7 +7,7 @@
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
 <link rel="stylesheet" href="/components/styles.css?v=17">
 <link rel="stylesheet" href="/components/sponsor-ad.css?v=1">
-<link rel="stylesheet" href="/css/home.css?v=4">
+<link rel="stylesheet" href="/css/home.css?v=5">
 <!-- 2026-09-30: sponsor-ad.js's one call site (AgsistAd.render(), below) is
      already guarded with window.AgsistAd? and runs inside a fetch .then(),
      well after a deferred script would finish — so defer is free here.
@@ -883,13 +883,13 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
       </div>
     </div>
     </details>
-  <details class="wr fade-up" id="wire-band" open hidden>
-    <summary class="wr-summary"><span class="wr-k">The wire</span><span class="wr-sub" id="wire-sub"></span></summary>
+  <section class="wr fade-up" id="wire-band" aria-labelledby="wire-h" hidden>
+    <div class="sec-head"><h2 class="sec-title" id="wire-h">The Wire</h2><span class="sec-all wr-sub" id="wire-sub"></span></div>
     <div class="wr-body">
       <div class="wr-g" id="wire-g"></div>
       <a class="wr-all" href="/news">Everything That Moved</a>
     </div>
-  </details>
+  </section>
 
   <div class="price-cards-section fade-up" id="f-prices">
 
@@ -963,7 +963,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
   </div>
   </div>
   <section class="s7-month" id="s7-month" aria-labelledby="s7-month-h" data-track="season">
-    <div class="s7-head"><h2 class="s7-h" id="s7-month-h">This month</h2><span class="s7-k" id="s7-month-k">What leads the page this month</span></div>
+    <div class="sec-head"><h2 class="sec-title" id="s7-month-h">This month</h2></div>
     <div class="s7-grid" id="s7-grid"></div>
     <!-- 2026-10-06: each cell shows its figure and one short line; the rest of
          what used to sit under it (how it is figured, sources, the reader's
