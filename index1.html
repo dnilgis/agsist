@@ -7,7 +7,7 @@
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
 <link rel="stylesheet" href="/components/styles.css?v=17">
 <link rel="stylesheet" href="/components/sponsor-ad.css?v=1">
-<link rel="stylesheet" href="/css/home.css?v=3">
+<link rel="stylesheet" href="/css/home.css?v=4">
 <!-- 2026-09-30: sponsor-ad.js's one call site (AgsistAd.render(), below) is
      already guarded with window.AgsistAd? and runs inside a fetch .then(),
      well after a deferred script would finish — so defer is free here.
@@ -3154,6 +3154,37 @@ gj('/data/markets.json').then(function(cached){
       },{rootMargin:'200px'});
       _wio.observe(_wf);
     } else { _wf.src=_wf.dataset.src; }
+  })();
+  /* 2026-10-06 (Sig): on desktop the live radar fills the space under the
+     cash bids card. On phone it stays in the Radar & Drought fold. The card
+     moves; nothing is copied, so there is one iframe and one lazy loader. */
+  (function(){
+    var card=document.querySelector('#f-radar .radar-card'), f1=document.getElementById('f1'), f2=document.getElementById('f2');
+    if(!card||!f1||!f2||!window.matchMedia) return;
+    var home=document.createComment('radar-home'); card.parentNode.insertBefore(home,card);
+    var mq=window.matchMedia('(min-width:901px)');
+    var fold=document.querySelector('.m-fold--radar .m-fold-sum span');
+    var h2=document.querySelector('#f-radar .sec-title');
+    function label(t){ if(fold) fold.textContent=t; if(h2&&h2.lastChild&&h2.lastChild.nodeType===3) h2.lastChild.textContent=t; }
+    function size(){
+      if(card.parentNode!==f1) { card.style.height=''; return; }
+      var top=card.getBoundingClientRect().top, bottom=f2.getBoundingClientRect().bottom;
+      var h=Math.round(bottom-top); card.style.height=Math.max(340,Math.min(h,720))+'px';
+    }
+    function sideBySide(){
+      if(!mq.matches) return false;
+      var a=f1.getBoundingClientRect(), b=f2.getBoundingClientRect();
+      return b.left >= a.right - 4 && Math.abs(b.top - a.top) < 40;
+    }
+    function place(){
+      if(sideBySide()){ if(card.parentNode!==f1){ f1.appendChild(card); card.classList.add('radar-in-f1'); label('Drought'); } }
+      else if(card.parentNode===f1){ home.parentNode.insertBefore(card,home.nextSibling); card.classList.remove('radar-in-f1'); label('Radar & Drought'); }
+      size();
+    }
+    place();
+    if(mq.addEventListener) mq.addEventListener('change',place); else if(mq.addListener) mq.addListener(place);
+    var t; window.addEventListener('resize',function(){clearTimeout(t);t=setTimeout(place,150);});
+    if('ResizeObserver' in window){ var ro=new ResizeObserver(function(){clearTimeout(t);t=setTimeout(size,100);}); ro.observe(f2); ro.observe(f1.firstElementChild||f1); }
   })();
   function isSignedUp(){try{return document.cookie.split(';').some(function(c){return c.trim().startsWith('agsist_subscribed=');})||localStorage.getItem('agsist_subscribed')==='1';}catch(e){return false;}}
   function setSignedUp(){try{var exp=new Date();exp.setFullYear(exp.getFullYear()+2);document.cookie='agsist_subscribed=1;expires='+exp.toUTCString()+';path=/;SameSite=Lax';localStorage.setItem('agsist_subscribed','1');}catch(e){}}

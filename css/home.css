@@ -2129,6 +2129,11 @@ html[data-look] #idx1-land .m-fold--lite>summary.m-fold-sum>span{color:var(--tex
   #daily-teaser-text,.daily-teaser .teaser-preview{-webkit-line-clamp:1!important}
 }
 
+/* 2026-10-06 radar under cash bids (desktop) */
+#f1>.radar-card.radar-in-f1{margin-top:16px;display:flex;flex-direction:column;border:1px solid var(--border-2);border-radius:8px;overflow:hidden;background:var(--surface);min-height:340px}
+#f1>.radar-card.radar-in-f1 iframe{flex:1;min-height:0!important;height:auto!important}
+#f1>.radar-card.radar-in-f1 .s7-radar-empty{flex:1}
+
 /* ===== THE LOOK (2026-10-03) ==========================================
    Sig: "lots of still monotone and hard to differentiate one thing from
    another". Every top-level section belongs to a family, and the page
