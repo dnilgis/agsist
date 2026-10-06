@@ -1917,6 +1917,16 @@ html.ticker-paused .ticker-track{animation-play-state:paused!important}
 #bids-list-area .watch-elevator-wrap.we-open{position:static!important;margin:.4rem 0 .2rem!important;width:100%}
 #bids-list-area .we-form select,#bids-list-area .we-form input{max-width:100%}
 
+/* ===== WAVE3-M: header opacity, daily briefing failure state */
+/* The sticky nav sits under the sticky preview flag; its .92 alpha let the
+   page scroll through it. Opaque, from the surface token, both themes. */
+.nav,[data-theme="light"] .nav{background:var(--surface);-webkit-backdrop-filter:none;backdrop-filter:none}
+/* daily.json failed: keep the headline and the link to /daily, hide the empty
+   briefing furniture around them. */
+#daily-hero.daily-failed .daily-left>:not(#daily-headline):not(#daily-lead),
+#daily-hero.daily-failed .hero-sidebar,#daily-hero.daily-failed #daily-otp,
+#daily-hero.daily-failed #daily-cashbids-cta,#daily-hero.daily-failed #daily-surprise-banner{display:none!important}
+#daily-hero.daily-failed .daily-lead a{color:var(--gold);text-decoration:underline}
 /* ===== THE LOOK (2026-10-03) ==========================================
    Sig: "lots of still monotone and hard to differentiate one thing from
    another". Every top-level section belongs to a family, and the page
