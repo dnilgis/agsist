@@ -262,7 +262,7 @@ button,a,[role="button"]{touch-action:manipulation}
     <div class="el-cov-item"><div class="el-cov-k">Each bid shows</div><div class="el-cov-v"><strong>Cash price</strong> (futures + basis), contract month, delivery window, and distance from your ZIP.</div></div>
   </div>
   <h2 class="el-h2" id="coverage-map">Coverage map</h2>
-  <p class="el-map-lede">Every grain elevator AGSIST tracks, nationwide. <strong>Green</strong> means we read that elevator&rsquo;s own posted board. <strong>Grey</strong> means we know it&rsquo;s there and it&rsquo;s in the queue. The network grows most weeks &mdash; if yours is grey, tell us and it moves up.</p>
+  <p class="el-map-lede">Every grain elevator AGSIST tracks, across the US plus Ontario. <strong>Green</strong> means we read at least one elevator&rsquo;s own posted board at that spot (click it for the list). <strong>Amber</strong> means we have a reader that did not answer the latest pass. <strong>Grey</strong> means we know it&rsquo;s there and it&rsquo;s in the queue. The network grows most weeks &mdash; if yours is grey, tell us and it moves up.</p>
 
   <div class="el-map-wrap">
     <div id="cov-map" role="img" aria-label="Map of grain elevators AGSIST knows about, coloured by whether its bid board is read"></div>
@@ -508,6 +508,7 @@ document.addEventListener('click',function(e){var a=e.target.closest&&e.target.c
            unplaced handful and the build timestamp are ours to watch, not the
            reader's to read. */
         foot.textContent = (n.elevators != null ? n.elevators.toLocaleString() + ' elevators tracked. ' : '') +
+          (n.unplaced ? n.unplaced.toLocaleString() + ' could not be placed on the map and are not drawn. ' : '') +
           'Several share a town centre, so one pin can cover more than one \u2014 click to see what is there.';
         /* THE SAMPLE, BESIDE THE CLAIM. Green counts what answered one pass of
            our readers; the fleet is bigger and steadier than any one pass. A
@@ -561,8 +562,8 @@ document.addEventListener('click',function(e){var a=e.target.closest&&e.target.c
         zoomControl: true, attributionControl: true,
         worldCopyJump: true, zoomSnap: 0.5, wheelDebounceTime: 25,
         /* ZOOM STOPS AT 9. The tile version allowed 16, which put a pin on a
-           specific building — and 83% of these pins are town centroids, a fact
-           the panel prints two inches below the map. Zoom 9 is a county-sized
+           specific building — and about 73% of these pins (81% of elevators) are
+           town or county centroids. Zoom 9 is a county-sized
            view, which is as precise as this data honestly gets. */
         minZoom: 3, maxZoom: 9
       }).setView([41.5, -93.5], 4.5);
@@ -609,8 +610,8 @@ document.addEventListener('click',function(e){var a=e.target.closest&&e.target.c
          it cannot be watermarked, repriced or keyed.
 
          WHAT IS LOST: streets and place names, and zoom past 9. Both were
-         promising more than this map has. 83% of these pins are town
-         centroids — the panel says so — so a dot at zoom 16 sat on a building
+         promising more than this map has. About 73% of these pins are town
+         or county centroids, so a dot at zoom 16 sat on a building
          it has nothing to do with. Capping the zoom is a correction, not a
          concession.
 
