@@ -117,12 +117,49 @@ def release_date(as_of):
     """
     monday = as_of - timedelta(days=as_of.weekday())
     delay = sum(1 for i in (2, 3, 4) if is_federal_holiday(monday + timedelta(days=i)))
-    d = as_of + timedelta(days=3)                     # the Friday
+    # Corrected 2026-10-03: the Friday OF THE AS-OF WEEK, not as_of + 3. When
+    # Tuesday is a holiday CFTC takes positions as of the Monday, and as_of + 3
+    # then gave a Thursday release and a Friday entry, a close that printed
+    # before the report existed. CFTC's own notice for the Mon 2018-12-24 report
+    # says it was "previously scheduled for release on Friday, December 28,
+    # 2018" (press release 7864-19).
+    d = monday + timedelta(days=4)                    # the Friday
     for _ in range(min(delay, 2)):
         d = next_business_day(d)
     while d.weekday() > 4 or is_federal_holiday(d):
         d = next_business_day(d)
     return d
+
+
+# ── reports CFTC published late because the government was shut ─────────────
+# During a lapse in appropriations CFTC published nothing, then caught up over
+# several weeks on a schedule of its own. We do not know every catch-up date,
+# so we do not guess them: a report whose as-of date falls in one of these
+# windows is SKIPPED by anything that needs to know when it could be traded.
+# Each window runs from the first report that missed its Friday to the last
+# one that we cannot show went out on time.
+#   2013  shutdown Oct 1-16. CFTC 6745-13: the Oct 1 report (due Oct 4) came out
+#         Oct 25; the normal schedule resumed "by the November 8, 2013 release
+#         date", i.e. with the Nov 5 report. Skip as-of Oct 1 - Oct 29.
+#   2018-19  shutdown Dec 22 - Jan 25. CFTC 7864-19: the Mon Dec 24 report came
+#         out Feb 1, 2019, then two a week "until the reports are current". The
+#         exact date it became current is not in that notice; we skip through
+#         the Mar 5, 2019 report, which is past any catch-up at two a week.
+#   2025  shutdown Oct 1 - Nov 12. The Sep 30 report missed Oct 3. Catch-up ran
+#         to the Dec 23 report, published Dec 31 (CFTC "Commitments of Traders
+#         Reports Update", 2025-12-31); the Dec 30 report kept its normal
+#         Mon Jan 5, 2026 date. Skip as-of Sep 30 - Dec 23.
+SHUTDOWN_SKIP = [
+    (date(2013, 10, 1), date(2013, 10, 29)),
+    (date(2018, 12, 24), date(2019, 3, 5)),
+    (date(2025, 9, 30), date(2025, 12, 23)),
+]
+
+
+def release_unknown(as_of):
+    """True when this report was held back by a shutdown, so its real release
+    date is not the calendar's. Callers that trade on a release must skip it."""
+    return any(a <= as_of <= b for a, b in SHUTDOWN_SKIP)
 
 
 def entry_date(as_of):
@@ -250,6 +287,23 @@ def selftest():
     ck("thanksgiving week release", release_date(date(2026, 11, 24)), date(2026, 11, 30))
     ck("release day that IS the holiday moves", release_date(date(2026, 12, 29)), date(2027, 1, 4))
     ck("entry is always after the release", entry_date(date(2026, 12, 29)) > release_date(date(2026, 12, 29)), True)
+
+    # MONDAY AS-OF (Tuesday holiday). The release is the Friday of that week,
+    # never as_of + 3 (a Thursday), and the entry is the session after it.
+    ck("Mon 2018-12-24 as-of releases Fri Dec 28 (CFTC 7864-19)", release_date(date(2018, 12, 24)), date(2018, 12, 28))
+    ck("Mon 2018-12-24 as-of enters Mon Dec 31, not Fri Dec 28", entry_date(date(2018, 12, 24)), date(2018, 12, 31))
+    ck("Mon 2017-07-03 as-of releases Fri Jul 7", release_date(date(2017, 7, 3)), date(2017, 7, 7))
+    ck("Mon 2017-07-03 as-of enters Mon Jul 10", entry_date(date(2017, 7, 3)), date(2017, 7, 10))
+    ck("Mon 2012-12-31 as-of releases Fri Jan 4", release_date(date(2012, 12, 31)), date(2013, 1, 4))
+    ck("Mon 2025-11-10 as-of releases Fri Nov 14", release_date(date(2025, 11, 10)), date(2025, 11, 14))
+    ck("release is never before the Friday of the as-of week",
+       all(release_date(date(2010, 1, 4) + timedelta(days=k)) >= date(2010, 1, 4) + timedelta(days=k - (date(2010, 1, 4) + timedelta(days=k)).weekday() + 4)
+           for k in range(0, 17 * 365) if (date(2010, 1, 4) + timedelta(days=k)).weekday() in (0, 1)), True)
+    ck("shutdown weeks are flagged: 2013-10-08", release_unknown(date(2013, 10, 8)), True)
+    ck("shutdown weeks are flagged: 2018-12-24", release_unknown(date(2018, 12, 24)), True)
+    ck("shutdown weeks are flagged: 2025-11-10", release_unknown(date(2025, 11, 10)), True)
+    ck("the week before a shutdown is not: 2025-09-23", release_unknown(date(2025, 9, 23)), False)
+    ck("the first normal week after is not: 2025-12-30", release_unknown(date(2025, 12, 30)), False)
 
     ck("observed: Jul 4 2026 is a Saturday, observed Friday",
        is_federal_holiday(date(2026, 7, 3)), True)

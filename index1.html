@@ -1352,7 +1352,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
       <p class="pbc-line" id="pbc-bt"></p>
       <p class="pbc-asof" id="pbc-asof"></p>
     </div>
-    <p class="pbc-foot"><span class="tip"><button type="button" class="tip-b" aria-expanded="false" aria-describedby="tip-score">How it works</button><span id="tip-score" role="tooltip" class="tip-t" hidden>One fixed statistical rule, written down before the first call: fund positioning at an extreme, otherwise the 13-week trend. It calls corn, soybeans, Chicago and KC wheat 20 trading sessions out, every trading day. Code grades each call against the settlement price. Not advice.</span></span></p>
+    <p class="pbc-foot"><span class="tip"><button type="button" class="tip-b" aria-expanded="false" aria-describedby="tip-score">How it works</button><span id="tip-score" role="tooltip" class="tip-t" hidden>One fixed rule, written and backtested once on Oct 3, 2026: managed money positioning at an extreme (the bot&rsquo;s own 90th/10th percentile over 3 years), otherwise the 13-week trend. Once per weekly CFTC report it calls corn, soybeans, Chicago and KC wheat 4 weeks out. Code grades each call against settlement prices. Its backtest is no better than a coin flip. Not advice.</span></span></p>
   </div>
 <div class="fade-up" id="f-price-alert">
     <div class="sec-head"><h2 class="sec-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:1.05em;height:1.05em;vertical-align:-.13em;margin-right:.34em;flex:none"><path d="M12 2v20"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>Price Alert</h2></div>
@@ -1462,27 +1462,32 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
     function esc(t){return String(t==null?'':t).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
     function fail(){var v=$('pbc-verdict');if(v)v.textContent='The bot\u2019s record could not be loaded right now.';var t=$('rsct-hit');if(t)t.textContent='\u2014';}
     fetch('/data/predictions.json',{cache:'no-store'}).then(function(r){if(!r.ok)throw new Error('no-predictions');return r.json();}).then(function(d){
-      var live=((d.live||{}).records||{}).all||null, bt=((d.backtest||{}).records||{}).all||null;
+      /* bot-v1.1 (2026-10-05): one call per crop per CFTC report, graded
+         four weeks later. The verdict words come from the file. */
+      var live=((d.live||{}).records||{}).all||null, bt=((d.backtest||{}).records||{}).all||null, R=d.rules||{};
       if(!live){fail();return;}
-      var lv=V[live.verdict]||'\u2014', bv=bt?(V[bt.verdict]||'\u2014'):'\u2014';
-      var head=live.gate_ok?('Live record: '+lv):'Live record: not enough calls yet.';
-      $('pbc-verdict').textContent=head+(bt?' Backtest: '+bv.charAt(0).toLowerCase()+bv.slice(1):'');
+      var btShort=bt&&bt.gate_ok?(bt.verdict==='held_up'?'held up':'no better than a coin flip'):'not computed yet';
+      $('pbc-verdict').textContent=live.gate_ok
+        ?('Live record: '+(live.verdict_text||V[live.verdict]||'—'))
+        :('Backtest: '+btShort+'. Too few live calls to grade.');
       var labels={};(d.crops||[]).forEach(function(c){labels[c.key]=c.label;});
       var lt=d.latest||{}, calls=lt.calls||[], ul=$('pbc-calls');
+      function px(c){return c.entry==null?'':' from $'+(Number(c.entry)/100).toFixed(2);}
       ul.innerHTML=calls.length?calls.map(function(c){
         var up=c.direction==='up';
-        return '<li><span class="pbc-crop">'+esc(labels[c.crop]||c.crop)+'</span><span class="pbc-dir '+(up?'pbc-up':'pbc-down')+'">'+(up?'Up':'Down')+'</span><span class="pbc-meta">'+esc(c.contract)+' &middot; graded '+fd(c.exit_day)+'</span></li>';
-      }).join(''):'<li class="pbc-none">No live call yet. The first calls are made after the '+fd(d.live_start)+' close.</li>';
+        return '<li><span class="pbc-crop">'+esc(labels[c.crop]||c.crop)+'</span><span class="pbc-dir '+(up?'pbc-up':'pbc-down')+'">'+(up?'Up':'Down')+'</span><span class="pbc-meta">'+esc(c.contract)+esc(px(c))+' &middot; grades '+fd(c.exit_day)+'</span></li>';
+      }).join(''):'<li class="pbc-none">First calls after the '+fd(d.first_live_call||d.live_start)+' close.</li>';
       $('pbc-live').textContent=live.gate_ok
-        ?('Live: right on '+n(live.hits)+' of '+n(live.graded)+' calls ('+live.hit_rate.toFixed(1)+'%), '+n(live.spell_hits)+' of '+n(live.spells)+' separate spells.')
-        :('Live: '+n(live.graded)+' calls graded so far. A rate is shown from '+n((d.rules||{}).min_graded_for_rate)+' graded calls.');
+        ?('Live: right '+live.hit_rate.toFixed(1)+'% ('+n(live.hits)+' of '+n(live.graded)+' calls, '+n(live.windows)+' non-overlapping 4-week windows).')
+        :(live.graded?('Live: '+n(live.graded)+' graded. A rate shows at '+n(R.min_graded_for_rate)+' calls and '+n(R.min_windows_for_rate)+' non-overlapping windows.'):'');
+      $('pbc-live').hidden=!$('pbc-live').textContent;
       $('pbc-bt').textContent=bt&&bt.graded
-        ?('Backtest, '+String(bt.first).slice(0,4)+' to '+String(bt.last).slice(0,4)+': right on '+n(bt.hits)+' of '+n(bt.graded)+' weekly calls ('+bt.hit_rate.toFixed(1)+'%), '+n(bt.spell_hits)+' of '+n(bt.spells)+' separate spells.')
+        ?('Backtest '+String(bt.first).slice(0,4)+'–'+String(bt.last).slice(0,4)+': right '+bt.hit_rate.toFixed(1)+'% ('+n(bt.hits)+' of '+n(bt.graded)+' weekly calls; non-overlapping '+bt.spell_rate_low.toFixed(1)+'–'+bt.spell_rate_high.toFixed(1)+'%). Always saying down: '+bt.fell_rate.toFixed(1)+'%.')
         :'Backtest: not computed yet.';
-      $('pbc-asof').textContent=lt.date?('Calls made after the '+fd(lt.date)+' close.'):'';
+      $('pbc-asof').textContent=lt.date?('Calls made at the '+fd(lt.date)+' close.'):'';
       var th=$('rsct-hit'), tl=$('rsct-label');
-      if(th)th.textContent=live.gate_ok?lv.replace(/\.$/,''):'Too early';
-      if(tl)tl.textContent=live.gate_ok?'Prediction bot, live record':('Prediction bot. Backtest: '+bv.replace(/\.$/,'').toLowerCase());
+      if(th)th.textContent=live.gate_ok?(V[live.verdict]||'—').replace(/\.$/,''):'Too early';
+      if(tl)tl.textContent=live.gate_ok?'Prediction bot, live record':('Prediction bot. Backtest: '+btShort);
     }).catch(fail);
   })();
   </script>
@@ -1995,7 +2000,9 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')close(true);
        call. */
     if(d.bot_call){var _old=document.getElementById('daily-takeaway-frame');if(_old)_old.remove();return;}
     var call=d.todays_call||{}, lp=d.locked_prices||{};
-    var key=call.instrument||'corn';
+    /* No instrument named: no price to frame (a diesel line got a corn price under it). */
+    if(!call.instrument){var _o=document.getElementById('daily-takeaway-frame');if(_o)_o.remove();return;}
+    var key=call.instrument;
     var NAMES={corn:'corn',beans:'beans',wheat:'wheat',oats:'oats',cattle:'live cattle',feeders:'feeders',hogs:'hogs',milk:'Class III milk',meal:'soy meal',crude:'crude',natgas:'natural gas'};
     var GRAIN={corn:1,beans:1,wheat:1,oats:1,'corn-dec':1,'beans-nov':1};
     var was=lp[key], live=q[key];
@@ -2928,7 +2935,7 @@ window.hydrateDaily = function(data) {
   // A daily.json from before the cut has no action and shows its takeaway
   // under the old label instead, so the block never goes blank on upload day.
   var takeaway=(data.action||'').trim();
-  var taLabel=takeaway?'THE ACTION':'THE TAKEAWAY';
+  var taLabel=takeaway?((data.bot_call&&data.bot_call.label)||'THE ACTION'):'THE TAKEAWAY';
   if(!takeaway)takeaway=(data.the_takeaway||'').trim();
   var taEl=el('daily-takeaway');
   var taText=el('daily-takeaway-text');
