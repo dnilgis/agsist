@@ -7,7 +7,7 @@
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
 <link rel="stylesheet" href="/components/styles.css?v=17">
 <link rel="stylesheet" href="/components/sponsor-ad.css?v=1">
-<link rel="stylesheet" href="/css/home.css?v=1">
+<link rel="stylesheet" href="/css/home.css?v=2">
 <!-- 2026-09-30: sponsor-ad.js's one call site (AgsistAd.render(), below) is
      already guarded with window.AgsistAd? and runs inside a fetch .then(),
      well after a deferred script would finish — so defer is free here.
@@ -306,7 +306,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
           <div class="s-card s-card--gold"><div class="s-card-label-row" style="display:flex;align-items:center;justify-content:space-between;gap:.5rem"><span class="s-card-label"><svg class="ic" aria-hidden="true"><use href="#i-chart-column"/></svg> THE NUMBER</span><button id="daily-number-copy" class="dn-copy-btn" type="button" aria-label="Copy The Number to clipboard" title="Copy"><svg class="ic" aria-hidden="true"><use href="#i-clipboard-list"/></svg></button></div><div id="daily-number-value" class="one-num">&mdash;</div><div id="daily-number-unit" class="one-num-unit"></div><div id="daily-number-context" class="one-num-ctx"></div></div>
           <div class="s-card"><div class="s-card-label"><svg class="ic" aria-hidden="true"><use href="#i-calendar"/></svg> <span id="daily-watch-label-text">TODAY’S WATCH LIST</span></div><ul id="daily-watch-list" class="watch-list" role="list"><li class="watch-item"><span class="watch-time">&mdash;</span><span class="watch-desc">Loading watch list&hellip;</span></li></ul></div>
           <div class="s-card" style="border-color:rgba(var(--gold-rgb),.15)"><div class="s-card-label" style="color:var(--gold)"><svg class="ic" aria-hidden="true"><use href="#i-message-circle"/></svg> DAILY QUOTE</div><blockquote style="margin:0;padding:0"><p id="daily-quote-text" style="font-size:1rem;color:var(--text-dim);line-height:1.65;margin-bottom:.4rem">"&mdash;"</p><cite id="daily-quote-attr" style="font-size:.824rem;color:var(--text-muted);font-style:normal"></cite></blockquote></div>
-          <div style="font-size:.706rem;color:var(--text-muted);text-align:center;padding:.2rem 0"><span id="daily-source">USDA &middot; CME Group &middot; Open-Meteo</span></div>
+          <div style="font-size:.765rem;color:var(--text-muted);text-align:center;padding:.2rem 0"><span id="daily-source">USDA &middot; CME Group &middot; Open-Meteo</span></div>
         </div>
       </div>
       <div id="daily-otp" class="daily-otp" aria-label="Outside the pit">
@@ -501,9 +501,179 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
   <path d="M9.8 4.4A2 2 0 1 1 11 8H2" /></symbol><symbol id="i-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18" />
   <path d="m6 6 12 12" /></symbol><symbol id="i-zap" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z" /></symbol><symbol id="i-rotate-ccw" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 2v6h6"/><path d="M3 8a9 9 0 1 0 3-7L3 8"/></symbol><symbol id="i-chevron-up" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></symbol></defs></svg><main id="main" class="main" role="main" tabindex="-1">
 <div class="idx1-shell"><div class="idx1-content">
+  <!-- 2026-10-06 HERO BAND. Numbers, not words: the best local bid for corn
+       and soybeans, the two harvest futures, and whether today works for the
+       field. Every figure is read from data the page already loads:
+         bids     the agsist:bids-top event from components/bids-homepage.js
+                  (or window.__agsistBidsTop if it fired first)
+         futures  data/prices.json via the shared window.__agsistPricesP
+         weather  #wx-temp (geo.js) and the one spray rule (S7.spray)
+       Nothing here fetches on its own except the shared prices promise, and
+       a missing figure is an em dash with the reason, never a guess. -->
+  <section class="hero-band" id="hero-band" aria-labelledby="hb-h">
+    <h2 class="visually-hidden" id="hb-h">Today at a glance</h2>
+    <div class="hb-top">
+      <span class="hb-place" id="hb-place">Your area</span>
+      <span class="hb-date" id="hb-date"></span>
+      <button type="button" class="hb-change" id="hb-change">Change</button>
+    </div>
+    <div class="hb-grid">
+      <a class="hb-cell hb-bid" id="hb-corn" href="#f1" data-track="hero">
+        <span class="hb-k" id="hb-corn-k">Top corn bid nearby</span>
+        <span class="hb-v" id="hb-corn-v"><span class="hb-skel" aria-hidden="true"></span><span class="visually-hidden">Loading</span></span>
+        <span class="hb-s" id="hb-corn-s"></span>
+      </a>
+      <a class="hb-cell hb-bid" id="hb-soy" href="#f1" data-track="hero">
+        <span class="hb-k" id="hb-soy-k">Top soybean bid nearby</span>
+        <span class="hb-v" id="hb-soy-v"><span class="hb-skel" aria-hidden="true"></span><span class="visually-hidden">Loading</span></span>
+        <span class="hb-s" id="hb-soy-s"></span>
+      </a>
+      <a class="hb-cell hb-fut" id="hb-fc" href="#f-prices" data-track="hero">
+        <span class="hb-k" id="hb-fc-k">Dec corn futures</span>
+        <span class="hb-v hb-v2" id="hb-fc-v"><span class="hb-skel" aria-hidden="true"></span></span>
+        <span class="hb-s" id="hb-fc-s"></span>
+      </a>
+      <a class="hb-cell hb-fut" id="hb-fs" href="#f-prices" data-track="hero">
+        <span class="hb-k" id="hb-fs-k">Nov bean futures</span>
+        <span class="hb-v hb-v2" id="hb-fs-v"><span class="hb-skel" aria-hidden="true"></span></span>
+        <span class="hb-s" id="hb-fs-s"></span>
+      </a>
+      <a class="hb-cell hb-wx" id="hb-wx" href="#f2" data-track="hero">
+        <span class="hb-k">Today</span>
+        <span class="hb-v hb-v2" id="hb-wx-v"><span class="hb-skel" aria-hidden="true"></span></span>
+        <span class="hb-s" id="hb-wx-s"></span>
+      </a>
+    </div>
+  </section>
+  <script>
+  (function(){
+    'use strict';
+    function $(i){return document.getElementById(i);}
+    var MINUS='−', DASH='—';
+    var MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    var MCODE={F:'Jan',G:'Feb',H:'Mar',J:'Apr',K:'May',M:'Jun',N:'Jul',Q:'Aug',U:'Sep',V:'Oct',X:'Nov',Z:'Dec'};
+    /* 4.3125 dollars -> "$4.31 1/4": the page writes quarter cents like the pit. */
+    function qd(dollars){var c=Math.round(Number(dollars)*400)/4,w=Math.floor(c+1e-9),f=Math.round((c-w)*4);if(f===4){w++;f=0;}
+      return '$'+(w/100).toFixed(2)+(f?'<span class="hb-frac"> '+['','1/4','1/2','3/4'][f]+'</span>':'');}
+    function qc(cents){var a=Math.abs(cents),q=Math.round(a*4)/4,w=Math.floor(q),f=Math.round((q-w)*4);
+      return (cents<0?MINUS:(cents>0?'+':''))+(w||!f?String(w):'')+(w&&f?' ':'')+(f?['','1/4','1/2','3/4'][f]:'')+'¢';}
+    function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+    function day(d){return MON[d.getMonth()]+' '+d.getDate();}
+    function set(id,html){var e=$(id);if(e)e.innerHTML=html;}
+    function cls(id,c,on){var e=$(id);if(e)e.classList.toggle(c,!!on);}
+
+    /* ---- place and date ---- */
+    function loc(){try{return JSON.parse(localStorage.getItem('agsist-wx-loc')||'null');}catch(e){return null;}}
+    var placeFromBids='';
+    function paintPlace(){
+      var l=loc(),p=placeFromBids||(l&&l.label)||'';
+      var el=$('hb-place');if(el)el.textContent=p||'Set your ZIP';
+      var b=$('hb-change');if(b){b.textContent=p?'Change':'Set ZIP';b.setAttribute('aria-label',p?'Change location ('+p+')':'Set your ZIP');}
+    }
+    var dt=$('hb-date');
+    if(dt){try{dt.textContent=new Intl.DateTimeFormat('en-US',{weekday:'short',month:'short',day:'numeric'}).format(new Date()).replace(',','');}catch(e){}}
+    var ch=$('hb-change');
+    if(ch)ch.addEventListener('click',function(){var c=$('idx1-zip-chip');if(c)c.click();});
+    paintPlace();
+    window._AGSIST_GEO_CALLBACKS=window._AGSIST_GEO_CALLBACKS||[];
+    window._AGSIST_GEO_CALLBACKS.push(function(){setTimeout(paintPlace,0);});
+    window.addEventListener('storage',paintPlace);
+
+    /* ---- bids: the bids card publishes its top board per crop ---- */
+    var bidsSeen=false;
+    var CROP={corn:['hb-corn','corn'],soybeans:['hb-soy','soybean']};
+    function paintBids(d){
+      if(!d||typeof d!=='object')return;
+      bidsSeen=true;
+      if(d.place){placeFromBids=String(d.place);paintPlace();}
+      var r=d.radiusMi!=null?d.radiusMi:d.radius;
+      var ring=(typeof r==='number'&&r>0)?'within '+Math.round(r)+' mi':'nearby';
+      Object.keys(CROP).forEach(function(k){
+        var id=CROP[k][0],word=CROP[k][1],x=d[k];
+        set(id+'-k','Top '+word+' bid '+ring);
+        cls(id,'hb-stale',x&&x.stale);
+        if(!x||x.cash==null||isNaN(Number(x.cash))){
+          set(id+'-v',DASH);
+          set(id+'-s','No '+word+' bid '+ring);
+          cls(id,'hb-none',true);return;
+        }
+        cls(id,'hb-none',false);
+        var old='';
+        if(x.stale){var pd=x.posted?new Date(x.posted):null;old='<span class="hb-old">Old bid'+(pd&&!isNaN(pd)?' · '+day(pd):'')+'</span>';}
+        set(id+'-v','<span class="hb-n">'+qd(x.cash)+'</span>'+old);
+        var bits=[];
+        if(x.basis!=null&&!isNaN(Number(x.basis)))bits.push('<span class="hb-n">'+qc(Number(x.basis)*100)+'</span>'+(x.ref?' '+esc(x.ref):''));
+        if(x.name)bits.push(esc(x.name));
+        if(x.town)bits.push(esc(x.town));
+        if(x.mi!=null&&!isNaN(Number(x.mi)))bits.push('<span class="hb-n">'+Math.round(Number(x.mi))+'</span> mi');
+        set(id+'-s',bits.join(' · '));
+      });
+    }
+    window.addEventListener('agsist:bids-top',function(e){paintBids(e&&e.detail);});
+    if(window.__agsistBidsTop)paintBids(window.__agsistBidsTop);
+    setTimeout(function(){
+      if(bidsSeen)return;
+      Object.keys(CROP).forEach(function(k){var id=CROP[k][0];set(id+'-v',DASH);set(id+'-s','Bids didn’t load');cls(id,'hb-none',true);});
+    },8000);
+
+    /* ---- futures: the harvest contracts, labelled from their own ticker ---- */
+    var futSeen=false;
+    function label(q,fallback){var m=/^Z[CS]([FGHJKMNQUVXZ])(\d{2})/.exec((q&&q.ticker)||'');return m?MCODE[m[1]]+' ’'+m[2]:fallback;}
+    function paintFut(data){
+      var q=data&&data.quotes;if(!q)return;
+      var stale=(data.stale_keys||[]);
+      [['corn-dec','hb-fc','corn',"Dec"],['beans-nov','hb-fs','bean',"Nov"]].forEach(function(a){
+        var x=q[a[0]],id=a[1];
+        if(!x||x.close==null){set(id+'-k',a[3]+' '+a[2]+' futures');set(id+'-v',DASH);set(id+'-s','Not in today’s price file');return;}
+        futSeen=true;
+        set(id+'-k',label(x,a[3])+' '+a[2]+' futures');
+        set(id+'-v','<span class="hb-n">'+qd(x.close/100)+'</span>');
+        var diff=x.netChange!=null?Number(x.netChange):(x.open!=null?x.close-x.open:null);
+        var c=diff==null||isNaN(diff)?'':'<span class="hb-n hb-chg '+(diff>0?'up':(diff<0?'dn':'nc'))+'">'+(diff>0?'▲ ':(diff<0?'▼ ':''))+qc(diff)+'</span>';
+        var held=stale.indexOf(a[0])>=0?'<span class="hb-old">Held'+(x.close_date?' · '+day(new Date(x.close_date+'T12:00:00')):'')+'</span>':'';
+        set(id+'-s',(c||'')+(c&&held?' ':'')+held||'&nbsp;');
+      });
+    }
+    function getPrices(){
+      var p=window.__agsistPricesP||(window.__agsistPricesP=fetch('/data/prices.json',{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).catch(function(){return null;}));
+      p.then(paintFut).catch(function(){});
+    }
+    window.addEventListener('agsist:prices',function(e){paintFut(e&&e.detail);});
+    if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',getPrices);else getPrices();
+    setTimeout(function(){if(futSeen)return;['hb-fc','hb-fs'].forEach(function(id){set(id+'-v',DASH);set(id+'-s','Prices didn’t load');});},10000);
+
+    /* ---- today: the Local Conditions reading and its spray verdict ---- */
+    var temp=null,spray,sprayDone=false;
+    function paintWx(){
+      var v=temp!=null?'<span class="hb-n">'+esc(temp)+'</span>':'';
+      var s='';
+      if(spray)s='<span class="hb-spray hb-'+spray.s+'">'+esc(spray.long)+'</span>'+(spray.short?' · '+esc(spray.short):'');
+      else if(sprayDone)s='Spray read: '+DASH+' forecast didn’t load';
+      if(v)set('hb-wx-v',v);
+      if(s)set('hb-wx-s',s);
+    }
+    function readTemp(){var t=$('wx-temp'),x=t&&(t.textContent||'').trim();if(x&&/\d/.test(x)){temp=x;paintWx();}}
+    /* The Local Conditions card sits further down the page than this script. */
+    function watchTemp(){var wt=$('wx-temp');
+      if(wt&&window.MutationObserver)new MutationObserver(readTemp).observe(wt,{childList:true,characterData:true,subtree:true});
+      readTemp();}
+    if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',watchTemp);else watchTemp();
+    window.addEventListener('agsist:spray',function(e){spray=e&&e.detail||null;sprayDone=true;paintWx();});
+    if(window.__agsistSprayToday!==undefined){spray=window.__agsistSprayToday;sprayDone=true;paintWx();}
+    setTimeout(function(){
+      if(temp==null)set('hb-wx-v',DASH);
+      if(!spray){sprayDone=true;}
+      if(temp==null&&!spray)set('hb-wx-s','Weather didn’t load');else paintWx();
+    },10000);
+  })();
+  </script>
   <section class="s7-month" id="s7-month" aria-labelledby="s7-month-h" data-track="season">
     <div class="s7-head"><h2 class="s7-h" id="s7-month-h">This month</h2><span class="s7-k" id="s7-month-k">What leads the page this month</span></div>
     <div class="s7-grid" id="s7-grid"></div>
+    <!-- 2026-10-06: each cell shows its figure and one short line; the rest of
+         what used to sit under it (how it is figured, sources, the reader's
+         state detail) is here, closed, never dropped. -->
+    <details class="s7-notes" id="s7-notes" hidden><summary>How these are figured</summary><div class="s7-notes-b" id="s7-notes-b"></div></details>
   </section>
   
   <div class="dash-grid" id="dash-grid" style="order:-1">
@@ -571,7 +741,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
     </div>
   <div class="price-cards-section fade-up" id="f-prices">
 
-    <div class="sec-head"><h2 class="sec-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:1.05em;height:1.05em;vertical-align:-.13em;margin-right:.34em;flex:none"><path d="M9 5v4" /> <rect width="4" height="6" x="7" y="9" rx="1" /> <path d="M9 15v2" /> <path d="M17 3v2" /> <rect width="4" height="8" x="15" y="5" rx="1" /> <path d="M17 13v3" /> <path d="M3 3v16a2 2 0 0 0 2 2h16" /></svg>Market Prices</h2><div style="display:flex;align-items:center;gap:.75rem"><span id="prices-age" style="font-family:'JetBrains Mono',monospace;font-size:.706rem;color:var(--text-muted)">Updated every 30 min</span><a href="/corn-futures-prices" class="sec-all">All Charts</a></div></div>
+    <div class="sec-head"><h2 class="sec-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:1.05em;height:1.05em;vertical-align:-.13em;margin-right:.34em;flex:none"><path d="M9 5v4" /> <rect width="4" height="6" x="7" y="9" rx="1" /> <path d="M9 15v2" /> <path d="M17 3v2" /> <rect width="4" height="8" x="15" y="5" rx="1" /> <path d="M17 13v3" /> <path d="M3 3v16a2 2 0 0 0 2 2h16" /></svg>Market Prices</h2><div style="display:flex;align-items:center;gap:.75rem"><span id="prices-age" style="font-family:'JetBrains Mono',monospace;font-size:.765rem;color:var(--text-muted)">Updated every 30 min</span><a href="/corn-futures-prices" class="sec-all">All Charts</a></div></div>
     <h3 class="pc-section-lbl idx1-sub-h">Grains &mdash; Key Contracts</h3>
     <div class="price-cards-grid">
       <div class="pc pc--highlight" data-spark="corn"><div class="pc-head"><span class="pc-name">Corn</span><span class="pc-contract"></span></div><div class="r7-pl"><div class="pc-price" id="pcp-corn-near"></div><span class="r7-unit">per bu</span></div><div class="pc-change"><span class="pc-chg-val nc" id="pcc-corn-near"></span></div><div class="pc-prev" id="pcprev-corn-near"></div><div class="pc-range"><div class="pc-range-labels"><span id="pcrl-corn-lo"></span><span>52-week range</span><span id="pcrl-corn-hi"></span></div><div class="pc-range-track"><div class="pc-range-fill" id="pcrf-corn"></div><div class="pc-range-dot" id="pcrd-corn"></div></div></div></div>
@@ -687,8 +857,8 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
                     <div class="wx-today" id="wx-today-summary"></div>
           <div id="wx-forecast" style="display:none"></div>
           <div class="wx-data-extra">
-            <div class="wx-extra-stat with-chart" id="gdu-stat" role="button" tabindex="0" aria-expanded="false" aria-controls="gdu-chart-panel"><div class="wx-extra-lbl"><svg class="ic" aria-hidden="true"><use href="#i-thermometer"/></svg> GDU Since Apr 1</div><div class="wx-extra-val" id="gdu-val">--</div><div class="wx-extra-ctx" id="gdu-ctx">Growing degree units</div><div class="wx-chart-toggle" id="gdu-chart-toggle">&#x25BC; Show 5-year history</div></div>
-            <div class="wx-extra-stat with-chart" id="precip-stat" role="button" tabindex="0" aria-expanded="false" aria-controls="precip-chart-panel"><div class="wx-extra-lbl"><svg class="ic" aria-hidden="true"><use href="#i-cloud-rain"/></svg> 30-Day Precip</div><div class="wx-extra-val" id="precip-val">--</div><div class="wx-extra-ctx" id="precip-ctx">Trailing 30 days</div><div class="wx-chart-toggle" id="precip-chart-toggle">&#x25BC; Show monthly history</div></div>
+            <div class="wx-extra-stat with-chart" id="gdu-stat" role="button" tabindex="0" aria-expanded="false" aria-controls="gdu-chart-panel"><div class="wx-extra-lbl"><svg class="ic" aria-hidden="true"><use href="#i-thermometer"/></svg> GDU Since Apr 1</div><div class="wx-extra-val" id="gdu-val">--</div><div class="wx-extra-ctx" id="gdu-ctx"></div><div class="wx-chart-toggle" id="gdu-chart-toggle">&#x25BC; History</div></div>
+            <div class="wx-extra-stat with-chart" id="precip-stat" role="button" tabindex="0" aria-expanded="false" aria-controls="precip-chart-panel"><div class="wx-extra-lbl"><svg class="ic" aria-hidden="true"><use href="#i-cloud-rain"/></svg> 30-Day Precip</div><div class="wx-extra-val" id="precip-val">--</div><div class="wx-extra-ctx" id="precip-ctx"></div><div class="wx-chart-toggle" id="precip-chart-toggle">&#x25BC; History</div></div>
           </div>
           <div class="wx-chart-panel" id="gdu-chart-panel" role="region" aria-label="5-year GDU monthly history">
             <div class="wx-chart-title" id="gdu-chart-title">GDU by month &middot; Apr&ndash;Oct &middot; 5-yr avg vs this year</div>
@@ -711,7 +881,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
               <div class="wx-7day-cell"><div class="wx-7day-name">&mdash;</div><div class="wx-7day-icon"><svg class="ic" aria-hidden="true"><use href="#i-cloud-sun"/></svg></div><div class="wx-7day-temps"><span class="hi">--&deg;</span><span class="lo">--&deg;</span></div><div class="wx-7day-meta">--</div></div>
               <div class="wx-7day-cell"><div class="wx-7day-name">&mdash;</div><div class="wx-7day-icon"><svg class="ic" aria-hidden="true"><use href="#i-cloud-sun"/></svg></div><div class="wx-7day-temps"><span class="hi">--&deg;</span><span class="lo">--&deg;</span></div><div class="wx-7day-meta">--</div></div>
             </div>
-            <button class="wx-hourly-toggle" id="wx-hourly-toggle" aria-expanded="false" aria-controls="wx-hourly-panel">&#x25BC; Show hourly forecast</button>
+            <button class="wx-hourly-toggle" id="wx-hourly-toggle" aria-expanded="false" aria-controls="wx-hourly-panel">&#x25BC; Hourly</button>
             <div class="wx-hourly-panel" id="wx-hourly-panel" role="region" aria-label="24-hour hourly forecast">
               <div class="wx-hourly-strip" id="wx-hourly-strip"></div>
             </div>
@@ -745,6 +915,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
       <a class="land-cell land-lead" id="land-atlas" href="/farmland-atlas" data-track="land"><span class="land-k">Farmland Atlas</span><span class="land-v" id="land-atlas-v">Rent, land value and risk for every US county</span><span class="land-s" id="land-atlas-s">Open the map</span></a>
       <a class="land-cell" id="land-hail" href="/hail-map" data-track="land" hidden><span class="land-k">Hail, 30 days</span><span class="land-v" id="land-hail-v"></span><span class="land-s" id="land-hail-s"></span></a>
     </div>
+    <details class="m-fold m-fold--lite" open><summary class="m-fold-sum"><span>More land and market pages</span></summary>
     <ul class="land-links">
       <li><a href="/cash-rent" data-track="land">Cash Rent by County</a></li>
       <li><a href="/land-tenure" data-track="land">Who Owns the Ground</a></li>
@@ -759,6 +930,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
       <li><a href="/foreign-land" data-track="land">Foreign-Owned Farmland</a></li>
       <li><a href="/archive" data-track="land">Briefing Archive</a></li>
     </ul>
+    </details>
   </section>
   <script>
   /* Land band. Every number comes from a file in /data or the Atlas build,
@@ -898,7 +1070,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
     <span class="scu-eyebrow"><svg class="ic" aria-hidden="true"><use href="#i-newspaper"/></svg> AGSIST Daily</span>
     <span class="scu-text"><strong>Free daily briefing</strong> &mdash; markets, weather, one number to know before the market open &mdash; for farmers across the US.</span>
     <div class="scu-form"><input type="email" class="scu-input" id="compact-email" placeholder="your@email.com" autocomplete="email" aria-label="Email for daily briefing"><button class="scu-btn" id="btn-compact-signup">Subscribe Free &rarr;</button></div>
-    <div class="scu-disc" style="font-size:.706rem;color:var(--text-muted);margin-top:.3rem">Unsubscribe any time. <a href="/privacy">Privacy Policy</a>.</div>
+    <div class="scu-disc" style="font-size:.765rem;color:var(--text-muted);margin-top:.3rem">Unsubscribe any time. <a href="/privacy">Privacy Policy</a>.</div>
     <button class="scu-dismiss" id="btn-compact-dismiss" aria-label="Dismiss signup"><svg class="ic" aria-hidden="true"><use href="#i-x"/></svg> No thanks</button>
   </div>
 
@@ -989,7 +1161,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
   </div>
   </details>
   <div class="pdw fade-up" id="pdw">
-    <label for="pdw-state" style="display:block;font-family:'JetBrains Mono',monospace;font-size:.706rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--brand);margin-bottom:.4rem">Your RMA price discovery</label>
+    <label for="pdw-state" style="display:block;font-family:'JetBrains Mono',monospace;font-size:.765rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--brand);margin-bottom:.4rem">Your RMA price discovery</label>
     <select id="pdw-state" class="pdw-sel"><option value="">Select your state</option></select>
     <div id="pdw-geo" style="font-size:.824rem;color:var(--text-muted);margin:-.3rem 0 .45rem"></div>
     <div id="pdw-out"></div>
@@ -1213,7 +1385,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
   <div class="signup--slim fade-up" id="signup-slim" style="display:none;padding-bottom:max(.5rem,env(safe-area-inset-bottom))">
     <span class="scs-text">Get the AGSIST Daily briefing every weekday &mdash; markets, weather, one number to know. Free for farmers everywhere.</span>
     <a href="/daily">Subscribe Free</a>
-    <span style="font-size:.706rem;color:var(--text-muted)">&middot; <a href="/privacy">Privacy Policy</a></span>
+    <span style="font-size:.765rem;color:var(--text-muted)">&middot; <a href="/privacy">Privacy Policy</a></span>
     <button id="btn-slim-dismiss" aria-label="Dismiss" style="background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:.824rem;padding:0 0 0 .5rem;line-height:1"><svg class="ic" aria-hidden="true"><use href="#i-x"/></svg></button>
   </div>
 
@@ -1284,29 +1456,21 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
          it is hand-maintained. The words under each figure are
          report_bands.describe(): the trade range is graded first, and a
          print inside it carries no bullish or bearish label (wave1-E). -->
-    <div class="usda-cal-card" style="margin-bottom:.7rem;padding:.85rem 1rem;display:flex;flex-direction:column;gap:.5rem">
-      <div style="display:flex;align-items:center;justify-content:space-between;gap:.5rem;flex-wrap:wrap">
-        <div style="font-size:.824rem;font-weight:700;color:var(--text)">September Grain Stocks &mdash; released Sep 30</div>
-        <a href="/whats-priced-in" style="font-family:'JetBrains Mono',monospace;font-size:.706rem;color:var(--text-muted);background:rgba(255,255,255,.04);padding:.2rem .5rem;border-radius:5px;text-decoration:none">USDA OFFICIAL &middot; graded</a>
+    <div class="usda-cal-card gs-card">
+      <div class="gs-head">
+        <span class="gs-t">September Grain Stocks &middot; Sep 30</span>
+        <a href="/whats-priced-in" class="gs-src">USDA, graded</a>
       </div>
-      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem">
-        <div>
-          <div style="font-size:.706rem;color:var(--text-muted)">Corn stocks</div>
-          <div style="font-family:'JetBrains Mono',monospace;font-size:1.294rem;font-weight:800;color:var(--text)">2.095<span style="display:block;font-size:.706rem;font-weight:600;color:var(--text-muted)">billion bu</span></div>
-          <div style="font-family:'JetBrains Mono',monospace;font-size:.706rem;color:var(--red)">above the trade range, bearish</div>
-        </div>
-        <div>
-          <div style="font-size:.706rem;color:var(--text-muted)">Soybean stocks</div>
-          <div style="font-family:'JetBrains Mono',monospace;font-size:1.294rem;font-weight:800;color:var(--text)">0.315<span style="display:block;font-size:.706rem;font-weight:600;color:var(--text-muted)">billion bu</span></div>
-          <div style="font-family:'JetBrains Mono',monospace;font-size:.706rem;color:var(--text-muted)">2.8% below average, inside the range</div>
-        </div>
-        <div>
-          <div style="font-size:.706rem;color:var(--text-muted)">Wheat stocks</div>
-          <div style="font-family:'JetBrains Mono',monospace;font-size:1.294rem;font-weight:800;color:var(--text)">1.846<span style="display:block;font-size:.706rem;font-weight:600;color:var(--text-muted)">billion bu</span></div>
-          <div style="font-family:'JetBrains Mono',monospace;font-size:.706rem;color:var(--text-muted)">no trade estimate</div>
-        </div>
+      <div class="gs-grid">
+        <div><div class="gs-k">Corn</div><div class="gs-v">2.095</div></div>
+        <div><div class="gs-k">Soybeans</div><div class="gs-v">0.315</div></div>
+        <div><div class="gs-k">Wheat</div><div class="gs-v">1.846</div></div>
       </div>
-      <div style="font-size:.706rem;color:var(--text-muted)">Corn printed above the whole trade range (1.843&ndash;2.005 billion bu). Soybeans printed inside it, below average. <a href="/whats-priced-in" style="color:var(--text-muted);text-decoration:underline">What’s Priced In</a></div>
+      <div class="gs-line">Billion bu. Corn above the trade range, bearish.</div>
+      <details class="gs-more"><summary>Against the trade range</summary>
+        <p>Corn stocks: above the trade range, bearish. Soybean stocks: 2.8% below average, inside the range. Wheat stocks: no trade estimate.</p>
+        <p>Corn printed above the whole trade range (1.843&ndash;2.005 billion bu). Soybeans printed inside it, below average. <a href="/whats-priced-in">What&rsquo;s Priced In</a></p>
+      </details>
     </div>
   </div>
 <details class="m-fold m-fold--cot" open><summary class="m-fold-sum"><span>Market Intelligence <small>COT positioning &middot; yield nowcast</small></span></summary>
@@ -1333,21 +1497,21 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
         <div class="ratio-widget-head"><h3 class="ratio-widget-title idx1-sub-h">Yield Nowcast &mdash; this year&rsquo;s crop</h3><span class="ratio-verdict neutral" id="nc-verdict">Loading&hellip;</span></div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:.7rem;margin:.15rem 0 .55rem">
           <div style="text-align:center;padding:.55rem .4rem;background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:9px">
-            <div style="font-size:.706rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.25rem">Corn</div>
+            <div style="font-size:.765rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.25rem">Corn</div>
             <div style="font-family:'JetBrains Mono',monospace;font-size:1.294rem;font-weight:800;line-height:1;color:var(--text)" id="nc-corn">--</div>
             <div style="font-family:'JetBrains Mono',monospace;font-size:.824rem;color:var(--text-muted);margin-top:.3rem">bu/ac &middot; 80% band &plusmn;<span id="nc-corn-band">--</span></div>
             <div style="font-size:.824rem;margin-top:.25rem" id="nc-corn-vs">&nbsp;</div>
           </div>
           <div style="text-align:center;padding:.55rem .4rem;background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:9px">
-            <div style="font-size:.706rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.25rem">Soybeans</div>
+            <div style="font-size:.765rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.25rem">Soybeans</div>
             <div style="font-family:'JetBrains Mono',monospace;font-size:1.294rem;font-weight:800;line-height:1;color:var(--text)" id="nc-beans">--</div>
             <div style="font-family:'JetBrains Mono',monospace;font-size:.824rem;color:var(--text-muted);margin-top:.3rem">bu/ac &middot; 80% band &plusmn;<span id="nc-beans-band">--</span></div>
             <div style="font-size:.824rem;margin-top:.25rem" id="nc-beans-vs">&nbsp;</div>
           </div>
         </div>
-        <div style="font-size:.706rem;color:var(--text-muted);line-height:1.55;margin-bottom:.35rem">Weekly, from USDA crop ratings. <span class="tip"><button type="button" class="tip-b" aria-expanded="false" aria-describedby="tip-nowcast">How it works</button><span id="tip-nowcast" role="tooltip" class="tip-t" hidden>Built from Monday&rsquo;s USDA crop ratings, state by state, weighted by acres. 80% band: in 8 of every 10 years backtested (<span id="nc-years">16</span> years, each left out in turn), the model at this week of the season missed USDA&rsquo;s final yield by no more than this. Tightens as the season ages.</span></span></div>
+        <div style="font-size:.765rem;color:var(--text-muted);line-height:1.55;margin-bottom:.35rem">Weekly, from USDA crop ratings. <span class="tip"><button type="button" class="tip-b" aria-expanded="false" aria-describedby="tip-nowcast">How it works</button><span id="tip-nowcast" role="tooltip" class="tip-t" hidden>Built from Monday&rsquo;s USDA crop ratings, state by state, weighted by acres. 80% band: in 8 of every 10 years backtested (<span id="nc-years">16</span> years, each left out in turn), the model at this week of the season missed USDA&rsquo;s final yield by no more than this. Tightens as the season ages.</span></span></div>
         <div style="display:flex;align-items:center;justify-content:space-between;gap:.5rem;flex-wrap:wrap">
-          <span style="font-family:'JetBrains Mono',monospace;font-size:.706rem;color:var(--text-muted)" id="nc-week">Ratings week: &mdash;</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:.765rem;color:var(--text-muted)" id="nc-week">Ratings week: &mdash;</span>
           <a href="/conditions-yield" class="ratio-link"><svg class="ic" aria-hidden="true"><use href="#i-chart-column"/></svg> How it&rsquo;s computed</a>
         </div>
       </div>
@@ -1359,19 +1523,25 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
     <div class="usda-cal-card pbc">
       <p class="pbc-verdict" id="pbc-verdict">Loading&hellip;</p>
       <ul class="pbc-calls" id="pbc-calls" aria-label="Latest calls"></ul>
-      <p class="pbc-line" id="pbc-live"></p>
-      <p class="pbc-line" id="pbc-bt"></p>
       <p class="pbc-asof" id="pbc-asof"></p>
+      <!-- 2026-10-06: the record in full, one tap away. Sample sizes and the
+           always-down comparison stay word for word. -->
+      <details class="pbc-more"><summary>The record in full</summary>
+        <p class="pbc-line" id="pbc-full"></p>
+        <p class="pbc-line" id="pbc-live"></p>
+        <p class="pbc-line" id="pbc-bt"></p>
+      </details>
     </div>
     <p class="pbc-foot"><span class="tip"><button type="button" class="tip-b" aria-expanded="false" aria-describedby="tip-score">How it works</button><span id="tip-score" role="tooltip" class="tip-t" hidden>One fixed rule, written and backtested once on Oct 3, 2026: managed money positioning at an extreme (the bot&rsquo;s own 90th/10th percentile over 3 years), otherwise the 13-week trend. Once per weekly CFTC report it calls corn, soybeans, Chicago and KC wheat 4 weeks out. Code grades each call against settlement prices. Its backtest is no better than a coin flip. Not advice.</span></span></p>
   </div>
+<details class="m-fold m-fold--alert" open><summary class="m-fold-sum"><span>Price alert <small>email at your target</small></span></summary>
 <div class="fade-up" id="f-price-alert">
     <div class="sec-head"><h2 class="sec-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:1.05em;height:1.05em;vertical-align:-.13em;margin-right:.34em;flex:none"><path d="M12 2v20"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>Price Alert</h2></div>
     <div class="usda-cal-card" style="padding:.85rem 1rem">
-      <p style="font-size:.824rem;color:var(--text-muted);margin:0 0 8px;line-height:1.45">One email when the futures price reaches your target, then it clears. Checked every 30 minutes, delayed about 15. <span class="tip"><button type="button" class="tip-b" aria-expanded="false" aria-describedby="tip-alert">Not a cash bid</button><span id="tip-alert" role="tooltip" class="tip-t" hidden>This watches the futures price, not your elevator&rsquo;s bid. Check your local basis separately.</span></span></p>
+      <p style="font-size:.824rem;color:var(--text-muted);margin:0 0 8px;line-height:1.45">One email when futures hit your target. <span class="tip"><button type="button" class="tip-b" aria-expanded="false" aria-describedby="tip-alert">Not a cash bid</button><span id="tip-alert" role="tooltip" class="tip-t" hidden>One email when the futures price reaches your target, then the alert clears. Checked every 30 minutes, delayed about 15. This watches the futures price, not your elevator&rsquo;s bid. Check your local basis separately.</span></span></p>
       <div id="pa-form" style="display:flex;flex-direction:column;gap:.45rem">
         <div style="display:flex;gap:.4rem;flex-wrap:wrap">
-          <select id="pa-symbol" aria-label="Contract" style="flex:1;min-width:120px;padding:.4rem .5rem;background:var(--surface2);border:1px solid var(--border);border-radius:5px;font-size:.706rem;color:var(--text)">
+          <select id="pa-symbol" aria-label="Contract" style="flex:1;min-width:120px;padding:.4rem .5rem;background:var(--surface2);border:1px solid var(--border);border-radius:5px;font-size:.765rem;color:var(--text)">
             <option value="corn">Corn, front month</option>
             <option value="corn-dec">Corn, December contract</option>
             <option value="beans">Soybeans, front month</option>
@@ -1379,7 +1549,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
             <option value="wheat">Chicago SRW wheat, front month</option>
             <option value="cattle">Live cattle, front month</option>
           </select>
-          <select id="pa-direction" aria-label="Direction" style="padding:.4rem .5rem;background:var(--surface2);border:1px solid var(--border);border-radius:5px;font-size:.706rem;color:var(--text)">
+          <select id="pa-direction" aria-label="Direction" style="padding:.4rem .5rem;background:var(--surface2);border:1px solid var(--border);border-radius:5px;font-size:.765rem;color:var(--text)">
             <option value="above">goes above</option>
             <option value="below">goes below</option>
           </select>
@@ -1389,12 +1559,13 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
           <input type="number" id="pa-target" step="0.01" min="0.01" max="1000" placeholder="Target" aria-label="Target price in dollars" style="flex:1;padding:.4rem .5rem;background:var(--surface2);border:1px solid var(--border);border-radius:5px;font-size:.824rem;font-family:'JetBrains Mono',monospace;color:var(--text)">
         </div>
         <div id="r7-pa-now" aria-live="polite"></div>
-        <input type="email" id="pa-email" placeholder="your@email.com" autocomplete="email" aria-label="Email for the alert" style="padding:.4rem .5rem;background:var(--surface2);border:1px solid var(--border);border-radius:5px;font-size:.706rem;color:var(--text)">
+        <input type="email" id="pa-email" placeholder="your@email.com" autocomplete="email" aria-label="Email for the alert" style="padding:.4rem .5rem;background:var(--surface2);border:1px solid var(--border);border-radius:5px;font-size:.765rem;color:var(--text)">
         <button type="button" id="pa-go" style="padding:.5rem .7rem;background:var(--gold);color:#0a0c0d;border:none;border-radius:5px;font-size:.824rem;font-weight:700;cursor:pointer">Set alert</button>
-        <div id="pa-status" role="status" tabindex="-1" style="font-size:.706rem;color:var(--text-muted);min-height:1.1em"></div>
+        <div id="pa-status" role="status" tabindex="-1" style="font-size:.765rem;color:var(--text-muted);min-height:1.1em"></div>
       </div>
     </div>
   </div>
+</details>
   <script>
   (function(){
     // Same double opt-in shape as "Watch this elevator" (components/homepage-extras.js)
@@ -1450,7 +1621,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
             return fail(/email/.test(String(data.error))?'That email address was not accepted.':/target/.test(String(data.error))?'That target price was not accepted.':'That alert was not accepted.',/email/.test(String(data.error))?email:/target/.test(String(data.error))?tgt:null);
           if(!r.ok||!data||data.ok!==true)
             return fail('The alert service did not confirm this'+(r.ok?'':' (error '+r.status+')')+'. Nothing was saved. Try again in a minute.');
-          document.getElementById('pa-form').innerHTML='<span id="pa-done" tabindex="-1" style="font-size:.706rem;color:var(--green)">Check your email to confirm. Nothing is sent until you do.</span>';
+          document.getElementById('pa-form').innerHTML='<span id="pa-done" tabindex="-1" style="font-size:.765rem;color:var(--green)">Check your email to confirm. Nothing is sent until you do.</span>';
           var done=document.getElementById('pa-done'); if(done) done.focus();
         });
     }
@@ -1478,9 +1649,16 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
       if(!live){fail();return;}
       var btShort=bt&&bt.gate_ok?(bt.verdict_text||V[bt.verdict]||'\u2014').replace(/\.$/,''):'not computed yet';
       btShort=btShort.charAt(0).toLowerCase()+btShort.slice(1);
+      /* 2026-10-06: the visible line is the short verdict word; the file's own
+         verdict sentence moves into "The record in full", unchanged. */
+      var btWord=bt&&bt.gate_ok&&V[bt.verdict]?V[bt.verdict].replace(/\.$/,''):btShort;
+      btWord=btWord.charAt(0).toLowerCase()+btWord.slice(1);
       $('pbc-verdict').textContent=live.gate_ok
+        ?('Live record: '+(V[live.verdict]||live.verdict_text||'—'))
+        :('Backtest: '+btWord+'. Too few live calls to grade.');
+      $('pbc-full').textContent=live.gate_ok
         ?('Live record: '+(live.verdict_text||V[live.verdict]||'—'))
-        :('Backtest: '+btShort+'. Too few live calls to grade.');
+        :('Backtest: '+btShort+'.');
       var labels={};(d.crops||[]).forEach(function(c){labels[c.key]=c.label;});
       var lt=d.latest||{}, calls=lt.calls||[], ul=$('pbc-calls');
       function px(c){if(c.entry==null)return '';var q=Math.round(Number(c.entry)*4),w=Math.floor(q/4),f=q%4;return ' from $'+Math.floor(w/100)+'.'+('0'+(w%100)).slice(-2)+['','\u00bc','\u00bd','\u00be'][f];}
@@ -1498,7 +1676,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
       $('pbc-asof').textContent=lt.date?('Calls made at the '+fd(lt.date)+' close.'):'';
       var th=$('rsct-hit'), tl=$('rsct-label');
       if(th)th.textContent=live.gate_ok?(V[live.verdict]||'—').replace(/\.$/,''):'Too early';
-      if(tl)tl.textContent=live.gate_ok?'Prediction bot, live record':('Prediction bot. Backtest: '+btShort);
+      if(tl)tl.textContent=live.gate_ok?'Prediction bot, live record':('Prediction bot. Backtest: '+btWord);
     }).catch(fail);
   })();
   </script>
@@ -2036,7 +2214,7 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')close(true);
       line=document.createElement('p');
       line.id='daily-takeaway-frame';
       line.className='daily-takeaway-frame';
-      line.setAttribute('style',"font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--text-muted);margin:.5rem 0 0;letter-spacing:.02em");
+      line.setAttribute('style',"font-family:'JetBrains Mono',monospace;font-size:.765rem;color:var(--text-muted);margin:.5rem 0 0;letter-spacing:.02em");
       ta.appendChild(line);
     }
     line.textContent='Written at '+fmt(was)+' '+(NAMES[key]||key)+' \u00b7 now '+fmt(now)+' ('+txt+')';
@@ -2460,7 +2638,7 @@ fetch('/data/crop-progress.json')
     if(!data||typeof data!=='object'||(!data.corn&&!data.soybeans))throw new Error('cp malformed');
     if(data.report_date){var d=document.getElementById('crop-date');if(d)d.textContent='As of '+fmtDate(data.report_date)+' \u00b7 NASS';}
     if(data.week){var wb=document.getElementById('crop-week-badge');if(wb)wb.textContent='Week '+data.week;}
-    if(!data.in_season){var rows=document.getElementById('crop-rows');if(rows)rows.innerHTML='<div class="crop-offseason"><svg class="ic" aria-hidden="true"><use href="#i-snowflake"/></svg> Off season \u2014 resumes April<br><span style="font-size:.706rem;margin-top:.2rem;display:block">Last season data shown when available</span></div>';}
+    if(!data.in_season){var rows=document.getElementById('crop-rows');if(rows)rows.innerHTML='<div class="crop-offseason"><svg class="ic" aria-hidden="true"><use href="#i-snowflake"/></svg> Off season \u2014 resumes April<br><span style="font-size:.765rem;margin-top:.2rem;display:block">Last season data shown when available</span></div>';}
     var allNull=true,_needHarvestNote=[];
     ['corn','soybeans'].forEach(function(comm){
       var key=comm==='soybeans'?'bean':comm,d=data[comm];if(!d)return;
@@ -2501,7 +2679,7 @@ fetch('/data/crop-progress.json')
       }
     });
     if(_needHarvestNote.length){var _cr=document.getElementById('crop-rows');if(_cr&&!document.getElementById('r7-crop-note')){var _n=document.createElement('div');_n.id='r7-crop-note';_n.className='r7-crop-note';_n.textContent='Harvested and mature'+(_needHarvestNote.length===1?' ('+_needHarvestNote[0]+')':'')+': Not loaded yet.';_cr.appendChild(_n);}}
-    if(allNull&&data.in_season!==false){var rows=document.getElementById('crop-rows');if(rows)rows.innerHTML='<div class="crop-offseason">Season starting \u2014 ratings begin once planting gets underway.<br><span style="font-size:.706rem;margin-top:.25rem;display:block">Typically mid-April for corn &amp; soybean country</span></div>';}
+    if(allNull&&data.in_season!==false){var rows=document.getElementById('crop-rows');if(rows)rows.innerHTML='<div class="crop-offseason">Season starting \u2014 ratings begin once planting gets underway.<br><span style="font-size:.765rem;margin-top:.25rem;display:block">Typically mid-April for corn &amp; soybean country</span></div>';}
   })
   /* WAVE3-L: a failed file is one line. It used to say "Data pending" and
      print "--% planted" in October. */
@@ -2850,7 +3028,7 @@ gj('/data/markets.json').then(function(cached){
       weekly.forEach(function(r){if(r.wd!==wd)return;var at=etToUtc(y,mo,da,r.h,r.mi),hol=!!HOL[di];
         /* A holiday row stays until its day is over: its time is not known. */
         if(hol?di<todayIso:at<=now)return;
-        events.push({name:r.name,day:di,mo:mo,da:da,at:at,time:hol?'Federal holiday · date may shift, check USDA':clock(r.h,r.mi)+(holWk?' · holiday week, may shift':'')});});
+        events.push({name:r.name,day:di,mo:mo,da:da,at:at,time:hol?'Holiday: date may shift':clock(r.h,r.mi)+(holWk?' · may shift':'')});});
     }
     function render(list,note){
       list.sort(function(a,b){return a.at-b.at;});
@@ -3785,7 +3963,7 @@ function wireChartToggle(statId,panelId,toggleId){
     if(e)e.stopPropagation();
     var open=panel.classList.toggle('expanded');
     stat.setAttribute('aria-expanded',open?'true':'false');
-    tog.innerHTML=(open?'\u25B2 Hide ':'\u25BC Show ')+(statId==='gdu-stat'?'5-yr history':'monthly history');
+    tog.innerHTML=open?'\u25B2 Hide':'\u25BC History';
   }
   stat.addEventListener('click',togglePanel);
   stat.addEventListener('keydown',function(ev){if(ev.key==='Enter'||ev.key===' '){ev.preventDefault();togglePanel(ev);}});
@@ -3796,7 +3974,7 @@ function wireHourlyToggle(){
   btn.addEventListener('click',function(){
     var open=panel.classList.toggle('expanded');
     btn.setAttribute('aria-expanded',open?'true':'false');
-    btn.innerHTML=(open?'\u25B2 Hide ':'\u25BC Show ')+'hourly forecast';
+    btn.innerHTML=open?'\u25B2 Hide hourly':'\u25BC Hourly';
     // auto-scroll "now" cell into view when opening
     if(open){var nowCell=panel.querySelector('.wx-hourly-cell.now');if(nowCell&&nowCell.scrollIntoView){try{nowCell.scrollIntoView({behavior:'smooth',inline:'center',block:'nearest'});}catch(e){}}}
   });
@@ -3956,7 +4134,7 @@ function loadWeatherEnhancements(state){
       var cls=Math.abs(gduPct)<5?'':(gduPct>0?'warm':'cool');
       gduCtxEl.innerHTML='vs 5-yr avg: <span style="font-weight:700;color:'+(cls==='warm'?'#d4a23f':cls==='cool'?'#5ba3e0':'var(--text)')+'">'+sgnN(gduPct)+'%</span>';
     } else if(gduCtxEl){
-      gduCtxEl.textContent='Growing degree units';
+      gduCtxEl.textContent='';
     }
     // Precip: trailing 30 days vs same 30-day window avg of past 5 years
     var win=new Date(yesterday);win.setDate(win.getDate()-29);
@@ -3978,7 +4156,7 @@ function loadWeatherEnhancements(state){
       var prCls=Math.abs(prPct)<10?'':(prPct>0?'wet':'dry');
       prCtxEl.innerHTML='vs 5-yr avg: <span style="font-weight:700;color:'+(prCls==='wet'?'#5ba3e0':prCls==='dry'?'#d4a23f':'var(--text)')+'">'+sgnN(prPct)+'%</span>';
     } else if(prCtxEl){
-      prCtxEl.textContent='Trailing 30 days';
+      prCtxEl.textContent='';
     }
     // ----- Plain-language takeaways: absolute delta + vs-normal + what it means -----
     var gduTk=document.getElementById('gdu-takeaway');
@@ -4732,7 +4910,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
     rent:'/cash-rent',condition:'/conditions',planting:'/planting-date',soilPlant:'/planting-date',spray:'/spray'};
   if(grid&&S){
     var h=$('s7-month-h');if(h)h.textContent=MONTH[M-1]+' on the farm';
-    var k=$('s7-month-k');if(k)k.textContent='Changes with the month';
+    var k=$('s7-month-k');if(k){k.textContent='';k.hidden=true;}
     /* The insurance cell takes a full row of its own (one row per crop inside it). */
     var cols=S.lead.filter(function(m){return m!=='insurance';}).map(function(){return 'minmax(0,1fr)';}).join(' ');
     grid.style.gridTemplateColumns=cols;
@@ -4749,11 +4927,30 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
     });
   }
   var jm=$('s7-jump-m');if(jm)jm.textContent=MONTH[M-1];
-  function put(m,v,s,meaning){
+  /* 2026-10-06 say it once: a cell keeps its figure and one short line. A
+     long sub-line keeps its first sentence; the rest of it, the meaning line
+     and any extra detail go to the closed notes under the grid. */
+  var NOTES={};
+  function note(m,html){
+    if(html)NOTES[m]=html;else delete NOTES[m];
+    var b=$('s7-notes-b'),d=$('s7-notes');if(!b||!d||!S)return;
+    var ks=S.lead.filter(function(k){return NOTES[k];});
+    b.innerHTML=ks.map(function(k){return '<p class="s7-note"><b>'+LABEL[k]+'.</b> '+NOTES[k]+'</p>';}).join('');
+    d.hidden=!ks.length;
+  }
+  function put(m,v,s,meaning,extra){
     var c=cells[m];if(!c)return;
     c.querySelector('.s7-cv').innerHTML=v;
-    c.querySelector('.s7-cs').innerHTML=s||'';
-    var cm=c.querySelector('.s7-cm');if(meaning){cm.innerHTML=meaning;cm.hidden=false;}else{cm.hidden=true;}
+    var sub=String(s||''),more=[];
+    if(extra)more.push(extra);
+    if(sub.replace(/<[^>]*>/g,'').length>70){
+      var f=/^([\s\S]*?[.!?])\s+(?=[A-Z<])/.exec(sub);
+      if(f){more.push(sub.slice(f[0].length));sub=f[1];}
+    }
+    if(meaning)more.push(meaning);
+    c.querySelector('.s7-cs').innerHTML=sub;
+    var cm=c.querySelector('.s7-cm');cm.innerHTML='';cm.hidden=true;
+    note(m,more.join(' '));
   }
   function needZip(m){var c=cells[m];if(!c)return;c.setAttribute('data-zip','1');c.href='#bids-zip';put(m,'<span class="s7-nl">Set your ZIP</span>','For your location');}
 
@@ -5039,9 +5236,13 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
       var wks=[];rows.forEach(function(r){if(r[4]&&wks.indexOf(r[4])<0)wks.push(r[4]);});
       var oneWin=wks.length===1?rows.filter(function(r){return r[4];})[0][5]:'';
       if(!oneWin)rows.forEach(function(r){if(r[5])r[3].push(r[5]);});
-      var html='',seen={};
+      var html='',seen={},insMore=[];
+      /* One short line per crop: the projected price it is measured against.
+         Averages, day counts and windows go to the notes, word for word. */
+      function shortDet(d){var p=d.filter(function(x){return /^projected /.test(x||'');})[0];return p||d.filter(Boolean)[0]||'';}
       rows.forEach(function(r,i){
-        if(!r[6]){html+='<span class="s7-ir"><span class="s7-ir-k">'+r[0]+(r[1]?' <small>· '+r[1]+'</small>':'')+'</span><span class="s7-ir-v">'+r[2]+'</span><small class="s7-ir-d">'+r[3].filter(Boolean).join(' · ')+'</small></span>';return;}
+        if(!r[6]){var full=r[3].filter(Boolean),sd=shortDet(full);if(full.length>1||full[0]!==sd)insMore.push('<span class="w1c-cp"><b>'+r[0]+':</b> '+full.join(' · ')+'</span>');
+          html+='<span class="s7-ir"><span class="s7-ir-k">'+r[0]+(r[1]?' <small>· '+r[1]+'</small>':'')+'</span><span class="s7-ir-v">'+r[2]+'</span><small class="s7-ir-d">'+sd+'</small></span>';return;}
         var gid=r[6].gid;if(seen[gid])return;seen[gid]=1;
         var subs=rows.filter(function(q){return q[6]&&q[6].gid===gid;});
         html+='<span class="s7-ir s7-ir-m"><span class="s7-ir-k">'+r[0]+' <small>· '+subs.length+' county windows</small></span>'+
@@ -5055,7 +5256,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
       var cw=rows.some(function(r){return r[6];})?'County windows: your county’s sales closing date sets which one is yours. RMA’s file lists the dates, not the counties. ':'';
       var lead1=cw+(oneWin?(oneWin.charAt(0).toUpperCase()+oneWin.slice(1))+'. ':'')+(trail?'RMA’s average can trail a day. ':'');
       var sub=lead1+(st?'':'Most states. ')+'Conventional (non-organic) prices, USDA RMA.'+asof+' <a href="/harvest-price-tracker">'+(extra?'Other crops, organic and counties':'Organic and counties')+' on the tracker</a>';
-      put('insurance','<span class="s7-irs">'+html+'</span>',sub,meaning);
+      put('insurance','<span class="s7-irs">'+html+'</span>',sub,meaning,insMore.join(''));
     });
   }
 
@@ -5095,7 +5296,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
         else{var so=d.states[st]||{},ks=Object.keys(SL).filter(function(k){return so[k]&&so[k].pct!=null;});
           stTxt=ks.length?ks.map(function(k){var o=so[k];return '<span class="w1c-cp"><b>'+esc(st)+' '+SL[k].toLowerCase()+' '+o.pct+'%</b>'+(o.prev_year!=null?', last year '+o.prev_year+'%':'')+(o.avg5!=null?', avg '+o.avg5+'%':'')+'</span>';}).join('')
             :'<span class="w1c-cp"><b>'+esc(st)+':</b> \u2014 NASS published no progress figure for this state this week.</span>';}
-        if(a||b)put('harvest',[a,b].filter(Boolean).map(function(x){return '<span class="s7-line">'+x+'</span>';}).join('')+mt,esc(hd?'US harvested. USDA Crop Progress, week ending '+isoDay(hd)+'.'+avgWhy:asof),stTxt);
+        if(a||b)put('harvest',[a,b].filter(Boolean).map(function(x){return '<span class="s7-line">'+x+'</span>';}).join(''),esc(hd?'US, USDA week ending '+isoDay(hd)+'.'+avgWhy:asof),stTxt,mt);
         else put('harvest',NL(),esc('Harvested share is not in our crop progress feed yet'+(d&&d.report_date?' (latest week: '+isoDay(d.report_date)+')':'')+'.'),stTxt);
       }
       if(cells.condition){
@@ -5266,6 +5467,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 
   window.S7={
     onWx:function(f){WX.f=(f&&f.hourly)?f:null;WX.state=WX.f?'ok':'fail';paintWx();
+      if(!WX.f){try{window.__agsistSprayToday=null;window.dispatchEvent(new CustomEvent('agsist:spray',{detail:null}));}catch(e){}}
       if(!WX.f){var sv=$('wx-forecast-7day');if(sv&&!$('s7-wx-off')){var p=document.createElement('div');p.className='s7-wx-off';p.id='s7-wx-off';p.textContent='Forecast: Not loaded yet';sv.parentNode.insertBefore(p,sv);sv.hidden=true;}}},
     spray:function(a){
       var out=[],names=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],dow=new Date().getDay();
@@ -5276,6 +5478,9 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
         out.push(r);
       }
       WX.spray=out.length&&out[0]?out:null;
+      /* 2026-10-06: the hero band reads today's verdict from here, so the page
+         never shows two spray reads. */
+      try{window.__agsistSprayToday=WX.spray?WX.spray[0]:null;window.dispatchEvent(new CustomEvent('agsist:spray',{detail:window.__agsistSprayToday}));}catch(e){}
       var strip=$('spray-days-strip');
       if(strip){
         if(WX.spray){strip.innerHTML=out.map(function(r){return r?'<div class="spray-day '+r.s+'"><span class="spray-day-name">'+r.label+'</span><span class="spray-day-icon"><svg class="ic" aria-hidden="true"><use href="'+ICON[r.s]+'"/></svg></span><span class="spray-day-status">'+r.t+'</span><span class="spray-day-reason" title="'+esc(r.why)+'">'+esc(r.short)+'</span></div>':'';}).join('');var sw=$('spray-windows');if(sw)sw.classList.add('loaded');}
