@@ -1820,6 +1820,10 @@ details.wr>summary,details.hbz>summary{align-items:center!important}
 .s7-ir-k small{font-weight:500;color:var(--text-muted)}
 .s7-ir-v{font-family:'JetBrains Mono',monospace;font-size:1rem;font-weight:700;line-height:1.35;color:var(--text);min-width:0;max-width:100%}
 .s7-cv .s7-ir-d{flex-basis:100%;font:500 .706rem/1.45 Inter,system-ui,sans-serif;color:var(--text-dim);min-width:0;overflow-wrap:anywhere}
+/* WAVE5-A: county windows (Texas corn has three) as sub-rows of one crop */
+/* a long status ("RMA has not released a harvest price yet") wraps instead of running into the next column */
+.s7-irs .s7-ir-v{white-space:normal}
+.s7-iw{display:flex;flex-wrap:wrap;flex-basis:100%;column-gap:10px;row-gap:1px;align-items:baseline;margin-top:4px;padding:2px 0 2px 10px;border-left:2px solid var(--hair,var(--border));min-width:0}
 /* ===== WAVE1-C: national markets (wheat classes, southern crops, COT rows, crop progress, export pace) */
 #f-prices .r7-row[data-r7k="kcwheat"] .r7-cm,#f-prices .r7-row[data-r7k="mplswheat"] .r7-cm,
 #f-prices .r7-row[data-r7k="cotton"] .r7-cm,#f-prices .r7-row[data-r7k="rice"] .r7-cm{white-space:normal}

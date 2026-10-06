@@ -67,5 +67,57 @@
     "days_total": 22
    }
   }
+ ],
+ "windows": [
+  {
+   "key": "ZCZ26.CBT|2026-10-01|2026-10-31",
+   "crop": "Corn",
+   "contract": "Dec '26",
+   "ticker": "ZCZ26.CBT",
+   "start": "2026-10-01",
+   "end": "2026-10-31",
+   "days_total": 22,
+   "series": [
+    {
+     "d": "2026-10-01",
+     "s": 5.0225,
+     "a": 5.02
+    },
+    {
+     "d": "2026-10-02",
+     "s": 4.9775,
+     "a": 5.0
+    }
+   ],
+   "days_counted": 2,
+   "status": "running",
+   "price": null,
+   "running_avg": 5.0
+  },
+  {
+   "key": "ZSX26.CBT|2026-10-01|2026-10-31",
+   "crop": "Soybeans",
+   "contract": "Nov '26",
+   "ticker": "ZSX26.CBT",
+   "start": "2026-10-01",
+   "end": "2026-10-31",
+   "days_total": 22,
+   "series": [
+    {
+     "d": "2026-10-01",
+     "s": 12.84,
+     "a": 12.84
+    },
+    {
+     "d": "2026-10-02",
+     "s": 12.7825,
+     "a": 12.81
+    }
+   ],
+   "days_counted": 2,
+   "status": "running",
+   "price": null,
+   "running_avg": 12.81
+  }
  ]
 }
