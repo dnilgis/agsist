@@ -1,5 +1,5 @@
 {
-  "fetched": "2026-10-06T23:21:17Z",
+  "fetched": "2026-10-06T23:52:08Z",
   "ok": 72,
   "failed": 1,
   "stale_keys": [],
@@ -373,7 +373,9 @@
         "close": 224.05,
         "open": 217.25,
         "netChange": 6.8,
-        "pctChange": 3.13
+        "pctChange": 3.13,
+        "close_date": "2026-10-06",
+        "prev_date": "2026-10-05"
       }
     },
     "feeders": {
@@ -393,7 +395,9 @@
         "close": 338.25,
         "open": 333.85001,
         "netChange": 4.39999,
-        "pctChange": 1.318
+        "pctChange": 1.318,
+        "close_date": "2026-10-06",
+        "prev_date": "2026-10-05"
       }
     },
     "hogs": {
@@ -413,7 +417,9 @@
         "close": 70.375,
         "open": 77.85,
         "netChange": -7.475,
-        "pctChange": -9.6018
+        "pctChange": -9.6018,
+        "close_date": "2026-10-06",
+        "prev_date": "2026-10-05"
       }
     },
     "milk": {
@@ -763,7 +769,9 @@
         "close": 355.39999,
         "open": 345.89999,
         "netChange": 9.5,
-        "pctChange": 2.7465
+        "pctChange": 2.7465,
+        "close_date": "2026-10-06",
+        "prev_date": "2026-10-05"
       }
     },
     "soyoil": {
@@ -783,15 +791,17 @@
         "close": 69.9,
         "open": 68.95,
         "netChange": 0.95,
-        "pctChange": 1.3778
+        "pctChange": 1.3778,
+        "close_date": "2026-10-06",
+        "prev_date": "2026-10-05"
       }
     },
     "crude": {
       "ticker": "CL=F",
-      "close": 89.87,
+      "close": 89.95,
       "open": 89.43,
-      "netChange": 0.44,
-      "pctChange": 0.492,
+      "netChange": 0.52,
+      "pctChange": 0.5815,
       "wk52_hi": 119.48,
       "wk52_lo": 54.98,
       "close_date": "2026-10-06",
@@ -799,10 +809,10 @@
     },
     "natgas": {
       "ticker": "NG=F",
-      "close": 3.12,
+      "close": 3.123,
       "open": 3.066,
-      "netChange": 0.054,
-      "pctChange": 1.7613,
+      "netChange": 0.057,
+      "pctChange": 1.8591,
       "wk52_hi": 7.827,
       "wk52_lo": 2.483,
       "close_date": "2026-10-06",
@@ -810,10 +820,10 @@
     },
     "gold": {
       "ticker": "GC=F",
-      "close": 4193.2998,
+      "close": 4193.7998,
       "open": 4156.7998,
-      "netChange": 36.5,
-      "pctChange": 0.8781,
+      "netChange": 37.0,
+      "pctChange": 0.8901,
       "wk52_hi": 5586.2002,
       "wk52_lo": 3901.3,
       "close_date": "2026-10-06",
@@ -821,10 +831,10 @@
     },
     "silver": {
       "ticker": "SI=F",
-      "close": 61.69,
+      "close": 61.74,
       "open": 60.869,
-      "netChange": 0.821,
-      "pctChange": 1.3488,
+      "netChange": 0.871,
+      "pctChange": 1.4309,
       "wk52_hi": 121.3,
       "wk52_lo": 45.845,
       "close_date": "2026-10-06",
@@ -832,10 +842,10 @@
     },
     "dollar": {
       "ticker": "DX-Y.NYB",
-      "close": 101.845,
+      "close": 101.885,
       "open": 102.17,
-      "netChange": -0.325,
-      "pctChange": -0.3181,
+      "netChange": -0.285,
+      "pctChange": -0.2789,
       "wk52_hi": 102.54,
       "wk52_lo": 95.55,
       "close_date": "2026-10-06",
@@ -865,10 +875,10 @@
     },
     "bitcoin": {
       "ticker": "BTC-USD",
-      "close": 85482.5,
+      "close": 85609.5625,
       "open": 85786.59375,
-      "netChange": -304.09375,
-      "pctChange": -0.3545,
+      "netChange": -177.03125,
+      "pctChange": -0.2064,
       "wk52_hi": 125184.0234,
       "wk52_lo": 57747.7656,
       "close_date": "2026-10-06",
@@ -876,10 +886,10 @@
     },
     "ripple": {
       "ticker": "XRP-USD",
-      "close": 1.4986,
+      "close": 1.4982,
       "open": 1.50744,
-      "netChange": -0.00884,
-      "pctChange": -0.5864,
+      "netChange": -0.00924,
+      "pctChange": -0.613,
       "wk52_hi": 2.9997,
       "wk52_lo": 0.9884,
       "close_date": "2026-10-06",
@@ -887,10 +897,10 @@
     },
     "kaspa": {
       "ticker": "KAS-USD",
-      "close": 0.04317,
+      "close": 0.04319,
       "open": 0.04347,
-      "netChange": -0.0003,
-      "pctChange": -0.6901,
+      "netChange": -0.00028,
+      "pctChange": -0.6441,
       "wk52_hi": 0.0792,
       "wk52_lo": 0.0139,
       "close_date": "2026-10-06",
