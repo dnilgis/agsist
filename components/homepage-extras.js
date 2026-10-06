@@ -50,6 +50,17 @@
     function math(t){ if(mathEl){ mathEl.textContent = t; var w = mathEl.closest && mathEl.closest('details'); if(w) w.hidden = !t; } }
     var priceRaw = priceEl.value, costRaw = costEl.value, monthsRaw = monthsEl.value, carryRaw = carryEl.value;
     var rateRaw = rateEl ? rateEl.value : '', shrinkRaw = shrinkEl ? shrinkEl.value : '';
+    /* WAVE3-H: each box is checked on its own, the first bad one is named
+       and marked aria-invalid, and the rest are cleared. */
+    var boxes = [priceEl, costEl, monthsEl, carryEl, rateEl, shrinkEl];
+    function bad(el, msg){
+      boxes.forEach(function(b){ if(b) b.removeAttribute('aria-invalid'); });
+      if(el){ el.setAttribute('aria-invalid', 'true'); el.setAttribute('aria-describedby', 'idx1-calc-result'); }
+      resultEl.style.color = 'var(--red,#ef4444)';
+      resultEl.textContent = msg;
+      math('');
+    }
+    boxes.forEach(function(b){ if(b) b.removeAttribute('aria-invalid'); });
     if(priceRaw === '' || costRaw === '' || monthsRaw === '' || carryRaw === ''){
       resultEl.style.color = 'var(--text-dim)';
       resultEl.textContent = 'Enter your numbers above.';
@@ -58,15 +69,16 @@
     }
     var price = parseFloat(priceRaw), cost = parseFloat(costRaw), months = parseFloat(monthsRaw), carry = parseFloat(carryRaw);
     var rate = rateRaw === '' ? null : parseFloat(rateRaw), shrink = shrinkRaw === '' ? null : parseFloat(shrinkRaw);
-    if(!isFinite(price) || !isFinite(cost) || !isFinite(months) || !isFinite(carry) || (rate !== null && !isFinite(rate)) || (shrink !== null && !isFinite(shrink))){
-      resultEl.style.color = 'var(--red,#ef4444)';
-      resultEl.textContent = 'That number is out of range — try a realistic $/bu or month value.';
-      math('');
-      return;
-    }
-    if(price < 0 || cost < 0 || months < 0 || carry < 0 || (rate !== null && (rate < 0 || rate > 30)) || (shrink !== null && (shrink < 0 || shrink > 20))){
-      resultEl.style.color = 'var(--red,#ef4444)';
-      resultEl.textContent = 'Price, storage cost, months and carry can’t be negative; interest runs 0 to 30% a year and shrink 0 to 20%.';
+    if(!isFinite(price) || price <= 0) return bad(priceEl, 'Cash price: enter a price above $0 per bushel.');
+    if(!isFinite(cost) || cost < 0) return bad(costEl, 'Storage cost: enter $0 or more per bushel per month.');
+    if(!isFinite(months) || months < 0 || Math.round(months) !== months) return bad(monthsEl, 'Months you would store: enter whole months, 0 to 24.');
+    if(months > 24) return bad(monthsEl, 'Months you would store: 24 at most.');
+    if(!isFinite(carry)) return bad(carryEl, 'Carry: enter a number in $/bu. Use a minus sign when the later month pays less.');
+    if(rate !== null && !(isFinite(rate) && rate >= 0 && rate <= 30)) return bad(rateEl, 'Interest rate: 0 to 30% a year, or leave it blank.');
+    if(shrink !== null && !(isFinite(shrink) && shrink >= 0 && shrink <= 20)) return bad(shrinkEl, 'Shrink: 0 to 20%, or leave it blank.');
+    if(months === 0){
+      resultEl.style.color = 'var(--text-dim)';
+      resultEl.textContent = 'No storage period entered.';
       math('');
       return;
     }
@@ -78,23 +90,32 @@
     if(rate === null) left.push('interest');
     if(shrink === null) left.push('shrink');
     var notCounted = left.length ? ' ' + left.join(' and ').replace(/^./, function(c){ return c.toUpperCase(); }) + ' not counted.' : '';
-    var lines = ['Carry you expect          +' + money(carry),
+    var lines = ['Carry you expect          ' + (carry < 0 ? '−' : '+') + money(carry),
       '− storage ' + money(cost) + ' × ' + months + ' mo     −' + money(totalCost)];
     lines.push(rate === null ? '− interest                not counted (no rate entered)'
       : '− interest ' + money(price) + ' × ' + rate + '% × ' + months + '/12   −' + money(interest));
     lines.push(shrink === null ? '− shrink                  not counted (no shrink entered)'
-      : '− shrink ' + shrink + '% × (' + money(price) + ' + ' + money(carry) + ')   −' + money(shrinkLoss));
+      : '− shrink ' + shrink + '% × (' + money(price) + ' ' + (carry < 0 ? '−' : '+') + ' ' + money(carry) + ')   −' + money(shrinkLoss));
     lines.push('= ' + (net >= 0 ? '+' : '−') + money(net) + ' per bushel stored, against selling at ' + money(price) + ' now');
     math(lines.join('\n'));
+    /* WAVE3-H: the prefilled carry is for its own months. Months that differ
+       pair one period's carry with another period's costs, so no verdict and
+       no colour: the math stays visible and the line says what to fix. */
+    if(cav){
+      resultEl.style.color = 'var(--text)';
+      resultEl.textContent = cav + ' Set months to ' + carryCover.months + ', or enter your own carry for ' + months + ' month' + (months === 1 ? '' : 's') + '. The math is below.';
+      var box = mathEl && mathEl.closest && mathEl.closest('details'); if(box) box.open = true;
+      return;
+    }
     if(net > 0.001){
       resultEl.style.color = 'var(--green)';
-      resultEl.textContent = 'Storing pencils out by +$' + net.toFixed(2) + '/bu over selling at $' + price.toFixed(2) + ' now, if your carry estimate holds.' + notCounted + cav;
+      resultEl.textContent = 'Storing pencils out by +$' + net.toFixed(2) + '/bu over selling at $' + price.toFixed(2) + ' now, if your carry estimate holds.' + notCounted;
     } else if(net < -0.001){
       resultEl.style.color = 'var(--red,#ef4444)';
-      resultEl.textContent = 'Storing costs $' + Math.abs(net).toFixed(2) + '/bu more than selling at $' + price.toFixed(2) + ' now, at these numbers.' + notCounted + cav;
+      resultEl.textContent = 'Storing costs $' + Math.abs(net).toFixed(2) + '/bu more than selling at $' + price.toFixed(2) + ' now, at these numbers.' + notCounted;
     } else {
       resultEl.style.color = 'var(--text)';
-      resultEl.textContent = 'Breakeven — storing and selling now cost the same at these numbers.' + notCounted + cav;
+      resultEl.textContent = 'Breakeven — storing and selling now cost the same at these numbers.' + notCounted;
     }
   }
   var calcDebounce = null;
@@ -120,11 +141,21 @@
   function carryCaveat(months){
     var el = $('idx1-calc-carry');
     if(!carryCover || !el || el.dataset.autofilled !== 'true' || carryCover.months == null || months === carryCover.months) return '';
-    return ' The carry above covers ' + carryCover.from + ' to ' + carryCover.to + ' (' + carryCover.months + ' month' + (carryCover.months === 1 ? '' : 's') + '), not your ' + months + '; it is not scaled.';
+    return 'The carry covers ' + carryCover.months + ' month' + (carryCover.months === 1 ? '' : 's') + ' (' + carryCover.from + ' to ' + carryCover.to + '), not your ' + months + '.';
   }
   function qc(c){ var a = Math.abs(c), w = Math.floor(a + 1e-9), f = Math.round((a - w) * 4); if(f === 4){ w++; f = 0; } return w + (f ? ' ' + ['', '1/4', '1/2', '3/4'][f] : '') + '¢'; }
+  /* WAVE3-H: a prefilled carry also fills "months you would store" with the
+     carry's own months, so the two always describe the same period until the
+     reader changes one. A pick with no carry clears both boxes if they were
+     filled here, so a stale carry never sits beside a new price. */
+  function clearAuto(){
+    var carryEl = $('idx1-calc-carry'), monthsEl = $('idx1-calc-months');
+    carryCover = null;
+    if(carryEl && carryEl.dataset.autofilled === 'true'){ carryEl.value = ''; carryEl.dataset.autofilled = 'false'; }
+    if(monthsEl && monthsEl.dataset.autofilled === 'true'){ monthsEl.value = ''; monthsEl.dataset.autofilled = 'false'; }
+  }
   function prefillCarry(sum){
-    var carryEl = $('idx1-calc-carry'), card = $('idx1-store-sell');
+    var carryEl = $('idx1-calc-carry'), monthsEl = $('idx1-calc-months'), card = $('idx1-store-sell');
     if(!carryEl || !card || !sum) return;
     var note = $('idx1-calc-carry-src');
     if(!note){ note = document.createElement('div'); note.id = 'idx1-calc-carry-src'; note.className = 'idx1-extras-fine';
@@ -132,26 +163,30 @@
     function fill(v){
       if(carryEl.value === '' || carryEl.dataset.autofilled === 'true'){
         carryEl.value = v; carryEl.dataset.autofilled = 'true';
+        if(monthsEl && carryCover && carryCover.months != null && (monthsEl.value === '' || monthsEl.dataset.autofilled === 'true')){
+          monthsEl.value = String(carryCover.months); monthsEl.dataset.autofilled = 'true';
+        }
       }
       calcStoreOrSell();
     }
+    function span(c){ return c.from + ' to ' + c.to + (c.months != null ? ' (' + c.months + ' month' + (c.months === 1 ? '' : 's') + ')' : ''); }
     var bc = sum.boardCarry;
     if(bc && bc.from && bc.to && isFinite(bc.cents)){
       if(bc.cents <= 0){
-        carryCover = null;
-        note.textContent = 'This elevator’s board pays ' + qc(bc.cents) + ' less for ' + bc.to + ' than ' + bc.from + ': no carry on its own board, so the box is left for your number.';
+        clearAuto();
+        note.textContent = 'This elevator pays ' + (bc.cents < 0 ? qc(bc.cents) + ' less' : 'the same') + ' for ' + bc.to + ' as for ' + bc.from + ': no carry at this elevator, so the box is left for your number.';
+        calcStoreOrSell();
         return;
       }
       carryCover = { months: bc.months, from: bc.from, to: bc.to };
-      note.textContent = String(sum.where || 'This elevator') + ' board (the bid filled above): ' + bc.from + ' $' + (+bc.fromCash).toFixed(2) + ' → ' + bc.to + ' $' + (+bc.toCash).toFixed(2) + ', +' + qc(bc.cents) + ' per bu' + (bc.months != null ? ' over ' + bc.months + ' month' + (bc.months === 1 ? '' : 's') : '') + '.';
+      note.textContent = 'Carry at this elevator: +' + qc(bc.cents) + ' from ' + span(bc) + '.';
       fill((bc.cents / 100).toFixed(4).replace(/0+$/, '').replace(/\.$/, ''));
       return;
     }
     /* WAVE1-A: the futures-spread fallback is corn only; another crop with no
        later bid on its own board leaves the box for the reader. */
     if(sum.crop !== 'corn'){
-      carryCover = null;
-      if(carryEl.dataset.autofilled === 'true'){ carryEl.value = ''; carryEl.dataset.autofilled = 'false'; }
+      clearAuto();
       note.textContent = 'Carry: this elevator posts no later ' + String(sum.cropName || sum.crop || 'bid').toLowerCase() + ' bid. Enter your own.';
       calcStoreOrSell();
       return;
@@ -164,19 +199,20 @@
       var my = m ? ('0' + (+m[1] + 1)).slice(-2) : '';
       var mar = m ? q['corn-mar' + my] : null;
       if(!dec || dec.close == null || !mar || mar.close == null){
-        carryCover = null;
-        note.textContent = 'Carry: this elevator posts no later corn bid, and the futures spread is not loaded yet. Enter your own.'; return;
+        clearAuto();
+        note.textContent = 'Carry: this elevator posts no later corn bid, and the futures spread is not loaded yet. Enter your own.';
+        calcStoreOrSell();
+        return;
       }
       var c = mar.close - dec.close, yy = m[1], when = '';
       try{ var d = new Date(pd.fetched); if(!isNaN(d)) when = d.toLocaleString('en-US', {month:'short', day:'numeric', hour:'numeric', minute:'2-digit', timeZone:'America/Chicago'}) + ' CT'; }catch(e){}
-      if(c <= 0){
-        carryCover = null;
-        note.textContent = 'This elevator posts no later corn bid, and Mar \'' + my + ' corn futures are ' + qc(c) + ' under Dec \'' + yy + ': no futures carry either. Enter your own.';
-        return;
-      }
       carryCover = { months: 3, from: 'Dec \'' + yy, to: 'Mar \'' + my };
-      note.textContent = 'This elevator posts no later corn bid. Futures carry Dec \'' + yy + ' → Mar \'' + my + ' only, ' + qc(c) + ' per bu' + (when ? ' at ' + when : '') + '; basis gain not included.';
-      fill((c / 100).toFixed(4).replace(/0+$/, '').replace(/\.$/, ''));
+      /* WAVE3-H: an inverted spread is filled as a negative carry. It is the
+         market's real answer: it pays less to wait. */
+      note.textContent = 'This elevator posts no later corn bid. Futures carry ' + span(carryCover) + ' only, '
+        + (c < 0 ? '−' : c > 0 ? '+' : '') + qc(c) + ' per bu' + (c < 0 ? ' (Mar under Dec, an inverted market)' : '')
+        + (when ? ' at ' + when : '') + '; basis gain not included.';
+      fill((c / 100).toFixed(4).replace(/0+$/, '').replace(/\.$/, '') || '0');
     });
   }
 
@@ -244,10 +280,6 @@
   function optLabel(o){
     return o.where + (townOf(o) ? ', ' + townOf(o) : '') + ' · ' + o.cropName + ' ' + o.monthLabel + ' · $' + (+o.cash).toFixed(2) + (o.miles != null ? ' · ' + Math.round(o.miles) + ' mi' : '');
   }
-  /* Said only when a listed elevator with the same crop is actually closer. */
-  function nearer(o){
-    return o.miles != null && pickOptions.some(function(x){ return x !== o && x.crop === o.crop && x.miles != null && x.miles < o.miles; });
-  }
   function townOf(o){
     var c = String(o.city || ''), t = c.replace(/,\s*[A-Z]{2}$/, '');
     return t && t.toLowerCase() === String(o.where || '').toLowerCase() ? c.replace(/^.*?,\s*/, '') : c;
@@ -257,7 +289,7 @@
     if(o.isBest){
       var r = sum.pickRule || 'highest corn bid nearby';
       return r.charAt(0).toUpperCase() + r.slice(1) + (sum.monthLabel ? ' for ' + sum.monthLabel : '')
-        + (sum.pickCount ? ' (of ' + sum.pickCount + ')' : '') + '.' + (nearer(o) ? ' Not the nearest elevator.' : '');
+        + (sum.pickCount ? ' (of ' + sum.pickCount + ')' : '') + '.';
     }
     return 'Your pick: ' + o.cropName.toLowerCase() + ', ' + o.monthLabel + ' delivery.';
   }
@@ -381,11 +413,27 @@
       svg.setAttribute('aria-label', 'Basis at this elevator ranged from ' + rawLo + ' to ' + rawHi + ' cents over the last ' + pts.length + ' logged changes, most recently ' + last + ' cents.');
 
       var firstDate = pts[0].date;
-      var monTxt = /^[A-Z]{3}\d{2}$/.test(bestMon) ? bestMon.charAt(0) + bestMon.slice(1, 3).toLowerCase() + ' \u2019' + bestMon.slice(3) + ' delivery' : 'one delivery month';
+      var monShort = /^[A-Z]{3}\d{2}$/.test(bestMon) ? bestMon.charAt(0) + bestMon.slice(1, 3).toLowerCase() + ' \u2019' + bestMon.slice(3) : '';
+      var monTxt = monShort ? monShort + ' delivery' : 'one delivery month';
+      /* WAVE3-H: say which month the chart is, and when it is not the bid's
+         month, say that plainly with the bid's month named. */
       fine.textContent = pts.length + ' basis change' + (pts.length === 1 ? '' : 's') + ' logged at this elevator for ' + monTxt + ', ' + firstDate + ' through ' + pts[pts.length - 1].date + ', ' + rawLo + '\u00a2 to ' + rawHi + '\u00a2.'
-        + (bestMatch ? '' : ' Not the month quoted above.');
+        + (bestMatch ? '' : wantMon && sum.monthLabel ? ' The bid above is for ' + sum.monthLabel + '; no changes are logged for that month here.' : ' Not the month quoted above.');
       var ttl = card.querySelector('.idx1-extras-title');
-      if(ttl && ttl.lastChild && ttl.lastChild.nodeType === 3) ttl.lastChild.textContent = ' Basis history at this elevator, ' + wantCrop;
+      if(ttl && ttl.lastChild && ttl.lastChild.nodeType === 3) ttl.lastChild.textContent = ' Basis history at this elevator, ' + wantCrop + (monShort ? ', ' + monTxt : '');
+      /* WAVE3-H: the two end values, printed under the line's two ends. */
+      var ends = $('idx1-basis-ends');
+      if(ends){
+        var MS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+        var dl = function(d){ var x = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(d || '')); return x ? MS[+x[2] - 1] + ' ' + (+x[3]) : String(d || ''); };
+        var cl = function(c){ return (c > 0 ? '+' : c < 0 ? '\u2212' : '') + Math.abs(c) + '\u00a2'; };
+        ends.innerHTML = '';
+        [[pts[0], 'idx1-basis-end-a'], [pts[pts.length - 1], 'idx1-basis-end-b']].forEach(function(e){
+          var sp = document.createElement('span'); sp.className = e[1];
+          sp.textContent = dl(e[0].date) + ': ' + cl(e[0].cents);
+          ends.appendChild(sp);
+        });
+      }
       card.style.display = 'block';
       foldTitle(true);
     });
@@ -497,8 +545,9 @@
     });
   }
 
+  var formSeq = 0;
   function drawForm(wrap, wid, label, name, opts){
-    var seen = watchedSet()[wid];
+    var seen = watchedSet()[wid], sid = 'we-status-' + (++formSeq);
     var kinds = [];
     if(wid) kinds.push(['any', 'corn basis changes']);
     if(opts.length){
@@ -523,7 +572,7 @@
       + '<input type="email" class="watch-elevator-email" placeholder="your@email.com" autocomplete="email" aria-label="Email for alerts on ' + escA(name || label) + '" style="flex:1;min-width:140px;' + FIELD + '">'
       + '<button type="button" class="watch-elevator-go" style="padding:.4rem .7rem;min-height:36px;background:var(--gold);color:#0a0c0d;border:none;border-radius:5px;font-size:.8rem;font-weight:700;cursor:pointer;white-space:nowrap">Watch — free</button>'
       + '</div><div class="we-note" style="font-size:.75rem;color:var(--text-muted);margin-top:.25rem">Email when the posted corn basis changes.</div>'
-      + '<div class="watch-elevator-status" style="font-size:.75rem;color:var(--text-muted);margin-top:.25rem"></div></div>';
+      + '<div class="watch-elevator-status" id="' + sid + '" role="status" tabindex="-1" style="font-size:.75rem;color:var(--text-muted);margin-top:.25rem"></div></div>';
     wrap.innerHTML = h;
     wrap.classList.add('we-open');
 
@@ -541,8 +590,8 @@
       else if(k === 'move'){ unit.textContent = 'Cents, at least'; val.step = '1'; val.min = '1'; val.max = '100'; val.placeholder = '5'; }
       nowEl.textContent = k === 'any' ? '' : 'Now ' + fmtCash(o.cash) + ' · basis ' + fmtBasis(o.basis) + (o.t ? ' · posted ' + o.t : '');
       note.textContent = k === 'any' ? 'Email when the posted corn basis changes.'
-        : k === 'move' ? 'Email each time a new posting moves this basis that far from the last email. Goes quiet if the elevator stops posting this period.'
-        : 'One email when a new posting reaches it, then the alert clears. Goes quiet if the elevator stops posting this period.';
+        : k === 'move' ? 'Email each time a new posting moves this basis that far from the last email. If the elevator stops posting this period, you get one note and the alert ends.'
+        : 'One email when a new posting reaches it, then the alert clears. If the elevator stops posting this period, you get one note and the alert ends.';
     }
     if(kindSel){
       kindSel.addEventListener('change', sync);
@@ -552,25 +601,32 @@
     }
     if(input) input.focus();
 
-    function fail(msg){ status.textContent = msg; status.style.color = 'var(--red,#ef4444)'; }
+    /* WAVE3-H: a failure names its field with aria-invalid, points the field
+       at the status line, and moves focus there so the reader can fix it. */
+    function fail(msg, field){
+      status.textContent = msg; status.style.color = 'var(--red,#ef4444)';
+      [input, val, rowSel].forEach(function(f){ if(f) f.removeAttribute('aria-invalid'); });
+      if(field){ field.setAttribute('aria-invalid', 'true'); field.setAttribute('aria-describedby', sid); field.focus(); }
+      else status.focus();
+    }
     function submit(){
       var email = (input.value || '').trim();
       var k = kindSel ? kindSel.value : 'any';
       var body = { email: email, wid: wid, label: label };
       if(k !== 'any'){
         var o = opts[+rowSel.value], raw = parseFloat(val.value), cond;
-        if(!o) return fail('Pick a row.');
+        if(!o) return fail('Pick a row.', rowSel);
         body = { email: email, kind: k, ewid: o.w, crop: o.c, period: o.p, plabel: o.l };
         if(k === 'cash'){
-          if(!(raw >= 1 && raw <= 32)) return fail('Enter a cash price between $1.00 and $32.00.');
+          if(!(raw >= 1 && raw <= 32)) return fail('Enter a cash price between $1.00 and $32.00.', val);
           body.direction = dirSel.value; body.target_cents = Math.round(raw * 100);
           cond = 'cash ' + (dirSel.value === 'above' ? 'at or above ' : 'at or below ') + fmtCash(body.target_cents);
         } else if(k === 'basis'){
-          if(!(raw >= -300 && raw <= 300) || Math.round(raw) !== raw) return fail('Enter a basis in whole cents, -300 to 300.');
+          if(!(raw >= -300 && raw <= 300) || Math.round(raw) !== raw) return fail('Enter a basis in whole cents, -300 to 300.', val);
           body.direction = dirSel.value; body.target_cents = raw;
           cond = 'basis ' + (dirSel.value === 'above' ? 'at or above ' : 'at or below ') + fmtBasis(raw);
         } else {
-          if(!(raw >= 1 && raw <= 100) || Math.round(raw) !== raw) return fail('Enter a move of 1 to 100 cents.');
+          if(!(raw >= 1 && raw <= 100) || Math.round(raw) !== raw) return fail('Enter a move of 1 to 100 cents.', val);
           body.move_cents = raw;
           cond = 'basis moves ' + raw + '¢ or more';
         }
@@ -578,33 +634,35 @@
         body.label = (name + ' — ' + o.n.toLowerCase() + ' ' + o.l + ': ' + cond).slice(0, 120);
         if(!body.wid) return fail('Could not set this alert. Reload the page and try again.');
       }
-      if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) return fail('Enter a real email address.');
+      if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) return fail('Enter a real email address.', input);
       go.disabled = true; go.textContent = 'Sending…';
       status.textContent = ''; status.style.color = 'var(--text-muted)';
+      [input, val, rowSel].forEach(function(f){ if(f) f.removeAttribute('aria-invalid'); });
+      function retry(msg, field){ fail(msg, field); go.disabled = false; go.textContent = 'Watch — free'; }
+      /* WAVE3-H: success only on an HTTP 2xx whose body says ok:true. A 404,
+         a 5xx, an HTML error page or an empty body is a failure, and nothing
+         is written to localStorage until the worker has said yes. */
       fetch(WATCH_WORKER + '/elevator-watch-subscribe', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body)
-      }).then(function(r){ return r.json().catch(function(){ return {}; }); })
-        .then(function(data){
-          if(data && data.error === 'limit'){
-            fail('This address already has 5 elevator alerts, the most one address can hold.');
-            go.disabled = false; go.textContent = 'Watch — free';
-            return;
-          }
-          if(data && data.ok === false){
-            fail('That alert was not accepted (' + String(data.error || 'error') + ').');
-            go.disabled = false; go.textContent = 'Watch — free';
-            return;
-          }
+      }).then(function(r){
+        return r.json().catch(function(){ return null; }).then(function(data){ return { r: r, data: data }; });
+      }, function(){ return null; })
+        .then(function(res){
+          if(!res) return retry('Could not reach the watch service. Try again in a minute.');
+          var r = res.r, data = res.data;
+          if(data && data.error === 'limit')
+            return retry('This address already has 5 elevator alerts, the most one address can hold.', input);
+          if(data && data.ok === false && data.error && r.status >= 400 && r.status < 500)
+            return retry('That alert was not accepted (' + String(data.error) + ').', /email/.test(String(data.error)) ? input : null);
+          if(!r.ok || !data || data.ok !== true)
+            return retry('The watch service did not confirm this' + (r.ok ? '' : ' (error ' + r.status + ')') + '. Nothing was saved. Try again in a minute.');
           if(wid) markWatched(wid);
           if(body.wid !== wid) markWatched(body.wid);
-          wrap.innerHTML = '<span style="font-size:.75rem;color:var(--green)">Check your email to confirm. Nothing is sent until you do.</span>';
+          wrap.innerHTML = '<span class="we-done" tabindex="-1" style="font-size:.75rem;color:var(--green)">Check your email to confirm. Nothing is sent until you do.</span>';
           wrap.classList.remove('we-open');
-        })
-        .catch(function(){
-          fail('Could not reach the watch service. Try again in a minute.');
-          go.disabled = false; go.textContent = 'Watch — free';
+          var done = wrap.querySelector('.we-done'); if(done) done.focus();
         });
     }
     if(go) go.addEventListener('click', submit);
