@@ -2327,9 +2327,9 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')close(true);
     if(!sc.length){el.hidden=true;return;}
     el.hidden=false;
     var avg=sc.reduce(function(a,b){return a+b;},0)/sc.length,maj=Math.floor(sc.length/2)+1;
-    if(avg>0.62&&nl>=maj){el.className='cot-verdict long';el.innerHTML='<svg class="ic" aria-hidden="true"><use href="#i-trending-up"/></svg> '+label+': long';}
-    else if(avg<0.38||nl===0){el.className='cot-verdict short';el.innerHTML='<svg class="ic" aria-hidden="true"><use href="#i-trending-down"/></svg> '+label+': short';}
-    else{el.className='cot-verdict mixed';el.textContent='\u2194 '+label+': mixed';}
+    if(avg>0.62&&nl>=maj){el.className='cot-verdict long';el.innerHTML='<svg class="ic" aria-hidden="true"><use href="#i-trending-up"/></svg> '+label+': near 52-wk high';}
+    else if(avg<0.38||nl===0){el.className='cot-verdict short';el.innerHTML='<svg class="ic" aria-hidden="true"><use href="#i-trending-down"/></svg> '+label+': near 52-wk low';}
+    else{el.className='cot-verdict mixed';el.textContent='\u2194 '+label+': mid-range';}
   }
   function renderCOT(data){
     window.AGSIST_COT._d=data;placeCOT(data);
@@ -2464,7 +2464,7 @@ fetch('/data/crop-progress.json')
         if(geEl){geEl.textContent=fmtPct(d.good_excellent);geEl.className='crop-ge-val '+geClass(d.good_excellent);geEl.style.display='';allNull=false;}
         var wkChg=fmtChg(d.good_excellent,d.good_excellent_prev_week,' points'),yrChg=fmtChg(d.good_excellent,d.good_excellent_prev_year,' points');
         if(wkEl){wkEl.textContent=wkChg.txt;wkEl.className='crop-chg '+wkChg.cls;}
-        if(yrEl){yrEl.textContent=yrChg.txt;yrEl.className='crop-chg '+yrChg.cls;}
+        if(yrEl){if(d.good_excellent_prev_year==null){yrEl.hidden=true;var _yl=yrEl.nextElementSibling;if(_yl&&_yl.classList.contains('crop-chg-lbl'))_yl.hidden=true;}else{yrEl.textContent=yrChg.txt;yrEl.className='crop-chg '+yrChg.cls;}}
         if(changeRow)changeRow.style.display='';
       }else{
         if(geEl)geEl.style.display='none';
@@ -5030,7 +5030,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
            sorghum, whichever NASS published for that state this week. */
         var pc=function(v){return v==null?'\u2014':v+'%';};
         var hline=function(name,o){if(!o||o.harvest_pct==null)return null;
-          return name+' '+o.harvest_pct+'% <small>harvested \u00b7 '+pc(o.harvest_prev_year)+' last year'+(o.harvest_5yr_avg!=null?' \u00b7 '+o.harvest_5yr_avg+'% 5-yr avg':'')+'</small>';};
+          return name+' '+o.harvest_pct+'% <small>harvested'+(o.harvest_prev_year!=null?' \u00b7 '+o.harvest_prev_year+'% last year':'')+(o.harvest_5yr_avg!=null?' \u00b7 '+o.harvest_5yr_avg+'% 5-yr avg':'')+'</small>';};
         var a=d&&hline('Corn',d.corn),b=d&&hline('Soybeans',d.soybeans);
         var mt=d&&d.corn&&d.corn.mature_pct!=null?'<span class="s7-line"><small>Corn mature '+d.corn.mature_pct+'%</small></span>':'';
         var hd=d&&((d.corn&&d.corn.harvest_date)||(d.soybeans&&d.soybeans.harvest_date));
@@ -5044,7 +5044,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
         if(!st)stTxt='<span class="w1c-cp">Set your ZIP to see your state.</span>';
         else if(!d||!d.states)stTxt='';
         else{var so=d.states[st]||{},ks=Object.keys(SL).filter(function(k){return so[k]&&so[k].pct!=null;});
-          stTxt=ks.length?ks.map(function(k){var o=so[k];return '<span class="w1c-cp"><b>'+esc(st)+' '+SL[k].toLowerCase()+' '+o.pct+'%</b>, last year '+pc(o.prev_year)+', avg '+pc(o.avg5)+'</span>';}).join('')
+          stTxt=ks.length?ks.map(function(k){var o=so[k];return '<span class="w1c-cp"><b>'+esc(st)+' '+SL[k].toLowerCase()+' '+o.pct+'%</b>'+(o.prev_year!=null?', last year '+o.prev_year+'%':'')+(o.avg5!=null?', avg '+o.avg5+'%':'')+'</span>';}).join('')
             :'<span class="w1c-cp"><b>'+esc(st)+':</b> \u2014 NASS published no progress figure for this state this week.</span>';}
         if(a||b)put('harvest',[a,b].filter(Boolean).map(function(x){return '<span class="s7-line">'+x+'</span>';}).join('')+mt,esc(hd?'US harvested. USDA Crop Progress, week ending '+isoDay(hd)+'.'+avgWhy:asof),stTxt);
         else put('harvest',NL(),esc('Harvested share is not in our crop progress feed yet'+(d&&d.report_date?' (latest week: '+isoDay(d.report_date)+')':'')+'.'),stTxt);

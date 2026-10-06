@@ -48,8 +48,17 @@ def contract_ticker(commodity):
     return root + MONTH_CODE[mon] + yy + ".CBT"
 
 
-def month_settlements(ticker, year, month):
-    """Daily closes for the given month. Fails loudly on empty."""
+def settled_only(rows, today):
+    """Bars dated before today (Central) only. A same-day Yahoo bar is not the
+    settlement: after the 7 PM reopen it holds evening trades (Oct 5, 2026:
+    4.9625 recorded against a 4.975 close), and even before then it can
+    differ from the figure Yahoo restates the next day (Oct 2: 4.9725 that
+    evening, 4.9775 later). Today's settle is counted on the next run."""
+    return [r for r in rows if r["d"] < today.isoformat()]
+
+
+def month_settlements(ticker, year, month, today=None):
+    """Daily closes for the given month, settled days only. Fails loudly on empty."""
     import yfinance as yf
     start = date(year, month, 1)
     end = date(year + (month == 12), (month % 12) + 1, 1)
@@ -66,6 +75,9 @@ def month_settlements(ticker, year, month):
             out.append({"d": idx.strftime("%Y-%m-%d"), "s": round(float(val) / 100, 4)})
     if not out:
         raise RuntimeError("all-NaN settlements for " + ticker)
+    out = settled_only(out, today or today_central())
+    if not out:
+        raise RuntimeError("no settled day yet for " + ticker + f" {year}-{month:02d}")
     return out
 
 
@@ -87,6 +99,10 @@ def selftest():
     # the last stamp equals the old one-shot formula
     t = [{"d": str(i), "s": v} for i, v in enumerate([12.84, 12.7725, 12.9, 13.0125])]
     assert with_running_avg(t)[-1]["a"] == round(sum(p["s"] for p in t) / len(t), 2)
+    rows = [{"d": "2026-10-01", "s": 5.0225}, {"d": "2026-10-02", "s": 4.9775}, {"d": "2026-10-05", "s": 4.9625}]
+    assert [r["d"] for r in settled_only(rows, date(2026, 10, 5))] == ["2026-10-01", "2026-10-02"], \
+        "a bar dated today is not a settlement yet"
+    assert len(settled_only(rows, date(2026, 10, 6))) == 3
     print("selftest ok")
     return 0
 
@@ -104,7 +120,12 @@ def update_leg(commodity, leg_name, month, crop_year, today):
     if leg["status"] == "final" or not (in_window or pending_final):
         return False
     ticker = contract_ticker(commodity)
-    series = month_settlements(ticker, disc_year, month)
+    try:
+        series = month_settlements(ticker, disc_year, month, today)
+    except RuntimeError as e:
+        if "no settled day yet" in str(e):
+            return False                      # first day of the window: nothing settled to count
+        raise
     with_running_avg(series)
     avg = series[-1]["a"]
     changed = (series != leg.get("series") or leg.get("status") == "pending")

@@ -117,7 +117,14 @@ var _bidsLoadedThisSession = false;
 // manual ZIP entry row. Only lock the idempotency guard when we had a real
 // zip, so a later resolution (cache → Nominatim) can still succeed.
 function _loadBidsOnce(lat, lon, name, zip) {
-  if (typeof window.loadHomepageBids !== 'function') return;
+  /* 2026-10-05: both scripts are deferred; on a slow link geo.js can get
+     here before bids-homepage.js has defined loadHomepageBids, and the card
+     sat on its loading bars for good. Park the request; the bids script
+     picks it up when it loads. A later, better request replaces it. */
+  if (typeof window.loadHomepageBids !== 'function') {
+    if (zip || !window.__agsistBidsPending) window.__agsistBidsPending = [lat, lon, name || '', zip || ''];
+    return;
+  }
   if (_bidsLoadedThisSession && zip) return;
   try { window.loadHomepageBids(lat, lon, name || '', zip || ''); } catch(e) {}
   if (zip) {

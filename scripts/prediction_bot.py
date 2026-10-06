@@ -703,6 +703,32 @@ def make_call(crop, day, deep, fetch=yahoo_closes):
     }, why
 
 
+def settle_entries(calls, today, fetch=yahoo_closes):
+    """Replace each open call's entry with its entry day's settled bar, once,
+    on the first run after that day. The same-day read is provisional: Yahoo
+    restates its daily bar to the settlement later (Oct 2, 2026: 4.9725 that
+    evening, 4.9775 the next run). The direction is never changed, only the
+    price it is graded from, and the note says when it moved."""
+    for c in calls:
+        if c.get("status") != "open" or c.get("entry_final"):
+            continue
+        md = date.fromisoformat(c["made"])
+        if md >= today:
+            continue
+        px, _ = fetch([c["ticker"]], md - timedelta(days=5))
+        if md not in px:
+            continue
+        new = px[md]
+        if round(new, 4) != round(c["entry"], 4):
+            c["note"] = ((c.get("note") or "") + f" Entry set to the settled {md.isoformat()} close {new} (read {c['entry']} that evening).").strip()
+            c["entry"] = new
+            crop = next(x for x in CROPS if x["key"] == c["crop"])
+            c["target"] = target_for(c["direction"], new, crop["tick"])
+            validate_call(c["direction"], new, c["target"])
+        c["entry_final"] = True
+    return calls
+
+
 def grade_open(calls, today, fetch=yahoo_closes, late=False):
     """Grade every open call whose exit day has settled. A call whose exit
     settlement never appears within 5 sessions is marked ungradeable: it is
@@ -711,8 +737,8 @@ def grade_open(calls, today, fetch=yahoo_closes, late=False):
         if c.get("status") != "open":
             continue
         xd = date.fromisoformat(c["exit_day"])
-        if xd > today or (late and xd == today):
-            continue                                  # after the evening reopen today's bar holds overnight trades
+        if xd >= today:
+            continue      # graded the run AFTER the exit day, from the restated (settled) bar
         px, _ = fetch([c["ticker"]], xd - timedelta(days=5))
         if xd in px:
             c["exit"] = px[xd]
@@ -865,6 +891,7 @@ def cmd_live():
     state = load_json(OUT_PATH, {}) or {}
     calls = state.get("calls", [])
     skipped = state.get("skipped", [])
+    settle_entries(calls, today)
     grade_open(calls, today, late=late)
     have = {c["id"] for c in calls}
     seen = {(s.get("crop"), s.get("report")) for s in skipped}
@@ -1113,6 +1140,20 @@ def selftest():
     ck("verdict text", vt, "No better than a coin flip; below half in 4 of 5 ways of counting, "
                            "and worse than always saying down.")
 
+    stub_px = {date(2026, 10, 5): 497.75, date(2026, 11, 2): 500.0}
+    stub = lambda tks, start: (stub_px, None)   # noqa: E731
+    oc = [{"id": "x", "crop": "corn", "made": "2026-10-05", "exit_day": "2026-11-02", "direction": "down",
+           "ticker": "ZCZ26.CBT", "entry": 497.5, "target": 497.25, "status": "open"}]
+    settle_entries(oc, date(2026, 10, 5), stub)
+    ck("entry is not settled on its own day", (oc[0]["entry"], oc[0].get("entry_final")), (497.5, None))
+    settle_entries(oc, date(2026, 10, 6), stub)
+    ck("next run takes the settled bar and keeps the direction", (oc[0]["entry"], oc[0]["target"], oc[0]["direction"], oc[0]["entry_final"]),
+       (497.75, 497.5, "down", True))
+    grade_open(oc, date(2026, 11, 2), stub)
+    ck("no grade on the exit day itself", oc[0]["status"], "open")
+    grade_open(oc, date(2026, 11, 3), stub)
+    ck("graded the next run from the settled exit bar", (oc[0]["status"], oc[0]["exit"], oc[0]["outcome"]), ("graded", 500.0, "miss"))
+
     ck("price keeps the quarter cent", [_price(497.5), _price(691.5), _price(742.25), _price(1281.0)],
        ["$4.97\u00bd", "$6.91\u00bd", "$7.42\u00bc", "$12.81"])
 
@@ -1261,7 +1302,7 @@ def selftest():
 
     # grading on a stub feed
     cs = [dict(call)]
-    grade_open(cs, date(2026, 11, 2), fetch=lambda s, st: ({date(2026, 11, 2): 497.25}, s[0]))
+    grade_open(cs, date(2026, 11, 3), fetch=lambda s, st: ({date(2026, 11, 2): 497.25}, s[0]))
     ck("graded tie is a miss", (cs[0]["status"], cs[0]["outcome"]), ("graded", "miss"))
     cs = [dict(call)]
     grade_open(cs, date(2026, 11, 20), fetch=lambda s, st: ({}, None))

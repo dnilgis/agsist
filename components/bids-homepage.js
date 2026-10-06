@@ -1392,5 +1392,10 @@
   // Expose globally
   window.loadHomepageBids = loadHomepageBids;
   window.lookupBids = lookupBids;
+  /* 2026-10-05: geo.js parks a request when it runs first (slow link). */
+  if(window.__agsistBidsPending && !lastArgs){
+    var _p = window.__agsistBidsPending; window.__agsistBidsPending = null;
+    try{ loadHomepageBids.apply(null, _p); }catch(e){}
+  }
 
 })();
