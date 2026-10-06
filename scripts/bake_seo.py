@@ -101,6 +101,8 @@ def build_ctx(today):
         "prices": _load("prices.json"),
         "cond_yield": _load("cond-yield/fit.json"),
         "crop_progress": _load("crop-progress.json"),
+        "basis": _load("transport/basis.json"),
+        "fertilizer": _load("fertilizer.json"),
     }
 
 
@@ -422,6 +424,161 @@ def make_futures(page):
     return build
 
 
+# ---------------------------------------------------------------- data pages
+# Added 2026-10-06 with the seed_static.py v1.5 body seeds. Same rails as
+# everything above, plus one more: a STALENESS limit per file. The no-data rule
+# keeps a page from being titled with a blank; it does not stop a page being
+# titled with last month's number when the fetcher quietly stops. A file older
+# than its limit is "no data" here, and the page keeps what it has.
+
+def _d(s):
+    try:
+        return date.fromisoformat(str(s)[:10])
+    except Exception:                                     # noqa: BLE001
+        return None
+
+
+def _too_old(d, today, days):
+    return d is None or (today - d).days > days or d > today
+
+
+def _usd(v):
+    return f"${v:,.2f}"
+
+
+def seo_markets(c):
+    """The board, dated by the corn quote's own close date -- never the run
+    date. A quote whose close is from another day is left out rather than
+    printed beside a date it does not belong to (livestock and the S&P close
+    a session apart from grains on a Monday)."""
+    p = c.get("prices")
+    if not p:
+        return None
+    corn = _quote(p, "corn")
+    cd = _d(corn.get("close_date")) or _d(p.get("fetched"))
+    if _too_old(cd, c["today"], 4) or _too_old(_d(p.get("fetched")), c["today"], 4):
+        return None
+    picks = []
+    for key, name, grain in (("corn", "Corn", True), ("beans", "Soybeans", True),
+                             ("wheat", "Wheat", True), ("cattle", "Live Cattle", False),
+                             ("crude", "Crude", False)):
+        q = _quote(p, key)
+        v = q.get("close")
+        if not isinstance(v, (int, float)) or _d(q.get("close_date") or cd) != cd:
+            continue
+        picks.append((key, name, _usd(v / 100.0 if grain else v), q.get("contract")))
+    grains = [x for x in picks if x[0] in ("corn", "beans", "wheat")]
+    if not grains or grains[0][0] != "corn":
+        return None
+    day = f"{MONTHS[cd.month - 1][:3]} {cd.day}"
+    title = None
+    for n in (3, 2, 1):
+        cand = (f"Ag Markets {day}: " + ", ".join(f"{nm} {px}" for _, nm, px, _ in grains[:n]) + SUFFIX)
+        if len(cand) <= TITLE_MAX:
+            title = cand
+            break
+    if not title:
+        return None
+    head = (f"Last quotes {mdY(cd)}: " +
+            ", ".join(f"{nm.lower() if i else nm}{(' ' + ct) if ct else ''} {px}"
+                      for i, (_, nm, px, ct) in enumerate(picks)) + ".")
+    tail = " Futures every 30 min, free."
+    desc = head + tail if len(head + tail) <= DESC_MAX else head
+    while len(desc) > DESC_MAX and len(picks) > 1:   # shed the least-searched quote
+        picks = picks[:-1]
+        desc = (f"Last quotes {mdY(cd)}: " +
+                ", ".join(f"{nm.lower() if i else nm}{(' ' + ct) if ct else ''} {px}"
+                          for i, (_, nm, px, ct) in enumerate(picks)) + ".")
+    return title, desc
+
+
+def _basis_rows(j, crop):
+    ser = (j or {}).get("series") or {}
+    newest = max((_d(s.get("date")) for s in ser.values() if _d(s.get("date"))), default=None)
+    rows = []
+    for k, s in ser.items():
+        parts = k.split("|")
+        if len(parts) != 3 or parts[0] != crop or parts[2] != "Elevator Bid":
+            continue
+        dt = _d(s.get("date"))
+        # the page withholds a row more than 14 days behind the newest week
+        if newest and dt and (newest - dt).days <= 14 and s.get("delta") is not None:
+            rows.append((parts[1], s))
+    return newest, sorted(rows, key=lambda r: r[1]["delta"])
+
+
+def seo_basis(c):
+    """Regional corn basis against its own 5-year same-week normal, counted
+    with the page's own bands (more than 10 cents either way). Dated by the
+    USDA week in the description; the title carries only the count."""
+    j = c.get("basis")
+    newest, rows = _basis_rows(j, "Corn")
+    if not rows or _too_old(newest, c["today"], 21):
+        return None
+    under = sum(1 for _, s in rows if s["delta"] < -0.1)
+    over = sum(1 for _, s in rows if s["delta"] > 0.1)
+    n = len(rows)
+    if under:
+        title = f"Corn Basis vs Normal: Weak in {under} of {n} USDA Regions{SUFFIX}"
+    elif over:
+        title = f"Corn Basis vs Normal: Strong in {over} of {n} USDA Regions{SUFFIX}"
+    else:
+        title = f"Corn Basis vs Normal: All {n} USDA Regions Near Normal{SUFFIX}"
+    name, w = rows[0]
+    sign = lambda v: ("-" if v < 0 else "+") + f"${abs(v):.2f}"      # noqa: E731
+    head = (f"Week of {mdY(newest)}: corn basis is over 10¢ under its 5-year normal in "
+            f"{under} of {n} regions. Weakest: {name} {sign(w['latest'])} vs {sign(w['avg5'])}.")
+    tail = " Barge rates that move it."
+    desc = head + tail if len(head + tail) <= DESC_MAX else head
+    return title, desc
+
+
+FERT_TITLE_ORDER = (("Urea", "Urea"), ("MAP + Sulfur", "MAP"), ("Potash", "Potash"),
+                    ("Amm. Sulfate", "AMS"))
+
+
+def seo_fertilizer(c):
+    """Dealer quotes are weekly at best and often a month apart, so the TITLE
+    carries no date at all -- a date there would read as today's price. The
+    as-of date the quotes themselves carry goes in the description, and only
+    quotes from that newest date are named."""
+    d = c.get("fertilizer")
+    rows = (d or {}).get("prices") or []
+    dated = [(r, _d(r.get("as_of"))) for r in rows if isinstance(r.get("price"), (int, float))]
+    dated = [(r, a) for r, a in dated if a]
+    if not dated:
+        return None
+    newest = max(a for _, a in dated)
+    if _too_old(newest, c["today"], 120):
+        return None
+    cur = {r["name"]: r for r, a in dated if a == newest}
+    named = [(short, cur[full]) for full, short in FERT_TITLE_ORDER if full in cur]
+    if not named:
+        return None
+    title = None
+    for n in range(len(named), 0, -1):
+        bits = [f"{s} ${r['price']:,.0f}" + ("/ton" if i == 0 else "") for i, (s, r) in enumerate(named[:n])]
+        cand = "Fertilizer Prices: " + ", ".join(bits) + SUFFIX
+        if len(cand) <= TITLE_MAX:
+            title = cand
+            break
+    if not title:
+        return None
+    parts = []
+    for i, (s, r) in enumerate(named):
+        bit = f"{s if s.isupper() else s.lower()} ${r['price']:,.0f}" + ("/ton" if i == 0 else "")
+        pv, pa = r.get("prev"), _d(r.get("prev_as_of"))
+        if i == 0 and isinstance(pv, (int, float)) and pv != r["price"] and pa:
+            bit += f" (${pv:,.0f} on {MONTHS[pa.month - 1][:3]} {pa.day})"
+        parts.append(bit)
+    head = f"Midwest dealer quotes as of {mdY(newest)}: " + ", ".join(parts) + "."
+    tail = " Cost per lb of N, P and K."
+    desc = head + tail if len(head + tail) <= DESC_MAX else head
+    if len(desc) > DESC_MAX:
+        desc = f"Midwest dealer quotes as of {mdY(newest)}: " + ", ".join(parts[:2]) + "."
+    return title, desc
+
+
 PAGES = {
     "usda-calendar.html":    (seo_usda_calendar, frozenset({"title", "desc"})),
     "cot.html":              (seo_cot,           frozenset({"title", "desc"})),
@@ -433,6 +590,11 @@ PAGES = {
     # from the file it describes, conditions quoted nothing current at all.
     "conditions-yield.html": (seo_cond_yield,    frozenset({"title", "desc", "alt"})),
     "conditions.html":       (seo_conditions,    frozenset({"title", "desc", "alt"})),
+    # Added 2026-10-06. markets and fertilizer keep their descriptive
+    # og:image:alt; basis repeated its old title there, so it follows the new.
+    "markets.html":          (seo_markets,       frozenset({"title", "desc"})),
+    "basis.html":            (seo_basis,         frozenset({"title", "desc", "alt"})),
+    "fertilizer.html":       (seo_fertilizer,    frozenset({"title", "desc"})),
 }
 for _p in FUTURES:
     PAGES[_p] = (make_futures(_p), frozenset({"title"}))
@@ -573,7 +735,20 @@ def selftest():
            "crop_progress": {"in_season": True,
                              "corn": {"good_excellent": 57, "good_excellent_prev_year": 66},
                              "soybeans": {"good_excellent": 58}},
-           "prices": {"quotes": {"corn": {"close": 459.25}, "beans": {"close": 1176.25},
+           "basis": {"series": {
+               "Corn|Iowa|Elevator Bid": {"latest": -0.432, "date": "2026-08-14", "avg5": -0.308, "delta": -0.124},
+               "Corn|Minnesota|Elevator Bid": {"latest": -0.912, "date": "2026-08-14", "avg5": -0.448, "delta": -0.464},
+               "Corn|Indiana|Elevator Bid": {"latest": -0.202, "date": "2026-08-14", "avg5": -0.334, "delta": 0.132},
+               "Corn|Ohio|Elevator Bid": {"latest": -0.9, "date": "2026-07-01", "avg5": -0.3, "delta": -0.6},
+               "Soybeans|Iowa|Elevator Bid": {"latest": -0.47, "date": "2026-08-14", "avg5": -0.6, "delta": 0.13}}},
+           "fertilizer": {"prices": [
+               {"name": "Urea", "price": 590, "prev": 695, "as_of": "2026-08-01", "prev_as_of": "2026-07-20"},
+               {"name": "Potash", "price": 460, "prev": 460, "as_of": "2026-08-01"},
+               {"name": "MAP + Sulfur", "price": 930, "prev": 930, "as_of": "2026-08-01"},
+               {"name": "Amm. Sulfate", "price": 460, "as_of": "2026-08-01"},
+               {"name": "K-Mag Premium", "price": 650, "as_of": "2026-06-20"}]},
+           "prices": {"fetched": "2026-08-14T20:05:00Z",
+                      "quotes": {"corn": {"close": 459.25}, "beans": {"close": 1176.25},
                                  "wheat": {"close": 674.0}, "cattle": {"close": 223.75},
                                  "feeders": {"close": 341.275}},
                       "nearby": {"corn": {"label": "Sep '26"}, "beans": {"label": "Aug '26"},
@@ -769,6 +944,37 @@ def selftest():
        all("desc" not in PAGES[p][1] for p in FUTURES))
     ck("cattle owns its description because nothing else writes one",
        "desc" in PAGES[CATTLE_PAGE][1] and CATTLE_PAGE not in theirs)
+
+    print("\ndata pages: dated by the data, silent when it is old")
+    t, d = seo_markets(ctx)
+    ck("markets title carries the data's date and the corn price",
+       t.startswith("Ag Markets Aug 14: Corn $4.59"), t)
+    ck("markets description dates the quotes", "Aug 14, 2026" in d, d)
+    ck("markets is skipped when the price file is a week old",
+       seo_markets(dict(ctx, today=date(2026, 8, 24))) is None)
+    mixed = dict(ctx, prices=dict(ctx["prices"], quotes=dict(
+        ctx["prices"]["quotes"], cattle={"close": 223.75, "close_date": "2026-08-13"})))
+    ck("a quote from another session is not printed under the board's date",
+       "223.75" not in seo_markets(mixed)[1], seo_markets(mixed)[1])
+    t, d = seo_basis(ctx)
+    ck("basis counts the weak regions with the page's 10c band",
+       "Weak in 2 of 3" in t, t)
+    ck("basis leaves out a region USDA has not posted for weeks",
+       "Ohio" not in d and "of 3 regions" in d, d)
+    ck("basis description carries the USDA week", "Aug 14, 2026" in d, d)
+    ck("basis is skipped when the newest week is a month old",
+       seo_basis(dict(ctx, today=date(2026, 9, 20))) is None)
+    ck("basis skipped with no file", seo_basis(dict(ctx, basis=None)) is None)
+    t, d = seo_fertilizer(ctx)
+    ck("fertilizer title names this round's quotes", "Urea $590/ton" in t, t)
+    ck("fertilizer title carries NO date (weekly/monthly data)",
+       not re.search(r"\b(20\d\d|Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\b", t), t)
+    ck("fertilizer description carries the quotes' own as-of date",
+       "as of Aug 1, 2026" in d and "Aug 16" not in d, d)
+    ck("fertilizer leaves out a quote from an older round", "650" not in t + d)
+    ck("fertilizer is skipped when the newest quote is over 120 days old",
+       seo_fertilizer(dict(ctx, today=date(2026, 12, 15))) is None)
+    ck("fertilizer skipped with no file", seo_fertilizer(dict(ctx, fertilizer=None)) is None)
 
     print("\nstamping")
     html = ('<title>Old</title>\n<meta name="description" content="old">\n'

@@ -93,31 +93,31 @@
       <div class="pb-verdicts" aria-live="polite">
         <section class="pb-box" id="pb-live" aria-labelledby="pb-live-tag">
           <div class="pb-box-tag" id="pb-live-tag">Live record</div>
-          <p class="pb-verdict" id="pb-live-verdict">Loading&hellip;</p>
-          <p id="pb-live-line"></p>
-          <p id="pb-live-luck"></p>
+          <p class="pb-verdict" id="pb-live-verdict"><!--SEED:pb:pb-live-verdict-->Not enough calls yet.<!--/SEED--></p>
+          <p id="pb-live-line"><!--SEED:pb:pb-live-line-->0 graded so far. A rate is shown from 40 graded calls and 30 non-overlapping windows. Record as of Oct 6, 2026.<!--/SEED--></p>
+          <p id="pb-live-luck"><!--SEED:pb:pb-live-luck-->4 calls are waiting for their grading day. The first live calls are made at the Oct 5, 2026 close and graded four weeks later.<!--/SEED--></p>
         </section>
         <section class="pb-box" id="pb-bt" aria-labelledby="pb-bt-tag">
           <div class="pb-box-tag" id="pb-bt-tag">Backtest</div>
-          <p class="pb-verdict" id="pb-bt-verdict">Loading&hellip;</p>
-          <p id="pb-bt-line"></p>
-          <p id="pb-bt-luck"></p>
-          <p id="pb-bt-base"></p>
+          <p class="pb-verdict" id="pb-bt-verdict"><!--SEED:pb:pb-bt-verdict-->No better than a coin flip; below half in 4 of 5 ways of counting, and worse than always saying down.<!--/SEED--></p>
+          <p id="pb-bt-line"><!--SEED:pb:pb-bt-line-->Jan 7, 2013 to Aug 31, 2026. Right on 1,301 of 2,736 weekly calls (47.6%). Across four non-overlapping groups of calls: 44.1% to 51.6% (169 windows).<!--/SEED--></p>
+          <p id="pb-bt-luck"><!--SEED:pb:pb-bt-luck-->Odds pure guessing does at least this well: about 96 in 100; at least this badly: about 4 in 100 (about 10 in 100 after adjusting for the records tested at once).<!--/SEED--></p>
+          <p id="pb-bt-base"><!--SEED:pb:pb-bt-base-->Always saying down: 51.1%. Always saying up: 48.9% (2,736 windows).<!--/SEED--></p>
         </section>
       </div>
       <p class="pb-note">The two boxes are kept apart on purpose. The backtest is the rule replayed on 2013&ndash;2026 history. The live record is calls made in public before the outcome was known. Adding them together would let old history prop up the live number.</p>
 
       <h2>Latest calls</h2>
-      <p id="pb-latest-when" class="pb-note"></p>
+      <p id="pb-latest-when" class="pb-note"><!--SEED:pb:pb-latest-when-->Made at the Oct 5, 2026 close.<!--/SEED--></p>
       <div class="pb-wrap"><table class="pb-table" id="pb-latest" aria-describedby="pb-latest-when">
         <thead><tr><th scope="col">Crop</th><th scope="col">Call</th><th scope="col">Contract</th><th scope="col" class="num">Entry close</th><th scope="col">Grades on</th><th scope="col">Why</th></tr></thead>
-        <tbody><tr><td colspan="6">Loading&hellip;</td></tr></tbody>
+        <tbody><!--SEED:pb:latest--><tr><td>Corn</td><td><span class="pb-down">Down</span></td><td>Dec '26</td><td class="num">$4.975</td><td>Nov 2, 2026</td><td>Managed money crowded long (managed money at the 97th percentile)</td></tr><tr><td>Soybeans</td><td><span class="pb-down">Down</span></td><td>Nov '26</td><td class="num">$12.81</td><td>Nov 2, 2026</td><td>Managed money crowded long (managed money at the 96th percentile)</td></tr><tr><td>Chicago wheat</td><td><span class="pb-up">Up</span></td><td>Dec '26</td><td class="num">$6.915</td><td>Nov 2, 2026</td><td>13-week trend up (managed money at the 87th percentile)</td></tr><tr><td>KC wheat</td><td><span class="pb-down">Down</span></td><td>Dec '26</td><td class="num">$7.4225</td><td>Nov 2, 2026</td><td>Managed money crowded long (managed money at the 92nd percentile)</td></tr><!--/SEED--></tbody>
       </table></div>
 
       <h2>By crop</h2>
       <div class="pb-wrap"><table class="pb-table" id="pb-bycrop">
         <thead><tr><th scope="col">Crop</th><th scope="col" class="num">Live, right</th><th scope="col" class="num">Live windows</th><th scope="col" class="num">Backtest, right</th><th scope="col" class="num">Backtest, non-overlapping</th><th scope="col">Backtest verdict</th></tr></thead>
-        <tbody><tr><td colspan="6">Loading&hellip;</td></tr></tbody>
+        <tbody><!--SEED:pb:bycrop--><tr><td>Corn</td><td class="num">&mdash; 0 graded</td><td class="num">&mdash;</td><td class="num">347 of 684 (50.7%)</td><td class="num">49.1%&ndash;52.7% (169 windows)</td><td>No better than a coin flip.</td></tr><tr><td>Soybeans</td><td class="num">&mdash; 0 graded</td><td class="num">&mdash;</td><td class="num">318 of 684 (46.5%)</td><td class="num">43.5%&ndash;50.9% (169 windows)</td><td>No better than a coin flip; below half in 4 of 5 ways of counting, and worse than always saying up.</td></tr><tr><td>Chicago wheat</td><td class="num">&mdash; 0 graded</td><td class="num">&mdash;</td><td class="num">330 of 684 (48.2%)</td><td class="num">44.1%&ndash;55.0% (169 windows)</td><td>No better than a coin flip; below half in 4 of 5 ways of counting, and worse than always saying down.</td></tr><tr><td>KC wheat</td><td class="num">&mdash; 0 graded</td><td class="num">&mdash;</td><td class="num">306 of 684 (44.7%)</td><td class="num">38.8%&ndash;48.5% (169 windows)</td><td>No better than a coin flip; below half in 5 of 5 ways of counting, and worse than always saying down.</td></tr><!--/SEED--></tbody>
       </table></div>
       <p class="pb-note" id="pb-bycrop-note"></p>
 
@@ -153,7 +153,7 @@
           <dt>Raw files</dt>
           <dd><a href="/data/predictions.json">/data/predictions.json</a> (calls, record, rule) and <a href="/data/predictions-backtest.json">/data/predictions-backtest.json</a> (every backtest call). Code: <code>scripts/prediction_bot.py</code>; its selftests carry hand-worked answers.</dd>
           <dt>Last changed</dt>
-          <dd id="pb-updated">&mdash;</dd>
+          <dd id="pb-updated"><!--SEED:pb:pb-updated-->2026-10-06 02:29:19 UTC<!--/SEED--></dd>
         </dl>
       </details>
 
