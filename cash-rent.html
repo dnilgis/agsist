@@ -95,7 +95,7 @@
           {
             "@type": "Question",
             "name": "How has cash rent changed as a share of revenue over time?",
-            "acceptedAnswer": {"@type": "Answer", "text": "This page charts it directly for every county with the data. For each year it divides that year's published county rent by that year's actual county yield times that year's state average price received. Every term is a USDA figure published after the fact, so the line shows what really happened rather than a projection. The pattern in most Corn Belt counties is that rent takes a far larger share of the gross in low-price years than in high-price years, even when the rent itself barely moves."
+            "acceptedAnswer": {"@type": "Answer", "text": "This page charts it directly for every county with the data. For each year it divides that year's published county rent by that year's actual county yield for the same practice times that year's state average price received: dryland rent over the dryland yield, irrigated rent over the irrigated yield. Where the only county yield mixes irrigated and dryland acres, that year is withheld and the page says so. Every term is a USDA figure published after the fact, so the line shows what really happened rather than a projection. The pattern in most Corn Belt counties is that rent takes a far larger share of the gross in low-price years than in high-price years, even when the rent itself barely moves."
             }
           },
           {
@@ -288,7 +288,8 @@
       <span id="cr-rh-note"></span>
     </div>
     <div class="cr-panel-b" style="border-top:1px solid rgba(132,160,168,.12)">
-      <p style="font-size:14px;line-height:1.7;color:#8a948f;margin:0" id="cr-rh-x">Each point is <strong style="color:#e6ebe9">that year&rsquo;s published rent</strong> divided by <strong style="color:#e6ebe9">that year&rsquo;s actual county yield</strong> times <strong style="color:#e6ebe9">that year&rsquo;s state average price received</strong>. Nothing here is a forecast or a trend line &mdash; every term is a number USDA published after the fact. Because price received is what farmers actually got, your basis is already inside it.</p>
+      <p style="font-size:14px;line-height:1.7;color:#8a948f;margin:0 0 10px" id="cr-rh-basis"></p>
+      <p style="font-size:14px;line-height:1.7;color:#8a948f;margin:0" id="cr-rh-x">Each point is <strong style="color:#e6ebe9">that year&rsquo;s published rent</strong> divided by <strong style="color:#e6ebe9">that year&rsquo;s actual county yield for the same practice</strong> times <strong style="color:#e6ebe9">that year&rsquo;s state average price received</strong>. Dryland rent is divided by the county&rsquo;s dryland (non-irrigated) yield and irrigated rent by its irrigated yield; the all-practice yield is used only where NASS reports no irrigation in the county. Where the only county yield mixes irrigated and dryland acres, the year is left out and listed above with that reason. Nothing here is a forecast or a trend line &mdash; every term is a number USDA published after the fact. Because price received is what farmers actually got, your basis is already inside it.</p>
     </div>
   </section>
 
@@ -313,7 +314,7 @@
 
     <h2>Where these numbers come from</h2>
     <p>The rent is USDA NASS's county estimate from the <strong>Cash Rents Survey</strong>, a survey of roughly 280,000 farms and ranches run every year in every state but Alaska. The 2008 Farm Bill requires NASS to publish a mean rate for every county with at least 20,000 acres of cropland plus pasture. Results land each <strong>August</strong> and are not revised afterward. The Farm Service Agency uses these same county estimates to set market-based rates for programs like CRP.</p>
-    <p>The trend yield is mine, not USDA's: an ordinary least-squares fit through your county's NASS yield estimates over the last fifteen years, projected to the current year. It ships with its fit quality attached, and where a county has fewer than six real years of yield on record, <strong>no trend is shown at all</strong> rather than a number pulled through too few points.</p>
+    <p>The trend yield is mine, not USDA's: an ordinary least-squares fit through your county's NASS yield estimates over the last fifteen years, projected to the current year. It is fitted on <strong>the same practice as the rent it is divided by</strong> &mdash; the county's dryland (non-irrigated) yields for dryland rent, its irrigated yields for irrigated rent. The all-practice county yield is used only where NASS reports no irrigation in the county; anywhere else it is mostly pivot corn and would make dryland rent look cheap, so the trend is withheld and the page says why. It ships with its fit quality attached, and where a county has fewer than six real years of yield on record, <strong>no trend is shown at all</strong> rather than a number pulled through too few points.</p>
 
     <h3>Three things this data will not do</h3>
     <ul>
@@ -338,7 +339,7 @@
       <details><summary>When is county cash rent data released?</summary><div class="cr-faq-a">USDA NASS releases county cash rent estimates each August, from a survey of roughly 280,000 farms and ranches conducted earlier the same year. The rate published in a given August describes that same crop year. Rates are not revised after publication.</div></details>
       <details><summary>Why is there no 2015 or 2018 cash rent data?</summary><div class="cr-faq-a">NASS did not conduct the county Cash Rents Survey in 2015 or 2018, so no county estimates exist for those years. County data runs 2008 to 2014, 2016 to 2017, and 2019 forward. This page shows that year as a gap rather than drawing a line across it, because a line across it would be an invention.</div></details>
       <details><summary>What percent of gross revenue should cash rent be?</summary><div class="cr-faq-a">There is no single correct figure, and anyone who gives you one is selling something. Rent as a share of gross revenue is useful because it moves when yields and prices move, while the rent itself is fixed for the season. Comparing the ratio to your own county's history is more informative than comparing it to a national rule of thumb. What the remaining share has to cover &mdash; seed, fertilizer, chemical, machinery, labor, interest &mdash; varies enormously between operations.</div></details>
-      <details><summary>How has cash rent changed as a share of revenue over time?</summary><div class="cr-faq-a">This page charts it directly for every county with the data. For each year it divides that year's published county rent by that year's actual county yield times that year's state average price received. Every term is a USDA figure published after the fact, so the line shows what really happened rather than a projection. The pattern in most Corn Belt counties is that rent takes a far larger share of the gross in low-price years than in high-price years, even when the rent itself barely moves.</div></details>
+      <details><summary>How has cash rent changed as a share of revenue over time?</summary><div class="cr-faq-a">This page charts it directly for every county with the data. For each year it divides that year's published county rent by that year's actual county yield for the same practice times that year's state average price received: dryland rent over the dryland yield, irrigated rent over the irrigated yield. Where the only county yield mixes irrigated and dryland acres, that year is withheld and the page says so. Every term is a USDA figure published after the fact, so the line shows what really happened rather than a projection. The pattern in most Corn Belt counties is that rent takes a far larger share of the gross in low-price years than in high-price years, even when the rent itself barely moves.</div></details>
       <details><summary>Does this use futures prices or what farmers actually got?</summary><div class="cr-faq-a">The historical chart uses the USDA NASS marketing-year average price received by farmers in your state, which reflects actual sales and therefore already includes local basis. The calculator at the top uses a board price plus a basis you enter yourself, because it is looking forward at a crop you have not sold. The two answer different questions: what happened, and what might.</div></details>
       <details><summary>Is NASS cash rent the same as what I should pay?</summary><div class="cr-faq-a">No. It is a county mean from a voluntary survey. Rents vary widely within a county and even between farms on the same road, driven by soil type, drainage, field size, yield history, and how badly a neighbor wants the ground. Treat the county mean as a reference point for a conversation, not as a rate card.</div></details>
     </div>
@@ -466,39 +467,114 @@
     return series[y];
   }
 
+  // ---- RENT AND YIELD OF THE SAME PRACTICE --------------------------------
+  // The pairing rule lives ONCE, in scripts/fetch_cash_rent.py pair_county(),
+  // and ships per county as c.pair: {rent:'nonirr'|'irr', corn:{y:{year:[yield,basis]},
+  // w:{year:reason}, t:{v,r2,n,b}|{w:reason}}, beans:{...}}. Dryland rent is
+  // divided by the dryland (non-irrigated) county yield, irrigated rent by the
+  // irrigated yield, and the all-practice yield only where NASS shows no
+  // irrigation in the county. Anything else is withheld WITH its reason.
+  //
+  // Before 2026-10 the page divided dryland rent by the ALL-PRACTICE yield:
+  // Finney KS 2022 read 44.5/(147.6 x 7.04) = 4.3% where 147.6 bu was mostly
+  // pivot corn. A state file written before the fix has no c.pair (no
+  // cur.pair_rule). For those files LEGACY rules apply until the workflow
+  // reruns: the all-practice yield is shown ONLY for a county with no
+  // irrigated rent in any year, outside the states where at least a third of
+  // counties irrigate 10%+ of cropland (2022 Census of Agriculture, read from
+  // Farmland Atlas water layer, irrigated_share_2022). Everything else is
+  // withheld and says why. No ratio from an old file is shown as dryland.
+  var REASON_MIXED='county yield mixes irrigated and dryland acres';
+  var REASON_LEGACY='county yield mixes irrigated and dryland acres (this data file predates the dryland/irrigated yield split; it returns with the next NASS refresh)';
+  var LEGACY_IRR_STATES={NV:1,AZ:1,CA:1,UT:1,NM:1,CO:1,ID:1,WY:1,OR:1,NE:1,FL:1,DE:1,WA:1,NJ:1,MT:1,RI:1,GA:1,MA:1,TX:1,AR:1,LA:1,SC:1,KS:1};
+  var BASIS_WORDS={nonirr:'dryland yield',irr:'irrigated yield',all:'all-practice yield \u2014 county reports no irrigated corn',
+    legacy:'all-practice yield \u2014 county reports no irrigated rent (dryland/irrigated yield split pending refresh)'};
+  var RENT_WORDS={nonirr:'non-irrigated rent',irr:'irrigated rent'};
+  function basisWords(b){ return BASIS_WORDS[b]||b; }
+  function pairFor(c,crop){
+    if(!c) return null;
+    if(cur&&cur.pair_rule){
+      if(!c.pair||!c.pair[crop]) return null;
+      var p=c.pair[crop];
+      return {rent:c.pair.rent, y:p.y||{}, w:p.w||{}, t:p.t||{}, legacy:false};
+    }
+    // LEGACY: old file, all-practice yield only, no practice split available
+    var r=c.rent||{}, rk=r.nonirr?'nonirr':(r.irr?'irr':null);
+    if(!rk) return null;
+    var e=(c.yield&&c.yield[crop])||{}, yh=e.hist||{}, rent=r[rk];
+    var ok=(rk==='nonirr'&&!r.irr&&!LEGACY_IRR_STATES[cur&&cur.state]);
+    var out={rent:rk, y:{}, w:{}, t:{}, legacy:true};
+    Object.keys(rent).forEach(function(y){
+      if(yh[y]==null) return;
+      if(ok) out.y[y]=[yh[y],'legacy']; else out.w[y]=REASON_LEGACY;
+    });
+    if(e.trend!=null&&e.r2!=null){
+      out.t=ok?{v:e.trend,r2:e.r2,n:e.n,b:'legacy'}:{w:REASON_LEGACY};
+    }else if(!ok&&Object.keys(yh).length){ out.t={w:REASON_LEGACY}; }
+    return out;
+  }
+
   // ---- THE CENTREPIECE ----------------------------------------------------
-  // rent(county,year) / ( yield(county,year) x price_received(state,year) )
+  // rent(county,year) / ( paired yield(county,year) x price_received(state,year) )
   // Every term is an observation USDA published for that year. A year missing
   // ANY term produces NO point -- plot only the years that can be proven, and
   // skip the rest, rather than carrying a value forward to keep a line unbroken.
+  // A year whose only yield mixes irrigated and dryland acres produces no
+  // point either, and is listed under the chart with that reason.
   function ratioSeries(crop){
-    var c=curCounty;
-    var rent=(c.rent&&(c.rent.nonirr||c.rent.irr))||null;
-    var yh=(c.yield&&c.yield[crop]&&c.yield[crop].hist)||null;
+    var c=curCounty, pr=pairFor(c,crop);
     var ph=(cur.prices&&cur.prices[crop])||null;
-    if(!rent||!yh||!ph) return {};
-    var out={};
+    var res={s:{}, b:{}, w:{}, rent:pr?pr.rent:null};
+    if(!pr||!ph) return res;
+    var rent=c.rent[pr.rent]||{};
     Object.keys(rent).forEach(function(y){
-      var Y=yh[y], P=ph[y], R=rent[y];
+      var P=ph[y], R=rent[y];
+      if(pr.w[y]&&P!=null){ res.w[y]=pr.w[y]; return; }
+      var yy=pr.y[y]; if(!yy) return;
+      var Y=yy[0];
       if(Y==null||P==null||R==null) return;   // no invention
       if(!(Y>0)||!(P>0)) return;
-      out[y]=(R/(Y*P))*100;
+      res.s[y]=(R/(Y*P))*100; res.b[y]=yy[1];
     });
-    return out;
+    return res;
+  }
+
+  function esc(t){ return String(t).replace(/[&<>"]/g,function(ch){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch];}); }
+  // One line per crop, in words: which rent, over which yield, and which
+  // years were withheld and why. The chart never shows a point this does not explain.
+  function basisSummary(M){
+    var out=[];
+    [['corn','Corn'],['beans','Soybeans']].forEach(function(k){
+      var m=M[k[0]]; if(!m||!m.rent) return;
+      var bs={}; Object.keys(m.s).forEach(function(y){ (bs[m.b[y]]=bs[m.b[y]]||[]).push(+y); });
+      var parts=Object.keys(bs).map(function(b){ var ys=bs[b].sort(function(a,c){return a-c;});
+        return RENT_WORDS[m.rent]+' \u00f7 county '+basisWords(b)+' ('+(ys.length>1?ys[0]+'\u2013'+ys[ys.length-1]:ys[0])+')'; });
+      var wy=Object.keys(m.w).sort(); var why={};
+      wy.forEach(function(y){ (why[m.w[y]]=why[m.w[y]]||[]).push(y); });
+      var wtxt=Object.keys(why).map(function(r){ return '\u2014 withheld '+why[r].join(', ')+': '+r; });
+      if(!parts.length&&!wtxt.length) return;
+      out.push('<strong style="color:#e6ebe9">'+k[1]+':</strong> '+esc(parts.join('; ')||'no year with a matching yield')+(wtxt.length?' <span class="warn">'+esc(wtxt.join(' '))+'</span>':''));
+    });
+    return out.join('<br>');
   }
 
   function ratioChart(){
     var svg=$('cr-rh-chart'), W=900,H=360,P={t:20,r:16,b:34,l:52};
     var crops=[['corn','#d4a23f'],['beans','#5fc28a']];
-    var S={}, all=[], years=[];
+    var S={}, M={}, all=[], years=[];
     crops.forEach(function(k){
-      var s=ratioSeries(k[0]);
+      var r=ratioSeries(k[0]), s=r.s; M[k[0]]=r;
       if(Object.keys(s).length>1){ S[k[0]]=s;
         Object.keys(s).forEach(function(y){ years.push(+y); all.push(s[y]); }); }
     });
+    $('cr-rh-basis').innerHTML=basisSummary(M);
     if(!all.length){
-      svg.innerHTML='<text x="450" y="172" text-anchor="middle" fill="#8a948f" font-family="\'JetBrains Mono\',monospace" font-size="13">Not enough published history for this county</text>'+
-        '<text x="450" y="194" text-anchor="middle" fill="#8a948f" font-family="\'JetBrains Mono\',monospace" font-size="11">needs rent, county yield and state price in the same year</text>';
+      var wc=M.corn&&Object.keys(M.corn.w).length, wr=wc?M.corn.w[Object.keys(M.corn.w)[0]]:null;
+      svg.innerHTML=wc
+        ? '<text x="450" y="172" text-anchor="middle" fill="#8a948f" font-family="\'JetBrains Mono\',monospace" font-size="13">\u2014 Withheld</text>'+
+          '<text x="450" y="194" text-anchor="middle" fill="#8a948f" font-family="\'JetBrains Mono\',monospace" font-size="11">'+esc(wr.split(' (')[0])+'</text>'
+        : '<text x="450" y="172" text-anchor="middle" fill="#8a948f" font-family="\'JetBrains Mono\',monospace" font-size="13">Not enough published history for this county</text>'+
+          '<text x="450" y="194" text-anchor="middle" fill="#8a948f" font-family="\'JetBrains Mono\',monospace" font-size="11">needs rent, a county yield of the same practice and state price in the same year</text>';
       $('cr-rh-r').textContent='\u2014'; $('cr-rh-note').textContent=''; return;
     }
     var y0=Math.min.apply(null,years), y1=Math.max.apply(null,years);
@@ -537,7 +613,7 @@
       });
       ys.forEach(function(y){
         var isP=prelim.indexOf(y)>=0;
-        o.push('<circle cx="'+X(y).toFixed(1)+'" cy="'+Y(s[y]).toFixed(1)+'" r="'+(isP?3:2.5)+'" fill="'+(isP?'#0a0c0d':col)+'" stroke="'+col+'" stroke-width="'+(isP?2:0)+'"><title>'+y+': '+s[y].toFixed(1)+'%'+(isP?' (preliminary)':'')+'</title></circle>');
+        o.push('<circle cx="'+X(y).toFixed(1)+'" cy="'+Y(s[y]).toFixed(1)+'" r="'+(isP?3:2.5)+'" fill="'+(isP?'#0a0c0d':col)+'" stroke="'+col+'" stroke-width="'+(isP?2:0)+'"><title>'+y+': '+s[y].toFixed(1)+'% \u00b7 '+RENT_WORDS[M[k].rent]+' \u00f7 '+basisWords(M[k].b[y])+(isP?' (preliminary)':'')+'</title></circle>');
       });
     });
     svg.innerHTML=o.join('');
@@ -557,12 +633,20 @@
     var y=latestYear(r.nonirr)||latestYear(r.irr)||latestYear(r.pasture);
     $('cr-rates-yr').textContent=y?y:'latest';
 
-    // seed the calculator
-    var cy=(c.yield&&c.yield.corn)||null;
-    if(cy&&cy.trend!=null&&cy.r2!=null){
-      $('cr-yield').value=cy.trend;
-      $('cr-yield-h').textContent='County trend \u00b7 R\u00b2 '+cy.r2.toFixed(2)+' \u00b7 '+cy.n+' yrs';
-      $('cr-yield-h').className='cr-in-h'+(cy.r2<0.3?' warn':'');
+    // seed the calculator with a trend fitted on the SAME practice as the
+    // rent it is divided by (dryland trend for dryland rent, irrigated for
+    // irrigated). Never the all-practice trend in a county that irrigates.
+    var pc=pairFor(c,'corn'), ct=pc&&pc.t||{};
+    seeded=null;
+    if(ct.v!=null&&ct.r2!=null){
+      $('cr-yield').value=ct.v;
+      seeded={v:ct.v,b:ct.b};
+      $('cr-yield-h').textContent='County trend, '+basisWords(ct.b)+' \u00b7 R\u00b2 '+ct.r2.toFixed(2)+' \u00b7 '+ct.n+' yrs';
+      $('cr-yield-h').className='cr-in-h'+(ct.r2<0.3?' warn':'');
+    }else if(ct.w){
+      $('cr-yield').value='';
+      $('cr-yield-h').textContent='\u2014 County trend withheld: '+ct.w+'. Enter your own yield.';
+      $('cr-yield-h').className='cr-in-h warn';
     }else{
       $('cr-yield').value='';
       $('cr-yield-h').textContent='No county trend \u2014 enter your own';
@@ -576,18 +660,23 @@
     ratioChart();
   }
 
+  var seeded=null;   // {v, b}: the county trend the yield box was seeded with, and its practice basis
   function calc(){
     var c=curCounty; if(!c) return;
-    var rent=latestYear(c.rent.nonirr)?c.rent.nonirr[latestYear(c.rent.nonirr)]:null;
-    if(rent==null) rent=latestYear(c.rent.irr)?c.rent.irr[latestYear(c.rent.irr)]:null;
+    var rk=latestYear(c.rent.nonirr)?'nonirr':(latestYear(c.rent.irr)?'irr':null);
+    var rent=rk?c.rent[rk][latestYear(c.rent[rk])]:null;
     var y=parseFloat($('cr-yield').value), p=parseFloat($('cr-price').value), b=parseFloat($('cr-basis').value)||0;
     var el=$('cr-ratio'), x=$('cr-ratio-x'), m=$('cr-math');
+    var pc=pairFor(c,'corn'), tw=pc&&pc.t&&pc.t.w;
     if(rent==null||!(y>0)||!(p>0)){
       el.textContent='\u2014'; el.className='cr-ratio-v';
-      x.textContent=rent==null?'NASS did not publish a cropland rent for this county, so there is no rent to divide.':'Enter a yield and a price to run the math.';
+      x.textContent=rent==null?'NASS did not publish a cropland rent for this county, so there is no rent to divide.'
+        :(!(y>0)&&tw?'Withheld \u2014 '+tw+', so there is no county trend to divide '+RENT_WORDS[rk]+' by. Type your own yield above to run the math.'
+        :'Enter a yield and a price to run the math.');
       m.textContent='\u2014';
       return;
     }
+    var ylab=(seeded&&Math.abs(y-seeded.v)<0.05)?('county trend, '+basisWords(seeded.b)):'your yield';
     var net=p+b;
     if(!(net>0)){
       el.textContent='\u2014'; el.className='cr-ratio-v';
@@ -598,10 +687,10 @@
     var gross=y*net, pct=(rent/gross)*100;
     el.textContent=pct.toFixed(1)+'%';
     el.className='cr-ratio-v '+(pct>=35?'neg':pct>=30?'warn':'pos');
-    m.innerHTML='rent <b>'+money(rent)+'</b> &divide; ( <b>'+y.toFixed(1)+'</b> bu &times; <b>$'+net.toFixed(2)+'</b> ) = <b>'+money(Math.round(gross))+'</b> gross/ac &rarr; <b>'+pct.toFixed(1)+'%</b>';
+    m.innerHTML=RENT_WORDS[rk]+' <b>'+money(rent)+'</b> &divide; ( <b>'+y.toFixed(1)+'</b> bu &times; <b>$'+net.toFixed(2)+'</b> ) = <b>'+money(Math.round(gross))+'</b> gross/ac &rarr; <b>'+pct.toFixed(1)+'%</b>';
     var left=gross-rent;
     var bpx=boardPrice(),pLbl=(!b&&bpx&&Math.abs(p-bpx)<0.005)?'nearby corn futures, before basis':(b?'price plus basis':'your price');
-    x.innerHTML='At <strong>'+y.toFixed(0)+' bu</strong> and <strong>$'+net.toFixed(2)+'</strong> ('+pLbl+'), this acre grosses <strong>'+money(Math.round(gross))+'</strong>. Rent takes <strong>'+money(rent)+'</strong>, leaving <strong>'+money(Math.round(left))+'</strong> to cover everything else and pay you. Compare that share to your own county\u2019s history below \u2014 not to a rule of thumb.';
+    x.innerHTML='At <strong>'+y.toFixed(0)+' bu</strong> ('+esc(ylab)+') and <strong>$'+net.toFixed(2)+'</strong> ('+pLbl+'), this acre grosses <strong>'+money(Math.round(gross))+'</strong>. Rent ('+RENT_WORDS[rk]+') takes <strong>'+money(rent)+'</strong>, leaving <strong>'+money(Math.round(left))+'</strong> to cover everything else and pay you. Compare that share to your own county\u2019s history below \u2014 not to a rule of thumb.';
   }
 
   // ---- history chart: honest gaps, no interpolation across missing years ----
@@ -674,7 +763,7 @@
   function legend(){
     if(!nat) return;
     var b=(mode==='pct')?nat.pct_breaks:nat.rent_breaks;
-    var fmt=(mode==='pct')?function(x){return x.toFixed(0)+'%';}:function(x){return '$'+Math.round(x);};
+    var fmt=(mode==='pct')?function(x){return x==null?'':x.toFixed(0)+'%';}:function(x){return x==null?'':'$'+Math.round(x);};
     var h='';
     for(var i=0;i<RAMP.length;i++){
       var lab=(i===0)?('<'+fmt(b[0])):(i===RAMP.length-1?('\u2265'+fmt(b[b.length-1])):fmt(b[i-1]));
@@ -689,12 +778,22 @@
       for(var k2 in cs){if(cs[k2].ry===lat&&typeof cs[k2].r==='number')n++;}
       nm=' counties with a '+lat+' rent';
     }
+    if(mode==='pct'&&natLegacy()){
+      $('cr-mleg').innerHTML='<span class="cr-mleg-l warn" style="margin-left:0">\u2014 Share-of-gross map withheld: this data file divides dryland rent by a county yield that mixes irrigated and dryland acres. It returns with the next NASS refresh, matched by practice. Pick a county below: its own ratio is shown only where it reports no irrigated rent and sits outside the irrigated states.</span>';
+      return;
+    }
+    if(mode==='pct'&&nat.n_pct_withheld) nm+=' \u00b7 '+nat.n_pct_withheld.toLocaleString()+' withheld ('+REASON_MIXED+')';
     h+='<span class="cr-mleg-l">'+n.toLocaleString()+nm+(mode==='pct'&&nat.pct_years?' \u00b7 '+(nat.pct_years[0]===nat.pct_years[1]?nat.pct_years[0]:nat.pct_years[0]+'\u2013'+nat.pct_years[1])+' \u00b7 corn':'')+'</span>';
     $('cr-mleg').innerHTML=h;
   }
+  // national.json written before the pairing fix (no nat.pair_rule) carries
+  // ratios built on the all-practice yield, and no per-county irrigation
+  // flag to sort them with. The share-of-gross layer is withheld outright for
+  // such a file rather than painting a mismatched number on irrigated counties.
+  function natLegacy(){ return !!nat&&!nat.pair_rule; }
   function style(f){
     var r=nat.counties[f.id];
-    var v=r?(mode==='pct'?(r.p==null?null:r.p):r.r):null;
+    var v=r?(mode==='pct'?((r.p==null||natLegacy())?null:r.p):r.r):null;
     return {fillColor:shade(v,mode==='pct'?nat.pct_breaks:nat.rent_breaks),
             fillOpacity:v==null?.35:.85,weight:.3,color:'#0a0c0d',opacity:.6};
   }
@@ -703,7 +802,10 @@
     var nm=(f.properties&&f.properties.name)||'County';
     if(!r){ l.bindPopup('<b>'+nm+'</b><br>USDA did not publish a rate here<br><span style="color:#8a948f">too few survey responses</span>'); return; }
     var h='<b>'+nm+' County, '+r.s+'</b><br>Rent $'+Math.round(r.r)+'/ac <span style="color:#8a948f">('+r.ry+')</span>';
-    if(r.p!=null) h+='<br>Share of gross <span style="color:'+(r.p>=35?'#e0685f':r.p>=30?'#d4a23f':'#5fc28a')+'">'+r.p.toFixed(1)+'%</span> <span style="color:#8a948f">('+r.py+' corn'+(r.pp?', prelim':'')+')</span>';
+    if(natLegacy()) h+='<br><span style="color:#8a948f">Share of gross \u2014 withheld until the data refresh that matches rent and yield by practice</span>';
+    else if(r.p!=null) h+='<br>Share of gross <span style="color:'+(r.p>=35?'#e0685f':r.p>=30?'#d4a23f':'#5fc28a')+'">'+r.p.toFixed(1)+'%</span> <span style="color:#8a948f">('+r.py+' corn'+(r.pp?', prelim':'')+')</span>'
+      +'<br><span style="color:#8a948f">'+(RENT_WORDS[r.rk]||'rent')+' \u00f7 '+basisWords(r.pb)+'</span>';
+    else if(r.pw) h+='<br>Share of gross \u2014 <span style="color:#d4a23f">withheld</span><br><span style="color:#8a948f">'+esc(r.pw)+' ('+r.pwy+')</span>';
     else h+='<br><span style="color:#8a948f">no corn yield published \u2014 no ratio</span>';
     l.bindPopup(h);
   }
@@ -723,6 +825,10 @@
       map=L.map('cr-map',{zoomControl:true,scrollWheelZoom:false,attributionControl:false}).setView([39.5,-98.35],4);
       layer=L.geoJSON(gj,{style:style,onEachFeature:popup}).addTo(map);
       legend();
+      if(natLegacy()){
+        // the crawler seed line (seed_static.py) still counts the old ratios; say what the map now does
+        var st=$('cr-stats'); if(st) st.innerHTML=st.innerHTML.replace(/rent-to-revenue ratio computed for [^&]*\([^)]*\)/,'rent-to-revenue ratio withheld until the next refresh matches rent and yield by practice');
+      }
       $('cr-mt-pct').addEventListener('click',function(){ mode='pct'; this.classList.add('on'); this.setAttribute('aria-selected','true');
         $('cr-mt-rent').classList.remove('on'); $('cr-mt-rent').setAttribute('aria-selected','false'); paint(); gaEvent('cash_rent_map',{mode:'pct'}); });
       $('cr-mt-rent').addEventListener('click',function(){ mode='rent'; this.classList.add('on'); this.setAttribute('aria-selected','true');

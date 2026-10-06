@@ -18,12 +18,29 @@ HONESTY RULES BAKED IN
     average a district down to a county, never invent a number.
   * Trend yield is a FIT, not an observation. It ships with r2 and n so the
     page can label it and refuse to show a garbage fit.
+  * RENT AND YIELD MUST BE THE SAME PRACTICE. The rent-share ratio used to
+    divide NON-IRRIGATED rent (or irrigated rent, where that was all NASS
+    published) by the ALL-PRACTICE county yield. In an irrigated county the
+    all-practice yield is mostly pivot corn: Finney Co. KS 2022 printed
+    44.5 / (147.6 x 7.04) = 4.3% for dryland ground, where 147.6 bu was the
+    irrigated acres talking. pair_county() now pairs dryland rent with the
+    NON-IRRIGATED yield and irrigated rent with the IRRIGATED yield. The
+    all-practice yield is used only where NASS shows no irrigation in the
+    county at all (no irrigated corn or soybean yield and no irrigated rent in
+    any year), i.e. where it is essentially a dryland yield. Anywhere else a
+    year with no matching yield is WITHHELD with its reason in words; it is
+    never filled from the mixed number. The basis of every ratio point and of
+    the calculator's trend ships in the JSON ("nonirr" | "irr" | "all").
 
 SOURCES (both USDA NASS Quick Stats, key required, free):
   rent  : RENT, CASH, {CROPLAND NON-IRRIGATED | CROPLAND IRRIGATED | PASTURE}
           - EXPENSE, MEASURED IN $ / ACRE   (agg_level_desc=COUNTY)
-  yield : CORN, GRAIN - YIELD, MEASURED IN BU / ACRE
-          SOYBEANS - YIELD, MEASURED IN BU / ACRE
+  yield : CORN, GRAIN - YIELD, MEASURED IN BU / ACRE                 (all practices)
+          CORN, GRAIN, NON-IRRIGATED - YIELD, MEASURED IN BU / ACRE
+          CORN, GRAIN, IRRIGATED - YIELD, MEASURED IN BU / ACRE
+          SOYBEANS - YIELD, MEASURED IN BU / ACRE                    (all practices)
+          SOYBEANS, NON-IRRIGATED - YIELD, MEASURED IN BU / ACRE
+          SOYBEANS, IRRIGATED - YIELD, MEASURED IN BU / ACRE
 
 USAGE
   python scripts/fetch_cash_rent.py --selftest     # offline, no key needed
@@ -63,9 +80,46 @@ RENT_KINDS = {
     "pasture": "RENT, CASH, PASTURELAND - EXPENSE, MEASURED IN $ / ACRE",
 }
 YIELD_KINDS = {
+    # ALL PRACTICES. Kept, unchanged, under the same keys: build_farmland_atlas,
+    # build_state_rent_pages and field-scout read yield.corn. It is NOT paired
+    # with rent unless the county shows no irrigation at all -- see pair_county().
     "corn":  "CORN, GRAIN - YIELD, MEASURED IN BU / ACRE",
     "beans": "SOYBEANS - YIELD, MEASURED IN BU / ACRE",
+    # PRACTICE-SPECIFIC. These are what rent is divided by. Same per-state loop,
+    # same api_get_safe() path, same suppression handling as the line above.
+    # api_get_safe() turns HTTP 400 into "no rows", and NASS answers a WRONG
+    # short_desc with HTTP 400 (the pasture-rent lesson above). So a typo here
+    # would not fail -- it would quietly report "no dryland yield published"
+    # for every county in America. main() therefore prints the national row
+    # count of every practice series and REFUSES the run if a corn practice
+    # series comes back empty in a run that included a state where NASS is
+    # known to publish them (PRACTICE_CANARY_STATES).
+    "corn_nonirr":  "CORN, GRAIN, NON-IRRIGATED - YIELD, MEASURED IN BU / ACRE",
+    "corn_irr":     "CORN, GRAIN, IRRIGATED - YIELD, MEASURED IN BU / ACRE",
+    "beans_nonirr": "SOYBEANS, NON-IRRIGATED - YIELD, MEASURED IN BU / ACRE",
+    "beans_irr":    "SOYBEANS, IRRIGATED - YIELD, MEASURED IN BU / ACRE",
 }
+CROPS = ("corn", "beans")
+PRACTICE_SERIES = ("corn_nonirr", "corn_irr", "beans_nonirr", "beans_irr")
+# Corn practice series are load-bearing for the headline and the map, so an
+# empty national pull is fatal. Soybean practice series only feed the second
+# line of the ratio chart; if they come back empty the run warns loudly and
+# pair_county() still refuses the all-practice soybean yield anywhere the
+# county shows irrigation (irrigated rent or an irrigated corn yield), so an
+# empty soybean series withholds points -- it cannot publish a mismatched one.
+FATAL_IF_EMPTY = ("corn_nonirr", "corn_irr")
+# NASS publishes county corn yields by practice in these states every year
+# (the Plains irrigation belt). A run that covers one of them and gets zero
+# practice rows has a broken string, not a quiet year.
+PRACTICE_CANARY_STATES = {"NE", "KS", "CO", "TX"}
+
+# Bump when the pairing rule changes; the page reads it to know the file
+# carries "pair" blocks (older files do not, and the page treats them as
+# unpaired -- see cash-rent.html LEGACY rule).
+PAIR_RULE = 2
+BASES = ("nonirr", "irr", "all")
+REASON_MIXED = "county yield mixes irrigated and dryland acres"
+REASON_IRR_ONLY_DRY = "NASS published only a dryland county yield, which does not match irrigated rent"
 # Marketing-year average price RECEIVED by farmers, by state. This is the key
 # to the whole page. It is not the board: it is what producers actually got,
 # state by state, which means BASIS IS ALREADY IN IT. Pairing it with the
@@ -200,9 +254,43 @@ def api_get_safe(key, short_desc, state, extra=None):
         raise
 
 
-def collect_state(key, state):
-    """-> (counties dict, stats dict). Fail-loud: exceptions propagate."""
+def yield_entry(pairs, cur):
+    """[(year, value), ...] -> {"hist": {...}, + trend fields when the fit holds}.
+
+    Full per-year history is retained: the ratio chart needs the ACTUAL yield
+    of each year, not a trend line evaluated at it. A trend is what you
+    expect; history is what happened. Each practice series gets its own entry
+    and its own fit -- a dryland trend is fitted on dryland years only.
+    """
+    hist = {str(y): round(v, 1) for y, v in sorted(pairs)}
+    entry = {"hist": hist}
+    recent = [p for p in pairs if p[0] > cur - TREND_WINDOW]
+    fit = fit_trend(recent)
+    if fit:
+        slope, intercept, r2, n = fit
+        entry.update({
+            "trend": round(slope * cur + intercept, 1),
+            "slope": round(slope, 3),
+            "r2": round(r2, 3),
+            "n": n,
+            "last": round(sorted(recent)[-1][1], 1),
+        })
+    return entry
+
+
+def collect_state(key, state, getter=None, cur=None):
+    """-> (counties dict, stats dict). Fail-loud: exceptions propagate.
+
+    getter defaults to api_get_safe; the selftest and the offline fixture pass
+    a function with the same signature that serves NASS-shaped records, so
+    the exact code path the workflow runs is the one that gets tested.
+    stats["rows"][kind] counts the usable (non-suppressed, FIPS-bearing) rows
+    each yield series returned, so main() can say out loud what it got.
+    """
+    getter = getter or api_get_safe
+    cur = cur or datetime.now(timezone.utc).year
     counties = {}
+    rows = {}
 
     def touch(f, name):
         if f not in counties:
@@ -210,7 +298,7 @@ def collect_state(key, state):
         return counties[f]
 
     for kind, sd in RENT_KINDS.items():
-        for rec in api_get_safe(key, sd, state):
+        for rec in getter(key, sd, state):
             f = fips(rec)
             v = parse_value(rec.get("Value"))
             year = int(rec.get("year", 0))
@@ -219,45 +307,146 @@ def collect_state(key, state):
             c = touch(f, (rec.get("county_name") or "").title())
             c["rent"].setdefault(kind, {})[str(year)] = round(v, 2)
 
-    for crop, sd in YIELD_KINDS.items():
+    for kind, sd in YIELD_KINDS.items():
         raw = {}
-        for rec in api_get_safe(key, sd, state):
+        n_rows = 0
+        for rec in getter(key, sd, state):
             f = fips(rec)
             v = parse_value(rec.get("Value"))
             year = int(rec.get("year", 0))
             if not f or v is None:
                 continue
+            n_rows += 1
             raw.setdefault(f, []).append((year, v))
-        cur = datetime.now(timezone.utc).year
+        rows[kind] = n_rows
         for f, pairs in raw.items():
             if f not in counties:
                 continue   # yield but no rent: nothing to contextualise, skip
-            # Full per-year history is retained: the ratio chart needs the
-            # ACTUAL yield of each year, not a trend line evaluated at it.
-            # A trend is what you expect; history is what happened.
-            hist = {str(y): round(v, 1) for y, v in sorted(pairs)}
-            entry = {"hist": hist}
-            recent = [p for p in pairs if p[0] > cur - TREND_WINDOW]
-            fit = fit_trend(recent)
-            if fit:
-                slope, intercept, r2, n = fit
-                entry.update({
-                    "trend": round(slope * cur + intercept, 1),
-                    "slope": round(slope, 3),
-                    "r2": round(r2, 3),
-                    "n": n,
-                    "last": round(sorted(recent)[-1][1], 1),
-                })
-            counties[f]["yield"][crop] = entry
+            counties[f]["yield"][kind] = yield_entry(pairs, cur)
 
     # A county with no rent series at all is noise — drop it.
     counties = {f: c for f, c in counties.items() if c["rent"]}
+    for c in counties.values():
+        c["pair"] = pair_county(c)
     stats = {
         "counties": len(counties),
         "with_nonirr": sum(1 for c in counties.values() if c["rent"].get("nonirr")),
         "with_corn_trend": sum(1 for c in counties.values() if c["yield"].get("corn", {}).get("trend")),
+        "rows": rows,
     }
     return counties, stats
+
+
+def irrigation_signal(c):
+    """Does NASS show ANY irrigation in this county, in ANY year?
+
+    Irrigated cropland rent, or an irrigated corn or soybean county yield.
+    Any year, not just the ratio year: pivots do not come and go, and NASS
+    publishes the irrigated series intermittently (Finney KS irrigated rent
+    is missing in 2022 and 2024 -- the pivots were not). Where this is False
+    the all-practice yield is, as far as NASS can tell us, a dryland yield.
+    """
+    if c.get("rent", {}).get("irr"):
+        return True
+    y = c.get("yield", {})
+    return any((y.get(k) or {}).get("hist") for k in ("corn_irr", "beans_irr"))
+
+
+def pair_county(c):
+    """THE PAIRING RULE. One copy, here; the page and the map read its output.
+
+    Rent: non-irrigated where published, else irrigated (unchanged).
+    Per crop and per rent year:
+      non-irrigated rent -> NON-IRRIGATED county yield of that year      "nonirr"
+                         -> else ALL-PRACTICE yield, only if the county
+                            shows no irrigation in any year              "all"
+                         -> else WITHHELD, REASON_MIXED
+      irrigated rent     -> IRRIGATED county yield of that year          "irr"
+                         -> else WITHHELD (all-practice mixes the two;
+                            a dryland yield is the wrong practice)
+    A year with no county yield of any kind produces no point and no reason
+    (same as before: nothing to divide by, and nothing mismatched to hide).
+
+    The calculator trend follows the same rule on the fitted series: the
+    dryland fit for dryland rent, the irrigated fit for irrigated rent, the
+    all-practice fit only for a county with no irrigation. Never a mix.
+
+    -> {"rent": "nonirr"|"irr",
+        "corn": {"y": {year: [yield, basis]}, "w": {year: reason},
+                 "t": {"v","r2","n","slope","last","b"} | {"w": reason} | {}},
+        "beans": {...}}   or None when the county has no cropland rent.
+    """
+    rents = c.get("rent", {})
+    rk = "nonirr" if rents.get("nonirr") else ("irr" if rents.get("irr") else None)
+    if rk is None:
+        return None
+    rent = rents[rk]
+    irrigated = irrigation_signal(c)
+    yl = c.get("yield", {})
+    out = {"rent": rk}
+    for crop in CROPS:
+        h_all = (yl.get(crop) or {}).get("hist") or {}
+        h_ni = (yl.get(crop + "_nonirr") or {}).get("hist") or {}
+        h_ir = (yl.get(crop + "_irr") or {}).get("hist") or {}
+        ys, ws = {}, {}
+        for y in sorted(rent, key=int):
+            if rk == "nonirr":
+                if y in h_ni:
+                    ys[y] = [h_ni[y], "nonirr"]
+                elif not irrigated and y in h_all:
+                    ys[y] = [h_all[y], "all"]
+                elif y in h_all or y in h_ir:
+                    ws[y] = REASON_MIXED
+            else:
+                if y in h_ir:
+                    ys[y] = [h_ir[y], "irr"]
+                elif y in h_all:
+                    ws[y] = REASON_MIXED
+                elif y in h_ni:
+                    ws[y] = REASON_IRR_ONLY_DRY
+        # trend for the calculator, same basis as the rent it is paired with
+        t_ni = yl.get(crop + "_nonirr") or {}
+        t_ir = yl.get(crop + "_irr") or {}
+        t_all = yl.get(crop) or {}
+        t = {}
+        if rk == "nonirr":
+            if t_ni.get("trend") is not None:
+                t = _trend_out(t_ni, "nonirr")
+            elif not irrigated and t_all.get("trend") is not None:
+                t = _trend_out(t_all, "all")
+            elif irrigated and (t_all.get("hist") or t_ir.get("hist") or t_ni.get("hist")):
+                t = {"w": (REASON_MIXED if not t_ni.get("hist") else
+                           f"fewer than {MIN_TREND_N} dryland county yields in the last {TREND_WINDOW} years, "
+                           f"and the all-practice yield is not a substitute: {REASON_MIXED}")}
+        else:
+            if t_ir.get("trend") is not None:
+                t = _trend_out(t_ir, "irr")
+            elif t_ir.get("hist"):
+                t = {"w": f"fewer than {MIN_TREND_N} irrigated county yields in the last {TREND_WINDOW} years"}
+            elif t_all.get("hist"):
+                t = {"w": REASON_MIXED}
+            elif t_ni.get("hist"):
+                t = {"w": REASON_IRR_ONLY_DRY}
+        out[crop] = {"y": ys, "w": ws, "t": t}
+    return out
+
+
+def practice_series_guard(rows_total, states):
+    """-> {"fatal": [...], "warn": [...]} for practice series with 0 rows.
+
+    Fatal only for corn (FATAL_IF_EMPTY) and only when the run included a
+    PRACTICE_CANARY_STATES state: a --states RI,CT subset legitimately gets
+    nothing and must not fail. Soybean practice series only warn.
+    """
+    canary = bool(PRACTICE_CANARY_STATES & set(states))
+    empty = [k for k in PRACTICE_SERIES if rows_total.get(k, 0) == 0]
+    return {"fatal": [k for k in empty if k in FATAL_IF_EMPTY and canary],
+            "warn": [k for k in empty if not (k in FATAL_IF_EMPTY and canary)]}
+
+
+def _trend_out(e, basis):
+    return {"v": e["trend"], "r2": e["r2"], "n": e["n"], "slope": e["slope"],
+            "last": e["last"], "b": basis}
 
 
 def collect_prices(key, state):
@@ -309,6 +498,11 @@ def write_state(state, counties, prices):
         "price_prelim": prelim_price_years(prices),
         "price_note": "State marketing-year average price received by farmers (USDA NASS). Reflects actual sales, so local basis is already embedded. Not a futures price.",
         "source": "USDA NASS Quick Stats — Cash Rents Survey (county estimates, released each August), county yield estimates, and state marketing-year average prices received",
+        "pair_rule": PAIR_RULE,
+        "pair_note": ("Rent is divided by a county yield of the same practice: non-irrigated rent by the non-irrigated "
+                      "yield, irrigated rent by the irrigated yield. The all-practice yield is used only where NASS shows "
+                      "no irrigation in the county (no irrigated yield and no irrigated rent in any year). Otherwise the "
+                      "year is withheld with its reason. Basis per point: nonirr | irr | all."),
         "counties": [counties[f] for f in sorted(counties)],
     }
     path = os.path.join(OUTDIR, f"{state}.json")
@@ -324,9 +518,17 @@ def emit_national():
     state price all exist together. That year differs by county, so it ships
     per county and the map legend says so -- a single "2024 map" that quietly
     used 2019 numbers for a third of the country would be a lie of omission.
+
+    The yield is the PAIRED yield from pair_county() (same practice as the
+    rent), never the raw all-practice series. Per county the record carries
+    "pb" (basis: nonirr | irr | all) and "rk" (rent kind). A county whose
+    paired years are all withheld gets no "p" but "pw" (reason) and "pwy"
+    (the latest withheld year), so the map can say why it is blank.
     """
     files = [f for f in sorted(os.listdir(OUTDIR)) if re.match(r"^[A-Z]{2}\.json$", f)]
     out, rents, pcts, yrs, rent_yrs = {}, [], [], [], []
+    basis_n = {b: 0 for b in BASES}
+    n_withheld = 0
     for fn in files:
         d = json.load(open(os.path.join(OUTDIR, fn)))
         prices = d.get("prices", {}).get("corn", {})
@@ -339,17 +541,30 @@ def emit_national():
             rec = {"r": rent[ry], "ry": int(ry), "s": d["state"], "n": c["name"]}
             rents.append(rent[ry])
             rent_yrs.append(int(ry))
-            yh = (c.get("yield", {}).get("corn") or {}).get("hist") or {}
-            common = [y for y in rent if y in yh and y in prices]
+            # Recompute rather than trust a "pair" block from disk: a state
+            # file written before PAIR_RULE existed has none, and the rule
+            # must be the one in this file, applied once, everywhere.
+            pr = pair_county(c) or {}
+            pc = pr.get("corn") or {}
+            py_ = pc.get("y") or {}
+            common = [y for y in rent if y in py_ and y in prices]
             if common:
                 y = max(common, key=lambda z: int(z))
-                gross = yh[y] * prices[y]
+                gross = py_[y][0] * prices[y]
                 if gross > 0:
                     pct = rent[y] / gross * 100
                     rec.update({"p": round(pct, 1), "py": int(y),
-                                "pp": 1 if y in prelim else 0})
+                                "pp": 1 if y in prelim else 0,
+                                "pb": py_[y][1], "rk": pr["rent"]})
                     pcts.append(pct)
                     yrs.append(int(y))
+                    basis_n[py_[y][1]] += 1
+            if "p" not in rec:
+                wh = [y for y in (pc.get("w") or {}) if y in prices]
+                if wh:
+                    y = max(wh, key=lambda z: int(z))
+                    rec.update({"pw": pc["w"][y], "pwy": int(y), "rk": pr["rent"]})
+                    n_withheld += 1
             out[c["fips"]] = rec
 
     def breaks(vals, n=6):
@@ -373,7 +588,14 @@ def emit_national():
         "rent_year": max(rent_yrs) if rent_yrs else None,
         "n_rent_latest": sum(1 for y in rent_yrs if y == max(rent_yrs)) if rent_yrs else 0,
         "n_pct": len(pcts),
-        "note": "Ratio year varies by county: each county uses its own latest year in which rent, county corn yield and state price received all exist. Rent is the latest published rent, non-irrigated where available.",
+        "n_pct_withheld": n_withheld,
+        "pct_basis": basis_n,
+        "pair_rule": PAIR_RULE,
+        "note": ("Ratio year varies by county: each county uses its own latest year in which rent, a county corn yield "
+                 "of the SAME practice, and state price received all exist. Rent is the latest published rent, "
+                 "non-irrigated where available. Non-irrigated rent is divided by the non-irrigated yield, irrigated "
+                 "rent by the irrigated yield; the all-practice yield only where NASS shows no irrigation in the "
+                 "county. Counties where the only yield mixes irrigated and dryland acres are withheld (pw = reason)."),
     }
     with open(os.path.join(OUTDIR, "national.json"), "w") as fh:
         json.dump(doc, fh, separators=(",", ":"))
@@ -411,7 +633,9 @@ def _scratch_outdir():
 def selftest():
     """Offline. NASS is blocked in the sandbox, so exercise every rule that
     matters against synthetic records: suppression, the 2015/2018 holes, FIPS
-    assembly, trend fitting, and the thin-data refusal."""
+    assembly, trend fitting, the thin-data refusal, the same-practice pairing
+    of rent and yield (dryland, irrigated-fallback, mixed-withheld,
+    no-irrigation), and the empty-practice-series refusal."""
     log("SELFTEST: cash rent")
     _real_outdir = OUTDIR
     _before_outdir = sorted(os.listdir(OUTDIR)) if os.path.isdir(OUTDIR) else []
@@ -521,7 +745,87 @@ def selftest():
       assert "p" not in nat["counties"]["19153"], "ratio invented for a county with no yield"
       log(f"  national roll-up OK ({nat['n_rent']} rent, {nat['n_rent_latest']} in {nat['rent_year']}, {nat['n_pct']} ratio, "
           f"Story={nat['counties']['19169']['p']}%)")
+      assert s["pb"] == "all", "Story shows no irrigation: all-practice is the dryland yield there"
       os.remove(os.path.join(OUTDIR, "IA.json")); os.remove(os.path.join(OUTDIR, "national.json"))
+
+      # --- RENT AND YIELD OF THE SAME PRACTICE --------------------------------
+      # Synthetic NASS-shaped records, served through collect_state() by a fake
+      # getter so the workflow's own code path is the one under test. Every
+      # 2022 value is hand-picked; each series is a straight line (1 bu/yr)
+      # ending at that value, so the 2022 trend equals the 2022 value exactly.
+      # Price 7.04 (synthetic). Expected ratios worked by hand below.
+      def rec(f, name, year, val):
+          return {"state_fips_code": "20", "county_ansi": f[2:], "county_name": name,
+                  "year": str(year), "Value": str(val)}
+
+      def line(f, name, v2022):
+          return [rec(f, name, y, v2022 - (2022 - y)) for y in range(2013, 2023)]
+
+      R, Y = RENT_KINDS, YIELD_KINDS
+      fx = {
+          R["nonirr"]: [rec("20001", "DRYLAND", 2022, "44.5"), rec("20005", "MIXED", 2022, "60"),
+                        rec("20007", "NOIRR", 2022, "90"), rec("20009", "IRRYIELDONLY", 2022, "50")],
+          R["irr"]: [rec("20001", "DRYLAND", 2022, "180"), rec("20003", "IRRFALLBACK", 2022, "200"),
+                     rec("20005", "MIXED", 2022, "150")],
+          R["pasture"]: [],
+          # all-practice: present everywhere, and mostly-irrigated where pivots exist
+          Y["corn"]: (line("20001", "DRYLAND", 147.6) + line("20003", "IRRFALLBACK", 190.0)
+                      + line("20005", "MIXED", 170.0) + line("20007", "NOIRR", 130.0)
+                      + line("20009", "IRRYIELDONLY", 165.0)),
+          Y["corn_nonirr"]: line("20001", "DRYLAND", 60.0) + [rec("20001", "DRYLAND", 2012, "(D)")],
+          Y["corn_irr"]: (line("20001", "DRYLAND", 200.0) + line("20003", "IRRFALLBACK", 220.0)
+                          + [rec("20009", "IRRYIELDONLY", 2019, "210")]),
+          Y["beans"]: [], Y["beans_nonirr"]: [], Y["beans_irr"]: [],
+      }
+      fake = lambda key, sd, state, extra=None: list(fx.get(sd, []))
+      cs, st_ = collect_state("x", "KS", getter=fake, cur=2022)
+      # 10 usable rows per line; the (D) row is suppression and must not count
+      assert st_["rows"]["corn_nonirr"] == 10 and st_["rows"]["corn_irr"] == 21, st_["rows"]
+      assert st_["rows"]["beans_irr"] == 0
+      P = 7.04
+      pr = {f: cs[f]["pair"] for f in cs}
+      # (1) dryland county: non-irrigated rent / NON-IRRIGATED yield.
+      #     44.5 / (60.0 x 7.04) = 10.54 %   (the old all-practice pairing: 44.5/(147.6x7.04) = 4.28 %)
+      assert pr["20001"]["rent"] == "nonirr" and pr["20001"]["corn"]["y"]["2022"] == [60.0, "nonirr"], pr["20001"]
+      assert pr["20001"]["corn"]["t"]["b"] == "nonirr" and pr["20001"]["corn"]["t"]["v"] == 60.0, pr["20001"]["corn"]["t"]
+      # (2) irrigated-fallback county (no dryland rent): irrigated rent / IRRIGATED yield.
+      #     200 / (220.0 x 7.04) = 12.91 %
+      assert pr["20003"]["rent"] == "irr" and pr["20003"]["corn"]["y"]["2022"] == [220.0, "irr"], pr["20003"]
+      assert pr["20003"]["corn"]["t"]["b"] == "irr" and pr["20003"]["corn"]["t"]["v"] == 220.0
+      # (3) mixed county, irrigated rent exists, no practice-specific yield: WITHHELD, reason in words
+      assert pr["20005"]["corn"]["y"] == {} and pr["20005"]["corn"]["w"] == {"2022": REASON_MIXED}, pr["20005"]
+      assert pr["20005"]["corn"]["t"] == {"w": REASON_MIXED}, pr["20005"]["corn"]["t"]
+      # (4) no irrigation anywhere in NASS: all-practice is the dryland yield. 90 / (130.0 x 7.04) = 9.83 %
+      assert pr["20007"]["corn"]["y"]["2022"] == [130.0, "all"] and pr["20007"]["corn"]["t"]["b"] == "all", pr["20007"]
+      # (5) no irrigated rent, but NASS published an irrigated corn yield (2019 only): the
+      #     county irrigates, so the 2022 all-practice yield is mixed -> withheld (any-year signal)
+      assert pr["20009"]["corn"]["y"] == {} and pr["20009"]["corn"]["w"] == {"2022": REASON_MIXED}, pr["20009"]
+      write_state("KS", cs, {"corn": {"2022": P}})
+      nat = emit_national()
+      nc = nat["counties"]
+      assert nc["20001"]["p"] == round(44.5 / (60.0 * P) * 100, 1) == 10.5 and nc["20001"]["pb"] == "nonirr", nc["20001"]
+      assert nc["20003"]["p"] == round(200 / (220.0 * P) * 100, 1) == 12.9 and nc["20003"]["pb"] == "irr", nc["20003"]
+      assert "p" not in nc["20005"] and nc["20005"]["pw"] == REASON_MIXED and nc["20005"]["pwy"] == 2022, nc["20005"]
+      assert nc["20007"]["p"] == round(90 / (130.0 * P) * 100, 1) == 9.8 and nc["20007"]["pb"] == "all", nc["20007"]
+      assert "p" not in nc["20009"] and nc["20009"]["pw"] == REASON_MIXED
+      assert nat["n_pct"] == 3 and nat["n_pct_withheld"] == 2, nat
+      assert nat["pct_basis"] == {"nonirr": 1, "irr": 1, "all": 1}, nat["pct_basis"]
+      assert json.load(open(os.path.join(OUTDIR, "KS.json")))["pair_rule"] == PAIR_RULE
+      log("  practice pairing OK: dryland 10.5% (nonirr/nonirr; was 4.3% on the all-practice yield), "
+          "irr-fallback 12.9% (irr/irr), mixed WITHHELD ('" + REASON_MIXED + "'), "
+          "no-irrigation 9.8% (all-practice), irrigated-yield-only county WITHHELD")
+      os.remove(os.path.join(OUTDIR, "KS.json")); os.remove(os.path.join(OUTDIR, "national.json"))
+
+      # --- a wrong short_desc must be LOUD, not "no data" ----------------------
+      g = practice_series_guard({"corn_nonirr": 0, "corn_irr": 5, "beans_nonirr": 0, "beans_irr": 3}, ["IA", "NE"])
+      assert g == {"fatal": ["corn_nonirr"], "warn": ["beans_nonirr"]}, g
+      g = practice_series_guard({k: 0 for k in PRACTICE_SERIES}, ["RI", "CT"])
+      assert g["fatal"] == [] and len(g["warn"]) == 4, "a subset run with no canary state must warn, not fail"
+      _, st0 = collect_state("x", "KS", getter=lambda key, sd, state, extra=None:
+                             [] if sd in (Y["corn_nonirr"], Y["corn_irr"]) else list(fx.get(sd, [])), cur=2022)
+      g = practice_series_guard(st0["rows"], ["KS"])
+      assert set(g["fatal"]) == {"corn_nonirr", "corn_irr"}, g
+      log("  empty practice series in a canary state REFUSES the run (wrong short_desc reads as HTTP 400 = 'no rows')")
     # AND IT LEAVES THE REPOSITORY EXACTLY AS IT FOUND IT. The fault this
     # file just carried was not a wrong number, it was a selftest writing into
     # the directory it was measuring. Checking that directly is cheaper than
@@ -553,8 +857,14 @@ def main():
     os.makedirs(OUTDIR, exist_ok=True)
 
     index, totals = [], {"counties": 0, "with_nonirr": 0, "with_corn_trend": 0}
+    rows_total = {k: 0 for k in YIELD_KINDS}
+    rows_by_state = {}
     for i, st in enumerate(states, 1):
         counties, stats = collect_state(key, st)
+        for k, n_ in stats["rows"].items():
+            rows_total[k] += n_
+        rows_by_state[st] = stats["rows"]
+        log(f"      {st} yield rows: " + ", ".join(f"{k}={stats['rows'].get(k, 0)}" for k in YIELD_KINDS))
         if not counties:
             log(f"[{i}/{len(states)}] {st}: no county rent published — skipped")
             continue
@@ -570,6 +880,29 @@ def main():
         time.sleep(3)   # be a good citizen on a free public API (1s tripped
                         # NASS's throttle ~19 states into an all-states pull)
 
+    # ── DID THE PRACTICE-SPECIFIC YIELDS ACTUALLY ARRIVE? ────────────────────
+    # Before national.json is written: a wrong short_desc is an HTTP 400 that
+    # api_get_safe() reports as "no rows", and an empty practice series would
+    # not break anything visibly -- it would just withhold every irrigated
+    # county's ratio and call it NASS's doing. Say the counts out loud, and
+    # refuse the run when the empty answer cannot be true.
+    log("\nyield rows by series (usable county rows, all states in this run):")
+    for k, sd in YIELD_KINDS.items():
+        log(f"  {k:<13} {rows_total[k]:>7,}  '{sd}'")
+    bad = practice_series_guard(rows_total, states)
+    for k in bad["warn"]:
+        _m = (f"{k} returned 0 county rows nationally for '{YIELD_KINDS[k]}'. Either the short_desc is wrong "
+              f"(NASS answers a wrong string with HTTP 400, which reads as 'no rows') or NASS stopped publishing it. "
+              f"Soybean ratio points are withheld wherever the county shows irrigation until this is fixed.")
+        print(f"::warning title=Practice yield series empty::{_m}")
+        log(f"[!] {_m}")
+    if bad["fatal"]:
+        sys.exit("REFUSING: practice-specific corn yield series came back empty nationally: "
+                 + ", ".join(f"{k} ('{YIELD_KINDS[k]}')" for k in bad["fatal"])
+                 + f". This run covered {sorted(PRACTICE_CANARY_STATES & set(states))}, where NASS publishes "
+                   "county corn yields by practice every year, so zero rows means the short_desc is wrong, not that "
+                   "the data is missing. national.json was NOT rewritten.")
+
     years = sorted({y for st in index
                     for y in json.load(open(os.path.join(OUTDIR, f"{st['state']}.json")))["years"]})
     with open(os.path.join(OUTDIR, "index.json"), "w") as fh:
@@ -579,6 +912,8 @@ def main():
             "no_survey_years": sorted(NO_SURVEY_YEARS),
             "states": index,
             "totals": totals,
+            "yield_rows": rows_total,
+            "pair_rule": PAIR_RULE,
             "source": "USDA NASS Quick Stats — Cash Rents Survey (county estimates, released each August)",
         }, fh, separators=(",", ":"))
 
