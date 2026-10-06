@@ -576,9 +576,23 @@ jobs:
         if: ${{ github.event_name == 'schedule' || inputs.send_email == true }}
         run: python3 scripts/test_send_loops.py
 
+      # THE LOCAL TOP BID MUST BE THE HOMEPAGE'S. scripts/local_bid.py ports
+      # the hero's rule; this runs it against the real components/*.js on the
+      # live bids files. If they disagree the briefing still goes out, just
+      # without the local line (LOCAL_BIDS=0) -- a wrong price in an inbox is
+      # worse than none. Never blocks the send.
+      - name: The email's local bid matches the homepage hero
+        id: localbid
+        if: ${{ github.event_name == 'schedule' || inputs.send_email == true }}
+        continue-on-error: true
+        run: |
+          python scripts/local_bid.py --selftest
+          node scripts/daily-local-bid-checks.mjs
+
       - name: Send daily email
         if: ${{ github.event_name == 'schedule' || inputs.send_email == true }}
         env:
+          LOCAL_BIDS:   ${{ steps.localbid.outcome == 'success' && '1' || '0' }}
           # new sender env names; falls back to the legacy GMAIL_* secrets so
           # either set works. RECIPIENTS is ignored when LIST_URL is set
           # (list pulled live from the subs worker).
