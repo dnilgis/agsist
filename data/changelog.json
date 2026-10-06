@@ -160,7 +160,7 @@
     },
     {
      "tag": "fixed",
-     "page": "/scorecard",
+     "page": "/scorecard#old-scorecard",
      "name": "The headline hit rate is now the machine-checked calls only, and weekend repeats count once",
      "text": "The headline blended older calls we had graded by hand with the ones checked by machine, which flattered the number. It now shows only the machine-checked calls: 17 of 83, or 20.5%. The older calls are listed separately. Weekend briefings that repeated Friday's call were counted two or three times against the same Monday close; 9 repeats are now counted once."
     },
@@ -739,7 +739,7 @@
     },
     {
      "tag": "improved",
-     "page": "/scorecard",
+     "page": "/scorecard#old-scorecard",
      "name": "Yesterday's Call, redesigned: one-day calls now sized to one-day moves",
      "text": "Since deterministic grading began in June, the daily call hit 4 of 43 -- a 9.3% record we publish rather than hide. The direction reads were not the problem: on those same 43 calls the direction alone was right 39.5% of the time. The problem was the claim itself, which demanded the price reach a specific level by the NEXT close, at distances that averaged more than a full typical trading day away. Corn's average session moves about 5 cents; the calls were asking for 7 or more, plus the right direction, in one day. Starting today the called level must sit inside a band computed from each market's own last-20-day average move (widened automatically on USDA report days, which trade a different regime), and the model sees its full graded record -- every hit and miss, by instrument -- before it makes today's call. The grading itself is unchanged, byte for byte. The old record stays on the scorecard, frozen and labeled, and the new series starts at zero in public, the same way we handled the switch to deterministic grading in June."
     },
@@ -780,7 +780,7 @@
     },
     {
      "tag": "fixed",
-     "page": "/scorecard",
+     "page": "/scorecard#old-scorecard",
      "name": "Call Scorecard \u2014 two real problems",
      "text": "Twenty-three graded rows showed the write-up for one call next to the grade for a different one, left over from the date bug fixed Aug 4. Those rows now show the call that was actually scored, rebuilt from the recorded market, direction and level, and say so underneath; the original wording stays in that day's briefing. Second, the headline hit rate was blending two different eras \u2014 calls before Jun 24 could only be graded by the briefing's own account of itself, while everything since is checked against the closes. Split out, that is 26 of 36 self-graded against 3 of 40 checked. Both numbers are now on the page. The checked one is the honest one and it is not flattering."
     },
@@ -1041,7 +1041,7 @@
    "items": [
     {
      "tag": "fixed",
-     "page": "/scorecard",
+     "page": "/scorecard#old-scorecard",
      "name": "Call Scorecard",
      "text": "Found and fixed a grading bug: since June 26, each morning's grade compared the call against the same day's close instead of the prior day's. Nightly re-scoring meant most published outcomes were still right, but two rows contradicted their own writeups \u2014 both now carry a regrade note, and the scorecard shows a plain incident note. The original text stays as published."
     },
@@ -1120,7 +1120,7 @@
    "items": [
     {
      "tag": "new",
-     "page": "/scorecard",
+     "page": "/scorecard#old-scorecard",
      "name": "Call Scorecard",
      "text": "Every daily-briefing market call is now graded against the next session and published \u2014 hits, misses, and the running record. The yield nowcast joined an analyst board next to USDA's number."
     },

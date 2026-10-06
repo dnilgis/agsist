@@ -23,7 +23,7 @@ specific page. Each daily briefing has a permanent dated URL.
 - [AGSIST Dashboard](https://agsist.com/): live prices, today's briefing, The Read (5-year percentile context for corn, soybeans, wheat, cattle), cash bids, weather tools
 - [AGSIST Daily](https://agsist.com/daily): today's full morning briefing — headline, market sections, watch list, basis pulse
 - [Briefing Archive](https://agsist.com/archive): every past briefing, dated, at /daily/YYYY-MM-DD
-- [Prediction Bot Scorecard](https://agsist.com/scorecard): a fixed statistical rule calls corn, soybeans, Chicago and KC wheat 20 trading sessions out every trading day; every call graded by code against settlement prices, with the backtest shown apart from the live record
+- [Prediction Bot Scorecard](https://agsist.com/scorecard): a fixed statistical rule calls whether corn, soybeans, Chicago and KC wheat settle higher or lower about four weeks out, one call per crop for each weekly CFTC report; every call graded by code against settlement prices, with the backtest shown apart from the live record
 - [Cash Grain Bids](https://agsist.com/cash-bids): local elevator bids and basis by ZIP, plus the national basis heatmap
 - [Markets](https://agsist.com/markets): corn, soybeans, wheat, oats, cattle, hogs, milk, energy, metals in one view
 
