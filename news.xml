@@ -5,8 +5,16 @@
     <link>https://agsist.com/news</link>
     <description>Dated grain and livestock market events the moment they are measurable: USDA report surprises, one-year positioning extremes, 52-week highs and lows, crop rating swings. Measured, not aggregated.</description>
     <language>en-us</language>
-    <lastBuildDate>Fri, 02 Oct 2026 22:05:54 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 06 Oct 2026 01:23:55 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/news.xml" rel="self" type="application/rss+xml"/>
+    <item>
+      <title>Corn ratings fell 3 points</title>
+      <link>https://agsist.com/conditions</link>
+      <description>54% good-to-excellent, 3 points down on the week.</description>
+      <guid isPermaLink="false">agsist-news-cond:2026-10-04:corn</guid>
+      <pubDate>Sun, 04 Oct 2026 12:00:00 +0000</pubDate>
+      <source url="https://agsist.com/news.xml">USDA NASS Crop Progress</source>
+    </item>
     <item>
       <title>Corn down 3.8% on the day</title>
       <link>https://agsist.com/corn-futures-prices</link>
