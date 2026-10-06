@@ -2726,8 +2726,21 @@
       var yl=null, ylab='';
       if(lv){ yl=lv.avg; ylab='County corn, recent level: <strong>'+lv.avg.toFixed(1)+' bu/ac</strong> ('+lv.from+'–'+lv.to+', high and low year dropped)'; }
       else if(cornY&&cornY.trend){ yl=Math.round(cornY.trend); ylab='County corn trend: <strong>'+yl+' bu/ac</strong>'+(cornY.last!=null?' (recent county average: '+cornY.last+' bu)':''); }
+      /* SAME PRACTICE, OR NO SHARE -- 2026-10-06, same rule as /cash-rent. This divided
+         NON-IRRIGATED rent by the county's all-practice corn yield, which in an irrigated
+         county is mostly irrigated corn, so the dryland share read far too low (Finney KS:
+         4.3%). Use the dryland trend when the data carries one; use the all-practice level
+         only where the county shows no irrigation at all; otherwise say why there is none. */
+      var pt=rec.pair&&rec.pair.corn&&rec.pair.corn.t, ylShare=null, shareWhy='';
+      var irrSeen=!!((rec.rent&&rec.rent.irr&&Object.keys(rec.rent.irr).length)||(rec.yield&&rec.yield.corn_irr&&rec.yield.corn_irr.hist&&Object.keys(rec.yield.corn_irr.hist).length));
+      if(pt&&pt.v!=null&&pt.b==='nonirr'){ ylShare=pt.v; shareWhy=' (county dryland corn trend, '+Math.round(pt.v)+' bu)'; }
+      else if(pt&&pt.v!=null&&pt.b==='all'){ ylShare=yl; }
+      else if(!pt&&!irrSeen){ ylShare=yl; }
       if(yl){
-        var bm=FIELD.bids&&FIELD.bids.corn&&FIELD.bids.corn.mon; var money = bid ? ' At $'+bid.toFixed(2)+' nearby corn'+(bm?' ('+bm+' delivery)':'')+', a corn year grosses $'+Math.round(yl*bid).toLocaleString('en-US')+'/ac and rent takes '+Math.round(val/(yl*bid)*100)+'% of it.' : '';
+        var bm=FIELD.bids&&FIELD.bids.corn&&FIELD.bids.corn.mon;
+        var money = !bid ? '' : ylShare
+          ? ' At $'+bid.toFixed(2)+' nearby corn'+(bm?' ('+bm+' delivery)':'')+', a corn year grosses $'+Math.round(ylShare*bid).toLocaleString('en-US')+'/ac'+shareWhy+' and rent takes '+Math.round(val/(ylShare*bid)*100)+'% of it.'
+          : ' Rent share not shown: this county\u2019s corn yield mixes irrigated and dryland acres, so dividing dryland rent by it would understate the share.';
         html+='<p class="fs-cline">'+ylab+'.'+money+' <a class="fs-act-link" href="/cash-lease?st='+abbr+'" target="_blank" rel="noopener">Run this lease in Cash Lease &rarr;</a></p>';
       }
       html+=csrc('USDA NASS county cash-rent survey and county corn yield · '+esc(cty)+' County, '+esc(stFull)+' · missing years = never surveyed, not zero');
