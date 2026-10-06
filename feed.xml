@@ -5,13 +5,25 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Mon, 05 Oct 2026 10:57:20 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 06 Oct 2026 10:57:35 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/agsist.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>CORN HOLDS $5 AS GRAIN STOCKS COME IN HEAVY</title>
+      <link>https://agsist.com/daily/2026-10-06</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-10-06</guid>
+      <pubDate>Tue, 06 Oct 2026 05:00:00 -0600</pubDate>
+      <description>Corn closed $5.00, up 3 cents, even after USDA's Grain Stocks report put old-crop corn bushels at 2.10 billion, up 35% from a year ago. Soybeans added a nickel to $12.86 on a 3% stocks draw the other direction.
+Action: Bot call, Oct 5 close, 4 weeks out: corn $4.97½ down, soybeans $12.81 down, Chicago wheat $6.91½ up, KC wheat $7.42¼ down. Backtest: no edge.
+• Corn Shrugs Off Heavy Stocks
+• Beans Firm On Tighter Stocks
+• Cattle Soft, Crude Breaks Lower
+Read more: https://agsist.com/daily/2026-10-06</description>
+    </item>
     <item>
       <title>CORN BACK ABOVE $5 AS RAIN KEEPS COMBINES PARKED</title>
       <link>https://agsist.com/daily/2026-10-05</link>
@@ -354,19 +366,6 @@ Friday's pre-holiday profit-taking hit wheat hardest while corn and beans drifte
 • ENERGY AND INPUTS INTO HARVEST
   → If you have unpriced fall diesel needs, the EIA crack-spread data says the current rack price is not the top of the range.
 Read more: https://agsist.com/daily/2026-09-06</description>
-    </item>
-    <item>
-      <title>WHEAT DROPS 3.4%; DIESEL TIGHTENS INTO HARVEST</title>
-      <link>https://agsist.com/daily/2026-09-05</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-09-05</guid>
-      <pubDate>Sat, 05 Sep 2026 05:00:00 -0600</pubDate>
-      <description>Wheat closed Friday at $7.16, down 3.4%, the sharpest single-session drop in this complex in weeks. Diesel crack spreads widened to record levels according to EIA data, meaning the fuel bill for first-pass harvest is higher than any budget penciled in last spring. The September 11 WASDE is six days out and the market is walking in with a bearish lean on wheat and a diesel problem.
-Friday's close put wheat at its worst session in weeks while diesel crack spreads widened, squeezing fall fieldwork budgets before the September 11 WASDE.
-• WHEAT BREAKS; GRAINS DRIFT
-• CATTLE QUIET; POLICY NOISE RISES
-• DIESEL TIGHTENS; CRUDE HOLDS
-  → If you haven't locked fall diesel at current rack prices, the EIA data says waiting is not working in your favor.
-Read more: https://agsist.com/daily/2026-09-05</description>
     </item>
   </channel>
 </rss>

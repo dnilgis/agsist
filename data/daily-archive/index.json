@@ -1,6 +1,17 @@
 {
   "briefings": [
     {
+      "date": "2026-10-06",
+      "date_display": "Tuesday, October 6, 2026",
+      "headline": "CORN HOLDS $5 AS GRAIN STOCKS COME IN HEAVY",
+      "teaser": "Corn shrugs off a 35% jump in old-crop stocks and holds the round number anyway.",
+      "market_mood": "mixed",
+      "surprise_count": 0,
+      "sections": 3,
+      "url": "/daily/2026-10-06",
+      "market_closed": false
+    },
+    {
       "date": "2026-10-05",
       "date_display": "Monday, October 5, 2026",
       "headline": "CORN BACK ABOVE $5 AS RAIN KEEPS COMBINES PARKED",
@@ -2371,6 +2382,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-10-05T10:57:13.703736+00:00",
-  "count": 206
+  "updated": "2026-10-06T10:57:28.356351+00:00",
+  "count": 207
 }
