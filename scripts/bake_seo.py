@@ -365,11 +365,24 @@ def seo_cattle(c):
         return None
     lab = _label(c["prices"], "cattle")
     when = f" {lab}" if lab else ""
+    # "closed" only when the session had closed when the quote was fetched;
+    # the 13:35 UTC freshness run lands in session (seed_static.quote_state is
+    # the one rule for this, shared with the page body).
+    from seed_static import quote_state, state_words
+    st, asof = quote_state(_quote(c["prices"], "feeders"),
+                           (c["prices"] or {}).get("fetched", ""), "cattle")
+    verb = state_words(st)[0]
+    stamp = ""
+    if st is True and ", " in asof:            # "Oct 6, 11:50 a.m. CT"
+        day, clock = asof.split(", ", 1)
+        stamp = f" as of {clock} {day}"
+    tail = (" CME futures every 30 min, with 5-year ranges, the feeder-to-live "
+            "ratio and cost of gain." if not stamp else
+            " CME futures every 30 min, 5-year ranges, cost of gain.")
     return (f"CME Feeder Cattle Futures ${feed:,.2f} & Live Cattle "
             f"${live:,.2f}{SUFFIX}",
-            f"Feeder cattle last closed ${feed:,.2f}, live cattle{when} "
-            f"${live:,.2f}. CME futures every 30 min, with 5-year ranges, the "
-            f"feeder-to-live ratio and cost of gain.")
+            f"Feeder cattle {verb} ${feed:,.2f}, live cattle{when} "
+            f"${live:,.2f}{stamp}.{tail}")
 
 
 def _quote(prices, key):
@@ -944,6 +957,18 @@ def selftest():
        all("desc" not in PAGES[p][1] for p in FUTURES))
     ck("cattle owns its description because nothing else writes one",
        "desc" in PAGES[CATTLE_PAGE][1] and CATTLE_PAGE not in theirs)
+
+    def _cat(fetched, cd):
+        q = {"close": 341.275, "close_date": cd}
+        return seo_cattle(dict(ctx, prices={"fetched": fetched, "quotes": {
+            "cattle": {"close": 223.75, "close_date": cd}, "feeders": q}}))[1]
+    d_in = _cat("2026-10-06T16:50:00Z", "2026-10-06")
+    ck("an in-session cattle quote is not called a close",
+       "closed" not in d_in and "last traded" in d_in and "CT" in d_in, d_in)
+    d_cl = _cat("2026-10-06T20:35:00Z", "2026-10-06")
+    ck("an after-close cattle quote says closed", "Feeder cattle closed $341.27" in d_cl, d_cl)
+    d_wk = _cat("2026-10-10T13:35:00Z", "2026-10-09")
+    ck("a Saturday run on Friday's quote says closed", "closed" in d_wk, d_wk)
 
     print("\ndata pages: dated by the data, silent when it is old")
     t, d = seo_markets(ctx)

@@ -33,6 +33,11 @@ import json
 import re
 import sys
 from datetime import datetime, timezone
+try:
+    from zoneinfo import ZoneInfo
+    CT = ZoneInfo("America/Chicago")
+except Exception:          # pragma: no cover - py<3.9 / no tzdata
+    CT = None
 
 PRICES = "data/prices.json"
 SITEMAP = "sitemap.xml"
@@ -70,15 +75,15 @@ DESC_MAX = 160
 
 DESC = {
     "corn-futures-prices.html": (
-        "Corn {mon} closed ${px} ({chg}) on {date} — live CBOT corn futures refreshed every "
+        "Corn {mon} {verb} ${px} ({chg}) {when} — live CBOT corn futures refreshed every "
         "30 min in session.",
         " December new-crop, RP floor, basis-to-cash, daily read."),
     "soybean-futures-prices.html": (
-        "Soybeans {mon} closed ${px} ({chg}) on {date} — live CBOT soybean futures refreshed "
+        "Soybeans {mon} {verb} ${px} ({chg}) {when} — live CBOT soybean futures refreshed "
         "every 30 min in session.",
         " November new-crop, crush spread, cash bids."),
     "wheat-futures-prices.html": (
-        "Wheat {mon} closed ${px} ({chg}) on {date} — live Chicago SRW futures refreshed every "
+        "Wheat {mon} {verb} ${px} ({chg}) {when} — live Chicago SRW futures refreshed every "
         "30 min in session{kc}.",
         " Class spreads, cash bids by ZIP."),
 }
@@ -178,12 +183,65 @@ def _chg(q):
     return ("%+.1f%%" % float(p)).replace("+0.0%", "0.0%").replace("-0.0%", "0.0%")
 
 
-def px_table(rows, flabel):
+# Day-session close, Central time. CBOT grains 1:20 p.m. CT; CME live and
+# feeder cattle 1:05 p.m. CT. freshness.yml runs at 13:35 and 20:35 UTC, so the
+# morning run lands IN SESSION and prices.json then carries close_date = today
+# for a price that is a delayed last trade, not a close. Yahoo quotes are never
+# CME settlements either way, so the words used are "closed" and "last trade".
+CLOSE_CT = {"grain": (13, 20), "cattle": (13, 5)}
+
+
+def quote_state(q, fetched, market="grain"):
+    """How to word a quote: (in_session, label).
+
+    in_session True  -> the quote's session had not closed when it was fetched:
+                        say "last trade", label like "Oct 6, 11:50 a.m. CT".
+    in_session False -> the session had closed: say "closed", label is the
+                        quote's OWN date ("Oct 6"), never the run date.
+    Unknown timing (no fetched/close_date) -> (None, best date label) and the
+    caller uses neutral wording.
+    """
+    cd = (q or {}).get("close_date")
+    try:
+        fu = datetime.strptime(fetched, "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=timezone.utc)
+    except Exception:
+        fu = None
+    def md(d):
+        return d.strftime("%b ") + str(d.day)
+    try:
+        cdd = datetime.strptime(cd, "%Y-%m-%d").date() if cd else None
+    except Exception:
+        cdd = None
+    if fu is None or cdd is None or CT is None:
+        lab = md(cdd) if cdd else (md(fu) if fu else "")
+        return None, lab
+    fc = fu.astimezone(CT)
+    hm = CLOSE_CT.get(market, CLOSE_CT["grain"])
+    before_close = fc.weekday() < 5 and (fc.hour, fc.minute) < hm
+    if cdd > fc.date() or (cdd == fc.date() and before_close):
+        h12 = fc.hour % 12 or 12
+        ampm = "a.m." if fc.hour < 12 else "p.m."
+        return True, f"{md(fc)}, {h12}:{fc.minute:02d} {ampm} CT"
+    return False, md(cdd)
+
+
+def state_words(in_session):
+    """(verb for a sentence, short noun) for quote_state's first value."""
+    if in_session is True:
+        return "last traded", "Last trade"
+    if in_session is False:
+        return "closed", "Last close"
+    return "last quoted", "Last quote"
+
+
+def px_table(rows, flabel, in_session=False):
     """Small crawler-visible last-close table. rows: [(label, quote)] with
     grain quotes in cents; quotes may be None (row skipped)."""
-    out = ['<table class="seed-tbl"><caption>Last close &middot; as of ' + flabel +
-           ' &middot; live quotes above update in session</caption>',
-           '<thead><tr><th scope="col">Contract</th><th scope="col" class="num">Close</th>'
+    noun = state_words(in_session)[1]
+    out = ['<table class="seed-tbl"><caption>' + noun + ' &middot; as of ' + flabel +
+           ' &middot; Yahoo Finance, delayed (not CME settlements) &middot; live quotes above update in session</caption>',
+           '<thead><tr><th scope="col">Contract</th><th scope="col" class="num">' +
+           ("Last" if in_session else "Close") + '</th>'
            '<th scope="col" class="num">Change</th><th scope="col" class="num">52-wk range</th>'
            '</tr></thead><tbody>']
     n = 0
@@ -904,26 +962,12 @@ def bump_sitemap(today):
     return changed
 
 
-def main():
-    now = datetime.now(timezone.utc)
-    today = now.strftime("%Y-%m-%d")
-    print(f"seed_static.py — {now.strftime('%Y-%m-%d %H:%M UTC')}")
-
-    try:
-        prices = load_prices()
-    except Exception as e:
-        print(f"FATAL: cannot read {PRICES}: {e}")
-        sys.exit(1)
+def seed_futures_pages(prices, today):
+    """The four futures pages: price seed, note, last-close/last-trade table and
+    (grains) meta description. Callable on its own so the futures seeds can be
+    refreshed without rewriting every other page main() touches."""
     quotes = prices.get("quotes", {})
     fetched = prices.get("fetched", "")
-    # human date label from the prices file's own timestamp — never claim fresher
-    # than the data actually is
-    try:
-        ft = datetime.strptime(fetched, "%Y-%m-%dT%H:%M:%SZ")
-        flabel = ft.strftime("%b %-d") if sys.platform != "win32" else ft.strftime("%b %d").replace(" 0", " ")
-    except Exception:
-        flabel = today
-
     any_change = False
 
     for page, (crop_key, bench_key, bench_label, crop) in PAGES.items():
@@ -946,12 +990,15 @@ def main():
         if f_usd:
             stale = " (last good quote)" if fq.get("stale") else ""
             front_label = ("Nearby " + mon + " " + crop) if mon else ("Front-month " + crop)
+            live, flabel = quote_state(fq, fetched, "grain")
+            flabel = flabel or today
+            verb = state_words(live)[0]
             t, c1 = seed_between(t, "px", "$" + f_usd)
-            note = (front_label + " last closed near <strong>$" + f_usd +
+            note = (front_label + " " + verb + " near <strong>$" + f_usd +
                     "</strong>" + stale +
                     ((" &middot; " + bench_label + " near $" + b_usd) if b_usd else "") +
                     " &middot; as of " + flabel +
-                    " &middot; refreshed every 30 minutes during trading hours &mdash; reload for the latest.")
+                    " &middot; Yahoo Finance, delayed &middot; refreshed every 30 minutes during trading hours &mdash; reload for the latest.")
             t, c2 = seed_between(t, "note", note)
             changed = c1 or c2
 
@@ -961,7 +1008,7 @@ def main():
             if page.startswith("wheat"):
                 rows += [("KC HRW (KE, most-active)", quotes.get("kcwheat")),
                          ("Minneapolis HRS (MWE, most-active)", quotes.get("mplswheat"))]
-            tbl = px_table(rows, flabel)
+            tbl = px_table(rows, flabel, live is True)
             if tbl:
                 t, c4 = seed_between(t, "pxtable", tbl)
                 changed = changed or c4
@@ -972,7 +1019,9 @@ def main():
                 kc_usd = grain_dollars(quotes.get("kcwheat"))
                 desc, dnote = render_desc(
                     tmpl, px=f_usd, chg=_chg(fq) or "flat", mon=mon or "front month",
-                    date=flabel,
+                    verb=verb,
+                    when=(("at " + flabel.split(", ", 1)[1] + " " + flabel.split(", ", 1)[0])
+                          if live is True else ("on " + flabel)),
                     kc=(" &middot; KC HRW $" + kc_usd) if kc_usd else "")
                 if desc is None:
                     print(f"  {page}: description {dnote}")
@@ -1001,11 +1050,13 @@ def main():
         changed = False
         if lc:
             stale = " (last good quote)" if quotes.get("cattle", {}).get("stale") else ""
+            live, flabel = quote_state(quotes.get("cattle"), fetched, "cattle")
+            flabel = flabel or today
             t, c1 = seed_between(t, "px", "$" + lc)
-            note = ("Live cattle last closed near <strong>$" + lc + "</strong>" + stale
+            note = ("Live cattle " + state_words(live)[0] + " near <strong>$" + lc + "</strong>" + stale
                     + ((" &middot; feeders near $" + gf) if gf else "")
                     + " &middot; $/cwt &middot; as of " + flabel
-                    + " &middot; refreshed every 30 minutes during trading hours &mdash; reload for the latest.")
+                    + " &middot; Yahoo Finance, delayed &middot; refreshed every 30 minutes during trading hours &mdash; reload for the latest.")
             t, c2 = seed_between(t, "note", note)
             changed = c1 or c2
         else:
@@ -1019,6 +1070,21 @@ def main():
             print(f"  {page}: no change")
     except FileNotFoundError:
         print(f"  {page}: missing — skipped")
+
+    return any_change
+
+
+def main():
+    now = datetime.now(timezone.utc)
+    today = now.strftime("%Y-%m-%d")
+    print(f"seed_static.py — {now.strftime('%Y-%m-%d %H:%M UTC')}")
+
+    try:
+        prices = load_prices()
+    except Exception as e:
+        print(f"FATAL: cannot read {PRICES}: {e}")
+        sys.exit(1)
+    any_change = bool(seed_futures_pages(prices, today))
 
     for page in DATEMOD_ONLY:
         try:
