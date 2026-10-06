@@ -520,7 +520,7 @@
   function fmtBasis(c){ return c === 0 ? 'even' : (c > 0 ? '+' : '−') + Math.abs(c) + '¢'; }
   function escA(s){ return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
   var FLD = 'display:flex;flex-direction:column;gap:.15rem;flex:1 1 9rem;min-width:0';
-  var KEY = 'font-size:.75rem;color:var(--text-muted)';
+  var KEY = 'font-size:.8125rem;color:var(--text-muted)';
   var FIELD = 'padding:.4rem .5rem;background:var(--surface2);border:1px solid var(--border);border-radius:5px;font-size:.8rem;color:var(--text);min-height:36px;box-sizing:border-box';
 
   var bidsArea = $('bids-list-area');
@@ -536,7 +536,7 @@
       try{ opts = JSON.parse(wrap.getAttribute('data-opts') || '[]') || []; }catch(e){ opts = []; }
       if(!(wid && label) && !opts.length) return;
       if(!opts.length && watchedSet()[wid]){
-        wrap.innerHTML = '<span style="font-size:.75rem;color:var(--green)">Watching this elevator — check your email to confirm</span>';
+        wrap.innerHTML = '<span style="font-size:.8125rem;color:var(--green)">Watching this elevator — check your email to confirm</span>';
         return;
       }
       btn.disabled = true; btn.textContent = 'Loading…';
@@ -558,7 +558,7 @@
       kinds.push(['move', 'basis moves by']);
     }
     var h = '<div class="we-form">';
-    if(seen) h += '<div class="we-seen" style="font-size:.75rem;color:var(--green);margin-bottom:.3rem">You asked to watch this elevator before. Check your email to confirm.</div>';
+    if(seen) h += '<div class="we-seen" style="font-size:.8125rem;color:var(--green);margin-bottom:.3rem">You asked to watch this elevator before. Check your email to confirm.</div>';
     if(opts.length){
       h += '<div class="we-grid" style="display:flex;flex-wrap:wrap;gap:.4rem .5rem;align-items:flex-end">'
         + '<label class="we-f" style="' + FLD + '"><span class="we-k" style="' + KEY + '">Email me when</span><select class="we-kind" style="' + FIELD + '">'
@@ -568,13 +568,18 @@
         + '<label class="we-f we-dirf" style="' + FLD + '"><span class="we-k" style="' + KEY + '">Side</span><select class="we-dir" style="' + FIELD + '"><option value="above">at or above</option><option value="below">at or below</option></select></label>'
         + '<label class="we-f we-valf" style="' + FLD + '"><span class="we-k we-unit" style="' + KEY + '">Price, $</span><input type="number" class="we-val" inputmode="decimal" style="' + FIELD + ';width:100%;font-family:\'JetBrains Mono\',monospace"></label>'
         + '</div>'
-        + '<div class="we-now" aria-live="polite" style="font-family:\'JetBrains Mono\',monospace;font-size:.75rem;color:var(--text-muted);margin-top:.3rem"></div>';
+        + '<div class="we-now" aria-live="polite" style="font-family:\'JetBrains Mono\',monospace;font-size:.8125rem;color:var(--text-muted);margin-top:.3rem"></div>';
     }
     h += '<div style="display:flex;gap:.4rem;align-items:center;flex-wrap:wrap;margin-top:.35rem">'
       + '<input type="email" class="watch-elevator-email" placeholder="your@email.com" autocomplete="email" aria-label="Email for alerts on ' + escA(name || label) + '" style="flex:1;min-width:140px;' + FIELD + '">'
       + '<button type="button" class="watch-elevator-go" style="padding:.4rem .7rem;min-height:36px;background:var(--gold);color:#0a0c0d;border:none;border-radius:5px;font-size:.8rem;font-weight:700;cursor:pointer;white-space:nowrap">Watch — free</button>'
-      + '</div><div class="we-note" style="font-size:.75rem;color:var(--text-muted);margin-top:.25rem">Email when the posted corn basis changes.</div>'
-      + '<div class="watch-elevator-status" id="' + sid + '" role="status" tabindex="-1" style="font-size:.75rem;color:var(--text-muted);margin-top:.25rem"></div></div>';
+      + '</div>'
+      /* 2026-10-06: the labelled daily opt-in, ticked by default, shown only
+         to a reader who has not signed up (components/signup-ask.js). */
+      + (window.AgsistSignup && !window.AgsistSignup.isSignedUp()
+        ? '<label class="sa-optin"><input type="checkbox" class="we-optin" checked> Also send me AGSIST Daily, free, every weekday morning</label>' : '')
+      + '<div class="we-note" style="font-size:.8125rem;color:var(--text-muted);margin-top:.25rem">Email when the posted corn basis changes.</div>'
+      + '<div class="watch-elevator-status" id="' + sid + '" role="status" tabindex="-1" style="font-size:.8125rem;color:var(--text-muted);margin-top:.25rem"></div></div>';
     wrap.innerHTML = h;
     wrap.classList.add('we-open');
 
@@ -662,9 +667,18 @@
             return retry('The watch service did not confirm this' + (r.ok ? '' : ' (error ' + r.status + ')') + '. Nothing was saved. Try again in a minute.');
           if(wid) markWatched(wid);
           if(body.wid !== wid) markWatched(body.wid);
-          wrap.innerHTML = '<span class="we-done" tabindex="-1" style="font-size:.75rem;color:var(--green)">Check your email to confirm. Nothing is sent until you do.</span>';
+          var oi = wrap.querySelector('.we-optin');
+          var S = window.AgsistSignup, wantDaily = !!(oi && oi.checked && S && !S.isSignedUp());
+          wrap.innerHTML = '<span class="we-done" tabindex="-1" style="font-size:.875rem;color:var(--green)">Check your email to confirm. Nothing is sent until you do.</span>'
+            + '<div class="sa-optmsg" role="status"></div>';
           wrap.classList.remove('we-open');
           var done = wrap.querySelector('.we-done'); if(done) done.focus();
+          /* The daily signup goes only after the watch itself was accepted. */
+          if(wantDaily) S.subscribe({ email: email, source: 'watch-optin' }).then(function(res){
+            var m = wrap.querySelector('.sa-optmsg'); if(!m) return;
+            m.className = 'sa-optmsg ' + (res.ok ? 'is-ok' : 'is-err');
+            m.textContent = 'AGSIST Daily: ' + (res.ok ? S.okText() : S.errText(res));
+          });
         });
     }
     if(go) go.addEventListener('click', submit);
