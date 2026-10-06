@@ -150,19 +150,23 @@ def _cents2(v):
 
 
 def money_basis(v):
-    """Basis in $/bu with an explicit sign: -$0.42, +$0.05, $0.00."""
+    """Basis in $/bu with an explicit sign: -$0.42, +$0.05, or "even".
+
+    A zero basis is a real bid at futures (ADM Mound City corn posts -20c,
+    0c, +18c for neighbouring months), so it is printed the way the trade
+    says it, "even" -- never a bare $0.00, which reads as a missing value."""
     if v is None:
         return "&mdash;"
     a = _cents2(v)
     if a == "0.00":
-        return "$0.00"
+        return "even"
     return f"<span style=\"white-space:nowrap\">{'+' if v > 0 else '&minus;'}${a}</span>"
 
 
 def plain_basis(v):
     a = _cents2(v)
     if a == "0.00":
-        return "$0.00"
+        return "even"
     return f"{'+' if v > 0 else '-'}${a}"
 
 
@@ -964,7 +968,7 @@ def selftest():
     assert period_start("2026-09/2026-11", snap) == "2026-10"
     assert period_start("spot", snap) == "2026-10"
     assert period_start("newcrop-2026", snap) is None
-    assert plain_basis(-0.625) == "-$0.63" and money_basis(0.0) == "$0.00"
+    assert plain_basis(-0.625) == "-$0.63" and money_basis(0.0) == "even" and plain_basis(0.0) == "even"
     merged, index, prev = _fixture()
     with _tf.TemporaryDirectory() as td:
         metas, drops = build_all(merged, index, prev, out_dir=td, root=".",

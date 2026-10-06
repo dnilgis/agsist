@@ -227,8 +227,16 @@ def static_checks(page, html, today):
             break
 
     # ---- numbers that should never reach a reader ------------------------
+    # A signed "$0.00" is a real, flat change ("\u2013 $0.00" in milk-prices'
+    # month-over-month column), not a missing value printed as zero. Only an
+    # UNSIGNED $0.00 is the bug this check exists for.
+    _t = H.unescape(text)
+    zero_unsigned = any(_t[:m.start()].rstrip()[-1:] not in ("\u2013", "\u2212", "+", "-", "\u25b2", "\u25bc", "\u00b1")
+                        for m in re.finditer(r"\$0\.00", _t))
     for bad, sev in (("$0.00", "HIGH"), ("NaN", "HIGH"), ("undefined", "MEDIUM"),
                      ("Infinity", "HIGH"), ("[object Object]", "HIGH")):
+        if bad == "$0.00" and not zero_unsigned:
+            continue
         if bad in text and not quotes:
             out.append(Finding(page, sev, "bad-value",
                                f"{bad!r} in rendered-ish text"))
@@ -478,6 +486,8 @@ def selftest():
            "<div>Corn · Dec '26 · 2026 crop year</div>"
            "<span>Projected price (February · final)</span>"))
     ck("$0.00 in copy", "bad-value" in codes("<p>Harvest price $0.00</p>"))
+    ck("a signed flat change is not a bad value",
+       "bad-value" not in codes("<p>Texas $21.40 <span>&ndash; $0.00</span></p>"))
     ck("NaN in copy", "bad-value" in codes("<p>Yield NaN bu</p>"))
     ck("broken JSON-LD",
        "jsonld-broken" in codes('<script type="application/ld+json">{oops}</script>'))
@@ -538,6 +548,9 @@ def selftest():
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--page", default=None)
+    ap.add_argument("--tree", action="store_true",
+                    help="audit every page in subfolders too (rent/, basis/, hail/, farmland-atlas/, daily/ ...); "
+                         "the root-only default is how FAQ drift on 47 rent pages went unseen")
     ap.add_argument("--selftest", action="store_true")
     ap.add_argument("--today", default=None)
     ap.add_argument("--json", default=None, help="write findings to this file")
@@ -549,6 +562,9 @@ def main():
         pages = [a.page]
     else:
         pages = sorted(p.name for p in REPO.glob("*.html") if p.name not in SKIP)
+        if a.tree:
+            pages += sorted(str(p.relative_to(REPO)) for p in REPO.glob("*/**/*.html")
+                            if p.parts[len(REPO.parts)] not in ("components", "test", "node_modules", ".github"))
     print(f"auditing {len(pages)} pages as of {today}")
     findings = audit(pages, today)
     if a.json:
