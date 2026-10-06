@@ -19,12 +19,18 @@ MODEL (deliberately simple, fully auditable — "computed, not asserted"):
   the 50-state national number.
 
 HONESTY RULES:
-  - The error band is NOT a formula prior: it is the 80th percentile of
-    absolute LEAVE-ONE-YEAR-OUT errors at THIS week, recomputed every run.
-    Early-season bands are wide because early-season calls were wrong.
-  - The trend-only MAE ships alongside so the reader sees the skill,
-    not just the number.
-  - Every weekly nowcast is appended to history and never edited; the
+  - The error band is NOT a formula prior: it is the 80th percentile
+    (nearest rank) of absolute EXPANDING-WINDOW errors at THIS week -- each
+    held-out year estimated from earlier years only, as a real-time reader
+    would have had it -- recomputed every run, n stated beside it. The
+    leave-one-year-out figures (which let a year learn from later ones) ship
+    as loyo_* for transparency, never as the band.
+  - The trend-only MAE (same held-out years, same rule, ratings term
+    removed) ships alongside so the reader sees the skill, not just the
+    number. The PRINTED trend is fitted on every final year before this one.
+  - Every weekly nowcast is appended to history and never edited; a rerun
+    that produces a DIFFERENT number for a week already recorded is appended
+    beside the old row with its generation time, not written over it. The
     final USDA yield gets written next to them in January. Misses stay.
   - Off-season / stale ratings (>21 days): the script refuses to write
     a new nowcast (exit 0) — the page keeps showing the last dated one.
@@ -140,6 +146,77 @@ def aggregate(panel, arows, year, per_state_value):
     return (num / den) if den else None
 
 
+def calibration(panel, arows, us, years):
+    """k = mean(US_actual / state_agg) over `years` (the caller chooses which
+    years it is allowed to see)."""
+    ks = []
+    for y in years:
+        actual = {s: next((p[2] for p in pairs if p[0] == y), None) for s, pairs in panel.items()}
+        agg = aggregate(panel, arows, y, actual)
+        if agg:
+            ks.append(us[y] / agg)
+    return sum(ks) / len(ks) if ks else None
+
+
+def state_trend_only(pairs, target_year, ge_now=None):
+    """The same state trend with the ratings term removed: the no-ratings
+    baseline, built from exactly the history the model saw."""
+    ta, tb = linfit([p[0] for p in pairs], [p[2] for p in pairs])
+    return ta + tb * target_year
+
+
+def _held_out_error(panel, arows, us, hold, train_ok, calib_years, estimator=None):
+    """Error for one held-out year. train_ok(year) decides which history the
+    state fits may use. Returns (error, newest year any fit or the calibration
+    saw) or None."""
+    est, seen = {}, []
+    for s, pairs in panel.items():
+        train = [p for p in pairs if train_ok(p[0])]
+        cur = [p for p in pairs if p[0] == hold]
+        if not cur or len(train) < MIN_YEARS - 2:
+            continue
+        est[s] = (estimator or state_estimate)(train, hold, cur[0][1])
+        seen.extend(p[0] for p in train)
+    agg = aggregate(panel, arows, hold, est)
+    k = calibration(panel, arows, us, calib_years)
+    if agg is None or k is None:
+        return None
+    return agg * k - us[hold], max(seen + list(calib_years))
+
+
+def loyo_errors(panel, arows, us, us_years):
+    """Leave-one-year-out (uses LATER years too). Kept for transparency only."""
+    out = []
+    for hold in us_years:
+        r = _held_out_error(panel, arows, us, hold, lambda y, h=hold: y != h,
+                            [y for y in us_years if y != hold])
+        if r:
+            out.append((hold, r[0], r[1]))
+    return out
+
+
+def expanding_errors(panel, arows, us, us_years, estimator=None):
+    """Pseudo real-time: each held-out year sees only years BEFORE it, in the
+    state fits and in the calibration. Returns [(hold, error, newest_seen)]."""
+    out = []
+    for hold in us_years:
+        prior = [y for y in us_years if y < hold]
+        if not prior:
+            continue
+        r = _held_out_error(panel, arows, us, hold, lambda y, h=hold: y < h, prior, estimator)
+        if r:
+            out.append((hold, r[0], r[1]))
+    return out
+
+
+def mae_p80(errors):
+    abs_err = sorted(abs(e) for e in errors)
+    # Nearest-rank p80. int(0.8*n)-1 lands one index low -- with n=16 it
+    # returned the 12th of 16 sorted errors, which is the 75th percentile,
+    # under a label that says 80%.
+    return sum(abs_err) / len(abs_err), abs_err[max(0, math.ceil(0.8 * len(abs_err)) - 1)]
+
+
 def run_crop(crop, cond, fit_states, nass_dir="data/nass"):
     yield_f, acres_f, us_f = CROPS[crop]
     yrows = {ST_ABBR.get(r["state"]): r["values"]
@@ -159,76 +236,95 @@ def run_crop(crop, cond, fit_states, nass_dir="data/nass"):
     if len(us_years) < MIN_YEARS:
         raise SystemExit(f"FATAL {crop}: only {len(us_years)} backtest years (need {MIN_YEARS})")
 
-    def calibration(exclude=None):
-        ks = []
-        for y in us_years:
-            if y == exclude:
-                continue
-            actual = {s: next((p[2] for p in pairs if p[0] == y), None) for s, pairs in panel.items()}
-            agg = aggregate(panel, arows, y, actual)
-            if agg:
-                ks.append(us[y] / agg)
-        return sum(ks) / len(ks)
+    errors_loyo = loyo_errors(panel, arows, us, us_years)
+    if len(errors_loyo) < MIN_YEARS - 2:
+        raise SystemExit(f"FATAL {crop}: backtest produced only {len(errors_loyo)} years")
+    loyo_mae, loyo_band = mae_p80([e for _, e, _ in errors_loyo])
 
-    # ── leave-one-year-out backtest at this week ──
-    errors = []
-    for hold in us_years:
-        est = {}
-        for s, pairs in panel.items():
-            train = [p for p in pairs if p[0] != hold]
-            cur = [p for p in pairs if p[0] == hold]
-            if not cur or len(train) < MIN_YEARS - 2:
-                continue
-            est[s] = state_estimate(train, hold, cur[0][1])
-        agg = aggregate(panel, arows, hold, est)
-        if agg is None:
-            continue
-        errors.append(agg * calibration(exclude=hold) - us[hold])
-    if len(errors) < MIN_YEARS - 2:
-        raise SystemExit(f"FATAL {crop}: backtest produced only {len(errors)} years")
-    abs_err = sorted(abs(e) for e in errors)
-    mae = sum(abs_err) / len(abs_err)
-    # Nearest-rank p80. int(0.8*n)-1 lands one index low -- with n=16 it
-    # returned the 12th of 16 sorted errors, which is the 75th percentile,
-    # under a label that says 80%.
-    band80 = abs_err[max(0, math.ceil(0.8 * len(abs_err)) - 1)]
+    # ── PUBLISHED band: expanding-window backtest at this week ──
+    # Each held-out year is estimated from EARLIER years only (state fits and
+    # the national calibration both), which is the information a real-time
+    # reader had. Leave-one-year-out lets 2019 learn from 2023 and reads
+    # tighter than the model could ever have been in real time; it is kept
+    # beside it (loyo_*) for transparency, not published as the band.
+    errs = expanding_errors(panel, arows, us, us_years)
+    if len(errs) < MIN_YEARS - 2:
+        raise SystemExit(f"FATAL {crop}: expanding-window backtest produced only {len(errs)} years")
+    mae, band80 = mae_p80([e for _, e, _ in errs])
+    held = [h for h, _, _ in errs]
 
-    # trend-only baseline (no ratings): what "nobody knows in July" implies
-    trend_errs = []
-    for hold in us_years:
-        yrs = [y for y in us_years if y != hold]
-        a, b = linfit(yrs, [us[y] for y in yrs])
-        trend_errs.append(abs(a + b * hold - us[hold]))
-    trend_mae = sum(trend_errs) / len(trend_errs)
+    # trend-only baseline (no ratings), scored on the SAME held-out years by
+    # the SAME expanding rule: the model's own state trends + calibration with
+    # the ratings term removed. A US-level trend would see only 2010+ finals
+    # while the state fits see 2001+, and the "skill" would partly be that.
+    terrs = expanding_errors(panel, arows, us, us_years, estimator=state_trend_only)
+    assert [h for h, _, _ in terrs] == held, "trend baseline scored on different years"
+    trend_mae = sum(abs(e) for _, e, _ in terrs) / len(terrs)
 
     # ── this year's nowcast ──
     this_year = date.today().year
     est_now = {}
     for s, pairs in panel.items():
-        ge_now = cond["states"][s].get("ge")
+        # A state NASS has stopped rating for the season is absent, not null:
+        # 2026-09-29 crashed on KeyError 'OK' and the nowcast went 14 days
+        # without a run. Absent and null are the same fact -- no rating this
+        # week -- so the state is left out and `states` says how many remain.
+        ge_now = cond["states"].get(s, {}).get("ge")
         if ge_now is None:
             continue
         est_now[s] = state_estimate(pairs, this_year, float(ge_now))
     if len(est_now) < MIN_STATES:
         raise SystemExit(f"FATAL {crop}: only {len(est_now)} states have a current rating")
-    nowcast = aggregate(panel, arows, this_year, est_now) * calibration()
+    nowcast = aggregate(panel, arows, this_year, est_now) * calibration(panel, arows, us, us_years)
 
-    a, b = linfit(us_years, [us[y] for y in us_years])
+    # The PRINTED trend uses every final year before this one, not us_years:
+    # us_years is "years with a rating this week", so a trend fitted on it
+    # moved week to week (184.9 at week 40, 188.7 on all 2010-2025 finals)
+    # while nothing about the trend had changed.
+    trend_years = sorted(y for y in us if y < this_year)
+    a, b = linfit(trend_years, [us[y] for y in trend_years])
     trend = a + b * this_year
+    mae_r, tmae_r = round(mae, 1), round(trend_mae, 1)
 
     return {
         "history_source": history_source,
         "week_ending": cond["week_ending"],
         "nowcast": round(nowcast, 1),
         "band80": round(band80, 1),
-        "mae": round(mae, 1),
+        "mae": mae_r,
+        "band_method": "expanding-window",
         "trend": round(trend, 1),
-        "trend_mae": round(trend_mae, 1),
-        "skill_pct": round(100 * (1 - mae / trend_mae)),
+        "trend_window": f"{trend_years[0]}-{trend_years[-1]}",
+        "trend_n": len(trend_years),
+        "trend_mae": tmae_r,
+        # From the ROUNDED MAEs the page prints, so a reader can reproduce it.
+        "skill_pct": round(100 * (1 - mae_r / tmae_r)) if tmae_r else None,
         "states": len(est_now),
-        "backtest_years": len(errors),
+        "backtest_years": len(errs),
+        "backtest_window": f"{held[0]}-{held[-1]}",
+        "loyo_mae": round(loyo_mae, 2),
+        "loyo_band80": round(loyo_band, 2),
+        "loyo_years": len(errors_loyo),
         "unit": "bu/acre",
     }
+
+
+def append_history(hist, r, generated):
+    """Append-only. Same week, same numbers -> nothing to add (idempotent).
+    Same week, DIFFERENT numbers (a method change, a late data revision) ->
+    the new row goes in beside the old one with its generation time; the old
+    row is never replaced, so what was published that week stays on record."""
+    row = {"week_ending": r["week_ending"], "nowcast": r["nowcast"], "band80": r["band80"]}
+    same = [h for h in hist if h["week_ending"] == r["week_ending"]]
+    if same and same[-1]["nowcast"] == row["nowcast"] and same[-1]["band80"] == row["band80"]:
+        return hist
+    if same:
+        row["generated"] = generated
+        if r.get("band_method"):
+            row["band_method"] = r["band_method"]
+    out = list(hist) + [row]
+    out.sort(key=lambda h: (h["week_ending"], h.get("generated", "")))
+    return out
 
 
 def main(force_stale=False):
@@ -250,20 +346,24 @@ def main(force_stale=False):
     out = {
         "generated": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "model": "ge-linear-v1",
-        "note": ("Ratings-only nowcast of US final yield. Band is the 80th percentile of "
-                 "absolute leave-one-year-out backtest errors AT THIS WEEK — recomputed every "
-                 "run, never assumed. trend_mae is the no-ratings baseline. History rows are "
-                 "append-only; final USDA yield is written beside them in January, misses included."),
+        "note": ("Ratings-only nowcast of US final yield. band80 is the 80th percentile "
+                 "(nearest rank) of absolute EXPANDING-WINDOW backtest errors AT THIS WEEK: "
+                 "each held-out year is estimated from earlier years only (backtest_years "
+                 "says how many, backtest_window which). loyo_* are the leave-one-year-out "
+                 "figures, which use later years, kept for transparency and not used for the "
+                 "band. trend_mae is the no-ratings baseline on the same years by the same "
+                 "rule; skill_pct is computed from the rounded MAEs as printed. trend is "
+                 "fitted on every US final in trend_window. History rows are append-only: a "
+                 "rerun that changes a recorded week adds a row with its generation time "
+                 "beside the old one. Final USDA yield is written beside them in January, "
+                 "misses included."),
         "crops": {},
         "history": prev.get("history", {"corn": [], "soybeans": []}),
     }
     for crop in CROPS:
         r = run_crop(crop, cond_all[crop], list(fits[crop]["states"]))
         out["crops"][crop] = r
-        hist = [h for h in out["history"].get(crop, []) if h["week_ending"] != r["week_ending"]]
-        hist.append({"week_ending": r["week_ending"], "nowcast": r["nowcast"], "band80": r["band80"]})
-        hist.sort(key=lambda h: h["week_ending"])
-        out["history"][crop] = hist
+        out["history"][crop] = append_history(out["history"].get(crop, []), r, out["generated"])
         print(f"  {crop}: {r['nowcast']} ±{r['band80']} bu/ac  (trend {r['trend']}, "
               f"MAE {r['mae']} vs trend-only {r['trend_mae']}, skill {r['skill_pct']}%, "
               f"{r['states']} states, {r['backtest_years']} yrs)")
@@ -336,6 +436,31 @@ def _selftest():
     # thin panel refusal
     thin = {"S0": panel["S0"][:6]}
     chk(len(build_panel({"S0": {"hist": []}}, {}, {}, ["S0"])) == 0, "thin/absent states are dropped, not fitted")
+
+    # expanding window: the band never sees the held-out year or a later one
+    ex = expanding_errors(panel, arows, us_actual, years)
+    chk(bool(ex) and all(seen < hold for hold, _, seen in ex),
+        f"expanding window trains only on earlier years ({[(h, s) for h, _, s in ex]})")
+    # ...and poisoning every year from 2022 on cannot move an earlier year's error
+    poisoned = {s: [(y, g, v + (500 if y >= 2022 else 0)) for y, g, v in pairs] for s, pairs in panel.items()}
+    us_p = {y: v + (500 if y >= 2022 else 0) for y, v in us_actual.items()}
+    ex_p = expanding_errors(poisoned, arows, us_p, years)
+    early = {h: e for h, e, _ in ex if h < 2022}
+    early_p = {h: e for h, e, _ in ex_p if h < 2022}
+    chk(early and all(abs(early[h] - early_p[h]) < 1e-9 for h in early),
+        "future years cannot leak into an earlier held-out year (poison test)")
+    lo = loyo_errors(panel, arows, us_actual, years)
+    chk(any(seen > hold for hold, _, seen in lo), "control: LOYO does see later years (why it is not the band)")
+    m, p = mae_p80([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
+    chk(abs(m - 5.5) < 1e-9 and p == 8, f"nearest-rank p80 of 1..10 is 8 (got {p})")
+
+    # history is append-only: a changed rerun keeps the old row
+    h0 = [{"week_ending": "2026-10-04", "nowcast": 180.6, "band80": 6.9}]
+    h1 = append_history(h0, {"week_ending": "2026-10-04", "nowcast": 180.6, "band80": 6.9}, "t1")
+    chk(h1 == h0, "identical rerun adds nothing")
+    h2 = append_history(h0, {"week_ending": "2026-10-04", "nowcast": 180.6, "band80": 7.0}, "t2")
+    chk(len(h2) == 2 and h2[0] == h0[0] and h2[1].get("generated") == "t2",
+        "changed rerun appends beside the old row, never over it")
 
     # linfit sanity
     a, b = linfit([1, 2, 3], [2, 4, 6])

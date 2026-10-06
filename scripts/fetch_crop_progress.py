@@ -74,6 +74,26 @@ def fetch_progress(commodity: str, year: int, unit: str = "PCT PLANTED",
     return nass_get(p)
 
 
+def _ge_complete(rows: list[dict]) -> dict:
+    """{week_ending: GOOD + EXCELLENT} for weeks where BOTH were published."""
+    parts: dict[str, dict] = {}
+    for r in rows:
+        week = r.get("week_ending", "")
+        unit = r.get("unit_desc", "").upper()
+        try:
+            val = int(str(r.get("Value", "")).replace(",", "").strip())
+        except ValueError:
+            continue
+        if not week:
+            continue
+        if "EXCELLENT" in unit:
+            parts.setdefault(week, {})["excellent"] = val
+        elif "GOOD" in unit:
+            parts.setdefault(week, {})["good"] = val
+    return {w: p["good"] + p["excellent"] for w, p in parts.items()
+            if "good" in p and "excellent" in p}
+
+
 def latest_ge(rows: list[dict]) -> dict | None:
     """
     Group rows by week_ending, sum GOOD + EXCELLENT for latest available week.
@@ -101,8 +121,12 @@ def latest_ge(rows: list[dict]) -> dict | None:
 
     latest_date = max(by_week.keys())
     w = by_week[latest_date]
-    ge = (w.get("good", 0) or 0) + (w.get("excellent", 0) or 0)
-    return {"date": latest_date, "good_excellent": ge}
+    # Both halves or nothing. A week with GOOD posted and EXCELLENT missing
+    # used to print GOOD alone as "good to excellent" -- a missing value
+    # turned into a 0 and added.
+    if w.get("good") is None or w.get("excellent") is None:
+        return None
+    return {"date": latest_date, "good_excellent": w["good"] + w["excellent"]}
 
 
 def latest_planting(rows: list[dict]) -> dict | None:
@@ -149,16 +173,7 @@ def ge_same_week_prev(rows: list[dict], cur_date: str | None) -> int | None:
     cur_date (within 4 days), not last year's final week."""
     if not cur_date:
         return None
-    by_week: dict[str, int] = {}
-    for r in rows:
-        week = r.get("week_ending", "")
-        unit = r.get("unit_desc", "").upper()
-        try:
-            val = int(str(r.get("Value", "")).replace(",", "").strip())
-        except ValueError:
-            continue
-        if week and ("EXCELLENT" in unit or "GOOD" in unit):
-            by_week[week] = by_week.get(week, 0) + val
+    by_week = _ge_complete(rows)
     return same_week_prev([{"week_ending": w, "Value": str(v)} for w, v in by_week.items()], cur_date)
 
 
@@ -399,23 +414,12 @@ def main():
         # Prior week G/E (second-most-recent week in current year)
         ge_prev_week = None
         if cond_cur:
-            by_week: dict[str, int] = {}
-            for r in cond_cur:
-                week = r.get("week_ending", "")
-                unit = r.get("unit_desc", "").upper()
-                try:
-                    val = int(str(r.get("Value", "")).replace(",", "").strip())
-                except ValueError:
-                    continue
-                if not week:
-                    continue
-                if week not in by_week:
-                    by_week[week] = 0
-                if "EXCELLENT" in unit or ("GOOD" in unit and "EXCELLENT" not in unit):
-                    by_week[week] += val
-            sorted_weeks = sorted(by_week.keys(), reverse=True)
-            if len(sorted_weeks) >= 2:
-                ge_prev_week = by_week[sorted_weeks[1]]
+            # The week before the latest PUBLISHED week, and only if both
+            # halves posted for it -- a half week is None, not GOOD alone.
+            all_weeks = sorted({r.get("week_ending", "") for r in cond_cur if r.get("week_ending")},
+                               reverse=True)
+            if len(all_weeks) >= 2:
+                ge_prev_week = _ge_complete(cond_cur).get(all_weeks[1])
 
         result[key] = {
             "good_excellent":           cur["good_excellent"] if cur else None,
@@ -575,6 +579,14 @@ def selftest():
     check(cs.get("US") == {D("2026-09-27"): 18}, "national row lands under US")
     check(cs.get("WI") == {D("2026-09-27"): 6}, "silage is dropped, grain kept (6, not 40)", cs.get("WI"))
     check("IA" not in cs, "a suppressed (D) value is not a zero")
+
+    print("\nGOOD + EXCELLENT NEEDS BOTH")
+    gr = lambda wk, u, v: {"week_ending": wk, "unit_desc": u, "Value": v}
+    check(latest_ge([gr("2026-10-04", "PCT GOOD", "40"), gr("2026-10-04", "PCT EXCELLENT", "14")])
+          == {"date": "2026-10-04", "good_excellent": 54}, "40 good + 14 excellent = 54")
+    check(latest_ge([gr("2026-09-27", "PCT GOOD", "41"), gr("2026-09-27", "PCT EXCELLENT", "16"),
+                     gr("2026-10-04", "PCT GOOD", "40")]) is None,
+          "latest week missing EXCELLENT -> None, not GOOD alone and not last week's")
 
     print("\nSTATES SHOW THIS WEEK OR NOTHING")
     def fake(comm, unit, cls, since):

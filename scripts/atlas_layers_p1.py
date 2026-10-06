@@ -328,6 +328,7 @@ def national_p1(counties, this_fy=None):
     n = 0
     by_period = {}
     over_one = 0
+    with_ratio = 0      # counties over the premium gate, the only ones with a whole-record ratio
     for c in counties.values():
         s = c.get("sob") or {}
         if s.get("status") != "ok":
@@ -335,15 +336,17 @@ def national_p1(counties, this_fy=None):
         n += 1
         ti += s["total_indemnity"]
         tp += s["total_premium"]
-        if s.get("loss_ratio_all") is not None and s["loss_ratio_all"] > 1:
-            over_one += 1
+        if s.get("loss_ratio_all") is not None:
+            with_ratio += 1
+            if s["loss_ratio_all"] > 1:
+                over_one += 1
         for k, p in (s.get("periods") or {}).items():
             bp = by_period.setdefault(k, {"indemnity": 0.0, "premium": 0.0})
             bp["indemnity"] += p["indemnity"]
             bp["premium"] += p["premium"]
     if n and tp:
         out["sob"] = {"counties": n, "total_indemnity": round(ti), "total_premium": round(tp), "loss_ratio": round(ti / tp, 2),
-                      "counties_over_one": over_one,
+                      "counties_over_one": over_one, "counties_with_ratio": with_ratio, "ratio_gate_premium": MIN_RATIO_PREMIUM,
                       "periods": {k: {"indemnity": round(v["indemnity"]), "premium": round(v["premium"]),
                                       "ratio": round(v["indemnity"] / v["premium"], 2) if v["premium"] else None} for k, v in sorted(by_period.items())}}
     # value
@@ -398,7 +401,8 @@ def national_p1(counties, this_fy=None):
                          "storage_mw": round(sum(x["operable"]["storage"] for x in en)),
                          "proposed_solar_mw": round(sum(x["proposed"]["solar"] for x in en)), "proposed_wind_mw": round(sum(x["proposed"]["wind"] for x in en)),
                          "counties_with_solar": sum(1 for x in en if x["operable"]["solar"] > 0), "counties_with_wind": sum(1 for x in en if x["operable"]["wind"] > 0),
-                         "counties_with_proposed": sum(1 for x in en if x["proposed"]["solar"] + x["proposed"]["wind"] + x["proposed"]["storage"] > 0)}
+                         "counties_with_proposed": sum(1 for x in en if x["proposed"]["solar"] + x["proposed"]["wind"] + x["proposed"]["storage"] > 0),
+                         "counties_with_proposed_solar_wind": sum(1 for x in en if x["proposed"]["solar"] + x["proposed"]["wind"] > 0)}
     # wells
     ne = [c["wells"] for c in counties.values() if (c.get("wells") or {}).get("status") == "ok" and c["state"] == "NE"]
     ks = [c["wells"] for c in counties.values() if (c.get("wells") or {}).get("status") == "ok" and c["state"] == "KS"]
@@ -476,7 +480,7 @@ def seed_p1(n, money, pct_of_unit):
     if s:
         per = " · ".join(f"{k} {v['ratio']:.2f}" for k, v in s["periods"].items() if v.get("ratio") is not None)
         big = lambda x: f"${x / 1e9:,.1f} billion" if abs(x) >= 1e9 else money(x)
-        parts.append(f'<p>Loss ratio: across {s["counties"]} counties RMA has paid {big(s["total_indemnity"])} of indemnity on {big(s["total_premium"])} of premium in closed crop years since 1989, a loss ratio of {s["loss_ratio"]:.2f}; in {s["counties_over_one"]} counties indemnities have exceeded premium over the whole record. By period: {per}. The crop year still being paid is left out; rainfall-index pasture policies are excluded.</p>')
+        parts.append(f'<p>Loss ratio: across {s["counties"]} counties RMA has paid {big(s["total_indemnity"])} of indemnity on {big(s["total_premium"])} of premium in closed crop years since 1989, a loss ratio of {s["loss_ratio"]:.2f}; in {s["counties_over_one"]} of the {s.get("counties_with_ratio", "—")} counties with ${s.get("ratio_gate_premium", MIN_RATIO_PREMIUM) / 1e6:,.0f} million or more of premium, indemnities have exceeded premium over the whole record. By period: {per}. The crop year still being paid is left out; rainfall-index pasture policies are excluded.</p>')
     else:
         parts.append('<p>Loss ratio: not yet measured.</p>')
     v = n.get("value")
@@ -497,7 +501,7 @@ def seed_p1(n, money, pct_of_unit):
         parts.append('<p>Drought: not yet measured.</p>')
     e = n.get("energy")
     if e:
-        parts.append(f'<p>Solar and wind, Form 860 {e["year"]}: {e["solar_mw"]:,} MW of solar in {e["counties_with_solar"]} counties and {e["wind_mw"]:,} MW of wind in {e["counties_with_wind"]}; {e["storage_mw"]:,} MW of batteries. Proposed to EIA: {e["proposed_solar_mw"]:,} MW solar and {e["proposed_wind_mw"]:,} MW wind, touching {e["counties_with_proposed"]} counties.</p>')
+        parts.append(f'<p>Solar and wind, Form 860 {e["year"]}: {e["solar_mw"]:,} MW of solar in {e["counties_with_solar"]} counties and {e["wind_mw"]:,} MW of wind in {e["counties_with_wind"]}; {e["storage_mw"]:,} MW of batteries. Proposed to EIA: {e["proposed_solar_mw"]:,} MW solar and {e["proposed_wind_mw"]:,} MW wind in {e.get("counties_with_proposed_solar_wind", "—")} counties ({e["counties_with_proposed"]} counties counting proposed batteries).</p>')
     else:
         parts.append('<p>Solar and wind: not yet measured.</p>')
     w = n.get("wells")

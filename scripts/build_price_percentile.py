@@ -9,7 +9,11 @@ wheat, then writes data/price-stats.json with, per commodity:
   lo,hi    : 5-yr low / high ($/bu)
   median   : 5-yr median ($/bu)
   n        : number of weekly observations
-  read     : plain-language "is this historically high or low" sentence
+  read     : plain-language "is this historically high or low" sentence (states n)
+  hist     : the n-1 prior weekly closes, so the page can rank the LIVE quote
+             against the same distribution (one "current" price per page)
+  seasonality (+ _years, _n, _method): 0-100 calendar-month index, detrended
+             by calendar-year mean, whole calendar years only
 
 The commodity pages read this file and render a 5-Year Price Position bar beside
 the existing 52-Week Range. Grain futures quote in cents on Yahoo; divided to $/bu.
@@ -28,7 +32,7 @@ TICKERS = {        # page-key : (yahoo continuous front-month, scale to display 
 }
 YEARS = 5
 
-def read_sentence(pct, name):
+def read_sentence(pct, name, n=None):
     if pct is None:        return f"5-year history unavailable for {name}."
     if pct < 10:  band = "historically very low — near a 5-year bottom"
     elif pct < 25: band = "historically low — below most of the last 5 years"
@@ -37,7 +41,8 @@ def read_sentence(pct, name):
     elif pct < 75: band = "above the 5-year midpoint"
     elif pct < 90: band = "historically high — above most of the last 5 years"
     else:          band = "historically very high — near a 5-year peak"
-    return f"At the {pct}{ordinal(pct)} percentile of the last {YEARS} years — {band}."
+    tail = (f" (n = {n} weekly closes, continuous front-month)") if n else ""
+    return f"At the {pct}{ordinal(pct)} percentile of the last {YEARS} years — {band}{tail}."
 
 def ordinal(n):
     if 10 <= n % 100 <= 20: return "th"
@@ -65,41 +70,82 @@ def compute(closes_dollars):
     }
 
 def fetch_closes(ticker, scale):
-    """Return (closes, pairs): closes is a chronological list of weekly closes in
-    display units; pairs is a list of (calendar_month_0_11, close) for seasonality."""
+    """Return (closes, dated): closes is a chronological list of weekly closes in
+    display units; dated is a list of (datetime.date, close) for seasonality."""
     import yfinance as yf
     df = yf.Ticker(ticker).history(period=f"{YEARS}y", interval="1wk", auto_adjust=False)
     if df is None or df.empty:
         return [], []
-    closes, pairs = [], []
+    closes, dated = [], []
     for idx, x in zip(df.index, df["Close"].tolist()):
         if x == x and x > 0:
             v = float(x) * scale
             closes.append(v)
             try:
-                pairs.append((int(idx.month) - 1, v))
+                dated.append((dt.date(int(idx.year), int(idx.month), int(idx.day)), v))
             except Exception:
                 pass
-    return closes, pairs
+    return closes, dated
 
 
-def compute_seasonality(pairs):
-    """0-100 seasonal-strength index by calendar month, from the same 5-yr weekly
-    closes. For each month, average its closes across the 5 years, then normalize the
-    twelve monthly means so the cheapest month maps to 0 and the dearest to 100.
-    Returns a 12-int list, or None if any month is missing data."""
-    if not pairs:
+MIN_WEEKS_PER_YEAR = 48   # a calendar year counts only if it is (nearly) whole
+
+
+def compute_seasonality(dated, today=None):
+    """0-100 seasonal index by calendar month, DETRENDED and on WHOLE calendar years.
+
+    The 2026-10 audit found the old index (raw monthly means over a rolling 5-yr
+    window) said Aug=0 / Oct=45 for corn while the page told readers October is
+    the weakest month. Two flaws: (1) a rolling window that starts and ends
+    mid-year counts some months five times and others four, so a trend leaks in
+    as fake seasonality; (2) raw levels let a 2022 price spike dominate.
+
+    Method now:
+      - keep only COMPLETE calendar years strictly before the current one, with
+        at least MIN_WEEKS_PER_YEAR weekly closes and all 12 months present;
+      - divide each weekly close by ITS calendar year's mean close (removes the
+        level/trend between years);
+      - average those ratios by calendar month across the kept years;
+      - rescale the twelve monthly means so the weakest month is 0, the
+        strongest 100.
+    Still NOT roll-adjusted: the continuous front-month splices old-crop into
+    new-crop, which itself depresses late-summer months for grains. The page
+    caption says so.
+
+    Returns (index_list_of_12, years_used, n_weeks) or None."""
+    if not dated:
+        return None
+    today = today or dt.date.today()
+    by_year = {}
+    for d, v in dated:
+        by_year.setdefault(d.year, []).append((d, v))
+    keep = []
+    for y in sorted(by_year):
+        rows = by_year[y]
+        if y >= today.year or len(rows) < MIN_WEEKS_PER_YEAR:
+            continue
+        if len({d.month for d, _ in rows}) < 12:
+            continue
+        keep.append(y)
+    if not keep:
         return None
     buckets = {m: [] for m in range(12)}
-    for m, v in pairs:
-        buckets[m].append(v)
+    n = 0
+    for y in keep:
+        rows = by_year[y]
+        mean = sum(v for _, v in rows) / len(rows)
+        if mean <= 0:
+            continue
+        for d, v in rows:
+            buckets[d.month - 1].append(v / mean)
+            n += 1
     if any(len(buckets[m]) == 0 for m in range(12)):
         return None
     means = [sum(buckets[m]) / len(buckets[m]) for m in range(12)]
     lo, hi = min(means), max(means)
     if hi - lo < 1e-9:
-        return [50] * 12
-    return [int(round(100.0 * (mn - lo) / (hi - lo))) for mn in means]
+        return [50] * 12, keep, n
+    return [int(round(100.0 * (mn - lo) / (hi - lo))) for mn in means], keep, n
 
 def load_clean_cur():
     """Current front-month price per page-key, in display units, taken from the
@@ -141,7 +187,7 @@ def main():
     ok = 0
     for key, (tk, scale) in TICKERS.items():
         try:
-            closes, pairs = fetch_closes(tk, scale)
+            closes, dated = fetch_closes(tk, scale)
             if key in clean_cur:
                 # use the GATE-1-clean front-month as the current observation, so a
                 # roll-splice in the continuous series can't poison cur/hi/percentile.
@@ -154,10 +200,22 @@ def main():
                     closes = [clean_cur[key]]
             stats = compute(closes)
             if stats:
-                stats["read"] = read_sentence(stats["pct"], key)
-                seas = compute_seasonality(pairs)
+                stats["read"] = read_sentence(stats["pct"], key, stats["n"])
+                # The weekly history the percentile was ranked against (all but
+                # the current observation), so the page can rank TODAY's live
+                # quote against the same distribution instead of showing a
+                # second, older "current" price beside the hero.
+                stats["hist"] = [round(c, 4) for c in closes[:-1]]
+                if dated:
+                    stats["hist_from"] = dated[0][0].isoformat()
+                    stats["hist_to"] = dated[-1][0].isoformat()
+                seas = compute_seasonality(dated)
                 if seas:
-                    stats["seasonality"] = seas
+                    idx, yrs, sn = seas
+                    stats["seasonality"] = idx
+                    stats["seasonality_years"] = [yrs[0], yrs[-1]]
+                    stats["seasonality_n"] = sn
+                    stats["seasonality_method"] = "calendar-year-detrended"
                 out[key] = stats
                 ok += 1
                 print(f"{key}: {stats['pct']}{ordinal(stats['pct'])} pct  "

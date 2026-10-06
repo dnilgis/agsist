@@ -73,6 +73,17 @@ QUIET = {
     "data/crop-progress.json": (
         "weekly",
         "USDA Crop Progress is a Monday afternoon release, in season only."),
+    # Checked every hour, CHANGED about once a week. fetch_outlooks.py keeps
+    # the old fetched_at when the payload is identical (the 2026-08-15 audit,
+    # so an unchanged map does not commit), so its age is the age of the
+    # newest map, not of the last check. The hourly cron gave it a 1h limit
+    # and status.html painted a healthy feed "Stalled" (99h on 2026-10-06,
+    # every run green, USDM valid 2026-09-29 with the next due Thursday).
+    "data/outlooks/manifest.json": (
+        "weekly",
+        "Checked hourly; it changes when the sources do. The US Drought "
+        "Monitor map is released Thursday mornings and the NOAA 30- and "
+        "90-day outlooks on the third Thursday of the month."),
 }
 
 # ── feeds nobody schedules, because a person maintains them ──────────────────
@@ -91,6 +102,10 @@ CURATED = {
     # build_feeds.py exits 1 and takes feeds-guard down on every push that
     # touches an .html file -- which is most of them.
     "data/us-states.geo.json",
+    # The sponsor roster and the active slot. Edited by hand; the sponsor
+    # report workflow READS both (they are its push trigger), which the
+    # manifest used to count as writing them.
+    "data/sponsors.json", "data/sponsor.json",
 }
 
 # ── feeds another repository publishes, and this one only reads ─────────────
@@ -152,6 +167,25 @@ CENTRAL_OFFSET_H = -5   # CDT. Enough to name an hour in a sentence; the status
 def read(p):
     with open(p, errors="ignore") as fh:
         return fh.read()
+
+
+def steps_only(wf):
+    """A workflow's text without its comments or its push/pull_request
+    `paths:` / `paths-ignore:` lists -- the parts that can name a feed without
+    writing it. Everything else is kept, so `git add data/x.json` still counts."""
+    out, skip_indent = [], None
+    for line in wf.split("\n"):
+        bare = line.split(" #", 1)[0] if not line.lstrip().startswith("#") else ""
+        indent = len(line) - len(line.lstrip())
+        if skip_indent is not None:
+            if not bare.strip() or (indent > skip_indent and bare.lstrip().startswith("-")):
+                continue
+            skip_indent = None
+        if re.match(r"\s*paths(-ignore)?:\s*$", bare):
+            skip_indent = indent
+            continue
+        out.append(bare)
+    return "\n".join(out)
 
 
 def cron_sentence(crons):
@@ -219,7 +253,12 @@ def max_gap_hours(crons):
         dows = {0 if d == 7 else d for d in dows}
         doms = f[2]
         if doms not in ("*", "?"):        # day-of-month schedules are monthly;
-            return None                   # a week is the wrong ruler for them.
+            continue                      # a week is the wrong ruler for them.
+            # SKIPPED, NOT DISQUALIFYING (2026-10-06). This returned None,
+            # so one monthly writer beside a daily one -- hail-data.yml beside
+            # mesh.yml -- switched the feed's alarm off. Another writer only
+            # adds fires, which can only shorten the gap, so the week measured
+            # from the rest is still a true limit. All-monthly stays None below.
         for d in dows:
             for h in hrs:
                 for m in mins:
@@ -282,7 +321,16 @@ def main():
         s = read(w)
         m = re.search(r"^name:\s*(.+)$", s, re.M)
         wf_name[w] = (m.group(1).strip().strip('"') if m else os.path.basename(w))
-        wf_cron[w] = re.findall(r"-\s*cron:\s*'([^']+)'", s)
+        # EITHER QUOTE. This read single-quoted crons only, and sixteen
+        # workflows write theirs in double quotes -- cond-yield's weekly
+        # "18 3 * * 2" among them, so data/yield-nowcast.json took its 24h
+        # limit from a daily job that only reads it. Found 2026-10-06.
+        wf_cron[w] = [c for _, c in re.findall(r"""-\s*cron:\s*(['"])([^'"]+)\1""", s)]
+        # A MENTION IS NOT A WRITE. A comment, or a push `paths:` trigger that
+        # rebakes a page WHEN a feed changes, names the feed without writing
+        # it: yield-panel.yml's comment and croptour.yml's trigger both made
+        # them "writers" of data/yield-nowcast.json. Scan what remains.
+        s = steps_only(s)
         for f in set(re.findall(r"data/[\w/.-]+\.json", s)):
             wf_writes[f].add(w)
         # A WORKFLOW THAT OWNS A DIRECTORY OWNS THE FILES IN IT. nass-series.yml
@@ -295,6 +343,13 @@ def main():
             for f in list(readers):
                 if f.startswith(d):
                     wf_writes[f].add(w)
+        # And a directory it stages, at any depth: ncei.yml does
+        # `git add data/hail/ncei`, no trailing slash, two levels down.
+        for args in re.findall(r"git add\s+([^\n;&|]+)", s):
+            for d in re.findall(r"(?<![\w/])data/[\w/-]+(?<!/)(?=\s|$)", args):
+                for f in list(readers):
+                    if f.startswith(d + "/"):
+                        wf_writes[f].add(w)
         for sc in set(re.findall(r"scripts/[\w.-]+\.(?:py|mjs)", s)):
             for f, owners in writes.items():
                 if sc in owners:

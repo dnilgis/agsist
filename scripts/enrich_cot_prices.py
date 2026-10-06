@@ -70,6 +70,19 @@ SYMBOLS = {
 }
 
 
+# PRICES THAT ARE WITHHELD ARE NOT WRITTEN. cot_analysis.UNREPAIRED_ROLL names
+# the markets whose roll rule is not verified (lean hogs). Writing their raw
+# front-month close here put the roll steps (-14.6%, -15.8% in a week) on the
+# /cot chart overlay beside a method note saying no hogs price is shown. One
+# list, imported, so the analysis and this file cannot disagree.
+sys.path.insert(0, HERE)
+try:
+    from cot_analysis import UNREPAIRED_ROLL
+except Exception as _e:                      # never let an import break the run silently
+    print("[enrich_cot_prices] WARN: could not import UNREPAIRED_ROLL (%s); withholding leanhogs" % _e)
+    UNREPAIRED_ROLL = {"leanhogs": "roll rule not verified"}
+
+
 def log(*a):
     print("[enrich_cot_prices]", *a)
 
@@ -158,6 +171,11 @@ def main():
         rows = history.get(k, [])
         if not rows:
             continue
+        if k in UNREPAIRED_ROLL:
+            log("  %s: price withheld (%s)" % (k, UNREPAIRED_ROLL[k][:60]))
+            for r in rows:
+                r.pop("price", None)
+            continue
         log("fetching %s (%s) ..." % (k, sym))
         try:
             daily = fetch_daily(sym, start, end)
@@ -189,6 +207,10 @@ def main():
         cur = load_json(CUR_PATH)
         for k in SYMBOLS:
             rows = history.get(k, [])
+            if k in cur and k in UNREPAIRED_ROLL and isinstance(cur[k], dict):
+                cur[k].pop("price", None)
+                cur[k].pop("price_prev", None)
+                continue
             if k in cur and rows:
                 if rows[-1].get("price") is not None:
                     cur[k]["price"] = rows[-1]["price"]

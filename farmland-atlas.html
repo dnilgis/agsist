@@ -5,8 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#0a0c0d">  <script>/* agsist-ga-guard 2026-10-01: Google Analytics loads only when the browser sends no Global Privacy Control or Do Not Track signal and the off switch on /privacy is not set. dataLayer and gtag always exist, so page code that calls them never throws. */(function(w,d,n){var off=false,v,i,s;w.dataLayer=w.dataLayer||[];if(typeof w.gtag!=='function'){w.gtag=function(){w.dataLayer.push(arguments);};}try{off=w.localStorage.getItem('agsist-ga-off')==='1';}catch(e){}if(n.globalPrivacyControl===true){off=true;}v=[n.doNotTrack,w.doNotTrack,n.msDoNotTrack];for(i=0;i<v.length;i++){if(v[i]==='1'||v[i]==='yes'){off=true;}}w.agsistGaOff=off;w.gtag('set','allow_google_signals',false);w.gtag('set','allow_ad_personalization_signals',false);if(off){return;}s=d.createElement('script');s.async=true;s.src='https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H';(d.head||d.documentElement).appendChild(s);})(window,document,navigator);</script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');function gaEvent(n,p){try{gtag('event',n,p||{});}catch(e){}}</script>
-  <link rel="preload" href="/components/styles.css?v=17" as="style">
-  <link rel="stylesheet" href="/components/styles.css?v=17">
+  <!-- static-nav:fonts (scripts/inject_static_nav.py) -->
+  <link rel="preload" href="/fonts/inter-400.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/jetbrains-mono-700.woff2" as="font" type="font/woff2" crossorigin>
+  <!-- /static-nav:fonts -->
+  <link rel="preload" href="/components/styles.css?v=18" as="style">
+  <link rel="stylesheet" href="/components/styles.css?v=18">
   <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
   <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
@@ -42,7 +46,7 @@
         "@type": "Dataset",
         "@id": "https://agsist.com/farmland-atlas#dataset",
         "name": "AGSIST Farmland Atlas: county night heat, water, loss record, land value, CRP, drought, energy and wells",
-        "description": "County-level records for the United States, county by county: July and August mean daily minimum temperature by decade since 1900 and the 50-year trend (NOAA NCEI nClimDiv county); irrigated share of harvested cropland (USDA Census of Agriculture 2022) and groundwater share of irrigation withdrawals (USGS 2015); crop insurance indemnities by cause of loss and the county loss ratio since 1989 (USDA RMA Summary of Business); census land and buildings value per acre 2012-2022 and rent-to-value; CRP acres by year and contract expirations (USDA FSA); weeks per year in severe drought since 2000 (U.S. Drought Monitor); solar, wind and battery MW operating and proposed (EIA Form 860); registered wells (Nebraska) and water rights (Kansas); county cash rent, the irrigated rent premium and county corn yield trend (USDA NASS). Layers are published separately and never combined into a score. Each layer covers the counties its own source publishes; the coverage of a layer is stated county by county, and several layers are still short of every county.",
+        "description": "County-level records for the United States, county by county: July and August mean daily minimum temperature by decade since 1900 and the trend since 1976 (NOAA NCEI nClimDiv county); irrigated share of harvested cropland (USDA Census of Agriculture 2022) and groundwater share of irrigation withdrawals (USGS 2015; crop irrigation where USGS splits it out, all irrigation including golf courses elsewhere); crop insurance indemnities by cause of loss and the county loss ratio since 1989 (USDA RMA Summary of Business); census land and buildings value per acre 2012-2022 and rent-to-value; CRP acres by year and contract expirations (USDA FSA); weeks per year in severe drought since 2000 (U.S. Drought Monitor); solar, wind and battery MW operating and proposed (EIA Form 860); registered wells (Nebraska) and water rights (Kansas); county cash rent, the irrigated rent premium and county corn yield trend (USDA NASS). Layers are published separately and never combined into a score. Each layer covers the counties its own source publishes; the coverage of a layer is stated county by county, and several layers are still short of every county.",
         "url": "https://agsist.com/farmland-atlas",
         "license": "https://www.usa.gov/government-works",
         "isAccessibleForFree": true,
@@ -71,6 +75,13 @@
         ],
         "distribution": [
           {"@type": "DataDownload", "encodingFormat": "application/json", "contentUrl": "https://agsist.com/data/atlas/atlas.json"}
+        ]
+      },
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {"@type": "ListItem", "position": 1, "name": "Home", "item": "https://agsist.com/"},
+          {"@type": "ListItem", "position": 2, "name": "Farmland Atlas", "item": "https://agsist.com/farmland-atlas"}
         ]
       },
       {
@@ -157,7 +168,7 @@ button,a,[role="button"]{touch-action:manipulation}
 .fa-subs{display:flex;flex-wrap:wrap;gap:.35rem;margin:0 0 .8rem;min-height:36px}
 .fa-maphead{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:.3rem 1rem}
 .fa-zoomout{flex:0 0 auto;margin:0 0 .45rem;padding:.35rem .7rem;border-radius:6px;border:1px solid rgba(233,237,235,.3);background:rgba(10,12,13,.78);color:#e9edeb;font-size:.75rem;font-weight:700;cursor:pointer;min-height:34px}
-.fa-zoomout:hover{border-color:#d4a23f;color:#d4a23f}
+.fa-zoomout:hover{border-color:#d4a23f;color:var(--gold)}
 .fa-ptools{display:flex;flex-wrap:wrap;gap:.4rem;margin:-.4rem 0 .9rem}
 .fa-ptools button,.fa-ptools a{padding:.3rem .7rem;border-radius:6px;border:1px solid var(--border-2);background:var(--bg2);color:var(--text-dim);font-size:.75rem;font-weight:600;cursor:pointer;text-decoration:none;min-height:32px;display:inline-flex;align-items:center}
 .fa-ptools button:hover,.fa-ptools a:hover{border-color:var(--gold);color:var(--text)}
@@ -176,7 +187,7 @@ details.fa-vd summary:hover{color:var(--gold)}
 .fa-grp-lbl{font-family:var(--font-mono);font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin-right:.2rem}
 .fa-tab{padding:.36rem .66rem;border-radius:999px;border:1px solid var(--border-2);background:var(--surface);color:var(--text-dim);font-size:.75rem;font-weight:600;cursor:pointer;min-height:34px;white-space:nowrap}
 .fa-tab:hover{border-color:var(--gold);color:var(--text)}
-.fa-tab.active{background:var(--gold);color:#0a0c0d;border-color:var(--gold);font-weight:700}
+.fa-tab.active{background:var(--gold-fill,var(--gold));color:#0a0c0d;border-color:var(--gold);font-weight:700}
 .fa-tab[disabled]{opacity:.28;cursor:not-allowed;border-style:dashed}
 .fa-tab[disabled]:hover{border-color:var(--border-2);color:var(--text-dim)}
 
@@ -230,7 +241,7 @@ details.fa-vd summary:hover{color:var(--gold)}
 .fa-cc-r{font-size:.78rem;color:var(--text-dim);line-height:1.5;margin:0 0 .5rem}
 .fa-nb-l{list-style:none;margin:0 0 .5rem;padding:0}
 .fa-nb-l button{grid-template-columns:12px minmax(0,1fr) auto}
-.fa-cc-go{width:100%;padding:.55rem .8rem;border-radius:8px;border:1px solid var(--gold);background:var(--gold);color:#111;font-weight:800;font-size:.8rem;cursor:pointer;min-height:40px}
+.fa-cc-go{width:100%;padding:.55rem .8rem;border-radius:8px;border:1px solid var(--gold);background:var(--gold-fill,var(--gold));color:#111;font-weight:800;font-size:.8rem;cursor:pointer;min-height:40px}
 .fa-cc-go:hover{filter:brightness(1.08)}
 .fa-cc-print{display:block;text-align:center;margin-top:.45rem;font-size:.78rem;font-weight:700;color:var(--gold);text-decoration:none;padding:.35rem;border:1px solid var(--border-2);border-radius:8px}
 .fa-cc-print:hover{border-color:var(--gold)}
@@ -243,7 +254,7 @@ details.fa-vd summary:hover{color:var(--gold)}
 @media (pointer:coarse){ .fa-sws,.fa-sws button{height:24px} }
 .fa-cls-out{font-size:.74rem;color:var(--text)}.fa-cls-out:empty{display:none}
 .fa-legend2{margin-top:-.2rem}.fa-legend2:empty{display:none}
-.fa-scale{align-self:flex-start;font-family:var(--font-mono);font-size:.66rem;letter-spacing:.08em;text-transform:uppercase;color:#111;background:var(--gold);border-radius:4px;padding:.1rem .4rem;margin-bottom:.2rem}
+.fa-scale{align-self:flex-start;font-family:var(--font-mono);font-size:.66rem;letter-spacing:.08em;text-transform:uppercase;color:#111;background:var(--gold-fill,var(--gold));border-radius:4px;padding:.1rem .4rem;margin-bottom:.2rem}
 #fa-method a{color:var(--gold);text-decoration:underline}
 #fa-panel a:not([class]),#fa-legend2 .fa-note a{text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:2px}   /* colour alone was 1.6:1 against body text */
 .fa-rail h3.fa-rk-h{font-weight:400}
@@ -341,7 +352,7 @@ details.fa-arith code{font-family:var(--font-mono);font-size:.74rem;color:var(--
 .fa-cta{border:1px solid var(--border-g);border-radius:12px;padding:1rem 1.1rem;background:linear-gradient(180deg,rgba(212,162,63,.06),transparent)}
 .fa-cta form{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.7rem}
 .fa-cta input[type=email]{flex:1;min-width:220px;background:var(--surface);color:var(--text);border:1px solid var(--border-2);border-radius:8px;padding:.55rem .8rem;font-size:.9rem;min-height:44px}
-.fa-cta button{padding:.5rem 1rem;border-radius:8px;border:none;background:var(--gold);color:#0a0c0d;font-weight:700;cursor:pointer;min-height:44px}
+.fa-cta button{padding:.5rem 1rem;border-radius:8px;border:none;background:var(--gold-fill,var(--gold));color:#0a0c0d;font-weight:700;cursor:pointer;min-height:44px}
 .fa-src{font-size:.78rem;color:var(--text-muted);line-height:1.7}
 .fa-src a{color:var(--gold);text-decoration:none}
 .fa-src a:hover{text-decoration:underline}
@@ -442,7 +453,7 @@ details.fa-arith .body a{color:var(--gold)}
 :root[data-theme="light"] .fa-page{--gold:#7a5a12}
 :root[data-theme="light"] .fa-nbt tr.me td:first-child{background:#f3ead6}
 :root[data-theme="light"] .fa-cc-go{color:#fff}
-:root[data-theme="light"] .fa-page .fa-tab.active{color:#fff}
+:root[data-theme="light"] .fa-page .fa-tab.active{color:#0a0c0d}
 @media (max-width:640px){
   .fa-strip{grid-template-columns:1fr 1fr}
   .fa-tile .v{font-size:1.15rem}
@@ -454,7 +465,24 @@ details.fa-arith .body a{color:var(--gold)}
 </head>
 <body>
 <a href="#main" class="skip">Skip to content</a>
-<div id="site-header"></div>
+<div id="site-header">
+<!-- static-nav:header (scripts/inject_static_nav.py; source components/header-fallback.html) -->
+  <!-- Static crawlable header: loader.js replaceWith() swaps this for the live dropdown nav on JS;
+       non-JS crawlers (Bing, AI) read these links; also a working fallback if the fetch fails.
+       Copied into every root page by scripts/inject_static_nav.py -- edit HERE, then re-run it. -->
+  <header style="border-bottom:1px solid var(--border);background:var(--surface)">
+    <div style="max-width:1100px;margin:0 auto;padding:.7rem 1rem;display:flex;flex-wrap:wrap;align-items:baseline;gap:.4rem 1.1rem">
+      <a href="/" aria-label="AGSIST Home" style="font-family:var(--font-display);font-weight:800;font-size:1.05rem;letter-spacing:.04em;color:var(--text);text-decoration:none">AGSIST</a>
+      <nav aria-label="AGSIST main navigation" style="font-family:'JetBrains Mono',monospace;font-size:0.775rem;line-height:2;color:var(--text-muted)">
+        <span style="color:var(--text-dim);font-weight:700">Markets:</span> <a href="/corn-futures-prices" style="color:var(--text-muted);text-decoration:none">Corn</a> &middot; <a href="/soybean-futures-prices" style="color:var(--text-muted);text-decoration:none">Soybeans</a> &middot; <a href="/wheat-futures-prices" style="color:var(--text-muted);text-decoration:none">Wheat</a> &middot; <a href="/cattle-futures-prices" style="color:var(--text-muted);text-decoration:none">Cattle</a> &middot; <a href="/cash-bids" style="color:var(--text-muted);text-decoration:none">Cash Bids</a> &middot; <a href="/elevators" style="color:var(--text-muted);text-decoration:none">Elevator Coverage Map</a> &middot; <a href="/milk-prices" style="color:var(--text-muted);text-decoration:none">Milk Prices</a> &middot; <a href="/basis" style="color:var(--text-muted);text-decoration:none">Basis vs Normal</a> &middot; <a href="/storage-crunch" style="color:var(--text-muted);text-decoration:none">Storage Crunch</a> &middot; <a href="/cot" style="color:var(--text-muted);text-decoration:none">COT Report</a> &middot; <a href="/ag-odds" style="color:var(--text-muted);text-decoration:none">Prediction Markets</a> &middot; <a href="/tariffs" style="color:var(--text-muted);text-decoration:none">Tariffs</a> &middot; <a href="/usda-quick-stats" style="color:var(--text-muted);text-decoration:none">USDA Crop Data</a> &middot; <a href="/usda-calendar" style="color:var(--text-muted);text-decoration:none">USDA Calendar</a> &middot; <a href="/whats-priced-in" style="color:var(--text-muted);text-decoration:none">What's Priced In</a> &middot; <a href="/whats-priced-in#analyst-board" style="color:var(--text-muted);text-decoration:none">Analyst Estimates</a> &middot; <a href="/markets" style="color:var(--text-muted);text-decoration:none">All Markets</a><br>
+        <span style="color:var(--text-dim);font-weight:700">Costs &amp; Land:</span> <a href="/breakeven" style="color:var(--text-muted);text-decoration:none">Break-Even</a> &middot; <a href="/presell-calculator" style="color:var(--text-muted);text-decoration:none">Pre-Sell Calculator</a> &middot; <a href="/grain-bin-calculator" style="color:var(--text-muted);text-decoration:none">Grain Bin</a> &middot; <a href="/harvest-price-tracker" style="color:var(--text-muted);text-decoration:none">Harvest Price Tracker</a> &middot; <a href="/farmland-atlas" style="color:var(--text-muted);text-decoration:none">Farmland Atlas</a> &middot; <a href="/cash-rent" style="color:var(--text-muted);text-decoration:none">Cash Rent by County</a> &middot; <a href="/rent/" style="color:var(--text-muted);text-decoration:none">Cash Rent by State</a> &middot; <a href="/cash-lease" style="color:var(--text-muted);text-decoration:none">Cash Farm Lease</a> &middot; <a href="/foreign-land" style="color:var(--text-muted);text-decoration:none">Foreign-Owned Land</a> &middot; <a href="/land-tenure" style="color:var(--text-muted);text-decoration:none">Rented vs Owner-Farmed</a> &middot; <a href="/farm-bill" style="color:var(--text-muted);text-decoration:none">Farm Bill</a><br>
+        <span style="color:var(--text-dim);font-weight:700">Field:</span> <a href="/spray" style="color:var(--text-muted);text-decoration:none">Spray Advisory</a> &middot; <a href="/urea" style="color:var(--text-muted);text-decoration:none">Urea Volatilization Risk</a> &middot; <a href="/drought-monitor" style="color:var(--text-muted);text-decoration:none">Drought Monitor</a> &middot; <a href="/conditions" style="color:var(--text-muted);text-decoration:none">Crop Conditions Rank</a> &middot; <a href="/conditions-yield" style="color:var(--text-muted);text-decoration:none">Ratings vs Yield</a> &middot; <a href="/pod-counts" style="color:var(--text-muted);text-decoration:none">Pod Counts vs Yield</a> &middot; <a href="/crop-tour" style="color:var(--text-muted);text-decoration:none">Crop Tour</a> &middot; <a href="/hail-map" style="color:var(--text-muted);text-decoration:none">Hail Map</a> &middot; <a href="/gdu-calculator" style="color:var(--text-muted);text-decoration:none">GDU Calculator</a> &middot; <a href="/planting-date" style="color:var(--text-muted);text-decoration:none">Planting Date</a> &middot; <a href="/fertilizer" style="color:var(--text-muted);text-decoration:none">Fertilizer</a> &middot; <a href="/yield-estimator" style="color:var(--text-muted);text-decoration:none">Yield Estimator</a> &middot; <a href="/field-scout" style="color:var(--text-muted);text-decoration:none">Field Scout</a> &middot; <a href="/fast-facts" style="color:var(--text-muted);text-decoration:none">Reference Tables</a> &middot; <a href="/tools" style="color:var(--text-muted);text-decoration:none">All Tools</a><br>
+        <span style="color:var(--text-dim);font-weight:700">Daily:</span> <a href="/news" style="color:var(--text-muted);text-decoration:none">The Wire</a> &middot; <a href="/daily" style="color:var(--text-muted);text-decoration:none">AGSIST Daily</a> &middot; <a href="/archive" style="color:var(--text-muted);text-decoration:none">Daily Archive</a> &middot; <a href="/scorecard" style="color:var(--text-muted);text-decoration:none">Prediction Bot</a>
+      </nav>
+    </div>
+  </header>
+<!-- /static-nav:header -->
+</div>
 
 <nav class="breadcrumb" aria-label="Breadcrumb">
   <a href="/">Home</a><span aria-hidden="true"> › </span><span>Farmland Atlas</span>
@@ -535,18 +563,18 @@ details.fa-arith .body a{color:var(--gold)}
     <p class="fa-note">Every county in the Atlas, added up. Open a section for the table behind it.</p>
     <details class="fa-fold" id="fa-seedfold"><summary>The national figures, layer by layer</summary>
 <!--SEED:atlas-->
-<div id="fa-seed" data-built="2026-09-25T14:29:41Z" class="fa-seedbox">
-<p><strong>Across the Atlas</strong> · built 2026-09-25 · 3141 counties in 50 states.</p>
+<div id="fa-seed" data-built="2026-10-06T15:12:47Z" class="fa-seedbox">
+<p><strong>Across the Atlas</strong> · built 2026-10-06 · 3141 counties in 50 states.</p>
 <p>July nights: 2029 of 3135 counties are warming since 1976 with the 95% interval clear of zero, 0 cooling, 1106 with no clear direction; the median trend is +0.45 F per decade. In 2178 of 3140 counties the 2010s were the warmest complete decade since the 1900s (the 2020s are not complete and are not counted). </p>
-<p>Each county has 51 Julys since 1976, and a single county's trend has to be large to clear its own 95% interval. Fitted on every July since 1895 instead, 2616 of 3135 counties are warming with the interval clear of zero.</p>
-<p>Water: 608 of 2161 counties irrigate a quarter or more of their harvested cropland and 412 irrigate half or more; the median county irrigates 4%. In 886 of 2663 counties nine-tenths or more of the irrigation water is pumped from the ground.</p>
+<p>Each county has at most 51 Julys since 1976, and a single county's trend has to be large to clear its own 95% interval. Fitted on every July since 1895 instead, 2616 of 3135 counties are warming with the interval clear of zero.</p>
+<p>Water: 608 of 2161 counties irrigate a quarter or more of their harvested cropland and 412 irrigate half or more; the median county irrigates 4%. In 886 of 2663 counties nine-tenths or more of the irrigation water is pumped from the ground (USGS 2015: crop irrigation where USGS splits it out, 1672 counties; all irrigation including golf courses in the other 991).</p>
 <p>Loss record: $210.6 billion of crop insurance indemnities in closed crop years since 1989 across 2840 counties (nominal dollars; the crop year still being paid is left out; pasture and rangeland rainfall-index policies excluded). Heat and drought share by period: 1989-1999 27% · 2000-2009 42% · 2010-2019 42% · 2020-2025 46%. Paid for failure of irrigation supply or equipment: $3.4 billion.</p>
-<p>Irrigated against dry cash rent: 572 counties publish both with enough paired years. Measured as irrigated rent over dry rent, so general rent inflation cancels out, the multiple is rising in 77 and falling in 54, with the 95% interval clear of zero. Falling fastest: Box Butte County, NE: 8.10 times dry rent in 2013 to 5.34 in 2026; Thurston County, WA: 6.12 times dry rent in 2009 to 2.20 in 2026; Lawrence County, AR: 3.31 times dry rent in 2012 to 1.67 in 2026. Rising fastest: Sutter County, CA: 4.00 times dry rent in 2010 to 12.11 in 2023; Yolo County, CA: 5.09 times dry rent in 2009 to 10.23 in 2026; Independence County, AR: 1.84 times dry rent in 2009 to 4.21 in 2023.</p>
-<p>Loss ratio: across 2890 counties RMA has paid $210.6 billion of indemnity on $246.4 billion of premium in closed crop years since 1989, a loss ratio of 0.85; in 826 counties indemnities have exceeded premium over the whole record. By period: 1989-1999 1.02 · 2000-2009 0.79 · 2010-2019 0.86 · 2020-2025 0.86. The crop year still being paid is left out; rainfall-index pasture policies are excluded.</p>
+<p>Irrigated against dry cash rent: 475 counties publish both with enough paired years and enough dry rent to test (97 more are not tested: dry rent under $25). Measured as irrigated rent over dry rent, so general rent inflation cancels out, the multiple is rising in 77 and falling in 54, with the 95% interval clear of zero; by chance alone about 12 of 475 would be called each way. Falling fastest: Box Butte County, NE: 8.10 times dry rent in 2013 to 5.34 in 2026; Thurston County, WA: 6.12 times dry rent in 2009 to 2.20 in 2026; Lawrence County, AR: 3.31 times dry rent in 2012 to 1.67 in 2026. Rising fastest: Sutter County, CA: 4.00 times dry rent in 2010 to 12.11 in 2023; Yolo County, CA: 5.09 times dry rent in 2009 to 10.23 in 2026; Independence County, AR: 1.84 times dry rent in 2009 to 4.21 in 2023.</p>
+<p>Loss ratio: across 2890 counties RMA has paid $210.6 billion of indemnity on $246.4 billion of premium in closed crop years since 1989, a loss ratio of 0.85; in 826 of the 2475 counties with $1 million or more of premium, indemnities have exceeded premium over the whole record. By period: 1989-1999 1.02 · 2000-2009 0.79 · 2010-2019 0.86 · 2020-2025 0.86. The crop year still being paid is left out; rainfall-index pasture policies are excluded.</p>
 <p>Land value, 2022 census: the median county reports $4,382 an acre for land and buildings (range $325 to $2,551,600, 3067 counties). Non-irrigated cash rent as a share of that value is published for 933 counties, median 2.48%; under 2% in 263, over 4% in 12.</p>
-<p>CRP: 25,753,630 acres enrolled across 3110 counties in 2025; 3,276,727 acres expire in the three fiscal years from 2026. In 382 of 1923 counties CRP is a tenth or more of the cropland base.</p>
+<p>CRP: 25,753,630 acres enrolled across 3110 counties in 2025; 2,144,307 acres expire in the three fiscal years from 2027. In 382 of 1923 counties CRP is a tenth or more of the cropland base.</p>
 <p>Drought: summed over 3132 counties, the year with the most county-weeks with at least half the county in severe drought or worse since 2000 was 2012 (41,841 county-weeks). In 2025, the latest full year, 121 counties spent half the year or more in that condition.</p>
-<p>Solar and wind, Form 860 2025: 154,264 MW of solar in 1326 counties and 159,732 MW of wind in 518; 43,643 MW of batteries. Proposed to EIA: 140,162 MW solar and 28,250 MW wind, touching 825 counties.</p>
+<p>Solar and wind, Form 860 2025: 154,264 MW of solar in 1326 counties and 159,732 MW of wind in 518; 43,643 MW of batteries. Proposed to EIA: 140,162 MW solar and 28,250 MW wind in 730 counties (825 counties counting proposed batteries).</p>
 <p>Wells and rights. Nebraska: 267,654 registered wells, 105,341 of them irrigation wells not decommissioned, median county median depth 197 ft. Kansas: 111,420 points of diversion, 51,917 active irrigation, median county median priority year 1977.</p>
 </div>
 <!--/SEED:atlas-->
@@ -554,7 +582,7 @@ details.fa-arith .body a{color:var(--gold)}
 
     <details class="fa-fold" id="fa-bystate" hidden>
       <summary>Where July nights are warming, by state</summary>
-      <p>Each county has 51 Julys since 1976, so its own trend has to be large before the 95% interval clears zero. The whole-record fit, every July since 1895, has more years; in some states it finds warming in more counties and in others in fewer, because the early 1900s were warm in some regions. Both columns count counties whose own interval clears zero.</p>
+      <p>Each county has one July a year since 1976, so its own trend has to be large before the 95% interval clears zero. The whole-record fit, every July since 1895, has more years; in some states it finds warming in more counties and in others in fewer, because the early 1900s were warm in some regions. Both columns count counties whose own interval clears zero.</p>
       <div class="tblscroll"><table class="fa-table" id="fa-bystate-table"><thead><tr><th>State</th><th class="n">Counties</th><th class="n">Warming since 1976</th><th class="n">Warming since 1895</th><th class="n">Median trend since 1976, °F a decade</th></tr></thead><tbody></tbody></table></div>
     </details>
 
@@ -643,7 +671,16 @@ details.fa-arith .body a{color:var(--gold)}
   </section>
 
 </main>
-<div id="site-footer"></div>
+<div id="site-footer">
+<!-- static-nav:footer (scripts/inject_static_nav.py; source components/footer-fallback.html) -->
+  <!-- Static crawlable nav: loader.js replaceWith() swaps this for the live footer on JS;
+       non-JS crawlers (Bing, AI) read these links; also a working fallback if the fetch fails.
+       Copied into every root page by scripts/inject_static_nav.py -- edit HERE, then re-run it. -->
+  <nav aria-label="AGSIST site links" style="max-width:1100px;margin:0 auto;padding:1.4rem 1rem;font-family:'JetBrains Mono',monospace;font-size:0.78rem;line-height:2.1;color:var(--text-muted);text-align:center;border-top:1px solid var(--border)">
+    <a href="/corn-futures-prices" style="color:var(--text-muted);text-decoration:none">Corn Futures</a> &middot; <a href="/soybean-futures-prices" style="color:var(--text-muted);text-decoration:none">Soybean Futures</a> &middot; <a href="/wheat-futures-prices" style="color:var(--text-muted);text-decoration:none">Wheat Futures</a> &middot; <a href="/cattle-futures-prices" style="color:var(--text-muted);text-decoration:none">Cattle Futures</a> &middot; <a href="/cash-bids" style="color:var(--text-muted);text-decoration:none">Cash Grain Bids</a> &middot; <a href="/basis" style="color:var(--text-muted);text-decoration:none">Basis vs Normal</a> &middot; <a href="/elevators" style="color:var(--text-muted);text-decoration:none">Elevator Coverage Map</a> &middot; <a href="/cot" style="color:var(--text-muted);text-decoration:none">COT Report</a> &middot; <a href="/ag-odds" style="color:var(--text-muted);text-decoration:none">Ag Prediction Markets</a> &middot; <a href="/markets" style="color:var(--text-muted);text-decoration:none">All Markets</a> &middot; <a href="/cash-rent" style="color:var(--text-muted);text-decoration:none">Cash Rent by County</a> &middot; <a href="/rent/" style="color:var(--text-muted);text-decoration:none">Cash Rent by State</a> &middot; <a href="/farmland-atlas" style="color:var(--text-muted);text-decoration:none">Farmland Atlas</a> &middot; <a href="/cash-lease" style="color:var(--text-muted);text-decoration:none">Cash Farm Lease</a> &middot; <a href="/foreign-land" style="color:var(--text-muted);text-decoration:none">Foreign-Owned Land</a> &middot; <a href="/land-tenure" style="color:var(--text-muted);text-decoration:none">Rented vs Owner-Farmed</a> &middot; <a href="/conditions" style="color:var(--text-muted);text-decoration:none">Crop Conditions Rank</a> &middot; <a href="/conditions-yield" style="color:var(--text-muted);text-decoration:none">Ratings vs Yield</a> &middot; <a href="/usda-quick-stats" style="color:var(--text-muted);text-decoration:none">USDA Crop Data</a> &middot; <a href="/usda-calendar" style="color:var(--text-muted);text-decoration:none">USDA Calendar</a> &middot; <a href="/fast-facts" style="color:var(--text-muted);text-decoration:none">Reference Tables</a> &middot; <a href="/tools" style="color:var(--text-muted);text-decoration:none">Farm Calculators &amp; Tools</a> &middot; <a href="/breakeven" style="color:var(--text-muted);text-decoration:none">Break-Even Calculator</a> &middot; <a href="/spray" style="color:var(--text-muted);text-decoration:none">Spray Advisory</a> &middot; <a href="/drought-monitor" style="color:var(--text-muted);text-decoration:none">Drought Monitor</a> &middot; <a href="/milk-prices" style="color:var(--text-muted);text-decoration:none">Milk Prices</a> &middot; <a href="/tariffs" style="color:var(--text-muted);text-decoration:none">Tariffs</a> &middot; <a href="/news" style="color:var(--text-muted);text-decoration:none">The Wire</a> &middot; <a href="/daily" style="color:var(--text-muted);text-decoration:none">AGSIST Daily</a> &middot; <a href="/archive" style="color:var(--text-muted);text-decoration:none">Daily Archive</a> &middot; <a href="/data-sources" style="color:var(--text-muted);text-decoration:none">Data Sources</a> &middot; <a href="/about" style="color:var(--text-muted);text-decoration:none">About</a> &middot; <a href="/contact" style="color:var(--text-muted);text-decoration:none">Contact</a> &middot; <a href="/sponsor" style="color:var(--text-muted);text-decoration:none">Sponsor</a> &middot; <a href="/accessibility" style="color:var(--text-muted);text-decoration:none">Accessibility</a> &middot; <a href="/privacy" style="color:var(--text-muted);text-decoration:none">Privacy</a> &middot; <a href="/terms" style="color:var(--text-muted);text-decoration:none">Terms</a>
+  </nav>
+<!-- /static-nav:footer -->
+</div>
 <script src="/components/loader.js?v=17" defer></script>
 <script>
 (function(){
@@ -758,9 +795,9 @@ var LAYERS=[
  {key:'water_irr',grp:'Water',label:'Cropland irrigated',ramp:'water',unit:'%',pct:true,k:0,needs:'water',
   v:function(c){return get(c,'water','irrigated_share_2022','share');},title:'Share of harvested cropland irrigated, 2022 census'},
  {key:'water_gw',grp:'Water',label:'From groundwater',ramp:'water',unit:'%',pct:true,k:0,needs:'water',
-  v:function(c){return get(c,'water','groundwater_share_2015','share');},title:'Share of irrigation water pumped from groundwater, 2015'},
+  v:function(c){return get(c,'water','groundwater_share_2015','share');},title:'Share of irrigation water pumped from groundwater, 2015 (USGS: crop irrigation where USGS splits it out, all irrigation including golf courses elsewhere)'},
  {key:'water_applied',grp:'Water',label:'Water withdrawn',ramp:'water',unit:'ft/acre',k:2,needs:'water',
-  v:function(c){return get(c,'water','applied_2015','acre_ft_per_acre');},title:'Crop irrigation water withdrawn per irrigated acre, 2015 (acre-feet per acre, conveyance losses included)'},
+  v:function(c){return get(c,'water','applied_2015','acre_ft_per_acre');},title:'Irrigation water withdrawn per irrigated acre, 2015 (acre-feet per acre, conveyance losses included; USGS crop irrigation where it splits it out, all irrigation including golf courses elsewhere)'},
  {key:'prem_slope',grp:'Water',label:'Irrigated ÷ dry rent, trend',div:true,unit:'×/yr',k:3,needs:'water_premium',
   v:function(c){var w=c.water_premium; return ok(w)&&w.ratio_slope_per_year!=null?w.ratio_slope_per_year:null;},title:'Irrigated cash rent as a multiple of dry rent: fitted change per year'},
  {key:'loss_hd',grp:'Loss record',label:'Heat + drought share',ramp:'loss',unit:'%',pct:true,k:0,needs:'loss',
@@ -1739,8 +1776,10 @@ function renderPanel(fips,c){
     if(sh.share!=null&&sh.reported===false) f+=fact('Harvested cropland irrigated, 2022','none reported');
     else if(sh.share!=null) f+=fact('Harvested cropland irrigated, 2022', pct(sh.share,0), sh.irrigated_acres!=null?fmt(sh.irrigated_acres,0)+' of '+fmt(sh.harvested_acres,0)+' acres':'');
     else f+=fact('Harvested cropland irrigated, 2022','— '+why(sh),'',true);
-    if(gw.share!=null&&!tiny) f+=fact('Irrigation water from groundwater, 2015', pct(gw.share,0));
-    if(ap&&ap.acre_ft_per_acre!=null) f+=fact('Water withdrawn per irrigated acre, 2015', fmt(ap.acre_ft_per_acre,2)+' acre-ft');
+    var gwb=gw.basis==='IR'?'USGS all irrigation, golf courses included (no crop split for this county)':gw.basis==='IC'?'USGS crop irrigation':'';
+    if(gw.share!=null&&!tiny) f+=fact('Irrigation water from groundwater, 2015', pct(gw.share,0), gwb);
+    else if(gw.share==null&&!tiny) f+=fact('Irrigation water from groundwater, 2015','— '+why(gw),'',true);
+    if(ap&&ap.acre_ft_per_acre!=null) f+=fact('Water withdrawn per irrigated acre, 2015', fmt(ap.acre_ft_per_acre,2)+' acre-ft', gwb);
     else if(tiny) f+=fact('USGS 2015 water use','— under 1,000 irrigated acres, too little to measure','',true);
   } else f+=fact('Water','— '+why(W),'',true);
   var thin=ok(P)&&/^not called/.test(P.direction||'');
@@ -1807,7 +1846,7 @@ function renderPanel(fips,c){
     else if(C.rate&&C.rate.status) f+=fact('Average CRP rental payment','— '+why(C.rate),'',true);
   } else na.push(['CRP', why(C)]);
   var aw='Irrigated share: 2022 Census of Agriculture. Groundwater share and water withdrawn: USGS 2015 county water use; not shown under 1,000 irrigated acres. '
-    +'Rent multiple: irrigated ÷ non-irrigated cash rent in the same survey year, so general rent inflation cancels out; its direction is called only when the 95% interval of the fitted trend excludes zero'+(ok(P)&&P.ratio_slope_per_year!=null?' ('+sgn(P.ratio_slope_per_year,3)+' ± '+fmt(P.ratio_slope_ci95,3)+' a year, '+P.n_pairs+' paired years)':'')+'. '
+    +'Rent multiple: irrigated ÷ non-irrigated cash rent in the same survey year, so general rent inflation cancels out; its direction is called only when the 95% interval of the fitted trend excludes zero'+(ok(P)&&P.ratio_slope_per_year!=null?' ('+sgn(P.ratio_slope_per_year,4)+' ± '+fmt(P.ratio_slope_ci95,4)+' a year, '+P.n_pairs+' paired years)':'')+'. '
     +'Wells and rights: the Nebraska DNR and Kansas DWR registers. Energy: EIA Form 860. Tile, ditches, tillage and cover crops: 2017 and 2022 Census of Agriculture, as shares of the county\'s cropland; a share over 100% is withheld because the census counts drainage on all land in farms (<a href="/farmland-atlas/methods#m-practices">method</a>). <a href="/farmland-atlas/methods#m-water">Full method</a>';
   var water_band=band('fa-b-water','Water and land',f,ch,na,aw);
 

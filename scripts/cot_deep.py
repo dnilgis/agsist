@@ -273,6 +273,25 @@ def _int(v):
         return 0
 
 
+# CFTC PRINTS "." WHERE A TRADER COUNT IS UNDER FOUR -- it suppresses the count
+# to protect the identity of the few traders behind it. _int() turned that into
+# 0, and the page printed "0 funds hold the long side" under Class III milk with
+# 109 contracts held long. A count is None when CFTC did not publish it.
+COUNT_FIELDS = {"tr_mm_long", "tr_mm_short", "tr_total"}
+
+
+def _count(v):
+    if v is None:
+        return None
+    s = str(v).strip().replace(",", "")
+    if s in ("", ".", "-", "n/a", "NA"):
+        return None
+    try:
+        return int(float(s))
+    except ValueError:
+        return None
+
+
 def _date_of(row, colmap):
     raw = (row.get(colmap["_date"]) or "").strip()
     if not raw:
@@ -313,7 +332,10 @@ def parse_rows(text: str, audit: bool = True) -> list:
             continue
         rec = {"commodity": key, "date": d}
         for f in FIELDS:
-            rec[f] = _int(r.get(colmap[f])) if f in colmap else 0
+            if f in COUNT_FIELDS:
+                rec[f] = _count(r.get(colmap[f])) if f in colmap else None
+            else:
+                rec[f] = _int(r.get(colmap[f])) if f in colmap else 0
         out.append(rec)
     if audit and near_miss:
         print("  UNMATCHED markets that look like ours (check match_commodity):", flush=True)
@@ -891,6 +913,11 @@ def selftest():
         globals()["fetch_socrata"] = keep_fetch
         globals()["load_price_frames"] = keep_prices
         shutil.rmtree(tmp, ignore_errors=True)
+
+    # A suppressed trader count is unknown, not zero; positions keep their 0 default.
+    ckt("CFTC's '.' trader count is None, not 0", _count(".") is None and _count("") is None)
+    ck("a published count parses", _count("25"), 25)
+    ck("positions still read '.' as 0", _int("."), 0)
 
     # The append run's price window reaches the oldest row it may backfill.
     dd = {"commodities": {"corn": {"dates": ["2026-08-04", "2026-08-11", "2026-08-18", "2026-08-25", "2026-09-01",

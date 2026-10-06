@@ -27,6 +27,7 @@ SERIES = {
     "wheat_yield":           "WHEAT, WINTER - YIELD, MEASURED IN BU / ACRE",
     "wheat_prod":            "WHEAT, WINTER - PRODUCTION, MEASURED IN BU",
 }
+WHEAT_FIELDS = ("wheat_yield", "wheat_prod")
 # field -> (divisor, round_digits) for display units used by the page
 CONV = {
     "corn_yield": (1, 1), "corn_prod": (1e6, 0),
@@ -113,13 +114,23 @@ MONTHS = {"JAN": "January", "FEB": "February", "MAR": "March", "APR": "April",
 FINAL_MONTH, FINAL_DAY = 1, 10          # ~Jan 10 of year+1, deliberately early
 
 
-def finals_possible(year, today=None):
+# SMALL GRAINS ARE FINAL IN THE AUTUMN, NOT IN JANUARY. NASS's Small Grains
+# Summary (last business day of September) is the final estimate for that
+# year's wheat; the January Crop Production Annual covers corn and soybeans.
+# Treating 2026 winter wheat as unfinal until Jan 2027 kept the Sep 30, 2026
+# final off the page for three months (audit, 2026-10-06).
+SMALL_GRAIN_FINAL = (10, 1)             # Oct 1 of the crop year, a day after the summary
+
+
+def finals_possible(year, today=None, small_grain=False):
     """Could USDA have published a FINAL for this crop year by today?"""
     today = today or date.today()
+    if small_grain:
+        return (today.year, today.month, today.day) >= (year, *SMALL_GRAIN_FINAL)
     return (today.year, today.month, today.day) >= (year + 1, FINAL_MONTH, FINAL_DAY)
 
 
-def is_forecast(ref, year=None, today=None):
+def is_forecast(ref, year=None, today=None, small_grain=False):
     """True if this row cannot honestly be called final.
 
     The string test alone is not enough and the 2026-08-15 21:51Z run proved
@@ -134,12 +145,12 @@ def is_forecast(ref, year=None, today=None):
     """
     if "FORECAST" in (ref or "").upper():
         return True
-    if year is not None and not finals_possible(year, today):
+    if year is not None and not finals_possible(year, today, small_grain):
         return True
     return False
 
 
-def status_label(year, ref, today=None):
+def status_label(year, ref, today=None, small_grain=False):
     """The honest description of one NASS row.
 
     2026-08-15 INCIDENT: this used to be the unconditional string
@@ -150,7 +161,7 @@ def status_label(year, ref, today=None):
     The register predicted this on 2026-08-08 and it shipped anyway.
     """
     ref = (ref or "").upper()
-    if is_forecast(ref, year, today):
+    if is_forecast(ref, year, today, small_grain):
         mon = next((MONTHS[m] for m in MONTHS if m in ref), None)
         return f"{year} crop \u00b7 USDA NASS {mon} forecast" if mon else \
                f"{year} crop \u00b7 USDA NASS in-season forecast"
@@ -274,6 +285,8 @@ def assemble(raw_by_field, year, by_state=None):
             rec["combined"] = True
         has = False
         for field in SERIES:
+            if field in WHEAT_FIELDS:
+                continue
             cells = by_state.get(field, {}).get(sa, {}).get(yr) or {}
             # same-vintage only: a missing field is an honest gap, never a
             # number borrowed from a different survey
@@ -281,6 +294,27 @@ def assemble(raw_by_field, year, by_state=None):
             rec[field] = val
             if val is not None:
                 has = True
+        # WHEAT HAS ITS OWN YEAR AND VINTAGE. Taking it from the corn vintage
+        # put the Aug/Sep winter-wheat FORECAST beside corn in October, after
+        # NASS's Sep 30 Small Grains Summary had published the final.
+        wy = [max(by_state[f][sa]) for f in WHEAT_FIELDS if by_state.get(f, {}).get(sa)]
+        if wy:
+            wyr = max(wy)
+            wcells = by_state.get("wheat_yield", {}).get(sa, {}).get(wyr) or \
+                     by_state.get("wheat_prod", {}).get(sa, {}).get(wyr) or {}
+            wref = pick_vintage(wcells) if wcells else None
+            for field in WHEAT_FIELDS:
+                cells = by_state.get(field, {}).get(sa, {}).get(wyr) or {}
+                rec[field] = convert(field, cells[wref]) if wref in cells else None
+                if rec[field] is not None:
+                    has = True
+            if any(rec[f] is not None for f in WHEAT_FIELDS):
+                rec["wheat_year"] = wyr
+                rec["wheat_forecast"] = bool(is_forecast(wref, wyr, small_grain=True))
+                rec["wheat_meta"] = status_label(wyr, wref, small_grain=True)
+        else:
+            for field in WHEAT_FIELDS:
+                rec[field] = None
         if not has:
             continue
         # ── coherence assertion: production / harvested acres == yield ────
@@ -309,6 +343,9 @@ def assemble(raw_by_field, year, by_state=None):
     # marked forecast=False. A gate that only labels is not a gate.
     liars = [f"{sa} {r['year']}" for sa, r in stats.items()
              if not r.get("forecast") and not finals_possible(r.get("year", 0))]
+    liars += [f"{sa} wheat {r['wheat_year']}" for sa, r in stats.items()
+              if r.get("wheat_year") and not r.get("wheat_forecast")
+              and not finals_possible(r["wheat_year"], small_grain=True)]
     if liars:
         print("\nSTANDING CROP PUBLISHED AS FINAL:")
         for line in liars[:20]:
@@ -404,6 +441,20 @@ def selftest():
     assert "AZ" in st, "a state absent from the forecast vanished from the file"
     assert st["AZ"]["corn_yield"] == 205.0 and st["AZ"]["year"] == 2025, st["AZ"]
     assert st["AZ"]["forecast"] is False and "final" in st["AZ"]["meta"], st["AZ"]["meta"]
+
+    # WHEAT: its own vintage, final from Oct 1 of the crop year
+    assert not finals_possible(2026, date(2026, 9, 29), small_grain=True)
+    assert finals_possible(2026, date(2026, 10, 1), small_grain=True)
+    assert not finals_possible(2026, date(2026, 10, 1)), "corn/soy must still wait for January"
+    if date.today() >= date(2026, 10, 1):
+        wk = {f: {} for f in SERIES}
+        wk["corn_yield"] = {"KS": {2026: {"YEAR - AUG FORECAST": 130.0}}}
+        wk["wheat_yield"] = {"KS": {2026: {"YEAR - AUG FORECAST": 40.0, "YEAR": 41.0}}}
+        wk["wheat_prod"] = {"KS": {2026: {"YEAR": 300e6}}}
+        kw = assemble(None, 2026, by_state=wk)["KS"]
+        assert kw["forecast"] is True, kw                       # corn is still a forecast
+        assert kw["wheat_yield"] == 41.0 and kw["wheat_forecast"] is False, kw
+        assert kw["wheat_year"] == 2026 and "final" in kw["wheat_meta"], kw
 
     # a FINAL must beat a FORECAST for the same state-year in either order
     for order in (0, 1):

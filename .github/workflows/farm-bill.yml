@@ -10,6 +10,7 @@ name: Bake farm-bill page
 
 on:
   push:
+    branches: [main]   # these jobs commit and rebase onto main; on a PR branch that rebase fails (2026-10-06)
     paths:
       - "**/farm-bill.json"
       - "**/build_farmbill.py"

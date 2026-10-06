@@ -7,34 +7,34 @@
   <!-- 2026-09-30: fonts are self-hosted in styles.css now, no preconnect needed -->
   <script>/* agsist-ga-guard 2026-10-01: Google Analytics loads only when the browser sends no Global Privacy Control or Do Not Track signal and the off switch on /privacy is not set. dataLayer and gtag always exist, so page code that calls them never throws. */(function(w,d,n){var off=false,v,i,s;w.dataLayer=w.dataLayer||[];if(typeof w.gtag!=='function'){w.gtag=function(){w.dataLayer.push(arguments);};}try{off=w.localStorage.getItem('agsist-ga-off')==='1';}catch(e){}if(n.globalPrivacyControl===true){off=true;}v=[n.doNotTrack,w.doNotTrack,n.msDoNotTrack];for(i=0;i<v.length;i++){if(v[i]==='1'||v[i]==='yes'){off=true;}}w.agsistGaOff=off;w.gtag('set','allow_google_signals',false);w.gtag('set','allow_ad_personalization_signals',false);if(off){return;}s=d.createElement('script');s.async=true;s.src='https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H';(d.head||d.documentElement).appendChild(s);})(window,document,navigator);</script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');function gaEvent(n,p){try{gtag('event',n,p||{});}catch(e){}}</script>
-  <link rel="preload" href="/components/styles.css?v=17" as="style">
-  <link rel="stylesheet" href="/components/styles.css?v=17">
+  <link rel="preload" href="/components/styles.css?v=18" as="style">
+  <link rel="stylesheet" href="/components/styles.css?v=18">
   <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
   <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
   <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
   <link rel="manifest" href="/manifest.json">
-  <title>Mississippi Farmland by County: Rent and Value | AGSIST</title>
-  <meta name="description" content="Mississippi: 82 counties, each with USDA cash rent, census land value, corn yield, crop insurance claims and drought weeks. Free, sourced, updated monthly.">
+  <title>Mississippi Farmland Values by County: Value, Yield &amp; Risk</title>
+  <meta name="description" content="Mississippi: 82 counties, each with census land value, USDA cash rent, corn yield, crop insurance claims and drought weeks. Free, sourced, updated monthly.">
   <link rel="canonical" href="https://agsist.com/farmland-atlas/mississippi/">
 
   <meta property="og:type" content="article">
   <meta property="og:site_name" content="AGSIST">
   <meta property="og:locale" content="en_US">
-  <meta property="og:title" content="Mississippi Farmland by County: Rent and Value">
-  <meta property="og:description" content="Mississippi: 82 counties, each with USDA cash rent, census land value, corn yield, crop insurance claims and drought weeks. Free, sourced, updated monthly.">
+  <meta property="og:title" content="Mississippi Farmland Values by County: Value, Yield &amp; Risk">
+  <meta property="og:description" content="Mississippi: 82 counties, each with census land value, USDA cash rent, corn yield, crop insurance claims and drought weeks. Free, sourced, updated monthly.">
   <meta property="og:url" content="https://agsist.com/farmland-atlas/mississippi/">
   <meta property="og:image" content="https://agsist.com/farmland-atlas/og/state-ms.png?v=0f713313">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:image:type" content="image/png">
-  <meta property="og:image:alt" content="Mississippi farmland by county: median dry cash rent $67 an acre across 82 counties">
+  <meta property="og:image:alt" content="Mississippi farmland values by county: median dry cash rent $67 an acre across 82 counties">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:site" content="@agsist">
-  <meta name="twitter:title" content="Mississippi Farmland by County: Rent and Value">
-  <meta name="twitter:description" content="Mississippi: 82 counties, each with USDA cash rent, census land value, corn yield, crop insurance claims and drought weeks. Free, sourced, updated monthly.">
+  <meta name="twitter:title" content="Mississippi Farmland Values by County: Value, Yield &amp; Risk">
+  <meta name="twitter:description" content="Mississippi: 82 counties, each with census land value, USDA cash rent, corn yield, crop insurance claims and drought weeks. Free, sourced, updated monthly.">
   <meta name="twitter:image" content="https://agsist.com/farmland-atlas/og/state-ms.png?v=0f713313">
-  <meta name="twitter:image:alt" content="Mississippi farmland by county: median dry cash rent $67 an acre across 82 counties">
+  <meta name="twitter:image:alt" content="Mississippi farmland values by county: median dry cash rent $67 an acre across 82 counties">
   <script type="application/ld+json">
 {
  "@context": "https://schema.org",
@@ -71,7 +71,7 @@
    "@type": "Dataset",
    "@id": "https://agsist.com/farmland-atlas/mississippi/#dataset",
    "name": "Mississippi county farmland record",
-   "description": "Mississippi: 82 counties, each with USDA cash rent, census land value, corn yield, crop insurance claims and drought weeks. Free, sourced, updated monthly.",
+   "description": "Mississippi: 82 counties, each with census land value, USDA cash rent, corn yield, crop insurance claims and drought weeks. Free, sourced, updated monthly.",
    "url": "https://agsist.com/farmland-atlas/mississippi/",
    "isAccessibleForFree": true,
    "license": "https://creativecommons.org/licenses/by/4.0/",
@@ -81,7 +81,7 @@
     "name": "AGSIST",
     "url": "https://agsist.com"
    },
-   "dateModified": "2026-09-25",
+   "dateModified": "2026-10-06",
    "spatialCoverage": {
     "@type": "Place",
     "name": "Mississippi, United States"
@@ -105,9 +105,10 @@
 <main class="ap">
 <nav class="bc" aria-label="Breadcrumb"><a href="/">AGSIST</a><i>/</i><a href="/farmland-atlas">Farmland Atlas</a><i>/</i><a href="/farmland-atlas/states/">By state</a><i>/</i><span aria-current="page">Mississippi</span></nav>
 <div class="kick">Farmland Atlas · state</div>
-<h1>Mississippi farmland by county</h1>
-<p class="sub">Mississippi: 82 counties, each with USDA cash rent, census land value, corn yield, crop insurance claims and drought weeks. Free, sourced, updated monthly. Click a heading to sort.</p>
-<div class="act"><a href="/farmland-atlas#s=MS">Open Mississippi on the map</a><a href="/farmland-atlas/data/ms.csv" download>Download MS CSV</a></div>
+<h1>Mississippi farmland values by county</h1>
+<p class="sub">Mississippi: 82 counties, each with census land value, USDA cash rent, corn yield, crop insurance claims and drought weeks. Free, sourced, updated monthly. Click a heading to sort.</p>
+<p class="sub">For cash rent, every published county rate and its history: <a href="/rent/mississippi">Mississippi cash rent by county</a>.</p>
+<div class="act"><a href="/rent/mississippi">Mississippi cash rent by county</a><a href="/farmland-atlas#s=MS">Open Mississippi on the map</a><a href="/farmland-atlas/data/ms.csv" download>Download MS CSV</a></div>
 <h2>Mississippi at a glance</h2>
 <div class="fact st"><span class="l">Median dry cash rent</span><span class="r">$67<small>median of 71 counties with 10,000+ farm acres, 2026 survey</small></span></div><div class="fact st"><span class="l">Median land and buildings, 2022 census</span><span class="r">$3,313<small>median of 82 counties with 10,000+ farm acres, value not flagged</small></span></div><div class="fact st"><span class="l">Median corn yield</span><span class="r">173.4<small>median of 23 counties with 10,000+ farm acres, 15+ published years</small></span></div><div class="fact st"><span class="l">Median claims per $100 of coverage</span><span class="r">$10.48<small>median of 59 counties with 10,000+ farm acres</small></span></div>
 <h2>Map: every county is a link</h2>
@@ -153,6 +154,6 @@ var t=document.getElementById('t'),b=t.tBodies[0],dir={};
 </script>
 
 <div id="site-footer"></div>
-<script src="/components/loader.js?v=14"></script>
+<script src="/components/loader.js?v=17"></script>
 </body>
 </html>

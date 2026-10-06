@@ -42,6 +42,13 @@ MAX_DISTANCE = 60  # miles from each ZIP
 # 200 is a starting point, not a finding. The run reports saturation per ZIP,
 # so the first live run says whether 200 binds. If it does, raise it and run
 # again. Measure, do not reason.
+
+def clean_phone(p):
+    """The licensed feed sends some numbers with '?' where a dash was lost to
+    an encoding step ('509?659?0130', Ritzville WA). A '?' between digits is
+    always that dash; nothing else is touched."""
+    return _re_mod.sub(r"(?<=\d)\?(?=\d)", "-", p) if p else p
+
 def _env_int(name, default):
     """An env var that is set-but-empty means UNSET, not zero and not a crash.
 
@@ -316,7 +323,7 @@ def flatten(data, source_zip):
                     "state": (item.get("state") or bid.get("state") or "").upper(),
                     "zip": item.get("zip") or bid.get("zip") or "",
                     "distance": _float(item.get("distance") if item.get("distance") is not None else bid.get("distance")),
-                    "phone": item.get("phone") or bid.get("phone") or "",
+                    "phone": clean_phone(item.get("phone") or bid.get("phone") or ""),
                     "commodity": cname,
                     "symbol": bid.get("symbol") or bid.get("basisSymbol") or "",
                     "cashPrice": _norm_cash(bid.get("cashprice", bid.get("cashPrice"))),
@@ -340,7 +347,7 @@ def flatten(data, source_zip):
                 "state": (item.get("state") or "").upper(),
                 "zip": item.get("zip") or "",
                 "distance": _float(item.get("distance")),
-                "phone": item.get("phone") or "",
+                "phone": clean_phone(item.get("phone") or ""),
                 "commodity": cname,
                 "symbol": item.get("symbol") or item.get("basisSymbol") or "",
                 "cashPrice": _norm_cash(item.get("cashprice", item.get("cashPrice"))),

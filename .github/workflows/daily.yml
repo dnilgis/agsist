@@ -509,7 +509,9 @@ jobs:
           # preflight_prices.py --repair on it. Without it staged, the repair
           # was computed and thrown away every run, and the browser-facing
           # file kept shipping the contaminated continuous quotes.
-          git add data/daily.json data/daily-archive/ daily/ feed.xml sitemap.xml index.html data/social/ whats-priced-in.html cot.html ag-odds.html data/prices.json
+          # archive.html + daily.html: the crawlable briefing link lists that
+          # generate_daily.save_archive() rebakes between their SEED markers.
+          git add data/daily.json data/daily-archive/ daily/ archive.html daily.html feed.xml sitemap.xml index.html data/social/ whats-priced-in.html cot.html ag-odds.html data/prices.json
           git diff --staged --quiet || git commit -m "AGSIST Daily — $(date -u +%Y-%m-%d)"
           # AUDIT 2026-08-11: three attempts — this is the repo's highest-
           # stakes push (a rejection here silently skips the daily email for

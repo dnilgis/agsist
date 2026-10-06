@@ -112,7 +112,7 @@ CSS = """<style>
 .cl-chk{grid-column:1/-1;display:flex;gap:.75rem;align-items:center;min-height:44px;font-size:.9rem;color:var(--text-dim);line-height:1.45;cursor:pointer}
 .cl-chk input{width:20px;height:20px;flex:none;margin:0;accent-color:var(--text)}
 .cl-go{grid-column:1/-1;display:flex;flex-wrap:wrap;align-items:center;gap:.75rem 1rem}
-.cl-btn{display:inline-flex;align-items:center;justify-content:center;padding:.75rem 1.4rem;border:0;border-radius:var(--r-sm);background:var(--gold);color:#0a0c0d;font-family:var(--font-mono);font-size:.85rem;font-weight:700;letter-spacing:.03em;cursor:pointer;min-height:44px;transition:filter .15s}
+.cl-btn{display:inline-flex;align-items:center;justify-content:center;padding:.75rem 1.4rem;border:0;border-radius:var(--r-sm);background:var(--gold-fill,var(--gold));color:#0a0c0d;font-family:var(--font-mono);font-size:.85rem;font-weight:700;letter-spacing:.03em;cursor:pointer;min-height:44px;transition:filter .15s}
 .cl-btn:hover{filter:brightness(1.07)}
 .cl-btn:active{filter:brightness(.92)}
 .cl-btn:disabled{opacity:.6;cursor:default}

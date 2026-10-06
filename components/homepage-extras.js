@@ -572,7 +572,7 @@
     }
     h += '<div style="display:flex;gap:.4rem;align-items:center;flex-wrap:wrap;margin-top:.35rem">'
       + '<input type="email" class="watch-elevator-email" placeholder="your@email.com" autocomplete="email" aria-label="Email for alerts on ' + escA(name || label) + '" style="flex:1;min-width:140px;' + FIELD + '">'
-      + '<button type="button" class="watch-elevator-go" style="padding:.4rem .7rem;min-height:36px;background:var(--gold);color:#0a0c0d;border:none;border-radius:5px;font-size:.8rem;font-weight:700;cursor:pointer;white-space:nowrap">Watch — free</button>'
+      + '<button type="button" class="watch-elevator-go" style="padding:.4rem .7rem;min-height:36px;background:var(--gold-fill,var(--gold));color:#0a0c0d;border:none;border-radius:5px;font-size:.8rem;font-weight:700;cursor:pointer;white-space:nowrap">Watch — free</button>'
       + '</div>'
       /* 2026-10-06: the labelled daily opt-in, ticked by default, shown only
          to a reader who has not signed up (components/signup-ask.js). */

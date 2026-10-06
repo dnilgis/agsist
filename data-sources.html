@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#111a0a">
   <title>Data Sources: Yahoo Finance, Open-Meteo, USDA NASS | AGSIST</title>
-  <meta name="description" content="Where AGSIST gets its data: Yahoo Finance for commodity prices, Open-Meteo for weather, USDA NASS for reports, a second feed for cash bids, Polymarket.">
+  <meta name="description" content="Where AGSIST gets its data: Yahoo Finance for commodity prices, Open-Meteo for weather, USDA NASS for reports, our elevator network plus a licensed feed for cash bids, Polymarket.">
   <meta name="keywords"    content="AGSIST data sources, agricultural data transparency, grain price data source, farm weather data, yfinance commodity prices">
   <meta name="author"      content="Sigurd Lindquist — Farmers First Agri Service">
   <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
@@ -15,7 +15,7 @@
   <meta property="og:site_name"    content="AGSIST">
   <meta property="og:locale"       content="en_US">
   <meta property="og:title"        content="Data Sources: Yahoo Finance, Open-Meteo, USDA NASS | AGSIST">
-  <meta property="og:description"  content="Where AGSIST gets its data: Yahoo Finance for commodity prices, Open-Meteo for weather, USDA NASS for reports, a second feed for cash bids, Polymarket.">
+  <meta property="og:description"  content="Where AGSIST gets its data: Yahoo Finance for commodity prices, Open-Meteo for weather, USDA NASS for reports, our elevator network plus a licensed feed for cash bids, Polymarket.">
   <meta property="og:url"          content="https://agsist.com/data-sources">
   <meta property="og:image"        content="https://agsist.com/img/og/agsist.jpg">
   <meta property="og:image:width"  content="1200">
@@ -31,8 +31,12 @@
   <script>/* agsist-ga-guard 2026-10-01: Google Analytics loads only when the browser sends no Global Privacy Control or Do Not Track signal and the off switch on /privacy is not set. dataLayer and gtag always exist, so page code that calls them never throws. */(function(w,d,n){var off=false,v,i,s;w.dataLayer=w.dataLayer||[];if(typeof w.gtag!=='function'){w.gtag=function(){w.dataLayer.push(arguments);};}try{off=w.localStorage.getItem('agsist-ga-off')==='1';}catch(e){}if(n.globalPrivacyControl===true){off=true;}v=[n.doNotTrack,w.doNotTrack,n.msDoNotTrack];for(i=0;i<v.length;i++){if(v[i]==='1'||v[i]==='yes'){off=true;}}w.agsistGaOff=off;w.gtag('set','allow_google_signals',false);w.gtag('set','allow_ad_personalization_signals',false);if(off){return;}s=d.createElement('script');s.async=true;s.src='https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H';(d.head||d.documentElement).appendChild(s);})(window,document,navigator);</script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
 
-  <link rel="preload" href="/components/styles.css?v=17" as="style">
-  <link rel="stylesheet"                          href="/components/styles.css?v=17">
+  <!-- static-nav:fonts (scripts/inject_static_nav.py) -->
+  <link rel="preload" href="/fonts/inter-400.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/jetbrains-mono-700.woff2" as="font" type="font/woff2" crossorigin>
+  <!-- /static-nav:fonts -->
+  <link rel="preload" href="/components/styles.css?v=18" as="style">
+  <link rel="stylesheet"                          href="/components/styles.css?v=18">
   <link rel="icon" type="image/x-icon"            href="/img/favicon.ico">
   <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
@@ -98,7 +102,24 @@
   <path d="M15.47 13.47 17 15l-1.53 1.53a3.5 3.5 0 0 1-4.94 0L9 15l1.53-1.53a3.5 3.5 0 0 1 4.94 0Z" />
   <path d="M19.47 9.47 21 11l-1.53 1.53a3.5 3.5 0 0 1-4.94 0L13 11l1.53-1.53a3.5 3.5 0 0 1 4.94 0Z" /></symbol></svg>
   <a href="#main" class="skip">Skip to content</a>
-  <div id="site-header"></div>
+  <div id="site-header">
+<!-- static-nav:header (scripts/inject_static_nav.py; source components/header-fallback.html) -->
+  <!-- Static crawlable header: loader.js replaceWith() swaps this for the live dropdown nav on JS;
+       non-JS crawlers (Bing, AI) read these links; also a working fallback if the fetch fails.
+       Copied into every root page by scripts/inject_static_nav.py -- edit HERE, then re-run it. -->
+  <header style="border-bottom:1px solid var(--border);background:var(--surface)">
+    <div style="max-width:1100px;margin:0 auto;padding:.7rem 1rem;display:flex;flex-wrap:wrap;align-items:baseline;gap:.4rem 1.1rem">
+      <a href="/" aria-label="AGSIST Home" style="font-family:var(--font-display);font-weight:800;font-size:1.05rem;letter-spacing:.04em;color:var(--text);text-decoration:none">AGSIST</a>
+      <nav aria-label="AGSIST main navigation" style="font-family:'JetBrains Mono',monospace;font-size:0.775rem;line-height:2;color:var(--text-muted)">
+        <span style="color:var(--text-dim);font-weight:700">Markets:</span> <a href="/corn-futures-prices" style="color:var(--text-muted);text-decoration:none">Corn</a> &middot; <a href="/soybean-futures-prices" style="color:var(--text-muted);text-decoration:none">Soybeans</a> &middot; <a href="/wheat-futures-prices" style="color:var(--text-muted);text-decoration:none">Wheat</a> &middot; <a href="/cattle-futures-prices" style="color:var(--text-muted);text-decoration:none">Cattle</a> &middot; <a href="/cash-bids" style="color:var(--text-muted);text-decoration:none">Cash Bids</a> &middot; <a href="/elevators" style="color:var(--text-muted);text-decoration:none">Elevator Coverage Map</a> &middot; <a href="/milk-prices" style="color:var(--text-muted);text-decoration:none">Milk Prices</a> &middot; <a href="/basis" style="color:var(--text-muted);text-decoration:none">Basis vs Normal</a> &middot; <a href="/storage-crunch" style="color:var(--text-muted);text-decoration:none">Storage Crunch</a> &middot; <a href="/cot" style="color:var(--text-muted);text-decoration:none">COT Report</a> &middot; <a href="/ag-odds" style="color:var(--text-muted);text-decoration:none">Prediction Markets</a> &middot; <a href="/tariffs" style="color:var(--text-muted);text-decoration:none">Tariffs</a> &middot; <a href="/usda-quick-stats" style="color:var(--text-muted);text-decoration:none">USDA Crop Data</a> &middot; <a href="/usda-calendar" style="color:var(--text-muted);text-decoration:none">USDA Calendar</a> &middot; <a href="/whats-priced-in" style="color:var(--text-muted);text-decoration:none">What's Priced In</a> &middot; <a href="/whats-priced-in#analyst-board" style="color:var(--text-muted);text-decoration:none">Analyst Estimates</a> &middot; <a href="/markets" style="color:var(--text-muted);text-decoration:none">All Markets</a><br>
+        <span style="color:var(--text-dim);font-weight:700">Costs &amp; Land:</span> <a href="/breakeven" style="color:var(--text-muted);text-decoration:none">Break-Even</a> &middot; <a href="/presell-calculator" style="color:var(--text-muted);text-decoration:none">Pre-Sell Calculator</a> &middot; <a href="/grain-bin-calculator" style="color:var(--text-muted);text-decoration:none">Grain Bin</a> &middot; <a href="/harvest-price-tracker" style="color:var(--text-muted);text-decoration:none">Harvest Price Tracker</a> &middot; <a href="/farmland-atlas" style="color:var(--text-muted);text-decoration:none">Farmland Atlas</a> &middot; <a href="/cash-rent" style="color:var(--text-muted);text-decoration:none">Cash Rent by County</a> &middot; <a href="/rent/" style="color:var(--text-muted);text-decoration:none">Cash Rent by State</a> &middot; <a href="/cash-lease" style="color:var(--text-muted);text-decoration:none">Cash Farm Lease</a> &middot; <a href="/foreign-land" style="color:var(--text-muted);text-decoration:none">Foreign-Owned Land</a> &middot; <a href="/land-tenure" style="color:var(--text-muted);text-decoration:none">Rented vs Owner-Farmed</a> &middot; <a href="/farm-bill" style="color:var(--text-muted);text-decoration:none">Farm Bill</a><br>
+        <span style="color:var(--text-dim);font-weight:700">Field:</span> <a href="/spray" style="color:var(--text-muted);text-decoration:none">Spray Advisory</a> &middot; <a href="/urea" style="color:var(--text-muted);text-decoration:none">Urea Volatilization Risk</a> &middot; <a href="/drought-monitor" style="color:var(--text-muted);text-decoration:none">Drought Monitor</a> &middot; <a href="/conditions" style="color:var(--text-muted);text-decoration:none">Crop Conditions Rank</a> &middot; <a href="/conditions-yield" style="color:var(--text-muted);text-decoration:none">Ratings vs Yield</a> &middot; <a href="/pod-counts" style="color:var(--text-muted);text-decoration:none">Pod Counts vs Yield</a> &middot; <a href="/crop-tour" style="color:var(--text-muted);text-decoration:none">Crop Tour</a> &middot; <a href="/hail-map" style="color:var(--text-muted);text-decoration:none">Hail Map</a> &middot; <a href="/gdu-calculator" style="color:var(--text-muted);text-decoration:none">GDU Calculator</a> &middot; <a href="/planting-date" style="color:var(--text-muted);text-decoration:none">Planting Date</a> &middot; <a href="/fertilizer" style="color:var(--text-muted);text-decoration:none">Fertilizer</a> &middot; <a href="/yield-estimator" style="color:var(--text-muted);text-decoration:none">Yield Estimator</a> &middot; <a href="/field-scout" style="color:var(--text-muted);text-decoration:none">Field Scout</a> &middot; <a href="/fast-facts" style="color:var(--text-muted);text-decoration:none">Reference Tables</a> &middot; <a href="/tools" style="color:var(--text-muted);text-decoration:none">All Tools</a><br>
+        <span style="color:var(--text-dim);font-weight:700">Daily:</span> <a href="/news" style="color:var(--text-muted);text-decoration:none">The Wire</a> &middot; <a href="/daily" style="color:var(--text-muted);text-decoration:none">AGSIST Daily</a> &middot; <a href="/archive" style="color:var(--text-muted);text-decoration:none">Daily Archive</a> &middot; <a href="/scorecard" style="color:var(--text-muted);text-decoration:none">Prediction Bot</a>
+      </nav>
+    </div>
+  </header>
+<!-- /static-nav:header -->
+</div>
   <main id="main" tabindex="-1">
     <div class="info-page">
       <h1>Data Sources</h1>
@@ -128,7 +149,7 @@
         <p><a href="https://www.windy.com" target="_blank" rel="noopener">windy.com</a></p>
       </div>
       <div class="info-card">
-        <h3><svg class="ic-sp" aria-hidden="true"><use href="#sp-map"/></svg> NOAA Drought Monitor</h3>
+        <h3><svg class="ic-sp" aria-hidden="true"><use href="#sp-map"/></svg> U.S. Drought Monitor (NDMC, USDA, NOAA)</h3>
         <p><strong>Used for:</strong> Weekly U.S. Drought Monitor map embed.</p>
         <p><a href="https://droughtmonitor.unl.edu" target="_blank" rel="noopener">droughtmonitor.unl.edu</a></p>
       </div>
@@ -160,7 +181,7 @@
       <h2>USDA Reports</h2>
       <div class="info-card">
         <h3><svg class="ic-sp" aria-hidden="true"><use href="#sp-wheat"/></svg> USDA</h3>
-        <p><strong>Used for:</strong> Report calendar (WASDE, Crop Progress, Grain Stocks, Acreage, Cattle on Feed) via USDA Economic Research Service and NASS APIs.</p>
+        <p><strong>Used for:</strong> Report calendar (WASDE, Crop Progress, Grain Stocks, Acreage, Cattle on Feed), compiled by hand from USDA&rsquo;s published release schedules (OCE/WAOB and the NASS calendar).</p>
         <p><a href="https://www.usda.gov" target="_blank" rel="noopener">usda.gov</a> — public APIs.</p>
       </div>
 
@@ -214,8 +235,8 @@
 
       <h2>Cash Bids</h2>
       <div class="info-card">
-        <h3><svg class="ic-sp" aria-hidden="true"><use href="#sp-tractor"/></svg> Second cash-bid feed</h3>
-        <p>Local elevator cash bids that AGSIST does not read itself come from a second cash-bid feed.</p>
+        <h3><svg class="ic-sp" aria-hidden="true"><use href="#sp-tractor"/></svg> AGSIST elevator network + licensed feed</h3>
+        <p>Cash bids come from AGSIST&rsquo;s own elevator network (bid boards read directly from each elevator) plus a licensed cash-bid feed for elevators AGSIST does not read itself.</p>
       </div>
 
       <p>See a data issue? <a href="/contact">Contact me directly</a>.</p>
@@ -228,7 +249,16 @@
 
     </div>
   </main>
-  <div id="site-footer"></div>
+  <div id="site-footer">
+<!-- static-nav:footer (scripts/inject_static_nav.py; source components/footer-fallback.html) -->
+  <!-- Static crawlable nav: loader.js replaceWith() swaps this for the live footer on JS;
+       non-JS crawlers (Bing, AI) read these links; also a working fallback if the fetch fails.
+       Copied into every root page by scripts/inject_static_nav.py -- edit HERE, then re-run it. -->
+  <nav aria-label="AGSIST site links" style="max-width:1100px;margin:0 auto;padding:1.4rem 1rem;font-family:'JetBrains Mono',monospace;font-size:0.78rem;line-height:2.1;color:var(--text-muted);text-align:center;border-top:1px solid var(--border)">
+    <a href="/corn-futures-prices" style="color:var(--text-muted);text-decoration:none">Corn Futures</a> &middot; <a href="/soybean-futures-prices" style="color:var(--text-muted);text-decoration:none">Soybean Futures</a> &middot; <a href="/wheat-futures-prices" style="color:var(--text-muted);text-decoration:none">Wheat Futures</a> &middot; <a href="/cattle-futures-prices" style="color:var(--text-muted);text-decoration:none">Cattle Futures</a> &middot; <a href="/cash-bids" style="color:var(--text-muted);text-decoration:none">Cash Grain Bids</a> &middot; <a href="/basis" style="color:var(--text-muted);text-decoration:none">Basis vs Normal</a> &middot; <a href="/elevators" style="color:var(--text-muted);text-decoration:none">Elevator Coverage Map</a> &middot; <a href="/cot" style="color:var(--text-muted);text-decoration:none">COT Report</a> &middot; <a href="/ag-odds" style="color:var(--text-muted);text-decoration:none">Ag Prediction Markets</a> &middot; <a href="/markets" style="color:var(--text-muted);text-decoration:none">All Markets</a> &middot; <a href="/cash-rent" style="color:var(--text-muted);text-decoration:none">Cash Rent by County</a> &middot; <a href="/rent/" style="color:var(--text-muted);text-decoration:none">Cash Rent by State</a> &middot; <a href="/farmland-atlas" style="color:var(--text-muted);text-decoration:none">Farmland Atlas</a> &middot; <a href="/cash-lease" style="color:var(--text-muted);text-decoration:none">Cash Farm Lease</a> &middot; <a href="/foreign-land" style="color:var(--text-muted);text-decoration:none">Foreign-Owned Land</a> &middot; <a href="/land-tenure" style="color:var(--text-muted);text-decoration:none">Rented vs Owner-Farmed</a> &middot; <a href="/conditions" style="color:var(--text-muted);text-decoration:none">Crop Conditions Rank</a> &middot; <a href="/conditions-yield" style="color:var(--text-muted);text-decoration:none">Ratings vs Yield</a> &middot; <a href="/usda-quick-stats" style="color:var(--text-muted);text-decoration:none">USDA Crop Data</a> &middot; <a href="/usda-calendar" style="color:var(--text-muted);text-decoration:none">USDA Calendar</a> &middot; <a href="/fast-facts" style="color:var(--text-muted);text-decoration:none">Reference Tables</a> &middot; <a href="/tools" style="color:var(--text-muted);text-decoration:none">Farm Calculators &amp; Tools</a> &middot; <a href="/breakeven" style="color:var(--text-muted);text-decoration:none">Break-Even Calculator</a> &middot; <a href="/spray" style="color:var(--text-muted);text-decoration:none">Spray Advisory</a> &middot; <a href="/drought-monitor" style="color:var(--text-muted);text-decoration:none">Drought Monitor</a> &middot; <a href="/milk-prices" style="color:var(--text-muted);text-decoration:none">Milk Prices</a> &middot; <a href="/tariffs" style="color:var(--text-muted);text-decoration:none">Tariffs</a> &middot; <a href="/news" style="color:var(--text-muted);text-decoration:none">The Wire</a> &middot; <a href="/daily" style="color:var(--text-muted);text-decoration:none">AGSIST Daily</a> &middot; <a href="/archive" style="color:var(--text-muted);text-decoration:none">Daily Archive</a> &middot; <a href="/data-sources" style="color:var(--text-muted);text-decoration:none">Data Sources</a> &middot; <a href="/about" style="color:var(--text-muted);text-decoration:none">About</a> &middot; <a href="/contact" style="color:var(--text-muted);text-decoration:none">Contact</a> &middot; <a href="/sponsor" style="color:var(--text-muted);text-decoration:none">Sponsor</a> &middot; <a href="/accessibility" style="color:var(--text-muted);text-decoration:none">Accessibility</a> &middot; <a href="/privacy" style="color:var(--text-muted);text-decoration:none">Privacy</a> &middot; <a href="/terms" style="color:var(--text-muted);text-decoration:none">Terms</a>
+  </nav>
+<!-- /static-nav:footer -->
+</div>
   <script src="/components/loader.js?v=17" defer></script>
 </body>
 </html>

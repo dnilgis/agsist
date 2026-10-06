@@ -3,8 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#111a0a"><link rel="preload" href="/components/styles.css?v=17" as="style">
-<link rel="stylesheet" href="/components/styles.css?v=17">
+<meta name="theme-color" content="#111a0a"><!-- static-nav:fonts (scripts/inject_static_nav.py) -->
+  <link rel="preload" href="/fonts/inter-400.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/jetbrains-mono-700.woff2" as="font" type="font/woff2" crossorigin>
+  <!-- /static-nav:fonts -->
+  <link rel="preload" href="/components/styles.css?v=18" as="style">
+<link rel="stylesheet" href="/components/styles.css?v=18">
 <link rel="stylesheet" href="/components/sponsor-ad.css?v=1">
 <script src="/components/sponsor-ad.js?v=1"></script>
 <link rel="icon" type="image/x-icon"            href="/img/favicon.ico">
@@ -89,7 +93,7 @@ body{overflow-x:hidden;overflow-x:clip;width:100%;}
 .dv3-hero{padding:1.2rem 0 1rem;border-bottom:1px solid var(--border);margin-bottom:1.4rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;}
 .dv3-hero-left h1{font-family:var(--font-display);font-size:1.7rem;font-weight:800;text-transform:uppercase;color:var(--text);margin:0 0 .2rem;}
 .dv3-hero-left .dv3-eyebrow{display:inline-flex;align-items:center;gap:.4rem;font-family:'JetBrains Mono',monospace;font-size:0.755rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:.3rem;}
-.dv3-hero-left .dv3-eyebrow-dot{width:6px;height:6px;border-radius:50%;background:var(--gold);}
+.dv3-hero-left .dv3-eyebrow-dot{width:6px;height:6px;border-radius:50%;background:var(--gold-fill,var(--gold));}
 .dv3-hero-left .dv3-sub{font-size:.82rem;color:var(--text-dim);line-height:1.55;margin:0;}
 .dv3-hero-meta{font-family:'JetBrains Mono',monospace;font-size:0.765rem;color:var(--text-muted);margin-top:.4rem;letter-spacing:.04em;}
 .dv3-hero-meta b{color:var(--green);font-weight:700;}
@@ -184,7 +188,7 @@ body{overflow-x:hidden;overflow-x:clip;width:100%;}
 .dv3-sec--heat{border-color:rgba(58,139,60,.38)!important;}
 .dv3-sec--heat::after{content:'\1F525 TOP STORY';position:absolute;top:-.55rem;left:.75rem;font-family:'JetBrains Mono',monospace;font-size:0.73rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#fff;background:var(--green);padding:.12rem .55rem;border-radius:2px;}
 .dv3-sec--surprise{border-color:rgba(var(--gold-rgb),.32)!important;}
-.dv3-sec--surprise::before{content:'\26A1 OVERNIGHT SURPRISE';position:absolute;top:-.55rem;right:.75rem;font-family:'JetBrains Mono',monospace;font-size:0.73rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#fff;background:var(--gold);padding:.12rem .55rem;border-radius:2px;}
+.dv3-sec--surprise::before{content:'\26A1 OVERNIGHT SURPRISE';position:absolute;top:-.55rem;right:.75rem;font-family:'JetBrains Mono',monospace;font-size:0.73rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#fff;background:var(--gold-fill,var(--gold));padding:.12rem .55rem;border-radius:2px;}
 
 /* TMYK */
 .dv3-tmyk{background:linear-gradient(135deg,var(--surface) 0%,rgba(74,143,186,.04) 100%);border:2px solid rgba(74,143,186,.22);border-radius:8px;padding:1rem 1.15rem;margin:1rem 0 1.25rem;}
@@ -423,7 +427,24 @@ body{overflow-x:hidden;overflow-x:clip;width:100%;}
   <path d="m6 6 12 12" /></symbol>
 </defs></svg>
 <a href="#main" class="skip">Skip to content</a>
-<div id="site-header"></div>
+<div id="site-header">
+<!-- static-nav:header (scripts/inject_static_nav.py; source components/header-fallback.html) -->
+  <!-- Static crawlable header: loader.js replaceWith() swaps this for the live dropdown nav on JS;
+       non-JS crawlers (Bing, AI) read these links; also a working fallback if the fetch fails.
+       Copied into every root page by scripts/inject_static_nav.py -- edit HERE, then re-run it. -->
+  <header style="border-bottom:1px solid var(--border);background:var(--surface)">
+    <div style="max-width:1100px;margin:0 auto;padding:.7rem 1rem;display:flex;flex-wrap:wrap;align-items:baseline;gap:.4rem 1.1rem">
+      <a href="/" aria-label="AGSIST Home" style="font-family:var(--font-display);font-weight:800;font-size:1.05rem;letter-spacing:.04em;color:var(--text);text-decoration:none">AGSIST</a>
+      <nav aria-label="AGSIST main navigation" style="font-family:'JetBrains Mono',monospace;font-size:0.775rem;line-height:2;color:var(--text-muted)">
+        <span style="color:var(--text-dim);font-weight:700">Markets:</span> <a href="/corn-futures-prices" style="color:var(--text-muted);text-decoration:none">Corn</a> &middot; <a href="/soybean-futures-prices" style="color:var(--text-muted);text-decoration:none">Soybeans</a> &middot; <a href="/wheat-futures-prices" style="color:var(--text-muted);text-decoration:none">Wheat</a> &middot; <a href="/cattle-futures-prices" style="color:var(--text-muted);text-decoration:none">Cattle</a> &middot; <a href="/cash-bids" style="color:var(--text-muted);text-decoration:none">Cash Bids</a> &middot; <a href="/elevators" style="color:var(--text-muted);text-decoration:none">Elevator Coverage Map</a> &middot; <a href="/milk-prices" style="color:var(--text-muted);text-decoration:none">Milk Prices</a> &middot; <a href="/basis" style="color:var(--text-muted);text-decoration:none">Basis vs Normal</a> &middot; <a href="/storage-crunch" style="color:var(--text-muted);text-decoration:none">Storage Crunch</a> &middot; <a href="/cot" style="color:var(--text-muted);text-decoration:none">COT Report</a> &middot; <a href="/ag-odds" style="color:var(--text-muted);text-decoration:none">Prediction Markets</a> &middot; <a href="/tariffs" style="color:var(--text-muted);text-decoration:none">Tariffs</a> &middot; <a href="/usda-quick-stats" style="color:var(--text-muted);text-decoration:none">USDA Crop Data</a> &middot; <a href="/usda-calendar" style="color:var(--text-muted);text-decoration:none">USDA Calendar</a> &middot; <a href="/whats-priced-in" style="color:var(--text-muted);text-decoration:none">What's Priced In</a> &middot; <a href="/whats-priced-in#analyst-board" style="color:var(--text-muted);text-decoration:none">Analyst Estimates</a> &middot; <a href="/markets" style="color:var(--text-muted);text-decoration:none">All Markets</a><br>
+        <span style="color:var(--text-dim);font-weight:700">Costs &amp; Land:</span> <a href="/breakeven" style="color:var(--text-muted);text-decoration:none">Break-Even</a> &middot; <a href="/presell-calculator" style="color:var(--text-muted);text-decoration:none">Pre-Sell Calculator</a> &middot; <a href="/grain-bin-calculator" style="color:var(--text-muted);text-decoration:none">Grain Bin</a> &middot; <a href="/harvest-price-tracker" style="color:var(--text-muted);text-decoration:none">Harvest Price Tracker</a> &middot; <a href="/farmland-atlas" style="color:var(--text-muted);text-decoration:none">Farmland Atlas</a> &middot; <a href="/cash-rent" style="color:var(--text-muted);text-decoration:none">Cash Rent by County</a> &middot; <a href="/rent/" style="color:var(--text-muted);text-decoration:none">Cash Rent by State</a> &middot; <a href="/cash-lease" style="color:var(--text-muted);text-decoration:none">Cash Farm Lease</a> &middot; <a href="/foreign-land" style="color:var(--text-muted);text-decoration:none">Foreign-Owned Land</a> &middot; <a href="/land-tenure" style="color:var(--text-muted);text-decoration:none">Rented vs Owner-Farmed</a> &middot; <a href="/farm-bill" style="color:var(--text-muted);text-decoration:none">Farm Bill</a><br>
+        <span style="color:var(--text-dim);font-weight:700">Field:</span> <a href="/spray" style="color:var(--text-muted);text-decoration:none">Spray Advisory</a> &middot; <a href="/urea" style="color:var(--text-muted);text-decoration:none">Urea Volatilization Risk</a> &middot; <a href="/drought-monitor" style="color:var(--text-muted);text-decoration:none">Drought Monitor</a> &middot; <a href="/conditions" style="color:var(--text-muted);text-decoration:none">Crop Conditions Rank</a> &middot; <a href="/conditions-yield" style="color:var(--text-muted);text-decoration:none">Ratings vs Yield</a> &middot; <a href="/pod-counts" style="color:var(--text-muted);text-decoration:none">Pod Counts vs Yield</a> &middot; <a href="/crop-tour" style="color:var(--text-muted);text-decoration:none">Crop Tour</a> &middot; <a href="/hail-map" style="color:var(--text-muted);text-decoration:none">Hail Map</a> &middot; <a href="/gdu-calculator" style="color:var(--text-muted);text-decoration:none">GDU Calculator</a> &middot; <a href="/planting-date" style="color:var(--text-muted);text-decoration:none">Planting Date</a> &middot; <a href="/fertilizer" style="color:var(--text-muted);text-decoration:none">Fertilizer</a> &middot; <a href="/yield-estimator" style="color:var(--text-muted);text-decoration:none">Yield Estimator</a> &middot; <a href="/field-scout" style="color:var(--text-muted);text-decoration:none">Field Scout</a> &middot; <a href="/fast-facts" style="color:var(--text-muted);text-decoration:none">Reference Tables</a> &middot; <a href="/tools" style="color:var(--text-muted);text-decoration:none">All Tools</a><br>
+        <span style="color:var(--text-dim);font-weight:700">Daily:</span> <a href="/news" style="color:var(--text-muted);text-decoration:none">The Wire</a> &middot; <a href="/daily" style="color:var(--text-muted);text-decoration:none">AGSIST Daily</a> &middot; <a href="/archive" style="color:var(--text-muted);text-decoration:none">Daily Archive</a> &middot; <a href="/scorecard" style="color:var(--text-muted);text-decoration:none">Prediction Bot</a>
+      </nav>
+    </div>
+  </header>
+<!-- /static-nav:header -->
+</div>
 <main id="main" tabindex="-1" class="dv3-page">
 
   <div class="dv3-hero">
@@ -446,7 +467,22 @@ body{overflow-x:hidden;overflow-x:clip;width:100%;}
     <a href="/archive" style="font-size:0.77rem;color:var(--gold);font-weight:600;text-decoration:none;white-space:nowrap;">View all &#x2192;</a>
   </div>
   <div class="dv3-arc-grid" id="dv3-arc-grid">
-    <div style="grid-column:1/-1;color:var(--text-muted);font-size:.82rem;padding:.5rem 0">Loading archive&hellip;</div>
+<!--SEED:dailyrecent-->
+<a href="/daily/2026-10-06" class="dv3-arc-card" title="Tue Oct 6 briefing"><div class="dv3-arc-card-head"><span class="dv3-arc-card-date">Tue Oct 6</span><span class="dv3-arc-card-badge wkday">Market day</span></div><div class="dv3-arc-card-hl">Corn holds $5 as grain stocks come in heavy</div></a>
+<a href="/daily/2026-10-05" class="dv3-arc-card" title="Mon Oct 5 briefing"><div class="dv3-arc-card-head"><span class="dv3-arc-card-date">Mon Oct 5</span><span class="dv3-arc-card-badge wkday">Market day</span></div><div class="dv3-arc-card-hl">Corn back above $5 as rain keeps combines parked</div></a>
+<a href="/daily/2026-10-04" class="dv3-arc-card" title="Sun Oct 4 briefing"><div class="dv3-arc-card-head"><span class="dv3-arc-card-date">Sun Oct 4</span><span class="dv3-arc-card-badge wkend">Weekend</span></div><div class="dv3-arc-card-hl">Corn closes under $5 with harvest stuck in the rain</div></a>
+<a href="/daily/2026-10-03" class="dv3-arc-card" title="Sat Oct 3 briefing"><div class="dv3-arc-card-head"><span class="dv3-arc-card-date">Sat Oct 3</span><span class="dv3-arc-card-badge wkend">Weekend</span></div><div class="dv3-arc-card-hl">Crude splits from diesel as harvest stalls in the rain</div></a>
+<a href="/daily/2026-10-02" class="dv3-arc-card" title="Fri Oct 2 briefing"><div class="dv3-arc-card-head"><span class="dv3-arc-card-date">Fri Oct 2</span><span class="dv3-arc-card-badge wkday">Market day</span></div><div class="dv3-arc-card-hl">Crude drops 3.5% as grains grind higher on no news</div></a>
+<a href="/daily/2026-10-01" class="dv3-arc-card" title="Thu Oct 1 briefing"><div class="dv3-arc-card-head"><span class="dv3-arc-card-date">Thu Oct 1</span><span class="dv3-arc-card-badge wkday">Market day</span></div><div class="dv3-arc-card-hl">Corn runs 1.1% ahead of stocks, crude up on Gulf flows</div></a>
+<a href="/daily/2026-09-30" class="dv3-arc-card" title="Wed Sep 30 briefing"><div class="dv3-arc-card-head"><span class="dv3-arc-card-date">Wed Sep 30</span><span class="dv3-arc-card-badge wkday">Market day</span></div><div class="dv3-arc-card-hl">Grains tick higher ahead of stocks data at 11 CT</div></a>
+<a href="/daily/2026-09-29" class="dv3-arc-card" title="Tue Sep 29 briefing"><div class="dv3-arc-card-head"><span class="dv3-arc-card-date">Tue Sep 29</span><span class="dv3-arc-card-badge wkday">Market day</span></div><div class="dv3-arc-card-hl">Crude pulls back 2.1% as Yanbu reopens</div></a>
+<a href="/daily/2026-09-28" class="dv3-arc-card" title="Mon Sep 28 briefing"><div class="dv3-arc-card-head"><span class="dv3-arc-card-date">Mon Sep 28</span><span class="dv3-arc-card-badge wkday">Market day</span></div><div class="dv3-arc-card-hl">Crude runs to $96 as beans slip again</div></a>
+<a href="/daily/2026-09-26" class="dv3-arc-card" title="Sat Sep 26 briefing"><div class="dv3-arc-card-head"><span class="dv3-arc-card-date">Sat Sep 26</span><span class="dv3-arc-card-badge wkend">Weekend</span></div><div class="dv3-arc-card-hl">Grains climb Friday, cattle stall before COF week</div></a>
+<a href="/daily/2026-09-25" class="dv3-arc-card" title="Fri Sep 25 briefing"><div class="dv3-arc-card-head"><span class="dv3-arc-card-date">Fri Sep 25</span><span class="dv3-arc-card-badge wkday">Market day</span></div><div class="dv3-arc-card-hl">Grains sit still, cattle slip again before COF</div></a>
+<a href="/daily/2026-09-24" class="dv3-arc-card" title="Thu Sep 24 briefing"><div class="dv3-arc-card-head"><span class="dv3-arc-card-date">Thu Sep 24</span><span class="dv3-arc-card-badge wkday">Market day</span></div><div class="dv3-arc-card-hl">Crude runs to $93 as Hormuz traffic stays thin</div></a>
+<a href="/daily/2026-09-23" class="dv3-arc-card" title="Wed Sep 23 briefing"><div class="dv3-arc-card-head"><span class="dv3-arc-card-date">Wed Sep 23</span><span class="dv3-arc-card-badge wkday">Market day</span></div><div class="dv3-arc-card-hl">Grains give back the China pop ahead of Xi summit</div></a>
+<a href="/daily/2026-09-22" class="dv3-arc-card" title="Tue Sep 22 briefing"><div class="dv3-arc-card-head"><span class="dv3-arc-card-date">Tue Sep 22</span><span class="dv3-arc-card-badge wkday">Market day</span></div><div class="dv3-arc-card-hl">Corn rallies on China hopes; cattle jump 2.4%</div></a>
+<!--/SEED:dailyrecent-->
   </div>
 
   <div class="dv3-arc-label" style="margin-top:2rem"><span>FAQ</span></div>
@@ -478,7 +514,16 @@ body{overflow-x:hidden;overflow-x:clip;width:100%;}
   </div>
 </div>
 
-<div id="site-footer"></div>
+<div id="site-footer">
+<!-- static-nav:footer (scripts/inject_static_nav.py; source components/footer-fallback.html) -->
+  <!-- Static crawlable nav: loader.js replaceWith() swaps this for the live footer on JS;
+       non-JS crawlers (Bing, AI) read these links; also a working fallback if the fetch fails.
+       Copied into every root page by scripts/inject_static_nav.py -- edit HERE, then re-run it. -->
+  <nav aria-label="AGSIST site links" style="max-width:1100px;margin:0 auto;padding:1.4rem 1rem;font-family:'JetBrains Mono',monospace;font-size:0.78rem;line-height:2.1;color:var(--text-muted);text-align:center;border-top:1px solid var(--border)">
+    <a href="/corn-futures-prices" style="color:var(--text-muted);text-decoration:none">Corn Futures</a> &middot; <a href="/soybean-futures-prices" style="color:var(--text-muted);text-decoration:none">Soybean Futures</a> &middot; <a href="/wheat-futures-prices" style="color:var(--text-muted);text-decoration:none">Wheat Futures</a> &middot; <a href="/cattle-futures-prices" style="color:var(--text-muted);text-decoration:none">Cattle Futures</a> &middot; <a href="/cash-bids" style="color:var(--text-muted);text-decoration:none">Cash Grain Bids</a> &middot; <a href="/basis" style="color:var(--text-muted);text-decoration:none">Basis vs Normal</a> &middot; <a href="/elevators" style="color:var(--text-muted);text-decoration:none">Elevator Coverage Map</a> &middot; <a href="/cot" style="color:var(--text-muted);text-decoration:none">COT Report</a> &middot; <a href="/ag-odds" style="color:var(--text-muted);text-decoration:none">Ag Prediction Markets</a> &middot; <a href="/markets" style="color:var(--text-muted);text-decoration:none">All Markets</a> &middot; <a href="/cash-rent" style="color:var(--text-muted);text-decoration:none">Cash Rent by County</a> &middot; <a href="/rent/" style="color:var(--text-muted);text-decoration:none">Cash Rent by State</a> &middot; <a href="/farmland-atlas" style="color:var(--text-muted);text-decoration:none">Farmland Atlas</a> &middot; <a href="/cash-lease" style="color:var(--text-muted);text-decoration:none">Cash Farm Lease</a> &middot; <a href="/foreign-land" style="color:var(--text-muted);text-decoration:none">Foreign-Owned Land</a> &middot; <a href="/land-tenure" style="color:var(--text-muted);text-decoration:none">Rented vs Owner-Farmed</a> &middot; <a href="/conditions" style="color:var(--text-muted);text-decoration:none">Crop Conditions Rank</a> &middot; <a href="/conditions-yield" style="color:var(--text-muted);text-decoration:none">Ratings vs Yield</a> &middot; <a href="/usda-quick-stats" style="color:var(--text-muted);text-decoration:none">USDA Crop Data</a> &middot; <a href="/usda-calendar" style="color:var(--text-muted);text-decoration:none">USDA Calendar</a> &middot; <a href="/fast-facts" style="color:var(--text-muted);text-decoration:none">Reference Tables</a> &middot; <a href="/tools" style="color:var(--text-muted);text-decoration:none">Farm Calculators &amp; Tools</a> &middot; <a href="/breakeven" style="color:var(--text-muted);text-decoration:none">Break-Even Calculator</a> &middot; <a href="/spray" style="color:var(--text-muted);text-decoration:none">Spray Advisory</a> &middot; <a href="/drought-monitor" style="color:var(--text-muted);text-decoration:none">Drought Monitor</a> &middot; <a href="/milk-prices" style="color:var(--text-muted);text-decoration:none">Milk Prices</a> &middot; <a href="/tariffs" style="color:var(--text-muted);text-decoration:none">Tariffs</a> &middot; <a href="/news" style="color:var(--text-muted);text-decoration:none">The Wire</a> &middot; <a href="/daily" style="color:var(--text-muted);text-decoration:none">AGSIST Daily</a> &middot; <a href="/archive" style="color:var(--text-muted);text-decoration:none">Daily Archive</a> &middot; <a href="/data-sources" style="color:var(--text-muted);text-decoration:none">Data Sources</a> &middot; <a href="/about" style="color:var(--text-muted);text-decoration:none">About</a> &middot; <a href="/contact" style="color:var(--text-muted);text-decoration:none">Contact</a> &middot; <a href="/sponsor" style="color:var(--text-muted);text-decoration:none">Sponsor</a> &middot; <a href="/accessibility" style="color:var(--text-muted);text-decoration:none">Accessibility</a> &middot; <a href="/privacy" style="color:var(--text-muted);text-decoration:none">Privacy</a> &middot; <a href="/terms" style="color:var(--text-muted);text-decoration:none">Terms</a>
+  </nav>
+<!-- /static-nav:footer -->
+</div>
 <script src="/components/loader.js?v=17" defer></script>
 <script>
 (function(){
@@ -982,7 +1027,8 @@ function renderArchive(){
     .then(function(r){return r.ok?r.json():null;})
     .then(function(manifest){
       if(!manifest||!manifest.briefings||!manifest.briefings.length){
-        grid.innerHTML='<p style="color:var(--text-muted);font-size:.82rem;grid-column:1/-1">Archive not yet available.</p>';
+        // Keep the baked recent list (SEED:dailyrecent) if there is one.
+        if(!grid.querySelector('a.dv3-arc-card'))grid.innerHTML='<p style="color:var(--text-muted);font-size:.82rem;grid-column:1/-1">Archive not yet available.</p>';
         return;
       }
       // Hero meta: briefings published count
@@ -1021,7 +1067,7 @@ function renderArchive(){
       grid.innerHTML=html;
     })
     .catch(function(){
-      grid.innerHTML='<p style="color:var(--text-muted);font-size:.82rem;grid-column:1/-1">Archive unavailable.</p>';
+      if(!grid.querySelector('a.dv3-arc-card'))grid.innerHTML='<p style="color:var(--text-muted);font-size:.82rem;grid-column:1/-1">Archive unavailable.</p>';
     });
 }
 

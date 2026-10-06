@@ -159,7 +159,9 @@ def numbers_el(rows):
     body = []
     for r in rows:
         u = (" " + r["unit"]) if r.get("unit") else ""
-        exp = DASH if r.get("expected") is None else (_sig(r["expected"]) + u)
+        exp = ((DASH + ('<div style="font-size:.72rem;color:var(--wp-mut)">'
+                        + _esc4(r["expected_why"]) + "</div>" if r.get("expected_why") else ""))
+               if r.get("expected") is None else (_sig(r["expected"]) + u))
         rng = ('<div style="font-size:.72rem;color:var(--wp-mut)">range '
                + _sig(r["low"]) + " to " + _sig(r["high"]) + "</div>") \
             if (r.get("low") is not None and r.get("high") is not None) else ""
@@ -194,9 +196,10 @@ def numbers_el(rows):
     src = next((r.get("source") for r in rows if r.get("source")), None)
     note = ('<div class="src">Trade estimates are a published pre-report survey, typed '
             'from the source and never computed here. <a href="' + _esc4(src) + '" '
-            'rel="nofollow noopener" target="_blank">Survey source</a>. A print below the '
-            'trade estimate is bullish, above it bearish; inside the band either side, '
-            'in line.</div>') if src else ""
+            'rel="nofollow noopener" target="_blank">Survey source</a>. Graded against the '
+            'survey\u2019s low-high range when it is on file: below it bullish, above it '
+            'bearish, inside it in line. With no range, against the trade average: within '
+            '0.5% for a yield, 2% otherwise.</div>') if src else ""
     waiting = all(r.get("actual") is None for r in rows)
     head = ("USDA prints at 12:00 PM ET. This fills in on its own." if waiting
             else "Graded against the pre-report survey.")
@@ -288,12 +291,20 @@ def result_banner(lr):
         return ""  # mirrors the JS: banner only lives ~5 days, then history has it
     b = lr.get("biggest_surprise") or {}
     sc = "bull" if b.get("surprise") == "bullish" else ("bear" if b.get("surprise") == "bearish" else "flat")
-    if lr.get("all_in_line"):
+    # metric_count is the GRADED count; a figure with no trade estimate is
+    # neither in line nor a surprise, so it is named beside the count instead.
+    # Mirrors resultBanner() in whats-priced-in.html.
+    ung = f' ({lr["ungraded_count"]} had no trade estimate)' if lr.get("ungraded_count") else ""
+    miss = (lr.get("metric_count") or 0) - (lr.get("in_line_count") or 0)
+    if not lr.get("metric_count"):
+        sum_txt = f"No figure in this report had a trade estimate to grade it against{ung}."
+    elif lr.get("all_in_line"):
         sum_txt = ("Landed in line across the board &mdash; no real surprise versus "
-                   "what the trade had priced in.")
+                   f"what the trade had priced in{ung}.")
     else:
-        sum_txt = (f'{lr["in_line_count"]} of {lr["metric_count"]} figures landed in line '
-                   f'with the trade. The one that didn’t:')
+        sum_txt = (f'{lr["in_line_count"]} of {lr["metric_count"]} graded figures landed in line '
+                   f'with the trade{ung}. '
+                   + ("The biggest miss:" if miss > 1 else "The one that didn’t:"))
     big = ""
     if b.get("metric") and not lr.get("all_in_line"):
         gp = ""
@@ -304,7 +315,7 @@ def result_banner(lr):
         big = (
             '<div class="wp-res-big">'
             f'<div class="wp-res-row"><span class="wp-res-metric">{esc(b["metric"])}</span>'
-            f'<span class="wp-res-tag {sc}">{b.get("surprise") or "in line"}</span></div>'
+            f'<span class="wp-res-tag {sc}">{b.get("surprise") or "— no trade estimate"}</span></div>'
             f'<div class="wp-res-nums"><b>{num(b.get("actual"), b.get("unit"))}</b> actual &middot; '
             f'{num(b.get("expected"), b.get("unit"))} expected{gp}</div>'
             f'{reaction}</div>'
@@ -394,6 +405,19 @@ def spread_note(r):
     return u'<span class="as-spread">calls ran %.2f\u2013%.2f%%</span>' % (lo, hi)
 
 
+def derived_note(r):
+    """A MIDPOINT WE COMPUTED, SAID ON THE BOARD ROW TOO. Port of derivedNote()
+    in whats-priced-in.html. The per-report rows already mark it; the board
+    averaged the same figure and said nothing."""
+    d = r.get("derived_n") or 0
+    if not d:
+        return ""
+    t = (u"midpoint of a stated range" if d == r.get("n")
+         else u"%d of %d a midpoint of a stated range" % (d, r.get("n") or 0))
+    return (u'<span class="as-res-derived" title="The forecaster published a range, not a '
+            u'point. AGSIST scored its midpoint so the call could be scored at all.">%s</span>' % t)
+
+
 def wins_badge(r):
     """CLOSEST OF WHO FILED IS NOT A WIN. Both badges this board had ever
     awarded sat on forecasts FURTHER from the print than the free consensus
@@ -448,12 +472,12 @@ def board_row(r, rank, min_n, show_rank):
             u'<td data-label="Analyst"><span class="who">%s</span>%s<span class="firm">%s</span>%s</td>'
             u'<td class="num" data-label="Calls">%s</td>'
             u'<td class="num" data-label="Avg error"><span class="as-cell">'
-            u'<span class="as-acc">%.2f%%</span>%s</span></td>'
+            u'<span class="as-acc">%.2f%%</span>%s%s</span></td>'
             u'<td class="num" data-label="Beat trade">%s</td>'
             u'<td class="num" data-label="Bias">%s</td></tr>'
             % ("" if qualified else ' class="as-building"', rk,
                esc(r["analyst"]), ours, esc(r["firm"]), wins_badge(r),
-               calls, r["mape"], spread_note(r), beat, bias_cell(r.get("bias"))))
+               calls, r["mape"], spread_note(r), derived_note(r), beat, bias_cell(r.get("bias"))))
 
 
 ORD_MIN = 10
@@ -733,12 +757,19 @@ def cot_summary(d):
         if not isinstance(c, dict) or c.get("net") is None:
             continue
         net, prev = c["net"], c.get("prev")
-        side = "net long" if net >= 0 else "net short"
+        # The pipeline's side (fetch_cot.side_of), so this crawler text and the
+        # page's cards cannot disagree about a position inside the flat band.
+        sd = c.get("side") or ("long" if net >= 0 else "short")
         chg = ""
         if prev is not None:
             delta = net - prev
             chg = f', {"+" if delta >= 0 else "−"}{abs(delta):,} on the week'
-        rows.append(f'<b>{lbl}</b> funds {side} {abs(net):,} contracts{chg}')
+        if sd == "flat":
+            side_txt = (f"funds near flat (net {'long' if net >= 0 else 'short'} {abs(net):,} "
+                        f"contracts, under {d.get('flat_oi_pct', 2.0)}% of open interest)")
+        else:
+            side_txt = f"funds net {sd} {abs(net):,} contracts"
+        rows.append(f'<b>{lbl}</b> {side_txt}{chg}')
     if not rows:
         return ""
     return (f'Managed-money positioning as of the <b>{esc(d.get("report_date", ""))}</b> CFTC report: '
@@ -783,6 +814,41 @@ def bake_agodds():
     return orig, src, AO_HTML
 
 
+# ── ONE PRINT, ONE VERDICT, ACROSS THE TWO FILES THIS PAGE READS ─────────────
+#
+# whats-priced-in.json (track record, report strip) and analyst-scorecard.json
+# ("Scored, by report") are written by two builders and rendered on one page.
+# On 2026-10-06 they disagreed about September 2026 soybean yield: IN LINE in
+# the track record (range-first, 52.8 inside 51.5-53.3) and BEARISH under the
+# forecaster scores (0.5% band only). Both call report_bands.surprise; one was
+# not passing it the range. This compares every (report date, metric label) the
+# two files share and --check fails on any difference, so the next drift is a
+# red run instead of a page that contradicts itself.
+def verdict_conflicts(wpi, asd):
+    """[(date, label, wpi_verdict, scorecard_verdict)] wherever they differ."""
+    mine = {}
+    for r in (wpi or {}).get("history") or []:
+        if r.get("date") and r.get("metric"):
+            mine.setdefault((r["date"], r["metric"]), set()).add(r.get("surprise") or "")
+    for blk in ((wpi or {}).get("latest_result"), (wpi or {}).get("upcoming")):
+        for n in (blk or {}).get("numbers") or []:
+            if blk.get("date") and n.get("label") and n.get("actual") is not None:
+                mine.setdefault((blk["date"], n["label"]), set()).add(n.get("surprise") or "")
+    out = []
+    for rep in (asd or {}).get("reports") or []:
+        for m in rep.get("metrics") or []:
+            k = (rep.get("date"), m.get("label"))
+            theirs = m.get("surprise") or ""
+            for v in sorted(mine.get(k, ())):
+                if v != theirs:
+                    out.append((k[0], k[1], v, theirs))
+    # and the whats-priced-in file must agree with itself
+    for k, vs in mine.items():
+        if len(vs) > 1:
+            out.append((k[0], k[1], " / ".join(sorted(vs)), "(within whats-priced-in.json)"))
+    return out
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--check", action="store_true", help="verify only; exit 1 if stale")
@@ -804,8 +870,19 @@ def main():
                 print(f"Baked {fname}.")
         else:
             print(f"{fname} already in sync.")
-    if args.check and stale:
-        print(f"STALE: {', '.join(stale)} — run prerender_wpi_scorecard.py")
+    with open(WPI_JSON, encoding="utf-8") as f:
+        _wpi = json.load(f)
+    with open(AS_JSON, encoding="utf-8") as f:
+        _asd = json.load(f)
+    conflicts = verdict_conflicts(_wpi, _asd)
+    for c in conflicts:
+        print("VERDICT CONFLICT: %s %s: whats-priced-in.json says %r, "
+              "analyst-scorecard.json says %r" % c)
+    if not conflicts:
+        print("Verdicts agree across whats-priced-in.json and analyst-scorecard.json.")
+    if args.check and (stale or conflicts):
+        if stale:
+            print(f"STALE: {', '.join(stale)} — run prerender_wpi_scorecard.py")
         sys.exit(1)
 
 

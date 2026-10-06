@@ -134,6 +134,29 @@ def front_key(commodity, quotes, today):
         return k
     return None
 
+def _carry_dates(cont, f, data, key, fields=("close_date","prev_date")):
+    """A REPAIRED ALIAS CARRIES ITS SOURCE'S DATES, AND ITS SOURCE'S AGE.
+    2026-10-06: `meal` was repaired from meal-oct26 -- whose close was the Oct 5
+    settle -- but kept the continuous ticker's own close_date 2026-10-06, so an
+    Oct 5 price was published stamped as Oct 6 with stale_keys empty. The
+    session date is what the alias itself claimed (its own close_date before
+    repair, else the feed's fetched day); a source older than that is a stale
+    quote and is tagged and listed as one. Returns True when marked stale."""
+    session = cont.get("close_date") or str(data.get("fetched") or "")[:10] or None
+    for k in fields:
+        if k in f or k in cont:
+            cont[k] = f.get(k)
+    src_day = f.get("close_date")
+    if src_day and session and src_day < session:
+        cont["stale"] = True
+        cont["stale_since"] = cont.get("stale_since") or f.get("stale_since") or session
+        cont["stale_reason"] = "repaired-from-older-session"
+        sk = data.setdefault("stale_keys", [])
+        if key not in sk:
+            sk.append(key)
+        return True
+    return False
+
 def run(data, today=None, repair=False):
     today=today or datetime.now(timezone.utc)
     quotes=data.get("quotes",{})
@@ -209,10 +232,13 @@ def run(data, today=None, repair=False):
                  %(commodity, cont.get("ticker"), c_close, fk, f.get("ticker"), f_close, rel*100))
             if repair:
                 orig={k:cont.get(k) for k in ("ticker","close","open","netChange","pctChange")}
+                orig["close_date"]=cont.get("close_date"); orig["prev_date"]=cont.get("prev_date")
                 cont.update({"close":f["close"],"open":f.get("open"),
                              "netChange":f.get("netChange"),"pctChange":f.get("pctChange"),
                              "repaired_from":fk,"repair_reason":"continuous-roll-contamination","_orig":orig})
-                REPAIR("contamination",msg+"  -> repaired to track "+fk)
+                old = _carry_dates(cont, f, data, commodity)
+                REPAIR("contamination",msg+"  -> repaired to track "+fk
+                       +("  (source settle %s is older than the session: marked stale)"%f.get("close_date") if old else ""))
             else:
                 FAIL("contamination",msg)
             continue
@@ -235,10 +261,14 @@ def run(data, today=None, repair=False):
                    cont.get("netChange")))
             if repair:
                 orig={k:cont.get(k) for k in ("ticker","close","open","netChange","pctChange")}
+                orig["prev_date"]=cont.get("prev_date")
                 cont.update({"open":f.get("open"),"netChange":f.get("netChange"),
                              "pctChange":f.get("pctChange"),
                              "repaired_from":fk,"repair_reason":"prior-close-roll-contamination",
                              "_orig":orig})
+                # Only the prior close is taken from the source here; its date goes with it.
+                if "prev_date" in f or "prev_date" in cont:
+                    cont["prev_date"]=f.get("prev_date")
                 REPAIR("prior-close",msg+"  -> change fields repaired from "+fk)
             else:
                 FAIL("prior-close",msg)

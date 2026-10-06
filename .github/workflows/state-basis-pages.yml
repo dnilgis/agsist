@@ -1,0 +1,61 @@
+name: state-basis-pages
+
+# Rebuilds /basis/<state> from the AGSIST elevator network ONLY
+# (dnilgis/bids data/merged-all.json + data/index.json, read from the same
+# Pages URL scripts/fetch_bids.py reads). No Barchart key is passed to this job
+# and the script never opens data/bids.json.
+#
+# Week-over-week reads the bids repo's own committed merged-all.json from ~7
+# days back via the GitHub API; if that fails the pages omit the change rather
+# than estimate it.
+#
+# The pages are MACHINE-OWNED: edit scripts/build_state_basis_pages.py, never
+# basis/*.html. basis/_indexable.txt lists the URLs that pass the thin-page
+# guard, for sitemap.xml (this job does not write the sitemap).
+#
+# Three weekday runs: after the morning boards post, midday, and after the
+# close. Off :00/:30 to stay out of the GitHub cron pile-up.
+on:
+  schedule:
+    - cron: "41 13,17,21 * * 1-5"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: state-basis-pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Selftest (gate)
+        run: python scripts/build_state_basis_pages.py --selftest
+
+      - name: Build pages from the network feed
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python scripts/build_state_basis_pages.py
+
+      - name: Commit if changed
+        run: |
+          git config user.name "AGSIST Bot"
+          git config user.email "bot@agsist.com"
+          # list newly indexable states (a state crosses the 5-elevator bar);
+          # basis pages change every run, so their lastmod moving is honest
+          python scripts/update_sitemap.py --add $(cat basis/_indexable.txt) --priority 0.7 --changefreq daily
+          git add basis sitemap.xml
+          if git diff --staged --quiet; then echo "no change"; exit 0; fi
+          git commit -m "pages: rebuild /basis state basis pages from the elevator network"
+          # rebase onto the branch this run started from (main on schedule)
+          git pull --rebase --autostash origin "${GITHUB_REF_NAME}" || true
+          git push origin "HEAD:${GITHUB_REF_NAME}"

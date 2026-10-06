@@ -13,7 +13,9 @@ rent/index.html -> /rent/. No collision with /cash-rent (cash-rent.html).
 Honesty rules carried in:
   - YoY and 10-yr deltas use MATCHED counties only (both years published) —
     composition drift would otherwise invent a trend.
-  - 2015 labeled "no survey"; other missing years "not published". No line
+  - 2015 and 2018 labeled "no survey" (NO_SURVEY_YEARS, imported from
+    fetch_cash_rent.py so there is one list); other missing years "not
+    published". No line
     is drawn across a gap.
   - Primary land type per state is whichever has the most 2025 counties
     (AZ/NV are irrigated states) and every table/stat SAYS which it is.
@@ -30,6 +32,9 @@ import json
 import os
 import statistics
 import sys
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from fetch_cash_rent import NO_SURVEY_YEARS  # noqa: E402  (stdlib-only module, main() guarded)
 
 DATA_DIR = "data/cash-rent"
 OUT_DIR = "rent"
@@ -77,6 +82,33 @@ def rent_verdict(yoy):
 
 def slug(name):
     return name.lower().replace(" ", "-")
+
+
+def article(word):
+    """'a' or 'an' by the sound of the word: an Iowa lease, a Utah lease."""
+    w = word.strip()
+    if not w:
+        return "a"
+    if w.lower().startswith(("uta", "uni", "use", "usu")):  # Utah: 'yoo' sound
+        return "a"
+    return "an" if w[0].lower() in "aeio" else "a"
+
+
+ATLAS_OUT = "farmland-atlas"
+
+
+def atlas_slugs(root="."):
+    """{fips: 'iowa/story-county'} from the Farmland Atlas builder's own World,
+    so a rent-page link lands on the exact page that builder writes. Empty
+    (and a warning) if the atlas data can't be read -- the table then prints
+    plain names rather than links that might 404."""
+    try:
+        import build_atlas_pages as BA  # noqa: E402  (same scripts/ dir)
+        W = BA.World(root)
+        return dict(W.slug)
+    except Exception as e:  # pragma: no cover
+        print(f"WARN: atlas slugs unavailable ({type(e).__name__}: {e}); county names left unlinked", file=sys.stderr)
+        return {}
 
 
 def esc(s):
@@ -146,7 +178,8 @@ def state_stats(d):
             hist.append({"y": y, "v": med(vals), "n": len(vals)})
         else:
             hist.append({"y": y, "v": None,
-                         "why": "no survey" if y in d.get("no_survey_years", []) else "not published"})
+                         "why": "no survey" if (y in NO_SURVEY_YEARS or y in d.get("no_survey_years", []))
+                                else "not published"})
     ranked = sorted(cur.items(), key=lambda kv: -kv[1])
     return {
         "yr": yr_latest, "primary": primary, "have_types": have_types,
@@ -169,8 +202,8 @@ def head(title, desc, path, jsonld):
   <!-- 2026-09-30: fonts are self-hosted in styles.css now, no preconnect needed -->
   <script>/* agsist-ga-guard 2026-10-01: Google Analytics loads only when the browser sends no Global Privacy Control or Do Not Track signal and the off switch on /privacy is not set. dataLayer and gtag always exist, so page code that calls them never throws. */(function(w,d,n){{var off=false,v,i,s;w.dataLayer=w.dataLayer||[];if(typeof w.gtag!=='function'){{w.gtag=function(){{w.dataLayer.push(arguments);}};}}try{{off=w.localStorage.getItem('agsist-ga-off')==='1';}}catch(e){{}}if(n.globalPrivacyControl===true){{off=true;}}v=[n.doNotTrack,w.doNotTrack,n.msDoNotTrack];for(i=0;i<v.length;i++){{if(v[i]==='1'||v[i]==='yes'){{off=true;}}}}w.agsistGaOff=off;w.gtag('set','allow_google_signals',false);w.gtag('set','allow_ad_personalization_signals',false);if(off){{return;}}s=d.createElement('script');s.async=true;s.src='https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H';(d.head||d.documentElement).appendChild(s);}})(window,document,navigator);</script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){{dataLayer.push(arguments);}}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');function gaEvent(n,p){{try{{gtag('event',n,p||{{}});}}catch(e){{}}}}</script>
-  <link rel="preload" href="/components/styles.css?v=17" as="style">
-  <link rel="stylesheet" href="/components/styles.css?v=17">
+  <link rel="preload" href="/components/styles.css?v=18" as="style">
+  <link rel="stylesheet" href="/components/styles.css?v=18">
   <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
   <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
@@ -199,6 +232,8 @@ def head(title, desc, path, jsonld):
   <style>
     .rs-wrap{{max-width:1060px;margin:0 auto;padding:0 16px}}
     .rs-hero{{display:flex;flex-wrap:wrap;gap:14px;margin:14px 0}}
+    /* 2026-10-06: these panels stay dark in light mode; gold inside them stays bright */
+    [data-theme="light"] .rs-stat,[data-theme="light"] .rs-note,[data-theme="light"] .rh-tile,[data-theme="light"] div[style*="background:#101415"]{{--gold:#d4a23f;--gold-fill:#d4a23f;--brand:#d4a23f;--brand-fill:#d4a23f}}
     .rs-stat{{background:#101415;border:1px solid #1a1f20;border-radius:10px;padding:12px 16px;min-width:150px;flex:1}}
     .rs-stat .v{{font-family:'JetBrains Mono',monospace;font-size:1.45rem;color:#e6ebe9}}
     .rs-stat .l{{font-size:.72rem;color:#8a948f;letter-spacing:.05em;text-transform:uppercase;margin-top:2px}}
@@ -219,13 +254,13 @@ def head(title, desc, path, jsonld):
     .rs-bar .gap{{color:#5a6467;font-style:italic;font-size:.74rem}}
     .rs-note{{background:#101415;border:1px solid #1a1f20;border-left:3px solid #d4a23f;border-radius:8px;padding:12px 15px;font-size:.85rem;line-height:1.65;color:#8a948f;margin:14px 0}}
     .rs-note b{{color:#e6ebe9}}
-    .rs-links a{{color:#d4a23f}}
+    .rs-links a{{color:var(--gold)}}
     .rs-cloud{{font-size:.78rem;line-height:2;color:#8a948f}}
     .rs-cloud a{{color:#8a948f;text-decoration:none;border-bottom:1px dotted #2a3133}}
-    .rs-cloud a:hover{{color:#d4a23f}}
+    .rs-cloud a:hover{{color:var(--gold)}}
     .ag-sponsor-ribbon{{display:block;font-size:.74rem;padding:.45rem .85rem;margin:1rem 0;border:1px solid rgba(132,160,168,.18);border-radius:8px;color:#8a948f;line-height:1.6}}
-    .ag-sponsor-ribbon .ag-sponsor-tag{{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;color:#d4a23f;margin-right:.5rem}}
-    .ag-sponsor-ribbon a{{color:#d4a23f}}
+    .ag-sponsor-ribbon .ag-sponsor-tag{{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin-right:.5rem}}
+    .ag-sponsor-ribbon a{{color:var(--gold)}}
     h1{{font-size:1.55rem;margin:14px 0 4px}} h2{{font-size:1.12rem;margin:26px 0 6px}}
     .rh-grid{{position:relative;width:840px;height:560px;margin:0 auto;max-width:100%}}
     .rh-tile{{position:absolute;width:64px;height:64px;border-radius:9px;padding:9px;box-sizing:border-box;text-decoration:none;display:block;left:calc(var(--gc)*70px - 70px);top:calc(var(--gr)*70px - 70px)}}
@@ -241,6 +276,11 @@ def head(title, desc, path, jsonld):
       .rh-tst{{font-size:.56rem}}
     }}
     .sub{{color:#8a948f;font-size:.9rem;line-height:1.6}}
+    .rs-t td:first-child a{{color:#e6ebe9;text-decoration:none;border-bottom:1px dotted #2a3133}}
+    .rs-t td:first-child a:hover{{color:var(--gold)}}
+    .rs-faq{{border-bottom:1px solid #1a1f20;padding:8px 0}}
+    .rs-faq summary{{cursor:pointer;color:#e6ebe9;font-size:.95rem}}
+    .rs-faq p{{color:#8a948f;font-size:.88rem;line-height:1.65;margin:8px 0 4px}}
   </style>
 </head>"""
 
@@ -271,7 +311,7 @@ def bars_html(hist):
     return '<div class="rs-bars">' + "".join(rows) + "</div>"
 
 
-def county_table(st, s):
+def county_table(st, s, aslug=None):
     yr = s["yr"]
     cols = [(t, TYPE_LABEL[t]) for t in ("nonirr", "irr", "pasture") if t in s["have_types"]]
     thead = "<th>County</th>" + "".join(
@@ -279,7 +319,9 @@ def county_table(st, s):
     thead += "<th>YoY</th><th>Corn trend</th>"
     body = []
     for c in sorted(s["counties"], key=lambda c: c["name"]):
-        cells = [f"<td>{esc(c['name'])}</td>"]
+        a = (aslug or {}).get(c.get("fips"))
+        cells = [f'<td><a href="/{ATLAS_OUT}/{a}" title="{esc(c["name"])}: Farmland Atlas county record">{esc(c["name"])}</a></td>'
+                 if a else f"<td>{esc(c['name'])}</td>"]
         for t, _ in cols:
             r = c["rent"].get(t, {})
             if str(yr) in r:
@@ -340,7 +382,15 @@ def state_cloud(states, exclude=None):
     return '<p class="rs-cloud">' + " &middot; ".join(links) + "</p>"
 
 
-def build_state_page(st, d, s, all_states):
+def faq_html(faq):
+    """The FAQ, visibly, with the exact text the FAQPage JSON-LD carries:
+    structured data must match what a reader sees."""
+    items = "".join(f'<details class="rs-faq"><summary>{esc(f["q"])}</summary><p>{esc(f["a"])}</p></details>'
+                    for f in faq)
+    return f'<h2 id="faq">Questions</h2>\n  {items}'
+
+
+def build_state_page(st, d, s, all_states, aslug=None):
     name = STATE_NAMES[st]
     sl = slug(name)
     yr = s["yr"]
@@ -349,8 +399,8 @@ def build_state_page(st, d, s, all_states):
     title = f"{name} Cash Rent by County {yr}"
     desc = (f"{name} farmland cash rent {yr}: median {money(s['median'])}/acre ({plabel}) across "
             f"{s['n']} published counties. Every county's USDA rate, history to {s['y0']}, free.")[:160]
-    hi_s = ", ".join(f"{esc(n)} ({money(v)})" for n, v in s["hi"][:3])
-    lo_s = ", ".join(f"{esc(n)} ({money(v)})" for n, v in s["lo"][:3])
+    hi_s = ", ".join(f"{n} ({money(v)})" for n, v in s["hi"][:3])
+    lo_s = ", ".join(f"{n} ({money(v)})" for n, v in s["lo"][:3])
     faq = [
         {"q": f"What is the average cash rent per acre in {name} for {yr}?",
          "a": (f"The median USDA NASS county cash rent for {plabel} in {name} is {money(s['median'])} per acre "
@@ -372,7 +422,7 @@ def build_state_page(st, d, s, all_states):
               "This page rebuilds automatically when new data lands."},
     ]
     if st in NOTICE:
-        faq.append({"q": f"When must I give notice to terminate a {name} farm lease?",
+        faq.append({"q": f"When must I give notice to terminate {article(name)} {name} farm lease?",
                     "a": f"{name} statute sets the deadline at {NOTICE[st].replace('&sect;', 'section ')}. "
                          f"Miss it and the lease typically continues another year on the same terms. "
                          f"See the AGSIST cash farm lease for the details and a printable lease."})
@@ -431,8 +481,9 @@ def build_state_page(st, d, s, all_states):
   {hero}
   <h2>Every published county, {yr}</h2>
   <p class="sub">Click a column to sort. Greyed values are the county&rsquo;s most recent published year where {yr}
-  wasn&rsquo;t published.{other_types} Corn trend is the AGSIST least-squares trend yield from NASS county estimates.</p>
-  {county_table(st, s)}
+  wasn&rsquo;t published.{other_types} Each county name opens its Farmland Atlas record (land value, yield, insurance
+  and drought). Corn trend is the AGSIST least-squares trend yield from NASS county estimates.</p>
+  {county_table(st, s, aslug)}
   <h2>{name} median county rent by year</h2>
   <p class="sub">Median of counties published each year ({plabel}). Gap years are shown as gaps &mdash;
   drawing a line across them would be an invention.</p>
@@ -446,6 +497,7 @@ def build_state_page(st, d, s, all_states):
   actually gross) &middot; put a number in a <a href="/cash-lease?st={st}">printable {name} cash lease</a>{
       " &mdash; termination notice: " + NOTICE[st] if st in NOTICE else ""} &middot;
   check <a href="/basis">local basis vs normal</a> before you commit to a rent that needs a price.</div>
+  {faq_html(faq)}
   <h2>Other states</h2>
   {state_cloud(all_states, exclude=st)}
   <p class="sub" style="font-size:.75rem;margin:18px 0">Source: USDA NASS Quick Stats &mdash; Cash Rents Survey county
@@ -454,7 +506,7 @@ def build_state_page(st, d, s, all_states):
 </main>
 {explore_nav()}
 <div id="site-footer"></div>
-<script src="/components/loader.js?v=14"></script>
+<script src="/components/loader.js?v=17"></script>
 {SORT_JS}
 </body>
 </html>
@@ -516,7 +568,7 @@ def build_hub(states, stats, generated):
     seed = (f"{len(states)} states &middot; highest median: {STATE_NAMES[medians[0][1]]} {money(medians[0][0])}/ac "
             f"&middot; lowest: {STATE_NAMES[medians[-1][1]]} {money(medians[-1][0])}/ac &middot; "
             f"data refreshed {esc(generated)}")
-    page = head(f"Cash Rent by State {yr} — Every County&rsquo;s USDA Rate", desc, "/rent/", jsonld) + f"""
+    page = head(f"Cash Rent by State {yr} — Every County\u2019s USDA Rate", desc, "/rent/", jsonld) + f"""
 <body>
 <div id="site-header"></div>
 <main class="rs-wrap">
@@ -529,14 +581,14 @@ def build_hub(states, stats, generated):
   <table class="rs-t" id="rs-table"><thead><tr><th>State</th><th>Median rent /ac</th><th>YoY</th><th>Counties</th><th>Type</th></tr></thead>
   <tbody>{"".join(rows)}</tbody></table>
   <p class="sub">Medians are of published counties, most-published land type per state (marked). Matched-county
-  YoY. The <a href="/cash-rent" style="color:#d4a23f">national county map</a> shows all of this on one screen,
+  YoY. The <a href="/cash-rent" style="color:var(--gold)">national county map</a> shows all of this on one screen,
   plus rent as a share of what the acre can actually gross.</p>
   <p class="sub" style="font-size:.75rem;margin:18px 0">Source: USDA NASS Cash Rents Survey county estimates.
   Pages rebuild automatically when NASS publishes (each August). Data refreshed {esc(generated)}.</p>
 </main>
 {explore_nav()}
 <div id="site-footer"></div>
-<script src="/components/loader.js?v=14"></script>
+<script src="/components/loader.js?v=17"></script>
 {SORT_JS}
 </body>
 </html>
@@ -550,11 +602,12 @@ def build_all(out_dir=OUT_DIR):
         raise SystemExit("FATAL: no state files in data/cash-rent — refusing to build empty pages")
     stats = {st: state_stats(d) for st, d in data.items()}
     os.makedirs(out_dir, exist_ok=True)
+    aslug = atlas_slugs()
     urls = [f"{SITE}/rent/"]
     open(os.path.join(out_dir, "index.html"), "w").write(
         build_hub(list(data), stats, next(iter(data.values())).get("generated", "")))
     for st, d in data.items():
-        p = build_state_page(st, d, stats[st], list(data))
+        p = build_state_page(st, d, stats[st], list(data), aslug)
         open(os.path.join(out_dir, f"{slug(STATE_NAMES[st])}.html"), "w").write(p)
         urls.append(f"{SITE}/rent/{slug(STATE_NAMES[st])}")
     # stderr, NOT stdout: --print-urls pipes stdout into the sitemap step,
@@ -575,10 +628,25 @@ def selftest():
         assert "SEED:rentstate" in ia and "FAQPage" in ia and "canonical" in ia
         assert "September 1" in ia, "IA termination notice missing"
         assert 'no survey' in ia, "2015 gap not shown honestly"
+        assert 2018 in NO_SURVEY_YEARS, "2018 (no NASS county survey) must be labeled no survey"
         assert ia.count("<tr>") >= 99, "IA county rows missing"
         assert "/rent/texas" in ia, "state cloud missing"
+        assert "an Iowa farm lease" in ia and "a Iowa" not in ia, "article a/an wrong"
+        # every FAQPage question and answer is printed on the page, verbatim
+        import re as _re
+        for blk in _re.findall(r'<script type="application/ld\+json">(.*?)</script>', ia, _re.S):
+            for g in json.loads(blk)["@graph"]:
+                if g["@type"] == "FAQPage":
+                    for q in g["mainEntity"]:
+                        assert esc(q["name"]) in ia and esc(q["acceptedAnswer"]["text"]) in ia, "FAQ not visible: " + q["name"]
+        # county names link to Farmland Atlas pages that exist on disk
+        hrefs = _re.findall(r'href="/farmland-atlas/([^"#]+)"', ia)
+        assert len(hrefs) >= 99, f"IA atlas links missing ({len(hrefs)})"
+        bad = [h for h in hrefs if not os.path.exists(os.path.join("farmland-atlas", h + ".html"))]
+        assert not bad, f"atlas links with no page: {bad[:5]}"
         hub = open(os.path.join(td, "index.html")).read()
         assert hub.count("/rent/") >= 47 and "SEED:renthub" in hub
+        assert "&amp;rsquo;" not in hub, "hub title double-escaped"
         # NV/AZ: irrigated-primary states must be labeled
         if "AZ" in stats:
             az = open(os.path.join(td, "arizona.html")).read()

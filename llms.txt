@@ -9,7 +9,7 @@
 > Service in Wisconsin. National in scope, available at no charge.
 
 Prices are delayed exchange quotes (Yahoo Finance feed) fetched every 30 minutes by the AGSIST pipeline, with settlement-limit sanity gates; they are not a real-time or official CME feed; cash bids
-from Barchart OnDemand; weather from Open-Meteo; crop and production data
+from AGSIST's own network of elevator bid boards plus a licensed cash-bid feed; weather from Open-Meteo; crop and production data
 from USDA NASS/FAS/RMA; drought from the US Drought Monitor. Dynamic pages
 update every 30 minutes during market hours; the daily briefing publishes
 by 6 AM Central each weekday. Nothing on the site is financial or trading
@@ -23,7 +23,7 @@ specific page. Each daily briefing has a permanent dated URL.
 - [AGSIST Dashboard](https://agsist.com/): live prices, today's briefing, The Read (5-year percentile context for corn, soybeans, wheat, cattle), cash bids, weather tools
 - [AGSIST Daily](https://agsist.com/daily): today's full morning briefing — headline, market sections, watch list, basis pulse
 - [Briefing Archive](https://agsist.com/archive): every past briefing, dated, at /daily/YYYY-MM-DD
-- [Prediction Bot Scorecard](https://agsist.com/scorecard): a fixed statistical rule calls corn, soybeans, Chicago and KC wheat 20 trading sessions out every trading day; every call graded by code against settlement prices, with the backtest shown apart from the live record
+- [Prediction Bot Scorecard](https://agsist.com/scorecard): a fixed statistical rule calls whether corn, soybeans, Chicago and KC wheat close higher or lower about four weeks out, one call per crop for each weekly CFTC report; every call graded by code against daily closing prices from Yahoo Finance (not the exchange's settlement file), with the backtest shown apart from the live record
 - [Cash Grain Bids](https://agsist.com/cash-bids): local elevator bids and basis by ZIP, plus the national basis heatmap
 - [Markets](https://agsist.com/markets): corn, soybeans, wheat, oats, cattle, hogs, milk, energy, metals in one view
 
@@ -51,9 +51,11 @@ specific page. Each daily briefing has a permanent dated URL.
 - [Cash Rent by County](https://agsist.com/cash-rent): USDA county cash rent, history, and rent as a share of realistic gross revenue
 - [Cash Rent by State](https://agsist.com/rent/): every state's county cash rent rates on one page each — median, YoY, history to 2008, lease-notice deadlines
 - [Cash Farm Lease](https://agsist.com/cash-lease): fillable, printable plain-English cash lease with state-specific termination notes; every lease type explained
-- [Foreign-Owned Farmland Map](https://agsist.com/foreign-land): USDA AFIDA disclosures 2010-2024 mapped by county — 47.2M acres, top holder countries, land types
+- [Foreign-Owned Farmland Map](https://agsist.com/foreign-land): USDA AFIDA disclosures 2010-2024 mapped by county — 46.3M acres per USDA's 2024 report, top holder countries, land types
 - [Who Owns the Ground](https://agsist.com/land-tenure): share of each county's farmland rented vs owner-farmed, census 1997-2022 — 39% of US farmland is rented
 - [Basis vs Normal](https://agsist.com/basis): regional grain basis against its own 5-year same-week average, with the barge rates and shipping spreads that move it
+- [Basis by State](https://agsist.com/basis/iowa): today's median corn and soybean basis per state from AGSIST's elevator network, with n, strongest and weakest elevators and the week's change, at /basis/<state> (e.g. /basis/illinois, /basis/nebraska)
+- [Farmland Atlas](https://agsist.com/farmland-atlas): every US county's cash rent, land value, crop insurance loss record, drought, water, night heat and CRP from public records, one page per county at /farmland-atlas/<state>/<county> (e.g. /farmland-atlas/iowa/story-county); methods at /farmland-atlas/methods
 - [Storage Crunch](https://agsist.com/storage-crunch): state grain production vs total bin capacity, ranked — which states grow more than they can store
 - [Crop Conditions Ranked](https://agsist.com/conditions): each state's Good+Excellent share ranked against the same week of every year since 2000
 - [Do Ratings Predict Yield?](https://agsist.com/conditions-yield): the honest R-squared of weekly Good+Excellent vs final yield, per state per week since 2000

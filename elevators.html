@@ -4,8 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"><script>/* agsist-ga-guard 2026-10-01: Google Analytics loads only when the browser sends no Global Privacy Control or Do Not Track signal and the off switch on /privacy is not set. dataLayer and gtag always exist, so page code that calls them never throws. */(function(w,d,n){var off=false,v,i,s;w.dataLayer=w.dataLayer||[];if(typeof w.gtag!=='function'){w.gtag=function(){w.dataLayer.push(arguments);};}try{off=w.localStorage.getItem('agsist-ga-off')==='1';}catch(e){}if(n.globalPrivacyControl===true){off=true;}v=[n.doNotTrack,w.doNotTrack,n.msDoNotTrack];for(i=0;i<v.length;i++){if(v[i]==='1'||v[i]==='yes'){off=true;}}w.agsistGaOff=off;w.gtag('set','allow_google_signals',false);w.gtag('set','allow_ad_personalization_signals',false);if(off){return;}s=d.createElement('script');s.async=true;s.src='https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H';(d.head||d.documentElement).appendChild(s);})(window,document,navigator);</script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
-<link rel="preload" href="/components/styles.css?v=17" as="style">
-<link rel="stylesheet" href="/components/styles.css?v=17">
+<!-- static-nav:fonts (scripts/inject_static_nav.py) -->
+  <link rel="preload" href="/fonts/inter-400.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/jetbrains-mono-700.woff2" as="font" type="font/woff2" crossorigin>
+  <!-- /static-nav:fonts -->
+  <link rel="preload" href="/components/styles.css?v=18" as="style">
+<link rel="stylesheet" href="/components/styles.css?v=18">
   <script src="/components/util.js?v=16"></script>
 <link rel="icon" type="image/x-icon"            href="/img/favicon.ico">
 <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
@@ -13,7 +17,7 @@
 <link rel="apple-touch-icon"                    href="/img/apple-touch-icon.png">
 <link rel="manifest"                            href="/manifest.json">
 <meta name="theme-color" content="#111a0a">
-<title>Grain Elevator Cash Bids by State | AGSIST</title>
+<title>Grain Elevator Coverage Map | AGSIST</title>
 <meta name="description" content="Live cash grain bids from elevators and co-ops nationwide. Enter your ZIP to find corn, soybean, and wheat prices near you. No account needed.">
 <meta name="author" content="Sigurd Lindquist">
 <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
@@ -21,11 +25,11 @@
 <meta property="og:type"        content="website">
 <meta property="og:site_name"   content="AGSIST">
 <meta property="og:locale"      content="en_US">
-<meta property="og:title"       content="Grain Elevator Cash Bids by State &#8212; Corn Belt Coverage | AGSIST">
+<meta property="og:title"       content="Grain Elevator Coverage Map | AGSIST">
 <meta property="og:description" content="Live cash grain bids from hundreds of elevators and grain facilities across the Corn Belt, Great Plains, Delta, Southeast, and Pacific Northwest. Mobile-first, no account or subscription required.">
 <meta property="og:url"         content="https://agsist.com/elevators">
 <meta property="og:image"       content="https://agsist.com/img/og/agsist.jpg">
-<meta property="og:image:alt" content="Grain Elevator Cash Bids by State &#8212; Corn Belt Coverage | AGSIST">
+<meta property="og:image:alt" content="Grain Elevator Coverage Map | AGSIST">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card"       content="summary_large_image">
@@ -37,7 +41,7 @@
 <script type="application/ld+json">
 {"@context":"https://schema.org","@graph":[
   {"@type":"WebPage","@id":"https://agsist.com/elevators#webpage","url":"https://agsist.com/elevators",
-   "name":"Grain Elevator Cash Bids by State \u2014 Corn Belt Coverage | AGSIST",
+   "name":"Grain Elevator Coverage Map | AGSIST",
    "description":"Live cash grain bids from elevators and grain facilities across the Corn Belt, Great Plains, Delta, Southeast, and Pacific Northwest. Enter your ZIP code to find nearby elevator prices for corn, soybeans, and wheat.",
    "isPartOf":{"@id":"https://agsist.com/#website"},
    "breadcrumb":{"@type":"BreadcrumbList","itemListElement":[
@@ -79,7 +83,7 @@ button,a,[role="button"]{touch-action:manipulation}
 .el-zip-lbl{font-family:var(--font-mono);font-size:0.745rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted)}
 .el-zip input{background:var(--bg);border:1px solid var(--border-2);border-radius:var(--r-sm);padding:.6rem .7rem;font-family:var(--font-mono);font-size:1rem;letter-spacing:.14em;color:var(--text);width:7.5rem;min-height:46px}
 .el-zip input:focus{outline:none;border-color:var(--gold)}
-.el-cta{display:inline-flex;align-items:center;gap:.5rem;padding:.72rem 1.4rem;border:0;border-radius:var(--r-sm);background:var(--gold);color:#0a0c0d;font-family:var(--font-mono);font-size:0.795rem;font-weight:700;text-decoration:none;letter-spacing:.03em;min-height:46px;cursor:pointer;transition:filter .15s,transform .15s}
+.el-cta{display:inline-flex;align-items:center;gap:.5rem;padding:.72rem 1.4rem;border:0;border-radius:var(--r-sm);background:var(--gold-fill,var(--gold));color:#0a0c0d;font-family:var(--font-mono);font-size:0.795rem;font-weight:700;text-decoration:none;letter-spacing:.03em;min-height:46px;cursor:pointer;transition:filter .15s,transform .15s}
 .el-cta:hover{filter:brightness(1.07);transform:translateY(-1px)}
 
 /* section heads */
@@ -198,7 +202,7 @@ button,a,[role="button"]{touch-action:manipulation}
 .cl-chk{grid-column:1/-1;display:flex;gap:.75rem;align-items:center;min-height:44px;font-size:.9rem;color:var(--text-dim);line-height:1.45;cursor:pointer}
 .cl-chk input{width:20px;height:20px;flex:none;margin:0;accent-color:var(--text)}
 .cl-go{grid-column:1/-1;display:flex;flex-wrap:wrap;align-items:center;gap:.75rem 1rem}
-.cl-btn{display:inline-flex;align-items:center;justify-content:center;padding:.75rem 1.4rem;border:0;border-radius:var(--r-sm);background:var(--gold);color:#0a0c0d;font-family:var(--font-mono);font-size:.85rem;font-weight:700;letter-spacing:.03em;cursor:pointer;min-height:44px;transition:filter .15s}
+.cl-btn{display:inline-flex;align-items:center;justify-content:center;padding:.75rem 1.4rem;border:0;border-radius:var(--r-sm);background:var(--gold-fill,var(--gold));color:#0a0c0d;font-family:var(--font-mono);font-size:.85rem;font-weight:700;letter-spacing:.03em;cursor:pointer;min-height:44px;transition:filter .15s}
 .cl-btn:hover{filter:brightness(1.07)}
 .cl-btn:active{filter:brightness(.92)}
 .cl-btn:disabled{opacity:.6;cursor:default}
@@ -227,13 +231,30 @@ button,a,[role="button"]{touch-action:manipulation}
 <body>
 <noscript><div style="padding:1rem;background:#1a2a1a;color:#e6b042;font-family:sans-serif;text-align:center;border-bottom:2px solid #3a8b3c;font-size:.9rem">AGSIST requires JavaScript for live bids. Enable JavaScript or visit agsist.com/cash-bids directly.</div></noscript>
 <a href="#main" class="skip">Skip to content</a>
-<div id="site-header"></div>
+<div id="site-header">
+<!-- static-nav:header (scripts/inject_static_nav.py; source components/header-fallback.html) -->
+  <!-- Static crawlable header: loader.js replaceWith() swaps this for the live dropdown nav on JS;
+       non-JS crawlers (Bing, AI) read these links; also a working fallback if the fetch fails.
+       Copied into every root page by scripts/inject_static_nav.py -- edit HERE, then re-run it. -->
+  <header style="border-bottom:1px solid var(--border);background:var(--surface)">
+    <div style="max-width:1100px;margin:0 auto;padding:.7rem 1rem;display:flex;flex-wrap:wrap;align-items:baseline;gap:.4rem 1.1rem">
+      <a href="/" aria-label="AGSIST Home" style="font-family:var(--font-display);font-weight:800;font-size:1.05rem;letter-spacing:.04em;color:var(--text);text-decoration:none">AGSIST</a>
+      <nav aria-label="AGSIST main navigation" style="font-family:'JetBrains Mono',monospace;font-size:0.775rem;line-height:2;color:var(--text-muted)">
+        <span style="color:var(--text-dim);font-weight:700">Markets:</span> <a href="/corn-futures-prices" style="color:var(--text-muted);text-decoration:none">Corn</a> &middot; <a href="/soybean-futures-prices" style="color:var(--text-muted);text-decoration:none">Soybeans</a> &middot; <a href="/wheat-futures-prices" style="color:var(--text-muted);text-decoration:none">Wheat</a> &middot; <a href="/cattle-futures-prices" style="color:var(--text-muted);text-decoration:none">Cattle</a> &middot; <a href="/cash-bids" style="color:var(--text-muted);text-decoration:none">Cash Bids</a> &middot; <a href="/elevators" style="color:var(--text-muted);text-decoration:none">Elevator Coverage Map</a> &middot; <a href="/milk-prices" style="color:var(--text-muted);text-decoration:none">Milk Prices</a> &middot; <a href="/basis" style="color:var(--text-muted);text-decoration:none">Basis vs Normal</a> &middot; <a href="/storage-crunch" style="color:var(--text-muted);text-decoration:none">Storage Crunch</a> &middot; <a href="/cot" style="color:var(--text-muted);text-decoration:none">COT Report</a> &middot; <a href="/ag-odds" style="color:var(--text-muted);text-decoration:none">Prediction Markets</a> &middot; <a href="/tariffs" style="color:var(--text-muted);text-decoration:none">Tariffs</a> &middot; <a href="/usda-quick-stats" style="color:var(--text-muted);text-decoration:none">USDA Crop Data</a> &middot; <a href="/usda-calendar" style="color:var(--text-muted);text-decoration:none">USDA Calendar</a> &middot; <a href="/whats-priced-in" style="color:var(--text-muted);text-decoration:none">What's Priced In</a> &middot; <a href="/whats-priced-in#analyst-board" style="color:var(--text-muted);text-decoration:none">Analyst Estimates</a> &middot; <a href="/markets" style="color:var(--text-muted);text-decoration:none">All Markets</a><br>
+        <span style="color:var(--text-dim);font-weight:700">Costs &amp; Land:</span> <a href="/breakeven" style="color:var(--text-muted);text-decoration:none">Break-Even</a> &middot; <a href="/presell-calculator" style="color:var(--text-muted);text-decoration:none">Pre-Sell Calculator</a> &middot; <a href="/grain-bin-calculator" style="color:var(--text-muted);text-decoration:none">Grain Bin</a> &middot; <a href="/harvest-price-tracker" style="color:var(--text-muted);text-decoration:none">Harvest Price Tracker</a> &middot; <a href="/farmland-atlas" style="color:var(--text-muted);text-decoration:none">Farmland Atlas</a> &middot; <a href="/cash-rent" style="color:var(--text-muted);text-decoration:none">Cash Rent by County</a> &middot; <a href="/rent/" style="color:var(--text-muted);text-decoration:none">Cash Rent by State</a> &middot; <a href="/cash-lease" style="color:var(--text-muted);text-decoration:none">Cash Farm Lease</a> &middot; <a href="/foreign-land" style="color:var(--text-muted);text-decoration:none">Foreign-Owned Land</a> &middot; <a href="/land-tenure" style="color:var(--text-muted);text-decoration:none">Rented vs Owner-Farmed</a> &middot; <a href="/farm-bill" style="color:var(--text-muted);text-decoration:none">Farm Bill</a><br>
+        <span style="color:var(--text-dim);font-weight:700">Field:</span> <a href="/spray" style="color:var(--text-muted);text-decoration:none">Spray Advisory</a> &middot; <a href="/urea" style="color:var(--text-muted);text-decoration:none">Urea Volatilization Risk</a> &middot; <a href="/drought-monitor" style="color:var(--text-muted);text-decoration:none">Drought Monitor</a> &middot; <a href="/conditions" style="color:var(--text-muted);text-decoration:none">Crop Conditions Rank</a> &middot; <a href="/conditions-yield" style="color:var(--text-muted);text-decoration:none">Ratings vs Yield</a> &middot; <a href="/pod-counts" style="color:var(--text-muted);text-decoration:none">Pod Counts vs Yield</a> &middot; <a href="/crop-tour" style="color:var(--text-muted);text-decoration:none">Crop Tour</a> &middot; <a href="/hail-map" style="color:var(--text-muted);text-decoration:none">Hail Map</a> &middot; <a href="/gdu-calculator" style="color:var(--text-muted);text-decoration:none">GDU Calculator</a> &middot; <a href="/planting-date" style="color:var(--text-muted);text-decoration:none">Planting Date</a> &middot; <a href="/fertilizer" style="color:var(--text-muted);text-decoration:none">Fertilizer</a> &middot; <a href="/yield-estimator" style="color:var(--text-muted);text-decoration:none">Yield Estimator</a> &middot; <a href="/field-scout" style="color:var(--text-muted);text-decoration:none">Field Scout</a> &middot; <a href="/fast-facts" style="color:var(--text-muted);text-decoration:none">Reference Tables</a> &middot; <a href="/tools" style="color:var(--text-muted);text-decoration:none">All Tools</a><br>
+        <span style="color:var(--text-dim);font-weight:700">Daily:</span> <a href="/news" style="color:var(--text-muted);text-decoration:none">The Wire</a> &middot; <a href="/daily" style="color:var(--text-muted);text-decoration:none">AGSIST Daily</a> &middot; <a href="/archive" style="color:var(--text-muted);text-decoration:none">Daily Archive</a> &middot; <a href="/scorecard" style="color:var(--text-muted);text-decoration:none">Prediction Bot</a>
+      </nav>
+    </div>
+  </header>
+<!-- /static-nav:header -->
+</div>
 <main id="main" class="el-page" tabindex="-1">
   <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a> &rarr; <a href="/cash-bids">Cash Bids</a> &rarr; Elevator Coverage</nav>
 
   <div class="el-hero">
     <div class="el-eyebrow"><svg class="lic el-eyebrow-ic" aria-hidden="true"><use href="#i-warehouse"></use></svg>Live Grain Elevator Cash Bids</div>
-    <h1>Grain Elevators by State</h1>
+    <h1>Grain Elevator Coverage Map</h1>
 <style></style><aside class="ag-sponsor-ribbon" id="ag-sponsor"><span class="ag-sponsor-tag">Sponsor this page</span> Every visitor is deciding where to haul &mdash; one category-exclusive slot. <a href="/sponsor?slot=elevators&amp;utm_source=elevators&amp;utm_medium=slot">Put your name here &rarr;</a></aside>
     <p>Live cash grain bids from elevators, co-ops, and grain facilities across the Corn Belt, Great Plains, Delta, Southeast, and Pacific Northwest &mdash; read from elevators' own posted boards and a second feed. Enter your ZIP code to see bids near you. Mobile-first, no account or subscription required.</p>
     <form class="el-zip" action="/cash-bids" method="get" id="el-zip-form">
@@ -262,7 +283,7 @@ button,a,[role="button"]{touch-action:manipulation}
     <div class="el-cov-item"><div class="el-cov-k">Each bid shows</div><div class="el-cov-v"><strong>Cash price</strong> (futures + basis), contract month, delivery window, and distance from your ZIP.</div></div>
   </div>
   <h2 class="el-h2" id="coverage-map">Coverage map</h2>
-  <p class="el-map-lede">Every grain elevator AGSIST tracks, nationwide. <strong>Green</strong> means we read that elevator&rsquo;s own posted board. <strong>Grey</strong> means we know it&rsquo;s there and it&rsquo;s in the queue. The network grows most weeks &mdash; if yours is grey, tell us and it moves up.</p>
+  <p class="el-map-lede">Every grain elevator AGSIST tracks, across the US plus Ontario. <strong>Green</strong> means we read at least one elevator&rsquo;s own posted board at that spot (click it for the list). <strong>Amber</strong> means we have a reader that did not answer the latest pass. <strong>Grey</strong> means we know it&rsquo;s there and it&rsquo;s in the queue. The network grows most weeks &mdash; if yours is grey, tell us and it moves up.</p>
 
   <div class="el-map-wrap">
     <div id="cov-map" role="img" aria-label="Map of grain elevators AGSIST knows about, coloured by whether its bid board is read"></div>
@@ -271,14 +292,14 @@ button,a,[role="button"]{touch-action:manipulation}
   </div>
 
   <div class="el-map-key" id="cov-key">
-    <button type="button" class="el-key el-key-read"  data-c="read"  aria-pressed="true"><span class="el-dot"></span><b id="cov-n-read">&mdash;</b> read direct</button>
-    <button type="button" class="el-key el-key-quiet" data-c="quiet" aria-pressed="true" title="We have a reader for these. It did not answer the pass this map was built from, or the board is refusing."><span class="el-dot"></span><b id="cov-n-quiet">&mdash;</b> checking</button>
-    <button type="button" class="el-key el-key-known" data-c="known" aria-pressed="true"><span class="el-dot"></span><b id="cov-n-known">&mdash;</b> in the queue</button>
+    <button type="button" class="el-key el-key-read"  data-c="read"  aria-pressed="true"><span class="el-dot"></span><b id="cov-n-read"><!--SEED:elev:cov-n-read-->1,795<!--/SEED--></b> read direct</button>
+    <button type="button" class="el-key el-key-quiet" data-c="quiet" aria-pressed="true" title="We have a reader for these. It did not answer the pass this map was built from, or the board is refusing."><span class="el-dot"></span><b id="cov-n-quiet"><!--SEED:elev:cov-n-quiet-->243<!--/SEED--></b> checking</button>
+    <button type="button" class="el-key el-key-known" data-c="known" aria-pressed="true"><span class="el-dot"></span><b id="cov-n-known"><!--SEED:elev:cov-n-known-->6,366<!--/SEED--></b> in the queue</button>
   </div>
 
   <div class="el-map-panel" id="cov-panel" hidden aria-live="polite"></div>
 
-  <p class="el-map-foot" id="cov-foot"></p>
+  <p class="el-map-foot" id="cov-foot"><!--SEED:elev:foot-->8,404 elevators tracked. 112 could not be placed on the map and are not drawn. Several share a town centre, so one pin can cover more than one &mdash; click to see what is there. We have readers for 2,038 of them; 1,795 answered the pass this map was built from (2026-10-05 19:11 UTC).<!--/SEED--></p>
 
   <div class="el-thin"><strong>Missing your elevator?</strong> Some smaller independents don&rsquo;t post bids electronically at all, and some we simply haven&rsquo;t added yet. Either way the form below is the fastest way to get it on the map.</div>
 
@@ -287,7 +308,7 @@ button,a,[role="button"]{touch-action:manipulation}
     <p class="cl-kick">For elevators and co-ops</p>
     <h2 id="cl-h">Run an elevator? Claim your board.</h2>
     <p class="cl-lede">Producers in your area already look up bids here. Claim your listing so what they see is right: your name, your town, your phone and your own board.</p>
-    <p class="cl-net" id="cl-net">Network counts: Not loaded yet.</p>
+    <p class="cl-net" id="cl-net"><!--SEED:elev:net-->In the read of Oct 5, 2026, 2:11 PM CT, AGSIST read <span class="num">1,795</span> elevator boards direct. <span class="num">243</span> more have a reader that did not answer that pass. It knows <span class="num">6,366</span> more elevators that have no reader yet. <a href="#coverage-map">See the map</a>.<!--/SEED--></p>
     <ul class="cl-pts">
       <li class="cl-pt">
         <p class="cl-pt-k">What you get</p>
@@ -449,7 +470,16 @@ button,a,[role="button"]{touch-action:manipulation}
     Cash bid data comes from elevators' own posted boards and a second feed. Bids are elevator-posted prices and may not reflect real-time changes. Verify all prices directly with the elevator before delivery. AGSIST is not a licensed commodity broker and this is not trading advice. Contact: <a href="mailto:sig@farmers1st.com" style="color:var(--gold)">sig@farmers1st.com</a> &middot; <a href="tel:+17157972428" style="color:var(--gold)">715-797-2428</a>
   </div>
 </main>
-<div id="site-footer"></div>
+<div id="site-footer">
+<!-- static-nav:footer (scripts/inject_static_nav.py; source components/footer-fallback.html) -->
+  <!-- Static crawlable nav: loader.js replaceWith() swaps this for the live footer on JS;
+       non-JS crawlers (Bing, AI) read these links; also a working fallback if the fetch fails.
+       Copied into every root page by scripts/inject_static_nav.py -- edit HERE, then re-run it. -->
+  <nav aria-label="AGSIST site links" style="max-width:1100px;margin:0 auto;padding:1.4rem 1rem;font-family:'JetBrains Mono',monospace;font-size:0.78rem;line-height:2.1;color:var(--text-muted);text-align:center;border-top:1px solid var(--border)">
+    <a href="/corn-futures-prices" style="color:var(--text-muted);text-decoration:none">Corn Futures</a> &middot; <a href="/soybean-futures-prices" style="color:var(--text-muted);text-decoration:none">Soybean Futures</a> &middot; <a href="/wheat-futures-prices" style="color:var(--text-muted);text-decoration:none">Wheat Futures</a> &middot; <a href="/cattle-futures-prices" style="color:var(--text-muted);text-decoration:none">Cattle Futures</a> &middot; <a href="/cash-bids" style="color:var(--text-muted);text-decoration:none">Cash Grain Bids</a> &middot; <a href="/basis" style="color:var(--text-muted);text-decoration:none">Basis vs Normal</a> &middot; <a href="/elevators" style="color:var(--text-muted);text-decoration:none">Elevator Coverage Map</a> &middot; <a href="/cot" style="color:var(--text-muted);text-decoration:none">COT Report</a> &middot; <a href="/ag-odds" style="color:var(--text-muted);text-decoration:none">Ag Prediction Markets</a> &middot; <a href="/markets" style="color:var(--text-muted);text-decoration:none">All Markets</a> &middot; <a href="/cash-rent" style="color:var(--text-muted);text-decoration:none">Cash Rent by County</a> &middot; <a href="/rent/" style="color:var(--text-muted);text-decoration:none">Cash Rent by State</a> &middot; <a href="/farmland-atlas" style="color:var(--text-muted);text-decoration:none">Farmland Atlas</a> &middot; <a href="/cash-lease" style="color:var(--text-muted);text-decoration:none">Cash Farm Lease</a> &middot; <a href="/foreign-land" style="color:var(--text-muted);text-decoration:none">Foreign-Owned Land</a> &middot; <a href="/land-tenure" style="color:var(--text-muted);text-decoration:none">Rented vs Owner-Farmed</a> &middot; <a href="/conditions" style="color:var(--text-muted);text-decoration:none">Crop Conditions Rank</a> &middot; <a href="/conditions-yield" style="color:var(--text-muted);text-decoration:none">Ratings vs Yield</a> &middot; <a href="/usda-quick-stats" style="color:var(--text-muted);text-decoration:none">USDA Crop Data</a> &middot; <a href="/usda-calendar" style="color:var(--text-muted);text-decoration:none">USDA Calendar</a> &middot; <a href="/fast-facts" style="color:var(--text-muted);text-decoration:none">Reference Tables</a> &middot; <a href="/tools" style="color:var(--text-muted);text-decoration:none">Farm Calculators &amp; Tools</a> &middot; <a href="/breakeven" style="color:var(--text-muted);text-decoration:none">Break-Even Calculator</a> &middot; <a href="/spray" style="color:var(--text-muted);text-decoration:none">Spray Advisory</a> &middot; <a href="/drought-monitor" style="color:var(--text-muted);text-decoration:none">Drought Monitor</a> &middot; <a href="/milk-prices" style="color:var(--text-muted);text-decoration:none">Milk Prices</a> &middot; <a href="/tariffs" style="color:var(--text-muted);text-decoration:none">Tariffs</a> &middot; <a href="/news" style="color:var(--text-muted);text-decoration:none">The Wire</a> &middot; <a href="/daily" style="color:var(--text-muted);text-decoration:none">AGSIST Daily</a> &middot; <a href="/archive" style="color:var(--text-muted);text-decoration:none">Daily Archive</a> &middot; <a href="/data-sources" style="color:var(--text-muted);text-decoration:none">Data Sources</a> &middot; <a href="/about" style="color:var(--text-muted);text-decoration:none">About</a> &middot; <a href="/contact" style="color:var(--text-muted);text-decoration:none">Contact</a> &middot; <a href="/sponsor" style="color:var(--text-muted);text-decoration:none">Sponsor</a> &middot; <a href="/accessibility" style="color:var(--text-muted);text-decoration:none">Accessibility</a> &middot; <a href="/privacy" style="color:var(--text-muted);text-decoration:none">Privacy</a> &middot; <a href="/terms" style="color:var(--text-muted);text-decoration:none">Terms</a>
+  </nav>
+<!-- /static-nav:footer -->
+</div>
 <script src="/components/loader.js?v=17" defer></script>
 <script>
 document.querySelectorAll('.el-faq-q').forEach(function(q){
@@ -508,6 +538,7 @@ document.addEventListener('click',function(e){var a=e.target.closest&&e.target.c
            unplaced handful and the build timestamp are ours to watch, not the
            reader's to read. */
         foot.textContent = (n.elevators != null ? n.elevators.toLocaleString() + ' elevators tracked. ' : '') +
+          (n.unplaced ? n.unplaced.toLocaleString() + ' could not be placed on the map and are not drawn. ' : '') +
           'Several share a town centre, so one pin can cover more than one \u2014 click to see what is there.';
         /* THE SAMPLE, BESIDE THE CLAIM. Green counts what answered one pass of
            our readers; the fleet is bigger and steadier than any one pass. A
@@ -561,8 +592,8 @@ document.addEventListener('click',function(e){var a=e.target.closest&&e.target.c
         zoomControl: true, attributionControl: true,
         worldCopyJump: true, zoomSnap: 0.5, wheelDebounceTime: 25,
         /* ZOOM STOPS AT 9. The tile version allowed 16, which put a pin on a
-           specific building — and 83% of these pins are town centroids, a fact
-           the panel prints two inches below the map. Zoom 9 is a county-sized
+           specific building — and about 73% of these pins (81% of elevators) are
+           town or county centroids. Zoom 9 is a county-sized
            view, which is as precise as this data honestly gets. */
         minZoom: 3, maxZoom: 9
       }).setView([41.5, -93.5], 4.5);
@@ -609,8 +640,8 @@ document.addEventListener('click',function(e){var a=e.target.closest&&e.target.c
          it cannot be watermarked, repriced or keyed.
 
          WHAT IS LOST: streets and place names, and zoom past 9. Both were
-         promising more than this map has. 83% of these pins are town
-         centroids — the panel says so — so a dot at zoom 16 sat on a building
+         promising more than this map has. About 73% of these pins are town
+         or county centroids, so a dot at zoom 16 sat on a building
          it has nothing to do with. Capping the zoom is a correction, not a
          concession.
 

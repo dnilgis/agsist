@@ -138,16 +138,17 @@
   "nights_note": "Which states report on which night follows the tour's route order, which has held since at least 2022. Pro Farmer publishes one figure per state. Wednesday's western Iowa session reports crop districts 1, 4 and 7 only and no western-Iowa state number; the single Iowa figure covering all nine districts posts Thursday when both legs meet in Rochester. If the tour reorders a leg, this page follows what actually gets announced.",
   "benchmarks": {
     "usda": {
-      "corn": 180.7,
-      "soy_yield": 52.7,
-      "label": "USDA, August WASDE",
-      "as_of": "2026-08-12",
-      "note": "USDA's first survey-based 2026 estimate, printed Aug 12: corn 180.7 bu/acre (down 2.3 from July), soybeans 52.7 (down 0.3). This is the number the tour's scouts will be checking against in the field.",
-      "short": "USDA's first survey-based 2026 estimate."
+      "corn": 178.5,
+      "soy_yield": 52.8,
+      "label": "USDA, September WASDE",
+      "as_of": "2026-09-11",
+      "note": "USDA's September 11 WASDE: corn 178.5 bu/acre (down 2.2 from August's 180.7), soybeans 52.8 (up 0.1 from 52.7). The tour's scouts were checking against August's 180.7; September is the number in force now.",
+      "short": "USDA's September 2026 estimate.",
+      "source": "https://www.dtnpf.com/agriculture/web/ag/news/article/2026/09/11/usda-lowers-corn-yield-2-2-bpa-soy ; https://www.fertilizerdaily.com/20260914-usda-wasde-september-2026-corn-yield-cut-soybean-production/"
     },
     "agsist": {
       "label": "AGSIST nowcast",
-      "note": "Our ratings-only nowcast of the US final yield, read straight from the model's own output file. The band is the 80th percentile of leave-one-year-out backtest errors at this week of the season, recomputed every run.",
+      "note": "Our ratings-only nowcast of the US final yield, read straight from the model's own output file. The band is the 80th percentile of backtest errors at this week of the season, each year scored using only the years before it, recomputed every run.",
       "correction": "Corrected 2026-08-20. An earlier 183.6, locked Aug 11, was computed on a history file that carried in-season forecasts in place of final yields. Superseded; the source defect is fixed.",
       "source": "data/yield-nowcast.json"
     },

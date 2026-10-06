@@ -137,6 +137,19 @@ def main():
         esc(daily.get("headline", "")), "headline")
     baked.append("headline")
 
+    # 2026-10-06: the briefing's own date, printed and stamped on the hero, so
+    # the page script can tell a baked briefing that is still current (keep it
+    # when the client fetch fails) from one that is days old (say it did not load).
+    html, _ = replace_inner(
+        html, r'<div id="daily-date" class="daily-date">', "</div>",
+        esc(daily.get("date", "")), "date", required=False)
+    iso = str(daily.get("generated_at") or "")[:10]
+    if re.fullmatch(r"\d{4}-\d{2}-\d{2}", iso):
+        html, n = re.subn(r'(<section class="daily-hero[^"]*" id="daily-hero")(?: data-briefing-date="[^"]*")?',
+                          rf'\1 data-briefing-date="{iso}"', html, count=1)
+        if n:
+            baked.append("date")
+
     html, _ = replace_inner(
         html, r'<p id="daily-subheadline"[^>]*>', "</p>",
         esc(daily.get("subheadline", "")), "subheadline")

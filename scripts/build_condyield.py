@@ -102,11 +102,14 @@ def render_table(rows):
     for r in rows:
         slope = "&mdash;" if r["peak_slope"] is None else f'{r["peak_slope"]:+.2f}'
         sv = 0 if r["peak_slope"] is None else r["peak_slope"]
+        # The peak week can rest on a different set of years from this week's
+        # (IA corn: 26 at week 39, 22 at week 40), so its n is printed with it.
+        peak_n = "" if r["peak_n"] is None else f' &middot; n={r["peak_n"]}'
         out.append(
             f'<tr><td><button class="cy-sel" data-st="{esc(r["st"])}">{esc(r["name"])}</button></td>'
             f'<td data-v="{r["r2"]:.3f}" style="color:{colour(r["r2"])}">{round(r["r2"]*100)}%</td>'
             f'<td data-v="{r["peak_r2"]:.3f}">{round(r["peak_r2"]*100)}% '
-            f'<span class="mut" style="font-size:0.775rem">wk {r["peak_wk"]}</span></td>'
+            f'<span class="mut" style="font-size:0.775rem">wk {r["peak_wk"]}{peak_n}</span></td>'
             f'<td data-v="{sv:.3f}">{slope}</td>'
             f'<td data-v="{r["n"]}">{r["n"]}</td></tr>')
     return "".join(out)
@@ -119,22 +122,60 @@ def pick(rows, st):
     return None
 
 
+def attach_years(rows, pairs, first_year=2000):
+    """Name the years a week's fit is missing, from pairs.json -- the same
+    same-week (year, G+E, yield) pairs the fit was computed on, emitted by the
+    same fetch. Only used when pairs.json is for the SAME ISO week and its
+    year count equals the fit's n; otherwise the row says n and names nothing
+    rather than guessing which years are absent.
+    """
+    pc = ((pairs or {}).get("crops") or {}).get("corn") or {}
+    for r in rows:
+        r["missing"] = None
+        if pc.get("week") != r["week"]:
+            continue
+        yrs = sorted({int(x[0]) for x in (pc.get("states") or {}).get(r["st"], [])})
+        if not yrs or len(yrs) != r["n"] or not r.get("year"):
+            continue
+        span = range(first_year, int(r["year"]))
+        r["missing"] = [y for y in span if y not in yrs]
+        r["span_n"] = len(span)
+    return rows
+
+
+def n_note(r):
+    """'n=22 yrs; no 2000, 2012, 2013, 2025' -- the sample beside the claim."""
+    out = f'n={r["n"]} yrs'
+    if r.get("missing"):
+        out += "; no " + ", ".join(str(y) for y in r["missing"])
+    return out
+
+
+def mixed_n(r):
+    """True when this week's fit and the peak week's fit rest on different
+    numbers of years, so comparing the two R2 values is not like for like."""
+    return r.get("n") is not None and r.get("peak_n") is not None and r["n"] != r["peak_n"]
+
+
 def render_tiles(data, rows):
     ia = pick(rows, "IA")
     top = rows[0] if rows else None
     wk = rows[0]["week"] if rows else None
     t = []
     if ia:
+        cmp = (f' &middot; not the same years as week {ia["peak_wk"]} ({ia["n"]} vs {ia["peak_n"]}), '
+               f'so the two are not like for like') if mixed_n(ia) else ""
         t.append(f'<div class="cy-stat"><div class="v">{round(ia["r2"]*100)}%</div>'
                  f'<div class="l">Iowa corn, this week (wk {ia["week"]})</div>'
-                 f'<div class="s">of yield deviation from trend explained by G+E</div></div>')
+                 f'<div class="s">of yield deviation from trend explained by G+E &middot; '
+                 f'{n_note(ia)}{cmp}</div></div>')
         t.append(f'<div class="cy-stat"><div class="v">{round(ia["peak_r2"]*100)}%</div>'
                  f'<div class="l">Iowa corn by week {ia["peak_wk"]}</div>'
-                 f'<div class="s">the season seals it late</div></div>')
+                 f'<div class="s">the season seals it late &middot; n={ia["peak_n"]} yrs</div></div>')
     if top:
         t.append(f'<div class="cy-stat"><div class="v">{round(top["r2"]*100)}%</div>'
                  f'<div class="l">{esc(top["name"])}, this week</div>'
-                 f'<div class="s">the clearest read in the country right now</div></div>')
+                 f'<div class="s">the clearest read in the country right now &middot; {n_note(top)}</div></div>')
     t.append(f'<div class="cy-stat"><div class="v">n&ge;{data.get("min_n", 15)}</div>'
              f'<div class="l">years per fit, minimum</div>'
              f'<div class="s">thin fits refused</div></div>')
@@ -152,14 +193,15 @@ def render_seed(data, rows):
         # r2 is the fit on DETRENDED yield; r2_raw (0.29 for IA wk38) is the
         # share of the yield itself. Saying "of final yield" claims the second
         # while printing the first.
-        parts.append(f'{round(ia["r2"]*100)}% of how Iowa&rsquo;s final yield differs from trend')
+        parts.append(f'{round(ia["r2"]*100)}% of how Iowa&rsquo;s final yield differs from trend ({n_note(ia)})')
     if il:
-        parts.append(f'{round(il["r2"]*100)}% of Illinois&rsquo;s')
+        parts.append(f'{round(il["r2"]*100)}% of Illinois&rsquo;s ({n_note(il)})')
     if top and top["st"] not in ("IA", "IL"):
-        parts.append(f'{round(top["r2"]*100)}% of {esc(top["name"])}&rsquo;s')
+        parts.append(f'{round(top["r2"]*100)}% of {esc(top["name"])}&rsquo;s ({n_note(top)})')
     bits.append(", ".join(parts))
     if il:
-        bits.append(f' &middot; by week {il["peak_wk"]} Illinois peaks at {round(il["peak_r2"]*100)}%')
+        bits.append(f' &middot; by week {il["peak_wk"]} Illinois peaks at {round(il["peak_r2"]*100)}% '
+                    f'(n={il["peak_n"]} yrs)')
     bits.append(f' &middot; fits vs detrended yield, 2000&ndash;{(yr or 2026) - 1}, '
                 f'n&ge;{data.get("min_n", 15)} &middot; data refreshed {stamp_date(data)}')
     return "".join(bits)
@@ -174,11 +216,15 @@ def faq_answer(rows):
     top = rows[0] if rows else None
     if not ia or not top:
         return None
+    miss = (f", missing {', '.join(str(y) for y in ia['missing'])}" if ia.get("missing") else "")
+    cmp = (f" The two weeks rest on different years ({ia['n']} vs {ia['peak_n']}), so the gap "
+           f"between them is partly a change of sample, not only of signal." if mixed_n(ia) else "")
     return (f"Partially, late, and it depends where you farm. In week {ia['week']}, the "
             f"Good+Excellent share explains about {round(ia['r2'] * 100)}% of how Iowa's final corn "
-            f"yield differs from its trend. Iowa's fit peaks at week {ia['peak_wk']}, at about "
-            f"{round(ia['peak_r2'] * 100)}%. In {top['name']}, this week's ratings already explain "
-            f"{round(top['r2'] * 100)}%. This page computes the number for every state and week "
+            f"yield differs from its trend ({ia['n']} years{miss}). Iowa's fit peaks at week "
+            f"{ia['peak_wk']}, at about {round(ia['peak_r2'] * 100)}% ({ia['peak_n']} years).{cmp} "
+            f"In {top['name']}, this week's ratings already explain {round(top['r2'] * 100)}% "
+            f"({top['n']} years). This page computes the number for every state and week "
             f"instead of asserting it.")
 
 
@@ -284,12 +330,48 @@ def validate(rows):
         assert 1 <= r["week"] <= 53, f"{r['st']}: week {r['week']}"
 
 
+def selftest():
+    fails = []
+
+    def ck(name, ok, detail=""):
+        print(("  ok   " if ok else "  FAIL ") + name + ("" if ok else f"  -- {detail}"))
+        if not ok:
+            fails.append(name)
+
+    data = {"min_n": 15, "generated": "2026-10-06T00:00:00Z", "crops": {"corn": {"states": {
+        "IA": {"latest": {"year": 2026, "week": 40}, "weeks": {
+            "39": {"r2": 0.641, "n": 26, "slope": 0.66}, "40": {"r2": 0.357, "n": 22, "slope": 0.48}}},
+        "TN": {"latest": {"year": 2026, "week": 40}, "weeks": {
+            "40": {"r2": 0.904, "n": 22, "slope": 0.71}}}}}}}
+    yrs = [y for y in range(2000, 2026) if y not in (2000, 2012, 2013, 2025)]
+    pairs = {"crops": {"corn": {"week": 40, "states": {"IA": [[y, 60, 180] for y in yrs]}}}}
+    rows = attach_years(rows_for(data, "corn"), pairs)
+    ia = pick(rows, "IA")
+    ck("missing years named from the same-week pairs", ia["missing"] == [2000, 2012, 2013, 2025], ia["missing"])
+    ck("a state without pairs gets n and no invented years", pick(rows, "TN")["missing"] is None)
+    tiles = render_tiles(data, rows)
+    ck("tile prints n beside this week's R2", "n=22 yrs; no 2000, 2012, 2013, 2025" in tiles, tiles)
+    ck("tile says the two weeks rest on different years", "22 vs 26" in tiles, tiles)
+    ck("peak tile prints its own n", "n=26 yrs" in tiles, tiles)
+    ck("seed prints n", "n=22 yrs" in render_seed(data, rows))
+    faq = faq_answer(rows)
+    ck("FAQ prints both n and names the gap", "22 years, missing 2000" in faq and "26 years" in faq, faq)
+    stale = attach_years(rows_for(data, "corn"), {"crops": {"corn": {"week": 39, "states": pairs["crops"]["corn"]["states"]}}})
+    ck("pairs from another week name nothing", pick(stale, "IA")["missing"] is None)
+    print("build_condyield selftest: " + ("all passed" if not fails else f"{len(fails)} FAILED"))
+    return 1 if fails else 0
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--check", action="store_true")
     ap.add_argument("--html", default=None)
     ap.add_argument("--json", default=None)
+    ap.add_argument("--pairs", default=None)
+    ap.add_argument("--selftest", action="store_true")
     args = ap.parse_args()
+    if args.selftest:
+        return selftest()
 
     root = Path(__file__).resolve().parent.parent
     html_path = Path(args.html) if args.html else root / "conditions-yield.html"
@@ -298,6 +380,12 @@ def main():
     data = json.loads(json_path.read_text(encoding="utf-8"))
     rows = rows_for(data, "corn")
     validate(rows)
+    pairs_path = Path(args.pairs) if args.pairs else json_path.parent / "pairs.json"
+    try:
+        pairs = json.loads(pairs_path.read_text(encoding="utf-8"))
+    except (FileNotFoundError, ValueError):
+        pairs = None
+    attach_years(rows, pairs)
 
     html = html_path.read_text(encoding="utf-8")
     baked = splice(html, "table", render_table(rows))

@@ -38,8 +38,8 @@ if (!monLine) throw new Error("no BH_MON");
 /* bhLook is the one thing stubbed: it reads a fetched shard, and what is
    under test is what the page SAYS about a row, not how it found it. */
 let STUB = null;
-const mk = new Function("getStub", ["basisCents", "bhNorm", "bhKeyOf", "bhDate", "bhSane", "bhLine"].map(grab).join("\n")
-  + "\n" + monLine[0] + "\nfunction bhLook(){return getStub();}"
+const mk = new Function("getStub", ["ppu", "basisUnit", "basisCents", "bhNorm", "bhKeyOf", "bhDate", "bhSane", "bhLine"].map(grab).join("\n")
+  + "\n" + monLine[0] + "\n" + h.match(/var PPU_BAND=\{[^}]*\};/)[0] + "\nfunction bhLook(){return getStub();}"
   + "; return {basisCents,bhNorm,bhKeyOf,bhDate,bhSane,bhLine};")(() => STUB);
 
 let pass = 0, fail = 0;

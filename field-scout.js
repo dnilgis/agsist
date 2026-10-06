@@ -2726,8 +2726,21 @@
       var yl=null, ylab='';
       if(lv){ yl=lv.avg; ylab='County corn, recent level: <strong>'+lv.avg.toFixed(1)+' bu/ac</strong> ('+lv.from+'–'+lv.to+', high and low year dropped)'; }
       else if(cornY&&cornY.trend){ yl=Math.round(cornY.trend); ylab='County corn trend: <strong>'+yl+' bu/ac</strong>'+(cornY.last!=null?' (recent county average: '+cornY.last+' bu)':''); }
+      /* SAME PRACTICE, OR NO SHARE -- 2026-10-06, same rule as /cash-rent. This divided
+         NON-IRRIGATED rent by the county's all-practice corn yield, which in an irrigated
+         county is mostly irrigated corn, so the dryland share read far too low (Finney KS:
+         4.3%). Use the dryland trend when the data carries one; use the all-practice level
+         only where the county shows no irrigation at all; otherwise say why there is none. */
+      var pt=rec.pair&&rec.pair.corn&&rec.pair.corn.t, ylShare=null, shareWhy='';
+      var irrSeen=!!((rec.rent&&rec.rent.irr&&Object.keys(rec.rent.irr).length)||(rec.yield&&rec.yield.corn_irr&&rec.yield.corn_irr.hist&&Object.keys(rec.yield.corn_irr.hist).length));
+      if(pt&&pt.v!=null&&pt.b==='nonirr'){ ylShare=pt.v; shareWhy=' (county dryland corn trend, '+Math.round(pt.v)+' bu)'; }
+      else if(pt&&pt.v!=null&&pt.b==='all'){ ylShare=yl; }
+      else if(!pt&&!irrSeen){ ylShare=yl; }
       if(yl){
-        var bm=FIELD.bids&&FIELD.bids.corn&&FIELD.bids.corn.mon; var money = bid ? ' At $'+bid.toFixed(2)+' nearby corn'+(bm?' ('+bm+' delivery)':'')+', a corn year grosses $'+Math.round(yl*bid).toLocaleString('en-US')+'/ac and rent takes '+Math.round(val/(yl*bid)*100)+'% of it.' : '';
+        var bm=FIELD.bids&&FIELD.bids.corn&&FIELD.bids.corn.mon;
+        var money = !bid ? '' : ylShare
+          ? ' At $'+bid.toFixed(2)+' nearby corn'+(bm?' ('+bm+' delivery)':'')+', a corn year grosses $'+Math.round(ylShare*bid).toLocaleString('en-US')+'/ac'+shareWhy+' and rent takes '+Math.round(val/(ylShare*bid)*100)+'% of it.'
+          : ' Rent share not shown: this county\u2019s corn yield mixes irrigated and dryland acres, so dividing dryland rent by it would understate the share.';
         html+='<p class="fs-cline">'+ylab+'.'+money+' <a class="fs-act-link" href="/cash-lease?st='+abbr+'" target="_blank" rel="noopener">Run this lease in Cash Lease &rarr;</a></p>';
       }
       html+=csrc('USDA NASS county cash-rent survey and county corn yield · '+esc(cty)+' County, '+esc(stFull)+' · missing years = never surveyed, not zero');
@@ -2994,8 +3007,8 @@
         var productive = s.nccpi!=null && s.nccpi>=0.55;
         push({ sev:productive?4:3, act:true, topic:'rotation', tag:'corn-on-corn pressure',
           title: r.pattern==='ccs' ? 'second-year corn this season \u2014 scout rootworm and budget the drag' : 'plan a rotation break to stop the corn-on-corn yield drag'+(productive?' on this productive ground':''),
-          detail:(cornSure?'Corn':'On its rotation, likely corn')+' this year on corn last year. '+(productive?'This is productive ground (soil productivity '+Math.round(s.nccpi*100)+'/100), so the second-year-corn drag costs more bushels here than on weaker soil':'Second-year corn carries rootworm and nitrogen pressure')+(r.pattern==='ccs'?'; it is part of a planned corn\u2013corn\u2013soybean rotation, so weigh the drag against the rotation\u2019s other gains':' — worth a rotation break before it compounds'+nFix)+'.',
-          action: dragAction(productive?8:5, productive?15:10),
+          detail:(cornSure?'Corn':'On its rotation, likely corn')+' this year on corn last year. '+'Second-year corn carries rootworm and nitrogen pressure'+(r.pattern==='ccs'?'; it is part of a planned corn\u2013corn\u2013soybean rotation, so weigh the drag against the rotation\u2019s other gains':' — worth a rotation break before it compounds'+nFix)+'.',
+          action: dragAction(5, 15),   // one range for every soil: trials (Gentry 2013, Seifert 2017) find the drag largest on weaker, drier ground, not productive ground
           watch: pollenWindow()!=null ? 'Rootworm pressure peaks near silking (~'+pollenWindow()+' days out) — scout this season; plan beans next.' : 'Scout for rootworm this season; plan beans on these acres next year.' });
       }
     } else if(r && r.cornOnCorn){

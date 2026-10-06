@@ -216,6 +216,14 @@ function htmlPage(msg, extraHtml) {
     { headers: { "Content-Type": "text/html;charset=utf-8" } });
 }
 
+// A confirmation link works for 14 days, as the privacy page says. Before
+// 2026-10-06 the confirm routes only checked that the request existed, so an
+// old link kept working and an unconfirmed address stayed stored indefinitely.
+const PEND_TTL_MS = 14 * 24 * 3600 * 1000;
+function pendExpired(rec) {
+  return !rec || typeof rec.ts !== "number" || Date.now() - rec.ts > PEND_TTL_MS;
+}
+
 export default {
   async fetch(req, env) {
     const url = new URL(req.url);
@@ -380,7 +388,10 @@ export default {
       if (req.method === "POST") {
         const r = await getWatch(e);
         if (conf) {
-          if (!(f in r.pend)) return htmlPage("This confirmation link has expired. Sign up again on the county page.");
+          if (!(f in r.pend) || pendExpired(r.pend[f])) {
+            if (f in r.pend) { delete r.pend[f]; await putWatch(e, r); }
+            return htmlPage("This confirmation link has expired. Sign up again on the county page.");
+          }
           delete r.pend[f];
           r.w[f] = null;                       // the sender records the baseline figures on its next run
           await putWatch(e, r);
@@ -596,7 +607,10 @@ export default {
       if (req.method === "POST") {
         const r = await getEWatch(e);
         if (conf) {
-          if (!(w in r.pend)) return htmlPage("This confirmation link has expired. Ask to watch it again on the elevator's bid card.");
+          if (!(w in r.pend) || pendExpired(r.pend[w])) {
+            if (w in r.pend) { delete r.pend[w]; await putEWatch(e, r); }
+            return htmlPage("This confirmation link has expired. Ask to watch it again on the elevator's bid card.");
+          }
           const pendLabel = r.pend[w].label;
           const opt = eOpts(r.pend[w]);
           delete r.pend[w];
@@ -724,7 +738,10 @@ export default {
       if (req.method === "POST") {
         const r = await getPWatch(e);
         if (conf) {
-          if (!(p in r.pend)) return htmlPage("This confirmation link has expired. Set the alert again on the homepage.");
+          if (!(p in r.pend) || pendExpired(r.pend[p])) {
+            if (p in r.pend) { delete r.pend[p]; await putPWatch(e, r); }
+            return htmlPage("This confirmation link has expired. Set the alert again on the homepage.");
+          }
           const rec = r.pend[p];
           delete r.pend[p];
           r.w[p] = { symbol: rec.symbol, direction: rec.direction, target_cents: rec.target_cents, label: rec.label };

@@ -30,7 +30,7 @@
   input{width:100%;background:var(--bg);border:2px solid var(--border);border-radius:6px;color:var(--text);
         font-family:'Courier New',monospace;font-size:15px;padding:7px 8px;outline:none;}
   input:focus{border-color:var(--gold);}
-  .btn{width:100%;min-height:44px;border:0;border-radius:8px;background:var(--gold);color:#0a1a0a;
+  .btn{width:100%;min-height:44px;border:0;border-radius:8px;background:var(--gold-fill,var(--gold));color:#0a1a0a;
        font-weight:800;font-size:13px;cursor:pointer;margin:3px 0 8px;}
   .btn:disabled{opacity:.5;cursor:not-allowed;}
   .status{font-size:11px;color:var(--muted);text-align:center;min-height:14px;margin-bottom:8px;line-height:1.4;}
@@ -88,13 +88,22 @@
 'use strict';
 var CORN=[{s:'VE',g:100},{s:'V3',g:200},{s:'V5',g:350},{s:'V6',g:475},{s:'V8',g:700},{s:'VT',g:1135},{s:'R1',g:1400},{s:'R2',g:1560},{s:'R3',g:1750},{s:'R4',g:1925},{s:'R5',g:2190},{s:'R6',g:2700}];
 var BEAN=[{s:'VE',g:130},{s:'V1',g:200},{s:'V3',g:400},{s:'V5',g:600},{s:'R1',g:800},{s:'R2',g:1000},{s:'R3',g:1200},{s:'R4',g:1400},{s:'R5',g:1600},{s:'R6',g:1750},{s:'R7',g:1900},{s:'R8',g:2000}];
-var crop='corn', realAccum=null, realDays=null, lat=null, lon=null;
+var crop='corn', realAccum=null, realDays=null, realThrough=null, lat=null, lon=null;
 function $(id){return document.getElementById(id);}
+// Local calendar date, not toISOString (UTC): after ~7pm CDT the UTC date is already tomorrow.
+function localISO(d){var m=d.getMonth()+1,dd=d.getDate();return d.getFullYear()+'-'+(m<10?'0':'')+m+'-'+(dd<10?'0':'')+dd;}
+function dayOf(str){return new Date(str+'T00:00:00');} // local midnight
+// 86/50 method: Hi and Lo each set to 50 if below 50 and to 86 if above 86.
+function gduDay(hi,lo){hi=Math.min(Math.max(hi,50),86);lo=Math.min(Math.max(lo,50),86);return (hi+lo)/2-50;}
+// Soybean GDU to R8: 1750 + 280*MG, a line through NDSU's soybean GDD model (1,694 for 00.8,
+// 1,890 for 0.5, 2,058 for 1.1 RM), used ONLY for MG -0.2 to 1.1; otherwise no target (null).
+// https://www.ag.ndsu.edu/news/newsreleases/2016/june-13-2016/ndsu-develops-soybean-growing-degree-day-model
+function beanTarget(mg){return (isFinite(mg)&&mg>=-0.2&&mg<=1.1)?Math.round(1750+280*mg):null;}
 function postHeight(){try{parent.postMessage({agsist:'gdu',height:document.body.scrollHeight},'*');}catch(e){}}
 
 (function init(){
   var t=new Date();
-  $('plant').value=new Date(t.getFullYear(),4,1).toISOString().slice(0,10);
+  $('plant').value=localISO(new Date(t.getFullYear(),4,1));
   // restore from URL params if present (shareable / pre-filled embeds)
   try{var q=new URLSearchParams(location.search);
     if(q.get('crop')==='bean')$('p-bean').click();
@@ -108,18 +117,18 @@ $('p-corn').addEventListener('click',function(){if(crop==='corn')return;crop='co
   $('rm-l').textContent='Relative Maturity';$('rm').value=108;calc();});
 $('p-bean').addEventListener('click',function(){if(crop==='bean')return;crop='bean';
   $('p-bean').setAttribute('aria-pressed','true');$('p-corn').setAttribute('aria-pressed','false');
-  $('rm-l').textContent='Maturity Group';$('rm').value=3;calc();});
+  $('rm-l').textContent='Maturity Group';$('rm').value=1;calc();});
 
 ['rm','frost'].forEach(function(id){$(id).addEventListener('input',calc);});
-$('plant').addEventListener('input',function(){realAccum=null;realDays=null;calc();});
+$('plant').addEventListener('input',function(){realAccum=null;realDays=null;realThrough=null;calc();});
 
 function setStatus(m,c){var e=$('status');e.textContent=m;e.className='status'+(c?' '+c:'');postHeight();}
 
 $('fetch').addEventListener('click',function(){
   var plantStr=$('plant').value;
   if(!plantStr){setStatus('Enter a planting date first','err');return;}
-  var todayStr=new Date().toISOString().slice(0,10);
-  if(new Date(todayStr)<=new Date(plantStr)){setStatus('Planting date must be in the past','err');return;}
+  var todayStr=localISO(new Date());
+  if(dayOf(todayStr)<=dayOf(plantStr)){setStatus('Planting date must be in the past','err');return;}
   var zip=($('zip').value||'').trim();
   var btn=$('fetch');btn.disabled=true;btn.textContent='⏳ Fetching…';setStatus('Loading…','');
   var locP=(lat&&lon)?Promise.resolve({lat:lat,lon:lon}):(zip?
@@ -132,14 +141,15 @@ $('fetch').addEventListener('click',function(){
   }).then(function(data){
     if(!data.daily||!data.daily.temperature_2m_max)throw new Error('Unexpected data');
     var mx=data.daily.temperature_2m_max,mn=data.daily.temperature_2m_min,tm=data.daily.time||[];
-    var acc=0,n=0,last=null;
+    var acc=0,n=0,last=null,lastIdx=-1;
     for(var i=0;i<mx.length;i++){if(mx[i]==null||mn[i]==null)continue;
-      acc+=Math.max(0,(Math.min(mx[i],86)+Math.max(mn[i],50))/2-50);n++;if(tm[i])last=tm[i];}
+      acc+=gduDay(mx[i],mn[i]);n++;lastIdx=i;if(tm[i])last=tm[i];}
     if(n===0)throw new Error('No usable weather days returned');
-    realAccum=acc;realDays=n;
-    var pend=last?Math.round((new Date(todayStr)-new Date(last))/86400000):0;
-    var thru=last?new Date(last+'T00:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric'}):'';
-    setStatus('✓ Through '+thru+' — '+n+' days, '+acc.toFixed(0)+' GDUs'+(pend>0?' · last '+pend+'d pending':''),'ok');
+    var gaps=0;for(var j=0;j<lastIdx;j++){if(mx[j]==null||mn[j]==null)gaps++;}
+    realAccum=acc;realDays=n;realThrough=last;
+    var pend=last?Math.round((dayOf(todayStr)-dayOf(last))/86400000):0;
+    var thru=last?dayOf(last).toLocaleDateString('en-US',{month:'short',day:'numeric'}):'';
+    setStatus('✓ Through '+thru+' — '+n+' days, '+acc.toFixed(0)+' GDUs'+(pend>0?' · last '+pend+'d pending':'')+(gaps>0?' · '+gaps+'d missing, not counted':''),'ok');
     calc();
   }).catch(function(err){setStatus('✗ '+err.message,'err');})
    .finally(function(){btn.disabled=false;btn.textContent='Fetch Real GDUs';postHeight();});
@@ -147,31 +157,40 @@ $('fetch').addEventListener('click',function(){
 
 function calc(){
   var plantStr=$('plant').value;if(!plantStr)return;
-  var todayStr=new Date().toISOString().slice(0,10);
-  var days=Math.max(0,Math.round((new Date(todayStr)-new Date(plantStr))/86400000));
   var accum,rate;
   if(realAccum!=null){accum=realAccum;rate=(realDays>0)?accum/realDays:0;}
   else{accum=0;rate=0;} // no estimate without a fetch in the compact widget
-  var rm=parseFloat($('rm').value)||(crop==='corn'?108:3);
+  // Blank maturity is withheld, never defaulted (MG 0 is a real group, so no `||`).
+  var rm=parseFloat($('rm').value), rmOK=isFinite(rm);
   var stages=crop==='corn'?CORN:BEAN;
-  var target=crop==='corn'?Math.round(rm*22+250):Math.min(Math.max(Math.round(rm*500+800),1600),2400);
-  var refBL=stages[stages.length-1].g, scale=refBL>0?target/refBL:1;
+  var target=!rmOK?null:(crop==='corn'?Math.round(rm*22+250):beanTarget(rm));
+  var refBL=stages[stages.length-1].g, scale=(target!=null&&refBL>0)?target/refBL:1;
   var scaled=stages.map(function(st){return {s:st.s,g:Math.round(st.g*scale)};});
-  var pct=target>0?Math.min(100,accum/target*100):0;
-  var rem=Math.max(0,target-accum), dleft=rate>0?Math.round(rem/rate):null;
-  var matD=dleft!=null?new Date(new Date(todayStr).getTime()+dleft*86400000):null;
+  var pct=target!=null?Math.min(100,accum/target*100):null;
+  var rem=target!=null?Math.max(0,target-accum):null, dleft=(rem!=null&&rate>0)?Math.round(rem/rate):null;
+  // Project from the last day the archive has, so pending days are projected, not zero.
+  var matD=null;
+  if(dleft!=null&&realThrough){matD=dayOf(realThrough);matD.setDate(matD.getDate()+dleft);}
   var cur=scaled[0].s;for(var i=0;i<scaled.length;i++){if(accum>=scaled[i].g)cur=scaled[i].s;}
+  var thru=realThrough?dayOf(realThrough).toLocaleDateString('en-US',{month:'short',day:'numeric'}):null;
 
-  $('total').innerHTML=Math.round(accum).toLocaleString()+' <small>GDUs · '+pct.toFixed(0)+'%</small>';
+  $('total').innerHTML=Math.round(accum).toLocaleString()+' <small>GDUs'+(thru?' through '+thru:'')+(pct!=null?' · '+pct.toFixed(0)+'%':'')+'</small>';
   $('stage').textContent=realAccum!=null?'Stage: '+cur:'Fetch to see stage';
   $('rate').textContent=rate>0?rate.toFixed(1)+'/day':'—';
-  $('mat-l').textContent=crop==='corn'?'Est. maturity (black layer)':'Est. full maturity (R8)';
-  $('mat').textContent=matD?matD.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}):'—';
+  $('mat-l').textContent=crop==='corn'?'Est. maturity (black layer)':(target!=null?'Est. full maturity (R8, NDSU GDD model)':'Est. full maturity (R8)');
+  var matTxt;
+  if(!rmOK)matTxt='— · enter '+(crop==='corn'?'a relative maturity':'a maturity group');
+  else if(target==null)matTxt='— · no published GDD-to-maturity figure for MG '+rm+' (NDSU’s model covers 00.8–1.1); soybean maturity is driven by day length — use the seed company’s rating.';
+  else matTxt=matD?matD.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}):'—';
+  $('mat').textContent=matTxt;
+  $('mat').style.whiteSpace=target==null?'normal':'';
+  $('mat').style.textAlign=target==null?'right':'';
 
   var fStr=$('frost').value, fv=$('frostv');
-  if(!fStr){fv.textContent='Add frost date';fv.style.color='var(--muted)';}
+  if(target==null){fv.textContent='—';fv.style.color='var(--muted)';}
+  else if(!fStr){fv.textContent='Add frost date';fv.style.color='var(--muted)';}
   else if(!matD){fv.textContent='Fetch first';fv.style.color='var(--muted)';}
-  else{var m=Math.round((new Date(fStr+'T00:00:00')-matD)/86400000);
+  else{var m=Math.round((dayOf(fStr)-matD)/86400000);
     if(m>=7){fv.textContent='✓ '+m+'d to spare';fv.style.color='var(--green)';}
     else if(m>=0){fv.textContent='⚠ '+m+'d margin';fv.style.color='var(--gold)';}
     else{fv.textContent='⚠ '+Math.abs(m)+'d short';fv.style.color='var(--red)';}}

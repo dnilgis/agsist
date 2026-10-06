@@ -18,10 +18,17 @@ START_YEAR = 2010
 
 # dataset key -> query spec. agg: STATE (rows per state) or NATIONAL (one series).
 # div: divide raw value; dig: round digits; unit: header label shown by the page.
+# final_at = (years after the crop year, month, day) on which a year's figure can
+#   be final. Default (1, 1, 1): corn and soybeans wait for January's annual
+#   summary. Small grains are final in NASS's Small Grains Summary at the end of
+#   September of the crop year itself.
+# period = reference_period_desc pinned at the query (default YEAR).
+DEFAULT_FINAL_AT = (1, 1, 1)
+SMALL_GRAIN = (0, 10, 1)
 DATASETS = {
     "corn-yield":  dict(short="CORN, GRAIN - YIELD, MEASURED IN BU / ACRE",          agg="STATE",    div=1,   dig=1, unit="bu/acre"),
     "soy-yield":   dict(short="SOYBEANS - YIELD, MEASURED IN BU / ACRE",             agg="STATE",    div=1,   dig=1, unit="bu/acre"),
-    "wheat-yield": dict(short="WHEAT, WINTER - YIELD, MEASURED IN BU / ACRE",        agg="STATE",    div=1,   dig=1, unit="bu/acre"),
+    "wheat-yield": dict(short="WHEAT, WINTER - YIELD, MEASURED IN BU / ACRE",        agg="STATE",    div=1,   dig=1, unit="bu/acre", final_at=SMALL_GRAIN),
     "corn-acres":  dict(short="CORN - ACRES PLANTED",                                agg="STATE",    div=1e6, dig=2, unit="M acres", zero_ok=True),
     "soy-acres":   dict(short="SOYBEANS - ACRES PLANTED",                            agg="STATE",    div=1e6, dig=2, unit="M acres", zero_ok=True),
     "corn-price":  dict(short="CORN, GRAIN - PRICE RECEIVED, MEASURED IN $ / BU",    agg="NATIONAL", div=1,   dig=2, unit="$/bu"),
@@ -30,7 +37,21 @@ DATASETS = {
     # national yield series — power the homepage-style hero snapshot + trend sparklines
     "corn-yield-us":  dict(short="CORN, GRAIN - YIELD, MEASURED IN BU / ACRE", agg="NATIONAL", div=1, dig=1, unit="bu/acre"),
     "soy-yield-us":   dict(short="SOYBEANS - YIELD, MEASURED IN BU / ACRE",    agg="NATIONAL", div=1, dig=1, unit="bu/acre"),
-    "wheat-yield-us": dict(short="WHEAT - YIELD, MEASURED IN BU / ACRE",       agg="NATIONAL", div=1, dig=1, unit="bu/acre"),
+    "wheat-yield-us": dict(short="WHEAT - YIELD, MEASURED IN BU / ACRE",       agg="NATIONAL", div=1, dig=1, unit="bu/acre", final_at=SMALL_GRAIN),
+    # winter wheat nationally, for the winter-wheat state tab (wheat-yield-us is ALL wheat)
+    "wheat-winter-yield-us": dict(short="WHEAT, WINTER - YIELD, MEASURED IN BU / ACRE", agg="NATIONAL", div=1, dig=1, unit="bu/acre", final_at=SMALL_GRAIN),
+    # NASS's own national planted acreage. Summing the state rows is not it:
+    # 2024 carried an "Other States" row on top of all 48 states (91.67M
+    # summed vs 90.6M published) and other years ran 0.3M short (audit 2026-10-06).
+    "corn-acres-us": dict(short="CORN - ACRES PLANTED",     agg="NATIONAL", div=1e6, dig=2, unit="M acres"),
+    "soy-acres-us":  dict(short="SOYBEANS - ACRES PLANTED", agg="NATIONAL", div=1e6, dig=2, unit="M acres"),
+    # marketing-year average price received; year Y is the Y/Y+1 marketing year.
+    # Final once the marketing year has closed and NASS's Agricultural Prices
+    # has published it: corn and soybeans (Sep-Aug) in the Sep 30 release,
+    # wheat (Jun-May) by the end of June.
+    "corn-price-my":  dict(short="CORN, GRAIN - PRICE RECEIVED, MEASURED IN $ / BU", agg="NATIONAL", div=1, dig=2, unit="$/bu", period="MARKETING YEAR", final_at=(1, 10, 1)),
+    "soy-price-my":   dict(short="SOYBEANS - PRICE RECEIVED, MEASURED IN $ / BU",    agg="NATIONAL", div=1, dig=2, unit="$/bu", period="MARKETING YEAR", final_at=(1, 10, 1)),
+    "wheat-price-my": dict(short="WHEAT - PRICE RECEIVED, MEASURED IN $ / BU",       agg="NATIONAL", div=1, dig=2, unit="$/bu", period="MARKETING YEAR", final_at=(1, 7, 1)),
 }
 
 def parse_val(v):
@@ -59,7 +80,7 @@ def conv(raw, div, dig):
         val = round(raw / div, dig + 2)
     return int(val) if dig == 0 else val
 
-def fetch(key, short, agg, year_ge, _opener=None):
+def fetch(key, short, agg, year_ge, _opener=None, period="YEAR"):
     params = {
         "key": key, "short_desc": short, "agg_level_desc": agg,
         "source_desc": "SURVEY", "format": "JSON", "year__GE": str(year_ge),
@@ -70,7 +91,7 @@ def fetch(key, short, agg, year_ge, _opener=None):
         # through on ten of eleven datasets -- and inconsistently, which is the
         # tell: wheat-yield.json excluded it while wheat-yield-us.json did not,
         # from the same run, because the label differs by aggregation.
-        "reference_period_desc": "YEAR",
+        "reference_period_desc": period,
     }
     url = API + "?" + urllib.parse.urlencode(params)
     req = urllib.request.Request(url, headers={"User-Agent": "AGSIST/1.0 (+https://agsist.com)"})
@@ -92,9 +113,29 @@ SCOPE = ("final estimates only; USDA in-season forecasts excluded "
          "(reference_period_desc pinned to YEAR at the query, and any year at or "
          "after the current calendar year dropped -- a crop year is not final "
          "until NASS's January annual summary)")
+SCOPE_SMALL_GRAIN = ("final estimates only; USDA in-season forecasts excluded "
+         "(reference_period_desc pinned to YEAR at the query; a crop year is kept "
+         "from Oct 1 of that year, after NASS's end-of-September Small Grains "
+         "Summary publishes the final)")
+SCOPE_MY = ("marketing-year average price received, final only (reference_period_desc "
+         "pinned to MARKETING YEAR; year Y is the Y/Y+1 marketing year, kept only "
+         "once that marketing year has closed and NASS has published it)")
 
 
-def assert_no_in_season(payload, key):
+def final_ok(year, final_at=DEFAULT_FINAL_AT, today=None):
+    """Could NASS have published a final for this year by today?"""
+    today = today or datetime.date.today()
+    dy, m, d = final_at
+    return (today.year, today.month, today.day) >= (int(year) + dy, m, d)
+
+
+def scope_for(spec):
+    if spec.get("period") == "MARKETING YEAR":
+        return SCOPE_MY
+    return SCOPE_SMALL_GRAIN if spec.get("final_at") == SMALL_GRAIN else SCOPE
+
+
+def assert_no_in_season(payload, key, final_at=DEFAULT_FINAL_AT):
     """Refuse to WRITE a file whose scope string would be a lie.
 
     The old scope string was a constant stamped onto the payload whatever the
@@ -102,16 +143,15 @@ def assert_no_in_season(payload, key):
     forecasts excluded" while carrying the August 2026 forecast. A claim that
     cannot fail is not a claim. This one fails the build.
     """
-    year_now = datetime.date.today().year
     if payload["type"] == "national":
-        bad = sorted(y for y in payload["values"] if int(y) >= year_now)
+        bad = sorted(y for y in payload["values"] if not final_ok(y, final_at))
     else:
-        bad = sorted({y for r in payload["rows"] for y in r["values"] if int(y) >= year_now})
+        bad = sorted({y for r in payload["rows"] for y in r["values"] if not final_ok(y, final_at)})
     assert not bad, (f"{key}: in-season year(s) {bad} survived into a payload whose scope "
                      f"says forecasts are excluded. Do not publish it.")
 
 
-def is_forecast(row):
+def is_forecast(row, final_at=DEFAULT_FINAL_AT):
     """True for NASS in-season forecast rows (AUG/SEP/OCT/NOV FORECAST).
 
     2026-08-15: `build_state_stats.py` published the Aug 12 Crop Production
@@ -136,19 +176,19 @@ def is_forecast(row):
     # guard for a year and it let 2026 through; this one does not depend on
     # NASS's wording staying put.
     try:
-        return int(str(row.get("year", "")).strip()) >= datetime.date.today().year
+        return not final_ok(int(str(row.get("year", "")).strip()), final_at)
     except ValueError:
         return True
 
 
-def shape_state(rows, div, dig, zero_ok=False):
+def shape_state(rows, div, dig, zero_ok=False, final_at=DEFAULT_FINAL_AT):
     by_state, years = {}, set()
     for r in rows:
         st = r.get("state_name")
         yr = str(r.get("year", "")).strip()
         if not st or st.upper() == "US TOTAL" or not yr.isdigit():
             continue
-        if is_forecast(r):
+        if is_forecast(r, final_at):
             IN_SEASON_SKIPPED["n"] += 1
             continue
         raw = parse_val(r.get("Value"))
@@ -168,13 +208,13 @@ def shape_state(rows, div, dig, zero_ok=False):
     out_rows.sort(key=lambda r: r["state"])
     return years, out_rows
 
-def shape_national(rows, div, dig):
+def shape_national(rows, div, dig, final_at=DEFAULT_FINAL_AT):
     vals, years = {}, set()
     for r in rows:
         yr = str(r.get("year", "")).strip()
         if not yr.isdigit():
             continue
-        if is_forecast(r):
+        if is_forecast(r, final_at):
             IN_SEASON_SKIPPED["n"] += 1
             continue
         val = conv(parse_val(r.get("Value")), div, dig)
@@ -185,23 +225,24 @@ def shape_national(rows, div, dig):
     return sorted(years), vals
 
 def build_one(key, spec, key_api, outdir):
-    rows = fetch(key_api, spec["short"], spec["agg"], START_YEAR)
+    fa = spec.get("final_at", DEFAULT_FINAL_AT)
+    rows = fetch(key_api, spec["short"], spec["agg"], START_YEAR, period=spec.get("period", "YEAR"))
     now = datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
     if spec["agg"] == "STATE":
-        years, out_rows = shape_state(rows, spec["div"], spec["dig"], spec.get("zero_ok", False))
+        years, out_rows = shape_state(rows, spec["div"], spec["dig"], spec.get("zero_ok", False), fa)
         if not years:
             print(f"  - {key}: no data, skipped"); return False
         payload = {"type": "state", "updated": now, "unit": spec["unit"],
                    "source": "USDA NASS Quick Stats", "years": years, "rows": out_rows,
-                   "scope": SCOPE, "newest_year": max(years) if years else None}
+                   "scope": scope_for(spec), "newest_year": max(years) if years else None}
     else:
-        years, vals = shape_national(rows, spec["div"], spec["dig"])
+        years, vals = shape_national(rows, spec["div"], spec["dig"], fa)
         if not years:
             print(f"  - {key}: no data, skipped"); return False
         payload = {"type": "national", "updated": now, "unit": spec["unit"],
                    "source": "USDA NASS Quick Stats", "years": years, "values": vals,
-                   "scope": SCOPE, "newest_year": max(years) if years else None}
-    assert_no_in_season(payload, key)
+                   "scope": scope_for(spec), "newest_year": max(years) if years else None}
+    assert_no_in_season(payload, key, fa)
     path = os.path.join(outdir, key + ".json")
     with open(path, "w") as fh:
         json.dump(payload, fh, separators=(",", ":"))
@@ -239,6 +280,16 @@ def check_data(outdir):
 
 # ---- offline self-test ---------------------------------------------------
 def selftest():
+    D = datetime.date
+    # corn/soy wait for January; small grains are final from Oct 1 of the crop year
+    assert not final_ok(2026, DEFAULT_FINAL_AT, D(2026, 12, 31)) and final_ok(2026, DEFAULT_FINAL_AT, D(2027, 1, 1))
+    assert not final_ok(2026, SMALL_GRAIN, D(2026, 9, 30)) and final_ok(2026, SMALL_GRAIN, D(2026, 10, 1))
+    # 2025/26 corn marketing year closes Aug 31, 2026; final from Oct 1, 2026, not before
+    my = DATASETS["corn-price-my"]
+    assert my["period"] == "MARKETING YEAR"
+    assert not final_ok(2025, my["final_at"], D(2026, 9, 15)) and final_ok(2025, my["final_at"], D(2026, 10, 1))
+    assert "January" not in scope_for(DATASETS["wheat-yield"]) and "January" in scope_for(DATASETS["corn-yield"])
+    assert {"corn-acres-us", "soy-acres-us", "wheat-winter-yield-us"} <= set(DATASETS)
     assert parse_val("12,900,000") == 12900000.0 and parse_val("(D)") is None
     assert conv(12900000.0, 1e6, 2) == 12.9
     assert conv(178.0, 1, 1) == 178.0

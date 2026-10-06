@@ -249,6 +249,33 @@ def test_cattle_does_not_roll_early():
           f'got {data2["quotes"]["cattle"].get("repaired_from")}')
 
 
+def test_repair_carries_source_dates_and_age():
+    """2026-10-06: `meal` was repaired from meal-oct26 (the Oct 5 settle) but
+    kept the continuous ticker's close_date 2026-10-06, with stale_keys empty:
+    a day-old price stamped as today's. The repair now carries the source's
+    dates and marks the alias stale when the source is older than the session."""
+    print("roll repair carries dates")
+    oct6 = datetime(2026, 10, 6, 17, 0, tzinfo=timezone.utc)
+    feed = {"fetched": "2026-10-06T16:50:20Z", "stale_keys": [], "quotes": {
+        "meal": {"ticker": "ZM=F", "close": 353.6, "open": 345.9, "netChange": 7.7,
+                 "pctChange": 2.2261, "close_date": "2026-10-06", "prev_date": "2026-10-05"},
+        "meal-oct26": {"ticker": "ZMV26.CBT", "close": 345.9, "open": 344.7, "netChange": 1.2,
+                       "pctChange": 0.3481, "close_date": "2026-10-05", "prev_date": "2026-10-02"}}}
+    _, _, data = run(copy.deepcopy(feed), today=oct6, repair=True)
+    m = data["quotes"]["meal"]
+    check("meal is repaired from meal-oct26", m.get("repaired_from") == "meal-oct26", f'got {m.get("repaired_from")}')
+    check("it carries the source's close_date", m.get("close_date") == "2026-10-05", f'got {m.get("close_date")}')
+    check("and prev_date", m.get("prev_date") == "2026-10-02", f'got {m.get("prev_date")}')
+    check("an Oct 5 settle in an Oct 6 session is stale", m.get("stale") is True)
+    check("and listed in stale_keys", "meal" in data["stale_keys"], f'got {data["stale_keys"]}')
+    fresh = copy.deepcopy(feed)
+    fresh["quotes"]["meal-oct26"]["close_date"] = "2026-10-06"
+    fresh["quotes"]["meal-oct26"]["prev_date"] = "2026-10-05"
+    _, _, d2 = run(fresh, today=oct6, repair=True)
+    check("a same-session source is not stale", d2["quotes"]["meal"].get("stale") is not True
+          and "meal" not in d2["stale_keys"])
+
+
 def test_suite_does_not_depend_on_the_wall_clock():
     """THE 2026-08-15 REGRESSION. Six assertions in this file failed that
     Saturday — not because the gate broke, but because the fixture aged past
@@ -330,6 +357,7 @@ if __name__ == "__main__":
               test_optional_curve_absent_is_a_warning_not_a_block,
               test_optional_curve_present_repairs_instead_of_suppressing,
               test_cattle_does_not_roll_early,
+              test_repair_carries_source_dates_and_age,
               test_suite_does_not_depend_on_the_wall_clock):
         t()
     print()

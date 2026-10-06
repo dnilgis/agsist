@@ -826,7 +826,8 @@ def _parse_poly_prob(m):
             except Exception:
                 pass
     if prob is None:
-        for f in ("yes_price", "bestBid", "lastTradePrice", "last_trade_price", "price"):
+        # not bestBid: a bid is not a probability, it understates the market by half the spread
+        for f in ("yes_price", "lastTradePrice", "last_trade_price", "price"):
             val = m.get(f)
             if val is not None:
                 try:
@@ -852,7 +853,8 @@ def _make_poly_record(m, question, seen, event_slug="", event_title=""):
     if prob is None:
         return None
     vol = 0
-    for f in ("volume", "volume24hr", "volume_num", "volumeNum", "liquidityNum"):
+    # volume_24h: the 24-hour figure first; "volume" is lifetime and liquidityNum is not volume at all
+    for f in ("volume24hr", "volume", "volume_num", "volumeNum"):
         if m.get(f):
             try:
                 vol = float(m[f])

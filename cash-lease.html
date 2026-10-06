@@ -5,8 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#0a0c0d">  <script>/* agsist-ga-guard 2026-10-01: Google Analytics loads only when the browser sends no Global Privacy Control or Do Not Track signal and the off switch on /privacy is not set. dataLayer and gtag always exist, so page code that calls them never throws. */(function(w,d,n){var off=false,v,i,s;w.dataLayer=w.dataLayer||[];if(typeof w.gtag!=='function'){w.gtag=function(){w.dataLayer.push(arguments);};}try{off=w.localStorage.getItem('agsist-ga-off')==='1';}catch(e){}if(n.globalPrivacyControl===true){off=true;}v=[n.doNotTrack,w.doNotTrack,n.msDoNotTrack];for(i=0;i<v.length;i++){if(v[i]==='1'||v[i]==='yes'){off=true;}}w.agsistGaOff=off;w.gtag('set','allow_google_signals',false);w.gtag('set','allow_ad_personalization_signals',false);if(off){return;}s=d.createElement('script');s.async=true;s.src='https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H';(d.head||d.documentElement).appendChild(s);})(window,document,navigator);</script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
-  <link rel="preload" href="/components/styles.css?v=17" as="style">
-  <link rel="stylesheet" href="/components/styles.css?v=17">
+  <!-- static-nav:fonts (scripts/inject_static_nav.py) -->
+  <link rel="preload" href="/fonts/inter-400.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/jetbrains-mono-700.woff2" as="font" type="font/woff2" crossorigin>
+  <!-- /static-nav:fonts -->
+  <link rel="preload" href="/components/styles.css?v=18" as="style">
+  <link rel="stylesheet" href="/components/styles.css?v=18">
   <script src="/components/util.js?v=16"></script>
   <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
   <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
@@ -37,7 +41,7 @@
   <style>
     .cl-wrap{max-width:940px;margin:0 auto;padding:24px 16px 60px}
     .cl-hero{padding:26px 0 2px}
-    .cl-kicker{font-family:'JetBrains Mono',monospace;font-size:0.77rem;letter-spacing:.16em;text-transform:uppercase;color:#d4a23f;margin:0 0 10px}
+    .cl-kicker{font-family:'JetBrains Mono',monospace;font-size:0.77rem;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin:0 0 10px}
     .cl-hero h1{font-family:var(--font-display);font-size:clamp(1.7rem,4.5vw,2.6rem);line-height:1.12;margin:0 0 12px;color:#e6ebe9}
     .cl-sub{font-size:1.02rem;line-height:1.7;color:#8a948f;max-width:760px;margin:0}
     .cl-sub strong{color:#e6ebe9}
@@ -46,7 +50,7 @@
     
     .cl-panel{background:#101415;border:1px solid #1a1f20;border-radius:12px;margin-top:26px;overflow:hidden}
     .cl-panel-hd{padding:14px 18px;border-bottom:1px solid #1a1f20}
-    .cl-panel-t{font-family:'JetBrains Mono',monospace;font-size:0.78rem;letter-spacing:.14em;text-transform:uppercase;color:#d4a23f}
+    .cl-panel-t{font-family:'JetBrains Mono',monospace;font-size:0.78rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}
     .cl-panel-b{padding:18px}
     .cl-types{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
     .cl-type{background:#0d1112;border:1px solid #1a1f20;border-radius:10px;padding:14px 16px}
@@ -54,17 +58,17 @@
     .cl-type p{margin:0 0 8px;font-size:.88rem;line-height:1.65;color:#8a948f}
     .cl-risk{font-family:'JetBrains Mono',monospace;font-size:0.76rem;letter-spacing:.1em;text-transform:uppercase;padding:3px 8px;border-radius:4px;display:inline-block;margin-bottom:9px}
     .cl-risk--tenant{color:#e0685f;border:1px solid rgba(224,104,95,.4)}
-    .cl-risk--shared{color:#d4a23f;border:1px solid rgba(212,162,63,.4)}
+    .cl-risk--shared{color:var(--gold);border:1px solid rgba(212,162,63,.4)}
     .cl-risk--owner{color:#5fc28a;border:1px solid rgba(95,194,138,.4)}
     .cl-note{background:rgba(212,162,63,.06);border:1px solid rgba(212,162,63,.3);border-radius:10px;padding:12px 16px;font-size:1rem;line-height:1.65;color:#8a948f;margin:16px 0}
-    .cl-note strong{color:#d4a23f}
+    .cl-note strong{color:var(--gold)}
     .cl-warn{background:rgba(224,104,95,.06);border:1px solid rgba(224,104,95,.35);border-radius:10px;padding:12px 16px;font-size:.88rem;line-height:1.65;color:#8a948f;margin:16px 0}
     .cl-warn strong{color:#e0685f}
     /* ---- the lease itself ---- */
     .lease{background:#0d1112;border:1px solid #1a1f20;border-radius:10px;padding:26px 26px 30px;line-height:1.75;color:#c9d1cd;font-size:.94rem}
     .lease h2{font-family:var(--font-display);text-align:center;font-size:1.25rem;letter-spacing:.06em;color:#e6ebe9;margin:0 0 4px}
     .lease .lease-sub{text-align:center;font-size:0.795rem;color:#8a948f;margin:0 0 22px}
-    .lease h3{font-size:.82rem;font-family:'JetBrains Mono',monospace;letter-spacing:.12em;text-transform:uppercase;color:#d4a23f;margin:22px 0 8px}
+    .lease h3{font-size:.82rem;font-family:'JetBrains Mono',monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin:22px 0 8px}
     .lease ol{padding-left:20px;margin:6px 0}
     .lease li{margin:5px 0}
     .lf{display:inline-block;background:transparent;border:none;border-bottom:1px solid #3a4345;color:#e6ebe9;font:inherit;padding:1px 6px;min-width:60px}
@@ -76,20 +80,20 @@
     .lf-area{display:block;width:100%;background:transparent;border:1px solid #3a4345;border-radius:6px;color:#e6ebe9;font:inherit;padding:8px 10px;min-height:74px;margin-top:6px}
     .lf-area:focus{outline:none;border-color:#d4a23f}
     .pm{display:none}
-    .cl-fmsg{color:#d4a23f;font-size:.8em;margin-left:6px}
+    .cl-fmsg{color:var(--gold);font-size:.8em;margin-left:6px}
     .lease .sig-grid{display:grid;grid-template-columns:1fr 1fr;gap:26px;margin-top:26px}
     .lease .sig td{padding-top:34px}
     .sigline{border-bottom:1px solid #3a4345;height:34px}
     .siglbl{font-size:0.78rem;color:#8a948f;margin-top:4px;font-family:'JetBrains Mono',monospace;letter-spacing:.08em}
     .cl-actions{display:flex;gap:10px;flex-wrap:wrap;margin:16px 0}
-    .cl-btn{font:inherit;font-size:.85rem;padding:9px 18px;border-radius:8px;border:1px solid #d4a23f;background:rgba(212,162,63,.1);color:#d4a23f;cursor:pointer}
+    .cl-btn{font:inherit;font-size:.85rem;padding:9px 18px;border-radius:8px;border:1px solid #d4a23f;background:rgba(212,162,63,.1);color:var(--gold);cursor:pointer}
     .cl-btn:hover{background:rgba(212,162,63,.2)}
     .cl-btn--ghost{border-color:#3a4345;background:transparent;color:#8a948f}
     .cl-faq details{border-bottom:1px solid #1a1f20;padding:10px 0}
     .cl-faq summary{cursor:pointer;color:#e6ebe9;font-size:1rem}
     .cl-faq p{color:#8a948f;font-size:.9rem;line-height:1.7;margin:8px 0 2px}
     .cl-src{font-size:.8rem;color:#8a948f;line-height:1.7}
-    .cl-src a{color:#d4a23f}
+    .cl-src a{color:var(--gold)}
     @media (max-width:640px){.lease{padding:18px 14px}.lease .sig-grid{grid-template-columns:1fr}}
     /* ---- print: the lease becomes clean paper; everything else disappears ---- */
     @media print{
@@ -124,10 +128,31 @@
       #cl-state-rule{display:block !important}
     }
     .lease-print-foot{display:none}
-  </style>
+  /* 2026-10-06: these panels stay dark in light mode, so gold inside them
+   stays the bright gold (the page around them takes the darker text gold). */
+[data-theme="light"] .cl-panel{--gold:#d4a23f;--gold-fill:#d4a23f;--brand:#d4a23f;--brand-fill:#d4a23f;--pd-gold:#d4a23f;--ib-gold:#d4a23f;--ib-gold2:#d4a23f;--wp-gold2:#e6b042;--as-gold2:#e6b042}
+</style>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"BreadcrumbList","@id":"https://agsist.com/cash-lease#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://agsist.com/"},{"@type":"ListItem","position":2,"name":"Cash Farm Lease","item":"https://agsist.com/cash-lease"}]}]}</script>
 </head>
 <body>
-<div id="site-header"></div>
+<div id="site-header">
+<!-- static-nav:header (scripts/inject_static_nav.py; source components/header-fallback.html) -->
+  <!-- Static crawlable header: loader.js replaceWith() swaps this for the live dropdown nav on JS;
+       non-JS crawlers (Bing, AI) read these links; also a working fallback if the fetch fails.
+       Copied into every root page by scripts/inject_static_nav.py -- edit HERE, then re-run it. -->
+  <header style="border-bottom:1px solid var(--border);background:var(--surface)">
+    <div style="max-width:1100px;margin:0 auto;padding:.7rem 1rem;display:flex;flex-wrap:wrap;align-items:baseline;gap:.4rem 1.1rem">
+      <a href="/" aria-label="AGSIST Home" style="font-family:var(--font-display);font-weight:800;font-size:1.05rem;letter-spacing:.04em;color:var(--text);text-decoration:none">AGSIST</a>
+      <nav aria-label="AGSIST main navigation" style="font-family:'JetBrains Mono',monospace;font-size:0.775rem;line-height:2;color:var(--text-muted)">
+        <span style="color:var(--text-dim);font-weight:700">Markets:</span> <a href="/corn-futures-prices" style="color:var(--text-muted);text-decoration:none">Corn</a> &middot; <a href="/soybean-futures-prices" style="color:var(--text-muted);text-decoration:none">Soybeans</a> &middot; <a href="/wheat-futures-prices" style="color:var(--text-muted);text-decoration:none">Wheat</a> &middot; <a href="/cattle-futures-prices" style="color:var(--text-muted);text-decoration:none">Cattle</a> &middot; <a href="/cash-bids" style="color:var(--text-muted);text-decoration:none">Cash Bids</a> &middot; <a href="/elevators" style="color:var(--text-muted);text-decoration:none">Elevator Coverage Map</a> &middot; <a href="/milk-prices" style="color:var(--text-muted);text-decoration:none">Milk Prices</a> &middot; <a href="/basis" style="color:var(--text-muted);text-decoration:none">Basis vs Normal</a> &middot; <a href="/storage-crunch" style="color:var(--text-muted);text-decoration:none">Storage Crunch</a> &middot; <a href="/cot" style="color:var(--text-muted);text-decoration:none">COT Report</a> &middot; <a href="/ag-odds" style="color:var(--text-muted);text-decoration:none">Prediction Markets</a> &middot; <a href="/tariffs" style="color:var(--text-muted);text-decoration:none">Tariffs</a> &middot; <a href="/usda-quick-stats" style="color:var(--text-muted);text-decoration:none">USDA Crop Data</a> &middot; <a href="/usda-calendar" style="color:var(--text-muted);text-decoration:none">USDA Calendar</a> &middot; <a href="/whats-priced-in" style="color:var(--text-muted);text-decoration:none">What's Priced In</a> &middot; <a href="/whats-priced-in#analyst-board" style="color:var(--text-muted);text-decoration:none">Analyst Estimates</a> &middot; <a href="/markets" style="color:var(--text-muted);text-decoration:none">All Markets</a><br>
+        <span style="color:var(--text-dim);font-weight:700">Costs &amp; Land:</span> <a href="/breakeven" style="color:var(--text-muted);text-decoration:none">Break-Even</a> &middot; <a href="/presell-calculator" style="color:var(--text-muted);text-decoration:none">Pre-Sell Calculator</a> &middot; <a href="/grain-bin-calculator" style="color:var(--text-muted);text-decoration:none">Grain Bin</a> &middot; <a href="/harvest-price-tracker" style="color:var(--text-muted);text-decoration:none">Harvest Price Tracker</a> &middot; <a href="/farmland-atlas" style="color:var(--text-muted);text-decoration:none">Farmland Atlas</a> &middot; <a href="/cash-rent" style="color:var(--text-muted);text-decoration:none">Cash Rent by County</a> &middot; <a href="/rent/" style="color:var(--text-muted);text-decoration:none">Cash Rent by State</a> &middot; <a href="/cash-lease" style="color:var(--text-muted);text-decoration:none">Cash Farm Lease</a> &middot; <a href="/foreign-land" style="color:var(--text-muted);text-decoration:none">Foreign-Owned Land</a> &middot; <a href="/land-tenure" style="color:var(--text-muted);text-decoration:none">Rented vs Owner-Farmed</a> &middot; <a href="/farm-bill" style="color:var(--text-muted);text-decoration:none">Farm Bill</a><br>
+        <span style="color:var(--text-dim);font-weight:700">Field:</span> <a href="/spray" style="color:var(--text-muted);text-decoration:none">Spray Advisory</a> &middot; <a href="/urea" style="color:var(--text-muted);text-decoration:none">Urea Volatilization Risk</a> &middot; <a href="/drought-monitor" style="color:var(--text-muted);text-decoration:none">Drought Monitor</a> &middot; <a href="/conditions" style="color:var(--text-muted);text-decoration:none">Crop Conditions Rank</a> &middot; <a href="/conditions-yield" style="color:var(--text-muted);text-decoration:none">Ratings vs Yield</a> &middot; <a href="/pod-counts" style="color:var(--text-muted);text-decoration:none">Pod Counts vs Yield</a> &middot; <a href="/crop-tour" style="color:var(--text-muted);text-decoration:none">Crop Tour</a> &middot; <a href="/hail-map" style="color:var(--text-muted);text-decoration:none">Hail Map</a> &middot; <a href="/gdu-calculator" style="color:var(--text-muted);text-decoration:none">GDU Calculator</a> &middot; <a href="/planting-date" style="color:var(--text-muted);text-decoration:none">Planting Date</a> &middot; <a href="/fertilizer" style="color:var(--text-muted);text-decoration:none">Fertilizer</a> &middot; <a href="/yield-estimator" style="color:var(--text-muted);text-decoration:none">Yield Estimator</a> &middot; <a href="/field-scout" style="color:var(--text-muted);text-decoration:none">Field Scout</a> &middot; <a href="/fast-facts" style="color:var(--text-muted);text-decoration:none">Reference Tables</a> &middot; <a href="/tools" style="color:var(--text-muted);text-decoration:none">All Tools</a><br>
+        <span style="color:var(--text-dim);font-weight:700">Daily:</span> <a href="/news" style="color:var(--text-muted);text-decoration:none">The Wire</a> &middot; <a href="/daily" style="color:var(--text-muted);text-decoration:none">AGSIST Daily</a> &middot; <a href="/archive" style="color:var(--text-muted);text-decoration:none">Daily Archive</a> &middot; <a href="/scorecard" style="color:var(--text-muted);text-decoration:none">Prediction Bot</a>
+      </nav>
+    </div>
+  </header>
+<!-- /static-nav:header -->
+</div>
 
 <main class="cl-wrap">
   <header class="cl-hero">
@@ -177,13 +202,13 @@
     </div>
   </section>
 
-  <div class="cl-note cl-crosslink"><strong>What&rsquo;s a fair number?</strong> Don&rsquo;t guess. USDA publishes county cash rent every year &mdash; see your county&rsquo;s rate, its history, and rent as a share of what the acre can actually gross on the <a href="/cash-rent" style="color:#d4a23f">AGSIST cash rent map</a>.</div>
+  <div class="cl-note cl-crosslink"><strong>What&rsquo;s a fair number?</strong> Don&rsquo;t guess. USDA publishes county cash rent every year &mdash; see your county&rsquo;s rate, its history, and rent as a share of what the acre can actually gross on the <a href="/cash-rent" style="color:var(--gold)">AGSIST cash rent map</a>.</div>
 
   <section class="cl-panel" aria-labelledby="cl-lease-t">
     <div class="cl-panel-hd"><span class="cl-panel-t" id="cl-lease-t">The lease &mdash; fill it in, print it, sign it</span></div>
     <div class="cl-panel-b">
       <div class="cl-actions no-print" style="align-items:center">
-        <label for="cl-state-sel" style="font-family:'JetBrains Mono',monospace;font-size:0.77rem;letter-spacing:.12em;text-transform:uppercase;color:#d4a23f">Your state</label>
+        <label for="cl-state-sel" style="font-family:'JetBrains Mono',monospace;font-size:0.77rem;letter-spacing:.12em;text-transform:uppercase;color:var(--gold)">Your state</label>
         <select id="cl-state-sel" class="cl-btn cl-btn--ghost" style="cursor:pointer" aria-label="Select your state to adapt the termination section"></select>
         <button class="cl-btn" id="cl-print" type="button">Print / save as PDF</button>
         <button class="cl-btn cl-btn--ghost" id="cl-clear" type="button">Clear form</button>
@@ -291,7 +316,7 @@
       <details><summary>Is a handshake lease legally binding?</summary><p>Oral farm leases are recognized in many states, but enforceability varies and multi-year oral deals can run into the statute of frauds. The better question: when memories differ in three years, what does the handshake say? A one-page written lease protects both sides &mdash; especially the friendship.</p></details>
       <details><summary>When do I have to give notice to end a lease?</summary><p>Entirely state-dependent. In states with a statutory deadline, written notice delivered late means the lease runs another full year whether anyone wanted it to or not. Iowa&rsquo;s September&nbsp;1 rule is the best known. Verify your state&rsquo;s rule with extension or an attorney &mdash; it is a cliff, not a guideline.</p></details>
       <details><summary>Cash, flex, or share &mdash; which pays the owner more?</summary><p>Over a long run they tend to converge; in any single year they differ exactly by who carried the risk. Straight cash pays the owner the same in a drought and a bumper year; flex and share pay more in the good years because the owner shared the bad ones. Pick by risk appetite, not by last year&rsquo;s outcome.</p></details>
-      <details><summary>What&rsquo;s a fair rate for my county?</summary><p>USDA NASS publishes county cash rent annually. The <a href="/cash-rent" style="color:#d4a23f">AGSIST cash rent map</a> shows every published county, its history, and rent as a share of realistic gross &mdash; the number that decides whether a lease actually cash-flows.</p></details>
+      <details><summary>What&rsquo;s a fair rate for my county?</summary><p>USDA NASS publishes county cash rent annually. The <a href="/cash-rent" style="color:var(--gold)">AGSIST cash rent map</a> shows every published county, its history, and rent as a share of realistic gross &mdash; the number that decides whether a lease actually cash-flows.</p></details>
       <details><summary>Why is this lease so short?</summary><p>Because leases fail at the coffee shop, not in court. A lease both parties have actually read beats a 20-page one neither has. The additional-terms box is there for what your situation genuinely needs; your attorney can tell you what your state requires beyond it.</p></details>
     </div>
   </section>
@@ -304,7 +329,16 @@
   </section>
 </main>
 
-<div id="site-footer"></div>
+<div id="site-footer">
+<!-- static-nav:footer (scripts/inject_static_nav.py; source components/footer-fallback.html) -->
+  <!-- Static crawlable nav: loader.js replaceWith() swaps this for the live footer on JS;
+       non-JS crawlers (Bing, AI) read these links; also a working fallback if the fetch fails.
+       Copied into every root page by scripts/inject_static_nav.py -- edit HERE, then re-run it. -->
+  <nav aria-label="AGSIST site links" style="max-width:1100px;margin:0 auto;padding:1.4rem 1rem;font-family:'JetBrains Mono',monospace;font-size:0.78rem;line-height:2.1;color:var(--text-muted);text-align:center;border-top:1px solid var(--border)">
+    <a href="/corn-futures-prices" style="color:var(--text-muted);text-decoration:none">Corn Futures</a> &middot; <a href="/soybean-futures-prices" style="color:var(--text-muted);text-decoration:none">Soybean Futures</a> &middot; <a href="/wheat-futures-prices" style="color:var(--text-muted);text-decoration:none">Wheat Futures</a> &middot; <a href="/cattle-futures-prices" style="color:var(--text-muted);text-decoration:none">Cattle Futures</a> &middot; <a href="/cash-bids" style="color:var(--text-muted);text-decoration:none">Cash Grain Bids</a> &middot; <a href="/basis" style="color:var(--text-muted);text-decoration:none">Basis vs Normal</a> &middot; <a href="/elevators" style="color:var(--text-muted);text-decoration:none">Elevator Coverage Map</a> &middot; <a href="/cot" style="color:var(--text-muted);text-decoration:none">COT Report</a> &middot; <a href="/ag-odds" style="color:var(--text-muted);text-decoration:none">Ag Prediction Markets</a> &middot; <a href="/markets" style="color:var(--text-muted);text-decoration:none">All Markets</a> &middot; <a href="/cash-rent" style="color:var(--text-muted);text-decoration:none">Cash Rent by County</a> &middot; <a href="/rent/" style="color:var(--text-muted);text-decoration:none">Cash Rent by State</a> &middot; <a href="/farmland-atlas" style="color:var(--text-muted);text-decoration:none">Farmland Atlas</a> &middot; <a href="/cash-lease" style="color:var(--text-muted);text-decoration:none">Cash Farm Lease</a> &middot; <a href="/foreign-land" style="color:var(--text-muted);text-decoration:none">Foreign-Owned Land</a> &middot; <a href="/land-tenure" style="color:var(--text-muted);text-decoration:none">Rented vs Owner-Farmed</a> &middot; <a href="/conditions" style="color:var(--text-muted);text-decoration:none">Crop Conditions Rank</a> &middot; <a href="/conditions-yield" style="color:var(--text-muted);text-decoration:none">Ratings vs Yield</a> &middot; <a href="/usda-quick-stats" style="color:var(--text-muted);text-decoration:none">USDA Crop Data</a> &middot; <a href="/usda-calendar" style="color:var(--text-muted);text-decoration:none">USDA Calendar</a> &middot; <a href="/fast-facts" style="color:var(--text-muted);text-decoration:none">Reference Tables</a> &middot; <a href="/tools" style="color:var(--text-muted);text-decoration:none">Farm Calculators &amp; Tools</a> &middot; <a href="/breakeven" style="color:var(--text-muted);text-decoration:none">Break-Even Calculator</a> &middot; <a href="/spray" style="color:var(--text-muted);text-decoration:none">Spray Advisory</a> &middot; <a href="/drought-monitor" style="color:var(--text-muted);text-decoration:none">Drought Monitor</a> &middot; <a href="/milk-prices" style="color:var(--text-muted);text-decoration:none">Milk Prices</a> &middot; <a href="/tariffs" style="color:var(--text-muted);text-decoration:none">Tariffs</a> &middot; <a href="/news" style="color:var(--text-muted);text-decoration:none">The Wire</a> &middot; <a href="/daily" style="color:var(--text-muted);text-decoration:none">AGSIST Daily</a> &middot; <a href="/archive" style="color:var(--text-muted);text-decoration:none">Daily Archive</a> &middot; <a href="/data-sources" style="color:var(--text-muted);text-decoration:none">Data Sources</a> &middot; <a href="/about" style="color:var(--text-muted);text-decoration:none">About</a> &middot; <a href="/contact" style="color:var(--text-muted);text-decoration:none">Contact</a> &middot; <a href="/sponsor" style="color:var(--text-muted);text-decoration:none">Sponsor</a> &middot; <a href="/accessibility" style="color:var(--text-muted);text-decoration:none">Accessibility</a> &middot; <a href="/privacy" style="color:var(--text-muted);text-decoration:none">Privacy</a> &middot; <a href="/terms" style="color:var(--text-muted);text-decoration:none">Terms</a>
+  </nav>
+<!-- /static-nav:footer -->
+</div>
 <script src="/components/loader.js?v=17"></script>
 <script>
 (function(){
@@ -319,7 +353,7 @@
        (absent = no farm-specific deadline widely cited)
      Statutes change. This is information, not legal advice. */
   var RULES={
-    IA:{n:'Iowa',t:'firm',d:'Written termination notice by SEPTEMBER 1 or the lease automatically continues another crop year. This applies to a year-to-year lease. A written lease with its own end date is governed by its terms.'},
+    IA:{n:'Iowa',t:'firm',d:'Written termination notice must be served on or before SEPTEMBER 1, or the farm tenancy automatically continues for another crop year on the same terms (Iowa Code 562.6). This applies to oral and written leases, including a written lease that states its own end date. The only way around notice is a separate, later written agreement to end the lease. Iowa Code 562.7 sets how notice must be served.'},
     IL:{n:'Illinois',t:'firm',d:'Year-to-year tenancy: written notice at least 4 MONTHS before the end of the lease year (for a Feb-end lease year, late October).'},
     KS:{n:'Kansas',t:'firm',d:'Written notice at least 30 DAYS BEFORE MARCH 1 for farm tenancies (roughly end of January).'},
     NE:{n:'Nebraska',t:'firm',d:'Verbal/year-to-year leases: notice 6 months before the end of the lease year — in practice by SEPTEMBER 1. Written leases: the lease controls.'},
@@ -455,7 +489,7 @@
   setIfEmpty('county', pf.county);
   setIfEmpty('rate', pf.rate);
   setIfEmpty('acres', pf.acres);
-  if(pf.county||pf.rate) { save(); totals(); }
+  if(pf.county||pf.rate||pf.acres) { save(); totals(); }
 
   var pb=$('#cl-print'); if(pb) pb.addEventListener('click', function(){ gaEvent('lease_print'); window.print(); });
   var cb=$('#cl-clear'); if(cb) cb.addEventListener('click', function(){

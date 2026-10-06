@@ -5,8 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#0a0c0d">  <script>/* agsist-ga-guard 2026-10-01: Google Analytics loads only when the browser sends no Global Privacy Control or Do Not Track signal and the off switch on /privacy is not set. dataLayer and gtag always exist, so page code that calls them never throws. */(function(w,d,n){var off=false,v,i,s;w.dataLayer=w.dataLayer||[];if(typeof w.gtag!=='function'){w.gtag=function(){w.dataLayer.push(arguments);};}try{off=w.localStorage.getItem('agsist-ga-off')==='1';}catch(e){}if(n.globalPrivacyControl===true){off=true;}v=[n.doNotTrack,w.doNotTrack,n.msDoNotTrack];for(i=0;i<v.length;i++){if(v[i]==='1'||v[i]==='yes'){off=true;}}w.agsistGaOff=off;w.gtag('set','allow_google_signals',false);w.gtag('set','allow_ad_personalization_signals',false);if(off){return;}s=d.createElement('script');s.async=true;s.src='https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H';(d.head||d.documentElement).appendChild(s);})(window,document,navigator);</script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
-  <link rel="preload" href="/components/styles.css?v=17" as="style">
-  <link rel="stylesheet" href="/components/styles.css?v=17">
+  <!-- static-nav:fonts (scripts/inject_static_nav.py) -->
+  <link rel="preload" href="/fonts/inter-400.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/jetbrains-mono-700.woff2" as="font" type="font/woff2" crossorigin>
+  <!-- /static-nav:fonts -->
+  <link rel="preload" href="/components/styles.css?v=18" as="style">
+  <link rel="stylesheet" href="/components/styles.css?v=18">
   <script src="/components/util.js?v=16"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
   <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
@@ -16,15 +20,15 @@
   <link rel="manifest" href="/manifest.json">
 
   <title>Foreign-Owned Farmland by County: 47M US Acres | AGSIST</title>
-  <meta name="description" content="Who owns 47.2 million acres of U.S. farmland from abroad? USDA AFIDA data mapped county by county, 2010-2024. Canada leads, nearly half is forest. Free.">
+  <meta name="description" content="Who owns 46.3 million acres of U.S. farmland from abroad? USDA AFIDA data mapped county by county, 2010-2024. Canada leads, nearly half is forest. Free.">
   <link rel="canonical" href="https://agsist.com/foreign-land">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="AGSIST">
-  <meta property="og:title" content="Foreign-Owned Farmland, County by County — 47.2 Million Acres Mapped">
+  <meta property="og:title" content="Foreign-Owned Farmland, County by County — 46.3 Million Acres Mapped">
   <meta property="og:description" content="USDA's AFIDA disclosures, 2010–2024, on one fast map. Canada leads, nearly half is timberland, and the total has nearly doubled since 2010.">
   <meta property="og:url" content="https://agsist.com/foreign-land">
   <meta property="og:image" content="https://agsist.com/img/og/agsist.jpg">
-  <meta property="og:image:alt" content="Foreign-Owned Farmland, County by County — 47.2 Million Acres Mapped">
+  <meta property="og:image:alt" content="Foreign-Owned Farmland, County by County — 46.3 Million Acres Mapped">
   <meta name="twitter:image" content="https://agsist.com/img/og/agsist.jpg">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
@@ -32,13 +36,13 @@
   <meta name="twitter:site" content="@agsist">
 
   <script type="application/ld+json">
-  {"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "How much American farmland does China own?", "acceptedAnswer": {"@type": "Answer", "text": "Far less than the discourse suggests: China is not among the top holders in the AFIDA files — Canada and European countries dominate. Chinese-connected holdings exist and are politically sensitive (several states have restricted them), but by acreage they are a small slice. Since 2023 the filings even carry specific flags for secondary interests from China, Iran, Russia, and North Korea."}}, {"@type": "Question", "name": "Is 47 million acres a lot?", "acceptedAnswer": {"@type": "Answer", "text": "It has nearly doubled since 2010, from 24.8 million acres to 47.2 million, and that growth is the more important number. About 22 million of the 47 million acres are forest."}}, {"@type": "Question", "name": "Why is so much of it forest?", "acceptedAnswer": {"@type": "Answer", "text": "Because global timber companies and investment funds own large tracts of U.S. timberland, and forest counts as agricultural land under AFIDA. Roughly 22 of the 47 million acres are forest — the single biggest reason raw AFIDA totals get misread as \"foreign corn ground.\""}}, {"@type": "Question", "name": "My county shows nothing — does that mean no foreign ownership?", "acceptedAnswer": {"@type": "Answer", "text": "It means no disclosed holdings. AFIDA relies on self-reporting with civil penalties for failure to file; federal auditors have found compliance gaps. Absence of a filing is evidence, not proof."}}, {"@type": "Question", "name": "Where can I get the raw data?", "acceptedAnswer": {"@type": "Answer", "text": "USDA FSA publishes the detailed holdings files annually — linked below. This page aggregates them with an open-source script and changes nothing."}}]}
+  {"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "How much American farmland does China own?", "acceptedAnswer": {"@type": "Answer", "text": "Far less than the discourse suggests: China is not among the top holders in the AFIDA files — Canada and European countries dominate. Chinese-connected holdings exist and are politically sensitive (several states have restricted them), but by acreage they are a small slice. Since 2023 the filings even carry specific flags for secondary interests from China, Iran, Russia, and North Korea."}}, {"@type": "Question", "name": "Is 46 million acres a lot?", "acceptedAnswer": {"@type": "Answer", "text": "USDA puts it at 3.6% of privately held agricultural land. In USDA’s detail files it has nearly doubled since 2010, from 24.8 million row-summed acres to 47.2 million, and that growth is the more important number. About 22 million of the 47 million acres are forest."}}, {"@type": "Question", "name": "Why is so much of it forest?", "acceptedAnswer": {"@type": "Answer", "text": "Because global timber companies and investment funds own large tracts of U.S. timberland, and forest counts as agricultural land under AFIDA. Roughly 22 of the 47 million acres are forest — the single biggest reason raw AFIDA totals get misread as \"foreign corn ground.\""}}, {"@type": "Question", "name": "My county shows nothing — does that mean no foreign ownership?", "acceptedAnswer": {"@type": "Answer", "text": "It means no disclosed holdings. AFIDA relies on self-reporting with civil penalties for failure to file; federal auditors have found compliance gaps. Absence of a filing is evidence, not proof."}}, {"@type": "Question", "name": "Where can I get the raw data?", "acceptedAnswer": {"@type": "Answer", "text": "USDA FSA publishes the detailed holdings files annually — linked below. This page aggregates them with an open-source script and changes nothing."}}]}
   </script>
 
   <style>
     .fl-wrap{max-width:1140px;margin:0 auto;padding:24px 16px 60px}
     .fl-hero{padding:26px 0 2px}
-    .fl-kicker{font-family:'JetBrains Mono',monospace;font-size:0.77rem;letter-spacing:.16em;text-transform:uppercase;color:#d4a23f;margin:0 0 10px}
+    .fl-kicker{font-family:'JetBrains Mono',monospace;font-size:0.77rem;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin:0 0 10px}
     .fl-hero h1{font-family:var(--font-display);font-size:clamp(1.7rem,4.5vw,2.6rem);line-height:1.12;margin:0 0 12px;color:#e6ebe9}
     .fl-sub{font-size:1.02rem;line-height:1.7;color:#8a948f;max-width:820px;margin:0}
     .fl-sub strong{color:#e6ebe9}
@@ -47,7 +51,7 @@
     
     .fl-panel{background:#101415;border:1px solid #1a1f20;border-radius:12px;margin-top:26px;overflow:hidden}
     .fl-panel-hd{padding:14px 18px;border-bottom:1px solid #1a1f20}
-    .fl-panel-t{font-family:'JetBrains Mono',monospace;font-size:0.78rem;letter-spacing:.14em;text-transform:uppercase;color:#d4a23f}
+    .fl-panel-t{font-family:'JetBrains Mono',monospace;font-size:0.78rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}
     .fl-panel-b{padding:18px}
     .fl-seed{font-size:13.4px;line-height:1.7;color:#8a948f;margin:6px 18px 0;padding-bottom:12px}
     #fl-map{height:520px;background:#0a0c0d}
@@ -58,21 +62,21 @@
     .fl-leg-l{font-family:'JetBrains Mono',monospace;font-size:12.9px;color:#8a948f;margin-left:14px}
     .fl-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px}
     .fl-stat{background:#0d1112;border:1px solid #1a1f20;border-radius:10px;padding:14px 16px}
-    .fl-stat-l{font-family:'JetBrains Mono',monospace;font-size:0.755rem;letter-spacing:.14em;text-transform:uppercase;color:#d4a23f}
+    .fl-stat-l{font-family:'JetBrains Mono',monospace;font-size:0.755rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}
     .fl-stat-v{font-family:'JetBrains Mono',monospace;font-size:1.5rem;color:#e6ebe9;margin:6px 0 2px}
     .fl-stat-m{font-size:.8rem;color:#8a948f;line-height:1.5}
     .fl-chart{width:100%;height:auto;display:block}
     table.fl-tbl{width:100%;border-collapse:collapse;font-size:.88rem}
-    .fl-tbl th{font-family:'JetBrains Mono',monospace;font-size:0.755rem;letter-spacing:.12em;text-transform:uppercase;color:#d4a23f;text-align:left;padding:8px 10px;border-bottom:1px solid #1a1f20}
+    .fl-tbl th{font-family:'JetBrains Mono',monospace;font-size:0.755rem;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);text-align:left;padding:8px 10px;border-bottom:1px solid #1a1f20}
     .fl-tbl td{padding:7px 10px;border-bottom:1px solid rgba(132,160,168,.08);color:#c9d1cd}
     .fl-tbl td.num{font-family:'JetBrains Mono',monospace;text-align:right;color:#e6ebe9;white-space:nowrap}
     .fl-note{background:rgba(212,162,63,.06);border:1px solid rgba(212,162,63,.3);border-radius:10px;padding:12px 16px;font-size:1rem;line-height:1.7;color:#8a948f;margin:16px 0}
-    .fl-note strong{color:#d4a23f}
+    .fl-note strong{color:var(--gold)}
     .fl-detail{display:none}
     .fl-detail.on{display:block}
     .fl-dt-head{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px}
     .fl-dt-name{font-family:var(--font-display);font-size:1.25rem;color:#e6ebe9}
-    .fl-dt-ac{font-family:'JetBrains Mono',monospace;font-size:1.15rem;color:#d4a23f}
+    .fl-dt-ac{font-family:'JetBrains Mono',monospace;font-size:1.15rem;color:var(--gold)}
     .fl-bars{display:flex;align-items:flex-end;gap:3px;height:90px;margin:14px 0 4px}
     .fl-bar{flex:1;background:#d4a23f;border-radius:2px 2px 0 0;min-height:2px;position:relative}
     .fl-bar.gap{background:transparent;border-bottom:2px dotted #3a4345}
@@ -83,7 +87,7 @@
     .fl-faq summary{cursor:pointer;color:#e6ebe9;font-size:1rem}
     .fl-faq p{color:#8a948f;font-size:.9rem;line-height:1.7;margin:8px 0 2px}
     .fl-src{font-size:.8rem;color:#8a948f;line-height:1.7}
-    .fl-src a{color:#d4a23f}
+    .fl-src a{color:var(--gold)}
     .fl-2col{display:grid;grid-template-columns:1fr 1fr;gap:26px}
     @media (max-width:820px){.fl-2col{grid-template-columns:1fr}}
   
@@ -116,16 +120,37 @@
       .vp-sent{font-size:.9rem;margin-top:10px}
       .vp-ver select{margin-bottom:10px}
     }
+/* 2026-10-06: these panels stay dark in light mode, so gold inside them
+   stays the bright gold (the page around them takes the darker text gold). */
+[data-theme="light"] .vp-ver,[data-theme="light"] .fl-panel{--gold:#d4a23f;--gold-fill:#d4a23f;--brand:#d4a23f;--brand-fill:#d4a23f;--pd-gold:#d4a23f;--ib-gold:#d4a23f;--ib-gold2:#d4a23f;--wp-gold2:#e6b042;--as-gold2:#e6b042}
 </style>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"BreadcrumbList","@id":"https://agsist.com/foreign-land#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://agsist.com/"},{"@type":"ListItem","position":2,"name":"Foreign-Owned Farmland","item":"https://agsist.com/foreign-land"}]}]}</script>
 </head>
 <body>
-<div id="site-header"></div>
+<div id="site-header">
+<!-- static-nav:header (scripts/inject_static_nav.py; source components/header-fallback.html) -->
+  <!-- Static crawlable header: loader.js replaceWith() swaps this for the live dropdown nav on JS;
+       non-JS crawlers (Bing, AI) read these links; also a working fallback if the fetch fails.
+       Copied into every root page by scripts/inject_static_nav.py -- edit HERE, then re-run it. -->
+  <header style="border-bottom:1px solid var(--border);background:var(--surface)">
+    <div style="max-width:1100px;margin:0 auto;padding:.7rem 1rem;display:flex;flex-wrap:wrap;align-items:baseline;gap:.4rem 1.1rem">
+      <a href="/" aria-label="AGSIST Home" style="font-family:var(--font-display);font-weight:800;font-size:1.05rem;letter-spacing:.04em;color:var(--text);text-decoration:none">AGSIST</a>
+      <nav aria-label="AGSIST main navigation" style="font-family:'JetBrains Mono',monospace;font-size:0.775rem;line-height:2;color:var(--text-muted)">
+        <span style="color:var(--text-dim);font-weight:700">Markets:</span> <a href="/corn-futures-prices" style="color:var(--text-muted);text-decoration:none">Corn</a> &middot; <a href="/soybean-futures-prices" style="color:var(--text-muted);text-decoration:none">Soybeans</a> &middot; <a href="/wheat-futures-prices" style="color:var(--text-muted);text-decoration:none">Wheat</a> &middot; <a href="/cattle-futures-prices" style="color:var(--text-muted);text-decoration:none">Cattle</a> &middot; <a href="/cash-bids" style="color:var(--text-muted);text-decoration:none">Cash Bids</a> &middot; <a href="/elevators" style="color:var(--text-muted);text-decoration:none">Elevator Coverage Map</a> &middot; <a href="/milk-prices" style="color:var(--text-muted);text-decoration:none">Milk Prices</a> &middot; <a href="/basis" style="color:var(--text-muted);text-decoration:none">Basis vs Normal</a> &middot; <a href="/storage-crunch" style="color:var(--text-muted);text-decoration:none">Storage Crunch</a> &middot; <a href="/cot" style="color:var(--text-muted);text-decoration:none">COT Report</a> &middot; <a href="/ag-odds" style="color:var(--text-muted);text-decoration:none">Prediction Markets</a> &middot; <a href="/tariffs" style="color:var(--text-muted);text-decoration:none">Tariffs</a> &middot; <a href="/usda-quick-stats" style="color:var(--text-muted);text-decoration:none">USDA Crop Data</a> &middot; <a href="/usda-calendar" style="color:var(--text-muted);text-decoration:none">USDA Calendar</a> &middot; <a href="/whats-priced-in" style="color:var(--text-muted);text-decoration:none">What's Priced In</a> &middot; <a href="/whats-priced-in#analyst-board" style="color:var(--text-muted);text-decoration:none">Analyst Estimates</a> &middot; <a href="/markets" style="color:var(--text-muted);text-decoration:none">All Markets</a><br>
+        <span style="color:var(--text-dim);font-weight:700">Costs &amp; Land:</span> <a href="/breakeven" style="color:var(--text-muted);text-decoration:none">Break-Even</a> &middot; <a href="/presell-calculator" style="color:var(--text-muted);text-decoration:none">Pre-Sell Calculator</a> &middot; <a href="/grain-bin-calculator" style="color:var(--text-muted);text-decoration:none">Grain Bin</a> &middot; <a href="/harvest-price-tracker" style="color:var(--text-muted);text-decoration:none">Harvest Price Tracker</a> &middot; <a href="/farmland-atlas" style="color:var(--text-muted);text-decoration:none">Farmland Atlas</a> &middot; <a href="/cash-rent" style="color:var(--text-muted);text-decoration:none">Cash Rent by County</a> &middot; <a href="/rent/" style="color:var(--text-muted);text-decoration:none">Cash Rent by State</a> &middot; <a href="/cash-lease" style="color:var(--text-muted);text-decoration:none">Cash Farm Lease</a> &middot; <a href="/foreign-land" style="color:var(--text-muted);text-decoration:none">Foreign-Owned Land</a> &middot; <a href="/land-tenure" style="color:var(--text-muted);text-decoration:none">Rented vs Owner-Farmed</a> &middot; <a href="/farm-bill" style="color:var(--text-muted);text-decoration:none">Farm Bill</a><br>
+        <span style="color:var(--text-dim);font-weight:700">Field:</span> <a href="/spray" style="color:var(--text-muted);text-decoration:none">Spray Advisory</a> &middot; <a href="/urea" style="color:var(--text-muted);text-decoration:none">Urea Volatilization Risk</a> &middot; <a href="/drought-monitor" style="color:var(--text-muted);text-decoration:none">Drought Monitor</a> &middot; <a href="/conditions" style="color:var(--text-muted);text-decoration:none">Crop Conditions Rank</a> &middot; <a href="/conditions-yield" style="color:var(--text-muted);text-decoration:none">Ratings vs Yield</a> &middot; <a href="/pod-counts" style="color:var(--text-muted);text-decoration:none">Pod Counts vs Yield</a> &middot; <a href="/crop-tour" style="color:var(--text-muted);text-decoration:none">Crop Tour</a> &middot; <a href="/hail-map" style="color:var(--text-muted);text-decoration:none">Hail Map</a> &middot; <a href="/gdu-calculator" style="color:var(--text-muted);text-decoration:none">GDU Calculator</a> &middot; <a href="/planting-date" style="color:var(--text-muted);text-decoration:none">Planting Date</a> &middot; <a href="/fertilizer" style="color:var(--text-muted);text-decoration:none">Fertilizer</a> &middot; <a href="/yield-estimator" style="color:var(--text-muted);text-decoration:none">Yield Estimator</a> &middot; <a href="/field-scout" style="color:var(--text-muted);text-decoration:none">Field Scout</a> &middot; <a href="/fast-facts" style="color:var(--text-muted);text-decoration:none">Reference Tables</a> &middot; <a href="/tools" style="color:var(--text-muted);text-decoration:none">All Tools</a><br>
+        <span style="color:var(--text-dim);font-weight:700">Daily:</span> <a href="/news" style="color:var(--text-muted);text-decoration:none">The Wire</a> &middot; <a href="/daily" style="color:var(--text-muted);text-decoration:none">AGSIST Daily</a> &middot; <a href="/archive" style="color:var(--text-muted);text-decoration:none">Daily Archive</a> &middot; <a href="/scorecard" style="color:var(--text-muted);text-decoration:none">Prediction Bot</a>
+      </nav>
+    </div>
+  </header>
+<!-- /static-nav:header -->
+</div>
 
 <main class="fl-wrap">
   <header class="fl-hero">
     <p class="fl-kicker">USDA AFIDA disclosures &middot; 2010&ndash;2024 &middot; county by county</p>
     <h1>Who owns American farmland &mdash; from somewhere else</h1>
-    <p class="fl-sub">Foreign investors report holding <strong>47.2 million acres</strong> of U.S. agricultural land &mdash; nearly double 2010, spread across <strong>2,559 counties</strong>. Before you repeat a headline: the biggest holder is <strong>Canada</strong>, not China, and <strong>nearly half of it is forest</strong>, not corn ground. Every number below comes from USDA&rsquo;s own disclosure files, unedited.</p>
+    <p class="fl-sub">USDA counts <strong>46.3 million acres</strong> of U.S. agricultural land held by foreign investors at the end of 2024 &mdash; 3.6% of privately held agricultural land, and nearly double 2010, spread across <strong>2,559 counties</strong>. Before you repeat a headline: the biggest holder is <strong>Canada</strong>, not China, and <strong>nearly half of it is forest</strong>, not corn ground. Every number below comes from USDA&rsquo;s own disclosure files, unedited.</p>
   </header>
 
   <aside class="ag-sponsor-ribbon" id="ag-sponsor"><span class="ag-sponsor-tag">Sponsor this page</span> Every visitor here cares who owns the ground &mdash; one category-exclusive slot. <a href="/sponsor?slot=foreign-land&amp;utm_source=foreign-land&amp;utm_medium=slot">Put your name here &rarr;</a></aside>
@@ -141,7 +166,7 @@
 
   <section class="fl-panel" aria-labelledby="fl-map-t">
     <div class="fl-panel-hd"><span class="fl-panel-t" id="fl-map-t">Foreign-held agricultural acres, by county</span></div>
-    <p class="fl-seed"><!--SEED:aflstats-->47,241,820 acres of U.S. agricultural land held by foreign investors as of Dec 31, 2024 &middot; 2,559 counties &middot; up from 24,841,588 acres in 2010 &middot; largest holder country: Canada &middot; 47% of the acreage is forest land &middot; source: USDA FSA AFIDA disclosure filings &middot; page data refreshed 2026-07-18<!--/SEED--></p>
+    <p class="fl-seed"><!--SEED:aflstats-->46.3 million acres of U.S. agricultural land held by foreign investors as of Dec 31, 2024 (USDA AFIDA report) &middot; the detail file&rsquo;s rows sum to 47,241,820, and the county and country figures here use the rows &middot; 2,559 counties &middot; up from 24,841,588 row-summed acres in 2010 &middot; largest holder country: Canada &middot; 47% of the acreage is forest land &middot; source: USDA FSA AFIDA disclosure filings &middot; page data refreshed 2026-07-18<!--/SEED--></p>
     <div class="fl-leg" id="fl-leg"></div>
     <div id="fl-map"></div>
     <div class="fl-panel-b" style="padding-top:10px">
@@ -174,7 +199,7 @@
     <div class="fl-panel-hd"><span class="fl-panel-t" id="fl-nat-t">The national trend &mdash; 2010 to 2024</span></div>
     <div class="fl-panel-b">
       <div class="fl-stats" style="margin-bottom:16px">
-        <div class="fl-stat"><div class="fl-stat-l">Foreign-held, 2024</div><div class="fl-stat-v" id="fl-s-total">&mdash;</div><div class="fl-stat-m">acres reported under AFIDA</div></div>
+        <div class="fl-stat"><div class="fl-stat-l">Foreign-held, 2024</div><div class="fl-stat-v" id="fl-s-total">&mdash;</div><div class="fl-stat-m">acres in the rows of USDA&rsquo;s detail file; USDA&rsquo;s report counts 46.3M</div></div>
         <div class="fl-stat"><div class="fl-stat-l">Since 2010</div><div class="fl-stat-v" id="fl-s-growth">&mdash;</div><div class="fl-stat-m">from 24.8M acres &mdash; a near-doubling</div></div>
         <div class="fl-stat"><div class="fl-stat-l">#1 holder country</div><div class="fl-stat-v" id="fl-s-top">&mdash;</div><div class="fl-stat-m">not the one the headlines lead with</div></div>
         <div class="fl-stat"><div class="fl-stat-l">Share that is forest</div><div class="fl-stat-v" id="fl-s-forest">&mdash;</div><div class="fl-stat-m">much of it corporate timberland</div></div>
@@ -198,13 +223,13 @@
     </div>
   </section>
 
-  <div class="fl-note"><strong>What this data is &mdash; and is not.</strong> AFIDA is a federal disclosure law: foreign persons and entities must report U.S. agricultural land holdings, including leases of 10+ years. It is <strong>self-reported</strong> &mdash; real filings, but only as complete as compliance, and USDA&rsquo;s GAO auditors have flagged gaps. Acreage here is summed exactly the way USDA&rsquo;s own annual report sums it. County percentages of total farmland are deliberately not shown yet &mdash; they need a matching county denominator done carefully, and a wrong percentage is worse than none. This page shows disclosed holdings, says so, and links the raw source below.</div>
+  <div class="fl-note"><strong>What this data is &mdash; and is not.</strong> AFIDA is a federal disclosure law: foreign persons and entities must report U.S. agricultural land holdings, including leases of 10+ years. It is <strong>self-reported</strong> &mdash; real filings, but only as complete as compliance, and federal GAO auditors have flagged gaps (GAO-24-106337). Acreage here is the sum of the rows in USDA&rsquo;s detail file; for 2024 that is 47.24 million acres, above the 46.3 million in USDA&rsquo;s published report, so the headline uses USDA&rsquo;s figure and the maps, county and country figures use the rows. County percentages of total farmland are deliberately not shown yet &mdash; they need a matching county denominator done carefully, and a wrong percentage is worse than none. This page shows disclosed holdings, says so, and links the raw source below.</div>
 
   <section class="fl-panel fl-faq-panel" aria-labelledby="fl-faq-t">
     <div class="fl-panel-hd"><span class="fl-panel-t" id="fl-faq-t">Questions people actually ask</span></div>
     <div class="fl-panel-b fl-faq">
       <details><summary>How much American farmland does China own?</summary><p>Far less than the discourse suggests: China is not among the top holders in the AFIDA files &mdash; Canada and European countries dominate. Chinese-connected holdings exist and are politically sensitive (several states have restricted them), but by acreage they are a small slice. Since 2023 the filings even carry specific flags for secondary interests from China, Iran, Russia, and North Korea.</p></details>
-      <details><summary>Is 47 million acres a lot?</summary><p>It has nearly doubled since 2010, from 24.8 million acres to 47.2 million, and that growth is the more important number. About 22 million of the 47 million acres are forest.</p></details>
+      <details><summary>Is 46 million acres a lot?</summary><p>USDA puts it at 3.6% of privately held agricultural land. In USDA&rsquo;s detail files it has nearly doubled since 2010, from 24.8 million row-summed acres to 47.2 million, and that growth is the more important number. About 22 million of the 47 million acres are forest.</p></details>
       <details><summary>Why is so much of it forest?</summary><p>Because global timber companies and investment funds own large tracts of U.S. timberland, and forest counts as agricultural land under AFIDA. Roughly 22 of the 47 million acres are forest &mdash; the single biggest reason raw AFIDA totals get misread as "foreign corn ground."</p></details>
       <details><summary>My county shows nothing — does that mean no foreign ownership?</summary><p>It means no <em>disclosed</em> holdings. AFIDA relies on self-reporting with civil penalties for failure to file; federal auditors have found compliance gaps. Absence of a filing is evidence, not proof.</p></details>
       <details><summary>Where can I get the raw data?</summary><p>USDA FSA publishes the detailed holdings files annually &mdash; linked below. This page aggregates them with an open-source script and changes nothing.</p></details>
@@ -214,12 +239,21 @@
   <section class="fl-panel">
     <div class="fl-panel-hd"><span class="fl-panel-t">Source</span></div>
     <div class="fl-panel-b fl-src">
-      <p>USDA Farm Service Agency, Agricultural Foreign Investment Disclosure Act (AFIDA) detailed holdings files, 2010&ndash;2024, via <a href="https://www.fsa.usda.gov/resources/economic-policy-analysis/afida/annual-reports-underlying-data" rel="noopener">fsa.usda.gov</a>. Aggregation script: <code>scripts/process_afida.py</code> in the AGSIST repository &mdash; row-sums match USDA&rsquo;s published annual totals. USDA also hosts its own <a href="https://www.usda.gov/us-foreign-owned-ag-lands" rel="noopener">ArcGIS dashboard</a>. Data years 2015 and 2021 are not in USDA&rsquo;s downloadable file set. Page data refreshed 2026-07-18; AFIDA updates annually.</p>
+      <p>USDA Farm Service Agency, Agricultural Foreign Investment Disclosure Act (AFIDA) detailed holdings files, 2010&ndash;2024, via <a href="https://www.fsa.usda.gov/resources/economic-policy-analysis/afida/annual-reports-underlying-data" rel="noopener">fsa.usda.gov</a>. Aggregation script: <code>scripts/process_afida.py</code> in the AGSIST repository &mdash; row-sums run above USDA&rsquo;s published headline (47.24 million vs 46.3 million for 2024). USDA also hosts its own <a href="https://www.usda.gov/us-foreign-owned-ag-lands" rel="noopener">ArcGIS dashboard</a>. Data years 2015 and 2021 are not in USDA&rsquo;s downloadable file set. Page data refreshed 2026-07-18; AFIDA updates annually.</p>
     </div>
   </section>
 </main>
 
-<div id="site-footer"></div>
+<div id="site-footer">
+<!-- static-nav:footer (scripts/inject_static_nav.py; source components/footer-fallback.html) -->
+  <!-- Static crawlable nav: loader.js replaceWith() swaps this for the live footer on JS;
+       non-JS crawlers (Bing, AI) read these links; also a working fallback if the fetch fails.
+       Copied into every root page by scripts/inject_static_nav.py -- edit HERE, then re-run it. -->
+  <nav aria-label="AGSIST site links" style="max-width:1100px;margin:0 auto;padding:1.4rem 1rem;font-family:'JetBrains Mono',monospace;font-size:0.78rem;line-height:2.1;color:var(--text-muted);text-align:center;border-top:1px solid var(--border)">
+    <a href="/corn-futures-prices" style="color:var(--text-muted);text-decoration:none">Corn Futures</a> &middot; <a href="/soybean-futures-prices" style="color:var(--text-muted);text-decoration:none">Soybean Futures</a> &middot; <a href="/wheat-futures-prices" style="color:var(--text-muted);text-decoration:none">Wheat Futures</a> &middot; <a href="/cattle-futures-prices" style="color:var(--text-muted);text-decoration:none">Cattle Futures</a> &middot; <a href="/cash-bids" style="color:var(--text-muted);text-decoration:none">Cash Grain Bids</a> &middot; <a href="/basis" style="color:var(--text-muted);text-decoration:none">Basis vs Normal</a> &middot; <a href="/elevators" style="color:var(--text-muted);text-decoration:none">Elevator Coverage Map</a> &middot; <a href="/cot" style="color:var(--text-muted);text-decoration:none">COT Report</a> &middot; <a href="/ag-odds" style="color:var(--text-muted);text-decoration:none">Ag Prediction Markets</a> &middot; <a href="/markets" style="color:var(--text-muted);text-decoration:none">All Markets</a> &middot; <a href="/cash-rent" style="color:var(--text-muted);text-decoration:none">Cash Rent by County</a> &middot; <a href="/rent/" style="color:var(--text-muted);text-decoration:none">Cash Rent by State</a> &middot; <a href="/farmland-atlas" style="color:var(--text-muted);text-decoration:none">Farmland Atlas</a> &middot; <a href="/cash-lease" style="color:var(--text-muted);text-decoration:none">Cash Farm Lease</a> &middot; <a href="/foreign-land" style="color:var(--text-muted);text-decoration:none">Foreign-Owned Land</a> &middot; <a href="/land-tenure" style="color:var(--text-muted);text-decoration:none">Rented vs Owner-Farmed</a> &middot; <a href="/conditions" style="color:var(--text-muted);text-decoration:none">Crop Conditions Rank</a> &middot; <a href="/conditions-yield" style="color:var(--text-muted);text-decoration:none">Ratings vs Yield</a> &middot; <a href="/usda-quick-stats" style="color:var(--text-muted);text-decoration:none">USDA Crop Data</a> &middot; <a href="/usda-calendar" style="color:var(--text-muted);text-decoration:none">USDA Calendar</a> &middot; <a href="/fast-facts" style="color:var(--text-muted);text-decoration:none">Reference Tables</a> &middot; <a href="/tools" style="color:var(--text-muted);text-decoration:none">Farm Calculators &amp; Tools</a> &middot; <a href="/breakeven" style="color:var(--text-muted);text-decoration:none">Break-Even Calculator</a> &middot; <a href="/spray" style="color:var(--text-muted);text-decoration:none">Spray Advisory</a> &middot; <a href="/drought-monitor" style="color:var(--text-muted);text-decoration:none">Drought Monitor</a> &middot; <a href="/milk-prices" style="color:var(--text-muted);text-decoration:none">Milk Prices</a> &middot; <a href="/tariffs" style="color:var(--text-muted);text-decoration:none">Tariffs</a> &middot; <a href="/news" style="color:var(--text-muted);text-decoration:none">The Wire</a> &middot; <a href="/daily" style="color:var(--text-muted);text-decoration:none">AGSIST Daily</a> &middot; <a href="/archive" style="color:var(--text-muted);text-decoration:none">Daily Archive</a> &middot; <a href="/data-sources" style="color:var(--text-muted);text-decoration:none">Data Sources</a> &middot; <a href="/about" style="color:var(--text-muted);text-decoration:none">About</a> &middot; <a href="/contact" style="color:var(--text-muted);text-decoration:none">Contact</a> &middot; <a href="/sponsor" style="color:var(--text-muted);text-decoration:none">Sponsor</a> &middot; <a href="/accessibility" style="color:var(--text-muted);text-decoration:none">Accessibility</a> &middot; <a href="/privacy" style="color:var(--text-muted);text-decoration:none">Privacy</a> &middot; <a href="/terms" style="color:var(--text-muted);text-decoration:none">Terms</a>
+  </nav>
+<!-- /static-nav:footer -->
+</div>
 <script src="/components/loader.js?v=17"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/topojson-client@3/dist/topojson-client.min.js"></script>

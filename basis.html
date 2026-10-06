@@ -5,8 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#0a0c0d">  <script>/* agsist-ga-guard 2026-10-01: Google Analytics loads only when the browser sends no Global Privacy Control or Do Not Track signal and the off switch on /privacy is not set. dataLayer and gtag always exist, so page code that calls them never throws. */(function(w,d,n){var off=false,v,i,s;w.dataLayer=w.dataLayer||[];if(typeof w.gtag!=='function'){w.gtag=function(){w.dataLayer.push(arguments);};}try{off=w.localStorage.getItem('agsist-ga-off')==='1';}catch(e){}if(n.globalPrivacyControl===true){off=true;}v=[n.doNotTrack,w.doNotTrack,n.msDoNotTrack];for(i=0;i<v.length;i++){if(v[i]==='1'||v[i]==='yes'){off=true;}}w.agsistGaOff=off;w.gtag('set','allow_google_signals',false);w.gtag('set','allow_ad_personalization_signals',false);if(off){return;}s=d.createElement('script');s.async=true;s.src='https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H';(d.head||d.documentElement).appendChild(s);})(window,document,navigator);</script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
-  <link rel="preload" href="/components/styles.css?v=17" as="style">
-  <link rel="stylesheet" href="/components/styles.css?v=17">
+  <!-- static-nav:fonts (scripts/inject_static_nav.py) -->
+  <link rel="preload" href="/fonts/inter-400.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/jetbrains-mono-700.woff2" as="font" type="font/woff2" crossorigin>
+  <!-- /static-nav:fonts -->
+  <link rel="preload" href="/components/styles.css?v=18" as="style">
+  <link rel="stylesheet" href="/components/styles.css?v=18">
   <script src="/components/util.js?v=16"></script>
   <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
   <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
@@ -14,22 +18,25 @@
   <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
   <link rel="manifest" href="/manifest.json">
 
-  <title>Grain Basis vs Normal: Elevator Ripping You Off? | AGSIST</title>
-  <meta name="description" content="Is your basis normal? Regional corn, soybean and wheat basis vs its own 5-year average, plus the barge rates that move it. Free.">
+  <title>Corn Basis vs Normal: Weak in 6 of 10 USDA Regions | AGSIST</title>
+  <meta name="description" content="Week of Sep 25, 2026: corn basis is over 10¢ under its 5-year normal in 6 of 10 regions. Weakest: Minnesota -$0.91 vs -$0.45. Barge rates that move it.">
   <link rel="canonical" href="https://agsist.com/basis">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="AGSIST">
-  <meta property="og:title" content="Your Elevator Didn't Cut Your Basis. The River Did.">
-  <meta property="og:description" content="Regional basis vs its own 5-year normal, next to the barge rates that move it. USDA data, weekly, free.">
+  <meta property="og:title" content="Corn Basis vs Normal: Weak in 6 of 10 USDA Regions | AGSIST">
+  <meta property="og:description" content="Week of Sep 25, 2026: corn basis is over 10¢ under its 5-year normal in 6 of 10 regions. Weakest: Minnesota -$0.91 vs -$0.45. Barge rates that move it.">
   <meta property="og:url" content="https://agsist.com/basis">
   <meta property="og:image" content="https://agsist.com/img/og/agsist.jpg">
-  <meta property="og:image:alt" content="Your Elevator Didn't Cut Your Basis. The River Did.">
+  <meta property="og:image:alt" content="Corn Basis vs Normal: Weak in 6 of 10 USDA Regions | AGSIST">
   <meta name="twitter:image" content="https://agsist.com/img/og/agsist.jpg">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:site" content="@agsist">
+  <meta name="twitter:title" content="Corn Basis vs Normal: Weak in 6 of 10 USDA Regions | AGSIST">
+  <meta name="twitter:description" content="Week of Sep 25, 2026: corn basis is over 10¢ under its 5-year normal in 6 of 10 regions. Weakest: Minnesota -$0.91 vs -$0.45. Barge rates that move it.">
 
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","@id":"https://agsist.com/basis#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://agsist.com/"},{"@type":"ListItem","position":2,"name":"Markets","item":"https://agsist.com/markets"},{"@type":"ListItem","position":3,"name":"Basis vs Normal","item":"https://agsist.com/basis"}]}</script>
   <script type="application/ld+json">
   {"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Why is my basis so wide right now?", "acceptedAnswer": {"@type": "Answer", "text": "Check two rows on this page: your region’s delta, and the barge bars. When freight runs above normal, interior bids must fall against the futures to pay the trip to the export market. Local demand (a plant nearby, a shuttle loader bidding) moves the rest."}}, {"@type": "Question", "name": "Is my elevator ripping me off?", "acceptedAnswer": {"@type": "Answer", "text": "Compare your bid’s basis to your region’s number above. If your elevator is a nickel behind the region, that’s a local conversation. If the whole region is a dollar under its normal — as happens in high-freight years — no elevator in the county could bid it away."}}, {"@type": "Question", "name": "When does basis usually strengthen?", "acceptedAnswer": {"@type": "Answer", "text": "Each region has its own seasonal shape — which is exactly why this page compares each region to its own same-week history instead of quoting a national rule. Post-harvest logistics unclogging and processor demand windows are common strengtheners, but check your region’s own pattern."}}, {"@type": "Question", "name": "Where do these numbers come from?", "acceptedAnswer": {"@type": "Answer", "text": "USDA AgTransport open datasets: weekly regional grain basis (since 2007), barge freight rates, and origin-to-destination bid spreads. Updated here every Friday; sources linked below."}}]}
   </script>
@@ -37,7 +44,7 @@
   <style>
     .bs-wrap{max-width:1140px;margin:0 auto;padding:24px 16px 60px}
     .bs-hero{padding:26px 0 2px}
-    .bs-kicker{font-family:'JetBrains Mono',monospace;font-size:0.77rem;letter-spacing:.16em;text-transform:uppercase;color:#d4a23f;margin:0 0 10px}
+    .bs-kicker{font-family:'JetBrains Mono',monospace;font-size:0.77rem;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin:0 0 10px}
     .bs-hero h1{font-family:var(--font-display);font-size:clamp(1.7rem,4.5vw,2.6rem);line-height:1.12;margin:0 0 12px;color:#e6ebe9}
     .bs-sub{font-size:1.02rem;line-height:1.7;color:#8a948f;max-width:820px;margin:0}
     .bs-sub strong{color:#e6ebe9}
@@ -46,15 +53,15 @@
     
     .bs-panel{background:#101415;border:1px solid #1a1f20;border-radius:12px;margin-top:26px;overflow:hidden}
     .bs-panel-hd{padding:14px 18px;border-bottom:1px solid #1a1f20;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;align-items:baseline}
-    .bs-panel-t{font-family:'JetBrains Mono',monospace;font-size:0.78rem;letter-spacing:.14em;text-transform:uppercase;color:#d4a23f}
+    .bs-panel-t{font-family:'JetBrains Mono',monospace;font-size:0.78rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}
     .bs-fresh{font-family:'JetBrains Mono',monospace;font-size:0.765rem;color:#8a948f}
     .bs-panel-b{padding:18px}
     .bs-seed{font-size:13.4px;line-height:1.7;color:#8a948f;margin:0 0 6px}
     .bs-tabs{display:flex;gap:8px;margin:0 0 14px}
     .bs-tab{font-family:'JetBrains Mono',monospace;font-size:0.775rem;letter-spacing:.1em;text-transform:uppercase;padding:6px 14px;border-radius:6px;border:1px solid #3a4345;background:transparent;color:#8a948f;cursor:pointer}
-    .bs-tab.on{border-color:#d4a23f;color:#d4a23f;background:rgba(212,162,63,.08)}
+    .bs-tab.on{border-color:#d4a23f;color:var(--gold);background:rgba(212,162,63,.08)}
     table.bs-tbl{width:100%;border-collapse:collapse;font-size:.9rem}
-    .bs-tbl th{font-family:'JetBrains Mono',monospace;font-size:0.755rem;letter-spacing:.12em;text-transform:uppercase;color:#d4a23f;text-align:left;padding:8px 10px;border-bottom:1px solid #1a1f20}
+    .bs-tbl th{font-family:'JetBrains Mono',monospace;font-size:0.755rem;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);text-align:left;padding:8px 10px;border-bottom:1px solid #1a1f20}
     .bs-tbl td{padding:8px 10px;border-bottom:1px solid rgba(132,160,168,.08);color:#c9d1cd}
     .bs-tbl td.num{font-family:'JetBrains Mono',monospace;text-align:right;white-space:nowrap;color:#e6ebe9}
     .neg{color:#e0685f !important}.pos{color:#5fc28a !important}
@@ -67,17 +74,17 @@
     .bs-barfill{position:absolute;top:2px;bottom:2px;left:0;background:#d4a23f;border-radius:3px;opacity:.85}
     .bs-barval{font-family:'JetBrains Mono',monospace;font-size:0.785rem;text-align:right;color:#e6ebe9}
     .bs-note{background:rgba(212,162,63,.06);border:1px solid rgba(212,162,63,.3);border-radius:10px;padding:12px 16px;font-size:1rem;line-height:1.7;color:#8a948f;margin:16px 0}
-    .bs-note strong{color:#d4a23f}
+    .bs-note strong{color:var(--gold)}
     .bs-walk{display:flex;flex-wrap:wrap;gap:10px;align-items:stretch}
     .bs-walkstep{flex:1;min-width:150px;background:#0d1112;border:1px solid #1a1f20;border-radius:10px;padding:12px 14px}
-    .bs-walk-l{font-family:'JetBrains Mono',monospace;font-size:0.75rem;letter-spacing:.12em;text-transform:uppercase;color:#d4a23f}
+    .bs-walk-l{font-family:'JetBrains Mono',monospace;font-size:0.75rem;letter-spacing:.12em;text-transform:uppercase;color:var(--gold)}
     .bs-walk-v{font-family:'JetBrains Mono',monospace;font-size:1.3rem;color:#e6ebe9;margin:4px 0 2px}
     .bs-walk-m{font-size:0.79rem;color:#8a948f;line-height:1.5}
     .bs-faq details{border-bottom:1px solid #1a1f20;padding:10px 0}
     .bs-faq summary{cursor:pointer;color:#e6ebe9;font-size:1rem}
     .bs-faq p{color:#8a948f;font-size:.9rem;line-height:1.7;margin:8px 0 2px}
     .bs-src{font-size:.8rem;color:#8a948f;line-height:1.7}
-    .bs-src a{color:#d4a23f}
+    .bs-src a{color:var(--gold)}
     @media (max-width:640px){.bs-barrow{grid-template-columns:96px 1fr 96px}.bs-spark{min-width:120px}}
     #bs-table th{white-space:nowrap} #bs-table th:last-child{white-space:normal;min-width:200px}
   
@@ -112,10 +119,30 @@
     }
 
 .tblscroll table{margin:0;min-width:520px}
+/* 2026-10-06: these panels stay dark in light mode, so gold inside them
+   stays the bright gold (the page around them takes the darker text gold). */
+[data-theme="light"] .vp-ver,[data-theme="light"] .bs-panel{--gold:#d4a23f;--gold-fill:#d4a23f;--brand:#d4a23f;--brand-fill:#d4a23f;--pd-gold:#d4a23f;--ib-gold:#d4a23f;--ib-gold2:#d4a23f;--wp-gold2:#e6b042;--as-gold2:#e6b042}
 </style>
 </head>
 <body>
-<div id="site-header"></div>
+<div id="site-header">
+<!-- static-nav:header (scripts/inject_static_nav.py; source components/header-fallback.html) -->
+  <!-- Static crawlable header: loader.js replaceWith() swaps this for the live dropdown nav on JS;
+       non-JS crawlers (Bing, AI) read these links; also a working fallback if the fetch fails.
+       Copied into every root page by scripts/inject_static_nav.py -- edit HERE, then re-run it. -->
+  <header style="border-bottom:1px solid var(--border);background:var(--surface)">
+    <div style="max-width:1100px;margin:0 auto;padding:.7rem 1rem;display:flex;flex-wrap:wrap;align-items:baseline;gap:.4rem 1.1rem">
+      <a href="/" aria-label="AGSIST Home" style="font-family:var(--font-display);font-weight:800;font-size:1.05rem;letter-spacing:.04em;color:var(--text);text-decoration:none">AGSIST</a>
+      <nav aria-label="AGSIST main navigation" style="font-family:'JetBrains Mono',monospace;font-size:0.775rem;line-height:2;color:var(--text-muted)">
+        <span style="color:var(--text-dim);font-weight:700">Markets:</span> <a href="/corn-futures-prices" style="color:var(--text-muted);text-decoration:none">Corn</a> &middot; <a href="/soybean-futures-prices" style="color:var(--text-muted);text-decoration:none">Soybeans</a> &middot; <a href="/wheat-futures-prices" style="color:var(--text-muted);text-decoration:none">Wheat</a> &middot; <a href="/cattle-futures-prices" style="color:var(--text-muted);text-decoration:none">Cattle</a> &middot; <a href="/cash-bids" style="color:var(--text-muted);text-decoration:none">Cash Bids</a> &middot; <a href="/elevators" style="color:var(--text-muted);text-decoration:none">Elevator Coverage Map</a> &middot; <a href="/milk-prices" style="color:var(--text-muted);text-decoration:none">Milk Prices</a> &middot; <a href="/basis" style="color:var(--text-muted);text-decoration:none">Basis vs Normal</a> &middot; <a href="/storage-crunch" style="color:var(--text-muted);text-decoration:none">Storage Crunch</a> &middot; <a href="/cot" style="color:var(--text-muted);text-decoration:none">COT Report</a> &middot; <a href="/ag-odds" style="color:var(--text-muted);text-decoration:none">Prediction Markets</a> &middot; <a href="/tariffs" style="color:var(--text-muted);text-decoration:none">Tariffs</a> &middot; <a href="/usda-quick-stats" style="color:var(--text-muted);text-decoration:none">USDA Crop Data</a> &middot; <a href="/usda-calendar" style="color:var(--text-muted);text-decoration:none">USDA Calendar</a> &middot; <a href="/whats-priced-in" style="color:var(--text-muted);text-decoration:none">What's Priced In</a> &middot; <a href="/whats-priced-in#analyst-board" style="color:var(--text-muted);text-decoration:none">Analyst Estimates</a> &middot; <a href="/markets" style="color:var(--text-muted);text-decoration:none">All Markets</a><br>
+        <span style="color:var(--text-dim);font-weight:700">Costs &amp; Land:</span> <a href="/breakeven" style="color:var(--text-muted);text-decoration:none">Break-Even</a> &middot; <a href="/presell-calculator" style="color:var(--text-muted);text-decoration:none">Pre-Sell Calculator</a> &middot; <a href="/grain-bin-calculator" style="color:var(--text-muted);text-decoration:none">Grain Bin</a> &middot; <a href="/harvest-price-tracker" style="color:var(--text-muted);text-decoration:none">Harvest Price Tracker</a> &middot; <a href="/farmland-atlas" style="color:var(--text-muted);text-decoration:none">Farmland Atlas</a> &middot; <a href="/cash-rent" style="color:var(--text-muted);text-decoration:none">Cash Rent by County</a> &middot; <a href="/rent/" style="color:var(--text-muted);text-decoration:none">Cash Rent by State</a> &middot; <a href="/cash-lease" style="color:var(--text-muted);text-decoration:none">Cash Farm Lease</a> &middot; <a href="/foreign-land" style="color:var(--text-muted);text-decoration:none">Foreign-Owned Land</a> &middot; <a href="/land-tenure" style="color:var(--text-muted);text-decoration:none">Rented vs Owner-Farmed</a> &middot; <a href="/farm-bill" style="color:var(--text-muted);text-decoration:none">Farm Bill</a><br>
+        <span style="color:var(--text-dim);font-weight:700">Field:</span> <a href="/spray" style="color:var(--text-muted);text-decoration:none">Spray Advisory</a> &middot; <a href="/urea" style="color:var(--text-muted);text-decoration:none">Urea Volatilization Risk</a> &middot; <a href="/drought-monitor" style="color:var(--text-muted);text-decoration:none">Drought Monitor</a> &middot; <a href="/conditions" style="color:var(--text-muted);text-decoration:none">Crop Conditions Rank</a> &middot; <a href="/conditions-yield" style="color:var(--text-muted);text-decoration:none">Ratings vs Yield</a> &middot; <a href="/pod-counts" style="color:var(--text-muted);text-decoration:none">Pod Counts vs Yield</a> &middot; <a href="/crop-tour" style="color:var(--text-muted);text-decoration:none">Crop Tour</a> &middot; <a href="/hail-map" style="color:var(--text-muted);text-decoration:none">Hail Map</a> &middot; <a href="/gdu-calculator" style="color:var(--text-muted);text-decoration:none">GDU Calculator</a> &middot; <a href="/planting-date" style="color:var(--text-muted);text-decoration:none">Planting Date</a> &middot; <a href="/fertilizer" style="color:var(--text-muted);text-decoration:none">Fertilizer</a> &middot; <a href="/yield-estimator" style="color:var(--text-muted);text-decoration:none">Yield Estimator</a> &middot; <a href="/field-scout" style="color:var(--text-muted);text-decoration:none">Field Scout</a> &middot; <a href="/fast-facts" style="color:var(--text-muted);text-decoration:none">Reference Tables</a> &middot; <a href="/tools" style="color:var(--text-muted);text-decoration:none">All Tools</a><br>
+        <span style="color:var(--text-dim);font-weight:700">Daily:</span> <a href="/news" style="color:var(--text-muted);text-decoration:none">The Wire</a> &middot; <a href="/daily" style="color:var(--text-muted);text-decoration:none">AGSIST Daily</a> &middot; <a href="/archive" style="color:var(--text-muted);text-decoration:none">Daily Archive</a> &middot; <a href="/scorecard" style="color:var(--text-muted);text-decoration:none">Prediction Bot</a>
+      </nav>
+    </div>
+  </header>
+<!-- /static-nav:header -->
+</div>
 
 <main class="bs-wrap">
   <header class="bs-hero">
@@ -127,18 +154,18 @@
   <aside class="ag-sponsor-ribbon" id="ag-sponsor"><span class="ag-sponsor-tag">Sponsor this page</span> Every visitor here just got a bid they didn&rsquo;t like &mdash; one category-exclusive slot. <a href="/sponsor?slot=basis&amp;utm_source=basis&amp;utm_medium=slot">Put your name here &rarr;</a></aside>
   <section class="vp-ver" aria-live="polite">
     <div><select id="vp-sel" aria-label="Pick a state"></select><div class="vp-geo" id="vp-geo"></div></div>
-    <div class="vp-big" id="vp-big">&hellip;</div>
-    <div><div class="vp-word" id="vp-word"></div><div class="vp-sent" id="vp-sent">Loading&hellip;</div></div>
+    <div class="vp-big" id="vp-big"><!--SEED:basisbig-->-$0.43<!--/SEED--></div>
+    <div><div class="vp-word" id="vp-word"><!--SEED:basisword-->UNDER NORMAL<!--/SEED--></div><div class="vp-sent" id="vp-sent"><!--SEED:basissent-->Corn basis in the <b>Iowa</b> region is <b>-$0.43/bu</b> for the week of Sep 25, 2026 &mdash; <b>-$0.12 vs normal</b> (a normal week like this runs -$0.31). These are regional USDA markets &mdash; your elevator sits a local spread away, but it moves with this.<!--/SEED--></div></div>
   </section>
   
 
 
   <section class="bs-panel" aria-labelledby="bs-reg-t">
-    <div class="bs-panel-hd"><span class="bs-panel-t" id="bs-reg-t">Regional basis vs 5-year same-week normal</span><span class="bs-fresh" id="bs-fresh">loading&hellip;</span></div>
+    <div class="bs-panel-hd"><span class="bs-panel-t" id="bs-reg-t">Regional basis vs 5-year same-week normal</span><span class="bs-fresh" id="bs-fresh"><!--SEED:basisfresh-->week of 2026-09-25<!--/SEED--></span></div>
     <div class="bs-panel-b">
-      <p class="bs-seed"><!--SEED:basisstats-->Weekly regional elevator-bid basis for corn, soybeans, and wheat vs each region&rsquo;s own 5-year same-week average, from USDA AgTransport (weekly since 2007), beside Mississippi-system barge rates and origin-to-Gulf shipping spreads. Data updates every Friday.<!--/SEED--></p>
+      <p class="bs-seed"><!--SEED:basisstats-->USDA AgTransport elevator-bid basis, week of Sep 25, 2026: corn basis is more than 10&cent; under its 5-year same-week normal in <strong>6 of 10</strong> regions (2 stronger; weakest vs normal Minnesota -$0.91/bu against -$0.45); soybeans <strong>0 of 10</strong> regions (4 stronger; weakest vs normal Kansas -$0.92/bu against -$0.82). Barge rates and origin-to-Gulf spreads below; USDA posts weekly.<!--/SEED--></p>
       <div class="bs-tabs" role="tablist" id="bs-tabs"></div>
-      <div class="tblscroll"><table class="bs-tbl" id="bs-table"><tr><td style="color:#8a948f">Loading USDA data&hellip;</td></tr></table></div>
+      <div class="tblscroll"><table class="bs-tbl" id="bs-table"><!--SEED:basistable--><caption>Corn, week of Sep 25, 2026 &middot; weakest vs normal first</caption><tr><th>Region</th><th style="text-align:right">Basis now</th><th style="text-align:right">5-yr normal</th><th style="text-align:right">Vs normal, $/bu</th></tr><tr><td>Minnesota</td><td class="num">-$0.91</td><td class="num">-$0.45</td><td class="num">-$0.46</td></tr><tr><td>Kansas</td><td class="num">-$0.35</td><td class="num">+$0.07</td><td class="num">-$0.42</td></tr><tr><td>South Dakota</td><td class="num">-$0.71</td><td class="num">-$0.39</td><td class="num">-$0.32</td></tr><tr><td>North Dakota</td><td class="num">-$0.74</td><td class="num">-$0.50</td><td class="num">-$0.25</td></tr><tr><td>Nebraska</td><td class="num">-$0.47</td><td class="num">-$0.27</td><td class="num">-$0.20</td></tr><tr><td>Iowa</td><td class="num">-$0.43</td><td class="num">-$0.31</td><td class="num">-$0.12</td></tr><tr><td>Ohio</td><td class="num">-$0.37</td><td class="num">-$0.36</td><td class="num">-$0.01</td></tr><tr><td>Illinois</td><td class="num">-$0.34</td><td class="num">-$0.35</td><td class="num">even</td></tr><tr><td>Indiana</td><td class="num">-$0.20</td><td class="num">-$0.33</td><td class="num">+$0.13</td></tr><tr><td>North Carolina</td><td class="num">+$0.33</td><td class="num">+$0.16</td><td class="num">+$0.17</td></tr><!--/SEED--></table></div>
       <p style="font-size:13.4px;color:#8a948f;margin:10px 0 0">Negative delta = weaker than this region&rsquo;s normal for this week. These are USDA-tracked <em>regional</em> markets &mdash; your specific elevator sits some local spread away from its region, but it moves with it.</p>
     </div>
   </section>
@@ -179,7 +206,16 @@
   </section>
 </main>
 
-<div id="site-footer"></div>
+<div id="site-footer">
+<!-- static-nav:footer (scripts/inject_static_nav.py; source components/footer-fallback.html) -->
+  <!-- Static crawlable nav: loader.js replaceWith() swaps this for the live footer on JS;
+       non-JS crawlers (Bing, AI) read these links; also a working fallback if the fetch fails.
+       Copied into every root page by scripts/inject_static_nav.py -- edit HERE, then re-run it. -->
+  <nav aria-label="AGSIST site links" style="max-width:1100px;margin:0 auto;padding:1.4rem 1rem;font-family:'JetBrains Mono',monospace;font-size:0.78rem;line-height:2.1;color:var(--text-muted);text-align:center;border-top:1px solid var(--border)">
+    <a href="/corn-futures-prices" style="color:var(--text-muted);text-decoration:none">Corn Futures</a> &middot; <a href="/soybean-futures-prices" style="color:var(--text-muted);text-decoration:none">Soybean Futures</a> &middot; <a href="/wheat-futures-prices" style="color:var(--text-muted);text-decoration:none">Wheat Futures</a> &middot; <a href="/cattle-futures-prices" style="color:var(--text-muted);text-decoration:none">Cattle Futures</a> &middot; <a href="/cash-bids" style="color:var(--text-muted);text-decoration:none">Cash Grain Bids</a> &middot; <a href="/basis" style="color:var(--text-muted);text-decoration:none">Basis vs Normal</a> &middot; <a href="/elevators" style="color:var(--text-muted);text-decoration:none">Elevator Coverage Map</a> &middot; <a href="/cot" style="color:var(--text-muted);text-decoration:none">COT Report</a> &middot; <a href="/ag-odds" style="color:var(--text-muted);text-decoration:none">Ag Prediction Markets</a> &middot; <a href="/markets" style="color:var(--text-muted);text-decoration:none">All Markets</a> &middot; <a href="/cash-rent" style="color:var(--text-muted);text-decoration:none">Cash Rent by County</a> &middot; <a href="/rent/" style="color:var(--text-muted);text-decoration:none">Cash Rent by State</a> &middot; <a href="/farmland-atlas" style="color:var(--text-muted);text-decoration:none">Farmland Atlas</a> &middot; <a href="/cash-lease" style="color:var(--text-muted);text-decoration:none">Cash Farm Lease</a> &middot; <a href="/foreign-land" style="color:var(--text-muted);text-decoration:none">Foreign-Owned Land</a> &middot; <a href="/land-tenure" style="color:var(--text-muted);text-decoration:none">Rented vs Owner-Farmed</a> &middot; <a href="/conditions" style="color:var(--text-muted);text-decoration:none">Crop Conditions Rank</a> &middot; <a href="/conditions-yield" style="color:var(--text-muted);text-decoration:none">Ratings vs Yield</a> &middot; <a href="/usda-quick-stats" style="color:var(--text-muted);text-decoration:none">USDA Crop Data</a> &middot; <a href="/usda-calendar" style="color:var(--text-muted);text-decoration:none">USDA Calendar</a> &middot; <a href="/fast-facts" style="color:var(--text-muted);text-decoration:none">Reference Tables</a> &middot; <a href="/tools" style="color:var(--text-muted);text-decoration:none">Farm Calculators &amp; Tools</a> &middot; <a href="/breakeven" style="color:var(--text-muted);text-decoration:none">Break-Even Calculator</a> &middot; <a href="/spray" style="color:var(--text-muted);text-decoration:none">Spray Advisory</a> &middot; <a href="/drought-monitor" style="color:var(--text-muted);text-decoration:none">Drought Monitor</a> &middot; <a href="/milk-prices" style="color:var(--text-muted);text-decoration:none">Milk Prices</a> &middot; <a href="/tariffs" style="color:var(--text-muted);text-decoration:none">Tariffs</a> &middot; <a href="/news" style="color:var(--text-muted);text-decoration:none">The Wire</a> &middot; <a href="/daily" style="color:var(--text-muted);text-decoration:none">AGSIST Daily</a> &middot; <a href="/archive" style="color:var(--text-muted);text-decoration:none">Daily Archive</a> &middot; <a href="/data-sources" style="color:var(--text-muted);text-decoration:none">Data Sources</a> &middot; <a href="/about" style="color:var(--text-muted);text-decoration:none">About</a> &middot; <a href="/contact" style="color:var(--text-muted);text-decoration:none">Contact</a> &middot; <a href="/sponsor" style="color:var(--text-muted);text-decoration:none">Sponsor</a> &middot; <a href="/accessibility" style="color:var(--text-muted);text-decoration:none">Accessibility</a> &middot; <a href="/privacy" style="color:var(--text-muted);text-decoration:none">Privacy</a> &middot; <a href="/terms" style="color:var(--text-muted);text-decoration:none">Terms</a>
+  </nav>
+<!-- /static-nav:footer -->
+</div>
 <script src="/components/loader.js?v=17"></script>
 <script>
 (function(){
@@ -211,6 +247,9 @@
       +'</svg>';
   }
 
+  var NEWEST='';
+  function shortDate(iso){ var m=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'], p=String(iso).split('-');
+    return p.length===3?m[+p[1]-1]+' '+(+p[2]):String(iso); }
   function renderTable(){
     var rows=[];
     Object.keys(basis.series).forEach(function(k){
@@ -220,14 +259,23 @@
     });
     rows.sort(function(a,b){ return (a.s.delta==null?9:a.s.delta)-(b.s.delta==null?9:b.s.delta); });
     var dmax=0.1;
-    rows.forEach(function(r){ if(r.s.delta!=null) dmax=Math.max(dmax, Math.abs(r.s.delta)); });
+    rows.forEach(function(r){ if(r.s.delta!=null&&!((Date.parse(NEWEST)-Date.parse(r.s.date))/864e5>14)) dmax=Math.max(dmax, Math.abs(r.s.delta)); });
     var dom=dmax*1.05;
     var h='<tr><th>Region</th><th style="text-align:right">Basis now</th><th style="text-align:right">5-yr normal</th><th>Vs its own 5-yr normal, $/bu &nbsp;<span style="text-transform:none;letter-spacing:0;color:#8a948f">| = normal for this week &middot; <span style="color:#e0685f">\u25a0</span> weaker &middot; <span style="color:#5fc28a">\u25a0</span> stronger &middot; all rows same scale</span></th></tr>';
     rows.forEach(function(r){
       var d=r.s.delta;
-      h+='<tr><td>'+r.mkt+'</td><td class="num">'+fmt$(r.s.latest)+'</td>'
-        +'<td class="num" style="color:#8a948f">'+(r.s.avg5==null?'—':fmt$(r.s.avg5))+'</td>'
-        +'<td>'+spark(r.s.hist, r.s.avg5, dom)+'</td></tr>';
+      /* A ROW IS ONLY "NOW" IF USDA POSTED IT THIS WEEK. SRW Illinois was last
+         posted Sep 11 while the header said week of Sep 25, and it sat in the
+         "Basis now" column with no date. Older than the newest week: say when.
+         More than 14 days older: withhold it, with the reason. */
+      var age=(Date.parse(NEWEST)-Date.parse(r.s.date))/864e5, now;
+      if(!(age>0)) now=fmt$(r.s.latest);
+      else if(age>14) now='\u2014 <span style="color:#8a948f;font-size:12px">no USDA posting since '+shortDate(r.s.date)+'</span>';
+      else now=fmt$(r.s.latest)+' <span style="color:#8a948f;font-size:12px">as of '+shortDate(r.s.date)+'</span>';
+      var n5=r.s.avg5_n;
+      h+='<tr><td>'+r.mkt+'</td><td class="num">'+now+'</td>'
+        +'<td class="num" style="color:#8a948f">'+(r.s.avg5==null?'—':fmt$(r.s.avg5)+(n5!=null?' <span style="font-size:12px">n='+n5+' yrs</span>':''))+'</td>'
+        +'<td>'+(age>14?'':spark(r.s.hist, r.s.avg5, dom))+'</td></tr>';
     });
     $('bs-table').innerHTML = rows.length?h:'<tr><td style="color:#8a948f">No USDA series for this commodity</td></tr>';
   }
@@ -277,8 +325,9 @@
   ]).then(function(res){
     basis=res[0]; journey=res[1];
     if(!basis||!journey){ $('bs-table').innerHTML='<tr><td style="color:#8a948f">Data unavailable — try a refresh</td></tr>'; return; }
-    var anyKey=Object.keys(basis.series)[0];
-    $('bs-fresh').textContent='week of '+(basis.series[anyKey]?basis.series[anyKey].date:'');
+    // the header names the newest week any series reached, not whichever is listed first
+    Object.keys(basis.series).forEach(function(k){ var dt=basis.series[k].date; if(dt&&(!NEWEST||dt>NEWEST)) NEWEST=dt; });
+    $('bs-fresh').textContent='week of '+(NEWEST||'—');
     renderTabs(); renderTable(); renderBarge(); renderWalk();
   });
 })();

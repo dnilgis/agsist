@@ -32,8 +32,9 @@ push the same way.
   apart are not two observations. Episodes are counted with a gap rule of h
   weeks, and significance comes from a block bootstrap, not a t-test.
 
-  Searching until something is significant. Around a hundred tests run every
-  week. At p<0.05 five look real by chance. The family is counted, published,
+  Searching until something is significant. Dozens of tests run every week
+  (the count is written to the output's "family" block), and at p<0.05 one in
+  twenty looks real by chance. The family is counted, published,
   and put through a Benjamini-Yekutieli control, which is the version that
   holds under arbitrary dependence between the tests.
 
@@ -63,6 +64,26 @@ MAX_BAND_SHARE = 0.28                       # a "condition" matching more than
                                             # this much of history is not one
 ALPHA = 0.05
 BOOT = 20000
+
+# ONE DEFINITION OF "CROWDED", USED BY EVERY SENTENCE ON THE PAGE. Before
+# 2026-10-06 the page had four: 90/10 on share of open interest (board, banner),
+# 80/20 (scatter quadrants), 85/15 on raw contracts over 52 weeks ignoring the
+# sign (card flag and The Read), and 85/15 on trader concentration. Feeder
+# Cattle, net LONG, was called "crowded short" by the third. Crowded now means
+# the full-record percentile of net as a share of open interest is at or beyond
+# these, AND the position is on that side of zero.
+CROWDED_HI = 90.0
+CROWDED_LO = 10.0
+
+# ONE DEFINITION OF "FLAT". A fixed +/-5,000 contracts was 0.27% of open
+# interest in corn and 13.9% in Class III milk. Flat is now a share of the
+# market's own open interest. fetch_cot.py imports side_of() so the cards, the
+# banner and this file cannot disagree about which markets are flat.
+FLAT_OI_PCT = 2.0
+
+# The card statistics are a trailing year of weekly reports, the current week
+# included.
+CARD_WEEKS = 52
 SEED = 20260906
 
 LABELS = {
@@ -190,6 +211,34 @@ def ordinal(n):
     return f"{n}{ {1: 'st', 2: 'nd', 3: 'rd'}.get(n % 10, 'th') }"
 
 
+def crowded_side(net, p):
+    """'long', 'short' or None. The sign has to agree with the percentile: a
+    net-long market at the 6th percentile of its record is a small long, not a
+    crowded short."""
+    if net is None or p is None:
+        return None
+    if p >= CROWDED_HI and net > 0:
+        return "long"
+    if p <= CROWDED_LO and net < 0:
+        return "short"
+    return None
+
+
+def side_of(net, oi):
+    """'long', 'short' or 'flat'. Flat is |net| under FLAT_OI_PCT of open
+    interest; without open interest only the sign is known."""
+    if net is None:
+        return None
+    if oi and abs(net) < FLAT_OI_PCT / 100.0 * oi:
+        return "flat"
+    return "long" if net > 0 else "short" if net < 0 else "flat"
+
+
+def flat_band(oi):
+    """Contracts either side of zero that count as flat at this open interest."""
+    return int(round(FLAT_OI_PCT / 100.0 * oi)) if oi else None
+
+
 def episodes_in(idxs, gap):
     """Independent spells. Two matching weeks separated by less than `gap`
     weeks share most of the same forward price path, so they are one spell.
@@ -267,13 +316,22 @@ def series_for(block):
     or_l, or_s = g("or_long"), g("or_short")
     nr_l, nr_s = g("nr_long"), g("nr_short")
     oi = g("oi")
-    net = [mm_l[i] - mm_s[i] for i in range(n)]
+    net =[mm_l[i] - mm_s[i] for i in range(n)]
     comm = [pm_l[i] - pm_s[i] for i in range(n)]
     swap = [sw_l[i] - sw_s[i] for i in range(n)]
     orep = [or_l[i] - or_s[i] for i in range(n)]
     nrep = [nr_l[i] - nr_s[i] for i in range(n)]
     pcto = lambda a: [round(100.0 * a[i] / oi[i], 3) if oi[i] else None for i in range(n)]
     tr_l, tr_s, tr_t = g("tr_mm_long"), g("tr_mm_short"), g("tr_total")
+    # CFTC SUPPRESSES A TRADER COUNT BELOW FOUR and prints "." in its place.
+    # cot_deep.py now stores that as None; files built before 2026-10-06 stored
+    # it as 0, which printed "0 funds hold the long side" under Class III milk
+    # with 109 contracts held long. Zero traders cannot hold a position, so a 0
+    # beside a non-zero position is the suppression marker, not a count.
+    sup = lambda t, pos: [None if (t[i] is None or (t[i] == 0 and pos[i])) else t[i]
+                          for i in range(n)]
+    tr_l, tr_s = sup(tr_l, mm_l), sup(tr_s, mm_s)
+    tr_t = [None if not tr_t[i] else tr_t[i] for i in range(n)]
     per_trader = [round(mm_l[i] / tr_l[i], 1) if tr_l[i] else None for i in range(n)]
     per_short = [round(mm_s[i] / tr_s[i], 1) if tr_s[i] else None for i in range(n)]
     # Average book size trends up over the record: open interest has roughly
@@ -504,6 +562,263 @@ def _room(net_oi, now, oi, hi=True):
     return int(round(abs(target - now) / 100.0 * oi))
 
 
+def price_withheld_reason(key, px_entry, px_adj):
+    """Why a market has no price read, in words a reader can check. None when
+    it has one. The page prints this wherever a price figure is missing, so a
+    withheld series is never described as one we do not have."""
+    if key in UNREPAIRED_ROLL:
+        return UNREPAIRED_ROLL[key]
+    if not any(v is not None for v in px_entry) and not any(v is not None for v in px_adj):
+        return ("no price series: our futures feed does not carry this contract, so there is "
+                "nothing to measure a price move against")
+    return None
+
+
+def card_stats(s, d, px_adj, i):
+    """The statistics printed on each summary card and used by The Read.
+
+    Computed here, not in the browser, so they use the same convention as every
+    other percentile on the page: the share of weeks AT OR BELOW this one, the
+    current week included, so the window's high is the 100th and its low is
+    100/n -- never "0th percentile". The window is the trailing CARD_WEEKS weekly
+    reports and n is stated with every figure.
+    """
+    net, oi = s["net"], s["oi"]
+    mm_l, mm_s = s["mm_long"], s["mm_short"]
+    lo = max(0, i - CARD_WEEKS + 1)
+    win = list(range(lo, i + 1))
+    nets = [net[j] for j in win]
+    chgs = [net[j] - net[j - 1] for j in win if j > lo]
+    if len(nets) < 6 or not chgs:
+        return None
+    cur = chgs[-1]
+
+    # Weeks back to an equal-or-larger move the same way. None when there is
+    # none in the window, which is "the largest in the window".
+    since = None
+    for back, c in enumerate(reversed(chgs[:-1]), start=1):
+        if (cur < 0 and c <= cur) or (cur > 0 and c >= cur):
+            since = back
+            break
+    streak = 1
+    for c in reversed(chgs[:-1]):
+        if c != 0 and (c > 0) == (cur > 0):
+            streak += 1
+        else:
+            break
+    dL, dS = mm_l[i] - mm_l[i - 1], mm_s[i] - mm_s[i - 1]
+    if cur < 0:
+        driver = "long liquidation" if abs(dL) >= abs(dS) else "new short selling"
+    elif cur > 0:
+        driver = "new long buying" if abs(dL) >= abs(dS) else "short covering"
+    else:
+        driver = "no net change"
+
+    # Sign changes inside the window, newest first.
+    flips = []
+    for j in range(i, lo, -1):
+        if net[j] and net[j - 1] and (net[j] > 0) != (net[j - 1] > 0):
+            flips.append({"date": d[j], "to": "long" if net[j] > 0 else "short",
+                          "weeks_ago": i - j})
+    move_floor = median([abs(c) for c in chgs])
+
+    out = {
+        "weeks": len(nets), "changes": len(chgs),
+        "pct": percentile_rank(nets, net[i]),
+        "z": zscore(nets, net[i]),
+        "chg": cur, "chg_long": dL, "chg_short": dS, "driver": driver,
+        "largest_in_window": since is None and cur != 0,
+        "weeks_since_larger": since,
+        "streak": streak,
+        "move_floor": int(round(move_floor)) if move_floor is not None else None,
+        "significant_move": move_floor is not None and abs(cur) >= move_floor and cur != 0,
+        "flips": flips[:3], "n_flips": len(flips),
+        "chg4": net[i] - net[i - 4] if i - 4 >= 0 else None,
+        "chg4_long": mm_l[i] - mm_l[i - 4] if i - 4 >= 0 else None,
+        "chg4_short": mm_s[i] - mm_s[i - 4] if i - 4 >= 0 else None,
+        "chg4_oi": (round(100.0 * (net[i] - net[i - 4]) / oi[i], 2)
+                    if (i - 4 >= 0 and oi[i]) else None),
+        "price4": None, "divergence": None,
+    }
+    # Four-week price move on the ROLL-REPAIRED index at the as-of Tuesdays.
+    if i - 4 >= 0 and px_adj[i] and px_adj[i - 4]:
+        p4 = round(100.0 * (px_adj[i] - px_adj[i - 4]) / px_adj[i - 4], 1)
+        nd = (out["chg4"] > 0) - (out["chg4"] < 0)
+        pd = (p4 > 0) - (p4 < 0)
+        out["price4"] = p4
+        out["divergence"] = {(1, -1): "bearish", (-1, 1): "bullish",
+                             (1, 1): "confirmed-up", (-1, -1): "confirmed-down"}.get((nd, pd))
+    return out
+
+
+def _signed(v):
+    return f"{'+' if v >= 0 else '−'}{abs(v):,}"
+
+
+def _fmt_pct_signed(v):
+    return f"{'+' if v >= 0 else '−'}{abs(v):.1f}%"
+
+
+def _rec_pct(c):
+    """The record percentile, said with its measure and its n."""
+    p = c["pctl"]["net_oi_all"]
+    if p is None:
+        return "with no long-run ranking"
+    n = f"(share of open interest, n = {c['weeks_of_history']:,} weeks)"
+    if c.get("is_record_low"):
+        return f"the lowest reading of its record since {c['first_week'][:4]} {n}"
+    if c.get("is_record_high"):
+        return f"the highest reading of its record since {c['first_week'][:4]} {n}"
+    # Not a record, so never "0th" or "100th".
+    return (f"the {ordinal(min(99, max(1, round(p))))} percentile of its record since "
+            f"{c['first_week'][:4]} {n}")
+
+
+def _divergence_read(c):
+    """The sentence for a four-week window in which net and price went opposite
+    ways. Every mechanism word is earned from the long and short legs, never
+    from the net alone: Feeder Cattle's net fell 270 contracts because shorts
+    rose 1,591 while longs ROSE 1,321, and the old page called that liquidation."""
+    k = c["card"]
+    lab, net = c["label"], c["net"]
+    dl, ds, ch, p4 = k["chg4_long"], k["chg4_short"], k["chg4"], k["price4"]
+    legs = f"longs {_signed(dl)}, shorts {_signed(ds)}"
+    price = f"price {'rose' if p4 > 0 else 'fell'} {_fmt_pct_signed(p4)} over the same four weeks"
+    tail = " It describes the weeks behind, not the ones ahead."
+    if k["divergence"] == "bearish":            # net up, price down
+        if net > 0:
+            how = ("as longs were added" if dl > 0 and dl >= -ds else
+                   "as shorts were covered")
+            return (f"funds' net long rose {ch:,} contracts {how} ({legs}) while {price}. "
+                    f"That is a long position price has stopped confirming." + tail)
+        how = ("Shorts leaving into a falling price is short liquidation: the market kept "
+               "going their way without them." if ds < 0 else
+               "The net short shrank because longs were added, not because shorts left.")
+        return (f"funds' net short shrank {ch:,} contracts ({legs}) while {price}. " + how + tail)
+    # bullish: net down, price up
+    if net > 0:
+        if dl < 0:
+            return (f"funds cut their net long {abs(ch):,} contracts ({legs}) while {price}. "
+                    f"Longs leaving into a rising price is liquidation, not conviction: the "
+                    f"market went up without them." + tail)
+        return (f"funds' net long fell {abs(ch):,} contracts as shorts were added ({legs}) "
+                f"while {price}. Longs did not leave; the net fell because new shorts arrived." + tail)
+    if ds > 0:
+        return (f"funds added {abs(ch):,} contracts to a net short ({legs}) while {price}. "
+                f"That is a short position price has stopped confirming." + tail)
+    return (f"funds' net short grew {abs(ch):,} contracts as longs left ({legs}) while {price}." + tail)
+
+
+GRAIN_FLIP_KEYS = ("corn", "beans", "wheat", "kcwheat")
+
+
+def build_the_read(out):
+    """THE READ: one market, one sentence, chosen here rather than in the
+    browser. Returns {key, label, kind, text, why} or None.
+
+    Order: a grain market that changed sign in the last week; a four-week window
+    in which net and price went opposite ways, the net move was at least a
+    typical week's move (the median absolute weekly change over the card
+    window), and the market is crowded on the side it is on or 1+ standard
+    deviations from its three-year normal; then the most newsworthy of the
+    rest. A move smaller than an ordinary week is not a read.
+    """
+    cards = {k: c for k, c in out.items() if c.get("card")}
+    if not cards:
+        return None
+
+    def recent_flip(c, within):
+        f = c["card"]["flips"]
+        return f[0] if (f and f[0]["weeks_ago"] <= within and c["side"] != "flat") else None
+
+    def say(c, kind, text, why):
+        return {"key": c["key"], "label": c["label"], "kind": kind, "text": text, "why": why}
+
+    def flip_text(c, f):
+        k = c["card"]
+        when = "this week" if f["weeks_ago"] == 0 else (
+            "last week" if f["weeks_ago"] == 1 else f"{f['weeks_ago']} weeks ago")
+        nf = k["n_flips"]
+        hist = ("the only sign change in the last " f"{k['weeks']} weeks" if nf <= 1 else
+                f"the {ordinal(nf)} sign change in the last {k['weeks']} weeks, the previous one "
+                f"{k['flips'][1]['weeks_ago'] - f['weeks_ago']} weeks earlier")
+        return (f"funds flipped net {f['to']} {when}, {hist}. Positioning sits at {_rec_pct(c)}. "
+                f"A sign change is a fact about the week, not a signal about the next one.")
+
+    for key in GRAIN_FLIP_KEYS:
+        c = cards.get(key)
+        f = c and recent_flip(c, 1)
+        if f:
+            return say(c, "flip", flip_text(c, f), "a grain market changed sign within a week")
+
+    divs = []
+    for c in cards.values():
+        k = c["card"]
+        if k["divergence"] not in ("bearish", "bullish") or k["chg4"] is None:
+            continue
+        if k["move_floor"] is None or abs(k["chg4"]) < k["move_floor"]:
+            continue
+        z3 = c["z"]["net_oi_3y"]
+        if not (c["crowded"] or (z3 is not None and abs(z3) >= 1)):
+            continue
+        divs.append(c)
+    if divs:
+        c = max(divs, key=lambda x: abs(x["card"]["price4"]))
+        return say(c, "divergence", _divergence_read(c),
+                   f"four-week net move {abs(c['card']['chg4']):,} contracts against a typical "
+                   f"week's {c['card']['move_floor']:,}")
+
+    def score(c):
+        k, sc = c["card"], 0.0
+        if c["crowded"]:
+            sc += 2
+        z3 = c["z"]["net_oi_3y"]
+        sc += min(2.0, abs(z3)) if z3 is not None else 0
+        if k["significant_move"]:
+            if k["largest_in_window"]:
+                sc += 3
+            elif (k["weeks_since_larger"] or 0) >= 8:
+                sc += 2
+            elif (k["weeks_since_larger"] or 0) >= 4:
+                sc += 1
+        if c.get("chg_z") is not None and abs(c["chg_z"]) >= 2:
+            sc += 1
+        if recent_flip(c, 2):
+            sc += 2
+        return sc
+
+    best = max(cards.values(), key=score)
+    if score(best) < 2:
+        return None
+    k = best["card"]
+    f = recent_flip(best, 2)
+    if f:
+        return say(best, "flip", flip_text(best, f), "changed sign within two weeks")
+    cr = best["crowded"]
+    where = (f"crowded {cr}: {_rec_pct(best)}" if cr else f"at {_rec_pct(best)}")
+    if k["significant_move"] and (k["largest_in_window"] or (k["weeks_since_larger"] or 0) >= 4):
+        fall = k["chg"] < 0
+        size = (f"the largest weekly {'fall' if fall else 'rise'} in net in the last {k['weeks']} weeks"
+                if k["largest_in_window"] else
+                f"the sharpest {'fall' if fall else 'rise'} in net in {k['weeks_since_larger']} weeks")
+        mech = {"long liquidation": " Existing longs left, rather than new shorts arriving.",
+                "short covering": " Existing shorts left, rather than new longs arriving."}.get(k["driver"], "")
+        # Said toward the side the position is on: a net short that falls has GROWN.
+        grew = (best["net"] > 0) != fall
+        what = f"net {'long' if best['net'] > 0 else 'short'} {'grew' if grew else 'shrank'}"
+        return say(best, "move",
+                   f"funds' {what} by {abs(k['chg']):,} contracts this week, "
+                   f"{size} (longs {_signed(k['chg_long'])}, shorts {_signed(k['chg_short'])}), from a position "
+                   f"{where}. The move was driven by {k['driver']}.{mech}",
+                   "an unusually large weekly move")
+    if cr:
+        return say(best, "crowded",
+                   f"managed money is {where}. That is a count of who is exposed, not a direction: "
+                   f"it says how many contracts could be forced out if the market turns, not that it will.",
+                   "crowded on the side it is on")
+    return None
+
+
 def analyse_commodity(key, block, family):
     d = block["dates"]
     n = len(d)
@@ -514,6 +829,18 @@ def analyse_commodity(key, block, family):
     px_adj = block.get("px_adj") or [None] * n
     px_tue = block.get("px_tue") or [None] * n
     fwd_map = {h: forward_returns(px_entry, d, h) for h in HORIZONS}
+    # NO ENTRY BEFORE THE REPORT EXISTED. A report held back by a government
+    # shutdown was published weeks after the calendar's Friday (the 2025-09-30
+    # report: calendar entry 2025-10-06, CFTC published 2025-11-19), so its
+    # px_entry is a close that printed before anyone could read the report.
+    # cot_calendar.release_unknown() flags those weeks; prediction_bot.py
+    # already skips them. They are excluded here as STARTING points. Their
+    # px_entry still serves as an exit price for an earlier week, because a
+    # close on that date did print and nothing about it depended on the report.
+    unknown = [CAL.release_unknown(date.fromisoformat(x)) for x in d]
+    shutdown_excluded = sum(1 for j in range(n) if unknown[j] and px_entry[j] is not None)
+    for h in HORIZONS:
+        fwd_map[h] = [None if unknown[j] else v for j, v in enumerate(fwd_map[h])]
 
     i = n - 1
     net, net_oi, comm = s["net"], s["net_oi"], s["comm"]
@@ -523,6 +850,23 @@ def analyse_commodity(key, block, family):
     higher = [d[j] for j in range(n) if net[j] > net[i]]
     hi_j = max(range(n), key=lambda j: net[j])
     lo_j = min(range(n), key=lambda j: net[j])
+    # THE RANK THE PANEL PRINTS IS ON THE SAME MEASURE AS ITS PERCENTILE. "A
+    # bigger net long than 98% of weeks" (share of open interest) sat beside
+    # "Rank 1st of 874 by net position" (raw contracts). Ranked here on share of
+    # open interest, counted toward the side the position is on: first is the
+    # biggest net long for a long, the biggest net short for a short. Ties share
+    # the better rank.
+    oi_vals = [(j, v) for j, v in enumerate(net_oi) if v is not None]
+    if net_oi[i] is not None:
+        if net[i] >= 0:
+            beyond = [j for j, v in oi_vals if v > net_oi[i]]
+        else:
+            beyond = [j for j, v in oi_vals if v < net_oi[i]]
+        rank_oi = {"side": "long" if net[i] >= 0 else "short",
+                   "rank": len(beyond) + 1, "of": len(oi_vals),
+                   "last_beyond": d[max(beyond)] if beyond else None}
+    else:
+        rank_oi = None
 
     # Price momentum comes off the roll-repaired index at the AS-OF Tuesday, a
     # price that exists on release night. Reading it off the entry close would
@@ -564,7 +908,14 @@ def analyse_commodity(key, block, family):
         # interest has tripled sets a "record" most years for no reason.
         "is_record_high": net_oi[i] is not None and net_oi[i] >= max(x for x in net_oi if x is not None),
         "is_record_low": net_oi[i] is not None and net_oi[i] <= min(x for x in net_oi if x is not None),
-        "rank": {"desc": rank_desc, "of": n,
+        "side": side_of(net[i], s["oi"][i]),
+        "flat_band": flat_band(s["oi"][i]),
+        "crowded": crowded_side(net[i], percentile_rank(net_oi, net_oi[i])),
+        "shutdown_excluded": shutdown_excluded,
+        "rank_oi": rank_oi,
+        # Raw contracts, kept for the arithmetic table only. NOT size-adjusted:
+        # open interest has roughly doubled over the record.
+        "rank": {"desc": rank_desc, "of": n, "measure": "raw contracts (not size-adjusted)",
                  "last_higher": higher[-1] if higher else None,
                  "record_high": {"date": d[hi_j], "net": net[hi_j]},
                  "record_low": {"date": d[lo_j], "net": net[lo_j]}},
@@ -665,6 +1016,8 @@ def analyse_commodity(key, block, family):
     wchg = [(100.0 * (net[j] - net[j - 1]) / s["oi"][j]) if (j and s["oi"][j]) else None
             for j in range(n)]
     out["chg_z"] = zscore([x for x in wchg[:i] if x is not None], wchg[i])
+    out["card"] = card_stats(s, d, px_adj, i)
+    out["price_withheld_reason"] = price_withheld_reason(key, px_entry, px_adj)
 
     out["correlation"] = correlations(s, px_adj, d, fwd_map,
                                       random.Random(f"{SEED}:corr:{key}"))
@@ -751,16 +1104,18 @@ def build_read(c):
     share = (f" ({abs(c['net_oi']):.1f}% of all open contracts)"
              if c["net_oi"] is not None else "")
     if c["is_record_high"] or c["is_record_low"]:
-        where = f"the biggest net {side} of any week since {c['first_week'][:4]}"
-    elif p is not None and (p >= 90 or p <= 10):
+        where = (f"the biggest net {side} of any week since {c['first_week'][:4]}, measured as "
+                 f"a share of open interest")
+    elif p is not None and (p >= CROWDED_HI or p <= CROWDED_LO) and c.get("crowded"):
         rarer = (100 - p) if net > 0 else p
         where = (f"a bigger net {side} than {100 - rarer:.0f}% of weeks since "
-                 f"{c['first_week'][:4]}")
+                 f"{c['first_week'][:4]}, measured as a share of open interest")
     elif p is not None and (p >= 75 or p <= 25):
-        where = (f"the {ordinal(p)} percentile since {c['first_week'][:4]}, on the "
-                 f"{'high' if p >= 75 else 'low'} side but not extreme")
+        where = (f"the {ordinal(p)} percentile since {c['first_week'][:4]} as a share of open "
+                 f"interest, on the {'high' if p >= 75 else 'low'} side but not extreme")
     elif p is not None:
-        where = f"the {ordinal(p)} percentile since {c['first_week'][:4]}, which is normal"
+        where = (f"the {ordinal(p)} percentile since {c['first_week'][:4]} as a share of open "
+                 f"interest, which is normal")
     else:
         where = "with no history to rank it against"
     cap = c["capacity"]
@@ -797,11 +1152,13 @@ def board_summary(out):
     return {
         "mean_pctl": round(sum(vals) / len(vals), 1),
         "n": len(vals),
-        "stretched_long": [{"key": k, "label": out[k]["label"], "pctl": v}
+        "stretched_long": [{"key": k, "label": out[k]["label"], "pctl": v, "crowded": out[k].get("crowded")}
                            for k, v in sorted(ps, key=lambda kv: -kv[1])[:3]],
-        "stretched_short": [{"key": k, "label": out[k]["label"], "pctl": v}
+        "stretched_short": [{"key": k, "label": out[k]["label"], "pctl": v, "crowded": out[k].get("crowded")}
                             for k, v in sorted(ps, key=lambda kv: kv[1])[:3]],
-        "extremes": sum(1 for v in vals if v >= 90 or v <= 10),
+        "extremes": sum(1 for k, c in out.items() if c.get("crowded")),
+        "flat": [{"key": k, "label": c["label"]} for k, c in out.items() if c.get("side") == "flat"],
+        "sides": {sd: sum(1 for c in out.values() if c.get("side") == sd) for sd in ("long", "short", "flat")},
         "moves": moves,
     }
 
@@ -810,18 +1167,24 @@ def board_correlation(out):
     """Three numbers for the whole page. The first says positioning follows
     price. The second says recent buying does not forecast it. The third is the
     contrarian claim itself: does being stretched now predict the next quarter?"""
-    rows = []
+    rows, withheld = [], []
     for k, c in out.items():
         cor = c.get("correlation") or {}
         f8 = (cor.get("forward") or {}).get("8") or {}
         f13 = (cor.get("forward") or {}).get("13") or {}
         sw = cor.get("same_week") or {}
         if sw.get("r") is None:
+            withheld.append({"key": k, "label": c["label"],
+                             "reason": c.get("price_withheld_reason")
+                             or f"fewer than 20 weeks with both a price and a position (n = {sw.get('n', 0)})"})
             continue
         rows.append({"key": k, "label": c["label"],
                      "same_week_r": sw.get("r"), "same_week_lo": sw.get("lo"), "same_week_hi": sw.get("hi"),
+                     "same_week_n": sw.get("n"),
                      "forward_r": f8.get("flow_r"), "forward_lo": f8.get("flow_lo"), "forward_hi": f8.get("flow_hi"),
-                     "level_r": f13.get("level_r"), "level_lo": f13.get("level_lo"), "level_hi": f13.get("level_hi")})
+                     "forward_n": f8.get("flow_n"),
+                     "level_r": f13.get("level_r"), "level_lo": f13.get("level_lo"), "level_hi": f13.get("level_hi"),
+                     "level_n": f13.get("level_n")})
     if not rows:
         return None
     take = lambda f: [r[f] for r in rows if r[f] is not None]
@@ -830,7 +1193,10 @@ def board_correlation(out):
             "median_forward": round(median(take("forward_r")), 3) if take("forward_r") else None,
             "median_level": round(median(take("level_r")), 3) if take("level_r") else None,
             "level_negative": sum(1 for v in take("level_r") if v < 0),
-            "n_markets": len(rows)}
+            "n_markets": len(rows),
+            "n_weeks": {f: [min(take(f)), max(take(f))] if take(f) else None
+                        for f in ("same_week_n", "forward_n", "level_n")},
+            "withheld": withheld}
 
 
 HIST_PATH = os.path.join(DATA, "cot-history.json")
@@ -881,6 +1247,12 @@ def attach_adjusted_prices(deep):
                 r.pop("px_adj", None)
             continue
         at = {d: i for i, d in enumerate(dates)}
+        if key in UNREPAIRED_ROLL:
+            # The raw front-month price is withheld too, not only the repaired
+            # index: the chart overlay drew the unrepaired roll steps (-14.6%,
+            # -15.8%) beside a method note saying no hogs price is shown.
+            for r in rows:
+                r.pop("price", None)
         for r in rows:
             i = at.get(r.get("date"))
             v = px[i] if (i is not None and i < len(px)) else None
@@ -904,7 +1276,10 @@ def attach_adjusted_prices(deep):
 # The hogs "-14.5% over 13 weeks" was the Aug 18 2026 roll. A price read built on that is wrong, so it is
 # withheld (the same path Minneapolis wheat already takes: no price series, so no price-conditioned read)
 # until the calendar rule is fixed and the archive rebuilt.
-UNREPAIRED_ROLL = {"leanhogs": "roll rule not yet in the calendar"}
+UNREPAIRED_ROLL = {"leanhogs": ("withheld, not missing: the rule for when lean hogs roll from one "
+                                "contract to the next is not yet verified in our contract calendar, "
+                                "so the price series still carries jumps of 10% to 23% at contract "
+                                "changes. Any price move measured on it would be mostly the roll")}
 
 
 def withhold_unrepaired_prices(deep):
@@ -959,6 +1334,8 @@ def main():
               f"threshold {ALPHA/(m*c):.5f}. Raise BOOT.", file=sys.stderr)
 
     latest = max((c2["date"] for c2 in out.values()), default=None)
+    shut = sum(c2.get("shutdown_excluded") or 0 for c2 in out.values())
+    shut_markets = sum(1 for c2 in out.values() if c2.get("shutdown_excluded"))
     payload = {
         "updated": datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ"),
         "report_date": latest,
@@ -968,7 +1345,11 @@ def main():
             "source": "CFTC Disaggregated Commitments of Traders, futures only, all contract months.",
             "entry": ("Forward returns start at the first session close after CFTC published, "
                       "using each week's real publication date. A federal holiday on the Wednesday, Thursday or Friday of the report week delays the "
-                      "release to the Monday, about six weeks a year."),
+                      "release to the Monday, about six weeks a year. "
+                      f"{shut:,} report weeks across {shut_markets} markets are excluded as "
+                      "starting points because they fell in a government shutdown (2013, "
+                      "2018-19, 2025), when CFTC published weeks late on a catch-up schedule "
+                      "and the real publication date of each report is not known."),
             "price": ("Front-month continuous futures with the roll steps removed. The return "
                       "across each front-month change is dropped rather than counted, so an "
                       "old-crop-to-new-crop roll is not read as a rally."),
@@ -988,6 +1369,13 @@ def main():
             "gates": (f"A read is withheld below {MIN_N} comparable weeks, below the horizon's "
                       f"spell count, or above {int(MAX_BAND_SHARE*100)}% of the record."),
         },
+        "shutdown_excluded": {"rows": shut, "markets": shut_markets,
+                              "windows": [[a.isoformat(), b.isoformat()] for a, b in CAL.SHUTDOWN_SKIP]},
+        "thresholds": {"crowded_hi": CROWDED_HI, "crowded_lo": CROWDED_LO,
+                       "flat_oi_pct": FLAT_OI_PCT, "card_weeks": CARD_WEEKS,
+                       "crowded_measure": "full-record percentile of managed-money net as a share "
+                                          "of open interest, on the side the position is on"},
+        "read": build_the_read(out),
         "family": {"tests": len(measured), "attempted": len(family),
                    "expected_by_chance": round(len(measured) * ALPHA, 1),
                    "raw_hits": raw_hits, "fdr_survivors": len(survivors)},
@@ -1116,6 +1504,55 @@ def selftest():
     ck("every category nets to zero", float(total), 0.0)
     ckt("zero open interest gives None, not a division error",
         series_for({"dates": ["x"], "oi": [0], "mm_long": [5], "mm_short": [1]})["net_oi"][0] is None)
+
+    # ── one definition of crowded and flat ──
+    ckt("crowded needs the sign to agree: net long at the 6th pct is not crowded short",
+        crowded_side(8166, 6.0) is None)
+    ckt("crowded long at the 90th with a net long", crowded_side(100, 90.0) == "long")
+    ckt("crowded short at the 10th with a net short", crowded_side(-100, 10.0) == "short")
+    ckt("flat is a share of open interest: 5,000 of 1.8m is flat",
+        side_of(5000, 1800000) == "flat" and side_of(-5000, 36000) == "short")
+    ckt("flat band at 36,020 open interest", flat_band(36020) == 720)
+
+    # ── card statistics use the pipeline's percentile convention ──
+    nn = 60
+    blk2 = {"dates": [(date(2025, 1, 7) + timedelta(weeks=j)).isoformat() for j in range(nn)],
+            "oi": [100000] * nn, "mm_long": [20000 + 100 * j for j in range(nn)],
+            "mm_short": [10000] * nn}
+    s2 = series_for(blk2)
+    cs = card_stats(s2, blk2["dates"], [None] * nn, nn - 1)
+    ckt("card window is 52 weeks", cs["weeks"] == 52 and cs["changes"] == 51)
+    ck("card percentile of the window high is 100, never past it", cs["pct"], 100.0)
+    s2["net"][nn - 1] = -99999
+    cs = card_stats(s2, blk2["dates"], [None] * nn, nn - 1)
+    ck("card percentile of the window low is 100/n, not 0", cs["pct"], round(100 / 52, 1))
+    ckt("no price, no divergence", cs["divergence"] is None and cs["price4"] is None)
+
+    # ── the Feeder Cattle case (2026-09-29): net -270 = longs +1,321, shorts +1,591 ──
+    fc = {"key": "feedercattle", "label": "Feeder Cattle", "net": 8166, "side": "long",
+          "crowded": None, "z": {"net_oi_3y": -0.4}, "chg_z": 0.1, "first_week": "2010-01-05",
+          "weeks_of_history": 874, "pctl": {"net_oi_all": 50.8},
+          "card": {"divergence": "bullish", "chg4": -270, "chg4_long": 1321, "chg4_short": 1591,
+                   "price4": 5.0, "move_floor": 797, "flips": [], "n_flips": 0, "weeks": 52,
+                   "significant_move": False, "largest_in_window": False,
+                   "weeks_since_larger": 1, "chg": 161, "chg_long": 0, "chg_short": 0,
+                   "driver": "short covering"}}
+    ckt("a 270-contract four-week move under a 797 typical week is not a Read",
+        build_the_read({"feedercattle": fc}) is None)
+    txt = _divergence_read(fc)
+    ckt("net fell because shorts were added: no 'liquidation'",
+        "liquidation" not in txt and "shorts were added" in txt, txt)
+    fc["card"].update({"chg4_long": -900, "chg4_short": 600, "chg4": -1500})
+    ckt("longs falling for a net long IS liquidation", "liquidation" in _divergence_read(fc))
+    fc["net"] = -8166
+    fc["card"].update({"divergence": "bearish", "chg4": 1500, "chg4_long": 200, "chg4_short": -1300,
+                       "price4": -5.0})
+    t2 = _divergence_read(fc)
+    ckt("a net short with net rising is never 'a long position price has stopped confirming'",
+        "long position" not in t2 and "net short" in t2, t2)
+
+    # ── shutdown weeks are not entry points ──
+    ckt("the 2025-09-30 report's release is unknown", CAL.release_unknown(date(2025, 9, 30)))
 
     print()
     if fails:

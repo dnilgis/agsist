@@ -1,5 +1,5 @@
 {
- "_note": "Past reports, scored against the actual print. expected = pre-report trade average; actual = USDA print. Leave 'surprise' blank to let the build script score it (within 2% = in line, below estimate = bullish, above = bearish), or set it explicitly. Add a new block after each release.",
+ "_note": "Past reports, scored against the actual print. expected = pre-report trade average; actual = USDA print. Leave 'surprise' blank to let the build script score it with scripts/report_bands.py: when the survey's low and high are on file in data/analyst-estimates.json the print is graded against that range first (below it = bullish, above it = bearish, inside it = in line); with no range on file, within 0.5% of the trade average is in line for a yield and within 2% for anything else, below that band = bullish, above = bearish; no trade estimate = not graded. Or set it explicitly. gap_pct is computed by the build script, never typed here. Add a new block after each release.",
  "history": [
   {
    "date": "2026-09-30",
@@ -53,7 +53,7 @@
    "expected": 765,
    "actual": 744,
    "unit": "mil bu",
-   "reaction": "The report's one real surprise: new-crop wheat carryout cut to 744M \u2014 21M below the trade and 18M under May \u2014 on a smaller Hard Red Winter crop (all-wheat production trimmed to 1,543M, yield 47.0). Bullish wheat; farm price cut $0.50 to $6.00."
+   "reaction": "New-crop wheat carryout came in at 744M \u2014 21M under the 765M trade average and 18M under May, but inside the survey's 740\u2013804M range, so some analyst on record expected this level. The cut came from a smaller Hard Red Winter crop (all-wheat production trimmed to 1,543M, yield 47.0); the season-average farm price was cut $0.50 to $6.00."
   },
   {
    "date": "2026-06-11",
@@ -162,6 +162,24 @@
    "actual": 52.8,
    "unit": "bu/acre",
    "reaction": ""
+  },
+  {
+   "date": "2026-09-11",
+   "report": "September WASDE",
+   "metric": "2026/27 corn ending stocks",
+   "expected": 1.533,
+   "actual": 1.567,
+   "unit": "bil bu",
+   "reaction": "USDA put 2026/27 corn carryout at 1.567 billion bushels, 34M above the 1.533B trade average (Dow Jones survey, via DTN). No survey low or high is on file for this figure, so it is graded on the 2% band."
+  },
+  {
+   "date": "2026-09-11",
+   "report": "September WASDE",
+   "metric": "2026/27 soybean ending stocks",
+   "expected": 290,
+   "actual": 310,
+   "unit": "mil bu",
+   "reaction": "USDA put 2026/27 soybean carryout at 310M, 20M above the 290M trade average (Dow Jones survey, via DTN). Reuters' survey averaged 298M; the print was above that too. No survey low or high is on file for this figure, so it is graded on the 2% band."
   }
  ]
 }

@@ -104,7 +104,7 @@ def build(daily_path="data/daily.json", predictions_path="data/predictions.json"
     # Public record: the prediction bot's LIVE record, only once it clears the
     # bot's own minimum sample (gate_ok). The backtest is never printed here,
     # so history cannot stand in for calls made in public.
-    score_line = "A STATISTICAL BOT CALLS THE GRAINS DAILY. EVERY CALL GRADED BY CODE, IN PUBLIC."
+    score_line = "A STATISTICAL BOT CALLS THE GRAINS ONCE A WEEK. EVERY CALL GRADED BY CODE, IN PUBLIC."
     score_bold = None
     try:
         pr = json.load(open(predictions_path, encoding="utf-8"))
@@ -196,7 +196,7 @@ def build(daily_path="data/daily.json", predictions_path="data/predictions.json"
 
     if score_bold:
         segs = [(score_line, sans_38, MUTED), (score_bold, sans_b38, TEXT),
-                (" calls right, graded by code against settlement prices.",
+                (" calls right, graded by code against Yahoo daily closes.",
                  sans_38, MUTED)]
     else:
         segs = [(score_line, sans_38, MUTED)]

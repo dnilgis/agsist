@@ -3,8 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#111a0a"><link rel="preload" href="/components/styles.css?v=17" as="style">
-<link rel="stylesheet" href="/components/styles.css?v=17">
+<meta name="theme-color" content="#111a0a"><!-- static-nav:fonts (scripts/inject_static_nav.py) -->
+  <link rel="preload" href="/fonts/inter-400.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/jetbrains-mono-700.woff2" as="font" type="font/woff2" crossorigin>
+  <!-- /static-nav:fonts -->
+  <link rel="preload" href="/components/styles.css?v=18" as="style">
+<link rel="stylesheet" href="/components/styles.css?v=18">
   <script src="/components/util.js?v=16"></script>
 <link rel="icon" type="image/x-icon"            href="/img/favicon.ico">
 <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
@@ -96,6 +100,16 @@ body{overflow-x:hidden;overflow-x:clip;width:100%;}
 .arc-empty{text-align:center;padding:2.5rem 1rem;color:var(--text-muted);font-size:.88rem;}
 .arc-empty strong{display:block;color:var(--text-dim);font-size:.95rem;margin-bottom:.3rem;}
 
+/* Static, crawlable list of every briefing (baked by generate_daily.py
+   between the SEED:archivelist markers). Hidden once the JS cards load. */
+.arc-static{margin-top:1rem;}
+.arc-static-month{font-family:'JetBrains Mono',monospace;font-size:0.77rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--text-muted);margin:1.5rem 0 .6rem;padding-bottom:.35rem;border-bottom:1px solid var(--border);}
+.arc-static-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:.15rem;}
+.arc-static-list a{display:block;padding:.45rem 0;font-size:.88rem;line-height:1.45;color:var(--text);text-decoration:none;}
+.arc-static-list a:hover{color:var(--gold);}
+.arc-static-list time{font-family:'JetBrains Mono',monospace;font-size:.78rem;color:var(--text-muted);}
+.arc-static.arc-hidden{display:none;}
+
 /* Hidden during load */
 .arc-content{display:none;}
 .arc-content.vis{display:block;}
@@ -114,7 +128,24 @@ body{overflow-x:hidden;overflow-x:clip;width:100%;}
   <rect width="8" height="4" x="10" y="6" rx="1" /></symbol><symbol id="sp-search" viewBox="0 0 24 24"><path d="m21 21-4.34-4.34" />
   <circle cx="11" cy="11" r="8" /></symbol></svg>
 <a href="#main" class="skip">Skip to content</a>
-<div id="site-header"></div>
+<div id="site-header">
+<!-- static-nav:header (scripts/inject_static_nav.py; source components/header-fallback.html) -->
+  <!-- Static crawlable header: loader.js replaceWith() swaps this for the live dropdown nav on JS;
+       non-JS crawlers (Bing, AI) read these links; also a working fallback if the fetch fails.
+       Copied into every root page by scripts/inject_static_nav.py -- edit HERE, then re-run it. -->
+  <header style="border-bottom:1px solid var(--border);background:var(--surface)">
+    <div style="max-width:1100px;margin:0 auto;padding:.7rem 1rem;display:flex;flex-wrap:wrap;align-items:baseline;gap:.4rem 1.1rem">
+      <a href="/" aria-label="AGSIST Home" style="font-family:var(--font-display);font-weight:800;font-size:1.05rem;letter-spacing:.04em;color:var(--text);text-decoration:none">AGSIST</a>
+      <nav aria-label="AGSIST main navigation" style="font-family:'JetBrains Mono',monospace;font-size:0.775rem;line-height:2;color:var(--text-muted)">
+        <span style="color:var(--text-dim);font-weight:700">Markets:</span> <a href="/corn-futures-prices" style="color:var(--text-muted);text-decoration:none">Corn</a> &middot; <a href="/soybean-futures-prices" style="color:var(--text-muted);text-decoration:none">Soybeans</a> &middot; <a href="/wheat-futures-prices" style="color:var(--text-muted);text-decoration:none">Wheat</a> &middot; <a href="/cattle-futures-prices" style="color:var(--text-muted);text-decoration:none">Cattle</a> &middot; <a href="/cash-bids" style="color:var(--text-muted);text-decoration:none">Cash Bids</a> &middot; <a href="/elevators" style="color:var(--text-muted);text-decoration:none">Elevator Coverage Map</a> &middot; <a href="/milk-prices" style="color:var(--text-muted);text-decoration:none">Milk Prices</a> &middot; <a href="/basis" style="color:var(--text-muted);text-decoration:none">Basis vs Normal</a> &middot; <a href="/storage-crunch" style="color:var(--text-muted);text-decoration:none">Storage Crunch</a> &middot; <a href="/cot" style="color:var(--text-muted);text-decoration:none">COT Report</a> &middot; <a href="/ag-odds" style="color:var(--text-muted);text-decoration:none">Prediction Markets</a> &middot; <a href="/tariffs" style="color:var(--text-muted);text-decoration:none">Tariffs</a> &middot; <a href="/usda-quick-stats" style="color:var(--text-muted);text-decoration:none">USDA Crop Data</a> &middot; <a href="/usda-calendar" style="color:var(--text-muted);text-decoration:none">USDA Calendar</a> &middot; <a href="/whats-priced-in" style="color:var(--text-muted);text-decoration:none">What's Priced In</a> &middot; <a href="/whats-priced-in#analyst-board" style="color:var(--text-muted);text-decoration:none">Analyst Estimates</a> &middot; <a href="/markets" style="color:var(--text-muted);text-decoration:none">All Markets</a><br>
+        <span style="color:var(--text-dim);font-weight:700">Costs &amp; Land:</span> <a href="/breakeven" style="color:var(--text-muted);text-decoration:none">Break-Even</a> &middot; <a href="/presell-calculator" style="color:var(--text-muted);text-decoration:none">Pre-Sell Calculator</a> &middot; <a href="/grain-bin-calculator" style="color:var(--text-muted);text-decoration:none">Grain Bin</a> &middot; <a href="/harvest-price-tracker" style="color:var(--text-muted);text-decoration:none">Harvest Price Tracker</a> &middot; <a href="/farmland-atlas" style="color:var(--text-muted);text-decoration:none">Farmland Atlas</a> &middot; <a href="/cash-rent" style="color:var(--text-muted);text-decoration:none">Cash Rent by County</a> &middot; <a href="/rent/" style="color:var(--text-muted);text-decoration:none">Cash Rent by State</a> &middot; <a href="/cash-lease" style="color:var(--text-muted);text-decoration:none">Cash Farm Lease</a> &middot; <a href="/foreign-land" style="color:var(--text-muted);text-decoration:none">Foreign-Owned Land</a> &middot; <a href="/land-tenure" style="color:var(--text-muted);text-decoration:none">Rented vs Owner-Farmed</a> &middot; <a href="/farm-bill" style="color:var(--text-muted);text-decoration:none">Farm Bill</a><br>
+        <span style="color:var(--text-dim);font-weight:700">Field:</span> <a href="/spray" style="color:var(--text-muted);text-decoration:none">Spray Advisory</a> &middot; <a href="/urea" style="color:var(--text-muted);text-decoration:none">Urea Volatilization Risk</a> &middot; <a href="/drought-monitor" style="color:var(--text-muted);text-decoration:none">Drought Monitor</a> &middot; <a href="/conditions" style="color:var(--text-muted);text-decoration:none">Crop Conditions Rank</a> &middot; <a href="/conditions-yield" style="color:var(--text-muted);text-decoration:none">Ratings vs Yield</a> &middot; <a href="/pod-counts" style="color:var(--text-muted);text-decoration:none">Pod Counts vs Yield</a> &middot; <a href="/crop-tour" style="color:var(--text-muted);text-decoration:none">Crop Tour</a> &middot; <a href="/hail-map" style="color:var(--text-muted);text-decoration:none">Hail Map</a> &middot; <a href="/gdu-calculator" style="color:var(--text-muted);text-decoration:none">GDU Calculator</a> &middot; <a href="/planting-date" style="color:var(--text-muted);text-decoration:none">Planting Date</a> &middot; <a href="/fertilizer" style="color:var(--text-muted);text-decoration:none">Fertilizer</a> &middot; <a href="/yield-estimator" style="color:var(--text-muted);text-decoration:none">Yield Estimator</a> &middot; <a href="/field-scout" style="color:var(--text-muted);text-decoration:none">Field Scout</a> &middot; <a href="/fast-facts" style="color:var(--text-muted);text-decoration:none">Reference Tables</a> &middot; <a href="/tools" style="color:var(--text-muted);text-decoration:none">All Tools</a><br>
+        <span style="color:var(--text-dim);font-weight:700">Daily:</span> <a href="/news" style="color:var(--text-muted);text-decoration:none">The Wire</a> &middot; <a href="/daily" style="color:var(--text-muted);text-decoration:none">AGSIST Daily</a> &middot; <a href="/archive" style="color:var(--text-muted);text-decoration:none">Daily Archive</a> &middot; <a href="/scorecard" style="color:var(--text-muted);text-decoration:none">Prediction Bot</a>
+      </nav>
+    </div>
+  </header>
+<!-- /static-nav:header -->
+</div>
 <main id="main" tabindex="-1" class="arc-page">
 <style>@media print{.ag-sponsor-ribbon{display:none!important}}</style><aside class="ag-sponsor-ribbon" id="ag-sponsor"><span class="ag-sponsor-tag">Sponsor this page</span> Every past briefing on the record — one category-exclusive slot. <a href="/sponsor?slot=archive&amp;utm_source=archive&amp;utm_medium=slot">Put your name here &rarr;</a></aside>
 
@@ -147,8 +178,254 @@ body{overflow-x:hidden;overflow-x:clip;width:100%;}
     <div id="arc-body"></div>
   </div>
 
+  <noscript><style>#arc-loading{display:none}</style></noscript>
+  <section class="arc-static" id="arc-static" aria-label="Every briefing, newest first">
+<!--SEED:archivelist-->
+<h2 class="arc-static-month">October 2026</h2>
+<ul class="arc-static-list">
+<li><a href="/daily/2026-10-06"><time datetime="2026-10-06">Tue Oct 6, 2026</time> &middot; Corn holds $5 as grain stocks come in heavy</a></li>
+<li><a href="/daily/2026-10-05"><time datetime="2026-10-05">Mon Oct 5, 2026</time> &middot; Corn back above $5 as rain keeps combines parked</a></li>
+<li><a href="/daily/2026-10-04"><time datetime="2026-10-04">Sun Oct 4, 2026</time> &middot; Corn closes under $5 with harvest stuck in the rain</a></li>
+<li><a href="/daily/2026-10-03"><time datetime="2026-10-03">Sat Oct 3, 2026</time> &middot; Crude splits from diesel as harvest stalls in the rain</a></li>
+<li><a href="/daily/2026-10-02"><time datetime="2026-10-02">Fri Oct 2, 2026</time> &middot; Crude drops 3.5% as grains grind higher on no news</a></li>
+<li><a href="/daily/2026-10-01"><time datetime="2026-10-01">Thu Oct 1, 2026</time> &middot; Corn runs 1.1% ahead of stocks, crude up on Gulf flows</a></li>
+</ul>
+<h2 class="arc-static-month">September 2026</h2>
+<ul class="arc-static-list">
+<li><a href="/daily/2026-09-30"><time datetime="2026-09-30">Wed Sep 30, 2026</time> &middot; Grains tick higher ahead of stocks data at 11 CT</a></li>
+<li><a href="/daily/2026-09-29"><time datetime="2026-09-29">Tue Sep 29, 2026</time> &middot; Crude pulls back 2.1% as Yanbu reopens</a></li>
+<li><a href="/daily/2026-09-28"><time datetime="2026-09-28">Mon Sep 28, 2026</time> &middot; Crude runs to $96 as beans slip again</a></li>
+<li><a href="/daily/2026-09-26"><time datetime="2026-09-26">Sat Sep 26, 2026</time> &middot; Grains climb Friday, cattle stall before COF week</a></li>
+<li><a href="/daily/2026-09-25"><time datetime="2026-09-25">Fri Sep 25, 2026</time> &middot; Grains sit still, cattle slip again before COF</a></li>
+<li><a href="/daily/2026-09-24"><time datetime="2026-09-24">Thu Sep 24, 2026</time> &middot; Crude runs to $93 as Hormuz traffic stays thin</a></li>
+<li><a href="/daily/2026-09-23"><time datetime="2026-09-23">Wed Sep 23, 2026</time> &middot; Grains give back the China pop ahead of Xi summit</a></li>
+<li><a href="/daily/2026-09-22"><time datetime="2026-09-22">Tue Sep 22, 2026</time> &middot; Corn rallies on China hopes; cattle jump 2.4%</a></li>
+<li><a href="/daily/2026-09-21"><time datetime="2026-09-21">Mon Sep 21, 2026</time> &middot; Beans flat, diesel at $6.50, crude breaks on Iran thaw</a></li>
+<li><a href="/daily/2026-09-20"><time datetime="2026-09-20">Sun Sep 20, 2026</time> &middot; Beans sank Friday; summit week opens with crossed signals</a></li>
+<li><a href="/daily/2026-09-19"><time datetime="2026-09-19">Sat Sep 19, 2026</time> &middot; Crude retreats; Trump-Xi summit hangs over beans</a></li>
+<li><a href="/daily/2026-09-18"><time datetime="2026-09-18">Fri Sep 18, 2026</time> &middot; Crude breaks 5.6%; beans wait for Xi</a></li>
+<li><a href="/daily/2026-09-17"><time datetime="2026-09-17">Thu Sep 17, 2026</time> &middot; Farm bill moves; export sales print at 7:30</a></li>
+<li><a href="/daily/2026-09-16"><time datetime="2026-09-16">Wed Sep 16, 2026</time> &middot; Beans lead; Saudi pipeline crisis keeps crude bid</a></li>
+<li><a href="/daily/2026-09-15"><time datetime="2026-09-15">Tue Sep 15, 2026</time> &middot; Hogs break hard; cattle hold; CHS drops $700M on crush</a></li>
+<li><a href="/daily/2026-09-14"><time datetime="2026-09-14">Mon Sep 14, 2026</time> &middot; Crude back at $102; beans crack, corn firms</a></li>
+<li><a href="/daily/2026-09-13"><time datetime="2026-09-13">Sun Sep 13, 2026</time> &middot; Beans hold $12.99; crude at $100, week ahead</a></li>
+<li><a href="/daily/2026-09-12"><time datetime="2026-09-12">Sat Sep 12, 2026</time> &middot; September WASDE prints; beans give back 24 cents</a></li>
+<li><a href="/daily/2026-09-11"><time datetime="2026-09-11">Fri Sep 11, 2026</time> &middot; WASDE at 11 CT; crude drops 4%, beans firm</a></li>
+<li><a href="/daily/2026-09-10"><time datetime="2026-09-10">Thu Sep 10, 2026</time> &middot; Wheat breaks 2%; export sales at 7:30</a></li>
+<li><a href="/daily/2026-09-09"><time datetime="2026-09-09">Wed Sep 9, 2026</time> &middot; Brent hits $100; grains and cattle follow</a></li>
+<li><a href="/daily/2026-09-08"><time datetime="2026-09-08">Tue Sep 8, 2026</time> &middot; Wheat drops again; crude nears $100</a></li>
+<li><a href="/daily/2026-09-07"><time datetime="2026-09-07">Mon Sep 7, 2026</time> &middot; Markets dark; U.S. strikes Iranian tankers Tuesday looms</a></li>
+<li><a href="/daily/2026-09-06"><time datetime="2026-09-06">Sun Sep 6, 2026</time> &middot; Wheat breaks 3.4%; September WASDE countdown begins</a></li>
+<li><a href="/daily/2026-09-05"><time datetime="2026-09-05">Sat Sep 5, 2026</time> &middot; Wheat drops 3.4%; diesel tightens into harvest</a></li>
+<li><a href="/daily/2026-09-04"><time datetime="2026-09-04">Fri Sep 4, 2026</time> &middot; Wheat breaks 3.4%; September WASDE setup begins</a></li>
+<li><a href="/daily/2026-09-03"><time datetime="2026-09-03">Thu Sep 3, 2026</time> &middot; Grains break hard; export sales arrive at 7:30</a></li>
+<li><a href="/daily/2026-09-02"><time datetime="2026-09-02">Wed Sep 2, 2026</time> &middot; Cattle break on beef imports; beans firm</a></li>
+<li><a href="/daily/2026-09-01"><time datetime="2026-09-01">Tue Sep 1, 2026</time> &middot; Wheat firms; EPA biofuel exemptions hit the board</a></li>
+</ul>
+<h2 class="arc-static-month">August 2026</h2>
+<ul class="arc-static-list">
+<li><a href="/daily/2026-08-31"><time datetime="2026-08-31">Mon Aug 31, 2026</time> &middot; Corn fades, crude runs; crop progress at 3 PM</a></li>
+<li><a href="/daily/2026-08-30"><time datetime="2026-08-30">Sun Aug 30, 2026</time> &middot; Wheat holds the high ground; September sets up</a></li>
+<li><a href="/daily/2026-08-29"><time datetime="2026-08-29">Sat Aug 29, 2026</time> &middot; Wheat leads the week; corn priced for harvest</a></li>
+<li><a href="/daily/2026-08-28"><time datetime="2026-08-28">Fri Aug 28, 2026</time> &middot; Wheat runs, beans hold; heatwave bids the complex</a></li>
+<li><a href="/daily/2026-08-27"><time datetime="2026-08-27">Thu Aug 27, 2026</time> &middot; Export sales at 7:30; soyoil runs, corn eases</a></li>
+<li><a href="/daily/2026-08-26"><time datetime="2026-08-26">Wed Aug 26, 2026</time> &middot; Crop ratings dip; grains firm, cattle slide</a></li>
+<li><a href="/daily/2026-08-25"><time datetime="2026-08-25">Tue Aug 25, 2026</time> &middot; Crude breaks; corn and beans hold their ground</a></li>
+<li><a href="/daily/2026-08-24"><time datetime="2026-08-24">Mon Aug 24, 2026</time> &middot; Corn holds 52-week high; crop progress at 3 PM</a></li>
+<li><a href="/daily/2026-08-23"><time datetime="2026-08-23">Sun Aug 23, 2026</time> &middot; Corn at 52-week high; beef import shock week ahead</a></li>
+<li><a href="/daily/2026-08-22"><time datetime="2026-08-22">Sat Aug 22, 2026</time> &middot; Pro Farmer says smaller; corn closes at 52-week high</a></li>
+<li><a href="/daily/2026-08-21"><time datetime="2026-08-21">Fri Aug 21, 2026</time> &middot; Pro Farmer wraps; Trump beef deal hits cattle</a></li>
+<li><a href="/daily/2026-08-20"><time datetime="2026-08-20">Thu Aug 20, 2026</time> &middot; Export sales at 7:30; beans hold, crude runs</a></li>
+<li><a href="/daily/2026-08-19"><time datetime="2026-08-19">Wed Aug 19, 2026</time> &middot; Tour day 3: beans firm, corn flat, Hormuz tightens</a></li>
+<li><a href="/daily/2026-08-18"><time datetime="2026-08-18">Tue Aug 18, 2026</time> &middot; Hormuz flares again; tour scouts find good crops</a></li>
+<li><a href="/daily/2026-08-17"><time datetime="2026-08-17">Mon Aug 17, 2026</time> &middot; Tour week opens: scouts in fields, prices quiet</a></li>
+<li><a href="/daily/2026-08-16"><time datetime="2026-08-16">Sun Aug 16, 2026</time> &middot; Tour week arrives: corn, wheat led Friday higher</a></li>
+<li><a href="/daily/2026-08-15"><time datetime="2026-08-15">Sat Aug 15, 2026</time> &middot; Pro Farmer tour starts Monday: grains finish strong</a></li>
+<li><a href="/daily/2026-08-14"><time datetime="2026-08-14">Fri Aug 14, 2026</time> &middot; Corn and wheat run; meal leads the complex</a></li>
+<li><a href="/daily/2026-08-13"><time datetime="2026-08-13">Thu Aug 13, 2026</time> &middot; Meal runs 6%; export sales at 7:30 CT</a></li>
+<li><a href="/daily/2026-08-12"><time datetime="2026-08-12">Wed Aug 12, 2026</time> &middot; WASDE prints at 11 CT: wheat leads, beans react</a></li>
+<li><a href="/daily/2026-08-11"><time datetime="2026-08-11">Tue Aug 11, 2026</time> &middot; WASDE eve: corn flat, beans split</a></li>
+<li><a href="/daily/2026-08-10"><time datetime="2026-08-10">Mon Aug 10, 2026</time> &middot; WASDE tomorrow; grains soft, crude runs</a></li>
+<li><a href="/daily/2026-08-09"><time datetime="2026-08-09">Sun Aug 9, 2026</time> &middot; WASDE week arrives; wheat leads, corn soft</a></li>
+<li><a href="/daily/2026-08-08"><time datetime="2026-08-08">Sat Aug 8, 2026</time> &middot; Lean hogs run 17%; corn, beans end week soft</a></li>
+<li><a href="/daily/2026-08-07"><time datetime="2026-08-07">Fri Aug 7, 2026</time> &middot; Farm bill stalls; grains end week soft</a></li>
+<li><a href="/daily/2026-08-06"><time datetime="2026-08-06">Thu Aug 6, 2026</time> &middot; Export sales day; beans bounce, cattle firm</a></li>
+<li><a href="/daily/2026-08-05"><time datetime="2026-08-05">Wed Aug 5, 2026</time> &middot; Crop tour bears down; wheat leads grains higher</a></li>
+<li><a href="/daily/2026-08-04"><time datetime="2026-08-04">Tue Aug 4, 2026</time> &middot; Crude drops 4%; grains soften on good crop news</a></li>
+<li><a href="/daily/2026-08-03"><time datetime="2026-08-03">Mon Aug 3, 2026</time> &middot; Crop tour week opens quiet; wheat firms</a></li>
+<li><a href="/daily/2026-08-02"><time datetime="2026-08-02">Sun Aug 2, 2026</time> &middot; Corn down 6%; week ahead resets the story</a></li>
+<li><a href="/daily/2026-08-01"><time datetime="2026-08-01">Sat Aug 1, 2026</time> &middot; Corn drops 6%; hogs run 18.7% to close July</a></li>
+</ul>
+<h2 class="arc-static-month">July 2026</h2>
+<ul class="arc-static-list">
+<li><a href="/daily/2026-07-31"><time datetime="2026-07-31">Fri Jul 31, 2026</time> &middot; Wheat breaks 3%; milk runs hard to close week</a></li>
+<li><a href="/daily/2026-07-30"><time datetime="2026-07-30">Thu Jul 30, 2026</time> &middot; Wheat leads grains; hogs fall hard on export day</a></li>
+<li><a href="/daily/2026-07-29"><time datetime="2026-07-29">Wed Jul 29, 2026</time> &middot; Cattle flip; grains ease as heat exits belt</a></li>
+<li><a href="/daily/2026-07-28"><time datetime="2026-07-28">Tue Jul 28, 2026</time> &middot; Feeders fall 3%; wheat leads grains lower</a></li>
+<li><a href="/daily/2026-07-27"><time datetime="2026-07-27">Mon Jul 27, 2026</time> &middot; Beans fall $12.20 as crop progress looms</a></li>
+<li><a href="/daily/2026-07-26"><time datetime="2026-07-26">Sun Jul 26, 2026</time> &middot; Corn drops 5%, beans at 52-week high: week ahead</a></li>
+<li><a href="/daily/2026-07-25"><time datetime="2026-07-25">Sat Jul 25, 2026</time> &middot; Corn drops 5%; beans hit 52-week high</a></li>
+<li><a href="/daily/2026-07-24"><time datetime="2026-07-24">Fri Jul 24, 2026</time> &middot; Wheat drops 3%; cattle bounce into COF</a></li>
+<li><a href="/daily/2026-07-23"><time datetime="2026-07-23">Thu Jul 23, 2026</time> &middot; Feeders break hard; crude holds $90</a></li>
+<li><a href="/daily/2026-07-22"><time datetime="2026-07-22">Wed Jul 22, 2026</time> &middot; Crude runs 3.3%; grains mark time</a></li>
+<li><a href="/daily/2026-07-21"><time datetime="2026-07-21">Tue Jul 21, 2026</time> &middot; Hormuz escalates again; feeders run hard</a></li>
+<li><a href="/daily/2026-07-20"><time datetime="2026-07-20">Mon Jul 20, 2026</time> &middot; Hogs run 16.9%; corn breaks hard; Hormuz escalates</a></li>
+<li><a href="/daily/2026-07-19"><time datetime="2026-07-19">Sun Jul 19, 2026</time> &middot; Beans and wheat close loud; corn splits in two</a></li>
+<li><a href="/daily/2026-07-18"><time datetime="2026-07-18">Sat Jul 18, 2026</time> &middot; Grains and hogs end the week loud</a></li>
+<li><a href="/daily/2026-07-17"><time datetime="2026-07-17">Fri Jul 17, 2026</time> &middot; Grains win the week; cattle take a hit</a></li>
+<li><a href="/daily/2026-07-16"><time datetime="2026-07-16">Thu Jul 16, 2026</time> &middot; Hormuz re-escalates; wheat leads, hogs bounce</a></li>
+<li><a href="/daily/2026-07-15"><time datetime="2026-07-15">Wed Jul 15, 2026</time> &middot; Hogs fall hard, wheat runs, crude holds $80</a></li>
+<li><a href="/daily/2026-07-14"><time datetime="2026-07-14">Tue Jul 14, 2026</time> &middot; Crude runs 6%, corn splits widen, beans firm</a></li>
+<li><a href="/daily/2026-07-13"><time datetime="2026-07-13">Mon Jul 13, 2026</time> &middot; Hogs run 11%, Hormuz flares again, crop progress due</a></li>
+<li><a href="/daily/2026-07-12"><time datetime="2026-07-12">Sun Jul 12, 2026</time> &middot; Week ahead: pollination weather, WASDE aftermath set stage</a></li>
+<li><a href="/daily/2026-07-11"><time datetime="2026-07-11">Sat Jul 11, 2026</time> &middot; Wheat runs, hogs reverse: week ends hot</a></li>
+<li><a href="/daily/2026-07-10"><time datetime="2026-07-10">Fri Jul 10, 2026</time> &middot; WASDE day: wheat runs 3%, hogs reverse hard</a></li>
+<li><a href="/daily/2026-07-09"><time datetime="2026-07-09">Thu Jul 9, 2026</time> &middot; Hogs fall hard; export sales decide beans</a></li>
+<li><a href="/daily/2026-07-08"><time datetime="2026-07-08">Wed Jul 8, 2026</time> &middot; Crude runs 3% as Hormuz reignites</a></li>
+<li><a href="/daily/2026-07-07"><time datetime="2026-07-07">Tue Jul 7, 2026</time> &middot; Beans lead the complex back north</a></li>
+<li><a href="/daily/2026-07-06"><time datetime="2026-07-06">Mon Jul 6, 2026</time> &middot; Corn breaks 4% again; oats breakdown 15%</a></li>
+<li><a href="/daily/2026-07-05"><time datetime="2026-07-05">Sun Jul 5, 2026</time> &middot; Corn polls into July 4 weekend at $4.25</a></li>
+<li><a href="/daily/2026-07-04"><time datetime="2026-07-04">Sat Jul 4, 2026</time> &middot; Corn breaks 4%; week ends on defensive note</a></li>
+<li><a href="/daily/2026-07-03"><time datetime="2026-07-03">Fri Jul 3, 2026</time> &middot; Corn breaks 4% on holiday eve; oats hit -15%</a></li>
+<li><a href="/daily/2026-07-02"><time datetime="2026-07-02">Thu Jul 2, 2026</time> &middot; Heat owns the belt; export sales arrive at 7:30</a></li>
+<li><a href="/daily/2026-07-01"><time datetime="2026-07-01">Wed Jul 1, 2026</time> &middot; Acreage verdict: corn holds, beans slip</a></li>
+</ul>
+<h2 class="arc-static-month">June 2026</h2>
+<ul class="arc-static-list">
+<li><a href="/daily/2026-06-30"><time datetime="2026-06-30">Tue Jun 30, 2026</time> &middot; Acreage data lands; corn holds $4.04</a></li>
+<li><a href="/daily/2026-06-29"><time datetime="2026-06-29">Mon Jun 29, 2026</time> &middot; Acreage report day: grains break, soyoil runs</a></li>
+<li><a href="/daily/2026-06-28"><time datetime="2026-06-28">Sun Jun 28, 2026</time> &middot; Acreage report Tuesday; corn breaks hard into it</a></li>
+<li><a href="/daily/2026-06-27"><time datetime="2026-06-27">Sat Jun 27, 2026</time> &middot; Corn and wheat close weak; soyoil runs hard</a></li>
+<li><a href="/daily/2026-06-26"><time datetime="2026-06-26">Fri Jun 26, 2026</time> &middot; Acreage report Tuesday; oats hit hard again</a></li>
+<li><a href="/daily/2026-06-25"><time datetime="2026-06-25">Thu Jun 25, 2026</time> &middot; Export sales report due; corn stabilizes after 6% break</a></li>
+<li><a href="/daily/2026-06-24"><time datetime="2026-06-24">Wed Jun 24, 2026</time> &middot; Corn nearby breaks 6%; old-crop carry inverts</a></li>
+<li><a href="/daily/2026-06-23"><time datetime="2026-06-23">Tue Jun 23, 2026</time> &middot; Wheat leads lower; farm bill draft drops</a></li>
+<li><a href="/daily/2026-06-22"><time datetime="2026-06-22">Mon Jun 22, 2026</time> &middot; Corn falls 7%; crop progress due at 3 PM</a></li>
+<li><a href="/daily/2026-06-21"><time datetime="2026-06-21">Sun Jun 21, 2026</time> &middot; Beans and wheat broke Friday; cattle held</a></li>
+<li><a href="/daily/2026-06-20"><time datetime="2026-06-20">Sat Jun 20, 2026</time> &middot; Grains break, cattle holds, week reset ahead</a></li>
+<li><a href="/daily/2026-06-19"><time datetime="2026-06-19">Fri Jun 19, 2026</time> &middot; Cattle on Feed delivers; grains break into holiday</a></li>
+<li><a href="/daily/2026-06-18"><time datetime="2026-06-18">Thu Jun 18, 2026</time> &middot; Soybean oil breaks hard, export sales due 7:30</a></li>
+<li><a href="/daily/2026-06-17"><time datetime="2026-06-17">Wed Jun 17, 2026</time> &middot; Cattle runs hard, wheat holds, corn firms</a></li>
+<li><a href="/daily/2026-06-16"><time datetime="2026-06-16">Tue Jun 16, 2026</time> &middot; Wheat runs 4%, crude drops hard on Iran deal</a></li>
+<li><a href="/daily/2026-06-15"><time datetime="2026-06-15">Mon Jun 15, 2026</time> &middot; Soybeans lead higher, cattle slips on screwworm restrictions</a></li>
+<li><a href="/daily/2026-06-14"><time datetime="2026-06-14">Sun Jun 14, 2026</time> &middot; Cattle holds gains, corn steadies ahead of key week</a></li>
+<li><a href="/daily/2026-06-13"><time datetime="2026-06-13">Sat Jun 13, 2026</time> &middot; Cattle bounces back, grains find footing after week of slides</a></li>
+<li><a href="/daily/2026-06-12"><time datetime="2026-06-12">Fri Jun 12, 2026</time> &middot; Grains find bottom, livestock slips on USDA supply view</a></li>
+<li><a href="/daily/2026-06-11"><time datetime="2026-06-11">Thu Jun 11, 2026</time> &middot; Grains slip ahead of WASDE, cattle hold gains</a></li>
+<li><a href="/daily/2026-06-10"><time datetime="2026-06-10">Wed Jun 10, 2026</time> &middot; Cattle bounce sharp, milk leads complex higher</a></li>
+<li><a href="/daily/2026-06-09"><time datetime="2026-06-09">Tue Jun 9, 2026</time> &middot; Grains tick higher, livestock falls on screwworm fears</a></li>
+<li><a href="/daily/2026-06-08"><time datetime="2026-06-08">Mon Jun 8, 2026</time> &middot; Wheat leads grains higher, milk falls sharply</a></li>
+<li><a href="/daily/2026-06-07"><time datetime="2026-06-07">Sun Jun 7, 2026</time> &middot; Beans break $11 support, hogs fall sharply</a></li>
+<li><a href="/daily/2026-06-06"><time datetime="2026-06-06">Sat Jun 6, 2026</time> &middot; Hogs fall 7.2%, cattle holds gains</a></li>
+<li><a href="/daily/2026-06-05"><time datetime="2026-06-05">Fri Jun 5, 2026</time> &middot; Grains finish four-day slide, metals fall sharply</a></li>
+<li><a href="/daily/2026-06-04"><time datetime="2026-06-04">Thu Jun 4, 2026</time> &middot; Cattle complex flips higher, grains extend slide</a></li>
+<li><a href="/daily/2026-06-03"><time datetime="2026-06-03">Wed Jun 3, 2026</time> &middot; Grains drift lower, milk gains overnight</a></li>
+<li><a href="/daily/2026-06-02"><time datetime="2026-06-02">Tue Jun 2, 2026</time> &middot; Grains grind lower, crude holds Iran gains</a></li>
+<li><a href="/daily/2026-06-01"><time datetime="2026-06-01">Mon Jun 1, 2026</time> &middot; Crude explodes 5% on Iran closure threat</a></li>
+</ul>
+<h2 class="arc-static-month">May 2026</h2>
+<ul class="arc-static-list">
+<li><a href="/daily/2026-05-31"><time datetime="2026-05-31">Sun May 31, 2026</time> &middot; Funds liquidate into June, cattle diverge</a></li>
+<li><a href="/daily/2026-05-30"><time datetime="2026-05-30">Sat May 30, 2026</time> &middot; Grains close worst week in month</a></li>
+<li><a href="/daily/2026-05-29"><time datetime="2026-05-29">Fri May 29, 2026</time> &middot; Grains shed week's gains, milk crashes 3%</a></li>
+<li><a href="/daily/2026-05-28"><time datetime="2026-05-28">Thu May 28, 2026</time> &middot; Milk spikes 2.2%, crude crashes overnight</a></li>
+<li><a href="/daily/2026-05-27"><time datetime="2026-05-27">Wed May 27, 2026</time> &middot; Cattle rally together, silver slides 2.6%</a></li>
+<li><a href="/daily/2026-05-26"><time datetime="2026-05-26">Tue May 26, 2026</time> &middot; Cattle climb together, oil crashes 3.6%</a></li>
+<li><a href="/daily/2026-05-25"><time datetime="2026-05-25">Mon May 25, 2026</time> &middot; Cattle reverse Friday's crash, hogs dive 4%</a></li>
+<li><a href="/daily/2026-05-24"><time datetime="2026-05-24">Sun May 24, 2026</time> &middot; Cattle split widens, grains hold gains into holiday</a></li>
+<li><a href="/daily/2026-05-23"><time datetime="2026-05-23">Sat May 23, 2026</time> &middot; Cattle surge 3.8%, grains steady into holiday</a></li>
+<li><a href="/daily/2026-05-22"><time datetime="2026-05-22">Fri May 22, 2026</time> &middot; Cattle crash 2%, grains inch higher</a></li>
+<li><a href="/daily/2026-05-21"><time datetime="2026-05-21">Thu May 21, 2026</time> &middot; Corn gains, feeders drop on Cargill lockout</a></li>
+<li><a href="/daily/2026-05-20"><time datetime="2026-05-20">Wed May 20, 2026</time> &middot; Wheat rallies 87 cents, feeders spike 1.4%</a></li>
+<li><a href="/daily/2026-05-19"><time datetime="2026-05-19">Tue May 19, 2026</time> &middot; Grains flat as China promise fades</a></li>
+<li><a href="/daily/2026-05-18"><time datetime="2026-05-18">Mon May 18, 2026</time> &middot; Corn jumps to $4.72 as China commits $17 billion</a></li>
+<li><a href="/daily/2026-05-17"><time datetime="2026-05-17">Sun May 17, 2026</time> &middot; Corn sits at $4.56 after Friday's fund exodus</a></li>
+<li><a href="/daily/2026-05-16"><time datetime="2026-05-16">Sat May 16, 2026</time> &middot; Corn craters to $4.56 as funds flee</a></li>
+<li><a href="/daily/2026-05-15"><time datetime="2026-05-15">Fri May 15, 2026</time> &middot; Corn breaks below $4.65 as planting hits target</a></li>
+<li><a href="/daily/2026-05-14"><time datetime="2026-05-14">Thu May 14, 2026</time> &middot; Hogs surge three percent as grains fade</a></li>
+<li><a href="/daily/2026-05-13"><time datetime="2026-05-13">Wed May 13, 2026</time> &middot; Cattle crater while grains mark time</a></li>
+<li><a href="/daily/2026-05-12"><time datetime="2026-05-12">Tue May 12, 2026</time> &middot; Hogs explode six percent as cattle crater</a></li>
+<li><a href="/daily/2026-05-11"><time datetime="2026-05-11">Mon May 11, 2026</time> &middot; Silver explodes six percent as grains drift</a></li>
+<li><a href="/daily/2026-05-10"><time datetime="2026-05-10">Sun May 10, 2026</time> &middot; Grains rally sets up planting week showdown</a></li>
+<li><a href="/daily/2026-05-09"><time datetime="2026-05-09">Sat May 9, 2026</time> &middot; Hogs crash nine percent as feeders flip script</a></li>
+<li><a href="/daily/2026-05-08"><time datetime="2026-05-08">Fri May 8, 2026</time> &middot; Cattle crash through $250 floor on feeder breakdown</a></li>
+<li><a href="/daily/2026-05-07"><time datetime="2026-05-07">Thu May 7, 2026</time> &middot; Cattle hold $253 as oil crash eases input costs</a></li>
+<li><a href="/daily/2026-05-06"><time datetime="2026-05-06">Wed May 6, 2026</time> &middot; Cattle surge past $252 as crude crashes</a></li>
+<li><a href="/daily/2026-05-05"><time datetime="2026-05-05">Tue May 5, 2026</time> &middot; Cattle hold $251 as markets mark time</a></li>
+<li><a href="/daily/2026-05-04"><time datetime="2026-05-04">Mon May 4, 2026</time> &middot; Cattle break $252 as oil surges 3%</a></li>
+<li><a href="/daily/2026-05-03"><time datetime="2026-05-03">Sun May 3, 2026</time> &middot; Week ahead: cattle test $250 floor</a></li>
+<li><a href="/daily/2026-05-02"><time datetime="2026-05-02">Sat May 2, 2026</time> &middot; Hogs crash 9% as cattle breakout stalls</a></li>
+<li><a href="/daily/2026-05-01"><time datetime="2026-05-01">Fri May 1, 2026</time> &middot; Cattle fade as grains mark time</a></li>
+</ul>
+<h2 class="arc-static-month">April 2026</h2>
+<ul class="arc-static-list">
+<li><a href="/daily/2026-04-30"><time datetime="2026-04-30">Thu Apr 30, 2026</time> &middot; Crude crashes as cattle hold gains</a></li>
+<li><a href="/daily/2026-04-29"><time datetime="2026-04-29">Wed Apr 29, 2026</time> &middot; Cattle hit 52-week high as crude explodes</a></li>
+<li><a href="/daily/2026-04-28"><time datetime="2026-04-28">Tue Apr 28, 2026</time> &middot; Cattle break through as crude surges</a></li>
+<li><a href="/daily/2026-04-27"><time datetime="2026-04-27">Mon Apr 27, 2026</time> &middot; Grains flatline as planting window tightens</a></li>
+<li><a href="/daily/2026-04-26"><time datetime="2026-04-26">Sun Apr 26, 2026</time> &middot; Mixed signals ahead of critical planting week</a></li>
+<li><a href="/daily/2026-04-25"><time datetime="2026-04-25">Sat Apr 25, 2026</time> &middot; Planting pressure builds as grains slide</a></li>
+<li><a href="/daily/2026-04-24"><time datetime="2026-04-24">Fri Apr 24, 2026</time> &middot; Milk crashes 6% as grains inch higher</a></li>
+<li><a href="/daily/2026-04-23"><time datetime="2026-04-23">Thu Apr 23, 2026</time> &middot; Natural gas spikes as grains hold steady</a></li>
+<li><a href="/daily/2026-04-22"><time datetime="2026-04-22">Wed Apr 22, 2026</time> &middot; Grains drift as planting pressure mounts</a></li>
+<li><a href="/daily/2026-04-21"><time datetime="2026-04-21">Tue Apr 21, 2026</time> &middot; Corn holds gains as beans edge higher</a></li>
+<li><a href="/daily/2026-04-20"><time datetime="2026-04-20">Mon Apr 20, 2026</time> &middot; Corn jumps on planting concerns</a></li>
+<li><a href="/daily/2026-04-19"><time datetime="2026-04-19">Sun Apr 19, 2026</time> &middot; Mixed week sets stage for weather watch</a></li>
+<li><a href="/daily/2026-04-18"><time datetime="2026-04-18">Sat Apr 18, 2026</time> &middot; Grains cap choppy week as planting accelerates</a></li>
+<li><a href="/daily/2026-04-17"><time datetime="2026-04-17">Fri Apr 17, 2026</time> &middot; Grains drift lower as planting picks up</a></li>
+<li><a href="/daily/2026-04-16"><time datetime="2026-04-16">Thu Apr 16, 2026</time> &middot; Milk crashes 5% as grains stay steady</a></li>
+<li><a href="/daily/2026-04-15"><time datetime="2026-04-15">Wed Apr 15, 2026</time> &middot; Grains inch higher as planting begins</a></li>
+<li><a href="/daily/2026-04-14"><time datetime="2026-04-14">Tue Apr 14, 2026</time> &middot; Grains drift as planting window opens</a></li>
+<li><a href="/daily/2026-04-13"><time datetime="2026-04-13">Mon Apr 13, 2026</time> &middot; Corn holds steady as planting pressure builds</a></li>
+<li><a href="/daily/2026-04-12"><time datetime="2026-04-12">Sun Apr 12, 2026</time> &middot; Weather focus as planting week begins</a></li>
+<li><a href="/daily/2026-04-11"><time datetime="2026-04-11">Sat Apr 11, 2026</time> &middot; Grains mixed as planting pressure builds</a></li>
+<li><a href="/daily/2026-04-10"><time datetime="2026-04-10">Fri Apr 10, 2026</time> &middot; Grains steady as planting window opens</a></li>
+<li><a href="/daily/2026-04-09"><time datetime="2026-04-09">Thu Apr 9, 2026</time> &middot; Stocks surge as grains inch higher</a></li>
+<li><a href="/daily/2026-04-08"><time datetime="2026-04-08">Wed Apr 8, 2026</time> &middot; Crude oil drops 3% as grains drift</a></li>
+<li><a href="/daily/2026-04-07"><time datetime="2026-04-07">Tue Apr 7, 2026</time> &middot; Lean hogs surge 3% on tight supplies</a></li>
+<li><a href="/daily/2026-04-06"><time datetime="2026-04-06">Mon Apr 6, 2026</time> &middot; Grains gain ground as planting window opens</a></li>
+<li><a href="/daily/2026-04-05"><time datetime="2026-04-05">Sun Apr 5, 2026</time> &middot; Energy rally pauses — grains ready for Monday test</a></li>
+<li><a href="/daily/2026-04-03"><time datetime="2026-04-03">Fri Apr 3, 2026</time> &middot; Crude explodes 7% — grains slip on profit-taking</a></li>
+<li><a href="/daily/2026-04-02"><time datetime="2026-04-02">Thu Apr 2, 2026</time> &middot; Hogs explode 22% as wheat drops 22¢</a></li>
+<li><a href="/daily/2026-04-01"><time datetime="2026-04-01">Wed Apr 1, 2026</time> &middot; Cattle surge 4.2% ignites broad rally</a></li>
+</ul>
+<h2 class="arc-static-month">March 2026</h2>
+<ul class="arc-static-list">
+<li><a href="/daily/2026-03-31"><time datetime="2026-03-31">Tue Mar 31, 2026</time> &middot; Corn slides 8¢ as crude jumps 3%</a></li>
+<li><a href="/daily/2026-03-30"><time datetime="2026-03-30">Mon Mar 30, 2026</time> &middot; Crude explodes above $101, grains slide</a></li>
+<li><a href="/daily/2026-03-27"><time datetime="2026-03-27">Fri Mar 27, 2026</time> &middot; Quiet Friday keeps grains steady</a></li>
+<li><a href="/daily/2026-03-26"><time datetime="2026-03-26">Thu Mar 26, 2026</time> &middot; Grains rally ahead of planting report</a></li>
+<li><a href="/daily/2026-03-25"><time datetime="2026-03-25">Wed Mar 25, 2026</time> &middot; Metals explode while grains drift sideways</a></li>
+<li><a href="/daily/2026-03-24"><time datetime="2026-03-24">Tue Mar 24, 2026</time> &middot; Crude oil craters 10% — grain complex follows</a></li>
+<li><a href="/daily/2026-03-23"><time datetime="2026-03-23">Mon Mar 23, 2026</time> &middot; Gold crashes hardest in years</a></li>
+<li><a href="/daily/2026-03-20"><time datetime="2026-03-20">Fri Mar 20, 2026</time> &middot; Meal rockets 2.3% on Chinese crush demand</a></li>
+<li><a href="/daily/2026-03-19"><time datetime="2026-03-19">Thu Mar 19, 2026</time> &middot; Energy shock lifts grains as natgas rockets 8.4%</a></li>
+<li><a href="/daily/2026-03-18"><time datetime="2026-03-18">Wed Mar 18, 2026</time> &middot; Hogs explode 25% on supply shock</a></li>
+<li><a href="/daily/2026-03-17"><time datetime="2026-03-17">Tue Mar 17, 2026</time> &middot; Livestock explodes as grain complex craters</a></li>
+<li><a href="/daily/2026-03-16"><time datetime="2026-03-16">Mon Mar 16, 2026</time> &middot; Crude spikes 4%, milk explodes 7% overnight</a></li>
+<li><a href="/daily/2026-03-13"><time datetime="2026-03-13">Fri Mar 13, 2026</time> &middot; Oats rally 4½¢ while stocks crater</a></li>
+<li><a href="/daily/2026-03-12"><time datetime="2026-03-12">Thu Mar 12, 2026</time> &middot; Crude oil rockets 11% higher overnight</a></li>
+<li><a href="/daily/2026-03-11"><time datetime="2026-03-11">Wed Mar 11, 2026</time> &middot; Hogs spike 11% on pork export surge</a></li>
+<li><a href="/daily/2026-03-10"><time datetime="2026-03-10">Tue Mar 10, 2026</time> &middot; Crude oil crashes 24% — grains follow deeper</a></li>
+<li><a href="/daily/2026-03-09"><time datetime="2026-03-09">Mon Mar 9, 2026</time> &middot; Crude explodes 14%, wheat surges 5.6%</a></li>
+<li><a href="/daily/2026-03-06"><time datetime="2026-03-06">Fri Mar 6, 2026</time> &middot; Corn rallies 9¢ on planting uncertainty</a></li>
+<li><a href="/daily/2026-03-05"><time datetime="2026-03-05">Thu Mar 5, 2026</time> &middot; Cattle surge overnight, grains drift lower</a></li>
+<li><a href="/daily/2026-03-04"><time datetime="2026-03-04">Wed Mar 4, 2026</time> &middot; Crude rallies 3% as grains drift sideways</a></li>
+</ul>
+<!--/SEED:archivelist-->
+  </section>
+
 </main>
-<div id="site-footer"></div>
+<div id="site-footer">
+<!-- static-nav:footer (scripts/inject_static_nav.py; source components/footer-fallback.html) -->
+  <!-- Static crawlable nav: loader.js replaceWith() swaps this for the live footer on JS;
+       non-JS crawlers (Bing, AI) read these links; also a working fallback if the fetch fails.
+       Copied into every root page by scripts/inject_static_nav.py -- edit HERE, then re-run it. -->
+  <nav aria-label="AGSIST site links" style="max-width:1100px;margin:0 auto;padding:1.4rem 1rem;font-family:'JetBrains Mono',monospace;font-size:0.78rem;line-height:2.1;color:var(--text-muted);text-align:center;border-top:1px solid var(--border)">
+    <a href="/corn-futures-prices" style="color:var(--text-muted);text-decoration:none">Corn Futures</a> &middot; <a href="/soybean-futures-prices" style="color:var(--text-muted);text-decoration:none">Soybean Futures</a> &middot; <a href="/wheat-futures-prices" style="color:var(--text-muted);text-decoration:none">Wheat Futures</a> &middot; <a href="/cattle-futures-prices" style="color:var(--text-muted);text-decoration:none">Cattle Futures</a> &middot; <a href="/cash-bids" style="color:var(--text-muted);text-decoration:none">Cash Grain Bids</a> &middot; <a href="/basis" style="color:var(--text-muted);text-decoration:none">Basis vs Normal</a> &middot; <a href="/elevators" style="color:var(--text-muted);text-decoration:none">Elevator Coverage Map</a> &middot; <a href="/cot" style="color:var(--text-muted);text-decoration:none">COT Report</a> &middot; <a href="/ag-odds" style="color:var(--text-muted);text-decoration:none">Ag Prediction Markets</a> &middot; <a href="/markets" style="color:var(--text-muted);text-decoration:none">All Markets</a> &middot; <a href="/cash-rent" style="color:var(--text-muted);text-decoration:none">Cash Rent by County</a> &middot; <a href="/rent/" style="color:var(--text-muted);text-decoration:none">Cash Rent by State</a> &middot; <a href="/farmland-atlas" style="color:var(--text-muted);text-decoration:none">Farmland Atlas</a> &middot; <a href="/cash-lease" style="color:var(--text-muted);text-decoration:none">Cash Farm Lease</a> &middot; <a href="/foreign-land" style="color:var(--text-muted);text-decoration:none">Foreign-Owned Land</a> &middot; <a href="/land-tenure" style="color:var(--text-muted);text-decoration:none">Rented vs Owner-Farmed</a> &middot; <a href="/conditions" style="color:var(--text-muted);text-decoration:none">Crop Conditions Rank</a> &middot; <a href="/conditions-yield" style="color:var(--text-muted);text-decoration:none">Ratings vs Yield</a> &middot; <a href="/usda-quick-stats" style="color:var(--text-muted);text-decoration:none">USDA Crop Data</a> &middot; <a href="/usda-calendar" style="color:var(--text-muted);text-decoration:none">USDA Calendar</a> &middot; <a href="/fast-facts" style="color:var(--text-muted);text-decoration:none">Reference Tables</a> &middot; <a href="/tools" style="color:var(--text-muted);text-decoration:none">Farm Calculators &amp; Tools</a> &middot; <a href="/breakeven" style="color:var(--text-muted);text-decoration:none">Break-Even Calculator</a> &middot; <a href="/spray" style="color:var(--text-muted);text-decoration:none">Spray Advisory</a> &middot; <a href="/drought-monitor" style="color:var(--text-muted);text-decoration:none">Drought Monitor</a> &middot; <a href="/milk-prices" style="color:var(--text-muted);text-decoration:none">Milk Prices</a> &middot; <a href="/tariffs" style="color:var(--text-muted);text-decoration:none">Tariffs</a> &middot; <a href="/news" style="color:var(--text-muted);text-decoration:none">The Wire</a> &middot; <a href="/daily" style="color:var(--text-muted);text-decoration:none">AGSIST Daily</a> &middot; <a href="/archive" style="color:var(--text-muted);text-decoration:none">Daily Archive</a> &middot; <a href="/data-sources" style="color:var(--text-muted);text-decoration:none">Data Sources</a> &middot; <a href="/about" style="color:var(--text-muted);text-decoration:none">About</a> &middot; <a href="/contact" style="color:var(--text-muted);text-decoration:none">Contact</a> &middot; <a href="/sponsor" style="color:var(--text-muted);text-decoration:none">Sponsor</a> &middot; <a href="/accessibility" style="color:var(--text-muted);text-decoration:none">Accessibility</a> &middot; <a href="/privacy" style="color:var(--text-muted);text-decoration:none">Privacy</a> &middot; <a href="/terms" style="color:var(--text-muted);text-decoration:none">Terms</a>
+  </nav>
+<!-- /static-nav:footer -->
+</div>
 <script src="/components/loader.js?v=17" defer></script>
 <script>
 (function(){
@@ -309,12 +586,17 @@ fetch('/data/daily-archive/index.json', {cache:'no-store'})
     document.getElementById('arc-loading').style.display='none';
     var content = document.getElementById('arc-content');
     if(content){ content.classList.add('vis'); }
+    // The static list stays as the no-JS / failed-fetch fallback; the
+    // searchable cards below carry the same links once they have loaded.
+    var staticList = document.getElementById('arc-static');
+    if(staticList && allEntries.length){ staticList.classList.add('arc-hidden'); }
 
     buildMonthFilters();
     render();
   })
   .catch(function(){
     var loadEl = document.getElementById('arc-loading');
+    if(loadEl && document.querySelector('#arc-static a')){ loadEl.style.display='none'; return; }
     if(loadEl) loadEl.innerHTML = '<div class="arc-empty"><strong>Archive unavailable</strong>Check back later or <a href="/daily" style="color:var(--gold)">read today\'s briefing \u2192</a></div>';
   });
 

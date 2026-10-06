@@ -12,10 +12,11 @@ File anatomy (all years 2010-2024): row1 banner, row2 spanning group labels,
 row3 REAL headers, row4+ one row per holding (owner x parcel).
 
 Methodology, validated against the official reports:
-  - National total = plain sum of "Number of Acres" over all rows. The 2023
-    file sums to 45,850,252 ac vs the official report's ~45.8M — FSA counts
-    rows (a handful of multi-owner parcels double-count ~0.05%; 37 parcels
-    of 47,006 in 2023). We match the official method and say so on-page.
+  - National total = plain sum of "Number of Acres" over all rows. This does
+    NOT reproduce USDA's published headline: the 2024 file sums to 47,241,820
+    ac against the report's 46.3M (3.6% of privately held ag land). The page
+    leads with USDA's figure and says the maps and county/country figures use
+    the row-sum. (Corrected 2026-10-06; this note used to claim a match.)
   - Land types: per-row Crop/Pasture/Forest/Other Agriculture/Other Non-Ag
     acre columns (forest is a large share — the page must say "much of this
     is timberland", it's the honest headline nobody prints).
@@ -162,8 +163,8 @@ def main():
                          for f, n, s, a in top_counties],
         "counties_with_holdings": sum(1 for c in county.values() if c["y"].get(latest)),
         "no_fips_acres_by_year": {y: round(v) for y, v in sorted(no_fips.items())},
-        "method": ("Row-sum of Number of Acres, matching FSA's official totals "
-                   "(2023 check: 45,850,252 vs report ~45.8M). AFIDA is "
+        "method": ("Row-sum of Number of Acres. It runs above USDA's published "
+                   "headline (2024: 47,241,820 vs 46.3M in the AFIDA report). AFIDA is "
                    "self-reported disclosure data; leaseholds of 10+ years are "
                    "included, and a large share of the acreage is forest."),
         "source": "USDA FSA AFIDA detailed holdings files, downloaded by hand",

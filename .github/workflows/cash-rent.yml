@@ -58,8 +58,11 @@ jobs:
           git add -A data/cash-rent 2>/dev/null || true
           if git diff --cached --quiet; then echo "no change"; exit 0; fi
           git commit -m "data: NASS county cash rent + trend yield"
-          git pull --rebase --autostash origin main || true
-          git push
+          # Rebase onto the branch this run started from (main on schedule; the
+          # branch when dispatched on one). "origin main" made a branch run rebase
+          # against main and then fail its push (2026-10-06).
+          git pull --rebase --autostash origin "${GITHUB_REF_NAME}" || true
+          git push origin "HEAD:${GITHUB_REF_NAME}"
 
       - name: IndexNow ping (Bing learns about new pages in seconds)
         if: steps.window.outputs.go == '1'

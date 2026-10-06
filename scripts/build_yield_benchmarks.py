@@ -101,7 +101,8 @@ def rows_for(crop, bench, nowcast):
             "value": round(float(c["nowcast"]), 1),
             "as_of": c.get("week_ending"), "source": "/" + NOWCAST_PATH,
             "method": "Crop ratings only. Band is the 80th percentile of "
-                      "leave-one-year-out backtest errors at this week.",
+                      "backtest errors at this week, each year scored "
+                      "using only earlier years.",
             "ours": True,
             "low": round(c["nowcast"] - c["band80"], 1) if c.get("band80") else None,
             "high": round(c["nowcast"] + c["band80"], 1) if c.get("band80") else None,

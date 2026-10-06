@@ -6,22 +6,22 @@
   "crops": {
     "corn": {
       "unit": "bu/acre",
-      "usda_current": 180.7,
-      "usda_current_label": "USDA, August WASDE",
-      "usda_current_as_of": "2026-08-12",
+      "usda_current": 178.5,
+      "usda_current_label": "USDA, September WASDE",
+      "usda_current_as_of": "2026-09-11",
       "final": null,
       "final_source": null
     },
     "soybeans": {
       "unit": "bu/acre",
-      "usda_current": 52.7,
-      "usda_current_label": "USDA, August WASDE",
-      "usda_current_as_of": "2026-08-12",
+      "usda_current": 52.8,
+      "usda_current_label": "USDA, September WASDE",
+      "usda_current_as_of": "2026-09-11",
       "final": null,
       "final_source": null
     }
   },
-  "usda_source": "https://www.usda.gov/oce/commodity/wasde/wasde0826.pdf",
+  "usda_source": "https://www.usda.gov/oce/commodity/wasde/wasde0926.pdf",
   "forecasts": [
     {
       "id": "dtn",
