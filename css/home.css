@@ -894,32 +894,18 @@ body{--hair:rgba(132,160,168,.12);--sp-md:12px;--sp-lg:16px;--sp-xl:24px;--sp-2x
   .m-fold{margin:0 0 8px}
 }
 
-/* Phone order. dash-grid stops being a box of its own so each card takes its
-   own place in the column: bids, the futures board, weather, then the rest. */
+/* Phone. dash-grid stops being a box of its own so each card takes its own
+   place in the column. 2026-10-06: the document is in the order the page
+   shows (hero, bids, conditions, the wire, markets, the month, the rest), so
+   no CSS order is needed and keyboard order matches the screen. */
 @media(max-width:900px){
   #dash-grid{display:contents!important}
-  .idx1-content>.home-h1{order:0}
-  .idx1-content>.idx1-zone-label{order:10!important}
-  #f1{order:20!important;margin-bottom:24px}
-  #f-prices{order:30}
-  #f2{order:40!important;margin-bottom:24px}
-  #f-rail-scorecard-teaser{order:50;margin-bottom:16px}
-  .m-fold--tools{order:55}
-  #signup-compact{order:56}
-  #wire-band{order:57}
-  #harvest-band{order:58}
-  .idx1-content>.m-fold--radar{order:60}
-  .idx1-content>.m-fold--noaa{order:100}
-  #pdw{order:110}
-  #f-read{order:120}
-  .idx1-content>.m-fold--kalshi{order:130}
-  .idx1-content>.m-fold--faq{order:150}
-  #signup-full{order:170}
+  #f1{margin-bottom:24px}
+  #f2{margin-bottom:24px}
+  #f-rail-scorecard-teaser{margin-bottom:16px}
   /* The bid-network note goes under the card on a phone, one line. */
   #f1{display:flex;flex-direction:column}
-  #f1>.sec-head{order:1}
-  #f1>.card{order:2}
-  #f1>.bidnet-note{order:3;margin:8px 0 0;padding:8px 0;border:0;border-top:1px solid var(--hair);border-radius:0;background:none;font-size:.706rem}
+  #f1>.bidnet-note{margin:8px 0 0;padding:8px 0;border:0;border-top:1px solid var(--hair);border-radius:0;background:none;font-size:.706rem}
   #f1>.bidnet-note .bidnet-txt{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   /* Three signup asks on one phone screen was two too many. The compact one
      shows only when a reader asks for it from the bids card. */
@@ -949,7 +935,6 @@ body{--hair:rgba(132,160,168,.12);--sp-md:12px;--sp-lg:16px;--sp-xl:24px;--sp-2x
 @media(max-width:900px){
   .m-fold--calc:not(:has(.idx1-extras-card[style*="block"])):not(:has(.idx1-extras-line[style*="block"])){display:none}
   .card-body:has(.idx1-extras-card[style*="block"]) .idx1-bids-hint{display:none}
-  .idx1-content>.m-fold--read{order:120}
   #signup-full .signup-icon,#signup-full .signup-sub{display:none}
   #signup-full{padding:16px 12px!important}
   #signup-full .signup-headline{font-size:1.294rem!important;margin-bottom:12px}
@@ -1040,9 +1025,6 @@ body{--hair:rgba(132,160,168,.12);--sp-md:12px;--sp-lg:16px;--sp-xl:24px;--sp-2x
   #dash-grid>#wire-band{grid-row:4}
   #dash-grid>.m-fold--tools{grid-row:5!important}
 }
-@media(max-width:900px){
-  #wire-band{order:45!important}
-}
 
 /* ===== block 7 of 23 ===== */
 /* ===== 2026-10-01 round 5: second panel ===== */
@@ -1066,8 +1048,7 @@ html.has-zip #bids-list-area:has(.bids-skeleton){min-height:820px}
 }
 /* The bid-network note: one ruled line under the card at every width. */
 #f1{display:flex;flex-direction:column}
-#f1>.sec-head{order:1}#f1>.card{order:2}
-#f1>.bidnet-note{order:3;margin:8px 0 0;padding:8px 0;border:0;border-top:1px solid var(--hair);border-radius:0;background:none;font-size:.706rem}
+#f1>.bidnet-note{margin:8px 0 0;padding:8px 0;border:0;border-top:1px solid var(--hair);border-radius:0;background:none;font-size:.706rem}
 #f1>.bidnet-note .bidnet-txt{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 /* The Wire: two columns of cards on wide screens, ruled not boxed. */
 #wire-g{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(260px,100%),1fr));gap:0 24px}
@@ -1090,9 +1071,6 @@ html.has-zip #bids-list-area:has(.bids-skeleton){min-height:820px}
 @media(max-width:900px){
   .land-grid{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
   .land-lead{grid-column:1/-1}
-  #idx1-land{order:55}
-  .idx1-content>.m-fold--tools{order:56!important}
-  #signup-compact{order:57!important}
 }
 /* 901-1239: the gutter, and Quick Tools full width. */
 @media(min-width:901px) and (max-width:1239px){
@@ -1264,12 +1242,10 @@ html[data-theme="light"] #daily-teaser-sponsor{color:var(--ad-orange-ink)!import
 .s7-warn{color:var(--red)}
 .s7-ok{color:var(--green)}
 @media(max-width:900px){
-  .idx1-content>.s7-month{order:5}
   .s7-grid{grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important}
   .s7-c.s7-wide{grid-column:1/-1}
   .s7-c{min-height:64px}
 }
-@media(min-width:901px) and (max-width:1239px){.idx1-content>.s7-month{order:-2}}
 /* Desktop: the strip shares row 1 of the main columns with the "Live now"
    label, which sits at the bottom of that row. The shell grid is unchanged. */
 @media(min-width:1240px){
@@ -1302,7 +1278,6 @@ html.s7-no-gdu #gdu-stat,html.s7-no-gdu #gdu-chart-panel{display:none!important}
 html.s7-no-gdu .wx-data-extra{grid-template-columns:minmax(0,1fr)!important}
 html.s7-no-hail #land-hail{display:none!important}
 html.s7-no-croptour .s7-croptour{display:none!important}
-html.s7-hail-lead #land-hail{order:-1}
 #idx1-land .land-grid{grid-template-columns:minmax(0,2fr) minmax(0,1fr)}
 html.s7-no-hail #idx1-land .land-grid{grid-template-columns:minmax(0,1fr)}
 @media(max-width:900px){#idx1-land .land-grid{grid-template-columns:minmax(0,1fr)!important}}
@@ -1426,8 +1401,6 @@ details>summary:hover{color:var(--text)}
   .idx1-extras-field input{min-height:44px!important;font-size:1rem!important}
   .ticker-track .t-link{min-height:44px;display:inline-flex!important;align-items:center}
   .crop-full-link,.export-full-link,.tariff-full-link,.fert-full-link,.cot-full-link,.ratio-link,.wx-chart-toggle,.wx-hourly-toggle,#wire-band .wr-all,.faq-a a{display:inline-flex!important;align-items:center;min-height:44px}
-  /* 5. Bids first on a phone; the month strip right after them. */
-  .idx1-content>.s7-month,#dash-grid>.s7-month{order:25!important}
 }
 
 .idx1-preview-flag{position:sticky;top:0;z-index:500;background:#d08a3c;color:#0a0c0d;font-family:'JetBrains Mono',monospace;font-size:.7rem;font-weight:700;text-align:center;padding:.28rem .6rem;letter-spacing:.03em}
@@ -1969,12 +1942,15 @@ h3:where(.pc-section-lbl,.idx1-extras-title,.s7-ck){font-family:inherit;letter-s
    futures, and today's field read. Sans for words, mono for figures only.
    Order after the hero: cash bids beside local conditions, then markets,
    then the month, then the rest. ===== */
-.hero-band{margin:0 0 16px;padding:12px 18px 6px;background:var(--surface2);border:1px solid var(--border-2);border-radius:8px;font-family:var(--font-body,Inter,system-ui,sans-serif)}
-.hb-top{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:1rem;line-height:1.3;color:var(--text);padding-bottom:4px}
+.hero-band{container:hero/inline-size;margin:0 0 16px;padding:12px 18px 6px;background:var(--surface2);border:1px solid var(--border-2);border-radius:8px;font-family:var(--font-body,Inter,system-ui,sans-serif)}
+.hb-top{display:flex;align-items:center;gap:0 8px;flex-wrap:nowrap;font-size:1rem;line-height:1.3;color:var(--text);padding-bottom:4px}
+.hb-where{flex:1 1 auto;min-width:0;display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 8px}
 .hb-place{font-weight:700}
 .hb-date{color:var(--text-dim)}
-.hb-date:not(:empty)::before{content:"\00b7";margin-right:8px;color:var(--text-dim)}
-.hb-change{margin-left:auto;background:none;border:0;padding:0 2px;min-height:44px;font:inherit;font-size:.824rem;font-weight:600;color:var(--text-dim);text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.hb-date:not(:empty)::before{content:"\00b7" / "";margin-right:8px;color:var(--text-dim)}
+.hb-asof{font-size:.824rem;font-weight:700;color:var(--orange)}
+.hb-asof[hidden]{display:none}
+.hb-change{flex:none;white-space:nowrap;margin-left:auto;background:none;border:0;padding:0 2px;min-height:44px;font:inherit;font-size:.824rem;font-weight:600;color:var(--text-dim);text-decoration:underline;text-underline-offset:3px;cursor:pointer}
 .hb-change:hover{color:var(--text)}
 .hb-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:16px}
 .hb-cell{display:flex;flex-direction:column;gap:3px;min-width:0;padding:10px 0 12px;border-top:1px solid var(--border-2);color:inherit;text-decoration:none}
@@ -1984,36 +1960,57 @@ h3:where(.pc-section-lbl,.idx1-extras-title,.s7-ck){font-family:inherit;letter-s
 .hb-k{font-size:.824rem;font-weight:600;line-height:1.3;color:var(--text-dim)}
 .hb-v{display:flex;align-items:baseline;flex-wrap:wrap;gap:4px 10px;font-family:'JetBrains Mono',monospace;font-variant-numeric:tabular-nums;font-size:2.1rem;font-weight:800;line-height:1.1;color:var(--text);letter-spacing:-.01em;min-height:1.1em}
 .hb-v2{font-size:1.55rem}
-.hb-s{font-size:.824rem;line-height:1.4;color:var(--text-dim);min-height:1.4em}
+.hb-s{font-size:.824rem;line-height:1.4;color:var(--text-dim);min-height:1.4em;overflow-wrap:break-word}
+.hb-l{display:block}
+.hb-name{color:var(--text);font-weight:600}
+.hb-nw{white-space:nowrap}
+.hb-age,.hb-ho{font-size:.8125rem}
 .hb-n{font-family:'JetBrains Mono',monospace;font-variant-numeric:tabular-nums;white-space:nowrap}
-.hb-frac{font-size:max(.6em,.765rem);font-weight:700}
+/* A price can break before its fraction; it never runs into the next cell. */
+.hb-v>.hb-n{white-space:normal}
+.hb-frac{font-size:max(.6em,.765rem);font-weight:700;white-space:nowrap}
 .hb-chg.up{color:var(--green)}.hb-chg.dn{color:var(--red)}
-.hb-old{font-family:var(--font-body,Inter,system-ui,sans-serif);font-size:.824rem;font-weight:700;letter-spacing:0;color:var(--orange)}
+.hb-old,.hb-unk{font-family:var(--font-body,Inter,system-ui,sans-serif);font-size:.824rem;font-weight:700;letter-spacing:0;color:var(--orange)}
+.hb-unk{color:var(--text-dim)}
+.hb-s .hb-old{font-size:.8125rem}
 .hb-none .hb-v{color:var(--text-dim)}
 .hb-spray{font-weight:700}
 .hb-spray.hb-go{color:var(--green)}.hb-spray.hb-caution{color:var(--gold)}.hb-spray.hb-stop{color:var(--red)}
-[data-theme="light"] :is(.hb-old,.hb-spray.hb-caution){color:#86600f}
+[data-theme="light"] :is(.hb-old,.hb-asof,.hb-spray.hb-caution){color:#86600f}
 .hb-skel{display:inline-block;width:5.5ch;height:.8em;border-radius:4px;background:var(--border-2);animation:hb-pulse 1.4s ease-in-out infinite}
 @keyframes hb-pulse{50%{opacity:.45}}
 @media(prefers-reduced-motion:reduce){.hb-skel{animation:none}}
-@media(min-width:640px){
-  .hb-bid{grid-column:auto}
-}
-@media(min-width:1100px){
-  .hb-grid{grid-template-columns:minmax(0,1.25fr) minmax(0,1.25fr) minmax(0,1fr) minmax(0,1fr) minmax(0,1fr);column-gap:0}
-  .hb-cell,.hb-bid,.hb-wx{grid-column:auto;padding:12px 18px 14px;border-top:1px solid var(--border-2)}
-  .hb-cell+.hb-cell{border-left:1px solid var(--border-2)}
-  .hb-cell:first-child{padding-left:0}
-  .hb-v{font-size:2.5rem}.hb-v2{font-size:1.9rem}
-}
-@media(max-width:639px){
-  .hero-band{padding:6px 14px 2px}
+@media(max-width:639px){.hero-band{padding:6px 14px 2px}}
+/* U1 (2026-10-06): the hero sizes from its own width, not the window. Five
+   across only when the band is at least 1000px wide; 560-999px is bids two
+   across over futures and today three across; under 560px the phone stack. */
+@container hero (max-width:559px){
   .hb-cell{padding:8px 0 10px}
-  /* Phone: the price on the left, its basis, elevator, town and miles beside it. */
+  /* The price on the left; elevator, town and what the bid is for beside it. */
   .hb-bid,.hb-wx{display:grid;grid-template-columns:auto minmax(0,1fr);column-gap:14px;row-gap:2px;align-items:center}
   .hb-bid>.hb-k,.hb-wx>.hb-k{grid-column:1/-1}
   .hb-v{font-size:2rem}.hb-v2{font-size:1.5rem}
   .hb-bid>.hb-v{flex-direction:column;align-items:flex-start;gap:2px}
+  .hb-bid .hb-v .hb-frac{font-size:.765rem}
+}
+@container hero (max-width:299px){
+  .hb-bid{display:flex;align-items:stretch}
+  .hb-v2{font-size:1.3rem}
+}
+@container hero (min-width:560px){
+  .hb-grid{grid-template-columns:repeat(6,minmax(0,1fr));column-gap:0}
+  .hb-bid{grid-column:span 3}
+  .hb-fut,.hb-wx{grid-column:span 2}
+  .hb-cell{padding:12px 16px 14px;border-left:1px solid var(--border-2)}
+  #hb-corn,#hb-fc{padding-left:0;border-left:0}
+  .hb-v{font-size:2.2rem}.hb-v2{font-size:1.7rem}
+}
+@container hero (min-width:1000px){
+  .hb-grid{grid-template-columns:minmax(0,1.25fr) minmax(0,1.25fr) repeat(3,minmax(0,1fr))}
+  .hb-bid,.hb-fut,.hb-wx{grid-column:auto}
+  .hb-cell{padding:12px 18px 14px}
+  #hb-fc{padding-left:18px;border-left:1px solid var(--border-2)}
+  .hb-v{font-size:clamp(1.9rem,3cqi,2.5rem)}.hb-v2{font-size:clamp(1.4rem,2.3cqi,1.9rem)}
 }
 /* The briefing teaser above the hero: one row and two lines at most on a phone. */
 @media(max-width:640px){
@@ -2022,20 +2019,6 @@ h3:where(.pc-section-lbl,.idx1-extras-title,.s7-ck){font-family:inherit;letter-s
   .daily-teaser .teaser-preview{white-space:normal!important;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;line-height:1.35}
 }
 
-/* Order. Phone and narrow desktop: one column. */
-@media(max-width:900px){
-  .idx1-content>.hero-band{order:1}
-  #f1{order:20!important}
-  #f2{order:22!important}
-  #f-prices{order:30!important}
-  .idx1-content>.s7-month,#dash-grid>.s7-month{order:35!important}
-  #wire-band{order:45!important}
-}
-@media(min-width:901px) and (max-width:1239px){
-  .idx1-content>.hero-band{order:-10}
-  #dash-grid{order:-2!important}
-  .idx1-content>.s7-month{order:-1}
-}
 /* Wide desktop: the hero spans the page, rail included; cash bids and local
    conditions sit right under it, and the rail starts beside them. */
 @media(min-width:1240px){
@@ -2050,12 +2033,12 @@ h3:where(.pc-section-lbl,.idx1-extras-title,.s7-ck){font-family:inherit;letter-s
    letter-spacing on anything longer than a few words. The cash bids card's
    own rows are left to the bids card. ===== */
 .r7-frac{font-size:max(.55em,.765rem)}
-.wx-7day-meta,.wx-card .wx-7day-meta{font-size:.765rem!important}
-:is(.wx-loc,.ticker-track .t-label,.ticker-track .t-unit,.m-fold-sum small,.fert-grid span,.idx1-subbar .idx1-zip-chip,.teaser-badge,.s7-stamp,.s7-ck,.s7-k,.s7-ir-v,.s7-cv small,.wstat-lbl,.wx-extra-lbl,.wx-extra-ctx,.wx-chart-toggle,.wx-7day-meta,.wr-when,.wr-meta,.pc-prev,#prices-age,.pc-section-lbl,.pc-contract,.r7-cm,.r7-unit,.cal-time,.land-k,.pbc-meta,.pbc-asof,#r7-pa-now,.idx1-sub-h,.export-cumul,.export-wk-lbl,.export-mkt-yr,.crop-week-badge,.crop-footer-date,.export-footer-date,.tariff-footer-date,.fert-footer-note,.r7-fnote,.spray-day-reason,.spray-day-status,.spray-day-name,.r7-cot-px,.r7-dim,.sig-price,.sig-tag,.noaa-card-head,#nc-week,.r7-nc-usda,.tool-widget-badge,.spray-windows-lbl,.daily-takeaway-frame,.rsc-teaser-label,.rsc-teaser-cta,.cot-bar-labels,.cot-dir,.cot-date,.crop-chg-lbl,.crop-plant-lbl,.tariff-row-dest,.ratio-link,.s7-notes,.gs-card){
+.wx-7day-meta,.wx-card .wx-7day-meta{font-size:.8125rem!important}
+:is(.wx-loc,.ticker-track .t-label,.ticker-track .t-unit,.m-fold-sum small,.fert-grid span,.idx1-subbar .idx1-zip-chip,.teaser-badge,.s7-stamp,.s7-ck,.s7-k,.s7-ir-v,.s7-cv small,.wstat-lbl,.wx-extra-lbl,.wx-extra-ctx,.wx-chart-toggle,.wx-7day-meta,.wr-when,.wr-meta,.pc-prev,#prices-age,.pc-section-lbl,.pc-contract,.r7-cm,.r7-unit,.cal-time,.land-k,.pbc-meta,.pbc-asof,#r7-pa-now,.idx1-sub-h,.export-cumul,.export-wk-lbl,.export-mkt-yr,.crop-week-badge,.crop-footer-date,.export-footer-date,.tariff-footer-date,.fert-footer-note,.r7-fnote,.spray-day-reason,.spray-day-status,.spray-day-name,.r7-cot-px,.r7-dim,.sig-price,.sig-tag,.noaa-card-head,#nc-week,.r7-nc-usda,.tool-widget-badge,.spray-windows-lbl,.daily-takeaway-frame,.rsc-teaser-label,.rsc-teaser-cta,.cot-bar-labels,.cot-dir,.cot-date,.crop-chg-lbl,.crop-plant-lbl,.tariff-row-dest,.ratio-link,.s7-notes,.gs-card,#idx1-calc-result,#ticker-age,.s7-cv .s7-line,.ad-slot-cta,.adspace-lbl,footer h2,.wx-summary-title){
   font-family:var(--font-body,Inter,system-ui,sans-serif)!important;letter-spacing:0!important}
 :is(.s7-ck,.s7-k,.wstat-lbl,.wx-extra-lbl,.pc-section-lbl,.pc-contract,.idx1-sub-h,.teaser-badge,.idx1-subbar .idx1-zip-chip,.cot-dir,.spray-day-status,.spray-day-name,.noaa-card-head,.tool-widget-badge,.land-k,.wr-when){text-transform:none!important}
 .s7-ck,.wstat-lbl,.wx-extra-lbl,.pc-section-lbl,.land-k{font-weight:600;color:var(--text-dim)}
-main .tip-b:not(#f1 .tip-b){font-family:var(--font-body,Inter,system-ui,sans-serif)!important;letter-spacing:0!important}
+main .tip-b{font-family:var(--font-body,Inter,system-ui,sans-serif)!important;letter-spacing:0!important}
 /* Section eyebrows stay mono; multi-word fold headers lose their tracking. */
 .m-fold:not(.m-fold--calc)>summary.m-fold-sum,.cot-verdict,.ratio-verdict,.tariff-status-badge,#land-h{letter-spacing:0!important}
 .wx-7day-meta,.s7-cv .s7-line small{font-variant-numeric:tabular-nums}
@@ -2102,6 +2085,49 @@ html[data-look] #idx1-land .m-fold--lite>summary.m-fold-sum>span{color:var(--tex
    passes AA in both. */
 :is(.spray-day.stop .spray-day-status,.cot-dir.short,.cot-verdict.short,.cot-chg.dn,.tariff-status-badge.elevated,.tariff-row-rate.elevated,.crop-ge-val.poor,.crop-chg.dn,.export-pace-pct.behind,.fert-chg-val.up,.yc-pill--bad,.dh-fc--stop){color:var(--red)!important}
 [data-theme="light"] :is(.s7-note,.gs-more,.pbc-more) a{color:#86600f}
+
+/* ===== 2026-10-06 panel 6 fix round (index1 layout) =====================
+   U9: on wide screens the Wire sits right under cash bids in the left column
+   and local conditions spans both rows on the right. Row 3 is the flexible
+   row, so it takes whatever height conditions needs beyond bids, and nothing
+   is left empty under the bids card. */
+@media(min-width:1240px){
+  .idx1-shell{grid-template-rows:auto auto 1fr}
+  #f1{grid-column:1!important;grid-row:2!important}
+  #wire-band{grid-column:1!important;grid-row:3!important;align-self:start}
+  #f2{grid-column:2!important;grid-row:2/4!important;align-self:start}
+}
+/* U8: the hero names the place once. The weather card's own place line and
+   the desktop ZIP chip's number drop; every Change control stays. */
+#idx1-zip-chip .idx1-zip-word{display:none}
+.idx1-content:has(>#hero-band) #wx-loc{display:none}
+@media(min-width:901px){
+  body:has(#hero-band) #idx1-zip-chip :is(.idx1-zip-label,.idx1-zip-val,.idx1-zip-dot){display:none}
+  body:has(#hero-band) #idx1-zip-chip .idx1-zip-word{display:inline}
+  body:has(#hero-band) #idx1-zip-chip .idx1-zip-change{margin-left:0}
+}
+/* U5: nothing a reader needs under 13px in the Store or sell fold, the month
+   notes or the 5-day strip. */
+.m-fold--calc :is(.idx1-extras-field,.idx1-extras-field>span,.idx1-extras-fine,.idx1-opt,.idx1-basis-end-a,.idx1-basis-end-b,summary:not(.m-fold-sum)){font-size:.8125rem!important}
+.s7-notes :is(small,.s7-note small){font-size:.8125rem!important}
+:is(.idx1-basis-end-a,.idx1-basis-end-b){font-family:var(--font-body,Inter,system-ui,sans-serif)!important;font-variant-numeric:tabular-nums;letter-spacing:0!important}
+.s7-cv .s7-line{font-variant-numeric:tabular-nums}
+/* U13: September to November, Local conditions on a phone folds the GDU and
+   soil tiles behind one button; the hero already gives today's read. */
+#wx-fold-btn{display:none}
+@media(max-width:900px){
+  html.wx-fold-season #wx-fold-btn{display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;min-height:44px;margin:8px 0 0;padding:10px 0;background:none;border:0;border-top:1px solid var(--hair);border-bottom:1px solid var(--hair);font:inherit;font-size:.875rem;font-weight:600;color:var(--text-dim);cursor:pointer;text-align:left}
+  html.wx-fold-season #wx-fold-btn::after{content:'+' / '';color:var(--text-dim)}
+  html.wx-fold-season.wx-fold-open #wx-fold-btn::after{content:'\2212' / ''}
+  html.wx-fold-season #wx-fold-btn:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+  html.wx-fold-season:not(.wx-fold-open) :is(#gdu-stat,#gdu-chart-panel,#s7-wx-soil-w){display:none!important}
+  html.wx-fold-season:not(.wx-fold-open) .wx-data-extra{grid-template-columns:minmax(0,1fr)!important}
+}
+/* Teaser: one line on a phone; the briefing stamp drops there. */
+@media(max-width:640px){
+  #daily-teaser-text .s7-stamp{display:none}
+  #daily-teaser-text,.daily-teaser .teaser-preview{-webkit-line-clamp:1!important}
+}
 
 /* ===== THE LOOK (2026-10-03) ==========================================
    Sig: "lots of still monotone and hard to differentiate one thing from

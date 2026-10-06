@@ -7,7 +7,7 @@
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
 <link rel="stylesheet" href="/components/styles.css?v=17">
 <link rel="stylesheet" href="/components/sponsor-ad.css?v=1">
-<link rel="stylesheet" href="/css/home.css?v=2">
+<link rel="stylesheet" href="/css/home.css?v=3">
 <!-- 2026-09-30: sponsor-ad.js's one call site (AgsistAd.render(), below) is
      already guarded with window.AgsistAd? and runs inside a fetch .then(),
      well after a deferred script would finish — so defer is free here.
@@ -117,7 +117,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
   <button type="button" id="idx1-zip-chip" class="idx1-zip-chip" aria-label="Jump to Cash Bids ZIP lookup">
     <span class="idx1-zip-label">ZIP</span>
     <span class="idx1-zip-val" id="idx1-zip-val">Not set</span>
-    <span class="idx1-zip-change" id="idx1-zip-change">&middot; Change</span>
+    <span class="idx1-zip-change" id="idx1-zip-change"><span class="idx1-zip-dot" aria-hidden="true">&middot; </span>Change<span class="idx1-zip-word"> ZIP</span></span>
   </button>
   <a href="#market-intel" class="idx1-zip-chip" style="text-decoration:none">
     <span class="idx1-zip-label">Market outlook</span>
@@ -513,8 +513,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
   <section class="hero-band" id="hero-band" aria-labelledby="hb-h">
     <h2 class="visually-hidden" id="hb-h">Today at a glance</h2>
     <div class="hb-top">
-      <span class="hb-place" id="hb-place">Your area</span>
-      <span class="hb-date" id="hb-date"></span>
+      <span class="hb-where"><span class="hb-place" id="hb-place">Your area</span><span class="hb-date" id="hb-date"></span><span class="hb-asof" id="hb-asof" hidden></span></span>
       <button type="button" class="hb-change" id="hb-change">Change</button>
     </div>
     <div class="hb-grid">
@@ -549,21 +548,32 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
   (function(){
     'use strict';
     function $(i){return document.getElementById(i);}
-    var MINUS='−', DASH='—';
+    var MINUS='−', DASH='—', TZ='America/Chicago';
     var MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
     var MCODE={F:'Jan',G:'Feb',H:'Mar',J:'Apr',K:'May',M:'Jun',N:'Jul',Q:'Aug',U:'Sep',V:'Oct',X:'Nov',Z:'Dec'};
+    var SEP='<span class="hb-sep" aria-hidden="true"> · </span>';
     /* 4.3125 dollars -> "$4.31 1/4": the page writes quarter cents like the pit. */
     function qd(dollars){var c=Math.round(Number(dollars)*400)/4,w=Math.floor(c+1e-9),f=Math.round((c-w)*4);if(f===4){w++;f=0;}
       return '$'+(w/100).toFixed(2)+(f?'<span class="hb-frac"> '+['','1/4','1/2','3/4'][f]+'</span>':'');}
     function qc(cents){var a=Math.abs(cents),q=Math.round(a*4)/4,w=Math.floor(q),f=Math.round((q-w)*4);
       return (cents<0?MINUS:(cents>0?'+':''))+(w||!f?String(w):'')+(w&&f?' ':'')+(f?['','1/4','1/2','3/4'][f]:'')+'¢';}
     function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
-    function day(d){return MON[d.getMonth()]+' '+d.getDate();}
     function set(id,html){var e=$(id);if(e)e.innerHTML=html;}
     function cls(id,c,on){var e=$(id);if(e)e.classList.toggle(c,!!on);}
+    function num(v){return v!=null&&v!==''&&!isNaN(Number(v));}
+    /* Every date on the band is read in Central time, like the card. */
+    function ct(d){try{var o={};new Intl.DateTimeFormat('en-US',{timeZone:TZ,year:'numeric',month:'2-digit',day:'2-digit',weekday:'short'}).formatToParts(d).forEach(function(p){o[p.type]=p.value;});return o;}catch(e){return null;}}
+    function ctKey(d){if(!d||isNaN(d))return '';var o=ct(d);return o?o.year+'-'+o.month+'-'+o.day:'';}
+    function keyDay(k){var m=/^(\d{4})-(\d{2})-(\d{2})/.exec(k||'');return m?MON[+m[2]-1]+' '+(+m[3]):'';}
+    function ctDay(iso){var d=iso?new Date(iso):null;return d&&!isNaN(d)?keyDay(ctKey(d)):'';}
+    function ctTime(iso){var d=iso?new Date(iso):null;if(!d||isNaN(d))return '';try{return new Intl.DateTimeFormat('en-US',{timeZone:TZ,hour:'numeric',minute:'2-digit'}).format(d)+' CT';}catch(e){return '';}}
+    /* The last weekday, Central time: today on a weekday, Friday on a weekend. */
+    function lastWeekdayKey(){var n=new Date(),o=ct(n);if(!o)return '';var back=o.weekday==='Sat'?1:(o.weekday==='Sun'?2:0);
+      var d=new Date(Date.UTC(+o.year,+o.month-1,+o.day-back));return d.toISOString().slice(0,10);}
 
     /* ---- place and date ---- */
     function loc(){try{return JSON.parse(localStorage.getItem('agsist-wx-loc')||'null');}catch(e){return null;}}
+    function hasZip(){var l=loc();return !!(l&&/^\d{5}$/.test(String(l.zip||'')));}
     var placeFromBids='';
     function paintPlace(){
       var l=loc(),p=placeFromBids||(l&&l.label)||'';
@@ -571,67 +581,115 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
       var b=$('hb-change');if(b){b.textContent=p?'Change':'Set ZIP';b.setAttribute('aria-label',p?'Change location ('+p+')':'Set your ZIP');}
     }
     var dt=$('hb-date');
-    if(dt){try{dt.textContent=new Intl.DateTimeFormat('en-US',{weekday:'short',month:'short',day:'numeric'}).format(new Date()).replace(',','');}catch(e){}}
+    if(dt){try{dt.textContent=new Intl.DateTimeFormat('en-US',{timeZone:TZ,weekday:'short',month:'short',day:'numeric'}).format(new Date()).replace(',','');}catch(e){}}
+    function openZip(){var c=$('idx1-zip-chip');if(c)c.click();}
     var ch=$('hb-change');
-    if(ch)ch.addEventListener('click',function(){var c=$('idx1-zip-chip');if(c)c.click();});
+    if(ch)ch.addEventListener('click',openZip);
     paintPlace();
     window._AGSIST_GEO_CALLBACKS=window._AGSIST_GEO_CALLBACKS||[];
     window._AGSIST_GEO_CALLBACKS.push(function(){setTimeout(paintPlace,0);});
     window.addEventListener('storage',paintPlace);
 
-    /* ---- bids: the bids card publishes its top board per crop ---- */
+    /* ---- bids: the bids card publishes its top board per crop ----
+       detail.status: ok | none | failed | pending | nozip (older builds send
+       none, and then an empty crop reads as "no bid within N mi"). */
     var bidsSeen=false;
     var CROP={corn:['hb-corn','corn'],soybeans:['hb-soy','soybean']};
+    var STATE={failed:'Bids couldn’t be read',nozip:'Set your ZIP',pending:'Still loading'};
+    function emptyCell(id,word,ring,status){
+      var e=$(id);if(e){delete e.dataset.boardKey;e.dataset.state=status||'none';}
+      if(status==='nozip')ring='nearby';
+      set(id+'-k','Top '+word+' bid '+ring);
+      cls(id,'hb-stale',false);cls(id,'hb-none',true);
+      if(status==='pending'){set(id+'-v','<span class="hb-skel" aria-hidden="true"></span><span class="visually-hidden">Loading</span>');}
+      else set(id+'-v',DASH);
+      set(id+'-s','<span class="hb-l">'+esc(STATE[status]||('No '+word+' bid '+ring))+'</span>');
+    }
     function paintBids(d){
       if(!d||typeof d!=='object')return;
       bidsSeen=true;
       if(d.place){placeFromBids=String(d.place);paintPlace();}
       var r=d.radiusMi!=null?d.radiusMi:d.radius;
       var ring=(typeof r==='number'&&r>0)?'within '+Math.round(r)+' mi':'nearby';
+      var status=d.status||null;
+      /* One "Bids as of" in the top row when every shown bid is old and from
+         the same Central day; otherwise each old bid carries its own date. */
+      var shown=Object.keys(CROP).map(function(k){return d[k];}).filter(function(x){return x&&num(x.cash);});
+      var asof='';
+      if(shown.length&&shown.every(function(x){return x.stale&&x.posted;})){
+        var ks=shown.map(function(x){return ctKey(new Date(x.posted));});
+        if(ks[0]&&ks.every(function(k){return k===ks[0];}))asof=keyDay(ks[0]);
+      }
+      var ao=$('hb-asof');if(ao){ao.textContent=asof?'Bids as of '+asof:'';ao.hidden=!asof;}
+      var today=ctKey(new Date());
       Object.keys(CROP).forEach(function(k){
         var id=CROP[k][0],word=CROP[k][1],x=d[k];
-        set(id+'-k','Top '+word+' bid '+ring);
-        cls(id,'hb-stale',x&&x.stale);
-        if(!x||x.cash==null||isNaN(Number(x.cash))){
-          set(id+'-v',DASH);
-          set(id+'-s','No '+word+' bid '+ring);
-          cls(id,'hb-none',true);return;
+        if(!x||!num(x.cash)){
+          emptyCell(id,word,ring,(status==='failed'||status==='nozip'||status==='pending')?status:'none');return;
         }
-        cls(id,'hb-none',false);
-        var old='';
-        if(x.stale){var pd=x.posted?new Date(x.posted):null;old='<span class="hb-old">Old bid'+(pd&&!isNaN(pd)?' · '+day(pd):'')+'</span>';}
-        set(id+'-v','<span class="hb-n">'+qd(x.cash)+'</span>'+old);
-        var bits=[];
-        if(x.basis!=null&&!isNaN(Number(x.basis)))bits.push('<span class="hb-n">'+qc(Number(x.basis)*100)+'</span>'+(x.ref?' '+esc(x.ref):''));
-        if(x.name)bits.push(esc(x.name));
-        if(x.town)bits.push(esc(x.town));
-        if(x.mi!=null&&!isNaN(Number(x.mi)))bits.push('<span class="hb-n">'+Math.round(Number(x.mi))+'</span> mi');
-        set(id+'-s',bits.join(' · '));
+        var e=$(id);if(e){e.dataset.state='ok';if(x.boardKey)e.dataset.boardKey=String(x.boardKey);else delete e.dataset.boardKey;}
+        cls(id,'hb-none',false);cls(id,'hb-stale',x.stale);
+        var postedKey=x.posted?ctKey(new Date(x.posted)):'';
+        var label='Top '+word+' bid '+ring;
+        if(x.higherOlder)label=postedKey&&postedKey===today?'Top '+word+' bid posted today':'Top current '+word+' bid';
+        set(id+'-k',label);
+        var tags='';
+        if(x.stale&&!asof){var pd=ctDay(x.posted);tags+='<span class="hb-old">Old bid'+(pd?' · '+pd:'')+'</span>';}
+        if(x.ageUnknown)tags+='<span class="hb-unk">Time unknown</span>';
+        set(id+'-v','<span class="hb-n">'+qd(x.cash)+'</span>'+tags);
+        /* Three lines: the elevator, where it is, and what the bid is for. */
+        var lines=[];
+        if(x.name)lines.push('<span class="hb-l hb-name">'+esc(x.name)+'</span>');
+        var where=[];
+        if(x.town)where.push(esc(x.town));
+        if(num(x.mi))where.push('<span class="hb-nw"><span class="hb-n">'+Math.round(Number(x.mi))+'</span>&nbsp;mi</span>');
+        if(where.length)lines.push('<span class="hb-l">'+where.join(SEP)+'</span>');
+        var what=[];
+        if(x.month)what.push(esc(x.month));
+        if(num(x.basis))what.push('<span class="hb-n">'+qc(Number(x.basis)*100)+'</span> basis'+(x.ref?' <span class="hb-nw">'+esc(x.ref)+'</span>':''));
+        if(what.length)lines.push('<span class="hb-l">'+what.join(SEP)+'</span>');
+        var ho=x.higherOlder;
+        if(ho&&num(ho.cash)){var hd=ctDay(ho.posted);lines.push('<span class="hb-l hb-ho">Higher older bid <span class="hb-nw">'+qd(ho.cash)+(hd?SEP+hd:'')+'</span></span>');}
+        set(id+'-s',lines.join(''));
       });
     }
+    /* A tap opens that elevator's row in the card when the card can; else it
+       scrolls to the card. With no ZIP it opens the ZIP field. */
+    Object.keys(CROP).forEach(function(k){
+      var e=$(CROP[k][0]);if(!e)return;
+      e.addEventListener('click',function(ev){
+        if(e.dataset.state==='nozip'){ev.preventDefault();openZip();return;}
+        var key=e.dataset.boardKey;
+        if(key&&typeof window.agsistOpenBidRow==='function'){ev.preventDefault();try{window.agsistOpenBidRow(key);}catch(er){location.hash='#f1';}}
+      });
+    });
     window.addEventListener('agsist:bids-top',function(e){paintBids(e&&e.detail);});
     if(window.__agsistBidsTop)paintBids(window.__agsistBidsTop);
+    /* Nothing from the card after 8 s: say what is true now, not "failed". */
     setTimeout(function(){
       if(bidsSeen)return;
-      Object.keys(CROP).forEach(function(k){var id=CROP[k][0];set(id+'-v',DASH);set(id+'-s','Bids didn’t load');cls(id,'hb-none',true);});
+      var st=hasZip()?'pending':'nozip';
+      Object.keys(CROP).forEach(function(k){emptyCell(CROP[k][0],CROP[k][1],'nearby',st);});
     },8000);
 
     /* ---- futures: the harvest contracts, labelled from their own ticker ---- */
-    var futSeen=false;
+    var futParsed=false;
     function label(q,fallback){var m=/^Z[CS]([FGHJKMNQUVXZ])(\d{2})/.exec((q&&q.ticker)||'');return m?MCODE[m[1]]+' ’'+m[2]:fallback;}
     function paintFut(data){
       var q=data&&data.quotes;if(!q)return;
-      var stale=(data.stale_keys||[]);
+      futParsed=true;
+      var stale=(data.stale_keys||[]),lw=lastWeekdayKey(),at=ctTime(data.fetched);
       [['corn-dec','hb-fc','corn',"Dec"],['beans-nov','hb-fs','bean',"Nov"]].forEach(function(a){
         var x=q[a[0]],id=a[1];
-        if(!x||x.close==null){set(id+'-k',a[3]+' '+a[2]+' futures');set(id+'-v',DASH);set(id+'-s','Not in today’s price file');return;}
-        futSeen=true;
+        if(!x||x.close==null){set(id+'-k',a[3]+' '+a[2]+' futures');set(id+'-v',DASH);set(id+'-s','<span class="hb-l">Not in today’s price file</span>');return;}
         set(id+'-k',label(x,a[3])+' '+a[2]+' futures');
         set(id+'-v','<span class="hb-n">'+qd(x.close/100)+'</span>');
         var diff=x.netChange!=null?Number(x.netChange):(x.open!=null?x.close-x.open:null);
-        var c=diff==null||isNaN(diff)?'':'<span class="hb-n hb-chg '+(diff>0?'up':(diff<0?'dn':'nc'))+'">'+(diff>0?'▲ ':(diff<0?'▼ ':''))+qc(diff)+'</span>';
-        var held=stale.indexOf(a[0])>=0?'<span class="hb-old">Held'+(x.close_date?' · '+day(new Date(x.close_date+'T12:00:00')):'')+'</span>':'';
-        set(id+'-s',(c||'')+(c&&held?' ':'')+held||'&nbsp;');
+        var c=diff==null||isNaN(diff)?'':'<span class="hb-n hb-chg '+(diff>0?'up':(diff<0?'dn':'nc'))+'">'+(diff>0?'<span aria-hidden="true">▲ </span><span class="visually-hidden">up </span>':(diff<0?'<span aria-hidden="true">▼ </span><span class="visually-hidden">down </span>':''))+qc(diff)+'</span>';
+        /* Age, always: an older close than the last weekday says so. */
+        var cd=x.close_date||'',old=stale.indexOf(a[0])>=0||(cd&&lw&&cd<lw);
+        var age=old?'<span class="hb-l hb-old">Last close'+(cd?' · '+keyDay(cd):'')+'</span>':(at?'<span class="hb-l hb-age">'+at+'</span>':'');
+        set(id+'-s',(c?'<span class="hb-l">'+c+'</span>':'')+age||'&nbsp;');
       });
     }
     function getPrices(){
@@ -640,14 +698,18 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
     }
     window.addEventListener('agsist:prices',function(e){paintFut(e&&e.detail);});
     if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',getPrices);else getPrices();
-    setTimeout(function(){if(futSeen)return;['hb-fc','hb-fs'].forEach(function(id){set(id+'-v',DASH);set(id+'-s','Prices didn’t load');});},10000);
+    /* Only when the file never parsed; a parsed file keeps its own reason. */
+    setTimeout(function(){if(futParsed)return;['hb-fc','hb-fs'].forEach(function(id){set(id+'-v',DASH);set(id+'-s','<span class="hb-l">Prices didn’t load</span>');});},10000);
 
-    /* ---- today: the Local Conditions reading and its spray verdict ---- */
+    /* ---- today: the Local Conditions reading, rain chance, spray verdict ---- */
     var temp=null,spray,sprayDone=false;
     function paintWx(){
       var v=temp!=null?'<span class="hb-n">'+esc(temp)+'</span>':'';
       var s='';
-      if(spray)s='<span class="hb-spray hb-'+spray.s+'">'+esc(spray.long)+'</span>'+(spray.short?' · '+esc(spray.short):'');
+      if(spray){
+        var rain=num(spray.pop)?'<span class="hb-nw">Rain <span class="hb-n">'+Math.round(Number(spray.pop))+'%</span></span>'+SEP:'';
+        s=rain+'<span class="hb-spray hb-'+spray.s+'">'+esc(spray.long)+'</span>'+(spray.s!=='go'&&spray.short?SEP+esc(spray.short):'');
+      }
       else if(sprayDone)s='Spray read: '+DASH+' forecast didn’t load';
       if(v)set('hb-wx-v',v);
       if(s)set('hb-wx-s',s);
@@ -667,30 +729,10 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
     },10000);
   })();
   </script>
-  <section class="s7-month" id="s7-month" aria-labelledby="s7-month-h" data-track="season">
-    <div class="s7-head"><h2 class="s7-h" id="s7-month-h">This month</h2><span class="s7-k" id="s7-month-k">What leads the page this month</span></div>
-    <div class="s7-grid" id="s7-grid"></div>
-    <!-- 2026-10-06: each cell shows its figure and one short line; the rest of
-         what used to sit under it (how it is figured, sources, the reader's
-         state detail) is here, closed, never dropped. -->
-    <details class="s7-notes" id="s7-notes" hidden><summary>How these are figured</summary><div class="s7-notes-b" id="s7-notes-b"></div></details>
-  </section>
-  
-  <div class="dash-grid" id="dash-grid" style="order:-1">
-    <div class="fade-up" id="f1" style="order:-2;grid-column:1/-1">
+  <div class="dash-grid" id="dash-grid">
+    <div class="fade-up" id="f1" style="grid-column:1/-1">
 
       <div class="sec-head"><h2 class="sec-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:1.05em;height:1.05em;vertical-align:-.13em;margin-right:.34em;flex:none"><rect width="20" height="12" x="2" y="6" rx="2" /> <circle cx="12" cy="12" r="2" /> <path d="M6 12h.01M18 12h.01" /></svg>Cash Bids &amp; Basis</h2></div>
-      <!-- THE ANNOUNCEMENT. Added 2026-09-05: the bid network went live and
-           nothing on the homepage said so — /changelog was reachable only from
-           the footer, and the word "changelog" appeared nowhere on this page.
-           Deliberately one line. Says what changed and where to look; does not
-           recite how it works. -->
-      <a class="bidnet-note" href="/elevators">
-        <span class="bidnet-tag">NEW</span>
-        <span class="bidnet-txt">Some of these bids now come <strong>straight from the elevator&rsquo;s own board.</strong>
-          See which elevators we read &mdash; and which are still in the queue.</span>
-        <span class="bidnet-go" aria-hidden="true">&rarr;</span>
-      </a>
       <div class="card"><div class="card-body">
         <div id="bids-geo-bar" style="display:flex;align-items:center;gap:.55rem;margin-bottom:.6rem;font-size:.824rem;color:var(--text-dim)">
           <span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--gold);animation:blink 1.5s infinite" aria-hidden="true"></span>
@@ -738,7 +780,94 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
         </details>
         <div id="idx1-trust-ledger">—</div>
       </div></div>
+      <!-- THE ANNOUNCEMENT. Added 2026-09-05: the bid network went live and
+           nothing on the homepage said so — /changelog was reachable only from
+           the footer, and the word "changelog" appeared nowhere on this page.
+           Deliberately one line. Says what changed and where to look; does not
+           recite how it works. -->
+      <a class="bidnet-note" href="/elevators">
+        <span class="bidnet-tag">NEW</span>
+        <span class="bidnet-txt">Some of these bids now come <strong>straight from the elevator&rsquo;s own board.</strong>
+          See which elevators we read &mdash; and which are still in the queue.</span>
+        <span class="bidnet-go" aria-hidden="true">&rarr;</span>
+      </a>
     </div>
+    <div class="fade-up" id="f2" style="transition-delay:.08s;grid-column:1/-1">
+      <div class="sec-head"><h2 class="sec-title">Local Conditions</h2></div>
+      <div class="card wx-card"><div class="card-body">
+        <div id="wx-loading" style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1.5rem 0;gap:.65rem">
+          <div style="font-size:1.882rem" aria-hidden="true"><svg class="ic" aria-hidden="true"><use href="#i-map-pin"/></svg></div>
+          <div style="font-size:.824rem;color:var(--text-dim);text-align:center">Getting your local weather&hellip;</div>
+          <button id="btn-allow-loc" style="padding:.65rem 1.25rem;background:var(--gold);color:#0a0c0d;border:none;border-radius:6px;font-size:.824rem;font-weight:700;cursor:pointer;min-height:44px;">Allow Location</button>
+          <button id="btn-zip-instead" style="background:none;border:none;color:var(--text-muted);font-size:.824rem;cursor:pointer;text-decoration:underline;padding:.4rem 0;min-height:44px;display:inline-flex;align-items:center;">Enter ZIP instead</button>
+        </div>
+        <div id="wx-zip-entry" style="display:none;margin-bottom:.85rem">
+          <div style="display:flex;gap:.5rem">
+            <input type="text" id="wx-zip" placeholder="ZIP code" maxlength="5" inputmode="numeric" pattern="[0-9]{5}" autocomplete="postal-code" aria-label="ZIP code for weather" style="flex:1;padding:.65rem .85rem;background:var(--surface2);border:1px solid var(--border);border-radius:6px;font-family:'JetBrains Mono',monospace;font-size:1rem;color:var(--text);outline:none;transition:border-color .15s">
+            <button id="btn-wx-go" style="padding:.65rem 1rem;background:var(--gold);color:#0a0c0d;border:none;border-radius:6px;font-size:.824rem;font-weight:700;cursor:pointer;min-height:44px;">Go</button>
+          </div>
+        </div>
+        <div id="wx-data" style="display:none">
+          <div class="wx-hero">
+            <div class="wx-icon" id="wx-icon" aria-hidden="true"><svg class="ic" aria-hidden="true"><use href="#i-cloud-sun"/></svg></div>
+            <div>
+              <div class="wx-temp"><span id="wx-temp">--</span></div>
+              <div class="wx-desc" id="wx-desc">Current conditions</div>
+              <div class="wx-loc" id="wx-loc"><svg class="ic" aria-hidden="true"><use href="#i-map-pin"/></svg> Locating...</div>
+            </div>
+          </div>
+          <div class="wx-grid">
+            <div class="wstat"><div class="wstat-lbl">Wind</div><div class="wstat-val" id="wx-wind">--</div></div>
+            <div class="wstat"><div class="wstat-lbl">Humidity</div><div class="wstat-val" id="wx-humid">--</div></div>
+            <div class="wstat"><div class="wstat-lbl">Precip Chance</div><div class="wstat-val" id="wx-precip">--</div></div>
+            <div class="wstat"><div class="wstat-lbl">Dew Point</div><div class="wstat-val" id="wx-dew">--</div></div><div class="wstat" id="s7-wx-low-w"><div class="wstat-lbl">Overnight low</div><div class="wstat-val" id="s7-wx-low"><span class="s7-nl">Not loaded yet</span></div></div><div class="wstat" id="s7-wx-soil-w"><div class="wstat-lbl">Soil, 2.4 in, modeled</div><div class="wstat-val" id="s7-wx-soil"><span class="s7-nl">Not loaded yet</span></div></div>
+          </div>
+                    <div class="wx-today" id="wx-today-summary"></div>
+          <div id="wx-forecast" style="display:none"></div>
+          <div class="wx-data-extra">
+            <div class="wx-extra-stat with-chart" id="gdu-stat" role="button" tabindex="0" aria-expanded="false" aria-controls="gdu-chart-panel"><div class="wx-extra-lbl"><svg class="ic" aria-hidden="true"><use href="#i-thermometer"/></svg> GDU Since Apr 1</div><div class="wx-extra-val" id="gdu-val">--</div><div class="wx-extra-ctx" id="gdu-ctx"></div><div class="wx-chart-toggle" id="gdu-chart-toggle">&#x25BC; History</div></div>
+            <div class="wx-extra-stat with-chart" id="precip-stat" role="button" tabindex="0" aria-expanded="false" aria-controls="precip-chart-panel"><div class="wx-extra-lbl"><svg class="ic" aria-hidden="true"><use href="#i-cloud-rain"/></svg> 30-Day Precip</div><div class="wx-extra-val" id="precip-val">--</div><div class="wx-extra-ctx" id="precip-ctx"></div><div class="wx-chart-toggle" id="precip-chart-toggle">&#x25BC; History</div></div>
+          </div>
+          <button type="button" id="wx-fold-btn" aria-expanded="false" aria-controls="gdu-stat s7-wx-soil-w">Growing degree days and soil temperature</button>
+          <div class="wx-chart-panel" id="gdu-chart-panel" role="region" aria-label="5-year GDU monthly history">
+            <div class="wx-chart-title" id="gdu-chart-title">GDU by month &middot; Apr&ndash;Oct &middot; 5-yr avg vs this year</div>
+            <div id="gdu-chart-svg"></div>
+            <div class="wx-chart-legend"><span><span class="wx-chart-legend-sw" style="background:rgba(58,139,60,.45)"></span>5-yr avg</span><span><span class="wx-chart-legend-sw" style="background:var(--gold)"></span>This year</span></div>
+            <div class="wx-chart-takeaway" id="gdu-takeaway"></div>
+          </div>
+          <div class="wx-chart-panel" id="precip-chart-panel" role="region" aria-label="5-year precipitation monthly history">
+            <div class="wx-chart-title" id="precip-chart-title">Precip by month &middot; Jan&ndash;Dec &middot; 5-yr avg vs this year</div>
+            <div id="precip-chart-svg"></div>
+            <div class="wx-chart-legend"><span><span class="wx-chart-legend-sw" style="background:rgba(58,139,60,.45)"></span>5-yr avg</span><span><span class="wx-chart-legend-sw" style="background:var(--gold)"></span>This year</span></div>
+            <div class="wx-chart-takeaway" id="precip-takeaway"></div>
+          </div>
+          <div class="wx-summary-card" style="margin-top:.85rem">
+            <div class="wx-summary-title"><svg class="ic" aria-hidden="true"><use href="#i-calendar"/></svg> 5-Day Forecast</div>
+            <div id="wx-forecast-7day" class="wx-7day-strip">
+              <div class="wx-7day-cell"><div class="wx-7day-name">Today</div><div class="wx-7day-icon"><svg class="ic" aria-hidden="true"><use href="#i-cloud-sun"/></svg></div><div class="wx-7day-temps"><span class="hi">--&deg;</span><span class="lo">--&deg;</span></div><div class="wx-7day-meta">--</div></div>
+              <div class="wx-7day-cell"><div class="wx-7day-name">&mdash;</div><div class="wx-7day-icon"><svg class="ic" aria-hidden="true"><use href="#i-cloud-sun"/></svg></div><div class="wx-7day-temps"><span class="hi">--&deg;</span><span class="lo">--&deg;</span></div><div class="wx-7day-meta">--</div></div>
+              <div class="wx-7day-cell"><div class="wx-7day-name">&mdash;</div><div class="wx-7day-icon"><svg class="ic" aria-hidden="true"><use href="#i-cloud-sun"/></svg></div><div class="wx-7day-temps"><span class="hi">--&deg;</span><span class="lo">--&deg;</span></div><div class="wx-7day-meta">--</div></div>
+              <div class="wx-7day-cell"><div class="wx-7day-name">&mdash;</div><div class="wx-7day-icon"><svg class="ic" aria-hidden="true"><use href="#i-cloud-sun"/></svg></div><div class="wx-7day-temps"><span class="hi">--&deg;</span><span class="lo">--&deg;</span></div><div class="wx-7day-meta">--</div></div>
+              <div class="wx-7day-cell"><div class="wx-7day-name">&mdash;</div><div class="wx-7day-icon"><svg class="ic" aria-hidden="true"><use href="#i-cloud-sun"/></svg></div><div class="wx-7day-temps"><span class="hi">--&deg;</span><span class="lo">--&deg;</span></div><div class="wx-7day-meta">--</div></div>
+            </div>
+            <button class="wx-hourly-toggle" id="wx-hourly-toggle" aria-expanded="false" aria-controls="wx-hourly-panel">&#x25BC; Hourly</button>
+            <div class="wx-hourly-panel" id="wx-hourly-panel" role="region" aria-label="24-hour hourly forecast">
+              <div class="wx-hourly-strip" id="wx-hourly-strip"></div>
+            </div>
+            <div style="margin-top:.5rem;font-size:.824rem;color:var(--text-muted);text-align:center"><svg class="ic" aria-hidden="true"><use href="#i-map-pin"/></svg> <span id="wx-loc-label">Set location above</span></div>
+          </div>
+          <button id="btn-change-loc" style="margin-top:.65rem;background:none;border:none;color:var(--text-muted);font-size:.824rem;cursor:pointer;text-decoration:underline;padding:.4rem 0;min-height:44px;display:inline-flex;align-items:center;">Change location</button>
+        </div>
+      </div></div>
+    </div>
+  <details class="wr fade-up" id="wire-band" open hidden>
+    <summary class="wr-summary"><span class="wr-k">The wire</span><span class="wr-sub" id="wire-sub"></span></summary>
+    <div class="wr-body">
+      <div class="wr-g" id="wire-g"></div>
+      <a class="wr-all" href="/news">Everything That Moved</a>
+    </div>
+  </details>
+
   <div class="price-cards-section fade-up" id="f-prices">
 
     <div class="sec-head"><h2 class="sec-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:1.05em;height:1.05em;vertical-align:-.13em;margin-right:.34em;flex:none"><path d="M9 5v4" /> <rect width="4" height="6" x="7" y="9" rx="1" /> <path d="M9 15v2" /> <path d="M17 3v2" /> <rect width="4" height="8" x="15" y="5" rx="1" /> <path d="M17 13v3" /> <path d="M3 3v16a2 2 0 0 0 2 2h16" /></svg>Market Prices</h2><div style="display:flex;align-items:center;gap:.75rem"><span id="prices-age" style="font-family:'JetBrains Mono',monospace;font-size:.765rem;color:var(--text-muted)">Updated every 30 min</span><a href="/corn-futures-prices" class="sec-all">All Charts</a></div></div>
@@ -824,81 +953,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
       </div>
     </details>
     </div>
-  </div>    <div class="fade-up" id="f2" style="transition-delay:.08s;order:-1;grid-column:1/-1">
-      <div class="sec-head"><h2 class="sec-title">Local Conditions</h2></div>
-      <div class="card wx-card"><div class="card-body">
-        <div id="wx-loading" style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1.5rem 0;gap:.65rem">
-          <div style="font-size:1.882rem" aria-hidden="true"><svg class="ic" aria-hidden="true"><use href="#i-map-pin"/></svg></div>
-          <div style="font-size:.824rem;color:var(--text-dim);text-align:center">Getting your local weather&hellip;</div>
-          <button id="btn-allow-loc" style="padding:.65rem 1.25rem;background:var(--gold);color:#0a0c0d;border:none;border-radius:6px;font-size:.824rem;font-weight:700;cursor:pointer;min-height:44px;">Allow Location</button>
-          <button id="btn-zip-instead" style="background:none;border:none;color:var(--text-muted);font-size:.824rem;cursor:pointer;text-decoration:underline;padding:.4rem 0;min-height:44px;display:inline-flex;align-items:center;">Enter ZIP instead</button>
-        </div>
-        <div id="wx-zip-entry" style="display:none;margin-bottom:.85rem">
-          <div style="display:flex;gap:.5rem">
-            <input type="text" id="wx-zip" placeholder="ZIP code" maxlength="5" inputmode="numeric" pattern="[0-9]{5}" autocomplete="postal-code" aria-label="ZIP code for weather" style="flex:1;padding:.65rem .85rem;background:var(--surface2);border:1px solid var(--border);border-radius:6px;font-family:'JetBrains Mono',monospace;font-size:1rem;color:var(--text);outline:none;transition:border-color .15s">
-            <button id="btn-wx-go" style="padding:.65rem 1rem;background:var(--gold);color:#0a0c0d;border:none;border-radius:6px;font-size:.824rem;font-weight:700;cursor:pointer;min-height:44px;">Go</button>
-          </div>
-        </div>
-        <div id="wx-data" style="display:none">
-          <div class="wx-hero">
-            <div class="wx-icon" id="wx-icon" aria-hidden="true"><svg class="ic" aria-hidden="true"><use href="#i-cloud-sun"/></svg></div>
-            <div>
-              <div class="wx-temp"><span id="wx-temp">--</span></div>
-              <div class="wx-desc" id="wx-desc">Current conditions</div>
-              <div class="wx-loc" id="wx-loc"><svg class="ic" aria-hidden="true"><use href="#i-map-pin"/></svg> Locating...</div>
-            </div>
-          </div>
-          <div class="wx-grid">
-            <div class="wstat"><div class="wstat-lbl">Wind</div><div class="wstat-val" id="wx-wind">--</div></div>
-            <div class="wstat"><div class="wstat-lbl">Humidity</div><div class="wstat-val" id="wx-humid">--</div></div>
-            <div class="wstat"><div class="wstat-lbl">Precip Chance</div><div class="wstat-val" id="wx-precip">--</div></div>
-            <div class="wstat"><div class="wstat-lbl">Dew Point</div><div class="wstat-val" id="wx-dew">--</div></div><div class="wstat" id="s7-wx-low-w"><div class="wstat-lbl">Overnight low</div><div class="wstat-val" id="s7-wx-low"><span class="s7-nl">Not loaded yet</span></div></div><div class="wstat" id="s7-wx-soil-w"><div class="wstat-lbl">Soil, 2.4 in, modeled</div><div class="wstat-val" id="s7-wx-soil"><span class="s7-nl">Not loaded yet</span></div></div>
-          </div>
-                    <div class="wx-today" id="wx-today-summary"></div>
-          <div id="wx-forecast" style="display:none"></div>
-          <div class="wx-data-extra">
-            <div class="wx-extra-stat with-chart" id="gdu-stat" role="button" tabindex="0" aria-expanded="false" aria-controls="gdu-chart-panel"><div class="wx-extra-lbl"><svg class="ic" aria-hidden="true"><use href="#i-thermometer"/></svg> GDU Since Apr 1</div><div class="wx-extra-val" id="gdu-val">--</div><div class="wx-extra-ctx" id="gdu-ctx"></div><div class="wx-chart-toggle" id="gdu-chart-toggle">&#x25BC; History</div></div>
-            <div class="wx-extra-stat with-chart" id="precip-stat" role="button" tabindex="0" aria-expanded="false" aria-controls="precip-chart-panel"><div class="wx-extra-lbl"><svg class="ic" aria-hidden="true"><use href="#i-cloud-rain"/></svg> 30-Day Precip</div><div class="wx-extra-val" id="precip-val">--</div><div class="wx-extra-ctx" id="precip-ctx"></div><div class="wx-chart-toggle" id="precip-chart-toggle">&#x25BC; History</div></div>
-          </div>
-          <div class="wx-chart-panel" id="gdu-chart-panel" role="region" aria-label="5-year GDU monthly history">
-            <div class="wx-chart-title" id="gdu-chart-title">GDU by month &middot; Apr&ndash;Oct &middot; 5-yr avg vs this year</div>
-            <div id="gdu-chart-svg"></div>
-            <div class="wx-chart-legend"><span><span class="wx-chart-legend-sw" style="background:rgba(58,139,60,.45)"></span>5-yr avg</span><span><span class="wx-chart-legend-sw" style="background:var(--gold)"></span>This year</span></div>
-            <div class="wx-chart-takeaway" id="gdu-takeaway"></div>
-          </div>
-          <div class="wx-chart-panel" id="precip-chart-panel" role="region" aria-label="5-year precipitation monthly history">
-            <div class="wx-chart-title" id="precip-chart-title">Precip by month &middot; Jan&ndash;Dec &middot; 5-yr avg vs this year</div>
-            <div id="precip-chart-svg"></div>
-            <div class="wx-chart-legend"><span><span class="wx-chart-legend-sw" style="background:rgba(58,139,60,.45)"></span>5-yr avg</span><span><span class="wx-chart-legend-sw" style="background:var(--gold)"></span>This year</span></div>
-            <div class="wx-chart-takeaway" id="precip-takeaway"></div>
-          </div>
-          <div class="wx-summary-card" style="margin-top:.85rem">
-            <div class="wx-summary-title"><svg class="ic" aria-hidden="true"><use href="#i-calendar"/></svg> 5-Day Forecast</div>
-            <div id="wx-forecast-7day" class="wx-7day-strip">
-              <div class="wx-7day-cell"><div class="wx-7day-name">Today</div><div class="wx-7day-icon"><svg class="ic" aria-hidden="true"><use href="#i-cloud-sun"/></svg></div><div class="wx-7day-temps"><span class="hi">--&deg;</span><span class="lo">--&deg;</span></div><div class="wx-7day-meta">--</div></div>
-              <div class="wx-7day-cell"><div class="wx-7day-name">&mdash;</div><div class="wx-7day-icon"><svg class="ic" aria-hidden="true"><use href="#i-cloud-sun"/></svg></div><div class="wx-7day-temps"><span class="hi">--&deg;</span><span class="lo">--&deg;</span></div><div class="wx-7day-meta">--</div></div>
-              <div class="wx-7day-cell"><div class="wx-7day-name">&mdash;</div><div class="wx-7day-icon"><svg class="ic" aria-hidden="true"><use href="#i-cloud-sun"/></svg></div><div class="wx-7day-temps"><span class="hi">--&deg;</span><span class="lo">--&deg;</span></div><div class="wx-7day-meta">--</div></div>
-              <div class="wx-7day-cell"><div class="wx-7day-name">&mdash;</div><div class="wx-7day-icon"><svg class="ic" aria-hidden="true"><use href="#i-cloud-sun"/></svg></div><div class="wx-7day-temps"><span class="hi">--&deg;</span><span class="lo">--&deg;</span></div><div class="wx-7day-meta">--</div></div>
-              <div class="wx-7day-cell"><div class="wx-7day-name">&mdash;</div><div class="wx-7day-icon"><svg class="ic" aria-hidden="true"><use href="#i-cloud-sun"/></svg></div><div class="wx-7day-temps"><span class="hi">--&deg;</span><span class="lo">--&deg;</span></div><div class="wx-7day-meta">--</div></div>
-            </div>
-            <button class="wx-hourly-toggle" id="wx-hourly-toggle" aria-expanded="false" aria-controls="wx-hourly-panel">&#x25BC; Hourly</button>
-            <div class="wx-hourly-panel" id="wx-hourly-panel" role="region" aria-label="24-hour hourly forecast">
-              <div class="wx-hourly-strip" id="wx-hourly-strip"></div>
-            </div>
-            <div style="margin-top:.5rem;font-size:.824rem;color:var(--text-muted);text-align:center"><svg class="ic" aria-hidden="true"><use href="#i-map-pin"/></svg> <span id="wx-loc-label">Set location above</span></div>
-          </div>
-          <button id="btn-change-loc" style="margin-top:.65rem;background:none;border:none;color:var(--text-muted);font-size:.824rem;cursor:pointer;text-decoration:underline;padding:.4rem 0;min-height:44px;display:inline-flex;align-items:center;">Change location</button>
-        </div>
-      </div></div>
-    </div>
-  <details class="wr fade-up" id="wire-band" open hidden>
-    <summary class="wr-summary"><span class="wr-k">The wire</span><span class="wr-sub" id="wire-sub"></span></summary>
-    <div class="wr-body">
-      <div class="wr-g" id="wire-g"></div>
-      <a class="wr-all" href="/news">Everything That Moved</a>
-    </div>
-  </details>
-
+  </div>
     <div class="fade-up" id="f-rail-scorecard-teaser">
       <a href="/scorecard" class="rsc-teaser-link" aria-label="AGSIST prediction bot: latest calls and record">
         <span class="rsc-teaser-num" id="rsct-hit">&mdash;</span>
@@ -909,6 +964,15 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
       </a>
     </div>
   </div>
+  <section class="s7-month" id="s7-month" aria-labelledby="s7-month-h" data-track="season">
+    <div class="s7-head"><h2 class="s7-h" id="s7-month-h">This month</h2><span class="s7-k" id="s7-month-k">What leads the page this month</span></div>
+    <div class="s7-grid" id="s7-grid"></div>
+    <!-- 2026-10-06: each cell shows its figure and one short line; the rest of
+         what used to sit under it (how it is figured, sources, the reader's
+         state detail) is here, closed, never dropped. -->
+    <details class="s7-notes" id="s7-notes" hidden><summary>How these are figured</summary><div class="s7-notes-b" id="s7-notes-b"></div></details>
+  </section>
+  
   <section class="fade-up idx1-land" id="idx1-land" aria-labelledby="land-h">
     <div class="sec-head"><h2 class="sec-title" id="land-h">Land, Storage &amp; Risk</h2></div>
     <div class="land-grid">
@@ -1653,9 +1717,20 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
          verdict sentence moves into "The record in full", unchanged. */
       var btWord=bt&&bt.gate_ok&&V[bt.verdict]?V[bt.verdict].replace(/\.$/,''):btShort;
       btWord=btWord.charAt(0).toLowerCase()+btWord.slice(1);
+      /* 2026-10-06 (D11): the visible line also carries the comparison the
+         verdict rests on: the hit rate against always calling the more common
+         direction. Both rates are the file's own. */
+      var btVs='';
+      if(bt&&bt.gate_ok&&bt.hit_rate!=null){
+        var fr=bt.fell_rate,rr=bt.rose_rate,base=null;
+        if(fr!=null&&(rr==null||fr>=rr))base=['always-down',fr];else if(rr!=null)base=['always-up',rr];
+        if(base){var hr=Number(bt.hit_rate),br=Number(base[1]);
+          btVs=', '+(hr<br?'below':(hr>br?'above':'level with'))+' '+base[0]+' ('+hr.toFixed(1)+'% vs '+br.toFixed(1)+'%)';}
+      }
+      var btLine='Backtest: '+btWord+btVs;
       $('pbc-verdict').textContent=live.gate_ok
         ?('Live record: '+(V[live.verdict]||live.verdict_text||'—'))
-        :('Backtest: '+btWord+'. Too few live calls to grade.');
+        :(btLine+'. Too few live calls to grade.');
       $('pbc-full').textContent=live.gate_ok
         ?('Live record: '+(live.verdict_text||V[live.verdict]||'—'))
         :('Backtest: '+btShort+'.');
@@ -1676,7 +1751,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
       $('pbc-asof').textContent=lt.date?('Calls made at the '+fd(lt.date)+' close.'):'';
       var th=$('rsct-hit'), tl=$('rsct-label');
       if(th)th.textContent=live.gate_ok?(V[live.verdict]||'—').replace(/\.$/,''):'Too early';
-      if(tl)tl.textContent=live.gate_ok?'Prediction bot, live record':('Prediction bot. Backtest: '+btWord);
+      if(tl)tl.textContent=live.gate_ok?'Prediction bot, live record':('Prediction bot. '+btLine);
     }).catch(fail);
   })();
   </script>
@@ -4896,7 +4971,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
     if(!S.gdu)root.classList.add('s7-no-gdu');
     if(!S.hail)root.classList.add('s7-no-hail');
     if(!S.cropTour)root.classList.add('s7-no-croptour');
-    if(S.hailLead)root.classList.add('s7-hail-lead');
+    if(S.hailLead){root.classList.add('s7-hail-lead');var lh=$('land-hail');if(lh&&lh.parentNode&&lh.previousElementSibling)lh.parentNode.insertBefore(lh,lh.parentNode.firstElementChild);}
     var fn=$('s7-falln');if(fn)fn.hidden=!S.fallN;
     var hp=$('s7-hp-link');if(hp)hp.hidden=!S.hp;
     var hb=$('harvest-band');
@@ -5206,6 +5281,8 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
                position (trading day N of 22) sits in the sub-line. */
             big=gap(lead-g.p,u);
             if(g.h!=null&&!k)trail=true;
+            /* D12: the sample size stays on the visible tag. */
+            if(n)tag='so far, '+n+' settle'+(n===1?'':'s');
             var rTxt=g.h!=null?'RMA '+usd(g.h,u)+(k?' ('+dayWord(k)+')':''):'RMA has not posted one';
             var oTxt=own?'our average '+usd(own.avg,u)+' ('+own.days+(tot?' of '+tot:'')+' days, through '+(function(d){var x=dayStart(d);return x?MON[x.getMonth()]+' '+x.getDate():d;})(own.last)+')':'';
             det=useOwn?[oTxt,rTxt]:[rTxt,oTxt];
@@ -5476,7 +5553,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
       var len=(a.max||[]).length;
       for(var k=0;k<Math.min(5,len);k++){
         var r=sprayRule({rain:a.rain[k],wind:a.wind[k],gust:a.gust[k],pop:a.pop[k],rh:a.rh[k],tmax:a.max[k],tmin:a.min[k],calm:calmAt(k)});
-        if(r){r.label=k===0?'Today':(k===1?'Tmrw':names[(dow+k)%7]);}
+        if(r){r.label=k===0?'Today':(k===1?'Tmrw':names[(dow+k)%7]);r.pop=(a.pop&&a.pop[k]!=null&&!isNaN(a.pop[k]))?Number(a.pop[k]):null;}
         out.push(r);
       }
       WX.spray=out.length&&out[0]?out:null;
@@ -5573,7 +5650,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
   /* ---------- C: chips ---------- */
   function chip(){
     var v=$('idx1-zip-val'),c=$('idx1-zip-change');if(!v||!c)return;
-    c.textContent=/^\d{5}$/.test(v.textContent.trim())?'· Change':'· Set';
+    c.innerHTML='<span class="idx1-zip-dot" aria-hidden="true">· </span>'+(/^\d{5}$/.test(v.textContent.trim())?'Change':'Set')+'<span class="idx1-zip-word"> ZIP</span>';
   }
   chip();
   window.addEventListener('agsist:bids',chip);window.addEventListener('storage',chip);
@@ -5697,20 +5774,17 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 })();
 </script>
 <script>
-/* 2026-10-01 r7-design: on a phone the month strip shows after Cash Bids
-   (CSS order). Move it there in the document too, so keyboard and screen
-   reader order match what is on screen; put it back on a wide screen. */
+/* 2026-10-06 (U13): September to November, a phone folds the GDU and soil
+   tiles in Local conditions behind one button. Nothing is removed; the
+   button opens them in place. Wider screens show them as before. */
 (function(){
-  var m=document.getElementById('s7-month'),f1=document.getElementById('f1');
-  if(!m||!f1||!m.parentNode)return;
-  var home=document.createComment('s7-month home');m.parentNode.insertBefore(home,m);
-  var mq=window.matchMedia('(max-width:900px)');
-  function place(){ if(mq.matches){ if(f1.nextSibling!==m) f1.parentNode.insertBefore(m,f1.nextSibling); } else if(home.nextSibling!==m){ home.parentNode.insertBefore(m,home.nextSibling); } }
-  place(); if(mq.addEventListener)mq.addEventListener('change',place);
-  /* the bid-network note shows under the card (CSS order): same order in
-     the document */
-  var card=f1.querySelector(':scope>.card'),note=f1.querySelector(':scope>.bidnet-note');
-  if(card&&note&&card.nextElementSibling!==note)f1.insertBefore(note,card.nextSibling);
+  var b=document.getElementById('wx-fold-btn'),root=document.documentElement;if(!b)return;
+  var m;try{m=+new Intl.DateTimeFormat('en-US',{timeZone:'America/Chicago',month:'numeric'}).format(new Date());}catch(e){m=new Date().getMonth()+1;}
+  if(m<9||m>11){b.hidden=true;return;}
+  root.classList.add('wx-fold-season');
+  function word(){b.textContent=root.classList.contains('s7-no-gdu')?'Soil temperature':'Growing degree days and soil temperature';}
+  word();setTimeout(word,0);
+  b.addEventListener('click',function(){var on=!root.classList.contains('wx-fold-open');root.classList.toggle('wx-fold-open',on);b.setAttribute('aria-expanded',on?'true':'false');});
 })();
 </script>
 </body>
