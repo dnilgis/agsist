@@ -283,6 +283,15 @@ window.agsistFillZip = function() {
   return zip;
 };
 
+/* WAVE3-I: full state name to postal code, for Open-Meteo's admin1. */
+var _ST_CODE = {'alabama':'AL','alaska':'AK','arizona':'AZ','arkansas':'AR','california':'CA','colorado':'CO','connecticut':'CT','delaware':'DE','district of columbia':'DC','florida':'FL','georgia':'GA','hawaii':'HI','idaho':'ID','illinois':'IL','indiana':'IN','iowa':'IA','kansas':'KS','kentucky':'KY','louisiana':'LA','maine':'ME','maryland':'MD','massachusetts':'MA','michigan':'MI','minnesota':'MN','mississippi':'MS','missouri':'MO','montana':'MT','nebraska':'NE','nevada':'NV','new hampshire':'NH','new jersey':'NJ','new mexico':'NM','new york':'NY','north carolina':'NC','north dakota':'ND','ohio':'OH','oklahoma':'OK','oregon':'OR','pennsylvania':'PA','rhode island':'RI','south carolina':'SC','south dakota':'SD','tennessee':'TN','texas':'TX','utah':'UT','vermont':'VT','virginia':'VA','washington':'WA','west virginia':'WV','wisconsin':'WI','wyoming':'WY'};
+function _stateCode(name) {
+  var n = String(name || '').trim();
+  if (/^[A-Za-z]{2}$/.test(n)) { var u = n.toUpperCase(); for (var k in _ST_CODE) { if (_ST_CODE[k] === u) return u; } return ''; }
+  return _ST_CODE[n.toLowerCase()] || '';
+}
+window.agsistStateCode = _stateCode;
+
 function loadWeatherZip() {
   var zip = (document.getElementById('wx-zip') || {}).value;
   if (!zip || zip.length !== 5 || isNaN(zip)) return;
@@ -297,11 +306,16 @@ function loadWeatherZip() {
         // Detect postal-code name and use admin1 as city label instead.
         var _isZip = /^\d+$/.test((r.name || '').trim());
         var _city = _isZip ? (r.admin1 || r.name) : r.name;
-        var _state = _isZip ? '' : (r.admin1 ? r.admin1.substring(0, 2).toUpperCase() : '');
+        /* WAVE3-I: the state code comes from the full name. The first two
+           letters of "Minnesota" are "MI". A name not in the table prints no
+           state rather than a wrong one. */
+        var _state = _isZip ? '' : _stateCode(r.admin1);
         var _label = _city + (_state ? ', ' + _state : '');
         // v17: User-entered ZIP — clear guard so bids reload with new ZIP
         _bidsLoadedThisSession = false;
-        fetchWeather(r.latitude, r.longitude, _label);
+        /* WAVE3-I: the typed ZIP goes through to the bids and the saved
+           location. Nominatim is asked only for the county. */
+        fetchWeather(r.latitude, r.longitude, _label, { zip: zip, state: _state });
       }
     }).catch(function() {});
 }
@@ -356,7 +370,7 @@ function calcSprayRating(tempF, humid, wind) {
   return 'good';
 }
 
-function fetchWeather(lat, lon, label) {
+function fetchWeather(lat, lon, label, known) {
   // v16: stamp localStorage save with ts so boot() can detect stale cache.
   // v17 FIX: MERGE into cache instead of replacing it. Previously each
   // fetchWeather call wiped zip/state/county and waited for propagateLocation
@@ -377,11 +391,22 @@ function fetchWeather(lat, lon, label) {
       _cachedZip = prior.zip || '';
       _cachedState = prior.state || '';
       _cachedCounty = prior.county || '';
+      /* WAVE3-I: a ZIP the reader typed stays theirs at the same spot. */
+      if (!known && prior.zipTyped && /^\d{5}$/.test(_cachedZip)) known = { zip: _cachedZip, state: _cachedState };
     }
-    localStorage.setItem('agsist-wx-loc', JSON.stringify({
+  } catch(e) {}
+  /* WAVE3-I: a typed ZIP wins over anything cached, at any coordinates. */
+  var _typed = !!(known && /^\d{5}$/.test(known.zip || ''));
+  if (!_typed) known = null;
+  else if (known.zip !== _cachedZip) { _cachedZip = known.zip; _cachedState = known.state || ''; _cachedCounty = ''; }
+  else if (known.state) _cachedState = known.state;
+  try {
+    var _rec = {
       lat: lat, lon: lon, label: label, ts: Date.now(),
       zip: _cachedZip, state: _cachedState, county: _cachedCounty
-    }));
+    };
+    if (_typed) _rec.zipTyped = true;
+    localStorage.setItem('agsist-wx-loc', JSON.stringify(_rec));
   } catch(e) {}
 
   // v17 FIX: when initializing AGSIST_GEO, preload zip/state/county from
@@ -449,7 +474,7 @@ function fetchWeather(lat, lon, label) {
   // from autoloading. Now bids autoload even when the weather API is down.
   // Weather and reverse-geocode are independent network calls; treating
   // them as a sequence was a bug.
-  propagateLocation(lat, lon, label);
+  propagateLocation(lat, lon, label, known);
 
   var url = 'https://api.open-meteo.com/v1/forecast?latitude='+lat+'&longitude='+lon
     + '&current=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation_probability,weather_code,wind_speed_10m,wind_direction_10m,dew_point_2m'
@@ -544,7 +569,7 @@ function fetchWeather(lat, lon, label) {
 // Writes to BOTH window.AGSIST_GEO (legacy, used by bids-homepage.js) and
 // window.AGSIST_STATE.weather (primary, read by homepage RMA date lookup
 // and other pages that need refined location without another fetch).
-function propagateLocation(lat, lon, label) {
+function propagateLocation(lat, lon, label, known) {
   fetch('https://nominatim.openstreetmap.org/reverse?lat='+lat+'&lon='+lon+'&format=json&zoom=18&addressdetails=1')
     .then(function(r) { return r.json(); })
     .then(function(geo) {
@@ -564,6 +589,14 @@ function propagateLocation(lat, lon, label) {
       }
       var zip = ((addr.postcode || '').toString().match(/\d{5}/) || [''])[0];
       var name = city + (st ? ', '+st : '');
+      /* WAVE3-I: with a typed ZIP, the ZIP, the state and the label are the
+         reader's and the geocoder's. A reverse lookup of the ZIP's centre
+         can land in the next ZIP or a township; only its county is used. */
+      if (known && known.zip) {
+        zip = known.zip;
+        if (known.state) st = known.state;
+        if (label) { name = label; city = String(label).split(',')[0]; }
+      }
 
       if (window.AGSIST_GEO) {
         window.AGSIST_GEO.city = city;
@@ -625,6 +658,15 @@ function propagateLocation(lat, lon, label) {
     }).catch(function() {
       // v17: if Nominatim fails, we still have lat/lon. Try cache for last
       // known ZIP and fire bids with that. Better stale data than no bids.
+      /* WAVE3-I: a typed ZIP needs no reverse lookup to load bids. */
+      if (known && known.zip) {
+        _loadBidsOnce(lat, lon, label || '', known.zip);
+        if (Array.isArray(window._AGSIST_GEO_CALLBACKS)) {
+          var kp = { lat: lat, lon: lon, city: String(label || '').split(',')[0], state: known.state || '', county: '', zip: known.zip, name: label || '' };
+          window._AGSIST_GEO_CALLBACKS.forEach(function(cb) { try { cb(kp); } catch(e) {} });
+        }
+        return;
+      }
       try {
         var saved = JSON.parse(localStorage.getItem('agsist-wx-loc') || '{}');
         if (saved.zip) {
