@@ -469,7 +469,10 @@ def load_net_index(data, now_ms):
             if len(end) >= 7 and end[:4].isdigit() and end[4] == "-" and end[:7] < month:
                 continue
             w = wid_for(p.get("state"), p.get("operator"), p.get("city"), crop)
+            # `town`: the bids merge's display town, set only when `city` is an
+            # elevator's name ("Walsh Grain"); printed, never hashed.
             row = {"state": p.get("state") or "", "facility": p.get("operator") or "", "city": p.get("city") or "",
+                   "town": p.get("town") or "",
                    "crop": crop, "period": period, "plabel": period_label(period, n.get("delivery") or ""),
                    "cash": int(round(cash * 100)), "basis": basis_cents_of(n), "pricedAt": p.get("pricedAt")}
             idx[w] = AMBIGUOUS if w in idx else row
@@ -477,7 +480,7 @@ def load_net_index(data, now_ms):
 
 
 def net_name(row):
-    town = ", ".join(x for x in (row["city"], row["state"]) if x)
+    town = ", ".join(x for x in (row.get("town") or row["city"], row["state"]) if x)
     return row["facility"] + (", " + town if town else "")
 
 
@@ -835,6 +838,10 @@ def selftest():
     m2 = change_email("a@x.com", "wC", "Chatham Coop, IL — corn", row_old["basis"], row_new, "https://w.dev", s, "AGSIST", "n@agsist.com", None)
     b2 = m2.get_body(("plain",)).get_content()
     assert "PO Box 243" in b2 and "Stop all elevator watches" in b2 and "-25¢" in b2.replace("−", "-") and "-30¢" in b2.replace("−", "-")
+    # The display town is printed when the bids merge set one; `city` otherwise.
+    assert net_name({"facility": "Walsh Grain", "city": "Walsh Grain", "town": "Mauston", "state": "WI"}) \
+        == "Walsh Grain, Mauston, WI"
+    assert net_name({"facility": "Allied", "city": "Tomah", "state": "WI"}) == "Allied, Tomah, WI"
     selftest_alerts()
     print("selftest ok")
 

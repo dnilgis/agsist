@@ -732,7 +732,7 @@ h2.snap-lbl,h2.basis-title,h2.crop-title{margin:0;display:inline-block}
 </main>
 
 <div id="site-footer"></div>
-<script src="/components/bids-network.js?v=1" defer></script>
+<script src="/components/bids-network.js?v=5" defer></script>
 <script src="/components/loader.js?v=16" defer></script>
 <script src="/components/geo.js?v=17" defer></script>
 <script>
@@ -1654,7 +1654,7 @@ function renderBasisCard(data){
     if(interpEl)interpEl.style.display='block';
 
     if(locEl){
-      var label=bidGrid?bidGrid.label:(b.city?(b.city+(b.state?', '+b.state:'')):(b.facility||'\u2014'));
+      var label=bidGrid?bidGrid.label:((b.town||b.city)?((b.town||b.city)+(b.state?', '+b.state:'')):(b.facility||'\u2014'));
       var locStr=label;
       if(bidGrid&&userLoc.lat!=null&&userLoc.lng!=null&&bidGrid.lat!=null){
         var dMi=haversineMi(userLoc.lat,userLoc.lng,bidGrid.lat,bidGrid.lng);
