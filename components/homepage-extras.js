@@ -345,7 +345,7 @@
   }
   function foldTitle(withChart){
     var f = $('idx1-basis-chart'), d = f && f.closest && f.closest('details'), sp = d && d.querySelector('summary span');
-    if(sp) sp.textContent = withChart ? 'Store or sell? Basis history' : 'Store or sell?';
+    if(sp) sp.textContent = withChart ? 'Store or sell? · basis history' : 'Store or sell?';
   }
   function fetchSparklines(state){
     if(sparkCache[state]) return sparkCache[state];
