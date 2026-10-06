@@ -1312,7 +1312,6 @@ html.s7-no-hail #idx1-land .land-grid{grid-template-columns:minmax(0,1fr)}
 /* Claim line: a quiet ruled row at the foot of the bids card. Not ad orange: it is not paid space. */
 #f1 .r7-claim{display:flex;align-items:center;min-height:44px;margin-top:12px;padding-top:8px;border-top:1px solid var(--hair);font-size:.824rem;color:var(--text-dim);text-decoration:none}
 #f1 .r7-claim:hover,#f1 .r7-claim:focus-visible{color:var(--text);text-decoration:underline}
-#bids-list-area .r7-ref-note{font-size:.706rem;color:var(--text-muted);padding:.4rem 0 0}
 #idx1-calc-carry-src{margin:.25rem 0 .4rem}
 /* The Read: "61st percentile", one word, no gap */
 #f-read .r7-ord{font-size:.5em;font-weight:700}
@@ -1469,10 +1468,8 @@ details>summary:hover{color:var(--text)}
 
 /* One type scale (12/14/17/22). The bids card is built by a shared script
    with its own sizes (12.75, 14.45, 16.15, 17.85px); snap them here. */
-#bids-list-area [style*="font-size:.75rem"]{font-size:.706rem!important}
 #bids-list-area [style*="font-size:.82rem"],#bids-list-area [style*="font-size:.85rem"]{font-size:.824rem!important}
 #bids-list-area [style*="font-size:.95rem"],#bids-list-area [style*="font-size:1.05rem"]{font-size:1rem!important}
-#bids-list-area .r7-per{font-size:.706rem!important}
 .spray-day-name,.spray-day-reason,.spray-day-status{font-size:.706rem!important}
 .wx-7day-name{font-size:.824rem!important}
 .t-item .r7-frac{font-size:.706rem!important}
@@ -1550,27 +1547,7 @@ details.wr>summary,details.hbz>summary{align-items:center!important}
 
 /* ===== block 15 of 23 id="r10" ===== */
 /* Round 10 (2026-10-03): the bids card without the air. */
-/* Crop and its basis contract on one line. */
-#bids-list-area span[style="min-width:0"]>span{display:inline!important}
-#bids-list-area span[style="min-width:0"]>.r7-ref:not(:empty)::before{content:"\00a0\00b7\00a0";color:var(--text-muted)}
-#bids-list-area .r7-per{margin:.35rem 0 0!important}
-#bids-list-area .r7-carry{margin-top:-.1rem}
-#bids-list-area .bh-elev{position:relative;padding:.45rem 0!important}
-/* "Watch this elevator" had its own 44px row under every elevator. */
-@media(min-width:601px){
-  #bids-list-area .bh-elev>div:first-child{padding-right:10rem}
-  #bids-list-area .watch-elevator-wrap{position:absolute;top:.45rem;right:0;margin:0!important}
-  #bids-list-area .watch-elevator-btn{min-height:32px!important}
-}
-@media(max-width:600px){
-  #bids-list-area .watch-elevator-wrap{margin-top:0!important}
-  #bids-list-area .watch-elevator-btn{min-height:36px!important}
-}
 /* The footnote stack under the elevators. */
-#bids-list-area .r7-ref-note,#bids-list-area .bids-read-time{margin:.25rem 0 0!important;padding:0!important;line-height:1.45}
-#bids-list-area a[href^="/cash-bids?zip="]{text-align:left!important;padding:.35rem 0 .1rem!important}
-#f1 .r7-claim{display:inline-block!important;min-height:0!important;margin:.25rem 0 0!important;padding:.35rem 0!important;border:0!important}
-#idx1-trust-ledger{margin-top:.25rem!important}
 /* Store or sell: four inputs across on desktop instead of 3 + 1. */
 @media(min-width:601px){
   .idx1-extras-row{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr));gap:.6rem}
@@ -1966,6 +1943,26 @@ h3:where(.pc-section-lbl,.idx1-extras-title,.s7-ck){font-family:inherit;letter-s
 .idx1-sp-txt strong{color:var(--text);font-weight:700}
 .idx1-sp-cta{flex:none;display:inline-flex;align-items:center;min-height:44px;text-decoration:none}
 .idx1-sp-cta:hover,.idx1-sp-cta:focus-visible{text-decoration:underline}
+
+/* ===== HERO-E (2026-10-06): the cash bids card as a price board =====
+   The card's own layout ships inside components/bids-homepage.js (index.html
+   draws the same card and does not load this file). Here: what only index1
+   has around it. */
+/* Feed counts now sit inside "How to read these bids". */
+#bids-list-area .bh-feed .r7-cov,#bids-list-area .bh-feed #idx1-trust-ledger{font-family:inherit!important;font-size:.8125rem!important;color:var(--text-muted);border:0!important;padding:0!important;margin:0!important;text-align:left}
+#bids-list-area .bh-feed #idx1-trust-ledger{margin-top:.2rem!important}
+/* "Run an elevator? Claim your board." is one small link. */
+#f1 .r7-claim{display:inline-flex!important;align-items:center;min-height:44px!important;margin:0!important;padding:0!important;border:0!important;font-size:.8125rem!important;color:var(--text-muted)!important;text-decoration:underline;text-underline-offset:3px}
+/* Store or sell? starts closed on every screen. Desktop shows its summary,
+   in the fold style the phone uses, at the page's 13px floor. */
+.m-fold--calc:not(:has(.idx1-extras-card[style*="block"])):not(:has(.idx1-extras-line[style*="block"])){display:none}
+.m-fold--calc{margin:.5rem 0 0}
+.m-fold--calc>summary.m-fold-sum{display:flex!important;align-items:center;justify-content:space-between;gap:12px;min-height:44px;padding:10px 0;border-top:1px solid var(--hair);border-bottom:1px solid var(--hair);cursor:pointer;list-style:none;font-family:inherit!important;font-size:.875rem!important;font-weight:600;letter-spacing:0!important;text-transform:none!important}
+.m-fold--calc>summary.m-fold-sum::-webkit-details-marker{display:none}
+.m-fold--calc>summary.m-fold-sum::after{content:'+';font-size:1rem;color:var(--text-muted)}
+.m-fold--calc[open]>summary.m-fold-sum::after{content:'\2212'}
+.m-fold--calc[open]>summary.m-fold-sum{border-bottom:0;margin-bottom:8px}
+.m-fold--calc>summary.m-fold-sum:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
 
 /* ===== THE LOOK (2026-10-03) ==========================================
    Sig: "lots of still monotone and hard to differentiate one thing from
