@@ -563,7 +563,7 @@
   <!-- 2. HOW THE CHECK IS BUILT (waterfall + sandbox) -->
   <section class="dp-sec" aria-labelledby="dp-fall-h">
     <h2 class="dp-sec-label" id="dp-fall-h"><svg class="ic" aria-hidden="true"><use href="#i-git-branch"/></svg> How your milk check is built</h2>
-    <p class="dp-sec-intro">One hundredweight of milk, top to bottom. Cheese and whey are the four commodities that set Class III; butter and nonfat dry milk set Class IV. <span style="color:var(--green);font-weight:700">Green</span> is a credit, <span style="color:var(--red);font-weight:700">red</span> is a deduction. Switch to the sandbox to move the prices yourself.</p>
+    <p class="dp-sec-intro">One hundredweight of milk, top to bottom. Four commodities set the prices: cheese, dry whey and butter set Class III (butter through the butterfat price); butter and nonfat dry milk set Class IV. <span style="color:var(--green);font-weight:700">Green</span> is a credit, <span style="color:var(--red);font-weight:700">red</span> is a deduction. Switch to the sandbox to move the prices yourself.</p>
 
     <div class="dp-fall">
       <div class="dp-fall-toggle" role="tablist" aria-label="Waterfall mode">
@@ -577,17 +577,17 @@
       <div class="dp-sandbox" id="dp-sandbox">
         <div class="dp-slider-row">
           <span class="dp-slider-lbl">Cheese</span>
-          <input type="range" class="dp-slider" id="sl-cheese" min="1.00" max="2.60" step="0.0025" value="1.6203" aria-label="Cheese price per pound">
+          <input type="range" class="dp-slider" id="sl-cheese" min="1.00" max="2.60" step="0.0001" value="1.6203" aria-label="Cheese price per pound">
           <span class="dp-slider-val" id="sv-cheese">$1.6203</span>
         </div>
         <div class="dp-slider-row">
           <span class="dp-slider-lbl">Dry whey</span>
-          <input type="range" class="dp-slider" id="sl-whey" min="0.20" max="1.00" step="0.0025" value="0.6602" aria-label="Dry whey price per pound">
+          <input type="range" class="dp-slider" id="sl-whey" min="0.20" max="1.00" step="0.0001" value="0.6602" aria-label="Dry whey price per pound">
           <span class="dp-slider-val" id="sv-whey">$0.6602</span>
         </div>
         <div class="dp-slider-row">
           <span class="dp-slider-lbl">Butterfat</span>
-          <input type="range" class="dp-slider" id="sl-fat" min="1.50" max="3.50" step="0.001" value="1.5107" aria-label="Butterfat price per pound">
+          <input type="range" class="dp-slider" id="sl-fat" min="1.00" max="3.50" step="0.0001" value="1.5107" aria-label="Butterfat price per pound">
           <span class="dp-slider-val" id="sv-fat">$1.5107</span>
         </div>
         <p class="dp-sandbox-note">These drive the Class III formula. Component values and the class price recompute live below, using the current USDA make allowances and yield factors. This is a teaching model &mdash; USDA's official monthly price is the authority.</p>
@@ -623,7 +623,7 @@
     <p class="dp-sec-intro">The class price is a <strong>starting point, not your paycheck</strong>. Three more layers sit between it and your account.</p>
 
     <div class="dp-fall">
-      <div class="dp-row"><div class="dp-row-main"><div class="dp-row-name"><svg class="ic" aria-hidden="true"><use href="#i-layers"/></svg> Blend / uniform price</div><div class="dp-row-desc">Your order pools all four classes and pays a weighted average. Because most milk is cheese milk (Class III was 57% of the pool in May 2026), the blend leans toward Class III &mdash; the higher-value fluid milk is only about a quarter of the pool.</div></div><div class="dp-row-val">$19.75<span class="u">/cwt</span></div></div>
+      <div class="dp-row"><div class="dp-row-main"><div class="dp-row-name"><svg class="ic" aria-hidden="true"><use href="#i-layers"/></svg> Blend / uniform price</div><div class="dp-row-desc">Your order pools all four classes and pays a weighted average. Because most milk is cheese milk (Class III was 57% of the pool in May 2026), the blend leans toward Class III &mdash; the higher-value fluid milk is only about a quarter of the pool. Your order&rsquo;s market administrator publishes it monthly.</div></div><div class="dp-row-val">varies<span class="u">/cwt</span></div></div>
       <div class="dp-row dp-op deduct"><div class="dp-row-main"><div class="dp-row-name">&plusmn; Producer price differential (PPD)</div><div class="dp-row-desc">The plug number that reconciles the blend with what you're paid. Positive in normal months. It can go sharply negative (see below), and then it comes right off your check.</div></div><div class="dp-row-val">varies<span class="u">/cwt</span></div></div>
 
       <div class="dp-row dp-op deduct"><div class="dp-row-main"><div class="dp-row-name">&minus; Hauling &amp; co-op deductions</div><div class="dp-row-desc">Trucking your milk to the plant, plus your cooperative's marketing, capital, and promotion assessments. Pulled before the check is cut. Often $1&ndash;2+/cwt combined.</div></div><div class="dp-row-val">&minus;$1 to $2<span class="u">/cwt</span></div></div>
@@ -661,7 +661,7 @@
     <div class="dp-margin">
       <div class="dp-bar-scale"><span>$0</span><span>the DMC margin: milk price minus feed cost</span></div>
       <div class="dp-bar">
-        <div class="dp-bar-fill" style="width:78%"></div>
+        <div class="dp-bar-fill" style="width:43%"></div>
         <div class="dp-bar-cost" style="left:52%"></div>
         <div class="dp-bar-cost-lbl" style="left:52%">$9.50 safety-net trigger</div>
       </div>
@@ -678,7 +678,7 @@
       <div class="dp-example-line"><span>Gross milk check, before hauling</span><span class="v">$44,051</span></div>
       <div class="dp-example-line"><span>Est. cost to produce at ~$19/cwt (ERS avg herd)</span><span class="v neg">&minus;$41,230</span></div>
       <div class="dp-example-line tot"><span>Left for the mortgage, family, and reinvestment</span><span class="v pos">$2,821</span></div>
-      <p class="dp-example-note">Illustrative, using the most current published price with a public number behind it (USDA NASS's July 2026 all-milk price, before hauling and co-op deductions) and ERS's average cost of production. The mailbox price itself isn't published in real time (see above), so the true net figure, after hauling and PPD, sits lower than this. Beef and cull-cow income and each farm's own cost structure move the real number &mdash; which is exactly why the only cost that matters is <a href="/breakeven" style="color:var(--gold);text-decoration:none">your own</a>.</p>
+      <p class="dp-example-note">Illustrative, using USDA NASS's July 2026 all-milk price (before hauling and co-op deductions; the August price above is newer) and ERS's average cost of production. The mailbox price itself isn't published in real time (see above), so the true net figure, after hauling and PPD, sits lower than this. Beef and cull-cow income and each farm's own cost structure move the real number &mdash; which is exactly why the only cost that matters is <a href="/breakeven" style="color:var(--gold);text-decoration:none">your own</a>.</p>
     </div>
 
     <div class="dp-cards" style="margin-top:1rem">
@@ -861,7 +861,7 @@
 (function(){
   'use strict';
   // ---- Class III teaching model (current USDA formula constants, 2025 rule) ----
-  // Protein  = (Cheese - MA_cheese) * 1.383 + ((Cheese - MA_cheese) * 1.572 - ButterfatPrice * 0.9) * 0.2
+  // Protein  = (Cheese - MA_cheese) * 1.383 + ((Cheese - MA_cheese) * 1.589 - ButterfatPrice * 0.91) * 1.17
   //   NOTE: coefficients per 7 CFR 1000.50; used here as a transparent teaching model,
   //   not the settlement calc. USDA's announced monthly price is the authority.
   // Make allowances and factors as amended by the January 2025 FMMO final rule
@@ -933,7 +933,7 @@
     if(!isReal && modelGap!=null && Math.abs(modelGap)>=0.01){
       gapNote=' At the starting values this model lands '+Math.abs(modelGap).toFixed(2)+
         ' '+(modelGap>0?'above':'below')+' USDA\u2019s announced '+SEED.month+
-        ' price of '+cwt(SEED.classIII)+' — announced prices use exact NASS survey averages and timing this simplified model does not carry. '+
+        ' price of '+cwt(SEED.classIII)+' — announced prices use exact USDA AMS survey averages and timing this simplified model does not carry. '+
         'Treat the shape as the lesson, not the last nickel.';
     }
     var finalDesc = isReal
@@ -1149,6 +1149,8 @@
       if(pos(sc)&&pos(sw)&&pos(sf)&&pos(d.class3)&&Math.abs(classIII(sc,sw,sf).val-d.class3)<=0.02){
         SEED.cheese=sc;SEED.whey=sw;SEED.fat=sf;SEED.classIII=d.class3;SEED.month=m;seedLabel();
         slC.value=sc;slW.value=sw;slF.value=sf;
+        // keep the readouts with the sliders: they showed the old seed month until Reset
+        svC.textContent=money(sc);svW.textContent=money(sw);svF.textContent=money(sf);
         if(tabReal.classList.contains('on')) render(SEED.cheese,SEED.whey,SEED.fat,SEED.month,true);
       }
     }
