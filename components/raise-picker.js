@@ -82,13 +82,24 @@
   var btn=document.getElementById('pk-btn'),panel=document.getElementById('pk-panel'),
       val=document.getElementById('pk-val'),lead=document.getElementById('pk-lead'),
       chg=document.getElementById('pk-chg'),say=document.getElementById('pk-say');
+  /* Does anything on the page answer to this pick right now? */
+  function responds(p){
+    var q=function(sel){return document.querySelector(sel);};
+    if((p.tk||[]).some(function(t){var e=q('.prices-strip .t-item[data-sym="'+t+'"]');return e&&!e.classList.contains('t-noq');}))return true;
+    if((p.led||[]).some(function(t){var e=q('#f-prices .r7-row[data-r7k="'+t+'"]');return e&&!e.classList.contains('r7-noq');}))return true;
+    if((p.cot||[]).length&&window.AGSIST_COT&&!window.AGSIST_COT.failed)return true;
+    if((p.sig||[]).some(function(id){return !!document.getElementById(id);}))return true;
+    if(p.bid&&q('#bids-list-area .bh-crop[data-crop="'+p.bid+'"]'))return true;
+    if(p.ins){var ic=q('#s7-grid');if(ic&&ic.textContent.indexOf(p.ins)>=0)return true;}
+    return false;
+  }
   function names(){return chosen.map(function(k){var p=BYK[k];return p.g==='w'?p.n+' wheat':p.n;});}
   function paintBtn(){
     if(!btn)return;
     var nm=names();
-    if(!nm.length){lead.textContent='What do you raise?';val.textContent='';chg.textContent='Pick to put it first';}
+    if(!nm.length){lead.textContent='What do you raise?';val.textContent='';chg.textContent='Sort the page';}
     else{lead.textContent='You raise';val.textContent=nm.length>2?nm.slice(0,2).join(', ')+' +'+(nm.length-2):nm.join(', ');chg.textContent='· Change';}
-    btn.setAttribute('aria-label',nm.length?'You raise '+nm.join(', ')+'. Change':'What do you raise? Pick to put it first on this page');
+    btn.setAttribute('aria-label',nm.length?'You raise '+nm.join(', ')+'. Change':'What do you raise? Sort the page by it');
   }
   function build(){
     if(!panel)return;
@@ -122,7 +133,16 @@
     chosen=c.filter(function(k){return BYK[k];}).sort(function(a,b){return BYK[a].i-BYK[b].i;});
     if(chosen.length)lsSet(KEY,chosen.join(','));else lsDel(KEY);
     setPrefs();paintBtn();applyPage(true);
-    if(say)say.textContent=chosen.length?'Saved. '+names().join(', ')+' first.':'Cleared. The page is back to its usual order.';
+    /* WAVE3-L: say only what moved. A pick with nothing on this page for it
+       (peanuts in Wisconsin, a crop with no quote yet) is named as such. */
+    if(say){
+      if(!chosen.length)say.textContent='Cleared. The page is back to its usual order.';
+      else{
+        var hit=[],none=[];
+        chosen.forEach(function(k){(responds(BYK[k])?hit:none).push(BYK[k].g==='w'?BYK[k].n+' wheat':BYK[k].n);});
+        say.textContent='Saved. '+(hit.length?hit.join(', ')+' first.':'')+(none.length?' Nothing on this page for '+none.join(', ')+' yet.':'');
+      }
+    }
     if(window.gaEvent)try{window.gaEvent('raise_pick',{picks:chosen.join(',')||'none'});}catch(e){}
   }
   if(btn&&panel){
@@ -181,7 +201,8 @@
       reorder(O.keyGrid,kc);
     }catch(e){}
     try{ /* more grains and livestock */
-      var lw=all('led');
+      /* WAVE3-L: a row with no quote (hidden) is not lifted or opened for. */
+      var lw=all('led').filter(function(k){var r=document.querySelector('#f-prices .r7-row[data-r7k="'+k+'"]');return !(r&&r.classList.contains('r7-noq'));});
       reorder(O.led,rank(O.ledRows,function(e){return e.getAttribute('data-r7k');},lw));
       if(O.more){
         /* Open the fold when a chosen row is in it; give it back when not. */
