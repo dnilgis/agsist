@@ -572,7 +572,7 @@ def cmd_append(args):
         return 0
     print(f"New report date: {latest}", flush=True)
 
-    prices = load_price_frames(latest - timedelta(days=30))
+    prices = load_price_frames(backfill_start(deep, latest))
     added = 0
     for key in COMMODITIES:
         b = deep["commodities"].get(key)
@@ -609,7 +609,7 @@ def cmd_append(args):
         raw = prices.get(key, {})
         if not raw:
             continue
-        lo = max(0, len(b["dates"]) - 8)
+        lo = max(0, len(b["dates"]) - BACKFILL_ROWS)
         # Anchor below the rows being filled, so a value this loop writes is
         # never the anchor for the next one.
         adj = rebase_to_stored(CAL.roll_adjust(raw, key), b, lo + 1)
@@ -634,6 +634,25 @@ def cmd_append(args):
     print(f"Appended {added} commodities, backfilled {filled} entry prices.", flush=True)
     write_deep(deep["commodities"], f"append {latest}")
     return 0
+
+
+BACKFILL_ROWS = 8
+
+
+def backfill_start(deep, latest):
+    """First day of prices the append run needs: 10 days before the oldest
+    row the backfill loop may fill (BACKFILL_ROWS back), and never later than
+    30 days before the new report. Before 2026-10-05 the run fetched only 30
+    days while the loop reached ~49 days back, so the rebase anchor sat
+    outside the window and nothing was ever backfilled (the 2026-09-22 row
+    kept px_entry null)."""
+    start = latest - timedelta(days=30)
+    for b in (deep.get("commodities") or {}).values():
+        ds = (b or {}).get("dates") or []
+        if ds:
+            d = date.fromisoformat(ds[max(0, len(ds) - BACKFILL_ROWS)]) - timedelta(days=10)
+            start = min(start, d)
+    return start
 
 
 def cmd_verify(args):
@@ -872,6 +891,12 @@ def selftest():
         globals()["fetch_socrata"] = keep_fetch
         globals()["load_price_frames"] = keep_prices
         shutil.rmtree(tmp, ignore_errors=True)
+
+    # The append run's price window reaches the oldest row it may backfill.
+    dd = {"commodities": {"corn": {"dates": ["2026-08-04", "2026-08-11", "2026-08-18", "2026-08-25", "2026-09-01",
+                                             "2026-09-08", "2026-09-15", "2026-09-22", "2026-09-29"]}}}
+    ck("backfill window starts 10 days before the 8th row back", backfill_start(dd, date(2026, 10, 6)), date(2026, 8, 1))
+    ck("never later than 30 days back", backfill_start({"commodities": {}}, date(2026, 10, 6)), date(2026, 9, 6))
 
     print()
     if fails:

@@ -246,30 +246,53 @@ def unit_guard(quotes):
 CLASS_SPREADS = {"kcwheat": "KC HRW", "mplswheat": "MGEX HRS"}
 
 
-def class_spreads(quotes, now=None):
-    """KC HRW and MGEX HRS minus Chicago SRW (2026-10-03, wave1-C).
+def first_notice_day(yr, mon):
+    """CBOT first notice day for a grain contract month: the last business day
+    of the month BEFORE delivery. Dec 2026 -> Mon Nov 30 2026. Business day is
+    contract_calendar.is_trading_day, the one definition of a session, so an
+    exchange holiday on the last weekday pushes it a day earlier."""
+    from datetime import date, timedelta
+    from contract_calendar import is_trading_day
+    d = date(yr, mon, 1) - timedelta(days=1)
+    while not is_trading_day(d):
+        d -= timedelta(days=1)
+    return d
 
-    Month against month first: the nearest unexpired delivery month for
-    which BOTH <class>-<mon><yy> and wheat-<mon><yy> carry a fresh close.
-    A spread between two continuous series is only a spread if both sit on
-    the same month, and Yahoo's continuous series follow volume, so they can
-    straddle a roll. Fallback, flagged `basis: "most-active"`: the two
-    continuous quotes, only when neither is stale and Chicago is not inside
-    a roll window. Otherwise cents is None and `reason` says why.
-    Pure function of its inputs; selftested in scripts/test_class_spreads.py.
+
+def class_spreads(quotes, now=None):
+    """KC HRW and MGEX HRS minus Chicago SRW (2026-10-03, wave1-C; wave3-J).
+
+    Month against month only: the nearest delivery month for which BOTH
+    <class>-<mon><yy> and wheat-<mon><yy> carry a fresh close, and which has
+    not reached first notice day. From first notice day the month is in
+    delivery and thinly traded, so it no longer stands for the class; the next
+    month is used.
+
+    There is no fallback to the two continuous series. KE=F and ZW=F follow
+    volume, so they can sit on different months (KC on March while Chicago is
+    still on December), and the difference is then a calendar spread printed
+    as a class spread. When no same-month pair is on file, cents is None and
+    `reason` says why. Pure function of its inputs; selftested in
+    scripts/test_class_spreads.py.
     """
     def fresh(q):
         return isinstance(q, dict) and q.get("close") is not None and not q.get("stale")
 
+    today = (now or datetime.now(timezone.utc)).date()
     out = {}
     for cls, name in CLASS_SPREADS.items():
         months = []
+        past_notice = []
         for k in quotes:
             if not k.startswith(cls + "-"):
                 continue
             suffix = k[len(cls) + 1:]
             exp = expiry_date(k)
             if exp is None or is_expired(k, now):
+                continue
+            mon, yr = month_num(suffix[:3]), 2000 + int(suffix[3:])
+            if today >= first_notice_day(yr, mon):
+                past_notice.append(_month_label(k))
                 continue
             months.append((exp, suffix))
         months.sort()
@@ -283,21 +306,15 @@ def class_spreads(quotes, now=None):
                        "class_close": a["close"], "chicago_close": b["close"]}
                 break
         if hit is None:
-            a, b = quotes.get(cls), quotes.get("wheat")
-            if fresh(a) and fresh(b) and not b.get("roll") and not a.get("roll"):
-                hit = {"cents": round(float(a["close"]) - float(b["close"]), 4),
-                       "basis": "most-active", "month": None,
-                       "class_key": cls, "chicago_key": "wheat",
-                       "class_close": a["close"], "chicago_close": b["close"],
-                       "note": f"{name} and Chicago most-active continuous series; "
-                               "no same-month pair on file, so the months are not confirmed"}
-            elif not fresh(a):
-                hit = {"cents": None, "reason": f"no current {name} quote on file"}
-            elif not fresh(b):
-                hit = {"cents": None, "reason": "no current Chicago SRW quote on file"}
+            if not months and not past_notice and not fresh(quotes.get(cls)):
+                reason = f"no current {name} quote on file"
             else:
-                hit = {"cents": None, "reason": "Chicago is inside a contract roll and no "
-                                                "same-month pair is on file"}
+                reason = (f"no current {name} and Chicago SRW quotes for the same delivery "
+                          f"month on file; the most-active series can sit on different "
+                          f"months, so they are not subtracted")
+                if past_notice:
+                    reason += f" ({', '.join(past_notice)} past first notice day)"
+            hit = {"cents": None, "reason": reason}
         out[cls] = hit
     return out
 
@@ -486,31 +503,63 @@ SYMBOLS = {
 }
 
 
+def close_and_prev(bars):
+    """The printed close and the close the day-change is measured against,
+    both from the daily bars (2026-10-03, wave3-J).
+
+    `bars` is a list of (date_iso, close) in date order, as history() returns
+    them. NaN/None closes are dropped first. Returns
+    (close, prev, close_date, prev_date); prev and prev_date are None when
+    fewer than two bars carry a close.
+
+    WHY: fast_info.previous_close was wrong. On 2026-10-02 it said 1276.5 for
+    Nov beans when the Oct 1 settle was 1284 (harvest-prices.json and RMA
+    agree), so beans printed up 3/4 on a day they fell 6 3/4. The previous
+    close is the second-to-last daily bar, the same way
+    fetch_harvest_prices.py reads settles. The close comes from the last bar
+    of the SAME series, so the pair always belongs to two adjacent sessions
+    of one source. Pure function; selftested in scripts/test_prev_close.py.
+    """
+    clean = [(str(d)[:10], _num(c)) for d, c in bars]
+    clean = [(d, c) for d, c in clean if c is not None]
+    if not clean:
+        return None, None, None, None
+    close_date, close = clean[-1]
+    if len(clean) < 2:
+        return close, None, close_date, None
+    prev_date, prev = clean[-2]
+    return close, prev, close_date, prev_date
+
+
+def _bars(t):
+    """Daily (date_iso, close) pairs for the last ten days, oldest first."""
+    hist = t.history(period="10d", interval="1d", auto_adjust=False)
+    if hist is None or len(hist) == 0:
+        return []
+    return [(idx.strftime("%Y-%m-%d"), v) for idx, v in hist["Close"].items()]
+
+
 def fetch_quote(key, ticker):
     try:
         t = yf.Ticker(ticker)
         info = t.fast_info
 
-        # _num() short-circuits None/NaN/inf to None so downstream math
-        # never sees a poisoned value. Two-step fallback (instead of `a or b`)
-        # is needed because a legitimate 0.0 close should not trigger fallback.
-        close = _num(getattr(info, 'last_price', None))
+        # Close AND previous close come from the daily bars (close_and_prev).
+        # fast_info.previous_close is not used: it disagreed with the
+        # exchange settle (see close_and_prev). _num() short-circuits
+        # None/NaN/inf to None so downstream math never sees a poisoned value.
+        close, prev, close_date, prev_date = close_and_prev(_bars(t))
+        live = _num(getattr(info, 'last_price', None))
         if close is None:
-            close = _num(getattr(info, 'regular_market_price', None))
-        prev = _num(getattr(info, 'previous_close', None))
-        if prev is None:
-            prev = _num(getattr(info, 'regular_market_previous_close', None))
+            # No bars at all: the live quote is the only close there is, and
+            # there is no previous close to measure a change against.
+            close = live
+        elif live is not None and close and abs(live - close) / abs(close) > 0.0025:
+            print(f"  NOTE {key} ({ticker}): last_price {live} differs from the last "
+                  f"daily bar {close} ({close_date}); the bar pair is used")
         # 52-week range — available on fast_info, no slow .info() call needed
         wk52_hi = _num(getattr(info, 'year_high', None))
         wk52_lo = _num(getattr(info, 'year_low', None))
-
-        if close is None:
-            # fallback: last 2 days of history
-            hist = t.history(period="2d", interval="1d")
-            if len(hist) >= 1:
-                close = _num(hist['Close'].iloc[-1])
-                if close is not None and len(hist) >= 2:
-                    prev = _num(hist['Close'].iloc[-2])
 
         if close is None:
             print(f"  SKIP {key} ({ticker}) — no price data")
@@ -538,10 +587,49 @@ def fetch_quote(key, ticker):
             "pctChange": pct,
             "wk52_hi":   wk52_hi,
             "wk52_lo":   wk52_lo,
+            # The sessions the two numbers belong to, so a reader (and
+            # harvest_crosscheck) can match the change to an exchange settle.
+            "close_date": close_date,
+            "prev_date":  prev_date,
         }
     except Exception as e:
         print(f"  ERR  {key} ({ticker}): {e}")
         return None
+
+
+# harvest-prices.json labels -> the dated prices.json key prefix.
+_HARVEST_PREFIX = {"Corn": "corn", "Soybeans": "beans"}
+
+
+def harvest_crosscheck(quotes, harvest):
+    """Compare each dated quote's previous close with the CBOT settle that
+    fetch_harvest_prices.py recorded for the same contract and date.
+
+    `harvest` is data/harvest-prices.json loaded. Contract "Dec '26" for Corn
+    maps to quotes["corn-dec26"]. Only a quote whose prev_date appears in that
+    contract's projected or harvest series is compared. Returns a list of
+    mismatch strings (settles in dollars x 100 = cents; tolerance a tenth of a
+    cent). Pure function; selftested in scripts/test_prev_close.py.
+    """
+    out = []
+    for c in (harvest or {}).get("commodities", []):
+        prefix = _HARVEST_PREFIX.get(c.get("label"))
+        contract = str(c.get("contract", ""))
+        parts = contract.replace("'", " ").split()
+        if not prefix or len(parts) != 2:
+            continue
+        key = f"{prefix}-{parts[0].lower()}{parts[1]}"
+        q = quotes.get(key)
+        if not isinstance(q, dict) or not q.get("prev_date") or q.get("open") is None:
+            continue
+        for leg in ("projected", "harvest"):
+            for row in (c.get(leg) or {}).get("series") or []:
+                if row.get("d") == q["prev_date"] and row.get("s") is not None:
+                    settle = round(float(row["s"]) * 100, 4)
+                    if abs(settle - float(q["open"])) > 0.1:
+                        out.append(f"{key}: previous close {q['open']} on {q['prev_date']} "
+                                   f"but the CBOT settle in harvest-prices.json is {settle}")
+    return out
 
 
 def _days_since(iso):
@@ -630,6 +718,16 @@ def main():
 
     nearby = add_nearby(quotes, SYMBOLS)
 
+    # Cross-check the previous close against the settles fetch_harvest_prices
+    # recorded for the same contract and day. Reported, never "repaired": the
+    # two writers run on different schedules, so a miss is for a human.
+    try:
+        with open("data/harvest-prices.json") as f:
+            for _m in harvest_crosscheck(quotes, json.load(f)):
+                print(f"::warning title=previous close disagrees with the settle::{_m}")
+    except FileNotFoundError:
+        pass
+
     withheld_keys = unit_guard(quotes)
     for _k, _why in withheld_keys.items():
         print(f"  WITHHELD {_k}: {_why}")
@@ -691,7 +789,7 @@ def main():
         # prints (UNIT_RANGE). Named with the reason, never silently dropped.
         "withheld_keys": withheld_keys,
         # KC HRW and MGEX HRS minus Chicago SRW, cents per bushel. See
-        # class_spreads(): same-month first, flagged fallback, or a reason.
+        # class_spreads(): a same-month pair before first notice day, or a reason.
         "spreads":    spreads,
         "quotes":     quotes
     }
