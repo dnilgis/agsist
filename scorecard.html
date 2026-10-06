@@ -10,7 +10,7 @@
 
 
   <title>Prediction Bot Scorecard | AGSIST</title>
-  <meta name="description" content="AGSIST's statistical prediction bot calls corn, soybeans, Chicago wheat and KC wheat four weeks out, once per weekly CFTC report. Every call is graded by code against settlement prices. The backtest is shown beside the live record, never merged with it.">
+  <meta name="description" content="Statistical bot calls corn, soybeans and wheat four weeks out, once per CFTC report, graded by code on Yahoo daily closes. Backtest kept apart from live calls.">
   <meta name="author" content="Sigurd Lindquist &mdash; Farmers First Agri Service">
   <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
   <link rel="canonical" href="https://agsist.com/scorecard">
@@ -18,7 +18,7 @@
   <meta property="og:site_name"   content="AGSIST">
   <meta property="og:locale"      content="en_US">
   <meta property="og:title"       content="Prediction Bot Scorecard | AGSIST">
-  <meta property="og:description" content="One fixed rule, written down before the first call. Every call graded by code against settlement prices, misses included.">
+  <meta property="og:description" content="One fixed rule, written down before the first call. Every call graded by code against Yahoo Finance daily closes, misses included.">
   <meta property="og:url"         content="https://agsist.com/scorecard">
   <meta property="og:image"       content="https://agsist.com/img/og/agsist.jpg">
   <meta property="og:image:width"  content="1200">
@@ -27,7 +27,7 @@
   <meta name="twitter:card"        content="summary_large_image">
   <meta name="twitter:site"        content="@agsist">
   <meta name="twitter:title"       content="Prediction Bot Scorecard | AGSIST">
-  <meta name="twitter:description" content="One fixed rule. Every call graded by code against settlement prices, misses included.">
+  <meta name="twitter:description" content="One fixed rule. Every call graded by code against Yahoo Finance daily closes, misses included.">
   <meta name="twitter:image"       content="https://agsist.com/img/og/agsist.jpg">
   <link rel="preload" href="/components/styles.css?v=17" as="style">
   <link rel="stylesheet" href="/components/styles.css?v=17">
@@ -76,7 +76,7 @@
     @media(max-width:640px){.pb-verdicts{grid-template-columns:1fr}}
   </style>
 <script type="application/ld+json">
-{"@context":"https://schema.org","@graph":[{"@type":"WebPage","url":"https://agsist.com/scorecard","name":"Prediction Bot Scorecard","description":"AGSIST's statistical prediction bot: one fixed rule, every call graded by code against settlement prices.","isPartOf":{"@type":"WebSite","url":"https://agsist.com/","name":"AGSIST"},"breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"AGSIST","item":"https://agsist.com/"},{"@type":"ListItem","position":2,"name":"Prediction Bot Scorecard","item":"https://agsist.com/scorecard"}]}}]}
+{"@context":"https://schema.org","@graph":[{"@type":"WebPage","url":"https://agsist.com/scorecard","name":"Prediction Bot Scorecard","description":"AGSIST's statistical prediction bot: one fixed rule, every call graded by code against Yahoo Finance daily closes.","isPartOf":{"@type":"WebSite","url":"https://agsist.com/","name":"AGSIST"},"breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"AGSIST","item":"https://agsist.com/"},{"@type":"ListItem","position":2,"name":"Prediction Bot Scorecard","item":"https://agsist.com/scorecard"}]}}]}
 </script>
 </head>
 <body>
@@ -86,7 +86,7 @@
     <div class="pb-page">
       <nav class="pb-bc" aria-label="Breadcrumb"><a href="/">AGSIST</a> &rsaquo; Prediction Bot Scorecard</nav>
       <h1>Prediction Bot Scorecard</h1>
-      <p class="pb-sub">A simple statistical bot calls whether corn, soybeans, Chicago wheat and KC wheat will settle higher or lower about four weeks from now. It makes one call per crop for each weekly CFTC report, at the first close after the report comes out, and grades it at the same point four reports later. Code grades every call against settlement prices. Nobody edits the calls or picks which ones count.</p>
+      <p class="pb-sub">A simple statistical bot calls whether corn, soybeans, Chicago wheat and KC wheat will close higher or lower about four weeks from now. It makes one call per crop for each weekly CFTC report, at the close of the first business day after the report comes out that is not a federal holiday, and grades it at the same point four reports later. Code grades every call against daily closing prices from Yahoo Finance (not the exchange&rsquo;s settlement file). Nobody picks which calls count. The four Oct 5, 2026 entry prices were set by hand before any grading, because the bot&rsquo;s run read a bar that already held evening trades; each call&rsquo;s note says how.</p>
 
       <noscript><p><strong>This page needs JavaScript to read the record.</strong> The raw file is <a href="/data/predictions.json">/data/predictions.json</a>.</p></noscript>
 
@@ -122,11 +122,11 @@
       <p class="pb-note" id="pb-bycrop-note"></p>
 
       <h2>The rule</h2>
-      <p>Written down on <span id="pb-reg">2026-10-03</span>, and backtested once that day, before the first live call, as rule set <b id="pb-ver">bot-v1.1</b>. The backtest came out no better than a coin flip and is published as such. The same day, before any live call, the timing was corrected so live calls match what was backtested (one call per report, the release date for holiday weeks, shutdown weeks skipped); the direction rule did not change. Any later change gets a new version number and a new record of its own.</p>
+      <p>Written down on <span id="pb-reg">2026-10-03</span>, and backtested once that day, before the first live call, as rule set <b id="pb-ver">bot-v1.1</b>. The backtest came out no better than a coin flip and is published as such. On 2026-10-05, after that day&rsquo;s close and before the first live call was written, the timing was corrected so live calls match what was backtested (one call per report, the release date for holiday weeks, shutdown weeks skipped); the direction rule did not change. Any later change gets a new version number and a new record of its own.</p>
       <ol class="pb-rules">
         <li><b>Crowding first.</b> Take managed money's net position (CFTC) as a share of open interest, from that week's report. Rank it against the <span data-rule="cot_window_reports">156</span> reports before it, about three years. This is the bot's own threshold; the COT page's &ldquo;crowded&rdquo; label uses the 85th/15th percentile of the full record and makes no forecast. At or above the <span data-rule="cot_crowded_long_pct">90</span>th percentile, the funds are crowded long: call <b>down</b>. At or below the <span data-rule="cot_crowded_short_pct">10</span>th, crowded short: call <b>up</b>.</li>
-        <li><b>Otherwise, trend.</b> If the front-month price is higher than <span data-rule="trend_lookback_weeks">13</span> weeks ago, call <b>up</b>; lower, call <b>down</b>; exactly flat, no call.</li>
-        <li><b>Grade.</b> An up call is right when the settlement at the exit (the entry close of the report <span data-rule="horizon_reports">4</span> weeks later) is above the entry settlement. A down call is right when it is below. A settlement equal to the entry is a miss.</li>
+        <li><b>Otherwise, trend.</b> If the roll-repaired front-month index (Yahoo&rsquo;s continuous futures with the jump at each contract change removed) is higher than <span data-rule="trend_lookback_weeks">13</span> weeks ago, call <b>up</b>; lower, call <b>down</b>; exactly flat, no call.</li>
+        <li><b>Grade.</b> An up call is right when the close at the exit (the entry close of the report <span data-rule="horizon_reports">4</span> weeks later) is above the entry close. A down call is right when it is below. A close equal to the entry is a miss.</li>
       </ol>
       <p>There is no seasonal signal. The seasonal figures the site has are built from all years at once, so using them would grade 2013 with knowledge from 2026.</p>
 
@@ -135,15 +135,15 @@
         <summary>Sources, dates, units and conventions</summary>
         <dl>
           <dt>Live prices</dt>
-          <dd>Settled daily closes of the named contract (for example Dec &rsquo;26 corn), from Yahoo Finance daily bars. The call is made after the close, before the 7 PM Central evening reopen, from that day&rsquo;s reading; its entry price is then replaced once, on the next run, by the day&rsquo;s bar as Yahoo restates it, and the log notes any change. A call is graded on the run after its exit day, from the restated exit bar. Yahoo&rsquo;s bars are not the exchange&rsquo;s settlement file. The Oct 5, 2026 calls were first read at 8:34 PM, after the reopen; each note says how the entry was set. Grains are quoted in cents per bushel; the page shows them in dollars. The contract is the first listed month still trading on the grading day, so no live call spans a contract roll.</dd>
+          <dd>Daily closes of the named contract (for example Dec &rsquo;26 corn), from Yahoo Finance daily bars. The call is made after the close, before the 7 PM Central evening reopen, from that day&rsquo;s reading; its entry price is then replaced once, on the next run, by the day&rsquo;s bar as Yahoo restates it, and the log notes any change. A call is graded on the run after its exit day, from the restated exit bar. Yahoo&rsquo;s bars are not the exchange&rsquo;s settlement file. The Oct 5, 2026 calls were first read at 8:34 PM, after the reopen; each note says how the entry was set. Grains are quoted in cents per bushel; the page shows them in dollars. The contract is the first listed month still trading on the grading day, so no live call spans a contract roll.</dd>
           <dt>Entry and exit days</dt>
-          <dd>Entry: the first session close after CFTC published the report. Exit: the entry close of the report four weeks later. Both are fixed when the call is made. Release dates: <code>scripts/cot_calendar.py</code>. CFTC publishes on the Friday of the report week at 3:30 PM Eastern, after grains settle; a federal holiday delays it. Reports held back by a government shutdown (2013, 2018&ndash;19, 2025) are skipped, because their real release dates are not all known.</dd>
+          <dd>Entry: the close of the first business day after CFTC published the report that is not a federal holiday. Federal holidays are skipped even when CME trades (Columbus Day, Veterans Day), and a day CME is closed moves the entry to its next session. Exit: the entry close of the report four weeks later. Both are fixed when the call is made. Release dates: <code>scripts/cot_calendar.py</code>. CFTC publishes on the Friday of the report week at 3:30 PM Eastern, after grains settle; a federal holiday delays it. Reports held back by a government shutdown (2013, 2018&ndash;19, 2025) are skipped, because their real release dates are not all known.</dd>
           <dt>Positioning</dt>
-          <dd>CFTC Disaggregated Futures-Only Commitments of Traders, managed money long minus short, divided by open interest. A report counts from the first session after CFTC published it (it lands at 3:30 PM Eastern, after grains settle; a federal holiday delays it).</dd>
+          <dd>CFTC Disaggregated Futures-Only Commitments of Traders, managed money long minus short, divided by open interest. A report counts from the close of the first non-holiday business day after CFTC published it (it lands at 3:30 PM Eastern, after grains settle; a federal holiday delays it).</dd>
           <dt>Backtest prices</dt>
           <dd>The roll-repaired front-month index in <code>data/cot-deep.json</code>: Yahoo's continuous series with the return across each contract change dropped. It is an index, not a price. One call per weekly report, same entry and exit days as live. Decisions whose grading day falls after <span id="pb-cutoff">2026-10-02</span> are left out, so the backtest never overlaps the live record. The continuous series follows Yahoo's own roll, which can differ by a few days from the exchange calendar the repair uses.</dd>
           <dt>Overlap, counted every way</dt>
-          <dd>Weekly calls on a four-week window overlap, and the four crops on one report are one bet on one month of markets. So the record is counted every way: all calls, tested with a Newey&ndash;West test that allows for the overlap; and four disjoint groups, by report week counted mod 4, in which no two calls overlap. The page prints the range across the four groups. Picking one group would let the luckiest stand in for all.</dd>
+          <dd>Weekly calls on a four-week window overlap, and the four crops on one report are one bet on one month of markets. So the record is counted every way: all calls, tested with a Newey&ndash;West test that allows for the overlap; and four disjoint groups, by report week counted mod 4, in which no two calls on the same crop overlap; the four crops on one report share one window. The page prints the range across the four groups. Picking one group would let the luckiest stand in for all.</dd>
           <dt>Coin-flip odds</dt>
           <dd>The chance that pure guessing does at least as well, from the Newey&ndash;West test on all calls. <span id="pb-family">Five</span> records are tested at once (all crops together and each crop), so the odds are adjusted with the Benjamini&ndash;Hochberg method before any record is called a finding.</dd>
           <dt>Baselines</dt>
@@ -234,7 +234,7 @@
         var lv=a.gate_ok?(n(a.hits)+' of '+n(a.graded)+' ('+rate(a.hit_rate)+')'):('— '+n(a.graded)+' graded');
         var ls=a.gate_ok?n(a.windows):'—';
         var bv=b.graded?(n(b.hits)+' of '+n(b.graded)+' ('+rate(b.hit_rate)+')'):'—';
-        var bs=b.graded?(rate(b.spell_rate_low)+'–'+rate(b.spell_rate_high)):'—';
+        var bs=b.graded?(rate(b.spell_rate_low)+'–'+rate(b.spell_rate_high)+' ('+n(b.windows)+' windows)'):'—';
         return '<tr><td>'+esc(c.label)+'</td><td class="num">'+lv+'</td><td class="num">'+ls+'</td><td class="num">'+bv+'</td><td class="num">'+bs+'</td><td>'+esc(b.verdict_text||VERDICT[b.verdict]||'—')+'</td></tr>';}).join('');
       $('pb-bycrop-note').textContent='Live figures show a dash until a crop has '+n(R.min_graded_for_rate)+' graded calls and '+n(R.min_windows_for_rate)+' non-overlapping windows. Backtest: '+n(bt.rules_tested)+' rule tested, '+n(bt.tests_in_family)+' records checked against a coin flip.';
 

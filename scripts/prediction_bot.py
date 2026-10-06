@@ -7,7 +7,8 @@ WHAT IT DOES
 Once per weekly CFTC report, at the first close a reader could trade on it, it
 calls the direction of corn, soybeans, Chicago wheat and KC wheat over the next
 four reports (about four weeks). Every call is graded by this code, on a fixed
-rule, against settlement closes. It also runs a walk-forward backtest of the
+rule, against daily closing prices from Yahoo Finance (not the exchange's
+settlement file). It also runs a walk-forward backtest of the
 same rule on the weekly history in data/cot-deep.json, and keeps that result
 beside the live record, never merged with it.
 
@@ -26,17 +27,21 @@ For each crop, at the entry close of each report:
   2. Otherwise, trend. The 13-report change in the roll-repaired front-month
      index: up -> call UP, down -> call DOWN, exactly flat -> no call.
 
-  Grade: an UP call is right when the settlement at the exit is above the
-  entry settlement; a DOWN call when it is below. Equal is a miss.
+  Grade: an UP call is right when the close at the exit (Yahoo daily bar,
+  not the exchange's settlement file) is above the entry close; a DOWN call
+  when it is below. Equal is a miss.
 
-  Entry: the first close after CFTC published the report (cot_calendar.
-  entry_date). Exit: the entry close of the report four weeks later.
+  Entry: the close of the first business day after CFTC published the report
+  that is not a federal holiday (cot_calendar.entry_date; next_business_day
+  skips federal holidays even when CME is open), moved forward to a CME
+  session if needed. Exit: the entry close of the report four weeks later.
 
 No seasonal signal. The repo's seasonal figures (price-stats.json) are built
 from the full sample, which would classify 2013 using 2026 (honest-numbers
 rule 5), and one more signal is one more knob.
 
-REVISION bot-v1 -> bot-v1.1 (2026-10-03, before any live call was made)
+REVISION bot-v1 -> bot-v1.1 (2026-10-05, after that day's close and before the
+first live call was written; commit cb0ba3be0, 2026-10-06 01:12 UTC)
 -----------------------------------------------------------------------
 The direction rule above did not change. What changed is when it is applied
 and how it is graded, so live calls match what was backtested:
@@ -49,9 +54,9 @@ and how it is graded, so live calls match what was backtested:
 
 LIVE vs BACKTEST -- the instruments differ and the page says so
 ---------------------------------------------------------------
-  live      a named contract (e.g. ZCZ26.CBT): entry = its settlement at the
-            report's entry close, exit = its settlement at the entry close of
-            the report four weeks later. The contract is the first listed
+  live      a named contract (e.g. ZCZ26.CBT): entry = its Yahoo daily close
+            on the report's entry day, exit = its Yahoo daily close on the
+            entry day of the report four weeks later. The contract is the first listed
             month still alive on the exit day, so no live call spans a roll.
   backtest  the roll-repaired front-month index in data/cot-deep.json, built
             by cot_deep.py from Yahoo's continuous series. Same entry and exit
@@ -93,7 +98,7 @@ BT_CALLS_PATH = os.path.join(ROOT, "data", "predictions-backtest.json")
 RULES = {
     "version": "bot-v1.1",
     "registered": "2026-10-03",
-    "revised": "2026-10-03",
+    "revised": "2026-10-05",
     "revision": ("Before the first live call: one call per report (live had been daily), "
                  "release date fixed for Monday as-of weeks, shutdown weeks skipped, "
                  "record counted every way. The direction rule is unchanged."),
@@ -278,13 +283,22 @@ WEEK_EPOCH = date(2006, 1, 3)   # a Tuesday; any fixed Tuesday works
 
 def week_group(c, k_of=4):
     """Which of the four report-week groups a call belongs to: the report's
-    week, counted from a fixed Tuesday, mod 4. Every call falls in exactly
-    one group, and calls in one group are four weeks apart, so their windows
-    do not overlap (2026-10-05: greedy chaining from four starting calls
-    re-synchronised after every gap, so the four "offsets" shared 648 of
-    about 688 calls and the printed range was far too narrow)."""
-    d = c.get("report") or c.get("cot_report") or c["made"]
-    return ((date.fromisoformat(d) - WEEK_EPOCH).days // 7) % k_of
+    calendar week (Monday to Sunday, keyed by its Friday), counted from the
+    epoch's week, mod 4. Every call falls in exactly one group, and calls in
+    one group are four weeks apart, so their windows do not overlap
+    (2026-10-05: greedy chaining from four starting calls re-synchronised
+    after every gap, so the four "offsets" shared 648 of about 688 calls and
+    the printed range was far too narrow).
+
+    Keyed by the week's Friday, not by days since the Tuesday epoch: a Monday
+    as-of report (Tuesday a holiday) is 6 days past the previous Tuesday, so
+    the old (report - epoch).days // 7 put it in the PREVIOUS week's group,
+    four weeks after that group's last call minus one day; chain_spells then
+    dropped it as overlapping, and 16 backtest calls (reports 2012-12-31,
+    2017-07-03, 2020-12-21, 2023-07-03) fell in no group (fixed 2026-10-06)."""
+    d = date.fromisoformat(c.get("report") or c.get("cot_report") or c["made"])
+    friday = d + timedelta(days=4 - d.weekday())
+    return ((friday - WEEK_EPOCH).days // 7) % k_of
 
 
 def chain_windows(calls, offset=0):
@@ -803,7 +817,7 @@ def build_output(state, deep, bt=None):
         "updated": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "rules": RULES,
         "live_start": LIVE_START,
-        "first_live_call": first_live_call(deep),
+        "first_live_call": first_live_call(deep, calls),
         "crops": [{"key": c["key"], "label": c["label"]} for c in CROPS],
         "latest": {"date": days[-1] if days else None, "calls": latest},
         "live": {"records": live, "tests_in_family": meta["tests_in_family"],
@@ -818,11 +832,18 @@ def build_output(state, deep, bt=None):
     return out
 
 
-def first_live_call(deep):
-    """The first entry session on or after LIVE_START, from the newest report
-    in the file, or that report's successor (a week later) if it entered
-    before LIVE_START. Printed by the pages as "First calls after the X
-    close"; None if the file has no reports."""
+def first_live_call(deep, calls=None):
+    """The day the first live calls were made: the earliest `made` among the
+    live calls once any exist, so the date the page prints stays put as new
+    reports arrive (2026-10-06: computed from the newest report, it slid
+    forward a week every week). With no live call yet, the first entry
+    session on or after LIVE_START, from the newest report in the file, or
+    that report's successor (a week later) if it entered before LIVE_START.
+    Printed by the pages as "The first live calls are made at the X close";
+    None if there is neither a call nor a report."""
+    made = [c["made"] for c in (calls or []) if c.get("made")]
+    if made:
+        return min(made)
     b = (deep or {}).get("commodities", {}).get("corn")
     if not b or not b.get("dates"):
         return None
@@ -1124,6 +1145,25 @@ def selftest():
     rg = record(gc)
     ck("16 weekly calls split 4/4/4/4 across week groups, gap or not", [o["calls"] for o in rg["by_offset"]], [4, 4, 4, 4])
     ck("every call is in exactly one group", sum(o["calls"] for o in rg["by_offset"]), len(gc))
+    # A Monday as-of report (Tuesday a holiday): Mon 2017-07-03 sits in the
+    # week of Tue 2017-07-04. Weekly Tuesday reports from 2017-05-30 to
+    # 2017-08-22 with that one Monday: the Monday report must share a group
+    # with the Tuesday reports 4, 8 weeks either side of its week, and be kept
+    # by chain_spells. The old (report - Tuesday epoch) // 7 put it one group
+    # back, behind a call whose window it overlaps, and the chain dropped it.
+    mw = [date(2017, 5, 30) + timedelta(weeks=i) for i in range(13)]
+    mw = [d if d != date(2017, 7, 4) else date(2017, 7, 3) for d in mw]
+    mc = [{"crop": "corn", "report": d.isoformat(), "made": CAL.entry_date(d).isoformat(),
+           "exit_day": (CAL.entry_date(d) + timedelta(days=28)).isoformat(),
+           "outcome": "hit", "entry": 1.0, "exit": 2.0} for d in mw]
+    ck("Monday as-of 2017-07-03 is grouped with Tuesday 2017-06-06's week group",
+       week_group({"report": "2017-07-03"}), week_group({"report": "2017-06-06"}))
+    ck("...and not with Tuesday 2017-06-27's",
+       week_group({"report": "2017-07-03"}) == week_group({"report": "2017-06-27"}), False)
+    rm_ = record(mc)
+    ck("with a Monday as-of report, every call lands in exactly one group",
+       sum(o["calls"] for o in rm_["by_offset"]), len(mc))
+    ck("...split 4/3/3/3 by week", sorted(o["calls"] for o in rm_["by_offset"]), [3, 3, 3, 4])
     ck("3 graded calls fail the gate", r["gate_ok"], False)
     ck("verdict below the gate", verdict(r, 0.0, 1.0), "not_enough")
     ck("baselines from entry and exit", (r["rose"], r["fell"], r["rose_rate"]), (3, 0, 100.0))
@@ -1299,6 +1339,14 @@ def selftest():
     nc, nwhy = make_call(CROP_BY_KEY["corn"], date(2026, 10, 6), dd, fetch=stub)
     ck("no second call on the same report the next day", nc, None)
     ck("first live call is the Oct 5 close", first_live_call(dd), "2026-10-05")
+    # Once calls exist the date is the earliest call's, not the newest
+    # report's: add reports through 2026-11-03 and the no-call answer moves
+    # to Nov 9, while the answer with the Oct 5 calls on file stays Oct 5.
+    dd_later = {"commodities": {"corn": {
+        "dates": [(date(2023, 9, 26) + timedelta(weeks=i)).isoformat() for i in range(163)]}}}
+    ck("...later file, no calls yet: it follows the newest report", first_live_call(dd_later), "2026-11-09")
+    ck("...later file with calls: it stays at the first call made",
+       first_live_call(dd_later, [{"made": "2026-11-09"}, {"made": "2026-10-05"}, {"made": "2026-10-13"}]), "2026-10-05")
 
     # grading on a stub feed
     cs = [dict(call)]
