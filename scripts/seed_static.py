@@ -541,6 +541,48 @@ def seed_markets(prices, today):
     return _write_seeds("markets.html", seeds)
 
 
+def seed_homepage(prices, today):
+    """The homepage's two lead price cards (corn and soybean, front month).
+
+    Before 2026-10-06 the cards shipped empty and geo.js filled them, so a
+    crawler or a reader whose script failed saw no price on the page whose
+    title promises "Corn, Soybean & Wheat Prices". The seed is the same quote
+    geo.js reads (data/prices.json "corn"/"beans"), and the line under it says
+    when it is from, because the bake runs twice a day and a price with no time
+    on it would be fake freshness. Only the lead cards are seeded: the deferred
+    cards stay empty so collapseSameContract never sees two equal seeds and
+    folds a card before the live quotes arrive.
+    """
+    q = (prices or {}).get("quotes") or {}
+    fetched = (prices or {}).get("fetched", "")
+    fd = _iso_date(fetched)
+    seeds = {}
+    if not q or _stale(fd, today, "prices"):
+        why = (f"price file last updated {_mdy(fd)}" if fd else "price file missing")
+        for k in ("corn", "beans"):
+            seeds["hp:" + k] = "&mdash;"
+            seeds["hp:" + k + "-when"] = "Quotes unavailable &mdash; " + why
+        return _write_seeds("index.html", seeds)
+    for k in ("corn", "beans"):
+        d = q.get(k) or {}
+        usd = grain_dollars(d)
+        if not usd:
+            seeds["hp:" + k] = "&mdash;"
+            seeds["hp:" + k + "-when"] = "No quote in the last price file"
+            continue
+        # the card's own format (index.html qc): quarter cents as " 1/2", so
+        # the seed and the live price never print the same quote two ways
+        t = round(float(d["close"]) * 4) / 4.0
+        w = int(t)
+        frac = {0.25: " 1/4", 0.5: " 1/2", 0.75: " 3/4"}.get(round(t - w, 2), "")
+        seeds["hp:" + k] = "$" + _fixed(w / 100.0, 2) + frac
+        live, label = quote_state(d, fetched, "grain")
+        seeds["hp:" + k + "-when"] = (state_words(live)[1] + (" " + label if label else "") +
+                                      (" (last good quote)" if d.get("stale") else "") +
+                                      " &middot; Yahoo Finance, delayed")
+    return _write_seeds("index.html", seeds)
+
+
 # --- /news -------------------------------------------------------------------
 NEWS_KIND = {"usda": "USDA", "positioning": "Positioning", "board": "Board",
              "crop": "Crop", "weather": "Weather"}
@@ -932,6 +974,7 @@ def seed_data_pages(prices, today):
     """Each page fails alone: one bad file never stops the others."""
     ch = False
     for name, fn in (("markets", lambda: seed_markets(prices, today)),
+                     ("homepage", lambda: seed_homepage(prices, today)),
                      ("news", lambda: seed_news(today)),
                      ("conditions", lambda: seed_conditions(today)),
                      ("scorecard", lambda: seed_scorecard(today)),

@@ -2360,3 +2360,16 @@ html[data-look] #f1 .bh-elev>div:first-child>div:first-child{font-size:1rem;font
 /* In the 340px desktop rail, two across squeezed each card to ~140px. One
    column there, the next five. */
 @media(min-width:1240px){#usda-cal-strip{grid-template-columns:minmax(0,1fr)}#usda-cal-strip .cal-card:nth-child(n+6){display:none}}
+
+/* 2026-10-06 light-mode gold contrast. Light --gold #a87d1e is 3.3-3.7:1 on
+   this page's light surfaces, under the 4.5:1 that body-size text needs. On
+   the homepage, gold TEXT takes #8a6514 (4.7-5.3:1). Solid gold fills keep
+   #a87d1e, because their #0a0c0d label reads 5.4:1 on it and would drop to
+   3.7:1 on the darker gold. */
+html[data-theme="light"] body{--gold:#8a6514}
+html[data-theme="light"] [style*="background:var(--gold)"],
+html[data-theme="light"] .noaa-tab.active,
+html[data-theme="light"] .noscript-banner,
+html[data-theme="light"] .pwa-hint-btn--primary,
+html[data-theme="light"] .pwa-step-num,
+html[data-theme="light"] .pk-done{background:#a87d1e!important}
