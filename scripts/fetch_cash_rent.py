@@ -26,8 +26,8 @@ HONESTY RULES BAKED IN
     irrigated acres talking. pair_county() now pairs dryland rent with the
     NON-IRRIGATED yield and irrigated rent with the IRRIGATED yield. The
     all-practice yield is used only where NASS shows no irrigation in the
-    county at all (no irrigated corn or soybean yield and no irrigated rent in
-    any year), i.e. where it is essentially a dryland yield. Anywhere else a
+    county at all (no irrigated corn or soybean yield in any year, and irrigated
+    rent in fewer than IRR_RENT_MIN_YEARS years), i.e. where it is essentially a dryland yield. Anywhere else a
     year with no matching yield is WITHHELD with its reason in words; it is
     never filled from the mixed number. The basis of every ratio point and of
     the calculator's trend ships in the JSON ("nonirr" | "irr" | "all").
@@ -73,6 +73,8 @@ MIN_TREND_N = 6                   # fewer real years than this -> no trend, no g
 # corn, which yields ~150. Three covers the normal one-year publication lag
 # plus one missing survey year.
 MAX_TREND_GAP = 3
+# Years of published irrigated rent before it marks a county as irrigated.
+IRR_RENT_MIN_YEARS = 2
 
 RENT_KINDS = {
     "nonirr":  "RENT, CASH, CROPLAND, NON-IRRIGATED - EXPENSE, MEASURED IN $ / ACRE",
@@ -122,7 +124,7 @@ PRACTICE_CANARY_STATES = {"NE", "KS", "CO", "TX"}
 # Bump when the pairing rule changes; the page reads it to know the file
 # carries "pair" blocks (older files do not, and the page treats them as
 # unpaired -- see cash-rent.html LEGACY rule).
-PAIR_RULE = 2
+PAIR_RULE = 3
 BASES = ("nonirr", "irr", "all")
 REASON_MIXED = "county yield mixes irrigated and dryland acres"
 REASON_IRR_ONLY_DRY = "NASS published only a dryland county yield, which does not match irrigated rent"
@@ -356,8 +358,15 @@ def irrigation_signal(c):
     publishes the irrigated series intermittently (Finney KS irrigated rent
     is missing in 2022 and 2024 -- the pivots were not). Where this is False
     the all-practice yield is, as far as NASS can tell us, a dryland yield.
+
+    Irrigated rent counts only when NASS published it in IRR_RENT_MIN_YEARS or
+    more years. One stray year is thin evidence of material irrigated acres:
+    Polk IA has a single irrigated rent (2017) and no irrigated yield ever, and
+    that one figure withheld its rent share. Relaxed 2026-10-06 at Sig's call;
+    110 counties had exactly one irrigated-rent year. An irrigated county yield
+    in any year still counts on its own.
     """
-    if c.get("rent", {}).get("irr"):
+    if len(c.get("rent", {}).get("irr") or {}) >= IRR_RENT_MIN_YEARS:
         return True
     y = c.get("yield", {})
     return any((y.get(k) or {}).get("hist") for k in ("corn_irr", "beans_irr"))
@@ -518,7 +527,7 @@ def write_state(state, counties, prices):
         "pair_rule": PAIR_RULE,
         "pair_note": ("Rent is divided by a county yield of the same practice: non-irrigated rent by the non-irrigated "
                       "yield, irrigated rent by the irrigated yield. The all-practice yield is used only where NASS shows "
-                      "no irrigation in the county (no irrigated yield and no irrigated rent in any year). Otherwise the "
+                      "no irrigation in the county (no irrigated yield in any year, and irrigated rent in at most one year). Otherwise the "
                       "year is withheld with its reason. Basis per point: nonirr | irr | all."),
         "counties": [counties[f] for f in sorted(counties)],
     }
@@ -692,6 +701,12 @@ def selftest():
     assert e.get("trend") is not None and "trend_w" not in e, "a 3-year gap must still fit"
     log("  stale practice series refused (Adams NE dryland, ended 2018)")
 
+    # --- one stray irrigated-rent year is not irrigation; two are ----------
+    assert not irrigation_signal({"rent": {"irr": {"2017": 373.0}}}), "1 year counted"
+    assert irrigation_signal({"rent": {"irr": {"2017": 373.0, "2019": 360.0}}}), "2 years ignored"
+    assert irrigation_signal({"rent": {}, "yield": {"corn_irr": {"hist": {"2010": 200.0}}}})
+    log(f"  irrigation signal: irrigated rent needs {IRR_RENT_MIN_YEARS}+ years; an irrigated yield counts alone")
+
     # --- 2015 and 2018 must never survive the filter ------------------------
     recs = [{"state_fips_code": "19", "county_ansi": "169", "county_name": "STORY",
              "year": str(y), "Value": "250"} for y in (2014, 2015, 2016, 2017, 2018, 2019)]
@@ -791,13 +806,17 @@ def selftest():
       R, Y = RENT_KINDS, YIELD_KINDS
       fx = {
           R["nonirr"]: [rec("20001", "DRYLAND", 2022, "44.5"), rec("20005", "MIXED", 2022, "60"),
-                        rec("20007", "NOIRR", 2022, "90"), rec("20009", "IRRYIELDONLY", 2022, "50")],
+                        rec("20007", "NOIRR", 2022, "90"), rec("20009", "IRRYIELDONLY", 2022, "50"),
+                        rec("20011", "ONESTRAY", 2022, "70")],
           R["irr"]: [rec("20001", "DRYLAND", 2022, "180"), rec("20003", "IRRFALLBACK", 2022, "200"),
-                     rec("20005", "MIXED", 2022, "150")],
+                     rec("20005", "MIXED", 2022, "150"), rec("20005", "MIXED", 2021, "145"),
+                     # one stray irrigated-rent year (Polk IA 2017): not irrigation
+                     rec("20011", "ONESTRAY", 2017, "160")],
           R["pasture"]: [],
           # all-practice: present everywhere, and mostly-irrigated where pivots exist
           Y["corn"]: (line("20001", "DRYLAND", 147.6) + line("20003", "IRRFALLBACK", 190.0)
                       + line("20005", "MIXED", 170.0) + line("20007", "NOIRR", 130.0)
+                      + line("20011", "ONESTRAY", 140.0)
                       + line("20009", "IRRYIELDONLY", 165.0)),
           Y["corn_nonirr"]: line("20001", "DRYLAND", 60.0) + [rec("20001", "DRYLAND", 2012, "(D)")],
           Y["corn_irr"]: (line("20001", "DRYLAND", 200.0) + line("20003", "IRRFALLBACK", 220.0)
@@ -822,6 +841,8 @@ def selftest():
       # (3) mixed county, irrigated rent exists, no practice-specific yield: WITHHELD, reason in words
       assert pr["20005"]["corn"]["y"] == {} and pr["20005"]["corn"]["w"] == {"2022": REASON_MIXED}, pr["20005"]
       assert pr["20005"]["corn"]["t"] == {"w": REASON_MIXED}, pr["20005"]["corn"]["t"]
+      # (3b) ONE stray irrigated-rent year, no irrigated yield: all-practice is used
+      assert pr["20011"]["corn"]["y"]["2022"] == [140.0, "all"] and pr["20011"]["corn"]["t"]["b"] == "all", pr["20011"]
       # (4) no irrigation anywhere in NASS: all-practice is the dryland yield. 90 / (130.0 x 7.04) = 9.83 %
       assert pr["20007"]["corn"]["y"]["2022"] == [130.0, "all"] and pr["20007"]["corn"]["t"]["b"] == "all", pr["20007"]
       # (5) no irrigated rent, but NASS published an irrigated corn yield (2019 only): the
@@ -835,12 +856,14 @@ def selftest():
       assert "p" not in nc["20005"] and nc["20005"]["pw"] == REASON_MIXED and nc["20005"]["pwy"] == 2022, nc["20005"]
       assert nc["20007"]["p"] == round(90 / (130.0 * P) * 100, 1) == 9.8 and nc["20007"]["pb"] == "all", nc["20007"]
       assert "p" not in nc["20009"] and nc["20009"]["pw"] == REASON_MIXED
-      assert nat["n_pct"] == 3 and nat["n_pct_withheld"] == 2, nat
-      assert nat["pct_basis"] == {"nonirr": 1, "irr": 1, "all": 1}, nat["pct_basis"]
+      assert nc["20011"]["p"] == round(70 / (140.0 * P) * 100, 1) == 7.1 and nc["20011"]["pb"] == "all", nc["20011"]
+      assert nat["n_pct"] == 4 and nat["n_pct_withheld"] == 2, nat
+      assert nat["pct_basis"] == {"nonirr": 1, "irr": 1, "all": 2}, nat["pct_basis"]
       assert json.load(open(os.path.join(OUTDIR, "KS.json")))["pair_rule"] == PAIR_RULE
       log("  practice pairing OK: dryland 10.5% (nonirr/nonirr; was 4.3% on the all-practice yield), "
           "irr-fallback 12.9% (irr/irr), mixed WITHHELD ('" + REASON_MIXED + "'), "
-          "no-irrigation 9.8% (all-practice), irrigated-yield-only county WITHHELD")
+          "no-irrigation 9.8% (all-practice), one stray irrigated-rent year 7.1% (all-practice), "
+          "irrigated-yield-only county WITHHELD")
       os.remove(os.path.join(OUTDIR, "KS.json")); os.remove(os.path.join(OUTDIR, "national.json"))
 
       # --- a wrong short_desc must be LOUD, not "no data" ----------------------
