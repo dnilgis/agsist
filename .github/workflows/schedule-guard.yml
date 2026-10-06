@@ -57,6 +57,12 @@ jobs:
         with:
           python-version: '3.12'
 
+      # Both tests parse the workflow files with PyYAML, which setup-python's
+      # interpreter does not ship. Without this the gate failed on import
+      # (ModuleNotFoundError: yaml) before any assertion ran.
+      - name: Test dependencies
+        run: python3 -m pip install --quiet pyyaml
+
       # THE ORDER MATTERS. test_briefing_gate.py drives the gate through every
       # event shape with the filesystem stubbed out completely; if the gate's
       # own logic is wrong, that says so first and in one line.
