@@ -1512,7 +1512,7 @@ details.wr>summary,details.hbz>summary{align-items:center!important}
 #harvest-band{display:none!important}        /* 4 of 5 links repeat Quick Tools; the 5th moved there */
 #pdw{display:none!important}                 /* 4th insurance harvest price on the page; October grid links the tracker */
 #s7-hp-link{display:none!important}          /* Quick Tools insurance row, same */
-#s7-falln-rec{display:none!important}        /* fall-N paragraph, printed in full in the October grid */
+/* 2026-10-06 EARN: #s7-falln-rec shows again; the fall-N line in Local conditions is now its one place. */
 #wsp-spray-detail{display:none!important}    /* "Today: wind up to..." also in Local conditions */
 #rsc-sample{display:none!important}          /* "87 calls graded": the headline is "41 of 87" */
 #f1>.bidnet-note,.bidnet-note{display:none!important}         /* "NEW" strip from Sep 5; the network line and claim link stay */
@@ -2157,6 +2157,29 @@ html[data-look] #idx1-land .m-fold--lite>summary.m-fold-sum>span{color:var(--tex
   .idx1-shell{grid-template-rows:repeat(10,auto) 1fr!important}
   html[data-look] #market-intel{grid-row:2/12!important}
 }
+
+/* 2. One fact, one place (EARN). Fall nitrogen is one ruled line in Local
+   conditions; the 5-day spray read sits under the 5-day forecast; export
+   sales is the markets fold's one block; land is one row plus More tools. */
+.wx-falln{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;padding:10px 0;border-top:1px solid var(--hair);text-decoration:none;color:inherit;min-height:44px}
+.wx-falln[hidden]{display:none}
+.wx-falln:hover .wx-falln-v{text-decoration:underline}
+.wx-falln-k{font-size:.824rem;font-weight:600;color:var(--text-dim)}
+.wx-falln-v{font-size:.875rem;font-weight:700;color:var(--text)}
+.wx-falln-s{flex-basis:100%;font-size:.8125rem;line-height:1.45;color:var(--text-muted)}
+#f2 .spray-windows{margin:12px 0 4px;padding-top:10px;border-top:1px solid var(--hair)}
+#f2 .spray-windows-lbl{font-family:var(--font-body,Inter,system-ui,sans-serif)!important;font-size:.824rem;font-weight:600;letter-spacing:0;text-transform:none;color:var(--text-dim)}
+#f2 .spray-days{max-width:none;justify-content:space-between}
+.crop-export-grid--one{grid-template-columns:minmax(0,1fr)!important}
+#idx1-land .land-grid{grid-template-columns:minmax(0,1fr)}
+#idx1-land:not(:has(#land-hail:not([hidden]))) .land-grid,html.s7-no-hail #idx1-land .land-grid{grid-template-columns:minmax(0,1fr)!important}
+#idx1-land .land-lead{flex-direction:row;flex-wrap:wrap;align-items:baseline;gap:4px 12px;border-top:0;padding-top:0}
+#idx1-land .land-lead .land-v{font-size:1rem}
+#idx1-land .land-lead .land-s{font-size:.824rem;color:var(--text-dim)}
+.land-more{margin-top:4px;border-top:1px solid var(--hair);padding-top:10px}
+.land-more-h{margin:0 0 2px;font-size:.824rem;font-weight:600;color:var(--text-dim)}
+.land-more .land-links{margin-top:0}
+@media(max-width:900px){.land-more-h{display:none}.land-more{border-top:0;padding-top:0}}
 
 /* ===== THE LOOK (2026-10-03) ==========================================
    Sig: "lots of still monotone and hard to differentiate one thing from
