@@ -1,7 +1,7 @@
 {
  "_comment": "AGSIST farm-bill page data. Edit this, then run build_farmbill.py (or push — the GitHub Action bakes it). Values are baked into static HTML so AI crawlers see them. HTML entities allowed in text fields. Keep <b> for emphasis.",
- "updated": "2026-09-29",
- "updated_display": "Sep 29, 2026",
+ "updated": "2026-10-06",
+ "updated_display": "Oct 6, 2026",
  "pills": [
   {
    "cls": "live",
@@ -13,7 +13,7 @@
   },
   {
    "cls": "warn",
-   "html": "Extension expires <b>Sep 30, 2026</b>"
+   "html": "Extension <b>lapsed Sep 30, 2026</b> &middot; not renewed"
   }
  ],
  "tldr": [
@@ -30,12 +30,12 @@
    "v": "Nutrition (SNAP) is <span class=\"num\">71.7%</span> of the baseline. Four titles are <span class=\"num\">~99%</span> of it."
   },
   {
-   "k": "Deadline",
-   "v": "The current extension expires <span class=\"num\">Sep 30, 2026</span> &mdash; the practical cutoff to finish or extend again."
+   "k": "Lapsed",
+   "v": "The extension <b>expired</b> <span class=\"num\">Sep 30, 2026</span>. The stopgap funding law through <span class=\"num\">Dec 11</span> does not extend it; new CRP enrollment is paused until Congress acts."
   },
   {
    "k": "Next step",
-   "v": "The Senate bill still needs a <b>full Senate floor vote</b> (60 votes) and a <b>conference with the House</b> before it can reach the President. Reporting as of Sep 16 said a floor vote before the Senate's pre-midterm recess was unlikely."
+   "v": "The Senate bill still needs a <b>full Senate floor vote</b> (60 votes) and a <b>conference with the House</b> before it can reach the President. The Agriculture Committee chairs say they hope to finish by year&rsquo;s end; lawmakers say an agreement is at least a month away."
   },
   {
    "k": "Not in either bill",
@@ -123,7 +123,7 @@
   },
   {
    "stage": "Senate floor",
-   "desc": "Needs 60 votes to pass the full Senate. As of Sep 16 a floor vote before the Senate's pre-midterm recess looked unlikely; no date set",
+   "desc": "Needs 60 votes to pass the full Senate. No date set; lawmakers say an agreement is at least a month away",
    "mk": "now",
    "label": "pending"
   },
@@ -135,15 +135,15 @@
   },
   {
    "stage": "Enactment",
-   "desc": "CBO's April score assumed an early-August signing &mdash; that window has already slipped; Sep 30 is the clock that matters",
+   "desc": "CBO's April score assumed an early-August signing; that window passed. The committee chairs now aim for year's end",
    "mk": "next",
    "label": "ahead"
   },
   {
    "stage": "Deadline",
-   "desc": "Current extension lapses without action &middot; Sep 30, 2026",
-   "mk": "now",
-   "label": "hard date"
+   "desc": "Extension lapsed &middot; Sep 30, 2026. The stopgap funding law through Dec 11 did not renew it",
+   "mk": "miss",
+   "label": "lapsed"
   }
  ]
 }
