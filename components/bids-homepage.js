@@ -113,12 +113,33 @@
     return Math.abs(bN) < 5 ? bN * 100 : bN;
   }
 
+  /* PANEL6 D6 2026-10-06: ONE QUARTER-CENT FORMATTER, for the card and the
+     hero band (index1 reads it from window.agsistBidFmt). The hero wrote
+     $4.37 3/4 and the card $4.38 for the same bid. Rounded to the nearest
+     quarter cent, the way the pit writes it. */
+  function qParts(dollars){
+    var c = Math.round(Number(dollars) * 400) / 4, w = Math.floor(c + 1e-9), f = Math.round((c - w) * 4);
+    if(f === 4){ w++; f = 0; }
+    return { whole: '$' + (w / 100).toFixed(2), frac: f ? ['', '1/4', '1/2', '3/4'][f] : '' };
+  }
+  function qCash(dollars, fracClass){
+    if(dollars == null || !isFinite(Number(dollars))) return '\u2014';
+    var p = qParts(dollars);
+    return p.whole + (p.frac ? '<span class="' + (fracClass || 'bh-frac') + '"> ' + p.frac + '</span>' : '');
+  }
+  function qCashText(dollars){ if(dollars == null || !isFinite(Number(dollars))) return '\u2014'; var p = qParts(dollars); return p.whole + (p.frac ? ' ' + p.frac : ''); }
+  /* Cents, signed: \u221262\u00a2, \u221262 1/2\u00a2, \u22121/2\u00a2, even. */
+  function qCents(cents){
+    var a = Math.abs(Number(cents)), q = Math.round(a * 4) / 4, w = Math.floor(q + 1e-9), f = Math.round((q - w) * 4);
+    if(!w && !f) return 'even';
+    return (cents < 0 ? '\u2212' : '+') + (w || !f ? String(w) : '') + (w && f ? ' ' : '') + (f ? ['', '1/4', '1/2', '3/4'][f] : '') + '\u00a2';
+  }
   function formatBasis(bN){
     var cents = basisCents(bN);
     if(cents == null) return { str:'\u2014', cls:'muted' };
     return {
       /* 2026-10-01: a flat basis is "even", not "+0c". */
-      str: cents === 0 ? 'even' : (cents > 0 ? '+' : '\u2212') + Math.abs(cents).toFixed(0) + '\u00a2',
+      str: qCents(cents),
       cls: cents > 0 ? 'pos' : cents < 0 ? 'neg' : 'muted'
     };
   }
@@ -359,7 +380,7 @@
   }
   /* The cell's bid: the nearest delivery month, per bushel, standard grade. */
   function pickCell(elev, cat){
-    var l = (elev.commodities[cat] || []).filter(function(b){ return !notPerBushel(b) && !isSpecialGrade(b) && ppu(b.cashPrice) != null; });
+    var l = (elev.commodities[cat] || []).filter(function(b){ return !notPerBushel(b) && !isSpecialGrade(b) && ppu(b.cashPrice) != null && !rowExpired(b); });
     l.sort(byMonth);
     return l[0] || null;
   }
@@ -367,13 +388,17 @@
     var d = new Date(iso); if(!iso || isNaN(d)) return '';
     try{ return d.toLocaleDateString('en-US', {month:'short', day:'numeric', timeZone:'America/Chicago'}); }catch(e){ return ''; }
   }
+  /* "2026-10-01" (already a Central-time day) -> "Oct 1". */
+  function ctShortDay(ds){ var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(ds || ''); return m ? MON[+m[2] - 1] + ' ' + (+m[3]) : ''; }
   function ctClock(iso){
     var d = new Date(iso); if(!iso || isNaN(d)) return '';
     try{ return d.toLocaleTimeString('en-US', {hour:'numeric', minute:'2-digit', timeZone:'America/Chicago'}); }catch(e){ return ''; }
   }
   /* Freshness, from this elevator's own times (WAVE1-A / WAVE3-I rule). */
   function freshness(elev){
-    var o = { stale: false, full: '', tag: '—', kind: 'na', sr: '' };
+    /* PANEL6 U16: a stale tag says "Old · Oct 1"; a fresh one the date only.
+       `ageUnknown`: the board carries no posting time at all. */
+    var o = { stale: false, full: '', tag: '—', kind: 'na', sr: '', ageUnknown: true };
     if(elev.fromNetwork){
       var chk = ctTime(elev.checkedAt) && ctTime(elev.checkedAt) !== ctTime(elev.pricedAt) ? ' · checked ' + ctTime(elev.checkedAt) : '';
       if(!ctTime(elev.pricedAt)){
@@ -381,11 +406,12 @@
         return o;
       }
       var st = staleSince(elev.pricedAt);
+      o.ageUnknown = false;
       o.stale = !!st;
       o.kind = st ? 'old' : 'ok';
       o.full = (st ? 'Not updated since ' : 'Posted ') + ctTime(elev.pricedAt) + chk;
-      o.tag = (!st && ctDate(elev.pricedAt) === ctToday()) ? ctClock(elev.pricedAt) : ctShort(elev.pricedAt);
-      o.sr = st ? 'Not updated since ' : 'Posted ';
+      o.tag = (st ? 'Old · ' : '') + ctShort(elev.pricedAt);
+      o.sr = (st ? 'Not updated since ' : 'Posted ') + ctShort(elev.pricedAt);
     } else {
       o.full = ctTime(feedTimes.licensed) ? 'Quotes read ' + ctTime(feedTimes.licensed) + ', no posting time sent' : 'No posting time sent';
       o.sr = 'No posting time sent';
@@ -395,7 +421,9 @@
   /* The basis contract, by the same rules as the expanded rows: named from
      the licensed feed's symbol, or checked later against data/prices.json by
      fillRefs(). Returns the data attributes and any label known now. */
-  function refFor(bid, cat, pp){
+  /* PANEL6 D4: `staleOn` is the Central-time day a stale board last posted.
+     Its basis is checked against that day's settle, not today's close. */
+  function refFor(bid, cat, pp, staleOn){
     var r = { attr: '', label: '', short: '' };
     var rm = refMonth(bid.symbol);
     if(rm){
@@ -405,7 +433,8 @@
     }
     if(pp != null && bid.basis != null && refCropFor(bid, cat)){
       var rc = refCropFor(bid, cat), ek = refEndKey(bid, rc === 'kcwheat' ? 'wheat' : rc);
-      if(ek) r.attr = ' data-ref-crop="' + rc + '" data-ref-for="' + cat + '" data-ref-end="' + ek + '" data-ref-imp="' + (pp - basisCents(bid.basis) / 100).toFixed(4) + '"' + (bid.pricedAt || bid.checkedAt ? ' data-ref-read="' + escHtml(String(bid.pricedAt || bid.checkedAt)) + '"' : '');
+      if(ek) r.attr = ' data-ref-crop="' + rc + '" data-ref-for="' + cat + '" data-ref-end="' + ek + '" data-ref-imp="' + (pp - basisCents(bid.basis) / 100).toFixed(4) + '"' + (bid.pricedAt || bid.checkedAt ? ' data-ref-read="' + escHtml(String(bid.pricedAt || bid.checkedAt)) + '"' : '')
+        + (staleOn ? ' data-ref-on="' + escHtml(staleOn) + '"' : '');
     }
     return r;
   }
@@ -414,27 +443,46 @@
     if(!pk) return '';
     return '<span class="bh-chg" hidden data-pk="' + pk + '" data-st="' + escHtml(String(bid.state || '').toUpperCase()) + '" data-cash="' + bid.cashPrice + '" data-on="' + escHtml(ctDate(bid.pricedAt || bid.checkedAt)) + '"></span>';
   }
-  function cellHTML(elev, cat){
+  /* PANEL6 D8: the delivery month, short: "Oct", or "Jan '27" when the year
+     is not this one. From the same key every picker uses. */
+  function monthShort(k){
+    var m = /^(\d{4})-(\d{2})$/.exec(k || ''); if(!m) return '';
+    return MON[+m[2] - 1] + (m[1] === ctToday().slice(0, 4) ? '' : ' \'' + m[1].slice(2));
+  }
+  function staleDay(elev, fr, bid){ return fr && fr.stale ? ctDate(bid.pricedAt || elev.pricedAt) : ''; }
+  function cellHTML(elev, cat, fr){
     var name = COMM_NAMES[cat] || cat;
     var b = pickCell(elev, cat);
-    if(!b) return '<span class="bh-cell bh-cell--none" title="No standard ' + escHtml(name.toLowerCase()) + ' bid posted here"><span class="bh-ck">' + escHtml(name) + '</span><span class="bh-cash">—</span><span class="bh-vh">no standard ' + escHtml(name.toLowerCase()) + ' bid posted</span></span>';
+    if(!b){
+      /* A board whose only rows are old-crop or new-crop outside their
+         window (D1) does post a bid; it is just not a current one. */
+      var why = (elev.commodities[cat] || []).some(rowExpired)
+        ? 'only an old-crop or new-crop ' + name.toLowerCase() + ' bid outside its window; tap for it'
+        : 'no standard ' + name.toLowerCase() + ' bid posted';
+      return '<span class="bh-cell bh-cell--none" title="' + escHtml(why.charAt(0).toUpperCase() + why.slice(1)) + '"><span class="bh-ck">' + escHtml(name) + '</span><span class="bh-cash">—</span><span class="bh-vh">' + escHtml(why) + '</span></span>';
+    }
     var pp = ppu(b.cashPrice), bs = formatBasis(b.basis), wc = cat === 'wheat' ? wheatClass(b) : '';
+    var mon = monthShort(rowMonthKey(b));
     var sub = '';
+    if(mon) sub += '<span class="bh-mon"><span class="bh-vh">for </span>' + escHtml(mon) + '</span>';
     if(bs.str !== '—'){
-      var rf = refFor(b, cat, pp);
-      /* "−62¢" until the contract is known, then "−62¢ Dec". Same unit either way. */
-      var cents = bs.str;
+      var rf = refFor(b, cat, pp, staleDay(elev, fr, b));
+      /* "Oct · −62¢" until the contract is known, then "Oct · −62¢ Dec". */
       var tail = rf.short ? ' ' + rf.short : '';
-      sub = '<span class="bh-bas"><span class="bh-vh">basis </span>' + cents + '<span class="bh-refm"' + rf.attr + '>' + escHtml(tail) + '</span></span>';
+      sub += (mon ? '<span class="bh-sep" aria-hidden="true">·</span>' : '')
+        + '<span class="bh-bas"><span class="bh-vh">, basis </span><span class="bh-num">' + bs.str + '</span><span class="bh-refm"' + rf.attr + '>' + escHtml(tail) + '</span></span>';
     }
     sub += chgSpan(b, false, false);
     return '<span class="bh-cell"><span class="bh-ck">' + escHtml(name + (wc ? ' · ' + wc : '')) + '</span>'
-      + '<span class="bh-cash">$' + pp.toFixed(2) + '</span>'
+      + '<span class="bh-cash">' + qCash(pp) + '</span>'
       + (sub ? '<span class="bh-sub">' + sub + '</span>' : '') + '</span>';
   }
 
   var bhSeq = 0;
-  function renderElevatorHTML(elev, cropPick, bothFeeds, cols, isOpen){
+  /* A stable id per board: the same string goes on the row button as
+     data-board-key and into the hero summary, so the hero can open it. */
+  function boardKey(elev){ return 'b' + fnv([elev.facility, elev.branch, elev.city, elev.state, elev.fromNetwork ? 'n' : 'l'].map(function(x){ return String(x || '').trim().toUpperCase(); }).join('|')); }
+  function renderElevatorHTML(elev, cropPick, bothFeeds, cols, isOpen, topLabel){
     var towns = (elev.towns && elev.towns.length > 1) ? elev.towns.join(', ') : (elev.city || '');
     var cityState = towns + (towns && elev.state ? ', ' : '') + (elev.state||'');
     /* WAVE3-I: "straight-line" is said once, in How to read. */
@@ -449,16 +497,19 @@
       + (elev.sourceId ? ' data-src="' + escHtml(elev.sourceId) + '"' : '') + '>';
 
     // The row
-    html += '<button type="button" class="bh-head" aria-expanded="' + (isOpen ? 'true' : 'false') + '" aria-controls="' + xid + '">';
+    html += '<button type="button" class="bh-head" data-board-key="' + escHtml(boardKey(elev)) + '" aria-expanded="' + (isOpen ? 'true' : 'false') + '" aria-controls="' + xid + '">';
     html += '<span class="bh-id"><span class="bh-l1"><span class="bh-name">' + escHtml(elev.facility) + '</span>'
-      + '<span class="bh-age bh-age--' + fr.kind + '" title="' + escHtml(fr.full) + '"><span class="bh-dot" aria-hidden="true"></span><span class="bh-vh">' + escHtml(fr.sr) + '</span>' + escHtml(fr.tag) + '</span>'
+      + (topLabel ? '<span class="bh-topk">' + escHtml(topLabel) + '</span>' : '')
       + '<span class="bh-type"></span></span>';
+    /* PANEL6 U12: the date tag sits on the town line, so every name line is
+       one height. */
     var sub = [];
     if(cityState) sub.push(escHtml(cityState));
     if(distStr) sub.push('<span class="bh-mi">' + distStr + '</span>');
-    if(sub.length) html += '<span class="bh-where">' + sub.join(' · ') + '</span>';
+    sub.push('<span class="bh-age bh-age--' + fr.kind + '" title="' + escHtml(fr.full) + '"><span class="bh-dot" aria-hidden="true"></span><span class="bh-vh">' + escHtml(fr.sr) + '</span><span aria-hidden="true">' + escHtml(fr.tag) + '</span></span>');
+    html += '<span class="bh-where">' + sub.join('<span class="bh-sep" aria-hidden="true"> · </span>') + '</span>';
     html += '</span>';
-    cols.forEach(function(c){ html += cellHTML(elev, c); });
+    cols.forEach(function(c){ html += cellHTML(elev, c, fr); });
     html += '<span class="bh-chev" aria-hidden="true"></span></button>';
 
     // Everything else, behind the tap
@@ -496,7 +547,7 @@
         var bid = r.b, cat = r.cat;
         var perTon = notPerBushel(bid);
         var pp = perTon ? null : ppu(bid.cashPrice);
-        var cashStr = pp != null ? '$' + pp.toFixed(2) : '—';
+        var cashStr = pp != null ? qCash(pp) : '—';
         var basis = perTon ? { str:'—', cls:'muted' } : formatBasis(bid.basis);
         var grade = String(bid.commodity || '').trim();
         var special = isSpecialGrade(bid);
@@ -512,7 +563,7 @@
         /* WAVE1-A: basis in one neutral colour; a negative basis is not bad news. */
         var refAttr = '', refTxt = '';
         if(!perTon && !special && basis.str !== '—'){
-          var rf = refFor(bid, cat, pp);
+          var rf = refFor(bid, cat, pp, staleDay(elev, fr, bid));
           refTxt = rf.label; refAttr = rf.attr;
         }
         html += '<div class="bh-row">';
@@ -662,8 +713,47 @@
   }
   /* The contract a network basis is quoted against, or null. One copy of the
      rule, used by the card (fillRefs) and the hero summary (publishTop). */
-  function resolveRef(crop, forCrop, imp, endKey, q){
+  function harvestOnce(){
+    if(!window.__agsistHarvestP){
+      window.__agsistHarvestP = fetch('/data/harvest-prices.json', { cache: 'no-store' })
+        .then(function(r){ return r.ok ? r.json() : null; }).catch(function(){ return null; });
+    }
+    return window.__agsistHarvestP;
+  }
+  /* PANEL6 D4 2026-10-06: A STALE BOARD IS CHECKED AGAINST THE SETTLE ON THE
+     DAY IT POSTED. Against today's close, a rally moved its cash minus basis
+     more than 8 cents off and the month vanished, leaving a bare "−70¢".
+     The only dated settles this page holds are data/harvest-prices.json
+     windows[].series (Dec corn and Nov soybeans, one per trading day). The
+     daily archive's quote_strip `prev` is not a settle and is never used.
+     No settle on file for that day and contract: no month, never a guess. */
+  var FUT_CODE = 'FGHJKMNQUVXZ';
+  function settleOn(hp, crop, candKey, day){
+    if(!hp || !Array.isArray(hp.windows) || !day) return null;
+    var root = crop === 'corn' ? 'ZC' : crop === 'soybeans' ? 'ZS' : '';
+    var m = /-([a-z]{3})(\d{2})$/.exec(candKey || '');
+    if(!root || !m) return null;
+    var tk = root + FUT_CODE.charAt(MON_LC.indexOf(m[1])) + m[2];
+    for(var i = 0; i < hp.windows.length; i++){
+      var w = hp.windows[i];
+      if(!w || String(w.ticker || '').split('.')[0] !== tk || !Array.isArray(w.series)) continue;
+      for(var j = 0; j < w.series.length; j++){
+        var x = w.series[j];
+        if(x && x.d === day && typeof x.s === 'number' && isFinite(x.s)) return x.s;
+      }
+    }
+    return null;
+  }
+  function resolveRef(crop, forCrop, imp, endKey, q, onDay, hp){
     if(!isFinite(imp)) return null;
+    if(onDay){
+      var sc = refCandidate(crop, endKey);
+      var sv = sc && settleOn(hp, crop, sc.key, onDay);
+      if(sv == null || Math.abs(sv - imp) > REF_TOL) return null;
+      var stext = forCrop === crop ? sc.label.replace(/ (corn|soybeans|oats)$/, '') : sc.label;
+      return { label: sc.label, text: stext, close: sv, settleDay: onDay,
+               short: sc.label.slice(0, 3) + (forCrop === crop ? '' : ' ' + crop) };
+    }
     if(crop === 'kcwheat'){
       /* 2026-10-05: a dated KC contract by the same delivery-month rule
          as every other crop (the price file now carries kcwheat-dec26,
@@ -695,18 +785,21 @@
              short: cand.label.slice(0, 3) + (forCrop === crop ? '' : ' ' + crop) };
   }
   var pricesData = null;
+  var hpData = null;
   function fillRefs(area){
-    pricesOnce().then(function(pd){
-      pricesData = pd;
-      var q = (pd && pd.quotes) || {}, n = 0, used = {}, oldest = '';
+    Promise.all([pricesOnce(), harvestOnce()]).then(function(x){
+      var pd = x[0]; pricesData = pd; hpData = x[1];
+      var q = (pd && pd.quotes) || {}, n = 0, used = {}, settled = {}, oldest = '';
       var els = area.querySelectorAll('.r7-ref[data-ref-crop], .bh-refm[data-ref-crop]');
       for(var i = 0; i < els.length; i++){
         var el = els[i], crop = el.getAttribute('data-ref-crop'), forCrop = el.getAttribute('data-ref-for') || crop;
-        var r = resolveRef(crop, forCrop, parseFloat(el.getAttribute('data-ref-imp')), el.getAttribute('data-ref-end'), q);
+        var r = resolveRef(crop, forCrop, parseFloat(el.getAttribute('data-ref-imp')), el.getAttribute('data-ref-end'), q, el.getAttribute('data-ref-on') || '', hpData);
         if(!r) continue;
+        var sdl = r.settleDay ? ctShortDay(r.settleDay) : '';
         /* A cell reads "−62 Dec"; the expanded row names the full contract. */
-        if(el.classList.contains('bh-refm')){ el.textContent = ' ' + r.short; el.title = 'basis vs ' + r.text; continue; }
+        if(el.classList.contains('bh-refm')){ el.textContent = ' ' + r.short; el.title = 'basis vs ' + r.text + (sdl ? ', matched to the ' + sdl + ' settle' : ''); continue; }
         el.textContent = 'basis vs ' + r.text;
+        if(r.settleDay){ settled[r.label + ' ' + sdl] = r.close; n++; continue; }
         used[r.label] = r.close;
         var rdt = el.getAttribute('data-ref-read') || ''; if(rdt && (!oldest || rdt < oldest)) oldest = rdt;
         n++;
@@ -715,9 +808,11 @@
       if(note && n){
         /* 7b: the boards and the futures file are read at different times;
            say both, with the futures level the page actually has. */
-        var fut = Object.keys(used).map(function(l){ return l + ' $' + used[l].toFixed(2); }).join(', ');
+        var fut = Object.keys(used).map(function(l){ return l + ' ' + qCashText(used[l]); }).join(', ');
+        var stl = Object.keys(settled).map(function(l){ return l + ' ' + qCashText(settled[l]); }).join(', ');
         var ft = ctTime(pd && pd.fetched);
-        note.textContent = (ft ? 'Futures at ' + ft + ': ' + fut + '. Boards post at other times. ' : '')
+        note.textContent = (ft && fut ? 'Futures at ' + ft + ': ' + fut + '. Boards post at other times. ' : '')
+          + (stl ? 'Old boards are matched to the settle on the day they posted: ' + stl + '. ' : '')
           + 'A basis month shows where cash minus basis lands within 8¢ of that contract.';
         note.hidden = false;
       }
@@ -777,40 +872,14 @@
          highest corn price across every month is an elevator's 2027 forward
          beating today's spot. White corn and other special grades never set
          the headline. A row with no month is used only if no row has one. */
-      var best = null, bestKey = '', nowKey = thisMonth(), pool = [], keyed = [];
-      for(var i = 0; i < bids.length; i++){
-        var b = bids[i];
-        /* flattenBarchartResponse has already classified every row; using
-           its `category` avoids a second copy of the rule. */
-        if(b.category !== 'corn') continue;
-        if(b.cashPrice == null || notPerBushel(b) || isSpecialGrade(b)) continue;
-        pool.push(b);
-        var k = rowMonthKey(b);
-        if(k && k >= nowKey) keyed.push({b: b, k: k});
-      }
-      if(keyed.length){
-        keyed.forEach(function(x){ if(!bestKey || x.k < bestKey) bestKey = x.k; });
-        pool = keyed.filter(function(x){ return x.k === bestKey; }).map(function(x){ return x.b; });
-      }
-      for(var j = 0; j < pool.length; j++){
-        if(!best || pool[j].cashPrice > best.cashPrice) best = pool[j];
-      }
-      if(!best) return;
-
-      /* Guarantee same-month before either comparison is built, regardless
-         of which path picked `best` above. The `keyed.length` branch already
-         narrows `pool` to one month when at least one row parses -- but if
-         EVERY row's deliveryMonth is unparseable, or every contract on offer
-         is already behind `nowKey` (a real rollover-season case), `keyed`
-         stays empty and `pool` silently falls back to every corn row across
-         every month mixed together. Re-filtering here to best's own month
-         closes that gap no matter how `best` was reached.
-         A `best` with NO parseable month of its own (bestMonthKey === '')
-         is the one case this can't fix by filtering: two unparseable rows
-         matching on "both blank" is not evidence their delivery windows
-         actually agree, so there is nothing safe to average -- pool is
-         emptied instead of grouping them on a shared blank. Withhold, don't
-         guess, per the site's own honest-numbers rule. */
+      /* PANEL6 D3: the same pick as the hero (topPick): fresh boards first,
+         stale only when none is fresh, expired new/old-crop rows never.
+         The calculator's "Highest corn bid nearby" and the hero now name
+         the same bid. `pool` is the picked month's rows from that pool. */
+      var tp = topPick(elevators, 'corn');
+      if(!tp) return;
+      var best = tp.best.b;
+      var pool = tp.pool.map(function(x){ return x.b; });
       var bestMonthKey = rowMonthKey(best);
       pool = bestMonthKey ? pool.filter(function(p){ return rowMonthKey(p) === bestMonthKey; }) : [];
 
@@ -883,6 +952,8 @@
            above: the highest corn cash among bids for the nearest open
            delivery month. `pickCount` is how many bids it was chosen from. */
         pickRule: 'highest corn bid nearby',
+        stale: !!tp.best.stale,
+        higherOlder: tp.higherOlder ? { cash: ppu(tp.higherOlder.b.cashPrice), posted: tp.higherOlder.e.pricedAt || null } : null,
         pickCount: pool.length,
         monthLabel: shortMon(bestMonthKey) || '',
         /* Every listed elevator's nearest open bid per crop, so the reader can
@@ -1032,7 +1103,38 @@
 
   // The delivery month of a row as YYYY-MM: from the label ("Nov 2026",
   // "Sep26", "Sept '26") first, then from the period / window start.
+  /* PANEL6 D1 2026-10-06: THE PERIOD TOKENS. The network files some rows as
+     `spot`, `newcrop-YYYY` or `oldcrop-YYYY`, and this returned '' for all
+     three, so Meyer's $12.10 new-crop soybean bid was dropped from "Top".
+       spot          the current month.
+       newcrop-YYYY  an open window: Sep-Dec of YYYY for corn, soybeans and
+                     sorghum, Jun-Sep for wheat and oats. Inside it, the
+                     current month; before it, the window start; after it,
+                     expired.
+       oldcrop-YYYY  the current month, only before Sep of YYYY; expired after.
+     An expired row is never a current bid (rowExpired); a row with no month
+     at all is still used last, as before. */
+  var NC_WIN = { corn:[9,12], soybeans:[9,12], sorghum:[9,12], wheat:[6,9], oats:[6,9] };
+  function tokenMonth(r){
+    var p = String(r.deliveryStart || '').trim().toLowerCase(), nw = thisMonth();
+    if(p === 'spot') return { key: nw };
+    var nc = /^newcrop-(\d{4})$/.exec(p);
+    if(nc){
+      var w = NC_WIN[r.category] || NC_WIN[r.netCrop] || null;
+      if(!w) return { key: '' };
+      var s = nc[1] + '-' + ('0' + w[0]).slice(-2), e = nc[1] + '-' + ('0' + w[1]).slice(-2);
+      if(nw < s) return { key: s };
+      if(nw <= e) return { key: nw };
+      return { key: '', expired: true };
+    }
+    var oc = /^oldcrop-(\d{4})$/.exec(p);
+    if(oc) return nw < oc[1] + '-09' ? { key: nw } : { key: '', expired: true };
+    return null;
+  }
+  function rowExpired(r){ var t = tokenMonth(r); return !!(t && t.expired); }
   function rowMonthKey(r){
+    var tk = tokenMonth(r);
+    if(tk) return tk.key;
     var mm = /^([A-Za-z]{3})[A-Za-z]*\s*'?(\d{2}|\d{4})$/.exec(String(r.deliveryMonth || '').trim());
     var i = mm ? MON.map(function(x){ return x.toLowerCase(); }).indexOf(mm[1].toLowerCase()) : -1;
     if(i >= 0) return (mm[2].length === 2 ? '20' + mm[2] : mm[2]) + '-' + ('0' + (i + 1)).slice(-2);
@@ -1096,7 +1198,8 @@
       return out;
     });
   }
-  window.__agsistHomeBidsInternals = { mergeFeeds: mergeFeeds, rowKey: rowKey, fromNetwork: fromNetwork, widFor: widFor, publishSummary: publishSummary };
+  window.__agsistHomeBidsInternals = { mergeFeeds: mergeFeeds, rowKey: rowKey, fromNetwork: fromNetwork, widFor: widFor, publishSummary: publishSummary,
+    rowMonthKey: function(r){ return rowMonthKey(r); }, rowExpired: function(r){ return rowExpired(r); }, topEntry: function(e, c){ return topEntry(e, c); } };
 
   // ── WAVE1-A: the day's change, filled after the card draws ──────────
   // data/bids-prev/<ST>.json is written by scripts/build_bids_prev.py in the
@@ -1307,11 +1410,22 @@
     '#bids-list-area .bh-type{flex:none;font-size:.8125rem;color:var(--text-muted);white-space:nowrap}',
     '#bids-list-area .bh-type:empty{display:none}',
     '#bids-list-area .bh-where{display:block;margin-top:.1rem;font-size:.8125rem;color:var(--text-muted)}',
+    '#bids-list-area .bh-where .bh-age{display:inline-flex;vertical-align:baseline}',
+    '#bids-geo-bar.bh-geo-quiet{justify-content:flex-end;margin-bottom:0!important}',
+    '#bids-geo-bar.bh-geo-quiet>span[aria-hidden="true"]{display:none!important}',
+    '#bids-geo-bar.bh-geo-quiet #bids-geo-txt{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}',
     '#bids-list-area .bh-cell{grid-column:1/-1;display:grid;grid-template-columns:6.5rem auto minmax(0,1fr);column-gap:.6rem;align-items:baseline}',
     '#bids-list-area .bh-ck{font-size:.875rem;color:var(--text-dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}',
     '#bids-list-area .bh-cash{font-family:"JetBrains Mono",monospace;font-size:1.125rem;font-weight:700;color:var(--text);white-space:nowrap}',
     '#bids-list-area .bh-cell--none .bh-cash{color:var(--text-muted);font-weight:400}',
-    '#bids-list-area .bh-sub{display:flex;justify-content:flex-end;gap:.45rem;font-family:"JetBrains Mono",monospace;font-size:.8125rem;color:var(--text-muted);white-space:nowrap}',
+    /* PANEL6 U2: at 200% text the sub-line wraps instead of running over the price. */
+    '#bids-list-area .bh-sub{display:flex;flex-wrap:wrap;justify-content:flex-end;justify-content:safe flex-end;column-gap:.35rem;min-width:0;font-size:.8125rem;color:var(--text-muted)}',
+    /* Monospace for figures only (HERO type rule); "Oct" and "Dec" are words. */
+    '#bids-list-area .bh-num{font-family:"JetBrains Mono",monospace}',
+    '#bids-list-area .bh-sub>span{white-space:nowrap}',
+    '#bids-list-area .bh-frac{font-size:.8em;font-weight:600}',
+    '#bids-list-area .bh-topk{flex:none;font-size:.8125rem;font-weight:700;color:var(--gold);white-space:nowrap}',
+    '[data-theme="light"] #bids-list-area .bh-topk{color:#86600f}',
     '#bids-list-area .bh-chg{font-family:"JetBrains Mono",monospace;font-size:.8125rem;white-space:nowrap}',
     '#bids-list-area .bh-chg[hidden]{display:none}',
     '#bids-list-area .bh-chg.is-up{color:var(--green)}',
@@ -1340,12 +1454,12 @@
     '#bids-list-area .bh-normal[hidden]{display:none}',
     '#bids-list-area .bh-normal-h{font-weight:700;color:var(--text-dim)}',
     '#bids-list-area .watch-elevator-btn{min-height:44px;padding:0;background:none;border:0;font-family:inherit;font-size:.8125rem;color:var(--text-muted);text-decoration:underline;cursor:pointer}',
-    '#bids-list-area .bh-foot{display:flex;flex-wrap:wrap;align-items:center;column-gap:1rem;padding:.35rem 0 0;font-size:.8125rem}',
-    '#bids-list-area .bh-tipb{min-height:44px;padding:0;background:none;border:0;font-family:inherit;font-size:.8125rem;color:var(--text-dim);cursor:pointer;text-decoration:underline dotted;text-underline-offset:3px}',
-    '#bids-list-area .bh-tipb::after{content:"\\00a0+";text-decoration:none;display:inline-block}',
-    '#bids-list-area .bh-tipb[aria-expanded="true"]::after{content:"\\00a0\\2212"}',
+    '#bids-list-area .bh-foot{display:flex;justify-content:flex-end;align-items:center;padding:.35rem 0 0;font-size:.875rem}',
+    '#bids-list-area .bh-links{display:flex;flex-wrap:wrap;align-items:center;column-gap:.4rem;font-size:.8125rem;color:var(--text-muted)}',
+    '#bids-list-area .bh-sep{color:var(--text-muted)}',
+    '#bids-list-area .bh-tipb{min-height:44px;padding:0;background:none;border:0;font-family:inherit;font-size:.8125rem;color:var(--text-muted);cursor:pointer;text-decoration:underline dotted;text-underline-offset:3px}',
     '#bids-list-area .bh-fl{display:inline-flex;align-items:center;min-height:44px;color:var(--text-muted);text-decoration:underline;text-underline-offset:3px}',
-    '#bids-list-area .bh-all{display:inline-flex;align-items:center;min-height:44px;margin-left:auto;color:var(--gold);font-weight:600;text-decoration:none}',
+    '#bids-list-area .bh-all{display:inline-flex;align-items:center;min-height:44px;color:var(--gold);font-weight:600;text-decoration:none}',
     '#bids-list-area .bh-tip{padding:.1rem 0 .5rem;font-size:.8125rem;line-height:1.5;color:var(--text-muted)}',
     '#bids-list-area .bh-tip[hidden]{display:none}',
     '#bids-list-area .bh-tip>div+div{margin-top:.35rem}',
@@ -1388,32 +1502,53 @@
   // highest stale one, marked stale. No board: null. Same radius as the card.
   var BIDS_RADIUS_MI = 50;
   var topSeq = 0;
-  function topEntry(elevators, cat){
+  /* PANEL6 D3 2026-10-06: ONE PICK, USED BY THE HERO AND THE CALCULATOR.
+     The pool is the boards this card does not flag as stale; if there are
+     none, the stale ones. Inside the pool: the nearest open delivery month,
+     then the highest cash. Expired new-crop and old-crop rows are never in
+     it (D1). When the pick came from the fresh pool and a stale board bids
+     more for the same month, that bid is returned as `higherOlder`, so a
+     lone fresh board's lower bid is never called "Top" without saying so. */
+  function topPick(elevators, cat){
     var nowKey = thisMonth(), fresh = [], old = [];
     elevators.forEach(function(e){
-      var stale = freshness(e).stale;
+      var fr = freshness(e);
       (e.commodities[cat] || []).forEach(function(b){
-        if(notPerBushel(b) || isSpecialGrade(b) || ppu(b.cashPrice) == null) return;
-        (stale ? old : fresh).push({ e: e, b: b, stale: stale });
+        if(notPerBushel(b) || isSpecialGrade(b) || ppu(b.cashPrice) == null || rowExpired(b)) return;
+        (fr.stale ? old : fresh).push({ e: e, b: b, stale: fr.stale, fr: fr });
       });
     });
-    var pool = fresh.length ? fresh : old;
-    if(!pool.length) return null;
-    var keyed = pool.filter(function(x){ var k = rowMonthKey(x.b); return k && k >= nowKey; });
-    if(keyed.length){
+    function narrow(list){
+      var keyed = list.filter(function(x){ var k = rowMonthKey(x.b); return k && k >= nowKey; });
+      if(!keyed.length) return { pool: list, mk: '' };
       var mk = keyed.reduce(function(m, x){ var k = rowMonthKey(x.b); return !m || k < m ? k : m; }, '');
-      pool = keyed.filter(function(x){ return rowMonthKey(x.b) === mk; });
+      return { pool: keyed.filter(function(x){ return rowMonthKey(x.b) === mk; }), mk: mk };
     }
-    var best = null;
-    pool.forEach(function(x){ if(!best || ppu(x.b.cashPrice) > ppu(best.b.cashPrice)) best = x; });
+    function highest(list){ var best = null; list.forEach(function(x){ if(!best || ppu(x.b.cashPrice) > ppu(best.b.cashPrice)) best = x; }); return best; }
+    var src = fresh.length ? fresh : old;
+    if(!src.length) return null;
+    var n = narrow(src), best = highest(n.pool);
+    var higherOlder = null;
+    if(fresh.length && old.length){
+      var mk = rowMonthKey(best.b);
+      var hi = highest(old.filter(function(x){ return rowMonthKey(x.b) === mk; }));
+      if(hi && ppu(hi.b.cashPrice) > ppu(best.b.cashPrice)) higherOlder = hi;
+    }
+    return { best: best, pool: n.pool, higherOlder: higherOlder };
+  }
+  function topEntry(elevators, cat){
+    var tp = topPick(elevators, cat);
+    if(!tp) return null;
+    var best = tp.best;
     var b = best.b, e = best.e, pp = ppu(b.cashPrice), bc = basisCents(b.basis);
     var ref = null, rm = refMonth(b.symbol);
     if(rm) ref = rm.replace(/ (corn|soybeans)$/, '');
     else if(bc != null && refCropFor(b, cat) && pricesData){
       var rc = refCropFor(b, cat);
-      var r = resolveRef(rc, cat, pp - bc / 100, refEndKey(b, rc === 'kcwheat' ? 'wheat' : rc), (pricesData && pricesData.quotes) || {});
+      var r = resolveRef(rc, cat, pp - bc / 100, refEndKey(b, rc === 'kcwheat' ? 'wheat' : rc), (pricesData && pricesData.quotes) || {}, staleDay(e, best.fr, b), hpData);
       if(r) ref = r.text;
     }
+    var ho = tp.higherOlder;
     return {
       cash: Math.round(pp * 10000) / 10000,
       basis: bc == null ? null : Math.round(bc * 100) / 10000,
@@ -1422,7 +1557,11 @@
       town: (e.city || '') + (e.city && e.state ? ', ' : '') + (e.state || ''),
       mi: e.distance == null ? null : Math.round(e.distance * 10) / 10,
       posted: e.fromNetwork && e.pricedAt ? String(e.pricedAt) : null,
-      stale: best.stale
+      stale: best.stale,
+      month: monthShort(rowMonthKey(b)) || null,
+      boardKey: boardKey(e),
+      higherOlder: ho ? { cash: Math.round(ppu(ho.b.cashPrice) * 10000) / 10000, posted: ho.e.fromNetwork && ho.e.pricedAt ? String(ho.e.pricedAt) : null } : null,
+      ageUnknown: !!best.fr.ageUnknown
     };
   }
   function dispatchTop(detail){
@@ -1430,21 +1569,40 @@
     try{ window.dispatchEvent(new CustomEvent('agsist:bids-top', { detail: detail })); }
     catch(e){ try{ var ev = document.createEvent('CustomEvent'); ev.initCustomEvent('agsist:bids-top', false, false, detail); window.dispatchEvent(ev); }catch(e2){} }
   }
-  function emptyTop(place){ return { place: place || null, radiusMi: BIDS_RADIUS_MI, corn: null, soybeans: null, wheat: null }; }
+  /* PANEL6 D5: `status` says why a crop is null. 'ok' (drawn), 'none'
+     (loaded, nothing within the radius), 'failed', 'pending' (still
+     loading), 'nozip'. The hero can no longer read "couldn't load" as
+     "no bid within 50 mi". */
+  function emptyTop(place, status){ return { status: status || 'ok', place: place || null, radiusMi: BIDS_RADIUS_MI, corn: null, soybeans: null, wheat: null }; }
   function placeOf(label, zip){ return label ? label : (zip ? 'ZIP ' + zip : null); }
   function publishTop(ctx){
     var tok = ++topSeq;
     function build(){
-      var d = emptyTop(placeOf(ctx.label, ctx.zip));
+      var d = emptyTop(placeOf(ctx.label, ctx.zip), 'ok');
       ['corn','soybeans','wheat'].forEach(function(c){ try{ d[c] = topEntry(ctx.elevators, c); }catch(e){ d[c] = null; } });
       dispatchTop(d);
     }
     build();
-    /* Network boards name no contract; once the futures file is in, the
-       label can be checked, so the summary goes out again with it. */
-    if(!pricesData) pricesOnce().then(function(pd){ if(tok !== topSeq || !pd) return; pricesData = pd; build(); });
+    /* Network boards name no contract; once the futures file and the dated
+       settles are in, the label can be checked, so the summary goes out
+       again with it. */
+    if(!pricesData || !hpData) Promise.all([pricesOnce(), harvestOnce()]).then(function(x){ if(tok !== topSeq) return; if(x[0]) pricesData = x[0]; if(x[1]) hpData = x[1]; if(x[0] || x[1]) build(); });
   }
-  function publishEmpty(label, zip){ ++topSeq; dispatchTop(emptyTop(placeOf(label, zip))); }
+  function publishEmpty(label, zip, status){ ++topSeq; dispatchTop(emptyTop(placeOf(label, zip), status)); }
+
+  /* PANEL6 U4: one persistent, visually hidden live region beside the card,
+     so a screen reader hears when the bids arrive, fail or come back empty. */
+  function liveNode(area){
+    var n = document.getElementById('bh-live');
+    if(!n && area && area.parentNode){
+      n = document.createElement('div');
+      n.id = 'bh-live'; n.setAttribute('role', 'status'); n.setAttribute('aria-live', 'polite');
+      n.style.cssText = 'position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0';
+      area.parentNode.insertBefore(n, area.nextSibling);
+    }
+    return n;
+  }
+  function announce(area, text){ var n = liveNode(area); if(n && n.textContent !== text) n.textContent = text; }
 
   var feedNodes = null;
   function drawCard(ctx){
@@ -1476,31 +1634,66 @@
       html += '</div>';
     }
 
+    /* FIX6: the hero names the top corn and soybean board; if the card does
+       not already draw it, it is drawn here as an extra row marked "Top corn
+       bid", so the hero's tap can always open it. agsistOpenBidRow() can add
+       any other board the same way (ctx.force). */
+    var shown = {}, extras = [], extraLab = {};
+    top.forEach(function(e){ shown[boardKey(e)] = 1; });
+    [['corn', 'corn'], ['soybeans', 'soybean']].forEach(function(cw){
+      var tp = null; try{ tp = topPick(ctx.elevators, cw[0]); }catch(e){}
+      if(!tp) return;
+      var e = tp.best.e, k = boardKey(e);
+      if(shown[k]) return;
+      if(!extraLab[k]){ extraLab[k] = []; extras.push(e); }
+      extraLab[k].push(cw[1]);
+    });
+    if(ctx.force && !shown[ctx.force] && !extraLab[ctx.force]){
+      ctx.elevators.forEach(function(e){ if(boardKey(e) === ctx.force && !extraLab[ctx.force]){ extraLab[ctx.force] = []; extras.push(e); } });
+    }
+    var drawn = top.concat(extras);
+    if(crop === 'all' && extras.length){
+      /* An extra board can carry a crop the first three do not. */
+      cols = ['corn','soybeans','wheat'].filter(function(c){ return drawn.some(function(e){ return (e.commodities[c] || []).length; }); });
+      if(!cols.length) cols = present.filter(function(c){ return c !== 'other'; }).slice(0, 3);
+    }
+
     html += '<div class="bh-list' + (cols.length >= 3 ? ' bh-k3' : '') + '" style="--bh-k:' + Math.max(cols.length, 1) + '">';
     html += '<div class="bh-cols" aria-hidden="true"><span style="text-align:left">Elevator</span>'
       + cols.map(function(c){ return '<span>' + escHtml(COMM_NAMES[c] || c) + '</span>'; }).join('') + '<span></span></div>';
-    var anyNet = top.some(function(e){ return e.fromNetwork; }), anyLic = top.some(function(e){ return !e.fromNetwork; });
+    var anyNet = drawn.some(function(e){ return e.fromNetwork; }), anyLic = drawn.some(function(e){ return !e.fromNetwork; });
     top.forEach(function(elev){
       var k = contactKey(elev.facility, elev.city, elev.state);
       html += renderElevatorHTML(elev, crop, anyNet && anyLic, cols, !!openSet[k]);
     });
+    extras.forEach(function(elev){
+      var k = contactKey(elev.facility, elev.city, elev.state), labs = extraLab[boardKey(elev)];
+      html += renderElevatorHTML(elev, 'all', anyNet && anyLic, cols, !!openSet[k], labs.length ? 'Top ' + labs.join(' and ') + ' bid' : '');
+    });
     html += '</div>';
 
-    /* Footer: one line. How to read (everything that was three footnotes
-       and a fold), Wrong number, View all. */
-    var extra = list.length - MAX_ELEVATORS;
+    /* PANEL6 U11: under the rows, one row with View all on the right, then
+       one muted line: How to read · Wrong number? · Claim your board. */
+    var nDrawn = 0;
+    list.forEach(function(e){ if(shown[boardKey(e)] || extraLab[boardKey(e)]) nDrawn++; });
     var tipWas = area.querySelector('.bh-tipb');
     var tipOpen = !!(tipWas && tipWas.getAttribute('aria-expanded') === 'true');
     html += '<div class="bh-foot">'
-      + '<button type="button" class="bh-tipb" aria-expanded="' + tipOpen + '" aria-controls="bh-tip">How to read these bids</button>'
+      + '<a class="bh-all" href="/cash-bids?zip=' + escHtml(zip) + '"' + (list.length > nDrawn ? ' aria-label="View all ' + list.length + ' elevators"' : '') + '>'
+      + (list.length > nDrawn ? 'View all ' + list.length + ' →' : 'View all cash bids →') + '</a>'
+      + '</div>'
+      + '<div class="bh-links">'
+      + '<button type="button" class="bh-tipb" aria-expanded="' + tipOpen + '" aria-controls="bh-tip">How to read</button>'
+      + '<span class="bh-sep" aria-hidden="true">·</span>'
       + '<a class="bh-fl" href="/contact">Wrong number?</a>'
-      + '<a class="bh-all" href="/cash-bids?zip=' + escHtml(zip) + '">' + (extra > 0 ? 'View all ' + list.length + ' elevators →' : 'View all cash bids →') + '</a>'
+      + '<span class="bh-sep" aria-hidden="true">·</span>'
+      + '<a class="bh-fl r7-claim" href="/elevators#claim" data-track="claim_board">Claim your board</a>'
       + '</div>';
     html += '<div class="bh-tip" id="bh-tip"' + (tipOpen ? '' : ' hidden') + '>'
       + '<div><b>Basis</b> is the cash bid minus the futures price it is quoted against. −62 Dec means 62¢ under December futures. Less negative is stronger.</div>'
       + '<div class="r7-ref-note" hidden></div>'
-      + '<div>Tap an elevator for its phone, every delivery month, carry, basis vs normal and posting time.</div>'
-      + '<div><b>Date tag:</b> a green dot means the board posted on the latest trading day; orange means it has not posted since the date shown. A dash means the feed sends no posting time.</div>'
+      + '<div>Tap for phone, nearest delivery month, the board’s best later month (carry), basis vs normal and posting time.</div>'
+      + '<div><b>Date tag:</b> a green dot and a date mean the board posted on the latest trading day. “Old” and an orange dot mean it has not posted since the date shown. A dash means the feed sends no posting time.</div>'
       + '<div><b>▲▼</b> under a price: change since this elevator’s previous posted price, same delivery month. A day name after it is the day of that earlier price. No mark: no earlier price on record.</div>'
       + (anyNet ? '<div>Miles are straight-line.' + (anyLic ? ' Miles marked “from your ZIP” are the second feed’s own.' : '') + '</div>' : '')
       + '<div>Posted prices, not contracts. Freight, moisture and grade discounts are the elevator’s; call before you haul.</div>'
@@ -1575,9 +1768,31 @@
         });
       }
     }
+    lastCtx = ctx;
     publishTop(ctx);
-    return top;
+    var pl = placeOf(ctx.label, zip);
+    announce(area, 'Cash bids loaded: ' + list.length + ' elevator' + (list.length === 1 ? '' : 's') + ' within ' + BIDS_RADIUS_MI + ' mi' + (pl ? ' of ' + pl : '') + ', ' + drawn.length + ' shown.');
+    return drawn;
   }
+
+  /* FIX6: the hero's tap. Scrolls to that board's row, opens it and moves
+     focus to it. A board the card is not drawing is drawn first. */
+  var lastCtx = null;
+  function openBidRow(key){
+    var area = document.getElementById('bids-list-area');
+    if(!area || !key) return false;
+    var sel = '.bh-head[data-board-key="' + String(key).replace(/[^A-Za-z0-9_-]/g, '') + '"]';
+    var btn = area.querySelector(sel);
+    if(!btn && lastCtx && lastCtx.elevators.some(function(e){ return boardKey(e) === key; })){
+      lastCtx.force = key; drawCard(lastCtx); btn = area.querySelector(sel);
+    }
+    if(!btn) return false;
+    if(btn.getAttribute('aria-expanded') !== 'true') btn.click();
+    try{ btn.scrollIntoView({ block: 'center', behavior: 'smooth' }); }catch(e){ btn.scrollIntoView(); }
+    try{ btn.focus({ preventScroll: true }); }catch(e){ btn.focus(); }
+    return true;
+  }
+  window.agsistOpenBidRow = openBidRow;
 
   function loadHomepageBids(lat, lng, label, zip){
     var mySeq = ++loadSeq;
@@ -1591,7 +1806,8 @@
       degraded = false;
       area.innerHTML = '<div style="text-align:center;padding:1rem;font-size:.82rem;color:var(--text-muted)">'
         + 'Enter your ZIP to see nearby cash bids.<br><a href="/cash-bids" style="color:var(--gold)">Search any ZIP →</a></div>';
-      publishEmpty(label, zip);
+      publishEmpty(label, zip, 'nozip');
+      announce(area, 'Enter your ZIP to see nearby cash bids.');
       return;
     }
 
@@ -1600,18 +1816,24 @@
       geoTxt.textContent = label ? label : ('ZIP ' + zip);
       /* r7-bids 7b: a ZIP is set, so the button changes it. */
       var zb = document.getElementById('bids-enter-zip-btn');
-      if(zb){ zb.textContent = 'Change ZIP'; zb.setAttribute('aria-label', 'Change the ZIP code for nearby cash bids'); }
+      if(zb){ zb.textContent = 'Change ZIP'; zb.setAttribute('aria-label', 'Change the ZIP code for nearby cash bids (now ' + (label ? label : 'ZIP ' + zip) + ')'); }
     }
+    quietGeo();
 
     // Show loading skeleton, unless a degraded card is already up (a quiet redraw).
     if(!degraded || !area.querySelector('.bh-elev')){
       if(feedNodes === null) feedNodes = [document.querySelector('.r7-cov'), document.getElementById('idx1-trust-ledger')].filter(function(x){ return x; });
-      area.innerHTML = '<div role="status"><span style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap">Loading cash bids</span>'
+      area.innerHTML = '<div><span style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap">Loading cash bids</span>'
         + '<div style="height:36px;background:var(--surface2);border-radius:6px;margin-bottom:.4rem;opacity:.4"></div>'
         + '<div style="height:36px;background:var(--surface2);border-radius:6px;margin-bottom:.4rem;opacity:.35"></div>'
         + '<div style="height:36px;background:var(--surface2);border-radius:6px;opacity:.3"></div>'
         + '</div>';
     }
+
+    /* PANEL6 D5: the hero hears "still loading", not silence. A quiet
+       redraw of a card already showing bids sends nothing new. */
+    if(!area.querySelector('.bh-elev')) publishEmpty(label, zip, 'pending');
+    liveNode(area);
 
     // ── Both feeds, in parallel; neither failing empties the card ───
     loadAllBids(zip)
@@ -1621,11 +1843,12 @@
 
         if(bids.length === 0){
           /* WAVE1-A: "none within 50 mi" only when the network really answered. */
-          if(!bids.netOk){ area.innerHTML = errorHTML(bids.netPending, zip); Array.prototype.forEach.call(area.querySelectorAll('.bh-retry'), function(b){ b.addEventListener('click', retryLoad); }); publishEmpty(label, zip); return; }
+          if(!bids.netOk){ area.innerHTML = errorHTML(bids.netPending, zip); Array.prototype.forEach.call(area.querySelectorAll('.bh-retry'), function(b){ b.addEventListener('click', retryLoad); }); publishEmpty(label, zip, bids.netPending ? 'pending' : 'failed'); announce(area, bids.netPending ? 'Elevator bids are still loading.' : 'Cash bids could not load right now.'); return; }
           area.innerHTML = '<div style="text-align:center;padding:1rem;font-size:.82rem;color:var(--text-muted)">'
             + 'No elevator bids found within ' + BIDS_RADIUS_MI + ' mi.<br>'
             + '<a href="/cash-bids?zip=' + escHtml(zip) + '" style="color:var(--gold)">Try wider search →</a></div>';
-          publishEmpty(label, zip);
+          publishEmpty(label, zip, 'none');
+          announce(area, 'No elevator bids found within ' + BIDS_RADIUS_MI + ' mi.');
           return;
         }
 
@@ -1645,9 +1868,19 @@
         console.warn('[AGSIST] Homepage bids fetch failed:', err);
         area.innerHTML = errorHTML(!!(err && err.pending), zip);
         Array.prototype.forEach.call(area.querySelectorAll('.bh-retry'), function(b){ b.addEventListener('click', retryLoad); });
-        publishEmpty(label, zip);
+        publishEmpty(label, zip, err && err.pending ? 'pending' : 'failed');
+        announce(area, err && err.pending ? 'Elevator bids are still loading.' : 'Cash bids could not load right now.');
       });
   }
+
+  /* PANEL6 U8: with the hero band on the page, the place is already said
+     at the top; the card's geo bar keeps only its Change ZIP button. The
+     place text stays for screen readers. */
+  function quietGeo(){
+    var gb = document.getElementById('bids-geo-bar');
+    if(gb && document.getElementById('hero-band')) gb.classList.add('bh-geo-quiet');
+  }
+  ensureCSS(); quietGeo();
 
   // ── lookupBids — called from homepage ZIP entry ─────────────────
   function lookupBids(){
@@ -1685,6 +1918,10 @@
   }
 
   // Expose globally
+  /* PANEL6 D6/D7: the one formatter, for the hero band too. cash(dollars,
+     fracClass) returns HTML ("$4.37<span class=..> 3/4</span>"), cashText
+     plain text, basis(cents) "−62 1/2¢", day(iso) "Oct 1" in Central time. */
+  window.agsistBidFmt = { cash: qCash, cashText: qCashText, basis: qCents, day: ctShort };
   window.loadHomepageBids = loadHomepageBids;
   window.lookupBids = lookupBids;
   /* 2026-10-05: geo.js parks a request when it runs first (slow link). */
