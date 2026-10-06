@@ -106,8 +106,12 @@ def shape(cells):
     newest_we = max(v["we"] for v in ge.values())
     cur_year, cur_wk = int(newest_we[:4]), week_no(newest_we)
 
-    def week_val(st, yr):
-        for w in (cur_wk, cur_wk - 1, cur_wk + 1):
+    def week_val(st, yr, exact=False):
+        # History may wobble +-1 week so calendar drift does not drop a year.
+        # THIS year may not: the wobble carried last week's number into the
+        # current week (NH corn 87% under week ending 2026-10-04 with no
+        # week-40 reading), which is a carried-forward value printed as new.
+        for w in ((cur_wk,) if exact else (cur_wk, cur_wk - 1, cur_wk + 1)):
             v = ge.get((st, yr, w))
             if v:
                 return v["ge"]
@@ -115,7 +119,7 @@ def shape(cells):
 
     states = {}
     for st in sorted({k[0] for k in ge}):
-        cur = week_val(st, cur_year)
+        cur = week_val(st, cur_year, exact=True)
         if cur is None:
             continue
         hist = []
@@ -189,6 +193,22 @@ def selftest():
     assert ia["of"] == 27 and len(ia["hist"]) == 26, ia["of"]
     assert ia["rank_from_worst"] == 4, f"expected 4th-worst, got {ia['rank_from_worst']}"
     assert ia["worst"] == 30.0 and ia["best"] == 55.0
+
+    # A state with no reading THIS week is left off, not shown with last
+    # week's number. NH: rated in week 27 of 2026 only; history at week 28.
+    for cat in ("GOOD", "EXCELLENT"):
+        rows_by_cat[cat] = rows_by_cat[cat] + [
+            {"week_ending": f"{yr}-07-12", "state_alpha": "NH", "Value": "40"} for yr in range(2000, 2026)
+        ] + [{"week_ending": "2026-07-05", "state_alpha": "NH", "Value": "45"}]
+    pkg2 = shape(collect("CORN", fake))
+    assert "NH" not in pkg2["states"], f"NH carried forward: {pkg2['states'].get('NH')}"
+    assert "IA" in pkg2["states"]
+    # ...while a past year one week off still counts (history wobble kept)
+    for cat in ("GOOD", "EXCELLENT"):
+        rows_by_cat[cat] = [r for r in rows_by_cat[cat] if not (r["state_alpha"] == "IA" and r["week_ending"] == "2003-07-12")]
+        rows_by_cat[cat].append({"week_ending": "2003-07-19", "state_alpha": "IA", "Value": "27.5"})
+    pkg3 = shape(collect("CORN", fake))
+    assert pkg3["states"]["IA"]["of"] == 27, pkg3["states"]["IA"]["of"]
     print(f"SELFTEST OK — IA 2026 ranks {ia['rank_from_worst']}/{ia['of']} "
           f"(pctile {ia['pctile']}), thin-history refusal + week matching exercised")
 

@@ -15,17 +15,17 @@
   <link rel="manifest" href="/manifest.json">
 
   <title>USDA Crop Conditions: Corn 54% Good-Excellent | AGSIST</title>
-  <meta name="description" content="US corn is 54% good to excellent, soybeans 57%,. Every state's rating ranked against the same week since 2000 — a percentile, not a feel.">
+  <meta name="description" content="US corn is 54% good to excellent; soybeans 57%. Every state's rating ranked against the same week since 2000 — a percentile, not a feel.">
   <link rel="canonical" href="https://agsist.com/conditions">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="AGSIST">
   <meta property="og:title" content="USDA Crop Conditions: Corn 54% Good-Excellent | AGSIST">
-  <meta property="og:description" content="US corn is 54% good to excellent, soybeans 57%,. Every state's rating ranked against the same week since 2000 — a percentile, not a feel.">
+  <meta property="og:description" content="US corn is 54% good to excellent; soybeans 57%. Every state's rating ranked against the same week since 2000 — a percentile, not a feel.">
 <meta name="twitter:title"       content="USDA Crop Conditions: Corn 54% Good-Excellent | AGSIST">
-<meta name="twitter:description" content="US corn is 54% good to excellent, soybeans 57%,. Every state's rating ranked against the same week since 2000 — a percentile, not a feel.">
+<meta name="twitter:description" content="US corn is 54% good to excellent; soybeans 57%. Every state's rating ranked against the same week since 2000 — a percentile, not a feel.">
   <meta property="og:url" content="https://agsist.com/conditions">
   <meta property="og:image" content="https://agsist.com/img/og/agsist.jpg">
-  <meta property="og:image:alt" content="USDA Crop Conditions: Corn 57% Good-Excellent | AGSIST">
+  <meta property="og:image:alt" content="USDA Crop Conditions: Corn 54% Good-Excellent | AGSIST">
   <meta name="twitter:image" content="https://agsist.com/img/og/agsist.jpg">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
@@ -167,7 +167,7 @@
   <section class="cd-panel">
     <div class="cd-panel-hd"><span class="cd-panel-t">Source</span></div>
     <div class="cd-panel-b cd-src">
-      <p>USDA NASS Quick Stats, weekly crop condition (PCT GOOD + PCT EXCELLENT), state level, 2000&ndash;present. Rankings computed by <code>scripts/fetch_conditions.py</code> in the AGSIST repository (same-week matching &plusmn;1 week; states with &lt;10 comparable years omitted). Related: <a href="/basis">basis vs normal</a> &middot; <a href="/drought-monitor">drought monitor</a> &middot; <a href="/yield-estimator">yield estimator</a>.</p>
+      <p>USDA NASS Quick Stats, weekly crop condition (PCT GOOD + PCT EXCELLENT), state level, 2000&ndash;present. Rankings computed by <code>scripts/fetch_conditions.py</code> in the AGSIST repository. This year&rsquo;s rating must come from the exact current week &mdash; a state USDA did not rate this week is left off, never shown with last week&rsquo;s number; past years are matched to the same week &plusmn;1 so calendar drift does not drop a year. States with &lt;10 comparable years omitted. Related: <a href="/basis">basis vs normal</a> &middot; <a href="/drought-monitor">drought monitor</a> &middot; <a href="/yield-estimator">yield estimator</a>.</p>
     </div>
   </section>
 </main>
@@ -201,18 +201,33 @@
   var TILE={"AK":[1,1],"ME":[12,1],"VT":[11,2],"NH":[12,2],"WA":[2,3],"MT":[3,3],"ND":[4,3],"SD":[5,3],"MN":[6,3],"WI":[7,3],"MI":[8,3],"NY":[10,3],"MA":[11,3],"RI":[12,3],"OR":[2,4],"ID":[3,4],"WY":[4,4],"NE":[5,4],"IA":[6,4],"IL":[7,4],"IN":[8,4],"OH":[9,4],"PA":[10,4],"NJ":[11,4],"CT":[12,4],"CA":[2,5],"NV":[3,5],"UT":[4,5],"CO":[5,5],"KS":[6,5],"MO":[7,5],"KY":[8,5],"WV":[9,5],"VA":[10,5],"MD":[11,5],"DE":[12,5],"AZ":[3,6],"NM":[4,6],"OK":[5,6],"AR":[6,6],"TN":[7,6],"NC":[8,6],"SC":[9,6],"TX":[5,7],"LA":[6,7],"MS":[7,7],"AL":[8,7],"GA":[9,7],"HI":[1,8],"FL":[10,8]};
   var FULL2AB={"alaska":"AK","alabama":"AL","arkansas":"AR","arizona":"AZ","california":"CA","colorado":"CO","connecticut":"CT","delaware":"DE","florida":"FL","georgia":"GA","hawaii":"HI","iowa":"IA","idaho":"ID","illinois":"IL","indiana":"IN","kansas":"KS","kentucky":"KY","louisiana":"LA","massachusetts":"MA","maryland":"MD","maine":"ME","michigan":"MI","minnesota":"MN","missouri":"MO","mississippi":"MS","montana":"MT","north carolina":"NC","north dakota":"ND","nebraska":"NE","new hampshire":"NH","new jersey":"NJ","new mexico":"NM","nevada":"NV","new york":"NY","ohio":"OH","oklahoma":"OK","oregon":"OR","pennsylvania":"PA","rhode island":"RI","south carolina":"SC","south dakota":"SD","tennessee":"TN","texas":"TX","utah":"UT","virginia":"VA","vermont":"VT","washington":"WA","wisconsin":"WI","west virginia":"WV","wyoming":"WY"};
   var pickedState=null, geoNote='';
-  function verdictOf(p){
-    if(p<=4)return["WORST ON RECORD","#e0685f"];
+  // WORST and BEST come from the RANK, not the percentile. With 26 prior
+  // years one lower year still rounds pctile to 4, and NC corn at 14% (rank 2
+  // of 27) was printed "WORST ON RECORD". Record claims need the record:
+  // worst = no prior year lower (rank 1); best = no prior year at or above.
+  // Everything between is banded on the percentile.
+  function band(st){
+    if(st.rank_from_worst===1)return st.ge<st.worst?'worst':'tiedworst';
+    if(st.ge>st.best)return 'best';
+    return null;
+  }
+  function verdictOf(st){
+    var b=band(st), p=st.pctile;
+    if(b==='worst')return["WORST ON RECORD","#e0685f"];
+    if(b==='tiedworst')return["TIED FOR WORST ON RECORD","#e0685f"];
+    if(b==='best')return["BEST ON RECORD","#5fc28a"];
     if(p<=15)return["AMONG THE WORST","#e0685f"];
     if(p<=35)return["BELOW NORMAL","#d4a23f"];
     if(p<65)return["PRETTY NORMAL","#8a948f"];
     if(p<85)return["ABOVE NORMAL","#5fc28a"];
-    if(p<100)return["AMONG THE BEST","#5fc28a"];
-    return["BEST ON RECORD","#5fc28a"];
+    return["AMONG THE BEST","#5fc28a"];
   }
-  function tileColor(p){
-    if(p==null)return"#14181a";
-    if(p<=4)return"#af3a32"; if(p<=15)return"#9c4b3d"; if(p<=35)return"#a8823c";
+  function tileColor(st){
+    if(!st||st.pctile==null)return"#14181a";
+    var b=band(st), p=st.pctile;
+    if(b==='worst'||b==='tiedworst')return"#af3a32";
+    if(b==='best')return"#2f9963";
+    if(p<=15)return"#9c4b3d"; if(p<=35)return"#a8823c";
     if(p<65)return"#3a4144"; if(p<85)return"#396d4f"; return"#2f9963";
   }
   function geoState(states){
@@ -230,7 +245,7 @@
     var sl=$('cd-stsel');
     sl.innerHTML=Object.keys(states).sort().map(function(a){return '<option value="'+a+'"'+(a===pickedState?' selected':'')+'>'+a+'</option>';}).join('');
     $('cd-geo').textContent=geoNote;
-    var st=states[pickedState], vv=verdictOf(st.pctile), cname=crop==='corn'?'corn':'soybeans';
+    var st=states[pickedState], vv=verdictOf(st), cname=crop==='corn'?'corn':'soybeans';
     $('cd-vbig').textContent=Math.round(st.ge)+'%';
     $('cd-vbig').style.color=vv[1];
     $('cd-vword').textContent=vv[0];
@@ -241,7 +256,7 @@
     Object.keys(TILE).forEach(function(ab){
       var t=TILE[ab], st2=states[ab];
       if(st2){
-        h+='<div class="cd-tile'+(ab===pickedState?' sel':'')+'" data-st="'+ab+'" style="--gc:'+t[0]+';--gr:'+t[1]+';background:'+tileColor(st2.pctile)+'">'
+        h+='<div class="cd-tile'+(ab===pickedState?' sel':'')+'" data-st="'+ab+'" style="--gc:'+t[0]+';--gr:'+t[1]+';background:'+tileColor(st2)+'">'
           +'<div class="cd-tst">'+ab+'</div><div class="cd-tge">'+Math.round(st2.ge)+'%</div></div>';
       } else {
         h+='<div class="cd-tile dim" style="--gc:'+t[0]+';--gr:'+t[1]+'"><div class="cd-tst">'+ab+'</div></div>';

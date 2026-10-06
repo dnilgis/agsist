@@ -274,10 +274,15 @@ def seo_conditions(c):
     if ge is None:
         return None
     soy = (d.get("soybeans") or {}).get("good_excellent")
-    vs = f" against {prev}% a year ago" if prev is not None else ""
-    also = f", soybeans {soy}%" if soy is not None else ""
+    # Built clause by clause: with no prior-year figure the old f-string left
+    # "soybeans 57%,." in the live meta description.
+    lead = f"US corn is {ge:g}% good to excellent"
+    if prev is not None:
+        lead += f" against {prev:g}% a year ago"
+    if soy is not None:
+        lead += f"; soybeans {soy:g}%"
     return (f"USDA Crop Conditions: Corn {ge:g}% Good-Excellent{SUFFIX}",
-            f"US corn is {ge:g}% good to excellent{also},{vs}. Every state's rating ranked "
+            f"{lead}. Every state's rating ranked "
             f"against the same week since 2000 — a percentile, not a feel.")
 
 
@@ -418,8 +423,8 @@ PAGES = {
     # Added 2026-09-13. Both pages carried a HAND-TYPED number in their search
     # snippet: conditions-yield quoted an R-squared that had already drifted
     # from the file it describes, conditions quoted nothing current at all.
-    "conditions-yield.html": (seo_cond_yield,    frozenset({"title", "desc"})),
-    "conditions.html":       (seo_conditions,    frozenset({"title", "desc"})),
+    "conditions-yield.html": (seo_cond_yield,    frozenset({"title", "desc", "alt"})),
+    "conditions.html":       (seo_conditions,    frozenset({"title", "desc", "alt"})),
 }
 for _p in FUTURES:
     PAGES[_p] = (make_futures(_p), frozenset({"title"}))
@@ -465,12 +470,17 @@ TAGS = [
     (_meta("property", "og:description"), "desc"),
     (_meta("name", "twitter:title"), "title"),
     (_meta("name", "twitter:description"), "desc"),
+    # og:image:alt repeats the title on pages that own it ("alt"). It was left
+    # out of the stamp list, so /conditions said "Corn 57%" in the share-card
+    # alt while its title said 54%. Opt-in per page: on pages whose alt
+    # describes the image rather than repeating the title it is left alone.
+    (_meta("property", "og:image:alt"), "alt"),
 ]
 EXPECT_TAGS = 6
 
 
 def stamp(text, title, desc, owns=frozenset({"title", "desc"})):
-    vals = {"title": esc(title or ""), "desc": esc(desc or "")}
+    vals = {"title": esc(title or ""), "desc": esc(desc or ""), "alt": esc(title or "")}
     n = 0
     for pat, which in TAGS:
         if which not in owns:
@@ -594,6 +604,20 @@ def selftest():
        seo_cond_yield(dict(ctx, cond_yield=None)) is None)
     t, d = seo_conditions(ctx)
     ck("conditions carries this week's G+E and last year's", "57%" in d and "66%" in d)
+    cp = dict(ctx["crop_progress"], corn={"good_excellent": 54, "good_excellent_prev_year": None},
+              soybeans={"good_excellent": 57})
+    _t, d0 = seo_conditions(dict(ctx, crop_progress=cp))
+    ck("conditions with no prior-year figure reads cleanly (no ',.')",
+       ",." not in d0 and "soybeans 57%." in d0 and "a year ago" not in d0, d0)
+    alt_html = ('<title>Old</title><meta name="description" content="o">'
+                '<meta property="og:title" content="o"><meta property="og:description" content="o">'
+                '<meta name="twitter:title" content="o"><meta name="twitter:description" content="o">'
+                '<meta property="og:image:alt" content="USDA Crop Conditions: Corn 57%">')
+    _o, _n = stamp(alt_html, "Corn 54%", "D", frozenset({"title", "desc", "alt"}))
+    ck("og:image:alt follows the title on pages that own it",
+       _n == 7 and 'og:image:alt" content="Corn 54%"' in _o and "57%" not in _o, _o)
+    ck("og:image:alt left alone on pages that do not own it",
+       "57%" in stamp(alt_html, "Corn 54%", "D")[0])
     ck("conditions stays quiet out of season",
        seo_conditions(dict(ctx, crop_progress={"in_season": False})) is None)
 
