@@ -2,8 +2,8 @@
  "schema": "agsist-feeds/1",
  "generated_by": "scripts/build_feeds.py",
  "note": "Derived from the repository, never typed. Pages come from a grep of every .html; the writer and its cadence come from the workflow that names the file or runs the script that names it.",
- "count": 61,
- "with_known_cadence": 61,
+ "count": 67,
+ "with_known_cadence": 67,
  "feeds": [
   {
    "path": "data/afida/county.json",
@@ -230,7 +230,8 @@
    ],
    "touched_by": [
     "cond-yield",
-    "conditions"
+    "conditions",
+    "Freshness \u2014 seed static prices, dateModified, sitemap lastmod"
    ],
    "cadence": "1 launch on a fixed schedule at about 8pm Central",
    "curated": false,
@@ -414,6 +415,7 @@
    ],
    "touched_by": [
     "Fetch Crop Progress",
+    "Freshness \u2014 seed static prices, dateModified, sitemap lastmod",
     "Rebuild Feed Manifest"
    ],
    "cadence": "4 launches on a fixed schedule at about 7am, 3pm, 4pm Central",
@@ -535,7 +537,8 @@
     "Coverage map \u2014 the elevator directory, drawn"
    ],
    "touched_by": [
-    "Coverage map \u2014 the elevator directory, drawn"
+    "Coverage map \u2014 the elevator directory, drawn",
+    "Freshness \u2014 seed static prices, dateModified, sitemap lastmod"
    ],
    "cadence": "1 launch every day at about 7am Central",
    "curated": false,
@@ -763,7 +766,53 @@
    "why_quiet": "The elevator bid network. dnilgis/bids reads ~650 boards and publishes this index and its shards to dnilgis.github.io/bids on its own schedule. cash-bids.html fetches it and falls back to the licensed feed alone if it is unreachable, so a stale or missing feed costs coverage and never breaks the page."
   },
   {
+   "path": "data/nass/corn-acres-us.json",
+   "pages": [
+    "usda-quick-stats.html"
+   ],
+   "written_by": [
+    "Build NASS Series"
+   ],
+   "touched_by": [
+    "Build NASS Series"
+   ],
+   "cadence": "1 launch every day at about 7am Central",
+   "curated": false,
+   "planned": false,
+   "external": false,
+   "url": null,
+   "crons": [
+    "45 12 16 * *"
+   ],
+   "max_gap_hours": null,
+   "quiet": null,
+   "why_quiet": null
+  },
+  {
    "path": "data/nass/corn-acres.json",
+   "pages": [
+    "usda-quick-stats.html"
+   ],
+   "written_by": [
+    "Build NASS Series"
+   ],
+   "touched_by": [
+    "Build NASS Series"
+   ],
+   "cadence": "1 launch every day at about 7am Central",
+   "curated": false,
+   "planned": false,
+   "external": false,
+   "url": null,
+   "crons": [
+    "45 12 16 * *"
+   ],
+   "max_gap_hours": null,
+   "quiet": null,
+   "why_quiet": null
+  },
+  {
+   "path": "data/nass/corn-price-my.json",
    "pages": [
     "usda-quick-stats.html"
    ],
@@ -855,7 +904,53 @@
    "why_quiet": null
   },
   {
+   "path": "data/nass/soy-acres-us.json",
+   "pages": [
+    "usda-quick-stats.html"
+   ],
+   "written_by": [
+    "Build NASS Series"
+   ],
+   "touched_by": [
+    "Build NASS Series"
+   ],
+   "cadence": "1 launch every day at about 7am Central",
+   "curated": false,
+   "planned": false,
+   "external": false,
+   "url": null,
+   "crons": [
+    "45 12 16 * *"
+   ],
+   "max_gap_hours": null,
+   "quiet": null,
+   "why_quiet": null
+  },
+  {
    "path": "data/nass/soy-acres.json",
+   "pages": [
+    "usda-quick-stats.html"
+   ],
+   "written_by": [
+    "Build NASS Series"
+   ],
+   "touched_by": [
+    "Build NASS Series"
+   ],
+   "cadence": "1 launch every day at about 7am Central",
+   "curated": false,
+   "planned": false,
+   "external": false,
+   "url": null,
+   "crons": [
+    "45 12 16 * *"
+   ],
+   "max_gap_hours": null,
+   "quiet": null,
+   "why_quiet": null
+  },
+  {
+   "path": "data/nass/soy-price-my.json",
    "pages": [
     "usda-quick-stats.html"
    ],
@@ -947,6 +1042,52 @@
    "why_quiet": null
   },
   {
+   "path": "data/nass/wheat-price-my.json",
+   "pages": [
+    "usda-quick-stats.html"
+   ],
+   "written_by": [
+    "Build NASS Series"
+   ],
+   "touched_by": [
+    "Build NASS Series"
+   ],
+   "cadence": "1 launch every day at about 7am Central",
+   "curated": false,
+   "planned": false,
+   "external": false,
+   "url": null,
+   "crons": [
+    "45 12 16 * *"
+   ],
+   "max_gap_hours": null,
+   "quiet": null,
+   "why_quiet": null
+  },
+  {
+   "path": "data/nass/wheat-winter-yield-us.json",
+   "pages": [
+    "usda-quick-stats.html"
+   ],
+   "written_by": [
+    "Build NASS Series"
+   ],
+   "touched_by": [
+    "Build NASS Series"
+   ],
+   "cadence": "1 launch every day at about 7am Central",
+   "curated": false,
+   "planned": false,
+   "external": false,
+   "url": null,
+   "crons": [
+    "45 12 16 * *"
+   ],
+   "max_gap_hours": null,
+   "quiet": null,
+   "why_quiet": null
+  },
+  {
    "path": "data/nass/wheat-yield-us.json",
    "pages": [
     "usda-quick-stats.html"
@@ -1003,6 +1144,7 @@
     "The wire"
    ],
    "touched_by": [
+    "Freshness \u2014 seed static prices, dateModified, sitemap lastmod",
     "The wire"
    ],
    "cadence": "3 launches on a fixed schedule at about 5pm Central",
@@ -1106,6 +1248,7 @@
    ],
    "touched_by": [
     "Generate Daily Briefing",
+    "Freshness \u2014 seed static prices, dateModified, sitemap lastmod",
     "Prediction bot \u2014 call and grade"
    ],
    "cadence": "2 launches weekdays at about 5pm, 6pm Central",
@@ -1412,6 +1555,7 @@
     "transport"
    ],
    "touched_by": [
+    "Freshness \u2014 seed static prices, dateModified, sitemap lastmod",
     "transport"
    ],
    "cadence": "1 launch Fridays at about 6am Central",
