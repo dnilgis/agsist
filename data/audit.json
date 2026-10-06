@@ -1,12 +1,18 @@
 {
  "schema": "agsist-render-audit/1",
  "base": "https://agsist.com",
- "ran": "2026-10-05T19:58:00.127Z",
+ "ran": "2026-10-06T17:26:56.849Z",
  "pages": 16,
- "seconds": 198,
- "high": 8,
- "med": 9,
+ "seconds": 199,
+ "high": 9,
+ "med": 7,
  "findings": [
+  {
+   "page": "/",
+   "sev": "high",
+   "kind": "subresource",
+   "detail": "desktop: 503  /img/logo-agsist-ondark.svg"
+  },
   {
    "page": "/basis",
    "sev": "high",
@@ -54,18 +60,6 @@
    "sev": "high",
    "kind": "contrast",
    "detail": "mobile: 1.00:1 on \"An elevator or co-op can now claim its listing\" (rgba(22, 26, 24, 0.83) on rgb(22, 27, 20))"
-  },
-  {
-   "page": "/",
-   "sev": "med",
-   "kind": "contrast",
-   "detail": "desktop: 3.48:1 on \"RADAR, FORECAST & DROUGHT\" (rgb(168, 125, 30) on rgb(246, 247, 245))"
-  },
-  {
-   "page": "/",
-   "sev": "med",
-   "kind": "contrast",
-   "detail": "mobile: 3.48:1 on \"RADAR, FORECAST & DROUGHT\" (rgb(168, 125, 30) on rgb(246, 247, 245))"
   },
   {
    "page": "/breakeven",
