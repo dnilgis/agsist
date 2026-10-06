@@ -2,7 +2,7 @@
  "schema": "agsist-sponsor-report/1",
  "sponsor": "Apex Insurance Group",
  "slug": "apex",
- "generated": "2026-10-06T01:13:03+00:00",
+ "generated": "2026-10-06T03:27:27+00:00",
  "through": "2026-10-04",
  "start": null,
  "pending": true,
@@ -68,7 +68,7 @@
     "price_week": 100,
     "slots": 1,
     "exclusive": true,
-    "placement": "Above the fold on every daily briefing and on the homepage. Web and email.",
+    "placement": "In every daily briefing, web and email, plus a sponsor strip above the fold on the homepage.",
     "note": "One ag company per issue. Founding rate locked for 12 months from start date. Once filled, the next slot opens only on renewal.",
     "year_equivalent": 5200
    },
