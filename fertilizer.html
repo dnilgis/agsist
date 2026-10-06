@@ -348,7 +348,7 @@
   <div class="fert-explainer">
     <div class="fe-card">
       <h3>Why Fertilizer Prices Move</h3>
-      <p>Natural gas drives nitrogen costs (urea, ammonium sulfate). Phosphate (MAP) prices follow global mining supply, with Morocco and China as dominant producers. Potash and K-Mag are dominated by Canada and Russia &#8212; any export disruption moves prices fast. Pelletized lime is more local, set by quarry output and freight. Seasonal demand spikes before spring and fall applications regardless of global fundamentals.</p>
+      <p>Natural gas drives nitrogen costs (urea, ammonium sulfate). Phosphate (MAP) prices follow global mining supply, with Morocco and China as dominant producers. Potash is dominated by Canada, Russia and Belarus; K-Mag comes from a single U.S. mine in Carlsbad, New Mexico &#8212; any export disruption moves prices fast. Pelletized lime is more local, set by quarry output and freight. Seasonal demand spikes before spring and fall applications regardless of global fundamentals.</p>
     </div>
     <div class="fe-card">
       <h3>What NOLA Barge Price Means</h3>
@@ -360,7 +360,7 @@
     </div>
     <div class="fe-card">
       <h3>How These Prices Affect Break-Evens</h3>
-      <p>For corn at 180 bu/acre applying 160 lbs actual N as urea: a $100/ton price increase adds roughly $17/acre to input costs, or about $0.09/bu to your break-even. At 180 bu and $4.50 corn that&#x2019;s meaningful &#8212; fertilizer price direction matters as much as corn price direction for your margin.</p>
+      <p>For corn at 180 bu/acre applying 160 lbs actual N as urea: a $100/ton price increase adds roughly $17/acre to input costs, or about $0.10/bu to your break-even. At 180 bu and $4.50 corn that&#x2019;s meaningful &#8212; fertilizer price direction matters as much as corn price direction for your margin.</p>
     </div>
   </div>
 
@@ -563,9 +563,11 @@ function runCalc(){
   if(window.gtag)gtag('event','fertilizer_calc',{crop:crop,yieldGoal:y});
 }
 function initCalc(){
-  ['calc-crop','calc-yield','calc-acres','calc-nrate'].forEach(function(id){var el=document.getElementById(id);if(el){el.addEventListener('input',runCalc);el.addEventListener('change',runCalc);}});
+  ['calc-yield','calc-acres','calc-nrate'].forEach(function(id){var el=document.getElementById(id);if(el){el.addEventListener('input',runCalc);el.addEventListener('change',runCalc);}});
   var crop=document.getElementById('calc-crop');
-  if(crop)crop.addEventListener('change',function(){var c=CROPS[crop.value];var nr=document.getElementById('calc-nrate');if(nr&&!c.fixesN)nr.value=c.nRate;});
+  // Reset the N rate to the new crop's default BEFORE pricing, or corn->wheat prices wheat at corn's lb N/bu.
+  function onCrop(){var c=CROPS[crop.value];var nr=document.getElementById('calc-nrate');if(c&&nr&&!c.fixesN)nr.value=c.nRate;runCalc();}
+  if(crop){crop.addEventListener('input',onCrop);crop.addEventListener('change',onCrop);}
   runCalc();
 }
 
@@ -588,7 +590,7 @@ fetch('/data/prices.json').then(function(r){return r.ok?r.json():null;}).then(fu
   if(!data)return;var q=data.quotes||{};
   var ng=q.natgas||null;if(ng){var price=ng.close||ng.price||ng.last||null;var el=document.getElementById('natgas-price');if(el&&price!=null)el.textContent='$'+parseFloat(price).toFixed(3);}
   var cn=q['corn-dec26']||null;var lab='Dec corn futures';
-  if(cn){var cp=cn.close||cn.price||cn.last||null;if(cp!=null){cp=parseFloat(cp);if(cp>50)cp=cp/100;STATE.cornPx=cp;STATE.cornLabel=lab;STATE.cornDate=data.fetched?String(data.fetched).slice(0,10):null;renderAfford();}}
+  if(cn){var cp=cn.close||cn.price||cn.last||null;if(cp!=null){cp=parseFloat(cp);if(cp>50)cp=cp/100;STATE.cornPx=cp;STATE.cornLabel=lab;STATE.cornDate=cn.close_date?String(cn.close_date).slice(0,10):(data.fetched?String(data.fetched).slice(0,10):null);renderAfford();}}
 }).catch(function(){});
 })();
 </script>

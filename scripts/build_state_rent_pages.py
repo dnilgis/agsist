@@ -13,7 +13,9 @@ rent/index.html -> /rent/. No collision with /cash-rent (cash-rent.html).
 Honesty rules carried in:
   - YoY and 10-yr deltas use MATCHED counties only (both years published) —
     composition drift would otherwise invent a trend.
-  - 2015 labeled "no survey"; other missing years "not published". No line
+  - 2015 and 2018 labeled "no survey" (NO_SURVEY_YEARS, imported from
+    fetch_cash_rent.py so there is one list); other missing years "not
+    published". No line
     is drawn across a gap.
   - Primary land type per state is whichever has the most 2025 counties
     (AZ/NV are irrigated states) and every table/stat SAYS which it is.
@@ -30,6 +32,9 @@ import json
 import os
 import statistics
 import sys
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from fetch_cash_rent import NO_SURVEY_YEARS  # noqa: E402  (stdlib-only module, main() guarded)
 
 DATA_DIR = "data/cash-rent"
 OUT_DIR = "rent"
@@ -146,7 +151,8 @@ def state_stats(d):
             hist.append({"y": y, "v": med(vals), "n": len(vals)})
         else:
             hist.append({"y": y, "v": None,
-                         "why": "no survey" if y in d.get("no_survey_years", []) else "not published"})
+                         "why": "no survey" if (y in NO_SURVEY_YEARS or y in d.get("no_survey_years", []))
+                                else "not published"})
     ranked = sorted(cur.items(), key=lambda kv: -kv[1])
     return {
         "yr": yr_latest, "primary": primary, "have_types": have_types,
@@ -575,6 +581,7 @@ def selftest():
         assert "SEED:rentstate" in ia and "FAQPage" in ia and "canonical" in ia
         assert "September 1" in ia, "IA termination notice missing"
         assert 'no survey' in ia, "2015 gap not shown honestly"
+        assert 2018 in NO_SURVEY_YEARS, "2018 (no NASS county survey) must be labeled no survey"
         assert ia.count("<tr>") >= 99, "IA county rows missing"
         assert "/rent/texas" in ia, "state cloud missing"
         hub = open(os.path.join(td, "index.html")).read()

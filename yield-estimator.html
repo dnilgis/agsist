@@ -36,7 +36,7 @@
 <script>/* agsist-ga-guard 2026-10-01: Google Analytics loads only when the browser sends no Global Privacy Control or Do Not Track signal and the off switch on /privacy is not set. dataLayer and gtag always exist, so page code that calls them never throws. */(function(w,d,n){var off=false,v,i,s;w.dataLayer=w.dataLayer||[];if(typeof w.gtag!=='function'){w.gtag=function(){w.dataLayer.push(arguments);};}try{off=w.localStorage.getItem('agsist-ga-off')==='1';}catch(e){}if(n.globalPrivacyControl===true){off=true;}v=[n.doNotTrack,w.doNotTrack,n.msDoNotTrack];for(i=0;i<v.length;i++){if(v[i]==='1'||v[i]==='yes'){off=true;}}w.agsistGaOff=off;w.gtag('set','allow_google_signals',false);w.gtag('set','allow_ad_personalization_signals',false);if(off){return;}s=d.createElement('script');s.async=true;s.src='https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H';(d.head||d.documentElement).appendChild(s);})(window,document,navigator);</script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How do I estimate corn yield before harvest?","acceptedAnswer":{"@type":"Answer","text":"The ear count method: count ears in 1/1000 acre row length, then count kernel rows and kernels per row on 5 representative ears. Formula: ears × kernel rows × kernels per row / 90, for a 1/1000-acre sample. Kernel weight varies, so the estimator shows a range across 65,000–95,000 kernels per bushel. Enter these counts in the AGSIST Yield Estimator for an instant field estimate."}},{"@type":"Question","name":"How accurate is the pre-harvest yield estimate?","acceptedAnswer":{"@type":"Answer","text":"The yield component method is accurate to roughly plus or minus 20 bushels per acre — a figure commonly cited in extension guides. Accuracy improves if you sample at least 5 locations and 10 ears per location, and estimate at the milk (R3) stage or later. Because kernel weight varies, the estimator also shows a range built from 65,000 to 95,000 kernels per bushel."}},{"@type":"Question","name":"How do I estimate soybean yield before harvest?","acceptedAnswer":{"@type":"Answer","text":"Count plants per acre, then count pods per plant and seeds per pod on 10 representative plants. Formula: plants/ac × pods/plant × seeds/pod / (seeds/lb × 60). The AGSIST estimator calculates this automatically."}}]}
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How do I estimate corn yield before harvest?","acceptedAnswer":{"@type":"Answer","text":"The ear count method: count ears in 1/1000 acre row length, then count kernel rows and kernels per row on 10 representative ears. Formula: ears × kernel rows × kernels per row / 90, for a 1/1000-acre sample. Kernel weight varies, so the estimator shows a range across 65,000–95,000 kernels per bushel. Enter these counts in the AGSIST Yield Estimator for an instant field estimate."}},{"@type":"Question","name":"How accurate is the pre-harvest yield estimate?","acceptedAnswer":{"@type":"Answer","text":"The yield component method is accurate to roughly plus or minus 20 bushels per acre — a figure commonly cited in extension guides. Accuracy improves if you sample at least 5 locations and 10 ears per location, and estimate at the milk (R3) stage or later. Because kernel weight varies, the estimator also shows a range built from 65,000 to 95,000 kernels per bushel."}},{"@type":"Question","name":"How do I estimate soybean yield before harvest?","acceptedAnswer":{"@type":"Answer","text":"Count plants per acre, then count pods per plant and seeds per pod on 10 representative plants. Formula: plants/ac × pods/plant × seeds/pod / (seeds/lb × 60). The AGSIST estimator calculates this automatically."}}]}
 </script>
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"WebApplication","name":"AGSIST Corn & Soybean Yield Estimator","url":"https://agsist.com/yield-estimator","applicationCategory":"Agricultural yield calculator","operatingSystem":"Web browser","description":"Free pre-harvest yield estimator for corn (ear-count / yield-component method) and soybeans (pod-count method), with a break-even profit-and-loss check that auto-fills price from live cash data.","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"author":{"@type":"Person","name":"Sigurd Lindquist","url":"https://agsist.com/about"},"featureList":["Corn ear-count yield estimate","Soybean pod-count yield estimate","Break-even / profit per acre at estimated yield","Auto-filled cash price by crop"]}
@@ -160,7 +160,7 @@
   <div class="ye-hero">
     <div class="ye-eyebrow"><svg class="ic-sp" aria-hidden="true"><use href="#sp-wheat"/></svg> Pre-Harvest Field Estimation</div>
     <h1>Soybean &amp; Corn<br>Yield Calculator</h1>
-    <p>Estimate yield from field counts at R5&ndash;R6 (corn) or R6&ndash;R7 (soybeans) &mdash; the same ear-count and kernel-count math crop tour scouts run in August. Pod-count method for soybeans. Sample at least 3 locations per field for reliable estimates. Then see <a class="inl-ye" href="/whats-priced-in">what the trade expects the national number to be</a>.</p>
+    <p>Estimate yield from field counts at R5&ndash;R6 (corn) or R6&ndash;R7 (soybeans) &mdash; the same ear-count and kernel-count math crop tour scouts run in August. Pod-count method for soybeans. Sample at least 5 locations per field for reliable estimates. Then see <a class="inl-ye" href="/whats-priced-in">what the trade expects the national number to be</a>.</p>
     <div class="ye-calibration">
       <strong>Method:</strong> Yield Component Method (ears &times; kernel rows &times; kernels per row &divide; 90, for a 1/1000-acre sample; widely referenced across US Corn Belt extension services).
       <strong>Accuracy:</strong> corn estimates run about &plusmn;20 bu/ac &mdash; the figure Purdue, Iowa State, Ohio State and Penn State Extension all give for this method. Sample at least 5 locations, 10 ears each, and estimate at the milk (R3) stage or later. Soybean estimates are looser still; Michigan State puts them at &plusmn;25% or worse before R6.
@@ -212,7 +212,7 @@
           </div>
         </div>
 
-        <div class="ye-method-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-pin"/></svg> Step 2 &mdash; Count Kernels (5 Representative Ears)</div>
+        <div class="ye-method-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-pin"/></svg> Step 2 &mdash; Count Kernels (10 Representative Ears)</div>
         <div class="field-row">
           <div class="field-group">
             <label class="field-label" for="c-kernel-rows">Kernel Rows</label>
@@ -236,7 +236,7 @@
             <div class="result-sub" id="c-yield-sub">bu / acre</div>
           </div>
           <div class="result-item">
-            <div class="result-label">Plants / Acre</div>
+            <div class="result-label">Ears / Acre</div>
             <div class="result-value green" id="c-pop-val">&mdash;</div>
             <div class="result-sub">from ear count</div>
           </div>
@@ -256,7 +256,7 @@
           <div style="font-size:0.755rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.4rem">Formula Used</div>
           <div style="font-family:'JetBrains Mono',monospace;font-size:0.78rem;color:var(--text-dim);line-height:1.7">
             Yield (bu/ac) = (ears &times; kernel rows &times; kernels/row) &divide; 90<br>
-            <span style="color:var(--text-muted);font-size:0.763rem">Ear count &times; 1000 = plants/acre (1/1000 acre row method). The 90,000 kernels/bu constant is the long-standing default (Iowa State); Some extension guides use a lower figure for modern hybrids, so the range above sweeps 65,000&ndash;95,000. Valid from the milk (R3) stage on. Test weight is not part of the formula. The yield range above only shows what changes if kernels per bushel are 65,000 to 95,000 instead of 90,000. It is not the field error. Worked example: 32 ears &times; 16 rows &times; 35 kernels &divide; 90 = 199 bu/ac.</span>
+            <span style="color:var(--text-muted);font-size:0.763rem">Ear count &times; 1000 = ears/acre (1/1000 acre row method). The 90,000 kernels/bu constant is the long-standing default (Iowa State); Some extension guides use a lower figure for modern hybrids, so the range above sweeps 65,000&ndash;95,000. Valid from the milk (R3) stage on. Test weight is not part of the formula. The yield range above only shows what changes if kernels per bushel are 65,000 to 95,000 instead of 90,000. It is not the field error. Worked example: 32 ears &times; 16 rows &times; 35 kernels &divide; 90 = 199 bu/ac.</span>
           </div>
         </div>
       </div>
@@ -265,10 +265,10 @@
         <div class="ye-method-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-search"/></svg> Field Sampling Best Practices</div>
         <div style="display:grid;grid-template-columns:minmax(0,1fr);gap:.5rem;">
           <div style="font-size:0.795rem;color:var(--text-dim);line-height:1.6">
-            &#8226; Sample at least <strong>3 locations</strong> per field, at least 200 feet apart and away from field edges.<br>
+            &#8226; Sample at least <strong>5 locations</strong> per field, at least 200 feet apart and away from field edges.<br>
             &#8226; <strong>Avoid sampling spots</strong> you noticed from the road &mdash; select locations before walking the field.<br>
-            &#8226; Count ear length in the <strong>designated 1/1000-acre row length</strong> for your row width (see table in Fast Facts &rarr; Crop Removal tab).<br>
-            &#8226; Count kernel rows and kernels/row on <strong>5 representative ears</strong> per location &mdash; not the biggest or smallest.<br>
+            &#8226; Count ears in the <strong>designated 1/1000-acre row length</strong> for your row width (see table in Fast Facts &rarr; Crop Removal tab).<br>
+            &#8226; Count kernel rows and kernels/row on <strong>10 representative ears</strong> per location &mdash; not the biggest or smallest.<br>
             &#8226; Test weight does not change this estimate. Weigh it at harvest, because low test weight docks grain value.<br>
             &#8226; Average multiple locations &mdash; field variability of 30&ndash;50 bu/ac between zones is common.
           </div>
@@ -358,7 +358,7 @@
           <div style="font-size:0.755rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.4rem">Formula Used</div>
           <div style="font-family:'JetBrains Mono',monospace;font-size:0.78rem;color:var(--text-dim);line-height:1.7">
             Yield (bu/ac) = (plants/ac &times; pods/plant &times; seeds/pod) &divide; (seeds/lb &times; 60)<br>
-            <span style="color:var(--text-muted);font-size:0.763rem">1 bu soybeans = 60 lb &nbsp; &middot; &nbsp; Typical seeds/lb range: 2,400&ndash;3,000 &middot; Plant count &times; 1000 = plants/acre</span>
+            <span style="color:var(--text-muted);font-size:0.763rem">1 bu soybeans = 60 lb &nbsp; &middot; &nbsp; Typical seeds/lb range: 2,500&ndash;3,500 (3,000 average) &middot; Plant count &times; 1000 = plants/acre</span>
           </div>
         </div>
       </div>
@@ -452,7 +452,7 @@
 </style>
 <section class="faq agf" aria-labelledby="agf-t">
 <h2 class="agf-t" id="agf-t">Common questions</h2>
-<details><summary>How do I estimate corn yield before harvest?</summary><div class="agf-a">The ear count method: count ears in 1/1000 acre row length, then count kernel rows and kernels per row on 5 representative ears. Formula: ears × kernel rows × kernels per row / 90, for a 1/1000-acre sample. Kernel weight varies, so the estimator shows a range across 65,000–95,000 kernels per bushel. Enter these counts in the AGSIST Yield Estimator for an instant field estimate.</div></details>
+<details><summary>How do I estimate corn yield before harvest?</summary><div class="agf-a">The ear count method: count ears in 1/1000 acre row length, then count kernel rows and kernels per row on 10 representative ears. Formula: ears × kernel rows × kernels per row / 90, for a 1/1000-acre sample. Kernel weight varies, so the estimator shows a range across 65,000–95,000 kernels per bushel. Enter these counts in the AGSIST Yield Estimator for an instant field estimate.</div></details>
 <details><summary>How accurate is the pre-harvest yield estimate?</summary><div class="agf-a">The yield component method is accurate to roughly plus or minus 20 bushels per acre — a figure commonly cited in extension guides. Accuracy improves if you sample at least 5 locations and 10 ears per location, and estimate at the milk (R3) stage or later. Because kernel weight varies, the estimator also shows a range built from 65,000 to 95,000 kernels per bushel.</div></details>
 <details><summary>How do I estimate soybean yield before harvest?</summary><div class="agf-a">Count plants per acre, then count pods per plant and seeds per pod on 10 representative plants. Formula: plants/ac × pods/plant × seeds/pod / (seeds/lb × 60). The AGSIST estimator calculates this automatically.</div></details>
 </section>
@@ -524,14 +524,13 @@ function syncBreakeven(){
 }
 
 /* ROW LENGTH LOOKUP (1/1000 acre for given row width) */
-var ROW_LENGTHS={20:'26\'1"',30:'17\'5"',36:'14\'6"',38:'13\'9"',40:'13\'1"',15:'34\'10"',7.5:'69\'8"'};
+var ROW_LENGTHS={20:'26\'2"',30:'17\'5"',36:'14\'6"',38:'13\'9"',40:'13\'1"',15:'34\'10"',7.5:'69\'8"'};
 function getRowLen(w){return ROW_LENGTHS[w]||'~17\'5"';}
 
 /* 2026-08-15 audit: every one of these read `parseFloat(x)||<default>`, so
    CLEARING a box left a confident number on screen computed from a value the
-   farmer could not see. Blank test weight still printed 193 bu/ac off an
-   assumed 56 -- and 50 lb test weight is 173, a 20 bu/ac swing. Same for
-   seeds/lb (assumed 3,000) and seeds/pod (assumed 2.5). This is the
+   farmer could not see. Blank seeds/lb (assumed 3,000) and seeds/pod
+   (assumed 2.5) still printed a yield. This is the
    render-before-validate class: blank in, blank out.
    `fld` returns null for an empty or non-numeric box; the guards below treat
    null as missing rather than substituting. */

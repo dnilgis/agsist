@@ -82,8 +82,8 @@
           },
           {
             "@type": "Question",
-            "name": "Why is there no 2015 cash rent data?",
-            "acceptedAnswer": {"@type": "Answer", "text": "NASS did not conduct the county Cash Rents Survey in 2015, so no county estimates exist for that year. County data runs 2008 to 2014 and 2016 forward. This page shows that year as a gap rather than drawing a line across it, because a line across it would be an invention."
+            "name": "Why is there no 2015 or 2018 cash rent data?",
+            "acceptedAnswer": {"@type": "Answer", "text": "NASS did not conduct the county Cash Rents Survey in 2015 or 2018, so no county estimates exist for those years. County data runs 2008 to 2014, 2016 to 2017, and 2019 forward. This page shows that year as a gap rather than drawing a line across it, because a line across it would be an invention."
             }
           },
           {
@@ -318,7 +318,7 @@
     <h3>Three things this data will not do</h3>
     <ul>
       <li><strong>It will not fill in your county if NASS didn't.</strong> Counties with too few survey responses are withheld. Where that happens you get a blank and a plain statement that NASS did not publish, never a neighbor's number wearing your county's name.</li>
-      <li><strong>It has no 2015.</strong> NASS ran no county Cash Rents Survey that year, so the series runs 2008&ndash;2014 and 2016 forward. The chart shows a hole. Drawing a line across it would be inventing a year.</li>
+      <li><strong>It has no 2015 or 2018.</strong> NASS ran no county Cash Rents Survey in those years, so the series runs 2008&ndash;2014, 2016&ndash;2017 and 2019 forward. The chart shows a hole. Drawing a line across it would be inventing a year.</li>
       <li><strong>It is a county mean, not a rate card.</strong> Rents differ between farms on the same road &mdash; soil, drainage, field size, yield history, and how badly the neighbor wants it. Bring the mean to the conversation as a reference point, not a verdict.</li>
     </ul>
 
@@ -336,7 +336,7 @@
     <div class="cr-faq">
       <details><summary>What is the average cash rent per acre in my county?</summary><div class="cr-faq-a">USDA NASS publishes a mean cash rental rate for every county with at least 20,000 acres of cropland plus pasture, separately for non-irrigated cropland, irrigated cropland, and permanent pasture. Pick your state and county above to see the published rate and its full history. If your county is not listed, NASS did not get enough survey responses to publish a rate for it.</div></details>
       <details><summary>When is county cash rent data released?</summary><div class="cr-faq-a">USDA NASS releases county cash rent estimates each August, from a survey of roughly 280,000 farms and ranches conducted earlier the same year. The rate published in a given August describes that same crop year. Rates are not revised after publication.</div></details>
-      <details><summary>Why is there no 2015 cash rent data?</summary><div class="cr-faq-a">NASS did not conduct the county Cash Rents Survey in 2015, so no county estimates exist for that year. County data runs 2008 to 2014 and 2016 forward. This page shows that year as a gap rather than drawing a line across it, because a line across it would be an invention.</div></details>
+      <details><summary>Why is there no 2015 or 2018 cash rent data?</summary><div class="cr-faq-a">NASS did not conduct the county Cash Rents Survey in 2015 or 2018, so no county estimates exist for those years. County data runs 2008 to 2014, 2016 to 2017, and 2019 forward. This page shows that year as a gap rather than drawing a line across it, because a line across it would be an invention.</div></details>
       <details><summary>What percent of gross revenue should cash rent be?</summary><div class="cr-faq-a">There is no single correct figure, and anyone who gives you one is selling something. Rent as a share of gross revenue is useful because it moves when yields and prices move, while the rent itself is fixed for the season. Comparing the ratio to your own county's history is more informative than comparing it to a national rule of thumb. What the remaining share has to cover &mdash; seed, fertilizer, chemical, machinery, labor, interest &mdash; varies enormously between operations.</div></details>
       <details><summary>How has cash rent changed as a share of revenue over time?</summary><div class="cr-faq-a">This page charts it directly for every county with the data. For each year it divides that year's published county rent by that year's actual county yield times that year's state average price received. Every term is a USDA figure published after the fact, so the line shows what really happened rather than a projection. The pattern in most Corn Belt counties is that rent takes a far larger share of the gross in low-price years than in high-price years, even when the rent itself barely moves.</div></details>
       <details><summary>Does this use futures prices or what farmers actually got?</summary><div class="cr-faq-a">The historical chart uses the USDA NASS marketing-year average price received by farmers in your state, which reflects actual sales and therefore already includes local basis. The calculator at the top uses a board price plus a basis you enter yourself, because it is looking forward at a crop you have not sold. The two answer different questions: what happened, and what might.</div></details>
@@ -588,7 +588,14 @@
       m.textContent='\u2014';
       return;
     }
-    var net=p+b, gross=y*net, pct=(rent/gross)*100;
+    var net=p+b;
+    if(!(net>0)){
+      el.textContent='\u2014'; el.className='cr-ratio-v';
+      x.textContent='Price plus basis is at or below zero \u2014 check the basis.';
+      m.textContent='\u2014';
+      return;
+    }
+    var gross=y*net, pct=(rent/gross)*100;
     el.textContent=pct.toFixed(1)+'%';
     el.className='cr-ratio-v '+(pct>=35?'neg':pct>=30?'warn':'pos');
     m.innerHTML='rent <b>'+money(rent)+'</b> &divide; ( <b>'+y.toFixed(1)+'</b> bu &times; <b>$'+net.toFixed(2)+'</b> ) = <b>'+money(Math.round(gross))+'</b> gross/ac &rarr; <b>'+pct.toFixed(1)+'%</b>';

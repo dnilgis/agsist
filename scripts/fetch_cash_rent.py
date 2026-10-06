@@ -10,8 +10,9 @@ WHAT THIS IS
   can realistically gross -- the number that actually decides a lease.
 
 HONESTY RULES BAKED IN
-  * 2015 DOES NOT EXIST. NASS ran no county cash rents survey that year.
-    We emit no 2015 key, ever. The page must show a gap, not a line.
+  * 2015 AND 2018 DO NOT EXIST. NASS ran no county cash rents survey in
+    either year. We emit no 2015 or 2018 rent key, ever. The page must show
+    a gap, not a line.
   * Suppressed counties stay suppressed. NASS withholds counties with too few
     responses ("(D)"). We drop them. We never interpolate a neighbor, never
     average a district down to a county, never invent a number.
@@ -46,7 +47,7 @@ from datetime import datetime, timezone
 API = "https://quickstats.nass.usda.gov/api/api_GET/"
 OUTDIR = "data/cash-rent"
 FIRST_YEAR = 2008
-NO_SURVEY_YEARS = {2015}          # NASS ran no county cash rents survey in 2015
+NO_SURVEY_YEARS = {2015, 2018}    # NASS ran no county cash rents survey in 2015 or 2018
 TREND_WINDOW = 15                 # years of yield history for the trend fit
 MIN_TREND_N = 6                   # fewer real years than this -> no trend, no guess
 
@@ -409,7 +410,7 @@ def _scratch_outdir():
 
 def selftest():
     """Offline. NASS is blocked in the sandbox, so exercise every rule that
-    matters against synthetic records: suppression, the 2015 hole, FIPS
+    matters against synthetic records: suppression, the 2015/2018 holes, FIPS
     assembly, trend fitting, and the thin-data refusal."""
     log("SELFTEST: cash rent")
     _real_outdir = OUTDIR
@@ -440,12 +441,12 @@ def selftest():
     assert fit_trend([(2020, 1.0)] * 8) is None, "zero variance produced a fit"
     log("  thin/degenerate data refused")
 
-    # --- 2015 must never survive the filter ---------------------------------
+    # --- 2015 and 2018 must never survive the filter ------------------------
     recs = [{"state_fips_code": "19", "county_ansi": "169", "county_name": "STORY",
-             "year": str(y), "Value": "250"} for y in (2014, 2015, 2016)]
+             "year": str(y), "Value": "250"} for y in (2014, 2015, 2016, 2017, 2018, 2019)]
     kept = [r for r in recs if int(r["year"]) not in NO_SURVEY_YEARS]
-    assert [r["year"] for r in kept] == ["2014", "2016"], "2015 leaked"
-    log("  2015 hole preserved (no survey that year)")
+    assert [r["year"] for r in kept] == ["2014", "2016", "2017", "2019"], "a no-survey year leaked"
+    log("  2015/2018 holes preserved (no survey those years)")
 
     # --- preliminary marketing years are flagged, not hidden -----------------
     cur = datetime.now(timezone.utc).year
@@ -488,8 +489,8 @@ def selftest():
       path, n = write_state("IA", counties, prices)
       doc = json.load(open(path))
       assert doc["years"] == [2016, 2024], doc["years"]
-      assert 2015 not in doc["years"]
-      assert doc["no_survey_years"] == [2015]
+      assert 2015 not in doc["years"] and 2018 not in doc["years"]
+      assert doc["no_survey_years"] == [2015, 2018]
       assert doc["prices"]["corn"]["2024"] == 4.35
       assert doc["counties"][0]["yield"]["corn"]["hist"]["2016"] == 203.0
       json.dumps(doc)

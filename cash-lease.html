@@ -319,7 +319,7 @@
        (absent = no farm-specific deadline widely cited)
      Statutes change. This is information, not legal advice. */
   var RULES={
-    IA:{n:'Iowa',t:'firm',d:'Written termination notice by SEPTEMBER 1 or the lease automatically continues another crop year. This applies to a year-to-year lease. A written lease with its own end date is governed by its terms.'},
+    IA:{n:'Iowa',t:'firm',d:'Written termination notice must be served on or before SEPTEMBER 1, or the farm tenancy automatically continues for another crop year on the same terms (Iowa Code 562.6). This applies to oral and written leases, including a written lease that states its own end date. The only way around notice is a separate, later written agreement to end the lease. Iowa Code 562.7 sets how notice must be served.'},
     IL:{n:'Illinois',t:'firm',d:'Year-to-year tenancy: written notice at least 4 MONTHS before the end of the lease year (for a Feb-end lease year, late October).'},
     KS:{n:'Kansas',t:'firm',d:'Written notice at least 30 DAYS BEFORE MARCH 1 for farm tenancies (roughly end of January).'},
     NE:{n:'Nebraska',t:'firm',d:'Verbal/year-to-year leases: notice 6 months before the end of the lease year — in practice by SEPTEMBER 1. Written leases: the lease controls.'},
@@ -455,7 +455,7 @@
   setIfEmpty('county', pf.county);
   setIfEmpty('rate', pf.rate);
   setIfEmpty('acres', pf.acres);
-  if(pf.county||pf.rate) { save(); totals(); }
+  if(pf.county||pf.rate||pf.acres) { save(); totals(); }
 
   var pb=$('#cl-print'); if(pb) pb.addEventListener('click', function(){ gaEvent('lease_print'); window.print(); });
   var cb=$('#cl-clear'); if(cb) cb.addEventListener('click', function(){

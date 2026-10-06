@@ -297,7 +297,7 @@ def seo_breakeven(c):
     dollars = px / 100.0 if px > 50 else px      # cents vs dollars
     return (f"Break-Even Price Calculator — Corn, Soybeans, Wheat{SUFFIX}",
             f"Corn is near ${dollars:.2f}. Enter your cost per acre and your yield "
-            f"to get your break-even price per bushel, and the acres where the "
+            f"to get your break-even price per bushel, and the yield where the "
             f"board stops covering them.")
 
 

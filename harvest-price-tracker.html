@@ -286,7 +286,7 @@ table.hp-hist td.up{color:var(--pd-green);} table.hp-hist td.dn{color:var(--pd-r
 
   <div class="pd-verdict" id="pd-verdict" role="status" aria-live="polite">
     <h2 id="pd-verdict-h">Corn and soybean harvest prices are set in October.</h2>
-    <p id="pd-verdict-p">Across most of the country. Eight southern states discover in August instead &mdash; pick your state and this page will only show you yours.</p>
+    <p id="pd-verdict-p">Across most of the country, not everywhere. Corn: eight southern states discover in August or mid-August to mid-September; North Carolina, Oklahoma and part of Texas in September; Idaho, Michigan, Oregon and Washington in November. Soybeans: ten eastern and southern states discover in November and Texas in September &mdash; pick your state and this page will only show you yours.</p>
   </div>
 
   <!-- Filled from data/rma-prices.json. The baked block below it is what a
@@ -338,7 +338,7 @@ table.hp-hist td.up{color:var(--pd-green);} table.hp-hist td.dn{color:var(--pd-r
       <div class="hp-seed-note">Figures above are baked in daily on trading days; in-window numbers are running estimates until the month closes. Official prices: USDA RMA.</div>
       <!--/SEED:hpcards-->
     </div>
-    <p class="pd-note">Those are the Corn Belt's windows. Alabama, Arkansas, Florida, Georgia, Louisiana, Mississippi, South Carolina and Texas discover corn in August, or mid-August to mid-September. Pick your state above for your own dates.</p>
+    <p class="pd-note">Those are the Corn Belt's windows. Alabama, Arkansas, Florida, Georgia, Louisiana, Mississippi, South Carolina and Texas discover corn in August, or mid-August to mid-September; Idaho, Michigan, Oregon and Washington in November. Pick your state above for your own dates.</p>
   </div>
 
   <h2 id="guarantee-math">What your guarantee is worth</h2>
@@ -585,7 +585,8 @@ window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);
     var cls=up?'up':'dn';
     var mean = up
       ? 'If the window closed today your revenue guarantee would revise up <b>'+
-        Math.abs(p).toFixed(1)+'%</b>, to <b class="pd-num">'+money(g.h,unitOf(g))+per(g)+'</b>.'
+        ((Math.min(g.h,2*g.p)-g.p)/g.p*100).toFixed(1)+'%</b>, to <b class="pd-num">'+money(Math.min(g.h,2*g.p),unitOf(g))+per(g)+'</b>.'+
+        (g.h>2*g.p?' The harvest price counts only up to 200% of the projected price.':'')
       : 'A '+sw+' average below the projected price does not cut your '+
         'guarantee — it stays at <b class="pd-num">'+money(g.p,unitOf(g))+per(g)+'</b>. '+
         'It changes what your crop is worth against that guarantee.';
@@ -692,8 +693,7 @@ window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);
       $('pd-fallback').hidden=false;
       $('pd-your').innerHTML=''; $('pd-open').innerHTML=''; $('pd-other').innerHTML='';
       $('pd-verdict-h').textContent='Corn and soybean harvest prices are set in October.';
-      $('pd-verdict-p').textContent='Across most of the country. Eight southern states '+
-        'discover in August instead — pick your state and this page will only show you yours.';
+      $('pd-verdict-p').textContent='Across most of the country, not everywhere. Corn: eight southern states discover in August or mid-August to mid-September; North Carolina, Oklahoma and part of Texas in September; Idaho, Michigan, Oregon and Washington in November. Soybeans: ten eastern and southern states discover in November and Texas in September — pick your state and this page will only show you yours.';
       fillCrops([]); calc(true); paintMap(''); return;
     }
 
@@ -817,12 +817,15 @@ window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);
       '% × <b class="pd-num">'+money(g.p,unitOf(g))+'</b> — '+esc(label(g))+
       ' projected price, locked '+shortd(g.ps)+'–'+shortd(g.pe)+'.';
     if(g.h!=null && g.h>g.p){
-      var v2=aph*cov*g.h, p=(g.h-g.p)/g.p*100, live=isOpen(g), sw=stWord(g);
+      // RP values production at the harvest price only up to 200% of the
+      // projected price (RMA); presell-calculator.html applies the same cap.
+      var hx=Math.min(g.h,2*g.p), v2=aph*cov*hx, p=(hx-g.p)/g.p*100, live=isOpen(g), sw=stWord(g);
       box.className='pd-out2 up';
       box.innerHTML='<b class="pd-num">$'+Math.round(v2).toLocaleString('en-US')+' /ac</b>'+
         '<span>at the '+sw+' harvest price of <b class="pd-num">'+
         money(g.h,unitOf(g))+'</b> — up <b>+'+p.toFixed(1)+'%</b>, or <b class="pd-num">$'+
         Math.round(v2-val).toLocaleString('en-US')+' /ac</b>.'+
+        (g.h>2*g.p?' The harvest price counts only up to 200% of the projected price ('+money(2*g.p,unitOf(g))+').':'')+
         (live?' That average is still moving.':'')+'</span>';
     }else if(g.h!=null){
       box.className='pd-out2 flat';

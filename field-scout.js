@@ -2994,8 +2994,8 @@
         var productive = s.nccpi!=null && s.nccpi>=0.55;
         push({ sev:productive?4:3, act:true, topic:'rotation', tag:'corn-on-corn pressure',
           title: r.pattern==='ccs' ? 'second-year corn this season \u2014 scout rootworm and budget the drag' : 'plan a rotation break to stop the corn-on-corn yield drag'+(productive?' on this productive ground':''),
-          detail:(cornSure?'Corn':'On its rotation, likely corn')+' this year on corn last year. '+(productive?'This is productive ground (soil productivity '+Math.round(s.nccpi*100)+'/100), so the second-year-corn drag costs more bushels here than on weaker soil':'Second-year corn carries rootworm and nitrogen pressure')+(r.pattern==='ccs'?'; it is part of a planned corn\u2013corn\u2013soybean rotation, so weigh the drag against the rotation\u2019s other gains':' — worth a rotation break before it compounds'+nFix)+'.',
-          action: dragAction(productive?8:5, productive?15:10),
+          detail:(cornSure?'Corn':'On its rotation, likely corn')+' this year on corn last year. '+'Second-year corn carries rootworm and nitrogen pressure'+(r.pattern==='ccs'?'; it is part of a planned corn\u2013corn\u2013soybean rotation, so weigh the drag against the rotation\u2019s other gains':' — worth a rotation break before it compounds'+nFix)+'.',
+          action: dragAction(5, 15),   // one range for every soil: trials (Gentry 2013, Seifert 2017) find the drag largest on weaker, drier ground, not productive ground
           watch: pollenWindow()!=null ? 'Rootworm pressure peaks near silking (~'+pollenWindow()+' days out) — scout this season; plan beans next.' : 'Scout for rootworm this season; plan beans on these acres next year.' });
       }
     } else if(r && r.cornOnCorn){
