@@ -1,6 +1,6 @@
 {
  "schema": "agsist-audience/2",
- "built": "2026-10-06T17:10:36+00:00",
+ "built": "2026-10-06T20:44:58+00:00",
  "ranges": [
   {
    "id": "7d",
@@ -5405,8 +5405,8 @@
     "d": "2026-10-04",
     "users": 130,
     "engaged": 82,
-    "gClicks": null,
-    "gImpr": null,
+    "gClicks": 34,
+    "gImpr": 1446,
     "bClicks": 37,
     "bImpr": 920
    }
@@ -5419,27 +5419,27 @@
    "rows": [
     {
      "q": "soybean yield calculator",
-     "clicks": 52,
-     "impr": 843,
-     "pos": 5.4
+     "clicks": 54,
+     "impr": 868,
+     "pos": 5.3
     },
     {
      "q": "agsist",
-     "clicks": 22,
-     "impr": 55,
+     "clicks": 23,
+     "impr": 57,
      "pos": 1
     },
     {
      "q": "cash rents by county per acre",
      "clicks": 20,
-     "impr": 233,
+     "impr": 239,
      "pos": 4.2
     },
     {
      "q": "hail map",
      "clicks": 9,
-     "impr": 80,
-     "pos": 8.4
+     "impr": 81,
+     "pos": 8.5
     },
     {
      "q": "usda cash rent by county",
@@ -5450,7 +5450,7 @@
     {
      "q": "cash rents by county",
      "clicks": 8,
-     "impr": 88,
+     "impr": 89,
      "pos": 5.8
     },
     {
@@ -5475,6 +5475,12 @@
      "q": "hail tracker",
      "clicks": 4,
      "impr": 76,
+     "pos": 8.6
+    },
+    {
+     "q": "grain bin calculator",
+     "clicks": 3,
+     "impr": 341,
      "pos": 8.6
     },
     {
@@ -5504,7 +5510,7 @@
     {
      "q": "soybean yield estimate",
      "clicks": 3,
-     "impr": 48,
+     "impr": 51,
      "pos": 9.2
     },
     {
@@ -5516,8 +5522,8 @@
     {
      "q": "fertilizer prices",
      "clicks": 2,
-     "impr": 61,
-     "pos": 15.6
+     "impr": 62,
+     "pos": 16.1
     },
     {
      "q": "hail map live",
@@ -5530,12 +5536,6 @@
      "clicks": 2,
      "impr": 32,
      "pos": 5.7
-    },
-    {
-     "q": "pasture rental rates by county",
-     "clicks": 2,
-     "impr": 54,
-     "pos": 5.9
     }
    ],
    "country": "US"
@@ -6031,21 +6031,21 @@
   "ga4": {
    "ok": true,
    "through": "2026-10-04",
-   "fetched": "2026-10-06T17:10:36+00:00"
+   "fetched": "2026-10-06T20:44:58+00:00"
   },
   "gsc": {
    "ok": true,
    "site": "sc-domain:agsist.com",
-   "fetched": "2026-10-06T17:10:36+00:00"
+   "fetched": "2026-10-06T20:44:58+00:00"
   },
   "bing": {
    "ok": true,
    "site": "https://agsist.com/",
-   "fetched": "2026-10-06T17:10:36+00:00"
+   "fetched": "2026-10-06T20:44:58+00:00"
   },
   "email": {
    "ok": true,
-   "fetched": "2026-10-06T17:10:36+00:00"
+   "fetched": "2026-10-06T20:44:58+00:00"
   }
  }
 }
