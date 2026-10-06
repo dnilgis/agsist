@@ -29,9 +29,15 @@ A wid encodes state+facility+city+commodity, not a delivery month -- a board
 carries several rows (front month, deferred, new crop) for the same
 commodity at the same elevator, and a watch is "this elevator's corn basis",
 not one contract that rolls off the board in a few months. Where more than
-one row hashes to the same wid, the one with the most recent lastSeen wins --
-the same "most recently active" tie-break scripts/build_basis_sparklines.py
-already uses for an analogous problem.
+one row hashes to the same wid, pick_row() chooses: rows still on the board
+(the latest lastSeen) first, then the nearest open delivery month that is
+not a new-crop label, in a fixed order that never depends on file order
+(2026-10-03, wave3-J: ties on lastSeen went to whichever row came first, so
+ADELL corn watched "26 NEW CROP" and ALCIVIA BALDWIN wheat watched
+07/01/2027 while 10/01/2026 was on the board). The delivery month is stored
+in the mark (s.dm). When the chosen month changes, the new month's basis is
+recorded silently: a different month is not a basis move. Every change
+email names the month.
 
 An elevator not found in today's basis files (delisted, or never had a
 change logged) is left alone: no email, no baseline overwrite. That is a
@@ -58,6 +64,10 @@ city, crop), the hash the card computed from the same row.
     move fires when |new - last note| >= N and records the new level, so it
     re-arms from there. A smaller move records nothing: moves add up from
     the last email, not from the last posting.
+  * When the elevator's row for that crop now quotes a DIFFERENT period, the
+    alert's period has rolled off: one "alert ended, this elevator now quotes
+    <period>" note is sent and the alert is cleared (fired). Before
+    2026-10-03 such an alert sat silent forever.
 
 Rules: never invent a basis figure; one mark per message, written right
 after that message is sent, so a rerun cannot re-mail anyone; a send failure
@@ -69,6 +79,7 @@ import hmac
 import html as H
 import json
 import os
+import re
 import smtplib
 import ssl
 import sys
@@ -130,9 +141,10 @@ def link(base, path, email, wid, secret, kind):
     return f"{base}/{path}?{q}&t={token(secret, email, tail)}"
 
 
-def load_basis_index():
-    """wid -> best row, scanning every state file once. Best = most recently
-    seen when two rows (different delivery months) hash to the same wid.
+def load_basis_index(now_ms=None):
+    """wid -> best row, scanning every state file once. Best = pick_row():
+    when two rows (different delivery months) hash to the same wid, the
+    nearest open, non-new-crop month still on the board.
 
     data/basis/<ST>.json is dictionary-encoded, not a map of facility ->
     rows: `f` and `c` are lookup lists (a row's `facility`/`commodity` slots
@@ -140,7 +152,7 @@ def load_basis_index():
     `r` is the flat row list, in the order `cols` names. `basis` is already
     an integer number of cents -- the same unit build_basis_sparklines.py
     uses, not dollars."""
-    idx = {}
+    idx, groups = {}, {}
     if not BASIS_DIR.is_dir():
         return idx
     for p in sorted(BASIS_DIR.glob("*.json")):
@@ -176,10 +188,97 @@ def load_basis_index():
                 "commodity": commodity, "symbol": row[i_sym], "deliveryMonth": row[i_del],
                 "basis": row[i_bas], "changedOn": lut(date_lut, row[i_chg]), "lastSeen": lut(date_lut, row[i_last]),
             }
-            prev = idx.get(w)
-            if prev is None or (cand["lastSeen"] or "") > (prev["lastSeen"] or ""):
-                idx[w] = cand
+            groups.setdefault(w, []).append(cand)
+    ym = tuple(int(x) for x in ct_month(now_ms if now_ms is not None else time.time() * 1000).split("-"))
+    for w, rows_ in groups.items():
+        idx[w] = pick_row(rows_, ym)
     return idx
+
+
+_MONTHS = {"JAN": 1, "FEB": 2, "MAR": 3, "APR": 4, "MAY": 5, "JUN": 6,
+           "JUL": 7, "AUG": 8, "SEP": 9, "OCT": 10, "NOV": 11, "DEC": 12}
+# Two-month shorthands boards print ("O/N26" = Oct-Nov 2026).
+_PAIRS = {"O/N": (10, 11), "O-N": (10, 11), "S/O": (9, 10), "JFM": (1, 3)}
+_NEW_CROP = re.compile(r"\bNEW\b|\bNC\b|\bN/C\b|\bNC(?=\d)|\bN CROP\b|\bCROP\b|\bFALL\b|\bHARVEST\b")
+_SPOT = re.compile(r"\bCASH\b|\bSPOT\b|\bIN ?STORE\b|\bPROMPT\b|\bOPEN STORAGE\b")
+
+
+def delivery_span(dm):
+    """(start, end) as (year, month) tuples from a board's own delivery label,
+    or None when the label names no month and year. Reads only what the label
+    says: '10/01/2026', '20260930', 'OCT26', 'OCT-NOV 26', 'SEPT 2026',
+    '01 OCT 2026 TO 31 OCT 2026', 'FALL 2026 (2026-11)', 'O/N26'."""
+    s = str(dm or "").upper()
+    m = re.search(r"\((\d{4})-(\d{2})\)", s)
+    if m and 1 <= int(m.group(2)) <= 12:
+        t = (int(m.group(1)), int(m.group(2)))
+        return t, t
+    m = re.fullmatch(r"\s*(\d{2})/(\d{2})/(\d{4})\s*", s)
+    if m and 1 <= int(m.group(1)) <= 12:
+        t = (int(m.group(3)), int(m.group(1)))
+        return t, t
+    m = re.fullmatch(r"\s*(20\d{2})(\d{2})(\d{2})\s*", s)
+    if m and 1 <= int(m.group(2)) <= 12:
+        t = (int(m.group(1)), int(m.group(2)))
+        return t, t
+    years = [(y.start(), int(y.group(1))) for y in re.finditer(r"(?<!\d)(20\d{2}|\d{2})(?![\d.%])", s)]
+    for k, (a, b) in _PAIRS.items():
+        i = s.find(k)
+        if i >= 0:
+            ys = [y for pos, y in years if pos > i]
+            if ys:
+                y = ys[0] + (2000 if ys[0] < 100 else 0)
+                return (y, a), (y, b)
+    toks = [(t.start(), _MONTHS[t.group(1)]) for t in
+            re.finditer(r"(?<![A-Z])(JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)[A-Z]*", s)]
+    if not toks:
+        return None
+    span = []
+    for pos, mon in toks:
+        ys = [y for p_, y in years if p_ > pos]
+        if not ys:
+            return None
+        y = ys[0] + (2000 if ys[0] < 100 else 0)
+        span.append((y, mon))
+    start, end = span[0], span[-1]
+    if start > end and start[0] == end[0]:
+        start = (start[0] - 1, start[1])          # 'DEC-JAN 27' starts in Dec 2026
+    return start, end
+
+
+def delivery_rank(dm, ym):
+    """Sort key for one delivery label, `ym` the current (year, month) in CT.
+    0  an open dated month or a spot word (CASH, IN STORE), nearest first
+    1  a new-crop or season label (NEW CROP, NC, FALL, HARVEST), by year
+    2  a label that names no month we can read
+    3  a dated month that has already closed
+    The label itself breaks any remaining tie, so file order never decides."""
+    s = str(dm or "").upper().strip()
+    span = delivery_span(s)
+    if _NEW_CROP.search(s):
+        if span:
+            y = span[0]
+        else:
+            m = re.search(r"(?<!\d)(20\d{2}|\d{2})(?![\d.%])", s)
+            y = ((int(m.group(1)) + (2000 if len(m.group(1)) == 2 else 0)), 0) if m else (9999, 0)
+        return (1, y, y, s)
+    if span:
+        start, end = span
+        if end < ym:
+            return (3, start, end, s)
+        return (0, max(start, ym), end, s)
+    if _SPOT.search(s):
+        return (0, ym, ym, s)
+    return (2, (9999, 0), (9999, 0), s)
+
+
+def pick_row(rows, ym):
+    """The one row a plain watch follows. Rows no longer on the board (an
+    older lastSeen than the newest) drop out; of the rest, the lowest
+    delivery_rank wins, then the symbol, so the choice is fixed."""
+    top = max((r.get("lastSeen") or "") for r in rows)
+    live = [r for r in rows if (r.get("lastSeen") or "") == top]
+    return min(live, key=lambda r: (delivery_rank(r.get("deliveryMonth"), ym), str(r.get("symbol") or "")))
 
 
 def basis_key(row):
@@ -239,19 +338,35 @@ def confirm_email(w, wid, label, base, secret, fn, fa, rt):
     return m
 
 
+def month_words(row):
+    """The delivery month as the elevator's board prints it, e.g. 'DEC 26'
+    or '10/01/2026'. Never rewritten into a month we might have misread."""
+    return str(row.get("deliveryMonth") or "").strip() or "an unnamed delivery month"
+
+
+def basis_mark(e, w, label, row):
+    """The mark for a plain watch: the basis key, the basis and the delivery
+    month it belongs to (s.dm), so a later run can tell a month change from
+    a basis move."""
+    return {"email": e, "wid": w, "label": label, "k": basis_key(row),
+            "s": {"basis": row["basis"], "dm": row.get("deliveryMonth")}}
+
+
 def change_email(w, wid, label, old_basis, new_row, base, secret, fn, fa, rt):
     stop1 = link(base, "elevator-watch-unsubscribe", w, wid, secret, "w1")
     stopall = link(base, "elevator-watch-unsubscribe", w, wid, secret, "w")
-    m = base_msg(w, f"{label}: basis moved to {fmt_cents(new_row['basis'])}", fn, fa, rt, stop1)
-    line = f"Basis: {fmt_cents(old_basis)} -> {fmt_cents(new_row['basis'])}, as of {new_row['changedOn'] or 'an unposted date'}."
-    m.set_content(f"{label}'s posted basis changed.\n\n{line}\n\n"
+    dm = month_words(new_row)
+    m = base_msg(w, f"{label}, {dm}: basis moved to {fmt_cents(new_row['basis'])}", fn, fa, rt, stop1)
+    line = (f"{dm} basis: {fmt_cents(old_basis)} -> {fmt_cents(new_row['basis'])}, "
+            f"as of {new_row['changedOn'] or 'an unposted date'}.")
+    m.set_content(f"{label}'s posted basis for {dm} changed.\n\n{line}\n\n"
                   f"This is the elevator's own posted board, not a contract -- freight, moisture and grade "
                   "discounts are theirs, not shown here. Call to confirm before you haul.\n\n"
                   f"Full cash bids:\n{SITE}/cash-bids\n\n"
                   f"--\n{ADDRESS}\nStop watching this elevator: {stop1}\nStop all elevator watches: {stopall}\n")
     foot = (f'{H.escape(ADDRESS)}<br><a href="{H.escape(stop1)}" style="color:#6b6b6b">Stop watching this elevator</a> &middot; '
             f'<a href="{H.escape(stopall)}" style="color:#6b6b6b">Stop all</a>')
-    m.add_alternative(html_wrap(f"{label}: basis moved", [
+    m.add_alternative(html_wrap(f"{label}, {dm}: basis moved", [
         line, "Posted price, not a contract. Freight, moisture and grade discounts are the elevator's -- call to confirm before you haul."],
         ("SEE ALL CASH BIDS", SITE + "/cash-bids"), foot), subtype="html")
     return m
@@ -396,11 +511,12 @@ def hit(direction, value, target):
 
 def plan_alerts(watchers, net_idx, now_ms):
     """Pure: what to do for cash / basis / move alerts. Returns
-    (confirms, sends, baselines).
+    (confirms, sends, baselines, ended).
     confirms  [(email, wid, label)]
     sends     [(email, wid, label, kind, old_value, row)]   kind cash|basis fire once; move re-arms
-    baselines [(email, wid, label, row, value)]            first sight after confirming: record, mail nothing"""
-    confirms, sends, base = [], [], []
+    baselines [(email, wid, label, row, value)]            first sight after confirming: record, mail nothing
+    ended     [(email, wid, label, old_period_label, row)] the row now quotes another period: one note, then cleared"""
+    confirms, sends, base, ended = [], [], [], []
     for r in watchers:
         e = r["email"]
         for w, p in (r.get("pend") or {}).items():
@@ -413,8 +529,14 @@ def plan_alerts(watchers, net_idx, now_ms):
             if not st or st.get("kind") not in OPT_KINDS:
                 continue
             row = net_idx.get(st.get("ewid"))
-            if not isinstance(row, dict) or row["period"] != st.get("period") or row["crop"] != st.get("crop"):
-                continue                                   # missing, ambiguous, or that period is off the board
+            if not isinstance(row, dict) or row["crop"] != st.get("crop"):
+                continue                                   # missing or ambiguous: never guessed
+            if row["period"] != st.get("period"):
+                # The same elevator and crop now quote another period: the
+                # alert's period has rolled off the board.
+                old = period_label(st.get("period") or "") or "the period you picked"
+                ended.append((e, w, f"{net_name(row)}, {CROP_NAMES[row['crop']]} {old}: {opt_condition(st)}", old, row))
+                continue
             kind = st["kind"]
             val = row["cash"] if kind == "cash" else row["basis"]
             if val is None or parse_iso(row["pricedAt"]) is None:
@@ -432,7 +554,7 @@ def plan_alerts(watchers, net_idx, now_ms):
                     sends.append((e, w, label, kind, last["v"], row))
             elif hit(st.get("direction"), val, st.get("target_cents")):
                 sends.append((e, w, label, kind, last["v"], row))
-    return confirms, sends, base
+    return confirms, sends, base, ended
 
 
 def alert_mark(row, val):
@@ -442,7 +564,8 @@ def alert_mark(row, val):
 
 def mark_after_send(job, x):
     """The one worker write after one sent message. job: c / oc confirm,
-    m basis change, oa option alert. A cash or basis target is one-shot
+    m basis change, oa option alert, oe option ended (its period rolled off:
+    cleared like a fired one-shot). A cash or basis target is one-shot
     (fired: the worker removes it); a move re-arms at the new level."""
     e, w = x[0], x[1]
     if job in ("c", "oc"):
@@ -452,7 +575,9 @@ def mark_after_send(job, x):
         if kind in ("cash", "basis"):
             return {"email": e, "wid": w, "fired": True}
         return dict({"email": e, "wid": w}, **alert_mark(row, row["basis"]))
-    return {"email": e, "wid": w, "label": x[2], "k": basis_key(x[4]), "s": {"basis": x[4]["basis"]}}
+    if job == "oe":
+        return {"email": e, "wid": w, "fired": True}
+    return basis_mark(e, w, x[2], x[4])
 
 
 def opt_confirm_email(w, wid, label, base, secret, fn, fa, rt):
@@ -500,6 +625,24 @@ def opt_alert_email(w, wid, label, kind, old, row, base, secret, fn, fa, rt):
     return m
 
 
+def opt_ended_email(w, wid, label, old_plabel, row, base, secret, fn, fa, rt):
+    """One note when an alert's delivery period rolls off the board."""
+    stopall = link(base, "elevator-watch-unsubscribe", w, wid, secret, "w")
+    stop1 = link(base, "elevator-watch-unsubscribe", w, wid, secret, "w1")
+    head = f"{net_name(row)}, {CROP_NAMES[row['crop']]}"
+    now = row["plabel"] or "another period"
+    subj = f"{head}: alert ended, this elevator now quotes {now}"
+    lines = [f"Your alert was for {old_plabel}: {opt_condition_from_label(label)}.",
+             f"This elevator no longer posts {old_plabel}. It now quotes {now}.",
+             "The alert is cleared. Set a new one on the card if you want one for the new period."]
+    m = base_msg(w, subj, fn, fa, rt, stop1)
+    m.set_content(f"{head}\n\n" + "\n".join(lines) + f"\n\nThe card:\n{CARD_URL}\n\n"
+                  f"--\n{ADDRESS}\nStop all elevator watches: {stopall}\n")
+    foot = f'{H.escape(ADDRESS)}<br><a href="{H.escape(stopall)}" style="color:#6b6b6b">Stop all</a>'
+    m.add_alternative(html_wrap(f"{head}: alert ended", lines, ("SEE THE CARD", CARD_URL), foot), subtype="html")
+    return m
+
+
 def opt_condition_from_label(label):
     return label.split(": ", 1)[1] if ": " in label else label
 
@@ -544,7 +687,8 @@ def daily_lines(watchers, net_idx, basis_idx):
                 row = basis_idx.get(w)
                 name = (st.get("label") or "A watched elevator")
                 if row:
-                    lines.append(f"{name}: basis {fmt_basis(row['basis'])}, last changed {row['changedOn'] or 'on an unposted date'}")
+                    lines.append(f"{name}, {month_words(row)}: basis {fmt_basis(row['basis'])}, "
+                                 f"last changed {row['changedOn'] or 'on an unposted date'}")
                 else:
                     lines.append(f"{name}: \u2014 not in the basis files this morning")
         if lines:
@@ -572,7 +716,7 @@ def plan(watchers, basis_idx, now_ms):
     """Pure: what to do. Returns (confirms, changes, baselines).
     confirms  [(email, wid, label)]
     changes   [(email, wid, label, old_basis, new_row)]
-    baselines [(email, wid, label, new_row)]   new watch, or a key change with the same basis (a rounding/date-only touch)"""
+    baselines [(email, wid, label, new_row)]   new watch, a new delivery month, or a key change with the same basis (a rounding/date-only touch)"""
     confirms, chg, base = [], [], []
     for r in watchers:
         e = r["email"]
@@ -590,6 +734,11 @@ def plan(watchers, basis_idx, now_ms):
             label = (st and st.get("label")) or "this elevator"
             k = basis_key(row)
             if not st or st.get("k") is None:
+                base.append((e, w, label, row))
+            elif (st.get("s") or {}).get("dm") != row.get("deliveryMonth"):
+                # A different delivery month (or a mark from before s.dm was
+                # stored): record this month's basis, mail nothing. Comparing
+                # two months' basis is not a basis move.
                 base.append((e, w, label, row))
             elif st.get("k") != k:
                 old_basis = ((st.get("s") or {}).get("basis"))
@@ -654,6 +803,30 @@ def selftest():
     assert sorted(x[1] for x in bs) == ["wB", "wD"], bs                              # new watch, and a same-basis re-post
     assert plan([{"email": "z@x.com", "pend": {"wA": {"ts": 0, "m": 0, "label": "x"}}, "w": {}}], idx, 20 * 864e5)[0] == [], \
         "expired pending is not mailed"
+
+    # Delivery month: the nearest open, non-new-crop month still on the board,
+    # never file order (ADELL corn and ALCIVIA BALDWIN wheat, 2026-10-03).
+    ym = (2026, 10)
+    rows_ = [{"deliveryMonth": "26 NEW CROP", "basis": -60, "lastSeen": "2026-10-02", "symbol": "a"},
+             {"deliveryMonth": "27 NEW CROP", "basis": -55, "lastSeen": "2026-10-02", "symbol": "b"}]
+    assert pick_row(rows_, ym)["deliveryMonth"] == "26 NEW CROP"
+    assert pick_row(list(reversed(rows_)), ym)["deliveryMonth"] == "26 NEW CROP", "file order must not decide"
+    wheat = [{"deliveryMonth": "07/01/2027", "basis": -150, "lastSeen": "2026-10-02", "symbol": "a"},
+             {"deliveryMonth": "10/01/2026", "basis": -160, "lastSeen": "2026-10-02", "symbol": "b"},
+             {"deliveryMonth": "09/01/2026", "basis": -170, "lastSeen": "2026-10-02", "symbol": "c"}]
+    assert pick_row(wheat, ym)["deliveryMonth"] == "10/01/2026", "the nearest open month, not next year, not a closed one"
+    assert pick_row(wheat + [{"deliveryMonth": "NEW CROP 26", "basis": -40, "lastSeen": "2026-10-02", "symbol": "d"}], ym)["deliveryMonth"] == "10/01/2026"
+    assert pick_row([dict(wheat[1], lastSeen="2026-09-01"), wheat[0]], ym)["deliveryMonth"] == "07/01/2027", "rows off the board drop out"
+    assert delivery_span("OCT-NOV 26") == ((2026, 10), (2026, 11)) and delivery_span("DEC-JAN 27") == ((2026, 12), (2027, 1))
+    # A month change records silently; a basis move in the same month mails and names the month.
+    rm1 = {"basis": -30, "changedOn": "2026-10-02", "lastSeen": "2026-10-02", "deliveryMonth": "NOV 26"}
+    Wm = [{"email": "m@x.com", "pend": {}, "w": {"wM": {"label": "Adell, corn", "k": basis_key(row_old), "s": {"basis": -25, "dm": "OCT 26"}},
+                                                 "wN": {"label": "Adell, corn", "k": basis_key(row_old), "s": {"basis": -25, "dm": "NOV 26"}}}}]
+    _, chm, bsm = plan(Wm, {"wM": rm1, "wN": rm1}, 2000)
+    assert [x[1] for x in chm] == ["wN"] and [x[1] for x in bsm] == ["wM"], (chm, bsm)
+    assert basis_mark("m@x.com", "wM", "x", rm1)["s"] == {"basis": -30, "dm": "NOV 26"}
+    mm_ = change_email("m@x.com", "wN", "Adell, corn", -25, rm1, "https://w.dev", s, "AGSIST", "n@agsist.com", None)
+    assert "NOV 26" in mm_["Subject"] and "NOV 26 basis" in mm_.get_body(("plain",)).get_content(), mm_["Subject"]
 
     m = confirm_email("a@x.com", "wA", "ADM Altamont, IL — corn", "https://w.dev", s, "AGSIST", "n@agsist.com", None)
     body = m.get_body(("plain",)).get_content()
@@ -732,7 +905,7 @@ def selftest_alerts():
                      "legacy": {"label": "ADM, corn", "k": None, "s": None},                         # plan() owns it
                  }}]
     watchers[0]["w"]["kreset"]["s"] = {"pa": T1, "v": 436}           # an old note left behind, k unset: still a baseline
-    cf, sends, bs = plan_alerts(watchers, idx, NOW)
+    cf, sends, bs, ended = plan_alerts(watchers, idx, NOW)
     assert [x[1] for x in cf] == ["p1"], cf
     assert cf[0][2] == "Adell Cooperative, Adell, WI, corn Oct 2026: cash at or above $4.50", \
         "the confirm names the elevator from the bid row, not the free-text label"
@@ -742,6 +915,12 @@ def selftest_alerts():
     assert got["up"][4] == 436 and got["up"][5]["cash"] == 452, "old value is the last note, new is the posting"
     assert got["beans"][3] == "basis" and got["beans"][5]["basis"] == -85
     assert got["mv5"][4] == -65 and got["mv5"][5]["basis"] == -60
+    # The Nov alert's period is off the board (the row quotes Oct): one note, then cleared.
+    assert [x[1] for x in ended] == ["roll"], ended
+    assert ended[0][3] == "Nov 2026" and ended[0][4]["plabel"] == "Oct 2026", ended[0]
+    assert mark_after_send("oe", ended[0]) == {"email": "f@x.com", "wid": "roll", "fired": True}
+    em = opt_ended_email("f@x.com", "roll", ended[0][2], ended[0][3], ended[0][4], "https://w.dev", "sec", "AGSIST", "n@agsist.com", None)
+    assert "now quotes Oct 2026" in em["Subject"] and "no longer posts Nov 2026" in em.get_body(("plain",)).get_content(), em["Subject"]
     legacy_view = {k: {"basis": -1, "changedOn": "2026-10-01", "lastSeen": "2026-10-01"}
                    for k in list(watchers[0]["w"]) + list(watchers[0]["pend"]) if k != "legacy"}
     cf0, ch0, bs0 = plan([dict(watchers[0], w={k: v for k, v in watchers[0]["w"].items() if k != "legacy"})], legacy_view, NOW)
@@ -757,15 +936,15 @@ def selftest_alerts():
     del w2["up"]                                                     # the worker removes a fired one-shot
     w2["mv5"] = dict(w2["mv5"], k=m["k"], s=m["s"])                  # and re-arms the move at -60
     nxt = [{"email": "f@x.com", "pend": {}, "w": w2}]
-    _, s2, _ = plan_alerts(nxt, idx, NOW)
+    _, s2, _, _ = plan_alerts(nxt, idx, NOW)
     assert "up" not in {x[1] for x in s2} and "mv5" not in {x[1] for x in s2}, "disarmed is gone; re-armed is stale until a new post"
     data2 = json.loads(json.dumps(data))
     data2["places"][0]["pricedAt"] = T3
     data2["places"][0]["now"]["corn"]["basisCents"] = -64          # 4 from the re-armed -60: no
-    _, s3, _ = plan_alerts(nxt, load_net_index(data2, NOW), NOW)
+    _, s3, _, _ = plan_alerts(nxt, load_net_index(data2, NOW), NOW)
     assert "mv5" not in {x[1] for x in s3}, "re-armed move measures from the new level"
     data2["places"][0]["now"]["corn"]["basisCents"] = -55          # 5 the other way: fires
-    _, s4, _ = plan_alerts(nxt, load_net_index(data2, NOW), NOW)
+    _, s4, _, _ = plan_alerts(nxt, load_net_index(data2, NOW), NOW)
     assert "mv5" in {x[1] for x in s4} and "mv4" not in {x[1] for x in s4}, s4      # mv4: -56 -> -55 is 1
     assert {x[1]: x for x in s4}["mv5"][4] == -60
     data2["places"][0]["pricedAt"] = None                            # no posting time: never inferred
@@ -809,14 +988,15 @@ def main():
         return 1
     dry = env("DRY_RUN") == "1"
     cap = int(env("MAX_SENDS", "100"))
-    basis_idx = load_basis_index()
     now_ms = time.time() * 1000
+    basis_idx = load_basis_index(now_ms)
     net_idx = load_net_index(fetch_net_index(), now_ms)
     watchers = worker(base, "elevator-watch-list", tok)
     confirms, chg, bs = plan(watchers, basis_idx, now_ms)
-    oconf, osend, obase = plan_alerts(watchers, net_idx, now_ms)
+    oconf, osend, obase, oend = plan_alerts(watchers, net_idx, now_ms)
     print(f"basis rows indexed {len(basis_idx)}; network rows indexed {len(net_idx)}; watchers {len(watchers)}; "
-          f"confirmations {len(confirms)}+{len(oconf)}; changes {len(chg)}; alerts {len(osend)}; baselines {len(bs)}+{len(obase)}")
+          f"confirmations {len(confirms)}+{len(oconf)}; changes {len(chg)}; alerts {len(osend)}; ended {len(oend)}; "
+          f"baselines {len(bs)}+{len(obase)}")
     if dry:
         for x in confirms + oconf:
             print("would confirm", x)
@@ -824,15 +1004,17 @@ def main():
             print("would mail", x[0], x[1], x[2], "basis", x[3], "->", x[4]["basis"])
         for x in osend:
             print("would alert", x[0], x[1], x[2], x[3], x[4], "->", x[5]["cash" if x[3] == "cash" else "basis"], "posted", x[5]["pricedAt"])
+        for x in oend:
+            print("would end", x[0], x[1], x[2], "now quotes", x[4]["plabel"])
         return 0
     for e, w, label, row in bs:                    # silent, no mail
-        worker(base, "elevator-watch-mark", tok, {"email": e, "wid": w, "label": label, "k": basis_key(row), "s": {"basis": row["basis"]}})
+        worker(base, "elevator-watch-mark", tok, basis_mark(e, w, label, row))
     for e, w, label, row, val in obase:            # silent, no mail: the last note an alert compares against
         worker(base, "elevator-watch-mark", tok, dict({"email": e, "wid": w}, **alert_mark(row, val)))
     fn, fa, rt = env("FROM_NAME", "AGSIST Cash Bids"), env("FROM_ADDR") or env("SMTP_USER"), env("REPLY_TO")
     sent, failed = 0, []
     jobs = ([("c", x) for x in confirms] + [("oc", x) for x in oconf]
-            + [("m", x) for x in chg] + [("oa", x) for x in osend])
+            + [("m", x) for x in chg] + [("oa", x) for x in osend] + [("oe", x) for x in oend])
     if jobs and cap > 0:
         ctx = ssl.create_default_context()
 
@@ -852,6 +1034,8 @@ def main():
                         msg = opt_confirm_email(e, w, label, base, secret, fn, fa, rt)
                     elif kind == "oa":
                         msg = opt_alert_email(e, w, label, x[3], x[4], x[5], base, secret, fn, fa, rt)
+                    elif kind == "oe":
+                        msg = opt_ended_email(e, w, label, x[3], x[4], base, secret, fn, fa, rt)
                     else:
                         msg = change_email(e, w, label, x[3], x[4], base, secret, fn, fa, rt)
                     conn.send_message(msg)
