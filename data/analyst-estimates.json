@@ -493,6 +493,30 @@
       51.5,
       53.3
      ]
+    },
+    {
+     "key": "corn_2627",
+     "label": "2026/27 corn ending stocks",
+     "unit": "bil bu",
+     "direction": "supply",
+     "consensus": 1.533,
+     "actual": 1.567,
+     "usda_current": 1.653,
+     "consensus_source": "https://www.dtnpf.com/agriculture/web/ag/news/article/2026/09/09/historic-late-august-price-rallies",
+     "consensus_note": "Dow Jones pre-report survey, reported by DTN on 2026-09-09: corn ending stocks cut 120 mb to 1.533 bb (the same survey and figure data/wpi-estimates.json carries). No survey low or high is on file for this figure, so no range is claimed and it is graded on the 2% band. Actual 1.567 bb from USDA's September WASDE, reported by DTN on 2026-09-11 (https://www.dtnpf.com/agriculture/web/ag/news/article/2026/09/11/usda-releases-september-crop-wasde-2).",
+     "estimates": []
+    },
+    {
+     "key": "soy_2627",
+     "label": "2026/27 soybean ending stocks",
+     "unit": "mil bu",
+     "direction": "supply",
+     "consensus": 290,
+     "actual": 310,
+     "usda_current": 320,
+     "consensus_source": "https://www.dtnpf.com/agriculture/web/ag/news/article/2026/09/09/historic-late-august-price-rallies",
+     "consensus_note": "Dow Jones pre-report survey, reported by DTN on 2026-09-09: soybean ending stocks cut 30 mb to 290 mb. Reuters' survey averaged 298 mb; the Dow Jones figure is used because it is the survey every other September figure here is graded against, and 310 is above both. No survey low or high is on file for this figure, so no range is claimed and it is graded on the 2% band. Actual 310 mb from USDA's September WASDE, reported by DTN on 2026-09-11 (https://www.dtnpf.com/agriculture/web/ag/news/article/2026/09/11/usda-releases-september-crop-wasde-2).",
+     "estimates": []
     }
    ]
   },
@@ -541,6 +565,36 @@
      "consensus_source": null,
      "consensus_note": "The only pre-report survey found (Pro Farmer, 2026-09-26) printed a wheat trade average (1.889 billion bushels) next to a cited WASDE figure that does not read as a comparable wheat ending-stocks number, and the two could not be reconciled against USDA's own current estimate. Left blank rather than publish a number that might not measure what it claims to.",
      "consensus_range": []
+    }
+   ]
+  },
+  {
+   "report": "October WASDE",
+   "date": "2026-10-09",
+   "metrics": [
+    {
+     "key": "corn_yield_2627",
+     "label": "2026/27 corn yield",
+     "unit": "bu/acre",
+     "direction": "supply",
+     "consensus": null,
+     "actual": null,
+     "usda_current": 178.5,
+     "consensus_source": null,
+     "consensus_note": "No pre-report trade survey is on file for the October WASDE yet; consensus stays null until one is published and typed in. usda_current is USDA's standing figure from the September 2026 WASDE (178.5 corn, 52.8 soybeans). Locked calls from data/nowcast-direction.json are merged in by scripts/build_analyst_scorecard.py, never typed here.",
+     "estimates": []
+    },
+    {
+     "key": "soy_yield_2627",
+     "label": "2026/27 soybean yield",
+     "unit": "bu/acre",
+     "direction": "supply",
+     "consensus": null,
+     "actual": null,
+     "usda_current": 52.8,
+     "consensus_source": null,
+     "consensus_note": "No pre-report trade survey is on file for the October WASDE yet; consensus stays null until one is published and typed in. usda_current is USDA's standing figure from the September 2026 WASDE (178.5 corn, 52.8 soybeans). Locked calls from data/nowcast-direction.json are merged in by scripts/build_analyst_scorecard.py, never typed here.",
+     "estimates": []
     }
    ]
   }

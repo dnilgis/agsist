@@ -118,14 +118,29 @@ def _roster_map(data):
     return m
 
 
-def _surprise(consensus, actual, label=""):
+def _range_of(met):
+    """(low, high) from a metric's consensus_range, or (None, None)."""
+    rng = met.get("consensus_range") or []
+    lo, hi = (list(rng) + [None, None])[:2]
+    return lo, hi
+
+
+def _surprise(consensus, actual, label="", low=None, high=None):
     """Metric-level label, from the shared rule.
+
+    THE RANGE GOES IN TOO (2026-10-06). report_bands.surprise grades against the
+    survey's low/high first and only falls back to the percentage band when no
+    range is on file. This caller passed the average alone, so it kept grading
+    on the band after the track record had moved to range-first on 2026-10-03:
+    September 2026 soybean yield (trade 52.5, range 51.5-53.3, USDA 52.8) read
+    IN LINE in the track record and BEARISH under "Scored, by report", one print
+    with two verdicts on one page. Same function, same arguments now.
 
     The empty string means there was no consensus to compare against, and it is
     NOT the same as "in line". The page used to render `m.surprise || 'in line'`,
     so a metric nobody had filed an estimate for was published as having landed
     where the trade expected. It now prints the reason instead."""
-    return band_surprise(consensus, actual, label)
+    return band_surprise(consensus, actual, label, low, high)
 
 
 def merge_locked_model_calls(reports, path=NOWCAST_PATH):
@@ -283,8 +298,10 @@ def score(data, roster, today):
                                    {"analyst": info["analyst"], "firm": info["firm"],
                                     "cls": cls, "n": 0, "err_sum": 0.0, "signed_sum": 0.0,
                                     "errs": [], "beat_yes": 0, "beat_n": 0,
-                                    "wins": 0, "closest_n": 0})
+                                    "wins": 0, "closest_n": 0, "derived_n": 0})
                 a["n"] += 1
+                if e.get("derived"):
+                    a["derived_n"] += 1
                 a["err_sum"] += err_pct
                 a["signed_sum"] += signed_pct
                 a["errs"].append(err_pct)
@@ -303,7 +320,7 @@ def score(data, roster, today):
             rep_metrics.append({"label": label,
                                 "unit": met.get("unit", ""), "consensus": consensus,
                                 "actual": actual,
-                                "surprise": _surprise(consensus, actual, label),
+                                "surprise": _surprise(consensus, actual, label, *_range_of(met)),
                                 # WHERE THE CONSENSUS CAME FROM. Typed into
                                 # analyst-estimates.json beside every figure and
                                 # then dropped here, so the page cited nothing
@@ -351,6 +368,13 @@ def score(data, roster, today):
                # beat_rate is None when none of them did, and the page printed a
                # bare dash for it, which reads as a zero to anybody skimming.
                "beat_n": a["beat_n"],
+               # HOW MANY OF THESE CALLS ARE A MIDPOINT AGSIST COMPUTED from a
+               # range the forecaster stated. The per-report rows already say
+               # "midpoint of a stated range"; the board row averaged the same
+               # number into "0.03%" and said nothing (Jerry Gulke, Aug 2026
+               # corn, 180.75 from his stated 180.5-181). The method is
+               # unchanged; the row now discloses it.
+               "derived_n": a["derived_n"],
                "metric_class": cls,
                "class_label": CLASS_LABELS.get(cls, cls),
                "qualified": a["n"] >= MIN_N,
@@ -592,6 +616,39 @@ def _selftest():
     good = win["closest"] is True and win["beat"] is True and win["star"] is True
     ok &= good
     print(("  ok    " if good else "  FAIL  ") + "closest AND closer than the trade does get one")
+
+    # ── RANGE FIRST, AS THE TRACK RECORD GRADES ─────────────────────────────
+    # September 2026 soybean yield: trade 52.5, survey range 51.5-53.3, USDA
+    # 52.8. +0.57% clears the 0.5% yield band, but the print is inside the
+    # range, so it is in line -- which is what the track record says. This
+    # board said "bearish" until 2026-10-06.
+    print()
+    print("the scorecard grades against the survey range first")
+    data3 = {"reports": [{"report": "September WASDE", "date": "2026-09-11", "metrics": [
+        {"label": "2026/27 soybean yield", "consensus": 52.5, "actual": 52.8,
+         "consensus_range": [51.5, 53.3], "estimates": [{"id": "sud", "value": 53.0}]},
+        {"label": "2026/27 soybean ending stocks", "consensus": 290, "actual": 310,
+         "estimates": []},
+        {"label": "Wheat stocks, all positions, Sept 1", "consensus": None, "actual": 1.846,
+         "consensus_range": [], "estimates": []}]}]}
+    _c3, reps3 = score(data3, roster, "2026-10-06")
+    v = {m["label"]: m["surprise"] for m in reps3[0]["metrics"]}
+    good = (v["2026/27 soybean yield"] == "in line"
+            and v["2026/27 soybean ending stocks"] == "bearish"
+            and v["Wheat stocks, all positions, Sept 1"] == "")
+    ok &= good
+    print(("  ok    " if good else "  FAIL  ") +
+          "inside the range is in line; no range falls to the band; no estimate is ''")
+
+    # A midpoint AGSIST computed is counted on the board row, not only per report.
+    data4 = {"reports": [{"report": "August WASDE", "date": "2026-08-12", "metrics": [
+        {"label": "2026/27 corn yield", "consensus": 182.0, "actual": 180.7,
+         "estimates": [{"id": "sud", "value": 180.75, "derived": True}]}]}]}
+    c4, _r4 = score(data4, roster, "2026-10-06")
+    row = (c4[0]["leaderboard"] + c4[0]["building"])[0]
+    good = row["derived_n"] == 1 and row["n"] == 1
+    ok &= good
+    print(("  ok    " if good else "  FAIL  ") + "a derived midpoint is counted on the board row")
 
     print()
     print("analyst-scorecard: " + ("all passed" if ok else "FAILURES ABOVE"))

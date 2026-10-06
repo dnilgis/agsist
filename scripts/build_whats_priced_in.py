@@ -151,7 +151,7 @@ def cot_positioning(commodity_text, cot):
 # report_bands.surprise, the same function the scorecard and the track record
 # use. A third implementation of "in line" is how one screen once called a print
 # BULLISH and another called it IN LINE off the same two numbers.
-def build_report_numbers(upcoming, path=ANALYST_PATH):
+def build_report_numbers(upcoming, path=None):
     """Every metric on the upcoming report, one row each, ready to render.
 
     Returns [] when the file is absent or carries no matching report. An empty
@@ -159,6 +159,11 @@ def build_report_numbers(upcoming, path=ANALYST_PATH):
     """
     if not upcoming:
         return []
+    # Resolved at CALL time. A default of path=ANALYST_PATH was bound when the
+    # module loaded, so the selftest's end-to-end main() run -- which points
+    # ANALYST_PATH at a temp file -- was silently reading the real repo file,
+    # and passed only while that file happened to hold the same two rows.
+    path = path or ANALYST_PATH
     try:
         with open(path) as f:
             book = json.load(f)
@@ -189,12 +194,23 @@ def build_report_numbers(upcoming, path=ANALYST_PATH):
             why = "no trade estimate was published for this one"
         else:
             why = ""
+        # AND THE TRADE COLUMN GETS ITS OWN REASON. A report typed in before its
+        # survey publishes (October 2026, carried so the model's locked calls
+        # can sit on the board) would otherwise print a bare dash under "Trade
+        # expects".
+        if exp is not None:
+            exp_why = ""
+        elif act is None:
+            exp_why = "no trade survey on file yet"
+        else:
+            exp_why = "no trade estimate published"
 
         rows.append({
             "key": m.get("key"),
             "label": label,
             "unit": m.get("unit") or "",
             "expected": exp,
+            "expected_why": exp_why,
             "low": lo,
             "high": hi,
             "usda_current": m.get("usda_current"),
@@ -383,16 +399,24 @@ def build_latest_result(history):
     for r in rows:
         gp = _gap_pct(r.get("expected"), r.get("actual"))
         enriched.append({**{k: r.get(k) for k in HISTORY_FIELDS}, "gap_pct": gp})
-    surprises = [r for r in enriched if r.get("surprise") not in ("in line", None)]
-    pool = surprises or enriched
-    biggest = max(pool, key=lambda r: abs(r.get("gap_pct") or 0)) if pool else None
-    in_line = sum(1 for r in enriched if r.get("surprise") == "in line")
+    # ONLY A GRADED ROW COUNTS (2026-10-06). The empty string is report_bands'
+    # "no trade estimate to compare against", and it was falling through
+    # `not in ("in line", None)` into the surprise list -- the September Grain
+    # Stocks wheat row, which nobody surveyed, could be picked as the report's
+    # "biggest surprise", and metric_count put it in the denominator of
+    # "1 of 3 figures landed in line". A figure nobody graded is neither.
+    graded = [r for r in enriched if r.get("surprise") in ("bullish", "bearish", "in line")]
+    surprises = [r for r in graded if r.get("surprise") != "in line"]
+    biggest = max(surprises, key=lambda r: abs(r.get("gap_pct") or 0)) if surprises else None
+    in_line = sum(1 for r in graded if r.get("surprise") == "in line")
     return {
         "date": latest_date,
         "report": rows[0].get("report") if rows else "",
-        "metric_count": len(enriched),
+        # metric_count is the GRADED count, the denominator the banner prints.
+        "metric_count": len(graded),
+        "ungraded_count": len(enriched) - len(graded),
         "in_line_count": in_line,
-        "all_in_line": (in_line == len(enriched)),
+        "all_in_line": bool(graded) and (in_line == len(graded)),
         "biggest_surprise": biggest,
     }
 
@@ -502,6 +526,9 @@ def _selftest():
         # tell which, and would reasonably assume the print was unremarkable.
         assert by["d"]["surprise"] == "" and by["d"]["why"] == "not printed yet"
         assert by["e"]["surprise"] == "" and "no trade estimate" in by["e"]["why"]
+        # the trade column carries its own reason when there is no estimate
+        assert by["e"]["expected_why"] == "no trade estimate published"
+        assert by["a"]["expected_why"] == "" and by["d"]["expected_why"] == ""
         assert by["d"]["why"] != by["e"]["why"]
 
         # a date with no report in the book is an empty list, never a guess
@@ -525,6 +552,21 @@ def _selftest():
     assert h["Corn stocks, all positions, Sept 1"]["surprise"] == "bearish"
     # no range on file: the 2% band still decides (765 -> 744 is -2.7%)
     assert h["2026/27 wheat ending stocks"]["surprise"] == "bullish" and h["2026/27 wheat ending stocks"]["low"] is None
+    # ── THE BANNER COUNTS ONLY WHAT WAS GRADED ──────────────────────────────
+    # The real September Grain Stocks shape: one bearish, one in line, one with
+    # no trade estimate. The ungraded row is neither a surprise nor in line.
+    lr = build_latest_result(build_history([
+        {"date": "2026-09-30", "metric": "Corn stocks, all positions, Sept 1", "expected": 1.918, "actual": 2.095},
+        {"date": "2026-09-30", "metric": "Soybean stocks, all positions, Sept 1", "expected": 0.324, "actual": 0.315},
+        {"date": "2026-09-30", "metric": "Wheat stocks, all positions, Sept 1", "expected": None, "actual": 1.846}], rk))
+    assert lr["metric_count"] == 2 and lr["ungraded_count"] == 1 and lr["in_line_count"] == 1, lr
+    assert lr["biggest_surprise"]["metric"].startswith("Corn") and not lr["all_in_line"]
+    # nothing graded at all: no biggest surprise, and not "all in line"
+    lr0 = build_latest_result(build_history([
+        {"date": "2026-09-30", "metric": "Wheat stocks, all positions, Sept 1", "expected": None, "actual": 1.846}]))
+    assert lr0["metric_count"] == 0 and lr0["ungraded_count"] == 1
+    assert lr0["biggest_surprise"] is None and lr0["all_in_line"] is False, lr0
+
     real = survey_ranges()
     if real:
         assert real.get(("2026-09-30", "Soybean stocks, all positions, Sept 1")) == (0.304, 0.349), "the range is read, not retyped"
