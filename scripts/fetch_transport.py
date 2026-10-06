@@ -61,6 +61,14 @@ def week_of_year(date_s):
     return datetime.strptime(date_s[:10], "%Y-%m-%d").isocalendar()[1]
 
 
+def iso_year_week(date_s):
+    """(ISO year, ISO week). A late-December or early-January date belongs
+    to the ISO year its week belongs to; keying on the calendar year put
+    2025-12-29 (ISO 2026-W01) in 2025's week 1 (2026-10-05)."""
+    y, w, _ = datetime.strptime(date_s[:10], "%Y-%m-%d").isocalendar()
+    return y, w
+
+
 def same_week_avg(rows_by_year_week, week, latest_year, value_key):
     """Average of this ISO-week's value over the prior AVG_YEARS years."""
     return same_week_avg_n(rows_by_year_week, week, latest_year, value_key)[0]
@@ -95,8 +103,8 @@ def series_stats(rows, key_fields, value_field, date_field="date"):
     for k, pts in grouped.items():
         pts.sort()
         latest_date, latest = pts[-1]
-        y, w = int(latest_date[:4]), week_of_year(latest_date)
-        byw = {(int(d[:4]), week_of_year(d)): {"v": v} for d, v in pts}
+        y, w = iso_year_week(latest_date)
+        byw = {iso_year_week(d): {"v": v} for d, v in pts}
         avg5, avg5_n = same_week_avg_n(byw, w, y, "v")
         out["|".join(k)] = {
             "latest": round(latest, 3),
@@ -198,6 +206,18 @@ def selftest():
     short = [r for r in rows if r["date"][:4] in ("2023", "2024", "2025")]
     s2 = series_stats(short, ["commodity", "market_name", "market_type"], "basis")
     assert s2[k]["avg5_n"] == 2, f"two prior years should count two: {s2[k]['avg5_n']}"
+    # ISO year, not calendar year: 2025-12-29 is ISO 2026-W01 (hand-checked).
+    assert iso_year_week("2025-12-29") == (2026, 1) and iso_year_week("2021-01-01") == (2020, 53)
+    # A latest posting of 2025-12-31 is ISO 2026-W01: its prior years are
+    # 2021-2025 week 1. Keyed on the calendar year it would average 2020-2024
+    # week 1 and pull in 2020's -0.50 (avg -0.26).
+    jan = [{"date": "2025-12-31", "market_name": "Iowa", "market_type": "Elevator Bid", "commodity": "Corn", "basis": -0.10}]
+    for y in range(2020, 2026):
+        d = datetime.strptime(f"{y}-W01-5", "%G-W%V-%u").strftime("%Y-%m-%d")
+        jan.append({"date": d, "market_name": "Iowa", "market_type": "Elevator Bid", "commodity": "Corn",
+                    "basis": -0.50 if y == 2020 else -0.20})
+    sj = series_stats(jan, ["commodity", "market_name", "market_type"], "basis")[k]
+    assert sj["avg5_n"] == 5 and abs(sj["avg5"] - (-0.20)) < 1e-9, sj
     # fail-loud path: empty dataset must raise
     try:
         build(fetch=lambda ds, p: [])

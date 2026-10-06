@@ -266,9 +266,11 @@ def fetch_year(code, year):
     }
 
 
-def wheat_classes(codes, pick, wheat_row, fetch=None):
+def wheat_classes(codes, pick, wheat_row, fetch=None, prev_scale=None):
     """Commitments by wheat class for the same marketing year and week as
-    all wheat, at all wheat's unit scale, with the same week last year.
+    all wheat, at all wheat's unit scale, with the same week last year at
+    LAST year's scale (prev_scale: all wheat's prior-year scale; the ESR unit
+    is detected per response, so the two years can differ).
     Returns {} when no class resolves, or when the classes sum to more than
     all wheat (a rollup row or a wrong year), so a bad split never ships."""
     fetch = fetch or fetch_year
@@ -282,7 +284,7 @@ def wheat_classes(codes, pick, wheat_row, fetch=None):
             log.warning(f'wheat class {key}: no week matching all wheat ({pick["latest"]})')
             continue
         prev = fetch(code, pick['year'] - 1)
-        ly, _wk = same_week_last_year(prev, pick['latest'], pick['scale'])
+        ly, _wk = same_week_last_year(prev, pick['latest'], prev_scale if prev_scale is not None else pick['scale'])
         out[key] = {'label': label,
                     'weekly_net_mt': round(info['weekly'] * pick['scale']),
                     'cumulative_mt': round(info['cumulative'] * pick['scale']),
@@ -491,6 +493,8 @@ def selftest():
     check(cl.get('hrw', {}).get('cumulative_mt') == 50000 and cl['srw']['cumulative_mt'] == 30000,
           "classes at all wheat's scale: 50,000 and 30,000", str(cl))
     check(cl['hrw']['prev_year_cumulative_mt'] == 40000, "HRW same week last year 40 x 1000", str(cl['hrw']))
+    cl1 = wheat_classes({'wheat_hrw': 'h', 'wheat_srw': 's'}, pick, {'cumulative_mt': 90000}, fake, prev_scale=1)
+    check(cl1['hrw']['prev_year_cumulative_mt'] == 40, "last year at last year's own scale (1), not this year's (1000)", str(cl1['hrw']))
     bad = wheat_classes({'wheat_hrw': 'h', 'wheat_srw': 's'}, pick, {'cumulative_mt': 60000}, fake)
     check(bad == {}, "classes summing past all wheat are not published")
 
@@ -621,7 +625,7 @@ def main():
                                  if ly_mt else None),
         }
         if comm == 'wheat':
-            cls = wheat_classes(codes, pick, out[comm])
+            cls = wheat_classes(codes, pick, out[comm], prev_scale=prev_c['scale'] if prev_c else None)
             if cls:
                 out[comm]['classes'] = cls
         if not target_current:

@@ -107,7 +107,7 @@ def describe(expected, actual, metric_label="", low=None, high=None):
     and What's Priced In cannot phrase the same print two ways.
 
       outside the range -> "below the trade range, bullish" / "above the trade range, bearish"
-      inside the range  -> "below average, inside the range" (no bullish or bearish word)
+      inside the range  -> "2.8% below average, inside the range" (no bullish or bearish word)
       no range on file  -> the band's verdict: "bullish" / "bearish" / "in line"
       nothing to grade  -> "no trade estimate" / "not printed yet"
     """
@@ -123,8 +123,12 @@ def describe(expected, actual, metric_label="", low=None, high=None):
         return "below the trade range, bullish"
     if v == "bearish":
         return "above the trade range, bearish"
-    side = "below average" if actual < expected else "above average" if actual > expected else "at the average"
-    return side + ", inside the range"
+    # Inside the range there is no bullish or bearish word, but a professional
+    # still grades on the gap to the average, so the size of it is printed.
+    g = gap_pct(expected, actual)
+    if not g:
+        return "at the average, inside the range"
+    return f"{abs(g):.1f}% {'below' if g < 0 else 'above'} average, inside the range"
 
 
 def gap_pct(expected, actual):
@@ -172,8 +176,8 @@ def _selftest():
           "soy stocks 0.315 inside 0.304-0.349 is not bullish")
     check(surprise(0.324, 0.315, "Soybean stocks, all positions, Sept 1"), "bullish",
           "the same print with no range on file falls back to the 2% band")
-    check(describe(0.324, 0.315, "Soybean stocks, all positions, Sept 1", 0.304, 0.349), "below average, inside the range",
-          "and is described as below average, inside the range")
+    check(describe(0.324, 0.315, "Soybean stocks, all positions, Sept 1", 0.304, 0.349), "2.8% below average, inside the range",
+          "and is described as 2.8% below average, inside the range")
     # Corn: average 1.918, range 1.843-2.005, print 2.095, above the top of the range.
     check(surprise(1.918, 2.095, "Corn stocks, all positions, Sept 1", 1.843, 2.005), "bearish",
           "corn stocks 2.095 above 2.005 is bearish")
@@ -184,7 +188,7 @@ def _selftest():
           "a print under the low end is bullish")
     # The ends of the range are inside it.
     check(surprise(0.324, 0.349, "soy stocks", 0.304, 0.349), "in line", "the high end itself is inside")
-    check(describe(0.324, 0.330, "soy stocks", 0.304, 0.349), "above average, inside the range",
+    check(describe(0.324, 0.330, "soy stocks", 0.304, 0.349), "1.9% above average, inside the range",
           "above average inside the range carries no bearish word")
     # Inside the range wins over the tight yield band too: 182.0 -> 180.7 is 0.7%,
     # outside 0.5%, but a hand-made range 179-185 contains it.
