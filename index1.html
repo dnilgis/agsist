@@ -121,7 +121,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
   </button>
   <a href="#market-intel" class="idx1-zip-chip" style="text-decoration:none">
     <span class="idx1-zip-label">Market outlook</span>
-    <span class="idx1-zip-change">Funds and yield &darr;</span>
+    <span class="idx1-zip-change">Positioning and yield &darr;</span>
   </a>
   <a href="#s7-month" class="idx1-zip-chip" style="text-decoration:none" data-track="season">
     <span class="idx1-zip-label">This month</span>
@@ -131,7 +131,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
   <button type="button" id="pk-btn" class="idx1-zip-chip pk-btn" aria-expanded="false" aria-controls="pk-panel">
     <span class="idx1-zip-label" id="pk-lead">What do you raise?</span>
     <span class="idx1-zip-val" id="pk-val"></span>
-    <span class="idx1-zip-change" id="pk-chg">Pick to put it first</span>
+    <span class="idx1-zip-change" id="pk-chg">Sort the page</span>
   </button>
 </div>
 <div class="pk-panel" id="pk-panel" hidden></div>
@@ -227,9 +227,8 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
   <button type="button" id="idx1-home-add" style="font-size:.824rem;font-weight:700;color:#0a0c0d;background:var(--gold);border:none;border-radius:6px;padding:.4rem .7rem;flex:none;cursor:pointer">Add</button>
   <button type="button" id="idx1-home-dismiss" aria-label="Dismiss" style="font-size:1rem;color:var(--text-muted);background:none;border:none;padding:.2rem .3rem;flex:none;cursor:pointer">&times;</button>
 </div>
-</style>
 <section class="daily-hero is-brief" id="daily-hero" aria-label="AGSIST Daily Briefing" aria-expanded="false">
-  <div class="daily-teaser" id="daily-teaser" role="button" tabindex="0" aria-label="Expand AGSIST Daily briefing" aria-controls="daily-full">
+  <div class="daily-teaser" id="daily-teaser" role="button" tabindex="0" aria-label="Expand AGSIST Daily briefing" aria-controls="daily-full" aria-expanded="false">
     <div class="teaser-line1"><div class="teaser-left"><span class="teaser-badge" id="daily-teaser-date"><svg class="ic" aria-hidden="true"><use href="#i-newspaper"/></svg> AGSIST Daily</span></div><span class="teaser-action">Read Today's Briefing &#x2193;</span></div>
     <span class="teaser-preview" id="daily-teaser-text">Today's ag market briefing &mdash; click to read</span>
   </div>
@@ -577,7 +576,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
     <details class="m-fold m-fold--usda" open><summary class="m-fold-sum"><span>Crops, exports, inputs <small>progress &middot; sales &middot; tariffs &middot; fertilizer</small></span></summary>
     <div class="crop-export-grid" id="crop-export-grid-inner">
       <div class="crop-widget" id="crop-widget">
-        <div class="crop-widget-head"><span class="crop-widget-title">Crop Condition &mdash; Good/Excellent</span><span class="crop-week-badge" id="crop-week-badge">USDA &middot; Mondays 4:00 PM ET</span></div>
+        <div class="crop-widget-head"><h3 class="crop-widget-title idx1-sub-h">Crop Condition &mdash; Good/Excellent</h3><span class="crop-week-badge" id="crop-week-badge">USDA &middot; Mondays 4:00 PM ET</span></div>
         <div class="crop-rows" id="crop-rows">
           <div><div class="crop-row-head"><div class="crop-comm-label"><span class="crop-comm-name">Corn</span></div><span class="crop-ge-val fair" id="crop-corn-ge">--</span></div><div class="crop-chg-row"><span class="crop-chg nc" id="crop-corn-wk">--</span><span class="crop-chg-lbl">week</span><span class="crop-chg nc" id="crop-corn-yr">--</span><span class="crop-chg-lbl">vs last year</span></div><div class="crop-plant-row"><span class="crop-plant-pct" id="crop-corn-plant">--%</span><span class="crop-plant-lbl">planted</span><div class="crop-plant-bar"><div class="crop-plant-fill" id="crop-corn-bar" style="width:0%"></div></div></div></div>
           <div><div class="crop-row-head"><div class="crop-comm-label"><span class="crop-comm-name">Soybeans</span></div><span class="crop-ge-val fair" id="crop-bean-ge">--</span></div><div class="crop-chg-row"><span class="crop-chg nc" id="crop-bean-wk">--</span><span class="crop-chg-lbl">week</span><span class="crop-chg nc" id="crop-bean-yr">--</span><span class="crop-chg-lbl">vs last year</span></div><div class="crop-plant-row"><span class="crop-plant-pct" id="crop-bean-plant">--%</span><span class="crop-plant-lbl">planted</span><div class="crop-plant-bar"><div class="crop-plant-fill" id="crop-bean-bar" style="width:0%"></div></div></div></div>
@@ -585,7 +584,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
         <div class="crop-footer"><span class="crop-footer-date" id="crop-date">USDA NASS &middot; Weekly</span><a href="/usda-calendar" class="crop-full-link">Full Calendar</a></div>
       </div>
       <div class="export-widget" id="export-widget">
-        <div class="export-widget-head"><span class="export-widget-title"><svg class="ic" aria-hidden="true"><use href="#i-package"/></svg> Export Sales &mdash; Commitments</span><span class="export-mkt-yr" id="export-mkt-yr">USDA FAS &middot; Thu 8:30am</span></div>
+        <div class="export-widget-head"><h3 class="export-widget-title idx1-sub-h"><svg class="ic" aria-hidden="true"><use href="#i-package"/></svg> Export Sales &mdash; Commitments</h3><span class="export-mkt-yr" id="export-mkt-yr">USDA FAS &middot; Thu 8:30am</span></div>
         <div class="export-rows" id="export-rows">
           <div><div class="export-row-head"><div class="export-comm-label"><span class="export-comm-name">Corn</span></div><span class="export-weekly"><span id="exp-corn-wk">--</span> <span class="export-wk-lbl">net sales this week</span></span></div><div class="export-pace-row"><div class="export-pace-bar"><div class="export-pace-fill on-track" id="exp-corn-bar" style="width:0%"></div></div><span class="export-pace-pct on-track" id="exp-corn-pct">--%</span></div><div class="export-cumul" id="exp-corn-cumul"></div><div class="export-withheld" id="exp-corn-why" hidden></div></div>
           <div><div class="export-row-head"><div class="export-comm-label"><span class="export-comm-name">Soybeans</span></div><span class="export-weekly"><span id="exp-bean-wk">--</span> <span class="export-wk-lbl">net sales this week</span></span></div><div class="export-pace-row"><div class="export-pace-bar"><div class="export-pace-fill on-track" id="exp-bean-bar" style="width:0%"></div></div><span class="export-pace-pct on-track" id="exp-bean-pct">--%</span></div><div class="export-cumul" id="exp-bean-cumul"></div><div class="export-withheld" id="exp-bean-why" hidden></div></div>
@@ -596,12 +595,12 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
     </div>
     <div class="tariff-fert-grid fade-up">
       <div class="tariff-widget" id="tariff-widget">
-        <div class="tariff-widget-head"><span class="tariff-widget-title"><svg class="ic" aria-hidden="true"><use href="#i-landmark"/></svg> Ag Tariff Tracker &mdash; US Export Rates</span><span class="tariff-status-badge elevated" id="tariff-badge">Loading&hellip;</span></div>
+        <div class="tariff-widget-head"><h3 class="tariff-widget-title idx1-sub-h"><svg class="ic" aria-hidden="true"><use href="#i-landmark"/></svg> Ag Tariff Tracker &mdash; US Export Rates</h3><span class="tariff-status-badge elevated" id="tariff-badge">Loading&hellip;</span></div>
         <div class="tariff-rows" id="tariff-rows"><div class="tariff-row" style="justify-content:center;color:var(--text-muted);font-size:.824rem">Loading tariff data&hellip;</div></div>
         <div class="tariff-footer"><span class="tariff-footer-date" id="tariff-date">Updated &mdash;</span><a href="/tariffs" class="tariff-full-link">Full Tracker</a></div>
       </div>
       <div class="fert-widget" id="fert-widget">
-        <div class="fert-widget-head"><span class="fert-widget-title"><svg class="ic" aria-hidden="true"><use href="#i-flask-conical"/></svg> Fertilizer Prices</span><span class="crop-week-badge" id="fert-date">Updated &mdash;</span></div>
+        <div class="fert-widget-head"><h3 class="fert-widget-title idx1-sub-h"><svg class="ic" aria-hidden="true"><use href="#i-flask-conical"/></svg> Fertilizer Prices</h3><span class="crop-week-badge" id="fert-date">Updated &mdash;</span></div>
         <div class="fert-grid" id="fert-grid"><div class="fert-card" style="grid-column:1/-1;text-align:center;padding:.75rem;color:var(--text-muted);font-size:.824rem">Loading&hellip;</div></div>
         <div class="fert-footer"><span class="fert-footer-note" id="fert-src-note">Midwest dealer quotes, dollars per ton</span><a href="/fertilizer" class="fert-full-link">Price History</a></div>
       </div>
@@ -1082,11 +1081,12 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
   <section class="fade-up" id="f-read" aria-labelledby="read-heading">
         <div class="sec-head"><h2 class="sec-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:1.05em;height:1.05em;vertical-align:-.13em;margin-right:.34em;flex:none"><circle cx="6" cy="15" r="4" /> <circle cx="18" cy="15" r="4" /> <path d="M14 15a2 2 0 0 0-2-2 2 2 0 0 0-2 2" /> <path d="M2.5 13 5 7c.7-1.3 1.4-2 3-2" /> <path d="M21.5 13 19 7c-.7-1.3-1.5-2-3-2" /></svg>The Read</h2><span class="read-sub">What today's prices mean</span></div>
     <div class="sig-grid">
-      <a href="/corn-futures-prices" class="sig" id="sig-corn"><div class="sig-top"><span class="sig-name">Corn</span><span class="sig-tag" id="sig-corn-tag">&middot;</span></div><div class="sig-num"><span id="sig-corn-num">61<span class="r7-ord">st</span></span><small id="sig-corn-sub">percentile</small></div><div class="sig-price" id="sig-corn-price">5-year range $3.68&ndash;$8.18</div><div class="sig-bar"><div class="sig-fill" id="sig-corn-fill" style="width:0"></div><div class="sig-dot" id="sig-corn-dot" style="left:-5px"></div></div><div class="sig-read" id="sig-corn-read">Ranked at Sep 30, 7:47 PM CT against 5 years of weekly front-month closes.</div><div class="sig-link">Full corn read</div></a>
-      <a href="/soybean-futures-prices" class="sig" id="sig-beans"><div class="sig-top"><span class="sig-name">Soybeans</span><span class="sig-tag" id="sig-beans-tag">&middot;</span></div><div class="sig-num"><span id="sig-beans-num">60<span class="r7-ord">th</span></span><small id="sig-beans-sub">percentile</small></div><div class="sig-price" id="sig-beans-price">5-year range $9.39&ndash;$17.45</div><div class="sig-bar"><div class="sig-fill" id="sig-beans-fill" style="width:0"></div><div class="sig-dot" id="sig-beans-dot" style="left:-5px"></div></div><div class="sig-read" id="sig-beans-read">Ranked at Sep 30, 7:47 PM CT against 5 years of weekly front-month closes.</div><div class="sig-link">Full soybean read</div></a>
-      <a href="/wheat-futures-prices" class="sig" id="sig-wheat"><div class="sig-top"><span class="sig-name">Wheat, Chicago SRW</span><span class="sig-tag" id="sig-wheat-tag">&middot;</span></div><div class="sig-num"><span id="sig-wheat-num">65<span class="r7-ord">th</span></span><small id="sig-wheat-sub">percentile</small></div><div class="sig-price" id="sig-wheat-price">5-year range $4.99&ndash;$13.48</div><div class="sig-bar"><div class="sig-fill" id="sig-wheat-fill" style="width:0"></div><div class="sig-dot" id="sig-wheat-dot" style="left:-5px"></div></div><div class="sig-read" id="sig-wheat-read">Ranked at Sep 30, 7:47 PM CT against 5 years of weekly front-month closes.</div><div class="sig-link">Full wheat read</div></a>
+      <a href="/corn-futures-prices" class="sig" id="sig-corn"><div class="sig-top"><span class="sig-name">Corn</span><span class="sig-tag" id="sig-corn-tag">&middot;</span></div><div class="sig-num"><span id="sig-corn-num">61<span class="r7-ord">st</span></span><small id="sig-corn-sub">percentile</small></div><div class="sig-price" id="sig-corn-price">5-year range $3.68&ndash;$8.18</div><div class="sig-bar"><div class="sig-fill" id="sig-corn-fill" style="width:0"></div><div class="sig-dot" id="sig-corn-dot" style="left:-5px"></div></div><div class="sig-read" id="sig-corn-read"></div><div class="sig-link">Full corn read</div></a>
+      <a href="/soybean-futures-prices" class="sig" id="sig-beans"><div class="sig-top"><span class="sig-name">Soybeans</span><span class="sig-tag" id="sig-beans-tag">&middot;</span></div><div class="sig-num"><span id="sig-beans-num">60<span class="r7-ord">th</span></span><small id="sig-beans-sub">percentile</small></div><div class="sig-price" id="sig-beans-price">5-year range $9.39&ndash;$17.45</div><div class="sig-bar"><div class="sig-fill" id="sig-beans-fill" style="width:0"></div><div class="sig-dot" id="sig-beans-dot" style="left:-5px"></div></div><div class="sig-read" id="sig-beans-read"></div><div class="sig-link">Full soybean read</div></a>
+      <a href="/wheat-futures-prices" class="sig" id="sig-wheat"><div class="sig-top"><span class="sig-name">Wheat, Chicago SRW</span><span class="sig-tag" id="sig-wheat-tag">&middot;</span></div><div class="sig-num"><span id="sig-wheat-num">65<span class="r7-ord">th</span></span><small id="sig-wheat-sub">percentile</small></div><div class="sig-price" id="sig-wheat-price">5-year range $4.99&ndash;$13.48</div><div class="sig-bar"><div class="sig-fill" id="sig-wheat-fill" style="width:0"></div><div class="sig-dot" id="sig-wheat-dot" style="left:-5px"></div></div><div class="sig-read" id="sig-wheat-read"></div><div class="sig-link">Full wheat read</div></a>
       <a href="/cattle-futures-prices" class="sig" id="sig-cattle"><div class="sig-top"><span class="sig-name">Cattle</span><span class="sig-tag" id="sig-cattle-tag">&middot;</span></div><div class="sig-num"><span id="sig-cattle-num">&mdash;</span><small id="sig-cattle-sub"></small></div><div class="sig-price" id="sig-cattle-price">Loading&hellip;</div><div class="sig-bar"><div class="sig-fill" id="sig-cattle-fill" style="width:0"></div><div class="sig-dot" id="sig-cattle-dot" style="left:-5px"></div></div><div class="sig-read" id="sig-cattle-read"></div><div class="sig-link">Full cattle read</div></a>
     </div>
+    <p class="sig-asof" id="sig-asof" hidden></p>
   </section>
   </details>
   <script>
@@ -1111,6 +1111,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
          build time, against 5 years of weekly closes, so it carries that
          time instead of borrowing the board's. The midpoint labels are gone:
          "61st percentile" already says "above the midpoint". */
+      var ranked=false;
       function bandTxt(p){if(p<10)return 'Near a 5-year low.';if(p<25)return 'Historically low: below most of the last 5 years.';if(p>=90)return 'Near a 5-year high.';if(p>=75)return 'Historically high: above most of the last 5 years.';return '';}
       Object.keys(GR).forEach(function(k){
         var g=GR[k],pre='sig-'+k,st=stats[g.sk],nb=px[k+'-nearby'],q=nb||px[k],pct,lo,hi,tag,rd;
@@ -1118,7 +1119,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
         /* quarter cents, like the tiles: 681.75 -> $6.81 3/4 */
         var qp=function(c){var w=Math.floor(c+1e-9),f=Math.round((c-w)*4);if(f===4){w++;f=0;}return '$'+(w/100).toFixed(2)+(f?' '+['','1/4','1/2','3/4'][f]:'');};
         if(st&&st.pct!=null){pct=st.pct;lo=st.lo;hi=st.hi;tag='5-year';
-          var b=bandTxt(pct);rd=(b?'<b>'+b+'</b> ':'')+'Ranked'+(asOf?' at '+asOf:'')+' against 5 years of weekly front-month closes.';}
+          var b=bandTxt(pct);rd=b?'<b>'+b+'</b>':'';ranked=true;}
         else if(q&&q.close!=null&&q.wk52_hi!=null&&q.wk52_lo!=null&&q.wk52_hi>q.wk52_lo){lo=q.wk52_lo*g.s;hi=q.wk52_hi*g.s;pct=Math.round((q.close-q.wk52_lo)/(q.wk52_hi-q.wk52_lo)*100);tag='52-week';rd='Where the board price sits in its 52-week range.';}
         else{if($(pre+'-tag'))$(pre+'-tag').textContent='Not loaded yet';return;}
         pct=Math.max(0,Math.min(100,pct));
@@ -1132,9 +1133,11 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
            price's place between the low and high printed above, so the bar says so. */
         var _sc=$(pre+'-scale'),_sbr=document.querySelector('#'+pre+' .sig-bar');
         if(!_sc&&_sbr){_sc=document.createElement('div');_sc.id=pre+'-scale';_sc.className='r7-barcap r7-scale';_sbr.parentNode.insertBefore(_sc,_sbr.nextSibling);}
-        if(_sc)_sc.innerHTML=tag==='5-year'?'<span>0</span><span>percentile of 5-yr weekly closes</span><span>100</span>':'<span>low</span><span>place in 52-week range</span><span>high</span>';
-        if($(pre+'-read'))$(pre+'-read').innerHTML=rd;
+        if(_sc)_sc.innerHTML=tag==='5-year'?'<span>0</span><span></span><span>100</span>':'<span>low</span><span>place in 52-week range</span><span>high</span>';
+        if($(pre+'-read')){$(pre+'-read').innerHTML=rd;$(pre+'-read').hidden=!rd;}
       });
+      /* WAVE3-L: the ranking time, said once under the cards. */
+      var _sa=$('sig-asof');if(_sa&&ranked){_sa.textContent='Ranked'+(asOf?' at '+asOf:'')+' against 5 years of weekly front-month closes.';_sa.hidden=false;}
       var le=px.cattle,gf=px.feeders,lc=cot.livecattle,pre='sig-cattle';
       if(!(le&&gf&&le.close!=null&&gf.close!=null)){if($(pre+'-price'))$(pre+'-price').textContent='Unavailable right now';if($(pre+'-tag'))$(pre+'-tag').textContent='';}
       if(le&&gf&&le.close!=null&&gf.close!=null){
@@ -1146,7 +1149,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
         if($(pre+'-price')){$(pre+'-price').textContent='Live cattle'+(_lm?' '+_lm:'')+' $'+le.close.toFixed(2)+' \u00b7 Feeder'+(_fm?' '+_fm:'')+' $'+gf.close.toFixed(2)+' per cwt';$(pre+'-price').setAttribute('data-r7','1');}
         var cp=null;if(lc&&lc.min52!=null&&lc.max52!=null&&lc.max52>lc.min52){cp=Math.round((lc.net-lc.min52)/(lc.max52-lc.min52)*100);cp=Math.max(0,Math.min(100,cp));}
         /* r7-bids 7b: no invented 50%: with no COT position the bar is hidden. */
-        var _sb=document.querySelector('#'+pre+' .sig-bar');if(cp!=null){bar(pre,cp);if(_sb&&!document.getElementById('sig-cattle-barcap')){var _bc=document.createElement('div');_bc.id='sig-cattle-barcap';_bc.className='r7-barcap';_bc.textContent='Bar: managed money net '+(lc.net>=0?'long':'short')+', '+cp+'% of its 52-week range';_sb.parentNode.insertBefore(_bc,_sb.nextSibling);}}else if(_sb){_sb.style.display='none';}
+        var _sb=document.querySelector('#'+pre+' .sig-bar');if(cp!=null){bar(pre,cp);}else if(_sb){_sb.style.display='none';}
         if(cp!=null){if($(pre+'-tag'))$(pre+'-tag').textContent='Ratio';/* "feeders near a 52-wk low" used to be a literal printed every day
              whatever feeders did, next to a percentage that is the LIVE CATTLE
              COT position. It is now computed from the feeder quote, or left
@@ -1161,7 +1164,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
           }
           /* "(2%)" read as "2% net long". It is the position's place in its own 52-week range. Say the position and say what the percentage is. */
           var _netTxt=(Math.abs(lc.net)>=1000?(Math.abs(lc.net)/1000).toFixed(1)+'k':String(Math.abs(lc.net)));
-          if($(pre+'-read'))$(pre+'-read').innerHTML='<b>Managed money '+(lc.net>=0?'net long':'net short')+' fed cattle</b> '+_netTxt+' contracts, '+cp+'% of the way up its 52-week range'+(_fclause==='.'?'.':_fclause)+(cotAsOf?' COT as of '+cotAsOf+'.':'');}
+          if($(pre+'-read'))$(pre+'-read').innerHTML='<b>Managed money '+(lc.net>=0?'net long':'net short')+' live cattle</b> '+_netTxt+' contracts, '+cp+'% of the way up its 52-week range'+(_fclause==='.'?'.':_fclause)+(cotAsOf?' COT as of '+cotAsOf+'.':'');}
         else{if($(pre+'-tag'))$(pre+'-tag').textContent='Ratio';if($(pre+'-read'))$(pre+'-read').innerHTML='<b>Feeder/live '+ratio.toFixed(2)+':1.</b> Value split between cow-calf and feedlots.';}
       }
     });
@@ -1304,8 +1307,8 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
     <div class="sec-head"><h2 class="sec-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:1.05em;height:1.05em;vertical-align:-.13em;margin-right:.34em;flex:none"><path d="M3 3v16a2 2 0 0 0 2 2h16" /> <path d="m19 9-5 5-4-4-3 3" /></svg>Market Intelligence</h2><a href="/cot" class="sec-all">Full COT Chart</a></div>
     <div class="ratio-cot-grid">
       <div class="cot-widget" id="cot-widget">
-        <div class="cot-widget-head"><span class="cot-widget-title"><svg class="ic" aria-hidden="true"><use href="#i-chart-column"/></svg> CFTC COT &mdash; Managed Money</span><span class="cot-verdict mixed" id="cot-verdict">Loading&hellip;</span></div>
-        <div class="cot-caption">Managed money&rsquo;s net position (CFTC disaggregated report), placed within its past 52 weeks. <span class="tip"><button type="button" class="tip-b" aria-expanded="false" aria-describedby="tip-cot">How to read</button><span id="tip-cot" role="tooltip" class="tip-t" hidden>COT is the CFTC&rsquo;s weekly Commitments of Traders report, positions as of Tuesday. Managed money means hedge funds and commodity trading advisers. Net futures contracts held long vs short by the &ldquo;managed money&rdquo; group in CFTC&rsquo;s disaggregated report (hedge funds and commodity trading advisers). Bar shows where that position sits within the past 52 weeks (not the 3-yr COT Index some desks use — this window runs shorter, which can read positioning as more extreme). The badge above averages the first four rows&rsquo; position-in-range (corn, soybeans, Chicago wheat, live cattle), not a headcount of who&rsquo;s long or short — one row can run the other way. Interpretation of public CFTC data, not a trading signal.</span></span></div>
+        <div class="cot-widget-head"><h3 class="cot-widget-title idx1-sub-h"><svg class="ic" aria-hidden="true"><use href="#i-chart-column"/></svg> CFTC COT &mdash; Managed Money</h3><span class="cot-badges"><span class="cot-verdict mixed" id="cot-verdict">Loading&hellip;</span><span class="cot-verdict mixed" id="cot-verdict-lv" hidden></span></span></div>
+        <div class="cot-caption">Net position within its past 52 weeks. <span class="tip"><button type="button" class="tip-b" aria-expanded="false" aria-describedby="tip-cot">How to read</button><span id="tip-cot" role="tooltip" class="tip-t" hidden>COT is the CFTC&rsquo;s weekly Commitments of Traders report, positions as of Tuesday. Managed money means hedge funds and commodity trading advisers. Net futures contracts held long vs short by that group in CFTC&rsquo;s disaggregated report. Bar shows where that position sits within the past 52 weeks (not the 3-yr COT Index some desks use — this window runs shorter, which can read positioning as more extreme). The two badges above are separate: Grains averages corn, soybeans and Chicago wheat&rsquo;s position-in-range; Live cattle reads that one row. Neither is a headcount of who&rsquo;s long or short, and one grain can run the other way. &ldquo;Price since&rdquo; compares the front-month close on the report&rsquo;s Tuesday with today&rsquo;s, so a contract roll in between is inside the number. Interpretation of public CFTC data, not a trading signal.</span></span></div>
         <div class="cot-rows" id="cot-rows">
           <div class="cot-row-corn"><div class="cot-row-top"><div class="cot-label"><span class="cot-comm-name">Corn</span></div><div class="cot-right"><span class="cot-dir nc" id="cot-corn-dir">--</span><span class="cot-net" id="cot-corn-net">--</span><span class="cot-chg nc" id="cot-corn-chg">--</span></div></div><div class="cot-bar-wrap"><div class="cot-bar-fill" id="cot-corn-fill"></div><div class="cot-zero-mark" id="cot-corn-zero"></div><div class="cot-bar-dot" id="cot-corn-dot" style="background:var(--text-muted)"></div></div><div class="cot-bar-labels"><span id="cot-corn-min">--</span><span>52-week range</span><span id="cot-corn-max">--</span></div></div>
           <div class="cot-row-beans"><div class="cot-row-top"><div class="cot-label"><span class="cot-comm-name">Soybeans</span></div><div class="cot-right"><span class="cot-dir nc" id="cot-beans-dir">--</span><span class="cot-net" id="cot-beans-net">--</span><span class="cot-chg nc" id="cot-beans-chg">--</span></div></div><div class="cot-bar-wrap"><div class="cot-bar-fill" id="cot-beans-fill"></div><div class="cot-zero-mark" id="cot-beans-zero"></div><div class="cot-bar-dot" id="cot-beans-dot" style="background:var(--text-muted)"></div></div><div class="cot-bar-labels"><span id="cot-beans-min">--</span><span>52-week range</span><span id="cot-beans-max">--</span></div></div>
@@ -1320,7 +1323,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
       </div>
       <div class="idx1-nowcast-na" style="display:none;padding:.6rem .1rem;font-size:.824rem;color:var(--text-muted)">Yield Nowcast (corn/soybean bu/ac) isn&rsquo;t shown for a cattle-only operation &mdash; switch to Row Crops or Mixed to see it.</div>
       <div class="ratio-widget" id="nowcast-widget">
-        <div class="ratio-widget-head"><span class="ratio-widget-title">Yield Nowcast &mdash; this year&rsquo;s crop</span><span class="ratio-verdict neutral" id="nc-verdict">Loading&hellip;</span></div>
+        <div class="ratio-widget-head"><h3 class="ratio-widget-title idx1-sub-h">Yield Nowcast &mdash; this year&rsquo;s crop</h3><span class="ratio-verdict neutral" id="nc-verdict">Loading&hellip;</span></div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:.7rem;margin:.15rem 0 .55rem">
           <div style="text-align:center;padding:.55rem .4rem;background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:9px">
             <div style="font-size:.706rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.25rem">Corn</div>
@@ -2101,10 +2104,49 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')close(true);
       if(elD)elD.style.left=pct.toFixed(1)+'%';
     }
   }
-  fetch('/data/prices.json').then(function(r){
+  /* WAVE3-L 2026-10-03: a failed or malformed prices.json used to leave
+     every price cell on "Not loaded yet", an empty ticker and a header that
+     still said "Updated every 30 min". Now: one line saying the prices did
+     not load and when we tried, the empty ticker hidden, and a retry on a
+     timer and when the browser comes back online. A file with no quotes
+     object counts as malformed. */
+  var _pxTry=0,_pxTimer=null,_pxDone=false;
+  function pxCT(){try{return new Intl.DateTimeFormat('en-US',{timeZone:'America/Chicago',hour:'numeric',minute:'2-digit'}).format(new Date())+' CT';}catch(e){return '';}}
+  function pxFail(){
+    if(_pxDone)return;
+    var fp=document.getElementById('f-prices'),strip=document.querySelector('.prices-strip');
+    if(fp)fp.classList.add('px-off');if(strip)strip.classList.add('px-off');
+    var pa=document.getElementById('prices-age');if(pa)pa.textContent='';
+    var ln=document.getElementById('px-fail');
+    if(!ln&&fp){ln=document.createElement('p');ln.id='px-fail';ln.className='px-fail';ln.setAttribute('role','status');var sh=fp.querySelector('.sec-head');fp.insertBefore(ln,sh?sh.nextSibling:fp.firstChild);}
+    var t=pxCT();if(ln)ln.textContent='Prices did not load'+(t?' ('+t+')':'')+'. Retrying.';
+    clearTimeout(_pxTimer);_pxTimer=setTimeout(pxLoad,[30,60,120][_pxTry-1]*1000||300000);
+  }
+  function pxClear(){
+    var fp=document.getElementById('f-prices'),strip=document.querySelector('.prices-strip'),ln=document.getElementById('px-fail');
+    if(fp)fp.classList.remove('px-off');if(strip)strip.classList.remove('px-off');if(ln&&ln.parentNode)ln.parentNode.removeChild(ln);
+    var rs=document.querySelectorAll('.pc-range');for(var i=0;i<rs.length;i++)rs[i].style.visibility='';
+  }
+  window.addEventListener('online',function(){if(!_pxDone){clearTimeout(_pxTimer);pxLoad();}});
+  function pxLoad(){
+  _pxTry++;
+  var first=_pxTry===1;
+  fetch('/data/prices.json',{cache:first?'default':'no-store'}).then(function(r){
     if(!r.ok)throw new Error('prices.json '+r.status);
     return r.json();
   }).then(function(data){
+    if(!data||typeof data!=='object'||!data.quotes||typeof data.quotes!=='object')throw new Error('prices.json malformed');
+    return data;
+  }).then(function(data){
+    _pxDone=true;clearTimeout(_pxTimer);
+    if(!first){
+      /* A retry worked: put the page back and let the other readers of the
+         file paint (geo.js the cards and ticker, r7-prices the ledgers). */
+      pxClear();
+      window.__agsistPricesP=Promise.resolve(data);
+      try{window.dispatchEvent(new CustomEvent('agsist:prices',{detail:data}));}catch(e){}
+      if(typeof window.fetchAllPrices==='function')window.fetchAllPrices();
+    }
     var q=data.quotes||{};
     /* The continuous series tracks the MOST-ACTIVE contract, so these bars
        placed the December price inside the continuous 52-week band and read
@@ -2187,7 +2229,7 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')close(true);
       if(__anyAg&&typeof gaEvent==='function'){gaEvent('quote_stale_shown',{page:'home'});}
     }catch(e){}
 
-  }).catch(function(){
+  },function(){
     blankRanges();
     // 2026-09-30: on an outright fetch failure (not just stale data — that
     // case is handled above) this never touched #ticker-age, so a visitor
@@ -2196,7 +2238,10 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')close(true);
     // 2026-09-12; this closes the failure case too.
     var _tbErr=document.getElementById('ticker-age');
     if(_tbErr){_tbErr.textContent='Not loaded yet';_tbErr.parentNode.classList.add('stale');}
+    pxFail();
   });
+  }
+  pxLoad();
 })();
 </script>
 <script>
@@ -2232,10 +2277,10 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')close(true);
      v: counts toward the badge, which averages the original four (the
      tooltip says so). All series are CFTC disaggregated managed money. */
   var COT_ROWS=[
-    {k:'corn',id:'corn',n:'Corn',v:1},
-    {k:'beans',id:'beans',n:'Soybeans',v:1},
-    {k:'wheat',id:'wheat',n:'Wheat, Chicago SRW',v:1},
-    {k:'livecattle',id:'cattle',n:'Live cattle',v:1},
+    {k:'corn',id:'corn',n:'Corn',v:'g'},
+    {k:'beans',id:'beans',n:'Soybeans',v:'g'},
+    {k:'wheat',id:'wheat',n:'Wheat, Chicago SRW',v:'g'},
+    {k:'livecattle',id:'cattle',n:'Live cattle',v:'l'},
     {k:'kcwheat',id:'kcwheat',n:'Wheat, KC HRW'},
     {k:'mplswheat',id:'mplswheat',n:'Wheat, MGEX HRS'},
     {k:'soymeal',id:'meal',n:'Soybean meal'},
@@ -2267,33 +2312,29 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')close(true);
       if(i>=COT_SHOWN)extra.push(r.n.replace(/^Wheat, /,''));
       if(data&&!data[r.k]){var n=document.getElementById('cot-'+r.id+'-net');if(n)n.textContent='\u2014';var c=document.getElementById('cot-'+r.id+'-chg');if(c){c.textContent='not in this week\u2019s file';c.className='cot-chg nc';}}});
     more.style.display=extra.length?'':'none';
-    more.querySelector('summary').textContent='More markets: '+extra.join(', ');
+    more.querySelector('summary').textContent=extra.length+' more market'+(extra.length===1?'':'s');
+    more.querySelector('summary').title=extra.join(', ');
   }
-  window.AGSIST_COT={rows:COT_ROWS,render:function(){placeCOT(window.AGSIST_COT._d);}};
+  /* WAVE3-L: after a failed cot.json there are no rows to put back. */
+  window.AGSIST_COT={rows:COT_ROWS,render:function(){if(window.AGSIST_COT.failed)return;placeCOT(window.AGSIST_COT._d);}};
+  /* WAVE3-L: one badge per group. The old badge averaged three grains with
+     live cattle; a cattle feeder and a corn grower read different markets.
+     Same thresholds as before, applied to each group on its own. */
+  function badge(el,rows,data,label){
+    if(!el)return;
+    var sc=[],nl=0;rows.forEach(function(r){var d=data[r.k];if(!d)return;var range=(d.max52-d.min52)||1;sc.push((d.net-d.min52)/range);if(d.net>0)nl++;});
+    if(!sc.length){el.hidden=true;return;}
+    el.hidden=false;
+    var avg=sc.reduce(function(a,b){return a+b;},0)/sc.length,maj=Math.floor(sc.length/2)+1;
+    if(avg>0.62&&nl>=maj){el.className='cot-verdict long';el.innerHTML='<svg class="ic" aria-hidden="true"><use href="#i-trending-up"/></svg> '+label+': long';}
+    else if(avg<0.38||nl===0){el.className='cot-verdict short';el.innerHTML='<svg class="ic" aria-hidden="true"><use href="#i-trending-down"/></svg> '+label+': short';}
+    else{el.className='cot-verdict mixed';el.textContent='\u2194 '+label+': mixed';}
+  }
   function renderCOT(data){
     window.AGSIST_COT._d=data;placeCOT(data);
-    var rows=COT_ROWS.filter(function(r){return r.v;}),scores=[];
-    COT_ROWS.forEach(function(row){if(!data[row.k])return;var d=data[row.k];if(row.v){var range=(d.max52-d.min52)||1;scores.push((d.net-d.min52)/range);}renderCOTRow(row.id,d);});
-    var avg=scores.length?scores.reduce(function(a,b){return a+b;},0)/scores.length:0.5;
-    var netLong=rows.filter(function(row){return data[row.k]&&data[row.k].net>0;}).length;
-    /* Majority of whatever rows actually have data today — was a hardcoded
-       ">=2 of 3"; adding cattle made that a minority (2 of 4), which flips
-       the verdict's meaning, so this scales with scores.length instead. */
-    var majority=Math.floor(scores.length/2)+1;
-    var verdict=document.getElementById('cot-verdict');
-    if(verdict){
-      // 2026-09-30: pre-existing bug, found while touching this function for
-      // the cattle row \u2014 on a successful fetch that returns no known
-      // commodities (scores.length===0), netLong===0 is trivially true (an
-      // empty .filter() has length 0), so the "Funds Short" branch fired on
-      // NO data, not bearish data. Guarding on scores.length so an empty
-      // result reads as "no verdict" (falls through to Mixed) instead of a
-      // fabricated bearish call.
-      if(scores.length===0){verdict.className='cot-verdict mixed';verdict.textContent='\u2194 Mixed';}
-      else if(avg>0.62&&netLong>=majority){verdict.className='cot-verdict long';verdict.innerHTML='<svg class="ic" aria-hidden="true"><use href="#i-trending-up"/></svg> Managed money long';}
-      else if(avg<0.38||netLong===0){verdict.className='cot-verdict short';verdict.innerHTML='<svg class="ic" aria-hidden="true"><use href="#i-trending-down"/></svg> Managed money short';}
-      else{verdict.className='cot-verdict mixed';verdict.textContent='\u2194 Mixed';}
-    }
+    COT_ROWS.forEach(function(row){if(data[row.k])renderCOTRow(row.id,data[row.k]);});
+    badge(document.getElementById('cot-verdict'),COT_ROWS.filter(function(r){return r.v==='g';}),data,'Grains');
+    badge(document.getElementById('cot-verdict-lv'),COT_ROWS.filter(function(r){return r.v==='l';}),data,'Live cattle');
     var dateEl=document.getElementById('cot-date');
     if(dateEl&&data.report_date){
       var _rds=String(data.report_date);
@@ -2314,13 +2355,15 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')close(true);
       })();
     }
   }
-  fetch('/data/cot.json').then(function(r){if(!r.ok)throw new Error('no-cot');return r.json();}).then(renderCOT).catch(function(){
-    var verdict=document.getElementById('cot-verdict');if(verdict){verdict.className='cot-verdict mixed';verdict.textContent='Not loaded yet';}var _cw=document.getElementById('cot-widget');if(_cw)_cw.classList.add('cot-na');
-    placeCOT(null);
-    COT_ROWS.map(function(r){return r.id;}).forEach(function(k){
-      var n=document.getElementById('cot-'+k+'-net');if(n)n.textContent='\u2014';
-      var c=document.getElementById('cot-'+k+'-chg');if(c){c.textContent='pending';c.className='cot-chg nc';}
-    });
+  /* WAVE3-L: a failed or malformed cot.json is one line, not ten rows of
+     placeholders. */
+  fetch('/data/cot.json').then(function(r){if(!r.ok)throw new Error('no-cot');return r.json();}).then(function(d){
+    if(!d||typeof d!=='object'||!COT_ROWS.some(function(r){return d[r.k]&&d[r.k].net!=null;}))throw new Error('cot malformed');return d;
+  }).then(renderCOT,function(){
+    window.AGSIST_COT.failed=true;
+    var verdict=document.getElementById('cot-verdict');if(verdict)verdict.hidden=true;var _cw=document.getElementById('cot-widget');if(_cw)_cw.classList.add('cot-na');
+    var rows=document.getElementById('cot-rows');if(rows)rows.innerHTML='<p class="cot-fail" role="status">CFTC positions did not load.</p>';
+    var cap=_cw&&_cw.querySelector('.cot-caption');if(cap)cap.hidden=true;
   });
 })();
 </script>
@@ -2406,6 +2449,7 @@ function fmtDate(iso){if(!iso)return'\u2014';try{var d=new Date(iso+'T12:00:00')
 fetch('/data/crop-progress.json')
   .then(function(r){if(!r.ok)throw new Error('no-cp');return r.json();})
   .then(function(data){
+    if(!data||typeof data!=='object'||(!data.corn&&!data.soybeans))throw new Error('cp malformed');
     if(data.report_date){var d=document.getElementById('crop-date');if(d)d.textContent='As of '+fmtDate(data.report_date)+' \u00b7 NASS';}
     if(data.week){var wb=document.getElementById('crop-week-badge');if(wb)wb.textContent='Week '+data.week;}
     if(!data.in_season){var rows=document.getElementById('crop-rows');if(rows)rows.innerHTML='<div class="crop-offseason"><svg class="ic" aria-hidden="true"><use href="#i-snowflake"/></svg> Off season \u2014 resumes April<br><span style="font-size:.706rem;margin-top:.2rem;display:block">Last season data shown when available</span></div>';}
@@ -2451,7 +2495,9 @@ fetch('/data/crop-progress.json')
     if(_needHarvestNote.length){var _cr=document.getElementById('crop-rows');if(_cr&&!document.getElementById('r7-crop-note')){var _n=document.createElement('div');_n.id='r7-crop-note';_n.className='r7-crop-note';_n.textContent='Harvested and mature'+(_needHarvestNote.length===1?' ('+_needHarvestNote[0]+')':'')+': Not loaded yet.';_cr.appendChild(_n);}}
     if(allNull&&data.in_season!==false){var rows=document.getElementById('crop-rows');if(rows)rows.innerHTML='<div class="crop-offseason">Season starting \u2014 ratings begin once planting gets underway.<br><span style="font-size:.706rem;margin-top:.25rem;display:block">Typically mid-April for corn &amp; soybean country</span></div>';}
   })
-  .catch(function(){var d=document.getElementById('crop-date');if(d)d.textContent='Data pending \u00b7 Mon 4pm ET';['corn-ge','corn-wk','corn-yr','bean-ge','bean-wk','bean-yr'].forEach(function(id){var el=document.getElementById('crop-'+id);if(el)el.textContent='\u2014';});});
+  /* WAVE3-L: a failed file is one line. It used to say "Data pending" and
+     print "--% planted" in October. */
+  .catch(function(){var d=document.getElementById('crop-date');if(d)d.textContent='USDA NASS \u00b7 Weekly';var rows=document.getElementById('crop-rows');if(rows)rows.innerHTML='<p class="crop-fail" role="status">Crop progress did not load.</p>';});
 })();
 </script>
 <script>
@@ -2524,8 +2570,9 @@ fetch('/data/export-sales.json')
           var ly=document.createElement('span');ly.className='w1c-ly';
           if(d.vs_prev_year_pct!=null&&d.prev_year_cumulative_mt!=null){var v=d.vs_prev_year_pct;
             ly.textContent=(v>0?'+':v<0?'\u2212':'')+Math.abs(v).toFixed(1)+'% vs the same week last year ('+fmtBu(d.prev_year_cumulative_mt,comm)+')';}
-          else ly.textContent='vs last year: \u2014 '+(('prev_year_cumulative_mt' in d)?'(last year\u2019s week is not in the FAS records)':'(next Thursday FAS run)');
-          cumEl.appendChild(ly);
+          else if('prev_year_cumulative_mt' in d)ly.textContent='vs last year: \u2014 (last year\u2019s week is not in the FAS records)';
+          /* WAVE3-L: an older file without the field shows nothing until the next run fills it. */
+          if(ly.textContent)cumEl.appendChild(ly);
         }
       }
       /* WAVE1-C: wheat by class, when the FAS file splits it. */
@@ -2533,8 +2580,8 @@ fetch('/data/export-sales.json')
         var cr=document.getElementById('exp-wheat-cls');
         if(!cr){cr=document.createElement('div');cr.id='exp-wheat-cls';cr.className='export-withheld w1c-cls';var wr=document.getElementById('exp-wheat-why');if(wr)wr.parentNode.insertBefore(cr,wr);}
         var cl=d.classes||null,ks=cl?Object.keys(cl):[];
-        cr.textContent=ks.length?'By class, committed: '+ks.map(function(k){return (cl[k].label||k.toUpperCase())+' '+fmtBu(cl[k].cumulative_mt,'wheat').replace(' million bu','M').replace(' thousand bu','k');}).join(' \u00b7 ')+' bu'
-          :'By class: \u2014 (next Thursday FAS run)';
+        cr.textContent=ks.length?'By class, committed: '+ks.map(function(k){return (cl[k].label||k.toUpperCase())+' '+fmtBu(cl[k].cumulative_mt,'wheat').replace(' million bu','M').replace(' thousand bu','k');}).join(' \u00b7 ')+' bu':'';
+        cr.hidden=!ks.length;
       }
       var whyEl=document.getElementById('exp-'+key+'-why');
       if(whyEl){whyEl.textContent=why||'';whyEl.hidden=!why;}
@@ -2559,28 +2606,36 @@ fetch('/data/fertilizer.json')
        shown. */
     var dateEl=document.getElementById('fert-date');if(dateEl)dateEl.textContent='Updated '+fmtDate(data.updated);
     /* wave1-E: the source as the file names it, not a line typed here. */
-    var srcEl=document.getElementById('fert-src-note');if(srcEl)srcEl.textContent=(data.source?String(data.source).replace(/[.\s]+$/,''):'Dealer quotes')+'. Dollars per ton.';
+    /* WAVE3-L: the file's source up to its first dash; the per-row date
+       note after it is said by the table itself. */
+    var srcEl=document.getElementById('fert-src-note');if(srcEl)srcEl.textContent=(data.source?String(data.source).split(/\s+[\u2014\u2013-]\s+/)[0].replace(/[.,\s]+$/,''):'Dealer quotes')+', dollars per ton.';
     var grid=document.getElementById('fert-grid');if(!grid||!data.prices||!data.prices.length)return;
     function age(iso){var t=new Date((iso||'')+'T12:00:00').getTime();return isNaN(t)?null:Math.floor((Date.now()-t)/86400000);}
     var fresh=[],old=[];
     data.prices.forEach(function(p){if(p.price==null)return;var a=age(p.as_of||data.updated);if(a==null||a>45)old.push(p);else fresh.push(p);});
     grid.classList.add('r7-fert');
-    var h='<div class="r7-fh" aria-hidden="true"><span>Product</span><span>Per ton</span><span>Change</span><span>Quoted</span></div>';
     /* short date in the table: "Sep 1", with the year only when it is not this year */
     var thisYr=new Date().getFullYear(),stale=[];
     function sd(iso){var d=new Date((iso||'')+'T12:00:00');if(isNaN(d))return '\u2014';return d.toLocaleDateString('en-US',d.getFullYear()===thisYr?{month:'short',day:'numeric'}:{month:'short',day:'numeric',year:'numeric'});}
+    /* WAVE3-L: when every row shares one quote date and one comparison
+       date, both go in the column headings and the rows carry none. */
+    var asOne=fresh.length>1&&fresh.every(function(p){return (p.as_of||data.updated)===(fresh[0].as_of||data.updated)&&p.prev_as_of===fresh[0].prev_as_of;})&&!!fresh[0].prev_as_of;
+    if(asOne)grid.classList.add('r7-fert3');else grid.classList.remove('r7-fert3');
+    var h=asOne
+      ?'<div class="r7-fh" aria-hidden="true"><span>Product</span><span>Per ton, '+esc(sd(fresh[0].as_of||data.updated))+'</span><span>Change since '+esc(sd(fresh[0].prev_as_of))+'</span></div>'
+      :'<div class="r7-fh" aria-hidden="true"><span>Product</span><span>Per ton</span><span>Change</span><span>Quoted</span></div>';
     h+=fresh.map(function(p){
       var chg=p.prev!=null?p.price-p.prev:null;
       var cls=chg==null?'nc':chg>0?'up':chg<0?'dn':'nc';
       var cs=chg==null?'':chg===0?'unch':(chg>0?'\u25b2 +$':'\u25bc \u2212$')+Math.abs(chg);
       /* wave1-E: the change names the quote it is measured from (prev_as_of,
          written by update_fertilizer.py); a quote over 30 days old says so. */
-      var since=(chg!=null&&p.prev_as_of)?'<small class="r7-fs">since '+esc(sd(p.prev_as_of))+'</small>':'';
+      var since=(!asOne&&chg!=null&&p.prev_as_of)?'<small class="r7-fs">since '+esc(sd(p.prev_as_of))+'</small>':'';
       var a30=age(p.as_of||data.updated);if(a30!=null&&a30>30)stale.push(p.name);
-      return '<div class="r7-fr"><span class="r7-fn">'+esc(p.name)+' <small>'+esc(p.symbol||'')+'</small></span><span class="r7-fp">$'+esc(String(p.price))+'</span><span class="r7-fc fert-chg-val '+cls+'">'+esc(cs)+since+'</span><span class="r7-fd">'+esc(sd(p.as_of||data.updated))+'</span></div>';
+      return '<div class="r7-fr"><span class="r7-fn">'+esc(p.name)+' <small>'+esc(p.symbol||'')+'</small></span><span class="r7-fp">$'+esc(String(p.price))+'</span><span class="r7-fc fert-chg-val '+cls+'">'+esc(cs)+since+'</span>'+(asOne?'':'<span class="r7-fd">'+esc(sd(p.as_of||data.updated))+'</span>')+'</div>';
     }).join('');
     if(!fresh.length)h+='<div class="r7-fnote">Not loaded yet.</div>';
-    if(stale.length)h+='<div class="r7-fnote">'+(stale.length===fresh.length?(stale.length===1?'This quote is':'All '+stale.length+' quotes above are'):esc(stale.join(', '))+(stale.length===1?' is':' are'))+' more than 30 days old.</div>';
+    if(stale.length)h+='<div class="r7-fnote">'+(stale.length===fresh.length?(stale.length===1?'This quote is over 30 days old.':'All quotes are over 30 days old.'):esc(stale.join(', '))+(stale.length===1?' is':' are')+' over 30 days old.')+'</div>';
     if(old.length){
       var ds={};old.forEach(function(p){ds[fmtDate(p.as_of||data.updated)]=1;});
       h+='<div class="r7-fnote">'+old.length+(old.length===1?' older quote':' older quotes')+' not shown ('+esc(old.map(function(p){return p.name;}).join(', '))+', last quoted '+esc(Object.keys(ds).join(', '))+').</div>';
@@ -2679,9 +2734,9 @@ gj('/data/markets.json').then(function(cached){
   var d=new Date();
   var TODAY_KEY='agsist-daily-'+d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
   window.TODAY_KEY=TODAY_KEY;
-  function dismissDaily(){try{localStorage.setItem(TODAY_KEY,'1');}catch(e){}var hero=document.getElementById('daily-hero');if(hero){hero.classList.add('dismissed');hero.setAttribute('aria-expanded','false');}document.documentElement.classList.add('daily-pre-dismissed');setTimeout(function(){window.scrollTo({top:0,behavior:'smooth'});var t=document.getElementById('daily-teaser');if(t&&t.focus)t.focus();},50);}
+  function dismissDaily(){try{localStorage.setItem(TODAY_KEY,'1');}catch(e){}var hero=document.getElementById('daily-hero');if(hero){hero.classList.add('dismissed');hero.setAttribute('aria-expanded','false');var _tz=document.getElementById('daily-teaser');if(_tz)_tz.setAttribute('aria-expanded','false');}document.documentElement.classList.add('daily-pre-dismissed');setTimeout(function(){window.scrollTo({top:0,behavior:'smooth'});var t=document.getElementById('daily-teaser');if(t&&t.focus)t.focus();},50);}
   window.dismissDaily=dismissDaily;
-  function expandDaily(){try{localStorage.removeItem(TODAY_KEY);}catch(e){}var hero=document.getElementById('daily-hero');if(hero){hero.classList.remove('dismissed');hero.setAttribute('aria-expanded','true');}document.documentElement.classList.remove('daily-pre-dismissed');var h=document.getElementById('daily-headline');if(h){if(!h.hasAttribute('tabindex'))h.setAttribute('tabindex','-1');try{h.focus({preventScroll:true});}catch(e){h.focus();}}}
+  function expandDaily(){try{localStorage.removeItem(TODAY_KEY);}catch(e){}var hero=document.getElementById('daily-hero');if(hero){hero.classList.remove('dismissed');hero.setAttribute('aria-expanded','true');var _tz=document.getElementById('daily-teaser');if(_tz)_tz.setAttribute('aria-expanded','true');}document.documentElement.classList.remove('daily-pre-dismissed');var h=document.getElementById('daily-headline');if(h){if(!h.hasAttribute('tabindex'))h.setAttribute('tabindex','-1');try{h.focus({preventScroll:true});}catch(e){h.focus();}}}
   window.expandDaily=expandDaily;
   try{if(localStorage.getItem(TODAY_KEY)==='1'){var hero=document.getElementById('daily-hero');if(hero)hero.classList.add('dismissed');}}catch(e){}
   window.addEventListener('resize',function(){var single=document.getElementById('ticker-items-single'),track=document.getElementById('ticker-track');if(!single||!track)return;var w=single.scrollWidth||single.offsetWidth;if(w<200)return;/* one speed: the same 20 px/s geo.js rebuildTickerLoop() uses */track.style.animationDuration=Math.max(20,Math.round(w/20))+'s';});
@@ -4392,14 +4447,29 @@ function spreadTxt(k,rowMon){
   if(sp.basis==='same-month')return t+' Chicago'+(sp.month&&sp.month!==rowMon?' '+sp.month:'');
   return t+' Chicago, both most active';
 }
+/* WAVE3-L: does the price file carry a quote for this key at all. Null
+   until the file has loaded, so nothing hides before we know. */
+function quoted(k){if(!D||!D.quotes)return null;var x=D.quotes[k]||D.quotes[k+'-nearby']||Q[k];return !!(x&&x.close!=null);}
+/* WAVE3-L: a row with no quote is hidden, and the hidden rows are named
+   once under their table, so the gap is still said. */
+function noQuoteNote(){
+  qa('#f-prices .r7-led').forEach(function(led){
+    var off=qa('.r7-row.r7-noq',led).map(function(r){var n=r.querySelector('.r7-n');return n?n.textContent:'';}).filter(Boolean);
+    var nt=led.nextElementSibling&&led.nextElementSibling.classList.contains('r7-noq-note')?led.nextElementSibling:null;
+    if(!off.length){if(nt)nt.parentNode.removeChild(nt);return;}
+    if(!nt){nt=document.createElement('p');nt.className='r7-noq-note';led.parentNode.insertBefore(nt,led.nextSibling);}
+    setT(nt,'No quote on file, not shown: '+off.join(', ')+'.');
+  });
+}
 function renderRow(row){
   var k=row.getAttribute('data-r7k'),c=CFG[k],q=Q[k]||(c&&c.own&&D&&D.quotes?D.quotes[k]:null);
+  var hasQ=quoted(k);if(hasQ!==null)row.classList.toggle('r7-noq',!hasQ);
   if(c&&c.own&&D&&(!q||q.close==null)){renderMissing(row,k);return;}
   if(!q||!c||q.close==null)return;
   if(c.own){row.removeAttribute('title');var pp0=row.querySelector('.pc-price');if(c.g)setQ(pp0,q.close);else setT(pp0,ownPrice(k,q));}
   var src=source(k)||{label:null,rq:q},rq=c.cm?q:src.rq;
   var st=spreadTxt(k,c.cm||src.label);
-  setT(row.querySelector('.r7-cm'),(c.cm||src.label||'Continuous')+(st?' \u00b7 '+st:''));
+  setT(row.querySelector('.r7-cm'),(c.cm||src.label||'Front month')+(st?' \u00b7 '+st:''));
   if(c.g){var pp=row.querySelector('.pc-price');if(pp&&pp.textContent===r2(q.close))setQ(pp,q.close);}
   var ch=chg(k,q),ce=row.querySelector('.r7-chg'),pe=row.querySelector('.r7-pct');
   if(ch){setT(ce,ch.t);ce.className='r7-chg '+ch.c;setT(pe,ch.p);pe.className='r7-pct '+ch.c;}
@@ -4430,13 +4500,16 @@ function renderTicker(){
     });
   });
   Object.keys(TICK).forEach(function(k){
-    if(!Q[k]&&!(CFG[k]&&CFG[k].own&&D&&D.quotes&&D.quotes[k]))return;if(!Q[k])Q[k]=D.quotes[k];var lb=TICK[k]+' '+(contractMonth(k)||'continuous');
+    if(!Q[k]&&!(CFG[k]&&CFG[k].own&&D&&D.quotes&&D.quotes[k]))return;if(!Q[k])Q[k]=D.quotes[k];var lb=TICK[k]+' '+(contractMonth(k)||'front month');
     qa('.prices-strip [data-sym="'+k+'"] .t-label').forEach(function(e){if(e.textContent!==lb){e.textContent=lb;ch=true;}});
   });
   [['corn-dec','Corn deferred','Corn '],['beans-nov','Soybeans deferred','Soybeans ']].forEach(function(d){
     var lb=cmByTicker(Q[d[0]]);if(!lb)return;
     qa('.prices-strip [data-sym="'+d[0]+'"] .t-label').forEach(function(e){if(e.textContent===d[1]){e.textContent=d[2]+lb;ch=true;}});
   });
+  /* WAVE3-L: a ticker tile with no quote is skipped, not shown as a dash. */
+  qa('.prices-strip .t-item[data-sym]').forEach(function(it){var h=quoted(it.getAttribute('data-sym'));if(h===null)return;
+    if(it.classList.contains('t-noq')===h){it.classList.toggle('t-noq',!h);ch=true;}});
   if(ch&&typeof window.rebuildTickerLoop==='function')window.rebuildTickerLoop();
 }
 function deferredChips(){
@@ -4445,7 +4518,7 @@ function deferredChips(){
     if(chip&&!chip.textContent.trim()){var lb=cmByTicker(Q[p[1]]);if(lb)chip.textContent=lb;}
   });
 }
-function renderAll(){qa('#f-prices .r7-row[data-r7k]').forEach(renderRow);renderTicker();deferredChips();dress();}
+function renderAll(){qa('#f-prices .r7-row[data-r7k]').forEach(renderRow);noQuoteNote();renderTicker();deferredChips();dress();}
 function schedule(){clearTimeout(timer);timer=setTimeout(renderAll,80);}
 /* Reader wording on the four key tiles and the ticker, applied after any
    writer. Every rewrite is idempotent, so the observers settle. */
@@ -4537,6 +4610,8 @@ function odds(){
 }
 function boot(){
   hook();observe();dress();odds();loadD();
+  /* WAVE3-L: the board script retried prices.json and got it. */
+  window.addEventListener('agsist:prices',function(e){var d=e&&e.detail;if(d&&d.quotes){D=d;schedule();}});
   setTimeout(function(){if(!have)fallback();},2500);
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
@@ -5188,7 +5263,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
     var hero=$('daily-hero'),tz=$('daily-teaser');if(!hero||!tz)return;
     function open(){
       if(!hero.classList.contains('is-brief'))return;
-      hero.classList.remove('is-brief');hero.setAttribute('aria-expanded','true');
+      hero.classList.remove('is-brief');hero.setAttribute('aria-expanded','true');var _tz2=document.getElementById('daily-teaser');if(_tz2)_tz2.setAttribute('aria-expanded','true');
       var b=hero.querySelector('[data-daily-more]');if(b)b.setAttribute('aria-expanded','true');
       var h=$('daily-headline');if(h){if(!h.hasAttribute('tabindex'))h.setAttribute('tabindex','-1');try{h.focus({preventScroll:true});}catch(e){}}
       if(window.gaEvent)window.gaEvent('daily_expand',{from:'teaser'});
@@ -5286,7 +5361,10 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
       var d=x.close-c.price,mon=contractOf(q,m[2]);
       var txt=m[4]==='c'?(d===0?'unchanged':(d>0?'+':MINUS)+cents(d)+'¢ per bu'):(Math.abs(d)<0.005?'unchanged':(d>0?'+':MINUS)+'$'+Math.abs(d).toFixed(2)+' per '+m[4]);
       var el=row.querySelector('.r7-cot-px');if(!el){el=document.createElement('div');el.className='r7-cot-px';row.appendChild(el);}
-      el.innerHTML='Price since '+rds+': <span class="'+(d>0?'r7-up':d<0?'r7-dn':'')+'">'+txt+'</span>'+(mon?' <span class="r7-dim">front month, now '+mon+'</span>':'');
+      /* WAVE3-L: cot.json carries no dated contract, so both ends are the
+         continuous front month and the span can cross a roll. Every row says
+         so the same way. */
+      el.innerHTML='Price since '+rds+': <span class="'+(d>0?'r7-up':d<0?'r7-dn':'')+'">'+txt+'</span> <span class="r7-dim">front month'+(mon?', now '+mon:'')+'</span>';
     });
   });
 

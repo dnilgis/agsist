@@ -1921,6 +1921,16 @@ html.ticker-paused .ticker-track{animation-play-state:paused!important}
 .idx1-basis-ends{display:flex;justify-content:space-between;gap:.5rem;font-family:'JetBrains Mono',monospace;font-size:.706rem;color:var(--text-dim);margin-top:-.15rem}
 #idx1-store-sell input[aria-invalid="true"],#pa-form input[aria-invalid="true"],.we-form [aria-invalid="true"]{border-color:var(--red)!important}
 #pa-status:focus,#pa-done:focus,.watch-elevator-status:focus,.we-done:focus{outline:2px solid var(--gold);outline-offset:2px}
+/* ===== WAVE3-L: no-quote rows, failure lines, ranking note, COT badges */
+#f-prices .r7-row.r7-noq{display:none!important}
+.r7-noq-note{font-size:.72rem;color:var(--text-muted);margin:.3rem 0 0}
+.prices-strip .t-item.t-noq,.prices-strip .t-item.t-noq+.t-sep{display:none!important}
+.prices-strip.px-off{display:none!important}
+#f-prices.px-off .price-cards-grid,#f-prices.px-off .r7-ledgers,#f-prices.px-off .pc-range{visibility:hidden}
+.px-fail,.cot-fail,.crop-fail{font-size:.82rem;color:var(--text-dim);margin:.4rem 0}
+.sig-asof{font-size:.72rem;color:var(--text-muted);margin:.4rem 0 0}
+.cot-badges{display:inline-flex;flex-wrap:wrap;gap:.3rem;justify-content:flex-end}
+:where(h3.idx1-sub-h){margin:0;font-size:inherit;font-weight:inherit;line-height:inherit}
 
 /* ===== THE LOOK (2026-10-03) ==========================================
    Sig: "lots of still monotone and hard to differentiate one thing from
