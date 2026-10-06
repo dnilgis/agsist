@@ -84,6 +84,18 @@ def container_span(body, start, tag):
     return len(body)
 
 
+# A link placed AFTER an answer's last full stop is a call to action ("See
+# Full Corn Futures", the 2026-10-06 homepage), not part of the answer.
+# A link inside a sentence is kept: its text is part of what the answer says.
+TRAILING_CTA = re.compile(r'([.!?)\u201d"]\s*)<a\b[^>]*>[^<]*</a>\s*$', re.S)
+
+
+def strip_cta(answer_html):
+    a = answer_html.rstrip()
+    a = re.sub(r"(</(?:div|p)>\s*)+$", "", a)         # the wrapper's own closing tags
+    return TRAILING_CTA.sub(r"\1", a)
+
+
 def visible_faq(html):
     """[(question, answer)] from the page's own FAQ container, in page order.
 
@@ -99,7 +111,7 @@ def visible_faq(html):
             if dm.start() in seen:          # nested faq-ish containers
                 continue
             seen.add(dm.start())
-            out.append((text_of(dm.group(1)), text_of(dm.group(2))))
+            out.append((text_of(dm.group(1)), text_of(strip_cta(dm.group(2)))))
     return out
 
 
@@ -127,14 +139,21 @@ def faq_json(pairs):
 
 
 def current_faq(html):
+    """-> (match, block, faq_node). The FAQPage is either the whole block or a
+    node in its @graph (the 2026-10-06 homepage keeps it in @graph; this used
+    to skip that page as having 'no FAQPage block to update')."""
     for m in LD_BLOCK.finditer(html):
         try:
             d = json.loads(m.group(1))
         except Exception:                                     # noqa: BLE001
             continue
         if isinstance(d, dict) and d.get("@type") == "FAQPage":
-            return m, d
-    return None, None
+            return m, d, d
+        if isinstance(d, dict) and isinstance(d.get("@graph"), list):
+            for node in d["@graph"]:
+                if isinstance(node, dict) and node.get("@type") == "FAQPage":
+                    return m, d, node
+    return None, None, None
 
 
 def rebuild(html):
@@ -145,11 +164,11 @@ def rebuild(html):
     bad = problems(pairs)
     if bad:
         return None, "refused: " + "; ".join(bad[:3])
-    m, existing = current_faq(html)
+    m, block, existing = current_faq(html)
     want = faq_json(pairs)
     if m is None:
         return None, f"{len(pairs)} visible questions but no FAQPage block to update"
-    if existing == want:
+    if existing.get("mainEntity") == want["mainEntity"]:
         return None, f"already in sync ({len(pairs)} questions)"
     have_q = [q.get("name", "") for q in existing.get("mainEntity", [])]
     want_q = [q["name"] for q in want["mainEntity"]]
@@ -160,7 +179,12 @@ def rebuild(html):
         note += f" · dropped {gone[0][:44]!r}" + (f" +{len(gone)-1} more" if len(gone) > 1 else "")
     if added:
         note += f" · added {added[0][:44]!r}" + (f" +{len(added)-1} more" if len(added) > 1 else "")
-    new = html[:m.start(1)] + json.dumps(want, ensure_ascii=False) + html[m.end(1):]
+    if block is existing:                    # a standalone FAQPage block
+        out = want
+    else:                                    # one node of an @graph: keep its siblings and keys
+        existing["mainEntity"] = want["mainEntity"]
+        out = block
+    new = html[:m.start(1)] + json.dumps(out, ensure_ascii=False) + html[m.end(1):]
     return new, note
 
 

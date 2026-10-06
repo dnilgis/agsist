@@ -514,18 +514,17 @@ def _index_for_prev(prev_doc):
 
 # ---------------------------------------------------------------- page parts
 def static_chrome(root="."):
-    """The crawlable static header/footer index.html carries (loader.js swaps
-    them for the live nav). Empty placeholders if index.html can't be read."""
-    try:
-        with open(os.path.join(root, "index.html"), encoding="utf-8") as f:
-            src = f.read()
-        hm = re.search(r'<div id="site-header">.*?</header>\s*</div>', src, re.S)
-        fm = re.search(r'<div id="site-footer">.*?</nav>\s*</div>', src, re.S)
-        return (hm.group(0) if hm else '<div id="site-header"></div>',
-                fm.group(0) if fm else '<div id="site-footer"></div>')
-    except OSError:
-        return '<div id="site-header"></div>', '<div id="site-footer"></div>'
+    """The crawlable static header/footer every root page carries, from the
+    same source they use (components/*-fallback.html via
+    scripts/inject_static_nav.py), inside the placeholders loader.js swaps.
 
+    This used to cut the chrome out of index.html with a regex; the new
+    homepage (2026-10-06) puts marker comments where the regex expected
+    '</header></div>', the match failed silently, and all 29 pages shipped
+    with empty placeholders -- no crawlable nav."""
+    import inject_static_nav as NAV
+    return (f'<div id="site-header">{NAV.block("header")}</div>',
+            f'<div id="site-footer">{NAV.block("footer")}</div>')
 
 CSS = """
     .bs-wrap{max-width:1060px;margin:0 auto;padding:0 16px}
