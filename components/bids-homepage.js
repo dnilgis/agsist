@@ -49,13 +49,17 @@
   }
   /* WAVE1-A: sorghum and oats bands. Sorghum quoted per hundredweight would
      read about 1.79x its per-bushel price; the network's own rows run $3.48
-     to $5.67 a bushel (304 places, 2026-10-03), so the band stops at $7. */
-  var PPU_BAND = { corn:[2,12], soybeans:[6,32], wheat:[3,20], sorghum:[2,7], oats:[1,8] };
+     to $5.67 a bushel (304 places, 2026-10-03). WAVE3-I: the band stops at
+     $6, below the $6.21 that the lowest of those rows would read per cwt,
+     and a row that names cwt is never read as a bushel price. */
+  var PPU_BAND = { corn:[2,12], soybeans:[6,32], wheat:[3,20], sorghum:[2,6], oats:[1,8] };
+  var PER_CWT = /\bcwt\b|hundredweight/i;
   function ppu(raw){ return raw == null ? null : (raw > 30 ? raw / 100 : raw); }
   // A row outside its own commodity's band is a unit mismatch, not a price.
   function plausible(b){
     var band = PPU_BAND[b.category];
     if(!band) return true;
+    if(PER_CWT.test(String(b.commodity || ''))) return false;
     var p = ppu(b.cashPrice);
     return p != null && p >= band[0] && p <= band[1];
   }
@@ -121,7 +125,7 @@
      symbol the licensed feed sends (ZCZ26 -> Dec). The elevator network
      rows carry no symbol, so they print no month rather than a guessed one. */
   var FUT_MON = {F:'Jan',G:'Feb',H:'Mar',J:'Apr',K:'May',M:'Jun',N:'Jul',Q:'Aug',U:'Sep',V:'Oct',X:'Nov',Z:'Dec'};
-  var WHEAT_EXCH = {KE:'KC', ZW:'Chi', MW:'MGEX'};
+  var WHEAT_EXCH = {KE:'KC', ZW:'Chicago', MW:'MGEX'};
   function refMonth(sym){
     var m = /^([A-Z]{1,3})([FGHJKMNQUVXZ])(\d{2})$/.exec(String(sym || '').trim().toUpperCase());
     if(!m) return '';
@@ -274,12 +278,13 @@
     var d = new Date(ds + 'T12:00:00Z'); if(isNaN(d)) return ds;
     return ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][d.getUTCDay()] + ' ' + MON[d.getUTCMonth()] + ' ' + d.getUTCDate();
   }
-  /* The board's last change is before the trading day ahead of the latest
-     trading day: on a Saturday, a board last changed Wednesday is stale and
-     one changed Thursday is not. */
+  /* WAVE3-I: the board has not posted on the latest finished trading day.
+     On a weekend or a Monday that is Friday, so a board last changed
+     Thursday is flagged on Saturday. On a weekday it is yesterday, so a
+     board that has not posted yet this morning is not flagged. */
   function staleSince(iso){
     var pd = ctDate(iso); if(!pd) return '';
-    var cut = prevWeekday(lastWeekday(ctToday()));
+    var cut = prevWeekday(ctToday());
     return pd < cut ? pd : '';
   }
 
@@ -341,11 +346,12 @@
     return out;
   }
 
-  function renderElevatorHTML(elev, cropPick){
+  function renderElevatorHTML(elev, cropPick, bothFeeds){
     var towns = (elev.towns && elev.towns.length > 1) ? elev.towns.join(', ') : (elev.city || '');
     var cityState = towns + (towns && elev.state ? ', ' : '') + (elev.state||'');
+    /* WAVE3-I: "straight-line" is said once, in the How-to-read fold. */
     var distStr = elev.distance != null
-      ? elev.distance.toFixed(0) + ' mi ' + (elev.fromNetwork ? 'straight-line' : 'from your ZIP')
+      ? elev.distance.toFixed(0) + ' mi' + (elev.fromNetwork ? '' : ' from your ZIP')
       : '';
     var ck = contactKey(elev.facility, elev.city, elev.state);
 
@@ -360,7 +366,9 @@
     var sub = [];
     if(cityState) sub.push(escHtml(cityState));
     if(distStr) sub.push('<span class="r7-mi" style="font-family:\'JetBrains Mono\',monospace">' + distStr + '</span>');
-    if(elev.fromNetwork) sub.push('<span style="color:var(--green)">direct from elevator</span>');
+    /* WAVE3-I: the source tag only tells two feeds apart, so it prints only
+       when the card holds rows from both. */
+    if(elev.fromNetwork && bothFeeds) sub.push('<span style="color:var(--green)">direct from elevator</span>');
     if(sub.length) html += '<div style="font-size:.75rem;color:var(--text-muted)">' + sub.join(' &middot; ') + '</div>';
     if(elev.towns && elev.towns.length > 1){
       html += '<div style="font-size:.75rem;color:var(--text-muted)">One location, filed under ' + elev.towns.length + ' town names. A row that differs by town says which.</div>';
@@ -532,9 +540,16 @@
   function refCropFor(b, cat){
     if(cat === 'corn' || cat === 'soybeans' || cat === 'oats') return cat;
     if(cat === 'sorghum') return 'corn';
-    if(cat === 'wheat'){ var wc = wheatClass(b); return wc === 'HRW' ? 'kcwheat' : (wc === '' || wc === 'SRW') ? 'wheat' : ''; }
+    if(cat === 'wheat'){
+      var wc = wheatClass(b);
+      /* WAVE3-I: unlabelled wheat in the hard red winter states is checked
+         against KC, not Chicago. */
+      if(wc === '' && HRW_STATES.indexOf(String(b.state || '').trim().toUpperCase()) >= 0) return 'kcwheat';
+      return wc === 'HRW' ? 'kcwheat' : (wc === '' || wc === 'SRW') ? 'wheat' : '';
+    }
     return '';
   }
+  var HRW_STATES = ['KS','OK','NE','CO','TX','SD','MT'];
   var REF_TOL = 0.08;
   var MON_LC = ['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'];
   function refEndKey(b, cat){
@@ -551,7 +566,7 @@
     for(var i = 0; i < cyc.length; i++){ if(cyc[i] >= mo){ pick = cyc[i]; break; } }
     if(pick == null){ pick = cyc[0]; y += 1; }
     var yy = String(y).slice(-2);
-    return { key: REF_KEY[cat] + '-' + MON_LC[pick - 1] + yy, label: MON[pick - 1] + ' \'' + yy + ' ' + (cat === 'soybeans' ? 'soybeans' : cat) };
+    return { key: REF_KEY[cat] + '-' + MON_LC[pick - 1] + yy, label: MON[pick - 1] + ' \'' + yy + ' ' + (cat === 'soybeans' ? 'soybeans' : cat === 'wheat' ? 'Chicago wheat' : cat) };
   }
   /* r7-bids 7b: THE ELEVATOR'S OWN CARRY. merged-index.json carries, per
      place and crop, `now` (nearest open delivery) and `best` (its top cash
@@ -627,7 +642,7 @@
         var fut = Object.keys(used).map(function(l){ return l + ' $' + used[l].toFixed(2); }).join(', ');
         var ft = ctTime(pd && pd.fetched), bt = ctTime(oldest);
         note.textContent = 'Basis month shown where cash minus basis lands within 8\u00a2 of that contract.'
-          + (ft ? ' Futures ' + fut + ' at ' + ft + (bt ? ', read at a different time than the boards, so the two will not match exactly.' : '.') : '');
+          + (ft ? ' Futures ' + fut + ' at ' + ft + (bt ? ', read at a different time than the boards.' : '.') : '');
         note.hidden = false;
       }
     });
@@ -1038,7 +1053,10 @@
           var prev = null;
           if(Array.isArray(hist) && on){ for(var h = 0; h < hist.length; h++){ if(hist[h] && hist[h][0] < on && hist[h][1] != null) prev = hist[h]; } }
           if(!prev || !isFinite(cash)){ el.textContent = '—'; el.title = 'No price on record for this delivery period on an earlier trading day'; continue; }
-          var d = (cash - prev[1]) * 100, gap = prev[0] < prevWeekday(on);
+          /* WAVE3-I: the earlier price's day is named whenever this is not
+             a move into the latest trading day: a gap in the record, or a
+             board that has not posted on the latest trading day. */
+          var d = (cash - prev[1]) * 100, gap = prev[0] < prevWeekday(on) || on !== lastWeekday(ctToday());
           var tail = gap ? ' <span style="font-size:.7rem">' + escHtml(dayName(prev[0]).slice(0, 3)) + '</span>' : '';
           el.title = 'Change from this board’s last price on ' + dayName(prev[0]) + ', $' + (+prev[1]).toFixed(2);
           if(Math.abs(d) < 0.125){ el.innerHTML = 'unch' + tail; el.style.color = 'var(--text-dim)'; }
@@ -1083,7 +1101,8 @@
       Promise.all([own, contactShard(el.getAttribute('data-st'))]).then(function(x){
         var c = x[1] && x[1][el.getAttribute('data-ck')];
         if(call && !call.innerHTML) call.innerHTML = callLink(x[0]) || (c ? callLink(c.phone) : '');
-        if(type && c && TYPE_WORD[c.type]){ type.textContent = TYPE_WORD[c.type]; type.title = 'Facility type as the elevator directory files it'; }
+        /* WAVE3-I: "Elevator" is what every row is unless it says otherwise. */
+        if(type && c && TYPE_WORD[c.type] && TYPE_WORD[c.type] !== 'Elevator'){ type.textContent = TYPE_WORD[c.type]; type.title = 'Facility type as the elevator directory files it'; }
       });
     });
   }
@@ -1107,7 +1126,7 @@
   }
   function normalLine(stName, cropTxt, s){
     var head = '<strong style="color:var(--text-dim)">' + escHtml(stName + ' ' + cropTxt) + ':</strong> ';
-    if(!s) return head + '— USDA’s weekly state basis series does not cover it, and this site’s own elevator record starts June 2026, too short for a same-week normal.';
+    if(!s) return head + '— no USDA state series here, and our elevator record (from June 2026) is too short.';
     var age = (Date.now() - Date.parse(s.date + 'T12:00:00Z')) / 864e5;
     if(!(age <= NORMAL_MAX_AGE_DAYS)) return head + '— USDA’s latest week for this series is ' + escHtml(s.date) + ', too old to compare.';
     if(s.avg5_n == null) return head + '— the number of years behind USDA’s same-week average is not in the file yet, so no comparison is printed.';
@@ -1192,17 +1211,21 @@
     // Column labels
     html += '<div style="display:grid;grid-template-columns:minmax(0,1fr) auto auto auto;gap:.1rem .55rem;padding:0 0 .2rem;'
       + 'font-family:\'JetBrains Mono\',monospace;font-size:.75rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted)">'
-      + '<span>Crop</span><span style="text-align:right">Cash</span><span style="text-align:right;min-width:52px">Chg</span><span style="text-align:right;min-width:48px">Basis</span></div>';
+      + '<span>Crop</span><span style="text-align:right">Cash</span><span style="text-align:right;min-width:52px">Cash chg</span><span style="text-align:right;min-width:48px">Basis</span></div>';
 
-    top.forEach(function(elev){ html += renderElevatorHTML(elev, crop); });
+    var anyNet = top.some(function(e){ return e.fromNetwork; }), anyLic = top.some(function(e){ return !e.fromNetwork; });
+    top.forEach(function(elev){ html += renderElevatorHTML(elev, crop, anyNet && anyLic); });
 
     /* Basis vs normal prints here when a state series answers; the notes on
        how to read the card sit behind one fold (2026-10-03: three footnote
        paragraphs made the phone card a page long). */
     html += '<div class="bh-normal" hidden style="font-size:.75rem;color:var(--text-muted);padding:.45rem 0 0"></div>';
-    html += '<details class="bh-how" style="font-size:.72rem;color:var(--text-muted);padding:.45rem 0 0"><summary style="cursor:pointer;min-height:32px;display:flex;align-items:center;color:var(--text-dim);font-weight:600">How to read these bids</summary>'
+    /* WAVE3-I: a redraw (crop chip, raise picker) keeps the fold as the reader left it. */
+    var howWas = area.querySelector('.bh-how');
+    html += '<details class="bh-how"' + (howWas && howWas.open ? ' open' : '') + ' style="font-size:.72rem;color:var(--text-muted);padding:.45rem 0 0"><summary style="cursor:pointer;min-height:32px;display:flex;align-items:center;color:var(--text-dim);font-weight:600">How to read these bids</summary>'
       + '<div class="r7-ref-note" hidden style="padding:.3rem 0 0"></div>'
-      + '<div class="bh-legend" style="padding:.3rem 0 0">Chg: cash now against the board’s last price on the trading day before its latest change, same delivery period. Elevator network rows only; a dash means no earlier price is on record.</div>'
+      + '<div class="bh-legend" style="padding:.3rem 0 0">Cash chg: change since this elevator\u2019s previous posted price, same delivery month. Dash: no earlier price on record. A day name after the change is the day of that earlier price.</div>'
+      + (anyNet ? '<div class="bh-miles" style="padding:.3rem 0 0">Miles are straight-line.' + (anyLic ? ' Miles marked \u201cfrom your ZIP\u201d are the second feed\u2019s own.' : '') + '</div>' : '')
       + '<div class="bh-normal-how" hidden style="padding:.3rem 0 0"></div></details>';
 
     // Footer link
@@ -1240,7 +1263,9 @@
         ctx.crop = btn.getAttribute('data-crop');
         try{ window.localStorage.setItem(CROP_KEY, ctx.crop); }catch(e){}
         drawCard(ctx);
-        var f = area.querySelector('.bh-crop[data-crop="' + ctx.crop + '"]'); if(f) f.focus();
+        /* WAVE3-I: no scroll. The raise picker clicks this chip from the top
+           of the page, and focus() alone scrolled the reader down to here. */
+        var f = area.querySelector('.bh-crop[data-crop="' + ctx.crop + '"]'); if(f){ try{ f.focus({ preventScroll: true }); }catch(e){ f.focus(); } }
       });
     });
     Array.prototype.forEach.call(area.querySelectorAll('.bh-retry'), function(b){ b.addEventListener('click', retryLoad); });
@@ -1288,7 +1313,7 @@
 
     // Show loading skeleton, unless a degraded card is already up (a quiet redraw).
     if(!degraded || !area.querySelector('.bh-elev')){
-      area.innerHTML = '<div aria-label="Loading cash bids">'
+      area.innerHTML = '<div role="status"><span style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap">Loading cash bids</span>'
         + '<div style="height:36px;background:var(--surface2);border-radius:6px;margin-bottom:.4rem;opacity:.4"></div>'
         + '<div style="height:36px;background:var(--surface2);border-radius:6px;margin-bottom:.4rem;opacity:.35"></div>'
         + '<div style="height:36px;background:var(--surface2);border-radius:6px;opacity:.3"></div>'
@@ -1350,7 +1375,10 @@
       .then(function(d){
         if(d.results && d.results.length){
           var r = d.results[0];
-          var label = r.name + (r.admin1 ? ', ' + r.admin1.substring(0,2) : '');
+          /* WAVE3-I: the code from the full name ("Minnesota" is MN, not MI). */
+          var stc = '', an = String(r.admin1 || '').trim().toLowerCase();
+          Object.keys(STATE_NAME).forEach(function(k){ if(STATE_NAME[k].toLowerCase() === an) stc = k; });
+          var label = r.name + (stc ? ', ' + stc : '');
           loadHomepageBids(r.latitude, r.longitude, label, zip);
         } else {
           loadHomepageBids(null, null, 'ZIP ' + zip, zip);
