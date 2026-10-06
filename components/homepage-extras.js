@@ -390,6 +390,8 @@
       var cents = pts.map(function(p){ return p.cents; });
       var lo = Math.min.apply(null, cents), hi = Math.max.apply(null, cents);
       var rawLo = lo, rawHi = hi;   // printed; lo/hi below may be widened for drawing only
+      /* Printed with a true minus sign (U+2212), as the rest of the page writes basis. */
+      var sc = function(c){ return (c < 0 ? '\u2212' : '') + Math.abs(c); };
       if(lo === hi){ lo -= 1; hi += 1; }
       var w = 300, h = 70, pad = 4;
       /* x by date, so a three-month gap looks like one. */
@@ -410,14 +412,14 @@
       svgHtml += '<polyline points="' + poly + '" fill="none" stroke="' + lineColor + '" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>';
       svg.innerHTML = svgHtml;
       svg.setAttribute('role', 'img');
-      svg.setAttribute('aria-label', 'Basis at this elevator ranged from ' + rawLo + ' to ' + rawHi + ' cents over the last ' + pts.length + ' logged changes, most recently ' + last + ' cents.');
+      svg.setAttribute('aria-label', 'Basis at this elevator ranged from ' + sc(rawLo) + ' to ' + sc(rawHi) + ' cents over the last ' + pts.length + ' logged changes, most recently ' + sc(last) + ' cents.');
 
       var firstDate = pts[0].date;
       var monShort = /^[A-Z]{3}\d{2}$/.test(bestMon) ? bestMon.charAt(0) + bestMon.slice(1, 3).toLowerCase() + ' \u2019' + bestMon.slice(3) : '';
       var monTxt = monShort ? monShort + ' delivery' : 'one delivery month';
       /* WAVE3-H: say which month the chart is, and when it is not the bid's
          month, say that plainly with the bid's month named. */
-      fine.textContent = pts.length + ' basis change' + (pts.length === 1 ? '' : 's') + ' logged at this elevator for ' + monTxt + ', ' + firstDate + ' through ' + pts[pts.length - 1].date + ', ' + rawLo + '\u00a2 to ' + rawHi + '\u00a2.'
+      fine.textContent = pts.length + ' basis change' + (pts.length === 1 ? '' : 's') + ' logged at this elevator for ' + monTxt + ', ' + firstDate + ' through ' + pts[pts.length - 1].date + ', ' + sc(rawLo) + '\u00a2 to ' + sc(rawHi) + '\u00a2.'
         + (bestMatch ? '' : wantMon && sum.monthLabel ? ' The bid above is for ' + sum.monthLabel + '; no changes are logged for that month here.' : ' Not the month quoted above.');
       var ttl = card.querySelector('.idx1-extras-title');
       if(ttl && ttl.lastChild && ttl.lastChild.nodeType === 3) ttl.lastChild.textContent = ' Basis history at this elevator, ' + wantCrop + (monShort ? ', ' + monTxt : '');

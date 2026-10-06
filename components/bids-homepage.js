@@ -383,9 +383,17 @@
       fr.push('Quotes read ' + ctTime(feedTimes.licensed) + ', no posting time sent');
     }
     var st = elev.fromNetwork ? staleSince(elev.pricedAt) : '';
+    /* 2026-10-06: a stale board says it once. The posted time becomes the
+       warning ("Not updated since Oct 1, 1:31 PM CT") instead of a posted
+       line followed by a second "Not updated since Thu Oct 1". */
+    var staleTxt = '';
+    if(st){
+      if(fr.length && fr[0].indexOf('Posted ') === 0) staleTxt = 'Not updated since ' + fr.shift().slice(7);
+      else staleTxt = 'Not updated since ' + dayName(st);
+    }
     html += '<div class="bh-fresh" style="display:flex;flex-wrap:wrap;align-items:center;column-gap:.6rem;font-family:\'JetBrains Mono\',monospace;font-size:.72rem;color:var(--text-muted)">';
-    if(fr.length) html += '<span>' + escHtml(fr.join(' · ')) + '</span>';
-    if(st) html += '<span class="bh-stale" style="color:var(--orange);font-weight:700">Not updated since ' + escHtml(dayName(st)) + '</span>';
+    if(staleTxt) html += '<span class="bh-stale" style="color:var(--orange);font-weight:700">' + escHtml(staleTxt) + (fr.length ? '</span><span>' + escHtml(fr.join(' · ')) + '</span>' : '</span>');
+    else if(fr.length) html += '<span>' + escHtml(fr.join(' · ')) + '</span>';
     html += '<span class="bh-call">' + callLink(elev.phone) + '</span>';
     html += '</div>';
     html += '</div>';
@@ -1131,8 +1139,18 @@
       .then(function(j){ if(!j) transportP = null; return j; });
     return transportP;
   }
-  function normalLine(stName, cropTxt, s){
+  /* WAVE5-A: scripts/fetch_transport.py rejects a USDA week outside a
+     plausible basis band (+/- $5/bu) and lists it in j.rejected. The line says
+     so, so a missing week or a thinner average is not silent. */
+  function rejectedNote(j, key){
+    var r = ((j && j.rejected) || []).filter(function(x){ return x && x.series === key; });
+    if(!r.length) return '';
+    return ' USDA posted ' + (r.length === 1 ? 'one week' : r.length + ' weeks') + ' (' + r.map(function(x){ return escHtml(x.date); }).join(', ')
+      + ') outside a plausible basis band; ' + (r.length === 1 ? 'it is' : 'they are') + ' left out of the history and the average.';
+  }
+  function normalLine(stName, cropTxt, s, rej){
     var head = '<strong style="color:var(--text-dim)">' + escHtml(stName + ' ' + cropTxt) + ':</strong> ';
+    if(rej && s) return normalLine(stName, cropTxt, s) + rej;
     if(!s) return head + '— no USDA state series here, and our elevator record (from June 2026) is too short.';
     var age = (Date.now() - Date.parse(s.date + 'T12:00:00Z')) / 864e5;
     if(!(age <= NORMAL_MAX_AGE_DAYS)) return head + '— USDA’s latest week for this series is ' + escHtml(s.date) + ', too old to compare.';
@@ -1155,7 +1173,7 @@
         var cropTxt = c === 'corn' ? 'corn' : c === 'soybeans' ? 'soybeans' : c + ' wheat';
         var sr = ser[nm + '|' + stName + '|Elevator Bid'];
         if(!sr){ none.push(cropTxt); return; }
-        lines.push('<div style="margin-top:.2rem">' + normalLine(stName, cropTxt, sr) + '</div>');
+        lines.push('<div style="margin-top:.2rem">' + normalLine(stName, cropTxt, sr, rejectedNote(j, nm + '|' + stName + '|Elevator Bid')) + '</div>');
       });
       /* With no comparison to print, the reason goes inside the fold. */
       var target = (j && lines.length) || !how ? box : how;

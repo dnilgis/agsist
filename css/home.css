@@ -1820,6 +1820,10 @@ details.wr>summary,details.hbz>summary{align-items:center!important}
 .s7-ir-k small{font-weight:500;color:var(--text-muted)}
 .s7-ir-v{font-family:'JetBrains Mono',monospace;font-size:1rem;font-weight:700;line-height:1.35;color:var(--text);min-width:0;max-width:100%}
 .s7-cv .s7-ir-d{flex-basis:100%;font:500 .706rem/1.45 Inter,system-ui,sans-serif;color:var(--text-dim);min-width:0;overflow-wrap:anywhere}
+/* WAVE5-A: county windows (Texas corn has three) as sub-rows of one crop */
+/* a long status ("RMA has not released a harvest price yet") wraps instead of running into the next column */
+.s7-irs .s7-ir-v{white-space:normal}
+.s7-iw{display:flex;flex-wrap:wrap;flex-basis:100%;column-gap:10px;row-gap:1px;align-items:baseline;margin-top:4px;padding:2px 0 2px 10px;border-left:2px solid var(--hair,var(--border));min-width:0}
 /* ===== WAVE1-C: national markets (wheat classes, southern crops, COT rows, crop progress, export pace) */
 #f-prices .r7-row[data-r7k="kcwheat"] .r7-cm,#f-prices .r7-row[data-r7k="mplswheat"] .r7-cm,
 #f-prices .r7-row[data-r7k="cotton"] .r7-cm,#f-prices .r7-row[data-r7k="rice"] .r7-cm{white-space:normal}
@@ -1931,6 +1935,10 @@ html.ticker-paused .ticker-track{animation-play-state:paused!important}
 .sig-asof{font-size:.72rem;color:var(--text-muted);margin:.4rem 0 0}
 .cot-badges{display:inline-flex;flex-wrap:wrap;gap:.3rem;justify-content:flex-end}
 :where(h3.idx1-sub-h){margin:0;font-size:inherit;font-weight:inherit;line-height:inherit}
+/* 2026-10-06: labels that were divs and are now h3s. styles.css gives every h3 the
+   display face and -0.01em tracking; these keep the inherited face they had as
+   divs. Specificity 0,0,1: any class rule on them still wins. */
+h3:where(.pc-section-lbl,.idx1-extras-title,.s7-ck){font-family:inherit;letter-spacing:inherit}
 
 /* ===== WAVE3-M: header opacity, daily briefing failure state */
 /* The sticky nav sits under the sticky preview flag; its .92 alpha let the
@@ -1944,6 +1952,20 @@ html.ticker-paused .ticker-track{animation-play-state:paused!important}
 /* Reduced motion: the ticker does not move, so let it scroll by hand instead of clipping. */
 @media (prefers-reduced-motion:reduce){.prices-strip .ticker-track-wrap{overflow-x:auto!important}}
 #daily-hero.daily-failed .daily-lead a{color:var(--gold);text-decoration:underline}
+
+/* ===== 2026-10-06: homepage sponsor strip (#idx1-sponsor). The site's sponsor
+   ribbon (.ag-sponsor-ribbon, components/styles.css), placed under the briefing
+   teaser at the page's 1400px measure. Hidden unless a paid sponsor is live. */
+.idx1-sponsor-wrap{max-width:1400px;margin:0 auto;padding:6px 16px 10px}
+.idx1-sponsor-wrap[hidden]{display:none}
+.idx1-sponsor.ag-sponsor-ribbon{display:flex;align-items:center;flex-wrap:wrap;gap:6px 12px;margin:0}
+.idx1-sponsor .ag-sponsor-tag{margin-right:0}
+.idx1-sp-logo{flex:none;display:inline-flex;align-items:center;justify-content:center;height:32px;padding:2px 6px;background:#fff;border-radius:6px}
+.idx1-sp-logo img{display:block;max-height:28px;width:auto;max-width:72px}
+.idx1-sp-txt{flex:1 1 220px;min-width:0;color:var(--text-dim)}
+.idx1-sp-txt strong{color:var(--text);font-weight:700}
+.idx1-sp-cta{flex:none;display:inline-flex;align-items:center;min-height:44px;text-decoration:none}
+.idx1-sp-cta:hover,.idx1-sp-cta:focus-visible{text-decoration:underline}
 
 /* ===== THE LOOK (2026-10-03) ==========================================
    Sig: "lots of still monotone and hard to differentiate one thing from
