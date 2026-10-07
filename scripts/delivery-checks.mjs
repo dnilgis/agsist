@@ -43,7 +43,7 @@ const grab = (name) => {
   for(let k=j;k<h.length;k++){ if(h[k]==="{")d++; else if(h[k]==="}"){d--; if(!d){j=k;break;}} }
   return h.slice(i,j+1);
 };
-const src = ["delKey","delLabel","harvestYear","harvestKeys","isHarvestSeason","inDelivery"].map(grab).join("\n")
+const src = ["delKey","delLabel","harvestYear","harvestKeys","isHarvestSeason","inDelivery","windowMonths"].map(grab).join("\n")
   + "\nvar MONTHNAME=" + JSON.stringify(["January","February","March","April","May","June","July","August","September","October","November","December"]) + ";";
 const mk = new Function("currentDelivery", src + "; return {delKey,delLabel,harvestYear,harvestKeys,isHarvestSeason,inDelivery};");
 let F = mk("all");

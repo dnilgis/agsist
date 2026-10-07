@@ -21,7 +21,7 @@ const NAMES = ["classify", "netGet", "netZipCoord", "netDistanceMi", "netPlacesW
                /* The helpers netRowsFrom and netKey call. Missing, every row
                   threw a ReferenceError here that the page never throws (the
                   same gap as network-checks.mjs). */
-               "usScope", "netNormOperator", "netPlain", "netIsTwin"];
+               "usScope", "netNormOperator", "netPlain", "netIsTwin", "netOlder"];
 /* Their tables, read off the page so a changed list is a changed test. */
 const pageVar = (name) => { const m = new RegExp(`var ${name}=([^;]+);`).exec(PAGE);
   if (!m) throw new Error("missing var " + name); return `var ${name}=${m[1]};\n`; };

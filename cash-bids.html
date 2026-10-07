@@ -1017,6 +1017,7 @@ button,a,[role="button"],input,select{touch-action:manipulation}
 <script src="/components/cb-glance.js?v=1"></script>
 <link rel="stylesheet" href="/components/cb-alerts.css?v=1">
 <script src="/components/cb-alerts.js?v=1" defer></script>
+<script src="/components/cb-rank.js?v=1"></script>
 <script>
 (function(){
 'use strict';
@@ -1703,6 +1704,11 @@ function bidPeriodPast(b){
      closed month be ranked as the nearest one. Where the feed says false the
      page checks for itself. */
   if(b&&b.periodPast===true)return true;
+  /* A TWO-MONTH WINDOW HAS GONE WHEN ITS LAST MONTH HAS, not its first.
+     "Sep-Oct 26" is still open in October; keyed on September it read as
+     closed, and getNearestBid() no longer ranks a closed month at all. */
+  var pe=/^\d{4}-\d{2}\/(\d{4}-\d{2})$/.exec(String(b&&b.deliveryPeriod||''));
+  if(pe&&!delKey(b))return pe[1]<monthFloorKey();
   var k=delKey(b)||periodFallbackKey(b);
   return k?(k<monthFloorKey()):false;
 }
@@ -1766,8 +1772,15 @@ function preferPlain(list,bidOf){
   var plain=list.filter(function(x){return !isSpecialGrade(bidOf(x));});
   return plain.length?plain:list;
 }
-function getNearestBid(elev,comm){
-  var bids=(elev.commodities[comm]||[]).filter(function(b){return b.cashPrice!=null&&!notPerBushel(b);});
+/* A MONTH THAT HAS GONE IS NOT THE NEAREST BID -- IT IS NO BID. deliveryRank()
+   only sorted it last, so an elevator whose one soybean row was a closed
+   September contract still offered it as its nearest: at ZIP 64770 the banner
+   compared ADM against Montrose Grain's expired September $12.32. Such rows are
+   left out here and an elevator with nothing else has no nearest bid.
+   `keep`, when given, narrows further (ranking: one wheat class, no board
+   unread for over a day). */
+function getNearestBid(elev,comm,keep){
+  var bids=(elev.commodities[comm]||[]).filter(function(b){return b.cashPrice!=null&&!notPerBushel(b)&&!bidPeriodPast(b)&&(!keep||keep(b));});
   if(!bids.length)return null;
   var usual=bids.filter(function(b){return !basisUnusual(b);});
   if(usual.length)bids=usual;               /* an unusual basis only when nothing else */
@@ -1880,7 +1893,9 @@ function syncDeliveryOptions(bids){
      that has already gone, which nobody can haul into. */
   var floorKey=monthFloorKey();
   var seen={},keys=[];
-  (bids||[]).forEach(function(b){var k=delKey(b);if(k&&k>=floorKey&&!seen[k]){seen[k]=1;keys.push(k);}});
+  (bids||[]).forEach(function(b){var k=delKey(b);if(k&&k>=floorKey&&!seen[k]){seen[k]=1;keys.push(k);}
+    /* each month of a two-month window ("Oct-Nov 26") is a month on offer */
+    if(!k)windowMonths(b).forEach(function(w){if(w>=floorKey&&!seen[w]){seen[w]=1;keys.push(w);}});});
   keys.sort();
   var hk=harvestKeys(keys);
   /* AND OFFERED WHEN A SEASONAL LABEL IS THE ONLY THING THAT CAN ANSWER IT.
@@ -1924,13 +1939,20 @@ function inDelivery(b){
      said which. So a chosen MONTH still drops it -- inventing a month to keep
      a card on the page is the same sin delKey() refuses -- and renderBids()
      says out loud how many were withheld rather than letting them vanish. */
+  /* A TWO-MONTH WINDOW NAMES BOTH ITS MONTHS. "Oct-Nov 26" (period
+     2026-10/2026-11) is an October bid and a November bid: the elevator said
+     so. Keyed on nothing, every Heartland Co-op branch near Ames vanished the
+     moment October was chosen. */
+  var wm=k?[]:windowMonths(b);
   if(currentDelivery==='harvest'){
     if(k)return harvestKeys([k]).length>0;
+    if(wm.length)return wm.some(function(w){return harvestKeys([w]).length>0;});
     return isHarvestSeason(b);
   }
-  if(!k)return false;
+  if(!k)return wm.indexOf(currentDelivery)!==-1;
   return k===currentDelivery;
 }
+function windowMonths(b){var R=typeof window!=='undefined'&&window.cbRank;return R?R.pairMonths(b&&b.deliveryPeriod):[];}
 
 /* getBest() USED TO LIVE HERE and is deliberately gone. It returned the
    highest cash price among ALL of an elevator's rows for a commodity, with no
@@ -1989,6 +2011,75 @@ function groupElevators(bids){
   return Object.keys(map).map(function(k){return map[k];});
 }
 
+/* ══ WHAT MAY BE RANKED, AND ON WHAT NUMBER ═══════════════════════════════
+   components/cb-rank.js answers it; these lines connect it to this page's
+   own readings of cash and basis. Used by the banner, the Best cards and the
+   Worth the Drive table, so the three can never rank by different rules. */
+function rankOf(b){
+  var cash=ppu(b.cashPrice);
+  var bc=(b.basis!=null&&!basisUnusual(b))?basisCents(b.basis,b):null;
+  if(!window.cbRank)return{exclude:false,tier:0,fresh:b.stale===true?2:0,price:cash,posted:cash,remark:null,old:false,unread:b.stale===true};
+  return cbRank.assess(b,{cash:cash,basisC:bc,band:PPU_BAND[b.category]});
+}
+function rankable(b){return !rankOf(b).exclude;}
+function wheatCls(b){return window.cbRank?cbRank.wheatClass(b&&b.commodity):'';}
+function rankCmp(a,b){return window.cbRank?cbRank.compare(a,b):(b.rk.price-a.rk.price);}
+/* One candidate per elevator for corn and soybeans; for wheat one per class
+   the elevator posts, because HRW, SRW and a wheat that names no class are
+   never ranked against each other. */
+function rankCands(elevs,comm){
+  var out=[];
+  elevs.forEach(function(elev){
+    var classes=[''];
+    if(comm==='wheat'){
+      classes=[];
+      (elev.commodities.wheat||[]).forEach(function(b){var c=wheatCls(b);if(classes.indexOf(c)<0)classes.push(c);});
+    }
+    classes.forEach(function(c){
+      var b=getNearestBid(elev,comm,function(x){return rankable(x)&&(comm!=='wheat'||wheatCls(x)===c);});
+      if(b&&b.cashPrice!=null)out.push({elev:elev,bid:b,dist:elev.distance,rk:rankOf(b),cls:comm==='wheat'?c:''});
+    });
+  });
+  return out;
+}
+/* {hrw:[...], srw:[...], '':[...]} -- the plain-grade rule applied inside each. */
+function classGroups(cands){
+  var g={};
+  cands.forEach(function(x){(g[x.cls]=g[x.cls]||[]).push(x);});
+  Object.keys(g).forEach(function(k){g[k]=preferPlain(g[k],function(x){return x.bid;});if(!g[k].length)delete g[k];});
+  return g;
+}
+/* Which wheat a single-answer panel shows: the class most elevators here post;
+   on a tie, the class of the nearest of them. */
+function pickClass(g){
+  var ks=Object.keys(g);if(!ks.length)return null;
+  ks.sort(function(a,b){
+    if(g[b].length!==g[a].length)return g[b].length-g[a].length;
+    var da=Math.min.apply(null,g[a].map(function(x){return x.dist!=null?x.dist:999;}));
+    var db=Math.min.apply(null,g[b].map(function(x){return x.dist!=null?x.dist:999;}));
+    return da-db;
+  });
+  return ks[0];
+}
+function clsName(c){return window.cbRank?cbRank.classLabel(c):c;}
+/* The town to print, and a delivery point's town where the network knows it. */
+function placeOf(elev){
+  var t=townOf(elev);
+  if(!window.cbRank||!cbRank.looksLikePoint(t))return t;
+  var z='';
+  Object.keys(elev.commodities||{}).some(function(k){return(elev.commodities[k]||[]).some(function(b){if(b.zip){z=b.zip;return true;}return false;});});
+  return cbRank.placeTown(t,z);
+}
+/* "Mid-Iowa Cooperative — Des Moines (28 mi)" */
+function bannerName(elev){
+  var t=placeOf(elev);
+  return elev.facility+(t?' — '+t:'')+(elev.distance!=null?' ('+elev.distance.toFixed(0)+' mi)':'');
+}
+window.cbRankRedraw=function(){
+  if(!currentElevators||!currentElevators.length)return;
+  renderBestBids(currentElevators);renderEarnings();renderWTD();
+};
+
 // Blank falls back to the field's own default; a typed 0 (or any real number) is honoured.
 function _num(el,dflt){var v=parseFloat(el&&el.value);return isFinite(v)&&v>=0?v:dflt;}
 function renderEarnings(){
@@ -1997,41 +2088,60 @@ function renderEarnings(){
   var bu=_num(wtdBu,1000),fpm=_num(wtdFuel,1.75);
   var best=null;
   ['corn','soybeans','wheat'].forEach(function(cat){
-    var elevRows=currentElevators.map(function(elev){
-      var bid=getNearestBid(elev,cat);
-      if(!bid||bid.cashPrice==null||elev.distance==null)return null;
-      return{elev:elev,p:ppu(bid.cashPrice)};
-    }).filter(Boolean);
-    elevRows=preferPlain(elevRows,function(x){return getNearestBid(x.elev,cat);});
-    if(elevRows.length<2)return;
-    var byDist=elevRows.slice().sort(function(a,b){return(a.elev.distance||999)-(b.elev.distance||999);});
-    var closest=byDist[0];
-    /* RANK ON NET, NOT ON PRICE. This took the single highest-price elevator
-       and then subtracted fuel from it, which answers a different question from
-       the one the panel below it answers -- and the two disagreed on screen.
-       Measured 2026-08-26, 1,000 bu at $1.75: this banner named Cargill US at
-       48 miles, $12.69, +$635. The Worth The Drive table directly beneath it
-       named CHS Ag Terminals at 19 miles, $12.68 -- one cent LESS per bushel
-       and $727 net, ninety-two dollars better and twenty-nine miles nearer.
-       The calculator was right. A page that answers its own headline question
-       two ways in one scroll is worse than a page that does not ask it. */
-    var scored=elevRows.map(function(r){
-      var extra=r.elev.distance-closest.elev.distance;
-      return{r:r,extraMi:extra,net:((r.p-closest.p)*bu)-(2*extra*fpm)};
-    }).sort(function(a,b){return b.net-a.net;});
-    var win=scored[0];
-    var top=win.r;
-    if(top.elev.key===closest.elev.key)return;
-    var extraMi=win.extraMi;
-    var gross=(top.p-closest.p)*bu;
-    var net=win.net;
-    if(net>50&&(!best||net>best.net))best={cat:cat,topName:top.elev.facility,closeName:closest.elev.facility,tppu:top.p,cppu:closest.p,gross:gross,net:net,extraMi:extraMi};
+    /* THE BANNER NAMES ONLY BOARDS READ TODAY OR RE-MARKED TO TODAY'S FUTURES.
+       An elevator whose board was not reached is kept off it entirely, as the
+       winner and as the reference: the headline is a dollar figure, and a
+       dollar figure built on a price nobody could confirm is not one to print
+       in large type. Day-old rows with no settle to re-mark against stay off
+       it too. They are all still in the table below, flagged. */
+    var all=rankCands(currentElevators.filter(function(e){return !e.unread&&e.distance!=null;}),cat)
+      .filter(function(x){return x.rk.tier===0&&!x.rk.unread;});
+    var groups=classGroups(all);
+    Object.keys(groups).forEach(function(cls){
+      var elevRows=groups[cls].map(function(x){return{elev:x.elev,bid:x.bid,rk:x.rk,dist:x.dist,p:x.rk.price};});
+      if(elevRows.length<2)return;
+      /* distance is never null here, and 0 is a distance: `||999` sent the
+         elevator AT the reader's ZIP to the back of this list (68025, Scoular
+         at 0 mi was compared against a co-op 29 mi out). */
+      var byDist=elevRows.slice().sort(function(a,b){return a.elev.distance-b.elev.distance;});
+      var closest=byDist[0];
+      /* RANK ON NET, NOT ON PRICE. This took the single highest-price elevator
+         and then subtracted fuel from it, which answers a different question from
+         the one the panel below it answers -- and the two disagreed on screen.
+         Measured 2026-08-26, 1,000 bu at $1.75: this banner named Cargill US at
+         48 miles, $12.69, +$635. The Worth The Drive table directly beneath it
+         named CHS Ag Terminals at 19 miles, $12.68 -- one cent LESS per bushel
+         and $727 net, ninety-two dollars better and twenty-nine miles nearer.
+         The calculator was right. A page that answers its own headline question
+         two ways in one scroll is worse than a page that does not ask it.
+         On an equal net the fresher board wins, then the nearer. */
+      var scored=elevRows.map(function(r){
+        var extra=r.elev.distance-closest.elev.distance;
+        return{r:r,extraMi:extra,net:((r.p-closest.p)*bu)-(2*extra*fpm)};
+      }).sort(function(a,b){
+        var d=Math.round(b.net)-Math.round(a.net);if(d)return d;
+        if(a.r.rk.fresh!==b.r.rk.fresh)return a.r.rk.fresh-b.r.rk.fresh;
+        return a.r.elev.distance-b.r.elev.distance;
+      });
+      var win=scored[0];
+      var top=win.r;
+      if(top.elev.key===closest.elev.key)return;
+      var gross=(top.p-closest.p)*bu;
+      if(win.net>50&&(!best||win.net>best.net))best={cat:cat,cls:cls,top:top,close:closest,gross:gross,net:win.net,extraMi:win.extraMi};
+    });
   });
   if(!best){earningsCallout.classList.add('muted');return;}
   earningsCallout.classList.remove('muted');
   var lab={corn:'corn',soybeans:'soybean',wheat:'wheat'};
-  earningsHead.textContent='Driving to '+truncName(best.topName,24)+' could net you '+fmtMoney(best.net)+' more on this '+lab[best.cat]+' load';
-  earningsDetail.innerHTML='<strong>'+escH(best.topName)+'</strong> pays $'+fmtPx(best.tppu)+'/bu vs <strong>'+escH(best.closeName)+'</strong> at $'+fmtPx(best.cppu)+'/bu. On '+bu.toLocaleString()+' bu \u2014 '+fmtMoney(best.gross)+' gross'+(best.extraMi>0?', minus '+fmtMoney(2*best.extraMi*fpm)+' round-trip fuel':'')+' = <strong>'+fmtMoney(best.net)+' net gain</strong>.';
+  var crop=best.cat==='wheat'?(best.cls?clsName(best.cls)+' wheat':'wheat (class not stated)'):lab[best.cat];
+  /* A re-marked price says so where it is printed. */
+  function priceHtml(r){
+    var s=(window.cbRank?cbRank.priceText(r.rk,fmtPx):'$'+fmtPx(r.p))+'/bu';
+    var n=window.cbRank?cbRank.note(r.rk,fmtPx):'';
+    return s+(n?' ('+escH(n)+')':'');
+  }
+  earningsHead.textContent='Driving to '+truncName(best.top.elev.facility,24)+' could net you '+fmtMoney(best.net)+' more on this '+crop+' load';
+  earningsDetail.innerHTML='<strong>'+escH(bannerName(best.top.elev))+'</strong> pays '+priceHtml(best.top)+' vs <strong>'+escH(bannerName(best.close.elev))+'</strong> at '+priceHtml(best.close)+'. On '+bu.toLocaleString()+' bu — '+fmtMoney(best.gross)+' gross'+(best.extraMi>0?', minus '+fmtMoney(2*best.extraMi*fpm)+' round-trip fuel':best.extraMi<0?', plus '+fmtMoney(-2*best.extraMi*fpm)+' round-trip fuel saved':'')+' = <strong>'+fmtMoney(best.net)+' net gain</strong>.';
   gaEvent('earnings_shown',{commodity:best.cat,net_gain:Math.round(best.net)});
 }
 
@@ -2045,24 +2155,42 @@ function renderBestBids(elevators){
        2027 forward against its neighbour's spot and calls the forward a
        better bid. The rest of this page settled that in getNearestBid(); this
        call site was missed. */
-    elevators.forEach(function(elev){var b=getNearestBid(elev,c.key);if(b&&b.cashPrice!=null)cands.push({elev:elev,bid:b});});
-    cands=preferPlain(cands,function(x){return x.bid;});
-    cands.sort(function(a,b){return b.bid.cashPrice-a.bid.cashPrice;});
+    /* RANKED BY cb-rank.js: a closed month, or a board unread for over a day,
+       is not a candidate; a day-old board is ranked on today's futures where
+       it can be and below same-day boards where it cannot; on an equal price
+       the fresher board wins, then the nearer. Wheat is ranked within one
+       class -- the class most elevators here post -- and the best of any
+       other class is named underneath, not compared. */
+    var groups=classGroups(rankCands(elevators,c.key)),cls=null,others=[];
+    if(c.key==='wheat'){
+      cls=pickClass(groups);
+      cands=cls!=null?groups[cls]:[];
+      Object.keys(groups).forEach(function(k){if(k!==cls){var g=groups[k].slice().sort(rankCmp);others.push({cls:k,top:g[0],n:g.length});}});
+    }else cands=groups['']||[];
+    cands.sort(rankCmp);
     var top=cands[0],best=top?top.bid:null,pp=best?ppu(best.cashPrice):null,topElev=top?top.elev:null;
     html+='<div class="best-bid-card '+c.cls+(best?' has-bid':'')+'" role="listitem" tabindex="0" '+(topElev?'data-bfac="'+escH(topElev.key)+'"':'')+' aria-label="Best '+c.label+(topElev?' at '+topElev.facility:'')+'">';
     html+='<div class="bbc-crown" aria-hidden="true">'+c.emoji+'</div>';
-    html+='<div class="bbc-comm">Best '+c.label+'</div>';
+    html+='<div class="bbc-comm">Best '+c.label+(c.key==='wheat'&&cls!=null&&top?' \u00b7 '+escH(clsName(cls)):'')+'</div>';
     if(best&&pp!=null&&topElev){
       var bf=formatBasis(best.basis,best);
-      var cs=townOf(topElev)+(townOf(topElev)&&topElev.state?', ':'')+(topElev.state||''); /* precedence bug swallowed the state — printed 'Clayton,' (fixed 2026-07-20) */
+      var cs=placeOf(topElev)+(placeOf(topElev)&&topElev.state?', ':'')+(topElev.state||''); /* precedence bug swallowed the state — printed 'Clayton,' (fixed 2026-07-20) */
       var del=delShow(best);
       var isSpot=isSpotDelivery(best.deliveryMonth||best.deliveryStart||'',best);
       html+='<div class="bbc-name" title="'+escH(topElev.facility)+'">'+escH(topElev.facility)+'</div>';
-      html+='<div class="bbc-price">$'+fmtPx(pp)+'</div>';
+      /* A re-marked price is printed with its "≈" and says what it is and
+         what the elevator actually posted; it is never the posted price. */
+      var rkN=window.cbRank?cbRank.note(top.rk,fmtPx):'';
+      html+='<div class="bbc-price">'+(top.rk.remark?escH(cbRank.priceText(top.rk,fmtPx)):'$'+fmtPx(pp))+'</div>';
+      if(rkN)html+='<div class="bbc-city'+(top.rk.old?' bbc-warn':'')+'" style="white-space:normal;width:0;min-width:100%">'+escH(rkN)+'</div>';
       if(best.commodity)html+='<div class="bbc-city">'+escH(String(best.commodity).trim())+'</div>';
       html+='<div class="bbc-meta"><span class="bbc-basis '+bf.cls+'">Basis '+bf.str+'</span>'+(topElev.distance!=null?'<span class="bbc-dist">'+topElev.distance.toFixed(0)+' mi</span>':'')+'</div>';
       if(cs)html+='<div class="bbc-city">'+escH(cs)+'</div>';
-      if(cands.length===1)html+='<div class="bbc-city">Only '+c.label.toLowerCase()+' bid in this search</div>';
+      if(cands.length===1)html+='<div class="bbc-city">Only '+(cls?escH(clsName(cls))+' ':'')+c.label.toLowerCase()+' bid in this search</div>';
+      others.forEach(function(o){
+        if(!o.top)return;
+        html+='<div class="bbc-city" style="white-space:normal;width:0;min-width:100%">'+(o.cls?escH(clsName(o.cls)):'Class not stated')+': '+escH((o.top.rk.remark?cbRank.priceText(o.top.rk,fmtPx):'$'+fmtPx(ppu(o.top.bid.cashPrice))))+' at '+escH(o.top.elev.facility)+(placeOf(o.top.elev)?' \u2014 '+escH(placeOf(o.top.elev)):'')+' (different wheat, not compared)</div>';
+      });
       if(topElev.unread)html+='<div class="bbc-city bbc-warn">board not reached \u2014 call before you load</div>';
       if(del)html+='<div class="bbc-delivery'+(isSpot?' bbc-delivery-spot':'')+'">'+escH(isSpot?'SPOT \u2014 today\'s delivery':del)+'</div>';
       var bfut=futuresOf(best),blab=contractLabel(best);
@@ -2095,19 +2223,28 @@ var WTD_TOSSUP_CENTS=3;
 function renderWTD(){
   var bu=_num(wtdBu,1000),fpm=_num(wtdFuel,1.75),comm=wtdComm;
   var rows=[];
-  currentElevators.forEach(function(elev){
-    var bid=getNearestBid(elev,comm);
-    if(!bid||bid.cashPrice==null)return;
-    /* NO DISTANCE, NO ROW. A missing distance used to become 0 miles: the row
-       turned into the "closest" reference with $0 of fuel. */
-    if(elev.distance==null)return;
-    var p=ppu(bid.cashPrice),d=elev.distance;
-    rows.push({elev:elev,bid:bid,dist:d,ppu:p,gross:p*bu,fuel:2*d*fpm,net:(p*bu)-(2*d*fpm),delivery:delShow(bid)});
+  /* NO DISTANCE, NO ROW. A missing distance used to become 0 miles: the row
+     turned into the "closest" reference with $0 of fuel.
+     Candidates and the number each is ranked on come from rankCands()/cb-rank.js:
+     a day-old board is ranked on today's futures where it can be, and below
+     every same-day board where it cannot. Wheat is one class at a time. */
+  var groups=classGroups(rankCands(currentElevators.filter(function(e){return e.distance!=null;}),comm));
+  var cls=comm==='wheat'?pickClass(groups):'',others=[];
+  if(comm==='wheat')Object.keys(groups).forEach(function(k){if(k!==cls)others.push(clsName(k)+' ('+groups[k].length+')');});
+  (cls!=null?(groups[cls]||[]):[]).forEach(function(x){
+    var p=x.rk.price,d=x.elev.distance;
+    rows.push({elev:x.elev,bid:x.bid,rk:x.rk,dist:d,ppu:p,gross:p*bu,fuel:2*d*fpm,net:(p*bu)-(2*d*fpm),delivery:delShow(x.bid)});
   });
-  rows=preferPlain(rows,function(x){return x.bid;});
   if(!rows.length){wtdTbody.innerHTML='<tr><td colspan="7" class="wtd-empty">No '+comm+' bids in results. Switch commodity or try a larger radius.</td></tr>';wtdWinner.style.display='none';$('wtd-delivery-note').style.display='none';return;}
-  rows.sort(function(a,b){return b.net-a.net;});
-  var refRow=rows.slice().sort(function(a,b){return a.dist-b.dist;})[0];
+  rows.sort(function(a,b){
+    if(a.rk.tier!==b.rk.tier)return a.rk.tier-b.rk.tier;
+    var d=Math.round(b.net)-Math.round(a.net);if(d)return d;
+    if(a.rk.fresh!==b.rk.fresh)return a.rk.fresh-b.rk.fresh;
+    return a.dist-b.dist;
+  });
+  /* The reference is the nearest SAME-DAY board where there is one. */
+  var refPool=rows.filter(function(r){return r.rk.tier===0;});
+  var refRow=(refPool.length?refPool:rows).slice().sort(function(a,b){return a.dist-b.dist;})[0];
   var refNet=refRow.net,winner=rows[0];
   if(winner&&winner.elev.key!==refRow.elev.key){
     var gain=winner.net-refNet;
@@ -2118,9 +2255,9 @@ function renderWTD(){
     var tossup=bu>0&&(gain/bu)*100<WTD_TOSSUP_CENTS;
     wtdWinner.classList.toggle('wtd-tossup',tossup);
     if(tossup){
-      wtdWinner.innerHTML='<strong>Toss-up.</strong> After hauling, '+escH(winner.elev.facility)+' nets '+(gain>0?'+':'')+fmtMoney(gain)+' on this '+bu.toLocaleString()+'-bu load, '+(Math.round(gain/bu*1000)/10)+'\u00a2/bu over your closest elevator \u2014 under '+WTD_TOSSUP_CENTS+'\u00a2/bu, so neither is the clear pick.';
+      wtdWinner.innerHTML='<strong>Toss-up.</strong> After hauling, '+escH(bannerName(winner.elev))+' nets '+(gain>0?'+':'')+fmtMoney(gain)+' on this '+bu.toLocaleString()+'-bu load, '+(Math.round(gain/bu*1000)/10)+'\u00a2/bu over your closest elevator \u2014 under '+WTD_TOSSUP_CENTS+'\u00a2/bu, so neither is the clear pick.';
     }else
-    wtdWinner.innerHTML='<svg class="ic" aria-hidden="true"><use href="#i-trophy"/></svg> <strong>'+escH(winner.elev.facility)+'</strong> nets you <strong style="color:var(--green)">'+(gain>0?'+':'')+fmtMoney(gain)+'</strong> more than your closest elevator on this '+bu.toLocaleString()+'-bu load.';
+    wtdWinner.innerHTML='<svg class="ic" aria-hidden="true"><use href="#i-trophy"/></svg> <strong>'+escH(bannerName(winner.elev))+'</strong> nets you <strong style="color:var(--green)">'+(gain>0?'+':'')+fmtMoney(gain)+'</strong> more than your closest elevator on this '+bu.toLocaleString()+'-bu load.';
     gaEvent('wtd_calc',{commodity:comm,bushels:bu,fpm:fpm,winner:winner.elev.facility,gain:Math.round(gain)});
   }else{wtdWinner.style.display='none';wtdWinner.classList.remove('wtd-tossup');}
   var _toss=wtdWinner.classList.contains('wtd-tossup')&&wtdWinner.style.display!=='none';
@@ -2130,20 +2267,24 @@ function renderWTD(){
     var delta=r.net-refNet;
     var dcls=delta>5?'pos':delta<-5?'neg':'flat';
     var dstr=refRow.elev.key===r.elev.key?'<span style="font-size:0.763rem;color:var(--text-muted)">reference</span>':(delta>=0?'+':'')+fmtMoney(delta);
-    var cs=townOf(r.elev)+(townOf(r.elev)&&r.elev.state?', ':'')+(r.elev.state||''); /* same precedence bug fixed at renderBestBids 2026-07-20; this copy was missed */
+    var cs=placeOf(r.elev)+(placeOf(r.elev)&&r.elev.state?', ':'')+(r.elev.state||''); /* same precedence bug fixed at renderBestBids 2026-07-20; this copy was missed */
+    var rn=window.cbRank?cbRank.note(r.rk,fmtPx):'';
     var subTxt=escH(cs)+(r.delivery?(cs?' &middot; ':'')+escH(r.delivery):'')
+      +(comm==='wheat'?' &middot; '+escH(clsName(cls)):'')
+      +(rn?' &middot; <span'+(r.rk.old?' class="bbc-warn"':'')+'>'+escH(rn)+'</span>':'')
       +(r.elev.unread?' &middot; <span style="color:var(--warn,#e0a83a)">board not reached</span>':'');
     html+='<tr class="'+(i===0&&!_toss?'wtd-w':'')+'">';
     /* 1 2 3 4, not 1 2 3 4. -- the first three came from a medal list that no
        longer holds medals, and only the fourth onwards got a full stop. */
     html+='<td class="wt-rank">'+(i+1)+'</td>';
     html+='<td><div class="wt-name">'+escH(r.elev.facility)+'</div><div class="wt-sub">'+subTxt+'</div></td>';
-    html+='<td data-l="Cash/bu" class="wt-cash r">$'+fmtPx(r.ppu)+'</td>';
+    html+='<td data-l="Cash/bu" class="wt-cash r">'+(r.rk.remark?escH(cbRank.priceText(r.rk,fmtPx)):'$'+fmtPx(r.ppu))+'</td>';
     html+='<td data-l="Distance" class="wt-dist r">'+r.dist.toFixed(0)+' mi</td>';
     html+='<td data-l="Round-trip fuel" class="wt-fuel r">&minus;'+fmtMoney(r.fuel)+'</td>';
     html+='<td data-l="Total net" class="wt-net r'+(i===0&&!_toss?' best':'')+'">'+fmtMoney(r.net)+'</td>';
     html+='<td data-l="vs closest" class="wt-delta '+dcls+'">'+dstr+'</td></tr>';
   }
+  if(others.length)html+='<tr><td colspan="7" class="wtd-empty">Comparing '+escH(clsName(cls))+' wheat only. Also posted nearby, a different wheat and not compared: '+escH(others.join(', '))+'.</td></tr>';
   wtdTbody.innerHTML=html;
   $('wtd-delivery-note').style.display='block';
 }
@@ -2652,6 +2793,9 @@ function netRowsFrom(shard,distanceMi){
          from a ZIP or geocode table; empty otherwise. `city` stays the key. */
       town:shard.town||'',
       state:b.state||shard.state||'',
+      /* The place's ZIP, so a delivery-point label ("ADM DSM") can be given
+         its town by cbRank.placeTown(). Never printed. */
+      zip:String(b.zip||'').slice(0,5),
       distance:(typeof distanceMi==='number'&&isFinite(distanceMi))?distanceMi:null,
       phone:'',
       commodity:b.commodity||'',
@@ -2791,7 +2935,18 @@ function netMerge(feedRows,networkRows){
        not carry (a network board with corn only deleted that elevator's
        soybeans). bids-homepage.js mergeFeeds already keys on facility + crop. */
     if(mine[k]){
-      var same=(byKey[k]||[]).filter(function(o){return o.category===r.category;});
+      var same=(byKey[k]||[]).filter(function(o){return o.category===r.category&&!o._netOut;});
+      /* OURS WINS ONLY WHEN OURS IS CURRENT. Where every one of our rows for
+         this crop is from a board we could not read, or from an earlier day
+         than the second feed's copy, the second feed's row is the newer
+         price and it is the one kept. Ours are taken out, not shown twice. */
+      if(same.length&&same.every(function(o){return netOlder(o,r);})){
+        same.forEach(function(o){o._netOut=true;});
+        same=[];
+      }
+      if(!same.length&&(byKey[k]||[]).some(function(o){return o.category===r.category&&o._netOut;})){
+        kept.push(r);return;
+      }
       if(same.length){
         dropped++;
         same.forEach(function(ours){inherit(ours,r);});
@@ -2804,6 +2959,8 @@ function netMerge(feedRows,networkRows){
       for(var i=0;i<(networkRows||[]).length;i++){
         if(netIsTwin(networkRows[i],r)){twin=networkRows[i];break;}
       }
+      if(twin&&!twin._netOut&&netOlder(twin,r)){twin._netOut=true;twin=null;kept.push(r);return;}
+      if(twin&&twin._netOut){kept.push(r);return;}
       if(twin){dropped++;inherit(twin,r);return;}
       /* Survives (a crop ours lacks): file it under our name for this place. */
       r.facility=ours2.facility;r.branch=ours2.branch;r.city=ours2.city;r.town=ours2.town||'';
@@ -2812,7 +2969,17 @@ function netMerge(feedRows,networkRows){
     }
     kept.push(r);
   });
+  kept=kept.filter(function(x){if(x._netOut){delete x._netOut;return false;}return true;});
   return {rows:kept,duplicatesResolved:dropped};
+}
+/* Our row is the older price: its board was not read this run, or it was
+   priced on an earlier Central-time day than the second feed's copy. A row
+   with no readable date on either side is not called older. */
+function netOlder(ours,feed){
+  if(ours&&ours.stale===true)return true;
+  var R=typeof window!=='undefined'&&window.cbRank;if(!R)return false;
+  var a=R.centralDay(ours&&ours.asOf),b=R.centralDay(feed&&feed.asOf);
+  return !!(a&&b&&a<b);
 }
 
 /* Never rejects. Resolves to an empty result on any failure at all. */
@@ -2834,6 +3001,7 @@ function _fetchNetworkInner(zip,radiusMi,empty){
     if(coord.unknownZip)return {rows:[],places:0,duplicatesResolved:0,nationalPlaces:null,unknownZip:true};
     return netGet('data/merged-index.json').then(function(index){
       if(!index)return empty;
+      if(window.cbRank)cbRank.learnTowns(index);
       var national=(index.counts&&index.counts.places)||null;
       var near=netPlacesWithin(index,coord,radiusMi||50,NET_MAX_PLACES);
       if(!near.length)return {rows:[],places:0,duplicatesResolved:0,nationalPlaces:national};

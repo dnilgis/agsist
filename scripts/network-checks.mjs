@@ -47,7 +47,7 @@ const NAMES = ["classify", "netZipCoord", "netDistanceMi", "netPlacesWithin",
                /* netRowsFrom drops non-US rows through usScope() (added with the
                   US-only scope); without it every row threw "usScope is not
                   defined" here, and only here: the page defines it. */
-               "usScope", "netNormOperator", "netPlain", "netIsTwin"];
+               "usScope", "netNormOperator", "netPlain", "netIsTwin", "netOlder"];
 const sources = {};
 for (const n of NAMES) {
   sources[n] = lift(n);
