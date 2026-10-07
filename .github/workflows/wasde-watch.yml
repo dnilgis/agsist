@@ -51,6 +51,9 @@ on:
     # 17:00 UTC, and because NASS's own publication can trail the WASDE by a few
     # minutes.
     - cron: "*/5 16-17 9-12 * *"
+  workflow_run:
+    workflows: ["Fetch Grain Bids"]
+    types: [completed]
   workflow_dispatch:
     inputs:
       date:
@@ -71,7 +74,24 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  # GitHub drops scheduled fires (this job's own cron delivered almost none),
+  # so it also runs after every "Fetch Grain Bids", which cron-job.org starts
+  # every 15 minutes. This gate makes those extra runs cost seconds outside days 9-12, 16:00-17:59 UTC.
+  gate:
+    runs-on: ubuntu-latest
+    outputs:
+      go: ${{ steps.g.outputs.go }}
+    steps:
+      - id: g
+        run: |
+          D=$(date -u +%-d); H=$(date -u +%-H); W=$(date -u +%u); GO=0
+          if [ "${{ github.event_name }}" != "workflow_run" ]; then GO=1
+          elif [ "$D" -ge 9 ] && [ "$D" -le 12 ] && [ "$H" -ge 16 ] && [ "$H" -le 17 ]; then GO=1; fi
+          echo "UTC day $D hour $H weekday $W -> go=$GO"; echo "go=$GO" >> "$GITHUB_OUTPUT"
+
   grade:
+    needs: gate
+    if: needs.gate.outputs.go == '1'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:

@@ -536,7 +536,7 @@
       try{ opts = JSON.parse(wrap.getAttribute('data-opts') || '[]') || []; }catch(e){ opts = []; }
       if(!(wid && label) && !opts.length) return;
       if(!opts.length && watchedSet()[wid]){
-        wrap.innerHTML = '<span style="font-size:.8125rem;color:var(--green)">Watching this elevator — check your email to confirm</span>';
+        wrap.innerHTML = '<span style="font-size:.8125rem;color:var(--green)">Watching this elevator — check your email to confirm (it arrives within about 15 minutes)</span>';
         return;
       }
       btn.disabled = true; btn.textContent = 'Loading…';
@@ -558,7 +558,7 @@
       kinds.push(['move', 'basis moves by']);
     }
     var h = '<div class="we-form">';
-    if(seen) h += '<div class="we-seen" style="font-size:.8125rem;color:var(--green);margin-bottom:.3rem">You asked to watch this elevator before. Check your email to confirm.</div>';
+    if(seen) h += '<div class="we-seen" style="font-size:.8125rem;color:var(--green);margin-bottom:.3rem">You asked to watch this elevator before. Check your email to confirm; it arrives within about 15 minutes.</div>';
     if(opts.length){
       h += '<div class="we-grid" style="display:flex;flex-wrap:wrap;gap:.4rem .5rem;align-items:flex-end">'
         + '<label class="we-f" style="' + FLD + '"><span class="we-k" style="' + KEY + '">Email me when</span><select class="we-kind" style="' + FIELD + '">'
@@ -669,7 +669,7 @@
           if(body.wid !== wid) markWatched(body.wid);
           var oi = wrap.querySelector('.we-optin');
           var S = window.AgsistSignup, wantDaily = !!(oi && oi.checked && S && !S.isSignedUp());
-          wrap.innerHTML = '<span class="we-done" tabindex="-1" style="font-size:.875rem;color:var(--green)">Check your email to confirm. Nothing is sent until you do.</span>'
+          wrap.innerHTML = '<span class="we-done" tabindex="-1" style="font-size:.875rem;color:var(--green)">Check your email to confirm. It arrives within about 15 minutes; nothing is sent until you confirm.</span>'
             + '<div class="sa-optmsg" role="status"></div>';
           wrap.classList.remove('we-open');
           var done = wrap.querySelector('.we-done'); if(done) done.focus();

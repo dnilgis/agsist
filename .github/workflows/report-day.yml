@@ -25,6 +25,7 @@ on:
     workflows:
       - "WASDE watch — grade the report as it lands"
       - "Build What's Priced In"
+      - "Fetch Grain Bids"
     types: [completed]
   schedule:
     - cron: "47 16 * * 1-5"
@@ -47,8 +48,24 @@ permissions:
   contents: read
 
 jobs:
+  # GitHub drops scheduled fires (this job's own cron delivered almost none),
+  # so it also runs after every "Fetch Grain Bids", which cron-job.org starts
+  # every 15 minutes. This gate makes those extra runs cost seconds outside weekdays 16:00-19:59 UTC.
+  gate:
+    runs-on: ubuntu-latest
+    outputs:
+      go: ${{ steps.g.outputs.go }}
+    steps:
+      - id: g
+        run: |
+          D=$(date -u +%-d); H=$(date -u +%-H); W=$(date -u +%u); GO=0
+          if [ "${{ github.event_name }}" != "workflow_run" ]; then GO=1
+          elif [ "${{ github.event.workflow_run.name }}" != "Fetch Grain Bids" ] || { [ "$W" -le 5 ] && [ "$H" -ge 16 ] && [ "$H" -le 19 ]; }; then GO=1; fi
+          echo "UTC day $D hour $H weekday $W -> go=$GO"; echo "go=$GO" >> "$GITHUB_OUTPUT"
+
   send:
-    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
+    needs: gate
+    if: ${{ needs.gate.outputs.go == '1' && (github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success') }}
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
