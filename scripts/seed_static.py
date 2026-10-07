@@ -80,7 +80,7 @@ DESC = {
         " December new-crop, RP floor, basis-to-cash, daily read."),
     "soybean-futures-prices.html": (
         "Soybeans {mon} {verb} ${px} ({chg}) {when} — live CBOT soybean futures refreshed "
-        "every 30 min in session.",
+        "every 15 min in session.",
         " November new-crop, crush spread, cash bids."),
     "wheat-futures-prices.html": (
         "Wheat {mon} {verb} ${px} ({chg}) {when} — live Chicago SRW futures refreshed every "
@@ -1041,7 +1041,7 @@ def seed_futures_pages(prices, today):
                     "</strong>" + stale +
                     ((" &middot; " + bench_label + " near $" + b_usd) if b_usd else "") +
                     " &middot; as of " + flabel +
-                    " &middot; Yahoo Finance, delayed &middot; refreshed every 30 minutes during trading hours &mdash; reload for the latest.")
+                    " &middot; Yahoo Finance, delayed &middot; refreshed every 15 minutes during trading hours &mdash; reload for the latest.")
             t, c2 = seed_between(t, "note", note)
             changed = c1 or c2
 
@@ -1099,7 +1099,7 @@ def seed_futures_pages(prices, today):
             note = ("Live cattle " + state_words(live)[0] + " near <strong>$" + lc + "</strong>" + stale
                     + ((" &middot; feeders near $" + gf) if gf else "")
                     + " &middot; $/cwt &middot; as of " + flabel
-                    + " &middot; Yahoo Finance, delayed &middot; refreshed every 30 minutes during trading hours &mdash; reload for the latest.")
+                    + " &middot; Yahoo Finance, delayed &middot; refreshed every 15 minutes during trading hours &mdash; reload for the latest.")
             t, c2 = seed_between(t, "note", note)
             changed = c1 or c2
         else:

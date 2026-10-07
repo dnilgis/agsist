@@ -376,9 +376,9 @@ def seo_cattle(c):
     if st is True and ", " in asof:            # "Oct 6, 11:50 a.m. CT"
         day, clock = asof.split(", ", 1)
         stamp = f" as of {clock} {day}"
-    tail = (" CME futures every 30 min, with 5-year ranges, the feeder-to-live "
+    tail = (" CME futures every 15 min, with 5-year ranges, the feeder-to-live "
             "ratio and cost of gain." if not stamp else
-            " CME futures every 30 min, 5-year ranges, cost of gain.")
+            " CME futures every 15 min, 5-year ranges, cost of gain.")
     return (f"CME Feeder Cattle Futures ${feed:,.2f} & Live Cattle "
             f"${live:,.2f}{SUFFIX}",
             f"Feeder cattle {verb} ${feed:,.2f}, live cattle{when} "
@@ -495,7 +495,7 @@ def seo_markets(c):
     head = (f"Last quotes {mdY(cd)}: " +
             ", ".join(f"{nm.lower() if i else nm}{(' ' + ct) if ct else ''} {px}"
                       for i, (_, nm, px, ct) in enumerate(picks)) + ".")
-    tail = " Futures every 30 min, free."
+    tail = " Futures every 15 min, free."
     desc = head + tail if len(head + tail) <= DESC_MAX else head
     while len(desc) > DESC_MAX and len(picks) > 1:   # shed the least-searched quote
         picks = picks[:-1]
