@@ -900,16 +900,49 @@ button,a,[role="button"],input,select{touch-action:manipulation}
       <h3 class="bm-h3">Strongest &amp; weakest locations</h3>
       <div class="bm-board" id="bm-board"></div>
     </section>
-    <div class="internal-links" id="internal-links-block" style="display:none">
-      <h3>Related Tools on AGSIST</h3>
+    <!-- Always shown: plain links a crawler can follow. The search code still
+         sets this block's display on each search; the !important rule keeps it
+         visible without touching that code. Town pages: scripts/build_cash_bid_pages.py -->
+    <style>#internal-links-block{display:block!important}.il-states{margin:.8rem 0 0;font-size:.85rem;line-height:1.9;color:var(--text-dim)}.il-states a{color:var(--text-dim)}.il-states a:hover{color:var(--gold)}</style>
+    <div class="internal-links" id="internal-links-block">
+      <h3>Related on AGSIST</h3>
       <div class="il-grid">
         <a class="il-pill" href="/corn-futures-prices"><svg class="ic" aria-hidden="true"><use href="#i-sprout"/></svg> Corn Futures Prices</a>
         <a class="il-pill" href="/soybean-futures-prices"><svg class="ic" aria-hidden="true"><use href="#i-bean"/></svg> Soybean Futures Prices</a>
         <a class="il-pill" href="/wheat-futures-prices"><svg class="ic" aria-hidden="true"><use href="#i-wheat"/></svg> Wheat Futures Prices</a>
-        <a class="il-pill" href="/ag-odds"><svg class="ic" aria-hidden="true"><use href="#i-chart-column"/></svg> Ag Prediction Markets</a>
         <a class="il-pill" href="/ag-odds"><svg class="ic" aria-hidden="true"><use href="#i-target"/></svg> Market Odds</a>
         <a class="il-pill" href="/"><svg class="ic" aria-hidden="true"><use href="#i-house"/></svg> AGSIST Dashboard</a>
       </div>
+      <p class="il-states">Today&rsquo;s network bids by town, and basis, by state:
+        <a href="/cash-bids/arkansas/">Arkansas</a> (<a href="/basis/arkansas">basis</a>) &middot;
+        <a href="/cash-bids/colorado/">Colorado</a> (<a href="/basis/colorado">basis</a>) &middot;
+        <a href="/cash-bids/florida/">Florida</a> (<a href="/basis/florida">basis</a>) &middot;
+        <a href="/cash-bids/georgia/">Georgia</a> (<a href="/basis/georgia">basis</a>) &middot;
+        <a href="/cash-bids/idaho/">Idaho</a> (<a href="/basis/idaho">basis</a>) &middot;
+        <a href="/cash-bids/illinois/">Illinois</a> (<a href="/basis/illinois">basis</a>) &middot;
+        <a href="/cash-bids/indiana/">Indiana</a> (<a href="/basis/indiana">basis</a>) &middot;
+        <a href="/cash-bids/iowa/">Iowa</a> (<a href="/basis/iowa">basis</a>) &middot;
+        <a href="/cash-bids/kansas/">Kansas</a> (<a href="/basis/kansas">basis</a>) &middot;
+        <a href="/cash-bids/kentucky/">Kentucky</a> (<a href="/basis/kentucky">basis</a>) &middot;
+        <a href="/cash-bids/louisiana/">Louisiana</a> (<a href="/basis/louisiana">basis</a>) &middot;
+        <a href="/cash-bids/michigan/">Michigan</a> (<a href="/basis/michigan">basis</a>) &middot;
+        <a href="/cash-bids/minnesota/">Minnesota</a> (<a href="/basis/minnesota">basis</a>) &middot;
+        <a href="/cash-bids/missouri/">Missouri</a> (<a href="/basis/missouri">basis</a>) &middot;
+        <a href="/cash-bids/montana/">Montana</a> (<a href="/basis/montana">basis</a>) &middot;
+        <a href="/cash-bids/nebraska/">Nebraska</a> (<a href="/basis/nebraska">basis</a>) &middot;
+        <a href="/cash-bids/new-york/">New York</a> (<a href="/basis/new-york">basis</a>) &middot;
+        <a href="/cash-bids/north-dakota/">North Dakota</a> (<a href="/basis/north-dakota">basis</a>) &middot;
+        <a href="/cash-bids/ohio/">Ohio</a> (<a href="/basis/ohio">basis</a>) &middot;
+        <a href="/cash-bids/oklahoma/">Oklahoma</a> (<a href="/basis/oklahoma">basis</a>) &middot;
+        <a href="/cash-bids/oregon/">Oregon</a> (<a href="/basis/oregon">basis</a>) &middot;
+        <a href="/cash-bids/pennsylvania/">Pennsylvania</a> (<a href="/basis/pennsylvania">basis</a>) &middot;
+        <a href="/cash-bids/south-carolina/">South Carolina</a> (<a href="/basis/south-carolina">basis</a>) &middot;
+        <a href="/cash-bids/south-dakota/">South Dakota</a> (<a href="/basis/south-dakota">basis</a>) &middot;
+        <a href="/cash-bids/tennessee/">Tennessee</a> (<a href="/basis/tennessee">basis</a>) &middot;
+        <a href="/cash-bids/texas/">Texas</a> (<a href="/basis/texas">basis</a>) &middot;
+        <a href="/cash-bids/washington/">Washington</a> (<a href="/basis/washington">basis</a>) &middot;
+        <a href="/cash-bids/wisconsin/">Wisconsin</a> (<a href="/basis/wisconsin">basis</a>) &middot;
+        <a href="/cash-bids/wyoming/">Wyoming</a> (<a href="/basis/wyoming">basis</a>)</p>
     </div>
     <div class="cb-info-grid">
       <h2 style="grid-column:1/-1;font-family:var(--font-display);font-size:1.15rem;font-weight:700;text-transform:uppercase;letter-spacing:.03em;color:var(--text);margin:0 0 .2rem">Cash Grain Prices &amp; Basis</h2>

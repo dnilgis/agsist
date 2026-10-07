@@ -1,0 +1,125 @@
+name: cash-bid-pages
+
+# Rebuilds /cash-bids/<state>/<town> and /cash-bids/<state>/ -- crawlable,
+# script-free pages of today's AGSIST network bids -- plus
+# sitemap-cash-bids.xml. Network data ONLY (dnilgis/bids merged-all.json,
+# index.json and geocodes/zip-towns.json, read from the same Pages URL
+# scripts/fetch_bids.py reads). No Barchart key is passed to this job, the
+# script never opens data/bids.json, and no futures price is printed.
+#
+# MACHINE-OWNED: edit scripts/build_cash_bid_pages.py, never cash-bids/*/*.html.
+# There is deliberately no cash-bids/index.html: /cash-bids is cash-bids.html.
+#
+# WHEN. After every "Fetch Grain Bids" run (a bot push cannot trigger another
+# workflow, so workflow_run is how this one hears the clock), plus a backstop
+# and a button. That run fires every 15 minutes; rebuilding ~1,200 pages that
+# often would put a commit of a few hundred changed pages into git four times an
+# hour. Measured 2026-10-07 on the bids repo's own history: a rebuild 1 h after
+# the last changes ~120 pages, 3 h after ~270, 6 h after ~1,570, and the full
+# set packs to ~0.85 MB with ~0.15 MB per 3-hour update. So the gate below
+# rebuilds at most once every MIN_GAP_MIN minutes (about 10 a day), unless run
+# by hand with force. A run whose pages did not change commits nothing.
+#
+# The Fetch Grain Bids conclusion is NOT required to be success: these pages
+# read the network directly, not that run's files, and that run turns red on
+# purpose when Barchart answers nothing while the network data shipped fine.
+on:
+  workflow_run:
+    workflows: ["Fetch Grain Bids"]
+    types: [completed]
+  schedule:
+    - cron: "19 */6 * * *"     # backstop, off the :00/:30 pile-up
+  workflow_dispatch:
+    inputs:
+      force:
+        description: "Rebuild even if the last rebuild is recent"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: cash-bid-pages
+  cancel-in-progress: false
+
+env:
+  MIN_GAP_MIN: "110"
+
+jobs:
+  gate:
+    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion != 'cancelled' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    outputs:
+      go: ${{ steps.age.outputs.go }}
+    steps:
+      # When did the pages last change on main? From the API, not a checkout:
+      # the bids bot commits every 15 minutes, so a shallow clone rarely reaches
+      # the last pages commit. No answer means "build", never "skip".
+      - id: age
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          FORCE: ${{ github.event.inputs.force }}
+        run: |
+          go=1
+          last=$(gh api "repos/${GITHUB_REPOSITORY}/commits?sha=main&path=sitemap-cash-bids.xml&per_page=1" \
+                   --jq '.[0].commit.committer.date' 2>/dev/null || true)
+          if [ -n "$last" ] && [ "$FORCE" != "true" ]; then
+            age=$(( ( $(date -u +%s) - $(date -u -d "$last" +%s) ) / 60 ))
+            echo "pages last changed $last ($age min ago); gap $MIN_GAP_MIN min"
+            [ "$age" -lt "$MIN_GAP_MIN" ] && go=0
+          else
+            echo "no earlier pages commit found (or force); building"
+          fi
+          echo "go=$go" >> "$GITHUB_OUTPUT"
+
+  build:
+    needs: gate
+    if: ${{ needs.gate.outputs.go == '1' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Selftest (gate)
+        run: python scripts/build_cash_bid_pages.py --selftest
+
+      - name: Build pages from the network feed
+        run: python scripts/build_cash_bid_pages.py --print-new /tmp/new-urls.txt
+
+      - name: Commit if changed
+        id: commit
+        run: |
+          git config user.name "AGSIST Bot"
+          git config user.email "bot@agsist.com"
+          git add -A cash-bids sitemap-cash-bids.xml
+          if git diff --staged --quiet; then echo "no change"; echo "changed=0" >> "$GITHUB_OUTPUT"; exit 0; fi
+          git diff --staged --shortstat
+          git commit -q -m "pages: rebuild /cash-bids town pages from the elevator network"
+          # the bids bot commits to main every 15 minutes; rebase and retry
+          for i in 1 2 3 4; do
+            git rebase --abort 2>/dev/null || true
+            if git pull -q --rebase --autostash origin main && git push -q; then
+              echo "changed=1" >> "$GITHUB_OUTPUT"; exit 0
+            fi
+            sleep $((20 * i))
+          done
+          echo "push failed after 4 attempts"; exit 1
+
+      # Pages first written this run, and every state index (their town lists
+      # move with the boards). Not every town page whose prices moved: that is
+      # most of them, every rebuild. The sitemap carries their lastmod.
+      - name: IndexNow ping (best-effort)
+        if: steps.commit.outputs.changed == '1'
+        continue-on-error: true
+        run: |
+          urls=$(cat /tmp/new-urls.txt; ls -d cash-bids/*/ | sed 's#^#https://agsist.com/#')
+          # shellcheck disable=SC2086
+          python scripts/indexnow_submit.py --urls $(echo "$urls" | sort -u) || echo "IndexNow ping failed - harmless"

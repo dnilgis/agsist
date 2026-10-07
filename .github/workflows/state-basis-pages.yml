@@ -47,6 +47,7 @@ jobs:
         run: python scripts/build_state_basis_pages.py
 
       - name: Commit if changed
+        id: commit
         run: |
           git config user.name "AGSIST Bot"
           git config user.email "bot@agsist.com"
@@ -59,3 +60,16 @@ jobs:
           # rebase onto the branch this run started from (main on schedule)
           git pull --rebase --autostash origin "${GITHUB_REF_NAME}" || true
           git push origin "HEAD:${GITHUB_REF_NAME}"
+          echo "changed=1" >> "$GITHUB_OUTPUT"
+
+      # A bot push does not start indexnow.yml (GITHUB_TOKEN pushes trigger no
+      # workflows), so the rebuilt pages are announced here. Same script and
+      # key file as indexnow.yml.
+      - name: IndexNow ping (best-effort)
+        if: steps.commit.outputs.changed == '1'
+        continue-on-error: true
+        run: |
+          # an empty --urls would make the script submit the whole sitemap
+          [ -s basis/_indexable.txt ] || { echo "nothing indexable"; exit 0; }
+          # shellcheck disable=SC2046
+          python scripts/indexnow_submit.py --urls $(cat basis/_indexable.txt) || echo "IndexNow ping failed - harmless"
