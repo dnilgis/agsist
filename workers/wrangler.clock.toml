@@ -2,6 +2,12 @@ name = "agsist-clock"
 main = "agsist-clock.js"
 compatibility_date = "2026-09-30"
 
+# The cron schedule lives HERE now. With Git connected, every deploy sets the
+# Worker's Cron Triggers to exactly this list -- change it here, not in the
+# dashboard (a dashboard edit gets overwritten on the next push).
+# Every 15 min: keeps prices.yml alive in its windows; fetch_bids fires at :07/:37.
+[triggers]
+crons = ["7,22,37,52 * * * *"]
+
 # Secrets (FIRE_KEY, GH_TOKEN) live on the Worker itself in the dashboard
-# under Settings -> Variables and Secrets. Not part of this file, untouched
-# by connecting Git.
+# under Settings -> Variables and Secrets. Deploys never touch secrets.
