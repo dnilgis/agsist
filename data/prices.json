@@ -734,8 +734,8 @@
       "ticker": "ZL=F",
       "close": 69.45,
       "open": 68.95,
-      "netChange": 0.63,
-      "pctChange": 0.9137,
+      "netChange": 0.5,
+      "pctChange": 0.7252,
       "wk52_hi": 79.69,
       "wk52_lo": 47.51,
       "close_date": "2026-10-07",
@@ -749,7 +749,8 @@
         "netChange": -0.13,
         "pctChange": -0.1868,
         "prev_date": "2026-10-06"
-      }
+      },
+      "derived_recomputed": true
     },
     "crude": {
       "ticker": "CL=F",

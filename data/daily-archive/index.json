@@ -1,6 +1,17 @@
 {
   "briefings": [
     {
+      "date": "2026-10-07",
+      "date_display": "Wednesday, October 7, 2026",
+      "headline": "CATTLE JUMP ON FEEDER STRENGTH AS CORN SLIPS BACK",
+      "teaser": "Cattle and feeders both jump overnight while corn gives back the $5 handle it just won.",
+      "market_mood": "mixed",
+      "surprise_count": 2,
+      "sections": 2,
+      "url": "/daily/2026-10-07",
+      "market_closed": false
+    },
+    {
       "date": "2026-10-06",
       "date_display": "Tuesday, October 6, 2026",
       "headline": "CORN HOLDS $5 AS GRAIN STOCKS COME IN HEAVY",
@@ -2382,6 +2393,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-10-06T10:57:28.356351+00:00",
-  "count": 207
+  "updated": "2026-10-07T11:08:35.987983+00:00",
+  "count": 208
 }

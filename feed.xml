@@ -5,7 +5,7 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Tue, 06 Oct 2026 10:57:35 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 07 Oct 2026 11:08:41 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/agsist.jpg</url>
@@ -13,11 +13,22 @@
       <link>https://agsist.com/daily</link>
     </image>
     <item>
+      <title>CATTLE JUMP ON FEEDER STRENGTH AS CORN SLIPS BACK</title>
+      <link>https://agsist.com/daily/2026-10-07</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-10-07</guid>
+      <pubDate>Wed, 07 Oct 2026 05:00:00 -0600</pubDate>
+      <description>Live cattle are trading at $221.23 overnight, up 1.8%, with feeders up 2.0% to $340.50, both printing well above Tuesday's settle with no fresh Cattle on Feed data behind it. Corn slipped back to $5.04, giving up the round number it just reclaimed Monday as rain-stalled harvest meets heavy Grain Stocks.
+Action: Bot call, Oct 5 close, 4 weeks out: corn $4.97¼ down, soybeans $12.80¾ down, Chicago wheat $6.92¼ up, KC wheat $7.42¼ down. Backtest: no edge.
+• Cattle And Feeders Both Jump
+• Corn Slips Back Under $5.08
+Read more: https://agsist.com/daily/2026-10-07</description>
+    </item>
+    <item>
       <title>CORN HOLDS $5 AS GRAIN STOCKS COME IN HEAVY</title>
       <link>https://agsist.com/daily/2026-10-06</link>
       <guid isPermaLink="true">https://agsist.com/daily/2026-10-06</guid>
       <pubDate>Tue, 06 Oct 2026 05:00:00 -0600</pubDate>
-      <description>Corn closed $5.00, up 3 cents, even after USDA's Grain Stocks report put old-crop corn bushels at 2.10 billion, up 35% from a year ago. Soybeans added a nickel to $12.86 on a 3% stocks draw the other direction.
+      <description>Corn traded at $5.00 overnight, up 3 cents from Monday's $4.97¼ settle, even after USDA's Grain Stocks report put old-crop corn bushels at 2.10 billion, up 35% from a year ago. Soybeans added a nickel to $12.86 on a 3% stocks draw the other direction.
 Action: Bot call, Oct 5 close, 4 weeks out: corn $4.97½ down, soybeans $12.81 down, Chicago wheat $6.91½ up, KC wheat $7.42¼ down. Backtest: no edge.
 • Corn Shrugs Off Heavy Stocks
 • Beans Firm On Tighter Stocks
@@ -353,19 +364,6 @@ Labor Day closes the board, but Iran escalation over the holiday weekend is the 
 • GRAINS: FRIDAY'S PROFIT TAKING, TUESDAY'S SETUP
 • CATTLE COMPLEX: EXECUTIVE ORDERS, QUIET PRICE
 Read more: https://agsist.com/daily/2026-09-07</description>
-    </item>
-    <item>
-      <title>WHEAT BREAKS 3.4%; SEPTEMBER WASDE COUNTDOWN BEGINS</title>
-      <link>https://agsist.com/daily/2026-09-06</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-09-06</guid>
-      <pubDate>Sun, 06 Sep 2026 05:00:00 -0600</pubDate>
-      <description>Wheat closed $7.16, down 3.4% Friday, the biggest single-session drop in the complex. Corn drifted to $5.12 on light volume as Labor Day weekend stripped the room. Beans held better at $12.94, off just 1.1%. The whole week telegraphs one thing: the funds took profits before the holiday and are waiting for Thursday's export sales and Friday's WASDE to decide their next move.
-Friday's pre-holiday profit-taking hit wheat hardest while corn and beans drifted; the September 11 WASDE is the week's make-or-break event.
-• WHEAT BREAKS; GRAINS DRIFT
-• CATTLE QUIET; TRUMP ORDERS MOVE
-• ENERGY AND INPUTS INTO HARVEST
-  → If you have unpriced fall diesel needs, the EIA crack-spread data says the current rack price is not the top of the range.
-Read more: https://agsist.com/daily/2026-09-06</description>
     </item>
   </channel>
 </rss>
