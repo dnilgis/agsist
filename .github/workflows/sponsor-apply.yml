@@ -1,0 +1,59 @@
+name: Sponsor sign-ups
+# The job behind agsist.com/sponsor-apply (scripts/sponsor_apply.py). Every
+# 30 minutes: confirmation emails to new applicants, the approve/decline email
+# to Sig, putting approved ads live (writes data/page-sponsors.json or
+# data/supporters.json and the logo, then pushes), the free-month-ends note,
+# monthly "send the invoice" reminders to Sig, and taking ads down when he
+# ends one. Applications live in the subs worker (KV prefix sapp:).
+# Secrets: the same ones the watch jobs use -- LIST_URL, LIST_TOKEN,
+# UNSUB_SECRET, SMTP_USER, SMTP_PASS. Optional: SMTP_HOST, SMTP_PORT,
+# FROM_ADDR, FROM_NAME, REPLY_TO, SPONSOR_TO (defaults to sig@farmers1st.com).
+
+on:
+  schedule:
+    - cron: '8,38 * * * *'
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Report what would happen; send, write and record nothing"
+        type: boolean
+        default: false
+
+concurrency:
+  group: sponsor-apply
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Checks (gate)
+        run: python3 scripts/sponsor_apply.py --selftest
+      - name: Run
+        env:
+          LIST_URL: ${{ secrets.LIST_URL }}
+          LIST_TOKEN: ${{ secrets.LIST_TOKEN }}
+          UNSUB_SECRET: ${{ secrets.UNSUB_SECRET }}
+          SMTP_HOST: ${{ secrets.SMTP_HOST }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SMTP_USER: ${{ secrets.SMTP_USER || secrets.GMAIL_USER }}
+          SMTP_PASS: ${{ secrets.SMTP_PASS || secrets.GMAIL_APP_PASS }}
+          FROM_ADDR: ${{ secrets.FROM_ADDR }}
+          FROM_NAME: ${{ secrets.FROM_NAME }}
+          REPLY_TO: ${{ secrets.REPLY_TO }}
+          SPONSOR_TO: ${{ secrets.SPONSOR_TO }}
+          DRY_RUN: ${{ inputs.dry_run == true && '1' || '' }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          python3 scripts/sponsor_apply.py

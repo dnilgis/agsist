@@ -887,6 +887,18 @@ td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;
 .ag-sponsor-ribbon a[href]:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(var(--ad-orange-rgb,232,116,58),.45)}
 @media(max-width:600px){.ag-sponsor-ribbon a[href]{margin-left:0;width:100%;justify-content:center}}
 @media(prefers-reduced-motion:reduce){.ag-sponsor-ribbon .ag-sponsor-tag::before{animation:none}.ag-sponsor-ribbon a[href]{transition:none}}
+/* A SOLD slot (components/loader.js fillPageRibbons): the sponsor's own ad.
+   Calmer than the open one -- no pulse, no price, the theme surface -- but
+   still labelled in ad orange, because paid space is always ad orange. */
+.ag-sponsor-ribbon--sold{background:var(--surface,transparent);box-shadow:none;border-color:var(--border);border-left-color:var(--ad-orange,#e8743a);color:var(--text-dim)}
+.ag-sponsor-ribbon--sold .ag-sponsor-tag{background:transparent;color:var(--ad-orange-ink,#a8380a);border:1px solid rgba(var(--ad-orange-rgb,232,116,58),.6);padding:.15rem .55rem}
+html:not([data-theme="light"]) .ag-sponsor-ribbon--sold .ag-sponsor-tag{color:var(--ad-orange,#e8743a)}
+.ag-sponsor-ribbon--sold .ag-sponsor-tag::before{display:none}
+.ag-sponsor-ribbon--sold .ag-sponsor-logo{height:28px;width:auto;max-width:110px;object-fit:contain}
+.ag-sponsor-ribbon--sold .ag-sponsor-copy{flex:1 1 16rem;min-width:0}
+.ag-sponsor-ribbon--sold .ag-sponsor-copy b{color:var(--text)}
+.ag-sponsor-ribbon--sold a[href]{background:transparent;color:var(--ad-orange-ink,#a8380a)!important;border:1px solid rgba(var(--ad-orange-rgb,232,116,58),.6)}
+html:not([data-theme="light"]) .ag-sponsor-ribbon--sold a[href]{color:var(--ad-orange,#e8743a)!important}
 
 
 /* Inline icon sprite — was on 14 pages, identical every time. */

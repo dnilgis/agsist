@@ -23,3 +23,4 @@ Secrets live in each worker's Settings → Variables (encrypted), never in code:
 After pasting a new version, verify:
 - fieldscout: `GET /health` returns the new BUILD stamp
 - subs: `GET /unsubscribe?e=x@y.zz&t=bad` renders the worker's own HTML page
+- subs v5.5 (sponsor sign-ups): `GET /sponsor-confirm?i=000000000000&t=x` answers "This link isn't valid." (the old worker answers 404 JSON)

@@ -292,17 +292,12 @@
             var url = s.url || ctaUrl;
             if (!/^(https?:\/\/|\/)/.test(url)) url = ctaUrl;
             var ext = url.indexOf('http') === 0;
-            var inner = s.logo
-              ? '<img class="ad-filled-logo" src="' + esc(s.logo) + '" alt="' + esc(s.name) + '">'
-              : '<span class="ad-filled-name">' + esc(s.name) + '</span>';
             var a = document.createElement('a');
             a.className = 'ad-slot ad-slot--filled';
             a.href = url;
             if (ext) { a.target = '_blank'; a.rel = 'sponsored noopener'; }
             else { a.rel = 'sponsored'; }
-            a.innerHTML = '<span class="ad-slot-tag ad-slot-tag--live">Sponsor</span>'
-              + inner
-              + (s.blurb ? '<span class="ad-filled-blurb">' + esc(s.blurb) + '</span>' : '');
+            a.innerHTML = supporterInner(s);
             // MEASURED BY components/sponsor-metrics.js, NOT HERE.
             // This card is only ever built for an ACTIVE supporter, so unlike
             // the open slot beside it, it is a real ad and counts as one. The
@@ -317,6 +312,68 @@
         }
       })
       .catch(function () { /* leave mockups on any failure */ });
+  }
+
+  // ── Sold page slots (2026-10-07) ───────────────────────────────
+  // Each tool page ships an OPEN ribbon ("Sponsor this page", price, button).
+  // When a sponsor has bought that page, data/page-sponsors.json carries them
+  // under the ribbon's slot id, written by scripts/sponsor_apply.py once Sig
+  // approves. From the entry's start date (Central time) the open ribbon is
+  // replaced by theirs. Any failure leaves the open ribbon, which is honest:
+  // the slot is shown as for sale rather than as somebody's ad gone blank.
+  // ONE RENDERER for a sold slot, shared with the sign-up form's live preview
+  // (sponsor-apply.html calls window.AgsistSlots), so what a sponsor sees
+  // before they apply is what the site draws after Sig approves.
+  function slotEsc(x) {
+    return String(x == null ? '' : x).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+  function ribbonInner(sp, id, live) {
+    var href = sp.url + (sp.url.indexOf('?') < 0 ? '?' : '&') +
+      'utm_source=agsist&utm_medium=page-ribbon&utm_campaign=' + encodeURIComponent(id);
+    // Live: only a logo that went through the approval job (/img/sponsors/).
+    // Preview: the data: URL the applicant just picked.
+    var okLogo = live ? /^\/img\/sponsors\/[a-z0-9._-]+\.(png|jpe?g|webp)$/.test(sp.logo || '')
+                      : /^data:image\/(png|jpeg|webp);base64,/.test(sp.logo || '');
+    var logo = okLogo ? '<img class="ag-sponsor-logo" src="' + slotEsc(sp.logo) + '" alt="" loading="lazy">' : '';
+    return '<span class="ag-sponsor-tag">Sponsor</span>' + logo +
+      '<span class="ag-sponsor-copy"><b>' + slotEsc(sp.company) + '</b>' +
+      (sp.headline ? ' &mdash; ' + slotEsc(sp.headline) : '') + (sp.body ? ' <span>' + slotEsc(sp.body) + '</span>' : '') +
+      '</span><a href="' + slotEsc(href) + '" rel="sponsored noopener" target="_blank"' +
+      (live ? ' data-sponsor-click="page:' + slotEsc(id) + '"' : '') + '>Visit &rarr;</a>';
+  }
+  function supporterInner(s) {
+    var inner = s.logo
+      ? '<img class="ad-filled-logo" src="' + slotEsc(s.logo) + '" alt="' + slotEsc(s.name) + '">'
+      : '<span class="ad-filled-name">' + slotEsc(s.name) + '</span>';
+    return '<span class="ad-slot-tag ad-slot-tag--live">Sponsor</span>' + inner +
+      (s.blurb ? '<span class="ad-filled-blurb">' + slotEsc(s.blurb) + '</span>' : '');
+  }
+  window.AgsistSlots = { ribbon: function (sp, id) { return ribbonInner(sp, id, false); }, supporter: supporterInner };
+
+  function fillPageRibbons() {
+    var rib = document.querySelector('aside.ag-sponsor-ribbon');
+    if (!rib) return;
+    var a = rib.querySelector('a[href*="slot="]');
+    var m = a && /[?&]slot=([a-z0-9-]+)/.exec(a.getAttribute('href') || '');
+    if (!m) return;
+    var id = m[1];
+    fetch(BASE + '/data/page-sponsors.json', { cache: 'no-cache' })
+      .then(function (r) { if (!r.ok) throw new Error('page-sponsors'); return r.json(); })
+      .then(function (d) {
+        var sp = d && d.slots && d.slots[id];
+        var today;
+        try { today = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Chicago' }).format(new Date()); }
+        catch (e) { today = new Date().toISOString().slice(0, 10); }
+        if (!sp || sp.active === false || !sp.company || !/^https?:\/\//.test(sp.url || '') ||
+            !/^\d{4}-\d{2}-\d{2}$/.test(sp.start || '') || sp.start > today) return;
+        rib.classList.add('ag-sponsor-ribbon--sold');
+        rib.setAttribute('data-sponsor-slot', 'page:' + id);
+        rib.setAttribute('aria-label', 'Sponsored: ' + sp.company);
+        rib.innerHTML = ribbonInner(sp, id, true);
+      })
+      .catch(function () { /* the open ribbon stays */ });
   }
 
   // ── Sponsor measurement ────────────────────────────────────────
@@ -337,6 +394,7 @@
     injectAnalytics();
     loadComponent('site-header', '/components/header.html', initNav);
     loadComponent('site-footer', '/components/footer.html', renderSupporters);
+    fillPageRibbons();
     loadSponsorMetrics();
   });
 })();
