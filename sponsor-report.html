@@ -465,17 +465,25 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
       stale: !!(ap && ap.proof && code && ap.proof !== code),
       live: !!(c && c.live),
       trialW: (isFinite(+bill.trial_weeks) && +bill.trial_weeks >= 0) ? Math.floor(+bill.trial_weeks) : 0,
+      /* 2026-10-07: the free period is a month (data/sponsors.json billing.trial_months).
+         trial_weeks still works for a deal written before the change. */
+      trialM: (isFinite(+bill.trial_months) && +bill.trial_months > 0) ? Math.floor(+bill.trial_months) : 0,
       lockM: (isFinite(+bill.rate_lock_months) && +bill.rate_lock_months > 0) ? Math.floor(+bill.rate_lock_months) : null,
       start: okDate(d.start) ? d.start : null
     };
     if (s.start) {
-      s.trialEnd = s.trialW ? addDays(s.start, s.trialW * 7 - 1) : null;
-      s.firstBilled = addDays(s.start, s.trialW * 7);
+      s.firstBilled = s.trialM ? addMonths(s.start, s.trialM) : addDays(s.start, s.trialW * 7);
+      s.trialEnd = (s.trialM || s.trialW) ? addDays(s.firstBilled, -1) : null;
       s.lockEnd = s.lockM ? addDays(addMonths(s.start, s.lockM), -1) : null;
       s.dayN = Math.floor((D(TODAY) - D(s.start)) / 864e5) + 1;
       s.inTrial = !!(s.trialEnd && TODAY >= s.start && TODAY <= s.trialEnd);
       s.trialLeft = s.inTrial ? Math.floor((D(s.trialEnd) - D(TODAY)) / 864e5) + 1 : 0;
     }
+    s.free = s.trialM ? (s.trialM === 1 ? 'first month' : 'first ' + s.trialM + ' months')
+                      : (s.trialW ? 'first ' + s.trialW + ' weeks' : '');
+    s.freeLabel = s.trialM ? (s.trialM === 1 ? '1 free month' : s.trialM + ' free months')
+                           : (s.trialW ? s.trialW + ' free weeks' : 'Free period');
+    s.freeSpan = s.trialM ? (s.trialM === 1 ? 'One month' : s.trialM + ' months') : s.trialW + ' weeks';
     return s;
   }
 
@@ -691,13 +699,13 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
       st = { ok: false, h: 'Your ad is being written', p: 'It will appear here for your approval before anything runs.' };
     } else if (s.live && s.start) {
       st = { ok: true, h: 'Live' + (s.dayN > 0 ? ' · day ' + s.dayN : ''),
-             p: (s.inTrial ? 'Free weeks: ' + s.trialLeft + ' day' + (s.trialLeft === 1 ? '' : 's') + ' left, through ' + esc(fmt(s.trialEnd, true)) + '. ' : '') +
+             p: (s.inTrial ? 'Free period: ' + s.trialLeft + ' day' + (s.trialLeft === 1 ? '' : 's') + ' left, through ' + esc(fmt(s.trialEnd, true)) + '. ' : '') +
                 'Results update every morning, through the end of yesterday.' };
     } else if (s.live) {
       st = { ok: true, h: 'Live', p: 'The start date is being recorded. Your counter begins with it.' };
     } else if (s.approved) {
       st = { ok: true, h: 'Approved' + (fmt(s.ap.on, true) ? ' on ' + esc(fmt(s.ap.on, true)) : ''),
-             p: 'Proof ' + esc(s.code) + ' is locked in. Your ad goes into the next morning’s briefing, and your free weeks start that day.' };
+             p: 'Proof ' + esc(s.code) + ' is locked in. Your ad goes into the next morning’s briefing, and your free period starts that day.' };
     } else if (s.stale) {
       st = { ok: false, h: 'The ad changed after you approved it',
              p: 'You approved proof ' + esc(s.ap.proof) + '. The ad below is proof ' + esc(s.code) + '. Look it over and approve again, or tell us what to change.', btn: true };
@@ -714,8 +722,8 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
       { t: 'Ad written', d: s.c ? 'Proof ' + s.code : 'In progress', done: !!s.c },
       { t: 'You approve', d: s.approved ? (fmt(s.ap.on, true) || 'Approved') : (s.stale ? 'Needs a new yes' : 'One email'), done: s.approved || s.live },
       { t: 'Goes live', d: s.start ? fmt(s.start, true) : 'Next briefing after approval', done: s.live && !!s.start },
-      { t: s.trialW ? s.trialW + ' free weeks' : 'Free weeks', d: s.trialEnd ? 'Through ' + fmt(s.trialEnd, true) : 'From the first day', done: !!(s.trialEnd && TODAY > s.trialEnd) },
-      { t: 'Billing starts', d: s.firstBilled ? fmt(s.firstBilled, true) : 'After the free weeks', done: !!(s.firstBilled && TODAY >= s.firstBilled) }
+      { t: s.freeLabel, d: s.trialEnd ? 'Through ' + fmt(s.trialEnd, true) : 'From the first day', done: !!(s.trialEnd && TODAY > s.trialEnd) },
+      { t: 'Billing starts', d: s.firstBilled ? fmt(s.firstBilled, true) : 'After the free period', done: !!(s.firstBilled && TODAY >= s.firstBilled) }
     ];
     var nowIdx = -1;
     for (var i = 0; i < steps.length; i++) { if (!steps[i].done) { nowIdx = i; break; } }
@@ -945,7 +953,7 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
     h += '</div>';
     h += '<div class="cp-req-f" data-for="plan" hidden><label for="cp-req-plan">New plan</label><select id="cp-req-plan" name="plan">' +
       (rc.tiers || []).filter(function (t) { return t.id !== cur; }).map(function (t) {
-        return '<option value="' + esc(t.id) + '">' + esc(t.name) + ' · $' + esc(t.price_week) + ' / week</option>'; }).join('') + '</select>' +
+        return '<option value="' + esc(t.id) + '">' + esc(t.name) + ' · $' + esc(t.price_month) + ' a month</option>'; }).join('') + '</select>' +
       '<p class="cp-small" id="cp-req-plan-d"></p></div>';
     h += '<div class="cp-req-f" data-for="pause cancel extend" hidden><label for="cp-req-date" id="cp-req-date-l">From</label><input type="date" id="cp-req-date" name="date"></div>';
     h += '<p class="cp-small cp-req-terms" data-for="cancel pause" hidden>' + esc(rc.terms || '') + ' Your ad keeps running until Sig confirms the date with you.</p>';
@@ -1063,9 +1071,9 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
     var h = '<section class="cp-sec" id="billing"><div class="cp-h2"><h2>Billing</h2><span class="cp-eyebrow">' + esc(rc.currency || 'USD') + '</span></div>';
     if (!t) return h + '<div class="cp-card"><p class="cp-note" style="margin:0">Your plan will appear here once it is recorded.</p></div></section>';
     h += '<div class="cp-bill"><div class="cp-card cp-plan"><div class="cp-plan-name">' + esc(t.name) + '</div>' +
-         '<div class="cp-plan-price">$' + esc(t.price_week) + '<small> / week</small></div>' +
+         '<div class="cp-plan-price">$' + esc(t.price_month) + '<small> a month</small></div>' +
          '<ul>' +
-         (s.trialW ? '<li>First ' + s.trialW + ' weeks free</li>' : '') +
+         (s.free ? '<li>' + s.free.charAt(0).toUpperCase() + s.free.slice(1) + ' free</li>' : '') +
          (s.lockM ? '<li>Rate locked for ' + esc(s.lockM) + ' months from your start date</li>' : '') +
          (rc.terms ? '<li>' + esc(rc.terms) + '</li>' : '') +
          (t.exclusive ? '<li>Exclusive: one sponsor per issue</li>' : '') +
@@ -1073,13 +1081,13 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
     var tl = [];
     if (s.start) {
       tl.push([s.start, 'Your ad goes live', 'The first briefing with your ad. The results counter starts here.', TODAY === s.start]);
-      if (s.trialEnd) tl.push([s.trialEnd, 'Last free day', s.trialW + ' weeks at no charge, ' + fmt(s.start) + ' to ' + fmt(s.trialEnd) + '.', s.inTrial]);
-      tl.push([s.firstBilled, 'First billed week', '$' + t.price_week + ' a week from here, month to month.', TODAY >= s.firstBilled && (!s.lockEnd || TODAY <= s.lockEnd)]);
-      if (s.lockEnd) tl.push([s.lockEnd, 'Rate lock ends', 'Your $' + t.price_week + ' ' + t.name.toLowerCase() + ' rate holds through this date.', false]);
+      if (s.trialEnd) tl.push([s.trialEnd, 'Last free day', s.freeSpan + ' at no charge, ' + fmt(s.start) + ' to ' + fmt(s.trialEnd) + '.', s.inTrial]);
+      tl.push([s.firstBilled, 'First billed month', '$' + t.price_month + ' a month from here, month to month.', TODAY >= s.firstBilled && (!s.lockEnd || TODAY <= s.lockEnd)]);
+      if (s.lockEnd) tl.push([s.lockEnd, 'Rate lock ends', 'Your $' + t.price_month + '-a-month ' + t.name.toLowerCase() + ' rate holds through this date.', false]);
     } else {
       tl.push([null, 'Your ad goes live', 'The morning after you approve. That date sets everything below.', false]);
-      if (s.trialW) tl.push([null, s.trialW + ' free weeks', 'From the first day your ad runs.', false]);
-      tl.push([null, 'First billed week', 'The day after the free weeks end, at $' + t.price_week + ' a week.', false]);
+      if (s.trialM || s.trialW) tl.push([null, s.freeLabel, 'From the first day your ad runs.', false]);
+      tl.push([null, 'First billed month', 'The day after the free period ends, at $' + t.price_month + ' a month.', false]);
       if (s.lockM) tl.push([null, 'Rate lock', 'Your rate holds for ' + s.lockM + ' months from the start date.', false]);
     }
     h += '<div class="cp-card"><div class="cp-eyebrow" style="margin-bottom:.3rem">Schedule</div><ol class="cp-tl">';

@@ -132,8 +132,8 @@ def main():
           "the approve action is a mailto the sponsor can actually send")
     check("d.approval" in html and "ap.proof === code" in html,
           "APPROVED is shown only when the approval on record is for THIS proof code")
-    check("price_week" in html, "the tier block prints the rate-card price")
-    check(re.search(r"\$\s*\d+\s*/\s*week", html) is None,
+    check("price_month" in html, "the tier block prints the rate-card price")
+    check(re.search(r"\$\s*\d+\s*/\s*(?:week|month|mo)\b", html) is None,
           "no price is typed into the page",
           "a hardcoded rate would drift from data/rate-card.json")
 

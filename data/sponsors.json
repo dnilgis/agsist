@@ -14,7 +14,7 @@
    "approved": null,
    "billing": {
     "tier": "founding",
-    "trial_weeks": 2,
+    "trial_months": 1,
     "rate_lock_months": 12,
     "invoice_contact": "Sig Lindquist · sig@farmers1st.com · 715-797-2428"
    },

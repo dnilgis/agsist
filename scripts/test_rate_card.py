@@ -56,16 +56,19 @@ def main():
     ids = [t.get("id") for t in tiers]
     check(len(ids) == len(set(ids)), "tier ids are unique", ids)
     for t in tiers:
-        check(isinstance(t.get("price_week"), int) and t["price_week"] > 0,
-              "%s carries a weekly price" % t.get("id"), t.get("price_week"))
+        check(isinstance(t.get("price_month"), int) and t["price_month"] > 0,
+              "%s carries a monthly price" % t.get("id"), t.get("price_month"))
+        check("price_week" not in t,
+              "%s carries no leftover weekly price" % t.get("id"),
+              "two prices for one tier is two answers to one question")
         check(bool(t.get("placement")), "%s says where the ad goes" % t.get("id"))
 
     print("\nevery price in the card is still on the page that sells it")
     pitch = _text(PITCH)
     for t in tiers:
-        p = t["price_week"]
-        # "$100 / week", "$100/week", "$100/wk", "$100 /week" all count.
-        pat = re.compile(r"\$%d\s*(?:/|\s*per\s)" % p)
+        p = t["price_month"]
+        # "$149 / month", "$149/month", "$149/mo", "$149 a month" all count.
+        pat = re.compile(r"\$%d\s*(?:/\s*mo|\s*(?:per|a)\s+month)" % p)
         check(bool(pat.search(pitch)),
               "$%d (%s) appears on sponsor.html" % (p, t["id"]),
               "not found — the card and the pitch have drifted")
@@ -73,10 +76,17 @@ def main():
     fnd = next((t for t in tiers if t["id"] == "founding"), None)
     if fnd and fnd.get("year_equivalent"):
         yr = fnd["year_equivalent"]
-        check(yr == fnd["price_week"] * 52,
-              "the annual figure is 52 weeks of the weekly one", "%s vs %s" % (yr, fnd["price_week"] * 52))
+        check(yr == fnd["price_month"] * 12,
+              "the annual figure is 12 months of the monthly one", "%s vs %s" % (yr, fnd["price_month"] * 12))
         check(("$%s" % f"{yr:,}") in pitch or ("$%d" % yr) in pitch,
               "and it is the figure the page quotes", yr)
+
+    print("\nevery open slot on the site shows the card's price")
+    import subprocess
+    r = subprocess.run([sys.executable, str(ROOT / "scripts" / "stamp_rates.py"), "--check"],
+                       capture_output=True, text=True)
+    check(r.returncode == 0, "ribbons, homepage chip and footer slot match the card (scripts/stamp_rates.py --check)",
+          (r.stdout + r.stderr).strip()[-300:])
 
     print("\nthe supporter cap is the one the strip renders")
     sup = next((t for t in tiers if t["id"] == "supporter"), None)

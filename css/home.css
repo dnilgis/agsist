@@ -1108,15 +1108,23 @@ html.has-zip #bids-list-area:has(.bids-skeleton){min-height:820px}
    your face with it." The empty slot is a quiet ad-orange text link (paid
    space is always ad orange), no box, no pulse, no price; gone on a phone (the footer strip still sells the slot). A paid
    sponsor, when there is one, keeps its ad-orange label, smaller. ===== */
-#daily-teaser-sponsor.empty-state{font-size:.765rem!important;font-weight:500!important;letter-spacing:0!important;text-transform:none!important;
-  color:var(--ad-orange)!important;background:none!important;border:0!important;padding:0 4px!important;box-shadow:none!important}
-#daily-teaser-sponsor.empty-state:hover{color:var(--ad-orange)!important;background:none!important;text-decoration:underline}
+/* 2026-10-07, Sig: "make the sponsor slots catch your eye". The empty slot
+   is back as a solid ad-orange pill with a pulsing dot and its price (written
+   from data/rate-card.json by scripts/stamp_rates.py), on every screen size.
+   #0d1117 on --ad-orange is 6.4:1. A paid sponsor's label stays small. */
+#daily-teaser-sponsor.empty-state{display:inline-flex!important;align-items:center;gap:.45rem;font-size:.86rem!important;font-weight:800!important;letter-spacing:.02em!important;text-transform:none!important;
+  color:#0d1117!important;background:var(--ad-orange)!important;border:0!important;border-radius:999px;padding:.42rem .95rem .42rem .8rem!important;box-shadow:0 3px 16px rgba(var(--ad-orange-rgb),.35)!important;text-decoration:none;min-height:36px}
+#daily-teaser-sponsor.empty-state:hover{color:#0d1117!important;background:var(--ad-orange-hi)!important;text-decoration:none;transform:translateY(-1px)}
 /* Sig's rule: anything that sells or shows paid space is ad orange, always.
    Light theme needs a darker orange to stay readable as text (4.5:1). */
-html[data-theme="light"] #daily-teaser-sponsor{color:var(--ad-orange-ink)!important}
-#daily-teaser-sponsor.empty-state .teaser-sponsor-dot,#daily-teaser-sponsor.empty-state .teaser-sponsor-tag{display:none!important}
+html[data-theme="light"] #daily-teaser-sponsor:not(.empty-state){color:var(--ad-orange-ink)!important}
+#daily-teaser-sponsor.empty-state .teaser-sponsor-dot{display:inline-block!important;margin:0;background:#0d1117!important;box-shadow:0 0 0 0 rgba(13,17,23,.5)!important;animation:ag-open-pulse 1.8s ease-out infinite!important}
+#daily-teaser-sponsor.empty-state .teaser-sponsor-tag{display:inline!important;font-family:'JetBrains Mono',monospace;font-size:.78rem;font-weight:800;opacity:1;margin-left:.15rem;padding-left:.5rem;border-left:1px solid rgba(13,17,23,.35)}
+@media(prefers-reduced-motion:reduce){#daily-teaser-sponsor.empty-state .teaser-sponsor-dot{animation:none!important}}
 #daily-teaser-sponsor.has-sponsor{font-size:.765rem!important;padding:2px 6px!important}
-@media(max-width:640px){#daily-teaser-sponsor.empty-state{display:none!important}}
+@media(max-width:640px){#daily-teaser-sponsor.empty-state{font-size:.8rem!important;padding:.38rem .75rem!important;max-width:100%}.s7-adrow{justify-content:center!important}}
+@media(max-width:480px){#daily-teaser-sponsor.empty-state{font-size:.74rem!important;gap:.3rem;padding:.34rem .6rem!important;letter-spacing:0!important}
+  #daily-teaser-sponsor.empty-state .teaser-sponsor-tag{font-size:.7rem;padding-left:.35rem;margin-left:.05rem;letter-spacing:-.01em}}
 
 /* ===== block 9 of 23 ===== */
 /* ===== 2026-10-01 r7-prices: ticker, key contracts, ledger rows, crop progress, export sales, fertilizer, prediction markets ===== */
@@ -1257,7 +1265,7 @@ html[data-theme="light"] #daily-teaser-sponsor{color:var(--ad-orange-ink)!import
 /* D: briefing stamp and the ad link on its own line, away from the data. */
 .s7-stamp{font-family:'JetBrains Mono',monospace;font-size:.765rem;color:var(--text-muted);margin-right:8px;white-space:nowrap}
 .s7-adrow{display:flex;justify-content:flex-end;max-width:1400px;margin:0 auto;padding:4px 16px 8px}
-@media(max-width:640px){.s7-adrow:has(.empty-state){display:none}}
+/* the empty sponsor row shows on a phone too (2026-10-07) */
 /* E: overnight low and soil in Local Conditions. */
 .wstat .s7-flag{display:block;font-family:Inter,system-ui,sans-serif;font-size:.765rem;font-weight:600;margin-top:4px}
 .wstat .s7-sub{display:block;font-family:Inter,system-ui,sans-serif;font-size:.765rem;font-weight:500;color:var(--text-muted);margin-top:4px}
@@ -1464,7 +1472,7 @@ details>summary:hover{color:var(--text)}
 .teaser-line1{flex-wrap:wrap;row-gap:.2rem}
 .teaser-badge{white-space:nowrap}
 .teaser-left{flex:0 1 auto!important;overflow:visible!important}
-.s7-adrow:has(>#daily-teaser-sponsor.empty-state){display:none}
+/* .s7-adrow with an empty slot is shown again (2026-10-07, see #daily-teaser-sponsor.empty-state) */
 
 /* Cut-off text. */
 .bidnet-txt{white-space:normal!important;overflow:visible!important;text-overflow:clip!important}

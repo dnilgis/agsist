@@ -249,7 +249,7 @@ def portal_extras(s):
               the approval email arrives. The portal shows APPROVED only when
               this proof equals the current proof code; if the copy changed
               since, it says the approval does not cover the new words.
-    billing   {"tier": "founding", "trial_weeks": 2, "rate_lock_months": 12,
+    billing   {"tier": "founding", "trial_months": 1, "rate_lock_months": 12,
                "invoice_to": "...", "notes": "..."} -- the deal as agreed. The
               schedule on the portal is computed from this and the start date.
     """

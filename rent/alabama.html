@@ -146,9 +146,7 @@
     .rs-cloud{font-size:.78rem;line-height:2;color:#8a948f}
     .rs-cloud a{color:#8a948f;text-decoration:none;border-bottom:1px dotted #2a3133}
     .rs-cloud a:hover{color:var(--gold)}
-    .ag-sponsor-ribbon{display:block;font-size:.74rem;padding:.45rem .85rem;margin:1rem 0;border:1px solid rgba(132,160,168,.18);border-radius:8px;color:#8a948f;line-height:1.6}
-    .ag-sponsor-ribbon .ag-sponsor-tag{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin-right:.5rem}
-    .ag-sponsor-ribbon a{color:var(--gold)}
+    /* the sponsor ribbon is styled once, in components/styles.css */
     h1{font-size:1.55rem;margin:14px 0 4px} h2{font-size:1.12rem;margin:26px 0 6px}
     .rh-grid{position:relative;width:840px;height:560px;margin:0 auto;max-width:100%}
     .rh-tile{position:absolute;width:64px;height:64px;border-radius:9px;padding:9px;box-sizing:border-box;text-decoration:none;display:block;left:calc(var(--gc)*70px - 70px);top:calc(var(--gr)*70px - 70px)}
@@ -178,7 +176,7 @@
   <h1>Alabama Cash Rent by County &mdash; 2026</h1>
   <p class="sub">Every USDA-published county cash rental rate in Alabama, straight from the NASS Cash Rents
   Survey &mdash; no estimates, no modeling, no login. <span id="rs-seed"><!--SEED:rentstate-->59 Alabama counties with a published 2026 non-irrigated cropland rent &middot; median $46/acre &middot; +5.1% vs 2025 (matched counties) &middot; data refreshed 2026-10-06<!--/SEED--></span></p>
-  <aside class="ag-sponsor-ribbon"><span class="ag-sponsor-tag">Sponsor this page</span> Everyone on this page is pricing Alabama ground &mdash; one category-exclusive slot. <a href="/sponsor?slot=rent-al&amp;utm_source=rent-alabama&amp;utm_medium=slot">Put your name here &rarr;</a></aside>
+  <aside class="ag-sponsor-ribbon"><span class="ag-sponsor-tag">Sponsor this page</span> Everyone on this page is pricing Alabama ground &mdash; one category-exclusive slot. <span class="ag-sponsor-price" data-rate="page">$29/mo &middot; first month free</span> <a href="/sponsor?slot=rent-al&amp;utm_source=rent-alabama&amp;utm_medium=slot">Put your name here &rarr;</a></aside>
   
   <div style="background:#101415;border:1px solid #1a1f20;border-radius:14px;padding:20px 24px;margin:14px 0;display:flex;gap:22px;flex-wrap:wrap;align-items:center">
     <div style="font-family:'JetBrains Mono',monospace;font-size:3.6rem;font-weight:800;line-height:1;color:#e0685f">$46</div>

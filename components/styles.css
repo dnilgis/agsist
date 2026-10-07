@@ -182,7 +182,7 @@ input, select, textarea { border-color: var(--border-2); }
 .agsb-x:hover { color: var(--text); }
 .agsb-warn { flex: 1 1 100%; font-size: .82rem; line-height: 1.45; color: var(--gold, #d4a23f); margin-top: .35rem; }
 .agsb-ok { font-size: .88rem; color: var(--green); font-weight: 700; flex: 1; }
-.ag-sponsor-ribbon a[href] { display: inline-block; padding: .5rem .3rem; margin: -.4rem -.1rem; }
+/* .ag-sponsor-ribbon a[href]: a real button now, sized in the OPEN SPONSOR SLOT block below */
 .skip { position: absolute; top: -100%; left: 1rem; z-index: 9999; padding: .5rem 1rem; background: var(--brand-fill,var(--brand)); color: #0a1206; font-size: .875rem; font-weight: 700; border-radius: 0 0 4px 4px }
 .skip:focus { top: 0 }
 :focus-visible { outline: 2px solid var(--gold); outline-offset: 2px }
@@ -873,10 +873,20 @@ td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;
    ─────────────────────────────────────────────────────────────────────── */
 
 /* Sponsor ribbon — was declared on 32 pages in 3 versions. Pages that hide it keep their own override; only the shared definition moved. */
-.ag-sponsor-ribbon{display:block;font-size:0.785rem;padding:.45rem .85rem .45rem 1rem;margin:1rem 0;border:1px solid rgba(var(--ad-orange-rgb,232,116,58),.34);border-left:4px solid var(--ad-orange,#e8743a);border-radius:8px;background:rgba(var(--ad-orange-rgb,232,116,58),.05);color:var(--text-dim,#8a948f);line-height:1.6}
-.ag-sponsor-ribbon .ag-sponsor-tag{font-family:'JetBrains Mono',monospace;font-size:0.75rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--ad-orange,#e8743a);margin-right:.5rem}
-.ag-sponsor-ribbon a{color:var(--ad-orange,#e8743a);font-weight:600}
-[data-theme="light"] .ag-sponsor-ribbon .ag-sponsor-tag,[data-theme="light"] .ag-sponsor-ribbon a{color:var(--ad-orange-ink,#a8380a)}
+/* OPEN SPONSOR SLOT (2026-10-07: "make the sponsor slots catch your eye").
+   One design for all 79 ribbons. The pulsing OPEN pill, the price chip
+   (written from data/rate-card.json by scripts/stamp_rates.py) and a real
+   button. #0d1117 on --ad-orange is 6.4:1; the price and body text use the
+   theme's own text colours. Printed pages drop the ribbon (per-page rule). */
+.ag-sponsor-ribbon{display:flex;flex-wrap:wrap;align-items:center;gap:.5rem .75rem;font-size:.86rem;line-height:1.5;padding:.75rem .9rem .75rem 1rem;margin:1.1rem 0;border:1px solid rgba(var(--ad-orange-rgb,232,116,58),.55);border-left:5px solid var(--ad-orange,#e8743a);border-radius:10px;background:linear-gradient(100deg,rgba(var(--ad-orange-rgb,232,116,58),.17),rgba(var(--ad-orange-rgb,232,116,58),.05) 55%,rgba(var(--ad-orange-rgb,232,116,58),.10));box-shadow:0 2px 14px rgba(var(--ad-orange-rgb,232,116,58),.14);color:var(--text-dim)}
+.ag-sponsor-ribbon .ag-sponsor-tag{display:inline-flex;align-items:center;gap:.4rem;font-family:'JetBrains Mono',monospace;font-size:.72rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#0d1117;background:var(--ad-orange,#e8743a);border-radius:999px;padding:.22rem .65rem .22rem .5rem;white-space:nowrap}
+.ag-sponsor-ribbon .ag-sponsor-tag::before{content:'';width:7px;height:7px;border-radius:50%;background:#0d1117;box-shadow:0 0 0 0 rgba(13,17,23,.55);animation:ag-open-pulse 1.8s ease-out infinite}
+@keyframes ag-open-pulse{0%{box-shadow:0 0 0 0 rgba(13,17,23,.55)}70%{box-shadow:0 0 0 7px rgba(13,17,23,0)}100%{box-shadow:0 0 0 0 rgba(13,17,23,0)}}
+.ag-sponsor-ribbon .ag-sponsor-price{font-family:'JetBrains Mono',monospace;font-size:.8rem;font-weight:800;color:var(--text);background:var(--surface,rgba(255,255,255,.04));border:1px solid rgba(var(--ad-orange-rgb,232,116,58),.6);border-radius:6px;padding:.18rem .55rem;white-space:nowrap}
+.ag-sponsor-ribbon a[href]{margin-left:auto;display:inline-flex;align-items:center;min-height:38px;padding:.4rem .95rem;border-radius:8px;background:var(--ad-orange,#e8743a);color:#0d1117!important;font-weight:800;text-decoration:none;white-space:nowrap;transition:transform .15s,box-shadow .15s}
+.ag-sponsor-ribbon a[href]:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(var(--ad-orange-rgb,232,116,58),.45)}
+@media(max-width:600px){.ag-sponsor-ribbon a[href]{margin-left:0;width:100%;justify-content:center}}
+@media(prefers-reduced-motion:reduce){.ag-sponsor-ribbon .ag-sponsor-tag::before{animation:none}.ag-sponsor-ribbon a[href]{transition:none}}
 
 
 /* Inline icon sprite — was on 14 pages, identical every time. */

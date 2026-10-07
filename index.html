@@ -11,7 +11,7 @@
   <!-- /static-nav:fonts -->
   <link rel="stylesheet" href="/components/styles.css?v=18">
 <link rel="stylesheet" href="/components/sponsor-ad.css?v=1">
-<link rel="stylesheet" href="/css/home.css?v=7">
+<link rel="stylesheet" href="/css/home.css?v=8">
 <!-- 2026-09-30: sponsor-ad.js's one call site (AgsistAd.render(), below) is
      already guarded with window.AgsistAd? and runs inside a fetch .then(),
      well after a deferred script would finish — so defer is free here.
@@ -239,7 +239,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
     <div class="teaser-line1"><div class="teaser-left"><span class="teaser-badge" id="daily-teaser-date"><svg class="ic" aria-hidden="true"><use href="#i-newspaper"/></svg> AGSIST Daily</span></div><span class="teaser-action">Read Today’s Briefing &#x2193;</span></div>
     <span class="teaser-preview" id="daily-teaser-text">Today’s ag market briefing &mdash; click to read</span>
   </div>
-  <div class="s7-adrow"><a class="teaser-sponsor empty-state" id="daily-teaser-sponsor" href="/sponsor" onclick="event.stopPropagation()"><span class="teaser-sponsor-dot"></span>Become a sponsor<span class="teaser-sponsor-tag">$100/wk</span></a></div>
+  <div class="s7-adrow"><a class="teaser-sponsor empty-state" id="daily-teaser-sponsor" href="/sponsor" onclick="event.stopPropagation()"><span class="teaser-sponsor-dot"></span>Become a sponsor<span class="teaser-sponsor-tag" data-rate="founding">$149/mo &middot; first month free</span></a></div>
   <div class="daily-full" id="daily-full">
     <div class="daily-hero-inner">
       <div id="daily-surprise-banner" class="daily-surprise-banner" style="display:none" role="alert"><span class="surprise-icon"><svg class="ic" aria-hidden="true"><use href="#i-zap"/></svg></span><span class="surprise-text"><strong>Loading&hellip;</strong></span></div>
@@ -287,10 +287,10 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
             <div class="dsp-empty" id="dsp-empty">
               <div class="dsp-tags">
                 <span class="dsp-tag dsp-tag-available"><svg class="ic" aria-hidden="true"><use href="#i-zap"/></svg> Available</span>
-                <span class="dsp-tag dsp-tag-founding">Founding Sponsor &middot; 1 Slot &middot; First 2 Weeks Free</span>
+                <span class="dsp-tag dsp-tag-founding">Founding Sponsor &middot; 1 Slot &middot; First Month Free</span>
               </div>
               <h2 class="dsp-headline">Sponsor the AGSIST Daily Briefing.</h2>
-              <p class="dsp-pitch">One ag company per issue. Your message reaches working US producers across grain, cattle, dairy, and specialty operations &mdash; read before the market open. <strong>First 2 weeks free, then $100/week &mdash; founding rate locked 12 months. No minimum, cancel anytime.</strong></p>
+              <p class="dsp-pitch">One ag company per issue. Your message reaches working US producers across grain, cattle, dairy, and specialty operations &mdash; read before the market open. <strong>First month free, then $149 a month &mdash; founding rate locked 12 months. No minimum, cancel anytime.</strong></p>
               <div class="dsp-actions">
                 <a class="dsp-cta-primary" href="/sponsor"><svg class="ic" aria-hidden="true"><use href="#i-newspaper"/></svg> See the founding sponsor pitch</a>
               </div>

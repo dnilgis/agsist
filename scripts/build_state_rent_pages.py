@@ -40,6 +40,17 @@ DATA_DIR = "data/cash-rent"
 OUT_DIR = "rent"
 SITE = "https://agsist.com"
 
+
+def _page_rate():
+    """The open ribbon's price, from the one rate card (scripts/stamp_rates.py
+    writes the same text into every other page)."""
+    with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "data", "rate-card.json")) as f:
+        t = next(x for x in json.load(f)["tiers"] if x["id"] == "page")
+    return "$%d/mo &middot; first month free" % t["price_month"]
+
+
+PAGE_RATE = _page_rate()
+
 STATE_NAMES = {
     "AL": "Alabama", "AR": "Arkansas", "AZ": "Arizona", "CA": "California",
     "CO": "Colorado", "CT": "Connecticut", "DE": "Delaware", "FL": "Florida",
@@ -258,9 +269,7 @@ def head(title, desc, path, jsonld):
     .rs-cloud{{font-size:.78rem;line-height:2;color:#8a948f}}
     .rs-cloud a{{color:#8a948f;text-decoration:none;border-bottom:1px dotted #2a3133}}
     .rs-cloud a:hover{{color:var(--gold)}}
-    .ag-sponsor-ribbon{{display:block;font-size:.74rem;padding:.45rem .85rem;margin:1rem 0;border:1px solid rgba(132,160,168,.18);border-radius:8px;color:#8a948f;line-height:1.6}}
-    .ag-sponsor-ribbon .ag-sponsor-tag{{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin-right:.5rem}}
-    .ag-sponsor-ribbon a{{color:var(--gold)}}
+    /* the sponsor ribbon is styled once, in components/styles.css */
     h1{{font-size:1.55rem;margin:14px 0 4px}} h2{{font-size:1.12rem;margin:26px 0 6px}}
     .rh-grid{{position:relative;width:840px;height:560px;margin:0 auto;max-width:100%}}
     .rh-tile{{position:absolute;width:64px;height:64px;border-radius:9px;padding:9px;box-sizing:border-box;text-decoration:none;display:block;left:calc(var(--gc)*70px - 70px);top:calc(var(--gr)*70px - 70px)}}
@@ -477,7 +486,7 @@ def build_state_page(st, d, s, all_states, aslug=None):
   <h1>{name} Cash Rent by County &mdash; {yr}</h1>
   <p class="sub">Every USDA-published county cash rental rate in {name}, straight from the NASS Cash Rents
   Survey &mdash; no estimates, no modeling, no login. <span id="rs-seed"><!--SEED:rentstate-->{seed}<!--/SEED--></span></p>
-  <aside class="ag-sponsor-ribbon"><span class="ag-sponsor-tag">Sponsor this page</span> Everyone on this page is pricing {name} ground &mdash; one category-exclusive slot. <a href="/sponsor?slot=rent-{st.lower()}&amp;utm_source=rent-{sl}&amp;utm_medium=slot">Put your name here &rarr;</a></aside>
+  <aside class="ag-sponsor-ribbon"><span class="ag-sponsor-tag">Sponsor this page</span> Everyone on this page is pricing {name} ground &mdash; one category-exclusive slot. <span class="ag-sponsor-price" data-rate="page">{PAGE_RATE}</span> <a href="/sponsor?slot=rent-{st.lower()}&amp;utm_source=rent-{sl}&amp;utm_medium=slot">Put your name here &rarr;</a></aside>
   {hero}
   <h2>Every published county, {yr}</h2>
   <p class="sub">Click a column to sort. Greyed values are the county&rsquo;s most recent published year where {yr}
@@ -576,7 +585,7 @@ def build_hub(states, stats, generated):
   <p class="sub">Pick a state for every published county&rsquo;s USDA cash rental rate, history to 2008, and the
   statutory lease-termination deadline where the state has one.
   <span id="rs-seed"><!--SEED:renthub-->{seed}<!--/SEED--></span></p>
-  <aside class="ag-sponsor-ribbon"><span class="ag-sponsor-tag">Sponsor this page</span> The doorway to every county rent rate in America &mdash; one category-exclusive slot. <a href="/sponsor?slot=rent-hub&amp;utm_source=rent-hub&amp;utm_medium=slot">Put your name here &rarr;</a></aside>
+  <aside class="ag-sponsor-ribbon"><span class="ag-sponsor-tag">Sponsor this page</span> The doorway to every county rent rate in America &mdash; one category-exclusive slot. <span class="ag-sponsor-price" data-rate="page">{PAGE_RATE}</span> <a href="/sponsor?slot=rent-hub&amp;utm_source=rent-hub&amp;utm_medium=slot">Put your name here &rarr;</a></aside>
   {tile_html}
   <table class="rs-t" id="rs-table"><thead><tr><th>State</th><th>Median rent /ac</th><th>YoY</th><th>Counties</th><th>Type</th></tr></thead>
   <tbody>{"".join(rows)}</tbody></table>
