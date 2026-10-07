@@ -1015,6 +1015,8 @@ button,a,[role="button"],input,select{touch-action:manipulation}
 <script src="/components/loader.js?v=17" defer></script>
 <script src="/components/geo.js?v=17" defer></script>
 <script src="/components/cb-glance.js?v=1"></script>
+<link rel="stylesheet" href="/components/cb-alerts.css?v=1">
+<script src="/components/cb-alerts.js?v=1" defer></script>
 <script>
 (function(){
 'use strict';
@@ -2388,6 +2390,8 @@ function renderBids(bids,keepLimit){
     html+='</div><div class="elev-meta">';
     if(elev.distance!=null)html+='<div class="elev-dist">'+elev.distance.toFixed(0)+' mi away</div>';
     html+='<button class="pin-btn'+(isPinned?' pinned':'')+'" data-key="'+escH(elev.key)+'" aria-pressed="'+(isPinned?'true':'false')+'" aria-label="'+(isPinned?'Remove '+escH(elev.facility)+' from':'Add '+escH(elev.facility)+' to')+' comparison">'+(isPinned?'Added':'&#43; Compare')+'</button>';
+    /* Alert bell: components/cb-alerts.js owns the button, the form and the post. Keep this one call in any card rebuild. */
+    if(window.CBAlerts)html+=CBAlerts.bell(elev);
     html+='</div></div>';
     html+='<div class="elev-actions">';
     if(elev.phone)html+='<a class="elev-call-btn" href="tel:'+elev.phone.replace(/[^\d]/g,'')+'" aria-label="Call '+escH(elev.facility)+' on '+escH(fmtPhone(elev.phone))+'"><svg class="ic" aria-hidden="true"><use href="#i-phone"/></svg> '+escH(fmtPhone(elev.phone))+'</a>';
@@ -3028,6 +3032,7 @@ function doSearch(zip){
     syncDeliveryOptions(bids);
     statusBar.style.display='flex';var _cn=document.getElementById('cb-confirm-note');if(_cn)_cn.style.display='block';toolbar.style.display='flex';internalLinks.style.display='block';
     statusLbl.textContent='Bids within '+radius+' mi of ZIP '+zip;
+    if(window.CBAlerts)CBAlerts.zipPanel(zip,radius); /* ZIP price alert, components/cb-alerts.js */
     /* Wire the freshness timer to lastFetchTime — ticks every 30s.
        Falls back gracefully if loader.js timer module didn't load. */
     var srcEl=document.getElementById('cb-status-source');

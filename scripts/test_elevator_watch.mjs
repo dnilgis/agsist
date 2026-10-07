@@ -177,4 +177,22 @@ r = await call('/elevator-watch-subscribe', 'POST', { email: 'old@x.com', wid: W
 P = JSON.parse(store.get('ewatch:old@x.com')).pend[WID];
 A(r.status == 200 && !('kind' in P) && Object.keys(P).sort().join() === 'label,m,ts', 'old page body stores exactly what v5.1 stored');
 
+// ZIP-wide cash alert (components/cb-alerts.js, scripts/send_zip_alert.py): an
+// ordinary kind=cash alert whose ewid is "ab" + ZIP + 3-digit miles. Stored by
+// the v5.3 rules unchanged; only the confirm sentence knows it re-arms (v5.6).
+const ZB = { email: 'zip@x.com', wid: 'b1c2d3e4', label: 'Corn at or above $4.50 within 25 mi of ZIP 54728', kind: 'cash',
+  ewid: 'ab54728025', crop: 'corn', period: 'nearby', plabel: 'nearest delivery', direction: 'above', target_cents: 450 };
+r = await call('/elevator-watch-subscribe', 'POST', ZB);
+P = JSON.parse(store.get('ewatch:zip@x.com')).pend.b1c2d3e4;
+A(r.status == 200 && P.ewid === 'ab54728025' && P.period === 'nearby' && P.target_cents === 450, 'worker stores a ZIP alert as it is');
+t = tok('zip@x.com|ec|b1c2d3e4');
+r = await call(`/elevator-watch-confirm?e=zip@x.com&w=b1c2d3e4&t=${t}`, 'POST');
+ctext = await r.text();
+A(ctext.includes('within 25 mi of ZIP 54728') && ctext.includes('one crosses again') && !ctext.includes('clears itself'), 'ZIP confirm page says it re-arms');
+await call('/elevator-watch-mark?token=tok', 'POST', { email: 'zip@x.com', wid: 'b1c2d3e4', k: 'on|p|462', s: { on: true, v: 462, pa: 'p' } });
+rec = JSON.parse(store.get('ewatch:zip@x.com'));
+A(rec.w.b1c2d3e4.ewid === 'ab54728025' && rec.w.b1c2d3e4.s.on === true && rec.w.b1c2d3e4.k === 'on|p|462', 'state mark keeps the ZIP alert');
+r = await call('/elevator-watch-subscribe', 'POST', Object.assign({}, ZB, { wid: 'b1c2d3e5', ewid: 'ab5472802' }));
+A(r.status == 200, 'a 9-char ewid is still a hex id to the worker; the sender ignores it (parse_ewid)');
+
 console.log('elevator-watch worker ok', ok, 'checks');

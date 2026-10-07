@@ -105,6 +105,16 @@ PPU_BAND = {"corn": (2, 12), "soybeans": (6, 32), "wheat": (3, 20), "sorghum": (
 CROP_NAMES = {"corn": "corn", "soybeans": "soybeans", "wheat": "wheat", "sorghum": "sorghum", "oats": "oats"}
 MON = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
 AMBIGUOUS = "ambiguous"
+# A ZIP-wide alert ("anyone within N mi of ZIP pays $X"), stored by the worker
+# as an ordinary kind=cash elevator alert whose ewid is "ab" + ZIP + 3-digit
+# miles. A real ewid is an 8-char FNV hash, so a 10-char one never names an
+# elevator. scripts/send_zip_alert.py owns these; every function here that
+# walks alerts leaves them alone (they would otherwise read as "not on the board").
+ZIP_EWID = re.compile(r"^ab(\d{5})(\d{3})$")
+
+
+def is_zip_alert(rec):
+    return isinstance(rec, dict) and rec.get("kind") == "cash" and bool(ZIP_EWID.match(str(rec.get("ewid") or "")))
 
 
 def env(name, default=None):
@@ -523,13 +533,13 @@ def plan_alerts(watchers, net_idx, now_ms):
     for r in watchers:
         e = r["email"]
         for w, p in (r.get("pend") or {}).items():
-            if p.get("kind") not in OPT_KINDS or p.get("m") or now_ms - p.get("ts", 0) > PEND_TTL_MS:
+            if p.get("kind") not in OPT_KINDS or p.get("m") or now_ms - p.get("ts", 0) > PEND_TTL_MS or is_zip_alert(p):
                 continue
             row = net_idx.get(p.get("ewid"))
             if isinstance(row, dict):
                 confirms.append((e, w, opt_label(p, row)))
         for w, st in (r.get("w") or {}).items():
-            if not st or st.get("kind") not in OPT_KINDS:
+            if not st or st.get("kind") not in OPT_KINDS or is_zip_alert(st):
                 continue
             row = net_idx.get(st.get("ewid"))
             if not isinstance(row, dict) or row["crop"] != st.get("crop"):
@@ -659,6 +669,8 @@ def daily_lines(watchers, net_idx, basis_idx):
         lines, seen = [], set()
         for w, st in (r.get("w") or {}).items():
             st = st or {}
+            if is_zip_alert(st):
+                continue                                   # a ZIP-wide alert names no one elevator
             if st.get("kind") in OPT_KINDS:
                 key = ("n", st.get("ewid"), st.get("period"))
                 if key in seen:
@@ -760,6 +772,8 @@ def pend_summary(watchers, basis_idx, net_idx, now_ms):
     n = {"to confirm": 0, "already mailed": 0, "expired": 0, "elevator not in index": 0}
     for r in watchers:
         for w, p in (r.get("pend") or {}).items():
+            if is_zip_alert(p):
+                continue                                   # counted by send_zip_alert.py
             if p.get("m"):
                 n["already mailed"] += 1
             elif now_ms - p.get("ts", 0) > PEND_TTL_MS:
@@ -987,6 +1001,15 @@ def selftest_alerts():
     mv = opt_alert_email("f@x.com", "mv5", got["mv5"][2], "move", -65, got["mv5"][5], "https://w.dev", "sec", "AGSIST", "n@agsist.com", None)
     assert "Basis: \u221260\u00a2 now, \u221265\u00a2 at the last alert" in mv.get_body(("plain",)).get_content() and "cleared" not in mv.get_body(("plain",)).get_content()
     assert "<b>spoof</b>" not in opt_confirm_email("f@x.com", "p1", cf[0][2], "https://w.dev", "sec", "AGSIST", "n@agsist.com", None).as_string()
+
+    # ZIP-wide alerts (scripts/send_zip_alert.py) are never planned, counted or printed here.
+    zw = {"kind": "cash", "ewid": "ab54728025", "crop": "corn", "period": "nearby", "plabel": "nearest delivery",
+          "direction": "above", "target_cents": 100, "label": "zip", "k": "on|x", "s": {"on": True}}
+    zp = dict(zw, ts=NOW - 1000, m=0)
+    zz = [{"email": "z@x.com", "pend": {"zp": zp}, "w": {"zw": zw}}]
+    assert is_zip_alert(zw) and not is_zip_alert(W("cash", A_C, direction="above", target_cents=450))
+    assert plan_alerts(zz, dict(idx, ab54728025=idx[A_C]), NOW) == ([], [], [], []), "a ZIP alert is not an elevator alert"
+    assert daily_lines(zz, idx, {}) == {} and "elevator not in index 0" in pend_summary(zz, {}, idx, NOW)
 
     # the Daily's block
     dl = daily_lines(watchers, idx, {})

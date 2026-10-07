@@ -1,0 +1,41 @@
+/* components/cb-alerts.css -- the alert bell on /cash-bids cards and the ZIP
+   alert above them (components/cb-alerts.js). Page tokens only, so light and
+   dark follow the page. */
+.cba-ic{width:1rem;height:1rem;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0;vertical-align:-.15em}
+.cba-bell{display:inline-flex;align-items:center;justify-content:center;gap:.25rem;min-height:44px;min-width:44px;padding:.22rem .55rem;background:none;border:1px solid var(--border);border-radius:20px;color:var(--text-muted);font-family:'JetBrains Mono',monospace;font-size:.763rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;cursor:pointer;white-space:nowrap}
+.cba-bell:hover,.cba-bell[aria-expanded="true"]{border-color:var(--gold);color:var(--gold)}
+[data-theme="light"] .cba-bell:hover,[data-theme="light"] .cba-bell[aria-expanded="true"]{color:#86600f;border-color:#86600f}
+.cba-bell:focus-visible,.cba-zs:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.cba-card{padding:.7rem 1rem .8rem;border-bottom:1px solid var(--border);background:var(--surface2)}
+.cba-form{display:flex;flex-direction:column;gap:.45rem;margin:0}
+.cba-title{margin:0;font-size:.9rem;font-weight:600;color:var(--text);line-height:1.9}
+.cba-row{display:flex;flex-wrap:wrap;gap:.45rem;align-items:flex-end}
+.cba-f{display:flex;flex-direction:column;gap:.15rem;min-width:0}
+.cba-grow{flex:1 1 12rem}
+.cba-k{font-size:.8125rem;color:var(--text-muted)}
+.cba-form input[type="email"],.cba-form input[type="number"],.cba-form select{background:var(--surface,var(--bg));border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:1rem;padding:.35rem .5rem;min-height:44px;box-sizing:border-box;max-width:100%}
+.cba-form input[type="number"]{width:6.2rem;font-family:'JetBrains Mono',monospace}
+.cba-form input[aria-invalid="true"]{border-color:var(--red,#ef4444)}
+.cba-kind{border:0;margin:0;padding:0;display:flex;flex-direction:column;gap:.15rem}
+.cba-radio{display:flex;align-items:center;flex-wrap:wrap;gap:.35rem;min-height:44px;font-size:.9rem;color:var(--text);cursor:pointer}
+.cba-radio input[type="radio"]{width:1.1rem;height:1.1rem;margin:0;accent-color:var(--gold)}
+.cba-go{min-height:44px;padding:.4rem 1rem;background:var(--gold-fill,var(--gold));color:#0a0c0d;border:0;border-radius:8px;font-size:.9rem;font-weight:700;cursor:pointer;white-space:nowrap}
+.cba-go:disabled{opacity:.6;cursor:default}
+.cba-now{margin:0;font-family:'JetBrains Mono',monospace;font-size:.8125rem;color:var(--text-muted);line-height:1.5}
+.cba-note{margin:0;font-size:.8125rem;color:var(--text-muted);line-height:1.5}
+.cba-status{font-size:.875rem;color:var(--text-muted);min-height:0}
+.cba-status.is-err{color:var(--red,#ef4444)}
+.cba-done{margin:0;font-size:.9rem;color:var(--green);line-height:1.5}
+.cba-zip{margin:.2rem 0 1rem;border:1px solid var(--border);border-radius:12px;background:var(--surface2)}
+.cba-zd{padding:0}
+.cba-zs{display:flex;align-items:center;gap:.45rem;min-height:44px;padding:.55rem .9rem;cursor:pointer;font-size:.92rem;font-weight:600;color:var(--text);list-style:none}
+.cba-zs::-webkit-details-marker{display:none}
+.cba-zs::after{content:'\25BE';margin-left:auto;color:var(--text-muted)}
+.cba-zd[open] .cba-zs::after{content:'\25B4'}
+.cba-zd .cba-form{padding:0 .9rem .9rem}
+.cba-zd .cba-title select{margin:0 .1rem}
+@media (max-width:480px){
+  .cba-bell-t{display:none}
+  .cba-title{font-size:.875rem}
+}
+@media print{.cba-bell,.cba-card,.cba-zip{display:none!important}}
