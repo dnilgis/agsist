@@ -42,7 +42,7 @@ function lift(name) {
 }
 
 const NAMES = ["classify", "netZipCoord", "netDistanceMi", "netPlacesWithin",
-               "netRowsFrom", "netKey", "netMerge", "fetchNetwork",
+               "netRowsFrom", "netContract", "netKey", "netMerge", "fetchNetwork",
                "_fetchNetworkInner", "netGet",
                /* netRowsFrom drops non-US rows through usScope() (added with the
                   US-only scope); without it every row threw "usScope is not

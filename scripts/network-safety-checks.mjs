@@ -17,7 +17,7 @@ function lift(name) {
   }
 }
 const NAMES = ["classify", "netGet", "netZipCoord", "netDistanceMi", "netPlacesWithin",
-               "netRowsFrom", "netKey", "netMerge", "fetchNetwork",
+               "netRowsFrom", "netContract", "netKey", "netMerge", "fetchNetwork",
                /* The helpers netRowsFrom and netKey call. Missing, every row
                   threw a ReferenceError here that the page never throws (the
                   same gap as network-checks.mjs). */
