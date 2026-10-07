@@ -43,6 +43,7 @@ var NEVER_CACHE = [
   'gamma-api.polymarket.com',                // ag-odds source (CORS-restricted)
   'workers.dev',                             // any Cloudflare Worker
   'geocoding-api.open-meteo.com',            // ZIP lookup
+  'api.weather.gov',                         // live NWS alerts: an expired warning must never come back from cache
 ];
 
 // ── Install: open new cache (don't pre-cache anything) ────────────
