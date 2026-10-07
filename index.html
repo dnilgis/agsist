@@ -283,16 +283,16 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
                which is now the prediction bot's call. It lives here, after the
                briefing's sections, so the ad and the call never read as one. -->
           <div class="daily-sponsor" id="daily-sponsor" role="region" aria-label="Sponsor slot">
-            <!-- Empty state: billboard for finding the founding sponsor -->
+            <!-- Empty state: billboard for finding the sponsor -->
             <div class="dsp-empty" id="dsp-empty">
               <div class="dsp-tags">
                 <span class="dsp-tag dsp-tag-available"><svg class="ic" aria-hidden="true"><use href="#i-zap"/></svg> Available</span>
-                <span class="dsp-tag dsp-tag-founding">Founding Sponsor &middot; 1 Slot &middot; First Month Free</span>
+                <span class="dsp-tag dsp-tag-founding">Sponsor &middot; 1 Slot &middot; First Month Free</span>
               </div>
               <h2 class="dsp-headline">Sponsor the AGSIST Daily Briefing.</h2>
-              <p class="dsp-pitch">One ag company per issue. Your message reaches working US producers across grain, cattle, dairy, and specialty operations &mdash; read before the market open. <strong>First month free, then $149 a month &mdash; founding rate locked 12 months. No minimum, cancel anytime.</strong></p>
+              <p class="dsp-pitch">One ag company per issue. Your message reaches working US producers across grain, cattle, dairy, and specialty operations &mdash; read before the market open. <strong>First month free, then $149 a month &mdash; rate locked 12 months. No minimum, cancel anytime.</strong></p>
               <div class="dsp-actions">
-                <a class="dsp-cta-primary" href="/sponsor"><svg class="ic" aria-hidden="true"><use href="#i-newspaper"/></svg> See the founding sponsor pitch</a>
+                <a class="dsp-cta-primary" href="/sponsor"><svg class="ic" aria-hidden="true"><use href="#i-newspaper"/></svg> See the sponsor pitch</a>
               </div>
               <div class="dsp-contact">
                 <a href="mailto:sig@farmers1st.com" aria-label="Email Sigurd at sig@farmers1st.com">sig@farmers1st.com</a>
@@ -1858,7 +1858,7 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')close(true);
     });
     /* The sponsor_impression observer that stood here was REMOVED 2026-09-05.
        It watched #daily-sponsor -- the whole block, which shows the house
-       "Available / Founding Sponsor" pitch whenever no sponsor is booked -- so
+       "Available / Sponsor" pitch whenever no sponsor is booked -- so
        every event it ever fired was a view of us advertising our own empty
        slot. It also fired at 50% with no dwell, which is not the MRC rule.
        components/sponsor-metrics.js now measures the FILLED element only, on

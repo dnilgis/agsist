@@ -7,12 +7,12 @@
   "tiers": [
     {
       "id": "founding",
-      "name": "Founding sponsor",
+      "name": "Sponsor",
       "price_month": 149,
       "slots": 1,
       "exclusive": true,
       "placement": "In every daily briefing, web and email, plus a sponsor strip above the fold on the homepage.",
-      "note": "One ag company per issue. Founding rate locked for 12 months from start date. Once filled, the next slot opens only on renewal.",
+      "note": "One ag company per issue. Rate locked for 12 months from start date. Once filled, the next slot opens only on renewal.",
       "year_equivalent": 1788
     },
     {

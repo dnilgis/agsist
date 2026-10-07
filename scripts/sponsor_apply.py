@@ -16,7 +16,7 @@ thing that changes the site:
                                  the logo to img/sponsors/. Then marked live with
                                  its start date, and both sides are told.
   approved (founding)         -> Sig is told it needs setting up by hand (the
-                                 founding card has its own approval flow).
+                                 sponsor card has its own approval flow).
   declined                    -> one polite note to the applicant.
   live                        -> 3 days before the free month ends, the sponsor
                                  hears what happens next; on each monthly date
@@ -66,7 +66,7 @@ REPO = Path(__file__).resolve().parent.parent
 SITE = "https://agsist.com"
 ADDRESS = "AGSIST, PO Box 243, Chetek, WI 54728"
 PEND_TTL_MS = 14 * 864e5
-TIER_NAME = {"page": "Own a page", "supporter": "Supporter", "founding": "Founding sponsor"}
+TIER_NAME = {"page": "Own a page", "supporter": "Supporter", "founding": "Sponsor"}
 
 
 def env(name, default=None):
@@ -310,7 +310,7 @@ def emails_for(action, a, base, secret, card, today, sig):
             "Contact: %s, %s%s." % (a.get("contact") or "?", a["email"], (", " + a["phone"]) if a.get("phone") else ""),
             "Price: first month free, then %s a month." % price]
         if a["tier"] == "founding":
-            lines.append("Founding slot: approving tells you to set it up by hand (the briefing card has its own proof and approval).")
+            lines.append("Sponsor slot: approving tells you to set it up by hand (the briefing card has its own proof and approval).")
         else:
             lines.append("Approve and it goes live within the hour; the free month starts that day.")
         return [(sig, dict(subject="New sponsor: %s, %s" % (a["company"], what(a)), paras=lines,
@@ -329,8 +329,8 @@ def emails_for(action, a, base, secret, card, today, sig):
                         a["company"], fmt(free_end), price, fmt(free_end + timedelta(days=1)))],
                     links=[("End it (frees the slot)", dec("end"))]))]
     if action == "founding":
-        return [(sig, dict(subject="Founding sponsor approved: %s" % a["company"], paras=[
-            "You approved %s for the founding slot. That one is set up by hand, like Apex:" % a["company"]] + ad_lines(a) + [
+        return [(sig, dict(subject="Sponsor approved: %s" % a["company"], paras=[
+            "You approved %s for the sponsor slot. That one is set up by hand, like Apex:" % a["company"]] + ad_lines(a) + [
             "Contact: %s, %s%s." % (a.get("contact") or "?", a["email"], (", " + a["phone"]) if a.get("phone") else ""),
             "Nothing has gone live and the applicant has not been told anything yet."]))]
     if action == "clash":
