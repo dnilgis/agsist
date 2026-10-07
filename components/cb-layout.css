@@ -1,0 +1,179 @@
+/* cb-layout.css -- the phone-first layout of /cash-bids (2026-10-07).
+   Loaded after the page's own <style>, so a rule here wins a tie with one
+   there. Site tokens only: light and dark follow [data-theme].
+   Order on a phone: H1, ZIP + Search, radius + location, one crop control,
+   one status line, the best price per crop, Delivery + Sort, the folded
+   glance panels, the cards, Show more, signup, Worth the Drive (folded),
+   sponsor, links, FAQ (folded). */
+
+.cb-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* ── top: one-line H1 and the search ─────────────────────────────────── */
+/* The header logo already goes home; on a phone the crumb cost 34px above the price. */
+@media(max-width:719px){#main > .breadcrumb{display:none}}
+.cb-hero{text-align:left;padding:.55rem 0 .4rem}
+.cb-hero h1{font-size:1.4rem;margin:0;line-height:1.15;letter-spacing:.01em}
+@media(min-width:700px){.cb-hero h1{font-size:1.9rem}}
+.cb-lookup{max-width:none;margin:0 0 .5rem;padding:0;border:0;background:none;border-radius:0;display:grid;gap:.4rem}
+.cb-lookup-row{max-width:none;min-width:0}
+.cb-lookup-input{min-height:46px;padding:.55rem .8rem}
+.cb-lookup-btn{min-height:46px}
+.cb-radius-row{margin:0;display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;min-width:0}
+.cb-radius-row select{flex:0 0 auto;font-size:.95rem;min-height:44px}
+.cb-geo-row{margin:0;flex:1 1 auto;min-width:0;gap:.3rem}
+.cb-geo-row button,.cb-geo-link-btn{padding:.4rem .2rem}
+#cb-geo-txt{font-size:.8rem}
+
+/* THE ONE CROP CONTROL. Five equal buttons on one line at 390px. */
+.cb-lookup .cb-filters{display:flex;flex-wrap:nowrap;gap:.3rem;flex:none;min-width:0}
+.cb-lookup .cb-filt{flex:1 1 0;min-width:0;justify-content:center;padding:.3rem .35rem;font-size:.84rem;border-width:1px;border-radius:8px}
+
+@media(min-width:720px){
+  .cb-lookup{display:flex;flex-wrap:wrap;align-items:center;gap:.5rem 1rem;padding:.7rem .9rem;border:1px solid var(--border);background:var(--surface);border-radius:10px}
+  .cb-lookup-row{flex:1 1 18rem;max-width:26rem}
+  .cb-radius-row{flex:0 1 auto}
+  .cb-lookup .cb-filters{flex:1 1 22rem}
+}
+
+/* ── one status line ──────────────────────────────────────────────────── */
+.cb-status{flex-wrap:wrap;align-items:center;justify-content:flex-start;gap:.1rem .35rem;margin:0 0 .4rem;padding:.1rem 0;border-bottom:0;font-family:var(--font-body,'Inter',system-ui,sans-serif);font-size:.82rem;color:var(--text-muted);line-height:1.5}
+.cb-status .cb-status-meta,.cb-status #cb-status-timer{font-family:inherit}
+.cb-status .cb-count{font-family:inherit;padding:0;border:0;background:none;border-radius:0;font-size:inherit;font-weight:700;color:var(--text-dim)}
+.cb-status > span:not([style*="none"]) ~ span:not([style*="none"])::before{content:"\00B7\00A0";color:var(--text-muted)}
+.cb-status #cb-status-label::before{content:none!important}
+@media(max-width:719px){.cb-status #cb-status-label{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}}
+.bids-section-label .share-btn{margin:-.6rem -.4rem -.6rem auto;border:0;align-self:center}
+#cb-degraded{margin:0 0 .45rem;padding:0;border:0;font-size:.8rem;line-height:1.45;color:var(--text-dim,var(--text-muted))}
+
+/* ── best price per crop: stacked compact rows ────────────────────────────
+   Row 1: crop, price and basis on the left, Call and Directions on the right.
+   Row 2: the elevator, its town, miles, delivery month and board age, at the
+   full width of the row so a long name is not cut to two words. */
+.bids-section-label{display:flex;flex-wrap:nowrap;align-items:baseline;gap:.1rem .5rem;margin:.1rem 0 .3rem;letter-spacing:.08em}
+.bbc-tag{font-family:var(--font-body,'Inter',system-ui,sans-serif);font-weight:400;letter-spacing:0;text-transform:none;font-size:.76rem;color:var(--text-muted)}
+.best-bids-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:.4rem;margin:0;overflow:visible;padding:0;flex-wrap:wrap}
+@media(max-width:719px){.best-bids-grid{display:grid}.best-bid-card{min-width:0}}
+.best-bid-card{display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"p a" "b b";gap:.1rem .5rem;align-items:start;padding:.4rem .6rem .45rem;border-width:1px;border-radius:10px;border-left-width:4px;min-width:0}
+.best-bid-card.corn-t,.best-bid-card.beans-t,.best-bid-card.wheat-t{border-top:1px solid var(--border)}
+.best-bid-card.corn-t{border-left-color:var(--gold)}
+.best-bid-card.beans-t{border-left-color:var(--green)}
+.best-bid-card.wheat-t{border-left-color:#ca8a3c}
+.best-bid-card.has-bid:hover{transform:none}
+.bbc-pricecol{grid-area:p;min-width:0}
+.bbc-body{grid-area:b;min-width:0}
+.best-bid-card .bbc-actions{grid-area:a;display:flex;gap:.3rem;margin:0}
+.bbc-comm{margin:0;font-size:.7rem;line-height:1.3}
+.best-bid-card .bbc-price{display:inline-block;font-size:1.5rem;margin:0 .45rem 0 0;line-height:1.15}
+.bbc-pricecol .bbc-basis{display:inline-block;font-size:.76rem}
+.best-bid-card .bbc-name{display:inline;font-size:.88rem;margin:0;white-space:normal}
+.best-bid-card .bbc-city{margin:0;font-size:.78rem;line-height:1.4;color:var(--text-muted)}
+.best-bid-card .bbc-where{display:inline}
+.best-bid-card .bbc-where::before{content:" \00B7\00A0"}
+.best-bid-card .bbc-dist{font-size:inherit}
+.best-bid-card .bbc-delivery{display:inline;margin:0;font-size:inherit}
+.bbc-note{font-size:.74rem;line-height:1.35;color:var(--text-muted);margin-top:.05rem}
+.best-bid-card .bbc-fut{display:inline;font-size:.72rem;margin:0}
+.best-bid-card .bbc-call-btn,.best-bid-card .bbc-dir-btn{padding:.2rem .5rem;font-family:var(--font-body,'Inter',system-ui,sans-serif);font-size:.8rem;letter-spacing:0;text-transform:none}
+.best-bid-card .bbc-none{padding:.1rem 0;font-size:.82rem}
+.best-bids-grid > .bbc-none{margin:0;font-size:.85rem;color:var(--text-muted)}
+@media(min-width:900px){
+  .best-bids-grid{grid-template-columns:repeat(auto-fit,minmax(0,1fr))}
+  .best-bid-card{grid-template-columns:minmax(0,1fr);grid-template-areas:"p" "b" "a";align-content:start}
+  .best-bid-card .bbc-actions{margin-top:.3rem}
+}
+.bbc-dist,.elev-dist{white-space:nowrap}
+.earnings-callout{margin:.45rem 0 0;padding:.4rem .6rem;border-width:1px;border-radius:10px;gap:.45rem;align-items:baseline}
+.earnings-icon{font-size:1rem;margin:0}
+.earnings-text{font-size:.85rem;line-height:1.4}
+.earnings-callout .earnings-headline{display:inline;font-size:.9rem;margin:0}
+.earnings-more{color:var(--gold);font-size:.82rem;white-space:nowrap}
+[data-theme="light"] .earnings-more{color:#86600f}
+#cb-confirm-note{margin:.35rem 0 0;font-size:.78rem;line-height:1.4;color:var(--text-dim,var(--text-muted))}
+#cb-confirm-note a{color:var(--gold)}
+[data-theme="light"] #cb-confirm-note a{color:#86600f}
+
+/* ── Delivery + Sort on one row ───────────────────────────────────────── */
+.cb-toolbar{margin:.6rem 0 .45rem;gap:.4rem}
+.cb-toolbar .cb-sort{flex:1 1 auto;flex-wrap:nowrap;gap:.5rem;width:100%;max-width:44rem}
+.cb-toolbar .cb-pair{flex:1 1 0;gap:.3rem}
+.cb-toolbar .cb-pair label{font-size:.78rem}
+.cb-toolbar .cb-sort select{font-size:.88rem;padding:.3rem .35rem;flex:1 1 0;text-overflow:ellipsis}
+#cb-season-note{margin:0 0 .45rem;font-size:.8rem;line-height:1.45;color:var(--text-dim,var(--text-muted))}
+
+/* ── folds: glance panels, Worth the Drive, FAQ ───────────────────────── */
+.cb-fold-s{display:flex;align-items:center;gap:.5rem;min-height:44px;padding:.45rem .75rem;cursor:pointer;list-style:none;font-size:.88rem;font-weight:600;color:var(--text)}
+.cb-fold-s::-webkit-details-marker{display:none}
+.cb-fold-s::after{content:'\25BE';margin-left:auto;color:var(--text-muted)}
+details[open] > .cb-fold-s::after{content:'\25B4'}
+.cb-fold-s:focus-visible,.faq-item summary:focus-visible,.wtd-toggle:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.cb-glance-box{margin:0 0 .5rem;border:1px solid var(--border);border-radius:10px;background:var(--surface)}
+.cb-glance-box #cb-glance{margin:0;padding:0 .5rem .5rem}
+.cba-zip{margin:0 0 .6rem}
+
+/* ── the cards: about half the height they were ───────────────────────── */
+.cb-grid{gap:.5rem;margin-bottom:.6rem}
+.elev-card{border-width:1px;border-radius:10px;--c-cash:4.9rem;--c-basis:3.4rem}
+@media(max-width:360px){.elev-card{--c-cash:3.7rem;--c-basis:2.9rem}}
+.elev-card .bid-chg{font-size:.66rem;line-height:1.2;margin-top:-.15rem}
+.elev-head{padding:.45rem .6rem .25rem;border-bottom:0;gap:.4rem;align-items:flex-start}
+.elev-card .elev-name{white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;font-size:.93rem;margin:0}
+.elev-card .elev-loc{font-size:.78rem;line-height:1.35}
+.elev-card .elev-dist{display:inline;font-size:inherit;font-weight:700;color:var(--text-dim,var(--text-muted))}
+.elev-card .elev-branch{display:inline;font-size:inherit;margin:0}
+.elev-card .elev-direct,.elev-card .elev-stale,.elev-card .elev-posted{margin:.15rem .25rem 0 0}
+.elev-card .elev-meta{flex-direction:row;flex-wrap:wrap;justify-content:flex-end;align-items:center;gap:.25rem;max-width:calc(132px + .5rem)}
+.elev-card .elev-info{min-width:8.5rem}
+.elev-card .elev-call-btn,.elev-card .elev-dir-btn{padding:.2rem .5rem;font-family:var(--font-body,'Inter',system-ui,sans-serif);font-size:.8rem;letter-spacing:0}
+.elev-card .pin-btn{padding:.2rem .45rem;font-size:.7rem}
+.elev-card .pin-btn{padding:0;font-size:1rem}
+/* The card is phone-width in every column layout, so its icon buttons are too. */
+.elev-card .elev-btn-t,.elev-card .cba-bell-t{display:none}
+.comm-section{border-top:0;padding:0 .6rem}
+.elev-card .bid-row-labels{padding:0;font-size:.68rem}
+.elev-card .basis-q{min-height:32px;min-width:40px}
+.comm-header{padding:.25rem 0 .05rem;display:flex;flex-wrap:wrap;align-items:baseline;gap:.1rem .6rem;font-size:.72rem;border-top:1px solid var(--border)}
+.comm-grade{font-weight:400;letter-spacing:0;text-transform:none;color:var(--text-muted)}
+.comm-header .comm-fut{display:inline-flex;padding:0;font-size:.68rem;font-weight:400;letter-spacing:0;text-transform:none;gap:.1rem .45rem}
+.elev-card .bid-rows{padding:0 0 .3rem}
+.elev-card .bid-row{padding:.14rem 0}
+.elev-card .bid-cash{font-size:1.08rem}
+.elev-card .bid-more{min-height:34px;padding:.15rem 0}
+.cb-more-wrap{margin:.6rem 0 .3rem}
+
+/* ── Worth the Drive, folded on every width ───────────────────────────── */
+.wtd-panel{margin:.8rem 0;border-width:1px;border-radius:10px}
+.wtd-toggle{display:flex;justify-content:flex-start;text-align:left;gap:.6rem;padding:.5rem .8rem;border-top:0;background:none;color:var(--text);letter-spacing:0;text-transform:none;font-family:inherit;font-size:.9rem;min-height:48px}
+.wtd-toggle-t{display:flex;flex-direction:column;min-width:0}
+.wtd-toggle .wtd-title{font-size:.92rem}
+.wtd-toggle .wtd-sub{font-size:.76rem;font-weight:400}
+.wtd-toggle-chev{margin-left:auto;color:var(--text-muted)}
+.wtd-body:not(.wtd-open){display:none!important}
+.wtd-body.wtd-open{display:block!important;border-top:1px solid var(--border)}
+.wtd-body .earnings-detail{margin:0 0 .7rem;font-size:.85rem}
+.wtd-body .earnings-detail:empty{display:none}
+.wtd-crop{margin:0 0 .6rem;font-size:.85rem;color:var(--text-dim,var(--text-muted))}
+
+/* ── below the results ────────────────────────────────────────────────── */
+.cb-wrap .ag-sponsor-ribbon{margin:.8rem 0}
+.internal-links{margin:.8rem 0;padding:.6rem .8rem;border-width:1px;border-radius:10px}
+.il-one{margin:0;font-size:.92rem;line-height:1.9}
+.il-one a{color:var(--gold);font-weight:600}
+[data-theme="light"] .il-one a{color:#86600f}
+.faq-section{margin:.8rem 0 1.2rem;padding:0;border:1px solid var(--border);border-radius:10px;background:var(--surface)}
+.faq-section > .cb-fold-s h2{display:inline;margin:0;font-size:1rem}
+.faq-section .faq-item{padding:0 .75rem;border-top:1px solid var(--border);border-bottom:0}
+.faq-item summary.faq-q{list-style:none;padding:.4rem 0;font-size:.95rem}
+.faq-item summary.faq-q::-webkit-details-marker{display:none}
+.faq-item summary.faq-q::after{content:'\25BE';color:var(--text-muted);flex-shrink:0}
+.faq-item details[open] > summary.faq-q::after{content:'\25B4'}
+.faq-item .faq-a{display:block;padding:0 0 .7rem;font-size:.95rem}
+
+.cb-empty{padding:1.4rem .5rem}
+@media print{.cb-glance-box,.faq-section{display:none!important}}
+
+/* Contrast inside the folds, light theme: these only show once a fold is
+   opened, so the closed-page audit never saw them. Green and red on the
+   tinted winner rows measured 3.97-4.27:1; these are above 4.5:1. */
+[data-theme="light"] .cbg-grid td.cbg-best{color:#1d5a39}
+[data-theme="light"] .wtd-table .wt-net.best{color:#1d5a39}
+[data-theme="light"] .wtd-table tr.wtd-w .wt-fuel{color:#9e3420}
