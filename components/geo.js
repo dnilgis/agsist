@@ -377,6 +377,66 @@ function calcSprayRating(tempF, humid, wind) {
   return 'good';
 }
 
+/* LIVE NWS ALERTS FOR THE READER'S OWN SPOT (2026-10-07).
+   Sig, watching a wind he had "literally never seen before": the homepage
+   showed the temperature and a spray rating and nothing about the warning in
+   effect outside. api.weather.gov/alerts/active?point= returns every watch,
+   warning and advisory covering that lat/lon, straight from NWS, CORS-open, no
+   key. Drawn only where the homepage weather card is (#wx-data); refreshed
+   every 5 minutes while the tab is visible. Nothing is invented: no alert in
+   effect draws nothing, and a failed fetch draws nothing rather than "all clear". */
+var _wxAlertTimer = null, _wxAlertAt = '';
+function loadWxAlerts(lat, lon) {
+  var host = document.getElementById('wx-data');
+  if (!host || !isFinite(+lat) || !isFinite(+lon)) return;
+  var pt = (+lat).toFixed(4) + ',' + (+lon).toFixed(4);
+  _wxAlertAt = pt;
+  var box = document.getElementById('wx-alerts');
+  if (!box) {
+    box = document.createElement('div');
+    box.id = 'wx-alerts'; box.setAttribute('aria-live', 'polite');
+    host.insertBefore(box, host.firstChild);
+  }
+  var RANK = { Extreme: 0, Severe: 1, Moderate: 2, Minor: 3, Unknown: 4 };
+  function esc(t) { return String(t == null ? '' : t).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  function until(iso) {
+    var d = iso ? new Date(iso) : null;
+    if (!d || isNaN(d)) return '';
+    return 'until ' + d.toLocaleString('en-US', { weekday: 'short', hour: 'numeric', minute: '2-digit' });
+  }
+  function draw(feats) {
+    if (_wxAlertAt !== pt) return;                       // the reader moved; a newer call owns the box
+    var now = Date.now();
+    var list = (feats || []).map(function (f) { return f.properties || {}; })
+      .filter(function (p) { var e = Date.parse(p.ends || p.expires || ''); return p.event && (!isFinite(e) || e > now) && p.status !== 'Test'; })
+      .sort(function (a, b) { var ra = RANK[a.severity], rb = RANK[b.severity]; return (ra == null ? 4 : ra) - (rb == null ? 4 : rb); });
+    if (!list.length) { box.innerHTML = ''; return; }
+    box.innerHTML = list.slice(0, 4).map(function (p) {
+      var hot = p.severity === 'Extreme' || p.severity === 'Severe';
+      var col = hot ? 'var(--red,#e0685f)' : p.severity === 'Moderate' ? 'var(--gold,#d4a23f)' : 'var(--text-muted)';
+      var body = [p.description, p.instruction].filter(Boolean).join('\n\n');
+      return '<details class="wx-alert" style="border:1px solid ' + col + ';border-left:6px solid ' + col + ';border-radius:8px;padding:.55rem .7rem;margin:0 0 .6rem;background:var(--surface2,rgba(255,255,255,.03))">'
+        + '<summary style="cursor:pointer;list-style:none;font-weight:700;color:var(--text);line-height:1.35">'
+        + '<span style="color:' + col + '">&#9888; ' + esc(p.event) + '</span> '
+        + '<span style="font-weight:500;color:var(--text-muted)">' + esc(until(p.ends || p.expires)) + '</span></summary>'
+        + (p.headline ? '<div style="margin:.45rem 0 0;font-size:.9rem;color:var(--text)">' + esc(p.headline) + '</div>' : '')
+        + (body ? '<div style="margin:.45rem 0 0;font-size:.9rem;color:var(--text-muted);white-space:pre-line">' + esc(body) + '</div>' : '')
+        + '<div style="margin:.45rem 0 0;font-size:.8rem;color:var(--text-muted)">National Weather Service' + (p.senderName ? ' · ' + esc(p.senderName.replace(/^NWS /, '')) : '') + '</div>'
+        + '</details>';
+    }).join('');
+  }
+  function go() {
+    if (document.hidden || _wxAlertAt !== pt) return;
+    fetch('https://api.weather.gov/alerts/active?point=' + pt, { headers: { 'Accept': 'application/geo+json' } })
+      .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+      .then(function (d) { draw(d && d.features); })
+      .catch(function () { /* leave what is showing; never print an all-clear we did not get */ });
+  }
+  go();
+  if (_wxAlertTimer) clearInterval(_wxAlertTimer);
+  _wxAlertTimer = setInterval(go, 5 * 60 * 1000);
+}
+
 function fetchWeather(lat, lon, label, known) {
   // v16: stamp localStorage save with ts so boot() can detect stale cache.
   // v17 FIX: MERGE into cache instead of replacing it. Previously each
@@ -486,6 +546,7 @@ function fetchWeather(lat, lon, label, known) {
   // Weather and reverse-geocode are independent network calls; treating
   // them as a sequence was a bug.
   propagateLocation(lat, lon, label, known);
+  loadWxAlerts(lat, lon);
 
   var url = 'https://api.open-meteo.com/v1/forecast?latitude='+lat+'&longitude='+lon
     + '&current=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation_probability,weather_code,wind_speed_10m,wind_direction_10m,dew_point_2m'
