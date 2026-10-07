@@ -35,6 +35,7 @@ CADENCE = {
     "/": 1,
     "/markets": 1,
     "/cash-bids": 1,
+    "/cash-bids-national": 1,
     "/daily": 1,
     "/corn-futures-prices": 1,
     "/soybean-futures-prices": 1,
