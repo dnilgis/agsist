@@ -9,6 +9,10 @@ name: Elevator watch emails
 # 2026-10-03: the same job sends the alert options (cash target, basis
 # target, basis move) on network elevators. Those read the bids repo's
 # public data/merged-index.json, the file the card reads; no new secret.
+# 2026-10-07: and the ZIP-wide cash alert ("anyone within N mi of a ZIP pays
+# $X"), scripts/send_zip_alert.py. Same list, same secrets, same index, plus
+# the bids repo's public ZIP table. Its own step, so a failure in one sender
+# never stops the other.
 # Secrets (already used by the county watch, hail alert and briefing jobs):
 # LIST_URL, LIST_TOKEN, UNSUB_SECRET, SMTP_USER, SMTP_PASS. Optional:
 # SMTP_HOST, SMTP_PORT, FROM_ADDR, FROM_NAME, REPLY_TO.
@@ -46,9 +50,12 @@ jobs:
         with:
           python-version: '3.12'
       - name: Checks (gate)
+        id: gate
         run: |
           python3 scripts/send_elevator_watch.py --selftest
           node scripts/test_elevator_watch.mjs
+          python3 scripts/send_zip_alert.py --selftest
+          python3 scripts/test_zip_alert.py
       - name: Send
         env:
           LIST_URL: ${{ secrets.LIST_URL }}
@@ -63,3 +70,18 @@ jobs:
           REPLY_TO: ${{ secrets.REPLY_TO }}
           DRY_RUN: ${{ inputs.dry_run == true && '1' || '' }}
         run: python3 scripts/send_elevator_watch.py
+      - name: Send ZIP alerts
+        if: ${{ !cancelled() && steps.gate.outcome == 'success' }}
+        env:
+          LIST_URL: ${{ secrets.LIST_URL }}
+          LIST_TOKEN: ${{ secrets.LIST_TOKEN }}
+          UNSUB_SECRET: ${{ secrets.UNSUB_SECRET }}
+          SMTP_HOST: ${{ secrets.SMTP_HOST }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SMTP_USER: ${{ secrets.SMTP_USER || secrets.GMAIL_USER }}
+          SMTP_PASS: ${{ secrets.SMTP_PASS || secrets.GMAIL_APP_PASS }}
+          FROM_ADDR: ${{ secrets.FROM_ADDR }}
+          FROM_NAME: ${{ secrets.FROM_NAME }}
+          REPLY_TO: ${{ secrets.REPLY_TO }}
+          DRY_RUN: ${{ inputs.dry_run == true && '1' || '' }}
+        run: python3 scripts/send_zip_alert.py

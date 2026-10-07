@@ -1,4 +1,12 @@
 /**
+ * v5.6 (2026-10-07): ONE SENTENCE. The confirm page for a ZIP-wide cash alert
+ *   (an ordinary kind=cash elevator alert whose ewid is "ab" + ZIP + 3-digit
+ *   miles, sent by components/cb-alerts.js and mailed by
+ *   scripts/send_zip_alert.py) says it re-arms, instead of "the alert clears
+ *   itself". No route, field, key or validation changes: v5.3 already stores
+ *   these records, so the alert works before this is deployed.
+ */
+/**
  * v5.5 (2026-10-07): SELF-SERVE SPONSOR SIGN-UP. New routes only; every
  *   existing route answers exactly as before. The sponsor-apply page posts an
  *   application; nothing goes public until Sig approves it.
@@ -648,6 +656,8 @@ export default {
           await putEWatch(e, r);
           const kind = opt.kind || "any";
           return htmlPage("You are watching " + escHtml(pendLabel) + ". " + (
+            // v5.6: a ZIP-wide alert (ewid "ab" + ZIP + miles) re-arms; it does not clear itself.
+            kind === "cash" && /^ab\d{8}$/.test(opt.ewid || "") ? "You will get one email when an elevator in range posts at or above your price, then none until every one is back below it and one crosses again." :
             kind === "move" ? "You will get an email each time a new posting moves the basis " + opt.move_cents + "\u00a2 or more from the last email." :
             kind === "cash" || kind === "basis" ? "You will get one email when a new posting reaches your target. Then the alert clears itself." :
             "You will get an email when its posted basis changes."));

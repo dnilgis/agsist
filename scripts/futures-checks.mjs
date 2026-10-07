@@ -45,9 +45,9 @@ const bandLine = h.match(/var PPU_BAND=\{[^}]*\};/);
 if (!bandLine) throw new Error("no PPU_BAND");
 const saneLine = h.match(/var BASIS_SANE=\{[^}]*\};/);
 if (!saneLine) throw new Error("no BASIS_SANE");
-const src = ["normSym", "classify", "ppu", "basisUnit", "basisCents", "basisUnusual", "basisUnclear", "formatBasis", "plausible", "futuresOf", "contractLabel", "contractStrip"].map(grab).join("\n")
+const src = ["normSym", "classify", "ppu", "basisUnit", "basisCents", "basisUnusual", "basisUnclear", "fmtPx", "formatBasis", "plausible", "futuresOf", "contractLabel", "contractStrip"].map(grab).join("\n")
   + "\n" + bandLine[0] + "\n" + saneLine[0];
-const M = new Function(src + "; return {classify,ppu,basisUnit,basisCents,basisUnusual,basisUnclear,formatBasis,plausible,futuresOf,contractLabel,contractStrip};")();
+const M = new Function(src + "; return {fmtPx,classify,ppu,basisUnit,basisCents,basisUnusual,basisUnclear,formatBasis,plausible,futuresOf,contractLabel,contractStrip};")();
 
 /* The captured board, verbatim in the fields the page reads. */
 const ROWS = [
@@ -173,6 +173,14 @@ eq(M.contractLabel({ basisMonth: "Dec 2026" }), "Dec26", "Dec 2026 -> Dec26");
 eq(M.contractLabel({ basisMonth: "Sep 2027" }), "Sep27", "Sep 2027 -> Sep27");
 eq(M.contractLabel({ basisMonth: "" }), "", "nothing in, nothing out");
 eq(M.contractLabel({ basisMonth: "December" }), "December", "an unexpected shape is passed through, not mangled");
+/* The bids network writes the month in full, and boards post half cents. */
+eq(M.contractLabel({ basisMonth: "December 2026" }), "Dec26", "December 2026 -> Dec26");
+eq(M.contractLabel({ basisMonth: "Dec 26 KCBT Red Wheat" }), "Dec26 KCBT Red Wheat", "the exchange is kept: KC and Chicago are two prices");
+eq(M.contractLabel({ basisMonth: "Fall 2026" }), "Fall 2026", "a season is not a month and is not shortened");
+eq(M.fmtPx(12.475), "12.475", "a half-cent price is printed as posted, not a cent low");
+eq(M.fmtPx(4.2125), "4.2125", "a quarter-cent board keeps its digits");
+eq(M.fmtPx(4.5), "4.50", "two decimals otherwise");
+eq(M.formatBasis(-0.125, { category: "corn", cashPrice: 4.6, basis: -0.125 }).str, "&minus;12.5&#162;", "a half-cent basis is not rounded to a whole cent");
 
 console.log("\n" + pass + " passed, " + fail + " failed");
 process.exit(fail ? 1 : 0);
