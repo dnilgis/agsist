@@ -1,4 +1,24 @@
 /**
+ * v5.5 (2026-10-07): SELF-SERVE SPONSOR SIGN-UP. New routes only; every
+ *   existing route answers exactly as before. The sponsor-apply page posts an
+ *   application; nothing goes public until Sig approves it.
+ *   POST /sponsor-apply  JSON {tier: page|supporter|founding, slot, company,
+ *     contact, email, phone, headline, body, url, logo (data:image/png|jpeg|
+ *     webp;base64, <= 250 KB decoded), terms:true}. Stored pending under
+ *     sapp:<id>, the logo apart under sapp-logo:<id>. At most 3 open
+ *     applications per address. Nothing is sent from here.
+ *   GET/POST /sponsor-confirm?i=&t=   the applicant's double opt-in; GET shows a
+ *     button and changes nothing, POST confirms. 14 days, like the watches.
+ *   GET/POST /sponsor-decide?i=&d=&t=  Sig's links: d = approve | decline | end.
+ *     The token is HMAC(id|sd|d), so only the email Sig receives can act.
+ *   GET  /sponsor-apps?token=          every application, no logo bytes, for
+ *     scripts/sponsor_apply.py.
+ *   GET  /sponsor-logo?token=&i=       one application's logo data URL.
+ *   POST /sponsor-mark?token=          the job records a mail sent, a go-live
+ *     (status live + start), an invoice reminder, or a take-down (ended).
+ *   No new binding and no new secret.
+ */
+/**
  * v5.4 (2026-10-06): ZIP AND REPORT-DAY OPT-IN ON THE DAILY LIST. Every
  *   existing route answers exactly as before; only these change or are new.
  *   POST /subscribe (JSON or form) takes three optional fields beside email:
@@ -223,6 +243,16 @@ const PEND_TTL_MS = 14 * 24 * 3600 * 1000;
 function pendExpired(rec) {
   return !rec || typeof rec.ts !== "number" || Date.now() - rec.ts > PEND_TTL_MS;
 }
+
+// v5.5: self-serve sponsor applications.
+const SAPP_TIERS = { page: "page", supporter: "footer", founding: "briefing" };
+const SAPP_LABEL = { page: "Own a page", supporter: "Supporter", founding: "Founding sponsor" };
+const SAPP_DECISIONS = {
+  approve: { from: ["confirmed"], to: "approved", ask: "Approve and put live", button: "Approve", done: "Approved" },
+  decline: { from: ["confirmed", "approved"], to: "declined", ask: "Decline", button: "Decline", done: "Declined" },
+  end:     { from: ["live", "approved"], to: "ending", ask: "End this sponsorship and free the slot", button: "End it", done: "Ending" },
+};
+function sappExpired(r) { return r.status === "pending" && pendExpired(r); }
 
 export default {
   async fetch(req, env) {
@@ -813,6 +843,133 @@ export default {
       }
       return json({ ok: true, added, skipped }, 200,
         { "Access-Control-Allow-Origin": "*" });
+    }
+
+    // ---------- v5.5: self-serve sponsor applications ----------
+    if (path === "/sponsor-apply" && req.method === "POST") {
+      let b = {};
+      try { b = await req.json(); } catch (e) { /* validation below */ }
+      if (b._gotcha) return json({ ok: true }, 200, cors(req));
+      const bad = (m) => json({ ok: false, error: m }, 400, cors(req));
+      const str = (v, n) => String(v == null ? "" : v).replace(/[\u0000-\u001f]/g, " ").trim().slice(0, n);
+      const tier = String(b.tier || "");
+      if (!SAPP_TIERS[tier]) return bad("pick a placement");
+      let slot = String(b.slot || "").trim().toLowerCase();
+      if (tier === "page" && !/^[a-z0-9][a-z0-9-]{1,59}$/.test(slot)) return bad("pick a page");
+      if (tier !== "page") slot = SAPP_TIERS[tier];
+      const email = String(b.email || "").trim().toLowerCase();
+      if (!EMAIL_RE.test(email) || email.length > 254) return bad("invalid email");
+      const company = str(b.company, 80), contact = str(b.contact, 80), phone = str(b.phone, 30);
+      const headline = str(b.headline, 90), body = str(b.body, 320);
+      let link = str(b.url, 200);
+      if (company.length < 2) return bad("company name is required");
+      if (tier !== "supporter" && headline.length < 3) return bad("a headline is required");
+      if (link && !/^https?:\/\//i.test(link)) link = "https://" + link;
+      try { const u = new URL(link); if (!/^https?:$/.test(u.protocol) || !u.hostname.includes(".")) throw 0; }
+      catch (e) { return bad("a working link to your site is required"); }
+      if (b.terms !== true) return bad("please accept the terms");
+      let logo = "";
+      if (b.logo) {
+        const m = /^data:image\/(png|jpeg|webp);base64,([A-Za-z0-9+/=]+)$/.exec(String(b.logo));
+        if (!m) return bad("the logo must be a PNG, JPG or WebP image");
+        if (Math.floor(m[2].length * 3 / 4) > 250 * 1024) return bad("the logo is over 250 KB");
+        logo = String(b.logo);
+      }
+      // At most 3 open applications per address: a typo'd resubmit is fine, a flood is not.
+      let open = 0;
+      for (const k of await listKeys(env, "sapp:")) {
+        try {
+          const r = JSON.parse(await env.SUBS.get(k) || "{}");
+          if (r.email === email && (r.status === "pending" || r.status === "confirmed") && !sappExpired(r)) open++;
+        } catch (e) { /* skip */ }
+      }
+      if (open >= 3) return json({ ok: false, error: "you already have 3 open applications; reply to the email you got" }, 429, cors(req));
+      const id = [...crypto.getRandomValues(new Uint8Array(6))].map(x => x.toString(16).padStart(2, "0")).join("");
+      const rec = { id, ts: Date.now(), status: "pending", m: 0, notified: 0, tier, slot, company, contact,
+                    email, phone, headline, body, url: link, logo_len: logo.length };
+      await env.SUBS.put("sapp:" + id, JSON.stringify(rec));
+      if (logo) await env.SUBS.put("sapp-logo:" + id, logo);
+      return json({ ok: true, id }, 200, cors(req));
+    }
+
+    if (path === "/sponsor-confirm" || path === "/sponsor-decide") {
+      const id = String(url.searchParams.get("i") || "").toLowerCase();
+      const t = String(url.searchParams.get("t") || "");
+      const confirm = path === "/sponsor-confirm";
+      const d = confirm ? "" : String(url.searchParams.get("d") || "");
+      if (!/^[0-9a-f]{12}$/.test(id) || (!confirm && !SAPP_DECISIONS[d]) || !env.UNSUB_SECRET)
+        return htmlPage("This link isn't valid.");
+      const want = await hmac16(id + (confirm ? "|sc" : "|sd|" + d), env.UNSUB_SECRET);
+      if (t !== want) return htmlPage("This link isn't valid.");
+      const raw = await env.SUBS.get("sapp:" + id);
+      const r = raw ? JSON.parse(raw) : null;
+      if (!r) return htmlPage("This application is no longer on file.");
+      const what = escHtml(r.company) + " &middot; " + escHtml(SAPP_LABEL[r.tier] || r.tier) +
+                   (r.tier === "page" ? " (" + escHtml(r.slot) + ")" : "");
+      if (confirm) {
+        if (r.status !== "pending") return htmlPage("Already confirmed. Sig will be in touch.");
+        if (sappExpired(r)) {
+          await env.SUBS.delete("sapp:" + id); await env.SUBS.delete("sapp-logo:" + id);
+          return htmlPage("This confirmation link has expired. Fill in the form again at agsist.com/sponsor-apply.");
+        }
+        if (req.method !== "POST")
+          return htmlPage("Confirm your AGSIST ad: " + what,
+            "<form method=post><button style=\"font-size:16px;padding:10px 18px\">Yes, send it to Sig</button></form>" +
+            "<p>Your first month is free. Nothing runs until Sig has looked at it.</p>");
+        r.status = "confirmed"; r.cts = Date.now();
+        await env.SUBS.put("sapp:" + id, JSON.stringify(r));
+        return htmlPage("Thanks. Sig has your ad.",
+          "<p>He reviews every ad himself, usually the same day, and you'll get an email when it's live. " +
+          "Your free month starts the day it runs.</p>");
+      }
+      const ok = SAPP_DECISIONS[d].from.includes(r.status);
+      if (!ok) return htmlPage("Nothing to do: this application is " + escHtml(r.status) + ".");
+      if (req.method !== "POST")
+        return htmlPage(escHtml(SAPP_DECISIONS[d].ask) + ": " + what,
+          "<form method=post><button style=\"font-size:16px;padding:10px 18px\">" + escHtml(SAPP_DECISIONS[d].button) +
+          "</button></form>");
+      r.status = SAPP_DECISIONS[d].to; r.dts = Date.now();
+      await env.SUBS.put("sapp:" + id, JSON.stringify(r));
+      return htmlPage(escHtml(SAPP_DECISIONS[d].done) + ": " + what,
+        "<p>The site job picks this up within half an hour.</p>");
+    }
+
+    if (path === "/sponsor-apps" && req.method === "GET") {
+      if (!authed) return json({ ok: false }, 403);
+      const out = [];
+      for (const k of await listKeys(env, "sapp:")) {
+        try { out.push(JSON.parse(await env.SUBS.get(k))); } catch (e) { /* skip */ }
+      }
+      return json(out);
+    }
+
+    if (path === "/sponsor-logo" && req.method === "GET") {
+      if (!authed) return json({ ok: false }, 403);
+      const id = String(url.searchParams.get("i") || "").toLowerCase();
+      if (!/^[0-9a-f]{12}$/.test(id)) return json({ ok: false }, 400);
+      return json({ ok: true, logo: (await env.SUBS.get("sapp-logo:" + id)) || "" });
+    }
+
+    if (path === "/sponsor-mark" && req.method === "POST") {
+      if (!authed) return json({ ok: false }, 403);
+      let b = {};
+      try { b = await req.json(); } catch (e) { return json({ ok: false }, 400); }
+      const id = String(b.id || "").toLowerCase();
+      const raw = /^[0-9a-f]{12}$/.test(id) ? await env.SUBS.get("sapp:" + id) : null;
+      if (!raw) return json({ ok: true, skipped: true });
+      const r = JSON.parse(raw), set = b.set || {};
+      // The job may move only these steps. Approve, decline and end are Sig's.
+      const MOVES = { approved: ["live"], ending: ["ended"], pending: ["expired"] };
+      if (set.status !== undefined) {
+        if (!(MOVES[r.status] || []).includes(set.status)) return json({ ok: false, error: "bad move" }, 409);
+        r.status = set.status;
+      }
+      for (const k of ["m", "notified", "reminded", "invoiced"]) if (Number.isInteger(set[k])) r[k] = set[k];
+      if (typeof set.start === "string" && /^\d{4}-\d{2}-\d{2}$/.test(set.start)) r.start = set.start;
+      if (typeof set.slug === "string" && /^[a-z0-9-]{2,60}$/.test(set.slug)) r.slug = set.slug;
+      if (r.status === "expired" || r.status === "ended") await env.SUBS.delete("sapp-logo:" + id);
+      await env.SUBS.put("sapp:" + id, JSON.stringify(r));
+      return json({ ok: true });
     }
 
     return json({ ok: false, error: "not found" }, 404);

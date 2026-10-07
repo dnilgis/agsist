@@ -1,0 +1,4 @@
+{
+ "_": "SOLD PAGE SLOTS. One entry per page slot that a sponsor has bought, keyed by the slot id in data/sponsor-slots.json. components/loader.js swaps that page's open ribbon for the sponsor's from `start` on. Written by scripts/sponsor_apply.py when Sig approves an application; edit by hand only to correct copy. active:false hides an entry without deleting it.",
+ "slots": {}
+}
