@@ -76,8 +76,8 @@ jobs:
   #
   # Since 2026-09-19 two schedulers start this workflow AT THE SAME MINUTES:
   # its own cron above (:07 and :37, 11-21 UTC weekdays), which GitHub
-  # delivered 4 times of 22 on 2026-09-18, and the agsist-clock Worker
-  # (workers/agsist-clock.js) on the same minutes. When both arrive, the
+  # delivered 4 times of 22 on 2026-09-18, and cron-job.org on the same
+  # minutes. When both arrive, the
   # concurrency group runs one and queues the other, and the queued one starts
   # the moment the first has committed. This job reads when the last fetch
   # landed and stops the run if it is under 10 minutes old -- which is only

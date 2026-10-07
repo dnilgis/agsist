@@ -1,9 +1,0 @@
-name = "agsist-prices"
-main = "barchart-proxy.js"
-compatibility_date = "2024-01-01"
-
-[vars]
-# Set BARCHART_API_KEY as a secret: wrangler secret put BARCHART_API_KEY
-
-[[routes]]
-pattern = "agsist-prices.workers.dev/*"

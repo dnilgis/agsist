@@ -55,7 +55,6 @@ except Exception:                                             # noqa: BLE001
 
 SKIP = {
     "404.html", "index1.html",              # by design: error page, noindex preview
-    "NOAA-widget-snippet.html",             # a snippet, not a page
     "cashbids.html", "fastfacts.html",      # redirect stubs
     "embed.html",
 }

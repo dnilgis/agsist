@@ -1411,7 +1411,7 @@ details>summary:hover{color:var(--text)}
 .idx1-preview-flag{position:sticky;top:0;z-index:500;background:#d08a3c;color:#0a0c0d;font-family:'JetBrains Mono',monospace;font-size:.7rem;font-weight:700;text-align:center;padding:.28rem .6rem;letter-spacing:.03em}
 
 /* ===== block 13 of 23 id="ui-r8" ===== */
-/* UI round 8 (2026-10-03). Scoped to this page; see build/patch_index1_ui_r8.py. */
+/* UI round 8 (2026-10-03). Scoped to this page. */
 
 /* Tokens. Light-theme muted text was rgba(22,26,24,.66): 4.06:1 on the menu
    panel. .74 clears 4.5:1 on every light surface. Field borders and range
