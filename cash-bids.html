@@ -1030,6 +1030,22 @@ var BASE_URL='https://agsist-barchart.dnilgis.workers.dev/barchart/getGrainBids'
    the feed. */
 var LICENSED_FEED=true;
 var currentBids=[],currentElevators=[],currentFilter='all',currentSort='distance',currentDelivery='all',pinnedKeys=[],wtdComm='corn';
+/* WHAT THE PAGE ASKS FOR BEFORE THE FARMER'S ANSWER, IT ASKS FOR SECOND.
+   The national basis map and the "where do I take this load" block each fetch
+   a file of their own (basis-map.json, elevator-coverage.json) and both sit
+   below the fold. On a 1.6 Mbps phone they were downloading in the same second
+   as merged-index.json and pushing it past its deadline. They now wait for the
+   first results (or the first error) to be drawn; with no search under way
+   they start once the page has loaded, and never later than 20 s. */
+var cbFirstDone=false,cbFirstQ=[],cbSearchStarted=false,cbAnnTimer=null;
+function cbFirstResultsDone(){
+  if(cbFirstDone)return;cbFirstDone=true;
+  var q=cbFirstQ;cbFirstQ=[];
+  setTimeout(function(){q.forEach(function(fn){try{fn();}catch(e){}});},0);
+}
+window.cbAfterFirstResults=function(fn){if(cbFirstDone)setTimeout(fn,0);else cbFirstQ.push(fn);};
+window.addEventListener('load',function(){setTimeout(function(){if(!cbSearchStarted)cbFirstResultsDone();},400);});
+setTimeout(cbFirstResultsDone,20000);
 var hasSearched=false,detectedLabel='',detectedZip='',preFilter='all',lastFetchTime=null;
 var radiusTimer=null;
 
@@ -1667,6 +1683,16 @@ function tidyBranch(v){
   if(!t||t!==t.toUpperCase()||!/[A-Z]{4}/.test(t))return t;
   return t.toLowerCase().replace(/(^|[\s\-\/&(])([a-z])/g,function(_,a,c){return a+c.toUpperCase();});
 }
+/* THE NAME TO SEARCH A MAP FOR. A network branch is the facility's own name
+   ("Lincoln Premium Poultry", "Holyoke Shuttle"), and without it the three
+   ADM cards at Fremont NE all opened the same "ADM Fremont NE" search.
+   Second-feed branches are not added: they are address strings
+   ("Aztalan Jefferson, WI") that only muddy the search. */
+function dirName(e){
+  var n=String((e&&e.facility)||''),b=String((e&&e.branch)||'').trim();
+  if(e&&e.via==='direct'&&b&&netPlain(b)!==netPlain(n)&&netPlain(b)!==netPlain(townOf(e)))n+=' '+tidyBranch(b);
+  return n;
+}
 function mapsUrl(name,city,state){return'https://maps.apple.com/?q='+encodeURIComponent((name||'')+(city?' '+city:'')+(state?' '+state:''));}
 function isSpotDelivery(del,b){
   if(!/(spot|cash|immediate)/i.test(String(del||''))&&del)return false;
@@ -2197,7 +2223,7 @@ function renderBestBids(elevators){
       if(bfut!=null&&blab)html+='<div class="bbc-fut" title="Implied by this board: cash minus basis">vs '+escH(blab)+' $'+fmtPx(bfut)+'</div>';
       html+='<div class="bbc-actions">';
       if(topElev.phone)html+='<a class="bbc-call-btn" href="tel:'+topElev.phone.replace(/[^\d]/g,'')+'" aria-label="Call '+escH(topElev.facility)+' on '+escH(fmtPhone(topElev.phone))+'"><svg class="ic" aria-hidden="true"><use href="#i-phone"/></svg> Call</a>';
-      html+='<a class="bbc-dir-btn" href="'+mapsUrl(topElev.facility,townOf(topElev),topElev.state)+'" target="_blank" rel="noopener" aria-label="Directions to '+escH(topElev.facility)+'"><svg class="ic" aria-hidden="true"><use href="#i-map-pin"/></svg> Directions</a>';
+      html+='<a class="bbc-dir-btn" href="'+mapsUrl(dirName(topElev),townOf(topElev),topElev.state)+'" target="_blank" rel="noopener" aria-label="Directions to '+escH(topElev.facility)+'"><svg class="ic" aria-hidden="true"><use href="#i-map-pin"/></svg> Directions</a>';
       html+='</div>';
       html+='<div class="bbc-hint">Show in the list below</div>';
     }else{html+='<div class="bbc-none">No '+c.label+' bids found</div>';}
@@ -2482,7 +2508,7 @@ function renderBids(bids,keepLimit){
   shown.forEach(function(elev){
     var cs=townOf(elev)+(townOf(elev)&&elev.state?', ':'')+(elev.state||''); /* precedence bug swallowed the state — printed 'Clayton,' (fixed 2026-07-20) */
     var isPinned=pinnedKeys.indexOf(elev.key)>=0;
-    var murl=mapsUrl(elev.facility,townOf(elev),elev.state);
+    var murl=mapsUrl(dirName(elev),townOf(elev),elev.state);
     html+='<article class="elev-card'+(isPinned?' pinned':'')+'" data-elev-key="'+escH(elev.key)+'" aria-label="'+escH(elev.facility)+'">';
     html+='<div class="elev-head"><div class="elev-info"><div class="elev-name" title="'+escH(elev.facility)+'">'+escH(elev.facility)+'</div>';
     if(elev.branch&&elev.branch!==elev.facility)html+='<div class="elev-branch">'+escH(tidyBranch(elev.branch))+'</div>';
@@ -2653,13 +2679,20 @@ var NET_TIMEOUT_MS=2500;    /* one request */
    page is identical to today's either way. */
 var NET_DEADLINE_MS=3500;
 
-/* A fetch that gives up rather than hanging the page behind it. */
-function netGet(path){
+/* A fetch that gives up rather than hanging the page behind it.
+   `ms` overrides the per-request limit. The search chain passes the long one:
+   the page no longer waits on it (NET_DEADLINE_MS decides the first render),
+   so the only thing a short limit did was throw away an index that was 80%
+   downloaded on a slow phone -- after which the elevators it would have found
+   never appeared at all. */
+var NET_LATE_TIMEOUT_MS=20000;
+function netGet(path,ms){
+  var lim=ms||NET_TIMEOUT_MS;
   return new Promise(function(resolve){
     var done=false,t0=Date.now();
     var t=setTimeout(function(){
-      if(!done){done=true;netLog('TIMED OUT after '+NET_TIMEOUT_MS+'ms:',path);resolve(null);}
-    },NET_TIMEOUT_MS);
+      if(!done){done=true;netLog('TIMED OUT after '+lim+'ms:',path);resolve(null);}
+    },lim);
     fetch(NET_BASE+path,{cache:'default'}).then(function(r){
       if(!r.ok)netLog('HTTP '+r.status+' ('+(Date.now()-t0)+'ms):',path);
       return r.ok?r.json():null;
@@ -2683,10 +2716,10 @@ function netGet(path){
    41,917 centroids is 334 KB gzipped. Down a phone on a gravel road that is
    the wrong trade to answer one question, so the table is sharded on the first
    two digits: 54728 asks for zips/54.json, which is 4 KB. */
-function netZipCoord(zip){
+function netZipCoord(zip,ms){
   var z=String(zip||'').trim().slice(0,5);
   if(!/^\d{5}$/.test(z))return Promise.resolve(null);
-  return netGet('data/zips/'+z.slice(0,2)+'.json').then(function(tbl){
+  return netGet('data/zips/'+z.slice(0,2)+'.json',ms).then(function(tbl){
     if(!tbl)return null;
     var p=tbl[z];
     /* THE TABLE ARRIVED AND THIS ZIP IS NOT IN IT. That is an answer, not a
@@ -2725,10 +2758,42 @@ function netPlacesWithin(index,coord,radiusMi,cap){
     if(!p.shard)return;
     var d=netDistanceMi(coord,[lat,lon]);
     if(d>radiusMi)return;
-    out.push({shard:p.shard,distance:d,operator:p.operator,city:p.city,state:p.state});
+    out.push({shard:p.shard,distance:d,operator:p.operator,city:p.city,state:p.state,
+              now:p.now||null,best:p.best||null,usd:!p.currency||p.currency==='USD'});
   });
   out.sort(function(x,y){return x.distance-y.distance;});
-  return out.slice(0,cap||NET_MAX_PLACES);
+  return netRankPlaces(out,cap||NET_MAX_PLACES);
+}
+/* THE NEAREST SIXTY WAS THE WRONG SIXTY. Ames IA at 100 miles has 103 places
+   in range; cutting by distance alone dropped POET Gowrie at 40 miles, the
+   best corn bid in reach ($4.92), for sixty closer and weaker ones. The index
+   already carries each place's nearest-delivery bid (`now`) and its top bid
+   (`best`) per crop, so the budget is spent in two passes WITHOUT fetching
+   anything extra: first the top NET_TOP_PER_CROP places per crop on either
+   number, then the nearest, until the budget is used. Same request count as
+   before; only which sixty changes. `list` must be sorted nearest first. */
+var NET_TOP_PER_CROP=5;
+function netRankPlaces(list,cap){
+  if(list.length<=cap)return list;
+  var pick={},n=0,crops={};
+  list.forEach(function(p){
+    if(!p.usd)return;
+    ['now','best'].forEach(function(f){
+      var o=p[f];if(!o)return;
+      Object.keys(o).forEach(function(c){
+        var v=o[c]&&o[c].cash;
+        if(typeof v==='number'&&isFinite(v))(crops[f+'|'+c]=crops[f+'|'+c]||[]).push({p:p,v:v});
+      });
+    });
+  });
+  Object.keys(crops).forEach(function(k){
+    /* Stable on ties, so the nearer of two equal bids wins the slot. */
+    crops[k].sort(function(a,b){return b.v-a.v;}).slice(0,NET_TOP_PER_CROP).forEach(function(e){
+      if(!pick[e.p.shard]&&n<cap){pick[e.p.shard]=true;n++;}
+    });
+  });
+  list.forEach(function(p){if(!pick[p.shard]&&n<cap){pick[p.shard]=true;n++;}});
+  return list.filter(function(p){return pick[p.shard];});
 }
 
 /* A MERGED BID BECOMES A ROW THIS PAGE ALREADY KNOWS HOW TO DRAW.
@@ -2786,7 +2851,9 @@ function netRowsFrom(shard,distanceMi){
     if((b.currency||'USD')!=='USD'||!usScope(b.state||shard.state)){nonUsd++;return;}
     rows.push({
       facility:b.operator||shard.operator||'Unknown',
-      branch:b.branch||'',
+      /* The shard header carries the branch too (2026-10-07), so a facility
+         split off a shared town key keeps its own card even if a row lacks it. */
+      branch:b.branch||shard.branch||'',
       city:b.city||shard.city||'',
       /* 2026-10-06: the town to PRINT when `city` is an elevator's name
          ("Walsh Grain"). Published on the shard header by dnilgis/bids, only
@@ -2797,7 +2864,9 @@ function netRowsFrom(shard,distanceMi){
          its town by cbRank.placeTown(). Never printed. */
       zip:String(b.zip||'').slice(0,5),
       distance:(typeof distanceMi==='number'&&isFinite(distanceMi))?distanceMi:null,
-      phone:'',
+      /* The elevator's own number from its source file, published on the
+         shard header by dnilgis/bids. Empty when the source has none. */
+      phone:String(shard.phone||b.phone||''),
       commodity:b.commodity||'',
       cashPrice:cash,
       basis:basis,
@@ -2921,11 +2990,16 @@ function netMerge(feedRows,networkRows){
      lands on the same card instead of a second card under "ADM Grain". Nothing
      is proven by name alone: CHS Ag Terminals Mankato never twins ADM. */
   var sameFac={};
+  /* Keyed by the second feed's branch as well: it files ADM's Fremont
+     elevator, soy plant and poultry plant as three branches of one name in one
+     town, and one key for all three filed every survivor under whichever card
+     twinned first. */
+  var facKey=function(r){return netKey(r)+'|'+netPlain(r.branch);};
   (feedRows||[]).forEach(function(r){
-    var k=netKey(r);
-    if(sameFac[k]||mine[k])return;
+    var k=netKey(r),fk=facKey(r);
+    if(sameFac[fk]||mine[k])return;
     for(var i=0;i<(networkRows||[]).length;i++){
-      if(netIsTwin(networkRows[i],r)){sameFac[k]=networkRows[i];break;}
+      if(netIsTwin(networkRows[i],r)){sameFac[fk]=networkRows[i];break;}
     }
   });
   (feedRows||[]).forEach(function(r){
@@ -2953,7 +3027,7 @@ function netMerge(feedRows,networkRows){
         return;
       }
     }
-    var ours2=sameFac[k];
+    var ours2=sameFac[facKey(r)];
     if(ours2){
       var twin=null;
       for(var i=0;i<(networkRows||[]).length;i++){
@@ -2982,31 +3056,41 @@ function netOlder(ours,feed){
   return !!(a&&b&&a<b);
 }
 
-/* Never rejects. Resolves to an empty result on any failure at all. */
-function fetchNetwork(zip,radiusMi){
+/* Never rejects. Resolves to an empty result on any failure at all.
+   `late` (optional) is a holder: the inner chain records its own answer on it
+   (late.done, late.result) and calls late.onSettle(result) if that is set. */
+function fetchNetwork(zip,radiusMi,late){
   var empty={rows:[],places:0,duplicatesResolved:0,nationalPlaces:null,failed:true};
   /* Off means off: no request is made at all, not merely ignored. */
   if(!NET_ON)return Promise.resolve(empty);
-  /* THE DEADLINE WRAPS EVERYTHING BELOW. Whichever settles first wins, and the
-     loser is simply dropped — there is nothing to clean up, because every path
-     in here resolves rather than rejects. */
+  /* THE DEADLINE DECIDES THE FIRST RENDER, NOT WHAT THE PAGE EVER SHOWS.
+     Whichever settles first is what the page draws first. The inner chain is
+     KEPT: it used to be dropped here forever, so on a 1.6 Mbps phone the
+     177 KB index finished a second after the deadline and the elevators it
+     named never appeared. Now the caller is told when it lands. */
+  var inner=_fetchNetworkInner(zip,radiusMi,empty);
+  if(late)inner.then(function(r){
+    late.done=true;late.result=r;
+    if(typeof late.onSettle==='function')late.onSettle(r);
+  });
   return Promise.race([
     new Promise(function(res){setTimeout(function(){res(empty);},NET_DEADLINE_MS);}),
-    _fetchNetworkInner(zip,radiusMi,empty)
+    inner
   ]);
 }
 function _fetchNetworkInner(zip,radiusMi,empty){
-  return netZipCoord(zip).then(function(coord){
+  var T=NET_LATE_TIMEOUT_MS;
+  return netZipCoord(zip,T).then(function(coord){
     if(!coord)return empty;
     if(coord.unknownZip)return {rows:[],places:0,duplicatesResolved:0,nationalPlaces:null,unknownZip:true};
-    return netGet('data/merged-index.json').then(function(index){
+    return netGet('data/merged-index.json',T).then(function(index){
       if(!index)return empty;
       if(window.cbRank)cbRank.learnTowns(index);
       var national=(index.counts&&index.counts.places)||null;
       var near=netPlacesWithin(index,coord,radiusMi||50,NET_MAX_PLACES);
       if(!near.length)return {rows:[],places:0,duplicatesResolved:0,nationalPlaces:national};
       return Promise.all(near.map(function(p){
-        return netGet('data/'+p.shard).then(function(s){
+        return netGet('data/'+p.shard,T).then(function(s){
           return s?netRowsFrom(s,p.distance):[];
         });
       })).then(function(lists){
@@ -3084,9 +3168,13 @@ function feedHuman(err,netFailed){
    "Unable to Load Bids" over sixty elevators whose shards had already
    downloaded. callback's third argument is the warning to show ABOVE results
    that did arrive, rather than instead of them. */
+/* callback may be called a SECOND time, with a fourth argument {late:true},
+   when the bids network answers after the first render (see fetchNetwork). */
+var cbSearchSeq=0;
 function fetchBids(zip,radius,callback){
   var url=BASE_URL+'?zipCode='+encodeURIComponent(zip)+'&maxDistance='+(radius||50)+'&getAllBids=1';
-  var net=fetchNetwork(zip,radius||50);
+  var seq=++cbSearchSeq,late={};
+  var net=fetchNetwork(zip,radius||50,late);
   var bcErr=null,ctl=null,killer=null;
   try{if(typeof AbortController==='function')ctl=new AbortController();}catch(e){}
   var live=!LICENSED_FEED?Promise.resolve([]):fetch(url,ctl?{signal:ctl.signal}:undefined)
@@ -3104,31 +3192,71 @@ function fetchBids(zip,radius,callback){
       res([]);
     },FEED_DEADLINE_MS);
   })]);
+  /* netMerge renames second-feed rows it files under one of ours, so a later
+     re-merge starts from untouched copies. */
+  var copyRows=function(a){return (a||[]).map(function(r){var c={};for(var k in r)c[k]=r[k];return c;});};
   Promise.all([capped,net]).then(function(out){
     if(killer){clearTimeout(killer);killer=null;}
-    var bids=out[0]||[],n=out[1]||{rows:[],places:0,nationalPlaces:null};
-    var merged=netMerge(bids,n.rows);
-    cbNetStats={places:n.places,rows:n.rows.length,duplicatesResolved:merged.duplicatesResolved,nationalPlaces:n.nationalPlaces};
-    netLog('result:',n.places+' places, '+n.rows.length+' rows, '+
-           merged.duplicatesResolved+' duplicate(s) resolved; the second feed contributed '+
-           bids.length+' rows; the page will draw '+merged.rows.length,
-           bcErr?('(BARCHART FAILED: '+bcErr+')'):'',
-           NET_ON?'':'(NETWORK IS SWITCHED OFF)');
-    if(bcErr)console.warn('[AGSIST]',bcErr);
-    if(!merged.rows.length){
-      cbNetStats={places:0,rows:0,duplicatesResolved:0,nationalPlaces:null};
-      /* Nothing came back AND the only source that could have answered did not:
-         say so. "No bids found" would tell the reader there are none near them. */
-      /* Not gated on the licensed feed being off: an empty answer from it
-         beside an unreachable network is not "No Bids Found" either. */
-      if(n.unknownZip)bcErr='zip unknown';
-      else if(!bcErr&&n.failed)bcErr='network unreachable';
-      callback(bcErr?new Error(feedHuman(bcErr,!!n.failed)):null,[]);
-      return;
+    var bcRows=out[0]||[],n=out[1]||{rows:[],places:0,nationalPlaces:null};
+    /* The network can finish while the second feed is still out: the deadline
+       won the race, but the real answer is already here. Use it. */
+    if(late.done&&late.result&&!late.result.failed&&late.result.rows.length>=n.rows.length)n=late.result;
+    var shown=false;
+    var deliver=function(n,isLate){
+      if(seq!==cbSearchSeq)return;
+      var bids=copyRows(bcRows);
+      var merged=netMerge(bids,n.rows);
+      cbNetStats={places:n.places,rows:n.rows.length,duplicatesResolved:merged.duplicatesResolved,nationalPlaces:n.nationalPlaces};
+      netLog(isLate?'LATE result:':'result:',n.places+' places, '+n.rows.length+' rows, '+
+             merged.duplicatesResolved+' duplicate(s) resolved; the second feed contributed '+
+             bcRows.length+' rows; the page will draw '+merged.rows.length,
+             bcErr?('(BARCHART FAILED: '+bcErr+')'):'',
+             NET_ON?'':'(NETWORK IS SWITCHED OFF)');
+      if(!isLate&&bcErr)console.warn('[AGSIST]',bcErr);
+      if(!merged.rows.length){
+        if(isLate)return;
+        cbNetStats={places:0,rows:0,duplicatesResolved:0,nationalPlaces:null};
+        /* Nothing came back AND the only source that could have answered did not:
+           say so. "No bids found" would tell the reader there are none near them. */
+        /* Not gated on the licensed feed being off: an empty answer from it
+           beside an unreachable network is not "No Bids Found" either. */
+        if(n.unknownZip)bcErr='zip unknown';
+        else if(!bcErr&&n.failed)bcErr='network unreachable';
+        shown=true;
+        callback(bcErr?new Error(feedHuman(bcErr,!!n.failed)):null,[]);
+        return;
+      }
+      renderNetStats();
+      var wasShown=shown;shown=true;
+      callback(null,merged.rows,bcErr?'The second feed did not answer. Showing the bids network only: the '+
+        n.places+' elevator'+(n.places===1?'':'s')+' AGSIST reads directly from their own boards.':null,
+        (isLate&&wasShown)?{late:true}:undefined);
+    };
+    if(!late.done&&NET_ON){
+      /* THE NETWORK IS STILL DOWNLOADING. If nothing else arrived, "No Bids
+         Found" now would be a claim the page cannot make yet, so the search
+         waits for it -- up to 8 s more -- before saying so (and still draws
+         it if it lands after that). If
+         the second feed did answer, its rows are drawn now and the network's
+         are merged in when they land. */
+      var hold=null;
+      late.onSettle=function(r){
+        if(hold){clearTimeout(hold);hold=null;}
+        if(r&&r.rows&&r.rows.length)deliver(r,true);
+        /* r, not n: an unknown ZIP or an unreachable network is said as soon
+           as the chain knows it, never after the 8 s hold. */
+        else if(!shown)deliver(r||n,false);
+      };
+      /* With a saved snapshot for this search the error path draws it, dated,
+         so there is nothing false to avoid and no reason to make anyone wait. */
+      var snap=false;
+      try{snap=!!(window.CBGlance&&CBGlance.snapshot(zip,radius||50));}catch(e){}
+      if(!bcRows.length&&!snap){
+        hold=setTimeout(function(){hold=null;if(!shown)deliver(n,false);},8000);
+        return;
+      }
     }
-    renderNetStats();
-    callback(null,merged.rows,bcErr?'The second feed did not answer. Showing the bids network only: the '+
-      n.places+' elevator'+(n.places===1?'':'s')+' AGSIST reads directly from their own boards.':null);
+    deliver(n,false);
   });
 }
 
@@ -3152,6 +3280,7 @@ function doSearch(zip){
   zip=(zip||zipInput.value||'').trim().replace(/\D/g,'');
   if(zip.length<5){zipInput.style.borderColor='var(--red,#ef4444)';setTimeout(function(){zipInput.style.borderColor='';},1500);zipInput.focus();announce('Enter a 5-digit ZIP code.');return;}
   zipInput.value=zip;zipInput.style.borderColor='';
+  cbSearchStarted=true;
   goBtn.disabled=true;goBtn.textContent='Searching\u2026';
   bestSec.style.display='none';internalLinks.style.display='none';
   /* aria-busy, because the skeleton is four empty divs: a screen reader
@@ -3162,7 +3291,8 @@ function doSearch(zip){
   var radius=parseInt(radiusSel.value,10)||50;
   gaEvent('bids_search',{zip:zip,radius:radius});
   announce('Searching for bids near '+zip+'\u2026');
-  fetchBids(zip,radius,function(err,bids,warn){
+  fetchBids(zip,radius,function(err,bids,warn,lateInfo){
+    var isLate=!!(lateInfo&&lateInfo.late),elevBefore=isLate?currentElevators.length:0,pinsBefore=pinnedKeys.slice();
     goBtn.disabled=false;
     results.removeAttribute('aria-busy');
     renderDegraded(null);
@@ -3184,16 +3314,20 @@ function doSearch(zip){
          ReferenceError and the only way out of the error state did nothing. */
       var rb=document.getElementById('cb-retry');
       if(rb){rb.addEventListener('click',function(){doSearch();});rb.focus();}
+      cbFirstResultsDone();
       announce('Error: unable to load bids. '+err.message);return;
     }
     if(warn)renderDegraded(warn);
     hasSearched=true;
     lastFetchTime=new Date();
-    setTimeout(function(){ announce((bids.length||0)+' elevator listings loaded. Results below.'); }, 400);
+    /* A late answer can land inside these 400 ms; its own line then replaces
+       this one rather than being overwritten by a count that is already old. */
+    clearTimeout(cbAnnTimer);
+    if(!isLate)cbAnnTimer=setTimeout(function(){ announce((bids.length||0)+' elevator listings loaded. Results below.'); }, 400);
     try{localStorage.setItem('agsist_zip',zip);}catch(e){}
     goBtn.textContent='\u21BB Refresh';
-    currentBids=bids;pinnedKeys=[];
-    if(window.CBGlance)CBGlance.newSearch();
+    currentBids=bids;pinnedKeys=isLate?pinsBefore:[];
+    if(window.CBGlance&&!isLate)CBGlance.newSearch();
     /* Built from the bids that just arrived, not from a hardcoded list of
        months: a radius with no new-crop bids in it must not offer a
        new-crop option that returns nothing. */
@@ -3238,6 +3372,14 @@ function doSearch(zip){
     renderBestBids(currentElevators);
     renderEarnings();
     updateCompareBar();
+    cbFirstResultsDone();
+    if(isLate){
+      /* THE SAME LIVE REGION, ONE SHORT LINE. Only when it added something. */
+      var added=currentElevators.length-elevBefore;
+      if(added>0)announce(added+' more elevator'+(added===1?'':'s')+' added. '+bids.length+' elevator listings in all.');
+      else announce('Live bids loaded. '+bids.length+' elevator listings.');
+      return;
+    }
     gaEvent('bids_loaded',{zip:zip,radius:radius,elevators:currentElevators.length,bids:bids.length});
     try{var p=new URLSearchParams(window.location.search);p.set('zip',zip);p.set('r',radius);history.replaceState(null,'','?'+p.toString());}catch(e){}
   });
@@ -3407,7 +3549,7 @@ if(window.AGSIST_STATE&&window.AGSIST_STATE.lat&&window.AGSIST_STATE.zip){
   }
   var tg=document.getElementById('bm-toggle');
   if(tg)tg.addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;current=b.getAttribute('data-c');this.querySelectorAll('button').forEach(function(x){x.setAttribute('aria-pressed',x===b?'true':'false');});render(current);if(window.gaEvent)gaEvent('basis_commodity',{commodity:current,page:'cash-bids'});});
-  fetch('/data/basis-map.json',{cache:'no-store'}).then(function(r){if(!r.ok)throw 0;return r.json();}).then(function(d){DATA=d;if(d.sample){var s=document.getElementById('bm-sample');if(s)s.style.display='block';}buildToggle();render(current);if(window.gaEvent)gaEvent('basis_view',{page:'cash-bids'});}).catch(function(){var g=document.getElementById('bm-grid');if(g)g.innerHTML='<div class="bm-err">National basis data is briefly unavailable.</div>';});
+  (window.cbAfterFirstResults||function(f){f();})(function(){fetch('/data/basis-map.json',{cache:'no-store'}).then(function(r){if(!r.ok)throw 0;return r.json();}).then(function(d){DATA=d;if(d.sample){var s=document.getElementById('bm-sample');if(s)s.style.display='block';}buildToggle();render(current);if(window.gaEvent)gaEvent('basis_view',{page:'cash-bids'});}).catch(function(){var g=document.getElementById('bm-grid');if(g)g.innerHTML='<div class="bm-err">National basis data is briefly unavailable.</div>';});});
 })();
 </script>
 <script>
@@ -3515,9 +3657,12 @@ function get(u){
   });
 }
 
+/* Deferred until the first results are drawn: see cbAfterFirstResults. */
+(window.cbAfterFirstResults||function(f){f();})(function(){
 Promise.all([get('/data/bids.json'),get('/data/elevator-coverage.json')])
   .then(function(v){build(v[0],v[1]);})
   .catch(function(){/* the page stays exactly as it was */});
+});
 
 function build(bids,cov){
   if(!bids||!bids.bids||!bids.bids.length||!cov||!cov.places||!cov.places.length)return;

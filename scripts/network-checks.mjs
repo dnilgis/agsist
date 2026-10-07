@@ -47,7 +47,10 @@ const NAMES = ["classify", "netZipCoord", "netDistanceMi", "netPlacesWithin",
                /* netRowsFrom drops non-US rows through usScope() (added with the
                   US-only scope); without it every row threw "usScope is not
                   defined" here, and only here: the page defines it. */
-               "usScope", "netNormOperator", "netPlain", "netIsTwin", "netOlder"];
+               "usScope", "netNormOperator", "netPlain", "netIsTwin", "netOlder",
+               /* netPlacesWithin spends its budget through netRankPlaces
+                  (2026-10-07): best bids per crop first, then the nearest. */
+               "netRankPlaces"];
 const sources = {};
 for (const n of NAMES) {
   sources[n] = lift(n);
@@ -74,6 +77,8 @@ const body = NAMES.map((n) => sources[n]).join("\n") +
   `\nvar NET_BASE=${constOf("NET_BASE")};` +
   `\nvar NET_MAX_PLACES=${constOf("NET_MAX_PLACES")};` +
   `\nvar NET_TIMEOUT_MS=${constOf("NET_TIMEOUT_MS")};` +
+  `\nvar NET_LATE_TIMEOUT_MS=${constOf("NET_LATE_TIMEOUT_MS")};` +
+  `\nvar NET_TOP_PER_CROP=${constOf("NET_TOP_PER_CROP")};` +
   /* The off switch and the overall deadline are read off the page too, so a
      changed value is a changed test rather than a stale one. */
   `\nvar NET_ON=${constOf("NET_ON")};` +
@@ -123,6 +128,22 @@ eq(N.netPlacesWithin(many, CHETEK, 500, 60).length, 60, "the shard cap is not be
 const sorted = N.netPlacesWithin(many, CHETEK, 500, 60);
 ok(sorted.every((p, i) => i === 0 || p.distance >= sorted[i - 1].distance),
    "places came back out of distance order, so the cap keeps the wrong ones");
+/* THE BEST BID IN RANGE IS NEVER CUT FOR A NEARER, WEAKER ONE (2026-10-07).
+   Ames 50010 at 50 mi: 103 places, and the nearest 60 left out POET Gowrie,
+   the best corn bid in reach. The budget goes to the top bids per crop first
+   (read from the index, no extra request), then to the nearest. */
+const ranked = { places: many.places.map((p, i) => ({ ...p,
+  now: { corn: { cash: i === 0 ? 4.92 : 4.5 } } })) };
+const pickR = N.netPlacesWithin(ranked, CHETEK, 500, 60);
+eq(pickR.length, 60, "ranking changed how many shards are fetched");
+ok(!sorted.some((p) => p.shard === "merged/s0.json"), "the fixture's s0 is meant to be the farthest place");
+ok(pickR.some((p) => p.shard === "merged/s0.json"),
+   "the best corn bid in the radius, the farthest place, was cut by the shard cap");
+ok(pickR.every((p, i) => i === 0 || p.distance >= pickR[i - 1].distance),
+   "ranked places came back out of distance order");
+const cad = { places: ranked.places.map((p) => p.shard === "merged/s0.json" ? { ...p, currency: "CAD" } : p) };
+ok(!N.netPlacesWithin(cad, CHETEK, 500, 60).some((p) => p.shard === "merged/s0.json"),
+   "a bid in another currency was ranked against dollar bids");
 
 /* ── a shard becomes rows this page can draw ───────────────────────────── */
 const SHARD = {
@@ -267,7 +288,8 @@ await N.fetchNetwork("not a zip", 50);
 eq(fetchLog.length, 0, "a malformed ZIP still fired a request");
 
 /* ── the page is actually wired to it ──────────────────────────────────── */
-ok(/var net=fetchNetwork\(zip,radius\|\|50\);/.test(PAGE),
+/* The third argument (2026-10-07) is the holder the late answer lands on. */
+ok(/var net=fetchNetwork\(zip,radius\|\|50(,late)?\);/.test(PAGE),
    "fetchBids() no longer asks the network — the block is present and unused");
 ok(/netMerge\(bids,n\.rows\)/.test(PAGE),
    "the two feeds are no longer merged in fetchBids()");
