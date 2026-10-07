@@ -1,18 +1,18 @@
 {
- "generated": "2026-10-07T14:23:10Z",
+ "generated": "2026-10-07T14:38:11Z",
  "from": "barchart-raw.json",
  "complete": false,
  "note": "Directory only: who operates a facility and where. No prices, no basis, no symbols, no delivery windows.",
  "counts": {
-  "facilities": 2266,
+  "facilities": 2267,
   "states": 38,
   "with_address": 722,
   "with_coords": 725,
   "with_url": 703,
-  "with_phone": 2199,
+  "with_phone": 2200,
   "saturated_zips": 0,
   "failed_zips": 0,
-  "rows_read": 17223
+  "rows_read": 17225
  },
  "saturated": [],
  "failed": [],
@@ -4049,6 +4049,15 @@
    "facility_type": "Country Elevator",
    "locationId": 21050,
    "elevatorId": 2128,
+   "source": "barchart"
+  },
+  {
+   "facility": "McCormick Ag Exchange",
+   "branch": "McGregor",
+   "city": "McGregor",
+   "state": "IA",
+   "zip": "52157",
+   "phone": "+15638733060",
    "source": "barchart"
   },
   {
