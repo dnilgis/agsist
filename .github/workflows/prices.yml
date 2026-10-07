@@ -1,63 +1,66 @@
 name: Fetch Prices
 
-# WHY THIS IS A LOOP, NOT A */30 CRON:
-# GitHub's scheduled-cron is best-effort and silently DROPS high-frequency
-# (every-30-min) runs — and will auto-disable a schedule that fails repeatedly.
-# That is why prices went stale and showed "no scheduled runs, only manual."
-# Instead of needing ~20 fragile cron fires a day, ONE reliable launch runs an
-# internal loop that fetches every 15 min for the whole trading session.
-# A couple of low-frequency starts (far more reliable than */30) kick it off,
-# and the manual button always works. NOTE: the long-running job uses Actions
-# minutes continuously — this is free on a PUBLIC repo (unlimited minutes); on a
-# PRIVATE repo it would burn the free tier, so use an external pinger instead.
+# ONE FETCH PER RUN. THE CLOCK IS cron-job.org.
+#
+# Until 2026-10-07 this was one ~5h20m loop per launch, started by a handful
+# of GitHub crons. GitHub drops scheduled fires, and when it dropped both the
+# 08:17 CT launch and its 11:03 recovery the homepage sat on 8:55 prices
+# until 11:16. Bids never had that problem: cron-job.org starts
+# fetch_bids.yml every 15 minutes and does not drop fires.
+#
+# So prices work the same way now. cron-job.org POSTs a workflow_dispatch
+# every 15 minutes, all day, every day; each run fetches once and exits. The
+# "Market hours" step below skips the fetch when CME grains are shut, so the
+# weekend does not get 96 commits of an unchanged board. The GitHub cron
+# under it is only a fallback for when cron-job.org is down.
 
 on:
   workflow_dispatch:
+    inputs:
+      force:
+        description: 'Fetch even if the market is closed'
+        type: boolean
+        default: false
   schedule:
-    # Low-frequency, off-:00 minutes (GitHub honors these far more reliably than */30).
-    # Each launch covers ~5.25h of 30-min fetches, so 1 successful fire = a full session.
-    - cron: '17 13 * * 1-5'   # ~08:17 CT — start before the 08:30 day-session open
-    - cron: '3 16 * * 1-5'    # midday recovery launch (in case the morning one was dropped)
-    # THE EVENING LAUNCH USED TO FIRE AT 00:02 UTC -- 7:02 PM CT, two minutes
-    # AFTER the 7:00 PM Globex reopen -- while the day launch above was
-    # deliberately given thirteen minutes of lead ("start before the 08:30
-    # open"). The evening one had minus two, and this scheduler is best effort.
-    #
-    # MEASURED on data/prices.json, Tuesday 2026-08-25, Central:
-    #   cron fires   19:02
-    #   first write  20:23:50   <- 1h 22m late
-    #   then 20:54 21:24 21:55 22:25 22:56 23:26 23:56 00:27 00:57 01:28 01:43
-    # The session was open and trading for eighty minutes with the page saying
-    # "DELAYED - Markets 2h 11m ago", which was true and was the whole problem.
-    #
-    # 23:40 UTC is 6:40 PM CDT: twenty minutes of lead in summer, and an hour
-    # and twenty in winter, where 23:40 UTC is 5:40 PM CST. Early is free --
-    # the launch simply covers its 5.25 hours from wherever it starts.
-    #
-    # DAYS 0-4 AND NOT 1-6. At 00:02 UTC the old range fired on Saturday, which
-    # is Friday 7:02 PM CT, when the market has been shut since 1:20 that
-    # afternoon and does not reopen until Sunday evening. That run has been
-    # buying nothing. Sun-Thu UTC at 23:40 is Sun-Thu evening CT, which is
-    # exactly the five overnight sessions there are.
-    - cron: '40 23 * * 0-4'   # ~18:40 CT — start before the 19:00 Globex reopen
-    # An evening recovery, for the same reason the midday one above exists: an
-    # 82-minute delay is not a hypothetical here, it is Tuesday. Newest launch
-    # wins, so this takes over cleanly and carries the session past 2 AM.
-    - cron: '10 2 * * 1-5'    # ~21:10 CT — evening recovery launch
-    - cron: '17 10 * * 1-5'   # pre-dawn: 5:17 AM CT Mon-Fri — overnight session trades til 7:45 AM; this hands the 6 AM briefing and early readers CURRENT prices, then the day launch takes over
+    - cron: '11,41 * * * *'   # fallback only; off the :00/:30 pile-ups
 
-# Newest launch wins — a restart takes over cleanly instead of queueing a 5h job.
+# One fetch at a time, and never cut one off mid-push: a second start waits.
 concurrency:
   group: fetch-prices
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
-  loop:
+  # CME grains trade Sun 7:00 PM to Fri 1:20 PM CT, shut 1:20-7:00 PM daily.
+  # Fetch from 6:45 PM (lead for the reopen) to 2:00 PM (catch the settle),
+  # in Central time so daylight saving takes care of itself. Outside that the
+  # board does not move and a fetch would only re-stamp `fetched`.
+  hours:
     runs-on: ubuntu-latest
-    timeout-minutes: 350      # guard well under the 6h hosted-runner ceiling
+    outputs:
+      open: ${{ steps.h.outputs.open }}
+    steps:
+      - id: h
+        run: |
+          DOW=$(TZ=America/Chicago date +%u)              # 1=Mon .. 7=Sun
+          HM=$(( 10#$(TZ=America/Chicago date +%H%M) ))   # e.g. 1845
+          OPEN=0
+          case "$DOW" in
+            7)       [ "$HM" -ge 1845 ] && OPEN=1 ;;
+            1|2|3|4) { [ "$HM" -lt 1400 ] || [ "$HM" -ge 1845 ]; } && OPEN=1 ;;
+            5)       [ "$HM" -lt 1400 ] && OPEN=1 ;;
+          esac
+          [ "${{ inputs.force }}" = "true" ] && OPEN=1
+          echo "CT day $DOW, $HM -> open=$OPEN"
+          echo "open=$OPEN" >> "$GITHUB_OUTPUT"
+
+  fetch:
+    needs: hours
+    if: needs.hours.outputs.open == '1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
     permissions:
       contents: write
-      # `actions: write` is what lets the last step of the fetch loop dispatch
+      # `actions: write` is what lets the fetch step dispatch
       # the briefing. Added 2026-09-01 with the heartbeat; see the note there.
       actions: write
     steps:
@@ -74,7 +77,7 @@ jobs:
       - name: Install dependencies
         run: pip install yfinance
 
-      # Selftests gate the loop: if the ONE expiry/roll rule or the roll marker
+      # Selftests gate the fetch: if the ONE expiry/roll rule or the roll marker
       # is broken, fail RED here — before a bad feed gets committed 10x/session.
       - name: Selftest — contract calendar + roll marking + feed gate
         run: |
@@ -84,7 +87,7 @@ jobs:
           python scripts/test_class_spreads.py
           python scripts/test_prev_close.py
 
-      - name: Fetch loop (every 15 min for the session)
+      - name: Fetch once
         env:
           # `gh workflow run` authenticates from GH_TOKEN. The built-in token is
           # enough: a workflow_dispatch is one of the two events GitHub creates
@@ -95,117 +98,90 @@ jobs:
           git config user.name  "AGSIST Bot"
           git config user.email "bot@agsist.com"
 
-          END=$(( $(date +%s) + 5*3600 + 1200 ))   # run ~5h20m, then exit before timeout
-          CYCLE=0
-          while :; do
-            CYCLE=$((CYCLE+1))
-            echo "::group::Cycle $CYCLE — $(date -u +'%H:%M:%SZ')"
+          python scripts/fetch_prices.py || echo "fetch_prices.py exited non-zero (kept last values)"
 
-            python scripts/fetch_prices.py || echo "fetch_prices.py exited non-zero (kept last values)"
+          # GATE — run the SAME feed gate daily.yml runs, on every cycle.
+          # Until 2026-08-08 preflight ran in daily.yml only: one of the four
+          # workflows that write this file. So the briefing got a repaired feed
+          # once a day and the homepage, markets.html and the futures pages read
+          # the raw one for the other 29 minutes of every half hour — and the
+          # daily repair was clobbered by the next fetch regardless. That is how
+          # "LEAN HOGS +13.82 (+16.9%)" — 2.9x the exchange daily limit — sat on
+          # the homepage. Repair mode: fix what a dated contract can verify,
+          # suppress what nothing can, never block the price loop.
+          python scripts/preflight_prices.py data/prices.json --repair \
+            || echo "::warning::preflight reported unrepairable quotes; they were suppressed, not published"
 
-            # GATE — run the SAME feed gate daily.yml runs, on every cycle.
-            # Until 2026-08-08 preflight ran in daily.yml only: one of the four
-            # workflows that write this file. So the briefing got a repaired feed
-            # once a day and the homepage, markets.html and the futures pages read
-            # the raw one for the other 29 minutes of every half hour — and the
-            # daily repair was clobbered by the next fetch regardless. That is how
-            # "LEAN HOGS +13.82 (+16.9%)" — 2.9x the exchange daily limit — sat on
-            # the homepage. Repair mode: fix what a dated contract can verify,
-            # suppress what nothing can, never block the price loop.
-            python scripts/preflight_prices.py data/prices.json --repair \
-              || echo "::warning::preflight reported unrepairable quotes; they were suppressed, not published"
-
-            if ! git diff --quiet -- data/prices.json; then
-              git add data/prices.json
-              git commit -m "💹 Prices — $(date -u +'%Y-%m-%d %H:%M UTC')"
-              # rebase-safe push with retry: pull AFTER commit, take our fresh copy on conflict
-              pushed=0
-              for i in 1 2 3 4 5; do
-                git pull --rebase --autostash origin main || {
-                  git checkout --theirs data/prices.json 2>/dev/null || true
-                  git add data/prices.json
-                  git rebase --continue 2>/dev/null || git rebase --abort 2>/dev/null || true
-                }
-                if git push origin main; then pushed=1; echo "pushed (attempt $i)"; break; fi
-                echo "push attempt $i lost a race; retrying…"; sleep $((RANDOM % 5 + 2))
-              done
-              [ "$pushed" = "0" ] && echo "::warning::could not push this cycle; will retry next cycle"
-
-              # ── THE BRIEFING HEARTBEAT ──────────────────────────────────
-              #
-              # This loop is the only thing in this repository that GitHub
-              # delivers reliably. daily.yml's own scheduled fires are dropped
-              # for days at a time; this one committed at 09:06, 09:37, 10:07,
-              # 10:37, 11:08, 11:38, 12:08 and 12:39 UTC on 2026-08-31 — eight
-              # for eight — while not one briefing fire arrived.
-              #
-              # daily.yml was given `on: push` on 2026-08-31 to ride along with
-              # exactly these commits. IT CANNOT WORK, and the reason is
-              # GitHub's, written down in their own documentation:
-              #
-              #   "When you use the repository's GITHUB_TOKEN to perform tasks,
-              #    events triggered by the GITHUB_TOKEN ... will not create a
-              #    new workflow run. ... this behavior prevents you from
-              #    accidentally creating recursive workflow runs."
-              #
-              # The checkout above authenticates with secrets.GITHUB_TOKEN, so
-              # every push this loop makes is invisible to every `on: push`
-              # trigger in the repository. Not unreliable. Impossible.
-              #
-              # The SAME page names the two events that are exempt:
-              #
-              #   "workflow_dispatch and repository_dispatch events always
-              #    create workflow runs."
-              #
-              # So the heartbeat is a dispatch, not a push. It needs no new
-              # secret and creates no recursion: daily.yml answers a heartbeat
-              # exactly the way it answered a push — it never waits, it skips
-              # if today is published or if it is before the 05:45 Central
-              # floor, and there is another one along in thirty minutes.
-              #
-              # `|| true` because a briefing is not worth failing a price
-              # fetch over.
-              if [ "$pushed" = "1" ]; then
-                gh workflow run daily.yml \
-                  -f heartbeat=true -f send_email=true \
-                  && echo "briefing heartbeat sent" \
-                  || echo "::warning::briefing heartbeat could not be sent this cycle"
-              fi
-            else
-              echo "no price change this cycle"
-            fi
-            echo "::endgroup::"
-
-            NOW=$(date +%s); REMAIN=$(( END - NOW ))
-            [ "$REMAIN" -le 60 ] && { echo "session window done, exiting"; break; }
-            # 15 minutes since 2026-10-07 (was 30): Yahoo's quote is already ~15
-            # minutes behind the exchange, and a 30-minute cycle on top of that
-            # left the page up to 45 minutes behind the board.
-            SLEEP=900; [ "$SLEEP" -gt "$REMAIN" ] && SLEEP="$REMAIN"
-            echo "sleeping ${SLEEP}s until next fetch…"
-            # ── THE COT RELEASE CLOCK ───────────────────────────────────
-            #
-            # cot-release-watch.yml asks GitHub's scheduler for a probe every
-            # five minutes from 19:00 UTC. GitHub delivered that workflow two
-            # hours after CFTC published on both of the last two Fridays (21:27
-            # and 21:34 UTC against a 19:30 release). This loop is the one thing
-            # here GitHub does deliver, so it does the asking: in the release
-            # window, Mon-Fri 19:00-21:59 UTC (3:00-4:59pm EDT, 2:00-3:59pm EST,
-            # which holds 3:30pm ET in both), the 15-minute sleep is cut into
-            # five-minute pieces and the watcher is dispatched after each one.
-            # The watcher probes CFTC itself and stops in about twenty seconds
-            # unless the report date moved. The sleep still totals $SLEEP, so
-            # the price cadence does not change. `|| true` style: a failed
-            # dispatch is a warning, never a failed price fetch.
-            SLEPT=0
-            while [ "$SLEPT" -lt "$SLEEP" ]; do
-              STEP=$(( SLEEP - SLEPT )); [ "$STEP" -gt 300 ] && STEP=300
-              sleep "$STEP"; SLEPT=$(( SLEPT + STEP ))
-              DOW=$(date -u +%u); HR=$(( 10#$(date -u +%H) ))
-              if [ "$DOW" -le 5 ] && [ "$HR" -ge 19 ] && [ "$HR" -le 21 ]; then
-                gh workflow run cot-release-watch.yml \
-                  && echo "COT watcher started $(date -u +%H:%M:%SZ)" \
-                  || echo "::warning::COT watcher could not be started"
-              fi
+          if ! git diff --quiet -- data/prices.json; then
+            git add data/prices.json
+            git commit -m "💹 Prices — $(date -u +'%Y-%m-%d %H:%M UTC')"
+            # rebase-safe push with retry: pull AFTER commit, take our fresh copy on conflict
+            pushed=0
+            for i in 1 2 3 4 5; do
+              git pull --rebase --autostash origin main || {
+                git checkout --theirs data/prices.json 2>/dev/null || true
+                git add data/prices.json
+                git rebase --continue 2>/dev/null || git rebase --abort 2>/dev/null || true
+              }
+              if git push origin main; then pushed=1; echo "pushed (attempt $i)"; break; fi
+              echo "push attempt $i lost a race; retrying…"; sleep $((RANDOM % 5 + 2))
             done
-          done
+            [ "$pushed" = "0" ] && echo "::warning::could not push this cycle; will retry next cycle"
+
+            # ── THE BRIEFING HEARTBEAT ──────────────────────────────────
+            #
+            # These runs are what arrives on time (cron-job.org starts them). daily.yml's own scheduled fires are dropped
+            # for days at a time; this one committed at 09:06, 09:37, 10:07,
+            # 10:37, 11:08, 11:38, 12:08 and 12:39 UTC on 2026-08-31 — eight
+            # for eight — while not one briefing fire arrived.
+            #
+            # daily.yml was given `on: push` on 2026-08-31 to ride along with
+            # exactly these commits. IT CANNOT WORK, and the reason is
+            # GitHub's, written down in their own documentation:
+            #
+            #   "When you use the repository's GITHUB_TOKEN to perform tasks,
+            #    events triggered by the GITHUB_TOKEN ... will not create a
+            #    new workflow run. ... this behavior prevents you from
+            #    accidentally creating recursive workflow runs."
+            #
+            # The checkout above authenticates with secrets.GITHUB_TOKEN, so
+            # every push this loop makes is invisible to every `on: push`
+            # trigger in the repository. Not unreliable. Impossible.
+            #
+            # The SAME page names the two events that are exempt:
+            #
+            #   "workflow_dispatch and repository_dispatch events always
+            #    create workflow runs."
+            #
+            # So the heartbeat is a dispatch, not a push. It needs no new
+            # secret and creates no recursion: daily.yml answers a heartbeat
+            # exactly the way it answered a push — it never waits, it skips
+            # if today is published or if it is before the 05:45 Central
+            # floor, and there is another one along in thirty minutes.
+            #
+            # `|| true` because a briefing is not worth failing a price
+            # fetch over.
+            if [ "$pushed" = "1" ]; then
+              gh workflow run daily.yml \
+                -f heartbeat=true -f send_email=true \
+                && echo "briefing heartbeat sent" \
+                || echo "::warning::briefing heartbeat could not be sent this cycle"
+            fi
+          else
+            echo "no price change this cycle"
+          fi
+
+          # ── THE COT RELEASE CLOCK ───────────────────────────────────
+          #
+          # cot-release-watch.yml asks GitHub's scheduler for a probe every
+          # five minutes from 19:00 UTC, and GitHub delivered it two hours after
+          # CFTC published on two Fridays running. These runs are what arrives
+          # on time, so each one in the release window (Mon-Fri 19:00-21:59 UTC,
+          # which holds 3:30pm ET in both summer and winter) starts the watcher.
+          # It probes CFTC and stops in ~20 seconds unless the report moved.
+          DOW=$(date -u +%u); HR=$(( 10#$(date -u +%H) ))
+          if [ "$DOW" -le 5 ] && [ "$HR" -ge 19 ] && [ "$HR" -le 21 ]; then
+            gh workflow run cot-release-watch.yml \
+              && echo "COT watcher started" \
+              || echo "::warning::COT watcher could not be started"
+          fi
