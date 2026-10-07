@@ -36,7 +36,8 @@
 .cp-logo .sa-wordmark{display:none}
 .cp-logo.sa-logo--text img{display:none}
 .cp-logo.sa-logo--text .sa-wordmark{display:block}
-.cp-x{font-family:var(--font-mono,'JetBrains Mono',monospace);color:var(--text-muted,#7d8782);font-size:.9rem}
+/* Two brands side by side, divided by a thin rule -- never 'A x B' (Sig, 2026-10-07). */
+.cp-x{display:inline-block;width:1px;height:2.4rem;background:var(--border,#2a3330);align-self:center}
 .cp-agsist{font-family:var(--font-display,'Inter',sans-serif);font-weight:800;letter-spacing:.06em;font-size:1.05rem}
 .cp-agsist span{color:var(--gold,#d4a23f)}
 .cp-hero h1{font-size:clamp(1.7rem,3.6vw,2.5rem);line-height:1.08;letter-spacing:-.02em;margin:1.1rem 0 .35rem}
@@ -687,7 +688,7 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
     var logo = f.logo ? '<div class="cp-logo"><img src="' + esc(f.logo) + '" alt="' + esc(name + ' logo') +
       '" onerror="this.parentNode.className+=\' sa-logo--text\'"><span class="sa-wordmark">' + esc(name) + '</span></div>' : '';
     var h = '<header class="cp-hero">';
-    h += '<div class="cp-hero-top"><div class="cp-brands">' + logo + (logo ? '<span class="cp-x" aria-hidden="true">&times;</span>' : '') +
+    h += '<div class="cp-hero-top"><div class="cp-brands">' + logo + (logo ? '<span class="cp-x" aria-hidden="true"></span>' : '') +
          '<span class="cp-agsist">AG<span>SIST</span></span></div><span class="cp-eyebrow">Campaign portal</span></div>';
     h += '<h1>' + esc(d.sponsor) + '</h1>';
     h += '<p class="cp-sub">' + (s.tier ? '<b>' + esc(s.tier.name) + '</b> of the AGSIST Daily' : 'Sponsor of the AGSIST Daily') +
