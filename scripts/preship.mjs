@@ -27,14 +27,17 @@
  *   node scripts/preship.mjs ... --json report.json     write a machine-readable report
  *   node scripts/preship.mjs ... --quick                skip the 404 matrix (smoke only)
  *   node scripts/preship.mjs ... --budget 20            minutes of rendering before it stops
- *   node scripts/preship.mjs ... --concurrency 3        pages rendered at once
+ *   node scripts/preship.mjs ... --concurrency 4        pages rendered at once
+ *   node scripts/preship.mjs ... --full-max 10          pages that get the full matrix on a big push
  *
  * BIG PUSHES (2026-10-07). A merge that touches thousands of files used to
  * run past the workflow's 30-minute limit and get cancelled with no verdict
  * at all (twice on 2026-10-06). Three things fix that without dropping a check:
  *   - a page whose only change is a ?v= cache-buster or the generated
  *     static-nav block is "cosmetic" and gets the two smoke renders; a page
- *     with a real change still gets the full matrix, and goes first
+ *     with a real change gets the full matrix, biggest change first. On a
+ *     push that changes more than --full-max (10) pages, the rest get the
+ *     two smoke renders too, and the report says which
  *   - baseline and candidate render side by side, and pages run in parallel
  *   - a time budget: pages it could not reach are listed by name as WARN
  *     ("not rendered"), so a partial run says so instead of being cancelled
@@ -85,7 +88,8 @@ const QUICK = !!arg('quick');
 const JSON_OUT = arg('json');
 const WAIT = +(arg('wait') || 6500);
 const BUDGET_MS = +(arg('budget') || 20) * 60000;
-const CONC = Math.max(1, +(arg('concurrency') || 3));
+const CONC = Math.max(1, +(arg('concurrency') || 4));
+const FULL_MAX = +(arg('full-max') || 10);
 const T0 = Date.now();
 
 if (!BASE || !CAND) {
@@ -324,6 +328,7 @@ function copyCheck(files, findings) {
   const all = walk(CAND).filter(r => /\.(html|js|mjs|py)$/.test(r));
   const cache = new Map();
   const read = r => { if (!cache.has(r)) cache.set(r, fs.readFileSync(path.join(CAND, r), 'utf8')); return cache.get(r); };
+  const byName = new Map();
   for (const rel of files) {
     if (!/\.(html|js|mjs|py)$/.test(rel)) continue;
     const a = fs.existsSync(path.join(BASE, rel)) ? fs.readFileSync(path.join(BASE, rel), 'utf8') : '';
@@ -337,13 +342,18 @@ function copyCheck(files, findings) {
         if (n && n.length > 3) names.add(n);
       }
     }
-    for (const n of names) {
-      const re = new RegExp('\\b' + n + '\\b');
-      const elsewhere = all.filter(r => r !== rel && re.test(read(r)));
-      if (elsewhere.length) {
-        findings.push({ level: 'NOTE', rel, what: `"${n}" also appears in ${elsewhere.length} other file(s)`,
-          detail: elsewhere.slice(0, 4).join(', ') + (elsewhere.length > 4 ? ' …' : '') });
-      }
+    for (const n of names) (byName.get(n) || byName.set(n, []).get(n)).push(rel);
+  }
+  /* One note per name, not one per file: a push that changes a shared line in
+     3,000 generated pages is one fact. */
+  for (const [n, rels] of byName) {
+    const re = new RegExp('\\b' + n + '\\b');
+    const changedHere = new Set(rels);
+    const elsewhere = all.filter(r => !changedHere.has(r) && re.test(read(r)));
+    if (elsewhere.length) {
+      findings.push({ level: 'NOTE', rel: rels.length > 1 ? `${rels[0]} (+${rels.length - 1} more changed)` : rels[0],
+        what: `"${n}" also appears in ${elsewhere.length} other file(s)`,
+        detail: elsewhere.slice(0, 4).join(', ') + (elsewhere.length > 4 ? ' …' : '') });
     }
   }
 }
@@ -360,6 +370,13 @@ const real = changed.filter(r => size.get(r) > 0);
 const pages = changed.filter(r => r.endsWith('.html') && !r.includes('/'))
   .sort((a, b) => (size.get(b) - size.get(a)) || a.localeCompare(b));
 const cosmetic = new Set(pages.filter(r => size.get(r) === 0));
+const fullPages = new Set(pages.filter(r => !cosmetic.has(r)).slice(0, FULL_MAX));
+const smokeOnly = pages.filter(r => !cosmetic.has(r) && !fullPages.has(r));
+if (smokeOnly.length) {
+  findings.push({ level: 'NOTE', rel: `${smokeOnly.length} page(s)`,
+    what: `big push: smoke renders only (the ${FULL_MAX} most-changed pages get the full matrix)`,
+    detail: smokeOnly.slice(0, 30).join(', ') + (smokeOnly.length > 30 ? ' …' : '') });
+}
 
 console.log('preship');
 console.log('  baseline  ' + BASE);
@@ -390,8 +407,9 @@ if (!pages.length) {
       render(browser, A.port, page, { id: 'probe', width: 1280, height: 900 }),
       render(browser, B.port, page, { id: 'probe', width: 1280, height: 900 })]);
     const deps = [...new Set([...probeA.dataFiles, ...probeB.dataFiles])].sort().slice(0, 14);
-    const list = scenarios(deps, cosmetic.has(page));
-    console.log(`\n  ${page} — ${cosmetic.has(page) ? 'cosmetic change, smoke renders' : deps.length + ' data file(s)'}, ${list.length} scenarios`);
+    const quick = !fullPages.has(page);
+    const list = scenarios(deps, quick);
+    console.log(`\n  ${page} — ${cosmetic.has(page) ? 'cosmetic change, smoke renders' : quick ? 'big push, smoke renders' : deps.length + ' data file(s)'}, ${list.length} scenarios`);
 
     let done = 0;
     for (const sc of list) {
