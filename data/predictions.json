@@ -1,9 +1,9 @@
 {
- "updated": "2026-10-06T02:29:19Z",
+ "updated": "2026-10-07T01:47:31Z",
  "rules": {
   "version": "bot-v1.1",
   "registered": "2026-10-03",
-  "revised": "2026-10-03",
+  "revised": "2026-10-05",
   "revision": "Before the first live call: one call per report (live had been daily), release date fixed for Monday as-of weeks, shutdown weeks skipped, record counted every way. The direction rule is unchanged.",
   "horizon_reports": 4,
   "horizon_label": "4 weeks",
@@ -54,13 +54,14 @@
     "trend_pct": 3.93,
     "contract": "Dec '26",
     "ticker": "ZCZ26.CBT",
-    "entry": 497.5,
-    "target": 497.25,
+    "entry": 497.25,
+    "target": 497.0,
     "status": "open",
     "exit": null,
     "outcome": null,
     "graded_on": null,
-    "note": "Entry corrected 2026-10-05 before any grading: the 8:34 PM CT run read 496.5, a bar that already held evening trades. 497.5 is the Oct 5 close in AGSIST's price snapshots from 3:19 PM to 6:51 PM CT."
+    "note": "Entry corrected 2026-10-05 before any grading: the 8:34 PM CT run read 496.5, a bar that already held evening trades. 497.5 is the Oct 5 close in AGSIST's price snapshots from 3:19 PM to 6:51 PM CT. Entry set to the settled 2026-10-05 close 497.25 (read 497.5 that evening).",
+    "entry_final": true
    },
    {
     "id": "beans-2026-09-29",
@@ -74,13 +75,14 @@
     "trend_pct": 2.24,
     "contract": "Nov '26",
     "ticker": "ZSX26.CBT",
-    "entry": 1281.0,
-    "target": 1280.75,
+    "entry": 1280.75,
+    "target": 1280.5,
     "status": "open",
     "exit": null,
     "outcome": null,
     "graded_on": null,
-    "note": "Entry corrected 2026-10-05 before any grading: the 8:34 PM CT run read 1279.25, a bar that already held evening trades. 1281.0 is the Oct 5 close in AGSIST's price snapshots from 3:19 PM to 6:51 PM CT."
+    "note": "Entry corrected 2026-10-05 before any grading: the 8:34 PM CT run read 1279.25, a bar that already held evening trades. 1281.0 is the Oct 5 close in AGSIST's price snapshots from 3:19 PM to 6:51 PM CT. Entry set to the settled 2026-10-05 close 1280.75 (read 1281.0 that evening).",
+    "entry_final": true
    },
    {
     "id": "wheat-2026-09-29",
@@ -94,13 +96,14 @@
     "trend_pct": 2.48,
     "contract": "Dec '26",
     "ticker": "ZWZ26.CBT",
-    "entry": 691.5,
-    "target": 691.75,
+    "entry": 692.25,
+    "target": 692.5,
     "status": "open",
     "exit": null,
     "outcome": null,
     "graded_on": null,
-    "note": "Entry corrected 2026-10-05 before any grading: the 8:34 PM CT run read 690.5, a bar that already held evening trades. 691.5 is the Oct 5 close in AGSIST's price snapshots from 3:19 PM to 6:51 PM CT."
+    "note": "Entry corrected 2026-10-05 before any grading: the 8:34 PM CT run read 690.5, a bar that already held evening trades. 691.5 is the Oct 5 close in AGSIST's price snapshots from 3:19 PM to 6:51 PM CT. Entry set to the settled 2026-10-05 close 692.25 (read 691.5 that evening).",
+    "entry_final": true
    },
    {
     "id": "kcwheat-2026-09-29",
@@ -120,7 +123,8 @@
     "exit": null,
     "outcome": null,
     "graded_on": null,
-    "note": "Entry corrected 2026-10-05 before any grading: the 8:34 PM CT run read 740.0, a bar that already held evening trades. 742.25 is the Oct 5 close in AGSIST's price snapshots from 3:19 PM to 6:51 PM CT."
+    "note": "Entry corrected 2026-10-05 before any grading: the 8:34 PM CT run read 740.0, a bar that already held evening trades. 742.25 is the Oct 5 close in AGSIST's price snapshots from 3:19 PM to 6:51 PM CT.",
+    "entry_final": true
    }
   ]
  },
@@ -437,7 +441,7 @@
   "ungradeable": 0
  },
  "action_label": "BOT CALL",
- "action_text": "Bot call, Oct 5 close, 4 weeks out: corn $4.97½ down, soybeans $12.81 down, Chicago wheat $6.91½ up, KC wheat $7.42¼ down. Backtest: no edge.",
+ "action_text": "Bot call, Oct 5 close, 4 weeks out: corn $4.97¼ down, soybeans $12.80¾ down, Chicago wheat $6.92¼ up, KC wheat $7.42¼ down. Backtest: no edge.",
  "calls": [
   {
    "id": "corn-2026-09-29",
@@ -451,13 +455,14 @@
    "trend_pct": 3.93,
    "contract": "Dec '26",
    "ticker": "ZCZ26.CBT",
-   "entry": 497.5,
-   "target": 497.25,
+   "entry": 497.25,
+   "target": 497.0,
    "status": "open",
    "exit": null,
    "outcome": null,
    "graded_on": null,
-   "note": "Entry corrected 2026-10-05 before any grading: the 8:34 PM CT run read 496.5, a bar that already held evening trades. 497.5 is the Oct 5 close in AGSIST's price snapshots from 3:19 PM to 6:51 PM CT."
+   "note": "Entry corrected 2026-10-05 before any grading: the 8:34 PM CT run read 496.5, a bar that already held evening trades. 497.5 is the Oct 5 close in AGSIST's price snapshots from 3:19 PM to 6:51 PM CT. Entry set to the settled 2026-10-05 close 497.25 (read 497.5 that evening).",
+   "entry_final": true
   },
   {
    "id": "beans-2026-09-29",
@@ -471,13 +476,14 @@
    "trend_pct": 2.24,
    "contract": "Nov '26",
    "ticker": "ZSX26.CBT",
-   "entry": 1281.0,
-   "target": 1280.75,
+   "entry": 1280.75,
+   "target": 1280.5,
    "status": "open",
    "exit": null,
    "outcome": null,
    "graded_on": null,
-   "note": "Entry corrected 2026-10-05 before any grading: the 8:34 PM CT run read 1279.25, a bar that already held evening trades. 1281.0 is the Oct 5 close in AGSIST's price snapshots from 3:19 PM to 6:51 PM CT."
+   "note": "Entry corrected 2026-10-05 before any grading: the 8:34 PM CT run read 1279.25, a bar that already held evening trades. 1281.0 is the Oct 5 close in AGSIST's price snapshots from 3:19 PM to 6:51 PM CT. Entry set to the settled 2026-10-05 close 1280.75 (read 1281.0 that evening).",
+   "entry_final": true
   },
   {
    "id": "wheat-2026-09-29",
@@ -491,13 +497,14 @@
    "trend_pct": 2.48,
    "contract": "Dec '26",
    "ticker": "ZWZ26.CBT",
-   "entry": 691.5,
-   "target": 691.75,
+   "entry": 692.25,
+   "target": 692.5,
    "status": "open",
    "exit": null,
    "outcome": null,
    "graded_on": null,
-   "note": "Entry corrected 2026-10-05 before any grading: the 8:34 PM CT run read 690.5, a bar that already held evening trades. 691.5 is the Oct 5 close in AGSIST's price snapshots from 3:19 PM to 6:51 PM CT."
+   "note": "Entry corrected 2026-10-05 before any grading: the 8:34 PM CT run read 690.5, a bar that already held evening trades. 691.5 is the Oct 5 close in AGSIST's price snapshots from 3:19 PM to 6:51 PM CT. Entry set to the settled 2026-10-05 close 692.25 (read 691.5 that evening).",
+   "entry_final": true
   },
   {
    "id": "kcwheat-2026-09-29",
@@ -517,12 +524,13 @@
    "exit": null,
    "outcome": null,
    "graded_on": null,
-   "note": "Entry corrected 2026-10-05 before any grading: the 8:34 PM CT run read 740.0, a bar that already held evening trades. 742.25 is the Oct 5 close in AGSIST's price snapshots from 3:19 PM to 6:51 PM CT."
+   "note": "Entry corrected 2026-10-05 before any grading: the 8:34 PM CT run read 740.0, a bar that already held evening trades. 742.25 is the Oct 5 close in AGSIST's price snapshots from 3:19 PM to 6:51 PM CT.",
+   "entry_final": true
   }
  ],
  "skipped": [],
  "backtest": {
-  "computed": "2026-10-06T02:29:19Z",
+  "computed": "2026-10-07T01:47:31Z",
   "source": "data/cot-deep.json (CFTC disaggregated COT; Yahoo continuous front-month, roll-repaired by cot_calendar.roll_adjust)",
   "source_built": "rebuild 2006–2026",
   "cutoff": "2026-10-02",
@@ -530,7 +538,7 @@
   "rules_tested": 1,
   "tests_in_family": 5,
   "spell_tests": 16,
-  "spell_tests_worse": 1,
+  "spell_tests_worse": 0,
   "spell_tests_better": 0,
   "records": {
    "all": {
@@ -540,19 +548,19 @@
     "by_offset": [
      {
       "offset": 0,
-      "calls": 680,
-      "hits": 300,
-      "rate": 44.1,
-      "windows": 170,
+      "calls": 684,
+      "hits": 305,
+      "rate": 44.6,
+      "windows": 171,
       "p_luck": null,
       "p_worse": null
      },
      {
       "offset": 1,
-      "calls": 676,
-      "hits": 349,
-      "rate": 51.6,
-      "windows": 169,
+      "calls": 688,
+      "hits": 352,
+      "rate": 51.2,
+      "windows": 172,
       "p_luck": null,
       "p_worse": null
      },
@@ -575,9 +583,9 @@
       "p_worse": null
      }
     ],
-    "spell_rate_low": 44.1,
-    "spell_rate_high": 51.6,
-    "windows": 169,
+    "spell_rate_low": 44.6,
+    "spell_rate_high": 51.2,
+    "windows": 170,
     "hac_z": -1.7352,
     "p_luck": 0.958651,
     "p_worse": 0.041349,
@@ -601,25 +609,25 @@
     "by_offset": [
      {
       "offset": 0,
-      "calls": 170,
-      "hits": 85,
-      "rate": 50.0,
-      "windows": 170,
-      "p_luck": 0.530553,
-      "p_worse": 0.530553,
-      "p_luck_adjusted": 0.998664,
-      "p_worse_adjusted": 0.707404
+      "calls": 171,
+      "hits": 86,
+      "rate": 50.3,
+      "windows": 171,
+      "p_luck": 0.5,
+      "p_worse": 0.56075,
+      "p_luck_adjusted": 0.997127,
+      "p_worse_adjusted": 0.726678
      },
      {
       "offset": 1,
-      "calls": 169,
+      "calls": 172,
       "hits": 89,
-      "rate": 52.7,
-      "windows": 169,
-      "p_luck": 0.269213,
-      "p_worse": 0.779075,
-      "p_luck_adjusted": 0.998664,
-      "p_worse_adjusted": 0.831013
+      "rate": 51.7,
+      "windows": 172,
+      "p_luck": 0.351569,
+      "p_worse": 0.703176,
+      "p_luck_adjusted": 0.997127,
+      "p_worse_adjusted": 0.751209
      },
      {
       "offset": 2,
@@ -629,8 +637,8 @@
       "windows": 170,
       "p_luck": 0.350741,
       "p_worse": 0.704258,
-      "p_luck_adjusted": 0.998664,
-      "p_worse_adjusted": 0.804866
+      "p_luck_adjusted": 0.997127,
+      "p_worse_adjusted": 0.751209
      },
      {
       "offset": 3,
@@ -640,13 +648,13 @@
       "windows": 171,
       "p_luck": 0.620103,
       "p_worse": 0.43925,
-      "p_luck_adjusted": 0.998664,
+      "p_luck_adjusted": 0.997127,
       "p_worse_adjusted": 0.638909
      }
     ],
     "spell_rate_low": 49.1,
-    "spell_rate_high": 52.7,
-    "windows": 169,
+    "spell_rate_high": 51.8,
+    "windows": 170,
     "hac_z": 0.255,
     "p_luck": 0.399349,
     "p_worse": 0.600651,
@@ -670,25 +678,25 @@
     "by_offset": [
      {
       "offset": 0,
-      "calls": 170,
+      "calls": 171,
       "hits": 74,
-      "rate": 43.5,
-      "windows": 170,
-      "p_luck": 0.96129,
-      "p_worse": 0.053493,
-      "p_luck_adjusted": 0.998664,
-      "p_worse_adjusted": 0.269574
+      "rate": 43.3,
+      "windows": 171,
+      "p_luck": 0.966929,
+      "p_worse": 0.046102,
+      "p_luck_adjusted": 0.997127,
+      "p_worse_adjusted": 0.245877
      },
      {
       "offset": 1,
-      "calls": 169,
-      "hits": 86,
-      "rate": 50.9,
-      "windows": 169,
-      "p_luck": 0.438895,
-      "p_worse": 0.620789,
-      "p_luck_adjusted": 0.998664,
-      "p_worse_adjusted": 0.764048
+      "calls": 172,
+      "hits": 87,
+      "rate": 50.6,
+      "windows": 172,
+      "p_luck": 0.469625,
+      "p_worse": 0.590426,
+      "p_luck_adjusted": 0.997127,
+      "p_worse_adjusted": 0.726678
      },
      {
       "offset": 2,
@@ -698,8 +706,8 @@
       "windows": 170,
       "p_luck": 0.754931,
       "p_worse": 0.295742,
-      "p_luck_adjusted": 0.998664,
-      "p_worse_adjusted": 0.607835
+      "p_luck_adjusted": 0.997127,
+      "p_worse_adjusted": 0.593648
      },
      {
       "offset": 3,
@@ -709,13 +717,13 @@
       "windows": 171,
       "p_luck": 0.937046,
       "p_worse": 0.084242,
-      "p_luck_adjusted": 0.998664,
-      "p_worse_adjusted": 0.269574
+      "p_luck_adjusted": 0.997127,
+      "p_worse_adjusted": 0.294683
      }
     ],
-    "spell_rate_low": 43.5,
-    "spell_rate_high": 50.9,
-    "windows": 169,
+    "spell_rate_low": 43.3,
+    "spell_rate_high": 50.6,
+    "windows": 170,
     "hac_z": -1.4147,
     "p_luck": 0.921421,
     "p_worse": 0.078579,
@@ -739,25 +747,25 @@
     "by_offset": [
      {
       "offset": 0,
-      "calls": 170,
-      "hits": 75,
-      "rate": 44.1,
-      "windows": 170,
-      "p_luck": 0.946507,
-      "p_worse": 0.072415,
-      "p_luck_adjusted": 0.998664,
-      "p_worse_adjusted": 0.269574
+      "calls": 171,
+      "hits": 77,
+      "rate": 45.0,
+      "windows": 171,
+      "p_luck": 0.915758,
+      "p_worse": 0.110506,
+      "p_luck_adjusted": 0.997127,
+      "p_worse_adjusted": 0.294683
      },
      {
       "offset": 1,
-      "calls": 169,
-      "hits": 93,
-      "rate": 55.0,
-      "windows": 169,
-      "p_luck": 0.109147,
-      "p_worse": 0.91701,
-      "p_luck_adjusted": 0.998664,
-      "p_worse_adjusted": 0.91701
+      "calls": 172,
+      "hits": 94,
+      "rate": 54.7,
+      "windows": 172,
+      "p_luck": 0.126331,
+      "p_worse": 0.902626,
+      "p_luck_adjusted": 0.997127,
+      "p_worse_adjusted": 0.902626
      },
      {
       "offset": 2,
@@ -767,7 +775,7 @@
       "windows": 170,
       "p_luck": 0.704258,
       "p_worse": 0.350741,
-      "p_luck_adjusted": 0.998664,
+      "p_luck_adjusted": 0.997127,
       "p_worse_adjusted": 0.607835
      },
      {
@@ -778,13 +786,13 @@
       "windows": 171,
       "p_luck": 0.915758,
       "p_worse": 0.110506,
-      "p_luck_adjusted": 0.998664,
+      "p_luck_adjusted": 0.997127,
       "p_worse_adjusted": 0.294683
      }
     ],
-    "spell_rate_low": 44.1,
-    "spell_rate_high": 55.0,
-    "windows": 169,
+    "spell_rate_low": 45.0,
+    "spell_rate_high": 54.7,
+    "windows": 170,
     "hac_z": -0.6546,
     "p_luck": 0.743628,
     "p_worse": 0.256372,
@@ -808,25 +816,25 @@
     "by_offset": [
      {
       "offset": 0,
-      "calls": 170,
-      "hits": 66,
-      "rate": 38.8,
-      "windows": 170,
-      "p_luck": 0.998664,
-      "p_worse": 0.002201,
-      "p_luck_adjusted": 0.998664,
-      "p_worse_adjusted": 0.035216
+      "calls": 171,
+      "hits": 68,
+      "rate": 39.8,
+      "windows": 171,
+      "p_luck": 0.997127,
+      "p_worse": 0.004561,
+      "p_luck_adjusted": 0.997127,
+      "p_worse_adjusted": 0.072976
      },
      {
       "offset": 1,
-      "calls": 169,
-      "hits": 81,
-      "rate": 47.9,
-      "windows": 169,
-      "p_luck": 0.730787,
-      "p_worse": 0.322271,
-      "p_luck_adjusted": 0.998664,
-      "p_worse_adjusted": 0.607835
+      "calls": 172,
+      "hits": 82,
+      "rate": 47.7,
+      "windows": 172,
+      "p_luck": 0.753664,
+      "p_worse": 0.296824,
+      "p_luck_adjusted": 0.997127,
+      "p_worse_adjusted": 0.593648
      },
      {
       "offset": 2,
@@ -836,8 +844,8 @@
       "windows": 170,
       "p_luck": 0.972567,
       "p_worse": 0.03871,
-      "p_luck_adjusted": 0.998664,
-      "p_worse_adjusted": 0.269574
+      "p_luck_adjusted": 0.997127,
+      "p_worse_adjusted": 0.245877
      },
      {
       "offset": 3,
@@ -847,13 +855,13 @@
       "windows": 171,
       "p_luck": 0.676758,
       "p_worse": 0.379897,
-      "p_luck_adjusted": 0.998664,
+      "p_luck_adjusted": 0.997127,
       "p_worse_adjusted": 0.607835
      }
     ],
-    "spell_rate_low": 38.8,
+    "spell_rate_low": 39.8,
     "spell_rate_high": 48.5,
-    "windows": 169,
+    "windows": 170,
     "hac_z": -1.9614,
     "p_luck": 0.975087,
     "p_worse": 0.024913,
