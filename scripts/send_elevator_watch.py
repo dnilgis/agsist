@@ -752,6 +752,25 @@ def plan(watchers, basis_idx, now_ms):
     return confirms, chg, base
 
 
+def pend_summary(watchers, basis_idx, net_idx, now_ms):
+    """Why each pending sign-up did or did not get a confirmation this run.
+    Counts only, never an address. A pending record whose elevator is not in
+    the index is skipped by plan()/plan_alerts() on purpose (the email is built
+    from the index, never from the form's text), so it must at least be seen."""
+    n = {"to confirm": 0, "already mailed": 0, "expired": 0, "elevator not in index": 0}
+    for r in watchers:
+        for w, p in (r.get("pend") or {}).items():
+            if p.get("m"):
+                n["already mailed"] += 1
+            elif now_ms - p.get("ts", 0) > PEND_TTL_MS:
+                n["expired"] += 1
+            elif not (isinstance(net_idx.get(p.get("ewid")), dict) if p.get("kind") in OPT_KINDS else w in basis_idx):
+                n["elevator not in index"] += 1
+            else:
+                n["to confirm"] += 1
+    return "; ".join("%s %d" % kv for kv in n.items())
+
+
 def worker(base, path, token_, body=None):
     url = f"{base}/{path}{'&' if '?' in path else '?'}token={urllib.parse.quote(token_)}"
     req = urllib.request.Request(url, data=json.dumps(body).encode() if body is not None else None,
@@ -1004,6 +1023,7 @@ def main():
     print(f"basis rows indexed {len(basis_idx)}; network rows indexed {len(net_idx)}; watchers {len(watchers)}; "
           f"confirmations {len(confirms)}+{len(oconf)}; changes {len(chg)}; alerts {len(osend)}; ended {len(oend)}; "
           f"baselines {len(bs)}+{len(obase)}")
+    print("pending: " + pend_summary(watchers, basis_idx, net_idx, now_ms))
     if dry:
         for x in confirms + oconf:
             print("would confirm", x)
