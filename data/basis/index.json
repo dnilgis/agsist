@@ -49,19 +49,19 @@
    "kb":4.0
   },
   "IL":{
-   "rows":7789,
+   "rows":7790,
    "facilities":415,
-   "kb":337.2
+   "kb":337.3
   },
   "IN":{
    "rows":1803,
    "facilities":107,
-   "kb":77.2
+   "kb":77.3
   },
   "KS":{
-   "rows":7304,
+   "rows":7295,
    "facilities":432,
-   "kb":314.8
+   "kb":314.4
   },
   "KY":{
    "rows":97,
@@ -164,9 +164,9 @@
    "kb":1.5
   },
   "WA":{
-   "rows":515,
+   "rows":516,
    "facilities":23,
-   "kb":23.3
+   "kb":23.4
   },
   "WI":{
    "rows":2380,
