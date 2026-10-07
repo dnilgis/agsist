@@ -1,24 +1,12 @@
 {
  "schema": "agsist-render-audit/1",
  "base": "https://agsist.com",
- "ran": "2026-10-06T17:26:56.849Z",
+ "ran": "2026-10-07T18:03:22.779Z",
  "pages": 16,
  "seconds": 199,
- "high": 9,
- "med": 7,
+ "high": 4,
+ "med": 0,
  "findings": [
-  {
-   "page": "/",
-   "sev": "high",
-   "kind": "subresource",
-   "detail": "desktop: 503  /img/logo-agsist-ondark.svg"
-  },
-  {
-   "page": "/basis",
-   "sev": "high",
-   "kind": "contrast",
-   "detail": "desktop: 2.16:1 on \"USDA AGTRANSPORT · WEEKLY · REGIONAL BASIS VS \" (rgb(212, 162, 63) on rgb(246, 247, 245))"
-  },
   {
    "page": "/basis",
    "sev": "high",
@@ -35,12 +23,6 @@
    "page": "/basis",
    "sev": "high",
    "kind": "contrast",
-   "detail": "mobile: 2.16:1 on \"USDA AGTRANSPORT · WEEKLY · REGIONAL BASIS VS \" (rgb(212, 162, 63) on rgb(246, 247, 245))"
-  },
-  {
-   "page": "/basis",
-   "sev": "high",
-   "kind": "contrast",
    "detail": "mobile: 1.12:1 on \"Your elevator didn’t cut your basis. The river\" (rgb(230, 235, 233) on rgb(246, 247, 245))"
   },
   {
@@ -48,60 +30,6 @@
    "sev": "high",
    "kind": "contrast",
    "detail": "mobile: 2.91:1 on \"Everyone stares at the futures board; the chec\" (rgb(138, 148, 143) on rgb(246, 247, 245))"
-  },
-  {
-   "page": "/changelog",
-   "sev": "high",
-   "kind": "contrast",
-   "detail": "desktop: 1.00:1 on \"An elevator or co-op can now claim its listing\" (rgba(22, 26, 24, 0.83) on rgb(22, 27, 20))"
-  },
-  {
-   "page": "/changelog",
-   "sev": "high",
-   "kind": "contrast",
-   "detail": "mobile: 1.00:1 on \"An elevator or co-op can now claim its listing\" (rgba(22, 26, 24, 0.83) on rgb(22, 27, 20))"
-  },
-  {
-   "page": "/breakeven",
-   "sev": "med",
-   "kind": "contrast",
-   "detail": "desktop: 3.48:1 on \"CORN & SOYBEAN BREAK-EVEN PRICE CALCULATOR\" (rgb(168, 125, 30) on rgb(246, 247, 245))"
-  },
-  {
-   "page": "/breakeven",
-   "sev": "med",
-   "kind": "contrast",
-   "detail": "mobile: 3.48:1 on \"CORN & SOYBEAN BREAK-EVEN PRICE CALCULATOR\" (rgb(168, 125, 30) on rgb(246, 247, 245))"
-  },
-  {
-   "page": "/changelog",
-   "sev": "med",
-   "kind": "contrast",
-   "detail": "desktop: 3.48:1 on \"October 1, 2026\" (rgb(168, 125, 30) on rgb(246, 247, 245))"
-  },
-  {
-   "page": "/changelog",
-   "sev": "med",
-   "kind": "contrast",
-   "detail": "mobile: 3.48:1 on \"October 1, 2026\" (rgb(168, 125, 30) on rgb(246, 247, 245))"
-  },
-  {
-   "page": "/markets",
-   "sev": "med",
-   "kind": "contrast",
-   "detail": "desktop: 3.74:1 on \"COSTS & LAND\" (rgb(168, 125, 30) on rgb(255, 255, 255))"
-  },
-  {
-   "page": "/tools",
-   "sev": "med",
-   "kind": "contrast",
-   "detail": "desktop: 3.48:1 on \"Farm Tools & Calculators\" (rgb(168, 125, 30) on rgb(246, 247, 245))"
-  },
-  {
-   "page": "/tools",
-   "sev": "med",
-   "kind": "contrast",
-   "detail": "mobile: 3.48:1 on \"Farm Tools & Calculators\" (rgb(168, 125, 30) on rgb(246, 247, 245))"
   },
   {
    "page": "/status",
