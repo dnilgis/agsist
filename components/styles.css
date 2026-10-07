@@ -512,7 +512,7 @@ button:focus:not(:focus-visible), a:focus:not(:focus-visible) { outline: none }
 .footer-status { display: flex; align-items: center; gap: .4rem; font-size:0.78rem; color: var(--text-dim) }
 .status-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--brand-fill,var(--brand)); animation: blink 2s ease-in-out infinite }
 .footer-cols { display: grid; grid-template-columns: repeat(5, 1fr); gap: 1.5rem; padding-bottom: .75rem; border-bottom: 1px solid var(--border); margin-bottom: .75rem }
-.footer-col h4, .footer-col h2 { line-height: 1.65; font-family: 'JetBrains Mono', monospace; font-size:0.76rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--brand); margin-bottom: .45rem; opacity: .9; }
+.footer-col h4, .footer-col h2 { line-height: 1.65; font-family: 'JetBrains Mono', monospace; font-size:0.76rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--brand); margin-bottom: .45rem; }
 .footer-col a { display: block; font-size: .82rem; color: var(--text-dim); padding: .38rem 0; transition: color .15s }
 .footer-col a:hover { color: var(--text) }
 .footer-net { padding-bottom: .75rem; border-bottom: 1px solid var(--border); margin-bottom: .6rem }
