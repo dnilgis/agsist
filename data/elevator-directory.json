@@ -1,18 +1,18 @@
 {
- "generated": "2026-10-07T18:08:14Z",
+ "generated": "2026-10-07T18:23:14Z",
  "from": "barchart-raw.json",
  "complete": false,
  "note": "Directory only: who operates a facility and where. No prices, no basis, no symbols, no delivery windows.",
  "counts": {
-  "facilities": 2271,
+  "facilities": 2272,
   "states": 38,
   "with_address": 722,
   "with_coords": 725,
   "with_url": 703,
-  "with_phone": 2204,
+  "with_phone": 2205,
   "saturated_zips": 0,
   "failed_zips": 0,
-  "rows_read": 17375
+  "rows_read": 17378
  },
  "saturated": [],
  "failed": [],
@@ -5322,6 +5322,15 @@
    "state": "IA",
    "zip": "52746",
    "phone": "563-282-9618 ",
+   "source": "barchart"
+  },
+  {
+   "facility": "River Valley Cooperative",
+   "branch": "Big River - Dyersville",
+   "city": "Dyersville",
+   "state": "IA",
+   "zip": "52040",
+   "phone": "563-875-5500",
    "source": "barchart"
   },
   {
