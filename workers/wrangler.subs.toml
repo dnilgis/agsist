@@ -2,8 +2,19 @@ name = "agsist-subs"
 main = "subs-worker.js"
 compatibility_date = "2026-09-30"
 
-# Secrets/vars (GMAIL_USER, GMAIL_APP_PASS, UNSUB_SECRET, LIST_TOKEN, etc. --
-# whatever this Worker already has set) live on the Worker itself in the
-# dashboard under Settings -> Variables and Secrets. They are NOT part of
-# this file and are untouched by connecting Git -- Git integration only
-# replaces the code on each push, never the secrets.
+# The KV store holding every subscriber, alert and sponsor application.
+# MUST be declared here: a Git deploy sets the Worker's bindings to exactly
+# what this file says, so leaving it out would unplug the store from the
+# Worker. The data itself would survive, but every signup would fail until
+# the binding came back.
+# Until the real id is filled in, deploys fail loudly and the live Worker is
+# left as-is -- which is the safe way to fail.
+# Find it: Cloudflare -> Storage & Databases -> KV -> the namespace bound as
+# SUBS -> copy its ID.
+[[kv_namespaces]]
+binding = "SUBS"
+id = "PASTE_SUBS_NAMESPACE_ID_HERE"
+
+# Secrets/vars (GMAIL_USER, GMAIL_APP_PASS, UNSUB_SECRET, LIST_TOKEN, etc.)
+# live on the Worker itself in the dashboard under Settings -> Variables and
+# Secrets. Deploys never touch secrets.
