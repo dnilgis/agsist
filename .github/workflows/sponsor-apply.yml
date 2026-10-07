@@ -12,6 +12,12 @@ name: Sponsor sign-ups
 on:
   schedule:
     - cron: '8,38 * * * *'
+  # GitHub delivered none of this cron's fires on its first day, so applicants
+  # who were told "check your email" heard nothing. It also runs after every
+  # "Fetch Grain Bids", which cron-job.org starts every 15 minutes.
+  workflow_run:
+    workflows: ["Fetch Grain Bids"]
+    types: [completed]
   workflow_dispatch:
     inputs:
       dry_run:
