@@ -33,7 +33,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 2          # HEAD and HEAD~1, nothing more
+          fetch-depth: 2          # HEAD and HEAD~1; the baseline is fetched on its own below
 
       - uses: actions/setup-node@v4
         with:
@@ -44,10 +44,27 @@ jobs:
           npm i -D playwright@1.47.0
           npx playwright install --with-deps chromium
 
+      # The baseline is what main pointed at BEFORE this push, not HEAD~1.
+      # HEAD~1 is the first parent, and a merge made on a branch ("merge main
+      # into the branch", then push to main) has the branch as its first
+      # parent: on 2026-10-07 that made preship compare the push against itself
+      # plus a few bot commits, render nothing, and pass in 2 seconds.
+      - name: Pick the baseline
+        id: base
+        run: |
+          B="${{ github.event.inputs.base }}"
+          [ -z "$B" ] && B="${{ github.event.before }}"
+          if [ -z "$B" ] || [ "$B" = "0000000000000000000000000000000000000000" ]; then B="HEAD~1"; fi
+          if [ "$B" != "HEAD~1" ] && ! git cat-file -e "$B^{commit}" 2>/dev/null; then
+            git fetch --no-tags --depth=1 origin "$B" || B="HEAD~1"
+          fi
+          echo "baseline: $B"
+          echo "ref=$B" >> "$GITHUB_OUTPUT"
+
       - name: Run preship
         run: |
           node scripts/preship.mjs \
-            --git-base "${{ github.event.inputs.base || 'HEAD~1' }}" \
+            --git-base "${{ steps.base.outputs.ref }}" \
             --budget 20 \
             --json preship-report.json
 
