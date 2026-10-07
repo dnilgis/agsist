@@ -1,18 +1,18 @@
 {
- "generated": "2026-10-07T17:38:12Z",
+ "generated": "2026-10-07T17:53:47Z",
  "from": "barchart-raw.json",
  "complete": false,
  "note": "Directory only: who operates a facility and where. No prices, no basis, no symbols, no delivery windows.",
  "counts": {
-  "facilities": 2268,
+  "facilities": 2271,
   "states": 38,
   "with_address": 722,
   "with_coords": 725,
   "with_url": 703,
-  "with_phone": 2201,
+  "with_phone": 2204,
   "saturated_zips": 0,
   "failed_zips": 0,
-  "rows_read": 17347
+  "rows_read": 17361
  },
  "saturated": [],
  "failed": [],
@@ -5299,6 +5299,15 @@
   },
   {
    "facility": "River Valley Cooperative",
+   "branch": "ADM - Clinton Grain",
+   "city": "Clinton",
+   "state": "IA",
+   "zip": "52732",
+   "phone": "563-242-5251",
+   "source": "barchart"
+  },
+  {
+   "facility": "River Valley Cooperative",
    "branch": "Dewitt",
    "city": "DeWitt",
    "state": "IA",
@@ -6512,7 +6521,7 @@
   {
    "facility": "CHS Illinois",
    "branch": "Shipman",
-   "city": "Shipman ",
+   "city": "Shipman",
    "state": "IL",
    "zip": "62685",
    "phone": "618-729-9009",
@@ -8619,11 +8628,29 @@
   },
   {
    "facility": "River Valley Cooperative",
+   "branch": "ADM- Creve Coeur",
+   "city": "Creve Coeur",
+   "state": "IL",
+   "zip": "61610",
+   "phone": "309-699-9581",
+   "source": "barchart"
+  },
+  {
+   "facility": "River Valley Cooperative",
    "branch": "Marquis Energy",
    "city": "Hennepin",
    "state": "IL",
    "zip": "61327",
    "phone": "(815) 925-7300",
+   "source": "barchart"
+  },
+  {
+   "facility": "River Valley Cooperative",
+   "branch": "ALTO ICP",
+   "city": "Pekin",
+   "state": "IL",
+   "zip": "61554",
+   "phone": "309-353-3990",
    "source": "barchart"
   },
   {
