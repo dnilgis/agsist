@@ -23,6 +23,7 @@
   <!-- /static-nav:fonts -->
   <link rel="preload" href="/components/styles.css?v=18" as="style">
 <link rel="stylesheet" href="/components/styles.css?v=18">
+<link rel="stylesheet" href="/components/cb-glance.css?v=1">
   <script src="/components/util.js?v=16"></script>
 <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
 <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
@@ -754,6 +755,7 @@ button,a,[role="button"],input,select{touch-action:manipulation}
          still on the page, and the reader is entitled to know the board is
          short rather than to be told nothing or told everything is fine. -->
     <p id="cb-degraded" style="display:none;margin:0 0 .75rem;padding:.6rem .8rem;border:1px solid var(--gold,#d4a23f);border-radius:8px;font-size:.92rem;line-height:1.5;color:var(--text-dim,#8a948f)"></p>
+    <div id="cb-glance" style="display:none"></div>
     <div id="cb-results" role="region" aria-label="Cash bid results">
       <div class="cb-empty">
         <div class="cb-empty-icon" aria-hidden="true"><svg class="ic" aria-hidden="true"><use href="#i-map-pin"/></svg></div>
@@ -979,6 +981,7 @@ button,a,[role="button"],input,select{touch-action:manipulation}
 </div>
 <script src="/components/loader.js?v=17" defer></script>
 <script src="/components/geo.js?v=17" defer></script>
+<script src="/components/cb-glance.js?v=1"></script>
 <script>
 (function(){
 'use strict';
@@ -2050,6 +2053,10 @@ function renderBestBids(elevators){
   });
 }
 
+/* UNDER THIS, AFTER HAULING, THE "WINNER" IS NOT ONE. Three cents a bushel is
+   inside the rounding of a fuel estimate and a scale ticket; naming a winner on
+   it sends a truck the long way for nothing. */
+var WTD_TOSSUP_CENTS=3;
 function renderWTD(){
   var bu=_num(wtdBu,1000),fpm=_num(wtdFuel,1.75),comm=wtdComm;
   var rows=[];
@@ -2073,9 +2080,15 @@ function renderWTD(){
        "+$727" was crushed into a vertical column of five characters on a
        375px phone. The inline style used to override the stylesheet fix. */
     wtdWinner.style.display='block';
+    var tossup=bu>0&&(gain/bu)*100<WTD_TOSSUP_CENTS;
+    wtdWinner.classList.toggle('wtd-tossup',tossup);
+    if(tossup){
+      wtdWinner.innerHTML='<strong>Toss-up.</strong> After hauling, '+escH(winner.elev.facility)+' nets '+(gain>0?'+':'')+fmtMoney(gain)+' on this '+bu.toLocaleString()+'-bu load, '+(Math.round(gain/bu*1000)/10)+'\u00a2/bu over your closest elevator \u2014 under '+WTD_TOSSUP_CENTS+'\u00a2/bu, so neither is the clear pick.';
+    }else
     wtdWinner.innerHTML='<svg class="ic" aria-hidden="true"><use href="#i-trophy"/></svg> <strong>'+escH(winner.elev.facility)+'</strong> nets you <strong style="color:var(--green)">'+(gain>0?'+':'')+fmtMoney(gain)+'</strong> more than your closest elevator on this '+bu.toLocaleString()+'-bu load.';
     gaEvent('wtd_calc',{commodity:comm,bushels:bu,fpm:fpm,winner:winner.elev.facility,gain:Math.round(gain)});
-  }else{wtdWinner.style.display='none';}
+  }else{wtdWinner.style.display='none';wtdWinner.classList.remove('wtd-tossup');}
+  var _toss=wtdWinner.classList.contains('wtd-tossup')&&wtdWinner.style.display!=='none';
   var html='';
   for(var i=0;i<Math.min(rows.length,12);i++){
     var r=rows[i];
@@ -2085,7 +2098,7 @@ function renderWTD(){
     var cs=townOf(r.elev)+(townOf(r.elev)&&r.elev.state?', ':'')+(r.elev.state||''); /* same precedence bug fixed at renderBestBids 2026-07-20; this copy was missed */
     var subTxt=escH(cs)+(r.delivery?(cs?' &middot; ':'')+escH(r.delivery):'')
       +(r.elev.unread?' &middot; <span style="color:var(--warn,#e0a83a)">board not reached</span>':'');
-    html+='<tr class="'+(i===0?'wtd-w':'')+'">';
+    html+='<tr class="'+(i===0&&!_toss?'wtd-w':'')+'">';
     /* 1 2 3 4, not 1 2 3 4. -- the first three came from a medal list that no
        longer holds medals, and only the fourth onwards got a full stop. */
     html+='<td class="wt-rank">'+(i+1)+'</td>';
@@ -2093,7 +2106,7 @@ function renderWTD(){
     html+='<td data-l="Cash/bu" class="wt-cash r">$'+fmtPx(r.ppu)+'</td>';
     html+='<td data-l="Distance" class="wt-dist r">'+r.dist.toFixed(0)+' mi</td>';
     html+='<td data-l="Round-trip fuel" class="wt-fuel r">&minus;'+fmtMoney(r.fuel)+'</td>';
-    html+='<td data-l="Total net" class="wt-net r'+(i===0?' best':'')+'">'+fmtMoney(r.net)+'</td>';
+    html+='<td data-l="Total net" class="wt-net r'+(i===0&&!_toss?' best':'')+'">'+fmtMoney(r.net)+'</td>';
     html+='<td data-l="vs closest" class="wt-delta '+dcls+'">'+dstr+'</td></tr>';
   }
   wtdTbody.innerHTML=html;
@@ -2107,7 +2120,7 @@ document.getElementById('wtd-comm-toggle').addEventListener('click',function(e){
 results.addEventListener('click',function(e){
   if(e.target.classList.contains('basis-q')){
     e.stopPropagation();
-    showToast('Basis = cash price minus nearby CME futures. \u221230\u00a2 means 30\u00a2 below futures. A line under a row shows what the basis was before it last moved, and when.',5200);
+    showToast('Basis = cash price minus nearby CME futures. \u221230\u00a2 means 30\u00a2 below futures. A line under a row shows what the basis was before it last moved, and when. Green or red means stronger or weaker than the middle of the boards in this search for the same crop and month; grey is within '+(window.CBGlance?CBGlance.TONE_BAND_CENTS:2)+'\u00a2 of it, or too few boards to compare.',7000);
     return;
   }
   /* THE STRIP HAS TO EXPLAIN ITSELF ON A PHONE. The title attribute covers a
@@ -2241,6 +2254,7 @@ function renderSeasonNote(names){
 }
 function renderBids(bids,keepLimit){
   if(!keepLimit)cbVisibleLimit=CB_PAGE_FIRST;
+  if(window.CBGlance)CBGlance.clear();
   cbLastBids=bids;
   if(!bids||!bids.length){results.innerHTML='<div class="cb-empty"><div class="cb-empty-icon" aria-hidden="true"><svg class="ic" aria-hidden="true"><use href="#i-search"/></svg></div><h2>No Bids Found</h2><p>Try a larger search radius or a different ZIP code.</p></div>';elevCount.textContent='0 elevators';currentElevators=[];return;}
   renderSeasonNote([]);
@@ -2282,7 +2296,11 @@ function renderBids(bids,keepLimit){
   /* Per-elevator "as of" line removed — freshness is surfaced once
      in the status bar timer (cb-status-timer) so it doesn't repeat
      on every card. */
-  var shown=elevators.slice(0,cbVisibleLimit);
+  /* cb-glance: the freshness scoreboard can narrow which cards are paged. */
+  var pool=window.CBGlance?CBGlance.cardPool(elevators):elevators;
+  var shown=pool.slice(0,cbVisibleLimit);
+  /* cb-glance: basis coloured against this search's median, not by its sign. */
+  var _tone=window.CBGlance?CBGlance.toneFn(filtered):null;
   _bhRows=[];                       /* rebuilt every render; indices are into THIS pass */
   var html='<div class="cb-grid">';
   shown.forEach(function(elev){
@@ -2375,7 +2393,7 @@ function renderBids(bids,keepLimit){
         var bhi='';
         if(bhSym(bid)&&bid.deliveryMonth){_bhRows.push({bid:bid,elev:elev});bhi=' data-bh-i="'+(_bhRows.length-1)+'"';}
         if(bf.odd)gradeHtml+='<span class="bid-grade bid-odd">unusual basis \u2014 check with the elevator</span>';
-        html+='<div class="bid-row'+(bi>=3?' bid-xtra':'')+'"'+bhi+'><span class="bid-del-cell">'+delHtml+ctag+'</span><span class="bid-cash">'+cs2+'</span><span class="bid-basis '+bf.cls+'">'+bf.str+'</span>'+gradeHtml+'</div>';
+        html+='<div class="bid-row'+(bi>=3?' bid-xtra':'')+'"'+bhi+'><span class="bid-del-cell">'+delHtml+ctag+'</span><span class="bid-cash">'+cs2+'</span><span class="bid-basis '+((!perTon&&_tone&&_tone(bid))||bf.cls)+'">'+bf.str+'</span>'+gradeHtml+'</div>';
       });
       if(catBids.length>3)html+='<button class="bid-more" type="button" aria-expanded="false">+'+(catBids.length-3)+' more delivery months &#9662;</button>';
       html+='</div></div>';
@@ -2384,8 +2402,8 @@ function renderBids(bids,keepLimit){
   });
   html+='</div>';
   /* The rest stay behind one honest button — 108 full cards made an 80,000px page. */
-  if(elevators.length>shown.length){
-    html+='<div class="cb-more-wrap"><button class="cb-more-btn" id="cb-more-btn">Show '+Math.min(CB_PAGE_STEP,elevators.length-shown.length)+' more elevators <span class="cb-more-n">('+shown.length+' of '+elevators.length+' shown · sorted by '+(currentSort==='best-cash'?'best cash price':currentSort==='best-basis'?'best basis':currentSort==='name'?'name':'distance')+')</span></button></div>';
+  if(pool.length>shown.length){
+    html+='<div class="cb-more-wrap"><button class="cb-more-btn" id="cb-more-btn">Show '+Math.min(CB_PAGE_STEP,pool.length-shown.length)+' more elevators <span class="cb-more-n">('+shown.length+' of '+pool.length+' shown · sorted by '+(currentSort==='best-cash'?'best cash price':currentSort==='best-basis'?'best basis':currentSort==='name'?'name':'distance')+')</span></button></div>';
   }
   results.innerHTML=html;
   results.querySelectorAll('.bid-more').forEach(function(btn){btn.addEventListener('click',function(){var box=btn.closest('.bid-rows');var open=box.classList.toggle('bids-open');btn.setAttribute('aria-expanded',open?'true':'false');btn.innerHTML=open?'Show fewer &#9652;':btn.getAttribute('data-label')||btn.innerHTML;if(open)btn.setAttribute('data-label',btn.innerHTML);});});
@@ -2396,7 +2414,14 @@ function renderBids(bids,keepLimit){
   });
   renderWTD();
   applyBasisHistory();
+  if(window.CBGlance)CBGlance.update({bids:cbLastBids,elevators:elevators,crop:glanceCrop(),zip:zipInput.value,radius:parseInt(radiusSel.value,10)||50,snap:!!(cbLastBids[0]&&cbLastBids[0].snap)});
 }
+/* cb-glance: the crop the panels show -- the chip if it names one, else the drive calculator's. */
+function glanceCrop(){return(currentFilter==='corn'||currentFilter==='soybeans'||currentFilter==='wheat')?currentFilter:wtdComm;}
+if(window.CBGlance)CBGlance.init({delKey:delKey,bidPeriodPast:bidPeriodPast,isSpotDelivery:isSpotDelivery,monthFloorKey:monthFloorKey,harvestYear:harvestYear,
+  ppu:ppu,plausible:plausible,notPerBushel:notPerBushel,isSpecialGrade:isSpecialGrade,basisUnusual:basisUnusual,basisUnclear:basisUnclear,basisCents:basisCents,
+  groupElevators:groupElevators,townOf:townOf,bhLoadState:bhLoadState,bhLook:bhLook,bhSane:bhSane,
+  rerender:function(){renderBids(cbLastBids);}});
 
 /* ═══════════════════════════════════════════════════════════════════════════
  * THE BID NETWORK — elevators read straight from their own posted boards.
@@ -2936,6 +2961,8 @@ function doSearch(zip){
     goBtn.disabled=false;
     results.removeAttribute('aria-busy');
     renderDegraded(null);
+    /* cb-glance: both feeds failed -- fall back to the last network snapshot this phone saved, dated. */
+    if(err&&!bids.length&&window.CBGlance){var _sn=CBGlance.snapshot(zip,radius);if(_sn){err=null;bids=_sn.rows;warn=_sn.note;}}
     if(err&&!bids.length){
       goBtn.textContent=hasSearched?'\u21BB Refresh':'Search';
       /* THE HEADER CANNOT KEEP CLAIMING ELEVATORS THE PAGE IS NOT SHOWING.
@@ -2961,6 +2988,7 @@ function doSearch(zip){
     try{localStorage.setItem('agsist_zip',zip);}catch(e){}
     goBtn.textContent='\u21BB Refresh';
     currentBids=bids;pinnedKeys=[];
+    if(window.CBGlance)CBGlance.newSearch();
     /* Built from the bids that just arrived, not from a hardcoded list of
        months: a radius with no new-crop bids in it must not offer a
        new-crop option that returns nothing. */
