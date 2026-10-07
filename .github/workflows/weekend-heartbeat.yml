@@ -5,10 +5,9 @@ name: Weekend daily-briefing heartbeat
 # malformed, just absent. Root-caused 2026-09-29 by reading the actual commit
 # history, not guessing: daily.yml's three own crons (10:19, 11:41, 13:23
 # UTC) are its ONLY chance on a Saturday or Sunday morning. On a weekday,
-# prices.yml's heartbeat dispatch adds many more chances every 30 minutes
-# starting 13:17 UTC -- but prices.yml only runs '* * 1-5' (weekdays), because
-# there is no fresh futures data to fetch before Sunday evening's session
-# reopens. Checked: zero "💹 Prices" commits landed on 2026-09-26 or
+# prices.yml's heartbeat dispatch adds a chance every 15 minutes -- but
+# prices.yml only fetches while CME grains trade (its "hours" job), and they
+# are shut from Friday afternoon until Sunday evening. Checked: zero "💹 Prices" commits landed on 2026-09-26 or
 # 2026-09-27, confirming the heartbeat genuinely never fires on a weekend
 # morning. So a weekend's entire briefing depends on GitHub's cron firing at
 # least one of three specific minutes -- and this repo already measured, in
