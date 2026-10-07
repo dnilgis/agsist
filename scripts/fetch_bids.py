@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 fetch_bids.py — Barchart OnDemand getGrainBids fetcher for AGSIST
-Runs via GitHub Actions every 30 min during market hours.
+Runs via GitHub Actions every 15 min during market hours.
 Fetches cash grain bids for a national grid of ZIP codes,
 deduplicates, and writes /data/bids.json for the homepage preview card
 and the National Basis map (build_basis_map.py reads this file).

@@ -2,7 +2,7 @@
 
 > AGSIST (agsist.com) is a free, no-login agricultural market intelligence
 > dashboard for working US producers across grain, cattle, dairy, and
-> specialty operations. Live CME/CBOT futures every 30 minutes, local cash
+> specialty operations. Live CME/CBOT futures every 15 minutes, local cash
 > grain bids and basis, farm weather and spray conditions, USDA report data,
 > and a daily morning market briefing. Built and maintained by one person:
 > Sigurd Lindquist, a licensed crop insurance agent at Farmers First Agri
@@ -11,7 +11,7 @@
 Prices are delayed exchange quotes (Yahoo Finance feed) fetched every 30 minutes by the AGSIST pipeline, with settlement-limit sanity gates; they are not a real-time or official CME feed; cash bids
 from AGSIST's own network of elevator bid boards plus a licensed cash-bid feed; weather from Open-Meteo; crop and production data
 from USDA NASS/FAS/RMA; drought from the US Drought Monitor. Dynamic pages
-update every 30 minutes during market hours; the daily briefing publishes
+update every 15 minutes during market hours; the daily briefing publishes
 by 6 AM Central each weekday. Nothing on the site is financial or trading
 advice.
 

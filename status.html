@@ -233,7 +233,7 @@
     // check() returns {state, label, age} given (data, ageMs). state ∈ ok/warn/down/idle.
     var COMPONENTS=[
       {
-        name:'Grain Futures Prices', desc:'Corn, soybean & wheat boards — refreshed every 30 min while the market is open.',
+        name:'Grain Futures Prices', desc:'Corn, soybean & wheat boards — refreshed every 15 min while the market is open.',
         url:'/data/prices.json', tsKey:'fetched',
         check:function(d,age){
           var open=grainsOpen();

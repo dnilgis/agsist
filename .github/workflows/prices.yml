@@ -5,7 +5,7 @@ name: Fetch Prices
 # (every-30-min) runs — and will auto-disable a schedule that fails repeatedly.
 # That is why prices went stale and showed "no scheduled runs, only manual."
 # Instead of needing ~20 fragile cron fires a day, ONE reliable launch runs an
-# internal loop that fetches every 30 min for the whole trading session.
+# internal loop that fetches every 15 min for the whole trading session.
 # A couple of low-frequency starts (far more reliable than */30) kick it off,
 # and the manual button always works. NOTE: the long-running job uses Actions
 # minutes continuously — this is free on a PUBLIC repo (unlimited minutes); on a
@@ -84,7 +84,7 @@ jobs:
           python scripts/test_class_spreads.py
           python scripts/test_prev_close.py
 
-      - name: Fetch loop (every 30 min for the session)
+      - name: Fetch loop (every 15 min for the session)
         env:
           # `gh workflow run` authenticates from GH_TOKEN. The built-in token is
           # enough: a workflow_dispatch is one of the two events GitHub creates
@@ -178,7 +178,10 @@ jobs:
 
             NOW=$(date +%s); REMAIN=$(( END - NOW ))
             [ "$REMAIN" -le 60 ] && { echo "session window done, exiting"; break; }
-            SLEEP=1800; [ "$SLEEP" -gt "$REMAIN" ] && SLEEP="$REMAIN"
+            # 15 minutes since 2026-10-07 (was 30): Yahoo's quote is already ~15
+            # minutes behind the exchange, and a 30-minute cycle on top of that
+            # left the page up to 45 minutes behind the board.
+            SLEEP=900; [ "$SLEEP" -gt "$REMAIN" ] && SLEEP="$REMAIN"
             echo "sleeping ${SLEEP}s until next fetch…"
             # ── THE COT RELEASE CLOCK ───────────────────────────────────
             #
@@ -188,7 +191,7 @@ jobs:
             # and 21:34 UTC against a 19:30 release). This loop is the one thing
             # here GitHub does deliver, so it does the asking: in the release
             # window, Mon-Fri 19:00-21:59 UTC (3:00-4:59pm EDT, 2:00-3:59pm EST,
-            # which holds 3:30pm ET in both), the half-hour sleep is cut into
+            # which holds 3:30pm ET in both), the 15-minute sleep is cut into
             # five-minute pieces and the watcher is dispatched after each one.
             # The watcher probes CFTC itself and stops in about twenty seconds
             # unless the report date moved. The sleep still totals $SLEEP, so

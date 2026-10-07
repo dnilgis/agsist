@@ -5,7 +5,7 @@ build_news.py — the live wire.
 WHAT THIS IS FOR
 ----------------
 The site already reads the primary sources: the WASDE watcher polls NASS inside
-the release window, prices refresh every 30 minutes, the COT lands Friday
+the release window, prices refresh every 15 minutes, the COT lands Friday
 afternoon. Those are moments AGSIST knows about before a wire story exists,
 because a wire story is written after somebody reads the same file we already
 parsed. This turns those moments into dated items, and the workflow pings
