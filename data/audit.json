@@ -1,36 +1,12 @@
 {
  "schema": "agsist-render-audit/1",
  "base": "https://agsist.com",
- "ran": "2026-10-07T18:03:22.779Z",
+ "ran": "2026-10-07T18:35:33.875Z",
  "pages": 16,
- "seconds": 199,
- "high": 4,
+ "seconds": 200,
+ "high": 0,
  "med": 0,
  "findings": [
-  {
-   "page": "/basis",
-   "sev": "high",
-   "kind": "contrast",
-   "detail": "desktop: 1.12:1 on \"Your elevator didn’t cut your basis. The river\" (rgb(230, 235, 233) on rgb(246, 247, 245))"
-  },
-  {
-   "page": "/basis",
-   "sev": "high",
-   "kind": "contrast",
-   "detail": "desktop: 2.91:1 on \"Everyone stares at the futures board; the chec\" (rgb(138, 148, 143) on rgb(246, 247, 245))"
-  },
-  {
-   "page": "/basis",
-   "sev": "high",
-   "kind": "contrast",
-   "detail": "mobile: 1.12:1 on \"Your elevator didn’t cut your basis. The river\" (rgb(230, 235, 233) on rgb(246, 247, 245))"
-  },
-  {
-   "page": "/basis",
-   "sev": "high",
-   "kind": "contrast",
-   "detail": "mobile: 2.91:1 on \"Everyone stares at the futures board; the chec\" (rgb(138, 148, 143) on rgb(246, 247, 245))"
-  },
   {
    "page": "/status",
    "sev": "expected",
