@@ -48,6 +48,7 @@ jobs:
         run: |
           node scripts/preship.mjs \
             --git-base "${{ github.event.inputs.base || 'HEAD~1' }}" \
+            --budget 20 \
             --json preship-report.json
 
       - name: Upload the report

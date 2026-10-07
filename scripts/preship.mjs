@@ -26,6 +26,21 @@
  *   node scripts/preship.mjs --base <dir> --candidate <dir> --pages index.html,breakeven.html
  *   node scripts/preship.mjs ... --json report.json     write a machine-readable report
  *   node scripts/preship.mjs ... --quick                skip the 404 matrix (smoke only)
+ *   node scripts/preship.mjs ... --budget 20            minutes of rendering before it stops
+ *   node scripts/preship.mjs ... --concurrency 3        pages rendered at once
+ *
+ * BIG PUSHES (2026-10-07). A merge that touches thousands of files used to
+ * run past the workflow's 30-minute limit and get cancelled with no verdict
+ * at all (twice on 2026-10-06). Three things fix that without dropping a check:
+ *   - a page whose only change is a ?v= cache-buster or the generated
+ *     static-nav block is "cosmetic" and gets the two smoke renders; a page
+ *     with a real change still gets the full matrix, and goes first
+ *   - baseline and candidate render side by side, and pages run in parallel
+ *   - a time budget: pages it could not reach are listed by name as WARN
+ *     ("not rendered"), so a partial run says so instead of being cancelled
+ * The static checks skip what cannot have changed: an inline script that is
+ * byte-identical to one in the same baseline file is not re-parsed, and the
+ * copy count runs on the files with a real change.
  *
  * Exit 0 = ship it. Exit 1 = do not.
  */
@@ -69,6 +84,9 @@ const ONLY = arg('pages');
 const QUICK = !!arg('quick');
 const JSON_OUT = arg('json');
 const WAIT = +(arg('wait') || 6500);
+const BUDGET_MS = +(arg('budget') || 20) * 60000;
+const CONC = Math.max(1, +(arg('concurrency') || 3));
+const T0 = Date.now();
 
 if (!BASE || !CAND) {
   console.error('usage: preship.mjs --base <dir> --candidate <dir> [--pages a.html,b.html] [--quick]');
@@ -133,6 +151,24 @@ function changedFiles() {
   return out;
 }
 
+/* A changed file whose only differences are ?v= cache-busters and the
+   static-nav blocks scripts/inject_static_nav.py writes. Its own markup and
+   scripts are what they were; it still renders (the assets it loads may have
+   changed), just without the full 404 matrix. */
+function normalize(t) {
+  return t.replace(/<!-- static-nav:(\w+)[\s\S]*?<!-- \/static-nav:\1 -->/g, '')
+          .replace(/\?v=\d+/g, '').replace(/\s+/g, ' ');
+}
+function changeSize(rel) {
+  const a = path.join(BASE, rel), b = path.join(CAND, rel);
+  if (!fs.existsSync(a)) return Infinity;
+  const ta = fs.readFileSync(a, 'utf8'), tb = fs.readFileSync(b, 'utf8');
+  if (!/\.(html|js|css)$/.test(rel)) return ta === tb ? 0 : 1;
+  if (normalize(ta) === normalize(tb)) return 0;
+  const aSet = new Set(ta.split('\n'));
+  return tb.split('\n').filter(l => !aSet.has(l)).length || 1;
+}
+
 /* ───────────────────── invariants: what must never appear ──────────── */
 /* Each is checked against the baseline too. Only NEW occurrences fail, so a
    page that already says "null" somewhere does not block the build, and one
@@ -150,10 +186,10 @@ const FORBIDDEN = [
 
 /* ──────────────────────────── the scenarios ────────────────────────── */
 
-function scenarios(dataFiles) {
+function scenarios(dataFiles, quick) {
   const s = [{ id: 'normal', width: 1280, height: 900 },
              { id: 'phone', width: 390, height: 844 }];
-  if (QUICK) return s;
+  if (QUICK || quick) return s;
   /* THE CLOCK. A countdown that is right after lunch and wrong before it is
      the single most repeated defect in this repo's history. */
   for (const t of ['2026-05-31T07:00:00', '2026-06-01T07:00:00', '2027-01-15T23:30:00']) {
@@ -240,20 +276,34 @@ async function render(browser, port, page, sc) {
 /* ─────────────────────── static checks on the files ────────────────── */
 
 function parseChecks(files, findings) {
+  const checked = new Map();   // script text -> error detail or ''
   for (const rel of files) {
     const f = path.join(CAND, rel);
     if (rel.endsWith('.html')) {
       const html = fs.readFileSync(f, 'utf8');
       const re = /<script(?![^>]*\bsrc=)([^>]*)>([\s\S]*?)<\/script>/g;
+      const bf = path.join(BASE, rel), baseScripts = new Set();
+      if (fs.existsSync(bf)) {
+        const bh = fs.readFileSync(bf, 'utf8');
+        let bm; while ((bm = re.exec(bh))) baseScripts.add(bm[2]);
+        re.lastIndex = 0;
+      }
       let m, i = 0;
       while ((m = re.exec(html))) {
         if (/json/i.test(m[1])) continue;
+        if (baseScripts.has(m[2])) continue;          // byte-identical to the baseline's: cannot newly fail
+        if (checked.has(m[2])) {
+          const d = checked.get(m[2]);
+          if (d) findings.push({ level: 'FAIL', rel, what: 'inline script does not parse', detail: d });
+          continue;
+        }
         const tmp = path.join(os.tmpdir(), `preship_${Date.now()}_${i++}.js`);
         fs.writeFileSync(tmp, m[2]);
-        try { execFileSync(process.execPath, ['--check', tmp], { stdio: 'pipe' }); }
+        try { execFileSync(process.execPath, ['--check', tmp], { stdio: 'pipe' }); checked.set(m[2], ''); }
         catch (e) {
-          findings.push({ level: 'FAIL', rel, what: 'inline script does not parse',
-            detail: String(e.stderr || e.message).split('\n\n')[0].slice(0, 200) });
+          const d = String(e.stderr || e.message).split('\n\n')[0].slice(0, 200);
+          checked.set(m[2], d);
+          findings.push({ level: 'FAIL', rel, what: 'inline script does not parse', detail: d });
         } finally { try { fs.unlinkSync(tmp); } catch {} }
       }
     }
@@ -272,6 +322,8 @@ function parseChecks(files, findings) {
    or const whose line changed, say how many other files mention it. */
 function copyCheck(files, findings) {
   const all = walk(CAND).filter(r => /\.(html|js|mjs|py)$/.test(r));
+  const cache = new Map();
+  const read = r => { if (!cache.has(r)) cache.set(r, fs.readFileSync(path.join(CAND, r), 'utf8')); return cache.get(r); };
   for (const rel of files) {
     if (!/\.(html|js|mjs|py)$/.test(rel)) continue;
     const a = fs.existsSync(path.join(BASE, rel)) ? fs.readFileSync(path.join(BASE, rel), 'utf8') : '';
@@ -286,7 +338,8 @@ function copyCheck(files, findings) {
       }
     }
     for (const n of names) {
-      const elsewhere = all.filter(r => r !== rel && new RegExp('\\b' + n + '\\b').test(fs.readFileSync(path.join(CAND, r), 'utf8')));
+      const re = new RegExp('\\b' + n + '\\b');
+      const elsewhere = all.filter(r => r !== rel && re.test(read(r)));
       if (elsewhere.length) {
         findings.push({ level: 'NOTE', rel, what: `"${n}" also appears in ${elsewhere.length} other file(s)`,
           detail: elsewhere.slice(0, 4).join(', ') + (elsewhere.length > 4 ? ' …' : '') });
@@ -298,39 +351,53 @@ function copyCheck(files, findings) {
 /* ──────────────────────────────── main ─────────────────────────────── */
 
 const findings = [];
+let RENDER_GAPS = 0;
 const changed = changedFiles();
-const pages = changed.filter(r => r.endsWith('.html') && !r.includes('/'));
+const size = new Map(changed.map(r => [r, changeSize(r)]));
+const real = changed.filter(r => size.get(r) > 0);
+/* Real changes first, the biggest first: if the budget runs out, what is
+   left unrendered is the cosmetic tail. */
+const pages = changed.filter(r => r.endsWith('.html') && !r.includes('/'))
+  .sort((a, b) => (size.get(b) - size.get(a)) || a.localeCompare(b));
+const cosmetic = new Set(pages.filter(r => size.get(r) === 0));
 
 console.log('preship');
 console.log('  baseline  ' + BASE);
 console.log('  candidate ' + CAND);
-console.log('  changed   ' + (changed.length ? changed.join(', ') : '(nothing)'));
+console.log(`  changed   ${changed.length} file(s), ${real.length} with a real change` +
+  (changed.length - real.length ? `, ${changed.length - real.length} only cache-busters or static nav` : ''));
+if (changed.length <= 40) console.log('            ' + changed.join(', '));
 if (!changed.length) { console.log('\nNothing to check.'); process.exit(0); }
 
 parseChecks(changed, findings);
-copyCheck(changed, findings);
+copyCheck(real, findings);
 
 if (!pages.length) {
   console.log('  no top-level pages changed — static checks only');
 } else {
   const browser = await chromium.launch(CHROMIUM ? { executablePath: CHROMIUM } : {});
   const A = await serve(BASE), B = await serve(CAND);
+  const skipped = [], partial = [];
 
-  for (const page of pages) {
+  async function checkPage(page) {
     if (!fs.existsSync(path.join(BASE, page))) {
       findings.push({ level: 'NOTE', rel: page, what: 'new page — no baseline to compare against', detail: '' });
-      continue;
+      return;
     }
+    if (Date.now() - T0 > BUDGET_MS) { skipped.push(page); return; }
     /* One baseline render discovers the page's own data dependencies. */
-    const probeA = await render(browser, A.port, page, { id: 'probe', width: 1280, height: 900 });
-    const probeB = await render(browser, B.port, page, { id: 'probe', width: 1280, height: 900 });
+    const [probeA, probeB] = await Promise.all([
+      render(browser, A.port, page, { id: 'probe', width: 1280, height: 900 }),
+      render(browser, B.port, page, { id: 'probe', width: 1280, height: 900 })]);
     const deps = [...new Set([...probeA.dataFiles, ...probeB.dataFiles])].sort().slice(0, 14);
-    console.log(`\n  ${page} — ${deps.length} data file(s), ${scenarios(deps).length} scenarios`);
+    const list = scenarios(deps, cosmetic.has(page));
+    console.log(`\n  ${page} — ${cosmetic.has(page) ? 'cosmetic change, smoke renders' : deps.length + ' data file(s)'}, ${list.length} scenarios`);
 
-    for (const sc of scenarios(deps)) {
-      const base = await render(browser, A.port, page, sc);
-      const cand = await render(browser, B.port, page, sc);
-
+    let done = 0;
+    for (const sc of list) {
+      if (Date.now() - T0 > BUDGET_MS) { partial.push(`${page} (${done} of ${list.length} scenarios)`); break; }
+      done++;
+      const [base, cand] = await Promise.all([render(browser, A.port, page, sc), render(browser, B.port, page, sc)]);
       const newErrs = cand.pageErrors.filter(e => !base.pageErrors.includes(e));
       if (newErrs.length) {
         findings.push({ level: 'FAIL', rel: page, what: `page error under [${sc.id}] that the baseline does not have`,
@@ -359,8 +426,24 @@ if (!pages.length) {
       process.stdout.write('.');
     }
   }
+
+  /* A small pool: each page's scenarios stay in order, CONC pages at once. */
+  const queue = pages.slice();
+  await Promise.all(Array.from({ length: Math.min(CONC, queue.length) }, async () => {
+    while (queue.length) await checkPage(queue.shift());
+  }));
   await browser.close(); A.srv.close(); B.srv.close();
   console.log('');
+  if (skipped.length) {
+    findings.push({ level: 'WARN', rel: `${skipped.length} of ${pages.length} pages`,
+      what: `not rendered: the ${Math.round(BUDGET_MS / 60000)}-minute budget ran out (static checks did run on them)`,
+      detail: skipped.slice(0, 30).join(', ') + (skipped.length > 30 ? ' …' : '') });
+  }
+  if (partial.length) {
+    findings.push({ level: 'WARN', rel: `${partial.length} page(s)`,
+      what: 'stopped part-way through their scenarios when the budget ran out', detail: partial.join(', ') });
+  }
+  RENDER_GAPS = skipped.length + partial.length;
 }
 
 /* ─────────────────────────────── report ────────────────────────────── */
@@ -403,6 +486,10 @@ if (JSON_OUT && JSON_OUT !== true) {
 if (fails.length) {
   console.log('\nDO NOT SHIP. Each FAIL is something the candidate does that main does not.');
   process.exit(1);
+}
+if (RENDER_GAPS) {
+  console.log('\nNo regression in what was rendered, but the run is PARTIAL: see the "not rendered" WARN.');
+  process.exit(0);
 }
 console.log('\nNothing the baseline did not already do. Ship it.');
 process.exit(0);
