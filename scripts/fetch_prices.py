@@ -369,7 +369,12 @@ SYMBOLS = {
     "corn-mar27": "ZCH27.CBT",
     "corn-may27": "ZCK27.CBT",
     "corn-jul27": "ZCN27.CBT",
+    "corn-sep27": "ZCU27.CBT",
     "corn-dec27": "ZCZ27.CBT",
+    # Read by dnilgis/flashgrain (Flash Grain's forward bids: every delivery
+    # month for the next year, plus Fall of this year and the next two). No
+    # page here draws these, and preflight's daily-limit gate covers them.
+    "corn-dec28": "ZCZ28.CBT",
 
     # Beans active months: Jan (F), Mar (H), May (K), Jul (N), Aug (Q), Sep (U), Nov (X)
     "beans-jul26":"ZSN26.CBT",
@@ -380,8 +385,12 @@ SYMBOLS = {
                                  # nearby ladder would skip to Jan '27 (audit 2026-07-29)
     "beans-jan27":"ZSF27.CBT",
     "beans-mar27":"ZSH27.CBT",
+    "beans-may27":"ZSK27.CBT",
     "beans-jul27":"ZSN27.CBT",
+    "beans-aug27":"ZSQ27.CBT",
+    "beans-sep27":"ZSU27.CBT",
     "beans-nov27":"ZSX27.CBT",
+    "beans-nov28":"ZSX28.CBT",   # Flash Grain's Fall '28 row, as corn-dec28
 
     # Wheat active months: Mar (H), May (K), Jul (N), Sep (U), Dec (Z)
     "wheat-jul26":"ZWN26.CBT",
