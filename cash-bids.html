@@ -73,11 +73,13 @@ button,a,[role="button"],input,select{touch-action:manipulation}
 .cb-lookup-input:focus{border-color:var(--gold)}
 .cb-lookup-input::placeholder{color:var(--text-muted)}
 .cb-lookup-btn{padding:.8rem 1.4rem;background:var(--green);color:#06110b;border:none;border-radius:8px;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:.9rem;cursor:pointer;white-space:nowrap;transition:background .15s;text-transform:uppercase;letter-spacing:.04em;min-height:52px;min-width:90px}
-.cb-lookup-btn:hover{background:#1b4d1c}
+.cb-lookup-btn:hover{background:#1b4d1c;color:#fff}
+[data-theme="light"] .cb-lookup-btn{background:#1f6b40;color:#fff}
 .cb-lookup-btn:disabled{opacity:.5;cursor:wait}
 .cb-radius-row{margin-top:.6rem;display:flex;align-items:center;gap:.5rem;font-size:.8rem;color:var(--text-dim)}
 .cb-radius-row label{font-weight:600}
 .cb-radius-row select{background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:1rem;padding:.3rem .55rem;cursor:pointer;outline:none;min-height:44px}
+.cb-radius-row select:focus-visible,.cb-sort select:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
 .cb-geo-row{margin-top:.6rem;font-size:0.795rem;color:var(--text-muted);display:flex;align-items:center;gap:.4rem;flex-wrap:wrap}
 .cb-geo-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--gold-fill,var(--gold));animation:gpulse 2s infinite}
 @keyframes gpulse{0%,100%{opacity:.4}50%{opacity:1}}
@@ -269,7 +271,7 @@ button,a,[role="button"],input,select{touch-action:manipulation}
 .pin-btn.pinned{background:rgba(230,176,66,.15);border-color:var(--gold);color:var(--gold)}
 .comm-section{border-top:1px solid var(--border)}
 .comm-header{display:flex;align-items:center;gap:.35rem;padding:.55rem 1rem .3rem;font-family:'JetBrains Mono',monospace;font-size:0.755rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
-.comm-header.corn{color:var(--gold)}.comm-header.soybeans{color:var(--green)}.comm-header.wheat{color:#ca8a3c}.comm-header.other{color:var(--text-muted)}
+.comm-header.corn{color:var(--gold)}.comm-header.soybeans{color:var(--green)}.comm-header.wheat{color:#ca8a3c}[data-theme="light"] .comm-header.wheat,[data-theme="light"] .wtd-comm-btn.active.wheat{color:#9a5a1a}.comm-header.other{color:var(--text-muted)}
 /* THE HEADER ROW AND THE DATA ROWS ARE TWO GRIDS AND `auto` CANNOT MAKE THEM
    AGREE. Both said `1fr auto auto`, which sizes each column to the content of
    ITS OWN grid: measured at 320, 360, 375, 390, 414, 480, 600, 720, 768, 900,
@@ -296,6 +298,7 @@ button,a,[role="button"],input,select{touch-action:manipulation}
    lesson from the "Delivery:" label that rendered one letter per line. */
 .bid-grade{grid-column:1/-1;font-size:0.72rem;line-height:1.25;color:var(--text-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .bid-odd{color:var(--warn,#e0a83a);font-weight:600}
+.bbc-warn{color:var(--warn,#e0a83a)}[data-theme="light"] .bid-odd,[data-theme="light"] .bbc-warn{color:#8a5a00}
 .bid-del-cell{display:flex;align-items:baseline;gap:.3rem;min-width:0;overflow:hidden}
 /* THE CHANGE LINE SPANS THE WHOLE ROW, which is the entire reason it cannot
    break anything. The row is a three-column grid; a fourth child would have
@@ -311,7 +314,8 @@ button,a,[role="button"],input,select{touch-action:manipulation}
 .bid-chg .bh-up{color:var(--green);font-weight:700}
 .bid-chg .bh-dn{color:var(--red,#ef4444);font-weight:700}
 .bid-chg .bh-when{color:var(--text-muted);opacity:.85}
-.bid-chg.bh-quiet{color:var(--text-muted);opacity:.62}
+.bid-chg.bh-quiet{color:var(--text-muted)}
+[data-theme="light"] .bid-chg .bh-when,[data-theme="light"] .comm-fut-l,[data-theme="light"] .bid-row-labels,[data-theme="light"] .bbc-scroll-hint,[data-theme="light"] .lo-opt{opacity:1}
 .bid-fut-tag{font-family:'JetBrains Mono',monospace;font-size:0.70rem;color:var(--text-muted);opacity:.75;white-space:nowrap;flex:0 0 auto}
 /* The strip is its own block under the commodity header and it WRAPS. It can
    carry six contracts on a wide screen and three lines on a phone, and neither
@@ -322,8 +326,9 @@ button,a,[role="button"],input,select{touch-action:manipulation}
 .comm-fut-c b{font-weight:700;color:var(--text-dim)}
 .bbc-fut{font-family:'JetBrains Mono',monospace;font-size:0.735rem;color:var(--text-muted);margin-top:.16rem}
 .bid-cash{font-family:'JetBrains Mono',monospace;font-size:1.22rem;font-weight:700;color:var(--text);text-align:right;white-space:nowrap;line-height:1.2}
-.bid-basis{font-family:'JetBrains Mono',monospace;font-size:0.79rem;font-weight:600;text-align:right;white-space:nowrap;min-width:52px;opacity:.82}
+.bid-basis{font-family:'JetBrains Mono',monospace;font-size:0.79rem;font-weight:600;text-align:right;white-space:nowrap;min-width:52px}
 .bid-basis.pos{color:var(--green)}.bid-basis.neg{color:var(--red,#ef4444)}.bid-basis.flat{color:var(--text-muted)}
+[data-theme="light"] .bid-basis.neg{color:#a8361f}
 .bid-row-labels{align-items:center;display:grid;grid-template-columns:minmax(0,1fr) var(--c-cash) var(--c-basis);gap:.25rem .6rem;padding:.18rem 0 .1rem;font-family:'JetBrains Mono',monospace;font-size:0.755rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);opacity:.7}
 .bid-row-labels span:nth-child(2),.bid-row-labels span:nth-child(3){text-align:right}
 .internal-links{margin:1.5rem 0;padding:1.1rem;background:var(--surface2);border:2px solid var(--border);border-radius:12px}
@@ -345,8 +350,8 @@ button,a,[role="button"],input,select{touch-action:manipulation}
 .faq-chev.open{transform:rotate(180deg)}
 .faq-a{font-size:1rem;color:var(--text-dim);line-height:1.7;padding-top:.55rem;display:none}
 .faq-a.open{display:block}
-.compare-bar{position:fixed;bottom:0;left:0;right:0;z-index:900;background:var(--surface);border-top:2px solid var(--gold);padding:.75rem max(1.2rem,env(safe-area-inset-right)) max(calc(.75rem + env(safe-area-inset-bottom)),.75rem) max(1.2rem,env(safe-area-inset-left));display:flex;align-items:center;justify-content:space-between;gap:.75rem;flex-wrap:wrap;transform:translateY(100%);transition:transform .22s cubic-bezier(.2,0,.2,1)}
-.compare-bar.visible{transform:translateY(0)}
+.compare-bar{position:fixed;bottom:0;left:0;right:0;z-index:900;background:var(--surface);border-top:2px solid var(--gold);padding:.75rem max(1.2rem,env(safe-area-inset-right)) max(calc(.75rem + env(safe-area-inset-bottom)),.75rem) max(1.2rem,env(safe-area-inset-left));display:flex;align-items:center;justify-content:space-between;gap:.75rem;flex-wrap:wrap;transform:translateY(100%);visibility:hidden;transition:transform .22s cubic-bezier(.2,0,.2,1),visibility 0s linear .22s}
+.compare-bar.visible{transform:translateY(0);visibility:visible;transition:transform .22s cubic-bezier(.2,0,.2,1),visibility 0s}
 .compare-bar-l{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;flex:1}
 .compare-bar-label{font-family:'JetBrains Mono',monospace;font-size:0.78rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);white-space:nowrap}
 .compare-chips{display:flex;gap:.35rem;flex-wrap:wrap}
@@ -470,6 +475,7 @@ button,a,[role="button"],input,select{touch-action:manipulation}
 .elev-call-btn:hover{background:rgba(58,139,60,.22)}
 .elev-dir-btn{display:inline-flex;align-items:center;gap:.25rem;background:rgba(74,143,186,.1);border:1px solid rgba(74,143,186,.3);border-radius:6px;color:var(--blue,#4a8fba);font-family:'JetBrains Mono',monospace;font-size:0.77rem;font-weight:700;text-decoration:none;padding:.28rem .65rem;min-height:44px;min-width:44px;justify-content:center;letter-spacing:.04em;transition:background .15s}
 .elev-dir-btn:hover{background:rgba(74,143,186,.18)}
+[data-theme="light"] .elev-dir-btn,[data-theme="light"] .bbc-dir-btn{color:#2d5f86}[data-theme="light"] .elev-call-btn,[data-theme="light"] .bbc-call-btn{color:#1f6b40}
 .bid-del-spot{color:var(--green);font-weight:700;font-size:0.78rem;letter-spacing:.04em}
 .bid-del-fwd{color:var(--text-dim);font-size:0.785rem}
 .cb-skel::after{content:'';display:block;height:140px}
@@ -489,7 +495,7 @@ button,a,[role="button"],input,select{touch-action:manipulation}
 .bm-tile{border-radius:10px;padding:.6rem .65rem;border:1px solid rgba(255,255,255,.08)}
 .bm-tile .st{font-family:var(--font-display);font-weight:700;font-size:1.05rem;color:#fff;line-height:1}
 .bm-tile .bs{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:1.1rem;margin:.25rem 0 .05rem}
-.bm-tile .nm{font-size:0.765rem;opacity:.8;line-height:1.2}
+.bm-tile .nm{font-size:0.765rem;color:rgba(255,255,255,.85);line-height:1.2}
 .bm-board{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
 .bm-li{display:flex;justify-content:space-between;gap:.5rem;align-items:baseline;background:var(--surface2);border:1px solid var(--border);border-radius:9px;padding:.5rem .7rem;margin:0 0 .4rem;font-size:.88rem}
 .bm-li .b{font-family:'JetBrains Mono',monospace;font-weight:700}
@@ -609,7 +615,7 @@ button,a,[role="button"],input,select{touch-action:manipulation}
       </div>
       <div class="cb-geo-row" id="cb-geo-row">
         <span class="cb-geo-dot" id="cb-geo-dot" aria-hidden="true" style="display:none"></span>
-        <span id="cb-geo-txt"><button class="cb-geo-link-btn" id="cb-use-location-btn"><svg class="ic" aria-hidden="true"><use href="#i-map-pin"/></svg> Use my location</button></span>
+        <button type="button" class="cb-geo-link-btn" id="cb-use-location-btn"><svg class="ic" aria-hidden="true"><use href="#i-map-pin"/></svg> <span id="cb-use-location-lbl">Use my location</span></button><span id="cb-geo-txt"></span>
         <button id="cb-use-detect" style="display:none">Use detected ZIP</button>
       </div>
     </div>
@@ -1269,11 +1275,26 @@ function showGeoDot(){if(geoDot)geoDot.style.display='inline-block';}
 
 var useLocationBtn=$('cb-use-location-btn');
 if(useLocationBtn){
+  /* The button stays in the DOM for every outcome; only its label and the
+     status text beside it change, so keyboard focus is never dropped to <body>
+     and the same button is the retry. Each outcome is announced. */
   useLocationBtn.addEventListener('click',function(){
+    if(useLocationBtn.getAttribute('aria-busy')==='true')return;
+    useLocationBtn.setAttribute('aria-busy','true');
     showGeoDot();
-    geoTxt.innerHTML='Detecting&#8230;';
+    setGeoLabel('Finding your location\u2026');
+    geoTxt.textContent='';
+    announce('Finding your location');
     doGeo();
   });
+}
+function setGeoLabel(t){var l=$('cb-use-location-lbl');if(l)l.textContent=t;}
+function geoDone(label,status,msg,focusZip){
+  if(useLocationBtn)useLocationBtn.removeAttribute('aria-busy');
+  setGeoLabel(label);
+  geoTxt.textContent=status;
+  announce(msg||status);
+  if(focusZip&&zipInput)zipInput.focus();
 }
 
 function showToast(msg,ms){toastEl.textContent=msg;toastEl.classList.add('show');clearTimeout(toastEl._t);toastEl._t=setTimeout(function(){toastEl.classList.remove('show');},ms||2400);}
@@ -1980,7 +2001,7 @@ function renderBestBids(elevators){
       html+='<div class="bbc-meta"><span class="bbc-basis '+bf.cls+'">Basis '+bf.str+'</span>'+(topElev.distance!=null?'<span class="bbc-dist">'+topElev.distance.toFixed(0)+' mi</span>':'')+'</div>';
       if(cs)html+='<div class="bbc-city">'+escH(cs)+'</div>';
       if(cands.length===1)html+='<div class="bbc-city">Only '+c.label.toLowerCase()+' bid in this search</div>';
-      if(topElev.unread)html+='<div class="bbc-city" style="color:var(--warn,#e0a83a)">board not reached \u2014 call before you load</div>';
+      if(topElev.unread)html+='<div class="bbc-city bbc-warn">board not reached \u2014 call before you load</div>';
       if(del)html+='<div class="bbc-delivery'+(isSpot?' bbc-delivery-spot':'')+'">'+escH(isSpot?'SPOT \u2014 today\'s delivery':del)+'</div>';
       var bfut=futuresOf(best),blab=contractLabel(best);
       if(bfut!=null&&blab)html+='<div class="bbc-fut" title="Implied by this board: cash minus basis">vs '+escH(blab)+' $'+bfut.toFixed(2)+'</div>';
@@ -2949,12 +2970,12 @@ shareBtn.addEventListener('click',function(){var url=window.location.href,text='
 
 document.querySelectorAll('.faq-q').forEach(function(q){function tog(){var ex=q.getAttribute('aria-expanded')==='true';q.setAttribute('aria-expanded',!ex);q.querySelector('.faq-chev').classList.toggle('open',!ex);var a=q.nextElementSibling;if(a&&a.classList.contains('faq-a')){a.classList.toggle('open',!ex);}if(!ex)gaEvent('faq_open',{q:q.querySelector('.faq-q-text').textContent.slice(0,60)});}q.addEventListener('click',tog);q.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();tog();}});});
 
-function latLngToZip(lat,lng,cb){fetch('https://nominatim.openstreetmap.org/reverse?lat='+lat+'&lon='+lng+'&format=json&zoom=10&addressdetails=1').then(function(r){return r.json();}).then(function(d){var zip=d.address&&d.address.postcode?d.address.postcode.split('-')[0]:null;var label=d.address?(d.address.city||d.address.town||d.address.village||'')+(d.address.state?', '+d.address.state:''):'';cb(zip,label);}).catch(function(){cb(null,'');});}
+function latLngToZip(lat,lng,cb){fetch('https://nominatim.openstreetmap.org/reverse?lat='+lat+'&lon='+lng+'&format=json&zoom=10&addressdetails=1').then(function(r){if(!r.ok)throw new Error('reverse geocode '+r.status);return r.json();}).then(function(d){var zip=d&&d.address&&d.address.postcode?d.address.postcode.split('-')[0]:null;var label=d.address?(d.address.city||d.address.town||d.address.village||'')+(d.address.state?', '+d.address.state:''):'';cb(zip,label);}).catch(function(){cb(null,'');});}
 
 function doGeo(){
   if(!navigator.geolocation){
-    geoTxt.textContent='Location not available \u2014 enter ZIP above';
     if(geoDot)geoDot.style.display='none';
+    geoDone('Use my location','Location not available \u2014 enter ZIP above','Location is not available on this device. Enter your ZIP code.',true);
     return;
   }
   navigator.geolocation.getCurrentPosition(function(pos){
@@ -2964,19 +2985,19 @@ function doGeo(){
         showGeoDot();
         /* textContent, not innerHTML: this string is built from a
            third-party reverse-geocode response. */
-        geoTxt.textContent=(label||'ZIP '+zip);
+        geoDone('Use my location',(label||'ZIP '+zip),'Location found: '+(label?label+', ':'')+'ZIP '+zip+'.',false);
         geoUseBtn.style.display='inline';
         geoUseBtn.textContent='Use '+zip;
         geoUseBtn.onclick=function(){zipInput.value=zip;gaEvent('geo_used');doSearch(zip);};
         if(!zipInput.value.trim()){zipInput.value=zip;doSearch(zip);}
       }else{
         if(geoDot)geoDot.style.display='none';
-        geoTxt.innerHTML='<button class="cb-geo-link-btn" id="cb-use-location-btn"><svg class="ic" aria-hidden="true"><use href="#i-map-pin"/></svg> Located \u2014 could not determine ZIP</button>';
+        geoDone('Try location again','Located \u2014 could not determine ZIP. Enter it above.','Located you, but could not find your ZIP code. Enter your ZIP code, or try location again.',true);
       }
     });
   },function(){
     if(geoDot)geoDot.style.display='none';
-    geoTxt.innerHTML='Location unavailable \u2014 enter ZIP above';
+    geoDone('Try location again','Location unavailable \u2014 enter ZIP above','Could not get your location. Enter your ZIP code.',true);
   },{timeout:8000,maximumAge:300000});
 }
 
