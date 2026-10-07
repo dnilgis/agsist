@@ -2301,6 +2301,13 @@ html[data-look="bands"] :is(#s7-month,#f1,#f2,#wire-band,#f-prices,#idx1-land,.m
   background:var(--panel-bg)!important;border:0!important;border-radius:0!important;
   padding:0 18px 16px!important;margin-bottom:var(--sec-gap)!important;box-shadow:none!important}
 html[data-look="bands"] .sec-head{background:var(--band-bar);margin:0 -18px 12px!important;padding:10px 18px!important;border-bottom:2px solid var(--fam,var(--gold))!important}
+/* 2026-10-07 (Sig): the radar map fills its card. It reaches into the band's
+   18px sides and 16px foot the same way the header row above it does. */
+@media(min-width:901px){
+  html[data-look="bands"] #radar-fold .radar-card{margin:0 -18px -16px!important}
+  html[data-look="bands"] #radar-fold #f-radar>.sec-head{margin-bottom:0!important}
+  html[data-look="bands"] #radar-fold #f-radar{margin-bottom:0!important}
+}
 html[data-look="bands"] .m-fold:not(.m-fold--calc)>summary.m-fold-sum{background:var(--band-bar);margin:0 -18px!important;padding-left:18px!important;padding-right:18px!important;border-bottom:2px solid var(--fam,var(--gold))!important}
 
 /* bands carries C's coloured header text and A's hairline and corners. */
