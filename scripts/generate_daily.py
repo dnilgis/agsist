@@ -2419,11 +2419,11 @@ def fix_weekday_labels(briefing, today=None):
 SPONSOR_OVERRIDE = None
 
 SPONSOR_HOUSE_AD = {
-    "active": False, "label": "FOUNDING SPONSOR \u00b7 1 SLOT", "advertiser": "AGSIST",
+    "active": False, "label": "SPONSOR \u00b7 1 SLOT", "advertiser": "AGSIST",
     "headline": "Sponsor the AGSIST Daily Briefing \u2014 $149 a month, first month free.",
-    "body": "One ag company per issue. Your message reaches working US producers across grain, cattle, dairy, and specialty operations \u2014 read every morning before the open. Founding rate locked in for 12 months from start date. No minimum, cancel anytime. First month free.",
-    "cta_text": "Become the founding sponsor",
-    "cta_url": "mailto:sig@farmers1st.com?subject=AGSIST%20Daily%20founding%20sponsor%20inquiry",
+    "body": "One ag company per issue. Your message reaches working US producers across grain, cattle, dairy, and specialty operations \u2014 read every morning before the open. Rate locked in for 12 months from start date. No minimum, cancel anytime. First month free.",
+    "cta_text": "Become the sponsor",
+    "cta_url": "mailto:sig@farmers1st.com?subject=AGSIST%20Daily%20sponsor%20inquiry",
     "disclosure": "One sponsor, one issue. No retargeting. No programmatic auctions. Reply or call 715-797-2428.",
     "is_house_ad": True,
 }

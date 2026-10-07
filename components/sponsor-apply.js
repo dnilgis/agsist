@@ -5,7 +5,7 @@
  *   pages offered   data/sponsor-slots.json (scripts/stamp_rates.py reads the ribbons)
  *   pages taken     data/page-sponsors.json (sold page slots)
  *   footer room     data/supporters.json (active supporters against its cap)
- *   founding slot   data/sponsors.json (a founding deal on file means it is spoken for)
+ *   sponsor slot   data/sponsors.json (a founding deal on file means it is spoken for)
  * The preview is drawn by window.AgsistSlots in components/loader.js, the same
  * code that draws a sold ribbon or footer card on the live site.
  *
@@ -114,8 +114,8 @@
         slots.supporter({ name: company, logo: S.logo }) + '</a></div>';
       $('sa-preview-lbl').textContent = 'In the footer of every page:';
     } else {
-      box.innerHTML = '<p class="sa-small">The founding card runs in every briefing and at the top of the homepage. Sig builds it with you from what you send here, and you approve the final version before it runs.</p>';
-      $('sa-preview-lbl').textContent = 'Founding sponsor card:';
+      box.innerHTML = '<p class="sa-small">The sponsor card runs in every briefing and at the top of the homepage. Sig builds it with you from what you send here, and you approve the final version before it runs.</p>';
+      $('sa-preview-lbl').textContent = 'Sponsor card:';
     }
   }
 
