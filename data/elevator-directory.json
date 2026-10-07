@@ -1,18 +1,18 @@
 {
- "generated": "2026-10-07T17:23:12Z",
+ "generated": "2026-10-07T17:38:12Z",
  "from": "barchart-raw.json",
  "complete": false,
  "note": "Directory only: who operates a facility and where. No prices, no basis, no symbols, no delivery windows.",
  "counts": {
-  "facilities": 2267,
+  "facilities": 2268,
   "states": 38,
   "with_address": 722,
   "with_coords": 725,
   "with_url": 703,
-  "with_phone": 2200,
+  "with_phone": 2201,
   "saturated_zips": 0,
   "failed_zips": 0,
-  "rows_read": 17298
+  "rows_read": 17347
  },
  "saturated": [],
  "failed": [],
@@ -5286,6 +5286,15 @@
    "facility_type": "Country Elevator",
    "locationId": 3745,
    "elevatorId": 1619,
+   "source": "barchart"
+  },
+  {
+   "facility": "River Valley Cooperative",
+   "branch": "ADM - Clinton",
+   "city": "Clinton",
+   "state": "IA",
+   "zip": "52732",
+   "phone": "563-242-2921",
    "source": "barchart"
   },
   {
