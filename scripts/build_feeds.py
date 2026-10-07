@@ -141,6 +141,15 @@ EXTERNAL = {
         "never breaks the page."),
 }
 
+# ── feeds whose real clock is outside GitHub ────────────────────────────────
+# GitHub drops scheduled fires, so these workflows are started by cron-job.org
+# with a workflow_dispatch POST, and the cron in the workflow file is only the
+# fallback. The crons still feed max_gap_hours; the sentence says what runs.
+CLOCKED = {
+    "data/prices.json": "every 15 minutes while CBOT trades, started by cron-job.org "
+                        "(the workflow's own :11/:41 cron is the fallback)",
+}
+
 # ── feeds a page is ready for whose FIRST RUN has not happened yet ───────────
 # data/dairy-data.json is now written by .github/workflows/dairy.yml
 # (scripts/fetch_dairy.py), so it has a writer and a cadence read off the cron.
@@ -193,6 +202,9 @@ def cron_sentence(crons):
     part of it comes off the expression."""
     if not crons:
         return None
+    gap = max_gap_hours(crons, minutes=True)
+    if any(len(c.split()) == 5 and c.split()[1] == "*" for c in crons) and gap is not None and gap <= 60:
+        return "about every %d minutes" % gap   # an hourly-or-faster cron is a rate, not launch times
     hours, dows = set(), set()
     for c in crons:
         f = c.split()
@@ -234,7 +246,7 @@ def _field_hits(f, lo, hi):
     return {v for v in out if lo <= v <= hi}
 
 
-def max_gap_hours(crons):
+def max_gap_hours(crons, minutes=False):
     """The longest a feed can legitimately go without a fire, in hours,
     measured by expanding its crons over one week.
 
@@ -267,7 +279,7 @@ def max_gap_hours(crons):
         return None
     t = sorted(fires)
     gaps = [t[i + 1] - t[i] for i in range(len(t) - 1)] + [t[0] + 10080 - t[-1]]
-    return round(max(gaps) / 60.0, 1)
+    return round(max(gaps) / 60.0, 1) if not minutes else max(gaps)
 
 
 def main():
@@ -371,7 +383,7 @@ def main():
             "pages": sorted(readers[f]),
             "written_by": [wf_name[w] for w in ws],
             "touched_by": [wf_name[w] for w in touched],
-            "cadence": (cron_sentence(crons)
+            "cadence": (CLOCKED.get(f) or cron_sentence(crons)
                         or (ext[0] if ext
                             else "maintained by hand, not on a schedule" if f in CURATED
                             else "on demand" if ws else "unknown")),

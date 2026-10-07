@@ -157,7 +157,7 @@
     "Build National Basis Map",
     "Fetch Grain Bids"
    ],
-   "cadence": "1 launch every day at about 7pm Central",
+   "cadence": "about every 15 minutes",
    "curated": false,
    "planned": false,
    "external": false,
@@ -186,7 +186,7 @@
     "Build National Basis Map",
     "Fetch Grain Bids"
    ],
-   "cadence": "1 launch every day at about 7pm Central",
+   "cadence": "about every 15 minutes",
    "curated": false,
    "planned": false,
    "external": false,
@@ -1199,7 +1199,7 @@
     "Fetch Outlooks (NOAA + USDM)",
     "Rebuild Feed Manifest"
    ],
-   "cadence": "1 launch every day at about 7pm Central",
+   "cadence": "about every 60 minutes",
    "curated": false,
    "planned": false,
    "external": false,
@@ -1317,9 +1317,10 @@
     "Morning brief \u2014 email Sigurd",
     "Build Price Stats (5-year percentile)",
     "Fetch Prices",
+    "Rebuild Feed Manifest",
     "Report day \u2014 USDA vs the trade email"
    ],
-   "cadence": "9 launches on a fixed schedule at about 5am, 6am, 8am, 11am Central",
+   "cadence": "every 15 minutes while CBOT trades, started by cron-job.org (the workflow's own :11/:41 cron is the fallback)",
    "curated": false,
    "planned": false,
    "external": false,
@@ -1329,13 +1330,9 @@
     "41 11 * * *",
     "23 13 * * *",
     "0 20 * * 5",
-    "17 13 * * 1-5",
-    "3 16 * * 1-5",
-    "40 23 * * 0-4",
-    "10 2 * * 1-5",
-    "17 10 * * 1-5"
+    "11,41 * * * *"
    ],
-   "max_gap_hours": 20.9,
+   "max_gap_hours": 0.5,
    "quiet": null,
    "why_quiet": null
   },
