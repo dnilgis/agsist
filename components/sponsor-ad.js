@@ -110,9 +110,13 @@
      generate_daily.build_sponsor_block adds the same sentence upstream; this
      skips it when it is already there. */
   var OWNER_NOTE = "AGSIST's founder also owns Farmers First Agri Service LLC in Chetek, WI (crop insurance, agronomy and ag technology services; a licensed crop-insurance agency) and Loke Drone LC (agricultural drone spraying), which may compete with this sponsor. Sponsors never change data, rankings or bid order.";
+  /* 2026-10-07 (Sig): no disclaimer line on a paid ad. The SPONSORED label is
+     the disclosure; the owner's other businesses are on /about, /terms and
+     /sponsor. Only the house ad keeps its own short line. */
   function ownerNote(sp) {
     var d = sp.disclosure || '';
     if (sp.is_house_ad) return d;
+    return '';
     var hay = [sp.advertiser, sp.headline, sp.body, d].join(' ');
     if (/insurance|spray|drone|aerial|agronom|fertili/i.test(hay) && d.indexOf('Farmers First') < 0) return d ? d + ' ' + OWNER_NOTE : OWNER_NOTE;
     return d;

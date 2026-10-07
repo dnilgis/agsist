@@ -2463,6 +2463,10 @@ def _owner_note_text(sp):
     disc = sp.get("disclosure") or ""
     if sp.get("is_house_ad"):
         return disc
+    # 2026-10-07 (Sig): no disclaimer line on a paid ad, anywhere it runs. The
+    # SPONSORED label is the disclosure; the owner's other businesses are on
+    # /about, /terms and /sponsor.
+    return ""
     hay = " ".join(str(sp.get(k) or "") for k in ("advertiser", "headline", "body", "disclosure"))
     if re.search(OWNER_SPONSOR_RX, hay, re.I) and "Farmers First" not in disc:
         return (disc + " " + OWNER_SPONSOR_NOTE) if disc else OWNER_SPONSOR_NOTE
@@ -2470,9 +2474,7 @@ def _owner_note_text(sp):
 
 
 def _owner_note(d):
-    note = _owner_note_text(d)
-    if note:
-        d["disclosure"] = note
+    d["disclosure"] = _owner_note_text(d)
     return d
 
 
