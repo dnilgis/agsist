@@ -430,8 +430,8 @@
       "ticker": "LE=F",
       "close": 221.22501,
       "open": 221.22501,
-      "netChange": 0.375,
-      "pctChange": 0.1695,
+      "netChange": 0.0,
+      "pctChange": 0.0,
       "wk52_hi": 258.725,
       "wk52_lo": 204.55,
       "close_date": "2026-10-06",
@@ -445,7 +445,8 @@
         "netChange": 3.97501,
         "pctChange": 1.8297,
         "prev_date": "2026-10-05"
-      }
+      },
+      "derived_recomputed": true
     },
     "feeders": {
       "ticker": "GF=F",

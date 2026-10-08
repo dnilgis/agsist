@@ -5,13 +5,25 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Wed, 07 Oct 2026 14:07:11 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 08 Oct 2026 10:47:28 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/agsist.jpg</url>
       <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>CRUDE RUNS 5% ON HORMUZ, SOY OIL BREAKS HARD</title>
+      <link>https://agsist.com/daily/2026-10-08</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-10-08</guid>
+      <pubDate>Thu, 08 Oct 2026 05:00:00 -0600</pubDate>
+      <description>WTI's at $92.61 overnight, up 4.9% after another tanker took fire off Qatar, the first deep-Gulf hit since fighting flared there back in September. Soybean oil got hit the other way, down 3.1% as meal took over the complex's weight. That split already moved crush margins before a single export sales number hit the tape.
+Action: Bot call, Oct 5 close, 4 weeks out: corn $4.97¼ down, soybeans $12.80¾ down, Chicago wheat $6.92¼ up, KC wheat $7.42¼ down. Backtest: no edge.
+• Crude Runs On Fresh Tanker Hit
+• Soy Oil Breaks, Meal Takes Over
+• Corn Grinds At The Round Number
+Read more: https://agsist.com/daily/2026-10-08</description>
+    </item>
     <item>
       <title>CATTLE JUMP ON FEEDER STRENGTH AS CORN SLIPS BACK</title>
       <link>https://agsist.com/daily/2026-10-07</link>
@@ -351,19 +363,6 @@ Wheat fell 3.4% for the second time in three sessions as Iran tensions push crud
   → If you have unpriced December corn, hold through today's 3 PM Crop Progress before making a move.
 • SOYOIL LEADS BEANS LOWER
 Read more: https://agsist.com/daily/2026-09-08</description>
-    </item>
-    <item>
-      <title>MARKETS DARK; U.S. STRIKES IRANIAN TANKERS TUESDAY LOOMS</title>
-      <link>https://agsist.com/daily/2026-09-07</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-09-07</guid>
-      <pubDate>Mon, 07 Sep 2026 05:00:00 -0600</pubDate>
-      <description>Markets are closed today, but the weekend handed traders a live wire: U.S. strikes on three Iranian tankers, WTI already ticking to $92.14 in overnight trade, and Goldman calling $120 a real scenario if shipping disruptions widen. Friday's close on December corn at $5.37 and November beans at $13.10 is the last clean number. Tuesday opens with a new risk premium in the room.
-Labor Day closes the board, but Iran escalation over the holiday weekend is the first thing traders price Tuesday morning.
-• IRAN ESCALATES; ENERGY INTO HARVEST
-  → If fall diesel needs are unpriced, the overnight move says Tuesday morning is not the moment to wait for a pullback.
-• GRAINS: FRIDAY'S PROFIT TAKING, TUESDAY'S SETUP
-• CATTLE COMPLEX: EXECUTIVE ORDERS, QUIET PRICE
-Read more: https://agsist.com/daily/2026-09-07</description>
     </item>
   </channel>
 </rss>

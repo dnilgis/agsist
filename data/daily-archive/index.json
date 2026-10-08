@@ -1,6 +1,17 @@
 {
   "briefings": [
     {
+      "date": "2026-10-08",
+      "date_display": "Thursday, October 8, 2026",
+      "headline": "CRUDE RUNS 5% ON HORMUZ, SOY OIL BREAKS HARD",
+      "teaser": "Crude gains on fresh Hormuz tanker attacks while soybean oil breaks and meal takes the crush spread the other way.",
+      "market_mood": "volatile",
+      "surprise_count": 3,
+      "sections": 3,
+      "url": "/daily/2026-10-08",
+      "market_closed": false
+    },
+    {
       "date": "2026-10-07",
       "date_display": "Wednesday, October 7, 2026",
       "headline": "CATTLE JUMP ON FEEDER STRENGTH AS CORN SLIPS BACK",
@@ -2393,6 +2404,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-10-07T11:08:35.987983+00:00",
-  "count": 208
+  "updated": "2026-10-08T10:47:26.261051+00:00",
+  "count": 209
 }
