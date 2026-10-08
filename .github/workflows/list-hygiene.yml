@@ -12,6 +12,10 @@ on:
         description: "Report only, change nothing"
         type: boolean
         default: true
+      remove:
+        description: "Addresses to remove from the Daily and hail lists (comma separated). Shows on this public run page."
+        type: string
+        default: ""
 permissions:
   contents: read
 concurrency:
@@ -39,3 +43,4 @@ jobs:
           FROM_ADDR: ${{ secrets.FROM_ADDR }}
           FROM_NAME: ${{ secrets.FROM_NAME }}
           REPORT_TO: ${{ secrets.REPLY_TO }}
+          REMOVE: ${{ inputs.remove }}

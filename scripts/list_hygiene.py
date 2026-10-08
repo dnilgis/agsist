@@ -159,11 +159,36 @@ def call(base, path, method="GET", body=None, form=False):
         return t
 
 
-def plan(daily, hail, bounces, mx=has_mx):
+def gkey(e):
+    """One key per real inbox: Gmail ignores dots and anything after '+'."""
+    local, _, dom = e.lower().partition("@")
+    if dom in ("gmail.com", "googlemail.com"):
+        return local.split("+", 1)[0].replace(".", "") + "@gmail.com"
+    return e.lower()
+
+
+def plan(daily, hail, bounces, mx=has_mx, remove=()):
     """What to do. daily/hail: lists of records with 'email'. Returns actions."""
     acts = []
     lists = {"daily": {r["email"]: r for r in daily}, "hail": {r["email"]: r for r in hail}}
     seen = set()
+    for e in remove:                                   # owner asked for these to go
+        for name, recs in lists.items():
+            if e in recs:
+                acts.append({"list": name, "do": "remove", "email": e, "why": "removed at the owner's request"})
+                seen.add((name, e))
+    for name, recs in lists.items():                   # same inbox written two ways: keep the oldest
+        groups = {}
+        for e, r in recs.items():
+            groups.setdefault(gkey(e), []).append(r)
+        for g in groups.values():
+            if len(g) > 1:
+                g.sort(key=lambda r: (r.get("ts") or 0, r["email"]))
+                for r in g[1:]:
+                    if (name, r["email"]) not in seen:
+                        acts.append({"list": name, "do": "remove", "email": r["email"],
+                                     "why": "duplicate of " + g[0]["email"] + " (same Gmail inbox)"})
+                        seen.add((name, r["email"]))
     for name, recs in lists.items():
         for e, r in recs.items():
             fix = suggest(e)
@@ -263,6 +288,10 @@ def selftest():
     chk(not acts2, "a misspelled-looking domain that DOES receive mail is never changed")
     acts3 = plan(daily, [], {}, mx=lambda d: None)
     chk(not acts3, "when the DNS lookup fails, nothing is changed")
+    dup = plan([{"email": "j.smith@gmail.com", "ts": 1}, {"email": "jsmith+ag@gmail.com", "ts": 2}, {"email": "jsmith@yahoo.com", "ts": 3}], [], {}, mx=lambda d: None)
+    chk([a["email"] for a in dup] == ["jsmith+ag@gmail.com"], "a second spelling of one Gmail inbox is removed, the oldest kept, Yahoo untouched")
+    rm = plan([{"email": "me@x.com"}], [{"email": "me@x.com", "lat": 1, "lon": 1}], {}, mx=lambda d: None, remove=["me@x.com"])
+    chk(sorted(a["list"] for a in rm) == ["daily", "hail"], "an owner removal takes the address off every list it is on")
     chk("13241" not in "\n".join([f"{len(acts)} actions"]), "the log line carries counts only")
     return ok
 
@@ -286,10 +315,11 @@ def main():
         # Typo fixes still run; the bounce half needs IMAP, which Gmail can refuse.
         print(f"::warning::could not read the sending inbox ({type(ex).__name__}); bounces skipped this run")
         bounces = {}
-    acts = plan(daily, hail, bounces)
+    remove = [x.strip().lower() for x in re.split(r"[,\s]+", env("REMOVE", "")) if "@" in x]
+    acts = plan(daily, hail, bounces, remove=remove)
     print(f"daily list: {len(daily)}  hail list: {len(hail)}  bounces read: {len(bounces)}")
     print(f"planned: {sum(a['do']=='fix' for a in acts)} typo fixes, {sum(a['do']=='remove' for a in acts)} removals, "
-          f"{sum(a['do']=='note' for a in acts)} notes")
+          f"{sum(a['do']=='note' for a in acts)} notes, {len(remove)} owner removals asked")
     if not dry:
         acts = apply(acts, base, secret, tok)
         print(f"failed: {sum(1 for a in acts if a.get('ok') is False)}")
