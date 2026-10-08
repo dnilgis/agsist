@@ -205,8 +205,9 @@ html[data-theme="light"] main [style^="background:#0d1112"],html[data-theme="lig
 html[data-theme="light"] main [style^="background:#1d2425"],html[data-theme="light"] main [style*=";background:#1d2425"],html[data-theme="light"] main [style*="background: rgb(29, 36, 37)"],html[data-theme="light"] main [style^="background:#1a1f20"],html[data-theme="light"] main [style*=";background:#1a1f20"],html[data-theme="light"] main [style*="background: rgb(26, 31, 32)"],html[data-theme="light"] main [style^="background:#1d2324"],html[data-theme="light"] main [style*=";background:#1d2324"],html[data-theme="light"] main [style*="background: rgb(29, 35, 36)"]{background:var(--surface3)!important}
 html[data-theme="light"] main [style*="border:1px solid #1a1f20"],html[data-theme="light"] main [style*="border-top:1px solid #1a1f20"],html[data-theme="light"] main [style*="border-bottom:1px solid #1a1f20"],html[data-theme="light"] main [style*="border:1px dashed #1a1f20"],html[data-theme="light"] main [style*="solid rgb(26, 31, 32)"],html[data-theme="light"] main [style*="border:1px solid #14181a"],html[data-theme="light"] main [style*="border-top:1px solid #14181a"],html[data-theme="light"] main [style*="border-bottom:1px solid #14181a"],html[data-theme="light"] main [style*="border:1px dashed #14181a"],html[data-theme="light"] main [style*="solid rgb(20, 24, 26)"],html[data-theme="light"] main [style*="border:1px solid #1d2324"],html[data-theme="light"] main [style*="border-top:1px solid #1d2324"],html[data-theme="light"] main [style*="border-bottom:1px solid #1d2324"],html[data-theme="light"] main [style*="border:1px dashed #1d2324"],html[data-theme="light"] main [style*="solid rgb(29, 35, 36)"],html[data-theme="light"] main [style*="border:1px solid #161b1c"],html[data-theme="light"] main [style*="border-top:1px solid #161b1c"],html[data-theme="light"] main [style*="border-bottom:1px solid #161b1c"],html[data-theme="light"] main [style*="border:1px dashed #161b1c"],html[data-theme="light"] main [style*="solid rgb(22, 27, 28)"],html[data-theme="light"] main [style*="border:1px solid #171c1d"],html[data-theme="light"] main [style*="border-top:1px solid #171c1d"],html[data-theme="light"] main [style*="border-bottom:1px solid #171c1d"],html[data-theme="light"] main [style*="border:1px dashed #171c1d"],html[data-theme="light"] main [style*="solid rgb(23, 28, 29)"]{border-color:var(--border)!important}
 html[data-theme="light"] main [style*="border:1px solid #2a3133"],html[data-theme="light"] main [style*="border-top:1px solid #2a3133"],html[data-theme="light"] main [style*="border-bottom:1px solid #2a3133"],html[data-theme="light"] main [style*="border:1px dashed #2a3133"],html[data-theme="light"] main [style*="solid rgb(42, 49, 51)"],html[data-theme="light"] main [style*="border:1px solid #3a4345"],html[data-theme="light"] main [style*="border-top:1px solid #3a4345"],html[data-theme="light"] main [style*="border-bottom:1px solid #3a4345"],html[data-theme="light"] main [style*="border:1px dashed #3a4345"],html[data-theme="light"] main [style*="solid rgb(58, 67, 69)"],html[data-theme="light"] main [style*="border:1px solid #2a2f31"],html[data-theme="light"] main [style*="border-top:1px solid #2a2f31"],html[data-theme="light"] main [style*="border-bottom:1px solid #2a2f31"],html[data-theme="light"] main [style*="border:1px dashed #2a2f31"],html[data-theme="light"] main [style*="solid rgb(42, 47, 49)"],html[data-theme="light"] main [style*="border:1px solid #1d2425"],html[data-theme="light"] main [style*="border-top:1px solid #1d2425"],html[data-theme="light"] main [style*="border-bottom:1px solid #1d2425"],html[data-theme="light"] main [style*="border:1px dashed #1d2425"],html[data-theme="light"] main [style*="solid rgb(29, 36, 37)"],html[data-theme="light"] main [style*="border:1px solid #3a4144"],html[data-theme="light"] main [style*="border-top:1px solid #3a4144"],html[data-theme="light"] main [style*="border-bottom:1px solid #3a4144"],html[data-theme="light"] main [style*="border:1px dashed #3a4144"],html[data-theme="light"] main [style*="solid rgb(58, 65, 68)"]{border-color:var(--border-2)!important}
-/* the county map keeps its dark canvas: its colour ramp and no-data fill were drawn against it */
-html[data-theme="light"] #cr-map>div[style*="color:#8a948f"]{color:#8a948f!important}
+/* county map, light theme: light canvas; the ramp, no-data grey and county borders switch in the page script */
+html[data-theme="light"] #cr-map,html[data-theme="light"] #cr-map.leaflet-container{background:var(--surface2)}
+html[data-theme="light"] .cr-mleg-s.na{outline:1px solid rgba(20,30,28,.28);outline-offset:-1px}
 </style>
 </head>
 <body>
@@ -775,11 +776,17 @@ html[data-theme="light"] #cr-map>div[style*="color:#8a948f"]{color:#8a948f!impor
   // Joined on 5-digit FIPS: an exact key, never a name match. Counties with no
   // published value stay grey and stay grey deliberately.
   var GEO='https://cdn.jsdelivr.net/npm/us-atlas@3/counties-10m.json';
-  var RAMP=['#2b2f21','#4a4a24','#6e6329','#9a7c2c','#c4922f','#e0685f'];
+  // Dark ramp is the original. Light ramp: ColorBrewer YlOrRd (colour-blind safe, sequential),
+  // its palest class dropped so the first step stays clear of the light canvas and the no-data grey.
+  var RAMP_DARK=['#2b2f21','#4a4a24','#6e6329','#9a7c2c','#c4922f','#e0685f'];
+  var RAMP_LIGHT=['#fed976','#feb24c','#fd8d3c','#fc4e2a','#e31a1c','#b10026'];
+  function isLight(){ return document.documentElement.getAttribute('data-theme')==='light'; }
+  var RAMP=isLight()?RAMP_LIGHT:RAMP_DARK;
+  function NA(){ return isLight()?'#d3d6d4':'#1a1f20'; }
   var nat=null, mode='rent', layer=null, map=null;
 
   function shade(v,breaks){
-    if(v==null) return '#1a1f20';
+    if(v==null) return NA();
     for(var i=0;i<breaks.length;i++){ if(v<breaks[i]) return RAMP[i]; }
     return RAMP[RAMP.length-1];
   }
@@ -792,7 +799,7 @@ html[data-theme="light"] #cr-map>div[style*="color:#8a948f"]{color:#8a948f!impor
       var lab=(i===0)?('<'+fmt(b[0])):(i===RAMP.length-1?('\u2265'+fmt(b[b.length-1])):fmt(b[i-1]));
       h+='<div class="cr-mleg-i"><div class="cr-mleg-s" style="background:'+RAMP[i]+'"></div><div class="cr-mleg-t">'+lab+'</div></div>';
     }
-    h+='<div class="cr-mleg-i"><div class="cr-mleg-s" style="background:#1a1f20"></div><div class="cr-mleg-t">n/a</div></div>';
+    h+='<div class="cr-mleg-i"><div class="cr-mleg-s na" style="background:'+NA()+'"></div><div class="cr-mleg-t">n/a</div></div>';
     var n=nat.n_pct,lat=0,nm=' counties';
     if(mode!=='pct'){
       /* Same rule as the stats line (seed_static.py): only counties whose rent is from the latest survey year. n_rent also counts older carried-forward rents. */
@@ -817,8 +824,9 @@ html[data-theme="light"] #cr-map>div[style*="color:#8a948f"]{color:#8a948f!impor
   function style(f){
     var r=nat.counties[f.id];
     var v=r?(mode==='pct'?((r.p==null||natLegacy())?null:r.p):r.r):null;
-    return {fillColor:shade(v,mode==='pct'?nat.pct_breaks:nat.rent_breaks),
-            fillOpacity:v==null?.35:.85,weight:.3,color:'#0a0c0d',opacity:.6};
+    var fc=shade(v,mode==='pct'?nat.pct_breaks:nat.rent_breaks);
+    if(isLight()) return {fillColor:fc,fillOpacity:1,weight:.3,color:'#8f9692',opacity:.8,smoothFactor:.3};
+    return {fillColor:fc,fillOpacity:v==null?.35:.85,weight:.3,color:'#0a0c0d',opacity:.6,smoothFactor:1};
   }
   function popup(f,l){
     var r=nat.counties[f.id];
@@ -844,10 +852,15 @@ html[data-theme="light"] #cr-map>div[style*="color:#8a948f"]{color:#8a948f!impor
         $('cr-map').innerHTML='<div style="padding:40px;text-align:center;color:#8a948f;font-family:\'JetBrains Mono\',monospace;font-size:13.2px">Map unavailable</div>';
         return;
       }
+      RAMP=isLight()?RAMP_LIGHT:RAMP_DARK;
       var gj=topojson.feature(topo,topo.objects.counties);
       map=L.map('cr-map',{zoomControl:true,scrollWheelZoom:false,attributionControl:false}).setView([39.5,-98.35],4);
       layer=L.geoJSON(gj,{style:style,onEachFeature:popup}).addTo(map);
       legend();
+      // Re-colour when loader.js flips html[data-theme] (toggle button or device change).
+      try{ var __th=document.documentElement.getAttribute('data-theme');
+        new MutationObserver(function(){ var t=document.documentElement.getAttribute('data-theme'); if(t===__th) return; __th=t; RAMP=isLight()?RAMP_LIGHT:RAMP_DARK; paint(); if(layer) layer.eachLayer(function(l){ l.redraw(); }); })
+        .observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']}); }catch(e){}
       if(natLegacy()){
         // the crawler seed line (seed_static.py) still counts the old ratios; say what the map now does
         var st=$('cr-stats'); if(st) st.innerHTML=st.innerHTML.replace(/rent-to-revenue ratio computed for [^&]*\([^)]*\)/,'rent-to-revenue ratio withheld until the next refresh matches rent and yield by practice');

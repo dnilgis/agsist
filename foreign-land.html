@@ -174,8 +174,9 @@ html[data-theme="light"] main [style^="background:#1d2425"],html[data-theme="lig
 html[data-theme="light"] main [style*="border:1px solid #1a1f20"],html[data-theme="light"] main [style*="border-top:1px solid #1a1f20"],html[data-theme="light"] main [style*="border-bottom:1px solid #1a1f20"],html[data-theme="light"] main [style*="border:1px dashed #1a1f20"],html[data-theme="light"] main [style*="solid rgb(26, 31, 32)"],html[data-theme="light"] main [style*="border:1px solid #14181a"],html[data-theme="light"] main [style*="border-top:1px solid #14181a"],html[data-theme="light"] main [style*="border-bottom:1px solid #14181a"],html[data-theme="light"] main [style*="border:1px dashed #14181a"],html[data-theme="light"] main [style*="solid rgb(20, 24, 26)"],html[data-theme="light"] main [style*="border:1px solid #1d2324"],html[data-theme="light"] main [style*="border-top:1px solid #1d2324"],html[data-theme="light"] main [style*="border-bottom:1px solid #1d2324"],html[data-theme="light"] main [style*="border:1px dashed #1d2324"],html[data-theme="light"] main [style*="solid rgb(29, 35, 36)"],html[data-theme="light"] main [style*="border:1px solid #161b1c"],html[data-theme="light"] main [style*="border-top:1px solid #161b1c"],html[data-theme="light"] main [style*="border-bottom:1px solid #161b1c"],html[data-theme="light"] main [style*="border:1px dashed #161b1c"],html[data-theme="light"] main [style*="solid rgb(22, 27, 28)"],html[data-theme="light"] main [style*="border:1px solid #171c1d"],html[data-theme="light"] main [style*="border-top:1px solid #171c1d"],html[data-theme="light"] main [style*="border-bottom:1px solid #171c1d"],html[data-theme="light"] main [style*="border:1px dashed #171c1d"],html[data-theme="light"] main [style*="solid rgb(23, 28, 29)"]{border-color:var(--border)!important}
 html[data-theme="light"] main [style*="border:1px solid #2a3133"],html[data-theme="light"] main [style*="border-top:1px solid #2a3133"],html[data-theme="light"] main [style*="border-bottom:1px solid #2a3133"],html[data-theme="light"] main [style*="border:1px dashed #2a3133"],html[data-theme="light"] main [style*="solid rgb(42, 49, 51)"],html[data-theme="light"] main [style*="border:1px solid #3a4345"],html[data-theme="light"] main [style*="border-top:1px solid #3a4345"],html[data-theme="light"] main [style*="border-bottom:1px solid #3a4345"],html[data-theme="light"] main [style*="border:1px dashed #3a4345"],html[data-theme="light"] main [style*="solid rgb(58, 67, 69)"],html[data-theme="light"] main [style*="border:1px solid #2a2f31"],html[data-theme="light"] main [style*="border-top:1px solid #2a2f31"],html[data-theme="light"] main [style*="border-bottom:1px solid #2a2f31"],html[data-theme="light"] main [style*="border:1px dashed #2a2f31"],html[data-theme="light"] main [style*="solid rgb(42, 47, 49)"],html[data-theme="light"] main [style*="border:1px solid #1d2425"],html[data-theme="light"] main [style*="border-top:1px solid #1d2425"],html[data-theme="light"] main [style*="border-bottom:1px solid #1d2425"],html[data-theme="light"] main [style*="border:1px dashed #1d2425"],html[data-theme="light"] main [style*="solid rgb(29, 36, 37)"],html[data-theme="light"] main [style*="border:1px solid #3a4144"],html[data-theme="light"] main [style*="border-top:1px solid #3a4144"],html[data-theme="light"] main [style*="border-bottom:1px solid #3a4144"],html[data-theme="light"] main [style*="border:1px dashed #3a4144"],html[data-theme="light"] main [style*="solid rgb(58, 65, 68)"]{border-color:var(--border-2)!important}
 html[data-theme="light"] .fl-chart circle[fill="#0a0c0d"]{fill:var(--surface)}
-/* the county map keeps its dark canvas: its colour ramp and no-data fill were drawn against it */
-html[data-theme="light"] #fl-map>div[style*="color:#8a948f"]{color:#8a948f!important}
+/* county map, light theme: light canvas; the ramp, no-data grey and county borders switch in the page script */
+html[data-theme="light"] #fl-map{background:var(--surface2)}
+html[data-theme="light"] .fl-leg-bar.na{border-color:rgba(20,30,28,.28)!important}
 </style>
 <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"BreadcrumbList","@id":"https://agsist.com/foreign-land#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://agsist.com/"},{"@type":"ListItem","position":2,"name":"Foreign-Owned Farmland","item":"https://agsist.com/foreign-land"}]}]}</script>
 </head>
@@ -223,7 +224,7 @@ html[data-theme="light"] #fl-map>div[style*="color:#8a948f"]{color:#8a948f!impor
     <div class="fl-leg" id="fl-leg"></div>
     <div id="fl-map"></div>
     <div class="fl-panel-b" style="padding-top:10px">
-      <p style="font-size:14px;line-height:1.7;color:#8a948f;margin:0">Tap any county. Dark counties report little or no foreign-held land; that can mean none exists <em>or</em> none was disclosed: AFIDA is a self-reporting law, so a blank county is not proof of anything.</p>
+      <p style="font-size:14px;line-height:1.7;color:#8a948f;margin:0">Tap any county. Counties at the low end of the scale, or marked none reported, hold little or no disclosed foreign land; that can mean none exists <em>or</em> none was disclosed: AFIDA is a self-reporting law, so a blank county is not proof of anything.</p>
     </div>
   </section>
 
@@ -326,7 +327,13 @@ html[data-theme="light"] #fl-map>div[style*="color:#8a948f"]{color:#8a948f!impor
       .replace(/^United Kingdom$/,'United Kingdom').replace(/\bUs\b/g,'US');
   }
   var YEARS=[2010,2011,2012,2013,2014,2015,2016,2017,2018,2019,2020,2021,2022,2023,2024];
-  var COLORS=['#26290f','#4a4416','#6e5d1d','#957a24','#bd982e','#d4a23f'];
+  // Dark ramp is the original. Light ramp: ColorBrewer YlOrBr (colour-blind safe, sequential),
+  // its palest class dropped so the first step stays clear of the light canvas and the no-data grey.
+  var COLORS_DARK=['#26290f','#4a4416','#6e5d1d','#957a24','#bd982e','#d4a23f'];
+  var COLORS_LIGHT=['#fee391','#fec44f','#fe9929','#ec7014','#cc4c02','#8c2d04'];
+  function isLight(){ return document.documentElement.getAttribute('data-theme')==='light'; }
+  var COLORS=isLight()?COLORS_LIGHT:COLORS_DARK;
+  function NA(){ return isLight()?'#d3d6d4':'#12161a'; }
 
   function quantiles(vals,n){
     var s=vals.slice().sort(function(a,b){return a-b;}), out=[];
@@ -334,7 +341,7 @@ html[data-theme="light"] #fl-map>div[style*="color:#8a948f"]{color:#8a948f!impor
     return out;
   }
   function shade(v){
-    if(v==null||v<=0) return '#12161a';
+    if(v==null||v<=0) return NA();
     for(var i=0;i<breaks.length;i++) if(v<=breaks[i]) return COLORS[i];
     return COLORS[COLORS.length-1];
   }
@@ -345,7 +352,7 @@ html[data-theme="light"] #fl-map>div[style*="color:#8a948f"]{color:#8a948f!impor
       h+='<div class="fl-leg-cell"><div class="fl-leg-bar" style="background:'+COLORS[i]+'"></div>'
         +'<div class="fl-leg-lbl">'+(i<breaks.length?'≤'+lab(breaks[i]):'≥'+lab(breaks[breaks.length-1]))+'</div></div>';
     }
-    h+='<div class="fl-leg-cell"><div class="fl-leg-bar" style="background:#12161a;border:1px solid #1a1f20"></div><div class="fl-leg-lbl">none rep.</div></div>';
+    h+='<div class="fl-leg-cell"><div class="fl-leg-bar na" style="background:'+NA()+';border:1px solid #1a1f20"></div><div class="fl-leg-lbl">none rep.</div></div>';
     h+='<span class="fl-leg-l">acres · '+nat.latest_year+' · '+fmt(nat.counties_with_holdings)+' counties report holdings</span>';
     $('fl-leg').innerHTML=h;
   }
@@ -475,21 +482,28 @@ html[data-theme="light"] #fl-map>div[style*="color:#8a948f"]{color:#8a948f!impor
       }
       var latest=nat.latest_year;
       var vals=[]; Object.keys(county).forEach(function(f){var v=county[f].y[latest]||county[f].y[String(latest)];if(v)vals.push(v);});
+      COLORS=isLight()?COLORS_LIGHT:COLORS_DARK;
       breaks=quantiles(vals,COLORS.length);
       legend();
       var gj=topojson.feature(topo,topo.objects.counties);
       map=L.map('fl-map',{zoomControl:true,scrollWheelZoom:false,attributionControl:false}).setView([39.5,-98.35],4);
-      layer=L.geoJSON(gj,{
-        style:function(f){
+      var style=function(f){
           var c=county[f.id], v=c?(c.y[latest]||c.y[String(latest)]):null;
-          return {fillColor:shade(v),weight:.4,color:'#0a0c0d',fillOpacity:.92};
-        },
+          if(isLight()) return {fillColor:shade(v),weight:.4,color:'#8f9692',opacity:.8,smoothFactor:.3,fillOpacity:1};
+          return {fillColor:shade(v),weight:.4,color:'#0a0c0d',opacity:1,fillOpacity:.92,smoothFactor:1};
+        };
+      layer=L.geoJSON(gj,{
+        style:style,
         onEachFeature:function(f,l){
           l.on('click',function(){ showCounty(f.id); });
           var c=county[f.id], v=c?(c.y[latest]||c.y[String(latest)]):null;
           l.bindTooltip((c?c.n+' Co., '+c.st:'')+(v?' · '+fmt(v)+' ac':' · none reported'),{sticky:true});
         }
       }).addTo(map);
+      // Re-colour when loader.js flips html[data-theme] (toggle button or device change).
+      try{ var __th=document.documentElement.getAttribute('data-theme');
+        new MutationObserver(function(){ var t=document.documentElement.getAttribute('data-theme'); if(t===__th) return; __th=t; COLORS=isLight()?COLORS_LIGHT:COLORS_DARK; legend(); layer.setStyle(style); layer.eachLayer(function(l){ l.redraw(); }); })
+        .observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']}); }catch(e){}
     });
   }
 

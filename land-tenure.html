@@ -242,8 +242,9 @@ html[data-theme="light"] main [style^="background:#0d1112"],html[data-theme="lig
 html[data-theme="light"] main [style^="background:#1d2425"],html[data-theme="light"] main [style*=";background:#1d2425"],html[data-theme="light"] main [style*="background: rgb(29, 36, 37)"],html[data-theme="light"] main [style^="background:#1a1f20"],html[data-theme="light"] main [style*=";background:#1a1f20"],html[data-theme="light"] main [style*="background: rgb(26, 31, 32)"],html[data-theme="light"] main [style^="background:#1d2324"],html[data-theme="light"] main [style*=";background:#1d2324"],html[data-theme="light"] main [style*="background: rgb(29, 35, 36)"]{background:var(--surface3)!important}
 html[data-theme="light"] main [style*="border:1px solid #1a1f20"],html[data-theme="light"] main [style*="border-top:1px solid #1a1f20"],html[data-theme="light"] main [style*="border-bottom:1px solid #1a1f20"],html[data-theme="light"] main [style*="border:1px dashed #1a1f20"],html[data-theme="light"] main [style*="solid rgb(26, 31, 32)"],html[data-theme="light"] main [style*="border:1px solid #14181a"],html[data-theme="light"] main [style*="border-top:1px solid #14181a"],html[data-theme="light"] main [style*="border-bottom:1px solid #14181a"],html[data-theme="light"] main [style*="border:1px dashed #14181a"],html[data-theme="light"] main [style*="solid rgb(20, 24, 26)"],html[data-theme="light"] main [style*="border:1px solid #1d2324"],html[data-theme="light"] main [style*="border-top:1px solid #1d2324"],html[data-theme="light"] main [style*="border-bottom:1px solid #1d2324"],html[data-theme="light"] main [style*="border:1px dashed #1d2324"],html[data-theme="light"] main [style*="solid rgb(29, 35, 36)"],html[data-theme="light"] main [style*="border:1px solid #161b1c"],html[data-theme="light"] main [style*="border-top:1px solid #161b1c"],html[data-theme="light"] main [style*="border-bottom:1px solid #161b1c"],html[data-theme="light"] main [style*="border:1px dashed #161b1c"],html[data-theme="light"] main [style*="solid rgb(22, 27, 28)"],html[data-theme="light"] main [style*="border:1px solid #171c1d"],html[data-theme="light"] main [style*="border-top:1px solid #171c1d"],html[data-theme="light"] main [style*="border-bottom:1px solid #171c1d"],html[data-theme="light"] main [style*="border:1px dashed #171c1d"],html[data-theme="light"] main [style*="solid rgb(23, 28, 29)"]{border-color:var(--border)!important}
 html[data-theme="light"] main [style*="border:1px solid #2a3133"],html[data-theme="light"] main [style*="border-top:1px solid #2a3133"],html[data-theme="light"] main [style*="border-bottom:1px solid #2a3133"],html[data-theme="light"] main [style*="border:1px dashed #2a3133"],html[data-theme="light"] main [style*="solid rgb(42, 49, 51)"],html[data-theme="light"] main [style*="border:1px solid #3a4345"],html[data-theme="light"] main [style*="border-top:1px solid #3a4345"],html[data-theme="light"] main [style*="border-bottom:1px solid #3a4345"],html[data-theme="light"] main [style*="border:1px dashed #3a4345"],html[data-theme="light"] main [style*="solid rgb(58, 67, 69)"],html[data-theme="light"] main [style*="border:1px solid #2a2f31"],html[data-theme="light"] main [style*="border-top:1px solid #2a2f31"],html[data-theme="light"] main [style*="border-bottom:1px solid #2a2f31"],html[data-theme="light"] main [style*="border:1px dashed #2a2f31"],html[data-theme="light"] main [style*="solid rgb(42, 47, 49)"],html[data-theme="light"] main [style*="border:1px solid #1d2425"],html[data-theme="light"] main [style*="border-top:1px solid #1d2425"],html[data-theme="light"] main [style*="border-bottom:1px solid #1d2425"],html[data-theme="light"] main [style*="border:1px dashed #1d2425"],html[data-theme="light"] main [style*="solid rgb(29, 36, 37)"],html[data-theme="light"] main [style*="border:1px solid #3a4144"],html[data-theme="light"] main [style*="border-top:1px solid #3a4144"],html[data-theme="light"] main [style*="border-bottom:1px solid #3a4144"],html[data-theme="light"] main [style*="border:1px dashed #3a4144"],html[data-theme="light"] main [style*="solid rgb(58, 65, 68)"]{border-color:var(--border-2)!important}
-/* the county map keeps its dark canvas: its colour ramp and no-data fill were drawn against it */
-html[data-theme="light"] #lt-map>div[style*="color:#8a948f"]{color:#8a948f!important}
+/* county map, light theme: light canvas; the ramp, no-data grey and county borders switch in the page script */
+html[data-theme="light"] #lt-map{background:var(--surface2);border-color:var(--border)}
+html[data-theme="light"] .lt-mleg-s.na{outline:1px solid rgba(20,30,28,.28);outline-offset:-1px}
 </style>
 </head>
 <body>
@@ -340,15 +341,21 @@ html[data-theme="light"] #lt-map>div[style*="color:#8a948f"]{color:#8a948f!impor
 (function(){
   var $=function(id){return document.getElementById(id);};
   var GEO='https://cdn.jsdelivr.net/npm/us-atlas@3/counties-10m.json';
-  var RAMP=['#5fc28a','#9fbf74','#d4a23f','#d97f45','#e0685f'];
+  // Dark ramp is the original. Light ramp: ColorBrewer YlGnBu (colour-blind safe, sequential),
+  // its palest class dropped so the first step stays clear of the light canvas and the no-data grey.
+  var RAMP_DARK=['#5fc28a','#9fbf74','#d4a23f','#d97f45','#e0685f'];
+  var RAMP_LIGHT=['#c7e9b4','#7fcdbb','#41b6c4','#2c7fb8','#253494'];
+  function isLight(){ return document.documentElement.getAttribute('data-theme')==='light'; }
+  var RAMP=isLight()?RAMP_LIGHT:RAMP_DARK;
+  function NA(){ return isLight()?'#d3d6d4':'#1a1f20'; }
   var data=null, breaks=[], map=null, layer=null;
   function pct(pair){ return (pair&&pair[0]!=null&&pair[1]!=null)?100*pair[1]/(pair[0]+pair[1]):null; }
   // 2022 only for counties: the county rows pulled for 1997-2017 add up to well under the state totals
   // (Illinois 19.3M of 27.0M acres in 2017), so an earlier county share is not the same count as 2022's
   function latestPair(c){ var p=c.y['2022']; return p&&p[0]!=null&&p[1]!=null?{yr:'2022',p:p}:null; }
   function quantiles(vals,n){ vals=vals.slice().sort(function(a,b){return a-b;}); var out=[]; for(var i=1;i<n;i++)out.push(vals[Math.floor(vals.length*i/n)]); return out; }
-  function shade(v){ if(v==null)return '#1a1f20'; for(var i=0;i<breaks.length;i++)if(v<breaks[i])return RAMP[i]; return RAMP[RAMP.length-1]; }
-  function legend(){ var h=''; for(var i=0;i<RAMP.length;i++){ var lab=(i===0)?('<'+breaks[0].toFixed(0)+'%'):(i===RAMP.length-1?('\u2265'+breaks[breaks.length-1].toFixed(0)+'%'):breaks[i-1].toFixed(0)+'%'); h+='<span><span class="lt-mleg-s" style="background:'+RAMP[i]+'"></span> '+lab+'</span>'; } h+='<span><span class="lt-mleg-s" style="background:#1a1f20"></span> no data</span><span style="color:#5a6467">share of farmland rented, 2022</span>'; $('lt-mleg').innerHTML=h; }
+  function shade(v){ if(v==null)return NA(); for(var i=0;i<breaks.length;i++)if(v<breaks[i])return RAMP[i]; return RAMP[RAMP.length-1]; }
+  function legend(){ var h=''; for(var i=0;i<RAMP.length;i++){ var lab=(i===0)?('<'+breaks[0].toFixed(0)+'%'):(i===RAMP.length-1?('\u2265'+breaks[breaks.length-1].toFixed(0)+'%'):breaks[i-1].toFixed(0)+'%'); h+='<span><span class="lt-mleg-s" style="background:'+RAMP[i]+'"></span> '+lab+'</span>'; } h+='<span><span class="lt-mleg-s na" style="background:'+NA()+'"></span> no data</span><span style="color:#5a6467">share of farmland rented, 2022</span>'; $('lt-mleg').innerHTML=h; }
   function showCounty(fips){
     var c=data.counties[fips]; if(!c)return;
     var lp=latestPair(c);
@@ -371,12 +378,15 @@ html[data-theme="light"] #lt-map>div[style*="color:#8a948f"]{color:#8a948f!impor
         return;
       }
       var vals=[]; Object.keys(data.counties).forEach(function(f){ var v=pct(data.counties[f].y['2022']); if(v!=null)vals.push(v); });
+      RAMP=isLight()?RAMP_LIGHT:RAMP_DARK;
       breaks=quantiles(vals,RAMP.length); legend();
       var gj=topojson.feature(topo,topo.objects.counties);
       map=L.map('lt-map',{zoomControl:true,scrollWheelZoom:false,attributionControl:false}).setView([39.5,-98.35],4);
+      var style=function(f){ var c=data.counties[f.id]; var v=c?pct(c.y['2022']):null;
+          if(isLight()) return {fillColor:shade(v),weight:.4,color:'#8f9692',opacity:.8,smoothFactor:.3,fillOpacity:1};
+          return {fillColor:shade(v),weight:.4,color:'#0a0c0d',opacity:1,fillOpacity:.92,smoothFactor:1}; };
       layer=L.geoJSON(gj,{
-        style:function(f){ var c=data.counties[f.id]; var v=c?pct(c.y['2022']):null;
-          return {fillColor:shade(v),weight:.4,color:'#0a0c0d',fillOpacity:.92}; },
+        style:style,
         onEachFeature:function(f,l){
           var c=data.counties[f.id];
           var nm=(f.properties&&f.properties.name)||'County';
@@ -384,6 +394,10 @@ html[data-theme="light"] #lt-map>div[style*="color:#8a948f"]{color:#8a948f!impor
           l.on('click',function(){ showCounty(f.id); });
         }
       }).addTo(map);
+      // Re-colour when loader.js flips html[data-theme] (toggle button or device change).
+      try{ var __th=document.documentElement.getAttribute('data-theme');
+        new MutationObserver(function(){ var t=document.documentElement.getAttribute('data-theme'); if(t===__th) return; __th=t; RAMP=isLight()?RAMP_LIGHT:RAMP_DARK; legend(); layer.setStyle(style); layer.eachLayer(function(l){ l.redraw(); }); })
+        .observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']}); }catch(e){}
     });
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initMap); else initMap();
