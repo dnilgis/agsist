@@ -11,7 +11,7 @@
   <!-- /static-nav:fonts -->
   <link rel="stylesheet" href="/components/styles.css?v=18">
 <link rel="stylesheet" href="/components/sponsor-ad.css?v=1">
-<link rel="stylesheet" href="/css/home.css?v=11">
+<link rel="stylesheet" href="/css/home.css?v=12">
 <!-- 2026-09-30: sponsor-ad.js's one call site (AgsistAd.render(), below) is
      already guarded with window.AgsistAd? and runs inside a fetch .then(),
      well after a deferred script would finish — so defer is free here.
@@ -591,10 +591,18 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
     function loc(){try{return JSON.parse(localStorage.getItem('agsist-wx-loc')||'null');}catch(e){return null;}}
     function hasZip(){var l=loc();return !!(l&&/^\d{5}$/.test(String(l.zip||'')));}
     var placeFromBids='';
+    /* 2026-10-08: with no ZIP the band asked four times (the title, the
+       button and both empty bid rows). Now it asks once: the top row reads
+       "Set your ZIP to see local cash bids" beside the one button, the two
+       bid rows are hidden (.hb-nozip in home.css) and the futures move up.
+       The bids card's status decides; before it speaks, the saved ZIP does. */
+    var bidStatus=null;
+    function noZip(){return bidStatus?bidStatus==='nozip':!hasZip();}
     function paintPlace(){
-      var l=loc(),p=placeFromBids||(l&&l.label)||'';
-      var el=$('hb-place');if(el)el.textContent=p||'Set your ZIP';
-      var b=$('hb-change');if(b){b.textContent=p?'Change':'Set ZIP';b.setAttribute('aria-label',p?'Change location ('+p+')':'Set your ZIP');}
+      var l=loc(),p=placeFromBids||(l&&l.label)||'',nz=noZip();
+      var hb=$('hero-band');if(hb)hb.classList.toggle('hb-nozip',nz);
+      var el=$('hb-place');if(el)el.textContent=nz?'Set your ZIP to see local cash bids':(p||'Set your ZIP');
+      var b=$('hb-change');if(b){b.textContent=(p&&!nz)?'Change':'Set ZIP';b.setAttribute('aria-label',(p&&!nz)?'Change location ('+p+')':'Set your ZIP');}
     }
     var dt=$('hb-date');
     if(dt){try{dt.textContent=new Intl.DateTimeFormat('en-US',{timeZone:TZ,weekday:'short',month:'short',day:'numeric'}).format(new Date()).replace(',','');}catch(e){}}
@@ -624,7 +632,9 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
     function paintBids(d){
       if(!d||typeof d!=='object')return;
       bidsSeen=true;
-      if(d.place){placeFromBids=String(d.place);paintPlace();}
+      bidStatus=d.status||null;
+      if(d.place)placeFromBids=String(d.place);
+      paintPlace();
       var r=d.radiusMi!=null?d.radiusMi:d.radius;
       var ring=(typeof r==='number'&&r>0)?'within '+Math.round(r)+' mi':'nearby';
       var status=d.status||null;
@@ -685,6 +695,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
     setTimeout(function(){
       if(bidsSeen)return;
       var st=hasZip()?'pending':'nozip';
+      bidStatus=st;paintPlace();
       Object.keys(CROP).forEach(function(k){emptyCell(CROP[k][0],CROP[k][1],'nearby',st);});
     },8000);
 

@@ -1980,6 +1980,10 @@ h3:where(.pc-section-lbl,.idx1-extras-title,.s7-ck){font-family:inherit;letter-s
 @keyframes hb-pulse{50%{opacity:.45}}
 @media(prefers-reduced-motion:reduce){.hb-skel{animation:none}}
 @media(max-width:639px){.hero-band{padding:6px 14px 2px}}
+/* No ZIP: one row asks for it (index.html paintPlace); the empty bid rows
+   go, so the futures sit right under it. */
+.hb-nozip .hb-bid{display:none}
+.hb-nozip .hb-change{color:var(--text)}
 /* U1 (2026-10-06): the hero sizes from its own width, not the window. Five
    across only when the band is at least 1000px wide; 560-999px is bids two
    across over futures and today three across; under 560px the phone stack. */
@@ -1991,6 +1995,9 @@ h3:where(.pc-section-lbl,.idx1-extras-title,.s7-ck){font-family:inherit;letter-s
   .hb-v{font-size:2rem}.hb-v2{font-size:1.5rem}
   .hb-bid>.hb-v{flex-direction:column;align-items:flex-start;gap:2px}
   .hb-bid .hb-v .hb-frac{font-size:.765rem}
+  /* The no-ZIP row stays one line on a phone: the date waits for a ZIP. */
+  .hb-nozip .hb-date{display:none}
+  .hb-nozip .hb-place{font-size:.941rem}
 }
 @container hero (max-width:299px){
   .hb-bid{display:flex;align-items:stretch}
@@ -2010,6 +2017,8 @@ h3:where(.pc-section-lbl,.idx1-extras-title,.s7-ck){font-family:inherit;letter-s
   .hb-cell{padding:12px 18px 14px}
   #hb-fc{padding-left:18px;border-left:1px solid var(--border-2)}
   .hb-v{font-size:clamp(1.9rem,3cqi,2.5rem)}.hb-v2{font-size:clamp(1.4rem,2.3cqi,1.9rem)}
+  .hb-nozip .hb-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .hb-nozip #hb-fc{padding-left:0;border-left:0}
 }
 /* The briefing teaser above the hero: one row and two lines at most on a phone. */
 @media(max-width:640px){
