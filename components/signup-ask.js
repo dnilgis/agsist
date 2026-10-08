@@ -246,6 +246,8 @@
       el.setAttribute('data-sa-busy', '1');
       /* A page with its own ZIP box (cash-bids) names it; else the saved location. */
       var zi = el.getAttribute('data-zip-input'), zv = zi && document.getElementById(zi) ? String(document.getElementById(zi).value || '').trim() : '';
+      /* A town page names its own ZIP, so the Daily brings that town's bids. */
+      if (!/^\d{5}$/.test(zv) && /^\d{5}$/.test(el.getAttribute('data-zip') || '')) zv = el.getAttribute('data-zip');
       subscribe({ email: email, source: source, reports: reports, zip: /^\d{5}$/.test(zv) ? zv : '' }).then(function (res) {
         el.removeAttribute('data-sa-busy');
         if (res.ok) {

@@ -546,6 +546,7 @@ def build_town_page(t, ctx):
   {intro}
   <a class="cbt-live" href="{esc(live)}">Live bids near {esc(z or t['name'])} &rarr;</a>
   {''.join(secs)}
+  <div data-signup-ask="Get {esc(t['name'])} bids by email every weekday morning" data-source="town:{ssl}/{t['slug']}"{f' data-zip="{z}"' if z else ''}></div>
   {quiet_html}
   <div class="cbt-note"><b>Where these come from.</b> The AGSIST elevator network reads each elevator&rsquo;s
   posted bid board directly; no third-party bid feed is used on this page. A bid shows only if the board was
@@ -794,6 +795,7 @@ def selftest():
         assert "$3.95" in fr and "By Oct 9" in fr and "Nov 2026" in fr and "(2026-12)" not in fr
         assert '<link rel="canonical" href="https://agsist.com/cash-bids/nebraska/fremont">' in fr
         assert 'content="index,follow"' in fr and "call to confirm" in fr and "/cash-bids?zip=68025" in fr
+        assert 'data-signup-ask=' in fr and 'data-zip="68025"' in fr, "a town page asks for an email with its own ZIP"
         assert "Cash grain bids in Fremont, NE today" in fr
         assert "Op bad" not in fr or "did not check out" in fr
         for blk in re.findall(r'<script type="application/ld\+json">(.*?)</script>', fr, re.S):
