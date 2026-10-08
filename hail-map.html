@@ -270,6 +270,9 @@
     .hm-cty-table tbody tr:nth-child(odd){background:rgba(255,255,255,.015)}
     .hm-cty-table td.num,.hm-cty-table th.num{text-align:right;font-variant-numeric:tabular-nums}
     .hm-cty-table .dmg{font-weight:600}
+    :root{--hm-dmg-hi:#fd8d3c;--hm-dmg-mid:#fed976}
+    /* light theme: the swath-ramp yellow/orange vanish on a white table */
+    html[data-theme="light"]{--hm-dmg-hi:#9a5a1a;--hm-dmg-mid:#8a6514}
     .hm-cty-empty{color:var(--text-muted);text-align:center;padding:1.1rem!important}
   
     /* ── mobile de-clunk (Sig, 2026-07-19) ── */
@@ -283,6 +286,9 @@
       .hm-controls button, .hm-meshnav button{min-height:44px}
       .hm-mesh-note{display:none}
     }
+
+/* phones: 40px tap targets */
+@media(max-width:640px){#hm-q,#hm-cty-select{min-height:40px}}
 </style>
 
   <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"HowTo","name":"How to check if it hailed at your address","step":[{"@type":"HowToStep","name":"Search your location","text":"Enter your address, town, or ZIP in the search box above the AGSIST hail map, or tap the pin button to use your current location."},{"@type":"HowToStep","name":"Read the report list","text":"The page lists every National Weather Service hail report within 25 miles over the last five years, with dates, reported stone sizes, and distances."},{"@type":"HowToStep","name":"Check the radar swaths","text":"Tap Check radar swaths at this pin to test your exact point against every archived radar-estimated (MESH) hail swath (an estimate, not a ground measurement) with a dated map link for every day that touched your location."},{"@type":"HowToStep","name":"Share or save the record","text":"Copy link produces a shareable URL that reopens the exact same lookup for anyone you send it to."},{"@type":"HowToStep","name":"Print the report","text":"Use Print report for a dated, sourced document to pair with your own photos for any claim conversation."}]},{"@type":"Dataset","dateModified":"2026-10-08",
@@ -1848,7 +1854,7 @@
       var body=document.getElementById('hm-cty-body'); if(!body) return;
       if(!rows.length){ countyEmpty('No ranked hail reports for '+nm+' in the last five years.'); return; }
       body.innerHTML = rows.map(function(r){
-        var dmgColor = r.dmg_pct>=40 ? '#fd8d3c' : (r.dmg_pct>=25 ? '#fed976' : 'var(--text-dim)');
+        var dmgColor = r.dmg_pct>=40 ? 'var(--hm-dmg-hi)' : (r.dmg_pct>=25 ? 'var(--hm-dmg-mid)' : 'var(--text-dim)');
         return '<tr><td>'+esc(titleCase(r.county))+'</td><td>'+esc(st)+'</td>'
           + '<td class="num">'+r.total.toLocaleString()+'</td>'
           + '<td class="num">'+r.avg+'</td>'

@@ -64,6 +64,7 @@ h2.snap-lbl,h2.basis-title,h2.crop-title{margin:0;display:inline-block}
 .snap-ft{display:flex;align-items:center;justify-content:space-between;padding-top:8px;border-top:1px solid var(--border);gap:8px;flex-wrap:wrap}
 .snap-cat{font-size:0.775rem;color:var(--text-dim)}.snap-cat strong{color:var(--gold)}
 .snap-link{font-size:0.763rem;color:var(--green);text-decoration:none;white-space:nowrap}
+@media(max-width:640px){.snap-link{display:inline-flex;align-items:center;min-height:40px}}
 .cg{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:8px;margin-bottom:14px}
 .cc{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px;text-align:center;transition:border-color .2s}.cc:hover{border-color:var(--border-g)}.cc.hi{border-color:var(--gold);background:rgba(230,176,66,.04)}
 .cc-lbl{font-size:0.755rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px}.cc-p{font-family:'JetBrains Mono',monospace;font-size:1.25rem;font-weight:700;color:var(--text)}.cc-u{font-size:0.755rem;color:var(--text-dim)}.cc-c{font-size:0.78rem;font-weight:600;margin-top:2px}
@@ -81,6 +82,10 @@ h2.snap-lbl,h2.basis-title,h2.crop-title{margin:0;display:inline-block}
 .rat-gauge-dot{position:absolute;top:-4px;width:16px;height:16px;border-radius:50%;background:var(--surface);border:3px solid #fff;transition:left .5s;box-shadow:0 0 0 2px var(--gold)}
 .rat-gauge-labels{display:flex;justify-content:space-between;font-size:0.755rem;color:var(--text-dim);line-height:1.3;margin-bottom:8px}
 .rat-gauge-labels em{font-style:normal;opacity:.7;font-size:.9em}
+/* light theme: the shared green/red sit just under 4.5:1 on these tinted panels */
+html[data-theme="light"] .cc,html[data-theme="light"] .be-zones,html[data-theme="light"] .crush-zones{--red:#b3432c;--green:#276c43}
+html[data-theme="light"] .rat-gauge-labels em{opacity:.85}
+
 .rat-interp{font-size:0.787rem;color:var(--text-dim);min-height:1.1em;margin-bottom:6px}
 .rat-note{font-size:1rem;color:var(--text-dim);margin-top:8px;border-top:1px solid var(--border);padding-top:7px}.rat-note a{color:var(--gold);text-decoration:none}
 .crush-zones{display:flex;flex-direction:column;gap:3px;margin:8px 0}
@@ -274,7 +279,7 @@ h2.snap-lbl,h2.basis-title,h2.crop-title{margin:0;display:inline-block}
 .basis-empty-msg{font-size:0.785rem;color:var(--text-dim);line-height:1.65;padding:8px 4px;border-top:1px dashed var(--border);border-bottom:1px dashed var(--border);margin:6px 0 4px}
 .basis-empty-msg strong{color:var(--text);font-weight:700}
 .basis-actions{margin-top:10px;display:flex;gap:8px;flex-wrap:wrap}
-.basis-actions a,.basis-actions button{font-size:0.775rem;color:var(--gold);background:transparent;border:1px solid var(--border);border-radius:6px;padding:7px 12px;text-decoration:none;cursor:pointer;font-family:inherit;min-height:34px;display:inline-flex;align-items:center}
+.basis-actions a,.basis-actions button{font-size:0.775rem;color:var(--gold);background:transparent;border:1px solid var(--border);border-radius:6px;padding:7px 12px;text-decoration:none;cursor:pointer;font-family:inherit;min-height:40px;display:inline-flex;align-items:center}
 .basis-actions a:hover,.basis-actions button:hover{border-color:var(--gold)}
 .basis-src{font-size:0.75rem;color:var(--text-muted);margin-top:9px;line-height:1.5}
 .basis-src a{color:var(--gold);text-decoration:none}
@@ -297,7 +302,7 @@ h2.snap-lbl,h2.basis-title,h2.crop-title{margin:0;display:inline-block}
 .sc-cash strong{color:var(--text)}
 .sc-priced{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:0.78rem;color:var(--text-dim);padding-top:8px;border-top:1px solid var(--border)}
 .sc-priced label{font-weight:600}
-.sc-priced input{width:88px;background:var(--surface2,rgba(255,255,255,.03));border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:.85rem;padding:6px 8px;min-height:38px}
+.sc-priced input{width:88px;background:var(--surface2,rgba(255,255,255,.03));border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:16px;padding:6px 8px;min-height:40px}
 .sc-priced-result{flex:1;min-width:0;font-size:0.78rem;color:var(--text)}
 .sc-edu{font-size:0.765rem;color:var(--text-dim);line-height:1.6;margin-top:8px}
 .sc-edu strong{color:var(--text)}

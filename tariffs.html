@@ -113,12 +113,15 @@
 </script>
 
 <style>
+:root{--tf-red:#ef4444}
+html[data-theme="light"]{--tf-red:#b3432c}
+html[data-theme="light"] .tariff-wi-mn strong{color:#276c43}
 
 
 button,a,[role="button"] { touch-action: manipulation; }
 
 a:focus-visible,button:focus-visible,input:focus-visible,[role="button"]:focus-visible{outline:2px solid var(--gold);outline-offset:2px;border-radius:4px}
-.tariff-status-banner.elevated .tsb-icon{color:#ef4444}
+.tariff-status-banner.elevated .tsb-icon{color:var(--tf-red)}
 .tariff-status-banner.normal .tsb-icon{color:var(--green)}
 .tariff-status-banner.mixed .tsb-icon{color:var(--gold)}
 .tariff-section-title{margin:0;font-size:inherit;font-weight:inherit;letter-spacing:inherit;text-transform:inherit;color:inherit}
@@ -158,7 +161,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,[role="button"]:focus-v
 .tsb-icon { font-size: 1.5rem; flex-shrink: 0; line-height: 1; margin-top: .05rem; }
 .tsb-body { flex: 1; }
 .tsb-label { font-family:var(--font-display); font-size: 1.1rem; font-weight: 700; line-height: 1; margin-bottom: .2rem; }
-.tsb-label.elevated { color: #ef4444; }
+.tsb-label.elevated { color:var(--tf-red); }
 .tsb-label.normal   { color: var(--green); }
 .tsb-label.mixed    { color: var(--gold); }
 .tsb-note { font-size:1rem; color: var(--text-muted); line-height: 1.55; }
@@ -197,7 +200,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,[role="button"]:focus-v
 .tt-comm { display: flex; align-items: center; gap: .45rem; font-weight: 700; }
 .tt-icon { font-size: 1rem; line-height: 1; }
 .tt-rate { font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: .88rem; }
-.tt-rate.elevated { color: #ef4444; }
+.tt-rate.elevated { color:var(--tf-red); }
 .tt-rate.normal   { color: var(--green); }
 .tt-rate.mixed    { color: var(--gold); }
 .tt-baseline { font-family: 'JetBrains Mono', monospace; font-size:0.785rem; color: var(--text-muted); }
@@ -205,7 +208,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,[role="button"]:focus-v
   display: inline-flex; align-items: center; padding: .15rem .48rem; border-radius: 4px;
   font-size:0.755rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; border: 1px solid;
 }
-.tt-badge.elevated { color: #ef4444; background: rgba(239,68,68,.08); border-color: rgba(239,68,68,.22); }
+.tt-badge.elevated { color:var(--tf-red); background: rgba(239,68,68,.08); border-color: rgba(239,68,68,.22); }
 .tt-badge.normal   { color: var(--green); background: rgba(34,197,94,.07); border-color: rgba(34,197,94,.2); }
 .tt-badge.mixed    { color: var(--gold); background: rgba(212,162,63,.08); border-color: rgba(212,162,63,.22); }
 /* .8rem to match the table. It was 1rem — the annotation set larger than the
@@ -432,7 +435,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,[role="button"]:focus-v
     </div>
     <div class="te-card">
       <h3>How to Read This Table</h3>
-      <p><strong style="color:#ef4444">Elevated</strong> means tariffs are significantly above baseline: export demand is impaired. <strong style="color:var(--gold)">Mixed</strong> means partial exemptions or uncertainty. <strong style="color:var(--green)">Normal</strong> means trade is flowing at standard rates. The baseline column shows what the rate was before the current dispute.</p>
+      <p><strong style="color:var(--tf-red)">Elevated</strong> means tariffs are significantly above baseline: export demand is impaired. <strong style="color:var(--gold)">Mixed</strong> means partial exemptions or uncertainty. <strong style="color:var(--green)">Normal</strong> means trade is flowing at standard rates. The baseline column shows what the rate was before the current dispute.</p>
     </div>
     <div class="te-card">
       <h3>Soybeans Are Most Exposed</h3>

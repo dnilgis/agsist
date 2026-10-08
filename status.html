@@ -77,7 +77,10 @@
   .st-legend span{display:inline-flex;align-items:center;gap:.35rem;}
   .st-legend i{width:9px;height:9px;border-radius:50%;display:inline-block;}
   @media(prefers-reduced-motion:reduce){.st-card .dot.wait{animation:none;}}
-  </style>
+  
+/* phones: 40px tap targets, 16px form text (no iOS zoom) */
+@media(max-width:640px){#st-recheck{min-height:40px}}
+</style>
 </head>
 <body>
   <a href="#main" class="skip">Skip to content</a>

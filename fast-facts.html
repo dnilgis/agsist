@@ -124,6 +124,8 @@
 .ff-t tr:hover td{background:rgba(255,255,255,.03);}
 .ff-t .tg td{color:var(--green);font-weight:700;font-family:'JetBrains Mono',monospace;font-size:0.757rem;letter-spacing:.05em;background:rgba(58,139,60,.08);}
 .ff-t .tg td.tl{color:var(--green);font-family:'JetBrains Mono',monospace;}
+/* light theme: the shared green sits just under 4.5:1 on the tinted group rows */
+html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--green:#276c43;color:#276c43}
 .ff-t .hi{color:var(--gold);font-weight:700;}.ff-t .ze{color:var(--text-muted);}.ff-t .re{color:#e05c5c;}.ff-t .gr{color:var(--green);}.ff-t .act{background:rgba(230,176,66,.12)!important;}
 .ff-calc{background:var(--surface);border:2px solid var(--border);border-radius:12px;padding:1.2rem 1.3rem;margin-bottom:1rem;}
 .ff-calc-title{font-family:'JetBrains Mono',monospace;font-size:0.763rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:.9rem;}
@@ -325,6 +327,9 @@
   .ff-tabs{gap:.2rem;}
   .ff-tab{font-size:0.755rem;padding:.35rem .6rem;}
 }
+
+/* phones: 40px tap targets, 16px form text (no iOS zoom) */
+@media(max-width:640px){#nc-fert{min-height:40px}}
 </style>
 </head>
 <body>

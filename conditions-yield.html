@@ -71,6 +71,7 @@
     .lt-note b{color:#e6ebe9} .lt-note a{color:var(--gold)}
     details{background:#101415;border:1px solid #1a1f20;border-radius:8px;margin:6px 0;padding:10px 14px}
     summary{cursor:pointer;color:#e6ebe9;font-size:1rem}
+    @media(max-width:640px){summary{padding:.4rem 0}}
     .lt-faq-a{color:#8a948f;font-size:1rem;line-height:1.65;padding-top:8px}
     
     
@@ -160,6 +161,9 @@ html[data-theme="light"] main [style*="border:1px solid #1a1f20"],html[data-them
 html[data-theme="light"] main [style*="border:1px solid #2a3133"],html[data-theme="light"] main [style*="border-top:1px solid #2a3133"],html[data-theme="light"] main [style*="border-bottom:1px solid #2a3133"],html[data-theme="light"] main [style*="border:1px dashed #2a3133"],html[data-theme="light"] main [style*="solid rgb(42, 49, 51)"],html[data-theme="light"] main [style*="border:1px solid #3a4345"],html[data-theme="light"] main [style*="border-top:1px solid #3a4345"],html[data-theme="light"] main [style*="border-bottom:1px solid #3a4345"],html[data-theme="light"] main [style*="border:1px dashed #3a4345"],html[data-theme="light"] main [style*="solid rgb(58, 67, 69)"],html[data-theme="light"] main [style*="border:1px solid #2a2f31"],html[data-theme="light"] main [style*="border-top:1px solid #2a2f31"],html[data-theme="light"] main [style*="border-bottom:1px solid #2a2f31"],html[data-theme="light"] main [style*="border:1px dashed #2a2f31"],html[data-theme="light"] main [style*="solid rgb(42, 47, 49)"],html[data-theme="light"] main [style*="border:1px solid #1d2425"],html[data-theme="light"] main [style*="border-top:1px solid #1d2425"],html[data-theme="light"] main [style*="border-bottom:1px solid #1d2425"],html[data-theme="light"] main [style*="border:1px dashed #1d2425"],html[data-theme="light"] main [style*="solid rgb(29, 36, 37)"],html[data-theme="light"] main [style*="border:1px solid #3a4144"],html[data-theme="light"] main [style*="border-top:1px solid #3a4144"],html[data-theme="light"] main [style*="border-bottom:1px solid #3a4144"],html[data-theme="light"] main [style*="border:1px dashed #3a4144"],html[data-theme="light"] main [style*="solid rgb(58, 65, 68)"]{border-color:var(--border-2)!important}
 html[data-theme="light"] #cy-nowcast{background:linear-gradient(135deg,var(--card,var(--surface)) 0%,rgba(168,125,30,.07) 100%)!important}
 html[data-theme="light"] #cyn-record [style*="opacity:.85"]{opacity:1!important}
+
+/* phones: 40px tap targets, 16px form text (no iOS zoom) */
+@media(max-width:640px){select.cy-btn{font-size:16px}}
 </style>
 </head>
 <body>

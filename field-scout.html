@@ -155,6 +155,8 @@
     .fs-invite{ position:absolute; inset:0; z-index:400; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:24px; pointer-events:none; }
     /* soft scrim so the invitation reads on any imagery, in either theme */
     .fs-invite::before{ content:""; position:absolute; inset:0; z-index:-1; background:radial-gradient(ellipse 46% 40% at 50% 52%, var(--fs-scrim), transparent 100%); }
+    /* light theme: dark text needs a solid light pool, the map underneath is dark imagery */
+    html[data-theme="light"] .fs-invite::before{ background:radial-gradient(ellipse 64% 50% at 50% 52%, rgba(255,255,255,.92) 0 55%, transparent 100%); }
     .fs-invite-glyph{ width:46px; height:46px; border:1.5px solid var(--accent-dim); border-radius:12px; display:grid; place-items:center; color:var(--brand); margin-bottom:16px; animation:fsRise .7s cubic-bezier(.2,.7,.2,1) both; }
     .fs-invite-glyph svg{ width:22px; height:22px; }
     .fs-invite-h{ font-family:var(--font-display); font-weight:700; font-size:clamp(20px,3.4vw,26px); letter-spacing:-.02em; color:var(--text); margin:0; animation:fsRise .7s .05s cubic-bezier(.2,.7,.2,1) both; }

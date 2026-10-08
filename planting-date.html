@@ -78,7 +78,9 @@
 .f-btn:disabled { opacity:.4; cursor:not-allowed; }
 .f-status { font-size:0.77rem; color:var(--text-muted); text-align:center; min-height:1.1rem; }
 .f-status.ok { color:var(--green); }
-.f-status.err { color:#e05c5c; }
+:root{--pd-red:#ec6b6b}
+html[data-theme="light"]{--pd-red:#b3432c}
+.f-status.err { color:var(--pd-red); }
 
 /* crop pills */
 .crop-pills { display:flex; gap:.4rem; margin-bottom:.85rem; }
@@ -96,7 +98,7 @@
 .st-verdict { font-size:0.787rem; font-weight:700; padding:.35rem .75rem; border-radius:6px; display:inline-block; margin-top:.55rem; }
 .st-verdict.go { background:rgba(58,139,60,.15); color:var(--green); border:1px solid rgba(58,139,60,.35); }
 .st-verdict.wait { background:rgba(230,176,66,.15); color:var(--gold); border:1px solid rgba(230,176,66,.35); }
-.st-verdict.no { background:rgba(224,92,92,.15); color:#e05c5c; border:1px solid rgba(224,92,92,.35); }
+.st-verdict.no { background:rgba(224,92,92,.15); color:var(--pd-red); border:1px solid rgba(224,92,92,.35); }
 
 /* window card */
 .window-card { background:var(--surface); border:2px solid var(--border); border-radius:10px; padding:.9rem 1rem; }
@@ -117,7 +119,7 @@
 .r-val { font-family:'JetBrains Mono',monospace; font-size:.84rem; font-weight:700; color:var(--text); }
 .r-val.gold { color:var(--gold); }
 .r-val.green { color:var(--green); }
-.r-val.red { color:#e05c5c; }
+.r-val.red { color:var(--pd-red); }
 
 /* yield penalty table */
 .pen-table { width:100%; border-collapse:collapse; font-size:0.785rem; }
@@ -142,7 +144,7 @@
 .cmp-gdu { font-family:'JetBrains Mono',monospace; font-size:1.1rem; font-weight:900; color:var(--gold); }
 .cmp-delta { font-size:0.763rem; margin-top:.2rem; }
 .cmp-delta.pos { color:var(--green); }
-.cmp-delta.neg { color:#e05c5c; }
+.cmp-delta.neg { color:var(--pd-red); }
 .cmp-label { font-size:0.745rem; color:var(--text-muted); margin-top:.2rem; }
 
 /* frost table */
@@ -153,12 +155,12 @@
 .frost-table tr:last-child td { border-bottom:none; }
 .frost-table .p10 { color:var(--green); font-family:'JetBrains Mono',monospace; }
 .frost-table .p50 { color:var(--gold); font-family:'JetBrains Mono',monospace; }
-.frost-table .p90 { color:#e05c5c; font-family:'JetBrains Mono',monospace; }
+.frost-table .p90 { color:var(--pd-red); font-family:'JetBrains Mono',monospace; }
 
 /* info boxes */
 .info-box { background:var(--bg); border-left:3px solid var(--gold); border-radius:0 6px 6px 0; padding:.65rem .9rem; font-size:0.79rem; color:var(--text-dim); line-height:1.6; margin:.5rem 0; }
 .info-box.green { border-color:var(--green); }
-.info-box.red   { border-color:#e05c5c; }
+.info-box.red   { border-color:var(--pd-red); }
 .info-box strong { color:var(--text); }
 .live-badge { display:inline-flex; align-items:center; gap:.3rem; font-size:0.75rem; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--green); background:rgba(58,139,60,.1); border:1px solid rgba(58,139,60,.3); border-radius:20px; padding:.15rem .5rem; }
 
@@ -342,8 +344,8 @@
     <tr class="opt"><td>&ge;55&deg;F</td><td style="color:var(--green)">&#10003; Ideal</td><td style="color:var(--green)">&#10003; Ideal</td><td>Plant with confidence in both crops</td></tr>
     <tr class="opt"><td>50&ndash;54&deg;F</td><td style="color:var(--green)">&#10003; Acceptable</td><td style="color:var(--green)">&#10003; Acceptable</td><td>Plant if forecast shows warming trend</td></tr>
     <tr class="warn"><td>46&ndash;49&deg;F</td><td style="color:var(--gold)">&#9651; Marginal</td><td style="color:var(--gold)">&#9651; Caution</td><td>Wait 2&ndash;3 days; cold soil injury risk rises</td></tr>
-    <tr class="hi"><td>40&ndash;45&deg;F</td><td style="color:#e05c5c">&#10007; High Risk</td><td style="color:#e05c5c">&#10007; High Risk</td><td>Do not plant; imbibitional chilling likely</td></tr>
-    <tr class="hl"><td>&lt;40&deg;F</td><td style="color:#e05c5c">&#10007; Do Not Plant</td><td style="color:#e05c5c">&#10007; Do Not Plant</td><td>Significant stand and seedling disease risk</td></tr>
+    <tr class="hi"><td>40&ndash;45&deg;F</td><td style="color:var(--pd-red)">&#10007; High Risk</td><td style="color:var(--pd-red)">&#10007; High Risk</td><td>Do not plant; imbibitional chilling likely</td></tr>
+    <tr class="hl"><td>&lt;40&deg;F</td><td style="color:var(--pd-red)">&#10007; Do Not Plant</td><td style="color:var(--pd-red)">&#10007; Do Not Plant</td><td>Significant stand and seedling disease risk</td></tr>
   </tbody>
   </table>
   </div>
@@ -636,7 +638,7 @@ function renderPenaltyTable(){
       estYield = (maxYield * d.pct / 100).toFixed(0);
     }
     return '<tr class="'+cls+'"><td>'+d.label+'</td>'
-      +'<td style="color:'+(d.pct===100?'var(--green)':d.pct>=95?'var(--gold)':'#e05c5c')+'">'+pctStr+'</td>'
+      +'<td style="color:'+(d.pct===100?'var(--green)':d.pct>=95?'var(--gold)':'var(--pd-red)')+'">'+pctStr+'</td>'
       +'<td>'+lossStr+'</td>'
       +'<td style="font-family:\'JetBrains Mono\',monospace">~'+estYield+' bu/ac</td>'
       +'<td style="font-size:0.77rem;color:var(--text-dim)">'+d.note+'</td>'
