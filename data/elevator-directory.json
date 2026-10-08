@@ -1,5 +1,5 @@
 {
- "generated": "2026-10-08T16:53:15Z",
+ "generated": "2026-10-08T17:08:27Z",
  "from": "barchart-raw.json",
  "complete": false,
  "note": "Directory only: who operates a facility and where. No prices, no basis, no symbols, no delivery windows.",
@@ -12,7 +12,7 @@
   "with_phone": 2205,
   "saturated_zips": 0,
   "failed_zips": 0,
-  "rows_read": 17354
+  "rows_read": 17394
  },
  "saturated": [],
  "failed": [],
@@ -1232,7 +1232,7 @@
   },
   {
    "facility": "Cedar County Coop",
-   "branch": "CARGILL - CR",
+   "branch": "Cargill - CR",
    "city": "Cedar Rapids",
    "state": "IA",
    "zip": "52401",
@@ -1241,7 +1241,7 @@
   },
   {
    "facility": "Cedar County Coop",
-   "branch": "ADM - CLINTON",
+   "branch": "ADM - Clinton",
    "city": "Clinton",
    "state": "IA",
    "zip": "52732",
@@ -1263,7 +1263,7 @@
   },
   {
    "facility": "Cedar County Coop",
-   "branch": "TIPTON",
+   "branch": "Tipton",
    "city": "Tipton",
    "state": "IA",
    "zip": "52772",
