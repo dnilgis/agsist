@@ -54,7 +54,7 @@ except Exception:                                             # noqa: BLE001
     _visible_faq = None
 
 SKIP = {
-    "404.html", "index1.html",              # by design: error page, noindex preview
+    "404.html",                              # by design: error page
     "cashbids.html", "fastfacts.html",      # redirect stubs
     "embed.html",
 }

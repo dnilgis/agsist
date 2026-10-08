@@ -286,7 +286,7 @@ def main():
     if a.selftest:
         return selftest()
     pages = [a.page] if a.page else sorted(
-        p.name for p in REPO.glob("*.html") if p.name not in {"404.html", "index1.html"})
+        p.name for p in REPO.glob("*.html") if p.name not in {"404.html"})
     return run(pages, check=a.check)
 
 
