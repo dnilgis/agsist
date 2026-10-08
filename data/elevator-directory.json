@@ -1,18 +1,18 @@
 {
- "generated": "2026-10-08T21:38:10Z",
+ "generated": "2026-10-08T21:53:12Z",
  "from": "barchart-raw.json",
  "complete": false,
  "note": "Directory only: who operates a facility and where. No prices, no basis, no symbols, no delivery windows.",
  "counts": {
-  "facilities": 2275,
+  "facilities": 2277,
   "states": 38,
   "with_address": 722,
   "with_coords": 725,
   "with_url": 703,
-  "with_phone": 2208,
+  "with_phone": 2210,
   "saturated_zips": 0,
   "failed_zips": 0,
-  "rows_read": 17573
+  "rows_read": 17604
  },
  "saturated": [],
  "failed": [],
@@ -8669,6 +8669,24 @@
    "state": "IL",
    "zip": "61356",
    "phone": "(815) 876-2900",
+   "source": "barchart"
+  },
+  {
+   "facility": "River Valley Cooperative",
+   "branch": "Princeville",
+   "city": "Princeville",
+   "state": "IL",
+   "zip": "61559",
+   "phone": "309-385-4361",
+   "source": "barchart"
+  },
+  {
+   "facility": "River Valley Cooperative",
+   "branch": "Putnam",
+   "city": "Putnam",
+   "state": "IL",
+   "zip": "61560",
+   "phone": "815-437-2471",
    "source": "barchart"
   },
   {
