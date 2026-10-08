@@ -529,7 +529,7 @@ def build_state_page(name, inp, ctx):
         sbits = []
         for meta, items, fc in seasons:
             vals = "; ".join(f"{CROP_LC[c]} <b>{num(v)}</b> bu/ac" for c, v in items)
-            sbits.append(f"<li>{vals} &mdash; <i>{esc(meta)}</i></li>")
+            sbits.append(f"<li>{vals} (<i>{esc(meta)}</i>)</li>")
         season_html = (f'<div class="yl-note"><b>Current season, kept out of the table above.</b> '
                        f'USDA NASS figures from AGSIST&rsquo;s state crop file (data/state-stats.json), with that file&rsquo;s own label:'
                        f'<ul style="margin:6px 0 0 18px;padding:0">{"".join(sbits)}</ul>'

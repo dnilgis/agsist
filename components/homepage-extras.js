@@ -115,7 +115,7 @@
       resultEl.textContent = 'Storing costs $' + Math.abs(net).toFixed(2) + '/bu more than selling at $' + price.toFixed(2) + ' now, at these numbers.' + notCounted;
     } else {
       resultEl.style.color = 'var(--text)';
-      resultEl.textContent = 'Breakeven — storing and selling now cost the same at these numbers.' + notCounted;
+      resultEl.textContent = 'Breakeven: storing and selling now cost the same at these numbers.' + notCounted;
     }
   }
   var calcDebounce = null;
@@ -536,7 +536,7 @@
       try{ opts = JSON.parse(wrap.getAttribute('data-opts') || '[]') || []; }catch(e){ opts = []; }
       if(!(wid && label) && !opts.length) return;
       if(!opts.length && watchedSet()[wid]){
-        wrap.innerHTML = '<span style="font-size:.8125rem;color:var(--green)">Watching this elevator — check your email to confirm (it arrives within about 15 minutes)</span>';
+        wrap.innerHTML = '<span style="font-size:.8125rem;color:var(--green)">Watching this elevator. Check your email to confirm (it arrives within about 15 minutes)</span>';
         return;
       }
       btn.disabled = true; btn.textContent = 'Loading…';
@@ -572,7 +572,7 @@
     }
     h += '<div style="display:flex;gap:.4rem;align-items:center;flex-wrap:wrap;margin-top:.35rem">'
       + '<input type="email" class="watch-elevator-email" placeholder="your@email.com" autocomplete="email" aria-label="Email for alerts on ' + escA(name || label) + '" style="flex:1;min-width:140px;' + FIELD + '">'
-      + '<button type="button" class="watch-elevator-go" style="padding:.4rem .7rem;min-height:36px;background:var(--gold-fill,var(--gold));color:#0a0c0d;border:none;border-radius:5px;font-size:.8rem;font-weight:700;cursor:pointer;white-space:nowrap">Watch — free</button>'
+      + '<button type="button" class="watch-elevator-go" style="padding:.4rem .7rem;min-height:36px;background:var(--gold-fill,var(--gold));color:#0a0c0d;border:none;border-radius:5px;font-size:.8rem;font-weight:700;cursor:pointer;white-space:nowrap">Watch (free)</button>'
       + '</div>'
       /* 2026-10-06: the labelled daily opt-in, ticked by default, shown only
          to a reader who has not signed up (components/signup-ask.js). */
@@ -645,7 +645,7 @@
       go.disabled = true; go.textContent = 'Sending…';
       status.textContent = ''; status.style.color = 'var(--text-muted)';
       [input, val, rowSel].forEach(function(f){ if(f) f.removeAttribute('aria-invalid'); });
-      function retry(msg, field){ fail(msg, field); go.disabled = false; go.textContent = 'Watch — free'; }
+      function retry(msg, field){ fail(msg, field); go.disabled = false; go.textContent = 'Watch (free)'; }
       /* WAVE3-H: success only on an HTTP 2xx whose body says ok:true. A 404,
          a 5xx, an HTML error page or an empty body is a failure, and nothing
          is written to localStorage until the worker has said yes. */

@@ -17,7 +17,7 @@
 <script>/* agsist-ga-guard 2026-10-01: Google Analytics loads only when the browser sends no Global Privacy Control signal and the off switch on /privacy is not set. dataLayer and gtag always exist, so page code that calls them never throws. */(function(w,d,n){var off=false,v,i,s;w.dataLayer=w.dataLayer||[];if(typeof w.gtag!=='function'){w.gtag=function(){w.dataLayer.push(arguments);};}try{off=w.localStorage.getItem('agsist-ga-off')==='1';}catch(e){}if(n.globalPrivacyControl===true){off=true;}w.agsistGaOff=off;w.gtag('set','allow_google_signals',false);w.gtag('set','allow_ad_personalization_signals',false);if(off){return;}s=d.createElement('script');s.async=true;s.src='https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H';(d.head||d.documentElement).appendChild(s);})(window,document,navigator);</script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
 
-<title>GDU Calculator &mdash; Corn &amp; Soybean Degree Units | AGSIST</title>
+<title>GDU Calculator: Corn &amp; Soybean Degree Units | AGSIST</title>
 <meta name="description" content="Free GDU calculator using real weather from your planting date. Track corn and soybean crop stage, project black layer, and monitor frost risk.">
 <meta name="keywords" content="growing degree unit calculator, GDU calculator corn, GDD calculator, corn GDU tracker, soybean GDU, crop stage calculator, heat unit accumulation, growing degree days Wisconsin, corn maturity calculator, black layer date estimate">
 <meta name="author" content="Sigurd Lindquist">
@@ -26,17 +26,17 @@
 <meta property="og:type"         content="website">
 <meta property="og:site_name"    content="AGSIST">
 <meta property="og:locale"       content="en_US">
-<meta property="og:title"        content="GDU Calculator &#8212; Real Accumulated Heat Units from Planting | AGSIST">
+<meta property="og:title"        content="GDU Calculator: Real Accumulated Heat Units from Planting | AGSIST">
 <meta property="og:description"  content="Auto-fetches real GDU accumulation from your planting date using historical weather. Track corn stage, estimate maturity, and project black layer. No charge, any US location.">
 <meta property="og:url"          content="https://agsist.com/gdu-calculator">
 <meta property="og:image"        content="https://agsist.com/img/og/agsist.jpg">
-<meta property="og:image:alt" content="GDU Calculator &#8212; Real Accumulated Heat Units from Planting | AGSIST">
+<meta property="og:image:alt" content="GDU Calculator: Real Accumulated Heat Units from Planting | AGSIST">
 <meta property="og:image:width"  content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card"        content="summary_large_image">
 <meta name="twitter:site"        content="@agsist">
 <meta name="twitter:creator"     content="@agsist">
-<meta name="twitter:title"       content="GDU Calculator &#8212; Real Accumulated Heat Units | AGSIST">
+<meta name="twitter:title"       content="GDU Calculator: Real Accumulated Heat Units | AGSIST">
 <meta name="twitter:description" content="Auto-fetches real GDU accumulation from your planting date. Track corn and soybean stage, project maturity. No charge, any US location.">
 <meta name="twitter:image"       content="https://agsist.com/img/og/agsist.jpg">
 
@@ -46,10 +46,10 @@
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
   {"@type":"Question","name":"What is a growing degree unit (GDU)?","acceptedAnswer":{"@type":"Answer","text":"A growing degree unit (GDU), also called a growing degree day (GDD), measures daily heat accumulation above a base temperature of 50\u00b0F for corn. Formula: GDU/day = ((Hi + Lo) \u00f7 2) \u2212 50, with Hi and Lo each set to 50\u00b0F if below 50 and to 86\u00b0F if above 86. GDUs accumulate daily from planting and determine crop growth stage progression."}},
-  {"@type":"Question","name":"How many GDUs does corn need to reach black layer?","acceptedAnswer":{"@type":"Answer","text":"Corn GDU requirement to physiological maturity (black layer) is approximately (Relative Maturity \u00d7 22) + 250, an AGSIST line through published anchors: about 2,670 GDUs for a 110-day hybrid (K-State Research and Extension) and about 2,700 for a 112-day hybrid (Purdue). Away from 110–112 days it is an extrapolation. Example: a 108-day RM hybrid needs roughly 2,626 GDUs; a 110-day hybrid roughly 2,670. This is a rule of thumb \u2014 always verify with your seed company\u2019s published GDU requirement for your specific hybrid."}},
+  {"@type":"Question","name":"How many GDUs does corn need to reach black layer?","acceptedAnswer":{"@type":"Answer","text":"Corn GDU requirement to physiological maturity (black layer) is approximately (Relative Maturity \u00d7 22) + 250, an AGSIST line through published anchors: about 2,670 GDUs for a 110-day hybrid (K-State Research and Extension) and about 2,700 for a 112-day hybrid (Purdue). Away from 110–112 days it is an extrapolation. Example: a 108-day RM hybrid needs roughly 2,626 GDUs; a 110-day hybrid roughly 2,670. This is a rule of thumb. Always verify with your seed company\u2019s published GDU requirement for your specific hybrid."}},
   {"@type":"Question","name":"What GDU accumulation does the US Corn Belt average per season?","acceptedAnswer":{"@type":"Answer","text":"May 1 through September 30 GDU accumulation ranges roughly 2,000 (northern Minnesota, Upper Peninsula) to 3,200+ (southern Illinois, Missouri, Kentucky). Corn hybrids should be matched to your location\u2019s typical GDU accumulation."}},
-  {"@type":"Question","name":"What is the difference between GDU and GDD?","acceptedAnswer":{"@type":"Answer","text":"Growing Degree Units (GDU) and Growing Degree Days (GDD) are the same thing \u2014 different names for the same calculation. Both use a base temperature of 50\u00b0F for corn with a maximum cap at 86\u00b0F. GDU is the more common term in Corn Belt Extension publications; GDD is used interchangeably."}},
-  {"@type":"Question","name":"How do I use this GDU calculator?","acceptedAnswer":{"@type":"Answer","text":"Enter your planting date and click \u2018Fetch Real GDUs\u2019 \u2014 the calculator automatically retrieves historical weather data for your location and computes exact accumulated GDUs from planting to today. Or enter your relative maturity and average daily temperatures for a manual estimate."}}
+  {"@type":"Question","name":"What is the difference between GDU and GDD?","acceptedAnswer":{"@type":"Answer","text":"Growing Degree Units (GDU) and Growing Degree Days (GDD) are the same thing, different names for the same calculation. Both use a base temperature of 50\u00b0F for corn with a maximum cap at 86\u00b0F. GDU is the more common term in Corn Belt Extension publications; GDD is used interchangeably."}},
+  {"@type":"Question","name":"How do I use this GDU calculator?","acceptedAnswer":{"@type":"Answer","text":"Enter your planting date and click \u2018Fetch Real GDUs\u2019, the calculator automatically retrieves historical weather data for your location and computes exact accumulated GDUs from planting to today. Or enter your relative maturity and average daily temperatures for a manual estimate."}}
 ]}
 </script>
 <script type="application/ld+json">
@@ -284,8 +284,8 @@
 <div class="gdu-hero">
   <div class="gdu-eyebrow"> Heat Unit Tracker &middot; Real Weather Data &middot; Any US Location</div>
   <h1>GDU Calculator</h1>
-  <p>Auto-fetches <em>actual</em> accumulated heat units from your planting date using real historical weather data &mdash; no manual temperature entry needed. Track corn and soybean crop stage, project black layer date, check whether your crop will mature before first fall frost, and monitor season progress by field. Works anywhere in the continental US.</p>
-      <aside class="ag-sponsor-ribbon" id="ag-sponsor"><span class="ag-sponsor-tag">Sponsor this page</span> Every visitor here is tracking crop development on a real field &mdash; one category-exclusive slot. <span class="ag-sponsor-price" data-rate="page">$29/mo &middot; first month free</span> <a href="/sponsor-apply?slot=gdu&amp;utm_source=gdu&amp;utm_medium=slot">Put your name here &rarr;</a></aside>
+  <p>Auto-fetches <em>actual</em> accumulated heat units from your planting date using real historical weather data, no manual temperature entry needed. Track corn and soybean crop stage, project black layer date, check whether your crop will mature before first fall frost, and monitor season progress by field. Works anywhere in the continental US.</p>
+      <aside class="ag-sponsor-ribbon" id="ag-sponsor"><span class="ag-sponsor-tag">Sponsor this page</span> Every visitor here is tracking crop development on a real field. One category-exclusive slot. <span class="ag-sponsor-price" data-rate="page">$29/mo &middot; first month free</span> <a href="/sponsor-apply?slot=gdu&amp;utm_source=gdu&amp;utm_medium=slot">Put your name here &rarr;</a></aside>
 </div>
 
 <div class="gdu-layout">
@@ -324,8 +324,8 @@
 
     <!-- ── THE HERO FEATURE ──────────────────────────────────────── -->
     <div class="gdu-card" style="margin-bottom:1.1rem">
-      <div class="gdu-card-title"> Real Accumulated GDUs &mdash; Auto-Fetched</div>
-      <p style="font-size:0.79rem;color:var(--text-dim);line-height:1.6;margin:0 0 .85rem">Enter your planting date and location, then click fetch. This calculator pulls <strong style="color:var(--text)">actual daily high &amp; low temperatures</strong> for every day since planting from the Open-Meteo weather archive and computes your exact accumulated GDUs &mdash; no manual entry, no guessing.</p>
+      <div class="gdu-card-title"> Real Accumulated GDUs: Auto-Fetched</div>
+      <p style="font-size:0.79rem;color:var(--text-dim);line-height:1.6;margin:0 0 .85rem">Enter your planting date and location, then click fetch. This calculator pulls <strong style="color:var(--text)">actual daily high &amp; low temperatures</strong> for every day since planting from the Open-Meteo weather archive and computes your exact accumulated GDUs, no manual entry, no guessing.</p>
 
       <div class="f-group">
         <label class="f-label" for="g-zip">Your Location (ZIP or City)</label>
@@ -339,7 +339,7 @@
       <button class="fetch-btn" id="g-fetch-btn">
         <span><svg class="ic-sp" aria-hidden="true"><use href="#sp-zap"/></svg></span> Fetch Real GDUs from Weather Data
       </button>
-      <div class="fetch-status" id="g-fetch-status" role="status" aria-live="polite">Ready &mdash; enter planting date and click above</div>
+      <div class="fetch-status" id="g-fetch-status" role="status" aria-live="polite">Ready: enter planting date and click above</div>
 
       <div class="method-divider"><span>or enter manually</span></div>
 
@@ -374,7 +374,7 @@
       </div>
 
       <div id="g-hist-note" style="display:none">
-        <div class="info-box green" style="margin-top:.5rem"><strong>Upper Midwest reference:</strong> 30-year NOAA normals for Wisconsin &mdash; ~7.5 GDU/day in May, 15.5 in June, 21.5 in July, 19.5 in August, 10.0 in September. Central Corn Belt runs ~15&ndash;20% higher. If you&rsquo;re outside the Upper Midwest, use the &ldquo;Fetch Real GDUs&rdquo; feature instead for location-accurate data.</div>
+        <div class="info-box green" style="margin-top:.5rem"><strong>Upper Midwest reference:</strong> 30-year NOAA normals for Wisconsin: ~7.5 GDU/day in May, 15.5 in June, 21.5 in July, 19.5 in August, 10.0 in September. Central Corn Belt runs ~15&ndash;20% higher. If you&rsquo;re outside the Upper Midwest, use the &ldquo;Fetch Real GDUs&rdquo; feature instead for location-accurate data.</div>
       </div>
     </div>
 
@@ -452,7 +452,7 @@
     <div class="gdu-card">
       <div class="gdu-card-title" id="ms-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-wheat"/></svg> Key Growth Stage Milestones</div>
       <div class="milestones-grid" id="milestones"></div>
-      <div class="f-hint" style="margin-top:.65rem">Scaled to your selected RM/MG. GDU requirements still vary &plusmn;100&ndash;200 by hybrid &mdash; verify with your seed company&#8217;s published GDU chart.</div>
+      <div class="f-hint" style="margin-top:.65rem">Scaled to your selected RM/MG. GDU requirements still vary &plusmn;100&ndash;200 by hybrid. Verify with your seed company&#8217;s published GDU chart.</div>
     </div>
   </div>
 </div>
@@ -471,7 +471,7 @@
       <tr><td>V6</td><td>~475</td><td>Growing point above soil</td><td>Post-emerge herbicide window closes on many labels: read yours; rapid growth begins</td></tr>
       <tr><td>V8</td><td>~610</td><td>Kernel rows determined</td><td>S and micronutrient uptake peaks; ECB scouting</td></tr>
       <tr><td>V10</td><td>~740</td><td>Ear size potential being set</td><td>Tassel forming inside stalk</td></tr>
-      <tr class="hi"><td>VT</td><td>~1135</td><td>Tasseling &mdash; pollen shed</td><td>Critical drought window; fungicide timing</td></tr>
+      <tr class="hi"><td>VT</td><td>~1135</td><td>Tasseling: pollen shed</td><td>Critical drought window; fungicide timing</td></tr>
       <tr class="hi"><td>R1</td><td>~1400</td><td>Silking</td><td>Most drought-sensitive stage; rootworm silk threshold</td></tr>
       <tr><td>R2</td><td>~1660</td><td>Blister</td><td>Kernel number locked; protect from disease</td></tr>
       <tr class="hi"><td>R4</td><td>~1925</td><td>Dough</td><td>Grain fill accelerating; watch Gray Leaf Spot</td></tr>
@@ -523,12 +523,12 @@
     </div>
     <div class="formula-card">
       <div class="formula-card-title">Soybean Notes</div>
-      <p>Soybeans use the same base formula but are <strong>photoperiod-sensitive</strong> &mdash; flowering is triggered by day length (short-day plant), not GDUs alone. Maturity groups range from 0.5 (North Dakota) to 5.5 (Gulf Coast); check your local Extension for recommended MGs.<br><br>
-      GDU to R8 here is <code>1750 + 280 &times; MG</code>, a straight line through the <a href="https://www.ag.ndsu.edu/news/newsreleases/2016/june-13-2016/ndsu-develops-soybean-growing-degree-day-model" target="_blank" rel="noopener">NDSU soybean GDD model</a> (planting to R8: 1,694 for 00.8, 1,890 for 0.5, 2,058 for 1.1 RM). It is used only for MG 00.8&ndash;1.1. For later groups there is no published GDD-to-maturity figure, so the target, R8 date and frost check are withheld &mdash; use the seed company&rsquo;s rating.</p>
+      <p>Soybeans use the same base formula but are <strong>photoperiod-sensitive</strong>: flowering is triggered by day length (short-day plant), not GDUs alone. Maturity groups range from 0.5 (North Dakota) to 5.5 (Gulf Coast); check your local Extension for recommended MGs.<br><br>
+      GDU to R8 here is <code>1750 + 280 &times; MG</code>, a straight line through the <a href="https://www.ag.ndsu.edu/news/newsreleases/2016/june-13-2016/ndsu-develops-soybean-growing-degree-day-model" target="_blank" rel="noopener">NDSU soybean GDD model</a> (planting to R8: 1,694 for 00.8, 1,890 for 0.5, 2,058 for 1.1 RM). It is used only for MG 00.8&ndash;1.1. For later groups there is no published GDD-to-maturity figure, so the target, R8 date and frost check are withheld. Use the seed company&rsquo;s rating.</p>
     </div>
     <div class="formula-card">
       <div class="formula-card-title">Data Source</div>
-      <p>Real GDU fetch uses the <strong>Open-Meteo weather archive API</strong> &mdash; no API key required. Historical data is ERA5-based, validated against NOAA station data. Accuracy: typically &plusmn;2 GDU/day vs. on-farm weather stations.</p>
+      <p>Real GDU fetch uses the <strong>Open-Meteo weather archive API</strong>: no API key required. Historical data is ERA5-based, validated against NOAA station data. Accuracy: typically &plusmn;2 GDU/day vs. on-farm weather stations.</p>
     </div>
   </div>
 </div>
@@ -561,10 +561,10 @@
 <section class="faq agf" aria-labelledby="agf-t">
 <h2 class="agf-t" id="agf-t">Common questions</h2>
 <details><summary>What is a growing degree unit (GDU)?</summary><div class="agf-a">A growing degree unit (GDU), also called a growing degree day (GDD), measures daily heat accumulation above a base temperature of 50°F for corn. Formula: GDU/day = ((Hi + Lo) ÷ 2) − 50, with Hi and Lo each set to 50°F if below 50 and to 86°F if above 86. GDUs accumulate daily from planting and determine crop growth stage progression.</div></details>
-<details><summary>How many GDUs does corn need to reach black layer?</summary><div class="agf-a">Corn GDU requirement to physiological maturity (black layer) is approximately (Relative Maturity × 22) + 250, an AGSIST line through published anchors: about 2,670 GDUs for a 110-day hybrid (K-State Research and Extension) and about 2,700 for a 112-day hybrid (Purdue). Away from 110–112 days it is an extrapolation. Example: a 108-day RM hybrid needs roughly 2,626 GDUs; a 110-day hybrid roughly 2,670. This is a rule of thumb — always verify with your seed company’s published GDU requirement for your specific hybrid.</div></details>
+<details><summary>How many GDUs does corn need to reach black layer?</summary><div class="agf-a">Corn GDU requirement to physiological maturity (black layer) is approximately (Relative Maturity × 22) + 250, an AGSIST line through published anchors: about 2,670 GDUs for a 110-day hybrid (K-State Research and Extension) and about 2,700 for a 112-day hybrid (Purdue). Away from 110–112 days it is an extrapolation. Example: a 108-day RM hybrid needs roughly 2,626 GDUs; a 110-day hybrid roughly 2,670. This is a rule of thumb. Always verify with your seed company’s published GDU requirement for your specific hybrid.</div></details>
 <details><summary>What GDU accumulation does the US Corn Belt average per season?</summary><div class="agf-a">May 1 through September 30 GDU accumulation ranges roughly 2,000 (northern Minnesota, Upper Peninsula) to 3,200+ (southern Illinois, Missouri, Kentucky). Corn hybrids should be matched to your location’s typical GDU accumulation.</div></details>
-<details><summary>What is the difference between GDU and GDD?</summary><div class="agf-a">Growing Degree Units (GDU) and Growing Degree Days (GDD) are the same thing — different names for the same calculation. Both use a base temperature of 50°F for corn with a maximum cap at 86°F. GDU is the more common term in Corn Belt Extension publications; GDD is used interchangeably.</div></details>
-<details><summary>How do I use this GDU calculator?</summary><div class="agf-a">Enter your planting date and click ‘Fetch Real GDUs’ — the calculator automatically retrieves historical weather data for your location and computes exact accumulated GDUs from planting to today. Or enter your relative maturity and average daily temperatures for a manual estimate.</div></details>
+<details><summary>What is the difference between GDU and GDD?</summary><div class="agf-a">Growing Degree Units (GDU) and Growing Degree Days (GDD) are the same thing, different names for the same calculation. Both use a base temperature of 50°F for corn with a maximum cap at 86°F. GDU is the more common term in Corn Belt Extension publications; GDD is used interchangeably.</div></details>
+<details><summary>How do I use this GDU calculator?</summary><div class="agf-a">Enter your planting date and click ‘Fetch Real GDUs’, the calculator automatically retrieves historical weather data for your location and computes exact accumulated GDUs from planting to today. Or enter your relative maturity and average daily temperatures for a manual estimate.</div></details>
 </section>
 <!--FAQ:END-->
 
@@ -650,7 +650,7 @@ function gduDay(hi,lo){hi=Math.min(Math.max(hi,50),86);lo=Math.min(Math.max(lo,5
 // https://www.ag.ndsu.edu/news/newsreleases/2016/june-13-2016/ndsu-develops-soybean-growing-degree-day-model
 // It is used ONLY for MG -0.2 (00.8) to 1.1. Outside that there is no published figure, so null.
 function beanTarget(mg){return (isFinite(mg)&&mg>=-0.2&&mg<=1.1)?Math.round(1750+280*mg):null;}
-function beanNoTarget(mg){return '\u2014 \u00b7 no published GDD-to-maturity figure for MG '+mg+' (NDSU\u2019s model covers 00.8\u20131.1); soybean maturity is driven by day length \u2014 use the seed company\u2019s rating.';}
+function beanNoTarget(mg){return '\u2014 \u00b7 no published GDD-to-maturity figure for MG '+mg+' (NDSU\u2019s model covers 00.8\u20131.1); soybean maturity is driven by day length. Use the seed company\u2019s rating.';}
 function localISO(d){var m=d.getMonth()+1,dd=d.getDate();return d.getFullYear()+'-'+(m<10?'0':'')+m+'-'+(dd<10?'0':'')+dd;}
 
 /* ─── STATE ─────────────────────────────────────────────────────────── */
@@ -736,8 +736,8 @@ document.getElementById('g-locate-btn').addEventListener('click',function(){
     document.getElementById('g-loc-display').textContent='Location: '+userLat.toFixed(3)+'\u00b0N, '+Math.abs(userLon).toFixed(3)+'\u00b0W';
     document.getElementById('g-zip').value='';
     btn.textContent='Auto';
-    setStatus('Location found \u2014 click Fetch to load weather data','ok');
-  },function(){btn.textContent='Auto';setStatus('Location access denied \u2014 enter ZIP code','err');});
+    setStatus('Location found: click Fetch to load weather data','ok');
+  },function(){btn.textContent='Auto';setStatus('Location access denied: enter ZIP code','err');});
 });
 
 /* ─── ZIP GEOCODE ───────────────────────────────────────────────────── */
@@ -815,7 +815,7 @@ document.getElementById('g-fetch-btn').addEventListener('click',function(){
     if(pending>0){ msg+=' \u00b7 last '+pending+' day'+(pending>1?'s':'')+' not yet in the archive (projected at the monthly rate)'; }
     if(gaps>0){ msg+=' \u00b7 '+gaps+' day'+(gaps>1?'s':'')+' missing inside the range, no GDU counted for '+(gaps>1?'them':'it'); }
     setStatus(msg,'ok');
-    document.getElementById('r-source').textContent='Open-Meteo ERA5 \u2014 through '+(thru||'n/a');
+    document.getElementById('r-source').textContent='Open-Meteo ERA5: through '+(thru||'n/a');
     calcGDU();
   }).catch(function(err){
     setStatus('\u2717 '+err.message,'err');

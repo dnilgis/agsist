@@ -16,7 +16,7 @@
 <link rel="apple-touch-icon"                    href="/img/apple-touch-icon.png">
 <link rel="manifest"                            href="/manifest.json">
 
-<title>Developer Docs — AGSIST Widget Embeds &amp; Data Feeds</title>
+<title>Developer Docs: AGSIST Widget Embeds &amp; Data Feeds</title>
 <meta name="description" content="Embed the AGSIST GDU calculator with one script, or pull open JSON market-data feeds. No account needed.">
 <meta name="keywords"    content="AGSIST developer docs, agricultural widget embed, GDU calculator widget, farm market data JSON feed">
 <meta name="author"      content="Sigurd Lindquist">
@@ -26,17 +26,17 @@
 <meta property="og:type"         content="website">
 <meta property="og:site_name"    content="AGSIST">
 <meta property="og:locale"       content="en_US">
-<meta property="og:title"        content="Developer Docs — AGSIST Widget Embeds &amp; Data Feeds">
+<meta property="og:title"        content="Developer Docs: AGSIST Widget Embeds &amp; Data Feeds">
 <meta property="og:description"  content="Embed the AGSIST GDU calculator with one script, or pull open JSON market-data feeds.">
 <meta property="og:url"          content="https://agsist.com/developer">
 <meta property="og:image"        content="https://agsist.com/img/og/agsist.jpg">
 <meta property="og:image:width"  content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt"    content="AGSIST Developer Docs — Agricultural Widget Embeds">
+<meta property="og:image:alt"    content="AGSIST Developer Docs: Agricultural Widget Embeds">
 <meta name="twitter:card"        content="summary_large_image">
 <meta name="twitter:site"        content="@agsist">
 <meta name="twitter:creator"     content="@agsist">
-<meta name="twitter:title"       content="Developer Docs — AGSIST Widget Embeds &amp; Data Feeds">
+<meta name="twitter:title"       content="Developer Docs: AGSIST Widget Embeds &amp; Data Feeds">
 <meta name="twitter:description" content="Embed the GDU calculator with one script, or pull open JSON market-data feeds.">
 <meta name="twitter:image"       content="https://agsist.com/img/og/agsist.jpg">
 
@@ -135,7 +135,7 @@
 <h1>Developer Docs</h1>
 <p class="sub">AGSIST publishes embeddable agricultural tools and open JSON market-data feeds for ag media, extension services, co-ops, and farm websites. Add a widget with one script, or consume the data feeds directly to build your own UI. Want a custom build? Reach out.</p>
 
-<div class="dev-lead"><strong>One script, one div.</strong> The GDU calculator is the only widget the script serves today. It loads from a single file — <code>https://agsist.com/embed.js</code>. Add the script once, then drop a <code>data-agsist-widget</code> div wherever you want it. The script injects the live tool in an iframe, adds a crawlable &ldquo;Powered by AGSIST&rdquo; backlink in your page, and auto-resizes the frame. Prefer copy-paste? The <a href="/embed">embed gallery</a> has ready snippets and live previews.</div>
+<div class="dev-lead"><strong>One script, one div.</strong> The GDU calculator is the only widget the script serves today. It loads from a single file: <code>https://agsist.com/embed.js</code>. Add the script once, then drop a <code>data-agsist-widget</code> div wherever you want it. The script injects the live tool in an iframe, adds a crawlable &ldquo;Powered by AGSIST&rdquo; backlink in your page, and auto-resizes the frame. Prefer copy-paste? The <a href="/embed">embed gallery</a> has ready snippets and live previews.</div>
 
 <pre>&lt;div data-agsist-widget="gdu"&gt;&lt;/div&gt;
 &lt;script async src="https://agsist.com/embed.js"&gt;&lt;/script&gt;</pre>
@@ -179,7 +179,7 @@
       <span class="ep-method">GET</span>
       <span class="ep-path">https://agsist.com/data/prices.json</span>
     </div>
-    <p class="ep-desc">Delayed commodity futures prices for corn, soybeans, wheat, live cattle, lean hogs, crude oil, natural gas, gold, silver, Dollar Index, 10-yr Treasury, and a few crypto quotes (Bitcoin, XRP, Kaspa). Updated about every 15 minutes while futures markets trade, Sunday evening to Friday afternoon. <strong>Grain prices are in cents per bushel — divide by 100 for dollar display.</strong></p>
+    <p class="ep-desc">Delayed commodity futures prices for corn, soybeans, wheat, live cattle, lean hogs, crude oil, natural gas, gold, silver, Dollar Index, 10-yr Treasury, and a few crypto quotes (Bitcoin, XRP, Kaspa). Updated about every 15 minutes while futures markets trade, Sunday evening to Friday afternoon. <strong>Grain prices are in cents per bushel. Divide by 100 for dollar display.</strong></p>
 <pre>{
   "fetched": "2026-09-25T22:55:59Z",
   "quotes": {
@@ -245,9 +245,9 @@
 <h2>Usage Policy</h2>
 <ul>
   <li>Non-commercial use by farms, extension offices, and co-ops is welcome at no charge.</li>
-  <li>Commercial licensing and white-labeling require a written agreement — <a href="mailto:sig@farmers1st.com">contact me</a>.</li>
-  <li>Cache data on your end. Please limit requests to one fetch per 15 minutes or longer — don't hammer the endpoints.</li>
-  <li>If you use the widget script, please keep the &ldquo;Powered by AGSIST&rdquo; link — it's how a free tool stays free.</li>
+  <li>Commercial licensing and white-labeling require a written agreement: <a href="mailto:sig@farmers1st.com">contact me</a>.</li>
+  <li>Cache data on your end. Please limit requests to one fetch per 15 minutes or longer. Don't hammer the endpoints.</li>
+  <li>If you use the widget script, please keep the &ldquo;Powered by AGSIST&rdquo; link. It's how a free tool stays free.</li>
   <li>All price data is delayed a minimum of 15 minutes during market hours. Do not use for live trading decisions.</li>
 </ul>
 
@@ -261,7 +261,7 @@
 
 <!-- ═══ CONTACT ═══════════════════════════════════════════════════════ -->
 <h2>Questions &amp; Licensing</h2>
-<p>I'm a solo developer. I respond to real integration questions quickly. If you want to talk early access, custom builds, or commercial licensing — reach out directly.</p>
+<p>I'm a solo developer. I respond to real integration questions quickly. If you want to talk early access, custom builds, or commercial licensing. Reach out directly.</p>
 <div class="contact-card">
   <div class="cc-name">Sigurd Lindquist</div>
   <div class="cc-title">Founder, AGSIST</div>

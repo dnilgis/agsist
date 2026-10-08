@@ -17,8 +17,8 @@
 <link rel="apple-touch-icon"                    href="/img/apple-touch-icon.png">
 <link rel="manifest"                            href="/manifest.json">
 
-<title>Daily Ag Briefing &#8212; Market Morning Report | AGSIST</title>
-<meta name="description" content="The AGSIST Daily Briefing: corn, soybeans, wheat, cattle &amp; energy, read before the open &mdash; graded calls, watch list, and the number that matters.">
+<title>Daily Ag Briefing: Market Morning Report | AGSIST</title>
+<meta name="description" content="The AGSIST Daily Briefing: corn, soybeans, wheat, cattle &amp; energy, read before the open: graded calls, watch list, and the number that matters.">
 <meta name="keywords"    content="daily ag briefing, farm morning market report, corn price today, soybean market morning, grain market briefing, agricultural market summary, free farm briefing">
 <meta name="author"      content="Sigurd Lindquist">
 <meta name="robots"      content="index, follow, max-snippet:-1, max-image-preview:large">
@@ -27,13 +27,13 @@
 <meta property="og:type"         content="article">
 <meta property="og:site_name"    content="AGSIST">
 <meta property="og:locale"       content="en_US">
-<meta property="og:title"        content="Daily Ag Briefing &#8212; Market Morning Report | AGSIST">
-<meta property="og:description"  content="Morning market briefing for working US ag producers. Grain, livestock, dairy, and specialty &#8212; weather and what to watch today.">
+<meta property="og:title"        content="Daily Ag Briefing: Market Morning Report | AGSIST">
+<meta property="og:description"  content="Morning market briefing for working US ag producers. Grain, livestock, dairy, and specialty, weather and what to watch today.">
 <meta property="og:url"          content="https://agsist.com/daily">
 <meta property="og:image"        content="https://agsist.com/img/og/agsist.jpg">
 <meta property="og:image:width"  content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt"    content="AGSIST Daily Ag Briefing &#8212; morning market report for US ag producers">
+<meta property="og:image:alt"    content="AGSIST Daily Ag Briefing: morning market report for US ag producers">
 <meta name="twitter:card"        content="summary_large_image">
 <meta name="twitter:site"        content="@agsist">
 <meta name="twitter:creator"     content="@agsist">
@@ -53,7 +53,7 @@
       "@id": "https://agsist.com/daily#webpage",
       "url": "https://agsist.com/daily",
       "dateModified": "2026-10-08",
-      "name": "Daily Ag Briefing \u2014 Market Morning Report | AGSIST",
+      "name": "Daily Ag Briefing: Market Morning Report | AGSIST",
       "description": "Free morning agricultural market briefing for US ag producers across grain, livestock, dairy, and specialty operations. Published every morning before the market open, weekends included.",
       "isPartOf": { "@id": "https://agsist.com/#website" }
     },
@@ -471,14 +471,14 @@ body{overflow-x:hidden;overflow-x:clip;width:100%;}
     <div class="dv3-hero-left">
       <div class="dv3-eyebrow"><span class="dv3-eyebrow-dot"></span> AGSIST Daily &middot; Published every morning before the market open, weekends included</div>
       <h1>Daily Ag Briefing</h1>
-      <p class="dv3-sub">Morning market intelligence for working US ag producers &mdash; grain, livestock, dairy, and specialty operations. Available at no charge, no account required.</p>
+      <p class="dv3-sub">A morning market report for working US ag producers: grain, livestock, dairy, and specialty operations. Available at no charge, no account required.</p>
       <div class="dv3-hero-meta" id="dv3-hero-meta" aria-live="polite"></div>
     </div>
     <button class="dv3-subscribe-btn" id="dv3-sub-btn"><svg class="dv3-ic" aria-hidden="true"><use href="#i-mail"/></svg> Get it in your inbox</button>
   </div>
 
   <div class="dv3-today" id="dv3-today">
-<noscript><div style="padding:2rem"><p style="font-size:.9rem">This page loads the briefing with JavaScript, which is off in this browser. The <a href="/archive.html" style="color:var(--gold)">briefing archive</a> works without it &mdash; the newest issue is at the top.</p></div></noscript>
+<noscript><div style="padding:2rem"><p style="font-size:.9rem">This page loads the briefing with JavaScript, which is off in this browser. The <a href="/archive.html" style="color:var(--gold)">briefing archive</a> works without it. The newest issue is at the top.</p></div></noscript>
     <div class="dv3-loading"><div class="dv3-loading-spinner"></div>Loading today&rsquo;s briefing&hellip;</div>
   </div>
 
@@ -517,7 +517,7 @@ body{overflow-x:hidden;overflow-x:clip;width:100%;}
   <div class="dv3-modal">
     <button class="dv3-modal-close" id="dv3-modal-close" aria-label="Close subscribe dialog"><svg class="dv3-ic" aria-hidden="true"><use href="#i-x"/></svg></button>
     <h2 id="dv3-modal-title"><svg class="dv3-ic" aria-hidden="true"><use href="#i-mail"/></svg> Get the Daily Briefing</h2>
-    <p>Join the email list at no charge and the AGSIST Daily lands in your inbox every morning before the market open &#8212; grain, livestock, dairy, weather, and what to watch. Unsubscribe anytime.</p>
+    <p>Join the email list at no charge and the AGSIST Daily lands in your inbox every morning before the market open: grain, livestock, dairy, weather, and what to watch. Unsubscribe anytime.</p>
     <form id="dv3-sub-form" action="https://agsist-subs.dnilgis.workers.dev/subscribe" method="POST">
       <input type="email" name="email" placeholder="your@email.com" required autocomplete="email" aria-label="Email address">
       <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px" aria-hidden="true">
@@ -620,7 +620,7 @@ function renderToday(data,why){
   if(!data||!data.headline){
     // A network failure is not an editorial fact. Say which one happened.
     if(why==='error'){
-      el.innerHTML='<div class="dv3-loading" style="padding:2rem"><p style="color:var(--text-dim);font-size:.88rem">The briefing could not be loaded \u2014 the connection failed. '+
+      el.innerHTML='<div class="dv3-loading" style="padding:2rem"><p style="color:var(--text-dim);font-size:.88rem">The briefing could not be loaded: the connection failed. '+
         '<button id="dv3-retry" style="color:var(--gold);background:none;border:1px solid var(--border);border-radius:6px;padding:.35rem .8rem;cursor:pointer;font:inherit">Try again</button>'+
         '<br><br><a href="/archive.html" style="color:var(--gold)">Briefing archive \u2192</a></p></div>';
       var rb=document.getElementById('dv3-retry');
@@ -984,7 +984,7 @@ function renderToday(data,why){
       label:'FOUNDING SPONSOR \u00B7 1 SLOT',
       advertiser:'AGSIST',
       headline:'Sponsor the AGSIST Daily Briefing.',
-      body:'One ag company per issue. Your message reaches working US producers across grain, cattle, dairy, and specialty operations \u2014 read before the market open. First month free, then $149 a month — founding rate, locked for 12 months. No minimum, cancel anytime.',
+      body:'One ag company per issue. Your message reaches working US producers across grain, cattle, dairy, and specialty operations. Read before the market open. First month free, then $149 a month: founding rate, locked for 12 months. No minimum, cancel anytime.',
       cta_text:'See the founding sponsor pitch',
       cta_url:'/sponsor',
       disclosure:'One sponsor, one issue. No retargeting. No programmatic auctions. Reply or call 715-797-2428.',
@@ -1010,7 +1010,7 @@ function renderToday(data,why){
   // Byline (Sigurd, founder)
   var byline='<div class="dv3-byline">'+
     'Written by <strong>Sigurd Lindquist</strong>, founder. Reply at '+
-    '<a href="mailto:sig@farmers1st.com">sig@farmers1st.com</a> \u2014 I read everything.'+
+    '<a href="mailto:sig@farmers1st.com">sig@farmers1st.com</a>: I read everything.'+
   '</div>';
 
   // Source + permalink
@@ -1175,11 +1175,11 @@ if(form){
         if(r.ok){
           form.innerHTML='<p style="color:var(--green);text-align:center;padding:.5rem 0"><svg class="dv3-ic" aria-hidden="true" style="color:var(--green)"><use href="#i-check"/></svg> On the list. Your first briefing arrives the next weekday morning.</p>';
         } else {
-          alert('Something went wrong \u2014 try again or email sig@farmers1st.com');
+          alert('Something went wrong: try again or email sig@farmers1st.com');
         }
       })
       .catch(function(){
-        alert('Network error \u2014 try again or email sig@farmers1st.com');
+        alert('Network error: try again or email sig@farmers1st.com');
       });
   });
 }

@@ -582,18 +582,18 @@ function fetchWeather(lat, lon, label, known) {
       var spray = document.getElementById('wx-spray');
       if (spray && !rateable) {
         spray.className = 'spray-badge';
-        spray.textContent = 'Spray rating \u2014 not in this forecast (temperature, humidity or wind missing) \u2192';
+        spray.textContent = 'Spray rating: not in this forecast (temperature, humidity or wind missing) \u2192';
       } else if (spray) {
         var sprayR = calcSprayRating(tempF, humid, wind);
         var sprayMsg;
         if (sprayR === 'poor') {
-          if (tempF < 32)       sprayMsg = 'Do Not Spray \u2014 Below freezing (' + tempF + '\u00B0F) \u2192';
-          else if (tempF < 40)  sprayMsg = 'Do Not Spray \u2014 Too cold (' + tempF + '\u00B0F) \u2192';
-          else if (wind > 15)   sprayMsg = 'Poor Spray Conditions \u2014 Wind too high (' + wind + ' mph) \u2192';
-          else if (tempF > 90)  sprayMsg = 'Poor Spray Conditions \u2014 Too hot (' + tempF + '\u00B0F) \u2192';
-          else                  sprayMsg = 'Poor Spray Conditions \u2014 Humidity too low (' + humid + '%) \u2192';
+          if (tempF < 32)       sprayMsg = 'Do Not Spray: Below freezing (' + tempF + '\u00B0F) \u2192';
+          else if (tempF < 40)  sprayMsg = 'Do Not Spray: Too cold (' + tempF + '\u00B0F) \u2192';
+          else if (wind > 15)   sprayMsg = 'Poor Spray Conditions: Wind too high (' + wind + ' mph) \u2192';
+          else if (tempF > 90)  sprayMsg = 'Poor Spray Conditions: Too hot (' + tempF + '\u00B0F) \u2192';
+          else                  sprayMsg = 'Poor Spray Conditions: Humidity too low (' + humid + '%) \u2192';
         } else if (sprayR === 'caution') {
-          sprayMsg = 'Marginal Spray Conditions \u2014 Review before applying \u2192';
+          sprayMsg = 'Marginal Spray Conditions: Review before applying \u2192';
         } else {
           sprayMsg = '\u2713 Good Spray Conditions \u2192';
         }
@@ -788,7 +788,7 @@ function updateWidgetPreviews(tempF, humid, wind, pop) {
   var sprayIcons   = {good:'<svg class="ic" aria-hidden="true"><use href="#i-circle-check"/></svg>',
                       marginal:'<svg class="ic" aria-hidden="true"><use href="#i-triangle-alert"/></svg>',
                       poor:'<svg class="ic" aria-hidden="true"><use href="#i-ban"/></svg>'};
-  var sprayLabels  = {good:'Good \u2014 Apply Now',marginal:'Use Caution',poor:'Do Not Spray'};
+  var sprayLabels  = {good:'Good: Apply Now',marginal:'Use Caution',poor:'Do Not Spray'};
   var sprayEl  = document.getElementById('wsp-spray-icon');
   var statusEl = document.getElementById('wsp-spray-status');
   var detailEl = document.getElementById('wsp-spray-detail');
@@ -812,7 +812,7 @@ function updateWidgetPreviews(tempF, humid, wind, pop) {
 
   var u = calcUrea(tempF, humid, wind, pop);
   var uPalette = {frozen:'91,163,224', low:'62,207,110', moderate:'230,176,66', high:'240,145,58', extreme:'240,96,96'};
-  var uLbls    = {frozen:'Below freezing now \u2014 low risk', low:'Low Risk', moderate:'Moderate Risk', high:'High Risk', extreme:'Extreme Risk'};
+  var uLbls    = {frozen:'Below freezing now: low risk', low:'Low Risk', moderate:'Moderate Risk', high:'High Risk', extreme:'Extreme Risk'};
   var uRecs    = {frozen:'Air below 32\u00B0F right now; risk rises as it warms', low:'Favorable for application', moderate:'Consider NBPT stabilizer', high:'Use stabilizer or wait', extreme:'Do not apply without stabilizer'};
   var uColors  = {frozen:'var(--blue)', low:'var(--green)', moderate:'var(--gold)', high:'#f0913a', extreme:'var(--red)'};
   var uSc = document.getElementById('wsp-urea-score');
@@ -1084,13 +1084,13 @@ function applyPriceResult(key, q, close, open, netChg, pctChg) {
     var __card = (__pe && __pe.closest) ? __pe.closest('.pc') : null;
     if (__card) {
       __card.classList.toggle('stale-tile', __stale);
-      if (__stale) __card.title = 'Last known value \u2014 did not refresh this cycle';
+      if (__stale) __card.title = 'Last known value: did not refresh this cycle';
       else __card.removeAttribute('title');
     }
   }
   document.querySelectorAll('[data-sym="' + key + '"]').forEach(function(el) {
     el.classList.toggle('stale-tile', __stale);
-    if (__stale) el.title = 'Last known value \u2014 did not refresh this cycle';
+    if (__stale) el.title = 'Last known value: did not refresh this cycle';
     else el.removeAttribute('title');
   });
   rebuildTickerLoop();
@@ -1224,7 +1224,7 @@ function fetchKalshiMarkets() {
           + ''
           + '<div style="font-size:.88rem;font-weight:600;color:var(--text);margin-bottom:.35rem">No active prediction markets right now</div>'
           + '<div style="font-size:.78rem;color:var(--text-muted);line-height:1.5;max-width:32rem;margin:0 auto">'
-          + 'We scan Kalshi and Polymarket once a day for events that affect agriculture \u2014 tariffs, weather, trade, energy, USDA reports, and more.</div>'
+          + 'We scan Kalshi and Polymarket once a day for events that affect agriculture: tariffs, weather, trade, energy, USDA reports, and more.</div>'
           + '<div style="margin-top:.75rem;font-size:.78rem">'
           + '<a href="https://kalshi.com/markets" target="_blank" rel="noopener" style="color:var(--gold)">Browse Kalshi \u2192</a>'
           + '<span style="color:var(--text-muted);margin:0 .5rem">\u00B7</span>'

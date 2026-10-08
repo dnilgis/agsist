@@ -435,16 +435,16 @@ def render_hero(data, st, ph, today, sst=None):
     if ph == "before":
         days = (date.fromisoformat(t["start"]) - today).days
         kicker = (f"Scouts roll {short(t['start'])}"
-                  + (f" &mdash; {days} day{'s' if days != 1 else ''} out" if days > 0 else ""))
+                  + (f", {days} day{'s' if days != 1 else ''} out" if days > 0 else ""))
         verdict = "Worth watching, not worth trading blind"
     elif ph == "during":
-        kicker = "Tour underway &mdash; results post each night"
+        kicker = "Tour underway: results post each night"
         verdict = "Read the nightly numbers against this record"
     elif ph == "waiting":
-        kicker = f"Scouting done &mdash; national number posts {esc(t['final_expected_label'])}"
+        kicker = f"Scouting done: national number posts {esc(t['final_expected_label'])}"
         verdict = "Read the nightly numbers against this record"
     elif ph == "stale":
-        kicker = (f"Scouting done &mdash; national number was due "
+        kicker = (f"Scouting done: national number was due "
                   f"{esc(t['final_expected_label'])} and is not on this page yet")
         verdict = "This page has not been updated with the tour's final number"
     else:
@@ -522,7 +522,7 @@ def render_bias_claim(st, plain=False):
     n = st["n"]
     b = "" if plain else "<b>"
     _b = "" if plain else "</b>"
-    dash = " - " if plain else " &mdash; "
+    dash = ": "
     parts = [f"The tour has also leaned one way: it came in {b}under{_b} the final yield in "
              f"{st['tour_low']} of {n} years"]
     if st["tour_low_mean"] is not None:
@@ -575,7 +575,7 @@ def render_nights(data, ph, sst, today):
                 when = s.get("expected_label") or nt.get("expected_label")
                 show = when and nxt is not None and nt is nxt and ph in ("before", "during")
                 val = ('<span class="ct-pend">not posted yet'
-                       + (f" &mdash; {esc(when)}" if show else "")
+                       + (f" ({esc(when)})" if show else "")
                        + "</span>")
             else:
                 # Same helper the lede board uses, so a state figure is
@@ -707,7 +707,7 @@ def render_districts(s):
     body = ('<details class="ct-dtoggle"><summary>Show each district</summary>'
             + "".join(out) + "</details>") if head else "".join(out)
     lbl = "" if head else ('<div class="ct-d-lbl">Districts only '
-                           "&mdash; not a state figure</div>")
+                           ", not a state figure</div>")
     return f'<div class="ct-dists">{head}{lbl}{body}</div>'
 
 
@@ -793,9 +793,9 @@ def render_progress(prog, data, ph, today):
         if moved:
             moved[0] += f' {against}'
         if moved and prog["compared"] == prog["posted"]:
-            tail = " &mdash; " + ", ".join(moved) + "."
+            tail = ": " + ", ".join(moved) + "."
         elif moved:
-            tail = (f' &mdash; of the {prog["compared"]} with a prior figure to compare, '
+            tail = (f'; of the {prog["compared"]} with a prior figure to compare, '
                     + ", ".join(moved) + ".")
         else:
             tail = "."
@@ -1140,7 +1140,7 @@ def render_benchnote(data):
             f'came in by {cst[k]["mae"]:.1f} bushels a year against the tour\'s own '
             f'{cst["pf"]["mae"]:.1f}, and landed closer in {cst[k]["ahead"]} of those '
             f'{cst["n"]} years. Ten years is not enough to tell a real edge from a lucky '
-            f'one, and the two outside forecasts are not independent of each other &mdash; '
+            f'one, and the two outside forecasts are not independent of each other: '
             f'their errors track at {cst["corr_pf_usda"]:.2f}, so most of what the averaging '
             f'buys comes from putting last year\'s actual crop back on the table.</p>')
     return "".join(bits)
@@ -1155,7 +1155,7 @@ PAPER_CARD = (
     '<span class="ct-paper-t">Do pod counts predict soybean yield?</span>'
     '<span class="ct-paper-d">The tour counts pods and never publishes a bean '
     'yield. We measured what those counts actually predict, against USDA&rsquo;s '
-    'final state numbers &mdash; and what the rule of thumb everyone repeats '
+    'final state numbers, and what the rule of thumb everyone repeats '
     'gets wrong.</span>'
     '<span class="ct-paper-go">Read it &rarr;</span></a></div>')
 
@@ -1189,7 +1189,7 @@ def render_history(st):
            '<thead><tr>'
            '<th scope="col">Year</th><th scope="col" class="num">Tour</th>'
            '<th scope="col" class="num">USDA Aug</th><th scope="col" class="num">Final</th>'
-           '<th scope="col">Tour vs final &mdash; bushels per acre</th>'
+           '<th scope="col">Tour vs final (bushels per acre)</th>'
            '</tr></thead><tbody>']
     for r in rows:
         e = r["tour_err"]
@@ -1211,7 +1211,7 @@ def render_history(st):
                    f'<td class="num">{L("Tour")}{r["tour_corn"]:.1f}</td>'
                    f'<td class="num">{L("USDA Aug")}{r["usda_aug_corn"]:.1f}</td>'
                    f'<td class="num">{L("Final")}{r["usda_final_corn"]:.1f}</td>'
-                   f'<td class="ct-barcell {side}">{L("Tour vs final &mdash; bu/acre")}'
+                   f'<td class="ct-barcell {side}">{L("Tour vs final (bu/acre)")}'
                    f'<span class="ct-tick"></span>{bar}</td></tr>')
     out.append('</tbody></table></div>')
     return "".join(out)
@@ -1247,7 +1247,7 @@ def render_soy_table(st):
            '<thead><tr>'
            '<th scope="col">Year</th><th scope="col" class="num">Tour</th>'
            '<th scope="col" class="num">USDA Aug</th><th scope="col" class="num">Final</th>'
-           '<th scope="col">Tour vs final &mdash; billion bushels</th>'
+           '<th scope="col">Tour vs final (billion bushels)</th>'
            '</tr></thead><tbody>']
     for r in rows:
         e = r["tour_err"]
@@ -1267,7 +1267,7 @@ def render_soy_table(st):
                    f'<td class="num">{L("Tour")}{r["tour_soy_prod"]:.3f}</td>'
                    f'<td class="num">{L("USDA Aug")}{r["usda_aug_soy_prod"]:.2f}</td>'
                    f'<td class="num">{L("Final")}{r["usda_final_soy_prod"]:.2f}</td>'
-                   f'<td class="ct-barcell {side}">{L("Tour vs final &mdash; billion bu")}'
+                   f'<td class="ct-barcell {side}">{L("Tour vs final (billion bu)")}'
                    f'<span class="ct-tick"></span>{bar}</td></tr>')
     out.append('</tbody></table></div>')
     lean = ("under" if st["soy_low"] > st["soy_high"] else
@@ -1286,7 +1286,7 @@ def render_soy_table(st):
             + (f', with {st["soy_draws"]} drawn' if st["soy_draws"] else '')
             + '. Beans are the softer half of the '
             'tour: scouts measure corn as a yield in the field, but they never '
-            'measure a soybean yield at all &mdash; they count pods, and the '
+            'measure a soybean yield at all. They count pods, and the '
             'production number is built from those counts plus judgement.</p>')
     return ('<details class="ct-soytbl"><summary>Show the soybean record, '
             f'{st["soy_first"]}&ndash;{st["soy_last"]}</summary>'
@@ -1378,7 +1378,7 @@ SECTIONS = {
         "h2": "Nightly results",
         "sub": ("Scouts run two routes at once, Monday through Thursday, and states report "
                 "at the nightly meetings. Corn is a sampled yield in bushels per acre. "
-                "Soybeans are pod counts in a three-foot square &mdash; more pods means more "
+                "Soybeans are pod counts in a three-foot square. More pods means more "
                 "beans, but pods do not convert cleanly into bushels, so treat them as a "
                 "direction, not a yield."),
         "body": '<div id="ct-nights"><!-- CT:nights --><!-- /CT:nights --></div>',
@@ -1391,7 +1391,7 @@ SECTIONS = {
         # data and has to be derived or dropped; this one is dropped.
         "h2": "The numbers on the table",
         "sub": ("Every forecast for this year's corn crop, published before anyone knows "
-                "the answer &mdash; and what each one is worth."),
+                "the answer, and what each one is worth."),
         # The card is a NUMBER, not an essay. One label, one figure, one short
         # line. Everything that used to make the cards different heights and
         # read like a wall of generated text now lives in one place under the

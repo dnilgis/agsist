@@ -118,9 +118,9 @@ def seo_usda_calendar(c):
         raise ValueError(f"next_wasde returned {w}, already in the past")
     days = (w - c["today"]).days
     when = "today" if days == 0 else ("tomorrow" if days == 1 else f"in {days} days")
-    return (f"Next WASDE: {mdY(w)} — USDA Report Calendar{SUFFIX}",
+    return (f"Next WASDE: {mdY(w)} | USDA Report Calendar{SUFFIX}",
             f"The next WASDE lands {mdY(w)}, {when}. Every 2026 USDA report date "
-            f"— WASDE, Crop Production, Grain Stocks, Cattle on Feed — with what "
+            f"(WASDE, Crop Production, Grain Stocks, Cattle on Feed) with what "
             f"each one moves.")
 
 
@@ -192,7 +192,7 @@ def seo_crop_tour(c):
         # A date is the same answer at a fixed width, and it fits: 66.
         lead = ("starts tomorrow" if days == 1 else
                 "starts today" if days == 0 else f"starts {mdY(start)[:-6]}")
-        return (f"Pro Farmer Crop Tour {yr} {lead.title()} — Nightly Results{SUFFIX}",
+        return (f"Pro Farmer Crop Tour {yr} {lead.title()}: Nightly Results{SUFFIX}",
                 f"The {yr} Pro Farmer Crop Tour runs {span(start, end)}. "
                 f"State numbers here every night, next to USDA's and ours, plus "
                 f"how close the tour has actually been.")
@@ -210,12 +210,12 @@ def seo_crop_tour(c):
         # the whole week before the tour and for the first day of it.
         #
         # Tested on n == 0, because that is the state it shipped wrong in.
-        title = (f"Pro Farmer Crop Tour {yr} — Scout Results Nightly{SUFFIX}"
+        title = (f"Pro Farmer Crop Tour {yr}: Scout Results Nightly{SUFFIX}"
                  if n == 0 else
-                 f"Pro Farmer Crop Tour {yr} — Night {n} Results{SUFFIX}")
+                 f"Pro Farmer Crop Tour {yr}: Night {n} Results{SUFFIX}")
         return (title,
                 f"Pro Farmer Crop Tour {yr} results by state, posted each night "
-                f"of {span(start, end)}, next to USDA's number and ours — "
+                f"of {span(start, end)}, next to USDA's number and ours, "
                 f"plus the tour's own accuracy record.")
 
     tour = (d.get("benchmarks") or {}).get("tour") or {}
@@ -224,7 +224,7 @@ def seo_crop_tour(c):
                 f"Pro Farmer's {yr} national corn estimate is {tour['corn']} "
                 f"bu/ac. Set against USDA's number and ours, with how close the "
                 f"tour has actually been since 2015.")
-    return (f"Pro Farmer Crop Tour {yr} — Results & Accuracy Record{SUFFIX}",
+    return (f"Pro Farmer Crop Tour {yr}: Results & Accuracy Record{SUFFIX}",
             f"Every night of the {yr} Pro Farmer Crop Tour by state, next to "
             f"USDA's number and ours, plus the record nobody publishes: how "
             f"close the tour has actually been.")
@@ -242,9 +242,9 @@ def seo_quick_stats(c):
     # label it exactly as the file does; never call a forecast a final
     kind = "forecast" if ia.get("forecast") else "final"
     yr = ia.get("year")
-    return (f"Corn & Soybean Yields by State — USDA NASS Data{SUFFIX}",
+    return (f"Corn & Soybean Yields by State: USDA NASS Data{SUFFIX}",
             f"Iowa corn {y:g} bu/ac ({yr} {kind}). Yields, acres, production "
-            f"and prices by state for corn, soybeans and wheat — USDA Quick "
+            f"and prices by state for corn, soybeans and wheat: USDA Quick "
             f"Stats, made readable and free.")
 
 
@@ -293,7 +293,7 @@ def seo_conditions(c):
         lead += f"; soybeans {soy:g}%"
     return (f"USDA Crop Conditions: Corn {ge:g}% Good-Excellent{SUFFIX}",
             f"{lead}. Every state's rating ranked "
-            f"against the same week since 2000 — a percentile, not a feel.")
+            f"against the same week since 2000: a percentile, not a feel.")
 
 
 def _px(prices, key):
@@ -310,7 +310,7 @@ def seo_breakeven(c):
     if px is None:
         return None
     dollars = px / 100.0 if px > 50 else px      # cents vs dollars
-    return (f"Break-Even Price Calculator — Corn, Soybeans, Wheat{SUFFIX}",
+    return (f"Break-Even Price Calculator: Corn, Soybeans, Wheat{SUFFIX}",
             f"Corn is near ${dollars:.2f}. Enter your cost per acre and your yield "
             f"to get your break-even price per bushel, and the yield where the "
             f"board stops covering them.")
@@ -431,7 +431,7 @@ def make_futures(page):
         # grain boards quote in cents; cattle already quotes in dollars per cwt
         dollars = px / 100.0 if key != "cattle" else px
         money = f"${dollars:,.2f}"
-        return (f"{exch} {crop} Futures: {lab} {money} — {extra}{SUFFIX}", None)
+        return (f"{exch} {crop} Futures: {lab} {money}, {extra}{SUFFIX}", None)
 
     build.__name__ = f"seo_{key}_futures"
     return build

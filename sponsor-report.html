@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Campaign portal — AGSIST</title>
+<title>Campaign portal | AGSIST</title>
 <!-- A sponsor's own campaign, on a link they hold. Not for search. -->
 <meta name="robots" content="noindex, nofollow">
 <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
@@ -469,7 +469,7 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
          sponsor chasing the wrong thing. The two are separated here. */
       try { draw(d); }
       catch (e) {
-        die('Something went wrong drawing this page. Your link is fine — reply to the ' +
+        die('Something went wrong drawing this page. Your link is fine: reply to the ' +
             'email it came in and we will fix it today.<br><small>' + esc(String((e && e.message) || e)) + '</small>');
       }
     })
@@ -617,7 +617,7 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
       .catch(function () {
         el.disabled = false; el.textContent = was;
         /* THE PATH THAT HAS ALWAYS WORKED. No network, no mail client. */
-        approveSay(el, '<p class="cp-req-bad"><b>That did not go through.</b> Send it yourself instead \u2014 ' +
+        approveSay(el, '<p class="cp-req-bad"><b>That did not go through.</b> Send it yourself instead: ' +
           'the message is written out for you.</p>');
         openMailFallback(href);
       });
@@ -650,7 +650,7 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
         '<button class="cp-mailfb-x" type="button" aria-label="Close">&times;</button>' +
         '<div class="cp-eyebrow">Your email program should have opened</div>' +
         '<h3 class="cp-mailfb-h">If it did not, send this instead</h3>' +
-        '<p class="cp-note">Nothing on this page sends mail by itself. Copy the message below and send it from whatever you normally use \u2014 phone, webmail, anything. It counts the same.</p>' +
+        '<p class="cp-note">Nothing on this page sends mail by itself. Copy the message below and send it from whatever you normally use: phone, webmail, anything. It counts the same.</p>' +
         '<dl class="cp-mailfb-dl">' +
           '<dt>To</dt><dd><span class="cp-mailfb-to"></span></dd>' +
           '<dt>Subject</dt><dd><span class="cp-mailfb-subj"></span></dd>' +
@@ -678,7 +678,7 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
       var done = function (ok) {
         said.textContent = ok ? 'Copied. Paste it into a new email to ' +
           el.querySelector('.cp-mailfb-to').textContent + '.'
-          : 'Could not copy automatically \u2014 select the text above and copy it.';
+          : 'Could not copy automatically; select the text above and copy it.';
       };
       if (navigator.clipboard && navigator.clipboard.writeText) {
         navigator.clipboard.writeText(txt).then(function () { done(true); }, function () { done(false); });

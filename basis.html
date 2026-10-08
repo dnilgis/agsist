@@ -38,7 +38,7 @@
 
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","@id":"https://agsist.com/basis#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://agsist.com/"},{"@type":"ListItem","position":2,"name":"Markets","item":"https://agsist.com/markets"},{"@type":"ListItem","position":3,"name":"Basis vs Normal","item":"https://agsist.com/basis"}]}</script>
   <script type="application/ld+json">
-  {"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Why is my basis so wide right now?", "acceptedAnswer": {"@type": "Answer", "text": "Check two rows on this page: your region’s delta, and the barge bars. When freight runs above normal, interior bids must fall against the futures to pay the trip to the export market. Local demand (a plant nearby, a shuttle loader bidding) moves the rest."}}, {"@type": "Question", "name": "Is my elevator ripping me off?", "acceptedAnswer": {"@type": "Answer", "text": "Compare your bid’s basis to your region’s number above. If your elevator is a nickel behind the region, that’s a local conversation. If the whole region is a dollar under its normal — as happens in high-freight years — no elevator in the county could bid it away."}}, {"@type": "Question", "name": "When does basis usually strengthen?", "acceptedAnswer": {"@type": "Answer", "text": "Each region has its own seasonal shape — which is exactly why this page compares each region to its own same-week history instead of quoting a national rule. Post-harvest logistics unclogging and processor demand windows are common strengtheners, but check your region’s own pattern."}}, {"@type": "Question", "name": "Where do these numbers come from?", "acceptedAnswer": {"@type": "Answer", "text": "USDA AgTransport open datasets: weekly regional grain basis (since 2007), barge freight rates, and origin-to-destination bid spreads. Updated here every Friday; sources linked below."}}]}
+  {"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Why is my basis so wide right now?", "acceptedAnswer": {"@type": "Answer", "text": "Check two rows on this page: your region’s delta, and the barge bars. When freight runs above normal, interior bids must fall against the futures to pay the trip to the export market. Local demand (a plant nearby, a shuttle loader bidding) moves the rest."}}, {"@type": "Question", "name": "Is my elevator ripping me off?", "acceptedAnswer": {"@type": "Answer", "text": "Compare your bid’s basis to your region’s number above. If your elevator is a nickel behind the region, that’s a local conversation. If the whole region is a dollar under its normal, as happens in high-freight years, no elevator in the county could bid it away."}}, {"@type": "Question", "name": "When does basis usually strengthen?", "acceptedAnswer": {"@type": "Answer", "text": "Each region has its own seasonal shape, which is exactly why this page compares each region to its own same-week history instead of quoting a national rule. Post-harvest logistics unclogging and processor demand windows are common strengtheners, but check your region’s own pattern."}}, {"@type": "Question", "name": "Where do these numbers come from?", "acceptedAnswer": {"@type": "Answer", "text": "USDA AgTransport open datasets: weekly regional grain basis (since 2007), barge freight rates, and origin-to-destination bid spreads. Updated here every Friday; sources linked below."}}]}
   </script>
 
   <style>
@@ -167,10 +167,10 @@
   <header class="bs-hero">
     <p class="bs-kicker">USDA AgTransport &middot; weekly &middot; regional basis vs its own normal</p>
     <h1>Your elevator didn&rsquo;t cut your basis. The river did.</h1>
-    <p class="bs-sub">Everyone stares at the futures board; the check you actually cash is <strong>futures plus basis</strong> &mdash; and basis is mostly a freight story. Below: every USDA-tracked region&rsquo;s basis against <strong>its own 5-year average for this same week</strong>, next to the barge rates and origin-to-Gulf spreads that move it. When the number under your region turns red, this page shows you why &mdash; and it usually isn&rsquo;t your elevator.</p>
+    <p class="bs-sub">Everyone stares at the futures board; the check you actually cash is <strong>futures plus basis</strong>: and basis is mostly a freight story. Below: every USDA-tracked region&rsquo;s basis against <strong>its own 5-year average for this same week</strong>, next to the barge rates and origin-to-Gulf spreads that move it. When the number under your region turns red, this page shows you why, and it usually isn&rsquo;t your elevator.</p>
   </header>
 
-  <aside class="ag-sponsor-ribbon" id="ag-sponsor"><span class="ag-sponsor-tag">Sponsor this page</span> Every visitor here just got a bid they didn&rsquo;t like &mdash; one category-exclusive slot. <span class="ag-sponsor-price" data-rate="page">$29/mo &middot; first month free</span> <a href="/sponsor-apply?slot=basis&amp;utm_source=basis&amp;utm_medium=slot">Put your name here &rarr;</a></aside>
+  <aside class="ag-sponsor-ribbon" id="ag-sponsor"><span class="ag-sponsor-tag">Sponsor this page</span> Every visitor here just got a bid they didn&rsquo;t like. One category-exclusive slot. <span class="ag-sponsor-price" data-rate="page">$29/mo &middot; first month free</span> <a href="/sponsor-apply?slot=basis&amp;utm_source=basis&amp;utm_medium=slot">Put your name here &rarr;</a></aside>
   <section class="vp-ver" aria-live="polite">
     <div><select id="vp-sel" aria-label="Pick a state"></select><div class="vp-geo" id="vp-geo"></div></div>
     <div class="vp-big" id="vp-big"><!--SEED:basisbig-->-$0.43<!--/SEED--></div>
@@ -185,34 +185,34 @@
       <p class="bs-seed"><!--SEED:basisstats-->USDA AgTransport elevator-bid basis, week of Sep 25, 2026: corn basis is more than 10&cent; under its 5-year same-week normal in <strong>6 of 10</strong> regions (2 stronger; weakest vs normal Minnesota -$0.91/bu against -$0.45); soybeans <strong>0 of 10</strong> regions (4 stronger; weakest vs normal Kansas -$0.92/bu against -$0.82). Barge rates and origin-to-Gulf spreads below; USDA posts weekly.<!--/SEED--></p>
       <div class="bs-tabs" role="tablist" id="bs-tabs"></div>
       <div class="tblscroll"><table class="bs-tbl" id="bs-table"><!--SEED:basistable--><caption>Corn, week of Sep 25, 2026 &middot; weakest vs normal first</caption><tr><th>Region</th><th style="text-align:right">Basis now</th><th style="text-align:right">5-yr normal</th><th style="text-align:right">Vs normal, $/bu</th></tr><tr><td>Minnesota</td><td class="num">-$0.91</td><td class="num">-$0.45</td><td class="num">-$0.46</td></tr><tr><td>Kansas</td><td class="num">-$0.35</td><td class="num">+$0.07</td><td class="num">-$0.42</td></tr><tr><td>South Dakota</td><td class="num">-$0.71</td><td class="num">-$0.39</td><td class="num">-$0.32</td></tr><tr><td>North Dakota</td><td class="num">-$0.74</td><td class="num">-$0.50</td><td class="num">-$0.25</td></tr><tr><td>Nebraska</td><td class="num">-$0.47</td><td class="num">-$0.27</td><td class="num">-$0.20</td></tr><tr><td>Iowa</td><td class="num">-$0.43</td><td class="num">-$0.31</td><td class="num">-$0.12</td></tr><tr><td>Ohio</td><td class="num">-$0.37</td><td class="num">-$0.36</td><td class="num">-$0.01</td></tr><tr><td>Illinois</td><td class="num">-$0.34</td><td class="num">-$0.35</td><td class="num">even</td></tr><tr><td>Indiana</td><td class="num">-$0.20</td><td class="num">-$0.33</td><td class="num">+$0.13</td></tr><tr><td>North Carolina</td><td class="num">+$0.33</td><td class="num">+$0.16</td><td class="num">+$0.17</td></tr><!--/SEED--></table></div>
-      <p style="font-size:13.4px;color:var(--bs-dim);margin:10px 0 0">Negative delta = weaker than this region&rsquo;s normal for this week. These are USDA-tracked <em>regional</em> markets &mdash; your specific elevator sits some local spread away from its region, but it moves with it.</p>
+      <p style="font-size:13.4px;color:var(--bs-dim);margin:10px 0 0">Negative delta = weaker than this region&rsquo;s normal for this week. These are USDA-tracked <em>regional</em> markets. Your specific elevator sits some local spread away from its region, but it moves with it.</p>
     </div>
   </section>
 
   <section class="bs-panel" aria-labelledby="bs-river-t">
-    <div class="bs-panel-hd"><span class="bs-panel-t" id="bs-river-t">The river, right now &mdash; barge rates vs normal</span><span class="bs-fresh" id="bs-fresh2"></span></div>
+    <div class="bs-panel-hd"><span class="bs-panel-t" id="bs-river-t">The river, right now: barge rates vs normal</span><span class="bs-fresh" id="bs-fresh2"></span></div>
     <div class="bs-panel-b">
       <div class="bs-bars" id="bs-barge"></div>
-      <p style="font-size:13.4px;color:var(--bs-dim);margin:12px 0 0">Rates are percent of the 1976 benchmark tariff &mdash; the industry&rsquo;s odd but standard yardstick. The grey tick is each location&rsquo;s 5-year same-week average; the gold bar is now. Bars far past their ticks are freight eating your basis.</p>
+      <p style="font-size:13.4px;color:var(--bs-dim);margin:12px 0 0">Rates are percent of the 1976 benchmark tariff, the industry&rsquo;s odd but standard yardstick. The grey tick is each location&rsquo;s 5-year same-week average; the gold bar is now. Bars far past their ticks are freight eating your basis.</p>
     </div>
   </section>
 
   <section class="bs-panel" aria-labelledby="bs-walk-t">
-    <div class="bs-panel-hd"><span class="bs-panel-t" id="bs-walk-t">A bushel&rsquo;s journey &mdash; where the money goes</span></div>
+    <div class="bs-panel-hd"><span class="bs-panel-t" id="bs-walk-t">A bushel&rsquo;s journey: where the money goes</span></div>
     <div class="bs-panel-b">
       <div class="bs-walk" id="bs-walk"></div>
       <p style="font-size:13.4px;color:var(--bs-dim);margin:12px 0 0" id="bs-walk-note"></p>
     </div>
   </section>
 
-  <div class="bs-note"><strong>What this is &mdash; and is not.</strong> Regional attribution only: USDA tracks named markets and origins, not individual elevators, so this page explains the <em>regional</em> move your bid rides on. It will never claim to know your specific elevator&rsquo;s spread. Basis in $/bu against futures; a negative number is normal in most regions most of the time &mdash; the delta against normal is the story.</div>
+  <div class="bs-note"><strong>What this is, and is not.</strong> Regional attribution only: USDA tracks named markets and origins, not individual elevators, so this page explains the <em>regional</em> move your bid rides on. It will never claim to know your specific elevator&rsquo;s spread. Basis in $/bu against futures; a negative number is normal in most regions most of the time, the delta against normal is the story.</div>
 
   <section class="bs-panel bs-faq-panel" aria-labelledby="bs-faq-t">
     <div class="bs-panel-hd"><span class="bs-panel-t" id="bs-faq-t">Questions people actually ask</span></div>
     <div class="bs-panel-b bs-faq">
       <details><summary>Why is my basis so wide right now?</summary><p>Check two rows on this page: your region&rsquo;s delta, and the barge bars. When freight runs above normal, interior bids must fall against the futures to pay the trip to the export market. Local demand (a plant nearby, a shuttle loader bidding) moves the rest.</p></details>
-      <details><summary>Is my elevator ripping me off?</summary><p>Compare your bid&rsquo;s basis to your region&rsquo;s number above. If your elevator is a nickel behind the region, that&rsquo;s a local conversation. If the whole region is a dollar under its normal &mdash; as happens in high-freight years &mdash; no elevator in the county could bid it away.</p></details>
-      <details><summary>When does basis usually strengthen?</summary><p>Each region has its own seasonal shape &mdash; which is exactly why this page compares each region to its own same-week history instead of quoting a national rule. Post-harvest logistics unclogging and processor demand windows are common strengtheners, but check your region&rsquo;s own pattern.</p></details>
+      <details><summary>Is my elevator ripping me off?</summary><p>Compare your bid&rsquo;s basis to your region&rsquo;s number above. If your elevator is a nickel behind the region, that&rsquo;s a local conversation. If the whole region is a dollar under its normal, as happens in high-freight years, no elevator in the county could bid it away.</p></details>
+      <details><summary>When does basis usually strengthen?</summary><p>Each region has its own seasonal shape, which is exactly why this page compares each region to its own same-week history instead of quoting a national rule. Post-harvest logistics unclogging and processor demand windows are common strengtheners, but check your region&rsquo;s own pattern.</p></details>
       <details><summary>Where do these numbers come from?</summary><p>USDA AgTransport open datasets: weekly regional grain basis (since 2007), barge freight rates, and origin-to-destination bid spreads. Updated here every Friday; sources linked below.</p></details>
     </div>
   </section>
@@ -333,7 +333,7 @@
     $('bs-walk').innerHTML=
       '<div class="bs-walkstep"><div class="bs-walk-l">'+p[1]+' bid</div><div class="bs-walk-v">$'+s.origin_bid.toFixed(2)+'</div><div class="bs-walk-m">what the interior market pays per bushel of '+p[0].toLowerCase()+'</div></div>'
       +'<div class="bs-walkstep"><div class="bs-walk-l">'+p[2]+' bid</div><div class="bs-walk-v">$'+s.destination_bid.toFixed(2)+'</div><div class="bs-walk-m">what the export market pays for the same bushel</div></div>'
-      +'<div class="bs-walkstep"><div class="bs-walk-l">The journey&rsquo;s cut</div><div class="bs-walk-v">$'+s.spread.toFixed(2)+'</div><div class="bs-walk-m">freight + handling + margin between the two &mdash; the wedge your basis lives inside</div></div>';
+      +'<div class="bs-walkstep"><div class="bs-walk-l">The journey&rsquo;s cut</div><div class="bs-walk-v">$'+s.spread.toFixed(2)+'</div><div class="bs-walk-m">freight + handling + margin between the two, the wedge your basis lives inside</div></div>';
     var ci=journey.cost_index||{};
     $('bs-walk-note').textContent='Transport cost indicators (2000=100), week of '+String(ci.date||'').slice(0,10)+': truck '+(ci.truck||'—')+' · shuttle train '+(ci.shuttle_train||'—')+' · barge '+(ci.barge||'—')+' · Gulf vessel '+(ci.gulf_vessel||'—')+'. Spread data: '+s.date+'.';
   }
@@ -343,7 +343,7 @@
     fetch('/data/transport/journey.json',{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).catch(function(){return null;})
   ]).then(function(res){
     basis=res[0]; journey=res[1];
-    if(!basis||!journey){ $('bs-table').innerHTML='<tr><td style="color:var(--bs-dim)">Data unavailable — try a refresh</td></tr>'; return; }
+    if(!basis||!journey){ $('bs-table').innerHTML='<tr><td style="color:var(--bs-dim)">Data unavailable: try a refresh</td></tr>'; return; }
     // the header names the newest week any series reached, not whichever is listed first
     Object.keys(basis.series).forEach(function(k){ var dt=basis.series[k].date; if(dt&&(!NEWEST||dt>NEWEST)) NEWEST=dt; });
     $('bs-fresh').textContent='week of '+(NEWEST||'—');
@@ -399,7 +399,7 @@
       var lab=(cur>=0?'+$':'-$')+Math.abs(cur).toFixed(2);
       var nrm=(s.avg5==null)?'':(' (a normal week like this runs '+(s.avg5>=0?'+$':'-$')+Math.abs(s.avg5).toFixed(2)+')');
       out[key]={big:lab,word:w,col:c,tile:null,tval:null,
-        sent:'Corn basis in the <b>'+name+'</b> region is <b style="color:'+c+'">'+lab+'/bu</b>'+(d!=null?(' \u2014 <b style="color:'+c+'">'+(d>0?'+$':'-$')+Math.abs(d).toFixed(2)+' vs normal</b>'+nrm):'')+'. These are regional USDA markets \u2014 your elevator sits a local spread away, but it moves with this. The barge rates below are usually why.'};
+        sent:'Corn basis in the <b>'+name+'</b> region is <b style="color:'+c+'">'+lab+'/bu</b>'+(d!=null?(' \u2014 <b style="color:'+c+'">'+(d>0?'+$':'-$')+Math.abs(d).toFixed(2)+' vs normal</b>'+nrm):'')+'. These are regional USDA markets. Your elevator sits a local spread away, but it moves with this. The barge rates below are usually why.'};
     });
     return out;
   }

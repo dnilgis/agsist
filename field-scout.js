@@ -263,23 +263,23 @@
       el.innerHTML='<div class="fs-leg-top"><span class="fs-leg-ttl">Crop vigor</span><span class="fs-leg-tag">how much living canopy</span></div>'+
         '<div class="fs-leg-bar" style="background:linear-gradient(90deg,#8c6638,#b79a3c,#6aa83a,#1f7a2e)"></div>'+
         '<div class="fs-leg-ends"><span>Bare / stressed</span><span>Healthy / lush</span></div>'+
-        '<div class="fs-leg-say">Greener means more living crop. Brown and tan are bare soil, residue, or a struggling stand &mdash; those are the spots worth walking.</div>';
+        '<div class="fs-leg-say">Greener means more living crop. Brown and tan are bare soil, residue, or a struggling stand. Those are the spots worth walking.</div>';
     } else if(which==='ndre'){
       el.hidden=false;
       el.innerHTML='<div class="fs-leg-top"><span class="fs-leg-ttl">Nitrogen (NDRE)</span><span class="fs-leg-tag">red-edge, most useful after canopy closes</span></div>'+
         '<div class="fs-leg-bar" style="background:linear-gradient(90deg,#e0685f,#d4a23f,#5fc28a)"></div>'+
         '<div class="fs-leg-ends"><span>Low</span><span>Strong</span></div>'+
-        '<div class="fs-leg-say">Once the canopy closes, NDVI flattens out and stops showing variation &mdash; NDRE keeps reading chlorophyll and nitrogen status underneath it. Red/gold patches are where nitrogen is most likely limiting, worth a soil or tissue test before you trust it.</div>';
+        '<div class="fs-leg-say">Once the canopy closes, NDVI flattens out and stops showing variation; NDRE keeps reading chlorophyll and nitrogen status underneath it. Red/gold patches are where nitrogen is most likely limiting, worth a soil or tissue test before you trust it.</div>';
     } else if(which==='moisture'){
       el.hidden=false;
       el.innerHTML='<div class="fs-leg-top"><span class="fs-leg-ttl">Soil moisture</span><span class="fs-leg-tag">radar surface wetness</span></div>'+
         '<div class="fs-leg-bar" style="background:linear-gradient(90deg,#c7ae73,#8fb59a,#2a7fd6)"></div>'+
         '<div class="fs-leg-ends"><span>Drier</span><span>Wetter</span></div>'+
-        '<div class="fs-leg-say">Bluer is a wetter surface, tan is drier. It\u2019s a relative read from radar &mdash; good for finding wet holes and dry knobs, not an exact percent.</div>';
+        '<div class="fs-leg-say">Bluer is a wetter surface, tan is drier. It\u2019s a relative read from radar: good for finding wet holes and dry knobs, not an exact percent.</div>';
     } else if(which==='hail'){
       el.hidden=false;
       el.innerHTML='<div class="fs-leg-top"><span class="fs-leg-ttl">Hail history</span><span class="fs-leg-tag">reported storms, last 5 years</span></div>'+
-        '<div class="fs-leg-say">Each blue dot is a severe-hail storm report near this field over the last five years &mdash; tap a dot for the reported stone size and date. No dots means no reports in the archive for this spot.</div>';
+        '<div class="fs-leg-say">Each blue dot is a severe-hail storm report near this field over the last five years. Tap a dot for the reported stone size and date. No dots means no reports in the archive for this spot.</div>';
     } else { el.hidden=true; el.innerHTML=''; }
   }
 
@@ -448,7 +448,7 @@
       return '<div class="fs-section" id="fs-notes-wrap">'+
         '<div class="fs-section-h" role="heading" aria-level="3"><span class="ico" aria-hidden="true">'+ICONS.notes+'</span>Scouting Notes</div>'+
         '<div class="fs-section-body">'+
-          '<p class="fs-notes-hint">Save this field to attach notes and photos &mdash; they live on this device, right alongside the field.</p>'+
+          '<p class="fs-notes-hint">Save this field to attach notes and photos. They live on this device, right alongside the field.</p>'+
           '<button type="button" class="fs-save-btn" id="fs-notes-save-prompt">Save field</button>'+
         '</div>'+
       '</div>';
@@ -465,8 +465,8 @@
           '<input type="file" accept="image/*" id="fs-notes-photo-input" style="display:none"'+(atCap?' disabled':'')+'>'+
           '<span class="fs-notes-meta">'+photos.length+' of '+PHOTO_CAP+' photos</span>'+
         '</div>'+
-        (atCap ? '<p class="fs-notes-cap">Photo cap reached ('+PHOTO_CAP+' per field) &mdash; delete one below to add another.</p>' : '')+
-        '<p class="fs-notes-note">Notes and photos save on this device only, with the field &mdash; not sent anywhere. Photos are resized and compressed to fit.</p>'+
+        (atCap ? '<p class="fs-notes-cap">Photo cap reached ('+PHOTO_CAP+' per field); delete one below to add another.</p>' : '')+
+        '<p class="fs-notes-note">Notes and photos save on this device only, with the field, not sent anywhere. Photos are resized and compressed to fit.</p>'+
       '</div>'+
     '</div>';
   }
@@ -529,11 +529,11 @@
   function handlePhotoFile(file){
     var f=currentSavedField();
     if(!f){ flashHint('Save this field first, then attach photos.'); return; }
-    if((f.photos||[]).length>=PHOTO_CAP){ flashHint('Up to '+PHOTO_CAP+' photos per field &mdash; delete one to add another.'); return; }
+    if((f.photos||[]).length>=PHOTO_CAP){ flashHint('Up to '+PHOTO_CAP+' photos per field; delete one to add another.'); return; }
     // A full-resolution phone photo can run 20-50MB; reading that whole to a
     // dataURL before the canvas resize kicks in is real memory pressure on a
     // low-end phone. Reject up front rather than risk a freeze.
-    if(file && file.size>26214400){ flashHint('That photo is too large — try a smaller one (under 25MB).'); return; }
+    if(file && file.size>26214400){ flashHint('That photo is too large. Try a smaller one (under 25MB).'); return; }
     compressPhoto(file, 800, 0.6).then(function(dataUrl){
       var arr=loadSavedFields();
       var row=arr.filter(function(x){ return x.id===_activeFieldId; })[0]; if(!row) return;
@@ -542,13 +542,13 @@
       row.photos.push({ id:Date.now().toString(36)+Math.random().toString(36).slice(2,7), dataUrl:dataUrl, addedAt:Date.now() });
       if(!persistSavedFields(arr)){
         // the browser's quota said no — back the photo out and say so plainly, no invented ceiling
-        flashHint('Storage on this device is full for saved photos — delete a photo or a saved field to add more.');
+        flashHint('Storage on this device is full for saved photos; delete a photo or a saved field to add more.');
         return;
       }
       renderNotesSectionInPlace();
       renderSavedFields();
       ga('field_photo_added', {});
-    }).catch(function(){ flashHint('Couldn’t read that photo — try a different file.'); });
+    }).catch(function(){ flashHint('Couldn’t read that photo. Try a different file.'); });
   }
   function deletePhoto(photoId){
     if(_activeFieldId==null || !photoId) return;
@@ -637,7 +637,7 @@
       gpsMarker=L.circleMarker([p.coords.latitude,p.coords.longitude],{radius:7,color:'#daa520',fillColor:'#daa520',fillOpacity:.9}).addTo(map);
       btn.innerHTML='&#9678; My location';
       flashHint('Tap your field on the map');
-    }, function(err){ btn.innerHTML='&#9678; My location'; flashHint(err&&err.code===1?'Location is blocked for this site \u2014 allow it in browser settings, or search your address below':'Couldn\u2019t get a GPS fix \u2014 try again outside or search your address'); }, {enableHighAccuracy:true,timeout:8000});
+    }, function(err){ btn.innerHTML='&#9678; My location'; flashHint(err&&err.code===1?'Location is blocked for this site: allow it in browser settings, or search your address below':'Couldn\u2019t get a GPS fix: try again outside or search your address'); }, {enableHighAccuracy:true,timeout:8000});
   }
   function searchAddr(){
     var q=document.getElementById('fs-addr').value.trim();
@@ -653,16 +653,16 @@
           // no-mouse fallback (a default box you can analyze or adjust).
           afterLocate(+d[0].lat, +d[0].lon);
         } else {
-          flashHint('No match — try a town + state, or pan the map and trace your field.');
+          flashHint('No match. Try a town + state, or pan the map and trace your field.');
         }
-      }).catch(function(){ btn.textContent='Go'; flashHint('Address lookup is busy — pan the map and trace your field.'); });
+      }).catch(function(){ btn.textContent='Go'; flashHint('Address lookup is busy; pan the map and trace your field.'); });
   }
 
   // After we land on a spot (search or GPS), the tap-to-field path is live — just
   // say so. Keep a keyboard-accessible "analyze a field box here" affordance so a
   // pointing device is never required.
   function afterLocate(lat, lng){
-    flashHint('Tap your field on the map &mdash; or', 15000);
+    flashHint('Tap your field on the map, or', 15000);
     var host=document.getElementById('fs-hint'); if(!host) return;
     if(document.getElementById('fs-boxbtn')) return;
     var b=document.createElement('button');
@@ -837,8 +837,8 @@
     if(prev.pDep!=null && cur.pDep!=null){
       var dd=+(cur.pDep-prev.pDep).toFixed(1);
       if(Math.abs(dd)>=0.3){
-        if(dd<0) out.push('&#9650; The field got drier &mdash; rain ran <strong>'+Math.abs(dd)+'&Prime; further below normal</strong> since your last look.');
-        else out.push('&#9660; The field caught rain &mdash; running <strong>'+dd+'&Prime; wetter</strong> than at your last look.');
+        if(dd<0) out.push('&#9650; The field got drier: rain ran <strong>'+Math.abs(dd)+'&Prime; further below normal</strong> since your last look.');
+        else out.push('&#9660; The field caught rain: running <strong>'+dd+'&Prime; wetter</strong> than at your last look.');
       }
     }
     if(prev.ndvi!=null && cur.ndvi!=null){
@@ -847,7 +847,7 @@
       if(Math.abs(dv)>=0.04){
         out.push((dv>0?'&#9650; Vigor is <strong>up '+dv.toFixed(2):'&#9660; Vigor is <strong>down '+Math.abs(dv).toFixed(2))+'</strong> since your last look (NDVI '+prev.ndvi.toFixed(2)+' &rarr; '+cur.ndvi.toFixed(2)+')'+(newPass?' on a new clear pass':'')+'.');
       } else if(newPass){
-        out.push('&bull; A new clear satellite pass came in ('+esc(cur.passDate)+') &mdash; vigor is holding right where you left it (NDVI '+cur.ndvi.toFixed(2)+').');
+        out.push('&bull; A new clear satellite pass came in ('+esc(cur.passDate)+'): vigor is holding right where you left it (NDVI '+cur.ndvi.toFixed(2)+').');
       }
     }
     if(prev.verdict && cur.verdict && prev.verdict!==cur.verdict){
@@ -962,7 +962,7 @@
     if(!activePoly) return;
     writeHash(activePoly);
     var url=location.href;
-    function done(){ flashHint('Field link copied &mdash; anyone who opens it sees this exact field', 6000); ga('field_share', {}); }
+    function done(){ flashHint('Field link copied: anyone who opens it sees this exact field', 6000); ga('field_share', {}); }
     // Phones: the system share sheet (text, email, WhatsApp) beats a copied link.
     var coarse = window.matchMedia && window.matchMedia('(pointer:coarse)').matches;
     if(coarse && navigator.share){
@@ -1001,7 +1001,7 @@
   }
   function fieldKML(poly, name){
     var coordStr = ringCoords(poly).map(function(p){ return p[0]+','+p[1]+',0'; }).join(' ');
-    var nm = esc(name||'Field'), desc = esc(polyAcres(poly).toFixed(1)+' acres — exported from AGSIST Field Scout');
+    var nm = esc(name||'Field'), desc = esc(polyAcres(poly).toFixed(1)+' acres: exported from AGSIST Field Scout');
     return '<?xml version="1.0" encoding="UTF-8"?>\n'+
       '<kml xmlns="http://www.opengis.net/kml/2.2"><Document>\n'+
       '<name>'+nm+'</name>\n'+
@@ -1067,7 +1067,7 @@
     if(_capAc > 2500){
       try{ map.removeLayer(poly); }catch(e){}
       drawnLayer.clearLayers();
-      flashHint('That traced out to '+Math.round(_capAc).toLocaleString('en-US')+' acres — Field Scout reads one field at a time (under 2,500 ac). Zoom in and try again.');
+      flashHint('That traced out to '+Math.round(_capAc).toLocaleString('en-US')+' acres; Field Scout reads one field at a time (under 2,500 ac). Zoom in and try again.');
       ga('field_too_big', { acres: Math.round(_capAc) });
       return;
     }
@@ -1295,24 +1295,24 @@
         }
         if(FIELD.soil.nccpi!=null){
           var nc=Math.round(FIELD.soil.nccpi*100)/100, tier = nc>=0.65?'high':nc>=0.5?'good':nc>=0.35?'moderate':nc>=0.2?'modest':'low';
-          slopeNote += '<div class="fs-soil-slope"><strong>Soil productivity '+Math.round(nc*100)+'/100</strong> (USDA NCCPI '+nc.toFixed(2)+', '+tier+') &mdash; how well this soil and climate carry dryland row crops, on one national scale'+
+          slopeNote += '<div class="fs-soil-slope"><strong>Soil productivity '+Math.round(nc*100)+'/100</strong> (USDA NCCPI '+nc.toFixed(2)+', '+tier+'): how well this soil and climate carry dryland row crops, on one national scale'+
             (FIELD.soil.nccpiCorn!=null?'. Corn '+FIELD.soil.nccpiCorn.toFixed(2)+(FIELD.soil.nccpiSoy!=null?' · soy '+FIELD.soil.nccpiSoy.toFixed(2):''):'')+'.</div>';
         }
         if(FIELD.soil.farmPct!=null){
           slopeNote += '<div class="fs-soil-slope"><strong>'+FIELD.soil.farmPct+'% prime farmland</strong>'+(FIELD.soil.farmIfPct?' and '+FIELD.soil.farmIfPct+'% prime <em>if drained</em>':'')+' &mdash; USDA\u2019s farmland classification for each soil map unit.</div>';
         }
         if(FIELD.soil.floodPct){
-          slopeNote += '<div class="fs-soil-slope"><strong>'+FIELD.soil.floodPct+'% of the acreage has a mapped flooding frequency</strong> (rare or more often) &mdash; check the FEMA map before a loan or a lease.</div>';
+          slopeNote += '<div class="fs-soil-slope"><strong>'+FIELD.soil.floodPct+'% of the acreage has a mapped flooding frequency</strong> (rare or more often). Check the FEMA map before a loan or a lease.</div>';
         }
         if(FIELD.soil.poorDrainPct!=null && FIELD.soil.poorDrainPct>=25){
-          slopeNote += '<div class="fs-soil-slope"><strong>'+FIELD.soil.poorDrainPct+'% of the acreage maps as poorly drained</strong> &mdash; the survey\u2019s way of saying the low ground holds water. Late planting and drown-out corners here are the soil, not the operator; tile is the structural fix conversation.</div>';
+          slopeNote += '<div class="fs-soil-slope"><strong>'+FIELD.soil.poorDrainPct+'% of the acreage maps as poorly drained</strong>: the survey\u2019s way of saying the low ground holds water. Late planting and drown-out corners here are the soil, not the operator; tile is the structural fix conversation.</div>';
         } else if(FIELD.soil.drainageTop){
           slopeNote += '<div class="fs-soil-slope">Dominant drainage: <strong>'+esc(FIELD.soil.drainageTop)+'</strong></div>';
         }
         if(FIELD.soil.slope!=null){
           var sl=FIELD.soil.slope, er = sl<3?'little water-erosion exposure':sl<6?'some water-erosion exposure':sl<12?'real water-erosion exposure':'severe water-erosion exposure';
           slopeNote += '<div class="fs-soil-slope"><strong>'+sl+'% average slope</strong>'+(FIELD.soil.maxSlope!=null&&FIELD.soil.maxSlope>sl?' (up to '+FIELD.soil.maxSlope+'%)':'')+' &mdash; '+er+'</div>'+
-            '<div class="fs-caveat">Slope is SSURGO\u2019s representative value for each soil map unit, not a measurement of your exact acres &mdash; flat bottomland beside a hill can read steeper than it farms.</div>';
+            '<div class="fs-caveat">Slope is SSURGO\u2019s representative value for each soil map unit, not a measurement of your exact acres; flat bottomland beside a hill can read steeper than it farms.</div>';
         }
         setBody('fs-soil', html + slopeNote + '<div class="fs-src" style="margin-top:.5rem">USDA SSURGO · number = land capability class (1 fewest limits, 8 most); letter = the main limit (e wind or water erosion, w wetness, s root zone, c climate)</div>');
       })
@@ -1320,7 +1320,7 @@
         if(gen!==fieldGen) return;
         // SSURGO upstream flakes transiently (502/504) — retry once before giving up.
         if(!tries){ setTimeout(function(){ if(gen===fieldGen) loadSoil(poly, 1); }, 1500); return; }
-        setErr('fs-soil','The USDA soil survey server (SSURGO) isn\u2019t responding right now &mdash; this is a known-flaky government service, not your field. Redraw the field in a few minutes and it usually loads.');
+        setErr('fs-soil','The USDA soil survey server (SSURGO) isn\u2019t responding right now. This is a known-flaky government service, not your field. Redraw the field in a few minutes and it usually loads.');
       });
   }
   // NRCS capability wording (not "prime": prime farmland is a separate legal class)
@@ -1441,7 +1441,7 @@
         // cropland in CDL (pasture, forest, developed, water). Say so plainly rather
         // than render five empty placeholder tiles that look broken.
         if(codes.every(function(c){ return c===null; })){
-          setBody('fs-rot','<div class="fs-src">USDA\u2019s Cropland Data Layer doesn\u2019t classify this spot as row-crop or forage ground over the years on record &mdash; it reads as pasture, forest, developed, or water at the field center. Draw over active cropland to see a rotation.</div>');
+          setBody('fs-rot','<div class="fs-src">USDA\u2019s Cropland Data Layer doesn\u2019t classify this spot as row-crop or forage ground over the years on record. It reads as pasture, forest, developed, or water at the field center. Draw over active cropland to see a rotation.</div>');
           return;
         }
         var html='<div class="fs-rotation">'+ codes.map(function(code,i){
@@ -1458,7 +1458,7 @@
         '<div class="fs-caveat">CDL is satellite-classified (~85&ndash;90% accurate per pixel) and sampled at the field\u2019s center point, so a single odd year may be a classification miss rather than a real planting.</div>';
         setBody('fs-rot', html);
       })
-      .catch(function(){ if(gen!==fieldGen) return; setErr('fs-rot','The USDA crop-history service isn\u2019t responding right now &mdash; a temporary government-server hiccup, not your field. Redraw in a few minutes.'); });
+      .catch(function(){ if(gen!==fieldGen) return; setErr('fs-rot','The USDA crop-history service isn\u2019t responding right now: a temporary government-server hiccup, not your field. Redraw in a few minutes.'); });
   }
 
   // ── 3. WEATHER (Open-Meteo) ─────────────────────────────────────────
@@ -1587,15 +1587,15 @@
     var spark = precipSparkline(cumMap, cur, prior);
     // one-sentence synthesis of the two numbers above — the "so what"
     var wet=s.pDep>=1, dry=s.pDep<=-1, hot=s.gDep>=75, cool=s.gDep<=-75, seasonSay;
-    if(hot&&dry) seasonSay='A hot, dry season so far \u2014 the crop is developing fast into a moisture deficit, the combination to watch closest.';
-    else if(hot&&wet) seasonSay='Warm and well-watered \u2014 fast development with moisture to back it. About the best combination there is.';
-    else if(cool&&wet) seasonSay='A cool, wet season \u2014 development is running behind, and low ground may be struggling with the surplus.';
-    else if(cool&&dry) seasonSay='Cool and dry \u2014 slow development, but the moisture deficit bites less at this pace.';
-    else if(hot) seasonSay='Heat is running ahead of normal on near-normal rain \u2014 development is ahead of the calendar.';
-    else if(cool) seasonSay='Heat units are lagging on near-normal rain \u2014 expect development a few days behind a typical year.';
-    else if(wet) seasonSay='Rain is running ahead of normal at a normal heat pace \u2014 moisture is banked, not a limiting factor so far.';
-    else if(dry) seasonSay='Rain is running behind normal at a normal heat pace \u2014 not acute yet, but the deficit is the number to watch.';
-    else seasonSay='Both rain and heat are tracking close to this spot\u2019s normal \u2014 an unremarkable season in the best sense.';
+    if(hot&&dry) seasonSay='A hot, dry season so far: the crop is developing fast into a moisture deficit, the combination to watch closest.';
+    else if(hot&&wet) seasonSay='Warm and well-watered, fast development with moisture to back it. About the best combination there is.';
+    else if(cool&&wet) seasonSay='A cool, wet season: development is running behind, and low ground may be struggling with the surplus.';
+    else if(cool&&dry) seasonSay='Cool and dry: slow development, but the moisture deficit bites less at this pace.';
+    else if(hot) seasonSay='Heat is running ahead of normal on near-normal rain; development is ahead of the calendar.';
+    else if(cool) seasonSay='Heat units are lagging on near-normal rain. Expect development a few days behind a typical year.';
+    else if(wet) seasonSay='Rain is running ahead of normal at a normal heat pace: moisture is banked, not a limiting factor so far.';
+    else if(dry) seasonSay='Rain is running behind normal at a normal heat pace, not acute yet, but the deficit is the number to watch.';
+    else seasonSay='Both rain and heat are tracking close to this spot\u2019s normal, an unremarkable season in the best sense.';
     return '<div class="fs-stats" style="grid-template-columns:1fr 1fr">'+rainBlock+gduBlock+'</div>'+
       '<div class="fs-vigor-say" style="margin:.55rem 0 .2rem">'+seasonSay+'</div>'+
       spark +
@@ -1654,7 +1654,7 @@
     var ex=X(now.length-1), ey=Math.max(padT+7, Math.min(H-padB-3, Y(endV)));
     var endLbl='<circle cx="'+ex.toFixed(1)+'" cy="'+Y(endV).toFixed(1)+'" r="3.2" fill="'+lineCol+'"/>'+
       '<text x="'+(ex+6).toFixed(1)+'" y="'+(ey+3).toFixed(1)+'" font-size="10" font-weight="700" fill="'+lineCol+'" font-family="JetBrains Mono,monospace">'+endV.toFixed(1)+'\u2033</text>';
-    return '<div class="fs-chart-title">Cumulative rainfall &mdash; Jan 1 to date</div>'+
+    return '<div class="fs-chart-title">Cumulative rainfall: Jan 1 to date</div>'+
       '<svg viewBox="0 0 '+W+' '+H+'" '+
       'role="img" aria-label="Cumulative rainfall this season versus the prior-years range" style="display:block;width:100%;height:auto;margin-top:.35rem">'+
       grid+
@@ -1691,14 +1691,14 @@
         stat(wx.wind+' mph','Wind')+ stat(wx.wk+'"','Rain, 7 days')+'</div>';
       // one plain-language read of the numbers above — what they mean for work today
       var wkN=parseFloat(wx.wk)||0, wxSay;
-      if(wx.wind>15) wxSay='Too windy to spray right now \u2014 drift risk at '+wx.wind+' mph.';
-      else if(wkN>=1.5) wxSay='A wet week ('+wx.wk+'\u2033 in 7 days) \u2014 low ground is likely soft underfoot.';
-      else if(wx.hum>85 && wx.temp>=70) wxSay='Warm and humid \u2014 prime conditions for foliar disease; slow herbicide drydown too.';
-      else if(wx.temp>90) wxSay='Hot \u2014 crop water demand is peaking; spray early if you spray.';
-      else if(wx.wind<=10 && wx.hum<=85) wxSay='A decent working window \u2014 light wind, workable humidity.';
+      if(wx.wind>15) wxSay='Too windy to spray right now: drift risk at '+wx.wind+' mph.';
+      else if(wkN>=1.5) wxSay='A wet week ('+wx.wk+'\u2033 in 7 days); low ground is likely soft underfoot.';
+      else if(wx.hum>85 && wx.temp>=70) wxSay='Warm and humid, prime conditions for foliar disease; slow herbicide drydown too.';
+      else if(wx.temp>90) wxSay='Hot: crop water demand is peaking; spray early if you spray.';
+      else if(wx.wind<=10 && wx.hum<=85) wxSay='A decent working window: light wind, workable humidity.';
       // hand off to the full spray tool for the forward window
       if(wxSay) wxSay+=' <a href="/spray" target="_blank" rel="noopener" style="color:var(--brand,var(--gold))">Full spray forecast &rarr;</a>';
-      else wxSay='Middling conditions \u2014 nothing blocking field work, nothing ideal.';
+      else wxSay='Middling conditions. Nothing blocking field work, nothing ideal.';
       html += '<div class="fs-vigor-say" style="margin-top:.55rem">'+wxSay+'</div>';
     } else if(wx && wx.err){
       html += '<div class="fs-err" style="margin-bottom:.6rem">Weather unavailable right now.</div>';
@@ -1873,7 +1873,7 @@
     if(!sw.hits.length){
       body = '<strong>No radar-estimated hail ≥0.75″ crossed this field’s drawn boundary</strong> on any of the '+
         sw.checked+' storm day'+(sw.checked===1?'':'s')+' in the archive'+(sw.failed?' ('+sw.failed+' day'+(sw.failed===1?'':'s')+' couldn’t load)':'')+
-        '. Nearby reports above may still be real — swaths are ~1 km radar estimates, and the archive starts '+esc(ixDate(meshIdxFS.dates[0]))+'.';
+        '. Nearby reports above may still be real: swaths are ~1 km radar estimates, and the archive starts '+esc(ixDate(meshIdxFS.dates[0]))+'.';
     } else {
       body = '<strong>'+sw.hits.length+' storm day'+(sw.hits.length===1?'':'s')+' put a radar-estimated hail swath across this field’s drawn boundary:</strong>'+
         sw.hits.map(function(h){
@@ -1885,13 +1885,13 @@
             stageNote = stage.pre
               ? ' — before this field’s estimated planting window, so no corn was up yet'
               : ' — <span class="fs-swath-stage">estimated corn stage at the time: '+esc(stage.label)+
-                '</span> <span class="fs-approx">(approximate — modeled from temperature'+plantHedge0+', not field scouting)</span>';
+                '</span> <span class="fs-approx">(approximate, modeled from temperature'+plantHedge0+', not field scouting)</span>';
           }
           return '<div class="fs-swath-hit"><span class="fs-swath-dot" style="background:'+c+'"></span>'+
             '<span class="fs-swath-date">'+esc(ixDate(h.d))+'</span> — inside the ≥'+h.band+'″ estimated band'+stageNote+
             ' <a href="/hail-map?swath='+h.d+'&lat='+FIELD.lat.toFixed(4)+'&lon='+FIELD.lng.toFixed(4)+'" target="_blank" rel="noopener" class="fs-act-link">view that day’s swath →</a></div>';
         }).join('')+
-        '<div class="fs-src">Radar estimate (NOAA MRMS MESH — Maximum Estimated Size of Hail), not a ground measurement · MESH typically runs larger than stones measured on the ground · '+
+        '<div class="fs-src">Radar estimate (NOAA MRMS MESH, Maximum Estimated Size of Hail), not a ground measurement · MESH typically runs larger than stones measured on the ground · '+
         'tested against the field’s actual drawn boundary, not just its center point'+(sw.failed?' · '+sw.failed+' day'+(sw.failed===1?'':'s')+' could not be loaded':'')+'</div>';
     }
     return '<div class="fs-swathcheck" id="fs-swathcheck"><div class="fs-swath-out">'+body+'</div></div>';
@@ -1980,13 +1980,13 @@
       var resolved = (FIELD.soil!==null) && (FIELD.hail!==null);
       if(!resolved){ setBody('fs-risk','<div class="fs-loading"><span class="fs-spin"></span>assessing</div>'); return; }
       var note = (hail&&hail.err)
-        ? 'No major risk flags surfaced from public data &mdash; hail history was unavailable.'
+        ? 'No major risk flags surfaced from public data; hail history was unavailable.'
         : 'No major risk flags surfaced from public data for this field.';
       setBody('fs-risk','<div class="fs-src">'+note+'</div>');
       return;
     }
     setBody('fs-risk', rows.join('') + hailSwathHtml() +
-      '<div class="fs-src" style="margin-top:.5rem">A starting risk read from public data &mdash; not an underwriting decision. Questions? <a href="mailto:sig@farmers1st.com" style="color:var(--brand,var(--gold))">Sigurd Lindquist &rarr;</a></div>');
+      '<div class="fs-src" style="margin-top:.5rem">A starting risk read from public data, not an underwriting decision. Questions? <a href="mailto:sig@farmers1st.com" style="color:var(--brand,var(--gold))">Sigurd Lindquist &rarr;</a></div>');
   }
   function riskRow(label, level, color, detail, link){
     // Colorblind-safe: a symbol carries severity independent of color.
@@ -2108,7 +2108,7 @@
       .then(function(g){
         if(gen !== fieldGen) return;
         var zip = g && g.address ? (g.address.postcode||'').slice(0,5) : '';
-        if(!zip){ if(FIELD){ FIELD.bids={corn:null,bean:null,zip:'',count:0}; recomputeInsight(); } setBody('fs-bids','<div class="fs-src">This field sits far enough from a mapped ZIP that we can\u2019t pull nearby bids for it &mdash; common for remote parcels. Try the cash-bids page directly for your area.</div>'); return; }
+        if(!zip){ if(FIELD){ FIELD.bids={corn:null,bean:null,zip:'',count:0}; recomputeInsight(); } setBody('fs-bids','<div class="fs-src">This field sits far enough from a mapped ZIP that we can\u2019t pull nearby bids for it, common for remote parcels. Try the cash-bids page directly for your area.</div>'); return; }
         return Promise.all([fsFromNetwork(zip), fsFromLicensed(zip)])
           .then(function(x){
             if(gen!==fieldGen) return;
@@ -2158,7 +2158,7 @@
     // Border ZIPs pull Ontario/Manitoba elevators quoting CAD. This page prints "$" and
     // multiplies by US county yields, so a CAD price would read as a US price. Leave them out.
     flat = flat.filter(function(x){ return !isNaN(x.cash) && x.cur==='USD'; }).sort(function(a,b){ return (a.dist||999)-(b.dist||999); });
-    if(!flat.length){ if(FIELD){ FIELD.bids={corn:null,bean:null,zip:zip,count:0}; recomputeInsight(); } setBody('fs-bids','<div class="fs-src">No elevators are reporting cash bids near ZIP '+esc(zip)+' right now. Bid coverage is densest across the Corn Belt and thins out elsewhere &mdash; this isn\u2019t an error.</div>'); return; }
+    if(!flat.length){ if(FIELD){ FIELD.bids={corn:null,bean:null,zip:zip,count:0}; recomputeInsight(); } setBody('fs-bids','<div class="fs-src">No elevators are reporting cash bids near ZIP '+esc(zip)+' right now. Bid coverage is densest across the Corn Belt and thins out elsewhere. This isn\u2019t an error.</div>'); return; }
     // record best CONVENTIONAL corn & bean bid for the insight engine — specialty
     // bids (organic, food-grade, white, popcorn, seed, non-GMO) trade $2–8/bu over
     // conventional and must never headline as "cash corn". The full list below
@@ -2217,7 +2217,7 @@
         '<div style="text-align:right"><div class="fs-bid-px">$'+x.cash.toFixed(2)+'</div>'+basis+'</div></div>';
     }).join('');
     setBody('fs-bids', html +
-      '<div class="fs-src" style="margin-top:.45rem">Each elevator\u2019s nearest delivery month. Later months usually pay more for storage; see them all on Cash Bids. Basis = cents vs the futures board. A less-negative basis than your area\u2019s usual means local demand is paying up \u2014 the strongest bid isn\u2019t always the highest cash number if hauling eats the spread.</div>'+
+      '<div class="fs-src" style="margin-top:.45rem">Each elevator\u2019s nearest delivery month. Later months usually pay more for storage; see them all on Cash Bids. Basis = cents vs the futures board. A less-negative basis than your area\u2019s usual means local demand is paying up; the strongest bid isn\u2019t always the highest cash number if hauling eats the spread.</div>'+
       '<div class="fs-src" style="margin-top:.4rem"><a href="/cash-bids" style="color:var(--brand,var(--gold))">All bids near ZIP '+esc(zip)+' →</a></div>');
   }
 
@@ -2342,23 +2342,23 @@
     if(cls==='hay'){
       if(v>=0.6) return 'Dense, healthy stand';
       if(v>=0.45) return 'Solid growing canopy';
-      if(v>=0.3) return 'Regrowth building &mdash; normal after a cutting';
-      return 'Low canopy &mdash; typical right after a cutting; the regrowth slope over the next passes is the health read';
+      if(v>=0.3) return 'Regrowth building: normal after a cutting';
+      return 'Low canopy, typical right after a cutting; the regrowth slope over the next passes is the health read';
     }
     if(cls==='pasture'){
       if(v>=0.6) return 'Lush, well-recovered sward';
       if(v>=0.45) return 'Good cover, actively growing';
-      if(v>=0.3) return 'Recovering from grazing &mdash; watch the rebound';
-      return 'Short cover &mdash; recently grazed or dormant';
+      if(v>=0.3) return 'Recovering from grazing: watch the rebound';
+      return 'Short cover: recently grazed or dormant';
     }
     if(cls==='smallgrain'&&grainRipening()&&v<0.45){
-      return v>=0.3 ? 'Ripening down &mdash; a falling read is normal as the grain matures'
-                    : 'Mature or harvested &mdash; brown is the goal at this stage, not a problem';
+      return v>=0.3 ? 'Ripening down: a falling read is normal as the grain matures'
+                    : 'Mature or harvested: brown is the goal at this stage, not a problem';
     }
     if(v>=0.6) return 'Healthy, closed canopy';
     if(v>=0.45) return 'Solid, actively growing canopy';
-    if(v>=0.3) return 'Developing canopy &mdash; partial ground cover';
-    return 'Low cover &mdash; bare ground, residue, or a very early stand';
+    if(v>=0.3) return 'Developing canopy: partial ground cover';
+    return 'Low cover: bare ground, residue, or a very early stand';
   }
   function vigorColor(v){
     if(v==null) return 'var(--dim)';
@@ -2391,20 +2391,20 @@
   var FS_TIPS = {
     acres:{t:'Acres',b:'Total area inside the boundary you drew.'},
     soil:{t:'Soil & productivity',b:'The dominant USDA soil map units under your field, ranked by share of acreage. Soil sets what the ground can yield and how it drains.'},
-    nccpi:{t:'NCCPI',b:'USDA\u2019s National Commodity Crop Productivity Index \u2014 a 0\u20131 index for row-crop ground (shown \u00d7100 in the vitals strip). Higher is more productive soil. It\u2019s weighted toward Corn Belt soils, so strong regional ground can still score mid-scale.'},
+    nccpi:{t:'NCCPI',b:'USDA\u2019s National Commodity Crop Productivity Index, a 0\u20131 index for row-crop ground (shown \u00d7100 in the vitals strip). Higher is more productive soil. It\u2019s weighted toward Corn Belt soils, so strong regional ground can still score mid-scale.'},
     ndvi:{t:'NDVI \u00b7 crop vigor',b:'How much living, green canopy the satellite sees. Runs about 0 (bare or dead) to 0.9 (dense, healthy crop). The best single at-a-glance crop-health number.'},
     ndre:{t:'NDRE \u00b7 nitrogen',b:'A red-edge index tied to chlorophyll and nitrogen status. Most useful after canopy close, when NDVI flattens out.'},
     ndmi:{t:'NDMI \u00b7 canopy moisture',b:'Water held in the crop canopy. Higher means more moisture in the leaves; a drop can flag stress before you can see it.'},
     nmdi:{t:'NMDI \u00b7 moisture',b:'A drought index combining canopy and soil-water signals.'},
-    msi:{t:'MSI \u00b7 moisture stress',b:'Moisture Stress Index. Higher means more water stress \u2014 it runs opposite to NDMI.'},
+    msi:{t:'MSI \u00b7 moisture stress',b:'Moisture Stress Index. Higher means more water stress. It runs opposite to NDMI.'},
     ndwi:{t:'NDWI \u00b7 water',b:'Surface and canopy water content. Mildly negative over dry crop ground is normal.'},
-    bsi:{t:'BSI \u00b7 bare soil',b:'Bare Soil Index. Higher means more exposed soil \u2014 early season, after harvest, or a thin stand.'},
+    bsi:{t:'BSI \u00b7 bare soil',b:'Bare Soil Index. Higher means more exposed soil: early season, after harvest, or a thin stand.'},
     rotation:{t:'Crop rotation',b:'What grew here each year on record (up to a decade), from USDA\u2019s satellite-classified Cropland Data Layer. Continuous corn raises rootworm and disease pressure.'},
     drought:{t:'Drought',b:'US Drought Monitor category for this field, None through D4 (exceptional). D2 and worse means real moisture stress.'},
     slope:{t:'Slope',b:'Average ground slope across the field. Steeper ground carries more water-erosion exposure.'},
-    basis:{t:'Cash bid',b:'What a nearby elevator would pay for grain today \u2014 futures plus or minus local basis. The number you\u2019d actually get, not the board price.'},
-    patchy:{t:'Field uniformity',b:'How evenly vigor is spread across the field. A wide spread means part of the field is lagging \u2014 a zone worth walking.'},
-    normal:{t:'Field normal',b:'This field\u2019s own NDVI averaged over the same window in prior years \u2014 the baseline that says whether this season is ahead or behind.'}
+    basis:{t:'Cash bid',b:'What a nearby elevator would pay for grain today, futures plus or minus local basis. The number you\u2019d actually get, not the board price.'},
+    patchy:{t:'Field uniformity',b:'How evenly vigor is spread across the field. A wide spread means part of the field is lagging, a zone worth walking.'},
+    normal:{t:'Field normal',b:'This field\u2019s own NDVI averaged over the same window in prior years, the baseline that says whether this season is ahead or behind.'}
   };
   var _tipFor=null;
   function tipQ(key){ return FS_TIPS[key] ? '<button class="fs-q" type="button" data-tip="'+key+'" aria-label="What is this?">?</button>' : ''; }
@@ -2503,7 +2503,7 @@
   function renderIndices(d){
     var series=(d && d.series) || [];
     if(!series.length){
-      setBody('fs-vigor','<div class="fs-caveat">No clear satellite pass for this field yet this season &mdash; clouds block the read. Check back after the next clear day, or toggle the <b>Crop vigor</b> map layer.</div>');
+      setBody('fs-vigor','<div class="fs-caveat">No clear satellite pass for this field yet this season; clouds block the read. Check back after the next clear day, or toggle the <b>Crop vigor</b> map layer.</div>');
       return;
     }
     var last=d.latest || series[series.length-1];
@@ -2512,7 +2512,7 @@
     var vTrend='';
     if(nd){ vTrend = nd.dir==='rising' ? ' &mdash; still greening up' : (nd.dir==='easing' ? ' &mdash; easing back from its '+ixDate(nd.peakDate)+' peak' : ' &mdash; holding steady'); }
     var sd=last.ndvi_sd, varLine='';
-    if(sd!=null && v!=null){ varLine = sd>=0.12 ? 'Vigor <b>varies across the field</b> &mdash; there\u2019s likely a weaker zone worth scouting.' : 'Vigor is <b>fairly uniform</b> across the field.'; }
+    if(sd!=null && v!=null){ varLine = sd>=0.12 ? 'Vigor <b>varies across the field</b>: there\u2019s likely a weaker zone worth scouting.' : 'Vigor is <b>fairly uniform</b> across the field.'; }
     var normal=d.normal, normLine='', baseV=null;
     if(normal && normal.ndvi!=null){
       baseV=normal.ndvi;
@@ -2533,15 +2533,15 @@
     var ndreT=idxTrend(series,'ndre');
     if(ndreT && v!=null && v>=0.55 && last.ndre!=null){
       var nWord=ndreT.dir==='easing'?'easing':(ndreT.dir==='rising'?'building':'steady');
-      nLine='Nitrogen signal (NDRE '+(+last.ndre).toFixed(2)+') is <b>'+nWord+'</b>'+(ndreT.dir==='easing'?' while the canopy holds &mdash; the classic pattern worth a nitrogen check.':' &mdash; chlorophyll is tracking with the canopy.');
+      nLine='Nitrogen signal (NDRE '+(+last.ndre).toFixed(2)+') is <b>'+nWord+'</b>'+(ndreT.dir==='easing'?' while the canopy holds, the classic pattern worth a nitrogen check.':' &mdash; chlorophyll is tracking with the canopy.');
     }
     // Off-season (Nov–Mar) with a low canopy: the story is winter cover, not vigor.
     var winterHead=null;
     if(offSeason() && v!=null && v<0.3 && last.bsi!=null){
       var b2=+last.bsi;
-      winterHead = b2>=0.1 ? {w:'Mostly bare ground', c:'var(--gold)', s:'Bare or tilled through winter &mdash; vigor picks back up with the next crop.'}
+      winterHead = b2>=0.1 ? {w:'Mostly bare ground', c:'var(--gold)', s:'Bare or tilled through winter; vigor picks back up with the next crop.'}
         : (b2>=0 ? {w:'Thin winter cover', c:'var(--gold)', s:'Some residue or thin cover holding through winter.'}
-                 : {w:'Living winter cover', c:'var(--green)', s:'The satellite sees living cover through the off-season &mdash; a cover crop or perennial holding the ground.'});
+                 : {w:'Living winter cover', c:'var(--green)', s:'The satellite sees living cover through the off-season, a cover crop or perennial holding the ground.'});
     }
     var headWord = winterHead ? winterHead.w : ('Crop vigor: '+vigorWord(v));
     var headCol  = winterHead ? winterHead.c : vCol;
@@ -2572,13 +2572,13 @@
       (mLine?'<p class="fs-vigor-say">'+mLine+'</p>':'')+
       (nLine?'<p class="fs-vigor-say">'+nLine+'</p>':'')+
       '<div class="fs-vigor-fresh"><svg class="fs-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg> Last clear pass <b>'+ixDate(last.date)+'</b> ('+ixDaysAgo(last.date)+') </div>'+
-      (series.length>=2?'<a href="#" class="fs-god-link fs-replay-btn" data-god="ndvi"><svg class="fs-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="6 3 20 12 6 21 6 3"/></svg> Replay '+series.length+' passes on the map &mdash; watch the season</a>':'')+
+      (series.length>=2?'<a href="#" class="fs-god-link fs-replay-btn" data-god="ndvi"><svg class="fs-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="6 3 20 12 6 21 6 3"/></svg> Replay '+series.length+' passes on the map: watch the season</a>':'')+
       '<details class="fs-vigor-more"><summary>Show all indices for the latest pass</summary>'+
         '<div class="fs-vigor-grid">'+
           idxChip('NDVI',last.ndvi,'vigor')+idxChip('NDRE',last.ndre,'nitrogen')+idxChip('NDMI',last.ndmi,'moisture')+
           idxChip('MSI',last.msi,'stress')+idxChip('NDWI',last.ndwi,'water')+idxChip('BSI',last.bsi,'bare soil')+
         '</div>'+
-        '<div class="fs-src">Verdict words are rough guides &mdash; the right value shifts with crop and growth stage. Tap ? on any index for what it measures.</div>'+
+        '<div class="fs-src">Verdict words are rough guides; the right value shifts with crop and growth stage. Tap ? on any index for what it measures.</div>'+
       '</details>'+
       '<div class="fs-src">Sentinel-2 / Copernicus &middot; cloud-masked &middot; averaged over your field</div>';
     setBody('fs-vigor', html);
@@ -2669,7 +2669,7 @@
   }
   function loadCounty(c){
     var gen = fieldGen;
-    var ERR_ALL = 'Couldn’t pin down the county for this spot right now (reverse-geocode didn’t answer). The county numbers need it — redraw in a minute and they usually load.';
+    var ERR_ALL = 'Couldn’t pin down the county for this spot right now (reverse-geocode didn’t answer). The county numbers need it; redraw in a minute and they usually load.';
     geoRev(c, 8)
       .then(function(d){
         if(gen!==fieldGen) return;
@@ -2678,7 +2678,7 @@
         var stFull=ad.state, abbr=N2A[stFull]||(iso&&iso[1]);
         // Virginia's independent cities carry no county in OSM; NASS lists them as "X City".
         var cty=(ad.county||(abbr==='VA'&&ad.city?ad.city+' City':'')).replace(/\s+(County|Parish|Borough|Census Area)$/i,'');
-        if(!abbr||!cty){ ['fs-rent','fs-market','fs-hood','fs-cond','fs-atlas'].forEach(function(id){ setErr(id, 'This spot didn’t resolve to a US county — the county and state layers only cover the fifty states.'); }); return; }
+        if(!abbr||!cty){ ['fs-rent','fs-market','fs-hood','fs-cond','fs-atlas'].forEach(function(id){ setErr(id, 'This spot didn’t resolve to a US county; the county and state layers only cover the fifty states.'); }); return; }
         FIELD.county = { name:cty, st:stFull, abbr:abbr, fips:null };
         var co=document.querySelector('#fs-results .coords');
         if(co) co.textContent='center '+c.lat.toFixed(4)+', '+c.lng.toFixed(4)+' · '+cty+' County, '+stFull;
@@ -2707,7 +2707,7 @@
       if(FIELD.county) FIELD.county.fips = rec.fips;
       atlasCard(gen, rec.fips);
       atlasCounty(rec.fips).then(function(ad){ if(gen!==fieldGen) return; rentCard(rec, ad); if(FIELD) FIELD._rentRedraw=function(){ if(gen===fieldGen) rentCard(rec, ad); }; });
-    }).catch(function(){ if(gen===fieldGen) setErr('fs-rent','County rent data didn’t load — refresh in a minute.'); });
+    }).catch(function(){ if(gen===fieldGen) setErr('fs-rent','County rent data didn’t load; refresh in a minute.'); });
     function rentCard(rec, ad){
       var ni=rec.rent&&rec.rent.nonirr||{};
       var yrs=Object.keys(ni).map(Number).sort(function(a,b){return a-b;});
@@ -2791,7 +2791,7 @@
     FIELD.county.atlasFips=fips;
     atlasCounty(fips).then(function(d){
       if(gen!==fieldGen) return;
-      if(!d){ setErr('fs-atlas','The county’s Farmland Atlas record didn’t load — refresh in a minute.'); return; }
+      if(!d){ setErr('fs-atlas','The county’s Farmland Atlas record didn’t load; refresh in a minute.'); return; }
       var rows=atlasRows(d);
       FIELD.county.atlas={ fips:fips, rows:rows };
       if(d.storms&&d.storms.status==='ok'&&d.storms.hail_1in_days_per_year!=null){ FIELD.county.storms=+d.storms.hail_1in_days_per_year; renderRisk(); }
@@ -2880,7 +2880,7 @@
         }
       }
       if(!fips&&!(FIELD.county&&FIELD.county.fips)) setErr('fs-atlas','Couldn’t match '+esc(cty)+' County to a county code, so its long record can’t be shown.');
-      if(!got){ setErr('fs-hood','No census tenure or AFIDA rows published for '+esc(cty)+' County — suppressed small-sample counties stay blank rather than estimated.'); return; }
+      if(!got){ setErr('fs-hood','No census tenure or AFIDA rows published for '+esc(cty)+' County; suppressed small-sample counties stay blank rather than estimated.'); return; }
       html+=csrc('USDA Census of Agriculture (owned vs rented-from-others) · USDA AFIDA foreign-holdings filings');
       setBody('fs-hood', html); recomputeInsight();
     });
@@ -2897,7 +2897,7 @@
       var cropKey = (isBeans&&haveSoy)?'soybeans':'corn', cropWord = cropKey;
       var cc=c&&c.crops&&c.crops[cropKey];
       var srow=cc&&cc.states&&cc.states[abbr];
-      if(!srow){ setErr('fs-cond','NASS doesn’t rate '+esc(cropWord)+' weekly in '+esc(stFull)+' (or under 10 comparable years) — thin samples aren’t ranked.'); return; }
+      if(!srow){ setErr('fs-cond','NASS doesn’t rate '+esc(cropWord)+' weekly in '+esc(stFull)+' (or under 10 comparable years); thin samples aren’t ranked.'); return; }
       var wcls = srow.pctile>=60?'green':srow.pctile<=30?'red':'gold';
       var html=bigline(Math.round(srow.ge)+'%', wcls, 'Good–Excellent', wcls);
       html+='<p class="fs-cline">'+esc(stFull)+' '+cropWord+' sits in the <strong>'+ordinal(srow.pctile)+' percentile</strong> for this week since 2000 (best '+Math.round(srow.best)+', worst '+Math.round(srow.worst)+').</p>';
@@ -2988,7 +2988,7 @@
             ? cap(cornIf+'corn is at or entering pollination, the single most weather-sensitive window of the year.')
             : cap(cornIf+'that heat-unit pace puts development around <strong>'+cropStage.label+'</strong>, roughly '+cropStage.daysToPollen+' day'+(cropStage.daysToPollen===1?'':'s')+' from pollination at a typical midsummer pace.'));
       var pp=pacePhrase();
-      lines.push(stg+(pp?' The season is '+pp+'.':'')+' <span class="fs-approx">(approximate — modeled from temperature'+plantHedge+', not field scouting)</span>');
+      lines.push(stg+(pp?' The season is '+pp+'.':'')+' <span class="fs-approx">(approximate, modeled from temperature'+plantHedge+', not field scouting)</span>');
     } else if(se && se.gDep!=null && Math.abs(se.gDep)>=100){
       var pp2=pacePhrase(); if(pp2) lines.push('Heat-unit accumulation is '+pp2+' this season.');
     }
@@ -2999,17 +2999,17 @@
     if(s && s.worst && r && r.cornOnCorn){
       if(s.worst.nicc>=4){
         push({ sev:5, act:true, topic:'rotation', tag:'continuous corn on your class-'+s.worst.nicc+' ground',
-          title:'break the rotation on your class-'+s.worst.nicc+' acres — it\u2019s the highest-ROI move on this field',
+          title:'break the rotation on your class-'+s.worst.nicc+' acres: it\u2019s the highest-ROI move on this field',
           detail:'Your weaker ground (class '+s.worst.nicc+') is '+(cornSure?'in':'likely in')+' <strong>corn on corn this year</strong>'+(r.corOnCornYears>=3?' ('+r.corOnCornYears+' years running)':'')+' — two strikes against yield in the same spot. A rotation break there is the highest-ROI change on this field'+nFix+'.',
           action: dragAction(5,12),
-          watch: pollenWindow()!=null ? 'Rootworm feeding shows at silking (~'+pollenWindow()+' days out) — pull and check roots before then.' : 'Scout roots for rootworm before pollination, and plan beans on these acres next year.' });
+          watch: pollenWindow()!=null ? 'Rootworm feeding shows at silking (~'+pollenWindow()+' days out); pull and check roots before then.' : 'Scout roots for rootworm before pollination, and plan beans on these acres next year.' });
       } else {
         var productive = s.nccpi!=null && s.nccpi>=0.55;
         push({ sev:productive?4:3, act:true, topic:'rotation', tag:'corn-on-corn pressure',
-          title: r.pattern==='ccs' ? 'second-year corn this season \u2014 scout rootworm and budget the drag' : 'plan a rotation break to stop the corn-on-corn yield drag'+(productive?' on this productive ground':''),
+          title: r.pattern==='ccs' ? 'second-year corn this season: scout rootworm and budget the drag' : 'plan a rotation break to stop the corn-on-corn yield drag'+(productive?' on this productive ground':''),
           detail:(cornSure?'Corn':'On its rotation, likely corn')+' this year on corn last year. '+'Second-year corn carries rootworm and nitrogen pressure'+(r.pattern==='ccs'?'; it is part of a planned corn\u2013corn\u2013soybean rotation, so weigh the drag against the rotation\u2019s other gains':' — worth a rotation break before it compounds'+nFix)+'.',
           action: dragAction(5, 15),   // one range for every soil: trials (Gentry 2013, Seifert 2017) find the drag largest on weaker, drier ground, not productive ground
-          watch: pollenWindow()!=null ? 'Rootworm pressure peaks near silking (~'+pollenWindow()+' days out) — scout this season; plan beans next.' : 'Scout for rootworm this season; plan beans on these acres next year.' });
+          watch: pollenWindow()!=null ? 'Rootworm pressure peaks near silking (~'+pollenWindow()+' days out); scout this season; plan beans next.' : 'Scout for rootworm this season; plan beans on these acres next year.' });
       }
     } else if(r && r.cornOnCorn){
       push({ sev:3, act:true, topic:'rotation', tag:'a multi-year corn streak',
@@ -3028,7 +3028,7 @@
         lines.push('The soil scores <strong>'+Math.round(s.nccpi*100)+'/100</strong> on USDA\u2019s national productivity index (NCCPI '+s.nccpi.toFixed(2)+'), upper tier: what limits yield here is mostly what you manage.'+favors);
       } else if(s.nccpi<0.3){
         push({ sev:2, act:false, topic:'soil', tag:null,
-          title:'NCCPI '+s.nccpi.toFixed(2)+' nationally — match yield goals and inputs to what this soil reliably returns',
+          title:'NCCPI '+s.nccpi.toFixed(2)+' nationally: match yield goals and inputs to what this soil reliably returns',
           detail:'On USDA\u2019s <strong>national</strong> index this rates NCCPI '+s.nccpi.toFixed(2)+' — the lower end of a scale weighted heavily by Corn Belt ground. In its own region this can still be solid.'+' <span class="fs-src">source: USDA NCCPI, a national 0–1 productivity index</span>', watch:null });
       }
     }
@@ -3037,9 +3037,9 @@
     var inDrought = d && d.cat && d.cat!=='None' && (d.cat.indexOf('D2')>=0||d.cat.indexOf('D3')>=0||d.cat.indexOf('D4')>=0);
     if(inDrought){
       push({ sev:4, act:true, topic:'moisture', tag:esc(d.cat)+' drought',
-        title:'moisture is the acute variable right now — prioritize it',
+        title:'moisture is the acute variable right now; prioritize it',
         detail:'Currently in <strong>'+esc(d.cat)+'</strong> — the field is under real moisture stress.',
-        watch: (pollenWindow()!=null && pollenWindow()<=21) ? 'Drought through pollination (~'+pollenWindow()+' days out) is the worst-timed stress there is — that window sets kernel count.' : 'Watch soil moisture closely into the next rain.' });
+        watch: (pollenWindow()!=null && pollenWindow()<=21) ? 'Drought through pollination (~'+pollenWindow()+' days out) is the worst-timed stress there is. That window sets kernel count.' : 'Watch soil moisture closely into the next rain.' });
     }
 
     // ── Season rain × GDU (skip a second moisture stressor if already in drought) ──
@@ -3049,16 +3049,16 @@
       var dryEnough=se.pDep<=-2, wetEnough=se.pDep>=2, hot=se.gDep>=100, cool=se.gDep<=-100;
       if(dryEnough && hot && !inDrought){
         push({ sev:4, act:true, topic:'moisture', tag:'a widening rain deficit',
-          title:'the crop is developing fast into a moisture deficit — watch it closely',
-          detail:'Rain is <strong>'+Math.abs(se.pDep).toFixed(1)+'″ below</strong> the '+se.n+'-year average while GDUs run '+Math.round(se.gDep)+' ahead — fast development into a drying profile.',
+          title:'the crop is developing fast into a moisture deficit. Watch it closely',
+          detail:'Rain is <strong>'+Math.abs(se.pDep).toFixed(1)+'″ below</strong> the '+se.n+'-year average while GDUs run '+Math.round(se.gDep)+' ahead: fast development into a drying profile.',
           watch: pollenWindow()!=null ? 'The next 2–3 weeks toward pollination (~'+pollenWindow()+' days out) are when a deficit bites hardest.' : 'A timely rain over the next two weeks matters most.' });
       } else if(dryEnough && !inDrought){
         push({ sev:3, act:false, topic:'moisture', tag:'a dry start',
-          title:'the field is starting dry — keep an eye on moisture',
+          title:'the field is starting dry: keep an eye on moisture',
           detail:'Season-to-date rain is <strong>'+Math.abs(se.pDep).toFixed(1)+'″ below</strong> its '+se.n+'-year average.',
           watch:'Watch the forecast; a return to normal rainfall still recovers this.' });
       } else if(wetEnough && cool){
-        lines.push('A wet, cool start — rain '+se.pDep.toFixed(1)+'″ above normal and GDUs '+Math.round(se.gDep)+' behind, so development is running slow.');
+        lines.push('A wet, cool start: rain '+se.pDep.toFixed(1)+'″ above normal and GDUs '+Math.round(se.gDep)+' behind, so development is running slow.');
       } else if(wetEnough){
         lines.push('Rain is running '+se.pDep.toFixed(1)+'″ above its '+se.n+'-year average so far this season.');
       }
@@ -3081,21 +3081,21 @@
         lines.push('The satellite shows the canopy '+(ixTr&&ixTr.dir==='easing'?'drying down':'holding')+' (NDVI '+ixV.toFixed(2)+(belowNorm!=null?', '+(belowNorm<-0.05?'below':belowNorm>0.05?'above':'close to')+' this field\u2019s other years at this date':'')+'). This late in the season that is maturity, not stress; what moves money now is harvest timing and the bid.');
       } else if(belowNorm!=null && belowNorm<=normTrig && !(cropCls==='smallgrain'&&grainRipening())){
         push({ sev: ixPrime?4:3, act:true, topic:'vigor', tag:'a canopy running below its own normal',
-          title: ixPrime ? 'the satellite says this capable ground is underperforming its own history \u2014 go look'
-                          : 'crop vigor is running below this field\u2019s normal \u2014 worth a scout',
-          detail:(ixPrime?'This is capable ground, yet ':'')+'the latest cloud-free pass reads NDVI <strong>'+ixV.toFixed(2)+'</strong>, about <strong>'+Math.abs(belowNorm).toFixed(2)+' below</strong> this field\u2019s '+nrmYrs+'normal for this point in the season. '+(cropCls==='hay'?'On hay ground a fresh cutting explains this &mdash; if you haven\u2019t cut recently, something is holding the stand back.':'Something on the ground is holding the canopy back.')+' <span class="fs-src">source: Sentinel-2 / Copernicus, cloud-masked</span>',
-          watch: ixPatchy ? 'It\u2019s also uneven across the field \u2014 start with the weakest zone (<a href="#" class="fs-god-link" data-god="ndvi">the Crop-vigor map layer shows where</a>).'
+          title: ixPrime ? 'the satellite says this capable ground is underperforming its own history. Go look'
+                          : 'crop vigor is running below this field\u2019s normal, worth a scout',
+          detail:(ixPrime?'This is capable ground, yet ':'')+'the latest cloud-free pass reads NDVI <strong>'+ixV.toFixed(2)+'</strong>, about <strong>'+Math.abs(belowNorm).toFixed(2)+' below</strong> this field\u2019s '+nrmYrs+'normal for this point in the season. '+(cropCls==='hay'?'On hay ground a fresh cutting explains this. If you haven\u2019t cut recently, something is holding the stand back.':'Something on the ground is holding the canopy back.')+' <span class="fs-src">source: Sentinel-2 / Copernicus, cloud-masked</span>',
+          watch: ixPatchy ? 'It\u2019s also uneven across the field: start with the weakest zone (<a href="#" class="fs-god-link" data-god="ndvi">the Crop-vigor map layer shows where</a>).'
                           : 'Scout for stand, nutrient, or moisture problems while there\u2019s still time to react.' });
       } else if(ixPatchy && ixV!=null){
         push({ sev:2, act:true, topic:'vigor', tag:'an uneven canopy',
-          title:'the canopy is uneven across the field \u2014 scout the weak zone',
-          detail:'Satellite vigor varies noticeably across this field (averaging NDVI '+ixV.toFixed(2)+', but spread out around it) \u2014 usually a drainage, compaction, or stand issue in one area.'+' <span class="fs-src">source: Sentinel-2 / Copernicus</span>',
+          title:'the canopy is uneven across the field; scout the weak zone',
+          detail:'Satellite vigor varies noticeably across this field (averaging NDVI '+ixV.toFixed(2)+', but spread out around it): usually a drainage, compaction, or stand issue in one area.'+' <span class="fs-src">source: Sentinel-2 / Copernicus</span>',
           watch:'Walk the lowest-vigor corner; <a href="#" class="fs-god-link" data-god="ndvi">the map\u2019s Crop-vigor layer</a> points to it.' });
       } else if(ixV!=null && ixV>=0.6 && (belowNorm==null || belowNorm>=-0.03)){
         lines.push('The satellite backs this up: canopy vigor is <strong>strong</strong> (NDVI '+ixV.toFixed(2)+')'+(belowNorm!=null?', tracking '+(belowNorm>0.03?'above':'right at')+' its own normal for the date':'')+(ixTr&&ixTr.dir==='easing'?', easing back from its peak as you\u2019d expect for the stage':'')+'.');
       }
       if(inDrought && ixTr && ixTr.dir==='easing' && ixV!=null){
-        lines.push('The drought is already showing in the canopy \u2014 vigor has been easing on recent passes.');
+        lines.push('The drought is already showing in the canopy: vigor has been easing on recent passes.');
       }
 
       // ── Cross-index reads (v: the satellite finally reasons in pairs) ──
@@ -3109,9 +3109,9 @@
         var nT=idxTrend(ix.series,'ndre');
         if(nT && nT.dir==='easing' && ixTr && ixTr.dir!=='easing'){
           push({ sev:3, act:true, topic:'nitrogen', tag:'a fading nitrogen signal under a full canopy',
-            title:'the nitrogen signal is fading while the canopy holds \u2014 check N before the window closes',
-            detail:'The canopy itself is holding (NDVI '+ixV.toFixed(2)+'), but the red-edge nitrogen signal (NDRE) has been <strong>easing on recent passes</strong> \u2014 the pattern that shows up when chlorophyll thins under a closed canopy. It is a satellite pattern, not a tissue test, but it is exactly what a nitrogen shortfall looks like from above.'+' <span class="fs-src">source: Sentinel-2 red-edge (NDRE), cloud-masked</span>',
-            watch: pollenWindow()!=null ? 'Pollination (~'+pollenWindow()+' days out) sets kernel count \u2014 a tissue or soil nitrate check before then still leaves time to sidedress or Y-drop.' : 'A tissue or soil nitrate check confirms it either way \u2014 the satellite can only point.' });
+            title:'the nitrogen signal is fading while the canopy holds. Check N before the window closes',
+            detail:'The canopy itself is holding (NDVI '+ixV.toFixed(2)+'), but the red-edge nitrogen signal (NDRE) has been <strong>easing on recent passes</strong>: the pattern that shows up when chlorophyll thins under a closed canopy. It is a satellite pattern, not a tissue test, but it is exactly what a nitrogen shortfall looks like from above.'+' <span class="fs-src">source: Sentinel-2 red-edge (NDRE), cloud-masked</span>',
+            watch: pollenWindow()!=null ? 'Pollination (~'+pollenWindow()+' days out) sets kernel count; a tissue or soil nitrate check before then still leaves time to sidedress or Y-drop.' : 'A tissue or soil nitrate check confirms it either way; the satellite can only point.' });
         }
       }
 
@@ -3121,10 +3121,10 @@
         if(mT && sT && mT.dir==='easing' && sT.dir==='rising'){
           var mSev = inDrought ? 4 : ((se && se.pDep!=null && se.pDep<=-2) ? 3 : 2);
           push({ sev:mSev, act:mSev>=3, topic:'moisture', tag:'a canopy drying on two independent reads',
-            title: mSev>=4 ? 'the canopy is drying on every read \u2014 moisture is the story on this field'
+            title: mSev>=4 ? 'the canopy is drying on every read; moisture is the story on this field'
                            : 'two independent satellite reads agree the canopy is drying',
-            detail:'Canopy moisture (NDMI) is <strong>falling</strong> and the moisture-stress index (MSI) is <strong>rising</strong> across recent passes \u2014 two separate calculations from different light bands telling the same story. When they agree like this, the drying is real, not noise.'+(inDrought?' It lines up with the '+esc(d.cat)+' drought status.':'')+' <span class="fs-src">source: Sentinel-2 NDMI + MSI, cloud-masked</span>',
-            watch: pollenWindow()!=null && pollenWindow()<=21 ? 'Moisture stress through pollination (~'+pollenWindow()+' days out) is the worst-timed stress there is.' : 'Watch the rain forecast \u2014 a timely inch changes this read fast.' });
+            detail:'Canopy moisture (NDMI) is <strong>falling</strong> and the moisture-stress index (MSI) is <strong>rising</strong> across recent passes: two separate calculations from different light bands telling the same story. When they agree like this, the drying is real, not noise.'+(inDrought?' It lines up with the '+esc(d.cat)+' drought status.':'')+' <span class="fs-src">source: Sentinel-2 NDMI + MSI, cloud-masked</span>',
+            watch: pollenWindow()!=null && pollenWindow()<=21 ? 'Moisture stress through pollination (~'+pollenWindow()+' days out) is the worst-timed stress there is.' : 'Watch the rain forecast; a timely inch changes this read fast.' });
         }
       }
 
@@ -3141,9 +3141,9 @@
           var hits=hl.dates.filter(function(hd){ return hd>d0 && hd<=d1; });
           if(hits.length){
             push({ sev:3, act:true, topic:'hail', tag:'a vigor drop that lines up with reported hail',
-              title:'the '+ixDate(d1)+' vigor drop lines up with a reported hail day \u2014 walk it and document',
+              title:'the '+ixDate(d1)+' vigor drop lines up with a reported hail day; walk it and document',
               detail:'Vigor fell <strong>'+drop.toFixed(2)+'</strong> between the '+ixDate(d0)+' and '+ixDate(d1)+' passes, and a severe-hail report near this field is dated <strong>'+ixDate(hits[0])+'</strong> \u2014 inside that window'+(hl.maxStone?' (stones up to '+hl.maxStone+'\u2033 reported in the area over 5 yrs)':'')+'. The timing lines up; only boots in the field confirm it.'+' <span class="fs-src">source: Sentinel-2 pass-to-pass + NOAA/IEM storm reports</span>',
-              watch:'Walk it soon and photograph what you find \u2014 dated satellite passes plus dated photos make a clean record for any claim conversation with your own agent or adjuster.' });
+              watch:'Walk it soon and photograph what you find: dated satellite passes plus dated photos make a clean record for any claim conversation with your own agent or adjuster.' });
             break; // one correlation is the story; don't stack duplicates
           }
         }
@@ -3152,8 +3152,8 @@
       // (c) Drown-out read — very wet surface + uneven canopy in a wet season.
       if(ixLast.ndwi!=null && ixLast.ndwi>=0.2 && ixPatchy && se && se.pDep!=null && se.pDep>=2){
         push({ sev:2, act:true, topic:'wet', tag:'saturated ground in the weak zones',
-          title:'the wet spots are likely drowning the weak zones \u2014 walk the low ground',
-          detail:'The surface-water read (NDWI '+(+ixLast.ndwi).toFixed(2)+') is running <strong>very wet</strong>, the season is '+se.pDep.toFixed(1)+'\u2033 above normal on rain, and vigor is uneven across the field \u2014 the classic drowned-low-spot signature.'+(s&&s.poorDrainPct!=null&&s.poorDrainPct>=25?' The soil survey agrees: <strong>'+s.poorDrainPct+'%</strong> of this ground maps as poorly drained.':'')+' <span class="fs-src">source: Sentinel-2 NDWI + Open-Meteo season rainfall</span>',
+          title:'the wet spots are likely drowning the weak zones; walk the low ground',
+          detail:'The surface-water read (NDWI '+(+ixLast.ndwi).toFixed(2)+') is running <strong>very wet</strong>, the season is '+se.pDep.toFixed(1)+'\u2033 above normal on rain, and vigor is uneven across the field: the classic drowned-low-spot signature.'+(s&&s.poorDrainPct!=null&&s.poorDrainPct>=25?' The soil survey agrees: <strong>'+s.poorDrainPct+'%</strong> of this ground maps as poorly drained.':'')+' <span class="fs-src">source: Sentinel-2 NDWI + Open-Meteo season rainfall</span>',
           watch:'Check the low corners; <a href="#" class="fs-god-link" data-god="ndvi">the Crop-vigor layer</a> shows which zones are lagging.' });
       }
     }
@@ -3184,7 +3184,7 @@
 
     // No concerns at all → nudge toward the visual NDVI layer.
     if(!stress.length && s && r){
-      lines.push('No red flags in the soil and rotation here — flip on <a href="#" class="fs-god-link" data-god="ndvi"><strong>Crop vigor</strong></a> to see how the stand is actually doing this season.');
+      lines.push('No red flags in the soil and rotation here; flip on <a href="#" class="fs-god-link" data-god="ndvi"><strong>Crop vigor</strong></a> to see how the stand is actually doing this season.');
     }
 
     stress.sort(function(a,b){ return b.sev-a.sev; });
@@ -3199,8 +3199,8 @@
     if(cy && cy.basis && cy.basis.dev<=-0.25){
       push({ sev:2, act:false, topic:'basis', tag:'weak basis',
         title:'basis here is running '+Math.round(Math.abs(cy.basis.dev)*100)+'¢ under normal',
-        detail:esc(cy.basis.crop.charAt(0).toUpperCase()+cy.basis.crop.slice(1))+' basis in '+esc(cy.st)+' is <strong>'+(cy.basis.latest<0?'−$':'$')+Math.abs(cy.basis.latest).toFixed(2)+'</strong> vs a '+(cy.basis.avg5>=0?'+$':'−$')+Math.abs(cy.basis.avg5).toFixed(2)+' 5-yr normal — '+Math.round(Math.abs(cy.basis.dev)*100)+'¢ of freight and storage pressure coming straight off your price.'+(cy.storage&&cy.storage.ratio>=0.9?' The state’s bins are '+Math.round(cy.storage.ratio*100)+'% committed'+(cy.storage.since?' — tightest since '+cy.storage.since:'')+', which is a lot of the story.':''),
-        watch:'If you have on-farm storage, weak basis is paying you to use it — and to shop bids beyond the closest elevator.' });
+        detail:esc(cy.basis.crop.charAt(0).toUpperCase()+cy.basis.crop.slice(1))+' basis in '+esc(cy.st)+' is <strong>'+(cy.basis.latest<0?'−$':'$')+Math.abs(cy.basis.latest).toFixed(2)+'</strong> vs a '+(cy.basis.avg5>=0?'+$':'−$')+Math.abs(cy.basis.avg5).toFixed(2)+' 5-yr normal: '+Math.round(Math.abs(cy.basis.dev)*100)+'¢ of freight and storage pressure coming straight off your price.'+(cy.storage&&cy.storage.ratio>=0.9?' The state’s bins are '+Math.round(cy.storage.ratio*100)+'% committed'+(cy.storage.since?' — tightest since '+cy.storage.since:'')+', which is a lot of the story.':''),
+        watch:'If you have on-farm storage, weak basis is paying you to use it, and to shop bids beyond the closest elevator.' });
     }
     var acts = stress.filter(function(x){ return x.act; });
     var mons = stress.filter(function(x){ return !x.act; });
@@ -3216,7 +3216,7 @@
           : tags.slice(0,-1).join(', ')+', and '+tags[tags.length-1];
         var cnt = tags.length===2?'Two':(tags.length===3?'Three':'Several');
         compound = cnt+' things are stacking up on this field at once: '+list+'. '
-          + 'Any one is manageable on its own — together they compound, which is why the first item below is the priority.';
+          + 'Any one is manageable on its own: together they compound, which is why the first item below is the priority.';
       }
     }
 
@@ -3434,12 +3434,12 @@
     if(cy&&cy.storage) moneyRows+=kv('State bins', Math.round(cy.storage.ratio*100)+'% of capacity filled by the \u2019'+String(cy.storage.year).slice(2)+' crop'+(cy.storage.since&&cy.storage.ratio>=0.85?' \u2014 tightest since '+cy.storage.since:''));
 
     var ownRows='';
-    if(cy&&cy.tenure) ownRows+=kv('County ground rented', cy.tenure.pct+'% \u2014 '+Math.round(cy.tenure.rented).toLocaleString('en-US')+' of '+Math.round(cy.tenure.total).toLocaleString('en-US')+' ac ('+cy.tenure.year+' census)');
+    if(cy&&cy.tenure) ownRows+=kv('County ground rented', cy.tenure.pct+'%: '+Math.round(cy.tenure.rented).toLocaleString('en-US')+' of '+Math.round(cy.tenure.total).toLocaleString('en-US')+' ac ('+cy.tenure.year+' census)');
     if(cy&&cy.afida) ownRows+=kv('Foreign-held in county', Math.round(cy.afida.acres).toLocaleString('en-US')+' ac'+(cy.afida.share!=null?' ('+cy.afida.share+'% of farmland)':'')+' \u00b7 '+cy.afida.year);
 
     var stateRows='';
     if(cy&&cy.cond){
-      stateRows+=kv('Crop condition ('+esc(cy.st||'state')+' '+esc(cy.cond.crop)+')', Math.round(cy.cond.ge)+'% G+E \u2014 '+ordinal(cy.cond.pctile)+' percentile since 2000');
+      stateRows+=kv('Crop condition ('+esc(cy.st||'state')+' '+esc(cy.cond.crop)+')', Math.round(cy.cond.ge)+'% G+E: '+ordinal(cy.cond.pctile)+' percentile since 2000');
       if(cy.cond.r2!=null) stateRows+=kv('What this week\u2019s ratings are worth', '~'+Math.round(cy.cond.r2*100)+'% of final yield, historically');
     }
 
@@ -3475,7 +3475,7 @@
       +'@media print{.no-print{display:none}body{padding:0;max-width:none;font-size:11.5px;line-height:1.4}h2{margin:12px 0 5px}.r-p{margin:.15em 0}.r-kv,.r-tbl{font-size:11.5px}.r-kv th,.r-kv td,.r-tbl td{padding:2px 6px 2px 0}.r-foot{margin-top:12px}}';
 
     var html='<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'
-      +'<title>Field Report \u2014 '+d.acres.toFixed(0)+' acres \u2014 AGSIST</title><style>'+css+'</style></head><body>'
+      +'<title>Field Report: '+d.acres.toFixed(0)+' acres | AGSIST</title><style>'+css+'</style></head><body>'
       +'<div class="r-actions no-print"><button type="button" onclick="window.print()">\u2399 Print / Save as PDF</button></div>'
       +'<div class="r-head"><div class="r-brand">AGSIST \u00b7 Field Scout</div><div class="r-date">'+esc(dateStr)+'</div></div>'
       +'<div class="r-top">'+outline+'<div class="r-top-t"><h1>'+d.acres.toFixed(1)+'-acre field'+(cy&&cy.name?' — '+esc(cy.name)+' County, '+esc(cy.st):'')+'</h1><div class="r-loc">Center '+d.lat.toFixed(4)+', '+d.lng.toFixed(4)+'</div>'
@@ -3492,7 +3492,7 @@
       +(cy&&cy.atlas&&cy.atlas.rows.length?sect('The county\u2019s long record', '<table class="r-kv">'+cy.atlas.rows.map(function(r){ return kv(r[0], esc(r[1])+(r[2]?' <span style="color:#777">\u00b7 '+esc(r[2])+'</span>':'')); }).join('')+'</table>'
         +'<p class="r-note">County-wide, the same figures the Farmland Atlas prints: agsist.com/farmland-atlas#'+esc(cy.atlas.fips)+' \u00b7 county sheet: agsist.com/farmland-atlas/sheet#'+esc(cy.atlas.fips)+'</p>'):'')
       +'</div>'
-      +'<div class="r-foot"><strong>Prepared by Sigurd Lindquist \u00b7 AGSIST Field Scout \u00b7 agsist.com/field-scout \u00b7 sig@farmers1st.com</strong><br>Compiled from public data: USDA SSURGO soil survey, Cropland Data Layer, NASS county cash-rent survey &amp; weekly crop conditions, Census of Agriculture, AFIDA foreign-holdings filings, AgTransport basis, Open-Meteo, US Drought Monitor, Iowa Environmental Mesonet hail reports, and the AGSIST cash-bid feed. Survey estimates &mdash; not a substitute for sampling your own ground. A starting read, not an underwriting decision or financial advice. Missing data prints as missing; nothing here is interpolated.</div>'
+      +'<div class="r-foot"><strong>Prepared by Sigurd Lindquist \u00b7 AGSIST Field Scout \u00b7 agsist.com/field-scout \u00b7 sig@farmers1st.com</strong><br>Compiled from public data: USDA SSURGO soil survey, Cropland Data Layer, NASS county cash-rent survey &amp; weekly crop conditions, Census of Agriculture, AFIDA foreign-holdings filings, AgTransport basis, Open-Meteo, US Drought Monitor, Iowa Environmental Mesonet hail reports, and the AGSIST cash-bid feed. Survey estimates, not a substitute for sampling your own ground. A starting read, not an underwriting decision or financial advice. Missing data prints as missing; nothing here is interpolated.</div>'
       +'</body></html>';
 
     var w=window.open('','_blank');

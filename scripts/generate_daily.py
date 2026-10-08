@@ -2420,8 +2420,8 @@ SPONSOR_OVERRIDE = None
 
 SPONSOR_HOUSE_AD = {
     "active": False, "label": "SPONSOR \u00b7 1 SLOT", "advertiser": "AGSIST",
-    "headline": "Sponsor the AGSIST Daily Briefing \u2014 $149 a month, first month free.",
-    "body": "One ag company per issue. Your message reaches working US producers across grain, cattle, dairy, and specialty operations \u2014 read every morning before the open. Rate locked in for 12 months from start date. No minimum, cancel anytime. First month free.",
+    "headline": "Sponsor the AGSIST Daily Briefing: $149 a month, first month free.",
+    "body": "One ag company per issue. Your message reaches working US producers across grain, cattle, dairy, and specialty operations, who read it every morning before the open. Rate locked in for 12 months from start date. No minimum, cancel anytime. First month free.",
     "cta_text": "Become the sponsor",
     "cta_url": "mailto:sig@farmers1st.com?subject=AGSIST%20Daily%20sponsor%20inquiry",
     "disclosure": "One sponsor, one issue. No retargeting. No programmatic auctions. Reply or call 715-797-2428.",
@@ -2669,7 +2669,7 @@ def render_forward_block_html(date_iso):
 def render_byline_block_html():
     return ('<div class="dv3-byline">'
             'Written by <strong>Sigurd Lindquist</strong>, founder. Reply at '
-            '<a href="mailto:sig@farmers1st.com">sig@farmers1st.com</a> &mdash; I read everything.'
+            '<a href="mailto:sig@farmers1st.com">sig@farmers1st.com</a>. I read everything.'
             '</div>')
 
 
@@ -2970,11 +2970,11 @@ def _trim_words(text, limit, ellipsis="…"):
 
 
 def daily_page_title(briefing, date_iso):
-    """'Corn holds $5 as grain stocks come in heavy — Oct 6, 2026 | AGSIST'.
+    """'Corn holds $5 as grain stocks come in heavy | Oct 6, 2026 | AGSIST'.
     Plain text (escape it for HTML). Never longer than DAILY_TITLE_MAX."""
     hl = sentence_case_headline(briefing.get("headline") or "") or "Daily ag market briefing"
     hl = hl.rstrip(" .;:,")
-    dated = f" — {_short_date(date_iso)}"
+    dated = f" | {_short_date(date_iso)}"
     brand = " | AGSIST"
     # Headline first; the brand is the first thing to give way (Google shows
     # the site name above the result anyway), the headline the last.
@@ -3410,7 +3410,7 @@ def generate_archive_html(briefing, date_iso, prev_date=None, next_date=None,
 <meta property="og:image" content="{og_image_url}">
 <meta property="og:image:width" content="{og_image_w}">
 <meta property="og:image:height" content="{og_image_h}">
-<meta property="og:image:alt" content="AGSIST Daily &mdash; {headline_sc}">
+<meta property="og:image:alt" content="AGSIST Daily: {headline_sc}">
 <meta property="article:published_time" content="{date_iso}">
 <meta property="article:modified_time" content="{gen_at}">
 <meta property="article:author" content="Sigurd Lindquist">
@@ -3602,7 +3602,7 @@ html,body{{overflow-x:hidden;overflow-x:clip;width:100%;}}
   <article>
     <header class="dv3-header">
       <div class="dv3-header-row">
-        <div class="dv3-eyebrow"><span class="dv3-eyebrow-dot"></span> AGSIST DAILY{issue_suffix} &mdash; ARCHIVE</div>
+        <div class="dv3-eyebrow"><span class="dv3-eyebrow-dot"></span> AGSIST DAILY{issue_suffix} &middot; ARCHIVE</div>
         <div class="dv3-date">{html_esc(date_display)}</div>
         {mood_html}
         {weekend_badge}

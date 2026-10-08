@@ -323,7 +323,7 @@ def bars_html(hist):
     for h in hist:
         if h.get("v") is None:
             rows.append(f'<div class="rs-bar"><span class="y">{h["y"]}</span>'
-                        f'<span class="gap">{h["why"]} &mdash; gap shown, not interpolated</span></div>')
+                        f'<span class="gap">{h["why"]}; gap shown, not interpolated</span></div>')
         else:
             w = max(2, round(100 * h["v"] / top, 1))
             rows.append(f'<div class="rs-bar"><span class="y">{h["y"]}</span>'
@@ -428,7 +428,7 @@ def build_state_page(st, d, s, all_states, aslug=None):
          "a": (f"The median USDA NASS county cash rent for {plabel} in {name} is {money(s['median'])} per acre "
                f"across the {s['n']} counties with a published {yr} rate. Rents vary widely by county: "
                + (f"highest {hi_s}; lowest {lo_s}." if lo_s
-                  else f"highest {hi_s} — with under five published counties, a highest/lowest split would overstate the sample.")
+                  else f"highest {hi_s}. With under five published counties, a highest/lowest split would overstate the sample.")
                + " The county mean is a survey reference point, not a rate card.")},
         {"q": f"How much did {name} cash rent change from {yr-1} to {yr}?",
          "a": (f"Comparing the same {s['yoy_n']} counties published in both years, the median {plabel} rent moved "
@@ -438,7 +438,7 @@ def build_state_page(st, d, s, all_states, aslug=None):
         {"q": f"Why is my {name} county not listed?",
          "a": "USDA NASS publishes a county rate only where enough Cash Rents Survey responses came back "
               "(and the county has at least 20,000 acres of cropland plus pasture). If your county is missing, "
-              "NASS did not publish a rate for it — this page never estimates one."},
+              "NASS did not publish a rate for it, and this page never estimates one."},
         {"q": "When is county cash rent data released?",
          "a": "USDA NASS releases county cash rent estimates each August for the current crop year. "
               "This page rebuilds automatically when new data lands."},
@@ -496,10 +496,10 @@ def build_state_page(st, d, s, all_states, aslug=None):
 <div id="site-header"></div>
 <main class="rs-wrap">
   <p class="sub" style="margin-top:14px"><a href="/rent/" style="color:var(--text-muted)">Cash Rent by State</a> &rsaquo; <b>{name}</b></p>
-  <h1>{name} Cash Rent by County &mdash; {yr}</h1>
+  <h1>{name} Cash Rent by County, {yr}</h1>
   <p class="sub">Every USDA-published county cash rental rate in {name}, straight from the NASS Cash Rents
-  Survey &mdash; no estimates, no modeling, no login. <span id="rs-seed"><!--SEED:rentstate-->{seed}<!--/SEED--></span></p>
-  <aside class="ag-sponsor-ribbon"><span class="ag-sponsor-tag">Sponsor this page</span> Everyone on this page is pricing {name} ground &mdash; one category-exclusive slot. <span class="ag-sponsor-price" data-rate="page">{PAGE_RATE}</span> <a href="/sponsor-apply?slot=rent-{st.lower()}&amp;utm_source=rent-{sl}&amp;utm_medium=slot">Put your name here &rarr;</a></aside>
+  Survey. No estimates, no modeling, no login. <span id="rs-seed"><!--SEED:rentstate-->{seed}<!--/SEED--></span></p>
+  <aside class="ag-sponsor-ribbon"><span class="ag-sponsor-tag">Sponsor this page</span> Everyone on this page is pricing {name} ground. One category-exclusive slot. <span class="ag-sponsor-price" data-rate="page">{PAGE_RATE}</span> <a href="/sponsor-apply?slot=rent-{st.lower()}&amp;utm_source=rent-{sl}&amp;utm_medium=slot">Put your name here &rarr;</a></aside>
   {hero}
   <h2>Every published county, {yr}</h2>
   <p class="sub">Click a column to sort. Greyed values are the county&rsquo;s most recent published year where {yr}
@@ -507,22 +507,22 @@ def build_state_page(st, d, s, all_states, aslug=None):
   and drought). Corn trend is the AGSIST least-squares trend yield from NASS county estimates.</p>
   {county_table(st, s, aslug)}
   <h2>{name} median county rent by year</h2>
-  <p class="sub">Median of counties published each year ({plabel}). Gap years are shown as gaps &mdash;
+  <p class="sub">Median of counties published each year ({plabel}). Gap years are shown as gaps;
   drawing a line across them would be an invention.</p>
   {bars_html(s['hist'])}
-  <div class="rs-note"><b>What this can&rsquo;t tell you.</b> These are county <b>means from a voluntary USDA survey</b> &mdash;
-  rents vary widely inside a county, driven by soil, drainage, field size and how badly a neighbor wants the
+  <div class="rs-note"><b>What this can&rsquo;t tell you.</b> These are county <b>means from a voluntary USDA survey</b>.
+  Rents vary widely inside a county, driven by soil, drainage, field size and how badly a neighbor wants the
   ground. Year-over-year stats above compare only counties published in both years, so a county dropping out
   of the survey can&rsquo;t fake a trend. Treat any county number as the start of a conversation, not a rate card.</div>
   <div class="rs-note rs-links" style="border-left-color:#5fc28a"><b>Do something with it:</b>
   see this county on the <a href="/cash-rent">national rent map</a> (with rent as a share of what the acre can
   actually gross) &middot; put a number in a <a href="/cash-lease?st={st}">printable {name} cash lease</a>{
-      " &mdash; termination notice: " + NOTICE[st] if st in NOTICE else ""} &middot;
+      " (termination notice: " + NOTICE[st] + ")" if st in NOTICE else ""} &middot;
   check <a href="/basis">local basis vs normal</a> before you commit to a rent that needs a price.</div>
   {faq_html(faq)}
   <h2>Other states</h2>
   {state_cloud(all_states, exclude=st)}
-  <p class="sub" style="font-size:.75rem;margin:18px 0">Source: USDA NASS Quick Stats &mdash; Cash Rents Survey county
+  <p class="sub" style="font-size:.75rem;margin:18px 0">Source: USDA NASS Quick Stats, Cash Rents Survey county
   estimates (released each August) and county yield estimates. Page rebuilt automatically from data refreshed
   {esc(d.get('generated', ''))}. AGSIST is free and sells nothing on this page.</p>
 </main>
@@ -558,7 +558,7 @@ def build_hub(states, stats, generated):
         else:
             tiles.append(f'<div class="rh-tile dim" style="--gc:{c};--gr:{r}"><span class="rh-tst">{ab}</span></div>')
     tile_html = ('<div style="font-family:\'JetBrains Mono\',monospace;font-size:.66rem;letter-spacing:.1em;color:var(--text-muted);text-transform:uppercase;margin:16px 0 10px">'
-        f'Median county rent per acre, {yr} &mdash; tap a state for every county. Color ranks each state against states reporting the SAME land type (cropland vs pasture states are not comparable dollar-for-dollar)</div>'
+        f'Median county rent per acre, {yr}. Tap a state for every county. Color ranks each state against states reporting the SAME land type (cropland vs pasture states are not comparable dollar-for-dollar)</div>'
         '<div class="rh-grid">' + "".join(tiles) + '</div>'
         '<div style="display:flex;gap:14px;justify-content:center;margin:12px 0 0;font-size:.74rem;color:var(--text-muted);flex-wrap:wrap">'
         '<span><b style="display:inline-block;width:13px;height:13px;border-radius:3px;vertical-align:-2px;margin-right:5px;background:#af3a32"></b>priciest fifth</span>'
@@ -580,7 +580,7 @@ def build_hub(states, stats, generated):
     desc = (f"USDA county cash rent for all {len(states)} published states, {yr}: median $/acre, change vs "
             f"{yr-1}, and every county's rate one click deep. Free, sources shown.")[:160]
     jsonld = {"@context": "https://schema.org", "@graph": [
-        {"@type": "CollectionPage", "name": f"Cash Rent by State — {yr}",
+        {"@type": "CollectionPage", "name": f"Cash Rent by State, {yr}",
          "url": f"{SITE}/rent/", "isAccessibleForFree": True,
          "creator": {"@type": "Organization", "name": "AGSIST", "url": SITE}},
         {"@type": "BreadcrumbList", "itemListElement": [
@@ -590,15 +590,15 @@ def build_hub(states, stats, generated):
     seed = (f"{len(states)} states &middot; highest median: {STATE_NAMES[medians[0][1]]} {money(medians[0][0])}/ac "
             f"&middot; lowest: {STATE_NAMES[medians[-1][1]]} {money(medians[-1][0])}/ac &middot; "
             f"data refreshed {esc(generated)}")
-    page = head(f"Cash Rent by State {yr} — Every County\u2019s USDA Rate", desc, "/rent/", jsonld) + f"""
+    page = head(f"Cash Rent by State {yr}: Every County\u2019s USDA Rate", desc, "/rent/", jsonld) + f"""
 <body>
 <div id="site-header"></div>
 <main class="rs-wrap">
-  <h1>Cash Rent by State &mdash; {yr}</h1>
+  <h1>Cash Rent by State, {yr}</h1>
   <p class="sub">Pick a state for every published county&rsquo;s USDA cash rental rate, history to 2008, and the
   statutory lease-termination deadline where the state has one.
   <span id="rs-seed"><!--SEED:renthub-->{seed}<!--/SEED--></span></p>
-  <aside class="ag-sponsor-ribbon"><span class="ag-sponsor-tag">Sponsor this page</span> The doorway to every county rent rate in America &mdash; one category-exclusive slot. <span class="ag-sponsor-price" data-rate="page">{PAGE_RATE}</span> <a href="/sponsor-apply?slot=rent-hub&amp;utm_source=rent-hub&amp;utm_medium=slot">Put your name here &rarr;</a></aside>
+  <aside class="ag-sponsor-ribbon"><span class="ag-sponsor-tag">Sponsor this page</span> The doorway to every county rent rate in America. One category-exclusive slot. <span class="ag-sponsor-price" data-rate="page">{PAGE_RATE}</span> <a href="/sponsor-apply?slot=rent-hub&amp;utm_source=rent-hub&amp;utm_medium=slot">Put your name here &rarr;</a></aside>
   {tile_html}
   <div class="rs-tw"><table class="rs-t" id="rs-table"><thead><tr><th>State</th><th>Median rent /ac</th><th>YoY</th><th>Counties</th><th>Type</th></tr></thead>
   <tbody>{"".join(rows)}</tbody></table></div>

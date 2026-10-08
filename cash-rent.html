@@ -31,93 +31,16 @@
   <meta property="og:image" content="https://agsist.com/img/og/agsist.jpg">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="Cash Rent Map: Rent vs Crop Revenue by County — AGSIST">
+  <meta property="og:image:alt" content="Cash Rent Map: Rent vs Crop Revenue by County | AGSIST">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:site" content="@agsist">
   <meta name="twitter:creator" content="@agsist">
   <meta name="twitter:title" content="Cash Rent Map: Rent vs Crop Revenue by County">
-  <meta name="twitter:description" content="County cash rent against county trend yield and the board — the ratio that actually decides a lease.">
+  <meta name="twitter:description" content="County cash rent against county trend yield and the board, the ratio that actually decides a lease.">
   <meta name="twitter:image" content="https://agsist.com/img/og/agsist.jpg">
 
   <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@graph": [
-      {
-        "@type": "Dataset",
-        "@id": "https://agsist.com/cash-rent#dataset",
-        "name": "US County Cash Rent and Trend Yield",
-        "description": "County-level cash rental rates for non-irrigated cropland, irrigated cropland, and permanent pasture, as published annually by USDA NASS under the 2008 Farm Bill mandate, paired with county trend yields for corn and soybeans fitted from NASS county yield estimates.",
-        "url": "https://agsist.com/cash-rent",
-        "license": "https://www.usa.gov/government-works",
-        "isAccessibleForFree": true,
-        "creator": {"@type": "Organization", "name": "AGSIST", "url": "https://agsist.com"},
-        "temporalCoverage": "2008/..",
-        "spatialCoverage": {"@type": "Place", "name": "United States"},
-        "measurementTechnique": "USDA NASS Cash Rents Survey county estimates; ordinary least squares trend fit on NASS county yield estimates",
-        "variableMeasured": [
-          {"@type": "PropertyValue", "name": "Cash rent, non-irrigated cropland", "unitText": "USD per acre per year"},
-          {"@type": "PropertyValue", "name": "Cash rent, irrigated cropland", "unitText": "USD per acre per year"},
-          {"@type": "PropertyValue", "name": "Cash rent, permanent pasture", "unitText": "USD per acre per year"},
-          {"@type": "PropertyValue", "name": "Trend yield", "unitText": "bushels per acre"}
-        ]
-      },
-      {
-        "@type": "BreadcrumbList",
-        "itemListElement": [
-          {"@type": "ListItem", "position": 1, "name": "AGSIST", "item": "https://agsist.com/"},
-          {"@type": "ListItem", "position": 2, "name": "Cash Rent by County", "item": "https://agsist.com/cash-rent"}
-        ]
-      },
-      {
-        "@type": "FAQPage",
-        "mainEntity": [
-          {
-            "@type": "Question",
-            "name": "What is the average cash rent per acre in my county?",
-            "acceptedAnswer": {"@type": "Answer", "text": "USDA NASS publishes a mean cash rental rate for every county with at least 20,000 acres of cropland plus pasture, separately for non-irrigated cropland, irrigated cropland, and permanent pasture. Pick your state and county above to see the published rate and its full history. If your county is not listed, NASS did not get enough survey responses to publish a rate for it."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "When is county cash rent data released?",
-            "acceptedAnswer": {"@type": "Answer", "text": "USDA NASS releases county cash rent estimates each August, from a survey of roughly 280,000 farms and ranches conducted earlier the same year. The rate published in a given August describes that same crop year. Rates are not revised after publication."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "Why is there no 2015 or 2018 cash rent data?",
-            "acceptedAnswer": {"@type": "Answer", "text": "NASS did not conduct the county Cash Rents Survey in 2015 or 2018, so no county estimates exist for those years. County data runs 2008 to 2014, 2016 to 2017, and 2019 forward. This page shows that year as a gap rather than drawing a line across it, because a line across it would be an invention."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "What percent of gross revenue should cash rent be?",
-            "acceptedAnswer": {"@type": "Answer", "text": "There is no single correct figure, and anyone who gives you one is selling something. Rent as a share of gross revenue is useful because it moves when yields and prices move, while the rent itself is fixed for the season. Comparing the ratio to your own county's history is more informative than comparing it to a national rule of thumb. What the remaining share has to cover — seed, fertilizer, chemical, machinery, labor, interest — varies enormously between operations."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "How has cash rent changed as a share of revenue over time?",
-            "acceptedAnswer": {"@type": "Answer", "text": "This page charts it directly for every county with the data. For each year it divides that year's published county rent by that year's actual county yield for the same practice times that year's state average price received: dryland rent over the dryland yield, irrigated rent over the irrigated yield. Where the only county yield mixes irrigated and dryland acres, that year is withheld and the page says so. Every term is a USDA figure published after the fact, so the line shows what really happened rather than a projection. The pattern in most Corn Belt counties is that rent takes a far larger share of the gross in low-price years than in high-price years, even when the rent itself barely moves."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "Does this use futures prices or what farmers actually got?",
-            "acceptedAnswer": {"@type": "Answer", "text": "The historical chart uses the USDA NASS marketing-year average price received by farmers in your state, which reflects actual sales and therefore already includes local basis. The calculator at the top uses a board price plus a basis you enter yourself, because it is looking forward at a crop you have not sold. The two answer different questions: what happened, and what might."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "Is NASS cash rent the same as what I should pay?",
-            "acceptedAnswer": {"@type": "Answer", "text": "No. It is a county mean from a voluntary survey. Rents vary widely within a county and even between farms on the same road, driven by soil type, drainage, field size, yield history, and how badly a neighbor wants the ground. Treat the county mean as a reference point for a conversation, not as a rate card."
-            }
-          }
-        ]
-      }
-    ]
-  }
+  {"@context": "https://schema.org", "@graph": [{"@type": "Dataset", "@id": "https://agsist.com/cash-rent#dataset", "name": "US County Cash Rent and Trend Yield", "description": "County-level cash rental rates for non-irrigated cropland, irrigated cropland, and permanent pasture, as published annually by USDA NASS under the 2008 Farm Bill mandate, paired with county trend yields for corn and soybeans fitted from NASS county yield estimates.", "url": "https://agsist.com/cash-rent", "license": "https://www.usa.gov/government-works", "isAccessibleForFree": true, "creator": {"@type": "Organization", "name": "AGSIST", "url": "https://agsist.com"}, "temporalCoverage": "2008/..", "spatialCoverage": {"@type": "Place", "name": "United States"}, "measurementTechnique": "USDA NASS Cash Rents Survey county estimates; ordinary least squares trend fit on NASS county yield estimates", "variableMeasured": [{"@type": "PropertyValue", "name": "Cash rent, non-irrigated cropland", "unitText": "USD per acre per year"}, {"@type": "PropertyValue", "name": "Cash rent, irrigated cropland", "unitText": "USD per acre per year"}, {"@type": "PropertyValue", "name": "Cash rent, permanent pasture", "unitText": "USD per acre per year"}, {"@type": "PropertyValue", "name": "Trend yield", "unitText": "bushels per acre"}]}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "AGSIST", "item": "https://agsist.com/"}, {"@type": "ListItem", "position": 2, "name": "Cash Rent by County", "item": "https://agsist.com/cash-rent"}]}, {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "What is the average cash rent per acre in my county?", "acceptedAnswer": {"@type": "Answer", "text": "USDA NASS publishes a mean cash rental rate for every county with at least 20,000 acres of cropland plus pasture, separately for non-irrigated cropland, irrigated cropland, and permanent pasture. Pick your state and county above to see the published rate and its full history. If your county is not listed, NASS did not get enough survey responses to publish a rate for it."}}, {"@type": "Question", "name": "When is county cash rent data released?", "acceptedAnswer": {"@type": "Answer", "text": "USDA NASS releases county cash rent estimates each August, from a survey of roughly 280,000 farms and ranches conducted earlier the same year. The rate published in a given August describes that same crop year. Rates are not revised after publication."}}, {"@type": "Question", "name": "Why is there no 2015 or 2018 cash rent data?", "acceptedAnswer": {"@type": "Answer", "text": "NASS did not conduct the county Cash Rents Survey in 2015 or 2018, so no county estimates exist for those years. County data runs 2008 to 2014, 2016 to 2017, and 2019 forward. This page shows that year as a gap rather than drawing a line across it, because a line across it would be an invention."}}, {"@type": "Question", "name": "What percent of gross revenue should cash rent be?", "acceptedAnswer": {"@type": "Answer", "text": "There is no single correct figure, and anyone who gives you one is selling something. Rent as a share of gross revenue is useful because it moves when yields and prices move, while the rent itself is fixed for the season. Comparing the ratio to your own county's history is more informative than comparing it to a national rule of thumb. What the remaining share has to cover (seed, fertilizer, chemical, machinery, labor, interest) varies enormously between operations."}}, {"@type": "Question", "name": "How has cash rent changed as a share of revenue over time?", "acceptedAnswer": {"@type": "Answer", "text": "This page charts it directly for every county with the data. For each year it divides that year's published county rent by that year's actual county yield for the same practice times that year's state average price received: dryland rent over the dryland yield, irrigated rent over the irrigated yield. Where the only county yield mixes irrigated and dryland acres, that year is withheld and the page says so. Every term is a USDA figure published after the fact, so the line shows what really happened rather than a projection. The pattern in most Corn Belt counties is that rent takes a far larger share of the gross in low-price years than in high-price years, even when the rent itself barely moves."}}, {"@type": "Question", "name": "Does this use futures prices or what farmers actually got?", "acceptedAnswer": {"@type": "Answer", "text": "The historical chart uses the USDA NASS marketing-year average price received by farmers in your state, which reflects actual sales and therefore already includes local basis. The calculator at the top uses a board price plus a basis you enter yourself, because it is looking forward at a crop you have not sold. The two answer different questions: what happened, and what might."}}, {"@type": "Question", "name": "Is NASS cash rent the same as what I should pay?", "acceptedAnswer": {"@type": "Answer", "text": "No. It is a county mean from a voluntary survey. Rents vary widely within a county and even between farms on the same road, driven by soil type, drainage, field size, yield history, and how badly a neighbor wants the ground. Treat the county mean as a reference point for a conversation, not as a rate card."}}]}]}
   </script>
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
@@ -311,10 +234,10 @@ html[data-theme="light"] #cr-map>div[style*="color:#8a948f"]{color:#8a948f!impor
   <header class="cr-hero">
     <p class="cr-kicker">USDA NASS &middot; County Cash Rents Survey</p>
     <h1>Cash rent map: county rent against what the acre can gross</h1>
-    <p class="cr-sub">You know your rent. The number that decides the lease is <strong>rent as a share of what the acre can realistically gross</strong> &mdash; and almost nobody puts those two numbers side by side. This does, for every county USDA publishes.</p>
+    <p class="cr-sub">You know your rent. The number that decides the lease is <strong>rent as a share of what the acre can realistically gross</strong>: and almost nobody puts those two numbers side by side. This does, for every county USDA publishes.</p>
     <p class="cr-sub" style="margin-top:.5rem">Every county's rent beside its night heat, water, insurance loss record and land value: <a href="/farmland-atlas#l=rent" style="color:var(--gold)">the Farmland Atlas</a>.</p>
   </header>
-      <aside class="ag-sponsor-ribbon" id="ag-sponsor"><span class="ag-sponsor-tag">Sponsor this page</span> Every visitor here is weighing a land rent number &mdash; one category-exclusive slot. <span class="ag-sponsor-price" data-rate="page">$29/mo &middot; first month free</span> <a href="/sponsor-apply?slot=cash-rent&amp;utm_source=cash-rent&amp;utm_medium=slot">Put your name here &rarr;</a></aside>
+      <aside class="ag-sponsor-ribbon" id="ag-sponsor"><span class="ag-sponsor-tag">Sponsor this page</span> Every visitor here is weighing a land rent number. One category-exclusive slot. <span class="ag-sponsor-price" data-rate="page">$29/mo &middot; first month free</span> <a href="/sponsor-apply?slot=cash-rent&amp;utm_source=cash-rent&amp;utm_medium=slot">Put your name here &rarr;</a></aside>
 
   <section class="cr-panel" aria-labelledby="cr-map-t" style="margin-top:28px">
     <div class="cr-panel-hd">
@@ -328,7 +251,7 @@ html[data-theme="light"] #cr-map>div[style*="color:#8a948f"]{color:#8a948f!impor
     <div class="cr-mleg" id="cr-mleg"></div>
     <div id="cr-map"></div>
     <div class="cr-panel-b" style="border-top:1px solid rgba(132,160,168,.12)">
-      <p style="font-size:14px;line-height:1.7;color:#8a948f;margin:0" id="cr-map-note">Tap any county. Grey means USDA did not publish a rate there &mdash; too few survey responses &mdash; and I would rather show you a hole than a neighbour&rsquo;s number.</p>
+      <p style="font-size:14px;line-height:1.7;color:#8a948f;margin:0" id="cr-map-note">Tap any county. Grey means USDA did not publish a rate there, too few survey responses, and I would rather show you a hole than a neighbour&rsquo;s number.</p>
     </div>
   </section>
 
@@ -365,7 +288,7 @@ html[data-theme="light"] #cr-map>div[style*="color:#8a948f"]{color:#8a948f!impor
         <div class="cr-in"><label for="cr-price">Board price ($/bu)</label><input type="number" id="cr-price" inputmode="decimal" step="0.01"><div class="cr-in-h" id="cr-price-h">&nbsp;</div></div>
         <div class="cr-in"><label for="cr-basis">Your basis ($/bu)</label><input type="number" id="cr-basis" inputmode="decimal" step="0.01" value="0"><div class="cr-in-h">Under the board = negative</div></div>
       </div>
-      <p style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12.9px;color:#8a948f;margin:14px 0 0;line-height:1.7">Every field is editable. These are starting points, not your farm &mdash; change them to your own numbers and the math follows.</p>
+      <p style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12.9px;color:#8a948f;margin:14px 0 0;line-height:1.7">Every field is editable. These are starting points, not your farm. Change them to your own numbers and the math follows.</p>
     </div>
   </section>
 
@@ -379,7 +302,7 @@ html[data-theme="light"] #cr-map>div[style*="color:#8a948f"]{color:#8a948f!impor
     </div>
     <div class="cr-panel-b" style="border-top:1px solid rgba(132,160,168,.12)">
       <p style="font-size:14px;line-height:1.7;color:#8a948f;margin:0 0 10px" id="cr-rh-basis"></p>
-      <p style="font-size:14px;line-height:1.7;color:#8a948f;margin:0" id="cr-rh-x">Each point is <strong style="color:#e6ebe9">that year&rsquo;s published rent</strong> divided by <strong style="color:#e6ebe9">that year&rsquo;s actual county yield for the same practice</strong> times <strong style="color:#e6ebe9">that year&rsquo;s state average price received</strong>. Dryland rent is divided by the county&rsquo;s dryland (non-irrigated) yield and irrigated rent by its irrigated yield; the all-practice yield is used only where NASS reports no irrigation in the county. Where the only county yield mixes irrigated and dryland acres, the year is left out and listed above with that reason. Nothing here is a forecast or a trend line &mdash; every term is a number USDA published after the fact. Because price received is what farmers actually got, your basis is already inside it.</p>
+      <p style="font-size:14px;line-height:1.7;color:#8a948f;margin:0" id="cr-rh-x">Each point is <strong style="color:#e6ebe9">that year&rsquo;s published rent</strong> divided by <strong style="color:#e6ebe9">that year&rsquo;s actual county yield for the same practice</strong> times <strong style="color:#e6ebe9">that year&rsquo;s state average price received</strong>. Dryland rent is divided by the county&rsquo;s dryland (non-irrigated) yield and irrigated rent by its irrigated yield; the all-practice yield is used only where NASS reports no irrigation in the county. Where the only county yield mixes irrigated and dryland acres, the year is left out and listed above with that reason. Nothing here is a forecast or a trend line. Every term is a number USDA published after the fact. Because price received is what farmers actually got, your basis is already inside it.</p>
     </div>
   </section>
 
@@ -400,36 +323,36 @@ html[data-theme="light"] #cr-map>div[style*="color:#8a948f"]{color:#8a948f!impor
     <p>Rent is fixed in the spring. Yield and price are not. That is the whole problem with judging a lease by the rent alone: the rent stops moving the day you sign, and everything that pays for it keeps moving for another nine months.</p>
     <p>Expressing rent as a share of gross revenue puts the fixed number on top of the moving one. When corn is $6.00 and the county trends 200 bushels, $250 rent is about 21% of the gross. When corn is $4.00, the same $250 on the same ground is over 31%. Nothing about the lease changed. The arithmetic underneath it did.</p>
     <div class="cr-callout">
-      <p><strong>There is no magic percentage.</strong> Anyone quoting you one number for the whole country is guessing, or selling. What the rest of the gross has to cover &mdash; seed, fertilizer, chemical, iron, labor, interest, living &mdash; is wildly different between two operations on the same road. The useful comparison is your county against <em>its own history</em>, which is why the chart goes back to 2008.</p>
+      <p><strong>There is no magic percentage.</strong> Anyone quoting you one number for the whole country is guessing, or selling. What the rest of the gross has to cover (seed, fertilizer, chemical, iron, labor, interest, living) is wildly different between two operations on the same road. The useful comparison is your county against <em>its own history</em>, which is why the chart goes back to 2008.</p>
     </div>
 
     <h2>Where these numbers come from</h2>
     <p>The rent is USDA NASS's county estimate from the <strong>Cash Rents Survey</strong>, a survey of roughly 280,000 farms and ranches run every year in every state but Alaska. The 2008 Farm Bill requires NASS to publish a mean rate for every county with at least 20,000 acres of cropland plus pasture. Results land each <strong>August</strong> and are not revised afterward. The Farm Service Agency uses these same county estimates to set market-based rates for programs like CRP.</p>
-    <p>The trend yield is mine, not USDA's: an ordinary least-squares fit through your county's NASS yield estimates over the last fifteen years, projected to the current year. It is fitted on <strong>the same practice as the rent it is divided by</strong> &mdash; the county's dryland (non-irrigated) yields for dryland rent, its irrigated yields for irrigated rent. The all-practice county yield is used only where NASS reports no irrigation in the county; anywhere else it is mostly pivot corn and would make dryland rent look cheap, so the trend is withheld and the page says why. It ships with its fit quality attached, and where a county has fewer than six real years of yield on record, <strong>no trend is shown at all</strong> rather than a number pulled through too few points.</p>
+    <p>The trend yield is mine, not USDA's: an ordinary least-squares fit through your county's NASS yield estimates over the last fifteen years, projected to the current year. It is fitted on <strong>the same practice as the rent it is divided by</strong>: the county's dryland (non-irrigated) yields for dryland rent, its irrigated yields for irrigated rent. The all-practice county yield is used only where NASS reports no irrigation in the county; anywhere else it is mostly pivot corn and would make dryland rent look cheap, so the trend is withheld and the page says why. It ships with its fit quality attached, and where a county has fewer than six real years of yield on record, <strong>no trend is shown at all</strong> rather than a number pulled through too few points.</p>
 
     <h3>Three things this data will not do</h3>
     <ul>
       <li><strong>It will not fill in your county if NASS didn't.</strong> Counties with too few survey responses are withheld. Where that happens you get a blank and a plain statement that NASS did not publish, never a neighbor's number wearing your county's name.</li>
       <li><strong>It has no 2015 or 2018.</strong> NASS ran no county Cash Rents Survey in those years, so the series runs 2008&ndash;2014, 2016&ndash;2017 and 2019 forward. The chart shows a hole. Drawing a line across it would be inventing a year.</li>
-      <li><strong>It is a county mean, not a rate card.</strong> Rents differ between farms on the same road &mdash; soil, drainage, field size, yield history, and how badly the neighbor wants it. Bring the mean to the conversation as a reference point, not a verdict.</li>
+      <li><strong>It is a county mean, not a rate card.</strong> Rents differ between farms on the same road: soil, drainage, field size, yield history, and how badly the neighbor wants it. Bring the mean to the conversation as a reference point, not a verdict.</li>
     </ul>
 
     <h2>Using it in an actual rent conversation</h2>
     <p>The common landlord conversation is a number against a feeling. This gives both sides the same arithmetic to argue about, which is usually a shorter argument. A few ways to run it:</p>
     <ul>
-      <li><strong>Put your real yield in.</strong> The county trend is a starting point. If your ground beats the county by fifteen bushels, type that in &mdash; a share of gross computed on somebody else's yield is not your ratio.</li>
+      <li><strong>Put your real yield in.</strong> The county trend is a starting point. If your ground beats the county by fifteen bushels, type that in. A share of gross computed on somebody else's yield is not your ratio.</li>
       <li><strong>Put your real basis in.</strong> The board is not what you get paid. Basis is the difference between the two, and over a 200-bushel acre, thirty cents is sixty dollars.</li>
       <li><strong>Look at the history, not the level.</strong> A ratio means little in isolation and a lot next to the same county's last fifteen years.</li>
     </ul>
     <p>What it deliberately will not do is tell you what to sign. That is between you, your landlord, and your own numbers.</p>
 
-    <div style="background:rgba(212,162,63,.06);border:1px solid rgba(212,162,63,.3);border-radius:10px;padding:12px 16px;font-size:.9rem;line-height:1.65;color:#8a948f;margin:20px 0"><strong style="color:var(--gold)">Settled on a number?</strong> Put it on paper &mdash; the free fillable, printable <a href="/cash-lease" id="cr-lease-link" style="color:var(--gold)">AGSIST cash farm lease</a><span id="cr-lease-ctx"></span>, plus every lease type (straight cash, flex, share) explained in plain English.</div>
+    <div style="background:rgba(212,162,63,.06);border:1px solid rgba(212,162,63,.3);border-radius:10px;padding:12px 16px;font-size:.9rem;line-height:1.65;color:#8a948f;margin:20px 0"><strong style="color:var(--gold)">Settled on a number?</strong> Put it on paper: the free fillable, printable <a href="/cash-lease" id="cr-lease-link" style="color:var(--gold)">AGSIST cash farm lease</a><span id="cr-lease-ctx"></span>, plus every lease type (straight cash, flex, share) explained in plain English.</div>
     <h2>Questions</h2>
     <div class="cr-faq">
       <details><summary>What is the average cash rent per acre in my county?</summary><div class="cr-faq-a">USDA NASS publishes a mean cash rental rate for every county with at least 20,000 acres of cropland plus pasture, separately for non-irrigated cropland, irrigated cropland, and permanent pasture. Pick your state and county above to see the published rate and its full history. If your county is not listed, NASS did not get enough survey responses to publish a rate for it.</div></details>
       <details><summary>When is county cash rent data released?</summary><div class="cr-faq-a">USDA NASS releases county cash rent estimates each August, from a survey of roughly 280,000 farms and ranches conducted earlier the same year. The rate published in a given August describes that same crop year. Rates are not revised after publication.</div></details>
       <details><summary>Why is there no 2015 or 2018 cash rent data?</summary><div class="cr-faq-a">NASS did not conduct the county Cash Rents Survey in 2015 or 2018, so no county estimates exist for those years. County data runs 2008 to 2014, 2016 to 2017, and 2019 forward. This page shows that year as a gap rather than drawing a line across it, because a line across it would be an invention.</div></details>
-      <details><summary>What percent of gross revenue should cash rent be?</summary><div class="cr-faq-a">There is no single correct figure, and anyone who gives you one is selling something. Rent as a share of gross revenue is useful because it moves when yields and prices move, while the rent itself is fixed for the season. Comparing the ratio to your own county's history is more informative than comparing it to a national rule of thumb. What the remaining share has to cover &mdash; seed, fertilizer, chemical, machinery, labor, interest &mdash; varies enormously between operations.</div></details>
+      <details><summary>What percent of gross revenue should cash rent be?</summary><div class="cr-faq-a">There is no single correct figure, and anyone who gives you one is selling something. Rent as a share of gross revenue is useful because it moves when yields and prices move, while the rent itself is fixed for the season. Comparing the ratio to your own county's history is more informative than comparing it to a national rule of thumb. What the remaining share has to cover (seed, fertilizer, chemical, machinery, labor, interest) varies enormously between operations.</div></details>
       <details><summary>How has cash rent changed as a share of revenue over time?</summary><div class="cr-faq-a">This page charts it directly for every county with the data. For each year it divides that year's published county rent by that year's actual county yield for the same practice times that year's state average price received: dryland rent over the dryland yield, irrigated rent over the irrigated yield. Where the only county yield mixes irrigated and dryland acres, that year is withheld and the page says so. Every term is a USDA figure published after the fact, so the line shows what really happened rather than a projection. The pattern in most Corn Belt counties is that rent takes a far larger share of the gross in low-price years than in high-price years, even when the rent itself barely moves.</div></details>
       <details><summary>Does this use futures prices or what farmers actually got?</summary><div class="cr-faq-a">The historical chart uses the USDA NASS marketing-year average price received by farmers in your state, which reflects actual sales and therefore already includes local basis. The calculator at the top uses a board price plus a basis you enter yourself, because it is looking forward at a crop you have not sold. The two answer different questions: what happened, and what might.</div></details>
       <details><summary>Is NASS cash rent the same as what I should pay?</summary><div class="cr-faq-a">No. It is a county mean from a voluntary survey. Rents vary widely within a county and even between farms on the same road, driven by soil type, drainage, field size, yield history, and how badly a neighbor wants the ground. Treat the county mean as a reference point for a conversation, not as a rate card.</div></details>
@@ -437,7 +360,7 @@ html[data-theme="light"] #cr-map>div[style*="color:#8a948f"]{color:#8a948f!impor
 
     <div style="margin:22px 0">
       <div style="font-family:'JetBrains Mono',monospace;font-size:0.77rem;letter-spacing:.1em;text-transform:uppercase;color:#8a948f;margin-bottom:6px">Browse rent by state</div>
-      <p style="font-size:13.4px;line-height:2;color:#8a948f;margin:0">Every published county&rsquo;s rate as a plain table, one page per state &mdash; <a href="/rent/" style="color:var(--gold)">all states</a> &middot; <a href="/rent/alabama" style="color:#8a948f;text-decoration:none;border-bottom:1px dotted #2a3133">Alabama</a> &middot; <a href="/rent/arkansas" style="color:#8a948f;text-decoration:none;border-bottom:1px dotted #2a3133">Arkansas</a> &middot; <a href="/rent/arizona" style="color:#8a948f;text-decoration:none;border-bottom:1px dotted #2a3133">Arizona</a> &middot; <a href="/rent/california" style="color:#8a948f;text-decoration:none;border-bottom:1px dotted #2a3133">California</a> &middot; <a href="/rent/colorado" style="color:#8a948f;text-decoration:none;border-bottom:1px dotted #2a3133">Colorado</a> &middot; <a href="/rent/connecticut" style="color:#8a948f;text-decoration:none;border-bottom:1px dotted #2a3133">Connecticut</a> &middot; <a href="/rent/delaware" style="color:#8a948f;text-decoration:none;border-bottom:1px dotted #2a3133">Delaware</a> &middot; <a href="/rent/florida" style="color:#8a948f;text-decoration:none;border-bottom:1px dotted #2a3133">Florida</a> &middot; <a href="/rent/georgia" style="color:#8a948f;text-decoration:none;border-bottom:1px dotted #2a3133">Georgia</a> &middot; <a href="/rent/iowa" style="color:#8a948f;text-decoration:none;border-bottom:1px dotted #2a3133">Iowa</a> &middot; <a href="/rent/idaho" style="color:#8a948f;text-decoration:none;border-bottom:1px dotted #2a3133">Idaho</a> &middot; <a href="/rent/illinois" style="color:#8a948f;text-decoration:none;border-bottom:1px dotted #2a3133">Illinois</a> &middot; <a href="/rent/indiana" style="color:#8a948f;text-decoration:none;border-bottom:1px dotted #2a3133">Indiana</a> &middot; <a href="/rent/kansas" style="color:#8a948f;text-decoration:none;border-bottom:1px dotted #2a3133">Kansas</a> &middot; <a href="/rent/kentucky" style="color:#8a948f;text-decoration:none;border-bottom:1px dotted #2a3133">Kentucky</a> &middot; <a href="/rent/louisiana" style="color:#8a948f;text-decoration:none;border-bottom:1px dotted #2a3133">Louisiana</a> &middot; <a href="/rent/massachusetts" style="color:#8a948f;text-decoration:none;border-bottom:1px dotted #2a3133">Massachusetts</a> &middot; <a href="/rent/maryland" style="color:#8a948f;text-decoration:none;border-bottom:1px dotted #2a3133">Maryland</a> &middot; <a href="/rent/maine" style="color:#8a948f;text-decoration:none;border-bottom:1px dotted #2a3133">Maine</a> &middot; <a href="/rent/michigan" style="color:#8a948f;text-decoration:none;border-bottom:1px dotted #2a3133">Michigan</a> &middot; <a href="/rent/minnesota" style="color:#8a948f;text-decoration:none;border-bottom:1px dotted #2a3133">Minnesota</a> &middot; <a href="/rent/missouri" style="color:#8a948f;text-decoration:none;border-bottom:1px dotted #2a3133">Missouri</a> &middot; <a href="/rent/mississippi" style="color:#8a948f;text-decoration:none;border-bottom:1px dotted #2a3133">Mississippi</a> &middot; <a href="/rent/montana" style="color:#8a948f;text-decoration:none;border-bottom:1px dotted #2a3133">Montana</a> &middot; <a href="/rent/north-carolina" style="color:#8a948f;text-decoration:none;border-bottom:1px dotted #2a3133">North Carolina</a> &middot; <a href="/rent/north-dakota" style="color:#8a948f;text-decoration:none;border-bottom:1px dotted #2a3133">North Dakota</a> &middot; <a href="/rent/nebraska" style="color:#8a948f;text-decoration:none;border-bottom:1px dotted #2a3133">Nebraska</a> &middot; <a href="/rent/new-hampshire" style="color:#8a948f;text-decoration:none;border-bottom:1px dotted #2a3133">New Hampshire</a> &middot; <a href="/rent/new-jersey" style="color:#8a948f;text-decoration:none;border-bottom:1px dotted #2a3133">New Jersey</a> &middot; <a href="/rent/new-mexico" style="color:#8a948f;text-decoration:none;border-bottom:1px dotted #2a3133">New Mexico</a> &middot; <a href="/rent/nevada" style="color:#8a948f;text-decoration:none;border-bottom:1px dotted #2a3133">Nevada</a> &middot; <a href="/rent/new-york" style="color:#8a948f;text-decoration:none;border-bottom:1px dotted #2a3133">New York</a> &middot; <a href="/rent/ohio" style="color:#8a948f;text-decoration:none;border-bottom:1px dotted #2a3133">Ohio</a> &middot; <a href="/rent/oklahoma" style="color:#8a948f;text-decoration:none;border-bottom:1px dotted #2a3133">Oklahoma</a> &middot; <a href="/rent/oregon" style="color:#8a948f;text-decoration:none;border-bottom:1px dotted #2a3133">Oregon</a> &middot; <a href="/rent/pennsylvania" style="color:#8a948f;text-decoration:none;border-bottom:1px dotted #2a3133">Pennsylvania</a> &middot; <a href="/rent/south-carolina" style="color:#8a948f;text-decoration:none;border-bottom:1px dotted #2a3133">South Carolina</a> &middot; <a href="/rent/south-dakota" style="color:#8a948f;text-decoration:none;border-bottom:1px dotted #2a3133">South Dakota</a> &middot; <a href="/rent/tennessee" style="color:#8a948f;text-decoration:none;border-bottom:1px dotted #2a3133">Tennessee</a> &middot; <a href="/rent/texas" style="color:#8a948f;text-decoration:none;border-bottom:1px dotted #2a3133">Texas</a> &middot; <a href="/rent/utah" style="color:#8a948f;text-decoration:none;border-bottom:1px dotted #2a3133">Utah</a> &middot; <a href="/rent/virginia" style="color:#8a948f;text-decoration:none;border-bottom:1px dotted #2a3133">Virginia</a> &middot; <a href="/rent/vermont" style="color:#8a948f;text-decoration:none;border-bottom:1px dotted #2a3133">Vermont</a> &middot; <a href="/rent/washington" style="color:#8a948f;text-decoration:none;border-bottom:1px dotted #2a3133">Washington</a> &middot; <a href="/rent/wisconsin" style="color:#8a948f;text-decoration:none;border-bottom:1px dotted #2a3133">Wisconsin</a> &middot; <a href="/rent/west-virginia" style="color:#8a948f;text-decoration:none;border-bottom:1px dotted #2a3133">West Virginia</a> &middot; <a href="/rent/wyoming" style="color:#8a948f;text-decoration:none;border-bottom:1px dotted #2a3133">Wyoming</a></p>
+      <p style="font-size:13.4px;line-height:2;color:#8a948f;margin:0">Every published county&rsquo;s rate as a plain table, one page per state: <a href="/rent/" style="color:var(--gold)">all states</a> &middot; <a href="/rent/alabama" style="color:#8a948f;text-decoration:none;border-bottom:1px dotted #2a3133">Alabama</a> &middot; <a href="/rent/arkansas" style="color:#8a948f;text-decoration:none;border-bottom:1px dotted #2a3133">Arkansas</a> &middot; <a href="/rent/arizona" style="color:#8a948f;text-decoration:none;border-bottom:1px dotted #2a3133">Arizona</a> &middot; <a href="/rent/california" style="color:#8a948f;text-decoration:none;border-bottom:1px dotted #2a3133">California</a> &middot; <a href="/rent/colorado" style="color:#8a948f;text-decoration:none;border-bottom:1px dotted #2a3133">Colorado</a> &middot; <a href="/rent/connecticut" style="color:#8a948f;text-decoration:none;border-bottom:1px dotted #2a3133">Connecticut</a> &middot; <a href="/rent/delaware" style="color:#8a948f;text-decoration:none;border-bottom:1px dotted #2a3133">Delaware</a> &middot; <a href="/rent/florida" style="color:#8a948f;text-decoration:none;border-bottom:1px dotted #2a3133">Florida</a> &middot; <a href="/rent/georgia" style="color:#8a948f;text-decoration:none;border-bottom:1px dotted #2a3133">Georgia</a> &middot; <a href="/rent/iowa" style="color:#8a948f;text-decoration:none;border-bottom:1px dotted #2a3133">Iowa</a> &middot; <a href="/rent/idaho" style="color:#8a948f;text-decoration:none;border-bottom:1px dotted #2a3133">Idaho</a> &middot; <a href="/rent/illinois" style="color:#8a948f;text-decoration:none;border-bottom:1px dotted #2a3133">Illinois</a> &middot; <a href="/rent/indiana" style="color:#8a948f;text-decoration:none;border-bottom:1px dotted #2a3133">Indiana</a> &middot; <a href="/rent/kansas" style="color:#8a948f;text-decoration:none;border-bottom:1px dotted #2a3133">Kansas</a> &middot; <a href="/rent/kentucky" style="color:#8a948f;text-decoration:none;border-bottom:1px dotted #2a3133">Kentucky</a> &middot; <a href="/rent/louisiana" style="color:#8a948f;text-decoration:none;border-bottom:1px dotted #2a3133">Louisiana</a> &middot; <a href="/rent/massachusetts" style="color:#8a948f;text-decoration:none;border-bottom:1px dotted #2a3133">Massachusetts</a> &middot; <a href="/rent/maryland" style="color:#8a948f;text-decoration:none;border-bottom:1px dotted #2a3133">Maryland</a> &middot; <a href="/rent/maine" style="color:#8a948f;text-decoration:none;border-bottom:1px dotted #2a3133">Maine</a> &middot; <a href="/rent/michigan" style="color:#8a948f;text-decoration:none;border-bottom:1px dotted #2a3133">Michigan</a> &middot; <a href="/rent/minnesota" style="color:#8a948f;text-decoration:none;border-bottom:1px dotted #2a3133">Minnesota</a> &middot; <a href="/rent/missouri" style="color:#8a948f;text-decoration:none;border-bottom:1px dotted #2a3133">Missouri</a> &middot; <a href="/rent/mississippi" style="color:#8a948f;text-decoration:none;border-bottom:1px dotted #2a3133">Mississippi</a> &middot; <a href="/rent/montana" style="color:#8a948f;text-decoration:none;border-bottom:1px dotted #2a3133">Montana</a> &middot; <a href="/rent/north-carolina" style="color:#8a948f;text-decoration:none;border-bottom:1px dotted #2a3133">North Carolina</a> &middot; <a href="/rent/north-dakota" style="color:#8a948f;text-decoration:none;border-bottom:1px dotted #2a3133">North Dakota</a> &middot; <a href="/rent/nebraska" style="color:#8a948f;text-decoration:none;border-bottom:1px dotted #2a3133">Nebraska</a> &middot; <a href="/rent/new-hampshire" style="color:#8a948f;text-decoration:none;border-bottom:1px dotted #2a3133">New Hampshire</a> &middot; <a href="/rent/new-jersey" style="color:#8a948f;text-decoration:none;border-bottom:1px dotted #2a3133">New Jersey</a> &middot; <a href="/rent/new-mexico" style="color:#8a948f;text-decoration:none;border-bottom:1px dotted #2a3133">New Mexico</a> &middot; <a href="/rent/nevada" style="color:#8a948f;text-decoration:none;border-bottom:1px dotted #2a3133">Nevada</a> &middot; <a href="/rent/new-york" style="color:#8a948f;text-decoration:none;border-bottom:1px dotted #2a3133">New York</a> &middot; <a href="/rent/ohio" style="color:#8a948f;text-decoration:none;border-bottom:1px dotted #2a3133">Ohio</a> &middot; <a href="/rent/oklahoma" style="color:#8a948f;text-decoration:none;border-bottom:1px dotted #2a3133">Oklahoma</a> &middot; <a href="/rent/oregon" style="color:#8a948f;text-decoration:none;border-bottom:1px dotted #2a3133">Oregon</a> &middot; <a href="/rent/pennsylvania" style="color:#8a948f;text-decoration:none;border-bottom:1px dotted #2a3133">Pennsylvania</a> &middot; <a href="/rent/south-carolina" style="color:#8a948f;text-decoration:none;border-bottom:1px dotted #2a3133">South Carolina</a> &middot; <a href="/rent/south-dakota" style="color:#8a948f;text-decoration:none;border-bottom:1px dotted #2a3133">South Dakota</a> &middot; <a href="/rent/tennessee" style="color:#8a948f;text-decoration:none;border-bottom:1px dotted #2a3133">Tennessee</a> &middot; <a href="/rent/texas" style="color:#8a948f;text-decoration:none;border-bottom:1px dotted #2a3133">Texas</a> &middot; <a href="/rent/utah" style="color:#8a948f;text-decoration:none;border-bottom:1px dotted #2a3133">Utah</a> &middot; <a href="/rent/virginia" style="color:#8a948f;text-decoration:none;border-bottom:1px dotted #2a3133">Virginia</a> &middot; <a href="/rent/vermont" style="color:#8a948f;text-decoration:none;border-bottom:1px dotted #2a3133">Vermont</a> &middot; <a href="/rent/washington" style="color:#8a948f;text-decoration:none;border-bottom:1px dotted #2a3133">Washington</a> &middot; <a href="/rent/wisconsin" style="color:#8a948f;text-decoration:none;border-bottom:1px dotted #2a3133">Wisconsin</a> &middot; <a href="/rent/west-virginia" style="color:#8a948f;text-decoration:none;border-bottom:1px dotted #2a3133">West Virginia</a> &middot; <a href="/rent/wyoming" style="color:#8a948f;text-decoration:none;border-bottom:1px dotted #2a3133">Wyoming</a></p>
     </div>
 
     <div class="cr-src">
@@ -559,7 +482,7 @@ html[data-theme="light"] #cr-map>div[style*="color:#8a948f"]{color:#8a948f!impor
     var y=latestYear(series);
     if(y===null){
       v.innerHTML='<span class="cr-na">Not published</span>';
-      m.textContent='NASS withheld \u2014 too few responses';
+      m.textContent='NASS withheld: too few responses';
       return null;
     }
     v.innerHTML=money(series[y])+'<span class="cr-cell-u">/ac</span>';
@@ -587,8 +510,8 @@ html[data-theme="light"] #cr-map>div[style*="color:#8a948f"]{color:#8a948f!impor
   var REASON_MIXED='county yield mixes irrigated and dryland acres';
   var REASON_LEGACY='county yield mixes irrigated and dryland acres (this data file predates the dryland/irrigated yield split; it returns with the next NASS refresh)';
   var LEGACY_IRR_STATES={NV:1,AZ:1,CA:1,UT:1,NM:1,CO:1,ID:1,WY:1,OR:1,NE:1,FL:1,DE:1,WA:1,NJ:1,MT:1,RI:1,GA:1,MA:1,TX:1,AR:1,LA:1,SC:1,KS:1};
-  var BASIS_WORDS={nonirr:'dryland yield',irr:'irrigated yield',all:'all-practice yield \u2014 county reports no irrigated corn',
-    legacy:'all-practice yield \u2014 county reports no irrigated rent (dryland/irrigated yield split pending refresh)'};
+  var BASIS_WORDS={nonirr:'dryland yield',irr:'irrigated yield',all:'all-practice yield: county reports no irrigated corn',
+    legacy:'all-practice yield, county reports no irrigated rent (dryland/irrigated yield split pending refresh)'};
   var RENT_WORDS={nonirr:'non-irrigated rent',irr:'irrigated rent'};
   function basisWords(b){ return BASIS_WORDS[b]||b; }
   function pairFor(c,crop){
@@ -749,7 +672,7 @@ html[data-theme="light"] #cr-map>div[style*="color:#8a948f"]{color:#8a948f!impor
       $('cr-yield-h').className='cr-in-h warn';
     }else{
       $('cr-yield').value='';
-      $('cr-yield-h').textContent='No county trend \u2014 enter your own';
+      $('cr-yield-h').textContent='No county trend: enter your own';
       $('cr-yield-h').className='cr-in-h warn';
     }
     var bp=boardPrice();
@@ -771,7 +694,7 @@ html[data-theme="light"] #cr-map>div[style*="color:#8a948f"]{color:#8a948f!impor
     if(rent==null||!(y>0)||!(p>0)){
       el.textContent='\u2014'; el.className='cr-ratio-v';
       x.textContent=rent==null?'NASS did not publish a cropland rent for this county, so there is no rent to divide.'
-        :(!(y>0)&&tw?'Withheld \u2014 '+tw+', so there is no county trend to divide '+RENT_WORDS[rk]+' by. Type your own yield above to run the math.'
+        :(!(y>0)&&tw?'Withheld: '+tw+', so there is no county trend to divide '+RENT_WORDS[rk]+' by. Type your own yield above to run the math.'
         :'Enter a yield and a price to run the math.');
       m.textContent='\u2014';
       return;
@@ -780,7 +703,7 @@ html[data-theme="light"] #cr-map>div[style*="color:#8a948f"]{color:#8a948f!impor
     var net=p+b;
     if(!(net>0)){
       el.textContent='\u2014'; el.className='cr-ratio-v';
-      x.textContent='Price plus basis is at or below zero \u2014 check the basis.';
+      x.textContent='Price plus basis is at or below zero. Check the basis.';
       m.textContent='\u2014';
       return;
     }
@@ -790,7 +713,7 @@ html[data-theme="light"] #cr-map>div[style*="color:#8a948f"]{color:#8a948f!impor
     m.innerHTML=RENT_WORDS[rk]+' <b>'+money(rent)+'</b> &divide; ( <b>'+y.toFixed(1)+'</b> bu &times; <b>$'+net.toFixed(2)+'</b> ) = <b>'+money(Math.round(gross))+'</b> gross/ac &rarr; <b>'+pct.toFixed(1)+'%</b>';
     var left=gross-rent;
     var bpx=boardPrice(),pLbl=(!b&&bpx&&Math.abs(p-bpx)<0.005)?'nearby corn futures, before basis':(b?'price plus basis':'your price');
-    x.innerHTML='At <strong>'+y.toFixed(0)+' bu</strong> ('+esc(ylab)+') and <strong>$'+net.toFixed(2)+'</strong> ('+pLbl+'), this acre grosses <strong>'+money(Math.round(gross))+'</strong>. Rent ('+RENT_WORDS[rk]+') takes <strong>'+money(rent)+'</strong>, leaving <strong>'+money(Math.round(left))+'</strong> to cover everything else and pay you. Compare that share to your own county\u2019s history below \u2014 not to a rule of thumb.';
+    x.innerHTML='At <strong>'+y.toFixed(0)+' bu</strong> ('+esc(ylab)+') and <strong>$'+net.toFixed(2)+'</strong> ('+pLbl+'), this acre grosses <strong>'+money(Math.round(gross))+'</strong>. Rent ('+RENT_WORDS[rk]+') takes <strong>'+money(rent)+'</strong>, leaving <strong>'+money(Math.round(left))+'</strong> to cover everything else and pay you. Compare that share to your own county\u2019s history below, not to a rule of thumb.';
   }
 
   // ---- history chart: honest gaps, no interpolation across missing years ----
@@ -902,11 +825,11 @@ html[data-theme="light"] #cr-map>div[style*="color:#8a948f"]{color:#8a948f!impor
     var nm=(f.properties&&f.properties.name)||'County';
     if(!r){ l.bindPopup('<b>'+nm+'</b><br>USDA did not publish a rate here<br><span style="color:#8a948f">too few survey responses</span>'); return; }
     var h='<b>'+nm+' County, '+r.s+'</b><br>Rent $'+Math.round(r.r)+'/ac <span style="color:#8a948f">('+r.ry+')</span>';
-    if(natLegacy()) h+='<br><span style="color:#8a948f">Share of gross \u2014 withheld until the data refresh that matches rent and yield by practice</span>';
+    if(natLegacy()) h+='<br><span style="color:#8a948f">Share of gross, withheld until the data refresh that matches rent and yield by practice</span>';
     else if(r.p!=null) h+='<br>Share of gross <span style="color:'+(r.p>=35?'#e0685f':r.p>=30?'#d4a23f':'#5fc28a')+'">'+r.p.toFixed(1)+'%</span> <span style="color:#8a948f">('+r.py+' corn'+(r.pp?', prelim':'')+')</span>'
       +'<br><span style="color:#8a948f">'+(RENT_WORDS[r.rk]||'rent')+' \u00f7 '+basisWords(r.pb)+'</span>';
-    else if(r.pw) h+='<br>Share of gross \u2014 <span style="color:var(--gold)">withheld</span><br><span style="color:#8a948f">'+esc(r.pw)+' ('+r.pwy+')</span>';
-    else h+='<br><span style="color:#8a948f">no corn yield published \u2014 no ratio</span>';
+    else if(r.pw) h+='<br>Share of gross: <span style="color:var(--gold)">withheld</span><br><span style="color:#8a948f">'+esc(r.pw)+' ('+r.pwy+')</span>';
+    else h+='<br><span style="color:#8a948f">no corn yield published, no ratio</span>';
     l.bindPopup(h);
   }
   function paint(){ if(layer) layer.setStyle(style); legend(); }

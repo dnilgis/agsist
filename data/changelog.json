@@ -1,6 +1,6 @@
 {
  "updated": "2026-10-06",
- "note": "Curated by hand each work session. Dates are the day the change was built; uploads usually land the same day or the next. Machine-refreshed data (prices, bids, weather, briefings) is not logged here \u2014 that updates continuously.",
+ "note": "Curated by hand each work session. Dates are the day the change was built; uploads usually land the same day or the next. Machine-refreshed data (prices, bids, weather, briefings) is not logged here. That updates continuously.",
  "entries": [
   {
    "date": "2026-10-06",
@@ -97,13 +97,13 @@
      "tag": "new",
      "page": "/whats-priced-in",
      "name": "September Grain Stocks graded against the actual print",
-     "text": "Corn stocks printed 2.095 billion bushels \u2014 above the entire pre-report trade range (1.843\u20132.005B), a real miss versus what the trade had priced in. Soybean stocks printed 0.315B, a mild bullish surprise inside the trade range. Wheat stocks printed 1.846B; no trade estimate was ever on file for it, so it is shown ungraded rather than scored against a guess."
+     "text": "Corn stocks printed 2.095 billion bushels, above the entire pre-report trade range (1.843\u20132.005B), a real miss versus what the trade had priced in. Soybean stocks printed 0.315B, a mild bullish surprise inside the trade range. Wheat stocks printed 1.846B; no trade estimate was ever on file for it, so it is shown ungraded rather than scored against a guess."
     },
     {
      "tag": "new",
      "page": "/whats-priced-in",
      "name": "Grain Stocks joins What's Priced In",
-     "text": "What's Priced In covered WASDE only. It now also carries the quarterly Grain Stocks report \u2014 today's corn and soybean trade estimates, graded against the actual print once USDA releases it, the same way WASDE already is. No usable wheat trade estimate was found for this cycle, so wheat is shown withheld rather than guessed."
+     "text": "What's Priced In covered WASDE only. It now also carries the quarterly Grain Stocks report: today's corn and soybean trade estimates, graded against the actual print once USDA releases it, the same way WASDE already is. No usable wheat trade estimate was found for this cycle, so wheat is shown withheld rather than guessed."
     },
     {
      "tag": "new",
@@ -115,19 +115,19 @@
      "tag": "new",
      "page": "/",
      "name": "Market Intelligence: a real basis history chart, an I raise toggle, and September Grain Stocks on the front page",
-     "text": "The homepage Commitment of Traders panel now sits beside the USDA report calendar as a two-column strip, and a new September Grain Stocks card sits above it with today's real print (corn 2.095B bu, soybeans 0.315B, wheat 1.846B) linked through to the full grading on What's Priced In. An \"I raise\" toggle lets you pin Cattle first in the COT list if that is the position you actually hold. When your ZIP bid lookup finds a match, a basis history chart now draws from this elevator's own logged basis changes \u2014 real change-points only, going back to June 10 where we have them, never a smoothed or invented line \u2014 and elevators read through the AGSIST network feed are now marked \"direct from elevator\" so you can tell which numbers came straight from the board."
+     "text": "The homepage Commitment of Traders panel now sits beside the USDA report calendar as a two-column strip, and a new September Grain Stocks card sits above it with today's real print (corn 2.095B bu, soybeans 0.315B, wheat 1.846B) linked through to the full grading on What's Priced In. An \"I raise\" toggle lets you pin Cattle first in the COT list if that is the position you actually hold. When your ZIP bid lookup finds a match, a basis history chart now draws from this elevator's own logged basis changes (real change-points only, going back to June 10 where we have them, never a smoothed or invented line) and elevators read through the AGSIST network feed are now marked \"direct from elevator\" so you can tell which numbers came straight from the board."
     },
     {
      "tag": "new",
      "page": "/",
      "name": "A 25-mile basis comparison, and Watch this elevator",
-     "text": "The nearby-bids comparison on the homepage only ever averaged whatever bids happened to fall inside your ZIP search radius. When your search returns an elevator with real coordinates, the page now also compares its basis to every other located bid within a fixed 25-mile ring around it \u2014 a constant distance, not one that shifts with where you searched from. Separately, elevators with a posted corn basis now carry a \"Watch this elevator \u2014 free\" link: enter your email, confirm it once, and you get a message when that elevator's posted basis changes. Unsubscribe any time from the link in every email."
+     "text": "The nearby-bids comparison on the homepage only ever averaged whatever bids happened to fall inside your ZIP search radius. When your search returns an elevator with real coordinates, the page now also compares its basis to every other located bid within a fixed 25-mile ring around it: a constant distance, not one that shifts with where you searched from. Separately, elevators with a posted corn basis now carry a \"Watch this elevator: free\" link: enter your email, confirm it once, and you get a message when that elevator's posted basis changes. Unsubscribe any time from the link in every email."
     },
     {
      "tag": "new",
      "page": "/field-scout",
      "name": "Field Scout: a Nitrogen map layer",
-     "text": "Crop Vigor & Moisture already computed NDRE, the satellite index tied to nitrogen status, as a single number per field. It's now also a map layer you can switch on, next to Vigor and Moisture \u2014 because nitrogen stress is rarely even across a field, and a single number can't show you where. Same satellite source as the Vigor layer (Sentinel-2), and the color bands match the number exactly, so the map and the figure never disagree about the same field."
+     "text": "Crop Vigor & Moisture already computed NDRE, the satellite index tied to nitrogen status, as a single number per field. It's now also a map layer you can switch on, next to Vigor and Moisture: because nitrogen stress is rarely even across a field, and a single number can't show you where. Same satellite source as the Vigor layer (Sentinel-2), and the color bands match the number exactly, so the map and the figure never disagree about the same field."
     }
    ]
   },
@@ -291,7 +291,7 @@
      "tag": "improved",
      "page": "/corn-futures-prices",
      "name": "Your nearest cash bid is now read minutes ago, not yesterday",
-     "text": "The cash bid card on the corn, soybean and wheat pages read a file that a job rewrote about twice an hour. When that job stopped, the card kept showing the last thing it had written \u2014 and it stopped for a day. It now reads the elevator boards AGSIST polls every ten minutes, directly. A reader at Chetek, Wisconsin was being shown a bid in Rochester, Indiana labelled \u201cnot near you\u201d; the same reader now gets an elevator 52 miles away read twelve minutes ago. Where there is no elevator within seventy-five miles \u2014 outside the twenty-nine states we read \u2014 the card falls back to the licensed feed exactly as before, and says which one it used."
+     "text": "The cash bid card on the corn, soybean and wheat pages read a file that a job rewrote about twice an hour. When that job stopped, the card kept showing the last thing it had written, and it stopped for a day. It now reads the elevator boards AGSIST polls every ten minutes, directly. A reader at Chetek, Wisconsin was being shown a bid in Rochester, Indiana labelled \u201cnot near you\u201d; the same reader now gets an elevator 52 miles away read twelve minutes ago. Where there is no elevator within seventy-five miles, outside the twenty-nine states we read, the card falls back to the licensed feed exactly as before, and says which one it used."
     },
     {
      "tag": "fixed",
@@ -381,19 +381,19 @@
      "tag": "improved",
      "page": "/",
      "name": "One contract, one card",
-     "text": "For the part of the year when the front month and the new-crop contract are the same contract \u2014 right now corn is December on both \u2014 the board printed them as two cards side by side with the same price, the same change and the same symbol. There is one card now, and it says it is the new crop as well. When the front month rolls, the second card comes back."
+     "text": "For the part of the year when the front month and the new-crop contract are the same contract (right now corn is December on both) the board printed them as two cards side by side with the same price, the same change and the same symbol. There is one card now, and it says it is the new crop as well. When the front month rolls, the second card comes back."
     },
     {
      "tag": "fixed",
      "page": "/",
      "name": "A price cut in half on a phone",
-     "text": "The 52-week low and high under each price ran out of room on a phone and broke across two lines mid-number: soybeans read \u201c$10.4 / 8\u201d and corn ran the low into the caption as \u201c$4.2552-Wk Range\u201d. The caption is gone on a narrow screen \u2014 the two figures sit at either end of the range bar \u2014 and neither number breaks now."
+     "text": "The 52-week low and high under each price ran out of room on a phone and broke across two lines mid-number: soybeans read \u201c$10.4 / 8\u201d and corn ran the low into the caption as \u201c$4.2552-Wk Range\u201d. The caption is gone on a narrow screen; the two figures sit at either end of the range bar, and neither number breaks now."
     },
     {
      "tag": "fixed",
      "page": "/",
      "name": "Export sales showed an empty bar instead of a reason",
-     "text": "USDA has not published a 2026/27 export forecast, so there is nothing to measure the pace against. The page drew a bar at zero and a dash, which reads as nothing sold. It now prints what is actually known \u2014 17.4 million tonnes of corn booked so far \u2014 and says plainly that there is no target to measure it against."
+     "text": "USDA has not published a 2026/27 export forecast, so there is nothing to measure the pace against. The page drew a bar at zero and a dash, which reads as nothing sold. It now prints what is actually known: 17.4 million tonnes of corn booked so far, and says plainly that there is no target to measure it against."
     },
     {
      "tag": "fixed",
@@ -416,13 +416,13 @@
      "tag": "new",
      "page": "/hail-map",
      "name": "Ask about one day",
-     "text": "The hail lookup now takes a date. Put in the day the storm came through and the page answers for that day only \u2014 the reports near your spot, and the radar swath for that date. It used to answer for the last five years and leave you to work out which line was yours."
+     "text": "The hail lookup now takes a date. Put in the day the storm came through and the page answers for that day only: the reports near your spot, and the radar swath for that date. It used to answer for the last five years and leave you to work out which line was yours."
     },
     {
      "tag": "improved",
      "page": "/hail-map",
      "name": "Choose how close counts",
-     "text": "You can now set the lookup to 5, 10 or 25 miles, and it starts at 10. It was always 25, which is nearly two thousand square miles \u2014 wide enough that the biggest stone on your report could have fallen in the next county. Every number on the report now says how far away it was."
+     "text": "You can now set the lookup to 5, 10 or 25 miles, and it starts at 10. It was always 25, which is nearly two thousand square miles, wide enough that the biggest stone on your report could have fallen in the next county. Every number on the report now says how far away it was."
     },
     {
      "tag": "fixed",
@@ -440,13 +440,13 @@
      "tag": "improved",
      "page": "/hail-map",
      "name": "What the colours mean",
-     "text": "The national map colours how many reports came in, and reports come from people \u2014 nine of the ten busiest patches on it are cities. Counted by hail days instead, the busiest ground in the country is eastern Colorado, western Nebraska and western South Dakota. The map now says so plainly, and points you at the lookup for your own place, which does not care how many neighbours you have."
+     "text": "The national map colours how many reports came in, and reports come from people: nine of the ten busiest patches on it are cities. Counted by hail days instead, the busiest ground in the country is eastern Colorado, western Nebraska and western South Dakota. The map now says so plainly, and points you at the lookup for your own place, which does not care how many neighbours you have."
     },
     {
      "tag": "fixed",
      "page": "/cash-bids",
      "name": "Your nearest bid is the nearest one again",
-     "text": "Where an elevator posted a bid with no month on it \u2014 open storage, spot, a season name \u2014 the page sorted it behind every forward month, so a card could headline a bid more than a year out while today's bid sat underneath it. One elevator was showing a July 2027 price of $7.14 over $7.02 for today. Ours, and it is fixed."
+     "text": "Where an elevator posted a bid with no month on it (open storage, spot, a season name) the page sorted it behind every forward month, so a card could headline a bid more than a year out while today's bid sat underneath it. One elevator was showing a July 2027 price of $7.14 over $7.02 for today. Ours, and it is fixed."
     },
     {
      "tag": "fixed",
@@ -463,7 +463,7 @@
      "tag": "new",
      "page": "/cash-bids",
      "name": "Bids read straight from the elevator",
-     "text": "AGSIST now reads a growing number of elevators' own posted bid boards directly, rather than only through a licensed feed. Where we do, the card says \u201cdirect from the elevator\u201d and that board is the one you see \u2014 it is the elevator's own posting, so it wins over any copy of it. Everything else is unchanged, and the page still shows every elevator it showed before."
+     "text": "AGSIST now reads a growing number of elevators' own posted bid boards directly, rather than only through a licensed feed. Where we do, the card says \u201cdirect from the elevator\u201d and that board is the one you see. It is the elevator's own posting, so it wins over any copy of it. Everything else is unchanged, and the page still shows every elevator it showed before."
     },
     {
      "tag": "new",
@@ -475,13 +475,13 @@
      "tag": "new",
      "page": "/cash-bids",
      "name": "Market session clock",
-     "text": "The badge beside the results now says which CBOT session is running and counts down to the next one \u2014 the overnight session, the 8:30 open, the 1:20 close, and the Sunday evening reopen. It previously only knew about the day session, so it read \u201cmarket closed\u201d through every overnight."
+     "text": "The badge beside the results now says which CBOT session is running and counts down to the next one: the overnight session, the 8:30 open, the 1:20 close, and the Sunday evening reopen. It previously only knew about the day session, so it read \u201cmarket closed\u201d through every overnight."
     },
     {
      "tag": "fixed",
      "page": "/cash-bids",
      "name": "Weekend bids no longer look stale",
-     "text": "An elevator that posted its board on Friday was being flagged as out of date all weekend. A board is now judged against the trading calendar rather than a fixed number of hours, so Friday's board reads as Friday's board \u2014 which is what it is until the market reopens."
+     "text": "An elevator that posted its board on Friday was being flagged as out of date all weekend. A board is now judged against the trading calendar rather than a fixed number of hours, so Friday's board reads as Friday's board, which is what it is until the market reopens."
     }
    ]
   },
@@ -592,7 +592,7 @@
     {
      "tag": "new",
      "page": "/farm-bill",
-     "name": "What actually happens on October 1 \u2014 and why January 1 is the date that should worry you",
+     "name": "What actually happens on October 1, and why January 1 is the date that should worry you",
      "text": "Every story about this deadline says the farm bill expires September 30. The page said it too and never once said what expires. So here it is, sourced, in three parts. Nothing you depend on changes on October 1: crop insurance runs on permanent statutory authority and has never lapsed, and reference prices, ARC, PLC and base acres were reauthorized through 2031 by the 2025 reconciliation law. What actually stops is the handful of programs that law left without any money attached -- Biobased Markets, Specialty Crop Block Grants, the Local Agriculture Market Program, Organic Agriculture Research and Extension, Animal Disease Prevention and Management, and Farming Opportunities Training and Outreach -- and they start again whenever a bill or an extension funds them. If you are not in one of those, October 1 is a headline and not an event. The part nobody puts in the headline is that the suspension of permanent law -- the 1938 and 1949 Acts sitting underneath all of this -- runs only through the 2026 crop year, and the reconciliation law deliberately did not extend it, because that kind of extension does not score as costing anything. Without action the old law starts taking effect January 1, 2027. Dairy first, then wheat on June 1 and corn on October 1. In July 2025 the parity support price for milk under that old law was 252 percent of what milk was actually worth. Every figure here is from the Congressional Research Service report R48775, linked on the page, and the parity number is labelled as theirs because we have not checked it against USDA's own tables."
     },
     {
@@ -780,7 +780,7 @@
     {
      "tag": "fixed",
      "page": "/daily",
-     "name": "Saturday briefing \u2014 two prices that were not real",
+     "name": "Saturday briefing: two prices that were not real",
      "text": "Saturday's briefing led with a 16.9% one-day jump in lean hogs and a 5.4% break in corn. Neither happened. Lean hogs cannot move 16.9% in a session -- that is nearly three times the exchange's own daily limit, which is the maximum a contract is allowed to trade in one day. The number came from the price feed quoting one delivery month's close against a different month's close from the day before, and subtracting them. Corn was the same error: the $4.39 was right, September corn, but it was measured against December's close from Thursday. September corn was down two and three-quarter cents, not twenty-five. Soybeans and live cattle carried the same mistake in smaller sizes. The check that is supposed to catch exactly this compared only the closing price, and the closing price was correct -- so it passed the feed as clean. It now checks the prior close as well, and refuses any move larger than the exchange allows for that contract. Where it cannot verify a price, the site now says nothing about it rather than printing a number."
     },
     {
@@ -793,19 +793,19 @@
      "tag": "fixed",
      "page": "/",
      "name": "Homepage",
-     "text": "Several things at once. The \"Text Me Daily\" signup is gone \u2014 it threw the phone number away and there was no text service behind it. Both email signups now wait for the server to actually accept the address before saying you're subscribed. The weekly poll no longer falls back to a question from June whose results were already final, and a vote that fails to register no longer locks you out for the week. The price cards quote the real front-month contract and name it, so corn reads September at $4.42 rather than December at $4.65, and the 52-week range bar moves with it."
+     "text": "Several things at once. The \"Text Me Daily\" signup is gone. It threw the phone number away and there was no text service behind it. Both email signups now wait for the server to actually accept the address before saying you're subscribed. The weekly poll no longer falls back to a question from June whose results were already final, and a vote that fails to register no longer locks you out for the week. The price cards quote the real front-month contract and name it, so corn reads September at $4.42 rather than December at $4.65, and the 52-week range bar moves with it."
     },
     {
      "tag": "fixed",
      "page": "/conditions-yield",
      "name": "Ratings vs Yield",
-     "text": "The ranked table on this page was hand-written and never regenerated, so it had drifted three weeks behind the live data and openly contradicted the verdict box directly above it \u2014 Pennsylvania read 25% in the table and 65% in the box. The state ranked first under the heading \"ranked by what this week's number is worth\" was not the top state any more either. The table, the four headline tiles, the summary line and the page description now all come from the same file the verdict reads, and rebuild themselves every time the weekly fit runs."
+     "text": "The ranked table on this page was hand-written and never regenerated, so it had drifted three weeks behind the live data and openly contradicted the verdict box directly above it: Pennsylvania read 25% in the table and 65% in the box. The state ranked first under the heading \"ranked by what this week's number is worth\" was not the top state any more either. The table, the four headline tiles, the summary line and the page description now all come from the same file the verdict reads, and rebuild themselves every time the weekly fit runs."
     },
     {
      "tag": "fixed",
      "page": "/scorecard#old-scorecard",
-     "name": "Call Scorecard \u2014 two real problems",
-     "text": "Twenty-three graded rows showed the write-up for one call next to the grade for a different one, left over from the date bug fixed Aug 4. Those rows now show the call that was actually scored, rebuilt from the recorded market, direction and level, and say so underneath; the original wording stays in that day's briefing. Second, the headline hit rate was blending two different eras \u2014 calls before Jun 24 could only be graded by the briefing's own account of itself, while everything since is checked against the closes. Split out, that is 26 of 36 self-graded against 3 of 40 checked. Both numbers are now on the page. The checked one is the honest one and it is not flattering."
+     "name": "Call Scorecard: two real problems",
+     "text": "Twenty-three graded rows showed the write-up for one call next to the grade for a different one, left over from the date bug fixed Aug 4. Those rows now show the call that was actually scored, rebuilt from the recorded market, direction and level, and say so underneath; the original wording stays in that day's briefing. Second, the headline hit rate was blending two different eras: calls before Jun 24 could only be graded by the briefing's own account of itself, while everything since is checked against the closes. Split out, that is 26 of 36 self-graded against 3 of 40 checked. Both numbers are now on the page. The checked one is the honest one and it is not flattering."
     },
     {
      "tag": "fixed",
@@ -822,38 +822,38 @@
     {
      "tag": "fixed",
      "page": "/",
-     "name": "Homepage prices \u2014 wrong contract",
-     "text": "The homepage \"Front Month\" cards were quoting the most-active contract, not the nearby one. Corn read $4.65 \u2014 that is December \u2014 while September, the contract you would price against today, was $4.42. Beans and cattle had the same problem; on cattle the gap was about $89 a head. The cards now quote the real nearby month and name it, and the 52-week range bar moves with it: corn was showing 85% of its yearly range and is actually at 42%. The price checker in the pipeline had been flagging this every run, but the corrected file was being thrown away before it shipped."
+     "name": "Homepage prices: wrong contract",
+     "text": "The homepage \"Front Month\" cards were quoting the most-active contract, not the nearby one. Corn read $4.65, that is December, while September, the contract you would price against today, was $4.42. Beans and cattle had the same problem; on cattle the gap was about $89 a head. The cards now quote the real nearby month and name it, and the 52-week range bar moves with it: corn was showing 85% of its yearly range and is actually at 42%. The price checker in the pipeline had been flagging this every run, but the corrected file was being thrown away before it shipped."
     },
     {
      "tag": "fixed",
      "page": "/",
-     "name": "Email signup \u2014 every page",
-     "text": "The signup bar that appears on every page has never worked. It sent the address in a format the server could not read, got rejected, and showed \"You're in\" anyway. Anyone who signed up through that bar was told they were subscribed and was not. It works now, and it will no longer claim success unless the server actually accepted the address. If you signed up and never got a briefing, that is why \u2014 please try again."
+     "name": "Email signup: every page",
+     "text": "The signup bar that appears on every page has never worked. It sent the address in a format the server could not read, got rejected, and showed \"You're in\" anyway. Anyone who signed up through that bar was told they were subscribed and was not. It works now, and it will no longer claim success unless the server actually accepted the address. If you signed up and never got a briefing, that is why. Please try again."
     },
     {
      "tag": "fixed",
      "page": "/",
      "name": "Text message signup removed",
-     "text": "The homepage offered a \"Text Me Daily\" option. There is no text service \u2014 no sender, no number, nothing behind it \u2014 and the phone numbers entered were discarded. It has been removed rather than left up promising something that does not exist."
+     "text": "The homepage offered a \"Text Me Daily\" option. There is no text service (no sender, no number, nothing behind it) and the phone numbers entered were discarded. It has been removed rather than left up promising something that does not exist."
     },
     {
      "tag": "fixed",
      "page": "/cash-rent",
      "name": "Cash Rent by County",
-     "text": "For 457 of 2,926 counties \u2014 those with too few yield years to fit a trend \u2014 the page crashed halfway through drawing and left the previous county's rent ratio, charts and lease link sitting under the new county's name. Pick an Iowa county then an Alabama one and you were reading Iowa's numbers under Alabama's heading. Also fixed the board price, which had never filled in, leaving the headline ratio blank on every visit."
+     "text": "For 457 of 2,926 counties, those with too few yield years to fit a trend, the page crashed halfway through drawing and left the previous county's rent ratio, charts and lease link sitting under the new county's name. Pick an Iowa county then an Alabama one and you were reading Iowa's numbers under Alabama's heading. Also fixed the board price, which had never filled in, leaving the headline ratio blank on every visit."
     },
     {
      "tag": "fixed",
      "page": "/cash-lease",
      "name": "Cash Farm Lease",
-     "text": "Ohio's rule was backwards. The page said a written lease governs itself; the statute covers any farm lease \u2014 written or oral \u2014 that has no termination clause, and requires written notice by September 1. A landowner following our page could have missed the deadline and renewed for another year. Arkansas and South Dakota now also state that those statutes apply to oral leases only."
+     "text": "Ohio's rule was backwards. The page said a written lease governs itself; the statute covers any farm lease, written or oral, that has no termination clause, and requires written notice by September 1. A landowner following our page could have missed the deadline and renewed for another year. Arkansas and South Dakota now also state that those statutes apply to oral leases only."
     },
     {
      "tag": "fixed",
      "page": "/drought-monitor",
      "name": "Drought Monitor",
-     "text": "The page said the Livestock Forage Program needs 8 consecutive weeks of D2 drought. USDA lowered that to 4 weeks in July, retroactive to January 1 \u2014 so producers who read this page were told they did not qualify when they may well have."
+     "text": "The page said the Livestock Forage Program needs 8 consecutive weeks of D2 drought. USDA lowered that to 4 weeks in July, retroactive to January 1, so producers who read this page were told they did not qualify when they may well have."
     },
     {
      "tag": "fixed",
@@ -865,7 +865,7 @@
      "tag": "fixed",
      "page": "/usda-quick-stats",
      "name": "Top Producing States",
-     "text": "The wheat ranking pulls winter wheat only, which left out North Dakota \u2014 the second-largest wheat state in the country \u2014 and Minnesota entirely. It now says winter wheat on the tab and explains what is missing."
+     "text": "The wheat ranking pulls winter wheat only, which left out North Dakota, the second-largest wheat state in the country, and Minnesota entirely. It now says winter wheat on the tab and explains what is missing."
     },
     {
      "tag": "fixed",
@@ -895,19 +895,19 @@
      "tag": "new",
      "page": "/crop-tour",
      "name": "Pro Farmer Crop Tour",
-     "text": "Nightly state results as the tour posts them Aug 17-20, next to USDA's number and our own \u2014 plus the record nobody publishes: over the last 11 tours the tour's final corn call missed the eventual crop by 4.1 bushels on average, against 3.1 for USDA's August forecast, and it has run under the final yield in 7 of those 11 years."
+     "text": "Nightly state results as the tour posts them Aug 17-20, next to USDA's number and our own, plus the record nobody publishes: over the last 11 tours the tour's final corn call missed the eventual crop by 4.1 bushels on average, against 3.1 for USDA's August forecast, and it has run under the final yield in 7 of those 11 years."
     },
     {
      "tag": "fixed",
      "page": "/elevators",
      "name": "Elevator listing form",
-     "text": "The form elevators use to get their bids listed was collecting facility, contact and phone details and then discarding all of them \u2014 only the email reached anything, and that quietly went onto the briefing list. It now builds the full request in your own email app so you can see exactly what gets sent, and the page no longer claims a message arrived when it hadn't. If you sent one before today, it never reached us; please send it again."
+     "text": "The form elevators use to get their bids listed was collecting facility, contact and phone details and then discarding all of them: only the email reached anything, and that quietly went onto the briefing list. It now builds the full request in your own email app so you can see exactly what gets sent, and the page no longer claims a message arrived when it hadn't. If you sent one before today, it never reached us; please send it again."
     },
     {
      "tag": "fixed",
      "page": "/storage-crunch",
      "name": "Storage Crunch",
-     "text": "USDA publishes no separate on-farm bin capacity for ten states, and this page was treating that blank as zero \u2014 which made those states look like they had almost no storage and put South Carolina at the top of the crunch list at 3.46 times. That was our arithmetic, not South Carolina's grain. Those states now show elevator capacity only and sit out of the ranking, and the count of states over 1.0 drops from 14 to 7."
+     "text": "USDA publishes no separate on-farm bin capacity for ten states, and this page was treating that blank as zero, which made those states look like they had almost no storage and put South Carolina at the top of the crunch list at 3.46 times. That was our arithmetic, not South Carolina's grain. Those states now show elevator capacity only and sit out of the ranking, and the count of states over 1.0 drops from 14 to 7."
     },
     {
      "tag": "fixed",
@@ -919,13 +919,13 @@
      "tag": "fixed",
      "page": "/milk-prices",
      "name": "Milk Prices",
-     "text": "The component formula was rebuilt against the current regulation and now reproduces USDA's announced July 2026 prices exactly \u2014 protein, other solids, skim and the Class III price, to the last published digit. Three things were wrong: the butterfat term in the protein price used 0.2 where the rule says 1.17, so protein value could never go negative when butterfat ran away from cheese; two constants were still at their pre-June-2025 values; and the Class III total skipped the 0.965 skim split. Make allowances and the December 2025 composition factors are current, and the cheese input is 40-lb blocks only now that barrels have left the survey."
+     "text": "The component formula was rebuilt against the current regulation and now reproduces USDA's announced July 2026 prices exactly: protein, other solids, skim and the Class III price, to the last published digit. Three things were wrong: the butterfat term in the protein price used 0.2 where the rule says 1.17, so protein value could never go negative when butterfat ran away from cheese; two constants were still at their pre-June-2025 values; and the Class III total skipped the 0.965 skim split. Make allowances and the December 2025 composition factors are current, and the cheese input is 40-lb blocks only now that barrels have left the survey."
     },
     {
      "tag": "fixed",
      "page": "/",
      "name": "Grower Pulse",
-     "text": "The page said it held back results until enough growers had answered. It didn't \u2014 it published 100% off two responses. Weeks under ten responses now show raw counts and say so."
+     "text": "The page said it held back results until enough growers had answered. It didn't. It published 100% off two responses. Weeks under ten responses now show raw counts and say so."
     },
     {
      "tag": "improved",
@@ -937,48 +937,48 @@
      "tag": "improved",
      "page": "/fertilizer",
      "name": "Fertilizer",
-     "text": "The page advertised weekly updates from DTN and USDA AMS. The numbers are actually hand-collected Midwest dealer quotes gathered about monthly, and they now say so \u2014 with a banner that appears once the sheet passes 30 days old."
+     "text": "The page advertised weekly updates from DTN and USDA AMS. The numbers are actually hand-collected Midwest dealer quotes gathered about monthly, and they now say so, with a banner that appears once the sheet passes 30 days old."
     },
     {
      "tag": "fixed",
      "page": "/yield-estimator",
-     "name": "Yield Estimator \u2014 soybean numbers were 11% too high",
-     "text": "The soybean estimator assumed 2,700 seeds per pound. Every land-grant extension service \u2014 Iowa State, Ohio State, Purdue, Michigan State, Virginia Tech \u2014 teaches 3,000 for an average year and 3,500 when late-season stress makes the seed small. Fewer seeds per pound means each seed weighs more, so 2,700 was crediting your pods with more bushels than they hold: about 11% too high against the standard, 30% too high against a stressed crop. It is now 3,000, and the quick-fill buttons have been relabelled to the yields their own pod counts actually produce. If you have used this page to size up a crop this season, the soybean figure it gave you was optimistic."
+     "name": "Yield Estimator: soybean numbers were 11% too high",
+     "text": "The soybean estimator assumed 2,700 seeds per pound. Every land-grant extension service (Iowa State, Ohio State, Purdue, Michigan State, Virginia Tech) teaches 3,000 for an average year and 3,500 when late-season stress makes the seed small. Fewer seeds per pound means each seed weighs more, so 2,700 was crediting your pods with more bushels than they hold: about 11% too high against the standard, 30% too high against a stressed crop. It is now 3,000, and the quick-fill buttons have been relabelled to the yields their own pod counts actually produce. If you have used this page to size up a crop this season, the soybean figure it gave you was optimistic."
     },
     {
      "tag": "fixed",
      "page": "/yield-estimator",
-     "name": "Yield Estimator \u2014 the accuracy claim was made up",
-     "text": "The page said these estimates run within plus or minus 15%. No extension service says that, for either crop. Purdue, Iowa State, Ohio State and Penn State all put the corn ear-count method at plus or minus 20 bushels an acre, and Michigan State says soybean estimates vary by more than 25% before the crop reaches R6. The yield range shown beside each estimate now comes from sweeping the kernel and seed weights the uncertainty actually lives in \u2014 65,000 to 95,000 kernels per bushel for corn, 2,500 to 3,500 seeds per pound for beans \u2014 which is what those same services teach. The corn range is lopsided rather than even, because honestly it is."
+     "name": "Yield Estimator: the accuracy claim was made up",
+     "text": "The page said these estimates run within plus or minus 15%. No extension service says that, for either crop. Purdue, Iowa State, Ohio State and Penn State all put the corn ear-count method at plus or minus 20 bushels an acre, and Michigan State says soybean estimates vary by more than 25% before the crop reaches R6. The yield range shown beside each estimate now comes from sweeping the kernel and seed weights the uncertainty actually lives in (65,000 to 95,000 kernels per bushel for corn, 2,500 to 3,500 seeds per pound for beans) which is what those same services teach. The corn range is lopsided rather than even, because honestly it is."
     },
     {
      "tag": "fixed",
      "page": "/yield-estimator",
-     "name": "Yield Estimator \u2014 break-even panel showed the wrong crop",
-     "text": "Opening the page put a soybean yield of about 48 bushels into the break-even panel while the corn tab above it showed 193. Both calculators run once when the page loads and each one claims the break-even panel as it goes, so soybeans \u2014 running second \u2014 always won. Clicking back to the corn tab did not fix it either. If you worked a corn break-even straight off the page without retyping the yield, it was built on roughly a quarter of your actual bushels. Negative or blank entries also used to print a yield; a minus ten ear count returned minus 57 bushels an acre. Those now show a dash."
+     "name": "Yield Estimator: break-even panel showed the wrong crop",
+     "text": "Opening the page put a soybean yield of about 48 bushels into the break-even panel while the corn tab above it showed 193. Both calculators run once when the page loads and each one claims the break-even panel as it goes, so soybeans, running second, always won. Clicking back to the corn tab did not fix it either. If you worked a corn break-even straight off the page without retyping the yield, it was built on roughly a quarter of your actual bushels. Negative or blank entries also used to print a yield; a minus ten ear count returned minus 57 bushels an acre. Those now show a dash."
     },
     {
      "tag": "fixed",
      "page": "/grain-bin-calculator",
-     "name": "Bin Calculator \u2014 an empty height reported a full bin",
+     "name": "Bin Calculator: an empty height reported a full bin",
      "text": "Clear the eave height field and the calculator reported 14,957 bushels, a completely full 30 by 24 bin, while the height box on screen sat empty. The bin drawing showed an empty bin at the same time, so the picture and the number disagreed and only the picture was right. A blank, zero or negative dimension now returns zero bushels."
     },
     {
      "tag": "fixed",
      "page": "/grain-bin-calculator",
-     "name": "Bin Calculator \u2014 shrink ignored your target moisture",
-     "text": "The drying charge billed you for every point from your starting moisture down to your target, but the shrink was worked out only down to the crop's standard moisture. Drying corn from 20% to 13% charged for seven points and shrank five and a half, so the bushels left on the report included about 486 that do not survive the dryer \u2014 roughly $2,060 of corn that was never going to be there. Shrink now follows the same points the dryer bills for. If you left the target moisture box alone, nothing changes for you."
+     "name": "Bin Calculator: shrink ignored your target moisture",
+     "text": "The drying charge billed you for every point from your starting moisture down to your target, but the shrink was worked out only down to the crop's standard moisture. Drying corn from 20% to 13% charged for seven points and shrank five and a half, so the bushels left on the report included about 486 that do not survive the dryer, roughly $2,060 of corn that was never going to be there. Shrink now follows the same points the dryer bills for. If you left the target moisture box alone, nothing changes for you."
     },
     {
      "tag": "fixed",
      "page": "/breakeven",
-     "name": "Break-Even \u2014 a half-filled rented and owned split zeroed your land cost",
+     "name": "Break-Even: a half-filled rented and owned split zeroed your land cost",
      "text": "Opening the owned and rented split and typing your rented acres, before getting as far as the cash rent box, set the land cost to zero and locked the field. On the default corn figures the break-even fell from $5.03 to $3.64 a bushel and the whole-farm number went from a $47,500 loss to a $77,500 profit. The zero was then saved, so it was still there next visit and the land box looked like it could not be edited. A side of the split now counts only once it has both acres and a rate, and your own land figure is put back when the split is closed. The by-ground line also used to print an owned break-even of $3.64 with zero acres behind it to farmers who rent everything. It now shows only the ground you actually have."
     },
     {
      "tag": "fixed",
      "page": "/breakeven",
-     "name": "Break-Even \u2014 a blank yield printed a break-even of $0.00",
+     "name": "Break-Even: a blank yield printed a break-even of $0.00",
      "text": "Delete the expected yield to retype it and the page printed a break-even of $0.00 a bushel, dropped the over-market warning, and carried the same $0.00 into the printed report you might hand a lender. A break-even of zero reads as though any price clears. It now shows a dash and asks for a yield. Clearing the futures price also used to leave the entire what-if profit grid on screen, green box and all, for the scenario you had just edited away. The grid now clears with everything else."
     }
    ]
@@ -996,13 +996,13 @@
      "tag": "new",
      "page": "/status",
      "name": "System Status",
-     "text": "Live health check of every AGSIST data feed \u2014 grain prices, cash bids, the briefing, weather, hail \u2014 tested in your own browser when the page loads, so the status page itself can never go stale."
+     "text": "Live health check of every AGSIST data feed (grain prices, cash bids, the briefing, weather, hail) tested in your own browser when the page loads, so the status page itself can never go stale."
     },
     {
      "tag": "improved",
      "page": "/breakeven",
      "name": "Break-Even Calculator",
-     "text": "Split owned vs rented ground: enter acres and cost for each, see a blended land cost plus separate break-evens \u2014 owned bushels clear first. Also added a basis input so your target shows in cash terms, and your numbers now save per crop on your device."
+     "text": "Split owned vs rented ground: enter acres and cost for each, see a blended land cost plus separate break-evens; owned bushels clear first. Also added a basis input so your target shows in cash terms, and your numbers now save per crop on your device."
     },
     {
      "tag": "fixed",
@@ -1014,7 +1014,7 @@
      "tag": "improved",
      "page": "/cash-bids",
      "name": "Cash Bids",
-     "text": "Elevators whose feed carries a quote timestamp older than 18 hours now show a \"bids quoted [date]\" flag, so a stale bid can't pass as fresh. No timestamp, no guess \u2014 the flag only renders when the feed proves it."
+     "text": "Elevators whose feed carries a quote timestamp older than 18 hours now show a \"bids quoted [date]\" flag, so a stale bid can't pass as fresh. No timestamp, no guess: the flag only renders when the feed proves it."
     },
     {
      "tag": "improved",
@@ -1026,7 +1026,7 @@
      "tag": "improved",
      "page": "/cot",
      "name": "COT and Ag Odds",
-     "text": "Both pages now open with a readable summary baked in daily \u2014 visible the moment the page opens, before the live data loads, and readable by search engines too."
+     "text": "Both pages now open with a readable summary baked in daily: visible the moment the page opens, before the live data loads, and readable by search engines too."
     },
     {
      "tag": "fixed",
@@ -1038,7 +1038,7 @@
      "tag": "improved",
      "page": "/farm-bill",
      "name": "Farm Bill Tracker",
-     "text": "Updated the day the Senate markup failed \u2014 the tracker now shows the miss and the expected September revote instead of pretending the vote hadn't happened."
+     "text": "Updated the day the Senate markup failed: the tracker now shows the miss and the expected September revote instead of pretending the vote hadn't happened."
     }
    ]
   },
@@ -1049,13 +1049,13 @@
      "tag": "improved",
      "page": "/spray",
      "name": "Spray Conditions and Urea Risk",
-     "text": "Both pages rebuilt against the verified 2026 dicamba rules: current product names, the 240-ft downwind buffer, temperature cutoffs (reduced acres above 85\u00b0F, no application at 95\u00b0F), the AMS prohibition, and the R1 cutoff \u2014 checked against the labels, not memory."
+     "text": "Both pages rebuilt against the verified 2026 dicamba rules: current product names, the 240-ft downwind buffer, temperature cutoffs (reduced acres above 85\u00b0F, no application at 95\u00b0F), the AMS prohibition, and the R1 cutoff: checked against the labels, not memory."
     },
     {
      "tag": "improved",
      "page": "/yield-estimator",
      "name": "Yield Estimator",
-     "text": "Now linked from the pages where you'd actually reach for it \u2014 conditions, ratings-vs-yield, and Field Scout \u2014 instead of hiding in the tools list."
+     "text": "Now linked from the pages where you'd actually reach for it (conditions, ratings-vs-yield, and Field Scout) instead of hiding in the tools list."
     }
    ]
   },
@@ -1066,7 +1066,7 @@
      "tag": "fixed",
      "page": "/scorecard#old-scorecard",
      "name": "Call Scorecard",
-     "text": "Found and fixed a grading bug: since June 26, each morning's grade compared the call against the same day's close instead of the prior day's. Nightly re-scoring meant most published outcomes were still right, but two rows contradicted their own writeups \u2014 both now carry a regrade note, and the scorecard shows a plain incident note. The original text stays as published."
+     "text": "Found and fixed a grading bug: since June 26, each morning's grade compared the call against the same day's close instead of the prior day's. Nightly re-scoring meant most published outcomes were still right, but two rows contradicted their own writeups: both now carry a regrade note, and the scorecard shows a plain incident note. The original text stays as published."
     },
     {
      "tag": "improved",
@@ -1089,7 +1089,7 @@
      "tag": "fixed",
      "page": "/",
      "name": "Sitewide",
-     "text": "Menu icons rendered as solid black blobs on eight pages (an SVG id collision) \u2014 fixed everywhere. Also finished stripping emoji from the briefing and site chrome; meaning now rides on words and plain glyphs."
+     "text": "Menu icons rendered as solid black blobs on eight pages (an SVG id collision), fixed everywhere. Also finished stripping emoji from the briefing and site chrome; meaning now rides on words and plain glyphs."
     }
    ]
   },
@@ -1100,7 +1100,7 @@
      "tag": "improved",
      "page": "/",
      "name": "Sitewide",
-     "text": "Type rework after a reader said the fonts were too small \u2014 he was right. Bigger, cleaner reading text on all 56 pages, numbers stay monospaced, italics retired, and every page re-tested at phone width for horizontal scroll and clipped text."
+     "text": "Type rework after a reader said the fonts were too small. He was right. Bigger, cleaner reading text on all 56 pages, numbers stay monospaced, italics retired, and every page re-tested at phone width for horizontal scroll and clipped text."
     }
    ]
   },
@@ -1111,13 +1111,13 @@
      "tag": "fixed",
      "page": "/corn-futures-prices",
      "name": "Futures Pages",
-     "text": "The \"front month\" price was actually the most-active contract \u2014 corn showed December while true nearby September traded 22 cents lower. Heroes now quote the real nearby contract by name, and the next WASDE date comes from data instead of a hardcoded guess."
+     "text": "The \"front month\" price was actually the most-active contract, corn showed December while true nearby September traded 22 cents lower. Heroes now quote the real nearby contract by name, and the next WASDE date comes from data instead of a hardcoded guess."
     },
     {
      "tag": "improved",
      "page": "/wheat-futures-prices",
      "name": "Wheat Futures",
-     "text": "No longer Chicago-only: KC hard red winter and Minneapolis spring wheat boards, class spreads, all three classes in the fund-positioning card, and export pace \u2014 matching how most of the site's wheat bids actually price."
+     "text": "No longer Chicago-only: KC hard red winter and Minneapolis spring wheat boards, class spreads, all three classes in the fund-positioning card, and export pace, matching how most of the site's wheat bids actually price."
     }
    ]
   },
@@ -1134,7 +1134,7 @@
      "tag": "new",
      "page": "/usda-calendar",
      "name": "USDA Calendar",
-     "text": "Subscribe from your phone's calendar app (webcal/.ics) \u2014 report days show up where you'll actually see them."
+     "text": "Subscribe from your phone's calendar app (webcal/.ics): report days show up where you'll actually see them."
     }
    ]
   },
@@ -1145,13 +1145,13 @@
      "tag": "new",
      "page": "/scorecard#old-scorecard",
      "name": "Call Scorecard",
-     "text": "Every daily-briefing market call is now graded against the next session and published \u2014 hits, misses, and the running record. The yield nowcast joined an analyst board next to USDA's number."
+     "text": "Every daily-briefing market call is now graded against the next session and published: hits, misses, and the running record. The yield nowcast joined an analyst board next to USDA's number."
     },
     {
      "tag": "new",
      "page": "/",
      "name": "Email Signup",
-     "text": "The daily briefing by email, free \u2014 signup available across the site."
+     "text": "The daily briefing by email, free. Signup is available across the site."
     }
    ]
   },
@@ -1162,7 +1162,7 @@
      "tag": "improved",
      "page": "/field-scout",
      "name": "Field Scout",
-     "text": "The Read now pulls every county and state layer AGSIST has for your field's spot \u2014 cash rent, yield trend, basis, storage, land ownership, crop conditions \u2014 each card independent, each honest about missing data. Printable Field Report included."
+     "text": "The Read now pulls every county and state layer AGSIST has for your field's spot (cash rent, yield trend, basis, storage, land ownership, crop conditions) each card independent, each honest about missing data. Printable Field Report included."
     },
     {
      "tag": "improved",

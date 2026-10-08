@@ -75,15 +75,15 @@ DESC_MAX = 160
 
 DESC = {
     "corn-futures-prices.html": (
-        "Corn {mon} {verb} ${px} ({chg}) {when} — live CBOT corn futures refreshed every "
+        "Corn {mon} {verb} ${px} ({chg}) {when}. Live CBOT corn futures refreshed every "
         "30 min in session.",
         " December new-crop, RP floor, basis-to-cash, daily read."),
     "soybean-futures-prices.html": (
-        "Soybeans {mon} {verb} ${px} ({chg}) {when} — live CBOT soybean futures refreshed "
+        "Soybeans {mon} {verb} ${px} ({chg}) {when}. Live CBOT soybean futures refreshed "
         "every 15 min in session.",
         " November new-crop, crush spread, cash bids."),
     "wheat-futures-prices.html": (
-        "Wheat {mon} {verb} ${px} ({chg}) {when} — live Chicago SRW futures refreshed every "
+        "Wheat {mon} {verb} ${px} ({chg}) {when}. Live Chicago SRW futures refreshed every "
         "30 min in session{kc}.",
         " Class spreads, cash bids by ZIP."),
 }
@@ -492,7 +492,7 @@ def seed_markets(prices, today):
     fd = _iso_date(fetched)
     if not q or _stale(fd, today, "prices"):
         why = (f"price file last updated {_mdy(fd)}" if fd else "price file missing")
-        seeds["mk:status"] = f"Quotes unavailable &mdash; {why}; nothing is shown rather than an old number."
+        seeds["mk:status"] = f"Quotes unavailable: {why}; nothing is shown rather than an old number."
         for _, p, c, _, _ in MK_MAP:
             seeds["mk:" + p] = "&mdash;"
             seeds["mk:" + c] = "&mdash;"
@@ -561,7 +561,7 @@ def seed_homepage(prices, today):
         why = (f"price file last updated {_mdy(fd)}" if fd else "price file missing")
         for k in ("corn", "beans"):
             seeds["hp:" + k] = "&mdash;"
-            seeds["hp:" + k + "-when"] = "Quotes unavailable &mdash; " + why
+            seeds["hp:" + k + "-when"] = "Quotes unavailable: " + why
         return _write_seeds("index.html", seeds)
     for k in ("corn", "beans"):
         d = q.get(k) or {}
@@ -912,11 +912,11 @@ def seed_basis(today):
         seeds["basisword"] = word
         sent = f"Corn basis in the <b>{_e(name)}</b> region is <b>{lab}/bu</b> for the week of {_mdy(_iso_date(s['date']))}"
         if dlt is not None:
-            sent += (" &mdash; <b>even with normal</b>" if abs(dlt) < 0.005 else
-                     f" &mdash; <b>{_basis_money(dlt)} vs normal</b>")
+            sent += (", <b>even with normal</b>" if abs(dlt) < 0.005 else
+                     f", <b>{_basis_money(dlt)} vs normal</b>")
             if s.get("avg5") is not None:
                 sent += f" (a normal week like this runs {_basis_money(s['avg5'])})"
-        seeds["basissent"] = sent + ". These are regional USDA markets &mdash; your elevator sits a local spread away, but it moves with this."
+        seeds["basissent"] = sent + ". These are regional USDA markets. Your elevator sits a local spread away, but it moves with this."
     return _write_seeds("basis.html", seeds)
 
 
@@ -953,7 +953,7 @@ def seed_elevators(today):
         foot += f"{_commas(n['elevators'])} elevators tracked. "
     if n.get("unplaced"):
         foot += f"{_commas(n['unplaced'])} could not be placed on the map and are not drawn. "
-    foot += "Several share a town centre, so one pin can cover more than one &mdash; click to see what is there."
+    foot += "Several share a town centre, so one pin can cover more than one. Click to see what is there."
     if n.get("readers") is not None:
         when = str(d.get("directoryGenerated") or "")[:16].replace("T", " ")
         foot += (f" We have readers for {_commas(n['readers'])} of them; {_commas(n.get('read') or 0)} answered the pass "
@@ -1041,7 +1041,7 @@ def seed_futures_pages(prices, today):
                     "</strong>" + stale +
                     ((" &middot; " + bench_label + " near $" + b_usd) if b_usd else "") +
                     " &middot; as of " + flabel +
-                    " &middot; Yahoo Finance, delayed &middot; refreshed every 15 minutes during trading hours &mdash; reload for the latest.")
+                    " &middot; Yahoo Finance, delayed &middot; refreshed every 15 minutes during trading hours. Reload for the latest.")
             t, c2 = seed_between(t, "note", note)
             changed = c1 or c2
 
@@ -1099,7 +1099,7 @@ def seed_futures_pages(prices, today):
             note = ("Live cattle " + state_words(live)[0] + " near <strong>$" + lc + "</strong>" + stale
                     + ((" &middot; feeders near $" + gf) if gf else "")
                     + " &middot; $/cwt &middot; as of " + flabel
-                    + " &middot; Yahoo Finance, delayed &middot; refreshed every 15 minutes during trading hours &mdash; reload for the latest.")
+                    + " &middot; Yahoo Finance, delayed &middot; refreshed every 15 minutes during trading hours. Reload for the latest.")
             t, c2 = seed_between(t, "note", note)
             changed = c1 or c2
         else:
@@ -1150,8 +1150,8 @@ def main():
         tot = sum(hm.get("counts", {}).values())
         rc = hm.get("recent_count")
         line = (f"{tot:,} National Weather Service hail reports, {yrs[0]}\u2013{yrs[-1]}"
-                + (f" \u2014 {rc:,} in the last 30 days" if rc else "")
-                + " \u2014 recent reports refresh daily; the full archive rebuilds monthly.") if yrs else None
+                + (f", {rc:,} in the last 30 days" if rc else "")
+                + ". Recent reports refresh daily; the full archive rebuilds monthly.") if yrs else None
         if line:
             t = open("hail-map.html", encoding="utf-8").read()
             t, ch = seed_between(t, "hailstats", line)

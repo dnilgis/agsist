@@ -5,19 +5,19 @@
    "id": "archive",
    "page": "/archive",
    "name": "Daily Archive",
-   "pitch": "Every past briefing on the record — one category-exclusive slot."
+   "pitch": "Every past briefing on the record. One category-exclusive slot."
   },
   {
    "id": "basis",
    "page": "/basis",
    "name": "Basis vs Normal",
-   "pitch": "Every visitor here just got a bid they didn’t like — one category-exclusive slot."
+   "pitch": "Every visitor here just got a bid they didn’t like. One category-exclusive slot."
   },
   {
    "id": "breakeven",
    "page": "/breakeven",
    "name": "Break-Even Calculator",
-   "pitch": "Visitors here are running this year’s numbers — one category-exclusive slot."
+   "pitch": "Visitors here are running this year’s numbers. One category-exclusive slot."
   },
   {
    "id": "cash-bids",
@@ -29,115 +29,115 @@
    "id": "cash-lease",
    "page": "/cash-lease",
    "name": "Cash Farm Lease",
-   "pitch": "Every visitor here is putting a lease on paper — one category-exclusive slot."
+   "pitch": "Every visitor here is putting a lease on paper. One category-exclusive slot."
   },
   {
    "id": "cash-rent",
    "page": "/cash-rent",
    "name": "Cash Rent by County",
-   "pitch": "Every visitor here is weighing a land rent number — one category-exclusive slot."
+   "pitch": "Every visitor here is weighing a land rent number. One category-exclusive slot."
   },
   {
    "id": "cattle-futures-prices",
    "page": "/cattle-futures-prices",
    "name": "Cattle Futures Prices",
-   "pitch": "Cattle feeders check this board every day — one category-exclusive slot."
+   "pitch": "Cattle feeders check this board every day. One category-exclusive slot."
   },
   {
    "id": "conditions",
    "page": "/conditions",
    "name": "Crop Conditions",
-   "pitch": "Every visitor here is judging a crop year — one category-exclusive slot."
+   "pitch": "Every visitor here is judging a crop year. One category-exclusive slot."
   },
   {
    "id": "conditions-yield",
    "page": "/conditions-yield",
    "name": "Ratings vs Yield",
-   "pitch": "Everyone here second-guesses Monday’s number — one category-exclusive slot."
+   "pitch": "Everyone here second-guesses Monday’s number. One category-exclusive slot."
   },
   {
    "id": "corn-futures-prices",
    "page": "/corn-futures-prices",
    "name": "Corn Futures Prices",
-   "pitch": "Corn growers check this price all session long — one category-exclusive slot."
+   "pitch": "Corn growers check this price all session long. One category-exclusive slot."
   },
   {
    "id": "drought",
    "page": "/drought-monitor",
    "name": "Drought Monitor",
-   "pitch": "Everyone here is watching moisture — one category-exclusive slot."
+   "pitch": "Everyone here is watching moisture. One category-exclusive slot."
   },
   {
    "id": "elevators",
    "page": "/elevators",
    "name": "Elevator Coverage Map",
-   "pitch": "Every visitor is deciding where to haul — one category-exclusive slot."
+   "pitch": "Every visitor is deciding where to haul. One category-exclusive slot."
   },
   {
    "id": "fast-facts",
    "page": "/fast-facts",
    "name": "Reference Tables",
-   "pitch": "The reference farmers pull up in the shop, the cab, and the co-op line — one category-exclusive slot."
+   "pitch": "The reference farmers pull up in the shop, the cab, and the co-op line. One category-exclusive slot."
   },
   {
    "id": "fertilizer",
    "page": "/fertilizer",
    "name": "Fertilizer",
-   "pitch": "Input buyers comparing prices before they commit — one category-exclusive slot."
+   "pitch": "Input buyers comparing prices before they commit. One category-exclusive slot."
   },
   {
    "id": "field-scout",
    "page": "/field-scout",
    "name": "Field Scout",
-   "pitch": "Every visitor here is standing on ground they care about — one category-exclusive slot."
+   "pitch": "Every visitor here is standing on ground they care about. One category-exclusive slot."
   },
   {
    "id": "foreign-land",
    "page": "/foreign-land",
    "name": "Foreign-Owned Land",
-   "pitch": "Every visitor here cares who owns the ground — one category-exclusive slot."
+   "pitch": "Every visitor here cares who owns the ground. One category-exclusive slot."
   },
   {
    "id": "gdu",
    "page": "/gdu-calculator",
    "name": "GDU Calculator",
-   "pitch": "Every visitor here is tracking crop development on a real field — one category-exclusive slot."
+   "pitch": "Every visitor here is tracking crop development on a real field. One category-exclusive slot."
   },
   {
    "id": "grain-bin-calculator",
    "page": "/grain-bin-calculator",
    "name": "Grain Bin Calculator",
-   "pitch": "Bushels, shrink, and bin math for people with real steel to fill — one category-exclusive slot."
+   "pitch": "Bushels, shrink, and bin math for people with real steel to fill. One category-exclusive slot."
   },
   {
    "id": "land-tenure",
    "page": "/land-tenure",
    "name": "Rented vs Owner-Farmed",
-   "pitch": "Landlords, tenants, and everyone deciding which to be — one category-exclusive slot."
+   "pitch": "Landlords, tenants, and everyone deciding which to be. One category-exclusive slot."
   },
   {
    "id": "markets",
    "page": "/markets",
    "name": "Markets",
-   "pitch": "The whole grain complex checks prices here — one category-exclusive slot."
+   "pitch": "The whole grain complex checks prices here. One category-exclusive slot."
   },
   {
    "id": "milk",
    "page": "/milk-prices",
    "name": "Milk Prices",
-   "pitch": "Dairy country checks this page — one category-exclusive slot."
+   "pitch": "Dairy country checks this page. One category-exclusive slot."
   },
   {
    "id": "planting-date",
    "page": "/planting-date",
    "name": "Planting Date",
-   "pitch": "The first planting decision of the year gets made on this page — one category-exclusive slot."
+   "pitch": "The first planting decision of the year gets made on this page. One category-exclusive slot."
   },
   {
    "id": "presell-calculator",
    "page": "/presell-calculator",
    "name": "Pre-Sell Calculator",
-   "pitch": "Farmers working out how much crop to sell ahead check this floor — one category-exclusive slot."
+   "pitch": "Farmers working out how much crop to sell ahead check this floor. One category-exclusive slot."
   },
   {
    "id": "rent-hub",
@@ -149,7 +149,7 @@
    "id": "soybean-futures-prices",
    "page": "/soybean-futures-prices",
    "name": "Soybean Futures Prices",
-   "pitch": "Bean growers check this price all session long — one category-exclusive slot."
+   "pitch": "Bean growers check this price all session long. One category-exclusive slot."
   },
   {
    "id": "spray",
@@ -161,19 +161,19 @@
    "id": "storage-crunch",
    "page": "/storage-crunch",
    "name": "Storage Crunch",
-   "pitch": "Bin builders, elevators, and everyone selling storage or carry — one category-exclusive slot."
+   "pitch": "Bin builders, elevators, and everyone selling storage or carry. One category-exclusive slot."
   },
   {
    "id": "tools",
    "page": "/tools",
    "name": "All Tools",
-   "pitch": "The toolbox page every calculator hangs off — one category-exclusive slot."
+   "pitch": "The toolbox page every calculator hangs off. One category-exclusive slot."
   },
   {
    "id": "urea",
    "page": "/urea",
    "name": "Urea Volatilization Risk",
-   "pitch": "Every visitor here is pricing nitrogen loss before they spread — one category-exclusive slot."
+   "pitch": "Every visitor here is pricing nitrogen loss before they spread. One category-exclusive slot."
   },
   {
    "id": "whats-priced-in",
@@ -185,13 +185,13 @@
    "id": "wheat-futures-prices",
    "page": "/wheat-futures-prices",
    "name": "Wheat Futures Prices",
-   "pitch": "Wheat growers check this price all session long — one category-exclusive slot."
+   "pitch": "Wheat growers check this price all session long. One category-exclusive slot."
   },
   {
    "id": "yield-estimator",
    "page": "/yield-estimator",
    "name": "Yield Estimator",
-   "pitch": "Farmers counting kernels in August check their math here — one category-exclusive slot."
+   "pitch": "Farmers counting kernels in August check their math here. One category-exclusive slot."
   },
   {
    "id": "rent-al",

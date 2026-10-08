@@ -190,7 +190,7 @@ def wasde(out, state, held):
             f"wasde:{date}:{b['metric']}", "usda",
             f"{rpt}: {b['metric']} came in {b.get('surprise') or 'off the trade'}",
             f"Trade looked for {b['expected']}{unit}; USDA printed {b['actual']}{unit}"
-            + (f" — {b['gap_pct']:+.1f}% versus the survey." if b.get("gap_pct") is not None else "."),
+            + (f", {b['gap_pct']:+.1f}% versus the survey." if b.get("gap_pct") is not None else "."),
             "high", "/whats-priced-in", "USDA WASDE, graded against the pre-report survey", iso_day(date)))
 
 
@@ -547,7 +547,7 @@ def rss(data, limit=40):
     out = ['<?xml version="1.0" encoding="UTF-8"?>',
            '<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">',
            "  <channel>",
-           "    <title>AGSIST Wire — What Just Moved</title>",
+           "    <title>AGSIST Wire: What Just Moved</title>",
            f"    <link>{SITE}/news</link>",
            "    <description>Dated grain and livestock market events the moment they are "
            "measurable: USDA report surprises, one-year positioning extremes, 52-week highs "

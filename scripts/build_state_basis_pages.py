@@ -717,13 +717,13 @@ def stat_block(group, st, prev_gen):
 
 
 def loc_li(r):
-    return (f'<li>{esc(r["operator"])}, {esc(town_text(r["city"]))} &mdash; basis <b>{money_basis(r["basis"])}</b>, '
+    return (f'<li>{esc(r["operator"])}, {esc(town_text(r["city"]))}: basis <b>{money_basis(r["basis"])}</b>, '
             f'cash ${r["cash"]:.2f} ({esc(delivery_text(r))}), as of {fmt_ct(r["priced"])}</li>')
 
 
 EXPLAINER = """<h2>What basis is, in one paragraph</h2>
   <p class="bs-sub">Basis is the local cash price minus the futures price it is quoted against:
-  <b>cash &minus; futures</b>, in dollars per bushel. It carries everything futures leave out &mdash; freight to the
+  <b>cash &minus; futures</b>, in dollars per bushel. It carries everything futures leave out: freight to the
   river, rail or processor that ultimately buys the grain, local supply and demand, storage space and the
   elevator&rsquo;s margin. Inland elevators usually post a <b>negative</b> basis because grain has to be shipped
   toward an export port or a plant before it is worth the futures price, and that freight comes out of the bid.
@@ -819,7 +819,7 @@ def build_state_page(st, rows_all, summ, ctx):
                                  f"range {money_basis(c['lo'])} to {money_basis(c['hi'])}, n = {c['n']}")
                 else:
                     items.append(f"vs {contract_label(c['contract'])}: {c['n']} elevator"
-                                 f"{'s' if c['n'] != 1 else ''} &mdash; too few for a median")
+                                 f"{'s' if c['n'] != 1 else ''}, too few for a median")
             other_html = ('<p class="bs-sub">Elevators whose nearest bid is priced against a different contract '
                           'are kept out of the headline, because a basis against one month is not comparable '
                           'with a basis against another:</p><ul class="bs-list">'
@@ -850,8 +850,8 @@ def build_state_page(st, rows_all, summ, ctx):
                         f'{other_html}{extra_html}{sw}')
     if not sections:
         sections.append('<div class="bs-note"><b>No statistic today.</b> No elevator in this state had a fresh '
-                        'corn, soybean or wheat bid in the AGSIST network at this snapshot &mdash; '
-                        'the page is kept so its link does not break, and fills in when boards report.</div>')
+                        'corn, soybean or wheat bid in the AGSIST network at this snapshot. '
+                        'The page is kept so its link does not break, and fills in when boards report.</div>')
 
     # ---- table: one per crop, columns Elevator, Town, Basis, Cash first so the
     # numbers are on screen without scrolling sideways. On a phone each row is a
@@ -915,7 +915,7 @@ def build_state_page(st, rows_all, summ, ctx):
 {hdr}
 <main class="bs-wrap" id="main">
   <p class="bs-sub" style="margin-top:14px"><a href="/basis" style="color:var(--text-muted)">Basis</a> &rsaquo; <b style="color:var(--text)">{name}</b></p>
-  <h1>{name} cash basis today &mdash; AGSIST network elevators</h1>
+  <h1>{name} cash basis today: AGSIST network elevators</h1>
   <p class="bs-sub">Basis (cash &minus; futures, $/bu) at the <b>{len(elevators)}</b> {name} elevator{'s' if len(elevators) != 1 else ''}
   in the AGSIST elevator network with a fresh bid, read directly from each elevator&rsquo;s own bid board.
   This is a sample of {name} elevators, not all of them. Snapshot of <b>{fmt_ct(gen)}</b>; page built {fmt_ct(ctx['built'])}.
@@ -927,7 +927,7 @@ def build_state_page(st, rows_all, summ, ctx):
   {table}
   <div class="bs-note"><b>How these numbers are made.</b> Source: the AGSIST elevator network (dnilgis/bids),
   boards read directly; no third-party bid feed is used on this page. A bid counts only if its board was confirmed
-  live on the latest read and its price was posted within {FRESH_HOURS} hours of the snapshot &mdash; long enough
+  live on the latest read and its price was posted within {FRESH_HOURS} hours of the snapshot, long enough
   that a board unchanged over a weekend still counts on Monday. Specialty bids (white, organic, non-GMO, high-oleic,
   identity-preserved) are excluded. Medians and ranges are printed only with at least {MIN_STAT} elevators on the
   same futures contract. Prices are a snapshot as of {fmt_ct(gen)} and will have moved since; call the elevator

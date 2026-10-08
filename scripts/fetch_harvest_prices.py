@@ -340,7 +340,7 @@ def card_html(c, crop_year):
                     + ' of ~' + str(leg.get("days_total", "?")) + ' \u00b7 running estimate</span>'
                     '<span class="hpc-v">$' + f"{leg['running_avg']:.2f}" + '</span></div>')
         return ('<div class="hpc-leg"><span class="hpc-l">' + label + ' (' + month_word + ')</span>'
-                '<span class="hpc-v hpc-pend">pending \u2014 discovery opens '
+                '<span class="hpc-v hpc-pend">pending: discovery opens '
                 + month_word + ' 1</span></div>')
     return ('<div class="hp-card-s"><div class="hpc-t">' + c["label"] + ' \u00b7 ' + c["contract"]
             + ' \u00b7 ' + str(crop_year) + ' crop year</div>'

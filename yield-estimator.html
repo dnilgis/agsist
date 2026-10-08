@@ -40,7 +40,7 @@
 <script>/* agsist-ga-guard 2026-10-01: Google Analytics loads only when the browser sends no Global Privacy Control signal and the off switch on /privacy is not set. dataLayer and gtag always exist, so page code that calls them never throws. */(function(w,d,n){var off=false,v,i,s;w.dataLayer=w.dataLayer||[];if(typeof w.gtag!=='function'){w.gtag=function(){w.dataLayer.push(arguments);};}try{off=w.localStorage.getItem('agsist-ga-off')==='1';}catch(e){}if(n.globalPrivacyControl===true){off=true;}w.agsistGaOff=off;w.gtag('set','allow_google_signals',false);w.gtag('set','allow_ad_personalization_signals',false);if(off){return;}s=d.createElement('script');s.async=true;s.src='https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H';(d.head||d.documentElement).appendChild(s);})(window,document,navigator);</script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How do I estimate corn yield before harvest?","acceptedAnswer":{"@type":"Answer","text":"The ear count method: count ears in 1/1000 acre row length, then count kernel rows and kernels per row on 10 representative ears. Formula: ears × kernel rows × kernels per row / 90, for a 1/1000-acre sample. Kernel weight varies, so the estimator shows a range across 65,000–95,000 kernels per bushel. Enter these counts in the AGSIST Yield Estimator for an instant field estimate."}},{"@type":"Question","name":"How accurate is the pre-harvest yield estimate?","acceptedAnswer":{"@type":"Answer","text":"The yield component method is accurate to roughly plus or minus 20 bushels per acre — a figure commonly cited in extension guides. Accuracy improves if you sample at least 5 locations and 10 ears per location, and estimate at the milk (R3) stage or later. Because kernel weight varies, the estimator also shows a range built from 65,000 to 95,000 kernels per bushel."}},{"@type":"Question","name":"How do I estimate soybean yield before harvest?","acceptedAnswer":{"@type":"Answer","text":"Count plants per acre, then count pods per plant and seeds per pod on 10 representative plants. Formula: plants/ac × pods/plant × seeds/pod / (seeds/lb × 60). The AGSIST estimator calculates this automatically."}}]}
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How do I estimate corn yield before harvest?","acceptedAnswer":{"@type":"Answer","text":"The ear count method: count ears in 1/1000 acre row length, then count kernel rows and kernels per row on 10 representative ears. Formula: ears × kernel rows × kernels per row / 90, for a 1/1000-acre sample. Kernel weight varies, so the estimator shows a range across 65,000–95,000 kernels per bushel. Enter these counts in the AGSIST Yield Estimator for an instant field estimate."}},{"@type":"Question","name":"How accurate is the pre-harvest yield estimate?","acceptedAnswer":{"@type":"Answer","text":"The yield component method is accurate to roughly plus or minus 20 bushels per acre, a figure commonly cited in extension guides. Accuracy improves if you sample at least 5 locations and 10 ears per location, and estimate at the milk (R3) stage or later. Because kernel weight varies, the estimator also shows a range built from 65,000 to 95,000 kernels per bushel."}},{"@type":"Question","name":"How do I estimate soybean yield before harvest?","acceptedAnswer":{"@type":"Answer","text":"Count plants per acre, then count pods per plant and seeds per pod on 10 representative plants. Formula: plants/ac × pods/plant × seeds/pod / (seeds/lb × 60). The AGSIST estimator calculates this automatically."}}]}
 </script>
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"WebApplication","name":"AGSIST Corn & Soybean Yield Estimator","url":"https://agsist.com/yield-estimator","applicationCategory":"Agricultural yield calculator","operatingSystem":"Web browser","description":"Free pre-harvest yield estimator for corn (ear-count / yield-component method) and soybeans (pod-count method), with a break-even profit-and-loss check that auto-fills price from live cash data.","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"author":{"@type":"Person","name":"Sigurd Lindquist","url":"https://agsist.com/about"},"featureList":["Corn ear-count yield estimate","Soybean pod-count yield estimate","Break-even / profit per acre at estimated yield","Auto-filled cash price by crop"]}
@@ -175,17 +175,17 @@
 </div>
 
 <main id="main" tabindex="-1" class="ye-page">
-<style>@media print{.ag-sponsor-ribbon{display:none!important}}</style><aside class="ag-sponsor-ribbon" id="ag-sponsor"><span class="ag-sponsor-tag">Sponsor this page</span> Farmers counting kernels in August check their math here — one category-exclusive slot. <span class="ag-sponsor-price" data-rate="page">$29/mo &middot; first month free</span> <a href="/sponsor-apply?slot=yield-estimator&amp;utm_source=yield-estimator&amp;utm_medium=slot">Put your name here &rarr;</a></aside>
+<style>@media print{.ag-sponsor-ribbon{display:none!important}}</style><aside class="ag-sponsor-ribbon" id="ag-sponsor"><span class="ag-sponsor-tag">Sponsor this page</span> Farmers counting kernels in August check their math here. One category-exclusive slot. <span class="ag-sponsor-price" data-rate="page">$29/mo &middot; first month free</span> <a href="/sponsor-apply?slot=yield-estimator&amp;utm_source=yield-estimator&amp;utm_medium=slot">Put your name here &rarr;</a></aside>
 
   <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a> &rarr; Yield Estimator</nav>
 
   <div class="ye-hero">
     <div class="ye-eyebrow"><svg class="ic-sp" aria-hidden="true"><use href="#sp-wheat"/></svg> Pre-Harvest Field Estimation</div>
     <h1>Soybean &amp; Corn<br>Yield Calculator</h1>
-    <p>Estimate yield from field counts at R5&ndash;R6 (corn) or R6&ndash;R7 (soybeans) &mdash; the same ear-count and kernel-count math crop tour scouts run in August. Pod-count method for soybeans. Sample at least 5 locations per field for reliable estimates. Then see <a class="inl-ye" href="/whats-priced-in">what the trade expects the national number to be</a>.</p>
+    <p>Estimate yield from field counts at R5&ndash;R6 (corn) or R6&ndash;R7 (soybeans), the same ear-count and kernel-count math crop tour scouts run in August. Pod-count method for soybeans. Sample at least 5 locations per field for reliable estimates. Then see <a class="inl-ye" href="/whats-priced-in">what the trade expects the national number to be</a>.</p>
     <div class="ye-calibration">
       <strong>Method:</strong> Yield Component Method (ears &times; kernel rows &times; kernels per row &divide; 90, for a 1/1000-acre sample; widely referenced across US Corn Belt extension services).
-      <strong>Accuracy:</strong> corn estimates run about &plusmn;20 bu/ac &mdash; the figure Purdue, Iowa State, Ohio State and Penn State Extension all give for this method. Sample at least 5 locations, 10 ears each, and estimate at the milk (R3) stage or later. Soybean estimates are looser still; Michigan State puts them at &plusmn;25% or worse before R6.
+      <strong>Accuracy:</strong> corn estimates run about &plusmn;20 bu/ac: the figure Purdue, Iowa State, Ohio State and Penn State Extension all give for this method. Sample at least 5 locations, 10 ears each, and estimate at the milk (R3) stage or later. Soybean estimates are looser still; Michigan State puts them at &plusmn;25% or worse before R6.
       Not a substitute for certified yield monitoring or combine data.
     </div>
   </div>
@@ -206,7 +206,7 @@
     <div class="ye-panel-body">
 
       <div class="ye-method">
-        <div class="ye-method-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-zap"/></svg> Quick Fill &mdash; Start from a Typical Scenario</div>
+        <div class="ye-method-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-zap"/></svg> Quick Fill: Start from a Typical Scenario</div>
         <div class="qf-label">Select a scenario to auto-fill inputs:</div>
         <div class="quickfill-row">
           <button class="qf-btn" id="qf-corn-high" title="~220 bu/ac"><svg class="ic-sp" aria-hidden="true"><use href="#sp-wheat"/></svg> High Yield ~220 bu</button>
@@ -214,7 +214,7 @@
           <button class="qf-btn" id="qf-corn-low"  title="~130 bu/ac"><svg class="ic-sp" aria-hidden="true"><use href="#sp-wheat"/></svg> Low ~130 bu</button>
         </div>
 
-        <div class="ye-method-title" style="margin-top:.6rem"><svg class="ic-sp" aria-hidden="true"><use href="#sp-pin"/></svg> Step 1 &mdash; Count Ears</div>
+        <div class="ye-method-title" style="margin-top:.6rem"><svg class="ic-sp" aria-hidden="true"><use href="#sp-pin"/></svg> Step 1: Count Ears</div>
         <div class="field-row">
           <div class="field-group">
             <label class="field-label" for="c-row-width">Row Width (inches)</label>
@@ -234,7 +234,7 @@
           </div>
         </div>
 
-        <div class="ye-method-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-pin"/></svg> Step 2 &mdash; Count Kernels (10 Representative Ears)</div>
+        <div class="ye-method-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-pin"/></svg> Step 2: Count Kernels (10 Representative Ears)</div>
         <div class="field-row">
           <div class="field-group">
             <label class="field-label" for="c-kernel-rows">Kernel Rows</label>
@@ -288,11 +288,11 @@
         <div style="display:grid;grid-template-columns:minmax(0,1fr);gap:.5rem;">
           <div style="font-size:0.795rem;color:var(--text-dim);line-height:1.6">
             &#8226; Sample at least <strong>5 locations</strong> per field, at least 200 feet apart and away from field edges.<br>
-            &#8226; <strong>Avoid sampling spots</strong> you noticed from the road &mdash; select locations before walking the field.<br>
+            &#8226; <strong>Avoid sampling spots</strong> you noticed from the road; select locations before walking the field.<br>
             &#8226; Count ears in the <strong>designated 1/1000-acre row length</strong> for your row width (see table in Fast Facts &rarr; Crop Removal tab).<br>
-            &#8226; Count kernel rows and kernels/row on <strong>10 representative ears</strong> per location &mdash; not the biggest or smallest.<br>
+            &#8226; Count kernel rows and kernels/row on <strong>10 representative ears</strong> per location, not the biggest or smallest.<br>
             &#8226; Test weight does not change this estimate. Weigh it at harvest, because low test weight docks grain value.<br>
-            &#8226; Average multiple locations &mdash; field variability of 30&ndash;50 bu/ac between zones is common.
+            &#8226; Average multiple locations: field variability of 30&ndash;50 bu/ac between zones is common.
           </div>
         </div>
       </div>
@@ -308,7 +308,7 @@
     </div>
     <div class="ye-panel-body">
       <div class="ye-method">
-        <div class="ye-method-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-zap"/></svg> Quick Fill &mdash; Example Soybean Scenarios</div>
+        <div class="ye-method-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-zap"/></svg> Quick Fill: Example Soybean Scenarios</div>
         <div class="qf-label">Select an example (not an average):</div>
         <div class="quickfill-row">
           <button class="qf-btn" id="qf-bean-high" title="Example: ~54 bu/ac"><svg class="ic-sp" aria-hidden="true"><use href="#sp-leaf"/></svg> Good stand ~54 bu</button>
@@ -316,7 +316,7 @@
           <button class="qf-btn" id="qf-bean-low"  title="Example: ~32 bu/ac"><svg class="ic-sp" aria-hidden="true"><use href="#sp-leaf"/></svg> Stressed ~32 bu</button>
         </div>
 
-        <div class="ye-method-title" style="margin-top:.6rem"><svg class="ic-sp" aria-hidden="true"><use href="#sp-pin"/></svg> Step 1 &mdash; Count Plants</div>
+        <div class="ye-method-title" style="margin-top:.6rem"><svg class="ic-sp" aria-hidden="true"><use href="#sp-pin"/></svg> Step 1: Count Plants</div>
         <div class="field-row">
           <div class="field-group">
             <label class="field-label" for="b-row-width">Row Width (inches)</label>
@@ -334,7 +334,7 @@
           </div>
         </div>
 
-        <div class="ye-method-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-pin"/></svg> Step 2 &mdash; Count Pods &amp; Seeds (10 Plants)</div>
+        <div class="ye-method-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-pin"/></svg> Step 2: Count Pods &amp; Seeds (10 Plants)</div>
         <div class="field-row">
           <div class="field-group">
             <label class="field-label" for="b-pods-plant">Pods per Plant</label>
@@ -449,7 +449,7 @@
       <div class="ye-method">
         <div class="ye-method-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-chart-column"/></svg> Why Manure Value Matters to Your Yield Estimate</div>
         <div style="font-size:.8rem;color:var(--text-dim);line-height:1.65">
-          <p style="margin:0 0 .75rem">When you apply manure, your N, P, and K inputs are partially or fully covered. That changes your break-even calculation significantly &mdash; cost per acre goes down, and profit per acre goes up at any given yield.</p>
+          <p style="margin:0 0 .75rem">When you apply manure, your N, P, and K inputs are partially or fully covered. That changes your break-even calculation significantly: cost per acre goes down, and profit per acre goes up at any given yield.</p>
           <p style="margin:0 0 .75rem">&#9654; Use the <strong>Manure Calculator</strong> to get your $/acre fertilizer credit.<br>
           &#9654; Subtract that credit from your total cost in the <strong>Break-Even tab</strong> above.<br>
           &#9654; Re-run the break-even to see your true bottom line on manured acres.</p>
@@ -475,7 +475,7 @@
 <section class="faq agf" aria-labelledby="agf-t">
 <h2 class="agf-t" id="agf-t">Common questions</h2>
 <details><summary>How do I estimate corn yield before harvest?</summary><div class="agf-a">The ear count method: count ears in 1/1000 acre row length, then count kernel rows and kernels per row on 10 representative ears. Formula: ears × kernel rows × kernels per row / 90, for a 1/1000-acre sample. Kernel weight varies, so the estimator shows a range across 65,000–95,000 kernels per bushel. Enter these counts in the AGSIST Yield Estimator for an instant field estimate.</div></details>
-<details><summary>How accurate is the pre-harvest yield estimate?</summary><div class="agf-a">The yield component method is accurate to roughly plus or minus 20 bushels per acre — a figure commonly cited in extension guides. Accuracy improves if you sample at least 5 locations and 10 ears per location, and estimate at the milk (R3) stage or later. Because kernel weight varies, the estimator also shows a range built from 65,000 to 95,000 kernels per bushel.</div></details>
+<details><summary>How accurate is the pre-harvest yield estimate?</summary><div class="agf-a">The yield component method is accurate to roughly plus or minus 20 bushels per acre, a figure commonly cited in extension guides. Accuracy improves if you sample at least 5 locations and 10 ears per location, and estimate at the milk (R3) stage or later. Because kernel weight varies, the estimator also shows a range built from 65,000 to 95,000 kernels per bushel.</div></details>
 <details><summary>How do I estimate soybean yield before harvest?</summary><div class="agf-a">Count plants per acre, then count pods per plant and seeds per pod on 10 representative plants. Formula: plants/ac × pods/plant × seeds/pod / (seeds/lb × 60). The AGSIST estimator calculates this automatically.</div></details>
 </section>
 <!--FAQ:END-->

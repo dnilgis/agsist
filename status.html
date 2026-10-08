@@ -18,23 +18,23 @@
   <link rel="apple-touch-icon"                     href="/img/apple-touch-icon.png">
   <link rel="manifest"                             href="/manifest.json">
 
-  <title>AGSIST Status &mdash; Live Data &amp; Service Health | AGSIST</title>
-  <meta name="description" content="Live status of AGSIST's data feeds and tools — grain prices, cash bids, the daily briefing, weather, and hail. Checked in your browser, in real time.">
+  <title>AGSIST Status: Live Data &amp; Service Health | AGSIST</title>
+  <meta name="description" content="Live status of AGSIST's data feeds and tools: grain prices, cash bids, the daily briefing, weather, and hail. Checked in your browser, in real time.">
   <link rel="canonical"    href="https://agsist.com/status">
   <meta name="robots"      content="index, follow, max-image-preview:large">
   <meta property="og:type"         content="website">
   <meta property="og:site_name"    content="AGSIST">
   <meta property="og:locale"       content="en_US">
-  <meta property="og:title"        content="AGSIST Status — Live Data &amp; Service Health">
-  <meta property="og:description"  content="Real-time health of AGSIST's grain prices, cash bids, daily briefing, weather, and hail feeds — checked live in your browser.">
+  <meta property="og:title"        content="AGSIST Status: Live Data &amp; Service Health">
+  <meta property="og:description"  content="Real-time health of AGSIST's grain prices, cash bids, daily briefing, weather, and hail feeds, checked live in your browser.">
   <meta property="og:url"          content="https://agsist.com/status">
   <meta property="og:image"        content="https://agsist.com/img/og/agsist.jpg">
-  <meta property="og:image:alt" content="AGSIST Status — Live Data &amp; Service Health">
+  <meta property="og:image:alt" content="AGSIST Status: Live Data &amp; Service Health">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:image" content="https://agsist.com/img/og/agsist.jpg">
   <meta property="og:image:width"  content="1200">
   <meta property="og:image:height" content="630">
-  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebPage","@id":"https://agsist.com/status#webpage","url":"https://agsist.com/status","name":"AGSIST Status — Live Data & Service Health","description":"Live status of AGSIST's data feeds and tools, checked in the visitor's browser in real time.","isPartOf":{"@id":"https://agsist.com/#website"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://agsist.com/"},{"@type":"ListItem","position":2,"name":"Status","item":"https://agsist.com/status"}]}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebPage","@id":"https://agsist.com/status#webpage","url":"https://agsist.com/status","name":"AGSIST Status: Live Data & Service Health","description":"Live status of AGSIST's data feeds and tools, checked in the visitor's browser in real time.","isPartOf":{"@id":"https://agsist.com/#website"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://agsist.com/"},{"@type":"ListItem","position":2,"name":"Status","item":"https://agsist.com/status"}]}]}</script>
 
   <style>
   .st-wrap{max-width:820px;margin:0 auto;padding:0 1rem 3rem;}
@@ -107,7 +107,7 @@
       </nav>
       <div class="page-header" style="margin-bottom:1rem">
         <h1 style="margin-bottom:.3rem">AGSIST Status</h1>
-        <p style="color:var(--text-muted,#9bb0a3);font-size:1rem;line-height:1.5;margin:0">Live health of every AGSIST data feed &mdash; checked from your browser, right now. No cached dashboard, no spin. If a number on the site looks old, this page tells you whether it really is.</p>
+        <p style="color:var(--text-muted,#9bb0a3);font-size:1rem;line-height:1.5;margin:0">Live health of every AGSIST data feed: checked from your browser, right now. No cached dashboard, no spin. If a number on the site looks old, this page tells you whether it really is.</p>
       </div>
 
       <div class="st-banner" id="st-banner" role="status" aria-live="polite">
@@ -145,7 +145,7 @@
            identical from outside. That is the whole reason this section says
            WHY. -->
       <h2 class="st-h2" id="st-more-h">Everything else the site publishes</h2>
-      <p class="st-more-lede" id="st-more-lede">Checked live from your browser, the same way. Each row says who writes it, how often, and — when a feed is meant to sit still — why.</p>
+      <p class="st-more-lede" id="st-more-lede">Checked live from your browser, the same way. Each row says who writes it, how often, and, when a feed is meant to sit still, why.</p>
       <div class="st-grid" id="st-grid-more" aria-labelledby="st-more-h"></div>
 
       <div class="st-legend" aria-hidden="true">
@@ -156,9 +156,9 @@
       </div>
 
       <div class="st-note">
-        <b>How this page works.</b> Everything above is checked live, in your browser, when the page loads &mdash; there is no stored status that could itself go stale. Each feed publishes a timestamp; this page reads it and compares it to how often that feed is supposed to update. &ldquo;Delayed&rdquo; and &ldquo;Idle&rdquo; account for normal rhythms &mdash; grain prices don&rsquo;t move when the board is closed, and there&rsquo;s no weekday briefing on a Sunday, so the page won&rsquo;t cry wolf about either.
+        <b>How this page works.</b> Everything above is checked live, in your browser, when the page loads. There is no stored status that could itself go stale. Each feed publishes a timestamp; this page reads it and compares it to how often that feed is supposed to update. &ldquo;Delayed&rdquo; and &ldquo;Idle&rdquo; account for normal rhythms: grain prices don&rsquo;t move when the board is closed, and there&rsquo;s no weekday briefing on a Sunday, so the page won&rsquo;t cry wolf about either.
         <br><br>
-        <b>What it can and can&rsquo;t see.</b> If this page loaded at all, the AGSIST website is online. What it checks is whether the <em>data behind</em> each tool is current. It cannot see GitHub&rsquo;s build system directly &mdash; so when several feeds go &ldquo;Delayed&rdquo; together, it usually means an upstream provider (often GitHub, which builds and publishes the site) is catching up, not that anything is broken. For GitHub&rsquo;s own status, see <a href="https://www.githubstatus.com/" target="_blank" rel="noopener" id="st-ghlink">githubstatus.com</a>.
+        <b>What it can and can&rsquo;t see.</b> If this page loaded at all, the AGSIST website is online. What it checks is whether the <em>data behind</em> each tool is current. It cannot see GitHub&rsquo;s build system directly, so when several feeds go &ldquo;Delayed&rdquo; together, it usually means an upstream provider (often GitHub, which builds and publishes the site) is catching up, not that anything is broken. For GitHub&rsquo;s own status, see <a href="https://www.githubstatus.com/" target="_blank" rel="noopener" id="st-ghlink">githubstatus.com</a>.
         <br><br>
         Something looks wrong that this page says is fine? Tell Sig: <a href="mailto:sig@farmers1st.com?subject=AGSIST%20status">sig@farmers1st.com</a>.
       </div>
@@ -233,7 +233,7 @@
     // check() returns {state, label, age} given (data, ageMs). state ∈ ok/warn/down/idle.
     var COMPONENTS=[
       {
-        name:'Grain Futures Prices', desc:'Corn, soybean & wheat boards — refreshed every 15 min while the market is open.',
+        name:'Grain Futures Prices', desc:'Corn, soybean & wheat boards, refreshed every 15 min while the market is open.',
         url:'/data/prices.json', tsKey:'fetched',
         check:function(d,age){
           var open=grainsOpen();
@@ -322,7 +322,7 @@
         }
       },
       {
-        name:'Yield Nowcast', desc:'Weekly corn & soybean yield estimate from USDA condition ratings — updates each Tuesday in season.',
+        name:'Yield Nowcast', desc:'Weekly corn & soybean yield estimate from USDA condition ratings, updates each Tuesday in season.',
         url:'/data/yield-nowcast.json', tsKey:'generated',
         check:function(d,age){
           // Off-season (Dec-Mar): USDA ratings pause, the builder deliberately
@@ -336,7 +336,7 @@
         }
       },
       {
-        name:'COT Positioning', desc:'CFTC managed-money and commercial positioning — publishes Fridays, fetched weekly.',
+        name:'COT Positioning', desc:'CFTC managed-money and commercial positioning: publishes Fridays, fetched weekly.',
         /* `fetched` — the key data/cot.json does not have. It carries `updated`.
            So this card has been reading "No timestamp" in amber every day since
            it shipped, on a page whose entire job is telling a reader whether a
@@ -351,7 +351,7 @@
         }
       },
       {
-        name:'Yield Direction Record', desc:'The nowcast\'s locked directional calls against each WASDE — the append-only public ledger.',
+        name:'Yield Direction Record', desc:'The nowcast\'s locked directional calls against each WASDE, the append-only public ledger.',
         url:'/data/nowcast-direction.json', tsKey:'updated',
         check:function(d,age){
           var pend=(d&&d.record&&d.record.pending)||0, graded=(d&&d.record&&d.record.graded)||0;
@@ -360,7 +360,7 @@
         }
       },
       {
-        name:'Alerts & Subscriptions', desc:'The email briefing and hail-alert service — runs on Cloudflare, independent of the rest.',
+        name:'Alerts & Subscriptions', desc:'The email briefing and hail-alert service: runs on Cloudflare, independent of the rest.',
         url:'https://agsist-subs.dnilgis.workers.dev/', ping:true,
         check:function(reachable){
           return reachable ? {state:'ok', label:'Online', age:'responding'} : {state:'down', label:'Unreachable', age:'no response'};
@@ -482,7 +482,7 @@
       var sameDown=same.filter(function(r){return r.res.state==='down' && r.res.age==='no data';});
       if(same.length && sameDown.length===same.length){
         b.className='st-banner down'; bm.textContent='Trouble reaching AGSIST data';
-        bs.textContent='Your browser can load this page but not the data behind it — likely a content-delivery or network hiccup between you and the site. Try a refresh in a minute.';
+        bs.textContent='Your browser can load this page but not the data behind it: likely a content-delivery or network hiccup between you and the site. Try a refresh in a minute.';
         return;
       }
       var worst=results.reduce(function(a,r){return Math.max(a,RANK[r.res.state]);},0);
@@ -492,7 +492,7 @@
       if(delayed.length>=2){
         b.className='st-banner warn';
         bm.textContent='Data updates are running behind';
-        bs.innerHTML='Several feeds haven&rsquo;t refreshed on their normal schedule. The site and your saved data are still here &mdash; the numbers are just a few hours behind. This usually means an upstream provider (often GitHub, which publishes the site) is catching up, not that anything is broken. <a href="https://www.githubstatus.com/" target="_blank" rel="noopener" style="color:var(--gold,#d4a23f)">Check githubstatus.com &rarr;</a>';
+        bs.innerHTML='Several feeds haven&rsquo;t refreshed on their normal schedule. The site and your saved data are still here; the numbers are just a few hours behind. This usually means an upstream provider (often GitHub, which publishes the site) is catching up, not that anything is broken. <a href="https://www.githubstatus.com/" target="_blank" rel="noopener" style="color:var(--gold,#d4a23f)">Check githubstatus.com &rarr;</a>';
         return;
       }
       if(worst>=3){
@@ -503,7 +503,7 @@
         bs.textContent='Everything is online; one feed is behind or partly degraded. Details are marked below.';
       } else {
         b.className='st-banner ok'; bm.textContent='All systems normal';
-        bs.textContent='Every AGSIST feed is current for this time of day. Idle items are simply off-hours — markets closed or no briefing due — not a problem.';
+        bs.textContent='Every AGSIST feed is current for this time of day. Idle items are simply off-hours, markets closed or no briefing due, not a problem.';
       }
     }
 
