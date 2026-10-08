@@ -398,7 +398,7 @@ canvas#cot-chart { width: 100%; height: 260px; display: block; }
 .cx-table td.cx-note { white-space:normal; text-align:left; }
 
 .cx-details { margin-top:.9rem; }
-.cx-details summary { cursor:pointer; font-size:.76rem; color:var(--text-muted); padding:.4rem 0; min-height:32px; }
+.cx-details summary { cursor:pointer; font-size:.76rem; color:var(--text-muted); padding:.4rem 0; min-height:44px; display:flex; align-items:center; }
 .cx-details summary:focus-visible { outline:2px solid var(--green); outline-offset:2px; }
 .cx-details[open] summary { color:var(--text-dim); }
 
@@ -492,6 +492,26 @@ canvas#cot-chart { width: 100%; height: 260px; display: block; }
   margin:-.2rem 0 .35rem; }
 @media (max-width:620px){ .cx-three { grid-template-columns:1fr; } }
 
+
+/* Folds: long background sections, closed by default. Native <details>; every word stays in the HTML. */
+details.fold{border:1px solid var(--border);border-radius:10px;background:var(--surface);margin:1rem 0}
+details.fold>summary{list-style:none;cursor:pointer;min-height:44px;box-sizing:border-box;display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:.85rem;align-items:center;padding:.7rem 1rem;border-radius:10px;color:var(--text)}
+details.fold>summary::-webkit-details-marker{display:none}
+details.fold>summary>*{grid-column:1}
+details.fold>summary::after{content:"";grid-column:2;grid-row:1 / span 2;width:.6rem;height:.6rem;border-right:2px solid var(--gold);border-bottom:2px solid var(--gold);transform:translateY(-25%) rotate(45deg);transition:transform .15s}
+details.fold[open]>summary::after{transform:translateY(25%) rotate(-135deg)}
+details.fold>summary:hover{background:var(--surface2)}
+details.fold>summary:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+details.fold[open]>summary{border-bottom:1px solid var(--border);border-radius:10px 10px 0 0}
+details.fold>summary>h2,details.fold>summary>h3{margin:0!important;padding:0!important;border:0!important}
+.fold-title{display:block;font-weight:700;line-height:1.35}
+.fold-hint{display:block;margin-top:.2rem;font-size:.84rem;font-weight:400;line-height:1.45;color:var(--text-muted);letter-spacing:normal;text-transform:none}
+.fold-body{padding:1rem 1rem 1.1rem}
+@media (max-width:600px){.fold-body{padding:.85rem .7rem 1rem}details.fold>summary{padding:.65rem .8rem}}
+@media (prefers-reduced-motion:reduce){details.fold>summary::after{transition:none}}
+details.fold .fold-body>.cx-panel{border:0;background:none;padding:0}
+.cot-explainer.has-fold{background:none;border:0;padding:0}
+.cot-explainer.has-fold .cot-explainer-title{margin:0}
 </style>
 </head>
 
@@ -615,12 +635,16 @@ canvas#cot-chart { width: 100%; height: 260px; display: block; }
 
   <!-- ══ DOES THIS PREDICT PRICES ══ -->
   <section class="cx" id="cx-pred-sec" aria-labelledby="cx-pred-h">
-    <h2 class="cx-h" id="cx-pred-h">Does This Predict Prices?</h2>
+    <details class="fold">
+      <summary><h2 class="cx-h" id="cx-pred-h">Does This Predict Prices?</h2> <span class="fold-hint">The test on the full record: does fund positioning line up with later price moves?</span></summary>
+      <div class="fold-body">
     <p class="cx-sub">The question everyone asks about this report, measured on the whole record
       rather than asserted. Correlation runs from &minus;1 to +1; zero means no relationship.</p>
     <div class="cx-panel">
       <div id="cx-pred"></div>
     </div>
+      </div>
+    </details>
   </section>
 
   <!-- Chart -->
@@ -660,7 +684,9 @@ canvas#cot-chart { width: 100%; height: 260px; display: block; }
 
   <!-- ══ METHOD ══ -->
   <section class="cx" id="cx-method-sec" aria-labelledby="cx-method-h">
-    <h2 class="cx-h" id="cx-method-h">Why Our Numbers Are Lower Than The Ones You'll See Elsewhere</h2>
+    <details class="fold">
+      <summary><h2 class="cx-h" id="cx-method-h">Why Our Numbers Are Lower Than The Ones You'll See Elsewhere</h2> <span class="fold-hint">Four mistakes that make a positioning study look better than the trade it describes, and how this page avoids them.</span></summary>
+      <div class="fold-body">
     <p class="cx-sub">Four mistakes make a positioning study look better than the trade it describes.
       They all push the same way, and they are all easy to make by accident.</p>
     <div class="cx-panel cx-method">
@@ -685,11 +711,15 @@ canvas#cot-chart { width: 100%; height: 260px; display: block; }
       <p class="cx-family" id="cx-family"></p>
       <p class="cx-limits" id="cx-limits"></p>
     </div>
+      </div>
+    </details>
   </section>
 
   <!-- Explainer -->
-  <div class="cot-explainer">
-    <h2 class="cot-explainer-title">What Does This Mean for Farmers?</h2>
+  <div class="cot-explainer has-fold">
+    <details class="fold">
+      <summary><h2 class="cot-explainer-title">What Does This Mean for Farmers?</h2> <span class="fold-hint">What the report is, how to use it, what managed money means and where the position sits.</span></summary>
+      <div class="fold-body">
     <div class="cot-explainer-grid">
       <div class="cot-explainer-item">
         <h3>What is the COT Report?</h3>
@@ -708,6 +738,8 @@ canvas#cot-chart { width: 100%; height: 260px; display: block; }
         <p>The bar on each card covers the last year. The sections above rank the same position against the whole record we hold, measured as a share of all open contracts, which is the comparison that survives a market doubling in size. When the card and the section disagree they are answering different questions: one about this year, one about the whole record.</p>
       </div>
     </div>
+      </div>
+    </details>
   </div>
 
   <!-- Email capture -->
@@ -2773,5 +2805,20 @@ cotTick(); setInterval(cotTick, 60000);
 })();
 </script>
 
+<script>
+/* Folds: a link to anything inside a closed fold opens it first; printing opens them all. */
+(function(){
+  function openTo(h){
+    if(!h||h.length<2)return;
+    var t;try{t=document.getElementById(decodeURIComponent(h.slice(1)));}catch(e){return;}
+    var d=t&&t.closest?t.closest('details.fold'):null;
+    while(d){d.open=true;d=d.parentElement?d.parentElement.closest('details.fold'):null;}
+  }
+  document.addEventListener('click',function(e){var a=e.target&&e.target.closest?e.target.closest('a[href^="#"]'):null;if(a)openTo(a.getAttribute('href'));},true);
+  window.addEventListener('hashchange',function(){openTo(location.hash);});
+  window.addEventListener('beforeprint',function(){document.querySelectorAll('details.fold').forEach(function(d){d.open=true;});});
+  openTo(location.hash);
+})();
+</script>
 </body>
 </html>

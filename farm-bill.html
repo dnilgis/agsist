@@ -294,6 +294,23 @@ h2{font-family:var(--display);font-weight:700;font-size:clamp(22px,3.2vw,30px);l
 .byline{color:var(--text-muted,#8a948f);font-size:13px;line-height:1.65;margin:14px 0 0}
 .byline b{color:var(--text-dim,#c3ccc4)}
 .byline a{color:var(--gold)}
+
+/* Folds: long background sections, closed by default. Native <details>; every word stays in the HTML. */
+details.fold{border:1px solid var(--border);border-radius:10px;background:var(--surface);margin:1rem 0}
+details.fold>summary{list-style:none;cursor:pointer;min-height:44px;box-sizing:border-box;display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:.85rem;align-items:center;padding:.7rem 1rem;border-radius:10px;color:var(--text)}
+details.fold>summary::-webkit-details-marker{display:none}
+details.fold>summary>*{grid-column:1}
+details.fold>summary::after{content:"";grid-column:2;grid-row:1 / span 2;width:.6rem;height:.6rem;border-right:2px solid var(--gold);border-bottom:2px solid var(--gold);transform:translateY(-25%) rotate(45deg);transition:transform .15s}
+details.fold[open]>summary::after{transform:translateY(25%) rotate(-135deg)}
+details.fold>summary:hover{background:var(--surface2)}
+details.fold>summary:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+details.fold[open]>summary{border-bottom:1px solid var(--border);border-radius:10px 10px 0 0}
+details.fold>summary>h2,details.fold>summary>h3{margin:0!important;padding:0!important;border:0!important}
+.fold-title{display:block;font-weight:700;line-height:1.35}
+.fold-hint{display:block;margin-top:.2rem;font-size:.84rem;font-weight:400;line-height:1.45;color:var(--text-muted);letter-spacing:normal;text-transform:none}
+.fold-body{padding:1rem 1rem 1.1rem}
+@media (max-width:600px){.fold-body{padding:.85rem .7rem 1rem}details.fold>summary{padding:.65rem .8rem}}
+@media (prefers-reduced-motion:reduce){details.fold>summary::after{transition:none}}
 </style>
 </head>
 <body>
@@ -480,6 +497,9 @@ h2{font-family:var(--display);font-weight:700;font-size:clamp(22px,3.2vw,30px);l
       <div class="bignum"><div class="v">$0</div><div class="l">House mandatory change<br>FY2026&ndash;FY2036 (11 yr) &mdash; neutral</div></div>
       <div class="bignum"><div class="v">$22.5B</div><div class="l">Discretionary authorizations<br>subject to appropriation, 10 yr</div></div>
     </div>
+    <details class="fold" id="changes-ledger">
+      <summary><span class="fold-title">The largest line items in the House score</span> <span class="fold-hint">The biggest increases and cuts, with the dollar change for each.</span></summary>
+      <div class="fold-body">
     <div class="chg">
       <div class="chg-row"><div class="what"><b>EQIP reduced, redistributed</b><span>Environmental Quality Incentives Program cut; funds moved to other conservation programs. The largest single change &mdash; and the most contested in House debate.</span></div><div class="amt neg">&minus;$786M</div></div>
       <div class="chg-row"><div class="what"><b>Agricultural Conservation Easement Program</b><span>Increased, including an adjusted-gross-income provision.</span></div><div class="amt pos">+$216M</div></div>
@@ -493,6 +513,8 @@ h2{font-family:var(--display);font-weight:700;font-size:clamp(22px,3.2vw,30px);l
       provide it. Commodities and Crop Insurance carry no specific discretionary authorizations. The
       Senate bill (revised text out Aug 1) has not yet been scored at this
       level of detail; the table above reflects the House bill only.</p>
+      </div>
+    </details>
   </section>
 
   <section id="compare">
@@ -521,7 +543,9 @@ h2{font-family:var(--display);font-weight:700;font-size:clamp(22px,3.2vw,30px);l
 
   <section id="titles">
     <div class="sec-eyebrow"><span class="n">04</span> Title by title</div>
-    <h2>All twelve titles</h2>
+    <details class="fold">
+      <summary><h2>All twelve titles</h2> <span class="fold-hint">Each title&rsquo;s ten-year baseline, what it covers and its headline change.</span></summary>
+      <div class="fold-body">
     <p class="sec-intro">Each title's ten-year mandatory baseline, what it covers, and a headline change.
       Both bills use the same twelve-title structure and both build on the 2025 reconciliation law; the
       provisions noted here draw on the House-passed bill and the Senate's June 23 draft, with the
@@ -541,6 +565,8 @@ h2{font-family:var(--display);font-weight:700;font-size:clamp(22px,3.2vw,30px);l
       <div class="title-row"><div class="tr-num">XI</div><div class="tr-body"><div class="tr-name">Crop Insurance</div><div class="tr-cover">Federal Crop Insurance Program &mdash; premium subsidies, products</div><div class="tr-change">Brings more specialty crops into crop insurance: a new Specialty Crop Advisory Committee and coordinator, a reconstituted FCIC board, and research on organic, wine-grape smoke, mushroom, blueberry, and pecan policies. Both bills extend <b>enhanced premium support to veteran farmers and ranchers</b> and clarify FCIC yield and revenue authority.</div></div><div class="tr-figs"><div class="amt">$155.5B</div><div class="share">11.3%</div><div class="tr-mini"><i style="width:15.8%"></i></div></div></div>
       <div class="title-row"><div class="tr-num">XII</div><div class="tr-body"><div class="tr-name">Miscellaneous</div><div class="tr-cover">Livestock &amp; animal health, USDA reorganization, national security</div><div class="tr-change">A catch-all: strengthens animal-health programs and disease traceability, establishes a USDA Office of Seafood, and tightens foreign-ownership disclosure for U.S. agricultural land (AFIDA). The Senate draft also creates a <b>Crop Inputs Economist</b> to track fertilizer and input costs and reauthorizes the U.S. Drought Monitor.</div></div><div class="tr-figs"><div class="amt">$2.2B</div><div class="share">0.2%</div><div class="tr-mini"><i style="width:0.23%"></i></div></div></div>
     </div>
+      </div>
+    </details>
   </section>
 
   <section id="status">
@@ -559,6 +585,9 @@ h2{font-family:var(--display);font-weight:700;font-size:clamp(22px,3.2vw,30px);l
       </ul>
       <p class="fb-holdups-note">One for the insurance industry, not your policy: the Senate bill also writes the 2025 law’s higher administrative-and-operating reimbursement rates for insurance providers into statute for 2026 and later reinsurance years. Your <a class="inl" href="/presell-calculator">revenue guarantee math</a> doesn’t change.</p>
     </div>
+    <details class="fold" id="tracker">
+      <summary><span class="fold-title">Every step so far, from House committee to enactment</span> <span class="fold-hint">Each step with its date: done, pending and still ahead.</span></summary>
+      <div class="fold-body">
     <div class="track">
       <!--FB:tracker-->
       <div class="step"><div class="stage">House committee</div><div class="desc">House Ag reported it favorably, 34&ndash;17 &middot; Mar 5, 2026</div><div class="mk done">passed</div></div>
@@ -573,9 +602,13 @@ h2{font-family:var(--display);font-weight:700;font-size:clamp(22px,3.2vw,30px);l
       <div class="step"><div class="stage">Deadline</div><div class="desc">Extension lapsed &middot; Sep 30, 2026. The stopgap funding law through Dec 11 did not renew it</div><div class="mk miss">lapsed</div></div>
       <!--/FB:tracker-->
     </div>
+      </div>
+    </details>
     <p class="note">Separately, lawmakers are pushing <b>$15&ndash;17B in near-term economic aid</b> for producers
       facing low prices and high input costs &mdash; a measure not included in either farm bill. The Aug 1 revised text pulled one fight <b>into</b> the bill &mdash; year-round E15 sales, with a replacement for small-refinery exemptions after 2027 &mdash; while still sidestepping hemp and state animal-confinement laws. SNAP is what the Aug 6 markup failed over; the same text passed committee 12&ndash;11 on Sep 16.</p>
-    <h3 id="updates" style="font-family:var(--display);font-weight:700;font-size:17px;margin:30px 0 12px">Update log</h3>
+    <details class="fold">
+      <summary><h3 id="updates" style="font-family:var(--display);font-weight:700;font-size:17px">Update log</h3> <span class="fold-hint">What changed on this page, and when, since June 20, 2026.</span></summary>
+      <div class="fold-body">
     <div class="updlog">
       <div class="u"><div class="d">Oct 6, 2026</div><div><b>The extension lapsed on Sep 30</b> and was not renewed: the stopgap funding law through Dec 11 does not extend the farm bill, and new CRP enrollment is paused (DTN, Oct 1; AgWeb). Rewrote the deadline copy in the past tense, added CRP to what stopped, and corrected three statements: the Jan 1, 2027 permanent-law fix <b>is</b> in both bills (this page said it was not), the 2025 crop-insurance changes are permanent rather than through 2031, and the &ldquo;all other titles&rdquo; share is 1.2%.</div></div>
       <div class="u"><div class="d">Sep 29, 2026</div><div>The Senate Agriculture Committee <b>passed the Agricultural Act of 2026, 12&ndash;11</b>, on Sep 16 &mdash; Sen. Mitch McConnell returned from a months-long absence to cast the deciding vote. That clears committee; the bill still needs a full Senate floor vote (60 votes) and a conference with the House before it can reach the President. As of Sep 16, a floor vote before Congress's pre-midterm recess looked unlikely. Updated the status pills, tracker, TL;DR, FAQ, and holdups list to reflect the vote. Sources: <a class="inl" href="https://www.washingtonpost.com/politics/2026/09/16/senate-republicans-manage-advance-farm-bill-with-mcconnells-return/" rel="noopener">Washington Post</a>, <a class="inl" href="https://www.agweb.com/farm-bill-clears-senate-ag-committee-mcconnells-vote" rel="noopener">AgWeb</a> (both Sep 16, 2026).</div></div>
@@ -586,6 +619,8 @@ h2{font-family:var(--display);font-weight:700;font-size:clamp(22px,3.2vw,30px);l
       <div class="u"><div class="d">Jun 23, 2026</div><div>Senate discussion draft added; House vs Senate side-by-side built.</div></div>
       <div class="u"><div class="d">Jun 20, 2026</div><div>Page launched: House bill, CBO score, and the $1.374T baseline by title.</div></div>
     </div>
+      </div>
+    </details>
   </section>
 
   <section id="notify">
@@ -713,6 +748,21 @@ h2{font-family:var(--display);font-weight:700;font-size:clamp(22px,3.2vw,30px);l
       w.textContent='That did not go through. Try again, or email sig@farmers1st.com.';
     });
   });
+})();
+</script>
+<script>
+/* Folds: a link to anything inside a closed fold opens it first; printing opens them all. */
+(function(){
+  function openTo(h){
+    if(!h||h.length<2)return;
+    var t;try{t=document.getElementById(decodeURIComponent(h.slice(1)));}catch(e){return;}
+    var d=t&&t.closest?t.closest('details.fold'):null;
+    while(d){d.open=true;d=d.parentElement?d.parentElement.closest('details.fold'):null;}
+  }
+  document.addEventListener('click',function(e){var a=e.target&&e.target.closest?e.target.closest('a[href^="#"]'):null;if(a)openTo(a.getAttribute('href'));},true);
+  window.addEventListener('hashchange',function(){openTo(location.hash);});
+  window.addEventListener('beforeprint',function(){document.querySelectorAll('details.fold').forEach(function(d){d.open=true;});});
+  openTo(location.hash);
 })();
 </script>
 </body>

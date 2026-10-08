@@ -875,6 +875,36 @@ body {
 
 
 
+
+/* Folds: long background sections, closed by default. Native <details>; every word stays in the HTML. */
+details.fold{border:1px solid var(--border);border-radius:10px;background:var(--surface);margin:1rem 0}
+details.fold>summary{list-style:none;cursor:pointer;min-height:44px;box-sizing:border-box;display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:.85rem;align-items:center;padding:.7rem 1rem;border-radius:10px;color:var(--text)}
+details.fold>summary::-webkit-details-marker{display:none}
+details.fold>summary>*{grid-column:1}
+details.fold>summary::after{content:"";grid-column:2;grid-row:1 / span 2;width:.6rem;height:.6rem;border-right:2px solid var(--gold);border-bottom:2px solid var(--gold);transform:translateY(-25%) rotate(45deg);transition:transform .15s}
+details.fold[open]>summary::after{transform:translateY(25%) rotate(-135deg)}
+details.fold>summary:hover{background:var(--surface2)}
+details.fold>summary:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+details.fold[open]>summary{border-bottom:1px solid var(--border);border-radius:10px 10px 0 0}
+details.fold>summary>h2,details.fold>summary>h3{margin:0!important;padding:0!important;border:0!important}
+.fold-title{display:block;font-weight:700;line-height:1.35}
+.fold-hint{display:block;margin-top:.2rem;font-size:.84rem;font-weight:400;line-height:1.45;color:var(--text-muted);letter-spacing:normal;text-transform:none}
+.fold-body{padding:1rem 1rem 1.1rem}
+@media (max-width:600px){.fold-body{padding:.85rem .7rem 1rem}details.fold>summary{padding:.65rem .8rem}}
+@media (prefers-reduced-motion:reduce){details.fold>summary::after{transition:none}}
+.edu.has-fold{padding:0;border:0;background:none;overflow:visible}
+details.fold>summary>.edu-title{opacity:1}
+details.fold>summary>.nozzle-card-head{font-size:1rem}
+.fold-body>.mix-card{border:0;padding:0;background:none}
+.fold-body>.edu-grid:first-child,.fold-body>.tips-grid:first-child,.fold-body>.season-grid:first-child{margin-top:0}
+/* Single column (phones, small tablets): the live recommendation and 5-day outlook stay above the forecast;
+   the reading cards (sign-up, checklist, quick mix order, links) move below the forecast, product select and calculators. */
+@media screen and (max-width:1100px){
+  .pg > .sidebar{display:contents}
+  .pg > .sidebar > *{order:2}
+  .pg > .sidebar > .sc-live{order:0}
+  .pg > div:first-child{order:1}
+}
 </style>
 <style>
 h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head,h3.s-card-title,h3.sc-title{margin:0;font-size:inherit;font-weight:inherit;line-height:inherit;}
@@ -1145,8 +1175,10 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
           <div class="window-legend"><span class="wl-dot" style="background:var(--green,#4aab4c)"></span> Good window &middot; <span class="wl-dot" style="background:var(--gold-fill,var(--gold,#d4a23f))"></span> Marginal &mdash; proceed with care &middot; <span class="wl-dot" style="background:var(--red,#e0685f)"></span> Do not spray &middot; <svg class="ic-sp" aria-hidden="true"><use href="#sp-snowflake"/></svg> Frozen &middot; Scroll to see full 24h</div>
         </div>
       </div>
-      <div class="edu fade-up" id="section-factors">
-        <h2 class="edu-title"><span aria-hidden="true"><svg class="ic-sp" aria-hidden="true"><use href="#sp-graduation-cap"/></svg></span> Why These Conditions Matter</h2>
+      <div class="edu has-fold fade-up" id="section-factors">
+        <details class="fold">
+          <summary><h2 class="edu-title"><span aria-hidden="true"><svg class="ic-sp" aria-hidden="true"><use href="#sp-graduation-cap"/></svg></span> Why These Conditions Matter</h2> <span class="fold-hint">Wind, temperature, humidity, inversions, time of day and the label, plus how to spot an inversion in the field.</span></summary>
+          <div class="fold-body">
         <div class="edu-grid">
           <div class="edu-card"><div class="edu-card-icon" aria-hidden="true"><svg class="ic-sp" aria-hidden="true"><use href="#sp-wind"/></svg></div><div class="edu-card-title">The Wind Window: 3&ndash;10 mph</div><div class="edu-card-text">Calm conditions under 3 mph allow fine droplets to hang in the air and drift unpredictably. Over 10 mph, mechanical drift carries droplets off-target. The 3&ndash;10 mph range is your safe zone.</div><div class="edu-card-tip edu-card-tip-green">Ideal: 3&ndash;10 mph &middot; Consistent direction</div></div>
           <div class="edu-card"><div class="edu-card-icon" aria-hidden="true"><svg class="ic-sp" aria-hidden="true"><use href="#sp-thermometer"/></svg></div><div class="edu-card-title">Temperature &amp; Volatilization</div><div class="edu-card-text">Heat causes certain active ingredients &mdash; particularly dicamba, 2,4-D ester, and clopyralid &mdash; to volatilize off the leaf surface hours after application. Above 85&deg;F this off-gassing risk increases sharply.</div><div class="edu-card-tip edu-card-tip-gold">Critical above 85&deg;F for dicamba/2,4-D</div></div>
@@ -1178,6 +1210,8 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
             </div>
           </div>
         </div>
+          </div>
+        </details>
       </div>
       <div class="fade-up" style="margin-bottom:2rem">
         <div class="dicamba-box">
@@ -1560,7 +1594,9 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
       </section>
 
       <div class="mix-section fade-up" id="section-mixorder">
-        <h2 class="edu-title"><span aria-hidden="true"><svg class="ic-sp" aria-hidden="true"><use href="#sp-flask-conical"/></svg></span> Tank Mix Order Guide</h2>
+        <details class="fold">
+          <summary><h2 class="edu-title"><span aria-hidden="true"><svg class="ic-sp" aria-hidden="true"><use href="#sp-flask-conical"/></svg></span> Tank Mix Order Guide</h2> <span class="fold-hint">The nine-step loading order, with what to always do and never do.</span></summary>
+          <div class="fold-body">
         <div class="mix-card">
           <div class="mix-intro">Getting the mix order wrong causes clumping, gelling, clogged nozzles, reduced efficacy, and crop damage. Always do a jar test first.</div>
           <div class="mix-steps">
@@ -1591,9 +1627,13 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
             </div>
           </div>
         </div>
+          </div>
+        </details>
       </div>
       <div class="tips-section fade-up" id="section-tips">
-        <h2 class="edu-title"><span aria-hidden="true"><svg class="ic-sp" aria-hidden="true"><use href="#sp-lightbulb"/></svg></span> Sprayer Tips &amp; Tricks</h2>
+        <details class="fold">
+          <summary><h2 class="edu-title"><span aria-hidden="true"><svg class="ic-sp" aria-hidden="true"><use href="#sp-lightbulb"/></svg></span> Sprayer Tips &amp; Tricks</h2> <span class="fold-hint">Nozzles, speed and pressure, carrier volume, AMS, adjuvants, cleanout, records, boom height and resistance.</span></summary>
+          <div class="fold-body">
         <div class="tips-grid">
           <div class="tip-card"><div class="tip-card-icon" aria-hidden="true"><svg class="ic-sp" aria-hidden="true"><use href="#sp-hammer"/></svg></div><div class="tip-card-title">Nozzle Selection Makes or Breaks Your Application</div><div class="tip-card-text">Air induction nozzles (AITTJ, AI, TTI) produce larger, air-filled droplets that resist drift and are required on most dicamba labels. Flat fan nozzles give better coverage for contact herbicides but produce more fines. Dual-fan nozzles split the pattern for better canopy penetration.</div><div class="tip-card-detail"><strong>Rule of thumb:</strong> In wind over 8 mph or humidity under 50%, move up one nozzle size from your standard.</div></div>
           <div class="tip-card"><div class="tip-card-icon" aria-hidden="true"><svg class="ic-sp" aria-hidden="true"><use href="#sp-zap"/></svg></div><div class="tip-card-title">Speed &amp; Pressure &mdash; The Drift Multipliers</div><div class="tip-card-text">Higher pressure creates smaller droplets, and bumping pressure up meaningfully increases the share of drift-prone fine droplets. Keep pressure at the low end of the nozzle manufacturer&rsquo;s recommended range.</div><div class="tip-card-detail"><strong>Target:</strong> 30&ndash;40 PSI for most flat fans, 40&ndash;60 PSI for air induction. Boom height: 18&ndash;20 inches above target for 110&deg; nozzles.</div></div>
@@ -1606,8 +1646,12 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
           <div class="tip-card"><div class="tip-card-icon" aria-hidden="true"><svg class="ic-sp" aria-hidden="true"><use href="#sp-ruler"/></svg></div><div class="tip-card-title">Boom Height &mdash; Every Inch Counts</div><div class="tip-card-text">Doubling your boom height above the target quadruples the area your spray can drift into. On rough fields, slow down &mdash; boom bounce at speed launches drift-prone fines.</div><div class="tip-card-detail"><strong>Measure it:</strong> 18&ndash;20 inches for 110&deg; nozzles, 24 inches for 80&deg; nozzles.</div></div>
           <div class="tip-card"><div class="tip-card-icon" aria-hidden="true"><svg class="ic-sp" aria-hidden="true"><use href="#sp-dna"/></svg></div><div class="tip-card-title">Resistance Management &mdash; Rotate or Lose</div><div class="tip-card-text">Waterhemp, Palmer amaranth, and marestail now have populations resistant to 5+ herbicide groups in parts of the Midwest. Rotating modes of action is the only way to preserve the chemistry that still works.</div><div class="tip-card-detail"><strong>Practical rotation:</strong> Use PRE residuals (Group 15 + Group 14 or 27) to reduce POST weed pressure.</div></div>
         </div>
-        <div class="mix-card" id="section-nozzles" style="margin-top:1rem">
-          <h3 class="nozzle-card-head"><span aria-hidden="true"><svg class="ic-sp" aria-hidden="true"><use href="#sp-hammer"/></svg></span> Nozzle Type Comparison</h3>
+          </div>
+        </details>
+        <details class="fold" style="margin-top:1rem">
+          <summary><h3 class="nozzle-card-head"><span aria-hidden="true"><svg class="ic-sp" aria-hidden="true"><use href="#sp-hammer"/></svg></span> Nozzle Type Comparison</h3> <span class="fold-hint">Droplet size, drift risk, coverage and dicamba approval for five nozzle types.</span></summary>
+          <div class="fold-body">
+        <div class="mix-card" id="section-nozzles">
           <div class="nozzle-card-sub">Droplet size classification follows ASABE S572.3. Always verify against the specific product label.</div>
           <div class="nozzle-table-wrap">
             <table class="nozzle-table">
@@ -1623,9 +1667,13 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
           </div>
           <div class="nozzle-table-note">Source: ASABE S572.3 standards. Dicamba approval based on the EPA-approved 2026 OTT labels for Stryax (formerly XtendiMax), Engenia, and Tavium. Always verify against your specific product label before application.</div>
         </div>
+          </div>
+        </details>
       </div>
       <div class="season-section fade-up" id="section-season">
-        <h2 class="edu-title"><span aria-hidden="true"><svg class="ic-sp" aria-hidden="true"><use href="#sp-calendar"/></svg></span> Seasonal Spray Calendar &mdash; Corn Belt &amp; Upper Midwest</h2>
+        <details class="fold">
+          <summary><h2 class="edu-title"><span aria-hidden="true"><svg class="ic-sp" aria-hidden="true"><use href="#sp-calendar"/></svg></span> Seasonal Spray Calendar: Corn Belt &amp; Upper Midwest</h2> <span class="fold-hint">Application windows by month, April through October, for corn and soybeans.</span></summary>
+          <div class="fold-body">
         <p style="font-size:.82rem;color:var(--text-dim);line-height:1.7;margin-bottom:.9rem">Application windows by month for corn and soybean producers. Timing and conditions shift year to year &mdash; use this as a planning reference and always confirm current conditions before application.</p>
         <div class="season-grid">
           <div class="season-card"><div class="season-card-month">April</div><div class="season-card-title">Burndown &amp; Pre-Emerge Corn</div><div class="season-card-body">Burndown glyphosate/2,4-D on cereal rye and winter annuals. Pre-emerge corn (atrazine, acetochlor). Variable temps &mdash; watch for frost. Inversion risk high on cold, calm nights.</div><span class="season-card-tag tag-pre">PRE</span> <span class="season-card-tag tag-burn">BURNDOWN</span></div>
@@ -1635,6 +1683,8 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
           <div class="season-card"><div class="season-card-month">August</div><div class="season-card-title">Soybean Fungicide &amp; Layby</div><div class="season-card-body">Soybean fungicide R3 if disease pressure warrants. Monitoring for late season escapes. Minimal herbicide opportunities as canopy is closed. Still watch inversion risk on warm, clear nights.</div><span class="season-card-tag tag-fung">FUNGICIDE</span></div>
           <div class="season-card"><div class="season-card-month">Sept&ndash;Oct</div><div class="season-card-title">Harvest Aid &amp; Cover Crop Burndown</div><div class="season-card-body">Harvest aid soybeans (paraquat, sodium chlorate). Cover crop burndown post-harvest. Cool temps return &mdash; inversions common in calm fall nights. Watch for early frost timing and label restrictions.</div><span class="season-card-tag tag-burn">BURNDOWN</span></div>
         </div>
+          </div>
+        </details>
       </div>
       <div class="faq-section fade-up" id="section-faq">
         <h2 class="edu-title"><span aria-hidden="true"><svg class="ic-sp" aria-hidden="true"><use href="#sp-circle-help"/></svg></span> Frequently Asked Questions</h2>
@@ -1656,8 +1706,8 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
       </div>
     </div>
     <div class="sidebar fade-up" id="edu2">
-      <div class="sc"><div class="sc-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-clipboard-copy"/></svg> Recommendation</div><div class="rec marginal" id="rec-box"><div class="rec-h marginal" id="rec-head">Awaiting Location</div><div class="rec-t" id="rec-text">Set your location above to receive a real-time spray recommendation for your field conditions.</div></div></div>
-      <div class="sc"><div class="sc-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-calendar"/></svg> 5-Day Spray Outlook</div><div class="day-strip" id="day-strip"><div class="day-item"><div class="day-name">Today</div><div class="day-icon" aria-hidden="true"><svg class="ic-sp" aria-hidden="true"><use href="#sp-hourglass"/></svg></div><div class="day-rating marginal">&mdash;</div><div class="day-wind">&mdash;</div></div><div class="day-item"><div class="day-name">Day 2</div><div class="day-icon" aria-hidden="true"><svg class="ic-sp" aria-hidden="true"><use href="#sp-hourglass"/></svg></div><div class="day-rating marginal">&mdash;</div><div class="day-wind">&mdash;</div></div><div class="day-item"><div class="day-name">Day 3</div><div class="day-icon" aria-hidden="true"><svg class="ic-sp" aria-hidden="true"><use href="#sp-hourglass"/></svg></div><div class="day-rating marginal">&mdash;</div><div class="day-wind">&mdash;</div></div><div class="day-item"><div class="day-name">Day 4</div><div class="day-icon" aria-hidden="true"><svg class="ic-sp" aria-hidden="true"><use href="#sp-hourglass"/></svg></div><div class="day-rating marginal">&mdash;</div><div class="day-wind">&mdash;</div></div><div class="day-item"><div class="day-name">Day 5</div><div class="day-icon" aria-hidden="true"><svg class="ic-sp" aria-hidden="true"><use href="#sp-hourglass"/></svg></div><div class="day-rating marginal">&mdash;</div><div class="day-wind">&mdash;</div></div></div><div style="font-size:0.77rem;color:var(--text-muted);margin-top:.6rem;line-height:1.6">Based on forecast wind, temp, and humidity. Always verify conditions on the day of application.</div></div>
+      <div class="sc sc-live"><div class="sc-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-clipboard-copy"/></svg> Recommendation</div><div class="rec marginal" id="rec-box"><div class="rec-h marginal" id="rec-head">Awaiting Location</div><div class="rec-t" id="rec-text">Set your location above to receive a real-time spray recommendation for your field conditions.</div></div></div>
+      <div class="sc sc-live"><div class="sc-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-calendar"/></svg> 5-Day Spray Outlook</div><div class="day-strip" id="day-strip"><div class="day-item"><div class="day-name">Today</div><div class="day-icon" aria-hidden="true"><svg class="ic-sp" aria-hidden="true"><use href="#sp-hourglass"/></svg></div><div class="day-rating marginal">&mdash;</div><div class="day-wind">&mdash;</div></div><div class="day-item"><div class="day-name">Day 2</div><div class="day-icon" aria-hidden="true"><svg class="ic-sp" aria-hidden="true"><use href="#sp-hourglass"/></svg></div><div class="day-rating marginal">&mdash;</div><div class="day-wind">&mdash;</div></div><div class="day-item"><div class="day-name">Day 3</div><div class="day-icon" aria-hidden="true"><svg class="ic-sp" aria-hidden="true"><use href="#sp-hourglass"/></svg></div><div class="day-rating marginal">&mdash;</div><div class="day-wind">&mdash;</div></div><div class="day-item"><div class="day-name">Day 4</div><div class="day-icon" aria-hidden="true"><svg class="ic-sp" aria-hidden="true"><use href="#sp-hourglass"/></svg></div><div class="day-rating marginal">&mdash;</div><div class="day-wind">&mdash;</div></div><div class="day-item"><div class="day-name">Day 5</div><div class="day-icon" aria-hidden="true"><svg class="ic-sp" aria-hidden="true"><use href="#sp-hourglass"/></svg></div><div class="day-rating marginal">&mdash;</div><div class="day-wind">&mdash;</div></div></div><div style="font-size:0.77rem;color:var(--text-muted);margin-top:.6rem;line-height:1.6">Based on forecast wind, temp, and humidity. Always verify conditions on the day of application.</div></div>
       <div class="sc" id="signup-card"><div class="sc-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-mail"/></svg> Get the AGSIST Daily</div><div id="signup-form" style="display:flex;flex-direction:column;gap:.5rem"><p style="font-size:0.795rem;color:var(--text-dim);line-height:1.6;margin:0">Overnight markets, what to watch, and farm weather &mdash; by 6am CT on weekdays. Available at no charge.</p><input type="email" id="signup-email" placeholder="your@email.com" autocomplete="email" inputmode="email" aria-label="Email address" style="width:100%;box-sizing:border-box;padding:.6rem .7rem;background:var(--surface2,#1a1a14);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:1rem;min-height:44px"><button id="signup-btn" style="width:100%;padding:.6rem;background:var(--green);color:#06110b;border:none;border-radius:6px;font-size:.85rem;font-weight:700;cursor:pointer;min-height:44px;touch-action:manipulation">Subscribe Free &rarr;</button><div style="font-size:0.765rem;color:var(--text-muted);line-height:1.5">Unsubscribe any time. I never sell your data. <a href="/privacy" style="color:var(--text-muted)">Privacy</a>.</div></div></div>
       <div class="sc"><div class="sc-title">&#10003; Pre-Spray Checklist</div><div style="display:flex;flex-direction:column;gap:.5rem"><label class="checklist-item"><input type="checkbox"><span>Wind 3&ndash;10 mph, consistent direction away from sensitive areas</span></label><label class="checklist-item"><input type="checkbox"><span>Temperature 50&ndash;85&deg;F (check specific product label)</span></label><label class="checklist-item"><input type="checkbox"><span>Humidity above 40% RH (adjust nozzle if dry)</span></label><label class="checklist-item"><input type="checkbox"><span>No inversion indicators &mdash; smoke, hanging dust, ground fog</span></label><label class="checklist-item"><input type="checkbox"><span>Leaves are dry &mdash; no dew, no recent rain on canopy</span></label><label class="checklist-item"><input type="checkbox"><span>Re-read product label restrictions before starting</span></label><label class="checklist-item"><input type="checkbox"><span>Notified neighbors / checked buffer zones</span></label><label class="checklist-item"><input type="checkbox"><span>Equipment calibrated &mdash; nozzles clean, pressure checked</span></label><label class="checklist-item"><input type="checkbox"><span>Jar test completed for new tank mix combinations</span></label><label class="checklist-item"><input type="checkbox"><span>Spray records sheet ready &mdash; wind, temp, products, rates</span></label></div></div>
       <div class="sc"><div class="sc-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-flask-conical"/></svg> Quick Mix Order</div><div class="qmix-list"><div class="qmix-item"><span class="qmix-num" style="color:var(--blue)">1.</span><span class="qmix-text">Water (50&ndash;75%)</span></div><div class="qmix-item"><span class="qmix-num" style="color:var(--gold)">2.</span><span class="qmix-text">AMS / water conditioner</span></div><div class="qmix-item"><span class="qmix-num" style="color:#9f7aea">3.</span><span class="qmix-text">Agitation ON</span></div><div class="qmix-item"><span class="qmix-num" style="color:var(--orange)">4.</span><span class="qmix-text">Dry (WP, WDG, DF)</span></div><div class="qmix-item"><span class="qmix-num" style="color:var(--green)">5.</span><span class="qmix-text">Liquid flowables (SC)</span></div><div class="qmix-item"><span class="qmix-num" style="color:var(--red)">6.</span><span class="qmix-text">Emulsifiable (EC)</span></div><div class="qmix-item"><span class="qmix-num" style="color:var(--blue)">7.</span><span class="qmix-text">Soluble liquids (SL)</span></div><div class="qmix-item"><span class="qmix-num" style="color:var(--gold)">8.</span><span class="qmix-text">Adjuvants / surfactants</span></div><div class="qmix-item"><span class="qmix-num" style="color:var(--green)">9.</span><span class="qmix-text">Top off water</span></div></div><div class="qmix-footer">Always jar test new combinations. <a href="#section-mixorder">Full guide &#8593;</a></div></div>
@@ -1936,6 +1986,21 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
   }
   if(btn)btn.addEventListener('click',function(e){e.preventDefault();submit();});
   if(inp)inp.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();submit();}});
+})();
+</script>
+<script>
+/* Folds: a link to anything inside a closed fold opens it first; printing opens them all. */
+(function(){
+  function openTo(h){
+    if(!h||h.length<2)return;
+    var t;try{t=document.getElementById(decodeURIComponent(h.slice(1)));}catch(e){return;}
+    var d=t&&t.closest?t.closest('details.fold'):null;
+    while(d){d.open=true;d=d.parentElement?d.parentElement.closest('details.fold'):null;}
+  }
+  document.addEventListener('click',function(e){var a=e.target&&e.target.closest?e.target.closest('a[href^="#"]'):null;if(a)openTo(a.getAttribute('href'));},true);
+  window.addEventListener('hashchange',function(){openTo(location.hash);});
+  window.addEventListener('beforeprint',function(){document.querySelectorAll('details.fold').forEach(function(d){d.open=true;});});
+  openTo(location.hash);
 })();
 </script>
 </body>
