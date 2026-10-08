@@ -11,7 +11,7 @@
   <!-- /static-nav:fonts -->
   <link rel="stylesheet" href="/components/styles.css?v=18">
 <link rel="stylesheet" href="/components/sponsor-ad.css?v=1">
-<link rel="stylesheet" href="/css/home.css?v=9">
+<link rel="stylesheet" href="/css/home.css?v=10">
 <!-- 2026-09-30: sponsor-ad.js's one call site (AgsistAd.render(), below) is
      already guarded with window.AgsistAd? and runs inside a fetch .then(),
      well after a deferred script would finish — so defer is free here.
@@ -2253,8 +2253,8 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')close(true);
             var hn=holName(dayT);
             return{t:'Settle '+lbl(s),live:false,title:(hn?'Markets closed for '+hn+'. ':'')+'Settle prices for '+lbl(s)+', '+new Date(s).getUTCFullYear()+'. '+read};
           })(data.fetched);
-          if(_st){_tb.textContent=_st.t;_tb.parentNode.title=_st.title;_tb.parentNode.classList.toggle('stale',!_st.live);}
-          else{_tb.textContent='Not loaded yet';_tb.parentNode.classList.add('stale');}
+          if(_st){_tb.innerHTML='';(/^As of /.test(_st.t)?['As of',_st.t.slice(6)]:_st.t.split(/ (.+)/).slice(0,2)).forEach(function(w,i){if(i)_tb.appendChild(document.createElement('br'));_tb.appendChild(document.createTextNode(w));});_tb.parentNode.title=_st.title;_tb.parentNode.classList.toggle('stale',!_st.live);}
+          else{_tb.innerHTML='Not loaded<br>yet';_tb.parentNode.classList.add('stale');}
         }
         _pa.textContent=_mins<2?'• Live now':_mins<60?'• Updated '+_mins+' min ago':_mins<2880?'• Updated '+Math.round(_mins/60)+'h ago':'• Updated '+Math.round(_mins/1440)+'d ago';
         _pa.style.color=_mins>60?'#f0913a':_mins>30?'var(--gold)':'var(--text-muted)';
@@ -2278,7 +2278,7 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')close(true);
     // prices underneath it. Same dishonest-badge bug fixed for staleness on
     // 2026-09-12; this closes the failure case too.
     var _tbErr=document.getElementById('ticker-age');
-    if(_tbErr){_tbErr.textContent='Not loaded yet';_tbErr.parentNode.classList.add('stale');}
+    if(_tbErr){_tbErr.innerHTML='Not loaded<br>yet';_tbErr.parentNode.classList.add('stale');}
     pxFail();
   });
   }
