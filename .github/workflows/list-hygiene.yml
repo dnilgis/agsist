@@ -1,0 +1,41 @@
+name: List cleanup
+# Daily: drop addresses that bounced for good, fix obvious domain typos
+# (gmail.comb, gmial.com) on the Daily and hail lists, and email Sig what
+# changed. Mondays it emails a summary even when nothing changed.
+# The log shows counts only; addresses go only into the email.
+on:
+  schedule:
+    - cron: "23 13 * * *"
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Report only, change nothing"
+        type: boolean
+        default: true
+permissions:
+  contents: read
+concurrency:
+  group: list-hygiene
+  cancel-in-progress: false
+jobs:
+  clean:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python3 scripts/list_hygiene.py --selftest
+      - run: python3 scripts/list_hygiene.py ${{ (github.event_name == 'workflow_dispatch' && inputs.dry_run) && '--dry-run' || '' }}
+        env:
+          LIST_URL: ${{ secrets.LIST_URL }}
+          LIST_TOKEN: ${{ secrets.LIST_TOKEN }}
+          UNSUB_SECRET: ${{ secrets.UNSUB_SECRET }}
+          SMTP_HOST: ${{ secrets.SMTP_HOST }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SMTP_USER: ${{ secrets.SMTP_USER || secrets.GMAIL_USER }}
+          SMTP_PASS: ${{ secrets.SMTP_PASS || secrets.GMAIL_APP_PASS }}
+          FROM_ADDR: ${{ secrets.FROM_ADDR }}
+          FROM_NAME: ${{ secrets.FROM_NAME }}
+          REPORT_TO: ${{ secrets.REPLY_TO }}
