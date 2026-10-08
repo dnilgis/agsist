@@ -249,6 +249,13 @@ a:focus-visible,button:focus-visible,input:focus-visible,[role="button"]:focus-v
 .tl-dot.medium { background: var(--gold-fill,var(--gold)); box-shadow: 0 0 0 3px rgba(212,162,63,.15); }
 .tl-dot.low    { background: var(--green); box-shadow: 0 0 0 3px rgba(34,197,94,.15); }
 .tl-event { font-size:0.795rem; color: var(--text); line-height: 1.5; flex: 1; }
+/* phones: the date sits on its own line above the event, so the event text
+   gets the full width instead of a 200px column */
+@media (max-width: 600px) {
+  .tl-item:has(> .tl-date) { display: grid; grid-template-columns: 8px minmax(0,1fr); column-gap: .7rem; row-gap: .15rem; }
+  .tl-date { grid-column: 1 / -1; min-width: 0; padding-top: 0; }
+  .tl-item > .tl-dot { margin-top: .4rem; }
+}
 
 /* Explainer cards — fixed: minmax grid, no bare 1fr 1fr */
 .tariff-explainer { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: .75rem; margin-bottom: 1.25rem; }

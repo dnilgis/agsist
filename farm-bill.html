@@ -79,6 +79,9 @@
   --display:var(--font-display); --body:var(--font-body); --mono:var(--font-mono);
   --nav-h:60px; --subnav-h:50px;
 }
+/* light mode: the text gold read 4.0 to 4.3:1 on the raised cards; one step darker */
+[data-theme="light"]{--accent:#6e5010}
+[data-theme="light"] .cmp-head .cs{color:#2f6690}
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
 body{background:var(--page);color:var(--text);font-family:var(--body);line-height:1.55;
@@ -99,8 +102,10 @@ h1 .sub,h1+.sub{display:block;color:var(--dim);font-weight:600;font-size:clamp(1
 .lede b{opacity:1;font-weight:600}
 .status-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px}
 .pill{font-family:var(--mono);font-size:13.2px;letter-spacing:.03em;padding:7px 12px;border:1px solid var(--hair-strong);
-  border-radius:2px;color:var(--dim);display:inline-flex;align-items:center;gap:8px;background:var(--surface)}
-.pill .mk{width:7px;height:7px;border-radius:50%;display:inline-block}
+  border-radius:2px;color:var(--dim);display:inline-block;line-height:1.45;background:var(--surface)}
+/* inline-block, not inline-flex: as a flex box each text run became its own
+   item and a pill on a phone broke mid-word ("Extensi / on") */
+.pill .mk{width:7px;height:7px;border-radius:50%;display:inline-block;margin-right:8px;vertical-align:1px}
 .pill.live .mk{background:var(--pos)}.pill.warn .mk{background:var(--accent)}
 .pill b{color:var(--text);font-weight:600}
 

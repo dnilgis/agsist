@@ -83,6 +83,7 @@ button,a,[role="button"]{touch-action:manipulation}
 .el-zip-lbl{font-family:var(--font-mono);font-size:0.745rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted)}
 .el-zip input{background:var(--bg);border:1px solid var(--border-2);border-radius:var(--r-sm);padding:.6rem .7rem;font-family:var(--font-mono);font-size:1rem;letter-spacing:.14em;color:var(--text);width:7.5rem;min-height:46px}
 .el-zip input:focus{outline:none;border-color:var(--gold)}
+@media(max-width:600px){.el-zip-field{flex:1 1 100%}.el-zip input{width:100%}.el-zip .el-cta{flex:1 1 100%;justify-content:center;text-align:center}}
 .el-cta{display:inline-flex;align-items:center;gap:.5rem;padding:.72rem 1.4rem;border:0;border-radius:var(--r-sm);background:var(--gold-fill,var(--gold));color:#0a0c0d;font-family:var(--font-mono);font-size:0.795rem;font-weight:700;text-decoration:none;letter-spacing:.03em;min-height:46px;cursor:pointer;transition:filter .15s,transform .15s}
 .el-cta:hover{filter:brightness(1.07);transform:translateY(-1px)}
 
@@ -131,11 +132,13 @@ button,a,[role="button"]{touch-action:manipulation}
   background:rgba(8,12,11,.72);color:#cbd5d1;border:1px solid rgba(255,255,255,.1);
   border-radius:5px;padding:.2rem .45rem;transition:opacity .3s}
 #cov-map.leaflet-container:hover ~ .el-map-hint{opacity:0}
+/* no map, no hint: it was drawn over the could-not-load message */
+.el-map-wrap:has(#cov-fallback:not([hidden])) .el-map-hint{display:none}
 @media(max-width:640px){#cov-map{height:min(60vh,420px)}}
 .el-map-fallback{padding:1.2rem;color:var(--text-dim,#8a948f);font-size:.9rem}
 .el-map-key{display:flex;flex-wrap:wrap;gap:.5rem;margin:.7rem 0 0}
 .el-key{display:inline-flex;align-items:center;gap:.42rem;background:none;border:1px solid var(--border,#2a3230);
-  border-radius:20px;padding:.3rem .7rem;color:var(--text-dim,#8a948f);font-size:.8rem;cursor:pointer;
+  border-radius:20px;padding:.3rem .8rem;min-height:40px;color:var(--text-dim,#8a948f);font-size:.8rem;cursor:pointer;
   font-family:inherit;transition:opacity .15s}
 .el-key[aria-pressed="false"]{opacity:.4}
 .el-key b{color:var(--text,#e8ede9);font-variant-numeric:tabular-nums}
@@ -260,7 +263,7 @@ button,a,[role="button"]{touch-action:manipulation}
     <form class="el-zip" action="/cash-bids" method="get" id="el-zip-form">
       <div class="el-zip-field">
         <label class="el-zip-lbl" for="el-zip-in">Your ZIP code</label>
-        <input id="el-zip-in" name="zip" type="text" inputmode="numeric" pattern="[0-9]{5}" maxlength="5" placeholder="54728" autocomplete="postal-code" required>
+        <input id="el-zip-in" name="zip" type="text" inputmode="numeric" pattern="[0-9]{5}" maxlength="5" placeholder="ZIP" autocomplete="postal-code" required>
       </div>
       <button type="submit" class="el-cta">See bids near me &rarr;</button>
     </form>
@@ -558,6 +561,8 @@ document.addEventListener('click',function(e){var a=e.target.closest&&e.target.c
   function giveUp() {
     if (el) el.style.display = 'none';
     if (fallback) fallback.hidden = false;
+    var hint = el && el.parentNode && el.parentNode.querySelector('.el-map-hint');
+    if (hint) hint.style.display = 'none';
     if (gaveUp) return;
     gaveUp = true;
     /* Only say the counts are fine if they are. */

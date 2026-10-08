@@ -711,39 +711,41 @@ button,a,[role="button"],input,select{touch-action:manipulation}
          sets this block's display on each search; the !important rule keeps it
          visible without touching that code. Town pages: scripts/build_cash_bid_pages.py.
          The related-tools pills that sat here are in the site footer. -->
-    <style>#internal-links-block{display:block!important}.il-states{margin:.4rem 0 0;font-size:.85rem;line-height:1.9;color:var(--text-dim)}.il-states a{color:var(--text-dim)}.il-states a:hover{color:var(--gold)}</style>
+    <style>#internal-links-block{display:block!important}.il-states-h{margin:.4rem 0 .2rem;font-size:.85rem;color:var(--text-dim)}.il-states{list-style:none;margin:0;padding:0;columns:4 11rem;column-gap:1.25rem;font-size:.85rem;line-height:1.9;color:var(--text-dim)}.il-states li{break-inside:avoid;display:flex;align-items:center;gap:.45rem}.il-states a{color:var(--text-dim)}.il-states a:hover{color:var(--gold)}.il-states .il-b{font-size:.78rem;color:var(--text-muted);text-decoration:underline;text-underline-offset:2px}@media(max-width:600px){.il-states{columns:2;column-gap:.75rem;font-size:.9rem}.il-states li{min-height:40px}.il-states a{display:inline-flex;align-items:center;min-height:40px}.il-states li>a:first-child{flex:0 1 auto;min-width:0}}</style>
     <div class="internal-links" id="internal-links-block">
       <p class="il-one"><a href="/basis">Basis by state &#8594;</a> <span aria-hidden="true">&#183;</span> <a href="/cash-bids-national">Where basis is strongest nationally &#8594;</a></p>
-      <p class="il-states">Today&rsquo;s network bids by town, and basis, by state:
-        <a href="/cash-bids/arkansas/">Arkansas</a> (<a href="/basis/arkansas">basis</a>) &middot;
-        <a href="/cash-bids/colorado/">Colorado</a> (<a href="/basis/colorado">basis</a>) &middot;
-        <a href="/cash-bids/florida/">Florida</a> (<a href="/basis/florida">basis</a>) &middot;
-        <a href="/cash-bids/georgia/">Georgia</a> (<a href="/basis/georgia">basis</a>) &middot;
-        <a href="/cash-bids/idaho/">Idaho</a> (<a href="/basis/idaho">basis</a>) &middot;
-        <a href="/cash-bids/illinois/">Illinois</a> (<a href="/basis/illinois">basis</a>) &middot;
-        <a href="/cash-bids/indiana/">Indiana</a> (<a href="/basis/indiana">basis</a>) &middot;
-        <a href="/cash-bids/iowa/">Iowa</a> (<a href="/basis/iowa">basis</a>) &middot;
-        <a href="/cash-bids/kansas/">Kansas</a> (<a href="/basis/kansas">basis</a>) &middot;
-        <a href="/cash-bids/kentucky/">Kentucky</a> (<a href="/basis/kentucky">basis</a>) &middot;
-        <a href="/cash-bids/louisiana/">Louisiana</a> (<a href="/basis/louisiana">basis</a>) &middot;
-        <a href="/cash-bids/michigan/">Michigan</a> (<a href="/basis/michigan">basis</a>) &middot;
-        <a href="/cash-bids/minnesota/">Minnesota</a> (<a href="/basis/minnesota">basis</a>) &middot;
-        <a href="/cash-bids/missouri/">Missouri</a> (<a href="/basis/missouri">basis</a>) &middot;
-        <a href="/cash-bids/montana/">Montana</a> (<a href="/basis/montana">basis</a>) &middot;
-        <a href="/cash-bids/nebraska/">Nebraska</a> (<a href="/basis/nebraska">basis</a>) &middot;
-        <a href="/cash-bids/new-york/">New York</a> (<a href="/basis/new-york">basis</a>) &middot;
-        <a href="/cash-bids/north-dakota/">North Dakota</a> (<a href="/basis/north-dakota">basis</a>) &middot;
-        <a href="/cash-bids/ohio/">Ohio</a> (<a href="/basis/ohio">basis</a>) &middot;
-        <a href="/cash-bids/oklahoma/">Oklahoma</a> (<a href="/basis/oklahoma">basis</a>) &middot;
-        <a href="/cash-bids/oregon/">Oregon</a> (<a href="/basis/oregon">basis</a>) &middot;
-        <a href="/cash-bids/pennsylvania/">Pennsylvania</a> (<a href="/basis/pennsylvania">basis</a>) &middot;
-        <a href="/cash-bids/south-carolina/">South Carolina</a> (<a href="/basis/south-carolina">basis</a>) &middot;
-        <a href="/cash-bids/south-dakota/">South Dakota</a> (<a href="/basis/south-dakota">basis</a>) &middot;
-        <a href="/cash-bids/tennessee/">Tennessee</a> (<a href="/basis/tennessee">basis</a>) &middot;
-        <a href="/cash-bids/texas/">Texas</a> (<a href="/basis/texas">basis</a>) &middot;
-        <a href="/cash-bids/washington/">Washington</a> (<a href="/basis/washington">basis</a>) &middot;
-        <a href="/cash-bids/wisconsin/">Wisconsin</a> (<a href="/basis/wisconsin">basis</a>) &middot;
-        <a href="/cash-bids/wyoming/">Wyoming</a> (<a href="/basis/wyoming">basis</a>)</p>
+      <p class="il-states-h">Today&rsquo;s network bids by town, and basis, by state:</p>
+      <ul class="il-states">
+        <li><a href="/cash-bids/arkansas/">Arkansas</a> <a class="il-b" href="/basis/arkansas" aria-label="Arkansas basis">basis</a></li>
+        <li><a href="/cash-bids/colorado/">Colorado</a> <a class="il-b" href="/basis/colorado" aria-label="Colorado basis">basis</a></li>
+        <li><a href="/cash-bids/florida/">Florida</a> <a class="il-b" href="/basis/florida" aria-label="Florida basis">basis</a></li>
+        <li><a href="/cash-bids/georgia/">Georgia</a> <a class="il-b" href="/basis/georgia" aria-label="Georgia basis">basis</a></li>
+        <li><a href="/cash-bids/idaho/">Idaho</a> <a class="il-b" href="/basis/idaho" aria-label="Idaho basis">basis</a></li>
+        <li><a href="/cash-bids/illinois/">Illinois</a> <a class="il-b" href="/basis/illinois" aria-label="Illinois basis">basis</a></li>
+        <li><a href="/cash-bids/indiana/">Indiana</a> <a class="il-b" href="/basis/indiana" aria-label="Indiana basis">basis</a></li>
+        <li><a href="/cash-bids/iowa/">Iowa</a> <a class="il-b" href="/basis/iowa" aria-label="Iowa basis">basis</a></li>
+        <li><a href="/cash-bids/kansas/">Kansas</a> <a class="il-b" href="/basis/kansas" aria-label="Kansas basis">basis</a></li>
+        <li><a href="/cash-bids/kentucky/">Kentucky</a> <a class="il-b" href="/basis/kentucky" aria-label="Kentucky basis">basis</a></li>
+        <li><a href="/cash-bids/louisiana/">Louisiana</a> <a class="il-b" href="/basis/louisiana" aria-label="Louisiana basis">basis</a></li>
+        <li><a href="/cash-bids/michigan/">Michigan</a> <a class="il-b" href="/basis/michigan" aria-label="Michigan basis">basis</a></li>
+        <li><a href="/cash-bids/minnesota/">Minnesota</a> <a class="il-b" href="/basis/minnesota" aria-label="Minnesota basis">basis</a></li>
+        <li><a href="/cash-bids/missouri/">Missouri</a> <a class="il-b" href="/basis/missouri" aria-label="Missouri basis">basis</a></li>
+        <li><a href="/cash-bids/montana/">Montana</a> <a class="il-b" href="/basis/montana" aria-label="Montana basis">basis</a></li>
+        <li><a href="/cash-bids/nebraska/">Nebraska</a> <a class="il-b" href="/basis/nebraska" aria-label="Nebraska basis">basis</a></li>
+        <li><a href="/cash-bids/new-york/">New York</a> <a class="il-b" href="/basis/new-york" aria-label="New York basis">basis</a></li>
+        <li><a href="/cash-bids/north-dakota/">North Dakota</a> <a class="il-b" href="/basis/north-dakota" aria-label="North Dakota basis">basis</a></li>
+        <li><a href="/cash-bids/ohio/">Ohio</a> <a class="il-b" href="/basis/ohio" aria-label="Ohio basis">basis</a></li>
+        <li><a href="/cash-bids/oklahoma/">Oklahoma</a> <a class="il-b" href="/basis/oklahoma" aria-label="Oklahoma basis">basis</a></li>
+        <li><a href="/cash-bids/oregon/">Oregon</a> <a class="il-b" href="/basis/oregon" aria-label="Oregon basis">basis</a></li>
+        <li><a href="/cash-bids/pennsylvania/">Pennsylvania</a> <a class="il-b" href="/basis/pennsylvania" aria-label="Pennsylvania basis">basis</a></li>
+        <li><a href="/cash-bids/south-carolina/">South Carolina</a> <a class="il-b" href="/basis/south-carolina" aria-label="South Carolina basis">basis</a></li>
+        <li><a href="/cash-bids/south-dakota/">South Dakota</a> <a class="il-b" href="/basis/south-dakota" aria-label="South Dakota basis">basis</a></li>
+        <li><a href="/cash-bids/tennessee/">Tennessee</a> <a class="il-b" href="/basis/tennessee" aria-label="Tennessee basis">basis</a></li>
+        <li><a href="/cash-bids/texas/">Texas</a> <a class="il-b" href="/basis/texas" aria-label="Texas basis">basis</a></li>
+        <li><a href="/cash-bids/washington/">Washington</a> <a class="il-b" href="/basis/washington" aria-label="Washington basis">basis</a></li>
+        <li><a href="/cash-bids/wisconsin/">Wisconsin</a> <a class="il-b" href="/basis/wisconsin" aria-label="Wisconsin basis">basis</a></li>
+        <li><a href="/cash-bids/wyoming/">Wyoming</a> <a class="il-b" href="/basis/wyoming" aria-label="Wyoming basis">basis</a></li>
+      </ul>
     </div>
     <details class="faq-section" id="cb-faq">
       <summary class="cb-fold-s"><h2>Questions farmers ask</h2></summary>

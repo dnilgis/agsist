@@ -103,7 +103,7 @@ h2.snap-lbl,h2.basis-title,h2.crop-title{margin:0;display:inline-block}
 .seas-col{flex:1;display:flex;flex-direction:column;align-items:center;height:100%;cursor:default}
 .seas-bar{width:100%;border-radius:2px 2px 0 0;background:rgba(58,139,60,.4);transition:opacity .2s}
 .seas-col.cur .seas-bar{background:var(--gold-fill,var(--gold))}.seas-col:hover .seas-bar{opacity:.6}
-.seas-mo{font-size:0.73rem;color:var(--text-dim);margin-top:3px;text-align:center}
+.seas-mo{font-size:0.77rem;color:var(--text-dim);margin-top:3px;text-align:center}
 .seas-col.cur .seas-mo{color:var(--gold);font-weight:700}
 .seas-caption{font-size:1rem;color:var(--text-dim);margin-top:6px;line-height:1.5}
 .xg{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px;margin-bottom:14px}
@@ -157,7 +157,8 @@ h2.snap-lbl,h2.basis-title,h2.crop-title{margin:0;display:inline-block}
 .be-result{font-size:0.78rem;color:var(--text);flex:1;min-width:0}
 .be-result.over{color:var(--green);font-weight:600}
 .be-result.under{color:var(--red);font-weight:600}
-.be-clear{font-size:0.763rem;color:var(--text-dim);background:none;border:none;cursor:pointer;padding:4px;text-decoration:underline}
+.be-clear{font-size:0.82rem;color:var(--text-dim);background:none;border:none;cursor:pointer;padding:4px 10px;min-height:40px;min-width:44px;text-decoration:underline}
+.be-hint{flex-basis:100%;font-size:0.8rem;line-height:1.4;color:var(--text-muted);margin-top:-4px}
 /* NEW v11: signup card + big CTA */
 .signup-card{background:linear-gradient(135deg,var(--surface) 0%,rgba(58,139,60,.05) 100%);border:1px solid var(--border-g);border-radius:12px;padding:14px;margin-bottom:14px;text-align:center}
 .signup-card h3{font-size:.85rem;color:var(--gold);margin:0 0 4px 0}
@@ -187,7 +188,7 @@ h2.snap-lbl,h2.basis-title,h2.crop-title{margin:0;display:inline-block}
 .crop-bar-wrap{position:relative;height:20px;background:var(--surface2);border-radius:4px;overflow:hidden;margin-bottom:6px}
 .crop-bar-fill{position:absolute;top:0;left:0;height:100%;background:linear-gradient(90deg,var(--green) 0%,#5dbf61 100%);border-radius:4px;transition:width .6s ease}
 .crop-bar-pct{position:absolute;top:50%;left:9px;transform:translateY(-50%);font-size:0.78rem;font-weight:700;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.5);font-family:'JetBrains Mono',monospace;z-index:1;line-height:1}
-.crop-row{display:flex;justify-content:space-between;font-size:0.775rem;color:var(--text-dim);padding:1px 0;line-height:1.5}
+.crop-row{display:flex;justify-content:space-between;flex-wrap:wrap;gap:0 .6rem;font-size:0.875rem;color:var(--text-dim);padding:1px 0;line-height:1.5}
 .crop-row .v{color:var(--text);font-weight:600;font-family:'JetBrains Mono',monospace}
 .crop-pace{font-size:0.775rem;margin-top:6px;padding:6px 9px;border-radius:5px;font-weight:600;line-height:1.4}
 .crop-pace.behind{background:rgba(200,86,46,.12);color:var(--red);border:1px solid rgba(200,86,46,.3)}
@@ -235,7 +236,7 @@ h2.snap-lbl,h2.basis-title,h2.crop-title{margin:0;display:inline-block}
 .mr-section:last-child{margin-bottom:0}
 .mr-sec-lbl{font-size:0.745rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--green);margin-bottom:5px;display:flex;align-items:center;gap:5px}
 .mr-sec-lbl .em{font-size:0.795rem;line-height:1}
-.mr-sec-body{font-size:.82rem;line-height:1.7;color:var(--text-dim);margin:0}
+.mr-sec-body{font-size:1rem;line-height:1.7;color:var(--text-dim);margin:0}
 .mr-sec-body strong{color:var(--text);font-weight:700}
 .mr-do{background:rgba(58,139,60,.07);border-left:3px solid var(--green);border-radius:0 6px 6px 0;padding:8px 10px;margin-top:2px}
 .mr-do .mr-sec-body{color:var(--text)}
@@ -421,9 +422,10 @@ h2.snap-lbl,h2.basis-title,h2.crop-title{margin:0;display:inline-block}
 
   <div class="be-strip">
     <label for="be-input">My cost of production:</label>
-    <input type="number" id="be-input" placeholder="$/bu (typical $9.00-11.00)" step="0.01" inputmode="decimal" aria-label="Your cost of production in dollars per bushel">
+    <input type="number" id="be-input" placeholder="$/bu" step="0.01" inputmode="decimal" aria-label="Your cost of production in dollars per bushel" aria-describedby="be-hint">
     <span class="be-result" id="be-result"></span>
     <button type="button" class="be-clear" id="be-clear">clear</button>
+    <span class="be-hint" id="be-hint">Typical $9.00 to $11.00/bu. Varies by farm.</span>
   </div>
 
   <div class="snap-card">

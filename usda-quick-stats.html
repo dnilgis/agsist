@@ -60,6 +60,7 @@
     
     input[type="number"],input[type="text"],select{font-size:1rem;}
     :root{--r8:8px;--r6:6px;--neg:#e0685f;}
+    [data-theme="light"]{--neg:var(--red);}
 
     .qs-hero{background:linear-gradient(160deg,var(--bg)0%,var(--surface)100%);border-bottom:2px solid var(--border);padding:2.6rem 1.5rem 2.2rem;}
     .qs-hero-inner{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:1.5rem;align-items:center;}
@@ -111,7 +112,7 @@
     .exp-head-lbl{font-family:'JetBrains Mono',monospace;font-size:0.763rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--green);display:inline-flex;align-items:center;gap:.4rem;}
     .exp-head-lbl .ic{font-size:.85rem;}
     .exp-updated{font-family:'JetBrains Mono',monospace;font-size:0.755rem;color:var(--text-muted);}
-    .ds-tabs{display:flex;gap:.4rem;overflow-x:auto;scrollbar-width:none;padding:.9rem 1rem .75rem;border-bottom:1px solid var(--border);}
+    .ds-tabs{display:flex;flex-wrap:wrap;gap:.4rem;overflow-x:auto;scrollbar-width:none;padding:.9rem 1rem .75rem;border-bottom:1px solid var(--border);}
     .ds-tabs::-webkit-scrollbar{display:none;}
     .ds-tab{font-family:'JetBrains Mono',monospace;font-size:0.755rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:.38rem .72rem;border:2px solid var(--border);border-radius:20px;background:var(--surface2);color:var(--text-dim);cursor:pointer;white-space:nowrap;flex-shrink:0;min-height:44px;display:inline-flex;align-items:center;gap:.32rem;transition:all .15s;}
     .ds-tab .ic{font-size:0.795rem;}
@@ -200,7 +201,10 @@
     /* Forecast marker. A quiet mono tag, not a warning colour: an in-season
        forecast is a fact about the number, not a problem with it. */
     .ts-fc{font-family:'JetBrains Mono',monospace;font-size:0.68rem;font-weight:400;color:var(--text-muted);letter-spacing:.02em;margin-left:.4rem;white-space:nowrap;}
-    @media(max-width:520px){.ts-row{grid-template-columns:minmax(0,6rem) minmax(0,1fr) auto;}.ts-val small{display:none;}}
+    /* the year tag sits under the state name instead of taking its width
+       (in a 6rem column it cut every name to one letter) */
+    .ts-rank{flex-wrap:wrap;row-gap:0;}.ts-rank b{flex:1 1 0;min-width:0;}.ts-fc{flex-basis:100%;margin-left:0;line-height:1.2;}
+    @media(max-width:520px){.ts-row{grid-template-columns:minmax(0,6.5rem) minmax(0,1fr) auto;}.ts-val small{display:none;}}
 
     @media(max-width:640px){.qs-hero{padding:2rem 1rem 1.5rem;}.qs-main{padding:0 .75rem 3rem;}.qb-wrap{padding:1rem;}.snap-prod-num{font-size:1.8rem;}}
     @media(max-width:380px){.qs-hero{padding:1.5rem .65rem;}.qs-h1{font-size:1.6rem;}.qb-grid{grid-template-columns:repeat(auto-fill,minmax(120px,1fr));}}

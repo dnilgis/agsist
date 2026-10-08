@@ -108,17 +108,9 @@
 .signup--compact .scu-dismiss{font-size:.824rem}
 .signup--slim .scs-text{font-size:.824rem}
 .signup--slim a{font-size:.824rem}
-.footer-tagline{font-size:.824rem}
-.footer-built{font-size:.824rem}
-.footer-status{font-size:.824rem}
-.footer-col h4, .footer-col h2{font-size:.765rem}
-.footer-col a{font-size:.824rem}
-.footer-net-lbl{font-size:.765rem}
 .net-text strong{font-size:.824rem}
 .net-text em{font-size:.765rem}
 .net-arr{font-size:.824rem}
-.footer-legal{font-size:.824rem}
-.footer-disc{font-size:.824rem}
 .noscript-banner{font-size:.824rem}
 .ws-toast{font-size:.824rem}
 .breadcrumb{font-size:.824rem}
@@ -944,10 +936,6 @@ body{--hair:rgba(132,160,168,.12);--sp-md:12px;--sp-lg:16px;--sp-xl:24px;--sp-2x
   #signup-full .signup-headline{font-size:1.294rem!important;margin-bottom:12px}
 }
 @media(max-width:900px){
-  /* Footer links flow as two columns of text, not a grid of equal-height
-     rows: same links, same 36px tap rows, about 450px less empty space. */
-  footer .footer-cols{display:block!important;columns:2;column-gap:16px}
-  footer .footer-col{break-inside:avoid;display:flex;flex-direction:column;margin-bottom:16px}
   /* The field-scout link in the weather card: one ruled line, not a box. */
   #f2 .wx-fs-bridge{padding:8px 0!important;border:0!important;border-top:1px solid var(--hair)!important;border-bottom:1px solid var(--hair)!important;border-radius:0!important;background:none!important}
 }
@@ -1256,6 +1244,10 @@ html[data-theme="light"] #daily-teaser-sponsor:not(.empty-state){color:var(--ad-
 @media(max-width:900px){
   .s7-grid{grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important}
   .s7-c.s7-wide{grid-column:1/-1}
+  /* a last card left alone in its row spans the row instead of sitting in half
+     of it. The full-width insurance cell, when it leads, shifts the count by one. */
+  #s7-grid>.s7-c:last-child:nth-child(odd):not(.s7-wide ~ .s7-c){grid-column:1/-1}
+  #s7-grid>.s7-wide:first-child ~ .s7-c:last-child:nth-child(even){grid-column:1/-1}
   .s7-c{min-height:64px}
 }
 /* Desktop: the strip shares row 1 of the main columns with the "Live now"
@@ -1342,7 +1334,7 @@ html[data-theme="light"] #cot-rows .r7-up{color:#23663f}html[data-theme="light"]
 .tariff-status-badge{color:var(--text-dim)!important;background:none!important;border:0!important;padding:0!important}
 .wx-today-text strong,#wire-g .wr-c.hi strong,#sig-cattle-read b{color:var(--text)!important}
 .wx-chart-toggle,#wire-band .wr-all{color:var(--text-dim)!important}
-#wire-band .wr-k,#hbz-kicker,.radar-card>div>span,.drought-embed>summary>span,#pdw>label,.signup-eyebrow,#cot-date,#cot-countdown,.footer-col h2{color:var(--text-muted)!important}
+#wire-band .wr-k,#hbz-kicker,.radar-card>div>span,.drought-embed>summary>span,#pdw>label,.signup-eyebrow,#cot-date,#cot-countdown{color:var(--text-muted)!important}
 .drought-embed>div>a,.noaa-note a,.pdw-ft a,.faq-a a,.idx1-content a[style*="color:var(--gold)"],.main a[style*="color:var(--gold)"]{color:var(--text)!important;text-decoration:underline;text-underline-offset:3px;text-decoration-color:var(--border-2)}
 .tool-widget.tool-widget--scout{border-left-color:var(--hair)!important;border-color:var(--hair)!important}
 #bids-geo-bar>span[aria-hidden="true"]{background:var(--text-muted)!important}
@@ -1355,8 +1347,6 @@ html[data-theme="light"] #cot-rows .r7-up{color:#23663f}html[data-theme="light"]
 .ratio-verdict,.cot-verdict{background:none!important;border:0!important;padding:0!important}
 .ratio-verdict{color:var(--text-dim)!important}
 .wx-summary-title{color:var(--text)!important}
-footer.footer{border-top-color:var(--hair)!important}
-.footer-status .status-dot{background:var(--text-muted)!important}
 #drawer .draw-lbl,#drawer .draw-lbl-ic{color:var(--text-muted)!important}
 #drawer .draw-item{color:var(--text)!important}
 /* What stays gold, darker in the light theme so it reads (4.96:1 on the
@@ -1406,7 +1396,7 @@ details>summary{cursor:pointer}
 details>summary:hover{color:var(--text)}
 .m-fold>summary:hover .sec-title,.wr-summary:hover .wr-k{text-decoration:underline;text-underline-offset:3px}
 @media(max-width:900px){
-  #bids-list-area>a,a[href="/contact"],.land-links a,a[href="/whats-priced-in"]:not(.wr-c),.tip-b,.noaa-note a,.pdw-ft a,.signup-disc a,.footer-col a,.footer-legal a,.tool-btn,#f1>.bidnet-note,.drought-embed>div>a,.main a[href^="tel:"],.main a[href^="mailto:"],.main a[href="/privacy"],.signup-disc a{min-height:44px!important;display:inline-flex!important;align-items:center}
+  #bids-list-area>a,main a[href="/contact"],.land-links a,a[href="/whats-priced-in"]:not(.wr-c),.tip-b,.noaa-note a,.pdw-ft a,.signup-disc a,.tool-btn,#f1>.bidnet-note,.drought-embed>div>a,.main a[href^="tel:"],.main a[href^="mailto:"],.main a[href="/privacy"],.signup-disc a{min-height:44px!important;display:inline-flex!important;align-items:center}
   .idx1-extras-field input{min-height:44px!important;font-size:1rem!important}
   .ticker-track .t-link{min-height:44px;display:inline-flex!important;align-items:center}
   .crop-full-link,.export-full-link,.tariff-full-link,.fert-full-link,.cot-full-link,.ratio-link,.wx-chart-toggle,.wx-hourly-toggle,#wire-band .wr-all,.faq-a a{display:inline-flex!important;align-items:center;min-height:44px}
@@ -1807,8 +1797,8 @@ details.wr>summary,details.hbz>summary{align-items:center!important}
 .pbc-down{color:var(--red)}
 .pbc-meta{font-family:var(--font-mono);font-size:.765rem;color:var(--text-muted)}
 .pbc-none{color:var(--text-muted)}
-.pbc-line{margin:.3rem 0 0;font-size:.765rem;line-height:1.5;color:var(--text-dim)}
-.pbc-asof{margin:.35rem 0 0;font-size:.765rem;color:var(--text-muted)}
+.pbc-line{margin:.3rem 0 0;font-size:.875rem;line-height:1.5;color:var(--text-dim)}
+.pbc-asof{margin:.35rem 0 0;font-size:.875rem;color:var(--text-muted)}
 .pbc-foot{font-size:.765rem;color:var(--text-muted);margin:8px 0 0;line-height:1.45}
 /* ===== WAVE1-E: small fixes and presentation (2026-10-03) */
 /* The Read: the bar's ends name what the dot measures. */
@@ -2043,7 +2033,7 @@ h3:where(.pc-section-lbl,.idx1-extras-title,.s7-ck){font-family:inherit;letter-s
    own rows are left to the bids card. ===== */
 .r7-frac{font-size:max(.55em,.765rem)}
 .wx-7day-meta,.wx-card .wx-7day-meta{font-size:.8125rem!important}
-:is(.wx-loc,.ticker-track .t-label,.ticker-track .t-unit,.m-fold-sum small,.fert-grid span,.idx1-subbar .idx1-zip-chip,.teaser-badge,.s7-stamp,.s7-ck,.s7-k,.s7-ir-v,.s7-cv small,.wstat-lbl,.wx-extra-lbl,.wx-extra-ctx,.wx-chart-toggle,.wx-7day-meta,.wr-when,.wr-meta,.pc-prev,#prices-age,.pc-section-lbl,.pc-contract,.r7-cm,.r7-unit,.cal-time,.land-k,.pbc-meta,.pbc-asof,#r7-pa-now,.idx1-sub-h,.export-cumul,.export-wk-lbl,.export-mkt-yr,.crop-week-badge,.crop-footer-date,.export-footer-date,.tariff-footer-date,.fert-footer-note,.r7-fnote,.spray-day-reason,.spray-day-status,.spray-day-name,.r7-cot-px,.r7-dim,.sig-price,.sig-tag,.noaa-card-head,#nc-week,.r7-nc-usda,.tool-widget-badge,.spray-windows-lbl,.daily-takeaway-frame,.rsc-teaser-label,.rsc-teaser-cta,.cot-bar-labels,.cot-dir,.cot-date,.crop-chg-lbl,.crop-plant-lbl,.tariff-row-dest,.ratio-link,.s7-notes,.gs-card,#idx1-calc-result,#ticker-age,.s7-cv .s7-line,.ad-slot-cta,.adspace-lbl,footer h2,.wx-summary-title){
+:is(.wx-loc,.ticker-track .t-label,.ticker-track .t-unit,.m-fold-sum small,.fert-grid span,.idx1-subbar .idx1-zip-chip,.teaser-badge,.s7-stamp,.s7-ck,.s7-k,.s7-ir-v,.s7-cv small,.wstat-lbl,.wx-extra-lbl,.wx-extra-ctx,.wx-chart-toggle,.wx-7day-meta,.wr-when,.wr-meta,.pc-prev,#prices-age,.pc-section-lbl,.pc-contract,.r7-cm,.r7-unit,.cal-time,.land-k,.pbc-meta,.pbc-asof,#r7-pa-now,.idx1-sub-h,.export-cumul,.export-wk-lbl,.export-mkt-yr,.crop-week-badge,.crop-footer-date,.export-footer-date,.tariff-footer-date,.fert-footer-note,.r7-fnote,.spray-day-reason,.spray-day-status,.spray-day-name,.r7-cot-px,.r7-dim,.sig-price,.sig-tag,.noaa-card-head,#nc-week,.r7-nc-usda,.tool-widget-badge,.spray-windows-lbl,.daily-takeaway-frame,.rsc-teaser-label,.rsc-teaser-cta,.cot-bar-labels,.cot-dir,.cot-date,.crop-chg-lbl,.crop-plant-lbl,.tariff-row-dest,.ratio-link,.s7-notes,.gs-card,#idx1-calc-result,#ticker-age,.s7-cv .s7-line,.ad-slot-cta,.adspace-lbl,.wx-summary-title){
   font-family:var(--font-body,Inter,system-ui,sans-serif)!important;letter-spacing:0!important}
 :is(.s7-ck,.s7-k,.wstat-lbl,.wx-extra-lbl,.pc-section-lbl,.pc-contract,.idx1-sub-h,.teaser-badge,.idx1-subbar .idx1-zip-chip,.cot-dir,.spray-day-status,.spray-day-name,.noaa-card-head,.tool-widget-badge,.land-k,.wr-when){text-transform:none!important}
 .s7-ck,.wstat-lbl,.wx-extra-lbl,.pc-section-lbl,.land-k{font-weight:600;color:var(--text-dim)}
@@ -2376,6 +2366,9 @@ html[data-look] #f1 .bh-elev>div:first-child>div:first-child{font-size:1rem;font
 #usda-cal-strip{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));gap:.5rem;overflow:visible!important}
 #usda-cal-strip .cal-card{min-width:0!important}
 #usda-cal-strip .cal-card:nth-child(n+7){display:none}
+/* the shared .cal-strip carries a 2rem bottom margin for a free-standing strip;
+   inside this card it was dead space under the last row */
+.usda-cal-card #usda-cal-strip{margin-bottom:0;padding-bottom:0}
 /* In the 340px desktop rail, two across squeezed each card to ~140px. One
    column there, the next five. */
 @media(min-width:1240px){#usda-cal-strip{grid-template-columns:minmax(0,1fr)}#usda-cal-strip .cal-card:nth-child(n+6){display:none}}

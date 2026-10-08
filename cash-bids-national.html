@@ -49,10 +49,21 @@
 .bm-scale{display:flex;align-items:center;gap:.5rem;font-size:0.78rem;color:var(--text-muted);margin:0 0 .8rem}
 .bm-scale .bar{flex:1;height:8px;border-radius:4px;background:linear-gradient(90deg,hsl(0 60% 45%),hsl(48 60% 45%),hsl(130 55% 42%));max-width:240px}
 .bm-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:.5rem}
-.bm-tile{border-radius:10px;padding:.6rem .65rem;border:1px solid rgba(255,255,255,.08)}
+/* tile colour comes from --h (0 weak .. 130 strong), set per tile by the script */
+.bm-tile{border-radius:10px;padding:.6rem .65rem;border:1px solid hsl(var(--h,48) 55% 38%);background:hsl(var(--h,48) 42% 18%)}
 .bm-tile .st{font-family:var(--font-display);font-weight:700;font-size:1.05rem;color:#fff;line-height:1}
-.bm-tile .bs{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:1.1rem;margin:.25rem 0 .05rem}
+.bm-tile .bs{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:1.1rem;margin:.25rem 0 .05rem;color:hsl(var(--h,48) 60% 70%)}
 .bm-tile .nm{font-size:0.765rem;color:rgba(255,255,255,.85);line-height:1.2}
+/* light mode: a pale tint of the same hue, dark text, instead of heavy dark blocks */
+[data-theme="light"] .bm-tile{background:hsl(var(--h,48) 55% 94%);border-color:hsl(var(--h,48) 40% 72%)}
+[data-theme="light"] .bm-tile .st{color:var(--text)}
+[data-theme="light"] .bm-tile .bs{color:hsl(var(--h,48) 75% 24%)}
+[data-theme="light"] .bm-tile .nm{color:var(--text-dim)}
+@media(max-width:480px){.bm-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:600px){
+  .bm-toggle{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:thin;-webkit-overflow-scrolling:touch;padding-bottom:2px}
+  .bm-toggle button{flex:none;white-space:nowrap}
+}
 .bm-board{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
 .bm-li{display:flex;justify-content:space-between;gap:.5rem;align-items:baseline;background:var(--surface2);border:1px solid var(--border);border-radius:9px;padding:.5rem .7rem;margin:0 0 .4rem;font-size:.88rem}
 .bm-li .b{font-family:'JetBrains Mono',monospace;font-weight:700}
@@ -120,13 +131,13 @@
      are interpolated into innerHTML below; they are escaped here. */
   function escB(s){return s?String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'):''}
   function fmtB(n){var s=(n>=0?'+':'\u2212');return s+'$'+Math.abs(n).toFixed(2);}
-  function color(b,min,max){var t=(max>min)?(b-min)/(max-min):0.5;var h=Math.round(t*130);return {bg:'hsl('+h+' 42% 18%)',bd:'hsl('+h+' 55% 38%)',tx:'hsl('+h+' 60% 70%)'};}
+  function hue(b,min,max){var t=(max>min)?(b-min)/(max-min):0.5;return Math.round(t*130);}
   function render(c){
     var blk=DATA.commodities[c],grid=document.getElementById('bm-grid');if(!grid)return;
     if(!blk||!blk.states||!blk.states.length){grid.innerHTML='<div class="bm-err">No basis reported for '+escB(BM_LABELS[c]||c)+' right now.</div>';document.getElementById('bm-board').innerHTML='';return;}
     var states=blk.states.slice().sort(function(a,b){return b.basis-a.basis;});
     var vals=states.map(function(s){return s.basis;}),min=Math.min.apply(null,vals),max=Math.max.apply(null,vals);
-    grid.innerHTML=states.map(function(s){var col=color(s.basis,min,max);return '<div class="bm-tile" style="background:'+col.bg+';border-color:'+col.bd+'"><div class="st">'+escB(s.state)+'</div><div class="bs" style="color:'+col.tx+'">'+fmtB(s.basis)+'</div><div class="nm">'+escB(s.name||'')+(s.n?(' \u00b7 '+s.n+' loc'):'')+'</div></div>';}).join('');
+    grid.innerHTML=states.map(function(s){return '<div class="bm-tile" style="--h:'+hue(s.basis,min,max)+'"><div class="st">'+escB(s.state)+'</div><div class="bs">'+fmtB(s.basis)+'</div><div class="nm">'+escB(s.name||'')+(s.n?(' \u00b7 '+s.n+'\u00a0loc'):'')+'</div></div>';}).join('');
     var _w=DATA.window,_mn=function(k){var m=/^(\d{4})-(\d{2})/.exec(k||'');return m?['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][+m[2]-1]+' '+m[1]:'';};
     var _wt=(_w&&_mn(_w.from))?(_mn(_w.from)===_mn(_w.to)?_mn(_w.from):_mn(_w.from)+' to '+_mn(_w.to)):'every delivery month posted';
     document.getElementById('bm-meta').textContent='Basis vs '+(blk.futures_ref||'nearby futures')+'  \u00b7  '+(_w&&_w.rule==='nearest'?'each location\u2019s nearest delivery month: ':'average of delivery months: ')+_wt+'  \u00b7  '+states.length+' states with '+(DATA.min_locations||2)+'+ locations  \u00b7  as of '+(DATA.updated||'');
