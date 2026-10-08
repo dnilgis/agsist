@@ -1,8 +1,8 @@
 {
-  "updated": "2026-10-07T00:59:34Z",
+  "updated": "2026-10-08T01:15:14Z",
   "corn": {
     "pct": 62,
-    "cur": 5.0875,
+    "cur": 5.025,
     "lo": 3.6775,
     "hi": 8.1825,
     "median": 4.6638,
@@ -296,14 +296,14 @@
     "seasonality_method": "calendar-year-detrended"
   },
   "soybean": {
-    "pct": 63,
-    "cur": 13.0425,
+    "pct": 60,
+    "cur": 12.9275,
     "lo": 9.3875,
     "hi": 17.455,
     "median": 12.075,
     "n": 262,
     "years": 5,
-    "read": "At the 63rd percentile of the last 5 years \u2014 above the 5-year midpoint (n = 262 weekly closes, continuous front-month).",
+    "read": "At the 60th percentile of the last 5 years \u2014 above the 5-year midpoint (n = 262 weekly closes, continuous front-month).",
     "hist": [
       12.43,
       12.1775,
@@ -591,14 +591,14 @@
     "seasonality_method": "calendar-year-detrended"
   },
   "wheat": {
-    "pct": 70,
-    "cur": 7.0475,
+    "pct": 67,
+    "cur": 6.845,
     "lo": 4.985,
     "hi": 13.48,
     "median": 6.0587,
     "n": 262,
     "years": 5,
-    "read": "At the 70th percentile of the last 5 years \u2014 above the 5-year midpoint (n = 262 weekly closes, continuous front-month).",
+    "read": "At the 67th percentile of the last 5 years \u2014 above the 5-year midpoint (n = 262 weekly closes, continuous front-month).",
     "hist": [
       7.34,
       7.34,
@@ -887,7 +887,7 @@
   },
   "cattle": {
     "pct": 77,
-    "cur": 221.075,
+    "cur": 221.65,
     "lo": 124.1,
     "hi": 257.45,
     "median": 183.4625,
@@ -1181,14 +1181,14 @@
     "seasonality_method": "calendar-year-detrended"
   },
   "feeders": {
-    "pct": 82,
-    "cur": 340.475,
+    "pct": 81,
+    "cur": 338.25,
     "lo": 153.125,
     "hi": 375.5,
     "median": 247.75,
     "n": 262,
     "years": 5,
-    "read": "At the 82nd percentile of the last 5 years \u2014 historically high \u2014 above most of the last 5 years (n = 262 weekly closes, continuous front-month).",
+    "read": "At the 81st percentile of the last 5 years \u2014 historically high \u2014 above most of the last 5 years (n = 262 weekly closes, continuous front-month).",
     "hist": [
       159.475,
       157.575,
