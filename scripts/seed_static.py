@@ -520,7 +520,7 @@ def seed_markets(prices, today):
             seeds["mk:" + cid] = "&mdash;"
             continue
         n += 1
-        seeds["mk:" + pid] = "$" + (_fixed(float(c) / 100.0, 2) if grain else _fixed(c, 2))
+        seeds["mk:" + pid] = "$" + (_fixed(float(c) / 100.0, 2) if grain else "{:,.2f}".format(float(_fixed(c, 2))))  # $4,162.40, as the page script prints it
         cd = _iso_date(d.get("close_date")) or fd
         when = " &middot; " + _md(cd)
         if d.get("stale"):
