@@ -1,6 +1,6 @@
 {
  "schema": "agsist-audience/2",
- "built": "2026-10-07T21:18:53+00:00",
+ "built": "2026-10-08T03:07:43+00:00",
  "ranges": [
   {
    "id": "7d",
@@ -5414,10 +5414,10 @@
     "d": "2026-10-05",
     "users": 188,
     "engaged": 145,
-    "gClicks": null,
-    "gImpr": null,
-    "bClicks": null,
-    "bImpr": null
+    "gClicks": 41,
+    "gImpr": 2032,
+    "bClicks": 91,
+    "bImpr": 3399
    }
   ]
  },
@@ -5428,39 +5428,39 @@
    "rows": [
     {
      "q": "soybean yield calculator",
-     "clicks": 51,
-     "impr": 823,
+     "clicks": 52,
+     "impr": 847,
      "pos": 5.3
     },
     {
      "q": "agsist",
-     "clicks": 23,
-     "impr": 56,
+     "clicks": 24,
+     "impr": 57,
      "pos": 1
     },
     {
      "q": "cash rents by county per acre",
      "clicks": 18,
-     "impr": 227,
+     "impr": 232,
      "pos": 4.2
     },
     {
      "q": "usda cash rent by county",
      "clicks": 9,
-     "impr": 86,
-     "pos": 8.1
+     "impr": 89,
+     "pos": 8.0
     },
     {
      "q": "cash rents by county",
      "clicks": 8,
-     "impr": 85,
+     "impr": 89,
      "pos": 5.9
     },
     {
      "q": "hail map",
      "clicks": 7,
-     "impr": 76,
-     "pos": 8.5
+     "impr": 79,
+     "pos": 8.7
     },
     {
      "q": "hail map today",
@@ -5483,14 +5483,14 @@
     {
      "q": "grain bin calculator",
      "clicks": 3,
-     "impr": 334,
+     "impr": 340,
      "pos": 8.6
     },
     {
      "q": "grain prices at local elevators today near me",
      "clicks": 3,
-     "impr": 21,
-     "pos": 3.9
+     "impr": 23,
+     "pos": 3.7
     },
     {
      "q": "hail map near me",
@@ -5507,8 +5507,8 @@
     {
      "q": "south dakota cash rents by county map pdf",
      "clicks": 3,
-     "impr": 32,
-     "pos": 7.3
+     "impr": 35,
+     "pos": 7.4
     },
     {
      "q": "soybean yeild calculator",
@@ -5519,32 +5519,32 @@
     {
      "q": "soybean yield estimate",
      "clicks": 3,
-     "impr": 46,
+     "impr": 47,
      "pos": 9.0
+    },
+    {
+     "q": "usda cash rent by county per acre",
+     "clicks": 3,
+     "impr": 39,
+     "pos": 3.2
     },
     {
      "q": "current hail map",
      "clicks": 2,
-     "impr": 24,
-     "pos": 9.1
+     "impr": 26,
+     "pos": 9.2
     },
     {
      "q": "fertilizer prices",
      "clicks": 2,
-     "impr": 60,
-     "pos": 16.0
+     "impr": 62,
+     "pos": 16.3
     },
     {
      "q": "hail map live",
      "clicks": 2,
      "impr": 14,
      "pos": 5.1
-    },
-    {
-     "q": "live hail map",
-     "clicks": 2,
-     "impr": 32,
-     "pos": 5.7
     }
    ],
    "country": "US"
@@ -5658,7 +5658,7 @@
   }
  },
  "email": {
-  "subscribers": 125,
+  "subscribers": 122,
   "asOf": "2026-10-07"
  },
  "ai": {
@@ -6040,21 +6040,21 @@
   "ga4": {
    "ok": true,
    "through": "2026-10-05",
-   "fetched": "2026-10-07T21:18:53+00:00"
+   "fetched": "2026-10-08T03:07:43+00:00"
   },
   "gsc": {
    "ok": true,
    "site": "sc-domain:agsist.com",
-   "fetched": "2026-10-07T21:18:53+00:00"
+   "fetched": "2026-10-08T03:07:43+00:00"
   },
   "bing": {
    "ok": true,
    "site": "https://agsist.com/",
-   "fetched": "2026-10-07T21:18:53+00:00"
+   "fetched": "2026-10-08T03:07:43+00:00"
   },
   "email": {
    "ok": true,
-   "fetched": "2026-10-07T21:18:53+00:00"
+   "fetched": "2026-10-08T03:07:43+00:00"
   }
  }
 }
