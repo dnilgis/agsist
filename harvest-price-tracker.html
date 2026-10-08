@@ -204,7 +204,7 @@ details.pd-d .pd-db{padding:0 1rem 1rem;}
 .dn-t td.c-crop{line-height:1.35}
 .dn-p{font-family:var(--pd-mono);font-weight:700;white-space:nowrap}
 .dn-v{font-family:var(--pd-mono);font-size:.74rem;color:var(--pd-dim,#8a948f);white-space:nowrap}
-.dn-t td.c-st{font-family:var(--pd-mono);white-space:nowrap}
+.dn-t td.c-st{font-family:var(--pd-mono);white-space:normal;overflow-wrap:normal;min-width:6ch}
 .dn-na{color:var(--pd-dim,#8a948f);font-weight:400}
 .dn-st{font-family:var(--pd-mono);font-size:.68rem;color:var(--pd-dim,#8a948f);margin:.45rem 0 .9rem}
 /* On the narrowest phones the four columns measured 343px inside a 286px
@@ -270,7 +270,17 @@ table.hp-hist td.up{color:var(--pd-green);} table.hp-hist td.dn{color:var(--pd-r
 .pd-mleg i{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:.35rem;
   vertical-align:-1px;}
 /* 2026-10-06 light-mode contrast: page gold text at 4.7:1+ */
-:root[data-theme="light"]{--pd-gold:#8a6514;--pd-gold2:#8a6514}
+:root[data-theme="light"]{--pd-gold:#8a6514;--pd-gold2:#8a6514;
+  /* 2026-10-08: the page was dark-only; light mode now takes the site's light
+     surfaces and text (and the light green/red) so cards, tables and inputs read. */
+  --pd-green:var(--green);--pd-red:var(--red);--pd-bg:var(--bg);--pd-p1:var(--card,var(--surface));
+  --pd-p2:var(--surface2);--pd-line:var(--border-2);--pd-txt:var(--text);--pd-mut:var(--text-muted);
+  --pd-dim:var(--text-muted)}
+[data-theme="light"] .pd-step.now .pd-dot{box-shadow:0 0 0 4px rgba(22,26,24,.10)}
+[data-theme="light"] .pd-pill.wait{background:rgba(22,26,24,.04)}
+[data-theme="light"] .dn-t td{border-bottom-color:var(--border)}
+[data-theme="light"] .pd-map .pd-st.sel{outline-color:var(--text)}
+[data-theme="light"] .pd-map .pd-st[style*="background:#232a26"]{background:var(--surface2)!important;color:var(--text-muted)!important}
 </style>
 </head>
 <body>
