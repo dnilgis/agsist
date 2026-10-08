@@ -1,18 +1,18 @@
 {
- "generated": "2026-10-08T22:38:44Z",
+ "generated": "2026-10-08T22:53:12Z",
  "from": "barchart-raw.json",
  "complete": false,
  "note": "Directory only: who operates a facility and where. No prices, no basis, no symbols, no delivery windows.",
  "counts": {
-  "facilities": 2278,
+  "facilities": 2280,
   "states": 38,
   "with_address": 722,
   "with_coords": 725,
   "with_url": 703,
-  "with_phone": 2211,
+  "with_phone": 2213,
   "saturated_zips": 0,
   "failed_zips": 0,
-  "rows_read": 17616
+  "rows_read": 17630
  },
  "saturated": [],
  "failed": [],
@@ -6007,6 +6007,15 @@
    "state": "IL",
    "zip": "62526",
    "phone": "217-451-2492",
+   "source": "barchart"
+  },
+  {
+   "facility": "ADM Grain",
+   "branch": "E Dubuque, IL - 9K5",
+   "city": "East Dubuque, IL 61025",
+   "state": "IL",
+   "zip": "61025",
+   "phone": "N/A",
    "source": "barchart"
   },
   {
@@ -20537,6 +20546,15 @@
    "facility_type": "Country Elevator",
    "locationId": 85884,
    "elevatorId": 2179
+  },
+  {
+   "facility": "AGP",
+   "branch": "David City, NE",
+   "city": "David City",
+   "state": "NE",
+   "zip": "68632",
+   "phone": "402-275-6039",
+   "source": "barchart"
   },
   {
    "company": "Ag Valley Co-op",
