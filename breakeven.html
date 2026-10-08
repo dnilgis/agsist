@@ -55,6 +55,10 @@
     @media(prefers-reduced-motion:reduce){.live-dot{animation:none;}.hint-popup{animation:none;}.cost-bar-seg,.profit-gauge-fill,.profit-gauge-marker,.be-faq-a{transition:none;}}
     .hint-icon{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:var(--border);color:var(--text-dim);font-size:0.763rem;font-weight:700;cursor:pointer;transition:all 0.2s;flex-shrink:0;user-select:none;-webkit-tap-highlight-color:transparent;}
     .hint-icon:hover,.hint-icon.active{background:var(--green);color:#06110b;}
+    /* 40px tap target around the 20px dot; the dot itself is unchanged */
+    .hint-icon{position:relative;}.hint-icon::before{content:"";position:absolute;inset:-12px;}
+    /* light mode: dark text on the light-theme --green (#2e7d4f) read 3.8:1; white reads 5.1:1 */
+    [data-theme="light"] .btn-primary,[data-theme="light"] .live-price-bar button,[data-theme="light"] .hint-icon:hover,[data-theme="light"] .hint-icon.active{color:#fff;}
     .hint-popup{display:none;margin-top:8px;background:var(--surface);border:2px solid var(--green);border-radius:6px;padding:12px 14px;box-shadow:0 4px 12px rgba(0,0,0,0.3);animation:hintIn 0.15s ease-out;}
     .hint-popup.hint-open{display:block;}
     @keyframes hintIn{from{opacity:0;transform:translateY(-4px);}to{opacity:1;transform:none;}}
@@ -67,7 +71,7 @@
     .live-price-bar .chg-tag{font-family:'JetBrains Mono',monospace;font-size:0.787rem;font-weight:600;}
     .live-price-bar .chg-tag.up{color:var(--green);}.live-price-bar .chg-tag.dn{color:var(--red);}
     .live-price-bar button{background:var(--green);color:#06110b;border:none;padding:4px 12px;border-radius:6px;font-family:'JetBrains Mono',monospace;font-size:0.78rem;font-weight:700;text-transform:uppercase;cursor:pointer;transition:background 0.15s;margin-left:auto;min-height:44px;}
-    .live-price-bar button:hover{background:#1b4d1c;}
+    .live-price-bar button:hover{background:#1b4d1c;color:#fff;}
     .cost-breakdown{margin-top:16px;}
     .cost-breakdown-title{font-family:'JetBrains Mono',monospace;font-size:0.77rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;font-weight:700;}
     .cost-bar{display:flex;height:28px;border-radius:6px;overflow:hidden;margin-bottom:8px;}
@@ -202,7 +206,7 @@
     <div class="print-stat"><div class="print-stat-label">Profit/Acre</div><div class="print-stat-value" id="ps-profit">--</div></div>
     <div class="print-stat"><div class="print-stat-label">Farm Total (<span id="ps-acres-label">500</span> ac)</div><div class="print-stat-value" id="ps-farm">--</div></div>
   </div>
-  <main id="main" tabindex="-1">
+  <main id="main" class="main" tabindex="-1">
     <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a> &rarr; Break-Even Calculator</nav>
     <div class="grid-2">
       <div class="panel">

@@ -154,9 +154,9 @@ button,a,[role="button"]{touch-action:manipulation}
 .fa-panel,#fa-groups,.fa-maphead{scroll-margin-top:84px}
 /* toolbar: search, state zoom, layer groups, layers */
 .fa-bar{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;margin:0 0 .7rem}
-.fa-bar input[type=search]{flex:1 1 260px;min-width:0;background:var(--surface);color:var(--text);border:1px solid var(--border-2);border-radius:8px;padding:.55rem .8rem;font-size:.9rem;min-height:44px}
+.fa-bar input[type=search]{flex:1 1 260px;min-width:0;background:var(--surface);color:var(--text);border:1px solid var(--border-2);border-radius:8px;padding:.55rem .8rem;font-size:max(16px,.9rem);min-height:44px}
 .fa-bar input[type=search]:focus,.fa-bar select:focus{outline:2px solid var(--gold);outline-offset:1px}
-.fa-bar select{flex:0 1 190px;background:var(--surface);color:var(--text);border:1px solid var(--border-2);border-radius:8px;padding:.5rem .6rem;font-size:.85rem;min-height:44px}
+.fa-bar select{flex:0 1 190px;background:var(--surface);color:var(--text);border:1px solid var(--border-2);border-radius:8px;padding:.5rem .6rem;font-size:max(16px,.85rem);min-height:44px}
 .fa-bar button{padding:.5rem .9rem;border-radius:8px;border:1px solid var(--border-2);background:var(--surface);color:var(--text-dim);font-size:.8rem;font-weight:600;cursor:pointer;min-height:44px}
 .fa-bar button:hover{border-color:var(--gold);color:var(--text)}
 .fa-bar .fa-note{flex-basis:100%}
@@ -286,12 +286,12 @@ details.fa-vd summary:hover{color:var(--gold)}
 /* decade slider */
 .fa-slider{display:flex;flex-wrap:wrap;align-items:center;gap:.6rem 1rem;padding:.7rem .9rem;background:var(--surface);border:1px solid var(--border);border-radius:10px;margin-bottom:1rem}
 .fa-slider input[type=range]{flex:1;min-width:160px}
-.fa-slider select{background:var(--surface2);color:var(--text);border:1px solid var(--border-2);border-radius:6px;padding:.3rem .5rem;font-family:var(--font-mono);font-size:.78rem}
+.fa-slider select{background:var(--surface2);color:var(--text);border:1px solid var(--border-2);border-radius:6px;padding:.3rem .5rem;font-family:var(--font-mono);font-size:max(16px,.78rem)}
 .fa-slider output{font-family:var(--font-mono);font-size:.9rem;color:var(--gold);min-width:3.5em}
 
 /* search + panel */
 .fa-search{display:flex;gap:.5rem;flex-wrap:wrap;align-items:center;margin-bottom:1rem}
-.fa-search input{flex:1;min-width:220px;background:var(--surface);color:var(--text);border:1px solid var(--border-2);border-radius:8px;padding:.55rem .8rem;font-size:.9rem;min-height:44px}
+.fa-search input{flex:1;min-width:220px;background:var(--surface);color:var(--text);border:1px solid var(--border-2);border-radius:8px;padding:.55rem .8rem;font-size:max(16px,.9rem);min-height:44px}
 .fa-search input:focus{outline:2px solid var(--gold);outline-offset:1px}
 .fa-search button{padding:.5rem .9rem;border-radius:8px;border:1px solid var(--border-2);background:var(--surface);color:var(--text-dim);font-size:.8rem;font-weight:600;cursor:pointer;min-height:44px}
 .fa-search button:hover{border-color:var(--gold);color:var(--text)}
@@ -351,7 +351,7 @@ details.fa-arith code{font-family:var(--font-mono);font-size:.74rem;color:var(--
 .fa-faq p{margin:.5rem 0 0}
 .fa-cta{border:1px solid var(--border-g);border-radius:12px;padding:1rem 1.1rem;background:linear-gradient(180deg,rgba(212,162,63,.06),transparent)}
 .fa-cta form{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.7rem}
-.fa-cta input[type=email]{flex:1;min-width:220px;background:var(--surface);color:var(--text);border:1px solid var(--border-2);border-radius:8px;padding:.55rem .8rem;font-size:.9rem;min-height:44px}
+.fa-cta input[type=email]{flex:1;min-width:220px;background:var(--surface);color:var(--text);border:1px solid var(--border-2);border-radius:8px;padding:.55rem .8rem;font-size:max(16px,.9rem);min-height:44px}
 .fa-cta button{padding:.5rem 1rem;border-radius:8px;border:none;background:var(--gold-fill,var(--gold));color:#0a0c0d;font-weight:700;cursor:pointer;min-height:44px}
 .fa-src{font-size:.78rem;color:var(--text-muted);line-height:1.7}
 .fa-src a{color:var(--gold);text-decoration:none}
@@ -361,10 +361,8 @@ details.fa-arith code{font-family:var(--font-mono);font-size:.74rem;color:var(--
   .fa-hero h1{font-size:1.4rem}
   .fa-map-title{font-size:.66rem}
   .fa-bar select{flex:1 1 100%}
-  /* 16 groups: two rows that scroll sideways, with a fade that says there is more */
-  .fa-gtabs{display:grid;grid-auto-flow:column;grid-template-rows:auto auto;grid-auto-columns:max-content;
-    -webkit-mask-image:linear-gradient(90deg,#000 86%,transparent);mask-image:linear-gradient(90deg,#000 86%,transparent)}
-  .fa-gtabs.at-end{-webkit-mask-image:none;mask-image:none}
+  /* 16 groups wrap onto a few rows on phones. The old two-row sideways strip
+     opened scrolled to the active group, so the first tabs showed cut off. */
   .fa-gtab{padding:.4rem .6rem;font-size:.76rem}
   .fa-hero p{font-size:.86rem}
   .fa-eyebrow{display:none}

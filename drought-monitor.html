@@ -129,7 +129,12 @@ button,a,[role="button"] { touch-action: manipulation; }
 
 /* Map */
 .dm-map-wrap { position: relative; width: 100%; background: var(--surface); border: 2px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 1.25rem; }
-.dm-map-img { width: 100%; height: auto; display: block; }
+.dm-map-img { width: 100%; height: auto; display: block; aspect-ratio: auto 1100 / 850; object-fit: contain; }
+/* outside image failed: hide it (its alt text sat under the label) and show a plain box of the same size */
+.dm-map-fallback { display: none; aspect-ratio: 1100 / 850; align-items: center; justify-content: center; text-align: center; padding: 2.5rem 1rem 1rem; color: var(--text-dim); font-size: .9rem; line-height: 1.5; background: var(--surface2, var(--surface)); }
+.dm-map-fallback a { color: var(--gold); }
+.dm-map-wrap.is-broken .dm-map-img { display: none; }
+.dm-map-wrap.is-broken .dm-map-fallback { display: flex; }
 .dm-map-label { position: absolute; top: 10px; left: 12px; font-family: 'JetBrains Mono', monospace; font-size:0.755rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; background: rgba(0,0,0,.6); color: #fff; padding: .2rem .5rem; border-radius: 4px; }
 .dm-map-src { text-align: center; padding: .6rem; font-size:0.763rem; color: var(--text-muted); border-top: 1px solid var(--border); }
 .dm-map-src a { color: var(--gold); text-decoration: none; }
@@ -256,7 +261,12 @@ button,a,[role="button"] { touch-action: manipulation; }
         src="https://droughtmonitor.unl.edu/data/png/current/current_usdm.png"
         alt="US Drought Monitor — current weekly national map"
         loading="eager">
+      <div class="dm-map-fallback" id="dm-map-fallback"><p style="margin:0">The drought map image did not load.<br>See the current map at <a href="https://droughtmonitor.unl.edu" target="_blank" rel="noopener">droughtmonitor.unl.edu</a>.</p></div>
       <span class="dm-map-label" id="dm-map-label">US · National View</span>
+      <script>(function(){var i=document.getElementById('dm-map-img'),w=i&&i.parentNode;if(!i)return;
+        function bad(){w.classList.add('is-broken');} function ok(){w.classList.remove('is-broken');}
+        i.addEventListener('error',bad); i.addEventListener('load',ok);
+        if(i.complete&&!i.naturalWidth)bad();})();</script>
       <div class="dm-map-src">
         Source: <a href="https://droughtmonitor.unl.edu" target="_blank" rel="noopener">droughtmonitor.unl.edu</a>
         — National Drought Mitigation Center · USDA · NOAA

@@ -62,6 +62,9 @@
     .pill-group label:last-child { border-right: none; }
     .pill-group input { display: none; }
     .pill-group input:checked + label { background: var(--green); color: #06110b; }
+    /* light mode: dark text on the light-theme --green read 3.8:1; white reads 5.1:1 */
+    [data-theme="light"] .pill-group input:checked + label, [data-theme="light"] .sticky-bar-copy, [data-theme="light"] .btn-copy { color: #fff; }
+    [data-theme="light"] .mkt-link, [data-theme="light"] .field-hint { opacity: 1; }
     /* v2: minmax(0,1fr) on ALL grid column definitions — bare 1fr can overflow on iOS Safari */
     .input-grid { display: grid; gap: 12px; margin-bottom: 16px; }
     .input-grid.cols-2 { grid-template-columns: repeat(2, minmax(0,1fr)); }
@@ -105,7 +108,7 @@
     .vol-detail.open { max-height: 120px; }
     /* v2: sticky mobile result bar */
     .sticky-bar { display: none; position: fixed; bottom: 0; left: 0; right: 0; z-index: 100; background: var(--surface); border-top: 2px solid var(--green); padding: 10px 16px; padding-bottom: calc(10px + env(safe-area-inset-bottom)); align-items: center; justify-content: space-between; gap: 12px; }
-    .sticky-bar-bu { font-family: 'JetBrains Mono', monospace; font-size: 1.1rem; font-weight: 700; color: #fff; }
+    .sticky-bar-bu { font-family: 'JetBrains Mono', monospace; font-size: 1.1rem; font-weight: 700; color: var(--text); }
     .sticky-bar-val { font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; color: var(--gold); }
     .sticky-bar-label { font-family: 'JetBrains Mono', monospace; font-size:0.75rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: .06em; }
     .sticky-bar-copy { font-family: 'JetBrains Mono', monospace; font-size:0.78rem; font-weight: 700; padding: 6px 12px; background: var(--green); color: #06110b; border: none; border-radius: 6px; cursor: pointer; white-space: nowrap; min-height: 40px; touch-action: manipulation; }
@@ -185,7 +188,7 @@
     <button class="sticky-bar-copy" id="sb-copy" onclick="copyResult()">Copy</button>
   </div>
 
-  <main id="main" tabindex="-1" aria-label="Grain bin storage calculator">
+  <main id="main" class="main" tabindex="-1" aria-label="Grain bin storage calculator">
 <style>@media print{.ag-sponsor-ribbon{display:none!important}}</style><aside class="ag-sponsor-ribbon" id="ag-sponsor"><span class="ag-sponsor-tag">Sponsor this page</span> Bushels, shrink, and bin math for people with real steel to fill — one category-exclusive slot. <span class="ag-sponsor-price" data-rate="page">$29/mo &middot; first month free</span> <a href="/sponsor-apply?slot=grain-bin-calculator&amp;utm_source=grain-bin-calculator&amp;utm_medium=slot">Put your name here &rarr;</a></aside>
     <nav class="breadcrumb"><a href="/">Home</a> &rarr; <a href="/tools">Tools</a> &rarr; Grain Bin Calculator</nav>
     <div class="grid-2">

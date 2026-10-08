@@ -26,7 +26,7 @@
 // v8 (2026-07-26): cache bust for the big deploy week — chips, signup bar,
 // nowcast, contrast, iOS text fix, sponsor pricing. Returning phones were
 // pinned to old ?v= assets by cacheFirst; this clears every device's cache.
-var CACHE_VERSION = 26;  // v26 2026-08-15: styles.css nav-panel visibility fix (mega-menu links were staying in the tab order sitewide); was: v25
+var CACHE_VERSION = 27;  // v27 2026-10-08: styles.css phone fixes (16px inputs so iOS stops zooming, .sr-only, light-mode change chips); was: v26 (2026-08-15 nav-panel visibility fix)
 /* ───────────────────────────────────────────────────────────────── */
 
 var CACHE_NAME = 'agsist-v' + CACHE_VERSION;
