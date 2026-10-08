@@ -105,7 +105,9 @@ button,a,[role="button"] { touch-action: manipulation; }
 .breadcrumb { max-width: 1040px; margin: 0 auto; padding: .65rem 1rem 0; font-size:0.795rem; color: var(--text-dim); }
 .breadcrumb a { color: var(--text-dim); text-decoration: none; }
 .breadcrumb a:hover { color: var(--gold); }
-.breadcrumb span { margin: 0 .35rem; opacity: .45; }
+/* 2026-10-08: the faded opacity is for the separator only. On the current-page
+   crumb it put the text at 2.3:1 (light) and 3.4:1 (dark). */
+.breadcrumb span[aria-hidden] { margin: 0 .35rem; opacity: .45; }
 
 /* Hero */
 .dm-hero { padding: 1.2rem 0 1rem; border-bottom: 1px solid var(--border); margin-bottom: 1.25rem; }

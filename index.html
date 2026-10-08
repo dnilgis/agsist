@@ -1254,7 +1254,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
       <p style="font-size:.824rem;color:var(--text-muted);margin:0 0 8px;line-height:1.45">One email when futures hit your target. <span class="tip"><button type="button" class="tip-b" aria-expanded="false" aria-describedby="tip-alert">Not a cash bid</button><span id="tip-alert" role="tooltip" class="tip-t" hidden>One email when the futures price reaches your target, then the alert clears. Checked every 30 minutes, delayed about 15. This watches the futures price, not your elevator&rsquo;s bid. Check your local basis separately.</span></span></p>
       <div id="pa-form" style="display:flex;flex-direction:column;gap:.45rem">
         <div style="display:flex;gap:.4rem;flex-wrap:wrap">
-          <select id="pa-symbol" aria-label="Contract" style="flex:1;min-width:120px;padding:.4rem .5rem;background:var(--surface2);border:1px solid var(--border);border-radius:5px;font-size:.765rem;color:var(--text)">
+          <select id="pa-symbol" aria-label="Contract" style="flex:1;min-width:120px;padding:.4rem .5rem;background:var(--surface2);border:1px solid var(--border);border-radius:5px;font-size:max(16px,.765rem);color:var(--text)">
             <option value="corn">Corn, front month</option>
             <option value="corn-dec">Corn, December contract</option>
             <option value="beans">Soybeans, front month</option>
@@ -1262,17 +1262,17 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
             <option value="wheat">Chicago SRW wheat, front month</option>
             <option value="cattle">Live cattle, front month</option>
           </select>
-          <select id="pa-direction" aria-label="Direction" style="padding:.4rem .5rem;background:var(--surface2);border:1px solid var(--border);border-radius:5px;font-size:.765rem;color:var(--text)">
+          <select id="pa-direction" aria-label="Direction" style="padding:.4rem .5rem;background:var(--surface2);border:1px solid var(--border);border-radius:5px;font-size:max(16px,.765rem);color:var(--text)">
             <option value="above">goes above</option>
             <option value="below">goes below</option>
           </select>
         </div>
         <div style="display:flex;gap:.4rem;align-items:center">
           <span style="font-family:'JetBrains Mono',monospace;font-size:.824rem;color:var(--text-muted)">$</span>
-          <input type="number" id="pa-target" step="0.01" min="0.01" max="1000" placeholder="Target" aria-label="Target price in dollars" style="flex:1;padding:.4rem .5rem;background:var(--surface2);border:1px solid var(--border);border-radius:5px;font-size:.824rem;font-family:'JetBrains Mono',monospace;color:var(--text)">
+          <input type="number" id="pa-target" step="0.01" min="0.01" max="1000" placeholder="Target" aria-label="Target price in dollars" style="flex:1;padding:.4rem .5rem;background:var(--surface2);border:1px solid var(--border);border-radius:5px;font-size:max(16px,.824rem);font-family:'JetBrains Mono',monospace;color:var(--text)">
         </div>
         <div id="r7-pa-now" aria-live="polite"></div>
-        <input type="email" id="pa-email" placeholder="your@email.com" autocomplete="email" aria-label="Email for the alert" style="padding:.4rem .5rem;background:var(--surface2);border:1px solid var(--border);border-radius:5px;font-size:.765rem;color:var(--text)">
+        <input type="email" id="pa-email" placeholder="your@email.com" autocomplete="email" aria-label="Email for the alert" style="padding:.4rem .5rem;background:var(--surface2);border:1px solid var(--border);border-radius:5px;font-size:max(16px,.765rem);color:var(--text)">
         <label class="sa-optin" id="pa-optin-l" data-signup-hide><input type="checkbox" id="pa-optin" checked> Also send me AGSIST Daily, free, every weekday morning</label>
         <button type="button" id="pa-go" style="padding:.5rem .7rem;background:var(--gold-fill,var(--gold));color:#0a0c0d;border:none;border-radius:5px;font-size:.824rem;font-weight:700;cursor:pointer">Set alert</button>
         <div id="pa-status" role="status" tabindex="-1" style="font-size:.765rem;color:var(--text-muted);min-height:1.1em"></div>

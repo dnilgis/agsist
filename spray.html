@@ -872,6 +872,10 @@ body {
 
 /* WCAG AA: brighten danger red for chip/label text contrast on dark (was #c8562e 3.7:1 -> #e06b42 ~4.9:1). Scoped to this page. */
 [data-theme="dark"]{--red:#e06b42;--risk-extreme:#e06b42;}
+/* Light mode: the shared --blue (#6f9fc2) was 2.5:1 and --red (#c0492f) 4.2:1 on
+   the tinted frozen/poor chips and badges. Darker values on this page only,
+   4.9:1 or better on the tints; dark mode keeps its own values above. */
+[data-theme="light"]{--blue:#2a6390;--red:#a63c22;}
 
 
 

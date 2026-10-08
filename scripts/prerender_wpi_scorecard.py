@@ -794,6 +794,20 @@ def ao_summary(d):
               "The board below re-renders the same pull in your browser.")
 
 
+_MON = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+
+
+def ao_read_at(d):
+    """The pull time on the one-line note under the H1, e.g. "Oct 7, 2026,
+    16:40 UTC". readAt() in ag-odds.html writes the same wording on hydrate."""
+    f = d.get("fetched") or ""
+    m = re.match(r"(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})", f)
+    if not m:
+        return "once a day"
+    y, mo, dd, hh, mi = m.groups()
+    return f"{_MON[int(mo) - 1]} {int(dd)}, {y}, {hh}:{mi} UTC"
+
+
 def bake_cot():
     with open(COT_JSON, encoding="utf-8") as f:
         d = json.load(f)
@@ -811,6 +825,7 @@ def bake_agodds():
         src = f.read()
     orig = src
     src = replace_region(src, "ao-odds", ao_summary(d), AO_HTML)
+    src = replace_region(src, "ao-readat", ao_read_at(d), AO_HTML)
     return orig, src, AO_HTML
 
 

@@ -374,7 +374,8 @@
     .fs-bid-px{font-family:'JetBrains Mono',monospace;font-size:.9rem;font-weight:700;color:var(--text);white-space:nowrap}
     .fs-bid-basis{font-family:'JetBrains Mono',monospace;font-size:0.77rem}
 
-    .fs-disc{font-size:0.78rem;color:var(--text-muted);line-height:1.6;padding:1rem 1.2rem;background:var(--surface2)}
+    /* 2026-10-08: --text-muted read 4.2-4.4:1 here; --text-dim clears 4.5:1 in both themes. */
+    .fs-disc{font-size:0.78rem;color:var(--text-dim);line-height:1.6;padding:1rem 1.2rem;background:var(--surface2)}
     .fs-src{font-family:'JetBrains Mono',monospace;font-size:0.76rem;color:var(--text-muted);margin-top:.3rem}
 
     /* Leaflet dark-mode polish */
@@ -476,7 +477,7 @@
     .fs-act-dollar{margin-top:.5rem;padding:.5rem .65rem;background:rgba(var(--brand-rgb,218,165,32),.1);border-radius:6px;font-size:.84rem;color:var(--text);line-height:1.5}
     .fs-act-link{display:inline-block;margin-top:.15rem;color:var(--brand,var(--gold));font-weight:600;text-decoration:none;white-space:nowrap}
     .fs-act-link:hover{text-decoration:underline}
-    .fs-src{display:block;margin-top:.3rem;font-size:0.78rem;color:var(--text-dim);opacity:.7;}
+    .fs-src{display:block;margin-top:.3rem;font-size:0.78rem;color:var(--text-dim);}
 
     /* ── Risk profile (the insurance moat) ────────────────────────── */
     .fs-risk-row{display:flex;align-items:center;gap:.6rem;padding:.5rem 0;border-bottom:1px solid rgba(255,255,255,.04)}

@@ -269,7 +269,11 @@
   .dp-bar{position:relative;height:34px;border-radius:6px;background:var(--surface3);overflow:hidden;margin:.7rem 0 .3rem;}
   .dp-bar-fill{position:absolute;top:0;left:0;bottom:0;background:linear-gradient(90deg,rgba(var(--green-rgb),.4),rgba(var(--green-rgb),.65));}
   .dp-bar-cost{position:absolute;top:-3px;bottom:-3px;width:2px;background:var(--red);}
-  .dp-bar-cost-lbl{position:absolute;top:-1.15rem;transform:translateX(-50%);font-family:'JetBrains Mono',monospace;
+  /* 2026-10-08: the trigger label sat at top:-1.15rem inside .dp-bar, whose
+     overflow:hidden clipped it away entirely. It now lives in the scale row
+     above the bar, still pinned to the trigger's x. */
+  .dp-bar-scale{position:relative;}
+  .dp-bar-cost-lbl{position:absolute;top:0;transform:translateX(-50%);font-family:'JetBrains Mono',monospace;
     font-size:0.74rem;font-weight:700;color:var(--red);white-space:nowrap;}
   .dp-bar-scale{display:flex;justify-content:space-between;font-family:'JetBrains Mono',monospace;
     font-size:0.74rem;color:var(--text-muted);}
@@ -664,11 +668,10 @@
 
     <div class="dp-margin">
       <div class="dp-bar-cap">the DMC margin: milk price minus feed cost</div>
-      <div class="dp-bar-scale"><span>$0</span></div>
+      <div class="dp-bar-scale"><span>$0</span><span class="dp-bar-cost-lbl" style="left:52%">$9.50 safety-net trigger</span></div>
       <div class="dp-bar">
         <div class="dp-bar-fill" style="width:43%"></div>
         <div class="dp-bar-cost" style="left:52%"></div>
-        <div class="dp-bar-cost-lbl" style="left:52%">$9.50 safety-net trigger</div>
       </div>
       <div class="dp-margin-stats">
         <div class="dp-margin-stat"><span class="n">$7.81</span><span class="l">Jan 2026 DMC margin<br>below the $9.50 trigger</span></div>

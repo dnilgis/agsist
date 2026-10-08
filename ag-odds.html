@@ -47,12 +47,14 @@
 @keyframes spin  { to { transform: rotate(360deg); } }
 
 
-.ao-hero{padding:1.4rem 0 1.1rem;border-bottom:1px solid var(--border);margin-bottom:1.35rem}
-.ao-eyebrow{display:flex;align-items:center;gap:.45rem;font-size:0.757rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin-bottom:.32rem}
-.ao-eyebrow::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--green)}
+.ao-hero{padding:1.1rem 0 .85rem;border-bottom:1px solid var(--border);margin-bottom:1rem}
 .ao-hero h1{font-family:var(--font-display);font-size:1.9rem;font-weight:800;line-height:1.1;color:var(--text);letter-spacing:-.01em;text-transform:uppercase;margin:0 0 .4rem}
 @media(min-width:640px){.ao-hero h1{font-size:2.5rem}}
 .ao-hero-sub{font-size:.85rem;color:var(--text-dim);line-height:1.6;max-width:56rem}
+.ao-h1-sub{font-size:.95rem;font-weight:600;color:var(--text-dim);line-height:1.4;margin:0 0 .35rem}
+.ao-oneline{font-size:.8rem;color:var(--text-dim);line-height:1.5;margin:0}
+.ao-oneline a{color:var(--gold);text-decoration:underline;text-underline-offset:2px}
+.ao-about{margin:0 0 1.35rem}.ao-about .ao-hero-meta{margin-top:.5rem}
 .ao-hero-meta{display:flex;align-items:center;flex-wrap:wrap;gap:.4rem 1rem;margin-top:.8rem;font-size:0.765rem;color:var(--text-muted);font-family:'JetBrains Mono',monospace}
 .ao-dot{display:inline-block;width:6px;height:6px;border-radius:50%;vertical-align:middle;margin-right:3px;flex-shrink:0}
 .ao-dot.g{background:var(--green)}
@@ -251,45 +253,18 @@
   <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a> &rarr; Ag Prediction Markets</nav>
 
   <div class="ao-hero">
-    <div class="ao-eyebrow">Ag Prediction Markets</div>
-    <h1 id="ao-h1">Ag Prediction Markets: Daily Odds Board</h1>
-    <p class="ao-hero-sub" id="ao-hero-sub">A once-a-day screen of real-money prediction markets for the contracts that reach farm costs and prices. What is on the board changes with what the exchanges have open: some days that includes tariff, drought or grain contracts, and some days it holds none of them. The list below is today&rsquo;s actual pull from Polymarket, and the headings above it are counted from that pull.</p>
-    <div class="ao-hero-meta">
-      <span><span class="ao-dot g"></span><span id="ao-live-lbl">Loading today&rsquo;s pull&hellip;</span></span>
-      <span id="ao-hero-src"></span>
-      <span id="ao-count-badge"></span>
-    </div>
+    <h1 id="ao-h1">Ag prediction markets</h1>
+    <p class="ao-h1-sub" id="ao-h1-sub">Daily odds board for the contracts that reach farm costs and prices</p>
+    <p class="ao-oneline" id="ao-oneline">Market odds, not forecasts. From Polymarket, read <span id="ao-read-at"><!-- PRERENDER:ao-readat -->Oct 7, 2026, 16:40 UTC<!-- /PRERENDER:ao-readat --></span>. <a href="#ao-disc">Disclaimer</a></p>
   </div>
 
   <div class="ao-feed-notice" id="ao-feed-notice" hidden></div>
   <div class="ao-feed-notice" id="ao-stale" role="status" hidden></div>
 
-  <section class="ao-intro">
-    <p><strong>Agricultural prediction markets</strong> let you see, in one number, what thousands of real-money traders expect on the events that move farm income: China tariffs on soybeans, drought declarations, USDA report surprises, Fed rate decisions, and the crude oil and natural gas prices that set your diesel and fertilizer bills. I pull the ag-relevant contracts from <strong>Polymarket</strong> every morning, score each one for direct impact on corn, soybean, wheat, cattle, hog, and egg operations, and explain why it matters, at no charge. Which of those are actually trading changes day to day, and the board below is today&rsquo;s pull, not a standing menu.</p>
-    <p>Most prediction-market dashboards bury grain and livestock contracts under sports and politics. This page does the opposite: it filters for agriculture first, ranks markets by how directly they touch your basis, input costs, and yield risk, and links straight to the live contract so you can check depth and volume yourself.</p>
-  </section>
 
-  <!-- PATCH: static market categories — always visible to Googlebot -->
-  <div class="ao-static-cats" id="ao-static-cats">
-    <h2 class="ao-h2reset" style="font-size:0.747rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin:0 0 .4rem"><svg class="ic-sp" aria-hidden="true"><use href="#sp-chart-column"/></svg> Market Categories the Daily Scan Covers</h2>
-    <p style="font-size:.8rem;color:var(--text-muted);line-height:1.55;margin:0 0 .3rem">This is the coverage list the scan works from, not a claim that any of these are trading right now. The count beside each one is from today&rsquo;s pull.</p>
-    <div class="ao-static-cat-grid">
-      <div class="ao-static-cat-item" data-cat="Commodities"><strong>Commodities<span class="ao-cat-chip"></span></strong>Corn, soybean, wheat, cattle, hog, egg, and food price markets that directly affect farm revenue and input demand.</div>
-      <div class="ao-static-cat-item" data-cat="Trade & Policy"><strong>Trade &amp; Policy<span class="ao-cat-chip"></span></strong>Tariff probability on US grain exports to China, USMCA trade disputes, and retaliatory trade measures that move basis.</div>
-      <div class="ao-static-cat-item" data-cat="Energy & Inputs"><strong>Energy &amp; Inputs<span class="ao-cat-chip"></span></strong>Crude oil and natural gas price ranges that drive diesel and nitrogen fertilizer costs, the two largest variable input costs.</div>
-      <div class="ao-static-cat-item" data-cat="Weather & Climate"><strong>Weather &amp; Climate<span class="ao-cat-chip"></span></strong>Drought declaration probability, hurricane landfall odds, and El Ni&#241;o/La Ni&#241;a seasonal outlooks affecting yield risk.</div>
-      <div class="ao-static-cat-item" data-cat="Economy & Markets"><strong>Economy &amp; Markets<span class="ao-cat-chip"></span></strong>Fed rate decisions, inflation trajectory, and dollar strength, all affecting grain export demand and farm lending costs.</div>
-      <div class="ao-static-cat-item" data-cat="Infrastructure"><strong>Infrastructure<span class="ao-cat-chip"></span></strong>Rail strike probability, Mississippi River disruptions, and supply chain events that spike basis and delay grain movement.</div>
-    </div>
-  </div>
 
   <h2 class="ao-seo-h2" style="margin-bottom:.5rem">Today&rsquo;s Ag Prediction Market Board</h2>
   <div id="ao-baked" style="border:1px solid var(--border);border-radius:8px;padding:.75rem .95rem;margin:0 0 .8rem;font-size:.9rem;line-height:1.7;color:var(--text-dim)"><!-- PRERENDER:ao-odds -->Prediction-market odds as of 2026-10-07: Will Crude Oil reach a new all-time high by December 31? — <b>10%</b> yes; Will the Fed increase interest rates by 25 bps after the October 2026 meeting? — <b>18%</b> yes; Will there be no change in Fed interest rates after the October 2026 meeting? — <b>82%</b> yes; Will no Fed rate cuts happen in 2026? — <b>96%</b> yes; Will 1 Fed rate cut happen in 2026? — <b>2%</b> yes. These are the readings from the pull stamped above, not a live feed. The board below re-renders the same pull in your browser.<!-- /PRERENDER:ao-odds --></div>
-  <div class="ao-disc" style="margin-top:0;margin-bottom:1rem">
-    <strong>Not financial advice, and AGSIST does not offer trading.</strong> These are prices from other people&rsquo;s markets: they reflect crowd opinion at one moment, not guaranteed outcomes. Do not make hedging, storage, or marketing decisions on them alone.
-    Data from <a href="https://polymarket.com" target="_blank" rel="noopener">Polymarket</a>. Check its current access rules for US residents.
-    AGSIST has no commercial relationship with it and takes no cut. Each card links to the contract on Polymarket, where the live price and depth are shown.
-  </div>
   <div class="ao-source-bar" id="ao-source-bar"></div>
   <div class="ao-tier-row" id="ao-tier-row">
     <div class="ao-tier-pill off" data-tier="1" data-lbl="Direct Ag (corn, grain, cattle, egg, food)"><span class="ao-tp-dot"></span>Direct Ag (corn, grain, cattle, egg, food)<span class="ao-tp-n"></span></div>
@@ -315,6 +290,41 @@
         <div class="ao-spinner"></div>
         <span class="ao-load-lbl">Scanning prediction markets for agricultural impact&hellip;</span>
       </div>
+    </div>
+  </div>
+  <div class="ao-disc" id="ao-disc" style="margin-top:1.1rem;margin-bottom:1.35rem">
+    <strong>Not financial advice, and AGSIST does not offer trading.</strong> These are prices from other people&rsquo;s markets: they reflect crowd opinion at one moment, not guaranteed outcomes. Do not make hedging, storage, or marketing decisions on them alone.
+    Data from <a href="https://polymarket.com" target="_blank" rel="noopener">Polymarket</a>. Check its current access rules for US residents.
+    AGSIST has no commercial relationship with it and takes no cut. Each card links to the contract on Polymarket, where the live price and depth are shown.
+  </div>
+
+  <!-- 2026-10-08: board first. What this page is and how the scan works now
+       sits below the board instead of above it. -->
+  <section class="ao-about" aria-label="About this board">
+    <p class="ao-hero-sub" id="ao-hero-sub">A once-a-day screen of real-money prediction markets for the contracts that reach farm costs and prices. What is on the board changes with what the exchanges have open: some days that includes tariff, drought or grain contracts, and some days it holds none of them. The board above is today&rsquo;s actual pull from Polymarket, and the counts on it come from that pull.</p>
+    <div class="ao-hero-meta">
+      <span><span class="ao-dot g"></span><span id="ao-live-lbl">Loading today&rsquo;s pull&hellip;</span></span>
+      <span id="ao-hero-src"></span>
+      <span id="ao-count-badge"></span>
+    </div>
+  </section>
+
+  <section class="ao-intro">
+    <p><strong>Agricultural prediction markets</strong> let you see, in one number, what thousands of real-money traders expect on the events that move farm income: China tariffs on soybeans, drought declarations, USDA report surprises, Fed rate decisions, and the crude oil and natural gas prices that set your diesel and fertilizer bills. I pull the ag-relevant contracts from <strong>Polymarket</strong> every morning, score each one for direct impact on corn, soybean, wheat, cattle, hog, and egg operations, and explain why it matters, at no charge. Which of those are actually trading changes day to day, and the board above is today&rsquo;s pull, not a standing menu.</p>
+    <p>Most prediction-market dashboards bury grain and livestock contracts under sports and politics. This page does the opposite: it filters for agriculture first, ranks markets by how directly they touch your basis, input costs, and yield risk, and links straight to the live contract so you can check depth and volume yourself.</p>
+  </section>
+
+  <!-- PATCH: static market categories — always visible to Googlebot -->
+  <div class="ao-static-cats" id="ao-static-cats">
+    <h2 class="ao-h2reset" style="font-size:0.747rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin:0 0 .4rem"><svg class="ic-sp" aria-hidden="true"><use href="#sp-chart-column"/></svg> Market Categories the Daily Scan Covers</h2>
+    <p style="font-size:.8rem;color:var(--text-muted);line-height:1.55;margin:0 0 .3rem">This is the coverage list the scan works from, not a claim that any of these are trading right now. The count beside each one is from today&rsquo;s pull.</p>
+    <div class="ao-static-cat-grid">
+      <div class="ao-static-cat-item" data-cat="Commodities"><strong>Commodities<span class="ao-cat-chip"></span></strong>Corn, soybean, wheat, cattle, hog, egg, and food price markets that directly affect farm revenue and input demand.</div>
+      <div class="ao-static-cat-item" data-cat="Trade & Policy"><strong>Trade &amp; Policy<span class="ao-cat-chip"></span></strong>Tariff probability on US grain exports to China, USMCA trade disputes, and retaliatory trade measures that move basis.</div>
+      <div class="ao-static-cat-item" data-cat="Energy & Inputs"><strong>Energy &amp; Inputs<span class="ao-cat-chip"></span></strong>Crude oil and natural gas price ranges that drive diesel and nitrogen fertilizer costs, the two largest variable input costs.</div>
+      <div class="ao-static-cat-item" data-cat="Weather & Climate"><strong>Weather &amp; Climate<span class="ao-cat-chip"></span></strong>Drought declaration probability, hurricane landfall odds, and El Ni&#241;o/La Ni&#241;a seasonal outlooks affecting yield risk.</div>
+      <div class="ao-static-cat-item" data-cat="Economy & Markets"><strong>Economy &amp; Markets<span class="ao-cat-chip"></span></strong>Fed rate decisions, inflation trajectory, and dollar strength, all affecting grain export demand and farm lending costs.</div>
+      <div class="ao-static-cat-item" data-cat="Infrastructure"><strong>Infrastructure<span class="ao-cat-chip"></span></strong>Rail strike probability, Mississippi River disruptions, and supply chain events that spike basis and delay grain movement.</div>
     </div>
   </div>
 
@@ -493,6 +503,9 @@ function pc(n){return n>=70?'var(--green)':n>=50?'var(--gold)':n>=30?'var(--text
 function barBg(n){var rgb=n>=70?'34,197,94':n>=50?'230,176,66':n>=30?'140,140,130':'239,68,68';return'linear-gradient(90deg,rgba('+rgb+',.9),rgba('+rgb+',.3))';}
 function fmtVol(v){if(!v||v<1000)return'';if(v>=1e6)return'$'+(v/1e6).toFixed(1)+'M vol';return'$'+(v/1e3).toFixed(0)+'K vol';}
 /* fmtAge answers "how old"; agePhrase answers "pulled when". */
+/* "Oct 7, 2026, 16:40 UTC": the same wording prerender_wpi_scorecard.py bakes */
+function readAt(iso){try{var d=new Date(iso);if(isNaN(d))return'';var M=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  return M[d.getUTCMonth()]+' '+d.getUTCDate()+', '+d.getUTCFullYear()+', '+('0'+d.getUTCHours()).slice(-2)+':'+('0'+d.getUTCMinutes()).slice(-2)+' UTC';}catch(e){return'';}}
 function agePhrase(iso){var a=fmtAge(iso);return a==='just updated'?'just now':a;}
 function fmtAge(iso){if(!iso)return'';try{var h=(Date.now()-new Date(iso).getTime())/3600000;if(h<1)return'just updated';if(h<24)return Math.round(h)+'h ago';return Math.round(h/24)+'d ago';}catch(e){return'';}}
 function tLeft(iso){if(!iso)return'';try{var d=(new Date(iso).getTime()-Date.now())/86400000;if(d<0)return'Closed';if(d<1)return'Closes today';if(d<2)return'Closes tomorrow';if(d<=30)return'Closes in '+Math.round(d)+'d';return'~'+Math.round(d/30)+'mo';}catch(e){return'';}}
@@ -837,11 +850,14 @@ function applyFeedProfile(fetched){
   if(badge)badge.textContent=p.n?p.events+' event'+(p.events===1?'':'s'):'';
 
   /* H1 names the subjects actually on the board */
-  var h1=document.getElementById('ao-h1');
-  if(h1&&p.n){
+  /* the H1 stays "Ag prediction markets"; the subjects go on the line under it */
+  var h1s=document.getElementById('ao-h1-sub');
+  if(h1s&&p.n){
     var subj=p.catList.slice(0,3).map(function(c){return CAT_SUBJECT[c]||c;});
-    h1.textContent='Ag Prediction Markets: Today: '+subj.join(', ');
+    h1s.textContent='Today: '+subj.join(', ');
   }
+  var ra=document.getElementById('ao-read-at');
+  if(ra&&fetched){var rt=readAt(fetched);if(rt)ra.textContent=rt+(age?' ('+age+')':'');}
 
   /* hero sub: the counts, then the honest caveat */
   var sub=document.getElementById('ao-hero-sub');
