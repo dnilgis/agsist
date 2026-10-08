@@ -67,7 +67,9 @@ body{overflow-x:hidden;overflow-x:clip;width:100%;}
 .arc-search-clear.vis{display:block;}
 .arc-filter-wrap{display:flex;gap:.4rem;flex-wrap:wrap;}
 .arc-filter-btn{padding:.4rem .75rem;background:var(--surface);border:1px solid var(--border);border-radius:20px;font-family:'JetBrains Mono',monospace;font-size:0.77rem;font-weight:700;color:var(--text-muted);cursor:pointer;transition:all .15s;white-space:nowrap;}
-.arc-filter-btn:hover,.arc-filter-btn.active{background:rgba(74,171,76,.1);border-color:var(--green);color:var(--green);}
+.arc-filter-btn:hover,.arc-filter-btn.active{background:rgba(74,171,76,.05);border-color:var(--green);color:var(--green);}
+/* light: green text on a green tint fell under 4.5:1; the green border marks the active month */
+[data-theme="light"] .arc-filter-btn:hover,[data-theme="light"] .arc-filter-btn.active{background:var(--surface);}
 
 /* Stats bar */
 .arc-stats{font-family:'JetBrains Mono',monospace;font-size:0.77rem;color:var(--text-muted);margin-bottom:1.25rem;display:flex;align-items:center;gap:1rem;flex-wrap:wrap;}
@@ -77,14 +79,16 @@ body{overflow-x:hidden;overflow-x:clip;width:100%;}
 /* Month groups */
 .arc-month-group{margin-bottom:2rem;}
 .arc-month-label{font-family:'JetBrains Mono',monospace;font-size:0.77rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.75rem;padding-bottom:.35rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
-.arc-month-count{font-size:0.755rem;opacity:.7;}
+.arc-month-count{font-size:0.755rem;font-weight:600;letter-spacing:.06em;}
 .arc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:.65rem;}
 
 /* Cards */
 .arc-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.85rem 1rem;text-decoration:none;display:block;transition:border-color .15s,background .15s;}
 .arc-card:hover{border-color:var(--gold);background:rgba(var(--gold-rgb),.02);}
-.arc-card.wkend{opacity:.75;}
-.arc-card-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:.4rem;gap:.5rem;}
+/* Weekend cards read at full contrast; the muted Weekend badge is the only marker. */
+/* Head order is fixed: date, call dot, then the badge pushed to the right. */
+.arc-card-head{display:flex;align-items:center;margin-bottom:.4rem;gap:.5rem;}
+.arc-card-head .arc-card-badge{margin-left:auto;}
 .arc-card-date{font-family:'JetBrains Mono',monospace;font-size:0.763rem;font-weight:700;color:var(--text-muted);}
 .arc-card-badge{font-family:'JetBrains Mono',monospace;font-size:0.745rem;font-weight:700;padding:.08rem .35rem;border-radius:3px;text-transform:uppercase;letter-spacing:.04em;flex-shrink:0;}
 .arc-card-badge.wkday{background:rgba(74,171,76,.1);color:var(--green);border:1px solid rgba(74,171,76,.2);}
@@ -117,7 +121,10 @@ body{overflow-x:hidden;overflow-x:clip;width:100%;}
 @media(max-width:500px){
   .arc-hero{flex-direction:column;align-items:flex-start;}
   .arc-grid{grid-template-columns:1fr;}
-  .arc-filter-wrap{display:none;}/* hide month pills on mobile to save space */
+  /* Month pills stay on phones as one row that scrolls sideways. */
+  .arc-filter-wrap{flex:1 1 100%;min-width:0;max-width:100%;flex-wrap:nowrap;overflow-x:auto;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-bottom:.1rem;}
+  .arc-filter-wrap::-webkit-scrollbar{display:none;}
+  .arc-filter-btn{flex-shrink:0;min-height:40px;}
 }
 </style>
 </head>
@@ -505,9 +512,9 @@ function render(){
         '<a href="/daily'+(e.date?'/'+e.date.split('T')[0]:'')+'" class="arc-card'+(e.isWkend?' wkend':'')+'" title="Read the '+escHtml(e.shortLabel)+' briefing">'+
           '<div class="arc-card-head">'+
             '<span class="arc-card-date">'+escHtml(e.shortLabel)+'</span>'+
-            '<span class="arc-card-badge '+(e.isWkend?'wkend':'wkday')+'">'+(e.isWkend?'Weekend':'Market Day')+'</span>'+
             (e.yc==='played_out'?'<span class="arc-yc" title="That day\'s call played out" style="width:8px;height:8px;border-radius:50%;background:#5fc28a;flex-shrink:0"></span>':
              e.yc==='didnt'?'<span class="arc-yc" title="That day\'s call didn\'t play out" style="width:8px;height:8px;border-radius:50%;background:#e0685f;flex-shrink:0"></span>':'')+
+            '<span class="arc-card-badge '+(e.isWkend?'wkend':'wkday')+'">'+(e.isWkend?'Weekend':'Market Day')+'</span>'+
           '</div>'+
           '<div class="arc-card-hl'+(hasHL?'':' placeholder')+'">'+escHtml(hasHL?e.headline:'No briefing this day')+'</div>'+
           (e.lead?'<div class="arc-card-lead">'+escHtml(e.lead.slice(0,120)+(e.lead.length>120?'…':''))+'</div>':'')+

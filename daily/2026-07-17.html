@@ -97,13 +97,13 @@ button,a,[role="button"]{touch-action:manipulation;}
 html,body{overflow-x:hidden;overflow-x:clip;width:100%;}
 .dv3-page{max-width:900px;margin:0 auto;padding:2rem 1.25rem}
 .dv3-header{margin-bottom:2rem;padding-bottom:1.5rem;border-bottom:2px solid var(--border)}
-.dv3-eyebrow{display:inline-flex;align-items:center;gap:.5rem;font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--green);margin-bottom:.75rem;padding:.3rem .75rem;background:rgba(74,171,76,.06);border:1px solid rgba(74,171,76,.18);border-radius:3px}
+.dv3-eyebrow{display:inline-flex;align-items:center;gap:.5rem;font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--green);margin-bottom:.75rem;padding:.3rem .75rem;background:rgba(74,171,76,.03);border:1px solid rgba(74,171,76,.18);border-radius:3px}
 .dv3-eyebrow-dot{width:7px;height:7px;border-radius:50%;background:var(--text-muted)}
 .dv3-date{font-family:'JetBrains Mono',monospace;font-size:.78rem;color:var(--text-muted);letter-spacing:.08em;margin-bottom:.6rem;text-transform:uppercase}
 .dv3-spattr{display:inline-flex;align-items:center;gap:.35rem;font-family:'JetBrains Mono',monospace;font-size:.7rem;font-weight:600;letter-spacing:.04em;color:var(--ad-orange);text-decoration:none;padding:.3rem .65rem;border:1px solid rgba(var(--ad-orange-rgb),.34);border-radius:4px;background:rgba(var(--ad-orange-rgb),.06);margin-bottom:.85rem;transition:border-color .15s,background .15s,color .15s}
 .dv3-spattr:hover{border-color:var(--ad-orange);background:rgba(var(--ad-orange-rgb),.12);color:var(--ad-orange)}
-.dv3-spattr--house{opacity:.75;color:var(--text-muted);border-color:var(--border)}
-.dv3-spattr--house:hover{opacity:1;color:var(--ad-orange);border-color:rgba(var(--ad-orange-rgb),.4)}
+.dv3-spattr--house{color:var(--text-muted);border-color:var(--border)}
+.dv3-spattr--house:hover{color:var(--ad-orange);border-color:rgba(var(--ad-orange-rgb),.4)}
 .dv3-spattr strong{color:var(--text);font-weight:700}
 .dv3-headline{font-family:'Oswald',sans-serif;font-size:clamp(2rem,4vw,3rem);font-weight:700;line-height:1.15;color:var(--text);margin-bottom:.6rem;letter-spacing:-.01em;text-transform:uppercase}
 .dv3-subheadline{font-size:.92rem;color:var(--gold);font-weight:600;margin-bottom:.75rem}
@@ -121,7 +121,7 @@ html,body{overflow-x:hidden;overflow-x:clip;width:100%;}
 .dv3-quote-win{font-family:'JetBrains Mono',monospace;font-size:.72rem;letter-spacing:.04em;color:var(--text-muted);white-space:nowrap}
 .dv3-quote-price{font-family:'JetBrains Mono',monospace;font-size:1.15rem;font-weight:700;color:var(--text);line-height:1;letter-spacing:-.01em}
 .dv3-quote-chg{display:flex;align-items:baseline;gap:.45rem;font-family:'JetBrains Mono',monospace;font-size:.765rem;font-weight:700}
-.dv3-quote-chg .cents{font-weight:600;opacity:.85}
+.dv3-quote-chg .cents{font-weight:600}
 .dv3-quote .pos{color:var(--green,#5fc28a)}.dv3-quote .neg{color:var(--red,#e0685f)}.dv3-quote .flat{color:var(--text-muted)}
 .dv3-quote-asof{font-family:'JetBrains Mono',monospace;font-size:.68rem;letter-spacing:.03em;color:var(--text-muted);margin:0 0 1.1rem}
 .dv3-topbar{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:1.25rem;margin-bottom:2rem}
@@ -141,7 +141,7 @@ html,body{overflow-x:hidden;overflow-x:clip;width:100%;}
 .dv3-sec--surprise::before{content:'! OVERNIGHT SURPRISE';position:absolute;top:-.55rem;right:.75rem;font-family:'JetBrains Mono',monospace;font-size:.5rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#fff;background:var(--gold-fill,var(--gold));padding:.12rem .55rem;border-radius:2px}
 .dv3-sec--heat{border-color:rgba(74,171,76,.35)!important}
 .dv3-sec--heat::after{content:'TOP STORY';position:absolute;top:-.55rem;left:.75rem;font-family:'JetBrains Mono',monospace;font-size:.5rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#fff;background:var(--green);padding:.12rem .55rem;border-radius:2px}
-.dv3-sec-header{display:flex;align-items:center;gap:.55rem;margin-bottom:.65rem}
+.dv3-sec-header{display:flex;align-items:center;flex-wrap:wrap;gap:.35rem .55rem;margin-bottom:.65rem}
 .dv3-sec-icon{font-size:1.3rem;flex-shrink:0}
 .dv3-sec-title{font-family:'JetBrains Mono',monospace;font-size:.72rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--green);flex:1}
 .dv3-sec-conviction{font-family:'JetBrains Mono',monospace;font-size:.55rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:.15rem .45rem;border-radius:3px;white-space:nowrap}
@@ -200,18 +200,14 @@ html,body{overflow-x:hidden;overflow-x:clip;width:100%;}
 .dv3-watch-desc strong{color:var(--text)}
 .dv3-share{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;margin:1.5rem 0 1rem;padding:.85rem 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
 .dv3-share-label{font-family:'JetBrains Mono',monospace;font-size:.64rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted);margin-right:.35rem}
-.dv3-share-btn{display:inline-flex;align-items:center;gap:.35rem;font-family:'JetBrains Mono',monospace;font-size:.74rem;font-weight:700;padding:.45rem .85rem;background:var(--surface2);border:1px solid var(--border);border-radius:6px;color:var(--text-dim);cursor:pointer;transition:border-color .15s,color .15s;min-height:38px;touch-action:manipulation}
+.dv3-share-btn{display:inline-flex;align-items:center;gap:.35rem;font-family:'JetBrains Mono',monospace;font-size:.74rem;font-weight:700;padding:.45rem .85rem;background:var(--surface2);border:1px solid var(--border);border-radius:6px;color:var(--text-dim);cursor:pointer;transition:border-color .15s,color .15s;min-height:40px;touch-action:manipulation}
 .dv3-share-btn:hover{border-color:var(--gold);color:var(--text)}
 .dv3-share-btn svg{flex-shrink:0}
 .dv3-archnav{display:flex;justify-content:space-between;align-items:center;gap:.75rem;flex-wrap:wrap;margin:.4rem 0 1.2rem}
-.dv3-archnav-a{font-family:'JetBrains Mono',monospace;font-size:.72rem;font-weight:700;color:var(--text-dim);padding:.45rem .7rem;border:1px solid var(--border);border-radius:6px;min-height:38px;display:inline-flex;align-items:center}
+.dv3-archnav-a{font-family:'JetBrains Mono',monospace;font-size:.72rem;font-weight:700;color:var(--text-dim);padding:.45rem .7rem;border:1px solid var(--border);border-radius:6px;min-height:40px;display:inline-flex;align-items:center}
 .dv3-archnav-a:hover{border-color:var(--gold);color:var(--text)}
 .dv3-archnav-all{color:var(--text-muted)}
 .dv3-source{font-size:.68rem;color:var(--text-muted);text-align:center;padding:.75rem 0;border-top:1px solid var(--border);margin-bottom:2rem}
-.dv3-nav{display:flex;justify-content:space-between;align-items:center;padding:1rem 0;border-top:2px solid var(--border);border-bottom:2px solid var(--border);margin-bottom:2rem}
-.dv3-nav a{display:inline-flex;align-items:center;gap:.35rem;font-size:.85rem;font-weight:600;color:var(--green);transition:opacity .15s}
-.dv3-nav a:hover{opacity:.8}
-.dv3-nav-center{font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.1em}
 
 /* WEEKLY THREAD chapter marker, sits above the lead */
 .dv3-thread{display:flex;align-items:center;gap:.65rem;padding:.45rem .85rem;background:rgba(74,143,186,.06);border:1px solid rgba(74,143,186,.20);border-radius:6px;margin-bottom:1rem;flex-wrap:wrap}
@@ -233,12 +229,24 @@ html,body{overflow-x:hidden;overflow-x:clip;width:100%;}
 .dv3-forward-sub{font-size:.82rem;color:var(--text-dim);line-height:1.5}
 .dv3-forward-cta{display:inline-flex;align-items:center;gap:.35rem;font-family:'JetBrains Mono',monospace;font-size:.74rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;text-decoration:none;color:#fff;background:var(--green);padding:.55rem .95rem;border-radius:6px;transition:background .15s;min-height:42px;white-space:nowrap}
 .dv3-forward-cta:hover{background:#1b4d1c}
+:root:not([data-theme="light"]) .dv3-forward-cta{color:#06110b}
+:root:not([data-theme="light"]) .dv3-forward-cta:hover{background:#4aab4c;color:#06110b}
+:root:not([data-theme="light"]) .dv3-sec--heat::after{color:#06110b}
+.dv3-header-row{display:flex;align-items:center;flex-wrap:wrap;gap:.5rem .75rem;margin-bottom:.85rem}
+.dv3-header-row .dv3-eyebrow,.dv3-header-row .dv3-date{margin:0}
+.dv3-header-row .dv3-mood,.dv3-header-row>span{margin-left:0!important}
+.dv3-takeaway+.dv3-lead{margin-top:1.1rem}
+.dv3-after{display:flex;flex-direction:column;align-items:center;gap:.9rem;padding:1.25rem 0 1.75rem}
+.dv3-after .dv3-spattr{margin:0}
+.dv3-todaylink{display:inline-flex;align-items:center;min-height:44px;padding:0 1.1rem;font-family:'JetBrains Mono',monospace;font-size:.78rem;font-weight:700;letter-spacing:.04em;color:var(--gold);border:1px solid var(--border);border-radius:6px}
+.dv3-todaylink:hover{border-color:var(--gold);color:var(--text)}
 .dv3-byline{font-size:.86rem;color:var(--text-dim);line-height:1.65;padding:.85rem 0;border-top:1px solid var(--border);margin-top:.5rem}
 .dv3-byline strong{color:var(--text);font-weight:700}
-.dv3-byline a{color:var(--gold);text-decoration:none}
+.dv3-byline a{color:var(--gold);text-decoration:none;display:inline-block;padding:.75rem 0;margin:-.75rem 0}
 .dv3-byline a:hover{text-decoration:underline}
 @media(max-width:640px){.dv3-page{padding:1.25rem .9rem}.dv3-topbar{grid-template-columns:minmax(0,1fr)}.dv3-one-number-val{font-size:2.4rem}.dv3-sec{padding:.85rem 1rem}.dv3-forward{flex-direction:column;align-items:flex-start;gap:.7rem}.dv3-forward-cta{width:100%;justify-content:center}}
 @media(max-width:380px){.dv3-headline{font-size:1.6rem}.dv3-one-number-val{font-size:2rem}.dv3-sec-action{display:none}}
+@media(max-width:500px){.dv3-watch-item{flex-direction:column;gap:.15rem}.dv3-watch-time{min-width:0;white-space:normal}.dv3-sec-title{min-width:70%}.dv3-sec--heat.dv3-sec--surprise{padding-top:2.35rem}.dv3-sec--heat.dv3-sec--surprise::before{top:.9rem;left:.75rem;right:auto}}
 </style>
 </head>
 <body>
@@ -249,13 +257,13 @@ html,body{overflow-x:hidden;overflow-x:clip;width:100%;}
   <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a> / <a href="/daily">Daily Briefing</a> / <strong>Friday, July 17, 2026</strong></nav>
   <article>
     <header class="dv3-header">
-      <div style="display:flex;align-items:center;flex-wrap:wrap;gap:.5rem">
+      <div class="dv3-header-row">
         <div class="dv3-eyebrow"><span class="dv3-eyebrow-dot"></span> AGSIST DAILY &middot; ISSUE #128 &mdash; ARCHIVE</div>
+        <div class="dv3-date">Friday, July 17, 2026</div>
         <span class="dv3-mood" style="display:inline-flex;color:var(--gold);background:rgba(218,165,32,.08);border:1px solid rgba(218,165,32,.22)">↔ Mixed</span>
         
       </div>
-      <div class="dv3-date">Friday, July 17, 2026</div>
-      <a class="dv3-spattr dv3-spattr--house" href="mailto:sig@farmers1st.com?subject=AGSIST%20Daily%20founding%20sponsor%20inquiry" aria-label="Sponsor information">&#x25CF; Sponsor this slot &rarr;</a>
+      
       <h1 class="dv3-headline">GRAINS WIN THE WEEK; CATTLE TAKE A HIT</h1>
       <p class='dv3-subheadline'>Corn, wheat, and beans all close higher Friday as weather and fresh China sales push grains to weekly gains, while a sharp cash-market decline drags cattle to session lows.</p>
       <div class="dv3-thread dv3-thread--anchor"><span class="dv3-thread-day">FRIDAY RESOLUTION</span><span class="dv3-thread-q">Will USDA Crop Progress confirm the good-crop thesis that nearby corn is already pricing, or does a condition decline put the weather premium back on the board?</span></div>
@@ -278,14 +286,9 @@ html,body{overflow-x:hidden;overflow-x:clip;width:100%;}
     <nav class="dv3-archnav" aria-label="Briefing archive"><a class="dv3-archnav-a" href="/daily/2026-07-16" rel="prev">&larr; Jul 16 briefing</a><a class="dv3-archnav-a dv3-archnav-all" href="/archive">All briefings</a><a class="dv3-archnav-a" href="/daily/2026-07-18" rel="next">Jul 18 briefing &rarr;</a></nav>
     <div class="dv3-source">USDA NASS, CME Group, Brownfield Ag News, Feedstuffs, OilPrice.com, EIA Weekly Petroleum Status Report, Baker Hughes Rig Count, Beef Magazine, The Fence Post &middot; Compiled 3:52 PM CT Fri</div>
   </article>
-  <nav class="dv3-nav" aria-label="Briefing navigation" id="dv3-archive-nav">
-    <span></span>
-    <span class="dv3-nav-center"><a href="/daily">&larr; Latest Briefing</a></span>
-    <span></span>
-  </nav>
-  <div style="text-align:center;padding:1.5rem 0">
-    <a href="/daily" class="btn-gold">Today's Briefing &rarr;</a>
-    <div style="margin-top:.75rem"><a href="/daily#archive" style="font-size:.82rem;color:var(--text-muted)">Browse All Briefings &rarr;</a></div>
+  <div class="dv3-after">
+    <a class="dv3-todaylink" href="/daily">Today's briefing &rarr;</a>
+    <a class="dv3-spattr dv3-spattr--house" href="mailto:sig@farmers1st.com?subject=AGSIST%20Daily%20founding%20sponsor%20inquiry" aria-label="Sponsor information">&#x25CF; Sponsor this slot &rarr;</a>
   </div>
 </div>
 </main>
@@ -293,21 +296,6 @@ html,body{overflow-x:hidden;overflow-x:clip;width:100%;}
 <script src="/components/loader.js" defer></script>
 <script>
 (function(){
-  fetch('/data/daily-archive/index.json',{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).then(function(idx){
-    if(!idx||!idx.briefings)return;
-    var current='2026-07-17';
-    var entries=idx.briefings;
-    var curIdx=-1;
-    for(var i=0;i<entries.length;i++){if(entries[i].date===current){curIdx=i;break;}}
-    if(curIdx<0)return;
-    var nav=document.getElementById('dv3-archive-nav');
-    if(!nav)return;
-    var prev=curIdx<entries.length-1?entries[curIdx+1]:null;
-    var next=curIdx>0?entries[curIdx-1]:null;
-    var spans=nav.querySelectorAll('span');
-    if(prev&&spans[0])spans[0].innerHTML='<a href="/daily/'+prev.date+'">← '+prev.date+'</a>';
-    if(next&&spans[2])spans[2].innerHTML='<a href="/daily/'+next.date+'">'+next.date+' →</a>';
-  }).catch(function(){});
   var permalink='https://agsist.com/daily/2026-07-17';
   var headline='GRAINS WIN THE WEEK; CATTLE TAKE A HIT';
   var dateDisplay='Friday, July 17, 2026';

@@ -158,7 +158,7 @@ body{overflow-x:hidden;overflow-x:clip;width:100%;}
   color:var(--text);line-height:1;letter-spacing:-.01em;}
 .dv3-quote-chg{display:flex;align-items:baseline;gap:.45rem;font-family:'JetBrains Mono',monospace;
   font-size:0.765rem;font-weight:700;}
-.dv3-quote-chg .cents{font-weight:600;opacity:.85;}
+.dv3-quote-chg .cents{font-weight:600;}
 .dv3-quote .pos{color:var(--green,#5fc28a);}
 .dv3-quote .neg{color:var(--red,#e0685f);}
 .dv3-quote .flat{color:var(--text-muted);}
@@ -174,7 +174,7 @@ body{overflow-x:hidden;overflow-x:clip;width:100%;}
 .dv3-sec-sowhat{margin-top:.55rem;font-size:.88rem;line-height:1.6;color:var(--text-dim);}
 .dv3-sec{background:var(--surface2);border:2px solid var(--border);border-radius:8px;padding:1rem 1.15rem;position:relative;transition:border-color .15s;}
 .dv3-sec:hover{border-color:var(--border-g,var(--gold));}
-.dv3-sec-header{display:flex;align-items:center;gap:.5rem;margin-bottom:.55rem;}
+.dv3-sec-header{display:flex;align-items:center;flex-wrap:wrap;gap:.35rem .5rem;margin-bottom:.55rem;}
 .dv3-sec-icon{font-size:1.15rem;flex-shrink:0;}
 .dv3-sec-title{font-family:'JetBrains Mono',monospace;font-size:0.775rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--green);flex:1;}
 .dv3-sec-cnv{font-family:'JetBrains Mono',monospace;font-size:0.745rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:.15rem .45rem;border-radius:3px;white-space:nowrap;}
@@ -255,15 +255,15 @@ body{overflow-x:hidden;overflow-x:clip;width:100%;}
 /* Share row */
 .dv3-share{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;margin:1.25rem 0 .75rem;padding:.75rem 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);}
 .dv3-share-label{font-family:'JetBrains Mono',monospace;font-size:0.755rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted);margin-right:.25rem;}
-.dv3-share-btn{display:inline-flex;align-items:center;gap:.35rem;font-family:'JetBrains Mono',monospace;font-size:0.78rem;font-weight:700;padding:.4rem .75rem;background:var(--surface2);border:1px solid var(--border);border-radius:6px;color:var(--text-dim);cursor:pointer;transition:border-color .15s,color .15s;min-height:36px;touch-action:manipulation;}
+.dv3-share-btn{display:inline-flex;align-items:center;gap:.35rem;font-family:'JetBrains Mono',monospace;font-size:0.78rem;font-weight:700;padding:.4rem .75rem;background:var(--surface2);border:1px solid var(--border);border-radius:6px;color:var(--text-dim);cursor:pointer;transition:border-color .15s,color .15s;min-height:40px;touch-action:manipulation;}
 .dv3-share-btn:hover{border-color:var(--gold);color:var(--text);}
 .dv3-share-btn svg{flex-shrink:0;}
 
 /* SPONSOR ATTRIBUTION — inline pill above headline */
 .dv3-spattr{display:inline-flex;align-items:center;gap:.35rem;font-family:'JetBrains Mono',monospace;font-size:0.77rem;font-weight:600;letter-spacing:.04em;color:var(--ad-orange);text-decoration:none;padding:.28rem .6rem;border:1px solid rgba(var(--ad-orange-rgb),.25);border-radius:4px;background:rgba(var(--ad-orange-rgb),.04);margin:.4rem 0 .9rem;transition:border-color .15s,background .15s,color .15s;max-width:fit-content;}
 .dv3-spattr:hover{border-color:var(--ad-orange);background:rgba(var(--ad-orange-rgb),.10);color:var(--ad-orange);}
-.dv3-spattr--house{opacity:.75;color:var(--text-muted);border-color:var(--border);}
-.dv3-spattr--house:hover{opacity:1;color:var(--ad-orange);border-color:rgba(var(--ad-orange-rgb),.4);}
+.dv3-spattr--house{color:var(--text-muted);border-color:var(--border);}
+.dv3-spattr--house:hover{color:var(--ad-orange);border-color:rgba(var(--ad-orange-rgb),.4);}
 .dv3-spattr strong{color:var(--text);font-weight:700;}
 .dv3-spattr-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--ad-orange);flex-shrink:0;}
 
@@ -304,11 +304,18 @@ body{overflow-x:hidden;overflow-x:clip;width:100%;}
 .dv3-forward-sub{font-size:0.795rem;color:var(--text-dim);line-height:1.5;}
 .dv3-forward-cta{display:inline-flex;align-items:center;gap:.3rem;font-family:'JetBrains Mono',monospace;font-size:0.78rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;text-decoration:none;color:#fff;background:var(--green);padding:.5rem .9rem;border-radius:6px;transition:background .15s;min-height:40px;white-space:nowrap;}
 .dv3-forward-cta:hover{background:#1b4d1c;}
+/* Dark mode: --green is #5fc28a there, and white on it is 2.19:1. Dark text
+   on the light green reads at about 9:1 (same fix as .dv3-subscribe-btn). */
+:root:not([data-theme="light"]) .dv3-forward-cta{color:#06110b;}
+:root:not([data-theme="light"]) .dv3-forward-cta:hover{background:#4aab4c;color:#06110b;}
+:root:not([data-theme="light"]) .dv3-sec--heat::after{color:#06110b;}
 
 /* BYLINE — sits just above forward. */
 .dv3-byline{font-size:.82rem;color:var(--text-dim);line-height:1.65;padding:.75rem 0;border-top:1px solid var(--border);margin-top:.5rem;}
 .dv3-byline strong{color:var(--text);font-weight:700;}
-.dv3-byline a{color:var(--gold);text-decoration:none;}
+/* 40px+ tap target with no change to the line: padding grows the hit area, the
+   matching negative margin keeps the line box where it was. */
+.dv3-byline a{color:var(--gold);text-decoration:none;display:inline-block;padding:.75rem 0;margin:-.75rem 0;}
 .dv3-byline a:hover{text-decoration:underline;}
 
 @media(max-width:640px){
@@ -321,7 +328,7 @@ body{overflow-x:hidden;overflow-x:clip;width:100%;}
 /* Source + permalink footer */
 .dv3-source{font-size:0.775rem;color:var(--text-muted);text-align:center;padding:.75rem 0 .25rem;}
 .dv3-perm{text-align:center;padding-bottom:.25rem;}
-.dv3-perm a{font-family:'JetBrains Mono',monospace;font-size:0.77rem;font-weight:600;color:var(--gold);letter-spacing:.08em;text-transform:uppercase;}
+.dv3-perm a{font-family:'JetBrains Mono',monospace;font-size:0.77rem;font-weight:600;color:var(--gold);letter-spacing:.08em;text-transform:uppercase;display:inline-block;padding:.75rem .25rem;margin:-.75rem 0;}
 
 /* Loading */
 .dv3-loading{text-align:center;padding:2.5rem 1rem;color:var(--text-muted);}
@@ -337,9 +344,13 @@ body{overflow-x:hidden;overflow-x:clip;width:100%;}
 .dv3-arc-card-date{font-family:'JetBrains Mono',monospace;font-size:0.76rem;color:var(--text-muted);}
 .dv3-arc-yc-dot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:.4rem;vertical-align:middle;flex-shrink:0;box-shadow:0 0 0 1px rgba(0,0,0,.4);}
 .dv3-arc-card-badge{font-family:'JetBrains Mono',monospace;font-size:0.755rem;font-weight:700;padding:.1rem .4rem;border-radius:4px;text-transform:uppercase;letter-spacing:.04em;}
-.dv3-arc-card-badge.wkday{background:rgba(58,139,60,.12);color:var(--green);border:1px solid rgba(58,139,60,.25);}
+.dv3-arc-card-badge.wkday{background:rgba(58,139,60,.06);color:var(--green);border:1px solid rgba(58,139,60,.25);}
 .dv3-arc-card-badge.wkend{background:var(--surface2);color:var(--text-muted);border:1px solid var(--border);}
 .dv3-arc-card-hl{font-size:.82rem;font-weight:600;color:var(--text);line-height:1.4;}
+.dv3-arc-viewall{font-size:0.77rem;color:var(--gold);font-weight:600;text-decoration:none;white-space:nowrap;display:inline-flex;align-items:center;min-height:40px;padding:0 .25rem;margin:-.6rem -.25rem;}
+.dv3-arc-more{margin:-1.25rem 0 2rem;}
+.dv3-arc-more a{display:inline-flex;align-items:center;min-height:44px;padding:0 1rem;border:1px solid var(--border);border-radius:6px;font-family:'JetBrains Mono',monospace;font-size:0.77rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--gold);text-decoration:none;}
+.dv3-arc-more a:hover{border-color:var(--gold);}
 
 /* Modal */
 .dv3-modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:1000;align-items:center;justify-content:center;}
@@ -372,7 +383,16 @@ body{overflow-x:hidden;overflow-x:clip;width:100%;}
 @media(max-width:500px){
   .dv3-hero{flex-direction:column;align-items:flex-start;}
   .dv3-arc-grid{grid-template-columns:1fr;}
-  .dv3-watch-time{min-width:88px;}
+  /* Watch list: time above the description, so the description gets the full width. */
+  .dv3-watch-item{flex-direction:column;gap:.15rem;}
+  .dv3-watch-time{min-width:0;white-space:normal;}
+  /* Section header: the conviction pill drops to its own line instead of
+     squeezing the title to one word per line. */
+  .dv3-sec-title{min-width:70%;}
+  /* TOP STORY and OVERNIGHT SURPRISE both sit on the top edge and collide at
+     this width: keep TOP STORY on the edge, stack SURPRISE just under it. */
+  .dv3-sec--heat.dv3-sec--surprise{padding-top:2.75rem;}
+  .dv3-sec--heat.dv3-sec--surprise::before{top:1.1rem;left:.75rem;right:auto;}
 }
 @media(max-width:380px){
   .dv3-today-headline{font-size:1.15rem;}
@@ -464,7 +484,7 @@ body{overflow-x:hidden;overflow-x:clip;width:100%;}
 
   <div class="dv3-arc-label" style="display:flex;align-items:center;justify-content:space-between;">
     <span>Recent briefings &middot; archive</span>
-    <a href="/archive" style="font-size:0.77rem;color:var(--gold);font-weight:600;text-decoration:none;white-space:nowrap;">View all &#x2192;</a>
+    <a href="/archive" class="dv3-arc-viewall">View all &#x2192;</a>
   </div>
   <div class="dv3-arc-grid" id="dv3-arc-grid">
 <!--SEED:dailyrecent-->
@@ -475,15 +495,9 @@ body{overflow-x:hidden;overflow-x:clip;width:100%;}
 <a href="/daily/2026-10-03" class="dv3-arc-card" title="Sat Oct 3 briefing"><div class="dv3-arc-card-head"><span class="dv3-arc-card-date">Sat Oct 3</span><span class="dv3-arc-card-badge wkend">Weekend</span></div><div class="dv3-arc-card-hl">Crude splits from diesel as harvest stalls in the rain</div></a>
 <a href="/daily/2026-10-02" class="dv3-arc-card" title="Fri Oct 2 briefing"><div class="dv3-arc-card-head"><span class="dv3-arc-card-date">Fri Oct 2</span><span class="dv3-arc-card-badge wkday">Market day</span></div><div class="dv3-arc-card-hl">Crude drops 3.5% as grains grind higher on no news</div></a>
 <a href="/daily/2026-10-01" class="dv3-arc-card" title="Thu Oct 1 briefing"><div class="dv3-arc-card-head"><span class="dv3-arc-card-date">Thu Oct 1</span><span class="dv3-arc-card-badge wkday">Market day</span></div><div class="dv3-arc-card-hl">Corn runs 1.1% ahead of stocks, crude up on Gulf flows</div></a>
-<a href="/daily/2026-09-30" class="dv3-arc-card" title="Wed Sep 30 briefing"><div class="dv3-arc-card-head"><span class="dv3-arc-card-date">Wed Sep 30</span><span class="dv3-arc-card-badge wkday">Market day</span></div><div class="dv3-arc-card-hl">Grains tick higher ahead of stocks data at 11 CT</div></a>
-<a href="/daily/2026-09-29" class="dv3-arc-card" title="Tue Sep 29 briefing"><div class="dv3-arc-card-head"><span class="dv3-arc-card-date">Tue Sep 29</span><span class="dv3-arc-card-badge wkday">Market day</span></div><div class="dv3-arc-card-hl">Crude pulls back 2.1% as Yanbu reopens</div></a>
-<a href="/daily/2026-09-28" class="dv3-arc-card" title="Mon Sep 28 briefing"><div class="dv3-arc-card-head"><span class="dv3-arc-card-date">Mon Sep 28</span><span class="dv3-arc-card-badge wkday">Market day</span></div><div class="dv3-arc-card-hl">Crude runs to $96 as beans slip again</div></a>
-<a href="/daily/2026-09-26" class="dv3-arc-card" title="Sat Sep 26 briefing"><div class="dv3-arc-card-head"><span class="dv3-arc-card-date">Sat Sep 26</span><span class="dv3-arc-card-badge wkend">Weekend</span></div><div class="dv3-arc-card-hl">Grains climb Friday, cattle stall before COF week</div></a>
-<a href="/daily/2026-09-25" class="dv3-arc-card" title="Fri Sep 25 briefing"><div class="dv3-arc-card-head"><span class="dv3-arc-card-date">Fri Sep 25</span><span class="dv3-arc-card-badge wkday">Market day</span></div><div class="dv3-arc-card-hl">Grains sit still, cattle slip again before COF</div></a>
-<a href="/daily/2026-09-24" class="dv3-arc-card" title="Thu Sep 24 briefing"><div class="dv3-arc-card-head"><span class="dv3-arc-card-date">Thu Sep 24</span><span class="dv3-arc-card-badge wkday">Market day</span></div><div class="dv3-arc-card-hl">Crude runs to $93 as Hormuz traffic stays thin</div></a>
-<a href="/daily/2026-09-23" class="dv3-arc-card" title="Wed Sep 23 briefing"><div class="dv3-arc-card-head"><span class="dv3-arc-card-date">Wed Sep 23</span><span class="dv3-arc-card-badge wkday">Market day</span></div><div class="dv3-arc-card-hl">Grains give back the China pop ahead of Xi summit</div></a>
 <!--/SEED:dailyrecent-->
   </div>
+  <div class="dv3-arc-more"><a href="/archive">View all briefings &#x2192;</a></div>
 
   <div class="dv3-arc-label" style="margin-top:2rem"><span>FAQ</span></div>
   <div class="dv3-faq">
@@ -561,6 +575,37 @@ function fmtDate(iso){
   if(isNaN(d.getTime()))return iso;
   return d.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'});
 }
+// The permalink file daily/YYYY-MM-DD.html is named for the Central-time day
+// the generator ran (save_archive: datetime.now() under TZ=America/Chicago),
+// and generated_at is stamped in the same run. data.date is the long display
+// form ("Wednesday, October 7, 2026"), so it cannot be used as a path.
+// Candidates in order of trust; the archive index confirms which one exists.
+function briefingIsoCands(data){
+  var ISO=/^\d{4}-\d{2}-\d{2}$/,out=[];
+  function add(v){if(v&&ISO.test(v)&&out.indexOf(v)<0)out.push(v);}
+  add(dateOnly(data.date_iso||''));
+  add(dateOnly(data.date||''));
+  if(data.generated_at){
+    try{add(new Date(data.generated_at).toLocaleDateString('en-CA',{timeZone:'America/Chicago'}));}catch(e){}
+  }
+  var ld=new Date(data.date||'');
+  if(!isNaN(ld.getTime()))add(ld.getFullYear()+'-'+('0'+(ld.getMonth()+1)).slice(-2)+'-'+('0'+ld.getDate()).slice(-2));
+  if(data.generated_at)add(String(data.generated_at).slice(0,10));
+  return out;
+}
+var dv3Perm={cands:[],headline:'',index:null,set:null,check:function(){
+  if(!this.index||!this.set||!this.cands.length)return;
+  var hl=String(this.headline||'').toLowerCase(),i,j,e;
+  // Two candidates can both be real issues (a run that crossed midnight), so
+  // the one carrying this headline wins; otherwise the first that exists.
+  for(i=0;i<this.cands.length;i++)for(j=0;j<this.index.length;j++){
+    e=this.index[j];
+    if(dateOnly(e.date||'')===this.cands[i]&&hl&&String(e.headline||'').toLowerCase()===hl){this.set(this.cands[i]);return;}
+  }
+  for(i=0;i<this.cands.length;i++)for(j=0;j<this.index.length;j++){
+    if(dateOnly(this.index[j].date||'')===this.cands[i]){this.set(this.cands[i]);return;}
+  }
+}};
 function convictionClass(c){
   var v=(c||'').toUpperCase();
   if(v.indexOf('HIGH')===0)return'hi';
@@ -594,7 +639,8 @@ function renderToday(data,why){
     return;
   }
 
-  var iso=dateOnly(data.date);
+  var isoCands=briefingIsoCands(data);
+  var iso=isoCands[0]||'';
   var permalink='https://agsist.com/daily'+(iso?'/'+iso:'');
 
   // v4.4: hoist marketClosed to the top so all subsequent code reads it
@@ -977,6 +1023,16 @@ function renderToday(data,why){
   /* 2026-10-03: the sponsor follows the sections, away from The Action. */
   el.innerHTML=header+attribution+thread+ticker+surprise+takeaway+lead+sparks+topbar+yc+sections+sponsor+tmyk+watch+outsidePit+byline+cashbids+forward+share+src+perm;
 
+  // Point the permalink (and the share links) at the file that exists, once
+  // the archive index says which candidate date that is.
+  dv3Perm.cands=isoCands;
+  dv3Perm.headline=data.headline||'';
+  dv3Perm.set=function(v){
+    iso=v;permalink='https://agsist.com/daily/'+v;
+    var pa=el.querySelector('.dv3-perm a');if(pa)pa.setAttribute('href','/daily/'+v);
+  };
+  dv3Perm.check();
+
   // Wire share buttons
   var btns=el.querySelectorAll('.dv3-share-btn');
   Array.prototype.forEach.call(btns,function(btn){
@@ -1017,6 +1073,7 @@ function renderToday(data,why){
   });
 }
 
+var DV3_RECENT_N=7; // keep in step with DAILY_RECENT_N in scripts/generate_daily.py
 // ── archive ───────────────────────────────────────────────────────────
 function renderArchive(){
   var grid=document.getElementById('dv3-arc-grid');
@@ -1036,7 +1093,10 @@ function renderArchive(){
         var count=manifest.briefings.length;
         heroMeta.innerHTML='<svg class="dv3-ic" aria-hidden="true" style="color:var(--green)"><use href="#i-check"/></svg> <b>'+count+'</b> briefing'+(count===1?'':'s')+' published &middot; never missed a market day';
       }
-      var entries=manifest.briefings.slice(0,30);
+      dv3Perm.index=manifest.briefings;
+      dv3Perm.check();
+      // The page shows the latest week; the full list lives on /archive.
+      var entries=manifest.briefings.slice(0,DV3_RECENT_N);
       var html='';
       var dayN=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
       var monN=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
