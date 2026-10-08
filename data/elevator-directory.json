@@ -1,18 +1,18 @@
 {
- "generated": "2026-10-08T22:08:14Z",
+ "generated": "2026-10-08T22:24:50Z",
  "from": "barchart-raw.json",
  "complete": false,
  "note": "Directory only: who operates a facility and where. No prices, no basis, no symbols, no delivery windows.",
  "counts": {
-  "facilities": 2277,
+  "facilities": 2278,
   "states": 38,
   "with_address": 722,
   "with_coords": 725,
   "with_url": 703,
-  "with_phone": 2210,
+  "with_phone": 2211,
   "saturated_zips": 0,
   "failed_zips": 0,
-  "rows_read": 17604
+  "rows_read": 17616
  },
  "saturated": [],
  "failed": [],
@@ -8020,6 +8020,15 @@
    "facility_type": "Country Elevator",
    "locationId": 79839,
    "elevatorId": 3043,
+   "source": "barchart"
+  },
+  {
+   "facility": "NEW Cooperative, Inc.",
+   "branch": "Morton Mills",
+   "city": "Villisca",
+   "state": "IL",
+   "zip": "50864",
+   "phone": "712-414-0120",
    "source": "barchart"
   },
   {
