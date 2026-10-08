@@ -41,15 +41,16 @@
   .em-hero p strong{color:var(--text);}
   .em-h2{font-family:var(--font-display);font-size:1.25rem;font-weight:700;text-transform:uppercase;color:var(--text);margin:2.2rem 0 .9rem;padding-bottom:.45rem;border-bottom:1px solid var(--border);}
   .em-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.2rem 1.3rem;margin-bottom:1.1rem;}
-  .em-card.soon{opacity:.62;}
+  .em-card.soon{border-style:dashed;}
   .em-card-head{display:flex;align-items:center;justify-content:space-between;gap:.6rem;flex-wrap:wrap;margin-bottom:.4rem;}
   .em-card-title{font-family:var(--font-display);font-size:1.15rem;font-weight:700;color:var(--text);}
   .em-badge{font-family:'JetBrains Mono',monospace;font-size:0.75rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:.25rem .6rem;border-radius:4px;}
   .em-badge.live{background:rgba(74,171,76,.14);color:var(--green);border:1px solid rgba(74,171,76,.4);}
-  .em-badge.soon{background:rgba(125,132,111,.14);color:var(--text-muted);border:1px solid var(--border);}
+  .em-badge.soon{background:transparent;color:var(--text-dim);border:1px solid var(--border);}
+  [data-theme="light"] .em-badge.live{background:rgba(46,125,79,.06);}
   .em-card p{font-size:.85rem;color:var(--text-dim);line-height:1.6;margin:.2rem 0 .9rem;}
   .em-snip-lbl{font-family:'JetBrains Mono',monospace;font-size:0.755rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);margin:.8rem 0 .35rem;}
-  .em-snip{position:relative;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:.8rem .9rem;overflow-x:auto;}
+  .em-snip{position:relative;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:.8rem 4rem .8rem .9rem;overflow-x:auto;}
   .em-snip code{font-family:'JetBrains Mono',monospace;font-size:0.785rem;color:var(--green);white-space:pre;line-height:1.6;}
   .em-copy{position:absolute;top:.5rem;right:.5rem;background:var(--surface);border:1px solid var(--border);border-radius:5px;color:var(--gold);font-family:'JetBrains Mono',monospace;font-size:0.755rem;font-weight:700;padding:.3rem .55rem;cursor:pointer;min-height:32px;}
   .em-copy:hover{border-color:var(--gold);}
@@ -60,6 +61,8 @@
   .em-cta{text-align:center;margin-top:2rem;padding:1.4rem;background:var(--surface);border:1px solid var(--border);border-radius:12px;}
   .em-cta a{color:var(--gold);text-decoration:none;font-weight:700;}
   .em-iframe{width:100%;max-width:480px;border:0;display:block;margin:0 auto;min-height:560px;}
+  /* Phones: give the live preview the full card width so its form fields have room. */
+  @media(max-width:520px){.em-page{padding-left:.75rem;padding-right:.75rem;}.em-card{padding:1rem .85rem;}.em-prev{padding:.6rem 0;border-width:1px 0 0;border-radius:0;}}
 </style>
 <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"BreadcrumbList","@id":"https://agsist.com/embed#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://agsist.com/"},{"@type":"ListItem","position":2,"name":"Embed Widgets","item":"https://agsist.com/embed"}]}]}</script>
 </head>

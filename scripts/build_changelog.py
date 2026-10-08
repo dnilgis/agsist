@@ -80,19 +80,44 @@ def validate(data):
     return n_items
 
 
+OPEN_DAYS = 14  # days shown open, counted back from the newest entry (not the clock, so the bake stays idempotent)
+
+
+def render_day(e, h="h2"):
+    out = [f'<section class="cl-day"><{h} class="cl-date">{pretty_date(e["date"])}</{h}>'
+           f'<div class="cl-items">']
+    for it in e["items"]:
+        tag = it["tag"]
+        out.append(
+            f'<div class="cl-item"><div class="cl-top">'
+            f'<span class="cl-tag cl-tag--{tag}">{TAGS[tag]}</span>'
+            f'<a class="cl-page" href="{esc(it["page"])}">{esc(it["name"])}</a>'
+            f'</div><p class="cl-text">{esc(it["text"])}</p></div>')
+    out.append('</div></section>')
+    return "".join(out)
+
+
 def render_entries(data):
-    out = []
+    """The last OPEN_DAYS days render open; older days fold into one <details> per month,
+    so a phone reader is not handed every entry at once. Every entry stays in the HTML."""
+    newest = date.fromisoformat(data["entries"][0]["date"])
+    out, months = [], []
     for e in data["entries"]:
-        out.append(f'<section class="cl-day"><h2 class="cl-date">{pretty_date(e["date"])}</h2>'
-                   f'<div class="cl-items">')
-        for it in e["items"]:
-            tag = it["tag"]
-            out.append(
-                f'<div class="cl-item"><div class="cl-top">'
-                f'<span class="cl-tag cl-tag--{tag}">{TAGS[tag]}</span>'
-                f'<a class="cl-page" href="{esc(it["page"])}">{esc(it["name"])}</a>'
-                f'</div><p class="cl-text">{esc(it["text"])}</p></div>')
-        out.append('</div></section>')
+        if (newest - date.fromisoformat(e["date"])).days < OPEN_DAYS:
+            out.append(render_day(e))
+        else:
+            ym = e["date"][:7]
+            if not months or months[-1][0] != ym:
+                months.append((ym, []))
+            months[-1][1].append(e)
+    if months:
+        out.append('<h2 class="cl-older-h">Older changes, by month</h2>')
+        for ym, days in months:
+            y, m = (int(x) for x in ym.split("-"))
+            n = sum(len(e["items"]) for e in days)
+            out.append(f'<details class="cl-month"><summary>{MONTHS[m]} {y}'
+                       f'<span class="cl-month-n">{n} change{"s" if n != 1 else ""}</span></summary>'
+                       + "".join(render_day(e, "h3") for e in days) + '</details>')
     return "".join(out)
 
 

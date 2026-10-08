@@ -56,8 +56,17 @@
     .sa-grid .full{grid-column:1/-1}
     @media(max-width:640px){.sa-grid{grid-template-columns:1fr}}
     .sa-f label{display:block;font-size:.86rem;font-weight:700;color:var(--text);margin-bottom:.3rem}
-    .sa-f small{font-weight:500;color:var(--text-muted)}
+    .sa-f small{font-weight:500;color:var(--text-muted);font-size:.8rem}
     .sa-f label.sa-tier,.sa-f label.sa-terms{font-weight:500;margin-bottom:0}
+    .sa-f label.sa-terms{display:flex;gap:.5rem}
+    /* Logo picker: the native file input stays in the form and in the tab order, visually hidden;
+       the label beside it is the 44px button people see and tap. */
+    .sa-file{position:relative;display:flex;flex-wrap:wrap;align-items:center;gap:.4rem .8rem}
+    .sa-file input{position:absolute;left:0;top:0;width:1px;height:1px;opacity:0;overflow:hidden}
+    .sa-f label.sa-file-btn{display:inline-flex;align-items:center;min-height:44px;margin:0;padding:0 1.1rem;border:1px solid var(--border-2,var(--border));border-radius:8px;background:var(--surface2,var(--surface));color:var(--text);font-size:.95rem;font-weight:700;cursor:pointer}
+    .sa-f label.sa-file-btn:hover{border-color:var(--text-dim)}
+    .sa-file input:focus-visible+label.sa-file-btn{outline:2px solid var(--gold);outline-offset:2px}
+    .sa-file-name{font-size:.9rem;color:var(--text-dim);min-width:0}
     .sa-tier-what,.sa-tier-note{font-weight:500}
     .sa-f input[type=text],.sa-f input[type=email],.sa-f input[type=tel],.sa-f input[type=url],.sa-f select,.sa-f textarea{
       width:100%;box-sizing:border-box;font:inherit;font-size:1rem;color:var(--text);background:var(--surface2,var(--surface));border:1px solid var(--border-2,var(--border));border-radius:8px;padding:.6rem .7rem;min-height:44px}
@@ -140,7 +149,7 @@
         <div><label for="sa-url">Your website</label><input type="url" id="sa-url" name="url" maxlength="200" placeholder="https://" autocomplete="url" required></div>
         <div class="full" id="sa-head-row"><label for="sa-headline">Headline <small>(one line)</small></label><input type="text" id="sa-headline" name="headline" maxlength="90"><div class="sa-count" data-for="sa-headline"></div></div>
         <div class="full" id="sa-body-row"><label for="sa-body">A sentence or two <small>(optional, up to 50 words)</small></label><textarea id="sa-body" name="body" maxlength="320"></textarea><div class="sa-count" data-for="sa-body"></div></div>
-        <div class="full"><label for="sa-logo">Logo <small>(optional &middot; PNG, JPG or WebP, under 250 KB)</small></label><input type="file" id="sa-logo" accept="image/png,image/jpeg,image/webp"></div>
+        <div class="full"><label for="sa-logo">Logo <small>(optional &middot; PNG, JPG or WebP, under 250 KB)</small></label><div class="sa-file"><input type="file" id="sa-logo" accept="image/png,image/jpeg,image/webp" aria-describedby="sa-logo-name"><label for="sa-logo" class="sa-file-btn" aria-hidden="true">Choose a logo file</label><span id="sa-logo-name" class="sa-file-name">No file chosen</span></div></div>
       </div>
 
       <div class="sa-step">3 &middot; See it</div>
@@ -180,5 +189,12 @@
 </div>
   <script src="/components/loader.js?v=17" defer></script>
   <script src="/components/sponsor-apply.js?v=1" defer></script>
+  <script>
+  /* Show the chosen logo file name next to the picker button. Read after the form script has
+     had its turn, since that script clears a file it rejects. */
+  (function(){var i=document.getElementById('sa-logo'),n=document.getElementById('sa-logo-name');if(!i||!n)return;
+    function upd(){var f=i.files&&i.files[0];n.textContent=f?f.name:'No file chosen';}
+    i.addEventListener('change',function(){setTimeout(upd,0);});})();
+  </script>
 </body>
 </html>

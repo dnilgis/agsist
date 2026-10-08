@@ -50,7 +50,7 @@
     .pb-page p+p{margin-top:.7rem}
     .pb-page a{color:var(--gold)}
     .pb-bc{font-family:var(--font-mono);font-size:.78rem;color:var(--text-muted);margin-bottom:1rem}
-    .pb-bc a{color:var(--text-muted);text-decoration:none}
+    .pb-bc a{color:var(--text-muted);text-decoration:none;display:inline-flex;align-items:center;min-height:40px}
     .pb-sub{color:var(--text-dim);font-size:.98rem;max-width:640px}
     .pb-verdicts{display:grid;grid-template-columns:1fr 1fr;gap:.9rem;margin:1.4rem 0 .4rem}
     .pb-box{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1rem 1.1rem;min-width:0}
@@ -60,6 +60,11 @@
     .pb-box p+p{margin-top:.45rem}
     .pb-note{font-size:.82rem;color:var(--text-muted)}
     .pb-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:.4rem 0}
+    /* Phone audit 2026-10-08: the last column carries the sentence (why, verdict, result note).
+       Squeezed to ~80px it made rows 900px tall; give it a reading width and let the table scroll.
+       The fade on the right edge says there is more to the side; JS drops it at the end. */
+    .pb-table td:last-child{min-width:16.25rem}
+    .pb-wrap.pb-fade{-webkit-mask-image:linear-gradient(to right,#000 calc(100% - 2.5rem),transparent);mask-image:linear-gradient(to right,#000 calc(100% - 2.5rem),transparent)}
     .pb-table{width:100%;border-collapse:collapse;font-size:.86rem;min-width:520px}
     .pb-table th{font-family:var(--font-mono);font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted);text-align:left;font-weight:700;padding:.45rem .5rem;border-bottom:1px solid var(--border)}
     .pb-table td{padding:.5rem;border-bottom:1px solid var(--border);color:var(--text-dim);vertical-align:top}
@@ -284,6 +289,18 @@
       $('pb-skipped').innerHTML=sk.length?sk.map(function(s){return esc(fdate(s.date))+', '+esc(labels[s.crop]||s.crop)+': '+esc(s.reason);}).join('<br>'):'None so far.';
     }).catch(function(){
       ['pb-live-verdict','pb-bt-verdict'].forEach(function(id){$(id).textContent='Could not load the record right now.';});
+    });
+  })();
+  </script>
+  <script>
+  /* Right-edge fade on the scrolling tables while there is more to the right. */
+  (function(){
+    function upd(w){w.classList.toggle('pb-fade',w.scrollLeft+w.clientWidth<w.scrollWidth-2);}
+    document.querySelectorAll('.pb-wrap').forEach(function(w){
+      upd(w);
+      w.addEventListener('scroll',function(){upd(w);},{passive:true});
+      if('ResizeObserver' in window){var ro=new ResizeObserver(function(){upd(w);});ro.observe(w);if(w.firstElementChild)ro.observe(w.firstElementChild);}
+      else window.addEventListener('resize',function(){upd(w);});
     });
   })();
   </script>
