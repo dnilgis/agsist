@@ -1,18 +1,18 @@
 {
- "generated": "2026-10-08T21:23:09Z",
+ "generated": "2026-10-08T21:38:10Z",
  "from": "barchart-raw.json",
  "complete": false,
  "note": "Directory only: who operates a facility and where. No prices, no basis, no symbols, no delivery windows.",
  "counts": {
-  "facilities": 2272,
+  "facilities": 2275,
   "states": 38,
   "with_address": 722,
   "with_coords": 725,
   "with_url": 703,
-  "with_phone": 2205,
+  "with_phone": 2208,
   "saturated_zips": 0,
   "failed_zips": 0,
-  "rows_read": 17525
+  "rows_read": 17573
  },
  "saturated": [],
  "failed": [],
@@ -8669,6 +8669,33 @@
    "state": "IL",
    "zip": "61356",
    "phone": "(815) 876-2900",
+   "source": "barchart"
+  },
+  {
+   "facility": "River Valley Cooperative",
+   "branch": "Speer",
+   "city": "Speer",
+   "state": "IL",
+   "zip": "61473",
+   "phone": "N/A",
+   "source": "barchart"
+  },
+  {
+   "facility": "River Valley Cooperative",
+   "branch": "Valley",
+   "city": "Wyoming",
+   "state": "IL",
+   "zip": "61491",
+   "phone": "N/A",
+   "source": "barchart"
+  },
+  {
+   "facility": "River Valley Cooperative",
+   "branch": "Wyoming",
+   "city": "Wyoming",
+   "state": "IL",
+   "zip": "61491",
+   "phone": "N/A",
    "source": "barchart"
   },
   {
