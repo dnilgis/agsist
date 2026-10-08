@@ -355,7 +355,7 @@
     <a href="/soybean-futures-prices">Soybean futures</a>
   </nav>
 
-  <div class="wp-sample" id="wp-sample">Sample layout &mdash; live report data pending. Figures shown are illustrative.</div>
+  <div class="wp-sample" id="wp-sample">No report data yet. This page fills in after the next USDA report.</div>
 
   <div id="wp-result"><!-- PRERENDER:wp-result --><!-- /PRERENDER:wp-result --></div>
 
@@ -640,7 +640,7 @@ window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);
     }).join('');
   }
   fetch('/data/whats-priced-in.json',{cache:'no-store'}).then(function(r){if(!r.ok)throw 0;return r.json();}).then(function(d){
-    if(d.sample)document.getElementById('wp-sample').style.display='block';
+    if(d.sample){document.getElementById('wp-sample').style.display='block';return;}  /* no placeholder figures, ever */
     document.getElementById('wp-result').innerHTML=resultBanner(d.latest_result);
     document.getElementById('wp-next').innerHTML=nextCard(d.upcoming);
     document.getElementById('wp-history').innerHTML=historyEl(d.history);

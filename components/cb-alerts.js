@@ -268,7 +268,7 @@
       var em = form.querySelector('.cba-email'), email = (em.value || '').trim(), body;
       if(rows.length){
         var r = rows[+crop.value], kind = form.querySelector('input[name="' + id + '-k"]:checked').value;
-        var lead = r.place.operator + ', ' + (r.place.town || r.place.city || '') + ', ' + r.place.state + ' — ' + r.crop + ' ' + r.plabel + ': ';
+        var lead = r.place.operator + ', ' + (r.place.town || r.place.city || '') + ', ' + r.place.state + ': ' + r.crop + ' ' + r.plabel + ': ';
         body = { email:email, kind:kind, ewid:widFor(r.place.state, r.place.operator, r.place.city, r.crop), crop:r.crop, period:r.period, plabel:(r.plabel || r.period).slice(0, 40) };
         if(kind === 'cash'){
           var v = parseFloat(price.value);
@@ -283,7 +283,7 @@
           body.wid = widFor(body.ewid, 'move', r.period, ':1');
         }
       } else {
-        body = { email:email, wid:plainWid, label:(name + ' — corn').slice(0, 120) };
+        body = { email:email, wid:plainWid, label:(name + ', corn').slice(0, 120) };
       }
       if(!EMAIL_RE.test(email)) return fail(form, { field:'email', msg:'Enter a real email address.' });
       sending(form);

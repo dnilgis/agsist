@@ -189,7 +189,7 @@ test("a delivery-point label gets its town only where the network knows it", () 
     { zip: "50313", city: "ADM DSM" }, { zip: "50313", city: "Des Moines" },
     { zip: "52404", city: "Cedar Rapids" }, { zip: "52404", city: "Marion" }] });
   const e = elev("Mid-Iowa Cooperative", 28, [row({ zip: "50313" })], { city: "ADM DSM" });
-  assert.equal(c.bannerName(e), "Mid-Iowa Cooperative — Des Moines (28 mi)");
+  assert.equal(c.bannerName(e), "Mid-Iowa Cooperative, Des Moines (28 mi)");
   const amb = elev("X", 3, [row({ zip: "52404" })], { city: "ADM CR" });
   assert.equal(c.placeOf(amb), "ADM CR", "two towns in one ZIP is a guess, so the label stays");
   const plain = elev("Y", 3, [row({})], { city: "Ames" });

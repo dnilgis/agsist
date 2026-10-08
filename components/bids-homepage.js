@@ -1321,7 +1321,7 @@
              board that has not posted on the latest trading day. */
           var d = (cash - prev[1]) * 100, gap = prev[0] < prevWeekday(on) || on !== lastWeekday(ctToday());
           var tail = gap ? ' <span class="bh-chgd">' + escHtml(dayName(prev[0]).slice(0, 3)) + '</span>' : '';
-          el.title = 'Change from this board’s last price on ' + dayName(prev[0]) + ', $' + (+prev[1]).toFixed(2);
+          el.title = 'Change from this board’s last price on ' + dayName(prev[0]) + ', ' + qCashText(+prev[1]);
           if(Math.abs(d) < 0.125){ el.innerHTML = 'unch' + tail; el.className = 'bh-chg is-flat'; }
           else { el.innerHTML = (d > 0 ? '▲' : '▼') + quarterCents(d) + '¢' + tail; el.className = 'bh-chg ' + (d > 0 ? 'is-up' : 'is-dn'); }
           el.hidden = false;

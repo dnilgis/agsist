@@ -404,7 +404,7 @@
     var day = localYmd(d) === localYmd(new Date()) ? 'today' : d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
     return {
       rows: rows, savedAt: +s.savedAt,
-      note: 'Live bids did not load. Showing the snapshot from ' + t + ' ' + day + ' — the last AGSIST network bids this phone loaded for ZIP ' + s.zip +
+      note: 'Live bids did not load. Showing the snapshot from ' + t + ' ' + day + ', the last AGSIST network bids this phone loaded for ZIP ' + s.zip +
             (s.radius ? ' (' + s.radius + ' mi)' : '') + '. Call to confirm before you haul.'
     };
   }

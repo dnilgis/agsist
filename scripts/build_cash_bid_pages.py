@@ -476,7 +476,7 @@ def quiet_line(bd):
     why = next((WHY[k] for k, _ in bd["why"].most_common() if k in WHY), "no current bid")
     seen = f", last read {fmt_day(bd['checked'])}" if bd["checked"] else ""
     name = bd["operator"] or bd["city"]
-    return f"<li>{esc(name)} &mdash; {esc(why)}{seen}</li>"
+    return f"<li>{esc(name)}: {esc(why)}{seen}</li>"
 
 
 def build_town_page(t, ctx):
@@ -518,7 +518,7 @@ def build_town_page(t, ctx):
         desc = desc[:160]
         intro = (f'<p class="cbt-sub">Bids posted by <b>{n}</b> elevator{"s" if n != 1 else ""} in {esc(place)} '
                  f'that the AGSIST network reads directly from the elevator&rsquo;s own bid board. Cash is $/bu; '
-                 f'basis is cash minus the futures contract named under it. Prices move through the day &mdash; '
+                 f'basis is cash minus the futures contract named under it. Prices move through the day, '
                  f'each elevator shows when it posted. Call the elevator before you haul.</p>')
     else:
         desc = (f"Cash grain bids in {place}: no current bid from the elevators the AGSIST network reads here. "
@@ -542,7 +542,7 @@ def build_town_page(t, ctx):
 {hdr}
 <main class="cbt-wrap" id="main">
   <p class="cbt-sub" style="margin-top:14px"><a href="/cash-bids" style="color:var(--text-muted)">Cash bids</a> &rsaquo; <a href="/cash-bids/{ssl}/" style="color:var(--text-muted)">{esc(sname)}</a> &rsaquo; <b style="color:var(--text)">{esc(t['name'])}</b></p>
-  <h1>Cash grain bids in {esc(place)} &mdash; today</h1>
+  <h1>Cash grain bids in {esc(place)} today</h1>
   {intro}
   <a class="cbt-live" href="{esc(live)}">Live bids near {esc(z or t['name'])} &rarr;</a>
   {''.join(secs)}
@@ -580,7 +580,7 @@ def build_state_index(st, metas, ctx, unplaced=()):
     items = []
     for m in live:
         cl = ", ".join(CROP_LABEL[c].lower() for c in CROPS if c in m["crops"])
-        items.append(f'<li><a href="{m["path"]}">{esc(m["name"])}</a> <span class="cbt-mut">&mdash; '
+        items.append(f'<li><a href="{m["path"]}">{esc(m["name"])}</a> <span class="cbt-mut">· '
                      f'{m["elevators"]} elevator{"s" if m["elevators"] != 1 else ""}: {esc(cl)}; posted '
                      f'{esc(fmt_posted(m["latest"], ctx["snap_ct"]))}</span></li>')
     quiet_html = ""
@@ -591,7 +591,7 @@ def build_state_index(st, metas, ctx, unplaced=()):
         lis = []
         for op, city, z in sorted(set(unplaced), key=lambda u: (u[0].lower(), u[1].lower())):
             lab = esc(op) + (f" ({esc(city)})" if city and city.lower() != op.lower() else "")
-            lis.append(f'<li>{lab} &mdash; <a href="/cash-bids?zip={z}">live bids at ZIP {z}</a></li>' if z
+            lis.append(f'<li>{lab}: <a href="/cash-bids?zip={z}">live bids at ZIP {z}</a></li>' if z
                        else f"<li>{lab}</li>")
         quiet_html += ('<h2>Network elevators not placed in a town</h2><p class="cbt-sub">These boards name a '
                        'facility rather than a town, and we do not guess the town. Their bids are on the live '
@@ -794,13 +794,13 @@ def selftest():
         assert "$3.95" in fr and "By Oct 9" in fr and "Nov 2026" in fr and "(2026-12)" not in fr
         assert '<link rel="canonical" href="https://agsist.com/cash-bids/nebraska/fremont">' in fr
         assert 'content="index,follow"' in fr and "call to confirm" in fr and "/cash-bids?zip=68025" in fr
-        assert "Cash grain bids in Fremont, NE &mdash; today" in fr
+        assert "Cash grain bids in Fremont, NE today" in fr
         assert "Op bad" not in fr or "did not check out" in fr
         for blk in re.findall(r'<script type="application/ld\+json">(.*?)</script>', fr, re.S):
             assert {g["@type"] for g in json.loads(blk)["@graph"]} == {"BreadcrumbList"}
         ho = open(os.path.join(out, "nebraska", "hooper.html")).read()
         assert "1.16" not in ho and "1.17" not in ho and "$9.70" in ho
-        assert "Op old &mdash; no price posted in the last 72 hours" in ho, "a quiet board must be named, unpriced"
+        assert "Op old: no price posted in the last 72 hours" in ho, "a quiet board must be named, unpriced"
         # a town whose only boards are quiet is written noindex and left out of the sitemap
         lone = json.loads(json.dumps(merged))
         lone["bids"] = [x for x in lone["bids"] if x["source"] != "t-st"]
