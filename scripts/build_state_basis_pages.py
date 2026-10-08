@@ -78,6 +78,7 @@ SITE = "https://agsist.com"
 OUT_DIR = "basis"
 FRESH_HOURS = 72
 MIN_STAT = 3          # elevators needed to print a median/range at all
+FOLD_ROWS = 8         # table rows shown on a phone before "Show all"
 MIN_INDEX = 5         # elevators behind a corn or soy headline to be indexable
 PREV_TARGET_H = 7 * 24
 PREV_WINDOW_H = 30    # accept a prior snapshot 7 d +/- 30 h back
@@ -259,6 +260,55 @@ def period_start(period, snap):
 
 def median(vals):
     return statistics.median(vals) if vals else None
+
+
+_PERIOD_TAIL = re.compile(r"^(.*\S)\s*\((\d{4})-(\d{2})\)\s*$")
+
+
+def delivery_text(r):
+    """The board's delivery label for display. The network appends the parsed
+    period, e.g. "Nov 2026 (2026-11)"; that tail is dropped only when the label
+    already names the same month and year, so "Dec 2026 (2027-01)", where the
+    two disagree, is shown as is."""
+    d = str(r.get("delivery") or r.get("period") or "")
+    m = _PERIOD_TAIL.match(d)
+    if m:
+        body, y, mo = m.group(1), int(m.group(2)), int(m.group(3))
+        if 1 <= mo <= 12 and re.search(r"\b" + MONTH_ABBR[mo - 1].lower(), body.lower()) and \
+                re.search(rf"(?<!\d)({y}|{y % 100:02d})(?!\d)", body):
+            return body
+    return d
+
+
+_KEEP_UPPER = {"ADM", "CHS", "AGP", "MFA", "LLC", "LP", "USA", "II", "III", "IV"}
+
+
+def _word_case(m):
+    w = m.group(0)
+    if w in _KEEP_UPPER:
+        return w
+    if "'" in w:
+        a, b = w.split("'", 1)
+        return (a.capitalize() + "'" + b.capitalize()) if len(a) == 1 and len(b) > 1 else w.capitalize()
+    if len(w) > 3 and w.startswith("MC"):
+        return "Mc" + w[2:].capitalize()
+    return w.capitalize()
+
+
+def town_text(s):
+    """Town for display: an ALL-CAPS board label ("ADM CEDAR RAPIDS") reads as
+    "ADM Cedar Rapids". Mixed-case names are left exactly as posted."""
+    s = str(s or "")
+    u = re.sub(r"\bMc(?=[A-Z])", "MC", s)          # "McCOOL JUNCTION" is all caps too
+    if not re.search(r"[A-Z]", u) or re.search(r"[a-z]", u):
+        return s
+    return re.sub(r"[A-Z]+(?:'[A-Z]+)?", _word_case, u)
+
+
+def _crop_norm(s):
+    """Board commodity label compared with the crop name: "CORN" and "Soybean"
+    repeat it; "#2 Corn", "2026 Soybeans" or "Beans" say something more and stay."""
+    return " ".join(str(s).lower().split()).rstrip("s")
 
 
 # ---------------------------------------------------------------- loading
@@ -534,8 +584,8 @@ CSS = """
     .bs-hero{display:flex;flex-wrap:wrap;gap:14px;margin:14px 0}
     .bs-stat{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 16px;min-width:200px;flex:1}
     .bs-stat .v{font-family:'JetBrains Mono',monospace;font-size:1.45rem;color:var(--text)}
-    .bs-stat .l{font-size:.72rem;color:var(--text-muted);letter-spacing:.05em;text-transform:uppercase;margin-top:2px}
-    .bs-stat .s{font-size:.75rem;color:var(--text-muted);margin-top:4px;line-height:1.5}
+    .bs-stat .l{font-size:.875rem;color:var(--text-muted);letter-spacing:.03em;text-transform:uppercase;margin-top:2px;line-height:1.4}
+    .bs-stat .s{font-size:.875rem;color:var(--text-muted);margin-top:6px;line-height:1.55}
     .bs-note{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:8px;padding:12px 15px;font-size:.85rem;line-height:1.65;color:var(--text-muted);margin:14px 0}
     .bs-note b{color:var(--text)}
     .bs-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
@@ -551,6 +601,31 @@ CSS = """
     .bs-cloud{font-size:.78rem;line-height:2;color:var(--text-muted)}
     .bs-cloud a{color:var(--text-muted);text-decoration:none;border-bottom:1px dotted var(--border)}
     .bs-cloud a:hover{color:var(--gold)}
+    .bs-all{position:absolute;opacity:0;width:1px;height:1px;margin:0}
+    .bs-more{display:none}
+    @media (max-width:640px){
+      .bs-stat{min-width:0;flex-basis:100%}
+      .bs-scroll{overflow:visible}
+      table.bs-t,.bs-t tbody{display:block;font-size:.95rem}
+      .bs-t thead{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+      .bs-t tr{display:flex;flex-wrap:wrap;align-items:baseline;padding:10px 0;border-bottom:1px solid var(--border)}
+      .bs-t td{display:block;padding:0;border:0;white-space:normal}
+      .bs-t td.c-el{order:1;flex:1 1 calc(100% - 8rem);min-width:0;font-weight:600}
+      .bs-t td.c-bas{order:2;flex:0 0 8rem;text-align:right;font-weight:600}
+      .bs-t td.c-town{order:3;flex:1 1 calc(100% - 8rem);min-width:0;color:var(--text-muted)}
+      .bs-t td.c-cash{order:4;flex:0 0 8rem;text-align:right}
+      .bs-t td.c-com,.bs-t td.c-del,.bs-t td.c-con,.bs-t td.c-wow,.bs-t td.c-asof{order:5;flex:0 1 auto;font-size:.875rem;color:var(--text-muted);margin:4px 14px 0 0}
+      .bs-t td.c-wow{order:6;font-family:inherit;text-align:left}
+      .bs-t td.c-asof{order:7}
+      .bs-t td[data-l]::before{content:attr(data-l) " ";color:var(--text-dim);font-family:var(--font-body,system-ui,sans-serif);font-weight:400;font-size:.8rem}
+      .bs-t tr.more{display:none}
+      .bs-all:checked ~ .bs-scroll tr.more{display:flex}
+      .bs-more{display:inline-block;margin:6px 0 14px;padding:9px 14px;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--gold);font-size:.9rem;cursor:pointer}
+      .bs-all:focus-visible ~ .bs-more{outline:2px solid var(--gold);outline-offset:2px}
+      .bs-more .x{display:none}
+      .bs-all:checked ~ .bs-more .x{display:inline}
+      .bs-all:checked ~ .bs-more .o{display:none}
+    }
 """
 
 
@@ -642,8 +717,8 @@ def stat_block(group, st, prev_gen):
 
 
 def loc_li(r):
-    return (f'<li>{esc(r["operator"])}, {esc(r["city"])} &mdash; basis <b>{money_basis(r["basis"])}</b>, '
-            f'cash ${r["cash"]:.2f} ({esc(r["delivery"] or r["period"])}), as of {fmt_ct(r["priced"])}</li>')
+    return (f'<li>{esc(r["operator"])}, {esc(town_text(r["city"]))} &mdash; basis <b>{money_basis(r["basis"])}</b>, '
+            f'cash ${r["cash"]:.2f} ({esc(delivery_text(r))}), as of {fmt_ct(r["priced"])}</li>')
 
 
 EXPLAINER = """<h2>What basis is, in one paragraph</h2>
@@ -778,24 +853,48 @@ def build_state_page(st, rows_all, summ, ctx):
                         'corn, soybean or wheat bid in the AGSIST network at this snapshot &mdash; '
                         'the page is kept so its link does not break, and fills in when boards report.</div>')
 
-    # ---- table
-    trs = []
-    for r in sorted(rows_all, key=lambda r: (CROP_ORDER.index(r["group"]), r["city"], r["operator"])):
-        con = (f'{contract_label(r["contract"])} <span class="mut">{contract_code(r["contract"])}</span>'
-               if r["contract"] else '<span class="mut" title="the board does not name a futures month">'
-                                     '&mdash; not named</span>')
-        bas = money_basis(r["basis"]) + (' <span class="mut" title="beyond the sanity band; not in statistics">'
-                                         '?</span>' if r.get("suspect") else "")
-        wow = (f'<td class="n">{cents_delta(r["wow"])}</td>' if r.get("wow") is not None
-               else '<td class="n mut" title="no matching bid in the earlier snapshot">&mdash;</td>') if has_prev else ""
-        trs.append(f'<tr><td>{elevator_link(r)}</td><td>{esc(r["city"])}</td><td>{esc(CROP_LABEL[r["group"]])}'
-                   f' <span class="mut">{esc(r["commodity"])}</span></td><td>{esc(r["delivery"] or r["period"])}</td>'
-                   f'<td>{con}</td><td class="n">{bas}</td><td class="n">${r["cash"]:.2f}</td>{wow}'
-                   f'<td>{fmt_ct(r["priced"])}</td></tr>')
+    # ---- table: one per crop, columns Elevator, Town, Basis, Cash first so the
+    # numbers are on screen without scrolling sideways. On a phone each row is a
+    # card and only the first FOLD_ROWS rows show until "Show all"; every row
+    # stays in the HTML either way.
     wow_th = '<th class="n">Basis chg (wk)</th>' if has_prev else ""
-    table = (f'<div class="bs-scroll"><table class="bs-t"><thead><tr><th>Elevator</th><th>Town</th><th>Commodity</th>'
-             f'<th>Delivery</th><th>Contract</th><th class="n">Basis</th><th class="n">Cash</th>{wow_th}'
-             f'<th>Price as of</th></tr></thead><tbody>' + "".join(trs) + "</tbody></table></div>") if trs else \
+    thead = (f'<thead><tr><th>Elevator</th><th>Town</th><th class="n">Basis</th><th class="n">Cash</th>'
+             f'<th>Commodity</th><th>Delivery</th><th>Contract</th>{wow_th}<th>Price as of</th></tr></thead>')
+    tables = []
+    for g in CROP_ORDER:
+        grows = sorted((r for r in rows_all if r["group"] == g), key=lambda r: (town_text(r["city"]).casefold(), r["operator"]))
+        if not grows:
+            continue
+        trs = []
+        for i, r in enumerate(grows):
+            con = (f'{contract_label(r["contract"])} <span class="mut">{contract_code(r["contract"])}</span>'
+                   if r["contract"] else '<span class="mut" title="the board does not name a futures month">'
+                                         '&mdash; not named</span>')
+            bas = money_basis(r["basis"]) + (' <span class="mut" title="beyond the sanity band; not in statistics">'
+                                             '?</span>' if r.get("suspect") else "")
+            wow = (f'<td class="n c-wow" data-l="Wk chg">{cents_delta(r["wow"])}</td>' if r.get("wow") is not None
+                   else '<td class="n mut c-wow" data-l="Wk chg" title="no matching bid in the earlier snapshot">'
+                        '&mdash;</td>') if has_prev else ""
+            com = esc(CROP_LABEL[g])
+            if _crop_norm(r["commodity"]) != _crop_norm(CROP_LABEL[g]):
+                com += f' <span class="mut">{esc(r["commodity"])}</span>'
+            more = ' class="more"' if i >= FOLD_ROWS else ""
+            trs.append(f'<tr{more}><td class="c-el">{elevator_link(r)}</td>'
+                       f'<td class="c-town">{esc(town_text(r["city"]))}</td>'
+                       f'<td class="n c-bas" data-l="Basis">{bas}</td><td class="n c-cash" data-l="Cash">${r["cash"]:.2f}</td>'
+                       f'<td class="c-com">{com}</td><td class="c-del" data-l="Delivery">{esc(delivery_text(r))}</td>'
+                       f'<td class="c-con" data-l="vs">{con}</td>{wow}'
+                       f'<td class="c-asof" data-l="As of">{fmt_ct(r["priced"])}</td></tr>')
+        n = len(grows)
+        tbl = f'<div class="bs-scroll"><table class="bs-t">{thead}<tbody>' + "".join(trs) + "</tbody></table></div>"
+        if n > FOLD_ROWS:
+            what = f'{"soybean" if g == "soybeans" else CROP_LABEL[g].lower()} bids'
+            tbl = (f'<input type="checkbox" class="bs-all" id="all-{g}">{tbl}'
+                   f'<label class="bs-more" for="all-{g}"><span class="o">Show all {n} {what}</span>'
+                   f'<span class="x">Show fewer</span></label>')
+        tables.append(f'<h3 id="elevators-{g}">{CROP_LABEL[g]}: {n} elevator{"s" if n != 1 else ""}</h3>'
+                      f'<div class="bs-tw">{tbl}</div>')
+    table = "\n  ".join(tables) if tables else \
         '<p class="bs-sub">&mdash; no fresh network bids in this state at this snapshot.</p>'
 
     wow_note = (f"Week-over-week compares each bid with the same elevator&rsquo;s same delivery period and contract "
@@ -967,6 +1066,13 @@ def selftest():
     assert period_start("2026-09/2026-11", snap) == "2026-10"
     assert period_start("spot", snap) == "2026-10"
     assert period_start("newcrop-2026", snap) is None
+    assert town_text("ADM CEDAR RAPIDS") == "ADM Cedar Rapids" and town_text("McCOOL JUNCTION") == "McCool Junction"
+    assert town_text("O'NEILL") == "O'Neill" and town_text("Cargill - Cedar Rapids") == "Cargill - Cedar Rapids"
+    assert delivery_text({"delivery": "Nov 2026 (2026-11)"}) == "Nov 2026"
+    assert delivery_text({"delivery": "Oct/Nov '26 (2026-11)"}) == "Oct/Nov '26"
+    assert delivery_text({"delivery": "Dec 2026 (2027-01)"}) == "Dec 2026 (2027-01)"
+    assert delivery_text({"delivery": "October (2026-12)"}) == "October (2026-12)"
+    assert _crop_norm("CORN") == _crop_norm("Corn") and _crop_norm("#2 Corn") != _crop_norm("Corn")
     assert plain_basis(-0.625) == "-$0.63" and money_basis(0.0) == "even" and plain_basis(0.0) == "even"
     merged, index, prev = _fixture()
     with _tf.TemporaryDirectory() as td:
@@ -991,6 +1097,8 @@ def selftest():
         assert "Iowa Corn &amp; Soybean Basis" in page
         assert "implied futures price more than 3%" in page and "Op badfut" in page
         assert "+5&cent;" in page, "week-over-week matched-pair change missing"
+        assert 'Corn <span class="mut">Corn</span>' not in page, "commodity label repeated"
+        assert 'class="n c-bas" data-l="Basis"' in page and 'class="n c-cash" data-l="Cash"' in page
         for blk in re.findall(r'<script type="application/ld\+json">(.*?)</script>', page, re.S):
             doc = json.loads(blk)
             types = {g["@type"] for g in doc["@graph"]}
