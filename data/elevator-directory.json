@@ -1,18 +1,18 @@
 {
- "generated": "2026-10-08T23:08:08Z",
+ "generated": "2026-10-08T23:23:05Z",
  "from": "barchart-raw.json",
  "complete": false,
  "note": "Directory only: who operates a facility and where. No prices, no basis, no symbols, no delivery windows.",
  "counts": {
-  "facilities": 2280,
+  "facilities": 2284,
   "states": 38,
   "with_address": 722,
   "with_coords": 725,
   "with_url": 703,
-  "with_phone": 2213,
+  "with_phone": 2217,
   "saturated_zips": 0,
   "failed_zips": 0,
-  "rows_read": 17605
+  "rows_read": 17628
  },
  "saturated": [],
  "failed": [],
@@ -2247,6 +2247,15 @@
    "state": "IA",
    "zip": "51503",
    "phone": "(712) 366-0392",
+   "source": "barchart"
+  },
+  {
+   "facility": "Frontier Cooperative",
+   "branch": "Bunge CB",
+   "city": "Council Bluffs",
+   "state": "IA",
+   "zip": "51503",
+   "phone": "(712) 366-3600",
    "source": "barchart"
   },
   {
@@ -21724,6 +21733,15 @@
   },
   {
    "facility": "Frontier Cooperative",
+   "branch": "E-Energy Adams",
+   "city": "Adams",
+   "state": "NE",
+   "zip": "68301",
+   "phone": "(402) 988-4655",
+   "source": "barchart"
+  },
+  {
+   "facility": "Frontier Cooperative",
    "branch": "Avoca",
    "city": "Avoca",
    "state": "NE",
@@ -21747,6 +21765,15 @@
    "state": "NE",
    "zip": "68317",
    "phone": "402-782-2295",
+   "source": "barchart"
+  },
+  {
+   "facility": "Frontier Cooperative",
+   "branch": "Cargill Blair",
+   "city": "Blair",
+   "state": "NE",
+   "zip": "68008",
+   "phone": "(402) 533-4100",
    "source": "barchart"
   },
   {
@@ -21918,6 +21945,15 @@
    "state": "NE",
    "zip": "68403",
    "phone": "402-234-2515",
+   "source": "barchart"
+  },
+  {
+   "facility": "Frontier Cooperative",
+   "branch": "Martell",
+   "city": "Martell",
+   "state": "NE",
+   "zip": "68404",
+   "phone": "402-794-5465",
    "source": "barchart"
   },
   {
