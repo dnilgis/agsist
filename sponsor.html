@@ -189,7 +189,7 @@
           <div class="sp-sketch" aria-hidden="true"><i></i><i style="width:70%"></i><b class="k-card"></b><i></i></div>
           <p>Your card in every morning briefing, on the web and in the email, plus a sponsor strip near the top of the homepage. Logo, headline, a few lines and your link. One sponsor only.</p>
           <p class="sp-tier-fine">$1,788 a year. Your rate is locked for 12 months.</p>
-          <span class="sp-status sp-status--wait" data-status="founding">In talks with one business. Apply to be next in line.</span>
+          <span class="sp-status" data-status="founding">Open</span>
           <a class="sp-tier-go" href="/sponsor-apply?tier=founding">Apply for the Sponsor slot &rarr;</a>
         </div>
         <div class="sp-tier">
@@ -333,7 +333,7 @@
       }
       if (r[4]) {
         var held = (r[4].sponsors || []).some(function (s) { return s && s.active !== false && s.billing && s.billing.tier === 'founding'; });
-        status('founding', held ? 'In talks with one business. Apply to be next in line.' : 'Open', !held);
+        status('founding', held ? 'Taken. Apply to be next in line.' : 'Open', !held);
       }
 
       var a = r[5];

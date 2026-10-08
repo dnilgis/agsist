@@ -137,9 +137,11 @@ check("the report page is noindex", () =>
   assert.match(R("sponsor-report.html"), /name="robots"[^>]*noindex/i));
 
 console.log("\nTHE CONFIG");
-check("exactly one sponsor is active", () => {
+check("at most one sponsor is active", () => {
+  /* The builder refuses two or more without a slot dimension, and with none it
+     prints "no active sponsors" and exits cleanly (the slot is open). */
   const on = (CONF.sponsors || []).filter((s) => s.active !== false);
-  assert.equal(on.length, 1, on.length + " active sponsors; the builder will refuse");
+  assert.ok(on.length <= 1, on.length + " active sponsors; the builder will refuse");
 });
 check("no active sponsor carries a start date nobody has confirmed", () => {
   for (const s of (CONF.sponsors || []).filter((x) => x.active !== false))
