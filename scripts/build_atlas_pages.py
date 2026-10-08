@@ -742,7 +742,7 @@ CSS = """
 .ap .q0{fill:rgba(var(--gold-rgb),.16)}.ap .q1{fill:rgba(var(--gold-rgb),.34)}.ap .q2{fill:rgba(var(--gold-rgb),.52)}.ap .q3{fill:rgba(var(--gold-rgb),.74)}.ap .q4{fill:rgba(var(--gold-rgb),1)}.ap .qn{fill:var(--surface3)}
 .ap .leg{display:flex;flex-wrap:wrap;gap:.3rem .9rem;font-family:var(--font-mono);font-size:.74rem;color:var(--text-dim);margin:.5rem 0 0}
 .ap .leg span{display:inline-flex;align-items:center;gap:.35rem}.ap .leg i{display:inline-block;width:14px;height:14px;border-radius:3px;border:1px solid var(--border-2)}
-.ap .mp{display:flex;flex-wrap:wrap;gap:.6rem 1rem;align-items:center;margin:.4rem 0}.ap .mp select{font:inherit;font-size:.9rem;min-height:40px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text);padding:.3rem .6rem}
+.ap .mp{display:flex;flex-wrap:wrap;gap:.6rem 1rem;align-items:center;margin:.4rem 0}.ap .mp select{font:inherit;font-size:16px;min-height:40px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text);padding:.3rem .6rem}
 .ap .ch{width:100%;height:auto;display:block;margin:.4rem 0 .2rem}
 .ap .note{font-size:.8rem;color:var(--text-muted);line-height:1.55;margin:.2rem 0 .6rem}
 .ap .warn{border:1px solid var(--border);border-left:2px solid var(--gold);padding:.6rem .8rem;border-radius:6px;font-size:.85rem;color:var(--text-dim);margin:.6rem 0;line-height:1.55}
@@ -757,6 +757,7 @@ CSS = """
 .ap .cite code{font-family:var(--font-mono);font-size:.8rem;color:var(--text);word-break:break-word}
 .ap details{border:1px solid var(--border);border-radius:8px;padding:.6rem .9rem;margin:.6rem 0;font-size:.85rem;color:var(--text-dim);line-height:1.6}
 .ap details summary{cursor:pointer;font-weight:700;color:var(--text)}
+@media(max-width:640px){.ap details summary{padding:.5rem 0}}
 .ap .nav2{display:flex;justify-content:space-between;gap:1rem;margin:1.4rem 0 0;font-size:.85rem}
 .ap .nav2 a{color:var(--text-dim);text-decoration:none}.ap .nav2 a:hover{color:var(--gold)}
 .ap .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:.3rem .8rem;margin:.6rem 0}
@@ -775,7 +776,7 @@ CSS = """
 .ap .loc .lm{fill:var(--gold);stroke:var(--bg);stroke-width:1.2}.ap .loc .ln0{fill:var(--surface3);stroke:var(--bg);stroke-width:.7}
 .ap .watch{margin:0 0 1rem;padding:.8rem 1rem;border:1px solid var(--border);border-radius:10px;background:var(--surface,#12161a)}
 .ap .watch b{display:block;font-size:.9rem;margin-bottom:.15rem}.ap .watch p{margin:0 0 .5rem;font-size:.8rem;color:var(--text-muted)}
-.ap .watch .wr{display:flex;flex-wrap:wrap;gap:.5rem}.ap .watch input[type=email]{flex:1 1 220px;min-width:0;font:inherit;font-size:.9rem;color:var(--text);background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:.5rem .7rem;min-height:40px}
+.ap .watch .wr{display:flex;flex-wrap:wrap;gap:.5rem}.ap .watch input[type=email]{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;color:var(--text);background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:.5rem .7rem;min-height:40px}
 .ap .watch button{font:inherit;font-size:.82rem;font-weight:700;color:var(--text);background:var(--surface,#12161a);border:1px solid var(--gold);border-radius:8px;padding:.5rem .95rem;min-height:40px;cursor:pointer}
 .ap .watch button:hover{color:var(--gold)}.ap .watch .wm{margin:.5rem 0 0;font-size:.82rem;color:var(--text)}.ap .watch .hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
 @media print{.ap .act,.ap .watch,#site-header,#site-footer{display:none}}
