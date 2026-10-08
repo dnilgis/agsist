@@ -250,24 +250,32 @@ def head(title, desc, path, jsonld):
     .rs-stat .l{{font-size:.72rem;color:#8a948f;letter-spacing:.05em;text-transform:uppercase;margin-top:2px}}
     .rs-stat .s{{font-size:.72rem;color:#8a948f;margin-top:2px}}
     .up{{color:#5fc28a}}.dn{{color:#e0685f}}
-    table.rs-t{{width:100%;border-collapse:collapse;font-size:.85rem;margin:10px 0}}
-    .rs-t th{{text-align:right;color:#8a948f;font-size:.68rem;letter-spacing:.07em;text-transform:uppercase;padding:7px 9px;border-bottom:1px solid #1a1f20;cursor:pointer;white-space:nowrap;user-select:none}}
+    /* 2026-10-08: the table, bars, cloud and FAQ sit on the page background, so they use the
+       site tokens (light and dark) instead of fixed dark-theme hex. The table scrolls inside
+       .rs-tw on phones (the page itself clips sideways overflow) with the name column pinned. */
+    .rs-tw{{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:10px 0;max-width:100%}}
+    table.rs-t{{width:100%;border-collapse:separate;border-spacing:0;font-size:.85rem;margin:0}}
+    .rs-t th{{text-align:right;color:var(--text-muted);font-size:.68rem;letter-spacing:.07em;text-transform:uppercase;padding:7px 9px;border-bottom:1px solid var(--border-2);cursor:pointer;white-space:nowrap;user-select:none}}
     .rs-t th:first-child,.rs-t td:first-child{{text-align:left}}
-    .rs-t td{{padding:6px 9px;border-bottom:1px solid #14181a;text-align:right;font-family:'JetBrains Mono',monospace;white-space:nowrap;color:#e6ebe9}}
-    .rs-t td:first-child{{font-family:Archivo,Inter,sans-serif;color:#e6ebe9}}
-    .rs-t tr:hover td{{background:#101415}}
-    .rs-t .mut{{color:#5a6467}}
+    .rs-t td{{padding:6px 9px;border-bottom:1px solid var(--border);text-align:right;font-family:'JetBrains Mono',monospace;white-space:nowrap;color:var(--text)}}
+    .rs-t td:first-child{{font-family:Archivo,Inter,sans-serif;color:var(--text)}}
+    .rs-t th:first-child,.rs-t td:first-child{{position:sticky;left:0;z-index:1;background:var(--bg);box-shadow:1px 0 0 var(--border-2)}}
+    .rs-t tr:hover td{{background:var(--surface2)}}
+    .rs-t .mut{{color:var(--text-muted)}}
+    .rs-t .up{{color:var(--green)}}.rs-t .dn{{color:var(--red)}}
+    [data-theme="light"] .rs-t .dn{{color:#b3261e}}
     .rs-bars{{margin:8px 0}}
     .rs-bar{{display:flex;align-items:center;gap:10px;margin:3px 0;font-family:'JetBrains Mono',monospace;font-size:.78rem}}
-    .rs-bar .y{{width:42px;color:#8a948f}}
+    .rs-bar .y{{flex:none;width:3.2em;white-space:nowrap;color:var(--text-muted)}}
     .rs-bar .b{{height:13px;background:linear-gradient(90deg,#2c4a3a,#5fc28a);border-radius:3px;min-width:2px}}
-    .rs-bar .v{{color:#e6ebe9}}
-    .rs-bar .gap{{color:#5a6467;font-style:italic;font-size:.74rem}}
+    .rs-bar .v{{color:var(--text)}}
+    .rs-bar .mut{{color:var(--text-muted);font-size:.7rem;white-space:nowrap}}
+    .rs-bar .gap{{color:var(--text-muted);font-style:italic;font-size:.74rem}}
     .rs-note{{background:#101415;border:1px solid #1a1f20;border-left:3px solid #d4a23f;border-radius:8px;padding:12px 15px;font-size:.85rem;line-height:1.65;color:#8a948f;margin:14px 0}}
     .rs-note b{{color:#e6ebe9}}
     .rs-links a{{color:var(--gold)}}
-    .rs-cloud{{font-size:.78rem;line-height:2;color:#8a948f}}
-    .rs-cloud a{{color:#8a948f;text-decoration:none;border-bottom:1px dotted #2a3133}}
+    .rs-cloud{{font-size:.78rem;line-height:2;color:var(--text-muted)}}
+    .rs-cloud a{{color:var(--text-muted);text-decoration:none;border-bottom:1px dotted var(--border-2)}}
     .rs-cloud a:hover{{color:var(--gold)}}
     /* the sponsor ribbon is styled once, in components/styles.css */
     h1{{font-size:1.55rem;margin:14px 0 4px}} h2{{font-size:1.12rem;margin:26px 0 6px}}
@@ -284,12 +292,17 @@ def head(title, desc, path, jsonld):
       .rh-tge{{display:none}}
       .rh-tst{{font-size:.56rem}}
     }}
-    .sub{{color:#8a948f;font-size:.9rem;line-height:1.6}}
-    .rs-t td:first-child a{{color:#e6ebe9;text-decoration:none;border-bottom:1px dotted #2a3133}}
+    .sub{{color:var(--text-muted);font-size:.9rem;line-height:1.6}}
+    .sub b{{color:var(--text)}}
+    .rs-t td:first-child a{{color:var(--text);text-decoration:underline dotted var(--border-2);text-underline-offset:3px}}
     .rs-t td:first-child a:hover{{color:var(--gold)}}
-    .rs-faq{{border-bottom:1px solid #1a1f20;padding:8px 0}}
-    .rs-faq summary{{cursor:pointer;color:#e6ebe9;font-size:.95rem}}
-    .rs-faq p{{color:#8a948f;font-size:.88rem;line-height:1.65;margin:8px 0 4px}}
+    @media (max-width:760px){{
+      .rs-t td:first-child{{padding-top:0;padding-bottom:0}}
+      .rs-t td:first-child a{{display:inline-flex;align-items:center;min-height:40px}}
+    }}
+    .rs-faq{{border-bottom:1px solid var(--border);padding:8px 0}}
+    .rs-faq summary{{cursor:pointer;color:var(--text);font-size:.95rem}}
+    .rs-faq p{{color:var(--text-muted);font-size:.88rem;line-height:1.65;margin:8px 0 4px}}
   </style>
 </head>"""
 
@@ -316,7 +329,7 @@ def bars_html(hist):
             rows.append(f'<div class="rs-bar"><span class="y">{h["y"]}</span>'
                         f'<div class="b" style="width:{w}%"></div>'
                         f'<span class="v">{money(h["v"])}</span>'
-                        f'<span class="mut" style="color:#5a6467;font-size:.7rem">{h["n"]} co.</span></div>')
+                        f'<span class="mut">{h["n"]} co.</span></div>')
     return '<div class="rs-bars">' + "".join(rows) + "</div>"
 
 
@@ -350,8 +363,8 @@ def county_table(st, s, aslug=None):
         cells.append(f'<td data-v="{ct if ct is not None else -1}">'
                      + (f"{ct:.0f} bu" if ct is not None else '<span class="mut">&mdash;</span>') + "</td>")
         body.append("<tr>" + "".join(cells) + "</tr>")
-    return (f'<table class="rs-t" id="rs-table"><thead><tr>{thead}</tr></thead>'
-            f'<tbody>{"".join(body)}</tbody></table>')
+    return (f'<div class="rs-tw"><table class="rs-t" id="rs-table"><thead><tr>{thead}</tr></thead>'
+            f'<tbody>{"".join(body)}</tbody></table></div>')
 
 
 SORT_JS = """<script>
@@ -482,7 +495,7 @@ def build_state_page(st, d, s, all_states, aslug=None):
 <body>
 <div id="site-header"></div>
 <main class="rs-wrap">
-  <p class="sub" style="margin-top:14px"><a href="/rent/" style="color:#8a948f">Cash Rent by State</a> &rsaquo; <b style="color:#e6ebe9">{name}</b></p>
+  <p class="sub" style="margin-top:14px"><a href="/rent/" style="color:var(--text-muted)">Cash Rent by State</a> &rsaquo; <b>{name}</b></p>
   <h1>{name} Cash Rent by County &mdash; {yr}</h1>
   <p class="sub">Every USDA-published county cash rental rate in {name}, straight from the NASS Cash Rents
   Survey &mdash; no estimates, no modeling, no login. <span id="rs-seed"><!--SEED:rentstate-->{seed}<!--/SEED--></span></p>
@@ -544,10 +557,10 @@ def build_hub(states, stats, generated):
             tiles.append(f'<a class="rh-tile" href="/rent/{slug(STATE_NAMES[ab])}" style="--gc:{c};--gr:{r};background:{quint_color(st2["median"], st2["primary"])}"><span class="rh-tst">{ab}</span><span class="rh-tge">${round(st2["median"]):,}</span></a>')
         else:
             tiles.append(f'<div class="rh-tile dim" style="--gc:{c};--gr:{r}"><span class="rh-tst">{ab}</span></div>')
-    tile_html = ('<div style="font-family:\'JetBrains Mono\',monospace;font-size:.66rem;letter-spacing:.1em;color:#8a948f;text-transform:uppercase;margin:16px 0 10px">'
+    tile_html = ('<div style="font-family:\'JetBrains Mono\',monospace;font-size:.66rem;letter-spacing:.1em;color:var(--text-muted);text-transform:uppercase;margin:16px 0 10px">'
         f'Median county rent per acre, {yr} &mdash; tap a state for every county. Color ranks each state against states reporting the SAME land type (cropland vs pasture states are not comparable dollar-for-dollar)</div>'
         '<div class="rh-grid">' + "".join(tiles) + '</div>'
-        '<div style="display:flex;gap:14px;justify-content:center;margin:12px 0 0;font-size:.74rem;color:#8a948f;flex-wrap:wrap">'
+        '<div style="display:flex;gap:14px;justify-content:center;margin:12px 0 0;font-size:.74rem;color:var(--text-muted);flex-wrap:wrap">'
         '<span><b style="display:inline-block;width:13px;height:13px;border-radius:3px;vertical-align:-2px;margin-right:5px;background:#af3a32"></b>priciest fifth</span>'
         '<span><b style="display:inline-block;width:13px;height:13px;border-radius:3px;vertical-align:-2px;margin-right:5px;background:#a8823c"></b>middle</span>'
         '<span><b style="display:inline-block;width:13px;height:13px;border-radius:3px;vertical-align:-2px;margin-right:5px;background:#396d4f"></b>cheapest fifth</span>'
@@ -559,10 +572,10 @@ def build_hub(states, stats, generated):
                f'{"+" if s["yoy"] >= 0 else ""}{s["yoy"]}%</td>') if s["yoy"] is not None \
             else '<td class="mut" data-v="-999">&mdash;</td>'
         rows.append(
-            f'<tr><td><a href="/rent/{slug(STATE_NAMES[st])}" style="color:#e6ebe9">{STATE_NAMES[st]}</a></td>'
+            f'<tr><td><a href="/rent/{slug(STATE_NAMES[st])}" >{STATE_NAMES[st]}</a></td>'
             f'<td data-v="{s["median"]}">{money(s["median"])}</td>{yoy}'
             f'<td data-v="{s["n"]}">{s["n"]}</td>'
-            f'<td style="font-family:Archivo,Inter,sans-serif;color:#8a948f">{TYPE_SHORT[s["primary"]]}</td></tr>')
+            f'<td style="font-family:Archivo,Inter,sans-serif;color:var(--text-muted)">{TYPE_SHORT[s["primary"]]}</td></tr>')
     medians = sorted(((s["median"], st) for st, s in stats.items()), reverse=True)
     desc = (f"USDA county cash rent for all {len(states)} published states, {yr}: median $/acre, change vs "
             f"{yr-1}, and every county's rate one click deep. Free, sources shown.")[:160]
@@ -587,8 +600,8 @@ def build_hub(states, stats, generated):
   <span id="rs-seed"><!--SEED:renthub-->{seed}<!--/SEED--></span></p>
   <aside class="ag-sponsor-ribbon"><span class="ag-sponsor-tag">Sponsor this page</span> The doorway to every county rent rate in America &mdash; one category-exclusive slot. <span class="ag-sponsor-price" data-rate="page">{PAGE_RATE}</span> <a href="/sponsor-apply?slot=rent-hub&amp;utm_source=rent-hub&amp;utm_medium=slot">Put your name here &rarr;</a></aside>
   {tile_html}
-  <table class="rs-t" id="rs-table"><thead><tr><th>State</th><th>Median rent /ac</th><th>YoY</th><th>Counties</th><th>Type</th></tr></thead>
-  <tbody>{"".join(rows)}</tbody></table>
+  <div class="rs-tw"><table class="rs-t" id="rs-table"><thead><tr><th>State</th><th>Median rent /ac</th><th>YoY</th><th>Counties</th><th>Type</th></tr></thead>
+  <tbody>{"".join(rows)}</tbody></table></div>
   <p class="sub">Medians are of published counties, most-published land type per state (marked). Matched-county
   YoY. The <a href="/cash-rent" style="color:var(--gold)">national county map</a> shows all of this on one screen,
   plus rent as a share of what the acre can actually gross.</p>

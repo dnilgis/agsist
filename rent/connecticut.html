@@ -127,24 +127,32 @@
     .rs-stat .l{font-size:.72rem;color:#8a948f;letter-spacing:.05em;text-transform:uppercase;margin-top:2px}
     .rs-stat .s{font-size:.72rem;color:#8a948f;margin-top:2px}
     .up{color:#5fc28a}.dn{color:#e0685f}
-    table.rs-t{width:100%;border-collapse:collapse;font-size:.85rem;margin:10px 0}
-    .rs-t th{text-align:right;color:#8a948f;font-size:.68rem;letter-spacing:.07em;text-transform:uppercase;padding:7px 9px;border-bottom:1px solid #1a1f20;cursor:pointer;white-space:nowrap;user-select:none}
+    /* 2026-10-08: the table, bars, cloud and FAQ sit on the page background, so they use the
+       site tokens (light and dark) instead of fixed dark-theme hex. The table scrolls inside
+       .rs-tw on phones (the page itself clips sideways overflow) with the name column pinned. */
+    .rs-tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:10px 0;max-width:100%}
+    table.rs-t{width:100%;border-collapse:separate;border-spacing:0;font-size:.85rem;margin:0}
+    .rs-t th{text-align:right;color:var(--text-muted);font-size:.68rem;letter-spacing:.07em;text-transform:uppercase;padding:7px 9px;border-bottom:1px solid var(--border-2);cursor:pointer;white-space:nowrap;user-select:none}
     .rs-t th:first-child,.rs-t td:first-child{text-align:left}
-    .rs-t td{padding:6px 9px;border-bottom:1px solid #14181a;text-align:right;font-family:'JetBrains Mono',monospace;white-space:nowrap;color:#e6ebe9}
-    .rs-t td:first-child{font-family:Archivo,Inter,sans-serif;color:#e6ebe9}
-    .rs-t tr:hover td{background:#101415}
-    .rs-t .mut{color:#5a6467}
+    .rs-t td{padding:6px 9px;border-bottom:1px solid var(--border);text-align:right;font-family:'JetBrains Mono',monospace;white-space:nowrap;color:var(--text)}
+    .rs-t td:first-child{font-family:Archivo,Inter,sans-serif;color:var(--text)}
+    .rs-t th:first-child,.rs-t td:first-child{position:sticky;left:0;z-index:1;background:var(--bg);box-shadow:1px 0 0 var(--border-2)}
+    .rs-t tr:hover td{background:var(--surface2)}
+    .rs-t .mut{color:var(--text-muted)}
+    .rs-t .up{color:var(--green)}.rs-t .dn{color:var(--red)}
+    [data-theme="light"] .rs-t .dn{color:#b3261e}
     .rs-bars{margin:8px 0}
     .rs-bar{display:flex;align-items:center;gap:10px;margin:3px 0;font-family:'JetBrains Mono',monospace;font-size:.78rem}
-    .rs-bar .y{width:42px;color:#8a948f}
+    .rs-bar .y{flex:none;width:3.2em;white-space:nowrap;color:var(--text-muted)}
     .rs-bar .b{height:13px;background:linear-gradient(90deg,#2c4a3a,#5fc28a);border-radius:3px;min-width:2px}
-    .rs-bar .v{color:#e6ebe9}
-    .rs-bar .gap{color:#5a6467;font-style:italic;font-size:.74rem}
+    .rs-bar .v{color:var(--text)}
+    .rs-bar .mut{color:var(--text-muted);font-size:.7rem;white-space:nowrap}
+    .rs-bar .gap{color:var(--text-muted);font-style:italic;font-size:.74rem}
     .rs-note{background:#101415;border:1px solid #1a1f20;border-left:3px solid #d4a23f;border-radius:8px;padding:12px 15px;font-size:.85rem;line-height:1.65;color:#8a948f;margin:14px 0}
     .rs-note b{color:#e6ebe9}
     .rs-links a{color:var(--gold)}
-    .rs-cloud{font-size:.78rem;line-height:2;color:#8a948f}
-    .rs-cloud a{color:#8a948f;text-decoration:none;border-bottom:1px dotted #2a3133}
+    .rs-cloud{font-size:.78rem;line-height:2;color:var(--text-muted)}
+    .rs-cloud a{color:var(--text-muted);text-decoration:none;border-bottom:1px dotted var(--border-2)}
     .rs-cloud a:hover{color:var(--gold)}
     /* the sponsor ribbon is styled once, in components/styles.css */
     h1{font-size:1.55rem;margin:14px 0 4px} h2{font-size:1.12rem;margin:26px 0 6px}
@@ -161,18 +169,23 @@
       .rh-tge{display:none}
       .rh-tst{font-size:.56rem}
     }
-    .sub{color:#8a948f;font-size:.9rem;line-height:1.6}
-    .rs-t td:first-child a{color:#e6ebe9;text-decoration:none;border-bottom:1px dotted #2a3133}
+    .sub{color:var(--text-muted);font-size:.9rem;line-height:1.6}
+    .sub b{color:var(--text)}
+    .rs-t td:first-child a{color:var(--text);text-decoration:underline dotted var(--border-2);text-underline-offset:3px}
     .rs-t td:first-child a:hover{color:var(--gold)}
-    .rs-faq{border-bottom:1px solid #1a1f20;padding:8px 0}
-    .rs-faq summary{cursor:pointer;color:#e6ebe9;font-size:.95rem}
-    .rs-faq p{color:#8a948f;font-size:.88rem;line-height:1.65;margin:8px 0 4px}
+    @media (max-width:760px){
+      .rs-t td:first-child{padding-top:0;padding-bottom:0}
+      .rs-t td:first-child a{display:inline-flex;align-items:center;min-height:40px}
+    }
+    .rs-faq{border-bottom:1px solid var(--border);padding:8px 0}
+    .rs-faq summary{cursor:pointer;color:var(--text);font-size:.95rem}
+    .rs-faq p{color:var(--text-muted);font-size:.88rem;line-height:1.65;margin:8px 0 4px}
   </style>
 </head>
 <body>
 <div id="site-header"></div>
 <main class="rs-wrap">
-  <p class="sub" style="margin-top:14px"><a href="/rent/" style="color:#8a948f">Cash Rent by State</a> &rsaquo; <b style="color:#e6ebe9">Connecticut</b></p>
+  <p class="sub" style="margin-top:14px"><a href="/rent/" style="color:var(--text-muted)">Cash Rent by State</a> &rsaquo; <b>Connecticut</b></p>
   <h1>Connecticut Cash Rent by County &mdash; 2026</h1>
   <p class="sub">Every USDA-published county cash rental rate in Connecticut, straight from the NASS Cash Rents
   Survey &mdash; no estimates, no modeling, no login. <span id="rs-seed"><!--SEED:rentstate-->6 Connecticut counties with a published 2026 non-irrigated cropland rent &middot; median $83/acre &middot; data refreshed 2026-10-06<!--/SEED--></span></p>
@@ -195,11 +208,11 @@
   <p class="sub">Click a column to sort. Greyed values are the county&rsquo;s most recent published year where 2026
   wasn&rsquo;t published. Each county name opens its Farmland Atlas record (land value, yield, insurance
   and drought). Corn trend is the AGSIST least-squares trend yield from NASS county estimates.</p>
-  <table class="rs-t" id="rs-table"><thead><tr><th>County</th><th title="non-irrigated cropland, $/acre">Non-irrigated 2026</th><th>YoY</th><th>Corn trend</th></tr></thead><tbody><tr><td><a href="/farmland-atlas/connecticut/hartford-county" title="Hartford: Farmland Atlas county record">Hartford</a></td><td data-v="152.0">$152</td><td class="dn" data-v="-1.3">-1.3%</td><td data-v="-1"><span class="mut">&mdash;</span></td></tr><tr><td><a href="/farmland-atlas/connecticut/litchfield-county" title="Litchfield: Farmland Atlas county record">Litchfield</a></td><td class="mut" data-v="47.0">$47 <span style='font-size:.68rem'>(2025)</span></td><td class="mut" data-v="-999">&mdash;</td><td data-v="-1"><span class="mut">&mdash;</span></td></tr><tr><td><a href="/farmland-atlas/connecticut/middlesex-county" title="Middlesex: Farmland Atlas county record">Middlesex</a></td><td data-v="67.5">$67.50</td><td class="mut" data-v="-999">&mdash;</td><td data-v="-1"><span class="mut">&mdash;</span></td></tr><tr><td><a href="/farmland-atlas/connecticut/new-haven-county" title="New Haven: Farmland Atlas county record">New Haven</a></td><td data-v="80.0">$80</td><td class="mut" data-v="-999">&mdash;</td><td data-v="-1"><span class="mut">&mdash;</span></td></tr><tr><td><a href="/farmland-atlas/connecticut/new-london-county" title="New London: Farmland Atlas county record">New London</a></td><td data-v="86.0">$86</td><td class="mut" data-v="-999">&mdash;</td><td data-v="-1"><span class="mut">&mdash;</span></td></tr><tr><td><a href="/farmland-atlas/connecticut/tolland-county" title="Tolland: Farmland Atlas county record">Tolland</a></td><td data-v="90.0">$90</td><td class="dn" data-v="-13.5">-13.5%</td><td data-v="-1"><span class="mut">&mdash;</span></td></tr><tr><td><a href="/farmland-atlas/connecticut/windham-county" title="Windham: Farmland Atlas county record">Windham</a></td><td data-v="56.0">$56</td><td class="dn" data-v="-13.8">-13.8%</td><td data-v="-1"><span class="mut">&mdash;</span></td></tr></tbody></table>
+  <div class="rs-tw"><table class="rs-t" id="rs-table"><thead><tr><th>County</th><th title="non-irrigated cropland, $/acre">Non-irrigated 2026</th><th>YoY</th><th>Corn trend</th></tr></thead><tbody><tr><td><a href="/farmland-atlas/connecticut/hartford-county" title="Hartford: Farmland Atlas county record">Hartford</a></td><td data-v="152.0">$152</td><td class="dn" data-v="-1.3">-1.3%</td><td data-v="-1"><span class="mut">&mdash;</span></td></tr><tr><td><a href="/farmland-atlas/connecticut/litchfield-county" title="Litchfield: Farmland Atlas county record">Litchfield</a></td><td class="mut" data-v="47.0">$47 <span style='font-size:.68rem'>(2025)</span></td><td class="mut" data-v="-999">&mdash;</td><td data-v="-1"><span class="mut">&mdash;</span></td></tr><tr><td><a href="/farmland-atlas/connecticut/middlesex-county" title="Middlesex: Farmland Atlas county record">Middlesex</a></td><td data-v="67.5">$67.50</td><td class="mut" data-v="-999">&mdash;</td><td data-v="-1"><span class="mut">&mdash;</span></td></tr><tr><td><a href="/farmland-atlas/connecticut/new-haven-county" title="New Haven: Farmland Atlas county record">New Haven</a></td><td data-v="80.0">$80</td><td class="mut" data-v="-999">&mdash;</td><td data-v="-1"><span class="mut">&mdash;</span></td></tr><tr><td><a href="/farmland-atlas/connecticut/new-london-county" title="New London: Farmland Atlas county record">New London</a></td><td data-v="86.0">$86</td><td class="mut" data-v="-999">&mdash;</td><td data-v="-1"><span class="mut">&mdash;</span></td></tr><tr><td><a href="/farmland-atlas/connecticut/tolland-county" title="Tolland: Farmland Atlas county record">Tolland</a></td><td data-v="90.0">$90</td><td class="dn" data-v="-13.5">-13.5%</td><td data-v="-1"><span class="mut">&mdash;</span></td></tr><tr><td><a href="/farmland-atlas/connecticut/windham-county" title="Windham: Farmland Atlas county record">Windham</a></td><td data-v="56.0">$56</td><td class="dn" data-v="-13.8">-13.8%</td><td data-v="-1"><span class="mut">&mdash;</span></td></tr></tbody></table></div>
   <h2>Connecticut median county rent by year</h2>
   <p class="sub">Median of counties published each year (non-irrigated cropland). Gap years are shown as gaps &mdash;
   drawing a line across them would be an invention.</p>
-  <div class="rs-bars"><div class="rs-bar"><span class="y">2008</span><div class="b" style="width:69.6%"></div><span class="v">$67.50</span><span class="mut" style="color:#5a6467;font-size:.7rem">2 co.</span></div><div class="rs-bar"><span class="y">2009</span><span class="gap">not published &mdash; gap shown, not interpolated</span></div><div class="rs-bar"><span class="y">2010</span><div class="b" style="width:52.1%"></div><span class="v">$50.50</span><span class="mut" style="color:#5a6467;font-size:.7rem">5 co.</span></div><div class="rs-bar"><span class="y">2011</span><div class="b" style="width:48.5%"></div><span class="v">$47</span><span class="mut" style="color:#5a6467;font-size:.7rem">5 co.</span></div><div class="rs-bar"><span class="y">2012</span><div class="b" style="width:57.7%"></div><span class="v">$56</span><span class="mut" style="color:#5a6467;font-size:.7rem">5 co.</span></div><div class="rs-bar"><span class="y">2013</span><div class="b" style="width:49.0%"></div><span class="v">$47.50</span><span class="mut" style="color:#5a6467;font-size:.7rem">4 co.</span></div><div class="rs-bar"><span class="y">2014</span><div class="b" style="width:61.9%"></div><span class="v">$60</span><span class="mut" style="color:#5a6467;font-size:.7rem">5 co.</span></div><div class="rs-bar"><span class="y">2015</span><span class="gap">no survey &mdash; gap shown, not interpolated</span></div><div class="rs-bar"><span class="y">2016</span><div class="b" style="width:50.0%"></div><span class="v">$48.50</span><span class="mut" style="color:#5a6467;font-size:.7rem">5 co.</span></div><div class="rs-bar"><span class="y">2017</span><div class="b" style="width:47.2%"></div><span class="v">$45.75</span><span class="mut" style="color:#5a6467;font-size:.7rem">4 co.</span></div><div class="rs-bar"><span class="y">2018</span><span class="gap">no survey &mdash; gap shown, not interpolated</span></div><div class="rs-bar"><span class="y">2019</span><div class="b" style="width:62.9%"></div><span class="v">$61</span><span class="mut" style="color:#5a6467;font-size:.7rem">5 co.</span></div><div class="rs-bar"><span class="y">2020</span><span class="gap">not published &mdash; gap shown, not interpolated</span></div><div class="rs-bar"><span class="y">2021</span><div class="b" style="width:69.8%"></div><span class="v">$67.75</span><span class="mut" style="color:#5a6467;font-size:.7rem">6 co.</span></div><div class="rs-bar"><span class="y">2022</span><div class="b" style="width:68.8%"></div><span class="v">$66.75</span><span class="mut" style="color:#5a6467;font-size:.7rem">6 co.</span></div><div class="rs-bar"><span class="y">2023</span><div class="b" style="width:84.0%"></div><span class="v">$81.50</span><span class="mut" style="color:#5a6467;font-size:.7rem">6 co.</span></div><div class="rs-bar"><span class="y">2024</span><div class="b" style="width:100.0%"></div><span class="v">$97</span><span class="mut" style="color:#5a6467;font-size:.7rem">5 co.</span></div><div class="rs-bar"><span class="y">2025</span><div class="b" style="width:87.1%"></div><span class="v">$84.50</span><span class="mut" style="color:#5a6467;font-size:.7rem">4 co.</span></div><div class="rs-bar"><span class="y">2026</span><div class="b" style="width:85.6%"></div><span class="v">$83</span><span class="mut" style="color:#5a6467;font-size:.7rem">6 co.</span></div></div>
+  <div class="rs-bars"><div class="rs-bar"><span class="y">2008</span><div class="b" style="width:69.6%"></div><span class="v">$67.50</span><span class="mut">2 co.</span></div><div class="rs-bar"><span class="y">2009</span><span class="gap">not published &mdash; gap shown, not interpolated</span></div><div class="rs-bar"><span class="y">2010</span><div class="b" style="width:52.1%"></div><span class="v">$50.50</span><span class="mut">5 co.</span></div><div class="rs-bar"><span class="y">2011</span><div class="b" style="width:48.5%"></div><span class="v">$47</span><span class="mut">5 co.</span></div><div class="rs-bar"><span class="y">2012</span><div class="b" style="width:57.7%"></div><span class="v">$56</span><span class="mut">5 co.</span></div><div class="rs-bar"><span class="y">2013</span><div class="b" style="width:49.0%"></div><span class="v">$47.50</span><span class="mut">4 co.</span></div><div class="rs-bar"><span class="y">2014</span><div class="b" style="width:61.9%"></div><span class="v">$60</span><span class="mut">5 co.</span></div><div class="rs-bar"><span class="y">2015</span><span class="gap">no survey &mdash; gap shown, not interpolated</span></div><div class="rs-bar"><span class="y">2016</span><div class="b" style="width:50.0%"></div><span class="v">$48.50</span><span class="mut">5 co.</span></div><div class="rs-bar"><span class="y">2017</span><div class="b" style="width:47.2%"></div><span class="v">$45.75</span><span class="mut">4 co.</span></div><div class="rs-bar"><span class="y">2018</span><span class="gap">no survey &mdash; gap shown, not interpolated</span></div><div class="rs-bar"><span class="y">2019</span><div class="b" style="width:62.9%"></div><span class="v">$61</span><span class="mut">5 co.</span></div><div class="rs-bar"><span class="y">2020</span><span class="gap">not published &mdash; gap shown, not interpolated</span></div><div class="rs-bar"><span class="y">2021</span><div class="b" style="width:69.8%"></div><span class="v">$67.75</span><span class="mut">6 co.</span></div><div class="rs-bar"><span class="y">2022</span><div class="b" style="width:68.8%"></div><span class="v">$66.75</span><span class="mut">6 co.</span></div><div class="rs-bar"><span class="y">2023</span><div class="b" style="width:84.0%"></div><span class="v">$81.50</span><span class="mut">6 co.</span></div><div class="rs-bar"><span class="y">2024</span><div class="b" style="width:100.0%"></div><span class="v">$97</span><span class="mut">5 co.</span></div><div class="rs-bar"><span class="y">2025</span><div class="b" style="width:87.1%"></div><span class="v">$84.50</span><span class="mut">4 co.</span></div><div class="rs-bar"><span class="y">2026</span><div class="b" style="width:85.6%"></div><span class="v">$83</span><span class="mut">6 co.</span></div></div>
   <div class="rs-note"><b>What this can&rsquo;t tell you.</b> These are county <b>means from a voluntary USDA survey</b> &mdash;
   rents vary widely inside a county, driven by soil, drainage, field size and how badly a neighbor wants the
   ground. Year-over-year stats above compare only counties published in both years, so a county dropping out

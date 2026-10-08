@@ -735,6 +735,8 @@ CSS = """
 .ap .fact .r small{display:block;font-weight:400;color:var(--text-muted);font-family:inherit;font-size:.74rem}
 .ap .fact.w .r{font-weight:400;color:var(--text-muted);font-family:inherit}
 .ap .fact.st{grid-template-columns:minmax(0,1fr)}.ap .fact.st .r{text-align:left}
+.ap .fact.w{grid-template-columns:minmax(9em,1fr) minmax(0,auto)}
+@media (max-width:520px){.ap .fact.w{grid-template-columns:minmax(0,1fr)}.ap .fact.w .r{text-align:left}}
 .ap .smw{margin:.4rem 0 1rem}.ap .sm{width:100%;height:auto;display:block;background:var(--surface);border:1px solid var(--border);border-radius:8px}
 .ap .sm path{stroke:var(--bg);stroke-width:.6;stroke-linejoin:round;cursor:pointer}.ap .sm a:hover path,.ap .sm a:focus path{stroke:var(--text);stroke-width:1.4}
 .ap .q0{fill:rgba(var(--gold-rgb),.16)}.ap .q1{fill:rgba(var(--gold-rgb),.34)}.ap .q2{fill:rgba(var(--gold-rgb),.52)}.ap .q3{fill:rgba(var(--gold-rgb),.74)}.ap .q4{fill:rgba(var(--gold-rgb),1)}.ap .qn{fill:var(--surface3)}
