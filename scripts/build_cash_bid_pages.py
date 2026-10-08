@@ -63,6 +63,7 @@ Usage:
 import argparse
 import datetime as dt
 import json
+import math
 import os
 import re
 import shutil
@@ -198,12 +199,16 @@ def tel(p):
 
 
 # ---------------------------------------------------------------- selection
-def select(merged, index, towns_by_state):
-    """-> (towns, drops). towns: {(ST, town_key): {...}} with every board that
-    has posted rows in that town and, per board, the rows that may print."""
+def select(merged, index, towns_by_state, zip_towns=None, zip_coord=None, placed=None):
+    """-> (towns, drops, unplaced). towns: {(ST, town_key): {...}} with every
+    board that has posted rows in that town and, per board, the rows that may
+    print. A place town_of() cannot name is tried by place_by_zip_or_pin()."""
     gen = parse_ts(merged.get("generated"))
     snap_ct = gen.astimezone(CT)
     srcs = {s["id"]: s for s in (index.get("sources") or []) if s.get("id")}
+    fallback = place_fallbacks(merged, srcs, towns_by_state, zip_towns, zip_coord)
+    if placed is not None:
+        placed.update(fallback)
     drops = Counter()
     towns, unplaced = {}, {}
     for b in merged.get("bids") or []:
@@ -222,6 +227,10 @@ def select(merged, index, towns_by_state):
             drops["not_us_or_not_usd"] += 1
             continue
         tname = town_of(b, src, towns_by_state)
+        how = {"how": "name"}
+        if not tname and fallback.get((st, b.get("place") or sid)):
+            how = fallback[(st, b.get("place") or sid)]
+            tname = how["town"] if how["how"] != "none" else None
         if not tname:
             drops["rows_not_placed_in_a_town"] += 1
             unplaced.setdefault((st, b.get("place") or sid), (b.get("operator") or "", town_name(b.get("city")),
@@ -234,7 +243,8 @@ def select(merged, index, towns_by_state):
             "place": place, "source": sid, "operator": (b.get("operator") or src.get("operator") or "").strip(),
             "city": town_name(b.get("city")), "zip": zip5(b.get("zip") or src.get("zip")),
             "phone": src.get("phone") or "", "checked": parse_ts(src.get("checkedAt")),
-            "last_priced": None, "rows": [], "why": Counter()})
+            "last_priced": None, "rows": [], "why": Counter(), "how": how["how"], "near_mi": how.get("mi"),
+            "town": tname, "state": st})
         pt = parse_ts(b.get("pricedAt"))
         if pt and (bd["last_priced"] is None or pt > bd["last_priced"]):
             bd["last_priced"] = pt
@@ -338,6 +348,109 @@ def town_of(b, src, towns_by_state):
     return town_name(hit) if hit else None
 
 
+NEAR_MI = 10          # a place with no town and no usable ZIP goes on a town page this close, or nowhere
+
+
+def miles(a_lat, a_lon, b_lat, b_lon):
+    r = math.pi / 180
+    x = (math.sin((b_lat - a_lat) * r / 2) ** 2
+         + math.cos(a_lat * r) * math.cos(b_lat * r) * math.sin((b_lon - a_lon) * r / 2) ** 2)
+    return 2 * 3958.7613 * math.asin(math.sqrt(x))
+
+
+def _pin(b):
+    lat, lon = b.get("lat"), b.get("lon")
+    return (lat, lon) if isinstance(lat, (int, float)) and isinstance(lon, (int, float)) else None
+
+
+def place_fallbacks(merged, srcs, towns_by_state, zip_towns=None, zip_coord=None):
+    """{(ST, place): placement} for every network place town_of() cannot name.
+    A placement is {"how": "zip"|"near"|"none", "town", "mi", "why"}:
+
+      zip   the place's own ZIP is in zip-towns.json, in the same state. When
+            the place has a pin, the pin must sit within NEAR_MI of that ZIP's
+            centroid (data/zips/NN.json); a head-office ZIP on a branch board
+            fails that ("Naples" on a Pleasant Plains ZIP, 35 mi off) and the
+            place falls through to `near`. A ZIP whose centroid cannot be read
+            is not trusted against a pin.
+      near  the place has a street-level pin, and a town page already exists
+            for a town named by the rules in town_of(): the nearest such town
+            within NEAR_MI, measured to the nearest street-level pin of an
+            elevator placed in it by name. The card says how far ("8 mi from
+            Pana"). A town pin ("precision": "town") is a ZIP centroid and can
+            be miles off, so it is not used on either side.
+      none  neither: the place stays on the state index, as before.
+
+    A town is never read out of a name, and no page is made for a name that is
+    not a town in zip-towns.json."""
+    zips = (zip_towns or {}).get("zips") or {}
+    first, named, anchors = {}, set(), defaultdict(list)
+    for b in merged.get("bids") or []:
+        if not isinstance(b, dict):
+            continue
+        src = srcs.get(b.get("source"))
+        st = (b.get("state") or "").upper()
+        if src is None or b.get("via") != "scrape" or st not in STATE_NAMES or (b.get("currency") or "") != "USD":
+            continue
+        k = (st, b.get("place") or b.get("source"))
+        if k in first:
+            continue
+        first[k] = (b, src)
+        tname = town_of(b, src, towns_by_state)
+        if tname:
+            named.add(k)
+            if _pin(b) and b.get("precision") == "street":
+                anchors[(st, url_slug(tname))].append((_pin(b), tname))
+    out = {}
+    for k, (b, src) in first.items():
+        if k in named:
+            continue
+        st, pin = k[0], _pin(b)
+        z = zip5(b.get("zip") or src.get("zip"))
+        zt = zips.get(z) if z else None
+        why = "no ZIP on file" if not z else (f"ZIP {z} not in the ZIP table" if not zt else
+                                             (f"ZIP {z} is in {zt[1]}" if zt[1] != st else ""))
+        if not why and pin:
+            c = zip_coord(z) if zip_coord else None
+            if not c:
+                why = f"ZIP {z} has no centroid to check the pin against"
+            else:
+                d = miles(pin[0], pin[1], c[0], c[1])
+                if d > NEAR_MI:
+                    why = f"pin is {d:.0f} mi from ZIP {z}"
+        if not why:
+            out[k] = {"how": "zip", "town": town_name(zt[0]), "zip": z, "mi": None, "why": ""}
+            continue
+        best = None
+        if pin and b.get("precision") == "street":
+            for (ast, _), pts in anchors.items():
+                if ast != st:
+                    continue
+                for p, tname in pts:
+                    d = miles(pin[0], pin[1], p[0], p[1])
+                    if d <= NEAR_MI and (best is None or d < best[0]):
+                        best = (d, tname)
+        if best:
+            out[k] = {"how": "near", "town": best[1], "zip": z, "mi": best[0], "why": why}
+        else:
+            out[k] = {"how": "none", "town": None, "zip": z, "mi": None,
+                      "why": why + ("" if pin and b.get("precision") == "street" else
+                                    "; no street-level pin" if why else "no street-level pin")}
+    return out
+
+
+def near_text(bd):
+    """Where a place sits, for a board not named by its town: "Pana Facility,
+    Pana, IL 62557" for a ZIP placement, "8 mi from Pana" for a near one."""
+    if bd.get("how") == "zip":
+        return f"{bd['city']}, {bd['town']}, {bd['state']} {bd['zip']}".lstrip(", ")
+    if bd.get("how") == "near":
+        mi = bd["near_mi"]
+        dist = "under 1 mi" if mi < 1 else f"{mi:.0f} mi"
+        return (f"{bd['city']}, " if bd["city"] else "") + f"{dist} from {bd['town']}"
+    return ""
+
+
 def drop_misreads(towns, drops, tol=0.03):
     """cash - basis is the futures price the board used. One more than 3% off
     the network median for that contract (>= 5 boards) is a misread cash,
@@ -437,7 +550,7 @@ def board_section(bd, snap_ct):
     call = (f'<a href="tel:+1{ph}">call to confirm ({ph[:3]}-{ph[3:6]}-{ph[6:]})</a>' if ph
             else "call to confirm")
     name = bd["operator"] or bd["city"]
-    loc = bd["city"] if bd["city"] and bd["city"].lower() != name.lower() else ""
+    loc = near_text(bd) or (bd["city"] if bd["city"] and bd["city"].lower() != name.lower() else "")
     trs = []
     for r in rows:
         com = r["commodity"]
@@ -476,6 +589,9 @@ def quiet_line(bd):
     why = next((WHY[k] for k, _ in bd["why"].most_common() if k in WHY), "no current bid")
     seen = f", last read {fmt_day(bd['checked'])}" if bd["checked"] else ""
     name = bd["operator"] or bd["city"]
+    where = near_text(bd)
+    if where:
+        name += f" ({where})"
     return f"<li>{esc(name)}: {esc(why)}{seen}</li>"
 
 
@@ -483,10 +599,9 @@ def build_town_page(t, ctx):
     st, sname = t["state"], STATE_NAMES[t["state"]]
     ssl = url_slug(sname)
     snap_ct = ctx["snap_ct"]
-    live_b = sorted((b for b in t["boards"].values() if b["rows"]),
-                    key=lambda b: (b["operator"].lower(), b["city"].lower()))
-    quiet = sorted((b for b in t["boards"].values() if not b["rows"]),
-                   key=lambda b: (b["operator"].lower(), b["city"].lower()))
+    order = lambda b: (b["how"] == "near", b["near_mi"] or 0, b["operator"].lower(), b["city"].lower())  # noqa: E731
+    live_b = sorted((b for b in t["boards"].values() if b["rows"]), key=order)
+    quiet = sorted((b for b in t["boards"].values() if not b["rows"]), key=order)
     secs, times, crops, nrows = [], [], set(), 0
     for bd in live_b:
         h, rows, ts = board_section(bd, snap_ct)
@@ -502,21 +617,30 @@ def build_town_page(t, ctx):
         title = f"Cash Grain Bids in {place} Today"
     if len(title) > 60:
         title = f"{place} Cash Grain Bids"
-    zips = Counter(b["zip"] for b in live_b or quiet if b["zip"])
+    zips = Counter(b["zip"] for b in live_b or quiet if b["zip"] and b["how"] != "near")
+    if not zips:
+        zips = Counter(b["zip"] for b in live_b or quiet if b["zip"])
     z = zips.most_common(1)[0][0] if zips else ""
     live = f"/cash-bids?zip={z}" if z else "/cash-bids"
     if indexable:
         cl = [CROP_LABEL[c].lower() for c in CROPS if c in crops]
         cl_txt = ", ".join(cl[:-1]) + (" and " if len(cl) > 1 else "") + cl[-1]
         n = len(live_b)
+        n_near = sum(1 for b in live_b if b["how"] == "near")
+        where = f"in and near {place}" if n_near else f"in {place}"
         latest = max(times)
-        desc = (f"Cash {cl_txt} bids at {n} elevator{'s' if n != 1 else ''} in {place}: delivery month, cash "
+        desc = (f"Cash {cl_txt} bids at {n} elevator{'s' if n != 1 else ''} {where}: delivery month, cash "
                 f"price and basis, posted {fmt_day(latest)}. Read from each elevator's own board. Call to confirm.")
         if len(desc) > 160:
-            desc = (f"Cash grain bids at {n} elevator{'s' if n != 1 else ''} in {place}, posted {fmt_day(latest)}: "
+            desc = (f"Cash grain bids at {n} elevator{'s' if n != 1 else ''} {where}, posted {fmt_day(latest)}: "
                     f"cash price and basis by delivery month. Call to confirm.")
         desc = desc[:160]
-        intro = (f'<p class="cbt-sub">Bids posted by <b>{n}</b> elevator{"s" if n != 1 else ""} in {esc(place)} '
+        n_in = n - n_near
+        who = (f'<b>{n_in}</b> elevator{"s" if n_in != 1 else ""} in {esc(place)}' if n_in else "")
+        if n_near:
+            who += (" and " if n_in else "") + (f'<b>{n_near}</b> elevator{"s" if n_near != 1 else ""} within '
+                                                f'{NEAR_MI} miles of {esc(t["name"])}')
+        intro = (f'<p class="cbt-sub">Bids posted by {who} '
                  f'that the AGSIST network reads directly from the elevator&rsquo;s own bid board. Cash is $/bu; '
                  f'basis is cash minus the futures contract named under it. Prices move through the day, '
                  f'each elevator shows when it posted. Call the elevator before you haul.</p>')
@@ -536,6 +660,15 @@ def build_town_page(t, ctx):
     jsonld = {"@context": "https://schema.org", "@graph": [breadcrumb([
         ("AGSIST", f"{SITE}/"), ("Cash bids", f"{SITE}/cash-bids"),
         (sname, f"{SITE}/cash-bids/{ssl}/"), (t["name"], f"{SITE}{path}")])]}
+    hows = {b["how"] for b in t["boards"].values()}
+    near_note = ""
+    if "zip" in hows:
+        near_note += (f" An elevator whose board names a site rather than a town is listed here when its ZIP is a "
+                      f"{esc(t['name'])} ZIP; its card shows the board&rsquo;s own name and the ZIP.")
+    if "near" in hows:
+        near_note += (f" An elevator with no town or ZIP we can confirm is listed here when it is within "
+                      f"{NEAR_MI} miles of {esc(t['name'])}, measured from its map pin to the nearest elevator "
+                      f"we list in {esc(t['name'])}; its card says how far.")
     hdr, ftr = ctx["chrome"]
     body = f"""
 <body>
@@ -552,7 +685,7 @@ def build_town_page(t, ctx):
   posted bid board directly; no third-party bid feed is used on this page. A bid shows only if the board was
   confirmed on the latest read, the price was posted in the last {FRESH_HOURS} hours, and its delivery period
   has not ended. This page is a snapshot and is rebuilt through the day; the <a href="{esc(live)}">live page</a>
-  has the newest board and nearby elevators.</div>
+  has the newest board and nearby elevators.{near_note}</div>
   <p class="cbt-sub">{' &middot; '.join(links)}</p>
 """
     meta = {"state": st, "slug": t["slug"], "name": t["name"], "indexable": indexable, "path": path,
@@ -595,7 +728,8 @@ def build_state_index(st, metas, ctx, unplaced=()):
             lis.append(f'<li>{lab}: <a href="/cash-bids?zip={z}">live bids at ZIP {z}</a></li>' if z
                        else f"<li>{lab}</li>")
         quiet_html += ('<h2>Network elevators not placed in a town</h2><p class="cbt-sub">These boards name a '
-                       'facility rather than a town, and we do not guess the town. Their bids are on the live '
+                       'facility rather than a town, their ZIP does not confirm one, and they are not within '
+                       f'{NEAR_MI} miles of a town listed here. We do not guess the town. Their bids are on the live '
                        'page.</p><ul class="cbt-list">' + "".join(lis) + "</ul>")
     others = " &middot; ".join(f'<a href="/cash-bids/{url_slug(STATE_NAMES[o])}/">{STATE_NAMES[o]}</a>'
                                for o in ctx["states"] if o != st)
@@ -641,7 +775,7 @@ def write_sitemap(path, entries):
 
 # ---------------------------------------------------------------- build
 def build_all(merged, index, zip_towns, out_dir=OUT_DIR, root=".", sitemap=None, now=None, check_age=True,
-              min_towns=10000):
+              min_towns=10000, zip_coord=None):
     now = now or dt.datetime.now(dt.timezone.utc)
     gen = parse_ts(merged.get("generated"))
     if gen is None:
@@ -654,7 +788,9 @@ def build_all(merged, index, zip_towns, out_dir=OUT_DIR, root=".", sitemap=None,
     if sum(len(v) for v in tbs.values()) < min_towns:
         raise SystemExit("[cash-bid-pages] geocodes/zip-towns.json missing or short; refusing to build "
                          "(every town page would be dropped)")
-    towns, drops, unplaced = select(merged, index, tbs)
+    placed = {}
+    towns, drops, unplaced = select(merged, index, tbs, zip_towns, zip_coord, placed)
+    how = Counter(v["how"] for v in placed.values())
     drop_misreads(towns, drops)
     ids = {s["id"] for s in index.get("sources") or []}
     bad = [r for t in towns.values() for bd in t["boards"].values() for r in bd["rows"]
@@ -708,6 +844,8 @@ def build_all(merged, index, zip_towns, out_dir=OUT_DIR, root=".", sitemap=None,
     n_idx = sum(1 for m in metas if m["indexable"])
     print(f"[cash-bid-pages] snapshot {merged.get('generated')} ({age_h:.1f} h old); drops {dict(drops)}; "
           f"{len(unplaced)} places not placed in a town (listed on the state index)")
+    print(f"[cash-bid-pages] places with no town in their name: {len(placed)}; placed by ZIP {how['zip']}, "
+          f"within {NEAR_MI} mi of a town {how['near']}, not placed {how['none']}")
     print(f"[cash-bid-pages] {len(metas)} town pages ({n_idx} with a current bid, {len(metas) - n_idx} noindex), "
           f"{len(smetas)} state indexes, {sum(m['elevators'] for m in metas)} elevators, "
           f"{sum(m['rows'] for m in metas)} bid rows, {size / 1024:.0f} KB -> {out_dir}/; "
@@ -838,6 +976,24 @@ def selftest():
     print("selftest OK")
 
 
+def zip_centroids(base):
+    """zip -> (lat, lon) from the bids repo's data/zips/NN.json, the table
+    merge_bids.mjs checks a ZIP against a pin with. A shard that cannot be read
+    gives no centroid, and a ZIP with no centroid is not trusted against a pin."""
+    shards = {}
+
+    def get(z):
+        if z[:2] not in shards:
+            try:
+                shards[z[:2]] = SB._net_get_json(base, f"data/zips/{z[:2]}.json") or {}
+            except Exception as e:  # noqa: BLE001
+                print(f"[cash-bid-pages] data/zips/{z[:2]}.json unreadable ({e}); its ZIPs are not checked")
+                shards[z[:2]] = {}
+        c = shards[z[:2]].get(z)
+        return tuple(c) if isinstance(c, list) and len(c) == 2 else None
+    return get
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     ap.add_argument("--bids-dir", help="local dnilgis/bids clone instead of the published URLs")
@@ -856,7 +1012,7 @@ def main():
     base = a.bids_dir or a.base or SB.BIDS_NETWORK_BASE
     zip_towns = SB._net_get_json(base, "geocodes/zip-towns.json")
     _, smetas, _, new = build_all(merged, index, zip_towns, out_dir=a.out, root=a.root, sitemap=a.sitemap,
-                                  check_age=not a.ignore_age)
+                                  check_age=not a.ignore_age, zip_coord=zip_centroids(base))
     if a.print_new:
         with open(a.print_new, "w") as f:
             f.write("".join(u + "\n" for u in new))
