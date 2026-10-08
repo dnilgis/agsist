@@ -349,6 +349,7 @@ def town_of(b, src, towns_by_state):
 
 
 NEAR_MI = 10          # a place with no town and no usable ZIP goes on a town page this close, or nowhere
+ZIP_PIN_MI = 20       # a pin this far from its ZIP's centre still agrees; rural ZIPs run 10-18 mi, a head-office ZIP is 35+
 
 
 def miles(a_lat, a_lon, b_lat, b_lon):
@@ -368,7 +369,7 @@ def place_fallbacks(merged, srcs, towns_by_state, zip_towns=None, zip_coord=None
     A placement is {"how": "zip"|"near"|"none", "town", "mi", "why"}:
 
       zip   the place's own ZIP is in zip-towns.json, in the same state. When
-            the place has a pin, the pin must sit within NEAR_MI of that ZIP's
+            the place has a pin, the pin must sit within ZIP_PIN_MI of that ZIP's
             centroid (data/zips/NN.json); a head-office ZIP on a branch board
             fails that ("Naples" on a Pleasant Plains ZIP, 35 mi off) and the
             place falls through to `near`. A ZIP whose centroid cannot be read
@@ -416,7 +417,7 @@ def place_fallbacks(merged, srcs, towns_by_state, zip_towns=None, zip_coord=None
                 why = f"ZIP {z} has no centroid to check the pin against"
             else:
                 d = miles(pin[0], pin[1], c[0], c[1])
-                if d > NEAR_MI:
+                if d > ZIP_PIN_MI:
                     why = f"pin is {d:.0f} mi from ZIP {z}"
         if not why:
             out[k] = {"how": "zip", "town": town_name(zt[0]), "zip": z, "mi": None, "why": ""}
