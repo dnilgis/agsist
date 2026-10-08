@@ -35,6 +35,42 @@
   @media (max-width:560px){
     .adspace-row{grid-template-columns:repeat(auto-fit,minmax(min(140px,100%),1fr));}
   }
+  /* 2026-10-08: link columns are <details>. Wide screens: open, and the
+     heading looks and sits exactly as the old <h2> did (loader.js keeps them
+     open and stops a click folding them). Phones (700px and under): loader.js
+     closes them, so the footer is five tap rows, not about 60 links in one
+     column. Every link stays in the HTML either way. */
+  /* css/home.css (under 900px) makes .footer-col a flex column and its links
+     inline-flex; a flex <details> does not stack them, so the column is a
+     block and each link a full row, which is how they rendered before. */
+  footer details.footer-col{display:block;}
+  footer details.footer-col > a{display:flex!important;}
+  .footer summary{display:block;list-style:none;}
+  .footer summary::-webkit-details-marker{display:none;}
+  @media (min-width:701px){
+    .footer summary{cursor:default;}
+  }
+  @media (max-width:700px){
+    .footer .footer-inner{padding-left:1rem;padding-right:1rem;}
+    .footer .footer-top{padding-bottom:.6rem;margin-bottom:0;gap:.45rem;}
+    .footer .footer-brand img{height:30px;}
+    footer.footer .footer-cols{display:block!important;columns:auto;gap:0;padding-bottom:0;margin-bottom:0;}
+    footer details.footer-col{display:block;margin:0;border-bottom:1px solid var(--border);}
+    footer details.footer-col > summary{display:flex;align-items:center;justify-content:space-between;min-height:44px;cursor:pointer;}
+    footer details.footer-col > summary h2{margin:0;color:var(--text-dim);}
+    footer details.footer-col > summary::after{content:'';width:.5rem;height:.5rem;margin-right:.3rem;border-right:2px solid var(--text-dim);border-bottom:2px solid var(--text-dim);transform:translateY(-25%) rotate(45deg);transition:transform .15s;}
+    footer details.footer-col[open] > summary::after{transform:translateY(25%) rotate(-135deg);}
+    footer details.footer-col > summary:focus-visible{outline:2px solid var(--brand);outline-offset:2px;}
+    footer details.footer-col[open]{padding-bottom:.4rem;}
+    .footer .footer-adspace{margin-top:.75rem;padding-top:0;border-top:0;}
+    .footer .adspace-head{margin-bottom:.4rem;}
+    .footer .ad-slot--lead{padding:.55rem .7rem;gap:.35rem .6rem;}
+    .footer .ad-slot--lead .ad-slot-pitch{font-size:.84rem;}
+    .footer .ad-slot--lead .ad-slot-cta{padding:.35rem .75rem;font-size:.8rem;}
+    .footer .footer-bottom{padding:.5rem 0 .6rem;}
+    .footer .footer-legal{justify-content:center;row-gap:0;}
+  }
+  @media (prefers-reduced-motion:reduce){footer details.footer-col > summary::after{transition:none;}}
 </style>
 <footer class="footer">
   <div class="footer-inner">
@@ -54,8 +90,8 @@
       <div class="footer-status"><span class="status-dot"></span><span>Data refreshed through the trading session</span></div>
     </div>
     <div class="footer-cols">
-      <div class="footer-col">
-        <h2>Markets</h2>
+      <details class="footer-col" open>
+        <summary><h2>Markets</h2></summary>
         <a href="/milk-prices"><span class="lic" aria-hidden="true"></span>Milk Prices</a>
         <a href="/corn-futures-prices"><span class="lic" aria-hidden="true"></span>Corn</a>
         <a href="/soybean-futures-prices"><span class="lic" aria-hidden="true"></span>Soybeans</a>
@@ -73,9 +109,9 @@
         <a href="/usda-calendar"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-calendar"/></svg>USDA Calendar</a>
         <a href="/whats-priced-in"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-dices"/></svg>What's Priced In</a>
         <a href="/whats-priced-in#analyst-board"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-clipboard-check"/></svg>Analyst Estimates</a>
-      </div>
-      <div class="footer-col">
-        <h2>Costs &amp; Land</h2>
+      </details>
+      <details class="footer-col" open>
+        <summary><h2>Costs &amp; Land</h2></summary>
         <a href="/breakeven"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-scale"/></svg>Break-Even Calculator</a>
         <a href="/presell-calculator"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-shield-check"/></svg>Pre-Sell Calculator</a>
         <a href="/grain-bin-calculator"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-warehouse"/></svg>Grain Bin Calculator</a>
@@ -85,9 +121,9 @@
         <a href="/cash-lease"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-scroll-text"/></svg>Cash Farm Lease</a>
         <a href="/foreign-land"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-landmark"/></svg>Foreign-Owned Land</a>
           <a href="/land-tenure"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-scale"/></svg>Rented vs Owner-Farmed</a>
-      </div>
-      <div class="footer-col">
-        <h2>Field</h2>
+      </details>
+      <details class="footer-col" open>
+        <summary><h2>Field</h2></summary>
         <a href="/spray"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-spray-can"/></svg>Spray Advisory</a>
         <a href="/urea"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-flask-conical"/></svg>Urea Volatilization Risk</a>
         <a href="/drought-monitor"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-sun"/></svg>Drought Monitor</a>
@@ -102,22 +138,22 @@
         <a href="/yield-estimator"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-package"/></svg>Yield Estimator</a>
         <a href="/field-scout"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-satellite"/></svg>Field Scout</a>
         <a href="/fast-facts"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-book-open"/></svg>Reference Tables</a>
-      </div>
-      <div class="footer-col">
-        <h2>Daily</h2>
+      </details>
+      <details class="footer-col" open>
+        <summary><h2>Daily</h2></summary>
         <a href="/news"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-newspaper"/></svg>The Wire</a>
         <a href="/daily"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-newspaper"/></svg>AGSIST Daily</a>
         <a href="/archive"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-archive"/></svg>Briefing Archive</a>
         <a href="/scorecard"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-clipboard-check"/></svg>Prediction Bot</a>
-      </div>
-      <div class="footer-col">
-        <h2>Reference</h2>
+      </details>
+      <details class="footer-col" open>
+        <summary><h2>Reference</h2></summary>
         <a href="/status"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-shield-check"/></svg>System Status</a>
         <a href="/changelog"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-scroll-text"/></svg>What&rsquo;s New</a>
         <a href="/data-sources"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-link"/></svg>Data Sources</a>
         <a href="/embed"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-code"/></svg>Embed Widgets</a>
         <a href="/developer"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-terminal"/></svg>Developer API</a>
-      </div>
+      </details>
     </div>
 
 

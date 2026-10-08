@@ -24,7 +24,8 @@
   // Component cache version. Bump on every chrome deploy so browsers fetch the
   // new header/footer; between deploys the files cache normally (no refetch /
   // no nav-flash on each page navigation).
-  var CV = '22'; // v22 2026-09-19: the Farmland Atlas link restored to the Land group, drawer and footer (the 9/13 upload dropped it)
+  var CV = '23'; // v23 2026-10-08: footer link columns fold into <details> on phones (closed at 700px and under)
+                 // v22 2026-09-19: the Farmland Atlas link restored to the Land group, drawer and footer (the 9/13 upload dropped it)
                  // v21 2026-09-13: Farmland Atlas link in the Land group of the header, the drawer and the footer
                  // v20 2026-09-05: sponsor-metrics.js loaded sitewide; footer sponsor card measured on the MRC rule
   function cv(path) { return path + (path.indexOf('?') < 0 ? '?v=' : '&v=') + CV; }
@@ -390,10 +391,44 @@
     document.head.appendChild(s);
   }
 
+  // ── Footer link sections ───────────────────────────────────────
+  // footer.html ships each link column as <details open>, so every link is in
+  // the HTML. Phones (700px and under) get them closed: five tap rows instead
+  // of about 60 links. Wide screens keep them open and look as they did; a
+  // click on a heading there does nothing, and the heading is not a tab stop.
+  function foldFooter() {
+    var foot = document.querySelector('footer.footer');
+    if (!foot) return;
+    var dets = foot.querySelectorAll('details.footer-col');
+    if (!dets.length) return;
+    var mq = null;
+    try { mq = window.matchMedia('(max-width: 700px)'); } catch (e) {}
+    function phone() { return !!(mq && mq.matches); }
+    function apply() {
+      var p = phone();
+      for (var i = 0; i < dets.length; i++) {
+        dets[i].open = !p;
+        var s = dets[i].querySelector('summary');
+        if (!s) continue;
+        if (p) s.removeAttribute('tabindex'); else s.setAttribute('tabindex', '-1');
+      }
+    }
+    apply();
+    if (mq) {
+      if (mq.addEventListener) mq.addEventListener('change', apply);
+      else if (mq.addListener) mq.addListener(apply);
+    }
+    foot.addEventListener('click', function (e) {
+      if (phone()) return;
+      var s = e.target && e.target.closest ? e.target.closest('summary') : null;
+      if (s && foot.contains(s)) e.preventDefault();
+    });
+  }
+
   document.addEventListener('DOMContentLoaded', function () {
     injectAnalytics();
     loadComponent('site-header', '/components/header.html', initNav);
-    loadComponent('site-footer', '/components/footer.html', renderSupporters);
+    loadComponent('site-footer', '/components/footer.html', function () { foldFooter(); renderSupporters(); });
     fillPageRibbons();
     loadSponsorMetrics();
   });
