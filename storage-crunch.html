@@ -102,6 +102,8 @@
     .rs-t .mut{color:#5a6467}
     .sc-sel{background:none;border:none;color:#e6ebe9;cursor:pointer;font:inherit;padding:0;border-bottom:1px dotted #2a3133}
     .sc-sel:hover{color:var(--gold)}
+    /* 2026-10-08: a 40px tap target for the state buttons (were 25px). */
+    .sc-sel{min-height:40px;text-align:left}
     .sc-panel{background:#101415;border:1px solid #1a1f20;border-radius:10px;padding:14px 16px;margin:10px 0;display:none}
     .lt-bar{display:flex;align-items:center;gap:10px;margin:3px 0;font-family:'JetBrains Mono',monospace;font-size:0.795rem}
     .lt-bar .y{width:42px;color:#8a948f}
@@ -110,8 +112,10 @@
     .lt-bar .mut2{color:#5a6467;font-size:0.775rem}
     .lt-note{background:#101415;border:1px solid #1a1f20;border-left:3px solid #d4a23f;border-radius:8px;padding:12px 15px;font-size:1rem;line-height:1.65;color:#8a948f;margin:14px 0}
     .lt-note b{color:#e6ebe9} .lt-note a{color:var(--gold)}
-    details{background:#101415;border:1px solid #1a1f20;border-radius:8px;margin:6px 0;padding:10px 14px}
-    summary{cursor:pointer;color:#e6ebe9;font-size:1rem}
+    /* Scoped to the page body: unscoped, these also styled the site footer's
+       <details> columns (dark-on-dark in light mode). */
+    .sc-wrap details{background:#101415;border:1px solid #1a1f20;border-radius:8px;margin:6px 0;padding:10px 14px}
+    .sc-wrap summary{cursor:pointer;color:#e6ebe9;font-size:1rem}
     .lt-faq-a{color:#8a948f;font-size:1rem;line-height:1.65;padding-top:8px}
     
     
@@ -148,6 +152,19 @@
     }
 
 .tblscroll table{margin:0;min-width:520px}
+/* 2026-10-08 light mode: text that sits on the page background (the ranking
+   table, the subheads, the map labels) takes the site's light tokens. The
+   panels keep their dark backgrounds and their dark-mode text. */
+[data-theme="light"] .sub,[data-theme="light"] .rs-t th,[data-theme="light"] .rs-t .rs-nodata td,[data-theme="light"] .rs-t .mut,[data-theme="light"] .vp-maplab,[data-theme="light"] .vp-leg{color:var(--text-muted)}
+[data-theme="light"] .rs-t td,[data-theme="light"] .sc-sel{color:var(--text)}
+[data-theme="light"] .sc-sel{border-bottom-color:var(--border)}
+[data-theme="light"] .rs-t th,[data-theme="light"] .rs-t td{border-bottom-color:var(--border)}
+[data-theme="light"] .rs-t tr:hover td{background:var(--surface2)}
+[data-theme="light"] .rs-t .up,[data-theme="light"] .rs-t td[style*="#e0685f"]{color:var(--red)!important}
+[data-theme="light"] .rs-t .dn,[data-theme="light"] .rs-t td[style*="#5fc28a"]{color:var(--green)!important}
+[data-theme="light"] .rs-t td[style*="#d4a23f"]{color:var(--gold)!important}
+[data-theme="light"] .rs-t td[style*="#8a948f"]{color:var(--text-muted)!important}
+[data-theme="light"] .vp-tile[style$="background:"] .vp-tst,[data-theme="light"] .vp-tile[style$="background:"] .vp-tge{color:var(--text)}
 /* 2026-10-06: these panels stay dark in light mode, so gold inside them
    stays the bright gold (the page around them takes the darker text gold). */
 [data-theme="light"] .vp-ver,[data-theme="light"] .vp-tile,[data-theme="light"] .sc-stat,[data-theme="light"] .sc-panel,[data-theme="light"] .lt-note{--gold:#d4a23f;--gold-fill:#d4a23f;--brand:#d4a23f;--brand-fill:#d4a23f;--pd-gold:#d4a23f;--ib-gold:#d4a23f;--ib-gold2:#d4a23f;--wp-gold2:#e6b042;--as-gold2:#e6b042}

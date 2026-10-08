@@ -299,6 +299,14 @@
     font-size:0.74rem;font-weight:700;color:var(--red);white-space:nowrap;}
   .dp-bar-scale{display:flex;justify-content:space-between;font-family:'JetBrains Mono',monospace;
     font-size:0.74rem;color:var(--text-muted);}
+  /* 2026-10-08: the caption gets its own line above the bar; squeezed beside
+     "$0" it wrapped into "$ / 0" on a phone. */
+  .dp-bar-cap{font-family:'JetBrains Mono',monospace;font-size:0.74rem;color:var(--text-muted);margin:0 0 .15rem;}
+  .dp-bar-scale span{white-space:nowrap;}
+  /* 2026-10-08 light mode: green tag on its tinted chip and the blue "mixed"
+     effect line were 3.8:1 and 2.6:1. */
+  [data-theme="light"] .dp-ppd-class-tag.pooled{color:#1f5e3a;}
+  [data-theme="light"] .dp-tl-effect.mixed{color:#2563a8;}
   .dp-margin-stats{display:flex;flex-wrap:wrap;gap:.5rem 1.5rem;margin-top:.85rem;}
   .dp-margin-stat{display:flex;flex-direction:column;gap:.1rem;}
   .dp-margin-stat .n{font-family:'JetBrains Mono',monospace;font-size:1.05rem;font-weight:700;color:var(--text);line-height:1;}
@@ -681,7 +689,8 @@
     <p class="dp-sec-intro">A price only matters against what it costs to produce. Milk prices fell hard into 2026 while the federal safety net mostly stayed quiet, because of how its trigger is built.</p>
 
     <div class="dp-margin">
-      <div class="dp-bar-scale"><span>$0</span><span>the DMC margin: milk price minus feed cost</span></div>
+      <div class="dp-bar-cap">the DMC margin: milk price minus feed cost</div>
+      <div class="dp-bar-scale"><span>$0</span></div>
       <div class="dp-bar">
         <div class="dp-bar-fill" style="width:43%"></div>
         <div class="dp-bar-cost" style="left:52%"></div>

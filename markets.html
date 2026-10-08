@@ -136,10 +136,10 @@ h1.sec-title{font-family:inherit;font-size:inherit;font-weight:inherit;line-heig
 
       <div style="font-size:0.77rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.6rem">Metals &amp; Macro</div>
       <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.65rem;margin-bottom:.5rem">
-        <div class="pc"><div class="pc-head"><div class="pc-name">Gold</div></div><div id="pc-gold" class="pc-price"><!--SEED:mk:pc-gold-->$4134.10<!--/SEED--></div><div id="pcc-gold" class="pc-chg-val nc"><!--SEED:mk:pcc-gold-->▼ −53.00 (−1.27%) &middot; Oct 7<!--/SEED--></div></div>
+        <div class="pc"><div class="pc-head"><div class="pc-name">Gold</div></div><div id="pc-gold" class="pc-price"><!--SEED:mk:pc-gold-->$4,134.10<!--/SEED--></div><div id="pcc-gold" class="pc-chg-val nc"><!--SEED:mk:pcc-gold-->▼ −53.00 (−1.27%) &middot; Oct 7<!--/SEED--></div></div>
         <div class="pc"><div class="pc-head"><div class="pc-name">Silver</div></div><div id="pc-silver" class="pc-price"><!--SEED:mk:pc-silver-->$60.08<!--/SEED--></div><div id="pcc-silver" class="pc-chg-val nc"><!--SEED:mk:pcc-silver-->▼ −1.09 (−1.78%) &middot; Oct 7<!--/SEED--></div></div>
         <div class="pc"><div class="pc-head"><div class="pc-name">Dollar Index</div></div><div id="pcp-dxy" class="pc-price"><!--SEED:mk:pcp-dxy-->$102.22<!--/SEED--></div><div id="pcc-dxy" class="pc-chg-val nc"><!--SEED:mk:pcc-dxy-->▲ +0.40 (+0.39%) &middot; Oct 7<!--/SEED--></div></div>
-        <div class="pc"><div class="pc-head"><div class="pc-name">S&amp;P 500</div></div><div id="pcp-sp500" class="pc-price"><!--SEED:mk:pcp-sp500-->$7801.77<!--/SEED--></div><div id="pcc-sp500" class="pc-chg-val nc"><!--SEED:mk:pcc-sp500-->▼ −17.16 (−0.22%) &middot; Oct 7<!--/SEED--></div></div>
+        <div class="pc"><div class="pc-head"><div class="pc-name">S&amp;P 500</div></div><div id="pcp-sp500" class="pc-price"><!--SEED:mk:pcp-sp500-->$7,801.77<!--/SEED--></div><div id="pcc-sp500" class="pc-chg-val nc"><!--SEED:mk:pcc-sp500-->▼ −17.16 (−0.22%) &middot; Oct 7<!--/SEED--></div></div>
       </div>
 
       <div style="margin-top:.75rem;font-size:0.78rem;color:var(--text-muted)">Updated every 15 min &middot; Source: Yahoo Finance (yfinance) &middot; <a href="/data-sources" style="color:var(--gold)">Data sources &rarr;</a></div>
@@ -161,7 +161,7 @@ h1.sec-title{font-family:inherit;font-size:inherit;font-weight:inherit;line-heig
         <div class="mkt-idx-list">
           <a href="/cot"><b>COT Report</b><span>What managed money is holding, from the CFTC</span></a>
           <a href="/storage-crunch"><b>Storage Crunch</b><span>States growing more grain than they can store</span></a>
-          <a href="/ag-odds"><b>Prediction Markets</b><span>Live Kalshi and Polymarket odds on ag events</span></a>
+          <a href="/ag-odds"><b>Prediction Markets</b><span>Daily Polymarket odds on ag events</span></a>
         </div>
         <div class="mkt-idx-grp">Policy</div>
         <div class="mkt-idx-list">
@@ -217,7 +217,7 @@ h1.sec-title{font-family:inherit;font-size:inherit;font-weight:inherit;line-heig
 (function(){
   'use strict';
   function grain$(v){return v!=null?'$'+(+v/100).toFixed(2):'—';}
-  function dollar$(v,d){return v!=null?'$'+(+v).toFixed(d||2):'—';}
+  function dollar$(v,d){d=d||2;return v!=null?'$'+(+v).toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d}):'—';}
   function fmtCents(d){var a=Math.abs(d),w=Math.floor(a),f=Math.round((a-w)*4);if(f===4){w++;f=0;}var fr=f===1?'\u00bc':f===2?'\u00bd':f===3?'\u00be':'';return (w||!fr?w:'')+fr+'\u00a2';}
   function chgStr(net,pct,isGrain){if(net==null)return'—';var a=net>0?'▲':net<0?'▼':'—';var s=net>0?'+':net<0?'\u2212':'';var mv=isGrain?fmtCents(net):Math.abs(net).toFixed(2);return a+' '+s+mv+' ('+s+Math.abs(+pct).toFixed(2)+'%)';} /* cents first, percent second — reader request 2026-07-20 */
   function chgCls(net){return net>0?'up':net<0?'dn':'nc';}
@@ -241,6 +241,13 @@ h1.sec-title{font-family:inherit;font-size:inherit;font-weight:inherit;line-heig
   }
   fetch('/data/prices.json').then(function(r){return r.json();}).then(function(data){
     var q=data.quotes||{};
+    /* 2026-10-08: when the nearby contract IS the deferred one (Dec corn,
+       Nov beans in the fall), the second card repeats the first to the cent.
+       Hide it only when the two quotes carry the same ticker. */
+    [['corn','corn-dec','pcp-corn-dec'],['beans','beans-nov','pcp-bean-nov']].forEach(function(t){
+      var nb=q[t[0]+'-nearby'],dq=q[t[1]],el=document.getElementById(t[2]),card=el&&el.closest('.pc');
+      if(card)card.style.display=(nb&&dq&&nb.ticker&&nb.ticker===dq.ticker)?'none':'';
+    });
     /* True front month (2026-07-30): continuous corn/beans/wheat track the
        MOST-ACTIVE contract (was printing front == Dec '26, byte-identical).
        Prefer the <crop>-nearby alias published by fetch_prices v3.5 and name

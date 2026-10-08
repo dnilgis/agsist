@@ -174,7 +174,7 @@
 .wp-gap b{color:var(--wp-mut);font-weight:600}
 .wp-hr-gap{font-size:.78rem;color:var(--wp-mut);margin-top:.15rem}
 
-:root{--as-green:#4aab4c;--as-gold:var(--gold);--as-gold2:#e6b042;--as-bg:#0f1311;--as-panel:#161b18;--as-panel2:#1d2420;--as-line:#2a332d;--as-txt:#e7ece8;--as-mut:#9bb0a3;--as-up:#4aab4c;--as-dn:#d9534f;}
+:root{--as-green:#4aab4c;--as-gold:var(--gold);--as-gold2:#e6b042;--as-bg:#0f1311;--as-panel:#161b18;--as-panel2:#1d2420;--as-line:#2a332d;--as-txt:#e7ece8;--as-mut:#9bb0a3;--as-up:#4aab4c;--as-dn:#e8706c;}
 .as-ribbon{font-size:.85rem;color:var(--as-gold2);background:rgba(var(--gold-rgb),.08);border:1px solid var(--as-gold);border-radius:8px;padding:.6rem .8rem;margin:0 0 1.1rem;}
 .as-err{color:var(--as-mut);background:var(--as-panel);border:1px solid var(--as-line);border-radius:10px;padding:1rem;}
 .as-tbl{width:100%;border-collapse:collapse;font-size:.92rem;margin-top:.4rem;}
@@ -185,7 +185,7 @@
 .as-tbl .who{font-weight:600;color:#fff;}
 /* A record that is real but not yet rankable. Greyed, on the same table, under
    a rule that says what the grey means — rather than in a hidden array. */
-.as-tbl tr.as-building td{opacity:.62}
+.as-tbl tr.as-building td{opacity:.85}
 .as-tbl tr.as-split td{border-bottom:none;padding-top:.9rem;color:var(--as-mut);
   font-size:.78rem;line-height:1.5;border-top:1px solid var(--as-line)}
 .as-wins{display:block;font-size:.72rem;color:var(--as-gold2,#d4a23f);margin-top:.1rem}
@@ -200,7 +200,7 @@
 .as-cell{display:inline-block;text-align:right}
 /* The row that names what is being averaged. Same shape as as-split. */
 .as-tbl tr.as-cap td{border-bottom:1px solid var(--as-line);border-top:none;
-  color:var(--as-mut);font-size:.78rem;line-height:1.5;padding-top:.2rem}
+  color:var(--as-mut);font-size:.875rem;line-height:1.5;padding-top:.2rem}
 .as-tbl tr.as-cap td b{color:var(--as-txt)}
 .as-boardnote{background:var(--as-panel);border:1px solid var(--as-line);
   border-left:3px solid var(--as-gold2);border-radius:8px;padding:.7rem .85rem;
@@ -303,10 +303,20 @@
 .as-pl-badge.neut{color:var(--wp-mut);background:rgba(155,176,163,.1);}
 @media(max-width:560px){.as-pl-val{margin-left:0;}.as-pl-call{gap:.4rem;}}
 /* 2026-10-06 light-mode contrast: page gold text at 4.7:1+ */
-:root[data-theme="light"]{--wp-gold2:#8a6514;--as-gold2:#8a6514}
-/* 2026-10-06: these panels stay dark in light mode, so gold inside them
-   stays the bright gold (the page around them takes the darker text gold). */
-[data-theme="light"] .wp-farmbox,[data-theme="light"] .wp-xlink,[data-theme="light"] .wp-card,[data-theme="light"] .wp-hg,[data-theme="light"] .as-err,[data-theme="light"] .as-boardnote,[data-theme="light"] .as-pl-rep,[data-theme="light"] .as-chip,[data-theme="light"] .as-rep,[data-theme="light"] .wp-method{--gold:#d4a23f;--gold-fill:#d4a23f;--brand:#d4a23f;--brand-fill:#d4a23f;--pd-gold:#d4a23f;--ib-gold:#d4a23f;--ib-gold2:#d4a23f;--wp-gold2:#e6b042;--as-gold2:#e6b042}
+/* 2026-10-08: light mode gets a full light palette. The panels used to stay
+   dark while the page text took dark-page values, so the H1, lede and any
+   table on the page background were near-white on near-white. */
+:root[data-theme="light"]{
+  --wp-gold2:#8a6514;--wp-green:#2e7d4f;--wp-bg:#f6f7f5;--wp-panel:#ffffff;--wp-panel2:#f3f5f2;--wp-line:#d6dcd7;--wp-txt:#161a18;--wp-mut:#4a5650;--wp-up:#2e7d4f;--wp-dn:#b03e26;
+  --as-gold2:#8a6514;--as-green:#2e7d4f;--as-bg:#f6f7f5;--as-panel:#ffffff;--as-panel2:#f3f5f2;--as-line:#d6dcd7;--as-txt:#161a18;--as-mut:#4a5650;--as-up:#2e7d4f;--as-dn:#b03e26}
+/* Names that were hard-coded white for the dark panels. */
+[data-theme="light"] .as-tbl .who,[data-theme="light"] .as-pa .nm,[data-theme="light"] .as-rep .rpt,[data-theme="light"] .as-chip b,[data-theme="light"] .as-pl-rep-name,[data-theme="light"] .as-pl-who,[data-theme="light"] .as-pl-link,[data-theme="light"] .wp-card .rpt,[data-theme="light"] .wp-thr .v,[data-theme="light"] .wp-hg-rpt,[data-theme="light"] .wp-res-k,[data-theme="light"] .wp-res-metric,[data-theme="light"] .wp-farmbox b{color:var(--as-txt)}
+/* Greyed "building" rows: darker inks so the faded row still reads at 4.5:1. */
+[data-theme="light"] .as-tbl tr.as-building{--as-gold2:#75560f;--as-up:#256b41;--as-dn:#a93d24;--as-mut:#46524b}
+[data-theme="light"] .as-tbl tr.as-building td{opacity:.9}
+[data-theme="light"] .wp-nums .v.flat{background:rgba(22,26,24,.06)}
+/* Green on its own green tint: one step darker to clear 4.5:1. */
+[data-theme="light"] .wp-tag.bull,[data-theme="light"] .as-tag.bull,[data-theme="light"] .wp-res-tag.bull,[data-theme="light"] .as-pl-badge.bull,[data-theme="light"] .wp-nums .v.bull{color:#256b41}
 </style>
 </head>
 <body>
@@ -851,7 +861,7 @@ window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);
     if(!u||!u.panel||!u.panel.length)return '<div class="as-err">No forecasts logged yet for the next report. Check back as analysts publish ahead of the release.</div>';
     var rows=u.panel.map(function(p){
       var vals=p.metrics.map(function(m){return '<span>'+esc(m.label)+':</span> '+esc(m.value)+(m.unit?(' '+esc(m.unit)):'');}).join(' &nbsp; ');
-      var nm=p.source?('<a href="'+esc(p.source)+'" target="_blank" rel="noopener" style="color:#fff;text-decoration:none">'+esc(p.analyst)+'</a>'):esc(p.analyst);
+      var nm=p.source?('<a href="'+esc(p.source)+'" target="_blank" rel="noopener" style="color:inherit;text-decoration:none">'+esc(p.analyst)+'</a>'):esc(p.analyst);
       var lk=lockNote(p.locked_on);
       return '<div class="as-pa"><span class="nm">'+nm+'</span> <span class="fm">'+esc(p.firm)+'</span>'+(lk?(' '+lk):'')+'<div class="vals">'+vals+'</div></div>';
     }).join('');

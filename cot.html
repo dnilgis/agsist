@@ -107,7 +107,7 @@
 
 .cot-pctl { font-family:'JetBrains Mono',monospace; font-size:0.755rem; font-weight:700; letter-spacing:.02em; color:var(--text-muted); margin:-.15rem 0 .35rem; }
 .cot-pctl.hot  { color:var(--gold); }
-.cot-pctl.cold { color:#5ba3e0; }
+.cot-pctl.cold { color:var(--cx-cold); }
 .cot-insight { font-size:0.765rem; line-height:1.5; color:var(--text-dim); margin-top:.5rem; padding-top:.5rem; border-top:1px solid var(--border); }
 .cot-insight b { color:var(--text); font-weight:700; }
 .cot-insight .up { color:var(--green); } .cot-insight .dn { color:#ef4444; }
@@ -258,6 +258,15 @@
 canvas#cot-chart { width: 100%; height: 260px; display: block; }
 
 /* ── Explainer ── */
+/* 2026-10-08 light mode: the bright red and blue fail on white (3.8:1 and
+   2.7:1); light mode takes darker inks. */
+:root { --cx-cold:#5ba3e0; }
+[data-theme="light"] { --cx-cold:#2563a8; }
+[data-theme="light"] .cot-insight .dn, [data-theme="light"] .cvb-badge.short, [data-theme="light"] .cot-card-verdict.short,
+[data-theme="light"] .cot-card-net.short, [data-theme="light"] .cot-card-chg.dn { color:#b91c1c; }
+[data-theme="light"] .cot-explainer-title { color:#2b6cb0; }
+[data-theme="light"] .cx-pick button[aria-pressed="true"] { color:#735410; }
+[data-theme="light"] .cx-hz button[aria-pressed="true"] { color:#256b41; }
 .cot-explainer {
   background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
   padding: 1rem 1.1rem; margin-bottom: 1.25rem;
@@ -303,10 +312,10 @@ canvas#cot-chart { width: 100%; height: 260px; display: block; }
 .cx.on { display:block; }
 .cx-h { font-family:var(--font-display); font-size:1.05rem; font-weight:800; text-transform:uppercase;
         letter-spacing:.02em; color:var(--text); margin:0 0 .2rem; }
-.cx-sub { font-size:.8rem; color:var(--text-muted); line-height:1.6; margin:0 0 .85rem; max-width:66ch; }
+.cx-sub { font-size:.875rem; color:var(--text-muted); line-height:1.6; margin:0 0 .85rem; max-width:66ch; }
 .cx-panel { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:1rem 1.1rem; }
 .cx-mono { font-family:'JetBrains Mono',monospace; }
-.cx-hot { color:var(--gold); } .cx-cold { color:#5ba3e0; }
+.cx-hot { color:var(--gold); } .cx-cold { color:var(--cx-cold); }
 .cx-up { color:var(--green); } .cx-dn { color:var(--red); }
 .cx-dim { color:var(--text-muted); }
 
@@ -322,12 +331,12 @@ canvas#cot-chart { width: 100%; height: 260px; display: block; }
 .cx-dot text { font-size:10px; fill:var(--text-dim); }
 .cx-dot:focus-visible { outline:none; }
 .cx-dot:focus-visible circle { stroke:var(--green); stroke-width:2.5; }
-.cx-board-note { font-size:.74rem; color:var(--text-muted); margin-top:.5rem; line-height:1.55; }
+.cx-board-note { font-size:.875rem; color:var(--text-muted); margin-top:.5rem; line-height:1.55; }
 
 /* ── selector ── */
 .cx-pick { display:flex; flex-wrap:wrap; gap:.4rem; margin:0 0 .9rem; }
 .cx-pick button { font-family:'JetBrains Mono',monospace; font-size:.72rem; font-weight:700; letter-spacing:.03em;
-  padding:.45rem .6rem; min-height:36px; border-radius:6px; cursor:pointer;
+  padding:.45rem .6rem; min-height:40px; border-radius:6px; cursor:pointer;
   background:var(--surface2); color:var(--text-dim); border:1px solid var(--border); }
 .cx-pick button[aria-pressed="true"] { background:rgba(var(--gold-rgb),.14); color:var(--gold); border-color:rgba(var(--gold-rgb),.45); }
 .cx-pick button:focus-visible { outline:2px solid var(--green); outline-offset:2px; }
@@ -379,11 +388,14 @@ canvas#cot-chart { width: 100%; height: 260px; display: block; }
 
 /* ── tables ── */
 .cx-tw { overflow-x:auto; -webkit-overflow-scrolling:touch; }
-.cx-table { width:100%; border-collapse:collapse; font-family:'JetBrains Mono',monospace; font-size:.755rem; }
+.cx-table { width:100%; border-collapse:collapse; font-family:'JetBrains Mono',monospace; font-size:.875rem; }
 .cx-table th, .cx-table td { padding:.42rem .5rem; text-align:right; border-bottom:1px solid var(--border); white-space:nowrap; }
-.cx-table th { color:var(--text-muted); font-weight:700; text-transform:uppercase; letter-spacing:.04em; font-size:.68rem; }
+.cx-table th { color:var(--text-muted); font-weight:700; text-transform:uppercase; letter-spacing:.04em; font-size:.875rem; }
 .cx-table th:first-child, .cx-table td:first-child { text-align:left; }
 .cx-table tbody tr:last-child td { border-bottom:none; }
+/* A withheld-row note is prose: let it wrap inside the table instead of
+   stretching the table (and every number in it) off a phone screen. */
+.cx-table td.cx-note { white-space:normal; text-align:left; }
 
 .cx-details { margin-top:.9rem; }
 .cx-details summary { cursor:pointer; font-size:.76rem; color:var(--text-muted); padding:.4rem 0; min-height:32px; }
@@ -400,12 +412,12 @@ canvas#cot-chart { width: 100%; height: 260px; display: block; }
 @media (max-width:560px){
   .cx-panel { padding:.85rem .8rem; }
   .cx-stat dd { font-size:.94rem; }
-  .cx-sub, .cx-question { font-size:.79rem; }
+  .cx-question { font-size:.79rem; }
 }
 @media print { .cx-pick, .cx-hz { display:none; } }
 
 /* ── added with the second pass ── */
-.cx-stamp { font-family:'JetBrains Mono',monospace; font-size:.72rem; color:var(--text-muted);
+.cx-stamp { font-family:'JetBrains Mono',monospace; font-size:.875rem; color:var(--text-muted);
   margin:0 0 .7rem; line-height:1.6; }
 .cx-stamp b { color:var(--text-dim); }
 .cx-body { font-size:.86rem; line-height:1.7; color:var(--text-dim); margin:.2rem 0 .8rem; max-width:70ch; }
@@ -2041,7 +2053,7 @@ cotTick(); setInterval(cotTick, 60000);
       /* A correlation with its n, and a withheld one with its reason: an em
          dash alone reads as "zero" or "broken", and hogs is neither. */
       if (c.price_withheld_reason || !(cor.same_week && cor.same_week.r !== null && cor.same_week.r !== undefined)) {
-        rows.push('<tr><td>' + esc(c.label) + '</td><td colspan="5">\u2014 '
+        rows.push('<tr><td>' + esc(c.label) + '</td><td colspan="5" class="cx-note">\u2014 '
           + esc(c.price_withheld_reason || 'fewer than 20 weeks with both a price and a position') + '</td></tr>');
         return;
       }
@@ -2609,7 +2621,7 @@ cotTick(); setInterval(cotTick, 60000);
       var p = c.pctl.net_oi_all;
       el.textContent = (p === null ? 'no long-run ranking'
         : 'vs ' + (c.first_week ? c.first_week.slice(0,4) : 'record') + ', share of open: ' + crowdWord(p));
-      el.style.color = c.crowded === 'long' ? 'var(--gold)' : c.crowded === 'short' ? COLD : 'var(--text-muted)';
+      el.style.color = c.crowded === 'long' ? 'var(--gold)' : c.crowded === 'short' ? 'var(--cx-cold)' : 'var(--text-muted)';
     }
   }
 
