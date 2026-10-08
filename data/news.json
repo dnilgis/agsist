@@ -1,6 +1,6 @@
 {
- "updated": "2026-10-07T18:49:39+00:00",
- "count": 23,
+ "updated": "2026-10-08T18:47:32+00:00",
+ "count": 24,
  "added": 1,
  "state": {
   "px": {
@@ -29,6 +29,17 @@
   }
  },
  "items": [
+  {
+   "id": "px:2026-10-08:kcwheat:move",
+   "kind": "board",
+   "headline": "KC wheat down 2.6% on the day",
+   "detail": "Settled $7.37, -19.75 cents on the session.",
+   "significance": "notable",
+   "url": "/wheat-futures-prices",
+   "source": "CME settlement via the AGSIST board",
+   "day_only": true,
+   "ts": "2026-10-08T12:00:00+00:00"
+  },
   {
    "id": "px:2026-10-07:wheat:move",
    "kind": "board",
