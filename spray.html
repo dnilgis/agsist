@@ -876,6 +876,16 @@ body {
    the tinted frozen/poor chips and badges. Darker values on this page only,
    4.9:1 or better on the tints; dark mode keeps its own values above. */
 [data-theme="light"]{--blue:#2a6390;--red:#a63c22;}
+/* Light mode, 2026-10-08: the shared green (#2e7d4f) was 3.8:1 under the dark
+   button ink and 4.2:1 on the green tints; the mix calculator's own green
+   (#6ab04c) was 2.6:1 as text. One darker green for text here, white ink on the
+   green buttons, and no .9 opacity on the green and red section titles. */
+[data-theme="light"]{--green:#256b42;}
+[data-theme="light"] .btn-g,[data-theme="light"] #signup-btn{color:#fff!important;}
+[data-theme="light"] .edu-title,[data-theme="light"] .sc-title,[data-theme="light"] .inv-title{opacity:1;}
+[data-theme="light"] .qmix-num[style*="9f7aea"]{color:#6b46c1!important;}
+/* Dark: the .9 opacity put the inversion title at 4.48:1. */
+[data-theme="dark"] .inv-title{opacity:1;}
 
 
 
@@ -1120,7 +1130,6 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
       <div class="hero-eyebrow"><span class="live-dot" aria-hidden="true"></span>Real-Time Spray Advisory</div>
       <h1 class="hero-title">Is It <span>Safe to Spray</span><br>Right Now?</h1>
       <p class="hero-sub">Wind speed, temperature, humidity, thermal inversion risk, 24-hour window forecast, tank mix order, and pro tips &mdash; everything a sprayer needs. Free. No account. No app.</p>
-      <aside class="ag-sponsor-ribbon" id="ag-sponsor"><span class="ag-sponsor-tag">Sponsor this page</span> Every visitor here is deciding whether to spray today &mdash; one category-exclusive slot. <span class="ag-sponsor-price" data-rate="page">$29/mo &middot; first month free</span> <a href="/sponsor-apply?slot=spray&amp;utm_source=spray&amp;utm_medium=slot">Put your name here &rarr;</a></aside>
     </div>
     <div class="status-panel" id="status-panel" aria-live="polite" role="status">
       <div class="status-lbl"><span class="live-dot" aria-hidden="true"></span>Current Spray Status</div>
@@ -1142,6 +1151,7 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
     <a href="#section-season" class="jump-link"><svg class="ic-sp" aria-hidden="true"><use href="#sp-calendar"/></svg> Spray Calendar</a>
     <a href="#section-faq" class="jump-link"><svg class="ic-sp" aria-hidden="true"><use href="#sp-circle-help"/></svg> FAQ</a>
   </nav>
+  <aside class="ag-sponsor-ribbon" id="ag-sponsor"><span class="ag-sponsor-tag">Sponsor this page</span> Every visitor here is deciding whether to spray today &mdash; one category-exclusive slot. <span class="ag-sponsor-price" data-rate="page">$29/mo &middot; first month free</span> <a href="/sponsor-apply?slot=spray&amp;utm_source=spray&amp;utm_medium=slot">Put your name here &rarr;</a></aside>
   <div class="loc-setup" id="loc-setup">
     <h2><svg class="ic-sp" aria-hidden="true"><use href="#sp-globe"/></svg> Set Your Location</h2>
     <p>Spray conditions vary significantly by location. Share your location or enter a ZIP for accurate wind, temperature, humidity, and inversion risk at your field.</p>
@@ -1329,6 +1339,7 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
   @media(max-width:520px){.smc-grid,.scal-grid{grid-template-columns:1fr;}.smc-kpis{grid-template-columns:1fr 1fr;}}
   
   [data-theme="light"] .smc,[data-theme="light"] .scal{--c-gold:#8a6514}
+  [data-theme="light"] .smc-add,[data-theme="light"] .smc-water .pn{color:#256b42}
   </style>
 
   <h2 class="smc-h" id="smc-h"><span aria-hidden="true"><svg class="ic-sp" aria-hidden="true"><use href="#sp-calculator"/></svg></span> Spray Mix Calculator</h2>

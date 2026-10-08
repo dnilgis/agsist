@@ -117,6 +117,7 @@ button,a,[role="button"] { touch-action: manipulation; }
 .dm-hero-meta { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; margin-top: .6rem; }
 .dm-updated { font-family: 'JetBrains Mono', monospace; font-size:0.763rem; color: var(--text-muted); }
 .dm-next-update { font-family: 'JetBrains Mono', monospace; font-size:0.763rem; color: var(--green); background: rgba(58,139,60,.08); border: 1px solid rgba(58,139,60,.2); padding: .15rem .5rem; border-radius: 4px; }
+[data-theme="light"] .dm-next-update { color: #256b42; } /* was 4.26:1 on its tint */
 
 /* Auto-detect banner */
 .dm-state-banner { display: flex; align-items: center; gap: .6rem; padding: .55rem .85rem; background: rgba(230,176,66,.06); border: 1px solid rgba(230,176,66,.18); border-radius: 8px; margin-bottom: 1rem; font-size:0.795rem; color: var(--text-dim); }
@@ -242,7 +243,6 @@ button,a,[role="button"] { touch-action: manipulation; }
   <div class="dm-hero">
     <div class="dm-eyebrow"><svg class="ic-sp" aria-hidden="true"><use href="#sp-map"/></svg> Drought Intelligence · Updated Weekly</div>
     <h1>US Drought Monitor</h1>
-<style></style><aside class="ag-sponsor-ribbon" id="ag-sponsor"><span class="ag-sponsor-tag">Sponsor this page</span> Everyone here is watching moisture. One category-exclusive slot. <span class="ag-sponsor-price" data-rate="page">$29/mo &middot; first month free</span> <a href="/sponsor-apply?slot=drought&amp;utm_source=drought&amp;utm_medium=slot">Put your name here &rarr;</a></aside>
     <p>Weekly drought conditions for US crop regions. Select national, state, or regional views. Published every Thursday by the National Drought Mitigation Center, USDA, and NOAA. For every county's drought record since 2000, see <a href="/farmland-atlas#l=dr_share" style="color:var(--gold)">the Farmland Atlas</a>.</p>
     <div class="dm-hero-meta">
       <div class="dm-updated">Source: droughtmonitor.unl.edu · Updated Thursdays by 8:30 AM ET<span id="dm-valid"></span></div><script>fetch("/data/outlooks/manifest.json").then(function(r){return r.json()}).then(function(m){var f=(m&&m.files)||{};var d=(f["usdm_latest.png"]&&f["usdm_latest.png"].data_valid)||(m&&m.usdm_latest&&m.usdm_latest.data_valid)||(m&&m.data_valid);if(d)document.getElementById("dm-valid").textContent=" · map valid "+d;}).catch(function(){});</script>
@@ -284,6 +284,7 @@ button,a,[role="button"] { touch-action: manipulation; }
     <div class="dm-legend-item"><span class="dm-legend-dot" style="background:#e60000"></span>D3: Extreme Drought</div>
     <div class="dm-legend-item"><span class="dm-legend-dot" style="background:#730000"></span>D4: Exceptional Drought</div>
   </div>
+  <style></style><aside class="ag-sponsor-ribbon" id="ag-sponsor"><span class="ag-sponsor-tag">Sponsor this page</span> Everyone here is watching moisture. One category-exclusive slot. <span class="ag-sponsor-price" data-rate="page">$29/mo &middot; first month free</span> <a href="/sponsor-apply?slot=drought&amp;utm_source=drought&amp;utm_medium=slot">Put your name here &rarr;</a></aside>
 
   <div id="dm-state-section" style="display:none">
     <p class="dm-state-prompt">Select a state to view its drought map:</p>

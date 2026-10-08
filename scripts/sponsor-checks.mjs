@@ -8,7 +8,7 @@
  *
  *     node scripts/sponsor-checks.mjs
  */
-import { readFileSync, existsSync } from "node:fs";
+import { readFileSync, existsSync, readdirSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import assert from "node:assert/strict";
 
@@ -254,6 +254,42 @@ check("the ad's button ink is readable on its orange", () => {
 check("the ad's CSS lives in one file", () => {
   for (const [name, src] of [["index.html", R("index.html")], ["daily.html", R("daily.html")], ["sponsor-report.html", R("sponsor-report.html")], ["scripts/generate_daily.py", GEN]])
     assert.ok(!/(^|\})\s*\.sa-(ad|headline|cta|body|facts)\s*\{/m.test(src), name + " carries its own copy of the ad's rules");
+});
+
+console.log("\nTHE PAGE RIBBON (\"Sponsor this page\")");
+/* 2026-10-08 (Sig): on a phone the ribbon sat above the tool, and on some pages
+ * above the H1 and the breadcrumb. The rule: it comes after the page's first
+ * answer or result, never above the title. Each page carries its own copy of
+ * the ribbon (and rent/*.html get theirs from build_state_rent_pages.py), so
+ * this walks every page that ships one and fails by filename. */
+const ROOT = fileURLToPath(new URL("../", import.meta.url));
+const ribbonPages = [...readdirSync(ROOT).filter((f) => f.endsWith(".html")),
+  ...readdirSync(ROOT + "rent").filter((f) => f.endsWith(".html")).map((f) => "rent/" + f)]
+  .map((f) => [f, decomment(R(f))])
+  .filter(([, s]) => /<aside class="ag-sponsor-ribbon"(?! idx1)/.test(s));
+check("every page that ships the ribbon puts it below the H1 and the breadcrumb", () => {
+  assert.ok(ribbonPages.length >= 79, "only " + ribbonPages.length + " pages carry the ribbon; the pages have moved");
+  for (const [f, s] of ribbonPages) {
+    const body = s.slice(s.search(/<body[\s>]/));
+    const rib = body.search(/<aside class="ag-sponsor-ribbon"(?! idx1)/);
+    const h1 = body.search(/<h1[\s>]/);
+    const bc = body.search(/<nav class="(?:breadcrumb|bc|fs-bc)"/);
+    assert.ok(h1 >= 0 && rib > h1, f + ": the ribbon comes before the H1");
+    assert.ok(bc < 0 || rib > bc, f + ": the ribbon comes before the breadcrumb");
+  }
+});
+check("the rent page generator writes the ribbon after the verdict and the state tiles", () => {
+  const g = R("scripts/build_state_rent_pages.py");
+  for (const block of ["{hero}", "{tile_html}"]) {
+    const i = g.indexOf("\n  " + block + "\n");
+    assert.ok(i > 0, block + " is no longer a line of its own in the page template");
+    assert.ok(g.slice(i + block.length + 4).trimStart().startsWith('<aside class="ag-sponsor-ribbon"'), "the ribbon does not follow " + block);
+  }
+});
+check("the ribbon's link is a 44px tap target", () => {
+  const css = decomment(R("components/styles.css"));
+  const m = /\.ag-sponsor-ribbon a\[href\]\{[^}]*min-height:(\d+)px/.exec(css);
+  assert.ok(m && +m[1] >= 44, "ribbon link min-height is " + (m ? m[1] : "unset"));
 });
 
 console.log("\n  " + pass + " passed, " + fail + " failed\n");

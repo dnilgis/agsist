@@ -760,8 +760,11 @@
     .pwa-visual{padding:.5rem}
   }
 
-/* per-contract staleness — a held quote must not pose as live */
-.stale-tile{opacity:.55}
+/* per-contract staleness — a held quote must not pose as live.
+   2026-10-08: marked with a word, not faded. Opacity .55 took every label in
+   a held row (soybean meal, light and dark) under 4.5:1. */
+.stale-tile{opacity:1}
+.t-item.stale-tile .t-unit::after,#f-prices .r7-row.stale-tile .r7-cm::after{content:" \00b7  held"}
 
 /* ===== block 3 of 23 ===== */
 /* ===== 2026-09-30: real two-column page shell, replacing the Option-B
@@ -1174,7 +1177,7 @@ html[data-theme="light"] #daily-teaser-sponsor:not(.empty-state){color:var(--ad-
 #f-prices .r7-bar{grid-area:bar;position:relative;height:2px;margin:3px 4px 0;background:var(--border-2)}
 #f-prices .r7-dot{position:absolute;top:50%;left:0;width:7px;height:7px;border-radius:50%;background:var(--text);transform:translate(-50%,-50%)}
 #f-prices .r7-lo:empty~.r7-bar{visibility:hidden}
-#f-prices .r7-row.stale-tile{opacity:.6}
+#f-prices .r7-row.stale-tile{opacity:1}
 @media(max-width:600px){
   #f-prices .r7-lh{display:none!important}
   #f-prices .r7-led .pc.r7-row{grid-template-columns:minmax(0,1fr) auto auto;grid-template-areas:"nm last last" "rg ch pc";row-gap:6px;column-gap:12px;padding:10px 0!important}
