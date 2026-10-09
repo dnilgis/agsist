@@ -434,6 +434,16 @@ function loadWxAlerts(lat, lon) {
   }
   go();
   if (_wxAlertTimer) clearInterval(_wxAlertTimer);
+  if (document.prerendering) {
+    // not shown yet: start the five-minute alert poll on show, fresh read first
+    document.addEventListener('prerenderingchange', function () {
+      if (_wxAlertAt !== pt) return;
+      go();
+      if (_wxAlertTimer) clearInterval(_wxAlertTimer);
+      _wxAlertTimer = setInterval(go, 5 * 60 * 1000);
+    }, { once: true });
+    return;
+  }
   _wxAlertTimer = setInterval(go, 5 * 60 * 1000);
 }
 
@@ -1546,9 +1556,23 @@ function loadDailyBriefing() {
       fetchKalshiMarkets();
     }
 
-    setInterval(function() {
-      fetchAllPrices();
-      }, 5 * 60 * 1000);
+    // A page loaded ahead in the background (speculation rules) starts its
+    // five-minute poll only once it is shown, and re-reads prices on show if
+    // it sat unseen for more than a minute.
+    function startPricePoll() {
+      setInterval(function() {
+        fetchAllPrices();
+        }, 5 * 60 * 1000);
+    }
+    if (document.prerendering) {
+      var _preAt = Date.now();
+      document.addEventListener('prerenderingchange', function() {
+        if (Date.now() - _preAt > 60 * 1000) fetchAllPrices();
+        startPricePoll();
+      }, { once: true });
+    } else {
+      startPricePoll();
+    }
 
     // v16/v17: Stale-cache-aware boot. Read cache for instant render only if it
     // has a timestamp and is within WX_CACHE_TTL_MS. Always fire a background

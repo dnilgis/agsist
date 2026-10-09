@@ -2,7 +2,11 @@
  * AGSIST Service Worker — v4
  * ─────────────────────────────────────────────────────────────────
  * CACHE STRATEGY:
- *   HTML pages      → Network first, cache fallback (always fresh)
+ *   HTML pages      → Network first, cache fallback (always fresh), EXCEPT
+ *                     the shells in SHELLS below: a copy cached in the last
+ *                     SHELL_MAX_AGE is served at once and refreshed behind it
+ *   (2026-10-09)      (their prices come from /data/ and the workers, fetched
+ *                     live by the page, so the shell itself holds no price)
  *   JS/CSS/images   → Cache first IF versioned (?v=N), else network first
  *   Data (JSON)     → Network only, no caching (prices must be live)
  *   External APIs   → Network only (NEVER_CACHE list below)
@@ -79,7 +83,7 @@ self.addEventListener('fetch', function(e) {
   if (!e.request.url.startsWith('http')) return;
 
   e.respondWith(
-    handleFetch(e.request).catch(function() {
+    handleFetch(e.request, e).catch(function() {
       // Last resort: bypass SW entirely; if THAT fetch also fails (offline,
       // blocked tracker, flaky API) return a quiet 504 instead of rejecting —
       // an unhandled rejection here logs a console error on every failure.
@@ -91,7 +95,7 @@ self.addEventListener('fetch', function(e) {
 });
 
 // ── Strategy router ───────────────────────────────────────────────
-function handleFetch(request) {
+function handleFetch(request, event) {
   var url = request.url;
 
   // Never cache data endpoints or external APIs — straight to network
@@ -101,10 +105,12 @@ function handleFetch(request) {
     }
   }
 
-  // HTML pages → network first, cache fallback
+  // HTML pages → network first, cache fallback; client-side shells → recent
+  // cached copy at once, refreshed in the background
   var accept = request.headers.get('accept');
   var isHTML = accept && accept.indexOf('text/html') >= 0;
   if (isHTML) {
+    if (isShell(url)) return shellFirst(request, event);
     return networkFirst(request);
   }
 
@@ -143,6 +149,72 @@ function networkFirst(request) {
   }).catch(function() {
     return caches.match(request).then(function(cached) {
       return cached || Promise.reject('network-and-cache-both-failed');
+    });
+  });
+}
+
+// ── Shells: recent cached copy at once, refresh behind it ─────────
+// Only pages whose HTML holds no price, bid or date that the page does not
+// re-read live on load. The town pages (cash-bids/<state>/<town>), the state
+// pages, the daily archive and every page a workflow rewrites with baked
+// numbers stay network first. The homepage carries a baked briefing, but the
+// page re-reads daily.json on load and dates what it shows.
+// A copy older than SHELL_MAX_AGE (the 10 minutes GitHub Pages lets the
+// browser keep a page anyway) is not used: that request goes network first.
+var SHELLS = ['/', '/index.html', '/markets', '/markets.html', '/cash-bids', '/cash-bids.html'];
+var SHELL_MAX_AGE = 10 * 60 * 1000;
+var STAMP = 'x-agsist-cached-at';
+
+function isShell(url) {
+  try {
+    var u = new URL(url);
+    if (u.origin !== self.location.origin) return false;
+    return SHELLS.indexOf(u.pathname) >= 0;
+  } catch (e) { return false; }
+}
+
+// Cache key without the query: /cash-bids?zip=50601 and /cash-bids share one
+// shell (the page reads ?zip itself). Navigations are matched the same way.
+function shellKey(request) {
+  var u = new URL(request.url);
+  u.search = ''; u.hash = '';
+  return u.href;
+}
+
+function putShell(key, response) {
+  // Re-wrap to stamp when it was stored; the body streams straight through.
+  var h = new Headers(response.headers);
+  h.set(STAMP, String(Date.now()));
+  var stamped = new Response(response.body, { status: response.status, statusText: response.statusText, headers: h });
+  return caches.open(CACHE_NAME).then(function(cache) {
+    return cache.put(key, stamped).catch(function(){});
+  }).catch(function(){});
+}
+
+function shellFirst(request, event) {
+  var key = shellKey(request);
+  return caches.match(key).then(function(cached) {
+    var at = cached ? +cached.headers.get(STAMP) : 0;
+    var fresh = cached && at && (Date.now() - at) < SHELL_MAX_AGE;
+    var net = fetch(request, { cache: 'no-cache' }).then(function(response) {
+      // only a full, same-site 200 replaces the shell (no redirects, no errors)
+      if (response && response.status === 200 && response.type === 'basic' && !response.redirected) {
+        putShell(key, response.clone());
+      }
+      return response;
+    });
+    if (fresh) {
+      var bg = net.catch(function(){});   // background refresh; never affects this response
+      try { if (event && event.waitUntil) event.waitUntil(bg); } catch (e) {}
+      return cached;
+    }
+    return net.then(function(response) {
+      if (response && response.ok) return response;
+      return cached || response;
+    }, function() {
+      return cached || caches.match(request).then(function(c) {
+        return c || Promise.reject('network-and-cache-both-failed');
+      });
     });
   });
 }

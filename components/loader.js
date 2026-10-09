@@ -817,3 +817,100 @@
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start);
   else start();
 })();
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Instant pages (2026-10-09). Chrome and Edge get speculation rules: a link
+// held under the pointer (or touched) for a moment is loaded and drawn in the
+// background, so the click opens it at once. Other browsers (Safari, Firefox)
+// get a light prefetch of the page's HTML on touch or hover, a few per page.
+// Skipped: other sites, mailto/tel, downloads, new-tab links, /sponsor-apply,
+// and any link whose address subscribes, confirms or carries a token. Nothing
+// is fetched ahead on Save-Data or a 2G connection.
+// A page loaded ahead does not count as a visit: the analytics guard in each
+// page's <head> holds Google's script until the page is actually shown.
+(function () {
+  'use strict';
+  if (window.__agsistInstant) return;   // loader.js included twice
+  window.__agsistInstant = 1;
+
+  var SKIP_SEL = 'a[download],a[target="_blank"],a[rel~="nofollow"],a[data-no-prefetch],' +
+    'a[href^="#"],a[href^="/sponsor-apply"],a[href*="subscribe"],a[href*="confirm"],' +
+    'a[href*="token="],a[href*="action="],a[href*="utm_"],a[href^="/data/"],a[href^="/api/"]';
+  var FILE_RE = /\.(pdf|csv|ics|xml|json|zip|txt|png|jpe?g|webp|gif|svg|xlsx?)$/i;
+
+  function lowData() {
+    try {
+      var c = navigator.connection;
+      if (!c) return false;
+      return !!c.saveData || /(^|-)2g$/.test(c.effectiveType || '');
+    } catch (e) { return false; }
+  }
+
+  function supportsRules() {
+    try { return !!(HTMLScriptElement.supports && HTMLScriptElement.supports('speculationrules')); }
+    catch (e) { return false; }
+  }
+
+  if (supportsRules()) {
+    // Chrome itself skips speculation on Save-Data and low memory.
+    var where = { and: [
+      { href_matches: '/*' },
+      { not: { href_matches: ['/*.pdf', '/*.csv', '/*.ics', '/*.xml', '/*.json', '/*.zip', '/*.txt'] } },
+      { not: { selector_matches: SKIP_SEL } }
+    ] };
+    var s = document.createElement('script');
+    s.type = 'speculationrules';
+    s.textContent = JSON.stringify({
+      prerender: [{ source: 'document', where: where, eagerness: 'moderate' }],
+      prefetch: [{ source: 'document', where: where, eagerness: 'conservative' }]
+    });
+    (document.head || document.documentElement).appendChild(s);
+    return;
+  }
+
+  // Fallback: fetch the page's HTML once on touch or hover so the tap that
+  // follows is served from cache. At most MAX pages per page view.
+  var MAX = 4, done = {}, count = 0, hoverTimer = null;
+  var linkPrefetch = (function () {
+    try { var l = document.createElement('link'); return !!(l.relList && l.relList.supports && l.relList.supports('prefetch')); }
+    catch (e) { return false; }
+  })();
+
+  function eligible(a) {
+    if (!a || !a.href || a.matches(SKIP_SEL)) return null;
+    var u;
+    try { u = new URL(a.href, location.href); } catch (e) { return null; }
+    if (u.origin !== location.origin || !/^https?:$/.test(u.protocol)) return null;
+    if (FILE_RE.test(u.pathname)) return null;
+    u.hash = '';
+    var key = u.href;
+    if (key === location.href.split('#')[0]) return null;
+    return key;
+  }
+
+  function prefetch(a) {
+    if (count >= MAX || lowData()) return;
+    var key = eligible(a);
+    if (!key || done[key]) return;
+    done[key] = 1; count++;
+    if (linkPrefetch) {
+      var l = document.createElement('link');
+      l.rel = 'prefetch'; l.href = key; l.as = 'document';
+      document.head.appendChild(l);
+    } else {
+      try { fetch(key, { credentials: 'same-origin', headers: { 'Accept': 'text/html' }, priority: 'low' }).catch(function () {}); }
+      catch (e) {}
+    }
+  }
+
+  function anchorOf(e) { return e.target && e.target.closest ? e.target.closest('a[href]') : null; }
+
+  document.addEventListener('touchstart', function (e) { prefetch(anchorOf(e)); }, { passive: true, capture: true });
+  document.addEventListener('mouseover', function (e) {
+    var a = anchorOf(e);
+    if (!a) return;
+    clearTimeout(hoverTimer);
+    hoverTimer = setTimeout(function () { prefetch(a); }, 80);   // a pass over the link is not a hover
+  }, { passive: true, capture: true });
+  document.addEventListener('mouseout', function () { clearTimeout(hoverTimer); }, { passive: true, capture: true });
+})();

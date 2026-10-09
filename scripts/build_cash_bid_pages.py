@@ -539,7 +539,7 @@ HOUSE_JS = '<script src="/components/cb-house.js?v=1" defer></script>\n'
 def page_end(ftr, house=False):
     return f"""</main>
 {ftr}
-<script src="/components/loader.js?v=17" defer></script>
+<script src="/components/loader.js?v=18" defer></script>
 {HOUSE_JS if house else ''}</body>
 </html>
 """

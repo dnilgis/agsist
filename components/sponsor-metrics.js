@@ -41,19 +41,26 @@
     el.__spWatched = true;
 
     if (!('IntersectionObserver' in window)) return;
-    var timer = null, fired = false, since = 0;
+    var timer = null, fired = false, since = 0, inView = false;
+
+    function arm() {
+      /* Hidden is not viewable: a background tab, or a page loaded ahead
+         (speculation rules) that the reader has not opened yet. */
+      if (fired || timer || document.hidden) return;
+      since = Date.now();
+      timer = setTimeout(function () {
+        fired = true;
+        ga('sponsor_viewable', { slot: slot, page: page(), dwell_ms: Date.now() - since });
+        io.disconnect();
+      }, MIN_MS);
+    }
 
     var io = new IntersectionObserver(function (entries) {
       entries.forEach(function (e) {
         if (fired) return;
-        if (e.intersectionRatio >= MIN_RATIO) {
-          if (timer) return;
-          since = Date.now();
-          timer = setTimeout(function () {
-            fired = true;
-            ga('sponsor_viewable', { slot: slot, page: page(), dwell_ms: Date.now() - since });
-            io.disconnect();
-          }, MIN_MS);
+        inView = e.intersectionRatio >= MIN_RATIO;
+        if (inView) {
+          arm();
         } else {
           /* CONTINUOUS. Scrolling the ad half out of view before the second is
              up resets the clock — that is what "continuous" means, and it is
@@ -68,6 +75,7 @@
     /* A tab in the background is not viewable, whatever the geometry says. */
     document.addEventListener('visibilitychange', function () {
       if (document.hidden && timer) { clearTimeout(timer); timer = null; }
+      else if (!document.hidden && inView) arm();   /* shown again with the ad in view */
     });
   }
 

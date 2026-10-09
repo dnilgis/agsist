@@ -1078,3 +1078,19 @@ a[href^="mailto:"]:not([class]):not(:has(svg)),a[href^="tel:"]:not([class]):not(
   :is(.vp-grid>.vp-tile,.cd-grid>.cd-tile)[data-st],.rh-grid>a.rh-tile{position:relative;inset:auto}
   :is(.vp-grid>.vp-tile,.cd-grid>.cd-tile)[data-st]::after,.rh-grid>a.rh-tile::after{content:"";position:absolute;inset:-1.5px}
 }
+
+/* ── Page to page (2026-10-09) ─────────────────────────────────────────
+   The page color sits on <html> too, so nothing white shows between pages
+   or past the end of a short page in dark mode. The theme itself is set in
+   <head> before this sheet paints (agsist-theme-early). Links within the
+   site cross-fade quickly; the top nav keeps still. No motion for readers
+   who ask for less. */
+html { background: var(--bg); }
+@view-transition { navigation: auto; }
+.nav { view-transition-name: agsist-nav; }
+::view-transition-old(root), ::view-transition-new(root) { animation-duration: .16s; animation-timing-function: ease-out; }
+::view-transition-group(agsist-nav) { animation-duration: 0s; }
+@media (prefers-reduced-motion: reduce) {
+  @view-transition { navigation: none; }
+  ::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) { animation: none !important; }
+}
