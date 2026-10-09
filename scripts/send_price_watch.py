@@ -50,6 +50,10 @@ PEND_TTL_MS = 14 * 864e5
 # contracts with a visible price card on the homepage. Never widen this by
 # guessing a key exists; add one here only once it is confirmed live in
 # data/prices.json AND has a real display label below.
+# Which page a fired alert's "all prices" button opens, by symbol prefix.
+PRICE_PAGES = {"corn": "/corn-futures-prices", "beans": "/soybean-futures-prices",
+               "wheat": "/wheat-futures-prices", "cattle": "/cattle-futures-prices"}
+
 ALLOWED_SYMBOLS = {
     "corn":      "Corn",
     "corn-dec":  "Corn (new crop)",
@@ -144,7 +148,8 @@ def confirm_email(w, pid, label, base, secret, fn, fa, rt):
     return m
 
 
-def hit_email(w, pid, label, close_cents, base, secret, fn, fa, rt):
+def hit_email(w, pid, label, close_cents, base, secret, fn, fa, rt, symbol=None):
+    page = SITE + PRICE_PAGES.get(str(symbol or "").split("-")[0], "/corn-futures-prices")
     stopall = link(base, "price-watch-unsubscribe", w, pid, secret, "w")
     m = base_msg(w, f"{label} -- now {fmt_price(close_cents)}", fn, fa, rt, stopall)
     line = f"{label}: now {fmt_price(close_cents)}, so your alert fired."
@@ -153,21 +158,21 @@ def hit_email(w, pid, label, close_cents, base, secret, fn, fa, rt):
                   "Set a new one any time from the homepage.\n\n"
                   "This is the futures price, not a cash bid at any one elevator -- your local "
                   "basis still applies. Check Cash Bids for what your elevator is actually paying.\n\n"
-                  f"Full market prices:\n{SITE}/corn-futures-prices\n\n"
+                  f"Full market prices:\n{page}\n\n"
                   f"--\n{ADDRESS}\nThis alert is already cleared. Cancel all your other price alerts: {stopall}\n")
     foot = (f'{H.escape(ADDRESS)}<br>This alert is already cleared. '
             f'<a href="{H.escape(stopall)}" style="color:#6b6b6b">Cancel all price alerts</a>')
     m.add_alternative(html_wrap(f"{label}: price alert hit", [
         line, "This alert has done its job and is now cleared. Set a new one any time from the homepage.",
         "This is the futures price, not a cash bid at any one elevator -- check Cash Bids for your local basis."],
-        ("SEE ALL MARKET PRICES", SITE + "/corn-futures-prices"), foot), subtype="html")
+        ("SEE ALL MARKET PRICES", page), foot), subtype="html")
     return m
 
 
 def plan(watchers, quotes, now_ms):
     """Pure: what to do. Returns (confirms, fires).
     confirms  [(email, pid, label)]
-    fires     [(email, pid, label, close_cents)]"""
+    fires     [(email, pid, label, close_cents, symbol)]"""
     confirms, fires = [], []
     for r in watchers:
         e = r["email"]
@@ -180,7 +185,7 @@ def plan(watchers, quotes, now_ms):
             if not q or q.get("close") is None:
                 continue
             if hit(w.get("direction"), q["close"], w.get("target_cents")):
-                fires.append((e, p, w.get("label") or "this alert", q["close"]))
+                fires.append((e, p, w.get("label") or "this alert", q["close"], symbol))
     return confirms, fires
 
 
@@ -237,6 +242,11 @@ def selftest():
     m2 = hit_email("a@x.com", "pB", "Corn (new crop) above $4.50", 517.5, "https://w.dev", s, "AGSIST", "n@agsist.com", None)
     b2 = m2.get_body(("plain",)).get_content()
     assert "$5.17" in b2 and "already cleared" in b2 and "PO Box 243" in b2
+    assert "/corn-futures-prices" in b2
+    m3 = hit_email("a@x.com", "pC", "Soybeans (new crop) below $13.00", 1260.75, "https://w.dev", s, "AGSIST", "n@agsist.com", None, "beans-nov")
+    b3 = m3.get_body(("plain",)).get_content()
+    assert "/soybean-futures-prices" in b3 and "/corn-futures-prices" not in b3
+    assert "/soybean-futures-prices" in m3.get_body(("html",)).get_content()
     print("selftest ok")
 
 
@@ -280,7 +290,7 @@ def main():
                     if kind == "c":
                         msg = confirm_email(e, p, label, base, secret, fn, fa, rt)
                     else:
-                        msg = hit_email(e, p, label, x[3], base, secret, fn, fa, rt)
+                        msg = hit_email(e, p, label, x[3], base, secret, fn, fa, rt, x[4])
                     conn.send_message(msg)
                     sent += 1
                     worker(base, "price-watch-mark", tok,
