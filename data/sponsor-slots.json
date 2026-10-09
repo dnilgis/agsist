@@ -5,475 +5,475 @@
    "id": "archive",
    "page": "/archive",
    "name": "Daily Archive",
-   "pitch": "Every past briefing on the record. One category-exclusive slot."
+   "pitch": "Your name beside every past briefing. One category-exclusive slot."
   },
   {
    "id": "basis",
    "page": "/basis",
    "name": "Basis vs Normal",
-   "pitch": "Every visitor here just got a bid they didn’t like. One category-exclusive slot."
+   "pitch": "Your name beside regional basis and barge rates. One category-exclusive slot."
   },
   {
    "id": "breakeven",
    "page": "/breakeven",
    "name": "Break-Even Calculator",
-   "pitch": "Visitors here are running this year’s numbers. One category-exclusive slot."
+   "pitch": "Your name beside the break-even calculator. One category-exclusive slot."
   },
   {
    "id": "cash-bids",
    "page": "/cash-bids",
    "name": "Cash Bids",
-   "pitch": "Sellers with grain to move, checking bids. One category-exclusive slot."
+   "pitch": "Your name beside local cash bids. One category-exclusive slot."
   },
   {
    "id": "cash-lease",
    "page": "/cash-lease",
    "name": "Cash Farm Lease",
-   "pitch": "Every visitor here is putting a lease on paper. One category-exclusive slot."
+   "pitch": "Your name beside the cash lease tool. One category-exclusive slot."
   },
   {
    "id": "cash-rent",
    "page": "/cash-rent",
    "name": "Cash Rent by County",
-   "pitch": "Every visitor here is weighing a land rent number. One category-exclusive slot."
+   "pitch": "Your name beside county cash rents. One category-exclusive slot."
   },
   {
    "id": "cattle-futures-prices",
    "page": "/cattle-futures-prices",
    "name": "Cattle Futures Prices",
-   "pitch": "Cattle feeders check this board every day. One category-exclusive slot."
+   "pitch": "Your name beside the cattle futures. One category-exclusive slot."
   },
   {
    "id": "conditions",
    "page": "/conditions",
    "name": "Crop Conditions",
-   "pitch": "Every visitor here is judging a crop year. One category-exclusive slot."
+   "pitch": "Your name beside the crop condition rankings. One category-exclusive slot."
   },
   {
    "id": "conditions-yield",
    "page": "/conditions-yield",
    "name": "Ratings vs Yield",
-   "pitch": "Everyone here second-guesses Monday’s number. One category-exclusive slot."
+   "pitch": "Your name beside the ratings and yield record. One category-exclusive slot."
   },
   {
    "id": "corn-futures-prices",
    "page": "/corn-futures-prices",
    "name": "Corn Futures Prices",
-   "pitch": "Corn growers check this price all session long. One category-exclusive slot."
+   "pitch": "Your name beside the corn futures price. One category-exclusive slot."
   },
   {
    "id": "drought",
    "page": "/drought-monitor",
    "name": "Drought Monitor",
-   "pitch": "Everyone here is watching moisture. One category-exclusive slot."
+   "pitch": "Your name beside the drought map. One category-exclusive slot."
   },
   {
    "id": "elevators",
    "page": "/elevators",
    "name": "Elevator Coverage Map",
-   "pitch": "Every visitor is deciding where to haul. One category-exclusive slot."
+   "pitch": "Your name beside the elevator map. One category-exclusive slot."
   },
   {
    "id": "fast-facts",
    "page": "/fast-facts",
    "name": "Reference Tables",
-   "pitch": "The reference farmers pull up in the shop, the cab, and the co-op line. One category-exclusive slot."
+   "pitch": "Your name beside the reference tables. One category-exclusive slot."
   },
   {
    "id": "fertilizer",
    "page": "/fertilizer",
    "name": "Fertilizer",
-   "pitch": "Input buyers comparing prices before they commit. One category-exclusive slot."
+   "pitch": "Your name beside the fertilizer prices. One category-exclusive slot."
   },
   {
    "id": "field-scout",
    "page": "/field-scout",
    "name": "Field Scout",
-   "pitch": "Every visitor here is standing on ground they care about. One category-exclusive slot."
+   "pitch": "Your name beside Field Scout. One category-exclusive slot."
   },
   {
    "id": "foreign-land",
    "page": "/foreign-land",
    "name": "Foreign-Owned Land",
-   "pitch": "Every visitor here cares who owns the ground. One category-exclusive slot."
+   "pitch": "Your name beside the foreign-owned farmland numbers. One category-exclusive slot."
   },
   {
    "id": "gdu",
    "page": "/gdu-calculator",
    "name": "GDU Calculator",
-   "pitch": "Every visitor here is tracking crop development on a real field. One category-exclusive slot."
+   "pitch": "Your name beside the GDU calculator. One category-exclusive slot."
   },
   {
    "id": "grain-bin-calculator",
    "page": "/grain-bin-calculator",
    "name": "Grain Bin Calculator",
-   "pitch": "Bushels, shrink, and bin math for people with real steel to fill. One category-exclusive slot."
+   "pitch": "Your name beside the grain bin calculator. One category-exclusive slot."
   },
   {
    "id": "land-tenure",
    "page": "/land-tenure",
    "name": "Rented vs Owner-Farmed",
-   "pitch": "Landlords, tenants, and everyone deciding which to be. One category-exclusive slot."
+   "pitch": "Your name beside the rented and owner-farmed numbers. One category-exclusive slot."
   },
   {
    "id": "markets",
    "page": "/markets",
    "name": "Markets",
-   "pitch": "The whole grain complex checks prices here. One category-exclusive slot."
+   "pitch": "Your name beside every futures price on the site. One category-exclusive slot."
   },
   {
    "id": "milk",
    "page": "/milk-prices",
    "name": "Milk Prices",
-   "pitch": "Dairy country checks this page. One category-exclusive slot."
+   "pitch": "Your name beside the milk prices. One category-exclusive slot."
   },
   {
    "id": "planting-date",
    "page": "/planting-date",
    "name": "Planting Date",
-   "pitch": "The first planting decision of the year gets made on this page. One category-exclusive slot."
+   "pitch": "Your name beside the planting date guide. One category-exclusive slot."
   },
   {
    "id": "presell-calculator",
    "page": "/presell-calculator",
    "name": "Pre-Sell Calculator",
-   "pitch": "Farmers working out how much crop to sell ahead check this floor. One category-exclusive slot."
+   "pitch": "Your name beside the pre-sell calculator. One category-exclusive slot."
   },
   {
    "id": "rent-hub",
    "page": "/rent",
    "name": "Cash rent by state",
-   "pitch": "The doorway to every county rent rate in America. One category-exclusive slot."
+   "pitch": "Your name on the cash rent page for every state. One category-exclusive slot."
   },
   {
    "id": "soybean-futures-prices",
    "page": "/soybean-futures-prices",
    "name": "Soybean Futures Prices",
-   "pitch": "Bean growers check this price all session long. One category-exclusive slot."
+   "pitch": "Your name beside the soybean futures price. One category-exclusive slot."
   },
   {
    "id": "spray",
    "page": "/spray",
    "name": "Spray Advisory",
-   "pitch": "Every visitor here is deciding whether to spray today. One category-exclusive slot."
+   "pitch": "Your name beside the spray forecast. One category-exclusive slot."
   },
   {
    "id": "storage-crunch",
    "page": "/storage-crunch",
    "name": "Storage Crunch",
-   "pitch": "Bin builders, elevators, and everyone selling storage or carry. One category-exclusive slot."
+   "pitch": "A fit for anyone who sells bins, storage or carry. One category-exclusive slot."
   },
   {
    "id": "tools",
    "page": "/tools",
    "name": "All Tools",
-   "pitch": "The toolbox page every calculator hangs off. One category-exclusive slot."
+   "pitch": "Your name on the page that lists every tool. One category-exclusive slot."
   },
   {
    "id": "urea",
    "page": "/urea",
    "name": "Urea Volatilization Risk",
-   "pitch": "Every visitor here is pricing nitrogen loss before they spread. One category-exclusive slot."
+   "pitch": "Your name beside the urea loss risk. One category-exclusive slot."
   },
   {
    "id": "whats-priced-in",
    "page": "/whats-priced-in",
    "name": "What's Priced In",
-   "pitch": "Read before every USDA report by people about to make marketing decisions, one category-exclusive slot."
+   "pitch": "Your name beside the trade estimates for each USDA report. One category-exclusive slot."
   },
   {
    "id": "wheat-futures-prices",
    "page": "/wheat-futures-prices",
    "name": "Wheat Futures Prices",
-   "pitch": "Wheat growers check this price all session long. One category-exclusive slot."
+   "pitch": "Your name beside the wheat futures price. One category-exclusive slot."
   },
   {
    "id": "yield-estimator",
    "page": "/yield-estimator",
    "name": "Yield Estimator",
-   "pitch": "Farmers counting kernels in August check their math here. One category-exclusive slot."
+   "pitch": "Your name beside the yield estimator. One category-exclusive slot."
   },
   {
    "id": "rent-al",
    "page": "/rent/alabama",
    "name": "Alabama cash rent",
-   "pitch": "Everyone on this page is pricing Alabama ground. One category-exclusive slot."
+   "pitch": "Your name beside Alabama county cash rents. One category-exclusive slot."
   },
   {
    "id": "rent-az",
    "page": "/rent/arizona",
    "name": "Arizona cash rent",
-   "pitch": "Everyone on this page is pricing Arizona ground. One category-exclusive slot."
+   "pitch": "Your name beside Arizona county cash rents. One category-exclusive slot."
   },
   {
    "id": "rent-ar",
    "page": "/rent/arkansas",
    "name": "Arkansas cash rent",
-   "pitch": "Everyone on this page is pricing Arkansas ground. One category-exclusive slot."
+   "pitch": "Your name beside Arkansas county cash rents. One category-exclusive slot."
   },
   {
    "id": "rent-ca",
    "page": "/rent/california",
    "name": "California cash rent",
-   "pitch": "Everyone on this page is pricing California ground. One category-exclusive slot."
+   "pitch": "Your name beside California county cash rents. One category-exclusive slot."
   },
   {
    "id": "rent-co",
    "page": "/rent/colorado",
    "name": "Colorado cash rent",
-   "pitch": "Everyone on this page is pricing Colorado ground. One category-exclusive slot."
+   "pitch": "Your name beside Colorado county cash rents. One category-exclusive slot."
   },
   {
    "id": "rent-ct",
    "page": "/rent/connecticut",
    "name": "Connecticut cash rent",
-   "pitch": "Everyone on this page is pricing Connecticut ground. One category-exclusive slot."
+   "pitch": "Your name beside Connecticut county cash rents. One category-exclusive slot."
   },
   {
    "id": "rent-de",
    "page": "/rent/delaware",
    "name": "Delaware cash rent",
-   "pitch": "Everyone on this page is pricing Delaware ground. One category-exclusive slot."
+   "pitch": "Your name beside Delaware county cash rents. One category-exclusive slot."
   },
   {
    "id": "rent-fl",
    "page": "/rent/florida",
    "name": "Florida cash rent",
-   "pitch": "Everyone on this page is pricing Florida ground. One category-exclusive slot."
+   "pitch": "Your name beside Florida county cash rents. One category-exclusive slot."
   },
   {
    "id": "rent-ga",
    "page": "/rent/georgia",
    "name": "Georgia cash rent",
-   "pitch": "Everyone on this page is pricing Georgia ground. One category-exclusive slot."
+   "pitch": "Your name beside Georgia county cash rents. One category-exclusive slot."
   },
   {
    "id": "rent-id",
    "page": "/rent/idaho",
    "name": "Idaho cash rent",
-   "pitch": "Everyone on this page is pricing Idaho ground. One category-exclusive slot."
+   "pitch": "Your name beside Idaho county cash rents. One category-exclusive slot."
   },
   {
    "id": "rent-il",
    "page": "/rent/illinois",
    "name": "Illinois cash rent",
-   "pitch": "Everyone on this page is pricing Illinois ground. One category-exclusive slot."
+   "pitch": "Your name beside Illinois county cash rents. One category-exclusive slot."
   },
   {
    "id": "rent-in",
    "page": "/rent/indiana",
    "name": "Indiana cash rent",
-   "pitch": "Everyone on this page is pricing Indiana ground. One category-exclusive slot."
+   "pitch": "Your name beside Indiana county cash rents. One category-exclusive slot."
   },
   {
    "id": "rent-ia",
    "page": "/rent/iowa",
    "name": "Iowa cash rent",
-   "pitch": "Everyone on this page is pricing Iowa ground. One category-exclusive slot."
+   "pitch": "Your name beside Iowa county cash rents. One category-exclusive slot."
   },
   {
    "id": "rent-ks",
    "page": "/rent/kansas",
    "name": "Kansas cash rent",
-   "pitch": "Everyone on this page is pricing Kansas ground. One category-exclusive slot."
+   "pitch": "Your name beside Kansas county cash rents. One category-exclusive slot."
   },
   {
    "id": "rent-ky",
    "page": "/rent/kentucky",
    "name": "Kentucky cash rent",
-   "pitch": "Everyone on this page is pricing Kentucky ground. One category-exclusive slot."
+   "pitch": "Your name beside Kentucky county cash rents. One category-exclusive slot."
   },
   {
    "id": "rent-la",
    "page": "/rent/louisiana",
    "name": "Louisiana cash rent",
-   "pitch": "Everyone on this page is pricing Louisiana ground. One category-exclusive slot."
+   "pitch": "Your name beside Louisiana county cash rents. One category-exclusive slot."
   },
   {
    "id": "rent-me",
    "page": "/rent/maine",
    "name": "Maine cash rent",
-   "pitch": "Everyone on this page is pricing Maine ground. One category-exclusive slot."
+   "pitch": "Your name beside Maine county cash rents. One category-exclusive slot."
   },
   {
    "id": "rent-md",
    "page": "/rent/maryland",
    "name": "Maryland cash rent",
-   "pitch": "Everyone on this page is pricing Maryland ground. One category-exclusive slot."
+   "pitch": "Your name beside Maryland county cash rents. One category-exclusive slot."
   },
   {
    "id": "rent-ma",
    "page": "/rent/massachusetts",
    "name": "Massachusetts cash rent",
-   "pitch": "Everyone on this page is pricing Massachusetts ground. One category-exclusive slot."
+   "pitch": "Your name beside Massachusetts county cash rents. One category-exclusive slot."
   },
   {
    "id": "rent-mi",
    "page": "/rent/michigan",
    "name": "Michigan cash rent",
-   "pitch": "Everyone on this page is pricing Michigan ground. One category-exclusive slot."
+   "pitch": "Your name beside Michigan county cash rents. One category-exclusive slot."
   },
   {
    "id": "rent-mn",
    "page": "/rent/minnesota",
    "name": "Minnesota cash rent",
-   "pitch": "Everyone on this page is pricing Minnesota ground. One category-exclusive slot."
+   "pitch": "Your name beside Minnesota county cash rents. One category-exclusive slot."
   },
   {
    "id": "rent-ms",
    "page": "/rent/mississippi",
    "name": "Mississippi cash rent",
-   "pitch": "Everyone on this page is pricing Mississippi ground. One category-exclusive slot."
+   "pitch": "Your name beside Mississippi county cash rents. One category-exclusive slot."
   },
   {
    "id": "rent-mo",
    "page": "/rent/missouri",
    "name": "Missouri cash rent",
-   "pitch": "Everyone on this page is pricing Missouri ground. One category-exclusive slot."
+   "pitch": "Your name beside Missouri county cash rents. One category-exclusive slot."
   },
   {
    "id": "rent-mt",
    "page": "/rent/montana",
    "name": "Montana cash rent",
-   "pitch": "Everyone on this page is pricing Montana ground. One category-exclusive slot."
+   "pitch": "Your name beside Montana county cash rents. One category-exclusive slot."
   },
   {
    "id": "rent-ne",
    "page": "/rent/nebraska",
    "name": "Nebraska cash rent",
-   "pitch": "Everyone on this page is pricing Nebraska ground. One category-exclusive slot."
+   "pitch": "Your name beside Nebraska county cash rents. One category-exclusive slot."
   },
   {
    "id": "rent-nv",
    "page": "/rent/nevada",
    "name": "Nevada cash rent",
-   "pitch": "Everyone on this page is pricing Nevada ground. One category-exclusive slot."
+   "pitch": "Your name beside Nevada county cash rents. One category-exclusive slot."
   },
   {
    "id": "rent-nh",
    "page": "/rent/new-hampshire",
    "name": "New Hampshire cash rent",
-   "pitch": "Everyone on this page is pricing New Hampshire ground. One category-exclusive slot."
+   "pitch": "Your name beside New Hampshire county cash rents. One category-exclusive slot."
   },
   {
    "id": "rent-nj",
    "page": "/rent/new-jersey",
    "name": "New Jersey cash rent",
-   "pitch": "Everyone on this page is pricing New Jersey ground. One category-exclusive slot."
+   "pitch": "Your name beside New Jersey county cash rents. One category-exclusive slot."
   },
   {
    "id": "rent-nm",
    "page": "/rent/new-mexico",
    "name": "New Mexico cash rent",
-   "pitch": "Everyone on this page is pricing New Mexico ground. One category-exclusive slot."
+   "pitch": "Your name beside New Mexico county cash rents. One category-exclusive slot."
   },
   {
    "id": "rent-ny",
    "page": "/rent/new-york",
    "name": "New York cash rent",
-   "pitch": "Everyone on this page is pricing New York ground. One category-exclusive slot."
+   "pitch": "Your name beside New York county cash rents. One category-exclusive slot."
   },
   {
    "id": "rent-nc",
    "page": "/rent/north-carolina",
    "name": "North Carolina cash rent",
-   "pitch": "Everyone on this page is pricing North Carolina ground. One category-exclusive slot."
+   "pitch": "Your name beside North Carolina county cash rents. One category-exclusive slot."
   },
   {
    "id": "rent-nd",
    "page": "/rent/north-dakota",
    "name": "North Dakota cash rent",
-   "pitch": "Everyone on this page is pricing North Dakota ground. One category-exclusive slot."
+   "pitch": "Your name beside North Dakota county cash rents. One category-exclusive slot."
   },
   {
    "id": "rent-oh",
    "page": "/rent/ohio",
    "name": "Ohio cash rent",
-   "pitch": "Everyone on this page is pricing Ohio ground. One category-exclusive slot."
+   "pitch": "Your name beside Ohio county cash rents. One category-exclusive slot."
   },
   {
    "id": "rent-ok",
    "page": "/rent/oklahoma",
    "name": "Oklahoma cash rent",
-   "pitch": "Everyone on this page is pricing Oklahoma ground. One category-exclusive slot."
+   "pitch": "Your name beside Oklahoma county cash rents. One category-exclusive slot."
   },
   {
    "id": "rent-or",
    "page": "/rent/oregon",
    "name": "Oregon cash rent",
-   "pitch": "Everyone on this page is pricing Oregon ground. One category-exclusive slot."
+   "pitch": "Your name beside Oregon county cash rents. One category-exclusive slot."
   },
   {
    "id": "rent-pa",
    "page": "/rent/pennsylvania",
    "name": "Pennsylvania cash rent",
-   "pitch": "Everyone on this page is pricing Pennsylvania ground. One category-exclusive slot."
+   "pitch": "Your name beside Pennsylvania county cash rents. One category-exclusive slot."
   },
   {
    "id": "rent-sc",
    "page": "/rent/south-carolina",
    "name": "South Carolina cash rent",
-   "pitch": "Everyone on this page is pricing South Carolina ground. One category-exclusive slot."
+   "pitch": "Your name beside South Carolina county cash rents. One category-exclusive slot."
   },
   {
    "id": "rent-sd",
    "page": "/rent/south-dakota",
    "name": "South Dakota cash rent",
-   "pitch": "Everyone on this page is pricing South Dakota ground. One category-exclusive slot."
+   "pitch": "Your name beside South Dakota county cash rents. One category-exclusive slot."
   },
   {
    "id": "rent-tn",
    "page": "/rent/tennessee",
    "name": "Tennessee cash rent",
-   "pitch": "Everyone on this page is pricing Tennessee ground. One category-exclusive slot."
+   "pitch": "Your name beside Tennessee county cash rents. One category-exclusive slot."
   },
   {
    "id": "rent-tx",
    "page": "/rent/texas",
    "name": "Texas cash rent",
-   "pitch": "Everyone on this page is pricing Texas ground. One category-exclusive slot."
+   "pitch": "Your name beside Texas county cash rents. One category-exclusive slot."
   },
   {
    "id": "rent-ut",
    "page": "/rent/utah",
    "name": "Utah cash rent",
-   "pitch": "Everyone on this page is pricing Utah ground. One category-exclusive slot."
+   "pitch": "Your name beside Utah county cash rents. One category-exclusive slot."
   },
   {
    "id": "rent-vt",
    "page": "/rent/vermont",
    "name": "Vermont cash rent",
-   "pitch": "Everyone on this page is pricing Vermont ground. One category-exclusive slot."
+   "pitch": "Your name beside Vermont county cash rents. One category-exclusive slot."
   },
   {
    "id": "rent-va",
    "page": "/rent/virginia",
    "name": "Virginia cash rent",
-   "pitch": "Everyone on this page is pricing Virginia ground. One category-exclusive slot."
+   "pitch": "Your name beside Virginia county cash rents. One category-exclusive slot."
   },
   {
    "id": "rent-wa",
    "page": "/rent/washington",
    "name": "Washington cash rent",
-   "pitch": "Everyone on this page is pricing Washington ground. One category-exclusive slot."
+   "pitch": "Your name beside Washington county cash rents. One category-exclusive slot."
   },
   {
    "id": "rent-wv",
    "page": "/rent/west-virginia",
    "name": "West Virginia cash rent",
-   "pitch": "Everyone on this page is pricing West Virginia ground. One category-exclusive slot."
+   "pitch": "Your name beside West Virginia county cash rents. One category-exclusive slot."
   },
   {
    "id": "rent-wi",
    "page": "/rent/wisconsin",
    "name": "Wisconsin cash rent",
-   "pitch": "Everyone on this page is pricing Wisconsin ground. One category-exclusive slot."
+   "pitch": "Your name beside Wisconsin county cash rents. One category-exclusive slot."
   },
   {
    "id": "rent-wy",
    "page": "/rent/wyoming",
    "name": "Wyoming cash rent",
-   "pitch": "Everyone on this page is pricing Wyoming ground. One category-exclusive slot."
+   "pitch": "Your name beside Wyoming county cash rents. One category-exclusive slot."
   }
  ]
 }
