@@ -5,7 +5,7 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis, every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Thu, 08 Oct 2026 10:47:28 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 09 Oct 2026 10:47:36 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/agsist.jpg</url>
@@ -13,12 +13,22 @@
       <link>https://agsist.com/daily</link>
     </image>
     <item>
+      <title>Crude pulls back from the Hormuz run as grains sit quiet</title>
+      <link>https://agsist.com/daily/2026-10-09</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-10-09</guid>
+      <pubDate>Fri, 09 Oct 2026 05:00:00 -0600</pubDate>
+      <description>Corn is at $5.01 overnight, basically flat, holding the line it has worked to defend since getting back over $5 on Monday. Crude eased 1.0% to $90.60 after a 4.9% run Wednesday, with Brent still above $100 on Hormuz tanker disruptions, ongoing since July and flaring again this week.
+• Corn holds the round number again
+• Beans firm, meal leads the complex
+• Crude gives a little back
+Read more: https://agsist.com/daily/2026-10-09</description>
+    </item>
+    <item>
       <title>CRUDE RUNS 5% ON HORMUZ, SOY OIL BREAKS HARD</title>
       <link>https://agsist.com/daily/2026-10-08</link>
       <guid isPermaLink="true">https://agsist.com/daily/2026-10-08</guid>
       <pubDate>Thu, 08 Oct 2026 05:00:00 -0600</pubDate>
       <description>WTI's at $92.61 overnight, up 4.9% after another tanker took fire off Qatar, the first deep-Gulf hit since fighting flared there back in September. Soybean oil got hit the other way, down 3.1% as meal took over the complex's weight. That split already moved crush margins before a single export sales number hit the tape.
-Action: Bot call, Oct 5 close, 4 weeks out: corn $4.97¼ down, soybeans $12.80¾ down, Chicago wheat $6.92¼ up, KC wheat $7.42¼ down. Backtest: no edge.
 • Crude Runs On Fresh Tanker Hit
 • Soy Oil Breaks, Meal Takes Over
 • Corn Grinds At The Round Number
@@ -30,7 +40,6 @@ Read more: https://agsist.com/daily/2026-10-08</description>
       <guid isPermaLink="true">https://agsist.com/daily/2026-10-07</guid>
       <pubDate>Wed, 07 Oct 2026 05:00:00 -0600</pubDate>
       <description>Live cattle are trading at $221.23 overnight, up 1.8%, with feeders up 2.0% to $340.50, both printing well above Tuesday's settle with no fresh Cattle on Feed data behind it. Corn slipped back to $5.04, giving up the round number it just reclaimed Monday as rain-stalled harvest meets heavy Grain Stocks.
-Action: Bot call, Oct 5 close, 4 weeks out: corn $4.97¼ down, soybeans $12.80¾ down, Chicago wheat $6.92¼ up, KC wheat $7.42¼ down. Backtest: no edge.
 • Cattle And Feeders Both Jump
 • Corn Slips Back Under $5.08
 Read more: https://agsist.com/daily/2026-10-07</description>
@@ -41,7 +50,6 @@ Read more: https://agsist.com/daily/2026-10-07</description>
       <guid isPermaLink="true">https://agsist.com/daily/2026-10-06</guid>
       <pubDate>Tue, 06 Oct 2026 05:00:00 -0600</pubDate>
       <description>Corn traded at $5.00 overnight, up 3 cents from Monday's $4.97¼ settle, even after USDA's Grain Stocks report put old-crop corn bushels at 2.10 billion, up 35% from a year ago. Soybeans added a nickel to $12.86 on a 3% stocks draw the other direction.
-Action: Bot call, Oct 5 close, 4 weeks out: corn $4.97½ down, soybeans $12.81 down, Chicago wheat $6.91½ up, KC wheat $7.42¼ down. Backtest: no edge.
 • Corn Shrugs Off Heavy Stocks
 • Beans Firm On Tighter Stocks
 • Cattle Soft, Crude Breaks Lower
@@ -350,19 +358,6 @@ US strikes on Iranian tankers push crude to a two-month high, dragging harvest i
 • WHEAT LIFTS ON WAR BID
 • CATTLE AND HOGS RUN HIGHER
 Read more: https://agsist.com/daily/2026-09-09</description>
-    </item>
-    <item>
-      <title>WHEAT DROPS AGAIN; CRUDE NEARS $100</title>
-      <link>https://agsist.com/daily/2026-09-08</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-09-08</guid>
-      <pubDate>Tue, 08 Sep 2026 05:00:00 -0600</pubDate>
-      <description>Wheat hit $7.16 again Tuesday, a 25-cent drop that mirrors the Sep 5 selloff almost tick for tick. Two 3.4% down sessions in four trading days is not consolidation: somebody is getting out. Crude ran to $93.92 on fresh Saudi site attacks and fading Iran peace hopes, with Brent pressing $100. Crop Progress at 3 PM CT gives harvest a real number today.
-Wheat fell 3.4% for the second time in three sessions as Iran tensions push crude higher; USDA Crop Progress prints at 3 PM CT.
-• WHEAT BREAKS AGAIN
-• CORN SPLITS; HARVEST OPENS
-  → If you have unpriced December corn, hold through today's 3 PM Crop Progress before making a move.
-• SOYOIL LEADS BEANS LOWER
-Read more: https://agsist.com/daily/2026-09-08</description>
     </item>
   </channel>
 </rss>
