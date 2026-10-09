@@ -98,7 +98,7 @@ function norm(s){return String(s).toLowerCase().replace(/[^a-z0-9]+/g,' ').repla
 function n(x,k){return Number(x).toLocaleString('en-US',{maximumFractionDigits:k,minimumFractionDigits:0});}
 function nf(x,k){return Number(x).toLocaleString('en-US',{maximumFractionDigits:k,minimumFractionDigits:k});}
 var usd=function(v){return '$'+n(Math.floor(v+0.5),0);};
-var DASH='\u2014';
+var DASH='n/a';
 // [label, column(s), formatter(row) -> string or null, why-blank]
 var SPEC=[
  ['Dry cash rent',function(r){return r.rent_dry_usd_ac==null?null:usd(r.rent_dry_usd_ac)+' ('+r.rent_dry_year+')';},'no published county rent'],
@@ -132,8 +132,8 @@ function render(){
     rs.forEach(function(r){
       if(!r){cells+='<td>'+DASH+'</td>';return;}
       var v=s[1](r);
-      if(v==='flag'){cells+='<td>'+DASH+' <small>read with care: see the county page</small></td>';any=true;}
-      else if(v==null) cells+='<td>'+DASH+' <small>'+esc(s[2])+'</small></td>';
+      if(v==='flag'){cells+='<td><small>read with care: see the county page</small></td>';any=true;}
+      else if(v==null) cells+='<td><small>'+esc(s[2])+'</small></td>';
       else {cells+='<td>'+esc(v)+'</td>';any=true;}
     });
     body+='<tr><th scope="row">'+esc(s[0])+'</th>'+cells+(any?'':'')+'</tr>';

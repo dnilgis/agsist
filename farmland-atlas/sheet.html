@@ -84,7 +84,7 @@ td .yr{color:#50595c;font-size:7pt;font-weight:400}
 <body>
 <div class="bar" id="bar">
   <a href="/farmland-atlas" id="back">← Farmland Atlas</a>
-  <input id="q" list="ql" placeholder="Another county — e.g. Story, IA" aria-label="Find a county" autocomplete="off"><datalist id="ql"></datalist>
+  <input id="q" list="ql" placeholder="Another county, e.g. Story, IA" aria-label="Find a county" autocomplete="off"><datalist id="ql"></datalist>
   <button type="button" class="go" id="print" disabled>Print this sheet</button>
   <span class="msg" id="msg" role="status" aria-live="polite">Loading the county record…</span>
 </div>
@@ -101,10 +101,10 @@ function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){retur
 function get(o){ for(var i=1;i<arguments.length;i++){ if(o==null) return undefined; o=o[arguments[i]]; } return o; }
 function ok(l){ return l&&l.status==='ok'; }
 function why(l){ return l&&l.status?String(l.status).replace(/^(withheld|not yet measured):\s*/,''):'no data'; }
-function fmt(x,k){ if(x==null||isNaN(x)) return '—'; return Number(x).toLocaleString('en-US',{maximumFractionDigits:k==null?1:k,minimumFractionDigits:0}); }
-function money(x){ if(x==null) return '—'; var v=Math.floor(Math.abs(x)+0.5); return (x<0?'−$':'$')+v.toLocaleString('en-US'); }
-function mUSD(x){ if(x==null) return '—'; var a=Math.abs(x); if(a>=1e9) return '$'+(x/1e9).toFixed(2)+' billion'; if(a>=1e6) return '$'+(x/1e6).toFixed(1)+' million'; return money(x); }
-function pct(x,k){ return x==null?'—':fmt(x*100,k==null?0:k)+'%'; }
+function fmt(x,k){ if(x==null||isNaN(x)) return 'n/a'; return Number(x).toLocaleString('en-US',{maximumFractionDigits:k==null?1:k,minimumFractionDigits:0}); }
+function money(x){ if(x==null) return 'n/a'; var v=Math.floor(Math.abs(x)+0.5); return (x<0?'−$':'$')+v.toLocaleString('en-US'); }
+function mUSD(x){ if(x==null) return 'n/a'; var a=Math.abs(x); if(a>=1e9) return '$'+(x/1e9).toFixed(2)+' billion'; if(a>=1e6) return '$'+(x/1e6).toFixed(1)+' million'; return money(x); }
+function pct(x,k){ return x==null?'n/a':fmt(x*100,k==null?0:k)+'%'; }
 function rh(v,k){ var m=Math.pow(10,k); return (Math.sign(v)*Math.round(Math.abs(v)*m+1e-9)/m).toFixed(k); }   // half away from zero; toFixed alone prints 2.135 as 2.13
 function f1(v){ return rh(Number(v),1); }
 function usd2(v){ return '$'+rh(Number(v),2); }
@@ -173,13 +173,13 @@ function recentYield(y){
 function key(label,val,unit,sub,s,fm){
   if(s&&s.none){ var nn=esc(s.none); s=null; }
   var cmp=s?esc((ST[D.state]?D.state:'')+' median'+(s.yr&&s.yr!==RENT_LATEST?' of '+s.yr+' surveys':'')+' '+fm(s.med))+(s.words?' · '+esc(s.words):''):'';
-  return '<div class="k"><div class="t">'+esc(label)+'</div><div class="v'+(val&&String(val).length>8?' sm':'')+'">'+(val==null?'<small>—</small>':esc(val)+(unit?'<small>'+esc(unit)+'</small>':''))+'</div><div class="s">'+esc(sub||'')+(cmp?'<br>'+cmp:(typeof nn!=='undefined'?'<br>'+nn:''))+'</div></div>';
+  return '<div class="k"><div class="t">'+esc(label)+'</div><div class="v'+(val&&String(val).length>8?' sm':'')+'">'+(val==null?'<small>n/a</small>':esc(val)+(unit?'<small>'+esc(unit)+'</small>':''))+'</div><div class="s">'+esc(sub||'')+(cmp?'<br>'+cmp:(typeof nn!=='undefined'?'<br>'+nn:''))+'</div></div>';
 }
 function fopt(l,r,small){ return fct(l,r,small).replace('class="f','class="opt f'); }
 function fopt3(l,r,small){ return fct(l,r,small).replace('class="f','class="opt3 f'); }   // the last to go
 function fopt2(l,r,small){ return fct(l,r,small).replace('class="f','class="opt2 f'); }   // kept in tight mode, dropped only when a county still runs over
 function fct(l,r,small){ var long=String(r).length+String(small||'').length>34||String(l).length>44; return '<div class="f'+(long?' st':'')+'"><span class="l">'+esc(l)+'</span><span class="r">'+esc(r)+(small?' <small>'+esc(small)+'</small>':'')+'</span></div>'; }
-function fw(l,r){ r=String(r).replace(/\s*\(D\)/g,' to protect individual farms'); return '<div class="f w'+(String(r).length>30?' st':'')+'"><span class="l">'+esc(l)+'</span><span class="r">— '+esc(r)+'</span></div>'; }
+function fw(l,r){ r=String(r).replace(/\s*\(D\)/g,' to protect individual farms'); return '<div class="f w'+(String(r).length>30?' st':'')+'"><span class="l">'+esc(l)+'</span><span class="r">'+esc(r.charAt(0).toUpperCase()+r.slice(1))+'</span></div>'; }
 
 // a small line chart, every axis and end labelled
 function chart(series,W,H){
@@ -216,10 +216,10 @@ function nextDoor(){
   var yr=function(k,g){ return k[1]?get(g,'rent',k[1],'year'):null; };
   var h='<table><thead><tr><th>County</th>'+cols.map(function(k){return '<th>'+esc(k[0])+'</th>';}).join('')+'</tr></thead><tbody>';
   rows.forEach(function(f){ var g=A.counties[f];
-    h+='<tr'+(f===F?' class="me" aria-current="true"':'')+'><th scope="row" style="text-align:left;font-size:inherit;text-transform:none;letter-spacing:0;color:inherit;border-bottom:1px dotted var(--rule)">'+esc(shortName(g,c.state))+'</th>'+cols.map(function(k){ var v=k[2](g); if(v==null||isNaN(v)) return '<td>—</td>'; var y=yr(k,g);
+    h+='<tr'+(f===F?' class="me" aria-current="true"':'')+'><th scope="row" style="text-align:left;font-size:inherit;text-transform:none;letter-spacing:0;color:inherit;border-bottom:1px dotted var(--rule)">'+esc(shortName(g,c.state))+'</th>'+cols.map(function(k){ var v=k[2](g); if(v==null||isNaN(v)) return '<td>n/a</td>'; var y=yr(k,g);
       return '<td>'+esc(k[3](v))+(k[1]&&y!==RENT_LATEST?' <span class="yr">'+y+'</span>':'')+'</td>'; }).join('')+'</tr>'; });
   h+='<tr class="med"><td>Median next door</td>'+cols.map(function(k){ var v=nb.filter(function(f){ var g=A.counties[f], x=k[2](g); return x!=null&&!isNaN(x)&&(!k[1]||yr(k,g)===RENT_LATEST); }).map(function(f){ return k[2](A.counties[f]); }).sort(function(a,b){return a-b;});
-    if(!v.length) return '<td>—</td>'; var m=v.length, md=m%2?v[(m-1)/2]:(v[m/2-1]+v[m/2])/2; return '<td>'+esc(k[3](md))+(m<3?' <span class="yr">'+m+' co.</span>':'')+'</td>'; }).join('')+'</tr></tbody></table>';
+    if(!v.length) return '<td>n/a</td>'; var m=v.length, md=m%2?v[(m-1)/2]:(v[m/2-1]+v[m/2])/2; return '<td>'+esc(k[3](md))+(m<3?' <span class="yr">'+m+' co.</span>':'')+'</td>'; }).join('')+'</tr></tbody></table>';
   return h+'<p class="note">Counties sharing a border. An older rent carries its year and stays out of the median.</p>';
 }
 
@@ -320,7 +320,7 @@ function render(){
   var ffd=ok(Fr)&&Fr.frost_free_days&&Fr.frost_free_days.median!=null?Fr.frost_free_days.median:null, ls=ok(Fr)?Fr.last_spring_freeze||{}:{}, fs=ok(Fr)?Fr.first_fall_freeze||{}:{};
   if(ok(Cl)&&Cl.gs_normal_in!=null) Rt+=fct('Rain Apr–Sep, and season', f1(Cl.gs_normal_in)+' in',
       (Cl.gs_recent&&Cl.gs_recent.pct_of_normal!=null?'normal; last 10: '+Cl.gs_recent.pct_of_normal+'%':'1991–2020 normal')+(ffd!=null?' · '+(Fr.frost_free_days.at_least?'at least ':'')+ffd+' frost-free days':''));
-  else if(ffd!=null) Rt+=fct('Frost-free days, median', (Fr.frost_free_days.at_least?'at least ':'')+ffd, (ls.median||'—')+' to '+(fs.median||'—'));
+  else if(ffd!=null) Rt+=fct('Frost-free days, median', (Fr.frost_free_days.at_least?'at least ':'')+ffd, (ls.median||'n/a')+' to '+(fs.median||'n/a'));
   if(ok(Fr)&&Fr.gdd) Rt+=fopt('Corn GDD, May–Sep, median', fmt(Fr.gdd.median,0), '86/50 method');
   if(ok(Sm)) Rt+=fopt('Days with hail 1 inch or larger', f1(Sm.hail_1in_days_per_year)+' a year', 'reports, '+Sm.from+'–'+Sm.to);
   Rt+='<h2>Land and water</h2>';

@@ -121,7 +121,7 @@ def rfix(v, k):
 def fmt(x, k=1):
     """en-US, at most k places, no trailing zeros, thousands commas."""
     if x is None or (isinstance(x, float) and math.isnan(x)):
-        return "—"
+        return "n/a"
     s = rfmt(float(x), k)
     if "." in s:
         s = s.rstrip("0").rstrip(".")
@@ -135,7 +135,7 @@ def fmt(x, k=1):
 
 def money(x):
     if x is None:
-        return "—"
+        return "n/a"
     v = int(math.floor(abs(x) + 0.5))
     return ("−$" if x < 0 else "$") + f"{v:,}"
 
@@ -146,7 +146,7 @@ def usd2(v):
 
 def musd(x):
     if x is None:
-        return "—"
+        return "n/a"
     a = abs(x)
     if a >= 1e9:
         return f"${x / 1e9:.2f} billion"
@@ -157,7 +157,7 @@ def musd(x):
 
 def pct(x, k=0):
     """x is a ratio."""
-    return "—" if x is None else fmt(x * 100, k) + "%"
+    return "n/a" if x is None else fmt(x * 100, k) + "%"
 
 
 def sgn(v, k):
@@ -893,7 +893,8 @@ def fact(label, value, small=None):
 
 def fwith(label, reason):
     r = str(reason).replace("(D)", "to protect individual farms")
-    return '<div class="fact w"><span class="l">%s</span><span class="r">— %s</span></div>' % (esc(label), esc(r))
+    r = r[:1].upper() + r[1:]
+    return '<div class="fact w"><span class="l">%s</span><span class="r">%s</span></div>' % (esc(label), esc(r))
 
 
 def key(label, val, unit, sub, s, fm, state):
@@ -904,7 +905,7 @@ def key(label, val, unit, sub, s, fm, state):
     if s:
         cmp_ = "%s median%s %s%s" % (state, (" of %s surveys" % s["yr"]) if s.get("yr") and s["yr"] != s.get("latest") else "",
                                     fm(s["med"]), (" · " + s["words"]) if s["words"] else "")
-    vv = "<small>—</small>" if val is None else esc(val) + (("<small>%s</small>" % esc(unit)) if unit else "")
+    vv = "<small>n/a</small>" if val is None else esc(val) + (("<small>%s</small>" % esc(unit)) if unit else "")
     extra = ("<br>" + esc(cmp_)) if cmp_ else (("<br>" + esc(none)) if none else "")
     return '<div class="k"><div class="t">%s</div><div class="v">%s</div><div class="s">%s%s</div></div>' % (esc(label), vv, esc(sub or ""), extra)
 
@@ -1301,14 +1302,14 @@ def county_page(W, f, d, stamp):
             for k in cols:
                 v = W.m(k[1], g)
                 y = get(cg, "rent", k[3], "year") if k[3] else None
-                cell += "<td>%s%s</td>" % (esc(k[2](v)) if v is not None else "—", (" <small>%s</small>" % y) if (v is not None and y and y != RL) else "")
+                cell += "<td>%s%s</td>" % (esc(k[2](v)) if v is not None else "n/a", (" <small>%s</small>" % y) if (v is not None and y and y != RL) else "")
             link = nm if g == f else '<a href="/%s/%s">%s</a>' % (OUT, W.slug[g], esc(nm))
             ND += '<tr%s><td>%s</td>%s</tr>' % (' class="me" aria-current="true"' if g == f else "", link if g != f else esc(nm), cell)
         med = ""
         for k in cols:
             v = sorted(W.m(k[1], g) for g in nb if W.m(k[1], g) is not None and (not k[3] or get(W.C[g], "rent", k[3], "year") == RL))
             if not v:
-                med += "<td>—</td>"
+                med += "<td>n/a</td>"
                 continue
             n = len(v)
             md = v[(n - 1) // 2] if n % 2 else (v[n // 2 - 1] + v[n // 2]) / 2
@@ -1320,7 +1321,7 @@ def county_page(W, f, d, stamp):
     read_html = ""
     rd = W.reads.get(f)
     if rd and rd.get("text") and rd.get("sha") == c.get("sha") and read_ok(rd["text"], d, fl):
-        read_html = '<div class="read"><p style="margin:0">%s</p></div>' % esc(rd["text"])
+        read_html = '<div class="read"><p style="margin:0">%s</p></div>' % esc(rd["text"].replace(" \u2014 ", ", ").replace("\u2014", ", "))
     if W.TEN and W.farm_acres(f) is not None and W.farm_acres(f) < 10000:
         fa = W.farm_acres(f)
         warn = '<p class="warn">%s had %s in farms in the 2022 census. County averages here describe very little farmland; read them with care.</p>' % (
@@ -1413,8 +1414,9 @@ try{{gaEvent('atlas_county_page',{{fips:rec.fips}});}}catch(e){{}}
                               "u": "/%s/%s" % (OUT, W.slug[f])}
     return head(title, meta_desc, url, ld, robots="noindex,follow" if thin else None, full_title=title,
                 image="/%s/og/%s.png?v=%s" % (OUT, f, ck),
-                alt="%s, %s: dry cash rent %s an acre, land and buildings %s, median corn yield %s" % (
-                    lab, stn, money(rec["rent_dry_usd_ac"]), "read with care" if rec["value_flag"] else money(rec["value_usd_ac"]),
+                alt="%s, %s: dry cash rent %s, land and buildings %s, median corn yield %s" % (
+                    lab, stn, (money(rec["rent_dry_usd_ac"]) + " an acre") if rec["rent_dry_usd_ac"] is not None else "not published",
+                    "read with care" if rec["value_flag"] else (money(rec["value_usd_ac"]) if rec["value_usd_ac"] is not None else "not published"),
                     (f1(rec["corn_yield_median_bu_ac"]) + " bu/ac") if rec["corn_yield_median_bu_ac"] is not None else "not published")) + body + FOOT
 
 
@@ -1444,12 +1446,12 @@ def state_page(W, st):
         r = recs[f]
         rows += ('<tr><td><a href="/%s/%s">%s</a></td><td data-v="%s">%s</td><td data-v="%s">%s</td><td data-v="%s">%s</td><td data-v="%s">%s</td><td data-v="%s">%s</td><td data-v="%s">%s</td></tr>' % (
             OUT, W.slug[f], esc(W.label[f]),
-            r["rent_dry_usd_ac"] if r["rent_dry_usd_ac"] is not None else "", (money(r["rent_dry_usd_ac"]) + ("" if r["rent_dry_year"] == W.rent_latest else " <small>%s</small>" % r["rent_dry_year"])) if r["rent_dry_usd_ac"] is not None else "—",
-            r["rent_irr_usd_ac"] if r["rent_irr_usd_ac"] is not None else "", money(r["rent_irr_usd_ac"]) if r["rent_irr_usd_ac"] is not None else "—",
-            r["value_usd_ac"] if r["value_usd_ac"] is not None else "", (money(r["value_usd_ac"]) + (" *" if r["value_flag"] else "")) if r["value_usd_ac"] is not None else "—",
-            r["corn_yield_median_bu_ac"] if r["corn_yield_median_bu_ac"] is not None else "", f1(r["corn_yield_median_bu_ac"]) if r["corn_yield_median_bu_ac"] is not None else "—",
-            r["claims_per_100_usd"] if r["claims_per_100_usd"] is not None else "", usd2(r["claims_per_100_usd"]) if r["claims_per_100_usd"] is not None else "—",
-            r["d2_week_share_pct"] if r["d2_week_share_pct"] is not None else "", (fmt(r["d2_week_share_pct"], 0) + "%") if r["d2_week_share_pct"] is not None else "—"))
+            r["rent_dry_usd_ac"] if r["rent_dry_usd_ac"] is not None else "", (money(r["rent_dry_usd_ac"]) + ("" if r["rent_dry_year"] == W.rent_latest else " <small>%s</small>" % r["rent_dry_year"])) if r["rent_dry_usd_ac"] is not None else "n/a",
+            r["rent_irr_usd_ac"] if r["rent_irr_usd_ac"] is not None else "", money(r["rent_irr_usd_ac"]) if r["rent_irr_usd_ac"] is not None else "n/a",
+            r["value_usd_ac"] if r["value_usd_ac"] is not None else "", (money(r["value_usd_ac"]) + (" *" if r["value_flag"] else "")) if r["value_usd_ac"] is not None else "n/a",
+            r["corn_yield_median_bu_ac"] if r["corn_yield_median_bu_ac"] is not None else "", f1(r["corn_yield_median_bu_ac"]) if r["corn_yield_median_bu_ac"] is not None else "n/a",
+            r["claims_per_100_usd"] if r["claims_per_100_usd"] is not None else "", usd2(r["claims_per_100_usd"]) if r["claims_per_100_usd"] is not None else "n/a",
+            r["d2_week_share_pct"] if r["d2_week_share_pct"] is not None else "", (fmt(r["d2_week_share_pct"], 0) + "%") if r["d2_week_share_pct"] is not None else "n/a"))
     facts = ""
     smed = {}
     for label, key_, fm in (("Median dry cash rent", "rent", money), ("Median land and buildings, %s census" % get(W.atlas, "national", "value", "year"), "value", money),
@@ -1458,7 +1460,7 @@ def state_page(W, st):
         smed[key_] = m
         smed[key_ + "_n"], smed[key_ + "_lo"], smed[key_ + "_hi"] = (n, lo, hi) if m is not None else (None, None, None)
         why_ = {"rent": ", %s survey" % W.rent_latest, "value": ", value not flagged", "yld": ", 15+ published years"}.get(key_, "")
-        facts += fact(label, fm(m) if m is not None else "—", ("median of %d counties with 10,000+ farm acres%s" % (n, why_)) if m is not None else "too few counties to give a median")
+        facts += fact(label, fm(m) if m is not None else "n/a", ("median of %d counties with 10,000+ farm acres%s" % (n, why_)) if m is not None else "too few counties to give a median")
     crumb_vis, crumb_ld = crumbs([("AGSIST", "/"), ("Farmland Atlas", "/farmland-atlas"), ("By state", f"/{OUT}/states/"), (stn, None)])
     smap, smbr = state_map(W, st, recs)
     title = next((t for t in (f"{stn} Farmland Values by County: Land Value, Yield & Risk",
@@ -1580,8 +1582,8 @@ def data_page(W):
         if not isinstance(x, dict):
             continue
         vint += "<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>" % (
-            esc(k), esc((x.get("source") or "")[:160]), esc(str(x.get("fetched") or x.get("vintage") or "\u2014")[:10]),
-            esc(x.get("latest_year") or x.get("census_year") or "\u2014"))
+            esc(k), esc((x.get("source") or "")[:160]), esc(str(x.get("fetched") or x.get("vintage") or "n/a")[:10]),
+            esc(x.get("latest_year") or x.get("census_year") or "n/a"))
     body = f"""
 <main class="ap">
 {crumb_vis}
@@ -1755,8 +1757,8 @@ def selftest():
     check("rh half up", rh(2.135, 2) == "2.14" and rh(-2.135, 2) == "-2.14" and rh(0.5, 0) == "1" and rh(216.64999999999998, 1) == "216.7")
     check("toFixed exact", rfix(2.135, 2) == "2.13" and rfix(3.2075, 1) == "3.2")
     check("pct binary value, as ICU rounds it", pct(0.575) == "57%" and pct(0.5) == "50%" and rfmt(0.575 * 100, 0) == "57")  # corrected 2026-09-25: epsilon fudge printed 58
-    check("money", money(290) == "$290" and money(10914.5) == "$10,915" and money(None) == "—")
-    check("fmt", fmt(188.75, 1) == "188.8" and fmt(2.0, 2) == "2" and fmt(1234567, 0) == "1,234,567" and fmt(None) == "—")
+    check("money", money(290) == "$290" and money(10914.5) == "$10,915" and money(None) == "n/a")
+    check("fmt", fmt(188.75, 1) == "188.8" and fmt(2.0, 2) == "2" and fmt(1234567, 0) == "1,234,567" and fmt(None) == "n/a")
     check("sgn", sgn(26.1, 1) == "+26.1" and sgn(-0.04, 1) == "0.0" and sgn(-2.3, 1) == "−2.3")
     check("ord", ord_(1) == "1st" and ord_(2) == "2nd" and ord_(3) == "3rd" and ord_(11) == "11th" and ord_(22) == "22nd" and ord_(100) == "100th")
     check("rank words", rank_words(1, 99) == "highest of 99" and rank_words(99, 99) == "lowest of 99"
