@@ -390,7 +390,11 @@ def _asof_time(ts, feed, fallback_day=None):
         return f"Updated {_mdy(fallback_day)}" if fallback_day else ""
     c = t.astimezone(CT) if CT else t
     hm = c.strftime("%I:%M").lstrip("0") + " " + c.strftime("%p").lower()
-    return (f'<time class="asof" data-asof="{feed}" datetime="{t.astimezone(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')}">'
+    # The ISO stamp is built outside the f-string: reusing the outer quote
+    # inside one is Python 3.12+, and the COT watcher ran 3.11, so on
+    # 2026-10-09 this line was a SyntaxError that stopped cot.html's bake.
+    iso = t.astimezone(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    return (f'<time class="asof" data-asof="{feed}" datetime="{iso}">'
             f"Updated {_md(c)}, {hm}</time>")
 
 

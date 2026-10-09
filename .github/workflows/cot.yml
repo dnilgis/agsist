@@ -13,15 +13,18 @@ on:
     # answer is also to stop being two hours late.
     #
     # Both DST cases, because 3:30pm ET moves against UTC:
-    #   EDT (Mar-Nov)  release 19:30 UTC -> 19:45, 20:15
-    #   EST (Nov-Mar)  release 20:30 UTC -> 20:45, 21:15
+    #   EDT (Mar-Nov)  release 19:30 UTC -> 19:47, 20:17
+    #   EST (Nov-Mar)  release 20:30 UTC -> 20:47, 21:17
+    # (2026-10-09: two or three minutes off the quarter hours, where GitHub's
+    # queue is most crowded. cot-release-watch.yml is the fast path now; it
+    # runs after every bids and prices run. These are the backstop.)
     # Two attempts each, because a scheduled run can be delayed or dropped, and
     # the commit step is a no-op when the data has not moved — so a wasted run
     # costs a minute of CI and nothing else.
-    - cron: '45 19 * * 5'
-    - cron: '15 20 * * 5'
-    - cron: '45 20 * * 5'
-    - cron: '15 21 * * 5'
+    - cron: '47 19 * * 5'
+    - cron: '17 20 * * 5'
+    - cron: '47 20 * * 5'
+    - cron: '17 21 * * 5'
     # AND THE SAME FOUR ON MONDAY, because six of 2026's releases are not on a
     # Friday at all. From CFTC's own release schedule: "Federal holidays may
     # delay release by one or two days", and the 2026 calendar marks
@@ -38,14 +41,14 @@ on:
     # A Monday run costs a minute of CI on the forty-six Mondays a year that
     # publish nothing, because the commit step is a no-op when the data has not
     # moved. Six correct release days are worth forty-six wasted minutes.
-    - cron: '45 19 * * 1'
-    - cron: '15 20 * * 1'
-    - cron: '45 20 * * 1'
-    - cron: '15 21 * * 1'
+    - cron: '47 19 * * 1'
+    - cron: '17 20 * * 1'
+    - cron: '47 20 * * 1'
+    - cron: '17 21 * * 1'
     # The daily catch-all stays: a release shifted somewhere neither Friday nor
     # Monday covers, or a dropped cron, self-heals the next day instead of
     # leaving the page stale a week.
-    - cron: '30 21 * * *'
+    - cron: '33 21 * * *'
   workflow_dispatch:
 
 permissions:
@@ -65,7 +68,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: '3.12'
 
       # yfinance + pandas are needed by the price-enrichment step below.
       - name: Install dependencies
@@ -186,6 +189,7 @@ jobs:
           trap - ERR
 
       - name: Commit COT data
+        id: commit
         run: |
           git config user.name  "AGSIST Bot"
           git config user.email "bot@agsist.com"
@@ -235,3 +239,12 @@ jobs:
           echo "The title, meta descriptions and the crawler paragraph are"
           echo "still on the previous report. Fix the baker and re-run."
           exit 1
+
+      # THE PAGE MUST SAY WHAT THE DATA SAYS. On 2026-10-09 the watcher committed
+      # the Oct 6 report while the bake above had died (seed_static.py used a
+      # Python 3.12 f-string and both COT jobs ran 3.11), so cot.html's title kept
+      # the Sept 29 net. "Bake result" catches a bake that fails; this, the last step, catches
+      # any way the committed cot.html and data/cot.json end up apart.
+      - name: cot.html matches data/cot.json
+        if: ${{ !cancelled() && steps.commit.outcome == 'success' }}
+        run: python scripts/check_cot_baked.py
