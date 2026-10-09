@@ -5,8 +5,16 @@
     <link>https://agsist.com/news</link>
     <description>Dated grain and livestock market events the moment they are measurable: USDA report surprises, one-year positioning extremes, 52-week highs and lows, crop rating swings. Measured, not aggregated.</description>
     <language>en-us</language>
-    <lastBuildDate>Fri, 09 Oct 2026 17:26:21 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 09 Oct 2026 22:09:03 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/news.xml" rel="self" type="application/rss+xml"/>
+    <item>
+      <title>Corn down 3.9% on the day</title>
+      <link>https://agsist.com/corn-futures-prices</link>
+      <description>Settled $4.80, -19.75 cents on the session.</description>
+      <guid isPermaLink="false">agsist-news-px:2026-10-09:corn:move</guid>
+      <pubDate>Fri, 09 Oct 2026 12:00:00 +0000</pubDate>
+      <source url="https://agsist.com/news.xml">CME settlement via the AGSIST board</source>
+    </item>
     <item>
       <title>October WASDE printed in line with the trade</title>
       <link>https://agsist.com/whats-priced-in</link>
@@ -14,14 +22,6 @@
       <guid isPermaLink="false">agsist-news-wasde:2026-10-09:inline</guid>
       <pubDate>Fri, 09 Oct 2026 12:00:00 +0000</pubDate>
       <source url="https://agsist.com/news.xml">USDA WASDE, graded against the pre-report survey</source>
-    </item>
-    <item>
-      <title>Corn down 5.2% on the day</title>
-      <link>https://agsist.com/corn-futures-prices</link>
-      <description>Last $4.74, -26 cents on the session.</description>
-      <guid isPermaLink="false">agsist-news-px:2026-10-09:corn:move</guid>
-      <pubDate>Fri, 09 Oct 2026 12:00:00 +0000</pubDate>
-      <source url="https://agsist.com/news.xml">CME settlement via the AGSIST board</source>
     </item>
     <item>
       <title>Wheat down 2.6% on the day</title>

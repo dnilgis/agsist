@@ -1,7 +1,7 @@
 {
- "updated": "2026-10-09T17:26:21+00:00",
+ "updated": "2026-10-09T22:09:03+00:00",
  "count": 28,
- "added": 4,
+ "added": 1,
  "state": {
   "px": {
    "corn": {
@@ -30,6 +30,17 @@
  },
  "items": [
   {
+   "id": "px:2026-10-09:corn:move",
+   "kind": "board",
+   "headline": "Corn down 3.9% on the day",
+   "detail": "Settled $4.80, -19.75 cents on the session.",
+   "significance": "notable",
+   "url": "/corn-futures-prices",
+   "source": "CME settlement via the AGSIST board",
+   "day_only": true,
+   "ts": "2026-10-09T12:00:00+00:00"
+  },
+  {
    "id": "wasde:2026-10-09:inline",
    "kind": "usda",
    "headline": "October WASDE printed in line with the trade",
@@ -37,17 +48,6 @@
    "significance": "notable",
    "url": "/whats-priced-in",
    "source": "USDA WASDE, graded against the pre-report survey",
-   "day_only": true,
-   "ts": "2026-10-09T12:00:00+00:00"
-  },
-  {
-   "id": "px:2026-10-09:corn:move",
-   "kind": "board",
-   "headline": "Corn down 5.2% on the day",
-   "detail": "Last $4.74, -26 cents on the session.",
-   "significance": "high",
-   "url": "/corn-futures-prices",
-   "source": "CME settlement via the AGSIST board",
    "day_only": true,
    "ts": "2026-10-09T12:00:00+00:00"
   },
