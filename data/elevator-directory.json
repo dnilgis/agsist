@@ -1,18 +1,18 @@
 {
- "generated": "2026-10-09T12:23:14Z",
+ "generated": "2026-10-09T12:38:12Z",
  "from": "barchart-raw.json",
  "complete": false,
  "note": "Directory only: who operates a facility and where. No prices, no basis, no symbols, no delivery windows.",
  "counts": {
-  "facilities": 2284,
+  "facilities": 2285,
   "states": 38,
   "with_address": 722,
   "with_coords": 725,
   "with_url": 703,
-  "with_phone": 2217,
+  "with_phone": 2218,
   "saturated_zips": 0,
   "failed_zips": 0,
-  "rows_read": 17641
+  "rows_read": 17648
  },
  "saturated": [],
  "failed": [],
@@ -6548,7 +6548,7 @@
   {
    "facility": "CHS Illinois",
    "branch": "Shipman",
-   "city": "Shipman ",
+   "city": "Shipman",
    "state": "IL",
    "zip": "62685",
    "phone": "618-729-9009",
@@ -9501,6 +9501,15 @@
    "facility_type": "Country Elevator",
    "locationId": 87794,
    "elevatorId": 2194
+  },
+  {
+   "facility": "Tremont Co-operative Grain Co.",
+   "branch": "Tremont",
+   "city": "Tremont",
+   "state": "IL",
+   "zip": "61568",
+   "phone": "309-925-4981",
+   "source": "barchart"
   },
   {
    "facility": "Tri Central Coop",
