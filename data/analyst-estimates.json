@@ -577,24 +577,32 @@
      "label": "2026/27 corn yield",
      "unit": "bu/acre",
      "direction": "supply",
-     "consensus": null,
+     "consensus": 177.8,
      "actual": null,
      "usda_current": 178.5,
-     "consensus_source": null,
-     "consensus_note": "No pre-report trade survey is on file for the October WASDE yet; consensus stays null until one is published and typed in. usda_current is USDA's standing figure from the September 2026 WASDE (178.5 corn, 52.8 soybeans). Locked calls from data/nowcast-direction.json are merged in by scripts/build_analyst_scorecard.py, never typed here.",
-     "estimates": []
+     "consensus_source": "https://www.profarmer.com/news/agriculture-news/october-wasde-preview-key-metrics-watch-corn-soybeans-wheat-and-cotton",
+     "consensus_note": "Reuters pre-report survey, as reported by Pro Farmer's October WASDE preview. Typed in 2026-10-09.",
+     "estimates": [],
+     "consensus_range": [
+      173.2,
+      182.1
+     ]
     },
     {
      "key": "soy_yield_2627",
      "label": "2026/27 soybean yield",
      "unit": "bu/acre",
      "direction": "supply",
-     "consensus": null,
+     "consensus": 52.9,
      "actual": null,
      "usda_current": 52.8,
-     "consensus_source": null,
-     "consensus_note": "No pre-report trade survey is on file for the October WASDE yet; consensus stays null until one is published and typed in. usda_current is USDA's standing figure from the September 2026 WASDE (178.5 corn, 52.8 soybeans). Locked calls from data/nowcast-direction.json are merged in by scripts/build_analyst_scorecard.py, never typed here.",
-     "estimates": []
+     "consensus_source": "https://www.profarmer.com/news/agriculture-news/october-wasde-preview-key-metrics-watch-corn-soybeans-wheat-and-cotton",
+     "consensus_note": "Reuters pre-report survey, as reported by Pro Farmer's October WASDE preview. Typed in 2026-10-09.",
+     "estimates": [],
+     "consensus_range": [
+      51.4,
+      54.1
+     ]
     }
    ]
   }
