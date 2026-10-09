@@ -39,9 +39,9 @@
    "kb":2.1
   },
   "IA":{
-   "rows":12746,
+   "rows":12747,
    "facilities":764,
-   "kb":566.9
+   "kb":567.0
   },
   "ID":{
    "rows":89,
@@ -59,7 +59,7 @@
    "kb":77.7
   },
   "KS":{
-   "rows":7322,
+   "rows":7323,
    "facilities":432,
    "kb":316.1
   },
@@ -89,9 +89,9 @@
    "kb":52.2
   },
   "MT":{
-   "rows":192,
-   "facilities":9,
-   "kb":8.9
+   "rows":216,
+   "facilities":11,
+   "kb":9.9
   },
   "NC":{
    "rows":21,
@@ -114,14 +114,14 @@
    "kb":0.7
   },
   "OH":{
-   "rows":3597,
+   "rows":3598,
    "facilities":193,
-   "kb":154.0
+   "kb":154.1
   },
   "OK":{
-   "rows":1925,
+   "rows":1927,
    "facilities":90,
-   "kb":84.2
+   "kb":84.3
   },
   "ON":{
    "rows":26,
