@@ -35,7 +35,7 @@
 .cba-zd .cba-form{padding:0 .9rem .9rem}
 .cba-zd .cba-title select{margin:0 .1rem}
 @media (max-width:480px){
-  .cba-bell-t{display:none}
   .cba-title{font-size:.875rem}
 }
-@media print{.cba-bell,.cba-card,.cba-zip{display:none!important}}
+.cba-zwatch{margin-left:auto;min-height:40px;padding:0 .8rem;color:var(--text);border-color:var(--gold);font-family:var(--font-body,"Inter",system-ui,sans-serif);font-size:.82rem;letter-spacing:0;text-transform:none}
+@media print{.cba-bell,.cba-zwatch,.cba-card,.cba-zip{display:none!important}}

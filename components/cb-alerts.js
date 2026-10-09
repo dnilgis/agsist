@@ -198,7 +198,7 @@
     return '<button type="button" class="cba-bell" aria-expanded="false"'
       + ' data-st="' + esc(elev.state) + '" data-fac="' + esc(elev.facility) + '" data-city="' + esc(elev.city || '') + '"'
       + ' data-name="' + esc(name) + '" data-corn="' + ((elev.commodities && elev.commodities.corn && elev.commodities.corn.length) ? '1' : '') + '"'
-      + ' aria-label="Price alert for ' + esc(name) + '" title="Email me about this elevator">' + BELL + '<span class="cba-bell-t">Alert</span></button>';
+      + ' aria-label="Watch ' + esc(name) + ': email me when its price or basis moves" title="Email me when this elevator\u2019s price or basis moves">' + BELL + '<span class="cba-bell-t">Watch</span></button>';
   }
   function openBell(btn){
     var card = btn.closest('.elev-card') || btn.parentNode;
@@ -207,7 +207,8 @@
     box = document.createElement('div');
     box.className = 'cba-card'; box.id = 'cba-' + (++seq);
     btn.setAttribute('aria-controls', box.id); btn.setAttribute('aria-expanded', 'true');
-    var head = card.querySelector('.elev-head');
+    /* Under the card's Save / Watch row when it has one (components/cb-myelev.css). */
+    var head = card.querySelector('.elev-acts') || card.querySelector('.elev-head');
     if(head && head.parentNode === card) head.insertAdjacentElement('afterend', box); else card.appendChild(box);
     box.innerHTML = '<p class="cba-note">Checking what this elevator can alert on…</p>';
     var st = btn.getAttribute('data-st'), fac = btn.getAttribute('data-fac'), city = btn.getAttribute('data-city');
@@ -322,6 +323,27 @@
     return out;
   }
   var zipState = { zip:'', radius:25 };
+  /* "Watch" beside the result headline (#cb-status): opens the ZIP alert below. */
+  function headWatch(zip, box){
+    var bar = document.getElementById('cb-status');
+    if(!bar) return;
+    var b = document.getElementById('cba-zwatch');
+    if(!b){
+      b = document.createElement('button');
+      b.type = 'button'; b.id = 'cba-zwatch'; b.className = 'cba-bell cba-zwatch';
+      b.addEventListener('click', function(){
+        var z = document.getElementById('cba-zip'), d = z && z.querySelector('details');
+        if(!d) return;
+        d.open = true;
+        try{ z.scrollIntoView({ behavior:'smooth', block:'center' }); }catch(e){ z.scrollIntoView(); }
+        var f = d.querySelector('.cba-price'); if(f){ try{ f.focus({ preventScroll:true }); }catch(e){ f.focus(); } }
+      });
+      bar.appendChild(b);
+    }
+    b.setAttribute('aria-controls', 'cba-zip');
+    b.setAttribute('aria-label', 'Watch prices near ZIP ' + zip + ': email me when anyone pays my price');
+    b.innerHTML = BELL + '<span class="cba-bell-t">Watch</span>';
+  }
   function zipPanel(zip, radius){
     zip = String(zip || '').replace(/\D/g, '').slice(0, 5);
     var results = document.getElementById('cb-results');
@@ -333,6 +355,7 @@
       results.parentNode.insertBefore(box, results);
     }
     box.hidden = false;
+    headWatch(zip, box);
     var r = +radius; zipState.zip = zip;
     zipState.radius = RADII.indexOf(r) >= 0 ? r : (r > 100 ? 100 : (r > 50 ? 50 : 25));
     var crop0 = '';

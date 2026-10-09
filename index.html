@@ -762,6 +762,8 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
 
       <div class="sec-head"><h2 class="sec-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:1.05em;height:1.05em;vertical-align:-.13em;margin-right:.34em;flex:none"><rect width="20" height="12" x="2" y="6" rx="2" /> <circle cx="12" cy="12" r="2" /> <path d="M6 12h.01M18 12h.01" /></svg>Cash Bids &amp; Basis</h2></div>
       <div class="card"><div class="card-body">
+        <!-- My elevators (components/cb-myelev.js): only when this phone saved some on /cash-bids. -->
+        <div id="my-elevators" data-myelev="home" hidden></div>
         <div id="bids-geo-bar" style="display:flex;align-items:center;gap:.55rem;margin-bottom:.6rem;font-size:.824rem;color:var(--text-dim)">
           <span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--gold-fill,var(--gold));animation:blink 1.5s infinite" aria-hidden="true"></span>
           <span id="bids-geo-txt">Detecting your location&hellip;</span>
@@ -1885,6 +1887,8 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')close(true);
 <script src="/components/loader.js?v=17" defer></script>
 <script src="/components/geo.js?v=22" defer></script>
 <script src="/components/bids-homepage.js?v=30" defer></script>
+<link rel="stylesheet" href="/components/cb-myelev.css?v=1">
+<script src="/components/cb-myelev.js?v=1" defer></script>
 <script src="/components/homepage-extras.js?v=11" defer></script>
 <script>
 (function() {

@@ -531,11 +531,16 @@ def breadcrumb(items):
         {"@type": "ListItem", "position": i + 1, "name": n, "item": u} for i, (n, u) in enumerate(items)]}
 
 
-def page_end(ftr):
+# Town pages only: components/cb-house.js puts the email ask in the footer's
+# open sponsor slot while it is unsold, and leaves a sold one alone.
+HOUSE_JS = '<script src="/components/cb-house.js?v=1" defer></script>\n'
+
+
+def page_end(ftr, house=False):
     return f"""</main>
 {ftr}
 <script src="/components/loader.js?v=17" defer></script>
-</body>
+{HOUSE_JS if house else ''}</body>
 </html>
 """
 
@@ -692,7 +697,7 @@ def build_town_page(t, ctx):
     meta = {"state": st, "slug": t["slug"], "name": t["name"], "indexable": indexable, "path": path,
             "elevators": len(live_b), "quiet": len(quiet), "rows": nrows, "crops": crops,
             "latest": max(times) if times else None, "title": title, "desc": desc}
-    return head(title, desc, path, jsonld, indexable) + body + page_end(ftr), meta
+    return head(title, desc, path, jsonld, indexable) + body + page_end(ftr, house=True), meta
 
 
 def build_state_index(st, metas, ctx, unplaced=()):
@@ -935,6 +940,7 @@ def selftest():
         assert '<link rel="canonical" href="https://agsist.com/cash-bids/nebraska/fremont">' in fr
         assert 'content="index,follow"' in fr and "call to confirm" in fr and "/cash-bids?zip=68025" in fr
         assert 'data-signup-ask=' in fr and 'data-zip="68025"' in fr, "a town page asks for an email with its own ZIP"
+        assert "/components/cb-house.js" in fr, "a town page carries the house ask for its unsold footer slot"
         assert "Cash grain bids in Fremont, NE today" in fr
         assert "Op bad" not in fr or "did not check out" in fr
         for blk in re.findall(r'<script type="application/ld\+json">(.*?)</script>', fr, re.S):

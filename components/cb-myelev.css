@@ -1,0 +1,46 @@
+/* components/cb-myelev.css -- "My elevators" (components/cb-myelev.js) on
+   /cash-bids and the homepage, and the Save / Watch row on each /cash-bids
+   card. Page tokens only, so light and dark follow the page. */
+.mye-ic{width:1rem;height:1rem;fill:none;stroke:currentColor;stroke-width:2;stroke-linejoin:round;flex-shrink:0;vertical-align:-.15em}
+.mye{margin:0 0 .8rem;border:1px solid var(--border);border-left:4px solid var(--gold);border-radius:10px;background:var(--surface);padding:.45rem .7rem .5rem}
+.mye-head{display:flex;align-items:center;justify-content:space-between;gap:.5rem}
+.mye-h{margin:0;font-size:.95rem;font-weight:700;color:var(--text);letter-spacing:0;text-transform:none;font-family:inherit;display:flex;align-items:center;gap:.35rem}
+.mye-h .mye-ic{color:var(--gold);fill:currentColor}
+.mye-edit{display:inline-flex;align-items:center;min-height:40px;padding:0 .3rem;background:none;border:0;color:var(--text-muted);font:inherit;font-size:.85rem;text-decoration:underline;cursor:pointer}
+.mye-list{list-style:none;margin:0;padding:0}
+.mye-cmp{display:inline-flex;align-items:center;min-height:40px;margin:.1rem 0 .35rem;padding:0 .9rem;border:1px solid var(--gold);border-radius:8px;background:none;color:var(--text);font:inherit;font-size:.84rem;font-weight:600;cursor:pointer}
+.mye-cmp:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.mye-row{display:flex;flex-wrap:wrap;align-items:flex-start;gap:.35rem .5rem;padding:.45rem 0;border-top:1px solid var(--border)}
+.mye-main{flex:1 1 11rem;min-width:0}
+.mye-top{display:flex;flex-wrap:wrap;align-items:baseline;gap:0 .45rem}
+.mye-name{font-weight:700;font-size:.92rem;color:var(--text);text-decoration:underline;text-decoration-color:var(--border);text-underline-offset:3px;display:inline-flex;align-items:center;min-height:32px}
+.mye-name:hover{text-decoration-color:currentColor}
+.mye-town{font-size:.8rem;color:var(--text-muted)}
+.mye-crops{display:flex;flex-wrap:wrap;gap:.1rem .9rem;margin-top:.05rem}
+.mye-c{white-space:nowrap;font-size:.84rem;color:var(--text-muted)}
+.mye-cn{color:var(--text-muted)}
+.mye-px{font-family:'JetBrains Mono',monospace;font-size:1rem;color:var(--text)}
+.mye-chg{font-family:'JetBrains Mono',monospace;font-size:.78rem;font-weight:700}
+.mye-chg.is-up{color:var(--green)}
+.mye-chg.is-dn{color:var(--red,#ef4444)}
+.mye-chg.is-flat{color:var(--text-muted)}
+.mye-del{font-size:.74rem;color:var(--text-muted)}
+.mye-sub{font-size:.76rem;line-height:1.45;color:var(--text-muted);margin-top:.1rem}
+.mye-posted.is-old{color:var(--gold)}
+[data-theme="light"] .mye-posted.is-old{color:#86600f}
+.mye-x{min-height:40px;padding:0 .7rem;background:none;border:1px solid var(--border);border-radius:20px;color:var(--text-muted);font:inherit;font-size:.8rem;cursor:pointer}
+.mye-x:hover{border-color:var(--red,#ef4444);color:var(--red,#ef4444)}
+.mye-row .cba-card{flex:1 1 100%;border-bottom:0;border-radius:8px}
+.mye-note{margin:.2rem 0 0;font-size:.74rem;color:var(--text-muted)}
+.mye-edit:focus-visible,.mye-name:focus-visible,.mye-x:focus-visible,.mye-save:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+
+/* The card's own Save and Watch, text and icon, 40px and up. */
+.elev-acts{display:flex;flex-wrap:wrap;gap:.35rem;padding:0 .6rem .35rem}
+.elev-card .elev-acts .pin-btn.mye-save,.elev-card .elev-acts .cba-bell,.mye-row .cba-bell{display:inline-flex;align-items:center;gap:.3rem;min-height:40px;min-width:0;padding:0 .8rem;border-radius:20px;font-family:var(--font-body,'Inter',system-ui,sans-serif);font-size:.82rem;font-weight:700;letter-spacing:0;text-transform:none}
+.elev-card .elev-acts .cba-bell-t,.elev-card .elev-acts .mye-save-t,.mye-row .cba-bell-t{display:inline}
+.mye-save.pinned .mye-ic{fill:currentColor}
+[data-theme="light"] .mye-save.pinned{color:#86600f;border-color:#86600f}
+.elev-card{scroll-margin-top:84px}
+.elev-card.mye-flash{box-shadow:0 0 0 3px var(--gold);transition:box-shadow .3s}
+@media(prefers-reduced-motion:reduce){.elev-card.mye-flash{transition:none}}
+@media print{.mye,.elev-acts{display:none!important}}
