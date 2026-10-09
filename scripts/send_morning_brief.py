@@ -241,13 +241,12 @@ def section_one_number(daily):
 
 
 def section_action(daily):
-    """The Action, right after the lead. v5.5: the prediction bot's call."""
+    """The Action, right after the lead. 2026-10-09, Sig: the prediction bot
+    is out of the Daily for now (it lives on /scorecard), so an action that is
+    the bot's call (bot_call present) is not printed."""
     a = strip_html(daily.get("action", ""))
-    if not a:
+    if not a or daily.get("bot_call"):
         return None
-    if daily.get("bot_call"):
-        return (f"{daily['bot_call'].get('label') or 'BOT CALL'}\n{a}\nFrom the AGSIST prediction bot, a fixed statistical rule "
-                f"graded by code. Not advice. Record and method: {SITE}/scorecard")
     return f"THE ACTION\n{a}"
 
 
@@ -423,17 +422,10 @@ def section_weekly_thread(daily):
 
 
 def section_quote(daily):
-    q = daily.get("daily_quote")
-    if not isinstance(q, dict):
-        return None
-    text = (q.get("text") or "").strip()
-    attr = (q.get("attribution") or "").strip()
-    if not text:
-        return None
-    parts = [f'"{text}"']
-    if attr:
-        parts.append(f"   — {attr}")
-    return "\n".join(parts)
+    """Off since 2026-10-09. data/quote-pool.json has no source for any
+    attribution (some read "Attributed to"), so no quote goes out under a
+    name, even on an issue that still carries one."""
+    return None
 
 
 def section_footer(today):

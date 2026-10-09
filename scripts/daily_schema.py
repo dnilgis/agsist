@@ -81,6 +81,7 @@ OPTIONAL_TOP_LEVEL = [
     "the_takeaway",        # str: single-sentence "if you remember one thing"
     "subject_line",        # str: AI-suggested email subject for daily send
     "named_week",          # {title, started_at, theme} — Mon-Fri week-arc title
+    "harvest_clock",       # 2026-10-09: {asof, start, end, crops, lines, note, url} from scripts/harvest_clock.py
 ]
 
 # Deprecated field names — if present, validation warns but does not fail.

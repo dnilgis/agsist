@@ -170,6 +170,7 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 PRICES_PATH = REPO_ROOT / "data" / "prices.json"
 OUTPUT_PATH = REPO_ROOT / "data" / "daily.json"
 QUOTE_POOL_PATH = REPO_ROOT / "data" / "quote-pool.json"
+DAILY_QUOTE_ENABLED = False   # 2026-10-09: off; the pool's attributions are unsourced (see main)
 ANTHROPIC_API = "https://api.anthropic.com/v1/messages"
 # 2026-09-19: claude-sonnet-5 by default, $2/$10 per million tokens against
 # $3/$15 for claude-sonnet-4-6 on Anthropic's pricing page that day. The
@@ -2837,6 +2838,21 @@ def render_action_block_html(action, bot_call=None):
             f'</div>')
 
 
+def render_harvest_clock_html(block):
+    """The harvest price clock (scripts/harvest_clock.py): RMA's running
+    harvest price against its projected price, with RMA's as-of date. The
+    block is only in an issue generated inside the window from a fresh RMA
+    file; an archive page is that day's snapshot and keeps its as-of date."""
+    if not isinstance(block, dict) or not block.get("lines"):
+        return ""
+    lines = "".join(f'<p class="dv3-hclock-line">{html_esc(x)}</p>' for x in block["lines"])
+    url = html_esc(block.get("url") or "/harvest-price-tracker")
+    return (f'<div class="dv3-hclock" role="note" aria-label="Harvest price clock">'
+            f'<div class="dv3-hclock-label">Harvest price clock</div>{lines}'
+            f'<p class="dv3-hclock-note">{html_esc(block.get("note") or "")} '
+            f'<a href="{url}">Harvest price tracker &rarr;</a></p></div>')
+
+
 def render_cashbids_footer_html(market_closed):
     """v4.3: weekday-only inline cash-bids conversion footer.
     Sits below byline, above share row. Skipped on weekends/holidays."""
@@ -3331,7 +3347,9 @@ def generate_archive_html(briefing, date_iso, prev_date=None, next_date=None,
 
     one_num = briefing.get("one_number", {})
     one_num_html = ""
-    if one_num:
+    # No value, no card (it used to print "THE NUMBER -").
+    _onv = str((one_num or {}).get("value", "")).strip() if isinstance(one_num, dict) else ""
+    if one_num and _onv and _onv.strip("-\u2013\u2014"):
         one_num_html = (f'<div class="dv3-one-number">'
                         f'<div class="dv3-one-number-label">THE NUMBER</div>'
                         f'<div class="dv3-one-number-val">{html_esc(one_num.get("value", "-"))}</div>'
@@ -3391,6 +3409,7 @@ def generate_archive_html(briefing, date_iso, prev_date=None, next_date=None,
     takeaway_html = (render_action_block_html(briefing.get("action", ""), briefing.get("bot_call"))
                      or render_takeaway_block_html(briefing.get("the_takeaway", "")))
     cashbids_html = render_cashbids_footer_html(is_weekend_brief)
+    hclock_html = render_harvest_clock_html(briefing.get("harvest_clock"))
     # v5.5: no "Yesterday's call" block on new issues (the model wrote its
     # note, and it once printed the wrong direction). An archived issue
     # re-rendered from its JSON keeps the block it was published with.
@@ -3546,6 +3565,11 @@ html,body{{overflow-x:hidden;overflow-x:clip;width:100%;}}
 .dv3-takeaway-text{{font-family:'Oswald',sans-serif;font-size:1.1rem;line-height:1.45;color:var(--text);margin:0;font-weight:600;letter-spacing:-.005em}}
 .dv3-action-src{{margin:.5rem 0 0;font-size:.8rem;line-height:1.5;color:var(--text-muted)}}
 .dv3-action-src a{{color:var(--gold)}}
+.dv3-hclock{{margin:1rem 0 0;padding:.75rem 1rem;background:var(--surface2);border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:8px}}
+.dv3-hclock-label{{font-family:'JetBrains Mono',monospace;font-size:.72rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin:0 0 .35rem}}
+.dv3-hclock-line{{margin:.15rem 0;font-size:.94rem;line-height:1.5;color:var(--text)}}
+.dv3-hclock-note{{margin:.4rem 0 0;font-size:.8rem;line-height:1.5;color:var(--text-muted)}}
+.dv3-hclock-note a{{color:var(--gold);white-space:nowrap}}
 @media(max-width:640px){{.dv3-takeaway-text{{font-size:1rem}}}}
 /* v4.3: per-section vs_yesterday continuity chip */
 .dv3-sec-vs{{display:flex;align-items:center;gap:.4rem;font-family:'JetBrains Mono',monospace;font-size:.66rem;color:var(--text-muted);margin:0 0 .55rem;padding:.3rem .55rem;background:rgba(74,143,186,.04);border-left:2px solid rgba(74,143,186,.32);border-radius:0 4px 4px 0}}
@@ -3659,6 +3683,7 @@ html,body{{overflow-x:hidden;overflow-x:clip;width:100%;}}
       {surprise_html}
       {takeaway_html}
       <p class="dv3-lead">{lead}</p>
+      {hclock_html}
     </header>
     {sparks_html}
     {topbar_html}
@@ -4829,10 +4854,25 @@ def main():
     except Exception as _e:
         briefing["board"] = {"fetched": _fetched}
         print(f"  [warn] board session stamp unavailable ({type(_e).__name__}: {_e})")
-    # v5.5: The Action is the prediction bot's call. Inserted here, after the
-    # word cut and the validator, because neither is about it: its words and
-    # numbers are the bot's, not the model's, and they are not edited.
-    briefing = insert_bot_call(briefing)
+    # 2026-10-09, Sig: the prediction bot is out of the Daily for now. It
+    # lives on /scorecard (data/predictions.json), not in the briefing, the
+    # homepage teaser or the email. insert_bot_call() is kept, uncalled, so
+    # putting it back is one line. With no action the box stays hidden.
+    briefing.pop("action", None)
+    briefing.pop("bot_call", None)
+    # Harvest price clock: RMA's running harvest price against the projected
+    # price, only inside the discovery window and only from a fresh RMA file.
+    # None (out of window, stale, missing) leaves the field out.
+    try:
+        import harvest_clock as _hc
+        _clock = _hc.build_from_files(REPO_ROOT)
+        if _clock:
+            briefing["harvest_clock"] = _clock
+            print("  Harvest clock: " + " | ".join(_clock["lines"]))
+        else:
+            print("  Harvest clock: none (out of window, stale or missing RMA data)")
+    except Exception as _e:
+        print(f"  [warn] harvest clock skipped ({type(_e).__name__}: {_e})")
     chart_series, chart_dates = build_chart_series(
         locked_prices, briefing.get("market_closed") is True)
     if chart_series:
@@ -4857,8 +4897,6 @@ def main():
     print(f"  Issue number for today: #{briefing['issue_number']}")
 
     # v5.1: log block presence for verification
-    if not briefing.get("action"):
-        print("  Action: none (the prediction bot has no fresh call)")
     otp = briefing.get("outside_the_pit") or []
     if otp:
         print(f"  Outside the Pit: {len(otp)} item(s)")
@@ -4891,15 +4929,19 @@ def main():
     # If the new pick is the same as the first pass (deterministic seeds),
     # this is a no-op. If the mood-bucket has no quotes, falls back to full
     # pool. Override briefing.daily_quote with the mood-aware pick.
-    market_mood = (briefing.get("meta") or {}).get("market_mood", "")
-    if market_mood:
-        mood_quote = get_todays_quote(market_mood=market_mood)
-        if mood_quote and mood_quote.get("text"):
-            prev = briefing.get("daily_quote") or {}
-            if prev.get("text") != mood_quote["text"]:
-                print(f"  Quote re-picked for mood={market_mood!r}: "
-                      f"\"{mood_quote['text'][:50]}...\" ({mood_quote['attribution']})")
-            briefing["daily_quote"] = mood_quote
+    # 2026-10-09: no quote of the day. data/quote-pool.json carries no source
+    # for any attribution and 19 of its 413 entries say "Attributed to" (one
+    # printed "Quality means doing it right when no one is looking",
+    # "Attributed to Henry Ford"). A line we cannot source does not go out
+    # under a name. Every renderer hides the block when the field is absent.
+    if DAILY_QUOTE_ENABLED:
+        market_mood = (briefing.get("meta") or {}).get("market_mood", "")
+        if market_mood:
+            mood_quote = get_todays_quote(market_mood=market_mood)
+            if mood_quote and mood_quote.get("text"):
+                briefing["daily_quote"] = mood_quote
+    else:
+        briefing.pop("daily_quote", None)
 
     OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
     with open(OUTPUT_PATH, "w") as f:

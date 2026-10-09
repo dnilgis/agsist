@@ -57,7 +57,9 @@ def build_description(entry: dict, detail: dict) -> str:
     if subheadline:
         parts.append(subheadline)
     # v5.1: one top-level action; per-section farmer_action only on old issues
-    top_action = detail.get("action", "")
+    # 2026-10-09: the prediction bot's call (bot_call present) is not the
+    # Daily's any more; it lives on /scorecard.
+    top_action = "" if detail.get("bot_call") else detail.get("action", "")
     if top_action:
         parts.append(f"Action: {top_action}")
     sections = detail.get("sections", [])

@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="/components/styles.css?v=19">
 <link rel="stylesheet" href="/components/sponsor-ad.css?v=1">
 <link rel="stylesheet" href="/css/home.css?v=15">
+<link rel="stylesheet" href="/components/harvest-clock.css?v=1">
 <!-- 2026-09-30: sponsor-ad.js's one call site (AgsistAd.render(), below) is
      already guarded with window.AgsistAd? and runs inside a fetch .then(),
      well after a deferred script would finish — so defer is free here.
@@ -21,6 +22,7 @@
      absence, unlike the two callers above. Left as-is. -->
 <script src="/components/sponsor-ad.js?v=1" defer></script>
   <script src="/components/util.js?v=16"></script>
+<script src="/components/harvest-clock.js?v=1" defer></script>
 <link rel="icon" type="image/x-icon"            href="/img/favicon.ico">
 <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
@@ -54,7 +56,7 @@
 <meta name="twitter:title"       content="Corn, Soybean &amp; Wheat Prices &amp; Cash Grain Bids Today | AGSIST">
 <meta name="twitter:description" content="Live grain futures, farm weather, spray advisory, urea risk, cash bids &amp; USDA data. Free for farmers. Updated every 15 min.">
 <meta name="twitter:image"       content="https://agsist.com/data/social/card-2026-10-08.png">
-<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "WebSite", "@id": "https://agsist.com/#website", "url": "https://agsist.com/", "name": "AGSIST", "alternateName": ["AGSIST Farm Dashboard", "AGSIST Agricultural Intelligence"], "description": "Free live agricultural prices, weather, and tools for working farmers.", "publisher": {"@id": "https://agsist.com/#organization"}, "potentialAction": {"@type": "SearchAction", "target": {"@type": "EntryPoint", "urlTemplate": "https://agsist.com/cash-bids?zip={search_term_string}"}, "query-input": "required name=search_term_string"}}, {"@type": "Organization", "@id": "https://agsist.com/#organization", "name": "AGSIST", "url": "https://agsist.com/", "logo": {"@type": "ImageObject", "url": "https://agsist.com/img/icon-512.png", "width": 512, "height": 512}, "description": "Agricultural market intelligence platform for US corn, soybean, and grain producers. Available at no charge for non-commercial use.", "founder": {"@type": "Person", "name": "Sigurd Lindquist"}, "contactPoint": {"@type": "ContactPoint", "telephone": "+1-715-797-2428", "contactType": "customer service", "areaServed": "US", "availableLanguage": "English"}, "address": {"@type": "PostalAddress", "addressRegion": "WI", "addressCountry": "US"}}, {"@type": "WebPage", "@id": "https://agsist.com/#webpage", "url": "https://agsist.com/", "name": "Corn, Soybean & Wheat Prices & Cash Grain Bids Today | AGSIST", "description": "Live corn, soybean, and wheat futures prices updated every 15 minutes. Free farm dashboard with local weather, spray advisory, urea volatilization risk, cash grain bids, USDA reports, and daily ag briefing.", "isPartOf": {"@id": "https://agsist.com/#website"}, "about": {"@id": "https://agsist.com/#organization"}, "dateModified": "2026-10-09", "speakable": {"@type": "SpeakableSpecification", "cssSelector": [".sec-title", ".pc-price", ".pc-change", "#pbc-verdict", "#pbc-calls", "#idx1-trust-ledger"]}}, {"@type": "SoftwareApplication", "name": "AGSIST Agricultural Dashboard", "applicationCategory": "BusinessApplication", "operatingSystem": "Web", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}, "url": "https://agsist.com/"}, {"@type": "ItemList", "name": "Free Agricultural Tools on AGSIST", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Corn Futures Prices Today", "url": "https://agsist.com/corn-futures-prices"}, {"@type": "ListItem", "position": 2, "name": "Soybean Futures Prices Today", "url": "https://agsist.com/soybean-futures-prices"}, {"@type": "ListItem", "name": "Live & Feeder Cattle Futures Prices", "url": "https://agsist.com/cattle-futures-prices", "position": 3}, {"@type": "ListItem", "position": 4, "name": "Cash Grain Bids Near Me", "url": "https://agsist.com/cash-bids"}, {"@type": "ListItem", "position": 5, "name": "Spray Advisory", "url": "https://agsist.com/spray"}, {"@type": "ListItem", "position": 6, "name": "Urea Volatilization Risk Monitor", "url": "https://agsist.com/urea"}, {"@type": "ListItem", "position": 7, "name": "Farm Break-Even Calculator", "url": "https://agsist.com/breakeven"}, {"@type": "ListItem", "position": 8, "name": "Grain Bin Calculator", "url": "https://agsist.com/grain-bin-calculator"}, {"@type": "ListItem", "position": 9, "name": "AGSIST Daily Ag Briefing", "url": "https://agsist.com/daily"}, {"@type": "ListItem", "position": 10, "name": "Ag Prediction Markets", "url": "https://agsist.com/ag-odds"}, {"@type": "ListItem", "position": 11, "name": "Wheat Futures Prices Today", "url": "https://agsist.com/wheat-futures-prices"}, {"@type": "ListItem", "position": 12, "name": "Farmland Atlas", "url": "https://agsist.com/farmland-atlas"}, {"@type": "ListItem", "position": 13, "name": "Hail Map", "url": "https://agsist.com/hail-map"}, {"@type": "ListItem", "position": 14, "name": "Cash Rent by County", "url": "https://agsist.com/cash-rent"}]}, {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "What are corn futures prices today?", "acceptedAnswer": {"@type": "Answer", "text": "AGSIST displays CBOT corn futures prices from Yahoo Finance, delayed about 15 minutes and updated every 15 minutes. The front-month contract and the next December contract are both shown, each labeled with its contract month (for example Dec ’26), with net change, percent change, and 52-week range. Prices are in dollars per bushel."}}, {"@type": "Question", "name": "How do I find cash grain bids near me?", "acceptedAnswer": {"@type": "Answer", "text": "Enter any US ZIP code on AGSIST’s Cash Bids page at agsist.com/cash-bids to see posted corn, soybean, and wheat elevator prices from grain elevators within 50 miles of that ZIP by default. You can widen the search up to 250 miles. Basis is shown alongside cash price for each location."}}, {"@type": "Question", "name": "Is AGSIST free?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. AGSIST is available at no charge with no account or subscription required. Tools on the site — spray advisory, urea volatilization risk monitor, break-even calculator, grain bin calculator, cash bids, and the AGSIST Daily briefing — are available at no charge for non-commercial use."}}, {"@type": "Question", "name": "How often are grain prices updated on AGSIST?", "acceptedAnswer": {"@type": "Answer", "text": "Grain futures prices on AGSIST are updated about every 15 minutes while futures markets trade, from Sunday evening to Friday afternoon, Central time. The AGSIST Daily briefing is published every weekday morning with overnight market analysis."}}, {"@type": "Question", "name": "What is urea volatilization risk?", "acceptedAnswer": {"@type": "Answer", "text": "Urea volatilization is the loss of nitrogen fertilizer as ammonia gas when urea is surface-applied without incorporation. Risk is highest when soil temperatures exceed 50°F, humidity is high, and no rain is forecast within 2–4 days. AGSIST’s free urea risk monitor scores your real-time local conditions from 0–100."}}, {"@type": "Question", "name": "What is grain basis and why does it matter?", "acceptedAnswer": {"@type": "Answer", "text": "Grain basis is the difference between your local cash elevator price and the futures contract it is quoted against. A basis of −30 cents means the elevator pays 30 cents below futures. Stronger (less negative) basis signals higher local demand. AGSIST displays each elevator’s posted basis alongside its cash price in the cash bids tool."}}, {"@type": "Question", "name": "When is the WASDE report released?", "acceptedAnswer": {"@type": "Answer", "text": "The USDA WASDE (World Agricultural Supply and Demand Estimates) report is released monthly, typically around the 10th of each month at 12:00 PM Eastern Time. AGSIST’s USDA Calendar tracks all report dates with market impact ratings."}}, {"@type": "Question", "name": "What is the corn-to-soybean price ratio and how do farmers use it?", "acceptedAnswer": {"@type": "Answer", "text": "The corn-to-soybean price ratio is November soybean futures divided by December corn futures. A higher ratio leans toward soybeans and a lower one toward corn, but where the line falls depends on your own yields, input costs, and basis, so run break-even math on your own numbers. Both contract prices update every 15 minutes on AGSIST’s corn and soybean futures pages."}}]}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "WebSite", "@id": "https://agsist.com/#website", "url": "https://agsist.com/", "name": "AGSIST", "alternateName": ["AGSIST Farm Dashboard", "AGSIST Agricultural Intelligence"], "description": "Free live agricultural prices, weather, and tools for working farmers.", "publisher": {"@id": "https://agsist.com/#organization"}, "potentialAction": {"@type": "SearchAction", "target": {"@type": "EntryPoint", "urlTemplate": "https://agsist.com/cash-bids?zip={search_term_string}"}, "query-input": "required name=search_term_string"}}, {"@type": "Organization", "@id": "https://agsist.com/#organization", "name": "AGSIST", "url": "https://agsist.com/", "logo": {"@type": "ImageObject", "url": "https://agsist.com/img/icon-512.png", "width": 512, "height": 512}, "description": "Agricultural market intelligence platform for US corn, soybean, and grain producers. Available at no charge for non-commercial use.", "founder": {"@type": "Person", "name": "Sigurd Lindquist"}, "contactPoint": {"@type": "ContactPoint", "telephone": "+1-715-797-2428", "contactType": "customer service", "areaServed": "US", "availableLanguage": "English"}, "address": {"@type": "PostalAddress", "addressRegion": "WI", "addressCountry": "US"}}, {"@type": "WebPage", "@id": "https://agsist.com/#webpage", "url": "https://agsist.com/", "name": "Corn, Soybean & Wheat Prices & Cash Grain Bids Today | AGSIST", "description": "Live corn, soybean, and wheat futures prices updated every 15 minutes. Free farm dashboard with local weather, spray advisory, urea volatilization risk, cash grain bids, USDA reports, and daily ag briefing.", "isPartOf": {"@id": "https://agsist.com/#website"}, "about": {"@id": "https://agsist.com/#organization"}, "dateModified": "2026-10-09", "speakable": {"@type": "SpeakableSpecification", "cssSelector": [".sec-title", ".pc-price", ".pc-change", "#pbc-verdict", "#pbc-calls", "#idx1-trust-ledger"]}}, {"@type": "SoftwareApplication", "name": "AGSIST Agricultural Dashboard", "applicationCategory": "BusinessApplication", "operatingSystem": "Web", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}, "url": "https://agsist.com/"}, {"@type": "ItemList", "name": "Free Agricultural Tools on AGSIST", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Corn Futures Prices Today", "url": "https://agsist.com/corn-futures-prices"}, {"@type": "ListItem", "position": 2, "name": "Soybean Futures Prices Today", "url": "https://agsist.com/soybean-futures-prices"}, {"@type": "ListItem", "name": "Live & Feeder Cattle Futures Prices", "url": "https://agsist.com/cattle-futures-prices", "position": 3}, {"@type": "ListItem", "position": 4, "name": "Cash Grain Bids Near Me", "url": "https://agsist.com/cash-bids"}, {"@type": "ListItem", "position": 5, "name": "Spray Advisory", "url": "https://agsist.com/spray"}, {"@type": "ListItem", "position": 6, "name": "Urea Volatilization Risk Monitor", "url": "https://agsist.com/urea"}, {"@type": "ListItem", "position": 7, "name": "Farm Break-Even Calculator", "url": "https://agsist.com/breakeven"}, {"@type": "ListItem", "position": 8, "name": "Grain Bin Calculator", "url": "https://agsist.com/grain-bin-calculator"}, {"@type": "ListItem", "position": 9, "name": "AGSIST Daily Ag Briefing", "url": "https://agsist.com/daily"}, {"@type": "ListItem", "position": 10, "name": "Ag Prediction Markets", "url": "https://agsist.com/ag-odds"}, {"@type": "ListItem", "position": 11, "name": "Wheat Futures Prices Today", "url": "https://agsist.com/wheat-futures-prices"}, {"@type": "ListItem", "position": 12, "name": "Farmland Atlas", "url": "https://agsist.com/farmland-atlas"}, {"@type": "ListItem", "position": 13, "name": "Hail Map", "url": "https://agsist.com/hail-map"}, {"@type": "ListItem", "position": 14, "name": "Cash Rent by County", "url": "https://agsist.com/cash-rent"}]}, {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "What are corn futures prices today?", "acceptedAnswer": {"@type": "Answer", "text": "AGSIST displays CBOT corn futures prices from Yahoo Finance, delayed about 15 minutes and updated every 15 minutes. The front-month contract and the next December contract are both shown, each labeled with its contract month (for example Dec ’26), with net change, percent change, and 52-week range. Prices are in dollars per bushel."}}, {"@type": "Question", "name": "How do I find cash grain bids near me?", "acceptedAnswer": {"@type": "Answer", "text": "Enter any US ZIP code on AGSIST’s Cash Bids page at agsist.com/cash-bids to see posted corn, soybean, and wheat elevator prices from grain elevators within 50 miles of that ZIP by default. You can widen the search up to 250 miles. Basis is shown alongside cash price for each location."}}, {"@type": "Question", "name": "Is AGSIST free?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. AGSIST is available at no charge with no account or subscription required. Tools on the site — spray advisory, urea volatilization risk monitor, break-even calculator, grain bin calculator, cash bids, and the AGSIST Daily briefing — are available at no charge for non-commercial use."}}, {"@type": "Question", "name": "How often are grain prices updated on AGSIST?", "acceptedAnswer": {"@type": "Answer", "text": "Grain futures prices on AGSIST are updated about every 15 minutes while futures markets trade, from Sunday evening to Friday afternoon, Central time. The AGSIST Daily briefing is published every morning, weekends included, with overnight market analysis."}}, {"@type": "Question", "name": "What is urea volatilization risk?", "acceptedAnswer": {"@type": "Answer", "text": "Urea volatilization is the loss of nitrogen fertilizer as ammonia gas when urea is surface-applied without incorporation. Risk is highest when soil temperatures exceed 50°F, humidity is high, and no rain is forecast within 2–4 days. AGSIST’s free urea risk monitor scores your real-time local conditions from 0–100."}}, {"@type": "Question", "name": "What is grain basis and why does it matter?", "acceptedAnswer": {"@type": "Answer", "text": "Grain basis is the difference between your local cash elevator price and the futures contract it is quoted against. A basis of −30 cents means the elevator pays 30 cents below futures. Stronger (less negative) basis signals higher local demand. AGSIST displays each elevator’s posted basis alongside its cash price in the cash bids tool."}}, {"@type": "Question", "name": "When is the WASDE report released?", "acceptedAnswer": {"@type": "Answer", "text": "The USDA WASDE (World Agricultural Supply and Demand Estimates) report is released monthly, typically around the 10th of each month at 12:00 PM Eastern Time. AGSIST’s USDA Calendar tracks all report dates with market impact ratings."}}, {"@type": "Question", "name": "What is the corn-to-soybean price ratio and how do farmers use it?", "acceptedAnswer": {"@type": "Answer", "text": "The corn-to-soybean price ratio is November soybean futures divided by December corn futures. A higher ratio leans toward soybeans and a lower one toward corn, but where the line falls depends on your own yields, input costs, and basis, so run break-even math on your own numbers. Both contract prices update every 15 minutes on AGSIST’s corn and soybean futures pages."}}]}]}</script>
 <script>
 (function(){
   try{
@@ -239,6 +241,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
     <div class="teaser-line1"><div class="teaser-left"><span class="teaser-badge" id="daily-teaser-date"><svg class="ic" aria-hidden="true"><use href="#i-newspaper"/></svg> AGSIST Daily</span></div><span class="teaser-action">Read Today’s Briefing &#x2193;</span></div>
     <span class="teaser-preview" id="daily-teaser-text">Today’s ag market briefing. Click to read</span>
   </div>
+  <div id="home-hclock" hidden></div>
   <div class="s7-adrow"><a class="teaser-sponsor empty-state" id="daily-teaser-sponsor" href="/sponsor" onclick="event.stopPropagation()"><span class="teaser-sponsor-dot"></span>Become a sponsor<span class="teaser-sponsor-tag" data-rate="founding">$149/mo &middot; first month free</span></a></div>
   <div class="daily-full" id="daily-full">
     <div class="daily-hero-inner">
@@ -249,14 +252,13 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
           <div id="daily-date" class="daily-date">Thursday, October 8, 2026</div>
           <div class="daily-snapshot-note" aria-label="Briefing snapshot context" style="font-family:var(--font-body,'Inter',system-ui,sans-serif);font-size:.824rem;color:var(--text-muted);letter-spacing:.02em;margin:-.4rem 0 .8rem;line-height:1.5"><span id="daily-published">Snapshot at briefing publish</span> &middot; <span style="color:var(--gold)">live ticker above shows current prices</span></div>
           <div id="site-greeting" class="daily-greeting">Good Morning</div>
-          <div id="daily-thread-marker" class="daily-thread-marker"><span class="dtm-day">Day <span id="daily-thread-day">--</span>/5</span><span class="dtm-q" id="daily-thread-q"></span></div>
+          <div id="daily-thread-marker" class="daily-thread-marker" style="display:none"><span class="dtm-day">Day <span id="daily-thread-day"></span>/5</span><span class="dtm-q" id="daily-thread-q"></span></div>
           <h2 id="daily-headline" class="daily-headline">CRUDE RUNS 5% ON HORMUZ, SOY OIL BREAKS HARD</h2>
           <p id="daily-subheadline" style="font-size:.824rem;color:var(--gold);font-weight:600;margin-bottom:.5rem;letter-spacing:.02em"></p>
           <p id="daily-lead" class="daily-lead">WTI's at $92.61 overnight, up 4.9% after another tanker took fire off Qatar, the first deep-Gulf hit since fighting flared there back in September. Soybean oil got hit the other way, down 3.1% as meal took over the complex's weight. That split already moved crush margins before a single export sales number hit the tape.</p>
-          <div id="daily-takeaway" class="daily-takeaway" role="note" aria-label="Today’s action">
+          <div id="daily-takeaway" class="daily-takeaway" role="note" aria-label="Today’s action" style="display:none">
             <span class="daily-takeaway-label"><svg class="ic" aria-hidden="true"><use href="#i-target"/></svg> THE ACTION</span>
-            <p id="daily-takeaway-text" class="daily-takeaway-text">Bot call, Oct 5 close, 4 weeks out: corn $4.97¼ down, soybeans $12.80¾ down, Chicago wheat $6.92¼ up, KC wheat $7.42¼ down. Backtest: no edge.</p>
-            <p id="daily-takeaway-src" class="daily-takeaway-src" hidden>From the AGSIST prediction bot, a fixed statistical rule graded by code. Not advice. <a href="/scorecard">Record and Method &rarr;</a></p>
+            <p id="daily-takeaway-text" class="daily-takeaway-text"></p>
           </div>
           <div class="daily-more">
             <button type="button" data-daily-more aria-expanded="false">Read today’s full briefing &rarr;</button>
@@ -309,9 +311,8 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
           <div class="daily-byline" id="daily-byline">By <strong>Sigurd Lindquist</strong>, founder &middot; <a href="mailto:sig@farmers1st.com">sig@farmers1st.com</a></div>
         </div>
         <div class="hero-sidebar">
-          <div class="s-card s-card--gold"><div class="s-card-label-row" style="display:flex;align-items:center;justify-content:space-between;gap:.5rem"><span class="s-card-label"><svg class="ic" aria-hidden="true"><use href="#i-chart-column"/></svg> THE NUMBER</span><button id="daily-number-copy" class="dn-copy-btn" type="button" aria-label="Copy The Number to clipboard" title="Copy"><svg class="ic" aria-hidden="true"><use href="#i-clipboard-list"/></svg></button></div><div id="daily-number-value" class="one-num">-</div><div id="daily-number-unit" class="one-num-unit"></div><div id="daily-number-context" class="one-num-ctx"></div></div>
-          <div class="s-card"><div class="s-card-label"><svg class="ic" aria-hidden="true"><use href="#i-calendar"/></svg> <span id="daily-watch-label-text">TODAY’S WATCH LIST</span></div><ul id="daily-watch-list" class="watch-list" role="list"><li class="watch-item"><span class="watch-time">-</span><span class="watch-desc">Loading watch list&hellip;</span></li></ul></div>
-          <div class="s-card" style="border-color:rgba(var(--gold-rgb),.15)"><div class="s-card-label" style="color:var(--gold)"><svg class="ic" aria-hidden="true"><use href="#i-message-circle"/></svg> DAILY QUOTE</div><blockquote style="margin:0;padding:0"><p id="daily-quote-text" style="font-size:1rem;color:var(--text-dim);line-height:1.65;margin-bottom:.4rem">"-"</p><cite id="daily-quote-attr" style="font-size:.824rem;color:var(--text-muted);font-style:normal"></cite></blockquote></div>
+          <div class="s-card s-card--gold" style="display:none"><div class="s-card-label-row" style="display:flex;align-items:center;justify-content:space-between;gap:.5rem"><span class="s-card-label"><svg class="ic" aria-hidden="true"><use href="#i-chart-column"/></svg> THE NUMBER</span><button id="daily-number-copy" class="dn-copy-btn" type="button" aria-label="Copy The Number to clipboard" title="Copy"><svg class="ic" aria-hidden="true"><use href="#i-clipboard-list"/></svg></button></div><div id="daily-number-value" class="one-num"></div><div id="daily-number-unit" class="one-num-unit"></div><div id="daily-number-context" class="one-num-ctx"></div></div>
+          <div class="s-card" style="display:none"><div class="s-card-label"><svg class="ic" aria-hidden="true"><use href="#i-calendar"/></svg> <span id="daily-watch-label-text">TODAY’S WATCH LIST</span></div><ul id="daily-watch-list" class="watch-list" role="list"></ul></div>
           <div style="font-size:.765rem;color:var(--text-muted);text-align:center;padding:.2rem 0"><span id="daily-source">USDA &middot; CME Group &middot; Open-Meteo</span></div>
         </div>
       </div>
@@ -339,7 +340,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
         </div>
       </div>
       <div class="daily-dismiss-row" id="daily-dismiss-row">
-        <span class="daily-dismiss-note">Published Monday&ndash;Friday before the market open, with weekend recaps.</span>
+        <span class="daily-dismiss-note">Published every morning before the market open, weekends included.</span>
         <div class="daily-dismiss-actions">
           <a href="/daily?subscribe=1" class="btn-dismiss btn-dismiss--primary"><svg class="ic" aria-hidden="true"><use href="#i-mail"/></svg> Get Daily Alerts</a>
           <a href="/daily" class="btn-dismiss"><svg class="ic" aria-hidden="true"><use href="#i-newspaper"/></svg> Today’s Briefing</a>
@@ -939,11 +940,11 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
       <div class="export-widget" id="export-widget">
         <div class="export-widget-head"><h3 class="export-widget-title idx1-sub-h"><svg class="ic" aria-hidden="true"><use href="#i-package"/></svg> Export Sales: Commitments</h3><span class="export-mkt-yr" id="export-mkt-yr">USDA FAS &middot; Thu 8:30am</span></div>
         <div class="export-rows" id="export-rows">
-          <div><div class="export-row-head"><div class="export-comm-label"><span class="export-comm-name">Corn</span></div><span class="export-weekly"><span id="exp-corn-wk">--</span> <span class="export-wk-lbl">net sales this week</span></span></div><div class="export-pace-row"><div class="export-pace-bar"><div class="export-pace-fill on-track" id="exp-corn-bar" style="width:0%"></div></div><span class="export-pace-pct on-track" id="exp-corn-pct">--%</span></div><div class="export-cumul" id="exp-corn-cumul"></div><div class="export-withheld" id="exp-corn-why" hidden></div></div>
-          <div><div class="export-row-head"><div class="export-comm-label"><span class="export-comm-name">Soybeans</span></div><span class="export-weekly"><span id="exp-bean-wk">--</span> <span class="export-wk-lbl">net sales this week</span></span></div><div class="export-pace-row"><div class="export-pace-bar"><div class="export-pace-fill on-track" id="exp-bean-bar" style="width:0%"></div></div><span class="export-pace-pct on-track" id="exp-bean-pct">--%</span></div><div class="export-cumul" id="exp-bean-cumul"></div><div class="export-withheld" id="exp-bean-why" hidden></div></div>
-          <div><div class="export-row-head"><div class="export-comm-label"><span class="export-comm-name">Wheat, all classes</span></div><span class="export-weekly"><span id="exp-wheat-wk">--</span> <span class="export-wk-lbl">net sales this week</span></span></div><div class="export-pace-row"><div class="export-pace-bar"><div class="export-pace-fill on-track" id="exp-wheat-bar" style="width:0%"></div></div><span class="export-pace-pct on-track" id="exp-wheat-pct">--%</span></div><div class="export-cumul" id="exp-wheat-cumul"></div><div class="export-withheld" id="exp-wheat-why" hidden></div></div>
+          <div><div class="export-row-head"><div class="export-comm-label"><span class="export-comm-name">Corn</span></div><span class="export-weekly"><span id="exp-corn-wk"></span> <span class="export-wk-lbl">net sales this week</span></span></div><div class="export-pace-row"><div class="export-pace-bar" style="display:none"><div class="export-pace-fill on-track" id="exp-corn-bar" style="width:0%"></div></div><span class="export-pace-pct on-track" id="exp-corn-pct"></span></div><div class="export-cumul" id="exp-corn-cumul"></div><div class="export-withheld" id="exp-corn-why" hidden></div></div>
+          <div><div class="export-row-head"><div class="export-comm-label"><span class="export-comm-name">Soybeans</span></div><span class="export-weekly"><span id="exp-bean-wk"></span> <span class="export-wk-lbl">net sales this week</span></span></div><div class="export-pace-row"><div class="export-pace-bar" style="display:none"><div class="export-pace-fill on-track" id="exp-bean-bar" style="width:0%"></div></div><span class="export-pace-pct on-track" id="exp-bean-pct"></span></div><div class="export-cumul" id="exp-bean-cumul"></div><div class="export-withheld" id="exp-bean-why" hidden></div></div>
+          <div><div class="export-row-head"><div class="export-comm-label"><span class="export-comm-name">Wheat, all classes</span></div><span class="export-weekly"><span id="exp-wheat-wk"></span> <span class="export-wk-lbl">net sales this week</span></span></div><div class="export-pace-row"><div class="export-pace-bar" style="display:none"><div class="export-pace-fill on-track" id="exp-wheat-bar" style="width:0%"></div></div><span class="export-pace-pct on-track" id="exp-wheat-pct"></span></div><div class="export-cumul" id="exp-wheat-cumul"></div><div class="export-withheld" id="exp-wheat-why" hidden></div></div>
         </div>
-        <div class="export-footer"><span class="export-footer-date" id="exp-date">USDA FAS &middot; Weekly</span><span class="tip r7-tip"><button type="button" class="tip-b" aria-expanded="false" aria-describedby="tip-export">No pace yet</button><span id="tip-export" role="tooltip" class="tip-t" hidden>Pace is commitments against USDA&rsquo;s export projection for this marketing year. The projection is typed into the site&rsquo;s export-sales script after each WASDE, and the one on file is still last marketing year&rsquo;s, so no pace is shown rather than one against the wrong target. Each row compares with the same week last year instead.</span></span><span class="tip r7-tip"><button type="button" class="tip-b" aria-expanded="false" aria-describedby="tip-r7-bu">Bushels</button><span id="tip-r7-bu" role="tooltip" class="tip-t" hidden>USDA reports export sales in metric tons. Converted at 39.368 bushels per metric ton for corn and 36.744 for soybeans and wheat. Commitments are shipments so far plus sales not yet shipped.</span></span><a href="https://www.fas.usda.gov/programs/export-sales-reporting-program" target="_blank" rel="noopener" class="export-full-link">FAS Data</a></div>
+        <div class="export-footer"><span class="export-footer-date" id="exp-date">USDA FAS &middot; Weekly</span><span class="tip r7-tip"><button type="button" class="tip-b" aria-expanded="false" aria-describedby="tip-r7-bu">Bushels</button><span id="tip-r7-bu" role="tooltip" class="tip-t" hidden>USDA reports export sales in metric tons. Converted at 39.368 bushels per metric ton for corn and 36.744 for soybeans and wheat. Commitments are shipments so far plus sales not yet shipped.</span></span><a href="https://www.fas.usda.gov/programs/export-sales-reporting-program" target="_blank" rel="noopener" class="export-full-link">FAS Data</a></div>
       </div>
     </div>
     </details>
@@ -1214,24 +1215,24 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
       </div>
       <div class="idx1-nowcast-na" style="display:none;padding:.6rem .1rem;font-size:.824rem;color:var(--text-muted)">Yield Nowcast (corn/soybean bu/ac) isn&rsquo;t shown for a cattle-only operation, switch to Row Crops or Mixed to see it.</div>
       <div class="ratio-widget" id="nowcast-widget">
-        <div class="ratio-widget-head"><h3 class="ratio-widget-title idx1-sub-h">Yield Nowcast: this year&rsquo;s crop</h3><span class="ratio-verdict neutral" id="nc-verdict">Loading&hellip;</span></div>
+        <div class="ratio-widget-head"><h3 class="ratio-widget-title idx1-sub-h">Yield Nowcast: this year&rsquo;s crop</h3><span class="ratio-verdict neutral" id="nc-verdict"></span></div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:.7rem;margin:.15rem 0 .55rem">
           <div style="text-align:center;padding:.55rem .4rem;background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:9px">
             <div style="font-size:.765rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.25rem">Corn</div>
-            <div style="font-family:'JetBrains Mono',monospace;font-size:1.294rem;font-weight:800;line-height:1;color:var(--text)" id="nc-corn">--</div>
-            <div style="font-family:'JetBrains Mono',monospace;font-size:.824rem;color:var(--text-muted);margin-top:.3rem">bu/ac &middot; 80% band &plusmn;<span id="nc-corn-band">--</span></div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:1.294rem;font-weight:800;line-height:1;color:var(--text)" id="nc-corn"></div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:.824rem;color:var(--text-muted);margin-top:.3rem">bu/ac &middot; 80% band &plusmn;<span id="nc-corn-band"></span></div>
             <div style="font-size:.824rem;margin-top:.25rem" id="nc-corn-vs">&nbsp;</div>
           </div>
           <div style="text-align:center;padding:.55rem .4rem;background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:9px">
             <div style="font-size:.765rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.25rem">Soybeans</div>
-            <div style="font-family:'JetBrains Mono',monospace;font-size:1.294rem;font-weight:800;line-height:1;color:var(--text)" id="nc-beans">--</div>
-            <div style="font-family:'JetBrains Mono',monospace;font-size:.824rem;color:var(--text-muted);margin-top:.3rem">bu/ac &middot; 80% band &plusmn;<span id="nc-beans-band">--</span></div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:1.294rem;font-weight:800;line-height:1;color:var(--text)" id="nc-beans"></div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:.824rem;color:var(--text-muted);margin-top:.3rem">bu/ac &middot; 80% band &plusmn;<span id="nc-beans-band"></span></div>
             <div style="font-size:.824rem;margin-top:.25rem" id="nc-beans-vs">&nbsp;</div>
           </div>
         </div>
         <div style="font-size:.765rem;color:var(--text-muted);line-height:1.55;margin-bottom:.35rem">Weekly, from USDA crop ratings. <span class="tip"><button type="button" class="tip-b" aria-expanded="false" aria-describedby="tip-nowcast">How it works</button><span id="tip-nowcast" role="tooltip" class="tip-t" hidden>Built from Monday&rsquo;s USDA crop ratings, state by state, weighted by acres. 80% band: in 8 of every 10 years backtested (<span id="nc-years">16</span> years, each left out in turn), the model at this week of the season missed USDA&rsquo;s final yield by no more than this. Tightens as the season ages.</span></span></div>
         <div style="display:flex;align-items:center;justify-content:space-between;gap:.5rem;flex-wrap:wrap">
-          <span style="font-family:'JetBrains Mono',monospace;font-size:.765rem;color:var(--text-muted)" id="nc-week">Ratings week: -</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:.765rem;color:var(--text-muted)" id="nc-week"></span>
           <a href="/conditions-yield" class="ratio-link"><svg class="ic" aria-hidden="true"><use href="#i-chart-column"/></svg> How it&rsquo;s computed</a>
         </div>
       </div>
@@ -1280,7 +1281,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
         </div>
         <div id="r7-pa-now" aria-live="polite"></div>
         <input type="email" id="pa-email" placeholder="your@email.com" autocomplete="email" aria-label="Email for the alert" style="padding:.4rem .5rem;background:var(--surface2);border:1px solid var(--border);border-radius:5px;font-size:max(16px,.765rem);color:var(--text)">
-        <label class="sa-optin" id="pa-optin-l" data-signup-hide><input type="checkbox" id="pa-optin" checked> Also send me AGSIST Daily, free, every weekday morning</label>
+        <label class="sa-optin" id="pa-optin-l" data-signup-hide><input type="checkbox" id="pa-optin" checked> Also send me AGSIST Daily, free, every morning</label>
         <button type="button" id="pa-go" style="padding:.5rem .7rem;background:var(--gold-fill,var(--gold));color:#0a0c0d;border:none;border-radius:5px;font-size:.824rem;font-weight:700;cursor:pointer">Set alert</button>
         <div id="pa-status" role="status" tabindex="-1" style="font-size:.765rem;color:var(--text-muted);min-height:1.1em"></div>
       </div>
@@ -1520,7 +1521,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
       <details class="faq-item"><summary>What are corn futures prices today?</summary><div class="faq-a">AGSIST displays CBOT corn futures prices from Yahoo Finance, delayed about 15 minutes and updated every 15 minutes. The front-month contract and the next December contract are both shown, each labeled with its contract month (for example Dec &rsquo;26), with net change, percent change, and 52-week range. Prices are in dollars per bushel. <a href="/corn-futures-prices">See Full Corn Futures</a></div></details>
       <details class="faq-item"><summary>How do I find cash grain bids near me?</summary><div class="faq-a">Enter any US ZIP code on AGSIST’s Cash Bids page at agsist.com/cash-bids to see posted corn, soybean, and wheat elevator prices from grain elevators within 50 miles of that ZIP by default. You can widen the search up to 250 miles. Basis is shown alongside cash price for each location. <a href="/cash-bids">Find Cash Bids</a></div></details>
       <details class="faq-item"><summary>Is AGSIST free?</summary><div class="faq-a">Yes. AGSIST is available at no charge with no account or subscription required. Tools on the site (spray advisory, urea volatilization risk monitor, break-even calculator, grain bin calculator, cash bids, and the AGSIST Daily briefing) are available at no charge for non-commercial use.</div></details>
-      <details class="faq-item"><summary>How often are grain prices updated on AGSIST?</summary><div class="faq-a">Grain futures prices on AGSIST are updated about every 15 minutes while futures markets trade, from Sunday evening to Friday afternoon, Central time. The AGSIST Daily briefing is published every weekday morning with overnight market analysis.</div></details>
+      <details class="faq-item"><summary>How often are grain prices updated on AGSIST?</summary><div class="faq-a">Grain futures prices on AGSIST are updated about every 15 minutes while futures markets trade, from Sunday evening to Friday afternoon, Central time. The AGSIST Daily briefing is published every morning, weekends included, with overnight market analysis.</div></details>
       <details class="faq-item"><summary>What is urea volatilization risk?</summary><div class="faq-a">Urea volatilization is the loss of nitrogen fertilizer as ammonia gas when urea is surface-applied without incorporation. Risk is highest when soil temperatures exceed 50&deg;F, humidity is high, and no rain is forecast within 2&ndash;4 days. AGSIST’s free urea risk monitor scores your real-time local conditions from 0&ndash;100. <a href="/urea">Check Urea Volatilization Risk</a></div></details>
       <details class="faq-item"><summary>What is grain basis and why does it matter?</summary><div class="faq-a">Grain basis is the difference between your local cash elevator price and the futures contract it is quoted against. A basis of −30 cents means the elevator pays 30 cents below futures. Stronger (less negative) basis signals higher local demand. AGSIST displays each elevator’s posted basis alongside its cash price in the cash bids tool.</div></details>
       <details class="faq-item"><summary>When is the WASDE report released?</summary><div class="faq-a">The USDA WASDE (World Agricultural Supply and Demand Estimates) report is released monthly, typically around the 10th of each month at 12:00 PM Eastern Time. AGSIST’s USDA Calendar tracks all report dates with market impact ratings. <a href="/usda-calendar">USDA Report Calendar</a></div></details>
@@ -1533,7 +1534,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
       <div class="signup-icon" aria-hidden="true"></div>
       <span class="signup-eyebrow">AGSIST Daily</span>
       <h2 class="signup-headline">Market news before the open.</h2>
-      <p class="signup-sub">Overnight markets, what to watch, and farm weather, every weekday.</p>
+      <p class="signup-sub">Overnight markets, what to watch, and farm weather, every morning.</p>
       <div class="signup-tabs"><button class="signup-tab active" id="tab-email" aria-controls="form-email"><svg class="ic" aria-hidden="true"><use href="#i-mail"/></svg> Email</button></div>
       <div class="signup-form" id="form-email" role="tabpanel"><div class="signup-row"><input type="email" class="signup-input" placeholder="your@email.com" autocomplete="email" aria-label="Email address" required><button class="signup-submit" id="btn-email-signup">Subscribe &rarr;</button></div><div class="signup-disc">Free. Unsubscribe any time. We never sell your data. <a href="/privacy">Privacy Policy</a>.</div></div>
       
@@ -1890,16 +1891,18 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')close(true);
   'use strict';
   function loadYieldNowcast(){
     fetch('/data/yield-nowcast.json').then(function(r){if(!r.ok)throw new Error('no-nowcast');return r.json();}).then(function(d){
-      if(!d||!d.crops)return;
+      if(!d||!d.crops)throw new Error('no-nowcast');
       var map={corn:'nc-corn',soybeans:'nc-beans'};
       var above=0,below=0;
       Object.keys(map).forEach(function(crop){
-        var c=d.crops[crop]; if(!c)return;
+        var c=d.crops[crop];
+        /* A crop missing from the file: its box hides rather than print "--". */
+        if(!c||typeof c.nowcast!=='number'){var _bx=document.getElementById(map[crop]);if(_bx&&_bx.parentNode)_bx.parentNode.style.display='none';return;}
         var el=document.getElementById(map[crop]);
         var bd=document.getElementById(map[crop]+'-band');
         var vs=document.getElementById(map[crop]+'-vs');
         if(el)el.textContent=c.nowcast.toFixed(1);
-        if(bd)bd.textContent=c.band80.toFixed(1);
+        if(bd)bd.textContent=typeof c.band80==='number'?c.band80.toFixed(1):'';
         var diff=c.nowcast-c.trend;
         if(diff>0.4)above++; else if(diff<-0.4)below++;
         /* r7-bids 7b: the headline is the difference from USDA (filled below
@@ -1945,6 +1948,8 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')close(true);
       if(v){v.className='ratio-verdict neutral';v.textContent='Data unavailable';}
       var wk=document.getElementById('nc-week');
       if(wk){wk.textContent='Could not load this week\u2019s ratings.';wk.style.color='';}
+      /* No numbers to show: the two "--" boxes hide; the line above says why. */
+      var _g=document.getElementById('nc-corn');_g=_g&&_g.parentNode&&_g.parentNode.parentNode;if(_g&&_g.style)_g.style.display='none';
     });
   }
   loadYieldNowcast();
@@ -2575,10 +2580,13 @@ fetch('/data/export-sales.json')
   .then(function(r){if(!r.ok)throw new Error('no-exp');return r.json();})
   .then(function(data){
     var dateEl=document.getElementById('exp-date');if(dateEl)dateEl.textContent='Week ending '+fmtDate(data.report_date)+' \u00b7 FAS';
-    var mktEl=document.getElementById('export-mkt-yr');if(mktEl&&data.marketing_year)mktEl.textContent=data.marketing_year+' marketing year';var _noPace=false;
+    var mktEl=document.getElementById('export-mkt-yr');if(mktEl&&data.marketing_year)mktEl.textContent=data.marketing_year+' marketing year';var _noPace=false,_anyNum=false;
     var map={'corn':'corn','soybeans':'bean','wheat':'wheat'};
     Object.keys(map).forEach(function(comm){
-      var key=map[comm],d=data[comm];if(!d)return;
+      var key=map[comm],d=data[comm];
+      /* A commodity missing from the file: its row hides, not a dash. */
+      var rowEl=document.getElementById('exp-'+key+'-wk');rowEl=rowEl&&rowEl.closest('.export-rows > div');
+      if(!d){if(rowEl)rowEl.style.display='none';return;}
       /* EACH ROW ANSWERS FOR ITSELF. The footer prints one week for the whole
          widget, and that is the top-level `report_date` — the newest of the
          three. A commodity FAS has not published in months used to render its
@@ -2596,8 +2604,11 @@ fetch('/data/export-sales.json')
       var why=d.withheld||null;
       var EX_MY=(d.marketing_year||'');
       var wkEl=document.getElementById('exp-'+key+'-wk');
-      if(wkEl)wkEl.textContent=(d.weekly_net_mt!=null)
-        ?((d.weekly_net_mt<0?'\u2212':'+')+fmtBu(Math.abs(d.weekly_net_mt),comm)):(why?'-':'Not loaded yet');
+      /* No weekly figure: the "net sales this week" line hides instead of printing a dash. */
+      if(wkEl){wkEl.textContent=(d.weekly_net_mt!=null)
+        ?((d.weekly_net_mt<0?'\u2212':'+')+fmtBu(Math.abs(d.weekly_net_mt),comm)):'';
+        if(wkEl.parentNode&&wkEl.parentNode.style)wkEl.parentNode.style.display=(d.weekly_net_mt!=null)?'':'none';}
+      if(d.weekly_net_mt!=null||(!why&&d.cumulative_mt!=null)||d.pct_of_target!=null)_anyNum=true;
       var pct=d.pct_of_target,cls=(pct==null)?'no-data':paceClass(pct);if(pct==null&&!why)_noPace=true;
       var barEl=document.getElementById('exp-'+key+'-bar'),pctEl=document.getElementById('exp-'+key+'-pct');
       /* No target on file means there is no pace. Draw neither the track
@@ -2645,9 +2656,12 @@ fetch('/data/export-sales.json')
       var whyEl=document.getElementById('exp-'+key+'-why');
       if(whyEl){whyEl.textContent=why||'';whyEl.hidden=!why;}
     });
-    var _tp=document.getElementById('tip-export');if(_tp&&_tp.parentNode)_tp.parentNode.style.display=_noPace?'':'none';
+    /* 2026-10-09: no "No pace yet" chip. A pace shows on its row when USDA's
+       projection is on file; otherwise there is none. No real number at all:
+       the module hides, the same as a failed load. */
+    if(!_anyNum)throw new Error('no-exp-numbers');
   })
-  .catch(function(){var w=document.getElementById('export-widget');if(w)w.style.display='none';var grid=document.getElementById('crop-export-grid-inner');if(grid)grid.style.gridTemplateColumns='1fr';var cw=document.getElementById('crop-widget');if(cw)cw.style.maxWidth='520px';});
+  .catch(function(){var w=document.getElementById('export-widget');if(w)w.style.display='none';var _ef=w&&w.closest('details.m-fold--usda');if(_ef)_ef.style.display='none';var grid=document.getElementById('crop-export-grid-inner');if(grid)grid.style.gridTemplateColumns='1fr';var cw=document.getElementById('crop-widget');if(cw)cw.style.maxWidth='520px';});
 })();
 </script>
 <script>
@@ -3031,7 +3045,7 @@ gj('/data/markets.json').then(function(cached){
     if(!EMAIL_OK.test(email)){if(dsc)dsc.innerHTML='<span style="color:var(--red)">Enter a real email address.</span>';if(inp)inp.focus();return;}
     var _b=this,_t=_b.textContent;_b.disabled=true;_b.textContent='Sending…';
     bandSignup(document.getElementById('signup-full'),email,function(txt){
-        showSignupSuccess('form-email','<svg class="ic" aria-hidden="true"><use href="#i-circle-check"/></svg>',txt,'AGSIST Daily, free, every weekday. Check your spam folder once.');
+        showSignupSuccess('form-email','<svg class="ic" aria-hidden="true"><use href="#i-circle-check"/></svg>',txt,'AGSIST Daily, free, every morning. Check your spam folder once.');
         var tabs=document.querySelector('#signup-full .signup-tabs');if(tabs)tabs.style.display='none';},
       function(msg){_b.disabled=false;_b.textContent=_t;
         if(dsc){dsc.textContent='';var w=document.createElement('span');w.setAttribute('role','status');w.style.color='var(--red)';w.textContent=msg;dsc.appendChild(w);}});});}
@@ -3086,19 +3100,21 @@ window.hydrateDaily = function(data) {
   // v5.1: the one thresholded action, in the block the takeaway used to hold.
   // A daily.json from before the cut has no action and shows its takeaway
   // under the old label instead, so the block never goes blank on upload day.
-  var takeaway=(data.action||'').trim();
-  var taLabel=takeaway?((data.bot_call&&data.bot_call.label)||'THE ACTION'):'THE TAKEAWAY';
+  /* 2026-10-09, Sig: the prediction bot is out of the Daily for now; it
+     lives on /scorecard. An issue whose action is the bot's call (bot_call
+     present) shows no action, and the box hides. */
+  var takeaway=(data.bot_call?'':(data.action||'')).trim();
+  var taLabel=takeaway?'THE ACTION':'THE TAKEAWAY';
   if(!takeaway)takeaway=(data.the_takeaway||'').trim();
   var taEl=el('daily-takeaway');
   var taText=el('daily-takeaway-text');
   var taLbl=taEl&&taEl.querySelector('.daily-takeaway-label');
   if(taLbl)taLbl.innerHTML='<svg class="ic" aria-hidden="true"><use href="#i-target"/></svg> '+taLabel;
   if(taEl){if(takeaway){if(taText)taText.innerHTML=mdInline(takeaway);taEl.style.display='block';}else{taEl.style.display='none';}}
-  /* WAVE1-D: from 2026-10-03 The Action is the prediction bot's call
-     (data.bot_call, copied from data/predictions.json by the generator).
-     Say so under it; an older issue's model-written action gets no line. */
-  var taSrc=el('daily-takeaway-src');if(taSrc)taSrc.hidden=!(data.bot_call&&data.action);
   window.AGSIST_DAILY=data;
+  /* Harvest price clock (components/harvest-clock.js): RMA figures only,
+     inside the discovery window and while fresh; otherwise nothing. */
+  if(window.agsistHarvestClock)window.agsistHarvestClock.mount(data);
   if(typeof window.agsistFrameAction==='function')window.agsistFrameAction();
 
   // v4.3: Copy The Number button — copies "VALUE UNIT" to clipboard
@@ -3206,7 +3222,12 @@ window.hydrateDaily = function(data) {
       secEl.style.display='';
       var sec=sections[si-1];
       setText('daily-section-'+si+'-title',sec.title||'');
-      setHTML('daily-section-'+si+'-body',mdInline(sec.body||''));
+      /* '- ' bullet lines draw as the same list bake_homepage.py bakes (md_body),
+         not as one run-on line of dashes. Paragraph bodies are unchanged. */
+      setHTML('daily-section-'+si+'-body',(function(b){var ls=String(b||'').split('\n').map(function(x){return x.trim();}).filter(Boolean),bl=ls.filter(function(x){return x.indexOf('- ')===0;});
+        if(!bl.length)return mdInline(b||'');
+        return '<ul style="list-style:none;margin:0;padding:0">'+bl.map(function(x){return '<li style="position:relative;padding-left:1rem;margin:0 0 .35rem"><span style="position:absolute;left:0;top:.55em;width:.36rem;height:.36rem;border-radius:2px;background:rgba(218,165,32,.55)"></span>'+mdInline(x.slice(2))+'</li>';}).join('')+'</ul>'+
+          ls.filter(function(x){return x.indexOf('- ')!==0;}).map(function(x){return '<div style="margin-top:.4rem;font-style:italic">'+mdInline(x)+'</div>';}).join('');})(sec.body));
       // bottom_line + farmer_action default to display:none in CSS — must flip when populated
       // v5.1: so_what is the field; bottom_line is read for issues before the cut
       var soWhat=sec.so_what||sec.bottom_line||'';
@@ -3255,34 +3276,27 @@ window.hydrateDaily = function(data) {
     if(tmykWrap)tmykWrap.hidden=true;
   }
 
-  // Daily Quote — canonical: daily_quote, legacy: quote
-  var quote=pick(data.daily_quote,data.quote);
-  var qText=el('daily-quote-text');
-  var qCard=qText&&qText.closest('.s-card');
-  if(quote&&(quote.text||quote.attribution)){
-    setHTML('daily-quote-text','\u201c'+(quote.text||'')+'\u201d');
-    setText('daily-quote-attr',''+(quote.attribution||''));
-    if(qCard)qCard.hidden=false;
-  } else {
-    if(qCard)qCard.hidden=true;
-  }
+  // Daily Quote: off since 2026-10-09. data/quote-pool.json has no source
+  // for any attribution, so no quote is shown, even on an issue carrying one.
 
   // Watch list
-  if(data.watch_list){
-    var wl=el('daily-watch-list');
-    if(wl&&Array.isArray(data.watch_list)&&data.watch_list.length){
-      wl.innerHTML=data.watch_list.map(function(item){
-        return '<li class="watch-item"><span class="watch-time">'+escHtml(item.time||'')+'</span><span class="watch-desc">'+mdInline(item.desc||item.event||'')+'</span></li>';
-      }).join('');
-    }
-  }
+  /* The card stays hidden until it has at least one item to show. */
+  var wl=el('daily-watch-list'),wlCard=wl&&wl.closest('.s-card');
+  var wItems=Array.isArray(data.watch_list)?data.watch_list.filter(function(item){return item&&(item.desc||item.event);}):[];
+  if(wl&&wItems.length){
+    wl.innerHTML=wItems.map(function(item){
+      return '<li class="watch-item"><span class="watch-time">'+escHtml(item.time||'')+'</span><span class="watch-desc">'+mdInline(item.desc||item.event||'')+'</span></li>';
+    }).join('');
+    if(wlCard)wlCard.style.display='';
+  } else if(wlCard){wlCard.style.display='none';}
 
   // The Number — canonical: one_number, legacy: the_number or number
   var _num=pick(data.one_number,data.the_number,data.number);
   var nv=el('daily-number-value'),nu=el('daily-number-unit'),nc=el('daily-number-context');
   var numCard=nv&&nv.closest('.s-card');
-  if(_num){
-    if(nv)nv.textContent=(_num.value!=null&&_num.value!=='')?_num.value:'-'; /* a numeric 0 is a real headline (e.g. zero export sales), not a missing one */
+  /* No value, no card: an empty or "-" value used to print "THE NUMBER -". A numeric 0 is a real headline (e.g. zero export sales), not a missing one. */
+  if(_num&&_num.value!=null&&String(_num.value).trim()!==''&&!/^[-\u2013\u2014]+$/.test(String(_num.value).trim())){
+    if(nv)nv.textContent=_num.value;
     if(nu)nu.textContent=_num.unit||'';
     if(nc)nc.textContent=_num.context||'';
     if(numCard)numCard.style.display='';

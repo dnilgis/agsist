@@ -42,6 +42,7 @@ from datetime import date, datetime
 import sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import market_board   # noqa: E402  ONE definition of "is this the same session's board"
+import harvest_clock  # noqa: E402  the fall harvest price clock (RMA figures only)
 
 # Resolved against the repo, not the cwd. send_daily.py is invoked from the
 # workflow's checkout root today, but a sender that only finds the previous
@@ -263,15 +264,6 @@ def price_table(daily, prior, prior_day):
               % (SANS, MUTE, stamp)
             + '<tr><td><table role="presentation" width="100%%" cellpadding="0" cellspacing="0" '
               'border="0" style="width:100%%">%s</table></td></tr>' % "".join(rows))
-
-
-# v5.5: the line under The Action when it is the prediction bot's call.
-BOT_SRC_HTML = ('<div class="mute" style="font-family:%s;font-size:14px;line-height:1.5;color:%s;'
-                'padding-top:6px">From the AGSIST prediction bot, a fixed statistical rule graded '
-                'by code. Not advice. <a href="https://agsist.com/scorecard" style="color:%s">'
-                'Record and method</a></div>')
-BOT_SRC_TEXT = ("From the AGSIST prediction bot, a fixed statistical rule graded by code. "
-                "Not advice. Record and method: https://agsist.com/scorecard")
 
 
 def call_card(daily):
@@ -680,14 +672,53 @@ def action_label(daily, take):
     return lab[:1].upper() + lab[1:].lower()
 
 
+def daily_action(daily):
+    """The action line, if the Daily carries one. 2026-10-09, Sig: the
+    prediction bot is out of the Daily for now (it lives on /scorecard), so
+    an issue whose action is the bot's call (bot_call present) has none."""
+    if daily.get("bot_call"):
+        return ""
+    return strip_md(daily.get("action"))
+
+
+# ── 2026-10-09: the harvest price clock ────────────────────────────────────
+# RMA's running harvest price against its projected price, from the issue's
+# harvest_clock block (scripts/harvest_clock.py). Shown only while the window
+# is open and the RMA file is under four days old on the day the email is
+# built; otherwise nothing at all.
+CLOCK_URL = "https://agsist.com/harvest-price-tracker"
+
+
+def clock_html(daily, today=None):
+    b = harvest_clock.visible(daily.get("harvest_clock"), today)
+    if not b:
+        return ""
+    lines = "".join('<div style="padding-top:4px">%s</div>' % e(x) for x in b["lines"])
+    return ('<tr><td style="padding:14px 0 0"><table role="presentation" width="100%%" '
+            'cellpadding="0" cellspacing="0" border="0"><tr><td class="ink" style="border-left:3px solid %s;'
+            'padding:4px 0 4px 12px;font-family:%s;font-size:15px;line-height:1.5;color:%s">'
+            '<strong>Harvest price clock.</strong>%s'
+            '<div class="mute" style="padding-top:6px;font-size:14px;color:%s">%s '
+            '<a href="%s" style="color:%s">Harvest price tracker</a></div></td></tr></table></td></tr>'
+            % (GOLD, SANS, INK, lines, MUTE, e(b.get("note") or ""), CLOCK_URL, GOLD))
+
+
+def clock_text(daily, today=None):
+    b = harvest_clock.visible(daily.get("harvest_clock"), today)
+    if not b:
+        return []
+    return ["", "HARVEST PRICE CLOCK"] + list(b["lines"]) + [
+        ((b.get("note") or "") + " Harvest price tracker: " + CLOCK_URL).strip()]
+
+
 def render_html(daily, site_href, unsub_url=None, date_display=None, elevators=None,
-                local=None, forward_url=None):
+                local=None, forward_url=None, today=None):
     prior, prior_day = prior_board(daily)
     head = soften_caps(strip_md(daily.get("headline")))
     lead = strip_md(daily.get("lead"))
     # v5.1: the action holds the slot the takeaway had. An issue from before
     # the cut has no action and keeps its takeaway.
-    take = strip_md(daily.get("action"))
+    take = daily_action(daily)
     take_label = (action_label(daily, take) + ".") if take else "The takeaway."
     if take_label == ".":
         take_label = ""
@@ -726,8 +757,10 @@ def render_html(daily, site_href, unsub_url=None, date_display=None, elevators=N
                     'cellpadding="0" cellspacing="0" border="0"><tr><td style="border-left:3px solid %s;'
                     'padding:4px 0 4px 12px;font-family:%s;font-size:16px;line-height:1.55;color:%s" '
                     'class="ink"><strong>%s</strong> %s%s</td></tr></table></td></tr>'
-                    % (GOLD, SANS, INK, e(take_label), e(take), BOT_SRC_HTML % (SANS, MUTE, GOLD)
-                       if daily.get("bot_call") else ""))
+                    % (GOLD, SANS, INK, e(take_label), e(take), ""))
+    _clock = clock_html(daily, today)
+    if _clock:
+        body.append(_clock)
 
     # THE SPONSOR SLOT, WHICH /sponsor SELLS AND THE EMAIL DID NOT CARRY.
     # The pitch page says, in these words: "Above the fold on every briefing
@@ -834,7 +867,7 @@ def render_html(daily, site_href, unsub_url=None, date_display=None, elevators=N
 
 
 def render_text(daily, site, unsub_url=None, date_display=None, elevators=None,
-                local=None, forward_url=None):
+                local=None, forward_url=None, today=None):
     """The plain-text alternative, and it is not an afterthought.
 
     Some clients show it, some readers prefer it, and a multipart message with a
@@ -855,16 +888,15 @@ def render_text(daily, site, unsub_url=None, date_display=None, elevators=None,
             v = soften_caps(v)
         if v:
             L += ["", v]
-    take = strip_md(daily.get("action"))
+    take = daily_action(daily)
     if take:
         lab = action_label(daily, take).upper()
         L += ["", (lab + ": " if lab else "") + take]
-        if daily.get("bot_call"):
-            L.append(BOT_SRC_TEXT)
     else:
         take = strip_md(daily.get("the_takeaway"))
         if take:
             L += ["", "THE TAKEAWAY: " + take]
+    L += clock_text(daily, today)
     # Same slot as the HTML part, same rule: real active sponsor only, never
     # the house ad. A multipart message whose text half quietly drops the
     # sponsor is a message that shortchanges them for every reader whose
@@ -987,6 +1019,31 @@ def _selftest():
     txt = render_text(d, "https://agsist.com/")
     if "Crude runs 5% on Hormuz, soy oil breaks hard" not in txt or "SOY OIL" in txt:
         bad.append(("text heading", "", ""))
+    # 2026-10-09: the prediction bot is out of the email. An issue still
+    # carrying its call (bot_call) prints no action and no bot line.
+    bd = dict(d, action="Bot call, Oct 5 close, 4 weeks out: corn $4.97 down. Backtest: no edge.",
+              bot_call={"label": "BOT CALL", "text": "x", "calls": [{}], "date": "2026-10-05"})
+    for part, out in (("text", render_text(bd, "https://agsist.com/")),
+                      ("html", render_html(bd, "https://agsist.com/"))):
+        if "Bot call" in out or "prediction bot" in out or "BOT CALL" in out:
+            bad.append(("bot in " + part, "", ""))
+    # A model-written action on an issue with no bot_call still prints.
+    if "THE ACTION: Sell the rally" not in render_text(dict(d, action="Sell the rally"), "https://agsist.com/"):
+        bad.append(("plain action", "", ""))
+    # The harvest price clock: in window and fresh, out of window, stale.
+    line = "Corn harvest price so far: $5.01 vs $4.62 projected (+8.4%), 4 of 22 trading days in."
+    hc = {"asof": "2026-10-07", "start": "2026-10-01", "end": "2026-10-31", "lines": [line],
+          "note": "USDA RMA, as of Oct 7. Oct 1-31 window, most states.", "url": "/harvest-price-tracker"}
+    cd = dict(d, harvest_clock=hc)
+    for when, want in ((date(2026, 10, 9), True), (date(2026, 10, 10), True),
+                       (date(2026, 10, 11), False), (date(2026, 11, 1), False), (date(2026, 9, 30), False)):
+        t = render_text(cd, "https://agsist.com/", today=when)
+        h = render_html(cd, "https://agsist.com/", today=when)
+        got = (line in t, "HARVEST PRICE CLOCK" in t, e(line) in h, CLOCK_URL in h, CLOCK_URL in t)
+        if got != (want,) * 5:
+            bad.append(("clock " + when.isoformat(), got, want))
+    if "HARVEST PRICE CLOCK" in render_text(d, "https://agsist.com/", today=date(2026, 10, 9)):
+        bad.append(("clock with no block", "", ""))
     for b in bad:
         print("FAIL", b)
     print("brief_email selftest " + ("FAILED" if bad else "ok"))

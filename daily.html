@@ -11,6 +11,8 @@
 <link rel="stylesheet" href="/components/styles.css?v=19">
 <link rel="stylesheet" href="/components/sponsor-ad.css?v=1">
 <script src="/components/sponsor-ad.js?v=1"></script>
+<link rel="stylesheet" href="/components/harvest-clock.css?v=1">
+<script src="/components/harvest-clock.js?v=1"></script>
 <link rel="icon" type="image/x-icon"            href="/img/favicon.ico">
 <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
@@ -723,18 +725,21 @@ function renderToday(data,why){
     var paras=(data.body||'').split('\n\n').filter(Boolean);
     lead='<p class="dv3-today-lead">'+paras.map(mdInline).join('<br><br>')+'</p>';
   }
+  /* Harvest price clock (components/harvest-clock.js): RMA figures only,
+     inside the discovery window and while fresh; otherwise nothing. */
+  var hclock=window.agsistHarvestClock?window.agsistHarvestClock.html(data.harvest_clock):'';
 
   // v5.1: the one thresholded action holds the takeaway's slot. An issue
   // from before the cut has no action and keeps its takeaway.
   var takeaway='';
-  var actTxt=(data.action||'').trim();
+  /* 2026-10-09, Sig: the prediction bot is out of the Daily for now; it
+     lives on /scorecard. An issue whose action is the bot's call shows none. */
+  var actTxt=data.bot_call?'':(data.action||'').trim();
   var taTxt=(data.the_takeaway||'').trim();
   if(actTxt){
     takeaway='<div class="dv3-takeaway dv3-action" role="note" aria-label="Today\u2019s action">'+
-      '<span class="dv3-takeaway-label"><svg class="dv3-ic" aria-hidden="true"><use href="#i-target"/></svg>'+((data.bot_call&&data.bot_call.label)||'THE ACTION')+'</span>'+
+      '<span class="dv3-takeaway-label"><svg class="dv3-ic" aria-hidden="true"><use href="#i-target"/></svg>THE ACTION</span>'+
       '<p class="dv3-takeaway-text">'+mdInline(actTxt)+'</p>'+
-      /* 2026-10-03: The Action is the prediction bot's call when bot_call is present. */
-      (data.bot_call?'<p class="dv3-action-src">From the AGSIST prediction bot, a fixed statistical rule graded by code. Not advice. <a href="/scorecard">Record and method \u2192</a></p>':'')+
     '</div>';
   } else if(taTxt){
     takeaway='<div class="dv3-takeaway" role="note" aria-label="Today\u2019s key takeaway">'+
@@ -745,14 +750,18 @@ function renderToday(data,why){
 
   // Topbar: one number + daily quote
   var topbar='';
+  /* No value, no card. The quote of the day is off since 2026-10-09:
+     data/quote-pool.json has no source for any attribution. */
   var onum=data.one_number;
-  var q=data.daily_quote||data.quote;
+  var onumV=onum?String(onum.value!=null?onum.value:(onum.number!=null?onum.number:'')).trim():'';
+  if(!onumV||/^[-\u2013\u2014]+$/.test(onumV))onum=null;
+  var q=null;
   if(onum||q){
     topbar='<div class="dv3-topbar">';
     if(onum){
       topbar+='<div class="dv3-one-number">'+
         '<div class="dv3-one-number-label"><svg class="dv3-ic" aria-hidden="true"><use href="#i-chart-column"/></svg>The number</div>'+
-        '<div class="dv3-one-number-val">'+escHtml(onum.value||onum.number||'')+'</div>'+
+        '<div class="dv3-one-number-val">'+escHtml(onumV)+'</div>'+
         '<div class="dv3-one-number-unit">'+escHtml(onum.unit||onum.label||'')+'</div>'+
         '<div class="dv3-one-number-ctx">'+escHtml(onum.context||onum.ctx||'')+'</div>'+
       '</div>';
@@ -1021,7 +1030,7 @@ function renderToday(data,why){
   var perm=iso?'<div class="dv3-perm"><a href="/daily/'+escHtml(iso)+'">Permalink to this briefing \u2192</a></div>':'';
 
   /* 2026-10-03: the sponsor follows the sections, away from The Action. */
-  el.innerHTML=header+attribution+thread+ticker+surprise+takeaway+lead+sparks+topbar+yc+sections+sponsor+tmyk+watch+outsidePit+byline+cashbids+forward+share+src+perm;
+  el.innerHTML=header+attribution+thread+ticker+surprise+takeaway+lead+hclock+sparks+topbar+yc+sections+sponsor+tmyk+watch+outsidePit+byline+cashbids+forward+share+src+perm;
 
   // Point the permalink (and the share links) at the file that exists, once
   // the archive index says which candidate date that is.
@@ -1121,7 +1130,7 @@ function renderArchive(){
             '<span class="dv3-arc-card-date">'+ycDot+escHtml(shortLabel)+'</span>'+
             '<span class="dv3-arc-card-badge '+type+'">'+(type==='wkday'?'Market day':'Weekend')+'</span>'+
           '</div>'+
-          '<div class="dv3-arc-card-hl">'+(item.headline?escHtml(item.headline):'-')+'</div>'+
+          '<div class="dv3-arc-card-hl">'+(item.headline?escHtml(item.headline):'')+'</div>'+
         '</a>';
       });
       grid.innerHTML=html;
