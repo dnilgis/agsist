@@ -219,10 +219,10 @@ main > .breadcrumb{max-width:1400px;margin:12px auto 0;padding:0 var(--sp-lg)}
 <script>
 (function(){
   'use strict';
-  function grain$(v){return v!=null?'$'+(+v/100).toFixed(2):'—';}
-  function dollar$(v,d){d=d||2;return v!=null?'$'+(+v).toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d}):'—';}
+  function grain$(v){return v!=null?'$'+(+v/100).toFixed(2):'-';}
+  function dollar$(v,d){d=d||2;return v!=null?'$'+(+v).toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d}):'-';}
   function fmtCents(d){var a=Math.abs(d),w=Math.floor(a),f=Math.round((a-w)*4);if(f===4){w++;f=0;}var fr=f===1?'\u00bc':f===2?'\u00bd':f===3?'\u00be':'';return (w||!fr?w:'')+fr+'\u00a2';}
-  function chgStr(net,pct,isGrain){if(net==null)return'—';var a=net>0?'▲':net<0?'▼':'—';var s=net>0?'+':net<0?'\u2212':'';var mv=isGrain?fmtCents(net):Math.abs(net).toFixed(2);return a+' '+s+mv+' ('+s+Math.abs(+pct).toFixed(2)+'%)';} /* cents first, percent second — reader request 2026-07-20 */
+  function chgStr(net,pct,isGrain){if(net==null)return'-';var a=net>0?'▲':net<0?'▼':'-';var s=net>0?'+':net<0?'\u2212':'';var mv=isGrain?fmtCents(net):Math.abs(net).toFixed(2);return a+' '+s+mv+' ('+s+Math.abs(+pct).toFixed(2)+'%)';} /* cents first, percent second — reader request 2026-07-20 */
   function chgCls(net){return net>0?'up':net<0?'dn':'nc';}
   function setEl(pEl,cEl,val,isGrain,net,pct,roll){
     var pe=document.getElementById(pEl),ce=document.getElementById(cEl);

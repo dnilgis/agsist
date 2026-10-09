@@ -387,7 +387,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,[role="button"]:focus-v
   <div class="tariff-section">
     <div class="tariff-section-head">
       <h2 class="tariff-section-title">Current Export Tariff Rates by Commodity &amp; Destination</h2>
-      <span id="tariff-updated" style="font-size:0.763rem;color:var(--text-muted);letter-spacing:0;text-transform:none">—</span>
+      <span id="tariff-updated" style="font-size:0.763rem;color:var(--text-muted);letter-spacing:0;text-transform:none">-</span>
     </div>
     <div style="overflow-x:auto;-webkit-overflow-scrolling:touch">
       <table class="tariff-table" id="tariff-table">
@@ -510,7 +510,7 @@ function statusCls(s){ return s==='elevated'?'elevated':s==='normal'?'normal':'m
 function statusBadgeTxt(s){ return s==='elevated'?'Elevated':s==='normal'?'Normal':'Mixed'; }
 
 function fmtDate(iso){
-  if(!iso)return'—';
+  if(!iso)return'-';
   try{
     var d=new Date(iso+'T12:00:00');
     return d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});

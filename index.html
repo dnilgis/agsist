@@ -309,8 +309,8 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
           <div class="daily-byline" id="daily-byline">By <strong>Sigurd Lindquist</strong>, founder &middot; <a href="mailto:sig@farmers1st.com">sig@farmers1st.com</a></div>
         </div>
         <div class="hero-sidebar">
-          <div class="s-card s-card--gold"><div class="s-card-label-row" style="display:flex;align-items:center;justify-content:space-between;gap:.5rem"><span class="s-card-label"><svg class="ic" aria-hidden="true"><use href="#i-chart-column"/></svg> THE NUMBER</span><button id="daily-number-copy" class="dn-copy-btn" type="button" aria-label="Copy The Number to clipboard" title="Copy"><svg class="ic" aria-hidden="true"><use href="#i-clipboard-list"/></svg></button></div><div id="daily-number-value" class="one-num">&mdash;</div><div id="daily-number-unit" class="one-num-unit"></div><div id="daily-number-context" class="one-num-ctx"></div></div>
-          <div class="s-card"><div class="s-card-label"><svg class="ic" aria-hidden="true"><use href="#i-calendar"/></svg> <span id="daily-watch-label-text">TODAY’S WATCH LIST</span></div><ul id="daily-watch-list" class="watch-list" role="list"><li class="watch-item"><span class="watch-time">&mdash;</span><span class="watch-desc">Loading watch list&hellip;</span></li></ul></div>
+          <div class="s-card s-card--gold"><div class="s-card-label-row" style="display:flex;align-items:center;justify-content:space-between;gap:.5rem"><span class="s-card-label"><svg class="ic" aria-hidden="true"><use href="#i-chart-column"/></svg> THE NUMBER</span><button id="daily-number-copy" class="dn-copy-btn" type="button" aria-label="Copy The Number to clipboard" title="Copy"><svg class="ic" aria-hidden="true"><use href="#i-clipboard-list"/></svg></button></div><div id="daily-number-value" class="one-num">-</div><div id="daily-number-unit" class="one-num-unit"></div><div id="daily-number-context" class="one-num-ctx"></div></div>
+          <div class="s-card"><div class="s-card-label"><svg class="ic" aria-hidden="true"><use href="#i-calendar"/></svg> <span id="daily-watch-label-text">TODAY’S WATCH LIST</span></div><ul id="daily-watch-list" class="watch-list" role="list"><li class="watch-item"><span class="watch-time">-</span><span class="watch-desc">Loading watch list&hellip;</span></li></ul></div>
           <div class="s-card" style="border-color:rgba(var(--gold-rgb),.15)"><div class="s-card-label" style="color:var(--gold)"><svg class="ic" aria-hidden="true"><use href="#i-message-circle"/></svg> DAILY QUOTE</div><blockquote style="margin:0;padding:0"><p id="daily-quote-text" style="font-size:1rem;color:var(--text-dim);line-height:1.65;margin-bottom:.4rem">"&mdash;"</p><cite id="daily-quote-attr" style="font-size:.824rem;color:var(--text-muted);font-style:normal"></cite></blockquote></div>
           <div style="font-size:.765rem;color:var(--text-muted);text-align:center;padding:.2rem 0"><span id="daily-source">USDA &middot; CME Group &middot; Open-Meteo</span></div>
         </div>
@@ -564,7 +564,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
   (function(){
     'use strict';
     function $(i){return document.getElementById(i);}
-    var MINUS='−', DASH='—', TZ='America/Chicago';
+    var MINUS='−', DASH='-', TZ='America/Chicago';
     var MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
     var MCODE={F:'Jan',G:'Feb',H:'Mar',J:'Apr',K:'May',M:'Jun',N:'Jul',Q:'Aug',U:'Sep',V:'Oct',X:'Nov',Z:'Dec'};
     var SEP='<span class="hb-sep" aria-hidden="true"> · </span>';
@@ -805,7 +805,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
           <div id="idx1-basis-chart-fine" class="idx1-extras-fine"></div>
         </div>
         </details>
-        <div id="idx1-trust-ledger">—</div>
+        <div id="idx1-trust-ledger">-</div>
       </div></div>
       <!-- THE ANNOUNCEMENT. Added 2026-09-05: the bid network went live and
            nothing on the homepage said so — /changelog was reachable only from
@@ -876,10 +876,10 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
             <div class="wx-summary-title"><svg class="ic" aria-hidden="true"><use href="#i-calendar"/></svg> 5-Day Forecast</div>
             <div id="wx-forecast-7day" class="wx-7day-strip">
               <div class="wx-7day-cell"><div class="wx-7day-name">Today</div><div class="wx-7day-icon"><svg class="ic" aria-hidden="true"><use href="#i-cloud-sun"/></svg></div><div class="wx-7day-temps"><span class="hi">--&deg;</span><span class="lo">--&deg;</span></div><div class="wx-7day-meta">--</div></div>
-              <div class="wx-7day-cell"><div class="wx-7day-name">&mdash;</div><div class="wx-7day-icon"><svg class="ic" aria-hidden="true"><use href="#i-cloud-sun"/></svg></div><div class="wx-7day-temps"><span class="hi">--&deg;</span><span class="lo">--&deg;</span></div><div class="wx-7day-meta">--</div></div>
-              <div class="wx-7day-cell"><div class="wx-7day-name">&mdash;</div><div class="wx-7day-icon"><svg class="ic" aria-hidden="true"><use href="#i-cloud-sun"/></svg></div><div class="wx-7day-temps"><span class="hi">--&deg;</span><span class="lo">--&deg;</span></div><div class="wx-7day-meta">--</div></div>
-              <div class="wx-7day-cell"><div class="wx-7day-name">&mdash;</div><div class="wx-7day-icon"><svg class="ic" aria-hidden="true"><use href="#i-cloud-sun"/></svg></div><div class="wx-7day-temps"><span class="hi">--&deg;</span><span class="lo">--&deg;</span></div><div class="wx-7day-meta">--</div></div>
-              <div class="wx-7day-cell"><div class="wx-7day-name">&mdash;</div><div class="wx-7day-icon"><svg class="ic" aria-hidden="true"><use href="#i-cloud-sun"/></svg></div><div class="wx-7day-temps"><span class="hi">--&deg;</span><span class="lo">--&deg;</span></div><div class="wx-7day-meta">--</div></div>
+              <div class="wx-7day-cell"><div class="wx-7day-name">-</div><div class="wx-7day-icon"><svg class="ic" aria-hidden="true"><use href="#i-cloud-sun"/></svg></div><div class="wx-7day-temps"><span class="hi">--&deg;</span><span class="lo">--&deg;</span></div><div class="wx-7day-meta">--</div></div>
+              <div class="wx-7day-cell"><div class="wx-7day-name">-</div><div class="wx-7day-icon"><svg class="ic" aria-hidden="true"><use href="#i-cloud-sun"/></svg></div><div class="wx-7day-temps"><span class="hi">--&deg;</span><span class="lo">--&deg;</span></div><div class="wx-7day-meta">--</div></div>
+              <div class="wx-7day-cell"><div class="wx-7day-name">-</div><div class="wx-7day-icon"><svg class="ic" aria-hidden="true"><use href="#i-cloud-sun"/></svg></div><div class="wx-7day-temps"><span class="hi">--&deg;</span><span class="lo">--&deg;</span></div><div class="wx-7day-meta">--</div></div>
+              <div class="wx-7day-cell"><div class="wx-7day-name">-</div><div class="wx-7day-icon"><svg class="ic" aria-hidden="true"><use href="#i-cloud-sun"/></svg></div><div class="wx-7day-temps"><span class="hi">--&deg;</span><span class="lo">--&deg;</span></div><div class="wx-7day-meta">--</div></div>
             </div>
             <div class="spray-windows" id="spray-windows">
             <div class="spray-windows-lbl"><svg class="ic" aria-hidden="true"><use href="#i-wind"/></svg> Spray days <span class="tip"><button type="button" class="tip-b" aria-expanded="false" aria-describedby="tip-s7-spray">How it&rsquo;s rated</button><span id="tip-s7-spray" role="tooltip" class="tip-t" hidden>One rule for every spray verdict on this page, read from each day&rsquo;s forecast. Hold off: more than 0.25 in of rain, wind over 15 mph, or a high under 40&deg;F or over 90&deg;F. Use caution: wind over 10 mph, calm air under 3 mph in the early morning (5&ndash;9 AM) or evening (6&ndash;9 PM) in the hourly forecast (temperature inversion risk), rain chance over 50%, humidity over 85% or under 40%, a low under 45&deg;F, or a high over 85&deg;F. Otherwise OK. Gusts are shown, not rated. Always follow the product label.</span></span></div>
@@ -1018,7 +1018,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
     function $(i){return document.getElementById(i);}
     function ord(n){var v=n%100;if(v>=11&&v<=13)return'th';return({1:'st',2:'nd',3:'rd'})[n%10]||'th';}
     function bar(pre,f){f=Math.max(0,Math.min(100,f));var a=$(pre+'-fill'),b=$(pre+'-dot');if(a)a.style.width=f+'%';if(b)b.style.left='calc('+f+'% - 5px)';}
-    function r5(p){if(p<10)return['Near a 5-yr low','&mdash; rare territory.'];if(p<25)return['Historically low','&mdash; below most of the last 5 years.'];if(p<45)return['Below the 5-yr midpoint','.'];if(p<=55)return['Around the 5-yr midpoint','.'];if(p<75)return['Above the 5-yr midpoint','.'];if(p<90)return['Historically high','&mdash; above most of the last 5 years.'];return['Near a 5-yr high','&mdash; rare territory.'];}
+    function r5(p){if(p<10)return['Near a 5-yr low','rare territory.'];if(p<25)return['Historically low','below most of the last 5 years.'];if(p<45)return['Below the 5-yr midpoint','.'];if(p<=55)return['Around the 5-yr midpoint','.'];if(p<75)return['Above the 5-yr midpoint','.'];if(p<90)return['Historically high','above most of the last 5 years.'];return['Near a 5-yr high','rare territory.'];}
     function r52(p){if(p<25)return['Lower quartile','of its 52-week range.'];if(p<50)return['Lower half','of its 52-week range.'];if(p<75)return['Upper half','of its 52-week range.'];return['Upper quartile','of its 52-week range.'];}
     function get(u){return fetch(u,{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).catch(function(){return null;});}
     /* 2026-10-06 EARN: The Read left the homepage (the daily briefing says it); nothing to fill. */
@@ -1130,7 +1130,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
   }).then(function(d){
     var stats = d && d.stats;
     if(!stats || typeof stats.facilities !== 'number' || typeof stats.total_bids !== 'number' || !d.fetched){
-      el.textContent = '— elevator-board stats unavailable this load';
+      el.textContent = 'elevator-board stats unavailable this load';
       return;
     }
     var dt = new Date(d.fetched);
@@ -1148,7 +1148,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
     el.textContent = 'All feeds: ' + stats.total_bids.toLocaleString('en-US') + ' bids from '
       + where + ' · ' + when;
   }).catch(function(){
-    el.textContent = '— elevator-board stats unavailable this load';
+    el.textContent = 'elevator-board stats unavailable this load';
   });
 })();
 </script>
@@ -1362,16 +1362,16 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
     var V={not_enough:'Not enough calls yet.',coin_flip:'Coin flip.',held_up:'This one held up.',worse_than_coin:'Worse than a coin flip.'};
     var M=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
     function $(id){return document.getElementById(id);}
-    function fd(iso){if(!iso)return '\u2014';var p=String(iso).split('-');return M[+p[1]-1]+' '+(+p[2]);}
-    function n(x){return x==null?'\u2014':Number(x).toLocaleString('en-US');}
+    function fd(iso){if(!iso)return '-';var p=String(iso).split('-');return M[+p[1]-1]+' '+(+p[2]);}
+    function n(x){return x==null?'-':Number(x).toLocaleString('en-US');}
     function esc(t){return String(t==null?'':t).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
-    function fail(){var v=$('pbc-verdict');if(v)v.textContent='The bot\u2019s record could not be loaded right now.';var t=$('rsct-hit');if(t)t.textContent='\u2014';}
+    function fail(){var v=$('pbc-verdict');if(v)v.textContent='The bot\u2019s record could not be loaded right now.';var t=$('rsct-hit');if(t)t.textContent='-';}
     fetch('/data/predictions.json',{cache:'no-store'}).then(function(r){if(!r.ok)throw new Error('no-predictions');return r.json();}).then(function(d){
       /* bot-v1.1 (2026-10-05): one call per crop per CFTC report, graded
          four weeks later. The verdict words come from the file. */
       var live=((d.live||{}).records||{}).all||null, bt=((d.backtest||{}).records||{}).all||null, R=d.rules||{};
       if(!live){fail();return;}
-      var btShort=bt&&bt.gate_ok?(bt.verdict_text||V[bt.verdict]||'\u2014').replace(/\.$/,''):'not computed yet';
+      var btShort=bt&&bt.gate_ok?(bt.verdict_text||V[bt.verdict]||'-').replace(/\.$/,''):'not computed yet';
       btShort=btShort.charAt(0).toLowerCase()+btShort.slice(1);
       /* 2026-10-06: the visible line is the short verdict word; the file's own
          verdict sentence moves into "The record in full", unchanged. */
@@ -1389,10 +1389,10 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
       }
       var btLine='Backtest: '+btWord+btVs;
       $('pbc-verdict').textContent=live.gate_ok
-        ?('Live record: '+(V[live.verdict]||live.verdict_text||'—'))
+        ?('Live record: '+(V[live.verdict]||live.verdict_text||'-'))
         :(btLine+'. Too few live calls to grade.');
       $('pbc-full').textContent=live.gate_ok
-        ?('Live record: '+(live.verdict_text||V[live.verdict]||'—'))
+        ?('Live record: '+(live.verdict_text||V[live.verdict]||'-'))
         :('Backtest: '+btShort+'.');
       var labels={};(d.crops||[]).forEach(function(c){labels[c.key]=c.label;});
       var lt=d.latest||{}, calls=lt.calls||[], ul=$('pbc-calls');
@@ -1412,7 +1412,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
          the CME settlement; say so, as /scorecard does. */
       $('pbc-asof').textContent=lt.date?('Calls made at the '+fd(lt.date)+' close. Entry prices are Yahoo Finance daily closes, not CME settlements.'):'';
       var th=$('rsct-hit'), tl=$('rsct-label');
-      if(th)th.textContent=live.gate_ok?(V[live.verdict]||'—').replace(/\.$/,''):'Too early';
+      if(th)th.textContent=live.gate_ok?(V[live.verdict]||'-').replace(/\.$/,''):'Too early';
       if(tl)tl.textContent=live.gate_ok?'Prediction bot, live record':('Prediction bot. '+btLine);
     }).catch(fail);
   })();
@@ -2360,7 +2360,7 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')close(true);
     /* The fold lives inside #cot-rows, last, so every #cot-rows style reaches its rows. */
     COT_ROWS.forEach(function(r,i){var el=cotRowEl(r);if(i<COT_SHOWN)main.insertBefore(el,more);else moreRows.appendChild(el);
       if(i>=COT_SHOWN)extra.push(r.n.replace(/^Wheat, /,''));
-      if(data&&!data[r.k]){var n=document.getElementById('cot-'+r.id+'-net');if(n)n.textContent='\u2014';var c=document.getElementById('cot-'+r.id+'-chg');if(c){c.textContent='not in this week\u2019s file';c.className='cot-chg nc';}}});
+      if(data&&!data[r.k]){var n=document.getElementById('cot-'+r.id+'-net');if(n)n.textContent='-';var c=document.getElementById('cot-'+r.id+'-chg');if(c){c.textContent='not in this week\u2019s file';c.className='cot-chg nc';}}});
     more.style.display=extra.length?'':'none';
     more.querySelector('summary').textContent=extra.length+' more market'+(extra.length===1?'':'s');
     more.querySelector('summary').title=extra.join(', ');
@@ -2473,7 +2473,7 @@ var SHOW_COMMS=['Soybeans','Corn','Wheat','Pork'];
 function statusCls(s){return s==='elevated'?'elevated':s==='normal'?'normal':'mixed';}
 function statusIcon(s){return s==='elevated'?'<svg class="ic" aria-hidden="true"><use href="#i-siren"/></svg>':s==='normal'?'<svg class="ic" aria-hidden="true"><use href="#i-circle-check"/></svg>':'<svg class="ic" aria-hidden="true"><use href="#i-triangle-alert"/></svg>';}
 function statusTxt(s){return s==='elevated'?'Trade War Active':s==='normal'?'Normal Trade':'Mixed';}
-function fmtDate(iso){if(!iso)return'\u2014';try{var d=new Date(iso+'T12:00:00');return d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});}catch(e){return iso;}}
+function fmtDate(iso){if(!iso)return'-';try{var d=new Date(iso+'T12:00:00');return d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});}catch(e){return iso;}}
 
 /* 2026-10-06 EARN: off the homepage; nothing to fill. */
 if(document.getElementById('tariff-rows'))fetch('/data/tariffs.json')
@@ -2496,7 +2496,7 @@ function fmtPct(n){return n==null?'--':n+'%';}
 /* r7-prices: a change in a percentage rating is in points, and no change is "unch". */
 function fmtChg(cur,prev,suffix){if(cur==null||prev==null)return{txt:'Not loaded yet',cls:'nc'};var d=cur-prev;if(d===0)return{txt:'unch',cls:'nc'};var a=Math.abs(d);return{txt:(d>0?'\u25b2 +':'\u25bc \u2212')+a+(suffix===' points'&&a===1?' point':(suffix||'')),cls:d>0?'up':'dn'};}
 function geClass(v){if(v==null)return'fair';return v>=60?'good':v>=40?'fair':'poor';}
-function fmtDate(iso){if(!iso)return'\u2014';try{var d=new Date(iso+'T12:00:00');return d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});}catch(e){return iso;}}
+function fmtDate(iso){if(!iso)return'-';try{var d=new Date(iso+'T12:00:00');return d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});}catch(e){return iso;}}
 /* 2026-10-06 EARN: off the homepage; nothing to fill. */
 if(document.getElementById('crop-rows'))fetch('/data/crop-progress.json')
   .then(function(r){if(!r.ok)throw new Error('no-cp');return r.json();})
@@ -2504,7 +2504,7 @@ if(document.getElementById('crop-rows'))fetch('/data/crop-progress.json')
     if(!data||typeof data!=='object'||(!data.corn&&!data.soybeans))throw new Error('cp malformed');
     if(data.report_date){var d=document.getElementById('crop-date');if(d)d.textContent='As of '+fmtDate(data.report_date)+' \u00b7 NASS';}
     if(data.week){var wb=document.getElementById('crop-week-badge');if(wb)wb.textContent='Week '+data.week;}
-    if(!data.in_season){var rows=document.getElementById('crop-rows');if(rows)rows.innerHTML='<div class="crop-offseason"><svg class="ic" aria-hidden="true"><use href="#i-snowflake"/></svg> Off season \u2014 resumes April<br><span style="font-size:.765rem;margin-top:.2rem;display:block">Last season data shown when available</span></div>';}
+    if(!data.in_season){var rows=document.getElementById('crop-rows');if(rows)rows.innerHTML='<div class="crop-offseason"><svg class="ic" aria-hidden="true"><use href="#i-snowflake"/></svg> Off season, resumes April<br><span style="font-size:.765rem;margin-top:.2rem;display:block">Last season data shown when available</span></div>';}
     var allNull=true,_needHarvestNote=[];
     ['corn','soybeans'].forEach(function(comm){
       var key=comm==='soybeans'?'bean':comm,d=data[comm];if(!d)return;
@@ -2545,7 +2545,7 @@ if(document.getElementById('crop-rows'))fetch('/data/crop-progress.json')
       }
     });
     if(_needHarvestNote.length){var _cr=document.getElementById('crop-rows');if(_cr&&!document.getElementById('r7-crop-note')){var _n=document.createElement('div');_n.id='r7-crop-note';_n.className='r7-crop-note';_n.textContent='Harvested and mature'+(_needHarvestNote.length===1?' ('+_needHarvestNote[0]+')':'')+': Not loaded yet.';_cr.appendChild(_n);}}
-    if(allNull&&data.in_season!==false){var rows=document.getElementById('crop-rows');if(rows)rows.innerHTML='<div class="crop-offseason">Season starting \u2014 ratings begin once planting gets underway.<br><span style="font-size:.765rem;margin-top:.25rem;display:block">Typically mid-April for corn &amp; soybean country</span></div>';}
+    if(allNull&&data.in_season!==false){var rows=document.getElementById('crop-rows');if(rows)rows.innerHTML='<div class="crop-offseason">Season starting, ratings begin once planting gets underway.<br><span style="font-size:.765rem;margin-top:.25rem;display:block">Typically mid-April for corn &amp; soybean country</span></div>';}
   })
   /* WAVE3-L: a failed file is one line. It used to say "Data pending" and
      print "--% planted" in October. */
@@ -2590,7 +2590,7 @@ fetch('/data/export-sales.json')
       var EX_MY=(d.marketing_year||'');
       var wkEl=document.getElementById('exp-'+key+'-wk');
       if(wkEl)wkEl.textContent=(d.weekly_net_mt!=null)
-        ?((d.weekly_net_mt<0?'\u2212':'+')+fmtBu(Math.abs(d.weekly_net_mt),comm)):(why?'\u2014':'Not loaded yet');
+        ?((d.weekly_net_mt<0?'\u2212':'+')+fmtBu(Math.abs(d.weekly_net_mt),comm)):(why?'-':'Not loaded yet');
       var pct=d.pct_of_target,cls=(pct==null)?'no-data':paceClass(pct);if(pct==null&&!why)_noPace=true;
       var barEl=document.getElementById('exp-'+key+'-bar'),pctEl=document.getElementById('exp-'+key+'-pct');
       /* No target on file means there is no pace. Draw neither the track
@@ -2622,7 +2622,7 @@ fetch('/data/export-sales.json')
           var ly=document.createElement('span');ly.className='w1c-ly';
           if(d.vs_prev_year_pct!=null&&d.prev_year_cumulative_mt!=null){var v=d.vs_prev_year_pct;
             ly.textContent=(v>0?'+':v<0?'\u2212':'')+Math.abs(v).toFixed(1)+'% vs the same week last year ('+fmtBu(d.prev_year_cumulative_mt,comm)+')';}
-          else if('prev_year_cumulative_mt' in d)ly.textContent='vs last year: \u2014 (last year\u2019s week is not in the FAS records)';
+          else if('prev_year_cumulative_mt' in d)ly.textContent='vs last year: n/a (last year\u2019s week is not in the FAS records)';
           /* WAVE3-L: an older file without the field shows nothing until the next run fills it. */
           if(ly.textContent)cumEl.appendChild(ly);
         }
@@ -2646,7 +2646,7 @@ fetch('/data/export-sales.json')
 <script>
 (function(){
 'use strict';
-function fmtDate(iso){if(!iso)return'\u2014';try{var d=new Date(iso+'T12:00:00');return d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});}catch(e){return iso;}}
+function fmtDate(iso){if(!iso)return'-';try{var d=new Date(iso+'T12:00:00');return d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});}catch(e){return iso;}}
 
 /* 2026-10-06 EARN: off the homepage; nothing to fill. */
 if(document.getElementById('fert-grid'))fetch('/data/fertilizer.json')
@@ -2669,7 +2669,7 @@ if(document.getElementById('fert-grid'))fetch('/data/fertilizer.json')
     grid.classList.add('r7-fert');
     /* short date in the table: "Sep 1", with the year only when it is not this year */
     var thisYr=new Date().getFullYear(),stale=[];
-    function sd(iso){var d=new Date((iso||'')+'T12:00:00');if(isNaN(d))return '\u2014';return d.toLocaleDateString('en-US',d.getFullYear()===thisYr?{month:'short',day:'numeric'}:{month:'short',day:'numeric',year:'numeric'});}
+    function sd(iso){var d=new Date((iso||'')+'T12:00:00');if(isNaN(d))return '-';return d.toLocaleDateString('en-US',d.getFullYear()===thisYr?{month:'short',day:'numeric'}:{month:'short',day:'numeric',year:'numeric'});}
     /* WAVE3-L: when every row shares one quote date and one comparison
        date, both go in the column headings and the rows carry none. */
     var asOne=fresh.length>1&&fresh.every(function(p){return (p.as_of||data.updated)===(fresh[0].as_of||data.updated)&&p.prev_as_of===fresh[0].prev_as_of;})&&!!fresh[0].prev_as_of;
@@ -2710,7 +2710,7 @@ var T3=['interest rate','rate cut','rate hike','fed funds','fomc','powell','infl
 var SKIP=['nfl','nba','mlb','nhl','mls','wnba','ncaa','march madness','super bowl','world series','stanley cup','playoff','playoffs','championship game','all-star','premier league','la liga','champions league','world cup','olympics','lakers','celtics','warriors','chiefs','eagles','cowboys','yankees','dodgers','mvp award','rushing yards','batting','oscar','grammy','emmy','golden globe','eurovision','box office','netflix','disney','celebrity','kardashian','beyonce','album','spotify','tiktok','instagram','youtube','viral','dogecoin','shiba','nft','movie','marvel','dc comics','reality tv','presidential election','parliamentary election','senate race','congressional race','prime minister race','governor race','mayor race','republican primary','democratic primary','remain prime minister','remain as prime minister','new prime minister','become prime minister'];
 function isPriceTarget(t){return /will\s+(wti|crude|cl)\s+.*?(hit|reach|dip|drop|fall)\s*(to\s*)?(high|low|\$[\d,]+)/i.test(t)||/will\s+(wti|crude|cl)\s+.*?\(high\)|\(low\)\s*\$[\d,]+/i.test(t);}
 function scoreM(t){var s=t.toLowerCase();if(isPriceTarget(t))return null;for(var h=0;h<SKIP.length;h++){if(s.indexOf(SKIP[h])>=0)return null;}for(var a=0;a<T1.length;a++){if(hasKw(s,T1[a]))return{score:100,tier:1};}for(var b=0;b<T2.length;b++){if(s.indexOf(T2[b])>=0)return{score:70,tier:2};}for(var c=0;c<T3.length;c++){if(s.indexOf(T3[c])>=0)return{score:40,tier:3};}return null;}
-var WHY=[['egg','Egg prices signal avian flu pressure and poultry feed demand.'],['grocery','Grocery prices reflect the entire ag supply chain from field to shelf.'],['food price','Food price changes affect consumer ag demand from farm to shelf.'],['food inflation','Food inflation erodes purchasing power and shifts protein demand.'],['corn','Corn price moves affect feed costs, ethanol margins, and farm revenue.'],['soybean','Soybeans drive export revenue \u2014 any policy shift moves US ag exports.'],['wheat','Wheat prices set global food costs and compete for acres with corn.'],['cattle','Cattle prices reflect packer demand and feed efficiency for feedlots.'],['tariff','Tariffs directly impact US grain export demand \u2014 moves basis fast.'],['trade','Trade policy shifts can redirect global grain flows overnight.'],['china','China is the world’s largest soybean buyer \u2014 policy shifts move markets.'],['crude oil','Oil prices drive diesel and fertilizer costs \u2014 every $10/bbl hits your budget.'],['oil','Energy costs flow through to planting, spraying, drying, and hauling.'],['natural gas','Natural gas is the primary input for nitrogen fertilizer \u2014 spikes raise urea.'],['fertilizer','Fertilizer is the largest variable input cost \u2014 price moves squeeze margins.'],['interest rate','Rate changes affect land values, operating loans, and grain storage carry.'],['fed','Fed policy drives the dollar, which affects grain export competitiveness.'],['inflation','Inflation erodes margins when input costs rise faster than commodity prices.'],['recession','Slowdowns reduce ethanol demand and can weaken feed grain consumption.'],['drought','Drought is the single biggest yield risk \u2014 moves corn and bean prices fast.'],['hurricane','Hurricanes disrupt Gulf exports and can damage late-season crops.'],['bird flu','Bird flu outbreaks spike egg prices and cut poultry feed demand.'],['brazil','Brazil’s soybean crop competes directly with US exports for global buyers.'],['ukraine','Black Sea grain disruptions affect global wheat and corn supply.']];
+var WHY=[['egg','Egg prices signal avian flu pressure and poultry feed demand.'],['grocery','Grocery prices reflect the entire ag supply chain from field to shelf.'],['food price','Food price changes affect consumer ag demand from farm to shelf.'],['food inflation','Food inflation erodes purchasing power and shifts protein demand.'],['corn','Corn price moves affect feed costs, ethanol margins, and farm revenue.'],['soybean','Soybeans drive export revenue, any policy shift moves US ag exports.'],['wheat','Wheat prices set global food costs and compete for acres with corn.'],['cattle','Cattle prices reflect packer demand and feed efficiency for feedlots.'],['tariff','Tariffs directly impact US grain export demand, moves basis fast.'],['trade','Trade policy shifts can redirect global grain flows overnight.'],['china','China is the world’s largest soybean buyer, policy shifts move markets.'],['crude oil','Oil prices drive diesel and fertilizer costs, every $10/bbl hits your budget.'],['oil','Energy costs flow through to planting, spraying, drying, and hauling.'],['natural gas','Natural gas is the primary input for nitrogen fertilizer, spikes raise urea.'],['fertilizer','Fertilizer is the largest variable input cost, price moves squeeze margins.'],['interest rate','Rate changes affect land values, operating loans, and grain storage carry.'],['fed','Fed policy drives the dollar, which affects grain export competitiveness.'],['inflation','Inflation erodes margins when input costs rise faster than commodity prices.'],['recession','Slowdowns reduce ethanol demand and can weaken feed grain consumption.'],['drought','Drought is the single biggest yield risk, moves corn and bean prices fast.'],['hurricane','Hurricanes disrupt Gulf exports and can damage late-season crops.'],['bird flu','Bird flu outbreaks spike egg prices and cut poultry feed demand.'],['brazil','Brazil’s soybean crop competes directly with US exports for global buyers.'],['ukraine','Black Sea grain disruptions affect global wheat and corn supply.']];
 function getWhy(t){var s=t.toLowerCase();for(var i=0;i<WHY.length;i++){if(s.indexOf(WHY[i][0])>=0)return WHY[i][1];}return'Affects agricultural commodity prices, input costs, or farm policy.';}
 function pc(n){return n>=70?'var(--green)':n>=50?'var(--gold)':n>=30?'var(--text-dim)':'#ef4444';}
 function barBg(n){var rgb=n>=70?'34,197,94':n>=50?'218,165,32':n>=30?'140,140,130':'239,68,68';return'linear-gradient(90deg,rgba('+rgb+',.9),rgba('+rgb+',.3))';}
@@ -3102,7 +3102,7 @@ window.hydrateDaily = function(data) {
       var v=(el('daily-number-value')||{}).textContent||'';
       var u=(el('daily-number-unit')||{}).textContent||'';
       var txt=(v+(u?' '+u:'')).trim();
-      if(!txt||txt==='—')return;
+      if(!txt||txt==='-')return;
       var done=function(){var orig=dnCopyBtn.innerHTML;dnCopyBtn.innerHTML='<svg class="ic" aria-hidden="true"><use href="#i-check"/></svg>';setTimeout(function(){dnCopyBtn.innerHTML=orig;},1500);};
       if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(txt).then(done).catch(function(){prompt('Copy:',txt);});}
       else{var ta=document.createElement('textarea');ta.value=txt;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();try{document.execCommand('copy');done();}catch(e){prompt('Copy:',txt);}document.body.removeChild(ta);}
@@ -3148,7 +3148,7 @@ window.hydrateDaily = function(data) {
       var months=['January','February','March','April','May','June','July','August','September','October','November','December'];
       var ds=dOk?days[d.getDay()]+', '+months[d.getMonth()]+' '+d.getDate()+', '+d.getFullYear():dateStr;
       setText('daily-date',ds);
-      setHTML('daily-teaser-date','<svg class="ic" aria-hidden="true"><use href="#i-newspaper"/></svg> AGSIST Daily \u2014 '+(dOk?months[d.getMonth()]+' '+d.getDate():dateStr));
+      setHTML('daily-teaser-date','<svg class="ic" aria-hidden="true"><use href="#i-newspaper"/></svg> AGSIST Daily, '+(dOk?months[d.getMonth()]+' '+d.getDate():dateStr));
     }catch(e){}
   }
   if(data.teaser){setText('daily-teaser-text',data.teaser);window.__s7daily=data;if(window.S7)window.S7.teaser(data);}
@@ -3254,7 +3254,7 @@ window.hydrateDaily = function(data) {
   var qCard=qText&&qText.closest('.s-card');
   if(quote&&(quote.text||quote.attribution)){
     setHTML('daily-quote-text','\u201c'+(quote.text||'')+'\u201d');
-    setText('daily-quote-attr','\u2014 '+(quote.attribution||''));
+    setText('daily-quote-attr',''+(quote.attribution||''));
     if(qCard)qCard.hidden=false;
   } else {
     if(qCard)qCard.hidden=true;
@@ -3275,7 +3275,7 @@ window.hydrateDaily = function(data) {
   var nv=el('daily-number-value'),nu=el('daily-number-unit'),nc=el('daily-number-context');
   var numCard=nv&&nv.closest('.s-card');
   if(_num){
-    if(nv)nv.textContent=(_num.value!=null&&_num.value!=='')?_num.value:'\u2014'; /* a numeric 0 is a real headline (e.g. zero export sales), not a missing one */
+    if(nv)nv.textContent=(_num.value!=null&&_num.value!=='')?_num.value:'-'; /* a numeric 0 is a real headline (e.g. zero export sales), not a missing one */
     if(nu)nu.textContent=_num.unit||'';
     if(nc)nc.textContent=_num.context||'';
     if(numCard)numCard.style.display='';
@@ -3339,7 +3339,7 @@ window.hydrateDaily = function(data) {
       var ocCls=oc==='played_out'?'yc-pill--good':oc==='didnt'?'yc-pill--bad':'yc-pill--pending';
       if(pill){pill.innerHTML=ocLbl;pill.className='daily-yc-pill '+ocCls;}
       if(sumEl)sumEl.textContent=ycLine;
-      if(noteEl)noteEl.textContent=yc.note?' \u2014 '+yc.note:'';
+      if(noteEl)noteEl.textContent=yc.note?', '+yc.note:'';
       ycEl.style.display='block';
     } else { ycEl.style.display='none'; }
   }
@@ -3486,7 +3486,7 @@ window.hydrateDaily = function(data) {
     var _tt=document.getElementById('daily-teaser-text');if(_tt)_tt.textContent='Today\u2019s briefing did not load.';
     // The sidebar is NOT baked, so its placeholders must not say "Loading" forever.
     var _wl=document.getElementById('daily-watch-list');
-    if(_wl)_wl.innerHTML='<li class="watch-item"><span class="watch-time">&mdash;</span><span class="watch-desc">Watch list unavailable \u2014 see <a href="/daily" style="color:var(--gold)">today\u2019s briefing</a></span></li>';
+    if(_wl)_wl.innerHTML='<li class="watch-item"><span class="watch-time">-</span><span class="watch-desc">Watch list unavailable, see <a href="/daily" style="color:var(--gold)">today\u2019s briefing</a></span></li>';
     wireShare();
   });
   // Share strip wiring — runs after hydrateDaily so headline reflects current briefing
@@ -3495,7 +3495,7 @@ window.hydrateDaily = function(data) {
     var hl=document.getElementById('daily-headline');
     var headlineText=hl?hl.textContent.trim():'Today\u2019s AGSIST Daily';
     if(!headlineText||/loading|did not load/i.test(headlineText))headlineText='Today\u2019s AGSIST Daily';
-    var shareTitle='AGSIST Daily \u2014 '+headlineText;
+    var shareTitle='AGSIST Daily, '+headlineText;
     var ld=document.getElementById('daily-lead');
     var leadText=ld?ld.textContent.trim():'';
     var shareSummary=leadText||'Today\u2019s ag market briefing on AGSIST: overnight markets, what to watch, one number to know.';
@@ -3615,7 +3615,7 @@ var _rmaWatching=false;
         e=document.getElementById('rma-bean-est'),src=document.getElementById('rma-src');
     if(t)t.textContent='Final planting dates';
     if(l)l.textContent='';
-    if(c)c.textContent='\u2014'; if(b)b.textContent='\u2014'; if(e)e.hidden=true;
+    if(c)c.textContent='-'; if(b)b.textContent='-'; if(e)e.hidden=true;
     if(src)src.innerHTML=rmaSourceLine(data,'<strong>The planting-date file could not be read.</strong>');
     w.hidden=false;
   }
@@ -3627,8 +3627,8 @@ var _rmaWatching=false;
         e=document.getElementById('rma-bean-est'),src=document.getElementById('rma-src');
     if(t)t.textContent='Final planting dates';
     if(l)l.textContent=String(county||'')+', '+String(state||'');
-    if(c)c.textContent='\u2014';
-    if(b)b.textContent='\u2014';
+    if(c)c.textContent='-';
+    if(b)b.textContent='-';
     if(e)e.hidden=true;
     if(src)src.innerHTML=rmaSourceLine(data,'<strong>Your county is not in this dataset.</strong>');
     w.hidden=false;
@@ -3652,7 +3652,7 @@ var _rmaWatching=false;
 
     function put(el,label,iso,isEstimate){
       if(!el)return;
-      if(!label){el.textContent='\u2014';return;}
+      if(!label){el.textContent='-';return;}
       var d=current?daysUntil(iso):null;
       el.className='rma-d-v'+(d!=null&&d<0?' past':(d!=null&&d<=14?' soon':''));
       el.textContent=label+(d!=null?' \u00b7 '+formatCountdown(d):'');
@@ -3666,8 +3666,8 @@ var _rmaWatching=false;
     var soyIsReal=(entry.source==='RMA');
     if(soyIsReal){ put(b,entry.beansLabel,entry.beans,false); if(e)e.hidden=true; }
     else {
-      if(b){ b.className='rma-d-v'; b.textContent=entry.beansLabel||'\u2014'; }
-      if(e){ e.textContent='estimated, not an RMA date \u2014 confirm it'; e.hidden=false; }
+      if(b){ b.className='rma-d-v'; b.textContent=entry.beansLabel||'-'; }
+      if(e){ e.textContent='estimated, not an RMA date, confirm it'; e.hidden=false; }
     }
     if(src)src.innerHTML=rmaSourceLine(data, current?'':'<strong>'+
       (cy?'These are '+cy+' crop-year dates and it is now '+nowY+'.'
@@ -3750,7 +3750,7 @@ function waitForGeoCounty(timeoutMs){
     (function check(){
       var w=window.AGSIST_STATE&&window.AGSIST_STATE.weather;
       if(w&&w.state&&w.county){resolve({state:w.state,county:w.county});return;}
-      if(Date.now()>deadline){console.info('[AGSIST] geo.js did not populate state+county within '+timeoutMs+'ms — county-level RMA dates unavailable');resolve(null);return;}
+      if(Date.now()>deadline){console.info('[AGSIST] geo.js did not populate state+county within '+timeoutMs+'ms, county-level RMA dates unavailable');resolve(null);return;}
       setTimeout(check,200);
     })();
   });
@@ -3768,7 +3768,7 @@ function daysUntil(iso){
   var n=new Date(); n.setHours(0,0,0,0);
   return Math.round((t-n.getTime())/86400000);
 }
-function formatCountdown(days){if(days==null)return'\u2014';if(days<0)return'Past';if(days===0)return'Today';return days+' day'+(days===1?'':'s');}
+function formatCountdown(days){if(days==null)return'-';if(days<0)return'Past';if(days===0)return'Today';return days+' day'+(days===1?'':'s');}
 function waitForGeo(cb,retries){retries=retries||0;if(retries>20)return;var st=window.AGSIST_STATE;if(st&&st.weather&&st.weather.lat!=null){cb(st);}else{setTimeout(function(){waitForGeo(cb,retries+1);},400);}}
 
 // ---------- Monthly aggregation from Open-Meteo archive ----------
@@ -3970,11 +3970,11 @@ function loadWeatherEnhancements(state){
         if(sc>0)soilEstF=Math.round(ss/sc);
       }
     }
-    if(soilEstF==null){console.warn('[AGSIST] soil temp unavailable — hourly keys:',Object.keys((forecast&&forecast.hourly)||{}),'arr len:',hourSoilArr.length);}
+    if(soilEstF==null){console.warn('[AGSIST] soil temp unavailable, hourly keys:',Object.keys((forecast&&forecast.hourly)||{}),'arr len:',hourSoilArr.length);}
     var soilClass='warn',soilCtx='';
     if(soilEstF!=null){
       if(soilEstF<32){soilClass='cold';soilCtx='Too cold for field work';}
-      else if(soilEstF<40){soilClass='cold';soilCtx='Cold \u2014 wait for warmup';}
+      else if(soilEstF<40){soilClass='cold';soilCtx='Cold, wait for warmup';}
       else if(soilEstF<50){soilClass='warn';soilCtx='Approaching planting threshold';}
       else if(soilEstF<55){soilClass='warn';soilCtx='Near planting threshold (50\xb0F)';}
       else if(soilEstF<60){soilClass='good';soilCtx='Good for planting';}
@@ -3995,7 +3995,7 @@ function loadWeatherEnhancements(state){
     if(_locLabel){
       var _locBase=_wxSt.city?_wxSt.city:(_wxSt.zip?'ZIP '+_wxSt.zip:'');
       var _locSuffix=detectedState?(_locBase?_locBase+', '+detectedState:detectedState):_locBase;
-      _locLabel.textContent=_locSuffix?'<svg class="ic" aria-hidden="true"><use href="#i-map-pin"/></svg> RMA Dates \u2014 '+_locSuffix:'<svg class="ic" aria-hidden="true"><use href="#i-map-pin"/></svg> RMA Final Planting Dates';
+      _locLabel.textContent=_locSuffix?'<svg class="ic" aria-hidden="true"><use href="#i-map-pin"/></svg> RMA Dates, '+_locSuffix:'<svg class="ic" aria-hidden="true"><use href="#i-map-pin"/></svg> RMA Final Planting Dates';
     }
     // ========== HISTORICAL CHARTS (GDU + precip, 5-yr monthly) ==========
     var agg=aggregateArchive(dailyH);
@@ -4084,7 +4084,7 @@ function loadWeatherEnhancements(state){
       if(gduPct!=null){
         var dGdu=Math.round(curGDU-gduAvg5);
         var gduDir=gduPct>2?'ahead of':(gduPct<-2?'behind':'on pace with');
-        var gduMsg=gduPct>2?'Heat is building faster than normal \u2014 crops are developing ahead of schedule.':(gduPct<-2?'Heat units are running behind \u2014 slower crop development so far this year.':'Heat accumulation is right about average for this point in the season.');
+        var gduMsg=gduPct>2?'Heat is building faster than normal, crops are developing ahead of schedule.':(gduPct<-2?'Heat units are running behind, slower crop development so far this year.':'Heat accumulation is right about average for this point in the season.');
         gduTk.innerHTML='<strong>'+sgnN(dGdu)+' GDU</strong> '+gduDir+' the 5-yr average ('+sgnN(gduPct)+'%). '+gduMsg;
       } else { gduTk.textContent=''; }
     }
@@ -4093,7 +4093,7 @@ function loadWeatherEnhancements(state){
       if(prPct!=null){
         var dPr=Math.round((curPrecip-prAvg5)*10)/10;
         var prDir=prPct>5?'above':(prPct<-5?'below':'near');
-        var prMsg=prPct>15?'Notably wetter than normal \u2014 watch fields for saturation and delayed work.':(prPct>5?'A bit wetter than the 5-yr norm.':(prPct<-15?'Running dry versus normal \u2014 keep an eye on moisture stress.':(prPct<-5?'Slightly drier than the 5-yr norm.':'Rainfall is close to the 5-yr normal over the last 30 days.')));
+        var prMsg=prPct>15?'Notably wetter than normal, watch fields for saturation and delayed work.':(prPct>5?'A bit wetter than the 5-yr norm.':(prPct<-15?'Running dry versus normal, keep an eye on moisture stress.':(prPct<-5?'Slightly drier than the 5-yr norm.':'Rainfall is close to the 5-yr normal over the last 30 days.')));
         prTk.innerHTML='<strong>'+sgnN(dPr)+'\"</strong> '+prDir+' the 5-yr average ('+sgnN(prPct)+'%). '+prMsg;
       } else { prTk.textContent=''; }
     }
@@ -4335,7 +4335,7 @@ setTimeout(function(){
     deferredPrompt = e;
     androidUseNative = true;
     if(hintTitle) hintTitle.textContent = 'Install AGSIST as an app';
-    if(hintText) hintText.textContent = 'Faster access, opens like a real app \u2014 no Play Store needed.';
+    if(hintText) hintText.textContent = 'Faster access, opens like a real app, no Play Store needed.';
     if(installBtn) installBtn.textContent = 'Install';
   });
   // Install button click — branches by platform
@@ -4567,7 +4567,7 @@ function ownPrice(k,q){var c=CFG[k];return c.g?null:c.cl?(+q.close).toFixed(2)+'
 function whyNone(k){var w=D&&D.withheld_keys&&D.withheld_keys[k];return w?'Held back: '+w:(NOQ[k]||'No quote on file');}
 function renderMissing(row,k){
   var why=whyNone(k),pp=row.querySelector('.pc-price');
-  setT(pp,'\u2014');setT(row.querySelector('.r7-cm'),/^Held back/.test(why)?'Held back, unit not confirmed':why);
+  setT(pp,'-');setT(row.querySelector('.r7-cm'),/^Held back/.test(why)?'Held back, unit not confirmed':why);
   row.title=why;qa('.r7-chg,.r7-pct,.r7-lo,.r7-hi',row).forEach(function(e){setT(e,'');});
 }
 /* KC HRW and MGEX HRS against Chicago SRW, from prices.json `spreads`
@@ -4624,7 +4624,7 @@ function renderTicker(){
   /* WAVE1-C: price and change for the keys geo.js does not write. */
   Object.keys(CFG).forEach(function(k){
     var c=CFG[k];if(!c.own||!D)return;var q=Q[k]||(D.quotes&&D.quotes[k]),has=q&&q.close!=null;
-    var pt=has?(c.g?qc(q.close):ownPrice(k,q)):'\u2014',cg=has?chg(k,q):{t:'no quote',c:'nc'};
+    var pt=has?(c.g?qc(q.close):ownPrice(k,q)):'-',cg=has?chg(k,q):{t:'no quote',c:'nc'};
     qa('.prices-strip [data-sym="'+k+'"]').forEach(function(it){
       var pe=it.querySelector('.t-price'),ce=it.querySelector('.t-chg');
       if(pe&&pe.textContent!==pt){pe.textContent=pt;ch=true;}
@@ -4684,7 +4684,7 @@ function dress(){
       var pe=it.querySelector('.t-price');if(!pe)return;
       [Q[k],Q[GRAIN_T[k]]].some(function(q){if(q&&q.close!=null&&pe.textContent===r2(q.close)){setQ(pe,q.close);return true;}return false;});
     });
-    qa('#f-prices .price-cards-grid .pc-chg-val').forEach(function(e){if(/^\u2014 0/.test(e.textContent))setT(e,'unch');});
+    qa('#f-prices .price-cards-grid .pc-chg-val').forEach(function(e){if(/^0/.test(e.textContent))setT(e,'unch');});
   }finally{busy=false;}
 }
 function hook(){
@@ -5108,7 +5108,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
         var x=g.row,hs=g.hs,he=g.he,ex=!!(x.h_exch&&String(x.h_exch).trim());
         var tot=ex&&hs&&he?tradingDays(hs,he):0;
         var per=(u==='bu'||u==='lb')?' per '+u:'';
-        var proj=g.types?g.types.map(function(t){return esc(realType(t.type)||cropName(g.crop))+' '+(t.p!=null?usd(t.p,u):'—');}).join(', ')+per:(g.p!=null?usd(g.p,u):'—');
+        var proj=g.types?g.types.map(function(t){return esc(realType(t.type)||cropName(g.crop))+' '+(t.p!=null?usd(t.p,u):'-');}).join(', ')+per:(g.p!=null?usd(g.p,u):'-');
         var projTxt='projected '+proj;
         /* A county window: the projected window differs between windows, so it is named. */
         if(g.win&&x.p_start&&x.p_end){var ps=dayStart(x.p_start),pe=dayStart(x.p_end);if(ps&&pe)projTxt+=' ('+rng(ps,pe)+')';}
@@ -5208,7 +5208,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
            not bracketed). Then the reader's state from the same NASS file:
            corn, soybeans, winter wheat planted/emerged, cotton, rice, peanuts,
            sorghum, whichever NASS published for that state this week. */
-        var pc=function(v){return v==null?'\u2014':v+'%';};
+        var pc=function(v){return v==null?'-':v+'%';};
         var hline=function(name,o){if(!o||o.harvest_pct==null)return null;
           return name+' '+o.harvest_pct+'% <small>harvested'+(o.harvest_prev_year!=null?' \u00b7 '+o.harvest_prev_year+'% last year':'')+(o.harvest_5yr_avg!=null?' \u00b7 '+o.harvest_5yr_avg+'% 5-yr avg':'')+'</small>';};
         var a=d&&hline('Corn',d.corn),b=d&&hline('Soybeans',d.soybeans);
@@ -5225,7 +5225,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
         else if(!d||!d.states)stTxt='';
         else{var so=d.states[st]||{},ks=Object.keys(SL).filter(function(k){return so[k]&&so[k].pct!=null;});
           stTxt=ks.length?ks.map(function(k){var o=so[k];return '<span class="w1c-cp"><b>'+esc(st)+' '+SL[k].toLowerCase()+' '+o.pct+'%</b>'+(o.prev_year!=null?', last year '+o.prev_year+'%':'')+(o.avg5!=null?', avg '+o.avg5+'%':'')+'</span>';}).join('')
-            :'<span class="w1c-cp"><b>'+esc(st)+':</b> \u2014 NASS published no progress figure for this state this week.</span>';}
+            :'<span class="w1c-cp"><b>'+esc(st)+':</b> NASS published no progress figure for this state this week.</span>';}
         /* 2026-10-06 EARN: crop condition (good or excellent) joins this cell,
            from the same NASS file and week; it left the markets fold. */
         var ge=[];if(!cells.condition&&d){[['Corn',d.corn],['soybeans',d.soybeans]].forEach(function(x){if(x[1]&&x[1].good_excellent!=null)ge.push(x[0]+' '+x[1].good_excellent+'%');});}

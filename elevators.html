@@ -525,7 +525,7 @@ document.addEventListener('click',function(e){var a=e.target.closest&&e.target.c
     .then(function (r) { if (!r.ok) throw 0; return r.json(); });
   function set(id, v) {
     var e = document.getElementById(id);
-    if (e) e.textContent = (v == null ? '\u2014' : v.toLocaleString());
+    if (e) e.textContent = (v == null ? '-' : v.toLocaleString());
   }
   function paintCounts(d) {
       var n = d.counts || {};
@@ -750,7 +750,7 @@ document.addEventListener('click',function(e){var a=e.target.closest&&e.target.c
         if (!panel) return;
         var rows = p.a.map(function (a) {
           return '<li><span class="el-dot el-dot-' + a[2] + '"></span>' +
-                 '<b>' + esc(a[0]) + '</b>' + (a[1] ? ' &mdash; ' + esc(a[1]) : '') +
+                 '<b>' + esc(a[0]) + '</b>' + (a[1] ? ', ' + esc(a[1]) : '') +
                  ' <em>' + LABEL[a[2]] + '</em></li>';
         }).join('');
         var more = p.n > p.a.length ? '<li class="el-more">and ' + (p.n - p.a.length) + ' more at this point</li>' : '';

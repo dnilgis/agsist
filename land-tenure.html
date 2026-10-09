@@ -459,7 +459,7 @@ html[data-theme="light"] .lt-mleg-s.na{outline:1px solid rgba(20,30,28,.28);outl
       else if(p>=30){w='A THIRD RENTED';c='#8a948f';t='#5a656a';}
       else {w='MOSTLY OWNER-FARMED';c='#5fc28a';t='#396d4f';}
       out[st]={big:Math.round(p)+'\u0025',word:w,col:c,tile:t,tval:Math.round(p)+'\u0025',
-        sent:'<b style="color:'+c+'">'+Math.round(p)+'\u0025 of '+(__A2F[st]||st)+'\u2019s farmland</b> \u2014 '+(y[1]/1e6).toFixed(1)+' million of '+((y[0]+y[1])/1e6).toFixed(1)+' million acres: is farmed by someone who doesn\u2019t own it (2022 census)'+(d97!=null?(', '+(d97>=0?'up ':'down ')+Math.abs(d97).toFixed(1)+' points since 1997'):'')+'. Tap the county map below for your county\u2019s 2022 figures.'};
+        sent:'<b style="color:'+c+'">'+Math.round(p)+'\u0025 of '+(__A2F[st]||st)+'\u2019s farmland</b>, '+(y[1]/1e6).toFixed(1)+' million of '+((y[0]+y[1])/1e6).toFixed(1)+' million acres: is farmed by someone who doesn\u2019t own it (2022 census)'+(d97!=null?(', '+(d97>=0?'up ':'down ')+Math.abs(d97).toFixed(1)+' points since 1997'):'')+'. Tap the county map below for your county\u2019s 2022 figures.'};
     });
     return out;
   }

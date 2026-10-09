@@ -560,7 +560,7 @@ function fetchWeather(lat, lon, label, known) {
          temperature printed "0\u00B0F" and then "Do Not Spray \u2014 Frozen";
          an absent one became NaN and rated spraying "good". */
       function nr(v) { return (v == null || !isFinite(v)) ? null : Math.round(v); }
-      function dsh(v, sfx) { return v == null ? '\u2014' : v + sfx; }
+      function dsh(v, sfx) { return v == null ? '-' : v + sfx; }
       var code   = c.weather_code;
       var tempF  = nr(c.temperature_2m);
       var feelsF = nr(c.apparent_temperature);
@@ -574,7 +574,7 @@ function fetchWeather(lat, lon, label, known) {
       el = document.getElementById('wx-temp');  if(el) el.textContent = dsh(tempF, '\u00B0F');
       el = document.getElementById('wx-icon');  if(el) el.textContent = WX_ICONS[code] || '';
       el = document.getElementById('wx-desc');  if(el) el.textContent = (WX_CODES[code]||'Current Conditions') + (feelsF == null ? '' : ' \u00B7 Feels ' + feelsF + '\u00B0');
-      el = document.getElementById('wx-wind');  if(el) el.textContent = wind == null ? '\u2014' : degToCompass(c.wind_direction_10m) + ' ' + wind + ' mph';
+      el = document.getElementById('wx-wind');  if(el) el.textContent = wind == null ? '-' : degToCompass(c.wind_direction_10m) + ' ' + wind + ' mph';
       el = document.getElementById('wx-humid'); if(el) el.textContent = dsh(humid, '%');
       el = document.getElementById('wx-precip');if(el) el.textContent = dsh(precip, '%');
       el = document.getElementById('wx-dew');   if(el) el.textContent = dsh(dew, '\u00B0F');
@@ -774,10 +774,10 @@ window.AGSIST_GEO_READY = function(cb) {
 function updateWidgetPreviews(tempF, humid, wind, pop) {
   if (tempF == null || humid == null || wind == null || !isFinite(tempF) || !isFinite(humid) || !isFinite(wind)) {
     ['wsp-spray-status', 'wsp-urea-badge'].forEach(function (id) {
-      var x = document.getElementById(id); if (x) x.textContent = '\u2014 not in this forecast';
+      var x = document.getElementById(id); if (x) x.textContent = 'not in this forecast';
     });
     var sd = document.getElementById('wsp-spray-detail'); if (sd) sd.textContent = 'Temperature, humidity or wind missing from the forecast';
-    var us = document.getElementById('wsp-urea-score'); if (us) us.textContent = '\u2014';
+    var us = document.getElementById('wsp-urea-score'); if (us) us.textContent = '-';
     return;
   }
   var sprayRating = calcSprayRating(tempF, humid, wind);
@@ -957,10 +957,10 @@ function fmtChange(close, open, grain, netChg, pctChg) {
   var diff  = netChg !== undefined && netChg !== null ? parseFloat(netChg) : (c - o);
   var pct   = pctChg !== undefined && pctChg !== null ? parseFloat(pctChg) : (o !== 0 ? (diff/o)*100 : 0);
   var dir   = diff > 0 ? 'up' : diff < 0 ? 'dn' : 'nc';
-  var arrow = diff > 0 ? '\u25B2' : diff < 0 ? '\u25BC' : '\u2014';
+  var arrow = diff > 0 ? '\u25B2' : diff < 0 ? '\u25BC' : '';
   var sign  = diff > 0 ? '+' : diff < 0 ? '\u2212' : '';
   var mv    = grain ? fmtCentsDiff(diff) : Math.abs(diff).toFixed(2);
-  return {text: arrow + ' ' + sign + mv + ' (' + sign + Math.abs(pct).toFixed(1) + '%)', cls: dir};
+  return {text: (arrow ? arrow + ' ' : '') + sign + mv + ' (' + sign + Math.abs(pct).toFixed(1) + '%)', cls: dir};
 }
 
 function fmtTickerChange(close, open, grain, netChg, pctChg, prefix) {
@@ -1505,7 +1505,7 @@ function loadDailyBriefing() {
         el = document.getElementById('daily-quote-attr');
         if (el && d.daily_quote.attribution) {
           var attr = d.daily_quote.attribution.replace(/^[\u2014\u2013-]\s*/, '');
-          el.textContent = '\u2014 ' + attr;
+          el.textContent = '' + attr;
         }
       }
 

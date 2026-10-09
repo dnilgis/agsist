@@ -290,11 +290,11 @@
          More than 14 days older: withhold it, with the reason. */
       var age=(Date.parse(NEWEST)-Date.parse(r.s.date))/864e5, now;
       if(!(age>0)) now=fmt$(r.s.latest);
-      else if(age>14) now='\u2014 <span style="color:var(--bs-dim);font-size:12px">no USDA posting since '+shortDate(r.s.date)+'</span>';
+      else if(age>14) now='<span style="color:var(--bs-dim);font-size:12px">no USDA posting since '+shortDate(r.s.date)+'</span>';
       else now=fmt$(r.s.latest)+' <span style="color:var(--bs-dim);font-size:12px">as of '+shortDate(r.s.date)+'</span>';
       var n5=r.s.avg5_n;
       h+='<tr><td>'+r.mkt+'</td><td class="num">'+now+'</td>'
-        +'<td class="num" style="color:var(--bs-dim)">'+(r.s.avg5==null?'—':fmt$(r.s.avg5)+(n5!=null?' <span style="font-size:12px">n='+n5+' yrs</span>':''))+'</td>'
+        +'<td class="num" style="color:var(--bs-dim)">'+(r.s.avg5==null?'n/a':fmt$(r.s.avg5)+(n5!=null?' <span style="font-size:12px">n='+n5+' yrs</span>':''))+'</td>'
         +'<td>'+(age>14?'':spark(r.s.hist, r.s.avg5, dom))+'</td></tr>';
     });
     $('bs-table').innerHTML = rows.length?h:'<tr><td style="color:var(--bs-dim)">No USDA series for this commodity</td></tr>';
@@ -336,7 +336,7 @@
       +'<div class="bs-walkstep"><div class="bs-walk-l">'+p[2]+' bid</div><div class="bs-walk-v">$'+s.destination_bid.toFixed(2)+'</div><div class="bs-walk-m">what the export market pays for the same bushel</div></div>'
       +'<div class="bs-walkstep"><div class="bs-walk-l">The journey&rsquo;s cut</div><div class="bs-walk-v">$'+s.spread.toFixed(2)+'</div><div class="bs-walk-m">freight + handling + margin between the two, the wedge your basis lives inside</div></div>';
     var ci=journey.cost_index||{};
-    $('bs-walk-note').textContent='Transport cost indicators (2000=100), week of '+String(ci.date||'').slice(0,10)+': truck '+(ci.truck||'—')+' · shuttle train '+(ci.shuttle_train||'—')+' · barge '+(ci.barge||'—')+' · Gulf vessel '+(ci.gulf_vessel||'—')+'. Spread data: '+s.date+'.';
+    $('bs-walk-note').textContent='Transport cost indicators (2000=100), week of '+String(ci.date||'').slice(0,10)+': truck '+(ci.truck||'-')+' · shuttle train '+(ci.shuttle_train||'-')+' · barge '+(ci.barge||'-')+' · Gulf vessel '+(ci.gulf_vessel||'-')+'. Spread data: '+s.date+'.';
   }
 
   Promise.all([
@@ -347,7 +347,7 @@
     if(!basis||!journey){ $('bs-table').innerHTML='<tr><td style="color:var(--bs-dim)">Data unavailable: try a refresh</td></tr>'; return; }
     // the header names the newest week any series reached, not whichever is listed first
     Object.keys(basis.series).forEach(function(k){ var dt=basis.series[k].date; if(dt&&(!NEWEST||dt>NEWEST)) NEWEST=dt; });
-    $('bs-fresh').textContent='week of '+(NEWEST||'—');
+    $('bs-fresh').textContent='week of '+(NEWEST||'-');
     renderTabs(); renderTable(); renderBarge(); renderWalk();
   });
 })();
@@ -400,7 +400,7 @@
       var lab=(cur>=0?'+$':'-$')+Math.abs(cur).toFixed(2);
       var nrm=(s.avg5==null)?'':(' (a normal week like this runs '+(s.avg5>=0?'+$':'-$')+Math.abs(s.avg5).toFixed(2)+')');
       out[key]={big:lab,word:w,col:c,tile:null,tval:null,
-        sent:'Corn basis in the <b>'+name+'</b> region is <b style="color:'+c+'">'+lab+'/bu</b>'+(d!=null?(' \u2014 <b style="color:'+c+'">'+(d>0?'+$':'-$')+Math.abs(d).toFixed(2)+' vs normal</b>'+nrm):'')+'. These are regional USDA markets. Your elevator sits a local spread away, but it moves with this. The barge rates below are usually why.'};
+        sent:'Corn basis in the <b>'+name+'</b> region is <b style="color:'+c+'">'+lab+'/bu</b>'+(d!=null?(', <b style="color:'+c+'">'+(d>0?'+$':'-$')+Math.abs(d).toFixed(2)+' vs normal</b>'+nrm):'')+'. These are regional USDA markets. Your elevator sits a local spread away, but it moves with this. The barge rates below are usually why.'};
     });
     return out;
   }

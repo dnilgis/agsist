@@ -182,11 +182,11 @@
   <div class="sticky-bar" id="sticky-bar" role="status" aria-live="polite" aria-label="Quick result summary">
     <div>
       <div class="sticky-bar-label">Total Bushels</div>
-      <div class="sticky-bar-bu" id="sb-bu">&mdash;</div>
+      <div class="sticky-bar-bu" id="sb-bu">-</div>
     </div>
     <div>
       <div class="sticky-bar-label">Net Value</div>
-      <div class="sticky-bar-val" id="sb-val">&mdash;</div>
+      <div class="sticky-bar-val" id="sb-val">-</div>
     </div>
     <button class="sticky-bar-copy" id="sb-copy" onclick="copyResult()">Copy</button>
   </div>
@@ -350,7 +350,7 @@
                 <line x1="236" y1="245" x2="244" y2="245" stroke="#6a6a62" stroke-width="1"/>
                 <text id="dim-h" x="258" y="160" text-anchor="middle" transform="rotate(90,258,160)">24 ft</text>
               </g>
-              <text id="cap-num" x="140" y="200" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="18" font-weight="700" fill="#fff" opacity="0.9">&mdash;</text>
+              <text id="cap-num" x="140" y="200" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="18" font-weight="700" fill="#fff" opacity="0.9">-</text>
               <text id="cap-unit" x="140" y="216" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="9" font-weight="700" fill="#daa520" opacity="0.7">BUSHELS</text>
             </svg>
           </div>
@@ -398,28 +398,28 @@
           <div id="calc-err" class="field-hint" role="alert" style="display:none;color:#e05c5c;font-weight:700;margin-bottom:8px"></div>
 
           <div class="section-label">Bushels &amp; Weight</div>
-          <div class="result-row"><span class="result-label">Total Bushels</span><span class="result-value highlight" id="rTotBu" style="font-size:1.2rem">&mdash;</span></div>
-          <div class="result-row"><span class="result-label">Weight</span><span class="result-value" id="rWeight">&mdash;</span></div>
+          <div class="result-row"><span class="result-label">Total Bushels</span><span class="result-value highlight" id="rTotBu" style="font-size:1.2rem">-</span></div>
+          <div class="result-row"><span class="result-label">Weight</span><span class="result-value" id="rWeight">-</span></div>
 
           <!-- v2: volume details collapsed by default — engineering internals hidden -->
           <button class="vol-toggle" onclick="toggleVol(this)" aria-expanded="false">&#9654; Show volume breakdown</button>
           <div class="vol-detail" id="vol-detail">
-            <div class="result-row"><span class="result-label" id="rShapeLabel">Cylinder Volume</span><span class="result-value" id="rCylVol">&mdash;</span></div>
-            <div class="result-row"><span class="result-label" id="rAdjLabel">Surface Adj.</span><span class="result-value" id="rAdjVol">&mdash;</span></div>
-            <div class="result-row"><span class="result-label">Total Volume</span><span class="result-value" id="rTotVol">&mdash;</span></div>
+            <div class="result-row"><span class="result-label" id="rShapeLabel">Cylinder Volume</span><span class="result-value" id="rCylVol">-</span></div>
+            <div class="result-row"><span class="result-label" id="rAdjLabel">Surface Adj.</span><span class="result-value" id="rAdjVol">-</span></div>
+            <div class="result-row"><span class="result-label">Total Volume</span><span class="result-value" id="rTotVol">-</span></div>
           </div>
 
           <div style="height:12px"></div>
           <div class="section-label">Moisture Shrink</div>
-          <div class="result-row"><span class="result-label">Shrink Factor</span><span class="result-value" id="rShrink">&mdash;</span></div>
-          <div class="result-row"><span class="result-label">Dry Bushels</span><span class="result-value" id="rDryBu">&mdash;</span></div>
-          <div class="result-row"><span class="result-label">Bushels Lost</span><span class="result-value negative" id="rLost">&mdash;</span></div>
+          <div class="result-row"><span class="result-label">Shrink Factor</span><span class="result-value" id="rShrink">-</span></div>
+          <div class="result-row"><span class="result-label">Dry Bushels</span><span class="result-value" id="rDryBu">-</span></div>
+          <div class="result-row"><span class="result-label">Bushels Lost</span><span class="result-value negative" id="rLost">-</span></div>
 
           <div class="value-box">
-            <div class="result-row"><span class="result-label">Gross Value (wet bu)</span><span class="result-value" id="rGrossVal">&mdash;</span></div>
-            <div class="result-row"><span class="result-label">Value After Shrink</span><span class="result-value positive" id="rDryVal">&mdash;</span></div>
-            <div class="result-row" id="drying-row" style="display:none"><span class="result-label">Drying Cost</span><span class="result-value negative" id="rDryCost">&mdash;</span></div>
-            <div class="result-row" style="border-top:2px solid var(--border);padding-top:8px;margin-top:4px"><span class="result-label" style="font-weight:700;color:var(--text)">Net Value</span><span class="result-value" id="rNetVal" style="font-size:1.1rem;font-weight:700;color:var(--gold)">&mdash;</span></div>
+            <div class="result-row"><span class="result-label">Gross Value (wet bu)</span><span class="result-value" id="rGrossVal">-</span></div>
+            <div class="result-row"><span class="result-label">Value After Shrink</span><span class="result-value positive" id="rDryVal">-</span></div>
+            <div class="result-row" id="drying-row" style="display:none"><span class="result-label">Drying Cost</span><span class="result-value negative" id="rDryCost">-</span></div>
+            <div class="result-row" style="border-top:2px solid var(--border);padding-top:8px;margin-top:4px"><span class="result-label" style="font-weight:700;color:var(--text)">Net Value</span><span class="result-value" id="rNetVal" style="font-size:1.1rem;font-weight:700;color:var(--gold)">-</span></div>
           </div>
 
           <div style="margin-top:20px">
@@ -522,7 +522,7 @@
     sorghum: {lb:56,std:14.0}
   };
   var BU_PER_CUFT=0.8036, TAN_25=0.4663;
-  var NA='\u2014'; // missing / unusable input: em dash plus a reason, never 0
+  var NA='-'; // missing / unusable input: em dash plus a reason, never 0
   var _rafPending=false;
 
   function $(id){return document.getElementById(id);}

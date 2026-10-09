@@ -231,7 +231,7 @@ html[data-theme="light"] #cyn-record [style*="opacity:.85"]{opacity:1!important}
     }).catch(function(){ var b=document.getElementById('cy-nowcast'); if(b)nowcastFail(b); });
     function nowcastFail(box){
       var a=document.getElementById('cyn-corn'), b=document.getElementById('cyn-beans');
-      if(a)a.innerHTML='<div style="font-size:0.9rem;color:#8a948f">\u2014 Nowcast data did not load</div>';
+      if(a)a.innerHTML='<div style="font-size:0.9rem;color:#8a948f">Nowcast data did not load</div>';
       if(b)b.style.display='none';
       box.style.display='block';
     }
@@ -262,7 +262,7 @@ html[data-theme="light"] #cyn-record [style*="opacity:.85"]{opacity:1!important}
         var right, dim=!!c.superseded_by;
         if(dim){right='<span style="color:#8a948f">superseded: locked against '+c.usda_before+', not the print in force; re-locked '+String(c.superseded_by).replace(/^relock /,'')+' before the report, same call</span>';}
         else if(c.outcome===null||c.outcome===undefined){
-          right='<span style="color:#8a948f">'+(c.wasde<today?('printed '+c.wasde+' — awaiting entry'):('prints '+c.wasde))+'</span>';}
+          right='<span style="color:#8a948f">'+(c.wasde<today?('printed '+c.wasde+', awaiting entry'):('prints '+c.wasde))+'</span>';}
         else{
           var ocol=c.outcome==='correct'?'#5fc28a':'#e0685f';
           right='<span style="color:#8a948f">USDA '+c.usda_before+' → '+c.usda_after+'</span> <b style="color:'+ocol+'">'+c.outcome.toUpperCase()+'</b>'
@@ -305,7 +305,7 @@ html[data-theme="light"] #cyn-record [style*="opacity:.85"]{opacity:1!important}
         var sp=c.spread||{};
         var rows=c.rows.map(function(r){
           var band=(r.low!=null&&r.high!=null)?' <span style="color:#8a948f">'+r.low.toFixed(1)+'–'+r.high.toFixed(1)+'</span>':'';
-          var when=r.as_of?'<span style="color:#8a948f">'+esc(r.as_of)+'</span>':'<span style="color:#8a948f">— no date published</span>';
+          var when=r.as_of?'<span style="color:#8a948f">'+esc(r.as_of)+'</span>':'<span style="color:#8a948f">no date published</span>';
           /* USDA'S ROW SORTS INTO THE COLUMN WITH EVERYONE ELSE — its print is a
              forecast too, and pinning it under a sorted table made the table
              read as unsorted. Its colour marks it apart without moving it. */
@@ -347,7 +347,7 @@ html[data-theme="light"] #cyn-record [style*="opacity:.85"]{opacity:1!important}
     }).catch(function(){ panelFail(); });
     function panelFail(){
       var v=document.getElementById('cyp-verdict'), sec=document.getElementById('cy-panel');
-      if(v)v.textContent='\u2014 Forecast comparison data did not load';
+      if(v)v.textContent='Forecast comparison data did not load';
       if(sec)sec.style.display='block';
     }
   })();
@@ -450,7 +450,7 @@ html[data-theme="light"] #cyn-record [style*="opacity:.85"]{opacity:1!important}
     var sel=$('cy-state'); sel.innerHTML=sts.map(function(s){return '<option value="'+s+'"'+(s==='IA'?' selected':'')+'>'+(ST_NAME[s]||s)+'</option>';}).join('');
     sel.addEventListener('change',function(){ state=this.value; render(); });
   }).catch(function(){ fitFail(); });
-  function fitFail(){ $('cy-bars').innerHTML='<p class="sub">\u2014 Data did not load</p>'; }
+  function fitFail(){ $('cy-bars').innerHTML='<p class="sub">Data did not load</p>'; }
   $('cy-corn').addEventListener('click',function(){ crop='corn'; this.classList.add('on'); $('cy-soy').classList.remove('on'); render(); });
   $('cy-soy').addEventListener('click',function(){ crop='soybeans'; this.classList.add('on'); $('cy-corn').classList.remove('on'); render(); });
   document.addEventListener('click',function(e){ var b=e.target.closest('.cy-sel'); if(b&&data){ state=b.getAttribute('data-st'); $('cy-state').value=state; render(); $('cy-bars').scrollIntoView({behavior:'smooth',block:'nearest'}); } });
@@ -518,16 +518,16 @@ html[data-theme="light"] #cyn-record [style*="opacity:.85"]{opacity:1!important}
       else if(r2<0.5){word='WEAK SIGNAL';c='#d4a23f';t='#a8823c';}
       else if(r2<0.7){word='MEANINGFUL';c='#5fc28a';t='#396d4f';}
       else {word='STRONG SIGNAL';c='#5fc28a';t='#2f9963';}
-      out[st]={big:(r2==null?'\u2014':Math.round(r2*100)+'\u0025'),word:word,col:c,tile:t,
-        tval:(r2==null?'\u2014':Math.round(r2*100)+'\u0025'),
-        sent:'This week\u2019s corn rating has explained <b style="color:'+c+'">'+(r2==null?'\u2014':Math.round(r2*100)+'\u0025')+'</b>'+(r2==null?' \u2014 no fit this week (under '+(j.min_n||15)+' paired years), so this page does not say how much it explains':' of how '+(__A2F[st]||st)+'\u2019s final yield differed from trend, over '+w.n+' years, in-sample')+'. The best of the weeks tested was week '+pkw+' at <b>'+Math.round(pk.r2*100)+'\u0025</b> (n='+pk.n+(w&&w.n!==pk.n?'; a different set of years from this week\u2019s '+w.n:'')+'). That is a historical fit, not a forecast.'};
+      out[st]={big:(r2==null?'-':Math.round(r2*100)+'\u0025'),word:word,col:c,tile:t,
+        tval:(r2==null?'-':Math.round(r2*100)+'\u0025'),
+        sent:'This week\u2019s corn rating has explained <b style="color:'+c+'">'+(r2==null?'-':Math.round(r2*100)+'\u0025')+'</b>'+(r2==null?', no fit this week (under '+(j.min_n||15)+' paired years), so this page does not say how much it explains':' of how '+(__A2F[st]||st)+'\u2019s final yield differed from trend, over '+w.n+' years, in-sample')+'. The best of the weeks tested was week '+pkw+' at <b>'+Math.round(pk.r2*100)+'\u0025</b> (n='+pk.n+(w&&w.n!==pk.n?'; a different set of years from this week\u2019s '+w.n:'')+'). That is a historical fit, not a forecast.'};
     });
     return out;
   }
   fetch('/data/cond-yield/fit.json',{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).then(function(j){
     if(!j){ vpFail(); return; } VD=buildVerdicts(j); render();
   }).catch(function(){ vpFail(); });
-  function vpFail(){ var a=document.getElementById('vp-big'),b=document.getElementById('vp-sent'); if(a)a.textContent='\u2014'; if(b)b.textContent='\u2014 Data did not load'; }
+  function vpFail(){ var a=document.getElementById('vp-big'),b=document.getElementById('vp-sent'); if(a)a.textContent='-'; if(b)b.textContent='Data did not load'; }
 })();
 
 </script>

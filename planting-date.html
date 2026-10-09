@@ -294,8 +294,8 @@ html[data-theme="light"]{--pd-red:#b3432c}
         <span class="live-badge" id="st-badge" style="display:none"><span class="live-dot"></span>Live</span>
       </div>
       <div class="st-grid">
-        <div class="st-card"><div class="st-card-lbl">Soil 6 cm (~2")</div><div class="st-card-val" id="st-2in">&mdash;</div><div class="st-card-sub" id="st-2in-sub">&deg;F &middot; 3-day mean</div></div>
-        <div class="st-card"><div class="st-card-lbl">Air Temp Now</div><div class="st-card-val" id="st-air">&mdash;</div><div class="st-card-sub">&deg;F current</div></div>
+        <div class="st-card"><div class="st-card-lbl">Soil 6 cm (~2")</div><div class="st-card-val" id="st-2in">-</div><div class="st-card-sub" id="st-2in-sub">&deg;F &middot; 3-day mean</div></div>
+        <div class="st-card"><div class="st-card-lbl">Air Temp Now</div><div class="st-card-val" id="st-air">-</div><div class="st-card-sub">&deg;F current</div></div>
       </div>
       <div id="st-verdict-wrap" style="margin-top:.55rem"></div>
       <div class="f-hint" id="st-note" style="margin-top:.4rem">Soil temp is a weather-model estimate at 6 cm (~2 in), not a probe reading. For precision, check your local extension weather station.</div>
@@ -488,7 +488,7 @@ var BEAN_PENALTY = [
   r.bu = bu; r.lossBu = loss; r.pct = Math.round(bu / BEAN_BASE * 100);
   r.note = r.days===0
     ? (r.label==='Apr 25' ? 'No loss counted before May 1 in this approximation (UW-Madison sees 0.2–0.5 bu/a/day after Apr 25)' : 'Base: no delay past May 1')
-    : r.days+' days past May 1 × 0.4 bu/a/day ≈ '+loss.toFixed(1)+' bu/a'+(r.extra?' — '+r.extra:'');
+    : r.days+' days past May 1 × 0.4 bu/a/day ≈ '+loss.toFixed(1)+' bu/a'+(r.extra?', '+r.extra:'');
   return r;
 });
 
@@ -626,7 +626,7 @@ function renderPenaltyTable(){
     var pctStr, lossStr, estYield;
     if(d.bu!=null){ // soybean: computed from bu/a, approximation
       pctStr = d.pct+'%';
-      lossStr = d.lossBu>0 ? '-'+d.lossBu.toFixed(1)+' bu/a' : '—';
+      lossStr = d.lossBu>0 ? '-'+d.lossBu.toFixed(1)+' bu/a' : '-';
       estYield = d.bu.toFixed(0);
     } else if(d.lo!=null){ // a published range, printed as a range
       pctStr = '~'+d.lo+'–'+d.hi+'%';
@@ -634,7 +634,7 @@ function renderPenaltyTable(){
       estYield = (maxYield*d.lo/100).toFixed(0)+'–'+(maxYield*d.hi/100).toFixed(0);
     } else {
       pctStr = d.pct+'%';
-      lossStr = d.pct===100?'—':'-'+(100-d.pct)+'%';
+      lossStr = d.pct===100?'-':'-'+(100-d.pct)+'%';
       estYield = (maxYield * d.pct / 100).toFixed(0);
     }
     return '<tr class="'+cls+'"><td>'+d.label+'</td>'
@@ -697,8 +697,8 @@ function renderGDUCompare(){
   if(noteEl){
     var tgt;
     if(gduTarget===null){
-      if(rm===null) tgt = crop==='corn' ? '\u2014 Enter a corn relative maturity from 70 to 135.' : '\u2014 Enter a soybean maturity group from 0 to 6.';
-      else tgt = 'Soybean GDU target: \u2014 \u00b7 no published GDD-to-maturity figure for MG '+rm+' (NDSU\u2019s model covers 00.8\u20131.1); soybean maturity is driven by day length. Use the seed company\u2019s rating.';
+      if(rm===null) tgt = crop==='corn' ? 'Enter a corn relative maturity from 70 to 135.' : 'Enter a soybean maturity group from 0 to 6.';
+      else tgt = 'Soybean GDU target: n/a \u00b7 no published GDD-to-maturity figure for MG '+rm+' (NDSU\u2019s model covers 00.8\u20131.1); soybean maturity is driven by day length. Use the seed company\u2019s rating.';
     }
     else { tgt = 'GDU target for '+rm+(crop==='corn'?'-day RM corn':' MG soybean')+': '+gduTarget.toLocaleString()+' GDUs'+(crop==='corn'?' (AGSIST line through K-State 110-day &asymp; 2,670 and Purdue 112-day &asymp; 2,700; a reference figure).':' to R8 (NDSU soybean GDD model).'); }
     noteEl.textContent = 'These counts come from a Wisconsin monthly-average table. They are an estimate: check your hybrid\u2019s rating. GDUs are counted from the planting date to the 50% first-fall-frost date for '+fz.zone+' ('+fz.fall50+'). Only the frost date changes with the zone. The table has no April rate, so it starts at May 1. '+tgt;
@@ -717,7 +717,7 @@ function renderDiseaseCards(){
   var diseases = crop==='corn' ? DISEASE_CORN : DISEASE_BEAN;
   var html = '<div style="display:grid;grid-template-columns:minmax(0,1fr);gap:.65rem">'
     + diseases.map(function(d){
-        return '<div class="info-box red"><strong>'+d.name+'</strong> &mdash; <span style="color:var(--gold)">'+d.risk+'</span><br>'+d.desc+'</div>';
+        return '<div class="info-box red"><strong>'+d.name+'</strong>, <span style="color:var(--gold)">'+d.risk+'</span><br>'+d.desc+'</div>';
       }).join('')
     +'</div>';
   var el = document.getElementById('disease-grid');
@@ -845,8 +845,8 @@ function fetchSoilTemp(){
     if(!curHour){ soilWhy='The weather model did not say what hour it is at this location, so the last 3 days cannot be picked out.'; }
     else if(vals.length<60){ soilWhy='Only '+vals.length+' of the last 72 hourly soil readings came back (60 needed for a 3-day mean).'; }
     else { soil2in=(vals.reduce(function(a,b){return a+b;},0)/vals.length).toFixed(1); }
-    var soilDisplay=soil2in!=null?soil2in+'\u00b0F':'\u2014';
-    var airDisplay=air?air+'\u00b0F':'\u2014';
+    var soilDisplay=soil2in!=null?soil2in+'\u00b0F':'-';
+    var airDisplay=air?air+'\u00b0F':'-';
     document.getElementById('st-2in').textContent=soilDisplay;
     var subEl=document.getElementById('st-2in-sub');
     if(subEl)subEl.textContent=soil2in!=null?'\u00b0F \u00b7 3-day mean ('+vals.length+' h)':'3-day mean unavailable';
@@ -857,9 +857,9 @@ function fetchSoilTemp(){
     if(soil2in==null){
       lastSoil=null;
       var vw0=document.getElementById('st-verdict-wrap');
-      if(vw0)vw0.innerHTML='<div class="st-verdict wait">\u2014 No soil verdict</div>';
+      if(vw0)vw0.innerHTML='<div class="st-verdict wait">No soil verdict</div>';
       var nEl0=document.getElementById('st-note');
-      if(nEl0)nEl0.textContent='\u2014 '+soilWhy+' No 3-day mean, no verdict. Try again in an hour or check a nearby ZIP.';
+      if(nEl0)nEl0.textContent=''+soilWhy+' No 3-day mean, no verdict. Try again in an hour or check a nearby ZIP.';
       setStatus('\u2713 Loaded (no 3-day soil mean at this location)','ok');
       return;
     }

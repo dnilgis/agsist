@@ -532,13 +532,13 @@ window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);
      it is used. Kept byte-identical to the other so the baked port can mirror
      one rule; test/wpi-numbers-strip.test.mjs holds them together. */
   
-  function num(n,u){return (n==null)?'\u2014':(n+(u?(' '+u):''));}
+  function num(n,u){return (n==null)?'-':(n+(u?(' '+u):''));}
   /* THE STRIP. Renders what the pipeline decided and decides nothing itself.
      A missing figure prints an em dash and the reason the pipeline gave, never
      a blank cell and never a zero. */
   function numbersEl(rows){
     if(!rows||!rows.length)return '';
-    var DASH='\u2014';
+    var DASH='-';
     var body=rows.map(function(r){
       var u=r.unit?(' '+r.unit):'';
       var exp=(r.expected==null)?(DASH+(r.expected_why?('<div style="font-size:.72rem;color:var(--wp-mut)">'+esc(r.expected_why)+'</div>'):'')):(r.expected+u);
@@ -600,13 +600,13 @@ window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);
     var thr='';
     if(n.bullish_threshold||n.bearish_threshold){
       thr='<div class="wp-thr">'
-        +'<div class="t bull"><div class="k">Bullish surprise</div><div class="v">'+(n.bullish_threshold||'\u2014')+'</div></div>'
-        +'<div class="t bear"><div class="k">Bearish surprise</div><div class="v">'+(n.bearish_threshold||'\u2014')+'</div></div></div>';
+        +'<div class="t bull"><div class="k">Bullish surprise</div><div class="v">'+(n.bullish_threshold||'-')+'</div></div>'
+        +'<div class="t bear"><div class="k">Bearish surprise</div><div class="v">'+(n.bearish_threshold||'-')+'</div></div></div>';
     } else { thr=gap('thresholds','No surprise thresholds'); }
     var pos=n.positioning?('<div class="wp-pos">Fund positioning: '+n.positioning+'</div>')
       :gap('positioning','No positioning');
     return '<div class="wp-card"><div class="hd"><span class="rpt">'+n.report+'</span><span class="cd">'+n.date+(n.time?(' \u00b7 '+n.time):'')+' \u00b7 '+cd+'</span></div>'
-      +(n.commodity?'<div class="wp-metric">'+n.commodity+' \u2014 '+(n.metric||'')+'</div>':'')
+      +(n.commodity?'<div class="wp-metric">'+n.commodity+', '+(n.metric||'')+'</div>':'')
       +(n.expectation?'<div class="wp-exp">'+n.expectation+'</div>':'')
       +rangeHtml+odds+thr+pos+numbersEl(n.numbers)+'</div>';
   }
@@ -630,7 +630,7 @@ window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);
     var sum=!lr.metric_count
       ? 'No figure in this report had a trade estimate to grade it against'+ung+'.'
       : lr.all_in_line
-      ? 'Landed in line across the board &mdash; no real surprise versus what the trade had priced in'+ung+'.'
+      ? 'Landed in line across the board, no real surprise versus what the trade had priced in'+ung+'.'
       : lr.in_line_count+' of '+lr.metric_count+' graded figures landed in line with the trade'+ung+'. '+(miss>1?'The biggest miss:':'The one that didn\u2019t:');
     var big='';
     if(b.metric && !lr.all_in_line){
@@ -646,7 +646,7 @@ window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);
       }
       big='<div class="wp-res-big">'
         +'<div class="wp-res-row"><span class="wp-res-metric">'+b.metric+'</span>'
-        +'<span class="wp-res-tag '+sc+'">'+(b.surprise||'\u2014 no trade estimate')+'</span></div>'
+        +'<span class="wp-res-tag '+sc+'">'+(b.surprise||'no trade estimate')+'</span></div>'
         +'<div class="wp-res-nums"><b>'+num(b.actual,b.unit)+'</b> actual &middot; '+num(b.expected,b.unit)+' expected'+(gp?(' &middot; '+gp):'')+'</div>'
         +(inNote?'<div class="wp-res-reaction">'+inNote+'</div>':'')
         +(b.reaction?'<div class="wp-res-reaction">'+b.reaction+'</div>':'')+'</div>';
@@ -661,7 +661,7 @@ window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);
       +'<div class="wp-res-sum">'+sum+'</div>'+big+numbersEl(lr.numbers)
       +'<div class="wp-res-foot">Every figure, scored, in the <a href="#track-record">track record</a> below.</div></div>';
   }
-  function fmtNum(n,u){return (n==null)?'\u2014':(n+(u?('\u00a0'+u):''));}
+  function fmtNum(n,u){return (n==null)?'-':(n+(u?('\u00a0'+u):''));}
   /* AN EMPTY SURPRISE IS NOT "IN LINE". Both builders used to return "in line"
      when there was no consensus to compare against, and the page rendered
      `r.surprise||'in line'` on top of that — so a metric nobody had filed an
@@ -724,7 +724,7 @@ window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);
 (function(){
   
   function biasCell(b){
-    if(b==null)return '<span class="as-bias">&mdash;</span>';
+    if(b==null)return '<span class="as-bias">-</span>';
     if(Math.abs(b)<0.25)return '<span class="as-bias">&#8776; even</span>';
     var hi=b>0;return '<span class="as-bias"><span class="'+(hi?'hi':'lo')+'">'+(hi?'+':'')+b.toFixed(2)+'% '+(hi?'high':'low')+'</span></span>';
   }
@@ -784,7 +784,7 @@ window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);
       : '<span class="as-cell"><span class="'+beatCls+'">'+r.beat_rate+'%</span>'+cnt+'</span>';
     var calls=r.qualified?String(r.n):(r.n+' of '+minN);
     return '<tr'+(r.qualified?'':' class="as-building"')+'>'
-      +(showRank?('<td class="rk" data-label="#">'+(rank||'&mdash;')+'</td>'):'')
+      +(showRank?('<td class="rk" data-label="#">'+(rank||'n/a')+'</td>'):'')
       +'<td data-label="Analyst"><span class="who">'+esc(r.analyst)+'</span>'
       +(/agsist\.com/i.test(r.firm||'')?'<span class="as-ours" title="This is our own model. We run this board and score it, and the same rules apply to us.">ours</span>':'')
       +'<span class="firm">'+esc(r.firm)+'</span>'
@@ -823,21 +823,21 @@ window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);
     if(cls&&cls.label){
       cap='<tr class="as-cap"><td colspan="'+span+'"><b>'+esc(cls.label)+'</b>'
         +((cls.calls!=null)?(' \u00b7 '+cls.calls+' scored call'+(cls.calls===1?'':'s')):'')
-        +'. Errors are averaged inside this group only \u2014 a 2% miss on a yield and a 2% miss on '
+        +'. Errors are averaged inside this group only, a 2% miss on a yield and a 2% miss on '
         +'ending stocks are not the same miss, and this page does not add them together.</td></tr>';
     }
     var body=rows.map(function(r,i){return boardRow(r,ordinals?i+1:null,minN,ordinals);}).join('');
     var brows=building.map(function(r){return boardRow(r,null,minN,ordinals);}).join('');
     var note='';
     if(building.length&&rows.length){
-      note='<tr class="as-split"><td colspan="'+span+'">Still building \u2014 listed above the line once a forecaster has '
+      note='<tr class="as-split"><td colspan="'+span+'">Still building, listed above the line once a forecaster has '
         +'<b>'+minN+' scored calls in this group</b>. Their accuracy so far is real and is shown; '
         +'their position is not, because '+(minN-1)+' calls is not a record.</td></tr>';
     }
     var lead='';
-    if(!rows.length){lead='<div class="as-err" style="margin-bottom:.6rem">Nobody has '+minN+' scored calls in this group yet \u2014 building records below.</div>';}
+    if(!rows.length){lead='<div class="as-err" style="margin-bottom:.6rem">Nobody has '+minN+' scored calls in this group yet, building records below.</div>';}
     else if(rows.length===1){lead='<div class="as-err" style="margin-bottom:.6rem">A ranking needs at least two forecasters with '+minN+' scored calls in the same group. One has cleared that so far, so this board shows records, not places.</div>';}
-    else if(!ordinals){lead='<div class="as-err" style="margin-bottom:.6rem">Listed by average error, with no places. This page prints a finishing order only once every forecaster above the line has <b>'+ordMin+' scored calls</b> in the same group. Under that, the gap between two averages sits inside the spread of each one\u2019s own calls \u2014 shown beside every average \u2014 and an order would be a coin flip written as a fact.</div>';}
+    else if(!ordinals){lead='<div class="as-err" style="margin-bottom:.6rem">Listed by average error, with no places. This page prints a finishing order only once every forecaster above the line has <b>'+ordMin+' scored calls</b> in the same group. Under that, the gap between two averages sits inside the spread of each one\u2019s own calls, shown beside every average, and an order would be a coin flip written as a fact.</div>';}
     return lead+head+cap+body+note+brows+'</tbody></table>';
   }
   /* ── WHAT THE BOARD'S OWN NUMBERS SAY, IN ONE LINE, UNDER THE BOARD ──────
@@ -916,7 +916,7 @@ window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);
     return '<div class="as-panelbox"><div style="font-family:\'JetBrains Mono\',monospace;font-size:.8rem;color:var(--as-gold2);margin-bottom:.4rem">'+esc(u.report)+' &middot; '+esc(u.date)+'</div>'+rows+'</div>';
   }
   function pipelineEl(pl){
-    if(!pl||!pl.length)return '<div class="as-err">No calls filed yet. As forecasters post numbers ahead of a report, they land here &mdash; timestamped, and graded automatically once USDA prints.</div>';
+    if(!pl||!pl.length)return '<div class="as-err">No calls filed yet. As forecasters post numbers ahead of a report, they land here, timestamped, and graded automatically once USDA prints.</div>';
     return pl.map(function(r){
       var mets=r.metrics.map(function(m){
         var ref=(m.consensus!=null)?('trade '+m.consensus):(m.usda_current!=null?('USDA '+m.usda_current):'');
@@ -938,7 +938,7 @@ window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);
     return '<div class="as-roster">'+list.map(function(a){return '<span class="as-chip"><b>'+esc(a.firm||a.analyst)+'</b><span>'+esc(a.analyst)+'</span></span>';}).join('')+'</div>';
   }
   function reportsEl(reps){
-    if(!reps||!reps.length)return '<div class="as-err">No graded forecaster calls yet \u2014 these fill in as forecasters on record get scored against the print.</div>';
+    if(!reps||!reps.length)return '<div class="as-err">No graded forecaster calls yet, these fill in as forecasters on record get scored against the print.</div>';
     var blocks=reps.map(function(r){
       var mets=(r.metrics||[]).filter(function(m){return m.results&&m.results.length;});
       if(!mets.length)return '';
@@ -986,7 +986,7 @@ window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);
       }).join('');
       return '<div class="as-rep"><div class="hd"><span class="rpt">'+esc(r.report)+'</span><span class="cd">'+esc(r.date)+'</span></div>'+ms+'</div>';
     }).filter(Boolean).join('');
-    return blocks||'<div class="as-err">No graded forecaster calls yet \u2014 these fill in as forecasters on record get scored against the print.</div>';
+    return blocks||'<div class="as-err">No graded forecaster calls yet, these fill in as forecasters on record get scored against the print.</div>';
   }
   fetch('/data/analyst-scorecard.json',{cache:'no-store'}).then(function(r){if(!r.ok)throw 0;return r.json();}).then(function(d){
     if(d.sample){document.getElementById('as-ribbon').style.display='block';}

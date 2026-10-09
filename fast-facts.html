@@ -445,16 +445,16 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
 <!-- ── TODAY'S CALL — computed fresh from live prices each load; hides itself honestly if prices don't load ── -->
 <section class="ff-today" id="ff-today" hidden>
   <div class="ff-today-tag"><svg class="ic" aria-hidden="true" style="width:1em;height:1em;vertical-align:-.12em"><use href="#i-zap"/></svg> Today's call: N vs corn</div>
-  <div class="ff-today-verdict"><span class="ff-today-num" id="ffv-num">&mdash;</span><span class="ff-today-word" id="ffv-word"></span></div>
+  <div class="ff-today-verdict"><span class="ff-today-num" id="ffv-num">-</span><span class="ff-today-word" id="ffv-word"></span></div>
   <p class="ff-today-line" id="ffv-line"></p>
   <div class="ff-today-src" id="ffv-src"></div>
 </section>
   <style>@media print{.ag-sponsor-ribbon{display:none!important}}</style><aside class="ag-sponsor-ribbon" id="ag-sponsor"><span class="ag-sponsor-tag">Sponsor this page</span> The reference farmers pull up in the shop, the cab, and the co-op line. One category-exclusive slot. <span class="ag-sponsor-price" data-rate="page">$29/mo &middot; first month free</span> <a href="/sponsor-apply?slot=fast-facts&amp;utm_source=fast-facts&amp;utm_medium=slot">Put your name here &rarr;</a></aside>
 <div class="ff-strip" id="ff-strip" hidden>
-  <div class="ff-tile"><div class="k">Corn</div><div class="v" id="fft-corn">&mdash;</div><div class="n">CBOT &middot; live</div></div>
-  <div class="ff-tile"><div class="k">Soybeans</div><div class="v" id="fft-beans">&mdash;</div><div class="n">CBOT &middot; live</div></div>
-  <div class="ff-tile"><div class="k">Wheat</div><div class="v" id="fft-wheat">&mdash;</div><div class="n">CBOT &middot; live</div></div>
-  <div class="ff-tile"><div class="k">Urea 46-0-0</div><div class="v gold" id="fft-urea">&mdash;</div><div class="n" id="fft-urea-n">dealer</div></div>
+  <div class="ff-tile"><div class="k">Corn</div><div class="v" id="fft-corn">-</div><div class="n">CBOT &middot; live</div></div>
+  <div class="ff-tile"><div class="k">Soybeans</div><div class="v" id="fft-beans">-</div><div class="n">CBOT &middot; live</div></div>
+  <div class="ff-tile"><div class="k">Wheat</div><div class="v" id="fft-wheat">-</div><div class="n">CBOT &middot; live</div></div>
+  <div class="ff-tile"><div class="k">Urea 46-0-0</div><div class="v gold" id="fft-urea">-</div><div class="n" id="fft-urea-n">dealer</div></div>
 </div>
 <div class="ff-week" id="ff-week" hidden><span class="wk" id="ffw-num"></span><p id="ffw-txt"></p></div>
 <nav class="ff-tabs" role="tablist" aria-label="Fast Facts sections">
@@ -496,10 +496,10 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
     <div class="ff-cf"><label class="ff-cl" for="nc-fertprice">Fertilizer ($/ton)</label><input class="ff-ci" id="nc-fertprice" type="number" value="560" step="5" min="50" max="3000"></div>
   </div>
   <div class="ff-res" id="nc-res">
-    <div class="ff-ri"><div class="ff-ril">$/lb N</div><div class="ff-riv" id="nc-nlb">&mdash;</div></div>
-    <div class="ff-ri"><div class="ff-ril">N:Corn Ratio</div><div class="ff-riv" id="nc-ratio">&mdash;</div></div>
-    <div class="ff-ri"><div class="ff-ril">Use Table Column</div><div class="ff-riv green" id="nc-col">&mdash;</div></div>
-    <div class="ff-ri"><div class="ff-ril">Interpretation</div><div class="ff-riv dim" id="nc-interp">&mdash;</div></div>
+    <div class="ff-ri"><div class="ff-ril">$/lb N</div><div class="ff-riv" id="nc-nlb">-</div></div>
+    <div class="ff-ri"><div class="ff-ril">N:Corn Ratio</div><div class="ff-riv" id="nc-ratio">-</div></div>
+    <div class="ff-ri"><div class="ff-ril">Use Table Column</div><div class="ff-riv green" id="nc-col">-</div></div>
+    <div class="ff-ri"><div class="ff-ril">Interpretation</div><div class="ff-riv dim" id="nc-interp">-</div></div>
   </div>
 </div>
 <div class="ff-warn"><strong>Before applying:</strong> Subtract legume, manure, and green manure N credits. On loamy soils &gt;10% OM use low end. Sandy soils &lt;2% OM use high end.</div>
@@ -549,23 +549,23 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
 <thead><tr><th class="tl">Product</th><th>% N</th><th>% P&#x2082;O&#x2085;</th><th>% K&#x2082;O</th><th>Other</th><th>lbs/gal</th></tr></thead>
 <tbody>
   <tr class="tg"><td class="tl" colspan="6">Nitrogen Sources</td></tr>
-  <tr><td class="tl">Anhydrous Ammonia (AA)</td><td class="hi">82</td><td class="ze">0</td><td class="ze">0</td><td>&mdash;</td><td>&mdash;</td></tr>
-  <tr><td class="tl">Urea</td><td class="hi">46</td><td class="ze">0</td><td class="ze">0</td><td>&mdash;</td><td>&mdash;</td></tr>
-  <tr><td class="tl">UAN 32%</td><td class="hi">32</td><td class="ze">0</td><td class="ze">0</td><td>&mdash;</td><td>11.1</td></tr>
-  <tr><td class="tl">UAN 28%</td><td class="hi">28</td><td class="ze">0</td><td class="ze">0</td><td>&mdash;</td><td>10.6</td></tr>
-  <tr><td class="tl">Ammonium Sulfate (AMS)</td><td>21</td><td class="ze">0</td><td class="ze">0</td><td>24% S</td><td>&mdash;</td></tr>
-  <tr><td class="tl">Ammonium Nitrate</td><td>34</td><td class="ze">0</td><td class="ze">0</td><td>&mdash;</td><td>&mdash;</td></tr>
+  <tr><td class="tl">Anhydrous Ammonia (AA)</td><td class="hi">82</td><td class="ze">0</td><td class="ze">0</td><td>n/a</td><td>n/a</td></tr>
+  <tr><td class="tl">Urea</td><td class="hi">46</td><td class="ze">0</td><td class="ze">0</td><td>n/a</td><td>n/a</td></tr>
+  <tr><td class="tl">UAN 32%</td><td class="hi">32</td><td class="ze">0</td><td class="ze">0</td><td>n/a</td><td>11.1</td></tr>
+  <tr><td class="tl">UAN 28%</td><td class="hi">28</td><td class="ze">0</td><td class="ze">0</td><td>n/a</td><td>10.6</td></tr>
+  <tr><td class="tl">Ammonium Sulfate (AMS)</td><td>21</td><td class="ze">0</td><td class="ze">0</td><td>24% S</td><td>n/a</td></tr>
+  <tr><td class="tl">Ammonium Nitrate</td><td>34</td><td class="ze">0</td><td class="ze">0</td><td>n/a</td><td>n/a</td></tr>
   <tr class="tg"><td class="tl" colspan="6">Phosphorus Sources</td></tr>
-  <tr><td class="tl">DAP</td><td>18</td><td class="hi">46</td><td class="ze">0</td><td>&mdash;</td><td>&mdash;</td></tr>
-  <tr><td class="tl">MAP</td><td>11</td><td class="hi">52</td><td class="ze">0</td><td>&mdash;</td><td>&mdash;</td></tr>
-  <tr><td class="tl">MAP + Sulfur (12-40-0-10S)</td><td>12</td><td class="hi">40</td><td class="ze">0</td><td>10% S</td><td>&mdash;</td></tr>
-  <tr><td class="tl">Triple Superphosphate (TSP)</td><td class="ze">0</td><td class="hi">46</td><td class="ze">0</td><td>&mdash;</td><td>&mdash;</td></tr>
-  <tr><td class="tl">10-34-0 liquid</td><td>10</td><td class="hi">34</td><td class="ze">0</td><td>&mdash;</td><td>11.6</td></tr>
+  <tr><td class="tl">DAP</td><td>18</td><td class="hi">46</td><td class="ze">0</td><td>n/a</td><td>n/a</td></tr>
+  <tr><td class="tl">MAP</td><td>11</td><td class="hi">52</td><td class="ze">0</td><td>n/a</td><td>n/a</td></tr>
+  <tr><td class="tl">MAP + Sulfur (12-40-0-10S)</td><td>12</td><td class="hi">40</td><td class="ze">0</td><td>10% S</td><td>n/a</td></tr>
+  <tr><td class="tl">Triple Superphosphate (TSP)</td><td class="ze">0</td><td class="hi">46</td><td class="ze">0</td><td>n/a</td><td>n/a</td></tr>
+  <tr><td class="tl">10-34-0 liquid</td><td>10</td><td class="hi">34</td><td class="ze">0</td><td>n/a</td><td>11.6</td></tr>
   <tr class="tg"><td class="tl" colspan="6">Potassium Sources</td></tr>
-  <tr><td class="tl">MOP (Muriate of Potash)</td><td class="ze">0</td><td class="ze">0</td><td class="hi">60&ndash;62</td><td>&mdash;</td><td>&mdash;</td></tr>
-  <tr><td class="tl">SOP (Potassium Sulfate)</td><td class="ze">0</td><td class="ze">0</td><td class="hi">50</td><td>18% S</td><td>&mdash;</td></tr>
-  <tr><td class="tl">K-Mag</td><td class="ze">0</td><td class="ze">0</td><td class="hi">22</td><td>22% S, 11% Mg</td><td>&mdash;</td></tr>
-  <tr><td class="tl">9-18-9 starter liquid</td><td>9</td><td>18</td><td>9</td><td>&mdash;</td><td>11.1</td></tr>
+  <tr><td class="tl">MOP (Muriate of Potash)</td><td class="ze">0</td><td class="ze">0</td><td class="hi">60&ndash;62</td><td>n/a</td><td>n/a</td></tr>
+  <tr><td class="tl">SOP (Potassium Sulfate)</td><td class="ze">0</td><td class="ze">0</td><td class="hi">50</td><td>18% S</td><td>n/a</td></tr>
+  <tr><td class="tl">K-Mag</td><td class="ze">0</td><td class="ze">0</td><td class="hi">22</td><td>22% S, 11% Mg</td><td>n/a</td></tr>
+  <tr><td class="tl">9-18-9 starter liquid</td><td>9</td><td>18</td><td>9</td><td>n/a</td><td>11.1</td></tr>
 </tbody></table></div>
 <div class="ff-note"><strong>Liquid weights:</strong> 1 gal water = 8.34 lb &middot; UAN 28% = 10.6 lb/gal &middot; UAN 32% = 11.1 lb/gal &middot; 10-34-0 = 11.6 lb/gal</div>
 </div><!-- /tab-nitrogen -->
@@ -574,25 +574,25 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
 <div class="ff-panel" id="tab-economics" role="tabpanel" aria-labelledby="tab-btn-economics" tabindex="0" aria-hidden="true">
 <div class="ff-h2">Live Market Prices <span class="live-badge" id="eco-live-badge" style="display:none;margin-left:.5rem"><span class="b-dot"></span>Live</span></div>
 <div class="eco-price-grid">
-  <div class="eco-price-card"><div class="eco-price-label">Corn</div><div class="eco-price-val" id="eco-corn-price">&mdash;</div><div class="eco-price-unit">$/bu CBOT</div></div>
-  <div class="eco-price-card"><div class="eco-price-label">Soybeans</div><div class="eco-price-val" id="eco-bean-price">&mdash;</div><div class="eco-price-unit">$/bu CBOT</div></div>
-  <div class="eco-price-card"><div class="eco-price-label">Wheat</div><div class="eco-price-val" id="eco-wheat-price">&mdash;</div><div class="eco-price-unit">$/bu CBOT</div></div>
-  <div class="eco-price-card"><div class="eco-price-label">Urea N</div><div class="eco-price-val" id="eco-urea-price">&mdash;</div><div class="eco-price-unit">$/ton dealer</div></div>
-  <div class="eco-price-card"><div class="eco-price-label">P Source</div><div class="eco-price-val" id="eco-dap-price">&mdash;</div><div class="eco-price-unit">$/ton MAP+S</div></div>
-  <div class="eco-price-card"><div class="eco-price-label">MOP (K)</div><div class="eco-price-val" id="eco-mop-price">&mdash;</div><div class="eco-price-unit">$/ton</div></div>
+  <div class="eco-price-card"><div class="eco-price-label">Corn</div><div class="eco-price-val" id="eco-corn-price">-</div><div class="eco-price-unit">$/bu CBOT</div></div>
+  <div class="eco-price-card"><div class="eco-price-label">Soybeans</div><div class="eco-price-val" id="eco-bean-price">-</div><div class="eco-price-unit">$/bu CBOT</div></div>
+  <div class="eco-price-card"><div class="eco-price-label">Wheat</div><div class="eco-price-val" id="eco-wheat-price">-</div><div class="eco-price-unit">$/bu CBOT</div></div>
+  <div class="eco-price-card"><div class="eco-price-label">Urea N</div><div class="eco-price-val" id="eco-urea-price">-</div><div class="eco-price-unit">$/ton dealer</div></div>
+  <div class="eco-price-card"><div class="eco-price-label">P Source</div><div class="eco-price-val" id="eco-dap-price">-</div><div class="eco-price-unit">$/ton MAP+S</div></div>
+  <div class="eco-price-card"><div class="eco-price-label">MOP (K)</div><div class="eco-price-val" id="eco-mop-price">-</div><div class="eco-price-unit">$/ton</div></div>
 </div>
 <div class="ff-h2">Input Cost Builder</div>
 <p class="ff-sub">Build your projected cost per acre. N $/lb auto-fills from live fertilizer prices; edit to match your dealer.</p>
 <div class="eco-section">
   <div class="eco-section-title"><svg class="ic" aria-hidden="true"><use href="#i-sprout"/></svg> Corn: Cost Per Acre</div>
-  <div class="eco-cost-row"><span class="eco-cost-label">Nitrogen: <span id="eco-n-source-label" style="color:var(--gold)">Urea 46%</span></span><div class="eco-cost-inputs"><input class="eco-cost-mini" id="eco-n-rate" type="number" value="160" step="5" min="0" max="400" aria-label="N rate lb/ac"><span class="eco-cost-unit">lb N/ac &times;</span><input class="eco-cost-mini" id="eco-n-pplb" type="number" value="0.61" step="0.01" min="0.10" max="3.00" aria-label="$/lb N"><span class="eco-cost-unit">$/lb N =</span><span class="eco-cost-result em" id="eco-n-cost">&mdash;</span></div></div>
-  <div class="eco-cost-row"><span class="eco-cost-label">Phosphate (P&#x2082;O&#x2085;): DAP/MAP</span><div class="eco-cost-inputs"><input class="eco-cost-mini" id="eco-p-rate" type="number" value="75" step="5" min="0" max="300" aria-label="P rate"><span class="eco-cost-unit">lb/ac &times;</span><input class="eco-cost-mini" id="eco-p-pplb" type="number" value="0.60" step="0.01" min="0.10" max="3.00" aria-label="$/lb P2O5"><span class="eco-cost-unit">$/lb =</span><span class="eco-cost-result em" id="eco-p-cost">&mdash;</span></div></div>
-  <div class="eco-cost-row"><span class="eco-cost-label">Potash (K&#x2082;O): MOP</span><div class="eco-cost-inputs"><input class="eco-cost-mini" id="eco-k-rate" type="number" value="60" step="5" min="0" max="400" aria-label="K rate"><span class="eco-cost-unit">lb/ac &times;</span><input class="eco-cost-mini" id="eco-k-pplb" type="number" value="0.33" step="0.01" min="0.10" max="2.00" aria-label="$/lb K2O"><span class="eco-cost-unit">$/lb =</span><span class="eco-cost-result em" id="eco-k-cost">&mdash;</span></div></div>
-  <div class="eco-cost-row"><span class="eco-cost-label">Seed</span><div class="eco-cost-inputs"><input class="eco-cost-mini" id="eco-seed" type="number" value="105" step="5" min="0" max="500" aria-label="Seed $/ac"><span class="eco-cost-unit">$/ac</span><span class="eco-cost-result" id="eco-seed-echo">&mdash;</span></div></div>
-  <div class="eco-cost-row"><span class="eco-cost-label">Herbicide / Chemical</span><div class="eco-cost-inputs"><input class="eco-cost-mini" id="eco-chem" type="number" value="55" step="5" min="0" max="300" aria-label="Chem $/ac"><span class="eco-cost-unit">$/ac</span><span class="eco-cost-result" id="eco-chem-echo">&mdash;</span></div></div>
-  <div class="eco-cost-row"><span class="eco-cost-label">Land Rent</span><div class="eco-cost-inputs"><input class="eco-cost-mini" id="eco-rent" type="number" value="150" step="10" min="0" max="1000" aria-label="Rent $/ac"><span class="eco-cost-unit">$/ac</span><span class="eco-cost-result" id="eco-rent-echo">&mdash;</span></div></div>
-  <div class="eco-cost-row"><span class="eco-cost-label">Other (machinery, drying, overhead)</span><div class="eco-cost-inputs"><input class="eco-cost-mini" id="eco-other" type="number" value="75" step="5" min="0" max="500" aria-label="Other $/ac"><span class="eco-cost-unit">$/ac</span><span class="eco-cost-result" id="eco-other-echo">&mdash;</span></div></div>
-  <div class="eco-total-bar"><span class="eco-total-label">Total Cost Per Acre</span><span class="eco-total-val" id="eco-total">&mdash;</span></div>
+  <div class="eco-cost-row"><span class="eco-cost-label">Nitrogen: <span id="eco-n-source-label" style="color:var(--gold)">Urea 46%</span></span><div class="eco-cost-inputs"><input class="eco-cost-mini" id="eco-n-rate" type="number" value="160" step="5" min="0" max="400" aria-label="N rate lb/ac"><span class="eco-cost-unit">lb N/ac &times;</span><input class="eco-cost-mini" id="eco-n-pplb" type="number" value="0.61" step="0.01" min="0.10" max="3.00" aria-label="$/lb N"><span class="eco-cost-unit">$/lb N =</span><span class="eco-cost-result em" id="eco-n-cost">-</span></div></div>
+  <div class="eco-cost-row"><span class="eco-cost-label">Phosphate (P&#x2082;O&#x2085;): DAP/MAP</span><div class="eco-cost-inputs"><input class="eco-cost-mini" id="eco-p-rate" type="number" value="75" step="5" min="0" max="300" aria-label="P rate"><span class="eco-cost-unit">lb/ac &times;</span><input class="eco-cost-mini" id="eco-p-pplb" type="number" value="0.60" step="0.01" min="0.10" max="3.00" aria-label="$/lb P2O5"><span class="eco-cost-unit">$/lb =</span><span class="eco-cost-result em" id="eco-p-cost">-</span></div></div>
+  <div class="eco-cost-row"><span class="eco-cost-label">Potash (K&#x2082;O): MOP</span><div class="eco-cost-inputs"><input class="eco-cost-mini" id="eco-k-rate" type="number" value="60" step="5" min="0" max="400" aria-label="K rate"><span class="eco-cost-unit">lb/ac &times;</span><input class="eco-cost-mini" id="eco-k-pplb" type="number" value="0.33" step="0.01" min="0.10" max="2.00" aria-label="$/lb K2O"><span class="eco-cost-unit">$/lb =</span><span class="eco-cost-result em" id="eco-k-cost">-</span></div></div>
+  <div class="eco-cost-row"><span class="eco-cost-label">Seed</span><div class="eco-cost-inputs"><input class="eco-cost-mini" id="eco-seed" type="number" value="105" step="5" min="0" max="500" aria-label="Seed $/ac"><span class="eco-cost-unit">$/ac</span><span class="eco-cost-result" id="eco-seed-echo">-</span></div></div>
+  <div class="eco-cost-row"><span class="eco-cost-label">Herbicide / Chemical</span><div class="eco-cost-inputs"><input class="eco-cost-mini" id="eco-chem" type="number" value="55" step="5" min="0" max="300" aria-label="Chem $/ac"><span class="eco-cost-unit">$/ac</span><span class="eco-cost-result" id="eco-chem-echo">-</span></div></div>
+  <div class="eco-cost-row"><span class="eco-cost-label">Land Rent</span><div class="eco-cost-inputs"><input class="eco-cost-mini" id="eco-rent" type="number" value="150" step="10" min="0" max="1000" aria-label="Rent $/ac"><span class="eco-cost-unit">$/ac</span><span class="eco-cost-result" id="eco-rent-echo">-</span></div></div>
+  <div class="eco-cost-row"><span class="eco-cost-label">Other (machinery, drying, overhead)</span><div class="eco-cost-inputs"><input class="eco-cost-mini" id="eco-other" type="number" value="75" step="5" min="0" max="500" aria-label="Other $/ac"><span class="eco-cost-unit">$/ac</span><span class="eco-cost-result" id="eco-other-echo">-</span></div></div>
+  <div class="eco-total-bar"><span class="eco-total-label">Total Cost Per Acre</span><span class="eco-total-val" id="eco-total">-</span></div>
 </div>
 <div class="ff-note" style="margin-top:1rem"><strong>Take your cost total to the full break-even tool &rarr;</strong><br>
   The Break-Even Calculator adds a what-if sensitivity table, profit gauge, and printable report.<br><br>
@@ -613,15 +613,15 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
     <div class="ff-cf"><label class="ff-cl" for="st-k">K (ppm)</label><input class="ff-ci" id="st-k" type="number" value="110" step="5" min="0" max="600"></div>
   </div>
   <div class="ff-res" id="st-res">
-    <div class="ff-ri"><div class="ff-ril">P Category</div><div class="ff-riv" id="st-pcat">&mdash;</div></div>
-    <div class="ff-ri"><div class="ff-ril">K Category</div><div class="ff-riv" id="st-kcat">&mdash;</div></div>
-    <div class="ff-ri"><div class="ff-ril">Apply P&#x2082;O&#x2085; (lb/ac)</div><div class="ff-riv green" id="st-prec">&mdash;</div></div>
-    <div class="ff-ri"><div class="ff-ril">Apply K&#x2082;O (lb/ac)</div><div class="ff-riv green" id="st-krec">&mdash;</div></div>
+    <div class="ff-ri"><div class="ff-ril">P Category</div><div class="ff-riv" id="st-pcat">-</div></div>
+    <div class="ff-ri"><div class="ff-ril">K Category</div><div class="ff-riv" id="st-kcat">-</div></div>
+    <div class="ff-ri"><div class="ff-ril">Apply P&#x2082;O&#x2085; (lb/ac)</div><div class="ff-riv green" id="st-prec">-</div></div>
+    <div class="ff-ri"><div class="ff-ril">Apply K&#x2082;O (lb/ac)</div><div class="ff-riv green" id="st-krec">-</div></div>
   </div>
   <div id="pk-cost-out" class="pk-cost-bar" style="display:none">
-    <div class="pk-cost-item"><div class="pk-ci-label">P&#x2082;O&#x2085; Cost</div><div class="pk-ci-val" id="pk-p-cost">&mdash;</div></div>
-    <div class="pk-cost-item"><div class="pk-ci-label">K&#x2082;O Cost</div><div class="pk-ci-val" id="pk-k-cost">&mdash;</div></div>
-    <div class="pk-cost-item"><div class="pk-ci-label">Total P+K $/ac</div><div class="pk-ci-val" id="pk-total-cost">&mdash;</div></div>
+    <div class="pk-cost-item"><div class="pk-ci-label">P&#x2082;O&#x2085; Cost</div><div class="pk-ci-val" id="pk-p-cost">-</div></div>
+    <div class="pk-cost-item"><div class="pk-ci-label">K&#x2082;O Cost</div><div class="pk-ci-val" id="pk-k-cost">-</div></div>
+    <div class="pk-cost-item"><div class="pk-ci-label">Total P+K $/ac</div><div class="pk-ci-val" id="pk-total-cost">-</div></div>
     <div style="font-size:0.755rem;color:var(--text-muted);align-self:flex-end">Based on live DAP/MOP prices</div>
   </div>
   <div class="ff-cn" id="st-note"></div>
@@ -645,13 +645,13 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
 </thead>
 <tbody>
   <tr class="tg"><td class="tl" colspan="7">Phosphate (P&#x2082;O&#x2085;) lb/ac</td></tr>
-  <tr><td class="tl">131&ndash;150</td><td class="re">95</td><td>85</td><td class="hi">55</td><td>30</td><td class="ze">&mdash;</td><td class="ze">0</td></tr>
-  <tr><td class="tl">151&ndash;170</td><td class="re">100</td><td>90</td><td class="hi">60</td><td>30</td><td class="ze">&mdash;</td><td class="ze">0</td></tr>
-  <tr><td class="tl">171&ndash;190</td><td class="re">110</td><td>100</td><td class="hi">70</td><td>35</td><td class="ze">&mdash;</td><td class="ze">0</td></tr>
-  <tr><td class="tl">191&ndash;210</td><td class="re">115</td><td>105</td><td class="hi">75</td><td>40</td><td class="ze">&mdash;</td><td class="ze">0</td></tr>
-  <tr><td class="tl">211&ndash;230</td><td class="re">125</td><td>115</td><td class="hi">85</td><td>45</td><td class="ze">&mdash;</td><td class="ze">0</td></tr>
-  <tr><td class="tl">231&ndash;250</td><td class="re">130</td><td>120</td><td class="hi">90</td><td>45</td><td class="ze">&mdash;</td><td class="ze">0</td></tr>
-  <tr><td class="tl">251&ndash;270</td><td class="re">140</td><td>130</td><td class="hi">100</td><td>50</td><td class="ze">&mdash;</td><td class="ze">0</td></tr>
+  <tr><td class="tl">131&ndash;150</td><td class="re">95</td><td>85</td><td class="hi">55</td><td>30</td><td class="ze">n/a</td><td class="ze">0</td></tr>
+  <tr><td class="tl">151&ndash;170</td><td class="re">100</td><td>90</td><td class="hi">60</td><td>30</td><td class="ze">n/a</td><td class="ze">0</td></tr>
+  <tr><td class="tl">171&ndash;190</td><td class="re">110</td><td>100</td><td class="hi">70</td><td>35</td><td class="ze">n/a</td><td class="ze">0</td></tr>
+  <tr><td class="tl">191&ndash;210</td><td class="re">115</td><td>105</td><td class="hi">75</td><td>40</td><td class="ze">n/a</td><td class="ze">0</td></tr>
+  <tr><td class="tl">211&ndash;230</td><td class="re">125</td><td>115</td><td class="hi">85</td><td>45</td><td class="ze">n/a</td><td class="ze">0</td></tr>
+  <tr><td class="tl">231&ndash;250</td><td class="re">130</td><td>120</td><td class="hi">90</td><td>45</td><td class="ze">n/a</td><td class="ze">0</td></tr>
+  <tr><td class="tl">251&ndash;270</td><td class="re">140</td><td>130</td><td class="hi">100</td><td>50</td><td class="ze">n/a</td><td class="ze">0</td></tr>
   <tr class="tg"><td class="tl" colspan="7">Potash (K&#x2082;O) lb/ac</td></tr>
   <tr><td class="tl">131&ndash;150</td><td class="re">85</td><td>70</td><td class="hi">40</td><td>20</td><td>10</td><td class="ze">0</td></tr>
   <tr><td class="tl">151&ndash;170</td><td class="re">90</td><td>75</td><td class="hi">45</td><td>25</td><td>10</td><td class="ze">0</td></tr>
@@ -669,11 +669,11 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
 </thead>
 <tbody>
   <tr class="tg"><td class="tl" colspan="7">Phosphate (P&#x2082;O&#x2085;) lb/ac</td></tr>
-  <tr><td class="tl">46&ndash;55</td><td class="re">80</td><td>70</td><td class="hi">40</td><td>20</td><td class="ze">&mdash;</td><td class="ze">0</td></tr>
-  <tr><td class="tl">56&ndash;65</td><td class="re">90</td><td>80</td><td class="hi">50</td><td>25</td><td class="ze">&mdash;</td><td class="ze">0</td></tr>
-  <tr><td class="tl">66&ndash;75</td><td class="re">95</td><td>85</td><td class="hi">55</td><td>30</td><td class="ze">&mdash;</td><td class="ze">0</td></tr>
-  <tr><td class="tl">76&ndash;85</td><td class="re">105</td><td>95</td><td class="hi">65</td><td>35</td><td class="ze">&mdash;</td><td class="ze">0</td></tr>
-  <tr><td class="tl">86&ndash;95</td><td class="re">110</td><td>100</td><td class="hi">70</td><td>35</td><td class="ze">&mdash;</td><td class="ze">0</td></tr>
+  <tr><td class="tl">46&ndash;55</td><td class="re">80</td><td>70</td><td class="hi">40</td><td>20</td><td class="ze">n/a</td><td class="ze">0</td></tr>
+  <tr><td class="tl">56&ndash;65</td><td class="re">90</td><td>80</td><td class="hi">50</td><td>25</td><td class="ze">n/a</td><td class="ze">0</td></tr>
+  <tr><td class="tl">66&ndash;75</td><td class="re">95</td><td>85</td><td class="hi">55</td><td>30</td><td class="ze">n/a</td><td class="ze">0</td></tr>
+  <tr><td class="tl">76&ndash;85</td><td class="re">105</td><td>95</td><td class="hi">65</td><td>35</td><td class="ze">n/a</td><td class="ze">0</td></tr>
+  <tr><td class="tl">86&ndash;95</td><td class="re">110</td><td>100</td><td class="hi">70</td><td>35</td><td class="ze">n/a</td><td class="ze">0</td></tr>
   <tr class="tg"><td class="tl" colspan="7">Potash (K&#x2082;O) lb/ac</td></tr>
   <tr><td class="tl">46&ndash;55</td><td class="re">115</td><td>100</td><td class="hi">70</td><td>35</td><td>20</td><td class="ze">0</td></tr>
   <tr><td class="tl">56&ndash;65</td><td class="re">130</td><td>115</td><td class="hi">85</td><td>45</td><td>20</td><td class="ze">0</td></tr>
@@ -720,10 +720,10 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
     <div class="ff-cf"><label class="ff-cl" for="rem-acres">Field Acres</label><input class="ff-ci" id="rem-acres" type="number" value="100" step="1" min="1"></div>
   </div>
   <div class="ff-res" id="rem-res">
-    <div class="ff-ri"><div class="ff-ril">P&#x2082;O&#x2085; /ac</div><div class="ff-riv" id="rem-p-ac">&mdash;</div></div>
-    <div class="ff-ri"><div class="ff-ril">K&#x2082;O /ac</div><div class="ff-riv" id="rem-k-ac">&mdash;</div></div>
-    <div class="ff-ri"><div class="ff-ril">Total P&#x2082;O&#x2085;</div><div class="ff-riv green" id="rem-p-tot">&mdash;</div></div>
-    <div class="ff-ri"><div class="ff-ril">Total K&#x2082;O</div><div class="ff-riv green" id="rem-k-tot">&mdash;</div></div>
+    <div class="ff-ri"><div class="ff-ril">P&#x2082;O&#x2085; /ac</div><div class="ff-riv" id="rem-p-ac">-</div></div>
+    <div class="ff-ri"><div class="ff-ril">K&#x2082;O /ac</div><div class="ff-riv" id="rem-k-ac">-</div></div>
+    <div class="ff-ri"><div class="ff-ril">Total P&#x2082;O&#x2085;</div><div class="ff-riv green" id="rem-p-tot">-</div></div>
+    <div class="ff-ri"><div class="ff-ril">Total K&#x2082;O</div><div class="ff-riv green" id="rem-k-tot">-</div></div>
   </div>
 </div>
 <div class="ff-h2">Plant Population by Row Width</div>
@@ -740,8 +740,8 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
     <div class="ff-cf"><label class="ff-cl" for="corn-acres">Field Acres</label><input class="ff-ci" id="corn-acres" type="number" value="1.10" step="0.01"></div>
   </div>
   <div class="ff-res" id="corn-res">
-    <div class="ff-ri"><div class="ff-ril">Bu @ 15.5%</div><div class="ff-riv" id="corn-bu">&mdash;</div></div>
-    <div class="ff-ri"><div class="ff-ril">Bu / Acre</div><div class="ff-riv green" id="corn-buac">&mdash;</div></div>
+    <div class="ff-ri"><div class="ff-ril">Bu @ 15.5%</div><div class="ff-riv" id="corn-bu">-</div></div>
+    <div class="ff-ri"><div class="ff-ril">Bu / Acre</div><div class="ff-riv green" id="corn-buac">-</div></div>
   </div>
 </div>
 </div><!-- /tab-removal -->
@@ -808,19 +808,19 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
   </div>
   <div id="mv-results" style="display:none">
     <div class="mv-nutrient-grid">
-      <div class="mv-nutrient"><div class="mv-nut-label">Available N</div><div class="mv-nut-lbs"><span id="mv-n-lbs">&mdash;</span> <span class="mv-nut-unit">lb/ac</span></div><div class="mv-nut-val" id="mv-n-val">&mdash;</div></div>
-      <div class="mv-nutrient"><div class="mv-nut-label">P&#x2082;O&#x2085;</div><div class="mv-nut-lbs"><span id="mv-p-lbs">&mdash;</span> <span class="mv-nut-unit">lb/ac</span></div><div class="mv-nut-val" id="mv-p-val">&mdash;</div></div>
-      <div class="mv-nutrient"><div class="mv-nut-label">K&#x2082;O</div><div class="mv-nut-lbs"><span id="mv-k-lbs">&mdash;</span> <span class="mv-nut-unit">lb/ac</span></div><div class="mv-nut-val" id="mv-k-val">&mdash;</div></div>
+      <div class="mv-nutrient"><div class="mv-nut-label">Available N</div><div class="mv-nut-lbs"><span id="mv-n-lbs">-</span> <span class="mv-nut-unit">lb/ac</span></div><div class="mv-nut-val" id="mv-n-val">-</div></div>
+      <div class="mv-nutrient"><div class="mv-nut-label">P&#x2082;O&#x2085;</div><div class="mv-nut-lbs"><span id="mv-p-lbs">-</span> <span class="mv-nut-unit">lb/ac</span></div><div class="mv-nut-val" id="mv-p-val">-</div></div>
+      <div class="mv-nutrient"><div class="mv-nut-label">K&#x2082;O</div><div class="mv-nut-lbs"><span id="mv-k-lbs">-</span> <span class="mv-nut-unit">lb/ac</span></div><div class="mv-nut-val" id="mv-k-val">-</div></div>
     </div>
     <div class="mv-total-section">
-      <div class="mv-total-row"><span class="mv-tl">N value/acre</span><span class="mv-tv" id="mv-n-tot">&mdash;</span></div>
-      <div class="mv-total-row"><span class="mv-tl">P&#x2082;O&#x2085; value/acre</span><span class="mv-tv" id="mv-p-tot">&mdash;</span></div>
-      <div class="mv-total-row"><span class="mv-tl">K&#x2082;O value/acre</span><span class="mv-tv" id="mv-k-tot">&mdash;</span></div>
-      <div class="mv-total-row" style="margin-top:.3rem;border-top:1px solid rgba(230,176,66,.3);padding-top:.4rem;"><span class="mv-tl" style="font-weight:600;color:var(--text)">Agronomic value/acre</span><span class="mv-tv big" id="mv-agro-ac">&mdash;</span></div>
-      <div class="mv-total-row"><span class="mv-tl">Less: application cost/acre</span><span class="mv-tv red" id="mv-app-cost-row">&mdash;</span></div>
-      <div class="mv-total-row"><span class="mv-tl" style="font-weight:600;color:var(--text)">Net value/acre</span><span class="mv-tv big" id="mv-net-ac" style="color:var(--green)">&mdash;</span></div>
+      <div class="mv-total-row"><span class="mv-tl">N value/acre</span><span class="mv-tv" id="mv-n-tot">-</span></div>
+      <div class="mv-total-row"><span class="mv-tl">P&#x2082;O&#x2085; value/acre</span><span class="mv-tv" id="mv-p-tot">-</span></div>
+      <div class="mv-total-row"><span class="mv-tl">K&#x2082;O value/acre</span><span class="mv-tv" id="mv-k-tot">-</span></div>
+      <div class="mv-total-row" style="margin-top:.3rem;border-top:1px solid rgba(230,176,66,.3);padding-top:.4rem;"><span class="mv-tl" style="font-weight:600;color:var(--text)">Agronomic value/acre</span><span class="mv-tv big" id="mv-agro-ac">-</span></div>
+      <div class="mv-total-row"><span class="mv-tl">Less: application cost/acre</span><span class="mv-tv red" id="mv-app-cost-row">-</span></div>
+      <div class="mv-total-row"><span class="mv-tl" style="font-weight:600;color:var(--text)">Net value/acre</span><span class="mv-tv big" id="mv-net-ac" style="color:var(--green)">-</span></div>
     </div>
-    <div class="mv-savings-bar"><div class="mv-savings-label">Total Field: Commercial Fertilizer Savings</div><div class="mv-savings-val" id="mv-field-total">&mdash;</div><div class="mv-savings-sub" id="mv-field-sub">&mdash;</div></div>
+    <div class="mv-savings-bar"><div class="mv-savings-label">Total Field: Commercial Fertilizer Savings</div><div class="mv-savings-val" id="mv-field-total">-</div><div class="mv-savings-sub" id="mv-field-sub">-</div></div>
   </div>
 </div>
 
@@ -844,8 +844,8 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
     <div class="ff-cf"><label class="ff-cl" for="man-acres">Field Acres</label><input class="ff-ci" id="man-acres" type="number" value="40" step="1" min="0.1"></div>
   </div>
   <div class="ff-res" id="man-res">
-    <div class="ff-ri"><div class="ff-ril">Total Applied</div><div class="ff-riv" id="man-total">&mdash;</div></div>
-    <div class="ff-ri"><div class="ff-ril">Application Rate</div><div class="ff-riv green" id="man-rate">&mdash;</div></div>
+    <div class="ff-ri"><div class="ff-ril">Total Applied</div><div class="ff-riv" id="man-total">-</div></div>
+    <div class="ff-ri"><div class="ff-ril">Application Rate</div><div class="ff-riv green" id="man-rate">-</div></div>
   </div>
 </div>
 </div><!-- /tab-manure -->
@@ -892,10 +892,10 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
     <div class="ff-cf" id="lime-cce-wrap" style="display:none"><label class="ff-cl" for="lime-cce-custom">Custom CCE %</label><input class="ff-ci" id="lime-cce-custom" type="number" value="75" step="1" min="20" max="100"></div>
   </div>
   <div class="ff-res" id="lime-res">
-    <div class="ff-ri"><div class="ff-ril">Tons Pure CaCO&#x2083;/ac</div><div class="ff-riv" id="lime-pure">&mdash;</div></div>
-    <div class="ff-ri"><div class="ff-ril">Tons Aglime/ac</div><div class="ff-riv green" id="lime-ag">&mdash;</div></div>
-    <div class="ff-ri"><div class="ff-ril">Guidance</div><div class="ff-riv dim" id="lime-note">&mdash;</div></div>
-    <div class="ff-ri"><div class="ff-ril">Est. Cost/Acre</div><div class="ff-riv gold" id="lime-cost">&mdash;</div></div>
+    <div class="ff-ri"><div class="ff-ril">Tons Pure CaCO&#x2083;/ac</div><div class="ff-riv" id="lime-pure">-</div></div>
+    <div class="ff-ri"><div class="ff-ril">Tons Aglime/ac</div><div class="ff-riv green" id="lime-ag">-</div></div>
+    <div class="ff-ri"><div class="ff-ril">Guidance</div><div class="ff-riv dim" id="lime-note">-</div></div>
+    <div class="ff-ri"><div class="ff-ril">Est. Cost/Acre</div><div class="ff-riv gold" id="lime-cost">-</div></div>
   </div>
   <div class="ff-cn">Based on UW Extension A2809 SMP-buffer calibration (Upper Midwest). Other regions vary; consult your state land-grant extension for locally calibrated lime recommendations.</div>
 </div>
@@ -918,7 +918,7 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
     <tr><td class="tl">N %</td><td class="re">&lt;2.7</td><td class="gr">2.7&ndash;3.5</td><td class="dim">&gt;4.0</td></tr>
     <tr><td class="tl">P %</td><td class="re">&lt;0.25</td><td class="gr">0.25&ndash;0.50</td><td class="dim">&gt;0.60</td></tr>
     <tr><td class="tl">K %</td><td class="re">&lt;1.7</td><td class="gr">1.7&ndash;2.5</td><td class="dim">&gt;3.0</td></tr>
-    <tr><td class="tl">S %</td><td class="re">&lt;0.15</td><td class="gr">0.15&ndash;0.50</td><td>&mdash;</td></tr>
+    <tr><td class="tl">S %</td><td class="re">&lt;0.15</td><td class="gr">0.15&ndash;0.50</td><td>n/a</td></tr>
     <tr><td class="tl">Zn ppm</td><td class="re">&lt;15</td><td class="gr">15&ndash;60</td><td class="dim">&gt;200</td></tr>
   </tbody></table></div></div>
   <div><div class="ff-h3">Soybean: Uppermost Trifoliate at R3</div>
@@ -929,7 +929,7 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
     <tr><td class="tl">P %</td><td class="re">&lt;0.22</td><td class="gr">0.26&ndash;0.50</td><td class="dim">&gt;0.70</td></tr>
     <tr><td class="tl">K %</td><td class="re">&lt;1.4</td><td class="gr">1.7&ndash;2.5</td><td class="dim">&gt;3.0</td></tr>
     <tr><td class="tl">Zn ppm</td><td class="re">&lt;15</td><td class="gr">21&ndash;55</td><td class="dim">&gt;100</td></tr>
-    <tr><td class="tl">Fe ppm</td><td class="re">&lt;50</td><td class="gr">51&ndash;350</td><td>&mdash;</td></tr>
+    <tr><td class="tl">Fe ppm</td><td class="re">&lt;50</td><td class="gr">51&ndash;350</td><td>n/a</td></tr>
   </tbody></table></div></div>
 </div>
 </div><!-- /tab-soilhealth -->
@@ -958,10 +958,10 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
     <div class="ff-cf"><label class="ff-cl" for="gdu-acc">Accumulated GDU</label><input class="ff-ci" id="gdu-acc" type="number" value="0" step="1" min="0"></div>
   </div>
   <div class="ff-res" id="gdu-res">
-    <div class="ff-ri"><div class="ff-ril">Today&#8217;s GDUs</div><div class="ff-riv" id="gdu-day">&mdash;</div></div>
-    <div class="ff-ri"><div class="ff-ril">New Total</div><div class="ff-riv green" id="gdu-new">&mdash;</div></div>
-    <div class="ff-ri"><div class="ff-ril">Corn Stage</div><div class="ff-riv dim" id="gdu-corn-stage">&mdash;</div></div>
-    <div class="ff-ri"><div class="ff-ril">Soybean Stage</div><div class="ff-riv dim" id="gdu-bean-stage">&mdash;</div></div>
+    <div class="ff-ri"><div class="ff-ril">Today&#8217;s GDUs</div><div class="ff-riv" id="gdu-day">-</div></div>
+    <div class="ff-ri"><div class="ff-ril">New Total</div><div class="ff-riv green" id="gdu-new">-</div></div>
+    <div class="ff-ri"><div class="ff-ril">Corn Stage</div><div class="ff-riv dim" id="gdu-corn-stage">-</div></div>
+    <div class="ff-ri"><div class="ff-ril">Soybean Stage</div><div class="ff-riv dim" id="gdu-bean-stage">-</div></div>
   </div>
 </div>
 <div class="ff-h2">Spray Advisory</div>
@@ -976,12 +976,12 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
     <span id="spray-loc-label" style="font-size:0.775rem;color:var(--text-muted);align-self:center"></span>
   </div>
   <div class="spray-grid" id="spray-grid">
-    <div class="spray-factor"><div class="spray-factor-label">Temp</div><div class="spray-factor-val" id="spr-temp">&mdash;</div><div class="spray-factor-chip" id="spr-temp-chip">&mdash;</div></div>
-    <div class="spray-factor"><div class="spray-factor-label">Wind</div><div class="spray-factor-val" id="spr-wind">&mdash;</div><div class="spray-factor-chip" id="spr-wind-chip">&mdash;</div></div>
-    <div class="spray-factor"><div class="spray-factor-label">Humidity</div><div class="spray-factor-val" id="spr-hum">&mdash;</div><div class="spray-factor-chip" id="spr-hum-chip">&mdash;</div></div>
-    <div class="spray-factor"><div class="spray-factor-label">Cloud</div><div class="spray-factor-val" id="spr-cloud">&mdash;</div><div class="spray-factor-chip" id="spr-cloud-chip">&mdash;</div></div>
-    <div class="spray-factor"><div class="spray-factor-label">Precip</div><div class="spray-factor-val" id="spr-precip">&mdash;</div><div class="spray-factor-chip" id="spr-precip-chip">&mdash;</div></div>
-    <div class="spray-factor"><div class="spray-factor-label">Overall</div><div class="spray-factor-val" id="spr-overall">&mdash;</div><div class="spray-factor-chip" id="spr-overall-chip">&mdash;</div></div>
+    <div class="spray-factor"><div class="spray-factor-label">Temp</div><div class="spray-factor-val" id="spr-temp">-</div><div class="spray-factor-chip" id="spr-temp-chip">-</div></div>
+    <div class="spray-factor"><div class="spray-factor-label">Wind</div><div class="spray-factor-val" id="spr-wind">-</div><div class="spray-factor-chip" id="spr-wind-chip">-</div></div>
+    <div class="spray-factor"><div class="spray-factor-label">Humidity</div><div class="spray-factor-val" id="spr-hum">-</div><div class="spray-factor-chip" id="spr-hum-chip">-</div></div>
+    <div class="spray-factor"><div class="spray-factor-label">Cloud</div><div class="spray-factor-val" id="spr-cloud">-</div><div class="spray-factor-chip" id="spr-cloud-chip">-</div></div>
+    <div class="spray-factor"><div class="spray-factor-label">Precip</div><div class="spray-factor-val" id="spr-precip">-</div><div class="spray-factor-chip" id="spr-precip-chip">-</div></div>
+    <div class="spray-factor"><div class="spray-factor-label">Overall</div><div class="spray-factor-val" id="spr-overall">-</div><div class="spray-factor-chip" id="spr-overall-chip">-</div></div>
   </div>
   <div class="spray-rec" id="spray-rec">Weather conditions loading&hellip;</div>
   <a class="spray-link" href="/gdu-calculator">&#8594; Full GDU &amp; Weather History</a>
@@ -1117,8 +1117,8 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
 <div class="ff-tw" tabindex="0" role="region" aria-label="Planting date windows table, scrolls sideways"><table class="ff-t">
 <thead><tr><th class="tl">Date / Window</th><th class="tl">Corn</th><th class="tl">Soybean</th><th class="tl">Notes</th></tr></thead>
 <tbody>
-  <tr><td class="tl">Apr 20 &ndash; May 15</td><td class="tl">Optimal planting window</td><td class="tl">&mdash;</td><td class="tl" style="font-size:0.775rem">Soil temp &ge;50&deg;F at 2" depth for 3 consecutive days</td></tr>
-  <tr><td class="tl">May 1 &ndash; May 20</td><td class="tl">&mdash;</td><td class="tl">Optimal planting window</td><td class="tl" style="font-size:0.775rem">Soil temp &ge;50&deg;F; avoid Sudden Death Syndrome risk from cold early planting</td></tr>
+  <tr><td class="tl">Apr 20 &ndash; May 15</td><td class="tl">Optimal planting window</td><td class="tl">n/a</td><td class="tl" style="font-size:0.775rem">Soil temp &ge;50&deg;F at 2" depth for 3 consecutive days</td></tr>
+  <tr><td class="tl">May 1 &ndash; May 20</td><td class="tl">n/a</td><td class="tl">Optimal planting window</td><td class="tl" style="font-size:0.775rem">Soil temp &ge;50&deg;F; avoid Sudden Death Syndrome risk from cold early planting</td></tr>
   <tr><td class="tl">June 1</td><td class="tl">Significant yield drag begins</td><td class="tl">Moderate yield drag</td><td class="tl" style="font-size:0.775rem">~1% yield loss per day after June 1 for corn; beans more flexible to June 10</td></tr>
   <tr><td class="tl">Late June &ndash; July</td><td class="tl">Critical pollination window</td><td class="tl">Bloom &amp; pod set</td><td class="tl" style="font-size:0.775rem">Drought or heat stress during this window has largest yield impact</td></tr>
   <tr><td class="tl">Late Aug &ndash; early Sep</td><td class="tl">Black layer / physiological maturity</td><td class="tl">R7 (begin maturity)</td><td class="tl" style="font-size:0.775rem">Monitor for early frost risk: especially in northern areas</td></tr>
@@ -1231,7 +1231,7 @@ function loadFertPrices(){
     if(el&&data.updated){var d=new Date(data.updated+'T12:00:00');el.textContent='Updated '+d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
       // Honest staleness: dealer sheets older than 30 days get flagged, not passed off as current
       var ageDays=(Date.now()-d.getTime())/864e5;
-      if(ageDays>30){el.textContent+=' — check your dealer for current quotes';el.style.color='var(--gold)';}}
+      if(ageDays>30){el.textContent+=', check your dealer for current quotes';el.style.color='var(--gold)';}}
     // Name-based lookups — fertilizer.json uses product name field, not legacy symbol codes
     function _pg(sym){if(!sym)return null;var a=String(sym).trim().split('-');if(a.length<3)return null;var n=parseFloat(a[0]),pp=parseFloat(a[1]),k=parseFloat(a[2]);if(isNaN(n)||isNaN(pp)||isNaN(k))return null;var g={N:n,P:pp,K:k,S:0,Mg:0};for(var i=3;i<a.length;i++){var m=String(a[i]).match(/([\d.]+)\s*([A-Za-z]+)/);if(m){var u=m[2].toLowerCase();if(u==='s')g.S=parseFloat(m[1]);else if(u==='mg')g.Mg=parseFloat(m[1]);}}return g;}
     function _find(nm,pred){return data.prices.find(function(p){return p.name===nm;})||data.prices.find(function(p){var g=_pg(p.symbol);return g?pred(g):false;});}
@@ -1341,7 +1341,7 @@ function loadGrainPrices(){
       var lb=document.getElementById('nc-live-badge');if(lb)lb.style.display='inline-flex';
       var elb=document.getElementById('eco-live-badge');if(elb)elb.style.display='inline-flex';
     }
-    var ebp=document.getElementById('eco-bean-price');if(q.beans&&q.beans.close&&ebp)ebp.textContent=fmtGrain(q.beans.close); /* key is 'beans' in prices.json — 'soybeans' never existed, tile sat at "—" (fixed 2026-07-20) */
+    var ebp=document.getElementById('eco-bean-price');if(q.beans&&q.beans.close&&ebp)ebp.textContent=fmtGrain(q.beans.close); /* key is 'beans' in prices.json — 'soybeans' never existed, tile sat at "-" (fixed 2026-07-20) */
     var ewp=document.getElementById('eco-wheat-price');if(q.wheat&&q.wheat.close&&ewp)ewp.textContent=fmtGrain(q.wheat.close);
     updateEcoCosts();
   }).catch(function(){});
@@ -1385,7 +1385,7 @@ loadGrainPrices();
       if(corn) g('fft-corn').textContent='$'+corn.toFixed(2);
       if(beans) g('fft-beans').textContent=beans;
       if(wheat) g('fft-wheat').textContent=wheat;
-      if(urea){ g('fft-urea').textContent='$'+urea; var un=g('fft-urea-n'); un.textContent=fertDate?(fertDate+(fertStale?' — aging':'')):'dealer'; if(fertStale) un.className='n warn'; }
+      if(urea){ g('fft-urea').textContent='$'+urea; var un=g('fft-urea-n'); un.textContent=fertDate?(fertDate+(fertStale?', aging':'')):'dealer'; if(fertStale) un.className='n warn'; }
       g('ff-strip').hidden=false;
     }
     // verdict needs both legs
@@ -1703,7 +1703,7 @@ function calcLime(){
     } else if(agTons===0){
       costEl.textContent='None needed';costEl.style.color='var(--text-muted)';
     } else {
-      costEl.textContent='—';
+      costEl.textContent='-';
     }
   }
 }
@@ -1876,7 +1876,7 @@ function initStages(){
       var div=document.createElement('div');
       div.className='sv-mark'+(st.key?' key':'');
       div.setAttribute('role','button');div.setAttribute('tabindex','0');
-      div.setAttribute('aria-label',st.s+' \u2014 '+st.gdu+' GDU');
+      div.setAttribute('aria-label',st.s+', '+st.gdu+' GDU');
       div.innerHTML='<div class="sv-dot"></div><div class="sv-lbl">'+st.s+'</div><div class="sv-gdu">'+st.gdu+'</div>';
       div.addEventListener('click',function(){
         document.querySelectorAll('#'+markId+' .sv-mark').forEach(function(m){m.classList.remove('active');});
@@ -1907,8 +1907,8 @@ function initStateStats(){
   function renderState(code){
     var content=document.getElementById('state-content');if(!content)return;
     var s=stateData&&stateData[code];
-    if(!s){content.innerHTML='<div style="grid-column:1/-1;color:var(--text-muted);font-size:.84rem;line-height:1.7;padding:1rem 0">Per-state corn, soybean &amp; wheat detail for <strong style="color:var(--text)">'+(STATE_NAMES[code]||code)+'</strong> &mdash; acreage, yield, and production: is in the USDA NASS database, the authoritative national source. <a href="https://quickstats.nass.usda.gov/" target="_blank" rel="noopener" style="color:var(--gold);text-decoration:none;white-space:nowrap">Open USDA NASS Quick Stats &rarr;</a></div>';return;}
-    var safe=function(v,u){return v!=null?v+(u?u:''):'\u2014';};
+    if(!s){content.innerHTML='<div style="grid-column:1/-1;color:var(--text-muted);font-size:.84rem;line-height:1.7;padding:1rem 0">Per-state corn, soybean &amp; wheat detail for <strong style="color:var(--text)">'+(STATE_NAMES[code]||code)+'</strong>, acreage, yield, and production: is in the USDA NASS database, the authoritative national source. <a href="https://quickstats.nass.usda.gov/" target="_blank" rel="noopener" style="color:var(--gold);text-decoration:none;white-space:nowrap">Open USDA NASS Quick Stats &rarr;</a></div>';return;}
+    var safe=function(v,u){return v!=null?v+(u?u:''):'-';};
     content.innerHTML='<div class="ff-shdr"><div><div class="ff-sname">'+s.name+'</div><div class="ff-smeta">'+s.meta+'</div></div></div>'
       +'<div class="ff-card"><div class="ff-card-head"><span class="ff-card-icon"><svg class="ic" aria-hidden="true"><use href="#i-sprout"/></svg></span><span class="ff-card-title rp corn">Corn</span></div>'
       +'<div class="ff-row"><span class="ff-rl">Planted</span><span class="ff-rv">'+safe(s.corn_acres_planted,' M ac')+'</span></div>'

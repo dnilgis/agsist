@@ -423,7 +423,7 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
     return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;')
       .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   }
-  function num(n) { return n == null ? '—' : Number(n).toLocaleString('en-US'); }
+  function num(n) { return n == null ? '-' : Number(n).toLocaleString('en-US'); }
 
   /* Dates are calendar days, not instants: 'YYYY-MM-DD' in, UTC arithmetic,
      so a reader in another time zone never sees a start date move by a day. */
@@ -567,7 +567,7 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
   function undoLine() {
     return '<p class="cp-small cp-appr-undo" style="margin:.5rem 0 0">' +
       'Pressed that by mistake? <button type="button" class="cp-linkbtn" data-appr-undo="1">Put the button back</button> ' +
-      '\u2014 the message already sent cannot be recalled, so say so in <a href="#requests">Requests</a> and Sig will ignore it.</p>';
+      'the message already sent cannot be recalled, so say so in <a href="#requests">Requests</a> and Sig will ignore it.</p>';
   }
   function wireUndo(d, s) {
     document.addEventListener('click', function (e) {
@@ -788,8 +788,8 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
       (d.pending ? 'Counting starts with your first ad' : 'Through ' + esc(fmt(d.through, true)) + ' · from GA4') + '</span></div>';
     if (d.pending) {
       h += '<div class="cp-kpis">' +
-        kpi('—', 'Viewable impressions', 'MRC standard', true) + kpi('—', 'Clicks', 'button + phone', true) +
-        kpi('—', 'Click-through rate', 'clicks ÷ viewable', true) +
+        kpi('-', 'Viewable impressions', 'MRC standard', true) + kpi('-', 'Clicks', 'button + phone', true) +
+        kpi('-', 'Click-through rate', 'clicks ÷ viewable', true) +
         kpi('0', 'Days live', s.start ? 'from ' + esc(fmt(s.start)) : 'starts on day one', true) + '</div>';
       h += '<div class="cp-wait" style="margin-top:.7rem">' +
         '<div><b>No numbers until your ad runs.</b><span>The alternative is showing you site traffic that was not yours. This page fills in on its own from the first morning.</span></div>' +
@@ -800,7 +800,7 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
     h += '<div class="cp-kpis">' +
       kpi(num(t.viewable), 'Viewable impressions', 'half the ad, one second') +
       kpi(num(t.clicks), 'Clicks', 'button + phone') +
-      kpi(t.ctr == null ? '—' : t.ctr.toFixed(2) + '%', 'Click-through rate', 'clicks ÷ viewable', t.ctr == null) +
+      kpi(t.ctr == null ? '-' : t.ctr.toFixed(2) + '%', 'Click-through rate', 'clicks ÷ viewable', t.ctr == null) +
       kpi(num((d.series || []).length), 'Days reported', s.start ? 'since ' + esc(fmt(s.start)) : '') + '</div>';
     h += '<div class="cp-card" style="margin-top:.7rem">' + chart(d.series || []);
     if (d.windows && d.windows.length) {
@@ -817,7 +817,7 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
       d.byPage.forEach(function (p) {
         var ctr = p.viewable ? (100 * p.clicks / p.viewable) : null;
         h += '<tr><td>' + esc(p.page) + '</td><td class="n">' + num(p.viewable) + '</td><td class="n">' + num(p.clicks) +
-             '</td><td class="n">' + (ctr == null ? '—' : ctr.toFixed(2) + '%') + '</td></tr>';
+             '</td><td class="n">' + (ctr == null ? 'n/a' : ctr.toFixed(2) + '%') + '</td></tr>';
       });
       h += '</tbody></table>';
     }
@@ -1073,7 +1073,7 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
       if (em && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)) { out.innerHTML = '<p class="cp-req-bad">That email address does not look complete.</p>'; f.querySelector('#cp-req-email').focus(); return; }
       var lines = ['Request: ' + A[1], 'Sponsor: ' + (d.sponsor || ''), d.contact ? 'Contact: ' + d.contact : '',
         plan ? 'New plan: ' + plan : '', date_ && !f.querySelector('[data-for="pause cancel extend"]').hidden ? f.querySelector('#cp-req-date-l').textContent + ': ' + date_ : '',
-        'Current plan: ' + (s.tier ? s.tier.name : 'not recorded'), 'Ad proof code: ' + (s.code || '—'), '', msg].filter(function (x, i) { return x !== '' || i === 7; });
+        'Current plan: ' + (s.tier ? s.tier.name : 'not recorded'), 'Ad proof code: ' + (s.code || '-'), '', msg].filter(function (x, i) { return x !== '' || i === 7; });
       var body = lines.join('\n');
       var subj = 'AGSIST portal: ' + A[1] + ' (' + (d.sponsor || '') + ')';
       var to = d.approveTo || 'sig@farmers1st.com';
@@ -1189,8 +1189,8 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
     ['OK',3,6],['LA',4,6],['MS',5,6],['AL',6,6],['GA',7,6],
     ['HI',0,7],['TX',3,7],['FL',8,7]];
   var STEPS = [0.2, 0.38, 0.56, 0.76, 0.96], TOP = 15, THIN = 20;
-  function secs(n) { if (n == null) return '—'; n = Math.round(n); return n < 60 ? n + 's' : Math.floor(n / 60) + 'm' + (n % 60 ? ' ' + (n % 60) + 's' : ''); }
-  function pct(x) { return x == null ? '—' : Math.round(100 * x) + '%'; }
+  function secs(n) { if (n == null) return '-'; n = Math.round(n); return n < 60 ? n + 's' : Math.floor(n / 60) + 'm' + (n % 60 ? ' ' + (n % 60) + 's' : ''); }
+  function pct(x) { return x == null ? '-' : Math.round(100 * x) + '%'; }
   function span(a, b) { return (a && b && a.slice(0, 4) === b.slice(0, 4) ? fmt(a) : fmt(a, true)) + ' – ' + fmt(b, true); }
   function perDay(n, a, b) { var d = Math.round((D(b) - D(a)) / 864e5) + 1; return d > 0 ? Math.round(n / d) : null; }
   function nice(v) { if (v <= 0) return 1; var p = Math.pow(10, Math.floor(Math.log(v) / Math.LN10)), f = v / p; return (f <= 1 ? 1 : f <= 2 ? 2 : f <= 5 ? 5 : 10) * p; }
@@ -1273,10 +1273,10 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
       '<th style="text-align:right">Readers</th><th style="text-align:right">Time per reader</th><th style="text-align:right">Engaged</th></tr></thead><tbody>';
     rows.forEach(function (r, i) {
       var thin = r.users < THIN;
-      t += '<tr' + (i >= TOP ? ' class="is-more"' : '') + '><td>' + (r.rank == null ? '—' : r.rank) + '</td><td>' + esc(r.name) +
+      t += '<tr' + (i >= TOP ? ' class="is-more"' : '') + '><td>' + (r.rank == null ? 'n/a' : r.rank) + '</td><td>' + esc(r.name) +
         (inLic(r.code) ? '<span class="cp-tag is-lic">licensed</span>' : '') + (r.flag === 'server' ? '<span class="cp-tag">server traffic</span>' : '') +
         (r.flag === 'home' ? '<span class="cp-tag">home state</span>' : '') + '</td><td class="n">' + num(r.engaged) + '</td><td class="n">' + num(r.users) +
-        '</td><td class="n">' + (thin ? '—' : esc(secs(r.avgSeconds))) + '</td><td class="n">' + (thin ? '—' : pct(r.engagementRate)) + '</td></tr>';
+        '</td><td class="n">' + (thin ? 'n/a' : esc(secs(r.avgSeconds))) + '</td><td class="n">' + (thin ? 'n/a' : pct(r.engagementRate)) + '</td></tr>';
     });
     t += '</tbody></table>' + (rows.length > TOP ? '<button class="cp-btn cp-btn--ghost cp-more" type="button" id="cp-aud-more" aria-controls="cp-aud-t" aria-expanded="false">All ' + rows.length + ' states</button>' : '');
     h += '<div style="margin-top:.7rem">' + card('By state', 'ranked by engaged visits', t) + '</div>';
@@ -1363,7 +1363,7 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
     }
     var hs = by[a.homeState];
     if (hs && hs.users) notes.push(esc(hs.name) + ' is shown but not ranked: AGSIST is run from Chetek, and its ' + (hs.engaged / hs.users).toFixed(1) + ' engaged visits a reader against ' +
-      (T.users ? (T.engaged / T.users).toFixed(1) : '—') + ' overall is largely our own work on the site.');
+      (T.users ? (T.engaged / T.users).toFixed(1) : '-') + ' overall is largely our own work on the site.');
     var su = 0, sen = 0; rows.forEach(function (r) { su += r.users; sen += r.engaged; });
     if (su > (T.users || 0)) notes.push('A reader seen in two states counts in both, so the state rows add up to ' + num(su) + ' readers and ' + num(sen) + ' engaged visits, above the totals.');
     if (hasS) notes.push('Search clicks: Google is US searches (Search Console); Bing is worldwide (its API has no country filter). Search figures count clicks, not people, and are not part of the reader totals.');
@@ -1400,7 +1400,7 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
       xh.setAttribute('x1', x(i)); xh.setAttribute('x2', x(i)); xh.style.display = '';
       keys.forEach(function (k, j) { var c = svg.querySelector('.dot' + j), v = d[k[0]];
         if (v == null) { c.style.display = 'none'; return; } c.setAttribute('cx', x(i)); c.setAttribute('cy', y(v)); c.style.display = ''; });
-      tip.innerHTML = '<b>' + esc(fmt(d.d, true)) + '</b>' + keys.map(function (k) { return '<i style="background:' + k[2] + '"></i>' + esc(k[1]) + '<span>' + (d[k[0]] == null ? '—' : num(d[k[0]])) + '</span>'; }).join('<br>');
+      tip.innerHTML = '<b>' + esc(fmt(d.d, true)) + '</b>' + keys.map(function (k) { return '<i style="background:' + k[2] + '"></i>' + esc(k[1]) + '<span>' + (d[k[0]] == null ? '-' : num(d[k[0]])) + '</span>'; }).join('<br>');
       tip.hidden = false;
       var tx = x(i) * r.width / W + 12; if (tx + tip.offsetWidth > r.width) tx = x(i) * r.width / W - tip.offsetWidth - 12;
       tip.style.left = Math.max(0, tx) + 'px'; tip.style.top = '8px';

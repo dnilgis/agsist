@@ -340,7 +340,7 @@
     var logo = okLogo ? '<img class="ag-sponsor-logo" src="' + slotEsc(sp.logo) + '" alt="" loading="lazy">' : '';
     return '<span class="ag-sponsor-tag">Sponsor</span>' + logo +
       '<span class="ag-sponsor-copy"><b>' + slotEsc(sp.company) + '</b>' +
-      (sp.headline ? ' &mdash; ' + slotEsc(sp.headline) : '') + (sp.body ? ' <span>' + slotEsc(sp.body) + '</span>' : '') +
+      (sp.headline ? ', ' + slotEsc(sp.headline) : '') + (sp.body ? ' <span>' + slotEsc(sp.body) + '</span>' : '') +
       '</span><a href="' + slotEsc(href) + '" rel="sponsored noopener" target="_blank"' +
       (live ? ' data-sponsor-click="page:' + slotEsc(id) + '"' : '') + '>Visit &rarr;</a>';
   }

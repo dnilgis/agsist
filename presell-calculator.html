@@ -134,17 +134,17 @@
     <div class="ib-out" id="ib-out" hidden>
       <div class="ib-stat gold">
         <div class="k">Revenue guarantee</div>
-        <div class="v" id="ib-guar">&mdash;</div>
+        <div class="v" id="ib-guar">-</div>
         <div class="s">per acre, at your projected price</div>
       </div>
       <div class="ib-stat">
         <div class="k">Guaranteed bushels</div>
-        <div class="v" id="ib-bu">&mdash;</div>
+        <div class="v" id="ib-bu">-</div>
         <div class="s">coverage level &times; APH</div>
       </div>
       <div class="ib-stat">
         <div class="k" id="ib-floor-k">Floor on your guaranteed bu</div>
-        <div class="v" id="ib-floor">&mdash;</div>
+        <div class="v" id="ib-floor">-</div>
         <div class="s">$/bu your guarantee defends on those bushels</div>
       </div>
     </div>
@@ -283,10 +283,10 @@ window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);
     if(!r){
       var pv=parseFloat($('ib-pp').value), av=parseFloat($('ib-aph').value);
       var why=pv>100?'projected price above 100':av>1000?'APH above 1000':!(pv>0)?'enter your projected price':(av>0?'enter a coverage level':'enter your APH yield');
-      $('ib-guar').textContent='\u2014';$('ib-bu').textContent='\u2014';$('ib-floor').textContent='\u2014';
+      $('ib-guar').textContent='-';$('ib-bu').textContent='-';$('ib-floor').textContent='-';
       $('ib-floor-k').textContent='Floor on your guaranteed bu';
       $('ib-out').hidden=false;
-      var rn=$('ib-readout');rn.textContent='\u2014 '+why+'.';rn.hidden=false;
+      var rn=$('ib-readout');rn.textContent=''+why+'.';rn.hidden=false;
       return;
     }
     $('ib-guar').textContent=fmtUSD(r.guarRev);
@@ -308,7 +308,7 @@ window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);
     var ro=$('ib-hp-readout');
     if(!(hp>0)){ro.hidden=true;return;}
     if(!(pp>0)||!(aph>0)||!(cov>0)||aph>1000||pp>100){
-      ro.textContent=(pp>100||aph>1000)?'\u2014 '+(pp>100?'projected price above 100':'APH above 1000')+'.':'\u2014 enter your '+(!(pp>0)?'projected price':(!(aph>0)?'APH yield':'coverage level'))+' above.';
+      ro.textContent=(pp>100||aph>1000)?''+(pp>100?'projected price above 100':'APH above 1000')+'.':'enter your '+(!(pp>0)?'projected price':(!(aph>0)?'APH yield':'coverage level'))+' above.';
       ro.hidden=false;return;
     }
     var hi=Math.min(Math.max(hp,pp),2*pp);

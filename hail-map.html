@@ -812,7 +812,7 @@
             .then(function(d){ if(!d || !d.features){ throw new Error('empty'); } renderLookup(d,lat,lon,label); });
         })
         .catch(function(){
-          if(st) st.innerHTML='<div class="hm-point-stat" style="grid-column:1/-1"><div class="v">&mdash;</div><div class="l">the report service didn\u2019t answer. That\u2019s a hiccup on our end, not a quiet record. Tap the map again in a moment.</div></div>';
+          if(st) st.innerHTML='<div class="hm-point-stat" style="grid-column:1/-1"><div class="v">-</div><div class="l">the report service didn\u2019t answer. That\u2019s a hiccup on our end, not a quiet record. Tap the map again in a moment.</div></div>';
           var tb=document.getElementById('hm-point-table'); if(tb) tb.innerHTML='';
         });
       if(panel) panel.scrollIntoView({behavior:'smooth',block:'nearest'});
@@ -889,22 +889,22 @@
       });
       var maxMag=maxEv?maxEv.mag:0;
       var newest=ev.length?ev[0]:null;
-      if(ttl) ttl.textContent=(dayMode?'Hail on '+fmtDate(lookupDay)+' \u2014 ':'Hail history: ')+
+      if(ttl) ttl.textContent=(dayMode?'Hail on '+fmtDate(lookupDay)+', ':'Hail history: ')+
         (label||('tapped spot \u00b7 '+lat.toFixed(4)+'\u00b0, '+lon.toFixed(4)+'\u00b0'));
       if(st && dayMode){
         /* One day. A count of hail days and a per-year rate are meaningless
            here, so they are not printed rather than printed as 1 and 0.2. */
         st.innerHTML=
           '<div class="hm-point-stat"><div class="v">'+ev.length+'</div><div class="l">reports \u00b7 '+lookupMi+' mi \u00b7 '+esc(fmtDate(lookupDay))+'</div></div>'+
-          '<div class="hm-point-stat"><div class="v">'+(maxMag?maxMag.toFixed(2)+'\u2033':'\u2014')+'</div><div class="l">largest'+(maxEv?' \u00b7 '+Math.round(maxEv.mi)+' mi away':' reported')+'</div></div>'+
-          '<div class="hm-point-stat"><div class="v">'+(nearEv?nearEv.mi.toFixed(0)+' mi':'\u2014')+'</div><div class="l">nearest report that day</div></div>';
+          '<div class="hm-point-stat"><div class="v">'+(maxMag?maxMag.toFixed(2)+'\u2033':'-')+'</div><div class="l">largest'+(maxEv?' \u00b7 '+Math.round(maxEv.mi)+' mi away':' reported')+'</div></div>'+
+          '<div class="hm-point-stat"><div class="v">'+(nearEv?nearEv.mi.toFixed(0)+' mi':'-')+'</div><div class="l">nearest report that day</div></div>';
       }
       else if(st) st.innerHTML=
         '<div class="hm-point-stat"><div class="v">'+ev.length+'</div><div class="l">reports \u00b7 '+lookupMi+' mi \u00b7 '+(manifest&&manifest.years?manifest.years.length:5)+' yrs</div></div>'+
         '<div class="hm-point-stat"><div class="v">'+nDays+'</div><div class="l">hail days ('+(nDays/yrSpan()).toFixed(1)+'/yr)</div></div>'+
-        '<div class="hm-point-stat"><div class="v">'+(maxMag?maxMag.toFixed(2)+'\u2033':'\u2014')+'</div><div class="l">largest'+(maxEv?' \u00b7 '+esc(fmtDate(maxEv.date))+' \u00b7 '+Math.round(maxEv.mi)+' mi away':' reported')+'</div></div>'+
-        '<div class="hm-point-stat"><div class="v">'+(newest?esc(fmtDate(newest.date)):'\u2014')+'</div><div class="l">most recent'+(newest&&newest.mag!=null?' \u00b7 '+newest.mag.toFixed(2)+'\u2033':'')+(newest?' \u00b7 '+Math.round(newest.mi)+' mi away':'')+'</div></div>'+
-        '<div class="hm-point-stat"><div class="v">'+(nearEv?nearEv.mi.toFixed(1)+' mi':'\u2014')+'</div><div class="l">nearest report'+(nearEv?' \u00b7 '+esc(fmtDate(nearEv.date)):'')+'</div></div>';
+        '<div class="hm-point-stat"><div class="v">'+(maxMag?maxMag.toFixed(2)+'\u2033':'-')+'</div><div class="l">largest'+(maxEv?' \u00b7 '+esc(fmtDate(maxEv.date))+' \u00b7 '+Math.round(maxEv.mi)+' mi away':' reported')+'</div></div>'+
+        '<div class="hm-point-stat"><div class="v">'+(newest?esc(fmtDate(newest.date)):'-')+'</div><div class="l">most recent'+(newest&&newest.mag!=null?' \u00b7 '+newest.mag.toFixed(2)+'\u2033':'')+(newest?' \u00b7 '+Math.round(newest.mi)+' mi away':'')+'</div></div>'+
+        '<div class="hm-point-stat"><div class="v">'+(nearEv?nearEv.mi.toFixed(1)+' mi':'-')+'</div><div class="l">nearest report'+(nearEv?' \u00b7 '+esc(fmtDate(nearEv.date)):'')+'</div></div>';
       if(tb){
         if(!ev.length){ tb.innerHTML='<tbody><tr><td class="hm-cty-empty">No NWS hail reports within 25 miles in the last 5 years, which means none were <em>reported</em>, a genuinely quiet stretch by the record.</td></tr></tbody>'; }
         else{
@@ -919,7 +919,7 @@
             var dcell = (e.date===prevDate) ? '<span class="hm-ditto">'+esc(fmtDate(e.date))+'</span>' : esc(fmtDate(e.date));
             prevDate=e.date;
             var dmg = e.mag!=null && e.mag>=1.5;
-            return '<tr'+(dmg?' class="hm-row-dmg"':'')+'><td>'+dcell+'</td><td class="num">'+szDot(e.mag)+(e.mag!=null?e.mag.toFixed(2)+'\u2033':'\u2014')+'</td><td class="num">'+e.mi.toFixed(1)+' mi</td>'+(hasPlace?'<td>'+esc(e.place)+'</td>':'')+'</tr>';
+            return '<tr'+(dmg?' class="hm-row-dmg"':'')+'><td>'+dcell+'</td><td class="num">'+szDot(e.mag)+(e.mag!=null?e.mag.toFixed(2)+'\u2033':'n/a')+'</td><td class="num">'+e.mi.toFixed(1)+' mi</td>'+(hasPlace?'<td>'+esc(e.place)+'</td>':'')+'</tr>';
           }).join('');
           tb.innerHTML='<thead><tr><th scope="col">Date</th><th scope="col" class="num">Size</th><th scope="col" class="num">Distance</th>'+(hasPlace?'<th scope="col">Near</th>':'')+'</tr></thead><tbody>'+rows+'</tbody>'+
             (ev.length>40?'<tbody><tr><td colspan="4" class="hm-cty-empty">'+(ev.length-40)+' older reports not shown; print the report for the full record.</td></tr></tbody>':'');
@@ -943,7 +943,7 @@
         if(gen){
           var behind=Math.round((Date.now()-Date.parse(gen+'T12:00:00Z'))/86400000);
           asOfEl.innerHTML='NWS ground reports on file through <strong>'+esc(fmtDate(gen))+'</strong>'+
-            (behind>2 ? ' \u2014 the '+behind+' days since are not in these numbers yet. For a storm in that window use the radar check below.' : '.');
+            (behind>2 ? ', the '+behind+' days since are not in these numbers yet. For a storm in that window use the radar check below.' : '.');
           asOfEl.hidden=false;
         }
       }
@@ -989,7 +989,7 @@
         return '<span style="height:'+h+'%;background:'+c+'" title="'+esc(t)+'"></span>';
       }).join('');
       var firstYr=yrs[0];
-      var miss = '<span class="hm-trend-miss" title="No data before '+esc(firstYr)+' — the live record starts '+esc(firstYr)+'"></span>';
+      var miss = '<span class="hm-trend-miss" title="No data before '+esc(firstYr)+', the live record starts '+esc(firstYr)+'"></span>';
       box.innerHTML = '<div class="hm-longterm-h">Year by year · within '+lookupMi+' mi</div>'
         + '<div class="hm-trend-bars">'+miss+bars+'</div>'
         + '<div class="hm-trend-dl"><span>before '+esc(firstYr)+'</span>'+yrs.map(function(y){ return '<span>'+esc(y)+'</span>'; }).join('')+'</div>'
@@ -1247,7 +1247,7 @@
         out.innerHTML='<strong>'+hits.length+' storm day'+(hits.length===1?'':'s')+' put radar-estimated hail on this exact point:</strong>'+
           hits.map(function(h){
             var c=MESH_COLORS[h.band]||'#fed976';
-            return '<div class="sv-day"><span class="hm-dot" style="background:'+c+'"></span>'+esc(fmtDate(h.d))+' \u2014 inside the \u2265'+h.band+'\u2033 estimated band'+
+            return '<div class="sv-day"><span class="hm-dot" style="background:'+c+'"></span>'+esc(fmtDate(h.d))+', inside the \u2265'+h.band+'\u2033 estimated band'+
               '<a href="/hail-map?swath='+h.d+'&lat='+la.toFixed(4)+'&lon='+lo.toFixed(4)+'">view that day \u2192</a></div>';
           }).join('')+
           '<div style="font-family:\'JetBrains Mono\',monospace;font-size:0.77rem;color:var(--text-dim);margin-top:.4rem">Radar estimate (NOAA MRMS MESH), not a measurement \u00b7 archive since '+esc(meshIdx.dates[0])+' \u00b7 pairs with the dated reports above for a date-of-loss record</div>';
@@ -1329,7 +1329,7 @@
         if(!lastLookup) return;
         ga('hm_report_print',{});
         var L=lastLookup;
-        var rows=L.ev.map(function(e){ return '<tr><td>'+esc(e.date)+'</td><td>'+(e.mag!=null?e.mag.toFixed(2)+'&Prime;':'&mdash;')+'</td><td>'+e.mi.toFixed(1)+' mi</td><td>'+esc(e.place)+'</td></tr>'; }).join('');
+        var rows=L.ev.map(function(e){ return '<tr><td>'+esc(e.date)+'</td><td>'+(e.mag!=null?e.mag.toFixed(2)+'&Prime;':'n/a')+'</td><td>'+e.mi.toFixed(1)+' mi</td><td>'+esc(e.place)+'</td></tr>'; }).join('');
         var w=window.open('','_blank');
         if(!w){ banner('Allow pop-ups to print the report.'); return; }
         w.document.write('<!DOCTYPE html><html><head><title>Hail History Report</title><style>body{font-family:Georgia,serif;color:#1a1a1a;max-width:720px;margin:2rem auto;padding:0 1rem}h1{font-size:1.4rem;border-bottom:2px solid #6b5a13;padding-bottom:.4rem}table{width:100%;border-collapse:collapse;font-size:.9rem;margin-top:1rem}th,td{border-bottom:1px solid #ccc;text-align:left;padding:.35rem .5rem}th{font-size:.75rem;text-transform:uppercase;letter-spacing:.05em}.meta{color:#555;font-size:.85rem}.foot{margin-top:1.5rem;font-size:.75rem;color:#666;border-top:1px solid #ccc;padding-top:.6rem;line-height:1.5}</style></head><body>'+
@@ -1337,7 +1337,7 @@
           '<p class="meta">Location: '+esc(L.label?L.label+' ':'')+'('+L.lat.toFixed(4)+', '+L.lon.toFixed(4)+')'+
           ' &middot; Radius: '+lookupMi+' miles &middot; Window: '+(L.day?fmtDate(L.day):'last '+(manifest&&manifest.years?manifest.years.length:5)+' years')+' &middot; Generated '+new Date().toLocaleDateString()+'</p>'+
           '<p><strong>'+L.ev.length+'</strong> NWS hail reports on <strong>'+L.nDays+'</strong> distinct days ('+(L.nDays/5).toFixed(1)+'/yr average). Largest reported stone: <strong>'+(L.maxMag?L.maxMag.toFixed(2)+'&Prime;':'none recorded')+'</strong>.</p>'+
-          ((L.swaths&&L.swaths.hits&&L.swaths.hits.length)?('<h2 style="font-size:1.05rem;margin-top:1.2rem">Radar-estimated swaths at this point (NOAA MRMS MESH)</h2><ul>'+L.swaths.hits.map(function(h){ return '<li>'+esc(h.d)+' &mdash; inside the &ge;'+h.band+'&Prime; estimated band</li>'; }).join('')+'</ul><p style="font-size:.85rem;color:#555">Radar estimates, not measurements; checked against '+L.swaths.checked+' archived storm days.</p>'):'')+
+          ((L.swaths&&L.swaths.hits&&L.swaths.hits.length)?('<h2 style="font-size:1.05rem;margin-top:1.2rem">Radar-estimated swaths at this point (NOAA MRMS MESH)</h2><ul>'+L.swaths.hits.map(function(h){ return '<li>'+esc(h.d)+', inside the &ge;'+h.band+'&Prime; estimated band</li>'; }).join('')+'</ul><p style="font-size:.85rem;color:#555">Radar estimates, not measurements; checked against '+L.swaths.checked+' archived storm days.</p>'):'')+
           '<table><thead><tr><th>Date</th><th>Size</th><th>Distance</th><th>Near</th></tr></thead><tbody>'+rows+'</tbody></table>'+
           '<p style="font-size:.9rem;background:#f5f2e8;border:1px solid #d8cfa8;padding:.6rem .8rem;border-radius:6px"><strong>Using this for a claim:</strong> this printout confirms the date and the neighborhood. Your own photos confirm the property. Bring both; the adjuster does the rest.</p>'+
           '<p class="foot">Prepared by <strong>Sigurd Lindquist</strong> &middot; AGSIST &middot; sig@farmers1st.com &middot; agsist.com/hail-map<br>Source: National Weather Service Local Storm Reports via the Iowa Environmental Mesonet. Reports are town-level precision and depend on someone reporting; absence of reports is not proof of absence of hail. This is a public-data record, not an engineering or insurance determination.</p>'+
@@ -1555,7 +1555,7 @@
         clearOverlays();
         if(!fc || !fc.features || !fc.features.length){
           if(cnt) cnt.textContent='0';
-          banner('No radar-estimated hail \u22650.75\u2033 anywhere on '+d+' \u2014 a genuinely quiet day.');
+          banner('No radar-estimated hail \u22650.75\u2033 anywhere on '+d+', a genuinely quiet day.');
           return;
         }
         clearBanner();
@@ -1643,7 +1643,7 @@
           +'<br>'+esc(String(p.areaDesc||'').split(';').slice(0,3).join('; ')));
       }}).addTo(map);
       var nb=document.getElementById('hm-livebar-note');
-      var noteTxt=warnCount+' active hail-tagged warning'+(warnCount===1?'':'s')+(warnStates?' — '+esc(warnStates):'')+'.';
+      var noteTxt=warnCount+' active hail-tagged warning'+(warnCount===1?'':'s')+(warnStates?', '+esc(warnStates):'')+'.';
       // a11y: only rewrite the aria-live note when the situation actually changed —
       // rewriting every 90s poll made screen readers re-announce it forever and
       // destroyed the Zoom button mid-use if it had focus.

@@ -74,10 +74,10 @@
 
   <div class="res">
     <div class="big" id="total">0 <small>GDUs</small></div>
-    <div class="stage" id="stage">—</div>
+    <div class="stage" id="stage">-</div>
   </div>
-  <div class="rr"><span class="l">GDU/day</span><span class="v" id="rate" style="color:var(--gold)">—</span></div>
-  <div class="rr"><span class="l" id="mat-l">Est. maturity (black layer)</span><span class="v" id="mat" style="color:var(--green)">—</span></div>
+  <div class="rr"><span class="l">GDU/day</span><span class="v" id="rate" style="color:var(--gold)">-</span></div>
+  <div class="rr"><span class="l" id="mat-l">Est. maturity (black layer)</span><span class="v" id="mat" style="color:var(--green)">-</span></div>
   <div class="rr"><span class="l">Frost risk</span><span class="v" id="frostv">Add frost date</span></div>
 
   <div class="foot"><a id="pb" href="https://agsist.com/gdu-calculator?utm_source=embed" target="_blank" rel="noopener">Powered by AGSIST →</a></div>
@@ -149,7 +149,7 @@ $('fetch').addEventListener('click',function(){
     realAccum=acc;realDays=n;realThrough=last;
     var pend=last?Math.round((dayOf(todayStr)-dayOf(last))/86400000):0;
     var thru=last?dayOf(last).toLocaleDateString('en-US',{month:'short',day:'numeric'}):'';
-    setStatus('✓ Through '+thru+' — '+n+' days, '+acc.toFixed(0)+' GDUs'+(pend>0?' · last '+pend+'d pending':'')+(gaps>0?' · '+gaps+'d missing, not counted':''),'ok');
+    setStatus('✓ Through '+thru+', '+n+' days, '+acc.toFixed(0)+' GDUs'+(pend>0?' · last '+pend+'d pending':'')+(gaps>0?' · '+gaps+'d missing, not counted':''),'ok');
     calc();
   }).catch(function(err){setStatus('✗ '+err.message,'err');})
    .finally(function(){btn.disabled=false;btn.textContent='Fetch Real GDUs';postHeight();});
@@ -176,18 +176,18 @@ function calc(){
 
   $('total').innerHTML=Math.round(accum).toLocaleString()+' <small>GDUs'+(thru?' through '+thru:'')+(pct!=null?' · '+pct.toFixed(0)+'%':'')+'</small>';
   $('stage').textContent=realAccum!=null?'Stage: '+cur:'Fetch to see stage';
-  $('rate').textContent=rate>0?rate.toFixed(1)+'/day':'—';
+  $('rate').textContent=rate>0?rate.toFixed(1)+'/day':'-';
   $('mat-l').textContent=crop==='corn'?'Est. maturity (black layer)':(target!=null?'Est. full maturity (R8, NDSU GDD model)':'Est. full maturity (R8)');
   var matTxt;
-  if(!rmOK)matTxt='— · enter '+(crop==='corn'?'a relative maturity':'a maturity group');
-  else if(target==null)matTxt='— · no published GDD-to-maturity figure for MG '+rm+' (NDSU’s model covers 00.8–1.1); soybean maturity is driven by day length — use the seed company’s rating.';
-  else matTxt=matD?matD.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}):'—';
+  if(!rmOK)matTxt='n/a · enter '+(crop==='corn'?'a relative maturity':'a maturity group');
+  else if(target==null)matTxt='n/a · no published GDD-to-maturity figure for MG '+rm+' (NDSU’s model covers 00.8–1.1); soybean maturity is driven by day length, use the seed company’s rating.';
+  else matTxt=matD?matD.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}):'-';
   $('mat').textContent=matTxt;
   $('mat').style.whiteSpace=target==null?'normal':'';
   $('mat').style.textAlign=target==null?'right':'';
 
   var fStr=$('frost').value, fv=$('frostv');
-  if(target==null){fv.textContent='—';fv.style.color='var(--muted)';}
+  if(target==null){fv.textContent='-';fv.style.color='var(--muted)';}
   else if(!fStr){fv.textContent='Add frost date';fv.style.color='var(--muted)';}
   else if(!matD){fv.textContent='Fetch first';fv.style.color='var(--muted)';}
   else{var m=Math.round((dayOf(fStr)-matD)/86400000);

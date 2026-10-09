@@ -424,7 +424,7 @@
             <input type="number" id="qb-year" value="2015" min="1900" max="2026" inputmode="numeric" oninput="buildURL()">
           </div>
         </div>
-        <div class="qb-url-box"><span class="qb-url-txt" id="qb-url-txt">&mdash;</span></div>
+        <div class="qb-url-box"><span class="qb-url-txt" id="qb-url-txt">-</span></div>
         <div class="qb-actions">
           <button class="btn-gold" onclick="openNASS()"><svg class="ic" aria-hidden="true"><use href="#i-external-link"/></svg> Open in NASS</button>
           <button class="btn-border" id="copy-btn" onclick="copyURL()">Copy URL</button>
@@ -731,7 +731,7 @@
       var html = '<table class="nass-tbl"><thead><tr><th>Year</th><th>'+ds.unit+'</th></tr></thead><tbody>';
       years.slice().reverse().forEach(function(y){
         var v = vals[y]; var disp = v!=null ? fmtVal(v, ds.unit) : '';
-        html += '<tr><td class="td-state">'+y+'</td><td class="'+(v!=null?'td-val':'td-null')+'">'+(disp||'\u2014')+'</td></tr>';
+        html += '<tr><td class="td-state">'+y+'</td><td class="'+(v!=null?'td-val':'td-null')+'">'+(disp||'n/a')+'</td></tr>';
       });
       html += '</tbody></table>';
       wrap.innerHTML = html;
@@ -754,12 +754,12 @@
       years.forEach(function(y){
         var v = cellVal(r, y, currentData.unit);
         if (v==null) anyNull = true;
-        h += v!=null ? '<td class="td-val">'+(+v).toLocaleString()+'</td>' : '<td class="td-null" title="'+nullWhy(r)+'">\u2014</td>';
+        h += v!=null ? '<td class="td-val">'+(+v).toLocaleString()+'</td>' : '<td class="td-null" title="'+nullWhy(r)+'">n/a</td>';
       });
       h += '</tr>';
     });
     h += '</tbody></table>';
-    if (anyNull) h += '<p class="qs-ss" style="margin:.5rem 0 0">\u2014 = NASS published no figure (no report or withheld). It is not a zero. Other States is a combined group and has no yield.</p>';
+    if (anyNull) h += '<p class="qs-ss" style="margin:.5rem 0 0">n/a = NASS published no figure (no report or withheld). It is not a zero. Other States is a combined group and has no yield.</p>';
     wrap.innerHTML = h;
     el('dl-btn').disabled = false;
   }

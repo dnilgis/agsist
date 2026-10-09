@@ -429,9 +429,9 @@ html[data-theme="light"] .formula-card code { color:#276c43; }
       </div>
 
       <div style="margin-top:.85rem">
-        <div class="r-row"><span class="r-lbl">Days since planting</span><span class="r-val" id="r-days">&mdash;</span></div>
-        <div class="r-row"><span class="r-lbl">Average GDU/day</span><span class="r-val gold" id="r-gdu-day">&mdash;</span></div>
-        <div class="r-row"><span class="r-lbl">Data source</span><span class="r-val" id="r-source" style="font-size:0.78rem;color:var(--text-muted)">&mdash;</span></div>
+        <div class="r-row"><span class="r-lbl">Days since planting</span><span class="r-val" id="r-days">-</span></div>
+        <div class="r-row"><span class="r-lbl">Average GDU/day</span><span class="r-val gold" id="r-gdu-day">-</span></div>
+        <div class="r-row"><span class="r-lbl">Data source</span><span class="r-val" id="r-source" style="font-size:0.78rem;color:var(--text-muted)">-</span></div>
       </div>
     </div>
 
@@ -439,13 +439,13 @@ html[data-theme="light"] .formula-card code { color:#276c43; }
     <div class="gdu-card" style="margin-bottom:1.1rem">
       <div class="gdu-card-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-calendar"/></svg> Maturity Projection</div>
       <div class="mat-grid">
-        <div class="mat-card"><div class="mat-card-lbl">GDU Target</div><div class="mat-card-val" id="r-target">&mdash;</div><div class="mat-card-sub" id="r-target-sub">to maturity</div></div>
-        <div class="mat-card"><div class="mat-card-lbl">GDUs Left</div><div class="mat-card-val" id="r-remaining">&mdash;</div><div class="mat-card-sub">remaining</div></div>
-        <div class="mat-card"><div class="mat-card-lbl">Days Left</div><div class="mat-card-val" id="r-days-left">&mdash;</div><div class="mat-card-sub">at monthly-average rate</div></div>
+        <div class="mat-card"><div class="mat-card-lbl">GDU Target</div><div class="mat-card-val" id="r-target">-</div><div class="mat-card-sub" id="r-target-sub">to maturity</div></div>
+        <div class="mat-card"><div class="mat-card-lbl">GDUs Left</div><div class="mat-card-val" id="r-remaining">-</div><div class="mat-card-sub">remaining</div></div>
+        <div class="mat-card"><div class="mat-card-lbl">Days Left</div><div class="mat-card-val" id="r-days-left">-</div><div class="mat-card-sub">at monthly-average rate</div></div>
       </div>
-      <div class="r-row" style="margin-top:.6rem"><span class="r-lbl">Progress to maturity</span><span class="r-val gold" id="r-pct">&mdash;</span></div>
-      <div class="r-row"><span class="r-lbl" id="r-mat-lbl">Est. maturity (black layer)</span><span class="r-val green" id="r-mat-date">&mdash;</span></div>
-      <div class="r-row"><span class="r-lbl">Frost risk</span><span class="r-val" id="r-frost-verdict">&mdash;</span></div>
+      <div class="r-row" style="margin-top:.6rem"><span class="r-lbl">Progress to maturity</span><span class="r-val gold" id="r-pct">-</span></div>
+      <div class="r-row"><span class="r-lbl" id="r-mat-lbl">Est. maturity (black layer)</span><span class="r-val green" id="r-mat-date">-</span></div>
+      <div class="r-row"><span class="r-lbl">Frost risk</span><span class="r-val" id="r-frost-verdict">-</span></div>
       <div class="f-hint" id="r-mat-note" style="margin-top:.5rem"></div>
       <button id="g-share-btn" type="button" style="margin-top:.7rem;width:100%;padding:.55rem;border-radius:6px;border:1px solid var(--border);background:var(--bg);color:var(--gold);font-family:'JetBrains Mono',monospace;font-size:0.775rem;font-weight:700;letter-spacing:.04em;cursor:pointer;min-height:44px"><svg class="ic-sp" aria-hidden="true"><use href="#sp-link"/></svg> Copy shareable link to this field</button>
       <div class="f-hint" id="g-share-status" style="text-align:center;margin-top:.3rem" role="status" aria-live="polite"></div>
@@ -471,7 +471,7 @@ html[data-theme="light"] .formula-card code { color:#276c43; }
     <tbody>
       <tr><td>VE</td><td>~120</td><td>Emergence</td><td>Stand count; scout black cutworm V1&ndash;V3</td></tr>
       <tr><td>V2</td><td>~200</td><td>Growing point below soil</td><td>Side-dress N window opens (V3&ndash;V6 optimal)</td></tr>
-      <tr><td>V4</td><td>~345</td><td>Ear shoots initiated</td><td>&mdash;</td></tr>
+      <tr><td>V4</td><td>~345</td><td>Ear shoots initiated</td><td>n/a</td></tr>
       <tr><td>V6</td><td>~475</td><td>Growing point above soil</td><td>Post-emerge herbicide window closes on many labels: read yours; rapid growth begins</td></tr>
       <tr><td>V8</td><td>~610</td><td>Kernel rows determined</td><td>S and micronutrient uptake peaks; ECB scouting</td></tr>
       <tr><td>V10</td><td>~740</td><td>Ear size potential being set</td><td>Tassel forming inside stalk</td></tr>
@@ -654,7 +654,7 @@ function gduDay(hi,lo){hi=Math.min(Math.max(hi,50),86);lo=Math.min(Math.max(lo,5
 // https://www.ag.ndsu.edu/news/newsreleases/2016/june-13-2016/ndsu-develops-soybean-growing-degree-day-model
 // It is used ONLY for MG -0.2 (00.8) to 1.1. Outside that there is no published figure, so null.
 function beanTarget(mg){return (isFinite(mg)&&mg>=-0.2&&mg<=1.1)?Math.round(1750+280*mg):null;}
-function beanNoTarget(mg){return '\u2014 \u00b7 no published GDD-to-maturity figure for MG '+mg+' (NDSU\u2019s model covers 00.8\u20131.1); soybean maturity is driven by day length. Use the seed company\u2019s rating.';}
+function beanNoTarget(mg){return 'n/a \u00b7 no published GDD-to-maturity figure for MG '+mg+' (NDSU\u2019s model covers 00.8\u20131.1); soybean maturity is driven by day length. Use the seed company\u2019s rating.';}
 function localISO(d){var m=d.getMonth()+1,dd=d.getDate();return d.getFullYear()+'-'+(m<10?'0':'')+m+'-'+(dd<10?'0':'')+dd;}
 
 /* ─── STATE ─────────────────────────────────────────────────────────── */
@@ -815,7 +815,7 @@ document.getElementById('g-fetch-btn').addEventListener('click',function(){
     var pending=0;
     if(lastValid){ pending=Math.round((new Date(todayStr+'T00:00:00')-new Date(lastValid+'T00:00:00'))/86400000); }
     var thru=lastValid?new Date(lastValid+'T00:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric'}):'';
-    var msg='\u2713 Real data through '+thru+' \u2014 '+days+' days, '+accum.toFixed(0)+' GDUs';
+    var msg='\u2713 Real data through '+thru+', '+days+' days, '+accum.toFixed(0)+' GDUs';
     if(pending>0){ msg+=' \u00b7 last '+pending+' day'+(pending>1?'s':'')+' not yet in the archive (projected at the monthly rate)'; }
     if(gaps>0){ msg+=' \u00b7 '+gaps+' day'+(gaps>1?'s':'')+' missing inside the range, no GDU counted for '+(gaps>1?'them':'it'); }
     setStatus(msg,'ok');
@@ -913,11 +913,11 @@ function calcGDU(){
   }
   if(bad){
     function d0(id,v){var el=document.getElementById(id);if(el)el.textContent=v;}
-    ['r-total','r-stage','r-days','r-gdu-day','r-target','r-remaining','r-days-left','r-pct','r-mat-date'].forEach(function(id){d0(id,'—');});
+    ['r-total','r-stage','r-days','r-gdu-day','r-target','r-remaining','r-days-left','r-pct','r-mat-date'].forEach(function(id){d0(id,'-');});
     d0('r-total-unit','GDUs accumulated');
     renderProgLabels(null,null);
     d0('r-mat-lbl',crop==='corn'?'Est. maturity (black layer)':'Est. full maturity (R8)');
-    var fv0=document.getElementById('r-frost-verdict');if(fv0){fv0.textContent='—';fv0.style.color='var(--text-muted)';}
+    var fv0=document.getElementById('r-frost-verdict');if(fv0){fv0.textContent='-';fv0.style.color='var(--text-muted)';}
     d0('r-mat-note',bad);
     var arc0=document.getElementById('arc-fill');if(arc0)arc0.style.strokeDashoffset='257';
     var pf0=document.getElementById('prog-fill');if(pf0)pf0.style.width='0%';
@@ -975,20 +975,20 @@ function calcGDU(){
   s('r-stage','Stage: '+currentStage);
   s('r-days',daysSincePlant+' days');
   s('r-gdu-day',gduPerDay.toFixed(1)+' GDU/day');
-  s('r-target',gduTarget!=null?gduTarget.toLocaleString():'\u2014');
+  s('r-target',gduTarget!=null?gduTarget.toLocaleString():'-');
   s('r-target-sub',crop==='corn'?'to maturity':(gduTarget!=null?'to R8 \u00b7 NDSU model':'to R8'));
-  s('r-remaining',gduRemaining!=null?Math.round(gduRemaining).toLocaleString():'\u2014');
-  s('r-days-left',daysLeft!=null?daysLeft+' days':'\u2014');
-  s('r-pct',pctDone!=null?pctDone.toFixed(1)+'% complete':'\u2014');
-  s('r-mat-date',matDate?matDate.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'}):'\u2014');
+  s('r-remaining',gduRemaining!=null?Math.round(gduRemaining).toLocaleString():'-');
+  s('r-days-left',daysLeft!=null?daysLeft+' days':'-');
+  s('r-pct',pctDone!=null?pctDone.toFixed(1)+'% complete':'-');
+  s('r-mat-date',matDate?matDate.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'}):'-');
   s('r-mat-lbl',crop==='corn'?'Est. maturity (black layer)':'Est. full maturity (R8)');
   // Frost-risk verdict: optional user frost date vs projected maturity
   var frostStr=document.getElementById('g-frost')?document.getElementById('g-frost').value:'';
   var fv=document.getElementById('r-frost-verdict');
   if(fv){
-    if(gduTarget==null){ fv.textContent='\u2014'; fv.style.color='var(--text-muted)'; }
+    if(gduTarget==null){ fv.textContent='-'; fv.style.color='var(--text-muted)'; }
     else if(!frostStr){ fv.textContent='Add frost date'; fv.style.color='var(--text-muted)'; }
-    else if(!matDate){ fv.textContent='\u2014'; fv.style.color='var(--text-muted)'; }
+    else if(!matDate){ fv.textContent='-'; fv.style.color='var(--text-muted)'; }
     else { var frostD=new Date(frostStr+'T00:00:00'); var margin=Math.round((frostD-matDate)/86400000);
       if(margin>=7){ fv.textContent='\u2713 '+margin+' days to spare'; fv.style.color='var(--green)'; }
       else if(margin>=0){ fv.textContent=''+margin+'-day margin'; fv.style.color='var(--gold)'; }

@@ -247,9 +247,9 @@
       </div>
       <div class="cal-countdown" aria-live="polite">
         <div class="cal-cd-label"><span class="live-dot"></span> NEXT USDA REPORT</div>
-        <div class="cal-cd-name" id="next-name">&mdash;</div>
-        <div class="cal-cd-date" id="next-date">&mdash;</div>
-        <div class="cal-cd-num" id="next-num">&mdash;</div>
+        <div class="cal-cd-name" id="next-name">-</div>
+        <div class="cal-cd-date" id="next-date">-</div>
+        <div class="cal-cd-num" id="next-num">-</div>
         <div class="cal-cd-unit" id="next-unit"></div>
         <a class="cal-cd-cal" id="next-cal" href="#" target="_blank" rel="noopener" hidden><svg class="ic" aria-hidden="true"><use href="#i-calendar-plus"/></svg> Add to Google Calendar</a>
         <div class="cal-cd-more">
@@ -473,7 +473,7 @@
   function isoStart(r){var t=parseTime24(r.time);return t?r.date+'T'+t+etOffset(r.date):r.date;}
   function gcalDates(r){var t=parseTime24(r.time);if(!t){var d0=r.date.replace(/-/g,'');return d0+'/'+d0;}var st=new Date(r.date+'T'+t+etOffset(r.date)),en=new Date(st.getTime()+3600000);function f(d){return d.toISOString().replace(/[-:]/g,'').replace(/\.\d{3}/,'');}return f(st)+'/'+f(en);}
   function fmtCountdown(target){
-    if(!target||isNaN(target.getTime()))return{num:'\u2014',unit:''};
+    if(!target||isNaN(target.getTime()))return{num:'-',unit:''};
     var d=target.getTime()-Date.now();
     if(d<=0)return{num:'NOW',unit:'live'};
     function p(n){return(n<10?'0':'')+n;}
@@ -538,7 +538,7 @@
       document.getElementById('next-num').textContent=_cd.num;
       document.getElementById('next-unit').textContent=_cd.unit;
       var wpi=document.getElementById('next-wpi');if(wpi)wpi.hidden=!(next.type==='wasde'||next.type==='supply'||next.type==='stocks'||next.type==='plantings');
-      var cal=document.getElementById('next-cal');if(cal){cal.href='https://calendar.google.com/calendar/render?action=TEMPLATE&text='+encodeURIComponent('USDA: '+next.name)+'&dates='+gcalDates(next)+'&details='+encodeURIComponent((next.desc||'')+' \u2014 via AGSIST')+'&location=USDA';cal.hidden=false;cal.onclick=function(){calEvent('add_to_calendar',{report:next.name});};}
+      var cal=document.getElementById('next-cal');if(cal){cal.href='https://calendar.google.com/calendar/render?action=TEMPLATE&text='+encodeURIComponent('USDA: '+next.name)+'&dates='+gcalDates(next)+'&details='+encodeURIComponent((next.desc||'')+', via AGSIST')+'&location=USDA';cal.hidden=false;cal.onclick=function(){calEvent('add_to_calendar',{report:next.name});};}
     } else {
       // The hardcoded REPORTS array has run out of future dates (it ends at
       // the last entry above). Without this branch the hero countdown sat
@@ -546,7 +546,7 @@
       var nn=document.getElementById('next-name'); if(nn)nn.textContent='Calendar needs next year\u2019s dates';
       var nd=document.getElementById('next-date'); if(nd)nd.textContent='USDA publishes its report schedule each fall. This page\u2019s list ends at '+sorted[sorted.length-1].date+' and is awaiting the new dates.';
       var nu=document.getElementById('next-unit'); if(nu)nu.textContent='';
-      var nm=document.getElementById('next-num'); if(nm)nm.textContent='\u2014';
+      var nm=document.getElementById('next-num'); if(nm)nm.textContent='-';
     }
 
     const tagLabels={wasde:'WASDE',croprog:'Crop Progress',plantings:'Plantings',stocks:'Grain Stocks',census:'Census',supply:'Crop Production',outlook:'Outlook',export:'Export Sales',intl:'International'};

@@ -366,7 +366,7 @@
     var M=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
     var txt=null, verdict=null;
     if(days>0){
-      txt='Scouts roll '+M[start.getMonth()]+' '+start.getDate()+' \u2014 '+days+' day'+(days!==1?'s':'')+' out';
+      txt='Scouts roll '+M[start.getMonth()]+' '+start.getDate()+', '+days+' day'+(days!==1?'s':'')+' out';
     } else if(days===0 || (end && now<=end)){
       // tour week: mirrors the baker's "during" phase exactly
       txt='Tour underway: results post each night';

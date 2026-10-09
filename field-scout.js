@@ -593,7 +593,7 @@
       '<div class="fs-saved-list">' + arr.map(function(f){
         var hasNotes = !!((f.notes&&f.notes.trim()) || (f.photos&&f.photos.length));
         return '<span class="fs-saved-chip" role="group">'+
-          '<button class="fs-saved-open" data-id="'+f.id+'" type="button" title="Open '+esc(f.name)+(hasNotes?' — has notes':'')+'">'+esc(f.name)+' <small>'+f.acres+'ac</small>'+(hasNotes?' <small class="fs-saved-note-ind" aria-hidden="true">&#9998;</small>':'')+'</button>'+
+          '<button class="fs-saved-open" data-id="'+f.id+'" type="button" title="Open '+esc(f.name)+(hasNotes?', has notes':'')+'">'+esc(f.name)+' <small>'+f.acres+'ac</small>'+(hasNotes?' <small class="fs-saved-note-ind" aria-hidden="true">&#9998;</small>':'')+'</button>'+
           '<button class="fs-saved-del" data-del="'+f.id+'" type="button" aria-label="Delete '+esc(f.name)+'">&times;</button>'+
         '</span>';
       }).join('') + '</div>';
@@ -1291,7 +1291,7 @@
         if(!hasAc){ html += '<div class="fs-caveat">SSURGO returned the soil map units for this field but not per-unit acreage, so area shares aren\u2019t shown. Soils are listed by map unit.</div>'; }
         var slopeNote = '';
         if(FIELD.soil.csr2!=null){
-          slopeNote += '<div class="fs-soil-slope"><strong>CSR2 '+FIELD.soil.csr2.toFixed(1)+'</strong> &mdash; Iowa\u2019s Corn Suitability Rating (0\u2013100), weighted by acres. It is the number Iowa land sales, rents and loans are quoted against.</div>';
+          slopeNote += '<div class="fs-soil-slope"><strong>CSR2 '+FIELD.soil.csr2.toFixed(1)+'</strong>: Iowa\u2019s Corn Suitability Rating (0\u2013100), weighted by acres. It is the number Iowa land sales, rents and loans are quoted against.</div>';
         }
         if(FIELD.soil.nccpi!=null){
           var nc=Math.round(FIELD.soil.nccpi*100)/100, tier = nc>=0.65?'high':nc>=0.5?'good':nc>=0.35?'moderate':nc>=0.2?'modest':'low';
@@ -1299,7 +1299,7 @@
             (FIELD.soil.nccpiCorn!=null?'. Corn '+FIELD.soil.nccpiCorn.toFixed(2)+(FIELD.soil.nccpiSoy!=null?' · soy '+FIELD.soil.nccpiSoy.toFixed(2):''):'')+'.</div>';
         }
         if(FIELD.soil.farmPct!=null){
-          slopeNote += '<div class="fs-soil-slope"><strong>'+FIELD.soil.farmPct+'% prime farmland</strong>'+(FIELD.soil.farmIfPct?' and '+FIELD.soil.farmIfPct+'% prime <em>if drained</em>':'')+' &mdash; USDA\u2019s farmland classification for each soil map unit.</div>';
+          slopeNote += '<div class="fs-soil-slope"><strong>'+FIELD.soil.farmPct+'% prime farmland</strong>'+(FIELD.soil.farmIfPct?' and '+FIELD.soil.farmIfPct+'% prime <em>if drained</em>':'')+': USDA\u2019s farmland classification for each soil map unit.</div>';
         }
         if(FIELD.soil.floodPct){
           slopeNote += '<div class="fs-soil-slope"><strong>'+FIELD.soil.floodPct+'% of the acreage has a mapped flooding frequency</strong> (rare or more often). Check the FEMA map before a loan or a lease.</div>';
@@ -1311,7 +1311,7 @@
         }
         if(FIELD.soil.slope!=null){
           var sl=FIELD.soil.slope, er = sl<3?'little water-erosion exposure':sl<6?'some water-erosion exposure':sl<12?'real water-erosion exposure':'severe water-erosion exposure';
-          slopeNote += '<div class="fs-soil-slope"><strong>'+sl+'% average slope</strong>'+(FIELD.soil.maxSlope!=null&&FIELD.soil.maxSlope>sl?' (up to '+FIELD.soil.maxSlope+'%)':'')+' &mdash; '+er+'</div>'+
+          slopeNote += '<div class="fs-soil-slope"><strong>'+sl+'% average slope</strong>'+(FIELD.soil.maxSlope!=null&&FIELD.soil.maxSlope>sl?' (up to '+FIELD.soil.maxSlope+'%)':'')+': '+er+'</div>'+
             '<div class="fs-caveat">Slope is SSURGO\u2019s representative value for each soil map unit, not a measurement of your exact acres; flat bottomland beside a hill can read steeper than it farms.</div>';
         }
         setBody('fs-soil', html + slopeNote + '<div class="fs-src" style="margin-top:.5rem">USDA SSURGO · number = land capability class (1 fewest limits, 8 most); letter = the main limit (e wind or water erosion, w wetness, s root zone, c climate)</div>');
@@ -1445,14 +1445,14 @@
           return;
         }
         var html='<div class="fs-rotation">'+ codes.map(function(code,i){
-          var info = code ? crop(code) : {l:'—',e:'·',c:'#333'};
+          var info = code ? crop(code) : {l:'-',e:'·',c:'#333'};
           return '<div class="fs-rot-year">'+
             '<div class="fs-rot-chip" aria-hidden="true" style="background:'+hexA(info.c,.18)+';border-color:'+hexA(info.c,.5)+'">'+esc(info.l.charAt(0))+'</div>'+
             '<div class="fs-rot-crop">'+esc(info.l)+'</div>'+
             '<div class="fs-rot-yr">\''+String(years[i]).slice(2)+'</div></div>';
         }).join('') + '</div>'+
         (codes.length>5?'<div class="fs-src" style="margin-top:.5rem"><strong style="color:var(--text-dim)">'+codes.length+' years on record:</strong> '+cornCount+'\u00d7 corn, '+beanCount+'\u00d7 beans'+(maxCornStreak>=2?', longest corn streak '+maxCornStreak+' yrs':'')+'</div>':'')+
-        (rr.text?'<p class="fs-cline" style="margin-top:.55rem"><strong>'+esc(rr.text)+'</strong>'+(rr.predicted?' — '+rr.nextYear+' is likely '+(rr.predicted===1?'corn':'soybeans')+' on that pattern.':'.')+'</p>':'')+
+        (rr.text?'<p class="fs-cline" style="margin-top:.55rem"><strong>'+esc(rr.text)+'</strong>'+(rr.predicted?', '+rr.nextYear+' is likely '+(rr.predicted===1?'corn':'soybeans')+' on that pattern.':'.')+'</p>':'')+
         cropChips()+
         '<div class="fs-src" style="margin-top:.6rem">USDA Cropland Data Layer · the crop at the field\u2019s center point each year</div>'+
         '<div class="fs-caveat">CDL is satellite-classified (~85&ndash;90% accurate per pixel) and sampled at the field\u2019s center point, so a single odd year may be a classification miss rather than a real planting.</div>';
@@ -1883,12 +1883,12 @@
             var se0 = FIELD && FIELD.season;
             var plantHedge0 = se0 && se0.plantMD ? ' and a typical ~'+({'04-08':'Apr 8','04-18':'Apr 18','04-28':'Apr 28','05-05':'May 5'}[se0.plantMD]||se0.plantMD)+' planting' : '';
             stageNote = stage.pre
-              ? ' — before this field’s estimated planting window, so no corn was up yet'
-              : ' — <span class="fs-swath-stage">estimated corn stage at the time: '+esc(stage.label)+
+              ? ', before this field’s estimated planting window, so no corn was up yet'
+              : ', <span class="fs-swath-stage">estimated corn stage at the time: '+esc(stage.label)+
                 '</span> <span class="fs-approx">(approximate, modeled from temperature'+plantHedge0+', not field scouting)</span>';
           }
           return '<div class="fs-swath-hit"><span class="fs-swath-dot" style="background:'+c+'"></span>'+
-            '<span class="fs-swath-date">'+esc(ixDate(h.d))+'</span> — inside the ≥'+h.band+'″ estimated band'+stageNote+
+            '<span class="fs-swath-date">'+esc(ixDate(h.d))+'</span>, inside the ≥'+h.band+'″ estimated band'+stageNote+
             ' <a href="/hail-map?swath='+h.d+'&lat='+FIELD.lat.toFixed(4)+'&lon='+FIELD.lng.toFixed(4)+'" target="_blank" rel="noopener" class="fs-act-link">view that day’s swath →</a></div>';
         }).join('')+
         '<div class="fs-src">Radar estimate (NOAA MRMS MESH, Maximum Estimated Size of Hail), not a ground measurement · MESH typically runs larger than stones measured on the ground · '+
@@ -1946,7 +1946,7 @@
     }
     if(soil && soil.slope!=null && soil.slope>=3){
       var sl=soil.slope, ev=sl<6?'Moderate':sl<12?'Elevated':'High', ec=sl<6?'#ffd400':sl<12?'#ff9326':'#d9534f';
-      rows.push(riskRow('Erosion (slope)', ev, ec, sl+'% average slope'+(soil.maxSlope>sl?' · up to '+soil.maxSlope+'%':'')+' — water-erosion exposure'));
+      rows.push(riskRow('Erosion (slope)', ev, ec, sl+'% average slope'+(soil.maxSlope>sl?' · up to '+soil.maxSlope+'%':'')+', water-erosion exposure'));
     }
     if(hail && !hail.err){
       // report-days in a ~40-mile circle (about 5,000 sq mi): banded per year, and worded as reports
@@ -1956,12 +1956,12 @@
       var hc = hy<2?'#4aab4c':hy<5?'#ffd400':hy<10?'#ff9326':'#d9534f';
       var cst = FIELD.county&&FIELD.county.storms;
       rows.push(riskRow('Hail reports nearby', hv, hc,
-        hail.days+' day'+(hail.days===1?'':'s')+' with a hail report within ~40 mi in '+(hail.years||5)+' yrs'+(hail.maxStone?' · largest '+hail.maxStone+'"':'')+(cst?' · county: '+cst.toFixed(1)+' days a year with 1"+ reports':'')+' — reports follow people, so towns and highways count more',
+        hail.days+' day'+(hail.days===1?'':'s')+' with a hail report within ~40 mi in '+(hail.years||5)+' yrs'+(hail.maxStone?' · largest '+hail.maxStone+'"':'')+(cst?' · county: '+cst.toFixed(1)+' days a year with 1"+ reports':'')+', reports follow people, so towns and highways count more',
         ' · <a href="/hail-map" target="_blank" rel="noopener" style="color:var(--brand,var(--gold))">see the national map &rarr;</a>'));
     }
     if(rot && rot.cornOnCorn){
       rows.push(riskRow('Rotation stress', rot.corOnCornYears>=3?'Elevated':'Moderate', rot.corOnCornYears>=3?'#ff9326':'#ffd400',
-        (FIELD.thisYear.src==='you'?'Corn this year':'Likely corn this year')+' on corn last year'+(rot.corOnCornYears>=3?' — '+rot.corOnCornYears+' years running':'')+' — rootworm and a corn-on-corn yield drag'));
+        (FIELD.thisYear.src==='you'?'Corn this year':'Likely corn this year')+' on corn last year'+(rot.corOnCornYears>=3?', '+rot.corOnCornYears+' years running':'')+', rootworm and a corn-on-corn yield drag'));
     }
     if(dr && dr.cat && dr.cat!=='None'){
       // D0 is "abnormally dry", not drought
@@ -2383,7 +2383,7 @@
   function idxChip(label,val,what){
     var r=idxRead(label.toLowerCase(), val);
     var w = r ? '<span style="color:'+r.c+';font-weight:600">'+r.w+'</span> &middot; '+what : what;
-    return '<div class="fs-idx"><span class="fs-idx-l">'+label+tipQ(label.toLowerCase())+'</span><span class="fs-idx-v">'+(val==null?'\u2014':(+val).toFixed(2))+'</span><span class="fs-idx-w">'+w+'</span></div>';
+    return '<div class="fs-idx"><span class="fs-idx-l">'+label+tipQ(label.toLowerCase())+'</span><span class="fs-idx-v">'+(val==null?'-':(+val).toFixed(2))+'</span><span class="fs-idx-w">'+w+'</span></div>';
   }
 
   // ── On-demand explainers: a (?) on any cryptic label opens a plain-language
@@ -2457,7 +2457,7 @@
       } else { rotV = r.cornOnCorn ? 'Corn' : 'Mixed'; }
       if(r.patternText) rotSub = r.pattern==='cs'?'corn\u2013soy':r.pattern==='ccs'?'corn\u2013corn\u2013soy':r.pattern==='continuous'?'continuous corn':'mixed';
     }
-    var drV = d ? (d.cat==null ? '&mdash;' : (d.cat!=='None' ? esc(d.cat) : 'None')) : null;   // no answer is not "None"
+    var drV = d ? (d.cat==null ? '-' : (d.cat!=='None' ? esc(d.cat) : 'None')) : null;   // no answer is not "None"
     var drCls = (d && d.cat && /D[234]/.test(d.cat)) ? 'low' : '';
     var slV = (s&&s.slope!=null) ? s.slope+'%' : null;
     // the bid that matters is the crop in the field this year
@@ -2466,8 +2466,8 @@
     var bidV, bidSub;
     if(!b){ bidV=null; bidSub=null; }                                    // still loading -> ...
     else if(bid && bid.cash!=null){ bidV='$'+(+bid.cash).toFixed(2); bidSub = (bid===b.bean?'cash beans':'cash corn')+(bid.mon?' \u00b7 '+bid.mon:''); }
-    else { bidV='&mdash;'; bidSub='none nearby'; }                       // loaded, no elevator
-    renderPeek({acres:acres, nccpi:nccpiV, vig:vigSub, dr:(d?(d.cat==null?'no answer':(d.cat==='None'?'None':d.cat)):null), bid:bidV!=='&mdash;'?bidV:null, bidSub:bidSub});
+    else { bidV='-'; bidSub='none nearby'; }                       // loaded, no elevator
+    renderPeek({acres:acres, nccpi:nccpiV, vig:vigSub, dr:(d?(d.cat==null?'no answer':(d.cat==='None'?'None':d.cat)):null), bid:bidV!=='-'?bidV:null, bidSub:bidSub});
     el.innerHTML =
       vCell('ACRES', acres, null, 'acres') +
       vCell('SOIL', soilV, soilSub, 'soil') +
@@ -2488,7 +2488,7 @@
     var rd=FIELD.read||{}, P=_peek;
     var v=rd.verdict ? '<b>Bottom line:</b> '+esc(rd.verdict.charAt(0).toUpperCase()+rd.verdict.slice(1))+'.' : 'Reading this field&hellip;';
     var waiting = FIELD.t0 && (Date.now()-FIELD.t0)<12000;   // after the hold, a gap is a gap, not "loading"
-    function kv(k,val){ return '<div class="fs-peek-k"><span class="k">'+k+'</span><span class="v">'+(val!=null&&val!==''?val:(waiting?'&hellip;':'&mdash;'))+'</span></div>'; }
+    function kv(k,val){ return '<div class="fs-peek-k"><span class="k">'+k+'</span><span class="v">'+(val!=null&&val!==''?val:(waiting?'&hellip;':'-'))+'</span></div>'; }
     var fourth = P.bid ? kv('Cash '+(P.bidSub&&/beans/.test(P.bidSub)?'beans':'corn'), P.bid) : kv('Drought', P.dr!=null?esc(P.dr):null);
     el.innerHTML='<p class="fs-peek-v">'+v+'</p>'+
       kv('Acres', P.acres)+kv('Productivity', P.nccpi!=null?P.nccpi+'/100':null)+kv('Vigor', P.vig!=null?esc(P.vig):null)+fourth+
@@ -2510,7 +2510,7 @@
     var nd=idxTrend(series,'ndvi'), moist=idxTrend(series,'ndmi');
     var v=nd?nd.now:null, vCol=vigorColor(v);
     var vTrend='';
-    if(nd){ vTrend = nd.dir==='rising' ? ' &mdash; still greening up' : (nd.dir==='easing' ? ' &mdash; easing back from its '+ixDate(nd.peakDate)+' peak' : ' &mdash; holding steady'); }
+    if(nd){ vTrend = nd.dir==='rising' ? ', still greening up' : (nd.dir==='easing' ? ', easing back from its '+ixDate(nd.peakDate)+' peak' : ', holding steady'); }
     var sd=last.ndvi_sd, varLine='';
     if(sd!=null && v!=null){ varLine = sd>=0.12 ? 'Vigor <b>varies across the field</b>: there\u2019s likely a weaker zone worth scouting.' : 'Vigor is <b>fairly uniform</b> across the field.'; }
     var normal=d.normal, normLine='', baseV=null;
@@ -2526,14 +2526,14 @@
     var mLine='';
     if(moist){
       var md=moist.dir==='rising'?'rising':(moist.dir==='easing'?'falling':'steady');
-      mLine='Canopy moisture is <b>'+md+'</b>'+(moist.dir==='easing'?' &mdash; the stand is drying down compared with earlier in the season.':(moist.dir==='rising'?' &mdash; the canopy is holding more water than before.':'.'));
+      mLine='Canopy moisture is <b>'+md+'</b>'+(moist.dir==='easing'?', the stand is drying down compared with earlier in the season.':(moist.dir==='rising'?', the canopy is holding more water than before.':'.'));
     }
     // NDRE line — only meaningful once the canopy is dense enough that NDVI saturates
     var nLine='';
     var ndreT=idxTrend(series,'ndre');
     if(ndreT && v!=null && v>=0.55 && last.ndre!=null){
       var nWord=ndreT.dir==='easing'?'easing':(ndreT.dir==='rising'?'building':'steady');
-      nLine='Nitrogen signal (NDRE '+(+last.ndre).toFixed(2)+') is <b>'+nWord+'</b>'+(ndreT.dir==='easing'?' while the canopy holds, the classic pattern worth a nitrogen check.':' &mdash; chlorophyll is tracking with the canopy.');
+      nLine='Nitrogen signal (NDRE '+(+last.ndre).toFixed(2)+') is <b>'+nWord+'</b>'+(ndreT.dir==='easing'?' while the canopy holds, the classic pattern worth a nitrogen check.':', chlorophyll is tracking with the canopy.');
     }
     // Off-season (Nov–Mar) with a low canopy: the story is winter cover, not vigor.
     var winterHead=null;
@@ -2695,7 +2695,7 @@
       var want=normCty(cty);
       var rec=(d.counties||[]).find(function(x){ return normCty(x.name)===want; });
       if(!rec){
-        setErr('fs-rent','NASS publishes no county rent survey for '+esc(cty)+' — small samples get suppressed rather than guessed.');
+        setErr('fs-rent','NASS publishes no county rent survey for '+esc(cty)+', small samples get suppressed rather than guessed.');
         // The Atlas card doesn't need rent; find the county by its boundary instead.
         if(FIELD&&FIELD.lat!=null) fipsByPoint({lat:FIELD.lat,lng:FIELD.lng}, abbr).then(function(h){
           if(gen!==fieldGen) return;
@@ -2831,10 +2831,10 @@
         var since=null; for(var i=ys.length-2;i>=0;i--){ if(ra[ys[i]]>=r){ since=ys[i]; break; } }
         got=true;
         var pct=Math.round(r*100);
-        html+='<p class="fs-cline">'+(pct>=90?'Storage pressure is part of the picture: ':'')+esc(stFull)+'’s '+ly+' crop filled <strong>'+pct+'% of every bin in the state</strong>'+(since&&pct>=85?' — tightest since '+since:'')+'.'+(pct>=90?' Weak basis pays you to have your own steel.':'')+' <a class="fs-act-link" href="/grain-bin-calculator" target="_blank" rel="noopener">Bin math &rarr;</a></p>';
+        html+='<p class="fs-cline">'+(pct>=90?'Storage pressure is part of the picture: ':'')+esc(stFull)+'’s '+ly+' crop filled <strong>'+pct+'% of every bin in the state</strong>'+(since&&pct>=85?', tightest since '+since:'')+'.'+(pct>=90?' Weak basis pays you to have your own steel.':'')+' <a class="fs-act-link" href="/grain-bin-calculator" target="_blank" rel="noopener">Bin math &rarr;</a></p>';
         FIELD.county.storage={ ratio:r, year:ly, since:since };
       }
-      if(!got){ setErr('fs-market','No AgTransport basis series or storage figures published for '+esc(stFull)+' — USDA tracks a limited set of states.'); return; }
+      if(!got){ setErr('fs-market','No AgTransport basis series or storage figures published for '+esc(stFull)+', USDA tracks a limited set of states.'); return; }
       html+=csrc('USDA AgTransport weekly basis · NASS grain stocks &amp; production · state-level, not your elevator');
       setBody('fs-market', html); recomputeInsight();
     });
@@ -2862,7 +2862,7 @@
           if(!fips){ fips=trec.k; if(FIELD.county) FIELD.county.fips=fips; }
           atlasCard(gen, fips);
           html+=bigline(pct+'%','blue','rented ground','');
-          html+='<p class="fs-cline">'+esc(cty)+' Co farms rent <strong>'+Math.round(rented).toLocaleString('en-US')+' of '+Math.round(denom).toLocaleString('en-US')+' acres</strong> ('+ly+' census)'+(pct>=60?' — landlord country, and rents show it.':'.')+'</p>';
+          html+='<p class="fs-cline">'+esc(cty)+' Co farms rent <strong>'+Math.round(rented).toLocaleString('en-US')+' of '+Math.round(denom).toLocaleString('en-US')+' acres</strong> ('+ly+' census)'+(pct>=60?', landlord country, and rents show it.':'.')+'</p>';
           FIELD.county.tenure={ pct:pct, rented:rented, total:denom, year:ly };
         }
       }
@@ -2905,7 +2905,7 @@
       var fr=f&&f.crops&&f.crops[cropKey]&&f.crops[cropKey].states&&f.crops[cropKey].states[abbr];
       var r2 = fr&&wk!=null&&fr.weeks&&fr.weeks[wk] ? fr.weeks[wk].r2 : null;
       if(r2!=null){
-        html+='<p class="fs-cline">Fair warning from the record: this week’s ratings historically explain <strong>~'+Math.round(r2*100)+'% of final yield</strong> — '+(r2<0.35?'the crop is still being made':'ratings are starting to mean something')+'. <a class="fs-act-link" href="/conditions-yield" target="_blank" rel="noopener">What ratings are worth &rarr;</a></p>';
+        html+='<p class="fs-cline">Fair warning from the record: this week’s ratings historically explain <strong>~'+Math.round(r2*100)+'% of final yield</strong>, '+(r2<0.35?'the crop is still being made':'ratings are starting to mean something')+'. <a class="fs-act-link" href="/conditions-yield" target="_blank" rel="noopener">What ratings are worth &rarr;</a></p>';
       }
       html+=csrc('USDA NASS weekly crop condition · week of '+esc(cc.week_ending||'')+' · state-level, ranked against the same week 2000–present');
       FIELD.county.cond={ ge:srow.ge, pctile:srow.pctile, week:cc.week_ending, r2:r2, crop:cropWord };
@@ -3000,21 +3000,21 @@
       if(s.worst.nicc>=4){
         push({ sev:5, act:true, topic:'rotation', tag:'continuous corn on your class-'+s.worst.nicc+' ground',
           title:'break the rotation on your class-'+s.worst.nicc+' acres: it\u2019s the highest-ROI move on this field',
-          detail:'Your weaker ground (class '+s.worst.nicc+') is '+(cornSure?'in':'likely in')+' <strong>corn on corn this year</strong>'+(r.corOnCornYears>=3?' ('+r.corOnCornYears+' years running)':'')+' — two strikes against yield in the same spot. A rotation break there is the highest-ROI change on this field'+nFix+'.',
+          detail:'Your weaker ground (class '+s.worst.nicc+') is '+(cornSure?'in':'likely in')+' <strong>corn on corn this year</strong>'+(r.corOnCornYears>=3?' ('+r.corOnCornYears+' years running)':'')+', two strikes against yield in the same spot. A rotation break there is the highest-ROI change on this field'+nFix+'.',
           action: dragAction(5,12),
           watch: pollenWindow()!=null ? 'Rootworm feeding shows at silking (~'+pollenWindow()+' days out); pull and check roots before then.' : 'Scout roots for rootworm before pollination, and plan beans on these acres next year.' });
       } else {
         var productive = s.nccpi!=null && s.nccpi>=0.55;
         push({ sev:productive?4:3, act:true, topic:'rotation', tag:'corn-on-corn pressure',
           title: r.pattern==='ccs' ? 'second-year corn this season: scout rootworm and budget the drag' : 'plan a rotation break to stop the corn-on-corn yield drag'+(productive?' on this productive ground':''),
-          detail:(cornSure?'Corn':'On its rotation, likely corn')+' this year on corn last year. '+'Second-year corn carries rootworm and nitrogen pressure'+(r.pattern==='ccs'?'; it is part of a planned corn\u2013corn\u2013soybean rotation, so weigh the drag against the rotation\u2019s other gains':' — worth a rotation break before it compounds'+nFix)+'.',
+          detail:(cornSure?'Corn':'On its rotation, likely corn')+' this year on corn last year. '+'Second-year corn carries rootworm and nitrogen pressure'+(r.pattern==='ccs'?'; it is part of a planned corn\u2013corn\u2013soybean rotation, so weigh the drag against the rotation\u2019s other gains':', worth a rotation break before it compounds'+nFix)+'.',
           action: dragAction(5, 15),   // one range for every soil: trials (Gentry 2013, Seifert 2017) find the drag largest on weaker, drier ground, not productive ground
           watch: pollenWindow()!=null ? 'Rootworm pressure peaks near silking (~'+pollenWindow()+' days out); scout this season; plan beans next.' : 'Scout for rootworm this season; plan beans on these acres next year.' });
       }
     } else if(r && r.cornOnCorn){
       push({ sev:3, act:true, topic:'rotation', tag:'a multi-year corn streak',
         title:'plan a rotation break and scout for rootworm',
-        detail:(cornSure?'Corn':'Likely corn')+' this year on corn last year'+(r.corOnCornYears>=3?' (<strong>'+r.corOnCornYears+' years running</strong>)':'')+' — watch for rootworm and the corn-on-corn yield drag'+nFix+'.',
+        detail:(cornSure?'Corn':'Likely corn')+' this year on corn last year'+(r.corOnCornYears>=3?' (<strong>'+r.corOnCornYears+' years running</strong>)':'')+', watch for rootworm and the corn-on-corn yield drag'+nFix+'.',
         action: dragAction(5,10),
         watch: pollenWindow()!=null ? 'Rootworm pressure peaks near silking (~'+pollenWindow()+' days out).' : null });
     }
@@ -3029,7 +3029,7 @@
       } else if(s.nccpi<0.3){
         push({ sev:2, act:false, topic:'soil', tag:null,
           title:'NCCPI '+s.nccpi.toFixed(2)+' nationally: match yield goals and inputs to what this soil reliably returns',
-          detail:'On USDA\u2019s <strong>national</strong> index this rates NCCPI '+s.nccpi.toFixed(2)+' — the lower end of a scale weighted heavily by Corn Belt ground. In its own region this can still be solid.'+' <span class="fs-src">source: USDA NCCPI, a national 0–1 productivity index</span>', watch:null });
+          detail:'On USDA\u2019s <strong>national</strong> index this rates NCCPI '+s.nccpi.toFixed(2)+', the lower end of a scale weighted heavily by Corn Belt ground. In its own region this can still be solid.'+' <span class="fs-src">source: USDA NCCPI, a national 0–1 productivity index</span>', watch:null });
       }
     }
 
@@ -3038,7 +3038,7 @@
     if(inDrought){
       push({ sev:4, act:true, topic:'moisture', tag:esc(d.cat)+' drought',
         title:'moisture is the acute variable right now; prioritize it',
-        detail:'Currently in <strong>'+esc(d.cat)+'</strong> — the field is under real moisture stress.',
+        detail:'Currently in <strong>'+esc(d.cat)+'</strong>, the field is under real moisture stress.',
         watch: (pollenWindow()!=null && pollenWindow()<=21) ? 'Drought through pollination (~'+pollenWindow()+' days out) is the worst-timed stress there is. That window sets kernel count.' : 'Watch soil moisture closely into the next rain.' });
     }
 
@@ -3142,7 +3142,7 @@
           if(hits.length){
             push({ sev:3, act:true, topic:'hail', tag:'a vigor drop that lines up with reported hail',
               title:'the '+ixDate(d1)+' vigor drop lines up with a reported hail day; walk it and document',
-              detail:'Vigor fell <strong>'+drop.toFixed(2)+'</strong> between the '+ixDate(d0)+' and '+ixDate(d1)+' passes, and a severe-hail report near this field is dated <strong>'+ixDate(hits[0])+'</strong> \u2014 inside that window'+(hl.maxStone?' (stones up to '+hl.maxStone+'\u2033 reported in the area over 5 yrs)':'')+'. The timing lines up; only boots in the field confirm it.'+' <span class="fs-src">source: Sentinel-2 pass-to-pass + NOAA/IEM storm reports</span>',
+              detail:'Vigor fell <strong>'+drop.toFixed(2)+'</strong> between the '+ixDate(d0)+' and '+ixDate(d1)+' passes, and a severe-hail report near this field is dated <strong>'+ixDate(hits[0])+'</strong>, inside that window'+(hl.maxStone?' (stones up to '+hl.maxStone+'\u2033 reported in the area over 5 yrs)':'')+'. The timing lines up; only boots in the field confirm it.'+' <span class="fs-src">source: Sentinel-2 pass-to-pass + NOAA/IEM storm reports</span>',
               watch:'Walk it soon and photograph what you find: dated satellite passes plus dated photos make a clean record for any claim conversation with your own agent or adjuster.' });
             break; // one correlation is the story; don't stack duplicates
           }
@@ -3162,7 +3162,7 @@
     if(s && s.slope!=null && s.slope>=6){
       push({ sev:s.slope>=12?4:3, act:s.slope>=12, topic:'erosion', tag:'erosion exposure on the steep acres',
         title:'consider erosion control (residue, contouring) on the steeper acres',
-        detail:'Slope averages <strong>'+s.slope+'%</strong>'+(s.maxSlope>s.slope?' (up to '+s.maxSlope+'%)':'')+' — real water-erosion exposure on the steeper acres.', watch:null });
+        detail:'Slope averages <strong>'+s.slope+'%</strong>'+(s.maxSlope>s.slope?' (up to '+s.maxSlope+'%)':'')+', real water-erosion exposure on the steeper acres.', watch:null });
     }
 
     // ── Hail history → bridge to the Hail Map ──
@@ -3199,7 +3199,7 @@
     if(cy && cy.basis && cy.basis.dev<=-0.25){
       push({ sev:2, act:false, topic:'basis', tag:'weak basis',
         title:'basis here is running '+Math.round(Math.abs(cy.basis.dev)*100)+'¢ under normal',
-        detail:esc(cy.basis.crop.charAt(0).toUpperCase()+cy.basis.crop.slice(1))+' basis in '+esc(cy.st)+' is <strong>'+(cy.basis.latest<0?'−$':'$')+Math.abs(cy.basis.latest).toFixed(2)+'</strong> vs a '+(cy.basis.avg5>=0?'+$':'−$')+Math.abs(cy.basis.avg5).toFixed(2)+' 5-yr normal: '+Math.round(Math.abs(cy.basis.dev)*100)+'¢ of freight and storage pressure coming straight off your price.'+(cy.storage&&cy.storage.ratio>=0.9?' The state’s bins are '+Math.round(cy.storage.ratio*100)+'% committed'+(cy.storage.since?' — tightest since '+cy.storage.since:'')+', which is a lot of the story.':''),
+        detail:esc(cy.basis.crop.charAt(0).toUpperCase()+cy.basis.crop.slice(1))+' basis in '+esc(cy.st)+' is <strong>'+(cy.basis.latest<0?'−$':'$')+Math.abs(cy.basis.latest).toFixed(2)+'</strong> vs a '+(cy.basis.avg5>=0?'+$':'−$')+Math.abs(cy.basis.avg5).toFixed(2)+' 5-yr normal: '+Math.round(Math.abs(cy.basis.dev)*100)+'¢ of freight and storage pressure coming straight off your price.'+(cy.storage&&cy.storage.ratio>=0.9?' The state’s bins are '+Math.round(cy.storage.ratio*100)+'% committed'+(cy.storage.since?', tightest since '+cy.storage.since:'')+', which is a lot of the story.':''),
         watch:'If you have on-farm storage, weak basis is paying you to use it, and to shop bids beyond the closest elevator.' });
     }
     var acts = stress.filter(function(x){ return x.act; });
@@ -3325,7 +3325,7 @@
       soilHtml='<table class="r-tbl">'+s.classes.slice(0,6).map(function(c){
         var hasArea=hasAc&&c.ac>0;
         var pct=hasArea?Math.round(c.ac/s.total*100):null;
-        return '<tr><td>'+esc(c.name)+'</td><td>class '+(c.nicc||'?')+'</td><td class="r-num">'+(hasArea?c.ac.toFixed(1)+' ac':'\u2014')+'</td><td class="r-num">'+(pct!=null?pct+'%':'\u2014')+'</td></tr>';
+        return '<tr><td>'+esc(c.name)+'</td><td>class '+(c.nicc||'?')+'</td><td class="r-num">'+(hasArea?c.ac.toFixed(1)+' ac':'n/a')+'</td><td class="r-num">'+(pct!=null?pct+'%':'n/a')+'</td></tr>';
       }).join('')+'</table>';
       var bits=[];
       if(s.csr2!=null) bits.push('CSR2 '+s.csr2.toFixed(1));
@@ -3342,9 +3342,9 @@
       var vWord = (FIELD._vigWord || vigorWord(vv)).toLowerCase();
       var nrm=d.indices.normal;
       var nrmCell='';
-      if(nrm && nrm.ndvi!=null && vv!=null){ var df=vv-nrm.ndvi; nrmCell='<tr><th>Normal for this point in season</th><td>NDVI '+nrm.ndvi.toFixed(2)+' &mdash; '+(Math.abs(df)<0.04?'in line':(df>0?'ahead':'behind'))+(nrm.years&&nrm.years.length?' ('+nrm.years.length+'-yr)':'')+'</td></tr>'; }
+      if(nrm && nrm.ndvi!=null && vv!=null){ var df=vv-nrm.ndvi; nrmCell='<tr><th>Normal for this point in season</th><td>NDVI '+nrm.ndvi.toFixed(2)+', '+(Math.abs(df)<0.04?'in line':(df>0?'ahead':'behind'))+(nrm.years&&nrm.years.length?' ('+nrm.years.length+'-yr)':'')+'</td></tr>'; }
       vigorHtml='<table class="r-kv">'+
-        (vv!=null?'<tr><th>Crop vigor (NDVI)</th><td>'+vv.toFixed(2)+' &mdash; '+vWord+'</td></tr>':'')+
+        (vv!=null?'<tr><th>Crop vigor (NDVI)</th><td>'+vv.toFixed(2)+', '+vWord+'</td></tr>':'')+
         nrmCell+
         (vx.ndmi!=null?'<tr><th>Canopy moisture (NDMI)</th><td>'+vx.ndmi.toFixed(2)+'</td></tr>':'')+
         (vx.ndre!=null?'<tr><th>Nitrogen / chlorophyll (NDRE)</th><td>'+vx.ndre.toFixed(2)+'</td></tr>':'')+
@@ -3355,7 +3355,7 @@
     var rotHtml='';
     if(r&&r.codes&&r.codes.length){
       rotHtml='<div class="r-rot">'+r.codes.map(function(code,i){
-        var nm = code ? crop(code).l : '\u2014';
+        var nm = code ? crop(code).l : '-';
         return '<span><b>\u2019'+String(r.years[i]).slice(2)+'</b> '+esc(nm)+'</span>';
       }).join('')+'</div>';
       if(r.patternText) rotHtml+='<p class="r-note">'+esc(r.patternText)+(FIELD.thisYear&&FIELD.thisYear.code!=null?' · '+(r.nextYear||'')+': '+(FIELD.thisYear.code===1?'corn':FIELD.thisYear.code===5?'soybeans':'other')+(FIELD.thisYear.src==='you'?' (as told)':' (likely, from the pattern)'):'')+'</p>';
@@ -3431,7 +3431,7 @@
       }
     }
     if(cy&&cy.basis) moneyRows+=kv('State '+esc(cy.basis.crop)+' basis', (cy.basis.latest<0?'\u2212$':'$')+Math.abs(cy.basis.latest).toFixed(2)+' ('+(Math.abs(bDev)<0.005?'on':Math.round(Math.abs(bDev)*100)+'\u00a2 '+(bDev<0?'under':'over'))+' its 5-yr normal)');
-    if(cy&&cy.storage) moneyRows+=kv('State bins', Math.round(cy.storage.ratio*100)+'% of capacity filled by the \u2019'+String(cy.storage.year).slice(2)+' crop'+(cy.storage.since&&cy.storage.ratio>=0.85?' \u2014 tightest since '+cy.storage.since:''));
+    if(cy&&cy.storage) moneyRows+=kv('State bins', Math.round(cy.storage.ratio*100)+'% of capacity filled by the \u2019'+String(cy.storage.year).slice(2)+' crop'+(cy.storage.since&&cy.storage.ratio>=0.85?', tightest since '+cy.storage.since:''));
 
     var ownRows='';
     if(cy&&cy.tenure) ownRows+=kv('County ground rented', cy.tenure.pct+'%: '+Math.round(cy.tenure.rented).toLocaleString('en-US')+' of '+Math.round(cy.tenure.total).toLocaleString('en-US')+' ac ('+cy.tenure.year+' census)');
@@ -3478,7 +3478,7 @@
       +'<title>Field Report: '+d.acres.toFixed(0)+' acres | AGSIST</title><style>'+css+'</style></head><body>'
       +'<div class="r-actions no-print"><button type="button" onclick="window.print()">\u2399 Print / Save as PDF</button></div>'
       +'<div class="r-head"><div class="r-brand">AGSIST \u00b7 Field Scout</div><div class="r-date">'+esc(dateStr)+'</div></div>'
-      +'<div class="r-top">'+outline+'<div class="r-top-t"><h1>'+d.acres.toFixed(1)+'-acre field'+(cy&&cy.name?' — '+esc(cy.name)+' County, '+esc(cy.st):'')+'</h1><div class="r-loc">Center '+d.lat.toFixed(4)+', '+d.lng.toFixed(4)+'</div>'
+      +'<div class="r-top">'+outline+'<div class="r-top-t"><h1>'+d.acres.toFixed(1)+'-acre field'+(cy&&cy.name?', '+esc(cy.name)+' County, '+esc(cy.st):'')+'</h1><div class="r-loc">Center '+d.lat.toFixed(4)+', '+d.lng.toFixed(4)+'</div>'
       +verdictHtml+'</div></div>'+fieldBand+lead+flagsHtml+notesHtml+bandHtml
       +sect('Soil & productivity', soilHtml)
       +'<div class="r-cols">'

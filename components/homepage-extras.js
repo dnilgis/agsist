@@ -638,7 +638,7 @@
           cond = 'basis moves ' + raw + '¢ or more';
         }
         body.wid = aidFor(o.w, k, o.p, (body.direction || '') + ':' + (k === 'move' ? body.move_cents : body.target_cents));
-        body.label = (name + ' — ' + o.n.toLowerCase() + ' ' + o.l + ': ' + cond).slice(0, 120);
+        body.label = (name + ', ' + o.n.toLowerCase() + ' ' + o.l + ': ' + cond).slice(0, 120);
         if(!body.wid) return fail('Could not set this alert. Reload the page and try again.');
       }
       if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) return fail('Enter a real email address.', input);

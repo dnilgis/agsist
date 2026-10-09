@@ -232,7 +232,7 @@ html[data-theme="light"] .fl-leg-bar.na{border-color:rgba(20,30,28,.28)!importan
   <section class="fl-panel fl-detail" id="fl-detail" aria-live="polite">
     <div class="fl-panel-hd"><span class="fl-panel-t">This county</span></div>
     <div class="fl-panel-b">
-      <div class="fl-dt-head"><span class="fl-dt-name" id="fl-dt-name">&mdash;</span><span class="fl-dt-ac" id="fl-dt-ac"></span></div>
+      <div class="fl-dt-head"><span class="fl-dt-name" id="fl-dt-name">-</span><span class="fl-dt-ac" id="fl-dt-ac"></span></div>
       <a id="fl-dt-atlas" href="/farmland-atlas#l=afida" style="display:inline-block;margin:4px 0 8px;font-size:.8rem;color:var(--gold)">This county in the Farmland Atlas: heat, water, losses, land value &rarr;</a>
       <div class="fl-bars" id="fl-dt-bars"></div>
       <div style="height:16px"></div>
@@ -254,10 +254,10 @@ html[data-theme="light"] .fl-leg-bar.na{border-color:rgba(20,30,28,.28)!importan
     <div class="fl-panel-hd"><span class="fl-panel-t" id="fl-nat-t">The national trend: 2010 to 2024</span></div>
     <div class="fl-panel-b">
       <div class="fl-stats" style="margin-bottom:16px">
-        <div class="fl-stat"><div class="fl-stat-l">Foreign-held, 2024</div><div class="fl-stat-v" id="fl-s-total">&mdash;</div><div class="fl-stat-m">acres in the rows of USDA&rsquo;s detail file; USDA&rsquo;s report counts 46.3M</div></div>
-        <div class="fl-stat"><div class="fl-stat-l">Since 2010</div><div class="fl-stat-v" id="fl-s-growth">&mdash;</div><div class="fl-stat-m">from 24.8M acres: a near-doubling</div></div>
-        <div class="fl-stat"><div class="fl-stat-l">#1 holder country</div><div class="fl-stat-v" id="fl-s-top">&mdash;</div><div class="fl-stat-m">not the one the headlines lead with</div></div>
-        <div class="fl-stat"><div class="fl-stat-l">Share that is forest</div><div class="fl-stat-v" id="fl-s-forest">&mdash;</div><div class="fl-stat-m">much of it corporate timberland</div></div>
+        <div class="fl-stat"><div class="fl-stat-l">Foreign-held, 2024</div><div class="fl-stat-v" id="fl-s-total">-</div><div class="fl-stat-m">acres in the rows of USDA&rsquo;s detail file; USDA&rsquo;s report counts 46.3M</div></div>
+        <div class="fl-stat"><div class="fl-stat-l">Since 2010</div><div class="fl-stat-v" id="fl-s-growth">-</div><div class="fl-stat-m">from 24.8M acres: a near-doubling</div></div>
+        <div class="fl-stat"><div class="fl-stat-l">#1 holder country</div><div class="fl-stat-v" id="fl-s-top">-</div><div class="fl-stat-m">not the one the headlines lead with</div></div>
+        <div class="fl-stat"><div class="fl-stat-l">Share that is forest</div><div class="fl-stat-v" id="fl-s-forest">-</div><div class="fl-stat-m">much of it corporate timberland</div></div>
       </div>
       <svg class="fl-chart" id="fl-nat-chart" viewBox="0 0 900 300" role="img" aria-label="Foreign-held U.S. agricultural acres by year, 2010 to 2024"></svg>
       <p style="font-size:13.4px;color:#8a948f;margin:8px 0 0">Gaps at 2015 and 2021: USDA&rsquo;s downloadable detail files skip those years, so the line breaks there instead of guessing across the gap. In some counties 2022 is a one-year jump that falls back in 2023: Autauga County, AL reports 61,371 acres in 2020, 104,884 in 2022 and 58,741 in 2023. The files do not say why.</p>
@@ -466,7 +466,7 @@ html[data-theme="light"] .fl-leg-bar.na{border-color:rgba(20,30,28,.28)!importan
     $('fl-s-top').textContent=Object.keys(nat.by_country).filter(function(k){return !isCode(k);})[0]
       .toLowerCase().replace(/\b\w/g,function(c){return c.toUpperCase();});
     var forest=nat.by_land_type&&nat.by_land_type.Forest;
-    $('fl-s-forest').textContent=forest?Math.round(forest/tot*100)+'%':'—';
+    $('fl-s-forest').textContent=forest?Math.round(forest/tot*100)+'%':'-';
   }
 
   function boot(){
@@ -570,7 +570,7 @@ html[data-theme="light"] .fl-leg-bar.na{border-color:rgba(20,30,28,.28)!importan
       var qq=q(cur), t=qq>=0.8?'#af3a32':(qq>=0.6?'#9c4b3d':(qq>=0.4?'#a8823c':(qq>=0.2?'#3a4144':'#396d4f')));
       var lab=cur>=1e6?(cur/1e6).toFixed(1)+'M':Math.round(cur/1e3)+'k';
       out[st]={big:lab,word:word,col:c,tile:t,tval:lab,
-        sent:'Foreign entities report holding <b style="color:'+c+'">'+lab+' acres</b> of '+(__A2F[st]||st)+' agricultural land ('+latestYr+' AFIDA filings)'+(ch!=null?(' \u2014 '+(ch>=0?'up ':'down ')+Math.abs(ch).toFixed(0)+'\u0025 since '+(by[st]['2015']?'2015':'the earliest filing')):'')+'. Tap the county map below to see exactly where, and whose.'};
+        sent:'Foreign entities report holding <b style="color:'+c+'">'+lab+' acres</b> of '+(__A2F[st]||st)+' agricultural land ('+latestYr+' AFIDA filings)'+(ch!=null?(', '+(ch>=0?'up ':'down ')+Math.abs(ch).toFixed(0)+'\u0025 since '+(by[st]['2015']?'2015':'the earliest filing')):'')+'. Tap the county map below to see exactly where, and whose.'};
     });
     return out;
   }

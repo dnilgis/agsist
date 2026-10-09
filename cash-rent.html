@@ -261,7 +261,7 @@ html[data-theme="light"] .cr-mleg-s.na{outline:1px solid rgba(20,30,28,.28);outl
     <div class="cr-panel-b">
       <div class="cr-pick">
         <div><label for="cr-state">State</label><select id="cr-state" disabled><option>Loading&hellip;</option></select></div>
-        <div><label for="cr-county">County</label><select id="cr-county" disabled><option>&mdash;</option></select></div>
+        <div><label for="cr-county">County</label><select id="cr-county" disabled><option>-</option></select></div>
       </div>
     </div>
   </section>
@@ -269,21 +269,21 @@ html[data-theme="light"] .cr-mleg-s.na{outline:1px solid rgba(20,30,28,.28);outl
   <section aria-labelledby="cr-rates-t">
     <h2 class="cr-panel-t" id="cr-rates-t" style="margin:0 0 12px">Published rent &middot; <span id="cr-rates-yr">latest</span></h2>
     <div class="cr-cells">
-      <div class="cr-cell"><p class="cr-cell-l">Non-irrigated cropland</p><div class="cr-cell-v" id="cr-ni">&mdash;</div><div class="cr-cell-m" id="cr-ni-m">&nbsp;</div></div>
-      <div class="cr-cell"><p class="cr-cell-l">Irrigated cropland</p><div class="cr-cell-v" id="cr-ir">&mdash;</div><div class="cr-cell-m" id="cr-ir-m">&nbsp;</div></div>
-      <div class="cr-cell"><p class="cr-cell-l">Permanent pasture</p><div class="cr-cell-v" id="cr-pa">&mdash;</div><div class="cr-cell-m" id="cr-pa-m">&nbsp;</div></div>
+      <div class="cr-cell"><p class="cr-cell-l">Non-irrigated cropland</p><div class="cr-cell-v" id="cr-ni">-</div><div class="cr-cell-m" id="cr-ni-m">&nbsp;</div></div>
+      <div class="cr-cell"><p class="cr-cell-l">Irrigated cropland</p><div class="cr-cell-v" id="cr-ir">-</div><div class="cr-cell-m" id="cr-ir-m">&nbsp;</div></div>
+      <div class="cr-cell"><p class="cr-cell-l">Permanent pasture</p><div class="cr-cell-v" id="cr-pa">-</div><div class="cr-cell-m" id="cr-pa-m">&nbsp;</div></div>
     </div>
   </section>
 
   <section class="cr-panel" aria-labelledby="cr-ratio-t">
     <div class="cr-panel-hd"><span class="cr-panel-t" id="cr-ratio-t">Rent as a share of gross revenue</span><span class="cr-panel-t" id="cr-ratio-crop">Corn</span></div>
     <div class="cr-ratio">
-      <div class="cr-ratio-v" id="cr-ratio">&mdash;</div>
+      <div class="cr-ratio-v" id="cr-ratio">-</div>
       <div class="cr-ratio-l">of gross revenue goes to rent</div>
       <p class="cr-ratio-x" id="cr-ratio-x">Pick a county to run the math.</p>
     </div>
     <div class="cr-panel-b" style="border-top:1px solid rgba(132,160,168,.12)">
-      <div class="cr-math" id="cr-math">&mdash;</div>
+      <div class="cr-math" id="cr-math">-</div>
       <div class="cr-inputs">
         <div class="cr-in"><label for="cr-yield">Trend yield (bu/ac)</label><input type="number" id="cr-yield" inputmode="decimal" step="0.1"><div class="cr-in-h" id="cr-yield-h">&nbsp;</div></div>
         <div class="cr-in"><label for="cr-price">Board price ($/bu)</label><input type="number" id="cr-price" inputmode="decimal" step="0.01"><div class="cr-in-h" id="cr-price-h">&nbsp;</div></div>
@@ -294,7 +294,7 @@ html[data-theme="light"] .cr-mleg-s.na{outline:1px solid rgba(20,30,28,.28);outl
   </section>
 
   <section class="cr-panel" aria-labelledby="cr-rh-t">
-    <div class="cr-panel-hd"><span class="cr-panel-t" id="cr-rh-t">The squeeze &middot; rent as a share of gross, every year</span><span class="cr-panel-t" id="cr-rh-r">&mdash;</span></div>
+    <div class="cr-panel-hd"><span class="cr-panel-t" id="cr-rh-t">The squeeze &middot; rent as a share of gross, every year</span><span class="cr-panel-t" id="cr-rh-r">-</span></div>
     <div class="cr-panel-b" style="padding-bottom:8px"><svg class="cr-chart" id="cr-rh-chart" viewBox="0 0 900 360" role="img" aria-label="Rent as a share of gross revenue, by year"><text x="450" y="180" text-anchor="middle" fill="#8a948f" font-family="'JetBrains Mono',monospace" font-size="13">Pick a county</text></svg></div>
     <div class="cr-legend">
       <span><span class="cr-swatch" style="background:#d4a23f"></span>Corn</span>
@@ -308,7 +308,7 @@ html[data-theme="light"] .cr-mleg-s.na{outline:1px solid rgba(20,30,28,.28);outl
   </section>
 
   <section class="cr-panel" aria-labelledby="cr-hist-t">
-    <div class="cr-panel-hd"><span class="cr-panel-t" id="cr-hist-t">Rent history</span><span class="cr-panel-t" id="cr-hist-r">&mdash;</span></div>
+    <div class="cr-panel-hd"><span class="cr-panel-t" id="cr-hist-t">Rent history</span><span class="cr-panel-t" id="cr-hist-r">-</span></div>
     <div class="cr-panel-b" style="padding-bottom:8px"><svg class="cr-chart" id="cr-chart" viewBox="0 0 900 340" role="img" aria-label="County cash rent history"><text x="450" y="170" text-anchor="middle" fill="#8a948f" font-family="'JetBrains Mono',monospace" font-size="13">Pick a county</text></svg></div>
     <div class="cr-legend">
       <span><span class="cr-swatch" style="background:#d4a23f"></span>Non-irrigated</span>
@@ -446,7 +446,7 @@ html[data-theme="light"] .cr-mleg-s.na{outline:1px solid rgba(20,30,28,.28);outl
 
   function onState(){
     var st=$('cr-state').value, cs=$('cr-county');
-    if(!st){ cs.disabled=true; cs.innerHTML='<option>\u2014</option>'; return; }
+    if(!st){ cs.disabled=true; cs.innerHTML='<option>-</option>'; return; }
     cs.disabled=true; cs.innerHTML='<option>Loading\u2026</option>';
     fetch(DATA+st+'.json',{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).then(function(d){
       if(!d){ cs.innerHTML='<option>Unavailable</option>'; return; }
@@ -575,7 +575,7 @@ html[data-theme="light"] .cr-mleg-s.na{outline:1px solid rgba(20,30,28,.28);outl
         return RENT_WORDS[m.rent]+' \u00f7 county '+basisWords(b)+' ('+(ys.length>1?ys[0]+'\u2013'+ys[ys.length-1]:ys[0])+')'; });
       var wy=Object.keys(m.w).sort(); var why={};
       wy.forEach(function(y){ (why[m.w[y]]=why[m.w[y]]||[]).push(y); });
-      var wtxt=Object.keys(why).map(function(r){ return '\u2014 withheld '+why[r].join(', ')+': '+r; });
+      var wtxt=Object.keys(why).map(function(r){ return 'withheld '+why[r].join(', ')+': '+r; });
       if(!parts.length&&!wtxt.length) return;
       out.push('<strong style="color:#e6ebe9">'+k[1]+':</strong> '+esc(parts.join('; ')||'no year with a matching yield')+(wtxt.length?' <span class="warn">'+esc(wtxt.join(' '))+'</span>':''));
     });
@@ -595,11 +595,11 @@ html[data-theme="light"] .cr-mleg-s.na{outline:1px solid rgba(20,30,28,.28);outl
     if(!all.length){
       var wc=M.corn&&Object.keys(M.corn.w).length, wr=wc?M.corn.w[Object.keys(M.corn.w)[0]]:null;
       svg.innerHTML=wc
-        ? '<text x="450" y="172" text-anchor="middle" fill="#8a948f" font-family="\'JetBrains Mono\',monospace" font-size="13">\u2014 Withheld</text>'+
+        ? '<text x="450" y="172" text-anchor="middle" fill="#8a948f" font-family="\'JetBrains Mono\',monospace" font-size="13">Withheld</text>'+
           '<text x="450" y="194" text-anchor="middle" fill="#8a948f" font-family="\'JetBrains Mono\',monospace" font-size="11">'+esc(wr.split(' (')[0])+'</text>'
         : '<text x="450" y="172" text-anchor="middle" fill="#8a948f" font-family="\'JetBrains Mono\',monospace" font-size="13">Not enough published history for this county</text>'+
           '<text x="450" y="194" text-anchor="middle" fill="#8a948f" font-family="\'JetBrains Mono\',monospace" font-size="11">needs rent, a county yield of the same practice and state price in the same year</text>';
-      $('cr-rh-r').textContent='\u2014'; $('cr-rh-note').textContent=''; return;
+      $('cr-rh-r').textContent='-'; $('cr-rh-note').textContent=''; return;
     }
     var y0=Math.min.apply(null,years), y1=Math.max.apply(null,years);
     var v1=Math.min(100,Math.max.apply(null,all)*1.18), v0=0;
@@ -669,7 +669,7 @@ html[data-theme="light"] .cr-mleg-s.na{outline:1px solid rgba(20,30,28,.28);outl
       $('cr-yield-h').className='cr-in-h'+(ct.r2<0.3?' warn':'');
     }else if(ct.w){
       $('cr-yield').value='';
-      $('cr-yield-h').textContent='\u2014 County trend withheld: '+ct.w+'. Enter your own yield.';
+      $('cr-yield-h').textContent='County trend withheld: '+ct.w+'. Enter your own yield.';
       $('cr-yield-h').className='cr-in-h warn';
     }else{
       $('cr-yield').value='';
@@ -693,19 +693,19 @@ html[data-theme="light"] .cr-mleg-s.na{outline:1px solid rgba(20,30,28,.28);outl
     var el=$('cr-ratio'), x=$('cr-ratio-x'), m=$('cr-math');
     var pc=pairFor(c,'corn'), tw=pc&&pc.t&&pc.t.w;
     if(rent==null||!(y>0)||!(p>0)){
-      el.textContent='\u2014'; el.className='cr-ratio-v';
+      el.textContent='-'; el.className='cr-ratio-v';
       x.textContent=rent==null?'NASS did not publish a cropland rent for this county, so there is no rent to divide.'
         :(!(y>0)&&tw?'Withheld: '+tw+', so there is no county trend to divide '+RENT_WORDS[rk]+' by. Type your own yield above to run the math.'
         :'Enter a yield and a price to run the math.');
-      m.textContent='\u2014';
+      m.textContent='-';
       return;
     }
     var ylab=(seeded&&Math.abs(y-seeded.v)<0.05)?('county trend, '+basisWords(seeded.b)):'your yield';
     var net=p+b;
     if(!(net>0)){
-      el.textContent='\u2014'; el.className='cr-ratio-v';
+      el.textContent='-'; el.className='cr-ratio-v';
       x.textContent='Price plus basis is at or below zero. Check the basis.';
-      m.textContent='\u2014';
+      m.textContent='-';
       return;
     }
     var gross=y*net, pct=(rent/gross)*100;
@@ -725,7 +725,7 @@ html[data-theme="light"] .cr-mleg-s.na{outline:1px solid rgba(20,30,28,.28);outl
     var years=[], vals=[];
     kinds.forEach(function(k){ var s=c.rent[k[0]]; if(!s) return;
       Object.keys(s).forEach(function(y){ years.push(+y); vals.push(s[y]); }); });
-    if(!years.length){ svg.innerHTML='<text x="450" y="170" text-anchor="middle" fill="#8a948f" font-family="\'JetBrains Mono\',monospace" font-size="13">No published rent for this county</text>'; $('cr-hist-r').textContent='\u2014'; return; }
+    if(!years.length){ svg.innerHTML='<text x="450" y="170" text-anchor="middle" fill="#8a948f" font-family="\'JetBrains Mono\',monospace" font-size="13">No published rent for this county</text>'; $('cr-hist-r').textContent='-'; return; }
     var y0=Math.min.apply(null,years), y1=Math.max.apply(null,years);
     var v1=Math.max.apply(null,vals)*1.12, v0=0;
     var X=function(y){ return P.l+(y-y0)/Math.max(1,(y1-y0))*(W-P.l-P.r); };
@@ -768,7 +768,7 @@ html[data-theme="light"] .cr-mleg-s.na{outline:1px solid rgba(20,30,28,.28);outl
     if(ni){ var a=Math.min.apply(null,Object.keys(ni).map(Number)), b=Math.max.apply(null,Object.keys(ni).map(Number));
       var chg=((ni[b]-ni[a])/ni[a]*100);
       $('cr-hist-r').innerHTML='Non-irrigated '+a+'\u2013'+b+' <span class="'+(chg>=0?'pos':'neg')+'">'+(chg>=0?'+':'')+chg.toFixed(0)+'%</span>';
-    } else { $('cr-hist-r').textContent='\u2014'; }
+    } else { $('cr-hist-r').textContent='-'; }
     $('cr-gapnote').textContent=gaps.length?'\u00b7 dashed = no NASS survey that year':'';
   }
 
@@ -809,7 +809,7 @@ html[data-theme="light"] .cr-mleg-s.na{outline:1px solid rgba(20,30,28,.28);outl
       nm=' counties with a '+lat+' rent';
     }
     if(mode==='pct'&&natLegacy()){
-      $('cr-mleg').innerHTML='<span class="cr-mleg-l warn" style="margin-left:0">\u2014 Share-of-gross map withheld: this data file divides dryland rent by a county yield that mixes irrigated and dryland acres. It returns with the next NASS refresh, matched by practice. Pick a county below: its own ratio is shown only where it reports no irrigated rent and sits outside the irrigated states.</span>';
+      $('cr-mleg').innerHTML='<span class="cr-mleg-l warn" style="margin-left:0">Share-of-gross map withheld: this data file divides dryland rent by a county yield that mixes irrigated and dryland acres. It returns with the next NASS refresh, matched by practice. Pick a county below: its own ratio is shown only where it reports no irrigated rent and sits outside the irrigated states.</span>';
       return;
     }
     if(mode==='pct'&&nat.n_pct_withheld) nm+=' \u00b7 '+nat.n_pct_withheld.toLocaleString()+' withheld ('+REASON_MIXED+')';

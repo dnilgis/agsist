@@ -253,22 +253,22 @@
         <div class="result-bar" id="c-result" aria-live="polite">
           <div class="result-item">
             <div class="result-label">Est. Yield</div>
-            <div class="result-value" id="c-yield-val">&mdash;</div>
+            <div class="result-value" id="c-yield-val">-</div>
             <div class="result-sub" id="c-yield-sub">bu / acre</div>
           </div>
           <div class="result-item">
             <div class="result-label">Ears / Acre</div>
-            <div class="result-value green" id="c-pop-val">&mdash;</div>
+            <div class="result-value green" id="c-pop-val">-</div>
             <div class="result-sub">from ear count</div>
           </div>
           <div class="result-item">
             <div class="result-label">Kernels / Ear</div>
-            <div class="result-value green" id="c-kpe-val">&mdash;</div>
+            <div class="result-value green" id="c-kpe-val">-</div>
             <div class="result-sub">rows &times; per row</div>
           </div>
           <div class="result-item">
             <div class="result-label">Yield Range</div>
-            <div class="result-value dim" id="c-range-val">&mdash;</div>
+            <div class="result-value dim" id="c-range-val">-</div>
             <div class="result-sub">if 65k&ndash;95k kernels/bu</div>
           </div>
         </div>
@@ -355,22 +355,22 @@
         <div class="result-bar" id="b-result" aria-live="polite">
           <div class="result-item">
             <div class="result-label">Est. Yield</div>
-            <div class="result-value" id="b-yield-val">&mdash;</div>
+            <div class="result-value" id="b-yield-val">-</div>
             <div class="result-sub" id="b-yield-sub">bu / acre</div>
           </div>
           <div class="result-item">
             <div class="result-label">Plants / Acre</div>
-            <div class="result-value green" id="b-pop-val">&mdash;</div>
+            <div class="result-value green" id="b-pop-val">-</div>
             <div class="result-sub">from plant count</div>
           </div>
           <div class="result-item">
             <div class="result-label">Seeds / Plant</div>
-            <div class="result-value green" id="b-spp-val">&mdash;</div>
+            <div class="result-value green" id="b-spp-val">-</div>
             <div class="result-sub">pods &times; seeds/pod</div>
           </div>
           <div class="result-item">
             <div class="result-label">Yield Range</div>
-            <div class="result-value dim" id="b-range-val">&mdash;</div>
+            <div class="result-value dim" id="b-range-val">-</div>
             <div class="result-sub">2,500&ndash;3,500 seeds/lb</div>
           </div>
         </div>
@@ -417,12 +417,12 @@
           </div>
         </div>
         <div class="bm-grid" aria-live="polite">
-          <div class="bm-card"><div class="bm-card-label">Revenue / Acre</div><div class="bm-card-val em" id="bm-rev">&mdash;</div></div>
-          <div class="bm-card"><div class="bm-card-label">Profit / Acre</div><div class="bm-card-val em" id="bm-profit">&mdash;</div></div>
-          <div class="bm-card"><div class="bm-card-label">Break-Even Yield</div><div class="bm-card-val" id="bm-be-yield">&mdash;</div></div>
-          <div class="bm-card"><div class="bm-card-label">Break-Even Price</div><div class="bm-card-val" id="bm-be-price">&mdash;</div></div>
-          <div class="bm-card"><div class="bm-card-label">Total Farm P/L</div><div class="bm-card-val em" id="bm-total">&mdash;</div></div>
-          <div class="bm-card"><div class="bm-card-label">$/bu Cost</div><div class="bm-card-val" id="bm-cost-bu">&mdash;</div></div>
+          <div class="bm-card"><div class="bm-card-label">Revenue / Acre</div><div class="bm-card-val em" id="bm-rev">-</div></div>
+          <div class="bm-card"><div class="bm-card-label">Profit / Acre</div><div class="bm-card-val em" id="bm-profit">-</div></div>
+          <div class="bm-card"><div class="bm-card-label">Break-Even Yield</div><div class="bm-card-val" id="bm-be-yield">-</div></div>
+          <div class="bm-card"><div class="bm-card-label">Break-Even Price</div><div class="bm-card-val" id="bm-be-price">-</div></div>
+          <div class="bm-card"><div class="bm-card-label">Total Farm P/L</div><div class="bm-card-val em" id="bm-total">-</div></div>
+          <div class="bm-card"><div class="bm-card-label">$/bu Cost</div><div class="bm-card-val" id="bm-cost-bu">-</div></div>
         </div>
         <div style="margin-top:.75rem;font-size:0.78rem;color:var(--text-muted);line-height:1.55">
           <svg class="ic-sp" aria-hidden="true"><use href="#sp-pin"/></svg> For the full sensitivity table, what-if scenarios, and printable report &rarr; <a href="/breakeven" style="color:var(--gold);font-weight:700">Open Break-Even Calculator</a>
@@ -601,7 +601,7 @@ function calcCorn(){
   function s(id,v){var el=document.getElementById(id);if(el)el.textContent=v;}
   var why=gate([['c-ear-count','Ears'],['c-kernel-rows','Kernel rows'],['c-kernels-row','Kernels per row']]);
   if(why){
-    ['c-yield-val','c-pop-val','c-kpe-val','c-range-val'].forEach(function(id){s(id,'\u2014');});
+    ['c-yield-val','c-pop-val','c-kpe-val','c-range-val'].forEach(function(id){s(id,'-');});
     s('c-yield-sub',why);
     BE.corn.yield=null; syncBreakeven(); return;
   }
@@ -652,7 +652,7 @@ function calcBean(){
   function s(id,v){var el=document.getElementById(id);if(el)el.textContent=v;}
   var why=gate([['b-plant-count','Plants'],['b-pods-plant','Pods per plant'],['b-seeds-pod','Seeds per pod'],['b-seeds-lb','Seeds per pound']]);
   if(why){
-    ['b-yield-val','b-pop-val','b-spp-val','b-range-val'].forEach(function(id){s(id,'\u2014');});
+    ['b-yield-val','b-pop-val','b-spp-val','b-range-val'].forEach(function(id){s(id,'-');});
     s('b-yield-sub',why);
     BE.bean.yield=null; syncBreakeven(); return;
   }
@@ -707,7 +707,7 @@ function calcBreakeven(){
   var okY=inr('bm-yield',y), okP=inr('bm-price',p), okC=inr('bm-cost',c), okA=inr('bm-acres',a);
   function s(id,v){var el=document.getElementById(id);if(el)el.textContent=v;}
   function d(v){return (v<0?'-':'')+'$'+Math.abs(v).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});}
-  function nv(why){return '\u2014 '+why;}
+  function nv(why){return ''+why;}
   function col(id,v){var el=document.getElementById(id);if(el)el.style.color=(v==null)?'':(v>=0?'var(--green)':'#e05c5c');}
   var eY=nv(y!=null?'yield out of range':'enter a yield'), eP=nv(p!=null?'price out of range':'enter a price'), eC=nv(c!=null?'cost out of range':'enter a cost'), eA=nv(a!=null?'acres out of range':'enter acres');
   var rev=(okY&&okP)?y*p:null;

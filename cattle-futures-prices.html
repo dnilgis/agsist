@@ -188,8 +188,8 @@
   <div class="brief-strip" id="brief-strip" style="display:none">
     <div class="brief-icon"><svg class="ic" aria-hidden="true"><use href="#i-newspaper"/></svg></div>
     <div class="brief-text">
-      <div class="brief-hd" id="brief-hd">—</div>
-      <div class="brief-teaser" id="brief-teaser">—</div>
+      <div class="brief-hd" id="brief-hd">-</div>
+      <div class="brief-teaser" id="brief-teaser">-</div>
     </div>
     <a href="/daily" class="brief-cta">Read →</a>
   </div>
@@ -251,35 +251,35 @@
     <div class="ct-grid">
       <div class="ct-card">
         <div style="display:flex;justify-content:space-between;align-items:baseline"><span class="lbl">Live Cattle</span><span class="tk">LE=F · $/cwt</span></div>
-        <div class="ct-price" id="le-price">—</div>
+        <div class="ct-price" id="le-price">-</div>
         <div class="ct-chg" id="le-chg"></div>
         <div class="ct-rng"><div class="ct-rng-lbl" id="le-rng-lbl">52-Week Range</div>
           <div class="ct-bar"><div class="ct-fill" id="le-fill"></div><div class="ct-dot" id="le-dot"></div></div>
-          <div class="ct-rng-vals"><span class="lo" id="le-lo">—</span><span class="cur" id="le-cur">—</span><span class="hi" id="le-hi">—</span></div>
+          <div class="ct-rng-vals"><span class="lo" id="le-lo">-</span><span class="cur" id="le-cur">-</span><span class="hi" id="le-hi">-</span></div>
         </div>
         <div class="ct-read" id="le-read"></div>
       </div>
       <div class="ct-card">
         <div style="display:flex;justify-content:space-between;align-items:baseline"><span class="lbl">Feeder Cattle</span><span class="tk">GF=F · $/cwt</span></div>
-        <div class="ct-price" id="gf-price">—</div>
+        <div class="ct-price" id="gf-price">-</div>
         <div class="ct-chg" id="gf-chg"></div>
         <div class="ct-rng"><div class="ct-rng-lbl" id="gf-rng-lbl">52-Week Range</div>
           <div class="ct-bar"><div class="ct-fill" id="gf-fill"></div><div class="ct-dot" id="gf-dot"></div></div>
-          <div class="ct-rng-vals"><span class="lo" id="gf-lo">—</span><span class="cur" id="gf-cur">—</span><span class="hi" id="gf-hi">—</span></div>
+          <div class="ct-rng-vals"><span class="lo" id="gf-lo">-</span><span class="cur" id="gf-cur">-</span><span class="hi" id="gf-hi">-</span></div>
         </div>
         <div class="ct-read" id="gf-read"></div>
       </div>
     </div>
     <div class="ct-ratio">
       <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap"><span class="lbl"><svg class="ic" aria-hidden="true"><use href="#i-beef"/></svg> Feeder / Live Ratio</span><span class="tk" id="ct-ratio-feed">feeder ÷ live</span></div>
-      <div class="val" id="ct-ratio-val">—</div>
+      <div class="val" id="ct-ratio-val">-</div>
       <div class="interp" id="ct-ratio-interp">Loads with live prices.</div>
     </div>
   </section>
 
   <!-- ░░ forward curve · live cattle ░░ -->
   <section class="fwd-card" id="fwd-card" style="display:none" aria-label="Live cattle forward curve">
-    <div class="fwd-head"><span class="fwd-title"><svg class="ic" aria-hidden="true"><use href="#i-trending-up"/></svg> Forward Curve · Live Cattle</span><span class="fwd-shape" id="fwd-shape">—</span></div>
+    <div class="fwd-head"><span class="fwd-title"><svg class="ic" aria-hidden="true"><use href="#i-trending-up"/></svg> Forward Curve · Live Cattle</span><span class="fwd-shape" id="fwd-shape">-</span></div>
     <svg class="fwd-svg" id="fwd-svg" viewBox="0 0 700 140" xmlns="http://www.w3.org/2000/svg"></svg>
     <div class="fwd-empty" id="fwd-empty" style="display:none">Deferred contracts not available right now.</div>
     <div class="fwd-interp" id="fwd-interp">Carry analysis loads with price data.</div>
@@ -315,7 +315,7 @@
       var lastDiff=last.price-first.price;
       var st,it;
       if(diff>1){st='upward / contango';it='<strong>The curve peaks at $'+peak.price.toFixed(2)+'/cwt in '+peak.label+', $'+diff.toFixed(2)+' above the '+first.label+' contract</strong> (about $'+perMo.toFixed(2)+'/cwt per month over '+span+' months)'+(peak===last?'.':'; later months ease back to $'+last.price.toFixed(2)+' in '+last.label+'.')+' You can lock higher hedges on cattle marketed later.';}
-      else if(lastDiff<-1){st='inverted / backwardation';it='<strong>The '+first.label+' contract is $'+Math.abs(lastDiff).toFixed(2)+'/cwt above '+last.label+'</strong> — the board expects fed prices to ease from here. Current cash is tight; hedging deferred months locks in less than the spot, so marketing sooner can pay.';}
+      else if(lastDiff<-1){st='inverted / backwardation';it='<strong>The '+first.label+' contract is $'+Math.abs(lastDiff).toFixed(2)+'/cwt above '+last.label+'</strong>, the board expects fed prices to ease from here. Current cash is tight; hedging deferred months locks in less than the spot, so marketing sooner can pay.';}
       else{st='flat';it='<strong>Flat curve</strong>: deferred contracts price near the front month. The board is neutral on where fed cattle head from here.';}
       if(shape)shape.textContent=st;if(interp)interp.innerHTML=it;
     }).catch(function(){if(card)card.style.display='none';});
@@ -350,19 +350,19 @@
     <div class="ctcot-grid">
       <div class="ctcot-box">
         <div class="ctcot-name">Live Cattle (LE)</div>
-        <div class="ctcot-net" id="le-cot-net">—</div>
+        <div class="ctcot-net" id="le-cot-net">-</div>
         <div class="ctcot-sub" id="le-cot-sub">net contracts</div>
         <div class="ctcot-gauge"><div class="ctcot-dot" id="le-cot-dot" style="left:50%"></div></div>
-        <div class="ctcot-labels"><span id="le-cot-lo">—</span><span id="le-cot-hi">—</span></div>
+        <div class="ctcot-labels"><span id="le-cot-lo">-</span><span id="le-cot-hi">-</span></div>
         <div class="ctcot-pct" id="le-cot-pct"></div>
         <div class="ctcot-chg" id="le-cot-chg"></div>
       </div>
       <div class="ctcot-box">
         <div class="ctcot-name">Feeder Cattle (GF)</div>
-        <div class="ctcot-net" id="gf-cot-net">—</div>
+        <div class="ctcot-net" id="gf-cot-net">-</div>
         <div class="ctcot-sub" id="gf-cot-sub">net contracts</div>
         <div class="ctcot-gauge"><div class="ctcot-dot" id="gf-cot-dot" style="left:50%"></div></div>
-        <div class="ctcot-labels"><span id="gf-cot-lo">—</span><span id="gf-cot-hi">—</span></div>
+        <div class="ctcot-labels"><span id="gf-cot-lo">-</span><span id="gf-cot-hi">-</span></div>
         <div class="ctcot-pct" id="gf-cot-pct"></div>
         <div class="ctcot-chg" id="gf-cot-chg"></div>
       </div>
@@ -436,14 +436,14 @@
       <div class="cog-f" style="grid-column:1/-1"><label for="cog-fed">Fed-cattle sale price <span class="h" id="cog-fed-h">($/cwt, live cattle contract nearest your sale month)</span></label><input type="number" id="cog-fed" inputmode="decimal" value="" placeholder="—" min="0" step="1"></div>
     </div>
     <div class="cog-out" aria-live="polite">
-      <div class="cog-be"><div class="k">Breakeven sale price</div><div class="v" id="cog-be">—</div></div>
+      <div class="cog-be"><div class="k">Breakeven sale price</div><div class="v" id="cog-be">-</div></div>
       <div class="cog-rows">
-        <div class="cog-row"><span class="rk">Purchase cost</span><span class="rv" id="cog-pcost">—</span></div>
-        <div class="cog-row"><span class="rk">Pounds of gain</span><span class="rv" id="cog-gain">—</span></div>
-        <div class="cog-row"><span class="rk">Feeding cost</span><span class="rv" id="cog-fcost">—</span></div>
-        <div class="cog-row"><span class="rk">Total cost / head</span><span class="rv" id="cog-total">—</span></div>
+        <div class="cog-row"><span class="rk">Purchase cost</span><span class="rv" id="cog-pcost">-</span></div>
+        <div class="cog-row"><span class="rk">Pounds of gain</span><span class="rv" id="cog-gain">-</span></div>
+        <div class="cog-row"><span class="rk">Feeding cost</span><span class="rv" id="cog-fcost">-</span></div>
+        <div class="cog-row"><span class="rk">Total cost / head</span><span class="rv" id="cog-total">-</span></div>
       </div>
-      <div class="cog-pl" id="cog-pl"><span class="big" id="cog-pl-big">—</span><span class="note" id="cog-pl-note"></span></div>
+      <div class="cog-pl" id="cog-pl"><span class="big" id="cog-pl-big">-</span><span class="note" id="cog-pl-note"></span></div>
     </div>
     <p class="cog-disc">Decision-support only, not a guarantee. Real returns depend on actual cost of gain, death loss, basis, yield grade, interest, and the sale-month board, which all move. Use it to compare scenarios, then confirm with your own closeouts.</p>
   </section>
@@ -605,7 +605,7 @@
     // feed. Any required field blank -> every output shows an em dash until
     // the number is back. (n() returns null, not 0, for blanks now.)
     if(wtin==null||pin==null||wtfin==null||cogv==null||fed==null){
-      ['cog-be','cog-pcost','cog-gain','cog-fcost','cog-total','cog-pl-big'].forEach(function(id){var e=$(id);if(e)e.textContent='—';});
+      ['cog-be','cog-pcost','cog-gain','cog-fcost','cog-total','cog-pl-big'].forEach(function(id){var e=$(id);if(e)e.textContent='-';});
       var bx=$('cog-pl');if(bx)bx.className='cog-pl';
       var nt=$('cog-pl-note');if(nt)nt.textContent='Fill every field; a blank is not a zero.';
       return;
@@ -615,7 +615,7 @@
     var feed=gain*cogv;
     var total=purchase+feed;
     var be=wtfin>0?(total/wtfin*100):0;
-    $('cog-be').innerHTML=be?('$'+be.toFixed(2)+' <small>/cwt</small>'):'—';
+    $('cog-be').innerHTML=be?('$'+be.toFixed(2)+' <small>/cwt</small>'):'-';
     $('cog-pcost').textContent=money(purchase);
     $('cog-gain').textContent=gain.toFixed(0)+' lb';
     $('cog-fcost').textContent=money(feed);
@@ -653,7 +653,7 @@
 <script>
 (function(){
   function $(i){return document.getElementById(i);}
-  function fmtK(n){if(n==null)return '—';var s=n>=0?'+':'−';var a=Math.abs(n);return s+(a>=1000?(a/1000).toFixed(1)+'k':a);}
+  function fmtK(n){if(n==null)return '-';var s=n>=0?'+':'−';var a=Math.abs(n);return s+(a>=1000?(a/1000).toFixed(1)+'k':a);}
   function ord(n){var s=['th','st','nd','rd'],v=n%100;return s[(v-20)%10]||s[v]||s[0];}
   function one(pre,d){
     if(!d||d.net==null)return null;

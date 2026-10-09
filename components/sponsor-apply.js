@@ -47,7 +47,7 @@
     }));
     ['page', 'supporter', 'founding'].forEach(function (t) {
       var el = form.querySelector('[data-price="' + t + '"]');
-      if (el) el.innerHTML = price(t) ? price(t) + ' &middot; first month free' : '&mdash;';
+      if (el) el.innerHTML = price(t) ? price(t) + ' &middot; first month free' : '-';
     });
     if (S.supFull) $('sa-sup-note').textContent = 'All supporter spots are taken. Apply and you are first in line.';
     if (S.fndReserved) $('sa-fnd-note').textContent = 'In talks with one business. Apply and you are next in line.';

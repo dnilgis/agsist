@@ -1126,7 +1126,7 @@ function escH(s){return s?String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').r
    beside it printed the difference to the dollar, so the table disagreed with
    itself about how precisely it knew the answer. It is also the same six
    characters wide, so nothing was bought with the precision that was lost. */
-function fmtMoney(n){if(n==null||isNaN(n))return'&mdash;';return(n<0?'&minus;':'')+'$'+Math.round(Math.abs(n)).toLocaleString('en-US');}
+function fmtMoney(n){if(n==null||isNaN(n))return'-';return(n<0?'&minus;':'')+'$'+Math.round(Math.abs(n)).toLocaleString('en-US');}
 function truncName(name,max){return name&&name.length>max?name.slice(0,max-1)+'\u2026':name;}
 /* MEAL, HULLS, PELLETS AND OIL ARE NOT THE GRAIN. They are priced PER TON,
    and matching on the substring 'soy' filed 37 live rows -- Soybean Meal,
@@ -1182,8 +1182,8 @@ function basisUnclear(bid){return !!bid&&bid.basis!=null&&isFinite(bid.basis)&&b
    basis-change lines that were already using U+2212. Three glyphs for one
    arithmetic sign on one card. */
 function formatBasis(b,bid){
-  if(bid&&b!=null&&basisUnit(b,bid)==='?')return{str:'<span title="basis unit unclear">&mdash;</span>',cls:'flat'};
-  var c=basisCents(b,bid);if(c==null)return{str:'&mdash;',cls:'flat'};
+  if(bid&&b!=null&&basisUnit(b,bid)==='?')return{str:'<span title="basis unit unclear">-</span>',cls:'flat'};
+  var c=basisCents(b,bid);if(c==null)return{str:'-',cls:'flat'};
   var cls=c>0?'pos':c<0?'neg':'flat';
   /* An unusual basis is printed in dollars, as the board means it, and says so. */
   if(bid&&basisUnusual(bid))return{str:'<span class="basis-odd" title="unusual basis, check with the elevator">'+(c>0?'+':'&minus;')+'$'+fmtPx(Math.abs(c)/100)+'</span>',cls:cls,odd:true};
@@ -2012,7 +2012,7 @@ function renderBestBids(elevators){
       if(cands.length===1)html+='<div class="bbc-note">Only '+(cls?escH(clsName(cls))+' ':'')+c.label.toLowerCase()+' bid in this search</div>';
       others.forEach(function(o){
         if(!o.top)return;
-        html+='<div class="bbc-note">'+(o.cls?escH(clsName(o.cls)):'Class not stated')+': '+escH((o.top.rk.remark?cbRank.priceText(o.top.rk,fmtPx):'$'+fmtPx(ppu(o.top.bid.cashPrice))))+' at '+escH(o.top.elev.facility)+(placeOf(o.top.elev)?' \u2014 '+escH(placeOf(o.top.elev)):'')+' (different wheat, not compared)</div>';
+        html+='<div class="bbc-note">'+(o.cls?escH(clsName(o.cls)):'Class not stated')+': '+escH((o.top.rk.remark?cbRank.priceText(o.top.rk,fmtPx):'$'+fmtPx(ppu(o.top.bid.cashPrice))))+' at '+escH(o.top.elev.facility)+(placeOf(o.top.elev)?', '+escH(placeOf(o.top.elev)):'')+' (different wheat, not compared)</div>';
       });
       if(topElev.unread)html+='<div class="bbc-note bbc-warn">board not reached, call before you load</div>';
       html+='</div><div class="bbc-actions">';
@@ -2170,7 +2170,7 @@ function openCompareModal(){
   elevs.forEach(function(e){html+='<th>'+escH(e.facility)+'<br><span style="font-size:0.755rem;color:var(--text-muted);font-weight:400">'+escH(townOf(e)+(e.state?', '+e.state:''))+'</span></th>';});
   html+='</tr></thead><tbody>';
   html+='<tr><td class="compare-rl">Distance</td>';
-  elevs.forEach(function(e){html+='<td>'+(e.distance!=null?e.distance.toFixed(0)+' mi':'&mdash;')+'</td>';});html+='</tr>';
+  elevs.forEach(function(e){html+='<td>'+(e.distance!=null?e.distance.toFixed(0)+' mi':'n/a')+'</td>';});html+='</tr>';
   /* OTHER GRAINS ARE COMPARED PRODUCT BY PRODUCT, NEVER ACROSS PRODUCTS.
      The 'other' bucket holds sunflowers at $24 a hundredweight beside sorghum
      at $4 a bushel; taking the nearest row of each elevator put one against
@@ -2205,7 +2205,7 @@ function openCompareModal(){
     var delVals=picked.map(function(b){return b?delShow(b):null;});
     if(delVals.some(function(v){return v;})){
       html+='<tr><td class="compare-rl" style="padding-left:1.1rem">Delivery</td>';
-      delVals.forEach(function(v){html+=v?('<td>'+escH(v)+'</td>'):'<td class="compare-na">&mdash;</td>';});
+      delVals.forEach(function(v){html+=v?('<td>'+escH(v)+'</td>'):'<td class="compare-na">n/a</td>';});
       html+='</tr>';
     }
     var cashVals=picked.map(function(b){return b?ppu(b.cashPrice):null;});
@@ -2213,12 +2213,12 @@ function openCompareModal(){
     var nCash=cashVals.filter(function(v){return v!=null;}).length;
     var maxCash=nCash<2?null:cashVals.reduce(function(m,v){return v!=null&&v>m?v:m;},-Infinity);
     html+='<tr><td class="compare-rl" style="padding-left:1.1rem">'+(cat==='other'?'Cash':'Cash/bu')+' (soonest delivery)</td>';
-    cashVals.forEach(function(v){if(v==null){html+='<td class="compare-na">&mdash;</td>';return;}html+='<td class="compare-price'+(v===maxCash?' compare-win':'')+'">$'+fmtPx(v)+'</td>';});html+='</tr>';
+    cashVals.forEach(function(v){if(v==null){html+='<td class="compare-na">n/a</td>';return;}html+='<td class="compare-price'+(v===maxCash?' compare-win':'')+'">$'+fmtPx(v)+'</td>';});html+='</tr>';
     var bRows=picked;
     var cVals=bRows.map(function(b){return b?basisCents(b.basis,b):null;});
     var maxB=cVals.filter(function(v){return v!=null;}).length<2?null:cVals.reduce(function(m,v,i){return v!=null&&v>m&&!basisUnusual(bRows[i])?v:m;},-Infinity);
     html+='<tr><td class="compare-rl" style="padding-left:1.1rem">Basis (soonest delivery)</td>';
-    cVals.forEach(function(c,i){if(c==null){html+='<td class="compare-na">&mdash;</td>';return;}var f=formatBasis(bRows[i].basis,bRows[i]);html+='<td class="compare-basis '+f.cls+(c===maxB?' compare-win':'')+'">'+f.str+'</td>';});html+='</tr>';
+    cVals.forEach(function(c,i){if(c==null){html+='<td class="compare-na">n/a</td>';return;}var f=formatBasis(bRows[i].basis,bRows[i]);html+='<td class="compare-basis '+f.cls+(c===maxB?' compare-win':'')+'">'+f.str+'</td>';});html+='</tr>';
     /* WHICH CONTRACT EACH BASIS IS AGAINST. Two elevators quoting -55 and -45
        are not comparable if one is against December and the other against
        March, and until this row existed the table invited exactly that
@@ -2227,7 +2227,7 @@ function openCompareModal(){
     if(fRows.some(function(r){return r&&r.f!=null&&r.l;})){
       html+='<tr><td class="compare-rl" style="padding-left:1.1rem">Futures ref</td>';
       fRows.forEach(function(r){
-        if(!r||r.f==null||!r.l){html+='<td class="compare-na">&mdash;</td>';return;}
+        if(!r||r.f==null||!r.l){html+='<td class="compare-na">n/a</td>';return;}
         html+='<td style="font-family:\'JetBrains Mono\',monospace;font-size:0.78rem;color:var(--text-muted)">'+escH(r.l)+' $'+fmtPx(r.f)+'</td>';
       });
       html+='</tr>';
@@ -2332,7 +2332,7 @@ function renderBids(bids,keepLimit){
     /* THE BOARD COULD NOT BE READ THIS RUN. Drawn under the provenance badge
        because it qualifies exactly that claim: the row did come from this
        elevator's own board, just not today's. */
-    if(elev.unread)html+='<div class="elev-stale" title="AGSIST could not reach this elevator\u2019s board on the latest run. This is the last price it posted \u2014 confirm before hauling.">board not reached, call before you load</div>';
+    if(elev.unread)html+='<div class="elev-stale" title="AGSIST could not reach this elevator\u2019s board on the latest run. This is the last price it posted, confirm before hauling.">board not reached, call before you load</div>';
     /* Per-elevator stale flag: renders ONLY when the feed carries a real
        timestamp for this elevator AND it's >18h old — fresh or timestamp-less
        bids stay clean (the status-bar timer covers those). */
@@ -2363,7 +2363,7 @@ function renderBids(bids,keepLimit){
         }
       }else{
         var _age=Date.now()-elev.asOfT;
-        if(_age>18*3600e3){var _d=new Date(elev.asOfT);html+='<div class="elev-stale" title="This elevator\u2019s bid feed hasn\u2019t updated recently — confirm before hauling">bids quoted '+_d.toLocaleDateString('en-US',{month:'short',day:'numeric'})+'</div>';}
+        if(_age>18*3600e3){var _d=new Date(elev.asOfT);html+='<div class="elev-stale" title="This elevator\u2019s bid feed hasn\u2019t updated recently, confirm before hauling">bids quoted '+_d.toLocaleDateString('en-US',{month:'short',day:'numeric'})+'</div>';}
       }
     }
     html+='</div><div class="elev-meta">';
@@ -2399,8 +2399,8 @@ function renderBids(bids,keepLimit){
       catBids.forEach(function(bid,bi){
         var perTon=notPerBushel(bid);
         var p=perTon?null:ppu(bid.cashPrice);
-        var cs2=p!=null?'$'+fmtPx(p):'&mdash;';
-        var bf=perTon?{str:'&mdash;',cls:'flat'}:formatBasis(bid.basis,bid);
+        var cs2=p!=null?'$'+fmtPx(p):'-';
+        var bf=perTon?{str:'-',cls:'flat'}:formatBasis(bid.basis,bid);
         var del=bid.deliveryMonth||bid.deliveryStart||'';
         var spot=isSpotDelivery(del,bid);
         var delHtml=spot?'<span class="bid-del-spot">SPOT</span>':'<span class="bid-del-fwd" title="'+escH(del)+'">'+escH(delShow(bid))+'</span>';
@@ -2532,8 +2532,8 @@ function netGet(path,ms){
         /* A CORS refusal arrives here as a TypeError with no status, and is
            the single most likely reason for this to do nothing on a real
            browser while every test passes. Name it. */
-        netLog('FAILED ('+(Date.now()-t0)+'ms):',path,'\u2014',String(err&&err.message||err),
-               '\u2014 if this says "Failed to fetch", the browser was not allowed to read it (CORS) or the host is unreachable');
+        netLog('FAILED ('+(Date.now()-t0)+'ms):',path,'-',String(err&&err.message||err),
+               'if this says "Failed to fetch", the browser was not allowed to read it (CORS) or the host is unreachable');
         resolve(null);}
     });
   });

@@ -143,7 +143,7 @@
       <h2>By crop</h2>
       <div class="pb-wrap"><table class="pb-table" id="pb-bycrop">
         <thead><tr><th scope="col">Crop</th><th scope="col" class="num">Live, right</th><th scope="col" class="num">Live windows</th><th scope="col" class="num">Backtest, right</th><th scope="col" class="num">Backtest, non-overlapping</th><th scope="col">Backtest verdict</th></tr></thead>
-        <tbody><!--SEED:pb:bycrop--><tr><td>Corn</td><td class="num">&mdash; 0 graded</td><td class="num">&mdash;</td><td class="num">347 of 684 (50.7%)</td><td class="num">49.1%&ndash;51.8% (170 windows)</td><td>No better than a coin flip.</td></tr><tr><td>Soybeans</td><td class="num">&mdash; 0 graded</td><td class="num">&mdash;</td><td class="num">318 of 684 (46.5%)</td><td class="num">43.3%&ndash;50.6% (170 windows)</td><td>No better than a coin flip; below half in 4 of 5 ways of counting, and worse than always saying up.</td></tr><tr><td>Chicago wheat</td><td class="num">&mdash; 0 graded</td><td class="num">&mdash;</td><td class="num">330 of 684 (48.2%)</td><td class="num">45.0%&ndash;54.7% (170 windows)</td><td>No better than a coin flip; below half in 4 of 5 ways of counting, and worse than always saying down.</td></tr><tr><td>KC wheat</td><td class="num">&mdash; 0 graded</td><td class="num">&mdash;</td><td class="num">306 of 684 (44.7%)</td><td class="num">39.8%&ndash;48.5% (170 windows)</td><td>No better than a coin flip; below half in 5 of 5 ways of counting, and worse than always saying down.</td></tr><!--/SEED--></tbody>
+        <tbody><!--SEED:pb:bycrop--><tr><td>Corn</td><td class="num">&mdash; 0 graded</td><td class="num">n/a</td><td class="num">347 of 684 (50.7%)</td><td class="num">49.1%&ndash;51.8% (170 windows)</td><td>No better than a coin flip.</td></tr><tr><td>Soybeans</td><td class="num">&mdash; 0 graded</td><td class="num">n/a</td><td class="num">318 of 684 (46.5%)</td><td class="num">43.3%&ndash;50.6% (170 windows)</td><td>No better than a coin flip; below half in 4 of 5 ways of counting, and worse than always saying up.</td></tr><tr><td>Chicago wheat</td><td class="num">&mdash; 0 graded</td><td class="num">n/a</td><td class="num">330 of 684 (48.2%)</td><td class="num">45.0%&ndash;54.7% (170 windows)</td><td>No better than a coin flip; below half in 4 of 5 ways of counting, and worse than always saying down.</td></tr><tr><td>KC wheat</td><td class="num">&mdash; 0 graded</td><td class="num">n/a</td><td class="num">306 of 684 (44.7%)</td><td class="num">39.8%&ndash;48.5% (170 windows)</td><td>No better than a coin flip; below half in 5 of 5 ways of counting, and worse than always saying down.</td></tr><!--/SEED--></tbody>
       </table></div>
       <p class="pb-note" id="pb-bycrop-note"></p>
 
@@ -190,7 +190,7 @@
       </table></div>
       <div id="pb-log-more"></div>
       <h3>Days with no call</h3>
-      <p class="pb-note" id="pb-skipped">&mdash;</p>
+      <p class="pb-note" id="pb-skipped">-</p>
 
       <h2 id="old-scorecard">The old call scorecard</h2>
       <p>Until October 2026 this address showed a scorecard of calls the morning briefing wrote for itself. It has been retired. The briefing's &ldquo;The Action&rdquo; line now prints this bot's call instead.</p>
@@ -217,19 +217,19 @@
     var SIGNAL={crowded_long:'Managed money crowded long',crowded_short:'Managed money crowded short',trend_up:'13-week trend up',trend_down:'13-week trend down'};
     function $(id){return document.getElementById(id);}
     function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
-    function fdate(iso){if(!iso)return '—';var p=iso.split('-');return M[+p[1]-1]+' '+(+p[2])+', '+p[0];}
-    function n(x){return x==null?'—':Number(x).toLocaleString('en-US');}
-    function rate(x){return x==null?'—':x.toFixed(1)+'%';}
-    function dollars(c){if(c==null)return '—';var s=(c/100).toFixed(4).replace(/0+$/,'');if(s.split('.')[1].length<2)s=(c/100).toFixed(2);return '$'+s;}
+    function fdate(iso){if(!iso)return '-';var p=iso.split('-');return M[+p[1]-1]+' '+(+p[2])+', '+p[0];}
+    function n(x){return x==null?'-':Number(x).toLocaleString('en-US');}
+    function rate(x){return x==null?'-':x.toFixed(1)+'%';}
+    function dollars(c){if(c==null)return '-';var s=(c/100).toFixed(4).replace(/0+$/,'');if(s.split('.')[1].length<2)s=(c/100).toFixed(2);return '$'+s;}
     function ord(x){var v=x%100;if(v>=11&&v<=13)return x+'th';return x+({1:'st',2:'nd',3:'rd'}[x%10]||'th');}
-    function luck(p){if(p==null)return '—';if(p<0.01)return 'under 1 in 100';return 'about '+Math.round(p*100)+' in 100';}
-    function dirSpan(d){return d==='up'?'<span class="pb-up">Up</span>':(d==='down'?'<span class="pb-down">Down</span>':'—');}
+    function luck(p){if(p==null)return '-';if(p<0.01)return 'under 1 in 100';return 'about '+Math.round(p*100)+' in 100';}
+    function dirSpan(d){return d==='up'?'<span class="pb-up">Up</span>':(d==='down'?'<span class="pb-down">Down</span>':'-');}
     function verdictLine(r,label,R){
-      if(!r)return {v:'—',line:'',luck:''};
+      if(!r)return {v:'-',line:'',luck:''};
       if(r.verdict==='not_enough'){
         return {v:VERDICT.not_enough,line:n(r.graded)+' graded so far. A rate is shown from '+n(R.min_graded_for_rate)+' graded calls and '+n(R.min_windows_for_rate)+' non-overlapping windows.',luck:''};
       }
-      return {v:r.verdict_text||VERDICT[r.verdict]||'—',
+      return {v:r.verdict_text||VERDICT[r.verdict]||'-',
         line:'Right on '+n(r.hits)+' of '+n(r.graded)+' '+label+' ('+rate(r.hit_rate)+'). Across four non-overlapping groups of calls: '+rate(r.spell_rate_low)+' to '+rate(r.spell_rate_high)+' ('+n(r.windows)+' windows).',
         luck:'Odds pure guessing does at least this well: '+luck(r.p_luck)+'; at least this badly: '+luck(r.p_worse)+' ('+luck(r.p_worse_adjusted)+' after adjusting for the records tested at once).'};
     }
@@ -239,7 +239,7 @@
       document.querySelectorAll('[data-rule]').forEach(function(el){var k=el.getAttribute('data-rule');if(R[k]!=null)el.textContent=R[k];});
       if(R.registered)$('pb-reg').textContent=R.registered;
       if(R.version)$('pb-ver').textContent=R.version;
-      $('pb-updated').textContent=d.updated?d.updated.replace('T',' ').replace('Z',' UTC'):'—';
+      $('pb-updated').textContent=d.updated?d.updated.replace('T',' ').replace('Z',' UTC'):'-';
 
       var live=((d.live||{}).records||{}).all;
       var L=verdictLine(live,'graded calls',R);
@@ -261,27 +261,27 @@
       var lt=(d.latest||{}),lc=lt.calls||[];
       $('pb-latest-when').textContent=lt.date?('Made at the '+fdate(lt.date)+' close.'):'No live call yet. The first calls are made at the '+fdate(d.first_live_call||d.live_start)+' close.';
       var tb=$('pb-latest').querySelector('tbody');
-      tb.innerHTML=lc.length?lc.map(function(c){return '<tr><td>'+esc(labels[c.crop]||c.crop)+'</td><td>'+dirSpan(c.direction)+'</td><td>'+esc(c.contract)+'</td><td class="num">'+dollars(c.entry)+'</td><td>'+fdate(c.exit_day)+'</td><td>'+esc(SIGNAL[c.signal]||c.signal)+(c.cot_pct!=null?' (managed money at the '+ord(Math.round(c.cot_pct))+' percentile)':'')+'</td></tr>';}).join(''):'<tr><td colspan="6">— No calls yet.</td></tr>';
+      tb.innerHTML=lc.length?lc.map(function(c){return '<tr><td>'+esc(labels[c.crop]||c.crop)+'</td><td>'+dirSpan(c.direction)+'</td><td>'+esc(c.contract)+'</td><td class="num">'+dollars(c.entry)+'</td><td>'+fdate(c.exit_day)+'</td><td>'+esc(SIGNAL[c.signal]||c.signal)+(c.cot_pct!=null?' (managed money at the '+ord(Math.round(c.cot_pct))+' percentile)':'')+'</td></tr>';}).join(''):'<tr><td colspan="6">No calls yet.</td></tr>';
 
       var lr=(d.live||{}).records||{},br=bt.records||{};
       var cb=$('pb-bycrop').querySelector('tbody');
       cb.innerHTML=(d.crops||[]).map(function(c){var a=lr[c.key]||{},b=br[c.key]||{};
-        var lv=a.gate_ok?(n(a.hits)+' of '+n(a.graded)+' ('+rate(a.hit_rate)+')'):('— '+n(a.graded)+' graded');
-        var ls=a.gate_ok?n(a.windows):'—';
-        var bv=b.graded?(n(b.hits)+' of '+n(b.graded)+' ('+rate(b.hit_rate)+')'):'—';
-        var bs=b.graded?(rate(b.spell_rate_low)+'–'+rate(b.spell_rate_high)+' ('+n(b.windows)+' windows)'):'—';
-        return '<tr><td>'+esc(c.label)+'</td><td class="num">'+lv+'</td><td class="num">'+ls+'</td><td class="num">'+bv+'</td><td class="num">'+bs+'</td><td>'+esc(b.verdict_text||VERDICT[b.verdict]||'—')+'</td></tr>';}).join('');
+        var lv=a.gate_ok?(n(a.hits)+' of '+n(a.graded)+' ('+rate(a.hit_rate)+')'):(''+n(a.graded)+' graded');
+        var ls=a.gate_ok?n(a.windows):'-';
+        var bv=b.graded?(n(b.hits)+' of '+n(b.graded)+' ('+rate(b.hit_rate)+')'):'-';
+        var bs=b.graded?(rate(b.spell_rate_low)+'–'+rate(b.spell_rate_high)+' ('+n(b.windows)+' windows)'):'-';
+        return '<tr><td>'+esc(c.label)+'</td><td class="num">'+lv+'</td><td class="num">'+ls+'</td><td class="num">'+bv+'</td><td class="num">'+bs+'</td><td>'+esc(b.verdict_text||VERDICT[b.verdict]||'n/a')+'</td></tr>';}).join('');
       $('pb-bycrop-note').textContent='Live figures show a dash until a crop has '+n(R.min_graded_for_rate)+' graded calls and '+n(R.min_windows_for_rate)+' non-overlapping windows. Backtest: '+n(bt.rules_tested)+' rule tested, '+n(bt.tests_in_family)+' records checked against a coin flip.';
 
       var calls=(d.calls||[]).slice().sort(function(a,b){return a.made<b.made?1:(a.made>b.made?-1:(a.crop<b.crop?-1:1));});
       var lb=$('pb-log').querySelector('tbody'),shown=0,PAGE=40;
       function row(c){var res;
         if(c.status==='graded')res=c.outcome==='hit'?'<span class="pb-hit">Right</span>':'<span class="pb-miss">Wrong</span>';
-        else if(c.status==='ungradeable')res='— '+esc(c.note||'no settlement in the feed');
+        else if(c.status==='ungradeable')res=''+esc(c.note||'no settlement in the feed');
         else res='<span class="pb-open">Open</span>';
         if(c.note)res+='<br><small>'+esc(c.note)+'</small>';
-        return '<tr><td>'+fdate(c.made)+'</td><td>'+esc(labels[c.crop]||c.crop)+'</td><td>'+dirSpan(c.direction)+'</td><td>'+esc(c.contract)+'</td><td class="num">'+dollars(c.entry)+'</td><td class="num">'+(c.exit!=null?dollars(c.exit):'—')+'</td><td>'+fdate(c.exit_day)+'</td><td>'+res+'</td></tr>';}
-      function render(){var s=calls.slice(0,shown+PAGE);shown=s.length;lb.innerHTML=s.length?s.map(row).join(''):'<tr><td colspan="8">— No live calls yet.</td></tr>';
+        return '<tr><td>'+fdate(c.made)+'</td><td>'+esc(labels[c.crop]||c.crop)+'</td><td>'+dirSpan(c.direction)+'</td><td>'+esc(c.contract)+'</td><td class="num">'+dollars(c.entry)+'</td><td class="num">'+(c.exit!=null?dollars(c.exit):'n/a')+'</td><td>'+fdate(c.exit_day)+'</td><td>'+res+'</td></tr>';}
+      function render(){var s=calls.slice(0,shown+PAGE);shown=s.length;lb.innerHTML=s.length?s.map(row).join(''):'<tr><td colspan="8">No live calls yet.</td></tr>';
         var m=$('pb-log-more');m.innerHTML=shown<calls.length?'<button type="button" class="pb-more" id="pb-more-btn">Show '+Math.min(PAGE,calls.length-shown)+' more ('+(calls.length-shown)+' left)</button>':'';
         var bb=$('pb-more-btn');if(bb)bb.addEventListener('click',render);}
       render();

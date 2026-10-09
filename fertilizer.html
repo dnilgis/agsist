@@ -307,7 +307,7 @@
 
   <div class="fert-updated-bar">
     <div id="fert-stale" class="fert-stale" style="display:none"></div>
-    <div>As of <strong id="fert-updated-date">&#8212;</strong> &middot; <span id="fert-source-lbl">Midwest dealer benchmark</span></div>
+    <div>As of <strong id="fert-updated-date">-</strong> &middot; <span id="fert-source-lbl">Midwest dealer benchmark</span></div>
   </div>
 
   <div class="fert-disclaimer">
@@ -447,7 +447,7 @@
 (function(){
 'use strict';
 
-function fmtDate(iso){if(!iso)return'\u2014';try{var d=new Date(iso+'T12:00:00');return d.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});}catch(e){return iso;}}
+function fmtDate(iso){if(!iso)return'-';try{var d=new Date(iso+'T12:00:00');return d.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});}catch(e){return iso;}}
 function money(n){return '$'+Math.round(n).toLocaleString('en-US');}
 function money2(n){return '$'+(Math.round(n*100)/100).toFixed(2);}
 function fmtLb(n){return Math.round(n).toLocaleString('en-US');}
@@ -524,7 +524,7 @@ function renderCards(data){
     var hasPrice=p.price!=null;var chg=hasPrice&&p.prev!=null?p.price-p.prev:null;
     var chgCls=chg==null?'nc':chg>0?'up':chg<0?'dn':'nc';var arrow=chg==null?'':chg>0?'\u25b2':chg<0?'\u25bc':'';
     var chgStr=chg!=null&&chg!==0?'$'+Math.abs(chg).toFixed(0)+'/ton vs prior':'No change';
-    var chgTxt=chg!=null&&chg!==0?arrow+' $'+Math.abs(chg).toFixed(0):(chg===0?'\u2014':'');
+    var chgTxt=chg!=null&&chg!==0?arrow+' $'+Math.abs(chg).toFixed(0):(chg===0?'-':'');
     var priceDisplay=hasPrice?'$'+p.price:'Call';var priceColor=hasPrice?'':'color:var(--text-muted);font-size:1.2rem';
     return '<div class="fert-price-card"><div class="fpc-head"><span class="fpc-name">'+esc(p.name)+'</span><span class="fpc-sym">'+esc(p.symbol)+'</span></div><div class="fpc-price" style="'+priceColor+'">'+priceDisplay+'</div><div class="fpc-unit">'+esc(p.unit)+'</div>'+(chgTxt?'<div class="fpc-chg"><span class="fpc-chg-val '+chgCls+'" title="'+esc(chgStr)+'">'+esc(chgTxt)+'</span></div>':'')+'<div class="fpc-loc">'+esc(p.location)+stale(p,data.updated)+'</div></div>';
   }).join('');
@@ -534,7 +534,7 @@ function renderCards(data){
 var NUT=[{k:'N',label:'Nitrogen',unit:'lb N'},{k:'P',label:'Phosphate',unit:'lb P\u2082O\u2085'},{k:'K',label:'Potash',unit:'lb K\u2082O'},{k:'S',label:'Sulfur',unit:'lb S'}];
 function renderVerdict(products){
   var box=document.getElementById('fv-cheapest');if(!box)return;
-  box.innerHTML=NUT.map(function(n){var ok=n.k==='N'?mainlyN:null;var c=cheapest(products,n.k,ok);if(!c){var has=products.some(function(pr){return pr.grade&&pr.grade[n.k]>0&&(!ok||ok(pr));});if(!has)return'';return '<div class="fv-chip"><div class="fv-chip-lab">Cheapest '+n.label+'</div><div class="fv-chip-src">\u2014 no quote</div><div class="fv-chip-val">\u2014<span>/'+n.unit+'</span></div></div>';}
+  box.innerHTML=NUT.map(function(n){var ok=n.k==='N'?mainlyN:null;var c=cheapest(products,n.k,ok);if(!c){var has=products.some(function(pr){return pr.grade&&pr.grade[n.k]>0&&(!ok||ok(pr));});if(!has)return'';return '<div class="fv-chip"><div class="fv-chip-lab">Cheapest '+n.label+'</div><div class="fv-chip-src">no quote</div><div class="fv-chip-val">-<span>/'+n.unit+'</span></div></div>';}
     return '<div class="fv-chip"><div class="fv-chip-lab">Cheapest '+n.label+'</div><div class="fv-chip-src">'+esc(c.name)+ageTag(c.product.as_of)+'</div><div class="fv-chip-val">$'+c.cost.toFixed(2)+'<span>/'+n.unit+'</span></div></div>';}).join('');
   var v=document.getElementById('fert-verdict');if(v)v.hidden=false;
 }
@@ -553,7 +553,7 @@ function renderAfford(){
 function renderTable(products){
   var t=document.getElementById('fert-nutrient-body');if(!t)return;
   t.innerHTML=products.filter(function(p){return p.grade;}).map(function(p){
-    function cell(k){var c=costPerLb(p.price,p.grade[k]);if(c!=null)return '<td>$'+c.toFixed(2)+'</td>';return (!validPrice(p.price)&&p.grade[k]>0)?'<td class="na">\u2014 no quote</td>':'<td class="na">\u2014</td>';}
+    function cell(k){var c=costPerLb(p.price,p.grade[k]);if(c!=null)return '<td>$'+c.toFixed(2)+'</td>';return (!validPrice(p.price)&&p.grade[k]>0)?'<td class="na">no quote</td>':'<td class="na">n/a</td>';}
     return '<tr><td class="prod">'+esc(p.name)+' <span class="gr">'+esc(p.symbol)+'</span>'+ageTag(p.as_of)+'</td>'+cell('N')+cell('P')+cell('K')+cell('S')+'</tr>';}).join('');
   var amend=products.filter(function(p){return !p.grade;}).map(function(p){return esc(p.name);});
   var note=document.getElementById('fert-nutrient-note');
@@ -577,19 +577,19 @@ function runCalc(){
   var out=document.getElementById('calc-out');if(!out)return;
   if(y<=0){out.innerHTML='<p class="calc-hint">Enter a yield goal to see your per-acre fertility bill.</p>';return;}
   var progRows=prog.lines.map(function(l){var prod=esc(l.product)+(l.note?'<br><small>'+esc(l.note)+'</small>':'')+(l.asof?ageTag(l.asof):'');
-    if(l.cost==null)return '<tr><td>'+l.role+'</td><td>'+esc(l.product)+'</td><td>\u2014</td><td class="r">'+'\u2014 no quote'+'</td></tr>';
+    if(l.cost==null)return '<tr><td>'+l.role+'</td><td>'+esc(l.product)+'</td><td>n/a</td><td class="r">'+'no quote'+'</td></tr>';
     return '<tr><td>'+l.role+'</td><td>'+prod+'</td><td>'+fmtLb(l.lbs)+' lb</td><td class="r">'+money2(l.cost)+'</td></tr>';}).join('');
   var inc=prog.missing.length>0||prog.lines.some(function(l){return l.cost==null;});
   var missNote=inc?'<div class="calc-note">Total is incomplete: no quote for '+prog.missing.map(esc).join(', ')+'.</div>':'';
   var partTxt=prog.costPerAcre>0?'<small> \u00b7 '+money2(prog.costPerAcre)+'/ac excluding '+prog.missing.map(esc).join(', ')+'</small>':'';
-  var incTxt='\u2014 incomplete, quote missing<small> '+prog.missing.map(esc).join(', ')+'</small>'+partTxt;
+  var incTxt='incomplete, quote missing<small> '+prog.missing.map(esc).join(', ')+'</small>'+partTxt;
   var totalAc=a>0&&!inc?'<div class="calc-total-acres">Across <strong>'+fmtLb(a)+' acres</strong>: <strong>'+money(prog.costPerAcre*a)+'</strong> total</div>':'';
   var sLine=(prog.sSupplied>0&&!inc)?'You\u2019re also getting <strong>'+Math.round(prog.sSupplied)+' lb/acre sulfur</strong>'+(prog.mgSupplied>0?' and '+Math.round(prog.mgSupplied)+' lb Mg':'')+' from this program.':'';
   var sAdv=(prog.sSupplied<prog.sNeed)?' Most '+prog.crop.toLowerCase()+' wants roughly '+prog.sNeed+' lb S/acre. Consider moving some nitrogen to ammonium sulfate to close the gap.':'';
   var nNote=c.fixesN?'<div class="calc-note">Soybeans fix their own nitrogen; no N purchase needed. This bill is phosphate and potash to replace what '+y+'-bu beans remove.</div>':'';
   out.innerHTML=(c.fixesN?'':'<div class="calc-needs"><span>Example: about</span> <b>'+fmtLb(prog.Nreq)+' lb N</b> <span>at '+prog.nRate+' lb per bushel. Your rate depends on previous crop and soil test.</span></div>')+'<div class="calc-needs"><span>'+(c.fixesN?'This crop needs about':'Also about')+'</span> <b>'+fmtLb(prog.Preq)+' lb P\u2082O\u2085</b> &middot; <b>'+fmtLb(prog.Kreq)+' lb K\u2082O</b> <span>per acre</span></div>'+
     '<table class="calc-prog"><thead><tr><th scope="col">Nutrient</th><th scope="col">Cheapest source</th><th scope="col">Rate</th><th scope="col" class="r">$/acre</th></tr></thead><tbody>'+progRows+'</tbody></table>'+
-    '<div class="calc-headline"><div><span>Fertility cost</span><strong>'+(inc?incTxt:money2(prog.costPerAcre)+'<small> /acre</small>')+'</strong></div><div><span>Per bushel</span><strong>'+(inc?'\u2014 incomplete, quote missing':money2(prog.costPerBu)+'<small> /bu</small>')+'</strong></div></div>'+
+    '<div class="calc-headline"><div><span>Fertility cost</span><strong>'+(inc?incTxt:money2(prog.costPerAcre)+'<small> /acre</small>')+'</strong></div><div><span>Per bushel</span><strong>'+(inc?'incomplete, quote missing':money2(prog.costPerBu)+'<small> /bu</small>')+'</strong></div></div>'+
     missNote+totalAc+nNote+(sLine?'<div class="calc-note">'+sLine+sAdv+'</div>':'')+
     '<div class="calc-note muted">Lime is a multi-year pH investment, not an annual nutrient, priced in the table above but kept out of this per-season bill.</div>';
   if(window.gtag)gtag('event','fertilizer_calc',{crop:crop,yieldGoal:y});

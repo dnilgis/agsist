@@ -144,7 +144,7 @@ main > .breadcrumb{max-width:1060px;margin:12px auto 0;padding:0 max(1rem,env(sa
     document.getElementById('bm-meta').textContent='Basis vs '+(blk.futures_ref||'nearby futures')+'  \u00b7  '+(_w&&_w.rule==='nearest'?'each location\u2019s nearest delivery month: ':'average of delivery months: ')+_wt+'  \u00b7  '+states.length+' states with '+(DATA.min_locations||2)+'+ locations  \u00b7  as of '+(DATA.updated||'');
     var locs=(blk.locations||[]).slice().sort(function(a,b){return b.basis-a.basis;}),strong=locs.slice(0,5),weak=locs.slice(-5).reverse();
     function li(x){return '<div class="bm-li"><span>'+escB(x.name||'')+'</span><span class="b">'+fmtB(x.basis)+'</span></div>';}
-    document.getElementById('bm-board').innerHTML='<div class="bm-col"><h4>Strongest basis</h4>'+(strong.map(li).join('')||'<div class="bm-err">&mdash;</div>')+'</div><div class="bm-col"><h4>Weakest basis</h4>'+(weak.map(li).join('')||'<div class="bm-err">&mdash;</div>')+'</div>';
+    document.getElementById('bm-board').innerHTML='<div class="bm-col"><h4>Strongest basis</h4>'+(strong.map(li).join('')||'<div class="bm-err">-</div>')+'</div><div class="bm-col"><h4>Weakest basis</h4>'+(weak.map(li).join('')||'<div class="bm-err">-</div>')+'</div>';
   }
   /* THE THREE WHEATS ARE NOT ONE WHEAT. Chicago soft red, Kansas City hard
      red winter and Minneapolis hard red spring are different crops priced off

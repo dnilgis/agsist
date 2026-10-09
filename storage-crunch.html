@@ -285,14 +285,14 @@
     var capL=d.cap&&d.cap[Y];
     if(!capL||capL[0]==null){
       var elN=$('sc-panel');
-      elN.innerHTML='<h3 style="margin:0 0 6px;font-size:1rem">'+st+' &mdash; no ratio</h3><p style="margin:0;color:#8a948f">On-farm capacity is not published for this state, so there is no honest total to measure grain against. The ratio is left blank &dagger;</p>';
+      elN.innerHTML='<h3 style="margin:0 0 6px;font-size:1rem">'+st+', no ratio</h3><p style="margin:0;color:#8a948f">On-farm capacity is not published for this state, so there is no honest total to measure grain against. The ratio is left blank &dagger;</p>';
       elN.style.display='block';
       return;
     }
     var yrs=Object.keys(d.ratio).filter(function(y){return +y<=+Y;}).sort();
     var vals=yrs.map(function(y){return d.ratio[y];});
     var med=median(vals);
-    var h='<h3 style="margin:0 0 6px;font-size:1rem">'+st+' &mdash; grain grown vs storage, 2000&ndash;'+Y+'</h3>';
+    var h='<h3 style="margin:0 0 6px;font-size:1rem">'+st+', grain grown vs storage, 2000&ndash;'+Y+'</h3>';
     var shown=0;
     for(var i=0;i<yrs.length;i++){
       var y=yrs[i], r=d.ratio[y];
@@ -387,7 +387,7 @@
   fetch('/data/storage/storage.json',{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).then(function(j){
     if(!j){vpFail();return;} VD=buildVerdicts(j); render();
   }).catch(function(){vpFail();});
-  function vpFail(){var b=el('vp-big'),w=el('vp-word'),t=el('vp-sent');if(b)b.textContent='\u2014';if(w)w.textContent='';if(t)t.textContent='State verdicts are unavailable: the storage data file did not load. Refresh to retry.';}
+  function vpFail(){var b=el('vp-big'),w=el('vp-word'),t=el('vp-sent');if(b)b.textContent='-';if(w)w.textContent='';if(t)t.textContent='State verdicts are unavailable: the storage data file did not load. Refresh to retry.';}
 })();
 
 </script>

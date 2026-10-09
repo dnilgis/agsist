@@ -151,11 +151,11 @@
     return { whole: '$' + (w / 100).toFixed(2), frac: f ? ['', '1/4', '1/2', '3/4'][f] : '' };
   }
   function qCash(dollars, fracClass){
-    if(dollars == null || !isFinite(Number(dollars))) return '\u2014';
+    if(dollars == null || !isFinite(Number(dollars))) return '-';
     var p = qParts(dollars);
     return p.whole + (p.frac ? '<span class="' + (fracClass || 'bh-frac') + '"> ' + p.frac + '</span>' : '');
   }
-  function qCashText(dollars){ if(dollars == null || !isFinite(Number(dollars))) return '\u2014'; var p = qParts(dollars); return p.whole + (p.frac ? ' ' + p.frac : ''); }
+  function qCashText(dollars){ if(dollars == null || !isFinite(Number(dollars))) return '-'; var p = qParts(dollars); return p.whole + (p.frac ? ' ' + p.frac : ''); }
   /* Cents, signed: \u221262\u00a2, \u221262 1/2\u00a2, \u22121/2\u00a2, even. */
   function qCents(cents){
     var a = Math.abs(Number(cents)), q = Math.round(a * 4) / 4, w = Math.floor(q + 1e-9), f = Math.round((q - w) * 4);
@@ -163,11 +163,11 @@
     return (cents < 0 ? '\u2212' : '+') + (w || !f ? String(w) : '') + (w && f ? ' ' : '') + (f ? ['', '1/4', '1/2', '3/4'][f] : '') + '\u00a2';
   }
   function formatBasis(bN, bid){
-    if(bid && bid.basisUnclear) return { str:'\u2014', cls:'muted', title:'basis unit unclear' };
+    if(bid && bid.basisUnclear) return { str:'-', cls:'muted', title:'basis unit unclear' };
     var cents = basisCents(bN);
-    if(cents == null) return { str:'\u2014', cls:'muted' };
+    if(cents == null) return { str:'-', cls:'muted' };
     if(bid && basisOdd(bid)) return { str: (cents < 0 ? '\u2212' : '+') + '$' + (Math.abs(cents) / 100).toFixed(2), cls: 'muted', odd: true,
-      title: 'unusual basis \u2014 check with the elevator' };
+      title: 'unusual basis, check with the elevator' };
     return {
       /* 2026-10-01: a flat basis is "even", not "+0c". */
       str: qCents(cents),
@@ -447,7 +447,7 @@
   function freshness(elev){
     /* PANEL6 U16: a stale tag says "Old · Oct 1"; a fresh one the date only.
        `ageUnknown`: the board carries no posting time at all. */
-    var o = { stale: false, full: '', tag: '—', kind: 'na', sr: '', ageUnknown: true };
+    var o = { stale: false, full: '', tag: '-', kind: 'na', sr: '', ageUnknown: true };
     if(elev.fromNetwork){
       var chk = ctTime(elev.checkedAt) && ctTime(elev.checkedAt) !== ctTime(elev.pricedAt) ? ' · checked ' + ctTime(elev.checkedAt) : '';
       if(!ctTime(elev.pricedAt)){
@@ -508,13 +508,13 @@
       var why = (elev.commodities[cat] || []).some(rowExpired)
         ? 'only an old-crop or new-crop ' + name.toLowerCase() + ' bid outside its window; tap for it'
         : 'no standard ' + name.toLowerCase() + ' bid posted';
-      return '<span class="bh-cell bh-cell--none" title="' + escHtml(why.charAt(0).toUpperCase() + why.slice(1)) + '"><span class="bh-ck">' + escHtml(name) + '</span><span class="bh-cash">—</span><span class="bh-vh">' + escHtml(why) + '</span></span>';
+      return '<span class="bh-cell bh-cell--none" title="' + escHtml(why.charAt(0).toUpperCase() + why.slice(1)) + '"><span class="bh-ck">' + escHtml(name) + '</span><span class="bh-cash">-</span><span class="bh-vh">' + escHtml(why) + '</span></span>';
     }
     var pp = ppu(b.cashPrice), bs = formatBasis(b.basis, b), wc = cat === 'wheat' ? wheatClass(b) : '';
     var mon = monthShort(rowMonthKey(b));
     var sub = '';
     if(mon) sub += '<span class="bh-mon"><span class="bh-vh">for </span>' + escHtml(mon) + '</span>';
-    if(bs.str !== '—'){
+    if(bs.str !== '-'){
       var rf = refFor(b, cat, pp, staleDay(elev, fr, b));
       /* "Oct · −62¢" until the contract is known, then "Oct · −62¢ Dec". */
       var tail = rf.short ? ' ' + rf.short : '';
@@ -601,8 +601,8 @@
         var bid = r.b, cat = r.cat;
         var perTon = notPerBushel(bid);
         var pp = perTon ? null : ppu(bid.cashPrice);
-        var cashStr = pp != null ? qCash(pp) : '—';
-        var basis = perTon ? { str:'—', cls:'muted' } : formatBasis(bid.basis, bid);
+        var cashStr = pp != null ? qCash(pp) : '-';
+        var basis = perTon ? { str:'-', cls:'muted' } : formatBasis(bid.basis, bid);
         var grade = String(bid.commodity || '').trim();
         var special = isSpecialGrade(bid);
         var wc = cat === 'wheat' ? wheatClass(bid) : '';
@@ -616,8 +616,8 @@
             + (special && !perTon ? (grade ? ' · ' : '') + 'special grade' : '');
         /* WAVE1-A: basis in one neutral colour; a negative basis is not bad news. */
         var refAttr = '', refTxt = '';
-        if(basis.odd) gradeTxt = (gradeTxt ? gradeTxt + ' · ' : '') + 'unusual basis — check with the elevator';
-        if(!perTon && !special && !basis.odd && basis.str !== '—'){
+        if(basis.odd) gradeTxt = (gradeTxt ? gradeTxt + ' · ' : '') + 'unusual basis, check with the elevator';
+        if(!perTon && !special && !basis.odd && basis.str !== '-'){
           var rf = refFor(bid, cat, pp, staleDay(elev, fr, bid));
           refTxt = rf.label; refAttr = rf.attr;
         }
@@ -670,7 +670,7 @@
     if((hasCorn || opts.length) && elev.state && elev.facility){
       var wid = hasCorn ? widFor(elev.state, elev.facility, elev.city, 'corn') : '';
       var name = elev.facility + (townOf(elev) ? ', ' + townOf(elev) + (elev.state ? ', ' + elev.state : '') : '');
-      var label = escHtml(name + ' — corn');
+      var label = escHtml(name + ', corn');
       html += '<div class="watch-elevator-wrap" data-wid="' + wid + '" data-label="' + label + '" data-name="' + escHtml(name) + '"'
         + (opts.length ? ' data-opts="' + escHtml(JSON.stringify(opts)) + '"' : '') + '>'
         + '<button type="button" class="watch-elevator-btn">Watch this elevator</button>'
@@ -1400,11 +1400,11 @@
   function normalLine(stName, cropTxt, s, rej){
     var head = '<strong style="color:var(--text-dim)">' + escHtml(stName + ' ' + cropTxt) + ':</strong> ';
     if(rej && s) return normalLine(stName, cropTxt, s) + rej;
-    if(!s) return head + '— no USDA state series here, and our elevator record (from June 2026) is too short.';
+    if(!s) return head + 'no USDA state series here, and our elevator record (from June 2026) is too short.';
     var age = (Date.now() - Date.parse(s.date + 'T12:00:00Z')) / 864e5;
-    if(!(age <= NORMAL_MAX_AGE_DAYS)) return head + '— USDA’s latest week for this series is ' + escHtml(s.date) + ', too old to compare.';
-    if(s.avg5_n == null) return head + '— the number of years behind USDA’s same-week average is not in the file yet, so no comparison is printed.';
-    if(s.avg5 == null || s.avg5_n < NORMAL_MIN_YEARS) return head + '— only ' + s.avg5_n + ' earlier year' + (s.avg5_n === 1 ? '' : 's') + ' on record for this week; ' + NORMAL_MIN_YEARS + ' are needed to call a normal.';
+    if(!(age <= NORMAL_MAX_AGE_DAYS)) return head + 'USDA’s latest week for this series is ' + escHtml(s.date) + ', too old to compare.';
+    if(s.avg5_n == null) return head + 'the number of years behind USDA’s same-week average is not in the file yet, so no comparison is printed.';
+    if(s.avg5 == null || s.avg5_n < NORMAL_MIN_YEARS) return head + 'only ' + s.avg5_n + ' earlier year' + (s.avg5_n === 1 ? '' : 's') + ' on record for this week; ' + NORMAL_MIN_YEARS + ' are needed to call a normal.';
     var now = Math.round(s.latest * 100), avg = Math.round(s.avg5 * 100), d = now - avg;
     var fmt = function(c){ return (c > 0 ? '+' : c < 0 ? '−' : '') + Math.abs(c) + '¢'; };
     var verdict = Math.abs(d) <= 1 ? '<strong style="color:var(--text-dim)">about normal</strong>'
@@ -1423,7 +1423,7 @@
         var crops = String(box.getAttribute('data-crops') || '').split(',').filter(function(x){ return x; });
         if(!stName || !crops.length){ box.hidden = true; return; }
         var head = '<div class="bh-normal-h">Basis vs normal</div>';
-        if(!j){ box.innerHTML = head + '— the USDA basis file did not load.'; box.hidden = false; return; }
+        if(!j){ box.innerHTML = head + 'the USDA basis file did not load.'; box.hidden = false; return; }
         var ser = j.series || {}, lines = [], none = [];
         crops.forEach(function(c){
           var nm = USDA_CROP[c]; if(!nm) return;

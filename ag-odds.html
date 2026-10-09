@@ -284,11 +284,11 @@
     <button class="ao-fbtn active" data-filter="all">All Markets</button>
   </div>
   <div class="ao-status-bar" id="ao-status-bar">
-    <span>Contracts: <strong id="ao-stat-count">&mdash;</strong></span>
+    <span>Contracts: <strong id="ao-stat-count">-</strong></span>
     <span style="color:var(--border)">&middot;</span>
-    <span>Cards: <strong id="ao-stat-cards">&mdash;</strong></span>
+    <span>Cards: <strong id="ao-stat-cards">-</strong></span>
     <span style="color:var(--border)">&middot;</span>
-    <span>Updated: <strong id="ao-stat-fetched">&mdash;</strong></span>
+    <span>Updated: <strong id="ao-stat-fetched">-</strong></span>
     <span style="color:var(--border)">&middot;</span>
     <span id="ao-stat-src"></span>
   </div>
@@ -621,7 +621,7 @@ function buildCard(m){
   var a=document.createElement('a');
   a.className='ao-card';a.href=m.url||'#';a.target='_blank';a.rel='noopener noreferrer';
   a.dataset.tier=String(m.tier||3);a.dataset.category=m.category||'';
-  a.setAttribute('aria-label',esc(m.title)+' — '+pct+'% yes on '+pll);
+  a.setAttribute('aria-label',esc(m.title)+', '+pct+'% yes on '+pll);
   a.innerHTML='<div class="ao-card-top"><div class="ao-card-title">'+esc(m.title)+'</div><div class="ao-prob-block"><div class="ao-prob" style="color:'+pc(pct)+'">'+pct+'%</div><div class="ao-prob-lbl">Yes</div></div></div><div><div class="ao-bar-track"><div class="ao-bar-fill" style="width:'+pct+'%;background:'+barBg(pct)+'"></div></div><div class="ao-bar-labels"><span>'+pct+'% yes</span><span>'+(100-pct)+'% no</span></div></div><div class="ao-why">'+esc(why)+'</div><div class="ao-card-footer"><span class="ao-plat '+pcl+'">'+pll+'</span>'+(tl&&tl!=='Closed'?'<span class="ao-tl"><svg class="ic-sp" aria-hidden="true"><use href="#sp-timer"/></svg> '+esc(tl)+'</span>':'')+(vol?'<span class="ao-vol">'+vol+'</span>':'')+'</div>';
   return a;
 }
@@ -641,7 +641,7 @@ function buildEventCard(items){
   var a=document.createElement('a');
   a.className='ao-card';a.href=top.url||'#';a.target='_blank';a.rel='noopener noreferrer';
   a.dataset.tier=String(top.tier||3);a.dataset.category=top.category||'';
-  a.setAttribute('aria-label',ttl+' — one event with '+items.length+' contracts on '+pll+'; highest is '+Math.round(top.yes||0)+'% yes');
+  a.setAttribute('aria-label',ttl+', one event with '+items.length+' contracts on '+pll+'; highest is '+Math.round(top.yes||0)+'% yes');
   var legs='';
   items.forEach(function(m,i){
     var p=Math.round(m.yes||0);
@@ -654,7 +654,7 @@ function buildEventCard(items){
     +'<div class="ao-card-title">'+escT(ttl)+'</div></div>'
     +legs
     +'<div class="ao-ev-note">'+escT(groupNote(items))+'</div>'
-    +'<div class="ao-why"><strong style="color:var(--text-dim)">'+escT(labels[0])+'</strong> &mdash; '
+    +'<div class="ao-why"><strong style="color:var(--text-dim)">'+escT(labels[0])+'</strong>, '
       +escT(whyFor(top.title,top.yes,top.why_it_matters))+'</div>'
     +'<div class="ao-card-footer"><span class="ao-plat '+pcl+'">'+escT(pll)+'</span>'
     +(tl&&tl!=='Closed'?'<span class="ao-tl"><svg class="ic-sp" aria-hidden="true"><use href="#sp-timer"/></svg> '+escT(tl)+'</span>':'')
@@ -878,7 +878,7 @@ function applyFeedProfile(fetched){
                     (p.t3?p.t3+' macro':'no macro contracts')];
       var catBits=p.catList.map(function(c){return p.cats[c]+' '+c;});
       sub.textContent='Today\u2019s pull: '+p.n+' contract'+(p.n===1?'':'s')+' across '+p.events+' event'+(p.events===1?'':'s')
-        +' \u2014 '+catBits.join(', ')+'. By farm-impact tier: '+tierBits.join(', ')+'. '
+        +', '+catBits.join(', ')+'. By farm-impact tier: '+tierBits.join(', ')+'. '
         +sourcePhrase(p)+(age?', pulled '+age:'')+'. One pull a day; what is listed changes with what the exchanges have open.';
     }
   }
@@ -925,7 +925,7 @@ function loadMarkets(){
       var _bk=document.getElementById('ao-baked');if(_bk)_bk.style.display='none'; // live render supersedes the crawler bake
       /* Surface last-updated age in hero */
       var age=fmtAge(d.fetched);
-      var sf=document.getElementById('ao-stat-fetched');if(sf)sf.textContent=age||'\u2014 (no timestamp in the file)';
+      var sf=document.getElementById('ao-stat-fetched');if(sf)sf.textContent=age||'(no timestamp in the file)';
       return d.fetched||null;
     });
 }

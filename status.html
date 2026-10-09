@@ -431,7 +431,7 @@
         feeds.sort(function(a,b){ return b.pages.length-a.pages.length; });
         feeds.forEach(function(f){
           var el=document.createElement('div'); el.className='st-card';
-          var who=(f.written_by&&f.written_by.length)?f.written_by[0]:(f.curated?'kept by hand':'—');
+          var who=(f.written_by&&f.written_by.length)?f.written_by[0]:(f.curated?'kept by hand':'-');
           var sub=who+' \u00b7 '+f.cadence+
             ' \u00b7 on '+f.pages.length+' page'+(f.pages.length===1?'':'s')+
             (f.why_quiet?'<br><em>'+f.why_quiet+'</em>':'');

@@ -591,7 +591,7 @@ details.fold .fold-body>.cx-panel{border:0;background:none;padding:0}
   <!-- Verdict banner -->
   <div id="cot-baked" style="border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:8px;padding:.75rem .95rem;margin:0 0 1rem;font-size:.9rem;line-height:1.65;color:var(--text-dim)"><!-- PRERENDER:cot-summary -->Managed-money positioning as of the <b>September 29, 2026</b> CFTC report: <b>Corn</b> funds net long 381,220 contracts, −22,877 on the week; <b>Soybeans</b> funds net long 246,558 contracts, −18,601 on the week; <b>Chicago wheat</b> funds net short 22,109 contracts, −10,093 on the week; <b>KC wheat</b> funds net long 30,677 contracts, −9,958 on the week; <b>Minneapolis wheat</b> funds net long 16,206 contracts, −5,191 on the week; <b>Soymeal</b> funds net long 207,578 contracts, +16,491 on the week. Full 52-week context, price overlay, and every market below.<!-- /PRERENDER:cot-summary --></div>
   <div class="cot-verdict-banner mixed" id="cot-verdict-banner">
-    <div class="cvb-badge mixed" id="cvb-badge">—</div>
+    <div class="cvb-badge mixed" id="cvb-badge">-</div>
     <div class="cvb-text" id="cvb-text">Loading fund positioning data…</div>
     <div class="cvb-meta">
       <div class="cvb-date" id="cvb-date">CFTC · Updated weekly</div>
@@ -803,7 +803,7 @@ var ALL_KEYS = CFG.map(function(c){ return c.key; });
 
 function cotCardHTML(c){
   return '<div class="cot-card" id="card-'+c.key+'" data-key="'+c.key+'" role="button" tabindex="0" aria-label="'+c.label+' summary card. Activate to focus in chart.">'
-    +'<div class="cot-card-head"><span class="cot-card-name">'+c.label+'</span><span class="cot-card-verdict flat" id="verdict-'+c.key+'">\u2014</span></div>'
+    +'<div class="cot-card-head"><span class="cot-card-name">'+c.label+'</span><span class="cot-card-verdict flat" id="verdict-'+c.key+'">-</span></div>'
     +'<div class="cot-pctl" id="pctl-'+c.key+'"></div>'
     +'<div class="cot-card-net flat" id="net-'+c.key+'">--</div>'
     +'<div class="cot-card-unit">contracts, net</div>'
@@ -941,9 +941,9 @@ function cotMarkCard(key, present) {
   var card = document.getElementById('card-' + key);
   if (card) card.classList.toggle('cot-card-absent', !present);
   if (present) return;
-  if (net) { net.textContent = '—'; net.className = 'cot-card-net'; }
+  if (net) { net.textContent = '-'; net.className = 'cot-card-net'; }
   if (chg) { chg.textContent = 'not in this report'; chg.className = 'cot-card-chg nc'; }
-  if (vd)  { vd.textContent = '—'; vd.className = 'cot-card-verdict'; }
+  if (vd)  { vd.textContent = '-'; vd.className = 'cot-card-verdict'; }
   if (pill) pill.textContent = '';
   if (ins)  ins.innerHTML = '';
   if (card) card.setAttribute('aria-label',
@@ -989,8 +989,8 @@ function renderInsight(key){
   /* A move smaller than this market's typical week (the median absolute weekly
      change over the same window) gets no adjective. */
   if(k.significant_move){
-    if(k.largest_in_window) sharp=' \u2014 the largest weekly '+(k.chg<0?'fall':'rise')+' in net in the last '+k.weeks+' weeks';
-    else if(k.weeks_since_larger>=4) sharp=' \u2014 sharpest '+(k.chg<0?'fall':'rise')+' in net in '+k.weeks_since_larger+' weeks';
+    if(k.largest_in_window) sharp=', the largest weekly '+(k.chg<0?'fall':'rise')+' in net in the last '+k.weeks+' weeks';
+    else if(k.weeks_since_larger>=4) sharp=', sharpest '+(k.chg<0?'fall':'rise')+' in net in '+k.weeks_since_larger+' weeks';
     driveTxt=', driven by <b>'+esc(k.driver)+'</b>';
   }
   var f=(k.flips&&k.flips[0])||null, flipTxt='';
@@ -1000,7 +1000,7 @@ function renderInsight(key){
   if(k.divergence){
     var dvCls=(k.divergence==='bearish'||k.divergence==='confirmed-down')?'dn':'up';
     var nd=k.chg4>0?'rising':k.chg4<0?'falling':'flat', pd=k.price4>0?'rising':k.price4<0?'falling':'flat';
-    html+=' Over 4 weeks, net is '+nd+' while price is '+pd+' ('+(k.price4>=0?'+':'−')+Math.abs(k.price4).toFixed(1)+'%, roll-repaired) — <b class="'+dvCls+'">'+divLabel(k.divergence)+'</b>.';
+    html+=' Over 4 weeks, net is '+nd+' while price is '+pd+' ('+(k.price4>=0?'+':'−')+Math.abs(k.price4).toFixed(1)+'%, roll-repaired), <b class="'+dvCls+'">'+divLabel(k.divergence)+'</b>.';
   }
   /* The withdrawn analog hit rate (2026-08-21) stays withdrawn: it selected
      weeks with a percentile computed over the whole array, after the fact, and
@@ -1096,7 +1096,7 @@ function renderVerdict(summary) {
     if (sd === 'flat') nFlat++; else if (sd === 'long') nLong++; else nShort++;
   });
   var cls = 'mixed';
-  var badgeTxt = nTracked ? (nLong + ' long / ' + nShort + ' short' + (nFlat ? ' / ' + nFlat + ' flat' : '')) : '—';
+  var badgeTxt = nTracked ? (nLong + ' long / ' + nShort + ' short' + (nFlat ? ' / ' + nFlat + ' flat' : '')) : '-';
   var desc = nTracked
     ? ('Managed money is net long in ' + nLong + ' of the ' + nTracked + ' markets on this page and '
        + 'net short in ' + nShort + (nFlat ? ', with ' + nFlat + ' too close to zero to call' : '') + '. Which way they lean is a measure of who is exposed, not of '
@@ -1156,7 +1156,7 @@ function drawChart(key) {
 
   if (!allDates.length) {
     canvas.style.display = 'none';
-    if (msg) { msg.style.display = 'block'; msg.textContent = 'No chart data yet — populates after the weekly CFTC release.'; }
+    if (msg) { msg.style.display = 'block'; msg.textContent = 'No chart data yet, populates after the weekly CFTC release.'; }
     return;
   }
 
@@ -1457,7 +1457,7 @@ function cotApply(data, isPoll) {
        the badge for a full minute, and cotTick() will not touch it until the
        window closes. */
     COT_ANNOUNCE_UNTIL = Date.now() + 60000;
-    COT_ANNOUNCE_TEXT  = 'updated \u2014 ' + fresh + ' report is in';
+    COT_ANNOUNCE_TEXT  = 'updated, ' + fresh + ' report is in';
     /* Everything else on the page that reads a different file learns here,
        in the same tick, rather than on its own timer. */
     try { document.dispatchEvent(new CustomEvent('cot:new-report', { detail: fresh })); } catch (e) {}
@@ -1480,7 +1480,7 @@ function cotLoad(isPoll) {
       /* Worded as a schedule note, this was indistinguishable from "no new
          report yet" -- so a reader whose fetch had simply failed had no reason
          to reload, and sat in front of blank headline figures. */
-      if (text) text.textContent = 'Couldn\u2019t load the latest COT data \u2014 retrying.';
+      if (text) text.textContent = 'Couldn\u2019t load the latest COT data, retrying.';
       if (banner) banner.className = 'cot-verdict-banner mixed';
     });
 }
@@ -1513,7 +1513,7 @@ function cotLoadHistory(isPoll) {
        each Friday CFTC release", which is false: it had just refreshed. */
     if (isPoll) return;
     var msg = document.getElementById('cot-chart-msg');
-    if (msg) { msg.style.display = 'block'; msg.textContent = 'Could not load the chart data \u2014 retrying.'; }
+    if (msg) { msg.style.display = 'block'; msg.textContent = 'Could not load the chart data, retrying.'; }
     var canvas = document.getElementById('cot-chart');
     if (canvas) canvas.style.display = 'none';
   });
@@ -1690,10 +1690,10 @@ function cotTick(){
   cotStartPolling();
   var lateH = Math.floor(-left / 3600000);
   say(lateH < 3
-    ? 'this week\u2019s report is due \u2014 checking every couple of minutes'
+    ? 'this week\u2019s report is due, checking every couple of minutes'
     : 'this week\u2019s report hasn\u2019t landed here yet (' +
       (lateH < 24 ? lateH + 'h' : Math.floor(lateH / 24) + 'd') +
-      ') \u2014 still checking. When a federal holiday falls Wednesday to Friday, CFTC releases on the Monday.');
+      '), still checking. When a federal holiday falls Wednesday to Friday, CFTC releases on the Monday.');
 }
 cotTick(); setInterval(cotTick, 60000);
 
@@ -1757,18 +1757,18 @@ cotTick(); setInterval(cotTick, 60000);
 
   function $(id){ return document.getElementById(id); }
   
-  function num(n){ return (n === null || n === undefined || n !== n) ? '—' : Number(n).toLocaleString('en-US'); }
-  function sgn(n, d){ if (n === null || n === undefined || n !== n) return '—';
+  function num(n){ return (n === null || n === undefined || n !== n) ? '-' : Number(n).toLocaleString('en-US'); }
+  function sgn(n, d){ if (n === null || n === undefined || n !== n) return '-';
     return (n > 0 ? '+' : n < 0 ? '−' : '') + Math.abs(n).toFixed(d === undefined ? 1 : d); }
-  function k(n){ if (n === null || n === undefined || n !== n) return '—';
+  function k(n){ if (n === null || n === undefined || n !== n) return '-';
     var a = Math.abs(n), s = n < 0 ? '−' : '';
     return a >= 1000 ? s + (a/1000).toFixed(0) + 'k' : s + a; }
-  function pct(n, d){ return (n === null || n === undefined || n !== n) ? '—' : Number(n).toFixed(d === undefined ? 1 : d) + '%'; }
+  function pct(n, d){ return (n === null || n === undefined || n !== n) ? '-' : Number(n).toFixed(d === undefined ? 1 : d) + '%'; }
   function ord(n){ n = Math.round(n); var v = n % 100;
     if (v >= 10 && v <= 20) return n + 'th';
     return n + ({1:'st',2:'nd',3:'rd'}[n % 10] || 'th'); }
   function dt(iso){
-    if (!iso) return '—';
+    if (!iso) return '-';
     var p = String(iso).split('-'); if (p.length !== 3) return iso;
     var m = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
     return m[parseInt(p[1],10)-1] + ' ' + parseInt(p[2],10) + ', ' + p[0];
@@ -1884,7 +1884,7 @@ cotTick(); setInterval(cotTick, 60000);
         /* No Greek letters. The reader who needs this column most is the one
            who has never seen a z-score, and the magnitude is already in the
            column to its left. */
-        var zw = (m.z === null || m.z === undefined) ? '\u2014'
+        var zw = (m.z === null || m.z === undefined) ? '-'
                : Math.abs(m.z) >= 3 ? 'far bigger than usual'
                : Math.abs(m.z) >= 2 ? 'much bigger than usual'
                : Math.abs(m.z) >= 1 ? 'bigger than usual'
@@ -2070,7 +2070,7 @@ cotTick(); setInterval(cotTick, 60000);
       + (fw !== null && Math.abs(fw) < 0.12 ? 'is close to nothing' : 'is much weaker') + '.</p>');
     o.push('<p class="cx-body">The third number is the claim people actually make: funds are crowded '
       + 'long, so watch out below. Measured against the next thirteen weeks it comes out at '
-      + (lv === null ? '\u2014' : lv.toFixed(2)) + ', negative in ' + p.level_negative + ' of '
+      + (lv === null ? '-' : lv.toFixed(2)) + ', negative in ' + p.level_negative + ' of '
       + p.n_markets + ' markets and small everywhere. The intervals under each number are block '
       + 'bootstraps that keep the week-to-week overlap, so they are several times wider than a '
       + 'textbook standard error would suggest. Read them, not the point estimate.</p>');
@@ -2088,11 +2088,11 @@ cotTick(); setInterval(cotTick, 60000);
       /* A correlation with its n, and a withheld one with its reason: an em
          dash alone reads as "zero" or "broken", and hogs is neither. */
       if (c.price_withheld_reason || !(cor.same_week && cor.same_week.r !== null && cor.same_week.r !== undefined)) {
-        rows.push('<tr><td>' + esc(c.label) + '</td><td colspan="5" class="cx-note">\u2014 '
+        rows.push('<tr><td>' + esc(c.label) + '</td><td colspan="5" class="cx-note">'
           + esc(c.price_withheld_reason || 'fewer than 20 weeks with both a price and a position') + '</td></tr>');
         return;
       }
-      var cell = function(v, n){ return '<td>' + (v === null || v === undefined ? '\u2014' : v.toFixed(2))
+      var cell = function(v, n){ return '<td>' + (v === null || v === undefined ? 'n/a' : v.toFixed(2))
         + (n ? ' <span class="cx-dim">n ' + num(n) + '</span>' : '') + '</td>'; };
       rows.push('<tr><td>' + esc(c.label) + '</td>'
         + cell(cor.same_week && cor.same_week.r, cor.same_week && cor.same_week.n)
@@ -2113,7 +2113,7 @@ cotTick(); setInterval(cotTick, 60000);
 
   function tile(v, label, ci){
     return '<div class="cx-big"><span class="cx-big-n">'
-      + (v === null || v === undefined ? '\u2014' : v.toFixed(2)) + '</span>'
+      + (v === null || v === undefined ? '-' : v.toFixed(2)) + '</span>'
       + (ci || '') + '<span class="cx-big-l">' + label + '</span></div>';
   }
 
@@ -2367,8 +2367,8 @@ cotTick(); setInterval(cotTick, 60000);
       o.push('<div class="cx-withheld"><b>No price read for ' + esc(c.label) + ': '
         + esc(c.price_withheld_reason || 'no forward returns this week') + '.</b> The positioning above is '
         + 'CFTC\u2019s and is complete, all ' + num(c.weeks_of_history) + ' weeks of it. Everything on this '
-        + 'page that needs a price \u2014 what followed last time, the past weeks that look like today, '
-        + 'the correlations \u2014 is withheld for this market for that reason. It is not a thin sample; '
+        + 'page that needs a price, what followed last time, the past weeks that look like today, '
+        + 'the correlations, is withheld for this market for that reason. It is not a thin sample; '
         + 'it is no sample.</div>');
       o.push('<details class="cx-details"><summary>Show the arithmetic behind this panel</summary>'
         + '<div class="cx-tw"><table class="cx-table"><tbody>'
@@ -2413,7 +2413,7 @@ cotTick(); setInterval(cotTick, 60000);
       o.push('<div class="cx-withheld">' + (noPrice
         ? '<b>No price read for ' + esc(c.label) + ': ' + esc(c.price_withheld_reason || 'no forward returns this week')
           + '.</b> The positioning figures above are CFTC\u2019s and are complete. Everything that needs a '
-          + 'price \u2014 what followed last time, the analogs, the correlations \u2014 is withheld for that reason.'
+          + 'price, what followed last time, the analogs, the correlations, is withheld for that reason.'
         : 'Positioning in ' + esc(c.label) + ' is close enough to normal this week that there is no '
           + 'unusual condition to test. That is the common case, and it is an answer rather than a '
           + 'blank.') + '</div>');
@@ -2438,7 +2438,7 @@ cotTick(); setInterval(cotTick, 60000);
       c.analogs.forEach(function(a){
         t.push('<tr><td>' + dt(a.date) + '</td><td>' + a.distance.toFixed(2) + '</td>'
           + cols.map(function(f){
-              return '<td>' + (a[f] === null || a[f] === undefined ? '—' : sgn(a[f]) + '%') + '</td>';
+              return '<td>' + (a[f] === null || a[f] === undefined ? 'n/a' : sgn(a[f]) + '%') + '</td>';
             }).join('') + '</tr>');
       });
       o.push('<div class="cx-tw"><table class="cx-table">' + t.join('') + '</tbody></table></div>');
@@ -2446,7 +2446,7 @@ cotTick(); setInterval(cotTick, 60000);
       var agree = Math.max(ups, c.analogs.length - ups);
       o.push('<p class="cx-foot"><b>' + ups + ' of these ' + c.analogs.length + ' went up over 13 weeks, '
         + (c.analogs.length - ups) + ' went down.</b> An average week in ' + esc(c.label) + ' was higher '
-        + (b13.hit_up == null ? '\u2014' : Math.round(b13.hit_up*100) + '%') + ' of the time, middle '
+        + (b13.hit_up == null ? '-' : Math.round(b13.hit_up*100) + '%') + ' of the time, middle '
         + 'outcome ' + sgn(b13.median) + '%. Across these five the range was ' + sgn(lo13) + '% to '
         + sgn(hi13) + '%. '
         + (agree >= 4
@@ -2735,7 +2735,7 @@ cotTick(); setInterval(cotTick, 60000);
           }
         }
         if (mismatch) {
-          if (window.console && console.warn) console.warn('cot: data files disagree \u2014 ' + mismatch);
+          if (window.console && console.warn) console.warn('cot: data files disagree, ' + mismatch);
           CX = null; hideAll(); holdNote(true); return;
         }
         if (isNaN(a) || isNaN(b) || Math.abs(a - b) > 86400000) {

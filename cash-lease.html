@@ -432,7 +432,7 @@ html[data-theme="light"] .cl-btn{border-color:var(--gold-fill)}
 
   function stateRuleText(ab){
     var r=RULES[ab];
-    if(r){var q=r.t==='firm'?'widely documented':(r.t==='none'?'no statutory deadline we can point to':'as commonly summarized');return 'For '+r.n+': '+r.d+' ('+q+' — verify before relying; statutes change.)';}
+    if(r){var q=r.t==='firm'?'widely documented':(r.t==='none'?'no statutory deadline we can point to':'as commonly summarized');return 'For '+r.n+': '+r.d+' ('+q+', verify before relying; statutes change.)';}
     return 'No farm-specific statutory deadline is widely cited for this state. This lease’s own notice terms (§11) and general landlord–tenant law control. Confirm with your extension office or attorney.';
   }
   function applyState(ab, alsoField){
@@ -443,7 +443,7 @@ html[data-theme="light"] .cl-btn{border-color:var(--gold-fill)}
     var r=RULES[ab];
     if(card){
       card.hidden=false;
-      card.innerHTML='<strong>'+(r?(r.n+' — '+TIER_LBL[r.t]):(ab+' — no widely-cited farm deadline'))+':</strong> '
+      card.innerHTML='<strong>'+(r?(r.n+', '+TIER_LBL[r.t]):(ab+', no widely-cited farm deadline'))+':</strong> '
         + (r?r.d:'The lease’s own notice terms and general landlord–tenant law control. Confirm locally.')
         + ' <span style="font-size:.78em;opacity:.8">Compiled from industry &amp; extension summaries, reviewed 2026-07-18. Statutes change. Not legal advice.</span>';
     }
@@ -489,7 +489,7 @@ html[data-theme="light"] .cl-btn{border-color:var(--gold-fill)}
     $('#cl-acres-echo').textContent = acres ? acres.toLocaleString() : '____';
     $('#cl-total').removeAttribute('data-print-blank');
     $('#cl-total').textContent = (acres&&rate)
-      ? (acres*rate).toLocaleString(undefined,{maximumFractionDigits:0}) : '\u2014';
+      ? (acres*rate).toLocaleString(undefined,{maximumFractionDigits:0}) : '-';
     var p1=$('[data-k="pay1"]'), p2=$('[data-k="pay2"]');
     if(acres&&rate&&p1&&p2&&!p1.value&&!p2.value&&document.activeElement!==p1&&document.activeElement!==p2){
       var half=Math.round(acres*rate/2);
@@ -501,12 +501,12 @@ html[data-theme="light"] .cl-btn{border-color:var(--gold-fill)}
     document.querySelectorAll('.pm-tmp').forEach(function(m){m.remove();});
     document.querySelectorAll('.pm-hide').forEach(function(f){f.classList.remove('pm-hide');});
     var t=document.getElementById('cl-total');
-    if(t&&t.getAttribute('data-print-blank')==='1'){ t.textContent='\u2014'; t.removeAttribute('data-print-blank'); }
+    if(t&&t.getAttribute('data-print-blank')==='1'){ t.textContent='-'; t.removeAttribute('data-print-blank'); }
   }
   window.addEventListener('beforeprint',function(){
     clearMirrors();
     var tt=document.getElementById('cl-total');
-    if(tt&&tt.textContent==='\u2014'){ tt.textContent='______'; tt.setAttribute('data-print-blank','1'); }
+    if(tt&&tt.textContent==='-'){ tt.textContent='______'; tt.setAttribute('data-print-blank','1'); }
     document.querySelectorAll('#lease-form input.lf[data-k], #lease-form textarea.lf-area').forEach(function(f){
       if(!f.value) return;
       var m=document.createElement(f.tagName==='TEXTAREA'?'div':'span');
