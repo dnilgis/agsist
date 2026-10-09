@@ -250,7 +250,7 @@ def px_table(rows, flabel, in_session=False):
         if not usd:
             continue
         n += 1
-        rng = "&mdash;"
+        rng = "n/a"
         if q.get("wk52_lo") and q.get("wk52_hi"):
             rng = "$%.2f&ndash;$%.2f" % (q["wk52_lo"] / 100.0, q["wk52_hi"] / 100.0)
         stale = " (last good quote)" if q.get("stale") else ""
@@ -258,7 +258,7 @@ def px_table(rows, flabel, in_session=False):
         # proportional face and ranged left is the loudest "not a finance site"
         # signal there is; the styling rule lives once in components/styles.css.
         out.append('<tr><td>' + label + stale + '</td><td class="num">$' + usd +
-                   '</td><td class="num">' + (_chg(q) or "&mdash;") +
+                   '</td><td class="num">' + (_chg(q) or "n/a") +
                    '</td><td class="num">' + rng + '</td></tr>')
     out.append("</tbody></table>")
     return "".join(out) if n else None
@@ -478,11 +478,11 @@ def _frac_cents(d):
 def _chg_str(net, pct, grain):
     """The page's chgStr, character for character."""
     if net is None:
-        return "&mdash;"
-    a = "▲" if net > 0 else ("▼" if net < 0 else "—")
+        return "-"
+    a = "▲" if net > 0 else ("▼" if net < 0 else "")
     s = "+" if net > 0 else ("−" if net < 0 else "")
     mv = _frac_cents(net) if grain else _fixed(abs(net), 2)
-    return f"{a} {s}{mv} ({s}{_fixed(abs(float(pct or 0)), 2)}%)"
+    return f"{a + ' ' if a else ''}{s}{mv} ({s}{_fixed(abs(float(pct or 0)), 2)}%)"
 
 
 def seed_markets(prices, today):
@@ -494,10 +494,10 @@ def seed_markets(prices, today):
         why = (f"price file last updated {_mdy(fd)}" if fd else "price file missing")
         seeds["mk:status"] = f"Quotes unavailable: {why}; nothing is shown rather than an old number."
         for _, p, c, _, _ in MK_MAP:
-            seeds["mk:" + p] = "&mdash;"
-            seeds["mk:" + c] = "&mdash;"
+            seeds["mk:" + p] = "-"
+            seeds["mk:" + c] = "-"
         for i in ("rlo-corn", "rhi-corn", "rlo-beans", "rhi-beans"):
-            seeds["mk:" + i] = "&mdash;"
+            seeds["mk:" + i] = "-"
         for i in ("pct-corn", "pct-beans", "pct-wheat"):
             seeds["mk:" + i] = "front"
         return _write_seeds("markets.html", seeds)
@@ -516,8 +516,8 @@ def seed_markets(prices, today):
         d = q.get(key) or {}
         c = d.get("close")
         if c is None:
-            seeds["mk:" + pid] = "&mdash;"
-            seeds["mk:" + cid] = "&mdash;"
+            seeds["mk:" + pid] = "-"
+            seeds["mk:" + cid] = "-"
             continue
         n += 1
         seeds["mk:" + pid] = "$" + (_fixed(float(c) / 100.0, 2) if grain else "{:,.2f}".format(float(_fixed(c, 2))))  # $4,162.40, as the page script prints it
@@ -532,8 +532,8 @@ def seed_markets(prices, today):
     for crop, sym in (("corn", "corn"), ("beans", "beans")):
         d = q.get(crop) or {}
         lo, hi = d.get("wk52_lo"), d.get("wk52_hi")
-        seeds["mk:rlo-" + sym] = ("$" + _fixed(lo / 100.0, 2)) if lo is not None else "&mdash;"
-        seeds["mk:rhi-" + sym] = ("$" + _fixed(hi / 100.0, 2)) if hi is not None else "&mdash;"
+        seeds["mk:rlo-" + sym] = ("$" + _fixed(lo / 100.0, 2)) if lo is not None else "-"
+        seeds["mk:rhi-" + sym] = ("$" + _fixed(hi / 100.0, 2)) if hi is not None else "-"
     ft = fetched[11:16] if len(fetched) >= 16 else ""
     seeds["mk:status"] = (f"Last quotes as of {_mdy(fd)}" + (f", {ft} UTC" if ft else "")
                           + " &middot; each change line carries its own close date")
@@ -560,14 +560,14 @@ def seed_homepage(prices, today):
     if not q or _stale(fd, today, "prices"):
         why = (f"price file last updated {_mdy(fd)}" if fd else "price file missing")
         for k in ("corn", "beans"):
-            seeds["hp:" + k] = "&mdash;"
+            seeds["hp:" + k] = "-"
             seeds["hp:" + k + "-when"] = "Quotes unavailable: " + why
         return _write_seeds("index.html", seeds)
     for k in ("corn", "beans"):
         d = q.get(k) or {}
         usd = grain_dollars(d)
         if not usd:
-            seeds["hp:" + k] = "&mdash;"
+            seeds["hp:" + k] = "-"
             seeds["hp:" + k + "-when"] = "No quote in the last price file"
             continue
         # the card's own format (index.html qc): quarter cents as " 1/2", so
@@ -599,8 +599,8 @@ def seed_news(today):
     datemod = None
     if not d or _stale(upd, today, "news"):
         why = (f"the wire file was last written {_mdy(upd)}" if upd else "the wire file is missing")
-        seeds["newsupd"] = "&mdash;"
-        seeds["newslist"] = ('\n      <div class="nw-empty">&mdash; No current items: ' + why +
+        seeds["newsupd"] = "-"
+        seeds["newslist"] = ('\n      <div class="nw-empty">No current items: ' + why +
                              '. The <a href="/daily" style="color:var(--gold)">morning briefing</a> runs every morning regardless.</div>\n    ')
     else:
         u = str(d.get("updated"))
@@ -672,8 +672,8 @@ def seed_conditions(today):
     else:
         why = ("USDA is between seasons" if cp and not cp.get("in_season") else
                (f"the latest national report on file is the week ending {_mdy(rd)}" if rd else "the national file is missing"))
-        line = f"&mdash; No current national rating: {why}."
-        vsent = f"&mdash; No current rating: {why}."
+        line = f"No current national rating: {why}."
+        vsent = f"No current rating: {why}."
     # state table: the page script's table, corn tab, worst first
     pkg = ((cj or {}).get("crops") or {}).get("corn")
     we = _iso_date((pkg or {}).get("week_ending"))
@@ -692,8 +692,8 @@ def seed_conditions(today):
         seeds["condfresh"] = f"week ending {we.isoformat()}"
     else:
         why = (f"latest state file is the week ending {_mdy(we)}" if we else "state file missing or off-season")
-        seeds["condtable"] = f'<tr><td style="color:#8a948f">&mdash; No current state ratings: {why}</td></tr>'
-        seeds["condfresh"] = "&mdash;"
+        seeds["condtable"] = f'<tr><td style="color:#8a948f">No current state ratings: {why}</td></tr>'
+        seeds["condfresh"] = "-"
     seeds["condstats"] = line
     seeds["condvsent"] = vsent
     return _write_seeds("conditions.html", seeds)
@@ -707,27 +707,27 @@ PB_SIGNAL = {"crowded_long": "Managed money crowded long", "crowded_short": "Man
 
 
 def _pb_n(x):
-    return "&mdash;" if x is None else _commas(x)
+    return "-" if x is None else _commas(x)
 
 
 def _pb_rate(x):
-    return "&mdash;" if x is None else _fixed(x, 1) + "%"
+    return "-" if x is None else _fixed(x, 1) + "%"
 
 
 def _pb_luck(p):
     if p is None:
-        return "&mdash;"
+        return "-"
     return "under 1 in 100" if p < 0.01 else f"about {_jsround(p * 100)} in 100"
 
 
 def _pb_date(iso):
     d = _iso_date(iso)
-    return _mdy(d) if d else "&mdash;"
+    return _mdy(d) if d else "-"
 
 
 def _pb_dollars(c):
     if c is None:
-        return "&mdash;"
+        return "-"
     s = _fixed(c / 100.0, 4).rstrip("0")
     if len(s.split(".")[1]) < 2:
         s = _fixed(c / 100.0, 2)
@@ -743,12 +743,12 @@ def _pb_ord(x):
 
 def _pb_verdict(r, label, R):
     if not r:
-        return "&mdash;", "", ""
+        return "-", "", ""
     if r.get("verdict") == "not_enough":
         return (PB_VERDICT["not_enough"],
                 f"{_pb_n(r.get('graded'))} graded so far. A rate is shown from {_pb_n(R.get('min_graded_for_rate'))} "
                 f"graded calls and {_pb_n(R.get('min_windows_for_rate'))} non-overlapping windows.", "")
-    v = _e(r.get("verdict_text") or PB_VERDICT.get(r.get("verdict"), "")) or "&mdash;"
+    v = _e(r.get("verdict_text") or PB_VERDICT.get(r.get("verdict"), "")) or "-"
     line = (f"Right on {_pb_n(r.get('hits'))} of {_pb_n(r.get('graded'))} {label} ({_pb_rate(r.get('hit_rate'))}). "
             f"Across four non-overlapping groups of calls: {_pb_rate(r.get('spell_rate_low'))} to "
             f"{_pb_rate(r.get('spell_rate_high'))} ({_pb_n(r.get('windows'))} windows).")
@@ -764,13 +764,13 @@ def seed_scorecard(today):
     if not d or _stale(upd, today, "predictions"):
         why = (f"the record file was last written {_mdy(upd)}" if upd else "the record file is missing")
         for k in ("pb-live-verdict", "pb-bt-verdict"):
-            seeds["pb:" + k] = "&mdash;"
+            seeds["pb:" + k] = "-"
         for k in ("pb-live-line", "pb-bt-line", "pb-live-luck", "pb-bt-luck", "pb-bt-base", "pb-latest-when"):
             seeds["pb:" + k] = ""
-        seeds["pb:pb-live-line"] = f"&mdash; Record not shown: {why}."
-        seeds["pb:latest"] = f'<tr><td colspan="6">&mdash; {why}.</td></tr>'
-        seeds["pb:bycrop"] = f'<tr><td colspan="6">&mdash; {why}.</td></tr>'
-        seeds["pb:pb-updated"] = "&mdash;"
+        seeds["pb:pb-live-line"] = f"Record not shown: {why}."
+        seeds["pb:latest"] = f'<tr><td colspan="6">{why}.</td></tr>'
+        seeds["pb:bycrop"] = f'<tr><td colspan="6">{why}.</td></tr>'
+        seeds["pb:pb-updated"] = "-"
         return _write_seeds("scorecard.html", seeds)
     labels = {c["key"]: c["label"] for c in d.get("crops") or []}
     R = d.get("rules") or {}
@@ -800,7 +800,7 @@ def seed_scorecard(today):
 
     def dir_span(x):
         return ('<span class="pb-up">Up</span>' if x == "up" else
-                ('<span class="pb-down">Down</span>' if x == "down" else "&mdash;"))
+                ('<span class="pb-down">Down</span>' if x == "down" else "n/a"))
     rows = []
     for c in lc:
         why = _e(PB_SIGNAL.get(c.get("signal"), c.get("signal") or ""))
@@ -809,22 +809,22 @@ def seed_scorecard(today):
         rows.append(f"<tr><td>{_e(labels.get(c.get('crop'), c.get('crop') or ''))}</td><td>{dir_span(c.get('direction'))}</td>"
                     f"<td>{_e(c.get('contract') or '')}</td><td class=\"num\">{_pb_dollars(c.get('entry'))}</td>"
                     f"<td>{_pb_date(c.get('exit_day'))}</td><td>{why}</td></tr>")
-    seeds["pb:latest"] = "".join(rows) or '<tr><td colspan="6">&mdash; No calls yet.</td></tr>'
+    seeds["pb:latest"] = "".join(rows) or '<tr><td colspan="6">No calls yet.</td></tr>'
     lr = (d.get("live") or {}).get("records") or {}
     br = bt.get("records") or {}
     rows = []
     for c in d.get("crops") or []:
         a, b = lr.get(c["key"]) or {}, br.get(c["key"]) or {}
         lv = (f"{_pb_n(a.get('hits'))} of {_pb_n(a.get('graded'))} ({_pb_rate(a.get('hit_rate'))})" if a.get("gate_ok")
-              else f"&mdash; {_pb_n(a.get('graded'))} graded")
-        ls = _pb_n(a.get("windows")) if a.get("gate_ok") else "&mdash;"
-        bv = f"{_pb_n(b.get('hits'))} of {_pb_n(b.get('graded'))} ({_pb_rate(b.get('hit_rate'))})" if b.get("graded") else "&mdash;"
+              else f"{_pb_n(a.get('graded'))} graded")
+        ls = _pb_n(a.get("windows")) if a.get("gate_ok") else "n/a"
+        bv = f"{_pb_n(b.get('hits'))} of {_pb_n(b.get('graded'))} ({_pb_rate(b.get('hit_rate'))})" if b.get("graded") else "n/a"
         bs = (f"{_pb_rate(b.get('spell_rate_low'))}&ndash;{_pb_rate(b.get('spell_rate_high'))} ({_pb_n(b.get('windows'))} windows)"
-              if b.get("graded") else "&mdash;")
-        bvt = _e(b.get("verdict_text") or PB_VERDICT.get(b.get("verdict"), "")) or "&mdash;"
+              if b.get("graded") else "n/a")
+        bvt = _e(b.get("verdict_text") or PB_VERDICT.get(b.get("verdict"), "")) or "n/a"
         rows.append(f"<tr><td>{_e(c['label'])}</td><td class=\"num\">{lv}</td><td class=\"num\">{ls}</td>"
                     f"<td class=\"num\">{bv}</td><td class=\"num\">{bs}</td><td>{bvt}</td></tr>")
-    seeds["pb:bycrop"] = "".join(rows) or '<tr><td colspan="6">&mdash;</td></tr>'
+    seeds["pb:bycrop"] = "".join(rows) or '<tr><td colspan="6">n/a</td></tr>'
     return _write_seeds("scorecard.html", seeds)
 
 
@@ -861,12 +861,12 @@ def seed_basis(today):
     seeds = {}
     if not rows or _stale(newest, today, "basis"):
         why = (f"the newest USDA week on file is {_mdy(newest)}" if newest else "the basis file is missing")
-        seeds["basisstats"] = f"&mdash; No current regional basis: {why}."
-        seeds["basistable"] = f'<tr><td style="color:#8a948f">&mdash; No current USDA basis: {why}</td></tr>'
-        seeds["basisfresh"] = "&mdash;"
-        seeds["basisbig"] = "&mdash;"
+        seeds["basisstats"] = f"No current regional basis: {why}."
+        seeds["basistable"] = f'<tr><td style="color:#8a948f">No current USDA basis: {why}</td></tr>'
+        seeds["basisfresh"] = "-"
+        seeds["basisbig"] = "-"
         seeds["basisword"] = ""
-        seeds["basissent"] = f"&mdash; {why}."
+        seeds["basissent"] = f"{why[:1].upper()}{why[1:]}."
         return _write_seeds("basis.html", seeds)
     cur = [r for r in rows if r[2] <= 14]
     parts = []
@@ -890,14 +890,14 @@ def seed_basis(today):
          "<th style=\"text-align:right\">5-yr normal</th><th style=\"text-align:right\">Vs normal, $/bu</th></tr>"]
     for name, s, age in rows:
         if age > 14:
-            now = f"&mdash; no USDA posting since {_md(_iso_date(s['date']))}"
+            now = f"no USDA posting since {_md(_iso_date(s['date']))}"
             vs = ""
         else:
             now = _basis_money(s["latest"]) + (f" as of {_md(_iso_date(s['date']))}" if age > 0 else "")
             dl = s.get("delta")
             # a delta that rounds to a cent of nothing reads "even", not "+$0.00"
-            vs = ("&mdash;" if dl is None else "even" if abs(dl) < 0.005 else _basis_money(dl))
-        nrm = "&mdash;" if s.get("avg5") is None else (_basis_money(s["avg5"]) + (f" n={s['avg5_n']} yrs" if s.get("avg5_n") is not None else ""))
+            vs = ("-" if dl is None else "even" if abs(dl) < 0.005 else _basis_money(dl))
+        nrm = "-" if s.get("avg5") is None else (_basis_money(s["avg5"]) + (f" n={s['avg5_n']} yrs" if s.get("avg5_n") is not None else ""))
         h.append(f"<tr><td>{_e(name)}</td><td class=\"num\">{now}</td><td class=\"num\">{nrm}</td><td class=\"num\">{vs}</td></tr>")
     seeds["basistable"] = "".join(h)
     # the verdict box defaults to Iowa corn, as the page script does
@@ -942,12 +942,12 @@ def seed_elevators(today):
     if not d or not isinstance(n.get("read"), int) or not isinstance(n.get("known"), int) or _stale(gd, today, "elevators"):
         why = (f"the coverage file was last built {_mdy(gd)}" if gd else "the coverage file is missing")
         for k in ("read", "quiet", "known"):
-            seeds["elev:cov-n-" + k] = "&mdash;"
-        seeds["elev:foot"] = f"&mdash; Counts not shown: {why}."
-        seeds["elev:net"] = f"Network counts: &mdash; {why}."
+            seeds["elev:cov-n-" + k] = "-"
+        seeds["elev:foot"] = f"Counts not shown: {why}."
+        seeds["elev:net"] = f"Network counts: {why}."
         return _write_seeds("elevators.html", seeds)
     for k in ("read", "quiet", "known"):
-        seeds["elev:cov-n-" + k] = _commas(n[k]) if isinstance(n.get(k), int) else "&mdash;"
+        seeds["elev:cov-n-" + k] = _commas(n[k]) if isinstance(n.get(k), int) else "-"
     foot = ""
     if n.get("elevators") is not None:
         foot += f"{_commas(n['elevators'])} elevators tracked. "

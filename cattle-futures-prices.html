@@ -430,10 +430,10 @@
     <p class="cog-sub">What sale price do you need to break even? Enter your feeder cost, finished weight, and cost of gain. Feeder and fed-cattle prices are pre-filled from today's delayed board quotes. The feeder price is the front feeder futures, which settles to the CME Feeder Cattle Index for 700–899 lb steers (default weight 800 lb); lighter calves usually bring more per cwt, so adjust for yours. The sale price comes from the live cattle contract nearest the month your cattle would finish, assuming 3.5 lb/day average gain. Cost of gain typically runs $0.90–$1.30/lb (feed, yardage, interest, death loss).</p>
     <div class="cog-grid">
       <div class="cog-f"><label for="cog-wtin">Feeder weight <span class="h">(lb)</span></label><input type="number" id="cog-wtin" inputmode="decimal" value="800" min="1" step="10"></div>
-      <div class="cog-f"><label for="cog-pin">Feeder price <span class="h">($/cwt)</span></label><input type="number" id="cog-pin" inputmode="decimal" value="" placeholder="—" min="0" step="1"></div>
+      <div class="cog-f"><label for="cog-pin">Feeder price <span class="h">($/cwt)</span></label><input type="number" id="cog-pin" inputmode="decimal" value="" placeholder="-" min="0" step="1"></div>
       <div class="cog-f"><label for="cog-wtfin">Finished weight <span class="h">(lb)</span></label><input type="number" id="cog-wtfin" inputmode="decimal" value="1400" min="1" step="10"></div>
       <div class="cog-f"><label for="cog-cog">Cost of gain <span class="h">($/lb)</span></label><input type="number" id="cog-cog" inputmode="decimal" value="1.15" min="0" step="0.05"></div>
-      <div class="cog-f" style="grid-column:1/-1"><label for="cog-fed">Fed-cattle sale price <span class="h" id="cog-fed-h">($/cwt, live cattle contract nearest your sale month)</span></label><input type="number" id="cog-fed" inputmode="decimal" value="" placeholder="—" min="0" step="1"></div>
+      <div class="cog-f" style="grid-column:1/-1"><label for="cog-fed">Fed-cattle sale price <span class="h" id="cog-fed-h">($/cwt, live cattle contract nearest your sale month)</span></label><input type="number" id="cog-fed" inputmode="decimal" value="" placeholder="-" min="0" step="1"></div>
     </div>
     <div class="cog-out" aria-live="polite">
       <div class="cog-be"><div class="k">Breakeven sale price</div><div class="v" id="cog-be">-</div></div>

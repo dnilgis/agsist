@@ -50,13 +50,19 @@ AS_JSON = "data/analyst-scorecard.json"
 SC_JSON = "data/scorecard.json"
 
 
+def nodash(s):
+    """Data prose (reactions, notes) is printed verbatim; the site prints no em
+    dashes, so a spaced one reads as a comma and a bare one as a hyphen."""
+    return str(s).replace(" \u2014 ", ", ").replace("\u2014", "-")
+
+
 def esc(s):
-    return htmlmod.escape(str("" if s is None else s), quote=True)
+    return htmlmod.escape(nodash("" if s is None else s), quote=True)
 
 
 def num(n, u=""):
     if n is None:
-        return "—"
+        return "-"
     return f"{n} {u}".strip() if u else str(n)
 
 
@@ -105,7 +111,7 @@ def farm_box(n):
     when = _report_when(n)
     metric = esc(n.get("metric", "the next set of USDA numbers"))
     return ('<div class="wp-farmbox"><b>' + esc(n.get("report", "Next report")) +
-            (f' &mdash; {when}.</b> ' if when else '.</b> ') +
+            (f': {when}.</b> ' if when else '.</b> ') +
             f'{metric}. If you are holding unpriced bushels, know the number to beat '
             'before that morning. Your own numbers: <a href="/breakeven">break-even</a> '
             '&middot; <a href="/presell-calculator">safe pre-sell</a>.</div>')
@@ -117,7 +123,7 @@ def sc_next_report(n):
                 'See <a href="/usda-calendar" style="color:var(--gold)">the calendar</a>.')
     when = _report_when(n)
     return ('<b style="color:var(--text)">' + (when + ': ' if when else '') + '</b>' +
-            esc(n.get("report", "Next USDA report")) + ' &mdash; ' +
+            esc(n.get("report", "Next USDA report")) + ': ' +
             esc(n.get("metric", "the next USDA numbers")) + '. See '
             '<a href="/whats-priced-in" style="color:var(--gold)">what the trade has '
             'priced in</a> before the number drops.')
@@ -155,7 +161,7 @@ def _sig(n):
 def numbers_el(rows):
     if not rows:
         return ""
-    DASH = "\u2014"
+    DASH = "n/a"
     body = []
     for r in rows:
         u = (" " + r["unit"]) if r.get("unit") else ""
@@ -167,7 +173,7 @@ def numbers_el(rows):
             if (r.get("low") is not None and r.get("high") is not None) else ""
         now = DASH if r.get("usda_current") is None else (_sig(r["usda_current"]) + u)
         if r.get("actual") is None:
-            printed = '<td class="wait">' + DASH + " " + _esc4(r.get("why") or "not printed yet") + "</td>"
+            printed = '<td class="wait">' + _esc4(r.get("why") or "not printed yet") + "</td>"
         else:
             sur = r.get("surprise")
             if sur == "bullish":
@@ -262,15 +268,15 @@ def next_card(n):
     if n.get("bullish_threshold") or n.get("bearish_threshold"):
         thr = (
             '<div class="wp-thr">'
-            f'<div class="t bull"><div class="k">Bullish surprise</div><div class="v">{n.get("bullish_threshold") or "—"}</div></div>'
-            f'<div class="t bear"><div class="k">Bearish surprise</div><div class="v">{n.get("bearish_threshold") or "—"}</div></div></div>'
+            f'<div class="t bull"><div class="k">Bullish surprise</div><div class="v">{n.get("bullish_threshold") or "-"}</div></div>'
+            f'<div class="t bear"><div class="k">Bearish surprise</div><div class="v">{n.get("bearish_threshold") or "-"}</div></div></div>'
         )
     else:
         thr = gap("thresholds", "No surprise thresholds")
     pos = (f'<div class="wp-pos">Fund positioning: {esc(n["positioning"])}</div>'
            if n.get("positioning") else gap("positioning", "No positioning"))
     commodity = (
-        f'<div class="wp-metric">{esc(n["commodity"])} — {esc(n.get("metric", ""))}</div>'
+        f'<div class="wp-metric">{esc(n["commodity"])}: {esc(n.get("metric", ""))}</div>'
         if n.get("commodity") else ""
     )
     expectation = f'<div class="wp-exp">{esc(n["expectation"])}</div>' if n.get("expectation") else ""
@@ -299,7 +305,7 @@ def result_banner(lr):
     if not lr.get("metric_count"):
         sum_txt = f"No figure in this report had a trade estimate to grade it against{ung}."
     elif lr.get("all_in_line"):
-        sum_txt = ("Landed in line across the board &mdash; no real surprise versus "
+        sum_txt = ("Landed in line across the board, no real surprise versus "
                    f"what the trade had priced in{ung}.")
     else:
         sum_txt = (f'{lr["in_line_count"]} of {lr["metric_count"]} graded figures landed in line '
@@ -315,7 +321,7 @@ def result_banner(lr):
         big = (
             '<div class="wp-res-big">'
             f'<div class="wp-res-row"><span class="wp-res-metric">{esc(b["metric"])}</span>'
-            f'<span class="wp-res-tag {sc}">{b.get("surprise") or "— no trade estimate"}</span></div>'
+            f'<span class="wp-res-tag {sc}">{b.get("surprise") or "no trade estimate"}</span></div>'
             f'<div class="wp-res-nums"><b>{num(b.get("actual"), b.get("unit"))}</b> actual &middot; '
             f'{num(b.get("expected"), b.get("unit"))} expected{gp}</div>'
             f'{reaction}</div>'
@@ -333,7 +339,7 @@ def result_banner(lr):
 
 def fmt_num_nbsp(n, u):
     if n is None:
-        return "—"
+        return "n/a"
     return f"{n} {u}" if u else str(n)
 
 
@@ -384,7 +390,7 @@ def history_el(h):
 
 def bias_cell(b):
     if b is None:
-        return '<span class="as-bias">&mdash;</span>'
+        return '<span class="as-bias">-</span>'
     if abs(b) < 0.25:
         return '<span class="as-bias">&#8776; even</span>'
     hi = b > 0
@@ -467,7 +473,7 @@ def board_row(r, rank, min_n, show_rank):
     ours = (u'<span class="as-ours" title="This is our own model. We run this board and score '
             u'it, and the same rules apply to us.">ours</span>'
             if "agsist.com" in (r.get("firm") or "").lower() else "")
-    rk = (u'<td class="rk" data-label="#">%s</td>' % (rank if rank else u"&mdash;")) if show_rank else ""
+    rk = (u'<td class="rk" data-label="#">%s</td>' % (rank if rank else u"n/a")) if show_rank else ""
     return (u'<tr%s>%s'
             u'<td data-label="Analyst"><span class="who">%s</span>%s<span class="firm">%s</span>%s</td>'
             u'<td class="num" data-label="Calls">%s</td>'
@@ -514,7 +520,7 @@ def board_tbl(rows, building, min_n=3, cls=None, ord_min=None):
     if cls and cls.get("label"):
         n_calls = cls.get("calls")
         cap = (u'<tr class="as-cap"><td colspan="%d"><b>%s</b>%s. Errors are averaged inside '
-               u'this group only \u2014 a 2%% miss on a yield and a 2%% miss on ending stocks are '
+               u'this group only: a 2%% miss on a yield and a 2%% miss on ending stocks are '
                u'not the same miss, and this page does not add them together.</td></tr>'
                % (span, esc(cls["label"]),
                   (u' \u00b7 %d scored call%s' % (n_calls, "" if n_calls == 1 else "s"))
@@ -524,14 +530,14 @@ def board_tbl(rows, building, min_n=3, cls=None, ord_min=None):
     brows = u"".join(board_row(r, None, min_n, ordinals) for r in building)
     note = u""
     if building and rows:
-        note = (u'<tr class="as-split"><td colspan="%d">Still building \u2014 listed above the '
+        note = (u'<tr class="as-split"><td colspan="%d">Still building. Listed above the '
                 u'line once a forecaster has <b>%d scored calls in this group</b>. Their accuracy '
                 u'so far is real and is shown; their position is not, because %d calls is not a '
                 u'record.</td></tr>' % (span, min_n, min_n - 1))
     lead = u""
     if not rows:
         lead = (u'<div class="as-err" style="margin-bottom:.6rem">Nobody has %d scored calls in '
-                u'this group yet \u2014 building records below.</div>' % min_n)
+                u'this group yet. Building records below.</div>' % min_n)
     elif len(rows) == 1:
         lead = (u'<div class="as-err" style="margin-bottom:.6rem">A ranking needs at least two '
                 u'forecasters with %d scored calls in the same group. One has cleared that so '
@@ -541,7 +547,7 @@ def board_tbl(rows, building, min_n=3, cls=None, ord_min=None):
                 u'no places. This page prints a finishing order only once every forecaster above '
                 u'the line has <b>%d scored calls</b> in the same group. Under that, the gap '
                 u'between two averages sits inside the spread of each one\u2019s own calls '
-                u'\u2014 shown beside every average \u2014 and an order would be a coin flip '
+                u'(shown beside every average) and an order would be a coin flip '
                 u'written as a fact.</div>' % ord_min)
     return lead + head + cap + body + note + brows + u'</tbody></table>'
 
@@ -615,11 +621,11 @@ def _sc_det(d):
 def sc_stats_html(d):
     det = _sc_det(d)
     g, p = det.get("graded"), det.get("played")
-    hit = f'{det["hit_rate"]}%' if det.get("hit_rate") is not None else "—"
+    hit = f'{det["hit_rate"]}%' if det.get("hit_rate") is not None else "-"
     cs = d.get("current_streak") or 0
     streak = f'{cs} win{"" if cs == 1 else "s"}' if cs > 0 else "none"
     if g is None:
-        rec, total = "—", "—"
+        rec, total = "-", "-"
     else:
         rec = f'{p or 0}&ndash;{det.get("missed") or 0}&ndash;{d.get("pending") or 0}'
         total = str(g)
@@ -634,7 +640,7 @@ def sc_stats_html(d):
 def sc_sample_html(d):
     det = _sc_det(d)
     if not det.get("graded"):
-        return "—"
+        return "-"
     return (f'{det["played"]} of {det["graded"]} calls, '
             f'{fdate(det.get("first"))} to {fdate(det.get("last"))}')
 
@@ -642,7 +648,7 @@ def sc_sample_html(d):
 def sc_self_html(d):
     sr = (d.get("by_method") or {}).get("self_reported") or {}
     if not sr.get("graded"):
-        return "—"
+        return "-"
     return (f'{sr["played"]} of {sr["graded"]} ({sr["hit_rate"]}%), '
             f'{fdate(sr.get("first"))} to {fdate(sr.get("last"))}')
 
@@ -663,7 +669,7 @@ def sc_eras_html(d):
 def sc_list_html(d, limit=25):
     recs = d.get("records") or []
     if not recs:
-        return ('<div class="sc-loading">No graded calls yet — check back after '
+        return ('<div class="sc-loading">No graded calls yet. Check back after '
                 'the next briefing.</div>')
     rows = "".join(sc_row(r) for r in recs[:limit])
     more = ""
@@ -673,7 +679,7 @@ def sc_list_html(d, limit=25):
     pend = f" ({n_pending} pending)" if n_pending else ""
     if len(recs) > limit:
         more = (f'<p class="sc-note" style="margin-top:.7rem">Showing the latest {limit} of '
-                f'{n_graded} graded calls{pend} &mdash; the full record loads on this page with '
+                f'{n_graded} graded calls{pend}. The full record loads on this page with '
                 f'JavaScript, and every briefing is readable in the <a href="/archive">archive</a>.</p>')
     return rows + more
 
@@ -785,7 +791,7 @@ def ao_summary(d):
         t, yes = m.get("title"), m.get("yes")
         if not t or yes is None:
             continue
-        items.append(f'{esc(t)} — <b>{yes}%</b> yes')
+        items.append(f'{esc(t)} <b>{yes}%</b> yes')
     if not items:
         return ""
     fetched = (d.get("fetched") or "")[:10]

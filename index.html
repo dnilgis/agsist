@@ -42,12 +42,12 @@
 <meta property="og:site_name"    content="AGSIST">
 <meta property="og:locale"       content="en_US">
 <meta property="og:title"        content="Corn, Soybean &amp; Wheat Prices &amp; Cash Grain Bids Today | AGSIST">
-<meta property="og:description"  content="Live grain futures prices, local farm weather, spray advisory, urea risk, cash grain bids, and USDA data &#8212; all free for working farmers. Updated every 15 minutes.">
+<meta property="og:description"  content="Live grain futures prices, local farm weather, spray advisory, urea risk, cash grain bids, and USDA data, all free for working farmers. Updated every 15 minutes.">
 <meta property="og:url"          content="https://agsist.com/">
 <meta property="og:image"        content="https://agsist.com/data/social/card-2026-10-08.png">
 <meta property="og:image:width"  content="2400">
 <meta property="og:image:height" content="1350">
-<meta property="og:image:alt"    content="AGSIST &#8212; Free agricultural market dashboard with live corn, soybean, and wheat futures prices">
+<meta property="og:image:alt"    content="AGSIST: Free agricultural market dashboard with live corn, soybean, and wheat futures prices">
 <meta name="twitter:card"        content="summary_large_image">
 <meta name="twitter:site"        content="@agsist">
 <meta name="twitter:creator"     content="@agsist">
@@ -230,14 +230,14 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
 </div>
 <div id="idx1-home-prompt" class="idx1-home-prompt" style="display:none">
   <svg class="ic" aria-hidden="true" style="flex:none"><use href="#i-banknote"/></svg>
-  <div style="flex-grow:1;font-size:.824rem;color:var(--text)">Add AGSIST to your home screen — one tap from the field, no app store.</div>
+  <div style="flex-grow:1;font-size:.824rem;color:var(--text)">Add AGSIST to your home screen, one tap from the field, no app store.</div>
   <button type="button" id="idx1-home-add" style="font-size:.824rem;font-weight:700;color:#0a0c0d;background:var(--gold-fill,var(--gold));border:none;border-radius:6px;padding:.4rem .7rem;flex:none;cursor:pointer">Add</button>
   <button type="button" id="idx1-home-dismiss" aria-label="Dismiss" style="font-size:1rem;color:var(--text-muted);background:none;border:none;padding:.2rem .3rem;flex:none;cursor:pointer">&times;</button>
 </div>
 <section class="daily-hero is-brief" id="daily-hero" data-briefing-date="2026-10-08" aria-label="AGSIST Daily Briefing" aria-expanded="false">
   <div class="daily-teaser" id="daily-teaser" role="button" tabindex="0" aria-label="Expand AGSIST Daily briefing" aria-controls="daily-full" aria-expanded="false">
     <div class="teaser-line1"><div class="teaser-left"><span class="teaser-badge" id="daily-teaser-date"><svg class="ic" aria-hidden="true"><use href="#i-newspaper"/></svg> AGSIST Daily</span></div><span class="teaser-action">Read Today’s Briefing &#x2193;</span></div>
-    <span class="teaser-preview" id="daily-teaser-text">Today’s ag market briefing &mdash; click to read</span>
+    <span class="teaser-preview" id="daily-teaser-text">Today’s ag market briefing. Click to read</span>
   </div>
   <div class="s7-adrow"><a class="teaser-sponsor empty-state" id="daily-teaser-sponsor" href="/sponsor" onclick="event.stopPropagation()"><span class="teaser-sponsor-dot"></span>Become a sponsor<span class="teaser-sponsor-tag" data-rate="founding">$149/mo &middot; first month free</span></a></div>
   <div class="daily-full" id="daily-full">
@@ -290,7 +290,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
                 <span class="dsp-tag dsp-tag-founding">Sponsor &middot; 1 Slot &middot; First Month Free</span>
               </div>
               <h2 class="dsp-headline">Sponsor the AGSIST Daily Briefing.</h2>
-              <p class="dsp-pitch">One ag company per issue. Your message reaches working US producers across grain, cattle, dairy, and specialty operations &mdash; read before the market open. <strong>First month free, then $149 a month &mdash; rate locked 12 months. No minimum, cancel anytime.</strong></p>
+              <p class="dsp-pitch">One ag company per issue. Your message reaches working US producers across grain, cattle, dairy, and specialty operations, read before the market open. <strong>First month free, then $149 a month, rate locked 12 months. No minimum, cancel anytime.</strong></p>
               <div class="dsp-actions">
                 <a class="dsp-cta-primary" href="/sponsor"><svg class="ic" aria-hidden="true"><use href="#i-newspaper"/></svg> See the sponsor pitch</a>
               </div>
@@ -311,7 +311,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
         <div class="hero-sidebar">
           <div class="s-card s-card--gold"><div class="s-card-label-row" style="display:flex;align-items:center;justify-content:space-between;gap:.5rem"><span class="s-card-label"><svg class="ic" aria-hidden="true"><use href="#i-chart-column"/></svg> THE NUMBER</span><button id="daily-number-copy" class="dn-copy-btn" type="button" aria-label="Copy The Number to clipboard" title="Copy"><svg class="ic" aria-hidden="true"><use href="#i-clipboard-list"/></svg></button></div><div id="daily-number-value" class="one-num">-</div><div id="daily-number-unit" class="one-num-unit"></div><div id="daily-number-context" class="one-num-ctx"></div></div>
           <div class="s-card"><div class="s-card-label"><svg class="ic" aria-hidden="true"><use href="#i-calendar"/></svg> <span id="daily-watch-label-text">TODAY’S WATCH LIST</span></div><ul id="daily-watch-list" class="watch-list" role="list"><li class="watch-item"><span class="watch-time">-</span><span class="watch-desc">Loading watch list&hellip;</span></li></ul></div>
-          <div class="s-card" style="border-color:rgba(var(--gold-rgb),.15)"><div class="s-card-label" style="color:var(--gold)"><svg class="ic" aria-hidden="true"><use href="#i-message-circle"/></svg> DAILY QUOTE</div><blockquote style="margin:0;padding:0"><p id="daily-quote-text" style="font-size:1rem;color:var(--text-dim);line-height:1.65;margin-bottom:.4rem">"&mdash;"</p><cite id="daily-quote-attr" style="font-size:.824rem;color:var(--text-muted);font-style:normal"></cite></blockquote></div>
+          <div class="s-card" style="border-color:rgba(var(--gold-rgb),.15)"><div class="s-card-label" style="color:var(--gold)"><svg class="ic" aria-hidden="true"><use href="#i-message-circle"/></svg> DAILY QUOTE</div><blockquote style="margin:0;padding:0"><p id="daily-quote-text" style="font-size:1rem;color:var(--text-dim);line-height:1.65;margin-bottom:.4rem">"-"</p><cite id="daily-quote-attr" style="font-size:.824rem;color:var(--text-muted);font-style:normal"></cite></blockquote></div>
           <div style="font-size:.765rem;color:var(--text-muted);text-align:center;padding:.2rem 0"><span id="daily-source">USDA &middot; CME Group &middot; Open-Meteo</span></div>
         </div>
       </div>
@@ -815,7 +815,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
       <a class="bidnet-note" href="/elevators">
         <span class="bidnet-tag">NEW</span>
         <span class="bidnet-txt">Some of these bids now come <strong>straight from the elevator&rsquo;s own board.</strong>
-          See which elevators we read &mdash; and which are still in the queue.</span>
+          See which elevators we read, and which are still in the queue.</span>
         <span class="bidnet-go" aria-hidden="true">&rarr;</span>
       </a>
     </div>
@@ -906,7 +906,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
       <div class="sec-head"><h2 class="sec-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:1.05em;height:1.05em;vertical-align:-.13em;margin-right:.34em;flex:none"><path d="M12 2v2" /> <path d="m4.93 4.93 1.41 1.41" /> <path d="M20 12h2" /> <path d="m19.07 4.93-1.41 1.41" /> <path d="M15.947 12.65a4 4 0 0 0-5.925-4.128" /> <path d="M3 20a5 5 0 1 1 8.9-4H13a3 3 0 0 1 2 5.24" /> <path d="M11 20v2" /> <path d="M7 19v2" /></svg>Radar</h2><span class="sec-all radar-by">Live, from Windy</span></div>
       <div class="radar-card">
         <div class="s7-radar-empty" aria-hidden="true">Not loaded yet</div>
-        <iframe id="windy-frame" src="" data-src="https://embed.windy.com/embed.html?type=map&location=coordinates&metricRain=in&metricTemp=%C2%B0F&metricWind=mph&zoom=5&overlay=radar&product=radar&level=surface&lat=42.0&lon=-93.5&detailLat=42.0&detailLon=-93.5&detail=false&pressure=false&menu=false&message=false&marker=false&calendar=now&thunder=false" width="100%" style="border:none;display:block;min-height:320px;height:100%;aspect-ratio:unset" loading="lazy" title="Live Radar &mdash; Windy" allow="geolocation; fullscreen" allowfullscreen></iframe>
+        <iframe id="windy-frame" src="" data-src="https://embed.windy.com/embed.html?type=map&location=coordinates&metricRain=in&metricTemp=%C2%B0F&metricWind=mph&zoom=5&overlay=radar&product=radar&level=surface&lat=42.0&lon=-93.5&detailLat=42.0&detailLon=-93.5&detail=false&pressure=false&menu=false&message=false&marker=false&calendar=now&thunder=false" width="100%" style="border:none;display:block;min-height:320px;height:100%;aspect-ratio:unset" loading="lazy" title="Live Radar: Windy" allow="geolocation; fullscreen" allowfullscreen></iframe>
       </div>
     </div>
     </details>
@@ -921,7 +921,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
   <div class="price-cards-section fade-up" id="f-prices">
 
     <div class="sec-head"><h2 class="sec-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:1.05em;height:1.05em;vertical-align:-.13em;margin-right:.34em;flex:none"><path d="M9 5v4" /> <rect width="4" height="6" x="7" y="9" rx="1" /> <path d="M9 15v2" /> <path d="M17 3v2" /> <rect width="4" height="8" x="15" y="5" rx="1" /> <path d="M17 13v3" /> <path d="M3 3v16a2 2 0 0 0 2 2h16" /></svg>Market Prices</h2><div style="display:flex;align-items:center;gap:.75rem"><span id="prices-age" style="font-family:'JetBrains Mono',monospace;font-size:.765rem;color:var(--text-muted)">Updated every 15 min</span><a href="/corn-futures-prices" class="sec-all">All Charts</a></div></div>
-    <h3 class="pc-section-lbl idx1-sub-h">Grains &mdash; Key Contracts</h3>
+    <h3 class="pc-section-lbl idx1-sub-h">Grains: Key Contracts</h3>
     <div class="price-cards-grid">
       <div class="pc pc--highlight" data-spark="corn"><div class="pc-head"><span class="pc-name">Corn</span><span class="pc-contract"></span></div><div class="r7-pl"><div class="pc-price" id="pcp-corn-near"><!--SEED:hp:corn-->$4.99 1/2<!--/SEED--></div><span class="r7-unit">per bu</span></div><div class="pc-change"><span class="pc-chg-val nc" id="pcc-corn-near"></span></div><div class="pc-prev" id="pcprev-corn-near"><!--SEED:hp:corn-when-->Last close Oct 8 &middot; Yahoo Finance, delayed<!--/SEED--></div><div class="pc-range"><div class="pc-range-labels"><span id="pcrl-corn-lo"></span><span>52-week range</span><span id="pcrl-corn-hi"></span></div><div class="pc-range-track"><div class="pc-range-fill" id="pcrf-corn"></div><div class="pc-range-dot" id="pcrd-corn"></div></div></div></div>
       <div class="pc pc--highlight" data-spark="corn-dec"><div class="pc-head"><span class="pc-name">Corn deferred</span><span class="pc-contract"></span></div><div class="r7-pl"><div class="pc-price" id="pcp-corn-dec"></div><span class="r7-unit">per bu</span></div><div class="pc-change"><span class="pc-chg-val nc" id="pcc-corn-dec"></span></div><div class="pc-prev" id="pcprev-corn-dec"></div><div class="pc-range"><div class="pc-range-labels"><span id="pcrl-corn-dec-lo"></span><span>52-week range</span><span id="pcrl-corn-dec-hi"></span></div><div class="pc-range-track"><div class="pc-range-fill" id="pcrf-corn-dec"></div><div class="pc-range-dot" id="pcrd-corn-dec"></div></div></div></div>
@@ -936,7 +936,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
     <details class="m-fold m-fold--usda" open><summary class="m-fold-sum"><span>Export sales <small>USDA FAS, weekly</small></span></summary>
     <div class="crop-export-grid crop-export-grid--one" id="crop-export-grid-inner">
       <div class="export-widget" id="export-widget">
-        <div class="export-widget-head"><h3 class="export-widget-title idx1-sub-h"><svg class="ic" aria-hidden="true"><use href="#i-package"/></svg> Export Sales &mdash; Commitments</h3><span class="export-mkt-yr" id="export-mkt-yr">USDA FAS &middot; Thu 8:30am</span></div>
+        <div class="export-widget-head"><h3 class="export-widget-title idx1-sub-h"><svg class="ic" aria-hidden="true"><use href="#i-package"/></svg> Export Sales: Commitments</h3><span class="export-mkt-yr" id="export-mkt-yr">USDA FAS &middot; Thu 8:30am</span></div>
         <div class="export-rows" id="export-rows">
           <div><div class="export-row-head"><div class="export-comm-label"><span class="export-comm-name">Corn</span></div><span class="export-weekly"><span id="exp-corn-wk">--</span> <span class="export-wk-lbl">net sales this week</span></span></div><div class="export-pace-row"><div class="export-pace-bar"><div class="export-pace-fill on-track" id="exp-corn-bar" style="width:0%"></div></div><span class="export-pace-pct on-track" id="exp-corn-pct">--%</span></div><div class="export-cumul" id="exp-corn-cumul"></div><div class="export-withheld" id="exp-corn-why" hidden></div></div>
           <div><div class="export-row-head"><div class="export-comm-label"><span class="export-comm-name">Soybeans</span></div><span class="export-weekly"><span id="exp-bean-wk">--</span> <span class="export-wk-lbl">net sales this week</span></span></div><div class="export-pace-row"><div class="export-pace-bar"><div class="export-pace-fill on-track" id="exp-bean-bar" style="width:0%"></div></div><span class="export-pace-pct on-track" id="exp-bean-pct">--%</span></div><div class="export-cumul" id="exp-bean-cumul"></div><div class="export-withheld" id="exp-bean-why" hidden></div></div>
@@ -1000,7 +1000,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
   
   <div class="signup--compact fade-up" id="signup-compact" data-signup-hide style="display:none">
     <span class="scu-eyebrow"><svg class="ic" aria-hidden="true"><use href="#i-newspaper"/></svg> AGSIST Daily</span>
-    <span class="scu-text"><strong>Free daily briefing</strong> &mdash; markets, weather, one number to know before the market open &mdash; for farmers across the US.</span>
+    <span class="scu-text"><strong>Free daily briefing</strong>: markets, weather, one number to know before the market open, for farmers across the US.</span>
     <div class="scu-form"><input type="email" class="scu-input" id="compact-email" placeholder="your@email.com" autocomplete="email" aria-label="Email for daily briefing"><button class="scu-btn" id="btn-compact-signup">Subscribe Free &rarr;</button></div>
     <div class="scu-disc" style="font-size:.765rem;color:var(--text-muted);margin-top:.3rem">Unsubscribe any time. <a href="/privacy">Privacy Policy</a>.</div>
     <button class="scu-dismiss" id="btn-compact-dismiss" aria-label="Dismiss signup"><svg class="ic" aria-hidden="true"><use href="#i-x"/></svg> No thanks</button>
@@ -1156,7 +1156,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
 <aside class="intel-rail" aria-label="Market intelligence" id="market-intel" tabindex="-1" style="outline:none">
 <div class="fade-up" id="f5">
     <div class="sec-head"><h2 class="sec-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:1.05em;height:1.05em;vertical-align:-.13em;margin-right:.34em;flex:none"><path d="M8 2v4" /> <path d="M16 2v4" /> <rect width="18" height="18" x="3" y="4" rx="2" /> <path d="M3 10h18" /></svg>Upcoming USDA Reports</h2><a href="/usda-calendar" class="sec-all">Full Calendar</a></div>
-    <div class="usda-cal-card"><div class="cal-strip" id="usda-cal-strip" role="list" tabindex="0" aria-label="Upcoming USDA report dates — scroll for more"></div></div>
+    <div class="usda-cal-card"><div class="cal-strip" id="usda-cal-strip" role="list" tabindex="0" aria-label="Upcoming USDA report dates, scroll for more"></div></div>
     <!-- 2026-09-30: today's real September Grain Stocks print, the most
          recent USDA report and the one a reader landing here right after
          release would look for first. Static card, not client-fetched --
@@ -1191,8 +1191,8 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
     <div class="sec-head"><h2 class="sec-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:1.05em;height:1.05em;vertical-align:-.13em;margin-right:.34em;flex:none"><path d="M3 3v16a2 2 0 0 0 2 2h16" /> <path d="m19 9-5 5-4-4-3 3" /></svg>Market Intelligence</h2><a href="/cot" class="sec-all">Full COT Chart</a></div>
     <div class="ratio-cot-grid">
       <div class="cot-widget" id="cot-widget">
-        <div class="cot-widget-head"><h3 class="cot-widget-title idx1-sub-h"><svg class="ic" aria-hidden="true"><use href="#i-chart-column"/></svg> CFTC COT &mdash; Managed Money</h3><span class="cot-badges"><span class="cot-verdict mixed" id="cot-verdict">Loading&hellip;</span><span class="cot-verdict mixed" id="cot-verdict-lv" hidden></span></span></div>
-        <div class="cot-caption">Net position within its past 52 weeks. <span class="tip"><button type="button" class="tip-b" aria-expanded="false" aria-describedby="tip-cot">How to read</button><span id="tip-cot" role="tooltip" class="tip-t" hidden>COT is the CFTC&rsquo;s weekly Commitments of Traders report, positions as of Tuesday. Managed money means hedge funds and commodity trading advisers. Net futures contracts held long vs short by that group in CFTC&rsquo;s disaggregated report. Bar shows where that position sits within the past 52 weeks (not the 3-yr COT Index some desks use — this window runs shorter, which can read positioning as more extreme). The two badges above are separate: Grains averages corn, soybeans and Chicago wheat&rsquo;s position-in-range; Live cattle reads that one row. Neither is a headcount of who&rsquo;s long or short, and one grain can run the other way. &ldquo;Since&rdquo; compares the front-month close on the report&rsquo;s Tuesday with today&rsquo;s, so a contract roll in between is inside the number. Interpretation of public CFTC data, not a trading signal.</span></span></div>
+        <div class="cot-widget-head"><h3 class="cot-widget-title idx1-sub-h"><svg class="ic" aria-hidden="true"><use href="#i-chart-column"/></svg> CFTC COT: Managed Money</h3><span class="cot-badges"><span class="cot-verdict mixed" id="cot-verdict">Loading&hellip;</span><span class="cot-verdict mixed" id="cot-verdict-lv" hidden></span></span></div>
+        <div class="cot-caption">Net position within its past 52 weeks. <span class="tip"><button type="button" class="tip-b" aria-expanded="false" aria-describedby="tip-cot">How to read</button><span id="tip-cot" role="tooltip" class="tip-t" hidden>COT is the CFTC&rsquo;s weekly Commitments of Traders report, positions as of Tuesday. Managed money means hedge funds and commodity trading advisers. Net futures contracts held long vs short by that group in CFTC&rsquo;s disaggregated report. Bar shows where that position sits within the past 52 weeks (not the 3-yr COT Index some desks use, this window runs shorter, which can read positioning as more extreme). The two badges above are separate: Grains averages corn, soybeans and Chicago wheat&rsquo;s position-in-range; Live cattle reads that one row. Neither is a headcount of who&rsquo;s long or short, and one grain can run the other way. &ldquo;Since&rdquo; compares the front-month close on the report&rsquo;s Tuesday with today&rsquo;s, so a contract roll in between is inside the number. Interpretation of public CFTC data, not a trading signal.</span></span></div>
         <div class="cot-rows" id="cot-rows">
           <div class="cot-row-corn"><div class="cot-row-top"><div class="cot-label"><span class="cot-comm-name">Corn</span></div><div class="cot-right"><span class="cot-dir nc" id="cot-corn-dir">--</span><span class="cot-net" id="cot-corn-net">--</span><span class="cot-chg nc" id="cot-corn-chg">--</span></div></div><div class="cot-bar-wrap"><div class="cot-bar-fill" id="cot-corn-fill"></div><div class="cot-zero-mark" id="cot-corn-zero"></div><div class="cot-bar-dot" id="cot-corn-dot" style="background:var(--text-muted)"></div></div><div class="cot-bar-labels"><span id="cot-corn-min">--</span><span>52-week range</span><span id="cot-corn-max">--</span></div></div>
           <div class="cot-row-beans"><div class="cot-row-top"><div class="cot-label"><span class="cot-comm-name">Soybeans</span></div><div class="cot-right"><span class="cot-dir nc" id="cot-beans-dir">--</span><span class="cot-net" id="cot-beans-net">--</span><span class="cot-chg nc" id="cot-beans-chg">--</span></div></div><div class="cot-bar-wrap"><div class="cot-bar-fill" id="cot-beans-fill"></div><div class="cot-zero-mark" id="cot-beans-zero"></div><div class="cot-bar-dot" id="cot-beans-dot" style="background:var(--text-muted)"></div></div><div class="cot-bar-labels"><span id="cot-beans-min">--</span><span>52-week range</span><span id="cot-beans-max">--</span></div></div>
@@ -1205,9 +1205,9 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
           
         </div>
       </div>
-      <div class="idx1-nowcast-na" style="display:none;padding:.6rem .1rem;font-size:.824rem;color:var(--text-muted)">Yield Nowcast (corn/soybean bu/ac) isn&rsquo;t shown for a cattle-only operation &mdash; switch to Row Crops or Mixed to see it.</div>
+      <div class="idx1-nowcast-na" style="display:none;padding:.6rem .1rem;font-size:.824rem;color:var(--text-muted)">Yield Nowcast (corn/soybean bu/ac) isn&rsquo;t shown for a cattle-only operation, switch to Row Crops or Mixed to see it.</div>
       <div class="ratio-widget" id="nowcast-widget">
-        <div class="ratio-widget-head"><h3 class="ratio-widget-title idx1-sub-h">Yield Nowcast &mdash; this year&rsquo;s crop</h3><span class="ratio-verdict neutral" id="nc-verdict">Loading&hellip;</span></div>
+        <div class="ratio-widget-head"><h3 class="ratio-widget-title idx1-sub-h">Yield Nowcast: this year&rsquo;s crop</h3><span class="ratio-verdict neutral" id="nc-verdict">Loading&hellip;</span></div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:.7rem;margin:.15rem 0 .55rem">
           <div style="text-align:center;padding:.55rem .4rem;background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:9px">
             <div style="font-size:.765rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.25rem">Corn</div>
@@ -1224,7 +1224,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
         </div>
         <div style="font-size:.765rem;color:var(--text-muted);line-height:1.55;margin-bottom:.35rem">Weekly, from USDA crop ratings. <span class="tip"><button type="button" class="tip-b" aria-expanded="false" aria-describedby="tip-nowcast">How it works</button><span id="tip-nowcast" role="tooltip" class="tip-t" hidden>Built from Monday&rsquo;s USDA crop ratings, state by state, weighted by acres. 80% band: in 8 of every 10 years backtested (<span id="nc-years">16</span> years, each left out in turn), the model at this week of the season missed USDA&rsquo;s final yield by no more than this. Tightens as the season ages.</span></span></div>
         <div style="display:flex;align-items:center;justify-content:space-between;gap:.5rem;flex-wrap:wrap">
-          <span style="font-family:'JetBrains Mono',monospace;font-size:.765rem;color:var(--text-muted)" id="nc-week">Ratings week: &mdash;</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:.765rem;color:var(--text-muted)" id="nc-week">Ratings week: -</span>
           <a href="/conditions-yield" class="ratio-link"><svg class="ic" aria-hidden="true"><use href="#i-chart-column"/></svg> How it&rsquo;s computed</a>
         </div>
       </div>
@@ -1512,7 +1512,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
     <div class="faq-list">
       <details class="faq-item"><summary>What are corn futures prices today?</summary><div class="faq-a">AGSIST displays CBOT corn futures prices from Yahoo Finance, delayed about 15 minutes and updated every 15 minutes. The front-month contract and the next December contract are both shown, each labeled with its contract month (for example Dec &rsquo;26), with net change, percent change, and 52-week range. Prices are in dollars per bushel. <a href="/corn-futures-prices">See Full Corn Futures</a></div></details>
       <details class="faq-item"><summary>How do I find cash grain bids near me?</summary><div class="faq-a">Enter any US ZIP code on AGSIST’s Cash Bids page at agsist.com/cash-bids to see posted corn, soybean, and wheat elevator prices from grain elevators within 50 miles of that ZIP by default. You can widen the search up to 250 miles. Basis is shown alongside cash price for each location. <a href="/cash-bids">Find Cash Bids</a></div></details>
-      <details class="faq-item"><summary>Is AGSIST free?</summary><div class="faq-a">Yes. AGSIST is available at no charge with no account or subscription required. Tools on the site &mdash; spray advisory, urea volatilization risk monitor, break-even calculator, grain bin calculator, cash bids, and the AGSIST Daily briefing &mdash; are available at no charge for non-commercial use.</div></details>
+      <details class="faq-item"><summary>Is AGSIST free?</summary><div class="faq-a">Yes. AGSIST is available at no charge with no account or subscription required. Tools on the site (spray advisory, urea volatilization risk monitor, break-even calculator, grain bin calculator, cash bids, and the AGSIST Daily briefing) are available at no charge for non-commercial use.</div></details>
       <details class="faq-item"><summary>How often are grain prices updated on AGSIST?</summary><div class="faq-a">Grain futures prices on AGSIST are updated about every 15 minutes while futures markets trade, from Sunday evening to Friday afternoon, Central time. The AGSIST Daily briefing is published every weekday morning with overnight market analysis.</div></details>
       <details class="faq-item"><summary>What is urea volatilization risk?</summary><div class="faq-a">Urea volatilization is the loss of nitrogen fertilizer as ammonia gas when urea is surface-applied without incorporation. Risk is highest when soil temperatures exceed 50&deg;F, humidity is high, and no rain is forecast within 2&ndash;4 days. AGSIST’s free urea risk monitor scores your real-time local conditions from 0&ndash;100. <a href="/urea">Check Urea Volatilization Risk</a></div></details>
       <details class="faq-item"><summary>What is grain basis and why does it matter?</summary><div class="faq-a">Grain basis is the difference between your local cash elevator price and the futures contract it is quoted against. A basis of −30 cents means the elevator pays 30 cents below futures. Stronger (less negative) basis signals higher local demand. AGSIST displays each elevator’s posted basis alongside its cash price in the cash bids tool.</div></details>
@@ -1621,7 +1621,7 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')close(true);
 <div class="main" style="padding:0 1rem 1rem;max-width:1400px;margin:0 auto">
   <div style="font-size:.824rem;color:var(--text-muted);line-height:1.65;border-top:1px solid var(--border);padding-top:.75rem;margin-top:.5rem;display:flex;flex-wrap:wrap;gap:.4rem .9rem;align-items:center">
     <span>Prices from Yahoo Finance, delayed about 15 minutes &middot; Cash bids via the AGSIST elevator network and a second cash-bid feed &middot; Weather via Open-Meteo &middot; USDA NASS &middot; NOAA CPC</span>
-    <span>Not financial or trading advice &mdash; verify all prices with your elevator or broker before marketing decisions. Questions? <a href="tel:+17157972428" style="color:var(--gold);text-decoration:underline;">715-797-2428</a> &middot; <a href="mailto:sig@farmers1st.com" style="color:var(--gold);text-decoration:underline;">sig@farmers1st.com</a></span>
+    <span>Not financial or trading advice. Verify all prices with your elevator or broker before marketing decisions. Questions? <a href="tel:+17157972428" style="color:var(--gold);text-decoration:underline;">715-797-2428</a> &middot; <a href="mailto:sig@farmers1st.com" style="color:var(--gold);text-decoration:underline;">sig@farmers1st.com</a></span>
     <a href="/privacy" style="color:var(--gold);text-decoration:underline;">Privacy Policy</a>
   </div>
 </div>
@@ -1630,7 +1630,7 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')close(true);
   <span class="pwa-hint-icon" aria-hidden="true"><svg class="ic" aria-hidden="true"><use href="#i-smartphone"/></svg></span>
   <div class="pwa-hint-body">
     <strong id="pwa-hint-title">Add AGSIST to your home screen</strong>
-    <em id="pwa-hint-text">Open like a real app &mdash; faster, no browser bar.</em>
+    <em id="pwa-hint-text">Open like a real app, faster, no browser bar.</em>
   </div>
   <div class="pwa-hint-actions" id="pwa-hint-actions">
     <button class="pwa-hint-btn pwa-hint-btn--primary" id="pwa-install-btn" type="button">Show Me How</button>
@@ -1643,7 +1643,7 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')close(true);
     <button class="pwa-modal-close" id="pwa-modal-ios-close" type="button" aria-label="Close instructions"><svg class="ic" aria-hidden="true"><use href="#i-x"/></svg></button>
     <div class="pwa-modal-head">
       <h3 id="pwa-modal-ios-title">Add AGSIST to Your iPhone</h3>
-      <p>Three quick taps and AGSIST opens like an app from your home screen &mdash; no browser bar, no app store.</p>
+      <p>Three quick taps and AGSIST opens like an app from your home screen, no browser bar, no app store.</p>
     </div>
     <div class="pwa-modal-body">
       <div class="pwa-step">
@@ -1761,7 +1761,7 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')close(true);
     <button class="pwa-modal-close" id="pwa-modal-android-close" type="button" aria-label="Close instructions"><svg class="ic" aria-hidden="true"><use href="#i-x"/></svg></button>
     <div class="pwa-modal-head">
       <h3 id="pwa-modal-android-title">Install AGSIST on Android</h3>
-      <p>Quick install through Chrome&rsquo;s menu &mdash; no Play Store needed.</p>
+      <p>Quick install through Chrome&rsquo;s menu, no Play Store needed.</p>
     </div>
     <div class="pwa-modal-body">
       <div class="pwa-step">
