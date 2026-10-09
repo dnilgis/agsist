@@ -526,8 +526,9 @@ def head(title, desc, path, jsonld, indexable, share=None):
     h = h.replace(f"<style>{SB.CSS}  </style>", f"<style>{CSS}  </style>")
     h = h.replace('<meta property="og:type" content="article">', '<meta property="og:type" content="website">')
     assert CSS in h, "basis head() changed shape; update head() here"
-    sheet = '  <link rel="stylesheet" href="/components/styles.css?v=19">\n'
-    assert sheet in h, "basis head() changed shape; update head() here"
+    m = re.search(r'  <link rel="stylesheet" href="/components/styles\.css\?v=\d+">\n', h)
+    assert m, "basis head() changed shape; update head() here"
+    sheet = m.group(0)
     h = h.replace(sheet, sheet + '  <link rel="stylesheet" href="/components/asof.css?v=1">\n', 1)
     if share:
         for prop, old, new in (("og:title", title, share[0]), ("og:description", desc, share[1])):
