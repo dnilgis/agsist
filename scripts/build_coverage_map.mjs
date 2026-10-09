@@ -60,6 +60,11 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const SRC = process.env.DIRECTORY_URL ||
   "https://dnilgis.github.io/bids/data/directory.json";
 const OUT = join(ROOT, "data", "elevator-coverage.json");
+/* The homepage prints two of these numbers and nothing else. Fetching the
+   whole map for them cost a phone ~150 KB gzipped (~800 KB of JSON to parse)
+   on every visit, so the same counts are written beside it, from the same
+   payload in the same run, and the homepage reads this one. */
+const OUT_COUNTS = join(ROOT, "data", "elevator-coverage-counts.json");
 
 /* How long to hunt for a good pass. bids rebuilds the directory about every
    ten minutes during the day, so two-minute polling over half an hour sees
@@ -399,6 +404,13 @@ const counts = payload.counts;
 
 if (!existsSync(join(ROOT, "data"))) mkdirSync(join(ROOT, "data"), { recursive: true });
 writeFileSync(OUT, JSON.stringify(payload) + "\n");
+writeFileSync(OUT_COUNTS, JSON.stringify({
+  schema: "agsist-elevator-coverage-counts/1",
+  generated: payload.generated,
+  directoryGenerated: payload.directoryGenerated,
+  note: "The counts block of data/elevator-coverage.json, written by the same run. Read that file for the map.",
+  counts: payload.counts,
+}) + "\n");
 
 const kb = (n) => (n / 1024).toFixed(0) + " KB";
 console.log(`wrote ${OUT}`);

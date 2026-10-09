@@ -559,7 +559,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
          never jumps. -->
     <div id="hb-ask" data-signup-ask="Get your top local bid by email every weekday morning" data-source="hero" data-variant="hero"></div>
   </section>
-  <script src="/components/signup-ask.js?v=2"></script>
+  <script src="/components/signup-ask.js?v=3"></script>
   <script>
   (function(){
     'use strict';
@@ -1114,9 +1114,15 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
   var cov = document.createElement('div');
   cov.className = 'r7-cov';
   el.parentNode.insertBefore(cov, el);
-  fetch('/data/elevator-coverage.json').then(function(r){
+  /* The counts only (data/elevator-coverage-counts.json, written beside the
+     map by scripts/build_coverage_map.mjs): the full map is ~150 KB gzipped
+     for two numbers. The full file stays the fallback. */
+  function cov1(u){ return fetch(u).then(function(r){
     if(!r.ok) throw new Error('coverage ' + r.status);
     return r.json();
+  }); }
+  cov1('/data/elevator-coverage-counts.json').catch(function(){
+    return cov1('/data/elevator-coverage.json');
   }).then(function(c){
     var k = c && c.counts;
     if(!k || typeof k.read !== 'number' || typeof k.elevators !== 'number'){ cov.textContent = 'Elevator network: Not loaded yet'; return; }
