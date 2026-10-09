@@ -822,7 +822,7 @@ def render_html(daily, site_href, unsub_url=None, date_display=None, elevators=N
                     'color:%s">Forward to a neighbor. Or send them the free sign-up link: '
                     '<a href="%s" style="color:%s">%s</a></td></tr>'
                     % (SANS, MUTE, _href(forward_url), GOLD, e(forward_url.split("://", 1)[-1])))
-    foot = ('AGSIST &middot; free US ag market intelligence &middot; '
+    foot = ('AGSIST &middot; free US farm markets &middot; '
             '<a class="mute" href="https://agsist.com" style="color:%s">agsist.com</a>' % MUTE)
     if unsub_url:
         foot += ('<br><a class="mute" href="%s" style="color:%s">'
@@ -982,7 +982,7 @@ def render_text(daily, site, unsub_url=None, date_display=None, elevators=None,
         L += local_text(local)
     if forward_url:
         L += ["", "Forward to a neighbor. Or send them the free sign-up link: " + forward_url]
-    L += ["", "AGSIST, free US ag market intelligence, agsist.com"]
+    L += ["", "AGSIST, free US farm markets, agsist.com"]
     L.append("Unsubscribe: " + unsub_url if unsub_url
              else "To unsubscribe, reply with subject line: unsubscribe")
     L.append("PO Box 243, Chetek, WI 54728")

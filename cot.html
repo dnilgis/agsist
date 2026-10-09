@@ -49,7 +49,7 @@
     {
       "@type": "WebPage",
       "@id": "https://agsist.com/cot#webpage",
-      "name": "CFTC Commitment of Traders — Corn, Soybean & Wheat Fund Positioning",
+      "name": "CFTC Commitment of Traders: Corn, Soybean & Wheat Fund Positioning",
       "description": "Weekly CFTC Commitment of Traders data for corn, soybeans, and wheat managed money positioning with 52-week historical chart.",
       "url": "https://agsist.com/cot",
       "inLanguage": "en-US",
@@ -69,12 +69,12 @@
     {
       "@type": "Dataset",
       "@id": "https://agsist.com/cot#dataset",
-      "name": "Managed Money COT Positioning — 11 Ag Commodities",
+      "name": "Managed Money COT Positioning: 11 Ag Commodities",
       "description": "Weekly CFTC Commitment of Traders managed-money net positioning, 52-week percentile, and week-over-week change for corn, soybeans, SRW/HRW/HRS wheat, soybean meal and oil, live cattle, feeder cattle, lean hogs, and Class III milk.",
       "url": "https://agsist.com/cot",
       "creator": { "@type": "Organization", "name": "AGSIST", "url": "https://agsist.com/" },
       "isAccessibleForFree": true,
-      "creditText": "Source: CFTC Commitments of Traders — Disaggregated Futures-Only",
+      "creditText": "Source: CFTC Commitments of Traders: Disaggregated Futures-Only",
       "isBasedOn": "https://www.cftc.gov/MarketReports/CommitmentsofTraders/index.htm",
       "keywords": ["CFTC", "Commitment of Traders", "managed money", "corn", "soybeans", "wheat", "cattle", "fund positioning"],
       "dateModified": "2026-10-09",
@@ -576,7 +576,7 @@ details.fold .fold-body>.cx-panel{border:0;background:none;padding:0}
 
   <!-- Hero -->
   <div class="cot-hero">
-    <div class="cot-eyebrow page-kicker">Market Intelligence · Updated Weekly</div>
+    <div class="cot-eyebrow page-kicker">CFTC data · Updated weekly</div>
     <h1 class="cot-page-title">CFTC Commitment of Traders</h1>
     <p class="cot-page-sub page-lede">Every week the government publishes what the big speculative funds are betting on corn, beans, wheat, cattle, hogs and milk. These are hedge funds and commodity traders: they trade paper and never own a bushel. This page shows where they sit today, how crowded that is against every week of the same report we hold, and what it does and does not tell you about price.</p>
   <p class="cot-page-sub" style="margin-top:.55rem"><b>It is not a forecast.</b> We tested that on the full record and published the result below. Crowded positioning tells you how much buying or selling could be forced if the market turns, not which way it turns. Positions are counted on <b>Tuesday</b> and published <b>Friday</b> afternoon (the Monday after, in a federal holiday week), so they are at least three days old when they land and older every day after, the figures below carry their own age.</p>
@@ -1718,7 +1718,7 @@ cotTick(); setInterval(cotTick, 60000);
       .then(function(r){if(!r.ok)throw new Error(r.status);
         _ss();
         try{if(window.gaEvent)gaEvent('email_signup',{page:'cot',source:'cot-tool'});}catch(e){}
-        if(form)form.innerHTML='<div style=\"text-align:center;padding:.4rem 0\"><div style=\"font-size:1.6rem\">\u2713</div><div style=\"font-size:.85rem;font-weight:700;color:var(--text);margin-top:.2rem\">You\u2019re subscribed!</div><div style=\"font-size:0.785rem;color:var(--text-muted);line-height:1.5;margin-top:.2rem\">AGSIST Daily arrives by 6am CT every morning. Check your spam folder once.</div></div>';
+        if(form)form.innerHTML='<div style=\"text-align:center;padding:.4rem 0\"><div style=\"font-size:1.6rem\">\u2713</div><div style=\"font-size:.85rem;font-weight:700;color:var(--text);margin-top:.2rem\">You\u2019re subscribed.</div><div style=\"font-size:0.785rem;color:var(--text-muted);line-height:1.5;margin-top:.2rem\">AGSIST Daily arrives by 6am CT every morning. Check your spam folder once.</div></div>';
       })
       .catch(function(){
         if(btn){btn.disabled=false;btn.textContent=btn.dataset.label||'Subscribe';}

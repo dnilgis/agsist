@@ -1403,7 +1403,7 @@ SECTIONS = {
     },
     "history": {
         "id": "accuracy-record",
-        "h2": "How good has the tour actually been?",
+        "h2": "How close the tour has come",
         "sub": ("Every tour since 2015, against the crop that actually came in. Bar shows how "
                 "far the tour's final corn number landed from USDA's final yield: left of the "
                 "line means the tour called it too small, right means too big."),

@@ -940,7 +940,7 @@ function renderToday(data,why){
     }
     if(otpRendered.length){
       var otpLabel=marketClosed?'WEEK AHEAD IN AG':'OUTSIDE THE PIT';
-      var otpSub=marketClosed?'What\u2019s brewing for next week.':'News not moving prices today but in the calculus.';
+      var otpSub=marketClosed?'Coming up next week.':'Not moving prices today, but worth knowing.';
       outsidePit='<div class="dv3-otp" aria-label="'+otpLabel+'">'+
         '<div class="dv3-otp-header">'+
           '<span class="dv3-otp-label"><svg class="dv3-ic" aria-hidden="true"><use href="#i-newspaper"/></svg>'+otpLabel+'</span>'+
@@ -1005,11 +1005,11 @@ function renderToday(data,why){
   var sp=data.sponsor||null;
   if(!sp){
     sp={
-      label:'FOUNDING SPONSOR \u00B7 1 SLOT',
+      label:'SPONSOR \u00B7 1 SLOT',
       advertiser:'AGSIST',
       headline:'Sponsor the AGSIST Daily Briefing.',
-      body:'One ag company per issue. Your message reaches working US producers across grain, cattle, dairy, and specialty operations. Read before the market open. First month free, then $149 a month: founding rate, locked for 12 months. No minimum, cancel anytime.',
-      cta_text:'See the founding sponsor pitch',
+      body:'One ag company per issue. Your message reaches working US producers across grain, cattle, dairy, and specialty operations. Read before the market open. First month free, then $149 a month, rate locked for 12 months. No minimum, cancel anytime.',
+      cta_text:'See the sponsor pitch',
       cta_url:'/sponsor',
       disclosure:'One sponsor, one issue. No retargeting. No programmatic auctions. Reply or call 715-797-2428.',
       is_house_ad:true
@@ -1115,7 +1115,7 @@ function renderArchive(){
       // Hero meta: briefings published count
       if(heroMeta){
         var count=manifest.briefings.length;
-        heroMeta.innerHTML='<svg class="dv3-ic" aria-hidden="true" style="color:var(--green)"><use href="#i-check"/></svg> <b>'+count+'</b> briefing'+(count===1?'':'s')+' published &middot; never missed a market day';
+        heroMeta.innerHTML='<svg class="dv3-ic" aria-hidden="true" style="color:var(--green)"><use href="#i-check"/></svg> <b>'+count+'</b> briefing'+(count===1?'':'s')+' published';
       }
       dv3Perm.index=manifest.briefings;
       dv3Perm.check();

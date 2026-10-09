@@ -3013,8 +3013,8 @@
     if(s && s.worst && r && r.cornOnCorn){
       if(s.worst.nicc>=4){
         push({ sev:5, act:true, topic:'rotation', tag:'continuous corn on your class-'+s.worst.nicc+' ground',
-          title:'break the rotation on your class-'+s.worst.nicc+' acres: it\u2019s the highest-ROI move on this field',
-          detail:'Your weaker ground (class '+s.worst.nicc+') is '+(cornSure?'in':'likely in')+' <strong>corn on corn this year</strong>'+(r.corOnCornYears>=3?' ('+r.corOnCornYears+' years running)':'')+', two strikes against yield in the same spot. A rotation break there is the highest-ROI change on this field'+nFix+'.',
+          title:'break the rotation on your class-'+s.worst.nicc+' acres: it\u2019s the change most likely to pay on this field',
+          detail:'Your weaker ground (class '+s.worst.nicc+') is '+(cornSure?'in':'likely in')+' <strong>corn on corn this year</strong>'+(r.corOnCornYears>=3?' ('+r.corOnCornYears+' years running)':'')+', two strikes against yield in the same spot. A rotation break there is the change most likely to pay on this field'+nFix+'.',
           action: dragAction(5,12),
           watch: pollenWindow()!=null ? 'Rootworm feeding shows at silking (~'+pollenWindow()+' days out); pull and check roots before then.' : 'Scout roots for rootworm before pollination, and plan beans on these acres next year.' });
       } else {

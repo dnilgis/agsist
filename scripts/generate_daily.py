@@ -2790,7 +2790,7 @@ def render_outside_the_pit_html(items, market_closed=False):
     label_text = "WEEK AHEAD IN AG" if market_closed else "OUTSIDE THE PIT"
     label_sub = ("Not moving prices today, but worth knowing."
                  if not market_closed else
-                 "What's brewing for next week.")
+                 "Coming up next week.")
     return (f'<div class="dv3-otp" aria-label="{label_text}">'
             f'<div class="dv3-otp-header">'
             f'<span class="dv3-otp-label">{label_text}</span>'

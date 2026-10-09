@@ -438,7 +438,7 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
 <div class="ff-hero">
   <div class="ff-eyebrow page-kicker"><svg class="ic" aria-hidden="true"><use href="#i-clipboard-list"/></svg> Free &middot; no login &middot; updated with live prices</div>
   <h1>Corn &amp; Soybean Reference Tables</h1>
-  <p class="page-lede">The numbers you check before you spend money: N rates, P&amp;K, manure value, staging, thresholds, conversions.</p>
+  <p class="page-lede">The numbers to check before you spend money: N rates, P&amp;K, manure value, staging, thresholds, conversions.</p>
   <div class="ff-meta">Rates calibrated to <strong>UW A2809</strong> (Upper Midwest), confirm with your state extension &middot; maintained by <strong>Sigurd Lindquist</strong> &middot; <a href="mailto:sig@farmers1st.com">sig@farmers1st.com</a> &middot; related: <a href="/fertilizer">Fertilizer Prices</a> &middot; <a href="/breakeven">Break-Even</a> &middot; <a href="/gdu-calculator">GDU History</a></div>
 </div>
 
@@ -449,7 +449,7 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
   <p class="ff-today-line" id="ffv-line"></p>
   <div class="ff-today-src" id="ffv-src"></div>
 </section>
-  <style>@media print{.ag-sponsor-ribbon{display:none!important}}</style><aside class="ag-sponsor-ribbon" id="ag-sponsor"><span class="ag-sponsor-tag">Sponsor this page</span> The reference farmers pull up in the shop, the cab, and the co-op line. One category-exclusive slot. <span class="ag-sponsor-price" data-rate="page">$29/mo &middot; first month free</span> <a href="/sponsor-apply?slot=fast-facts&amp;utm_source=fast-facts&amp;utm_medium=slot">Put your name here &rarr;</a></aside>
+  <style>@media print{.ag-sponsor-ribbon{display:none!important}}</style><aside class="ag-sponsor-ribbon" id="ag-sponsor"><span class="ag-sponsor-tag">Sponsor this page</span> Your name beside the reference tables. One category-exclusive slot. <span class="ag-sponsor-price" data-rate="page">$29/mo &middot; first month free</span> <a href="/sponsor-apply?slot=fast-facts&amp;utm_source=fast-facts&amp;utm_medium=slot">Put your name here &rarr;</a></aside>
 <div class="ff-strip" id="ff-strip" hidden>
   <div class="ff-tile"><div class="k">Corn</div><div class="v" id="fft-corn">-</div><div class="n">CBOT &middot; live</div></div>
   <div class="ff-tile"><div class="k">Soybeans</div><div class="v" id="fft-beans">-</div><div class="n">CBOT &middot; live</div></div>
@@ -1836,13 +1836,13 @@ var stagesInited=false;
 function initStages(){
   if(stagesInited)return;stagesInited=true;
   var CORN_VIS=[
-    {s:'VE',gdu:0,key:true,desc:'Coleoptile emerges through soil surface.',mgmt:'Ensure soil temp \u226550\u00b0F. Scout for stand establishment and black cutworm.'},
+    {s:'VE',gdu:0,key:true,desc:'Coleoptile emerges through soil surface.',mgmt:'Check soil temp \u226550\u00b0F. Scout for stand establishment and black cutworm.'},
     {s:'V1',gdu:100,desc:'First leaf collar visible.',mgmt:'Count stand. 1/1000 ac row count for plant population.'},
     {s:'V3',gdu:200,key:true,desc:'3rd leaf collar visible. Growing point still below soil.',mgmt:'BCW threshold: 3+ cut plants/100. Point of no return for replant decision near.'},
     {s:'V5',gdu:350,desc:'5th leaf collar. Growing point near soil surface.',mgmt:'Last safe opportunity for anhydrous side-dress. Rapid leaf appearance begins.'},
     {s:'V6',gdu:475,desc:'Growing point above soil. Ear shoots determined.',mgmt:'Side-dress N window: V4\u2013V6 optimal. UAN Y-drop effective to V8.'},
     {s:'V8',gdu:610,key:true,desc:'8 leaf collars. Ear shoots forming, row number set.',mgmt:'Scout for European Corn Borer egg masses. Begin fungicide watch if conditions favor disease.'},
-    {s:'V10',gdu:750,desc:'10 collars. Ear row number determined.',mgmt:'Final N uptake push begins. Ensure adequate K for stalk strength.'},
+    {s:'V10',gdu:750,desc:'10 collars. Ear row number determined.',mgmt:'Final N uptake push begins. Make sure K is adequate for stalk strength.'},
     {s:'V12',gdu:900,desc:'12 collars. Kernel row number set, potential kernels/row determined.',mgmt:'Scout GLS on lower leaves. Fungicide efficacy window: before VT.'},
     {s:'VT',gdu:1250,key:true,desc:'Tassel fully emerged. Pollen shed begins.',mgmt:'Critical pollination window. Corn rootworm adult threshold: 0.75/plant + silk <1/2". Japanese beetle: 3+/ear during silk.'},
     {s:'R1',gdu:1400,key:true,desc:'Silking. One or more silks visible outside husk. Pollination occurs.',mgmt:'Avoid canopy disturbance. Drought/heat stress now = yield loss. Monitor silk clipping.'},

@@ -61,7 +61,7 @@
   {
    "k": "Farm loan limits",
    "h": "Raises maximum direct and guaranteed loan amounts.",
-   "s": "<b>Marquee item:</b> guaranteed operating to $3M, ownership to $3.5M, indexed to inflation."
+   "s": "<b>Main item:</b> guaranteed operating to $3M, ownership to $3.5M, indexed to inflation."
   },
   {
    "k": "Trade",
@@ -81,7 +81,7 @@
   {
    "k": "Economic aid",
    "h": "Not included.",
-   "s": "Not included &mdash; a separate $15&ndash;17B aid push is moving outside the bill."
+   "s": "Not included. A separate $15&ndash;17B aid push is moving outside the bill."
   }
  ],
  "tracker": [
@@ -111,13 +111,13 @@
   },
   {
    "stage": "Senate markup",
-   "desc": "Committee <b>voted it down along party lines</b> on Aug 6 &mdash; McConnell absent (health), so Democrats could block it over the SNAP cost-share timing. Boozman recessed, not adjourned",
+   "desc": "Committee <b>voted it down along party lines</b> on Aug 6: McConnell absent (health), so Democrats could block it over the SNAP cost-share timing. Boozman recessed, not adjourned",
    "mk": "miss",
    "label": "failed"
   },
   {
    "stage": "Senate revote",
-   "desc": "Committee <b>passed it 12&ndash;11</b> along party lines on Sep 16 &mdash; Sen. McConnell returned to cast the deciding Republican vote",
+   "desc": "Committee <b>passed it 12&ndash;11</b> along party lines on Sep 16: Sen. McConnell returned to cast the deciding Republican vote",
    "mk": "done",
    "label": "passed"
   },

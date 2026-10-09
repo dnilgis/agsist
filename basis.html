@@ -170,8 +170,8 @@
 <main class="bs-wrap" id="main">
   <header class="bs-hero">
     <p class="bs-kicker page-kicker">USDA AgTransport &middot; weekly &middot; regional basis vs its own normal</p>
-    <h1>Your elevator didn&rsquo;t cut your basis. The river did.</h1>
-    <p class="bs-sub page-lede">Everyone stares at the futures board; the check you actually cash is <strong>futures plus basis</strong>: and basis is mostly a freight story. Below: every USDA-tracked region&rsquo;s basis against <strong>its own 5-year average for this same week</strong>, next to the barge rates and origin-to-Gulf spreads that move it. When the number under your region turns red, this page shows you why, and it usually isn&rsquo;t your elevator.</p>
+    <h1>Corn and soybean basis vs normal, and the freight behind it</h1>
+    <p class="bs-sub page-lede">The check you cash is <strong>futures plus basis</strong>, and basis is mostly freight. Below is every USDA-tracked region&rsquo;s basis against <strong>its own 5-year average for this same week</strong>, next to the barge rates and origin-to-Gulf spreads that move it. When the number under your region turns red, this page shows you why, and it usually isn&rsquo;t your elevator.</p>
   </header>
 
   <section class="vp-ver" aria-live="polite">
@@ -179,7 +179,7 @@
     <div class="vp-big" id="vp-big"><!--SEED:basisbig-->-$0.43<!--/SEED--></div>
     <div><div class="vp-word" id="vp-word"><!--SEED:basisword-->UNDER NORMAL<!--/SEED--></div><div class="vp-sent" id="vp-sent"><!--SEED:basissent-->Corn basis in the <b>Iowa</b> region is <b>-$0.43/bu</b> for the week of Sep 25, 2026, <b>-$0.12 vs normal</b> (a normal week like this runs -$0.31). These are regional USDA markets. Your elevator sits a local spread away, but it moves with this.<!--/SEED--></div></div>
   </section>
-  <aside class="ag-sponsor-ribbon" id="ag-sponsor"><span class="ag-sponsor-tag">Sponsor this page</span> Every visitor here just got a bid they didn&rsquo;t like. One category-exclusive slot. <span class="ag-sponsor-price" data-rate="page">$29/mo &middot; first month free</span> <a href="/sponsor-apply?slot=basis&amp;utm_source=basis&amp;utm_medium=slot">Put your name here &rarr;</a></aside>
+  <aside class="ag-sponsor-ribbon" id="ag-sponsor"><span class="ag-sponsor-tag">Sponsor this page</span> Your name beside regional basis and barge rates. One category-exclusive slot. <span class="ag-sponsor-price" data-rate="page">$29/mo &middot; first month free</span> <a href="/sponsor-apply?slot=basis&amp;utm_source=basis&amp;utm_medium=slot">Put your name here &rarr;</a></aside>
   
 
 
@@ -202,7 +202,7 @@
   </section>
 
   <section class="bs-panel" aria-labelledby="bs-walk-t">
-    <div class="bs-panel-hd"><span class="bs-panel-t" id="bs-walk-t">A bushel&rsquo;s journey: where the money goes</span></div>
+    <div class="bs-panel-hd"><span class="bs-panel-t" id="bs-walk-t">Where the money goes between the farm and the Gulf</span></div>
     <div class="bs-panel-b">
       <div class="bs-walk" id="bs-walk" aria-busy="true"><span class="sr-only">Loading</span><span class="st-sk st-card" aria-hidden="true" style="--st-card-h:96px;flex:1 1 200px"></span><span class="st-sk st-card" aria-hidden="true" style="--st-card-h:96px;flex:1 1 200px"></span><span class="st-sk st-card" aria-hidden="true" style="--st-card-h:96px;flex:1 1 200px"></span></div>
       <p style="font-size:13.4px;color:var(--bs-dim);margin:12px 0 0" id="bs-walk-note"></p>
@@ -338,7 +338,7 @@
     $('bs-walk').innerHTML=
       '<div class="bs-walkstep"><div class="bs-walk-l">'+p[1]+' bid</div><div class="bs-walk-v">$'+s.origin_bid.toFixed(2)+'</div><div class="bs-walk-m">what the interior market pays per bushel of '+p[0].toLowerCase()+'</div></div>'
       +'<div class="bs-walkstep"><div class="bs-walk-l">'+p[2]+' bid</div><div class="bs-walk-v">$'+s.destination_bid.toFixed(2)+'</div><div class="bs-walk-m">what the export market pays for the same bushel</div></div>'
-      +'<div class="bs-walkstep"><div class="bs-walk-l">The journey&rsquo;s cut</div><div class="bs-walk-v">$'+s.spread.toFixed(2)+'</div><div class="bs-walk-m">freight + handling + margin between the two, the wedge your basis lives inside</div></div>';
+      +'<div class="bs-walkstep"><div class="bs-walk-l">Freight and handling</div><div class="bs-walk-v">$'+s.spread.toFixed(2)+'</div><div class="bs-walk-m">freight + handling + margin between the two, the wedge your basis lives inside</div></div>';
     var ci=journey.cost_index||{};
     $('bs-walk-note').textContent='Transport cost indicators (2000=100), week of '+String(ci.date||'').slice(0,10)+': truck '+(ci.truck||'-')+' · shuttle train '+(ci.shuttle_train||'-')+' · barge '+(ci.barge||'-')+' · Gulf vessel '+(ci.gulf_vessel||'-')+'. Spread data: '+s.date+'.';
   }

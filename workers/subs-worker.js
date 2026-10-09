@@ -261,7 +261,7 @@ function pendExpired(rec) {
 
 // v5.5: self-serve sponsor applications.
 const SAPP_TIERS = { page: "page", supporter: "footer", founding: "briefing" };
-const SAPP_LABEL = { page: "Own a page", supporter: "Supporter", founding: "Founding sponsor" };
+const SAPP_LABEL = { page: "Own a page", supporter: "Supporter", founding: "Sponsor" };
 const SAPP_DECISIONS = {
   approve: { from: ["confirmed"], to: "approved", ask: "Approve and put live", button: "Approve", done: "Approved" },
   decline: { from: ["confirmed", "approved"], to: "declined", ask: "Decline", button: "Decline", done: "Declined" },

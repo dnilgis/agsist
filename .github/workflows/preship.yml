@@ -61,6 +61,14 @@ jobs:
           echo "baseline: $B"
           echo "ref=$B" >> "$GITHUB_OUTPUT"
 
+      # Warning only: lists words and shapes that read as machine-written
+      # (scripts/site_voice_lint.py). It never blocks a push.
+      - name: Voice lint (warning only)
+        continue-on-error: true
+        run: |
+          python3 scripts/site_voice_lint.py --selftest
+          python3 scripts/site_voice_lint.py --check
+
       - name: Run preship
         run: |
           node scripts/preship.mjs \
