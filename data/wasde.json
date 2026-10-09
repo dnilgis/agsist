@@ -1,31 +1,31 @@
 {
- "generated": "2026-09-12T12:58:05Z",
- "release": "2026-09-11",
+ "generated": "2026-10-09T16:05:58Z",
+ "release": "2026-10-09",
  "source": "USDA NASS Quick Stats \u2014 https://quickstats.nass.usda.gov/api/",
  "note": "What USDA actually printed, read from the NASS series the WASDE yield figures come from. Written only after the release is public. Metrics with no NASS series are listed in `unavailable` and are filled by hand or not at all.",
  "metrics": [
   {
    "key": "corn_yield_2627",
    "label": "2026/27 corn yield",
-   "value": 178.5,
+   "value": 181.2,
    "unit": "bu/acre",
-   "consensus": 178.1,
+   "consensus": 177.8,
    "nass": {
     "short_desc": "CORN, GRAIN - YIELD, MEASURED IN BU / ACRE",
     "year": 2026,
-    "period": "YEAR - SEP FORECAST"
+    "period": "YEAR - OCT FORECAST"
    }
   },
   {
    "key": "soy_yield_2627",
    "label": "2026/27 soybean yield",
-   "value": 52.8,
+   "value": 53.1,
    "unit": "bu/acre",
-   "consensus": 52.5,
+   "consensus": 52.9,
    "nass": {
     "short_desc": "SOYBEANS - YIELD, MEASURED IN BU / ACRE",
     "year": 2026,
-    "period": "YEAR - SEP FORECAST"
+    "period": "YEAR - OCT FORECAST"
    }
   }
  ],

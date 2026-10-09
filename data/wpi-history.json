@@ -1,185 +1,203 @@
 {
- "_note": "Past reports, scored against the actual print. expected = pre-report trade average; actual = USDA print. Leave 'surprise' blank to let the build script score it with scripts/report_bands.py: when the survey's low and high are on file in data/analyst-estimates.json the print is graded against that range first (below it = bullish, above it = bearish, inside it = in line); with no range on file, within 0.5% of the trade average is in line for a yield and within 2% for anything else, below that band = bullish, above = bearish; no trade estimate = not graded. Or set it explicitly. gap_pct is computed by the build script, never typed here. Add a new block after each release.",
- "history": [
-  {
-   "date": "2026-09-30",
-   "report": "September Grain Stocks",
-   "metric": "Corn stocks, all positions, Sept 1",
-   "expected": 1.918,
-   "actual": 2.095,
-   "unit": "B bu",
-   "reaction": "Corn stocks printed 2.095 billion bushels, above the entire pre-report trade range (1.843\u20132.005B), not just the 1.918B average. A real miss: more old-crop corn was sitting in bins and elevators on September 1 than any surveyed analyst had guessed."
-  },
-  {
-   "date": "2026-09-30",
-   "report": "September Grain Stocks",
-   "metric": "Soybean stocks, all positions, Sept 1",
-   "expected": 0.324,
-   "actual": 0.315,
-   "unit": "B bu",
-   "reaction": "Soybean stocks printed 0.315 billion bushels, under the 0.324B trade average and inside the survey's 0.304\u20130.349B range. Below average, but some analyst on record expected this level, so it is not graded a surprise."
-  },
-  {
-   "date": "2026-09-30",
-   "report": "September Grain Stocks",
-   "metric": "Wheat stocks, all positions, Sept 1",
-   "expected": null,
-   "actual": 1.846,
-   "unit": "B bu",
-   "reaction": "Wheat stocks printed 1.846 billion bushels. No trade estimate was on file to grade this against, the only survey found had a wheat figure that didn't reconcile against a cited WASDE number, so it was withheld rather than published. The print stands on the record; it just isn't scored."
-  },
-  {
-   "date": "2026-08-12",
-   "report": "August WASDE",
-   "metric": "2026/27 corn yield",
-   "expected": 182.0,
-   "actual": 180.7,
-   "unit": "bu/acre",
-   "reaction": "USDA's first survey-based corn yield came in at 180.7, 2.3 under July and 1.3 under the trade's 182.0. More acres (planted up 1.4M to 96.7M) kept production near-record at 16.013B bu, but the market traded the yield cut and the 1.653B carryout (down from 1.79B): December corn settled up 15 cents at $4.78."
-  },
-  {
-   "date": "2026-08-12",
-   "report": "August WASDE",
-   "metric": "2026/27 soybean yield",
-   "expected": 52.9,
-   "actual": 52.7,
-   "unit": "bu/acre",
-   "reaction": "Soybean yield printed 52.7, a couple tenths under both July and the trade, effectively in line. The acreage add (planted up 1.4M to 86.8M) still makes 4.519B bu the largest soybean crop on record, and carryout ticked up to 320M. November beans settled up 12 cents at $11.84, riding corn's coattails more than their own numbers."
-  },
-  {
-   "date": "2026-06-11",
-   "report": "June WASDE",
-   "metric": "2026/27 wheat ending stocks",
-   "expected": 765,
-   "actual": 744,
-   "unit": "mil bu",
-   "reaction": "New-crop wheat carryout came in at 744M, 21M under the 765M trade average and 18M under May, but inside the survey's 740\u2013804M range, so some analyst on record expected this level. The cut came from a smaller Hard Red Winter crop (all-wheat production trimmed to 1,543M, yield 47.0); the season-average farm price was cut $0.50 to $6.00."
-  },
-  {
-   "date": "2026-06-11",
-   "report": "June WASDE",
-   "metric": "2025/26 corn ending stocks",
-   "expected": 2.138,
-   "actual": 2.145,
-   "unit": "bil bu",
-   "reaction": "Old-crop carryout landed right on the trade guess, a non-event for corn."
-  },
-  {
-   "date": "2026-06-11",
-   "report": "June WASDE",
-   "metric": "2026/27 corn ending stocks",
-   "expected": 1.947,
-   "actual": 1.96,
-   "unit": "bil bu",
-   "reaction": "New-crop carryout nudged up fractionally on old-crop demand tweaks; essentially unchanged at $4.40."
-  },
-  {
-   "date": "2026-06-11",
-   "report": "June WASDE",
-   "metric": "2025/26 soybean ending stocks",
-   "expected": 338,
-   "actual": 340,
-   "unit": "mil bu",
-   "reaction": "Old-crop beans unchanged from May and on top of the trade, no reaction."
-  },
-  {
-   "date": "2026-06-11",
-   "report": "June WASDE",
-   "metric": "2026/27 soybean ending stocks",
-   "expected": 312,
-   "actual": 310,
-   "unit": "mil bu",
-   "reaction": "New-crop beans held at 310, a hair under the trade, quietly friendly but no fireworks."
-  },
-  {
-   "date": "2026-06-11",
-   "report": "June WASDE",
-   "metric": "2025/26 wheat ending stocks",
-   "expected": 942,
-   "actual": 935,
-   "unit": "mil bu",
-   "reaction": "Old-crop wheat held at 935, just under the trade guess."
-  },
-  {
-   "date": "2026-05-12",
-   "report": "May WASDE",
-   "metric": "2026/27 winter wheat production",
-   "expected": 1208,
-   "actual": 1048,
-   "unit": "mil bu",
-   "reaction": "Smallest winter wheat crop in six decades on Southern Plains drought - July KC wheat ran limit-up and futures hit 2-yr highs."
-  },
-  {
-   "date": "2026-05-12",
-   "report": "May WASDE",
-   "metric": "2026/27 soybean ending stocks",
-   "expected": 355,
-   "actual": 310,
-   "unit": "mil bu",
-   "reaction": "Trade looked for a higher carryout; the tighter print pushed Nov beans to a 2-yr high near $12."
-  },
-  {
-   "date": "2026-05-12",
-   "report": "May WASDE",
-   "metric": "2026/27 corn ending stocks",
-   "expected": 1.922,
-   "actual": 1.957,
-   "unit": "bil bu",
-   "reaction": "New-crop carryout landed near the trade guess - ample supply into 2027 capped the upside."
-  },
-  {
-   "date": "2026-05-12",
-   "report": "May WASDE",
-   "metric": "2025/26 soybean ending stocks",
-   "expected": 345,
-   "actual": 340,
-   "unit": "mil bu",
-   "reaction": "Old-crop carryout close to the trade estimate - little reaction."
-  },
-  {
-   "date": "2026-05-12",
-   "report": "May WASDE",
-   "metric": "2025/26 corn ending stocks",
-   "expected": 2.131,
-   "actual": 2.14,
-   "unit": "bil bu",
-   "reaction": "Old-crop carryout in line - the week's move came from the new-crop sheets."
-  },
-  {
-   "date": "2026-09-11",
-   "report": "September WASDE",
-   "metric": "2026/27 corn yield",
-   "expected": 178.1,
-   "actual": 178.5,
-   "unit": "bu/acre",
-   "reaction": ""
-  },
-  {
-   "date": "2026-09-11",
-   "report": "September WASDE",
-   "metric": "2026/27 soybean yield",
-   "expected": 52.5,
-   "actual": 52.8,
-   "unit": "bu/acre",
-   "reaction": ""
-  },
-  {
-   "date": "2026-09-11",
-   "report": "September WASDE",
-   "metric": "2026/27 corn ending stocks",
-   "expected": 1.533,
-   "actual": 1.567,
-   "unit": "bil bu",
-   "reaction": "USDA put 2026/27 corn carryout at 1.567 billion bushels, 34M above the 1.533B trade average (Dow Jones survey, via DTN). No survey low or high is on file for this figure, so it is graded on the 2% band."
-  },
-  {
-   "date": "2026-09-11",
-   "report": "September WASDE",
-   "metric": "2026/27 soybean ending stocks",
-   "expected": 290,
-   "actual": 310,
-   "unit": "mil bu",
-   "reaction": "USDA put 2026/27 soybean carryout at 310M, 20M above the 290M trade average (Dow Jones survey, via DTN). Reuters' survey averaged 298M; the print was above that too. No survey low or high is on file for this figure, so it is graded on the 2% band."
-  }
- ]
+  "_note": "Past reports, scored against the actual print. expected = pre-report trade average; actual = USDA print. Leave 'surprise' blank to let the build script score it with scripts/report_bands.py: when the survey's low and high are on file in data/analyst-estimates.json the print is graded against that range first (below it = bullish, above it = bearish, inside it = in line); with no range on file, within 0.5% of the trade average is in line for a yield and within 2% for anything else, below that band = bullish, above = bearish; no trade estimate = not graded. Or set it explicitly. gap_pct is computed by the build script, never typed here. Add a new block after each release.",
+  "history": [
+    {
+      "date": "2026-09-30",
+      "report": "September Grain Stocks",
+      "metric": "Corn stocks, all positions, Sept 1",
+      "expected": 1.918,
+      "actual": 2.095,
+      "unit": "B bu",
+      "reaction": "Corn stocks printed 2.095 billion bushels, above the entire pre-report trade range (1.843\u20132.005B), not just the 1.918B average. A real miss: more old-crop corn was sitting in bins and elevators on September 1 than any surveyed analyst had guessed."
+    },
+    {
+      "date": "2026-09-30",
+      "report": "September Grain Stocks",
+      "metric": "Soybean stocks, all positions, Sept 1",
+      "expected": 0.324,
+      "actual": 0.315,
+      "unit": "B bu",
+      "reaction": "Soybean stocks printed 0.315 billion bushels, under the 0.324B trade average and inside the survey's 0.304\u20130.349B range. Below average, but some analyst on record expected this level, so it is not graded a surprise."
+    },
+    {
+      "date": "2026-09-30",
+      "report": "September Grain Stocks",
+      "metric": "Wheat stocks, all positions, Sept 1",
+      "expected": null,
+      "actual": 1.846,
+      "unit": "B bu",
+      "reaction": "Wheat stocks printed 1.846 billion bushels. No trade estimate was on file to grade this against, the only survey found had a wheat figure that didn't reconcile against a cited WASDE number, so it was withheld rather than published. The print stands on the record; it just isn't scored."
+    },
+    {
+      "date": "2026-08-12",
+      "report": "August WASDE",
+      "metric": "2026/27 corn yield",
+      "expected": 182.0,
+      "actual": 180.7,
+      "unit": "bu/acre",
+      "reaction": "USDA's first survey-based corn yield came in at 180.7, 2.3 under July and 1.3 under the trade's 182.0. More acres (planted up 1.4M to 96.7M) kept production near-record at 16.013B bu, but the market traded the yield cut and the 1.653B carryout (down from 1.79B): December corn settled up 15 cents at $4.78."
+    },
+    {
+      "date": "2026-08-12",
+      "report": "August WASDE",
+      "metric": "2026/27 soybean yield",
+      "expected": 52.9,
+      "actual": 52.7,
+      "unit": "bu/acre",
+      "reaction": "Soybean yield printed 52.7, a couple tenths under both July and the trade, effectively in line. The acreage add (planted up 1.4M to 86.8M) still makes 4.519B bu the largest soybean crop on record, and carryout ticked up to 320M. November beans settled up 12 cents at $11.84, riding corn's coattails more than their own numbers."
+    },
+    {
+      "date": "2026-06-11",
+      "report": "June WASDE",
+      "metric": "2026/27 wheat ending stocks",
+      "expected": 765,
+      "actual": 744,
+      "unit": "mil bu",
+      "reaction": "New-crop wheat carryout came in at 744M, 21M under the 765M trade average and 18M under May, but inside the survey's 740\u2013804M range, so some analyst on record expected this level. The cut came from a smaller Hard Red Winter crop (all-wheat production trimmed to 1,543M, yield 47.0); the season-average farm price was cut $0.50 to $6.00."
+    },
+    {
+      "date": "2026-06-11",
+      "report": "June WASDE",
+      "metric": "2025/26 corn ending stocks",
+      "expected": 2.138,
+      "actual": 2.145,
+      "unit": "bil bu",
+      "reaction": "Old-crop carryout landed right on the trade guess, a non-event for corn."
+    },
+    {
+      "date": "2026-06-11",
+      "report": "June WASDE",
+      "metric": "2026/27 corn ending stocks",
+      "expected": 1.947,
+      "actual": 1.96,
+      "unit": "bil bu",
+      "reaction": "New-crop carryout nudged up fractionally on old-crop demand tweaks; essentially unchanged at $4.40."
+    },
+    {
+      "date": "2026-06-11",
+      "report": "June WASDE",
+      "metric": "2025/26 soybean ending stocks",
+      "expected": 338,
+      "actual": 340,
+      "unit": "mil bu",
+      "reaction": "Old-crop beans unchanged from May and on top of the trade, no reaction."
+    },
+    {
+      "date": "2026-06-11",
+      "report": "June WASDE",
+      "metric": "2026/27 soybean ending stocks",
+      "expected": 312,
+      "actual": 310,
+      "unit": "mil bu",
+      "reaction": "New-crop beans held at 310, a hair under the trade, quietly friendly but no fireworks."
+    },
+    {
+      "date": "2026-06-11",
+      "report": "June WASDE",
+      "metric": "2025/26 wheat ending stocks",
+      "expected": 942,
+      "actual": 935,
+      "unit": "mil bu",
+      "reaction": "Old-crop wheat held at 935, just under the trade guess."
+    },
+    {
+      "date": "2026-05-12",
+      "report": "May WASDE",
+      "metric": "2026/27 winter wheat production",
+      "expected": 1208,
+      "actual": 1048,
+      "unit": "mil bu",
+      "reaction": "Smallest winter wheat crop in six decades on Southern Plains drought - July KC wheat ran limit-up and futures hit 2-yr highs."
+    },
+    {
+      "date": "2026-05-12",
+      "report": "May WASDE",
+      "metric": "2026/27 soybean ending stocks",
+      "expected": 355,
+      "actual": 310,
+      "unit": "mil bu",
+      "reaction": "Trade looked for a higher carryout; the tighter print pushed Nov beans to a 2-yr high near $12."
+    },
+    {
+      "date": "2026-05-12",
+      "report": "May WASDE",
+      "metric": "2026/27 corn ending stocks",
+      "expected": 1.922,
+      "actual": 1.957,
+      "unit": "bil bu",
+      "reaction": "New-crop carryout landed near the trade guess - ample supply into 2027 capped the upside."
+    },
+    {
+      "date": "2026-05-12",
+      "report": "May WASDE",
+      "metric": "2025/26 soybean ending stocks",
+      "expected": 345,
+      "actual": 340,
+      "unit": "mil bu",
+      "reaction": "Old-crop carryout close to the trade estimate - little reaction."
+    },
+    {
+      "date": "2026-05-12",
+      "report": "May WASDE",
+      "metric": "2025/26 corn ending stocks",
+      "expected": 2.131,
+      "actual": 2.14,
+      "unit": "bil bu",
+      "reaction": "Old-crop carryout in line - the week's move came from the new-crop sheets."
+    },
+    {
+      "date": "2026-09-11",
+      "report": "September WASDE",
+      "metric": "2026/27 corn yield",
+      "expected": 178.1,
+      "actual": 178.5,
+      "unit": "bu/acre",
+      "reaction": ""
+    },
+    {
+      "date": "2026-09-11",
+      "report": "September WASDE",
+      "metric": "2026/27 soybean yield",
+      "expected": 52.5,
+      "actual": 52.8,
+      "unit": "bu/acre",
+      "reaction": ""
+    },
+    {
+      "date": "2026-09-11",
+      "report": "September WASDE",
+      "metric": "2026/27 corn ending stocks",
+      "expected": 1.533,
+      "actual": 1.567,
+      "unit": "bil bu",
+      "reaction": "USDA put 2026/27 corn carryout at 1.567 billion bushels, 34M above the 1.533B trade average (Dow Jones survey, via DTN). No survey low or high is on file for this figure, so it is graded on the 2% band."
+    },
+    {
+      "date": "2026-09-11",
+      "report": "September WASDE",
+      "metric": "2026/27 soybean ending stocks",
+      "expected": 290,
+      "actual": 310,
+      "unit": "mil bu",
+      "reaction": "USDA put 2026/27 soybean carryout at 310M, 20M above the 290M trade average (Dow Jones survey, via DTN). Reuters' survey averaged 298M; the print was above that too. No survey low or high is on file for this figure, so it is graded on the 2% band."
+    },
+    {
+      "date": "2026-10-09",
+      "report": "October WASDE",
+      "metric": "2026/27 corn yield",
+      "expected": 177.8,
+      "actual": 181.2,
+      "unit": "bu/acre",
+      "reaction": ""
+    },
+    {
+      "date": "2026-10-09",
+      "report": "October WASDE",
+      "metric": "2026/27 soybean yield",
+      "expected": 52.9,
+      "actual": 53.1,
+      "unit": "bu/acre",
+      "reaction": ""
+    }
+  ]
 }
