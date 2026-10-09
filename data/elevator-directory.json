@@ -1,18 +1,18 @@
 {
- "generated": "2026-10-09T18:38:18Z",
+ "generated": "2026-10-09T18:53:10Z",
  "from": "barchart-raw.json",
  "complete": false,
  "note": "Directory only: who operates a facility and where. No prices, no basis, no symbols, no delivery windows.",
  "counts": {
-  "facilities": 2287,
+  "facilities": 2288,
   "states": 38,
   "with_address": 722,
   "with_coords": 725,
   "with_url": 703,
-  "with_phone": 2220,
+  "with_phone": 2221,
   "saturated_zips": 0,
   "failed_zips": 0,
-  "rows_read": 17665
+  "rows_read": 17305
  },
  "saturated": [],
  "failed": [],
@@ -28865,6 +28865,15 @@
    "facility_type": "Ethanol/Bio-Fuel",
    "locationId": 3687,
    "elevatorId": 1585
+  },
+  {
+   "facility": "United Wisconsin Grain Producers",
+   "branch": "Friesland",
+   "city": "Friesland",
+   "state": "WI",
+   "zip": "53935",
+   "phone": "920-348-5016",
+   "source": "barchart"
   },
   {
    "company": "Walsh Grain Farms, Inc.",
