@@ -129,13 +129,13 @@ test("scenario engine, 8 hand-worked years", () => {
   // ARC: G = 450, cap 60 x .85 = 51: 42.5, 51, 0, 42.5, 0, 51, 45.9, 45.9: mean 278.8 / 8 = 34.85
   near(v.arc, 34.85, "mean ARC");
   assert.equal(v.plcWins, 2); assert.equal(v.arcWins, 4);
-  // differences -42.5, 34, 0, -42.5, 0, 119, -45.9, -11.9: SD 54.99, SE 19.44; gap 1.275 < 2 x SE
+  // differences -42.5, 34, 0, -42.5, 0, 119, -45.9, -11.9: SD 54.99, SE 19.44; gap 1.275 is under $2
   near(v.se, 19.4408, "SE", 1e-3);
   assert.equal(v.verdict, "close");
   const fixed = A.scenarios(c, 4, ratios, 3.0);
   near(fixed.plc, 85, "PLC at $3.00"); near(fixed.arc, 51, "ARC at $3.00");
   assert.equal(fixed.verdict, "plc");
-  // Leans: PLC yield 60 -> PLC 51, 102, 20.4: mean 21.675 vs ARC 34.85; ARC more in 4 (2016 ties), PLC in 1; gap 13.175 >= $3, under 2 x SE 11.636
+  // Leans: PLC yield 60 -> PLC 51, 102, 20.4: mean 21.675 vs ARC 34.85; ARC more in 4 (2016 ties), PLC in 1; gap 13.175 >= $3 and >= 1 SE, under 2.365 (7 df) x SE 11.636
   const lean = A.scenarios({ ...c, py: 60 }, 4, ratios);
   near(lean.plc, 21.675, "PLC at yield 60"); assert.equal(lean.arcWins, 4); assert.equal(lean.plcWins, 1);
   near(lean.se, 11.636, "SE", 1e-3);
@@ -144,13 +144,46 @@ test("scenario engine, 8 hand-worked years", () => {
   assert.equal(A.scenarios(c, 4, seven).verdict, "withheld", "fewer than 8 years");
 });
 
+test("the call: t for the actual years, 3 winning years, one SE for Leans, $0/$0, borrowed cap (same cases as the build selftest)", () => {
+  // 10 years, 9 df, t 2.262: $10 gap, SE 4.60 -> 10.41 > 10 -> Leans; SE 4.40 -> 9.95 -> Pick. 11 years, t 2.228: SE 4.60 -> 10.25 -> Leans; 4.45 -> 9.91 -> Pick
+  assert.equal(A.call(10, 0, 10, 4.6, 5, 0, 10), "lean_plc");
+  assert.equal(A.call(10, 0, 10, 4.4, 5, 0, 10), "plc");
+  assert.equal(A.call(10, 0, 10, 4.6, 5, 0, 11), "lean_plc");
+  assert.equal(A.call(10, 0, 10, 4.45, 5, 0, 11), "plc");
+  assert.equal(A.tcrit(9), 2.262); assert.equal(A.tcrit(10), 2.228);
+  assert.equal(A.call(0, 10, -10, 0.5, 0, 2, 10), "close", "leader won only 2 years");
+  assert.equal(A.call(0, 10, -10, 0.5, 0, 3, 10), "arc");
+  assert.equal(A.call(4, 0, 4, 4.1, 4, 0, 10), "close", "Leans needs one SE");
+  assert.equal(A.call(4, 0, 4, 3.9, 4, 0, 10), "lean_plc");
+  assert.equal(A.call(0.49, 0.2, 0.29, 0.1, 3, 0, 10), "none", "both round to $0");
+  assert.equal(A.call(0.5, 0, 0.5, 0.1, 3, 0, 10), "close");
+  assert.equal(A.call(10, 0, 10, 1, 8, 0, 10, true), "lean_plc", "borrowed spread caps at Leans");
+});
+
+test("2026 normal crop and the futures-center check (same case as the build selftest)", () => {
+  const Rf = { 2015: 1.0, 2016: 0.98, 2017: 1.02, 2018: 1.0, 2019: 0.99, 2020: 1.01, 2021: 1.0, 2022: 1.0 };
+  const c = { erp: 4, bp: 5, loan: 2, py: 100, parts: [{ w: 1, by: 100, dy: 1 }] };
+  const v1 = A.scenarios(c, 3, Rf);
+  near(v1.plc, 85, "PLC at a $3.00 start"); near(v1.arc, 51, "ARC capped"); assert.equal(v1.verdict, "plc");
+  // futures start $4.50: PLC 0; ARC 7.65 at $4.41 and 3.825 at $4.455, mean 1.434 -> ARC leads -> Pick drops to Leans
+  const v2 = A.scenarios(c, 3, Rf, null, { alt: 4.5 });
+  assert.equal(v2.verdict, "lean_plc"); assert.equal(v2.altDown, true); near(v2.alt.arc, 11.475 / 8, "ARC at the futures start");
+  assert.equal(A.scenarios(c, 3, Rf, null, { alt: 3.1 }).verdict, "plc");
+  assert.equal(A.scenarios(c, 3, Rf, 3, { borrowed: true, alt: 4.5 }).verdict, "plc", "a typed price skips both checks");
+});
+
+test("a one-cent band reads 'at $X', and every band prints", () => {
+  const runs = [{ w: "plc", lo: 300, hi: 359 }, { w: "arc", lo: 360, hi: 360 }, { w: "plc", lo: 361, hi: 400 }, { w: "none", lo: 401, hi: 500 }];
+  assert.deepEqual(Array.from(A.rangeText(runs)), ["PLC pays more at $3.59 or lower.", "ARC-CO pays more at $3.60.", "PLC pays more from $3.61 to $4.00.", "Neither pays at $4.01 or higher."]);
+});
+
 test("the calculator and the county page give the same typical-farm verdict (Chippewa WI corn, non-irrigated)", (t) => {
   if (!D.fsa) return t.skip("no FSA file");
   const wi = state("WI");
   const cty = wi.c.find((c) => c.f === "55017");
   const e = cty.k.corn.find((x) => x.d === "non");
   const cr = D.years["2026"].crops.corn;
-  const v = A.scenarios({ erp: cr.erp.erp, bp: cr.bp.value, loan: cr.loan, py: cty.plc.corn, parts: [{ w: 1, by: e.by, dy: e.dy }] }, cr.scen.center, cr.scen.ratios);
+  const v = A.typical(cr, cty.plc.corn, e);
   const page = readFileSync(ROOT + "arc-plc/wisconsin/chippewa-county.html", "utf8");
   const m = /Corn, non-irrigated:<\/b> ([^(]+)\(est\. \$([\d.,]+) PLC vs \$([\d.,]+) ARC-CO/.exec(page);
   assert.ok(m, "quick answer present");

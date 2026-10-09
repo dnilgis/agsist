@@ -36,12 +36,13 @@ WHERE EVERY NUMBER COMES FROM (verified 2026-10-09)
   Price scenarios: WASDE (October 9, 2026) prints a projected 2026/27 price
   for sorghum, barley and oats ($/bu) and long grain rice ($/cwt, divided by
   100 to FSA's $/lb). Every other crop is centered on FSA's projected 2026/27
-  price in Table 1, labeled as such. The spread is each past year's change in
-  FSA's final MYA price. FSA's table starts in 2020/21, which gives at most
-  four past years (2021 to 2024) with both a price change and an FSA county
-  yield; the verdict needs eight (MIN_SCEN in build_arc_plc.py), so every
-  verdict for these crops is withheld and the page says why. No price history
-  from outside FSA's files is used.
+  price in Table 1, labeled as such. FSA's table starts in 2020/21, which gives
+  at most five past years of price change, under the eight a call needs
+  (MIN_SCEN in build_arc_plc.py). So for 2026 these crops borrow corn's
+  October spread (build_arc_plc.price_scen), the crop is harvested so the
+  county yield is a normal crop, and every call is capped at Leans. For 2027
+  there is no 2027 price for these crops we can check against past years, so
+  there is no 2027 call. No price history from outside FSA's files is used.
 """
 import glob
 import math
@@ -586,9 +587,9 @@ def hub_page(B, D, k, ch):
                  f"Across {n6:,} county and practice combinations, every typical-farm verdict is withheld"
                  + (f" ({mism:,} have no typical farm because FSA&rsquo;s county average PLC yield is above the benchmark)" if mism else "")
                  + ". The county pages still give the benchmark and where each program pays more by price.</p>") if t6 and not any(
-        t6.get(w) for w in ("plc", "arc", "close", "lean_plc", "lean_arc")) else ""
+        t6.get(w) for w in ("plc", "arc", "close", "lean_plc", "lean_arc", "none")) else ""
     if not verdict_p and t6:
-        verdict_p = ("<p><b>Typical-farm verdicts, 2026:</b> " + ", ".join(f"{B.VWORD[w]} {t6.get(w, 0):,}" for w in ("plc", "lean_plc", "close", "lean_arc", "arc", "withheld"))
+        verdict_p = ("<p><b>Typical-farm verdicts, 2026:</b> " + ", ".join(f"{B.VWORD[w]} {t6.get(w, 0):,}" for w in ("plc", "lean_plc", "close", "lean_arc", "arc", "none", "withheld") if t6.get(w))
                      + ".</p>")
     quick = f"""<div class="ap-quick" id="quick-answer">
     <p><b>Quick answer.</b> The 2026 PLC effective reference price for {esc(x['lc'])} is <b>{pf(c6, c6['erp']['erp'])}{u}</b> (FSA). PLC pays when the national
