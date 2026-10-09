@@ -181,6 +181,10 @@
     .rs-faq summary{cursor:pointer;color:var(--text);font-size:.95rem}
     @media(max-width:640px){.rs-faq summary{padding:.45rem 0}}
     .rs-faq p{color:var(--text-muted);font-size:.88rem;line-height:1.65;margin:8px 0 4px}
+    /* Farmland Atlas look (farmland-atlas/atlas-pages.css .read): this page is a door into the Atlas */
+    .rs-atlas{border-left:2px solid var(--gold);padding:.2rem 0 .2rem .9rem;margin:10px 0 4px;font-size:.95rem;line-height:1.6;color:var(--text-dim)}
+    .rs-atlas a{color:var(--gold);font-weight:700}
+    :root[data-theme="light"] .rs-atlas a{color:#6f5209}
   </style>
 </head>
 <body>
@@ -190,6 +194,7 @@
   <h1>Idaho Cash Rent by County, 2026</h1>
   <p class="sub">Every USDA-published county cash rental rate in Idaho, straight from the NASS Cash Rents
   Survey. No estimates, no modeling, no login. <span id="rs-seed"><!--SEED:rentstate-->33 Idaho counties with a published 2026 irrigated cropland rent &middot; median $178/acre &middot; -2.7% vs 2025 (matched counties) &middot; data refreshed 2026-10-06<!--/SEED--></span></p>
+  <p class="rs-atlas">Part of the <a href="/farmland-atlas/idaho/">Farmland Atlas</a>: land values, rent and risk for every county.</p>
   
   <div style="background:#101415;border:1px solid #1a1f20;border-radius:14px;padding:20px 24px;margin:14px 0;display:flex;gap:22px;flex-wrap:wrap;align-items:center">
     <div style="font-family:'JetBrains Mono',monospace;font-size:3.6rem;font-weight:800;line-height:1;color:#5fc28a">$178</div>
@@ -230,7 +235,7 @@
   estimates (released each August) and county yield estimates. Page rebuilt automatically from data refreshed
   2026-10-06. AGSIST is free and sells nothing on this page.</p>
 </main>
-<nav aria-label="Explore AGSIST" style="max-width:1060px;margin:26px auto 8px;padding:0 16px;font-size:12.5px;line-height:2.1"><span style="color:var(--text-dim);font-weight:700">Land:</span> <a href="/cash-rent" style="color:var(--text-muted);text-decoration:none">Cash Rent by County</a> &middot; <a href="/cash-lease" style="color:var(--text-muted);text-decoration:none">Cash Farm Lease</a> &middot; <a href="/foreign-land" style="color:var(--text-muted);text-decoration:none">Foreign-Owned Land</a><br><span style="color:var(--text-dim);font-weight:700">Markets:</span> <a href="/markets" style="color:var(--text-muted);text-decoration:none">Futures</a> &middot; <a href="/cash-bids" style="color:var(--text-muted);text-decoration:none">Cash Bids</a> &middot; <a href="/basis" style="color:var(--text-muted);text-decoration:none">Basis vs Normal</a> &middot; <a href="/whats-priced-in" style="color:var(--text-muted);text-decoration:none">What&rsquo;s Priced In</a> &middot; <a href="/cot" style="color:var(--text-muted);text-decoration:none">COT</a><br><span style="color:var(--text-dim);font-weight:700">Field:</span> <a href="/conditions" style="color:var(--text-muted);text-decoration:none">Crop Conditions Rank</a> &middot; <a href="/drought-monitor" style="color:var(--text-muted);text-decoration:none">Drought Monitor</a> &middot; <a href="/hail-map" style="color:var(--text-muted);text-decoration:none">Hail Map</a> &middot; <a href="/breakeven" style="color:var(--text-muted);text-decoration:none">Break-Even</a> &middot; <a href="/daily" style="color:var(--text-muted);text-decoration:none">Daily Briefing</a></nav>
+<nav aria-label="Explore AGSIST" style="max-width:1060px;margin:26px auto 8px;padding:0 16px;font-size:12.5px;line-height:2.1"><span style="color:var(--text-dim);font-weight:700">Land:</span> <a href="/farmland-atlas" style="color:var(--text-muted);text-decoration:none">Farmland Atlas</a> &middot; <a href="/cash-rent" style="color:var(--text-muted);text-decoration:none">Cash Rent by County</a> &middot; <a href="/cash-lease" style="color:var(--text-muted);text-decoration:none">Cash Farm Lease</a> &middot; <a href="/foreign-land" style="color:var(--text-muted);text-decoration:none">Foreign-Owned Land</a><br><span style="color:var(--text-dim);font-weight:700">Markets:</span> <a href="/markets" style="color:var(--text-muted);text-decoration:none">Futures</a> &middot; <a href="/cash-bids" style="color:var(--text-muted);text-decoration:none">Cash Bids</a> &middot; <a href="/basis" style="color:var(--text-muted);text-decoration:none">Basis vs Normal</a> &middot; <a href="/whats-priced-in" style="color:var(--text-muted);text-decoration:none">What&rsquo;s Priced In</a> &middot; <a href="/cot" style="color:var(--text-muted);text-decoration:none">COT</a><br><span style="color:var(--text-dim);font-weight:700">Field:</span> <a href="/conditions" style="color:var(--text-muted);text-decoration:none">Crop Conditions Rank</a> &middot; <a href="/drought-monitor" style="color:var(--text-muted);text-decoration:none">Drought Monitor</a> &middot; <a href="/hail-map" style="color:var(--text-muted);text-decoration:none">Hail Map</a> &middot; <a href="/breakeven" style="color:var(--text-muted);text-decoration:none">Break-Even</a> &middot; <a href="/daily" style="color:var(--text-muted);text-decoration:none">Daily Briefing</a></nav>
 <div id="site-footer"></div>
 <script src="/components/loader.js?v=18"></script>
 <script>

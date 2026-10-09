@@ -116,10 +116,31 @@ def atlas_slugs(root="."):
     try:
         import build_atlas_pages as BA  # noqa: E402  (same scripts/ dir)
         W = BA.World(root)
-        return dict(W.slug)
+        # only pages that are on disk: a county the builder knows but has not
+        # written yet keeps a plain name instead of a link that 404s
+        return {f: sl for f, sl in W.slug.items()
+                if os.path.exists(os.path.join(root, ATLAS_OUT, sl + ".html"))}
     except Exception as e:  # pragma: no cover
         print(f"WARN: atlas slugs unavailable ({type(e).__name__}: {e}); county names left unlinked", file=sys.stderr)
         return {}
+
+
+def atlas_state_href(st, root="."):
+    """The Farmland Atlas state page when it is on disk, else the Atlas map."""
+    try:
+        import build_atlas_pages as BA  # noqa: E402
+        sl = BA.slugify(STATE_NAMES[st])
+    except Exception:  # pragma: no cover
+        sl = slug(STATE_NAMES[st])
+    if os.path.exists(os.path.join(root, ATLAS_OUT, sl, "index.html")):
+        return f"/{ATLAS_OUT}/{sl}/"
+    return "/farmland-atlas"
+
+
+def atlas_line(href):
+    """The one-line door into the Atlas, near the top of every rent page."""
+    return (f'<p class="rs-atlas">Part of the <a href="{href}">Farmland Atlas</a>: '
+            f'land values, rent and risk for every county.</p>')
 
 
 def esc(s):
@@ -304,6 +325,10 @@ def head(title, desc, path, jsonld):
     .rs-faq summary{{cursor:pointer;color:var(--text);font-size:.95rem}}
     @media(max-width:640px){{.rs-faq summary{{padding:.45rem 0}}}}
     .rs-faq p{{color:var(--text-muted);font-size:.88rem;line-height:1.65;margin:8px 0 4px}}
+    /* Farmland Atlas look (farmland-atlas/atlas-pages.css .read): this page is a door into the Atlas */
+    .rs-atlas{{border-left:2px solid var(--gold);padding:.2rem 0 .2rem .9rem;margin:10px 0 4px;font-size:.95rem;line-height:1.6;color:var(--text-dim)}}
+    .rs-atlas a{{color:var(--gold);font-weight:700}}
+    :root[data-theme="light"] .rs-atlas a{{color:#6f5209}}
   </style>
 </head>"""
 
@@ -388,7 +413,7 @@ def explore_nav():
     L = lambda h, t: f'<a href="{h}" style="color:var(--text-muted);text-decoration:none">{t}</a>'
     return ('<nav aria-label="Explore AGSIST" style="max-width:1060px;margin:26px auto 8px;padding:0 16px;font-size:12.5px;line-height:2.1">'
             '<span style="color:var(--text-dim);font-weight:700">Land:</span> '
-            + " &middot; ".join([L("/cash-rent", "Cash Rent by County"),
+            + " &middot; ".join([L("/farmland-atlas", "Farmland Atlas"), L("/cash-rent", "Cash Rent by County"),
                                  L("/cash-lease", "Cash Farm Lease"), L("/foreign-land", "Foreign-Owned Land")])
             + '<br><span style="color:var(--text-dim);font-weight:700">Markets:</span> '
             + " &middot; ".join([L("/markets", "Futures"), L("/cash-bids", "Cash Bids"), L("/basis", "Basis vs Normal"),
@@ -500,6 +525,7 @@ def build_state_page(st, d, s, all_states, aslug=None):
   <h1>{name} Cash Rent by County, {yr}</h1>
   <p class="sub">Every USDA-published county cash rental rate in {name}, straight from the NASS Cash Rents
   Survey. No estimates, no modeling, no login. <span id="rs-seed"><!--SEED:rentstate-->{seed}<!--/SEED--></span></p>
+  {atlas_line(atlas_state_href(st))}
   {hero}
   <aside class="ag-sponsor-ribbon"><span class="ag-sponsor-tag">Sponsor this page</span> Everyone on this page is pricing {name} ground. One category-exclusive slot. <span class="ag-sponsor-price" data-rate="page">{PAGE_RATE}</span> <a href="/sponsor-apply?slot=rent-{st.lower()}&amp;utm_source=rent-{sl}&amp;utm_medium=slot">Put your name here &rarr;</a></aside>
   <h2>Every published county, {yr}</h2>
@@ -599,6 +625,7 @@ def build_hub(states, stats, generated):
   <p class="sub">Pick a state for every published county&rsquo;s USDA cash rental rate, history to 2008, and the
   statutory lease-termination deadline where the state has one.
   <span id="rs-seed"><!--SEED:renthub-->{seed}<!--/SEED--></span></p>
+  {atlas_line("/farmland-atlas")}
   {tile_html}
   <aside class="ag-sponsor-ribbon"><span class="ag-sponsor-tag">Sponsor this page</span> The doorway to every county rent rate in America. One category-exclusive slot. <span class="ag-sponsor-price" data-rate="page">{PAGE_RATE}</span> <a href="/sponsor-apply?slot=rent-hub&amp;utm_source=rent-hub&amp;utm_medium=slot">Put your name here &rarr;</a></aside>
   <div class="rs-tw"><table class="rs-t" id="rs-table"><thead><tr><th>State</th><th>Median rent /ac</th><th>YoY</th><th>Counties</th><th>Type</th></tr></thead>
@@ -665,10 +692,19 @@ def selftest():
         # county names link to Farmland Atlas pages that exist on disk
         hrefs = _re.findall(r'href="/farmland-atlas/([^"#]+)"', ia)
         assert len(hrefs) >= 99, f"IA atlas links missing ({len(hrefs)})"
-        bad = [h for h in hrefs if not os.path.exists(os.path.join("farmland-atlas", h + ".html"))]
+        bad = [h for h in hrefs if not os.path.exists(os.path.join("farmland-atlas", h + "index.html" if h.endswith("/") else h + ".html"))]
         assert not bad, f"atlas links with no page: {bad[:5]}"
+        # the door into the Atlas sits above the hero, on the state's own Atlas page
+        assert 'Part of the <a href="/farmland-atlas/iowa/">Farmland Atlas</a>: land values, rent and risk for every county.' in ia
+        assert ia.index('class="rs-atlas"') < ia.index('class="rs-hero"'), "Atlas line not near the top"
+        for st_ in stats:
+            pg = open(os.path.join(td, f"{slug(STATE_NAMES[st_])}.html")).read()
+            assert pg.count('class="rs-atlas"') == 1, f"{st_}: Atlas line missing"
+            for h_ in _re.findall(r'href="/farmland-atlas/([^"#]+)"', pg):
+                assert os.path.exists(os.path.join("farmland-atlas", h_ + "index.html" if h_.endswith("/") else h_ + ".html")), f"{st_}: {h_} has no page"
         hub = open(os.path.join(td, "index.html")).read()
         assert hub.count("/rent/") >= 47 and "SEED:renthub" in hub
+        assert 'Part of the <a href="/farmland-atlas">Farmland Atlas</a>' in hub, "hub Atlas line missing"
         assert "&amp;rsquo;" not in hub, "hub title double-escaped"
         # NV/AZ: irrigated-primary states must be labeled
         if "AZ" in stats:
