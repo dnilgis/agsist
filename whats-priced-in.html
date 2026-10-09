@@ -697,7 +697,8 @@ window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);
         +'<span class="wp-hg-meta"><span class="wp-hg-pill '+pillCls+'">'+pill+'</span><span class="wp-hg-date">'+g.date+'</span></span></div>'+body+'</div>';
     }).join('');
   }
-  fetch('/data/whats-priced-in.json',{cache:'no-store'}).then(function(r){if(!r.ok)throw 0;return r.json();}).then(function(d){
+  function agsND(o){if(typeof o==='string')return /^\s*\u2014\s*$/.test(o)?'-':o.replace(/^\s*\u2014\s*/,'').replace(/\s*\u2014\s*/g,', ');if(Array.isArray(o))return o.map(agsND);if(o&&typeof o==='object'){for(var k in o)if(Object.prototype.hasOwnProperty.call(o,k))o[k]=agsND(o[k]);}return o;} /* the site prints no em dashes; older data files still carry some */
+  fetch('/data/whats-priced-in.json',{cache:'no-store'}).then(function(r){if(!r.ok)throw 0;return r.json();}).then(function(d){d=agsND(d);
     if(d.sample){document.getElementById('wp-sample').style.display='block';return;}  /* no placeholder figures, ever */
     document.getElementById('wp-result').innerHTML=resultBanner(d.latest_result);
     document.getElementById('wp-next').innerHTML=nextCard(d.upcoming);
@@ -988,7 +989,8 @@ window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);
     }).filter(Boolean).join('');
     return blocks||'<div class="as-err">No graded forecaster calls yet, these fill in as forecasters on record get scored against the print.</div>';
   }
-  fetch('/data/analyst-scorecard.json',{cache:'no-store'}).then(function(r){if(!r.ok)throw 0;return r.json();}).then(function(d){
+  function agsND(o){if(typeof o==='string')return /^\s*\u2014\s*$/.test(o)?'-':o.replace(/^\s*\u2014\s*/,'').replace(/\s*\u2014\s*/g,', ');if(Array.isArray(o))return o.map(agsND);if(o&&typeof o==='object'){for(var k in o)if(Object.prototype.hasOwnProperty.call(o,k))o[k]=agsND(o[k]);}return o;} /* the site prints no em dashes; older data files still carry some */
+  fetch('/data/analyst-scorecard.json',{cache:'no-store'}).then(function(r){if(!r.ok)throw 0;return r.json();}).then(function(d){d=agsND(d);
     if(d.sample){document.getElementById('as-ribbon').style.display='block';}
     var minN=d.min_n||3,ordMin=d.ordinal_min_n||ORD_MIN;
     var classes=(d.classes&&d.classes.length)?d.classes:null;
