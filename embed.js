@@ -1,6 +1,6 @@
 /*! AGSIST embed loader — agsist.com/embed.js
  * Usage: <div data-agsist-widget="gdu"></div><script async src="https://agsist.com/embed.js"></script>
- * Widgets: gdu (live). (calendar/briefing keys removed 2026-08-11 —
+ * Widgets: gdu, arc-plc (live). (calendar/briefing keys removed 2026-08-11 —
  * they advertised embed pages that do not exist; a third-party mounting
  * one got a broken iframe. They return when their pages ship.)
  * The iframe gives partners the live tool; the injected <a> is the real backlink
@@ -10,7 +10,8 @@
   'use strict';
   var ORIGIN = 'https://agsist.com';
   var WIDGETS = {
-    gdu:      { path:'/embed/gdu',      link:'/gdu-calculator', label:'GDU Calculator', minH:560 }
+    gdu:      { path:'/embed/gdu',      link:'/gdu-calculator', label:'GDU Calculator', minH:560 },
+    'arc-plc':{ path:'/embed/arc-plc',  link:'/arc-plc',        label:'ARC or PLC calculator', minH:900 }
 
   };
   function each(list, fn){ Array.prototype.forEach.call(list, fn); }

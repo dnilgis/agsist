@@ -14,3 +14,4 @@ Disallow: /dev/
 Sitemap: https://agsist.com/sitemap.xml
 Sitemap: https://agsist.com/sitemap-atlas.xml
 Sitemap: https://agsist.com/sitemap-cash-bids.xml
+Sitemap: https://agsist.com/sitemap-arc-plc.xml

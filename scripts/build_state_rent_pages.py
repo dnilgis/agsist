@@ -143,6 +143,15 @@ def atlas_line(href):
             f'land values, rent and risk for every county.</p>')
 
 
+def arc_line(st, root="."):
+    """The state's ARC/PLC page (scripts/build_arc_plc.py), only when it is on disk."""
+    sl = slug(STATE_NAMES[st])
+    if not os.path.exists(os.path.join(root, "arc-plc", sl + ".html")):
+        return ""
+    return (f'\n  <p class="sub">Choosing ARC or PLC for 2027? See <a href="/arc-plc/{sl}" style="color:var(--gold)">'
+            f'{STATE_NAMES[st]} ARC-CO benchmark yields by county</a>.</p>')
+
+
 def esc(s):
     return html.escape(str(s), quote=True)
 
@@ -525,7 +534,7 @@ def build_state_page(st, d, s, all_states, aslug=None):
   <h1>{name} Cash Rent by County, {yr}</h1>
   <p class="sub">Every USDA-published county cash rental rate in {name}, straight from the NASS Cash Rents
   Survey. Nothing is estimated or modeled, and there is no login. <span id="rs-seed"><!--SEED:rentstate-->{seed}<!--/SEED--></span></p>
-  {atlas_line(atlas_state_href(st))}
+  {atlas_line(atlas_state_href(st))}{arc_line(st)}
   {hero}
   <aside class="ag-sponsor-ribbon"><span class="ag-sponsor-tag">Sponsor this page</span> Your name beside {name} county cash rents. One category-exclusive slot. <span class="ag-sponsor-price" data-rate="page">{PAGE_RATE}</span> <a href="/sponsor-apply?slot=rent-{st.lower()}&amp;utm_source=rent-{sl}&amp;utm_medium=slot">Put your name here &rarr;</a></aside>
   <h2>Every published county, {yr}</h2>

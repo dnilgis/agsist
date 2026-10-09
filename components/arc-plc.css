@@ -1,0 +1,80 @@
+/* ARC or PLC calculator and its state/county pages (components/arc-plc.js,
+   scripts/build_arc_plc.py). Site tokens only, so light and dark both work. */
+.ap-wrap{max-width:920px;margin:0 auto;padding:var(--page-top) 16px 3rem;color:var(--text);line-height:var(--lh-body)}
+.ap-wrap h1{margin:.2rem 0 .7rem}
+.ap-wrap h2,.ap-h2{font-family:var(--font-display);font-size:var(--fs-xl);font-weight:700;line-height:var(--lh-snug);margin:2rem 0 .6rem;color:var(--text)}
+.ap-wrap h3,.ap-h3{font-size:var(--fs-lg);font-weight:700;margin:1.3rem 0 .4rem;color:var(--text)}
+.ap-wrap p{margin:.5rem 0}
+.ap-wrap a:not(.chip):not(.btn){color:var(--link)}
+.ap-bc{font-size:var(--fs-xs);color:var(--text-dim);margin:0 0 .4rem}
+.ap-small{font-size:var(--fs-sm);color:var(--text-muted)}
+.ap-quick{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:var(--card-r);padding:.85rem 1rem;margin:.8rem 0 1rem}
+.ap-quick p{margin:.25rem 0}
+.ap-list{padding-left:1.15rem;margin:.4rem 0}
+.ap-list li{margin:.35rem 0}
+.ap-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;max-width:100%}
+.ap-t{font-size:var(--fs-sm);margin:.5rem 0}
+.ap-t td,.ap-t th{white-space:nowrap}
+.ap-t .mut{color:var(--text-muted)}
+.ap-t th[scope=row]{font-weight:600}
+.ap-st .ap-grp{text-align:center;border-bottom:1px solid var(--border)}
+.ap-math{font-size:var(--fs-sm);color:var(--text-dim)}
+.ap-math s{color:var(--text-muted)}
+.ap-det{border:1px solid var(--border);border-radius:var(--card-r);background:var(--surface);padding:.2rem .9rem;margin:.8rem 0}
+.ap-det summary{cursor:pointer;font-weight:700;padding:.5rem 0;min-height:44px;display:flex;align-items:center}
+.ap-steps{padding-left:1.3rem}
+.ap-steps li{margin:.45rem 0}
+.ap-faq h3{font-size:var(--fs-md);margin:1rem 0 .2rem}
+.ap-faq p{color:var(--text-dim);margin:.2rem 0 .6rem}
+.ap-disc{font-size:var(--fs-sm);color:var(--text-dim);border-top:1px solid var(--border);padding-top:.9rem;margin-top:1.6rem}
+.ap-src{font-size:var(--fs-sm);padding-left:1.1rem}
+.ap-states{font-size:var(--fs-sm);line-height:2}
+.ap-kv{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.5rem;margin:.6rem 0}
+.ap-kv div{background:var(--surface);border:1px solid var(--border);border-radius:var(--card-r);padding:.55rem .7rem;min-width:0}
+.ap-kv span{display:block;font-size:var(--fs-xs);color:var(--text-muted)}
+.ap-kv b{font-family:var(--font-mono);font-size:1.05rem}
+@media (max-width:560px){.ap-kv{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* calculator */
+.ap-calc{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:1rem 1rem 1.1rem;margin:1rem 0 1.4rem}
+.ap-calc .ap-h2{margin-top:0}
+.ap-crops{display:flex;gap:.5rem;flex-wrap:wrap;margin:.2rem 0 .9rem}
+.ap-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.75rem 1rem}
+.ap-f{min-width:0}
+.ap-f-wide{grid-column:1/-1}
+.ap-f label{display:block;font-size:var(--fs-sm);font-weight:600;color:var(--text-dim);margin:0 0 .25rem}
+.ap-f input,.ap-f select{width:100%;box-sizing:border-box;font-size:16px;font-family:var(--font-mono);background:var(--bg);color:var(--text);border:1px solid var(--border-2);border-radius:var(--r-sm);padding:.6rem .7rem;min-height:44px}
+.ap-f select{font-family:var(--font-body)}
+.ap-f input:focus-visible,.ap-f select:focus-visible{outline:2px solid var(--brand);outline-offset:1px}
+.ap-hint{font-size:var(--fs-xs);color:var(--text-muted);margin:.3rem 0 0;line-height:1.45}
+.ap-fut{min-height:3.2em}
+.ap-fut .asof{display:inline}
+.ap-use{font:inherit;font-weight:700;font-size:var(--fs-xs);min-height:32px;padding:.2rem .6rem;border-radius:var(--r-sm);border:1px solid var(--border-2);background:var(--surface2);color:var(--text);cursor:pointer}
+.ap-out{margin-top:1rem;min-height:4rem}
+.ap-need{color:var(--text-dim);background:var(--bg);border:1px dashed var(--border-2);border-radius:var(--card-r);padding:.7rem .85rem}
+.ap-verdict{border-radius:var(--card-r);padding:.7rem .9rem;border:1px solid var(--border-2);background:var(--bg)}
+.ap-verdict p{margin:0}
+.ap-cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.6rem;margin:.7rem 0}
+.ap-card{background:var(--bg);border:1px solid var(--border);border-radius:var(--card-r);padding:.7rem .8rem;min-width:0}
+.ap-card .k{display:block;font-size:var(--fs-xs);font-weight:700;letter-spacing:.06em;color:var(--text-muted)}
+.ap-card .v{display:block;font-family:var(--font-mono);font-weight:700;font-size:1.35rem;margin:.15rem 0}
+.ap-card .s{display:block;font-size:var(--fs-xs);color:var(--text-muted)}
+.ap-warn{color:var(--text)}
+.ap-cross{font-weight:600}
+.ap-grid-t th,.ap-grid-t td{padding:.4rem .45rem}
+.ap-grid-t thead th{white-space:nowrap;line-height:1.25;vertical-align:bottom;letter-spacing:.02em}
+.ap-grid-t td,.ap-grid-t th[scope=row]{font-family:var(--font-mono)}
+.ap-pct{font-weight:400}
+.ap-tag{display:block;font-size:.68rem;font-weight:600;color:var(--text-muted);line-height:1.1}
+.ap-w-plc{background:rgba(var(--gold-rgb),.16)}
+.ap-w-arc{background:rgba(var(--green-rgb),.16)}
+.ap-verdict.ap-w-plc{border-color:rgba(var(--gold-rgb),.5)}
+.ap-verdict.ap-w-arc{border-color:rgba(var(--green-rgb),.5)}
+.ap-near th,.ap-near td{box-shadow:inset 0 2px 0 var(--text-muted),inset 0 -2px 0 var(--text-muted)}
+@media (max-width:560px){
+  .ap-grid{grid-template-columns:minmax(0,1fr)}
+  .ap-calc{padding:.85rem .8rem 1rem}
+  .ap-grid-t th,.ap-grid-t td{padding:.35rem .22rem;font-size:.76rem}
+  .ap-tag{font-size:.6rem}
+}
+.ap-embed .ap-calc{margin:0}

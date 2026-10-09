@@ -557,6 +557,8 @@ def build_state_page(name, inp, ctx):
         links.append(f'<a href="/rent/{sl}">{name} cash rent by county</a>')
     if os.path.exists(os.path.join(root, "basis", f"{sl}.html")):
         links.append(f'<a href="/basis/{sl}">{name} cash basis today</a>')
+    if os.path.exists(os.path.join(root, "arc-plc", f"{sl}.html")):
+        links.append(f'<a href="/arc-plc/{sl}">{name} ARC-CO benchmark yields for 2027</a>')
     cloud = " &middot; ".join(f'<a href="/yield/{slug(o)}">{esc(o)}</a>' for o in ctx["all_states"] if o != name)
     hdr, ftr, _fonts = ctx["chrome"]
     intro_crops = ", ".join(f"{CROP_LC[c]} ({lrng[c]}, n&nbsp;=&nbsp;{stats[c]['n']})" for c in crops)
