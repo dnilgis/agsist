@@ -52,7 +52,9 @@ test("the searches a farmer types land on the right page", () => {
   assert.equal(top("spray"), "/spray");
   assert.equal(top("beans"), "/soybean-futures-prices");
   assert.equal(top("soyben"), "/soybean-futures-prices");
-  assert.equal(top("chipewa falls"), "/cash-bids/wisconsin/chippewa-falls");
+  // A typo still finds Chippewa Falls: its town page when one is built, or its
+  // ZIP search while no board there is fresh enough for a town page.
+  assert.match(top("chipewa falls"), /\/cash-bids\/wisconsin\/chippewa-falls$|\/cash-bids\?zip=5472\d$/);
   assert.equal(top("iowa hail"), "/hail-map/iowa");
 });
 
