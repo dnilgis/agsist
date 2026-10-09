@@ -340,6 +340,12 @@ jobs:
           python scripts/market_board.py
           python scripts/test_number_binding.py
 
+      # 2026-10-09: the voice check the generator, the critic and the gate all
+      # import. It catches an invented first person under Sig's name ("I talked
+      # to elevators today") and machine tells. Prove it still does.
+      - name: GATE 0e - voice check selftest
+        run: python scripts/voice_lint.py --selftest
+
       # The schedule is machinery too. This asserts the backup fires still
       # exist and are spread, and that the gate asks the remote rather than its
       # own checkout — the two things that keep a dropped fire from becoming a

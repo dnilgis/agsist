@@ -16,6 +16,10 @@ After any rewrite, briefing_cut.enforce_budget() runs, so the critic cannot
 push the briefing back over the ceiling it was asked to enforce. The review
 payload carries measured word counts per field, so the editor scores Rule 8
 from numbers, not by counting.
+2026-10-09: Sig's voice. The review payload carries voice_lint's findings
+(an invented first person under his name, machine tells), Rule 9 scores 1 on
+an invented first person, and apply_rewrite() refuses any rewrite that adds
+one.
 
 Reads the just-generated data/daily.json. Sends the briefing back to
 Claude as an editor. The editor scores 1-10 on each of the 17 IMPACT
@@ -51,6 +55,7 @@ Usage:
        sections allowed to be rewritten in a single pass)
 """
 
+import copy
 import json
 import os
 import sys
@@ -92,6 +97,7 @@ def _refused_model(e):
 # Make the generator importable so we can re-archive after rewrite
 sys.path.insert(0, str(REPO_ROOT / "scripts"))
 import briefing_cut   # noqa: E402  ONE definition of the word budget
+import voice_lint     # noqa: E402  ONE definition of an invented first person and a machine tell
 
 
 def http_post_json(url, payload, headers, timeout=60):
@@ -149,7 +155,9 @@ The briefing is SHORT by design: about 400 words, 450 is a hard ceiling. The rea
 
 8. THE WORD BUDGET — THE CUT. The draft comes with MEASURED word counts per field (`word_counts`) and the total. Caps: lead 55; section body 55; so_what 15; one_number.context 30; outside_the_pit body 30; watch item 20; sections 2-3; outside_the_pit exactly 1; watch_list exactly 3. Score 10 when the total is at or under 400 and every field is inside its cap. Any field over its cap scores below 7 and names `trim` as the target, listing the fields. A fourth section scores below 7 and names `drop_section_N` for the weakest one. A total over 450 scores below 5. The rewrite CUTS the weakest material; it never compresses good sentences into mush.
 
-9. VOICE — THE BIGGEST ONE. Does it sound like a working ag operator (plain, direct, embedded thesis, vocabulary like "the funds got lost", "basis is talking", "the chart's bluffing") or does it read like a Bloomberg/Reuters wire summary? Wire-neutral prose scores BELOW 5 here. This rule has the lowest tolerance for drift.
+9. VOICE, THE BIGGEST ONE. The briefing carries Sig Lindquist's name: a plain-spoken ag man from Chetek, Wisconsin, talking to a neighbor at the elevator. Plain words, short sentences, calm, practical, no hype, no clever wordplay, no trading-desk slang, no commands barked at the reader, proper capitalization. Does it sound like him, or like a Bloomberg/Reuters wire summary, or like a trader blog? Wire-neutral prose scores BELOW 5. Hype, swagger or slang ("basis is yelling", "carry's working", "the funds got lost", "the tape", "coiled spring") scores BELOW 5. This rule has the lowest tolerance for drift.
+
+INVENTED FIRST PERSON, INDIVIDUALLY DISQUALIFYING: first person is allowed only to frame an opinion ("I'd", "I think", "my read"). Any sentence that claims Sig did, saw, heard, sold or was told something ("I talked to elevators today", "my neighbor said", "a buyer told me", "we hauled beans", "around here") is a made-up fact under his name: Rule 9 scores 1 and the rewrite DELETES the sentence, it does not reword it. The draft's `voice_lint` field lists what a machine already found: every `fabricated` entry is this failure, and every `tells` entry (em dash, "delve", "landscape", "navigate", "it's worth noting", "in today's", "game-changer", "unprecedented", "robust", "tapestry", "not just X but Y", three adjectives in a row, hype, slang, Title Case) scores Rule 9 below 5 and names the field holding it as the target.
 
 ADDITIONAL VOICE FAILURES (auto score below 5 if any present):
   - "binary" / "binary level" / "binary week" / "binary support" — trader-tech jargon
@@ -168,7 +176,7 @@ ADDITIONAL VOICE FAILURES (auto score below 5 if any present):
   - "bloodbath" / "carnage" / "meltdown" / "rout" — never appropriate
   - "vaulted" / "leaped" (in price context) — drama
 
-CNBC DRAMA VERB PRINCIPLE: AGSIST is a Wisconsin crop insurance guy talking to working farmers. Big moves get described by size and rarity ("biggest day in three weeks"), not by drama verbs. Any drama verb found in lead, sections, or one_number context = auto Rule 9 below 5 = forced rewrite.
+CNBC DRAMA VERB PRINCIPLE: AGSIST is Sig talking plainly to farmers he knows. Big moves get described by size and rarity ("biggest day in three weeks"), not by drama verbs. Any drama verb found in lead, sections, or one_number context = auto Rule 9 below 5 = forced rewrite.
 
 10. THE FORWARD TEST. Would a working farmer forward this LEAD with one line of context to another farmer? If the lead is forgettable, score below 6. If it's the kind of line a producer would screenshot and text to a buddy, score 9-10.
 
@@ -230,7 +238,8 @@ If weakest_target is "one_number": rewritten_content = {"one_number": {"value": 
 
 REWRITE STANDARD — when you rewrite, the new content must:
 - Hit the rule that was failing.
-- Use the AGSIST voice. Plain, embedded thesis, operator vocabulary, no trade instructions (Rule 11). NO wire-service neutral.
+- Use Sig's voice. Plain words, short sentences, calm, says what the move means, no hype, no slang, no trade instructions (Rule 11). NO wire-service neutral.
+- NEVER add a first-person experience, conversation or action ("I talked to", "my neighbor", "told me", "around here"). First person only for opinion. A rewrite that adds one is refused by a machine.
 - Cite only prices, levels, and conditions present in the original briefing's data — do NOT invent new prices.
 - For Rule 13 rewrites: use locked_prices values directly. If close > level being claimed broken, soften "broke" to "tested" or "right back to". If close < level being claimed held, soften "held above" to "tested" or "fell through".
 - For Rule 15 rewrites: replace any literal <strong>...</strong> with **...** and any <em>...</em> with *...*.
@@ -243,6 +252,7 @@ REWRITE THRESHOLD: rewrite_needed = true if ANY of:
   - Rule 3 (lede deferral) alone scores below 5
   - Rule 8 (word budget) alone scores below 7 — length is a product rule
   - Rule 9 (voice) alone scores below 5
+  - voice_lint lists a fabricated entry in the lead, a section, one_number or a trim field
   - Rule 10 (forward test) alone scores below 5
   - Rule 11 (no trade instructions) alone scores below 5 — a briefing that tells farmers what to trade is not finished
   - Rule 13 (level coherence) alone scores below 7 — factual contradictions are individually disqualifying
@@ -251,6 +261,17 @@ REWRITE THRESHOLD: rewrite_needed = true if ANY of:
 NO em dashes (U+2014) or en dashes (U+2013) in any rewritten content.
 NO <strong> or <em> HTML tags in any rewritten content - use **markdown** instead.
 """
+
+
+def _voice_payload(briefing):
+    """voice_lint's findings, in the shape the editor reads; {} when clean."""
+    r = voice_lint.lint(briefing)
+    out = {}
+    if r["fabricated"]:
+        out["fabricated"] = [{"field": loc, "text": s} for _, loc, s in r["fabricated"]]
+    if r["tells"]:
+        out["tells"] = [{"field": loc, "kind": c, "text": s} for c, loc, s in r["tells"]]
+    return out
 
 
 def critique_briefing(briefing, threshold=7):
@@ -293,11 +314,13 @@ def critique_briefing(briefing, threshold=7):
         "word_target": briefing_cut.TARGET_WORDS,
         "word_ceiling": briefing_cut.HARD_CEILING,
         "lede_defers": briefing_cut.lede_defers(briefing.get("lead", "")) or None,
+        # Measured, not eyeballed: what voice_lint found in the draft.
+        "voice_lint": _voice_payload(briefing),
     }
 
     user_message = f"""Score this AGSIST Daily draft against the 16 rules. Be honest. The threshold for rewrite is {threshold}.
 
-The locked_prices field near the bottom of the draft is the canonical close prices for today. When checking Rule 13 (level coherence), match each "broke $X" / "below $X" / "above $X" claim against locked_prices and flag any contradiction. word_counts / word_total are MEASURED; use them for Rule 8 instead of counting. lede_defers, when not null, is the lead's last sentence and it points forward (Rule 3).
+The locked_prices field near the bottom of the draft is the canonical close prices for today. When checking Rule 13 (level coherence), match each "broke $X" / "below $X" / "above $X" claim against locked_prices and flag any contradiction. word_counts / word_total are MEASURED; use them for Rule 8 instead of counting. lede_defers, when not null, is the lead's last sentence and it points forward (Rule 3). voice_lint, when not empty, is what a machine found: invented first person (`fabricated`) and machine tells (`tells`), each with its field (Rule 9).
 
 DRAFT:
 {json.dumps(review_payload, indent=2, ensure_ascii=False)}
@@ -369,6 +392,10 @@ def apply_rewrite(briefing, critique):
     target = critique.get("weakest_target", "")
     rewritten = critique.get("rewritten_content") or {}
     applied = None
+    # 2026-10-09: a rewrite may never put an invented first-person sentence
+    # under Sig's name. Count before; refuse the whole rewrite if it adds one.
+    _before = copy.deepcopy(briefing)
+    _fab0 = len(voice_lint.fabricated_hits(briefing))
 
     if target == "lead" and rewritten.get("lead"):
         briefing["lead"] = rewritten["lead"]
@@ -459,7 +486,12 @@ def apply_rewrite(briefing, critique):
     elif target in ("action", "yesterdays_call"):
         print(f"  [warn] rewrite target {target!r} refused: read-only since v5.5")
 
+    if applied and len(voice_lint.fabricated_hits(briefing)) > _fab0:
+        print(f"  [warn] rewrite of {applied} refused: it adds an invented first-person sentence")
+        return _before, None
+
     if applied:
+        briefing, _ = voice_lint.fix_case(briefing)    # a rewritten title stays sentence case
         briefing, cut_log = briefing_cut.enforce_budget(briefing)
         for line in cut_log:
             print(f"  [cut] {line}")

@@ -786,6 +786,22 @@ def run(daily, prices=None, today=None, archive_dir='data/daily-archive', bind_s
     except Exception as _e:
         W("wasde-fabricated", "release check could not run (%s: %s)" % (type(_e).__name__, _e))
 
+    # ── Sig's voice (2026-10-09) ──────────────────────────────────────────
+    # The briefing carries his name. An invented first-person experience ("I
+    # talked to elevators today", "my neighbor said") is a false statement of
+    # fact under a real man's byline: FAIL. The generator regenerates on one
+    # and then cuts any left, so a FAIL here means both missed it. Machine
+    # tells (em dash, "navigate", "robust", "not just X but Y") are WARN.
+    try:
+        import voice_lint
+        _vr = voice_lint.lint(daily)
+        for _c, _loc, _s in _vr["fabricated"]:
+            F("voice-fabricated", "%s invents a first-person experience (%s): %r" % (_loc, _c, _s))
+        for _c, _loc, _s in _vr["tells"]:
+            W("voice-tell", "%s [%s]: %r" % (_loc, _c, _s))
+    except Exception as _e:
+        W("voice-fabricated", "voice check could not run (%s: %s)" % (type(_e).__name__, _e))
+
     # Prose figures must agree with the board this same issue prints.
     try:
         check_number_binding(daily, F, W, archive_dir, today, bind_strict)

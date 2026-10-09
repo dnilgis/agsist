@@ -6,6 +6,12 @@ Format: date heading (`## YYYY-MM-DD`), then short bullets under it. Keep each b
 
 The loader (`scripts/generate_daily.py:load_editorial_notes()`) reads this file every generation. No service restart required.
 
+## 2026-10-09
+
+- The briefing carries Sig's name, so it should read like Sig talking to a neighbor at the elevator: plain words, short sentences, calm, no hype, no trader slang, no clever headlines.
+- First person is only for opinion ("I'd", "I think"); never write that Sig talked to anyone, saw anything, sold anything or heard anything, because a machine cuts those sentences and the gate blocks the send.
+- Headlines and section titles are sentence case, a plain statement of what happened ("Corn holds $5 even with heavy grain stocks"), never ALL CAPS or Title Case.
+
 ## 2026-05-30
 
 - v4.6.1 deterministic scrubber now runs AFTER critic rewrite as belt-and-suspenders. Every banned drama verb (crashed, crater, exploded, surged, plunged, soared, spiked, jumped, etc.) is regex-substituted with case preservation. This catches what the critic's single-target rewrite misses (headlines, section titles, takeaways, TMYK titles). Scrubber audit log appears in workflow output.
@@ -25,7 +31,7 @@ The loader (`scripts/generate_daily.py:load_editorial_notes()`) reads this file 
 ## 2026-05-26
 
 - Drama verbs ban is ABSOLUTE on session-magnitude basis: crude moving 4.7% does not license "crashed", "crater", "rout", "collapse", "plunged". Use "tumbled", "fell sharply", "had its biggest drop in [N] weeks", or describe the size and rarity directly. The bigger the move, the stricter the discipline.
-- Section titles: NEVER use "ENERGY CRATER", "CATTLE CRASH", "FEEDERS SURGE", or any drama-verb construction. Use "ENERGY LEADS LOWER", "CATTLE FALL", "FEEDERS RUN HIGHER" instead.
+- Section titles: NEVER use "ENERGY CRATER", "CATTLE CRASH", "FEEDERS SURGE", or any drama-verb construction. Use "Energy leads lower", "Cattle fall", "Feeders run higher" instead.
 - The Number unit text counts as voice. "Crude oil collapse" / "crude oil crash" / "cattle surge" all violate. Use "single-day decline", "weekly gain", "session move" instead.
 
 ## 2026-05-24
