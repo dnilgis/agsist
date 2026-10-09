@@ -11,9 +11,9 @@ from datetime import datetime
 from xml.sax.saxutils import escape
 
 SITE     = "https://agsist.com"
-TITLE    = "AGSIST Daily — Morning Agricultural Intelligence Briefing"
+TITLE    = "AGSIST Daily: Morning Agricultural Intelligence Briefing"
 DESC     = ("Free daily agricultural market briefing for corn, soybean, and grain "
-            "producers. Overnight surprises, farmer actions, market analysis — "
+            "producers. Overnight surprises, farmer actions, market analysis, "
             "every morning at 5 AM CT.")
 LINK     = f"{SITE}/daily"
 IMG_URL  = f"{SITE}/img/og/agsist.jpg"
@@ -85,7 +85,7 @@ def generate():
     items = []
     for entry in briefings:
         date     = entry.get("date", "")
-        headline = escape(entry.get("headline", f"AGSIST Daily — {date}"))
+        headline = escape(entry.get("headline", f"AGSIST Daily, {date}"))
         url      = f"{SITE}/daily/{date}"
         pub_date = rfc822(date)
         detail   = load_briefing_detail(date)

@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
+    <title>AGSIST Daily: Morning Agricultural Intelligence Briefing</title>
     <link>https://agsist.com/daily</link>
-    <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis — every morning at 5 AM CT.</description>
+    <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis, every morning at 5 AM CT.</description>
     <language>en-us</language>
     <lastBuildDate>Thu, 08 Oct 2026 10:47:28 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/agsist.jpg</url>
-      <title>AGSIST Daily — Morning Agricultural Intelligence Briefing</title>
+      <title>AGSIST Daily: Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
     <item>
