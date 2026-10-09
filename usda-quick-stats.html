@@ -9,8 +9,8 @@
   <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/jetbrains-mono-var.woff2" as="font" type="font/woff2" crossorigin>
   <!-- /static-nav:fonts -->
-  <link rel="preload" href="/components/styles.css?v=22" as="style">
-  <link rel="stylesheet" href="/components/styles.css?v=22">
+  <link rel="preload" href="/components/styles.css?v=23" as="style">
+  <link rel="stylesheet" href="/components/styles.css?v=23">
   <script src="/components/util.js?v=16"></script>
   <link rel="icon" type="image/x-icon"             href="/img/favicon.ico">
   <link rel="icon" type="image/png" sizes="32x32"  href="/img/favicon-32.png">
@@ -72,6 +72,9 @@
 
     .qs-main{max-width:1200px;margin:0 auto;padding:0 1rem 4rem;}
     .qs-bc{font-size:.82rem;color:var(--text-dim);padding-top:1rem;margin-bottom:1.5rem;}
+    /* breadcrumb above the hero, 12px under the header, as on other pages */
+    .qs-bc-top{max-width:calc(1200px + 3rem);margin:0 auto;padding:12px 1.5rem 0}.qs-bc-top .qs-bc{padding-top:0;margin-bottom:12px}.qs-main > .qs-sh:first-child{margin-top:1.75rem}
+    @media(max-width:640px){.qs-bc-top{padding:12px 1rem 0}}@media(max-width:380px){.qs-bc-top{padding:12px .65rem 0}}
     .qs-bc a{color:var(--text-dim);text-decoration:none;}
     .qs-bc a:hover{color:var(--gold);}
 
@@ -83,7 +86,7 @@
 
     /* National snapshot */
     .snap-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:1rem;margin-bottom:.9rem;}
-    .snap-card{background:var(--surface);border:2px solid var(--border);border-radius:var(--r8);padding:1.15rem 1.2rem;display:flex;flex-direction:column;gap:.7rem;transition:border-color .15s;min-width:0;}
+    .snap-card{background:var(--surface);border:var(--card-bw) solid var(--border);border-radius:var(--r8);padding:1.15rem 1.2rem;display:flex;flex-direction:column;gap:.7rem;transition:border-color .15s;min-width:0;}
     .snap-card:hover{border-color:rgba(var(--gold-rgb),.3);}
     .snap-head{display:flex;align-items:center;gap:.5rem;}
     .snap-head .ic{font-size:1.15rem;color:var(--gold);}
@@ -107,7 +110,7 @@
     .snap-src a{color:var(--text-muted);text-decoration:underline;}
 
     /* Explorer */
-    .exp-wrap{background:var(--surface);border:2px solid var(--border);border-radius:var(--r8);overflow:hidden;margin-bottom:2rem;}
+    .exp-wrap{background:var(--surface);border:var(--card-bw) solid var(--border);border-radius:var(--r8);overflow:hidden;margin-bottom:2rem;}
     .exp-head{background:var(--bg);padding:.8rem 1rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:.75rem;}
     .exp-head-lbl{font-family:'JetBrains Mono',monospace;font-size:0.763rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--green);display:inline-flex;align-items:center;gap:.4rem;}
     .exp-head-lbl .ic{font-size:.85rem;}
@@ -124,7 +127,7 @@
     .nass-chart{width:100%;height:168px;display:block;overflow:visible;}
     .ncx-lbl{font-family:'JetBrains Mono',monospace;font-size:0.755rem;fill:var(--text-muted);}
     .exp-bar{display:flex;align-items:center;gap:.65rem;flex-wrap:wrap;padding:.7rem 1rem;border-bottom:1px solid var(--border);}
-    .exp-search{flex:1;min-width:150px;padding:.52rem .8rem;background:var(--surface2);border:2px solid var(--border);border-radius:var(--r6);font-family:inherit;font-size:1rem;color:var(--text);outline:none;transition:border-color .15s;min-height:44px;}
+    .exp-search{flex:1;min-width:150px;padding:.52rem .8rem;background:var(--surface2);border:var(--card-bw) solid var(--border);border-radius:var(--r6);font-family:inherit;font-size:1rem;color:var(--text);outline:none;transition:border-color .15s;min-height:44px;}
     .exp-search:focus{border-color:var(--gold);}
     .exp-search::placeholder{color:var(--text-muted);}
     .dl-btn{display:inline-flex;align-items:center;gap:.4rem;padding:.52rem .9rem;background:none;border:2px solid var(--border);border-radius:var(--r6);font-family:'JetBrains Mono',monospace;font-size:0.755rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text-dim);cursor:pointer;transition:all .15s;min-height:44px;}
@@ -148,10 +151,10 @@
     .nes-link{display:inline-flex;align-items:center;gap:.35rem;padding:.6rem 1.1rem;background:var(--gold-fill,var(--gold));color:#000;border-radius:var(--r6);font-family:'JetBrains Mono',monospace;font-size:0.775rem;font-weight:700;text-decoration:none;text-transform:uppercase;letter-spacing:.06em;min-height:44px;}
 
     /* Query builder */
-    .qb-wrap{background:var(--surface);border:2px solid var(--border);border-radius:var(--r8);padding:1.4rem;margin-bottom:2rem;}
+    .qb-wrap{background:var(--surface);border:var(--card-bw) solid var(--border);border-radius:var(--r8);padding:1.4rem;margin-bottom:2rem;}
     .qb-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:.8rem;margin-bottom:1rem;}
     .qb-field label{display:block;font-family:'JetBrains Mono',monospace;font-size:0.755rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.42rem;}
-    .qb-field select,.qb-field input{width:100%;padding:.58rem .8rem;background:var(--surface2);border:2px solid var(--border);border-radius:var(--r6);font-family:inherit;font-size:1rem;color:var(--text);outline:none;transition:border-color .15s;min-height:44px;}
+    .qb-field select,.qb-field input{width:100%;padding:.58rem .8rem;background:var(--surface2);border:var(--card-bw) solid var(--border);border-radius:var(--r6);font-family:inherit;font-size:1rem;color:var(--text);outline:none;transition:border-color .15s;min-height:44px;}
     .qb-field select:focus,.qb-field input:focus{border-color:var(--gold);}
     .qb-url-box{background:var(--bg);border:1px solid var(--border);border-radius:var(--r6);padding:.65rem .9rem;margin-bottom:.8rem;overflow-x:auto;}
     .qb-url-txt{font-family:var(--font-body,'Inter',system-ui,sans-serif);font-size:1rem;color:var(--text-dim);white-space:nowrap;}
@@ -165,7 +168,7 @@
 
     /* Pre-built queries */
     .pq-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:.85rem;}
-    .pq-card{background:var(--surface);border:2px solid var(--border);border-radius:var(--r8);padding:1.1rem;transition:border-color .15s;}
+    .pq-card{background:var(--surface);border:var(--card-bw) solid var(--border);border-radius:var(--r8);padding:1.1rem;transition:border-color .15s;}
     .pq-card:hover{border-color:rgba(var(--gold-rgb),.3);}
     .pq-card h3{font-family:var(--font-display);font-size:.92rem;font-weight:800;letter-spacing:.01em;margin:0 0 .5rem;line-height:1.2;color:var(--text);display:flex;align-items:center;gap:.4rem;}
     .pq-card h3 .ic{color:var(--gold);font-size:.95rem;}
@@ -175,7 +178,7 @@
 
     /* About */
     .about-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:.85rem;}
-    .about-card{background:var(--surface);border:2px solid var(--border);border-radius:var(--r8);padding:1.1rem;}
+    .about-card{background:var(--surface);border:var(--card-bw) solid var(--border);border-radius:var(--r8);padding:1.1rem;}
     .about-card h3{font-family:var(--font-display);font-size:.92rem;font-weight:800;letter-spacing:.01em;color:var(--gold);margin:0 0 .65rem;display:flex;align-items:center;gap:.4rem;}
     .about-card h3 .ic{font-size:.95rem;}
     .about-card ul{margin:0;padding-left:1.1rem;}
@@ -277,6 +280,7 @@
 <!-- /static-nav:header -->
 </div>
 
+  <div class="qs-bc-top"><nav class="qs-bc" aria-label="Breadcrumb"><a href="/">Home</a> &rarr; USDA Quick Stats</nav></div>
   <section class="qs-hero page-head">
     <div class="qs-hero-inner">
       <div>
@@ -290,7 +294,6 @@
 
   <main id="main" tabindex="-1">
     <div class="qs-main">
-      <nav class="qs-bc" aria-label="Breadcrumb"><a href="/">Home</a> &rarr; USDA Quick Stats</nav>
 
       <h2 class="qs-sh"><svg class="ic" aria-hidden="true"><use href="#i-chart-column"/></svg>Last Year&rsquo;s Crop <span>&middot; 2025</span></h2>
       <p class="qs-ss">Last year&rsquo;s crop (2025/26 estimate): the headline production, yields, and marketing-year average prices. The 2026 crop is still in the field; state forecasts are in the table further down.</p>
@@ -537,7 +540,7 @@
 
 <!--FAQ:START-->
 <style>
-.agf{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.1rem 1.2rem;margin:1.5rem 0 0}
+.agf{background:var(--surface);border:1px solid var(--border);border-radius:var(--card-r);padding:1.1rem 1.2rem;margin:1.5rem 0 0}
 .agf-t{font-family:var(--font-display);font-size:.95rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text);margin:0 0 .4rem}
 .agf details{border-top:1px solid var(--border)}
 .agf details:first-of-type{border-top:0}

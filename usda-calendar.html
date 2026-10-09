@@ -9,8 +9,8 @@
   <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/jetbrains-mono-var.woff2" as="font" type="font/woff2" crossorigin>
   <!-- /static-nav:fonts -->
-  <link rel="preload" href="/components/styles.css?v=22" as="style">
-  <link rel="stylesheet" href="/components/styles.css?v=22">
+  <link rel="preload" href="/components/styles.css?v=23" as="style">
+  <link rel="stylesheet" href="/components/styles.css?v=23">
   <link rel="icon" type="image/x-icon"             href="/img/favicon.ico">
   <link rel="icon" type="image/png" sizes="32x32"  href="/img/favicon-32.png">
   <link rel="icon" type="image/png" sizes="16x16"  href="/img/favicon-16.png">
@@ -80,6 +80,9 @@
     .cal-cd-unit{font-family:'JetBrains Mono',monospace;font-size:0.755rem;color:var(--text-muted);margin-top:.2rem;}
     .cal-main{max-width:1100px;margin:0 auto;padding:0 1rem 4rem;}
     .cal-bc{font-size:.82rem;color:var(--text-dim);padding-top:1rem;margin-bottom:.25rem;}
+    /* breadcrumb above the hero, 12px under the header, as on other pages */
+    .cal-bc-top{max-width:calc(1100px + 3rem);margin:0 auto;padding:12px 1.5rem 0}.cal-bc-top .cal-bc{padding-top:0;margin-bottom:12px}
+    @media(max-width:640px){.cal-bc-top{padding:12px 1rem 0}}@media(max-width:380px){.cal-bc-top{padding:12px .65rem 0}}
     .cal-bc a{color:var(--text-dim);text-decoration:none;}
     .cal-bc a:hover{color:var(--gold);}
     .cal-nav{display:flex;gap:.5rem;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding:.85rem 0 .75rem;}
@@ -90,7 +93,7 @@
     .cal-legend{display:flex;flex-wrap:wrap;gap:.55rem;margin-bottom:1.1rem;}
     .leg-item{display:flex;align-items:center;gap:.4rem;font-size:0.775rem;color:var(--text-dim);}
     .leg-dot{width:9px;height:9px;border-radius:2px;flex-shrink:0;}
-    .cal-month{background:var(--surface);border:2px solid var(--border);border-radius:var(--r8);margin-bottom:.85rem;overflow:hidden;}
+    .cal-month{background:var(--surface);border:var(--card-bw) solid var(--border);border-radius:var(--r8);margin-bottom:.85rem;overflow:hidden;}
     .cal-month.is-past{opacity:.85;}
     .cal-month-head{background:var(--bg);padding:.7rem 1rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
     .cal-mname{font-family:var(--font-display);font-size:.95rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--text-dim);}
@@ -154,7 +157,7 @@
     .imp-lbl.low     {background:rgba(255,255,255,.04);color:var(--text-muted);}
     .cal-section-head{font-family:'JetBrains Mono',monospace;font-size:0.763rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--text-muted);margin:1.75rem 0 .85rem;}
     .cal-exp-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:.85rem;}
-    .cal-exp-card{background:var(--surface);border:2px solid var(--border);border-radius:var(--r8);padding:1.1rem;transition:border-color .15s;}
+    .cal-exp-card{background:var(--surface);border:var(--card-bw) solid var(--border);border-radius:var(--r8);padding:1.1rem;transition:border-color .15s;}
     .cal-exp-card:hover{border-color:rgba(255,255,255,.1);}
     .cal-exp-card h3{font-family:var(--font-display);font-size:.9rem;font-weight:700;text-transform:uppercase;letter-spacing:.02em;margin:0 0 .55rem;line-height:1.2;}
     .cal-exp-card p{font-size:0.795rem;color:var(--text-dim);line-height:1.65;margin:0 0 .65rem;}
@@ -238,6 +241,7 @@
 <!-- /static-nav:header -->
 </div>
 
+  <div class="cal-bc-top"><nav class="cal-bc" aria-label="Breadcrumb"><a href="/">Home</a> &rarr; USDA Report Calendar</nav></div>
   <section class="cal-hero page-head">
     <div class="cal-hero-inner">
       <div>
@@ -264,9 +268,8 @@
 
   <main id="main" tabindex="-1">
     <div class="cal-main">
-      <nav class="cal-bc" aria-label="Breadcrumb"><a href="/">Home</a> &rarr; USDA Report Calendar</nav>
 
-      <h2 class="cal-section-head" style="margin-top:1rem">2026 USDA Report Schedule</h2>
+      <h2 class="cal-section-head" style="margin-top:1.5rem">2026 USDA Report Schedule</h2>
       <div class="cal-nav" role="group" aria-label="Filter reports">
         <button class="cal-filter active" onclick="filterReports('all',this)">All Reports</button>
         <button class="cal-filter" onclick="filterReports('wasde',this)">WASDE</button>
@@ -337,7 +340,7 @@
 
 <!--FAQ:START-->
 <style>
-.agf{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.1rem 1.2rem;margin:1.5rem 0 0}
+.agf{background:var(--surface);border:1px solid var(--border);border-radius:var(--card-r);padding:1.1rem 1.2rem;margin:1.5rem 0 0}
 .agf-t{font-family:var(--font-display);font-size:.95rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text);margin:0 0 .4rem}
 .agf details{border-top:1px solid var(--border)}
 .agf details:first-of-type{border-top:0}

@@ -9,8 +9,8 @@
   <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/jetbrains-mono-var.woff2" as="font" type="font/woff2" crossorigin>
   <!-- /static-nav:fonts -->
-  <link rel="preload" href="/components/styles.css?v=22" as="style">
-  <link rel="stylesheet" href="/components/styles.css?v=22">
+  <link rel="preload" href="/components/styles.css?v=23" as="style">
+  <link rel="stylesheet" href="/components/styles.css?v=23">
   <link rel="icon" type="image/x-icon"            href="/img/favicon.ico">
   <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
@@ -48,6 +48,7 @@
   <style>
   /* breadcrumb 12px under the header, as on every other page */
   main.main{padding-top:12px}
+  .calc-title{max-width:1100px;margin:0 auto 12px}.calc-title h1{margin:0}
     
     
     
@@ -72,9 +73,9 @@
     .input-grid.cols-2 { grid-template-columns: repeat(2, minmax(0,1fr)); }
     .input-grid.cols-3 { grid-template-columns: repeat(3, minmax(0,1fr)); }
     .input-grid label { font-size:0.78rem; color: var(--text-dim); margin-bottom: 2px; display: block; }
-    .input-grid input, .input-grid select { width: 100%; padding: 8px 10px; font-family: 'JetBrains Mono', monospace; font-size: 1rem; background: var(--surface); border: 2px solid var(--border); border-radius: 6px; color: var(--text); }
+    .input-grid input, .input-grid select { width: 100%; padding: 8px 10px; font-family: 'JetBrains Mono', monospace; font-size: 1rem; background: var(--surface); border: var(--card-bw) solid var(--border); border-radius: 6px; color: var(--text); }
     .input-grid input:focus, .input-grid select:focus { outline: none; border-color: var(--green); }
-    .crop-select { width: 100%; padding: 8px 10px; margin-bottom: 4px; font-family: 'JetBrains Mono', monospace; font-size: 1rem; background: var(--surface); border: 2px solid var(--border); border-radius: 6px; color: var(--text); }
+    .crop-select { width: 100%; padding: 8px 10px; margin-bottom: 4px; font-family: 'JetBrains Mono', monospace; font-size: 1rem; background: var(--surface); border: var(--card-bw) solid var(--border); border-radius: 6px; color: var(--text); }
     .crop-select:focus { outline: none; border-color: var(--green); }
     .depth-row { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; padding: 10px 12px; background: var(--bg); border: 2px solid var(--border); border-radius: 6px; }
     .depth-row label { font-family: 'JetBrains Mono', monospace; font-size:0.755rem; font-weight: 700; color: var(--text-dim); text-transform: uppercase; letter-spacing: .08em; white-space: nowrap; min-width: 72px; }
@@ -195,11 +196,12 @@
 
   <main id="main" class="main" tabindex="-1" aria-label="Grain bin storage calculator">
     <nav class="breadcrumb"><a href="/">Home</a> &rarr; <a href="/tools">Tools</a> &rarr; Grain Bin Calculator</nav>
+    <div class="calc-title"><h1>Grain bin calculator</h1></div>
     <div class="grid-2">
 
       <!-- INPUT PANEL -->
       <div class="panel">
-        <div class="panel-head"><h1><svg class="ic-sp" aria-hidden="true"><use href="#sp-wheat"/></svg> GRAIN BIN CALCULATOR</h1></div>
+        <div class="panel-head"><h2><svg class="ic-sp" aria-hidden="true"><use href="#sp-wheat"/></svg> YOUR BIN</h2></div>
         <div class="panel-body">
 
           <label class="section-label" for="crop" style="display:block">Crop Type</label>

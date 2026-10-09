@@ -7,8 +7,8 @@
   <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/jetbrains-mono-var.woff2" as="font" type="font/woff2" crossorigin>
   <!-- /static-nav:fonts -->
-  <link rel="preload" href="/components/styles.css?v=22" as="style">
-  <link rel="stylesheet" href="/components/styles.css?v=22">
+  <link rel="preload" href="/components/styles.css?v=23" as="style">
+  <link rel="stylesheet" href="/components/styles.css?v=23">
   <link rel="icon" type="image/x-icon"            href="/img/favicon.ico">
   <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
@@ -42,6 +42,7 @@
   <style>
   /* breadcrumb 12px under the header, as on every other page */
   main.main{padding-top:12px}
+  .calc-title{max-width:1100px;margin:0 auto 12px}.calc-title h1{margin:0}
     
     
     
@@ -79,7 +80,7 @@
     .cost-bar{display:flex;height:28px;border-radius:6px;overflow:hidden;margin-bottom:8px;}
     .cost-bar-seg{transition:width 0.4s ease;min-width:2px;position:relative;cursor:pointer;}
     .cost-bar-seg:hover{filter:brightness(1.2);}
-    .cost-bar-seg .seg-tip{display:none;position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:var(--surface);border:2px solid var(--border);border-radius:6px;padding:4px 8px;font-size:0.775rem;white-space:nowrap;z-index:500;pointer-events:none;}
+    .cost-bar-seg .seg-tip{display:none;position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:var(--surface);border:var(--card-bw) solid var(--border);border-radius:6px;padding:4px 8px;font-size:0.775rem;white-space:nowrap;z-index:500;pointer-events:none;}
     @media(hover:hover){.cost-bar-seg:hover .seg-tip{display:block;}}
     .seg-tip.seg-open{display:block!important;}
     .cost-legend{display:flex;flex-wrap:wrap;gap:6px 14px;}
@@ -108,7 +109,7 @@
     .acres-inner{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;}
     .acres-input-group{display:flex;align-items:center;gap:8px;}
     .acres-label{font-family:'JetBrains Mono',monospace;font-size:0.763rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:.08em;margin:0;white-space:nowrap;font-weight:700;}
-    .acres-field{width:80px;padding:4px 8px;font-family:'JetBrains Mono',monospace;font-size:.85rem;background:var(--surface);border:2px solid var(--border);border-radius:6px;color:var(--text);min-height:44px;}
+    .acres-field{width:80px;padding:4px 8px;font-family:'JetBrains Mono',monospace;font-size:.85rem;background:var(--surface);border:var(--card-bw) solid var(--border);border-radius:6px;color:var(--text);min-height:44px;}
     .acres-field:focus{outline:none;border-color:var(--green);}
     .farm-total-label{font-family:'JetBrains Mono',monospace;font-size:0.755rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:.08em;font-weight:700;}
     .farm-total-value{font-family:'JetBrains Mono',monospace;font-size:1.2rem;font-weight:700;}
@@ -210,9 +211,10 @@
   </div>
   <main id="main" class="main" tabindex="-1">
     <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a> &rarr; Break-Even Calculator</nav>
+    <div class="calc-title"><h1>Break-even price calculator</h1></div>
     <div class="grid-2">
       <div class="panel">
-        <div class="panel-head"><h1><svg class="ic-sp" aria-hidden="true"><use href="#sp-banknote"/></svg> CORN &amp; SOYBEAN BREAK-EVEN PRICE CALCULATOR</h1></div>
+        <div class="panel-head"><h2><svg class="ic-sp" aria-hidden="true"><use href="#sp-banknote"/></svg> YOUR CROP AND COSTS</h2></div>
         <div class="panel-body">
           <div class="live-price-bar" id="live-bar" style="display:none">
             <span class="live-dot"></span>
