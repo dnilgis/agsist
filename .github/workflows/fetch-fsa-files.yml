@@ -1,0 +1,35 @@
+# Download the exact FSA ARC/PLC files listed in data/fsa/urls.txt (one URL per
+# line), politely: one at a time with a pause. Files land in data/fsa/.
+name: fetch-fsa-files
+on:
+  workflow_dispatch:
+  push:
+    paths: ["data/fsa/urls.txt"]
+permissions:
+  contents: write
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download
+        run: |
+          UA="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124 Safari/537.36"
+          : > /tmp/got.tsv
+          while read -r u; do
+            [ -z "$u" ] && continue
+            n="data/fsa/$(basename "$u" | sed 's/%20/_/g; s/%28/(/g; s/%29/)/g; s/[^A-Za-z0-9._()-]/_/g; s/[()]//g')"
+            code=$(curl -sSL -m 120 -A "$UA" -w '%{http_code}' -o "$n.tmp" "$u" || echo 000)
+            sz=$(wc -c < "$n.tmp" 2>/dev/null || echo 0)
+            if [ "$code" = "200" ] && head -c 4 "$n.tmp" | grep -q 'PK'; then mv "$n.tmp" "$n"; echo "ok $n $sz"; printf '%s\t%s\t%s\t%s\n' "$(date -u +%FT%TZ)" "$n" "$sz" "$u" >> /tmp/got.tsv
+            else echo "SKIP $u http=$code bytes=$sz"; rm -f "$n.tmp"; fi
+            sleep 4
+          done < data/fsa/urls.txt
+          cat /tmp/got.tsv >> data/fsa/manifest.tsv
+      - name: Commit
+        run: |
+          git config user.name "agsist-bot"; git config user.email "bot@agsist.com"
+          git add data/fsa
+          if git diff --cached --quiet; then echo "no change"; exit 0; fi
+          git commit -m "data: FSA ARC/PLC files [skip ci]"
+          for i in 1 2 3; do git pull --rebase origin main && git push && break; sleep 5; done
