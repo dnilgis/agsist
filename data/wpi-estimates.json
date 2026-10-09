@@ -26,7 +26,7 @@
    "metric": "2026/27 corn yield",
    "unit": "bu/acre",
    "positioning_commodities": "corn soybeans",
-   "expectation": "USDA's fourth survey-based corn and soybean yields of the season, and the first to fold in October's harvest results. The trade looks for corn to come down from 178.5 to 177.8 bu/acre (range 173.2 to 182.1) and soybeans to edge up from 52.8 to 52.9 (range 51.4 to 54.1) (Reuters survey, via Pro Farmer, 2026-10). On 2026/27 ending stocks the Dow Jones survey (via DTN, 2026-10-07) averaged 1.677 billion bushels for corn, 311 million for soybeans and 722 million for wheat. The range bar below is the corn yield survey only.",
+   "expectation": "USDA's fourth survey-based corn and soybean yields of the season, and the first to fold in October's harvest results. The trade looks for corn to come down from 178.5 to 177.8 bu/acre (range 173.2 to 182.1) and soybeans to edge up from 52.8 to 52.9 (range 51.4 to 54.1) (Reuters survey, via Pro Farmer, 2026-10). On 2026/27 ending stocks the Dow Jones survey (via DTN, 2026-10-07) averaged 1.677 billion bushels for corn (range 1.522 to 1.895), 311 million for soybeans (245 to 358) and 722 million for wheat (701 to 750). The range bar below is the corn yield survey only.",
    "_added": "2026-09-12. The September WASDE was the only report on file and its date had passed, so at the next 11:20 UTC build build_upcoming would have returned None and the top of the page would have read 'No upcoming report is scheduled right now.' The date is WASDE_2026 in scripts/usda_dates.py, not a guess.",
    "estimate_low": 173.2,
    "estimate_avg": 177.8,

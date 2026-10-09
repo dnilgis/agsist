@@ -613,9 +613,12 @@
           "actual": 1.849,
           "usda_current": 1.567,
           "consensus_source": "https://www.dtnpf.com/agriculture/web/ag/news/article/2026/10/07/us-harvests-delayed-usda-gauge-crop",
-          "consensus_note": "Dow Jones pre-report survey, reported by DTN on 2026-10-07: average trade guess 1.677 billion bushels, a 110 mb increase from September. Newsquawk printed the same 1.677 as the expectation beside USDA's figure. A low of 1,522 and high of 1,895 million appear in a reprinted survey table, but another outlet paired that same range with a 1.694 average, so the range could not be tied to this survey and none is claimed. Graded on the 2% band. Typed in 2026-10-09.",
+          "consensus_note": "Dow Jones pre-report survey, reported by DTN on 2026-10-07: average trade guess 1.677 billion bushels, range 1.522 to 1.895, against USDA's September 1.567. Typed in 2026-10-09 from DTN's survey table.",
           "estimates": [],
-          "consensus_range": []
+          "consensus_range": [
+            1.522,
+            1.895
+          ]
         },
         {
           "key": "soy_2627",
@@ -626,9 +629,12 @@
           "actual": 315,
           "usda_current": 310,
           "consensus_source": "https://www.dtnpf.com/agriculture/web/ag/news/article/2026/10/07/us-harvests-delayed-usda-gauge-crop",
-          "consensus_note": "Dow Jones pre-report survey, reported by DTN on 2026-10-07: average trade guess 311 million bushels, implying usage of 4.570 billion. No survey low or high could be tied to this survey, so no range is claimed and the print is graded on the 2% band. Typed in 2026-10-09.",
+          "consensus_note": "Dow Jones pre-report survey, reported by DTN on 2026-10-07: average trade guess 311 million bushels, range 245 to 358, against USDA's September 310. Typed in 2026-10-09 from DTN's survey table.",
           "estimates": [],
-          "consensus_range": []
+          "consensus_range": [
+            245,
+            358
+          ]
         },
         {
           "key": "wheat_2627",
@@ -639,9 +645,12 @@
           "actual": 740,
           "usda_current": 717,
           "consensus_source": "https://www.dtnpf.com/agriculture/web/ag/news/article/2026/10/07/us-harvests-delayed-usda-gauge-crop",
-          "consensus_note": "Dow Jones pre-report survey, reported by DTN on 2026-10-07: average guess 722 million bushels, up 5 mb from September. No survey low or high could be tied to this survey, so no range is claimed and the print is graded on the 2% band. Typed in 2026-10-09.",
+          "consensus_note": "Dow Jones pre-report survey, reported by DTN on 2026-10-07: average guess 722 million bushels, range 701 to 750, against USDA's September 717. Typed in 2026-10-09 from DTN's survey table.",
           "estimates": [],
-          "consensus_range": []
+          "consensus_range": [
+            701,
+            750
+          ]
         },
         {
           "key": "corn_prod_2627",
