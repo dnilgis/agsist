@@ -339,6 +339,7 @@ jobs:
         run: |
           python scripts/market_board.py
           python scripts/test_number_binding.py
+          python scripts/test_arc_plc_link.py
 
       # 2026-10-09: the voice check the generator, the critic and the gate all
       # import. It catches an invented first person under Sig's name ("I talked

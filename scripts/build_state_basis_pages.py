@@ -907,6 +907,8 @@ def build_state_page(st, rows_all, summ, ctx):
         links.append(f'<a href="/rent/{sl}">{name} cash rent by county</a>')
     if os.path.exists(os.path.join(ctx["root"], "farmland-atlas", sl, "index.html")):
         links.append(f'<a href="/farmland-atlas/{sl}/">{name} Farmland Atlas</a>')
+    if os.path.exists(os.path.join(ctx["root"], "arc-plc", f"{sl}.html")):
+        links.append(f'<a href="/arc-plc/{sl}">{name} ARC or PLC by county</a>')
     cloud = " &middot; ".join(f'<a href="/basis/{slug(STATE_NAMES[o])}">{STATE_NAMES[o]}</a>'
                               for o in sorted(ctx["all_states"], key=lambda s: STATE_NAMES[s]) if o != st)
     hdr, ftr = ctx["chrome"]

@@ -4,7 +4,7 @@ PRODID:-//AGSIST//USDA Report Calendar//EN
 CALSCALE:GREGORIAN
 METHOD:PUBLISH
 X-WR-CALNAME:USDA Reports - AGSIST
-X-WR-CALDESC:WASDE, Crop Production, Grain Stocks and international report dates. Weekly Crop Progress and Export Sales are not included. agsist.com/usda-calendar
+X-WR-CALDESC:WASDE, Crop Production, Grain Stocks and international report dates, plus FSA ARC/PLC signup dates. Weekly Crop Progress and Export Sales are not included. agsist.com/usda-calendar
 X-PUBLISHED-TTL:PT48H
 REFRESH-INTERVAL;VALUE=DURATION:PT48H
 BEGIN:VEVENT
@@ -121,5 +121,29 @@ DTEND:20261204T143000Z
 SUMMARY:StatCan Crop Production (Canada)
 DESCRIPTION:Final 2026 Canadian production - wheat\, canola\, barley - Statistics Canada\nDetails: https://agsist.com/usda-calendar
 URL:https://agsist.com/usda-calendar
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-11-02-arc-plc-2027-signup-opens@agsist.com
+DTSTAMP:20261009T120000Z
+DTSTART;VALUE=DATE:20261102
+SUMMARY:2027 ARC/PLC signup opens (FSA)
+DESCRIPTION:FSA signup for the 2027 crop year opens. It runs to Mar 15\, 2027.\nCompare ARC and PLC for your county: https://agsist.com/arc-plc\nSource: https://www.fsa.usda.gov/news-events/news/09-15-2026/usda-announces-2026-2027-enrollment-key-price-revenue-safety-net
+URL:https://agsist.com/arc-plc
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-12-11-arc-plc-2026-signup-deadline@agsist.com
+DTSTAMP:20261009T120000Z
+DTSTART;VALUE=DATE:20261211
+SUMMARY:2026 ARC/PLC signup deadline (FSA)
+DESCRIPTION:Last day to sign 2026 ARC or PLC at your FSA office. A farm with no 2026 election keeps its 2025 election but gets no 2026 payment.\nCompare ARC and PLC for your county: https://agsist.com/arc-plc\nSource: https://www.fsa.usda.gov/news-events/news/09-15-2026/usda-announces-2026-2027-enrollment-key-price-revenue-safety-net
+URL:https://agsist.com/arc-plc
+END:VEVENT
+BEGIN:VEVENT
+UID:2027-03-15-arc-plc-2027-signup-deadline@agsist.com
+DTSTAMP:20261009T120000Z
+DTSTART;VALUE=DATE:20270315
+SUMMARY:2027 ARC/PLC signup deadline (FSA)
+DESCRIPTION:Last day to sign 2027 ARC or PLC at your FSA office.\nCompare ARC and PLC for your county: https://agsist.com/arc-plc\nSource: https://www.fsa.usda.gov/news-events/news/09-15-2026/usda-announces-2026-2027-enrollment-key-price-revenue-safety-net
+URL:https://agsist.com/arc-plc
 END:VEVENT
 END:VCALENDAR

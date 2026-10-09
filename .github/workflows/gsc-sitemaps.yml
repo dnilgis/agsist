@@ -1,0 +1,49 @@
+name: Search Console sitemaps
+
+# Google has no sitemap ping endpoint any more (retired 2023). This submits
+# every Sitemap: line in robots.txt through the Search Console API and prints
+# what Google reports for each one. Needs the repo secret
+# GSC_SERVICE_ACCOUNT_JSON (a service account added as an Owner of the
+# property); without it the job prints one notice line and stays green.
+# Optional repo variable GSC_SITE picks the property (default
+# sc-domain:agsist.com, then https://agsist.com/ if that one is refused).
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'sitemap*.xml'
+      - 'robots.txt'
+  schedule:
+    - cron: '41 13 * * 1'   # Mondays 13:41 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: gsc-sitemaps
+  cancel-in-progress: false
+
+jobs:
+  submit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install google-auth (pinned)
+        run: pip install --disable-pip-version-check 'google-auth==2.40.3' 'requests==2.32.3'
+
+      - name: Selftest (offline, fake transport)
+        run: python scripts/gsc_submit_sitemaps.py --selftest
+
+      - name: Submit sitemaps and print their status
+        env:
+          GSC_SERVICE_ACCOUNT_JSON: ${{ secrets.GSC_SERVICE_ACCOUNT_JSON }}
+          GSC_SITE: ${{ vars.GSC_SITE }}
+        run: python scripts/gsc_submit_sitemaps.py

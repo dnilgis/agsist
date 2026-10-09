@@ -6,7 +6,8 @@ on:
     paths:
       - '**.html'
       - '**.md'
-      - 'sitemap.xml'
+      - 'sitemap*.xml'
+      - 'robots.txt'
   schedule:
     # 14:30 UTC daily = 09:30 CT (after daily briefing has published)
     - cron: '30 14 * * *'
@@ -37,6 +38,11 @@ jobs:
         with:
           python-version: '3.11'
 
+      - name: IndexNow selftest (offline)
+        run: python scripts/test_indexnow_submit.py
+
+      # Every Sitemap: line in robots.txt (sitemap.xml, atlas, cash-bids,
+      # arc-plc), in batches of at most 10,000 URLs per request.
       - name: Submit to IndexNow
         env:
           MANUAL_URLS: ${{ github.event.inputs.urls }}

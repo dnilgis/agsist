@@ -152,6 +152,7 @@ from datetime import datetime, timezone, timedelta, date
 
 from contract_calendar import is_expired, holiday_name   # ONE expiry rule + ONE trading calendar
 import briefing_cut                         # ONE definition of the word budget
+import arc_plc_link                         # first ARC/PLC mention links /arc-plc
 from pathlib import Path
 
 try:
@@ -3748,7 +3749,7 @@ html,body{{overflow-x:hidden;overflow-x:clip;width:100%;}}
 </script>
 </body>
 </html>"""
-    return page
+    return arc_plc_link.link_first(page)
 
 
 def update_archive_index(briefing, date_iso):
