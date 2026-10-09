@@ -143,6 +143,9 @@ MIN_STATE_COUNTIES = 3
 SCEN_YEARS = list(range(2015, 2025))   # years with both an FSA county yield and a price change
 LEAN_GAP = 3.00       # $/base acre: "Leans X" needs at least this expected gap and more winning years
 SNAPSHOT = "data/arc-plc-prices.json"  # futures snapshot the scenarios are centered on (--snapshot-prices)
+SNAP_MAX_DAYS = 10    # a build refuses to write when the snapshot's futures close is older than this (weekly refresh + a long weekend)
+SNAP_FRESH_DAYS = 4   # --snapshot-prices refuses data/prices.json quotes older than this (a holiday weekend)
+BUILD_DATE = None     # date the signup copy is written for; main() sets it (today, UTC, or --today YYYY-MM-DD)
 RMA_HIST_PAGE = "harvest-price-tracker.html"  # RMA projected and harvest prices 2011-2025, one copy on the site
 MIN_SCEN = 8          # never recommend from fewer scenario years
 MIN_GAP = 2.00        # $/base acre: a smaller expected gap is "too close to call" whatever the spread
@@ -650,16 +653,18 @@ def parse_wasde(text):
     return out
 
 
+def wasde_key(p):
+    """Sort key for wasdeMMYY.pdf: (year, month), so wasde0127 comes after wasde1026."""
+    m = re.search(r"wasde(\d\d)(\d\d)", os.path.basename(p))
+    return (int(m.group(2)), int(m.group(1))) if m else (0, 0)
+
+
 def load_wasde(root="."):
     """The newest WASDE PDF in data/wasde-pdf/ (wasdeMMYY.pdf)."""
     ps = glob.glob(os.path.join(root, "data/wasde-pdf/wasde*.pdf"))
-
-    def key(p):
-        m = re.search(r"wasde(\d\d)(\d\d)", os.path.basename(p))
-        return (int(m.group(2)), int(m.group(1))) if m else (0, 0)
     if not ps:
         return None
-    p = max(ps, key=key)
+    p = max(ps, key=wasde_key)
     w = parse_wasde(wasde_text(p))
     w["file"] = os.path.relpath(p, root)
     return w if w.get("prices") and w.get("date") else None
@@ -704,10 +709,50 @@ def snapshot_prices(root="."):
         q = (pj.get("quotes") or {}).get(key)
         if q and q.get("close"):
             snap["futures"][k] = {"key": key, "price": round(q["close"] / 100, 4), "date": q.get("close_date")}
+    bad = snapshot_problem(snap, BUILD_DATE or dt.datetime.now(dt.timezone.utc).date(), SNAP_FRESH_DAYS)
+    if bad:
+        raise SystemExit(f"[arc-plc] --snapshot-prices refused, {SNAPSHOT} left as it was: data/prices.json {bad}")
     with open(os.path.join(root, SNAPSHOT), "w") as f:
         json.dump(snap, f, indent=1)
         f.write("\n")
     return snap
+
+
+def snapshot_problem(snap, today, max_days=SNAP_MAX_DAYS):
+    """Why a futures snapshot must not be published on date today, or None when it is fine."""
+    if not snap:
+        return f"has no futures snapshot ({SNAPSHOT}); run --snapshot-prices"
+    for k, key in (("corn", "corn-dec27"), ("soybeans", "beans-nov27")):
+        fu = (snap.get("futures") or {}).get(k) or {}
+        if not fu.get("price") or fu["price"] <= 0 or not fu.get("date"):
+            return f"has no {key} close"
+        age = (today - dt.date.fromisoformat(fu["date"][:10])).days
+        if age > max_days:
+            return f"{key} close is from {fu['date'][:10]}, {age} days before {today.isoformat()} (limit {max_days})"
+    return None
+
+
+def signup_copy(today):
+    """Signup wording for date today. Each program year's window is upcoming, open or closed."""
+    a, b = YEAR_INFO[2026], YEAR_INFO[2027]
+    st = {py: ("upcoming" if today < dt.date.fromisoformat(YEAR_INFO[py]["open"]) else
+               "open" if today <= dt.date.fromisoformat(YEAR_INFO[py]["close"]) else "closed") for py in YEARS}
+    c6, o7, c7 = nice_date(a["close"]), nice_date(b["open"]), nice_date(b["close"])
+    if st[2026] != "closed":
+        return {"state": st, "box6": "2026 signup closes", "box7": "2027 signup", "desc": "2026 signup ends Dec 11.",
+                "quick": f"The 2026 signup closes {c6}; the 2027 signup runs {o7} to {c7}.",
+                "llms": f"Signup: 2026 closes {c6}; 2027 runs {o7} to {c7}.", "faq": "The 2026 deadline comes first."}
+    if st[2027] != "closed":
+        return {"state": st, "box6": "2026 signup closed", "box7": "2027 signup", "desc": "2027 signup ends Mar 15.",
+                "quick": f"The 2026 signup closed {c6}. The 2027 signup is open through {c7}.",
+                "llms": f"Signup: 2026 closed {c6}; 2027 runs {o7} to {c7}.", "faq": f"The 2026 signup has closed; the 2027 signup is open through {c7}."}
+    return {"state": st, "box6": "2026 signup closed", "box7": "2027 signup closed", "desc": "2027 signup closed Mar 15.",
+            "quick": f"The 2026 signup closed {c6}, and the 2027 signup closed {c7}.",
+            "llms": f"Signup: 2026 closed {c6}; 2027 closed {c7}.", "faq": "Both signups have closed."}
+
+
+def build_date():
+    return BUILD_DATE or dt.datetime.now(dt.timezone.utc).date()
 
 
 # ---------------------------------------------------------------- loading
@@ -1080,9 +1125,9 @@ def src_link(k):
 
 
 def deadlines_html():
-    a, b = YEAR_INFO[2026], YEAR_INFO[2027]
-    return (f'<div class="ap-dl"><div><span>2026 signup closes</span><b>{nice_date(a["close"])}</b></div>'
-            f'<div><span>2027 signup</span><b>{nice_date(b["open"], False)} to {nice_date(b["close"])}</b></div></div>')
+    a, b, sc = YEAR_INFO[2026], YEAR_INFO[2027], signup_copy(build_date())
+    return (f'<div class="ap-dl"><div><span>{sc["box6"]}</span><b>{nice_date(a["close"])}</b></div>'
+            f'<div><span>{sc["box7"]}</span><b>{nice_date(b["open"], False)} to {nice_date(b["close"])}</b></div></div>')
 
 
 def form_html(D, crop="corn", st="", fips="", embed=False):
@@ -1172,7 +1217,7 @@ def faq_items(D):
          f"wheat {usd(y7['wheat']['erp']['erp'])}. For 2026 the figures are {usd(y6['corn']['erp']['erp'])}, {usd(y6['soybeans']['erp']['erp'])} "
          f"and {usd(y6['wheat']['erp']['erp'])}, matching published FSA-based figures. FSA publishes the official 2027 numbers."),
         ("When is the ARC/PLC deadline?",
-         f"2026: September 16 to December 11, 2026. 2027: November 2, 2026 to March 15, 2027. The 2026 deadline comes first."),
+         f"2026: September 16 to December 11, 2026. 2027: November 2, 2026 to March 15, 2027. {signup_copy(build_date())['faq']}"),
         ("What happens if I don't enroll?",
          "For 2026, a farm with no election by December 11, 2026 keeps its 2025 election but gets no 2026 payment. "
          "Keeping your old choice still takes a signed contract."),
@@ -1291,7 +1336,7 @@ def build_main(D, ch):
     n_c = sum(len(S["c"]) for S in D["states"].values())
     title = "ARC vs PLC 2026 and 2027 Calculator | AGSIST"
     desc = (f"Est. 2027 effective reference prices: corn {usd(c7['erp']['erp'])}, soybeans {usd(s7['erp']['erp'])}, wheat "
-            f"{usd(w7['erp']['erp'])}. " + ("FSA official county benchmarks. " if fsa else "Bring your county's FSA benchmark. ") + "2026 signup ends Dec 11.")
+            f"{usd(w7['erp']['erp'])}. " + ("FSA official county benchmarks. " if fsa else "Bring your county's FSA benchmark. ") + signup_copy(build_date())["desc"])
     og_title = f"ARC or PLC: est. 2027 corn ERP {usd(c7['erp']['erp'])}, soybeans {usd(s7['erp']['erp'])}"
     jsonld = [
         {"@context": "https://schema.org", "@type": "WebApplication", "@id": f"{SITE}/arc-plc#app",
@@ -1340,7 +1385,7 @@ def build_main(D, ch):
     <p><b>Quick answer.</b> By our math from final USDA prices, the 2027 PLC effective reference prices are <b>{usd(c7['erp']['erp'])}</b> for corn,
     <b>{usd(s7['erp']['erp'])}</b> for soybeans and <b>{usd(w7['erp']['erp'])}</b> for wheat (2026: {usd(y6['corn']['erp']['erp'])},
     {usd(y6['soybeans']['erp']['erp'])}, {usd(y6['wheat']['erp']['erp'])}). PLC pays if the national season-average price ends below that.
-    ARC-CO pays when county revenue falls below 90% of its benchmark. The 2026 signup closes Dec 11, 2026; the 2027 signup runs Nov 2, 2026 to Mar 15, 2027.</p>
+    ARC-CO pays when county revenue falls below 90% of its benchmark. {signup_copy(build_date())['quick']}</p>
     {tally_sentence(D)}
     <p class="ap-small">{fsa_line} {asof(D['updated'])}</p>
   </div>
@@ -1895,8 +1940,8 @@ def llms_text(D, root="."):
     n_c = sum(len(S["c"]) for S in D["states"].values())
     l1 = (f"{LLMS_PREFIX} PLC effective reference prices computed from final USDA NASS season-average prices under the 2025 farm law: 2026 corn "
           f"{usd(y6['corn']['erp']['erp'])}, soybeans {usd(y6['soybeans']['erp']['erp'])}, wheat {usd(y6['wheat']['erp']['erp'])}; 2027 est. corn "
-          f"{usd(y7['corn']['erp']['erp'])}, soybeans {usd(y7['soybeans']['erp']['erp'])}, wheat {usd(y7['wheat']['erp']['erp'])}. Signup: 2026 closes "
-          f"Dec 11, 2026; 2027 runs Nov 2, 2026 to Mar 15, 2027. A calculator compares PLC and ARC-CO per base acre by price and county yield, "
+          f"{usd(y7['corn']['erp']['erp'])}, soybeans {usd(y7['soybeans']['erp']['erp'])}, wheat {usd(y7['wheat']['erp']['erp'])}. "
+          f"{signup_copy(build_date())['llms']} A calculator compares PLC and ARC-CO per base acre by price and county yield, "
           f"with what changed under the 2025 law, SCO, rented ground and payment limits")
     l2 = (f"{LLMS_PREFIX2} FSA's official 2026 ARC-CO benchmark yields for {n_c:,} counties by crop (corn, soybeans, wheat) and practice "
           f"(irrigated, non-irrigated), with benchmark revenue, guarantee, maximum payment, FSA history and the PLC vs ARC break-even, at "
@@ -1959,7 +2004,11 @@ def existing_outputs(root):
 
 
 def main_build(root=".", check=False):
-    D = compute(load_inputs(root))
+    inp = load_inputs(root)
+    bad = None if check else snapshot_problem(inp["snap"], build_date())
+    if bad:
+        raise SystemExit(f"[arc-plc] refusing to write: the futures snapshot {bad}. Nothing written.")
+    D = compute(inp)
     out, stats = render_all(D)
     stale = []
     for rel, content in out.items():
@@ -2148,6 +2197,23 @@ def selftest():
     except ImportError:
         ck("openpyxl installed", False)
     ck("no em dash in range text", "—" not in " ".join(ranges_text(runs)))
+    # newest WASDE by report month, not by file name: Jan 2027 (0127) sorts after Oct 2026 (1026)
+    ck("WASDE pick: wasde0127 after wasde1226 and wasde1026",
+       max(["data/wasde-pdf/wasde1026.pdf", "data/wasde-pdf/wasde0127.pdf", "data/wasde-pdf/wasde1226.pdf"], key=wasde_key).endswith("0127.pdf"))
+    # signup copy on fixed dates: Dec 11 is the last day of 2026 signup, Mar 15 of 2027
+    d = dt.date
+    s1, s2, s3, s4 = (signup_copy(x) for x in (d(2026, 10, 9), d(2026, 12, 11), d(2026, 12, 12), d(2027, 3, 16)))
+    ck("signup Oct 9, 2026: 2026 open, 2027 upcoming", s1["state"] == {2026: "open", 2027: "upcoming"} and s1["box6"] == "2026 signup closes", str(s1["state"]))
+    ck("signup Dec 11, 2026: 2026 still open", s2["state"][2026] == "open" and "closes Dec 11, 2026" in s2["quick"], s2["quick"])
+    ck("signup Dec 12, 2026: 2026 closed, 2027 open, no 'closes Dec 11' left",
+       s3["state"] == {2026: "closed", 2027: "open"} and "closes" not in s3["quick"] + s3["box6"] + s3["llms"] and s3["desc"] == "2027 signup ends Mar 15.", str(s3))
+    ck("signup Mar 16, 2027: both closed", s4["state"] == {2026: "closed", 2027: "closed"} and "open" not in s4["quick"] + s4["faq"], str(s4))
+    ck("signup copy has no em dash", "—" not in json.dumps([s1, s2, s3, s4]))
+    sn = {"futures": {"corn": {"price": 5.12, "date": "2026-10-09"}, "soybeans": {"price": 12.45, "date": "2026-10-09"}}}
+    ck("snapshot 10 days old passes, 11 days refused",
+       snapshot_problem(sn, d(2026, 10, 19)) is None and "11 days" in (snapshot_problem(sn, d(2026, 10, 20)) or ""))
+    ck("snapshot missing or without soybeans refused",
+       snapshot_problem(None, d(2026, 10, 9)) and snapshot_problem({"futures": {"corn": sn["futures"]["corn"]}}, d(2026, 10, 9)))
     print(f"\n{'FAIL' if fails else 'OK'}: {len(fails)} failure(s)")
     return 1 if fails else 0
 
@@ -2157,8 +2223,11 @@ def main():
     ap.add_argument("--selftest", action="store_true")
     ap.add_argument("--check", action="store_true")
     ap.add_argument("--snapshot-prices", action="store_true")
+    ap.add_argument("--today", default="")
     a = ap.parse_args()
     os.chdir(ROOT)
+    global BUILD_DATE
+    BUILD_DATE = dt.date.fromisoformat(a.today) if a.today else dt.datetime.now(dt.timezone.utc).date()
     if a.snapshot_prices:
         print(json.dumps(snapshot_prices("."), indent=1))
     if a.selftest:

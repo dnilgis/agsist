@@ -1,0 +1,109 @@
+# Rebuild the ARC/PLC pages (scripts/build_arc_plc.py) on their own.
+#
+# Three things move them:
+#   - a new WASDE: the 2026 price center is USDA's projected season-average
+#     price from the newest data/wasde-pdf/wasdeMMYY.pdf (picked by report
+#     month, so wasde0127 beats wasde1026). wasde-watch.yml commits the PDF;
+#     this rebuilds after it. No new futures snapshot on that path, so a
+#     WASDE day does not churn the pages on every intraday price.
+#   - the weekly futures refresh: Monday after the close, --snapshot-prices
+#     freezes Dec 2027 corn and Nov 2027 soybean closes from data/prices.json
+#     into data/arc-plc-prices.json (the 2027 price center), then rebuilds.
+#   - the calendar: the signup copy is written for the build date, so the
+#     day after each deadline (Dec 12, 2026 and Mar 16, 2027) gets a run.
+#
+# FAILS LOUDLY. --snapshot-prices refuses quotes older than 4 days and a
+# build refuses to write when the snapshot is older than 10 days or missing
+# a contract. A red run here means the pages kept their last good numbers.
+# Nothing is committed unless an output changed.
+
+name: ARC/PLC refresh
+
+on:
+  schedule:
+    - cron: "23 22 * * 1"    # Monday 22:23 UTC, after the CBOT close and the price fetch
+    - cron: "23 6 12 12 *"   # Dec 12: the 2026 signup closed the day before
+    - cron: "23 6 16 3 *"    # Mar 16: the 2027 signup closed the day before
+  workflow_run:
+    workflows: ["WASDE watch — grade the report as it lands"]
+    types: [completed]
+  workflow_dispatch:
+    inputs:
+      snapshot:
+        description: "Take a new futures snapshot first"
+        type: boolean
+        default: true
+
+permissions:
+  contents: write
+
+concurrency:
+  group: arc-plc-refresh
+  cancel-in-progress: false
+
+jobs:
+  # WASDE watch completes every 15 minutes (it runs after each Fetch Grain
+  # Bids). Only its runs on release days, 16:00-19:59 UTC, can carry a new PDF.
+  gate:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    outputs:
+      go: ${{ steps.g.outputs.go }}
+      snap: ${{ steps.g.outputs.snap }}
+    steps:
+      - id: g
+        env:
+          EV: ${{ github.event_name }}
+          SNAP_IN: ${{ inputs.snapshot }}
+        run: |
+          D=$(date -u +%-d); H=$(date -u +%-H); GO=1; SNAP=1
+          if [ "$EV" = "workflow_run" ]; then
+            SNAP=0
+            if [ "$D" -lt 9 ] || [ "$D" -gt 13 ] || [ "$H" -lt 16 ] || [ "$H" -gt 19 ]; then GO=0; fi
+          fi
+          [ "$EV" = "workflow_dispatch" ] && [ "$SNAP_IN" = "false" ] && SNAP=0
+          echo "event $EV, UTC day $D hour $H -> go=$GO snap=$SNAP"
+          echo "go=$GO" >> "$GITHUB_OUTPUT"; echo "snap=$SNAP" >> "$GITHUB_OUTPUT"
+
+  build:
+    needs: gate
+    if: needs.gate.outputs.go == '1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      # Pinned: the WASDE price lines are read with pypdf, and a new version
+      # can change the extracted text. The selftest checks the Oct 2026 PDF.
+      - name: Install
+        run: pip install openpyxl==3.1.5 pypdf==6.17.0
+      - name: Selftest
+        run: python scripts/build_arc_plc.py --selftest
+
+      # The build rewrites thousands of files. On a push race it does not
+      # rebase them; it resets to the new main and builds again, so a
+      # conflict on a shared file (llms.txt) cannot wedge the run.
+      - name: Build and commit
+        env:
+          SNAP: ${{ needs.gate.outputs.snap }}
+        run: |
+          set -e
+          git config user.name "AGSIST Bot"
+          git config user.email "bot@agsist.com"
+          for i in 1 2 3 4 5; do
+            if [ "$SNAP" = "1" ]; then python scripts/build_arc_plc.py --snapshot-prices; else python scripts/build_arc_plc.py; fi
+            git add -A -- arc-plc.html arc-plc data/arc-plc.json data/arc-plc data/arc-plc-prices.json \
+                          embed/arc-plc.html sitemap-arc-plc.xml llms.txt
+            if git diff --staged --quiet; then echo "No change."; exit 0; fi
+            git commit -q -m "arc-plc: rebuilt $(date -u +%Y-%m-%d)"
+            if git push; then echo "Pushed on attempt $i."; exit 0; fi
+            echo "Push race on attempt $i; building again on the new main..."
+            git fetch -q origin main
+            git reset -q --hard origin/main
+            sleep $((RANDOM % 6 + 3))
+          done
+          echo "Failed to push after 5 attempts."; exit 1

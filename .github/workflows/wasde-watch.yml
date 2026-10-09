@@ -135,13 +135,19 @@ jobs:
       # A PDF already in data/wasde-pdf/ is not downloaded again, so the runs
       # after the first cost nothing here. No PDF yet is not an error; the
       # stocks wait for the next run.
+      # A new PDF is committed even on a run that fills nothing: the fill can
+      # land before usda.gov posts the PDF, and then no later run would commit
+      # it. arc-plc-refresh.yml rebuilds the ARC/PLC pages from the newest one.
       - name: Fetch the WASDE PDF
+        id: pdf
         env:
           WASDE_DATE: ${{ inputs.date }}
+          WASDE_DRY:  ${{ inputs.dry_run }}
         run: |
           args=()
           [ -n "${WASDE_DATE:-}" ] && args+=(--date "$WASDE_DATE")
           python scripts/read_wasde_pdf.py --fetch "${args[@]}"
+          if [ "${WASDE_DRY:-false}" != "true" ] && [ -n "$(git status --porcelain -- data/wasde-pdf)" ]; then echo "new=1" >> "$GITHUB_OUTPUT"; fi
 
       - name: Read the print
         id: read
@@ -171,7 +177,7 @@ jobs:
           python scripts/prerender_wpi_scorecard.py || true
 
       - name: Commit
-        if: steps.read.outputs.filled == '1'
+        if: steps.read.outputs.filled == '1' || steps.pdf.outputs.new == '1'
         run: |
           set -e
           git config user.name "AGSIST Bot"
