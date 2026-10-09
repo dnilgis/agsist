@@ -1746,7 +1746,7 @@ Output as the yesterdays_call object in the JSON: {{"outcome": your best read ('
 
     # v4.6: alias the module-level constants into local scope for the f-string below.
     CALENDAR_FACTS_2026_LOCAL = CALENDAR_FACTS_2026
-    return f"""You are writing the AGSIST Daily, a morning farm markets briefing read every day by US producers across grain, livestock, dairy, and specialty operations. It goes out under Sig Lindquist's name. Sig is a plain-spoken ag man from Chetek, Wisconsin, who works with farmers. Write it the way he would talk to a neighbor at the elevator.
+    return f"""You are writing the AGSIST Daily, a morning farm markets briefing read every day by US producers across grain, livestock, dairy, and specialty operations. It goes out under Sig Lindquist's name. Sig is a Certified Crop Adviser (CCA) who works with farmers. Write it the way he would talk to a neighbor at the elevator.
 
 ══ THE VOICE ══
 
@@ -3492,7 +3492,7 @@ html,body{{overflow-x:hidden;overflow-x:clip;width:100%;}}
 .dv3-spattr--house{{color:var(--text-muted);border-color:var(--border)}}
 .dv3-spattr--house:hover{{color:var(--ad-orange);border-color:rgba(var(--ad-orange-rgb),.4)}}
 .dv3-spattr strong{{color:var(--text);font-weight:700}}
-.dv3-headline{{font-family:'Oswald',sans-serif;font-size:clamp(2rem,4vw,3rem);font-weight:700;line-height:1.15;color:var(--text);margin-bottom:.6rem;letter-spacing:-.01em;text-transform:uppercase}}
+.dv3-headline{{font-family:'Oswald',sans-serif;font-size:clamp(2rem,4vw,3rem);font-weight:700;line-height:1.15;color:var(--text);margin-bottom:.6rem;letter-spacing:-.01em}}
 .dv3-subheadline{{font-size:.92rem;color:var(--gold);font-weight:600;margin-bottom:.75rem}}
 .dv3-lead{{font-size:1.05rem;line-height:1.75;color:var(--text-dim);max-width:720px}}
 .dv3-surprise-banner{{display:none;align-items:center;gap:.6rem;padding:.65rem 1rem;background:linear-gradient(135deg,rgba(218,165,32,.06) 0%,rgba(240,145,58,.04) 100%);border:1px solid rgba(218,165,32,.20);border-radius:8px;margin-bottom:1.25rem}}
