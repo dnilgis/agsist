@@ -41,7 +41,7 @@
   "IA":{
    "rows":12853,
    "facilities":764,
-   "kb":567.8
+   "kb":567.7
   },
   "ID":{
    "rows":89,
@@ -54,19 +54,19 @@
    "kb":361.5
   },
   "IN":{
-   "rows":1878,
+   "rows":1879,
    "facilities":107,
-   "kb":80.0
+   "kb":80.1
   },
   "KS":{
-   "rows":7414,
+   "rows":7425,
    "facilities":432,
-   "kb":319.3
+   "kb":319.8
   },
   "KY":{
    "rows":98,
    "facilities":9,
-   "kb":4.9
+   "kb":4.8
   },
   "LA":{
    "rows":5,
@@ -79,7 +79,7 @@
    "kb":33.4
   },
   "MN":{
-   "rows":7514,
+   "rows":7515,
    "facilities":328,
    "kb":323.9
   },
