@@ -28,11 +28,7 @@ jobs:
             if [ "$code" = "200" ] && head -c 4 /tmp/w.pdf | grep -q '%PDF'; then cp /tmp/w.pdf "data/wasde-pdf/wasde$M.pdf"; ok=1; break; fi
           done
           [ "$ok" = 1 ] || { echo "no PDF"; exit 0; }
-          pdftotext -layout "data/wasde-pdf/wasde$M.pdf" /tmp/w.txt
-          echo "--- season-average price lines:"
-          grep -n -i -E 'season-average|avg\. farm price|farm price|price \(\$/bu\)' /tmp/w.txt | head -60
-          echo "--- U.S. Feed Grain and Corn / Soybeans / Wheat supply-use price rows:"
-          grep -n -E '^\s*(Avg\. Farm Price|Avg\.\s+Farm\s+Price)' /tmp/w.txt | head -40
+          echo "saved data/wasde-pdf/wasde$M.pdf"
       - name: Commit
         run: |
           git config user.name "agsist-bot"; git config user.email "bot@agsist.com"
