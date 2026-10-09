@@ -1,0 +1,42 @@
+# Download a WASDE report PDF from USDA and print its season-average price lines,
+# so the October projection can be read without waiting for search engines.
+name: fetch-wasde-pdf
+on:
+  workflow_dispatch:
+    inputs:
+      mmyy:
+        description: "Report month and year, e.g. 1026 for October 2026"
+        default: "1026"
+permissions:
+  contents: write
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download and read
+        run: |
+          set -u
+          sudo apt-get install -y -qq poppler-utils >/dev/null 2>&1 || true
+          M="${{ github.event.inputs.mmyy }}"
+          mkdir -p data/wasde-pdf
+          UA="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124 Safari/537.36"
+          ok=0
+          for u in "https://www.usda.gov/oce/commodity/wasde/wasde$M.pdf" "https://www.usda.gov/sites/default/files/documents/wasde$M.pdf"; do
+            code=$(curl -sSL -m 120 -A "$UA" -w '%{http_code}' -o /tmp/w.pdf "$u" || echo 000)
+            echo "$u -> $code $(wc -c < /tmp/w.pdf)"
+            if [ "$code" = "200" ] && head -c 4 /tmp/w.pdf | grep -q '%PDF'; then cp /tmp/w.pdf "data/wasde-pdf/wasde$M.pdf"; ok=1; break; fi
+          done
+          [ "$ok" = 1 ] || { echo "no PDF"; exit 0; }
+          pdftotext -layout "data/wasde-pdf/wasde$M.pdf" /tmp/w.txt
+          echo "--- season-average price lines:"
+          grep -n -i -E 'season-average|avg\. farm price|farm price|price \(\$/bu\)' /tmp/w.txt | head -60
+          echo "--- U.S. Feed Grain and Corn / Soybeans / Wheat supply-use price rows:"
+          grep -n -E '^\s*(Avg\. Farm Price|Avg\.\s+Farm\s+Price)' /tmp/w.txt | head -40
+      - name: Commit
+        run: |
+          git config user.name "agsist-bot"; git config user.email "bot@agsist.com"
+          git add data/wasde-pdf
+          if git diff --cached --quiet; then echo "no change"; exit 0; fi
+          git commit -m "data: WASDE PDF [skip ci]"
+          for i in 1 2 3; do git pull --rebase origin main && git push && break; sleep 5; done
