@@ -157,7 +157,7 @@ def money_basis(v):
     0c, +18c for neighbouring months), so it is printed the way the trade
     says it, "even" -- never a bare $0.00, which reads as a missing value."""
     if v is None:
-        return "&mdash;"
+        return "n/a"
     a = _cents2(v)
     if a == "0.00":
         return "even"
@@ -173,7 +173,7 @@ def plain_basis(v):
 
 def cents_delta(v):
     if v is None:
-        return "&mdash;"
+        return "n/a"
     if v == 0:
         return "0&cent;"
     return f"{'+' if v > 0 else '&minus;'}{abs(v):g}&cent;"
@@ -298,7 +298,7 @@ def _word_case(m):
 def town_text(s):
     """Town for display: an ALL-CAPS board label ("ADM CEDAR RAPIDS") reads as
     "ADM Cedar Rapids". Mixed-case names are left exactly as posted."""
-    s = str(s or "")
+    s = str(s or "").replace(" \u2014 ", ", ")
     u = re.sub(r"\bMc(?=[A-Z])", "MC", s)          # "McCOOL JUNCTION" is all caps too
     if not re.search(r"[A-Z]", u) or re.search(r"[a-z]", u):
         return s
@@ -697,7 +697,7 @@ def stat_block(group, st, prev_gen):
     con = st["contract"]
     root = EXCHANGE.get(con[0], con[0])
     if "median" not in st:
-        return (f'<div class="bs-stat"><div class="v mut">&mdash;</div><div class="l">{lab} vs '
+        return (f'<div class="bs-stat"><div class="v mut">-</div><div class="l">{lab} vs '
                 f'{contract_label(con)}</div><div class="s">Only {st["n"]} network elevator'
                 f'{"s" if st["n"] != 1 else ""} price against this contract; a median needs at least '
                 f'{MIN_STAT}.</div></div>')
@@ -707,7 +707,7 @@ def stat_block(group, st, prev_gen):
             wow = (f'<br>Change since the {fmt_ct(prev_gen)} snapshot (about a week): <b style="color:var(--text)">{cents_delta(st["wow_median"])}</b> median change '
                    f'across {st["wow_n"]} matched bids ({st["wow_up"]} up, {st["wow_dn"]} down).')
         else:
-            wow = (f"<br>Change since the {fmt_ct(prev_gen)} snapshot: &mdash; "
+            wow = (f"<br>Change since the {fmt_ct(prev_gen)} snapshot: n/a "
                    f"(fewer than {MIN_STAT} matched bids in both snapshots).")
     return (f'<div class="bs-stat"><div class="v">{money_basis(st["median"])}</div>'
             f'<div class="l">{lab} median basis vs {contract_label(con)} {esc(root)}</div>'
@@ -843,7 +843,7 @@ def build_state_page(st, rows_all, summ, ctx):
                   + f'<h3>Weakest basis ({contract_label(head0["contract"])})</h3><ul class="bs-list">'
                   + "".join(loc_li(r) for r in head0["weak"]) + "</ul>")
         if not cons:
-            blocks = ('<div class="bs-stat"><div class="v mut">&mdash;</div><div class="l">'
+            blocks = ('<div class="bs-stat"><div class="v mut">-</div><div class="l">'
                       f'{CROP_LABEL[g]}</div><div class="s">No elevator here named a futures contract, so no '
                       'basis statistic can be stated.</div></div>')
         sections.append(f'<h2 id="{g}">{CROP_LABEL[g]}</h2>\n  <div class="bs-hero">{blocks}</div>'
@@ -869,12 +869,12 @@ def build_state_page(st, rows_all, summ, ctx):
         for i, r in enumerate(grows):
             con = (f'{contract_label(r["contract"])} <span class="mut">{contract_code(r["contract"])}</span>'
                    if r["contract"] else '<span class="mut" title="the board does not name a futures month">'
-                                         '&mdash; not named</span>')
+                                         'not named</span>')
             bas = money_basis(r["basis"]) + (' <span class="mut" title="beyond the sanity band; not in statistics">'
                                              '?</span>' if r.get("suspect") else "")
             wow = (f'<td class="n c-wow" data-l="Wk chg">{cents_delta(r["wow"])}</td>' if r.get("wow") is not None
                    else '<td class="n mut c-wow" data-l="Wk chg" title="no matching bid in the earlier snapshot">'
-                        '&mdash;</td>') if has_prev else ""
+                        'n/a</td>') if has_prev else ""
             com = esc(CROP_LABEL[g])
             if _crop_norm(r["commodity"]) != _crop_norm(CROP_LABEL[g]):
                 com += f' <span class="mut">{esc(r["commodity"])}</span>'
@@ -895,10 +895,10 @@ def build_state_page(st, rows_all, summ, ctx):
         tables.append(f'<h3 id="elevators-{g}">{CROP_LABEL[g]}: {n} elevator{"s" if n != 1 else ""}</h3>'
                       f'<div class="bs-tw">{tbl}</div>')
     table = "\n  ".join(tables) if tables else \
-        '<p class="bs-sub">&mdash; no fresh network bids in this state at this snapshot.</p>'
+        '<p class="bs-sub">No fresh network bids in this state at this snapshot.</p>'
 
     wow_note = (f"Week-over-week compares each bid with the same elevator&rsquo;s same delivery period and contract "
-                f"in the network snapshot of {fmt_ct(ctx['prev_generated'])}; bids with no match show &mdash;."
+                f"in the network snapshot of {fmt_ct(ctx['prev_generated'])}; bids with no match show n/a."
                 if has_prev else
                 "No week-over-week change is shown: an earlier network snapshot about seven days back "
                 "was not available to this build, and a change is never estimated.")

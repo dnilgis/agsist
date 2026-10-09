@@ -102,7 +102,7 @@ def url_slug(s):
 
 
 def town_name(s):
-    s = re.sub(r"\s+", " ", (s or "").strip())
+    s = re.sub(r"\s+", " ", (s or "").strip()).replace(" \u2014 ", ", ")
     if s and (s.isupper() or s.islower()):
         s = " ".join(w[:1].upper() + w[1:].lower() for w in s.split(" "))
     return s
