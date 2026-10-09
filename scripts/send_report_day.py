@@ -618,7 +618,7 @@ def _selftest():
     ok("2026/27 corn ending stocks" in labels and "2026/27 corn yield" in labels,
        "a future send carries the stocks rows beside the yields: %r" % labels)
     sl = [row_line(h) for h in r10.get("October WASDE", []) if h.get("metric") == "2026/27 corn ending stocks"]
-    ok(sl == ["2026/27 corn ending stocks: USDA 1.849 bil bu. Trade average 1.677. Graded bearish."], repr(sl))
+    ok(sl == ["2026/27 corn ending stocks: USDA 1.849 bil bu. Trade average 1.677, range 1.522 to 1.895. Inside the trade range, graded in line."], repr(sl))
     pdf = {"release": "2026-10-09", "wasde_pdf": {"date": "2026-10-09", "crops": {
         "corn": {"marketing_year": "2026/27", "prev_month": "Sep",
                  "ending_stocks": {"value": 1849, "prev": 1567}, "price": {"value": 4.7, "prev": 4.8}},
