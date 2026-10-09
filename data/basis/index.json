@@ -19,7 +19,7 @@
    "kb":4.6
   },
   "CO":{
-   "rows":309,
+   "rows":308,
    "facilities":26,
    "kb":14.3
   },
@@ -41,17 +41,17 @@
   "IA":{
    "rows":12747,
    "facilities":764,
-   "kb":567.0
+   "kb":564.3
   },
   "ID":{
    "rows":89,
    "facilities":2,
-   "kb":4.1
+   "kb":4.0
   },
   "IL":{
-   "rows":8122,
+   "rows":8123,
    "facilities":421,
-   "kb":355.4
+   "kb":355.5
   },
   "IN":{
    "rows":1813,
@@ -59,9 +59,9 @@
    "kb":77.7
   },
   "KS":{
-   "rows":7321,
+   "rows":7331,
    "facilities":432,
-   "kb":316.0
+   "kb":316.4
   },
   "KY":{
    "rows":98,
@@ -99,12 +99,12 @@
    "kb":1.4
   },
   "ND":{
-   "rows":4253,
+   "rows":4255,
    "facilities":114,
-   "kb":183.1
+   "kb":183.2
   },
   "NE":{
-   "rows":8805,
+   "rows":8806,
    "facilities":326,
    "kb":388.4
   },
