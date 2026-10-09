@@ -1973,6 +1973,8 @@ h3:where(.pc-section-lbl,.idx1-extras-title,.s7-ck){font-family:inherit;letter-s
 .hb-v{display:flex;align-items:baseline;flex-wrap:wrap;gap:4px 10px;font-family:'JetBrains Mono',monospace;font-variant-numeric:tabular-nums;font-size:2.1rem;font-weight:800;line-height:1.1;color:var(--text);letter-spacing:-.01em;min-height:1.1em}
 .hb-v2{font-size:1.55rem}
 .hb-s{font-size:.824rem;line-height:1.4;color:var(--text-dim);min-height:1.4em;overflow-wrap:break-word}
+/* futures cells: the change line and the "as of" line land with prices.json; hold both lines so the band does not grow 20px after first paint */
+.hb-fut .hb-s{min-height:2.8em}
 .hb-l{display:block}
 .hb-name{color:var(--text);font-weight:600}
 .hb-nw{white-space:nowrap}

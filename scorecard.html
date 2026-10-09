@@ -35,6 +35,7 @@
   <!-- /static-nav:fonts -->
   <link rel="preload" href="/components/styles.css?v=20" as="style">
   <link rel="stylesheet" href="/components/styles.css?v=20">
+<link rel="stylesheet" href="/components/states.css?v=1"><script src="/components/states.js?v=1" defer></script>
   <script src="/components/util.js?v=16"></script>
   <link rel="icon" type="image/x-icon"            href="/img/favicon.ico">
   <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
@@ -186,7 +187,7 @@
       <h2>Every live call</h2>
       <div class="pb-wrap"><table class="pb-table" id="pb-log">
         <thead><tr><th scope="col">Made</th><th scope="col">Crop</th><th scope="col">Call</th><th scope="col">Contract</th><th scope="col" class="num">Entry</th><th scope="col" class="num">Exit close</th><th scope="col">Grades on</th><th scope="col">Result</th></tr></thead>
-        <tbody><tr><td colspan="8">Loading&hellip;</td></tr></tbody>
+        <tbody aria-busy="true"><tr><td colspan="8"><span class="sr-only">Loading the call log</span><span class="st-sk st-line" aria-hidden="true" style="height:1.1em;margin:.65em 0"></span><span class="st-sk st-line" aria-hidden="true" style="height:1.1em;margin:.65em 0"></span><span class="st-sk st-line" aria-hidden="true" style="height:1.1em;margin:.65em 0"></span><span class="st-sk st-line" aria-hidden="true" style="height:1.1em;margin:.65em 0"></span><span class="st-sk st-line" aria-hidden="true" style="height:1.1em;margin:.65em 0"></span></td></tr></tbody>
       </table></div>
       <div id="pb-log-more"></div>
       <h3>Days with no call</h3>
@@ -233,6 +234,7 @@
         line:'Right on '+n(r.hits)+' of '+n(r.graded)+' '+label+' ('+rate(r.hit_rate)+'). Across four non-overlapping groups of calls: '+rate(r.spell_rate_low)+' to '+rate(r.spell_rate_high)+' ('+n(r.windows)+' windows).',
         luck:'Odds pure guessing does at least this well: '+luck(r.p_luck)+'; at least this badly: '+luck(r.p_worse)+' ('+luck(r.p_worse_adjusted)+' after adjusting for the records tested at once).'};
     }
+    function loadRec(){
     fetch('/data/predictions.json',{cache:'no-cache'}).then(function(r){if(!r.ok)throw new Error(r.status);return r.json();}).then(function(d){
       var labels={};(d.crops||[]).forEach(function(c){labels[c.key]=c.label;});
       var R=d.rules||{};
@@ -281,7 +283,7 @@
         else res='<span class="pb-open">Open</span>';
         if(c.note)res+='<br><small>'+esc(c.note)+'</small>';
         return '<tr><td>'+fdate(c.made)+'</td><td>'+esc(labels[c.crop]||c.crop)+'</td><td>'+dirSpan(c.direction)+'</td><td>'+esc(c.contract)+'</td><td class="num">'+dollars(c.entry)+'</td><td class="num">'+(c.exit!=null?dollars(c.exit):'n/a')+'</td><td>'+fdate(c.exit_day)+'</td><td>'+res+'</td></tr>';}
-      function render(){var s=calls.slice(0,shown+PAGE);shown=s.length;lb.innerHTML=s.length?s.map(row).join(''):'<tr><td colspan="8">No live calls yet.</td></tr>';
+      function render(){var s=calls.slice(0,shown+PAGE);shown=s.length;lb.removeAttribute('aria-busy');lb.innerHTML=s.length?s.map(row).join(''):'<tr><td colspan="8">No live calls yet.</td></tr>';
         var m=$('pb-log-more');m.innerHTML=shown<calls.length?'<button type="button" class="pb-more" id="pb-more-btn">Show '+Math.min(PAGE,calls.length-shown)+' more ('+(calls.length-shown)+' left)</button>':'';
         var bb=$('pb-more-btn');if(bb)bb.addEventListener('click',render);}
       render();
@@ -289,7 +291,12 @@
       $('pb-skipped').innerHTML=sk.length?sk.map(function(s){return esc(fdate(s.date))+', '+esc(labels[s.crop]||s.crop)+': '+esc(s.reason);}).join('<br>'):'None so far.';
     }).catch(function(){
       ['pb-live-verdict','pb-bt-verdict'].forEach(function(id){$(id).textContent='Could not load the record right now.';});
+      var lb=$('pb-log').querySelector('tbody');
+      (function(f){f();if(!window.AgStates)(window.AgStatesQ=window.AgStatesQ||[]).push(f);})(function(){if(lb&&window.AgStates){lb.removeAttribute('aria-busy');lb.innerHTML='<tr><td colspan="8" id="pb-log-err"></td></tr>';
+        AgStates.error('pb-log-err',{msg:'The call log didn\u2019t load.',retry:function(){lb.setAttribute('aria-busy','true');lb.innerHTML='<tr><td colspan="8"><span class="sr-only">Loading the call log</span><span class="st-sk st-line" aria-hidden="true" style="height:1.1em;margin:.65em 0"></span><span class="st-sk st-line" aria-hidden="true" style="height:1.1em;margin:.65em 0"></span><span class="st-sk st-line" aria-hidden="true" style="height:1.1em;margin:.65em 0"></span><span class="st-sk st-line" aria-hidden="true" style="height:1.1em;margin:.65em 0"></span><span class="st-sk st-line" aria-hidden="true" style="height:1.1em;margin:.65em 0"></span></td></tr>';loadRec();}});}});
     });
+    }
+    loadRec();
   })();
   </script>
   <script>

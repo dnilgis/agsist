@@ -11,6 +11,7 @@
   <!-- /static-nav:fonts -->
   <link rel="preload" href="/components/styles.css?v=20" as="style">
   <link rel="stylesheet" href="/components/styles.css?v=20">
+<link rel="stylesheet" href="/components/states.css?v=1"><script src="/components/states.js?v=1" defer></script><script>try{if(/(^|;\s*)agsist_subscribed=/.test(document.cookie)||localStorage.getItem('agsist_subscribed')==='1')document.documentElement.classList.add('sa-subbed')}catch(e){}</script>
   <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
   <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
@@ -147,6 +148,7 @@ button,a,[role="button"]{touch-action:manipulation}
 .fa-lbl{font-family:var(--font-mono);font-size:.74rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted);margin:0 0 .55rem}
 .fa-note{font-size:.82rem;color:var(--text-muted);line-height:1.55}
 .fa-loading:not([hidden]){min-height:calc(min(100vw,1180px)*.625 + 220px)}
+.fa-loading .fa-sk-bar{height:44px;margin:0 0 .8rem;border-radius:6px}.fa-loading .fa-sk-map{height:calc(min(100vw,1180px)*.625);border-radius:8px}
 .fa-notice{border:1px solid var(--border);border-left:2px solid var(--gold);padding:.7rem .9rem;border-radius:6px;font-size:.85rem;color:var(--text-dim);margin:0 0 1rem;line-height:1.55}
 .fa-mono{font-family:var(--font-mono)}
 .fa-seedbox{border:1px solid var(--border);border-radius:10px;padding:.2rem 1rem;margin:0 0 1.2rem;background:var(--surface)}
@@ -507,7 +509,7 @@ details.fa-arith .body a{color:var(--gold)}
 
   <div id="fa-nodata" class="fa-notice" hidden>The Atlas data has not been published yet. The county layers appear here after the first data run.</div>
 
-  <div id="fa-loading" class="fa-notice fa-loading" role="status" aria-live="polite">Loading the map: 3,141 counties.</div>
+  <div id="fa-loading" class="fa-notice fa-loading" role="status" aria-live="polite" aria-busy="true"><span class="sr-only">Loading the map: 3,141 counties.</span><span class="st-sk fa-sk-bar" aria-hidden="true"></span><span class="st-sk fa-sk-map" aria-hidden="true"></span></div>
   <div id="fa-app" hidden>
 
     <div class="fa-bar">

@@ -552,6 +552,15 @@ def seed_markets(prices, today):
         lo, hi = d.get("wk52_lo"), d.get("wk52_hi")
         seeds["mk:rlo-" + sym] = ("$" + _fixed(lo / 100.0, 2)) if lo is not None else "-"
         seeds["mk:rhi-" + sym] = ("$" + _fixed(hi / 100.0, 2)) if hi is not None else "-"
+    # the nearby card and the deferred card are the same contract in the fall;
+    # the page hides the repeat once prices load, so the build hides it too
+    # (a card vanishing after first paint pulled the whole grid up)
+    dup = []
+    for crop, dk, card in (("corn", "corn-dec", "pc-card-corn-dec"), ("beans", "beans-nov", "pc-card-bean-nov")):
+        nb, dq = (prices.get("quotes") or {}).get(crop + "-nearby"), (prices.get("quotes") or {}).get(dk)
+        if nb and dq and nb.get("ticker") and nb.get("ticker") == dq.get("ticker"):
+            dup.append("#" + card)
+    seeds["mk:dup"] = ('<style id="mk-dup-css">' + ",".join(dup) + "{display:none}</style>") if dup else ""
     seeds["mk:status"] = _asof_time(fetched, "prices", fd) + " &middot; each change line carries its own close date"
     print(f"  markets.html: {n} of {len(MK_MAP)} quotes seeded")
     return _write_seeds("markets.html", seeds)
@@ -1021,6 +1030,102 @@ def bump_sitemap(today):
     return changed
 
 
+# --- futures heroes: the parts the page script fills in -----------------------
+# The hero's contract label, day change and the new-crop / deferred line used to
+# arrive with the fetch, after first paint. Each one adds or rewraps a line, and
+# the price block below jumped (CLS 0.6 to 0.7 on a phone). Baking them here, in
+# the page script's exact words, means the live fill rewrites text in place.
+def _fut_chg(q):
+    """The futures pages' chgTxt for a grain quote: (text, class) or None."""
+    if not q:
+        return None
+    if q.get("roll"):
+        return ("contract roll", "roll")
+    net, pct = q.get("netChange"), q.get("pctChange")
+    if net is None or pct is None:
+        return None
+    a = "\u25b2" if net >= 0 else "\u25bc"
+    s = "+" if net > 0 else ("\u2212" if net < 0 else "")
+    return (f"{a} {s}{_frac_cents(net)} ({s}{_fixed(abs(float(pct)), 2)}%)", "up" if net >= 0 else "dn")
+
+
+def _chg_seed(c):
+    return ('<span class="' + c[1] + '">' + H.escape(c[0], quote=False) + "</span>") if c else ""
+
+
+def _nearby_label(prices, crop, fallback):
+    """'Nearby Dec \'26' the way each page script builds it, else its fallback."""
+    q = (prices.get("quotes") or {}).get(crop + "-nearby")
+    if not q or q.get("close") is None:
+        return fallback
+    lab = q.get("contract") or (((prices.get("nearby") or {}).get(crop) or {}).get("label"))
+    return ("Nearby " + lab) if lab else fallback
+
+
+def futures_hero_seeds(page, prices):
+    """{tag: html} for the hero seeds a futures page carries."""
+    q = prices.get("quotes") or {}
+    out = {}
+    if page.startswith("corn"):
+        hq = q.get("corn-nearby") or q.get("corn")
+        out["exch"] = "CBOT &middot; CME Group &middot; " + _e(_nearby_label(prices, "corn", "Most-active (ZC)")) + " &middot; Refreshed in session"
+        out["chg"] = _chg_seed(_fut_chg(hq))
+        cd = q.get("corn-dec")
+        if cd and cd.get("close") is not None:
+            pc = cd.get("pctChange")
+            if cd.get("roll"):
+                chg = '<span id="nc-chg" class="roll">(contract roll)</span>'
+            elif pc is not None:
+                net = cd.get("netChange") or 0
+                sg = "+" if net > 0 else ("\u2212" if net < 0 else "")
+                chg = '<span id="nc-chg" class="' + ("up" if net >= 0 else "dn") + '">(' + sg + _fixed(abs(float(pc)), 2) + "%)</span>"
+            else:
+                chg = '<span id="nc-chg"></span>'
+            out["nc"] = ('<div class="nc-glance" id="nc-glance">Dec \'26 new crop: <strong id="nc-price">$' +
+                         grain_dollars(cd) + "</strong> " + chg + "</div>")
+        else:
+            out["nc"] = ('<div class="nc-glance" id="nc-glance" style="display:none">Dec \'26 new crop: '
+                         '<strong id="nc-price"></strong> <span id="nc-chg"></span></div>')
+    elif page.startswith("soybean"):
+        hq = q.get("beans-nearby") if (q.get("beans-nearby") or {}).get("close") is not None else q.get("beans")
+        out["contract"] = _e(_nearby_label(prices, "beans", "Most-active (ZS)"))
+        out["chg"] = _chg_seed(_fut_chg(hq))
+        nq = q.get("beans-nov")
+        if nq and nq.get("close") is not None:
+            h = "Nov '26 new crop: <strong>$" + grain_dollars(nq) + "</strong>"
+            np_ = nq.get("pctChange")
+            if np_ is not None and not nq.get("roll"):
+                h += (' <span class="' + ("up" if np_ >= 0 else "dn") + '">(' +
+                      ("+" if np_ > 0 else ("\u2212" if np_ < 0 else "")) + _fixed(abs(float(np_)), 1) + "%)</span>")
+            out["nc"] = '<div class="nc-line" id="nc-line">' + h + "</div>"
+        else:
+            out["nc"] = '<div class="nc-line" id="nc-line" style="display:none"></div>'
+    elif page.startswith("wheat"):
+        n = q.get("wheat-nearby")
+        hq = n if (n and n.get("close") is not None) else q.get("wheat")
+        out["contract"] = "&middot; " + _e(("Nearby " + n["contract"]) if (n and n.get("contract")) else "Most-active (ZW)")
+        out["chg"] = _chg_seed(_fut_chg(hq))
+        d26 = q.get("wheat-dec26")
+        if d26 and d26.get("close") is not None:
+            pc = d26.get("pctChange")
+            chg = (" (" + ("+" if pc >= 0 else "\u2212") + _fixed(abs(float(pc)), 1) + "%)") if pc is not None else ""
+            out["bench"] = ('<div class="benchline" id="benchline">Dec \'26 (deferred): <strong>$' + grain_dollars(d26) +
+                            "</strong>" + chg + ", winter wheat new-crop is July</div>")
+        else:
+            out["bench"] = '<div class="benchline" id="benchline" style="display:none"></div>'
+    elif page.startswith("cattle"):
+        le = q.get("cattle") or {}
+        if le.get("close") is not None and le.get("pctChange") is not None:
+            net = le.get("netChange")
+            hu = (net or 0) >= 0
+            txt = (("\u25b2 +" if hu else "\u25bc \u2212") + (("$" + _fixed(abs(float(net)), 2) + " ") if net is not None else "")
+                   + "(" + ("+" if hu else "\u2212") + _fixed(abs(float(le["pctChange"])), 2) + "%)")
+            out["chg"] = _chg_seed((txt, "up" if hu else "dn"))
+        else:
+            out["chg"] = ""
+    return out
+
+
 def seed_futures_pages(prices, today):
     """The four futures pages: price seed, note, last-close/last-trade table and
     (grains) meta description. Callable on its own so the futures seeds can be
@@ -1090,6 +1195,9 @@ def seed_futures_pages(prices, today):
                     changed = changed or c5
         else:
             print(f"  {page}: no usable {crop_key} quote — seeds left as-is")
+        for tag, val in futures_hero_seeds(page, prices).items():
+            t, c6 = seed_between(t, tag, val)
+            changed = changed or c6
         t, c3 = stamp_datemodified(t, today)
         if changed or c3:
             open(page, "w", encoding="utf-8").write(t)
@@ -1120,6 +1228,9 @@ def seed_futures_pages(prices, today):
             changed = c1 or c2
         else:
             print(f"  {page}: no usable cattle quote — seeds left as-is")
+        for tag, val in futures_hero_seeds(page, prices).items():
+            t, c6 = seed_between(t, tag, val)
+            changed = changed or c6
         t, c3 = stamp_datemodified(t, today)
         if changed or c3:
             open(page, "w", encoding="utf-8").write(t)

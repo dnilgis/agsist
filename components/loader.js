@@ -463,6 +463,7 @@
     loadComponent('site-footer', '/components/footer.html', function () { foldFooter(); renderSupporters(); });
     fillPageRibbons();
     loadSponsorMetrics();
+    (function () { if (!document.querySelector('link[href*="/components/states.css"]')) { var l = document.createElement('link'); l.rel = 'stylesheet'; l.href = BASE + '/components/states.css?v=1'; document.head.appendChild(l); } if (!window.AgStates && !document.querySelector('script[src*="/components/states.js"]')) { var j = document.createElement('script'); j.src = BASE + '/components/states.js?v=1'; j.async = true; document.head.appendChild(j); } })(); // loading, empty, error and stale states kit (components/states.css + states.js), on every page
   });
 })();
 

@@ -11,6 +11,7 @@
 <link rel="stylesheet" href="/components/styles.css?v=20">
 <link rel="stylesheet" href="/components/asof.css?v=1">
 <script src="/components/asof.js?v=1"></script>
+<link rel="stylesheet" href="/components/states.css?v=1"><script src="/components/states.js?v=1" defer></script>
 <link rel="stylesheet" href="/components/sponsor-ad.css?v=1">
 <script src="/components/sponsor-ad.js?v=1"></script>
 <link rel="stylesheet" href="/components/harvest-clock.css?v=1">
@@ -336,6 +337,9 @@ body{overflow-x:hidden;overflow-x:clip;width:100%;}
 
 /* Loading */
 .dv3-loading{text-align:center;padding:2.5rem 1rem;color:var(--text-muted);}
+/* skeleton while the briefing loads: tall enough that the archive below stays under the fold, so the briefing lands without pushing anything in view */
+.dv3-sk{min-height:900px}.dv3-sk-hl{height:1.55rem;margin:.6rem 0}.dv3-sk-box{height:150px;margin-top:1.25rem;border-radius:10px}
+.dv3-hero-meta{min-height:1.65em}@media(max-width:520px){.dv3-hero-meta{min-height:3.3em}}
 .dv3-loading-spinner{width:24px;height:24px;border:2px solid var(--border);border-top-color:var(--green);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto .75rem;}
 @keyframes spin{to{transform:rotate(360deg);}}
 
@@ -483,7 +487,7 @@ body{overflow-x:hidden;overflow-x:clip;width:100%;}
 
   <div class="dv3-today" id="dv3-today">
 <noscript><div style="padding:2rem"><p style="font-size:.9rem">This page loads the briefing with JavaScript, which is off in this browser. The <a href="/archive.html" style="color:var(--gold)">briefing archive</a> works without it. The newest issue is at the top.</p></div></noscript>
-    <div class="dv3-loading"><div class="dv3-loading-spinner"></div>Loading today&rsquo;s briefing&hellip;</div>
+    <div class="dv3-sk" aria-busy="true"><span class="sr-only">Loading today&rsquo;s briefing</span><span class="st-sk st-line st-w30" aria-hidden="true"></span><span class="st-sk st-line st-w50" aria-hidden="true"></span><span class="st-sk dv3-sk-hl" aria-hidden="true"></span><span class="st-sk dv3-sk-hl st-w75" aria-hidden="true"></span><span class="st-sk st-line" aria-hidden="true"></span><span class="st-sk st-line st-w90" aria-hidden="true"></span><span class="st-sk st-line st-w75" aria-hidden="true"></span><span class="st-sk dv3-sk-box" aria-hidden="true"></span><span class="st-sk dv3-sk-box" aria-hidden="true"></span></div>
   </div>
 
   <div class="dv3-arc-label" style="display:flex;align-items:center;justify-content:space-between;">
@@ -624,11 +628,18 @@ function renderToday(data,why){
   if(!data||!data.headline){
     // A network failure is not an editorial fact. Say which one happened.
     if(why==='error'){
+      var kit=function(){
+        AgStates.error(el,{msg:'Today\u2019s briefing didn\u2019t load. The connection failed.',retry:loadToday});
+        el.querySelector('.st-msg').insertAdjacentHTML('beforeend','<a href="/archive.html" style="color:var(--gold)">Briefing archive \u2192</a>');
+      };
+      if(window.AgStates){kit();return;}
+      /* failed before the states kit loaded: plain text now, the kit's box when it lands */
+      (window.AgStatesQ=window.AgStatesQ||[]).push(function(){if(document.getElementById('dv3-retry'))kit();});
       el.innerHTML='<div class="dv3-loading" style="padding:2rem"><p style="color:var(--text-dim);font-size:.88rem">The briefing could not be loaded: the connection failed. '+
         '<button id="dv3-retry" style="color:var(--gold);background:none;border:1px solid var(--border);border-radius:6px;padding:.35rem .8rem;cursor:pointer;font:inherit">Try again</button>'+
         '<br><br><a href="/archive.html" style="color:var(--gold)">Briefing archive \u2192</a></p></div>';
       var rb=document.getElementById('dv3-retry');
-      if(rb)rb.addEventListener('click',function(){location.reload();});
+      if(rb)rb.addEventListener('click',function(){rb.disabled=true;rb.textContent='Trying\u2026';loadToday();});
       return;
     }
     el.innerHTML='<div class="dv3-loading" style="padding:2rem"><p style="color:var(--text-dim);font-size:.88rem">Today\'s briefing is not yet available. Published every morning before the market open.<br><br><a href="/" style="color:var(--gold)">\u2190 Return to dashboard</a></p></div>';
@@ -1199,10 +1210,13 @@ if(form){
 
 // ── load ──────────────────────────────────────────────────────────────
 function agsND(o){if(typeof o==='string')return /^\s*\u2014\s*$/.test(o)?'-':o.replace(/^\s*\u2014\s*/,'').replace(/\s*\u2014\s*/g,', ');if(Array.isArray(o))return o.map(agsND);if(o&&typeof o==='object'){for(var k in o)if(Object.prototype.hasOwnProperty.call(o,k))o[k]=agsND(o[k]);}return o;} /* the site prints no em dashes; older data files still carry some */
+function loadToday(){
 fetch('/data/daily.json',{cache:'no-store'})
-  .then(function(r){return r.ok?r.json():null;})
+  .then(function(r){if(r.status>=500)throw new Error(r.status);return r.ok?r.json():null;})
   .then(function(d){renderToday(agsND(d));})
   .catch(function(){renderToday(null,'error');});
+}
+loadToday();
 
 renderArchive();
 

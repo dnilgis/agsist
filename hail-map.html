@@ -36,6 +36,7 @@
   <link rel="stylesheet" href="/components/styles.css?v=20">
   <link rel="stylesheet" href="/components/asof.css?v=1">
   <script src="/components/asof.js?v=1"></script>
+<link rel="stylesheet" href="/components/states.css?v=1"><script src="/components/states.js?v=1" defer></script>
   <script src="/components/util.js?v=16"></script>
 
   <!-- Leaflet (map engine) + Leaflet.heat (density heatmap) -->
@@ -276,6 +277,7 @@
     /* light theme: the swath-ramp yellow/orange vanish on a white table */
     html[data-theme="light"]{--hm-dmg-hi:#9a5a1a;--hm-dmg-mid:#8a6514}
     .hm-cty-empty{color:var(--text-muted);text-align:center;padding:1.1rem!important}
+    #hm-cty-err .st-msg{max-width:calc(100vw - 64px)} /* the table scrolls sideways; keep the retry in view */
   
     /* ── mobile de-clunk (Sig, 2026-07-19) ── */
     @media(max-width:640px){
@@ -485,7 +487,7 @@
               <th scope="col">Peak month</th>
               <th scope="col" class="num">% damaging</th>
             </tr></thead>
-            <tbody id="hm-cty-body"><tr><td colspan="6" class="hm-cty-empty">Loading county rankings&hellip;</td></tr></tbody>
+            <tbody id="hm-cty-body" aria-busy="true"><tr><td colspan="6"><span class="sr-only">Loading county rankings</span><span class="st-sk st-line" aria-hidden="true" style="height:1.1em;margin:.7em 0"></span><span class="st-sk st-line" aria-hidden="true" style="height:1.1em;margin:.7em 0"></span><span class="st-sk st-line" aria-hidden="true" style="height:1.1em;margin:.7em 0"></span><span class="st-sk st-line" aria-hidden="true" style="height:1.1em;margin:.7em 0"></span><span class="st-sk st-line" aria-hidden="true" style="height:1.1em;margin:.7em 0"></span><span class="st-sk st-line" aria-hidden="true" style="height:1.1em;margin:.7em 0"></span></td></tr></tbody>
           </table>
         </div>
       </section>
@@ -1809,7 +1811,13 @@
           renderCountyTable(st);
           map.on('moveend', onMove);
         })
-        .catch(function(){ countyEmpty('County rankings couldn\u2019t load just now.'); });
+        .catch(function(){
+          var b=document.getElementById('hm-cty-body');
+          if(!b||!window.AgStates){ countyEmpty('County rankings couldn\u2019t load just now.'); return; }
+          b.removeAttribute('aria-busy');
+          b.innerHTML='<tr><td colspan="6" id="hm-cty-err"></td></tr>';
+          AgStates.error('hm-cty-err',{msg:'County rankings didn\u2019t load.',retry:function(){ b.setAttribute('aria-busy','true'); b.innerHTML='<tr><td colspan="6"><span class="sr-only">Loading county rankings</span><span class="st-sk st-line" aria-hidden="true" style="height:1.1em;margin:.7em 0"></span><span class="st-sk st-line" aria-hidden="true" style="height:1.1em;margin:.7em 0"></span><span class="st-sk st-line" aria-hidden="true" style="height:1.1em;margin:.7em 0"></span><span class="st-sk st-line" aria-hidden="true" style="height:1.1em;margin:.7em 0"></span><span class="st-sk st-line" aria-hidden="true" style="height:1.1em;margin:.7em 0"></span><span class="st-sk st-line" aria-hidden="true" style="height:1.1em;margin:.7em 0"></span></td></tr>'; loadCounties(); }});
+        });
     }
 
     function topState(){
@@ -1846,7 +1854,7 @@
     }
 
     function countyEmpty(msg){
-      var body=document.getElementById('hm-cty-body');
+      var body=document.getElementById('hm-cty-body'); if(body) body.removeAttribute('aria-busy');
       if(body) body.innerHTML='<tr><td colspan="6" class="hm-cty-empty">'+esc(msg)+'</td></tr>';
     }
 
@@ -1857,6 +1865,7 @@
       var sel=document.getElementById('hm-cty-select'); if(sel && sel.value!==st) sel.value=st;
       var rows=(countyData.states[st]||[]);
       var body=document.getElementById('hm-cty-body'); if(!body) return;
+      body.removeAttribute('aria-busy');
       if(!rows.length){ countyEmpty('No ranked hail reports for '+nm+' in the last five years.'); return; }
       body.innerHTML = rows.map(function(r){
         var dmgColor = r.dmg_pct>=40 ? 'var(--hm-dmg-hi)' : (r.dmg_pct>=25 ? 'var(--hm-dmg-mid)' : 'var(--text-dim)');

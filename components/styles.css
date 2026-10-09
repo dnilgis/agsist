@@ -810,6 +810,18 @@ summary:focus-visible, .pc:focus-visible {
    style outranks a stylesheet rule. One overriding rule beats eight hand-edits
    that would drift apart -- the single-definition rule applied to CSS. */
 #site-header{min-height:74px}
+/* the live nav is 62px tall at 520px and under (.nav-inner 60px + 2px border) */
+@media (max-width:520px){#site-header{min-height:62px}}
+/* A page ask (<div data-signup-ask>, drawn by components/signup-ask.js after
+   first paint) used to arrive as a 100-140px box and shove everything under it
+   down (CLS 0.07 to 0.09 on /cash-bids and the town pages). Hold its space from
+   the start. The heights are the drawn box: label on its own line above field
+   and button, then one row from 900px. Readers already signed up never get the
+   box; the page's head script marks them (html.sa-subbed) before first paint. */
+[data-signup-ask]:not([data-sa-ready]):not([data-variant]){display:block;box-sizing:border-box;min-height:122px;margin:14px 0}
+@media (min-width:520px){[data-signup-ask]:not([data-sa-ready]):not([data-variant]){min-height:101px}}
+@media (min-width:900px){[data-signup-ask]:not([data-sa-ready]):not([data-variant]){min-height:73px}}
+html.sa-subbed [data-signup-ask]:not([data-sa-done]){display:none}
 #site-header>header>div{flex-wrap:nowrap!important;align-items:center!important;min-width:0}
 /* Without this the wordmark is the shrinkable flex item next to a very wide
    nav, and "AGSIST" wraps one letter per line into a 177px column. */

@@ -13,6 +13,7 @@
   <link rel="stylesheet" href="/components/styles.css?v=20">
   <link rel="stylesheet" href="/components/asof.css?v=1">
   <script src="/components/asof.js?v=1"></script>
+<link rel="stylesheet" href="/components/states.css?v=1"><script src="/components/states.js?v=1" defer></script>
   <script src="/components/util.js?v=16"></script>
   <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
   <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
@@ -195,7 +196,7 @@
   <section class="bs-panel" aria-labelledby="bs-river-t">
     <div class="bs-panel-hd"><span class="bs-panel-t" id="bs-river-t">The river, right now: barge rates vs normal</span><span class="bs-fresh" id="bs-fresh2"></span></div>
     <div class="bs-panel-b">
-      <div class="bs-bars" id="bs-barge"></div>
+      <div class="bs-bars" id="bs-barge" aria-busy="true"><span class="sr-only">Loading barge rates</span><span class="st-sk st-row" aria-hidden="true" style="--st-row-h:36px"></span><span class="st-sk st-row" aria-hidden="true" style="--st-row-h:36px"></span><span class="st-sk st-row" aria-hidden="true" style="--st-row-h:36px"></span><span class="st-sk st-row" aria-hidden="true" style="--st-row-h:36px"></span><span class="st-sk st-row" aria-hidden="true" style="--st-row-h:36px"></span><span class="st-sk st-row" aria-hidden="true" style="--st-row-h:36px"></span></div>
       <p style="font-size:13.4px;color:var(--bs-dim);margin:12px 0 0">Rates are percent of the 1976 benchmark tariff, the industry&rsquo;s odd but standard yardstick. The grey tick is each location&rsquo;s 5-year same-week average; the gold bar is now. Bars far past their ticks are freight eating your basis.</p>
     </div>
   </section>
@@ -203,7 +204,7 @@
   <section class="bs-panel" aria-labelledby="bs-walk-t">
     <div class="bs-panel-hd"><span class="bs-panel-t" id="bs-walk-t">A bushel&rsquo;s journey: where the money goes</span></div>
     <div class="bs-panel-b">
-      <div class="bs-walk" id="bs-walk"></div>
+      <div class="bs-walk" id="bs-walk" aria-busy="true"><span class="sr-only">Loading</span><span class="st-sk st-card" aria-hidden="true" style="--st-card-h:96px;flex:1 1 200px"></span><span class="st-sk st-card" aria-hidden="true" style="--st-card-h:96px;flex:1 1 200px"></span><span class="st-sk st-card" aria-hidden="true" style="--st-card-h:96px;flex:1 1 200px"></span></div>
       <p style="font-size:13.4px;color:var(--bs-dim);margin:12px 0 0" id="bs-walk-note"></p>
     </div>
   </section>
@@ -342,18 +343,29 @@
     $('bs-walk-note').textContent='Transport cost indicators (2000=100), week of '+String(ci.date||'').slice(0,10)+': truck '+(ci.truck||'-')+' · shuttle train '+(ci.shuttle_train||'-')+' · barge '+(ci.barge||'-')+' · Gulf vessel '+(ci.gulf_vessel||'-')+'. Spread data: '+s.date+'.';
   }
 
+  function load(){
   Promise.all([
     fetch('/data/transport/basis.json',{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).catch(function(){return null;}),
     fetch('/data/transport/journey.json',{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).catch(function(){return null;})
   ]).then(function(res){
     basis=res[0]; journey=res[1];
-    if(!basis||!journey){ $('bs-table').innerHTML='<tr><td style="color:var(--bs-dim)">Data unavailable: try a refresh</td></tr>'; return; }
+    if(!basis||!journey){
+      /* the baked table above is real (dated) data: keep it, and say what did not load where it would have gone */
+      var showErr=function(){ $('bs-walk').removeAttribute('aria-busy'); $('bs-walk').innerHTML='';
+        AgStates.error('bs-barge',{msg:'The latest barge rates didn\u2019t load. The basis table above is from the last update.',retry:function(){ $('bs-barge').innerHTML='<span class="sr-only">Loading barge rates</span><span class="st-sk st-row" aria-hidden="true" style="--st-row-h:36px"></span><span class="st-sk st-row" aria-hidden="true" style="--st-row-h:36px"></span><span class="st-sk st-row" aria-hidden="true" style="--st-row-h:36px"></span><span class="st-sk st-row" aria-hidden="true" style="--st-row-h:36px"></span><span class="st-sk st-row" aria-hidden="true" style="--st-row-h:36px"></span><span class="st-sk st-row" aria-hidden="true" style="--st-row-h:36px"></span>'; $('bs-walk').innerHTML='<span class="sr-only">Loading</span><span class="st-sk st-card" aria-hidden="true" style="--st-card-h:96px;flex:1 1 200px"></span><span class="st-sk st-card" aria-hidden="true" style="--st-card-h:96px;flex:1 1 200px"></span><span class="st-sk st-card" aria-hidden="true" style="--st-card-h:96px;flex:1 1 200px"></span>'; load(); }}); };
+      if(window.AgStates){ showErr(); return; }
+      /* no kit yet (an early failure): say it plainly now, the kit's box with its retry when it lands */
+      (window.AgStatesQ=window.AgStatesQ||[]).push(function(){ if($('bs-barge').getAttribute('aria-busy')) showErr(); });
+      $('bs-barge').textContent='The latest barge rates didn\u2019t load. The basis table above is from the last update.'; $('bs-walk').innerHTML=''; return; }
+    $('bs-barge').removeAttribute('aria-busy'); $('bs-walk').removeAttribute('aria-busy');
     // the header names the newest week any series reached, not whichever is listed first
     Object.keys(basis.series).forEach(function(k){ var dt=basis.series[k].date; if(dt&&(!NEWEST||dt>NEWEST)) NEWEST=dt; });
     $('bs-fresh').textContent='week of '+(NEWEST||'-');
     if(window.AgAsOf&&basis.generated)$('bs-fresh').insertAdjacentHTML('beforeend',' \u00b7 '+AgAsOf.html(basis.generated,'usda'));
     renderTabs(); renderTable(); renderBarge(); renderWalk();
   });
+  }
+  load();
 })();
 </script>
 <script>

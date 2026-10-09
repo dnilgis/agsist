@@ -12,8 +12,9 @@
   <link rel="stylesheet" href="/components/styles.css?v=20">
   <link rel="stylesheet" href="/components/asof.css?v=1">
   <script src="/components/asof.js?v=1"></script>
+<link rel="stylesheet" href="/components/states.css?v=1"><script src="/components/states.js?v=1" defer></script>
 <link rel="stylesheet" href="/components/sponsor-ad.css?v=1">
-<link rel="stylesheet" href="/css/home.css?v=15">
+<link rel="stylesheet" href="/css/home.css?v=16">
 <link rel="stylesheet" href="/components/harvest-clock.css?v=1">
 <!-- 2026-09-30: sponsor-ad.js's one call site (AgsistAd.render(), below) is
      already guarded with window.AgsistAd? and runs inside a fetch .then(),
@@ -562,6 +563,8 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
          never jumps. -->
     <div id="hb-ask" data-signup-ask="Get your top local bid by email every weekday morning" data-source="hero" data-variant="hero"></div>
   </section>
+  <!-- no saved ZIP: hide the bid cells now, before the parser stops for the script below and the page paints with them (they used to vanish after first paint and the row rewrapped) -->
+  <script>try{(function(){var l=null;try{l=JSON.parse(localStorage.getItem('agsist-wx-loc')||'null');}catch(e){}if(l&&/^\d{5}$/.test(String(l.zip||'')))return;var hb=document.getElementById('hero-band');if(hb)hb.classList.add('hb-nozip');var p=document.getElementById('hb-place');if(p)p.textContent='Set your ZIP to see local cash bids';var c=document.getElementById('hb-change');if(c)c.textContent='Set ZIP';})();}catch(e){}</script>
   <script src="/components/signup-ask.js?v=3"></script>
   <script>
   (function(){
@@ -1108,7 +1111,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
   <details class="m-fold m-fold--kalshi" open><summary class="m-fold-sum"><span>What&rsquo;s Moving Agriculture</span></summary>
   <div class="fade-up" id="f-kalshi">
     <div class="sec-head"><h2 class="sec-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:1.05em;height:1.05em;vertical-align:-.13em;margin-right:.34em;flex:none"><path d="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2" /></svg>What’s Moving Agriculture</h2><a href="/ag-odds" class="sec-all">All Markets</a></div>
-    <div id="kalshi-grid" data-markets-handled="true" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(268px,100%),1fr));gap:.65rem;margin-bottom:.5rem"><div id="kalshi-loading" style="grid-column:1/-1;text-align:center;padding:1.2rem;font-size:.824rem;color:var(--text-muted)"><svg class="ic" aria-hidden="true"><use href="#i-hourglass"/></svg> Loading markets&hellip;</div></div>
+    <div id="kalshi-grid" data-markets-handled="true" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(268px,100%),1fr));gap:.65rem;margin-bottom:.5rem"><div id="kalshi-loading" role="status" style="grid-column:1/-1;display:grid;grid-template-columns:repeat(auto-fill,minmax(min(268px,100%),1fr));gap:.65rem"><span class="sr-only">Loading markets</span><span class="st-sk st-card" aria-hidden="true" style="--st-card-h:132px"></span><span class="st-sk st-card" aria-hidden="true" style="--st-card-h:132px"></span><span class="st-sk st-card" aria-hidden="true" style="--st-card-h:132px"></span></div></div>
     <div id="kalshi-footer" style="display:none;padding:.25rem 0 .15rem;text-align:right"><a href="/ag-odds" style="font-size:.824rem;color:var(--gold);text-decoration:none;font-weight:600">View All Ag Prediction Markets</a></div>
   </div>
   </details>

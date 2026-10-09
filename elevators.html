@@ -10,6 +10,7 @@
   <!-- /static-nav:fonts -->
   <link rel="preload" href="/components/styles.css?v=20" as="style">
 <link rel="stylesheet" href="/components/styles.css?v=20">
+<link rel="stylesheet" href="/components/states.css?v=1"><script src="/components/states.js?v=1" defer></script>
   <script src="/components/util.js?v=16"></script>
 <link rel="icon" type="image/x-icon"            href="/img/favicon.ico">
 <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
@@ -556,7 +557,22 @@ document.addEventListener('click',function(e){var a=e.target.closest&&e.target.c
 
   }
   var countsOk = false;
-  covData.then(function (d) { if (d && d.counts) { paintCounts(d); countsOk = true; } }).catch(function () {});
+  covData.then(function (d) { if (d && d.counts) { paintCounts(d); countsOk = true; } }).catch(function () {
+    /* say it, in the line under the map, with a retry that fetches the file again */
+    var f = document.getElementById('cov-foot');
+    if (!f) return;
+    /* an early failure can beat the deferred states kit: run when it lands */
+    if (!window.AgStates) { (window.AgStatesQ = window.AgStatesQ || []).push(function () { failBox(); }); return; }
+    failBox();
+    function failBox() { (function fail() {
+      AgStates.error(f, { inline: true, msg: 'The coverage counts didn\u2019t load.', retry: function () {
+        fetch('/data/elevator-coverage.json', { cache: 'no-cache' })
+          .then(function (r) { if (!r.ok) throw 0; return r.json(); })
+          .then(function (d) { if (d && d.counts) { f.innerHTML = ''; paintCounts(d); countsOk = true; } else fail(); })
+          .catch(fail);
+      } });
+    })(); }
+  });
   var gaveUp = false;
   function giveUp() {
     if (el) el.style.display = 'none';

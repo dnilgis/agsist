@@ -1,0 +1,100 @@
+/* components/states.css: loading, empty, error and stale states, one look sitewide.
+   Pairs with components/states.js (window.AgStates).
+
+   Rules this file keeps:
+   - A skeleton sits in space the page already reserved. The container owns its
+     height (min-height, aspect-ratio, line count); these classes only paint it.
+     So a page still holds still if this file arrives late.
+   - A skeleton is gray blocks shaped like what is coming. No words, no spinner.
+   - When data is missing or a fetch fails, a short plain sentence says so in
+     the same box, with a button that tries again. Nothing shimmers forever.
+   - Reduced motion: the shimmer stops and the blocks stay as flat gray. */
+
+/* ── skeleton ─────────────────────────────────────────────────────────── */
+.st-sk{
+  --st-a:rgba(132,160,168,.10);
+  --st-b:rgba(132,160,168,.22);
+  display:block;
+  border-radius:6px;
+  background:var(--st-a) linear-gradient(90deg,transparent 0%,transparent 35%,var(--st-b) 50%,transparent 65%,transparent 100%) no-repeat;
+  background-size:300% 100%;
+  animation:st-sweep 1.6s linear infinite;
+  color:transparent!important;
+  -webkit-text-fill-color:transparent!important;
+  user-select:none;
+  pointer-events:none;
+}
+[data-theme="light"] .st-sk{--st-a:rgba(20,30,28,.07);--st-b:rgba(20,30,28,.13)}
+@keyframes st-sweep{from{background-position:150% 0}to{background-position:-50% 0}}
+
+/* a text line: one line box tall, so N lines of skeleton are N lines of text */
+.st-line{height:.8em;margin:.35em 0;max-width:100%}
+.st-line:last-child{width:62%}
+.st-line.st-w90{width:90%}.st-line.st-w75{width:75%}.st-line.st-w50{width:50%}.st-line.st-w30{width:30%}
+/* inline bar for a number inside a sentence */
+.st-num{display:inline-block;vertical-align:middle;width:5ch;height:.85em;margin:0}
+/* a big number (hero price) */
+.st-big{height:1em;width:5.5ch;margin:.05em 0}
+/* a list of rows: each row the height of the real row */
+.st-rows{display:flex;flex-direction:column;gap:8px}
+.st-row{height:var(--st-row-h,44px)}
+/* fills its reserved box (a map, a chart, a card) */
+.st-fill{width:100%;height:100%;min-height:inherit}
+/* cards in a grid */
+.st-card{height:var(--st-card-h,120px);border-radius:10px}
+
+/* ── empty / error message ───────────────────────────────────────────── */
+.st-msg{
+  display:flex;flex-wrap:wrap;align-items:center;gap:.35rem .75rem;
+  box-sizing:border-box;
+  min-height:inherit;
+  padding:.75rem .9rem;
+  font-family:var(--font-body,'Inter',system-ui,sans-serif);
+  font-size:.9375rem;line-height:1.45;
+  color:var(--text-dim,inherit);
+  background:var(--surface2,transparent);
+  border:1px dashed var(--border-2,rgba(132,160,168,.3));
+  border-radius:8px;
+  text-align:left;
+}
+.st-msg p{margin:0;flex:1 1 14rem}
+.st-msg--fill{width:100%;height:100%;justify-content:center;text-align:center}
+.st-msg--fill p{flex:0 1 auto}
+.st-retry{
+  min-height:44px;padding:.45rem .95rem;
+  font:inherit;font-size:.9rem;font-weight:700;
+  color:var(--text,inherit);
+  background:var(--surface,transparent);
+  border:1px solid var(--border-2,rgba(132,160,168,.3));
+  border-radius:6px;cursor:pointer;
+}
+.st-retry:hover{border-color:var(--gold,#d4a23f)}
+.st-retry:focus-visible{outline:2px solid var(--gold,#d4a23f);outline-offset:2px}
+.st-retry[disabled]{opacity:.6;cursor:default}
+/* a one-line message inside a sentence or a status row */
+.st-inline{color:var(--text-muted,inherit)}
+.st-inline .st-retry{min-height:32px;padding:.15rem .6rem;margin-left:.4rem;font-size:.85em}
+
+/* ── stale feed ──────────────────────────────────────────────────────── */
+.st-stale{color:var(--gold,#d4a23f);font-weight:600}
+
+@media (prefers-reduced-motion:reduce){
+  .st-sk{animation:none;background-image:none}
+}
+@media print{.st-sk,.st-retry{display:none!important}}
+
+/* ── page hooks ──────────────────────────────────────────────────────── */
+/* futures heroes: the day change is baked at build and masked by loader.js's
+   .sk until the live quote lands; keep it one line so the mask is the same
+   size as the text it covers */
+.ph-chg.sk,.ph-val.sk{display:block;width:fit-content;margin-left:auto;white-space:nowrap;max-width:none}
+@media(max-width:520px){.ph-chg.sk,.ph-val.sk{margin-left:0}}
+/* on a phone the change line is a full-width flex row: paint the bar on the
+   baked text only, not across the whole row */
+@media(max-width:520px){
+  .ph-chg.sk{background:none!important;animation:none!important}
+  .ph-chg.sk>span{display:inline-block;visibility:visible;border-radius:4px;color:transparent;-webkit-text-fill-color:transparent;
+    background:rgba(132,160,168,.10) linear-gradient(90deg,transparent 35%,rgba(132,160,168,.22) 50%,transparent 65%) no-repeat;
+    background-size:300% 100%;animation:st-sweep 1.6s linear infinite}
+}
+@media(max-width:520px) and (prefers-reduced-motion:reduce){.ph-chg.sk>span{animation:none;background-image:none}}

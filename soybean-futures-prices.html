@@ -14,13 +14,14 @@
 <link rel="stylesheet" href="/components/styles.css?v=20">
 <link rel="stylesheet" href="/components/asof.css?v=1">
 <script src="/components/asof.js?v=1"></script>
+<link rel="stylesheet" href="/components/states.css?v=1"><script src="/components/states.js?v=1" defer></script><script>try{if(/(^|;\s*)agsist_subscribed=/.test(document.cookie)||localStorage.getItem('agsist_subscribed')==='1')document.documentElement.classList.add('sa-subbed')}catch(e){}</script>
 <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
 <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
 <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
 <link rel="manifest" href="/manifest.json">
 <title>CBOT Soybean Futures: Nov '26 $12.85, Live Prices | AGSIST</title>
-<meta name="description" content="Soybeans Nov '26 closed $12.85 (-0.9%) on Oct 8. Live CBOT soybean futures refreshed every 15 min in session. November new-crop, crush spread, cash bids.">
+<meta name="description" content="Soybeans Nov '26 closed $12.96 (-0.1%) on Oct 8. Live CBOT soybean futures refreshed every 15 min in session. November new-crop, crush spread, cash bids.">
 <meta name="keywords" content="soybean prices today, soybean futures prices today, cbot soybeans, cbot soybean live price, soybean cash bids, soybean basis, soybean price by zip, ZS futures, November soybean futures, corn bean ratio, soybean market read, soybean price per bushel">
 <meta name="author" content="Sigurd Lindquist">
 <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
@@ -49,6 +50,8 @@
 .up{color:var(--green)}.dn{color:var(--red)}
 .ps{display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-size:0.775rem;color:var(--text-dim);margin-bottom:10px}
 .ps-dot{width:6px;height:6px;border-radius:50%;background:var(--green)}
+/* status row holds still: on a phone the status line and the session badge each get their own fixed row, so the skeleton, the live timer and the badge swap in place (was a 0.5 layout shift) */
+@media(max-width:560px){.ps{flex-direction:column;align-items:stretch;flex-wrap:nowrap}.ps>#status,.ps>#status-timer{min-height:22px;display:flex;align-items:center;gap:6px}.ps>.session-badge{margin-left:0;align-self:flex-start;min-height:55px;box-sizing:border-box}}
 .js .ps-dot{animation:pulse 2s infinite}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.35}}
 .sk{color:var(--text-dim)}
@@ -405,19 +408,19 @@ html[data-theme="light"] .rat-gauge-labels em{opacity:.85}
   <div class="ph">
     <div class="ph-info">
       <h1>Soybean Futures Prices Today</h1>
-      <div class="ph-exch">CBOT &middot; CME Group &middot; <span id="hero-contract">ZS futures</span> &middot; Local cash bids &middot; Refreshed in session</div>
+      <div class="ph-exch">CBOT &middot; CME Group &middot; <span id="hero-contract"><!--SEED:contract-->Nearby Nov '26<!--/SEED--></span> &middot; Local cash bids &middot; Refreshed in session</div>
     </div>
     <div class="ph-price">
-      <div class="ph-val sk" id="hero-price"><!--SEED:px-->$12.85<!--/SEED--></div>
+      <div class="ph-val sk" id="hero-price"><!--SEED:px-->$12.96<!--/SEED--></div>
       <div class="ph-unit">$ / bushel</div>
-      <div class="ph-chg" id="hero-chg"></div>
+      <div class="ph-chg sk" id="hero-chg"><!--SEED:chg--><span class="dn">▼ −1¼¢ (−0.10%)</span><!--/SEED--></div>
     </div>
   </div>
 
-  <div class="ps"><span id="status-timer" data-agsist-timer data-mode="live" data-interval="30" data-label="Markets" style="display:none"></span><span id="status"><span class="ps-dot" aria-hidden="true"></span>Loading prices&hellip;</span><span class="session-badge closed" id="session-badge"><span class="dot" aria-hidden="true"></span>Loading&hellip;</span></div>
-  <div class="nc-line" id="nc-line" style="display:none"></div>
-  <p class="px-seed-note" style="font-family:var(--font-body,'Inter',system-ui,sans-serif);font-size:1rem;color:var(--text-dim);margin:.35rem 0 0"><!--SEED:note-->Nearby Nov '26 soybeans closed near <strong>$12.85</strong> &middot; as of Oct 8 &middot; Yahoo Finance, delayed &middot; refreshed every 15 minutes during trading hours. Reload for the latest.<!--/SEED--></p>
-  <div class="seed-tbl-wrap"><!--SEED:pxtable--><table class="seed-tbl"><caption>Last close &middot; as of Oct 8 &middot; Yahoo Finance, delayed (not CME settlements) &middot; live quotes above update in session</caption><thead><tr><th scope="col">Contract</th><th scope="col" class="num">Close</th><th scope="col" class="num">Change</th><th scope="col" class="num">52-wk range</th></tr></thead><tbody><tr><td>Nearby Nov '26</td><td class="num">$12.85</td><td class="num">-0.9%</td><td class="num">$10.51&ndash;$13.35</td></tr></tbody></table><!--/SEED--></div>
+  <div class="ps"><span id="status-timer" data-agsist-timer data-mode="live" data-interval="30" data-label="Markets" style="display:none"></span><span id="status"><span class="ps-dot" aria-hidden="true"></span><span class="st-sk st-num" style="width:19ch" aria-hidden="true"></span><span class="sr-only">Loading prices</span></span><span class="session-badge closed" id="session-badge"><span class="dot" aria-hidden="true"></span><span class="st-sk st-num" style="width:9ch" aria-hidden="true"></span><span class="session-sub"><span class="st-sk st-num" style="width:20ch" aria-hidden="true"></span></span></span></div>
+  <!--SEED:nc--><div class="nc-line" id="nc-line">Nov '26 new crop: <strong>$12.96</strong> <span class="dn">(−0.1%)</span></div><!--/SEED-->
+  <p class="px-seed-note" style="font-family:var(--font-body,'Inter',system-ui,sans-serif);font-size:1rem;color:var(--text-dim);margin:.35rem 0 0"><!--SEED:note-->Nearby Nov '26 soybeans closed near <strong>$12.96</strong> &middot; as of Oct 8 &middot; Yahoo Finance, delayed &middot; refreshed every 15 minutes during trading hours. Reload for the latest.<!--/SEED--></p>
+  <div class="seed-tbl-wrap"><!--SEED:pxtable--><table class="seed-tbl"><caption>Last close &middot; as of Oct 8 &middot; Yahoo Finance, delayed (not CME settlements) &middot; live quotes above update in session</caption><thead><tr><th scope="col">Contract</th><th scope="col" class="num">Close</th><th scope="col" class="num">Change</th><th scope="col" class="num">52-wk range</th></tr></thead><tbody><tr><td>Nearby Nov '26</td><td class="num">$12.96</td><td class="num">-0.1%</td><td class="num">$10.51&ndash;$13.35</td></tr></tbody></table><!--/SEED--></div>
 
   <div class="qa">
     <style>
@@ -444,12 +447,12 @@ html[data-theme="light"] .rat-gauge-labels em{opacity:.85}
 
     <div class="mr-section">
       <div class="mr-sec-lbl"><span class="em"><svg class="ic" aria-hidden="true"><use href="#i-map-pin"/></svg></span> Where the market is</div>
-      <p class="mr-sec-body" id="mr-where">Analyzing current prices&hellip;</p>
+      <p class="mr-sec-body" id="mr-where"><span class="sr-only">Loading the market read</span><span class="st-sk st-line" aria-hidden="true"></span><span class="st-sk st-line" aria-hidden="true"></span></p>
     </div>
 
     <div class="mr-section">
       <div class="mr-sec-lbl"><span class="em"><svg class="ic" aria-hidden="true"><use href="#i-search"/></svg></span> What's moving it</div>
-      <p class="mr-sec-body" id="mr-what"><em style="opacity:.6">Loading fundamentals&hellip;</em></p>
+      <p class="mr-sec-body" id="mr-what"><span class="sr-only">Loading fundamentals</span><span class="st-sk st-line" aria-hidden="true"></span><span class="st-sk st-line" aria-hidden="true"></span><span class="st-sk st-line" aria-hidden="true"></span></p>
     </div>
 
     <div class="mr-section mr-do" id="mr-do-wrap" style="display:none">
@@ -594,7 +597,7 @@ html[data-theme="light"] .rat-gauge-labels em{opacity:.85}
       <div class="cot-pct" id="cot-pct">-</div>
     </div>
     <div class="cot-chg" id="cot-chg">-</div>
-    <div class="cot-interp" id="cot-interp">Loading positioning data&hellip;</div>
+    <div class="cot-interp" id="cot-interp"><span class="sr-only">Loading positioning data</span><span class="st-sk st-line" aria-hidden="true"></span><span class="st-sk st-line" aria-hidden="true"></span></div>
     <div class="cot-src">Source: CFTC Disaggregated Commitments of Traders, futures-only, released Fridays 3:30 PM ET &middot; <a href="https://www.cftc.gov/MarketReports/CommitmentsofTraders/index.htm" target="_blank" rel="noopener">CFTC &#8599;</a> &middot; <a href="/cot">Full positioning history &rarr;</a></div>
   </div>
   <div class="fwd-card">
@@ -1066,6 +1069,8 @@ function renderMarketSession(){
   badge.className='session-badge '+s.state;
   badge.innerHTML='<span class="dot" aria-hidden="true"></span>'+s.label+'<span class="session-sub">'+s.sub+'</span>';
 }
+/* draw the badge now, not at DOMContentLoaded: "Loading…" then the real badge rewrapped the status row */
+try{renderMarketSession();}catch(e){}
 
 // ============ MARKET READ ASSEMBLY (v13 sectioned refactor) ============
 function renderMarketRead(){
@@ -1085,7 +1090,7 @@ function renderMarketRead(){
   if(mr.crop&&mr.crop.length)whatPhrases=whatPhrases.concat(mr.crop);
   if(mr.cot&&mr.cot.length)whatPhrases=whatPhrases.concat(mr.cot);
   if(mr.basis&&mr.basis.length)whatPhrases=whatPhrases.concat(mr.basis);
-  whatEl.innerHTML=whatPhrases.length?(cap(whatPhrases.join('; '))+'.'):'<em style="opacity:.6">Loading fundamentals\u2026</em>';
+  whatEl.innerHTML=whatPhrases.length?(cap(whatPhrases.join('; '))+'.'):'<span class="sr-only">Loading fundamentals</span><span class="st-sk st-line" aria-hidden="true"></span><span class="st-sk st-line" aria-hidden="true"></span><span class="st-sk st-line" aria-hidden="true"></span>';
 
   try{renderScorecard();}catch(e){}
   var actionLine=buildActionLine(mr);
@@ -1982,6 +1987,7 @@ function ord(n){var s=['th','st','nd','rd'],v=n%100;return s[(v-20)%10]||s[v]||s
 function chgTxt(net,pct,roll,g,u){if(roll)return{t:'contract roll',c:'roll'};if(net==null)return{t:'',c:''};var a=net>=0?'\u25B2':'\u25BC';var s=net>0?'+':net<0?'−':'';u=u||{};var mv=g===false?(u.pre||'')+Math.abs(net).toFixed(2)+(u.suf||''):fmtCents(net);return{t:a+' '+s+mv+' ('+s+Math.abs(pct).toFixed(2)+'%)',c:net>=0?'up':'dn'};}function fmtCents(d){var a=Math.abs(d),w=Math.floor(a),f=Math.round((a-w)*4);if(f===4){w++;f=0;}var fr=f===1?'¼':f===2?'½':f===3?'¾':'';return (w||!fr?w:'')+fr+'¢';}/* cents first, percent second — reader request 2026-07-20 *//* roll: front month just switched contracts — day-change would compare two months, so it's labeled, not shown (2026-07-20) */
 function setEl(id,txt,cls){var el=document.getElementById(id);if(!el)return;el.textContent=txt;el.classList.remove('sk');if(cls){el.classList.remove('up','dn','roll');el.classList.add(cls);}}
 
+function loadPrices(){
 fetch('/data/prices.json',{cache:'no-store'})
   .then(function(r){return r.json();})
   .then(function(data){
@@ -2023,7 +2029,7 @@ fetch('/data/prices.json',{cache:'no-store'})
       if(ncQ.pctChange!=null&&!ncQ.roll){var np=ncQ.pctChange;ncHtml+=' <span class="'+(np>=0?'up':'dn')+'">('+(np>0?'+':np<0?'−':'')+Math.abs(np).toFixed(1)+'%)</span>';}
       ncEl.innerHTML=ncHtml;
       ncEl.style.display='';
-    }
+    }else if(ncEl){ncEl.style.display='none';}
 
     var cornDec=q['corn-dec'],beansNov=q['beans-nov'];
     if(cornDec&&beansNov&&cornDec.close&&beansNov.close){
@@ -2116,8 +2122,13 @@ fetch('/data/prices.json',{cache:'no-store'})
        market hours. Stop the loading skeletons, keep the seeded last close visible. */
     document.querySelectorAll('.sk').forEach(function(el){el.classList.remove('sk');});
     var st=document.getElementById('status');
-    if(st)st.textContent='Live update failed, showing last close (see note below).';
+    (function(f){f();if(!window.AgStates)(window.AgStatesQ=window.AgStatesQ||[]).push(f);})(function(){if(st){if(window.AgStates)AgStates.error(st,{inline:true,msg:'Live prices didn\u2019t load. Showing the last close below.',retry:loadPrices});else st.textContent='Live update failed, showing last close (see note below).';}});
+    /* the market read is built from live prices: say so rather than shimmer */
+    var mw=document.getElementById('mr-where');if(mw&&mw.querySelector('.st-sk'))mw.textContent='The market read is built from live prices, and they didn\u2019t load.';
+    var mt=document.getElementById('mr-what');if(mt&&mt.querySelector('.st-sk'))mt.textContent='';
   });
+}
+loadPrices();
 
 document.addEventListener('DOMContentLoaded',function(){
   var tvTimeout=setTimeout(function(){
