@@ -105,3 +105,7 @@
 .ap-faq details{border-bottom:1px solid var(--border);padding:.2rem 0}
 .ap-faq summary{cursor:pointer;font-weight:700;min-height:44px;display:flex;align-items:center}
 .ap-faq details p{margin:.2rem 0 .7rem}
+.ap-decide{margin:.2rem 0 1rem}
+.ap-decide .ap-verdict{margin:.4rem 0}
+.ap-decide .ap-verdict:not(.ap-cur){opacity:.85}
+.ap-decide .ap-cur{border-width:2px}

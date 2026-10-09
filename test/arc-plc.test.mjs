@@ -118,6 +118,41 @@ test("FSA official county figures, when the file is loaded", (t) => {
   for (const c of ia.c) for (const es of Object.values(c.k)) for (const e of es) assert.ok(e.by > 0 && ["all", "irr", "non"].includes(e.d));
 });
 
+test("scenario engine, 8 hand-worked years", () => {
+  // ERP 4.00, BP 5.00, loan 2.00, PLC yield 100, benchmark 100, center $4.00
+  const ratios = { 2015: 1.0, 2016: 0.75, 2017: 1.25, 2018: 1.25, 2019: 1.0, 2020: 0.5, 2021: 1.1, 2022: 0.9 };
+  const dy = { 2015: 1.0, 2016: 1.0, 2017: 1.0, 2018: 0.8, 2019: 1.2, 2020: 1.0, 2021: 0.9, 2022: 1.1 };
+  const c = { erp: 4, bp: 5, loan: 2, py: 100, parts: [{ w: 1, by: 100, dy }] };
+  const v = A.scenarios(c, 4, ratios);
+  // PLC pays 85 (2016, $3.00), 170 (2020, $2.00), 34 (2022, $3.60): mean 289 / 8 = 36.125
+  near(v.plc, 36.125, "mean PLC");
+  // ARC: G = 450, cap 60 x .85 = 51: 42.5, 51, 0, 42.5, 0, 51, 45.9, 45.9: mean 278.8 / 8 = 34.85
+  near(v.arc, 34.85, "mean ARC");
+  assert.equal(v.plcWins, 2); assert.equal(v.arcWins, 4);
+  // differences -42.5, 34, 0, -42.5, 0, 119, -45.9, -11.9: SD 54.99, SE 19.44; gap 1.275 < 2 x SE
+  near(v.se, 19.4408, "SE", 1e-3);
+  assert.equal(v.verdict, "close");
+  const fixed = A.scenarios(c, 4, ratios, 3.0);
+  near(fixed.plc, 85, "PLC at $3.00"); near(fixed.arc, 51, "ARC at $3.00");
+  assert.equal(fixed.verdict, "plc");
+  const seven = Object.fromEntries(Object.entries(ratios).filter(([t]) => t !== "2022"));
+  assert.equal(A.scenarios(c, 4, seven).verdict, "withheld", "fewer than 8 years");
+});
+
+test("the calculator and the county page give the same typical-farm verdict (Chippewa WI corn, non-irrigated)", (t) => {
+  if (!D.fsa) return t.skip("no FSA file");
+  const wi = state("WI");
+  const cty = wi.c.find((c) => c.f === "55017");
+  const e = cty.k.corn.find((x) => x.d === "non");
+  const cr = D.years["2026"].crops.corn;
+  const v = A.scenarios({ erp: cr.erp.erp, bp: cr.bp.value, loan: cr.loan, py: cty.plc.corn, parts: [{ w: 1, by: e.by, dy: e.dy }] }, cr.scen.center, cr.scen.ratios);
+  const page = readFileSync(ROOT + "arc-plc/wisconsin/chippewa-county.html", "utf8");
+  const m = /Corn, non-irrigated:<\/b> ([^(]+)\(est\. \$([\d.,]+) PLC vs \$([\d.,]+) ARC-CO/.exec(page);
+  assert.ok(m, "quick answer present");
+  assert.equal(v.plc.toFixed(2), m[2]); assert.equal(v.arc.toFixed(2), m[3]);
+  assert.equal(v.n >= 8, true);
+});
+
 test("no em dash in the calculator's words", () => {
   assert.ok(!readFileSync(ROOT + "components/arc-plc.js", "utf8").includes("—"));
 });
