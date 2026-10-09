@@ -1049,3 +1049,32 @@ a[href^="mailto:"]:not([class]):not(:has(svg)),a[href^="tel:"]:not([class]):not(
 /* white text on --green is 2.19:1 in the dark theme; use dark ink there (light theme --green #2e7d4f keeps white) */
 :root:not([data-theme="light"]) :is(.signup-form button,#signup-btn,.sp-support-cta:hover){color:#06110b!important}
 :root:not([data-theme="light"]) :is(.dv3-subscribe-btn,.dv3-modal-submit):not(:hover){color:#06110b!important}
+
+/* Phone tap targets, 2026-10-09. On a phone (600px and under) each of these
+   gets a hit area of at least 40x40 CSS px where the layout has room for it.
+   What you see does not change: a transparent ::after is the hit area, and a
+   tap on an element's own ::after counts as a tap on the element.
+   - Links and buttons in data tables: a 40x40 box (or the link, if bigger)
+     centred on the link. Rows of a stacked table that has links are 40px tall,
+     so two links one above the other never share a pixel. A plain link that wraps
+     onto two lines is made one box (inline-block) so the hit area covers both
+     lines. Card-style tables (.bs-t, .tariff-table) keep their row height;
+     their links sit on lines with no other link above or below.
+   - Leaflet zoom buttons: +5px each side; + reaches 10px up and - 10px down,
+     so the two never overlap (the control has 12px of margin there).
+   - State tile maps: 12 columns on a 390px phone leave a 30px pitch, so a
+     tile's hit area fills its half of the 3px gap and stops there; 40px would
+     need a bigger map or tiles that overlap. The desktop map places tiles
+     with left/top, so inset:auto keeps those off once the tile is relative. */
+@media (max-width:600px){
+  :is(.rs-t,.yl-t,.fa-table,.ap .tw table,.he-wrap table):has(td :is(a[href],button)) tbody tr{height:40px}
+  :is(.rs-t,.yl-t,.bs-t,.fa-table,.ap .tw table,.he-wrap table,.tariff-table) td :is(a[href],button){position:relative}
+  :where(.bs-t,.ap .tw table,.he-wrap table) td a[href]:where(:not([class])){display:inline-block}
+  :is(.rs-t,.yl-t,.bs-t,.fa-table,.ap .tw table,.he-wrap table,.tariff-table) td :is(a[href],button)::after{content:"";position:absolute;left:50%;top:50%;width:100%;height:100%;min-width:40px;min-height:40px;transform:translate(-50%,-50%)}
+  .leaflet-control-zoom a{position:relative}
+  .leaflet-control-zoom a::after{content:"";position:absolute;left:-5px;right:-5px;top:0;bottom:0}
+  .leaflet-control-zoom a.leaflet-control-zoom-in::after{top:-10px}
+  .leaflet-control-zoom a.leaflet-control-zoom-out::after{bottom:-10px}
+  :is(.vp-grid>.vp-tile,.cd-grid>.cd-tile)[data-st],.rh-grid>a.rh-tile{position:relative;inset:auto}
+  :is(.vp-grid>.vp-tile,.cd-grid>.cd-tile)[data-st]::after,.rh-grid>a.rh-tile::after{content:"";position:absolute;inset:-1.5px}
+}

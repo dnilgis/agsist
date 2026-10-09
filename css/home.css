@@ -1830,6 +1830,16 @@ html.has-zip #bids-list-area:has(>[aria-label="Loading cash bids"]){min-height:8
 .ticker-pause:focus-visible{outline:2px solid var(--gold);outline-offset:-2px}
 html.ticker-paused .ticker-track{animation-play-state:paused!important}
 @media(prefers-reduced-motion:reduce){.ticker-pause{display:none}}
+/* Phone tap target, 2026-10-09: the ticker is 38px tall on a phone, so the
+   button's hit area reaches 1px above and below it (40px) through a
+   transparent ::after. The strip and the ticker row clip sideways only (both
+   hold nothing taller than the row), so the scrolling track is still cut off
+   at the edges. Browsers without overflow:clip keep the 38px button. */
+@media(max-width:600px){
+  @supports (overflow:clip){.prices-strip,.prices-strip .ticker-outer{overflow-x:clip;overflow-y:visible}}
+  .ticker-pause{position:relative}
+  .ticker-pause::after{content:"";position:absolute;left:0;right:0;top:min(0px,calc(50% - 20px));bottom:min(0px,calc(50% - 20px))}
+}
 /* Fertilizer: the date each change is measured from, and the 30-day flag. */
 #fert-grid .r7-fs{display:block;font-size:.765rem;font-weight:500;color:var(--text-muted);white-space:normal}
 #fert-widget .fert-full-link{white-space:nowrap;flex:none}
