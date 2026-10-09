@@ -205,6 +205,58 @@ def slugify(s):
 
 
 # ------------------------------------------------------------------- loading
+RREV_BASIS = {"nonirr": ("dryland yield", ""), "irr": ("irrigated yield", ""),
+              "all": ("all-practice yield", "; the county reports no irrigated corn")}
+
+
+def load_rent_revenue(root="."):
+    """Rent as a share of corn gross, per county, read from the files Cash Rent
+    by County (/cash-rent) draws its map from, so the two pages cannot disagree.
+
+    data/cash-rent/national.json carries the ratio (p), its year (py), the
+    preliminary-price flag (pp), the yield basis (pb) and, where the only yield
+    mixes irrigated and dryland acres, the reason it is withheld (pw, pwy).
+    A national file without pair_rule predates the same-practice pairing and
+    is not used at all (cash-rent.html withholds it the same way).
+    The state file supplies the three inputs so the page can show the sum;
+    the inputs are printed only when they reproduce the published ratio."""
+    try:
+        nat = json.load(open(os.path.join(root, "data", "cash-rent", "national.json"), encoding="utf-8"))
+    except Exception:
+        return {}
+    if not nat.get("pair_rule"):
+        return {}
+    states = {}
+    out = {}
+    for f, r in (nat.get("counties") or {}).items():
+        if r.get("p") is None and not r.get("pw"):
+            continue
+        st = r.get("s")
+        if st not in states:
+            try:
+                states[st] = json.load(open(os.path.join(root, "data", "cash-rent", "%s.json" % st), encoding="utf-8"))
+                states[st]["_by"] = {c["fips"]: c for c in states[st].get("counties", [])}
+            except Exception:
+                states[st] = {}
+        if r.get("p") is None:
+            out[f] = {"pw": r["pw"], "pwy": r.get("pwy")}
+            continue
+        o = {"p": r["p"], "py": r["py"], "pp": bool(r.get("pp")), "pb": r.get("pb"), "rk": r.get("rk")}
+        sd = states[st]
+        c = (sd.get("_by") or {}).get(f)
+        y = str(r["py"])
+        try:
+            rent = c["rent"][r["rk"]][y]
+            yld = c["pair"]["corn"]["y"][y][0]
+            price = sd["prices"]["corn"][y]
+            if abs(rent / (yld * price) * 100 - r["p"]) < 0.051:
+                o.update({"rent": rent, "yld": yld, "price": price})
+        except Exception:
+            pass
+        out[f] = o
+    return out
+
+
 class World:
     """Everything the pages share. Built once."""
 
@@ -256,6 +308,7 @@ class World:
                 continue
             if rd_.get("state") in STATE_NAMES and rd_.get("counties"):
                 self.rent_states.add(rd_["state"])
+        self.rrev = load_rent_revenue(root)
         self.thin = set()     # county pages with few figures: noindex, out of the sitemap
         self.by_state = {}
         for f, c in self.C.items():
@@ -1138,6 +1191,23 @@ def county_page(W, f, d, stamp):
         S1 += fact("Irrigated, %s" % ri["year"], money(ri["value"]) + "/ac", "no dry rent published")
     else:
         S1 += fwith("Cash rent", why(R))
+    rr = W.rrev.get(f)
+    if rr and rr.get("p") is not None:
+        if rr.get("rent") is not None:
+            sub = "%s %s ÷ (%s bu %s × %s %s price received)%s" % (
+                money(rr["rent"]), "irrigated rent" if rr["rk"] == "irr" else "non-irrigated rent",
+                f1(rr["yld"]), RREV_BASIS.get(rr["pb"], ("corn yield", ""))[0], usd2(rr["price"]), stn, RREV_BASIS.get(rr["pb"], ("", ""))[1])
+        else:
+            sub = "%s over the %s%s" % (("irrigated rent" if rr["rk"] == "irr" else "non-irrigated rent",) + RREV_BASIS.get(rr["pb"], ("corn yield", "")))
+        if rr["pp"]:
+            sub += "; the %s price is preliminary" % rr["py"]
+        S1 += fact("Rent as a share of corn gross, %s" % rr["py"], "%.1f%%" % rr["p"], sub)
+    elif rr and rr.get("pw"):
+        S1 += fwith("Rent as a share of corn gross", "%s (%s)" % (rr["pw"], rr["pwy"]))
+    if rr:
+        S1 += ('<p class="note">Share of gross uses the latest year with a published rent, a county corn yield of the same practice and the '
+               'state price received, all USDA NASS. Year by year, and a calculator for your own yield and price: '
+               '<a href="/cash-rent">Cash Rent by County</a>.</p>')
 
     S2 = "<h2>Land value</h2>"
     if ok(V):
@@ -1664,7 +1734,9 @@ def build(root=".", out_root=None, only=None, quiet=False):
             # the page does'. Hashing the whole page broke that promise: any
             # template or wording change moved every county's date and its
             # sitemap lastmod (2026-10-06). Hash the figures, not the markup.
-            h = hashlib.sha1(json.dumps(flat_record(W, f, d), sort_keys=True,
+            # the rent share of corn gross is a figure on the page too (not a CSV column)
+            fig = dict(flat_record(W, f, d), rent_share=W.rrev.get(f))
+            h = hashlib.sha1(json.dumps(fig, sort_keys=True,
                                         default=str).encode("utf-8")).hexdigest()[:12]
             date = prev[f][1] if f in prev and prev[f][0] == h else W.built
             stamps[f] = [h, date]
@@ -1795,6 +1867,21 @@ def selftest():
                 check(f + " canonical", '<link rel="canonical" href="%s">' % W.url(f) in t)
                 check(f + " no nan", "NaN" not in t and "undefined" not in t and "None" not in t.replace("None reported", ""))
                 check(f + " json-ld parses", all(json.loads(m) for m in re.findall(r'<script type="application/ld\+json">\s*(.*?)</script>', t, re.S)))
+        # rent as a share of corn gross: the /cash-rent ratio, its year, and the sum that makes it
+        for f, r in list(W.rrev.items())[:300]:
+            t = html.unescape(open(os.path.join(tmp, W.path(f)), encoding="utf-8").read()) if f in W.C else ""
+            if not t:
+                continue
+            if r.get("p") is not None:
+                check(f + " rent share printed", ("Rent as a share of corn gross, %s" % r["py"]) in t and ("%.1f%%" % r["p"]) in t)
+                check(f + " rent share prelim flagged", ("the %s price is preliminary" % r["py"] in t) == r["pp"])
+                if r.get("rent") is not None:
+                    check(f + " rent share sum", abs(r["rent"] / (r["yld"] * r["price"]) * 100 - r["p"]) < 0.051)
+            else:
+                check(f + " rent share withheld says why", r["pw"][1:] in t and "Rent as a share of corn gross" in t)
+        nat_ = json.load(open(os.path.join("data", "cash-rent", "national.json"))) if os.path.exists(os.path.join("data", "cash-rent", "national.json")) else {}
+        if nat_.get("pair_rule"):
+            check("rent share: every published ratio carried", sum(1 for r in W.rrev.values() if r.get("p") is not None) == nat_.get("n_pct"))
         # CSV columns line up
         rows = list(csv.reader(open(os.path.join(tmp, OUT, "data", "counties.csv"), encoding="utf-8")))
         check("csv header", rows[0] == COLNAMES)
