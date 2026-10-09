@@ -1119,7 +1119,7 @@ def county_page(W, f, d, stamp):
     act_rent = ("\n  " + rent_link) if rent_link else ""
     # the county's ARC/PLC page, written by build_arc_plc.py only where a benchmark estimate exists
     if os.path.exists(os.path.join(W.root, "arc-plc", W.slug[f] + ".html")):
-        act_rent += '\n  <a href="/arc-plc/%s">ARC or PLC for 2027</a>' % W.slug[f]
+        act_rent += '\n  <a href="/arc-plc/%s">ARC or PLC for 2026 and 2027</a>' % W.slug[f]
 
     # ---- key tiles
     def val_sub():
@@ -1549,7 +1549,7 @@ def state_page(W, st):
 <h1>{esc(stn)} farmland values by county</h1>
 <p class="sub">{esc(desc)} Click a heading to sort.</p>
 {('<p class="sub">For cash rent, every published county rate and its history: ' + rent_link + '.</p>') if rent_link else ''}
-<div class="act">{rent_link}{('<a href="/arc-plc/' + slugify(stn) + '">' + esc(stn) + ' ARC-CO benchmarks</a>') if os.path.exists(os.path.join(W.root, "arc-plc", slugify(stn) + ".html")) else ''}<a href="/farmland-atlas#s={esc(st)}">Open {esc(stn)} on the map</a><a href="/{OUT}/data/{st.lower()}.csv" download>Download {esc(st)} CSV</a></div>
+<div class="act">{rent_link}{('<a href="/arc-plc/' + slugify(stn) + '">' + esc(stn) + ' ARC or PLC by county</a>') if os.path.exists(os.path.join(W.root, "arc-plc", slugify(stn) + ".html")) else ''}<a href="/farmland-atlas#s={esc(st)}">Open {esc(stn)} on the map</a><a href="/{OUT}/data/{st.lower()}.csv" download>Download {esc(st)} CSV</a></div>
 <h2>{esc(stn)} at a glance</h2>
 {facts}
 <h2>Map: every county is a link</h2>

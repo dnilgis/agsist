@@ -148,8 +148,8 @@ def arc_line(st, root="."):
     sl = slug(STATE_NAMES[st])
     if not os.path.exists(os.path.join(root, "arc-plc", sl + ".html")):
         return ""
-    return (f'\n  <p class="sub">Choosing ARC or PLC for 2027? See <a href="/arc-plc/{sl}" style="color:var(--gold)">'
-            f'{STATE_NAMES[st]} ARC-CO benchmark yields by county</a>.</p>')
+    return (f'\n  <p class="sub">Choosing ARC or PLC for 2026 or 2027? See <a href="/arc-plc/{sl}" style="color:var(--gold)">'
+            f'{STATE_NAMES[st]} ARC or PLC by county</a>.</p>')
 
 
 def esc(s):
