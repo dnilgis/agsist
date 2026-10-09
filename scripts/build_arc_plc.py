@@ -2271,7 +2271,7 @@ def gap_line(v, lc, y, cd, by=None):
 
 
 def erp_line(cd, lc, y):
-    return f"PLC only pays if {lc} {avg_verb(lc)} under {XC.pf(cd, cd['erp']['erp'])} a {XC.word(cd)} for {y}."
+    return f"PLC only pays if {lc} {avg_verb(lc)} under {XC.say_price(cd, cd['erp']['erp'])} for {y}."
 
 
 def year_line(v, y):
@@ -2391,7 +2391,7 @@ def crop_card(c, k, D, LY, OY):
 
 def sheet_why(v, cd, lc, y):
     w = v["verdict"]
-    erp = f" PLC pays under {XC.pf(cd, cd['erp']['erp'])}."
+    erp = f" PLC pays under {XC.say_price(cd, cd['erp']['erp']) if cd.get('unit') == 'lb' else XC.pf(cd, cd['erp']['erp'])}."
     if w in ("plc", "arc") or w.startswith("lean_"):
         return f"{WORD[w.replace('lean_', '')]} about ${whole(v['diff'])} more per base acre for {y}.{erp}"
     if w == "close":

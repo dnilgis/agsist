@@ -173,6 +173,14 @@ def per(cd):
     return UNIT[cd.get("unit", "bu")]["per"]
 
 
+def say_price(cd, v):
+    """A price in plain words for a sentence: 23.75 cents a pound, $4.67 a bushel."""
+    if cd.get("unit") == "lb":
+        c = f"{rnd(v * 100, 2):.2f}".rstrip("0").rstrip(".")
+        return f"{c} cents a pound"
+    return f"{pf(cd, v)} a {word(cd)}"
+
+
 def word(cd):
     return UNIT[cd.get("unit", "bu")]["word"]
 
