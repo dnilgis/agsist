@@ -357,7 +357,7 @@ def make_desc(name, stats, crops, y0, y1):
 
 
 def dash(reason="NASS published no figure"):
-    return f'<span class="mut" title="{esc(reason)}">&mdash;</span>'
+    return f'<span class="mut" title="{esc(reason)}">n/a</span>'
 
 
 def stat_card(c, s, unit="bu/ac"):
@@ -368,14 +368,14 @@ def stat_card(c, s, unit="bu/ac"):
     def avg_li(a, w):
         rng = yrs(a["from"], a["to"])
         if a["value"] is None and a.get("before_pull"):
-            return (f"<li>{w}-year average ({rng}): {dash('window starts before the data')} the NASS pull on this "
+            return (f"<li>{w}-year average ({rng}): {dash('window starts before the data')}. The NASS pull on this "
                     f"page starts in {a['pull_start']}, so no full {w}-year window ends in {a['to']}</li>")
         if a["value"] is None:
-            return (f"<li>{w}-year average ({rng}): {dash('fewer published years than the minimum')} "
-                    f"only {a['n']} of {a['of']} years published, too few to average</li>")
+            return (f"<li>{w}-year average ({rng}): {dash('fewer published years than the minimum')}. "
+                    f"Only {a['n']} of {a['of']} years published, too few to average</li>")
         return f"<li>{w}-year average ({rng}): <b>{r(a['value'])}</b> {unit}, n&nbsp;=&nbsp;{a['n']} of {a['of']} years</li>"
     if tr["slope"] is None:
-        tli = (f"<li>Trend: {dash('too few published years')} {tr['n']} published years, "
+        tli = (f"<li>Trend: {dash('too few published years')}. {tr['n']} published years, "
                f"fewer than the {MIN_TREND_N} needed to fit a line</li>")
     else:
         sgn = "+" if tr["slope"] > 0 else ("&minus;" if tr["slope"] < 0 else "")
@@ -574,7 +574,7 @@ def build_state_page(name, inp, ctx):
   {season_html}
   <h2 id="by-year">{esc(name)} yield by year</h2>
   <p class="yl-sub">Newest first. Bushels per acre; planted acres in millions. Source: USDA NASS Quick Stats, state level.
-  &mdash; means NASS published no figure for that year; &ldquo;pending&rdquo; means NASS has not yet released that
+  n/a means NASS published no figure for that year; &ldquo;pending&rdquo; means NASS has not yet released that
   crop year&rsquo;s annual estimate (corn and soybeans come out in January).</p>
   {year_table(st, name, inp, crops, y0, y1t)}
   {county_section(st, name, inp, stats.get("corn"), root)}
@@ -715,9 +715,9 @@ def selftest():
         lds = [json.loads(b) for b in re.findall(r'<script type="application/ld\+json">(.*?)</script>', ia, re.S)]
         types = {g["@type"] for d in lds for g in d["@graph"]}
         ck("JSON-LD parses: Dataset + BreadcrumbList, no FAQ", types == {"Dataset", "BreadcrumbList"}, types)
-        ck("gap year is em dash + reason", re.search(r"<tr><td>2014</td><td class=\"n\"><span class=\"mut\" "
-                                                     r"title=\"NASS published no figure\">&mdash;", ia) is not None)
-        ck("acres missing -> em dash, present -> value", "<td class=\"n\">13.6</td>" in ia)
+        ck("gap year is n/a + reason", re.search(r"<tr><td>2014</td><td class=\"n\"><span class=\"mut\" "
+                                                     r"title=\"NASS published no figure\">n/a", ia) is not None)
+        ck("acres missing -> n/a, present -> value", "<td class=\"n\">13.6</td>" in ia)
         ck("high/low years", "<b>211</b> in 2024" in ia and "<b>137</b> in 2012" in ia)
         ck("forecast kept out of table", "<tr><td>2026</td>" not in ia and "219" in ia
            and "in-season forecast" in ia)

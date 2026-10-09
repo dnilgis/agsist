@@ -310,7 +310,7 @@ def head(title, desc, path, jsonld):
 
 def delta_html(v, n, label):
     if v is None:
-        return f'<div class="v mut">&mdash;</div><div class="l">{label}</div><div class="s">too few matched counties</div>'
+        return f'<div class="v mut">-</div><div class="l">{label}</div><div class="s">too few matched counties</div>'
     cls = "up" if v >= 0 else "dn"
     sign = "+" if v >= 0 else ""
     return (f'<div class="v {cls}">{sign}{v}%</div><div class="l">{label}</div>'
@@ -352,17 +352,17 @@ def county_table(st, s, aslug=None):
             else:
                 ly, lv = latest(r)
                 cells.append(f'<td class="mut" data-v="{lv if lv is not None else -1}">'
-                             + (f"{money(lv)} <span style='font-size:.68rem'>({ly})</span>" if lv is not None else "&mdash;")
+                             + (f"{money(lv)} <span style='font-size:.68rem'>({ly})</span>" if lv is not None else "n/a")
                              + "</td>")
         p = c["rent"].get(s["primary"], {})
         if str(yr) in p and str(yr - 1) in p and p[str(yr - 1)]:
             ch = 100 * (p[str(yr)] - p[str(yr - 1)]) / p[str(yr - 1)]
             cells.append(f'<td class="{"up" if ch >= 0 else "dn"}" data-v="{ch:.1f}">{"+" if ch >= 0 else ""}{ch:.1f}%</td>')
         else:
-            cells.append('<td class="mut" data-v="-999">&mdash;</td>')
+            cells.append('<td class="mut" data-v="-999">n/a</td>')
         ct = (c.get("yield", {}).get("corn") or {}).get("trend")
         cells.append(f'<td data-v="{ct if ct is not None else -1}">'
-                     + (f"{ct:.0f} bu" if ct is not None else '<span class="mut">&mdash;</span>') + "</td>")
+                     + (f"{ct:.0f} bu" if ct is not None else '<span class="mut">n/a</span>') + "</td>")
         body.append("<tr>" + "".join(cells) + "</tr>")
     return (f'<div class="rs-tw"><table class="rs-t" id="rs-table"><thead><tr>{thead}</tr></thead>'
             f'<tbody>{"".join(body)}</tbody></table></div>')
@@ -490,7 +490,7 @@ def build_state_page(st, d, s, all_states, aslug=None):
     <div class="rs-stat"><div class="v">{money(s['median'])}</div><div class="l">median rent /ac &middot; {yr}</div><div class="s">{plabel}, {s['n']} counties</div></div>
     <div class="rs-stat">{delta_html(s['yoy'], s['yoy_n'], f'vs {yr-1}')}</div>
     <div class="rs-stat">{delta_html(s['dec'], s['dec_n'], f'vs {yr-9}')}</div>
-    <div class="rs-stat"><div class="v">{money(s['hi'][0][1]) if s['hi'] else '&mdash;'}</div><div class="l">top county</div><div class="s">{esc(s['hi'][0][0]) if s['hi'] else ''}</div></div>
+    <div class="rs-stat"><div class="v">{money(s['hi'][0][1]) if s['hi'] else '-'}</div><div class="l">top county</div><div class="s">{esc(s['hi'][0][0]) if s['hi'] else ''}</div></div>
   </div>"""
     page = head(title, desc, f"/rent/{sl}", jsonld) + f"""
 <body>
@@ -571,7 +571,7 @@ def build_hub(states, stats, generated):
         s = stats[st]
         yoy = (f'<td class="{"up" if s["yoy"] >= 0 else "dn"}" data-v="{s["yoy"]}">'
                f'{"+" if s["yoy"] >= 0 else ""}{s["yoy"]}%</td>') if s["yoy"] is not None \
-            else '<td class="mut" data-v="-999">&mdash;</td>'
+            else '<td class="mut" data-v="-999">n/a</td>'
         rows.append(
             f'<tr><td><a href="/rent/{slug(STATE_NAMES[st])}" >{STATE_NAMES[st]}</a></td>'
             f'<td data-v="{s["median"]}">{money(s["median"])}</td>{yoy}'
