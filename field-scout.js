@@ -79,6 +79,20 @@
     map = L.map('fs-map', { zoomControl:true, attributionControl:true }).setView([41.878, -93.0977], 6); // Iowa-ish center
     map.on('dragstart', function(){ if(FIELD) FIELD._dragged=true; });   // the user moved it: stop auto-fitting
     try{ map.zoomControl.setPosition('bottomleft'); }catch(e){}
+    // On phones the action dock sits over the bottom-left zoom buttons; lift them clear of it.
+    function liftZoom(){
+      try{
+        var corner=map.getContainer().querySelector('.leaflet-bottom.leaflet-left');
+        var dock=document.querySelector('.fs-dock');
+        if(!corner||!dock) return;
+        if(window.innerWidth>820){ corner.style.bottom=''; return; }
+        var gap=map.getContainer().getBoundingClientRect().bottom-dock.getBoundingClientRect().top;
+        corner.style.bottom=(gap>0?Math.ceil(gap)+6:0)+'px';
+      }catch(e){}
+    }
+    liftZoom();
+    window.addEventListener('resize', liftZoom);
+    try{ if(window.ResizeObserver){ var dk=document.querySelector('.fs-dock'); if(dk) new ResizeObserver(liftZoom).observe(dk); } }catch(e){}
     setTimeout(function(){ try{ map.invalidateSize(); }catch(e){} }, 60);
     window.addEventListener('resize', function(){ try{ map.invalidateSize(); }catch(e){} });
     // the invitation clears the moment the user engages the map — pan, zoom, or tap
