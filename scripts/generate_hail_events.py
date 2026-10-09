@@ -361,9 +361,9 @@ def figures_html(nd, fig):
         city_col = fig["has_city"]
         rows = "".join(
             "<tr><td class=\"num\">" + f"{r['mag']:.2f}&Prime;" + "</td>"
-            "<td>" + (esc(r["county"]) if r["county"] else "&mdash; <span class=\"he-dim\">not matched</span>") + "</td>"
-            "<td>" + (esc(state_name(r["st"])) if r["st"] else "&mdash;") + "</td>"
-            + ("<td>" + (esc(r["city"]) if r["city"] else "&mdash;") + "</td>" if city_col else "")
+            "<td>" + (esc(r["county"]) if r["county"] else "<span class=\"he-dim\">not matched</span>") + "</td>"
+            "<td>" + (esc(state_name(r["st"])) if r["st"] else "n/a") + "</td>"
+            + ("<td>" + (esc(r["city"]) if r["city"] else "n/a") + "</td>" if city_col else "")
             + "<td class=\"num\">" + f"{r['lat']:.2f}, {r['lon']:.2f}" + "</td></tr>"
             for r in fig["stones"])
         tied = len(fig["at_max"])
@@ -380,7 +380,7 @@ def figures_html(nd, fig):
     if fig["counties"]:
         rows = "".join(
             "<tr><td>" + esc(c) + "</td><td>" + esc(state_name(st)) + "</td><td class=\"num\">" + str(v["n"]) +
-            "</td><td class=\"num\">" + (f"{v['max']:.2f}&Prime;" if v["max"] is not None else "&mdash;") + "</td></tr>"
+            "</td><td class=\"num\">" + (f"{v['max']:.2f}&Prime;" if v["max"] is not None else "n/a") + "</td></tr>"
             for (c, st), v in fig["counties"])
         out.append(
             "<h2>Counties with the most hail reports</h2>\n"
@@ -442,7 +442,7 @@ def page_html(date, rec, has_swath, mesh_max, today, counties=None):
 
     swath_cta = (('<a class="he-cta" href="/hail-map?swath=' + date + '">Open the radar swath map for ' + esc(nd) + ' &rarr;</a>')
                  if has_swath else
-                 '<p class="he-note">Radar swath archive begins after this date &mdash; the dated reports on this page are the record for this day.</p>')
+                 '<p class="he-note">Radar swath archive begins after this date. The dated reports on this page are the record for this day.</p>')
 
     faq = [
         ("How big was the hail on " + nd + "?",
@@ -472,7 +472,7 @@ def page_html(date, rec, has_swath, mesh_max, today, counties=None):
         "<meta name=\"description\" content=\"" + esc(meta_description(nd, fig, mesh_max, has_swath)) + "\">\n"
         + ("<meta name=\"robots\" content=\"noindex,follow\">\n" if thin else "") +
         "<link rel=\"canonical\" href=\"" + canonical + "\">\n"
-        "<meta property=\"og:title\" content=\"Hail on " + esc(nd) + " — where it hit | AGSIST\">\n"
+        "<meta property=\"og:title\" content=\"Hail on " + esc(nd) + ": where it hit | AGSIST\">\n"
         "<meta property=\"og:url\" content=\"" + canonical + "\">\n"
         "<meta property=\"og:type\" content=\"article\">\n"
         "<meta property=\"og:image\" content=\"https://agsist.com/img/og/hail-map.jpg\">\n"
@@ -515,11 +515,11 @@ def page_html(date, rec, has_swath, mesh_max, today, counties=None):
         ".he-src{font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--text-dim,#8a948f);margin-top:1.2rem;line-height:1.7}\n"
         "</style>\n</head>\n<body>\n<div id=\"site-header\"></div>\n<main id=\"main\">\n<div class=\"he-wrap\">\n"
         "<nav class=\"he-bc\" aria-label=\"Breadcrumb\"><a href=\"/\">AGSIST</a> › <a href=\"/hail-map\">Hail Map</a> › <a href=\"/hail/\">Storm Log</a> › " + esc(nd) + "</nav>\n"
-        "<h1>Hail on " + esc(nd) + " — where it hit</h1>\n"
+        "<h1>Hail on " + esc(nd) + ": where it hit</h1>\n"
         + lead +
         "<div class=\"he-stats\">"
         "<div class=\"he-stat\"><div class=\"v\">" + (f"{n:,}" if n else "0") + "</div><div class=\"l\">NWS reports</div></div>"
-        "<div class=\"he-stat\"><div class=\"v\">" + (f"{mx:.2f}″" if mx else "—") + "</div><div class=\"l\">largest reported</div></div>"
+        "<div class=\"he-stat\"><div class=\"v\">" + (f"{mx:.2f}″" if mx else "-") + "</div><div class=\"l\">largest reported</div></div>"
         "<div class=\"he-stat\"><div class=\"v\">" + str(dmg) + "</div><div class=\"l\">reports ≥1.5″</div></div>"
         "<div class=\"he-stat\"><div class=\"v\">" + str(fig["n_states"]) + "</div><div class=\"l\">states reporting</div></div>"
         + ("<div class=\"he-stat\"><div class=\"v\">" + (f"{mesh_max:.2f}″" if mesh_max else "✓") + "</div><div class=\"l\">radar-estimated max</div></div>" if has_swath else "")
@@ -536,14 +536,14 @@ def page_html(date, rec, has_swath, mesh_max, today, counties=None):
 def hub_html(dates_meta, today):
     rows = "".join(
         "<tr><td><a href=\"/hail/" + d + "\">" + esc(nice_date(d)) + "</a></td>"
-        "<td class=\"num\">" + (f"{m['n']:,}" if m and m.get("n") else "\u2014") + "</td>"
-        "<td class=\"num\">" + (f"{m['max']:.2f}\u2033" if m and m.get("max") else "\u2014") + "</td>"
+        "<td class=\"num\">" + (f"{m['n']:,}" if m and m.get("n") else "n/a") + "</td>"
+        "<td class=\"num\">" + (f"{m['max']:.2f}\u2033" if m and m.get("max") else "n/a") + "</td>"
         "<td>" + ("swath map" if m.get("swath") else "reports") + "</td></tr>"
         for d, m in dates_meta)
     return ("<!DOCTYPE html>\n<html lang=\"en\" data-theme=\"dark\">\n<head>\n"
         "<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n"
-        "<title>US Hail Storm Log \u2014 Every Significant Hail Day, Mapped | AGSIST</title>\n"
-        "<meta name=\"description\" content=\"A running log of every significant US hail day: report counts, largest stones, and radar swath maps \u2014 one page per storm, no charge, no login.\">\n"
+        "<title>US Hail Storm Log: Every Significant Hail Day, Mapped | AGSIST</title>\n"
+        "<meta name=\"description\" content=\"A running log of every significant US hail day: report counts, largest stones, and radar swath maps, one page per storm, no charge, no login.\">\n"
         "<link rel=\"canonical\" href=\"https://agsist.com/hail/\">\n"
         "<meta property=\"og:image\" content=\"https://agsist.com/img/og/hail-map.jpg\">\n"
         "<meta property=\"og:image:width\" content=\"1200\">\n<meta property=\"og:image:height\" content=\"630\">\n"
@@ -562,7 +562,7 @@ def hub_html(dates_meta, today):
         "td a{color:var(--brand,#d4a23f);text-decoration:none}</style>\n</head>\n<body>\n"
         "<div id=\"site-header\"></div>\n<main id=\"main\">\n<div class=\"he-wrap\">\n"
         "<h1>US Hail Storm Log</h1>\n"
-        "<p>Every significant hail day on record here \u2014 one page per storm with report counts, largest stones, and the radar swath map. Newest first. Checking a specific address? <a href=\"/hail-map\" style=\"color:var(--brand,#d4a23f)\">The hail map's search</a> pulls its full history in one tap.</p>\n"
+        "<p>Every significant hail day on record here, one page per storm with report counts, largest stones, and the radar swath map. Newest first. Checking a specific address? <a href=\"/hail-map\" style=\"color:var(--brand,#d4a23f)\">The hail map's search</a> pulls its full history in one tap.</p>\n"
         "<table><thead><tr><th>Storm day</th><th class=\"num\">Reports</th><th class=\"num\">Largest</th><th>Record</th></tr></thead><tbody>"
         + rows + "</tbody></table>\n"
         "</div>\n</main>\n<div id=\"site-footer\"></div>\n<script src=\"/components/loader.js\" defer></script>\n</body>\n</html>\n")
