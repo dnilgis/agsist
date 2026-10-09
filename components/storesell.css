@@ -1,0 +1,22 @@
+/* storesell.css: the posted-carry line and table in the homepage
+   "Store or sell?" calculator (components/storesell.js). Site tokens only,
+   so light and dark come from the theme. */
+.ss-posted{margin:0 0 .75rem;padding:.65rem .75rem;background:var(--surface2);border:1px solid var(--border);border-radius:8px;min-width:0}
+.ss-line{margin:0;font-size:.95rem;line-height:1.45;font-weight:600;color:var(--text)}
+.ss-tablewrap{margin:.55rem 0 0;max-width:100%;overflow-x:auto}
+.ss-table{width:100%;border-collapse:collapse;font-size:.8125rem;font-variant-numeric:tabular-nums}
+.ss-table th,.ss-table td{padding:.3rem .4rem;vertical-align:middle;text-align:right;border-top:1px solid var(--border);white-space:nowrap}
+.ss-table thead th{border-top:0;font-size:.72rem;font-weight:600;color:var(--text-muted);vertical-align:bottom;white-space:normal}
+.ss-table th[scope=row],.ss-table thead th:first-child{text-align:left;font-weight:600;color:var(--text)}
+.ss-table .ss-now td,.ss-table .ss-now th{color:var(--text-dim)}
+.ss-table .ss-now td[colspan]{text-align:right;font-style:italic}
+.ss-pick{all:unset;box-sizing:border-box;cursor:pointer;display:inline-flex;align-items:baseline;gap:.4rem;min-height:36px;padding:0 .2rem;border-radius:4px;color:var(--text);font-weight:600}
+.ss-pick:focus-visible{outline:2px solid var(--gold);outline-offset:1px}
+.ss-mo{font-weight:400;font-size:.72rem;color:var(--text-muted)}
+.ss-on th,.ss-on td{background:rgba(var(--gold-rgb,212,162,63),.14)}
+.ss-on .ss-pick{text-decoration:underline;text-underline-offset:3px}
+.ss-net{font-weight:700}
+.ss-up{color:var(--green)}
+.ss-dn{color:var(--red,#ef4444)}
+.ss-fine{margin-top:.5rem}
+.m-fold--calc .ss-table{font-size:.8125rem!important}

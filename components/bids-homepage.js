@@ -897,7 +897,18 @@
   /* WAVE1-A: one option per elevator and crop: its nearest open delivery
      month, per bushel, not a special grade. Nearest elevator first. */
   function storeOptions(bids, best){
-    var nowKey = thisMonth(), by = {};
+    var nowKey = thisMonth(), by = {}, per = {};
+    /* storesell: every open period this elevator posts for the same crop and
+       grade, from the rows on hand (the licensed feed sends them all; a
+       network row is its crop's nearest period and storesell.js reads the
+       rest from the board's shard by `place`). */
+    bids.forEach(function(b){
+      if(b.cashPrice == null || notPerBushel(b) || isSpecialGrade(b) || basisOdd(b)) return;
+      var k = rowMonthKey(b); if(!k || k < nowKey) return;
+      var de = /^(\d{4}-\d{2})-\d{2}/.exec(String(b.deliveryEnd || '')), pe = periodEnd(b.deliveryStart);
+      var id = rowKey(b) + '|' + b.category + '|' + String(b.commodity || '').toLowerCase();
+      (per[id] = per[id] || []).push({ start: k, end: de ? de[1] : (pe && pe >= k ? pe : k), cash: ppu(b.cashPrice) });
+    });
     bids.forEach(function(b){
       if(['corn','soybeans','wheat','sorghum','oats'].indexOf(b.category) < 0) return;
       if(b.cashPrice == null || notPerBushel(b) || isSpecialGrade(b) || basisOdd(b)) return;
@@ -910,7 +921,10 @@
         city: townOf(b) + (b.state ? ', ' + b.state : ''),
         miles: b.distance == null ? null : b.distance,
         cash: ppu(b.cashPrice), monthKey: k, monthLabel: shortMon(k),
-        boardCarry: boardCarry(b), isBest: b === best };
+        boardCarry: boardCarry(b), isBest: b === best,
+        commodity: b.commodity || '', place: b.source === 'network' ? (b.place || '') : '',
+        posted: b.source === 'network' ? (b.pricedAt || '') : (feedTimes.licensed || ''),
+        periods: per[rowKey(b) + '|' + b.category + '|' + String(b.commodity || '').toLowerCase()] || [] };
     });
     /* One pin, several town names, same price: one option (see mergeOnePin). */
     var one = {}, out = [];

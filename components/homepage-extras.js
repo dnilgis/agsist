@@ -1,6 +1,7 @@
 /**
  * AGSIST homepage extras — added 2026-09-30.
- * r7-bids 2026-10-01: carry prefilled from the Dec-Mar corn futures spread.
+ * 2026-10-09: carry prefilled from the picked elevator's posted later months
+ *   (components/storesell.js); the Dec-Mar futures fallback is gone.
  * Three real, wired features that were prototyped as a design-canvas mockup
  * and are now live here, reading real site data instead of illustrative
  * placeholders:
@@ -47,6 +48,9 @@
         resultEl = $('idx1-calc-result'), rateEl = $('idx1-calc-rate'), shrinkEl = $('idx1-calc-shrink'),
         mathEl = $('idx1-calc-math');
     if(!priceEl || !costEl || !monthsEl || !carryEl || !resultEl) return;
+    /* storesell: while the boxes hold the posted carry, the posted line above
+       already says the answer; the result line returns once a box is edited. */
+    resultEl.hidden = !!(window.AgsistStoreSell && window.AgsistStoreSell.driving && window.AgsistStoreSell.driving());
     function math(t){ if(mathEl){ mathEl.textContent = t; var w = mathEl.closest && mathEl.closest('details'); if(w) w.hidden = !t; } }
     var priceRaw = priceEl.value, costRaw = costEl.value, monthsRaw = monthsEl.value, carryRaw = carryEl.value;
     var rateRaw = rateEl ? rateEl.value : '', shrinkRaw = shrinkEl ? shrinkEl.value : '';
@@ -133,9 +137,9 @@
      BOARD. When the looked-up elevator posts a later delivery for the same
      crop (bids-homepage.js publishes it as sum.boardCarry), that difference
      is the carry, labelled with both periods. Only when the board posts no
-     later period does it fall back to the Dec-to-Mar corn futures spread,
-     labelled as futures carry with basis change excluded. Either way the
-     note says which months the carry covers, and the result line says so
+     later period is the box left for the reader (2026-10-09: the Dec-to-Mar
+     futures fallback is gone; storesell.js now lists every posted month).
+     The note says which months the carry covers, and the result line says so
      when "months you would store" differs. Nothing is scaled. */
   var carryCover = null;   // {months, from, to} of the prefilled carry
   function carryCaveat(months){
@@ -170,6 +174,21 @@
       calcStoreOrSell();
     }
     function span(c){ return c.from + ' to ' + c.to + (c.months != null ? ' (' + c.months + ' month' + (c.months === 1 ? '' : 's') + ')' : ''); }
+    /* 2026-10-09 storesell: the carry comes from the picked elevator's own
+       posted later months (components/storesell.js lists them all and nets
+       each after the reader's costs). The pick in its table fills the carry
+       and months boxes below. */
+    var SS = window.AgsistStoreSell;
+    if(SS && SS.show) clearAuto();
+    if(SS && SS.show && SS.show(sum, { fill: function(sel){
+      note.textContent = ''; note.hidden = true;
+      if(!sel){ clearAuto(); calcStoreOrSell(); return; }
+      var priceEl = $('idx1-calc-price');
+      if(priceEl && priceEl.dataset.autofilled === 'true' && isFinite(sel.spotCash)) priceEl.value = sel.spotCash.toFixed(2);
+      carryCover = { months: sel.months, from: sel.from, to: sel.to };
+      fill(String(Math.round(sel.carry * 10000) / 10000));
+    } })) return;
+    note.hidden = false;
     var bc = sum.boardCarry;
     if(bc && bc.from && bc.to && isFinite(bc.cents)){
       if(bc.cents <= 0){
@@ -183,37 +202,11 @@
       fill((bc.cents / 100).toFixed(4).replace(/0+$/, '').replace(/\.$/, ''));
       return;
     }
-    /* WAVE1-A: the futures-spread fallback is corn only; another crop with no
-       later bid on its own board leaves the box for the reader. */
-    if(sum.crop !== 'corn'){
-      clearAuto();
-      note.textContent = 'Carry: this elevator posts no later ' + String(sum.cropName || sum.crop || 'bid').toLowerCase() + ' bid. Enter your own.';
-      calcStoreOrSell();
-      return;
-    }
-    var p = window.__agsistPricesP || (window.__agsistPricesP = fetch('/data/prices.json', { cache: 'no-store' })
-      .then(function(r){ return r.ok ? r.json() : null; }).catch(function(){ return null; }));
-    p.then(function(pd){
-      var q = (pd && pd.quotes) || {}, dec = q['corn-dec'];
-      var m = dec && /^ZCZ(\d{2})\./.exec(String(dec.ticker || ''));
-      var my = m ? ('0' + (+m[1] + 1)).slice(-2) : '';
-      var mar = m ? q['corn-mar' + my] : null;
-      if(!dec || dec.close == null || !mar || mar.close == null){
-        clearAuto();
-        note.textContent = 'Carry: this elevator posts no later corn bid, and the futures spread is not loaded yet. Enter your own.';
-        calcStoreOrSell();
-        return;
-      }
-      var c = mar.close - dec.close, yy = m[1], when = '';
-      try{ var d = new Date(pd.fetched); if(!isNaN(d)) when = d.toLocaleString('en-US', {month:'short', day:'numeric', hour:'numeric', minute:'2-digit', timeZone:'America/Chicago'}) + ' CT'; }catch(e){}
-      carryCover = { months: 3, from: 'Dec \'' + yy, to: 'Mar \'' + my };
-      /* WAVE3-H: an inverted spread is filled as a negative carry. It is the
-         market's real answer: it pays less to wait. */
-      note.textContent = 'This elevator posts no later corn bid. Futures carry ' + span(carryCover) + ' only, '
-        + (c < 0 ? '−' : c > 0 ? '+' : '') + qc(c) + ' per bu' + (c < 0 ? ' (Mar under Dec, an inverted market)' : '')
-        + (when ? ' at ' + when : '') + '; basis gain not included.';
-      fill((c / 100).toFixed(4).replace(/0+$/, '').replace(/\.$/, '') || '0');
-    });
+    /* No later bid on the elevator's own board: say so and leave the box for
+       the reader. No futures spread stands in for a month it does not post. */
+    clearAuto();
+    note.textContent = 'Carry: this elevator posts no later ' + String(sum.cropName || sum.crop || 'bid').toLowerCase() + ' bid. Enter your own.';
+    calcStoreOrSell();
   }
 
   function onBidsPublished(evt){
