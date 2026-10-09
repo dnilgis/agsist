@@ -27,13 +27,13 @@ COMMODITIES = ["corn", "soybeans", "wheat"]
 # WHAT THE NUMBER IS AGAINST, IN THE BOARD'S OWN TERMS. Each location is read
 # at its own nearest delivery month (see nearest_only), which is not always
 # the nearby futures contract, so none of these says it is.
-FUTURES_REF = {"corn": "each board's posted futures month \u2014 CBOT corn (ZC)",
-               "soybeans": "each board's posted futures month \u2014 CBOT soybeans (ZS)",
-               "wheat-srw": "each board's posted futures month \u2014 Chicago SRW (CBOT, ZW)",
-               "wheat-hrw": "each board's posted futures month \u2014 KC HRW (CBOT, KE)",
-               "wheat-hrs": "each board's posted futures month \u2014 spring wheat (MGEX, MWE)",
-               "wheat-sww": "each board's own reference \u2014 soft white has no CBOT, KC or MGEX contract; not comparable with the tabs above",
-               "wheat-unstated": "each board's own reference \u2014 these boards did not say which wheat; not comparable with the tabs above"}
+FUTURES_REF = {"corn": "each board's posted futures month, CBOT corn (ZC)",
+               "soybeans": "each board's posted futures month, CBOT soybeans (ZS)",
+               "wheat-srw": "each board's posted futures month, Chicago SRW (CBOT, ZW)",
+               "wheat-hrw": "each board's posted futures month, KC HRW (CBOT, KE)",
+               "wheat-hrs": "each board's posted futures month, spring wheat (MGEX, MWE)",
+               "wheat-sww": "each board's own reference: soft white has no CBOT, KC or MGEX contract; not comparable with the tabs above",
+               "wheat-unstated": "each board's own reference: these boards did not say which wheat; not comparable with the tabs above"}
 
 # Order matters: durum and spring are tested before the winter patterns so
 # "Hard Red Spring" cannot be caught by a rule meant for "Hard Red Winter",

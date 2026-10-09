@@ -356,8 +356,10 @@ STALE_DAYS = {"prices": 4, "news": 10, "conditions": 14, "basis": 21,
 
 
 def _e(s):
-    """Text-node escape. Quotes stay literal: "Dec '26", not "Dec &#x27;26"."""
-    return H.escape(str(s), quote=False)
+    """Text-node escape. Quotes stay literal: "Dec '26", not "Dec &#x27;26".
+    Em dashes in data prose print as a comma, the way the pages' JS shows them."""
+    s = re.sub(r"\s*\u2014\s*", ", ", re.sub(r"^\s*\u2014\s*", "", str(s)))
+    return H.escape(s, quote=False)
 
 
 def _iso_date(s):

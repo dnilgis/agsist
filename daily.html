@@ -630,7 +630,7 @@ function renderToday(data,why){
     el.innerHTML='<div class="dv3-loading" style="padding:2rem"><p style="color:var(--text-dim);font-size:.88rem">Today\'s briefing is not yet available. Published every morning before the market open.<br><br><a href="/" style="color:var(--gold)">\u2190 Return to dashboard</a></p></div>';
     // AUDIT 2026-08-11: don't dead-end — offer the most recent archived
     // briefing right here (the archive index is a cheap fetch).
-    fetch('/data/daily-archive/index.json',{cache:'no-cache'}).then(function(r){return r.ok?r.json():null;}).then(function(ix){
+    fetch('/data/daily-archive/index.json',{cache:'no-cache'}).then(function(r){return r.ok?r.json():null;}).then(function(ix){ix=agsND(ix);
       var b=(ix&&ix.briefings||[]).filter(function(x){return x.headline;}).sort(function(a,c){return (c.date||'').localeCompare(a.date||'');})[0];
       if(!b)return;
       var p=el.querySelector('p');
@@ -1082,7 +1082,7 @@ function renderArchive(){
 
   fetch('/data/daily-archive/index.json',{cache:'no-store'})
     .then(function(r){return r.ok?r.json():null;})
-    .then(function(manifest){
+    .then(function(manifest){manifest=agsND(manifest);
       if(!manifest||!manifest.briefings||!manifest.briefings.length){
         // Keep the baked recent list (SEED:dailyrecent) if there is one.
         if(!grid.querySelector('a.dv3-arc-card'))grid.innerHTML='<p style="color:var(--text-muted);font-size:.82rem;grid-column:1/-1">Archive not yet available.</p>';
@@ -1185,9 +1185,10 @@ if(form){
 }
 
 // ── load ──────────────────────────────────────────────────────────────
+function agsND(o){if(typeof o==='string')return /^\s*\u2014\s*$/.test(o)?'-':o.replace(/^\s*\u2014\s*/,'').replace(/\s*\u2014\s*/g,', ');if(Array.isArray(o))return o.map(agsND);if(o&&typeof o==='object'){for(var k in o)if(Object.prototype.hasOwnProperty.call(o,k))o[k]=agsND(o[k]);}return o;} /* the site prints no em dashes; older data files still carry some */
 fetch('/data/daily.json',{cache:'no-store'})
   .then(function(r){return r.ok?r.json():null;})
-  .then(function(d){renderToday(d);})
+  .then(function(d){renderToday(agsND(d));})
   .catch(function(){renderToday(null,'error');});
 
 renderArchive();

@@ -171,7 +171,8 @@ main > .breadcrumb{max-width:1060px;margin:12px auto 0;padding:0 max(1rem,env(sa
   }
   var tg=document.getElementById('bm-toggle');
   if(tg)tg.addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;current=b.getAttribute('data-c');this.querySelectorAll('button').forEach(function(x){x.setAttribute('aria-pressed',x===b?'true':'false');});render(current);if(window.gaEvent)gaEvent('basis_commodity',{commodity:current,page:'cash-bids-national'});});
-  fetch('/data/basis-map.json',{cache:'no-store'}).then(function(r){if(!r.ok)throw 0;return r.json();}).then(function(d){DATA=d;if(d.sample){var s=document.getElementById('bm-sample');if(s)s.style.display='block';}buildToggle();render(current);if(window.gaEvent)gaEvent('basis_view',{page:'cash-bids-national'});}).catch(function(){var g=document.getElementById('bm-grid');if(g)g.innerHTML='<div class="bm-err">National basis data is briefly unavailable.</div>';});
+function agsND(o){if(typeof o==='string')return /^\s*\u2014\s*$/.test(o)?'-':o.replace(/^\s*\u2014\s*/,'').replace(/\s*\u2014\s*/g,', ');if(Array.isArray(o))return o.map(agsND);if(o&&typeof o==='object'){for(var k in o)if(Object.prototype.hasOwnProperty.call(o,k))o[k]=agsND(o[k]);}return o;} /* the site prints no em dashes; older data files still carry some */
+  fetch('/data/basis-map.json',{cache:'no-store'}).then(function(r){if(!r.ok)throw 0;return r.json();}).then(function(d){d=agsND(d);DATA=d;if(d.sample){var s=document.getElementById('bm-sample');if(s)s.style.display='block';}buildToggle();render(current);if(window.gaEvent)gaEvent('basis_view',{page:'cash-bids-national'});}).catch(function(){var g=document.getElementById('bm-grid');if(g)g.innerHTML='<div class="bm-err">National basis data is briefly unavailable.</div>';});
 })();
 </script>
 

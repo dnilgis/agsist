@@ -98,7 +98,9 @@ ABBR = ["", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep",
 
 
 def esc(s):
-    return (str(s).replace("&", "&amp;").replace("<", "&lt;")
+    # data notes carry em dashes; the site prints none (a spaced one reads as a comma)
+    s = str(s).replace(" \u2014 ", ", ").replace("\u2014", "-")
+    return (s.replace("&", "&amp;").replace("<", "&lt;")
             .replace(">", "&gt;").replace('"', "&quot;"))
 
 
@@ -999,7 +1001,7 @@ def render_bench(data, ph="during"):
             sub = ("Not recorded here yet. Pro Farmer's number was expected "
                    + (data["tour"].get("final_expected_label") or "at the end of tour week")
                    + "; this page has not been updated with it.")
-        val = f'{corn:.1f}' if corn is not None else "&mdash;"
+        val = f'{corn:.1f}' if corn is not None else "-"
         asof = f' &middot; {short(e["as_of"])}' if e.get("as_of") else ""
         if key == "agsist" and nc and nc.get("week_ending"):
             # The label carried "Aug 11" while the figure had moved on. A date

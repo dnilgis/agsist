@@ -161,9 +161,10 @@
     return d.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
   }
 
+  function agsND(o){if(typeof o==='string')return /^\s*\u2014\s*$/.test(o)?'-':o.replace(/^\s*\u2014\s*/,'').replace(/\s*\u2014\s*/g,', ');if(Array.isArray(o))return o.map(agsND);if(o&&typeof o==='object'){for(var k in o)if(Object.prototype.hasOwnProperty.call(o,k))o[k]=agsND(o[k]);}return o;} /* the site prints no em dashes; older data files still carry some */
   fetch('/data/news.json',{cache:'no-store'}).then(function(r){
     if(!r.ok) throw new Error(r.status); return r.json();
-  }).then(function(d){
+  }).then(function(d){d=agsND(d);
     var items=(d&&d.items)||[];
     var u=el('nw-updated');
     if(u&&d.updated) u.textContent='Updated '+new Date(d.updated).toLocaleString('en-US',

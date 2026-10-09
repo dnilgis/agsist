@@ -102,7 +102,7 @@ def group(open_rows):
 
 def fmt_money(v):
     if v is None:
-        return "&mdash;"
+        return "n/a"
     # RMA quotes some crops per pound (cotton, rice, canola); those come back
     # as fractions of a dollar and must not be rounded to two places.
     s = ("%.4f" % v).rstrip("0").rstrip(".") if abs(v) < 1 else "%.2f" % v
@@ -186,7 +186,7 @@ def build(rows, today):
         def cell(practice):
             rs = practices.get(practice)
             if not rs:
-                return "<span class='dn-na'>&mdash;</span>"
+                return "<span class='dn-na'>n/a</span>"
             lo, hi, _ = price_span(rs, leg)
             if lo is None:
                 return "<span class='dn-na'>pending</span>"

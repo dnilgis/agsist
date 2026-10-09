@@ -160,8 +160,8 @@ def seo_cot(c):
     if len(desc) > DESC_MAX:          # the move clause is the optional one
         desc = head + tail
     if side == "flat":
-        return (f"Managed Money Is Near Flat In Corn — CFTC COT{SUFFIX}", desc)
-    return (f"Managed Money Is Net {side.title()} Corn {kk} — CFTC COT{SUFFIX}", desc)
+        return (f"Managed Money Is Near Flat In Corn: CFTC COT{SUFFIX}", desc)
+    return (f"Managed Money Is Net {side.title()} Corn {kk}: CFTC COT{SUFFIX}", desc)
 
 
 def seo_crop_tour(c):

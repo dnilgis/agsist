@@ -423,9 +423,10 @@
       var host=document.getElementById('st-grid-more');
       var covered={};
       COMPONENTS.forEach(function(c){ covered[c.url.replace(/^\//,'')]=1; });
+function agsND(o){if(typeof o==='string')return /^\s*\u2014\s*$/.test(o)?'-':o.replace(/^\s*\u2014\s*/,'').replace(/\s*\u2014\s*/g,', ');if(Array.isArray(o))return o.map(agsND);if(o&&typeof o==='object'){for(var k in o)if(Object.prototype.hasOwnProperty.call(o,k))o[k]=agsND(o[k]);}return o;} /* the site prints no em dashes; older data files still carry some */
       fetch('/data/feeds.json?_t='+Date.now(),{cache:'no-store'}).then(function(r){
         if(!r.ok) throw new Error('http'); return r.json();
-      }).then(function(man){
+      }).then(function(man){man=agsND(man);
         var feeds=(man.feeds||[]).filter(function(f){ return !covered[f.path]; });
         if(!feeds.length){ host.parentNode.removeChild(host); return; }
         feeds.sort(function(a,b){ return b.pages.length-a.pages.length; });

@@ -448,7 +448,7 @@ var allEntries = [];    // full sorted list
 var activeMonth = null; // null = all
 var searchTerm  = '';
 
-function escHtml(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function escHtml(s){ return (s||'').replace(/^\s*\u2014\s*/,'').replace(/\s*\u2014\s*/g,', ').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
 function parseDateOnly(str){
   if(!str)return null;

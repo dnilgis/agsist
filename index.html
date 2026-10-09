@@ -4427,9 +4427,10 @@ setTimeout(function(){
     return d.toLocaleDateString('en-US',{month:'short',day:'numeric'});
   }
   var _boardReady=new Promise(function(res){var n=0;(function w(){if(window.AGSIST_PRICE_DATA||n++>40)return res();setTimeout(w,150);})();});
+function agsND(o){if(typeof o==='string')return /^\s*\u2014\s*$/.test(o)?'-':o.replace(/^\s*\u2014\s*/,'').replace(/\s*\u2014\s*/g,', ');if(Array.isArray(o))return o.map(agsND);if(o&&typeof o==='object'){for(var k in o)if(Object.prototype.hasOwnProperty.call(o,k))o[k]=agsND(o[k]);}return o;} /* the site prints no em dashes; older data files still carry some */
   _boardReady.then(function(){return fetch('/data/news.json',{cache:'no-store'});}).then(function(r){
     if(!r.ok) throw new Error(r.status); return r.json();
-  }).then(function(d){
+  }).then(function(d){d=agsND(d);
     var items=(d&&d.items)||[]; if(!items.length) return;   // stay hidden
     var band=document.getElementById('wire-band'), g=document.getElementById('wire-g');
     if(!band||!g) return;

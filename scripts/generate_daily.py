@@ -3087,6 +3087,8 @@ def _published_briefings():
             hl, closed = b.get("headline", ""), bool(b.get("market_closed"))
         except Exception:
             pass
+        # older archive JSONs predate sanitize_em_dashes; the lists print none
+        hl = re.sub(r"\s*\u2014\s*", ", ", hl or "")
         out.append((p.stem, sentence_case_headline(hl), closed))
     return out
 
