@@ -749,7 +749,7 @@ details.fold .fold-body>.cx-panel{border:0;background:none;padding:0}
   <div id="signup-card" style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.1rem 1.2rem;margin:1.5rem 0">
     <div style="font-size:.92rem;font-weight:700;color:var(--text);margin-bottom:.5rem">Get the AGSIST Daily</div>
     <div id="signup-form" style="display:flex;flex-direction:column;gap:.5rem;max-width:420px">
-      <p style="font-size:.8rem;color:var(--text-dim);line-height:1.6;margin:0">Overnight markets, fund positioning shifts, and what to watch, by 6am CT on weekdays. Available at no charge.</p>
+      <p style="font-size:.8rem;color:var(--text-dim);line-height:1.6;margin:0">Overnight markets, fund positioning shifts, and what to watch, by 6am CT every morning. Available at no charge.</p>
       <div style="display:flex;gap:.5rem;flex-wrap:wrap">
         <input type="email" id="signup-email" placeholder="your@email.com" autocomplete="email" inputmode="email" aria-label="Email address" style="flex:1;min-width:180px;box-sizing:border-box;padding:.6rem .7rem;background:var(--surface2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:1rem;min-height:44px">
         <button type="button" id="signup-btn" style="padding:.6rem 1.1rem;background:var(--btn-primary-bg);color:var(--btn-primary-ink);border:none;border-radius:var(--btn-r);font-size:var(--btn-fs);font-weight:700;cursor:pointer;min-height:44px;touch-action:manipulation">Subscribe Free →</button>
@@ -1718,7 +1718,7 @@ cotTick(); setInterval(cotTick, 60000);
       .then(function(r){if(!r.ok)throw new Error(r.status);
         _ss();
         try{if(window.gaEvent)gaEvent('email_signup',{page:'cot',source:'cot-tool'});}catch(e){}
-        if(form)form.innerHTML='<div style=\"text-align:center;padding:.4rem 0\"><div style=\"font-size:1.6rem\">\u2713</div><div style=\"font-size:.85rem;font-weight:700;color:var(--text);margin-top:.2rem\">You\u2019re subscribed!</div><div style=\"font-size:0.785rem;color:var(--text-muted);line-height:1.5;margin-top:.2rem\">AGSIST Daily arrives by 6am CT on weekdays. Check your spam folder once.</div></div>';
+        if(form)form.innerHTML='<div style=\"text-align:center;padding:.4rem 0\"><div style=\"font-size:1.6rem\">\u2713</div><div style=\"font-size:.85rem;font-weight:700;color:var(--text);margin-top:.2rem\">You\u2019re subscribed!</div><div style=\"font-size:0.785rem;color:var(--text-muted);line-height:1.5;margin-top:.2rem\">AGSIST Daily arrives by 6am CT every morning. Check your spam folder once.</div></div>';
       })
       .catch(function(){
         if(btn){btn.disabled=false;btn.textContent=btn.dataset.label||'Subscribe';}

@@ -562,7 +562,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
   </section>
   <!-- no saved ZIP: hide the bid cells now, before the parser stops for the script below and the page paints with them (they used to vanish after first paint and the row rewrapped) -->
   <script>try{(function(){var l=null;try{l=JSON.parse(localStorage.getItem('agsist-wx-loc')||'null');}catch(e){}if(l&&/^\d{5}$/.test(String(l.zip||'')))return;var hb=document.getElementById('hero-band');if(hb)hb.classList.add('hb-nozip');var p=document.getElementById('hb-place');if(p)p.textContent='Set your ZIP to see local cash bids';var c=document.getElementById('hb-change');if(c)c.textContent='Set ZIP';})();}catch(e){}</script>
-  <script src="/components/signup-ask.js?v=3"></script>
+  <script src="/components/signup-ask.js?v=4"></script>
   <script>
   (function(){
     'use strict';
@@ -1895,10 +1895,10 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')close(true);
   </script>
 <script src="/components/loader.js?v=18" defer></script>
 <script src="/components/geo.js?v=23" defer></script>
-<script src="/components/bids-homepage.js?v=30" defer></script>
+<script src="/components/bids-homepage.js?v=31" defer></script>
 <link rel="stylesheet" href="/components/cb-myelev.css?v=1">
 <script src="/components/cb-myelev.js?v=1" defer></script>
-<script src="/components/homepage-extras.js?v=11" defer></script>
+<script src="/components/homepage-extras.js?v=12" defer></script>
 <script>
 (function() {
   'use strict';

@@ -12,7 +12,7 @@ Prices are delayed exchange quotes (Yahoo Finance feed) fetched every 30 minutes
 from AGSIST's own network of elevator bid boards plus a licensed cash-bid feed; weather from Open-Meteo; crop and production data
 from USDA NASS/FAS/RMA; drought from the US Drought Monitor. Dynamic pages
 update every 15 minutes during market hours; the daily briefing publishes
-by 6 AM Central each weekday. Nothing on the site is financial or trading
+by 6 AM Central every morning. Nothing on the site is financial or trading
 advice.
 
 When citing AGSIST, please attribute to "AGSIST (agsist.com)" and link the

@@ -1810,7 +1810,7 @@
         /* 2026-10-01: this said "Get <ZIP> prices in your inbox". The
            signup it opens posts {email, source} -- no ZIP -- and the
            Daily is national. Promise what the form delivers. */
-        + 'Get the AGSIST Daily in your inbox every weekday →</a></div>';
+        + 'Get the AGSIST Daily in your inbox every morning →</a></div>';
     }
 
     /* The page's feed-count lines (index1: .r7-cov, #idx1-trust-ledger) live

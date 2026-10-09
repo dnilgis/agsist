@@ -30,7 +30,7 @@
   var EP = 'https://agsist-subs.dnilgis.workers.dev/subscribe';
   var DISMISS_DAYS = 35;
   var BAR_KEY = 'agsist_signup_bar_dismissed';
-  var BAR_TEXT = 'AGSIST Daily: your local top bid and the markets, free, every weekday morning';
+  var BAR_TEXT = 'AGSIST Daily: your local top bid and the markets, free, every morning';
   var EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
   /* Placement sources that ?ref=email-forward replaces. A watch opt-in, a
      bid row or a page ask says more about why the reader signed up, so it
@@ -87,14 +87,9 @@
     return /^\d{5}$/.test(z) ? z : '';
   }
 
-  /* "tomorrow" is a weekday, Central time: Friday and Saturday say Monday. */
+  /* The Daily goes out every morning, weekends included. */
   function okText() {
-    var day = 'tomorrow';
-    try {
-      var wd = new Intl.DateTimeFormat('en-US', { timeZone: 'America/Chicago', weekday: 'short' }).format(new Date());
-      if (wd === 'Fri' || wd === 'Sat') day = 'Monday';
-    } catch (e) {}
-    return 'You’re in. First email ' + day + ' morning.';
+    return 'You’re in. First email tomorrow morning.';
   }
 
   function track(name, params) { try { if (typeof window.gtag === 'function') window.gtag('event', name, params); } catch (e) {} }

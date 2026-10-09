@@ -570,7 +570,7 @@
       /* 2026-10-06: the labelled daily opt-in, ticked by default, shown only
          to a reader who has not signed up (components/signup-ask.js). */
       + (window.AgsistSignup && !window.AgsistSignup.isSignedUp()
-        ? '<label class="sa-optin"><input type="checkbox" class="we-optin" checked> Also send me AGSIST Daily, free, every weekday morning</label>' : '')
+        ? '<label class="sa-optin"><input type="checkbox" class="we-optin" checked> Also send me AGSIST Daily, free, every morning</label>' : '')
       + '<div class="we-note" style="font-size:.8125rem;color:var(--text-muted);margin-top:.25rem">Email when the posted corn basis changes.</div>'
       + '<div class="watch-elevator-status" id="' + sid + '" role="status" tabindex="-1" style="font-size:.8125rem;color:var(--text-muted);margin-top:.25rem"></div></div>';
     wrap.innerHTML = h;
