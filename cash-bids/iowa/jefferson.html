@@ -120,6 +120,8 @@
   <div class="cbt-note"><b>No current bid.</b> No elevator the AGSIST network reads in Jefferson, IA has a bid we could confirm right now. The live page shows bids nearby.</div>
   <a class="cbt-live" href="/cash-bids?zip=50129">Live bids near 50129 &rarr;</a>
   
+  <!-- a reader already signed up never gets the ask: mark them before first paint (components/styles.css holds the space otherwise) -->
+  <script>try{if(/(^|;\s*)agsist_subscribed=/.test(document.cookie)||localStorage.getItem('agsist_subscribed')==='1')document.documentElement.classList.add('sa-subbed')}catch(e){}</script>
   <div data-signup-ask="Get Jefferson bids by email every weekday morning" data-source="town:iowa/jefferson" data-zip="50129"></div>
   <h2>Also in Jefferson, no current bid</h2><ul class="cbt-list"><li>Landus Cooperative: board not confirmed on the latest read, last read Oct 8, 2026</li></ul><p class="cbt-sub">No price is shown for these until their board posts again.</p>
   <div class="cbt-note"><b>Where these come from.</b> The AGSIST elevator network reads each elevator&rsquo;s
