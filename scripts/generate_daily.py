@@ -3289,7 +3289,7 @@ def generate_archive_html(briefing, date_iso, prev_date=None, next_date=None,
     if one_num:
         one_num_html = (f'<div class="dv3-one-number">'
                         f'<div class="dv3-one-number-label">THE NUMBER</div>'
-                        f'<div class="dv3-one-number-val">{html_esc(one_num.get("value", "\u2014"))}</div>'
+                        f'<div class="dv3-one-number-val">{html_esc(one_num.get("value", "-"))}</div>'
                         f'<div class="dv3-one-number-unit">{html_esc(one_num.get("unit", ""))}</div>'
                         f'<div class="dv3-one-number-ctx">{html_esc(one_num.get("context", ""))}</div>'
                         f'</div>')

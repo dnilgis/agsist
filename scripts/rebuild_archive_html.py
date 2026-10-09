@@ -19,6 +19,7 @@ so their rebuilt pages show no sparkline row. That's expected.
 New briefings written by v3.6 will have sparklines from day one.
 """
 
+import re
 import sys
 import json
 from pathlib import Path
@@ -33,6 +34,19 @@ ARCHIVE_JSON_DIR = REPO_ROOT / "data" / "daily-archive"
 ARCHIVE_HTML_DIR = REPO_ROOT / "daily"
 
 
+def _no_em_dashes(obj):
+    """Older archive JSONs predate sanitize_em_dashes; the published pages had
+    their em dashes taken out by hand, so a rebuild must not put them back.
+    Em dashes only: en dashes in ranges stay."""
+    if isinstance(obj, dict):
+        return {k: _no_em_dashes(v) for k, v in obj.items()}
+    if isinstance(obj, list):
+        return [_no_em_dashes(v) for v in obj]
+    if isinstance(obj, str):
+        return re.sub(r",\s*,", ",", re.sub(r"(?<=\S)[ \t]*\u2014[ \t]*(?=\S)", ", ", obj)).replace("\u2014 ", "").replace("\u2014", "")
+    return obj
+
+
 def rebuild_one(date_iso: str, dry_run: bool = False) -> bool:
     json_path = ARCHIVE_JSON_DIR / f"{date_iso}.json"
     html_path = ARCHIVE_HTML_DIR / f"{date_iso}.html"
@@ -43,7 +57,7 @@ def rebuild_one(date_iso: str, dry_run: bool = False) -> bool:
 
     try:
         with open(json_path) as f:
-            briefing = json.load(f)
+            briefing = _no_em_dashes(json.load(f))
     except json.JSONDecodeError as e:
         print(f"  [err]  {date_iso} — invalid JSON: {e}")
         return False
