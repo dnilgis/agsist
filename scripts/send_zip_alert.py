@@ -241,7 +241,7 @@ def confirm_email(w, wid, label, base, secret, fn, fa, rt):
                   f"If that was you, confirm here:\n{go}\n\n{how}\n"
                   "It reads boards AGSIST reads direct from the elevators, not every elevator in the area.\n"
                   "If it was not you, ignore this email. Nothing starts until you confirm.\n\n"
-                  f"--\n{sew.ADDRESS}\nNot me / stop: {stop}\n")
+                  f"-- \n{sew.ADDRESS}\nNot me / stop: {stop}\n")
     foot = f'{H.escape(sew.ADDRESS)}<br><a href="{H.escape(stop)}" style="color:#6b6b6b">Not me / stop</a>'
     m.add_alternative(sew.html_wrap("Confirm your ZIP cash alert", [
         "Someone asked for this cash bid alert on AGSIST using this address:", label,
@@ -273,7 +273,7 @@ def alert_email(w, wid, label, hits, zip5, radius, crop, target, first, base, se
     m = sew.base_msg(w, subj, fn, fa, rt, stop1)
     m.set_content(f"{head}\n\n{lead}\n\n" + "\n".join(lines) + f"\n\n{tail}\n\n{note}\n\n"
                   f"All bids near {zip5}:\n{CARD_URL}\n\n"
-                  f"--\n{sew.ADDRESS}\nStop this alert: {stop1}\nStop all elevator alerts: {stopall}\n")
+                  f"-- \n{sew.ADDRESS}\nStop this alert: {stop1}\nStop all elevator alerts: {stopall}\n")
     foot = (f'{H.escape(sew.ADDRESS)}<br><a href="{H.escape(stop1)}" style="color:#6b6b6b">Stop this alert</a> &middot; '
             f'<a href="{H.escape(stopall)}" style="color:#6b6b6b">Stop all</a>')
     m.add_alternative(sew.html_wrap(head, [lead] + lines + [tail, note], ("SEE ALL CASH BIDS", CARD_URL), foot),

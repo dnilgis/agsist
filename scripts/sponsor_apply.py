@@ -272,14 +272,14 @@ def msg(to, subject, paras, button=None, fn="AGSIST", fa="", rt=None, links=None
         text += "\n\n%s: %s" % button
     for label, url in links or []:
         text += "\n%s: %s" % (label, url)
-    m.set_content(text + "\n\n--\n" + ADDRESS + "\n")
+    m.set_content(text + "\n\n-- \n" + ADDRESS + "\n")
     e = H.escape
     body = "".join('<p style="font-size:14px;line-height:1.6;margin:0 0 12px">%s</p>' % e(p) for p in paras)
     btn = ('<p style="margin:18px 0"><a href="%s" style="background:#e8743a;color:#0d1117;text-decoration:none;'
            'padding:11px 18px;font-weight:bold;border-radius:6px">%s</a></p>' % (e(button[1]), e(button[0]))) if button else ""
     more = "".join('<p style="margin:6px 0"><a href="%s">%s</a></p>' % (e(u), e(l)) for l, u in links or [])
     m.add_alternative('<div style="font-family:Georgia,serif;max-width:560px;margin:0 auto;padding:24px 16px;color:#1a1a1a;background:#fff">'
-                      '%s%s%s<p style="font-size:12px;color:#6b6b6b">%s</p></div>' % (body, btn, more, e(ADDRESS)), subtype="html")
+                      '%s%s%s<p style="font-size:14px;color:#6b6b6b">%s</p></div>' % (body, btn, more, e(ADDRESS)), subtype="html")
     return m
 
 

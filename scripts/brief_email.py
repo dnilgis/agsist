@@ -259,14 +259,14 @@ def price_table(daily, prior, prior_day):
     _against = _against or prior_day
     stamp = ("close, against %s" % e(_against)) if _against else "close"
     return (_label("The board")
-            + '<tr><td class="mute" style="padding:0 0 8px;font-family:%s;font-size:12px;color:%s">%s</td></tr>'
+            + '<tr><td class="mute" style="padding:0 0 8px;font-family:%s;font-size:14px;color:%s">%s</td></tr>'
               % (SANS, MUTE, stamp)
             + '<tr><td><table role="presentation" width="100%%" cellpadding="0" cellspacing="0" '
               'border="0" style="width:100%%">%s</table></td></tr>' % "".join(rows))
 
 
 # v5.5: the line under The Action when it is the prediction bot's call.
-BOT_SRC_HTML = ('<div class="mute" style="font-family:%s;font-size:12px;line-height:1.5;color:%s;'
+BOT_SRC_HTML = ('<div class="mute" style="font-family:%s;font-size:14px;line-height:1.5;color:%s;'
                 'padding-top:6px">From the AGSIST prediction bot, a fixed statistical rule graded '
                 'by code. Not advice. <a href="https://agsist.com/scorecard" style="color:%s">'
                 'Record and method</a></div>')
@@ -292,7 +292,7 @@ def call_card(daily):
               '<td style="border-left:3px solid %s;padding:10px 0 10px 12px">'
               '<div class="ink" style="font-family:%s;font-size:16px;color:%s">'
               '<strong>%s</strong> %s <strong>%s</strong></div>'
-              '<div class="mute" style="font-family:%s;font-size:12px;color:%s;padding-top:4px">'
+              '<div class="mute" style="font-family:%s;font-size:14px;color:%s;padding-top:4px">'
               'Graded against tomorrow&rsquo;s close, win or lose, on the scorecard.</div>'
               '</td></tr></table></td></tr>'
               % (GOLD, MONO, INK, e(str(inst).title()), arrow,
@@ -408,7 +408,7 @@ def elevators_html(lines):
         return ""
     rows = "".join('<tr><td style="padding:6px 0 0;font-family:%s;font-size:14px;line-height:1.5;'
                    'color:%s" class="ink">%s</td></tr>' % (SANS, INK, e(x)) for x in lines)
-    note = ('<tr><td class="mute" style="padding:6px 0 0;font-family:%s;font-size:12px;line-height:1.5;'
+    note = ('<tr><td class="mute" style="padding:6px 0 0;font-family:%s;font-size:14px;line-height:1.5;'
             'color:%s">The elevators\' own posted boards, read when this email was sent. Not a contract. '
             'Call to confirm before you haul.</td></tr>' % (SANS, MUTE))
     return (_label("Your elevators")
@@ -438,6 +438,71 @@ DARK = """
 SUBJECT_MAX = 78
 
 
+# ── the headline, without the shouting ────────────────────────────────────
+# Every archived headline is written in capitals. In a subject line and as the
+# email's own heading that reads as shouting, so a mostly-capitals headline is
+# put in sentence case. Words a reader expects in capitals stay in capitals,
+# and names keep their capital letter. Both lists come from the archived
+# headlines (data/daily-archive) plus the usual ag acronyms; a word that is in
+# neither list is lower-cased, which is the safe miss.
+HEAD_ACRONYMS = {
+    "USDA", "WASDE", "WTI", "CME", "CBOT", "EPA", "RFS", "US", "U.S.", "EU", "OPEC", "ETF",
+    "COT", "NOPA", "ENSO", "FOMC", "GDP", "CPI", "KC", "MGEX", "ZIP", "CHS", "COF", "CT",
+    "AM", "PM", "ET", "UK", "UN", "LNG", "SRW", "HRW", "HRS", "NASS", "FSA", "RMA", "DDGS",
+    "OPEC+", "MMT", "API", "EIA", "FAS", "USMCA", "UAE",
+}
+HEAD_PROPER = {w.upper(): w for w in (
+    "Brazil", "Brazilian", "China", "Chinese", "Hormuz", "Qatar", "Argentina", "Argentine", "Gulf",
+    "Iran", "Iranian", "Israel", "Saudi", "Yanbu", "Russia", "Russian", "Ukraine", "Ukrainian",
+    "Black", "Sea", "Mexico", "Canada", "India", "Australia", "Europe", "Brent", "Cargill",
+    "Trump", "Xi", "Beijing", "Washington", "Mississippi", "Midwest", "Iowa", "Illinois",
+    "Nebraska", "Kansas", "Minnesota", "Indiana", "Ohio", "Dakota", "Texas", "Panama",
+    "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday",
+    "January", "February", "March", "April", "May", "June", "July", "August", "September",
+    "October", "November", "December", "Thanksgiving", "Christmas", "Labor", "Memorial",
+)}
+# Names of more than one word, where each word alone is ordinary ("PRO", "BELT").
+HEAD_PHRASES = (("PRO FARMER", "Pro Farmer"), ("CORN BELT", "Corn Belt"), ("FARM BILL", "Farm Bill"),
+                ("BLACK SEA", "Black Sea"), ("LABOR DAY", "Labor Day"), ("MEMORIAL DAY", "Memorial Day"),
+                ("SOUTH AMERICA", "South America"), ("NORTH DAKOTA", "North Dakota"),
+                ("SOUTH DAKOTA", "South Dakota"), ("CROP PROGRESS", "Crop Progress"))
+_HEAD_WORD = re.compile(r"(?<![0-9A-Za-z])[A-Za-z][A-Za-z.+]*(?:['’][A-Za-z]+)?")
+
+
+def soften_caps(head):
+    """A headline in capitals -> sentence case; anything else unchanged."""
+    head = str(head or "")
+    letters = [c for c in head if c.isalpha()]
+    if len(letters) < 4 or sum(c.isupper() for c in letters) < 0.8 * len(letters):
+        return head
+
+    def word(m):
+        w = m.group(0)
+        core, tail = w, ""
+        mm = re.match(r"^(.*?)(['’][A-Za-z]+)$", w)
+        if mm:
+            core, tail = mm.group(1), mm.group(2).lower()
+        dot = ""
+        if core.upper() not in HEAD_ACRONYMS and core.endswith("."):
+            core, dot = core[:-1], "."
+        up = core.upper()
+        if up in HEAD_ACRONYMS:
+            return up + tail + dot
+        if up in HEAD_PROPER:
+            return HEAD_PROPER[up] + tail + dot
+        return core.lower() + tail + dot
+
+    out = _HEAD_WORD.sub(word, head)
+    for a, b in HEAD_PHRASES:
+        out = re.sub(r"(?<![A-Za-z])" + re.escape(a) + r"(?![A-Za-z])", b, out, flags=re.I)
+    # "Trump-Xi": each half of a hyphenated word is looked up on its own above,
+    # because the word pattern stops at the hyphen.
+    m = re.search(r"[A-Za-z]", out)
+    if m:
+        out = out[:m.start()] + out[m.start()].upper() + out[m.start() + 1:]
+    return out
+
+
 def _clip(head, room):
     """Shorten a headline without leaving a half-word or a dangling comma."""
     if room < 20 or len(head) <= room:
@@ -460,7 +525,7 @@ def subject_line(daily, prior):
     characters, and neither can drift from the table underneath.
     """
     issue = daily.get("issue_number")
-    head = strip_md(daily.get("headline")) or "AGSIST Daily"
+    head = soften_caps(strip_md(daily.get("headline"))) or "AGSIST Daily"
     mover, p = biggest_mover(daily, prior)
     bits = ["AGSIST" + (" #%s" % issue if issue else "")]
     if mover and p is not None and abs(p) >= 0.5:
@@ -545,7 +610,7 @@ def sponsor_block(daily):
         parts.append('<div class="ink" style="font-family:%s;font-size:14px;line-height:1.55;'
                      'color:%s;padding-top:6px">%s</div>' % (SANS, INK, text))
     if facts:
-        parts.append('<div class="mute" style="font-family:%s;font-size:12px;line-height:1.6;'
+        parts.append('<div class="mute" style="font-family:%s;font-size:14px;line-height:1.6;'
                      'font-weight:700;color:%s;padding-top:8px">%s</div>'
                      % (MONO, MUTE, " &nbsp;&middot;&nbsp; ".join(facts)))
     if cta_u:
@@ -556,11 +621,11 @@ def sponsor_block(daily):
                      'text-transform:uppercase;color:%s;text-decoration:none">%s &rarr;</a></td>'
                      '%s</tr></table>'
                      % (AD_ORANGE, AD_ORANGE, cta_u, MONO, AD_INK, cta_t,
-                        ('<td style="padding-left:14px;font-family:%s;font-size:13px;color:%s">'
+                        ('<td style="padding-left:14px;font-family:%s;font-size:14px;color:%s">'
                          'or call <a href="%s" style="color:%s;font-weight:700;text-decoration:none">%s</a></td>'
                          % (SANS, MUTE, tel, INK, phone)) if tel else ""))
     if disc:
-        parts.append('<div class="mute" style="font-family:%s;font-size:11px;line-height:1.5;'
+        parts.append('<div class="mute" style="font-family:%s;font-size:14px;line-height:1.5;'
                      'color:%s;padding-top:10px">%s</div>' % (SANS, MUTE, disc))
     parts.append('</td></tr></table></td></tr>')
     return "".join(parts)
@@ -578,14 +643,14 @@ def local_html(local):
     if not local:
         return ""
     if local.get("ask_url"):
-        return ('<tr><td class="mute" style="padding:12px 0 0;font-family:%s;font-size:13px;line-height:1.5;'
+        return ('<tr><td class="mute" style="padding:12px 0 0;font-family:%s;font-size:14px;line-height:1.5;'
                 'color:%s"><a href="%s" style="color:%s">Add your ZIP to get your local top bid</a> '
                 'at the top of this email.</td></tr>' % (SANS, MUTE, _href(local["ask_url"]), GOLD))
     if not local.get("head"):
         return ""
-    det = "".join('<br><span class="mute" style="font-size:13px;color:%s">%s</span>' % (MUTE, e(d))
+    det = "".join('<br><span class="mute" style="font-size:14px;color:%s">%s</span>' % (MUTE, e(d))
                   for d in (local.get("detail") or []))
-    note = ('<br><span class="mute" style="font-size:12px;color:%s">%s</span>' % (MUTE, e(local["note"]))
+    note = ('<br><span class="mute" style="font-size:14px;color:%s">%s</span>' % (MUTE, e(local["note"]))
             if local.get("note") else "")
     return ('<tr><td style="padding:14px 0 0"><table role="presentation" width="100%%" cellpadding="0" '
             'cellspacing="0" border="0"><tr><td class="ink" style="border-left:3px solid %s;padding:4px 0 4px 12px;'
@@ -618,7 +683,7 @@ def action_label(daily, take):
 def render_html(daily, site_href, unsub_url=None, date_display=None, elevators=None,
                 local=None, forward_url=None):
     prior, prior_day = prior_board(daily)
-    head = strip_md(daily.get("headline"))
+    head = soften_caps(strip_md(daily.get("headline")))
     lead = strip_md(daily.get("lead"))
     # v5.1: the action holds the slot the takeaway had. An issue from before
     # the cut has no action and keeps its takeaway.
@@ -644,7 +709,7 @@ def render_html(daily, site_href, unsub_url=None, date_display=None, elevators=N
         'opacity:0;color:transparent;font-size:1px;line-height:1px">%s</div>' % e(lead or take),
         '<tr><td style="font-family:%s;font-size:11px;font-weight:700;letter-spacing:.14em;'
         'text-transform:uppercase;color:%s" class="mute">%s</td></tr>' % (MONO, MUTE, mast),
-        '<tr><td style="padding:2px 0 0;font-family:%s;font-size:12px;color:%s" class="mute">%s</td></tr>'
+        '<tr><td style="padding:2px 0 0;font-family:%s;font-size:14px;color:%s" class="mute">%s</td></tr>'
         % (SANS, MUTE, e(date_display)),
     ]
     _loc = local_html(local)
@@ -720,7 +785,7 @@ def render_html(daily, site_href, unsub_url=None, date_display=None, elevators=N
     if _loc and local.get("ask_url"):
         body.append(_loc)
     if forward_url:
-        body.append('<tr><td class="mute" style="padding:12px 0 0;font-family:%s;font-size:13px;line-height:1.5;'
+        body.append('<tr><td class="mute" style="padding:12px 0 0;font-family:%s;font-size:14px;line-height:1.5;'
                     'color:%s">Forward to a neighbor. Or send them the free sign-up link: '
                     '<a href="%s" style="color:%s">%s</a></td></tr>'
                     % (SANS, MUTE, _href(forward_url), GOLD, e(forward_url.split("://", 1)[-1])))
@@ -733,7 +798,7 @@ def render_html(daily, site_href, unsub_url=None, date_display=None, elevators=N
         foot += "<br>To unsubscribe, reply with subject line: unsubscribe"
     foot += "<br>PO Box 243, Chetek, WI 54728"
     body.append(_rule(26))
-    body.append('<tr><td class="mute" style="padding:12px 0 0;font-family:%s;font-size:12px;'
+    body.append('<tr><td class="mute" style="padding:12px 0 0;font-family:%s;font-size:14px;'
                 'line-height:1.6;color:%s">%s</td></tr>' % (SANS, MUTE, foot))
 
     # THE PADDING GOES ON AN INNER CELL, NOT ON THE CARD TABLE. A table is
@@ -786,6 +851,8 @@ def render_text(daily, site, unsub_url=None, date_display=None, elevators=None,
         L += local_text(local)
     for k in ("headline", "lead"):
         v = strip_md(daily.get(k))
+        if k == "headline":
+            v = soften_caps(v)
         if v:
             L += ["", v]
     take = strip_md(daily.get("action"))
@@ -876,7 +943,8 @@ def render_text(daily, site, unsub_url=None, date_display=None, elevators=None,
             L.append("  %s: %s" % (strip_md(w.get("time")), strip_md(w.get("desc"))))
     if elevators:
         L += ["", "YOUR ELEVATORS"] + ["  " + x for x in elevators]
-        L.append("  The elevators' own posted boards, read when this email was sent. Not a contract.")
+        L.append("  The elevators' own posted boards, read when this email was sent. Not a contract. "
+                 "Call to confirm before you haul.")
     L += ["", "Charts, calls and the full issue: " + site]
     if local and local.get("ask_url"):
         L += local_text(local)
@@ -887,3 +955,44 @@ def render_text(daily, site, unsub_url=None, date_display=None, elevators=None,
              else "To unsubscribe, reply with subject line: unsubscribe")
     L.append("PO Box 243, Chetek, WI 54728")
     return "\n".join(L) + "\n"
+
+
+def _selftest():
+    """Real archived headlines, before and after."""
+    cases = {
+        "CRUDE RUNS 5% ON HORMUZ, SOY OIL BREAKS HARD": "Crude runs 5% on Hormuz, soy oil breaks hard",
+        "WASDE PRINTS AT 11 CT: WHEAT LEADS, BEANS REACT": "WASDE prints at 11 CT: wheat leads, beans react",
+        "PRO FARMER SAYS SMALLER; CORN CLOSES AT 52-WEEK HIGH": "Pro Farmer says smaller; corn closes at 52-week high",
+        "MARKETS DARK; U.S. STRIKES IRANIAN TANKERS TUESDAY LOOMS": "Markets dark; U.S. strikes Iranian tankers Tuesday looms",
+        "HOGS BREAK HARD; CATTLE HOLD; CHS DROPS $700M ON CRUSH": "Hogs break hard; cattle hold; CHS drops $700M on crush",
+        "CRUDE RETREATS; TRUMP-XI SUMMIT HANGS OVER BEANS": "Crude retreats; Trump-Xi summit hangs over beans",
+        "WHEAT FIRMS; EPA BIOFUEL EXEMPTIONS HIT THE BOARD": "Wheat firms; EPA biofuel exemptions hit the board",
+        "GRAINS SIT STILL, CATTLE SLIP AGAIN BEFORE COF": "Grains sit still, cattle slip again before COF",
+        "BEANS SANK FRIDAY; SUMMIT WEEK OPENS WITH CROSSED SIGNALS": "Beans sank Friday; summit week opens with crossed signals",
+        "CRUDE PULLS BACK 2.1% AS YANBU REOPENS": "Crude pulls back 2.1% as Yanbu reopens",
+        "CORN HOLDS 52-WEEK HIGH; CROP PROGRESS AT 3 PM": "Corn holds 52-week high; Crop Progress at 3 PM",
+        "BEANS HOLD $12.99; CRUDE AT $100, WEEK AHEAD": "Beans hold $12.99; crude at $100, week ahead",
+        "CORN RALLIES ON CHINA HOPES; CATTLE JUMP 2.4%": "Corn rallies on China hopes; cattle jump 2.4%",
+        "FRIDAY'S SELLOFF HITS BRAZIL BEANS": "Friday's selloff hits Brazil beans",
+        # Mixed case is somebody's deliberate choice: left alone.
+        "Crude runs 5% on Hormuz": "Crude runs 5% on Hormuz",
+        "USDA vs the trade": "USDA vs the trade",
+        "": "",
+    }
+    bad = [(a, soften_caps(a), b) for a, b in cases.items() if soften_caps(a) != b]
+    d = {"issue_number": 209, "headline": "CRUDE RUNS 5% ON HORMUZ, SOY OIL BREAKS HARD", "lead": "x"}
+    subj = subject_line(d, None)
+    if "Crude runs 5% on Hormuz" not in subj or "HORMUZ" in subj:
+        bad.append(("subject", subj, "sentence case"))
+    txt = render_text(d, "https://agsist.com/")
+    if "Crude runs 5% on Hormuz, soy oil breaks hard" not in txt or "SOY OIL" in txt:
+        bad.append(("text heading", "", ""))
+    for b in bad:
+        print("FAIL", b)
+    print("brief_email selftest " + ("FAILED" if bad else "ok"))
+    return 1 if bad else 0
+
+
+if __name__ == "__main__":
+    if "--selftest" in sys.argv:
+        sys.exit(_selftest())

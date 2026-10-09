@@ -73,7 +73,7 @@ def fmt_line(label, old, new, unit=None, yr=None):
             return "not published"
         t = money(v, unit) if unit else f"{v:g}"
         return t + (f" ({y})" if y else "")
-    return f"{label}: {one(old[0], old[1])} -> {one(new[0], new[1])}"
+    return f"{label}: {one(old[0], old[1])} to {one(new[0], new[1])}"
 
 
 def changes(old, new):
@@ -93,9 +93,9 @@ def changes(old, new):
             out.append("Corn yield: no longer published")
         else:
             was = "not published" if old.get("y") is None else f"{old['y']:g}"
-            out.append(f"Corn yield: {was} -> {new['y']:g} bu/acre")
+            out.append(f"Corn yield: {was} to {new['y']:g} bu/acre")
     if old.get("c") != new.get("c"):
-        out.append(f"Claims per $100 of coverage: {old.get('c') if old.get('c') is not None else 'not published'} -> "
+        out.append(f"Claims per $100 of coverage: {old.get('c') if old.get('c') is not None else 'not published'} to "
                    f"{new.get('c') if new.get('c') is not None else 'not published'}")
     return out
 
@@ -120,7 +120,7 @@ def html_wrap(title, paras, button=None, foot=""):
            f'text-decoration:none;display:inline-block;padding:13px 20px;font-family:Courier,monospace;font-size:14px">{e(button[0])}</a></p>') if button else ""
     return ('<div style="font-family:Georgia,serif;max-width:560px;margin:0 auto;padding:24px 16px;color:#1a1a1a;background:#fff">'
             f'<h1 style="font-size:20px;line-height:1.3;margin:0 0 12px">{e(title)}</h1>{body}{btn}'
-            f'<p style="font-size:12px;color:#6b6b6b;line-height:1.5">{foot}</p></div>')
+            f'<p style="font-size:14px;color:#6b6b6b;line-height:1.5">{foot}</p></div>')
 
 
 def confirm_email(w, fips, c, base, secret, fn, fa, rt):
@@ -132,7 +132,7 @@ def confirm_email(w, fips, c, base, secret, fn, fa, rt):
                   f"If that was you, confirm here:\n{go}\n\n"
                   "Then you get an email when that county's published figures change. That is usually once or twice a year.\n"
                   "If it was not you, ignore this email. Nothing starts until you confirm.\n\n"
-                  f"--\n{ADDRESS}\nNo more emails about this county: {stop}\n")
+                  f"-- \n{ADDRESS}\nNo more emails about this county: {stop}\n")
     foot = f'{H.escape(ADDRESS)}<br><a href="{H.escape(stop)}" style="color:#6b6b6b">Not me / stop</a>'
     m.add_alternative(html_wrap(f"Confirm: watch {lab}", [
         f"Someone asked to watch {lab} in the AGSIST Farmland Atlas using this address.",
@@ -148,7 +148,7 @@ def change_email(w, fips, c, lines, base, secret, fn, fa, rt, page):
     m = base_msg(w, f"{lab}: Farmland Atlas figures updated", fn, fa, rt, stop1)
     m.set_content(f"Published figures changed for {lab}.\n\n" + "\n".join(lines) +
                   f"\n\nFull county page:\n{page}\n\nThese are county averages from public records, not an appraisal of any farm.\n\n"
-                  f"--\n{ADDRESS}\nStop watching this county: {stop1}\nStop all county watches: {stopall}\n")
+                  f"-- \n{ADDRESS}\nStop watching this county: {stop1}\nStop all county watches: {stopall}\n")
     foot = (f'{H.escape(ADDRESS)}<br><a href="{H.escape(stop1)}" style="color:#6b6b6b">Stop watching this county</a> &middot; '
             f'<a href="{H.escape(stopall)}" style="color:#6b6b6b">Stop all</a>')
     m.add_alternative(html_wrap(f"{lab}: figures updated", lines + [
@@ -200,11 +200,11 @@ def selftest():
     old = {"r": 250.0, "ry": 2025, "v": 9000, "vy": 2022, "vf": False, "y": 200.5, "c": 5.7}
     assert changes(old, dict(old)) == []
     n = dict(old, r=262.5, ry=2026)
-    assert changes(old, n) == ["Dry cash rent: $250 an acre (2025) -> $262.50 an acre (2026)"], changes(old, n)
-    assert changes(dict(old, r=None, ry=None), n)[0].startswith("Dry cash rent: not published -> $262.50")
+    assert changes(old, n) == ["Dry cash rent: $250 an acre (2025) to $262.50 an acre (2026)"], changes(old, n)
+    assert changes(dict(old, r=None, ry=None), n)[0].startswith("Dry cash rent: not published to $262.50")
     assert changes(old, dict(old, v=9100, vf=True))[0].endswith("read with care")
     assert changes(old, dict(old, y=None)) == ["Corn yield: no longer published"]
-    assert changes(old, dict(old, y=205.0)) == ["Corn yield: 200.5 -> 205 bu/acre"]
+    assert changes(old, dict(old, y=205.0)) == ["Corn yield: 200.5 to 205 bu/acre"]
     C = {"19169": {"n": "Story County", "s": "Iowa", "k": "new", "r": 262.5, "ry": 2026, "v": 9000, "vy": 2022, "vf": False, "y": 200.5, "c": 5.7},
          "19001": {"n": "Adair County", "s": "Iowa", "k": "same", "r": 1.0, "ry": 2026, "v": 1, "vy": 2022, "vf": False, "y": 1, "c": 1}}
     W = [{"email": "a@x.com", "pend": {"19169": {"ts": 1000, "m": 0}, "19001": {"ts": 1000, "m": 1}, "99999": {"ts": 1000, "m": 0}},
@@ -220,7 +220,7 @@ def selftest():
     body = m.get_body(("plain",)).get_content()
     assert "PO Box 243, Chetek, WI 54728" in body and "watch-confirm?e=a%40x.com&f=19169&t=" in body
     assert m["List-Unsubscribe-Post"] == "List-Unsubscribe=One-Click"
-    m2 = change_email("a@x.com", "19169", C["19169"], ["x -> y"], "https://w.dev", s, "AGSIST", "n@agsist.com", None, "https://agsist.com/p")
+    m2 = change_email("a@x.com", "19169", C["19169"], ["x to y"], "https://w.dev", s, "AGSIST", "n@agsist.com", None, "https://agsist.com/p")
     assert "PO Box 243" in m2.get_body(("plain",)).get_content() and "Stop all county watches" in m2.get_body(("plain",)).get_content()
     print("selftest ok")
 

@@ -234,7 +234,7 @@ def apply(acts, base, secret, list_token):
 
 def line(a):
     if a["do"] == "fix":
-        return f"Fixed ({a['list']}): {a['email']} -> {a['to']}"
+        return f"Fixed ({a['list']}): {a['email']} changed to {a['to']}"
     if a["do"] == "remove":
         return f"Removed ({a['list']}): {a['email']}, {a['why']}"
     return f"Note: {a['email']}, {a['why']}"

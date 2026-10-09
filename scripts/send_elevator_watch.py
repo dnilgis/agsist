@@ -328,7 +328,7 @@ def html_wrap(title, paras, button=None, foot=""):
            f'text-decoration:none;display:inline-block;padding:13px 20px;font-family:Courier,monospace;font-size:14px">{e(button[0])}</a></p>') if button else ""
     return ('<div style="font-family:Georgia,serif;max-width:560px;margin:0 auto;padding:24px 16px;color:#1a1a1a;background:#fff">'
             f'<h1 style="font-size:20px;line-height:1.3;margin:0 0 12px">{e(title)}</h1>{body}{btn}'
-            f'<p style="font-size:12px;color:#6b6b6b;line-height:1.5">{foot}</p></div>')
+            f'<p style="font-size:14px;color:#6b6b6b;line-height:1.5">{foot}</p></div>')
 
 
 def confirm_email(w, wid, label, base, secret, fn, fa, rt):
@@ -339,7 +339,7 @@ def confirm_email(w, wid, label, base, secret, fn, fa, rt):
                   f"If that was you, confirm here:\n{go}\n\n"
                   "Then you get an email when this elevator's posted basis changes.\n"
                   "If it was not you, ignore this email. Nothing starts until you confirm.\n\n"
-                  f"--\n{ADDRESS}\nNo more emails about this elevator: {stop}\n")
+                  f"-- \n{ADDRESS}\nNo more emails about this elevator: {stop}\n")
     foot = f'{H.escape(ADDRESS)}<br><a href="{H.escape(stop)}" style="color:#6b6b6b">Not me / stop</a>'
     m.add_alternative(html_wrap(f"Confirm: watch {label}", [
         f"Someone asked to watch {label} in AGSIST's cash bids using this address.",
@@ -367,17 +367,17 @@ def change_email(w, wid, label, old_basis, new_row, base, secret, fn, fa, rt):
     stopall = link(base, "elevator-watch-unsubscribe", w, wid, secret, "w")
     dm = month_words(new_row)
     m = base_msg(w, f"{label}, {dm}: basis moved to {fmt_cents(new_row['basis'])}", fn, fa, rt, stop1)
-    line = (f"{dm} basis: {fmt_cents(old_basis)} -> {fmt_cents(new_row['basis'])}, "
+    line = (f"{dm} basis: {fmt_cents(old_basis)} to {fmt_cents(new_row['basis'])}, "
             f"as of {new_row['changedOn'] or 'an unposted date'}.")
     m.set_content(f"{label}'s posted basis for {dm} changed.\n\n{line}\n\n"
-                  f"This is the elevator's own posted board, not a contract -- freight, moisture and grade "
+                  f"This is the elevator's own posted board, not a contract. Freight, moisture and grade "
                   "discounts are theirs, not shown here. Call to confirm before you haul.\n\n"
                   f"Full cash bids:\n{SITE}/cash-bids\n\n"
-                  f"--\n{ADDRESS}\nStop watching this elevator: {stop1}\nStop all elevator watches: {stopall}\n")
+                  f"-- \n{ADDRESS}\nStop watching this elevator: {stop1}\nStop all elevator watches: {stopall}\n")
     foot = (f'{H.escape(ADDRESS)}<br><a href="{H.escape(stop1)}" style="color:#6b6b6b">Stop watching this elevator</a> &middot; '
             f'<a href="{H.escape(stopall)}" style="color:#6b6b6b">Stop all</a>')
     m.add_alternative(html_wrap(f"{label}, {dm}: basis moved", [
-        line, "Posted price, not a contract. Freight, moisture and grade discounts are the elevator's -- call to confirm before you haul."],
+        line, "Posted price, not a contract. Freight, moisture and grade discounts are the elevator's. Call to confirm before you haul."],
         ("SEE ALL CASH BIDS", SITE + "/cash-bids"), foot), subtype="html")
     return m
 
@@ -601,7 +601,7 @@ def opt_confirm_email(w, wid, label, base, secret, fn, fa, rt):
                   f"If that was you, confirm here:\n{go}\n\n"
                   "It looks only at postings made after you confirm.\n"
                   "If it was not you, ignore this email. Nothing starts until you confirm.\n\n"
-                  f"--\n{ADDRESS}\nNot me / stop: {stop}\n")
+                  f"-- \n{ADDRESS}\nNot me / stop: {stop}\n")
     foot = f'{H.escape(ADDRESS)}<br><a href="{H.escape(stop)}" style="color:#6b6b6b">Not me / stop</a>'
     m.add_alternative(html_wrap("Confirm your cash bid alert", [
         "Someone asked for this cash bid alert on AGSIST using this address:", label,
@@ -631,7 +631,7 @@ def opt_alert_email(w, wid, label, kind, old, row, base, secret, fn, fa, rt):
                   "This is the elevator's own posted board, not a contract. Freight, moisture and grade "
                   "discounts are theirs and not shown here. Call to confirm before you haul.\n\n"
                   f"The card:\n{CARD_URL}\n\n"
-                  f"--\n{ADDRESS}\nStop this alert: {stop1}\nStop all elevator watches: {stopall}\n")
+                  f"-- \n{ADDRESS}\nStop this alert: {stop1}\nStop all elevator watches: {stopall}\n")
     foot = (f'{H.escape(ADDRESS)}<br><a href="{H.escape(stop1)}" style="color:#6b6b6b">Stop this alert</a> &middot; '
             f'<a href="{H.escape(stopall)}" style="color:#6b6b6b">Stop all</a>')
     m.add_alternative(html_wrap(head, lines + [tail,
@@ -652,7 +652,7 @@ def opt_ended_email(w, wid, label, old_plabel, row, base, secret, fn, fa, rt):
              "The alert is cleared. Set a new one on the card if you want one for the new period."]
     m = base_msg(w, subj, fn, fa, rt, stopall)        # this alert is already cleared
     m.set_content(f"{head}\n\n" + "\n".join(lines) + f"\n\nThe card:\n{CARD_URL}\n\n"
-                  f"--\n{ADDRESS}\nStop all elevator watches: {stopall}\n")
+                  f"-- \n{ADDRESS}\nStop all elevator watches: {stopall}\n")
     foot = f'{H.escape(ADDRESS)}<br><a href="{H.escape(stopall)}" style="color:#6b6b6b">Stop all</a>'
     m.add_alternative(html_wrap(f"{head}: alert ended", lines, ("SEE THE CARD", CARD_URL), foot), subtype="html")
     return m

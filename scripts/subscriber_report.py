@@ -57,7 +57,7 @@ def watch_rows(recs, what):
 def build(daily, alerts, county, elev, price):
     lists = {}
     lists["Daily briefing"] = [{"email": s.get("email", ""), "zip": s.get("zip") or "", "source": s.get("src") or "",
-                                "weekly reports": "yes" if s.get("reports", True) else "no", "since": when(s.get("ts"))}
+                                "report-day emails": "yes" if s.get("reports", True) else "no", "since": when(s.get("ts"))}
                                for s in daily]
     lists["Hail alerts"] = [{"email": a.get("email", ""), "place": a.get("place", ""), "radius mi": a.get("radius_mi", ""),
                              "lat": a.get("lat", ""), "lon": a.get("lon", ""), "since": when(a.get("ts"))} for a in alerts]

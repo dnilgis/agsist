@@ -226,7 +226,7 @@ def build_email(w, day, band, from_name, from_addr, reply_to):
             + link + "\n\n"
             "If damage is possible: photograph everything with today's date "
             "before cleanup, and note the time hail fell if you saw it.\n\n"
-            "--\nAGSIST hail alerts \u00b7 free \u00b7 agsist.com/hail-map\n"
+            "-- \nAGSIST hail alerts \u00b7 free \u00b7 agsist.com/hail-map\n"
             "AGSIST, PO Box 243, Chetek, WI 54728\n"
             "Stop these alerts: " + stop + "\n")
     msg.set_content(text)
@@ -236,7 +236,7 @@ def build_email(w, day, band, from_name, from_addr, reply_to):
     hbody = (
         '<div style="font-family:Georgia,serif;max-width:560px;margin:0 auto;'
         'padding:24px 16px;color:#1a1a1a;background:#ffffff">'
-        '<div style="font-family:Courier,monospace;font-size:12px;color:#6b6b6b;'
+        '<div style="font-family:Courier,monospace;font-size:14px;color:#6b6b6b;'
         'letter-spacing:.08em;text-transform:uppercase">AGSIST hail alert &middot; '
         + e(day) + "</div>"
         '<h1 style="font-size:20px;line-height:1.3;margin:10px 0 12px">Radar-estimated hail near '
@@ -253,9 +253,9 @@ def build_email(w, day, band, from_name, from_addr, reply_to):
         'style="background:#14100a;color:#e9dfc9;text-decoration:none;'
         'display:inline-block;padding:13px 20px;font-family:Courier,monospace;font-size:14px">'
         "SEE THE DATED SWATH MAP &#8594;</a></p>"
-        '<p style="font-size:13px;line-height:1.6;color:#444">If damage is possible: '
+        '<p style="font-size:14px;line-height:1.6;color:#444">If damage is possible: '
         "photograph everything with today's date before cleanup.</p>"
-        '<p style="font-size:12px;color:#6b6b6b;line-height:1.5">AGSIST hail alerts &middot; free &middot; '
+        '<p style="font-size:14px;color:#6b6b6b;line-height:1.5">AGSIST hail alerts &middot; free &middot; '
         '<a href="https://agsist.com/hail-map" style="color:#6b6b6b">agsist.com/hail-map</a>'
         '<br>AGSIST, PO Box 243, Chetek, WI 54728'
         '<br><a href="' + stop + '" style="color:#6b6b6b">Stop these alerts</a></p></div>')

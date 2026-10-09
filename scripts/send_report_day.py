@@ -282,7 +282,8 @@ def compose(day, reports, moves):
             L.append(row_line(h))
         for h in rows:
             if h.get("reaction"):
-                L.append(str(h["reaction"]))
+                # No em dashes in the email, whatever the typed reaction carries.
+                L.append(re.sub(r"\s*\u2014\s*", ", ", str(h["reaction"])).strip(", "))
     if moves:
         L += ["", "THE PRICE MOVE"] + moves
     L += ["", "Trade estimates are the published pre-report survey, typed in from its source; nothing here is estimated by AGSIST.",
@@ -330,9 +331,9 @@ def build_email(day, b, to_addr, from_name, from_addr, reply_to):
               ("Unsubscribe (stops AGSIST Daily too): " + uurl) if uurl else "To unsubscribe, reply with subject line: unsubscribe",
               "PO Box 243, Chetek, WI 54728"]
     msg.set_content(text + "\n" + "\n".join(foot_t) + "\n")
-    foot_h = ('<p style="margin:16px 0 0;font:13px/1.5 sans-serif;color:#6b6b6b">Forward to a neighbor. Or send them the free '
+    foot_h = ('<p style="margin:16px 0 0;font:14px/1.5 sans-serif;color:#6b6b6b">Forward to a neighbor. Or send them the free '
               'sign-up link: <a href="%s" style="color:#8a6b1f">agsist.com/?ref=email-forward</a></p>'
-              '<p style="margin:12px 0 0;font:12px/1.6 sans-serif;color:#6b6b6b">You get this because you signed up for AGSIST Daily '
+              '<p style="margin:12px 0 0;font:14px/1.6 sans-serif;color:#6b6b6b">You get this because you signed up for AGSIST Daily '
               'and report-day emails.<br>%s<br>PO Box 243, Chetek, WI 54728</p>'
               % (FORWARD_URL, ('<a href="%s" style="color:#6b6b6b">Unsubscribe</a> (stops AGSIST Daily too)' % uurl.replace("&", "&amp;"))
                  if uurl else "To unsubscribe, reply with subject line: unsubscribe"))

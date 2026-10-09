@@ -26,6 +26,7 @@ What it does beyond pass-through:
 Stdlib only. No secrets, no network. Safe to run on every push + daily cron.
 """
 import json
+import re
 import os
 import sys
 from datetime import datetime, timezone, date as _date
@@ -362,11 +363,20 @@ def survey_ranges(path=None):
     return out
 
 
+def plain_dashes(text):
+    """A typed reaction's em dashes become commas. The report-day email and the
+    page both print this text, and the house style has no em dashes."""
+    if not isinstance(text, str):
+        return text
+    return re.sub(r"\s*\u2014\s*", ", ", text).strip(", ")
+
+
 def build_history(rows, ranges=None):
     ranges = ranges or {}
     out = []
     for r in rows:
         row = {k: r.get(k) for k in HISTORY_FIELDS}
+        row["reaction"] = plain_dashes(row.get("reaction"))
         lo, hi = ranges.get((r.get("date"), r.get("metric") or r.get("label")), (None, None))
         row["low"], row["high"] = lo, hi
         if not row.get("surprise"):
