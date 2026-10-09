@@ -4,11 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#111a0a"><!-- static-nav:fonts (scripts/inject_static_nav.py) -->
-  <link rel="preload" href="/fonts/inter-400.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="preload" href="/fonts/jetbrains-mono-700.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/jetbrains-mono-var.woff2" as="font" type="font/woff2" crossorigin>
   <!-- /static-nav:fonts -->
-  <link rel="preload" href="/components/styles.css?v=21" as="style">
-<link rel="stylesheet" href="/components/styles.css?v=21">
+  <link rel="preload" href="/components/styles.css?v=22" as="style">
+<link rel="stylesheet" href="/components/styles.css?v=22">
 <link rel="icon" type="image/x-icon"            href="/img/favicon.ico">
 <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
@@ -123,7 +123,7 @@
 .manure-link-card{background:linear-gradient(135deg,rgba(58,139,60,.07),rgba(230,176,66,.04));border:2px solid rgba(58,139,60,.25);border-radius:8px;padding:1.2rem 1.3rem;}
 .manure-link-eyebrow{font-size:0.755rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--green);margin-bottom:.55rem;}
 .manure-link-card p{font-size:.82rem;color:var(--text-dim);line-height:1.6;margin:0 0 1rem;}
-.manure-link-card a.go-btn{display:inline-flex;align-items:center;gap:.5rem;background:var(--gold-fill,var(--gold));color:#0a1a0a;font-family:'JetBrains Mono',monospace;font-size:0.787rem;font-weight:700;text-decoration:none;padding:.65rem 1.1rem;border-radius:6px;min-height:44px;transition:opacity .15s;}
+.manure-link-card a.go-btn{display:inline-flex;align-items:center;gap:.5rem;background:var(--btn-primary-bg);color:var(--btn-primary-ink);font-family:var(--font-body);font-size:var(--btn-fs);font-weight:700;text-decoration:none;padding:.65rem 1.1rem;border-radius:var(--btn-r);min-height:44px;transition:opacity .15s;text-transform:none;letter-spacing:0}
 .manure-link-card a.go-btn:hover{opacity:.85;}
 .manure-link-sub{font-size:0.775rem;color:var(--text-muted);margin-top:.75rem;line-height:1.55;}
 
@@ -179,9 +179,9 @@
   <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a> &rarr; Yield Estimator</nav>
 
   <div class="ye-hero">
-    <div class="ye-eyebrow"><svg class="ic-sp" aria-hidden="true"><use href="#sp-wheat"/></svg> Pre-Harvest Field Estimation</div>
+    <div class="ye-eyebrow page-kicker"><svg class="ic-sp" aria-hidden="true"><use href="#sp-wheat"/></svg> Pre-Harvest Field Estimation</div>
     <h1>Soybean &amp; Corn<br>Yield Calculator</h1>
-    <p>Estimate yield from field counts at R5&ndash;R6 (corn) or R6&ndash;R7 (soybeans), the same ear-count and kernel-count math crop tour scouts run in August. Pod-count method for soybeans. Sample at least 5 locations per field for reliable estimates. Then see <a class="inl-ye" href="/whats-priced-in">what the trade expects the national number to be</a>.</p>
+    <p class="page-lede">Estimate yield from field counts at R5&ndash;R6 (corn) or R6&ndash;R7 (soybeans), the same ear-count and kernel-count math crop tour scouts run in August. Pod-count method for soybeans. Sample at least 5 locations per field for reliable estimates. Then see <a class="inl-ye" href="/whats-priced-in">what the trade expects the national number to be</a>.</p>
     <div class="ye-calibration">
       <strong>Method:</strong> Yield Component Method (ears &times; kernel rows &times; kernels per row &divide; 90, for a 1/1000-acre sample; widely referenced across US Corn Belt extension services).
       <strong>Accuracy:</strong> corn estimates run about &plusmn;20 bu/ac: the figure Purdue, Iowa State, Ohio State and Penn State Extension all give for this method. Sample at least 5 locations, 10 ears each, and estimate at the milk (R3) stage or later. Soybean estimates are looser still; Michigan State puts them at &plusmn;25% or worse before R6.

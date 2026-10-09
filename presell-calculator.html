@@ -18,15 +18,15 @@
 <meta property="og:description" content="How much of your crop can your revenue guarantee cover for forward pricing? Run the numbers.">
 <meta property="og:url" content="https://agsist.com/presell-calculator">
 <meta name="robots" content="index,follow"><!-- static-nav:fonts (scripts/inject_static_nav.py) -->
-  <link rel="preload" href="/fonts/inter-400.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="preload" href="/fonts/jetbrains-mono-700.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/jetbrains-mono-var.woff2" as="font" type="font/woff2" crossorigin>
   <!-- /static-nav:fonts -->
-  <link rel="stylesheet" href="/components/styles.css?v=21">
+  <link rel="stylesheet" href="/components/styles.css?v=22">
   <script src="/components/util.js?v=16"></script>
 <style>
 /* page-scoped (ib- prefix) — self-contained, no styles.css dependency */
 :root{--ib-green:#5fc28a;--ib-gold:#d4a23f;--ib-gold2:#d4a23f;--ib-bg:#0a0c0d;--ib-panel:#101415;--ib-panel2:#161b1c;--ib-line:#1d2324;--ib-txt:#e9edeb;--ib-mut:#8a948f;}
-.ib-wrap{max-width:880px;margin:0 auto;padding:1.25rem 1rem 3rem;color:var(--ib-txt);font-family:Inter,system-ui,sans-serif;}
+.ib-wrap{max-width:880px;margin:0 auto;padding:var(--page-top) 1rem 3rem;color:var(--ib-txt);font-family:Inter,system-ui,sans-serif;}
 .ib-wrap h1{font-family:var(--font-display),sans-serif;font-weight:700;font-size:clamp(1.7rem,5vw,2.4rem);line-height:1.08;margin:.2rem 0 .4rem;text-wrap:balance;}
 .ib-wrap h2{font-family:var(--font-display),sans-serif;font-weight:600;font-size:1.3rem;margin:2rem 0 .6rem;color:var(--ib-gold2);}
 .ib-lede{color:var(--ib-mut);font-size:1.05rem;line-height:1.5;max-width:62ch;margin:.2rem 0 1.4rem;}
@@ -59,8 +59,8 @@
 .ib-cred{margin-top:1.6rem;font-size:.86rem;color:var(--ib-mut);line-height:1.5;border-top:1px solid var(--ib-line);padding-top:1rem;}
 .ib-cred a{color:var(--ib-gold2);}
 .ib-disc{font-size:0.795rem;color:var(--ib-mut);margin-top:.8rem;line-height:1.5;}
-.ib-btn{margin-top:1.1rem;font-family:var(--font-display),sans-serif;font-weight:600;font-size:1rem;letter-spacing:.02em;background:var(--ib-green);color:#0a0c0d;border:none;border-radius:10px;padding:.8rem 1.4rem;min-height:44px;cursor:pointer;}
-.ib-btn:hover{background:#5fc28a;}
+.ib-btn{margin-top:1.1rem;font-family:var(--font-body);font-weight:700;font-size:var(--btn-fs);letter-spacing:0;background:var(--btn-primary-bg);color:var(--btn-primary-ink);border:none;border-radius:var(--btn-r);padding:.8rem 1.4rem;min-height:44px;cursor:pointer;text-transform:none}
+.ib-btn:hover{filter:brightness(.94)}
 /* 2026-10-06 light-mode contrast: page gold text at 4.7:1+ */
 :root[data-theme="light"]{--ib-gold:#8a6514;--ib-gold2:#8a6514;
   /* 2026-10-08: the page was dark-only; light mode now takes the site's light
@@ -92,9 +92,9 @@
 <!-- /static-nav:header -->
 </div>
 
-<main class="ib-wrap">
+<main class="ib-wrap" id="main">
   <h1>How much of your crop can you safely pre-sell?</h1>
-  <p class="ib-lede">If you carry Revenue Protection (RP), your guarantee puts a revenue floor under a chunk of your bushels, which means you can forward-price them with a backstop. Most marketing tools ignore your insurance; most insurance tools ignore your marketing. This one sits in the middle. Enter your numbers and see your floor.</p>
+  <p class="ib-lede page-lede">If you carry Revenue Protection (RP), your guarantee puts a revenue floor under a chunk of your bushels, which means you can forward-price them with a backstop. Most marketing tools ignore your insurance; most insurance tools ignore your marketing. This one sits in the middle. Enter your numbers and see your floor.</p>
 
   <div class="ib-card">
     <div class="ib-grid">

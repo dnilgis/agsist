@@ -4,11 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#111a0a"><!-- static-nav:fonts (scripts/inject_static_nav.py) -->
-  <link rel="preload" href="/fonts/inter-400.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="preload" href="/fonts/jetbrains-mono-700.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/jetbrains-mono-var.woff2" as="font" type="font/woff2" crossorigin>
   <!-- /static-nav:fonts -->
-  <link rel="preload" href="/components/styles.css?v=21" as="style">
-<link rel="stylesheet" href="/components/styles.css?v=21">
+  <link rel="preload" href="/components/styles.css?v=22" as="style">
+<link rel="stylesheet" href="/components/styles.css?v=22">
 <link rel="stylesheet" href="/components/asof.css?v=1">
 <script src="/components/asof.js?v=1"></script>
 <link rel="stylesheet" href="/components/states.css?v=2"><script src="/components/states.js?v=1" defer></script>
@@ -95,15 +95,15 @@ body{overflow-x:hidden;overflow-x:clip;width:100%;}
 
 .dv3-page{max-width:860px;margin:0 auto;padding:0 1rem 4rem;}
 
-.dv3-hero{padding:1.2rem 0 1rem;border-bottom:1px solid var(--border);margin-bottom:1.4rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;}
+.dv3-hero{padding:var(--page-top) 0 1rem;border-bottom:1px solid var(--border);margin-bottom:1.4rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;}
 .dv3-hero-left h1{font-family:var(--font-display);font-size:1.7rem;font-weight:800;text-transform:uppercase;color:var(--text);margin:0 0 .2rem;}
 .dv3-hero-left .dv3-eyebrow{display:inline-flex;align-items:center;gap:.4rem;font-family:'JetBrains Mono',monospace;font-size:0.755rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:.3rem;}
 .dv3-hero-left .dv3-eyebrow-dot{width:6px;height:6px;border-radius:50%;background:var(--gold-fill,var(--gold));}
 .dv3-hero-left .dv3-sub{font-size:.82rem;color:var(--text-dim);line-height:1.55;margin:0;}
 .dv3-hero-meta{font-family:'JetBrains Mono',monospace;font-size:0.765rem;color:var(--text-muted);margin-top:.4rem;letter-spacing:.04em;}
 .dv3-hero-meta b{color:var(--green);font-weight:700;}
-.dv3-subscribe-btn{padding:.5rem 1.1rem;background:var(--green);color:#fff;border:none;border-radius:6px;font-family:'JetBrains Mono',monospace;font-size:0.787rem;font-weight:700;cursor:pointer;text-transform:uppercase;letter-spacing:.04em;white-space:nowrap;transition:background .15s;min-height:44px;}
-.dv3-subscribe-btn:hover{background:#1b4d1c;}
+.dv3-subscribe-btn{padding:.5rem 1.1rem;background:var(--btn-primary-bg);color:var(--btn-primary-ink);border:none;border-radius:var(--btn-r);font-family:var(--font-body);font-size:var(--btn-fs);font-weight:700;cursor:pointer;text-transform:none;letter-spacing:0;white-space:nowrap;transition:filter .15s;min-height:44px}
+.dv3-subscribe-btn:hover{filter:brightness(.94)}
 
 .dv3-today{background:var(--surface);border:2px solid var(--border);border-radius:12px;padding:1.4rem;margin-bottom:1.5rem;position:relative;overflow:hidden;}
 .dv3-today::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--green),var(--gold));}
@@ -307,12 +307,12 @@ body{overflow-x:hidden;overflow-x:clip;width:100%;}
 .dv3-forward-content{flex:1;min-width:200px;}
 .dv3-forward-headline{font-size:.9rem;font-weight:700;color:var(--text);line-height:1.3;margin-bottom:.15rem;}
 .dv3-forward-sub{font-size:0.795rem;color:var(--text-dim);line-height:1.5;}
-.dv3-forward-cta{display:inline-flex;align-items:center;gap:.3rem;font-family:'JetBrains Mono',monospace;font-size:0.78rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;text-decoration:none;color:#fff;background:var(--green);padding:.5rem .9rem;border-radius:6px;transition:background .15s;min-height:40px;white-space:nowrap;}
-.dv3-forward-cta:hover{background:#1b4d1c;}
+.dv3-forward-cta{display:inline-flex;align-items:center;gap:.3rem;font-family:var(--font-body);font-size:var(--btn-fs);font-weight:700;letter-spacing:0;text-transform:none;text-decoration:none;color:var(--btn-primary-ink);background:var(--btn-primary-bg);padding:.5rem .9rem;border-radius:var(--btn-r);transition:filter .15s;min-height:40px;white-space:nowrap}
+.dv3-forward-cta:hover{filter:brightness(.94)}
 /* Dark mode: --green is #5fc28a there, and white on it is 2.19:1. Dark text
    on the light green reads at about 9:1 (same fix as .dv3-subscribe-btn). */
 :root:not([data-theme="light"]) .dv3-forward-cta{color:#06110b;}
-:root:not([data-theme="light"]) .dv3-forward-cta:hover{background:#4aab4c;color:#06110b;}
+:root:not([data-theme="light"]) .dv3-forward-cta:hover{color:#06110b;filter:brightness(.94)}
 :root:not([data-theme="light"]) .dv3-sec--heat::after{color:#06110b;}
 
 /* BYLINE — sits just above forward. */
@@ -370,8 +370,8 @@ body{overflow-x:hidden;overflow-x:clip;width:100%;}
 .dv3-modal input[type="email"]:focus{border-color:var(--green);}
 .dv3-modal-close{position:absolute;top:1rem;right:1rem;background:none;border:none;color:var(--text-dim);font-size:1.2rem;cursor:pointer;line-height:1;min-height:44px;min-width:44px;display:flex;align-items:center;justify-content:center;}
 .dv3-modal-close:hover{color:var(--text);}
-.dv3-modal-submit{width:100%;padding:.65rem;background:var(--green);color:#fff;border:none;border-radius:6px;font-family:'JetBrains Mono',monospace;font-size:.82rem;font-weight:700;text-transform:uppercase;cursor:pointer;letter-spacing:.04em;transition:background .15s;min-height:44px;}
-.dv3-modal-submit:hover{background:#1b4d1c;}
+.dv3-modal-submit{width:100%;padding:.65rem;background:var(--btn-primary-bg);color:var(--btn-primary-ink);border:none;border-radius:var(--btn-r);font-family:var(--font-body);font-size:var(--btn-fs);font-weight:700;text-transform:none;cursor:pointer;letter-spacing:0;transition:filter .15s;min-height:44px}
+.dv3-modal-submit:hover{filter:brightness(.94)}
 .dv3-modal-fine{font-size:0.775rem;color:var(--text-muted);text-align:center;margin-top:.5rem;}
 
 /* FAQ */
@@ -477,9 +477,9 @@ body{overflow-x:hidden;overflow-x:clip;width:100%;}
 
   <div class="dv3-hero">
     <div class="dv3-hero-left">
-      <div class="dv3-eyebrow"><span class="dv3-eyebrow-dot"></span> AGSIST Daily &middot; Published every morning before the market open, weekends included</div>
+      <div class="dv3-eyebrow page-kicker"><span class="dv3-eyebrow-dot"></span> AGSIST Daily &middot; Published every morning before the market open, weekends included</div>
       <h1>Daily Ag Briefing</h1>
-      <p class="dv3-sub">A morning market report for working US ag producers: grain, livestock, dairy, and specialty operations. Available at no charge, no account required.</p>
+      <p class="dv3-sub page-lede">A morning market report for working US ag producers: grain, livestock, dairy, and specialty operations. Available at no charge, no account required.</p>
       <div class="dv3-hero-meta" id="dv3-hero-meta" aria-live="polite"></div>
     </div>
     <button class="dv3-subscribe-btn" id="dv3-sub-btn"><svg class="dv3-ic" aria-hidden="true"><use href="#i-mail"/></svg> Get it in your inbox</button>

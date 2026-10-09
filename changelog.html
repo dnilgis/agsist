@@ -6,11 +6,11 @@
   <meta name="theme-color" content="#111a0a">  <script>/* agsist-theme-early: saved theme, else the device's, set before first paint so pages do not flash the wrong color. loader.js applies the same rule. */try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.setAttribute('data-theme',_t);}catch(e){}</script><script>/* agsist-ga-guard 2026-10-09: Google Analytics loads only when the browser sends no Global Privacy Control signal and the off switch on /privacy is not set, and only once the page is shown (a page loaded ahead in the background is not a visit). dataLayer and gtag always exist, so page code that calls them never throws. */(function(w,d,n){var off=false,v,i,s;w.dataLayer=w.dataLayer||[];if(typeof w.gtag!=='function'){w.gtag=function(){w.dataLayer.push(arguments);};}try{off=w.localStorage.getItem('agsist-ga-off')==='1';}catch(e){}if(n.globalPrivacyControl===true){off=true;}w.agsistGaOff=off;w.gtag('set','allow_google_signals',false);w.gtag('set','allow_ad_personalization_signals',false);if(off){return;}i=function(){s=d.createElement('script');s.async=true;s.src='https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H';(d.head||d.documentElement).appendChild(s);};if(d.prerendering){d.addEventListener('prerenderingchange',i,{once:true});}else{i();}})(window,document,navigator);</script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
   <!-- static-nav:fonts (scripts/inject_static_nav.py) -->
-  <link rel="preload" href="/fonts/inter-400.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="preload" href="/fonts/jetbrains-mono-700.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/jetbrains-mono-var.woff2" as="font" type="font/woff2" crossorigin>
   <!-- /static-nav:fonts -->
-  <link rel="preload" href="/components/styles.css?v=21" as="style">
-  <link rel="stylesheet" href="/components/styles.css?v=21">
+  <link rel="preload" href="/components/styles.css?v=22" as="style">
+  <link rel="stylesheet" href="/components/styles.css?v=22">
   <script src="/components/util.js?v=16"></script>
   <link rel="icon" type="image/x-icon"             href="/img/favicon.ico">
   <link rel="icon" type="image/png" sizes="32x32"  href="/img/favicon-32.png">
@@ -98,7 +98,7 @@
       </nav>
       <div class="page-header" style="margin-bottom:.9rem">
         <h1 style="margin-bottom:.3rem">What&rsquo;s New on AGSIST</h1>
-        <p style="color:var(--text-muted,#9bb0a3);font-size:1rem;line-height:1.5;margin:0">Every meaningful change to the site, dated and in plain language: new pages, improvements, and the fixes. Same rule as the <a href="/scorecard" style="color:var(--gold,#d4a23f)">prediction bot scorecard</a>: when something was wrong, it says so here, on the record.</p>
+        <p class="page-lede" style="margin:0">Every meaningful change to the site, dated and in plain language: new pages, improvements, and the fixes. Same rule as the <a href="/scorecard" style="color:var(--gold,#d4a23f)">prediction bot scorecard</a>: when something was wrong, it says so here, on the record.</p>
       </div>
 
       <div class="cl-stamp"><!-- CHANGELOG:stamp -->Log updated October 6, 2026 &middot; 176 changes across 25 days<!-- /CHANGELOG:stamp --></div>

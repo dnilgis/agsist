@@ -4,11 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#0e0e0c">  <!-- static-nav:fonts (scripts/inject_static_nav.py) -->
-  <link rel="preload" href="/fonts/inter-400.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="preload" href="/fonts/jetbrains-mono-700.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/jetbrains-mono-var.woff2" as="font" type="font/woff2" crossorigin>
   <!-- /static-nav:fonts -->
-  <link rel="preload" href="/components/styles.css?v=21" as="style">
-  <link rel="stylesheet" href="/components/styles.css?v=21">
+  <link rel="preload" href="/components/styles.css?v=22" as="style">
+  <link rel="stylesheet" href="/components/styles.css?v=22">
   <link rel="icon" type="image/x-icon"            href="/img/favicon.ico">
   <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
@@ -40,6 +40,8 @@
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
   <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "WebApplication", "name": "Farm Break-Even Price Calculator", "description": "Calculate break-even price and profit margins for corn, soybeans, and wheat.", "url": "https://agsist.com/breakeven", "applicationCategory": "UtilitiesApplication", "operatingSystem": "Web", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}}, {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "How do I calculate break-even price per bushel?", "acceptedAnswer": {"@type": "Answer", "text": "Divide your total cost per acre by your expected yield in bushels. For example: $850 per acre total cost ÷ 200 bu/ac expected yield = $4.25/bu break-even price for corn. This is the minimum cash price at which you cover all expenses. Because cash = futures + basis and basis is usually negative, the futures price you need is this number minus your basis (e.g. $4.25 cash at a -$0.30 basis means $4.55 futures). The calculator above does this automatically as you enter your costs. The Break-Even Price result updates instantly. To stay profitable, your market price (futures + basis) needs to exceed this number."}}, {"@type": "Question", "name": "What is a realistic corn production cost per acre in Wisconsin or Minnesota?", "acceptedAnswer": {"@type": "Answer", "text": "University budget series (Iowa State estimated costs, Illinois farmdoc, FINBIN) put total tenant corn cost at roughly $750–$1,100 per acre for 2026, or about $550–$850 without cash rent. The low end takes cheap ground and light inputs. Land is the biggest variable: 2026 USDA NASS county cash rents for non-irrigated cropland reach about $247/acre in Wisconsin and $280/acre in Minnesota, with the median county at $136 in Wisconsin and $189 in Minnesota. See your county on the AGSIST cash rent map. Fertilizer and seed are the next biggest lines in those budgets. The defaults in this calculator reflect a representative Upper Midwest tenant operation. Adjust each line for your actual costs to get your true break-even."}}, {"@type": "Question", "name": "How does cash rent affect my corn or soybean break-even price?", "acceptedAnswer": {"@type": "Answer", "text": "Cash rent is typically the single largest per-acre variable cost for tenant farmers, and it moves your break-even directly. Every $50/acre increase in land rent raises your corn break-even by about $0.28/bu at 180 bu/ac yields. At 200 bu/ac, it's $0.25/bu per $50 rent increase. For soybeans at 55 bu/ac, every $50/acre rent increase adds about $0.91/bu to your break-even. This is why land rent negotiation is one of the highest-value conversations in farm management: the math is direct and permanent."}}, {"@type": "Question", "name": "What costs should I include in a full farm break-even calculation?", "acceptedAnswer": {"@type": "Answer", "text": "A complete break-even includes two layers. Direct inputs: seed, fertilizer (N, P, K, lime, sulfur), herbicides (pre and post-emerge), fungicide, insecticide, crop insurance premium (net of subsidy), drying, and trucking. Overhead costs: land rent or property tax/ownership cost, machinery depreciation, fuel and lube, repairs and maintenance, labor (including your own time at a market wage), operating loan interest, and general farm overhead. Many producers undercount labor and depreciation: in university budgets, own labor and machinery depreciation together commonly add on the order of $50–$120/acre to a true break-even."}}, {"@type": "Question", "name": "What is the what-if sensitivity table and how do I use it?", "acceptedAnswer": {"@type": "Answer", "text": "The sensitivity table shows profit or loss per acre across 36 different combinations of yield and price simultaneously. Your current inputs are highlighted in green so you can immediately see where you stand. The rows show different yield scenarios (above and below your estimate) and the columns show different price scenarios. Red numbers are losses; green numbers are profitable outcomes. This lets you answer questions like: \"If yields come in 20 bushels below plan AND futures drop $0.40, what's my loss per acre?\", without running the calculator multiple times. It's most useful for evaluating crop insurance coverage levels and forward pricing decisions."}}]}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://agsist.com/"}, {"@type": "ListItem", "position": 2, "name": "Break-Even Calculator", "item": "https://agsist.com/breakeven"}]}]}</script>
   <style>
+  /* breadcrumb 12px under the header, as on every other page */
+  main.main{padding-top:12px}
     
     
     
@@ -58,7 +60,7 @@
     /* 40px tap target around the 20px dot; the dot itself is unchanged */
     .hint-icon{position:relative;}.hint-icon::before{content:"";position:absolute;inset:-12px;}
     /* light mode: dark text on the light-theme --green (#2e7d4f) read 3.8:1; white reads 5.1:1 */
-    [data-theme="light"] .btn-primary,[data-theme="light"] .live-price-bar button,[data-theme="light"] .hint-icon:hover,[data-theme="light"] .hint-icon.active{color:#fff;}
+    [data-theme="light"] .live-price-bar button,[data-theme="light"] .hint-icon:hover,[data-theme="light"] .hint-icon.active{color:#fff;}
     .hint-popup{display:none;margin-top:8px;background:var(--surface);border:2px solid var(--green);border-radius:6px;padding:12px 14px;box-shadow:0 4px 12px rgba(0,0,0,0.3);animation:hintIn 0.15s ease-out;}
     .hint-popup.hint-open{display:block;}
     @keyframes hintIn{from{opacity:0;transform:translateY(-4px);}to{opacity:1;transform:none;}}
@@ -112,8 +114,8 @@
     .farm-total-value{font-family:'JetBrains Mono',monospace;font-size:1.2rem;font-weight:700;}
     .action-bar{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap;}
     .btn{display:inline-flex;align-items:center;gap:6px;padding:10px 18px;border-radius:6px;font-family:'JetBrains Mono',monospace;font-size:0.795rem;font-weight:700;cursor:pointer;text-transform:uppercase;letter-spacing:.3px;transition:all 0.15s;border:2px solid var(--border);min-height:44px;}
-    .btn-primary{background:var(--green);color:#06110b;border-color:var(--green);}
-    .btn-primary:hover{background:#1b4d1c;color:#fff;border-color:#1b4d1c;}
+    .btn-primary{background:var(--btn-primary-bg);color:var(--btn-primary-ink);border-color:transparent;font-family:var(--font-body);font-size:var(--btn-fs);font-weight:700;text-transform:none;letter-spacing:0;border-radius:var(--btn-r)}
+    .btn-primary:hover{filter:brightness(.94)}
     .btn-secondary{background:var(--surface);color:var(--text-dim);}
     .btn-secondary:hover{color:var(--text);border-color:var(--green);}
     .be-faq{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin:1.5rem auto;max-width:1100px;}

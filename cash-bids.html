@@ -18,11 +18,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <script>/* agsist-theme-early: saved theme, else the device's, set before first paint so pages do not flash the wrong color. loader.js applies the same rule. */try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.setAttribute('data-theme',_t);}catch(e){}</script><script>/* agsist-ga-guard 2026-10-09: Google Analytics loads only when the browser sends no Global Privacy Control signal and the off switch on /privacy is not set, and only once the page is shown (a page loaded ahead in the background is not a visit). dataLayer and gtag always exist, so page code that calls them never throws. */(function(w,d,n){var off=false,v,i,s;w.dataLayer=w.dataLayer||[];if(typeof w.gtag!=='function'){w.gtag=function(){w.dataLayer.push(arguments);};}try{off=w.localStorage.getItem('agsist-ga-off')==='1';}catch(e){}if(n.globalPrivacyControl===true){off=true;}w.agsistGaOff=off;w.gtag('set','allow_google_signals',false);w.gtag('set','allow_ad_personalization_signals',false);if(off){return;}i=function(){s=d.createElement('script');s.async=true;s.src='https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H';(d.head||d.documentElement).appendChild(s);};if(d.prerendering){d.addEventListener('prerenderingchange',i,{once:true});}else{i();}})(window,document,navigator);</script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script><!-- static-nav:fonts (scripts/inject_static_nav.py) -->
-  <link rel="preload" href="/fonts/inter-400.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="preload" href="/fonts/jetbrains-mono-700.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/jetbrains-mono-var.woff2" as="font" type="font/woff2" crossorigin>
   <!-- /static-nav:fonts -->
-  <link rel="preload" href="/components/styles.css?v=21" as="style">
-<link rel="stylesheet" href="/components/styles.css?v=21">
+  <link rel="preload" href="/components/styles.css?v=22" as="style">
+<link rel="stylesheet" href="/components/styles.css?v=22">
 <link rel="stylesheet" href="/components/asof.css?v=1">
 <script src="/components/asof.js?v=1"></script>
 <link rel="stylesheet" href="/components/states.css?v=2"><script src="/components/states.js?v=1" defer></script><script>try{if(/(^|;\s*)agsist_subscribed=/.test(document.cookie)||localStorage.getItem('agsist_subscribed')==='1')document.documentElement.classList.add('sa-subbed')}catch(e){}</script>
@@ -55,6 +55,9 @@ html{overflow-x:hidden;overflow-x:clip;scroll-behavior:smooth}
 body{overflow-x:hidden;overflow-x:clip;max-width:100%}
 button,a,[role="button"],input,select{touch-action:manipulation}
 .cb-wrap{max-width:1060px;margin:0 auto;padding:0 1rem;padding-left:max(1rem,env(safe-area-inset-left));padding-right:max(1rem,env(safe-area-inset-right))}
+/* breadcrumb sat flush against the screen edge; line it up with the page (same rule as cash-bids-national) */
+main > .breadcrumb{max-width:1060px;margin:12px auto 0;padding:0 max(1rem,env(safe-area-inset-right)) 0 max(1rem,env(safe-area-inset-left))}
+@media(min-width:1400px){main > .breadcrumb{max-width:1320px}}
 .cb-hero{text-align:center;padding:1.8rem 0 .75rem}
 .cb-hero-eyebrow{font-family:'JetBrains Mono',monospace;font-size:0.77rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--gold);margin-bottom:.5rem}
 .cb-hero h1{font-family:var(--font-display);font-size:1.9rem;font-weight:800;text-transform:uppercase;letter-spacing:.02em;color:var(--text);margin:0 0 .5rem;line-height:1.1}
@@ -76,9 +79,8 @@ button,a,[role="button"],input,select{touch-action:manipulation}
 .cb-lookup-input{flex:1;background:var(--surface2);border:2px solid var(--border);border-radius:8px;padding:.8rem 1rem;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:1rem;outline:none;transition:border-color .15s;min-height:52px}
 .cb-lookup-input:focus{border-color:var(--gold)}
 .cb-lookup-input::placeholder{color:var(--text-muted)}
-.cb-lookup-btn{padding:.8rem 1.4rem;background:var(--green);color:#06110b;border:none;border-radius:8px;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:.9rem;cursor:pointer;white-space:nowrap;transition:background .15s;text-transform:uppercase;letter-spacing:.04em;min-height:52px;min-width:90px}
-.cb-lookup-btn:hover{background:#1b4d1c;color:#fff}
-[data-theme="light"] .cb-lookup-btn{background:#1f6b40;color:#fff}
+.cb-lookup-btn{padding:.8rem 1.4rem;background:var(--btn-primary-bg);color:var(--btn-primary-ink);border:none;border-radius:var(--btn-r);font-family:var(--font-body);font-weight:700;font-size:var(--btn-fs);cursor:pointer;white-space:nowrap;transition:filter .15s;text-transform:none;letter-spacing:0;min-height:52px;min-width:90px}
+.cb-lookup-btn:hover{filter:brightness(.94)}
 .cb-lookup-btn:disabled{opacity:.5;cursor:wait}
 .cb-radius-row{margin-top:.6rem;display:flex;align-items:center;gap:.5rem;font-size:.8rem;color:var(--text-dim)}
 .cb-radius-row label{font-weight:600}
@@ -364,8 +366,8 @@ button,a,[role="button"],input,select{touch-action:manipulation}
 .compare-chip-x{cursor:pointer;color:var(--text-muted);flex-shrink:0;font-size:.9rem;min-width:44px;min-height:44px;display:inline-flex;align-items:center;justify-content:center;text-align:center}
 .compare-chip-x:hover{color:var(--text)}
 .compare-bar-actions{display:flex;gap:.5rem;flex-shrink:0}
-.compare-go-btn{padding:.55rem 1.1rem;background:var(--gold-fill,var(--gold));color:#0a1a0a;border:none;border-radius:8px;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:0.795rem;cursor:pointer;text-transform:uppercase;letter-spacing:.05em;min-height:44px}
-.compare-go-btn:hover{background:#d4a032}
+.compare-go-btn{padding:.55rem 1.1rem;background:var(--btn-primary-bg);color:var(--btn-primary-ink);border:none;border-radius:var(--btn-r);font-family:var(--font-body);font-weight:700;font-size:var(--btn-fs);cursor:pointer;text-transform:none;letter-spacing:0;min-height:44px}
+.compare-go-btn:hover{filter:brightness(.94)}
 .compare-clear-btn{padding:.55rem .9rem;background:none;border:1px solid var(--border);border-radius:8px;color:var(--text-muted);font-family:'JetBrains Mono',monospace;font-size:0.795rem;cursor:pointer;min-height:44px}
 .compare-clear-btn:hover{border-color:var(--text-muted);color:var(--text)}
 .compare-overlay{position:fixed;inset:0;z-index:1100;background:rgba(0,0,0,.78);display:none;align-items:flex-start;justify-content:center;overflow-y:auto;padding:2rem 1rem calc(5rem + env(safe-area-inset-bottom))}

@@ -5,11 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#111a0a">
 <!-- static-nav:fonts (scripts/inject_static_nav.py) -->
-  <link rel="preload" href="/fonts/inter-400.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="preload" href="/fonts/jetbrains-mono-700.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/jetbrains-mono-var.woff2" as="font" type="font/woff2" crossorigin>
   <!-- /static-nav:fonts -->
-  <link rel="preload" href="/components/styles.css?v=21" as="style">
-<link rel="stylesheet" href="/components/styles.css?v=21">
+  <link rel="preload" href="/components/styles.css?v=22" as="style">
+<link rel="stylesheet" href="/components/styles.css?v=22">
 <link rel="icon" type="image/x-icon"            href="/img/favicon.ico">
 <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
@@ -47,7 +47,7 @@
 /* v5: reconciled to the live embed.js mechanism — real widgets + open JSON feeds */
 
 
-.dev-page{max-width:900px;margin:0 auto;padding:2.5rem 1.5rem 5rem}
+.dev-page{max-width:900px;margin:0 auto;padding:2.5rem 1.5rem 4rem}
 .dev-page h1{font-family:var(--font-display);font-size:clamp(1.8rem,4vw,2.4rem);color:var(--gold);margin-bottom:.3rem;font-weight:700;text-transform:uppercase;letter-spacing:.02em}
 .dev-page .sub{color:var(--text-dim);font-size:.95rem;margin-bottom:2rem;line-height:1.7;max-width:640px}
 .dev-page h2{font-size:1.05rem;color:var(--text);margin:2.5rem 0 .85rem;font-weight:700;border-bottom:1px solid var(--border);padding-bottom:.4rem;font-family:var(--font-display);text-transform:uppercase;letter-spacing:.05em}
@@ -133,7 +133,7 @@
 <div class="dev-page">
 
 <h1>Developer Docs</h1>
-<p class="sub">AGSIST publishes embeddable agricultural tools and open JSON market-data feeds for ag media, extension services, co-ops, and farm websites. Add a widget with one script, or consume the data feeds directly to build your own UI. Want a custom build? Reach out.</p>
+<p class="sub page-lede">AGSIST publishes embeddable agricultural tools and open JSON market-data feeds for ag media, extension services, co-ops, and farm websites. Add a widget with one script, or consume the data feeds directly to build your own UI. Want a custom build? Reach out.</p>
 
 <div class="dev-lead"><strong>One script, one div.</strong> The GDU calculator is the only widget the script serves today. It loads from a single file: <code>https://agsist.com/embed.js</code>. Add the script once, then drop a <code>data-agsist-widget</code> div wherever you want it. The script injects the live tool in an iframe, adds a crawlable &ldquo;Powered by AGSIST&rdquo; backlink in your page, and auto-resizes the frame. Prefer copy-paste? The <a href="/embed">embed gallery</a> has ready snippets and live previews.</div>
 

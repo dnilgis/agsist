@@ -4,11 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#111a0a"><!-- static-nav:fonts (scripts/inject_static_nav.py) -->
-  <link rel="preload" href="/fonts/inter-400.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="preload" href="/fonts/jetbrains-mono-700.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/jetbrains-mono-var.woff2" as="font" type="font/woff2" crossorigin>
   <!-- /static-nav:fonts -->
-  <link rel="preload" href="/components/styles.css?v=21" as="style">
-<link rel="stylesheet" href="/components/styles.css?v=21">
+  <link rel="preload" href="/components/styles.css?v=22" as="style">
+<link rel="stylesheet" href="/components/styles.css?v=22">
   <script src="/components/util.js?v=16"></script>
 <link rel="icon" type="image/x-icon"            href="/img/favicon.ico">
 <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
@@ -48,9 +48,9 @@
 html{overflow-x:hidden;overflow-x:clip;width:100%;}
 body{overflow-x:hidden;overflow-x:clip;width:100%;}
 
-.arc-page{max-width:900px;margin:0 auto;padding:0 1rem 4rem;}
+.arc-page{max-width:900px;margin:0 auto;padding:0 1rem 2rem;}
 
-.arc-hero{padding:1.2rem 0 1rem;border-bottom:1px solid var(--border);margin-bottom:1.5rem;display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;flex-wrap:wrap;}
+.arc-hero{padding:var(--page-top) 0 1rem;border-bottom:1px solid var(--border);margin-bottom:1.5rem;display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;flex-wrap:wrap;}
 .arc-hero-left .arc-eyebrow{font-size:0.755rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:.3rem;}
 .arc-hero-left h1{font-family:var(--font-display);font-size:1.7rem;font-weight:800;text-transform:uppercase;color:var(--text);margin:0 0 .2rem;}
 .arc-hero-left .arc-sub{font-size:.82rem;color:var(--text-dim);line-height:1.55;}
@@ -157,9 +157,9 @@ body{overflow-x:hidden;overflow-x:clip;width:100%;}
 
   <div class="arc-hero">
     <div class="arc-hero-left">
-      <div class="arc-eyebrow"><svg class="ic-sp" aria-hidden="true"><use href="#sp-newspaper"/></svg> AGSIST Daily</div>
+      <div class="arc-eyebrow page-kicker"><svg class="ic-sp" aria-hidden="true"><use href="#sp-newspaper"/></svg> AGSIST Daily</div>
       <h1>Briefing Archive</h1>
-      <p class="arc-sub">Past market morning reports. Search by keyword or browse by month.</p>
+      <p class="arc-sub page-lede">Past market morning reports. Search by keyword or browse by month.</p>
     </div>
     <a href="/daily" class="arc-back">&#x2190; Today&#x2019;s Briefing</a>
   </div>

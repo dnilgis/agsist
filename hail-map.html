@@ -29,11 +29,11 @@
   <meta name="twitter:title" content="National Hail Map: Radar Hail Swaths + 70 Years of US Hail History">
   <meta name="twitter:description" content="Where hail hits, year after year, radar-estimated swaths and free hail alerts for your own address.">
   <meta name="twitter:image" content="https://agsist.com/img/og/hail-map.jpg">  <!-- static-nav:fonts (scripts/inject_static_nav.py) -->
-  <link rel="preload" href="/fonts/inter-400.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="preload" href="/fonts/jetbrains-mono-700.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/jetbrains-mono-var.woff2" as="font" type="font/woff2" crossorigin>
   <!-- /static-nav:fonts -->
-  <link rel="preload" href="/components/styles.css?v=21" as="style">
-  <link rel="stylesheet" href="/components/styles.css?v=21">
+  <link rel="preload" href="/components/styles.css?v=22" as="style">
+  <link rel="stylesheet" href="/components/styles.css?v=22">
   <link rel="stylesheet" href="/components/asof.css?v=1">
   <script src="/components/asof.js?v=1"></script>
 <link rel="stylesheet" href="/components/states.css?v=2"><script src="/components/states.js?v=1" defer></script>
@@ -81,7 +81,7 @@
     .hm-search{display:flex;align-items:center;gap:.5rem;margin:0 0 .7rem;background:var(--surface,#101415);border:1px solid var(--border,rgba(132,160,168,.12));border-radius:10px;padding:.35rem .35rem .35rem .7rem}
     .hm-search .ic-sp{color:var(--text-dim,#8a948f);flex-shrink:0}
     .hm-search input{flex:1;min-width:0;background:none;border:0;color:var(--text,#e6ebe9);font-size:16px;padding:.5rem .2rem;outline:none;font-family:Inter,system-ui,sans-serif}
-    .hm-search button{min-height:44px;border-radius:8px;border:1px solid var(--border,rgba(132,160,168,.2));background:var(--brand-fill,var(--brand,#d4a23f));color:#141410;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:0.795rem;padding:.5rem .9rem;cursor:pointer}
+    .hm-search button{min-height:44px;border-radius:var(--btn-r);border:2px solid transparent;background:var(--btn-primary-bg);color:var(--btn-primary-ink);font-family:var(--font-body);font-weight:700;font-size:var(--btn-fs);padding:.5rem .9rem;cursor:pointer;text-transform:none;letter-spacing:0}
     .hm-search #hm-gps{background:none;color:var(--text-dim,#8a948f);padding:.5rem .6rem}
     .hm-point{margin:1rem 0 0;padding:1rem;background:var(--surface,#101415);border:1px solid var(--border,rgba(132,160,168,.12));border-left:3px solid var(--brand,#d4a23f);border-radius:10px}
     .hm-point-head{display:flex;align-items:center;justify-content:space-between;gap:.6rem;flex-wrap:wrap;margin-bottom:.6rem}
@@ -155,7 +155,7 @@
     .hm-rchip[aria-pressed="true"]{border-color:var(--brand,#d4a23f);color:var(--brand,#d4a23f)}
     .hm-alerts-row{display:flex;gap:.5rem;flex-wrap:wrap}
     .hm-alerts-row input{flex:1;min-width:200px;background:var(--surface,#101415);border:1px solid var(--border,rgba(132,160,168,.25));border-radius:8px;color:var(--text,#e6ebe9);font-size:16px;padding:.55rem .7rem;min-height:44px}
-    .hm-alerts-row button{min-height:44px;background:var(--brand-fill,var(--brand,#d4a23f));border:0;border-radius:8px;color:#141410;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:0.795rem;padding:.55rem 1rem;cursor:pointer}
+    .hm-alerts-row button{min-height:44px;background:var(--btn-primary-bg);border:0;border-radius:var(--btn-r);color:var(--btn-primary-ink);font-family:var(--font-body);font-weight:700;font-size:var(--btn-fs);padding:.55rem 1rem;cursor:pointer;text-transform:none;letter-spacing:0}
     .hm-alerts-row button:disabled{opacity:.5;cursor:default}
     .hm-alerts-status{font-family:'JetBrains Mono',monospace;font-size:0.785rem;margin-top:.45rem;color:var(--text-dim,#8a948f)}
     .hm-swathcheck{margin:.8rem 0 0;padding-top:.7rem;border-top:1px solid var(--border,rgba(132,160,168,.12))}
@@ -348,7 +348,7 @@
 
       <div class="hm-head">
         <h1 class="hm-title">National Hail Map: <em>did it hail at your place?</em></h1>
-        <p class="hm-sub"><span id="hm-seed-stats"><!--SEED:hailstats-->64,577 NWS hail reports on the map (2022–2026) · 285 in the last 30 days · data through 2026-10-01<!--/SEED--></span></p>
+        <p class="hm-sub page-lede"><span id="hm-seed-stats"><!--SEED:hailstats-->64,577 NWS hail reports on the map (2022–2026) · 285 in the last 30 days · data through 2026-10-01<!--/SEED--></span></p>
               </div>
 
       <div class="hm-search" role="search">

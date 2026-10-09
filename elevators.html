@@ -5,11 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"><script>/* agsist-theme-early: saved theme, else the device's, set before first paint so pages do not flash the wrong color. loader.js applies the same rule. */try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.setAttribute('data-theme',_t);}catch(e){}</script><script>/* agsist-ga-guard 2026-10-09: Google Analytics loads only when the browser sends no Global Privacy Control signal and the off switch on /privacy is not set, and only once the page is shown (a page loaded ahead in the background is not a visit). dataLayer and gtag always exist, so page code that calls them never throws. */(function(w,d,n){var off=false,v,i,s;w.dataLayer=w.dataLayer||[];if(typeof w.gtag!=='function'){w.gtag=function(){w.dataLayer.push(arguments);};}try{off=w.localStorage.getItem('agsist-ga-off')==='1';}catch(e){}if(n.globalPrivacyControl===true){off=true;}w.agsistGaOff=off;w.gtag('set','allow_google_signals',false);w.gtag('set','allow_ad_personalization_signals',false);if(off){return;}i=function(){s=d.createElement('script');s.async=true;s.src='https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H';(d.head||d.documentElement).appendChild(s);};if(d.prerendering){d.addEventListener('prerenderingchange',i,{once:true});}else{i();}})(window,document,navigator);</script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
 <!-- static-nav:fonts (scripts/inject_static_nav.py) -->
-  <link rel="preload" href="/fonts/inter-400.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="preload" href="/fonts/jetbrains-mono-700.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/jetbrains-mono-var.woff2" as="font" type="font/woff2" crossorigin>
   <!-- /static-nav:fonts -->
-  <link rel="preload" href="/components/styles.css?v=21" as="style">
-<link rel="stylesheet" href="/components/styles.css?v=21">
+  <link rel="preload" href="/components/styles.css?v=22" as="style">
+<link rel="stylesheet" href="/components/styles.css?v=22">
 <link rel="stylesheet" href="/components/states.css?v=2"><script src="/components/states.js?v=1" defer></script>
   <script src="/components/util.js?v=16"></script>
 <link rel="icon" type="image/x-icon"            href="/img/favicon.ico">
@@ -85,7 +85,7 @@ button,a,[role="button"]{touch-action:manipulation}
 .el-zip input{background:var(--bg);border:1px solid var(--border-2);border-radius:var(--r-sm);padding:.6rem .7rem;font-family:var(--font-mono);font-size:1rem;letter-spacing:.14em;color:var(--text);width:7.5rem;min-height:46px}
 .el-zip input:focus{outline:none;border-color:var(--gold)}
 @media(max-width:600px){.el-zip-field{flex:1 1 100%}.el-zip input{width:100%}.el-zip .el-cta{flex:1 1 100%;justify-content:center;text-align:center}}
-.el-cta{display:inline-flex;align-items:center;gap:.5rem;padding:.72rem 1.4rem;border:0;border-radius:var(--r-sm);background:var(--gold-fill,var(--gold));color:#0a0c0d;font-family:var(--font-mono);font-size:0.795rem;font-weight:700;text-decoration:none;letter-spacing:.03em;min-height:46px;cursor:pointer;transition:filter .15s,transform .15s}
+.el-cta{display:inline-flex;align-items:center;gap:.5rem;padding:.72rem 1.4rem;border:0;border-radius:var(--btn-r);background:var(--btn-primary-bg);color:var(--btn-primary-ink);font-family:var(--font-body);font-size:var(--btn-fs);font-weight:700;text-decoration:none;letter-spacing:0;min-height:46px;cursor:pointer;transition:filter .15s,transform .15s;text-transform:none}
 .el-cta:hover{filter:brightness(1.07);transform:translateY(-1px)}
 
 /* section heads */
@@ -206,7 +206,7 @@ button,a,[role="button"]{touch-action:manipulation}
 .cl-chk{grid-column:1/-1;display:flex;gap:.75rem;align-items:center;min-height:44px;font-size:.9rem;color:var(--text-dim);line-height:1.45;cursor:pointer}
 .cl-chk input{width:20px;height:20px;flex:none;margin:0;accent-color:var(--text)}
 .cl-go{grid-column:1/-1;display:flex;flex-wrap:wrap;align-items:center;gap:.75rem 1rem}
-.cl-btn{display:inline-flex;align-items:center;justify-content:center;padding:.75rem 1.4rem;border:0;border-radius:var(--r-sm);background:var(--gold-fill,var(--gold));color:#0a0c0d;font-family:var(--font-mono);font-size:.85rem;font-weight:700;letter-spacing:.03em;cursor:pointer;min-height:44px;transition:filter .15s}
+.cl-btn{display:inline-flex;align-items:center;justify-content:center;padding:.75rem 1.4rem;border:0;border-radius:var(--btn-r);background:var(--btn-primary-bg);color:var(--btn-primary-ink);font-family:var(--font-body);font-size:var(--btn-fs);font-weight:700;letter-spacing:0;cursor:pointer;min-height:44px;transition:filter .15s;text-transform:none}
 .cl-btn:hover{filter:brightness(1.07)}
 .cl-btn:active{filter:brightness(.92)}
 .cl-btn:disabled{opacity:.6;cursor:default}
@@ -257,9 +257,9 @@ button,a,[role="button"]{touch-action:manipulation}
   <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a> &rarr; <a href="/cash-bids">Cash Bids</a> &rarr; Elevator Coverage</nav>
 
   <div class="el-hero">
-    <div class="el-eyebrow"><svg class="lic el-eyebrow-ic" aria-hidden="true"><use href="#i-warehouse"></use></svg>Live Grain Elevator Cash Bids</div>
+    <div class="el-eyebrow page-kicker"><svg class="lic el-eyebrow-ic" aria-hidden="true"><use href="#i-warehouse"></use></svg>Live Grain Elevator Cash Bids</div>
     <h1>Grain Elevator Coverage Map</h1>
-    <p>Live cash grain bids from elevators, co-ops, and grain facilities across the Corn Belt, Great Plains, Delta, Southeast, and Pacific Northwest. Read from elevators' own posted boards and a second feed. Enter your ZIP code to see bids near you. Mobile-first, no account or subscription required.</p>
+    <p class="page-lede">Live cash grain bids from elevators, co-ops, and grain facilities across the Corn Belt, Great Plains, Delta, Southeast, and Pacific Northwest. Read from elevators' own posted boards and a second feed. Enter your ZIP code to see bids near you. Mobile-first, no account or subscription required.</p>
     <form class="el-zip" action="/cash-bids" method="get" id="el-zip-form">
       <div class="el-zip-field">
         <label class="el-zip-lbl" for="el-zip-in">Your ZIP code</label>

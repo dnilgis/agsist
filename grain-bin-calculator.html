@@ -6,11 +6,11 @@
   <meta name="theme-color" content="#0e0e0c">
   <script>/* agsist-theme-early: saved theme, else the device's, set before first paint so pages do not flash the wrong color. loader.js applies the same rule. */try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.setAttribute('data-theme',_t);}catch(e){}</script><script>/* agsist-ga-guard 2026-10-09: Google Analytics loads only when the browser sends no Global Privacy Control signal and the off switch on /privacy is not set, and only once the page is shown (a page loaded ahead in the background is not a visit). dataLayer and gtag always exist, so page code that calls them never throws. */(function(w,d,n){var off=false,v,i,s;w.dataLayer=w.dataLayer||[];if(typeof w.gtag!=='function'){w.gtag=function(){w.dataLayer.push(arguments);};}try{off=w.localStorage.getItem('agsist-ga-off')==='1';}catch(e){}if(n.globalPrivacyControl===true){off=true;}w.agsistGaOff=off;w.gtag('set','allow_google_signals',false);w.gtag('set','allow_ad_personalization_signals',false);if(off){return;}i=function(){s=d.createElement('script');s.async=true;s.src='https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H';(d.head||d.documentElement).appendChild(s);};if(d.prerendering){d.addEventListener('prerenderingchange',i,{once:true});}else{i();}})(window,document,navigator);</script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>  <!-- static-nav:fonts (scripts/inject_static_nav.py) -->
-  <link rel="preload" href="/fonts/inter-400.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="preload" href="/fonts/jetbrains-mono-700.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/jetbrains-mono-var.woff2" as="font" type="font/woff2" crossorigin>
   <!-- /static-nav:fonts -->
-  <link rel="preload" href="/components/styles.css?v=21" as="style">
-  <link rel="stylesheet" href="/components/styles.css?v=21">
+  <link rel="preload" href="/components/styles.css?v=22" as="style">
+  <link rel="stylesheet" href="/components/styles.css?v=22">
   <link rel="icon" type="image/x-icon"            href="/img/favicon.ico">
   <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
@@ -46,6 +46,8 @@
   ]}
   </script>
   <style>
+  /* breadcrumb 12px under the header, as on every other page */
+  main.main{padding-top:12px}
     
     
     
@@ -63,7 +65,7 @@
     .pill-group input { display: none; }
     .pill-group input:checked + label { background: var(--green); color: #06110b; }
     /* light mode: dark text on the light-theme --green read 3.8:1; white reads 5.1:1 */
-    [data-theme="light"] .pill-group input:checked + label, [data-theme="light"] .sticky-bar-copy, [data-theme="light"] .btn-copy { color: #fff; }
+    [data-theme="light"] .pill-group input:checked + label, [data-theme="light"] .sticky-bar-copy { color: #fff; }
     [data-theme="light"] .mkt-link, [data-theme="light"] .field-hint { opacity: 1; }
     /* v2: minmax(0,1fr) on ALL grid column definitions — bare 1fr can overflow on iOS Safari */
     .input-grid { display: grid; gap: 12px; margin-bottom: 16px; }
@@ -115,7 +117,7 @@
     /* v2: reset + copy buttons */
     .action-row { display: flex; gap: 8px; margin-top: 14px; }
     .btn-reset { flex: 1; font-family: 'JetBrains Mono', monospace; font-size:0.795rem; font-weight: 700; padding: 9px 12px; background: none; color: var(--text-dim); border: 2px solid var(--border); border-radius: 6px; cursor: pointer; min-height: 40px; touch-action: manipulation; }
-    .btn-copy  { flex: 2; font-family: 'JetBrains Mono', monospace; font-size:0.795rem; font-weight: 700; padding: 9px 12px; background: var(--green); color: #06110b; border: 2px solid var(--green); border-radius: 6px; cursor: pointer; min-height: 40px; touch-action: manipulation; }
+    .btn-copy  {flex:2;font-family:var(--font-body);font-size:var(--btn-fs);font-weight:700;padding:9px 12px;background:var(--btn-primary-bg);color:var(--btn-primary-ink);border:2px solid transparent;border-radius:var(--btn-r);cursor:pointer;min-height:40px;touch-action:manipulation;text-transform:none;letter-spacing:0}
     /* v2: SEO content section */
     .content-section { max-width: 1100px; margin: 24px auto 0; }
     .content-section h2 { font-family:var(--font-display); font-size: 1.1rem; color: var(--text); margin-bottom: 8px; font-weight: 600; }

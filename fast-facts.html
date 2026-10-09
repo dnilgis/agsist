@@ -4,11 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#111a0a"><!-- static-nav:fonts (scripts/inject_static_nav.py) -->
-  <link rel="preload" href="/fonts/inter-400.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="preload" href="/fonts/jetbrains-mono-700.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/jetbrains-mono-var.woff2" as="font" type="font/woff2" crossorigin>
   <!-- /static-nav:fonts -->
-  <link rel="preload" href="/components/styles.css?v=21" as="style">
-<link rel="stylesheet" href="/components/styles.css?v=21">
+  <link rel="preload" href="/components/styles.css?v=22" as="style">
+<link rel="stylesheet" href="/components/styles.css?v=22">
 <link rel="icon" type="image/x-icon"            href="/img/favicon.ico">
 <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
@@ -63,7 +63,7 @@
 .ff-related-strip a:hover{text-decoration:underline;}
 @media print{.ff-tabs,.ff-hero p,.skip,#site-header,#site-footer{display:none!important;}.ff-panel{display:block!important;page-break-inside:avoid;}.ff-page{padding:0;max-width:100%;}}
 .ff-page{max-width:980px;margin:0 auto;padding:0 1rem 4rem;}
-.ff-hero{padding:1.2rem 0 1rem;border-bottom:1px solid var(--border);margin-bottom:1.25rem;}
+.ff-hero{padding:var(--page-top) 0 1rem;border-bottom:1px solid var(--border);margin-bottom:1.25rem;}
 .ff-eyebrow{font-size:0.755rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:.3rem;}
 .ff-hero h1{font-family:var(--font-display);font-size:1.7rem;font-weight:800;text-transform:uppercase;color:var(--text);margin:0 0 .3rem;}
 .ff-hero p{font-size:.82rem;color:var(--text-dim);line-height:1.55;max-width:680px;margin:0;}
@@ -436,9 +436,9 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
   <path d="M19.47 9.47 21 11l-1.53 1.53a3.5 3.5 0 0 1-4.94 0L13 11l1.53-1.53a3.5 3.5 0 0 1 4.94 0Z" /></symbol><symbol id="i-zap" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z" /></symbol></defs></svg><style></style>
 <main id="main" tabindex="-1" class="ff-page">
 <div class="ff-hero">
-  <div class="ff-eyebrow"><svg class="ic" aria-hidden="true"><use href="#i-clipboard-list"/></svg> Free &middot; no login &middot; updated with live prices</div>
+  <div class="ff-eyebrow page-kicker"><svg class="ic" aria-hidden="true"><use href="#i-clipboard-list"/></svg> Free &middot; no login &middot; updated with live prices</div>
   <h1>Corn &amp; Soybean Reference Tables</h1>
-  <p>The numbers you check before you spend money: N rates, P&amp;K, manure value, staging, thresholds, conversions.</p>
+  <p class="page-lede">The numbers you check before you spend money: N rates, P&amp;K, manure value, staging, thresholds, conversions.</p>
   <div class="ff-meta">Rates calibrated to <strong>UW A2809</strong> (Upper Midwest), confirm with your state extension &middot; maintained by <strong>Sigurd Lindquist</strong> &middot; <a href="mailto:sig@farmers1st.com">sig@farmers1st.com</a> &middot; related: <a href="/fertilizer">Fertilizer Prices</a> &middot; <a href="/breakeven">Break-Even</a> &middot; <a href="/gdu-calculator">GDU History</a></div>
 </div>
 

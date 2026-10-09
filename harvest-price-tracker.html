@@ -20,16 +20,16 @@
 <meta property="og:description" content="The projected and harvest prices that set your revenue guarantee, tracked daily during each discovery window.">
 <meta property="og:url" content="https://agsist.com/harvest-price-tracker">
 <meta name="robots" content="index,follow"><!-- static-nav:fonts (scripts/inject_static_nav.py) -->
-  <link rel="preload" href="/fonts/inter-400.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="preload" href="/fonts/jetbrains-mono-700.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/jetbrains-mono-var.woff2" as="font" type="font/woff2" crossorigin>
   <!-- /static-nav:fonts -->
-  <link rel="stylesheet" href="/components/styles.css?v=21">
+  <link rel="stylesheet" href="/components/styles.css?v=22">
   <script src="/components/util.js?v=16"></script>
 <style>
 :root{--pd-gold:#d4a23f;--pd-gold2:#e6b042;--pd-green:#5fc28a;--pd-green2:#4aab4c;
   --pd-red:#c8562e;--pd-bg:#0f1311;--pd-p1:#161b18;--pd-p2:#1d2420;--pd-line:#2a332d;
   --pd-txt:#e7ece8;--pd-mut:#9bb0a3;--pd-mono:'JetBrains Mono',ui-monospace,monospace;}
-.hp-wrap{max-width:900px;margin:0 auto;padding:1.25rem 1rem 3rem;color:var(--pd-txt);
+.hp-wrap{max-width:900px;margin:0 auto;padding:var(--page-top) 1rem 3rem;color:var(--pd-txt);
   font-family:Inter,system-ui,sans-serif;}
 .hp-wrap h1{font-family:var(--font-display),Inter,sans-serif;font-weight:800;
   font-size:clamp(1.7rem,5vw,2.35rem);line-height:1.1;margin:.2rem 0 .35rem;text-wrap:balance;}
@@ -306,8 +306,8 @@ table.hp-hist td.up{color:var(--pd-green);} table.hp-hist td.dn{color:var(--pd-r
 <a href="#main" class="skip">Skip to content</a>
 <main id="main" tabindex="-1" class="hp-wrap">
 
-  <h1 id="pdv-h">When does your <em style="font-style:normal;color:var(--pd-gold2)">price</em> get set?</h1>
-  <p class="hp-lede" style="margin-bottom:.9rem">Your revenue guarantee is built from two averages: a projected price before you plant, and a harvest price at the end. RMA decides when each one is taken, and it is not the same month everywhere.</p>
+  <h1 id="pdv-h">When does your <em>price</em> get set?</h1>
+  <p class="hp-lede page-lede" style="margin-bottom:.9rem">Your revenue guarantee is built from two averages: a projected price before you plant, and a harvest price at the end. RMA decides when each one is taken, and it is not the same month everywhere.</p>
 
   <div class="pd-pick">
     <label for="pd-state">Your state</label>

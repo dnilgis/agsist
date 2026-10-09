@@ -6,11 +6,11 @@
   <meta name="theme-color" content="#0a0c0d">  <script>/* agsist-theme-early: saved theme, else the device's, set before first paint so pages do not flash the wrong color. loader.js applies the same rule. */try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.setAttribute('data-theme',_t);}catch(e){}</script><script>/* agsist-ga-guard 2026-10-09: Google Analytics loads only when the browser sends no Global Privacy Control signal and the off switch on /privacy is not set, and only once the page is shown (a page loaded ahead in the background is not a visit). dataLayer and gtag always exist, so page code that calls them never throws. */(function(w,d,n){var off=false,v,i,s;w.dataLayer=w.dataLayer||[];if(typeof w.gtag!=='function'){w.gtag=function(){w.dataLayer.push(arguments);};}try{off=w.localStorage.getItem('agsist-ga-off')==='1';}catch(e){}if(n.globalPrivacyControl===true){off=true;}w.agsistGaOff=off;w.gtag('set','allow_google_signals',false);w.gtag('set','allow_ad_personalization_signals',false);if(off){return;}i=function(){s=d.createElement('script');s.async=true;s.src='https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H';(d.head||d.documentElement).appendChild(s);};if(d.prerendering){d.addEventListener('prerenderingchange',i,{once:true});}else{i();}})(window,document,navigator);</script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
   <!-- static-nav:fonts (scripts/inject_static_nav.py) -->
-  <link rel="preload" href="/fonts/inter-400.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="preload" href="/fonts/jetbrains-mono-700.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/jetbrains-mono-var.woff2" as="font" type="font/woff2" crossorigin>
   <!-- /static-nav:fonts -->
-  <link rel="preload" href="/components/styles.css?v=21" as="style">
-  <link rel="stylesheet" href="/components/styles.css?v=21">
+  <link rel="preload" href="/components/styles.css?v=22" as="style">
+  <link rel="stylesheet" href="/components/styles.css?v=22">
   <script src="/components/util.js?v=16"></script>
   <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
   <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
@@ -235,13 +235,13 @@ html[data-theme="light"] .cr-mleg-s.na{outline:1px solid rgba(20,30,28,.28);outl
 <!-- /static-nav:header -->
 </div>
 
-<main class="cr-wrap">
+<main class="cr-wrap" id="main">
 
   <header class="cr-hero">
     <p class="cr-atlas">Part of the <a href="/farmland-atlas">Farmland Atlas</a>: land values, rent and risk for every county.</p>
-    <p class="cr-kicker">USDA NASS &middot; County Cash Rents Survey</p>
+    <p class="cr-kicker page-kicker">USDA NASS &middot; County Cash Rents Survey</p>
     <h1>Cash rent map: county rent against what the acre can gross</h1>
-    <p class="cr-sub">You know your rent. The number that decides the lease is <strong>rent as a share of what the acre can realistically gross</strong>: and almost nobody puts those two numbers side by side. This does, for every county USDA publishes.</p>
+    <p class="cr-sub page-lede">You know your rent. The number that decides the lease is <strong>rent as a share of what the acre can realistically gross</strong>: and almost nobody puts those two numbers side by side. This does, for every county USDA publishes.</p>
     <p class="cr-sub" style="margin-top:.5rem">Every county's rent beside its night heat, water, insurance loss record and land value: <a href="/farmland-atlas#l=rent" style="color:var(--gold)">the Farmland Atlas</a>.</p>
   </header>
 

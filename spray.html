@@ -10,11 +10,11 @@
 <link rel="preconnect" href="https://nominatim.openstreetmap.org">
 <link rel="preconnect" href="https://geocoding-api.open-meteo.com">
 <!-- static-nav:fonts (scripts/inject_static_nav.py) -->
-  <link rel="preload" href="/fonts/inter-400.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="preload" href="/fonts/jetbrains-mono-700.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/jetbrains-mono-var.woff2" as="font" type="font/woff2" crossorigin>
   <!-- /static-nav:fonts -->
-  <link rel="preload" href="/components/styles.css?v=21" as="style">
-<link rel="stylesheet" href="/components/styles.css?v=21">
+  <link rel="preload" href="/components/styles.css?v=22" as="style">
+<link rel="stylesheet" href="/components/styles.css?v=22">
 <link rel="stylesheet" href="/components/asof.css?v=1">
 <script src="/components/asof.js?v=1"></script>
 <link rel="stylesheet" href="/components/states.css?v=2"><script src="/components/states.js?v=1" defer></script><script>/* a saved location: the forecast panel shows and the setup box does not, from first paint (autoLoad swapped them after paint and the page jumped) */try{var _l=JSON.parse(localStorage.getItem('agsist-wx-loc')||'null');if(_l&&_l.lat&&_l.lon)document.documentElement.classList.add('spray-has-loc');}catch(e){}</script>
@@ -211,25 +211,25 @@ body {
 }
 .btn-g {
   display: inline-flex; align-items: center; gap: .45rem;
-  padding: .75rem 1.4rem; background: var(--green); color: #06110b;
-  border: none; border-radius: var(--r-sm, 4px); font-family: 'JetBrains Mono', monospace;
-  font-size: .85rem; font-weight: 700; cursor: pointer;
-  text-transform: uppercase; letter-spacing: .5px;
-  transition: background .15s;
+  padding: .75rem 1.4rem; background: var(--btn-primary-bg); color: var(--btn-primary-ink);
+  border: none; border-radius: var(--btn-r); font-family: var(--font-body);
+  font-size: var(--btn-fs); font-weight: 700; cursor: pointer;
+  text-transform: none; letter-spacing: 0;
+  transition: filter .15s;
   min-height: 44px;
 }
-.btn-g:hover { background: #1b4d1c; }
+.btn-g:hover { filter: brightness(.94); }
 .btn-q {
   display: inline-flex; align-items: center; gap: .45rem;
   padding: .75rem 1.3rem; background: none;
-  border: 2px solid var(--border); border-radius: var(--r-sm, 4px);
-  font-family: 'JetBrains Mono', monospace; font-size: .85rem; font-weight: 600;
-  color: var(--text-dim); cursor: pointer;
-  text-transform: uppercase; letter-spacing: .5px;
+  border: 2px solid var(--border-2); border-radius: var(--btn-r);
+  font-family: var(--font-body); font-size: var(--btn-fs); font-weight: 700;
+  color: var(--text); cursor: pointer;
+  text-transform: none; letter-spacing: 0;
   transition: border-color .15s, color .15s;
   min-height: 44px;
 }
-.btn-q:hover { border-color: var(--green); color: var(--green); }
+.btn-q:hover { border-color: var(--brand); color: var(--brand); }
 .zip-row {
   display: none; flex-direction: row; gap: .6rem; justify-content: center;
   margin-top: .9rem; flex-wrap: wrap;
@@ -889,7 +889,7 @@ body {
    (#6ab04c) was 2.6:1 as text. One darker green for text here, white ink on the
    green buttons, and no .9 opacity on the green and red section titles. */
 [data-theme="light"]{--green:#256b42;}
-[data-theme="light"] .btn-g,[data-theme="light"] #signup-btn{color:#fff!important;}
+/* the primary buttons (.btn-g, #signup-btn) are gold with dark ink in both themes now (styles.css --btn-primary-*) */
 [data-theme="light"] .edu-title,[data-theme="light"] .sc-title,[data-theme="light"] .inv-title{opacity:1;}
 [data-theme="light"] .qmix-num[style*="9f7aea"]{color:#6b46c1!important;}
 /* Dark: the .9 opacity put the inversion title at 4.48:1. */
@@ -1132,12 +1132,12 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
   </header>
 <!-- /static-nav:header -->
 </div>
-<section class="hero">
+<section class="hero page-head">
   <div class="hero-inner">
     <div>
-      <div class="hero-eyebrow"><span class="live-dot" aria-hidden="true"></span>Real-Time Spray Advisory</div>
+      <div class="hero-eyebrow page-kicker"><span class="live-dot" aria-hidden="true"></span>Real-Time Spray Advisory</div>
       <h1 class="hero-title">Is It <span>Safe to Spray</span><br>Right Now?</h1>
-      <p class="hero-sub">Wind speed, temperature, humidity, thermal inversion risk, 24-hour window forecast, tank mix order, and pro tips, everything a sprayer needs. Free. No account. No app.</p>
+      <p class="hero-sub page-lede">Wind speed, temperature, humidity, thermal inversion risk, 24-hour window forecast, tank mix order, and pro tips, everything a sprayer needs. Free. No account. No app.</p>
     </div>
     <div class="status-panel" id="status-panel" aria-live="polite" role="status">
       <div class="status-lbl"><span class="live-dot" aria-hidden="true"></span>Current Spray Status</div>
@@ -1732,7 +1732,7 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
     <div class="sidebar fade-up" id="edu2">
       <div class="sc sc-live"><div class="sc-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-clipboard-copy"/></svg> Recommendation</div><div class="rec marginal" id="rec-box"><div class="rec-h marginal" id="rec-head">Awaiting Location</div><div class="rec-t" id="rec-text">Set your location above to receive a real-time spray recommendation for your field conditions.</div></div></div>
       <div class="sc sc-live"><div class="sc-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-calendar"/></svg> 5-Day Spray Outlook</div><div class="day-strip" id="day-strip"><div class="day-item"><div class="day-name">Today</div><div class="day-icon" aria-hidden="true"><svg class="ic-sp" aria-hidden="true"><use href="#sp-hourglass"/></svg></div><div class="day-rating marginal">-</div><div class="day-wind">-</div></div><div class="day-item"><div class="day-name">Day 2</div><div class="day-icon" aria-hidden="true"><svg class="ic-sp" aria-hidden="true"><use href="#sp-hourglass"/></svg></div><div class="day-rating marginal">-</div><div class="day-wind">-</div></div><div class="day-item"><div class="day-name">Day 3</div><div class="day-icon" aria-hidden="true"><svg class="ic-sp" aria-hidden="true"><use href="#sp-hourglass"/></svg></div><div class="day-rating marginal">-</div><div class="day-wind">-</div></div><div class="day-item"><div class="day-name">Day 4</div><div class="day-icon" aria-hidden="true"><svg class="ic-sp" aria-hidden="true"><use href="#sp-hourglass"/></svg></div><div class="day-rating marginal">-</div><div class="day-wind">-</div></div><div class="day-item"><div class="day-name">Day 5</div><div class="day-icon" aria-hidden="true"><svg class="ic-sp" aria-hidden="true"><use href="#sp-hourglass"/></svg></div><div class="day-rating marginal">-</div><div class="day-wind">-</div></div></div><div style="font-size:0.77rem;color:var(--text-muted);margin-top:.6rem;line-height:1.6">Based on forecast wind, temp, and humidity. Always verify conditions on the day of application.</div></div>
-      <div class="sc" id="signup-card"><div class="sc-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-mail"/></svg> Get the AGSIST Daily</div><div id="signup-form" style="display:flex;flex-direction:column;gap:.5rem"><p style="font-size:0.795rem;color:var(--text-dim);line-height:1.6;margin:0">Overnight markets, what to watch, and farm weather, by 6am CT on weekdays. Available at no charge.</p><input type="email" id="signup-email" placeholder="your@email.com" autocomplete="email" inputmode="email" aria-label="Email address" style="width:100%;box-sizing:border-box;padding:.6rem .7rem;background:var(--surface2,#1a1a14);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:1rem;min-height:44px"><button id="signup-btn" style="width:100%;padding:.6rem;background:var(--green);color:#06110b;border:none;border-radius:6px;font-size:.85rem;font-weight:700;cursor:pointer;min-height:44px;touch-action:manipulation">Subscribe Free &rarr;</button><div style="font-size:0.765rem;color:var(--text-muted);line-height:1.5">Unsubscribe any time. I never sell your data. <a href="/privacy" style="color:var(--text-muted)">Privacy</a>.</div></div></div>
+      <div class="sc" id="signup-card"><div class="sc-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-mail"/></svg> Get the AGSIST Daily</div><div id="signup-form" style="display:flex;flex-direction:column;gap:.5rem"><p style="font-size:0.795rem;color:var(--text-dim);line-height:1.6;margin:0">Overnight markets, what to watch, and farm weather, by 6am CT on weekdays. Available at no charge.</p><input type="email" id="signup-email" placeholder="your@email.com" autocomplete="email" inputmode="email" aria-label="Email address" style="width:100%;box-sizing:border-box;padding:.6rem .7rem;background:var(--surface2,#1a1a14);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:1rem;min-height:44px"><button id="signup-btn" style="width:100%;padding:.6rem;background:var(--btn-primary-bg);color:var(--btn-primary-ink);border:none;border-radius:var(--btn-r);font-size:var(--btn-fs);font-weight:700;cursor:pointer;min-height:44px;touch-action:manipulation">Subscribe Free &rarr;</button><div style="font-size:0.765rem;color:var(--text-muted);line-height:1.5">Unsubscribe any time. I never sell your data. <a href="/privacy" style="color:var(--text-muted)">Privacy</a>.</div></div></div>
       <div class="sc"><div class="sc-title">&#10003; Pre-Spray Checklist</div><div style="display:flex;flex-direction:column;gap:.5rem"><label class="checklist-item"><input type="checkbox"><span>Wind 3&ndash;10 mph, consistent direction away from sensitive areas</span></label><label class="checklist-item"><input type="checkbox"><span>Temperature 50&ndash;85&deg;F (check specific product label)</span></label><label class="checklist-item"><input type="checkbox"><span>Humidity above 40% RH (adjust nozzle if dry)</span></label><label class="checklist-item"><input type="checkbox"><span>No inversion indicators (smoke, hanging dust, ground fog)</span></label><label class="checklist-item"><input type="checkbox"><span>Leaves are dry: no dew, no recent rain on canopy</span></label><label class="checklist-item"><input type="checkbox"><span>Re-read product label restrictions before starting</span></label><label class="checklist-item"><input type="checkbox"><span>Notified neighbors / checked buffer zones</span></label><label class="checklist-item"><input type="checkbox"><span>Equipment calibrated: nozzles clean, pressure checked</span></label><label class="checklist-item"><input type="checkbox"><span>Jar test completed for new tank mix combinations</span></label><label class="checklist-item"><input type="checkbox"><span>Spray records sheet ready (wind, temp, products, rates)</span></label></div></div>
       <div class="sc"><div class="sc-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-flask-conical"/></svg> Quick Mix Order</div><div class="qmix-list"><div class="qmix-item"><span class="qmix-num" style="color:var(--blue)">1.</span><span class="qmix-text">Water (50&ndash;75%)</span></div><div class="qmix-item"><span class="qmix-num" style="color:var(--gold)">2.</span><span class="qmix-text">AMS / water conditioner</span></div><div class="qmix-item"><span class="qmix-num" style="color:#9f7aea">3.</span><span class="qmix-text">Agitation ON</span></div><div class="qmix-item"><span class="qmix-num" style="color:var(--orange)">4.</span><span class="qmix-text">Dry (WP, WDG, DF)</span></div><div class="qmix-item"><span class="qmix-num" style="color:var(--green)">5.</span><span class="qmix-text">Liquid flowables (SC)</span></div><div class="qmix-item"><span class="qmix-num" style="color:var(--red)">6.</span><span class="qmix-text">Emulsifiable (EC)</span></div><div class="qmix-item"><span class="qmix-num" style="color:var(--blue)">7.</span><span class="qmix-text">Soluble liquids (SL)</span></div><div class="qmix-item"><span class="qmix-num" style="color:var(--gold)">8.</span><span class="qmix-text">Adjuvants / surfactants</span></div><div class="qmix-item"><span class="qmix-num" style="color:var(--green)">9.</span><span class="qmix-text">Top off water</span></div></div><div class="qmix-footer">Always jar test new combinations. <a href="#section-mixorder">Full guide &#8593;</a></div></div>
       <a href="/urea" class="cross-link"><span class="cross-link-icon" aria-hidden="true"><svg class="ic-sp" aria-hidden="true"><use href="#sp-wheat"/></svg></span><div><div class="cross-link-title">Planning to Apply Urea?</div><div class="cross-link-text">Temperature and wind affect nitrogen loss just as much as spray drift. Check volatilization risk before you spread.</div></div><span class="cross-link-arrow" aria-hidden="true">&rarr;</span></a>

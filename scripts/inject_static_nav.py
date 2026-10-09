@@ -15,9 +15,9 @@ nav -- and those nine copies had already drifted from each other.
 This script makes components/header-fallback.html and footer-fallback.html the
 single source and copies them inside #site-header / #site-footer of every
 public root page, between markers. It also puts the two above-the-fold font
-preloads in each <head> (measured 2026-10-06 with Playwright on index, markets,
-breakeven, cash-rent, about, corn-futures-prices, tools: Inter 400 and
-JetBrains Mono 700 cover the most above-the-fold text and load on every page).
+preloads in each <head>: the variable Inter and JetBrains Mono files, the only
+two font files a page needs since 2026-10-09 (one file per family covers every
+weight; see the @font-face block in components/styles.css).
 
 Edit the fallback files, then run this. Idempotent.
 
@@ -38,7 +38,7 @@ REPO = pathlib.Path(__file__).resolve().parent.parent
 COMP = REPO / "components"
 SKIP = set()
 
-FONTS = ("/fonts/inter-400.woff2", "/fonts/jetbrains-mono-700.woff2")
+FONTS = ("/fonts/inter-var.woff2", "/fonts/jetbrains-mono-var.woff2")
 FONT_BLOCK = ("<!-- static-nav:fonts (scripts/inject_static_nav.py) -->\n"
               + "".join(f'  <link rel="preload" href="{u}" as="font" type="font/woff2" crossorigin>\n'
                         for u in FONTS)

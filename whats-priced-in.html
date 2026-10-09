@@ -22,14 +22,14 @@
 <meta name="twitter:image" content="https://agsist.com/img/whats-priced-in.png">
 <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1"><!-- 2026-09-30: removed a redundant direct Google Fonts stylesheet link; components/styles.css already self-hosts these same weights. -->
 <!-- static-nav:fonts (scripts/inject_static_nav.py) -->
-  <link rel="preload" href="/fonts/inter-400.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="preload" href="/fonts/jetbrains-mono-700.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/jetbrains-mono-var.woff2" as="font" type="font/woff2" crossorigin>
   <!-- /static-nav:fonts -->
-  <link rel="stylesheet" href="/components/styles.css?v=21">
+  <link rel="stylesheet" href="/components/styles.css?v=22">
   <script src="/components/util.js?v=16"></script>
 <style>
 :root{--wp-green:#4aab4c;--wp-gold:var(--gold);--wp-gold2:#e6b042;--wp-bg:#0f1311;--wp-panel:#161b18;--wp-panel2:#1d2420;--wp-line:#2a332d;--wp-txt:#e7ece8;--wp-mut:#9bb0a3;--wp-up:#4aab4c;--wp-dn:#e8706c;}
-.wp-wrap{max-width:900px;margin:0 auto;padding:1.25rem 1rem 3rem;color:var(--wp-txt);font-family:Inter,system-ui,sans-serif;}
+.wp-wrap{max-width:900px;margin:0 auto;padding:var(--page-top) 1rem 3rem;color:var(--wp-txt);font-family:Inter,system-ui,sans-serif;}
 .wp-wrap h1{font-family:var(--font-display);font-weight:700;font-size:clamp(1.7rem,5vw,2.4rem);line-height:1.08;margin:.2rem 0 .4rem;text-wrap:balance;}
 .wp-wrap h2{font-family:var(--font-display);font-weight:600;font-size:1.25rem;margin:2rem 0 .6rem;color:var(--wp-gold2);}
 .wp-lede{color:var(--wp-mut);font-size:1.05rem;line-height:1.5;max-width:64ch;margin:.2rem 0 1.2rem;}
@@ -375,9 +375,9 @@ details.fold>summary>h2,details.fold>summary>h3{margin:0!important;padding:0!imp
 <!-- /static-nav:header -->
 </div>
 
-<main class="wp-wrap">
+<main class="wp-wrap" id="main">
   <h1>What's priced in?</h1>
-  <p class="wp-lede">Before every major USDA report the market has already placed its bet. This is what the trade expects, and the number that would surprise it, scored after every release.</p>
+  <p class="wp-lede page-lede">Before every major USDA report the market has already placed its bet. This is what the trade expects, and the number that would surprise it, scored after every release.</p>
   <nav class="wp-jump" aria-label="On this page"><b>On this page</b>
     <a href="#next-report">What's expected next</a><span>&middot;</span><a href="#track-record">How past reports landed</a><span>&middot;</span><a href="#analyst-board">Analyst estimates, graded</a><span>&middot;</span><a href="#methodology">Methodology</a><span>&middot;</span><a href="#questions">Questions</a>
   </nav>

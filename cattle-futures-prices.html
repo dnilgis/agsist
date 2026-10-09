@@ -6,11 +6,11 @@
 <meta name="theme-color" content="#111a0a"><script>/* agsist-theme-early: saved theme, else the device's, set before first paint so pages do not flash the wrong color. loader.js applies the same rule. */try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.setAttribute('data-theme',_t);}catch(e){}</script><script>/* agsist-ga-guard 2026-10-09: Google Analytics loads only when the browser sends no Global Privacy Control signal and the off switch on /privacy is not set, and only once the page is shown (a page loaded ahead in the background is not a visit). dataLayer and gtag always exist, so page code that calls them never throws. */(function(w,d,n){var off=false,v,i,s;w.dataLayer=w.dataLayer||[];if(typeof w.gtag!=='function'){w.gtag=function(){w.dataLayer.push(arguments);};}try{off=w.localStorage.getItem('agsist-ga-off')==='1';}catch(e){}if(n.globalPrivacyControl===true){off=true;}w.agsistGaOff=off;w.gtag('set','allow_google_signals',false);w.gtag('set','allow_ad_personalization_signals',false);if(off){return;}i=function(){s=d.createElement('script');s.async=true;s.src='https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H';(d.head||d.documentElement).appendChild(s);};if(d.prerendering){d.addEventListener('prerenderingchange',i,{once:true});}else{i();}})(window,document,navigator);</script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');window.gaEvent=function(n,p){try{gtag('event',n,p||{});}catch(e){};};</script>
 <!-- static-nav:fonts (scripts/inject_static_nav.py) -->
-  <link rel="preload" href="/fonts/inter-400.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="preload" href="/fonts/jetbrains-mono-700.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/jetbrains-mono-var.woff2" as="font" type="font/woff2" crossorigin>
   <!-- /static-nav:fonts -->
-  <link rel="preload" href="/components/styles.css?v=21" as="style">
-<link rel="stylesheet" href="/components/styles.css?v=21">
+  <link rel="preload" href="/components/styles.css?v=22" as="style">
+<link rel="stylesheet" href="/components/styles.css?v=22">
 <link rel="stylesheet" href="/components/asof.css?v=1">
 <script src="/components/asof.js?v=1"></script>
 <link rel="stylesheet" href="/components/states.css?v=2"><script src="/components/states.js?v=1" defer></script>
@@ -102,8 +102,8 @@
 .signup-form{display:flex;gap:6px;max-width:420px;margin:0 auto;flex-wrap:wrap}
 .signup-form input{flex:1;min-width:180px;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:10px 12px;font-size:1rem;color:var(--text);min-height:40px}
 .signup-form input:focus{outline:1px solid var(--gold);border-color:var(--gold)}
-.signup-form button{background:var(--green);color:#06110b;border:none;border-radius:6px;padding:10px 16px;font-size:0.795rem;font-weight:700;cursor:pointer;min-height:40px}[data-theme="light"] .signup-form button{color:#fff}
-.signup-form button:hover{background:var(--brand-fill,var(--brand,#d4a23f))}
+.signup-form button{background:var(--btn-primary-bg);color:var(--btn-primary-ink);border:none;border-radius:var(--btn-r);padding:10px 16px;font-size:var(--btn-fs);font-weight:700;cursor:pointer;min-height:40px;font-family:var(--font-body);text-transform:none;letter-spacing:0}
+.signup-form button:hover{filter:brightness(.94)}
 .signup-ok{color:var(--green);font-size:0.795rem;margin-top:8px;font-weight:600;display:none}
 .signup-sub{font-size:0.755rem;color:var(--text-dim);margin-top:6px}
 .author-block{background:linear-gradient(135deg,var(--surface) 0%,rgba(58,139,60,.03) 100%);border:1px solid var(--border);border-radius:10px;padding:13px 15px;margin:16px 0 0;display:flex;align-items:flex-start;gap:12px}
