@@ -52,6 +52,13 @@
 .lg-l{display:none}
 [data-theme="light"] .lg-l{display:inline-block}
 [data-theme="light"] .lg-d{display:none}
+/* Site search button. Inline so its space is set when the header lands; the
+   sheet itself (components/search.js + search.css) loads on first open. */
+.srch-btn{display:flex;align-items:center;gap:.45rem;min-height:44px;min-width:44px;padding:0 .7rem;background:none;border:1px solid var(--border);border-radius:var(--r-sm);color:var(--text-dim);font:inherit;font-size:.82rem;font-weight:600;cursor:pointer}
+.srch-btn:hover,.srch-btn:focus-visible{border-color:var(--brand);color:var(--brand)}
+.srch-btn svg{width:18px;height:18px;flex:0 0 auto;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}
+.srch-btn kbd{font:inherit;font-size:.72rem;line-height:1;padding:.18rem .4rem;border:1px solid var(--border);border-radius:4px;color:var(--text-muted)}
+@media (max-width:1000px){.srch-btn .srch-btn-t,.srch-btn kbd{display:none}.srch-btn{justify-content:center;padding:0}}
 </style>
 <nav class="nav" id="topnav">
   <div class="nav-inner">
@@ -142,6 +149,7 @@
 
 
     <div class="nav-actions">
+      <button type="button" class="srch-btn" id="srch-btn" aria-label="Search the site" aria-haspopup="dialog" aria-expanded="false" aria-keyshortcuts="/ Control+K Meta+K"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><span class="srch-btn-t">Search</span><kbd aria-hidden="true">/</kbd></button>
       <button class="theme-btn" id="theme-btn" aria-label="Toggle theme">
         <span id="theme-icon" aria-hidden="true"><svg class="theme-ic moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401" /></svg><svg class="theme-ic sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4" /> <path d="M12 2v2" /> <path d="M12 20v2" /> <path d="m4.93 4.93 1.41 1.41" /> <path d="m17.66 17.66 1.41 1.41" /> <path d="M2 12h2" /> <path d="M20 12h2" /> <path d="m6.34 17.66-1.41 1.41" /> <path d="m19.07 4.93-1.41 1.41" /></svg></span>
         <div class="t-track"><div class="t-thumb"></div></div>

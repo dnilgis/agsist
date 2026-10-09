@@ -1,0 +1,42 @@
+/* search.css -- the site search sheet (components/search.js). Loaded with it,
+   only when a reader opens search. The header button's own styles live inline
+   in components/header.html so its space is there before this file loads. */
+.srch-ov{position:fixed;inset:0;z-index:9994;background:rgba(0,0,0,.45)}
+.srch{position:fixed;z-index:9995;left:50%;top:72px;transform:translateX(-50%);
+  width:min(640px,calc(100vw - 32px));max-height:calc(100vh - 110px);display:flex;flex-direction:column;
+  background:var(--surface,#101415);color:var(--text,#e9edeb);border:1px solid var(--border,rgba(132,160,168,.25));
+  border-radius:var(--r-lg,14px);box-shadow:0 24px 60px -20px rgba(0,0,0,.6);overflow:hidden}
+.srch[hidden],.srch-ov[hidden]{display:none}
+.srch-bar{display:flex;align-items:center;gap:.5rem;padding:.55rem .6rem .55rem .9rem;border-bottom:1px solid var(--border,rgba(132,160,168,.25))}
+.srch-ic{width:20px;height:20px;flex:0 0 auto;fill:none;stroke:var(--text-muted,#999);stroke-width:2;stroke-linecap:round}
+.srch-lbl{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.srch-in{flex:1;min-width:0;min-height:44px;border:0;background:transparent;color:var(--text,#e9edeb);
+  font:inherit;font-size:16px;outline:none;padding:0 .2rem}
+.srch-in::placeholder{color:var(--text-muted,#999)}
+.srch-in::-webkit-search-cancel-button{-webkit-appearance:none}
+.srch-x{flex:0 0 auto;min-height:44px;min-width:44px;padding:0 .8rem;border:1px solid var(--border,rgba(132,160,168,.25));
+  border-radius:var(--r-sm,6px);background:none;color:var(--text-dim,#ddd);font:inherit;font-size:.85rem;font-weight:600;cursor:pointer}
+.srch-x:hover,.srch-x:focus-visible{border-color:var(--brand,#d4a23f);color:var(--brand,#d4a23f)}
+.srch-st{margin:0;padding:.45rem 1rem 0;font-size:.8rem;color:var(--text-muted,#999)}
+.srch-st:empty{display:none}
+.srch-list{overflow-y:auto;overscroll-behavior:contain;padding:.25rem 0 .5rem;flex:1 1 auto}
+.srch-list:empty{display:none}
+.srch-gh{padding:.7rem 1rem .25rem;font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted,#999)}
+.srch-n{font-weight:600;letter-spacing:0;margin-left:.25rem;padding:0 .4rem;border-radius:999px;background:var(--bg2,rgba(127,127,127,.12))}
+.srch-opt{display:flex;flex-direction:column;justify-content:center;min-height:44px;padding:.35rem 1rem;
+  color:var(--text,#e9edeb);text-decoration:none;border-left:3px solid transparent;cursor:pointer}
+.srch-opt.on{background:rgba(var(--brand-rgb,212,162,63),.14);border-left-color:var(--brand,#d4a23f)}
+.srch-t{font-size:.95rem;font-weight:600;line-height:1.3}
+.srch-s{font-size:.78rem;color:var(--text-muted,#999);line-height:1.3}
+.srch-t mark{background:none;color:var(--brand,#d4a23f);font-weight:800;text-decoration:underline;text-underline-offset:2px}
+.srch-more{font-size:.85rem;font-weight:700;color:var(--brand,#d4a23f)}
+.srch-foot{margin:0;padding:.5rem 1rem;border-top:1px solid var(--border,rgba(132,160,168,.25));font-size:.75rem;color:var(--text-muted,#999)}
+html.srch-open{overflow:hidden}
+/* Phones: a full-width sheet over the page, keyboard up. */
+@media (max-width:700px){
+  .srch{left:0;top:0;transform:none;width:100%;max-height:none;height:100%;height:100dvh;border:0;border-radius:0}
+  .srch-ov{background:var(--surface,#101415)}
+  .srch-foot{display:none}
+  .srch-opt{min-height:48px}
+}
+@media (prefers-reduced-motion:no-preference){.srch{animation:srch-in .12s ease-out}@keyframes srch-in{from{opacity:0}to{opacity:1}}}

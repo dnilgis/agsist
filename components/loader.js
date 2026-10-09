@@ -221,6 +221,8 @@
 
     window.closeDr = closeDr;
 
+    var sb = document.getElementById('srch-btn');
+    if (sb) sb.addEventListener('click', openSearch);
     if (ham) ham.addEventListener('click', openDr);
     if (dc)  dc.addEventListener('click', closeDr);
     if (ov)  ov.addEventListener('click', closeDr);
@@ -424,6 +426,36 @@
       if (s && foot.contains(s)) e.preventDefault();
     });
   }
+
+  // Site search: components/search.js + search.css load on first open (the
+  // header button, "/" or Ctrl/Cmd-K), never on page load. A focused stand-in
+  // input holds the phone keyboard up until the real box takes focus.
+  function openSearch() {
+    if (window.AgsistSearch) { window.AgsistSearch.open(); return; }
+    if (!window.__agsistSearchProxy) {
+      var px = document.createElement('input');
+      px.setAttribute('aria-hidden', 'true'); px.tabIndex = -1;
+      px.style.cssText = 'position:fixed;top:0;left:0;width:1px;height:1px;opacity:0;font-size:16px;border:0;padding:0';
+      document.body.appendChild(px); px.focus();
+      window.__agsistSearchProxy = px;
+    }
+    window.__agsistSearchWant = true;
+    if (openSearch.loading) return;
+    openSearch.loading = true;
+    var l = document.createElement('link'); l.rel = 'stylesheet'; l.href = BASE + cv('/components/search.css');
+    l.onload = l.onerror = function () { // styles first, so the sheet never shows unstyled
+      var s = document.createElement('script'); s.src = BASE + cv('/components/search.js');
+      s.onerror = function () { openSearch.loading = false; var p = window.__agsistSearchProxy; if (p) p.remove(); window.__agsistSearchProxy = null; };
+      document.head.appendChild(s);
+    };
+    document.head.appendChild(l);
+  }
+  document.addEventListener('keydown', function (e) {
+    var t = e.target, tag = t && t.tagName;
+    var typing = tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || (t && t.isContentEditable);
+    if ((e.key === 'k' || e.key === 'K') && (e.ctrlKey || e.metaKey) && !e.altKey && !e.shiftKey) { e.preventDefault(); openSearch(); }
+    else if (e.key === '/' && !typing && !e.ctrlKey && !e.metaKey && !e.altKey) { e.preventDefault(); openSearch(); }
+  });
 
   document.addEventListener('DOMContentLoaded', function () {
     injectAnalytics();
