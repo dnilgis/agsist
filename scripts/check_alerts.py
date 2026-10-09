@@ -207,7 +207,7 @@ def build_email(w, day, band, from_name, from_addr, reply_to):
     stop = stop_url(w["email"])
 
     msg = EmailMessage()
-    msg["Subject"] = "Hail alert — radar-estimated hail near " + place + " (" + day + ")"
+    msg["Subject"] = "Hail alert: radar-estimated hail near " + place + " (" + day + ")"
     msg["From"] = formataddr((from_name, from_addr))
     msg["To"] = w["email"]
     msg["Message-ID"] = make_msgid(domain=from_addr.split("@", 1)[1])
@@ -216,17 +216,18 @@ def build_email(w, day, band, from_name, from_addr, reply_to):
     msg["List-Unsubscribe"] = "<" + stop + ">"
     msg["List-Unsubscribe-Post"] = "List-Unsubscribe=One-Click"
 
-    text = ("HAIL ALERT — " + day + "\n\n"
+    text = ("HAIL ALERT, " + day + "\n\n"
             "Radar-estimated hail of " + str(band) + "\u2033 or larger touched the "
             + str(radius) + "-mile watch area around " + place + " yesterday.\n\n"
             "This is a radar ESTIMATE (NOAA MRMS MESH), not a ground measurement. "
-            "Stones may have been smaller, larger, or absent at your exact spot — "
-            "pair it with what you can see on the ground.\n\n"
+            "Stones may have been smaller, larger, or absent at your exact spot. "
+            "Pair it with what you can see on the ground.\n\n"
             "See the dated swath map and pull the ground reports near you:\n"
             + link + "\n\n"
             "If damage is possible: photograph everything with today's date "
             "before cleanup, and note the time hail fell if you saw it.\n\n"
-            "\u2014\nAGSIST hail alerts \u00b7 free \u00b7 agsist.com/hail-map\n"
+            "--\nAGSIST hail alerts \u00b7 free \u00b7 agsist.com/hail-map\n"
+            "AGSIST, PO Box 243, Chetek, WI 54728\n"
             "Stop these alerts: " + stop + "\n")
     msg.set_content(text)
 
@@ -246,16 +247,17 @@ def build_email(w, day, band, from_name, from_addr, reply_to):
         + e(str(radius)) + "-mile watch area</p>"
         '<p style="font-size:14px;line-height:1.6;margin:0 0 14px">This is a radar '
         "<strong>estimate</strong> (NOAA MRMS MESH), not a ground measurement. Stones may "
-        "have been smaller, larger, or absent at your exact spot &mdash; pair it with what "
+        "have been smaller, larger, or absent at your exact spot. Pair it with what "
         "you can see on the ground.</p>"
         '<p style="margin:18px 0"><a href="' + link + '" '
         'style="background:#14100a;color:#e9dfc9;text-decoration:none;'
-        'padding:10px 18px;font-family:Courier,monospace;font-size:13px">'
+        'display:inline-block;padding:13px 20px;font-family:Courier,monospace;font-size:14px">'
         "SEE THE DATED SWATH MAP &#8594;</a></p>"
         '<p style="font-size:13px;line-height:1.6;color:#444">If damage is possible: '
         "photograph everything with today's date before cleanup.</p>"
         '<p style="font-size:12px;color:#6b6b6b;line-height:1.5">AGSIST hail alerts &middot; free &middot; '
         '<a href="https://agsist.com/hail-map" style="color:#6b6b6b">agsist.com/hail-map</a>'
+        '<br>AGSIST, PO Box 243, Chetek, WI 54728'
         '<br><a href="' + stop + '" style="color:#6b6b6b">Stop these alerts</a></p></div>')
     msg.add_alternative(hbody, subtype="html")
     return msg

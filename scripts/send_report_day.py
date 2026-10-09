@@ -293,7 +293,9 @@ def compose(day, reports, moves):
     for ln in L:
         if not ln:
             continue
-        if ln.isupper() or ln.startswith("AGSIST ·"):
+        # A report's own heading ("SEPTEMBER GRAIN STOCKS (released 11:00 AM CT)")
+        # is not all capitals, so it fell through to a body paragraph.
+        if ln.isupper() or ln.startswith("AGSIST ·") or ln.split(" (released ")[0].isupper():
             parts.append('<p style="margin:16px 0 4px;font:700 11px/1.4 monospace;letter-spacing:.12em;color:#6b6b6b">%s</p>' % esc(ln))
         elif ln.startswith("Every figure"):
             parts.append('<p style="margin:12px 0 0;font:14px/1.5 sans-serif"><a href="%s" style="color:#8a6b1f">Every figure, its source and the history</a></p>' % PAGE.replace("&", "&amp;"))

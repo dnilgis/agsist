@@ -325,7 +325,7 @@ def html_wrap(title, paras, button=None, foot=""):
     e = H.escape
     body = "".join(f'<p style="font-size:14px;line-height:1.6;margin:0 0 12px">{e(p)}</p>' for p in paras)
     btn = (f'<p style="margin:18px 0"><a href="{H.escape(button[1])}" style="background:#14100a;color:#e9dfc9;'
-           f'text-decoration:none;padding:10px 18px;font-family:Courier,monospace;font-size:13px">{e(button[0])}</a></p>') if button else ""
+           f'text-decoration:none;display:inline-block;padding:13px 20px;font-family:Courier,monospace;font-size:14px">{e(button[0])}</a></p>') if button else ""
     return ('<div style="font-family:Georgia,serif;max-width:560px;margin:0 auto;padding:24px 16px;color:#1a1a1a;background:#fff">'
             f'<h1 style="font-size:20px;line-height:1.3;margin:0 0 12px">{e(title)}</h1>{body}{btn}'
             f'<p style="font-size:12px;color:#6b6b6b;line-height:1.5">{foot}</p></div>')
@@ -624,7 +624,9 @@ def opt_alert_email(w, wid, label, kind, old, row, base, secret, fn, fa, rt):
              f"Your alert: {opt_condition_from_label(label)}"]
     tail = ("This alert has fired and is now cleared. Set it again on the card if you want another."
             if kind != "move" else "The next email comes when a later posting moves the basis this far again from here.")
-    m = base_msg(w, subj, fn, fa, rt, stop1)
+    # A cash or basis alert is gone once it fires, so a one-click unsubscribe
+    # aimed at it alone would stop nothing. The header stops them all.
+    m = base_msg(w, subj, fn, fa, rt, stop1 if kind == "move" else stopall)
     m.set_content(f"{head}\n\n" + "\n".join(lines) + f"\n\n{tail}\n\n"
                   "This is the elevator's own posted board, not a contract. Freight, moisture and grade "
                   "discounts are theirs and not shown here. Call to confirm before you haul.\n\n"
@@ -648,7 +650,7 @@ def opt_ended_email(w, wid, label, old_plabel, row, base, secret, fn, fa, rt):
     lines = [f"Your alert was for {old_plabel}: {opt_condition_from_label(label)}.",
              f"This elevator no longer posts {old_plabel}. It now quotes {now}.",
              "The alert is cleared. Set a new one on the card if you want one for the new period."]
-    m = base_msg(w, subj, fn, fa, rt, stop1)
+    m = base_msg(w, subj, fn, fa, rt, stopall)        # this alert is already cleared
     m.set_content(f"{head}\n\n" + "\n".join(lines) + f"\n\nThe card:\n{CARD_URL}\n\n"
                   f"--\n{ADDRESS}\nStop all elevator watches: {stopall}\n")
     foot = f'{H.escape(ADDRESS)}<br><a href="{H.escape(stopall)}" style="color:#6b6b6b">Stop all</a>'
@@ -682,7 +684,7 @@ def daily_lines(watchers, net_idx, basis_idx):
                                  f"{fmt_cash(row['cash'])}, basis {fmt_basis(row['basis'])}, posted {fmt_posted(row['pricedAt'])}")
                 else:
                     lines.append(f"{(st.get('label') or 'A watched elevator').split(' — ')[0]}, {st.get('crop') or ''} "
-                                 f"{st.get('plabel') or ''}: \u2014 not on the board this morning")
+                                 f"{st.get('plabel') or ''}: not on the board this morning")
             else:
                 # A plain corn watch's wid is the same hash as the network
                 # row's ewid. Where the card has that row, print it, so this
@@ -705,7 +707,7 @@ def daily_lines(watchers, net_idx, basis_idx):
                     lines.append(f"{name}, {month_words(row)}: basis {fmt_basis(row['basis'])}, "
                                  f"last changed {row['changedOn'] or 'on an unposted date'}")
                 else:
-                    lines.append(f"{name}: \u2014 not in the basis files this morning")
+                    lines.append(f"{name}: not in the basis files this morning")
         if lines:
             out[r["email"].lower()] = lines
     return out
@@ -1015,8 +1017,8 @@ def selftest_alerts():
     dl = daily_lines(watchers, idx, {})
     lines = dl["f@x.com"]
     assert "Adell Cooperative, Adell, WI, corn Oct 2026: $4.52, basis \u221260\u00a2, posted Oct 3, 11:30 AM CT" in lines, lines
-    assert any(x.endswith("\u2014 not on the board this morning") for x in lines), "a missing row says so"
-    assert any(x == "ADM, corn: \u2014 not in the basis files this morning" for x in lines)
+    assert any(x.endswith(": not on the board this morning") for x in lines), "a missing row says so"
+    assert any(x == "ADM, corn: not in the basis files this morning" for x in lines)
     assert len(lines) == len(set(lines)), "one line per elevator, crop and period"
     assert daily_lines([{"email": "z@x.com", "w": {}}], idx, {}) == {}
     both = daily_lines([{"email": "y@x.com", "w": {A_C: {"label": "Adell, corn", "k": "x", "s": {}},

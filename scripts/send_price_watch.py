@@ -121,7 +121,7 @@ def html_wrap(title, paras, button=None, foot=""):
     e = H.escape
     body = "".join(f'<p style="font-size:14px;line-height:1.6;margin:0 0 12px">{e(p)}</p>' for p in paras)
     btn = (f'<p style="margin:18px 0"><a href="{H.escape(button[1])}" style="background:#14100a;color:#e9dfc9;'
-           f'text-decoration:none;padding:10px 18px;font-family:Courier,monospace;font-size:13px">{e(button[0])}</a></p>') if button else ""
+           f'text-decoration:none;display:inline-block;padding:13px 20px;font-family:Courier,monospace;font-size:14px">{e(button[0])}</a></p>') if button else ""
     return ('<div style="font-family:Georgia,serif;max-width:560px;margin:0 auto;padding:24px 16px;color:#1a1a1a;background:#fff">'
             f'<h1 style="font-size:20px;line-height:1.3;margin:0 0 12px">{e(title)}</h1>{body}{btn}'
             f'<p style="font-size:12px;color:#6b6b6b;line-height:1.5">{foot}</p></div>')
@@ -147,15 +147,16 @@ def confirm_email(w, pid, label, base, secret, fn, fa, rt):
 def hit_email(w, pid, label, close_cents, base, secret, fn, fa, rt):
     stopall = link(base, "price-watch-unsubscribe", w, pid, secret, "w")
     m = base_msg(w, f"{label} -- now {fmt_price(close_cents)}", fn, fa, rt, stopall)
-    line = f"{label} just hit {fmt_price(close_cents)}, the price you set."
+    line = f"{label}: now {fmt_price(close_cents)}, so your alert fired."
     m.set_content(f"{line}\n\n"
                   "This alert has done its job and is now cleared -- it will not fire again. "
                   "Set a new one any time from the homepage.\n\n"
                   "This is the futures price, not a cash bid at any one elevator -- your local "
                   "basis still applies. Check Cash Bids for what your elevator is actually paying.\n\n"
                   f"Full market prices:\n{SITE}/corn-futures-prices\n\n"
-                  f"--\n{ADDRESS}\nThis alert is already cleared; no action needed: {stopall}\n")
-    foot = f'{H.escape(ADDRESS)}<br>This alert is already cleared, no action needed.'
+                  f"--\n{ADDRESS}\nThis alert is already cleared. Cancel all your other price alerts: {stopall}\n")
+    foot = (f'{H.escape(ADDRESS)}<br>This alert is already cleared. '
+            f'<a href="{H.escape(stopall)}" style="color:#6b6b6b">Cancel all price alerts</a>')
     m.add_alternative(html_wrap(f"{label}: price alert hit", [
         line, "This alert has done its job and is now cleared. Set a new one any time from the homepage.",
         "This is the futures price, not a cash bid at any one elevator -- check Cash Bids for your local basis."],

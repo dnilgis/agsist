@@ -107,6 +107,10 @@ def split_bullets(text):
     parts = [p.strip() for p in re.split(r"(?:^|\n)\s*[-\u2022]\s+", raw) if p.strip()]
     if len(parts) >= 2 and re.search(r"(?:^|\n)\s*[-\u2022]\s+", raw):
         return [strip_md(p) for p in parts]
+    # A one-item list ("- WTI's at ...") is one paragraph, without the marker.
+    # strip_md() would keep the "- " and the email printed it as a stray hyphen.
+    if len(parts) == 1 and re.match(r"\s*[-\u2022]\s+", raw):
+        return [strip_md(parts[0])]
     v = strip_md(raw)
     return [v] if v else []
 
@@ -600,6 +604,17 @@ def local_text(local):
         ["  " + local["note"]] if local.get("note") else [])
 
 
+def action_label(daily, take):
+    """The label in front of the action line: the bot's own ("BOT CALL" until
+    its calls hold up, then "THE ACTION"), so the HTML and the text part say
+    the same thing. Empty when the line already opens with it ("Bot call, Oct
+    5 close, ..."), so it is not said twice."""
+    lab = str((daily.get("bot_call") or {}).get("label") or "THE ACTION").strip()
+    if take.lower().startswith(lab.lower()):
+        return ""
+    return lab[:1].upper() + lab[1:].lower()
+
+
 def render_html(daily, site_href, unsub_url=None, date_display=None, elevators=None,
                 local=None, forward_url=None):
     prior, prior_day = prior_board(daily)
@@ -608,7 +623,9 @@ def render_html(daily, site_href, unsub_url=None, date_display=None, elevators=N
     # v5.1: the action holds the slot the takeaway had. An issue from before
     # the cut has no action and keeps its takeaway.
     take = strip_md(daily.get("action"))
-    take_label = "The action." if take else "The takeaway."
+    take_label = (action_label(daily, take) + ".") if take else "The takeaway."
+    if take_label == ".":
+        take_label = ""
     if not take:
         take = strip_md(daily.get("the_takeaway"))
     issue = daily.get("issue_number")
@@ -773,7 +790,8 @@ def render_text(daily, site, unsub_url=None, date_display=None, elevators=None,
             L += ["", v]
     take = strip_md(daily.get("action"))
     if take:
-        L += ["", ((daily.get("bot_call") or {}).get("label") or "THE ACTION") + ": " + take]
+        lab = action_label(daily, take).upper()
+        L += ["", (lab + ": " if lab else "") + take]
         if daily.get("bot_call"):
             L.append(BOT_SRC_TEXT)
     else:

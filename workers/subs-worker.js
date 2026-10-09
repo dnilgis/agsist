@@ -1,4 +1,8 @@
 /**
+ * v5.7 (2026-10-09): the confirm/unsubscribe pages carry a viewport meta, so
+ *   they read at full size on a phone. No route, field or token changes.
+ */
+/**
  * v5.6 (2026-10-07): ONE SENTENCE. The confirm page for a ZIP-wide cash alert
  *   (an ordinary kind=cash elevator alert whose ewid is "ab" + ZIP + 3-digit
  *   miles, sent by components/cb-alerts.js and mailed by
@@ -238,6 +242,9 @@ function htmlPage(msg, extraHtml) {
   return new Response(
     "<!doctype html><meta charset=utf-8><title>AGSIST</title>" +
     "<meta name=robots content=noindex>" +
+    // v5.7: without this a phone lays the page out 980px wide and shrinks it,
+    // so the unsubscribe question and its button arrive at a third size.
+    "<meta name=viewport content=\"width=device-width,initial-scale=1\">" +
     "<body style=\"font-family:Georgia,serif;max-width:480px;margin:80px auto;" +
     "padding:0 16px;color:#1a1a1a\"><h2>" + msg + "</h2>" + (extraHtml || "") +
     "<p><a href=\"https://agsist.com\">agsist.com</a></p>",
