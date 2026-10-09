@@ -9,8 +9,8 @@
   <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/jetbrains-mono-var.woff2" as="font" type="font/woff2" crossorigin>
   <!-- /static-nav:fonts -->
-  <link rel="preload" href="/components/styles.css?v=22" as="style">
-  <link rel="stylesheet" href="/components/styles.css?v=22">
+  <link rel="preload" href="/components/styles.css?v=23" as="style">
+  <link rel="stylesheet" href="/components/styles.css?v=23">
   <script src="/components/util.js?v=16"></script>
   <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
   <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
@@ -283,7 +283,7 @@ html[data-theme="light"] #cyn-record [style*="opacity:.85"]{opacity:1!important}
        loads, so the page before the first build is the page that was there
        yesterday. The numbers are not computed here — scripts/build_yield_benchmarks.py
        owns every one of them and the panel file carries them ready to print. -->
-  <section id="cy-panel" style="display:none;background:#0d1112;border:1px solid #1a1f20;border-radius:12px;padding:18px 20px;margin:18px 0">
+  <section id="cy-panel" style="display:none;background:#0d1112;border:1px solid #1a1f20;border-radius:var(--card-r);padding:18px 20px;margin:18px 0">
     <div style="font-size:0.755rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:7px">What everyone else says</div>
     <div id="cyp-verdict" style="font-size:0.9rem;color:#e6ebe9;line-height:1.6;margin-bottom:12px"></div>
     <div id="cyp-crops" style="display:grid;gap:14px"></div>

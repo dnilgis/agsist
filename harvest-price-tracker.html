@@ -23,7 +23,7 @@
   <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/jetbrains-mono-var.woff2" as="font" type="font/woff2" crossorigin>
   <!-- /static-nav:fonts -->
-  <link rel="stylesheet" href="/components/styles.css?v=22">
+  <link rel="stylesheet" href="/components/styles.css?v=23">
   <script src="/components/util.js?v=16"></script>
 <style>
 :root{--pd-gold:#d4a23f;--pd-gold2:#e6b042;--pd-green:#5fc28a;--pd-green2:#4aab4c;
@@ -41,7 +41,7 @@
 /* ── the one control ─────────────────────────────────────────────── */
 [hidden]{display:none !important}
 .pd-pick{display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;background:var(--pd-p1);
-  border:1px solid var(--pd-line);border-radius:12px;padding:.7rem .8rem;margin:0 0 1.3rem;}
+  border:1px solid var(--pd-line);border-radius:var(--card-r);padding:.7rem .8rem;margin:0 0 1.3rem;}
 .pd-pick label{font-family:var(--pd-mono);font-size:.72rem;font-weight:700;letter-spacing:.08em;
   text-transform:uppercase;color:var(--pd-mut);}
 .pd-pick select{background:var(--pd-p2);color:var(--pd-txt);border:1px solid var(--pd-line);
@@ -62,7 +62,7 @@
 .pd-sect{font-family:var(--pd-mono);font-size:.72rem;font-weight:700;letter-spacing:.11em;
   text-transform:uppercase;color:var(--pd-mut);margin:1.6rem 0 .6rem;padding-bottom:.4rem;
   border-bottom:1px solid var(--pd-line);}
-.pd-crop{background:var(--pd-p1);border:1px solid var(--pd-line);border-radius:12px;
+.pd-crop{background:var(--pd-p1);border:1px solid var(--pd-line);border-radius:var(--card-r);
   padding:.95rem 1rem;margin-bottom:.7rem;}
 .pd-crop.live{border-color:rgba(95,194,138,.45);}
 .pd-crop-top{display:flex;justify-content:space-between;align-items:center;gap:.7rem;
@@ -145,7 +145,7 @@ table.pd-t td.n{font-family:var(--pd-mono);text-align:right;white-space:nowrap;}
 table.pd-t td:first-child{font-weight:600;}
 .pd-up{color:var(--pd-green);} .pd-dn{color:var(--pd-red);}
 .pd-sub2{font-size:.7rem;color:var(--pd-mut);font-weight:400;}
-details.pd-d{background:var(--pd-p1);border:1px solid var(--pd-line);border-radius:12px;
+details.pd-d{background:var(--pd-p1);border:1px solid var(--pd-line);border-radius:var(--card-r);
   margin:.6rem 0;}
 details.pd-d>summary{cursor:pointer;padding:.85rem 1rem;font-weight:700;font-size:.98rem;
   list-style:none;display:flex;justify-content:space-between;gap:.6rem;align-items:center;
@@ -159,7 +159,7 @@ details.pd-d .pd-db{padding:0 1rem 1rem;}
 .pd-note{color:var(--pd-mut);font-size:.86rem;line-height:1.55;margin:.5rem 0 0;}
 
 /* ── guarantee calculator ────────────────────────────────────────── */
-.pd-calc{background:var(--pd-p1);border:1px solid var(--pd-line);border-radius:12px;padding:1rem;}
+.pd-calc{background:var(--pd-p1);border:1px solid var(--pd-line);border-radius:var(--card-r);padding:1rem;}
 .pd-calc .pd-r3{display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:.7rem;margin-bottom:.7rem;}
 @media(max-width:620px){.pd-calc .pd-r3{grid-template-columns:1fr;}}
 .pd-calc label{display:block;font-family:var(--pd-mono);font-size:.66rem;font-weight:700;
@@ -217,7 +217,7 @@ details.pd-d .pd-db{padding:0 1rem 1rem;}
    price a grower is most likely to want. */
 .dn-cn{display:block}
 .dn-cx{display:block;font-family:var(--pd-mono);font-size:.68rem;color:var(--pd-dim,#8a948f);margin-top:.1rem}
-.hp-card-s{background:var(--pd-p1);border:1px solid var(--pd-line);border-radius:12px;
+.hp-card-s{background:var(--pd-p1);border:1px solid var(--pd-line);border-radius:var(--card-r);
   padding:.85rem .95rem;}
 .hpc-t{font-family:var(--pd-mono);font-size:.72rem;letter-spacing:.05em;color:var(--pd-mut);
   margin-bottom:.5rem;}
@@ -231,7 +231,7 @@ details.pd-d .pd-db{padding:0 1rem 1rem;}
 .hp-seed-note{grid-column:1/-1;font-size:.76rem;color:var(--pd-mut);line-height:1.5;}
 
 /* ── key figures, history, FAQ, credit ───────────────────────────── */
-.hp-figs{background:var(--pd-p1);border:1px solid var(--pd-line);border-radius:12px;
+.hp-figs{background:var(--pd-p1);border:1px solid var(--pd-line);border-radius:var(--card-r);
   padding:1rem 1.1rem;margin:1rem 0;}
 .hp-figs h2{margin-top:0;}
 .hp-figs ul{margin:.4rem 0 .6rem;padding-left:1.1rem;color:var(--pd-txt);font-size:.93rem;

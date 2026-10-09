@@ -28,8 +28,8 @@
   <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/jetbrains-mono-var.woff2" as="font" type="font/woff2" crossorigin>
   <!-- /static-nav:fonts -->
-  <link rel="preload" href="/components/styles.css?v=22" as="style">
-<link rel="stylesheet" href="/components/styles.css?v=22">
+  <link rel="preload" href="/components/styles.css?v=23" as="style">
+<link rel="stylesheet" href="/components/styles.css?v=23">
 <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
 <link rel="manifest" href="/manifest.json">
 <style>
@@ -40,7 +40,7 @@
   .em-hero p{font-size:.95rem;line-height:1.65;color:var(--text-dim);max-width:64ch;margin:0;}
   .em-hero p strong{color:var(--text);}
   .em-h2{font-family:var(--font-display);font-size:1.25rem;font-weight:700;text-transform:uppercase;color:var(--text);margin:2.2rem 0 .9rem;padding-bottom:.45rem;border-bottom:1px solid var(--border);}
-  .em-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.2rem 1.3rem;margin-bottom:1.1rem;}
+  .em-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--card-r);padding:1.2rem 1.3rem;margin-bottom:1.1rem;}
   .em-card.soon{border-style:dashed;}
   .em-card-head{display:flex;align-items:center;justify-content:space-between;gap:.6rem;flex-wrap:wrap;margin-bottom:.4rem;}
   .em-card-title{font-family:var(--font-display);font-size:1.15rem;font-weight:700;color:var(--text);}
@@ -58,7 +58,7 @@
   .em-prev-lbl{font-family:'JetBrains Mono',monospace;font-size:0.75rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.6rem;}
   .em-note{font-size:1rem;line-height:1.65;color:var(--text-dim);background:var(--surface);border-left:3px solid var(--gold);border-radius:0 8px 8px 0;padding:.8rem 1rem;margin:1rem 0;}
   .em-note strong{color:var(--text);}
-  .em-cta{text-align:center;margin-top:2rem;padding:1.4rem;background:var(--surface);border:1px solid var(--border);border-radius:12px;}
+  .em-cta{text-align:center;margin-top:2rem;padding:1.4rem;background:var(--surface);border:1px solid var(--border);border-radius:var(--card-r);}
   .em-cta a{color:var(--gold);text-decoration:none;font-weight:700;}
   .em-iframe{width:100%;max-width:480px;border:0;display:block;margin:0 auto;min-height:560px;}
   /* Phones: give the live preview the full card width so its form fields have room. */

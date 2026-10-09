@@ -9,8 +9,8 @@
   <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/jetbrains-mono-var.woff2" as="font" type="font/woff2" crossorigin>
   <!-- /static-nav:fonts -->
-  <link rel="preload" href="/components/styles.css?v=22" as="style">
-  <link rel="stylesheet" href="/components/styles.css?v=22">
+  <link rel="preload" href="/components/styles.css?v=23" as="style">
+  <link rel="stylesheet" href="/components/styles.css?v=23">
   <script src="/components/util.js?v=16"></script>
   <link rel="icon" type="image/x-icon"             href="/img/favicon.ico">
   <link rel="icon" type="image/png" sizes="32x32"  href="/img/favicon-32.png">
@@ -48,13 +48,13 @@
   .ct-h2{font-family:var(--font-display),'Inter',system-ui,sans-serif;font-size:1.28rem;font-weight:800;color:var(--text,#e7ece8);margin:2.2rem 0 .3rem;}
   .ct-sub{font-size:.9rem;color:var(--text-muted,#9bb0a3);line-height:1.6;margin:0 0 1rem;}
   .ct-benches{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(200px,100%),1fr));gap:.6rem;margin:0 0 .8rem;}
-  .ct-bench{background:var(--card,#161b14);border:1px solid var(--border,#2a3324);border-radius:12px;padding:.9rem 1rem;}
+  .ct-bench{background:var(--card,#161b14);border:1px solid var(--border,#2a3324);border-radius:var(--card-r);padding:.9rem 1rem;}
   .ct-bench--agsist{border-color:rgba(212,162,63,.45);}
   .ct-b-lbl{font-family:'JetBrains Mono',monospace;font-size:.73rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted,#9bb0a3);}
   .ct-b-val{font-family:var(--font-display),'Inter',system-ui,sans-serif;font-size:2rem;font-weight:800;color:var(--text,#e7ece8);line-height:1.1;margin:.25rem 0 .2rem;}
   .ct-b-u{font-size:.42em;font-weight:700;color:var(--text-muted,#9bb0a3);margin-left:.25rem;}
   .ct-b-note{font-size:.82rem;color:var(--text-dim,#c3ccc4);line-height:1.5;}
-  .ct-night{background:var(--card,#161b14);border:1px solid var(--border,#2a3324);border-radius:12px;padding:.85rem 1rem;margin-bottom:.6rem;}
+  .ct-night{background:var(--card,#161b14);border:1px solid var(--border,#2a3324);border-radius:var(--card-r);padding:.85rem 1rem;margin-bottom:.6rem;}
   .ct-night--posted{border-color:rgba(74,171,76,.4);}
   .ct-n-hd{display:flex;align-items:baseline;gap:.6rem;flex-wrap:wrap;margin-bottom:.6rem;}
   .ct-n-day{font-weight:700;font-size:1rem;color:var(--text,#e7ece8);}
@@ -83,7 +83,7 @@
   .ct-bar-v--pos{padding-left:.4rem;color:var(--green,#4aab4c);}
   .ct-bar-zero{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-family:'JetBrains Mono',monospace;font-size:.78rem;font-weight:700;color:var(--text-muted,#9bb0a3);}
   .ct-legend{font-size:.82rem;color:var(--text-muted,#9bb0a3);line-height:1.6;margin:.7rem 0 0;}
-  .ct-note{background:var(--card,#161b14);border:1px solid var(--border,#2a3324);border-radius:12px;padding:1rem 1.15rem;margin-top:1.4rem;font-size:.87rem;color:var(--text-dim,#c3ccc4);line-height:1.68;}
+  .ct-note{background:var(--card,#161b14);border:1px solid var(--border,#2a3324);border-radius:var(--card-r);padding:1rem 1.15rem;margin-top:1.4rem;font-size:.87rem;color:var(--text-dim,#c3ccc4);line-height:1.68;}
   .ct-note b{color:var(--text,#e7ece8);}
   .ct-note a{color:var(--gold,#d4a23f);}
   .ct-note ul{margin:.5rem 0 0;padding-left:1.1rem;}

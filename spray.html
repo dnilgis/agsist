@@ -13,8 +13,8 @@
   <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/jetbrains-mono-var.woff2" as="font" type="font/woff2" crossorigin>
   <!-- /static-nav:fonts -->
-  <link rel="preload" href="/components/styles.css?v=22" as="style">
-<link rel="stylesheet" href="/components/styles.css?v=22">
+  <link rel="preload" href="/components/styles.css?v=23" as="style">
+<link rel="stylesheet" href="/components/styles.css?v=23">
 <link rel="stylesheet" href="/components/asof.css?v=1">
 <script src="/components/asof.js?v=1"></script>
 <link rel="stylesheet" href="/components/states.css?v=2"><script src="/components/states.js?v=1" defer></script><script>/* a saved location: the forecast panel shows and the setup box does not, from first paint (autoLoad swapped them after paint and the page jumped) */try{var _l=JSON.parse(localStorage.getItem('agsist-wx-loc')||'null');if(_l&&_l.lat&&_l.lon)document.documentElement.classList.add('spray-has-loc');}catch(e){}</script>
@@ -164,7 +164,7 @@ body {
 
 /* ── Status Panel (hero right) ────────────────────────────────────── */
 .status-panel {
-  background: var(--surface); border: 2px solid var(--border);
+  background: var(--surface); border: var(--card-bw) solid var(--border);
   border-radius: var(--r-md, 6px); padding: 1.5rem; text-align: center;
   min-width: 0;
   transition: border-color .2s;
@@ -200,7 +200,7 @@ body {
 
 /* ── Location Setup Card ──────────────────────────────────────────── */
 .loc-setup {
-  background: var(--surface); border: 2px solid var(--border);
+  background: var(--surface); border: var(--card-bw) solid var(--border);
   border-radius: var(--r-md, 6px); padding: 2rem; text-align: center;
   max-width: 560px; margin: 0 auto 1.5rem;
 }
@@ -235,7 +235,7 @@ body {
   margin-top: .9rem; flex-wrap: wrap;
 }
 .zip-in {
-  padding: .75rem 1rem; background: var(--surface2); border: 2px solid var(--border);
+  padding: .75rem 1rem; background: var(--surface2); border: var(--card-bw) solid var(--border);
   border-radius: var(--r-sm, 4px); font-family: 'JetBrains Mono', monospace; font-size: .88rem;
   color: var(--text); width: 160px; outline: none; transition: border-color .15s;
   min-height: 44px;
@@ -321,7 +321,7 @@ body {
   margin-bottom: 1.5rem;
 }
 .fcard {
-  background: var(--surface); border: 2px solid var(--border);
+  background: var(--surface); border: var(--card-bw) solid var(--border);
   border-radius: var(--r-md, 6px); padding: 1rem 1.1rem;
   transition: border-color .2s;
   min-width: 0;
@@ -370,7 +370,7 @@ body {
 
 /* ── Hourly Spray Window ─────────────────────────────────────────── */
 .window-wrap {
-  background: var(--surface); border: 2px solid var(--border);
+  background: var(--surface); border: var(--card-bw) solid var(--border);
   border-radius: var(--r-md, 6px); padding: 1.1rem;
   margin-bottom: 1.5rem;
   /* overflow:hidden intentionally OMITTED — kills iOS touch scroll on .hourly-scroll child */
@@ -416,7 +416,7 @@ body {
 
 /* ── Education Section ───────────────────────────────────────────── */
 .edu {
-  background: var(--surface); border: 2px solid var(--border);
+  background: var(--surface); border: var(--card-bw) solid var(--border);
   border-radius: var(--r-md, 6px); padding: 1.5rem; margin-bottom: 1.5rem;
   min-width: 0; overflow: hidden;
 }
@@ -432,7 +432,7 @@ body {
   margin-bottom: 1.25rem;
 }
 .edu-card {
-  background: var(--surface2); border: 2px solid var(--border);
+  background: var(--surface2); border: var(--card-bw) solid var(--border);
   border-radius: var(--r-sm, 4px); padding: 1rem; min-width: 0;
   overflow: hidden;
 }
@@ -508,7 +508,7 @@ body {
 ═══════════════════════════════════════════════════════════════════ */
 .mix-section { margin-top: 2.5rem; min-width: 0; }
 .mix-card {
-  background: var(--surface); border: 2px solid var(--border);
+  background: var(--surface); border: var(--card-bw) solid var(--border);
   border-radius: var(--r-md, 6px); padding: 1.5rem;
   /* overflow:hidden intentionally OMITTED — kills iOS touch scroll on .nozzle-table-wrap child */
 }
@@ -524,7 +524,7 @@ body {
   grid-template-columns: 44px minmax(0,1fr);
   gap: .85rem; align-items: start;
   padding: .85rem; background: var(--surface2);
-  border: 2px solid var(--border); border-radius: var(--r-md, 6px);
+  border: var(--card-bw) solid var(--border); border-radius: var(--r-md, 6px);
   transition: border-color .2s;
   min-width: 0;
 }
@@ -580,7 +580,7 @@ body {
   gap: .85rem; margin-bottom: 1rem;
 }
 .tip-card {
-  background: var(--surface); border: 2px solid var(--border);
+  background: var(--surface); border: var(--card-bw) solid var(--border);
   border-radius: var(--r-md, 6px); padding: 1.15rem;
   transition: border-color .2s;
   min-width: 0; overflow: hidden;
@@ -652,7 +652,7 @@ body {
   min-width: 0;
 }
 .sc {
-  background: var(--surface); border: 2px solid var(--border);
+  background: var(--surface); border: var(--card-bw) solid var(--border);
   border-radius: var(--r-md, 6px); padding: 1.1rem 1.2rem;
   min-width: 0;
   /* overflow:hidden intentionally OMITTED — kills iOS touch scroll on .day-strip child.
@@ -692,7 +692,7 @@ body {
   flex: 1; flex-shrink: 0; min-width: 48px;
   display: flex; flex-direction: column; align-items: center;
   gap: .2rem; padding: .65rem .3rem;
-  background: var(--surface2); border: 2px solid var(--border);
+  background: var(--surface2); border: var(--card-bw) solid var(--border);
   border-radius: var(--r-sm, 4px); text-align: center;
 }
 .day-name   { font-family: 'JetBrains Mono', monospace; font-size:0.755rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--text-muted); white-space:nowrap; }
@@ -744,7 +744,7 @@ body {
 .cross-link {
   display: flex; align-items: flex-start; gap: .9rem;
   padding: 1rem 1.1rem; background: var(--surface);
-  border: 2px solid var(--border); border-radius: var(--r-md, 6px);
+  border: var(--card-bw) solid var(--border); border-radius: var(--r-md, 6px);
   text-decoration: none; transition: border-color .15s, background .15s;
   min-width: 0; overflow: hidden;
 }
@@ -1281,7 +1281,7 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
   .smc *,.scal *{box-sizing:border-box;}
   .smc-h,.scal-h{display:flex;align-items:center;gap:.5rem;font-family:var(--font-display);font-weight:700;font-size:1.3rem;margin:0 0 .2rem;color:var(--c-txt);}
   .smc-sub,.scal-sub{color:var(--c-mut);font-size:.92rem;line-height:1.45;margin:0 0 1rem;}
-  .smc-seg,.scal-seg{display:flex;gap:.4rem;background:var(--c-panel2);border:1px solid var(--c-line);border-radius:12px;padding:.3rem;margin-bottom:1rem;}
+  .smc-seg,.scal-seg{display:flex;gap:.4rem;background:var(--c-panel2);border:1px solid var(--c-line);border-radius:var(--card-r);padding:.3rem;margin-bottom:1rem;}
   .smc-seg button,.scal-seg button{flex:1;min-height:46px;border:none;border-radius:9px;background:transparent;color:var(--c-mut);font-weight:700;font-size:.9rem;cursor:pointer;font-family:inherit;}
   .smc-seg button[aria-pressed="true"],.scal-seg button[aria-pressed="true"]{background:var(--c-green);color:#0f140c;}
   .smc-grid,.scal-grid{display:grid;grid-template-columns:1fr 1fr;gap:.7rem;margin-bottom:1rem;}
@@ -1297,7 +1297,7 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
   .smc-prodhd .lbl{font-size:0.795rem;text-transform:uppercase;letter-spacing:.03em;color:var(--c-mut);font-weight:700;}
   .smc-help{font-size:0.79rem;color:var(--c-mut);line-height:1.4;margin:0 0 .6rem;background:var(--c-panel2);border:1px solid var(--c-line);border-radius:8px;padding:.5rem .6rem;}
   .smc-help b{color:var(--c-txt);}
-  .smc-prod{background:var(--c-panel2);border:1px solid var(--c-line);border-radius:12px;padding:.7rem .7rem .6rem;margin-bottom:.6rem;}
+  .smc-prod{background:var(--c-panel2);border:1px solid var(--c-line);border-radius:var(--card-r);padding:.7rem .7rem .6rem;margin-bottom:.6rem;}
   .smc-prod-top{display:flex;gap:.5rem;align-items:center;margin-bottom:.5rem;}
   .smc-prod-top input{flex:1;min-height:44px;}
   .smc-prod-rm{flex:0 0 auto;min-width:44px;min-height:44px;border:1px solid var(--c-line);background:transparent;color:var(--c-mut);border-radius:9px;font-size:1.2rem;cursor:pointer;line-height:1;}

@@ -21,7 +21,7 @@
   <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/jetbrains-mono-var.woff2" as="font" type="font/woff2" crossorigin>
   <!-- /static-nav:fonts -->
-  <link rel="stylesheet" href="/components/styles.css?v=22">
+  <link rel="stylesheet" href="/components/styles.css?v=23">
   <script src="/components/util.js?v=16"></script>
 <style>
 /* page-scoped (ib- prefix) — self-contained, no styles.css dependency */
@@ -40,12 +40,12 @@
 .ib-out{margin-top:1.2rem;display:grid;grid-template-columns:1fr 1fr 1fr;gap:.8rem;}
 .ib-out[hidden],.ib-readout[hidden]{display:none!important}
 @media(max-width:560px){.ib-out{grid-template-columns:1fr;}}
-.ib-stat{background:var(--ib-panel2);border:1px solid var(--ib-line);border-radius:12px;padding:.9rem .9rem 1rem;border-top:3px solid var(--ib-green);}
+.ib-stat{background:var(--ib-panel2);border:1px solid var(--ib-line);border-radius:var(--card-r);padding:.9rem .9rem 1rem;border-top:3px solid var(--ib-green);}
 .ib-stat .k{font-size:0.79rem;text-transform:uppercase;letter-spacing:.03em;color:var(--ib-mut);}
 .ib-stat .v{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:1.7rem;color:#fff;line-height:1.1;margin:.25rem 0 .15rem;}
 .ib-stat .s{font-size:.82rem;color:var(--ib-mut);line-height:1.35;}
 .ib-stat.gold{border-top-color:var(--ib-gold);}
-.ib-readout{margin-top:1rem;background:linear-gradient(180deg,rgba(74,171,76,.10),rgba(74,171,76,.03));border:1px solid var(--ib-green);border-radius:12px;padding:1rem 1.05rem;font-size:1.02rem;line-height:1.5;}
+.ib-readout{margin-top:1rem;background:linear-gradient(180deg,rgba(74,171,76,.10),rgba(74,171,76,.03));border:1px solid var(--ib-green);border-radius:var(--card-r);padding:1rem 1.05rem;font-size:1.02rem;line-height:1.5;}
 .ib-readout b{color:var(--ib-gold2);}
 .ib-note{background:var(--ib-panel);border:1px solid var(--ib-line);border-left:3px solid var(--ib-gold);border-radius:10px;padding:.9rem 1rem;margin:1rem 0;font-size:1rem;line-height:1.55;color:var(--ib-txt);}
 .ib-note b{color:var(--ib-gold2);}

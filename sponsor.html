@@ -37,8 +37,8 @@
   <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/jetbrains-mono-var.woff2" as="font" type="font/woff2" crossorigin>
   <!-- /static-nav:fonts -->
-  <link rel="preload" href="/components/styles.css?v=22" as="style">
-  <link rel="stylesheet" href="/components/styles.css?v=22">
+  <link rel="preload" href="/components/styles.css?v=23" as="style">
+  <link rel="stylesheet" href="/components/styles.css?v=23">
   <script src="/components/util.js?v=16"></script>
   <link rel="icon" type="image/x-icon"            href="/img/favicon.ico">
   <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
@@ -84,7 +84,7 @@
     /* What you can buy */
     .sp-tiers{display:grid;grid-template-columns:1fr;gap:.8rem;}
     @media(min-width:760px){.sp-tiers{grid-template-columns:repeat(3,1fr);}}
-    .sp-tier{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.1rem 1.15rem;display:flex;flex-direction:column;gap:.5rem;}
+    .sp-tier{background:var(--surface);border:1px solid var(--border);border-radius:var(--card-r);padding:1.1rem 1.15rem;display:flex;flex-direction:column;gap:.5rem;}
     .sp-tier--top{border:2px solid var(--ad-orange);}
     .sp-tier-name{font-family:var(--font-display);font-size:1.15rem;font-weight:700;color:var(--text);text-transform:uppercase;}
     .sp-tier-price{font-family:var(--font-mono);font-size:1.9rem;font-weight:800;color:var(--ad-orange);line-height:1;}
@@ -128,7 +128,7 @@
     .sp-faq-body a{color:var(--ad-orange);}
 
     /* Closing */
-    .sp-close{margin:2.4rem 0 0;padding:1.6rem 1.2rem;border:1px solid rgba(var(--ad-orange-rgb),.35);border-radius:12px;background:var(--surface);text-align:center;}
+    .sp-close{margin:2.4rem 0 0;padding:1.6rem 1.2rem;border:1px solid rgba(var(--ad-orange-rgb),.35);border-radius:var(--card-r);background:var(--surface);text-align:center;}
     .sp-close .sp-close-h{font-family:var(--font-display);font-size:1.3rem;font-weight:700;color:var(--text);text-transform:uppercase;margin:0 0 1rem;}
     .sp-close .sp-contact{margin-top:.9rem;}
 

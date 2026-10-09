@@ -9,8 +9,8 @@
   <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/jetbrains-mono-var.woff2" as="font" type="font/woff2" crossorigin>
   <!-- /static-nav:fonts -->
-  <link rel="preload" href="/components/styles.css?v=22" as="style">
-  <link rel="stylesheet" href="/components/styles.css?v=22">
+  <link rel="preload" href="/components/styles.css?v=23" as="style">
+  <link rel="stylesheet" href="/components/styles.css?v=23">
   <link rel="stylesheet" href="/components/asof.css?v=1">
   <script src="/components/asof.js?v=1"></script>
 <link rel="stylesheet" href="/components/states.css?v=2"><script src="/components/states.js?v=1" defer></script>
@@ -57,7 +57,7 @@
     /* panel colours: dark by default, site light surfaces in light mode */
     :root{--bs-bg:#101415;--bs-line:#1a1f20;--bs-dim:#8a948f;--bs-txt:#c9d1cd;--bs-hi:#e6ebe9;--bs-well:#0d1112;--bs-tabbd:#3a4345;--bs-faint:#5a6467;--bs-neg:#e0685f;--bs-pos:#5fc28a}
     [data-theme="light"]{--bs-bg:var(--surface);--bs-line:var(--border);--bs-dim:var(--text-muted);--bs-txt:var(--text-dim);--bs-hi:var(--text);--bs-well:var(--surface2);--bs-tabbd:var(--border-2);--bs-faint:var(--text-muted);--bs-neg:var(--red);--bs-pos:var(--green)}
-    .bs-panel{background:var(--bs-bg);color:var(--bs-txt);border:1px solid var(--bs-line);border-radius:12px;margin-top:26px;overflow:hidden}
+    .bs-panel{background:var(--bs-bg);color:var(--bs-txt);border:1px solid var(--bs-line);border-radius:var(--card-r);margin-top:26px;overflow:hidden}
     .bs-panel-hd{padding:14px 18px;border-bottom:1px solid var(--bs-line);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;align-items:baseline}
     .bs-panel-t{font-family:'JetBrains Mono',monospace;font-size:0.78rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}
     .bs-fresh{font-family:'JetBrains Mono',monospace;font-size:0.765rem;color:var(--bs-dim)}

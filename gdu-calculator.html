@@ -7,8 +7,8 @@
   <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/jetbrains-mono-var.woff2" as="font" type="font/woff2" crossorigin>
   <!-- /static-nav:fonts -->
-  <link rel="preload" href="/components/styles.css?v=22" as="style">
-<link rel="stylesheet" href="/components/styles.css?v=22">
+  <link rel="preload" href="/components/styles.css?v=23" as="style">
+<link rel="stylesheet" href="/components/styles.css?v=23">
 <link rel="icon" type="image/x-icon"            href="/img/favicon.ico">
 <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
@@ -72,7 +72,7 @@
 @media(min-width:700px){ .gdu-layout { grid-template-columns:minmax(0,360px) minmax(0,1fr); } }
 
 /* ── INPUTS ──────────────────────────────────────────────────────────── */
-.gdu-card { background:var(--surface); border:2px solid var(--border); border-radius:12px; padding:1.1rem 1.2rem; }
+.gdu-card { background:var(--surface); border:var(--card-bw) solid var(--border); border-radius:var(--card-r); padding:1.1rem 1.2rem; }
 .gdu-card-title { font-family:'JetBrains Mono',monospace; font-size:0.755rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--gold); margin-bottom:.9rem; display:flex; align-items:center; gap:.4rem; }
 
 .f-group { margin-bottom:.85rem; }
@@ -112,7 +112,7 @@
 .r-val.red { color:#e05c5c; }
 
 /* ── GAUGE ────────────────────────────────────────────────────────────── */
-.gauge-wrap { background:var(--surface); border:2px solid var(--border); border-radius:12px; padding:1.25rem 1.3rem; margin-bottom:1.1rem; }
+.gauge-wrap { background:var(--surface); border:var(--card-bw) solid var(--border); border-radius:var(--card-r); padding:1.25rem 1.3rem; margin-bottom:1.1rem; }
 .gauge-center { display:flex; flex-direction:column; align-items:center; }
 .gauge-arc { position:relative; width:200px; height:108px; overflow:hidden; }
 .gauge-arc svg { width:100%; height:100%; }
@@ -551,7 +551,7 @@ html[data-theme="light"] .formula-card code { color:#276c43; }
 
 <!--FAQ:START-->
 <style>
-.agf{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.1rem 1.2rem;margin:1.5rem 0 0}
+.agf{background:var(--surface);border:1px solid var(--border);border-radius:var(--card-r);padding:1.1rem 1.2rem;margin:1.5rem 0 0}
 .agf-t{font-family:var(--font-display);font-size:.95rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text);margin:0 0 .4rem}
 .agf details{border-top:1px solid var(--border)}
 .agf details:first-of-type{border-top:0}

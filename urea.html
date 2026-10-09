@@ -12,8 +12,8 @@
   <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/jetbrains-mono-var.woff2" as="font" type="font/woff2" crossorigin>
   <!-- /static-nav:fonts -->
-  <link rel="preload" href="/components/styles.css?v=22" as="style">
-<link rel="stylesheet" href="/components/styles.css?v=22">
+  <link rel="preload" href="/components/styles.css?v=23" as="style">
+<link rel="stylesheet" href="/components/styles.css?v=23">
 <link rel="icon" type="image/x-icon"             href="/img/favicon.ico">
 <link rel="icon" type="image/png" sizes="32x32"  href="/img/favicon-32.png">
 <link rel="icon" type="image/png" sizes="16x16"  href="/img/favicon-16.png">
@@ -140,7 +140,7 @@ body {
 
 /* ── Risk Panel + Gauge ──────────────────────────────────────────── */
 .risk-panel {
-  background: var(--surface); border: 2px solid var(--border);
+  background: var(--surface); border: var(--card-bw) solid var(--border);
   border-radius: var(--r-md, 6px); padding: 1.5rem; text-align: center;
   position: relative;
   /* FIX v9-7: overflow:hidden REMOVED — created BFC, would block future
@@ -223,7 +223,7 @@ body {
 
 /* ── Location Setup Card ──────────────────────────────────────────── */
 .loc-setup {
-  background: var(--surface); border: 2px solid var(--border);
+  background: var(--surface); border: var(--card-bw) solid var(--border);
   border-radius: var(--r-md, 6px); padding: 2rem; text-align: center;
   max-width: 560px; margin: 0 auto 1.5rem;
 }
@@ -256,7 +256,7 @@ body {
   margin-top: .9rem; flex-wrap: wrap;
 }
 .zip-input {
-  padding: .75rem 1rem; background: var(--surface2); border: 2px solid var(--border);
+  padding: .75rem 1rem; background: var(--surface2); border: var(--card-bw) solid var(--border);
   border-radius: var(--r-sm, 4px); font-family: 'JetBrains Mono', monospace; font-size: .88rem;
   color: var(--text); width: 160px; outline: none; transition: border-color .15s;
   min-height: 44px;
@@ -282,7 +282,7 @@ body {
 }
 /* FIX v9-10: min-width:0 — grid children default to min-width:auto */
 .factor {
-  background: var(--surface); border: 2px solid var(--border);
+  background: var(--surface); border: var(--card-bw) solid var(--border);
   border-radius: var(--r-md, 6px); padding: 1rem 1.1rem;
   transition: border-color .2s;
   min-width: 0;
@@ -340,7 +340,7 @@ body {
 }
 /* FIX v9-10: min-width:0 */
 .edu-card {
-  background: var(--surface); border: 2px solid var(--border);
+  background: var(--surface); border: var(--card-bw) solid var(--border);
   border-radius: var(--r-md, 6px); padding: 1.1rem;
   min-width: 0;
 }
@@ -356,7 +356,7 @@ body {
 
 /* ── Chemistry Box ───────────────────────────────────────────────── */
 .chem-box {
-  background: var(--surface); border: 2px solid var(--border);
+  background: var(--surface); border: var(--card-bw) solid var(--border);
   border-radius: var(--r-md, 6px); padding: 1.3rem; margin-bottom: 1.25rem;
   min-width: 0;
 }
@@ -399,7 +399,7 @@ body {
 }
 /* FIX v9-10: min-width:0 on sidebar cards */
 .s-card {
-  background: var(--surface); border: 2px solid var(--border);
+  background: var(--surface); border: var(--card-bw) solid var(--border);
   border-radius: var(--r-md, 6px); padding: 1.1rem;
   transition: border-color .2s;
   min-width: 0;
@@ -435,7 +435,7 @@ body {
 .forecast-strip::-webkit-scrollbar { display: none; }
 .fc-day {
   flex: 1; flex-shrink: 0; min-width: 48px; text-align: center;
-  background: var(--surface2); border: 2px solid var(--border);
+  background: var(--surface2); border: var(--card-bw) solid var(--border);
   border-radius: var(--r-sm, 4px); padding: .5rem .2rem;
 }
 .fc-day-name { font-family: 'JetBrains Mono', monospace; font-size:0.755rem; color: var(--text-muted); margin-bottom: .2rem; font-weight: 700; }
@@ -470,7 +470,7 @@ body {
 /* ── Cross-link ──────────────────────────────────────────────────── */
 .cross-link {
   display: flex; align-items: center; gap: .85rem;
-  background: var(--surface); border: 2px solid var(--border);
+  background: var(--surface); border: var(--card-bw) solid var(--border);
   border-radius: var(--r-md, 6px); padding: 1rem; text-decoration: none; color: inherit;
   transition: border-color .15s, background .15s;
   min-width: 0;
@@ -930,7 +930,7 @@ h2.edu-head,h2.soil-air-head,h2.s-card-title,h3.s-card-title,h3.stab-title{margi
           <div class="edu-card"><div class="edu-card-icon"><svg class="ic-sp" aria-hidden="true"><use href="#sp-wheat"/></svg></div><div class="edu-card-title">Crop Residue: Hidden Urease Factory</div><div class="edu-card-text">No-till and minimum-till fields commonly lose about two to three times more N than bare, tilled soil: because urea granules sitting on stalk fragments or leaf litter are in direct, concentrated contact with enzyme.</div><div class="edu-card-risk" style="background:rgba(240,145,58,.12);color:var(--risk-high)">No-till: assume higher risk</div></div>
           <div class="edu-card"><div class="edu-card-icon"><svg class="ic-sp" aria-hidden="true"><use href="#sp-calendar"/></svg></div><div class="edu-card-title">The 72-Hour Decision Window</div><div class="edu-card-text">Most of the volatilization loss happens in the first few days after application. The decision you make at application time (conditions, product choice, timing) is the one that matters most.</div><div class="edu-card-risk" style="background:rgba(230,176,66,.12);color:var(--risk-mod)">Most loss in the first few days</div></div>
         </div>
-        <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.5rem;margin-bottom:1.5rem">
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--card-r);padding:1.5rem;margin-bottom:1.5rem">
           <h3 style="font-size:0.77rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--orange);margin-bottom:.85rem"><svg class="ic-sp" aria-hidden="true"><use href="#sp-shield"/></svg> NBPT Stabilizer: How It Works and When It’s Worth It</h3>
           <div class="stab-grid">
             <div>

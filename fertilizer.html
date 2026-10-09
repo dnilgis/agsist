@@ -9,8 +9,8 @@
   <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/jetbrains-mono-var.woff2" as="font" type="font/woff2" crossorigin>
   <!-- /static-nav:fonts -->
-  <link rel="preload" href="/components/styles.css?v=22" as="style">
-<link rel="stylesheet" href="/components/styles.css?v=22">
+  <link rel="preload" href="/components/styles.css?v=23" as="style">
+<link rel="stylesheet" href="/components/styles.css?v=23">
   <script src="/components/util.js?v=16"></script>
 <link rel="icon" type="image/x-icon"            href="/img/favicon.ico">
 <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
@@ -128,7 +128,7 @@
 /* Price cards */
 .fert-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(158px,1fr));gap:.65rem;margin-bottom:1.25rem}
 .fert-price-card{
-  background:var(--surface);border:1px solid var(--border);border-radius:12px;
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--card-r);
   padding:.85rem 1rem;display:flex;flex-direction:column;gap:.18rem;
 }
 .fpc-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:.25rem}
@@ -146,7 +146,7 @@
 
 /* Natural gas */
 .natgas-card{
-  background:var(--surface);border:1px solid var(--border);border-radius:12px;
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--card-r);
   padding:.9rem 1.1rem;margin-bottom:1.25rem;
   display:flex;align-items:center;gap:.85rem;flex-wrap:wrap;
 }
@@ -171,7 +171,7 @@
   .fert-cards{grid-template-columns:1fr 1fr}
   .fert-related{grid-template-columns:1fr}
 }
-.fe-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:.9rem 1rem}
+.fe-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--card-r);padding:.9rem 1rem}
 /* FIX: heading hierarchy \u2014 h3 used inside .fe-card (correct level under page h1) */
 .fe-card h3{font-size:.8rem;font-weight:700;color:var(--text);margin:0 0 .3rem;font-family:inherit;text-transform:none;letter-spacing:0}
 .fe-card p{font-size:0.79rem;color:var(--text-muted);line-height:1.62;margin:0}
@@ -214,7 +214,7 @@
 .fert-nutrient-table td.na{color:var(--text-muted)}
 #fert-nutrient-note{font-size:1rem;color:var(--text-muted);line-height:1.55;margin-top:.5rem}
 
-.fert-calc{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.1rem 1.15rem;margin-bottom:1.25rem}
+.fert-calc{background:var(--surface);border:1px solid var(--border);border-radius:var(--card-r);padding:1.1rem 1.15rem;margin-bottom:1.25rem}
 .fert-calc-h{font-family:var(--font-display);font-size:1.05rem;font-weight:700;text-transform:uppercase;color:var(--text);margin:0 0 .25rem}
 .fert-calc-sub{font-size:0.785rem;color:var(--text-muted);margin:0 0 .9rem;line-height:1.5}
 .calc-inputs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.65rem;margin-bottom:1rem}
@@ -398,7 +398,7 @@
 
 <!--FAQ:START-->
 <style>
-.agf{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.1rem 1.2rem;margin:1.5rem 0 0}
+.agf{background:var(--surface);border:1px solid var(--border);border-radius:var(--card-r);padding:1.1rem 1.2rem;margin:1.5rem 0 0}
 .agf-t{font-family:var(--font-display);font-size:.95rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text);margin:0 0 .4rem}
 .agf details{border-top:1px solid var(--border)}
 .agf details:first-of-type{border-top:0}

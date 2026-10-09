@@ -9,8 +9,8 @@
   <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/jetbrains-mono-var.woff2" as="font" type="font/woff2" crossorigin>
   <!-- /static-nav:fonts -->
-  <link rel="preload" href="/components/styles.css?v=22" as="style">
-<link rel="stylesheet" href="/components/styles.css?v=22">
+  <link rel="preload" href="/components/styles.css?v=23" as="style">
+<link rel="stylesheet" href="/components/styles.css?v=23">
 <link rel="stylesheet" href="/components/asof.css?v=1">
 <script src="/components/asof.js?v=1"></script>
 <link rel="icon" type="image/x-icon"            href="/img/favicon.ico">
@@ -133,7 +133,7 @@ button,a,[role="button"] { touch-action: manipulation; }
 .dm-tab.active { background: var(--gold-fill,var(--gold)); color: #0a1a0a; border-color: var(--gold); font-weight: 700; }
 
 /* Map */
-.dm-map-wrap { position: relative; width: 100%; background: var(--surface); border: 2px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 1.25rem; }
+.dm-map-wrap { position: relative; width: 100%; background: var(--surface); border: var(--card-bw) solid var(--border); border-radius: var(--card-r); overflow: hidden; margin-bottom: 1.25rem; }
 .dm-map-img { width: 100%; height: auto; display: block; aspect-ratio: auto 1100 / 850; object-fit: contain; }
 /* outside image failed: hide it (its alt text sat under the label) and show a plain box of the same size */
 .dm-map-fallback { display: none; aspect-ratio: 1100 / 850; align-items: center; justify-content: center; text-align: center; padding: 2.5rem 1rem 1rem; color: var(--text-dim); font-size: .9rem; line-height: 1.5; background: var(--surface2, var(--surface)); }
@@ -362,7 +362,7 @@ button,a,[role="button"] { touch-action: manipulation; }
 
 <!--FAQ:START-->
 <style>
-.agf{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.1rem 1.2rem;margin:1.5rem 0 0}
+.agf{background:var(--surface);border:1px solid var(--border);border-radius:var(--card-r);padding:1.1rem 1.2rem;margin:1.5rem 0 0}
 .agf-t{font-family:var(--font-display);font-size:.95rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text);margin:0 0 .4rem}
 .agf details{border-top:1px solid var(--border)}
 .agf details:first-of-type{border-top:0}

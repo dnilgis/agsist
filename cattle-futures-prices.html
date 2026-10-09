@@ -9,8 +9,8 @@
   <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/jetbrains-mono-var.woff2" as="font" type="font/woff2" crossorigin>
   <!-- /static-nav:fonts -->
-  <link rel="preload" href="/components/styles.css?v=22" as="style">
-<link rel="stylesheet" href="/components/styles.css?v=22">
+  <link rel="preload" href="/components/styles.css?v=23" as="style">
+<link rel="stylesheet" href="/components/styles.css?v=23">
 <link rel="stylesheet" href="/components/asof.css?v=1">
 <script src="/components/asof.js?v=1"></script>
 <link rel="stylesheet" href="/components/states.css?v=2"><script src="/components/states.js?v=1" defer></script>
@@ -72,7 +72,7 @@
 .ps{display:flex;align-items:center;gap:6px;font-size:0.775rem;color:var(--text-dim);margin-bottom:10px}
 .ps-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
 .sk{color:var(--text-dim);animation:blink 1.4s ease-in-out infinite}
-.faq-wrap{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:14px}
+.faq-wrap{background:var(--surface);border:1px solid var(--border);border-radius:var(--card-r);overflow:hidden;margin-bottom:14px}
 .faq-head{padding:10px 14px;border-bottom:1px solid var(--border);font-size:0.795rem;font-weight:700;color:var(--gold)}
 .faq-item{border-bottom:1px solid var(--border)}
 .faq-item:last-child{border-bottom:none}
@@ -97,7 +97,7 @@
 .brief-teaser{font-size:1rem;color:var(--text-dim);line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .brief-cta{font-size:0.77rem;color:var(--gold);text-decoration:none;white-space:nowrap;padding:6px 10px;border:1px solid var(--border);border-radius:6px;flex-shrink:0;min-height:32px;display:flex;align-items:center}
 .brief-cta:hover{border-color:var(--gold)}
-.signup-card{background:linear-gradient(135deg,var(--surface) 0%,rgba(58,139,60,.05) 100%);border:1px solid var(--border-g,var(--border));border-radius:12px;padding:14px;margin:16px 0;text-align:center}
+.signup-card{background:linear-gradient(135deg,var(--surface) 0%,rgba(58,139,60,.05) 100%);border:1px solid var(--border-g,var(--border));border-radius:var(--card-r);padding:14px;margin:16px 0;text-align:center}
 .signup-card h3{font-size:.85rem;color:var(--gold);margin:0 0 4px 0}.signup-card p{font-size:0.78rem;color:var(--text-dim);margin:0 0 10px 0;line-height:1.5}
 .signup-form{display:flex;gap:6px;max-width:420px;margin:0 auto;flex-wrap:wrap}
 .signup-form input{flex:1;min-width:180px;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:10px 12px;font-size:1rem;color:var(--text);min-height:40px}
@@ -112,14 +112,14 @@
 
 .disc{font-size:0.77rem;color:var(--text-dim);text-align:center;padding:8px;border-top:1px solid var(--border);margin-top:14px}
 @media(max-width:480px){.author-block{flex-direction:column;gap:8px}.author-avatar{width:38px;height:38px;font-size:1rem}}
-.fwd-card{background:var(--surface,#161b14);border:1px solid var(--border,#2a3324);border-radius:12px;padding:13px 14px;margin:12px 0}
+.fwd-card{background:var(--surface,#161b14);border:1px solid var(--border,#2a3324);border-radius:var(--card-r);padding:13px 14px;margin:12px 0}
 .fwd-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:6px}
 .fwd-title{font-size:0.795rem;font-weight:700;color:var(--gold,#d4a23f)}
 .fwd-shape{font-size:0.77rem;color:var(--text-dim,#9bb0a3);font-family:'JetBrains Mono',monospace}
 .fwd-svg{width:100%;height:auto;display:block;max-height:180px}
 .fwd-interp{font-size:0.78rem;color:var(--text-dim,#9bb0a3);line-height:1.55;margin-top:8px;border-top:1px solid var(--border,#2a3324);padding-top:7px}.fwd-interp strong{color:var(--text,#e7ece8)}
 .fwd-empty{font-size:0.78rem;color:var(--text-dim,#9bb0a3);padding:20px;text-align:center}
-.seas-wrap{background:var(--surface,#161b14);border:1px solid var(--border,#2a3324);border-radius:12px;padding:13px 14px;margin:12px 0}
+.seas-wrap{background:var(--surface,#161b14);border:1px solid var(--border,#2a3324);border-radius:var(--card-r);padding:13px 14px;margin:12px 0}
 .seas-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:4px}
 .seas-title{font-size:0.795rem;font-weight:700;color:var(--gold,#d4a23f)}
 .seas-note{font-size:1rem;color:var(--text-dim,#9bb0a3)}
