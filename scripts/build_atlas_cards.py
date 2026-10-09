@@ -2,12 +2,12 @@
 """
 build_atlas_cards.py -- the share images for the Farmland Atlas.
 
-One 1200 x 630 JPEG per county (3,148), per state (50), plus the hub and the
+One 1200 x 630 PNG per county (3,148), per state (50), plus the hub and the
 data page. Every number on a card is read from farmland-atlas/data/cards.json,
 which build_atlas_pages.py writes: this script draws, it does not compute.
 A card shows the same figures the page shows, with the same rules: a value
-flagged to read with care is a dash and those words, a missing figure is a dash
-and the reason, never a zero.
+flagged to read with care shows those words, a missing figure is left off the
+card (never a zero), and a card with no figures at all says so in one line.
 
 MACHINE-OWNED OUTPUT: farmland-atlas/og/*.png and farmland-atlas/og/stamps.json.
 Edit this script, never the images.
@@ -171,11 +171,15 @@ def title_size(name):
 
 
 def stat(label, value, unit="", why=None, warn=False):
+    # a missing figure is left off the card; the page says why (why is kept for the reader of this code)
     if value is None:
-        return '<div class="st"><div class="l">%s</div><div class="v n">—<small>%s</small></div></div>' % (esc(label), esc(why or "not published"))
+        return ""
     cls = "v w" if warn else "v"
     return '<div class="st"><div class="l">%s</div><div class="%s">%s%s</div></div>' % (
         esc(label), cls, esc(value), ("<small>%s</small>" % esc(unit)) if unit else "")
+
+
+NONE_LINE = '<div class="st"><div class="v w" style="white-space:normal;width:1080px">%s</div></div>'
 
 
 def county_card(W, cards, f):
@@ -191,6 +195,8 @@ def county_card(W, cards, f):
     yl = stat("Corn yield, median", gen.fmt(c["y"], 1), "bu/ac") if c["y"] is not None else stat("Corn yield", None, why="too few published years")
     m = county_map(W, f)
     mp = '<div class="map">%s</div>' % m if m else ""
+    if not (rent or val or yl):
+        rent = NONE_LINE % "No published rent, land value or yield"
     return ('<div class="card"><div class="top"><span class="k">Farmland Atlas · County record</span><span class="u">agsist.com</span></div>%s'
             '<div class="stats">%s%s%s</div>%s<div class="foot"><span><b>AGSIST</b> · free, sourced, every county</span><span>agsist.com/farmland-atlas</span></div></div>') % (
         body, rent, val, yl, mp)
@@ -203,6 +209,8 @@ def state_card(W, cards, st):
     rent = stat("Median dry rent", gen.money(s["r"]), "/ac") if s["r"] is not None else stat("Median dry rent", None, why="too few counties")
     val = stat("Median land value", gen.money(s["v"]), "/ac") if s["v"] is not None else stat("Median land value", None, why="too few counties")
     yl = stat("Median corn yield", gen.fmt(s["y"], 1), "bu/ac") if s["y"] is not None else stat("Median corn yield", None, why="too few counties")
+    if not (rent or val or yl):
+        rent = NONE_LINE % "Too few counties for state medians"
     return ('<div class="card"><div class="top"><span class="k">Farmland Atlas · State</span><span class="u">agsist.com</span></div>%s'
             '<div class="stats">%s%s%s</div><div class="map">%s</div>%s<div class="foot"><span><b>AGSIST</b> · free, sourced, every county</span><span>agsist.com/farmland-atlas</span></div></div>') % (
         body, rent, val, yl, sm, leg)
@@ -228,7 +236,7 @@ def data_card(W, cards):
 def compare_card(W, cards):
     return ('<div class="card"><div class="top"><span class="k">Farmland Atlas \u00b7 Compare</span><span class="u">agsist.com</span></div>'
             '<div class="body" style="width:1000px"><h1 style="font-size:96px">Compare counties,<br>side by side</h1>'
-            '<div class="sub" style="font-size:30px">Rent, land value, yield, claims and drought for up to three counties. No score. No winner.</div></div>'
+            '<div class="sub" style="font-size:30px">Rent, land value, yield, claims and drought for up to three counties. We do not rank them.</div></div>'
             '<div class="stats" style="gap:56px"><div class="st"><div class="l">Counties</div><div class="v">up to 3</div></div>'
             '<div class="st"><div class="l">Measures</div><div class="v">17</div></div><div class="st"><div class="l">Sources named</div><div class="v">every one</div></div></div>'
             '<div class="foot"><span><b>AGSIST</b> \u00b7 free, sourced</span><span>agsist.com/farmland-atlas/compare</span></div></div>')
@@ -284,8 +292,20 @@ def selftest():
     br = bins(list(range(100)))
     check("shade extremes", shade(0, br) == RAMP[0] and shade(99, br) == RAMP[4] and shade(None, br) == NONE_FILL and shade(5, None) == NONE_FILL)
     check("title size steps down", title_size("Story County") == 96 and title_size("Lake and Peninsula Borough") == 60 and title_size("x" * 40) == 50)
-    d = stat("Corn yield", None, why="too few published years")
-    check("missing is a dash and a reason, never a zero", "—" in d and "too few published years" in d and ">0<" not in d)
+    check("missing figure is left off, never a zero or a dash", stat("Corn yield", None, why="too few published years") == "")
+    class NoMap:
+        def mapped(self, f):
+            return False
+    cc = {"counties": {
+        "1": {"n": "Full County", "s": "Iowa", "r": 290, "ry": 2026, "v": 10914, "vy": 2022, "vf": False, "y": 188.7},
+        "2": {"n": "Empty Borough", "s": "Alaska", "r": None, "ry": None, "v": None, "vy": None, "vf": False, "y": None},
+        "3": {"n": "Part County", "s": "Alabama", "r": 51, "ry": 2026, "v": 2636, "vy": 2022, "vf": False, "y": None}}}
+    full, empty, part = (county_card(NoMap(), cc, f) for f in "123")
+    check("full card shows three figures", full.count('class="st"') == 3 and "$10,914" in full and "188.7" in full)
+    check("part card leaves the missing figure off", part.count('class="st"') == 2 and "Corn yield" not in part)
+    check("empty card says so in one line", empty.count('class="st"') == 1 and "No published rent" in empty and ">0<" not in empty)
+    with open(os.path.abspath(__file__), encoding="utf-8") as fh:
+        check("no em dash anywhere in the generator", "\u2014" not in fh.read())
     check("flag is words", "read with care" in stat("Land", "read with care", warn=True))
     check("fonts present", all(os.path.exists(os.path.join(HERE, "cardfonts", n)) for n in (
         "inter-latin-800-normal.woff2", "inter-latin-900-normal.woff2", "jetbrains-mono-latin-500-normal.woff2", "jetbrains-mono-latin-700-normal.woff2")))
