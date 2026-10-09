@@ -38,6 +38,21 @@ jobs:
               echo "ok $f $(wc -c < "$f")"
             else echo "FAILED $u"; fi
           done < /tmp/want.txt
+          # FSA's newer links are landing pages (/documents/<slug>) that link to the real file.
+          # Follow each one to its spreadsheet or PDF, then drop the landing page.
+          for p in data/fsa/*; do
+            case "$p" in *.xlsx|*.xls|*.pdf|*.csv|*.zip|*/manifest.tsv) continue;; esac
+            if head -c 200 "$p" | grep -qi '<!doctype html'; then
+              grep -o -i -E 'https://www\.fsa\.usda\.gov/sites/default/files/[^"<> ]+\.(xlsx|xls|csv|pdf|zip)' "$p" | sort -u | while read -r u; do
+                n="data/fsa/$(basename "$u" | sed 's/%20/_/g; s/%28/(/g; s/%29/)/g; s/[^A-Za-z0-9._-]/_/g')"
+                if curl -sSL -m 120 -A "$UA" "$u" -o "$n"; then
+                  printf '%s\t%s\t%s\t%s\n' "$(date -u +%FT%TZ)" "$n" "$(wc -c < "$n")" "$u" >> data/fsa/manifest.tsv; echo "file $n $(wc -c < "$n")"
+                fi
+              done
+              rm -f "$p"
+            fi
+          done
+          grep -v -E '\tdata/fsa/[^\t.]+\t' data/fsa/manifest.tsv > /tmp/m && mv /tmp/m data/fsa/manifest.tsv || true
           cat data/fsa/manifest.tsv
       - name: Commit
         run: |
