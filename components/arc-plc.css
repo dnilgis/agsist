@@ -109,3 +109,8 @@
 .ap-decide .ap-verdict{margin:.4rem 0}
 .ap-decide .ap-verdict:not(.ap-cur){opacity:.85}
 .ap-decide .ap-cur{border-width:2px}
+/* crop picker: every covered crop FSA lists */
+.ap-crop-f{align-items:center}
+.ap-crop-l{font-size:var(--fs-sm);font-weight:600;color:var(--text-dim)}
+.ap-crop-s{font-size:16px;font-family:var(--font-body);background:var(--bg);color:var(--text);border:1px solid var(--border-2);border-radius:var(--r-sm);padding:.5rem .6rem;min-height:44px;max-width:100%}
+.ap-crop-s:focus-visible{outline:2px solid var(--brand);outline-offset:1px}

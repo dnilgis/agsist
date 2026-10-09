@@ -162,3 +162,19 @@ test("the calculator and the county page give the same typical-farm verdict (Chi
 test("no em dash in the calculator's words", () => {
   assert.ok(!readFileSync(ROOT + "components/arc-plc.js", "utf8").includes("—"));
 });
+
+test("a pound crop scans in hundredths of a cent (peanuts, by hand)", () => {
+  // ERP .315, loan .195, PLC yield 3,300 lb, benchmark 4,000 lb at $.315, county yield 3,400 lb. ARC cap 151.20 x .85 = 128.52 binds below $.2891;
+  // PLC 2,805 x (.315 - p) beats it below $.2692; ARC pays until 1,134 - 3,400p = 0 at $.3335. Same answer as the build script's selftest.
+  const c = { erp: 0.315, bp: 0.315, loan: 0.195, py: 3300, parts: [{ w: 1, by: 4000, y: 3400 }], scale: 10000 };
+  assert.deepEqual(Array.from(A.rangeText(A.ranges(c), 10000)),
+    ["PLC pays more at $0.2691 or lower.", "ARC-CO pays more from $0.2692 to $0.3335.", "Neither pays at $0.3336 or higher."]);
+  near(A.pay(c, 0.24).plc, 210.375, "PLC at $.24: .075 x 3,300 x .85", 1e-9);
+});
+
+test("every crop in the built file carries a unit, and pound crops have a 2026 ERP FSA printed", () => {
+  for (const [k, c] of Object.entries(D.years["2026"].crops)) assert.ok(["bu", "lb"].includes(c.unit), k);
+  assert.equal(D.years["2026"].crops.peanuts.erp.erp, 0.315);
+  assert.equal(D.years["2026"].crops.peanuts.unit, "lb");
+  assert.equal(D.years["2026"].crops.sorghum.erp.erp, 4.67);
+});

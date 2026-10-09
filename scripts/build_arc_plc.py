@@ -124,6 +124,7 @@ from decimal import Decimal, ROUND_HALF_UP
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 sys.path.insert(0, HERE)
+import arc_plc_crops as XC  # noqa: E402  every covered crop beyond corn, soybeans and wheat
 
 SITE = "https://agsist.com"
 YEARS = (2026, 2027)
@@ -138,7 +139,7 @@ FINAL_SCOPE = "final only"
 STYLES_V = "23"
 LOADER_V = "18"
 ASOF_V = "1"
-CALC_V = "4"
+CALC_V = "5"
 MIN_STATE_COUNTIES = 3
 SCEN_YEARS = list(range(2015, 2025))   # years with both an FSA county yield and a price change
 LEAN_GAP = 3.00       # $/base acre: "Leans X" needs at least this expected gap and more winning years
@@ -238,6 +239,8 @@ CROPS = {
               "grid": (4.50, 7.50, 0.30), "prior_statutory": 5.50},
 }
 CROP_LC = {"corn": "corn", "soybeans": "soybeans", "wheat": "wheat"}
+CROP_LC.update({k: v["lc"] for k, v in XC.XCROPS.items()})
+ALL = list(CROPS) + list(XC.XCROPS)   # every crop with county data, corn, soybeans and wheat first
 # 2018 law (crop years 2019-2024): statutory price, 85% escalator; loan rates 2019-2025 [ERS][LOAN25]
 LAW2018 = {"corn": (3.70, 2.20), "soybeans": (8.40, 6.20), "wheat": (5.50, 3.38)}
 BACKTEST_YEARS = list(range(2019, 2026))
@@ -315,17 +318,18 @@ def per_base(rate_value, pa=0.85):
     return rate_value * pa
 
 
-def ranges(erp, loan, plc_y, by, bp, y, g=0.90, cap=0.12, pa=0.85):
-    """Which program pays more at each cent of season-average price at county
-    yield y. Runs [{w, lo, hi}] in cents, inclusive. The scan stops at
+def ranges(erp, loan, plc_y, by, bp, y, g=0.90, cap=0.12, pa=0.85, scale=100):
+    """Which program pays more at each tick of season-average price at county
+    yield y. Runs [{w, lo, hi}] in ticks (1/scale dollars: cents for bushel
+    crops, scale 10000 for FSA's pound crops), inclusive. The scan stops at
     max(ERP, benchmark price) x 1.5 so no input can make it run long.
     Mirrors AgArcPlc.ranges in components/arc-plc.js (test/arc-plc.test.mjs)."""
-    lo_c = cents(loan)
+    lo_c = int(math.floor(loan * scale + 0.5))
     trig = (g * by * bp / y) if y > 0 else erp
-    hi_c = min(int(math.ceil(max(erp, trig) * 100)) + 1, int(math.ceil(max(erp, bp) * 150)))
+    hi_c = min(int(math.ceil(max(erp, trig) * scale)) + 1, int(math.ceil(max(erp, bp) * (1.5 * scale))))
     runs = []
     for c in range(lo_c, max(hi_c, lo_c) + 1):
-        p = c / 100.0
+        p = c / float(scale)
         a = cents(per_base(arc_rate(by, bp, y, p, loan, g, cap), pa))
         b = cents(per_base(plc_rate(erp, p, loan) * plc_y, pa))
         w = "none" if a == 0 and b == 0 else ("same" if a == b else ("plc" if b > a else "arc"))
@@ -421,8 +425,8 @@ def usd_pay(v):
     return "$0" if cents(v) == 0 else usd(v)
 
 
-def c2(c):
-    return f"${c / 100:.2f}"
+def c2(c, scale=100):
+    return f"${c / scale:.2f}" if scale == 100 else f"${c / scale:.4f}"
 
 
 def bu(v, k=1):
@@ -446,11 +450,11 @@ def slugify(s):
 WORD = {"plc": "PLC", "arc": "ARC-CO"}
 
 
-def ranges_text(runs):
+def ranges_text(runs, scale=100):
     out = []
     n = len(runs)
     for i, r in enumerate(runs):
-        lo, hi = c2(r["lo"]), c2(r["hi"])
+        lo, hi = c2(r["lo"], scale), c2(r["hi"], scale)
         if r["w"] == "none":
             out.append(f"Neither pays at {lo} or higher." if i == n - 1 else f"Neither pays from {lo} to {hi}.")
             continue
@@ -567,7 +571,7 @@ def load_plc_county(root="."):
     hi = next(i for i, r in enumerate(rows) if r and "PLC Yield" in [str(x or "").strip() for x in r])
     hdr = [str(h or "").strip() for h in rows[hi]]
     ist, ico, icr, iy = hdr.index("State"), hdr.index("County"), hdr.index("Crop Name"), hdr.index("PLC Yield")
-    want = {"CORN": "corn", "SOYBEANS": "soybeans", "WHEAT": "wheat"}
+    want = {"CORN": "corn", "SOYBEANS": "soybeans", "WHEAT": "wheat", **XC.PLC_NAMES}
     out, base = {}, {}
     for r in rows[hi + 1:]:
         if not r or r[ist] is None:
@@ -775,6 +779,8 @@ def load_inputs(root="."):
     inp["fsa_tables"] = load_fsa_tables(root)
     inp["rma_hist"] = load_rma_hist(root)
     inp["wasde"] = load_wasde(root)
+    inp["xtab"] = XC.load_tables(load_xlsx, root)
+    inp["wasde_x"] = XC.load_wasde_x(wasde_text, root, inp["wasde"])
     inp["snap"] = _read(root, SNAPSHOT) if os.path.exists(os.path.join(root, SNAPSHOT)) else None
     return inp
 
@@ -899,6 +905,7 @@ def compute(inp):
     fsa = inp["fsa"]
     primary = fsa.get(2026)
     history_pys = sorted(fsa)
+    add_other_crops(inp, years, primary)
     by_crop = {v["fsa"]: k for k, v in CROPS.items()}
     # FSA's benchmark price must equal ours for the same year
     if primary:
@@ -907,6 +914,7 @@ def compute(inp):
             if k and rec["bp"] is not None and abs(rec["bp"] - years["2026"]["crops"][k]["bp"]["value"]) > 0.005:
                 raise SystemExit(f"FSA 2026 benchmark price for {crop} is {rec['bp']}, ours "
                                  f"{years['2026']['crops'][k]['bp']['value']}: refusing to publish two answers")
+    by_crop.update({v["fsa"]: k for k, v in XC.XCROPS.items() if k in years["2026"]["crops"]})
     idx = {r[0]: r for r in inp["counties"]}
     counties = {}
     plc = inp["plc_county"]
@@ -963,6 +971,7 @@ def compute(inp):
         S["c"].append(c)
     for S in states.values():
         S["c"].sort(key=lambda x: x["n"])
+        dedupe_slugs(S, idx)
     # a county with fewer than MIN_SCEN years of its own takes its state's
     # average for that crop and practice, year by year (MIN_STATE_N counties)
     pool = {}
@@ -988,7 +997,8 @@ def compute(inp):
                 raise SystemExit(f"FSA's 2026 ERP for {k} is {v}, ours {years['2026']['crops'][k]['erp']['erp']}: refusing two answers")
     for y in years:
         for k, cd in years[y]["crops"].items():
-            cd["scen"] = price_scen(inp, k, int(y))
+            cd["scen"] = (price_scen(inp, k, int(y)) if k in CROPS else
+                          XC.price_scen_x(k, cd, inp["xtab"], inp.get("wasde_x"), SCEN_YEARS, MIN_SCEN))
     plc_all = inp["plc_county"]["yields"] if inp["plc_county"] else {}
     for c in counties.values():
         c["verdicts"] = {}
@@ -1004,14 +1014,16 @@ def compute(inp):
                         c["verdicts"][(k, i, y)] = {"verdict": "mismatch", "py": pyv, "by": e["by"], "n": 0}
                     continue
                 for y in years:
-                    cd = years[y]["crops"][k]
-                    if not cd.get("scen"):
+                    cd = years[y]["crops"].get(k)
+                    if not cd or not cd.get("scen"):
                         continue
                     v = scen_eval(cd["erp"]["erp"], cd["bp"]["value"], cd["loan"], pyv, [(1.0, e["by"], e["dy"])],
                                   cd["scen"]["center"], cd["scen"]["ratios"])
                     c["verdicts"][(k, i, y)] = v
     plc = inp["plc_county"]
-    updated = max([m["updated"] or "" for m in inp["mya_meta"].values()] + [(primary or {}).get("as_of") or ""])
+    for c in counties.values():
+        c["lead"] = lead_crop(c, plc)
+    updated = data_date(inp, primary)
     return {
         "updated": updated,
         "years": years,
@@ -1024,9 +1036,82 @@ def compute(inp):
         "_backtest": backtest(inp),
         "states": states,
         "_plc_yields": plc["yields"] if plc else {},
+        "_plc_base": plc["base"] if plc else {},
         "sources": {k: {"name": v[0], "url": v[1]} for k, v in SRC.items()},
         "links": {"fsa": FSA_PAGE, "fsa_data": FSA_DATA, "office": OFFICE},
+        "crops": [{"k": k, "label": (CROPS.get(k) or XC.XCROPS[k])["label"]} for k in ALL if k in years["2026"]["crops"]],
+        "hubs": [{"k": k, "slug": XC.XCROPS[k]["slug"], "label": XC.XCROPS[k]["label"]} for k in XC.XCROPS if k in years["2026"]["crops"]],
+        "_hubs": [k for k in XC.XCROPS if k in years["2026"]["crops"]],
+        "_xtab_date": (inp.get("xtab") or {}).get("date"),
     }
+
+
+def add_other_crops(inp, years, primary):
+    """Every other covered crop from FSA's national tables (scripts/arc_plc_crops.py),
+    checked against FSA's own 2026 figures and county file before anything is used."""
+    for py in YEARS:
+        crops, pending = XC.year_params_x(inp.get("xtab"), py)
+        if py == 2026:
+            XC.check_against_fsa(crops, primary)
+        for n, p1, p0, _l in OTHER_STATUTORY:   # the 2018 law's statutory price, for the 'before 2025' line [ERS]
+            k = n.lower()
+            if k in crops and abs(crops[k]["statutory"] - p1) < 1e-9:
+                crops[k]["prior_statutory"] = p0
+        years[str(py)]["crops"].update(crops)
+        years[str(py)]["pending"] = pending
+    for y in years.values():
+        for k in CROPS:
+            y["crops"][k].update({"unit": "bu", "dp": 2, "tick": 0.01})
+
+
+def dedupe_slugs(S, idx):
+    """Two FSA county codes can name the same place (Virginia's former Bedford city,
+    51515, and Bedford County, 51019). The one not in the county index gets its own
+    name and slug, so no page overwrites another."""
+    seen = {}
+    for c in S["c"]:
+        seen.setdefault(c["s"], []).append(c)
+    for s_, cs in seen.items():
+        if len(cs) < 2:
+            continue
+        for c in cs:
+            if c["f"] in idx:
+                continue
+            base = re.sub(r" County$", "", c["n"])
+            c["n"] = f"{base} city (former)" if c["st"] == "VA" and c["f"][2:] >= "500" else f"{base} ({c['f']})"
+            c["s"] = slugify(c["n"])
+
+
+def lead_crop(c, plc):
+    """The crop a county page leads with: the most FSA enrolled base acres in the county
+    (FSA's PLC county yield file), among crops with a 2026 benchmark here."""
+    ks = [k for k in ALL if any(e["by"] for e in c["k"].get(k, []))] or [k for k in ALL if k in c["k"]]
+    base = ((plc or {}).get("base") or {}).get(c["f"], {})
+    if not ks:
+        return None
+    return max(ks, key=lambda k: (base.get(k) or 0, -ALL.index(k)))
+
+
+def lead_year():
+    """The program year county pages lead with: 2026 until its signup closes, then 2027."""
+    return "2027" if signup_copy(build_date())["state"][2026] == "closed" else "2026"
+
+
+def data_date(inp, primary):
+    """One date for every 'updated' line, dateModified and sitemap lastmod: the newest
+    input (NASS prices, FSA files and tables, WASDE, futures snapshot) or the day the
+    signup wording last changed, whichever is later."""
+    ds = [m["updated"] or "" for m in inp["mya_meta"].values()] + [(primary or {}).get("as_of") or ""]
+    ds.append((inp.get("xtab") or {}).get("date") or "")
+    ds.append((inp.get("wasde") or {}).get("date") or "")
+    for fu in ((inp.get("snap") or {}).get("futures") or {}).values():
+        ds.append((fu.get("date") or "")[:10])
+    today = build_date()
+    for py in YEARS:
+        for d_ in (dt.date.fromisoformat(YEAR_INFO[py]["open"]), dt.date.fromisoformat(YEAR_INFO[py]["close"]) + dt.timedelta(days=1)):
+            if d_ <= today:
+                ds.append(d_.isoformat())
+    return max(x[:10] for x in ds if x)
 
 
 def calc_json(D):
@@ -1041,7 +1126,7 @@ def calc_json(D):
                    if any(e["by"] for e in es)},
              **({"plc": D["_plc_yields"][c["f"]]} if c["f"] in D["_plc_yields"] else {})}
             for c in S["c"]]}
-    out = {k: v for k, v in D.items() if k not in ("states", "_plc_yields", "_backtest")}
+    out = {k: v for k, v in D.items() if k not in ("states", "_plc_yields", "_backtest") and not k.startswith("_")}
     out["states"] = {code: {"n": S["n"], "slug": S["slug"], "nc": len(S["c"])} for code, S in D["states"].items()}
     return out, per
 
@@ -1131,14 +1216,14 @@ def deadlines_html():
 
 
 def form_html(D, crop="corn", st="", fips="", embed=False):
-    chips = "".join(
-        f'<button type="button" class="chip" data-crop="{k}" aria-pressed="{"true" if k == crop else "false"}">{esc(v["label"])}</button>'
-        for k, v in CROPS.items())
+    chips = ('<label class="ap-crop-l" for="ap-crop">Crop</label><select id="ap-crop" class="ap-crop-s">' + "".join(
+        f'<option value="{x["k"]}"{" selected" if x["k"] == crop else ""}>{esc(x["label"])}</option>' for x in D.get("crops") or
+        [{"k": k, "label": v["label"]} for k, v in CROPS.items()]) + '</select>')
     ychips = "".join(f'<button type="button" class="chip" data-year="{y}" aria-pressed="false">{y}</button>' for y in YEARS)
     return f"""<section class="ap-calc" id="calculator" data-arcplc data-src="/{OUT_JSON}" data-state-src="/{OUT_STATE_JSON}/" data-crop="{esc(crop)}" data-state="{esc(st)}" data-fips="{esc(fips)}"{' data-embed="1"' if embed else ''} aria-labelledby="ap-calc-h">
   <h2 id="ap-calc-h" class="ap-h2">Run your farm&rsquo;s numbers</h2>
   <p class="ap-hint ap-runone">Run each crop on each FSA farm number separately. The election is made crop by crop, farm by farm.</p>
-  <div class="ap-row"><div class="ap-crops" role="group" aria-label="Program year">{ychips}</div><div class="ap-crops" role="group" aria-label="Crop">{chips}</div></div>
+  <div class="ap-row"><div class="ap-crops" role="group" aria-label="Program year">{ychips}</div><div class="ap-crops ap-crop-f">{chips}</div></div>
   <div class="ap-grid">
     <div class="ap-f"><label for="ap-st">State</label><select id="ap-st"><option value="">Pick a state</option></select></div>
     <div class="ap-f"><label for="ap-co">County</label><select id="ap-co" disabled><option value="">Pick a state first</option></select></div>
@@ -1146,10 +1231,10 @@ def form_html(D, crop="corn", st="", fips="", embed=False):
       <p class="ap-hint">FSA has separate irrigated and non-irrigated benchmarks here. A farm with both is weighted by its historical irrigated percentage on FSA&rsquo;s records, not by what you plant this year.</p></div>
     <div class="ap-f" id="ap-share-f" hidden><label for="ap-share">Irrigated share of this farm&rsquo;s base (%)</label><input id="ap-share" type="number" inputmode="decimal" min="0" max="100" step="1" value="50"></div>
     <div class="ap-f"><label for="ap-base">Base acres for this crop</label><input id="ap-base" type="number" inputmode="decimal" min="0" step="0.1" value="100"><p class="ap-hint">From the FSA-156EZ. Base acres are not what you plant; each farm number has its own base.</p></div>
-    <div class="ap-f"><label for="ap-py">PLC payment yield (bu/acre)</label><input id="ap-py" type="number" inputmode="decimal" min="0" step="1" placeholder="From your FSA-156EZ"><p class="ap-hint" id="ap-py-hint">On the FSA-156EZ for the farm. Each farm has its own.</p></div>
-    <div class="ap-f"><label for="ap-by">ARC-CO benchmark yield (bu/acre)</label><input id="ap-by" type="number" inputmode="decimal" min="0" step="0.01" placeholder="FSA official, from the county"><p class="ap-hint" id="ap-by-hint">Fills in from FSA&rsquo;s official county file when we have it. You can type the number your county office gives you.</p></div>
+    <div class="ap-f"><label for="ap-py" id="ap-py-l">PLC payment yield (bu/acre)</label><input id="ap-py" type="number" inputmode="decimal" min="0" step="1" placeholder="From your FSA-156EZ"><p class="ap-hint" id="ap-py-hint">On the FSA-156EZ for the farm. Each farm has its own.</p></div>
+    <div class="ap-f"><label for="ap-by" id="ap-by-l">ARC-CO benchmark yield (bu/acre)</label><input id="ap-by" type="number" inputmode="decimal" min="0" step="0.01" placeholder="FSA official, from the county"><p class="ap-hint" id="ap-by-hint">Fills in from FSA&rsquo;s official county file when we have it. You can type the number your county office gives you.</p></div>
     <div class="ap-f"><label for="ap-y" id="ap-y-l">Expected county yield (bu/acre)</label><input id="ap-y" type="number" inputmode="decimal" min="0" step="0.1"><p class="ap-hint">County average, not your farm. A normal year often comes in a bit above this.</p></div>
-    <div class="ap-f ap-f-wide"><label for="ap-p">Expected season-average price ($/bu)</label><input id="ap-p" type="number" inputmode="decimal" min="0" step="0.01" placeholder="You set this"><p class="ap-hint" id="ap-p-hint">USDA national season-average price for the marketing year, not your local cash price.</p><p class="ap-hint ap-fut" id="ap-fut"></p></div>
+    <div class="ap-f ap-f-wide"><label for="ap-p" id="ap-p-l">Expected season-average price ($/bu)</label><input id="ap-p" type="number" inputmode="decimal" min="0" step="0.01" placeholder="You set this"><p class="ap-hint" id="ap-p-hint">USDA national season-average price for the marketing year, not your local cash price.</p><p class="ap-hint ap-fut" id="ap-fut"></p></div>
   </div>
   <div class="ap-out" id="ap-out" aria-live="polite"></div>
 </section>"""
@@ -1261,7 +1346,7 @@ def tally_sentence(D):
 def method_html(D):
     """How the verdict is figured, the scenario inputs, the county tally, and the back-test."""
     y6, y7 = D["years"]["2026"]["crops"], D["years"]["2027"]["crops"]
-    if not all(c.get("scen") for c in list(y6.values()) + list(y7.values())):
+    if not all(y6[k].get("scen") and y7[k].get("scen") for k in CROPS):
         return ('<h2 id="method">How the ARC or PLC verdict is figured</h2><p>Not available: the price inputs for the scenarios are not loaded.</p>')
     yrs = sorted(int(t) for t in y6["corn"]["scen"]["ratios"])
     cols = [(y, k) for y in ("2026", "2027") for k in CROPS]
@@ -1365,13 +1450,11 @@ def build_main(D, ch):
         f'<tr><th scope="row">{esc(y7[k]["label"])}</th><td class="num">{usd(y6[k]["erp"]["erp"])}</td><td class="num"><b>{usd(y7[k]["erp"]["erp"])}</b></td>'
         f'<td class="num">{usd(y6[k]["bp"]["value"])}</td><td class="num">{usd(y7[k]["bp"]["value"])}</td><td class="num">{usd(y7[k]["statutory"])}</td>'
         f'<td class="num">{usd(y7[k]["prior_statutory"])}</td><td class="num">{usd(y7[k]["loan"])}</td></tr>' for k in CROPS)
-    other_rows = "".join(
-        f'<tr><th scope="row">{n}</th><td class="num mut" colspan="4">not computed</td><td class="num">{usd(p1)}</td><td class="num">{usd(p0)}</td><td class="num">{usd(l)}</td></tr>'
-        for n, p1, p0, l in OTHER_STATUTORY)
     faq_html = "".join(f"<details><summary>{esc(q)}</summary><p>{esc(a)}</p></details>" for q, a in faq)
     state_links = " &middot; ".join(f'<a href="/arc-plc/{S["slug"]}">{esc(S["n"])}</a>'
                                     for _k, S in sorted(D["states"].items(), key=lambda kv: kv[1]["n"]))
-    srcs = "".join(f"<li>{src_link(k)}</li>" for k in SRC)
+    srcs = "".join(f"<li>{src_link(k)}</li>" for k in SRC) + "".join(
+        f'<li><a href="{esc(u)}" rel="noopener">{esc(n)}</a></li>' for n, u in XC.TABLE_URLS.values())
     fsa_line = (f"FSA&rsquo;s official ARC-CO benchmark yields for program year {fsa['py']} (FSA file as of {nice_date(fsa['as_of'])}) cover "
                 f"{n_c:,} counties." if fsa else "FSA&rsquo;s official county benchmark file is not loaded yet; type the benchmark your county office gives you.")
     body = f"""
@@ -1410,17 +1493,19 @@ def build_main(D, ch):
   <h2 id="erp">2026 and 2027 effective reference prices</h2>
   <div class="ap-scroll"><table class="tbl ap-t">
     <thead><tr><th>Crop</th><th class="num">2026 ERP</th><th class="num">2027 ERP (est.)</th><th class="num">2026 ARC price</th><th class="num">2027 ARC price (est.)</th><th class="num">Statutory now</th><th class="num">Before 2025</th><th class="num">Loan rate</th></tr></thead>
-    <tbody>{erp_rows}{other_rows}</tbody>
+    <tbody>{erp_rows}</tbody>
   </table></div>
   <p class="ap-small">$ per bushel. ERP = PLC effective reference price. ARC price = ARC-CO benchmark price. Est. = our math from final USDA prices; FSA publishes the
   official 2027 figures. 2026 figures match those published by FSA-based sources{" and FSA&rsquo;s 2026 county file" if fsa else ""}.</p>
   <details class="ap-det"><summary>Show the math for 2027</summary>
   <p>The effective reference price is the lesser of 115% of the statutory price, or the greater of the statutory price and 88% of the
   Olympic average season-average price for the five most recent crop years (2021 to 2025 for 2027; 2020 to 2024 for 2026).</p>
-  {''.join(erp_math_html(x) for x in y7.values())}
+  {''.join(erp_math_html(y7[k]) for k in CROPS)}
   <p>The ARC-CO benchmark price uses the same five years, with any year below the 2027 effective reference price raised to it:</p>
-  {''.join(bp_math_html(x) for x in y7.values())}
+  {''.join(bp_math_html(y7[k]) for k in CROPS)}
   </details>
+
+  {XC.other_crops_table(D)}
 
   <div class="ap-faq-sections">
   <h2 id="changed">What changed for 2026 and 2027?</h2>
@@ -1501,15 +1586,16 @@ def crossover_table(crop_d, by=None):
     """PLC vs ARC-CO at county yield = benchmark, by PLC yield as % of the
     official benchmark. Depends only on that share, so it holds in any county."""
     erp, loan, bp = crop_d["erp"]["erp"], crop_d["loan"], crop_d["bp"]["value"]
+    sc = XC.scale(crop_d)
     base_by = by or 100.0
     rows = []
     for r in RATIOS:
-        runs = ranges(erp, loan, base_by * r, base_by, bp, base_by)
+        runs = ranges(erp, loan, base_by * r, base_by, bp, base_by, scale=sc)
         below = plc_below(runs)
         arc_runs = [x for x in runs if x["w"] == "arc"]
-        arc_txt = f'{c2(arc_runs[0]["lo"])} to {c2(arc_runs[-1]["hi"])}' if arc_runs else "never"
-        lab = f"{int(r * 100)}%" + (f"<br><span class=\"mut\">{bu(base_by * r)} bu</span>" if by else "")
-        rows.append(f'<tr><td>{lab}</td><td>PLC: {c2(below) + " or lower" if below else "never"}<br>ARC-CO: {arc_txt}</td></tr>')
+        arc_txt = f'{c2(arc_runs[0]["lo"], sc)} to {c2(arc_runs[-1]["hi"], sc)}' if arc_runs else "never"
+        lab = f"{int(r * 100)}%" + (f"<br><span class=\"mut\">{XC.yf(crop_d, base_by * r, 1)}</span>" if by else "")
+        rows.append(f'<tr><td>{lab}</td><td>PLC: {c2(below, sc) + " or lower" if below else "never"}<br>ARC-CO: {arc_txt}</td></tr>')
     return ('<table class="tbl ap-t ap-x"><thead><tr><th>PLC yield, % of your official benchmark</th>'
             '<th>Which pays more, by season-average price</th></tr></thead><tbody>' + "".join(rows) + "</tbody></table>")
 
@@ -1529,17 +1615,19 @@ def pending_note(D):
             f'no current benchmark, trigger yield or break-even in bushels. {ASK}</p></div>')
 
 
-def hist_table(e):
+def hist_table(e, cd=None):
     hist = [h for h in e.get("hist", []) if h["py"] != 2026]
     if not hist:
         return ""
+    cd = cd or {"unit": "bu", "dp": 2}
+    u = XC.UNIT[cd["unit"]]["short"]
     rows = "".join(
-        f'<tr><td>{h["py"]}</td><td class="num">{h["by"]:.2f}</td><td class="num">{usd(h["bp"]) if h["bp"] else "n/a"}</td>'
+        f'<tr><td>{h["py"]}</td><td class="num">{h["by"]:,.2f}</td><td class="num">{XC.pf(cd, h["bp"]) if h["bp"] else "n/a"}</td>'
         f'<td class="num">{f"{h["ay"]:.2f}" if h["ay"] is not None else "not yet"}</td>'
         f'<td class="num">{("none" if h["pay"] == 0 else usd(h["pay"])) if h["pay"] is not None else "not yet"}</td></tr>' for h in hist)
     return (f'<h3>FSA history, {esc(ent_label(e).lower())}</h3><div class="ap-scroll"><table class="tbl ap-t"><thead><tr><th>Year</th>'
             f'<th class="num">Benchmark</th><th class="num">Price</th><th class="num">County yield</th><th class="num">ARC-CO $/ac</th></tr></thead>'
-            f'<tbody>{rows}</tbody></table></div><p class="ap-small">Program year; benchmark yield in bu/acre; benchmark price $/bu; actual county '
+            f'<tbody>{rows}</tbody></table></div><p class="ap-small">Program year; benchmark yield in {u}/acre; benchmark price $/{u}; actual county '
             f'yield; ARC-CO payment rate per acre before the 85% factor. All from FSA&rsquo;s files. Older program years use older windows and prices, '
             f'so they are history, not this year&rsquo;s benchmark.</p>')
 
@@ -1572,13 +1660,15 @@ def state_page(st, S, D, ch, nav_states):
                         + "".join(f'<td class="num">{f"{pv[k]:.1f}" if pv.get(k) else "n/a"}</td>' for k in CROPS) + "</tr>")
             continue
         first = True
-        for k in CROPS:
+        for k in ALL:
+            if k not in y6:
+                continue
             for e in c["k"].get(k, []):
                 link = f'<a href="/arc-plc/{sl}/{c["s"]}">{esc(re.sub(r" (County|Parish)$", "", c["n"]))}</a>' if first else ""
                 py_avg = plcy.get(c["f"], {}).get(k)
                 if official:
                     m = county_metrics(e["by"], y6[k])
-                    cells = (f'<td class="num">{e["by"]:.2f}</td><td class="num">{usd(m["br"], 0)}</td><td class="num">{usd(m["max_base"], 0)}</td>')
+                    cells = (f'<td class="num">{XC.yf(y6[k], e["by"])}</td><td class="num">{usd(m["br"], 0)}</td><td class="num">{usd(m["max_base"], 0)}</td>')
                 else:
                     cells = f'<td class="num">{f"{py_avg:.1f}" if py_avg else "n/a"}</td>'
                 rows.append(f'<tr><th scope="row">{link}</th><td>{esc(y6[k]["label"])}</td><td>{esc(ent_label(e))}</td>{cells}</tr>')
@@ -1610,7 +1700,7 @@ def state_page(st, S, D, ch, nav_states):
             f"{asof(fsa['as_of'], 'FSA file as of')}" if official else
             f"The {len(S['c'])} {esc(name)} counties FSA lists for corn, soybeans or wheat, with FSA&rsquo;s county average PLC yield. {asof(D['updated'])}")
     table_h = "Official benchmark yield and revenue by county" if official else "County average PLC yields (FSA)"
-    table_note = ("Benchmark yield in bu/acre (FSA, 2026). Revenue = yield &times; 2026 benchmark price, $/acre. Max/base ac = 12% of revenue on 85% of base."
+    table_note = ("Benchmark yield per acre (FSA, 2026), in bushels or, for peanuts, rice, pulses, seed cotton and most oilseeds, pounds. Revenue = yield &times; 2026 benchmark price, $/acre. Max/base ac = 12% of revenue on 85% of base."
                   if official else f"Average PLC payment yield on enrolled base in the county by crop, bu/acre, FSA program year {plc_py}. Your farm&rsquo;s own is on the FSA-156EZ.")
     body = f"""
 <body>
@@ -1625,7 +1715,7 @@ def state_page(st, S, D, ch, nav_states):
   <div class="ap-quick"><p><b>Prices that apply in every county.</b> 2026 effective reference price: corn {usd(y6['corn']['erp']['erp'])}, soybeans {usd(y6['soybeans']['erp']['erp'])},
   wheat {usd(y6['wheat']['erp']['erp'])}. 2026 ARC-CO benchmark price: corn {usd(y6['corn']['bp']['value'])}, soybeans {usd(y6['soybeans']['bp']['value'])}, wheat {usd(y6['wheat']['bp']['value'])}.
   When the county yield comes in at its benchmark, ARC-CO pays when the season-average price ends at {c2(trigger_c(y6['corn']))} or lower for corn,
-  {c2(trigger_c(y6['soybeans']))} for soybeans and {c2(trigger_c(y6['wheat']))} for wheat.</p></div>
+  {c2(trigger_c(y6['soybeans']))} for soybeans and {c2(trigger_c(y6['wheat']))} for wheat.</p>{XC.state_crops_line(D, S)}</div>
   <h2 id="counties">{table_h}</h2>
   <p class="ap-small">{table_note}</p>
   <div class="ap-scroll"><table class="tbl ap-t ap-st">
@@ -1661,9 +1751,9 @@ def why_text(v, cd, by, py):
     max_plc = per_base(plc_rate(erp, 0, loan) * py)
     max_arc = per_base(0.12 * by * cd["bp"]["value"])
     short = sum(1 for r in v["rows"] if r["arc"] > 0)
-    return (f"PLC pays on any season-average price below {usd(erp)}, up to {usd(max_plc)} per base acre at the {usd(loan)} loan rate, so it "
+    return (f"PLC pays on any season-average price below {XC.pf(cd, erp)}, up to {usd(max_plc)} per base acre at the {XC.pf(cd, loan)} loan rate, so it "
             f"protects against a deep price drop. ARC-CO is capped at {usd(max_arc)} per base acre but also pays when the county&rsquo;s "
-            f"yield is short; it paid something in {short} of the {v['n']} past-year scenarios. With prices centered at {usd(center)}, "
+            f"yield is short; it paid something in {short} of the {v['n']} past-year scenarios. With prices centered at {XC.pf(cd, center)}, "
             f"PLC is expected to pay {usd_pay(v['plc'])} and ARC-CO {usd_pay(v['arc'])} per base acre.")
 
 
@@ -1673,46 +1763,64 @@ def default_entries(es):
     return sorted(range(len(es)), key=lambda i: (order[es[i]["d"]], es[i].get("sub", "")))
 
 
+def crop_order(c, D):
+    """The county's crops with a benchmark, the lead crop (most FSA base acres) first, then by base acres."""
+    base = ((D.get("_plc_base") or {}).get(c["f"]) or {})
+    ks = [k for k in ALL if k in c["k"] and k in D["years"]["2026"]["crops"]]
+    return sorted(ks, key=lambda k: (k != c.get("lead"), -(base.get(k) or 0), ALL.index(k)))
+
+
 def typical_html(c, k, D, cname):
-    """The typical-farm verdict block for one crop, and the headline verdict (2026, default practice)."""
+    """The typical-farm verdict block for one crop, and the headline verdict (lead year, default practice)."""
     es = c["k"].get(k) or []
+    LY = lead_year()
+    OY = "2027" if LY == "2026" else "2026"
+    cdl = D["years"][LY]["crops"].get(k) or D["years"]["2026"]["crops"][k]
     cd6 = D["years"]["2026"]["crops"][k]
     pyv = D["_plc_yields"].get(c["f"], {}).get(k)
     plc_py = (D["plc_county"] or {}).get("py")
+    why = ((cd6.get("scen") or {}).get("why") or "")
     lines, head_v = [], None
     for i in default_entries(es):
         e = es[i]
         if not e["by"]:
             continue
-        v6, v7 = c["verdicts"].get((k, i, "2026")), c["verdicts"].get((k, i, "2027"))
+        vl, vo = c["verdicts"].get((k, i, LY)), c["verdicts"].get((k, i, OY))
         lab = esc(ent_label(e))
-        if not v6:
+        if not vl:
+            vl, vo, LY_, OY_ = vo, None, OY, LY
+        else:
+            LY_, OY_ = LY, OY
+        if not vl:
             continue
-        if v6["verdict"] == "mismatch":
-            lines.append(f'<p class="ap-small"><b>{lab}:</b> no typical-farm verdict. FSA&rsquo;s average PLC yield for the county ({pyv:.1f} bu) covers '
-                         f'all practices and is above this benchmark ({e["by"]:.2f} bu), so it does not describe a typical farm here. Run your own PLC yield below.</p>')
+        if vl["verdict"] == "mismatch":
+            lines.append(f'<p class="ap-small"><b>{lab}:</b> no typical-farm verdict. FSA&rsquo;s average PLC yield for the county ({XC.yf(cd6, pyv, 1)}) covers '
+                         f'all practices and is above this benchmark ({XC.yf(cd6, e["by"])}), so it does not describe a typical farm here. Run your own PLC yield below.</p>')
             continue
-        if head_v is None and v6["verdict"] in SHORT:
-            head_v = (v6, e)
+        if head_v is None and vl["verdict"] in SHORT:
+            head_v = (vl, e, LY_)
         src = "this county&rsquo;s own FSA yields" if e["dsrc"] == "county" else f"the {esc(STATE_NAMES[c['st']])} average for this crop and practice (the county has fewer than {MIN_SCEN} years)"
-        lines.append(f'<div class="ap-verdict ap-w-{v6["verdict"].replace("lean_", "") if v6["verdict"] not in ("close", "withheld") else "none"}"><p><b>{lab}, 2026: {verdict_line(v6)}</b></p>'
-                     + (f'<p>{why_text(v6, cd6, e["by"], pyv)}</p>' if v6["verdict"] != "withheld" else "")
-                     + (f'<p class="ap-small"><b>2027:</b> {verdict_line(v7)} The 2027 view uses FSA&rsquo;s 2026 benchmark; FSA posts 2027 later.</p>' if v7 else "")
-                     + f'<p class="ap-small">For a typical farm: FSA&rsquo;s county average PLC yield {pyv:.1f} bu (program year {plc_py}) and the official '
-                       f'{e["by"]:.2f} bu benchmark. County yields from {src}. Run your own numbers in the calculator below.</p></div>')
+        note7 = " The 2027 view uses FSA&rsquo;s 2026 benchmark; FSA posts 2027 later."
+        lines.append(f'<div class="ap-verdict ap-w-{vl["verdict"].replace("lean_", "") if vl["verdict"] not in ("close", "withheld") else "none"}"><p><b>{lab}, {LY_}: {verdict_line(vl)}</b></p>'
+                     + (f'<p>{why_text(vl, D["years"][LY_]["crops"][k], e["by"], pyv)}</p>' if vl["verdict"] != "withheld" else (f'<p class="ap-small">{why}</p>' if why else ""))
+                     + (f'<p class="ap-small"><b>{OY_}:</b> {verdict_line(vo)}{note7 if OY_ == "2027" else ""}</p>' if vo else "")
+                     + f'<p class="ap-small">For a typical farm: FSA&rsquo;s county average PLC yield {XC.yf(cd6, pyv, 1)} (program year {plc_py}) and the official '
+                       f'{XC.yf(cd6, e["by"])} benchmark. County yields from {src}. Run your own numbers in the calculator below.</p></div>')
     return "".join(lines), head_v
 
 
-
 def quick_county(c, D):
-    """Quick answer: each crop's 2026 typical-farm verdict, default practice, numbers beside it."""
+    """Quick answer: each crop's typical-farm verdict for the lead year, default practice, numbers beside it."""
+    LY = lead_year()
     items = []
-    for k in CROPS:
+    for k in crop_order(c, D):
         es = c["k"].get(k) or []
         for i in default_entries(es):
-            v = c["verdicts"].get((k, i, "2026"))
+            v = c["verdicts"].get((k, i, LY))
             if not v or v["verdict"] in ("mismatch",):
                 continue
+            if v["verdict"] == "withheld" and k not in CROPS:
+                break   # these crops are withheld everywhere; their sections say why
             lab = D["years"]["2026"]["crops"][k]["label"] + ("" if es[i]["d"] == "all" else ", " + DLABEL[es[i]["d"]].lower())
             if v["verdict"] == "withheld":
                 items.append(f"<li><b>{esc(lab)}:</b> not enough history to say.</li>")
@@ -1722,11 +1830,27 @@ def quick_county(c, D):
             break
     if not items:
         return ""
-    return ('<div class="ap-quick" id="quick-answer"><p><b>Quick answer for 2026, for a typical farm in this county.</b> Run your own numbers; '
+    return (f'<div class="ap-quick" id="quick-answer"><p><b>Quick answer for {LY}, for a typical farm in this county.</b> Run your own numbers; '
             'your PLC yield and base can change it.</p><ul class="ap-list">' + "".join(items) + '</ul>'
             '<p class="ap-small">Typical farm = FSA&rsquo;s county average PLC yield and FSA&rsquo;s official benchmark. Prices: USDA&rsquo;s October WASDE projection, '
             'spread by how far the season-average price ended from October futures in each past year; county yields from the same past years. '
             '<a href="/arc-plc#method">How this is figured</a>.</p></div>')
+
+
+def county_title(cname, st, lab, LY, by_txt):
+    """'{County}, {ST} ARC or PLC {year}: {Crop} Benchmark {yield}', shortened until it fits 60 characters.
+    Always carries 'ARC or PLC'; the verdict goes in the description, not here."""
+    short = re.sub(r" County$", " Co.", cname)
+    for t in (f"{cname}, {st} ARC or PLC {LY}: {lab} Benchmark {by_txt}",
+              f"{cname}, {st} ARC or PLC {LY}: {lab} Benchmark",
+              f"{short}, {st} ARC or PLC {LY}: {lab} Benchmark {by_txt}",
+              f"{short}, {st} ARC or PLC {LY}: {lab} Benchmark",
+              f"{short}, {st} ARC or PLC {LY}: {lab}",
+              f"{cname}, {st} ARC or PLC {LY} and {int(LY) + 1 if LY == '2026' else 2026}",
+              f"{short}, {st} ARC or PLC {LY}"):
+        if len(t) <= 60:
+            return t
+    return f"{short} {st} ARC or PLC {LY}"[:60]
 
 
 def county_page(st, S, c, D, ch):
@@ -1739,53 +1863,67 @@ def county_page(st, S, c, D, ch):
     official = bool(fsa)
     plcy = D["_plc_yields"].get(c["f"], {})
     plc_py = (D["plc_county"] or {}).get("py")
-    head_crop = next((k for k in CROPS if k in c["k"]), None)
-    _th, head_v = typical_html(c, head_crop, D, cname) if official and head_crop else ("", None)
-    if official and head_v:
-        lab = ("Irrigated " + y6[head_crop]["label"].lower()) if head_v[1]["d"] == "irr" else y6[head_crop]["label"]
-        sh = SHORT[head_v[0]["verdict"]]
-        title = next((t for t in (f"{cname}, {st} {lab} ARC or PLC 2026: {sh} | AGSIST",
-                                  f"{cname}, {st} {lab} 2026: {sh} | AGSIST",
-                                  f"{cname}, {st} {lab} 2026: {sh}",
-                                  f"{cname} {lab} 2026: {sh}") if len(t) <= 60), f"{cname}, {st} ARC or PLC 2026")
-        vv = head_v[0]
-        desc = (f"{cname}, {name} {lab.lower()} 2026, typical farm: {VWORD[vv['verdict']]}, est. {usd_pay(vv['plc'])} PLC vs {usd_pay(vv['arc'])} "
-                f"ARC-CO per base acre. FSA official benchmarks. Run your numbers.")
-        if len(desc) > 155:
-            desc = f"{cname}, {st} {lab.lower()} 2026: {VWORD[vv['verdict']]}, est. {usd_pay(vv['plc'])} PLC vs {usd_pay(vv['arc'])} ARC-CO per base acre. Run your numbers."
+    LY = lead_year()
+    order = crop_order(c, D)
+    lead = order[0] if order else None
+    head_v = typical_html(c, lead, D, cname)[1] if official and lead else None
+    if official and lead:
+        le = next((c["k"][lead][i] for i in default_entries(c["k"][lead]) if c["k"][lead][i]["by"]), None)
+        cdl = y6[lead]
+        lab = XC.XCROPS[lead].get("short", cdl["label"]) if lead in XC.XCROPS else cdl["label"]
+        if le and le["d"] == "irr":
+            lab = "Irrigated " + lab.lower()
+        by_txt = (f"{le['by']:.1f} bu" if cdl["unit"] == "bu" else f"{le['by']:,.0f} lb") if le else ""
+        title = county_title(cname, st, lab, LY, by_txt)
+        bm = f"FSA {LY if LY == '2026' else '2026'} ARC-CO benchmark {XC.yf(cdl, le['by'], 1)}" if le else "FSA ARC-CO benchmarks"
+        if head_v:
+            vv = head_v[0]
+            desc = (f"{cname}, {name} {lab.lower()}: {bm}. Typical farm {head_v[2]}: {VWORD[vv['verdict']]}, est. {usd_pay(vv['plc'])} PLC vs "
+                    f"{usd_pay(vv['arc'])} ARC-CO per base acre. Run your numbers.")
+            if len(desc) > 155:
+                desc = (f"{cname}, {st} {lab.lower()}: {bm}. {head_v[2]}: {VWORD[vv['verdict']]}, est. {usd_pay(vv['plc'])} PLC vs "
+                        f"{usd_pay(vv['arc'])} ARC-CO per base acre.")
+            if len(desc) > 155:
+                desc = f"{cname}, {st}: {VWORD[vv['verdict']]} for {lab.lower()} in {head_v[2]}, est. {usd_pay(vv['plc'])} PLC vs {usd_pay(vv['arc'])} ARC-CO per base acre."
+        else:
+            bits = [f"{CROP_LC[k]}{'' if e['d'] == 'all' else ' ' + DLABEL[e['d']].lower()} {XC.yf(y6[k], e['by'], 1)}" for k in order for e in c["k"].get(k, []) if e["by"]]
+            desc = f"{cname}, {name}: FSA official 2026 ARC-CO benchmark yields: {', '.join(bits)}. Revenue, guarantee and PLC vs ARC break-even."
+            if len(desc) > 155:
+                desc = f"{cname}, {st}: FSA official 2026 ARC-CO benchmark yields by crop and practice, revenue, guarantee and PLC vs ARC break-even."
+            if len(desc) > 155:
+                desc = f"{cname}, {st}: FSA 2026 ARC-CO benchmark yields by crop, revenue and the PLC vs ARC break-even."
     elif official:
-        title = next((t for t in (f"{cname}, {st} ARC-CO Benchmark Yield 2026 | AGSIST",
-                                  f"{cname}, {st} ARC-CO Benchmark 2026 | AGSIST",
-                                  f"{cname}, {st} ARC-CO Benchmark 2026") if len(t) <= 60), f"{cname}, {st} ARC-CO 2026")
-        bits = [f"{CROP_LC[k]}{'' if e['d'] == 'all' else ' ' + DLABEL[e['d']].lower()} {e['by']:.1f}" for k in CROPS for e in c["k"].get(k, [])]
-        desc = f"{cname}, {name}: FSA official 2026 ARC-CO benchmark yields: {', '.join(bits)} bu. Revenue, guarantee and PLC vs ARC break-even."
-        if len(desc) > 155:
-            desc = f"{cname}, {st}: FSA official 2026 ARC-CO benchmark yields by crop and practice, revenue, guarantee and PLC vs ARC break-even."
+        title = county_title(cname, st, "ARC-CO", LY, "")
+        desc = f"{cname}, {st}: FSA official 2026 ARC-CO benchmark yields by crop and practice, revenue, guarantee and PLC vs ARC break-even."
     else:
         title = next((t for t in (f"{cname}, {st} ARC or PLC 2026 and 2027 | AGSIST", f"{cname}, {st} ARC or PLC | AGSIST")
                       if len(t) <= 60), f"{cname}, {st} ARC or PLC")
         desc = f"{cname}, {name}: FSA county average PLC yields and ARC-CO history, and how to get the official 2026 benchmark."
     blocks, faqs, ds_vars = [], [], []
-    first = next(k for k in CROPS if k in c["k"])
-    for k in CROPS:
+    first = lead or next(k for k in ALL if k in c["k"])
+    for k in (order if official else [k for k in ALL if k in c["k"]]):
         es = c["k"].get(k)
         if not es:
             continue
         cd = y6[k]
+        u = XC.UNIT[cd["unit"]]["short"]
         th, hv = typical_html(c, k, D, cname) if official else ("", None)
-        blocks.append(f'<h2 id="{k}">{esc(cd["label"])} 2026 in {esc(cname)}: {VWORD[hv[0]["verdict"]] if hv else "ARC-CO benchmark and break-even"}</h2>')
+        hub = (f' <a href="{XC.hub_path(k)}">All {esc(CROP_LC[k])} counties</a>.' if k in XC.XCROPS else "")
+        blocks.append(f'<h2 id="{k}">{esc(cd["label"])} {hv[2] if hv else LY} in {esc(cname)}: {VWORD[hv[0]["verdict"]] if hv else "ARC-CO benchmark and break-even"}</h2>')
+        if hub:
+            blocks.append(f'<p class="ap-small">{XC.XCROPS[k].get("note", "")}{hub}</p>')
         if th:
             blocks.append(th)
             if hv:
-                faqs.append((f"Should I pick ARC or PLC for {CROP_LC[k]} in {cname} for 2026?",
+                faqs.append((f"Should I pick ARC or PLC for {CROP_LC[k]} in {cname} for {hv[2]}?",
                              re.sub(r"<[^>]+>", "", html.unescape(f"For a typical farm ({ent_label(hv[1]).lower()}): {verdict_line(hv[0])} "
-                                                                  f"{why_text(hv[0], cd, hv[1]['by'], plcy[k])} Run your own PLC yield and base acres; the answer can change."))))
+                                                                  f"{why_text(hv[0], D['years'][hv[2]]['crops'][k], hv[1]['by'], plcy[k])} Run your own PLC yield and base acres; the answer can change."))))
         if plcy.get(k) and plc_py:
-            blocks.append(f'<p>Average PLC yield on enrolled {CROP_LC[k]} base in this county: <b>{plcy[k]:.1f} bu</b> (FSA, program year {plc_py}). '
+            blocks.append(f'<p>Average PLC yield on enrolled {CROP_LC[k]} base in this county: <b>{XC.yf(cd, plcy[k], 1)}</b> (FSA, program year {plc_py}). '
                           f'Your farm&rsquo;s own is on the FSA-156EZ.</p>')
         for e in es:
             if e["by"] is None:
-                blocks.append(f'<h3>{esc(ent_label(e))}</h3><p class="ap-small">Official 2026 benchmark: not loaded here yet. Ask the county office.</p>{hist_table(e)}')
+                blocks.append(f'<h3>{esc(ent_label(e))}</h3><p class="ap-small">Official 2026 benchmark: not loaded here yet. Ask the county office.</p>{hist_table(e, cd)}')
                 continue
             m = county_metrics(e["by"], cd)
             yrs = e["yrs"]
@@ -1803,32 +1941,32 @@ def county_page(st, S, c, D, ch):
                     else:
                         parts.append(f"{y}: {v:g}")
                 ys = (f'<p class="ap-math">FSA trend-adjusted county yields (county yield or 80% of T-yield): {" &middot; ".join(parts)} '
-                      f'(struck: high and low). Middle three average: <b>{e["by"]:.2f} bu</b>.</p>')
+                      f'(struck: high and low). Middle three average: <b>{XC.yf(cd, e["by"])}</b>.</p>')
             blocks.append(f"""
   <h3>{esc(ent_label(e))}: official 2026 ARC-CO benchmark</h3>
   <div class="ap-kv">
-    <div><span>Benchmark yield (FSA)</span><b>{e['by']:.2f} bu</b></div>
-    <div><span>Benchmark price 2026</span><b>{usd(cd['bp']['value'])}</b></div>
+    <div><span>Benchmark yield (FSA)</span><b>{XC.yf(cd, e['by'])}</b></div>
+    <div><span>Benchmark price 2026</span><b>{XC.pf(cd, cd['bp']['value'])}</b></div>
     <div><span>Benchmark revenue</span><b>{usd(m['br'])}/ac</b></div>
     <div><span>Guarantee (90%)</span><b>{usd(m['g'])}/ac</b></div>
     <div><span>Max payment (12%)</span><b>{usd(m['max'])}/ac</b></div>
     <div><span>Max per base acre (&times;85%)</span><b>{usd(m['max_base'])}</b></div>
   </div>
   {ys}
-  <p>At a season-average price equal to the 2026 effective reference price ({usd(cd['erp']['erp'])}), PLC pays nothing and ARC-CO pays when the
-  county yield comes in below <b>{bu(m['trig_y'])} bu</b>, reaching its cap below <b>{bu(m['cap_y'])} bu</b>.</p>
-  <h3>PLC vs ARC-CO break-even at a {e['by']:.2f} bu county yield, 2026 prices</h3>
+  <p>At a season-average price equal to the 2026 effective reference price ({XC.pf(cd, cd['erp']['erp'])}{XC.per(cd)}), PLC pays nothing and ARC-CO pays when the
+  county yield comes in below <b>{XC.yf(cd, m['trig_y'], 1)}</b>, reaching its cap below <b>{XC.yf(cd, m['cap_y'], 1)}</b>.</p>
+  <h3>PLC vs ARC-CO break-even at a {XC.yf(cd, e['by'])} county yield, 2026 prices</h3>
   {crossover_table(cd, e['by'])}
-  {hist_table(e)}""")
-            ds_vars.append(f"{CROP_LC[k]} {ent_label(e).lower()} ARC-CO benchmark yield (bu/acre)")
+  {hist_table(e, cd)}""")
+            ds_vars.append(f"{CROP_LC[k]} {ent_label(e).lower()} ARC-CO benchmark yield ({u}/acre)")
         if official and es[0]["by"]:
             faqs.append((f"What is the ARC-CO benchmark yield for {CROP_LC[k]} in {cname}?",
                          f"FSA's official 2026 benchmark yield for {CROP_LC[k]} in {cname}, {name} is "
-                         + "; ".join(f"{e['by']:.2f} bu ({ent_label(e).lower()})" for e in es if e["by"])
-                         + f". The 2026 benchmark price is {usd(cd['bp']['value'])}. FSA has not posted the 2027 benchmark."))
+                         + "; ".join(f"{XC.yf(cd, e['by'])} ({ent_label(e).lower()})" for e in es if e["by"])
+                         + f". The 2026 benchmark price is {XC.pf(cd, cd['bp']['value'])} per {XC.word(cd)}. FSA has not posted the 2027 benchmark."))
         elif plcy.get(k) and plc_py:
             faqs.append((f"What is the average PLC yield for {CROP_LC[k]} in {cname}?",
-                         f"FSA lists {plcy[k]:.1f} bushels per acre as the average PLC yield on enrolled {CROP_LC[k]} base in {cname}, {name} for program year "
+                         f"FSA lists {plcy[k]:,.1f} {XC.word(cd)}s per acre as the average PLC yield on enrolled {CROP_LC[k]} base in {cname}, {name} for program year "
                          f"{plc_py}. Each farm has its own PLC yield, shown on its FSA-156EZ."))
         if not official:
             blocks.append(f"<p>Break-even by PLC yield as a share of the official benchmark (2026 prices):</p>{crossover_table(cd)}")
@@ -1865,7 +2003,7 @@ def county_page(st, S, c, D, ch):
 <main class="ap-wrap" id="main">
   <p class="ap-bc"><a href="/arc-plc">ARC vs PLC</a> &rsaquo; <a href="/arc-plc/{sl}">{esc(name)}</a> &rsaquo; {esc(cname)}</p>
   <p class="page-kicker">ARC-CO and PLC &middot; {"FSA official" if official else "county"}</p>
-  <h1>{esc(cname)}, {st}: ARC or PLC for 2026 and 2027</h1>
+  <h1>{esc(cname)}, {st}: ARC or PLC 2026 and 2027, ARC-CO Benchmark Yields</h1>
   <p class="page-lede">{lede}</p>
   {deadlines_html()}
   {'' if official else pending_note(D)}
@@ -1884,7 +2022,7 @@ def county_page(st, S, c, D, ch):
 <script>document.addEventListener('click',function(e){{var a=e.target.closest&&e.target.closest('[data-share]');if(!a||!navigator.share)return;e.preventDefault();navigator.share({{title:a.getAttribute('data-title'),url:a.getAttribute('data-share')}}).catch(function(){{}});}});</script>
 """
     page = head(title, desc, path, jsonld, official, fonts) + body + tail(ftr, calc=True)
-    return page, {"path": path, "indexable": official, "title": title, "desc": desc}
+    return page, {"path": path, "indexable": official, "title": title, "desc": desc, "lead": lead, "st": st}
 
 
 def embed_page(D):
@@ -1943,7 +2081,7 @@ def llms_text(D, root="."):
           f"{usd(y7['corn']['erp']['erp'])}, soybeans {usd(y7['soybeans']['erp']['erp'])}, wheat {usd(y7['wheat']['erp']['erp'])}. "
           f"{signup_copy(build_date())['llms']} A calculator compares PLC and ARC-CO per base acre by price and county yield, "
           f"with what changed under the 2025 law, SCO, rented ground and payment limits")
-    l2 = (f"{LLMS_PREFIX2} FSA's official 2026 ARC-CO benchmark yields for {n_c:,} counties by crop (corn, soybeans, wheat) and practice "
+    l2 = (f"{LLMS_PREFIX2} FSA's official 2026 ARC-CO benchmark yields for {n_c:,} counties by crop (corn, soybeans, wheat and every other covered crop FSA lists) and practice "
           f"(irrigated, non-irrigated), with benchmark revenue, guarantee, maximum payment, FSA history and the PLC vs ARC break-even, at "
           f"/arc-plc/<state> and /arc-plc/<state>/<county> (e.g. /arc-plc/iowa/story-county)")
     lines = cur.split("\n")
@@ -1968,9 +2106,13 @@ def render_all(D):
     out[OUT_MAIN] = main
     out[OUT_EMBED] = embed_page(D)
     lm = D["updated"][:10]
-    urls = [("/arc-plc", "0.8", lm)]
+    urls = []   # /arc-plc itself is listed in sitemap.xml only
+    for k in D.get("_hubs", []):
+        page, m = XC.hub_page(sys.modules[__name__], D, k, ch)
+        out[f"{OUT_DIR}/{XC.XCROPS[k]['slug']}.html"] = page
+        urls.append((m["path"], "0.6", lm))
     nav_states = sorted(D["states"].values(), key=lambda x: x["n"])
-    stats = {"states": 0, "states_indexed": 0, "counties": 0, "meta": meta, "examples": {}}
+    stats = {"states": 0, "states_indexed": 0, "counties": 0, "meta": meta, "examples": {}, "hubs": len(D.get("_hubs", []))}
     for st, S in sorted(D["states"].items()):
         page, m = state_page(st, S, D, ch, nav_states)
         out[f"{OUT_DIR}/{S['slug']}.html"] = page
@@ -1986,8 +2128,10 @@ def render_all(D):
             if m["indexable"]:
                 urls.append((m["path"], "0.5", lm))
             stats["examples"].setdefault("county", m)
+    if len({u for u, _p, _l in urls}) != len(urls):
+        raise SystemExit("[arc-plc] two pages share one URL; refusing to write the sitemap")
     out[OUT_SITEMAP] = sitemap(urls)
-    t = llms_text(D)
+    t = XC.llms_merge(llms_text(D), D, (LLMS_PREFIX, LLMS_PREFIX2))
     if t:
         out["llms.txt"] = t
     return out, stats
@@ -2214,6 +2358,48 @@ def selftest():
        snapshot_problem(sn, d(2026, 10, 19)) is None and "11 days" in (snapshot_problem(sn, d(2026, 10, 20)) or ""))
     ck("snapshot missing or without soybeans refused",
        snapshot_problem(None, d(2026, 10, 9)) and snapshot_problem({"futures": {"corn": sn["futures"]["corn"]}}, d(2026, 10, 9)))
+    # ---- crops beyond corn, soybeans and wheat (scripts/arc_plc_crops.py)
+    # pound crop, peanuts 2026: 0.21, 0.243, 0.268, 0.269, 0.261; drop 0.21 and 0.269; (0.243+0.268+0.261)/3 = 0.257333;
+    # x 0.88 = 0.226453 -> 0.2265, under the $0.315 statutory price, which holds; benchmark price: every year raised to 0.315
+    e = XC.erp_x([0.21, 0.243, 0.268, 0.269, 0.261], 0.315, 4)
+    ck("peanuts 2026: 88% figure 0.2265, ERP 0.315 statutory, cap 0.3623, benchmark 0.315",
+       e["pct_value"] == 0.2265 and e["erp"] == 0.315 and e["binding"] == "statutory" and e["cap"] == 0.3623
+       and XC.bp_x([0.21, 0.243, 0.268, 0.269, 0.261], 0.315, 4)[0] == 0.315, str(e))
+    # flaxseed (bushel, four decimals): 11.1, 25.9, 17.5, 12.1, 12.5 -> (12.1+12.5+17.5)/3 = 14.0333 x 0.88 = 12.3493; ERP 13.30
+    ck("flaxseed 2026: 12.3493, ERP 13.30, benchmark 14.70", XC.erp_x([11.1, 25.9, 17.5, 12.1, 12.5], 13.3, 4)["pct_value"] == 12.3493
+       and XC.bp_x([11.1, 25.9, 17.5, 12.1, 12.5], 13.3, 4)[0] == 14.7)
+    # peanut county, by hand: ERP .315, loan .195, PLC yield 3,300 lb, benchmark 4,000 lb at $.315, county yield 3,400 lb.
+    # ARC cap 0.12 x 1,260 = 151.20 (128.52/base acre) binds below (1,134 - 151.20)/3,400 = $.2891; PLC 2,805 x (.315 - p) beats
+    # 128.52 below $.2692 (at .2691: 128.75 vs 128.52; at .2692: 128.47); ARC pays until 1,134 - 3,400p hits 0 at $.3335
+    pr = ranges(0.315, 0.195, 3300, 4000, 0.315, 3400, scale=10000)
+    ck("peanut ranges in hundredths of a cent", ranges_text(pr, 10000) == ["PLC pays more at $0.2691 or lower.", "ARC-CO pays more from $0.2692 to $0.3335.",
+                                                                         "Neither pays at $0.3336 or higher."], str(ranges_text(pr, 10000)))
+    ck("peanut payments at $0.24: PLC 210.375, ARC capped 128.52", abs(per_base(plc_rate(0.315, 0.24, 0.195) * 3300) - 210.375) < 1e-9
+       and abs(per_base(arc_rate(4000, 0.315, 3600, 0.24, 0.195)) - 128.52) < 1e-9)
+    # hundredweight crop: WASDE prints long grain rice in $/cwt; FSA prices it per pound. $14.00/cwt -> $0.1400/lb
+    wx = XC.parse_wasde_x("U.S. Sorghum, Barley, and Oats Supply and Use 1/\nSORGHUM \nAvg. Farm Price ($/bu)  2/ 4.07 3.67 4.60 4.50\n"
+                          "BARLEY \nAvg. Farm Price ($/bu)  2/ 6.31 5.46 5.70 5.70\nOATS \nAvg. Farm Price ($/bu)  2/ 3.35 3.23 3.35 3.35\n"
+                          "LONG-GRAIN RICE \n  Avg. Farm Price ($/cwt)  6/ 14.00 10.40 13.50 14.00\n")
+    ck("WASDE other crops: sorghum 4.50, barley 5.70, oats 3.35, long grain rice $14.00/cwt = $0.1400/lb",
+       wx == {"sorghum": (4.5, "$/bu", 4.5), "barley": (5.7, "$/bu", 5.7), "oats": (3.35, "$/bu", 3.35), "rice_long": (0.14, "$/cwt", 14.0)}, str(wx))
+    ck("long grain rice PLC rate at $0.14/lb: 0.169 - 0.14 = 0.029", abs(plc_rate(0.169, 0.14, 0.077) - 0.029) < 1e-12)
+    xt = XC.load_tables(load_xlsx, ROOT)
+    if xt:
+        c26, _p = XC.year_params_x(xt, 2026)
+        bad = [k for k, cd in c26.items() if abs(cd["erp"]["erp"] - cd["fsa_check"]["erp"]) > 1e-9 or abs(cd["bp"]["value"] - cd["fsa_check"]["bp"]) > 1e-9]
+        ck(f"every 2026 ERP and benchmark price in FSA's tables reproduces ({len(c26)} crops)", not bad and len(c26) == len(XC.XCROPS), str(bad))
+        c27, p27 = XC.year_params_x(xt, 2027)
+        # long grain 2021-2025: 0.136, 0.167, 0.159, 0.14, 2025 projected; at any 2025 price 88% of the middle three is at most
+        # 0.88 x (0.167+0.159+0.14)/3 = 0.1367 < 0.169, and every year is raised to 0.169: ERP and benchmark 0.169 whatever 2025 brings
+        ck("2027 long grain rice fixed at 0.169 whatever the 2025 price; sorghum waits on its final 2025 price",
+           c27.get("rice_long", {}).get("erp", {}).get("erp") == 0.169 and c27["rice_long"]["bp"]["value"] == 0.169 and "sorghum" in p27, str(p27.get("sorghum")))
+    # 65 characters with the yield, so the yield goes first; a longer name then takes "Co."
+    ck("title: Pottawattamie drops the yield, Prince George's takes Co.",
+       county_title("Pottawattamie County", "IA", "Corn", "2026", "203.4 bu") == "Pottawattamie County, IA ARC or PLC 2026: Corn Benchmark"
+       and county_title("Prince George's County", "MD", "Soybeans", "2026", "45.1 bu") == "Prince George's Co., MD ARC or PLC 2026: Soybeans Benchmark")
+    ck("title: always 60 or fewer with 'ARC or PLC'", all(len(t) <= 60 and "ARC or PLC" in t for t in (
+        county_title("Prince of Wales-Hyder Census Area", "AK", "Medium and short grain rice", "2027", "7,000 lb"),
+        county_title("Story County", "IA", "Corn", "2026", "203.4 bu"))))
     print(f"\n{'FAIL' if fails else 'OK'}: {len(fails)} failure(s)")
     return 1 if fails else 0
 

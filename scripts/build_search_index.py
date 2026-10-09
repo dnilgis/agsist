@@ -205,6 +205,21 @@ def build_pages(warn):
             continue
         warn("page not in PAGES, added with its <title>: %s" % name)
         out.append([0, t, "", "/" + name[:-5], ""])
+    return out + build_arcplc_crops()
+
+
+def build_arcplc_crops():
+    """ARC or PLC crop pages (/arc-plc/<crop>, built by build_arc_plc.py), from the
+    list in data/arc-plc.json, kept only where the page exists."""
+    p = os.path.join(ROOT, "data", "arc-plc.json")
+    if not os.path.exists(p):
+        return []
+    out = []
+    for h in json.load(open(p, encoding="utf-8")).get("hubs") or []:
+        if exists("arc-plc/%s.html" % h["slug"]):
+            lab = h["label"]
+            out.append([0, "%s ARC or PLC" % lab, "2026 and 2027, FSA county benchmarks", "/arc-plc/" + h["slug"],
+                        "arc plc arc-co price loss coverage %s reference price benchmark yield fsa farm program" % lab.lower()])
     return out
 
 
