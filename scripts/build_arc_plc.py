@@ -138,9 +138,12 @@ FINAL_SCOPE = "final only"
 STYLES_V = "23"
 LOADER_V = "18"
 ASOF_V = "1"
-CALC_V = "3"
+CALC_V = "4"
 MIN_STATE_COUNTIES = 3
 SCEN_YEARS = list(range(2015, 2025))   # years with both an FSA county yield and a price change
+LEAN_GAP = 3.00       # $/base acre: "Leans X" needs at least this expected gap and more winning years
+SNAPSHOT = "data/arc-plc-prices.json"  # futures snapshot the scenarios are centered on (--snapshot-prices)
+RMA_HIST_PAGE = "harvest-price-tracker.html"  # RMA projected and harvest prices 2011-2025, one copy on the site
 MIN_SCEN = 8          # never recommend from fewer scenario years
 MIN_GAP = 2.00        # $/base acre: a smaller expected gap is "too close to call" whatever the spread
 MIN_STATE_N = 3       # counties a state-year needs to stand in for a county
@@ -173,6 +176,10 @@ SRC = {
              "https://farmdocdaily.illinois.edu/2025/07/impacts-of-the-commodity-title-changes-under-the-one-big-beautiful-bill-act-obbba-for-midwestern-farms-in-2025.html"),
     "FDBASE": ("farmdoc daily, Jul 2025 (new base acre provisions)",
                "https://farmdocdaily.illinois.edu/2025/07/the-new-base-acre-provisions-in-the-2025-farm-bill.html"),
+    "HOFF15": ("Hoffman, Etienne, Irwin, Colino and Toasa (2015), Forecast performance of WASDE price projections for U.S. corn",
+               "https://www.researchgate.net/publication/282941394_Forecast_performance_of_WASDE_price_projections_for_US_corn"),
+    "WASDE": ("USDA WASDE-676, Oct 9, 2026",
+              "https://www.usda.gov/about-usda/general-information/staff-offices/office-chief-economist/commodity-markets/wasde-report"),
     "AFBF26": ("American Farm Bureau Market Intel (2026 ERPs and benchmark prices)",
                "https://www.fb.org/market-intel/risk-management-options-for-2026-corn-soybeans-and-wheat"),
     "ALA": ("Alabama Cooperative Extension, Title I program changes",
@@ -363,27 +370,37 @@ def scen_eval(erp, bp, loan, py, parts, center, ratios, price=None):
     out.update({"plc": mp, "arc": ma, "diff": md, "se": se, "plc_wins": pw, "arc_wins": aw, "ties": n - pw - aw, "close_band": band})
     if n < MIN_SCEN:
         out["verdict"] = "withheld"
-    elif abs(md) < band or (md > 0 and pw <= aw) or (md < 0 and aw <= pw):
-        # called only when the expected gap is over twice its uncertainty from
-        # the n years (and over MIN_GAP), and the same program paid more in more years
-        out["verdict"] = "close"
     else:
-        out["verdict"] = "plc" if md > 0 else "arc"
+        more = (md > 0 and pw > aw) or (md < 0 and aw > pw)
+        side = "plc" if md > 0 else "arc"
+        if abs(md) >= band and more:
+            # Pick: the expected gap is over twice its uncertainty (and over MIN_GAP)
+            # and the same program paid more in more of the years
+            out["verdict"] = side
+        elif abs(md) >= LEAN_GAP and more:
+            # Leans: at least LEAN_GAP and more winning years, but within the normal swing
+            out["verdict"] = "lean_" + side
+        else:
+            out["verdict"] = "close"
     return out
 
 
-VWORD = {"plc": "PLC expected to pay more", "arc": "ARC-CO expected to pay more", "close": "too close to call",
-         "withheld": "not enough history to say"}
+VWORD = {"plc": "PLC expected to pay more", "arc": "ARC-CO expected to pay more", "lean_plc": "leans PLC", "lean_arc": "leans ARC-CO",
+         "close": "too close to call", "withheld": "not enough history to say"}
 
 
 def verdict_line(v):
     """One plain sentence, numbers beside the verdict."""
     if v["verdict"] == "withheld":
         return f"Not enough history to say: {v['n']} past years with both a price and a county yield; we need {MIN_SCEN}."
-    nums = (f"expected {usd(v['plc'])} PLC vs {usd(v['arc'])} ARC-CO per base acre; PLC paid more in {v['plc_wins']} of "
+    nums = (f"expected {usd_pay(v['plc'])} PLC vs {usd_pay(v['arc'])} ARC-CO per base acre; PLC paid more in {v['plc_wins']} of "
             f"{v['n']} past-year scenarios, ARC-CO in {v['arc_wins']}")
     if v["verdict"] == "close":
         return f"Too close to call ({nums}; the gap is under {usd(v['close_band'])})."
+    if v["verdict"].startswith("lean_"):
+        w = WORD[v["verdict"][5:]]
+        return (f"Leans {w}: expected about {usd(abs(v['diff']))} more per base acre, but the gap is within the normal swing; "
+                f"either is a defensible choice ({nums}).")
     return f"Pick {WORD[v['verdict']]} ({nums})."
 
 
@@ -394,6 +411,11 @@ def esc(s):
 
 def usd(v, k=2):
     return f"${rnd(v, k):,.{k}f}"
+
+
+def usd_pay(v):
+    """An expected payment: '$0' when it rounds to nothing, else dollars and cents."""
+    return "$0" if cents(v) == 0 else usd(v)
 
 
 def c2(c):
@@ -587,6 +609,107 @@ def load_fsa_tables(root="."):
     return out if (out["proj"] or out["erp"]) else None
 
 
+def wasde_text(path):
+    """Plain text of a WASDE PDF: pypdf if installed, else pdftotext."""
+    try:
+        import pypdf
+        return "\n".join(pg.extract_text() or "" for pg in pypdf.PdfReader(path).pages)
+    except ImportError:
+        import subprocess
+        return subprocess.run(["pdftotext", path, "-"], capture_output=True, text=True, check=True).stdout
+
+
+def parse_wasde(text):
+    """-> {date, number, prices: {crop: projected season-average farm price, this month}}.
+
+    Each U.S. table's 'Avg. Farm Price ($/bu)' row ends with the current
+    month's projection: the wheat table, then CORN under the feed grain
+    table, then SOYBEANS under the soybean table."""
+    out = {"prices": {}}
+    m = re.search(r"WASDE\s*-\s*(\d+)\s+Approved by the World Agricultural Outlook Board\s+([A-Z][a-z]+ \d{1,2}, 20\d\d)", text)
+    if m:
+        out["number"] = int(m.group(1))
+        out["date"] = dt.datetime.strptime(m.group(2), "%B %d, %Y").date().isoformat()
+    for k, start, sub in (("wheat", r"U\.S\. Wheat Supply and Use", None),
+                          ("corn", r"U\.S\. Feed Grain and Corn Supply and Use", r"\nCORN\s*\n"),
+                          ("soybeans", r"U\.S\. Soybeans and Products Supply and Use", r"\nSOYBEANS\s*\n")):
+        a = re.search(start, text)
+        if not a:
+            continue
+        pos = a.end()
+        if sub:
+            b = re.compile(sub).search(text, pos)
+            if not b:
+                continue
+            pos = b.end()
+        line = re.compile(r"Avg\. Farm Price \(\$/bu\)[^\n]*").search(text, pos)
+        if line:
+            nums = re.findall(r"\d+\.\d+", line.group(0))
+            if nums:
+                out["prices"][k] = float(nums[-1])
+    return out
+
+
+def load_wasde(root="."):
+    """The newest WASDE PDF in data/wasde-pdf/ (wasdeMMYY.pdf)."""
+    ps = glob.glob(os.path.join(root, "data/wasde-pdf/wasde*.pdf"))
+
+    def key(p):
+        m = re.search(r"wasde(\d\d)(\d\d)", os.path.basename(p))
+        return (int(m.group(2)), int(m.group(1))) if m else (0, 0)
+    if not ps:
+        return None
+    p = max(ps, key=key)
+    w = parse_wasde(wasde_text(p))
+    w["file"] = os.path.relpath(p, root)
+    return w if w.get("prices") and w.get("date") else None
+
+
+def load_rma_hist(root="."):
+    """RMA projected (February) and harvest (October) prices for corn and
+    soybeans by crop year, from the one table the site already publishes
+    (harvest-price-tracker.html, mirrored from RMA price discovery)."""
+    p = os.path.join(root, RMA_HIST_PAGE)
+    if not os.path.exists(p):
+        return {}
+    s = open(p, encoding="utf-8").read()
+    m = re.search(r'<table class="hp-hist">(.*?)</table>', s, re.S)
+    if not m:
+        return {}
+    out = {"corn": {}, "soybeans": {}}
+    for r in re.findall(r"<tr>(.*?)</tr>", m.group(1), re.S):
+        cells = [re.sub(r"[^\d.]", "", html.unescape(re.sub(r"<[^>]+>", "", c)).split("$")[-1]) for c in re.findall(r"<t[dh][^>]*>(.*?)</t[dh]>", r, re.S)]
+        if len(cells) != 5 or not re.fullmatch(r"\d{4}", cells[0]):
+            continue
+        y = int(cells[0])
+        for k, (a, b) in (("corn", (cells[1], cells[2])), ("soybeans", (cells[3], cells[4]))):
+            if a and b:
+                out[k][y] = (float(a), float(b))
+    return out
+
+
+def snapshot_prices(root="."):
+    """Freeze the futures the scenarios are centered on, so a build is reproducible."""
+    pj = _read(root, "data/prices.json")
+    hp = _read(root, "data/harvest-prices.json")
+    snap = {"taken": pj.get("fetched"), "harvest": {}, "futures": {}}
+    lab = {"Corn": "corn", "Soybeans": "soybeans"}
+    for c in hp.get("commodities", []):
+        k = lab.get(c.get("label"))
+        h = c.get("harvest") or {}
+        if k and h.get("running_avg"):
+            snap["harvest"][k] = {"contract": c.get("contract"), "price": h["running_avg"], "days": h.get("days_counted"),
+                                  "of": h.get("days_total"), "status": h.get("status"), "updated": hp.get("updated")}
+    for k, key in (("corn", "corn-dec27"), ("soybeans", "beans-nov27")):
+        q = (pj.get("quotes") or {}).get(key)
+        if q and q.get("close"):
+            snap["futures"][k] = {"key": key, "price": round(q["close"] / 100, 4), "date": q.get("close_date")}
+    with open(os.path.join(root, SNAPSHOT), "w") as f:
+        json.dump(snap, f, indent=1)
+        f.write("\n")
+    return snap
+
+
 # ---------------------------------------------------------------- loading
 def _read(root, rel):
     with open(os.path.join(root, rel), encoding="utf-8") as f:
@@ -605,6 +728,9 @@ def load_inputs(root="."):
     inp["fsa"] = load_fsa(root)
     inp["plc_county"] = load_plc_county(root)
     inp["fsa_tables"] = load_fsa_tables(root)
+    inp["rma_hist"] = load_rma_hist(root)
+    inp["wasde"] = load_wasde(root)
+    inp["snap"] = _read(root, SNAPSHOT) if os.path.exists(os.path.join(root, SNAPSHOT)) else None
     return inp
 
 
@@ -673,6 +799,54 @@ def backtest(inp):
                          "plc": per_base(rate * nat_py[k]) if nat_py[k] else None,
                          "arc": a[0] if a else None, "arc_n": a[1] if a else 0})
     return {"rows": rows, "nat_py": nat_py, "plc_py": plc["py"]}
+
+
+def price_scen(inp, k, py):
+    """Price scenarios for crop k, program year py: {center, ratios {year: multiplier}, kind, ...}.
+
+    2026 corn and soybeans: the October average so far of the Dec 2026 corn /
+      Nov 2026 soybean contract (RMA's harvest-price window), times each past
+      year's final MYA / that year's October average (RMA harvest price). That
+      is how far the season-average price ended from the October futures, the
+      uncertainty actually left in October.
+    2027 corn and soybeans: Dec 2027 / Nov 2027 futures today, times the
+      2011-2025 average of final MYA / February futures (RMA projected price),
+      spread by each past year's MYA change (a year out, the wider spread).
+    Wheat: no futures history on file, so USDA's projected 2026/27 MYA times
+      each past year's MYA change (the wide band) for both years."""
+    mya = inp["mya"][k]
+    yoy = {t: mya[t] / mya[t - 1] for t in SCEN_YEARS if t in mya and (t - 1) in mya}
+    hist = (inp.get("rma_hist") or {}).get(k) or {}
+    snap = inp.get("snap") or {}
+    tabs = inp.get("fsa_tables") or {}
+    usda = tabs.get("proj", {}).get(k)
+    base = {"usda": usda, "usda_date": nice_date(tabs["date"]) if tabs.get("date") else None}
+    wz = inp.get("wasde") or {}
+    wp = wz.get("prices", {}).get(k)
+    if wp:
+        base.update({"usda": wp, "usda_date": nice_date(wz["date"]), "usda_src": f"USDA WASDE, {nice_date(wz['date'])}"})
+    if py == 2026 and wp and all(t in hist for t in SCEN_YEARS):
+        f = {t: mya[t] / hist[t][1] for t in SCEN_YEARS if t in mya}
+        m = sum(f.values()) / len(f)
+        return {**base, "kind": "oct", "center": wp, "ratios": {t: round(v / m, 4) for t, v in f.items()},
+                "center_label": f"USDA&rsquo;s projected 2026/27 season-average price (WASDE, {nice_date(wz['date'])})"}
+    if py == 2026 and wp:
+        return {**base, "kind": "yoy", "center": wp, "ratios": {t: round(v, 4) for t, v in yoy.items()},
+                "center_label": f"USDA&rsquo;s projected 2026/27 season-average price (WASDE, {nice_date(wz['date'])})"}
+    if py == 2027 and k in snap.get("futures", {}) and len(hist) >= 10:
+        fu = snap["futures"][k]
+        gy = [t for t in sorted(hist) if t in mya]
+        g = sum(mya[t] / hist[t][0] for t in gy) / len(gy)
+        m = sum(yoy.values()) / len(yoy)
+        return {**base, "kind": "fut", "center": round(fu["price"] * g, 4), "fut": fu["price"], "fut_date": nice_date(fu["date"]),
+                "gap": round(g, 4), "gap_years": [gy[0], gy[-1], len(gy)],
+                "ratios": {t: round(v / m, 4) for t, v in yoy.items()},
+                "center_label": (f"{'Dec 2027 corn' if k == 'corn' else 'Nov 2027 soybean'} futures {usd(fu['price'])} ({nice_date(fu['date'])}) "
+                                 f"&times; {g:.3f}, the {gy[0]} to {gy[-1]} average of final MYA / February futures")}
+    if base.get("usda"):
+        return {**base, "kind": "yoy", "center": base["usda"], "ratios": {t: round(v, 4) for t, v in yoy.items()},
+                "center_label": f"USDA&rsquo;s projected 2026/27 season-average price ({base.get('usda_src') or 'FSA table of ' + base['usda_date']})"}
+    return None
 
 
 def compute(inp):
@@ -769,10 +943,7 @@ def compute(inp):
                 raise SystemExit(f"FSA's 2026 ERP for {k} is {v}, ours {years['2026']['crops'][k]['erp']['erp']}: refusing two answers")
     for y in years:
         for k, cd in years[y]["crops"].items():
-            mya = inp["mya"][k]
-            ratios = {t: round(mya[t] / mya[t - 1], 4) for t in SCEN_YEARS if t in mya and (t - 1) in mya}
-            proj = (tabs or {}).get("proj", {}).get(k)
-            cd["scen"] = ({"center": proj, "center_date": nice_date(tabs["date"]), "ratios": ratios} if proj else None)
+            cd["scen"] = price_scen(inp, k, int(y))
     plc_all = inp["plc_county"]["yields"] if inp["plc_county"] else {}
     for c in counties.values():
         c["verdicts"] = {}
@@ -1034,31 +1205,33 @@ def tally_sentence(D):
             for (k, i, y), v in c["verdicts"].items():
                 if y == "2026" and k == "corn":
                     t[v["verdict"]] = t.get(v["verdict"], 0) + 1
-    n = t.get("plc", 0) + t.get("arc", 0) + t.get("close", 0)
+    n = sum(t.get(w, 0) for w in ("plc", "arc", "close", "lean_plc", "lean_arc"))
     if not n:
         return ""
-    return (f'<p><b>For a typical farm, 2026 corn:</b> our scenarios call ARC-CO in {t.get("arc", 0):,} county and practice combinations, PLC in '
-            f'{t.get("plc", 0):,}, and too close to call in {t.get("close", 0):,} of {n:,}. Your own PLC yield moves the answer; the calculator below gives yours, '
-            f'with the expected payments. <a href="#method">How this is figured</a>.</p>')
+    return (f'<p><b>For a typical farm, 2026 corn</b>, across {n:,} county and practice combinations: pick ARC-CO {t.get("arc", 0):,}, leans ARC-CO '
+            f'{t.get("lean_arc", 0):,}, too close to call {t.get("close", 0):,}, leans PLC {t.get("lean_plc", 0):,}, pick PLC {t.get("plc", 0):,}. Your own PLC yield '
+            f'moves the answer; the calculator below gives yours, with the expected payments. <a href="#method">How this is figured</a>.</p>')
 
 
 def method_html(D):
     """How the verdict is figured, the scenario inputs, the county tally, and the back-test."""
-    y6 = D["years"]["2026"]["crops"]
-    if not all(c.get("scen") for c in y6.values()):
-        return ('<h2 id="method">How the ARC or PLC verdict is figured</h2><p>Not available: FSA&rsquo;s table with USDA&rsquo;s projected '
-                'season-average price is not loaded, so there is no center for the price scenarios.</p>')
+    y6, y7 = D["years"]["2026"]["crops"], D["years"]["2027"]["crops"]
+    if not all(c.get("scen") for c in list(y6.values()) + list(y7.values())):
+        return ('<h2 id="method">How the ARC or PLC verdict is figured</h2><p>Not available: the price inputs for the scenarios are not loaded.</p>')
     yrs = sorted(int(t) for t in y6["corn"]["scen"]["ratios"])
-    rat = "".join(f'<tr><th scope="row">{t}</th>' + "".join(f'<td class="num">{y6[k]["scen"]["ratios"][t]:.3f}</td>' for k in CROPS) + "</tr>" for t in yrs)
+    cols = [(y, k) for y in ("2026", "2027") for k in CROPS]
+    rat = "".join(f'<tr><th scope="row">{t}</th>' + "".join(
+        f'<td class="num">{usd(D["years"][y]["crops"][k]["scen"]["center"] * D["years"][y]["crops"][k]["scen"]["ratios"][str(t) if str(t) in D["years"][y]["crops"][k]["scen"]["ratios"] else t])}</td>'
+        for y, k in cols) + "</tr>" for t in yrs)
+    tiers = ("plc", "lean_plc", "close", "lean_arc", "arc", "withheld", "mismatch")
     tally = {}
     for S in D["states"].values():
         for c in S["c"]:
             for (k, i, y), v in c["verdicts"].items():
-                if y == "2026":
-                    tally.setdefault(k, {}).setdefault(v["verdict"], 0)
-                    tally[k][v["verdict"]] += 1
-    tl = "".join(f'<tr><th scope="row">{y6[k]["label"]}</th>' + "".join(f'<td class="num">{tally.get(k, {}).get(w, 0):,}</td>' for w in ("plc", "arc", "close", "withheld", "mismatch")) + "</tr>"
-                 for k in CROPS)
+                tally.setdefault((y, k), {}).setdefault(v["verdict"], 0)
+                tally[(y, k)][v["verdict"]] += 1
+    tl = "".join(f'<tr><th scope="row">{y} {D["years"][y]["crops"][k]["label"].lower()}</th>' + "".join(f'<td class="num">{tally.get((y, k), {}).get(w, 0):,}</td>' for w in tiers) + "</tr>"
+                 for y in ("2026", "2027") for k in CROPS)
     bt = D.get("_backtest")
     btab = ""
     if bt:
@@ -1074,29 +1247,37 @@ def method_html(D):
                 f'2018 law (statutory $3.70, $8.40, $5.50; 85% escalator); 2025 the 2025 law. ARC-CO: FSA&rsquo;s county payment rates from its program year files, '
                 f'irrigated and non-irrigated averaged equally where FSA splits a county, weighted by each county&rsquo;s enrolled base, times 85%. n/a: FSA&rsquo;s county file for that '
                 f'program year is not in our data (2021 and 2022 are). National averages hide wide county differences.</p>')
-    c6 = y6["corn"]["scen"]
+    c6, s6, c7, s7, w6 = y6["corn"]["scen"], y6["soybeans"]["scen"], y7["corn"]["scen"], y7["soybeans"]["scen"], y6["wheat"]["scen"]
+    def plabel(sc):
+        return sc["center_label"]
     return f"""<h2 id="method">How the ARC or PLC verdict is figured</h2>
-  <p>The verdict compares what each program is expected to pay per base acre across past years, not one guess. Every scenario is a real year:</p>
+  <p>The verdict compares what each program is expected to pay per base acre across {len(yrs)} past years ({yrs[0]} to {yrs[-1]}), not one guess. Every scenario is a real year:
+  that year&rsquo;s price outcome and that year&rsquo;s county yield, together.</p>
   <ul class="ap-list">
-    <li><b>Price.</b> Center: USDA&rsquo;s projected 2026/27 season-average price as printed in FSA&rsquo;s table of {c6['center_date']} (corn {usd(y6['corn']['scen']['center'])},
-    soybeans {usd(y6['soybeans']['scen']['center'])}, wheat {usd(y6['wheat']['scen']['center'])}). Each scenario moves it by one past year&rsquo;s actual change in the final
-    season-average price (NASS), {yrs[0]} to {yrs[-1]}. That is a year-to-year change, wider than what is still unknown about 2026/27 in October: we could not source enough years of
-    USDA&rsquo;s October projections against the final price. A wider band makes &ldquo;too close to call&rdquo; more likely, not less. 2027 uses the same center and spread. The October 2026
-    WASDE came out today and is not loaded here.</li>
+    <li><b>2026 price, corn and soybeans.</b> Start: USDA&rsquo;s projected 2026/27 season-average price, {usd(c6['center'])} corn and {usd(s6['center'])} soybeans
+    ({c6.get('usda_src', 'USDA WASDE')}). Spread: how far each past year&rsquo;s final season-average price (NASS) ended from that October&rsquo;s futures average (RMA&rsquo;s harvest
+    price, listed on our <a href="/harvest-price-tracker#history">price tracker</a>), scaled to average 1. That is the uncertainty actually left in October. We use the futures
+    record because USDA&rsquo;s month-by-month projection history is not on file; a study of corn found WASDE and futures-based forecasts about equally accurate
+    (WASDE lower error in 9 of 16 forecast months: {src_link('HOFF15')}).</li>
+    <li><b>2027 price, corn and soybeans.</b> Start: {plabel(c7)}: {usd(c7['center'])} corn; soybeans {plabel(s7)}: {usd(s7['center'])}. Spread: each past year&rsquo;s change in the
+    final season-average price, scaled to average 1, because 2027 is a whole year out. The gap is measured from February futures (RMA&rsquo;s projected price), about seven months
+    before harvest; today is about thirteen months before the 2027 harvest.</li>
+    <li><b>Wheat, both years.</b> No futures history on file, so USDA&rsquo;s projected {usd(w6['center'])} ({w6.get('usda_src', 'USDA')}) times each past year&rsquo;s change in the final season-average price.
+    That band is wider than what is left to learn about 2026/27, which makes &ldquo;too close to call&rdquo; more likely, not less.</li>
     <li><b>County yield.</b> For the same year, the county&rsquo;s yield against its benchmark, from FSA&rsquo;s own files: the five window years in the program year 2021 file
     ({yrs[0]} to 2019) and the 2026 file (2020 to {yrs[-1]}), each divided by that file&rsquo;s benchmark. FSA&rsquo;s yields already have the 80% T-yield floor and trend adjustment.
     A county with fewer than {MIN_SCEN} years uses its state&rsquo;s average for that crop and practice (at least {MIN_STATE_N} counties a year).</li>
-    <li><b>Pairing.</b> Price and yield come from the same real year, so a short crop and a high price stay together.</li>
-    <li><b>When we call it.</b> Only with at least {MIN_SCEN} years, when the expected gap is more than twice its uncertainty from those years and at least {usd(MIN_GAP)} per base acre,
-    and the same program paid more in more years. Otherwise &ldquo;too close to call&rdquo;, with the numbers.</li>
+    <li><b>The call.</b> With at least {MIN_SCEN} years: <b>Pick</b> when the expected gap is more than twice its uncertainty from those years (and at least {usd(MIN_GAP)} per base acre)
+    and the same program paid more in more years; <b>Leans</b> when the gap is at least {usd(LEAN_GAP)} and that program paid more in more years, but the gap is within the normal swing;
+    otherwise <b>too close to call</b>. Expected dollars are always shown beside the call.</li>
     <li><b>Typical farm</b> (county pages): FSA&rsquo;s county average PLC yield and FSA&rsquo;s official benchmark, non-irrigated first. Where the county average PLC yield is above a practice&rsquo;s
     benchmark (it covers all practices), no typical verdict is given for that practice.</li>
   </ul>
-  <h3>Price changes used ({len(yrs)} years)</h3>
-  <div class="ap-scroll"><table class="tbl ap-t"><thead><tr><th>Year</th>{''.join(f'<th class="num">{y6[k]["label"]}</th>' for k in CROPS)}</tr></thead><tbody>{rat}</tbody></table></div>
-  <p class="ap-small">Final season-average price that year divided by the year before (USDA NASS).</p>
-  <h3>Typical-farm verdicts for 2026, all counties</h3>
-  <div class="ap-scroll"><table class="tbl ap-t"><thead><tr><th>Crop</th><th class="num">PLC</th><th class="num">ARC-CO</th><th class="num">Too close</th><th class="num">Too few years</th><th class="num">No typical farm</th></tr></thead><tbody>{tl}</tbody></table></div>
+  <h3>Scenario prices ({len(yrs)} years)</h3>
+  <div class="ap-scroll"><table class="tbl ap-t"><thead><tr><th>Year</th>{''.join(f'<th class="num">{y} {D["years"][y]["crops"][k]["label"].lower()}</th>' for y, k in cols)}</tr></thead><tbody>{rat}</tbody></table></div>
+  <p class="ap-small">Season-average price used in each scenario year, $/bu.</p>
+  <h3>Typical-farm verdicts, all counties</h3>
+  <div class="ap-scroll"><table class="tbl ap-t"><thead><tr><th>Year, crop</th><th class="num">Pick PLC</th><th class="num">Leans PLC</th><th class="num">Too close</th><th class="num">Leans ARC-CO</th><th class="num">Pick ARC-CO</th><th class="num">Too few years</th><th class="num">No typical farm</th></tr></thead><tbody>{tl}</tbody></table></div>
   <p class="ap-small">County and practice combinations. Your own PLC yield moves the answer; run it.</p>
   {btab}"""
 
@@ -1425,7 +1606,8 @@ def state_page(st, S, D, ch, nav_states):
     return page, {"path": path, "indexable": indexable, "title": title, "desc": desc}
 
 
-SHORT = {"plc": "PLC Est. Higher", "arc": "ARC-CO Est. Higher", "close": "Too Close to Call"}
+SHORT = {"plc": "PLC Est. Higher", "arc": "ARC-CO Est. Higher", "lean_plc": "Leans PLC", "lean_arc": "Leans ARC-CO",
+         "close": "Too Close to Call"}
 
 
 def why_text(v, cd, by, py):
@@ -1436,8 +1618,8 @@ def why_text(v, cd, by, py):
     short = sum(1 for r in v["rows"] if r["arc"] > 0)
     return (f"PLC pays on any season-average price below {usd(erp)}, up to {usd(max_plc)} per base acre at the {usd(loan)} loan rate, so it "
             f"protects against a deep price drop. ARC-CO is capped at {usd(max_arc)} per base acre but also pays when the county&rsquo;s "
-            f"yield is short; it paid something in {short} of the {v['n']} past-year scenarios. Centered on USDA&rsquo;s {usd(center)} "
-            f"projection, PLC is expected to pay {usd(v['plc'])} and ARC-CO {usd(v['arc'])} per base acre.")
+            f"yield is short; it paid something in {short} of the {v['n']} past-year scenarios. With prices centered at {usd(center)}, "
+            f"PLC is expected to pay {usd_pay(v['plc'])} and ARC-CO {usd_pay(v['arc'])} per base acre.")
 
 
 def default_entries(es):
@@ -1468,7 +1650,7 @@ def typical_html(c, k, D, cname):
         if head_v is None and v6["verdict"] in SHORT:
             head_v = (v6, e)
         src = "this county&rsquo;s own FSA yields" if e["dsrc"] == "county" else f"the {esc(STATE_NAMES[c['st']])} average for this crop and practice (the county has fewer than {MIN_SCEN} years)"
-        lines.append(f'<div class="ap-verdict ap-w-{v6["verdict"] if v6["verdict"] in ("plc", "arc") else "none"}"><p><b>{lab}, 2026: {verdict_line(v6)}</b></p>'
+        lines.append(f'<div class="ap-verdict ap-w-{v6["verdict"].replace("lean_", "") if v6["verdict"] not in ("close", "withheld") else "none"}"><p><b>{lab}, 2026: {verdict_line(v6)}</b></p>'
                      + (f'<p>{why_text(v6, cd6, e["by"], pyv)}</p>' if v6["verdict"] != "withheld" else "")
                      + (f'<p class="ap-small"><b>2027:</b> {verdict_line(v7)} The 2027 view uses FSA&rsquo;s 2026 benchmark; FSA posts 2027 later.</p>' if v7 else "")
                      + f'<p class="ap-small">For a typical farm: FSA&rsquo;s county average PLC yield {pyv:.1f} bu (program year {plc_py}) and the official '
@@ -1490,15 +1672,16 @@ def quick_county(c, D):
             if v["verdict"] == "withheld":
                 items.append(f"<li><b>{esc(lab)}:</b> not enough history to say.</li>")
             else:
-                items.append(f"<li><b>{esc(lab)}:</b> {VWORD[v['verdict']]} (est. {usd(v['plc'])} PLC vs {usd(v['arc'])} ARC-CO per base acre; "
+                items.append(f"<li><b>{esc(lab)}:</b> {VWORD[v['verdict']]} (est. {usd_pay(v['plc'])} PLC vs {usd_pay(v['arc'])} ARC-CO per base acre; "
                              f"PLC more in {v['plc_wins']} of {v['n']} past-year scenarios, ARC-CO in {v['arc_wins']}).</li>")
             break
     if not items:
         return ""
     return ('<div class="ap-quick" id="quick-answer"><p><b>Quick answer for 2026, for a typical farm in this county.</b> Run your own numbers; '
             'your PLC yield and base can change it.</p><ul class="ap-list">' + "".join(items) + '</ul>'
-            '<p class="ap-small">Typical farm = FSA&rsquo;s county average PLC yield and FSA&rsquo;s official benchmark. Prices: USDA&rsquo;s projection moved by '
-            'each past year&rsquo;s price change; county yields from the same past years. <a href="/arc-plc#method">How this is figured</a>.</p></div>')
+            '<p class="ap-small">Typical farm = FSA&rsquo;s county average PLC yield and FSA&rsquo;s official benchmark. Prices: USDA&rsquo;s October WASDE projection, '
+            'spread by how far the season-average price ended from October futures in each past year; county yields from the same past years. '
+            '<a href="/arc-plc#method">How this is figured</a>.</p></div>')
 
 
 def county_page(st, S, c, D, ch):
@@ -1521,10 +1704,10 @@ def county_page(st, S, c, D, ch):
                                   f"{cname}, {st} {lab} 2026: {sh}",
                                   f"{cname} {lab} 2026: {sh}") if len(t) <= 60), f"{cname}, {st} ARC or PLC 2026")
         vv = head_v[0]
-        desc = (f"{cname}, {name} {lab.lower()} 2026, typical farm: {VWORD[vv['verdict']]}, est. {usd(vv['plc'])} PLC vs {usd(vv['arc'])} "
+        desc = (f"{cname}, {name} {lab.lower()} 2026, typical farm: {VWORD[vv['verdict']]}, est. {usd_pay(vv['plc'])} PLC vs {usd_pay(vv['arc'])} "
                 f"ARC-CO per base acre. FSA official benchmarks. Run your numbers.")
         if len(desc) > 155:
-            desc = f"{cname}, {st} {lab.lower()} 2026: {VWORD[vv['verdict']]}, est. {usd(vv['plc'])} PLC vs {usd(vv['arc'])} ARC-CO per base acre. Run your numbers."
+            desc = f"{cname}, {st} {lab.lower()} 2026: {VWORD[vv['verdict']]}, est. {usd_pay(vv['plc'])} PLC vs {usd_pay(vv['arc'])} ARC-CO per base acre. Run your numbers."
     elif official:
         title = next((t for t in (f"{cname}, {st} ARC-CO Benchmark Yield 2026 | AGSIST",
                                   f"{cname}, {st} ARC-CO Benchmark 2026 | AGSIST",
@@ -1871,8 +2054,34 @@ def selftest():
        and v["verdict"] == "close", str(v))
     v = scen_eval(4.0, 5.0, 2.0, 100, [(1.0, 100, Dy)], 4.0, R, price=3.0)
     ck("at a fixed $3.00: PLC 85 every year, ARC 51 every year -> PLC", v["plc"] == 85 and abs(v["arc"] - 51) < 1e-9 and v["verdict"] == "plc", str(v))
+    # Leans: PLC yield 60 -> PLC 51 (2016), 102 (2020), 20.4 (2022): mean 173.4/8 = 21.675 vs ARC 34.85;
+    # ARC more in 4 years (2016 is a 51-51 tie), PLC in 1; gap 13.175 >= $3 but under 2 x SE (2 x 11.636)
+    v = scen_eval(4.0, 5.0, 2.0, 60, [(1.0, 100, Dy)], 4.0, R)
+    ck("leans ARC-CO: 21.675 vs 34.85, wins 1 vs 4, within 2 SE", abs(v["plc"] - 21.675) < 1e-9 and v["plc_wins"] == 1 and v["arc_wins"] == 4
+       and abs(v["se"] - 11.636) < 1e-3 and v["verdict"] == "lean_arc", str({k: v[k] for k in v if k != "rows"}))
     R7 = {k: v_ for k, v_ in R.items() if k != 2022}
     ck("fewer than 8 years -> withheld", scen_eval(4.0, 5.0, 2.0, 100, [(1.0, 100, Dy)], 4.0, R7)["verdict"] == "withheld")
+    inp0 = load_inputs(ROOT)
+    if inp0.get("rma_hist"):
+        h = inp0["rma_hist"]["corn"]
+        ck("RMA history read from the price tracker: 2012 corn $5.68 / $7.50, 2024 $4.66 / $4.16",
+           h.get(2012) == (5.68, 7.50) and h.get(2024) == (4.66, 4.16), str(h.get(2012)))
+        sc = price_scen(dict(inp0, wasde={"prices": {"corn": 4.70}, "date": "2026-10-09"}), "corn", 2026)
+        # 2024: final MYA 4.24 / October futures average 4.16 = 1.01923; the 2015-2024 average of
+        # those ratios is 0.99195, so the spread is centered: $4.70 x 1.01923 / 0.99195 = $4.83
+        ck("2026 corn scenario 2024: $4.70 x (4.24/4.16) / 0.99195 = $4.83", sc["kind"] == "oct" and round(sc["center"] * sc["ratios"][2024], 2) == 4.83, str(sc)[:200])
+    # WASDE parser on the text layout of the report
+    fake = ("WASDE - 676 Approved by the World Agricultural Outlook Board  October 9, 2026\n"
+            "U.S. Wheat Supply and Use  1/\nAvg. Farm Price ($/bu)  2/ 5.52 5.06 6.40 6.30\n"
+            "U.S. Feed Grain and Corn Supply and Use  1/\nFEED GRAINS\nCORN \nAvg. Farm Price ($/bu)  4/ 4.24 4.16 4.80 4.70\n"
+            "U.S. Soybeans and Products Supply and Use (Domestic Measure)  1/\nSOYBEANS \nAvg. Farm Price ($/bu)  2/ 10.00 10.50 12.00 12.00\n")
+    w = parse_wasde(fake)
+    ck("WASDE parser: Oct 9, 2026 #676, corn 4.70, soybeans 12.00, wheat 6.30",
+       w == {"prices": {"wheat": 6.30, "corn": 4.70, "soybeans": 12.00}, "number": 676, "date": "2026-10-09"}, str(w))
+    if os.path.exists(os.path.join(ROOT, "data/wasde-pdf/wasde1026.pdf")):
+        w = parse_wasde(wasde_text(os.path.join(ROOT, "data/wasde-pdf/wasde1026.pdf")))
+        ck("WASDE Oct 2026 PDF: corn 4.70, soybeans 12.00, wheat 6.30", w.get("prices") == {"wheat": 6.30, "corn": 4.70, "soybeans": 12.00}
+           and w.get("date") == "2026-10-09", str(w))
     # published PLC rates the back-test must reproduce: 2019 corn $0.14, 2019 wheat $0.92, 2020 wheat $0.45, 2025 wheat $1.29
     bt = backtest(load_inputs(ROOT))
     got = {(r["y"], r["k"]): r["rate"] for r in bt["rows"]}
@@ -1947,8 +2156,11 @@ def main():
     ap = argparse.ArgumentParser(add_help=False)
     ap.add_argument("--selftest", action="store_true")
     ap.add_argument("--check", action="store_true")
+    ap.add_argument("--snapshot-prices", action="store_true")
     a = ap.parse_args()
     os.chdir(ROOT)
+    if a.snapshot_prices:
+        print(json.dumps(snapshot_prices("."), indent=1))
     if a.selftest:
         return selftest()
     return main_build(".", check=a.check)

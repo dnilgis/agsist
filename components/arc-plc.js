@@ -109,7 +109,7 @@
      Scenario year t: price = center x r_t (or the reader's price), county
      yield = benchmark x d_t, the same real year for both. Mirrors scen_eval
      in scripts/build_arc_plc.py. */
-  var MIN_SCEN = 8, MIN_GAP = 2;
+  var MIN_SCEN = 8, MIN_GAP = 2, LEAN_GAP = 3;
   function scenarios(c, center, ratios, price) {
     var yrs = Object.keys(ratios).sort().filter(function (t) { return c.parts.every(function (p) { return p.dy && p.dy[t] != null; }); });
     var rows = yrs.map(function (t) {
@@ -128,8 +128,12 @@
     var band = Math.max(MIN_GAP, 2 * se);
     out.plc = mp; out.arc = ma; out.diff = md; out.se = se; out.plcWins = pw; out.arcWins = aw; out.band = band;
     if (n < MIN_SCEN) out.verdict = 'withheld';
-    else if (Math.abs(md) < band || (md > 0 && pw <= aw) || (md < 0 && aw <= pw)) out.verdict = 'close';
-    else out.verdict = md > 0 ? 'plc' : 'arc';
+    else {
+      var more = (md > 0 && pw > aw) || (md < 0 && aw > pw), side = md > 0 ? 'plc' : 'arc';
+      if (Math.abs(md) >= band && more) out.verdict = side;
+      else if (Math.abs(md) >= LEAN_GAP && more) out.verdict = 'lean_' + side;
+      else out.verdict = 'close';
+    }
     return out;
   }
 
@@ -145,6 +149,7 @@
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (ch) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]; }); }
   function money(v, k) { k = k == null ? 2 : k; v = Number(v); v += v >= 0 ? 1e-9 : -1e-9; /* 27.455 is 27.45499.. in binary; print 27.46 */
     return '$' + v.toLocaleString('en-US', { minimumFractionDigits: k, maximumFractionDigits: k }); }
+  function pay$(v) { return cents(v) === 0 ? '$0' : money(v); }
   function num(el) { if (!el || el.value === '') return null; var v = parseFloat(el.value); return isFinite(v) ? v : null; }
   function sget(k) { try { var v = localStorage.getItem(k); return v ? JSON.parse(v) : null; } catch (e) { return null; } }
   function sset(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
@@ -307,11 +312,13 @@
       save();
       try { d.dispatchEvent(new CustomEvent('arcplc:render')); } catch (e) {}
     }
-    var VW = { plc: 'Pick PLC', arc: 'Pick ARC-CO', close: 'Too close to call', withheld: 'Not enough history to say' };
+    var VW = { plc: 'Pick PLC', arc: 'Pick ARC-CO', lean_plc: 'Leans PLC', lean_arc: 'Leans ARC-CO', close: 'Too close to call', withheld: 'Not enough history to say' };
     function vline(Y, v) {
       if (v.verdict === 'withheld') return '<b>' + Y + ': not enough history to say.</b> ' + v.n + ' past years with both a price and a county yield; we need ' + MIN_SCEN + '.';
-      return '<b>' + Y + ': ' + VW[v.verdict] + (v.verdict === 'close' ? ' (the gap is under ' + money(v.band) + ' per base acre)' : '') + '.</b> Expected ' + money(v.plc) + ' PLC vs ' +
-        money(v.arc) + ' ARC-CO per base acre; PLC paid more in ' + v.plcWins + ' of ' + v.n + ' past-year scenarios, ARC-CO in ' + v.arcWins + '.';
+      var lean = v.verdict.indexOf('lean_') === 0;
+      return '<b>' + Y + ': ' + VW[v.verdict] + (v.verdict === 'close' ? ' (the gap is under ' + money(v.band) + ' per base acre)' : '') +
+        (lean ? ': expected about ' + money(Math.abs(v.diff)) + ' more per base acre, but the gap is within the normal swing; either is a defensible choice' : '') + '.</b> Expected ' + pay$(v.plc) + ' PLC vs ' +
+        pay$(v.arc) + ' ARC-CO per base acre; PLC paid more in ' + v.plcWins + ' of ' + v.n + ' past-year scenarios, ARC-CO in ' + v.arcWins + '.';
     }
     function decide(c) {
       if (!c.parts.every(function (p) { return p.dy; })) return '<div class="ap-decide"><p class="ap-need">Pick your county to get a verdict: it uses the county&rsquo;s own yield history from FSA&rsquo;s files.</p></div>';
@@ -322,7 +329,7 @@
         var cy = { erp: cr.erp.erp, bp: cr.bp.value, loan: cr.loan, py: c.py, parts: c.parts };
         var v = scenarios(cy, cr.scen.center, cr.scen.ratios);
         if (Y === year) cur = { v: v, cr: cr, cy: cy };
-        h += '<div class="ap-verdict ap-w-' + (v.verdict === 'plc' || v.verdict === 'arc' ? v.verdict : 'none') + (Y === year ? ' ap-cur' : '') + '"><p>' + vline(Y, v) + '</p></div>';
+        h += '<div class="ap-verdict ap-w-' + (v.verdict === 'close' || v.verdict === 'withheld' ? 'none' : v.verdict.replace('lean_', '')) + (Y === year ? ' ap-cur' : '') + '"><p>' + vline(Y, v) + '</p></div>';
       });
       if (cur && cur.v.verdict !== 'withheld') {
         var v = cur.v, cr = cur.cr, cy = cur.cy;
@@ -330,16 +337,18 @@
         var paid = v.rows.filter(function (r) { return r.arc > 0; }).length;
         h += '<p><b>Why.</b> PLC pays on any season-average price below ' + money(cy.erp) + ', up to ' + money(maxP) + ' per base acre at the ' + money(cy.loan) +
           ' loan rate, so it protects against a deep price drop. ARC-CO is capped at ' + money(maxA) + ' per base acre but also pays when the county&rsquo;s yield is short; it paid something in ' +
-          paid + ' of the ' + v.n + ' past-year scenarios. Centered on USDA&rsquo;s ' + money(cr.scen.center) + ' projection, PLC is expected to pay ' + money(v.plc) + ' and ARC-CO ' + money(v.arc) + ' per base acre.</p>';
+          paid + ' of the ' + v.n + ' past-year scenarios. With prices centered at ' + money(cr.scen.center) + ', PLC is expected to pay ' + pay$(v.plc) + ' and ARC-CO ' + pay$(v.arc) + ' per base acre.</p>';
         if (c.price != null) {
           var u = scenarios(cy, cr.scen.center, cr.scen.ratios, c.price);
-          h += '<p>At your ' + money(c.price) + ' price, across the same ' + u.n + ' county-yield years: PLC ' + money(u.plc) + ' vs ARC-CO ' + money(u.arc) +
+          h += '<p>At your ' + money(c.price) + ' price, across the same ' + u.n + ' county-yield years: PLC ' + pay$(u.plc) + ' vs ARC-CO ' + pay$(u.arc) +
             ' per base acre; PLC more in ' + u.plcWins + ', ARC-CO in ' + u.arcWins + '. ' + (u.verdict === 'withheld' ? '' : VW[u.verdict] + ' at that price.') + '</p>';
         }
         var src = c.parts.some(function (p) { return p.dsrc === 'state'; }) ? 'the state average for this crop and practice (the county has too few years)' : 'this county&rsquo;s FSA yields';
-        h += '<p class="ap-small">Scenarios: USDA&rsquo;s projected ' + money(cr.scen.center) + ' season-average price (FSA&rsquo;s table of ' + cr.scen.center_date + ') moved by each year&rsquo;s actual price change, ' +
-          v.rows[0].t + ' to ' + v.rows[v.rows.length - 1].t + ' (' + v.n + ' years), paired with ' + src + ' in the same year. We call it only when the expected gap is more than twice its uncertainty and at least ' +
-          money(MIN_GAP) + ', and the same program paid more in more years. SCO can now go with either program, so it is no reason to pick PLC. <a href="/arc-plc#method">Method and back-test</a>.</p>';
+        var how = { oct: 'how far each past year&rsquo;s season-average price ended from its October futures (scaled to average 1)', fut: 'each past year&rsquo;s price change, scaled to average 1',
+          yoy: 'each past year&rsquo;s price change' }[cr.scen.kind];
+        h += '<p class="ap-small">Scenarios: ' + cr.scen.center_label + ', ' + money(cr.scen.center) + ', moved by ' + how + ', ' +
+          v.rows[0].t + ' to ' + v.rows[v.rows.length - 1].t + ' (' + v.n + ' years), paired with ' + src + ' in the same year. Pick: the gap is over twice its uncertainty and at least ' +
+          money(MIN_GAP) + ', and the same program paid more in more years. Leans: at least ' + money(LEAN_GAP) + ' and more winning years. SCO can now go with either program, so it is no reason to pick PLC. <a href="/arc-plc#method">Method and back-test</a>.</p>';
       }
       return h + '</div>';
     }

@@ -135,6 +135,11 @@ test("scenario engine, 8 hand-worked years", () => {
   const fixed = A.scenarios(c, 4, ratios, 3.0);
   near(fixed.plc, 85, "PLC at $3.00"); near(fixed.arc, 51, "ARC at $3.00");
   assert.equal(fixed.verdict, "plc");
+  // Leans: PLC yield 60 -> PLC 51, 102, 20.4: mean 21.675 vs ARC 34.85; ARC more in 4 (2016 ties), PLC in 1; gap 13.175 >= $3, under 2 x SE 11.636
+  const lean = A.scenarios({ ...c, py: 60 }, 4, ratios);
+  near(lean.plc, 21.675, "PLC at yield 60"); assert.equal(lean.arcWins, 4); assert.equal(lean.plcWins, 1);
+  near(lean.se, 11.636, "SE", 1e-3);
+  assert.equal(lean.verdict, "lean_arc");
   const seven = Object.fromEntries(Object.entries(ratios).filter(([t]) => t !== "2022"));
   assert.equal(A.scenarios(c, 4, seven).verdict, "withheld", "fewer than 8 years");
 });
@@ -149,7 +154,8 @@ test("the calculator and the county page give the same typical-farm verdict (Chi
   const page = readFileSync(ROOT + "arc-plc/wisconsin/chippewa-county.html", "utf8");
   const m = /Corn, non-irrigated:<\/b> ([^(]+)\(est\. \$([\d.,]+) PLC vs \$([\d.,]+) ARC-CO/.exec(page);
   assert.ok(m, "quick answer present");
-  assert.equal(v.plc.toFixed(2), m[2]); assert.equal(v.arc.toFixed(2), m[3]);
+  const fmt = (x) => (A.cents(x) === 0 ? "0" : x.toFixed(2)); // the page prints a zero expected payment as $0
+  assert.equal(fmt(v.plc), m[2]); assert.equal(fmt(v.arc), m[3]);
   assert.equal(v.n >= 8, true);
 });
 
