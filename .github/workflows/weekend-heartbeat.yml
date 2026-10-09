@@ -41,20 +41,59 @@ name: Weekend daily-briefing heartbeat
 # heartbeat -- and this file doesn't reach that case. Flagged, not solved
 # here; would need an actual trading-calendar check, which contract_calendar.py
 # already has and could be extended to cover.
+#
+# 2026-10-09: THE KNOCK NOW COMES FROM THE BIDS RUN TOO. These two crons, like
+# daily.yml's own, arrived hours late: the weekend briefings of Oct 3 and 4
+# published at 09:46 and 10:27 Central against a 05:45 floor. So this also
+# runs after every "Fetch Grain Bids" (cron-job.org, every 15 minutes, weekends
+# included). On that path it knocks only on Saturday and Sunday, from 05:45 to
+# 11:59 Central, and only while today's briefing is not yet published, which
+# makes it the weekend twin of prices.yml's weekday heartbeat. daily.yml's own
+# gate still makes every decision. Nothing daily.yml does starts Fetch Grain
+# Bids, so this cannot loop.
 on:
   schedule:
     - cron: '11 14 * * 0,6'   # 14:11 UTC Sat/Sun -- 48min after daily.yml's last cron
     - cron: '2 15 * * 0,6'    # 15:02 UTC Sat/Sun -- 51min after the fire above
+  workflow_run:
+    workflows: ["Fetch Grain Bids"]
+    types: [completed]
   workflow_dispatch:
 
 permissions:
   actions: write
+  contents: read
+
+concurrency:
+  group: weekend-heartbeat
+  cancel-in-progress: false
 
 jobs:
   knock:
     runs-on: ubuntu-latest
     steps:
+      # Only the chained path is gated; a scheduled or manual knock always goes.
+      - name: Is a knock due?
+        id: due
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TZ: America/Chicago
+        run: |
+          if [ "${{ github.event_name }}" != "workflow_run" ]; then echo "go=1" >> "$GITHUB_OUTPUT"; exit 0; fi
+          DOW=$(date +%u); HM=$(( 10#$(date +%H%M) )); DAY=$(date +%F); GO=0
+          if [ "$DOW" -ge 6 ] && [ "$HM" -ge 545 ] && [ "$HM" -lt 1200 ]; then
+            if gh api "repos/${{ github.repository }}/contents/data/daily-archive/$DAY.json" --silent 2>/dev/null; then
+              echo "today's briefing ($DAY) is already published"
+            else
+              GO=1
+            fi
+          else
+            echo "not a weekend morning in Central (day $DOW, $HM)"
+          fi
+          echo "go=$GO" >> "$GITHUB_OUTPUT"
+
       - name: Dispatch daily.yml as a heartbeat
+        if: steps.due.outputs.go == '1'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |

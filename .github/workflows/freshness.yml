@@ -12,6 +12,12 @@ on:
   schedule:
     - cron: '35 13 * * 1-5'   # 13:35 UTC — pre-open refresh (overnight session closes)
     - cron: '35 20 * * 1-5'   # 20:35 UTC — post-close (CBOT day session ends 19:20 UTC)
+  # Also after every "Fetch Grain Bids" (cron-job.org, every 15 minutes): GitHub
+  # drops and delays the schedule above. The gate job below lets the first run
+  # after each tick of the schedule do the work; see scripts/cron_gate.py.
+  workflow_run:
+    workflows: ["Fetch Grain Bids"]
+    types: [completed]
   workflow_dispatch:
 
 permissions:
@@ -22,7 +28,29 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  gate:
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+    outputs:
+      go: ${{ steps.g.outputs.go }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: scripts/cron_gate.py
+          sparse-checkout-cone-mode: false
+      - id: g
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: >-
+          python3 scripts/cron_gate.py tick --workflow freshness.yml --max-lag 120
+          --cron "35 13 * * 1-5"
+          --cron "35 20 * * 1-5"
+
   seed:
+    needs: gate
+    if: needs.gate.outputs.go == '1'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout

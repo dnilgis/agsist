@@ -11,7 +11,8 @@ name: Sponsor sign-ups
 
 on:
   schedule:
-    - cron: '8,38 * * * *'
+    # Hourly fallback (was every 30 min); the bids chain below does the work.
+    - cron: '38 * * * *'
   # GitHub delivered none of this cron's fires on its first day, so applicants
   # who were told "check your email" heard nothing. It also runs after every
   # "Fetch Grain Bids", which cron-job.org starts every 15 minutes.

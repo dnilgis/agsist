@@ -46,7 +46,12 @@ on:
     # old by morning. The primary clock is cron-job.org on the same minutes;
     # this GitHub cron is the fallback underneath it. :07 :22 :37 :52 stay off
     # the :00 and :30 pile-ups.
-    - cron: '7,22,37,52 * * * *'
+    # 2026-10-09: HOURLY FALLBACK. Over Oct 2-9 cron-job.org started 671 runs
+    # with no gap over 30 minutes; this cron asked for 672 and got 32. Its 96
+    # fires a day were a fifth of everything this repository asks GitHub's
+    # scheduler for, and they bought nothing the dispatch did not. One an hour
+    # keeps a floor under the page if cron-job.org goes down.
+    - cron: '7 * * * *'
   workflow_dispatch:
     inputs:
       total_locations:

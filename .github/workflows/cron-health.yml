@@ -1,0 +1,100 @@
+name: Cron health
+
+# DID THE JOBS READERS DEPEND ON ACTUALLY RUN?
+#
+# GitHub's scheduler delivered 13.7% of this repository's scheduled fires over
+# 2026-10-02 to 10-09, and a dropped fire leaves nothing behind: no red run,
+# just a page that stops moving. The COT watcher missed its whole window three
+# days running before anyone saw it. scripts/cron_health.py checks each
+# time-critical workflow against its own clock and writes data/cron-health.json.
+# This run goes red when a critical one is late.
+#
+# It runs after every "Fetch Grain Bids" (cron-job.org, every 15 minutes) and
+# its gate keeps that to one check every half hour. The cron is the fallback.
+# If cron-job.org itself stops, this goes quiet with it; that is what the
+# fallback cron is for, and why Fetch Grain Bids is the first row it checks.
+#
+# The file is committed only when a status changes or every six hours, so it
+# does not add a Pages deploy every half hour.
+
+on:
+  workflow_run:
+    workflows: ["Fetch Grain Bids"]
+    types: [completed]
+  schedule:
+    - cron: '26 */2 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: read
+
+concurrency:
+  group: cron-health
+  cancel-in-progress: false
+
+jobs:
+  gate:
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+    outputs:
+      go: ${{ steps.g.outputs.go }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: scripts/cron_gate.py
+          sparse-checkout-cone-mode: false
+      - id: g
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: >-
+          python3 scripts/cron_gate.py tick --workflow cron-health.yml --max-lag 30
+          --cron "26,56 * * * *"
+
+  check:
+    needs: gate
+    if: needs.gate.outputs.go == '1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+
+      - name: Prove the checks
+        run: |
+          python3 scripts/cron_gate.py --selftest
+          python3 scripts/cron_health.py --selftest
+
+      - name: Check every clock
+        id: h
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 scripts/cron_health.py --out data/cron-health.json
+
+      - name: Commit
+        if: steps.h.outputs.commit == '1'
+        run: |
+          git config user.name  "AGSIST Bot"
+          git config user.email "bot@agsist.com"
+          cp data/cron-health.json /tmp/cron-health.json
+          for i in 1 2 3 4 5; do
+            git fetch -q origin main
+            git reset -q --hard origin/main
+            cp /tmp/cron-health.json data/cron-health.json
+            git add data/cron-health.json
+            if git diff --staged --quiet; then echo "nothing to commit"; exit 0; fi
+            git commit -q -m "chore: cron health [skip ci]"
+            if git push -q origin HEAD:main; then echo "pushed (attempt $i)"; exit 0; fi
+            sleep $((RANDOM % 5 + 2))
+          done
+          echo "::warning::could not push data/cron-health.json"
+
+      - name: Late
+        if: steps.h.outputs.red == '1'
+        run: |
+          echo "::error::Time-critical workflow past its clock: ${{ steps.h.outputs.late }}"
+          echo "See data/cron-health.json for which tick was missed and why."
+          exit 1

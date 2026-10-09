@@ -9,18 +9,55 @@ on:
     # dropped Monday run showed last week's condition ratings for a further
     # seven days. And 21:30 UTC is ninety minutes after the release in EDT.
     #
-    #   EDT (Mar-Nov)  release 20:00 UTC -> 20:15
-    #   EST (Nov-Mar)  release 21:00 UTC -> 21:15
-    # 21:30 stays as the second attempt in both; Tuesday midday is the
+    #   EDT (Mar-Nov)  release 20:00 UTC -> 20:17
+    #   EST (Nov-Mar)  release 21:00 UTC -> 21:17
+    # (2026-10-09: two or three minutes off the quarter hours, where GitHub's
+    # queue is most crowded.)
+    # 21:33 stays as the second attempt in both; Tuesday midday is the
     # catch-all. Each is a no-op when the data has not moved.
-    - cron: '15 20 * * 1'
-    - cron: '15 21 * * 1'
-    - cron: '30 21 * * 1'
-    - cron: '30 12 * * 2'
+    - cron: '17 20 * * 1'
+    - cron: '17 21 * * 1'
+    - cron: '33 21 * * 1'
+    - cron: '33 12 * * 2'
+  # Also after every "Fetch Grain Bids" (cron-job.org, every 15 minutes): GitHub
+  # drops and delays the schedule above. The gate job below lets the first run
+  # after each tick of the schedule do the work; see scripts/cron_gate.py.
+  workflow_run:
+    workflows: ["Fetch Grain Bids"]
+    types: [completed]
   workflow_dispatch:
 
+# One run at a time, so a chained run and a late cron fire cannot both write.
+concurrency:
+  group: crop-progress
+  cancel-in-progress: false
+
 jobs:
+  gate:
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+    outputs:
+      go: ${{ steps.g.outputs.go }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: scripts/cron_gate.py
+          sparse-checkout-cone-mode: false
+      - id: g
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: >-
+          python3 scripts/cron_gate.py tick --workflow crop_progress.yml --max-lag 120
+          --cron "17 20 * * 1"
+          --cron "17 21 * * 1"
+          --cron "33 21 * * 1"
+          --cron "33 12 * * 2"
+
   fetch-crop-progress:
+    needs: gate
+    if: needs.gate.outputs.go == '1'
     runs-on: ubuntu-latest
     permissions:
       contents: write

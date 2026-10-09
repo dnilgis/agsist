@@ -22,7 +22,7 @@ on:
         type: boolean
         default: false
   schedule:
-    - cron: '11,41 * * * *'   # fallback only; off the :00/:30 pile-ups
+    - cron: '11 * * * *'   # fallback only, off the :00/:30 pile-ups. Hourly since 2026-10-09: cron-job.org has started a run every 15 minutes since 10-07 (213 runs, one gap over 30 min)
 
 # One fetch at a time, and never cut one off mid-push: a second start waits.
 concurrency:
@@ -171,17 +171,8 @@ jobs:
             echo "no price change this cycle"
           fi
 
-          # ── THE COT RELEASE CLOCK ───────────────────────────────────
-          #
-          # cot-release-watch.yml asks GitHub's scheduler for a probe every
-          # five minutes from 19:00 UTC, and GitHub delivered it two hours after
-          # CFTC published on two Fridays running. These runs are what arrives
-          # on time, so each one in the release window (Mon-Fri 19:00-21:59 UTC,
-          # which holds 3:30pm ET in both summer and winter) starts the watcher.
-          # It probes CFTC and stops in ~20 seconds unless the report moved.
-          DOW=$(date -u +%u); HR=$(( 10#$(date -u +%H) ))
-          if [ "$DOW" -le 5 ] && [ "$HR" -ge 19 ] && [ "$HR" -le 21 ]; then
-            gh workflow run cot-release-watch.yml \
-              && echo "COT watcher started" \
-              || echo "::warning::COT watcher could not be started"
-          fi
+          # THE COT RELEASE CLOCK used to be dispatched from here. It sat behind
+          # the market-hours gate above, which shuts at 14:00 Central, the hour
+          # the 19:00 UTC window opens, so after 2026-10-07 it never fired.
+          # cot-release-watch.yml now runs on workflow_run after this workflow
+          # and after Fetch Grain Bids, whether or not the market is open.

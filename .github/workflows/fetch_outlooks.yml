@@ -5,7 +5,10 @@ on:
     # Hourly. NOAA outlooks update ~twice a month and USDM weekly, so this is
     # heavily over-spec'd, but it lines up with the rest of the AGSIST cron
     # cadence and lets us catch a refresh inside the hour after upstream posts.
-    - cron: '15 * * * *'
+    # 2026-10-09: EVERY TWO HOURS, at :43. GitHub delivered 30 of 168 hourly
+    # fires over Oct 2-9 anyway, and :15 is a crowded minute. Twelve asks a day
+    # instead of 24 still covers an upstream that moves twice a month and weekly.
+    - cron: '43 */2 * * *'
   workflow_dispatch: {}
 
 permissions:

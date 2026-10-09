@@ -2,8 +2,8 @@
  "schema": "agsist-feeds/1",
  "generated_by": "scripts/build_feeds.py",
  "note": "Derived from the repository, never typed. Pages come from a grep of every .html; the writer and its cadence come from the workflow that names the file or runs the script that names it.",
- "count": 66,
- "with_known_cadence": 66,
+ "count": 75,
+ "with_known_cadence": 70,
  "feeds": [
   {
    "path": "data/afida/county.json",
@@ -70,6 +70,56 @@
     "*/5 16-17 9-12 * *"
    ],
    "max_gap_hours": 24.0,
+   "quiet": null,
+   "why_quiet": null
+  },
+  {
+   "path": "data/arc-plc.json",
+   "pages": [
+    "arc-plc.html"
+   ],
+   "written_by": [
+    "ARC/PLC refresh"
+   ],
+   "touched_by": [
+    "ARC/PLC refresh"
+   ],
+   "cadence": "3 launches on a fixed schedule at about 1am, 5pm Central",
+   "curated": false,
+   "planned": false,
+   "external": false,
+   "url": null,
+   "crons": [
+    "23 22 * * 1",
+    "23 6 12 12 *",
+    "23 6 16 3 *"
+   ],
+   "max_gap_hours": 168.0,
+   "quiet": null,
+   "why_quiet": null
+  },
+  {
+   "path": "data/arc-plc/nav.json",
+   "pages": [
+    "arc-plc.html"
+   ],
+   "written_by": [
+    "ARC/PLC refresh"
+   ],
+   "touched_by": [
+    "ARC/PLC refresh"
+   ],
+   "cadence": "3 launches on a fixed schedule at about 1am, 5pm Central",
+   "curated": false,
+   "planned": false,
+   "external": false,
+   "url": null,
+   "crons": [
+    "23 22 * * 1",
+    "23 6 12 12 *",
+    "23 6 16 3 *"
+   ],
+   "max_gap_hours": 168.0,
    "quiet": null,
    "why_quiet": null
   },
@@ -147,7 +197,7 @@
   {
    "path": "data/basis-map.json",
    "pages": [
-    "cash-bids.html"
+    "cash-bids-national.html"
    ],
    "written_by": [
     "Build National Basis Map",
@@ -157,15 +207,15 @@
     "Build National Basis Map",
     "Fetch Grain Bids"
    ],
-   "cadence": "about every 15 minutes",
+   "cadence": "about every 60 minutes",
    "curated": false,
    "planned": false,
    "external": false,
    "url": null,
    "crons": [
-    "7,22,37,52 * * * *"
+    "7 * * * *"
    ],
-   "max_gap_hours": 0.2,
+   "max_gap_hours": 1.0,
    "quiet": null,
    "why_quiet": null
   },
@@ -186,15 +236,39 @@
     "Build National Basis Map",
     "Fetch Grain Bids"
    ],
-   "cadence": "about every 15 minutes",
+   "cadence": "about every 60 minutes",
    "curated": false,
    "planned": false,
    "external": false,
    "url": null,
    "crons": [
-    "7,22,37,52 * * * *"
+    "7 * * * *"
    ],
-   "max_gap_hours": 0.2,
+   "max_gap_hours": 1.0,
+   "quiet": null,
+   "why_quiet": null
+  },
+  {
+   "path": "data/cash-rent/national.json",
+   "pages": [
+    "farmland-atlas.html"
+   ],
+   "written_by": [
+    "cash-rent"
+   ],
+   "touched_by": [
+    "cash-rent",
+    "Freshness \u2014 seed static prices, dateModified, sitemap lastmod"
+   ],
+   "cadence": "1 launch on a fixed schedule at about 9am Central",
+   "curated": false,
+   "planned": false,
+   "external": false,
+   "url": null,
+   "crons": [
+    "20 14 * * 3"
+   ],
+   "max_gap_hours": 168.0,
    "quiet": null,
    "why_quiet": null
   },
@@ -268,18 +342,18 @@
    "url": null,
    "crons": [
     "20 9 * * 0",
-    "*/5 19-21 * * 1-5",
-    "45 19 * * 5",
-    "15 20 * * 5",
-    "45 20 * * 5",
-    "15 21 * * 5",
-    "45 19 * * 1",
-    "15 20 * * 1",
-    "45 20 * * 1",
-    "15 21 * * 1",
-    "30 21 * * *"
+    "13,43 19-21 * * 1-5",
+    "47 19 * * 5",
+    "17 20 * * 5",
+    "47 20 * * 5",
+    "17 21 * * 5",
+    "47 19 * * 1",
+    "17 20 * * 1",
+    "47 20 * * 1",
+    "17 21 * * 1",
+    "33 21 * * *"
    ],
-   "max_gap_hours": 23.6,
+   "max_gap_hours": 23.8,
    "quiet": null,
    "why_quiet": null
   },
@@ -305,18 +379,18 @@
    "url": null,
    "crons": [
     "20 9 * * 0",
-    "*/5 19-21 * * 1-5",
-    "45 19 * * 5",
-    "15 20 * * 5",
-    "45 20 * * 5",
-    "15 21 * * 5",
-    "45 19 * * 1",
-    "15 20 * * 1",
-    "45 20 * * 1",
-    "15 21 * * 1",
-    "30 21 * * *"
+    "13,43 19-21 * * 1-5",
+    "47 19 * * 5",
+    "17 20 * * 5",
+    "47 20 * * 5",
+    "17 21 * * 5",
+    "47 19 * * 1",
+    "17 20 * * 1",
+    "47 20 * * 1",
+    "17 21 * * 1",
+    "33 21 * * *"
    ],
-   "max_gap_hours": 23.6,
+   "max_gap_hours": 23.8,
    "quiet": null,
    "why_quiet": null
   },
@@ -340,16 +414,16 @@
    "external": false,
    "url": null,
    "crons": [
-    "*/5 19-21 * * 1-5",
-    "45 19 * * 5",
-    "15 20 * * 5",
-    "45 20 * * 5",
-    "15 21 * * 5",
-    "45 19 * * 1",
-    "15 20 * * 1",
-    "45 20 * * 1",
-    "15 21 * * 1",
-    "30 21 * * *"
+    "13,43 19-21 * * 1-5",
+    "47 19 * * 5",
+    "17 20 * * 5",
+    "47 20 * * 5",
+    "17 21 * * 5",
+    "47 19 * * 1",
+    "17 20 * * 1",
+    "47 20 * * 1",
+    "17 21 * * 1",
+    "33 21 * * *"
    ],
    "max_gap_hours": 24.0,
    "quiet": "weekly",
@@ -374,9 +448,17 @@
     "Build Analyst Scorecard",
     "COT Release Watch",
     "Fetch COT Data",
+    "Cron health",
+    "Fetch Crop Progress",
     "Generate Daily Briefing",
+    "Fetch Export Sales",
+    "Freshness \u2014 seed static prices, dateModified, sitemap lastmod",
+    "Harvest price tracker",
+    "The wire",
+    "Build Price Stats (5-year percentile)",
     "Rebuild Feed Manifest",
     "Rebuild Call Scorecard",
+    "state-basis-pages",
     "WASDE watch \u2014 grade the report as it lands",
     "Build What's Priced In"
    ],
@@ -386,16 +468,16 @@
    "external": false,
    "url": null,
    "crons": [
-    "*/5 19-21 * * 1-5",
-    "45 19 * * 5",
-    "15 20 * * 5",
-    "45 20 * * 5",
-    "15 21 * * 5",
-    "45 19 * * 1",
-    "15 20 * * 1",
-    "45 20 * * 1",
-    "15 21 * * 1",
-    "30 21 * * *"
+    "13,43 19-21 * * 1-5",
+    "47 19 * * 5",
+    "17 20 * * 5",
+    "47 20 * * 5",
+    "17 21 * * 5",
+    "47 19 * * 1",
+    "17 20 * * 1",
+    "47 20 * * 1",
+    "17 21 * * 1",
+    "33 21 * * *"
    ],
    "max_gap_hours": 24.0,
    "quiet": "weekly",
@@ -423,12 +505,12 @@
    "external": false,
    "url": null,
    "crons": [
-    "15 20 * * 1",
-    "15 21 * * 1",
-    "30 21 * * 1",
-    "30 12 * * 2"
+    "17 20 * * 1",
+    "17 21 * * 1",
+    "33 21 * * 1",
+    "33 12 * * 2"
    ],
-   "max_gap_hours": 151.8,
+   "max_gap_hours": 151.7,
    "quiet": "weekly",
    "why_quiet": "USDA Crop Progress is a Monday afternoon release, in season only."
   },
@@ -470,7 +552,6 @@
     "developer.html",
     "index.html",
     "soybean-futures-prices.html",
-    "sponsor.html",
     "status.html",
     "wheat-futures-prices.html"
    ],
@@ -525,9 +606,31 @@
    "why_quiet": null
   },
   {
+   "path": "data/elevator-coverage-counts.json",
+   "pages": [
+    "index.html"
+   ],
+   "written_by": [
+    "Coverage map \u2014 the elevator directory, drawn"
+   ],
+   "touched_by": [
+    "Coverage map \u2014 the elevator directory, drawn"
+   ],
+   "cadence": "1 launch every day at about 7am Central",
+   "curated": false,
+   "planned": false,
+   "external": false,
+   "url": null,
+   "crons": [
+    "38 12 * * *"
+   ],
+   "max_gap_hours": 24.0,
+   "quiet": null,
+   "why_quiet": null
+  },
+  {
    "path": "data/elevator-coverage.json",
    "pages": [
-    "cash-bids.html",
     "elevators.html",
     "index.html"
    ],
@@ -569,9 +672,9 @@
    "external": false,
    "url": null,
    "crons": [
-    "45 12 * * 4",
-    "45 13 * * 4",
-    "30 14 * * 4",
+    "47 12 * * 4",
+    "47 13 * * 4",
+    "33 14 * * 4",
     "20 13 * * 5"
    ],
    "max_gap_hours": 143.4,
@@ -694,6 +797,7 @@
     "Harvest price tracker"
    ],
    "touched_by": [
+    "ARC/PLC refresh",
     "Harvest price tracker",
     "Fetch Prices",
     "Rebuild Feed Manifest"
@@ -704,7 +808,7 @@
    "external": false,
    "url": null,
    "crons": [
-    "45 21 * * 1-5"
+    "47 21 * * 1-5"
    ],
    "max_gap_hours": 72.0,
    "quiet": "seasonal",
@@ -1145,14 +1249,13 @@
     "Freshness \u2014 seed static prices, dateModified, sitemap lastmod",
     "The wire"
    ],
-   "cadence": "3 launches on a fixed schedule at about 5pm Central",
+   "cadence": "2 launches on a fixed schedule at about 5pm Central",
    "curated": false,
    "planned": false,
    "external": false,
    "url": null,
    "crons": [
     "7,37 12-21 * * 1-5",
-    "22,52 12-21 * * 1-5",
     "12 22,23,0,11 * * *"
    ],
    "max_gap_hours": 11.0,
@@ -1199,17 +1302,36 @@
     "Fetch Outlooks (NOAA + USDM)",
     "Rebuild Feed Manifest"
    ],
-   "cadence": "about every 60 minutes",
+   "cadence": "1 launch every day at about 7pm Central",
    "curated": false,
    "planned": false,
    "external": false,
    "url": null,
    "crons": [
-    "15 * * * *"
+    "43 */2 * * *"
    ],
-   "max_gap_hours": 1.0,
+   "max_gap_hours": 2.0,
    "quiet": "weekly",
    "why_quiet": "Checked hourly; it changes when the sources do. The US Drought Monitor map is released Thursday mornings and the NOAA 30- and 90-day outlooks on the third Thursday of the month."
+  },
+  {
+   "path": "data/page-sponsors.json",
+   "pages": [
+    "sponsor.html"
+   ],
+   "written_by": [],
+   "touched_by": [
+    "Sponsor sign-ups"
+   ],
+   "cadence": "unknown",
+   "curated": false,
+   "planned": false,
+   "external": false,
+   "url": null,
+   "crons": [],
+   "max_gap_hours": null,
+   "quiet": null,
+   "why_quiet": null
   },
   {
    "path": "data/predictions-backtest.json",
@@ -1312,6 +1434,8 @@
     "Fetch Prices"
    ],
    "touched_by": [
+    "ARC/PLC refresh",
+    "cash-bid-pages",
     "Generate Daily Briefing",
     "Freshness \u2014 seed static prices, dateModified, sitemap lastmod",
     "Morning brief \u2014 email Sigurd",
@@ -1320,7 +1444,7 @@
     "Rebuild Feed Manifest",
     "Report day \u2014 USDA vs the trade email"
    ],
-   "cadence": "every 15 minutes while CBOT trades, started by cron-job.org (the workflow's own :11/:41 cron is the fallback)",
+   "cadence": "every 15 minutes while CBOT trades, started by cron-job.org (the workflow's own hourly :11 cron is the fallback)",
    "curated": false,
    "planned": false,
    "external": false,
@@ -1330,9 +1454,44 @@
     "41 11 * * *",
     "23 13 * * *",
     "0 20 * * 5",
-    "11,41 * * * *"
+    "11 * * * *"
    ],
-   "max_gap_hours": 0.5,
+   "max_gap_hours": 1.0,
+   "quiet": null,
+   "why_quiet": null
+  },
+  {
+   "path": "data/quote-pool.json",
+   "pages": [
+    "daily.html",
+    "index.html"
+   ],
+   "written_by": [],
+   "touched_by": [],
+   "cadence": "unknown",
+   "curated": false,
+   "planned": false,
+   "external": false,
+   "url": null,
+   "crons": [],
+   "max_gap_hours": null,
+   "quiet": null,
+   "why_quiet": null
+  },
+  {
+   "path": "data/rate-card.json",
+   "pages": [
+    "sponsor.html"
+   ],
+   "written_by": [],
+   "touched_by": [],
+   "cadence": "unknown",
+   "curated": false,
+   "planned": false,
+   "external": false,
+   "url": null,
+   "crons": [],
+   "max_gap_hours": null,
    "quiet": null,
    "why_quiet": null
   },
@@ -1382,6 +1541,23 @@
    "why_quiet": "RMA price discovery runs in defined windows; outside them there is nothing to publish."
   },
   {
+   "path": "data/sponsor-slots.json",
+   "pages": [
+    "sponsor.html"
+   ],
+   "written_by": [],
+   "touched_by": [],
+   "cadence": "unknown",
+   "curated": false,
+   "planned": false,
+   "external": false,
+   "url": null,
+   "crons": [],
+   "max_gap_hours": null,
+   "quiet": null,
+   "why_quiet": null
+  },
+  {
    "path": "data/sponsor.json",
    "pages": [
     "index.html"
@@ -1404,7 +1580,8 @@
   {
    "path": "data/sponsors.json",
    "pages": [
-    "sponsor-report.html"
+    "sponsor-report.html",
+    "sponsor.html"
    ],
    "written_by": [],
    "touched_by": [
@@ -1440,7 +1617,7 @@
    "external": false,
    "url": null,
    "crons": [
-    "30 12 15 * *"
+    "33 12 15 * *"
    ],
    "max_gap_hours": null,
    "quiet": null,
@@ -1465,6 +1642,26 @@
    "crons": [
     "35 7 20 1 *"
    ],
+   "max_gap_hours": null,
+   "quiet": null,
+   "why_quiet": null
+  },
+  {
+   "path": "data/supporters.json",
+   "pages": [
+    "sponsor.html"
+   ],
+   "written_by": [],
+   "touched_by": [
+    "Sponsor sign-ups",
+    "Sponsor reports \u2014 yesterday's numbers, from GA4"
+   ],
+   "cadence": "unknown",
+   "curated": false,
+   "planned": false,
+   "external": false,
+   "url": null,
+   "crons": [],
    "max_gap_hours": null,
    "quiet": null,
    "why_quiet": null
@@ -1636,7 +1833,7 @@
    "external": false,
    "url": null,
    "crons": [
-    "*/5 19-21 * * 1-5",
+    "13,43 19-21 * * 1-5",
     "*/5 16-17 9-12 * *",
     "20 11 * * *"
    ],

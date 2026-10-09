@@ -8,11 +8,22 @@ name: The wire
 #   and the ones that follow find nothing new and write nothing. Duplicate items
 #   are impossible -- build_news.py keys every item on what it is about, never on
 #   when it ran.
+#
+# 2026-10-09: THE CLOCK IS NOW THE BIDS RUN. Over Oct 2-9 these crons got 34 of
+# 228 fires, one of them 4h35m late. The wire now also runs after every "Fetch
+# Grain Bids" (cron-job.org, every 15 minutes) and its gate job does the work
+# once per tick of the old schedule, which it still lists in full. The
+# :22/:52 cron is gone; :07/:37 and the evening fires stay as a fallback.
 on:
   schedule:
     - cron: "7,37 12-21 * * 1-5"    # 7:07am-4:37pm Central, weekdays
-    - cron: "22,52 12-21 * * 1-5"   # offset by 15 minutes
     - cron: "12 22,23,0,11 * * *"   # evening and pre-open, every day
+  # Also after every "Fetch Grain Bids" (cron-job.org, every 15 minutes): GitHub
+  # drops and delays the schedule above. The gate job below lets the first run
+  # after each tick of the schedule do the work; see scripts/cron_gate.py.
+  workflow_run:
+    workflows: ["Fetch Grain Bids"]
+    types: [completed]
   workflow_dispatch:
   # The watchers already know the moment something lands. They can say so.
   repository_dispatch:
@@ -26,7 +37,29 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  gate:
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+    outputs:
+      go: ${{ steps.g.outputs.go }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: scripts/cron_gate.py
+          sparse-checkout-cone-mode: false
+      - id: g
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: >-
+          python3 scripts/cron_gate.py tick --workflow news.yml --max-lag 30
+          --cron "7,22,37,52 12-21 * * 1-5"
+          --cron "12 22,23,0,11 * * *"
+
   wire:
+    needs: gate
+    if: needs.gate.outputs.go == '1'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

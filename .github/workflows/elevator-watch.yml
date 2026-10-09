@@ -19,7 +19,9 @@ name: Elevator watch emails
 
 on:
   schedule:
-    - cron: '16,46 * * * *'
+    # Hourly fallback (was every 30 min). Runs after every Fetch Grain Bids;
+    # that chain started all 703 runs it should have over Oct 2-9, this cron 32 of 336.
+    - cron: '46 * * * *'
   workflow_dispatch:
     inputs:
       dry_run:

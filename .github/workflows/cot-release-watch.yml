@@ -25,11 +25,32 @@ name: COT Release Watch
 # It shares cot.yml's concurrency group, so the two can never write data/ at
 # the same time.
 
+#
+# THE CLOCK IS NOW THE BIDS AND PRICES RUNS, NOT GITHUB'S SCHEDULER (2026-10-09).
+# The */5 cron asked for 36 fires a weekday and got about one, hours late:
+# 22:54, 23:28 and 23:39 UTC on Oct 6, 7 and 8, and none by 21:33 on Friday
+# Oct 9, so that week's report waited for a hand dispatch. Until Oct 7 the old
+# five-hour price loop dispatched this watcher; when prices.yml became one
+# fetch per run that dispatch moved behind its market-hours gate, which shuts
+# at 14:00 Central, exactly when this window opens, and it never fired again.
+#
+# So this runs after every "Fetch Grain Bids" and every "Fetch Prices", both
+# started by cron-job.org every 15 minutes, which puts a probe roughly every
+# seven minutes. The gate job stops a run in seconds outside Mon-Fri
+# 19:00-23:59 UTC, and inside it once this week's report is in data/cot.json
+# (scripts/cron_gate.py cot). Neither parent reads anything this writes, and
+# this commits with [skip ci] on GITHUB_TOKEN, so nothing loops.
+# The cron stays as a thin fallback for a day cron-job.org is down, moved off
+# :00 and :30 and cut from 36 fires a weekday to 6.
+
 on:
   schedule:
-    # 19:00-21:55 UTC covers 3:00-4:55pm ET in BOTH daylight and standard time,
+    # 19:00-21:59 UTC covers 3:00-4:59pm ET in BOTH daylight and standard time,
     # which is where the 3:30pm ET release lands either way.
-    - cron: '*/5 19-21 * * 1-5'
+    - cron: '13,43 19-21 * * 1-5'
+  workflow_run:
+    workflows: ["Fetch Grain Bids", "Fetch Prices"]
+    types: [completed]
   workflow_dispatch:
     inputs:
       force:
@@ -45,7 +66,34 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  gate:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      go: ${{ steps.report.outputs.go || steps.window.outputs.go }}
+    steps:
+      # Cheapest first: no checkout at all outside the release window.
+      - id: window
+        run: |
+          W=$(date -u +%u); H=$(( 10#$(date -u +%H) ))
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then echo "go=1" >> "$GITHUB_OUTPUT"; echo "manual run"; exit 0; fi
+          if [ "$W" -le 5 ] && [ "$H" -ge 19 ]; then echo "open=1" >> "$GITHUB_OUTPUT"; echo "in window (day $W, hour $H)"
+          else echo "go=0" >> "$GITHUB_OUTPUT"; echo "outside Mon-Fri 19:00-23:59 UTC (day $W, hour $H)"; fi
+      - if: steps.window.outputs.open == '1'
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            scripts/cron_gate.py
+            data/cot.json
+          sparse-checkout-cone-mode: false
+      - id: report
+        if: steps.window.outputs.open == '1'
+        run: python3 scripts/cron_gate.py cot --cot-file data/cot.json
+
   watch:
+    needs: gate
+    if: needs.gate.outputs.go == '1'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -106,7 +154,7 @@ jobs:
       - uses: actions/setup-python@v5
         if: steps.probe.outputs.moved == 'true' || inputs.force == true
         with:
-          python-version: '3.11'
+          python-version: '3.12'
 
       - name: Install dependencies
         if: steps.probe.outputs.moved == 'true' || inputs.force == true
@@ -226,6 +274,7 @@ jobs:
           PY
 
       - name: Commit
+        id: commit
         if: steps.probe.outputs.moved == 'true' || inputs.force == true
         run: |
           git config user.name  "AGSIST Bot"
@@ -293,3 +342,12 @@ jobs:
           echo "Otherwise the analysis sections on /cot are showing last week's"
           echo "report or hiding themselves. Fix before next Friday."
           exit 1
+
+      # THE PAGE MUST SAY WHAT THE DATA SAYS. On 2026-10-09 this job committed
+      # the Oct 6 report while the bake above had died (seed_static.py used a
+      # Python 3.12 f-string and this job ran 3.11), so cot.html's title kept
+      # the Sept 29 net. "Bake result" catches a bake that fails; this, the last step, catches
+      # any way the committed cot.html and data/cot.json end up apart.
+      - name: cot.html matches data/cot.json
+        if: ${{ !cancelled() && steps.commit.outcome == 'success' }}
+        run: python scripts/check_cot_baked.py

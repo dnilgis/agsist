@@ -5,7 +5,7 @@ on:
     paths:
       - "scripts/build_state_stats.py"
   schedule:
-    - cron: "30 12 15 * *"   # monthly, 15th 12:30 UTC — picks up the Jan annual summary + NASS revisions
+    - cron: "33 12 15 * *"   # monthly, 15th 12:33 UTC (off :30) — picks up the Jan annual summary + NASS revisions
   workflow_dispatch:
 
 permissions:

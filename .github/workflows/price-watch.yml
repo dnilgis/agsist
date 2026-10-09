@@ -14,7 +14,9 @@ name: Price alert emails
 
 on:
   schedule:
-    - cron: '21,51 * * * *'
+    # Hourly fallback (was every 30 min). Runs after every Fetch Prices;
+    # that chain started a run for every one of 234 over Oct 2-9, this cron 32 of 336.
+    - cron: '51 * * * *'
   workflow_dispatch:
     inputs:
       dry_run:

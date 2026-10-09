@@ -147,7 +147,7 @@ EXTERNAL = {
 # fallback. The crons still feed max_gap_hours; the sentence says what runs.
 CLOCKED = {
     "data/prices.json": "every 15 minutes while CBOT trades, started by cron-job.org "
-                        "(the workflow's own :11/:41 cron is the fallback)",
+                        "(the workflow's own hourly :11 cron is the fallback)",
 }
 
 # ── feeds a page is ready for whose FIRST RUN has not happened yet ───────────

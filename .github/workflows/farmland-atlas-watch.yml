@@ -5,9 +5,15 @@ name: Farmland Atlas watch emails
 # Secrets (already used by the hail alert and briefing jobs): LIST_URL, LIST_TOKEN, UNSUB_SECRET,
 # SMTP_USER, SMTP_PASS. Optional: SMTP_HOST, SMTP_PORT, FROM_ADDR, FROM_NAME, REPLY_TO.
 
+#
+# 2026-10-09: the 30-minute cron delivered 32 of 336 fires over Oct 2-9, so a
+# new watcher could wait hours for the confirmation link. It now also runs
+# after every "Fetch Grain Bids" (cron-job.org, every 15 minutes), the same
+# chain elevator-watch.yml uses, and the cron is an hourly fallback. Nothing
+# here writes to the repository, so the chain cannot loop.
 on:
   schedule:
-    - cron: '11,41 * * * *'
+    - cron: '41 * * * *'
   workflow_dispatch:
     inputs:
       dry_run:
@@ -15,7 +21,7 @@ on:
         type: boolean
         default: false
   workflow_run:
-    workflows: ["farmland-atlas-pages"]
+    workflows: ["farmland-atlas-pages", "Fetch Grain Bids"]
     types: [completed]
 
 concurrency:

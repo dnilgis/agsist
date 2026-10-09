@@ -9,8 +9,8 @@ on:
       - 'sitemap*.xml'
       - 'robots.txt'
   schedule:
-    # 14:30 UTC daily = 09:30 CT (after daily briefing has published)
-    - cron: '30 14 * * *'
+    # 14:33 UTC daily = 09:33 CT (after daily briefing has published); off :30, a crowded minute
+    - cron: '33 14 * * *'
   workflow_dispatch:
     inputs:
       urls:

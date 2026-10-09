@@ -2,12 +2,44 @@ name: Build Price Stats (5-year percentile)
 on:
   schedule:
     - cron: '40 21 * * 1-5'   # 21:40 UTC weekdays (after CBOT settle)
+  # Also after every "Fetch Grain Bids" (cron-job.org, every 15 minutes): GitHub
+  # drops and delays the schedule above. The gate job below lets the first run
+  # after each tick of the schedule do the work; see scripts/cron_gate.py.
+  workflow_run:
+    workflows: ["Fetch Grain Bids"]
+    types: [completed]
   workflow_dispatch:
 permissions:
   contents: write
 
+# One run at a time, so a chained run and a late cron fire cannot both write.
+concurrency:
+  group: price-stats
+  cancel-in-progress: false
+
 jobs:
+  gate:
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+    outputs:
+      go: ${{ steps.g.outputs.go }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: scripts/cron_gate.py
+          sparse-checkout-cone-mode: false
+      - id: g
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: >-
+          python3 scripts/cron_gate.py tick --workflow price-stats.yml --max-lag 120
+          --cron "40 21 * * 1-5"
+
   build:
+    needs: gate
+    if: needs.gate.outputs.go == '1'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

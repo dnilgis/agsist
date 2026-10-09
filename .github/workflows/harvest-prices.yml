@@ -9,7 +9,13 @@ name: Harvest price tracker
 on:
   workflow_dispatch:
   schedule:
-    - cron: '45 21 * * 1-5'   # 21:45 UTC weekdays — after CBOT settles
+    - cron: '47 21 * * 1-5'   # 21:47 UTC weekdays — after CBOT settles
+  # Also after every "Fetch Grain Bids" (cron-job.org, every 15 minutes): GitHub
+  # drops and delays the schedule above. The gate job below lets the first run
+  # after each tick of the schedule do the work; see scripts/cron_gate.py.
+  workflow_run:
+    workflows: ["Fetch Grain Bids"]
+    types: [completed]
 
 concurrency:
   group: harvest-prices
@@ -19,7 +25,28 @@ permissions:
   contents: write
 
 jobs:
+  gate:
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+    outputs:
+      go: ${{ steps.g.outputs.go }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: scripts/cron_gate.py
+          sparse-checkout-cone-mode: false
+      - id: g
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: >-
+          python3 scripts/cron_gate.py tick --workflow harvest-prices.yml --max-lag 120
+          --cron "47 21 * * 1-5"
+
   track:
+    needs: gate
+    if: needs.gate.outputs.go == '1'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
