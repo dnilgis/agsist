@@ -1,0 +1,46 @@
+# Download FSA's ARC/PLC program data files (official ARC-CO benchmark yields
+# and revenues, trend yield adjustment factors, effective reference prices) into
+# data/fsa/ so scripts/build_arc_plc.py can use official numbers. fsa.usda.gov is
+# not reachable from the dev sandbox; the Actions runner can reach it.
+name: fetch-fsa-arcplc
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "37 13 * * 1"   # Mondays: FSA updates these files a few times a year
+permissions:
+  contents: write
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Find and download the program data files
+        run: |
+          set -u
+          mkdir -p data/fsa
+          UA="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124 Safari/537.36"
+          PAGE="https://www.fsa.usda.gov/resources/programs/arc-plc/program-data"
+          curl -sSL -m 60 -A "$UA" "$PAGE" -o /tmp/pd.html
+          echo "page bytes: $(wc -c < /tmp/pd.html)"
+          grep -o -i -E 'href="[^"]+\.(xlsx|xls|csv|pdf)"' /tmp/pd.html | sed 's/href="//;s/"$//' | sort -u > /tmp/links.txt
+          echo "--- all file links on the page:"; cat /tmp/links.txt
+          # keep the files that matter for the 2026/2027 calculator
+          grep -i -E 'bench|trend|effective|reference|county.*yield|yield.*county|mya|price' /tmp/links.txt | grep -i -E '202[4-7]' > /tmp/want.txt || true
+          echo "--- downloading:"; cat /tmp/want.txt
+          : > data/fsa/manifest.tsv
+          while read -r l; do
+            case "$l" in http*) u="$l";; /*) u="https://www.fsa.usda.gov$l";; *) u="https://www.fsa.usda.gov/$l";; esac
+            f="data/fsa/$(basename "${u%%\?*}" | sed 's/%20/_/g; s/[^A-Za-z0-9._-]/_/g')"
+            if curl -sSL -m 120 -A "$UA" "$u" -o "$f"; then
+              printf '%s\t%s\t%s\t%s\n' "$(date -u +%FT%TZ)" "$f" "$(wc -c < "$f")" "$u" >> data/fsa/manifest.tsv
+              echo "ok $f $(wc -c < "$f")"
+            else echo "FAILED $u"; fi
+          done < /tmp/want.txt
+          cat data/fsa/manifest.tsv
+      - name: Commit
+        run: |
+          git config user.name "agsist-bot"; git config user.email "bot@agsist.com"
+          git add data/fsa
+          if git diff --cached --quiet; then echo "no change"; exit 0; fi
+          git commit -m "data: FSA ARC/PLC program data files [skip ci]"
+          for i in 1 2 3; do git pull --rebase origin main && git push && break; sleep 5; done
