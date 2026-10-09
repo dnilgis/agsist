@@ -826,7 +826,7 @@ def build_main(D, ch):
     n_c = sum(len(S["c"]) for S in D["states"].values())
     title = "ARC vs PLC 2026 and 2027 Calculator | AGSIST"
     desc = (f"Est. 2027 effective reference prices: corn {usd(c7['erp']['erp'])}, soybeans {usd(s7['erp']['erp'])}, wheat "
-            f"{usd(w7['erp']['erp'])}. FSA official county benchmarks. 2026 signup ends Dec 11.")
+            f"{usd(w7['erp']['erp'])}. " + ("FSA official county benchmarks. " if fsa else "Bring your county's FSA benchmark. ") + "2026 signup ends Dec 11.")
     og_title = f"ARC or PLC: est. 2027 corn ERP {usd(c7['erp']['erp'])}, soybeans {usd(s7['erp']['erp'])}"
     jsonld = [
         {"@context": "https://schema.org", "@type": "WebApplication", "@id": f"{SITE}/arc-plc#app",
