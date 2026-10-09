@@ -1,0 +1,288 @@
+{
+ "generated_at": "2026-10-09T22:09:01Z",
+ "note": "Written by scripts/cron_health.py. A workflow is late when the latest tick of its clock was not served by a successful run within max_delay_minutes. Committed when a status changes or every 6 hours, so last_success can trail the live run list.",
+ "late": [
+  "report-day.yml",
+  "news.yml",
+  "crop_progress.yml",
+  "export_sales.yml",
+  "price-stats.yml",
+  "harvest-prices.yml",
+  "freshness.yml",
+  "state-basis-pages.yml"
+ ],
+ "late_critical": [
+  "report-day.yml"
+ ],
+ "workflows": [
+  {
+   "workflow": "fetch_bids.yml",
+   "critical": true,
+   "clock": "cron-job.org dispatch every 15 minutes; every chained watcher hangs off this",
+   "schedule": [
+    "7,22,37,52 * * * *"
+   ],
+   "max_delay_minutes": 45,
+   "expected_max_gap_minutes": 60,
+   "last_success": "2026-10-09T22:07:01Z",
+   "status": "ok",
+   "last_tick": "2026-10-09T21:22Z",
+   "why": "served",
+   "served_by": {
+    "id": 37993011332,
+    "event": "workflow_dispatch",
+    "created_at": "2026-10-09T21:22:01Z",
+    "conclusion": "success"
+   }
+  },
+  {
+   "workflow": "prices.yml",
+   "critical": true,
+   "clock": "cron-job.org dispatch every 15 minutes",
+   "schedule": [
+    "0,15,30,45 * * * *"
+   ],
+   "max_delay_minutes": 45,
+   "expected_max_gap_minutes": 60,
+   "last_success": "2026-10-09T22:00:10Z",
+   "status": "ok",
+   "last_tick": "2026-10-09T21:15Z",
+   "why": "served",
+   "served_by": {
+    "id": 37992282487,
+    "event": "workflow_dispatch",
+    "created_at": "2026-10-09T21:15:05Z",
+    "conclusion": "success"
+   }
+  },
+  {
+   "workflow": "price-watch.yml",
+   "critical": true,
+   "clock": "runs after every Fetch Prices",
+   "schedule": [
+    "0,15,30,45 * * * *"
+   ],
+   "max_delay_minutes": 45,
+   "expected_max_gap_minutes": 60,
+   "last_success": "2026-10-09T22:00:20Z",
+   "status": "ok",
+   "last_tick": "2026-10-09T21:15Z",
+   "why": "served",
+   "served_by": {
+    "id": 37992300886,
+    "event": "workflow_run",
+    "created_at": "2026-10-09T21:15:15Z",
+    "conclusion": "success"
+   }
+  },
+  {
+   "workflow": "elevator-watch.yml",
+   "critical": true,
+   "clock": "runs after every Fetch Grain Bids",
+   "schedule": [
+    "7,22,37,52 * * * *"
+   ],
+   "max_delay_minutes": 45,
+   "expected_max_gap_minutes": 60,
+   "last_success": "2026-10-09T22:08:30Z",
+   "status": "ok",
+   "last_tick": "2026-10-09T21:22Z",
+   "why": "served",
+   "served_by": {
+    "id": 37993149229,
+    "event": "workflow_run",
+    "created_at": "2026-10-09T21:23:22Z",
+    "conclusion": "success"
+   }
+  },
+  {
+   "workflow": "cot-release-watch.yml",
+   "critical": true,
+   "clock": "after every bids and prices run, Mon-Fri 19:00-23:59 UTC",
+   "schedule": [
+    "7,22,37,52 19-23 * * 1-5"
+   ],
+   "max_delay_minutes": 30,
+   "expected_max_gap_minutes": 4065,
+   "last_success": "2026-10-09T22:08:30Z",
+   "status": "ok",
+   "last_tick": "2026-10-09T21:37Z",
+   "why": "served",
+   "served_by": {
+    "id": 37996772551,
+    "event": "workflow_run",
+    "created_at": "2026-10-09T22:00:20Z",
+    "conclusion": "success"
+   }
+  },
+  {
+   "workflow": "wasde-watch.yml",
+   "critical": true,
+   "clock": "after every Fetch Grain Bids on WASDE days, 16:00-17:59 UTC",
+   "schedule": [
+    "7,22,37,52 16-17 9-12 * *"
+   ],
+   "max_delay_minutes": 30,
+   "expected_max_gap_minutes": 1365,
+   "last_success": "2026-10-09T22:08:30Z",
+   "status": "ok",
+   "last_tick": "2026-10-09T17:52Z",
+   "why": "served",
+   "served_by": {
+    "id": 37969459876,
+    "event": "workflow_run",
+    "created_at": "2026-10-09T17:53:35Z",
+    "conclusion": "success"
+   }
+  },
+  {
+   "workflow": "report-day.yml",
+   "critical": true,
+   "clock": "after WASDE watch, What's Priced In and Fetch Grain Bids",
+   "schedule": [
+    "47 16 * * 1-5",
+    "13 18 * * 1-5"
+   ],
+   "max_delay_minutes": 60,
+   "expected_max_gap_minutes": 4294,
+   "last_success": "2026-10-09T22:08:30Z",
+   "status": "late",
+   "last_tick": "2026-10-09T18:13Z",
+   "why": "the run that served the Fri 18:13 UTC tick ended failure",
+   "served_by": {
+    "id": 37972925632,
+    "event": "workflow_run",
+    "created_at": "2026-10-09T18:23:21Z",
+    "conclusion": "failure"
+   }
+  },
+  {
+   "workflow": "news.yml",
+   "critical": false,
+   "clock": "chained, gated to its own schedule",
+   "schedule": [
+    "7,22,37,52 12-21 * * 1-5",
+    "12 22,23,0,11 * * *"
+   ],
+   "max_delay_minutes": 30,
+   "expected_max_gap_minutes": 690,
+   "last_success": "2026-10-09T18:25:30Z",
+   "status": "late",
+   "last_tick": "2026-10-09T21:37Z",
+   "why": "no run started within 30 min of the Fri 21:37 UTC tick",
+   "served_by": null
+  },
+  {
+   "workflow": "crop_progress.yml",
+   "critical": false,
+   "clock": "chained, gated to its own schedule",
+   "schedule": [
+    "17 20 * * 1",
+    "17 21 * * 1",
+    "33 21 * * 1",
+    "33 12 * * 2"
+   ],
+   "max_delay_minutes": 60,
+   "expected_max_gap_minutes": 9164,
+   "last_success": "2026-10-09T22:08:30Z",
+   "status": "late",
+   "last_tick": "2026-10-06T12:33Z",
+   "why": "no run started within 60 min of the Tue 12:33 UTC tick",
+   "served_by": null
+  },
+  {
+   "workflow": "export_sales.yml",
+   "critical": false,
+   "clock": "chained, gated to its own schedule",
+   "schedule": [
+    "47 12 * * 4",
+    "47 13 * * 4",
+    "33 14 * * 4",
+    "20 13 * * 5"
+   ],
+   "max_delay_minutes": 60,
+   "expected_max_gap_minutes": 8667,
+   "last_success": "2026-10-09T22:08:30Z",
+   "status": "late",
+   "last_tick": "2026-10-09T13:20Z",
+   "why": "no run started within 60 min of the Fri 13:20 UTC tick",
+   "served_by": null
+  },
+  {
+   "workflow": "price-stats.yml",
+   "critical": false,
+   "clock": "chained, gated to its own schedule",
+   "schedule": [
+    "40 21 * * 1-5"
+   ],
+   "max_delay_minutes": 60,
+   "expected_max_gap_minutes": 4380,
+   "last_success": "2026-10-09T01:22:34Z",
+   "status": "late",
+   "last_tick": "2026-10-08T21:40Z",
+   "why": "no run started within 60 min of the Thu 21:40 UTC tick",
+   "served_by": null
+  },
+  {
+   "workflow": "harvest-prices.yml",
+   "critical": false,
+   "clock": "chained, gated to its own schedule",
+   "schedule": [
+    "47 21 * * 1-5"
+   ],
+   "max_delay_minutes": 60,
+   "expected_max_gap_minutes": 4380,
+   "last_success": "2026-10-09T01:26:59Z",
+   "status": "late",
+   "last_tick": "2026-10-08T21:47Z",
+   "why": "no run started within 60 min of the Thu 21:47 UTC tick",
+   "served_by": null
+  },
+  {
+   "workflow": "freshness.yml",
+   "critical": false,
+   "clock": "chained, gated to its own schedule",
+   "schedule": [
+    "35 13 * * 1-5",
+    "35 20 * * 1-5"
+   ],
+   "max_delay_minutes": 60,
+   "expected_max_gap_minutes": 3960,
+   "last_success": "2026-10-09T22:08:30Z",
+   "status": "late",
+   "last_tick": "2026-10-09T20:35Z",
+   "why": "no run started within 60 min of the Fri 20:35 UTC tick",
+   "served_by": null
+  },
+  {
+   "workflow": "state-basis-pages.yml",
+   "critical": false,
+   "clock": "chained, gated to its own schedule",
+   "schedule": [
+    "41 13,17,21 * * 1-5"
+   ],
+   "max_delay_minutes": 60,
+   "expected_max_gap_minutes": 3900,
+   "last_success": "2026-10-09T22:08:30Z",
+   "status": "late",
+   "last_tick": "2026-10-09T17:41Z",
+   "why": "no run started within 60 min of the Fri 17:41 UTC tick",
+   "served_by": null
+  },
+  {
+   "workflow": "daily.yml",
+   "critical": true,
+   "clock": "published by 07:30 Central",
+   "check": "data/daily-archive/2026-10-09.json",
+   "status": "ok",
+   "why": "published"
+  },
+  {
+   "workflow": "cot.html",
+   "critical": true,
+   "clock": "baked from data/cot.json",
+   "status": "ok",
+   "why": "matches data/cot.json"
+  }
+ ]
+}
