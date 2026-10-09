@@ -1,14 +1,11 @@
 {
- "generated_at": "2026-10-09T22:26:55Z",
+ "generated_at": "2026-10-09T23:08:59Z",
  "note": "Written by scripts/cron_health.py. A workflow is late when the latest tick of its clock was not served by a successful run within max_delay_minutes. Committed when a status changes or every 6 hours, so last_success can trail the live run list.",
  "late": [
   "report-day.yml",
   "crop_progress.yml",
   "export_sales.yml",
-  "price-stats.yml",
-  "harvest-prices.yml",
-  "freshness.yml",
-  "state-basis-pages.yml"
+  "freshness.yml"
  ],
  "late_critical": [
   "report-day.yml"
@@ -23,14 +20,14 @@
    ],
    "max_delay_minutes": 45,
    "expected_max_gap_minutes": 60,
-   "last_success": "2026-10-09T22:22:02Z",
+   "last_success": "2026-10-09T23:07:02Z",
    "status": "ok",
-   "last_tick": "2026-10-09T21:37Z",
+   "last_tick": "2026-10-09T22:22Z",
    "why": "served",
    "served_by": {
-    "id": 37994514910,
+    "id": 37998815487,
     "event": "workflow_dispatch",
-    "created_at": "2026-10-09T21:37:02Z",
+    "created_at": "2026-10-09T22:22:02Z",
     "conclusion": "success"
    }
   },
@@ -43,14 +40,14 @@
    ],
    "max_delay_minutes": 45,
    "expected_max_gap_minutes": 60,
-   "last_success": "2026-10-09T22:15:06Z",
+   "last_success": "2026-10-09T23:00:10Z",
    "status": "ok",
-   "last_tick": "2026-10-09T21:30Z",
+   "last_tick": "2026-10-09T22:15Z",
    "why": "served",
    "served_by": {
-    "id": 37993825829,
+    "id": 37998179281,
     "event": "workflow_dispatch",
-    "created_at": "2026-10-09T21:30:09Z",
+    "created_at": "2026-10-09T22:15:06Z",
     "conclusion": "success"
    }
   },
@@ -63,14 +60,14 @@
    ],
    "max_delay_minutes": 45,
    "expected_max_gap_minutes": 60,
-   "last_success": "2026-10-09T22:15:15Z",
+   "last_success": "2026-10-09T23:00:19Z",
    "status": "ok",
-   "last_tick": "2026-10-09T21:30Z",
+   "last_tick": "2026-10-09T22:15Z",
    "why": "served",
    "served_by": {
-    "id": 37993845049,
+    "id": 37998194728,
     "event": "workflow_run",
-    "created_at": "2026-10-09T21:30:19Z",
+    "created_at": "2026-10-09T22:15:15Z",
     "conclusion": "success"
    }
   },
@@ -83,14 +80,14 @@
    ],
    "max_delay_minutes": 45,
    "expected_max_gap_minutes": 60,
-   "last_success": "2026-10-09T22:26:25Z",
+   "last_success": "2026-10-09T23:08:29Z",
    "status": "ok",
-   "last_tick": "2026-10-09T21:37Z",
+   "last_tick": "2026-10-09T22:22Z",
    "why": "served",
    "served_by": {
-    "id": 37994650046,
+    "id": 37999220267,
     "event": "workflow_run",
-    "created_at": "2026-10-09T21:38:24Z",
+    "created_at": "2026-10-09T22:26:25Z",
     "conclusion": "success"
    }
   },
@@ -103,14 +100,14 @@
    ],
    "max_delay_minutes": 30,
    "expected_max_gap_minutes": 4065,
-   "last_success": "2026-10-09T22:26:25Z",
+   "last_success": "2026-10-09T23:08:29Z",
    "status": "ok",
-   "last_tick": "2026-10-09T21:52Z",
+   "last_tick": "2026-10-09T22:37Z",
    "why": "served",
    "served_by": {
-    "id": 37996772551,
+    "id": 38000287940,
     "event": "workflow_run",
-    "created_at": "2026-10-09T22:00:20Z",
+    "created_at": "2026-10-09T22:38:18Z",
     "conclusion": "success"
    }
   },
@@ -123,7 +120,7 @@
    ],
    "max_delay_minutes": 30,
    "expected_max_gap_minutes": 1365,
-   "last_success": "2026-10-09T22:26:25Z",
+   "last_success": "2026-10-09T23:08:29Z",
    "status": "ok",
    "last_tick": "2026-10-09T17:52Z",
    "why": "served",
@@ -144,7 +141,7 @@
    ],
    "max_delay_minutes": 60,
    "expected_max_gap_minutes": 4294,
-   "last_success": "2026-10-09T22:26:25Z",
+   "last_success": "2026-10-09T23:08:29Z",
    "status": "late",
    "last_tick": "2026-10-09T18:13Z",
    "why": "the run that served the Fri 18:13 UTC tick ended failure",
@@ -165,14 +162,14 @@
    ],
    "max_delay_minutes": 30,
    "expected_max_gap_minutes": 690,
-   "last_success": "2026-10-09T22:08:30Z",
+   "last_success": "2026-10-09T23:08:29Z",
    "status": "ok",
-   "last_tick": "2026-10-09T21:52Z",
+   "last_tick": "2026-10-09T22:12Z",
    "why": "served",
    "served_by": {
-    "id": 37997558382,
+    "id": 37999220161,
     "event": "workflow_run",
-    "created_at": "2026-10-09T22:08:30Z",
+    "created_at": "2026-10-09T22:26:25Z",
     "conclusion": "success"
    }
   },
@@ -188,7 +185,7 @@
    ],
    "max_delay_minutes": 60,
    "expected_max_gap_minutes": 9164,
-   "last_success": "2026-10-09T22:26:25Z",
+   "last_success": "2026-10-09T23:08:29Z",
    "status": "late",
    "last_tick": "2026-10-06T12:33Z",
    "why": "no run started within 60 min of the Tue 12:33 UTC tick",
@@ -206,7 +203,7 @@
    ],
    "max_delay_minutes": 60,
    "expected_max_gap_minutes": 8667,
-   "last_success": "2026-10-09T22:26:25Z",
+   "last_success": "2026-10-09T23:08:29Z",
    "status": "late",
    "last_tick": "2026-10-09T13:20Z",
    "why": "no run started within 60 min of the Fri 13:20 UTC tick",
@@ -221,11 +218,16 @@
    ],
    "max_delay_minutes": 60,
    "expected_max_gap_minutes": 4380,
-   "last_success": "2026-10-09T22:26:25Z",
-   "status": "late",
-   "last_tick": "2026-10-08T21:40Z",
-   "why": "no run started within 60 min of the Thu 21:40 UTC tick",
-   "served_by": null
+   "last_success": "2026-10-09T23:08:29Z",
+   "status": "ok",
+   "last_tick": "2026-10-09T21:40Z",
+   "why": "served",
+   "served_by": {
+    "id": 37997558626,
+    "event": "workflow_run",
+    "created_at": "2026-10-09T22:08:30Z",
+    "conclusion": "success"
+   }
   },
   {
    "workflow": "harvest-prices.yml",
@@ -236,11 +238,16 @@
    ],
    "max_delay_minutes": 60,
    "expected_max_gap_minutes": 4380,
-   "last_success": "2026-10-09T22:26:25Z",
-   "status": "late",
-   "last_tick": "2026-10-08T21:47Z",
-   "why": "no run started within 60 min of the Thu 21:47 UTC tick",
-   "served_by": null
+   "last_success": "2026-10-09T23:08:29Z",
+   "status": "ok",
+   "last_tick": "2026-10-09T21:47Z",
+   "why": "served",
+   "served_by": {
+    "id": 37997558542,
+    "event": "workflow_run",
+    "created_at": "2026-10-09T22:08:30Z",
+    "conclusion": "success"
+   }
   },
   {
    "workflow": "freshness.yml",
@@ -252,7 +259,7 @@
    ],
    "max_delay_minutes": 60,
    "expected_max_gap_minutes": 3960,
-   "last_success": "2026-10-09T22:26:25Z",
+   "last_success": "2026-10-09T23:08:29Z",
    "status": "late",
    "last_tick": "2026-10-09T20:35Z",
    "why": "no run started within 60 min of the Fri 20:35 UTC tick",
@@ -267,11 +274,16 @@
    ],
    "max_delay_minutes": 60,
    "expected_max_gap_minutes": 3900,
-   "last_success": "2026-10-09T22:26:25Z",
-   "status": "late",
-   "last_tick": "2026-10-09T17:41Z",
-   "why": "no run started within 60 min of the Fri 17:41 UTC tick",
-   "served_by": null
+   "last_success": "2026-10-09T23:08:29Z",
+   "status": "ok",
+   "last_tick": "2026-10-09T21:41Z",
+   "why": "served",
+   "served_by": {
+    "id": 37997558562,
+    "event": "workflow_run",
+    "created_at": "2026-10-09T22:08:30Z",
+    "conclusion": "success"
+   }
   },
   {
    "workflow": "daily.yml",
