@@ -588,6 +588,12 @@ function fetchWeather(lat, lon, label, known) {
       el = document.getElementById('wx-humid'); if(el) el.textContent = dsh(humid, '%');
       el = document.getElementById('wx-precip');if(el) el.textContent = dsh(precip, '%');
       el = document.getElementById('wx-dew');   if(el) el.textContent = dsh(dew, '\u00B0F');
+      /* "Updated" stamp (components/asof.js) from the forecast's own time:
+         current.time is local wall time, utc_offset_seconds places it. */
+      if (window.AgAsOf) {
+        var wt = c.time && d.utc_offset_seconds != null ? Date.parse(c.time + 'Z') - d.utc_offset_seconds * 1000 : NaN;
+        window.AgAsOf.set('wx-asof', isNaN(wt) ? null : new Date(wt), 'weather');
+      }
 
       var spray = document.getElementById('wx-spray');
       if (spray && !rateable) {

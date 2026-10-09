@@ -34,6 +34,8 @@
   <!-- /static-nav:fonts -->
   <link rel="preload" href="/components/styles.css?v=20" as="style">
   <link rel="stylesheet" href="/components/styles.css?v=20">
+  <link rel="stylesheet" href="/components/asof.css?v=1">
+  <script src="/components/asof.js?v=1"></script>
   <script src="/components/util.js?v=16"></script>
 
   <!-- Leaflet (map engine) + Leaflet.heat (density heatmap) -->
@@ -687,6 +689,7 @@
           manifest = m;
           buildControls();
           var gen=document.getElementById('hm-gen'); if(gen && m.generated) gen.textContent='Data through '+m.generated+'.';
+          if(gen && window.AgAsOf && m.recent_generated) gen.insertAdjacentHTML('beforeend',' '+AgAsOf.html(m.recent_generated,'daily'));
           var qpw=new URLSearchParams(location.search); var wantSwath=qpw.get('swath')||qpw.get('swaths');
           if(wantSwath && meshIdx && meshIdx.dates.indexOf(wantSwath)>=0){ setView('mesh'); }
           else setView('all'); // open on the full 5-year picture — the strongest view
@@ -943,7 +946,8 @@
         if(gen){
           var behind=Math.round((Date.now()-Date.parse(gen+'T12:00:00Z'))/86400000);
           asOfEl.innerHTML='NWS ground reports on file through <strong>'+esc(fmtDate(gen))+'</strong>'+
-            (behind>2 ? ', the '+behind+' days since are not in these numbers yet. For a storm in that window use the radar check below.' : '.');
+            (behind>2 ? ', the '+behind+' days since are not in these numbers yet. For a storm in that window use the radar check below.' : '.')+
+            (window.AgAsOf&&manifest.recent_generated ? ' '+AgAsOf.html(manifest.recent_generated,'daily') : '');
           asOfEl.hidden=false;
         }
       }
@@ -1522,10 +1526,11 @@
       current='live24'; if(typeof markActive==='function') markActive(null);
       clearOverlays();
       var t; try{ t=new Date(Date.parse(live24.meta.as_of)).toLocaleTimeString([], {hour:'numeric',minute:'2-digit'}); }catch(e){ t=''; }
+      var st=window.AgAsOf?AgAsOf.html(live24.meta&&live24.meta.as_of,'weather'):'';
       var bd=document.getElementById('hm-yearbadge');
       if(bd) bd.innerHTML='LIVE<small>last 24 hrs</small>';
       if(!live24.features || !live24.features.length){
-        banner('No radar-estimated hail \u22650.75\u2033 anywhere in the last 24 hours'+(t?' (as of '+esc(t)+')':'')+'.');
+        banner('No radar-estimated hail \u22650.75\u2033 anywhere in the last 24 hours'+(st?' ('+st+')':t?' (as of '+esc(t)+')':'')+'.');
         return;
       }
       clearBanner();
@@ -1534,7 +1539,7 @@
         return { color:c, weight:1, opacity:.9, fillColor:c, fillOpacity:.32 };
       }}).addTo(map);
       var cnt=document.getElementById('hm-count'); if(cnt) cnt.textContent=String(live24.features.length);
-      banner('Rolling 24-hour radar-estimated hail'+(t?' \u00b7 as of '+esc(t):'')+' \u00b7 IN PROGRESS: bands can still grow; the finished day posts tomorrow morning. An estimate, not a measurement.');
+      banner('Rolling 24-hour radar-estimated hail'+(st?' \u00b7 '+st:t?' \u00b7 as of '+esc(t):'')+' \u00b7 IN PROGRESS: bands can still grow; the finished day posts tomorrow morning. An estimate, not a measurement.');
     }
     function showMeshDay(i){
       if(!meshIdx) return;

@@ -12,6 +12,8 @@
   <!-- /static-nav:fonts -->
   <link rel="preload" href="/components/styles.css?v=20" as="style">
 <link rel="stylesheet" href="/components/styles.css?v=20">
+<link rel="stylesheet" href="/components/asof.css?v=1">
+<script src="/components/asof.js?v=1"></script>
 <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
 <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
@@ -875,7 +877,8 @@ function renderCropProgress(data){
   var asof=document.getElementById('crop-asof');
   if(asof){
     var stamp=d.report_date||data.report_date||data.updated;
-    if(stamp)asof.textContent='Updated '+stamp;
+    if(window.AgAsOf&&data.updated)asof.innerHTML=(d.report_date||data.report_date?'Week ending '+(d.report_date||data.report_date)+' \u00b7 ':'')+AgAsOf.html(data.updated,'usda');
+    else if(stamp)asof.textContent='Updated '+stamp;
   }
 }
 
@@ -961,7 +964,7 @@ function renderCOT(data){
 
   // As-of
   var asof=document.getElementById('cot-asof');
-  if(asof&&data.report_date)asof.textContent='As of '+data.report_date;
+  if(asof&&data.report_date){asof.textContent='As of '+data.report_date;if(window.AgAsOf&&data.updated)asof.innerHTML='Positions as of '+data.report_date+' \u00b7 '+AgAsOf.html(data.updated,'usda');}
 }
 
 // ============ DATA FETCHERS ============
@@ -1773,7 +1776,9 @@ function renderBasisCard(data){
 
     if(srcEl){
       var srcLine='Source: '+(b.facility||b.bidName||b.location||'local elevator');
-      if(b.timestamp||b.cashPriceTimestamp)srcLine+=' \u00b7 updated '+fmtBidTime(b.timestamp||b.cashPriceTimestamp);
+      var bidSt=window.AgAsOf?AgAsOf.html(b.timestamp||b.cashPriceTimestamp,'bids'):'';
+      if(bidSt)srcLine+=' \u00b7 '+bidSt;
+      else if(b.timestamp||b.cashPriceTimestamp)srcLine+=' \u00b7 updated '+fmtBidTime(b.timestamp||b.cashPriceTimestamp);
       else if(data.fetched)srcLine+=' \u00b7 polled '+fmtBidTime(data.fetched);
       // Credit the source of THIS bid: a network elevator's own board, or
       // Barchart. The merged feed marks network rows source=='network'.
@@ -2099,7 +2104,13 @@ fetch('/data/prices.json',{cache:'no-store'})
     if(sp.length){window.__agsistMR.base=sp;var __feFront=heroQ;if(__feFront&&__feFront.close!=null){window.__agsistMR.breakeven=getBreakevenPhrase(__feFront.close/100);}renderMarketRead();}
     /* v15: Wire freshness timers — both tick every 30s automatically.
        Falls back gracefully if loader.js timer module didn't load. */
-    if(window.agsistTimer&&data.fetched){
+    if(window.AgAsOf&&data.fetched){
+      /* The site's one "Updated" stamp (components/asof.js), greyed with an age once stale. */
+      var __st=document.getElementById('status');
+      if(__st){var __sx=(typeof computeMarketSession==='function')?computeMarketSession():null;
+        __st.innerHTML=(__sx&&__sx.state==='closed'?'Market closed \u00b7 ':'')+AgAsOf.html(data.fetched,'prices');}
+      AgAsOf.set('snap-age',data.fetched,'prices');
+    }else if(window.agsistTimer&&data.fetched){
       var statusTmr=document.getElementById('status-timer');
       var statusOld=document.getElementById('status');
       if(statusTmr&&statusOld){

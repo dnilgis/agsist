@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#0a0c0d">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Offline | AGSIST</title>
+  <script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('agsist-theme')||(matchMedia('(prefers-color-scheme: light)').matches?'light':'dark'));}catch(e){}</script>
+  <!-- Served by sw.js when there is no signal and this page was never saved.
+       Everything it needs is inline: no stylesheet, font or script is fetched. -->
+  <style>
+    :root{--bg:#0a0c0d;--surface:#101415;--border:rgba(132,160,168,.13);--text:#e9edeb;--text-dim:rgba(233,237,235,.9);
+      --text-muted:rgba(233,237,235,.7);--gold:#d4a23f}
+    [data-theme="light"]{--bg:#f6f7f5;--surface:#fff;--border:rgba(22,26,24,.14);--text:#161a18;--text-dim:rgba(22,26,24,.83);
+      --text-muted:rgba(22,26,24,.66);--gold:#8a6514}
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:var(--text);font:17px/1.6 Inter,system-ui,-apple-system,"Segoe UI",sans-serif}
+    header{border-bottom:1px solid var(--border);background:var(--surface)}
+    header div{max-width:720px;margin:0 auto;padding:.7rem 16px}
+    header a{font-weight:800;letter-spacing:.04em;color:var(--text);text-decoration:none}
+    main{max-width:720px;margin:0 auto;padding:1.5rem 16px 3rem}
+    h1{font-size:1.4rem;margin:0 0 .5rem}
+    p{color:var(--text-dim);margin:0 0 1rem}
+    h2{font-size:1rem;margin:1.5rem 0 .5rem}
+    ul{list-style:none;margin:0;padding:0;border-top:1px solid var(--border)}
+    li{border-bottom:1px solid var(--border)}
+    li a{display:flex;align-items:center;min-height:44px;padding:.4rem 0;color:var(--text);text-decoration:none}
+    li a:hover{color:var(--gold)}
+    .mut{color:var(--text-muted);font-size:.88rem}
+    button{font:inherit;font-size:.95rem;font-weight:600;min-height:44px;padding:.5rem 1.1rem;border-radius:6px;
+      border:1px solid var(--gold);background:transparent;color:var(--text);cursor:pointer}
+  </style>
+</head>
+<body>
+  <header><div><a href="/">AGSIST</a></div></header>
+  <main id="main">
+    <h1>No signal</h1>
+    <p>This page was not saved on this phone, so it cannot open without a connection.</p>
+    <p><button type="button" onclick="location.reload()">Try again</button></p>
+    <div id="saved" hidden>
+      <h2>Saved on this phone</h2>
+      <p class="mut">These open without a signal, with the prices and bids from your last visit.</p>
+      <ul id="saved-list"></ul>
+    </div>
+    <p class="mut" id="none" hidden>Nothing is saved yet. Pages you open with a signal are kept here for the next time you lose it.</p>
+  </main>
+  <script>
+  (function(){
+    var NAMES={'/':'Home','/cash-bids':'Cash bids','/markets':'Markets','/daily':'AGSIST Daily','/spray':'Spray advisory',
+      '/basis':'Basis','/hail-map':'Hail map','/drought-monitor':'Drought monitor','/conditions':'Crop conditions',
+      '/corn-futures-prices':'Corn futures','/soybean-futures-prices':'Soybean futures','/wheat-futures-prices':'Wheat futures',
+      '/cattle-futures-prices':'Cattle futures'};
+    var list=document.getElementById('saved-list');
+    function done(n){document.getElementById(n?'saved':'none').hidden=false;}
+    if(!window.caches){done(0);return;}
+    caches.keys().then(function(keys){
+      return Promise.all(keys.filter(function(k){return /^agsist-v/.test(k);}).map(function(k){
+        return caches.open(k).then(function(c){return c.keys().then(function(reqs){return {c:c,reqs:reqs};});});
+      }));
+    }).then(function(all){
+      var seen={},jobs=[];
+      all.forEach(function(x){x.reqs.forEach(function(r){
+        var u=new URL(r.url),path=u.pathname.replace(/\.html$/,'').replace(/\/index$/,'/');
+        if(u.origin!==location.origin||seen[path])return;
+        if(/\.(js|css|json|png|jpe?g|svg|webp|ico|woff2?|xml|txt|ics)$/.test(u.pathname)||path==='/offline')return;
+        if(/^\/(components|data)\//.test(u.pathname))return;
+        seen[path]=1;
+        jobs.push(x.c.match(r).then(function(res){
+          if(!res||!/text\/html/.test(res.headers.get('content-type')||''))return null;
+          return res.text().then(function(t){
+            var m=/<title>([^<]*)<\/title>/i.exec(t),n=NAMES[path];
+            var title=n||(m?m[1].replace(/\s*\|\s*AGSIST\s*$/,'').replace(/&amp;/g,'&'):path);
+            return {path:path,href:u.pathname+u.search,title:title};
+          });
+        }).catch(function(){return null;}));
+      });});
+      return Promise.all(jobs);
+    }).then(function(items){
+      items=items.filter(Boolean).sort(function(a,b){return (a.path==='/'?-1:b.path==='/'?1:a.title.localeCompare(b.title));});
+      items.forEach(function(it){
+        var li=document.createElement('li'),a=document.createElement('a');
+        a.href=it.href;a.textContent=it.title;li.appendChild(a);list.appendChild(li);
+      });
+      done(items.length);
+    }).catch(function(){done(0);});
+    window.addEventListener('online',function(){location.reload();});
+  })();
+  </script>
+</body>
+</html>

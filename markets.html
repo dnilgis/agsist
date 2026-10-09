@@ -11,6 +11,8 @@
   <!-- /static-nav:fonts -->
   <link rel="preload" href="/components/styles.css?v=20" as="style">
 <link rel="stylesheet" href="/components/styles.css?v=20">
+<link rel="stylesheet" href="/components/asof.css?v=1">
+<script src="/components/asof.js?v=1"></script>
 <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
 <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
@@ -94,7 +96,7 @@ main > .breadcrumb{max-width:1400px;margin:12px auto 0;padding:0 var(--sp-lg)}
       <div class="sec-head">
         <h1 class="sec-title">Commodity Prices Today</h1>
 
-        <span id="price-data-status" style="font-size:0.78rem;color:var(--text-muted)"><!--SEED:mk:status-->Last quotes as of Oct 9, 2026, 00:31 UTC &middot; each change line carries its own close date<!--/SEED--></span>
+        <span id="price-data-status" style="font-size:0.78rem;color:var(--text-muted)"><!--SEED:mk:status--><time class="asof" data-asof="prices" datetime="2026-10-09T00:31:00Z">Updated Oct 8, 7:31 pm</time> &middot; each change line carries its own close date<!--/SEED--></span>
       </div>
 
       <div style="font-size:0.77rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.6rem;margin-top:.25rem">Grain Futures</div>
@@ -293,8 +295,7 @@ main > .breadcrumb{max-width:1400px;margin:12px auto 0;padding:0 var(--sp-lg)}
     setRange('beans','bean-near',q);
     var status=document.getElementById('price-data-status');
     if(status&&data.fetched){
-      var mins=Math.round((Date.now()-new Date(data.fetched).getTime())/60000);
-      status.textContent=mins<2?'Just updated':mins<60?mins+' min ago':mins<2880?Math.round(mins/60)+'h ago':Math.round(mins/1440)+'d ago';
+      if(window.AgAsOf)AgAsOf.set(status,data.fetched,'prices');
     }
   }).catch(function(){
     var s=document.getElementById('price-data-status');

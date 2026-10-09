@@ -11,6 +11,8 @@
   <!-- /static-nav:fonts -->
   <link rel="preload" href="/components/styles.css?v=20" as="style">
   <link rel="stylesheet" href="/components/styles.css?v=20">
+  <link rel="stylesheet" href="/components/asof.css?v=1">
+  <script src="/components/asof.js?v=1"></script>
   <script src="/components/util.js?v=16"></script>
   <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
   <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
@@ -368,6 +370,7 @@ html[data-theme="light"] .cd-tile.dim .cd-tst{color:var(--text-muted)}
     var pkg=data.crops[crop];
     if(!pkg){ $('cd-table').innerHTML='<tr><td style="color:#8a948f">Off-season, no current ratings</td></tr>'; return; }
     $('cd-fresh').textContent='week ending '+pkg.week_ending;
+    if(window.AgAsOf&&data.generated)$('cd-fresh').insertAdjacentHTML('beforeend',' \u00b7 '+AgAsOf.html(data.generated,'usda'));
     var rows=Object.keys(pkg.states).map(function(ab){ var s=pkg.states[ab]; s.ab=ab; return s; });
     rows.sort(function(a,b){ return a.pctile-b.pctile; });
     var dmax=5;

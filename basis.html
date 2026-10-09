@@ -11,6 +11,8 @@
   <!-- /static-nav:fonts -->
   <link rel="preload" href="/components/styles.css?v=20" as="style">
   <link rel="stylesheet" href="/components/styles.css?v=20">
+  <link rel="stylesheet" href="/components/asof.css?v=1">
+  <script src="/components/asof.js?v=1"></script>
   <script src="/components/util.js?v=16"></script>
   <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
   <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
@@ -323,6 +325,7 @@
         +'<div class="bs-barval'+(v.delta>25?' neg':'')+'">'+Math.round(v.latest)+'%'+d+'</div></div>';
     }).join('');
     $('bs-fresh2').textContent='week of '+(journey.barge[keys[0]]?journey.barge[keys[0]].date:'');
+    if(window.AgAsOf&&journey.generated)$('bs-fresh2').insertAdjacentHTML('beforeend',' \u00b7 '+AgAsOf.html(journey.generated,'usda'));
   }
 
   function renderWalk(){
@@ -348,6 +351,7 @@
     // the header names the newest week any series reached, not whichever is listed first
     Object.keys(basis.series).forEach(function(k){ var dt=basis.series[k].date; if(dt&&(!NEWEST||dt>NEWEST)) NEWEST=dt; });
     $('bs-fresh').textContent='week of '+(NEWEST||'-');
+    if(window.AgAsOf&&basis.generated)$('bs-fresh').insertAdjacentHTML('beforeend',' \u00b7 '+AgAsOf.html(basis.generated,'usda'));
     renderTabs(); renderTable(); renderBarge(); renderWalk();
   });
 })();

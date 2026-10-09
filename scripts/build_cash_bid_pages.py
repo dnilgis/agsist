@@ -517,13 +517,62 @@ CSS = """
 """
 
 
-def head(title, desc, path, jsonld, indexable):
-    """build_state_basis_pages.head() with this page's CSS in place of its."""
+def head(title, desc, path, jsonld, indexable, share=None):
+    """build_state_basis_pages.head() with this page's CSS in place of its.
+    share=(title, desc) replaces the og: and twitter: title and description
+    (the link preview in a text or a post); <title> and the meta description
+    stay as they are for search."""
     h = SB.head(title, desc, path, jsonld, indexable)
     h = h.replace(f"<style>{SB.CSS}  </style>", f"<style>{CSS}  </style>")
     h = h.replace('<meta property="og:type" content="article">', '<meta property="og:type" content="website">')
     assert CSS in h, "basis head() changed shape; update head() here"
+    sheet = '  <link rel="stylesheet" href="/components/styles.css?v=19">\n'
+    assert sheet in h, "basis head() changed shape; update head() here"
+    h = h.replace(sheet, sheet + '  <link rel="stylesheet" href="/components/asof.css?v=1">\n', 1)
+    if share:
+        for prop, old, new in (("og:title", title, share[0]), ("og:description", desc, share[1])):
+            for attr in (f'property="{prop}"', f'name="twitter:{prop[3:]}"'):
+                a, b = f'<meta {attr} content="{esc(old)}">', f'<meta {attr} content="{esc(new)}">'
+                assert a in h, f"basis head() has no {attr}; update head() here"
+                h = h.replace(a, b)
     return h
+
+
+def fmt_share_time(t):
+    """"Oct 8, 7:10 pm" in Central time, the way the site's "Updated" lines read."""
+    c = t.astimezone(CT)
+    return f"{MONTH_ABBR[c.month - 1]} {c.day}, {c.strftime('%I:%M').lstrip('0')} {c.strftime('%p').lower()}"
+
+
+def asof_time(t):
+    """The site's one "Updated" stamp (components/asof.js): absolute in the
+    file, since the page is read hours later; the script re-renders it
+    ("Updated 7:10 pm", "Updated yesterday 4:10 pm") and greys it with a
+    plain age once it is not from today."""
+    iso = t.astimezone(dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    return f'<time class="asof" data-asof="bids" datetime="{iso}">Updated {fmt_share_time(t)}</time>'
+
+
+def top_nearby(rows):
+    """{crop: (highest cash, its posted time)} over the rows shown, for each
+    crop's nearest delivery month present. Only numbers that print on the
+    page; on a tie the newer posting."""
+    out = {}
+    for c in CROPS:
+        rs = [r for r in rows if r["crop"] == c and r.get("dm")]
+        if rs:
+            m = min(r["dm"] for r in rs)
+            best = max((r for r in rs if r["dm"] == m), key=lambda r: (r["cash"], r["priced"]))
+            out[c] = (best["cash"], best["priced"])
+    return out
+
+
+def share_prices(tops, n=3):
+    """-> ("corn $4.38, soybeans $9.87", the oldest posted time among them),
+    from top_nearby(), at most n crops."""
+    cs = [c for c in CROPS if c in tops][:n]
+    return (", ".join(f"{CROP_LABEL[c].lower()} ${tops[c][0]:.2f}" for c in cs),
+            min(tops[c][1] for c in cs))
 
 
 def breadcrumb(items):
@@ -540,6 +589,7 @@ def page_end(ftr, house=False):
     return f"""</main>
 {ftr}
 <script src="/components/loader.js?v=18" defer></script>
+<script src="/components/asof.js?v=1" defer></script>
 {HOUSE_JS if house else ''}</body>
 </html>
 """
@@ -577,7 +627,7 @@ def board_section(bd, snap_ct):
                  f'delivery on the <a href="{esc(live)}">live page</a>.</p>' if more else "")
     return (f'<section class="cbt-el"><h2>{esc(name)}</h2>'
             + (f'<div class="loc">{esc(loc)}</div>' if loc else "")
-            + f'<p class="cbt-posted">Posted <b>{esc(posted)}</b> &middot; {call}</p>'
+            + f'<p class="cbt-posted" title="Posted {esc(posted)}">{asof_time(lo)} &middot; {call}</p>'
             f'<div class="cbt-scroll"><table class="cbt-t"><thead><tr><th>Crop</th><th>Delivery</th>'
             f'<th class="n">Cash</th><th class="n">Basis</th></tr></thead><tbody>{"".join(trs)}</tbody></table></div>'
             f'{more_html}</section>'), rows, times
@@ -608,11 +658,12 @@ def build_town_page(t, ctx):
     order = lambda b: (b["how"] == "near", b["near_mi"] or 0, b["operator"].lower(), b["city"].lower())  # noqa: E731
     live_b = sorted((b for b in t["boards"].values() if b["rows"]), key=order)
     quiet = sorted((b for b in t["boards"].values() if not b["rows"]), key=order)
-    secs, times, crops, nrows = [], [], set(), 0
+    secs, times, crops, nrows, shown = [], [], set(), 0, []
     for bd in live_b:
         h, rows, ts = board_section(bd, snap_ct)
         secs.append(h)
         times += ts
+        shown += rows
         nrows += len(rows)
         crops |= {r["crop"] for r in rows}
     indexable = bool(live_b)
@@ -641,6 +692,11 @@ def build_town_page(t, ctx):
             desc = (f"Cash grain bids at {n} elevator{'s' if n != 1 else ''} {where}, posted {fmt_day(latest)}: "
                     f"cash price and basis by delivery month. Call to confirm.")
         desc = desc[:160]
+        tops = top_nearby(shown)
+        txt, when = share_prices(tops)
+        share = (f"{place} cash bids",
+                 f"Top bids for nearest delivery: {txt} at {n} elevator{'s' if n != 1 else ''}. "
+                 f"Updated {fmt_share_time(when)}.")
         n_in = n - n_near
         who = (f'<b>{n_in}</b> elevator{"s" if n_in != 1 else ""} in {esc(place)}' if n_in else "")
         if n_near:
@@ -653,6 +709,7 @@ def build_town_page(t, ctx):
     else:
         desc = (f"Cash grain bids in {place}: no current bid from the elevators the AGSIST network reads here. "
                 f"See the live page for bids nearby.")[:160]
+        tops, share = {}, None
         intro = (f'<div class="cbt-note"><b>No current bid.</b> No elevator the AGSIST network reads in '
                  f'{esc(place)} has a bid we could confirm right now. The live page shows bids nearby.</div>')
     quiet_html = ""
@@ -696,8 +753,9 @@ def build_town_page(t, ctx):
 """
     meta = {"state": st, "slug": t["slug"], "name": t["name"], "indexable": indexable, "path": path,
             "elevators": len(live_b), "quiet": len(quiet), "rows": nrows, "crops": crops,
-            "latest": max(times) if times else None, "title": title, "desc": desc}
-    return head(title, desc, path, jsonld, indexable) + body + page_end(ftr, house=True), meta
+            "latest": max(times) if times else None, "title": title, "desc": desc, "tops": tops,
+            "share": share}
+    return head(title, desc, path, jsonld, indexable, share) + body + page_end(ftr, house=True), meta
 
 
 def build_state_index(st, metas, ctx, unplaced=()):
@@ -717,12 +775,23 @@ def build_state_index(st, metas, ctx, unplaced=()):
                 f"cash, basis and delivery.")[:160]
     else:
         desc = f"{sname} cash grain bids by town: no current bid from the elevators the AGSIST network reads."[:160]
+    share = None
+    if indexable:
+        tops = {}
+        for m in live:
+            for c, v in m["tops"].items():
+                tops[c] = max(v, tops.get(c, v))
+        top_txt, when = share_prices(tops)
+        share = (f"{sname} cash bids by town",
+                 f"Bids from {n_el} elevator{'s' if n_el != 1 else ''} in {len(live)} {sname} "
+                 f"town{'s' if len(live) != 1 else ''}. Top bid for nearest delivery: {top_txt}. "
+                 f"Updated {fmt_share_time(when)}.")
     items = []
     for m in live:
         cl = ", ".join(CROP_LABEL[c].lower() for c in CROPS if c in m["crops"])
         items.append(f'<li><a href="{m["path"]}">{esc(m["name"])}</a> <span class="cbt-mut">· '
-                     f'{m["elevators"]} elevator{"s" if m["elevators"] != 1 else ""}: {esc(cl)}; posted '
-                     f'{esc(fmt_posted(m["latest"], ctx["snap_ct"]))}</span></li>')
+                     f'{m["elevators"]} elevator{"s" if m["elevators"] != 1 else ""}: {esc(cl)}; '
+                     f'{asof_time(m["latest"])}</span></li>')
     quiet_html = ""
     if quiet:
         quiet_html = ('<h2>Towns with no current bid</h2><p class="cbt-cloud">'
@@ -763,9 +832,49 @@ def build_state_index(st, metas, ctx, unplaced=()):
   <h2>Other states</h2>
   <p class="cbt-cloud">{others}</p>
 """
-    return head(title, desc, path, jsonld, indexable) + body + page_end(ftr), {
+    return head(title, desc, path, jsonld, indexable, share) + body + page_end(ftr), {
         "state": st, "path": path, "indexable": indexable, "towns": len(live), "quiet": len(quiet),
         "elevators": n_el, "latest": max((m["latest"] for m in live), default=None)}
+
+
+LIVE_PAGE = "cash-bids.html"
+LIVE_SHARE_GENERIC = {
+    "og:description": "Find local cash grain bids by ZIP: corn, soybean and wheat elevator prices, basis, and the "
+                      "Worth the Drive net-revenue tool.",
+    "twitter:description": "Local cash grain bids by ZIP: corn, soybean, wheat elevator prices today + Worth the "
+                           "Drive net revenue tool."}
+
+
+def stamp_live_page(path, metas):
+    """Put the network's current counts and time in /cash-bids' link-preview
+    description (og: and twitter: only; its <title>, meta description and
+    everything else are hand-edited and left alone). With no town priced, the
+    generic text goes back, so an old count never stays up. -> the text, or
+    None when the page or its tags are missing (warned, never fatal)."""
+    live = [m for m in metas if m["indexable"]]
+    if not os.path.exists(path):
+        print(f"[cash-bid-pages] {path} not found; its share text was not updated")
+        return None
+    with open(path, encoding="utf-8") as f:
+        html = f.read()
+    text = None
+    if live:
+        n_el = sum(m["elevators"] for m in live)
+        text = (f"Find local cash grain bids by ZIP. The AGSIST network has current bids from {n_el:,} "
+                f"elevator{'s' if n_el != 1 else ''} in {len(live):,} town{'s' if len(live) != 1 else ''}. "
+                f"Updated {fmt_share_time(max(m['latest'] for m in live))}.")
+    out = html
+    for key, generic in LIVE_SHARE_GENERIC.items():
+        attr = "property" if key.startswith("og:") else "name"
+        pat = re.compile(rf'(<meta {attr}="{re.escape(key)}" content=")[^"]*(">)')
+        if not pat.search(out):
+            print(f"[cash-bid-pages] {path} has no {key} tag; its share text was not updated")
+            return None
+        out = pat.sub(lambda m: m.group(1) + esc(text or generic) + m.group(2), out, count=1)
+    if out != html:
+        with open(path, "w", encoding="utf-8") as f:
+            f.write(out)
+    return text or LIVE_SHARE_GENERIC["og:description"]
 
 
 def write_sitemap(path, entries):
@@ -943,6 +1052,19 @@ def selftest():
         assert "/components/cb-house.js" in fr, "a town page carries the house ask for its unsold footer slot"
         assert "Cash grain bids in Fremont, NE today" in fr
         assert "Op bad" not in fr or "did not check out" in fr
+        # the link preview carries the page's own top nearby bids and their posted time
+        assert '<meta property="og:title" content="Fremont, NE cash bids">' in fr
+        assert '<meta name="twitter:title" content="Fremont, NE cash bids">' in fr
+        share = re.search(r'<meta property="og:description" content="([^"]*)">', fr).group(1)
+        assert share == re.search(r'<meta name="twitter:description" content="([^"]*)">', fr).group(1)
+        assert share.startswith("Top bids for nearest delivery: corn $3.95, soybeans $9.85 at "), share
+        assert share.endswith("Updated Oct 7, 12:00 pm."), share
+        assert "<title>Cash Grain Bids in Fremont, NE Today | AGSIST</title>" in fr, "search title unchanged"
+        # each board's posted time is the site's "Updated" stamp, re-rendered and aged by asof.js
+        assert '<time class="asof" data-asof="bids" datetime="2026-10-07T17:00:00Z">Updated Oct 7, 12:00 pm</time>' in fr
+        assert '/components/asof.js?v=1' in fr and '/components/asof.css?v=1' in fr
+        for v in re.findall(r"\$(\d+\.\d\d)", share):
+            assert f"${v}</td>" in fr, f"share price {v} is not on the page"
         for blk in re.findall(r'<script type="application/ld\+json">(.*?)</script>', fr, re.S):
             assert {g["@type"] for g in json.loads(blk)["@graph"]} == {"BreadcrumbList"}
         ho = open(os.path.join(out, "nebraska", "hooper.html")).read()
@@ -954,6 +1076,7 @@ def selftest():
         build_all(lone, index, ZT, out_dir=out + "2", root=".", min_towns=0, now=parse_ts("2026-10-07T19:00:00Z"))
         ho2 = open(os.path.join(out + "2", "nebraska", "hooper.html")).read()
         assert 'content="noindex,follow"' in ho2 and "No current bid." in ho2
+        assert "Top bids" not in ho2 and '<meta property="og:title" content="Cash Grain Bids in Hooper, NE Today' in ho2
         assert os.path.exists(os.path.join(out, "iowa", "redfield.html"))
         assert not os.path.exists(os.path.join(out, "iowa", "lincolnway-energy.html"))
         ia = open(os.path.join(out, "iowa", "index.html")).read()
@@ -961,6 +1084,22 @@ def selftest():
         assert not os.path.exists(os.path.join(out, "index.html"))
         ne = open(os.path.join(out, "nebraska", "index.html")).read()
         assert 'href="/cash-bids/nebraska/fremont"' in ne and 'href="/cash-bids/iowa/"' in ne
+        assert '<meta property="og:title" content="Nebraska cash bids by town">' in ne
+        assert re.search(r'<meta name="twitter:description" content="Bids from \d+ elevators in 2 Nebraska towns\. '
+                         r'Top bid for nearest delivery: corn \$3\.95, soybeans \$9\.85\. Updated Oct 7, 12:00 pm\.">',
+                         ne), ne[:3000]
+        # /cash-bids gets the network counts, and the generic text back when nothing is priced
+        lp = os.path.join(td, "cash-bids.html")
+        gen_tags = (f'<meta property="og:description" content="{esc(LIVE_SHARE_GENERIC["og:description"])}">'
+                    f'<meta name="twitter:description" content="{esc(LIVE_SHARE_GENERIC["twitter:description"])}">')
+        with open(lp, "w") as f:
+            f.write(f"<head>{gen_tags}</head>")
+        txt = stamp_live_page(lp, metas)
+        live_html = open(lp).read()
+        assert txt.endswith("Updated Oct 7, 12:00 pm.") and live_html.count(esc(txt)) == 2, live_html
+        assert stamp_live_page(lp, [x for x in metas if not x["indexable"]]) == LIVE_SHARE_GENERIC["og:description"]
+        assert open(lp).read() == f"<head>{gen_tags}</head>"
+        assert stamp_live_page(os.path.join(td, "missing.html"), metas) is None
         locs = re.findall(r"<loc>(.*?)</loc>", open(sm).read())
         assert "https://agsist.com/cash-bids/nebraska/fremont" in locs and "https://agsist.com/cash-bids/nebraska/" in locs
         for k in ("not_a_network_board", "not_us_or_not_usd", "price_older_than_cutoff", "stale_or_unconfirmed",
@@ -1018,8 +1157,9 @@ def main():
     merged, index = SB.load_network(a.bids_dir, a.base)
     base = a.bids_dir or a.base or SB.BIDS_NETWORK_BASE
     zip_towns = SB._net_get_json(base, "geocodes/zip-towns.json")
-    _, smetas, _, new = build_all(merged, index, zip_towns, out_dir=a.out, root=a.root, sitemap=a.sitemap,
-                                  check_age=not a.ignore_age, zip_coord=zip_centroids(base))
+    metas, smetas, _, new = build_all(merged, index, zip_towns, out_dir=a.out, root=a.root, sitemap=a.sitemap,
+                                      check_age=not a.ignore_age, zip_coord=zip_centroids(base))
+    stamp_live_page(os.path.join(a.root, LIVE_PAGE), metas)
     if a.print_new:
         with open(a.print_new, "w") as f:
             f.write("".join(u + "\n" for u in new))

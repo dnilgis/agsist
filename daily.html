@@ -9,6 +9,8 @@
   <!-- /static-nav:fonts -->
   <link rel="preload" href="/components/styles.css?v=20" as="style">
 <link rel="stylesheet" href="/components/styles.css?v=20">
+<link rel="stylesheet" href="/components/asof.css?v=1">
+<script src="/components/asof.js?v=1"></script>
 <link rel="stylesheet" href="/components/sponsor-ad.css?v=1">
 <script src="/components/sponsor-ad.js?v=1"></script>
 <link rel="stylesheet" href="/components/harvest-clock.css?v=1">
@@ -666,6 +668,7 @@ function renderToday(data,why){
       (mood?'<span class="dv3-mood-pill">'+escHtml(mood)+'</span>':'')+
     '</div>'+
     '<div class="dv3-today-date">'+escHtml(fmtDate(data.date))+'</div>'+
+    (window.AgAsOf&&data.generated_at?'<p class="asof-line">'+AgAsOf.html(data.generated_at,'daily')+'</p>':'')+
     '<h2 class="dv3-today-headline">'+escHtml(data.headline)+'</h2>'+
     (data.subheadline?'<p class="dv3-today-sub">'+escHtml(data.subheadline)+'</p>':'');
 
@@ -823,10 +826,11 @@ function renderToday(data,why){
     });
     sparks+='</div>';
     var asofBits=[];
-    if(strip.asof){var t=ctStamp(strip.asof);if(t)asofBits.push('Quotes as of '+t+' CT');}
+    var qSt=strip.asof&&window.AgAsOf?AgAsOf.html(strip.asof,'daily',{prefix:'Quotes as of'}):'';
+    if(strip.asof&&!qSt){var t=ctStamp(strip.asof);if(t)asofBits.push('Quotes as of '+t+' CT');}
     if(strip.vs_session){var wd=ctWeekday(strip.vs_session);if(wd)asofBits.push('change vs '+wd+' close');}
     asofBits.push('CME futures, delayed');
-    sparks+='<div class="dv3-quote-asof">'+escHtml(asofBits.join(' \u00B7 '))+'</div>';
+    sparks+='<div class="dv3-quote-asof">'+(qSt?qSt+' \u00B7 ':'')+escHtml(asofBits.join(' \u00B7 '))+'</div>';
   }
 
   // Sections

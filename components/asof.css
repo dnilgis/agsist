@@ -1,0 +1,12 @@
+/* "Updated" stamps (components/asof.js). Quiet on purpose: small, muted,
+   the same on every page. A stale stamp goes grayer and says how old. */
+.asof{font-family:var(--font-body,inherit);font-size:.78rem;font-weight:400;font-style:normal;letter-spacing:0;
+  text-transform:none;color:var(--text-muted);white-space:normal;line-height:1.4}
+.asof.is-stale{color:var(--text-muted)}   /* gray, never a warning color; contrast kept */
+.asof-t,.asof-note{white-space:nowrap}
+.asof-note{font-weight:600}
+.asof-line{margin:.35rem 0 0;font-size:.78rem;color:var(--text-muted);line-height:1.4}
+.asof-line[hidden]{display:none}
+.asof-offline{margin:.6rem 0;padding:.5rem .75rem;border:1px solid var(--border);border-left:3px solid var(--text-muted);
+  border-radius:var(--r-sm,6px);background:var(--surface);color:var(--text);font-size:.88rem;line-height:1.4}
+.asof-offline[hidden]{display:none}

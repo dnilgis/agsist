@@ -11,6 +11,8 @@
   <!-- /static-nav:fonts -->
   <link rel="preload" href="/components/styles.css?v=20" as="style">
 <link rel="stylesheet" href="/components/styles.css?v=20">
+<link rel="stylesheet" href="/components/asof.css?v=1">
+<script src="/components/asof.js?v=1"></script>
 <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
 <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
@@ -538,7 +540,7 @@
     if(lbG)lbG.textContent=(gf===nGF&&gfm)?'52-Week Range \u00b7 '+gfm[1].charAt(0).toUpperCase()+gfm[1].slice(1)+" '"+gfm[2]+' contract':'52-Week Range \u00b7 continuous series';
     setQuote('le',le);setQuote('gf',gf);
     var st=$('status');var dot='<span class="ps-dot" aria-hidden="true"></span>';
-    if(d.fetched){var t=new Date(d.fetched);if(st)st.innerHTML=dot+'Live CME futures · updated '+t.toLocaleString('en-US',{hour:'numeric',minute:'2-digit',month:'short',day:'numeric'});}
+    if(d.fetched){var t=new Date(d.fetched);if(st)st.innerHTML=window.AgAsOf?dot+'CME futures, delayed \u00b7 '+AgAsOf.html(d.fetched,'prices'):dot+'Live CME futures · updated '+t.toLocaleString('en-US',{hour:'numeric',minute:'2-digit',month:'short',day:'numeric'});}
     else if(st)st.innerHTML=dot+'Live CME futures · updated through the trading day';
     // hero price = live cattle
     var hp=$('hero-price');if(hp&&le&&le.close!=null)hp.textContent='$'+Number(le.close).toFixed(2);
@@ -676,7 +678,7 @@
     if(!d)return;var le=d.livecattle,gf=d.feedercattle;
     if((!le||le.net==null)&&(!gf||gf.net==null))return;
     var card=$('cot-cattle');if(card)card.style.display='block';
-    if(d.report_date&&$('cot-asof'))$('cot-asof').textContent='As of '+d.report_date;
+    if(d.report_date&&$('cot-asof')){$('cot-asof').textContent='As of '+d.report_date;if(window.AgAsOf&&d.updated)$('cot-asof').innerHTML='Positions as of '+d.report_date+' \u00b7 '+AgAsOf.html(d.updated,'usda');}
     var lp=one('le',le),fp=one('gf',gf),parts=[];
     if(le&&le.net!=null&&lp!=null)parts.push('Funds are <strong>net '+(le.net>=0?'long':'short')+' live cattle</strong> at '+lp+'% of the way up the 52-week range');
     if(gf&&gf.net!=null&&fp!=null)parts.push((parts.length?'and ':'Funds are ')+'<strong>'+(fp<=20?'near the 52-week low':fp>=80?'near the 52-week high':'mid-range')+'</strong> on feeders ('+fp+'% of the range)');

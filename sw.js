@@ -8,7 +8,11 @@
  *   (2026-10-09)      (their prices come from /data/ and the workers, fetched
  *                     live by the page, so the shell itself holds no price)
  *   JS/CSS/images   → Cache first IF versioned (?v=N), else network first
- *   Data (JSON)     → Network only, no caching (prices must be live)
+ *   Data (JSON)     → Network only, no caching (prices must be live), EXCEPT
+ *                     the few key files savedDataFeed() names (bottom of file):
+ *                     network first with a 3 s limit, then the last good copy,
+ *                     and the page is told so it can say "Offline. Showing ..."
+ *   Navigations     → when network and cache both fail: offline.html
  *   External APIs   → Network only (NEVER_CACHE list below)
  *
  * v4 FIXES:
@@ -50,9 +54,10 @@ var NEVER_CACHE = [
   'api.weather.gov',                         // live NWS alerts: an expired warning must never come back from cache
 ];
 
-// ── Install: open new cache (don't pre-cache anything) ────────────
+// ── Install: open new cache (only the offline set, precacheOffline) ─
 self.addEventListener('install', function(e) {
   self.skipWaiting(); // activate immediately, don't wait for old tabs to close
+  e.waitUntil(precacheOffline());
 });
 
 // ── Activate: delete all old caches ──────────────────────────────
@@ -83,12 +88,12 @@ self.addEventListener('fetch', function(e) {
   if (!e.request.url.startsWith('http')) return;
 
   e.respondWith(
-    handleFetch(e.request, e).catch(function() {
+    (savedDataFeed(e.request.url) ? savedDataFetch(e.request, e.clientId) : handleFetch(e.request, e)).catch(function() {
       // Last resort: bypass SW entirely; if THAT fetch also fails (offline,
       // blocked tracker, flaky API) return a quiet 504 instead of rejecting —
       // an unhandled rejection here logs a console error on every failure.
       return fetch(e.request).catch(function(){
-        return new Response('', { status: 504, statusText: 'network unavailable' });
+        return offlineFallback(e.request);
       });
     })
   );
@@ -284,4 +289,140 @@ function cacheFirst(request) {
       return response;
     });
   });
+}
+
+// ══ Offline: saved data copies and the offline page ═══════════════════
+// Kept apart from the strategies above on purpose (merge-friendly). Hooks:
+// install -> precacheOffline(); fetch -> savedDataFeed()/savedDataFetch()
+// before handleFetch(); the last-resort catch -> offlineFallback().
+
+var OFFLINE_PAGE = '/offline.html';
+var SAVED_TIMEOUT_MS = 3000;
+
+// url -> feed name the page's offline line uses (components/asof.js), or ''.
+// Only these are saved; every other data file and API stays network only.
+function savedDataFeed(url) {
+  var u;
+  try { u = new URL(url); } catch (err) { return ''; }
+  if (u.origin === self.location.origin) {
+    if (u.pathname === '/data/prices.json') return 'prices';
+    if (u.pathname === '/data/daily.json') return 'daily';
+    return '';
+  }
+  if (u.hostname === 'dnilgis.github.io' && u.pathname.indexOf('/bids/') === 0 && /\.json$/.test(u.pathname)) return 'bids';
+  if (u.hostname === 'api.open-meteo.com' && u.pathname === '/v1/forecast') return 'weather';
+  return '';
+}
+
+// Same-origin data is saved without its query (a ?t= buster must not make a
+// new copy each load); outside data keeps its full URL (lat/lon, shard name).
+function savedDataKey(request) {
+  var u = new URL(request.url);
+  if (u.origin === self.location.origin) return u.origin + u.pathname;
+  return request.url;
+}
+
+// The data's own time, read from the file (never the save time, which would
+// make an 8:46 price file read as "from 9:17"): the first of these top-level
+// fields, or an Open-Meteo forecast's current.time placed by its UTC offset.
+function dataTimeOf(text) {
+  var j;
+  try { j = JSON.parse(text); } catch (err) { return ''; }
+  if (!j || typeof j !== 'object') return '';
+  var keys = ['fetched', 'generated_at', 'generated', 'updated', 'pricedAt'];
+  for (var i = 0; i < keys.length; i++) {
+    var v = j[keys[i]];
+    if (typeof v === 'string' && !isNaN(Date.parse(v))) return v;
+  }
+  if (j.current && typeof j.current.time === 'string' && typeof j.utc_offset_seconds === 'number') {
+    var t = Date.parse(j.current.time + 'Z') - j.utc_offset_seconds * 1000;
+    if (!isNaN(t)) return new Date(t).toISOString();
+  }
+  return '';
+}
+
+function saveDataCopy(key, response) {
+  if (!response || !response.ok || response.type === 'opaque') return;
+  var copy = response.clone();
+  copy.text().then(function(body) {
+    var h = new Headers(copy.headers);
+    h.set('x-agsist-saved', new Date().toISOString());
+    var dt = dataTimeOf(body);
+    if (dt) h.set('x-agsist-data-time', dt);
+    h.delete('content-encoding'); h.delete('content-length'); // the body is stored decoded
+    return caches.open(CACHE_NAME).then(function(cache) {
+      return cache.put(key, new Response(body, { status: copy.status, statusText: copy.statusText, headers: h }));
+    });
+  }).catch(function(){}); // quota or a body error: just no saved copy
+}
+
+function tellPage(clientId, feed, cached, reason) {
+  if (!clientId || !self.clients || !self.clients.get) return;
+  self.clients.get(clientId).then(function(c) {
+    if (c) c.postMessage({ type: 'agsist-saved-data', feed: feed, reason: reason,
+      dataTime: cached.headers.get('x-agsist-data-time') || '', saved: cached.headers.get('x-agsist-saved') || '' });
+  }).catch(function(){});
+}
+
+// Network first; after SAVED_TIMEOUT_MS with no answer, or on a failure, the
+// last good copy. A late network answer still refreshes the saved copy.
+function savedDataFetch(request, clientId) {
+  var feed = savedDataFeed(request.url), key = savedDataKey(request);
+  return new Promise(function(resolve, reject) {
+    var done = false, timer = null;
+    function fromCache(reason, otherwise) {
+      return caches.match(key).then(function(cached) {
+        if (done) return;
+        if (cached) { done = true; clearTimeout(timer); tellPage(clientId, feed, cached, reason); resolve(cached); }
+        else if (otherwise) otherwise();
+      }).catch(function() { if (!done && otherwise) otherwise(); });
+    }
+    timer = setTimeout(function() { fromCache('timeout'); }, SAVED_TIMEOUT_MS);
+    fetch(request).then(function(response) {
+      saveDataCopy(key, response);
+      if (done) return;
+      if (response && response.ok) { done = true; clearTimeout(timer); resolve(response); return; }
+      fromCache('failed', function() { done = true; clearTimeout(timer); resolve(response); });
+    }, function(err) {
+      if (done) return;
+      fromCache('failed', function() { done = true; clearTimeout(timer); reject(err); });
+    });
+  });
+}
+
+// Install: the offline page, plus the page that installed this worker and
+// the price file. That first page loaded before the worker was in control,
+// so without this a reader who opens the site once and loses signal has
+// nothing saved. The page usually comes from the browser's HTTP cache (no
+// second download). Best effort, capped at 5 s, never blocks install.
+function precacheOffline() {
+  var base = caches.open(CACHE_NAME).then(function(cache) {
+    return cache.add(new Request(OFFLINE_PAGE, { cache: 'reload' }));
+  }).catch(function(){});
+  var extra = self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then(function(list) {
+    var jobs = list.map(function(c) {
+      var u = new URL(c.url);
+      if (u.origin !== self.location.origin) return null;
+      return fetch(c.url, { credentials: 'same-origin' }).then(function(res) {
+        if (!res || !res.ok || (res.headers.get('content-type') || '').indexOf('text/html') < 0) return;
+        return caches.open(CACHE_NAME).then(function(cache) { return cache.put(c.url, res); });
+      }).catch(function(){});
+    });
+    jobs.push(fetch(self.location.origin + '/data/prices.json').then(function(res) {
+      saveDataCopy(self.location.origin + '/data/prices.json', res);
+    }).catch(function(){}));
+    return Promise.all(jobs);
+  }).catch(function(){});
+  var cap = new Promise(function(resolve) { setTimeout(resolve, 5000); });
+  return Promise.all([base, Promise.race([extra, cap])]);
+}
+
+// Network and cache both failed. A page: its saved copy under any query
+// (/cash-bids?zip=54728 -> /cash-bids), else the offline page.
+function offlineFallback(request) {
+  var quiet = new Response('', { status: 504, statusText: 'network unavailable' });
+  if (request.mode !== 'navigate') return quiet;
+  return caches.match(request, { ignoreSearch: true }).then(function(page) {
+    return page || caches.match(OFFLINE_PAGE);
+  }).then(function(page) { return page || quiet; }).catch(function() { return quiet; });
 }

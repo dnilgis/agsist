@@ -378,6 +378,22 @@ def _mdy(d):
     return f"{MON3[d.month - 1]} {d.day}, {d.year}"
 
 
+def _asof_time(ts, feed, fallback_day=None):
+    """The site's one "Updated" stamp (components/asof.js), baked: a <time>
+    the page's script re-renders and marks stale when it ages. Central time,
+    absolute ("Updated Oct 8, 7:10 pm") since the baked copy is read later."""
+    try:
+        t = datetime.fromisoformat(str(ts).replace("Z", "+00:00"))
+        if t.tzinfo is None:
+            t = t.replace(tzinfo=timezone.utc)
+    except (TypeError, ValueError):
+        return f"Updated {_mdy(fallback_day)}" if fallback_day else ""
+    c = t.astimezone(CT) if CT else t
+    hm = c.strftime("%I:%M").lstrip("0") + " " + c.strftime("%p").lower()
+    return (f'<time class="asof" data-asof="{feed}" datetime="{t.astimezone(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')}">'
+            f"Updated {_md(c)}, {hm}</time>")
+
+
 def _stale(d, today, key):
     """True when date d is missing or older than the page's limit."""
     if d is None:
@@ -536,9 +552,7 @@ def seed_markets(prices, today):
         lo, hi = d.get("wk52_lo"), d.get("wk52_hi")
         seeds["mk:rlo-" + sym] = ("$" + _fixed(lo / 100.0, 2)) if lo is not None else "-"
         seeds["mk:rhi-" + sym] = ("$" + _fixed(hi / 100.0, 2)) if hi is not None else "-"
-    ft = fetched[11:16] if len(fetched) >= 16 else ""
-    seeds["mk:status"] = (f"Last quotes as of {_mdy(fd)}" + (f", {ft} UTC" if ft else "")
-                          + " &middot; each change line carries its own close date")
+    seeds["mk:status"] = _asof_time(fetched, "prices", fd) + " &middot; each change line carries its own close date"
     print(f"  markets.html: {n} of {len(MK_MAP)} quotes seeded")
     return _write_seeds("markets.html", seeds)
 

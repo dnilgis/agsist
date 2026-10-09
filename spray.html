@@ -15,6 +15,8 @@
   <!-- /static-nav:fonts -->
   <link rel="preload" href="/components/styles.css?v=20" as="style">
 <link rel="stylesheet" href="/components/styles.css?v=20">
+<link rel="stylesheet" href="/components/asof.css?v=1">
+<script src="/components/asof.js?v=1"></script>
 <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
 <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
@@ -1884,7 +1886,7 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
       var wR=wind==null?'na':windRatingP(wind,P),tR=temp==null?'na':tempRatingP(temp,P),hR=humid==null?'na':humidRating(humid),iR=wind==null?'na':inversionRisk(wind,hour,cloud,trend),dR=(temp==null||dew==null)?'na':dewRisk(temp,dew),dt=(temp==null||humid==null)?null:deltaTC(temp,humid),dtR=dt==null?'na':deltaTRating(dt),overall=overallRating(wR,tR,hR,iR,dR,code,dtR);
       var dst=dicambaStatus(P,d.daily,tNow,0);overall=applyDicamba(overall,dst);var blk=(dst&&dst.level==='block')?dst.reason:'';
       var si=document.getElementById('st-icon'),sm=document.getElementById('st-main'),ss=document.getElementById('st-sub'),sp=document.getElementById('status-panel'),ts=document.getElementById('st-ts');
-      if(si)si.textContent=rIcons[overall];if(sm){sm.textContent=rMainText[overall];sm.className='status-main '+overall;}if(ss)ss.textContent=rSubs[overall];if(sp)sp.className='status-panel '+overall;if(ts)ts.textContent='Updated '+new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',hour12:true});
+      if(si)si.textContent=rIcons[overall];if(sm){sm.textContent=rMainText[overall];sm.className='status-main '+overall;}if(ss)ss.textContent=rSubs[overall];if(sp)sp.className='status-panel '+overall;if(ts){var _wt=c.time&&d.utc_offset_seconds!=null?Date.parse(c.time+'Z')-d.utc_offset_seconds*1000:NaN;if(window.AgAsOf)AgAsOf.set(ts,isNaN(_wt)?null:new Date(_wt),'weather');else ts.textContent='Updated '+new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',hour12:true});}
       var windDesc=wind==null?'Wind speed not available in this forecast, measure it on-site before spraying.':wind<3?'Calm conditions, below 3 mph. Thermal inversions trap spray droplets near the ground. Do not spray until wind picks up to 3+ mph.':wind<=10?'Within the ideal window. Good mechanical dispersion. Stay aware of downwind sensitive areas.':wind<=15?'Getting high, mechanical drift risk is elevated. Consider larger nozzle size or waiting.':'Too high for safe application. Significant off-target drift likely. Do not spray.';
       var wLimit=(P.label==='General guidance')?'':(' '+P.label+' limit: '+P.wMin+'\u2013'+P.wHiCaution+' mph ideal, '+P.wMax+' mph max.');setFcard('wind',wind==null?'-':Math.round(wind)+' mph',windDesc+wLimit+(wind==null?'':' Reading is at 10 m, at boom height (~3 ft) wind usually runs lower; confirm on-site.'),wR,wind==null?0:Math.min(100,Math.round(wind)*6));
       var compass=degToCompass(dir),dirDesc=dir==null?'Not scored, wind direction not available in this forecast. Check it on-site and make sure nothing sensitive is downwind.':'Not scored, a reminder. Wind is from the '+compass+' ('+Math.round(dir)+'\u00b0), so it carries spray toward the '+degToCompass((dir+180)%360)+'. Make sure nothing sensitive is that way.';
