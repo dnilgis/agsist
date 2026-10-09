@@ -9,8 +9,8 @@
   <link rel="preload" href="/fonts/inter-400.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/jetbrains-mono-700.woff2" as="font" type="font/woff2" crossorigin>
   <!-- /static-nav:fonts -->
-  <link rel="preload" href="/components/styles.css?v=20" as="style">
-<link rel="stylesheet" href="/components/styles.css?v=20">
+  <link rel="preload" href="/components/styles.css?v=21" as="style">
+<link rel="stylesheet" href="/components/styles.css?v=21">
 <link rel="stylesheet" href="/components/asof.css?v=1">
 <script src="/components/asof.js?v=1"></script>
 <link rel="stylesheet" href="/components/states.css?v=1"><script src="/components/states.js?v=1" defer></script>
@@ -102,7 +102,7 @@ main > .breadcrumb{max-width:1400px;margin:12px auto 0;padding:0 var(--sp-lg)}
         <h1 class="sec-title">Commodity Prices Today</h1>
 
         <!--SEED:mk:dup--><style id="mk-dup-css">#pc-card-corn-dec,#pc-card-bean-nov{display:none}</style><!--/SEED-->
-        <span id="price-data-status" style="font-size:0.78rem;color:var(--text-muted)"><!--SEED:mk:status--><time class="asof" data-asof="prices" datetime="2026-10-09T00:31:00Z">Updated Oct 8, 7:31 pm</time> &middot; each change line carries its own close date<!--/SEED--></span>
+        <span id="price-data-status" style="font-size:0.78rem;color:var(--text-muted)"><!--SEED:mk:status--><time class="asof" data-asof="prices" datetime="2026-10-09T03:16:01Z">Updated Oct 8, 10:16 pm</time> &middot; each change line carries its own close date<!--/SEED--></span>
       </div>
 
       <div style="font-size:0.77rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.6rem;margin-top:.25rem">Grain Futures</div>
@@ -117,14 +117,14 @@ main > .breadcrumb{max-width:1400px;margin:12px auto 0;padding:0 var(--sp-lg)}
         <div class="pc" id="pc-card-corn-dec"><div class="pc-head"><div class="pc-name">Corn</div><span class="pc-contract">Dec '26</span></div><div id="pcp-corn-dec" class="pc-price"><!--SEED:mk:pcp-corn-dec-->$5.03<!--/SEED--></div><div id="pcc-corn-dec" class="pc-chg-val nc"><!--SEED:mk:pcc-corn-dec-->▲ +½¢ (+0.10%) &middot; Oct 8<!--/SEED--></div></div>
         <div class="pc">
           <div class="pc-head"><div class="pc-name">Soybeans</div><span class="pc-contract" id="pct-beans"><!--SEED:mk:pct-beans-->Nov '26 &middot; nearby<!--/SEED--></span></div>
-          <div id="pcp-bean-near" class="pc-price"><!--SEED:mk:pcp-bean-near-->$12.96<!--/SEED--></div><div id="pcc-bean-near" class="pc-chg-val nc"><!--SEED:mk:pcc-bean-near-->▼ −1¼¢ (−0.10%) &middot; Oct 8<!--/SEED--></div>
+          <div id="pcp-bean-near" class="pc-price"><!--SEED:mk:pcp-bean-near-->$12.96<!--/SEED--></div><div id="pcc-bean-near" class="pc-chg-val nc"><!--SEED:mk:pcc-bean-near-->▼ −1¾¢ (−0.13%) &middot; Oct 8<!--/SEED--></div>
           <div class="pc-range"><div class="pc-range-labels"><span id="rlo-beans"><!--SEED:mk:rlo-beans-->$10.51<!--/SEED--></span><span>52-wk</span><span id="rhi-beans"><!--SEED:mk:rhi-beans-->$13.35<!--/SEED--></span></div>
           <div class="pc-range-track"><div class="pc-range-fill" id="pcf-bean-near" style="width:0%"></div><div class="pc-range-dot" id="pcd-bean-near" style="left:0%"></div></div></div>
           <div><a href="/soybean-futures-prices" style="font-size:0.77rem;color:var(--gold);text-decoration:none">Full chart &rarr;</a></div>
         </div>
-        <div class="pc" id="pc-card-bean-nov"><div class="pc-head"><div class="pc-name">Beans</div><span class="pc-contract">Nov '26</span></div><div id="pcp-bean-nov" class="pc-price"><!--SEED:mk:pcp-bean-nov-->$12.96<!--/SEED--></div><div id="pcc-bean-nov" class="pc-chg-val nc"><!--SEED:mk:pcc-bean-nov-->▼ −1¼¢ (−0.10%) &middot; Oct 8<!--/SEED--></div></div>
-        <div class="pc"><div class="pc-head"><div class="pc-name">Wheat</div><span class="pc-contract" id="pct-wheat"><!--SEED:mk:pct-wheat-->Dec '26 &middot; nearby<!--/SEED--></span></div><div id="pcp-wheat" class="pc-price"><!--SEED:mk:pcp-wheat-->$6.86<!--/SEED--></div><div id="pcc-wheat" class="pc-chg-val nc"><!--SEED:mk:pcc-wheat-->▼ −¼¢ (−0.04%) &middot; Oct 8<!--/SEED--></div><div><a href="/wheat-futures-prices" style="font-size:0.77rem;color:var(--gold);text-decoration:none">Full chart &rarr;</a></div></div>
-        <div class="pc"><div class="pc-head"><div class="pc-name">Oats</div><span class="pc-contract">ZO</span></div><div id="pcp-oats" class="pc-price"><!--SEED:mk:pcp-oats-->$4.39<!--/SEED--></div><div id="pcc-oats" class="pc-chg-val nc"><!--SEED:mk:pcc-oats-->▲ +10¾¢ (+2.51%) &middot; Oct 8<!--/SEED--></div></div>
+        <div class="pc" id="pc-card-bean-nov"><div class="pc-head"><div class="pc-name">Beans</div><span class="pc-contract">Nov '26</span></div><div id="pcp-bean-nov" class="pc-price"><!--SEED:mk:pcp-bean-nov-->$12.96<!--/SEED--></div><div id="pcc-bean-nov" class="pc-chg-val nc"><!--SEED:mk:pcc-bean-nov-->▼ −1¾¢ (−0.13%) &middot; Oct 8<!--/SEED--></div></div>
+        <div class="pc"><div class="pc-head"><div class="pc-name">Wheat</div><span class="pc-contract" id="pct-wheat"><!--SEED:mk:pct-wheat-->Dec '26 &middot; nearby<!--/SEED--></span></div><div id="pcp-wheat" class="pc-price"><!--SEED:mk:pcp-wheat-->$6.86<!--/SEED--></div><div id="pcc-wheat" class="pc-chg-val nc"><!--SEED:mk:pcc-wheat-->▼ −1¢ (−0.15%) &middot; Oct 8<!--/SEED--></div><div><a href="/wheat-futures-prices" style="font-size:0.77rem;color:var(--gold);text-decoration:none">Full chart &rarr;</a></div></div>
+        <div class="pc"><div class="pc-head"><div class="pc-name">Oats</div><span class="pc-contract">ZO</span></div><div id="pcp-oats" class="pc-price"><!--SEED:mk:pcp-oats-->$4.38<!--/SEED--></div><div id="pcc-oats" class="pc-chg-val nc"><!--SEED:mk:pcc-oats-->▲ +9½¢ (+2.22%) &middot; Oct 8<!--/SEED--></div></div>
         <div class="pc" style="border:1px dashed var(--border-g)"><div class="pc-head"><div class="pc-name">Cash Bids</div></div><div style="font-size:.8rem;color:var(--text-muted);margin:.3rem 0 .6rem;line-height:1.5">Local elevator prices near you</div><a href="/cash-bids" style="font-size:0.795rem;color:var(--gold);font-weight:700;text-decoration:none">Check bids near me &rarr;</a></div>
       </div>
   <style></style><aside class="ag-sponsor-ribbon" id="ag-sponsor"><span class="ag-sponsor-tag">Sponsor this page</span> The whole grain complex checks prices here. One category-exclusive slot. <span class="ag-sponsor-price" data-rate="page">$29/mo &middot; first month free</span> <a href="/sponsor-apply?slot=markets&amp;utm_source=markets&amp;utm_medium=slot">Put your name here &rarr;</a></aside>
@@ -139,17 +139,17 @@ main > .breadcrumb{max-width:1400px;margin:12px auto 0;padding:0 var(--sp-lg)}
 
       <div style="font-size:0.77rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.6rem">Energy &amp; Inputs</div>
       <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.65rem;margin-bottom:1.5rem">
-        <div class="pc"><div class="pc-head"><div class="pc-name">Crude WTI</div></div><div id="pcp-crude" class="pc-price"><!--SEED:mk:pcp-crude-->$90.92<!--/SEED--></div><div id="pcc-crude" class="pc-chg-val nc"><!--SEED:mk:pcc-crude-->▲ +2.64 (+2.99%) &middot; Oct 8<!--/SEED--></div></div>
-        <div class="pc"><div class="pc-head"><div class="pc-name">Natural Gas</div></div><div id="pcp-natgas" class="pc-price"><!--SEED:mk:pcp-natgas-->$3.13<!--/SEED--></div><div id="pcc-natgas" class="pc-chg-val nc"><!--SEED:mk:pcc-natgas-->▼ −0.07 (−2.15%) &middot; Oct 8<!--/SEED--></div></div>
+        <div class="pc"><div class="pc-head"><div class="pc-name">Crude WTI</div></div><div id="pcp-crude" class="pc-price"><!--SEED:mk:pcp-crude-->$90.71<!--/SEED--></div><div id="pcc-crude" class="pc-chg-val nc"><!--SEED:mk:pcc-crude-->▲ +2.43 (+2.75%) &middot; Oct 8<!--/SEED--></div></div>
+        <div class="pc"><div class="pc-head"><div class="pc-name">Natural Gas</div></div><div id="pcp-natgas" class="pc-price"><!--SEED:mk:pcp-natgas-->$3.14<!--/SEED--></div><div id="pcc-natgas" class="pc-chg-val nc"><!--SEED:mk:pcc-natgas-->▼ −0.07 (−2.03%) &middot; Oct 8<!--/SEED--></div></div>
         <div class="pc"><div class="pc-head"><div class="pc-name">Soybean Meal</div></div><div id="pcp-meal" class="pc-price"><!--SEED:mk:pcp-meal-->$360.40<!--/SEED--></div><div id="pcc-meal" class="pc-chg-val nc"><!--SEED:mk:pcc-meal-->▼ −5.50 (−1.50%) &middot; Oct 8<!--/SEED--></div></div>
         <div class="pc"><div class="pc-head"><div class="pc-name">Soybean Oil</div></div><div id="pcp-oil" class="pc-price"><!--SEED:mk:pcp-oil-->$67.74<!--/SEED--></div><div id="pcc-oil" class="pc-chg-val nc"><!--SEED:mk:pcc-oil-->▲ +0.32 (+0.47%) &middot; Oct 8<!--/SEED--></div></div>
       </div>
 
       <div style="font-size:0.77rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.6rem">Metals &amp; Macro</div>
       <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.65rem;margin-bottom:.5rem">
-        <div class="pc"><div class="pc-head"><div class="pc-name">Gold</div></div><div id="pc-gold" class="pc-price"><!--SEED:mk:pc-gold-->$4,194.50<!--/SEED--></div><div id="pcc-gold" class="pc-chg-val nc"><!--SEED:mk:pcc-gold-->▲ +53.80 (+1.30%) &middot; Oct 8<!--/SEED--></div></div>
-        <div class="pc"><div class="pc-head"><div class="pc-name">Silver</div></div><div id="pc-silver" class="pc-price"><!--SEED:mk:pc-silver-->$60.26<!--/SEED--></div><div id="pcc-silver" class="pc-chg-val nc"><!--SEED:mk:pcc-silver-->▲ +0.36 (+0.59%) &middot; Oct 8<!--/SEED--></div></div>
-        <div class="pc"><div class="pc-head"><div class="pc-name">Dollar Index</div></div><div id="pcp-dxy" class="pc-price"><!--SEED:mk:pcp-dxy-->$101.99<!--/SEED--></div><div id="pcc-dxy" class="pc-chg-val nc"><!--SEED:mk:pcc-dxy-->▼ −0.25 (−0.24%) &middot; Oct 8<!--/SEED--></div></div>
+        <div class="pc"><div class="pc-head"><div class="pc-name">Gold</div></div><div id="pc-gold" class="pc-price"><!--SEED:mk:pc-gold-->$4,201.10<!--/SEED--></div><div id="pcc-gold" class="pc-chg-val nc"><!--SEED:mk:pcc-gold-->▲ +60.40 (+1.46%) &middot; Oct 8<!--/SEED--></div></div>
+        <div class="pc"><div class="pc-head"><div class="pc-name">Silver</div></div><div id="pc-silver" class="pc-price"><!--SEED:mk:pc-silver-->$60.41<!--/SEED--></div><div id="pcc-silver" class="pc-chg-val nc"><!--SEED:mk:pcc-silver-->▲ +0.51 (+0.85%) &middot; Oct 8<!--/SEED--></div></div>
+        <div class="pc"><div class="pc-head"><div class="pc-name">Dollar Index</div></div><div id="pcp-dxy" class="pc-price"><!--SEED:mk:pcp-dxy-->$102.02<!--/SEED--></div><div id="pcc-dxy" class="pc-chg-val nc"><!--SEED:mk:pcc-dxy-->▼ −0.22 (−0.21%) &middot; Oct 8<!--/SEED--></div></div>
         <div class="pc"><div class="pc-head"><div class="pc-name">S&amp;P 500</div></div><div id="pcp-sp500" class="pc-price"><!--SEED:mk:pcp-sp500-->$7,765.36<!--/SEED--></div><div id="pcc-sp500" class="pc-chg-val nc"><!--SEED:mk:pcc-sp500-->▼ −36.41 (−0.47%) &middot; Oct 8<!--/SEED--></div></div>
       </div>
 

@@ -882,8 +882,8 @@ def head(title, desc, canon, extra_ld=None, robots=None, image=None, alt=None, f
   <meta name="theme-color" content="#0a0c0d">
   <!-- 2026-09-30: fonts are self-hosted in styles.css now, no preconnect needed -->
   {GA}
-  <link rel="preload" href="/components/styles.css?v=20" as="style">
-  <link rel="stylesheet" href="/components/styles.css?v=20">
+  <link rel="preload" href="/components/styles.css?v=21" as="style">
+  <link rel="stylesheet" href="/components/styles.css?v=21">
   <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
   <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
