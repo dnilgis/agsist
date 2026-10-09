@@ -1,8 +1,8 @@
 {
- "generated": "2026-10-09T16:05:58Z",
+ "generated": "2026-10-09T17:22:01Z",
  "release": "2026-10-09",
- "source": "USDA NASS Quick Stats \u2014 https://quickstats.nass.usda.gov/api/",
- "note": "What USDA actually printed, read from the NASS series the WASDE yield figures come from. Written only after the release is public. Metrics with no NASS series are listed in `unavailable` and are filled by hand or not at all.",
+ "source": "USDA NASS Quick Stats (yields) -- https://quickstats.nass.usda.gov/api/; USDA WASDE PDF (stocks, production, price) -- https://www.usda.gov/oce/commodity/wasde/wasde1026.pdf",
+ "note": "What USDA actually printed. Yields are read from the NASS series the WASDE yield figures come from; ending stocks, production and the season-average farm price are read from the WASDE PDF's U.S. supply and use tables (scripts/read_wasde_pdf.py). Written only after the release is public. `wasde_pdf` carries the whole U.S. corn, soybean and wheat block as printed, in the PDF's own units, with last month's column beside it.",
  "metrics": [
   {
    "key": "corn_yield_2627",
@@ -27,7 +27,163 @@
     "year": 2026,
     "period": "YEAR - OCT FORECAST"
    }
+  },
+  {
+   "key": "corn_2627",
+   "label": "2026/27 corn ending stocks",
+   "value": 1.849,
+   "unit": "bil bu",
+   "consensus": 1.677,
+   "wasde_pdf": {
+    "report": "WASDE-676",
+    "column": "2026/27 Proj. Oct"
+   }
+  },
+  {
+   "key": "soy_2627",
+   "label": "2026/27 soybean ending stocks",
+   "value": 315,
+   "unit": "mil bu",
+   "consensus": 311,
+   "wasde_pdf": {
+    "report": "WASDE-676",
+    "column": "2026/27 Proj. Oct"
+   }
+  },
+  {
+   "key": "wheat_2627",
+   "label": "2026/27 wheat ending stocks",
+   "value": 740,
+   "unit": "mil bu",
+   "consensus": 722,
+   "wasde_pdf": {
+    "report": "WASDE-676",
+    "column": "2026/27 Proj. Oct"
+   }
+  },
+  {
+   "key": "corn_prod_2627",
+   "label": "2026/27 corn production",
+   "value": 16.034,
+   "unit": "bil bu",
+   "consensus": 15.716,
+   "wasde_pdf": {
+    "report": "WASDE-676",
+    "column": "2026/27 Proj. Oct"
+   }
+  },
+  {
+   "key": "soy_prod_2627",
+   "label": "2026/27 soybean production",
+   "value": 4562,
+   "unit": "mil bu",
+   "consensus": 4541,
+   "wasde_pdf": {
+    "report": "WASDE-676",
+    "column": "2026/27 Proj. Oct"
+   }
+  },
+  {
+   "key": "wheat_prod_2627",
+   "label": "2026/27 wheat production",
+   "value": 1534,
+   "unit": "mil bu",
+   "consensus": null,
+   "wasde_pdf": {
+    "report": "WASDE-676",
+    "column": "2026/27 Proj. Oct"
+   }
   }
  ],
- "unavailable": []
+ "unavailable": [
+  {
+   "metric": "2026/27 corn yield",
+   "why": "already filled in"
+  },
+  {
+   "metric": "2026/27 soybean yield",
+   "why": "already filled in"
+  }
+ ],
+ "wasde_pdf": {
+  "report": "WASDE-676",
+  "date": "2026-10-09",
+  "crops": {
+   "wheat": {
+    "marketing_year": "2026/27",
+    "month": "Oct",
+    "prev_month": "Sep",
+    "yield": {
+     "value": 48.1,
+     "prev": 47.8,
+     "unit": "bu/acre"
+    },
+    "production": {
+     "value": 1534,
+     "prev": 1531,
+     "unit": "mil bu"
+    },
+    "ending_stocks": {
+     "value": 740,
+     "prev": 717,
+     "unit": "mil bu"
+    },
+    "price": {
+     "value": 6.3,
+     "prev": 6.4,
+     "unit": "$/bu"
+    }
+   },
+   "corn": {
+    "marketing_year": "2026/27",
+    "month": "Oct",
+    "prev_month": "Sep",
+    "yield": {
+     "value": 181.2,
+     "prev": 178.5,
+     "unit": "bu/acre"
+    },
+    "production": {
+     "value": 16034,
+     "prev": 15800,
+     "unit": "mil bu"
+    },
+    "ending_stocks": {
+     "value": 1849,
+     "prev": 1567,
+     "unit": "mil bu"
+    },
+    "price": {
+     "value": 4.7,
+     "prev": 4.8,
+     "unit": "$/bu"
+    }
+   },
+   "soybeans": {
+    "marketing_year": "2026/27",
+    "month": "Oct",
+    "prev_month": "Sep",
+    "yield": {
+     "value": 53.1,
+     "prev": 52.8,
+     "unit": "bu/acre"
+    },
+    "production": {
+     "value": 4562,
+     "prev": 4535,
+     "unit": "mil bu"
+    },
+    "ending_stocks": {
+     "value": 315,
+     "prev": 310,
+     "unit": "mil bu"
+    },
+    "price": {
+     "value": 12.0,
+     "prev": 12.0,
+     "unit": "$/bu"
+    }
+   }
+  }
+ }
 }

@@ -199,10 +199,22 @@ def numbers_el(rows):
             printed = '<td class="n"><b>' + _sig(r["actual"]) + u + "</b>" + tag + in_rng + "</td>"
         body.append("<tr><td>" + _esc4(r.get("label")) + rng + '</td><td class="n">' + exp
                     + '</td><td class="n">' + now + "</td>" + printed + "</tr>")
-    src = next((r.get("source") for r in rows if r.get("source")), None)
+    # One link per distinct survey, same as numbersEl(): a report's yields and its
+    # stocks can come from two surveys, and one link would credit both to the first.
+    srcs = []
+    for r in rows:
+        if r.get("source") and r["source"] not in srcs:
+            srcs.append(r["source"])
+    src = srcs[0] if srcs else None
+    if len(srcs) > 1:
+        links = "Survey sources: " + ", ".join(
+            '<a href="' + _esc4(s) + '" rel="nofollow noopener" target="_blank">'
+            + _esc4(re.sub(r"^https?://(www\.)?", "", s).split("/")[0]) + "</a>" for s in srcs)
+    else:
+        links = ('<a href="' + _esc4(src) + '" rel="nofollow noopener" target="_blank">'
+                 'Survey source</a>')
     note = ('<div class="src">Trade estimates are a published pre-report survey, typed '
-            'from the source and never computed here. <a href="' + _esc4(src) + '" '
-            'rel="nofollow noopener" target="_blank">Survey source</a>. Graded against the '
+            'from the source and never computed here. ' + links + '. Graded against the '
             'survey\u2019s low-high range when it is on file: below it bullish, above it '
             'bearish, inside it in line. With no range, against the trade average: within '
             '0.5% for a yield, 2% otherwise.</div>') if src else ""

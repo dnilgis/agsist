@@ -119,6 +119,19 @@ test("before the print, both say so and neither grades anything", () => {
   assert.doesNotMatch(js, /class="v (bull|bear|flat)"/);
 });
 
+// October 2026: the yields came from a Reuters survey (via Pro Farmer) and the
+// ending stocks from a Dow Jones survey (via DTN). One "Survey source" link
+// would have credited the stocks figures to the wrong survey.
+test("two surveys on one report get one link each, in both", () => {
+  const two = ROWS.map((r, i) => i === 2
+    ? { ...r, actual: 2200, surprise: "bearish", why: "", source: "https://www.dtnpf.com/x/y?z=1&q=2" }
+    : r);
+  const js = jsStrip(two);
+  assert.equal(pyStrip(two), js);
+  assert.match(js, /Survey sources: <a href="https:\/\/example\.test\/a\?x=1&amp;y=2"[^>]*>example\.test<\/a>, <a href="https:\/\/www\.dtnpf\.com\/x\/y\?z=1&amp;q=2"[^>]*>dtnpf\.com<\/a>\./);
+  assert.doesNotMatch(jsStrip(ROWS), /Survey sources/);
+});
+
 test("no rows is no strip, in both, rather than an empty box", () => {
   assert.equal(jsStrip([]), "");
   assert.equal(pyStrip([]), "");

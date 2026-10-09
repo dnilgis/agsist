@@ -198,6 +198,60 @@
       "actual": 53.1,
       "unit": "bu/acre",
       "reaction": ""
+    },
+    {
+      "date": "2026-10-09",
+      "report": "October WASDE",
+      "metric": "2026/27 corn ending stocks",
+      "expected": 1.677,
+      "actual": 1.849,
+      "unit": "bil bu",
+      "reaction": ""
+    },
+    {
+      "date": "2026-10-09",
+      "report": "October WASDE",
+      "metric": "2026/27 soybean ending stocks",
+      "expected": 311,
+      "actual": 315,
+      "unit": "mil bu",
+      "reaction": ""
+    },
+    {
+      "date": "2026-10-09",
+      "report": "October WASDE",
+      "metric": "2026/27 wheat ending stocks",
+      "expected": 722,
+      "actual": 740,
+      "unit": "mil bu",
+      "reaction": ""
+    },
+    {
+      "date": "2026-10-09",
+      "report": "October WASDE",
+      "metric": "2026/27 corn production",
+      "expected": 15.716,
+      "actual": 16.034,
+      "unit": "bil bu",
+      "reaction": ""
+    },
+    {
+      "date": "2026-10-09",
+      "report": "October WASDE",
+      "metric": "2026/27 soybean production",
+      "expected": 4541,
+      "actual": 4562,
+      "unit": "mil bu",
+      "reaction": ""
+    },
+    {
+      "date": "2026-10-09",
+      "report": "October WASDE",
+      "metric": "2026/27 wheat production",
+      "expected": null,
+      "actual": 1534,
+      "unit": "mil bu",
+      "reaction": ""
     }
   ]
 }

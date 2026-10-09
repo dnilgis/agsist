@@ -8,9 +8,11 @@ plain list means everyone, the v5.4 default). For each report released today:
 what USDA printed against the trade average and range, as the site's own
 data/whats-priced-in.json already records them (built by
 scripts/build_whats_priced_in.py from the typed-in pre-report survey and
-fetch_wasde.py's NASS read), the one-line reaction when the file carries one,
-and the futures move since the release from data/prices.json, labelled with
-the times of both prices.
+fetch_wasde.py's NASS and WASDE PDF read), the one-line reaction when the file
+carries one, USDA's ending stocks and farm price against last month for each
+crop when the WASDE PDF was read (data/wasde.json `wasde_pdf`), and the
+futures move since the release from data/prices.json, labelled with the times
+of both prices.
 
 WHEN IT SENDS, AND WHEN IT DOES NOT.
   * Only rows dated TODAY (Central time) with a USDA figure filled in. No such
@@ -185,6 +187,54 @@ def row_line(h):
     return s
 
 
+# ── USDA's own month-over-month changes, off the WASDE PDF ───────────────
+MONTH_NAME = {"Jan": "January", "Feb": "February", "Mar": "March", "Apr": "April", "May": "May",
+              "Jun": "June", "Jul": "July", "Aug": "August", "Sep": "September", "Oct": "October",
+              "Nov": "November", "Dec": "December"}
+CROP_NAME = (("corn", "Corn"), ("soybeans", "Soybeans"), ("wheat", "Wheat"))
+
+
+def balance_lines(day, wasde=None):
+    """One line per crop: ending stocks and the season-average farm price, each
+    against last month, as the WASDE PDF printed them (data/wasde.json's
+    `wasde_pdf`, written by fetch_wasde.py). [] when the file is not today's
+    or carries no PDF read. Nothing here is computed but the difference of two
+    printed figures."""
+    if wasde is None:
+        try:
+            wasde = json.load(open(WASDE))
+        except Exception:
+            wasde = {}
+    pdf = wasde.get("wasde_pdf") or {}
+    if str(wasde.get("release")) != day.isoformat() or str(pdf.get("date")) != day.isoformat():
+        return []
+    out = []
+    for key, word in CROP_NAME:
+        t = (pdf.get("crops") or {}).get(key) or {}
+        prev_m = MONTH_NAME.get(t.get("prev_month") or "", "")
+        bits = []
+        st = t.get("ending_stocks") or {}
+        v, p = num(st.get("value")), num(st.get("prev"))
+        if v is not None:
+            b = "ending stocks %s million bushels" % format(int(round(v)), ",")
+            if p is not None and prev_m:
+                d = int(round(v - p))
+                b += (", unchanged from " + prev_m) if d == 0 else (
+                    ", %s %s million from %s" % ("up" if d > 0 else "down", format(abs(d), ","), prev_m))
+            bits.append(b)
+        pr = t.get("price") or {}
+        v, p = num(pr.get("value")), num(pr.get("prev"))
+        if v is not None:
+            b = "average farm price $%.2f a bushel" % v
+            if p is not None and prev_m:
+                c = int(round((v - p) * 100))
+                b += ", unchanged" if c == 0 else (", %s %d cents" % ("up" if c > 0 else "down", abs(c)))
+            bits.append(b)
+        if bits:
+            out.append("%s %s: %s." % (t.get("marketing_year") or "", word, "; ".join(bits)))
+    return out
+
+
 # ── the price move ────────────────────────────────────────────────────────
 def _git(*args):
     return subprocess.run(["git", "-C", str(REPO)] + list(args), capture_output=True, text=True, timeout=60)
@@ -270,9 +320,10 @@ def unsub_url(email):
     return base.rstrip("/") + "/unsubscribe?e=" + urllib.parse.quote(email.lower()) + "&t=" + t
 
 
-def compose(day, reports, moves):
+def compose(day, reports, moves, balance=None):
     """(subject, text, html) for today's reports. Same for every reader but
-    the unsubscribe link, which build_email adds."""
+    the unsubscribe link, which build_email adds. `balance` is balance_lines():
+    USDA's stocks and price against last month, printed under the WASDE."""
     names = list(reports)
     subject = "USDA vs the trade: " + " + ".join(names)
     L = ["AGSIST · USDA VS THE TRADE", day.strftime("%A, %B ") + str(day.day) + day.strftime(", %Y")]
@@ -284,6 +335,8 @@ def compose(day, reports, moves):
             if h.get("reaction"):
                 # No em dashes in the email, whatever the typed reaction carries.
                 L.append(re.sub(r"\s*\u2014\s*", ", ", str(h["reaction"])).strip(", "))
+        if balance and kind_of(name) == "WASDE":
+            L += ["", "USDA'S STOCKS AND PRICE, AGAINST LAST MONTH"] + list(balance)
     if moves:
         L += ["", "THE PRICE MOVE"] + moves
     L += ["", "Trade estimates are the published pre-report survey, typed in from its source; nothing here is estimated by AGSIST.",
@@ -425,7 +478,8 @@ def main(argv=()):
 
     now_j = json.load(open(REPO / PRICES_REL))
     moves = price_moves(now_j, prices_before(rel), rel)
-    b = compose(day, reports, moves)
+    balance = balance_lines(day) if any(kind_of(n) == "WASDE" for n in reports) else []
+    b = compose(day, reports, moves, balance)
 
     base, token = env("LIST_URL"), env("LIST_TOKEN")
     if base and token:
@@ -549,6 +603,44 @@ def _selftest():
     body = m.get_body(("plain",)).get_content()
     ok(FORWARD_URL in body and "PO Box 243" in body, "forward link and postal address")
     ok("{{FOOT}}" not in m.get_body(("html",)).get_content(), "html footer filled")
+
+    # OCTOBER 9 2026: STOCKS JOIN THE YIELDS UNDER THE SAME REPORT NAME.
+    # The yields-only email went out that day (127/127) and set
+    # report:2026-10-09:october-wasde. Re-grading added six rows dated the same
+    # day; they must land under the same report name, so the same flag says
+    # "already sent" and nobody gets a second October WASDE email.
+    w10 = json.load(open(WASDE)) if WASDE.exists() else {}
+    r10 = todays_reports(date(2026, 10, 9), wpi, w10)
+    ok(list(r10) == ["October WASDE"], "Oct 9: every row under one report, %r" % list(r10))
+    ok(_flag_key(date(2026, 10, 9), "October WASDE") == "report:2026-10-09:october-wasde",
+       "the day-marker set by the 127-reader send is the one a rerun checks")
+    labels = [h.get("metric") for h in r10.get("October WASDE", [])]
+    ok("2026/27 corn ending stocks" in labels and "2026/27 corn yield" in labels,
+       "a future send carries the stocks rows beside the yields: %r" % labels)
+    sl = [row_line(h) for h in r10.get("October WASDE", []) if h.get("metric") == "2026/27 corn ending stocks"]
+    ok(sl == ["2026/27 corn ending stocks: USDA 1.849 bil bu. Trade average 1.677. Graded bearish."], repr(sl))
+    pdf = {"release": "2026-10-09", "wasde_pdf": {"date": "2026-10-09", "crops": {
+        "corn": {"marketing_year": "2026/27", "prev_month": "Sep",
+                 "ending_stocks": {"value": 1849, "prev": 1567}, "price": {"value": 4.7, "prev": 4.8}},
+        "soybeans": {"marketing_year": "2026/27", "prev_month": "Sep",
+                     "ending_stocks": {"value": 315, "prev": 310}, "price": {"value": 12.0, "prev": 12.0}},
+        "wheat": {"marketing_year": "2026/27", "prev_month": "Sep",
+                  "ending_stocks": {"value": 740, "prev": 717}, "price": {"value": 6.3, "prev": 6.4}}}}}
+    bl = balance_lines(date(2026, 10, 9), pdf)
+    ok(bl == ["2026/27 Corn: ending stocks 1,849 million bushels, up 282 million from September; "
+              "average farm price $4.70 a bushel, down 10 cents.",
+              "2026/27 Soybeans: ending stocks 315 million bushels, up 5 million from September; "
+              "average farm price $12.00 a bushel, unchanged.",
+              "2026/27 Wheat: ending stocks 740 million bushels, up 23 million from September; "
+              "average farm price $6.30 a bushel, down 10 cents."], repr(bl))
+    ok(balance_lines(date(2026, 11, 10), pdf) == [], "October's PDF is not printed under November's report")
+    ok(balance_lines(date(2026, 10, 9), {"release": "2026-10-09"}) == [], "no PDF read, no lines")
+    s10, t10, h10 = compose(date(2026, 10, 9), r10, [], bl)
+    ok("USDA'S STOCKS AND PRICE, AGAINST LAST MONTH" in t10 and "$4.70" in t10, "the email carries the lines")
+    ok("\u2014" not in t10 and "\u2014" not in h10, "and no em dash anywhere in it")
+    ok(">USDA&#x27;S STOCKS" in h10 or ">USDA'S STOCKS" in h10, "the heading is styled as a heading")
+    s9, t9, _ = compose(date(2026, 9, 30), r, [], bl)
+    ok("STOCKS AND PRICE" not in t9, "a Grain Stocks email does not carry WASDE lines")
     if fails:
         for f in fails:
             print("FAIL", f)

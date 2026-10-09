@@ -47,6 +47,16 @@ different values is a refusal naming both and the periods they came under. "Has
 the report landed" is still a question the data answers; it is just answered by
 whether a value comes back rather than by a string nobody has verified.
 
+AND WHAT THE PDF ADDS (2026-10-09)
+
+NASS has no ending stocks, no season-average price, and the October WASDE
+graded only its two yields because of it. Ending stocks, production and price
+now come from the WASDE PDF itself (scripts/read_wasde_pdf.py), when this
+release's file is on disk in data/wasde-pdf/. wasde-watch.yml downloads it
+after the release and never before. NASS stays the yield source; the PDF's
+yield is only checked against it. Units follow data/analyst-estimates.json:
+corn stocks and production in billion bushels, soybeans and wheat in million.
+
 WHAT IT REFUSES TO DO
 
   • Write anything before the report is public. scripts/usda_dates.py already
@@ -83,11 +93,13 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 import usda_dates  # noqa: E402
+import read_wasde_pdf  # noqa: E402
 
 ROOT = HERE.parent
 EST_PATH = ROOT / "data" / "analyst-estimates.json"
 HIST_PATH = ROOT / "data" / "wpi-history.json"
 OUT_PATH = ROOT / "data" / "wasde.json"
+PDF_DIR = ROOT / "data" / "wasde-pdf"
 
 API = "https://quickstats.nass.usda.gov/api/api_GET/"
 API_KEY = os.environ.get("NASS_API_KEY", "")
@@ -292,6 +304,53 @@ def plan(est, release):
     return jobs, skipped
 
 
+# ── THE PDF: STOCKS, PRODUCTION AND PRICE ──────────────────────────────────
+#
+# Added 2026-10-09. NASS answers the yields and nothing else, so the October
+# WASDE graded two lines and the report-day email carried two lines, while the
+# trade had been surveyed on ending stocks too. The WASDE PDF prints all of it;
+# scripts/read_wasde_pdf.py reads it and refuses anything that does not add up.
+#
+# NASS STAYS THE YIELD SOURCE. A yield metric is never filled from the PDF; the
+# PDF's yield is only compared with NASS's and a disagreement is printed as a
+# warning, because the two are meant to be the same number.
+def plan_pdf(est, release, board):
+    """Metrics in this release's block the PDF can fill: (jobs, current, notes).
+
+    `current` maps a key to last month's figure, for metrics whose
+    `usda_current` is empty -- the PDF's previous-month column is exactly that.
+    `notes` are yield cross-checks against NASS."""
+    jobs, current, notes = [], {}, []
+    iso = release.isoformat()
+    for rep in est.get("reports", []):
+        if (rep.get("date") or "") != iso:
+            continue
+        for met in rep.get("metrics", []):
+            b = board.get(met.get("key"))
+            if not b:
+                continue
+            if b["row"] == "yield":
+                act = met.get("actual")
+                if act is not None and abs(float(act) - b["value"]) > 1e-9:
+                    notes.append("%s: NASS %s, WASDE PDF %s" % (b["label"], act, b["value"]))
+                continue
+            if met.get("unit") and met["unit"] != b["unit"]:
+                # The board and the PDF reader must agree on units, or a
+                # billion-bushel consensus is graded against a million-bushel print.
+                notes.append("%s: board unit %r, PDF unit %r -- not filled"
+                             % (b["label"], met["unit"], b["unit"]))
+                continue
+            if met.get("usda_current") is None and b["prev"] is not None:
+                current[met["key"]] = b["prev"]
+            if met.get("actual") is not None:
+                continue
+            jobs.append({"report": rep.get("report", ""), "date": iso, "key": met["key"],
+                         "label": met.get("label") or b["label"], "unit": b["unit"],
+                         "consensus": met.get("consensus"), "value": b["value"],
+                         "source": "pdf", "column": b["column"]})
+    return jobs, current, notes
+
+
 def apply_actuals(est, hist, filled):
     """Write each number into both files that need it, and say what changed.
 
@@ -354,15 +413,58 @@ def main(argv=None):
     est = json.loads(EST_PATH.read_text())
     hist = json.loads(HIST_PATH.read_text()) if HIST_PATH.exists() else {"history": []}
     jobs, skipped = plan(est, release)
+
+    # THE PDF, when this release's file is on disk (.github/workflows/
+    # wasde-watch.yml downloads it after the release, never before).
+    parsed, pdf_jobs, pdf_current = None, [], {}
+    pdf = PDF_DIR / ("wasde%s.pdf" % release.strftime("%m%y"))
+    if pdf.exists():
+        try:
+            parsed = read_wasde_pdf.parse_pdf(pdf)
+            if parsed["date"] != release.isoformat():
+                print("  REFUSED  %s is dated %s, not %s; not read" % (pdf.name, parsed["date"], release))
+                print("::error title=WASDE PDF is the wrong report::%s is dated %s" % (pdf.name, parsed["date"]))
+                parsed = None
+        except read_wasde_pdf.PdfRefused as ex:
+            print("  REFUSED  %s: %s" % (pdf.name, ex))
+            print("::error title=WASDE PDF not read::%s" % ex)
+            parsed = None
+    else:
+        print("  no %s on disk; stocks, production and price wait for it" % pdf.name)
+    if parsed:
+        pdf_jobs, pdf_current, notes = plan_pdf(est, release, read_wasde_pdf.board_metrics(parsed))
+        for n in notes:
+            print("  CHECK    %s" % n)
+            print("::warning title=WASDE PDF and the board disagree::%s" % n)
+        # A stocks line NASS cannot answer is no longer "skipped" once the PDF has.
+        board = read_wasde_pdf.board_metrics(parsed)
+        answered = {m.get("label") for rep in est.get("reports", []) if rep.get("date") == release.isoformat()
+                    for m in rep.get("metrics", []) if m.get("key") in board}
+        skipped = [(lab, why) for lab, why in skipped
+                   if not (lab in answered and why.startswith("no NASS series"))]
+        print("  read     %s, released %s" % (parsed["report"], parsed["date"]))
     for label, why in skipped:
         print("  skipped  %-32s %s" % (label[:32], why))
-    if not jobs:
+    # THE PRINTED BLOCK IS RECORDED EVEN WHEN NO BOARD METRIC WANTS IT. The
+    # report-day email prints USDA's stocks and price against last month from
+    # it, and a month with no stocks survey on the board still has those.
+    pdf_record = False
+    if parsed:
+        try:
+            on_file = json.loads(OUT_PATH.read_text()) if OUT_PATH.exists() else {}
+        except ValueError:
+            on_file = {}
+        pdf_record = not (on_file.get("release") == release.isoformat()
+                          and on_file.get("wasde_pdf") == parsed)
+    if not jobs and not pdf_jobs and not pdf_current and not pdf_record:
         print("  nothing to fill for %s." % release)
         return 0
-    if not API_KEY:
+    if jobs and not API_KEY:
         print("  NASS_API_KEY is not set. Get a free key at "
               "https://quickstats.nass.usda.gov/api/ and add it as a repository secret.")
-        return 1
+        if not pdf_jobs:
+            return 1
+        jobs = []
 
     filled, waiting, refused = [], [], []
     for j in jobs:
@@ -400,6 +502,10 @@ def main(argv=None):
         filled.append(j)
         print("  read     %-32s %s %s  (NASS %s %s)"
               % (j["label"][:32], value, j["unit"], j["year"], j["period"]))
+    for j in pdf_jobs:
+        filled.append(j)
+        print("  read     %-32s %s %s  (%s, %s)"
+              % (j["label"][:32], j["value"], j["unit"], parsed["report"], j["column"]))
     for label, why in waiting:
         print("  waiting  %-32s %s" % (label[:32], why))
     for label, why in refused:
@@ -412,7 +518,7 @@ def main(argv=None):
         print("  is red on purpose so it is not mistaken for a quiet one.")
         return 1
 
-    if not filled:
+    if not filled and not pdf_current and not pdf_record:
         # THIS IS THE NORMAL ANSWER BEFORE THE RELEASE LANDS, and it is not a
         # failure. The watcher runs every five minutes inside the window; the
         # run that finds nothing exits 0 so a red tick means something is
@@ -421,18 +527,53 @@ def main(argv=None):
         return 0
 
     changed = apply_actuals(est, hist, filled)
+    if pdf_record:
+        changed.append("the %s U.S. corn, soybean and wheat block in %s" % (parsed["report"], OUT_PATH.name))
+    for rep in est.get("reports", []):
+        if rep.get("date") != release.isoformat():
+            continue
+        for met in rep.get("metrics", []):
+            if met.get("key") in pdf_current and met.get("usda_current") is None:
+                met["usda_current"] = pdf_current[met["key"]]
+                changed.append("usda_current %s = %s (last month's WASDE column)"
+                               % (met.get("label"), pdf_current[met["key"]]))
     stamp = now.strftime("%Y-%m-%dT%H:%M:%SZ")
+    # ONE FILE PER RELEASE, ADDED TO, NEVER CUT. The yields usually land from
+    # NASS a run before the PDF is read; a later run rewriting wasde.json from
+    # only what it filled would drop them.
+    old = {}
+    if OUT_PATH.exists():
+        try:
+            old = json.loads(OUT_PATH.read_text())
+        except ValueError:
+            old = {}
+    if old.get("release") != release.isoformat():
+        old = {}
+    metrics = {m["key"]: m for m in old.get("metrics", []) if m.get("key")}
+    for f in filled:
+        row = {"key": f["key"], "label": f["label"], "value": f["value"],
+               "unit": f["unit"], "consensus": f["consensus"]}
+        if f.get("source") == "pdf":
+            row["wasde_pdf"] = {"report": parsed["report"], "column": f["column"]}
+        else:
+            row["nass"] = {"short_desc": f["short_desc"], "year": f["year"], "period": f["period"]}
+        metrics[f["key"]] = row
     doc = {"generated": stamp, "release": release.isoformat(),
-           "source": "USDA NASS Quick Stats — https://quickstats.nass.usda.gov/api/",
-           "note": ("What USDA actually printed, read from the NASS series the WASDE "
-                    "yield figures come from. Written only after the release is public. "
-                    "Metrics with no NASS series are listed in `unavailable` and are "
-                    "filled by hand or not at all."),
-           "metrics": [{"key": f["key"], "label": f["label"], "value": f["value"],
-                        "unit": f["unit"], "consensus": f["consensus"],
-                        "nass": {"short_desc": f["short_desc"], "year": f["year"],
-                                 "period": f["period"]}} for f in filled],
+           "source": ("USDA NASS Quick Stats (yields) -- https://quickstats.nass.usda.gov/api/; "
+                      "USDA WASDE PDF (stocks, production, price) -- "
+                      + read_wasde_pdf.URLS[0].format(mmyy=release.strftime("%m%y"))),
+           "note": ("What USDA actually printed. Yields are read from the NASS series the WASDE "
+                    "yield figures come from; ending stocks, production and the season-average "
+                    "farm price are read from the WASDE PDF's U.S. supply and use tables "
+                    "(scripts/read_wasde_pdf.py). Written only after the release is public. "
+                    "`wasde_pdf` carries the whole U.S. corn, soybean and wheat block as printed, "
+                    "in the PDF's own units, with last month's column beside it."),
+           "metrics": list(metrics.values()),
            "unavailable": [{"metric": m, "why": w} for m, w in skipped + waiting]}
+    if parsed:
+        doc["wasde_pdf"] = parsed
+    elif old.get("wasde_pdf"):
+        doc["wasde_pdf"] = old["wasde_pdf"]
     if a.dry_run:
         print("\n--dry-run: would write %d change(s):" % len(changed))
         for c in changed:
@@ -624,9 +765,10 @@ def selftest():
     # A test whose answer depends on which figures happen to be on file is not
     # testing the reader. Two metrics, both empty, in a temporary file.
     import unittest.mock as _mock, tempfile as _tf
-    global API_KEY, EST_PATH, HIST_PATH, OUT_PATH
-    _saved = (API_KEY, EST_PATH, HIST_PATH, OUT_PATH)
+    global API_KEY, EST_PATH, HIST_PATH, OUT_PATH, PDF_DIR
+    _saved = (API_KEY, EST_PATH, HIST_PATH, OUT_PATH, PDF_DIR)
     _dir = Path(_tf.mkdtemp())
+    PDF_DIR = _dir  # no PDF here: these two runs are about NASS alone
     (_dir / "est.json").write_text(json.dumps({"reports": [{
         "report": "Fixture WASDE", "date": "2026-09-11", "metrics": [
             {"key": "corn_yield_2627", "label": "2026/27 corn yield",
@@ -662,7 +804,7 @@ def selftest():
         check(not (_dir / "wasde.json").exists(),
               "a refused or empty run writes no output file at all")
     finally:
-        API_KEY, EST_PATH, HIST_PATH, OUT_PATH = _saved
+        API_KEY, EST_PATH, HIST_PATH, OUT_PATH, PDF_DIR = _saved
 
 
     # THE DISCOVERY CALL MUST DROP THE PIN, NOT SEND "None".
@@ -706,6 +848,112 @@ def selftest():
     check(_v is None, "two different values are still refused, never picked between")
     check("YEAR - SEP FORECAST=178.5" in _why and "YEAR - AUG FORECAST=180.7" in _why,
           "and the refusal pairs each figure with the period it came under", _why)
+
+    print()
+    print("THE PDF FILLS STOCKS, PRODUCTION AND PRICE; NASS KEEPS THE YIELDS")
+    board = {
+        "corn_yield_2627": {"key": "corn_yield_2627", "label": "2026/27 corn yield", "value": 181.2,
+                            "prev": 178.5, "unit": "bu/acre", "row": "yield", "column": "x"},
+        "corn_2627": {"key": "corn_2627", "label": "2026/27 corn ending stocks", "value": 1.849,
+                      "prev": 1.567, "unit": "bil bu", "row": "ending_stocks", "column": "2026/27 Proj. Oct"},
+        "soy_2627": {"key": "soy_2627", "label": "2026/27 soybean ending stocks", "value": 315.0,
+                     "prev": 310.0, "unit": "mil bu", "row": "ending_stocks", "column": "x"},
+        "wheat_2627": {"key": "wheat_2627", "label": "2026/27 wheat ending stocks", "value": 740.0,
+                       "prev": 717.0, "unit": "mil bu", "row": "ending_stocks", "column": "x"},
+    }
+    est3 = {"reports": [{"report": "October WASDE", "date": "2026-10-09", "metrics": [
+        {"key": "corn_yield_2627", "label": "2026/27 corn yield", "unit": "bu/acre",
+         "consensus": 177.8, "actual": 181.0},
+        {"key": "corn_2627", "label": "2026/27 corn ending stocks", "unit": "bil bu",
+         "consensus": 1.677, "actual": None, "usda_current": None},
+        {"key": "soy_2627", "label": "2026/27 soybean ending stocks", "unit": "bil bu",
+         "consensus": 0.311, "actual": None},
+        {"key": "wheat_2627", "label": "2026/27 wheat ending stocks", "unit": "mil bu",
+         "consensus": 722, "actual": 739, "usda_current": 717},
+    ]}, {"report": "September WASDE", "date": "2026-09-11", "metrics": [
+        {"key": "corn_2627", "label": "2026/27 corn ending stocks", "unit": "bil bu", "actual": None}]}]}
+    pj, cur, notes = plan_pdf(est3, date(2026, 10, 9), board)
+    check([j["key"] for j in pj] == ["corn_2627"], "only the empty stocks line is filled", [j["key"] for j in pj])
+    check(pj and pj[0]["value"] == 1.849 and pj[0]["consensus"] == 1.677,
+          "with the PDF's figure and the board's own consensus", pj)
+    check(cur == {"corn_2627": 1.567}, "last month's column fills an empty usda_current only", cur)
+    check(any("NASS 181.0, WASDE PDF 181.2" in n for n in notes),
+          "a yield NASS and the PDF disagree on is flagged, never overwritten", notes)
+    check(any("soybean ending stocks" in n and "not filled" in n for n in notes),
+          "a unit mismatch (billions on the board, millions in the PDF) is refused", notes)
+    check(not any(j["key"] == "wheat_2627" for j in pj), "an actual already on file is not touched")
+    check(not any(j["date"] != "2026-10-09" for j in pj), "and September's block is not touched by October's PDF")
+
+    print()
+    print("END TO END ON THE REAL OCTOBER PDF, IN A TEMPORARY DIRECTORY")
+    import shutil as _sh
+    _saved = (API_KEY, EST_PATH, HIST_PATH, OUT_PATH, PDF_DIR)
+    _dir = Path(_tf.mkdtemp())
+    real_pdf = ROOT / "data" / "wasde-pdf" / "wasde1026.pdf"
+    if not real_pdf.exists() or not read_wasde_pdf.shutil.which("pdftotext"):
+        check(False, "the October PDF and pdftotext are both here", str(real_pdf))
+    else:
+        _sh.copy(real_pdf, _dir / "wasde1026.pdf")
+        (_dir / "est.json").write_text(json.dumps({"reports": [{
+            "report": "October WASDE", "date": "2026-10-09", "metrics": [
+                {"key": "corn_yield_2627", "label": "2026/27 corn yield", "unit": "bu/acre",
+                 "consensus": 177.8, "actual": 181.2, "usda_current": 178.5},
+                {"key": "corn_2627", "label": "2026/27 corn ending stocks", "unit": "bil bu",
+                 "consensus": 1.677, "actual": None, "usda_current": None},
+                {"key": "soy_2627", "label": "2026/27 soybean ending stocks", "unit": "mil bu",
+                 "consensus": 311, "actual": None, "usda_current": None},
+            ]}]}))
+        (_dir / "hist.json").write_text(json.dumps({"history": [
+            {"date": "2026-10-09", "report": "October WASDE", "metric": "2026/27 corn yield",
+             "expected": 177.8, "actual": 181.2, "unit": "bu/acre", "reaction": ""}]}))
+        (_dir / "wasde.json").write_text(json.dumps({"release": "2026-10-09", "metrics": [
+            {"key": "corn_yield_2627", "label": "2026/27 corn yield", "value": 181.2,
+             "unit": "bu/acre", "consensus": 177.8, "nass": {"period": "YEAR - OCT FORECAST"}}]}))
+        API_KEY, EST_PATH, HIST_PATH, OUT_PATH, PDF_DIR = ("", _dir / "est.json", _dir / "hist.json",
+                                                           _dir / "wasde.json", _dir)
+        try:
+            with _mock.patch(__name__ + ".nass_rows", side_effect=AssertionError("NASS asked")):
+                rc = main(["--date", "2026-10-09"])
+            check(rc == 0, "no NASS key needed when only the PDF has work", rc)
+            e = {m["key"]: m for m in json.loads(EST_PATH.read_text())["reports"][0]["metrics"]}
+            check(e["corn_2627"]["actual"] == 1.849 and e["soy_2627"]["actual"] == 315.0,
+                  "corn 1.849 bil bu and soybeans 315 mil bu filled", (e["corn_2627"], e["soy_2627"]))
+            check(e["corn_2627"]["usda_current"] == 1.567 and e["soy_2627"]["usda_current"] == 310.0,
+                  "with September's 1.567 and 310 as USDA's previous figure")
+            h = {r["metric"]: r for r in json.loads(HIST_PATH.read_text())["history"]}
+            check(h.get("2026/27 corn ending stocks", {}).get("expected") == 1.677,
+                  "a track-record row carries the board's consensus", h.get("2026/27 corn ending stocks"))
+            w = json.loads(OUT_PATH.read_text())
+            keys = [m["key"] for m in w["metrics"]]
+            check(keys[:1] == ["corn_yield_2627"] and "corn_2627" in keys and "soy_2627" in keys,
+                  "wasde.json keeps the NASS yield it already had and adds the PDF lines", keys)
+            check(w.get("wasde_pdf", {}).get("crops", {}).get("wheat", {}).get("price", {}).get("value") == 6.3,
+                  "and carries the whole printed block (wheat price 6.30)")
+            before = (EST_PATH.read_text(), OUT_PATH.read_text())
+            rc = main(["--date", "2026-10-09"])
+            check(rc == 0 and (EST_PATH.read_text(), OUT_PATH.read_text()) == before,
+                  "a second run with everything filled writes nothing (the watcher runs every 5 min)")
+            w = json.loads(OUT_PATH.read_text())
+            del w["wasde_pdf"]
+            OUT_PATH.write_text(json.dumps(w))
+            rc = main(["--date", "2026-10-09"])
+            check("wasde_pdf" in json.loads(OUT_PATH.read_text()),
+                  "but a PDF block missing from wasde.json is written even with no metric to fill")
+
+            class _At1559(datetime):
+                @classmethod
+                def now(cls, tz=None):
+                    return datetime(2026, 10, 9, 15, 59, tzinfo=timezone.utc)
+            est4 = json.loads(EST_PATH.read_text())
+            est4["reports"][0]["metrics"][1]["actual"] = None      # work the PDF could do
+            EST_PATH.write_text(json.dumps(est4))
+            before = EST_PATH.read_text()
+            with _mock.patch(__name__ + ".datetime", _At1559):
+                rc = main([])
+            check(rc == 0 and EST_PATH.read_text() == before,
+                  "at 15:59 UTC on release day nothing is read or written, PDF or not")
+        finally:
+            API_KEY, EST_PATH, HIST_PATH, OUT_PATH, PDF_DIR = _saved
 
     print()
     if fails:

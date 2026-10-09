@@ -603,6 +603,90 @@
             51.4,
             54.1
           ]
+        },
+        {
+          "key": "corn_2627",
+          "label": "2026/27 corn ending stocks",
+          "unit": "bil bu",
+          "direction": "supply",
+          "consensus": 1.677,
+          "actual": 1.849,
+          "usda_current": 1.567,
+          "consensus_source": "https://www.dtnpf.com/agriculture/web/ag/news/article/2026/10/07/us-harvests-delayed-usda-gauge-crop",
+          "consensus_note": "Dow Jones pre-report survey, reported by DTN on 2026-10-07: average trade guess 1.677 billion bushels, a 110 mb increase from September. Newsquawk printed the same 1.677 as the expectation beside USDA's figure. A low of 1,522 and high of 1,895 million appear in a reprinted survey table, but another outlet paired that same range with a 1.694 average, so the range could not be tied to this survey and none is claimed. Graded on the 2% band. Typed in 2026-10-09.",
+          "estimates": [],
+          "consensus_range": []
+        },
+        {
+          "key": "soy_2627",
+          "label": "2026/27 soybean ending stocks",
+          "unit": "mil bu",
+          "direction": "supply",
+          "consensus": 311,
+          "actual": 315,
+          "usda_current": 310,
+          "consensus_source": "https://www.dtnpf.com/agriculture/web/ag/news/article/2026/10/07/us-harvests-delayed-usda-gauge-crop",
+          "consensus_note": "Dow Jones pre-report survey, reported by DTN on 2026-10-07: average trade guess 311 million bushels, implying usage of 4.570 billion. No survey low or high could be tied to this survey, so no range is claimed and the print is graded on the 2% band. Typed in 2026-10-09.",
+          "estimates": [],
+          "consensus_range": []
+        },
+        {
+          "key": "wheat_2627",
+          "label": "2026/27 wheat ending stocks",
+          "unit": "mil bu",
+          "direction": "supply",
+          "consensus": 722,
+          "actual": 740,
+          "usda_current": 717,
+          "consensus_source": "https://www.dtnpf.com/agriculture/web/ag/news/article/2026/10/07/us-harvests-delayed-usda-gauge-crop",
+          "consensus_note": "Dow Jones pre-report survey, reported by DTN on 2026-10-07: average guess 722 million bushels, up 5 mb from September. No survey low or high could be tied to this survey, so no range is claimed and the print is graded on the 2% band. Typed in 2026-10-09.",
+          "estimates": [],
+          "consensus_range": []
+        },
+        {
+          "key": "corn_prod_2627",
+          "label": "2026/27 corn production",
+          "unit": "bil bu",
+          "direction": "supply",
+          "consensus": 15.716,
+          "actual": 16.034,
+          "usda_current": 15.8,
+          "consensus_source": "https://www.dtnpf.com/agriculture/web/ag/news/article/2026/10/07/us-harvests-delayed-usda-gauge-crop",
+          "consensus_note": "Dow Jones survey of 15 analytic firms, reported by DTN on 2026-10-07: average 15.716 billion bushels, high 16.115 and low 15.344 from the same table. The same survey averaged 177.6 bu/acre on yield; the yield row above uses the Reuters survey. Typed in 2026-10-09.",
+          "estimates": [],
+          "consensus_range": [
+            15.344,
+            16.115
+          ]
+        },
+        {
+          "key": "soy_prod_2627",
+          "label": "2026/27 soybean production",
+          "unit": "mil bu",
+          "direction": "supply",
+          "consensus": 4541,
+          "actual": 4562,
+          "usda_current": 4535,
+          "consensus_source": "https://www.dtnpf.com/agriculture/web/ag/news/article/2026/10/07/us-harvests-delayed-usda-gauge-crop",
+          "consensus_note": "Dow Jones pre-report survey, reported by DTN on 2026-10-07: average 4.541 billion bushels, up 6 mb from September; high 4,648 and low 4,415 million from the same table. Typed in 2026-10-09.",
+          "estimates": [],
+          "consensus_range": [
+            4415,
+            4648
+          ]
+        },
+        {
+          "key": "wheat_prod_2627",
+          "label": "2026/27 wheat production",
+          "unit": "mil bu",
+          "direction": "supply",
+          "consensus": null,
+          "actual": 1534,
+          "usda_current": 1531,
+          "consensus_source": null,
+          "consensus_note": "No pre-report survey figure was found for October wheat production; it carries the September 30 Small Grains Summary. The print is shown without a grade.",
+          "estimates": [],
+          "consensus_range": []
         }
       ]
     }
