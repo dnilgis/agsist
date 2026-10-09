@@ -47,8 +47,8 @@
    @fontsource-variable 5.2.5, axis trimmed to the weights the site uses
    (Inter 400-900, JetBrains Mono 400-700). The two are preloaded in each page's
    <head> (scripts/inject_static_nav.py writes that block). */
-@font-face{font-family:'Inter';font-style:normal;font-weight:400 900;font-display:swap;src:url('/fonts/inter-var.woff2') format('woff2')}
-@font-face{font-family:'JetBrains Mono';font-style:normal;font-weight:400 700;font-display:swap;src:url('/fonts/jetbrains-mono-var.woff2') format('woff2')}
+@font-face{font-family:'Inter';font-style:normal;font-weight:400 900;font-display:optional;src:url('/fonts/inter-var.woff2') format('woff2')}
+@font-face{font-family:'JetBrains Mono';font-style:normal;font-weight:400 700;font-display:optional;src:url('/fonts/jetbrains-mono-var.woff2') format('woff2')}
 /* Oswald: only the /daily/ archive pages (scripts/generate_daily.py) set it.
    A face that no rule asks for is never downloaded, so other pages pay nothing. */
 @font-face{font-family:'Oswald';font-style:normal;font-weight:500 700;font-display:swap;src:url('/fonts/oswald-var.woff2') format('woff2')}
