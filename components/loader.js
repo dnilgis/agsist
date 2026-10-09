@@ -281,7 +281,7 @@
     fetch(BASE + '/data/supporters.json', { cache: 'no-cache' })
       .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
       .then(function (d) {
-        var ctaUrl = (d && d.cta_url) || '/sponsor#supporter';
+        var ctaUrl = (d && d.cta_url) || '/sponsor#slots';
         var list = ((d && d.supporters) || []).filter(function (s) { return s && s.active === true; });
         if (!list.length) return;
         var open = row.querySelectorAll('.ad-slot--open');
