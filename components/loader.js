@@ -846,6 +846,15 @@
     } catch (e) { return false; }
   }
 
+  // Back and forward come straight from the browser's page cache; a fade there
+  // only delays the page the reader already saw. Fade on link clicks only.
+  try {
+    window.addEventListener('pageswap', function (e) {
+      var t = e.activation && e.activation.navigationType;
+      if (e.viewTransition && t === 'traverse') e.viewTransition.skipTransition();
+    });
+  } catch (e) {}
+
   function supportsRules() {
     try { return !!(HTMLScriptElement.supports && HTMLScriptElement.supports('speculationrules')); }
     catch (e) { return false; }
