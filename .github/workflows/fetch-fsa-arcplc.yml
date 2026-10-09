@@ -22,10 +22,12 @@ jobs:
           PAGE="https://www.fsa.usda.gov/resources/programs/arc-plc/program-data"
           curl -sSL -m 60 -A "$UA" "$PAGE" -o /tmp/pd.html
           echo "page bytes: $(wc -c < /tmp/pd.html)"
-          grep -o -i -E 'href="[^"]+\.(xlsx|xls|csv|pdf)"' /tmp/pd.html | sed 's/href="//;s/"$//' | sort -u > /tmp/links.txt
-          echo "--- all file links on the page:"; cat /tmp/links.txt
-          # keep the files that matter for the 2026/2027 calculator
-          grep -i -E 'bench|trend|effective|reference|county.*yield|yield.*county|mya|price' /tmp/links.txt | grep -i -E '202[4-7]' > /tmp/want.txt || true
+          grep -o -i -E 'href="[^"]+"' /tmp/pd.html | sed 's/href="//;s/"$//' | sort -u > /tmp/all.txt
+          echo "--- every link mentioning 2025, 2026 or 2027:"; grep -E '202[5-7]' /tmp/all.txt || true
+          grep -i -E '\.(xlsx|xls|csv|pdf)([?#].*)?$|/media/|/documents/|/files/' /tmp/all.txt > /tmp/links.txt || true
+          echo "--- file links:"; wc -l < /tmp/links.txt
+          # files that feed ARC-CO benchmarks, trend factors, county yields, ERP/MYA for 2023 and later
+          grep -i -E 'arc.?co|bench|ta_yield|trend|plc_county|county.?yield|erp|effective|mya|t.?yield' /tmp/links.txt | grep -E '202[3-7]' > /tmp/want.txt || true
           echo "--- downloading:"; cat /tmp/want.txt
           : > data/fsa/manifest.tsv
           while read -r l; do
