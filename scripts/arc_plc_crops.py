@@ -517,8 +517,8 @@ def hub_faq(D, k):
     if sc:
         r = proj_rate(c6, sc["center"])
         q.append((f"Will PLC pay on {x['lc']} for 2026?",
-                  f"At {strip(sc['usda_src'])}'s projected 2026/27 price of {pf(c6, sc['center'])}{u}, the 2026 PLC rate would be {pf(c6, r)}{u}"
-                  + (" (none)" if r == 0 else "") + f". FSA's own table of {nice(D['_xtab_date'])} shows {pf(c6, c6['fsa_plc_p'])}{u} at {pf(c6, c6['fsa_proj'])}. "
+                  f"At {strip(sc['usda_src'])}'s projected 2026/27 price of {pf(c6, sc['center'])}{u}, PLC would pay " + ("nothing for 2026" if r == 0 else f"a 2026 rate of {pf(c6, r)}{u}")
+                  + f". FSA's own table of {nice(D['_xtab_date'])} shows " + ("no payment" if not c6['fsa_plc_p'] else f"{pf(c6, c6['fsa_plc_p'])}{u}") + f" at {pf(c6, c6['fsa_proj'])}. "
                   f"The real rate is set by the final season-average price, published after the marketing year ({c6['my']}) ends."))
     q.append((f"Should I pick ARC or PLC for {x['lc']}?",
               f"We do not give a pick for {x['lc']} yet. " + strip(sc.get("why", "")) + " The county pages show FSA's official benchmark, where each "
@@ -567,15 +567,17 @@ def hub_page(B, D, k, ch):
          "variableMeasured": [f"Effective reference price ($/{c6['unit']})", f"ARC-CO benchmark yield ({c6['unit']}/acre)"]},
         {"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [
             {"@type": "ListItem", "position": 1, "name": "Home", "item": f"{B.SITE}/"},
-            {"@type": "ListItem", "position": 2, "name": "ARC vs PLC", "item": f"{B.SITE}/arc-plc"},
+            {"@type": "ListItem", "position": 2, "name": "ARC or PLC", "item": f"{B.SITE}/arc-plc"},
             {"@type": "ListItem", "position": 3, "name": x["label"], "item": f"{B.SITE}{path}"}]},
+        {"@context": "https://schema.org", "@type": "WebPage", "@id": f"{B.SITE}{path}", "name": title, "url": f"{B.SITE}{path}", "description": desc,
+         "author": B.AUTHOR, "dateModified": upd, "inLanguage": "en-US"},
     ]
     # quick answer
     proj = ""
     if sc:
         r = proj_rate(c6, sc["center"])
-        proj = (f"<p>At {sc['center_label']}, {pf(c6, sc['center'])}{u}, the 2026 PLC rate would be <b>{pf(c6, r)}{u}</b>"
-                + (" (none)" if r == 0 else "") + ". The real rate comes from the final price after the marketing year ends "
+        proj = (f"<p>At {sc['center_label']}, {pf(c6, sc['center'])}{u}, PLC would pay " + ("<b>nothing</b> for 2026" if r == 0 else f"a 2026 rate of <b>{pf(c6, r)}{u}</b>")
+                + ". The real rate comes from the final price after the marketing year ends "
                 f"({esc(c6['my'])}).</p>")
     y7 = (f"2027 (est.): ERP <b>{pf(c7, c7['erp']['erp'])}</b>, benchmark price {pf(c7, c7['bp']['value'])}. {c7.get('note', '')}" if c7
           else f"2027: {pend7}")
@@ -617,9 +619,12 @@ def hub_page(B, D, k, ch):
 <body>
 {hdr}
 <main class="ap-wrap" id="main">
-  <p class="ap-bc"><a href="/arc-plc">ARC vs PLC</a> &rsaquo; {esc(x['label'])}</p>
+  {B.bc_html([("Home", "/"), ("ARC or PLC", "/arc-plc"), (x["label"], None)])}
   <p class="page-kicker">Farm program &middot; {esc(x['lc'])}</p>
   <h1>{esc(x['label'])}: ARC or PLC for 2026 and 2027</h1>
+  {B.byline_html(D)}
+  <h2 class="ap-find-h">Find your county&rsquo;s short answer</h2>
+  {B.picker_html(D)}
   {B.deadlines_html()}
   {quick}
   <p><a class="btn btn-secondary" href="/arc-plc?crop={k}#calculator">Run {esc(x['lc'])} in the calculator</a></p>

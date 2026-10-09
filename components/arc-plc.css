@@ -72,6 +72,13 @@
 .ap-w-arc{background:rgba(var(--green-rgb),.16)}
 .ap-verdict.ap-w-plc{border-color:rgba(var(--gold-rgb),.5)}
 .ap-verdict.ap-w-arc{border-color:rgba(var(--green-rgb),.5)}
+/* a lean, a close call and no answer each look different from a pick */
+.ap-w-lean-plc{background:rgba(var(--gold-rgb),.07)}
+.ap-w-lean-arc{background:rgba(var(--green-rgb),.07)}
+.ap-verdict.ap-w-lean-plc{border-color:rgba(var(--gold-rgb),.5);border-style:dashed}
+.ap-verdict.ap-w-lean-arc{border-color:rgba(var(--green-rgb),.5);border-style:dashed}
+.ap-verdict.ap-w-close,.ap-verdict.ap-w-neither{background:var(--bg)}
+.ap-verdict.ap-w-withheld{background:transparent;border-style:dotted;color:var(--text-dim)}
 .ap-near th,.ap-near td{box-shadow:inset 0 2px 0 var(--text-muted),inset 0 -2px 0 var(--text-muted)}
 @media (max-width:560px){
   .ap-grid{grid-template-columns:minmax(0,1fr)}

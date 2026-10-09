@@ -10,7 +10,7 @@
  */
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { readFileSync, existsSync } from "node:fs";
+import { readFileSync, existsSync, readdirSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import vm from "node:vm";
 
@@ -18,6 +18,9 @@ const ROOT = fileURLToPath(new URL("../", import.meta.url));
 const ctx = { window: {} };
 vm.runInNewContext(readFileSync(ROOT + "components/arc-plc.js", "utf8"), ctx);
 const A = ctx.window.AgArcPlc;
+const fctx = { window: {} };
+vm.runInNewContext(readFileSync(ROOT + "components/arc-plc-simple.js", "utf8"), fctx);
+const F = fctx.window.AgArcFind;
 const D = JSON.parse(readFileSync(ROOT + "data/arc-plc.json", "utf8"));
 const near = (a, b, msg, tol = 1e-9) => assert.ok(Math.abs(a - b) < tol, `${msg}: ${a} vs ${b}`);
 const one = (erp, bp, loan, py, by, y) => ({ erp, bp, loan, py, parts: [{ w: 1, by, y }] });
@@ -177,19 +180,70 @@ test("a one-cent band reads 'at $X', and every band prints", () => {
   assert.deepEqual(Array.from(A.rangeText(runs)), ["PLC pays more at $3.59 or lower.", "ARC-CO pays more at $3.60.", "PLC pays more from $3.61 to $4.00.", "Neither pays at $4.01 or higher."]);
 });
 
-test("the calculator and the county page give the same typical-farm verdict (Chippewa WI corn, non-irrigated)", (t) => {
+test("every county page's answers equal the calculator's math on the state file: each crop card, all three PLC-yield buttons, both years", (t) => {
   if (!D.fsa) return t.skip("no FSA file");
-  const wi = state("WI");
-  const cty = wi.c.find((c) => c.f === "55017");
-  const e = cty.k.corn.find((x) => x.d === "non");
-  const cr = D.years["2026"].crops.corn;
-  const v = A.typical(cr, cty.plc.corn, e);
-  const page = readFileSync(ROOT + "arc-plc/wisconsin/chippewa-county.html", "utf8");
-  const m = /Corn, non-irrigated:<\/b> ([^(]+)\(est\. \$([\d.,]+) PLC vs \$([\d.,]+) ARC-CO/.exec(page);
-  assert.ok(m, "quick answer present");
-  const fmt = (x) => (A.cents(x) === 0 ? "0" : x.toFixed(2)); // the page prints a zero expected payment as $0
-  assert.equal(fmt(v.plc), m[2]); assert.equal(fmt(v.arc), m[3]);
-  assert.equal(v.n >= 8, true);
+  const states = {};
+  let pages = 0, seen = 0, calls = 0;
+  const unq = (x) => x.replace(/&amp;/g, "&").replace(/&#x27;|&#39;/g, "'");
+  for (const sd of readdirSync(ROOT + "arc-plc", { withFileTypes: true }).filter((x) => x.isDirectory())) {
+    for (const f of readdirSync(ROOT + "arc-plc/" + sd.name)) {
+      if (!f.endsWith(".html") || f.endsWith("-sheet.html")) continue;
+      const html = readFileSync(ROOT + "arc-plc/" + sd.name + "/" + f, "utf8");
+      const m0 = /data-arcplc [^>]*data-state="([A-Z]{2})" data-fips="(\d{5})"/.exec(html);
+      assert.ok(m0, `${sd.name}/${f}: calculator carries its county`);
+      const S = states[m0[1]] || (states[m0[1]] = state(m0[1]));
+      const cty = S.c.find((c) => c.f === m0[2]);
+      pages++;
+      const re = /<div class="ap-lv" data-k="([a-z_]+)" data-e="([a-z]+)(?::([^"]*))?" data-py="([\d.]+)" data-t="([^"]+)" data-lv="(\w+)"(\s+hidden)?>/g;
+      const shown = {};
+      for (const m of html.matchAll(re)) {
+        const [, k, d, sub, py, tt, lv, hid] = m;
+        if (!hid) shown[k] = (shown[k] || 0) + 1;
+        assert.equal(!hid, lv === "same", `${f} ${k}: only About the same shows first`);
+        const e = cty.k[k].find((x) => x.d === d && (x.sub || "") === unq(sub || ""));
+        assert.ok(e, `${f} ${k} ${d}: entry in the state file`);
+        for (const part of tt.split("|")) {
+          const [y, v, pc, ac] = part.split(":");
+          const cd = D.years[y].crops[k];
+          seen++;
+          if (v === "pending") { assert.ok(!cd, `${f} ${k} ${y}: pending means no ${y} figures`); continue; }
+          if (v === "mismatch") { assert.ok(+py > e.by, `${f} ${k} ${y} ${lv}: PLC yield ${py} above benchmark ${e.by}`); continue; }
+          const r = A.typical(cd, +py, e);
+          assert.equal(r.verdict, v, `${f} ${k} ${d} ${y} ${lv}: page says ${v}, calculator ${r.verdict}`);
+          if (r.n) { assert.equal(A.cents(r.plc), +pc, `${f} ${k} ${y} ${lv} PLC`); assert.equal(A.cents(r.arc), +ac, `${f} ${k} ${y} ${lv} ARC-CO`); calls++; }
+        }
+      }
+      for (const [k, n] of Object.entries(shown)) assert.equal(n, 1, `${f} ${k}: one answer shown`);
+    }
+  }
+  assert.ok(pages >= 2700, `only ${pages} county pages read; the pages have moved`);
+  assert.ok(calls >= 20000, `only ${calls} answers re-derived; the cards have moved`);
+});
+
+test("Use my location: point in polygon on a fixture, and Chippewa's coordinates land on Chippewa County, WI", () => {
+  // a 10 x 10 square with a 2 x 2 hole: even-odd across the polygon's rings
+  const sq = [[0, 0], [10, 0], [10, 10], [0, 10], [0, 0]], hole = [[4, 4], [6, 4], [6, 6], [4, 6], [4, 4]];
+  const nav = { s: { XX: { b: [0, 0, 10, 10] } } };
+  const geos = { XX: { c: [["99001", "Square", "square-county", [0, 0, 10, 10], [[sq, hole]]]] } };
+  assert.equal(F.locate(nav, geos, 2, 2).rec[0], "99001");
+  assert.equal(F.locate(nav, geos, 5, 5), null, "inside the hole");
+  assert.equal(F.locate(nav, geos, 11, 5), null, "outside");
+  assert.equal(F.inRing(9.999, 0.001, sq), true);
+  const N = JSON.parse(readFileSync(ROOT + "data/arc-plc/nav.json", "utf8"));
+  const cand = Array.from(F.candidates(N, -91.29, 44.94));
+  const G = Object.fromEntries(cand.map((s) => [s, JSON.parse(readFileSync(ROOT + `data/arc-plc/geo/${s}.json`, "utf8"))]));
+  const hit = F.locate(N, G, -91.29, 44.94);
+  assert.equal(hit.st, "WI"); assert.equal(hit.rec[0], "55017"); assert.equal(hit.rec[2], "chippewa-county");
+  assert.equal(N.s.WI.slug, "wisconsin");
+  assert.equal(F.locate(N, {}, 2.35, 48.85), null, "Paris is outside");
+  // every county with a page is reachable by its shape
+  let withPage = 0;
+  for (const s of Object.keys(N.s)) {
+    const p = ROOT + `data/arc-plc/geo/${s}.json`;
+    if (!existsSync(p)) continue;
+    for (const r of JSON.parse(readFileSync(p, "utf8")).c) if (r[2]) withPage++;
+  }
+  assert.ok(withPage >= 2700, `${withPage} county shapes carry a page`);
 });
 
 test("no em dash in the calculator's words", () => {
