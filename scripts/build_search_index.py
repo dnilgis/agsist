@@ -90,7 +90,7 @@ PAGES = [
     ("/presell-calculator", "Pre-sell calculator", "Sell ahead with crop insurance", "presell pre sell forward contract insurance calculator hedge"),
     ("/grain-bin-calculator", "Grain bin calculator", "Bushels and shrink", "grain bin bushels capacity moisture shrink calculator dryer"),
     ("/harvest-price-tracker", "Harvest price tracker", "Crop insurance harvest price", "harvest price projected crop insurance rma tracker"),
-    ("/farmland-atlas", "Farmland atlas", "Land value, rent and risk by county", "farmland atlas land value values county rent risk acre"),
+    ("/farmland-atlas", "Farmland Atlas", "Land value, rent and risk by county", "farmland atlas land value values county rent rents cash rent risk acre"),
     ("/cash-rent", "Cash rent map", "Rent by county", "cash rent rents rental county land acre lease"),
     ("/cash-lease", "Cash farm lease form", "Free printable lease", "cash lease form farm lease printable template contract rent"),
     ("/foreign-land", "Foreign-owned land", "By county", "foreign owned land afida ownership"),

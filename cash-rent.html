@@ -74,6 +74,11 @@
   .cr-panel-b{padding:18px}
 
   .cr-pick{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  /* Farmland Atlas look (farmland-atlas/atlas-pages.css .read): this page is a door into the Atlas */
+  .cr-atlas{border-left:2px solid var(--gold);padding:.2rem 0 .2rem .9rem;margin:0 0 18px;font-size:15px;line-height:1.6;color:var(--text-dim)}
+  .cr-atlas a{color:var(--gold);font-weight:700}
+  :root[data-theme="light"] .cr-atlas a{color:#6f5209}
+  .cr-atlas-c{margin:14px 0 0}
   @media(max-width:560px){.cr-pick{grid-template-columns:1fr}}
   .cr-pick label{display:block;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12.7px;letter-spacing:.12em;text-transform:uppercase;color:#8a948f;margin:0 0 6px}
   .cr-pick select{width:100%;background:#161b1c;border:1px solid rgba(132,160,168,.12);border-radius:4px;color:#e6ebe9;font-family:Inter,system-ui,sans-serif;font-size:16px;padding:11px 12px;-webkit-appearance:none;appearance:none}
@@ -221,7 +226,7 @@ html[data-theme="light"] .cr-mleg-s.na{outline:1px solid rgba(20,30,28,.28);outl
       <a href="/" aria-label="AGSIST Home" style="font-family:var(--font-display);font-weight:800;font-size:1.05rem;letter-spacing:.04em;color:var(--text);text-decoration:none">AGSIST</a>
       <nav aria-label="AGSIST main navigation" style="font-family:'JetBrains Mono',monospace;font-size:0.775rem;line-height:2;color:var(--text-muted)">
         <span style="color:var(--text-dim);font-weight:700">Markets:</span> <a href="/corn-futures-prices" style="color:var(--text-muted);text-decoration:none">Corn</a> &middot; <a href="/soybean-futures-prices" style="color:var(--text-muted);text-decoration:none">Soybeans</a> &middot; <a href="/wheat-futures-prices" style="color:var(--text-muted);text-decoration:none">Wheat</a> &middot; <a href="/cattle-futures-prices" style="color:var(--text-muted);text-decoration:none">Cattle</a> &middot; <a href="/cash-bids" style="color:var(--text-muted);text-decoration:none">Cash Bids</a> &middot; <a href="/elevators" style="color:var(--text-muted);text-decoration:none">Elevator Coverage Map</a> &middot; <a href="/milk-prices" style="color:var(--text-muted);text-decoration:none">Milk Prices</a> &middot; <a href="/basis" style="color:var(--text-muted);text-decoration:none">Basis vs Normal</a> &middot; <a href="/storage-crunch" style="color:var(--text-muted);text-decoration:none">Storage Crunch</a> &middot; <a href="/cot" style="color:var(--text-muted);text-decoration:none">COT Report</a> &middot; <a href="/ag-odds" style="color:var(--text-muted);text-decoration:none">Prediction Markets</a> &middot; <a href="/tariffs" style="color:var(--text-muted);text-decoration:none">Tariffs</a> &middot; <a href="/usda-quick-stats" style="color:var(--text-muted);text-decoration:none">USDA Crop Data</a> &middot; <a href="/usda-calendar" style="color:var(--text-muted);text-decoration:none">USDA Calendar</a> &middot; <a href="/whats-priced-in" style="color:var(--text-muted);text-decoration:none">What's Priced In</a> &middot; <a href="/whats-priced-in#analyst-board" style="color:var(--text-muted);text-decoration:none">Analyst Estimates</a> &middot; <a href="/markets" style="color:var(--text-muted);text-decoration:none">All Markets</a><br>
-        <span style="color:var(--text-dim);font-weight:700">Costs &amp; Land:</span> <a href="/breakeven" style="color:var(--text-muted);text-decoration:none">Break-Even</a> &middot; <a href="/presell-calculator" style="color:var(--text-muted);text-decoration:none">Pre-Sell Calculator</a> &middot; <a href="/grain-bin-calculator" style="color:var(--text-muted);text-decoration:none">Grain Bin</a> &middot; <a href="/harvest-price-tracker" style="color:var(--text-muted);text-decoration:none">Harvest Price Tracker</a> &middot; <a href="/farmland-atlas" style="color:var(--text-muted);text-decoration:none">Farmland Atlas</a> &middot; <a href="/cash-rent" style="color:var(--text-muted);text-decoration:none">Cash Rent by County</a> &middot; <a href="/rent/" style="color:var(--text-muted);text-decoration:none">Cash Rent by State</a> &middot; <a href="/cash-lease" style="color:var(--text-muted);text-decoration:none">Cash Farm Lease</a> &middot; <a href="/foreign-land" style="color:var(--text-muted);text-decoration:none">Foreign-Owned Land</a> &middot; <a href="/land-tenure" style="color:var(--text-muted);text-decoration:none">Rented vs Owner-Farmed</a> &middot; <a href="/farm-bill" style="color:var(--text-muted);text-decoration:none">Farm Bill</a><br>
+        <span style="color:var(--text-dim);font-weight:700">Costs &amp; Land:</span> <a href="/breakeven" style="color:var(--text-muted);text-decoration:none">Break-Even</a> &middot; <a href="/presell-calculator" style="color:var(--text-muted);text-decoration:none">Pre-Sell Calculator</a> &middot; <a href="/grain-bin-calculator" style="color:var(--text-muted);text-decoration:none">Grain Bin</a> &middot; <a href="/harvest-price-tracker" style="color:var(--text-muted);text-decoration:none">Harvest Price Tracker</a> &middot; <a href="/farmland-atlas" style="color:var(--text-muted);text-decoration:none">Farmland Atlas</a> &middot; <a href="/cash-lease" style="color:var(--text-muted);text-decoration:none">Cash Farm Lease</a> &middot; <a href="/foreign-land" style="color:var(--text-muted);text-decoration:none">Foreign-Owned Land</a> &middot; <a href="/land-tenure" style="color:var(--text-muted);text-decoration:none">Rented vs Owner-Farmed</a> &middot; <a href="/farm-bill" style="color:var(--text-muted);text-decoration:none">Farm Bill</a><br>
         <span style="color:var(--text-dim);font-weight:700">Field:</span> <a href="/spray" style="color:var(--text-muted);text-decoration:none">Spray Advisory</a> &middot; <a href="/urea" style="color:var(--text-muted);text-decoration:none">Urea Volatilization Risk</a> &middot; <a href="/drought-monitor" style="color:var(--text-muted);text-decoration:none">Drought Monitor</a> &middot; <a href="/conditions" style="color:var(--text-muted);text-decoration:none">Crop Conditions Rank</a> &middot; <a href="/conditions-yield" style="color:var(--text-muted);text-decoration:none">Ratings vs Yield</a> &middot; <a href="/pod-counts" style="color:var(--text-muted);text-decoration:none">Pod Counts vs Yield</a> &middot; <a href="/crop-tour" style="color:var(--text-muted);text-decoration:none">Crop Tour</a> &middot; <a href="/hail-map" style="color:var(--text-muted);text-decoration:none">Hail Map</a> &middot; <a href="/gdu-calculator" style="color:var(--text-muted);text-decoration:none">GDU Calculator</a> &middot; <a href="/planting-date" style="color:var(--text-muted);text-decoration:none">Planting Date</a> &middot; <a href="/fertilizer" style="color:var(--text-muted);text-decoration:none">Fertilizer</a> &middot; <a href="/yield-estimator" style="color:var(--text-muted);text-decoration:none">Yield Estimator</a> &middot; <a href="/field-scout" style="color:var(--text-muted);text-decoration:none">Field Scout</a> &middot; <a href="/fast-facts" style="color:var(--text-muted);text-decoration:none">Reference Tables</a> &middot; <a href="/tools" style="color:var(--text-muted);text-decoration:none">All Tools</a><br>
         <span style="color:var(--text-dim);font-weight:700">Daily:</span> <a href="/news" style="color:var(--text-muted);text-decoration:none">The Wire</a> &middot; <a href="/daily" style="color:var(--text-muted);text-decoration:none">AGSIST Daily</a> &middot; <a href="/archive" style="color:var(--text-muted);text-decoration:none">Daily Archive</a> &middot; <a href="/scorecard" style="color:var(--text-muted);text-decoration:none">Prediction Bot</a>
       </nav>
@@ -233,6 +238,7 @@ html[data-theme="light"] .cr-mleg-s.na{outline:1px solid rgba(20,30,28,.28);outl
 <main class="cr-wrap">
 
   <header class="cr-hero">
+    <p class="cr-atlas">Part of the <a href="/farmland-atlas">Farmland Atlas</a>: land values, rent and risk for every county.</p>
     <p class="cr-kicker">USDA NASS &middot; County Cash Rents Survey</p>
     <h1>Cash rent map: county rent against what the acre can gross</h1>
     <p class="cr-sub">You know your rent. The number that decides the lease is <strong>rent as a share of what the acre can realistically gross</strong>: and almost nobody puts those two numbers side by side. This does, for every county USDA publishes.</p>
@@ -263,6 +269,7 @@ html[data-theme="light"] .cr-mleg-s.na{outline:1px solid rgba(20,30,28,.28);outl
         <div><label for="cr-state">State</label><select id="cr-state" disabled><option>Loading&hellip;</option></select></div>
         <div><label for="cr-county">County</label><select id="cr-county" disabled><option>-</option></select></div>
       </div>
+      <p class="cr-atlas cr-atlas-c" id="cr-atlas-c" hidden></p>
     </div>
   </section>
 
@@ -382,7 +389,7 @@ html[data-theme="light"] .cr-mleg-s.na{outline:1px solid rgba(20,30,28,.28);outl
        non-JS crawlers (Bing, AI) read these links; also a working fallback if the fetch fails.
        Copied into every root page by scripts/inject_static_nav.py -- edit HERE, then re-run it. -->
   <nav aria-label="AGSIST site links" style="max-width:1100px;margin:0 auto;padding:1.4rem 1rem;font-family:'JetBrains Mono',monospace;font-size:0.78rem;line-height:2.1;color:var(--text-muted);text-align:center;border-top:1px solid var(--border)">
-    <a href="/corn-futures-prices" style="color:var(--text-muted);text-decoration:none">Corn Futures</a> &middot; <a href="/soybean-futures-prices" style="color:var(--text-muted);text-decoration:none">Soybean Futures</a> &middot; <a href="/wheat-futures-prices" style="color:var(--text-muted);text-decoration:none">Wheat Futures</a> &middot; <a href="/cattle-futures-prices" style="color:var(--text-muted);text-decoration:none">Cattle Futures</a> &middot; <a href="/cash-bids" style="color:var(--text-muted);text-decoration:none">Cash Grain Bids</a> &middot; <a href="/basis" style="color:var(--text-muted);text-decoration:none">Basis vs Normal</a> &middot; <a href="/elevators" style="color:var(--text-muted);text-decoration:none">Elevator Coverage Map</a> &middot; <a href="/cot" style="color:var(--text-muted);text-decoration:none">COT Report</a> &middot; <a href="/ag-odds" style="color:var(--text-muted);text-decoration:none">Ag Prediction Markets</a> &middot; <a href="/markets" style="color:var(--text-muted);text-decoration:none">All Markets</a> &middot; <a href="/cash-rent" style="color:var(--text-muted);text-decoration:none">Cash Rent by County</a> &middot; <a href="/rent/" style="color:var(--text-muted);text-decoration:none">Cash Rent by State</a> &middot; <a href="/farmland-atlas" style="color:var(--text-muted);text-decoration:none">Farmland Atlas</a> &middot; <a href="/cash-lease" style="color:var(--text-muted);text-decoration:none">Cash Farm Lease</a> &middot; <a href="/foreign-land" style="color:var(--text-muted);text-decoration:none">Foreign-Owned Land</a> &middot; <a href="/land-tenure" style="color:var(--text-muted);text-decoration:none">Rented vs Owner-Farmed</a> &middot; <a href="/conditions" style="color:var(--text-muted);text-decoration:none">Crop Conditions Rank</a> &middot; <a href="/conditions-yield" style="color:var(--text-muted);text-decoration:none">Ratings vs Yield</a> &middot; <a href="/usda-quick-stats" style="color:var(--text-muted);text-decoration:none">USDA Crop Data</a> &middot; <a href="/usda-calendar" style="color:var(--text-muted);text-decoration:none">USDA Calendar</a> &middot; <a href="/fast-facts" style="color:var(--text-muted);text-decoration:none">Reference Tables</a> &middot; <a href="/tools" style="color:var(--text-muted);text-decoration:none">Farm Calculators &amp; Tools</a> &middot; <a href="/breakeven" style="color:var(--text-muted);text-decoration:none">Break-Even Calculator</a> &middot; <a href="/spray" style="color:var(--text-muted);text-decoration:none">Spray Advisory</a> &middot; <a href="/drought-monitor" style="color:var(--text-muted);text-decoration:none">Drought Monitor</a> &middot; <a href="/milk-prices" style="color:var(--text-muted);text-decoration:none">Milk Prices</a> &middot; <a href="/tariffs" style="color:var(--text-muted);text-decoration:none">Tariffs</a> &middot; <a href="/news" style="color:var(--text-muted);text-decoration:none">The Wire</a> &middot; <a href="/daily" style="color:var(--text-muted);text-decoration:none">AGSIST Daily</a> &middot; <a href="/archive" style="color:var(--text-muted);text-decoration:none">Daily Archive</a> &middot; <a href="/data-sources" style="color:var(--text-muted);text-decoration:none">Data Sources</a> &middot; <a href="/about" style="color:var(--text-muted);text-decoration:none">About</a> &middot; <a href="/contact" style="color:var(--text-muted);text-decoration:none">Contact</a> &middot; <a href="/sponsor" style="color:var(--text-muted);text-decoration:none">Sponsor</a> &middot; <a href="/accessibility" style="color:var(--text-muted);text-decoration:none">Accessibility</a> &middot; <a href="/privacy" style="color:var(--text-muted);text-decoration:none">Privacy</a> &middot; <a href="/terms" style="color:var(--text-muted);text-decoration:none">Terms</a>
+    <a href="/corn-futures-prices" style="color:var(--text-muted);text-decoration:none">Corn Futures</a> &middot; <a href="/soybean-futures-prices" style="color:var(--text-muted);text-decoration:none">Soybean Futures</a> &middot; <a href="/wheat-futures-prices" style="color:var(--text-muted);text-decoration:none">Wheat Futures</a> &middot; <a href="/cattle-futures-prices" style="color:var(--text-muted);text-decoration:none">Cattle Futures</a> &middot; <a href="/cash-bids" style="color:var(--text-muted);text-decoration:none">Cash Grain Bids</a> &middot; <a href="/basis" style="color:var(--text-muted);text-decoration:none">Basis vs Normal</a> &middot; <a href="/elevators" style="color:var(--text-muted);text-decoration:none">Elevator Coverage Map</a> &middot; <a href="/cot" style="color:var(--text-muted);text-decoration:none">COT Report</a> &middot; <a href="/ag-odds" style="color:var(--text-muted);text-decoration:none">Ag Prediction Markets</a> &middot; <a href="/markets" style="color:var(--text-muted);text-decoration:none">All Markets</a> &middot; <a href="/farmland-atlas" style="color:var(--text-muted);text-decoration:none">Farmland Atlas</a> &middot; <a href="/cash-lease" style="color:var(--text-muted);text-decoration:none">Cash Farm Lease</a> &middot; <a href="/foreign-land" style="color:var(--text-muted);text-decoration:none">Foreign-Owned Land</a> &middot; <a href="/land-tenure" style="color:var(--text-muted);text-decoration:none">Rented vs Owner-Farmed</a> &middot; <a href="/conditions" style="color:var(--text-muted);text-decoration:none">Crop Conditions Rank</a> &middot; <a href="/conditions-yield" style="color:var(--text-muted);text-decoration:none">Ratings vs Yield</a> &middot; <a href="/usda-quick-stats" style="color:var(--text-muted);text-decoration:none">USDA Crop Data</a> &middot; <a href="/usda-calendar" style="color:var(--text-muted);text-decoration:none">USDA Calendar</a> &middot; <a href="/fast-facts" style="color:var(--text-muted);text-decoration:none">Reference Tables</a> &middot; <a href="/tools" style="color:var(--text-muted);text-decoration:none">Farm Calculators &amp; Tools</a> &middot; <a href="/breakeven" style="color:var(--text-muted);text-decoration:none">Break-Even Calculator</a> &middot; <a href="/spray" style="color:var(--text-muted);text-decoration:none">Spray Advisory</a> &middot; <a href="/drought-monitor" style="color:var(--text-muted);text-decoration:none">Drought Monitor</a> &middot; <a href="/milk-prices" style="color:var(--text-muted);text-decoration:none">Milk Prices</a> &middot; <a href="/tariffs" style="color:var(--text-muted);text-decoration:none">Tariffs</a> &middot; <a href="/news" style="color:var(--text-muted);text-decoration:none">The Wire</a> &middot; <a href="/daily" style="color:var(--text-muted);text-decoration:none">AGSIST Daily</a> &middot; <a href="/archive" style="color:var(--text-muted);text-decoration:none">Daily Archive</a> &middot; <a href="/data-sources" style="color:var(--text-muted);text-decoration:none">Data Sources</a> &middot; <a href="/about" style="color:var(--text-muted);text-decoration:none">About</a> &middot; <a href="/contact" style="color:var(--text-muted);text-decoration:none">Contact</a> &middot; <a href="/sponsor" style="color:var(--text-muted);text-decoration:none">Sponsor</a> &middot; <a href="/accessibility" style="color:var(--text-muted);text-decoration:none">Accessibility</a> &middot; <a href="/privacy" style="color:var(--text-muted);text-decoration:none">Privacy</a> &middot; <a href="/terms" style="color:var(--text-muted);text-decoration:none">Terms</a>
   </nav>
 <!-- /static-nav:footer -->
 </div>
@@ -464,6 +471,7 @@ html[data-theme="light"] .cr-mleg-s.na{outline:1px solid rgba(20,30,28,.28);outl
     if(i===''||!cur){ return; }
     curCounty=cur.counties[+i];
     render();
+    atlasLink(curCounty);
     // hand the picked county + its latest rent straight into the lease form
     try{
       var c=curCounty, ry=latestYear(c.rent&&c.rent.nonirr), rate=ry?c.rent.nonirr[ry]:null;
@@ -476,6 +484,27 @@ html[data-theme="light"] .cr-mleg-s.na{outline:1px solid rgba(20,30,28,.28);outl
       }
     }catch(e){}
     gaEvent('cash_rent_county',{state:cur.state,county:curCounty.name});
+  }
+
+  // ---- FARMLAND ATLAS COUNTY PAGES ----------------------------------------
+  // fips -> page, from the index the Atlas page builder writes next to the pages
+  // (scripts/build_atlas_pages.py), so a link is only ever drawn to a page that exists.
+  var APAGES=null, APAGES_P=null;
+  function atlasPages(){
+    if(!APAGES_P) APAGES_P=fetch('/farmland-atlas/data/counties-index.json').then(function(r){return r.ok?r.json():null;}).catch(function(){return null;}).then(function(a){
+      if(Array.isArray(a)){ APAGES={}; for(var i=0;i<a.length;i++) APAGES[a[i][0]]=a[i][2]; }
+      return APAGES;
+    });
+    return APAGES_P;
+  }
+  function atlasLink(c){
+    var el=$('cr-atlas-c'); if(!el) return; el.hidden=true;
+    atlasPages().then(function(m){
+      if(c!==curCounty) return;
+      var u=m&&c&&m[c.fips]; if(!u){ el.hidden=true; return; }
+      el.innerHTML='<a href="'+esc(u)+'">'+esc(c.name)+' County on the Farmland Atlas</a>: land value, yield, insurance and drought for the same ground.';
+      el.hidden=false;
+    });
   }
 
   function setCell(vid,mid,series){
@@ -828,21 +857,25 @@ html[data-theme="light"] .cr-mleg-s.na{outline:1px solid rgba(20,30,28,.28);outl
     if(isLight()) return {fillColor:fc,fillOpacity:1,weight:.3,color:'#8f9692',opacity:.8,smoothFactor:.3};
     return {fillColor:fc,fillOpacity:v==null?.35:.85,weight:.3,color:'#0a0c0d',opacity:.6,smoothFactor:1};
   }
-  function popup(f,l){
+  function popup(f,l){ l.bindPopup(function(){ return popupHtml(f); }); }
+  function popupHtml(f){
     var r=nat.counties[f.id];
     var nm=(f.properties&&f.properties.name)||'County';
-    if(!r){ l.bindPopup('<b>'+nm+'</b><br>USDA did not publish a rate here<br><span style="color:#8a948f">too few survey responses</span>'); return; }
-    var h='<b>'+nm+' County, '+r.s+'</b><br>Rent $'+Math.round(r.r)+'/ac <span style="color:#8a948f">('+r.ry+')</span>';
+    var au=APAGES&&APAGES[f.id], A=function(t){ return au?'<a href="'+esc(au)+'" style="color:inherit">'+t+'</a>':t; };
+    if(!r){ return '<b>'+A(nm)+'</b><br>USDA did not publish a rate here<br><span style="color:#8a948f">too few survey responses</span>'; }
+    var h='<b>'+A(nm+' County, '+r.s)+'</b><br>Rent $'+Math.round(r.r)+'/ac <span style="color:#8a948f">('+r.ry+')</span>';
     if(natLegacy()) h+='<br><span style="color:#8a948f">Share of gross, withheld until the data refresh that matches rent and yield by practice</span>';
     else if(r.p!=null) h+='<br>Share of gross <span style="color:'+(r.p>=35?'#e0685f':r.p>=30?'#d4a23f':'#5fc28a')+'">'+r.p.toFixed(1)+'%</span> <span style="color:#8a948f">('+r.py+' corn'+(r.pp?', prelim':'')+')</span>'
       +'<br><span style="color:#8a948f">'+(RENT_WORDS[r.rk]||'rent')+' \u00f7 '+basisWords(r.pb)+'</span>';
     else if(r.pw) h+='<br>Share of gross: <span style="color:var(--gold)">withheld</span><br><span style="color:#8a948f">'+esc(r.pw)+' ('+r.pwy+')</span>';
     else h+='<br><span style="color:#8a948f">no corn yield published, no ratio</span>';
-    l.bindPopup(h);
+    if(au) h+='<br><a href="'+esc(au)+'" style="color:var(--gold)">Farmland Atlas county page</a>';
+    return h;
   }
   function paint(){ if(layer) layer.setStyle(style); legend(); }
 
   function initMap(){
+    atlasPages();
     Promise.all([
       fetch(DATA+'national.json',{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).catch(function(){return null;}),
       fetch(GEO).then(function(r){return r.ok?r.json():null;}).catch(function(){return null;})
