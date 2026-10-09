@@ -49,6 +49,7 @@ specific page. Each daily briefing has a permanent dated URL.
 - [Harvest Price Tracker](https://agsist.com/harvest-price-tracker)
 - [Pre-Sell Calculator](https://agsist.com/presell-calculator)
 - [ARC or PLC for 2026 and 2027](https://agsist.com/arc-plc): PLC effective reference prices computed from final USDA NASS season-average prices under the 2025 farm law: 2026 corn $4.42, soybeans $10.71, wheat $6.35; 2027 est. corn $4.34, soybeans $10.62, wheat $6.35. Signup: 2026 closes Dec 11, 2026; 2027 runs Nov 2, 2026 to Mar 15, 2027. A calculator compares PLC and ARC-CO per base acre by price and county yield, with what changed under the 2025 law, SCO, rented ground and payment limits
+- [ARC-CO benchmark yields by county](https://agsist.com/arc-plc/iowa): FSA's official 2026 ARC-CO benchmark yields for 2,736 counties by crop (corn, soybeans, wheat) and practice (irrigated, non-irrigated), with benchmark revenue, guarantee, maximum payment, FSA history and the PLC vs ARC break-even, at /arc-plc/<state> and /arc-plc/<state>/<county> (e.g. /arc-plc/iowa/story-county)
 - [Cash Rent by County](https://agsist.com/cash-rent): USDA county cash rent, history, and rent as a share of realistic gross revenue
 - [Cash Rent by State](https://agsist.com/rent/): every state's county cash rent rates on one page each — median, YoY, history to 2008, lease-notice deadlines
 - [Cash Farm Lease](https://agsist.com/cash-lease): fillable, printable plain-English cash lease with state-specific termination notes; every lease type explained
