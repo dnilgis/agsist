@@ -13,7 +13,7 @@
   <link rel="preload" href="/components/styles.css?v=23" as="style">
   <link rel="stylesheet" href="/components/styles.css?v=23">
   <link rel="stylesheet" href="/components/asof.css?v=1">
-  <link rel="stylesheet" href="/components/arc-plc.css?v=5">
+  <link rel="stylesheet" href="/components/arc-plc.css?v=6">
   <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
   <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
@@ -84,16 +84,17 @@
   <div class="ap-grid">
     <div class="ap-f"><label for="ap-st">State</label><select id="ap-st"><option value="">Pick a state</option></select></div>
     <div class="ap-f"><label for="ap-co">County</label><select id="ap-co" disabled><option value="">Pick a state first</option></select></div>
-    <div class="ap-f ap-f-wide" id="ap-prac-f" hidden><label for="ap-prac">Practice</label><select id="ap-prac"></select>
-      <p class="ap-hint">FSA has separate irrigated and non-irrigated benchmarks here. A farm with both is weighted by its historical irrigated percentage on FSA&rsquo;s records, not by what you plant this year.</p></div>
+    <div class="ap-f ap-f-wide" id="ap-prac-f" hidden><label for="ap-prac">Practice</label><select id="ap-prac" aria-describedby="ap-prac-hint"></select>
+      <p class="ap-hint" id="ap-prac-hint">FSA has separate irrigated and non-irrigated benchmarks here. A farm with both is weighted by its historical irrigated percentage on FSA&rsquo;s records, not by what you plant this year.</p></div>
     <div class="ap-f" id="ap-share-f" hidden><label for="ap-share">Irrigated share of this farm&rsquo;s base (%)</label><input id="ap-share" type="number" inputmode="decimal" min="0" max="100" step="1" value="50"></div>
-    <div class="ap-f"><label for="ap-base">Base acres for this crop</label><input id="ap-base" type="number" inputmode="decimal" min="0" step="0.1" value="100"><p class="ap-hint">From the FSA-156EZ. Base acres are not what you plant; each farm number has its own base.</p></div>
-    <div class="ap-f"><label for="ap-py" id="ap-py-l">PLC payment yield (bu/acre)</label><input id="ap-py" type="number" inputmode="decimal" min="0" step="1" placeholder="From your FSA-156EZ"><p class="ap-hint" id="ap-py-hint">On the FSA-156EZ for the farm. Each farm has its own.</p></div>
-    <div class="ap-f"><label for="ap-by" id="ap-by-l">ARC-CO benchmark yield (bu/acre)</label><input id="ap-by" type="number" inputmode="decimal" min="0" step="0.01" placeholder="FSA official, from the county"><p class="ap-hint" id="ap-by-hint">Fills in from FSA&rsquo;s official county file when we have it. You can type the number your county office gives you.</p></div>
-    <div class="ap-f"><label for="ap-y" id="ap-y-l">Expected county yield (bu/acre)</label><input id="ap-y" type="number" inputmode="decimal" min="0" step="0.1"><p class="ap-hint">County average, not your farm. A normal year often comes in a bit above this.</p></div>
-    <div class="ap-f ap-f-wide"><label for="ap-p" id="ap-p-l">Expected season-average price ($/bu)</label><input id="ap-p" type="number" inputmode="decimal" min="0" step="0.01" placeholder="You set this"><p class="ap-hint" id="ap-p-hint">USDA national season-average price for the marketing year, not your local cash price.</p><p class="ap-hint ap-fut" id="ap-fut"></p></div>
+    <div class="ap-f"><label for="ap-base">Base acres for this crop</label><input id="ap-base" type="number" inputmode="decimal" min="0" step="0.1" placeholder="Blank shows per base acre" aria-describedby="ap-base-hint"><p class="ap-hint" id="ap-base-hint">From the FSA-156EZ. Base acres are not what you plant; each farm number has its own base.</p></div>
+    <div class="ap-f"><label for="ap-py" id="ap-py-l">PLC payment yield (bu/acre)</label><input id="ap-py" type="number" inputmode="decimal" min="0" step="1" placeholder="From your FSA-156EZ" aria-describedby="ap-py-hint"><p class="ap-hint" id="ap-py-hint">On the FSA-156EZ for the farm. Each farm has its own.</p></div>
+    <div class="ap-f"><label for="ap-by" id="ap-by-l">ARC-CO benchmark yield (bu/acre)</label><input id="ap-by" type="number" inputmode="decimal" min="0" step="0.01" placeholder="FSA official, from the county" aria-describedby="ap-by-hint"><p class="ap-hint" id="ap-by-hint">Fills in from FSA&rsquo;s official county file when we have it. You can type the number your county office gives you.</p></div>
+    <div class="ap-f"><label for="ap-y" id="ap-y-l">Expected county yield (bu/acre)</label><input id="ap-y" type="number" inputmode="decimal" min="0" step="0.1" aria-describedby="ap-y-hint"><p class="ap-hint" id="ap-y-hint">County average, not your farm. A normal year often comes in a bit above this.</p></div>
+    <div class="ap-f ap-f-wide"><label for="ap-p" id="ap-p-l">Expected season-average price ($/bu)</label><input id="ap-p" type="number" inputmode="decimal" min="0" step="0.01" placeholder="You set this" aria-describedby="ap-p-hint ap-fut"><p class="ap-hint" id="ap-p-hint">USDA national season-average price for the marketing year, not your local cash price.</p><p class="ap-hint ap-fut" id="ap-fut"></p></div>
+    <div class="ap-f"><label for="ap-farm">FSA farm number (optional)</label><input id="ap-farm" type="text" inputmode="numeric" autocomplete="off" maxlength="12" aria-describedby="ap-farm-hint"><p class="ap-hint" id="ap-farm-hint">Goes on the printout and keeps each farm&rsquo;s numbers apart on this device.</p></div>
   </div>
-  <div class="ap-out" id="ap-out" aria-live="polite"></div>
+  <div class="ap-out" id="ap-out" aria-busy="true"><p class="ap-need">Loading FSA and USDA numbers for the calculator.</p></div>
 </section>
 
   <div class="ap-faq-sections">
@@ -119,7 +120,7 @@
   <details class="ap-det"><summary>Show the math for 2027</summary>
   <p>The effective reference price is the lesser of 115% of the statutory price, or the greater of the statutory price and 88% of the
   Olympic average season-average price for the five most recent crop years (2021 to 2025 for 2027; 2020 to 2024 for 2026).</p>
-  <p class="ap-math"><b>Corn.</b> Season-average prices 2021: $6.00 &middot; <s>2022: $6.54</s> &middot; 2023: $4.55 &middot; 2024: $4.24 &middot; <s>2025: $4.16</s> (struck: the high and low year). Average of the middle three: $4.9300. 88% of that is <b>$4.34</b>, above the $4.10 statutory price and under the $4.72 cap (115%).</p><p class="ap-math"><b>Soybeans.</b> Season-average prices 2021: $13.30 &middot; <s>2022: $14.20</s> &middot; 2023: $12.40 &middot; <s>2024: $10.00</s> &middot; 2025: $10.50 (struck: the high and low year). Average of the middle three: $12.0667. 88% of that is <b>$10.62</b>, above the $10.00 statutory price and under the $11.50 cap (115%).</p><p class="ap-math"><b>Wheat.</b> Season-average prices 2021: $7.63 &middot; <s>2022: $8.83</s> &middot; 2023: $6.96 &middot; 2024: $5.52 &middot; <s>2025: $5.06</s> (struck: the high and low year). Average of the middle three: $6.7033. 88% of the average is $5.90, below the $6.35 statutory price, so the statutory price holds: <b>$6.35</b>.</p>
+  <p class="ap-math"><b>Corn.</b> Season-average prices 2021: $6.00 &middot; <s>2022: $6.54</s><span class="sr-only"> (dropped)</span> &middot; 2023: $4.55 &middot; 2024: $4.24 &middot; <s>2025: $4.16</s><span class="sr-only"> (dropped)</span> (struck: the high and low year). Average of the middle three: $4.9300. 88% of that is <b>$4.34</b>, above the $4.10 statutory price and under the $4.72 cap (115%).</p><p class="ap-math"><b>Soybeans.</b> Season-average prices 2021: $13.30 &middot; <s>2022: $14.20</s><span class="sr-only"> (dropped)</span> &middot; 2023: $12.40 &middot; <s>2024: $10.00</s><span class="sr-only"> (dropped)</span> &middot; 2025: $10.50 (struck: the high and low year). Average of the middle three: $12.0667. 88% of that is <b>$10.62</b>, above the $10.00 statutory price and under the $11.50 cap (115%).</p><p class="ap-math"><b>Wheat.</b> Season-average prices 2021: $7.63 &middot; <s>2022: $8.83</s><span class="sr-only"> (dropped)</span> &middot; 2023: $6.96 &middot; 2024: $5.52 &middot; <s>2025: $5.06</s><span class="sr-only"> (dropped)</span> (struck: the high and low year). Average of the middle three: $6.7033. 88% of the average is $5.90, below the $6.35 statutory price, so the statutory price holds: <b>$6.35</b>.</p>
   <p>The ARC-CO benchmark price uses the same five years, with any year below the 2027 effective reference price raised to it:</p>
   <p class="ap-math"><b>Corn.</b> 2021: $6.00 &middot; 2022: $6.54 &middot; 2023: $4.55 &middot; 2024: $4.34 (raised from $4.24) &middot; 2025: $4.34 (raised from $4.16). Drop the high ($6.54) and low ($4.34); the middle three average <b>$4.96</b>.</p><p class="ap-math"><b>Soybeans.</b> 2021: $13.30 &middot; 2022: $14.20 &middot; 2023: $12.40 &middot; 2024: $10.62 (raised from $10.00) &middot; 2025: $10.62 (raised from $10.50). Drop the high ($14.20) and low ($10.62); the middle three average <b>$12.11</b>.</p><p class="ap-math"><b>Wheat.</b> 2021: $7.63 &middot; 2022: $8.83 &middot; 2023: $6.96 &middot; 2024: $6.35 (raised from $5.52) &middot; 2025: $6.35 (raised from $5.06). Drop the high ($8.83) and low ($6.35); the middle three average <b>$6.98</b>.</p>
   </details>
@@ -227,6 +228,6 @@
 </div>
 <script src="/components/asof.js?v=1" defer></script>
 <script src="/components/loader.js?v=18" defer></script>
-<script src="/components/arc-plc.js?v=5" defer></script>
+<script src="/components/arc-plc.js?v=6" defer></script>
 </body>
 </html>

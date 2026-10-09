@@ -139,7 +139,7 @@ FINAL_SCOPE = "final only"
 STYLES_V = "23"
 LOADER_V = "18"
 ASOF_V = "1"
-CALC_V = "5"
+CALC_V = "6"
 MIN_STATE_COUNTIES = 3
 SCEN_YEARS = list(range(2015, 2025))   # years with both an FSA county yield and a price change
 LEAN_GAP = 3.00       # $/base acre: "Leans X" needs at least this expected gap and more winning years
@@ -1227,16 +1227,17 @@ def form_html(D, crop="corn", st="", fips="", embed=False):
   <div class="ap-grid">
     <div class="ap-f"><label for="ap-st">State</label><select id="ap-st"><option value="">Pick a state</option></select></div>
     <div class="ap-f"><label for="ap-co">County</label><select id="ap-co" disabled><option value="">Pick a state first</option></select></div>
-    <div class="ap-f ap-f-wide" id="ap-prac-f" hidden><label for="ap-prac">Practice</label><select id="ap-prac"></select>
-      <p class="ap-hint">FSA has separate irrigated and non-irrigated benchmarks here. A farm with both is weighted by its historical irrigated percentage on FSA&rsquo;s records, not by what you plant this year.</p></div>
+    <div class="ap-f ap-f-wide" id="ap-prac-f" hidden><label for="ap-prac">Practice</label><select id="ap-prac" aria-describedby="ap-prac-hint"></select>
+      <p class="ap-hint" id="ap-prac-hint">FSA has separate irrigated and non-irrigated benchmarks here. A farm with both is weighted by its historical irrigated percentage on FSA&rsquo;s records, not by what you plant this year.</p></div>
     <div class="ap-f" id="ap-share-f" hidden><label for="ap-share">Irrigated share of this farm&rsquo;s base (%)</label><input id="ap-share" type="number" inputmode="decimal" min="0" max="100" step="1" value="50"></div>
-    <div class="ap-f"><label for="ap-base">Base acres for this crop</label><input id="ap-base" type="number" inputmode="decimal" min="0" step="0.1" value="100"><p class="ap-hint">From the FSA-156EZ. Base acres are not what you plant; each farm number has its own base.</p></div>
-    <div class="ap-f"><label for="ap-py" id="ap-py-l">PLC payment yield (bu/acre)</label><input id="ap-py" type="number" inputmode="decimal" min="0" step="1" placeholder="From your FSA-156EZ"><p class="ap-hint" id="ap-py-hint">On the FSA-156EZ for the farm. Each farm has its own.</p></div>
-    <div class="ap-f"><label for="ap-by" id="ap-by-l">ARC-CO benchmark yield (bu/acre)</label><input id="ap-by" type="number" inputmode="decimal" min="0" step="0.01" placeholder="FSA official, from the county"><p class="ap-hint" id="ap-by-hint">Fills in from FSA&rsquo;s official county file when we have it. You can type the number your county office gives you.</p></div>
-    <div class="ap-f"><label for="ap-y" id="ap-y-l">Expected county yield (bu/acre)</label><input id="ap-y" type="number" inputmode="decimal" min="0" step="0.1"><p class="ap-hint">County average, not your farm. A normal year often comes in a bit above this.</p></div>
-    <div class="ap-f ap-f-wide"><label for="ap-p" id="ap-p-l">Expected season-average price ($/bu)</label><input id="ap-p" type="number" inputmode="decimal" min="0" step="0.01" placeholder="You set this"><p class="ap-hint" id="ap-p-hint">USDA national season-average price for the marketing year, not your local cash price.</p><p class="ap-hint ap-fut" id="ap-fut"></p></div>
+    <div class="ap-f"><label for="ap-base">Base acres for this crop</label><input id="ap-base" type="number" inputmode="decimal" min="0" step="0.1" placeholder="Blank shows per base acre" aria-describedby="ap-base-hint"><p class="ap-hint" id="ap-base-hint">From the FSA-156EZ. Base acres are not what you plant; each farm number has its own base.</p></div>
+    <div class="ap-f"><label for="ap-py" id="ap-py-l">PLC payment yield (bu/acre)</label><input id="ap-py" type="number" inputmode="decimal" min="0" step="1" placeholder="From your FSA-156EZ" aria-describedby="ap-py-hint"><p class="ap-hint" id="ap-py-hint">On the FSA-156EZ for the farm. Each farm has its own.</p></div>
+    <div class="ap-f"><label for="ap-by" id="ap-by-l">ARC-CO benchmark yield (bu/acre)</label><input id="ap-by" type="number" inputmode="decimal" min="0" step="0.01" placeholder="FSA official, from the county" aria-describedby="ap-by-hint"><p class="ap-hint" id="ap-by-hint">Fills in from FSA&rsquo;s official county file when we have it. You can type the number your county office gives you.</p></div>
+    <div class="ap-f"><label for="ap-y" id="ap-y-l">Expected county yield (bu/acre)</label><input id="ap-y" type="number" inputmode="decimal" min="0" step="0.1" aria-describedby="ap-y-hint"><p class="ap-hint" id="ap-y-hint">County average, not your farm. A normal year often comes in a bit above this.</p></div>
+    <div class="ap-f ap-f-wide"><label for="ap-p" id="ap-p-l">Expected season-average price ($/bu)</label><input id="ap-p" type="number" inputmode="decimal" min="0" step="0.01" placeholder="You set this" aria-describedby="ap-p-hint ap-fut"><p class="ap-hint" id="ap-p-hint">USDA national season-average price for the marketing year, not your local cash price.</p><p class="ap-hint ap-fut" id="ap-fut"></p></div>
+    <div class="ap-f"><label for="ap-farm">FSA farm number (optional)</label><input id="ap-farm" type="text" inputmode="numeric" autocomplete="off" maxlength="12" aria-describedby="ap-farm-hint"><p class="ap-hint" id="ap-farm-hint">Goes on the printout and keeps each farm&rsquo;s numbers apart on this device.</p></div>
   </div>
-  <div class="ap-out" id="ap-out" aria-live="polite"></div>
+  <div class="ap-out" id="ap-out" aria-busy="true"><p class="ap-need">Loading FSA and USDA numbers for the calculator.</p></div>
 </section>"""
 
 
@@ -1247,9 +1248,9 @@ def erp_math_html(c):
     parts = []
     for y, v in c["mya"].items():
         if not lo_done and v == e["dropped_low"]:
-            parts.append(f"<s>{y}: {usd(v)}</s>"); lo_done = True
+            parts.append(f'<s>{y}: {usd(v)}</s><span class="sr-only"> (dropped)</span>'); lo_done = True
         elif not hi_done and v == e["dropped_high"]:
-            parts.append(f"<s>{y}: {usd(v)}</s>"); hi_done = True
+            parts.append(f'<s>{y}: {usd(v)}</s><span class="sr-only"> (dropped)</span>'); hi_done = True
         else:
             parts.append(f"{y}: {usd(v)}")
     if e["binding"] == "statutory":
@@ -1596,8 +1597,8 @@ def crossover_table(crop_d, by=None):
         arc_txt = f'{c2(arc_runs[0]["lo"], sc)} to {c2(arc_runs[-1]["hi"], sc)}' if arc_runs else "never"
         lab = f"{int(r * 100)}%" + (f"<br><span class=\"mut\">{XC.yf(crop_d, base_by * r, 1)}</span>" if by else "")
         rows.append(f'<tr><td>{lab}</td><td>PLC: {c2(below, sc) + " or lower" if below else "never"}<br>ARC-CO: {arc_txt}</td></tr>')
-    return ('<table class="tbl ap-t ap-x"><thead><tr><th>PLC yield, % of your official benchmark</th>'
-            '<th>Which pays more, by season-average price</th></tr></thead><tbody>' + "".join(rows) + "</tbody></table>")
+    return ('<div class="ap-scroll"><table class="tbl ap-t ap-x"><thead><tr><th>PLC yield, % of your official benchmark</th>'
+            '<th>Which pays more, by season-average price</th></tr></thead><tbody>' + "".join(rows) + "</tbody></table></div>")
 
 
 def ent_label(e):
@@ -1935,9 +1936,9 @@ def county_page(st, S, c, D, ch):
                 parts = []
                 for y, v in yrs.items():
                     if not lo_d and v == lo:
-                        parts.append(f"<s>{y}: {v:g}</s>"); lo_d = True
+                        parts.append(f'<s>{y}: {v:g}</s><span class="sr-only"> (dropped)</span>'); lo_d = True
                     elif not hi_d and v == hi:
-                        parts.append(f"<s>{y}: {v:g}</s>"); hi_d = True
+                        parts.append(f'<s>{y}: {v:g}</s><span class="sr-only"> (dropped)</span>'); hi_d = True
                     else:
                         parts.append(f"{y}: {v:g}")
                 ys = (f'<p class="ap-math">FSA trend-adjusted county yields (county yield or 80% of T-yield): {" &middot; ".join(parts)} '
@@ -2013,7 +2014,7 @@ def county_page(st, S, c, D, ch):
   {''.join(blocks)}
   {miss_txt}
   <p class="ap-small">Break-even prices are per base acre with both programs on 85% of base and 2026 prices. Your PLC yield is on the FSA-156EZ.</p>
-  <div class="ap-noprint">{form_html(D, first, st, c['f'])}</div>
+  <div>{form_html(D, first, st, c['f'])}</div>
   {f'<div class="ap-faq ap-noprint"><h2>Questions about {esc(cname)}</h2>{faq_html}</div>' if faqs else ''}
   <p class="ap-disc">An estimate, not a USDA determination. Source: <a href="{FSA_DATA}" rel="noopener">FSA ARC/PLC program data</a>. <a href="{OFFICE}" rel="noopener">Find your county office</a>.</p>
   <p class="ap-small ap-noprint">Related: {' &middot; '.join(rel)}</p>

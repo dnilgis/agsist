@@ -36,14 +36,16 @@
 @media (max-width:560px){.ap-kv{grid-template-columns:repeat(2,minmax(0,1fr))}}
 
 /* calculator */
-.ap-calc{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:1rem 1rem 1.1rem;margin:1rem 0 1.4rem}
+.ap-calc{--ap-in-b:#6f7a7c;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:1rem 1rem 1.1rem;margin:1rem 0 1.4rem}
 .ap-calc .ap-h2{margin-top:0}
 .ap-crops{display:flex;gap:.5rem;flex-wrap:wrap;margin:.2rem 0 .9rem}
 .ap-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.75rem 1rem}
 .ap-f{min-width:0}
 .ap-f-wide{grid-column:1/-1}
 .ap-f label{display:block;font-size:var(--fs-sm);font-weight:600;color:var(--text-dim);margin:0 0 .25rem}
-.ap-f input,.ap-f select{width:100%;box-sizing:border-box;font-size:16px;font-family:var(--font-mono);background:var(--bg);color:var(--text);border:1px solid var(--border-2);border-radius:var(--r-sm);padding:.6rem .7rem;min-height:44px}
+/* input borders: at least 3:1 against the field and the panel, both themes */
+[data-theme="light"] .ap-calc{--ap-in-b:#767d7a}
+.ap-f input,.ap-f select{width:100%;box-sizing:border-box;font-size:16px;font-family:var(--font-mono);background:var(--bg);color:var(--text);border:1px solid var(--ap-in-b);border-radius:var(--r-sm);padding:.6rem .7rem;min-height:44px}
 .ap-f select{font-family:var(--font-body)}
 .ap-f input:focus-visible,.ap-f select:focus-visible{outline:2px solid var(--brand);outline-offset:1px}
 .ap-hint{font-size:var(--fs-xs);color:var(--text-muted);margin:.3rem 0 0;line-height:1.45}
@@ -90,9 +92,24 @@
 .ap-warn{color:var(--text);background:rgba(var(--gold-rgb),.12);border-left:3px solid var(--gold);border-radius:var(--r-sm);padding:.4rem .6rem;margin:.4rem 0;font-size:var(--fs-sm)}
 .ap-card .ap-warn{display:block;margin-top:.4rem}
 .ap-tools{display:flex;flex-wrap:wrap;gap:.5rem;margin:.8rem 0}
-.ap-printonly{display:none}
+.ap-tools .btn{white-space:normal;text-align:center}
+.ap-f input[aria-invalid=true]{border-color:var(--gold);border-width:2px}
+.ap-restored{font-size:var(--fs-sm);color:var(--text-dim);margin:0 0 .7rem}
+.ap-restored .ap-use{min-height:44px;margin-left:.3rem}
+.ap-pyuse{margin-top:.4rem;min-height:44px;text-align:left}
+.ap-st-err .ap-use{min-height:44px;margin-left:.3rem}
+.ap-u{font-weight:400}
+.ap-printonly,.ap-printin{display:none}
 @media print{
-  #site-header,#site-footer,.ap-noprint,.ap-tools,.ap-calc,.ap-det,.ag-sponsor-ribbon{display:none!important}
+  #site-header,#site-footer,#topnav,#drawer,#draw-ov,body>footer,.skip-link,.ap-noprint,.ap-tools,.ap-det,.ag-sponsor-ribbon{display:none!important}
+  /* the calculator prints only once it has an answer: what was entered and
+     what came out, without the form; the typical-farm verdict steps aside */
+  .ap-calc:not(.ap-has-out){display:none!important}
+  .ap-calc{border:0;padding:0;background:none}
+  .ap-calc .ap-row,.ap-calc .ap-grid,.ap-calc .ap-runone,.ap-restored,.ap-cue,.ap-use{display:none!important}
+  .ap-calc-on .ap-typical{display:none!important}
+  .ap-printin{display:block;break-inside:avoid}
+  .ap-near th,.ap-near td{box-shadow:none;outline:2px solid #000;outline-offset:-2px}
   .ap-printonly{display:block}
   .ap-wrap{max-width:none;padding:0;color:#000}
   .ap-kv div,.ap-dl div{border-color:#999}

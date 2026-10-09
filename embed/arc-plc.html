@@ -9,7 +9,7 @@
 <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
 <link rel="stylesheet" href="/components/styles.css?v=23">
 <link rel="stylesheet" href="/components/asof.css?v=1">
-<link rel="stylesheet" href="/components/arc-plc.css?v=5">
+<link rel="stylesheet" href="/components/arc-plc.css?v=6">
 <script>try{var m=/[?&]theme=(dark|light)/.exec(location.search);document.documentElement.setAttribute('data-theme',m?m[1]:(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'));}catch(e){}</script>
 <style>body{margin:0;background:var(--bg)}.ap-wrap{padding:12px 12px 8px}</style>
 </head>
@@ -22,21 +22,22 @@
   <div class="ap-grid">
     <div class="ap-f"><label for="ap-st">State</label><select id="ap-st"><option value="">Pick a state</option></select></div>
     <div class="ap-f"><label for="ap-co">County</label><select id="ap-co" disabled><option value="">Pick a state first</option></select></div>
-    <div class="ap-f ap-f-wide" id="ap-prac-f" hidden><label for="ap-prac">Practice</label><select id="ap-prac"></select>
-      <p class="ap-hint">FSA has separate irrigated and non-irrigated benchmarks here. A farm with both is weighted by its historical irrigated percentage on FSA&rsquo;s records, not by what you plant this year.</p></div>
+    <div class="ap-f ap-f-wide" id="ap-prac-f" hidden><label for="ap-prac">Practice</label><select id="ap-prac" aria-describedby="ap-prac-hint"></select>
+      <p class="ap-hint" id="ap-prac-hint">FSA has separate irrigated and non-irrigated benchmarks here. A farm with both is weighted by its historical irrigated percentage on FSA&rsquo;s records, not by what you plant this year.</p></div>
     <div class="ap-f" id="ap-share-f" hidden><label for="ap-share">Irrigated share of this farm&rsquo;s base (%)</label><input id="ap-share" type="number" inputmode="decimal" min="0" max="100" step="1" value="50"></div>
-    <div class="ap-f"><label for="ap-base">Base acres for this crop</label><input id="ap-base" type="number" inputmode="decimal" min="0" step="0.1" value="100"><p class="ap-hint">From the FSA-156EZ. Base acres are not what you plant; each farm number has its own base.</p></div>
-    <div class="ap-f"><label for="ap-py" id="ap-py-l">PLC payment yield (bu/acre)</label><input id="ap-py" type="number" inputmode="decimal" min="0" step="1" placeholder="From your FSA-156EZ"><p class="ap-hint" id="ap-py-hint">On the FSA-156EZ for the farm. Each farm has its own.</p></div>
-    <div class="ap-f"><label for="ap-by" id="ap-by-l">ARC-CO benchmark yield (bu/acre)</label><input id="ap-by" type="number" inputmode="decimal" min="0" step="0.01" placeholder="FSA official, from the county"><p class="ap-hint" id="ap-by-hint">Fills in from FSA&rsquo;s official county file when we have it. You can type the number your county office gives you.</p></div>
-    <div class="ap-f"><label for="ap-y" id="ap-y-l">Expected county yield (bu/acre)</label><input id="ap-y" type="number" inputmode="decimal" min="0" step="0.1"><p class="ap-hint">County average, not your farm. A normal year often comes in a bit above this.</p></div>
-    <div class="ap-f ap-f-wide"><label for="ap-p" id="ap-p-l">Expected season-average price ($/bu)</label><input id="ap-p" type="number" inputmode="decimal" min="0" step="0.01" placeholder="You set this"><p class="ap-hint" id="ap-p-hint">USDA national season-average price for the marketing year, not your local cash price.</p><p class="ap-hint ap-fut" id="ap-fut"></p></div>
+    <div class="ap-f"><label for="ap-base">Base acres for this crop</label><input id="ap-base" type="number" inputmode="decimal" min="0" step="0.1" placeholder="Blank shows per base acre" aria-describedby="ap-base-hint"><p class="ap-hint" id="ap-base-hint">From the FSA-156EZ. Base acres are not what you plant; each farm number has its own base.</p></div>
+    <div class="ap-f"><label for="ap-py" id="ap-py-l">PLC payment yield (bu/acre)</label><input id="ap-py" type="number" inputmode="decimal" min="0" step="1" placeholder="From your FSA-156EZ" aria-describedby="ap-py-hint"><p class="ap-hint" id="ap-py-hint">On the FSA-156EZ for the farm. Each farm has its own.</p></div>
+    <div class="ap-f"><label for="ap-by" id="ap-by-l">ARC-CO benchmark yield (bu/acre)</label><input id="ap-by" type="number" inputmode="decimal" min="0" step="0.01" placeholder="FSA official, from the county" aria-describedby="ap-by-hint"><p class="ap-hint" id="ap-by-hint">Fills in from FSA&rsquo;s official county file when we have it. You can type the number your county office gives you.</p></div>
+    <div class="ap-f"><label for="ap-y" id="ap-y-l">Expected county yield (bu/acre)</label><input id="ap-y" type="number" inputmode="decimal" min="0" step="0.1" aria-describedby="ap-y-hint"><p class="ap-hint" id="ap-y-hint">County average, not your farm. A normal year often comes in a bit above this.</p></div>
+    <div class="ap-f ap-f-wide"><label for="ap-p" id="ap-p-l">Expected season-average price ($/bu)</label><input id="ap-p" type="number" inputmode="decimal" min="0" step="0.01" placeholder="You set this" aria-describedby="ap-p-hint ap-fut"><p class="ap-hint" id="ap-p-hint">USDA national season-average price for the marketing year, not your local cash price.</p><p class="ap-hint ap-fut" id="ap-fut"></p></div>
+    <div class="ap-f"><label for="ap-farm">FSA farm number (optional)</label><input id="ap-farm" type="text" inputmode="numeric" autocomplete="off" maxlength="12" aria-describedby="ap-farm-hint"><p class="ap-hint" id="ap-farm-hint">Goes on the printout and keeps each farm&rsquo;s numbers apart on this device.</p></div>
   </div>
-  <div class="ap-out" id="ap-out" aria-live="polite"></div>
+  <div class="ap-out" id="ap-out" aria-busy="true"><p class="ap-need">Loading FSA and USDA numbers for the calculator.</p></div>
 </section>
 <p class="ap-small">An estimate, not a USDA determination. Prices, FSA county benchmarks and the full math at <a href="https://agsist.com/arc-plc" target="_blank" rel="noopener">agsist.com/arc-plc</a>.</p>
 </main>
 <script src="/components/asof.js?v=1" defer></script>
-<script src="/components/arc-plc.js?v=5" defer></script>
+<script src="/components/arc-plc.js?v=6" defer></script>
 <script>
 (function(){function post(){try{parent.postMessage({agsist:'arc-plc',height:document.body.scrollHeight},'*');}catch(e){}}
 window.addEventListener('load',post);document.addEventListener('arcplc:render',post);
