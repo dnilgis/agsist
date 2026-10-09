@@ -73,7 +73,7 @@
 .st-retry[disabled]{opacity:.6;cursor:default}
 /* a one-line message inside a sentence or a status row */
 .st-inline{color:var(--text-muted,inherit)}
-.st-inline .st-retry{min-height:32px;padding:.15rem .6rem;margin-left:.4rem;font-size:.85em}
+.st-inline .st-retry{min-height:40px;padding:.3rem .7rem;margin-left:.4rem;font-size:.85em}
 
 /* ── stale feed ──────────────────────────────────────────────────────── */
 .st-stale{color:var(--gold,#d4a23f);font-weight:600}

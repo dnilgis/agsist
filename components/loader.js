@@ -24,7 +24,7 @@
   // Component cache version. Bump on every chrome deploy so browsers fetch the
   // new header/footer; between deploys the files cache normally (no refetch /
   // no nav-flash on each page navigation).
-  var CV = '28'; // v28 2026-10-09: menu shows Farmland Atlas once, footer keeps Cash Rent by State; v27 2026-10-09: instant pages, prerender-safe analytics, Updated stamps; v26 2026-10-09: header search button; v25 2026-10-09: em-dash cleanup and link fixes; v24 2026-10-08: footer sponsor pill no longer overlaps on phones; v23 2026-10-08: footer link columns fold into <details> on phones (closed at 700px and under)
+  var CV = '29'; // v29 2026-10-09: no-jump layout and loading states kit; v28 2026-10-09: menu shows Farmland Atlas once, footer keeps Cash Rent by State; v27 2026-10-09: instant pages, prerender-safe analytics, Updated stamps; v26 2026-10-09: header search button; v25 2026-10-09: em-dash cleanup and link fixes; v24 2026-10-08: footer sponsor pill no longer overlaps on phones; v23 2026-10-08: footer link columns fold into <details> on phones (closed at 700px and under)
                  // v22 2026-09-19: the Farmland Atlas link restored to the Land group, drawer and footer (the 9/13 upload dropped it)
                  // v21 2026-09-13: Farmland Atlas link in the Land group of the header, the drawer and the footer
                  // v20 2026-09-05: sponsor-metrics.js loaded sitewide; footer sponsor card measured on the MRC rule
@@ -463,7 +463,7 @@
     loadComponent('site-footer', '/components/footer.html', function () { foldFooter(); renderSupporters(); });
     fillPageRibbons();
     loadSponsorMetrics();
-    (function () { if (!document.querySelector('link[href*="/components/states.css"]')) { var l = document.createElement('link'); l.rel = 'stylesheet'; l.href = BASE + '/components/states.css?v=1'; document.head.appendChild(l); } if (!window.AgStates && !document.querySelector('script[src*="/components/states.js"]')) { var j = document.createElement('script'); j.src = BASE + '/components/states.js?v=1'; j.async = true; document.head.appendChild(j); } })(); // loading, empty, error and stale states kit (components/states.css + states.js), on every page
+    (function () { if (!document.querySelector('link[href*="/components/states.css"]')) { var l = document.createElement('link'); l.rel = 'stylesheet'; l.href = BASE + '/components/states.css?v=2'; document.head.appendChild(l); } if (!window.AgStates && !document.querySelector('script[src*="/components/states.js"]')) { var j = document.createElement('script'); j.src = BASE + '/components/states.js?v=1'; j.async = true; document.head.appendChild(j); } })(); // loading, empty, error and stale states kit (components/states.css + states.js), on every page
   });
 })();
 
