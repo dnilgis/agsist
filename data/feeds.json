@@ -3,7 +3,7 @@
  "generated_by": "scripts/build_feeds.py",
  "note": "Derived from the repository, never typed. Pages come from a grep of every .html; the writer and its cadence come from the workflow that names the file or runs the script that names it.",
  "count": 75,
- "with_known_cadence": 70,
+ "with_known_cadence": 75,
  "feeds": [
   {
    "path": "data/afida/county.json",
@@ -221,11 +221,8 @@
    "path": "data/bids.json",
    "pages": [
     "cash-bids.html",
-    "corn-futures-prices.html",
     "index.html",
-    "soybean-futures-prices.html",
-    "status.html",
-    "wheat-futures-prices.html"
+    "status.html"
    ],
    "written_by": [
     "Fetch Grain Bids"
@@ -319,7 +316,8 @@
   {
    "path": "data/cot-analysis.json",
    "pages": [
-    "cot.html"
+    "cot.html",
+    "index.html"
    ],
    "written_by": [
     "COT Deep History Rebuild",
@@ -429,12 +427,9 @@
    "path": "data/cot.json",
    "pages": [
     "cattle-futures-prices.html",
-    "corn-futures-prices.html",
     "cot.html",
     "index.html",
-    "soybean-futures-prices.html",
-    "status.html",
-    "wheat-futures-prices.html"
+    "status.html"
    ],
    "written_by": [
     "COT Release Watch",
@@ -481,10 +476,7 @@
   {
    "path": "data/crop-progress.json",
    "pages": [
-    "corn-futures-prices.html",
-    "index.html",
-    "soybean-futures-prices.html",
-    "wheat-futures-prices.html"
+    "index.html"
    ],
    "written_by": [
     "Fetch Crop Progress"
@@ -542,13 +534,10 @@
    "path": "data/daily.json",
    "pages": [
     "cattle-futures-prices.html",
-    "corn-futures-prices.html",
     "daily.html",
     "developer.html",
     "index.html",
-    "soybean-futures-prices.html",
-    "status.html",
-    "wheat-futures-prices.html"
+    "status.html"
    ],
    "written_by": [
     "Generate Daily Briefing"
@@ -627,10 +616,7 @@
   {
    "path": "data/elevator-coverage-counts.json",
    "pages": [
-    "corn-futures-prices.html",
-    "index.html",
-    "soybean-futures-prices.html",
-    "wheat-futures-prices.html"
+    "index.html"
    ],
    "written_by": [
     "Coverage map \u2014 the elevator directory, drawn"
@@ -678,8 +664,7 @@
   {
    "path": "data/export-sales.json",
    "pages": [
-    "index.html",
-    "wheat-futures-prices.html"
+    "index.html"
    ],
    "written_by": [
     "Fetch Export Sales"
@@ -809,12 +794,9 @@
   {
    "path": "data/harvest-prices.json",
    "pages": [
-    "corn-futures-prices.html",
     "harvest-price-tracker.html",
     "index.html",
-    "soybean-futures-prices.html",
-    "status.html",
-    "wheat-futures-prices.html"
+    "status.html"
    ],
    "written_by": [
     "Harvest price tracker"
@@ -1340,10 +1322,11 @@
    ],
    "written_by": [],
    "touched_by": [
+    "Rebuild Feed Manifest",
     "Sponsor sign-ups"
    ],
-   "cadence": "unknown",
-   "curated": false,
+   "cadence": "maintained by hand, not on a schedule",
+   "curated": true,
    "planned": false,
    "external": false,
    "url": null,
@@ -1406,10 +1389,7 @@
    "path": "data/price-stats.json",
    "pages": [
     "cattle-futures-prices.html",
-    "corn-futures-prices.html",
-    "index.html",
-    "soybean-futures-prices.html",
-    "wheat-futures-prices.html"
+    "index.html"
    ],
    "written_by": [
     "Build Price Stats (5-year percentile)"
@@ -1434,16 +1414,13 @@
    "pages": [
     "breakeven.html",
     "cattle-futures-prices.html",
-    "corn-futures-prices.html",
     "developer.html",
     "fast-facts.html",
     "fertilizer.html",
     "index.html",
     "markets.html",
     "milk-prices.html",
-    "soybean-futures-prices.html",
-    "status.html",
-    "wheat-futures-prices.html"
+    "status.html"
    ],
    "written_by": [
     "Generate Daily Briefing",
@@ -1483,9 +1460,11 @@
     "index.html"
    ],
    "written_by": [],
-   "touched_by": [],
-   "cadence": "unknown",
-   "curated": false,
+   "touched_by": [
+    "Rebuild Feed Manifest"
+   ],
+   "cadence": "maintained by hand, not on a schedule",
+   "curated": true,
    "planned": false,
    "external": false,
    "url": null,
@@ -1500,9 +1479,11 @@
     "sponsor.html"
    ],
    "written_by": [],
-   "touched_by": [],
-   "cadence": "unknown",
-   "curated": false,
+   "touched_by": [
+    "Rebuild Feed Manifest"
+   ],
+   "cadence": "maintained by hand, not on a schedule",
+   "curated": true,
    "planned": false,
    "external": false,
    "url": null,
@@ -1562,9 +1543,11 @@
     "sponsor.html"
    ],
    "written_by": [],
-   "touched_by": [],
-   "cadence": "unknown",
-   "curated": false,
+   "touched_by": [
+    "Rebuild Feed Manifest"
+   ],
+   "cadence": "maintained by hand, not on a schedule",
+   "curated": true,
    "planned": false,
    "external": false,
    "url": null,
@@ -1646,11 +1629,12 @@
    ],
    "written_by": [],
    "touched_by": [
+    "Rebuild Feed Manifest",
     "Sponsor sign-ups",
     "Sponsor reports \u2014 yesterday's numbers, from GA4"
    ],
-   "cadence": "unknown",
-   "curated": false,
+   "cadence": "maintained by hand, not on a schedule",
+   "curated": true,
    "planned": false,
    "external": false,
    "url": null,
@@ -1811,11 +1795,8 @@
   {
    "path": "data/whats-priced-in.json",
    "pages": [
-    "corn-futures-prices.html",
     "index.html",
-    "soybean-futures-prices.html",
-    "whats-priced-in.html",
-    "wheat-futures-prices.html"
+    "whats-priced-in.html"
    ],
    "written_by": [
     "COT Release Watch",

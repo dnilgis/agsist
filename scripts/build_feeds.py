@@ -106,6 +106,13 @@ CURATED = {
     # report workflow READS both (they are its push trigger), which the
     # manifest used to count as writing them.
     "data/sponsors.json", "data/sponsor.json",
+    # Sponsor price list, the slot list and the sold-page roster: edited by
+    # hand (or by the sponsor sign-up job when a sale goes live), read by
+    # stamp_rates.py and the sponsor pages. No cadence to keep.
+    "data/rate-card.json", "data/sponsor-slots.json",
+    "data/page-sponsors.json", "data/supporters.json",
+    # Hand-kept quote list; the briefing stopped printing a quote 2026-10-09.
+    "data/quote-pool.json",
 }
 
 # ── feeds another repository publishes, and this one only reads ─────────────

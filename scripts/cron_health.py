@@ -68,7 +68,6 @@ CHECKS = [
     ("price-stats.yml", None, 60, False, "chained, gated to its own schedule"),
     ("harvest-prices.yml", None, 60, False, "chained, gated to its own schedule"),
     ("freshness.yml", None, 60, False, "chained, gated to its own schedule"),
-    ("state-basis-pages.yml", None, 60, False, "chained, gated to its own schedule"),
 ]
 
 # The briefing is judged by what it publishes: today's archive file, by 07:30
