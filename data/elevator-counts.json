@@ -1,10 +1,10 @@
 {
  "schema": "agsist-elevator-counts/1",
- "generated": "2026-10-10T13:49:55Z",
+ "generated": "2026-10-10T15:47:02Z",
  "note": "bids: AGSIST network elevators with a current bid on a /cash-bids page, and the towns they are in (scripts/build_cash_bid_pages.py state_counts). coverage: boards read on the latest full coverage pass out of every elevator tracked (copied from data/elevator-coverage-counts.json). Different questions: a board can be read and have no current bid.",
  "bids": {
-  "elevators": 1850,
-  "towns": 1471
+  "elevators": 1767,
+  "towns": 1397
  },
  "states": {
   "AR": {
@@ -24,24 +24,24 @@
    "towns": 8
   },
   "IA": {
-   "elevators": 417,
-   "towns": 314
+   "elevators": 348,
+   "towns": 247
   },
   "ID": {
    "elevators": 1,
    "towns": 1
   },
   "IL": {
-   "elevators": 204,
-   "towns": 147
+   "elevators": 202,
+   "towns": 146
   },
   "IN": {
    "elevators": 59,
    "towns": 47
   },
   "KS": {
-   "elevators": 249,
-   "towns": 181
+   "elevators": 245,
+   "towns": 180
   },
   "KY": {
    "elevators": 9,
@@ -56,24 +56,24 @@
    "towns": 17
   },
   "MN": {
-   "elevators": 154,
-   "towns": 130
+   "elevators": 155,
+   "towns": 131
   },
   "MO": {
    "elevators": 28,
    "towns": 27
   },
   "MT": {
-   "elevators": 5,
-   "towns": 5
+   "elevators": 2,
+   "towns": 2
   },
   "ND": {
-   "elevators": 54,
-   "towns": 50
+   "elevators": 53,
+   "towns": 49
   },
   "NE": {
-   "elevators": 239,
-   "towns": 181
+   "elevators": 236,
+   "towns": 180
   },
   "NY": {
    "elevators": 2,
@@ -96,7 +96,7 @@
    "towns": 3
   },
   "SD": {
-   "elevators": 106,
+   "elevators": 105,
    "towns": 91
   },
   "TN": {
@@ -112,8 +112,8 @@
    "towns": 8
   },
   "WI": {
-   "elevators": 69,
-   "towns": 64
+   "elevators": 68,
+   "towns": 63
   },
   "WY": {
    "elevators": 1,
@@ -121,10 +121,10 @@
   }
  },
  "coverage": {
-  "generated": "2026-10-09T18:29:12.768Z",
-  "read": 1953,
-  "quiet": 85,
-  "known": 6211,
-  "elevators": 8249
+  "generated": "2026-10-10T14:49:12.614Z",
+  "read": 1951,
+  "quiet": 87,
+  "known": 6366,
+  "elevators": 8404
  }
 }
