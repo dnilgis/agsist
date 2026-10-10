@@ -63,6 +63,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import subscribers        # noqa: E402
 import gmail_limit        # noqa: E402
 from local_bid import q_cash_text, q_cents   # noqa: E402  (the site's quarter-cent text)
+from report_bands import surprise as band_surprise, range_context   # noqa: E402  (the one grading rule)
 
 try:
     from zoneinfo import ZoneInfo
@@ -158,9 +159,13 @@ def todays_reports(day, wpi=None, wasde=None):
         for m in (wasde.get("metrics") or []):
             if num(m.get("value")) is None:
                 continue
+            # graded with the same rule the page uses; no range is on this
+            # file, so there is no range context to print
             rows.append({"date": iso, "report": day.strftime("%B") + " WASDE", "metric": m.get("label"),
                          "actual": m.get("value"), "expected": m.get("consensus"), "low": None, "high": None,
-                         "unit": m.get("unit"), "surprise": "", "reaction": ""})
+                         "unit": m.get("unit"),
+                         "surprise": band_surprise(num(m.get("consensus")), num(m.get("value")), m.get("label") or ""),
+                         "reaction": ""})
         if rows:
             out[rows[0]["report"]] = rows
     return out
@@ -175,13 +180,13 @@ def row_line(h):
         if lo is not None and hi is not None:
             s += ", range %s to %s" % (fnum(lo), fnum(hi))
         s += "."
-        if lo is not None and hi is not None:
-            where = "below the whole trade range" if act < lo else ("above the whole trade range" if act > hi else "inside the trade range")
-            s += " " + where[0].upper() + where[1:]
-            s += (", graded " + h["surprise"]) if h.get("surprise") else ""
-            s += "."
-        elif h.get("surprise"):
-            s += " Graded " + str(h["surprise"]) + "."
+        # The grade is the page's (report_bands, carried on the row); the
+        # range is context, worded by the same function the page uses.
+        ctx = h.get("context") or range_context(act, lo, hi)
+        if h.get("surprise"):
+            s += " Graded " + str(h["surprise"]) + (", " + ctx if ctx else "") + "."
+        elif ctx:
+            s += " " + ctx[0].upper() + ctx[1:] + "."
     else:
         s += " No trade estimate was on file for this one."
     return s
@@ -577,13 +582,17 @@ def _selftest():
     r = todays_reports(date(2026, 9, 30), wpi, {})
     ok(list(r) == ["September Grain Stocks"] and len(r["September Grain Stocks"]) == 3, "Sep 30 2026: Grain Stocks, 3 rows")
     line = row_line(r["September Grain Stocks"][0])
-    ok(line.startswith("Corn stocks, all positions, Sept 1: USDA 2.095 B bu. Trade average 1.918, range 1.843 to 2.005. Above the whole trade range, graded bearish."), line)
+    ok(line.startswith("Corn stocks, all positions, Sept 1: USDA 2.095 B bu. Trade average 1.918, range 1.843 to 2.005. Graded bearish, outside the trade range."), line)
+    soy = row_line(r["September Grain Stocks"][1])
+    ok(soy.endswith("Graded bullish, inside the range, near the bottom."), soy)
     ok("No trade estimate was on file" in row_line(r["September Grain Stocks"][2]), "a row with no estimate says so")
     ok(todays_reports(date(2026, 10, 6), wpi, {}) == {}, "no report today: nothing")
     ok(list(todays_reports(date(2026, 9, 11), wpi, {})) == ["September WASDE"], "Sep 11: WASDE")
     w = {"release": "2026-10-09", "metrics": [{"label": "2026/27 corn yield", "value": 180.1, "unit": "bu/acre", "consensus": 179.0}]}
     rr = todays_reports(date(2026, 10, 9), {"history": []}, w)
     ok(list(rr) == ["October WASDE"] and "Trade average 179" in row_line(rr["October WASDE"][0]), "wasde.json alone fills WASDE")
+    # 180.1 vs 179.0 is +0.61%, past the 0.5% yield band: graded by the same rule
+    ok(row_line(rr["October WASDE"][0]).endswith("Graded bearish."), row_line(rr["October WASDE"][0]))
     ok(release_utc(date(2026, 10, 9)).hour == 16 and release_utc(date(2026, 12, 10)).hour == 17, "noon ET in UTC, DST aware")
     ok(len(_flag_key(date(2026, 9, 30), "September Grain Stocks")) <= 64
        and re.match(r"^[\w:.-]{1,64}$", _flag_key(date(2026, 9, 30), "September Grain Stocks")), "flag key fits the worker's pattern")
@@ -618,7 +627,7 @@ def _selftest():
     ok("2026/27 corn ending stocks" in labels and "2026/27 corn yield" in labels,
        "a future send carries the stocks rows beside the yields: %r" % labels)
     sl = [row_line(h) for h in r10.get("October WASDE", []) if h.get("metric") == "2026/27 corn ending stocks"]
-    ok(sl == ["2026/27 corn ending stocks: USDA 1.849 bil bu. Trade average 1.677, range 1.522 to 1.895. Inside the trade range, graded in line."], repr(sl))
+    ok(sl == ["2026/27 corn ending stocks: USDA 1.849 bil bu. Trade average 1.677, range 1.522 to 1.895. Graded bearish, inside the range, near the top."], repr(sl))
     pdf = {"release": "2026-10-09", "wasde_pdf": {"date": "2026-10-09", "crops": {
         "corn": {"marketing_year": "2026/27", "prev_month": "Sep",
                  "ending_stocks": {"value": 1849, "prev": 1567}, "price": {"value": 4.7, "prev": 4.8}},
