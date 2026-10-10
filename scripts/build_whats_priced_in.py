@@ -17,9 +17,13 @@ What it does beyond pass-through:
     when they aren't spelled out (convention: a print BELOW the low end is
     bullish — less supply — and ABOVE the high end is bearish; this holds
     for both ending-stocks and production metrics).
-  • Scores each history row's surprise from expected vs. actual when the
-    row doesn't already carry a `surprise` (|gap| <= IN_LINE_PCT -> in line;
-    actual < expected -> bullish; actual > expected -> bearish).
+  • Grades every history row from expected vs. actual with
+    scripts/report_bands.py (the distance from the trade average against a
+    band per kind of number; the range is printed as context). A hand-typed
+    `surprise` in wpi-history.json is ignored since 2026-10-10: one rule, every
+    row, or the track record and the scorecard disagree again.
+  • Refuses to build (report_bands.consensus_lock) when a trade average, low
+    or high is not dated before its report.
   • Sets `sample` to false whenever any real report/history is present, so
     the page's "illustrative" ribbon turns itself off.
 
@@ -29,7 +33,7 @@ import json
 import re
 import os
 import sys
-from datetime import datetime, timezone, date as _date
+from datetime import datetime, timezone, timedelta, date as _date
 
 # ONE DEFINITION OF "IN LINE", shared with build_analyst_scorecard.py. The two
 # used to carry their own copies and disagreed on one screen about one number:
@@ -37,12 +41,14 @@ from datetime import datetime, timezone, date as _date
 # calls, same consensus, same print. See scripts/report_bands.py.
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from report_bands import surprise as band_surprise, gap_pct as band_gap_pct  # noqa: E402
+from report_bands import range_context, consensus_lock, ConsensusLockError, RULE_CHANGED  # noqa: E402
 
 EST_PATH  = "data/wpi-estimates.json"
 ANALYST_PATH = "data/analyst-estimates.json"
 HIST_PATH = "data/wpi-history.json"
 OUT_PATH  = "data/whats-priced-in.json"
 COT_PATH  = "data/cot.json"
+WASDE_PATH = "data/wasde.json"
 # The bands moved to scripts/report_bands.py on 2026-09-10, unchanged, so the
 # scorecard could apply the same ones. The 2026-08-11 reasoning for why a yield
 # gets a tighter band than a stocks figure is in that file's header.
@@ -57,6 +63,40 @@ UPCOMING_FIELDS = ["report", "date", "time", "commodity", "metric", "expectation
                    "positioning", "from_calendar"]
 HISTORY_FIELDS  = ["date", "report", "metric", "expected", "actual", "unit",
                    "surprise", "reaction"]
+
+
+def load_book(path=None):
+    """data/analyst-estimates.json, checked by the lock. {} when absent.
+
+    A trade average, low or high whose source is not dated before the report
+    stops the build here, loudly, naming every one. That is what kept October's
+    after-the-report ranges from deciding grades."""
+    try:
+        with open(path or ANALYST_PATH) as f:
+            book = json.load(f)
+    except (OSError, ValueError):
+        return {}
+    try:
+        consensus_lock(book)
+    except ConsensusLockError as e:
+        sys.exit("[whats-priced-in] REFUSED: %s" % e)
+    return book
+
+
+def book_meta(book):
+    """{(date, label): {direction, source_date_unknown}} for every metric."""
+    try:
+        status = consensus_lock(book)
+    except ConsensusLockError:
+        status = {}
+    out = {}
+    for rpt in (book or {}).get("reports") or []:
+        for m in rpt.get("metrics") or []:
+            k = (rpt.get("date"), m.get("label"))
+            out[k] = {"direction": m.get("direction") or "supply",
+                      "source_date": m.get("consensus_source_date"),
+                      "source_date_unknown": status.get(k) == "unknown"}
+    return out
 
 # WHICH COMMODITIES A REPORT IS ABOUT, read off the words the author wrote in
 # `commodity` rather than a second field to keep in step. The keys are the ones
@@ -164,12 +204,10 @@ def build_report_numbers(upcoming, path=None):
     # module loaded, so the selftest's end-to-end main() run -- which points
     # ANALYST_PATH at a temp file -- was silently reading the real repo file,
     # and passed only while that file happened to hold the same two rows.
-    path = path or ANALYST_PATH
-    try:
-        with open(path) as f:
-            book = json.load(f)
-    except (OSError, ValueError):
+    book = load_book(path or ANALYST_PATH)
+    if not book:
         return []
+    status = consensus_lock(book)
 
     date = upcoming.get("date")
     rpt = next((r for r in (book.get("reports") or []) if r.get("date") == date), None)
@@ -206,6 +244,7 @@ def build_report_numbers(upcoming, path=None):
         else:
             exp_why = "no trade estimate published"
 
+        direction = m.get("direction") or "supply"
         rows.append({
             "key": m.get("key"),
             "label": label,
@@ -216,9 +255,15 @@ def build_report_numbers(upcoming, path=None):
             "high": hi,
             "usda_current": m.get("usda_current"),
             "actual": act,
-            # graded against the survey's range first, then the band (report_bands)
-            "surprise": band_surprise(exp, act, label, lo, hi),
+            # the distance from the trade average against the band for this
+            # kind of number (report_bands); the range is context, below
+            "surprise": band_surprise(exp, act, label, lo, hi, direction),
             "gap_pct": band_gap_pct(exp, act),
+            "context": range_context(act, lo, hi),
+            "source_date": m.get("consensus_source_date"),
+            # the lock let it through only because the entry predates the
+            # rule; the page says "source date unknown" beside it
+            "source_date_unknown": status.get((date, label)) == "unknown",
             "why": why,
             "source": m.get("consensus_source"),
             "source_note": m.get("consensus_note"),
@@ -247,14 +292,17 @@ def build_report_numbers(upcoming, path=None):
 # through the existing `withheld` path, which already prints why it is absent.
 # No figure is invented, and `from_calendar` marks the card so a reader of the
 # JSON can tell a scheduled placeholder from a report somebody has researched.
-def calendar_fallback(today):
-    """The next WASDE from the shipped calendar, as a minimal report row."""
+def calendar_fallback(today, released=()):
+    """The next WASDE from the shipped calendar, as a minimal report row.
+    A WASDE dated today that has already printed is not "next"."""
     try:
         import usda_dates
     except ImportError:
         return None
     try:
         nxt = usda_dates.next_wasde(_date.fromisoformat(today))
+        if nxt and nxt.isoformat() in released:
+            nxt = usda_dates.next_wasde(nxt + timedelta(days=1))
     except (AttributeError, ValueError):
         return None
     if not nxt:
@@ -266,11 +314,28 @@ def calendar_fallback(today):
         "from_calendar": True,
     }
 
-def build_upcoming(reports, today, cot=None):
-    future = sorted((r for r in reports if (r.get("date") or "") >= today),
+def released_dates(history, wasde=None):
+    """Report dates that have printed: any history row with a USDA figure, plus
+    the release data/wasde.json records once the watcher has read it.
+
+    ON REPORT DAY THE CARD ROLLS AT THE PRINT, NOT AT MIDNIGHT. `upcoming` was
+    the first report dated today or later, so on 2026-10-09 the October card,
+    with its pre-report wording and its own copy of the numbers table, sat
+    above the result banner until 00:00 UTC. Once the print is on file the next
+    report is what is coming."""
+    out = {str(r.get("date")) for r in (history or [])
+           if r.get("date") and r.get("actual") is not None}
+    if wasde and wasde.get("release"):
+        out.add(str(wasde["release"])[:10])
+    return out
+
+
+def build_upcoming(reports, today, cot=None, released=()):
+    future = sorted((r for r in reports
+                     if (r.get("date") or "") >= today and r.get("date") not in released),
                     key=lambda r: r["date"])
     if not future:
-        fb = calendar_fallback(today)
+        fb = calendar_fallback(today, released)
         if not fb:
             return None
         future = [fb]
@@ -371,16 +436,28 @@ def plain_dashes(text):
     return re.sub(r"\s*\u2014\s*", ", ", text).strip(", ")
 
 
-def build_history(rows, ranges=None):
+def build_history(rows, ranges=None, meta=None):
     ranges = ranges or {}
+    meta = meta or {}
     out = []
     for r in rows:
         row = {k: r.get(k) for k in HISTORY_FIELDS}
         row["reaction"] = plain_dashes(row.get("reaction"))
-        lo, hi = ranges.get((r.get("date"), r.get("metric") or r.get("label")), (None, None))
+        label = r.get("metric") or r.get("label") or ""
+        lo, hi = ranges.get((r.get("date"), label), (None, None))
         row["low"], row["high"] = lo, hi
-        if not row.get("surprise"):
-            row["surprise"] = band_surprise(r.get("expected"), r.get("actual"), r.get("metric") or r.get("label") or "", lo, hi)
+        mt = meta.get((r.get("date"), label)) or {}
+        # EVERY ROW, ONE RULE (2026-10-10). A typed `surprise` is not honoured:
+        # none of the rows on file carried one, and an override is a second
+        # definition of "in line" waiting to disagree with the scorecard.
+        row["surprise"] = band_surprise(r.get("expected"), r.get("actual"), label, lo, hi,
+                                        mt.get("direction") or "supply")
+        row["context"] = range_context(r.get("actual"), lo, hi)
+        # A ROW WITH NO DATED SOURCE SAYS SO. The May 2026 rows were typed from
+        # surveys nobody filed in analyst-estimates.json, so nothing shows they
+        # came before the print; they stay on the record, flagged.
+        row["source_date_unknown"] = (r.get("expected") is not None
+                                      and (not mt or mt.get("source_date_unknown", True)))
         # HOW FAR OFF, ON EVERY ROW. This was computed for the one report in the
         # result banner and nowhere else, so the track record showed "765 -> 744"
         # and left the reader to do the arithmetic on thirteen rows.
@@ -408,7 +485,9 @@ def build_latest_result(history):
     enriched = []
     for r in rows:
         gp = _gap_pct(r.get("expected"), r.get("actual"))
-        enriched.append({**{k: r.get(k) for k in HISTORY_FIELDS}, "gap_pct": gp})
+        enriched.append({**{k: r.get(k) for k in HISTORY_FIELDS}, "gap_pct": gp,
+                         "context": r.get("context") or "",
+                         "low": r.get("low"), "high": r.get("high")})
     # ONLY A GRADED ROW COUNTS (2026-10-06). The empty string is report_bands'
     # "no trade estimate to compare against", and it was falling through
     # `not in ("in line", None)` into the surprise list -- the September Grain
@@ -426,8 +505,10 @@ def build_latest_result(history):
         "metric_count": len(graded),
         "ungraded_count": len(enriched) - len(graded),
         "in_line_count": in_line,
+        # all in line only when every GRADED row sat inside its band
         "all_in_line": bool(graded) and (in_line == len(graded)),
         "biggest_surprise": biggest,
+        "rule_changed": RULE_CHANGED,
     }
 
 
@@ -442,11 +523,18 @@ def main():
             cot = json.load(open(COT_PATH))
         except Exception as ex:
             print("[whats-priced-in] could not read %s (%s)" % (COT_PATH, type(ex).__name__))
-    upcoming = build_upcoming(reports, today, cot)
+    book = load_book()          # exits here, loudly, if the lock refuses
+    wasde = None
+    if os.path.exists(WASDE_PATH):
+        try:
+            wasde = json.load(open(WASDE_PATH))
+        except Exception as ex:
+            print("[whats-priced-in] could not read %s (%s)" % (WASDE_PATH, type(ex).__name__))
+    history = build_history(hist_rows, survey_ranges(), book_meta(book))
+    latest_result = build_latest_result(history)
+    upcoming = build_upcoming(reports, today, cot, released_dates(history, wasde))
     if upcoming:
         upcoming["numbers"] = build_report_numbers(upcoming)
-    history = build_history(hist_rows, survey_ranges())
-    latest_result = build_latest_result(history)
 
     # ── THE WALK-THROUGH HAS TO OUTLIVE THE REPORT IT WALKS THROUGH ──────
     #
@@ -548,20 +636,40 @@ def _selftest():
     finally:
         _os.unlink(path)
 
-    # ── THE TRADE RANGE IS GRADED FIRST, IN THE TRACK RECORD TOO ────────────
+    # ── THE AVERAGE GRADES, THE RANGE IS CONTEXT (2026-10-10) ───────────────
     # September 2026 Grain Stocks soybeans: average 0.324, range 0.304-0.349,
-    # print 0.315. -2.8% clears the 2% band; inside the range it is not bullish.
+    # print 0.315. -2.8% clears the 2% band: bullish, inside the range near the
+    # bottom. From 2026-10-03 to 2026-10-09 this read "in line".
     rk = {("2026-09-30", "Soybean stocks, all positions, Sept 1"): (0.304, 0.349),
           ("2026-09-30", "Corn stocks, all positions, Sept 1"): (1.843, 2.005)}
     h = {x["metric"]: x for x in build_history([
         {"date": "2026-09-30", "metric": "Soybean stocks, all positions, Sept 1", "expected": 0.324, "actual": 0.315},
         {"date": "2026-09-30", "metric": "Corn stocks, all positions, Sept 1", "expected": 1.918, "actual": 2.095},
         {"date": "2026-06-11", "metric": "2026/27 wheat ending stocks", "expected": 765, "actual": 744}], rk)}
-    assert h["Soybean stocks, all positions, Sept 1"]["surprise"] == "in line", h
-    assert h["Soybean stocks, all positions, Sept 1"]["low"] == 0.304
+    soy = h["Soybean stocks, all positions, Sept 1"]
+    assert soy["surprise"] == "bullish", h
+    assert soy["context"] == "inside the range, near the bottom", soy
+    assert soy["low"] == 0.304
     assert h["Corn stocks, all positions, Sept 1"]["surprise"] == "bearish"
-    # no range on file: the 2% band still decides (765 -> 744 is -2.7%)
+    assert h["Corn stocks, all positions, Sept 1"]["context"] == "outside the trade range"
+    # no range on file: no context, and the 2% band decides (765 -> 744 is -2.7%)
     assert h["2026/27 wheat ending stocks"]["surprise"] == "bullish" and h["2026/27 wheat ending stocks"]["low"] is None
+    assert h["2026/27 wheat ending stocks"]["context"] == ""
+    # with no metadata at all, nothing shows the survey came first: flagged
+    assert all(x["source_date_unknown"] for x in h.values())
+    # a typed surprise is not honoured: one rule for every row
+    typed = build_history([{"date": "2026-10-09", "metric": "2026/27 corn yield",
+                            "expected": 177.8, "actual": 181.2, "surprise": "in line"}],
+                          {("2026-10-09", "2026/27 corn yield"): (173.2, 182.1)},
+                          {("2026-10-09", "2026/27 corn yield"): {"direction": "supply",
+                                                                 "source_date_unknown": False}})
+    assert typed[0]["surprise"] == "bearish" and typed[0]["context"] == "inside the range, near the top", typed
+    assert typed[0]["source_date_unknown"] is False
+    # a demand metric reads the other way round
+    dem = build_history([{"date": "2026-10-09", "metric": "2026/27 corn exports", "expected": 100, "actual": 110}],
+                        None, {("2026-10-09", "2026/27 corn exports"): {"direction": "demand",
+                                                                       "source_date_unknown": False}})
+    assert dem[0]["surprise"] == "bullish", dem
     # ── THE BANNER COUNTS ONLY WHAT WAS GRADED ──────────────────────────────
     # The real September Grain Stocks shape: one bearish, one in line, one with
     # no trade estimate. The ungraded row is neither a surprise nor in line.
@@ -569,8 +677,26 @@ def _selftest():
         {"date": "2026-09-30", "metric": "Corn stocks, all positions, Sept 1", "expected": 1.918, "actual": 2.095},
         {"date": "2026-09-30", "metric": "Soybean stocks, all positions, Sept 1", "expected": 0.324, "actual": 0.315},
         {"date": "2026-09-30", "metric": "Wheat stocks, all positions, Sept 1", "expected": None, "actual": 1.846}], rk))
-    assert lr["metric_count"] == 2 and lr["ungraded_count"] == 1 and lr["in_line_count"] == 1, lr
+    assert lr["metric_count"] == 2 and lr["ungraded_count"] == 1 and lr["in_line_count"] == 0, lr
     assert lr["biggest_surprise"]["metric"].startswith("Corn") and not lr["all_in_line"]
+    # THE REAL OCTOBER SHAPE: 7 graded, 1 ungraded, 3 in line, 4 bearish. Every
+    # one of the 7 is inside its range; "all in line" is now false.
+    oct_rows = [("2026/27 corn yield", 177.8, 181.2, 173.2, 182.1),
+                ("2026/27 soybean yield", 52.9, 53.1, 51.4, 54.1),
+                ("2026/27 corn ending stocks", 1.677, 1.849, 1.522, 1.895),
+                ("2026/27 soybean ending stocks", 311, 315, 245, 358),
+                ("2026/27 wheat ending stocks", 722, 740, 701, 750),
+                ("2026/27 corn production", 15.716, 16.034, 15.344, 16.115),
+                ("2026/27 soybean production", 4541, 4562, 4415, 4648),
+                ("2026/27 wheat production", None, 1534, None, None)]
+    lro = build_latest_result(build_history(
+        [{"date": "2026-10-09", "report": "October WASDE", "metric": m, "expected": e, "actual": a}
+         for m, e, a, _l, _h in oct_rows],
+        {("2026-10-09", m): (l, hh) for m, _e, _a, l, hh in oct_rows if l is not None}))
+    assert (lro["metric_count"], lro["ungraded_count"], lro["in_line_count"], lro["all_in_line"]) == (7, 1, 3, False), lro
+    # biggest by distance from the average: corn stocks, +10.3%
+    assert lro["biggest_surprise"]["metric"] == "2026/27 corn ending stocks", lro["biggest_surprise"]
+    assert lro["biggest_surprise"]["context"] == "inside the range, near the top"
     # nothing graded at all: no biggest surprise, and not "all in line"
     lr0 = build_latest_result(build_history([
         {"date": "2026-09-30", "metric": "Wheat stocks, all positions, Sept 1", "expected": None, "actual": 1.846}]))
@@ -640,18 +766,19 @@ def _selftest():
         paths[name] = _os.path.join(d, name)
         with open(paths[name], "w") as f:
             json.dump(blob, f)
-    global ANALYST_PATH, HIST_PATH, EST_PATH, OUT_PATH, COT_PATH
-    keep = (ANALYST_PATH, HIST_PATH, EST_PATH, OUT_PATH, COT_PATH)
+    global ANALYST_PATH, HIST_PATH, EST_PATH, OUT_PATH, COT_PATH, WASDE_PATH
+    keep = (ANALYST_PATH, HIST_PATH, EST_PATH, OUT_PATH, COT_PATH, WASDE_PATH)
     try:
         ANALYST_PATH = paths["analyst-estimates.json"]
         HIST_PATH = paths["wpi-history.json"]
         EST_PATH = paths["wpi-estimates.json"]
         OUT_PATH = _os.path.join(d, "out.json")
         COT_PATH = _os.path.join(d, "no-cot.json")
+        WASDE_PATH = _os.path.join(d, "no-wasde.json")
         main()
         built = json.load(open(OUT_PATH))
     finally:
-        ANALYST_PATH, HIST_PATH, EST_PATH, OUT_PATH, COT_PATH = keep
+        ANALYST_PATH, HIST_PATH, EST_PATH, OUT_PATH, COT_PATH, WASDE_PATH = keep
 
     lr = built["latest_result"]
     assert lr and lr["date"] == "2026-09-11"
@@ -660,14 +787,48 @@ def _selftest():
                             "result banner, not the next card: got %r" % (nums,))
     got = {r["key"]: (r["actual"], r["surprise"]) for r in nums}
     assert got["corn_yield_2627"] == (178.5, "in line"), got
-    # corrected 2026-10-03: 52.8 is inside the survey's 51.5-53.3, and the range is
-    # graded first now, so this print is in line (it was "bearish" off the 0.5% band)
-    assert got["soy_yield_2627"] == (52.8, "in line"), got
+    # 2026-10-10: 52.8 vs 52.5 is +0.57%, past the 0.5% yield band, so bearish.
+    # (Range-first called it in line from 2026-10-03 to 2026-10-09.)
+    assert got["soy_yield_2627"] == (52.8, "bearish"), got
+    ctx = {r["key"]: r["context"] for r in nums}
+    assert ctx["soy_yield_2627"] == "inside the range, near the top", ctx
     # and the September rows are NOT also hanging off October's card, which
     # would put the same figures under the wrong report's heading.
     assert built["upcoming"]["date"] != "2026-09-11"
     assert (built["upcoming"].get("numbers") or []) == [], \
         "the next report has no numbers until its own survey is typed in"
+
+    # ── THE CARD ROLLS AT THE PRINT ─────────────────────────────────────────
+    octrep = [{"report": "October WASDE", "date": "2026-10-09", "metric": "corn yield"}]
+    # report morning, nothing printed: October is still next
+    assert build_upcoming(octrep, "2026-10-09", released=set())["date"] == "2026-10-09"
+    # printed (a history row, or wasde.json's release): November is next
+    rel = released_dates([{"date": "2026-10-09", "actual": 181.2}])
+    assert rel == {"2026-10-09"}
+    u = build_upcoming(octrep, "2026-10-09", released=rel)
+    assert u["date"] == "2026-11-10" and u["from_calendar"] is True, u
+    assert released_dates([], {"release": "2026-10-09"}) == {"2026-10-09"}
+    # a row with no USDA figure is not a release
+    assert released_dates([{"date": "2026-11-10", "actual": None}]) == set()
+
+    # ── THE LOCK STOPS THE BUILD ────────────────────────────────────────────
+    bad = {"reports": [{"report": "November WASDE", "date": "2026-11-10", "metrics": [
+        {"label": "2026/27 corn yield", "consensus": 181.0, "consensus_range": [179, 183]}]}]}
+    fd, bp = tempfile.mkstemp(suffix=".json"); _os.close(fd)
+    json.dump(bad, open(bp, "w"))
+    try:
+        load_book(bp)
+        raise AssertionError("an undated November survey must stop the build")
+    except SystemExit as e:
+        assert "REFUSED" in str(e) and "2026-11-10" in str(e), e
+    finally:
+        _os.unlink(bp)
+    # the real book passes, and every October figure is dated
+    real_book = load_book()
+    if real_book:
+        meta = book_meta(real_book)
+        assert meta[("2026-10-09", "2026/27 corn ending stocks")]["source_date"] == "2026-10-07"
+        assert not meta[("2026-10-09", "2026/27 corn yield")]["source_date_unknown"]
 
     print("[whats-priced-in] selftest ok: 5 rows, 3 verdicts, 2 kinds of silence, "
           "the card falls back to the calendar, and the walk-through outlives the print")

@@ -52,6 +52,7 @@ from datetime import datetime, timezone
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from report_bands import surprise as band_surprise  # noqa: E402
 from report_bands import band_for, IN_LINE_PCT_YIELD  # noqa: E402
+from report_bands import range_context, consensus_lock, ConsensusLockError  # noqa: E402
 
 EST_PATH = "data/analyst-estimates.json"
 OUT_PATH = "data/analyst-scorecard.json"
@@ -125,8 +126,13 @@ def _range_of(met):
     return lo, hi
 
 
-def _surprise(consensus, actual, label="", low=None, high=None):
+def _surprise(consensus, actual, label="", low=None, high=None, direction="supply"):
     """Metric-level label, from the shared rule.
+
+    THE RULE CHANGED ON 2026-10-10: the distance from the trade average against
+    a band per kind of number decides; the range is context only. The arguments
+    below are unchanged so this board and the track record still call the one
+    function the same way, now with the metric's direction as well.
 
     THE RANGE GOES IN TOO (2026-10-06). report_bands.surprise grades against the
     survey's low/high first and only falls back to the percentage band when no
@@ -140,7 +146,7 @@ def _surprise(consensus, actual, label="", low=None, high=None):
     NOT the same as "in line". The page used to render `m.surprise || 'in line'`,
     so a metric nobody had filed an estimate for was published as having landed
     where the trade expected. It now prints the reason instead."""
-    return band_surprise(consensus, actual, label, low, high)
+    return band_surprise(consensus, actual, label, low, high, direction)
 
 
 def merge_locked_model_calls(reports, path=NOWCAST_PATH):
@@ -320,7 +326,10 @@ def score(data, roster, today):
             rep_metrics.append({"label": label,
                                 "unit": met.get("unit", ""), "consensus": consensus,
                                 "actual": actual,
-                                "surprise": _surprise(consensus, actual, label, *_range_of(met)),
+                                "surprise": _surprise(consensus, actual, label, *_range_of(met),
+                                                      direction=met.get("direction") or "supply"),
+                                "context": range_context(actual, *_range_of(met)),
+                                "consensus_source_date": met.get("consensus_source_date"),
                                 # WHERE THE CONSENSUS CAME FROM. Typed into
                                 # analyst-estimates.json beside every figure and
                                 # then dropped here, so the page cited nothing
@@ -444,6 +453,12 @@ def build_pipeline(reports, roster, today):
 
 def main():
     data = _load()
+    # THE LOCK. A consensus, low or high not dated before its report is refused
+    # here as it is in build_whats_priced_in.py: the two builders read one book.
+    try:
+        consensus_lock(data)
+    except ConsensusLockError as e:
+        sys.exit("build_analyst_scorecard: REFUSED: %s" % e)
     roster = _roster_map(data)
     today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
 
@@ -617,13 +632,12 @@ def _selftest():
     ok &= good
     print(("  ok    " if good else "  FAIL  ") + "closest AND closer than the trade does get one")
 
-    # ── RANGE FIRST, AS THE TRACK RECORD GRADES ─────────────────────────────
+    # ── THE AVERAGE GRADES, AS THE TRACK RECORD GRADES (2026-10-10) ─────────
     # September 2026 soybean yield: trade 52.5, survey range 51.5-53.3, USDA
-    # 52.8. +0.57% clears the 0.5% yield band, but the print is inside the
-    # range, so it is in line -- which is what the track record says. This
-    # board said "bearish" until 2026-10-06.
+    # 52.8. +0.57% clears the 0.5% yield band: bearish, inside the range near
+    # the top. The range-first rule (2026-10-03 to 2026-10-09) said in line.
     print()
-    print("the scorecard grades against the survey range first")
+    print("the scorecard grades on the distance from the average; the range is context")
     data3 = {"reports": [{"report": "September WASDE", "date": "2026-09-11", "metrics": [
         {"label": "2026/27 soybean yield", "consensus": 52.5, "actual": 52.8,
          "consensus_range": [51.5, 53.3], "estimates": [{"id": "sud", "value": 53.0}]},
@@ -633,12 +647,23 @@ def _selftest():
          "consensus_range": [], "estimates": []}]}]}
     _c3, reps3 = score(data3, roster, "2026-10-06")
     v = {m["label"]: m["surprise"] for m in reps3[0]["metrics"]}
-    good = (v["2026/27 soybean yield"] == "in line"
+    cx = {m["label"]: m["context"] for m in reps3[0]["metrics"]}
+    good = (v["2026/27 soybean yield"] == "bearish"
+            and cx["2026/27 soybean yield"] == "inside the range, near the top"
             and v["2026/27 soybean ending stocks"] == "bearish"
+            and cx["2026/27 soybean ending stocks"] == ""
             and v["Wheat stocks, all positions, Sept 1"] == "")
     ok &= good
     print(("  ok    " if good else "  FAIL  ") +
-          "inside the range is in line; no range falls to the band; no estimate is ''")
+          "+0.57% on a yield is bearish though inside its range; no range, no context; no estimate is ''")
+    # A demand metric: over the average is bullish.
+    data5 = {"reports": [{"report": "X", "date": "2026-10-09", "metrics": [
+        {"label": "2026/27 corn exports", "direction": "demand", "consensus": 100, "actual": 110,
+         "estimates": []}]}]}
+    _c5, reps5 = score(data5, roster, "2026-10-10")
+    good = reps5[0]["metrics"][0]["surprise"] == "bullish"
+    ok &= good
+    print(("  ok    " if good else "  FAIL  ") + "a demand metric's direction is honoured")
 
     # A midpoint AGSIST computed is counted on the board row, not only per report.
     data4 = {"reports": [{"report": "August WASDE", "date": "2026-08-12", "metrics": [

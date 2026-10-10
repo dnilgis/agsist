@@ -1,5 +1,5 @@
 {
-  "_note": "Maintained by hand in the GitHub editor. THREE steps per report cycle: (1) before the report, fill each analyst's `value` and a `source` link for the metrics they publicly posted, and the `consensus` (trade average) per metric; (2) after USDA releases, fill each metric's `actual`; (3) the build script scores everyone automatically. Only keep analysts whose numbers you can source from a public post/interview/survey \u2014 leave a value null if you don't have it. Never invent a number. Add a new block under `reports` for each future report.",
+  "_note": "Maintained by hand in the GitHub editor. THREE steps per report cycle: (1) before the report, fill each analyst's `value` and a `source` link for the metrics they publicly posted, and the `consensus` (trade average) per metric; (2) after USDA releases, fill each metric's `actual`; (3) the build script scores everyone automatically. Only keep analysts whose numbers you can source from a public post/interview/survey \u2014 leave a value null if you don't have it. Never invent a number. Add a new block under `reports` for each future report. Every consensus and consensus_range needs consensus_source_date (YYYY-MM-DD, the day the survey was published), and it must be before the report. A survey published on the report day also needs consensus_source_time_utc (HH:MM) before the noon ET release. The build refuses anything else (scripts/report_bands.py consensus_lock).",
   "analysts": [
     {
       "id": "stonex",
@@ -125,7 +125,9 @@
             2.087,
             2.297
           ],
-          "consensus_source": "https://www.profarmer.com/news/what-watch-thursdays-june-wasde-report-after-grain-markets-steep-slide"
+          "consensus_source": "https://www.profarmer.com/news/what-watch-thursdays-june-wasde-report-after-grain-markets-steep-slide",
+          "consensus_source_date": "2026-06-09",
+          "consensus_source_date_basis": "Reuters poll via Pro Farmer, published 2026-06-09 (see _consensus_source)."
         },
         {
           "key": "soy_2526",
@@ -175,7 +177,9 @@
             320,
             365
           ],
-          "consensus_source": "https://www.profarmer.com/news/what-watch-thursdays-june-wasde-report-after-grain-markets-steep-slide"
+          "consensus_source": "https://www.profarmer.com/news/what-watch-thursdays-june-wasde-report-after-grain-markets-steep-slide",
+          "consensus_source_date": "2026-06-09",
+          "consensus_source_date_basis": "Reuters poll via Pro Farmer, published 2026-06-09 (see _consensus_source)."
         },
         {
           "key": "wheat_2526",
@@ -225,7 +229,9 @@
             924,
             985
           ],
-          "consensus_source": "https://www.profarmer.com/news/what-watch-thursdays-june-wasde-report-after-grain-markets-steep-slide"
+          "consensus_source": "https://www.profarmer.com/news/what-watch-thursdays-june-wasde-report-after-grain-markets-steep-slide",
+          "consensus_source_date": "2026-06-09",
+          "consensus_source_date_basis": "Reuters poll via Pro Farmer, published 2026-06-09 (see _consensus_source)."
         },
         {
           "key": "corn_2627",
@@ -275,7 +281,9 @@
             1.847,
             2.119
           ],
-          "consensus_source": "https://www.profarmer.com/news/what-watch-thursdays-june-wasde-report-after-grain-markets-steep-slide"
+          "consensus_source": "https://www.profarmer.com/news/what-watch-thursdays-june-wasde-report-after-grain-markets-steep-slide",
+          "consensus_source_date": "2026-06-09",
+          "consensus_source_date_basis": "Reuters poll via Pro Farmer, published 2026-06-09 (see _consensus_source)."
         },
         {
           "key": "soy_2627",
@@ -325,7 +333,9 @@
             293,
             342
           ],
-          "consensus_source": "https://www.profarmer.com/news/what-watch-thursdays-june-wasde-report-after-grain-markets-steep-slide"
+          "consensus_source": "https://www.profarmer.com/news/what-watch-thursdays-june-wasde-report-after-grain-markets-steep-slide",
+          "consensus_source_date": "2026-06-09",
+          "consensus_source_date_basis": "Reuters poll via Pro Farmer, published 2026-06-09 (see _consensus_source)."
         },
         {
           "key": "wheat_2627",
@@ -375,7 +385,9 @@
             740,
             804
           ],
-          "consensus_source": "https://www.profarmer.com/news/what-watch-thursdays-june-wasde-report-after-grain-markets-steep-slide"
+          "consensus_source": "https://www.profarmer.com/news/what-watch-thursdays-june-wasde-report-after-grain-markets-steep-slide",
+          "consensus_source_date": "2026-06-09",
+          "consensus_source_date_basis": "Reuters poll via Pro Farmer, published 2026-06-09 (see _consensus_source)."
         }
       ]
     },
@@ -418,7 +430,9 @@
             }
           ],
           "consensus_source": "https://www.agweb.com/markets/grain-markets-and-farmers-prepare-august-wasde",
-          "consensus_note": "Average of private pre-report estimates published ahead of the Aug 12 WASDE (AgWeb, Aug 7 2026). No low/high was published for the poll, so no range is claimed."
+          "consensus_note": "Average of private pre-report estimates published ahead of the Aug 12 WASDE (AgWeb, Aug 7 2026). No low/high was published for the poll, so no range is claimed.",
+          "consensus_source_date": "2026-08-07",
+          "consensus_source_date_basis": "AgWeb's write-up of the private estimates, published Aug 7 2026 (consensus_note)."
         },
         {
           "key": "soy_yield_2627",
@@ -448,7 +462,9 @@
             }
           ],
           "consensus_source": "https://www.agweb.com/markets/grain-markets-and-farmers-prepare-august-wasde",
-          "consensus_note": "Average of private pre-report estimates published ahead of the Aug 12 WASDE (AgWeb, Aug 7 2026). No low/high was published for the poll, so no range is claimed."
+          "consensus_note": "Average of private pre-report estimates published ahead of the Aug 12 WASDE (AgWeb, Aug 7 2026). No low/high was published for the poll, so no range is claimed.",
+          "consensus_source_date": "2026-08-07",
+          "consensus_source_date_basis": "AgWeb's write-up of the private estimates, published Aug 7 2026 (consensus_note)."
         }
       ]
     },
@@ -477,7 +493,9 @@
               "source": "https://www.profarmer.com/news/pro-farmer-estimates-2026-u-s-corn-crop-15-344-billion-bushels-soybeans-4-572-billion-bushels",
               "source_note": "Pro Farmer's 2026 crop tour national corn estimate, published at the end of tour week and already carried in data/crop-tour.json. It is the low end of the Dow Jones survey range, which is why 173.2 appears in both places."
             }
-          ]
+          ],
+          "consensus_source_date": "2026-09-09",
+          "consensus_source_date_basis": "Dow Jones survey reported by DTN on 2026-09-09 (consensus_note)."
         },
         {
           "key": "soy_yield_2627",
@@ -492,7 +510,9 @@
           "consensus_range": [
             51.5,
             53.3
-          ]
+          ],
+          "consensus_source_date": "2026-09-09",
+          "consensus_source_date_basis": "Dow Jones survey reported by DTN on 2026-09-09 (consensus_note)."
         },
         {
           "key": "corn_2627",
@@ -504,7 +524,9 @@
           "usda_current": 1.653,
           "consensus_source": "https://www.dtnpf.com/agriculture/web/ag/news/article/2026/09/09/historic-late-august-price-rallies",
           "consensus_note": "Dow Jones pre-report survey, reported by DTN on 2026-09-09: corn ending stocks cut 120 mb to 1.533 bb (the same survey and figure data/wpi-estimates.json carries). No survey low or high is on file for this figure, so no range is claimed and it is graded on the 2% band. Actual 1.567 bb from USDA's September WASDE, reported by DTN on 2026-09-11 (https://www.dtnpf.com/agriculture/web/ag/news/article/2026/09/11/usda-releases-september-crop-wasde-2).",
-          "estimates": []
+          "estimates": [],
+          "consensus_source_date": "2026-09-09",
+          "consensus_source_date_basis": "Dow Jones survey reported by DTN on 2026-09-09 (consensus_note)."
         },
         {
           "key": "soy_2627",
@@ -516,7 +538,9 @@
           "usda_current": 320,
           "consensus_source": "https://www.dtnpf.com/agriculture/web/ag/news/article/2026/09/09/historic-late-august-price-rallies",
           "consensus_note": "Dow Jones pre-report survey, reported by DTN on 2026-09-09: soybean ending stocks cut 30 mb to 290 mb. Reuters' survey averaged 298 mb; the Dow Jones figure is used because it is the survey every other September figure here is graded against, and 310 is above both. No survey low or high is on file for this figure, so no range is claimed and it is graded on the 2% band. Actual 310 mb from USDA's September WASDE, reported by DTN on 2026-09-11 (https://www.dtnpf.com/agriculture/web/ag/news/article/2026/09/11/usda-releases-september-crop-wasde-2).",
-          "estimates": []
+          "estimates": [],
+          "consensus_source_date": "2026-09-09",
+          "consensus_source_date_basis": "Dow Jones survey reported by DTN on 2026-09-09 (consensus_note)."
         }
       ]
     },
@@ -537,7 +561,9 @@
           "consensus_range": [
             1.843,
             2.005
-          ]
+          ],
+          "consensus_source_date": "2026-09-26",
+          "consensus_source_date_basis": "Pro Farmer's trade survey, published 2026-09-26 (consensus_note)."
         },
         {
           "key": "soy_stocks_sep1",
@@ -552,7 +578,9 @@
           "consensus_range": [
             0.304,
             0.349
-          ]
+          ],
+          "consensus_source_date": "2026-09-26",
+          "consensus_source_date_basis": "Pro Farmer's trade survey, published 2026-09-26 (consensus_note)."
         },
         {
           "key": "wheat_stocks_sep1",
@@ -586,7 +614,10 @@
           "consensus_range": [
             173.2,
             182.1
-          ]
+          ],
+          "consensus_source_date": "2026-10-09",
+          "consensus_source_time_utc": "14:08",
+          "consensus_source_date_basis": "The Pro Farmer preview's own publish date was not recorded. The average and range were committed to this file at 14:08 UTC on 2026-10-09 (commit 86fdfda14), before the 16:00 UTC release, so the source existed by then."
         },
         {
           "key": "soy_yield_2627",
@@ -602,7 +633,10 @@
           "consensus_range": [
             51.4,
             54.1
-          ]
+          ],
+          "consensus_source_date": "2026-10-09",
+          "consensus_source_time_utc": "14:08",
+          "consensus_source_date_basis": "The Pro Farmer preview's own publish date was not recorded. The average and range were committed to this file at 14:08 UTC on 2026-10-09 (commit 86fdfda14), before the 16:00 UTC release, so the source existed by then."
         },
         {
           "key": "corn_2627",
@@ -618,7 +652,9 @@
           "consensus_range": [
             1.522,
             1.895
-          ]
+          ],
+          "consensus_source_date": "2026-10-07",
+          "consensus_source_date_basis": "Dow Jones survey reported by DTN on 2026-10-07 (consensus_note)."
         },
         {
           "key": "soy_2627",
@@ -634,7 +670,9 @@
           "consensus_range": [
             245,
             358
-          ]
+          ],
+          "consensus_source_date": "2026-10-07",
+          "consensus_source_date_basis": "Dow Jones survey reported by DTN on 2026-10-07 (consensus_note)."
         },
         {
           "key": "wheat_2627",
@@ -650,7 +688,9 @@
           "consensus_range": [
             701,
             750
-          ]
+          ],
+          "consensus_source_date": "2026-10-07",
+          "consensus_source_date_basis": "Dow Jones survey reported by DTN on 2026-10-07 (consensus_note)."
         },
         {
           "key": "corn_prod_2627",
@@ -666,7 +706,9 @@
           "consensus_range": [
             15.344,
             16.115
-          ]
+          ],
+          "consensus_source_date": "2026-10-07",
+          "consensus_source_date_basis": "Dow Jones survey reported by DTN on 2026-10-07 (consensus_note)."
         },
         {
           "key": "soy_prod_2627",
@@ -682,7 +724,9 @@
           "consensus_range": [
             4415,
             4648
-          ]
+          ],
+          "consensus_source_date": "2026-10-07",
+          "consensus_source_date_basis": "Dow Jones survey reported by DTN on 2026-10-07 (consensus_note)."
         },
         {
           "key": "wheat_prod_2627",

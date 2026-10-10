@@ -1,5 +1,5 @@
 {
-  "_note": "Past reports, scored against the actual print. expected = pre-report trade average; actual = USDA print. Leave 'surprise' blank to let the build script score it with scripts/report_bands.py: when the survey's low and high are on file in data/analyst-estimates.json the print is graded against that range first (below it = bullish, above it = bearish, inside it = in line); with no range on file, within 0.5% of the trade average is in line for a yield and within 2% for anything else, below that band = bullish, above = bearish; no trade estimate = not graded. Or set it explicitly. gap_pct is computed by the build script, never typed here. Add a new block after each release.",
+  "_note": "Past reports, scored against the actual print. expected = pre-report trade average; actual = USDA print. The build script grades every row with scripts/report_bands.py; there is no 'surprise' field to set by hand. Since 2026-10-10 the grade is the distance from the trade average: within 0.5% for a yield, 1% for production and 2% for stocks is in line; outside it, a supply figure above the average is bearish and below it bullish. The survey's low and high (from data/analyst-estimates.json) are printed beside the grade as context and do not change it. No trade estimate = not graded. gap_pct is computed by the build script, never typed here. Add a new block after each release.",
   "history": [
     {
       "date": "2026-09-30",
@@ -17,7 +17,7 @@
       "expected": 0.324,
       "actual": 0.315,
       "unit": "B bu",
-      "reaction": "Soybean stocks printed 0.315 billion bushels, under the 0.324B trade average and inside the survey's 0.304\u20130.349B range. Below average, but some analyst on record expected this level, so it is not graded a surprise."
+      "reaction": "Soybean stocks printed 0.315 billion bushels, 2.8% under the 0.324B trade average, outside the 2% band, so graded bullish. It was still inside the survey's 0.304 to 0.349B range, near the bottom."
     },
     {
       "date": "2026-09-30",
@@ -53,7 +53,7 @@
       "expected": 765,
       "actual": 744,
       "unit": "mil bu",
-      "reaction": "New-crop wheat carryout came in at 744M, 21M under the 765M trade average and 18M under May, but inside the survey's 740\u2013804M range, so some analyst on record expected this level. The cut came from a smaller Hard Red Winter crop (all-wheat production trimmed to 1,543M, yield 47.0); the season-average farm price was cut $0.50 to $6.00."
+      "reaction": "New-crop wheat carryout came in at 744M, 21M (2.7%) under the 765M trade average and 18M under May, so graded bullish; it was still inside the survey's 740 to 804M range, near the bottom. The cut came from a smaller Hard Red Winter crop (all-wheat production trimmed to 1,543M, yield 47.0); the season-average farm price was cut $0.50 to $6.00."
     },
     {
       "date": "2026-06-11",
