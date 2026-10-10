@@ -1,6 +1,6 @@
 {
- "updated": "2026-10-10T14:05:35+00:00",
- "count": 28,
+ "updated": "2026-10-10T22:23:39+00:00",
+ "count": 24,
  "added": 1,
  "state": {
   "px": {
@@ -30,6 +30,17 @@
  },
  "items": [
   {
+   "id": "px:2026-10-09:corn-dec:move",
+   "kind": "board",
+   "headline": "December corn down 3.9% on the day",
+   "detail": "Closed $4.80½, −19¾¢ on the session.",
+   "significance": "notable",
+   "url": "/corn-futures-prices",
+   "source": "Yahoo Finance close via the AGSIST board",
+   "day_only": true,
+   "ts": "2026-10-09T12:00:00+00:00"
+  },
+  {
    "id": "wasde:2026-10-09:2026/27 corn ending stocks",
    "kind": "usda",
    "headline": "October WASDE: 2026/27 corn ending stocks came in bearish",
@@ -47,28 +58,6 @@
    "detail": "Settled $4.80, -19.75 cents on the session.",
    "significance": "notable",
    "url": "/corn-futures-prices",
-   "source": "CME settlement via the AGSIST board",
-   "day_only": true,
-   "ts": "2026-10-09T12:00:00+00:00"
-  },
-  {
-   "id": "px:2026-10-09:wheat:move",
-   "kind": "board",
-   "headline": "Wheat down 2.6% on the day",
-   "detail": "Last $6.66, -17.5 cents on the session.",
-   "significance": "notable",
-   "url": "/wheat-futures-prices",
-   "source": "CME settlement via the AGSIST board",
-   "day_only": true,
-   "ts": "2026-10-09T12:00:00+00:00"
-  },
-  {
-   "id": "px:2026-10-09:kcwheat:move",
-   "kind": "board",
-   "headline": "KC wheat down 2.8% on the day",
-   "detail": "Last $7.16, -20.5 cents on the session.",
-   "significance": "notable",
-   "url": "/wheat-futures-prices",
    "source": "CME settlement via the AGSIST board",
    "day_only": true,
    "ts": "2026-10-09T12:00:00+00:00"
@@ -96,17 +85,6 @@
    "ts": "2026-10-07T12:00:00+00:00"
   },
   {
-   "id": "px:2026-10-07:kcwheat:move",
-   "kind": "board",
-   "headline": "KC wheat down 2.5% on the day",
-   "detail": "Last $7.37, -19 cents on the session.",
-   "significance": "notable",
-   "url": "/wheat-futures-prices",
-   "source": "CME settlement via the AGSIST board",
-   "day_only": true,
-   "ts": "2026-10-07T12:00:00+00:00"
-  },
-  {
    "id": "cond:2026-10-04:corn",
    "kind": "crop",
    "headline": "Corn ratings fell 3 points",
@@ -116,17 +94,6 @@
    "source": "USDA NASS Crop Progress",
    "day_only": true,
    "ts": "2026-10-04T12:00:00+00:00"
-  },
-  {
-   "id": "px:2026-10-01:corn:move",
-   "kind": "board",
-   "headline": "Corn down 3.8% on the day",
-   "detail": "Settled $5.02, -20 cents on the session.",
-   "significance": "notable",
-   "url": "/corn-futures-prices",
-   "source": "CME settlement via the AGSIST board",
-   "day_only": true,
-   "ts": "2026-10-01T12:00:00+00:00"
   },
   {
    "id": "px:2026-10-01:corn-dec:move",
@@ -169,17 +136,6 @@
    "significance": "high",
    "url": "/whats-priced-in",
    "source": "USDA WASDE, graded against the pre-report survey",
-   "day_only": true,
-   "ts": "2026-09-30T12:00:00+00:00"
-  },
-  {
-   "id": "px:2026-09-30:corn:move",
-   "kind": "board",
-   "headline": "Corn down 3.2% on the day",
-   "detail": "Settled $5.05, -16.5 cents on the session.",
-   "significance": "notable",
-   "url": "/corn-futures-prices",
-   "source": "CME settlement via the AGSIST board",
    "day_only": true,
    "ts": "2026-09-30T12:00:00+00:00"
   },
