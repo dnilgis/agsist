@@ -24,7 +24,7 @@
   // Component cache version. Bump on every chrome deploy so browsers fetch the
   // new header/footer; between deploys the files cache normally (no refetch /
   // no nav-flash on each page navigation).
-  var CV = '35'; // v35 2026-10-09: ARC or PLC short-answer pages; v34 2026-10-09: ARC or PLC link in the menu and footer; v33 2026-10-09: ARC/PLC calculator; v32 2026-10-09: plainer copy in shared components; v31 2026-10-09: signup wording, card tokens; v30 2026-10-09: one look, variable fonts; v29 2026-10-09: no-jump layout and loading states kit; v28 2026-10-09: menu shows Farmland Atlas once, footer keeps Cash Rent by State; v27 2026-10-09: instant pages, prerender-safe analytics, Updated stamps; v26 2026-10-09: header search button; v25 2026-10-09: em-dash cleanup and link fixes; v24 2026-10-08: footer sponsor pill no longer overlaps on phones; v23 2026-10-08: footer link columns fold into <details> on phones (closed at 700px and under)
+  var CV = '36'; // v36 2026-10-10: the menu grouped by question, phone drawer folds each question; v35 2026-10-09: ARC or PLC short-answer pages; v34 2026-10-09: ARC or PLC link in the menu and footer; v33 2026-10-09: ARC/PLC calculator; v32 2026-10-09: plainer copy in shared components; v31 2026-10-09: signup wording, card tokens; v30 2026-10-09: one look, variable fonts; v29 2026-10-09: no-jump layout and loading states kit; v28 2026-10-09: menu shows Farmland Atlas once, footer keeps Cash Rent by State; v27 2026-10-09: instant pages, prerender-safe analytics, Updated stamps; v26 2026-10-09: header search button; v25 2026-10-09: em-dash cleanup and link fixes; v24 2026-10-08: footer sponsor pill no longer overlaps on phones; v23 2026-10-08: footer link columns fold into <details> on phones (closed at 700px and under)
                  // v22 2026-09-19: the Farmland Atlas link restored to the Land group, drawer and footer (the 9/13 upload dropped it)
                  // v21 2026-09-13: Farmland Atlas link in the Land group of the header, the drawer and the footer
                  // v20 2026-09-05: sponsor-metrics.js loaded sitewide; footer sponsor card measured on the MRC rule
@@ -202,6 +202,7 @@
         ham.setAttribute('aria-label', 'Close navigation menu');
       }
       document.body.style.overflow = 'hidden';
+      document.documentElement.classList.add('drawer-open');
     }
 
     function closeDr() {
@@ -217,6 +218,7 @@
         ham.setAttribute('aria-label', 'Open navigation menu');
       }
       document.body.style.overflow = '';
+      document.documentElement.classList.remove('drawer-open');
     }
 
     window.closeDr = closeDr;
@@ -232,7 +234,12 @@
     document.querySelectorAll('[data-nav-link], .nav-panel a, .drawer-link, .draw-item').forEach(function (a) {
       var href = (a.getAttribute('href') || '').replace(/\/$/, '') || '/';
       var active = (href === path) || (href !== '/' && path.startsWith(href));
-      if (active) { a.classList.add('active'); a.setAttribute('aria-current', 'page'); }
+      if (active) {
+        a.classList.add('active'); a.setAttribute('aria-current', 'page');
+        // Drawer questions start folded; the one holding this page starts open.
+        var q = a.closest ? a.closest('details.draw-q') : null;
+        if (q) q.open = true;
+      }
     });
 
     // ── Keyboard: Escape closes drawer/dropdowns ──────────────────

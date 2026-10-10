@@ -19,7 +19,9 @@ preloads in each <head>: the variable Inter and JetBrains Mono files, the only
 two font files a page needs since 2026-10-09 (one file per family covers every
 weight; see the @font-face block in components/styles.css).
 
-Edit the fallback files, then run this. Idempotent.
+Edit the fallback files, then run this. Idempotent. Both modes also refuse
+to run when a fallback's links differ from the live file it stands in for
+(header.html / footer.html), or when any of the four links a retired page.
 
     python3 scripts/inject_static_nav.py           # write
     python3 scripts/inject_static_nav.py --check   # exit 1 if any page is stale
@@ -77,6 +79,72 @@ def fill_fonts(html):
     return html[:at] + FONT_BLOCK + "\n  " + html[at:]
 
 
+# Pages that are now redirect stubs. The menu and footer must link where they
+# went, so no click depends on a stub. Keep in step with the stubs on disk.
+RETIRED = ("/cash-rent", "/land-tenure", "/storage-crunch", "/cash-bids-national",
+           "/basis-map", "/presell-calculator", "/ag-odds", "/embed", "/cashbids",
+           "/fastfacts")
+RETIRED_TEXT = ("Analyst Estimates",)
+HREF_RE = re.compile(r'<a\b[^>]*\bhref="(/[^"?#]*)(?:[?#][^"]*)?"', re.I)
+
+
+def nav_links(text):
+    """Internal page links in a chrome file, ignoring query-string links
+    (the footer's sponsor-apply card, which is meant to stay out of search)."""
+    return {m.group(1) for m in HREF_RE.finditer(re.sub(r"<!--.*?-->", "", text, flags=re.S))
+            if '?' not in m.group(0).split('href="', 1)[1].split('"', 1)[0]}
+
+
+def chrome_problems(comp=COMP):
+    out, seen = [], 0
+    for kind in ("header", "footer"):
+        live = (comp / f"{kind}.html").read_text(encoding="utf-8")
+        fb = (comp / f"{kind}-fallback.html").read_text(encoding="utf-8")
+        a, b = nav_links(live), nav_links(fb)
+        seen += len(a)
+        if a - b:
+            out.append(f"{kind}-fallback.html lacks {sorted(a - b)} (in {kind}.html)")
+        if b - a:
+            out.append(f"{kind}.html lacks {sorted(b - a)} (in {kind}-fallback.html)")
+        for name, text, links in ((f"{kind}.html", live, a), (f"{kind}-fallback.html", fb, b)):
+            for r in RETIRED:
+                if r in links or r + "/" in links:
+                    out.append(f"{name} links the retired {r}")
+            for t in RETIRED_TEXT:
+                if t in text:
+                    out.append(f"{name} still says {t!r}")
+    if seen < 40:
+        out.append(f"only {seen} links found in header.html + footer.html; the markup has moved")
+    return out
+
+
+def selftest():
+    import tempfile
+    with tempfile.TemporaryDirectory() as d:
+        d = pathlib.Path(d)
+        menu = '<a href="/">x</a>' + "".join(f'<a href="/p{i}">p</a>' for i in range(25))
+        for k in ("header", "footer"):
+            (d / f"{k}.html").write_text(menu + '<a href="/sponsor-apply?tier=x">s</a><!-- <a href="/q">q</a> -->')
+            (d / f"{k}-fallback.html").write_text(menu)
+        assert chrome_problems(d) == [], chrome_problems(d)
+        (d / "header-fallback.html").write_text(menu.replace('"/p3"', '"/p99"'))
+        got = chrome_problems(d)
+        assert any("lacks ['/p3']" in g for g in got) and any("lacks ['/p99']" in g for g in got), got
+        (d / "header-fallback.html").write_text(menu)
+        (d / "footer.html").write_text(menu + '<a href="/ag-odds#x">o</a>')
+        (d / "footer-fallback.html").write_text(menu + '<a href="/ag-odds">o</a>')
+        assert chrome_problems(d) == ["footer.html links the retired /ag-odds",
+                                      "footer-fallback.html links the retired /ag-odds"], chrome_problems(d)
+        (d / "footer.html").write_text(menu + "Analyst Estimates")
+        (d / "footer-fallback.html").write_text(menu)
+        assert chrome_problems(d) == ["footer.html still says 'Analyst Estimates'"], chrome_problems(d)
+        for k in ("header", "footer"):
+            (d / f"{k}.html").write_text("<a href=\"/\">x</a>")
+            (d / f"{k}-fallback.html").write_text("<a href=\"/\">x</a>")
+        assert any("markup has moved" in g for g in chrome_problems(d))
+    print("selftest ok")
+
+
 def eligible(path, html):
     if path.name in SKIP or REFRESH_RE.search(html):
         return False
@@ -92,7 +160,15 @@ def render(html, page, hdr, ftr):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--check", action="store_true", help="exit 1 if any page would change")
+    ap.add_argument("--selftest", action="store_true")
     a = ap.parse_args()
+    if a.selftest:
+        selftest()
+        return 0
+    bad = chrome_problems()
+    if bad:
+        print("MENU/FOOTER PROBLEMS:\n  " + "\n  ".join(bad))
+        return 1
     hdr, ftr = block("header"), block("footer")
     stale, done, skipped = [], 0, []
     for p in sorted(REPO.glob("*.html")):
