@@ -20,15 +20,15 @@
   <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
   <link rel="canonical" href="https://agsist.com/usda-calendar">
 
-  <title>Next WASDE: Oct 9, 2026 | USDA Report Calendar | AGSIST</title>
-  <meta name="description" content="The next WASDE lands Oct 9, 2026, today. Every 2026 USDA report date (WASDE, Crop Production, Grain Stocks, Cattle on Feed) with what each one moves.">
+  <title>Next WASDE: Nov 10, 2026 | USDA Report Calendar | AGSIST</title>
+  <meta name="description" content="The next WASDE lands Nov 10, 2026, in 31 days. Every 2026 USDA report date (WASDE, Crop Production, Grain Stocks, Cattle on Feed) with what each one moves.">
   <meta name="keywords" content="USDA report dates, WASDE calendar, crop progress dates, USDA calendar 2026, agricultural report schedule, prospective plantings, export sales report, market impact rating">
 
   <meta property="og:type"         content="website">
   <meta property="og:site_name"    content="AGSIST">
   <meta property="og:locale"       content="en_US">
-  <meta property="og:title"        content="Next WASDE: Oct 9, 2026 | USDA Report Calendar | AGSIST">
-  <meta property="og:description"  content="The next WASDE lands Oct 9, 2026, today. Every 2026 USDA report date (WASDE, Crop Production, Grain Stocks, Cattle on Feed) with what each one moves.">
+  <meta property="og:title"        content="Next WASDE: Nov 10, 2026 | USDA Report Calendar | AGSIST">
+  <meta property="og:description"  content="The next WASDE lands Nov 10, 2026, in 31 days. Every 2026 USDA report date (WASDE, Crop Production, Grain Stocks, Cattle on Feed) with what each one moves.">
   <meta property="og:url"          content="https://agsist.com/usda-calendar">
   <meta property="og:image"        content="https://agsist.com/img/og/agsist.jpg">
   <meta property="og:image:width"  content="1200">
@@ -37,8 +37,8 @@
   <meta name="twitter:card"        content="summary_large_image">
   <meta name="twitter:site"        content="@agsist">
   <meta name="twitter:creator"     content="@agsist">
-  <meta name="twitter:title"       content="Next WASDE: Oct 9, 2026 | USDA Report Calendar | AGSIST">
-  <meta name="twitter:description" content="The next WASDE lands Oct 9, 2026, today. Every 2026 USDA report date (WASDE, Crop Production, Grain Stocks, Cattle on Feed) with what each one moves.">
+  <meta name="twitter:title"       content="Next WASDE: Nov 10, 2026 | USDA Report Calendar | AGSIST">
+  <meta name="twitter:description" content="The next WASDE lands Nov 10, 2026, in 31 days. Every 2026 USDA report date (WASDE, Crop Production, Grain Stocks, Cattle on Feed) with what each one moves.">
   <meta name="twitter:image"       content="https://agsist.com/img/og/agsist.jpg">
 
   <script type="application/ld+json">
@@ -445,12 +445,16 @@
   ];
   const FSA_SRC='https://www.fsa.usda.gov/news-events/news/09-15-2026/usda-announces-2026-2027-enrollment-key-price-revenue-safety-net';
 
-  /* US federal holidays 2025-2026 (observed dates). A weekly release that falls on one is marked
-     "holiday week: date may shift, check USDA" instead of being listed as a release day. USDA's
-     actual shifted dates are not asserted here. */
+  /* US federal holidays 2025-2026 (observed dates). A weekly release that falls on one moves to
+     the next business day, which is what USDA does (Crop Progress comes out Tuesday after a Monday
+     holiday; Export Sales on Friday of Thanksgiving week). Until 2026-10-10 these weeks were
+     dropped from the list, so the "Next report" card skipped the Oct 13 Crop Progress. The row
+     says it moved and from which day. */
   const FED_HOLIDAYS=new Set(['2025-01-01','2025-01-20','2025-02-17','2025-05-26','2025-06-19','2025-07-04','2025-09-01','2025-10-13','2025-11-11','2025-11-27','2025-12-25','2026-01-01','2026-01-19','2026-02-16','2026-05-25','2026-06-19','2026-07-03','2026-09-07','2026-10-12','2026-11-11','2026-11-26','2026-12-25']);
-  const HOLIDAY_NOTE='Holiday week: date may shift, check USDA';
   function isoUTC(d){return d.toISOString().slice(0,10);}
+  /* the next weekday that is not a federal holiday, in UTC */
+  function nextBizDay(iso){var d=new Date(iso+'T00:00:00Z');do{d.setUTCDate(d.getUTCDate()+1);}while(d.getUTCDay()===0||d.getUTCDay()===6||FED_HOLIDAYS.has(isoUTC(d)));return isoUTC(d);}
+  function movedNote(iso){var d=new Date(iso+'T00:00:00Z');return ' Moved from '+['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][d.getUTCDay()]+' '+['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][d.getUTCMonth()]+' '+d.getUTCDate()+' for the federal holiday.';}
   /* all date math in UTC so the weekday never depends on the reader's time zone */
   (function(){
     const end=Date.UTC(2026,11,31);
@@ -458,7 +462,7 @@
     while(cur.getUTCDay()!==4)cur.setUTCDate(cur.getUTCDate()+1);
     while(cur.getTime()<=end){
       const iso=isoUTC(cur),hol=FED_HOLIDAYS.has(iso);
-      REPORTS.push({date:iso,name:'Export Sales Report',type:'export',time:hol?HOLIDAY_NOTE:'8:30 AM ET',holiday:hol,desc:'Weekly net export sales (corn, soybeans, wheat) USDA FAS'});
+      REPORTS.push({date:hol?nextBizDay(iso):iso,name:'Export Sales Report',type:'export',time:'8:30 AM ET',moved:hol,desc:'Weekly net export sales (corn, soybeans, wheat) USDA FAS'+(hol?movedNote(iso):'')});
       cur.setUTCDate(cur.getUTCDate()+7);
     }
   })();
@@ -470,7 +474,7 @@
       while(cur.getTime()<=end.getTime()){
         const iso=isoUTC(cur),hol=FED_HOLIDAYS.has(iso);
         if(!REPORTS.find(r=>r.date===iso&&r.type==='croprog')){
-          REPORTS.push({date:iso,name:'Crop Progress Report',type:'croprog',time:hol?HOLIDAY_NOTE:'4:00 PM ET',holiday:hol,desc:'Weekly condition ratings and planting/harvest progress by state'});
+          REPORTS.push({date:hol?nextBizDay(iso):iso,name:'Crop Progress Report',type:'croprog',time:'4:00 PM ET',moved:hol,desc:'Weekly condition ratings and planting/harvest progress by state'+(hol?movedNote(iso):'')});
         }
         cur.setUTCDate(cur.getUTCDate()+7);
       }
@@ -490,7 +494,11 @@
     var d=target.getTime()-Date.now();
     if(d<=0)return{num:'NOW',unit:'live'};
     function p(n){return(n<10?'0':'')+n;}
-    if(d>=86400000){var days=Math.round(d/86400000);return{num:days,unit:(days===1?'day':'days')+' away'};}
+    /* WHOLE CALENDAR DAYS, midnight to midnight in the reader's day, so a
+       Tuesday report reads "1 day away" all of Monday, not 2 by Monday morning. */
+    var t0=new Date(target.getTime());t0.setHours(0,0,0,0);var n0=new Date();n0.setHours(0,0,0,0);
+    var days=Math.round((t0-n0)/86400000);
+    if(days>=1)return{num:days,unit:(days===1?'day':'days')+' away'};
     var hrs=Math.floor(d/3600000),mins=Math.floor((d%3600000)/60000),secs=Math.floor((d%60000)/1000);
     if(d>=3600000)return{num:hrs+':'+p(mins),unit:'hrs : min'};
     return{num:mins+':'+p(secs),unit:'min : sec'};
@@ -539,10 +547,20 @@
 
     const sorted=[...REPORTS].sort((a,b)=>a.date.localeCompare(b.date));
     let next=null;
-    for(const r of sorted){if(r.holiday||r.type==='fsa')continue;const d=new Date(r.date+'T12:00:00');if(d>=today){next=r;break;}}
+    /* EVERY USDA REPORT COUNTS, AND ONLY USDA. CONAB and StatCan are listed
+       below but are not USDA, so they never take this card; FSA signup dates
+       are not reports. A report already out today (its release time passed)
+       is not next. */
+    const nowMs=Date.now();
+    for(const r of sorted){
+      if(r.type==='fsa'||r.type==='intl')continue;
+      const d=new Date(r.date+'T12:00:00');if(d<today)continue;
+      const st=isoStart(r);
+      if(/T/.test(st)&&new Date(st).getTime()<=nowMs)continue;
+      next=r;break;
+    }
     if(next){
       const d=new Date(next.date+'T12:00:00');
-      const diff=Math.ceil((d-today)/86400000);
       document.getElementById('next-name').textContent=next.name;
       var _ti=isoStart(next);
       nextTarget=new Date(/T/.test(_ti)?_ti:next.date+'T12:00:00-05:00');

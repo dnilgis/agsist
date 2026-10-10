@@ -6,6 +6,8 @@ on:
       - "data/wpi-estimates.json"
       - "data/wpi-history.json"
       - "scripts/build_whats_priced_in.py"
+      - "data/analyst-estimates.json"
+      - "scripts/report_bands.py"
   schedule:
     - cron: "20 11 * * *"   # 11:20 UTC daily — rolls the "next report" card over as dates pass
   workflow_dispatch:
@@ -72,7 +74,10 @@ jobs:
             git reset --hard "origin/$BR"
             cp /tmp/wpi.json "$FILE"
             python scripts/prerender_wpi_scorecard.py || true   # bake pages; never block the data commit
-            git add "$FILE" whats-priced-in.html scorecard.html cot.html ag-odds.html index.html
+            # The calendar's title names the next WASDE. This job runs every day,
+            # weekends too, so the title rolls the morning after a report.
+            python scripts/bake_seo.py --page usda-calendar.html || true
+            git add "$FILE" whats-priced-in.html scorecard.html cot.html ag-odds.html index.html usda-calendar.html
             if git diff --staged --quiet; then echo "No change."; exit 0; fi
             git commit -m "Update what's priced in $(date -u +%Y-%m-%dT%H:%M:%SZ)"
             if git push origin "HEAD:$BR"; then echo "Pushed on attempt $i."; exit 0; fi

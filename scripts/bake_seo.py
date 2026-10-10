@@ -90,11 +90,22 @@ def _load(name):
         return None
 
 
-def build_ctx(today):
+def next_unprinted_wasde(today, wasde=None):
+    """The next WASDE that has not printed yet. On report day, once
+    data/wasde.json records today's release, the next one is next: the title
+    read "Next WASDE: Oct 9" all afternoon after the Oct 9 print."""
     import usda_dates
+    from datetime import timedelta
+    w = usda_dates.next_wasde(today)
+    if w and w == today and str((wasde or {}).get("release") or "")[:10] == w.isoformat():
+        w = usda_dates.next_wasde(w + timedelta(days=1))
+    return w
+
+
+def build_ctx(today):
     return {
         "today": today,
-        "next_wasde": usda_dates.next_wasde(today),
+        "next_wasde": next_unprinted_wasde(today, _load("wasde.json")),
         "cot": _load("cot.json"),
         "state_stats": _load("state-stats.json"),
         "crop_tour": _load("crop-tour.json"),
@@ -852,6 +863,16 @@ def selftest():
                                                 crop_tour=dict(ctx["crop_tour"],
                                                                nights=[{"posted": False}] * 4)))[0])
            for d_ in (17, 18, 19, 20, 21, 22)))
+
+    print("\nusda calendar rolls at the print")
+    ck("report morning, not printed: Oct 9 is next",
+       next_unprinted_wasde(date(2026, 10, 9), {"release": "2026-09-11"}) == date(2026, 10, 9))
+    ck("report day, printed: Nov 10 is next",
+       next_unprinted_wasde(date(2026, 10, 9), {"release": "2026-10-09"}) == date(2026, 11, 10))
+    ck("the day after: Nov 10, printed or not",
+       next_unprinted_wasde(date(2026, 10, 10), None) == date(2026, 11, 10))
+    ck("the title names it", seo_usda_calendar(dict(ctx, today=date(2026, 10, 10),
+                                                     next_wasde=date(2026, 11, 10)))[0].startswith("Next WASDE: Nov 10, 2026"))
 
     print("\nrails")
     try:
