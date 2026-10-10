@@ -703,6 +703,78 @@ def sc_list_html(d, limit=25):
 
 # ── Marker machinery ───────────────────────────────────────────────────────
 
+# ── THE HOMEPAGE USDA CARD, BAKED FROM THE SAME GRADES ──────────────────────
+#
+# Until 2026-10-10 this card was typed into index.html by hand "alongside the
+# next report". On Oct 10 it still showed the Sept 30 Grain Stocks over an
+# October WASDE that had printed the day before. It is baked here now, every
+# time the What's Priced In data is, from the same history rows the track
+# record renders, so the homepage and that page cannot grade one print two ways.
+HOME_HTML = "index.html"
+
+
+def _short_day(iso):
+    try:
+        return datetime.strptime(iso, "%Y-%m-%d").strftime("%b %-d")
+    except (TypeError, ValueError):
+        return ""
+
+
+def home_usda_card(wpi):
+    lr = (wpi or {}).get("latest_result") or {}
+    date, rpt = lr.get("date"), lr.get("report")
+    rows = [r for r in (wpi or {}).get("history") or [] if r.get("date") == date]
+    if not date or not rpt or not rows:
+        return ""
+    graded = [r for r in rows if r.get("surprise") in ("bullish", "bearish", "in line")]
+    off = [r for r in graded if r["surprise"] != "in line"]
+    ung = len(rows) - len(graded)
+    if not graded:
+        line = "No figure in this report had a trade estimate to grade it against."
+    elif not off:
+        line = f"All {len(graded)} graded figures landed in line with the trade average."
+    else:
+        b = max(off, key=lambda r: abs(r.get("gap_pct") or 0))
+        sign = "+" if (b.get("gap_pct") or 0) > 0 else ""
+        line = (f"{len(graded) - len(off)} of {len(graded)} graded figures in line with the trade. "
+                f"Biggest miss: {esc(b['metric'])}, {sign}{b.get('gap_pct')}%, {b['surprise']}.")
+    if ung:
+        line += f" {ung} had no trade estimate."
+    items = []
+    for r in rows:
+        u = f" {r['unit']}" if r.get("unit") else ""
+        if r.get("expected") is None:
+            words = "no trade estimate"
+        else:
+            words = r.get("surprise") or "not graded"
+            if r.get("context"):
+                words += ", " + r["context"]
+            words = f"trade {_sig(r['expected'])}. {words[:1].upper() + words[1:]}"
+        items.append(f"<p>{esc(r['metric'])}: {_sig(r['actual'])}{esc(u)}, {esc(words)}.</p>")
+    return (
+        '<div class="usda-cal-card gs-card">'
+        '<div class="gs-head">'
+        f'<span class="gs-t">{esc(rpt)} &middot; {_short_day(date)}</span>'
+        '<a href="/whats-priced-in" class="gs-src">USDA, graded</a></div>'
+        f'<div class="gs-line">{line}</div>'
+        '<details class="gs-more"><summary>Every figure against the trade</summary>'
+        + "".join(items) +
+        '<p>Graded on the distance from the trade average: 0.5% for a yield, 1% for '
+        'production, 2% for stocks. <a href="/whats-priced-in">What&rsquo;s Priced In</a></p>'
+        '</details></div>'
+    )
+
+
+def bake_home():
+    with open(WPI_JSON, encoding="utf-8") as f:
+        wpi = json.load(f)
+    with open(HOME_HTML, encoding="utf-8") as f:
+        src = f.read()
+    orig = src
+    src = replace_region(src, "home-usda", home_usda_card(wpi), HOME_HTML)
+    return orig, src, HOME_HTML
+
+
 def replace_region(src, name, content, fname):
     open_m = f"<!-- PRERENDER:{name} -->"
     close_m = f"<!-- /PRERENDER:{name} -->"
@@ -902,7 +974,7 @@ def main():
     # prediction bot's page, which reads data/predictions.json and carries
     # none of the old PRERENDER:sc-* regions. The old call scorecard's data
     # (data/scorecard.json) stays in the repo as an archive, unshown.
-    for bake in (bake_wpi, bake_cot, bake_agodds):
+    for bake in (bake_wpi, bake_cot, bake_agodds, bake_home):
         orig, new, fname = bake()
         if new != orig:
             if args.check:

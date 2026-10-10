@@ -185,7 +185,7 @@ jobs:
           for i in 1 2 3 4 5; do
             git add data/analyst-estimates.json data/wpi-history.json data/wasde.json data/wasde-pdf \
                     data/analyst-scorecard.json data/whats-priced-in.json \
-                    whats-priced-in.html scorecard.html cot.html ag-odds.html 2>/dev/null || true
+                    whats-priced-in.html scorecard.html cot.html ag-odds.html index.html 2>/dev/null || true
             if git diff --staged --quiet; then echo "No change."; exit 0; fi
             git commit -m "wasde: graded the $(date -u +%Y-%m-%d) print"
             if git push; then echo "Pushed on attempt $i."; exit 0; fi

@@ -170,28 +170,42 @@ def say_day(iso):
 
 # ── detectors ──────────────────────────────────────────────────────────────
 
+WASDE_PREFIX = "wasde:"
+
+
 def wasde(out, state, held):
+    """The latest graded USDA report, rebuilt from latest_result on EVERY run.
+
+    It counts the same graded set What's Priced In counts (metric_count is the
+    graded figures; ungraded ones are named apart). On 2026-10-09 this item was
+    written once, when two figures were graded, and kept saying "All 2 scored
+    figures" after the page had graded seven. build() now replaces any older
+    item for the same report date with this one."""
     d = load("whats-priced-in.json")
     lr = (d or {}).get("latest_result")
     if not lr or not lr.get("date") or not lr.get("report"):
         return
     date, rpt = lr["date"], lr["report"]
     b = lr.get("biggest_surprise") or {}
+    n, inl, ung = lr.get("metric_count") or 0, lr.get("in_line_count") or 0, lr.get("ungraded_count") or 0
+    tail = f" {ung} had no trade estimate." if ung else ""
     if lr.get("all_in_line") is True:
         out.append(item(
-            f"wasde:{date}:inline", "usda",
+            f"{WASDE_PREFIX}{date}:inline", "usda",
             f"{rpt} printed in line with the trade",
-            f"All {lr.get('metric_count')} scored figures landed inside the trade's range.",
-            "notable", "/whats-priced-in", "USDA WASDE, graded against the pre-report survey", iso_day(date)))
+            f"All {n} graded figures landed close to the trade average.{tail}",
+            "notable", "/whats-priced-in", "USDA, graded against the pre-report survey", iso_day(date)))
         return
     if b.get("metric") and b.get("expected") is not None and b.get("actual") is not None:
         unit = (" " + b["unit"]) if b.get("unit") else ""
+        ctx = f", {b['context']}" if b.get("context") else ""
         out.append(item(
-            f"wasde:{date}:{b['metric']}", "usda",
+            f"{WASDE_PREFIX}{date}:{b['metric']}", "usda",
             f"{rpt}: {b['metric']} came in {b.get('surprise') or 'off the trade'}",
             f"Trade looked for {b['expected']}{unit}; USDA printed {b['actual']}{unit}"
-            + (f", {b['gap_pct']:+.1f}% versus the survey." if b.get("gap_pct") is not None else "."),
-            "high", "/whats-priced-in", "USDA WASDE, graded against the pre-report survey", iso_day(date)))
+            + (f", {b['gap_pct']:+.1f}% versus the survey average{ctx}." if b.get("gap_pct") is not None else ".")
+            + f" {inl} of {n} graded figures in line.{tail}",
+            "high", "/whats-priced-in", "USDA, graded against the pre-report survey", iso_day(date)))
 
 
 def positioning(out, state, held):
@@ -472,6 +486,18 @@ def build():
     # The one exception: a session move published off an intraday print
     # ("Last $5.05") is replaced once by the same day's settlement ("Settled
     # $5.02"), so the Wire ends the day saying what the board settled at.
+    # THE USDA ITEM FOLLOWS THE GRADES. It is rebuilt from latest_result every
+    # run, so an older item for the same report date (written when fewer
+    # figures were graded, or under the old rule) gives way to the current one.
+    for i in fresh:
+        fid = str(i.get("id", ""))
+        if fid.startswith(WASDE_PREFIX):
+            pre = WASDE_PREFIX + fid[len(WASDE_PREFIX):].split(":", 1)[0] + ":"
+            kept = [k for k in kept if not (str(k.get("id", "")).startswith(pre)
+                                            and (k.get("id"), k.get("headline"), k.get("detail"))
+                                            != (i.get("id"), i.get("headline"), i.get("detail")))]
+    seen = {i.get("id") for i in kept}
+    said = {(i.get("headline"), i.get("detail")) for i in kept}
     by_id = {i.get("id"): i for i in kept}
     upgraded = set()
     for i in fresh:
@@ -814,6 +840,33 @@ def _selftest():
     _moves3 = [i for i in _d3["items"] if i["id"] == "px:2026-09-30:corn:move"]
     check(len(_moves3) == 1 and _moves3[0]["detail"].startswith("Settled"),
           "an evening Last does not overwrite the published settle")
+
+    # THE USDA ITEM FOLLOWS THE GRADES. The real Oct 9 shape: the Wire wrote
+    # "All 2 scored figures" when two were graded; the page then graded seven,
+    # four of them bearish. The next run must replace that item, not keep it.
+    _old_w = {"id": "wasde:2026-10-09:inline", "kind": "usda",
+              "headline": "October WASDE printed in line with the trade",
+              "detail": "All 2 scored figures landed inside the trade's range.",
+              "ts": "2026-10-09T12:00:00+00:00"}
+    _wpi_w = {"latest_result": {"date": "2026-10-09", "report": "October WASDE",
+              "metric_count": 7, "ungraded_count": 1, "in_line_count": 3, "all_in_line": False,
+              "biggest_surprise": {"metric": "2026/27 corn ending stocks", "expected": 1.677,
+                                   "actual": 1.849, "unit": "bil bu", "surprise": "bearish",
+                                   "gap_pct": 10.3, "context": "inside the range, near the top"}}}
+    _pw = {"updated": "2026-10-09T18:00:00+00:00", "items": [_old_w]}
+    globals()["load"] = lambda n: _pw if n == "news.json" else (_wpi_w if n == "whats-priced-in.json" else None)
+    _dw, _aw, _chw, _hw = build()
+    _ws = [i for i in _dw["items"] if str(i["id"]).startswith("wasde:2026-10-09:")]
+    check(len(_ws) == 1 and _ws[0]["id"] == "wasde:2026-10-09:2026/27 corn ending stocks",
+          "a stale USDA item for the same report is replaced, not kept beside the new one")
+    check(_ws and "3 of 7 graded figures in line. 1 had no trade estimate." in _ws[0]["detail"]
+          and "+10.3% versus the survey average, inside the range, near the top" in _ws[0]["detail"],
+          "the Wire counts the same graded set as What's Priced In: %r" % (_ws[0]["detail"] if _ws else None))
+    # and an unchanged grade is not rewritten (no churn, no empty commit)
+    _pw2 = {"updated": "x", "items": _dw["items"]}
+    globals()["load"] = lambda n: _pw2 if n == "news.json" else (_wpi_w if n == "whats-priced-in.json" else None)
+    _dw2, _aw2, _chw2, _ = build()
+    check(not _aw2 and not _chw2, "the same grade on the next run changes nothing")
 
     check(_rfc822("2026-09-11T12:00:00+00:00") == "Fri, 11 Sep 2026 12:00:00 +0000",
           "_rfc822 renders a pubDate RSS readers accept")

@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-09T22:09:03+00:00",
+ "updated": "2026-10-10T14:05:35+00:00",
  "count": 28,
  "added": 1,
  "state": {
@@ -30,6 +30,17 @@
  },
  "items": [
   {
+   "id": "wasde:2026-10-09:2026/27 corn ending stocks",
+   "kind": "usda",
+   "headline": "October WASDE: 2026/27 corn ending stocks came in bearish",
+   "detail": "Trade looked for 1.677 bil bu; USDA printed 1.849 bil bu, +10.3% versus the survey average, inside the range, near the top. 3 of 7 graded figures in line. 1 had no trade estimate.",
+   "significance": "high",
+   "url": "/whats-priced-in",
+   "source": "USDA, graded against the pre-report survey",
+   "day_only": true,
+   "ts": "2026-10-09T12:00:00+00:00"
+  },
+  {
    "id": "px:2026-10-09:corn:move",
    "kind": "board",
    "headline": "Corn down 3.9% on the day",
@@ -37,17 +48,6 @@
    "significance": "notable",
    "url": "/corn-futures-prices",
    "source": "CME settlement via the AGSIST board",
-   "day_only": true,
-   "ts": "2026-10-09T12:00:00+00:00"
-  },
-  {
-   "id": "wasde:2026-10-09:inline",
-   "kind": "usda",
-   "headline": "October WASDE printed in line with the trade",
-   "detail": "All 2 scored figures landed inside the trade's range.",
-   "significance": "notable",
-   "url": "/whats-priced-in",
-   "source": "USDA WASDE, graded against the pre-report survey",
    "day_only": true,
    "ts": "2026-10-09T12:00:00+00:00"
   },

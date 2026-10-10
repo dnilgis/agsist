@@ -5,8 +5,16 @@
     <link>https://agsist.com/news</link>
     <description>Dated grain and livestock market events the moment they are measurable: USDA report surprises, one-year positioning extremes, 52-week highs and lows, crop rating swings. Measured, not aggregated.</description>
     <language>en-us</language>
-    <lastBuildDate>Fri, 09 Oct 2026 22:09:03 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 10 Oct 2026 14:05:35 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/news.xml" rel="self" type="application/rss+xml"/>
+    <item>
+      <title>October WASDE: 2026/27 corn ending stocks came in bearish</title>
+      <link>https://agsist.com/whats-priced-in</link>
+      <description>Trade looked for 1.677 bil bu; USDA printed 1.849 bil bu, +10.3% versus the survey average, inside the range, near the top. 3 of 7 graded figures in line. 1 had no trade estimate.</description>
+      <guid isPermaLink="false">agsist-news-wasde:2026-10-09:2026/27 corn ending stocks</guid>
+      <pubDate>Fri, 09 Oct 2026 12:00:00 +0000</pubDate>
+      <source url="https://agsist.com/news.xml">USDA, graded against the pre-report survey</source>
+    </item>
     <item>
       <title>Corn down 3.9% on the day</title>
       <link>https://agsist.com/corn-futures-prices</link>
@@ -14,14 +22,6 @@
       <guid isPermaLink="false">agsist-news-px:2026-10-09:corn:move</guid>
       <pubDate>Fri, 09 Oct 2026 12:00:00 +0000</pubDate>
       <source url="https://agsist.com/news.xml">CME settlement via the AGSIST board</source>
-    </item>
-    <item>
-      <title>October WASDE printed in line with the trade</title>
-      <link>https://agsist.com/whats-priced-in</link>
-      <description>All 2 scored figures landed inside the trade's range.</description>
-      <guid isPermaLink="false">agsist-news-wasde:2026-10-09:inline</guid>
-      <pubDate>Fri, 09 Oct 2026 12:00:00 +0000</pubDate>
-      <source url="https://agsist.com/news.xml">USDA WASDE, graded against the pre-report survey</source>
     </item>
     <item>
       <title>Wheat down 2.6% on the day</title>
