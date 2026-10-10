@@ -51,8 +51,6 @@ SET_PAGE_KB = 150     # cap for any one page in a generated set
 # Known offenders with a dated reason. Each entry is a debt, not a pass:
 # remove it when the page is fixed. The check prints them every run.
 PAGE_EXCEPTIONS = {
-    "farmland-atlas/texas/index.html": "atlas state hubs are being reworked in the 2026-10 consolidation (rent/atlas merge)",
-    "farmland-atlas/alaska/index.html": "atlas state hubs are being reworked in the 2026-10 consolidation (rent/atlas merge)",
     "basis/kansas.html": "basis state pages move the elevator table to on-demand data in the 2026-10 consolidation",
     "basis/nebraska.html": "basis state pages move the elevator table to on-demand data in the 2026-10 consolidation",
     "basis/illinois.html": "basis state pages move the elevator table to on-demand data in the 2026-10 consolidation",

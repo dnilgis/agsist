@@ -749,17 +749,30 @@ def state_map(W, st, recs):
     h = min(560, (y1 - y0) * sc + 8)
     sc = min(sc, (h - 8) / max(1e-9, y1 - y0))
     ox, oy = (w - (x1 - x0) * sc) / 2, (h - (y1 - y0) * sc) / 2
-    P = lambda x, y: "%.1f %.1f" % (ox + (x * k - x0) * sc, oy + (y1 - y) * sc)
+    def ring_d(ring):
+        # whole pixels on a 760-wide map, a point that lands on the pixel
+        # before it dropped: Alaska's coastline was 137 KB of sub-pixel detail
+        pts, last = [], None
+        for x, y in ring:
+            q = (int(math.floor(ox + (x * k - x0) * sc + 0.5)), int(math.floor(oy + (y1 - y) * sc + 0.5)))
+            if q != last:
+                pts.append("%d %d" % q)
+                last = q
+        return ("M" + "L".join(pts) + "Z") if len(pts) >= 3 else ""
     rent = {f: recs[f]["rent_dry_usd_ac"] for f in fs if recs[f]["rent_dry_usd_ac"] is not None and recs[f]["rent_dry_year"] == W.rent_latest}
     br = quint(list(rent.values()))
     out = []
     for f in fs:
         r = recs[f]
-        d = "".join("M" + "L".join(P(x, y) for x, y in ring) + "Z" for ring in R[f])
+        d = "".join(ring_d(ring) for ring in R[f])
         q = ("q%d" % bin_of(rent[f], br)) if (br and f in rent) else "qn"
         at = ""
+        old_r = r["rent_dry_usd_ac"] if (r["rent_dry_usd_ac"] is not None and f not in rent) else None
         for code, v in (("r", rent.get(f)), ("v", None if r["value_flag"] else r["value_usd_ac"]), ("y", r["corn_yield_median_bu_ac"]),
-                        ("c", r["claims_per_100_usd"]), ("d", r["d2_week_share_pct"])):
+                        ("c", r["claims_per_100_usd"]), ("d", r["d2_week_share_pct"]),
+                        # for the county table, which the page builds from these paths
+                        ("i", r["rent_irr_usd_ac"]), ("o", old_r), ("oy", r["rent_dry_year"] if old_r is not None else None),
+                        ("vs", r["value_usd_ac"] if r["value_flag"] else None)):
             if v is not None:
                 at += ' data-%s="%s"' % (code, v)
         tip = "%s: %s" % (W.label[f], money(rent[f]) if f in rent else "no current rent")
@@ -1610,6 +1623,8 @@ def state_page(W, st):
 
     rows = ""
     for f in fs:
+        if f in W.geo:
+            continue          # on the map: the page builds its row from the map's data (one copy, not two)
         r = recs[f]
         rows += ('<tr><td><a href="/%s/%s">%s</a></td><td data-v="%s">%s</td><td data-v="%s">%s</td><td data-v="%s">%s</td><td data-v="%s">%s</td><td data-v="%s">%s</td><td data-v="%s">%s</td></tr>' % (
             OUT, W.slug[f], esc(W.label[f]),
@@ -1646,7 +1661,7 @@ def state_page(W, st):
 <div class="kick">Farmland Atlas · state</div>
 <h1>{esc(stn)} farmland values by county</h1>
 <p class="sub">{esc(desc)} Click a heading to sort.</p>
-{('<p class="sub">For cash rent, every published county rate and its history: ' + rent_link + '.</p>') if rent_link else ''}
+{('<p class="read"><b>Cash rent:</b> every published ' + esc(stn) + ' county rate side by side, with history to 2008, irrigated and pasture shown apart: ' + rent_link + '.</p>') if rent_link else ''}
 <div class="act">{rent_link}{('<a href="/arc-plc/' + slugify(stn) + '">' + esc(stn) + ' ARC or PLC by county</a>') if os.path.exists(os.path.join(W.root, "arc-plc", slugify(stn) + ".html")) else ''}<a href="/farmland-atlas#s={esc(st)}">Open {esc(stn)} on the map</a><a href="/{OUT}/data/{st.lower()}.csv" download>Download {esc(st)} CSV</a></div>
 <h2>{esc(stn)} at a glance</h2>
 {facts}
@@ -1655,7 +1670,8 @@ def state_page(W, st):
 {smap}
 <p class="note" id="mn">Dry cash rent, {get(W.atlas, "national", "rent", "year") or W.rent_latest} survey. Five equal-count groups of the state's counties: each swatch shows the range it covers. Grey is a county with no figure. Land values flagged to read with care are left grey.</p>
 <h2>Every county</h2>
-<div class="tw"><table id="t"><thead><tr><th class="s" scope="col">County</th><th class="s" scope="col">Dry rent</th><th class="s" scope="col">Irr. rent</th><th class="s" scope="col">Land value</th><th class="s" scope="col">Corn yield</th><th class="s" scope="col">Claims per $100</th><th class="s" scope="col">Drought weeks</th></tr></thead><tbody>{rows}</tbody></table></div>
+<div class="tw"><table id="t"><thead><tr><th class="s" scope="col">County</th><th class="s" scope="col">Dry rent</th><th class="s" scope="col">Irr. rent</th><th class="s" scope="col">Land value</th><th class="s" scope="col">Median corn yield</th><th class="s" scope="col">Claims per $100</th><th class="s" scope="col">Drought weeks</th></tr></thead><tbody>{rows}</tbody></table></div>
+<noscript><p class="note">The county table is built from the map above, which needs JavaScript. Every county on the map is a link, and the CSV download has every row.</p></noscript>
 <p class="note">Rent is dollars per acre, NASS county survey; an older year is shown beside the figure. Land value is the census of agriculture estimate; a star marks a value flagged to read with care. Corn yield is the median of published years. Claims per $100 of coverage are the last ten closed crop years. Drought weeks are the share of weeks since 2000 with half the county or more in D2 drought or worse. A dash means the source withheld the figure or the record does not carry it.</p>
 </main>
 <script>
@@ -1680,6 +1696,20 @@ function paint(k){{
 }}
 sel.addEventListener('change',function(){{paint(sel.value);}});
 var t=document.getElementById('t'),b=t.tBodies[0],dir={{}};
+(function(){{
+  var m=function(v){{return '$'+Math.round(+v).toLocaleString('en-US');}},o=[];
+  [].forEach.call(svg.querySelectorAll('a'),function(a){{
+    var p=a.querySelector('path'),ti=p.querySelector('title').textContent,n=ti.slice(0,ti.lastIndexOf(': '));
+    var g=function(k){{return p.getAttribute('data-'+k);}},c=function(v,txt){{return '<td data-v="'+(v===null?'':v)+'">'+(v===null?'n/a':txt)+'</td>';}};
+    var r=g('r')!==null?c(g('r'),m(g('r'))):(g('o')!==null?c(g('o'),m(g('o'))+' <small>'+g('oy')+'</small>'):c(null));
+    var v=g('v')!==null?c(g('v'),m(g('v'))):(g('vs')!==null?c(g('vs'),m(g('vs'))+' *'):c(null));
+    o.push([n,'<tr><td><a href="'+a.getAttribute('href')+'"></a></td>'+r+c(g('i'),g('i')&&m(g('i')))+v
+      +c(g('y'),g('y')&&(Math.round(g('y')*10)/10).toFixed(1))+c(g('c'),g('c')&&'$'+(+g('c')).toFixed(2))+c(g('d'),g('d')&&Math.round(g('d'))+'%')+'</tr>']);
+  }});
+  o.sort(function(x,y){{return x[0].toLowerCase()<y[0].toLowerCase()?-1:1;}});
+  var keep=b.innerHTML;b.innerHTML=o.map(function(x){{return x[1];}}).join('')+keep;
+  [].forEach.call(b.querySelectorAll('td:first-child a'),function(a,i){{if(i<o.length)a.textContent=o[i][0];}});
+}})();
 [].forEach.call(t.tHead.rows[0].cells,function(th,i){{th.addEventListener('click',function(){{
   var rows=[].slice.call(b.rows),d=dir[i]=!dir[i];
   rows.sort(function(a,c){{
@@ -1995,6 +2025,18 @@ def selftest():
                 seen_ += 1
                 check(f + " no /cash-rent link", 'href="/cash-rent' not in open(p_, encoding="utf-8").read())
         check("cash-rent link scan saw pages", seen_ >= 300)
+        # state hubs stay under the generated-set page cap; the table is built from the map, and the rent page is up top
+        for st_ in sorted(W.by_state)[:60]:
+            p_ = os.path.join(tmp, OUT, slugify(STATE_NAMES.get(st_, st_)), "index.html")
+            if not os.path.exists(p_):
+                continue
+            sz_ = os.path.getsize(p_)
+            check(st_ + " hub under 150 KB (%d)" % sz_, sz_ <= 150 * 1024)
+            ht_ = open(p_, encoding="utf-8").read()
+            mapped_ = [f_ for f_ in W.by_state[st_] if f_ in W.geo]
+            check(st_ + " hub map carries every mapped county", ht_.count("<a href=\"/%s/" % OUT) >= len(mapped_))
+            if st_ in W.rent_states:
+                check(st_ + " hub leads with its rent page", '<p class="read"><b>Cash rent:</b>' in ht_ and ht_.index('class="read"') < ht_.index("<h2>"))
         nat_ = json.load(open(os.path.join("data", "cash-rent", "national.json"))) if os.path.exists(os.path.join("data", "cash-rent", "national.json")) else {}
         if nat_.get("pair_rule"):
             check("rent share: every published ratio carried", sum(1 for r in W.rrev.values() if r.get("p") is not None) == nat_.get("n_pct"))
