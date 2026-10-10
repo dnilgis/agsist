@@ -513,6 +513,7 @@ html[data-theme="light"] .rat-gauge-labels em{opacity:.85}
   <div class="rat-row">
     <div class="rat-card">
       <div class="rat-lbl"><svg class="ic" aria-hidden="true"><use href="#i-sprout"/></svg>/<svg class="ic" aria-hidden="true"><use href="#i-bean"/></svg> Corn&middot;Bean Planting Ratio</div>
+      <div class="rat-pair" id="cb-pair" style="font-size:.8rem;color:var(--text-dim);margin-top:2px"></div>
       <div class="rat-val sk" id="cb-ratio">-</div>
       <div class="rat-gauge-bar"><div class="rat-gauge-dot" id="cb-dot"></div></div>
       <div class="rat-gauge-labels">
@@ -2035,8 +2036,15 @@ fetch('/data/prices.json',{cache:'no-store'})
     }else if(ncEl){ncEl.style.display='none';}
 
     var cornDec=q['corn-dec'],beansNov=q['beans-nov'];
-    if(cornDec&&beansNov&&cornDec.close&&beansNov.close){
-      var ratio=beansNov.close/cornDec.close;
+    /* Planting ratio: the pipeline's pair (fetch_prices planting_ratio): next
+       year's Nov beans / Dec corn once September corn is off the board, this
+       year's before. Named on the card. No ratio published: the card hides. */
+    var PR=data.planting_ratio&&data.planting_ratio.value?data.planting_ratio:null;
+    var cbCard=document.getElementById('cb-ratio');cbCard=cbCard&&cbCard.closest?cbCard.closest('.rat-card'):null;
+    if(!PR&&cbCard)cbCard.style.display='none';
+    if(PR){
+      var ratio=PR.value;
+      setEl('cb-pair',PR.label+(PR.crop_year?' \u00b7 '+PR.crop_year+' planting':''));
       setEl('cb-ratio',ratio.toFixed(2)+':1');
       var gp=Math.min(100,Math.max(0,(ratio-2)/1*100));
       document.getElementById('cb-dot').style.left='calc('+gp+'% - 8px)';
@@ -2058,9 +2066,9 @@ fetch('/data/prices.json',{cache:'no-store'})
       var zone=pct<25?'lower quartile: historically a weak pricing window':pct<50?'lower half of its 52-week range':pct<75?'upper half of its range':'upper quartile: near recent highs';
       sp.push('<strong>'+(beansNear?'Nearby':'Most-active')+' soybeans at '+grain$(beans.close)+'</strong> are <strong>'+pct+'% of the way up</strong> their 52-week range ('+zone+')');
     }
-    if(cornDec&&beansNov&&cornDec.close&&beansNov.close){
-      var r2=beansNov.close/cornDec.close;
-      sp.push(r2<2.4?'the <strong>corn/bean ratio at '+r2.toFixed(2)+':1</strong> historically signals corn as the stronger per-acre choice this season':r2<2.6?'the <strong>corn/bean ratio at '+r2.toFixed(2)+':1</strong> is in neutral territory: an even acre split is common at these levels':'the <strong>corn/bean ratio at '+r2.toFixed(2)+':1</strong> gives soybeans the historical per-acre edge for flexible acres');
+    if(PR){
+      var r2=PR.value,rl=' ('+PR.label+')';
+      sp.push(r2<2.4?'the <strong>corn/bean ratio at '+r2.toFixed(2)+':1</strong>'+rl+' historically signals corn as the stronger per-acre choice this season':r2<2.6?'the <strong>corn/bean ratio at '+r2.toFixed(2)+':1</strong>'+rl+' is in neutral territory: an even acre split is common at these levels':'the <strong>corn/bean ratio at '+r2.toFixed(2)+':1</strong>'+rl+' gives soybeans the historical per-acre edge for flexible acres');
     }
     if(beans&&meal&&soyoil&&beans.close&&meal.close&&soyoil.close){
       var mPbu=(meal.close/2000)*44,oPbu=(soyoil.close/100)*11,bCost=beans.close/100,cr=mPbu+oPbu-bCost;

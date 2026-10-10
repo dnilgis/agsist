@@ -112,7 +112,7 @@ def _num(v):
     return f
 
 
-from contract_calendar import is_expired, recent_expiry, expiry_date, month_num  # ONE definition of contract expiry
+from contract_calendar import is_expired, recent_expiry, expiry_date, month_num, dead_from  # ONE definition of contract expiry
 
 # A transient yfinance hiccup clears within hours; a quote that cannot be
 # fetched for this many days is almost certainly an expired/rolled contract
@@ -540,6 +540,36 @@ def close_and_prev(bars):
     return close, prev, close_date, prev_date
 
 
+def planting_year(today):
+    """The crop year the corn/bean planting ratio is about.
+
+    Up to the harvest roll it is this year's crop (Nov beans / Dec corn of
+    this year are the new-crop contracts). From the day September corn goes
+    off the board (contract_calendar dead_from: the 15th, CBOT's business day
+    before the 15th being the last trade), the Dec and Nov contracts of this
+    year are the crop being harvested, and the next planting decision is
+    priced on next year's Nov beans / Dec corn. On 2026-10-09 the pages
+    still divided Nov '26 by Dec '26 (2.69, "beans favored") while the 2027
+    acreage pair read 2.47, neutral."""
+    return today.year + (1 if today >= dead_from(today.year, 9, "GRAIN") else 0)
+
+
+def planting_ratio(quotes, today):
+    """{value, beans, corn, label, crop_year} from Nov beans / Dec corn of the
+    planting year, or {reason} when either quote is missing. Pure; selftested
+    in scripts/test_nearby.py."""
+    y = planting_year(today)
+    yy = str(y)[2:]
+    bk, ck = f"beans-nov{yy}", f"corn-dec{yy}"
+    b, c = (quotes.get(bk) or {}).get("close"), (quotes.get(ck) or {}).get("close")
+    label = f"Nov '{yy} beans \u00f7 Dec '{yy} corn"
+    if not b or not c:
+        return {"crop_year": y, "beans": bk, "corn": ck, "label": label, "value": None,
+                "reason": f"no quote for {bk if not b else ck}"}
+    return {"crop_year": y, "beans": bk, "corn": ck, "label": label,
+            "value": round(float(b) / float(c), 4)}
+
+
 def widen_range(lo, hi, close):
     """The 52-week range must contain the latest close.
 
@@ -820,6 +850,10 @@ def main():
         # KC HRW and MGEX HRS minus Chicago SRW, cents per bushel. See
         # class_spreads(): a same-month pair before first notice day, or a reason.
         "spreads":    spreads,
+        # Corn/bean planting ratio on the planting year's contracts
+        # (planting_year: next year's after the September roll), so every
+        # page divides the same two quotes and names them.
+        "planting_ratio": planting_ratio(quotes, datetime.now(timezone.utc).date()),
         "quotes":     quotes
     }
 

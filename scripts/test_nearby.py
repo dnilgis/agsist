@@ -9,7 +9,8 @@ import sys
 from datetime import datetime, timezone
 
 sys.path.insert(0, "scripts")
-from fetch_prices import add_nearby, _month_label, SYMBOLS
+from fetch_prices import add_nearby, _month_label, SYMBOLS, planting_year, planting_ratio
+from datetime import date
 
 T = lambda y, m, d: datetime(y, m, d, 13, 0, tzinfo=timezone.utc)
 
@@ -83,6 +84,23 @@ def main():
     # --- label helper ----------------------------------------------------------
     chk(_month_label("wheat-dec27") == "Dec '27", "_month_label wheat-dec27")
     chk(_month_label("corn-dec") is None, "_month_label undated alias -> None")
+
+    # planting ratio: this year's Nov/Dec until September corn goes off the
+    # board (dead from Sep 15), next year's after (2026-10-09: 2.69 on the
+    # '26 pair, 2.47 on the '27 pair).
+    chk(planting_year(date(2026, 9, 14)) == 2026, "planting year: Sep 14 is still this year's crop")
+    chk(planting_year(date(2026, 9, 15)) == 2027, "planting year: Sep 15 (Sep corn dead) switches to next year")
+    chk(planting_year(date(2027, 3, 1)) == 2027, "planting year: March is this year's planting")
+    pq = {"beans-nov26": {"close": 1292.25}, "corn-dec26": {"close": 480.5},
+          "beans-nov27": {"close": 1263.5}, "corn-dec27": {"close": 511.75}}
+    pr = planting_ratio(pq, date(2026, 10, 9))
+    chk(pr["beans"] == "beans-nov27" and pr["corn"] == "corn-dec27", "Oct 9 2026 divides Nov '27 by Dec '27")
+    chk(abs(pr["value"] - 1263.5 / 511.75) < 1e-4 and round(pr["value"], 2) == 2.47, "Oct 9 2026 ratio 2.47, not 2.69")
+    chk(pr["label"] == "Nov '27 beans \u00f7 Dec '27 corn", "the label names both contracts")
+    pa = planting_ratio(pq, date(2026, 8, 1))
+    chk(pa["beans"] == "beans-nov26" and round(pa["value"], 2) == 2.69, "Aug 1 2026 still divides the '26 pair")
+    pm = planting_ratio({"beans-nov27": {"close": 1263.5}}, date(2026, 10, 9))
+    chk(pm["value"] is None and "corn-dec27" in pm["reason"], "a missing quote gives a reason, not a number")
 
     print("SELFTEST OK" if ok else "SELFTEST FAILED")
     return 0 if ok else 1
