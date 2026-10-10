@@ -242,7 +242,6 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
     <div class="teaser-line1"><div class="teaser-left"><span class="teaser-badge" id="daily-teaser-date"><svg class="ic" aria-hidden="true"><use href="#i-newspaper"/></svg> AGSIST Daily</span></div><span class="teaser-action">Read Today’s Briefing &#x2193;</span></div>
     <span class="teaser-preview" id="daily-teaser-text">Today’s ag market briefing. Click to read</span>
   </div>
-  <div class="s7-adrow"><a class="teaser-sponsor empty-state" id="daily-teaser-sponsor" href="/sponsor" onclick="event.stopPropagation()"><span class="teaser-sponsor-dot"></span>Become a sponsor<span class="teaser-sponsor-tag" data-rate="founding">$149/mo &middot; first month free</span></a></div>
   <div class="daily-full" id="daily-full">
     <div class="daily-hero-inner">
       <div id="daily-surprise-banner" class="daily-surprise-banner" style="display:none" role="alert"><span class="surprise-icon"><svg class="ic" aria-hidden="true"><use href="#i-zap"/></svg></span><span class="surprise-text"><strong>Loading&hellip;</strong></span></div>
@@ -520,6 +519,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
          weather  #wx-temp (geo.js) and the one spray rule (S7.spray)
        Nothing here fetches on its own except the shared prices promise, and
        a missing figure is an em dash with the reason, never a guess. -->
+  <style>.s7-adrow--hb{padding:6px 0 4px!important;margin:0!important;max-width:none!important;min-width:0}.s7-adrow--hb #daily-teaser-sponsor.empty-state{flex-wrap:wrap;justify-content:center;max-width:100%;row-gap:0}@media(max-width:480px){.s7-adrow--hb #daily-teaser-sponsor.empty-state .teaser-sponsor-tag{white-space:nowrap}}</style>
   <section class="hero-band" id="hero-band" aria-labelledby="hb-h">
     <h2 class="visually-hidden" id="hb-h">Today at a glance</h2>
     <div class="hb-top">
@@ -559,6 +559,8 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
          is drawn (or hidden) before first paint and the bids card below
          never jumps. -->
     <div id="hb-ask" data-signup-ask="Get your top local bid by email every weekday morning" data-source="hero" data-variant="hero"></div>
+    <!-- Sponsor pill: at the foot of the first answer (this band), not above the headline. Inside the band so the desktop grid cannot move it. -->
+  <div class="s7-adrow s7-adrow--hb"><a class="teaser-sponsor empty-state" id="daily-teaser-sponsor" href="/sponsor" onclick="event.stopPropagation()"><span class="teaser-sponsor-dot"></span>Become a sponsor<span class="teaser-sponsor-tag" data-rate="founding">$149/mo &middot; first month free</span></a></div>
   </section>
   <!-- no saved ZIP: hide the bid cells now, before the parser stops for the script below and the page paints with them (they used to vanish after first paint and the row rewrapped) -->
   <script>try{(function(){var l=null;try{l=JSON.parse(localStorage.getItem('agsist-wx-loc')||'null');}catch(e){}if(l&&/^\d{5}$/.test(String(l.zip||'')))return;var hb=document.getElementById('hero-band');if(hb)hb.classList.add('hb-nozip');var p=document.getElementById('hb-place');if(p)p.textContent='Set your ZIP to see local cash bids';var c=document.getElementById('hb-change');if(c)c.textContent='Set ZIP';})();}catch(e){}</script>
