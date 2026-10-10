@@ -268,7 +268,8 @@ const ribbonPages = [...readdirSync(ROOT).filter((f) => f.endsWith(".html")),
   .map((f) => [f, decomment(R(f))])
   .filter(([, s]) => /<aside class="ag-sponsor-ribbon"(?! idx1)/.test(s));
 check("every page that ships the ribbon puts it below the H1 and the breadcrumb", () => {
-  assert.ok(ribbonPages.length >= 79, "only " + ribbonPages.length + " pages carry the ribbon; the pages have moved");
+  // 77: /cash-rent and /land-tenure retired to stubs (2026-10), taking their two ribbons with them
+  assert.ok(ribbonPages.length >= 77, "only " + ribbonPages.length + " pages carry the ribbon; the pages have moved");
   for (const [f, s] of ribbonPages) {
     const body = s.slice(s.search(/<body[\s>]/));
     const rib = body.search(/<aside class="ag-sponsor-ribbon"(?! idx1)/);
