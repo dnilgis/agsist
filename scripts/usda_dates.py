@@ -18,6 +18,36 @@ WASDE_2026 = {
 }
 
 
+# THE OTHER 11:00 a.m. CT REPORTS THE BRIEFING MUST NAME ON THE DAY
+# (scripts/report_day.py). Grain Stocks, Plantings and Acreage match
+# usda-calendar.html. Crop Production is listed on the days it carries the corn
+# and soybean yield the site grades (Aug to Nov, with the WASDE) plus the April
+# update and the January annual; the May to July winter wheat editions are left
+# out, so on those days the briefing names the WASDE alone.
+GRAIN_STOCKS_2026 = {date(2026, 1, 12), date(2026, 3, 31), date(2026, 6, 30), date(2026, 9, 30)}
+CROP_PRODUCTION_2026 = {date(2026, 1, 12), date(2026, 4, 9), date(2026, 8, 12), date(2026, 9, 11),
+                        date(2026, 10, 9), date(2026, 11, 10)}
+PROSPECTIVE_PLANTINGS_2026 = {date(2026, 3, 31)}
+ACREAGE_2026 = {date(2026, 6, 30)}
+
+
+def major_reports(day):
+    """The market-moving USDA reports released on `day`, in the order a
+    farmer would name them. [] on any other day."""
+    out = []
+    if day in WASDE_2026:
+        out.append("WASDE")
+    if day in CROP_PRODUCTION_2026:
+        out.append("Crop Production")
+    if day in GRAIN_STOCKS_2026:
+        out.append("Grain Stocks")
+    if day in PROSPECTIVE_PLANTINGS_2026:
+        out.append("Prospective Plantings")
+    if day in ACREAGE_2026:
+        out.append("Acreage")
+    return out
+
+
 def next_wasde(today):
     """The next WASDE date >= today, or None past the table's horizon."""
     future = sorted(d for d in WASDE_2026 if d >= today)

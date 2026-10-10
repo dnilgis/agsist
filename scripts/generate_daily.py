@@ -1545,17 +1545,14 @@ def get_usda_release_today():
     if today.date() in usda_dates.WASDE_2026:
         releases.append("USDA WASDE (World Ag Supply/Demand Estimates), 11:00 AM CT")
 
-    # Quarterly stocks (Jan/Mar/Jun/Sep around 30th-31st):
-    qs_2026 = {"01-30", "03-31", "06-30", "09-30"}
-    if md in qs_2026:
+    # Quarterly stocks, Prospective Plantings, Acreage: the same table the
+    # report-day line uses (usda_dates; the January stocks report is Jan 12,
+    # with the WASDE, not Jan 30 as this block used to say).
+    if today.date() in usda_dates.GRAIN_STOCKS_2026:
         releases.append("USDA Quarterly Grain Stocks, 11:00 AM CT")
-
-    # Prospective Plantings (late March):
-    if md == "03-31":
+    if today.date() in usda_dates.PROSPECTIVE_PLANTINGS_2026:
         releases.append("USDA Prospective Plantings, 11:00 AM CT")
-
-    # Acreage report (late June):
-    if md == "06-30":
+    if today.date() in usda_dates.ACREAGE_2026:
         releases.append("USDA Acreage Report, 11:00 AM CT")
 
     if not releases:
@@ -4808,6 +4805,15 @@ def main():
     briefing, _cut_log = briefing_cut.enforce_budget(briefing)
     for _l in _cut_log:
         print(f"  [cut] {_l}")
+    # 2026-10-10: ON A USDA REPORT DAY THE BRIEFING NAMES THE REPORT, BY CODE.
+    # The Oct 9 watch list left out the WASDE printing at 11 that morning. The
+    # fixed watch line and the lead mention come from scripts/report_day.py
+    # (dates from usda_dates), never from the model; the critic puts them back
+    # after any rewrite and briefing_gate refuses to publish without them.
+    import report_day
+    briefing = report_day.apply(briefing, datetime.now().date(), datetime.now(timezone.utc))
+    if briefing.get("report_day"):
+        print(f"  Report day: {', '.join(briefing['report_day']['reports'])}; fixed watch line in place")
     _wc_total = briefing_cut.word_count(briefing)
     print(f"  Word count: {_wc_total} (target {briefing_cut.TARGET_WORDS}, ceiling {briefing_cut.HARD_CEILING})")
 

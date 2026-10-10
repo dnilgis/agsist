@@ -495,6 +495,11 @@ def apply_rewrite(briefing, critique):
         briefing, cut_log = briefing_cut.enforce_budget(briefing)
         for line in cut_log:
             print(f"  [cut] {line}")
+        # A rewrite or the cut may drop the report-day line; it goes back in.
+        # It is not the model's to remove (scripts/report_day.py).
+        import report_day
+        from datetime import datetime as _dt, timezone as _tz
+        briefing = report_day.apply(briefing, _dt.now().date(), _dt.now(_tz.utc))
         n = briefing_cut.word_count(briefing)
         print(f"  Word count after rewrite: {n} (ceiling {briefing_cut.HARD_CEILING})")
         if isinstance(briefing.get("meta"), dict):

@@ -802,6 +802,18 @@ def run(daily, prices=None, today=None, archive_dir='data/daily-archive', bind_s
     except Exception as _e:
         W("voice-fabricated", "voice check could not run (%s: %s)" % (type(_e).__name__, _e))
 
+    # ── report day (2026-10-10) ───────────────────────────────────────────
+    # On a USDA report day the issue must carry the fixed watch line and name
+    # the report in the lead (scripts/report_day.py writes both). The Oct 9
+    # issue went out with neither, on WASDE morning. A deterministic fact about
+    # the calendar, so it blocks.
+    try:
+        import report_day
+        for _m in report_day.check(daily, today):
+            F("report-day", _m)
+    except Exception as _e:
+        W("report-day", "report-day check could not run (%s: %s)" % (type(_e).__name__, _e))
+
     # Prose figures must agree with the board this same issue prints.
     try:
         check_number_binding(daily, F, W, archive_dir, today, bind_strict)

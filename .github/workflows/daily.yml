@@ -347,6 +347,11 @@ jobs:
       - name: GATE 0e - voice check selftest
         run: python scripts/voice_lint.py --selftest
 
+      # The report-day line (scripts/report_day.py): written by code on a USDA
+      # report day, put back after the critic, required by GATE 2.
+      - name: GATE 0f - report-day line selftest
+        run: python scripts/report_day.py --selftest
+
       # The schedule is machinery too. This asserts the backup fires still
       # exist and are spread, and that the gate asks the remote rather than its
       # own checkout — the two things that keep a dropped fire from becoming a
