@@ -32,12 +32,6 @@
    "pitch": "Your name beside the cash lease tool. One category-exclusive slot."
   },
   {
-   "id": "cash-rent",
-   "page": "/cash-rent",
-   "name": "Cash Rent by County",
-   "pitch": "Your name beside county cash rents. One category-exclusive slot."
-  },
-  {
    "id": "cattle-futures-prices",
    "page": "/cattle-futures-prices",
    "name": "Cattle Futures Prices",
@@ -108,12 +102,6 @@
    "page": "/grain-bin-calculator",
    "name": "Grain Bin Calculator",
    "pitch": "Your name beside the grain bin calculator. One category-exclusive slot."
-  },
-  {
-   "id": "land-tenure",
-   "page": "/land-tenure",
-   "name": "Rented vs Owner-Farmed",
-   "pitch": "Your name beside the rented and owner-farmed numbers. One category-exclusive slot."
   },
   {
    "id": "markets",

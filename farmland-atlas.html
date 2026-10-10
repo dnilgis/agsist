@@ -584,6 +584,8 @@ details.fa-arith .body a{color:var(--gold)}
 <!--/SEED:atlas-->
     </details>
 
+    <details class="fa-fold" id="fa-tenure"><summary>Rented vs owner-farmed, 1997 to 2022</summary><div id="fa-tenure-box"></div></details>
+
     <details class="fa-fold" id="fa-bystate" hidden>
       <summary>Where July nights are warming, by state</summary>
       <p>Each county has one July a year since 1976, so its own trend has to be large before the 95% interval clears zero. The whole-record fit, every July since 1895, has more years; in some states it finds warming in more counties and in others in fewer, because the early 1900s were warm in some regions. Both columns count counties whose own interval clears zero.</p>
@@ -623,8 +625,7 @@ details.fa-arith .body a{color:var(--gold)}
   <section class="fa-sec" id="fa-related">
     <h2>The rest of the land record on AGSIST</h2>
     <div class="fa-rel">
-      <a href="/cash-rent"><b>Cash Rent by County</b><span>Every NASS rent estimate by state and county, irrigated and not, with the history.</span></a>
-      <a href="/land-tenure"><b>Rented vs Owner-Farmed</b><span>Rented share by state and county across six censuses since 1997.</span></a>
+      <a href="/rent/"><b>Cash Rent by State</b><span>Every NASS rent estimate by state and county, irrigated and not, with the history.</span></a>
       <a href="/foreign-land"><b>Foreign-Owned Land</b><span>AFIDA holdings by state, county and holder country since 2010.</span></a>
       <a href="/drought-monitor"><b>Drought Monitor</b><span>This week's map and the seasonal outlooks.</span></a>
       <a href="/hail-map"><b>Hail Map</b><span>Radar hail swaths and the storm record, down to the field.</span></a>
@@ -921,9 +922,9 @@ var SIDE={
   more:{url:'/data/atlas/more.json', why:'the weather, storm and livestock file did not load'},
   rentrev:{url:'/data/cash-rent/national.json', why:'the cash rent file did not load'}
 };
-// rent ÷ corn gross: read from Cash Rent by County's own map file (/cash-rent), so the two pages cannot disagree.
+// rent ÷ corn gross: read from data/cash-rent/national.json, the file the county pages and the rent share calculator use, so they cannot disagree.
 // p = rent ÷ (county corn yield of the same practice × state price received), py its year, pp = that price is preliminary.
-// A file without pair_rule divided dryland rent by a mixed yield; /cash-rent withholds it and so does this layer.
+// A file without pair_rule divided dryland rent by a mixed yield; this layer withholds it.
 var RREV_LATEST=null, FOF=null;
 function rrev(f){ var R=SIDE.rentrev; return R.ok&&R.d.counties?R.d.counties[f]||null:null; }
 function fipsOf(c){ if(!FOF){ FOF=new Map(); for(var f in ATLAS.counties) FOF.set(ATLAS.counties[f],f); } return FOF.get(c); }
@@ -1405,13 +1406,13 @@ function rrevWhy(f){ var R=SIDE.rentrev; if(!R.ok) return R.why; var r=rrev(f); 
   if(r.p!=null) return 'latest year with rent, a same-practice corn yield and a price is '+r.py+'; the map colours '+(RREV_LATEST-3)+' on';
   if(r.pw) return r.pw+' ('+r.pwy+')'; return 'no county corn yield published, so no ratio'; }
 function rrevLegend(byF,inScope){
-  // the source and as-of line /cash-rent prints under its own map, plus how many coloured counties lean on a preliminary price
+  // the source and as-of line for the rent file, plus how many coloured counties lean on a preliminary price
   var np=0, py={}, R=SIDE.rentrev.d||{};
   for(var f in byF){ if(!inScope(f)) continue; var r=rrev(f); if(r&&r.pp){ np++; py[r.py]=1; } }
   var ys=Object.keys(py).sort();
   return '<span class="fa-note">Rent ÷ (county corn yield of the same practice × state price received), all USDA NASS: dryland rent over the dryland yield, irrigated over irrigated. Each county shows its own latest year with all three; '+(RREV_LATEST-3)+' to '+RREV_LATEST+' are coloured, older ratios are hatched.'
     +(np?' '+fmt(np,0)+' '+(np===1?'county uses':'counties use')+' a preliminary '+ys.join(', ')+' price.':'')
-    +(R.generated?' Cash rent file refreshed '+esc(R.generated)+'.':'')+' Every year for every county: <a href="/cash-rent">Cash Rent by County</a></span>';
+    +(R.generated?' Cash rent file refreshed '+esc(R.generated)+'.':'')+' Every year for every county: open a county page and tap the rent share calculator.</span>';
 }
 function missingWhy(c,L,f){ if(L.key==='rent'){ var rr=get(c,'rent','nonirr'); if(rr&&rr.year&&RENT_LATEST&&rr.year<RENT_LATEST-3) return 'latest published rent is from '+rr.year; } if(L.key==='sob_over'&&ok(c.sob)&&get(c,'sob','share_over_one')==null) return 'fewer than ten crop years with a rated premium'; if((L.side&&!SIDE[L.side].done)||(L.sidecar&&!HEATD_DONE)) return 'loading'; if(L.side==='rentrev') return rrevWhy(f); if(L.side) return L.side==='tenure'?'not published for this county (census suppression or no match)':L.side==='more'?(!SIDE.more.ok?(SIDE.more.why||'the file did not load'):L.key==='fr_spring'&&mv(f,'f',0)===-1?'no freeze after March 1 in most years':L.key==='fr_fall'&&mv(f,'f',1)===999?'no freeze before December in most years':'withheld or not published here; the county record says why'):'no data'; var lay=c[L.needs]; if(!lay) return 'no data'; if(lay.status!=='ok') return why(lay);
   if(L.key==='crp_peak') return 'peak enrollment under 100 acres';
@@ -1674,7 +1675,7 @@ function renderPanel(fips,c){
   if(ok(Y)){
     f+=fact('Median, '+Y.first_year+'–'+Y.last_year, f1(Y.median)+' bu/ac', Y.n+' published years, '+(irrShare(c)!=null&&irrShare(c)>=0.10?'irrigated and dryland combined':'all practices'));
     var ry5=recentYield(d['yield']);
-    if(ry5) f+=fact('Recent level, '+ry5.from+'–'+ry5.to, f1(ry5.avg)+' bu/ac', 'average of '+ry5.used.join(', ')+'; '+ry5.n+' published years, the high ('+ry5.hi+') and low ('+ry5.lo+') dropped');
+    if(ry5) f+=fact(ry5.from+'-'+String(ry5.to).slice(2)+' average', f1(ry5.avg)+' bu/ac', 'average of '+ry5.used.join(', ')+'; '+ry5.n+' published years, the high ('+ry5.hi+') and low ('+ry5.lo+') dropped');
     f+=fact('Lowest published year', Y.worst.year+': '+f1(Y.worst.value)+' bu/ac', pct(Y.worst.share_of_median,0)+' of median');
     if(Y.slope!=null) f+=fact('Trend, '+(Y.window||'').replace('-','–'), sgn(Y.slope,1)+' bu/ac a year');
     else f+=fact('Trend',''+why({status:Y.trend_status||'withheld'}),'',true);
@@ -1975,7 +1976,7 @@ function renderOwnership(fips){
       h+=fact('Held by foreign persons, '+ly, ac?fmt(ac,0)+' acres':'none disclosed', 'agricultural land, as filed under AFIDA');
       if(ac&&top&&top[0]) h+=fact('Largest holder country', /^999/.test(String(top[0]))?'No predominant country':/^998/.test(String(top[0]))?'No country listed':String(top[0]).toLowerCase().replace(/\b[a-z]/g,function(x){return x.toUpperCase();}));
     } else h+=fact('Held by foreign persons',''+A.why,'',true);
-    h+='<p class="fa-na" style="grid-column:1/-1">More on <a href="/land-tenure">rented vs owner-farmed</a> and <a href="/foreign-land">foreign-owned land</a>.</p>';
+    h+='<p class="fa-na" style="grid-column:1/-1">Rented vs owner-farmed since 1997 for every state is in the national picture below the map. More on <a href="/foreign-land">foreign-owned land</a>.</p>';
     var slot=$('fa-own-slot'); if(slot) slot.innerHTML=h;
     var t=$('fa-t-rented'), c=ATLAS.counties[fips];
     if(t&&c){ var stat=s22!=null?stateStat('rented',c.state,fips):null;
@@ -2185,6 +2186,13 @@ function boot(){
 }
 if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',boot); else boot();
 })();
+</script>
+<script>/* the tenure fold loads its own file only when opened (this page is already over 200 KB) */
+(function(){var d=document.getElementById('fa-tenure');if(!d)return;
+function go(){if(!d.open||d.getAttribute('data-on'))return;d.setAttribute('data-on','1');var box=document.getElementById('fa-tenure-box');
+var s=document.createElement('script');s.src='/components/atlas-tenure.js?v=1';s.onload=function(){window.AgTenure.mount(box).then(function(){if(!box.querySelector('table'))d.removeAttribute('data-on');});};
+s.onerror=function(){box.textContent='The tenure section did not load. Close and open it to try again.';d.removeAttribute('data-on');};document.head.appendChild(s);}
+d.addEventListener('toggle',go);if(/(^|[#&])l=ten_rent(&|$)/.test(location.hash)){d.open=true;}})();
 </script>
 </body>
 </html>

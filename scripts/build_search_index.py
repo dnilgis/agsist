@@ -91,11 +91,10 @@ PAGES = [
     ("/arc-plc", "ARC or PLC, 2026 and 2027", "Reference prices and FSA county benchmarks", "arc plc arc-co price loss coverage agriculture risk coverage effective reference price benchmark yield base acres fsa farm program 2026 2027 signup calculator sco"),
     ("/grain-bin-calculator", "Grain bin calculator", "Bushels and shrink", "grain bin bushels capacity moisture shrink calculator dryer"),
     ("/harvest-price-tracker", "Harvest price tracker", "Crop insurance harvest price", "harvest price projected crop insurance rma tracker"),
-    ("/farmland-atlas", "Farmland Atlas", "Land value, rent and risk by county", "farmland atlas land value values county rent rents cash rent risk acre"),
-    ("/cash-rent", "Cash rent map", "Rent by county", "cash rent rents rental county land acre lease"),
+    ("/farmland-atlas", "Farmland Atlas", "Land value, rent and risk by county", "farmland atlas land value values county rent rents cash rent risk acre tenure rented owned landlord ownership"),
+    ("/rent/", "Cash rent by state", "Rent by county", "cash rent rents rental county land acre lease"),
     ("/cash-lease", "Cash farm lease form", "Free printable lease", "cash lease form farm lease printable template contract rent"),
     ("/foreign-land", "Foreign-owned land", "By county", "foreign owned land afida ownership"),
-    ("/land-tenure", "Rented vs owner-farmed", "Who farms the ground", "tenure rented owned landlord land ownership"),
     ("/spray", "Spray advisory", "Can I spray today", "spray spraying sprayer wind drift inversion herbicide tank mix weather"),
     ("/urea", "Urea risk", "Volatilization and N loss", "urea nitrogen volatilization n loss fertilizer apply"),
     ("/drought-monitor", "Drought monitor", "Weekly drought map", "drought dry monitor map rain weather"),
@@ -188,7 +187,7 @@ def build_pages(warn):
     listed = set()
     for url, title, sub, kw in PAGES:
         base = url.split("#")[0].strip("/") or "index"
-        if not exists(base + ".html"):
+        if not (exists(base + ".html") or (url.endswith("/") and exists(base + "/index.html"))):
             warn("page listed but missing: %s" % url)
             continue
         listed.add(base + ".html")

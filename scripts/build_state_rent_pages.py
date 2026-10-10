@@ -17,8 +17,11 @@ Honesty rules carried in:
     fetch_cash_rent.py so there is one list); other missing years "not
     published". No line
     is drawn across a gap.
-  - Primary land type per state is whichever has the most 2025 counties
-    (AZ/NV are irrigated states) and every table/stat SAYS which it is.
+  - "Rent" means non-irrigated (dryland) cropland rent, the same definition
+    the Farmland Atlas and data/cash-rent/national.json use. Irrigated and
+    pasture are shown beside it, labeled, never in its place. Only a state
+    with fewer than MIN_DRY counties of dryland rent (AZ, NV) is headlined on
+    another type, and every table/stat SAYS which it is.
   - County medians of published counties only, labeled as such.
 
 No naked squiggles: history is a labeled bar table (year + $ printed on
@@ -34,9 +37,10 @@ import statistics
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from fetch_cash_rent import NO_SURVEY_YEARS  # noqa: E402  (stdlib-only module, main() guarded)
+from fetch_cash_rent import NO_SURVEY_YEARS, pair_county  # noqa: E402  (stdlib-only module, main() guarded)
 
 DATA_DIR = "data/cash-rent"
+MIN_DRY = 3          # counties with a latest-year dryland rent before a state is headlined on it
 OUT_DIR = "rent"
 SITE = "https://agsist.com"
 
@@ -190,7 +194,7 @@ def state_stats(d):
     # primary type = most counties published in the latest year
     coverage = {t: sum(1 for c in counties if str(yr_latest) in c["rent"].get(t, {}))
                 for t in ("nonirr", "irr", "pasture")}
-    primary = max(("nonirr", "irr", "pasture"), key=lambda t: (coverage[t], t == "nonirr"))
+    primary = "nonirr" if coverage["nonirr"] >= MIN_DRY else max(("irr", "pasture"), key=lambda t: coverage[t])
     have_types = [t for t in ("nonirr", "irr", "pasture") if coverage[t]]
 
     cur = {c["name"]: c["rent"][primary][str(yr_latest)]
@@ -222,13 +226,23 @@ def state_stats(d):
                          "why": "no survey" if (y in NO_SURVEY_YEARS or y in d.get("no_survey_years", []))
                                 else "not published"})
     ranked = sorted(cur.items(), key=lambda kv: -kv[1])
+    # the other land types, labeled, beside the headline (same latest year)
+    other = {}
+    for t_ in ("nonirr", "irr", "pasture"):
+        if t_ == primary:
+            continue
+        v_ = [c["rent"][t_][str(yr_latest)] for c in counties if str(yr_latest) in c["rent"].get(t_, {})]
+        if len(v_) >= MIN_DRY:
+            other[t_] = {"median": med(v_), "n": len(v_)}
     return {
+        "other": other,
         "yr": yr_latest, "primary": primary, "have_types": have_types,
         "coverage": coverage, "n": len(cur), "median": med(list(cur.values())),
         "yoy": yoy, "yoy_n": yoy_n, "dec": dec, "dec_n": dec_n,
         "hi": ranked[:5], "lo": ranked[-5:][::-1] if len(ranked) >= 5 else [],
         "hist": hist, "counties": counties,
         "y0": min(all_years) if all_years else yr_latest,
+        "ty": int(str(d.get("generated") or yr_latest)[:4]),
     }
 
 
@@ -373,7 +387,8 @@ def county_table(st, s, aslug=None):
     cols = [(t, TYPE_LABEL[t]) for t in ("nonirr", "irr", "pasture") if t in s["have_types"]]
     thead = "<th>County</th>" + "".join(
         f'<th title="{lab}, $/acre">{TYPE_SHORT[t]} {yr}</th>' for t, lab in cols)
-    thead += "<th>YoY</th><th>Corn trend</th>"
+    thead += ('<th>YoY</th><th title="county corn yield, 15-year least-squares trend projected to %s, fitted on the same '
+              'practice as the rent (dryland, or all practices where NASS shows no irrigation)">Corn trend %s</th>' % (s["ty"], s["ty"]))
     body = []
     for c in sorted(s["counties"], key=lambda c: c["name"]):
         a = (aslug or {}).get(c.get("fips"))
@@ -394,7 +409,7 @@ def county_table(st, s, aslug=None):
             cells.append(f'<td class="{"up" if ch >= 0 else "dn"}" data-v="{ch:.1f}">{"+" if ch >= 0 else ""}{ch:.1f}%</td>')
         else:
             cells.append('<td class="mut" data-v="-999">n/a</td>')
-        ct = (c.get("yield", {}).get("corn") or {}).get("trend")
+        ct = ((pair_county(c) or {}).get("corn") or {}).get("t", {}).get("v")
         cells.append(f'<td data-v="{ct if ct is not None else -1}">'
                      + (f"{ct:.0f} bu" if ct is not None else '<span class="mut">n/a</span>') + "</td>")
         body.append("<tr>" + "".join(cells) + "</tr>")
@@ -422,7 +437,7 @@ def explore_nav():
     L = lambda h, t: f'<a href="{h}" style="color:var(--text-muted);text-decoration:none">{t}</a>'
     return ('<nav aria-label="Explore AGSIST" style="max-width:1060px;margin:26px auto 8px;padding:0 16px;font-size:12.5px;line-height:2.1">'
             '<span style="color:var(--text-dim);font-weight:700">Land:</span> '
-            + " &middot; ".join([L("/farmland-atlas", "Farmland Atlas"), L("/cash-rent", "Cash Rent by County"),
+            + " &middot; ".join([L("/farmland-atlas", "Farmland Atlas"), L("/rent/", "Cash Rent by State"),
                                  L("/cash-lease", "Cash Farm Lease"), L("/foreign-land", "Foreign-Owned Land")])
             + '<br><span style="color:var(--text-dim);font-weight:700">Markets:</span> '
             + " &middot; ".join([L("/markets", "Futures"), L("/cash-bids", "Cash Bids"), L("/basis", "Basis vs Normal"),
@@ -510,7 +525,12 @@ def build_state_page(st, d, s, all_states, aslug=None):
     other_types = ""
     if len(s["have_types"]) > 1:
         other_types = (" Columns cover " + ", ".join(TYPE_LABEL[t] for t in s["have_types"])
-                       + f"; state stats above use {plabel} (the most-published type here).")
+                       + (f"; state stats above use {plabel}, the rent this site means by \u201crent\u201d." if s["primary"] == "nonirr"
+                          else f"; state stats above use {plabel}: NASS published dryland rent for fewer than {MIN_DRY} {name} counties."))
+    other_tiles = "".join(
+        f'<div class="rs-stat"><div class="v">{money(o["median"])}</div><div class="l">{TYPE_SHORT[t_].lower()} median &middot; {yr}</div>'
+        f'<div class="s">{TYPE_LABEL[t_]}, {o["n"]} counties, shown apart</div></div>'
+        for t_, o in s["other"].items())
     vw, vc = rent_verdict(s["yoy"])
     hero = f"""
   <div style="background:#101415;border:1px solid #1a1f20;border-radius:14px;padding:20px 24px;margin:14px 0;display:flex;gap:22px;flex-wrap:wrap;align-items:center">
@@ -525,7 +545,8 @@ def build_state_page(st, d, s, all_states, aslug=None):
     <div class="rs-stat">{delta_html(s['yoy'], s['yoy_n'], f'vs {yr-1}')}</div>
     <div class="rs-stat">{delta_html(s['dec'], s['dec_n'], f'vs {yr-9}')}</div>
     <div class="rs-stat"><div class="v">{money(s['hi'][0][1]) if s['hi'] else '-'}</div><div class="l">top county</div><div class="s">{esc(s['hi'][0][0]) if s['hi'] else ''}</div></div>
-  </div>"""
+  </div>
+  {('<div class="rs-hero">' + other_tiles + '</div>') if other_tiles else ''}"""
     page = head(title, desc, f"/rent/{sl}", jsonld) + f"""
 <body>
 <div id="site-header"></div>
@@ -540,7 +561,9 @@ def build_state_page(st, d, s, all_states, aslug=None):
   <h2>Every published county, {yr}</h2>
   <p class="sub">Click a column to sort. Greyed values are the county&rsquo;s most recent published year where {yr}
   wasn&rsquo;t published.{other_types} Each county name opens its Farmland Atlas record (land value, yield, insurance
-  and drought). Corn trend is the AGSIST least-squares trend yield from NASS county estimates.</p>
+  and drought). Corn trend is the county&rsquo;s 15-yr trend yield (projected {s['ty']}) from NASS county estimates,
+  fitted on the same practice as the rent: the figure the Atlas county page divides rent by for rent per bushel, and the
+  one its rent share calculator starts from.</p>
   {county_table(st, s, aslug)}
   <h2>{name} median county rent by year</h2>
   <p class="sub">Median of counties published each year ({plabel}). Gap years are shown as gaps;
@@ -551,8 +574,8 @@ def build_state_page(st, d, s, all_states, aslug=None):
   ground. Year-over-year stats above compare only counties published in both years, so a county dropping out
   of the survey can&rsquo;t fake a trend. Treat any county number as the start of a conversation, not a rate card.</div>
   <div class="rs-note rs-links" style="border-left-color:#5fc28a"><b>Do something with it:</b>
-  see this county on the <a href="/cash-rent">national rent map</a> (with rent as a share of what the acre can
-  actually gross) &middot; put a number in a <a href="/cash-lease?st={st}">printable {name} cash lease</a>{
+  open a county in the table for its Farmland Atlas page and the <b>rent share calculator</b> (rent as a share of
+  what the acre can actually gross, year by year) &middot; put a number in a <a href="/cash-lease?st={st}">printable {name} cash lease</a>{
       " (termination notice: " + NOTICE[st] + ")" if st in NOTICE else ""} &middot;
   check <a href="/basis">local basis vs normal</a> before you commit to a rent that needs a price.</div>
   {faq_html(faq)}
@@ -570,6 +593,94 @@ def build_state_page(st, d, s, all_states, aslug=None):
 </html>
 """
     return page
+
+
+# Moved from the retired /cash-rent page (2026-10): its explainer, its seven
+# questions and its Dataset record. The calculator itself is
+# components/rent-calc.js, opened from a Farmland Atlas county page.
+HUB_DATASET = {
+    "@type": "Dataset", "@id": f"{SITE}/rent/#dataset", "name": "US County Cash Rent and Trend Yield",
+    "description": ("County-level cash rental rates for non-irrigated cropland, irrigated cropland, and permanent pasture, "
+                    "as published annually by USDA NASS under the 2008 Farm Bill mandate, paired with county trend yields "
+                    "for corn and soybeans fitted from NASS county yield estimates."),
+    "url": f"{SITE}/rent/", "license": "https://www.usa.gov/government-works", "isAccessibleForFree": True,
+    "creator": {"@type": "Organization", "name": "AGSIST", "url": SITE},
+    "temporalCoverage": "2008/..", "spatialCoverage": {"@type": "Place", "name": "United States"},
+    "measurementTechnique": "USDA NASS Cash Rents Survey county estimates; ordinary least squares trend fit on NASS county yield estimates",
+    "variableMeasured": [{"@type": "PropertyValue", "name": "Cash rent, non-irrigated cropland", "unitText": "USD per acre per year"},
+                         {"@type": "PropertyValue", "name": "Cash rent, irrigated cropland", "unitText": "USD per acre per year"},
+                         {"@type": "PropertyValue", "name": "Cash rent, permanent pasture", "unitText": "USD per acre per year"},
+                         {"@type": "PropertyValue", "name": "Trend yield", "unitText": "bushels per acre"}],
+    "distribution": [{"@type": "DataDownload", "encodingFormat": "application/json", "contentUrl": f"{SITE}/data/cash-rent/national.json"}],
+}
+HUB_FAQ = [
+    {"q": "What is the average cash rent per acre in my county?",
+     "a": "USDA NASS publishes a mean cash rental rate for every county with at least 20,000 acres of cropland plus pasture, "
+          "separately for non-irrigated cropland, irrigated cropland, and permanent pasture. Pick your state above to see every "
+          "published county rate and its history. If your county is not listed, NASS did not get enough survey responses to publish a rate for it."},
+    {"q": "When is county cash rent data released?",
+     "a": "USDA NASS releases county cash rent estimates each August, from a survey of roughly 280,000 farms and ranches conducted "
+          "earlier the same year. The rate published in a given August describes that same crop year. Rates are not revised after publication."},
+    {"q": "Why is there no 2015 or 2018 cash rent data?",
+     "a": "NASS did not conduct the county Cash Rents Survey in 2015 or 2018, so no county estimates exist for those years. County data "
+          "runs 2008 to 2014, 2016 to 2017, and 2019 forward. These pages show those years as gaps rather than drawing a line across them, "
+          "because a line across them would be an invention."},
+    {"q": "What percent of gross revenue should cash rent be?",
+     "a": "There is no single correct figure, and anyone who gives you one is selling something. Rent as a share of gross revenue is useful "
+          "because it moves when yields and prices move, while the rent itself is fixed for the season. Comparing the ratio to your own "
+          "county's history is more informative than comparing it to a national rule of thumb. What the remaining share has to cover (seed, "
+          "fertilizer, chemical, machinery, labor, interest) varies enormously between operations."},
+    {"q": "How has cash rent changed as a share of revenue over time?",
+     "a": "The rent share calculator on each Farmland Atlas county page charts it for every county with the data. For each year it divides "
+          "that year's published county rent by that year's actual county yield for the same practice times that year's state average price "
+          "received: dryland rent over the dryland yield, irrigated rent over the irrigated yield. Where the only county yield mixes irrigated "
+          "and dryland acres, that year is withheld and the page says so. Every term is a USDA figure published after the fact, so the line "
+          "shows what really happened rather than a projection. The pattern in most Corn Belt counties is that rent takes a far larger share "
+          "of the gross in low-price years than in high-price years, even when the rent itself barely moves."},
+    {"q": "Does this use futures prices or what farmers actually got?",
+     "a": "The historical chart uses the USDA NASS marketing-year average price received by farmers in your state, which reflects actual "
+          "sales and therefore already includes local basis. The calculator uses a board price plus a basis you enter yourself, because it "
+          "is looking forward at a crop you have not sold. The two answer different questions: what happened, and what might."},
+    {"q": "Is NASS cash rent the same as what I should pay?",
+     "a": "No. It is a county mean from a voluntary survey. Rents vary widely within a county and even between farms on the same road, "
+          "driven by soil type, drainage, field size, yield history, and how badly a neighbor wants the ground. Treat the county mean as a "
+          "reference point for a conversation, not as a rate card."},
+]
+HUB_EXPLAIN = """<h2>How to read rent</h2>
+  <details class="rs-faq"><summary>Why rent as a share of gross, and not the rent alone</summary>
+  <p>Rent is fixed in the spring. Yield and price are not. That is the whole problem with judging a lease by the rent alone: the rent stops
+  moving the day you sign, and everything that pays for it keeps moving for another nine months.</p>
+  <p>Expressing rent as a share of gross revenue puts the fixed number on top of the moving one. When corn is $6.00 and the county trends
+  200 bushels, $250 rent is about 21% of the gross. When corn is $4.00, the same $250 on the same ground is over 31%. Nothing about the
+  lease changed. The arithmetic underneath it did.</p>
+  <p><b>There is no magic percentage.</b> Anyone quoting you one number for the whole country is guessing, or selling. What the rest of
+  the gross has to cover (seed, fertilizer, chemical, iron, labor, interest, living) is wildly different between two operations on the
+  same road. The useful comparison is your county against its own history, which is why the calculator&rsquo;s chart goes back to 2008.</p></details>
+  <details class="rs-faq"><summary>Where these numbers come from</summary>
+  <p>The rent is USDA NASS&rsquo;s county estimate from the Cash Rents Survey, a survey of roughly 280,000 farms and ranches run every year
+  in every state but Alaska. The 2008 Farm Bill requires NASS to publish a mean rate for every county with at least 20,000 acres of
+  cropland plus pasture. Results land each August and are not revised afterward. The Farm Service Agency uses these same county estimates
+  to set market-based rates for programs like CRP.</p>
+  <p>The trend yield is ours, not USDA&rsquo;s: an ordinary least-squares fit through the county&rsquo;s NASS yield estimates over the
+  last fifteen years, projected to the current year. It is fitted on the same practice as the rent it is divided by: dryland
+  (non-irrigated) yields for dryland rent, irrigated yields for irrigated rent. The all-practice county yield is used only where NASS
+  reports no irrigation in the county; anywhere else it is mostly pivot corn and would make dryland rent look cheap, so the trend is
+  withheld and the page says why. Where a county has fewer than six real years of yield on record, or its series stopped more than three
+  years ago, no trend is shown at all.</p></details>
+  <details class="rs-faq"><summary>Three things this data will not do</summary>
+  <p><b>It will not fill in your county if NASS didn&rsquo;t.</b> Counties with too few survey responses are withheld. Where that happens
+  you get a blank and a plain statement that NASS did not publish, never a neighbor&rsquo;s number wearing your county&rsquo;s name.</p>
+  <p><b>It has no 2015 or 2018.</b> NASS ran no county Cash Rents Survey in those years, so the series runs 2008 to 2014, 2016 to 2017
+  and 2019 forward. Drawing a line across the gap would be inventing a year.</p>
+  <p><b>It is a county mean, not a rate card.</b> Rents differ between farms on the same road: soil, drainage, field size, yield history,
+  and how badly the neighbor wants it. Bring the mean to the conversation as a reference point, not a verdict.</p></details>
+  <details class="rs-faq"><summary>Using it in an actual rent conversation</summary>
+  <p>The common landlord conversation is a number against a feeling. The calculator gives both sides the same arithmetic to argue
+  about, which is usually a shorter argument. Put your real yield in: if your ground beats the county by fifteen bushels, type that in.
+  Put your real basis in: over a 200-bushel acre, thirty cents is sixty dollars. Look at the history, not the level: a ratio means little
+  alone and a lot next to the same county&rsquo;s last fifteen years.</p>
+  <p>What it will not do is tell you what to sign. That is between you, your landlord, and your own numbers. Settled on a number? Put it
+  on paper with the free <a href="/cash-lease" style="color:var(--gold)">AGSIST cash farm lease</a>.</p></details>"""
 
 
 def build_hub(states, stats, generated):
@@ -594,38 +705,56 @@ def build_hub(states, stats, generated):
         else:
             tiles.append(f'<div class="rh-tile dim" style="--gc:{c};--gr:{r}"><span class="rh-tst">{ab}</span></div>')
     tile_html = ('<div style="font-family:\'JetBrains Mono\',monospace;font-size:.66rem;letter-spacing:.1em;color:var(--text-muted);text-transform:uppercase;margin:16px 0 10px">'
-        f'Median county rent per acre, {yr}. Tap a state for every county. Color ranks each state against states reporting the SAME land type (cropland vs pasture states are not comparable dollar-for-dollar)</div>'
+        f'Median county rent per acre, {yr}, non-irrigated cropland. Tap a state for every county. ' + (', '.join(STATE_NAMES[x] for x in sorted(stats, key=lambda x: STATE_NAMES[x]) if stats[x]["primary"] != "nonirr") + ': no dryland rent published, so the tile shows irrigated cropland and is colored only against itself' if any(s2["primary"] != "nonirr" for s2 in stats.values()) else '') + '</div>'
         '<div class="rh-grid">' + "".join(tiles) + '</div>'
         '<div style="display:flex;gap:14px;justify-content:center;margin:12px 0 0;font-size:.74rem;color:var(--text-muted);flex-wrap:wrap">'
         '<span><b style="display:inline-block;width:13px;height:13px;border-radius:3px;vertical-align:-2px;margin-right:5px;background:#af3a32"></b>priciest fifth</span>'
         '<span><b style="display:inline-block;width:13px;height:13px;border-radius:3px;vertical-align:-2px;margin-right:5px;background:#a8823c"></b>middle</span>'
         '<span><b style="display:inline-block;width:13px;height:13px;border-radius:3px;vertical-align:-2px;margin-right:5px;background:#396d4f"></b>cheapest fifth</span>'
         '<span><b style="display:inline-block;width:13px;height:13px;border-radius:3px;vertical-align:-2px;margin-right:5px;background:#14181a;border:1px dashed #2a3133"></b>no data</span></div>')
+    def type_med(s, t_):
+        if s["primary"] == t_:
+            return s["median"], s["n"]
+        o = s["other"].get(t_)
+        return (o["median"], o["n"]) if o else (None, 0)
+
+    def cell(v):
+        return f'<td data-v="{v}">{money(v)}</td>' if v is not None else '<td class="mut" data-v="-1">n/a</td>'
+
+    NA_YOY = '<td class="mut" data-v="-999">n/a</td>'
     rows = []
     for st in sorted(states, key=lambda s: STATE_NAMES[s]):
         s = stats[st]
         yoy = (f'<td class="{"up" if s["yoy"] >= 0 else "dn"}" data-v="{s["yoy"]}">'
                f'{"+" if s["yoy"] >= 0 else ""}{s["yoy"]}%</td>') if s["yoy"] is not None \
             else '<td class="mut" data-v="-999">n/a</td>'
+        dry = (f'<td data-v="{s["median"]}">{money(s["median"])}</td>' if s["primary"] == "nonirr"
+               else '<td class="mut" data-v="-1">n/a</td>')
         rows.append(
             f'<tr><td><a href="/rent/{slug(STATE_NAMES[st])}" >{STATE_NAMES[st]}</a></td>'
-            f'<td data-v="{s["median"]}">{money(s["median"])}</td>{yoy}'
-            f'<td data-v="{s["n"]}">{s["n"]}</td>'
-            f'<td style="font-family:Archivo,Inter,sans-serif;color:var(--text-muted)">{TYPE_SHORT[s["primary"]]}</td></tr>')
-    medians = sorted(((s["median"], st) for st, s in stats.items()), reverse=True)
+            f'{dry}{yoy if s["primary"] == "nonirr" else NA_YOY}'
+            f'<td data-v="{type_med(s, "nonirr")[1]}">{type_med(s, "nonirr")[1]}</td>'
+            f'{cell(type_med(s, "irr")[0])}{cell(type_med(s, "pasture")[0])}</tr>')
+    # the headline compares like with like: dryland cropland medians only
+    medians = sorted(((s["median"], st) for st, s in stats.items() if s["primary"] == "nonirr"), reverse=True)
+    no_dry = sorted((st for st, s in stats.items() if s["primary"] != "nonirr"), key=lambda x: STATE_NAMES[x])
     desc = (f"USDA county cash rent for all {len(states)} published states, {yr}: median $/acre, change vs "
             f"{yr-1}, and every county's rate one click deep. Free, sources shown.")[:160]
     jsonld = {"@context": "https://schema.org", "@graph": [
         {"@type": "CollectionPage", "name": f"Cash Rent by State, {yr}",
          "url": f"{SITE}/rent/", "isAccessibleForFree": True,
          "creator": {"@type": "Organization", "name": "AGSIST", "url": SITE}},
+        HUB_DATASET,
+        {"@type": "FAQPage", "mainEntity": [
+            {"@type": "Question", "name": f["q"], "acceptedAnswer": {"@type": "Answer", "text": f["a"]}} for f in HUB_FAQ]},
         {"@type": "BreadcrumbList", "itemListElement": [
             {"@type": "ListItem", "position": 1, "name": "AGSIST", "item": f"{SITE}/"},
             {"@type": "ListItem", "position": 2, "name": "Cash Rent by State", "item": f"{SITE}/rent/"}]},
     ]}
-    seed = (f"{len(states)} states &middot; highest median: {STATE_NAMES[medians[0][1]]} {money(medians[0][0])}/ac "
-            f"&middot; lowest: {STATE_NAMES[medians[-1][1]]} {money(medians[-1][0])}/ac &middot; "
-            f"data refreshed {esc(generated)}")
+    seed = (f"{len(states)} states &middot; non-irrigated cropland, highest state median: {STATE_NAMES[medians[0][1]]} "
+            f"{money(medians[0][0])}/ac &middot; lowest: {STATE_NAMES[medians[-1][1]]} {money(medians[-1][0])}/ac"
+            + (f" &middot; no dryland rent published for {len(no_dry)} ({', '.join(STATE_NAMES[x] for x in no_dry)})" if no_dry else "")
+            + f" &middot; data refreshed {esc(generated)}")
     page = head(f"Cash Rent by State {yr}: Every County\u2019s USDA Rate", desc, "/rent/", jsonld) + f"""
 <body>
 <div id="site-header"></div>
@@ -637,11 +766,14 @@ def build_hub(states, stats, generated):
   {atlas_line("/farmland-atlas")}
   {tile_html}
   <aside class="ag-sponsor-ribbon"><span class="ag-sponsor-tag">Sponsor this page</span> Your name on the cash rent page for every state. One category-exclusive slot. <span class="ag-sponsor-price" data-rate="page">{PAGE_RATE}</span> <a href="/sponsor-apply?slot=rent-hub&amp;utm_source=rent-hub&amp;utm_medium=slot">Put your name here &rarr;</a></aside>
-  <div class="rs-tw"><table class="rs-t" id="rs-table"><thead><tr><th>State</th><th>Median rent /ac</th><th>YoY</th><th>Counties</th><th>Type</th></tr></thead>
+  <div class="rs-tw"><table class="rs-t" id="rs-table"><thead><tr><th>State</th><th title="non-irrigated cropland, median of published counties">Non-irrigated</th><th>YoY</th><th>Counties</th><th title="irrigated cropland, shown apart">Irrigated</th><th title="permanent pasture, shown apart">Pasture</th></tr></thead>
   <tbody>{"".join(rows)}</tbody></table></div>
-  <p class="sub">Medians are of published counties, most-published land type per state (marked). Matched-county
-  YoY. The <a href="/cash-rent" style="color:var(--gold)">national county map</a> shows all of this on one screen,
-  plus rent as a share of what the acre can actually gross.</p>
+  <p class="sub">&ldquo;Rent&rdquo; here means non-irrigated (dryland) cropland: the median of every county NASS published in
+  {yr}, the same counties the Farmland Atlas state pages use. Irrigated cropland and pasture are separate columns and never
+  stand in for it. YoY compares only counties published in both years. For rent as a share of what the acre can gross,
+  open any county on the <a href="/farmland-atlas" style="color:var(--gold)">Farmland Atlas</a> and tap the rent share calculator.</p>
+  {HUB_EXPLAIN}
+  {faq_html(HUB_FAQ)}
   <p class="sub" style="font-size:.75rem;margin:18px 0">Source: USDA NASS Cash Rents Survey county estimates.
   Pages rebuild automatically when NASS publishes (each August). Data refreshed {esc(generated)}.</p>
 </main>
@@ -712,6 +844,31 @@ def selftest():
             for h_ in _re.findall(r'href="/farmland-atlas/([^"#]+)"', pg):
                 assert os.path.exists(os.path.join("farmland-atlas", h_ + "index.html" if h_.endswith("/") else h_ + ".html")), f"{st_}: {h_} has no page"
         hub = open(os.path.join(td, "index.html")).read()
+        # /cash-rent is retired: nothing here may link to it
+        for st_ in list(stats) + ["index"]:
+            pg = open(os.path.join(td, ("index" if st_ == "index" else slug(STATE_NAMES[st_])) + ".html")).read()
+            assert 'href="/cash-rent' not in pg, f"{st_}: links the retired /cash-rent"
+        # the hub headline compares like land types: dryland medians only
+        seed_ = hub.split("<!--SEED:renthub-->")[1].split("<!--/SEED-->")[0]
+        dry_ = sorted((s_["median"], k) for k, s_ in stats.items() if s_["primary"] == "nonirr")
+        assert money(dry_[0][0]) in seed_ and money(dry_[-1][0]) in seed_, seed_
+        assert all(s_["primary"] == "nonirr" for k, s_ in stats.items() if k not in ("AZ", "NV")), \
+            {k: s_["primary"] for k, s_ in stats.items() if s_["primary"] != "nonirr"}
+        # the moved /cash-rent FAQ and Dataset are on the hub, visibly
+        assert "#dataset" in hub and hub.count('class="rs-faq"') >= 11, "hub explainer or FAQ missing"
+        for blk in _re.findall(r'<script type="application/ld\+json">(.*?)</script>', hub, _re.S):
+            for g in json.loads(blk)["@graph"]:
+                if g["@type"] == "FAQPage":
+                    for q in g["mainEntity"]:
+                        assert esc(q["name"]) in hub and esc(q["acceptedAnswer"]["text"]) in hub, "hub FAQ not visible: " + q["name"]
+        # one county set: a state's dryland median here is the Farmland Atlas state median
+        cards_p = os.path.join("farmland-atlas", "data", "cards.json")
+        if os.path.exists(cards_p):
+            cj = json.load(open(cards_p))
+            off = {k: (s_["median"], (cj["states"].get(k) or {}).get("r")) for k, s_ in stats.items()
+                   if s_["primary"] == "nonirr" and k != "CT" and (cj["states"].get(k) or {}).get("r") is not None
+                   and abs(s_["median"] - cj["states"][k]["r"]) > 0.001}
+            assert not off, f"rent page and Atlas state medians disagree: {off}"
         assert hub.count("/rent/") >= 47 and "SEED:renthub" in hub
         assert 'Part of the <a href="/farmland-atlas">Farmland Atlas</a>' in hub, "hub Atlas line missing"
         assert "&amp;rsquo;" not in hub, "hub title double-escaped"

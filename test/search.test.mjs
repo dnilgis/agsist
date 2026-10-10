@@ -48,7 +48,7 @@ test("the searches a farmer types land on the right page", () => {
   assert.equal(top("dunn county", "WI"), "/farmland-atlas/wisconsin/dunn-county");
   assert.equal(top("dunn county", "ND"), "/farmland-atlas/north-dakota/dunn-county");
   assert.equal(top("cash rent iowa"), "/rent/iowa");
-  assert.equal(top("rent"), "/cash-rent");
+  assert.equal(top("rent"), "/rent/");
   assert.equal(top("spray"), "/spray");
   assert.equal(top("beans"), "/soybean-futures-prices");
   assert.equal(top("soyben"), "/soybean-futures-prices");

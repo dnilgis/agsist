@@ -10,7 +10,8 @@ Probe-verified 2026-07-18 (probe-epic2 log):
   (the probe's raw state count was 348 rows for one state = domains).
   The guessed "FARM OPERATIONS, TENURE, ..." strings do NOT exist — dead.
 
-THE PAGE'S PROMISE (/land-tenure): what share of your county's farmland is
+THE PROMISE (the Farmland Atlas tenure layer and its national picture,
+components/atlas-tenure.js; /land-tenure retired 2026-10): what share of your county's farmland is
 rented, and which way it's moving, 1997→2022. pct_rented = rented_from_others
 / (owned + rented_from_others). Both terms are census acres from farms'
 own reports. No estimates.

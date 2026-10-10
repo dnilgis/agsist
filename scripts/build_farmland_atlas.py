@@ -29,9 +29,11 @@ OUTPUT
 HONESTY RULES BAKED IN
   * A gap is a gap. Every withheld figure carries `status` naming why.
   * Minimum samples are explicit constants below and printed on the page.
-  * The yield trend is the one already published on /cash-rent (15-year
-    window, fitted by fetch_cash_rent.py). It is not refitted here so the two
-    pages cannot disagree about one county's slope.
+  * The county corn yield a page leads with is the 15-yr trend fetch_cash_rent.py
+    fits through scripts/county_yield.py (the figure rent per bushel and the
+    rent-share calculator use). The long-record slope here is a separate,
+    labelled window, fitted with the same ols() and withheld by the same
+    series-ends-early rule.
   * The thesis test counts the whole search: eight correlations are run, all
     eight are published, and the significance line is corrected for eight.
 
@@ -374,7 +376,7 @@ def rent_layer(rent):
 def yield_layer(yld):
     """County corn yield trend fitted here on EVERY published year (2008 onward).
 
-    /cash-rent publishes its own fit over the last fifteen years, which as of
+    fetch_cash_rent.py publishes its own fit over the last fifteen years, which as of
     2026 means 2012 to 2024: it starts on the drought year, so that slope is
     mostly how deep 2012 was and it will jump the year 2012 drops out (measured
     2026-09-13 on 1,022 Atlas counties: median county slope 2.82 over 2012-2024,
@@ -397,7 +399,7 @@ def yield_layer(yld):
         "median": round(med, 1),
         "worst": {"year": wy, "value": hist[wy], "share_of_median": round(hist[wy] / med, 3)},
         "hist": hist,
-        "cash_rent_slope": corn.get("slope"),      # the /cash-rent 15-year fit, kept for reference
+        "cash_rent_slope": corn.get("slope"),      # the 15-year fit (data/cash-rent), kept for reference
     }
     stop = ends_early(max(hist), datetime.now(timezone.utc).year)
     if stop:
@@ -810,7 +812,7 @@ def _in_period(label, year):
 # ---------------------------------------------------------------- thesis test
 
 def thesis_test(counties):
-    """Across counties: does the /cash-rent corn yield slope (bu/ac/yr, 15-yr window)
+    """Across counties: does the county corn yield slope (bu/ac/yr, 15-yr window)
     move with July or August night heat?
 
     Two versions of each test. RAW correlates counties as they are; it is confounded
@@ -1349,7 +1351,7 @@ def selftest():
     assert "share" not in L["periods"]["1989-1999"] and "withheld" in L["periods"]["1989-1999"]["share_status"]
     assert L["per_year"][2012]["heat_drought"] == 3_000_000
 
-    # yield: fit on every published year, not /cash-rent's 15-year window
+    # yield: fit on every published year, not the 15-year window in data/cash-rent
     hist2 = {str(2008 + i): 150 + 2 * i for i in range(17)}     # exactly +2 bu/yr
     y2 = yield_layer({"corn": {"hist": hist2, "slope": 9.9}})
     assert y2["slope"] == 2.0 and y2["window"] == "2008-2024" and y2["n"] == 17 and y2["cash_rent_slope"] == 9.9, y2

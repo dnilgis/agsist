@@ -297,38 +297,9 @@ def seed_hail(today):
     return ch
 
 
-def seed_cashrent(today):
-    """Inject national coverage stats into cash-rent.html's SEED:crstats marker
-    from data/cash-rent/national.json — a data page where JS-blind crawlers
-    previously saw zero numbers (directly against the citation strategy).
-    Numbers change once a year (NASS August release) + whenever the cash-rent
-    workflow re-runs; idempotent otherwise."""
-    try:
-        d = json.load(open("data/cash-rent/national.json"))
-        t = open("cash-rent.html", encoding="utf-8").read()
-    except Exception:
-        return False
-    counties = d.get("counties") or {}
-    # Only counties whose rent is from the latest survey year count. Older
-    # carried-forward rents (ry < latest) must not enter the count or the median.
-    latest_ry = max((v.get("ry") or 0) for v in counties.values())
-    cur = [v for v in counties.values()
-           if v.get("ry") == latest_ry and isinstance(v.get("r"), (int, float))]
-    vals = sorted(v["r"] for v in cur)
-    if not vals:
-        return False
-    med = vals[len(vals) // 2] if len(vals) % 2 else (vals[len(vals)//2 - 1] + vals[len(vals)//2]) / 2
-    states = len({v.get("s") for v in cur})
-    years = d.get("pct_years") or [None, None]
-    line = (f"{len(cur):,} counties in {states} states with a published "
-            f"{latest_ry} rent &middot; median county rate ${med:.2f}/acre (non-irrigated where "
-            f"available) &middot; rent-to-revenue ratio computed for {d.get('n_pct', 0):,} counties "
-            f"({years[0]}&ndash;{years[-1]}) &middot; data refreshed {d.get('generated', today)}")
-    t2, ch = seed_between(t, "crstats", line)
-    if ch:
-        open("cash-rent.html", "w", encoding="utf-8").write(t2)
-    return ch
-
+# seed_cashrent() lived here until 2026-10: /cash-rent retired to a stub that
+# forwards to /rent/, whose builder (build_state_rent_pages.py) bakes its own
+# numbers. Nothing to seed.
 
 # ---------------------------------------------------------------- data pages
 # v1.5 — 2026-10-06. Seven data pages showed a JS-blind crawler nothing but
@@ -1299,9 +1270,6 @@ def main():
     if seed_hail(today):
         any_change = True
         print("  hail-map.html: stats line seeded")
-    if seed_cashrent(today):
-        any_change = True
-        print("  cash-rent.html: SEED:crstats seeded")
 
     if seed_data_pages(prices, today):
         any_change = True

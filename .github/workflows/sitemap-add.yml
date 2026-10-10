@@ -13,7 +13,7 @@ on:
   workflow_dispatch:
     inputs:
       urls:
-        description: "Full URLs, space-separated (e.g. https://agsist.com/cash-rent)"
+        description: "Full URLs, space-separated (e.g. https://agsist.com/rent/)"
         required: true
       priority:
         description: "Sitemap priority for NEW entries"

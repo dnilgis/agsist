@@ -257,8 +257,7 @@
     "cash-rent"
    ],
    "touched_by": [
-    "cash-rent",
-    "Freshness \u2014 seed static prices, dateModified, sitemap lastmod"
+    "cash-rent"
    ],
    "cadence": "1 launch on a fixed schedule at about 9am Central",
    "curated": false,
@@ -1415,7 +1414,6 @@
    "path": "data/prices.json",
    "pages": [
     "breakeven.html",
-    "cash-rent.html",
     "cattle-futures-prices.html",
     "corn-futures-prices.html",
     "developer.html",
@@ -1692,8 +1690,7 @@
   {
    "path": "data/tenure/tenure.json",
    "pages": [
-    "farmland-atlas.html",
-    "land-tenure.html"
+    "farmland-atlas.html"
    ],
    "written_by": [
     "tenure"

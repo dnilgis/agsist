@@ -215,7 +215,7 @@
     [0, 'Soybean futures', 'CBOT soybean quotes', '/soybean-futures-prices'],
     [0, 'Spray advisory', 'Can I spray today', '/spray'],
     [0, 'Farmland atlas', 'Land value, rent and risk by county', '/farmland-atlas'],
-    [0, 'Cash rent map', 'Rent by county', '/cash-rent']
+    [0, 'Cash rent by state', 'Rent by county', '/rent/']
   ];
 
   function build() {

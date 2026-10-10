@@ -1,6 +1,7 @@
 name: tenure
 
-# Census of Agriculture land-ownership data (/land-tenure page). The census
+# Census of Agriculture land-ownership data (Farmland Atlas tenure layer and
+# its national picture; /land-tenure retired 2026-10 to a stub). The census
 # is 5-yearly (last 2022); this exists to seed the data and re-run when a
 # new census drops. Annual cron is just a cheap safety net.
 on:

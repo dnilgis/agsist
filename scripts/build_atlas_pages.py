@@ -25,8 +25,9 @@ OUTPUT (all under farmland-atlas/)
 HONESTY RULES CARRIED IN (read the sheet's JS in farmland-atlas/sheet.html: this
 is a port, and the selftest compares against its rules)
   - A missing value is a dash and the reason. Never zero, never carried forward.
-  - A rank counts counties with 10,000 acres or more in farms, in the same
-    survey year for rent, in the same state. A code with no boundary (a
+  - A rent rank or median counts every county with a published rent in the
+    same survey year, in the same state: the set the /rent pages use. Other
+    ranks count counties with 10,000 acres or more in farms. A code with no boundary (a
     Connecticut planning region) is never ranked against counties.
   - A land value flagged by the builder (a city county whose 2022 census value
     fell while its neighbours rose) prints with "read with care" and shows no
@@ -54,6 +55,9 @@ import os
 import re
 import statistics
 import sys
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import county_yield as CY  # noqa: E402  (one fit, one withholding rule, one set of names)
 
 SITE = "https://agsist.com"
 DATA = "data/atlas"
@@ -205,19 +209,19 @@ def slugify(s):
 
 
 # ------------------------------------------------------------------- loading
-RREV_BASIS = {"nonirr": ("dryland yield", ""), "irr": ("irrigated yield", ""),
-              "all": ("all-practice yield", "; the county reports no irrigated corn")}
+RREV_BASIS = {"nonirr": ("dryland", ""), "irr": ("irrigated", ""),
+              "all": ("all practices", "; the county reports no irrigated corn")}
 
 
 def load_rent_revenue(root="."):
-    """Rent as a share of corn gross, per county, read from the files Cash Rent
-    by County (/cash-rent) draws its map from, so the two pages cannot disagree.
+    """Rent as a share of corn gross, per county, read from the files the rent
+    share calculator (components/rent-calc.js) reads, so the two cannot disagree.
 
     data/cash-rent/national.json carries the ratio (p), its year (py), the
     preliminary-price flag (pp), the yield basis (pb) and, where the only yield
     mixes irrigated and dryland acres, the reason it is withheld (pw, pwy).
     A national file without pair_rule predates the same-practice pairing and
-    is not used at all (cash-rent.html withholds it the same way).
+    is not used at all (the calculator withholds it the same way).
     The state file supplies the three inputs so the page can show the sum;
     the inputs are printed only when they reproduce the published ratio."""
     try:
@@ -254,6 +258,35 @@ def load_rent_revenue(root="."):
         except Exception:
             pass
         out[f] = o
+    return out
+
+
+def load_yield_trends(root="."):
+    """{fips: trend} from data/cash-rent/<ST>.json: the county corn trend the
+    rent-share calculator and the /rent tables use, fitted by fetch_cash_rent.py
+    through scripts/county_yield.py on the SAME practice as the rent (dryland
+    yield for dryland rent; all practices only where NASS shows no irrigation).
+    The pairing is recomputed with pair_county() so the rule is the one in that
+    file, applied once. trend: {"v", "b", "ty", "n", "r2"} or {"w": reason}."""
+    try:
+        from fetch_cash_rent import pair_county
+    except Exception:  # pragma: no cover
+        return {}
+    out = {}
+    for p_ in sorted(glob.glob(os.path.join(root, "data", "cash-rent", "[A-Z][A-Z].json"))):
+        try:
+            d = json.load(open(p_, encoding="utf-8"))
+        except Exception:
+            continue
+        ty0 = int(str(d.get("generated") or "0")[:4] or 0) or None
+        for c in d.get("counties") or []:
+            pr = pair_county(c) or {}
+            tt = (pr.get("corn") or {}).get("t") or {}
+            if tt.get("v") is not None:
+                out[c["fips"]] = {"v": tt["v"], "b": tt.get("b"), "ty": tt.get("ty") or ty0, "n": tt.get("n"),
+                                  "r2": tt.get("r2"), "rk": pr.get("rent")}
+            elif tt.get("w"):
+                out[c["fips"]] = {"w": tt["w"], "rk": pr.get("rent")}
     return out
 
 
@@ -301,6 +334,7 @@ class World:
         # states with a /rent/<state> page: build_state_rent_pages.py writes one
         # for every data/cash-rent/<ST>.json that carries counties
         self.rent_states = set()
+        self.rent_fips, self.rent_st = set(), {}     # counties in a data/cash-rent file: the calculator has data
         for p_ in glob.glob(os.path.join(root, "data", "cash-rent", "[A-Z][A-Z].json")):
             try:
                 rd_ = json.load(open(p_, encoding="utf-8"))
@@ -308,7 +342,11 @@ class World:
                 continue
             if rd_.get("state") in STATE_NAMES and rd_.get("counties"):
                 self.rent_states.add(rd_["state"])
+                for c_ in rd_["counties"]:
+                    self.rent_fips.add(c_["fips"])
+                    self.rent_st[c_["fips"]] = rd_["state"]
         self.rrev = load_rent_revenue(root)
+        self.ytrend = load_yield_trends(root)
         self.thin = set()     # county pages with few figures: noindex, out of the sitemap
         self.by_state = {}
         for f, c in self.C.items():
@@ -371,6 +409,8 @@ class World:
             return None
         if key == "value":
             return get(c, "value", "latest")
+        if key == "trend":
+            return (self.ytrend.get(f) or {}).get("v")
         if key == "yld":
             n = get(c, "yield", "n")
             return None if (n is not None and n < 15) else get(c, "yield", "median")
@@ -402,7 +442,11 @@ class World:
                 continue
             if g == f:
                 mine = v
-            if not self.is_farm(g):
+            # Rent medians count every county NASS published, the same set the
+            # /rent pages use (NASS already limits the survey to counties with
+            # 20,000+ acres of cropland and pasture). Other figures keep the
+            # 10,000-farm-acre floor, and say so.
+            if not yk and not self.is_farm(g):
                 continue
             if key == "value" and get(c, "value", "flag"):
                 continue
@@ -413,7 +457,7 @@ class World:
         vals.sort()
         n = len(vals)
         med = vals[(n - 1) // 2] if n % 2 else (vals[n // 2 - 1] + vals[n // 2]) / 2
-        in_pool = (mine is not None and self.is_farm(f)
+        in_pool = (mine is not None and (bool(yk) or self.is_farm(f))
                    and not (key == "value" and get(self.C[f], "value", "flag")))
         words = ""
         if in_pool:
@@ -441,13 +485,9 @@ def recent_yield(y, rent_latest):
     if not y or not y.get("hist") or not y.get("last_year"):
         return None
     last = y["last_year"]
-    if rent_latest and last < rent_latest - 3:
+    if rent_latest and CY.ends_early(last, rent_latest):
         return None
-    ys = [k for k in range(last - 4, last + 1) if str(k) in y["hist"]]
-    if len(ys) < 4:
-        return None
-    vals = sorted(y["hist"][str(k)] for k in ys)[1:-1]
-    return {"from": last - 4, "to": last, "n": len(ys), "avg": sum(vals) / len(vals)}
+    return CY.recent_avg(y["hist"], last)
 
 
 def jsround(x):
@@ -483,6 +523,9 @@ COLUMNS = [
     ("corn_yield_median_bu_ac", "bu/acre", "NASS county yields", "median published county corn yield"),
     ("corn_yield_years", "years", "NASS county yields", "published years behind that median"),
     ("corn_yield_trend_bu_yr", "bu/acre/yr", "NASS county yields", "least-squares trend over the published years"),
+    ("corn_trend_bu_ac", "bu/acre", "NASS county yields", "15-yr least-squares trend projected to the current year, same practice as the rent (the figure rent per bushel uses)"),
+    ("corn_trend_year", "year", "NASS county yields", "year that trend is projected to"),
+    ("corn_trend_practice", "", "NASS county yields", "dryland, irrigated, or all practices where NASS shows no irrigation"),
     ("claims_per_100_usd", "$", "RMA Summary of Business", "indemnity per $100 of liability, last ten closed crop years"),
     ("loss_ratio_last10", "ratio", "RMA Summary of Business", "indemnity over total premium (farmer share plus subsidy), last ten closed years"),
     ("loss_ratio_all", "ratio", "RMA Summary of Business", "the same, 1989 to the last closed year"),
@@ -534,7 +577,11 @@ def flat_record(W, f, d=None):
     if ok(Y):
         rec["corn_yield_median_bu_ac"] = Y.get("median")
         rec["corn_yield_years"] = Y.get("n")
-        rec["corn_yield_trend_bu_yr"] = Y.get("slope")
+        rec["corn_yield_trend_bu_yr"] = Y.get("slope") if not CY.ends_early(Y.get("last_year"), W.rent_latest) else None
+    yt = W.ytrend.get(f) or {}
+    if yt.get("v") is not None:
+        rec["corn_trend_bu_ac"], rec["corn_trend_year"] = yt["v"], yt["ty"]
+        rec["corn_trend_practice"] = CY.PRACTICE_WORDS.get(yt.get("b"), yt.get("b"))
     if ok(S):
         lc = S.get("loss_cost_last10", get(S, "last10", "loss_cost"))
         rec["claims_per_100_usd"] = None if lc is None else round(lc * 100, 4)
@@ -1010,8 +1057,11 @@ def lede(W, f, rec, first_year=None):
         bits.append("irrigated cash rent %s an acre (%s)" % (money(rec["rent_irr_usd_ac"]), rec["rent_irr_year"]))
     if rec["value_usd_ac"] is not None:
         bits.append("land and buildings %s an acre in the %s census%s" % (money(rec["value_usd_ac"]), rec["value_year"], ", flagged to read with care" if rec["value_flag"] else ""))
-    if rec["corn_yield_median_bu_ac"] is not None:
-        bits.append("median corn yield %s bu/ac" % f1(rec["corn_yield_median_bu_ac"]))
+    if rec["corn_trend_bu_ac"] is not None:
+        bits.append("corn 15-yr trend %s bu/ac" % f1(rec["corn_trend_bu_ac"]))
+    elif rec["corn_yield_median_bu_ac"] is not None:
+        bits.append("corn yield %s bu/ac, %s" % (f1(rec["corn_yield_median_bu_ac"]),
+                                                 "median of %s published years" % rec["corn_yield_years"]))
     if rec["loss_ratio_all"] is not None:
         bits.append("crop insurance loss ratio %s since %s" % (rh(rec["loss_ratio_all"], 2), first_year) if first_year else "crop insurance loss ratio %s" % rh(rec["loss_ratio_all"], 2))
     if not bits:
@@ -1104,6 +1154,16 @@ def county_page(W, f, d, stamp):
     irr_low = ok(Wt) and ish is not None and ish < 0.10
     irr_high = ok(Wt) and ish is not None and ish >= 0.10
     ry5 = recent_yield(Y, RL) if ok(Y) else None
+    # THE county corn yield: the 15-yr trend, projected to this year, on the
+    # same practice as the rent (scripts/county_yield.py). Rent per bushel,
+    # the /rent table and the rent-share calculator all use this one figure.
+    yt = W.ytrend.get(f) or {}
+    ytv = yt.get("v")
+    ytl = ("%s, %s" % (CY.label_trend(yt["ty"]), CY.PRACTICE_WORDS.get(yt.get("b"), ""))) if ytv is not None else None
+    ylast = None
+    if ok(Y) and Y.get("hist") and not CY.ends_early(Y.get("last_year"), RL):
+        ylast = (int(Y["last_year"]), (Y.get("hist") or {}).get(str(Y["last_year"]), (Y.get("hist") or {}).get(Y["last_year"])))
+    rpb = (rv["value"] / ytv) if (rv and ytv and yt.get("rk") == "nonirr") else None
     fl = V.get("flag") if ok(V) else None
     crumb_vis, crumb_ld = crumbs([("AGSIST", "/"), ("Farmland Atlas", "/farmland-atlas"), (stn, f"/{OUT}/{slugify(stn)}/"), (lab, None)])
 
@@ -1131,7 +1191,7 @@ def county_page(W, f, d, stamp):
     st_rent = W.stat("rent", st, f) if rv else None
     st_irr = W.stat("irr", st, f) if ri else None
     st_val = W.stat("value", st, f) if ok(V) and not fl else None
-    st_yld = W.stat("yld", st, f) if ok(Y) and Y.get("n", 0) >= 15 else None
+    st_yld = W.stat("trend", st, f) if ytv is not None else None
     st_cost = W.stat("cost", st, f) if lc is not None else None
     st_rent_ = W.stat("rented", st, f) if rs is not None else None
     for s_ in (st_rent, st_irr, st_val, st_yld, st_cost, st_rent_):
@@ -1145,17 +1205,32 @@ def county_page(W, f, d, stamp):
     keys += key("Land and buildings", money(V["latest"]) if ok(V) and V.get("latest") is not None else None, "/ac", val_sub(), st_val, money, st)
     rtv = get(V, "rent_to_value", "pct")
     if not ri:
-        if rtv is None and rv and ry5 and irr_low:
-            keys += key("Dry rent per bushel of corn", usd2(rv["value"] / ry5["avg"]), "", "%s ÷ %s bu, recent yield %d–%d" % (
-                money(rv["value"]), f1(ry5["avg"]), ry5["from"], ry5["to"]), None, None, st)
+        if rtv is None and rpb is not None:
+            keys += key("Dry rent per bushel of corn", usd2(rpb), "", "%s ÷ %s bu, %s" % (
+                money(rv["value"]), f1(ytv), CY.label_trend(yt["ty"])), None, None, st)
         else:
             keys += key("Rent as % of land value", (fmt(rtv, 2) + "%") if rtv is not None else None, "",
                         ("%s dry rent ÷ %s land and buildings, both %s" % (money(V["rent_to_value"]["rent"]), money(V["rent_to_value"]["value"]), V["rent_to_value"]["year"]))
                         if rtv is not None else "not shown" + ((": " + why(V["rent_to_value"])) if get(V, "rent_to_value", "status") else ""), None, None, st)
-    keys += key("Corn yield, %s median" % ("%d–%d" % (Y["first_year"], Y["last_year"]) if ok(Y) else ""),
-                f1(Y["median"]) if ok(Y) else None, " bu/ac",
-                ((("recent level %d–%d: %s" % (ry5["from"], ry5["to"], f1(ry5["avg"]))) if ry5 else "%s published years" % Y.get("n"))
-                 + (" · irrigated and dryland combined" if irr_high else "")) if ok(Y) else why(Y), st_yld, f1, st)
+    ysub = []
+    if ylast and ylast[1] is not None:
+        ysub.append("%s %s" % (CY.label_year(ylast[0]), f1(ylast[1])))
+    if ry5:
+        ysub.append("%s %s" % (CY.label_avg(ry5["from"], ry5["to"]), f1(ry5["avg"])))
+    if ytv is not None:
+        keys += key("Corn yield, " + CY.label_trend(yt["ty"]), f1(ytv), " bu/ac",
+                    "%s trend · %s" % (CY.PRACTICE_WORDS.get(yt.get("b"), ""), (" · ".join(ysub) + " (all practices)") if ysub else "from %s county yields" % yt.get("n")),
+                    st_yld, f1, st)
+    elif ry5:
+        keys += key("Corn yield, " + CY.label_avg(ry5["from"], ry5["to"]), f1(ry5["avg"]), " bu/ac",
+                    "high and low dropped" + (" · " + ysub[0] if ylast else "") + (" · irrigated and dryland combined" if irr_high else "")
+                    + ((" · trend withheld: " + yt["w"]) if yt.get("w") else ""), None, f1, st)
+    elif ok(Y) and Y.get("median") is not None and not CY.ends_early(Y.get("last_year"), RL):
+        keys += key("Corn yield, " + CY.label_median(Y["first_year"], Y["last_year"]), f1(Y["median"]), " bu/ac",
+                    "%s published years, all practices" % Y.get("n") + ((" · trend withheld: " + yt["w"]) if yt.get("w") else ""), None, f1, st)
+    else:
+        stop = CY.ends_early(Y.get("last_year"), RL) if ok(Y) else None
+        keys += key("Corn yield", None, " bu/ac", yt.get("w") or stop or (why(Y) if not ok(Y) else "no recent county yields"), None, f1, st)
     keys += key("Claims paid per $100 of coverage", usd2(lc) if lc is not None else None, "",
                 ("%d–%d, closed crop years" % (S["last10"]["from"], S["last10"]["to"])) if lc is not None else ("under the premium floor for a figure" if ok(S) else why(S)),
                 st_cost, usd2, st)
@@ -1188,8 +1263,8 @@ def county_page(W, f, d, stamp):
         p = R.get("pasture")
         if p and (not RL or p["year"] >= RL - 3):
             S1 += fact("Pasture, %s" % p["year"], money(p["value"]) + "/ac")
-        if rv and ry5 and irr_low:
-            S1 += fact("Dry rent per bushel of corn", usd2(rv["value"] / ry5["avg"]), "%s ÷ %s bu, county yield %d–%d" % (money(rv["value"]), f1(ry5["avg"]), ry5["from"], ry5["to"]))
+        if rpb is not None:
+            S1 += fact("Dry rent per bushel of corn", usd2(rpb), "%s ÷ %s bu, %s" % (money(rv["value"]), f1(ytv), ytl))
     elif ri:
         S1 += fact("Irrigated, %s" % ri["year"], money(ri["value"]) + "/ac", "no dry rent published")
     else:
@@ -1197,20 +1272,22 @@ def county_page(W, f, d, stamp):
     rr = W.rrev.get(f)
     if rr and rr.get("p") is not None:
         if rr.get("rent") is not None:
-            sub = "%s %s ÷ (%s bu %s × %s %s price received)%s" % (
-                money(rr["rent"]), "irrigated rent" if rr["rk"] == "irr" else "non-irrigated rent",
-                f1(rr["yld"]), RREV_BASIS.get(rr["pb"], ("corn yield", ""))[0], usd2(rr["price"]), stn, RREV_BASIS.get(rr["pb"], ("", ""))[1])
+            sub = "%s %s %s ÷ (%s bu, %s, %s × %s %s price received)%s" % (
+                money(rr["rent"]), "irrigated rent" if rr["rk"] == "irr" else "non-irrigated rent", rr["py"],
+                f1(rr["yld"]), CY.label_year(rr["py"]), RREV_BASIS.get(rr["pb"], ("", ""))[0], usd2(rr["price"]), stn, RREV_BASIS.get(rr["pb"], ("", ""))[1])
         else:
-            sub = "%s over the %s%s" % (("irrigated rent" if rr["rk"] == "irr" else "non-irrigated rent",) + RREV_BASIS.get(rr["pb"], ("corn yield", "")))
+            sub = "%s over the %s, %s%s" % (("irrigated rent" if rr["rk"] == "irr" else "non-irrigated rent", CY.label_year(rr["py"])) + RREV_BASIS.get(rr["pb"], ("", "")))
         if rr["pp"]:
             sub += "; the %s price is preliminary" % rr["py"]
         S1 += fact("Rent as a share of corn gross, %s" % rr["py"], "%.1f%%" % rr["p"], sub)
     elif rr and rr.get("pw"):
         S1 += fwith("Rent as a share of corn gross", "%s (%s)" % (rr["pw"], rr["pwy"]))
     if rr:
-        S1 += ('<p class="note">Share of gross uses the latest year with a published rent, a county corn yield of the same practice and the '
-               'state price received, all USDA NASS. Year by year, and a calculator for your own yield and price: '
-               '<a href="/cash-rent">Cash Rent by County</a>.</p>')
+        S1 += ('<p class="note">Share of gross is a past year, all observed: that year\'s rent, that year\'s county corn yield of the same practice and the '
+               'state price received, USDA NASS. Rent per bushel uses this year\'s rent over the 15-yr trend. The calculator below starts from that trend and lets you put in your own yield and price.</p>')
+    if f in W.rent_fips:
+        S1 += ('<div class="act rcw"><button type="button" id="rc-open" data-st="%s" data-fips="%s" aria-expanded="false">Rent share calculator and history</button></div>'
+               '<div id="rc-box" hidden></div>' % (esc(W.rent_st.get(f, st)), esc(f)))
 
     S2 = "<h2>Land value</h2>"
     if ok(V):
@@ -1238,12 +1315,19 @@ def county_page(W, f, d, stamp):
         hist = {int(k): v for k, v in (Y.get("hist") or {}).items()}
         S3 += bars_svg(hist, "County corn yield by year, bushels per acre", lambda v: f1(v), ref=Y.get("median"), ref_label="median %s" % f1(Y["median"]))
         S3 += '<p class="note">Bushels per acre, USDA NASS county yields, all practices. The dashed line is the median of the published years.</p>'
-        S3 += fact("Median, %s–%s" % (Y["first_year"], Y["last_year"]), f1(Y["median"]) + " bu/ac", "%s published years%s" % (Y["n"], ", irrigated and dryland combined" if irr_high else ""))
+        if ytv is not None:
+            S3 += fact(CY.label_trend(yt["ty"]).capitalize(), f1(ytv) + " bu/ac", "%s county yields, %d years, R² %.2f; the figure rent per bushel uses" % (
+                CY.PRACTICE_WORDS.get(yt.get("b"), ""), yt.get("n") or 0, yt.get("r2") or 0))
+        elif yt.get("w"):
+            S3 += fwith("15-yr trend", yt["w"])
+        if ylast and ylast[1] is not None:
+            S3 += fact(CY.label_year(ylast[0]).capitalize(), f1(ylast[1]) + " bu/ac", "all practices")
         if ry5:
-            S3 += fact("Recent level, %d–%d" % (ry5["from"], ry5["to"]), f1(ry5["avg"]) + " bu/ac", "%d published years, high and low dropped" % ry5["n"])
+            S3 += fact(CY.label_avg(ry5["from"], ry5["to"]).capitalize(), f1(ry5["avg"]) + " bu/ac", "%d published years, high and low dropped" % ry5["n"])
+        S3 += fact("Median, %s–%s" % (Y["first_year"], Y["last_year"]), f1(Y["median"]) + " bu/ac", "%s published years%s" % (Y["n"], ", irrigated and dryland combined" if irr_high else ""))
         if Y.get("worst"):
             S3 += fact("Lowest published year", "%s: %s bu/ac" % (Y["worst"]["year"], f1(Y["worst"]["value"])), pct(Y["worst"]["share_of_median"], 0) + " of median")
-        if Y.get("slope") is not None:
+        if Y.get("slope") is not None and not CY.ends_early(Y.get("last_year"), RL):
             S3 += fact("Trend, %s" % str(Y.get("window") or "").replace("-", "–"), sgn(Y["slope"], 1) + " bu/ac a year", "±%s (95%% interval)" % f1(Y["slope_ci95"]) if Y.get("slope_ci95") is not None else None)
     else:
         S3 += fwith("County corn yield", why(Y))
@@ -1435,7 +1519,7 @@ def county_page(W, f, d, stamp):
 <div class="two"><div><section class="keys" aria-label="Key figures">{keys}</section></div><div>{locator_svg(W, f)}</div></div>
 {S1}{S2}{S3}{S4}{S5}{S6}{ND}
 <h2>Cite this page</h2>
-<div class="cite"><code>{esc(cite)}</code><br>Every figure is a county average from the sources named below. Ranks count counties with 10,000 acres or more in farms, in the same survey year for rent, within the state. Methods: <a href="/farmland-atlas/methods">how each figure is built</a>. Downloads: <a href="/farmland-atlas/data">all counties, CSV</a>.</div>
+<div class="cite"><code>{esc(cite)}</code><br>Every figure is a county average from the sources named below. Rent ranks count every county with a published rent in the same survey year, within the state (the same counties as the state rent page); other ranks count counties with 10,000 acres or more in farms. Methods: <a href="/farmland-atlas/methods">how each figure is built</a>. Downloads: <a href="/farmland-atlas/data">all counties, CSV</a>.</div>
 <details><summary>Sources, dates and arithmetic</summary>
 <p>"Figures as of" is the date this page's numbers last changed; it moves only when a figure on the page does. Source files and their retrieval dates are listed on the <a href="/farmland-atlas/data">data page</a>.</p>
 <p>Rent: USDA NASS Cash Rents Survey, county. Land value: Census of Agriculture, operators' estimate of land and buildings. Yield: NASS county corn yields, trend fitted here over every published year since 2008. Loss ratio: claims (indemnity) divided by total premium, USDA RMA Summary of Business, 1989 on, open crop year left out. Drought: U.S. Drought Monitor, weeks with half the county or more in D2 or worse. July lows: NOAA nClimDiv county monthly minimum temperature. A dash means the record does not carry the figure or the source withheld it; the reason is printed beside it.</p></details>
@@ -1444,6 +1528,15 @@ def county_page(W, f, d, stamp):
 <script type="application/json" id="{csv_id}">{rec_json}</script>
 <script>
 (function(){{
+var rb=document.getElementById('rc-open');
+if(rb)rb.addEventListener('click',function(){{
+  var box=document.getElementById('rc-box'),o=!box.hidden;box.hidden=o;rb.setAttribute('aria-expanded',o?'false':'true');
+  if(o||box.getAttribute('data-on'))return;box.setAttribute('data-on','1');
+  var s=document.createElement('script');s.src='/components/rent-calc.js?v=1';
+  s.onload=function(){{window.AgRentCalc.mount(box,{{st:rb.getAttribute('data-st'),fips:rb.getAttribute('data-fips')}});}};
+  s.onerror=function(){{box.textContent='The calculator did not load. Try again in a minute.';box.removeAttribute('data-on');}};
+  document.head.appendChild(s);
+}});
 var rec=JSON.parse(document.getElementById('rec').textContent);
 document.getElementById('dl').addEventListener('click',function(){{
   var k=Object.keys(rec),q=function(v){{v=v==null?'':String(v);return /[",\\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v;}};
@@ -1500,6 +1593,7 @@ def state_page(W, st):
     url = f"{SITE}/{OUT}/{slugify(stn)}/"
     recs = {f: flat_record(W, f) for f in fs}
     pool = [f for f in fs if W.mapped(f) and W.is_farm(f)]
+    pool_rent = [f for f in fs if W.mapped(f)]      # rent: every county NASS published, as on /rent
 
     def med(key):
         def keep(f):
@@ -1508,7 +1602,7 @@ def state_page(W, st):
             if key == "value":
                 return not get(W.C[f], "value", "flag")
             return True
-        v = sorted(x for x in (W.m(key, f) for f in pool if keep(f)) if x is not None)
+        v = sorted(x for x in (W.m(key, f) for f in (pool_rent if key == "rent" else pool) if keep(f)) if x is not None)
         n = len(v)
         # the same counties give the median, the low and the high (the homepage prints all three)
         return (None if n < 3 else (v[(n - 1) // 2] if n % 2 else (v[n // 2 - 1] + v[n // 2]) / 2), n,
@@ -1532,8 +1626,12 @@ def state_page(W, st):
         m, n, lo, hi = med(key_)
         smed[key_] = m
         smed[key_ + "_n"], smed[key_ + "_lo"], smed[key_ + "_hi"] = (n, lo, hi) if m is not None else (None, None, None)
-        why_ = {"rent": ", %s survey" % W.rent_latest, "value": ", value not flagged", "yld": ", 15+ published years"}.get(key_, "")
-        facts += fact(label, fm(m) if m is not None else "n/a", ("median of %d counties with 10,000+ farm acres%s" % (n, why_)) if m is not None else "too few counties to give a median")
+        why_ = {"value": ", value not flagged", "yld": ", 15+ published years"}.get(key_, "")
+        if key_ == "rent":
+            sub_ = "median of the %d counties with a published %s non-irrigated rent, the same counties as the %s rent page" % (n, W.rent_latest, stn)
+        else:
+            sub_ = "median of %d counties with 10,000+ farm acres%s" % (n, why_)
+        facts += fact(label, fm(m) if m is not None else "n/a", sub_ if m is not None else "too few counties to give a median")
     crumb_vis, crumb_ld = crumbs([("AGSIST", "/"), ("Farmland Atlas", "/farmland-atlas"), ("By state", f"/{OUT}/states/"), (stn, None)])
     smap, smbr = state_map(W, st, recs)
     title = next((t for t in (f"{stn} Farmland Values by County: Land Value, Yield & Risk",
@@ -1870,7 +1968,7 @@ def selftest():
                 check(f + " canonical", '<link rel="canonical" href="%s">' % W.url(f) in t)
                 check(f + " no nan", "NaN" not in t and "undefined" not in t and "None" not in t.replace("None reported", ""))
                 check(f + " json-ld parses", all(json.loads(m) for m in re.findall(r'<script type="application/ld\+json">\s*(.*?)</script>', t, re.S)))
-        # rent as a share of corn gross: the /cash-rent ratio, its year, and the sum that makes it
+        # rent as a share of corn gross: the national.json ratio, its year, and the sum that makes it
         for f, r in list(W.rrev.items())[:300]:
             t = html.unescape(open(os.path.join(tmp, W.path(f)), encoding="utf-8").read()) if f in W.C else ""
             if not t:
@@ -1882,6 +1980,21 @@ def selftest():
                     check(f + " rent share sum", abs(r["rent"] / (r["yld"] * r["price"]) * 100 - r["p"]) < 0.051)
             else:
                 check(f + " rent share withheld says why", r["pw"][1:] in t and "Rent as a share of corn gross" in t)
+        # every yield the page prints is named; rent per bushel uses the trend; the calculator is a button, not inline
+        st_ = html.unescape(open(os.path.join(tmp, W.path("19169")), encoding="utf-8").read())
+        tr_ = W.ytrend.get("19169") or {}
+        if tr_.get("v") is not None:
+            check("story trend headline", ("Corn yield, " + CY.label_trend(tr_["ty"])) in st_ and f1(tr_["v"]) in st_)
+            check("story rent per bushel on the trend", ("÷ %s bu, %s" % (f1(tr_["v"]), CY.label_trend(tr_["ty"]))) in st_)
+        check("story share-of-gross yield named", CY.label_year(W.rrev["19169"]["py"]) in st_ if W.rrev.get("19169", {}).get("p") is not None else True)
+        check("story calculator button", 'id="rc-open"' in st_ and "/components/rent-calc.js" in st_ and "AgRentCalc" not in st_.split("<script>")[0])
+        seen_ = 0
+        for f in list(W.C)[:600]:
+            p_ = os.path.join(tmp, W.path(f))
+            if os.path.exists(p_):
+                seen_ += 1
+                check(f + " no /cash-rent link", 'href="/cash-rent' not in open(p_, encoding="utf-8").read())
+        check("cash-rent link scan saw pages", seen_ >= 300)
         nat_ = json.load(open(os.path.join("data", "cash-rent", "national.json"))) if os.path.exists(os.path.join("data", "cash-rent", "national.json")) else {}
         if nat_.get("pair_rule"):
             check("rent share: every published ratio carried", sum(1 for r in W.rrev.values() if r.get("p") is not None) == nat_.get("n_pct"))
@@ -1906,7 +2019,7 @@ def selftest():
         wi = cj["states"].get("WI")
         if wi and wi.get("r") is not None:
             pool_ = sorted(c["r"] for f_, c in cj["counties"].items() if c["st"] == "WI" and c["r"] is not None and c["ry"] == cj["rent_latest"]
-                           and W.mapped(f_) and W.is_farm(f_))
+                           and W.mapped(f_))
             check("WI rent low/high are the county extremes", (wi["rl"], wi["rh"], wi["rn"]) == (pool_[0], pool_[-1], len(pool_)))
         sm = open(os.path.join(tmp, "sitemap-atlas.xml"), encoding="utf-8").read()
         check("sitemap", "<loc>%s/%s/data</loc>" % (SITE, OUT) in sm)
