@@ -18,37 +18,37 @@
 <link rel="apple-touch-icon"                    href="/img/apple-touch-icon.png">
 <link rel="manifest"                            href="/manifest.json">
 <meta name="theme-color" content="#111a0a">
-<title>Grain Elevator Coverage Map | AGSIST</title>
-<meta name="description" content="Live cash grain bids from elevators and co-ops nationwide. Enter your ZIP to find corn, soybean, and wheat prices near you. No account needed.">
+<title>For Elevators: Coverage and Claim Your Board | AGSIST</title>
+<meta name="description" content="Map of every grain elevator AGSIST tracks and which boards we read direct. Run an elevator? Claim your board to check your name, town and phone. Free.">
 <meta name="author" content="Sigurd Lindquist">
 <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
 <link rel="canonical" href="https://agsist.com/elevators">
 <meta property="og:type"        content="website">
 <meta property="og:site_name"   content="AGSIST">
 <meta property="og:locale"      content="en_US">
-<meta property="og:title"       content="Grain Elevator Coverage Map | AGSIST">
-<meta property="og:description" content="Live cash grain bids from hundreds of elevators and grain facilities across the Corn Belt, Great Plains, Delta, Southeast, and Pacific Northwest. Works on your phone, no account needed.">
+<meta property="og:title"       content="For Elevators: Coverage and Claim Your Board | AGSIST">
+<meta property="og:description" content="Map of every grain elevator AGSIST tracks and which boards we read direct. Run an elevator? Claim your board to check your name, town and phone. Free.">
 <meta property="og:url"         content="https://agsist.com/elevators">
 <meta property="og:image"       content="https://agsist.com/img/og/agsist.jpg">
-<meta property="og:image:alt" content="Grain Elevator Coverage Map | AGSIST">
+<meta property="og:image:alt" content="For Elevators: Coverage and Claim Your Board | AGSIST">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card"       content="summary_large_image">
 <meta name="twitter:site"       content="@agsist">
 <meta name="twitter:creator"    content="@agsist">
-<meta name="twitter:title"      content="Grain Elevator Cash Bids: Corn Belt Coverage | AGSIST">
-<meta name="twitter:description" content="Live cash grain bids from elevators across the Corn Belt and Great Plains. Enter your ZIP, no account needed.">
+<meta name="twitter:title"      content="For Elevators: Coverage and Claim Your Board | AGSIST">
+<meta name="twitter:description" content="Map of every grain elevator AGSIST tracks and which boards we read direct. Run an elevator? Claim your board to check your name, town and phone. Free.">
 <meta name="twitter:image"      content="https://agsist.com/img/og/agsist.jpg">
 <script type="application/ld+json">
 {"@context":"https://schema.org","@graph":[
   {"@type":"WebPage","@id":"https://agsist.com/elevators#webpage","url":"https://agsist.com/elevators",
-   "name":"Grain Elevator Coverage Map | AGSIST",
-   "description":"Live cash grain bids from elevators and grain facilities across the Corn Belt, Great Plains, Delta, Southeast, and Pacific Northwest. Enter your ZIP code to find nearby elevator prices for corn, soybeans, and wheat.",
+   "name":"For Elevators: Coverage and Claim Your Board | AGSIST",
+   "description":"Map of every grain elevator AGSIST tracks and which boards we read direct. Run an elevator? Claim your board to check your name, town and phone. Free.",
    "isPartOf":{"@id":"https://agsist.com/#website"},
    "breadcrumb":{"@type":"BreadcrumbList","itemListElement":[
      {"@type":"ListItem","position":1,"name":"AGSIST","item":"https://agsist.com/"},
      {"@type":"ListItem","position":2,"name":"Cash Bids","item":"https://agsist.com/cash-bids"},
-     {"@type":"ListItem","position":3,"name":"Elevator Coverage","item":"https://agsist.com/elevators"}
+     {"@type":"ListItem","position":3,"name":"For elevators","item":"https://agsist.com/elevators"}
    ]}},
   {"@type":"FAQPage","mainEntity":[
     {"@type":"Question","name":"Which grain elevators does AGSIST cover?",
@@ -79,24 +79,13 @@ button,a,[role="button"]{touch-action:manipulation}
 .el-hero h1{font-family:var(--font-display);font-size:2rem;font-weight:800;line-height:1.06;letter-spacing:-.01em;color:var(--text);margin:0 0 .5rem}
 @media(min-width:640px){.el-hero h1{font-size:2.5rem}}
 .el-hero p{font-size:.9rem;color:var(--text-dim);line-height:1.62;max-width:60rem;margin:.3rem 0 0}
-.el-zip{display:flex;gap:.6rem;margin-top:1.15rem;flex-wrap:wrap;align-items:flex-end}
-.el-zip-field{display:flex;flex-direction:column;gap:.32rem}
-.el-zip-lbl{font-family:var(--font-mono);font-size:0.745rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted)}
-.el-zip input{background:var(--bg);border:1px solid var(--border-2);border-radius:var(--r-sm);padding:.6rem .7rem;font-family:var(--font-mono);font-size:1rem;letter-spacing:.14em;color:var(--text);width:7.5rem;min-height:46px}
-.el-zip input:focus{outline:none;border-color:var(--gold)}
-@media(max-width:600px){.el-zip-field{flex:1 1 100%}.el-zip input{width:100%}.el-zip .el-cta{flex:1 1 100%;justify-content:center;text-align:center}}
-.el-cta{display:inline-flex;align-items:center;gap:.5rem;padding:.72rem 1.4rem;border:0;border-radius:var(--btn-r);background:var(--btn-primary-bg);color:var(--btn-primary-ink);font-family:var(--font-body);font-size:var(--btn-fs);font-weight:700;text-decoration:none;letter-spacing:0;min-height:46px;cursor:pointer;transition:filter .15s,transform .15s;text-transform:none}
-.el-cta:hover{filter:brightness(1.07);transform:translateY(-1px)}
-
+@media(max-width:600px){
 /* section heads */
+#cl-bids:empty{display:none}
+.el-farmer{margin:.9rem 0 0;font-size:.95rem;color:var(--text-muted)}.el-farmer a{color:var(--gold);font-weight:600}
 .el-h2{font-family:var(--font-display);font-size:1.15rem;font-weight:700;color:var(--text);border-bottom:1px solid var(--border-2);padding-bottom:.5rem;margin:2.2rem 0 1.1rem}
 
 /* how-to steps */
-.el-how{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:.8rem;margin-bottom:1.5rem}
-.el-how-step{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md);padding:1rem}
-.el-how-num{font-family:var(--font-display);font-size:1.5rem;font-weight:800;color:var(--gold);line-height:1;margin-bottom:.4rem}
-.el-how-title{font-family:var(--font-display);font-size:.92rem;font-weight:700;color:var(--text);margin-bottom:.25rem}
-.el-how-body{font-size:0.795rem;color:var(--text-muted);line-height:1.55}
 
 /* what AGSIST covers */
 .el-cov{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:.8rem;margin-bottom:1.1rem}
@@ -254,29 +243,15 @@ button,a,[role="button"]{touch-action:manipulation}
 <!-- /static-nav:header -->
 </div>
 <main id="main" class="el-page" tabindex="-1">
-  <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a> &rarr; <a href="/cash-bids">Cash Bids</a> &rarr; Elevator Coverage</nav>
+  <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a> &rarr; <a href="/cash-bids">Cash Bids</a> &rarr; For elevators</nav>
 
   <div class="el-hero">
-    <div class="el-eyebrow page-kicker"><svg class="lic el-eyebrow-ic" aria-hidden="true"><use href="#i-warehouse"></use></svg>Live Grain Elevator Cash Bids</div>
-    <h1>Grain Elevator Coverage Map</h1>
-    <p class="page-lede">Live cash grain bids from elevators, co-ops, and grain facilities across the Corn Belt, Great Plains, Delta, Southeast, and Pacific Northwest. Read from elevators' own posted boards and a second feed. Enter your ZIP code to see bids near you. Works on your phone, no account needed.</p>
-    <form class="el-zip" action="/cash-bids" method="get" id="el-zip-form">
-      <div class="el-zip-field">
-        <label class="el-zip-lbl" for="el-zip-in">Your ZIP code</label>
-        <input id="el-zip-in" name="zip" type="text" inputmode="numeric" pattern="[0-9]{5}" maxlength="5" placeholder="ZIP" autocomplete="postal-code" required>
-      </div>
-      <button type="submit" class="el-cta">See bids near me &rarr;</button>
-    </form>
+    <div class="el-eyebrow page-kicker"><svg class="lic el-eyebrow-ic" aria-hidden="true"><use href="#i-warehouse"></use></svg>For elevators and co-ops</div>
+    <h1>For elevators: coverage and claim your board</h1>
+    <p class="page-lede">Every grain elevator AGSIST tracks, which ones we read straight from their own posted board, and how an elevator claims its board so farmers see the right name, town and phone. <a href="#claim">Claim your board</a>.</p>
+    <p class="el-farmer">Looking for a price? <a href="/cash-bids">Cash bids near you, by ZIP &rarr;</a></p>
   </div>
   <style></style><aside class="ag-sponsor-ribbon" id="ag-sponsor"><span class="ag-sponsor-tag">Sponsor this page</span> Your name beside the elevator map. One category-exclusive slot. <span class="ag-sponsor-price" data-rate="page">$29/mo &middot; first month free</span> <a href="/sponsor-apply?slot=elevators&amp;utm_source=elevators&amp;utm_medium=slot">Put your name here &rarr;</a></aside>
-
-  <h2 class="el-h2">How to Find Your Elevator&rsquo;s Bids</h2>
-  <div class="el-how">
-    <div class="el-how-step"><div class="el-how-num">1</div><div class="el-how-title">Enter your ZIP code</div><div class="el-how-body">Type your 5-digit ZIP above (or on the cash bids page). AGSIST finds grain facilities in your area automatically.</div></div>
-    <div class="el-how-step"><div class="el-how-num">2</div><div class="el-how-title">See nearby bids</div><div class="el-how-body">Corn, soybean, and wheat bids appear sorted by distance from your ZIP. Basis and futures components shown separately.</div></div>
-    <div class="el-how-step"><div class="el-how-num">3</div><div class="el-how-title">Compare elevators</div><div class="el-how-body">Multiple facilities show up within your radius. Compare bids side-by-side before deciding where to haul.</div></div>
-    <div class="el-how-step"><div class="el-how-num">4</div><div class="el-how-title">Confirm before hauling</div><div class="el-how-body">Always call ahead to confirm the posted bid. Prices update throughout the day and can change before you arrive.</div></div>
-  </div>
 
   <h2 class="el-h2">What AGSIST covers</h2>
   <div class="el-cov">
@@ -313,6 +288,7 @@ button,a,[role="button"]{touch-action:manipulation}
     <h2 id="cl-h">Run an elevator? Claim your board.</h2>
     <p class="cl-lede">Producers in your area already look up bids here. Claim your listing so what they see is right: your name, your town, your phone and your own board.</p>
     <p class="cl-net" id="cl-net"><!--SEED:elev:net-->In the read of Oct 9, 2026, 1:20 PM CT, AGSIST read <span class="num">1,953</span> elevator boards direct. <span class="num">85</span> more have a reader that did not answer that pass. It knows <span class="num">6,211</span> more elevators that have no reader yet. <a href="#coverage-map">See the map</a>.<!--/SEED--></p>
+    <p class="cl-net" id="cl-bids"><!--SEED:elev:bids-->On Oct 10, 2026, <span class="num">1,850</span> network elevators had a current bid on our cash bids pages, across <span class="num">1,471</span> towns.<!--/SEED--></p>
     <ul class="cl-pts">
       <li class="cl-pt">
         <p class="cl-pt-k">What you get</p>
@@ -495,7 +471,7 @@ document.querySelectorAll('.el-faq-q').forEach(function(q){
   q.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();q.click();}});
 });
 document.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('a[href^="/cash-bids"]');if(a&&window.gaEvent)gaEvent('elevators_cta',{label:(a.textContent||'').trim().slice(0,40)});},true);
-(function(){var zf=document.getElementById('el-zip-form');if(zf)zf.addEventListener('submit',function(){if(window.gaEvent)gaEvent('elevators_zip_search',{});});})();
+
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <script>

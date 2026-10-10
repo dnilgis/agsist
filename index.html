@@ -1124,14 +1124,18 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
   var cov = document.createElement('div');
   cov.className = 'r7-cov';
   el.parentNode.insertBefore(cov, el);
-  /* The counts only (data/elevator-coverage-counts.json, written beside the
-     map by scripts/build_coverage_map.mjs): the full map is ~150 KB gzipped
-     for two numbers. The full file stays the fallback. */
+  /* The counts only. 2026-10-10: data/elevator-counts.json is the one file
+     every page reads its elevator counts from (scripts/build_cash_bid_pages.py
+     writes it; its coverage block is the coverage map's own counts, with their
+     date). The map's counts file, then the full map, stay the fallbacks. */
   function cov1(u){ return fetch(u).then(function(r){
     if(!r.ok) throw new Error('coverage ' + r.status);
     return r.json();
   }); }
-  cov1('/data/elevator-coverage-counts.json').catch(function(){
+  cov1('/data/elevator-counts.json').then(function(c){
+    if(!c || !c.coverage) throw new Error('no coverage block');
+    return { generated: c.coverage.generated, counts: c.coverage };
+  }).catch(function(){ return cov1('/data/elevator-coverage-counts.json'); }).catch(function(){
     return cov1('/data/elevator-coverage.json');
   }).then(function(c){
     var k = c && c.counts;
@@ -1449,7 +1453,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
       <li><a href="/cash-lease" data-track="land">Farm Cash Lease</a></li>
       <li><a href="/harvest-price-tracker" data-track="land">Harvest Price Tracker</a></li>
       <li><a href="/basis" data-track="land">Basis vs Normal</a></li>
-      <li><a href="/storage-crunch" data-track="land">Storage Crunch</a></li>
+      <li><a href="/basis#storage" data-track="land">Storage Crunch</a></li>
       <li><a href="/breakeven" data-track="land">Break-Even</a></li>
       <li><a href="/arc-plc" data-track="land">ARC or PLC</a></li>
       <li><a href="/grain-bin-calculator" data-track="land">Grain Bin</a></li>

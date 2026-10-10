@@ -3,7 +3,9 @@
  *
  * WHY THIS EXISTS
  *
- * dnilgis/bids reads 1,096 elevator boards every ten minutes, all day. Until
+ * dnilgis/bids reads the network's elevator boards every ten minutes, all day
+ * (how many: data/elevator-counts.json, the one place the site counts them;
+ * a number typed here went stale within a week). Until
  * now that work reached agsist only through fetch_bids.yml, which pulls
  * Barchart, merges the scrape into it and commits data/bids.json roughly twice
  * an hour. Every cash surface on the site except the ZIP search on /cash-bids
