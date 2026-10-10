@@ -493,9 +493,11 @@ function renderCOT(data){
 
   // Interpretation: the COT page's tested result, not "crowded longs unwind hard".
   var interp,where=CROP.cotClasses?'In Chicago SRW, f':'F',side=d.net>0?'long':d.net<0?'short':'flat';
+  /* Before the pipeline publishes its crowd words, say the percentile itself. */
+  var kw=k?(k.word||('at the '+Math.round(k.pctl)+ord(Math.round(k.pctl))+' percentile')):'';
   if(!k){interp=where+'unds are net '+side+'. The percentile against the record is not shown: the analysis file is not from the same week as these positions.';}
-  else if(k.crowded){interp='<strong>'+where+'unds are crowded '+k.crowded+'</strong>: '+(k.word||'')+' of their record since '+k.since+', measured as a share of open interest. '+(k.tested||'');}
-  else{interp='<strong>'+where+'unds are net '+side+', '+(k.word||'')+'</strong> against their record since '+k.since+', not crowded. '+(k.tested||'');}
+  else if(k.crowded){interp='<strong>'+where+'unds are crowded '+k.crowded+'</strong>: '+kw+' of their record since '+k.since+', measured as a share of open interest. '+(k.tested||'');}
+  else{interp='<strong>'+where+'unds are net '+side+', '+kw+'</strong> against their record since '+k.since+', not crowded. '+(k.tested||'');}
   if(CROP.cotClasses&&data.kcwheat&&data.kcwheat.net!=null&&d.net!=null&&((data.kcwheat.net>=0)!==(d.net>=0))){
     interp+=' Note the classes are split: KC HRW funds sit on the opposite side of Chicago right now, so read the row for your class above.';
   }
@@ -1233,10 +1235,10 @@ function findBestBidForCrop(bids,nearestGridResult,cropKey){
 }
 
 
-/* The network's own count (data/elevator-coverage-counts.json, the file the
+/* The network's own count (data/elevator-counts.json `coverage`, the one counts file; copied from the file the
    homepage reads), in place of the old "samples 50 ZIP locations" line. No
    file, no number: the sentence reads fine without it. */
-function netCount(box){fetch('/data/elevator-coverage-counts.json').then(function(r){return r.ok?r.json():null;}).then(function(c){var k=c&&c.counts;if(!k||typeof k.read!=='number'||typeof k.elevators!=='number'||!box)return;Array.prototype.forEach.call(box.querySelectorAll('.net-count'),function(e){e.textContent=' ('+k.read.toLocaleString('en-US')+' of the '+k.elevators.toLocaleString('en-US')+' elevators it knows are read directly)';});}).catch(function(){});}
+function netCount(box){fetch('/data/elevator-counts.json').then(function(r){return r.ok?r.json():null;}).then(function(c){var k=c&&c.coverage;if(!k||typeof k.read!=='number'||typeof k.elevators!=='number'||!box)return;Array.prototype.forEach.call(box.querySelectorAll('.net-count'),function(e){e.textContent=' ('+k.read.toLocaleString('en-US')+' of the '+k.elevators.toLocaleString('en-US')+' elevators it knows are read directly)';});}).catch(function(){});}
 
 /* The seasonal factor's label names the window the index was built on
    (price-stats.json seasonality_years: 2022-2025 is 4 years, not "5-yr"). */
