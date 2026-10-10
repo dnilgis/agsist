@@ -3159,25 +3159,30 @@ def _dow_label(date_iso):
 
 
 def render_archive_static_list(items):
-    """Full list for archive.html, grouped by month, newest first."""
+    """Full list for archive.html, grouped by month, newest first. Each month
+    is a <details>; only the newest month is open, so the page opens on this
+    month instead of 200 links. Every link stays in the HTML for crawlers."""
     parts, cur = [], None
     for d, hl, _closed in items:
         mk = d[:7]
         if mk != cur:
             if cur is not None:
-                parts.append("</ul>")
+                parts.append("</ul></details>")
             try:
                 label = datetime.strptime(mk, "%Y-%m").strftime("%B %Y")
             except Exception:
                 label = mk
-            parts.append(f'<h2 class="arc-static-month">{label}</h2>')
+            n = sum(1 for x in items if x[0][:7] == mk)
+            parts.append(f'<details class="arc-static-group"{" open" if cur is None else ""}>'
+                         f'<summary><h2 class="arc-static-month">{label}</h2>'
+                         f'<span class="arc-month-count">{n} briefing{"" if n == 1 else "s"}</span></summary>')
             parts.append('<ul class="arc-static-list">')
             cur = mk
         y = d[:4]
         parts.append(f'<li><a href="/daily/{d}"><time datetime="{d}">{_dow_label(d)}, {y}</time> '
                      f'&middot; {html_esc(hl or "Daily briefing")}</a></li>')
     if cur is not None:
-        parts.append("</ul>")
+        parts.append("</ul></details>")
     return "\n".join(parts)
 
 

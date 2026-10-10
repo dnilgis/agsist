@@ -113,6 +113,16 @@ body{overflow-x:hidden;overflow-x:clip;width:100%;}
 .arc-static-list a:hover{color:var(--gold);}
 .arc-static-list time{font-family:'JetBrains Mono',monospace;font-size:.78rem;color:var(--text-muted);}
 .arc-static.arc-hidden{display:none;}
+/* Months fold: the newest month opens, older ones are one tap away. */
+.arc-static-group>summary,.arc-month-group>summary{list-style:none;cursor:pointer;display:flex;align-items:baseline;justify-content:space-between;gap:.6rem;min-height:44px;}
+.arc-static-group>summary::-webkit-details-marker,.arc-month-group>summary::-webkit-details-marker{display:none;}
+.arc-static-group>summary .arc-static-month{flex:1;}
+.arc-static-group>summary::after,.arc-month-group>summary .arc-month-label::after{content:"+";font-family:'JetBrains Mono',monospace;color:var(--gold);font-weight:700;margin-left:.5rem;}
+.arc-static-group[open]>summary::after,.arc-month-group[open]>summary .arc-month-label::after{content:"\2212";}
+.arc-static-group .arc-month-count{font-family:'JetBrains Mono',monospace;color:var(--text-muted);}
+.arc-month-group>summary .arc-month-label{flex:1;}
+.arc-month-group:not([open]){margin-bottom:.6rem;}
+.arc-month-group>summary:focus-visible,.arc-static-group>summary:focus-visible{outline:2px solid var(--gold);outline-offset:2px;}
 
 /* Hidden during load */
 .arc-content{display:none;}
@@ -188,7 +198,7 @@ body{overflow-x:hidden;overflow-x:clip;width:100%;}
   <noscript><style>#arc-loading{display:none}</style></noscript>
   <section class="arc-static" id="arc-static" aria-label="Every briefing, newest first">
 <!--SEED:archivelist-->
-<h2 class="arc-static-month">October 2026</h2>
+<details class="arc-static-group" open><summary><h2 class="arc-static-month">October 2026</h2><span class="arc-month-count">10 briefings</span></summary>
 <ul class="arc-static-list">
 <li><a href="/daily/2026-10-10"><time datetime="2026-10-10">Sat Oct 10, 2026</time> &middot; Corn drops nearly 4% Friday on WASDE; cattle hold the gains</a></li>
 <li><a href="/daily/2026-10-09"><time datetime="2026-10-09">Fri Oct 9, 2026</time> &middot; Crude pulls back from the Hormuz run as grains sit quiet</a></li>
@@ -200,8 +210,8 @@ body{overflow-x:hidden;overflow-x:clip;width:100%;}
 <li><a href="/daily/2026-10-03"><time datetime="2026-10-03">Sat Oct 3, 2026</time> &middot; Crude splits from diesel as harvest stalls in the rain</a></li>
 <li><a href="/daily/2026-10-02"><time datetime="2026-10-02">Fri Oct 2, 2026</time> &middot; Crude drops 3.5% as grains grind higher on no news</a></li>
 <li><a href="/daily/2026-10-01"><time datetime="2026-10-01">Thu Oct 1, 2026</time> &middot; Corn runs 1.1% ahead of stocks, crude up on Gulf flows</a></li>
-</ul>
-<h2 class="arc-static-month">September 2026</h2>
+</ul></details>
+<details class="arc-static-group"><summary><h2 class="arc-static-month">September 2026</h2><span class="arc-month-count">29 briefings</span></summary>
 <ul class="arc-static-list">
 <li><a href="/daily/2026-09-30"><time datetime="2026-09-30">Wed Sep 30, 2026</time> &middot; Grains tick higher ahead of stocks data at 11 CT</a></li>
 <li><a href="/daily/2026-09-29"><time datetime="2026-09-29">Tue Sep 29, 2026</time> &middot; Crude pulls back 2.1% as Yanbu reopens</a></li>
@@ -232,8 +242,8 @@ body{overflow-x:hidden;overflow-x:clip;width:100%;}
 <li><a href="/daily/2026-09-03"><time datetime="2026-09-03">Thu Sep 3, 2026</time> &middot; Grains break hard; export sales arrive at 7:30</a></li>
 <li><a href="/daily/2026-09-02"><time datetime="2026-09-02">Wed Sep 2, 2026</time> &middot; Cattle break on beef imports; beans firm</a></li>
 <li><a href="/daily/2026-09-01"><time datetime="2026-09-01">Tue Sep 1, 2026</time> &middot; Wheat firms; EPA biofuel exemptions hit the board</a></li>
-</ul>
-<h2 class="arc-static-month">August 2026</h2>
+</ul></details>
+<details class="arc-static-group"><summary><h2 class="arc-static-month">August 2026</h2><span class="arc-month-count">31 briefings</span></summary>
 <ul class="arc-static-list">
 <li><a href="/daily/2026-08-31"><time datetime="2026-08-31">Mon Aug 31, 2026</time> &middot; Corn fades, crude runs; crop progress at 3 PM</a></li>
 <li><a href="/daily/2026-08-30"><time datetime="2026-08-30">Sun Aug 30, 2026</time> &middot; Wheat holds the high ground; September sets up</a></li>
@@ -266,8 +276,8 @@ body{overflow-x:hidden;overflow-x:clip;width:100%;}
 <li><a href="/daily/2026-08-03"><time datetime="2026-08-03">Mon Aug 3, 2026</time> &middot; Crop tour week opens quiet; wheat firms</a></li>
 <li><a href="/daily/2026-08-02"><time datetime="2026-08-02">Sun Aug 2, 2026</time> &middot; Corn down 6%; week ahead resets the story</a></li>
 <li><a href="/daily/2026-08-01"><time datetime="2026-08-01">Sat Aug 1, 2026</time> &middot; Corn drops 6%; hogs run 18.7% to close July</a></li>
-</ul>
-<h2 class="arc-static-month">July 2026</h2>
+</ul></details>
+<details class="arc-static-group"><summary><h2 class="arc-static-month">July 2026</h2><span class="arc-month-count">31 briefings</span></summary>
 <ul class="arc-static-list">
 <li><a href="/daily/2026-07-31"><time datetime="2026-07-31">Fri Jul 31, 2026</time> &middot; Wheat breaks 3%; milk runs hard to close week</a></li>
 <li><a href="/daily/2026-07-30"><time datetime="2026-07-30">Thu Jul 30, 2026</time> &middot; Wheat leads grains; hogs fall hard on export day</a></li>
@@ -300,8 +310,8 @@ body{overflow-x:hidden;overflow-x:clip;width:100%;}
 <li><a href="/daily/2026-07-03"><time datetime="2026-07-03">Fri Jul 3, 2026</time> &middot; Corn breaks 4% on holiday eve; oats hit -15%</a></li>
 <li><a href="/daily/2026-07-02"><time datetime="2026-07-02">Thu Jul 2, 2026</time> &middot; Heat owns the belt; export sales arrive at 7:30</a></li>
 <li><a href="/daily/2026-07-01"><time datetime="2026-07-01">Wed Jul 1, 2026</time> &middot; Acreage verdict: corn holds, beans slip</a></li>
-</ul>
-<h2 class="arc-static-month">June 2026</h2>
+</ul></details>
+<details class="arc-static-group"><summary><h2 class="arc-static-month">June 2026</h2><span class="arc-month-count">30 briefings</span></summary>
 <ul class="arc-static-list">
 <li><a href="/daily/2026-06-30"><time datetime="2026-06-30">Tue Jun 30, 2026</time> &middot; Acreage data lands; corn holds $4.04</a></li>
 <li><a href="/daily/2026-06-29"><time datetime="2026-06-29">Mon Jun 29, 2026</time> &middot; Acreage report day: grains break, soyoil runs</a></li>
@@ -333,8 +343,8 @@ body{overflow-x:hidden;overflow-x:clip;width:100%;}
 <li><a href="/daily/2026-06-03"><time datetime="2026-06-03">Wed Jun 3, 2026</time> &middot; Grains drift lower, milk gains overnight</a></li>
 <li><a href="/daily/2026-06-02"><time datetime="2026-06-02">Tue Jun 2, 2026</time> &middot; Grains grind lower, crude holds Iran gains</a></li>
 <li><a href="/daily/2026-06-01"><time datetime="2026-06-01">Mon Jun 1, 2026</time> &middot; Crude explodes 5% on Iran closure threat</a></li>
-</ul>
-<h2 class="arc-static-month">May 2026</h2>
+</ul></details>
+<details class="arc-static-group"><summary><h2 class="arc-static-month">May 2026</h2><span class="arc-month-count">31 briefings</span></summary>
 <ul class="arc-static-list">
 <li><a href="/daily/2026-05-31"><time datetime="2026-05-31">Sun May 31, 2026</time> &middot; Funds liquidate into June, cattle diverge</a></li>
 <li><a href="/daily/2026-05-30"><time datetime="2026-05-30">Sat May 30, 2026</time> &middot; Grains close worst week in month</a></li>
@@ -367,8 +377,8 @@ body{overflow-x:hidden;overflow-x:clip;width:100%;}
 <li><a href="/daily/2026-05-03"><time datetime="2026-05-03">Sun May 3, 2026</time> &middot; Week ahead: cattle test $250 floor</a></li>
 <li><a href="/daily/2026-05-02"><time datetime="2026-05-02">Sat May 2, 2026</time> &middot; Hogs crash 9% as cattle breakout stalls</a></li>
 <li><a href="/daily/2026-05-01"><time datetime="2026-05-01">Fri May 1, 2026</time> &middot; Cattle fade as grains mark time</a></li>
-</ul>
-<h2 class="arc-static-month">April 2026</h2>
+</ul></details>
+<details class="arc-static-group"><summary><h2 class="arc-static-month">April 2026</h2><span class="arc-month-count">29 briefings</span></summary>
 <ul class="arc-static-list">
 <li><a href="/daily/2026-04-30"><time datetime="2026-04-30">Thu Apr 30, 2026</time> &middot; Crude crashes as cattle hold gains</a></li>
 <li><a href="/daily/2026-04-29"><time datetime="2026-04-29">Wed Apr 29, 2026</time> &middot; Cattle hit 52-week high as crude explodes</a></li>
@@ -399,8 +409,8 @@ body{overflow-x:hidden;overflow-x:clip;width:100%;}
 <li><a href="/daily/2026-04-03"><time datetime="2026-04-03">Fri Apr 3, 2026</time> &middot; Crude explodes 7%, grains slip on profit-taking</a></li>
 <li><a href="/daily/2026-04-02"><time datetime="2026-04-02">Thu Apr 2, 2026</time> &middot; Hogs explode 22% as wheat drops 22¢</a></li>
 <li><a href="/daily/2026-04-01"><time datetime="2026-04-01">Wed Apr 1, 2026</time> &middot; Cattle surge 4.2% ignites broad rally</a></li>
-</ul>
-<h2 class="arc-static-month">March 2026</h2>
+</ul></details>
+<details class="arc-static-group"><summary><h2 class="arc-static-month">March 2026</h2><span class="arc-month-count">20 briefings</span></summary>
 <ul class="arc-static-list">
 <li><a href="/daily/2026-03-31"><time datetime="2026-03-31">Tue Mar 31, 2026</time> &middot; Corn slides 8¢ as crude jumps 3%</a></li>
 <li><a href="/daily/2026-03-30"><time datetime="2026-03-30">Mon Mar 30, 2026</time> &middot; Crude explodes above $101, grains slide</a></li>
@@ -422,7 +432,7 @@ body{overflow-x:hidden;overflow-x:clip;width:100%;}
 <li><a href="/daily/2026-03-06"><time datetime="2026-03-06">Fri Mar 6, 2026</time> &middot; Corn rallies 9¢ on planting uncertainty</a></li>
 <li><a href="/daily/2026-03-05"><time datetime="2026-03-05">Thu Mar 5, 2026</time> &middot; Cattle surge overnight, grains drift lower</a></li>
 <li><a href="/daily/2026-03-04"><time datetime="2026-03-04">Wed Mar 4, 2026</time> &middot; Crude rallies 3% as grains drift sideways</a></li>
-</ul>
+</ul></details>
 <!--/SEED:archivelist-->
   </section>
 
@@ -504,10 +514,13 @@ function render(){
   if(statsEl) statsEl.innerHTML = '<span class="arc-stats-count"><strong>'+filtered.length+'</strong> briefing'+(filtered.length!==1?'s':'')+' &middot; <strong>'+totalWeekday+'</strong> market day'+(totalWeekday!==1?'s':'')+'</span>';
 
   var html='';
-  order.forEach(function(mk){
+  // Months fold. With no search or month picked, only the newest month is
+  // open; a search or a picked month opens every group it matched.
+  var openAll = !!(searchTerm || activeMonth);
+  order.forEach(function(mk, gi){
     var grp = groups[mk];
-    html += '<div class="arc-month-group">';
-    html += '<div class="arc-month-label"><span>'+monthDisplay(mk)+'</span><span class="arc-month-count">'+grp.length+' briefing'+(grp.length!==1?'s':'')+'</span></div>';
+    html += '<details class="arc-month-group"'+((openAll||gi===0)?' open':'')+'>';
+    html += '<summary><div class="arc-month-label"><span>'+monthDisplay(mk)+'</span><span class="arc-month-count">'+grp.length+' briefing'+(grp.length!==1?'s':'')+'</span></div></summary>';
     html += '<div class="arc-grid">';
     grp.forEach(function(e){
       var hasHL = e.headline && e.headline.trim();
@@ -523,7 +536,7 @@ function render(){
           (e.lead?'<div class="arc-card-lead">'+escHtml(e.lead.slice(0,120)+(e.lead.length>120?'…':''))+'</div>':'')+
         '</a>';
     });
-    html += '</div></div>';
+    html += '</div></details>';
   });
   if(bodyEl) bodyEl.innerHTML = html;
 }
