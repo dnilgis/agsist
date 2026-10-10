@@ -121,6 +121,7 @@ PAGES = [
         ("/tools", "All Tools", "every AGSIST calculator on one page"),
     ]),
     ("Sell, store or price ahead?", [
+        ("/store-or-sell", "Sell Now or Store?", "net carry after storage and interest from your nearest elevator's posted bids, or the futures spread"),
         ("/breakeven", "Break-Even Calculator", "cost per bushel and profit per acre, with what-if tables"),
         ("/harvest-price-tracker", "Harvest Price Tracker",
          "the RMA projected and harvest prices that set Revenue Protection guarantees, what your guarantee is worth, and how many bushels you can safely pre-sell"),

@@ -68,8 +68,8 @@ specific page. Each daily briefing has a permanent dated URL.
 
 ## Sell, store or price ahead?
 
+- [Sell Now or Store?](https://agsist.com/store-or-sell): net carry after storage and interest from your nearest elevator's posted bids, or the futures spread
 - [Break-Even Calculator](https://agsist.com/breakeven): cost per bushel and profit per acre, with what-if tables
-- [Store or Sell](https://agsist.com/store-or-sell): your elevator's later posted bids minus storage, interest and shrink, in cents a bushel
 - [Harvest Price Tracker](https://agsist.com/harvest-price-tracker): the RMA projected and harvest prices that set Revenue Protection guarantees, what your guarantee is worth, and how many bushels you can safely pre-sell
 - [Grain Bin Calculator](https://agsist.com/grain-bin-calculator): bushels in a bin and moisture shrink
 
