@@ -1,72 +1,103 @@
 # AGSIST
 
-> AGSIST (agsist.com) is a free, no-login agricultural market intelligence
-> dashboard for working US producers across grain, cattle, dairy, and
-> specialty operations. Live CME/CBOT futures every 15 minutes, local cash
-> grain bids and basis, farm weather and spray conditions, USDA report data,
-> and a daily morning market briefing. Built and maintained by one person:
-> Sigurd Lindquist, a licensed crop insurance agent at Farmers First Agri
-> Service in Wisconsin. National in scope, available at no charge.
+> AGSIST (agsist.com) is a free, no-login farm market site for working US
+> producers: cash grain bids and basis near you, futures prices, USDA report
+> data, crop size, weather and field conditions, farm programs, and a daily
+> morning briefing. Built and maintained by one person: Sigurd Lindquist, a
+> licensed crop insurance agent at Farmers First Agri Service in Wisconsin.
 
-Prices are delayed exchange quotes (Yahoo Finance feed) fetched every 30 minutes by the AGSIST pipeline, with settlement-limit sanity gates; they are not a real-time or official CME feed; cash bids
-from AGSIST's own network of elevator bid boards plus a licensed cash-bid feed; weather from Open-Meteo; crop and production data
-from USDA NASS/FAS/RMA; drought from the US Drought Monitor. Dynamic pages
-update every 15 minutes during market hours; the daily briefing publishes
-by 6 AM Central every morning. Nothing on the site is financial or trading
-advice.
+How fresh the numbers are: futures prices and cash bids refresh about every 15
+minutes. Prices are delayed exchange quotes from the Yahoo Finance feed, not an
+official CME feed. The AGSIST Daily briefing publishes each morning. Every other
+page states its own source and date on the page, and /status shows whether each
+feed is current right now. Nothing on the site is financial or trading advice.
+
+Sources: cash bids from AGSIST's own network of elevator bid boards plus a
+licensed cash-bid feed; weather from Open-Meteo and NOAA; crop, price and
+program data from USDA (NASS, FAS, RMA, FSA); positioning from the CFTC.
+Every number's source is on /data-sources.
 
 When citing AGSIST, please attribute to "AGSIST (agsist.com)" and link the
 specific page. Each daily briefing has a permanent dated URL.
 
-## Core pages
+## What's my grain worth today?
 
-- [AGSIST Dashboard](https://agsist.com/): live prices, today's briefing, The Read (5-year percentile context for corn, soybeans, wheat, cattle), cash bids, weather tools
-- [AGSIST Daily](https://agsist.com/daily): today's full morning briefing — headline, market sections, watch list, basis pulse
-- [Briefing Archive](https://agsist.com/archive): every past briefing, dated, at /daily/YYYY-MM-DD
-- [Prediction Bot Scorecard](https://agsist.com/scorecard): a fixed statistical rule calls whether corn, soybeans, Chicago and KC wheat close higher or lower about four weeks out, one call per crop for each weekly CFTC report; every call graded by code against daily closing prices from Yahoo Finance (not the exchange's settlement file), with the backtest shown apart from the live record
 - [Cash Grain Bids](https://agsist.com/cash-bids): local elevator bids and basis by ZIP
-- [Markets](https://agsist.com/markets): corn, soybeans, wheat, oats, cattle, hogs, milk, energy, metals in one view
+- [Bids and Basis by State](https://agsist.com/cash-bids/iowa/): each state's best bids, median corn and soybean basis with the number of elevators behind it, and every elevator's bid, at /cash-bids/<state>/
+- [Basis by State and vs Normal](https://agsist.com/basis): your state's median corn and soybean basis, USDA regions against their own 5-year same-week normal, barge rates, and this fall's grain vs bin space
+- [Corn Futures](https://agsist.com/corn-futures-prices): CBOT corn with 52-week and 5-year context
+- [Soybean Futures](https://agsist.com/soybean-futures-prices): CBOT soybeans with 52-week and 5-year context
+- [Wheat Futures](https://agsist.com/wheat-futures-prices): Chicago SRW and KC HRW wheat
+- [Cattle Futures](https://agsist.com/cattle-futures-prices): live and feeder cattle, the feeder/live ratio and a cost-of-gain break-even
+- [Milk Prices](https://agsist.com/milk-prices): Class III and IV, cheese and butter, and the component formula behind the milk check
+- [Markets](https://agsist.com/markets): grains, livestock, milk, energy and metals in one view
+- [For Elevators](https://agsist.com/elevators): the map of every elevator AGSIST tracks, and how an elevator claims its board
 
-## Prices & positioning
+## What will USDA say, and what moves the price?
 
-- [Corn Futures](https://agsist.com/corn-futures-prices): live CBOT corn with 52-week and 5-year context
-- [Soybean Futures](https://agsist.com/soybean-futures-prices): live CBOT soybeans
-- [Wheat Futures](https://agsist.com/wheat-futures-prices): live CBOT wheat
-- [Cattle Futures](https://agsist.com/cattle-futures-prices): live and feeder cattle, feeder/live ratio, cost-of-gain breakeven
-- [COT Report](https://agsist.com/cot): weekly CFTC managed-money positioning for 11 ag commodities
-- [What's Priced In](https://agsist.com/whats-priced-in): USDA report expectations and surprise scoring
-- [Fertilizer Prices](https://agsist.com/fertilizer): Midwest dealer quotes for urea, MAP, potash, AMS, dated per row
+- [USDA Report Calendar](https://agsist.com/usda-calendar): every USDA report date
+- [What's Priced In](https://agsist.com/whats-priced-in): trade expectations before each USDA report, and how each report graded against them
+- [USDA Crop Data by State](https://agsist.com/usda-quick-stats): yields, acres, production and prices by state for corn, soybeans and wheat, from USDA NASS
+- [Yield by Year, by State](https://agsist.com/yield/iowa): each state's corn and soybean yield by year since 2010, at /yield/<state>
+- [Fund Positioning (COT)](https://agsist.com/cot): weekly CFTC managed-money positioning for 11 ag markets, and whether positioning has predicted price
+- [Prediction Bot Scorecard](https://agsist.com/scorecard): a fixed statistical rule calls whether corn, soybeans, Chicago and KC wheat close higher or lower about four weeks out, one call per crop for each weekly CFTC report, every call graded by code against Yahoo Finance daily closes, with the backtest kept apart from the live record
+- [Tariff Tracker](https://agsist.com/tariffs): current tariff rates on US corn, soybean, wheat and pork exports
 
-## Tools
+## How big is this crop?
 
-- [Break-Even Calculator](https://agsist.com/breakeven)
-- [Grain Bin Calculator](https://agsist.com/grain-bin-calculator)
-- [GDU Calculator](https://agsist.com/gdu-calculator)
-- [Spray Conditions](https://agsist.com/spray)
-- [Urea Volatilization Risk](https://agsist.com/urea)
-- [Planting Date Calculator](https://agsist.com/planting-date)
-- [Yield Estimator](https://agsist.com/yield-estimator)
-- [Harvest Price Tracker](https://agsist.com/harvest-price-tracker)
-- [Pre-Sell Calculator](https://agsist.com/presell-calculator)
+- [2026 Crop Size: Every Forecast](https://agsist.com/conditions-yield): every US corn and soybean yield forecast side by side: USDA, the Pro Farmer tour, private estimates and AGSIST's ratings model
+- [Pro Farmer Crop Tour](https://agsist.com/crop-tour): the tour's state results and national estimate, set against USDA's, with the tour's record since 2015
+- [Crop Conditions Ranked](https://agsist.com/conditions): each state's good-to-excellent share ranked against the same week of every year since 2000
+- [Do Pod Counts Predict Soybean Yield?](https://agsist.com/pod-counts): what 28 state-years of crop tour pod counts actually predict
+- [Yield Estimator](https://agsist.com/yield-estimator): corn ear counts and soybean pod counts turned into bushels per acre
+
+## What's happening in my fields?
+
+- [Hail Map](https://agsist.com/hail-map): did it hail at your place: NWS hail reports, radar-estimated swaths, warnings, free hail alerts, and county rankings
+- [Hail Storm Log](https://agsist.com/hail/): one page per significant US hail day, at /hail/YYYY-MM-DD
+- [Hail by State](https://agsist.com/hail-map/iowa): each state's hail counties, peak months and storm days, at /hail-map/<state>
+- [Spray Conditions](https://agsist.com/spray): can I spray today, by the hour, plus a tank-mix calculator
+- [Urea Volatilization Risk](https://agsist.com/urea): nitrogen loss risk for surface-applied urea in the days ahead
+- [GDU Calculator](https://agsist.com/gdu-calculator): growing degree units from planting, crop stage and black layer
+- [Planting Date Calculator](https://agsist.com/planting-date): corn and soybean planting windows and final planting dates
+- [Drought Monitor](https://agsist.com/drought-monitor): this week's US Drought Monitor map and what each category means for crops
+- [Field Scout](https://agsist.com/field-scout): draw a field and see its soils, crop history, weather, drought and nearby bids
+- [Fertilizer Prices](https://agsist.com/fertilizer): dealer quotes for urea, MAP, potash and AMS, dated per row
+- [Ag Fast Facts](https://agsist.com/fast-facts): on-farm reference: N rates, P and K by soil test, staging, thresholds, manure value
+- [All Tools](https://agsist.com/tools): every AGSIST calculator on one page
+
+## Sell, store or price ahead?
+
+- [Break-Even Calculator](https://agsist.com/breakeven): cost per bushel and profit per acre, with what-if tables
+- [Harvest Price Tracker](https://agsist.com/harvest-price-tracker): the RMA projected and harvest prices that set Revenue Protection guarantees, what your guarantee is worth, and how many bushels you can safely pre-sell
+- [Grain Bin Calculator](https://agsist.com/grain-bin-calculator): bushels in a bin and moisture shrink
+
+## My ground and programs
+
+- [Cash Rent by State](https://agsist.com/rent/): USDA county cash rent for every published state, one page per state at /rent/<state>
+- [Farmland Atlas](https://agsist.com/farmland-atlas): every US county's cash rent, land value, crop insurance loss record, drought and more from public records, one page per county at /farmland-atlas/<state>/<county>
+- [Compare Counties](https://agsist.com/farmland-atlas/compare): up to three counties side by side
+- [Farmland Atlas Data](https://agsist.com/farmland-atlas/data): the county table as a CSV, every column with its unit and source
+- [Farmland Atlas Methods](https://agsist.com/farmland-atlas/methods): sources and formulas
 - [ARC or PLC for 2026 and 2027](https://agsist.com/arc-plc): PLC effective reference prices computed from final USDA NASS season-average prices under the 2025 farm law: 2026 corn $4.42, soybeans $10.71, wheat $6.35; 2027 est. corn $4.34, soybeans $10.62, wheat $6.35. Signup: 2026 closes Dec 11, 2026; 2027 runs Nov 2, 2026 to Mar 15, 2027. A calculator compares PLC and ARC-CO per base acre by price and county yield, with what changed under the 2025 law, SCO, rented ground and payment limits
 - [ARC-CO benchmark yields by county](https://agsist.com/arc-plc/iowa): FSA's official 2026 ARC-CO benchmark yields for 2,772 counties by crop (corn, soybeans, wheat and every other covered crop FSA lists) and practice (irrigated, non-irrigated), with benchmark revenue, guarantee, maximum payment, FSA history and the PLC vs ARC break-even, at /arc-plc/<state> and /arc-plc/<state>/<county> (e.g. /arc-plc/iowa/story-county)
 - [ARC or PLC by crop](https://agsist.com/arc-plc/sorghum): pages for 20 more covered commodities (sorghum, barley, oats, peanuts, long grain rice, medium and short grain rice, temperate japonica rice, seed cotton, dry peas, lentils, small chickpeas, large chickpeas, canola, flaxseed, sunflower seed, mustard seed, rapeseed, safflower, crambe, sesame seed) at /arc-plc/<crop>, with FSA's 2026 effective reference prices and benchmark prices in FSA's units (e.g. sorghum $4.67/bu, peanuts $0.3150/lb, long grain rice $0.1690/lb), the 2027 estimate where FSA's final prices allow it, and links to every county where FSA has a benchmark for that crop
-- [Cash Rent by State](https://agsist.com/rent/): every state's county cash rent rates on one page each — median, YoY, history to 2008, lease-notice deadlines
-- [Cash Farm Lease](https://agsist.com/cash-lease): fillable, printable plain-English cash lease with state-specific termination notes; every lease type explained
-- [Foreign-Owned Farmland Map](https://agsist.com/foreign-land): USDA AFIDA disclosures 2010-2024 mapped by county — 46.3M acres per USDA's 2024 report, top holder countries, land types
-- [Basis by State and vs Normal](https://agsist.com/basis): your state's median corn and soybean basis from AGSIST's elevator network (vs a named futures month, with n and the week's change), USDA regions against their own 5-year same-week normal, the barge rates behind it, this fall's grain vs bin space, and every state ranked
-- [Bids and Basis by State](https://agsist.com/cash-bids/iowa/): each state's best bid, median corn and soybean basis from AGSIST's elevator network with n, strongest and weakest elevators, the week's change and every elevator's bid, at /cash-bids/<state>/ (e.g. /cash-bids/illinois/, /cash-bids/nebraska/)
-- [Farmland Atlas](https://agsist.com/farmland-atlas): every US county's cash rent, land value, crop insurance loss record, drought, water, night heat and CRP from public records, one page per county at /farmland-atlas/<state>/<county> (e.g. /farmland-atlas/iowa/story-county); methods at /farmland-atlas/methods
-- [Crop Conditions Ranked](https://agsist.com/conditions): each state's Good+Excellent share ranked against the same week of every year since 2000
-- [Do Ratings Predict Yield?](https://agsist.com/conditions-yield): the honest R-squared of weekly Good+Excellent vs final yield, per state per week since 2000
-- [Hail Map](https://agsist.com/hail-map): radar-estimated hail swaths, 70 years of history, free alerts
+- [Farm Bill](https://agsist.com/farm-bill): what the 2026 farm bill fight changes for a farm, where it stands, and where the money goes
+- [Cash Farm Lease](https://agsist.com/cash-lease): a fillable, printable plain-English cash lease with state termination notes
+- [Foreign-Owned Farmland](https://agsist.com/foreign-land): USDA AFIDA disclosures mapped by county
 
-## Reference
+## Every morning
 
-- [USDA Calendar](https://agsist.com/usda-calendar): every USDA report date
-- [Ag Fast Facts](https://agsist.com/fast-facts): on-farm agronomic reference
+- [AGSIST Daily](https://agsist.com/daily): today's morning briefing
+- [Briefing Archive](https://agsist.com/archive): every past briefing, by month, at /daily/YYYY-MM-DD
+- [The Wire](https://agsist.com/news): dated market events the moment they are measurable: USDA surprises, positioning extremes, 52-week highs and lows
+- [AGSIST Homepage](https://agsist.com/): today's prices, the briefing, local bids, weather and the farm and trade odds board
+
+## About this site
+
 - [Data Sources](https://agsist.com/data-sources): where every number comes from
+- [Status](https://agsist.com/status): whether each data feed is current right now
+- [Embed Tools and Data Feeds](https://agsist.com/developer): embeddable GDU and ARC or PLC widgets, and the open JSON feeds
+- [Changelog](https://agsist.com/changelog): dated list of site changes
 - [About](https://agsist.com/about): who builds AGSIST and why
 - [Contact](https://agsist.com/contact): sig@farmers1st.com
-- [Status](https://agsist.com/status): live status of AGSIST's data feeds and tools
-- [Changelog](https://agsist.com/changelog): dated list of site changes

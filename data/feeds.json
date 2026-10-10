@@ -836,7 +836,6 @@
   {
    "path": "data/markets.json",
    "pages": [
-    "ag-odds.html",
     "developer.html",
     "index.html"
    ],
@@ -844,12 +843,7 @@
     "Fetch Markets"
    ],
    "touched_by": [
-    "Build Analyst Scorecard",
-    "Generate Daily Briefing",
-    "Fetch Markets",
-    "Rebuild Call Scorecard",
-    "WASDE watch \u2014 grade the report as it lands",
-    "Build What's Priced In"
+    "Fetch Markets"
    ],
    "cadence": "1 launch every day at about 4am Central",
    "curated": false,
@@ -1284,24 +1278,26 @@
   {
    "path": "data/nowcast-direction.json",
    "pages": [
-    "conditions-yield.html",
     "status.html"
    ],
    "written_by": [
-    "cond-yield"
+    "cond-yield",
+    "WASDE watch \u2014 grade the report as it lands"
    ],
    "touched_by": [
     "Build Analyst Scorecard",
     "cond-yield",
-    "WASDE watch \u2014 grade the report as it lands"
+    "WASDE watch \u2014 grade the report as it lands",
+    "yield-panel"
    ],
-   "cadence": "1 launch on a fixed schedule at about 10pm Central",
+   "cadence": "2 launches on a fixed schedule at about 10pm Central",
    "curated": false,
    "planned": false,
    "external": false,
    "url": null,
    "crons": [
-    "18 3 * * 2"
+    "18 3 * * 2",
+    "*/5 16-17 9-12 * *"
    ],
    "max_gap_hours": 168.0,
    "quiet": null,
@@ -1379,7 +1375,6 @@
   {
    "path": "data/predictions.json",
    "pages": [
-    "index.html",
     "scorecard.html"
    ],
    "written_by": [
@@ -1444,8 +1439,7 @@
     "milk-prices.html",
     "soybean-futures-prices.html",
     "status.html",
-    "wheat-futures-prices.html",
-    "yield-estimator.html"
+    "wheat-futures-prices.html"
    ],
    "written_by": [
     "Generate Daily Briefing",
@@ -1780,23 +1774,33 @@
   {
    "path": "data/wasde.json",
    "pages": [
+    "crop-tour.html",
     "index.html"
    ],
    "written_by": [
-    "WASDE watch \u2014 grade the report as it lands"
+    "bake crop tour",
+    "WASDE watch \u2014 grade the report as it lands",
+    "yield-panel"
    ],
    "touched_by": [
-    "WASDE watch \u2014 grade the report as it lands"
+    "COT Release Watch",
+    "bake crop tour",
+    "WASDE watch \u2014 grade the report as it lands",
+    "Build What's Priced In",
+    "yield-panel"
    ],
-   "cadence": "1 launch every day Central",
+   "cadence": "4 launches every day at about 4am, 8pm, 11pm Central",
    "curated": false,
    "planned": false,
    "external": false,
    "url": null,
    "crons": [
-    "*/5 16-17 9-12 * *"
+    "20 9 * * *",
+    "30 1 17-22 8 *",
+    "*/5 16-17 9-12 * *",
+    "24 4 * * *"
    ],
-   "max_gap_hours": null,
+   "max_gap_hours": 19.1,
    "quiet": null,
    "why_quiet": null
   },
@@ -1804,6 +1808,7 @@
    "path": "data/whats-priced-in.json",
    "pages": [
     "corn-futures-prices.html",
+    "index.html",
     "soybean-futures-prices.html",
     "whats-priced-in.html",
     "wheat-futures-prices.html"
@@ -1895,6 +1900,7 @@
     "yield-panel"
    ],
    "touched_by": [
+    "cond-yield",
     "yield-panel"
    ],
    "cadence": "1 launch every day at about 11pm Central",

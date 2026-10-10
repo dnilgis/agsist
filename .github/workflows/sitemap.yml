@@ -44,15 +44,22 @@ jobs:
             python scripts/update_sitemap.py --daily --out /tmp/bumped.txt
           fi
 
+      # llms.txt is built from the same published pages: one list in
+      # scripts/build_llms_txt.py, every URL checked live against the files and
+      # the sitemaps. The --check step at the end of this job goes red when a
+      # sitemap page is in neither its list nor its OMIT set.
+      - name: Rebuild llms.txt
+        run: python scripts/build_llms_txt.py
+
       - name: Commit if changed
         run: |
           git config user.name "AGSIST Bot"
           git config user.email "bot@agsist.com"
-          git add sitemap.xml
+          git add sitemap.xml llms.txt
           if git diff --staged --quiet; then
             echo "no sitemap change"
           else
-            git commit -m "Bump sitemap lastmod $(date -u +%F)"
+            git commit -m "Bump sitemap lastmod, rebuild llms.txt $(date -u +%F)"
             git pull --rebase --autostash origin main || true
             git push
           fi
@@ -69,3 +76,8 @@ jobs:
           else
             echo "nothing bumped; skipping IndexNow"
           fi
+
+      # After the commit, so a page nobody has placed yet never holds up the
+      # lastmod bump; it still turns the run red until someone decides.
+      - name: llms.txt lists every page
+        run: python scripts/build_llms_txt.py --check
