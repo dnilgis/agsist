@@ -2837,8 +2837,9 @@ def render_action_block_html(action, bot_call=None):
 
 
 def render_harvest_clock_html(block):
-    """The harvest price clock (scripts/harvest_clock.py): RMA's running
-    harvest price against its projected price, with RMA's as-of date. The
+    """The harvest price clock (scripts/harvest_clock.py): the running
+    average of the contract's settles (data/harvest-prices.json, the site's
+    one count) against RMA's projected price. The
     block is only in an issue generated inside the window from a fresh RMA
     file; an archive page is that day's snapshot and keeps its as-of date."""
     if not isinstance(block, dict) or not block.get("lines"):

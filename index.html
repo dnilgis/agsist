@@ -4908,7 +4908,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
       var wa=ww.status==='final'?ww.price:ww.status==='running'?ww.running_avg:null;
       var ws=ww.series||[],wl=ws.length?dayStart(ws[ws.length-1].d):null;
       if(wa==null||!wl||wl>today||wl<hs||wl>he)return null;
-      return {avg:wa,days:ww.days_counted,series:ws,last:ws[ws.length-1].d,fin:ww.status==='final'};
+      return {avg:wa,days:ws.length,series:ws,last:ws[ws.length-1].d,fin:ww.status==='final'};
     }
     if(!hp.commodities)return null;
     var c=null;hp.commodities.forEach(function(x){if(x.label===crop)c=x;});
@@ -4920,7 +4920,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
     if(avg==null)return null;
     var last=dayStart(leg.series[leg.series.length-1].d);
     if(!last||last>today||last<hs)return null;
-    return {avg:avg,days:leg.days_counted,series:leg.series,last:leg.series[leg.series.length-1].d};
+    return {avg:avg,days:leg.series.length,series:leg.series,last:leg.series[leg.series.length-1].d};
   }
   /* How many settles RMA's posted figure holds: the day whose running
      average (the pipeline writes it as "a") equals RMA's price. Only a single
@@ -5026,19 +5026,24 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
         if(g.win&&x.p_start&&x.p_end){var ps=dayStart(x.p_start),pe=dayStart(x.p_end);if(ps&&pe)projTxt+=' ('+rng(ps,pe)+')';}
         if(g.st==='open'){
           tag='in window';
-          var own=(g.p!=null)?ownAvg(hp,g.crop,x,hs,he,today):null;
+          var own=ownAvg(hp,g.crop,x,hs,he,today);
           var win=hs&&he?rng(hs,he):'';
-          if(tot){var nth=tradingDays(hs,today);win+=': '+(isTrading(today)?'trading day '+nth+' of '+tot:nth+' of '+tot+' trading days done');}
+          /* 2026-10-10 ONE COUNT: the settles in data/harvest-prices.json (the
+             tracker, the ARC/PLC snapshot and the briefing clock use the same
+             series). The calendar position ("trading day 7 of 22") read as a
+             third count beside 6 settles; it is not printed. */
+          if(tot&&own)win+=': '+own.days+' of '+tot+' settles counted';
           else if(win)win='window '+win;
           /* A county window names its dates in its label already. */
           if(g.win)win=tot?win.replace(/^[^:]*: /,''):'';
           wk=(hs&&he?+hs+'|'+(+he):'')+'|'+tot;wt=win;
           if(g.p!=null&&(g.h!=null||own)){
-            /* Lead with whichever average covers more settles. RMA's count is
-               known only when its figure matches one day's running average. */
+            /* Lead with the site's own average of the settles whenever the file
+               has it (the one count); RMA's posted figure follows it. RMA's count
+               is known only when its figure matches one day's running average. */
             anyCmp=true;tag='so far';
             var k=g.h!=null?rmaDays(own,g.h):null;
-            var useOwn=!!own&&(g.h==null||k==null||own.days>=k);
+            var useOwn=!!own;
             var lead=useOwn?own.avg:g.h,n=useOwn?own.days:k;
             /* One day count only, inside the line it describes; the window's own
                position (trading day N of 22) sits in the sub-line. */

@@ -42,7 +42,7 @@ from datetime import date, datetime
 import sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import market_board   # noqa: E402  ONE definition of "is this the same session's board"
-import harvest_clock  # noqa: E402  the fall harvest price clock (RMA figures only)
+import harvest_clock  # noqa: E402  the fall harvest price clock (the site's settles count, RMA window)
 
 # Resolved against the repo, not the cwd. send_daily.py is invoked from the
 # workflow's checkout root today, but a sender that only finds the previous

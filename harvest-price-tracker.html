@@ -371,8 +371,8 @@ table.hp-hist td.up{color:var(--pd-green);} table.hp-hist td.dn{color:var(--pd-r
     </div>
     <div class="hp-cards">
     <!--SEED:hpcards-->
-      <div class="hp-card-s"><div class="hpc-t">Corn · Dec '26 · 2026 crop year</div><div class="hpc-leg"><span class="hpc-l">Projected price (February · final)</span><span class="hpc-v">$4.62</span></div><div class="hpc-leg"><span class="hpc-l">Harvest price · day 6 of ~22 · running estimate</span><span class="hpc-v">$5.01</span></div></div>
-      <div class="hp-card-s"><div class="hpc-t">Soybeans · Nov '26 · 2026 crop year</div><div class="hpc-leg"><span class="hpc-l">Projected price (February · final)</span><span class="hpc-v">$11.09</span></div><div class="hpc-leg"><span class="hpc-l">Harvest price · day 6 of ~22 · running estimate</span><span class="hpc-v">$12.88</span></div></div>
+      <div class="hp-card-s"><div class="hpc-t">Corn · Dec '26 · 2026 crop year</div><div class="hpc-leg"><span class="hpc-l">Projected price (February · final)</span><span class="hpc-v">$4.62</span></div><div class="hpc-leg"><span class="hpc-l">Harvest price · 6 of 22 settles · running estimate</span><span class="hpc-v">$5.01</span></div></div>
+      <div class="hp-card-s"><div class="hpc-t">Soybeans · Nov '26 · 2026 crop year</div><div class="hpc-leg"><span class="hpc-l">Projected price (February · final)</span><span class="hpc-v">$11.09</span></div><div class="hpc-leg"><span class="hpc-l">Harvest price · 6 of 22 settles · running estimate</span><span class="hpc-v">$12.88</span></div></div>
       <div class="hp-seed-note">Figures above are baked in daily on trading days; in-window numbers are running estimates until the month closes. Official prices: USDA RMA.</div>
       <!--/SEED:hpcards-->
     </div>
@@ -484,7 +484,7 @@ table.hp-hist td.up{color:var(--pd-green);} table.hp-hist td.dn{color:var(--pd-r
   "url":"https://agsist.com/harvest-price-tracker",
   "creator":{"@type":"Person","name":"Sigurd Lindquist","url":"https://agsist.com/about","jobTitle":"Licensed Crop Insurance Agent"},
   "isAccessibleForFree":true,
-  "dateModified":"2026-10-09",
+  "dateModified":"2026-10-10",
   "temporalCoverage":"2011/2026",
   "variableMeasured":["Projected price","Harvest price"],
   "keywords":["crop insurance","projected price","harvest price","Revenue Protection","corn","soybeans","RMA"]
@@ -537,6 +537,23 @@ window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);
 
   function d(s){ var p=String(s).split('-'); return new Date(+p[0],+p[1]-1,+p[2],12,0,0); }
   function days(a,b){ return Math.round((b-a)/86400000); }
+  /* 2026-10-10 ONE COUNT. The settles in data/harvest-prices.json for this
+     crop and exact window, the count the homepage, the ARC/PLC snapshot and
+     the briefing clock print too: {n, total, avg, last} or null. The calendar
+     "day 9 of a 31-day window" this page used to print was a third count. */
+  var HP=null;
+  function hpCount(crop,hs,he){
+    if(!HP) return null;
+    var ser=null,total=null;
+    (HP.windows||[]).forEach(function(w){ if(!ser&&w&&w.crop===crop&&w.start===hs&&w.end===he&&w.series&&w.series.length){ ser=w.series; total=w.days_total; } });
+    if(!ser){ (HP.commodities||[]).forEach(function(c){ var L=c&&c.harvest;
+      if(ser||!L||c.label!==crop||!L.series||!L.series.length) return;
+      var a=d(hs),b=d(he);
+      if(a.getDate()===1&&new Date(b.getFullYear(),b.getMonth(),b.getDate()+1).getDate()===1&&a.getMonth()===b.getMonth()&&L.window===MON[a.getMonth()]){ ser=L.series; total=L.days_total; } }); }
+    if(!ser) return null;
+    var t=0; ser.forEach(function(x){ t+=+x.s; });
+    return { n:ser.length, total:total, avg:Math.round(t/ser.length*100+1e-7)/100, last:ser[ser.length-1].d };
+  }
   
   function unit(r){ return CENT[r.crop]?'lb':'bu'; }
   function unitOf(g){
@@ -789,8 +806,8 @@ window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);
       var o0=openL[0];
       $('pd-verdict-h').innerHTML='Your '+esc(crops(openL))+
         ' price is being set <em>right now</em>.';
-      $('pd-verdict-p').textContent=name+' is day '+(days(d(o0.hs),TODAY)+1)+' of a '+
-        (days(d(o0.hs),d(o0.he))+1)+'-day window'+
+      var hc0=hpCount(o0.crop,o0.hs,o0.he);
+      $('pd-verdict-p').textContent=name+': '+(hc0?hc0.n+(hc0.total?' of '+hc0.total:'')+' trading days settled, through '+shortd(hc0.last):'window '+shortd(o0.hs)+' to '+shortd(o0.he))+
         (openL.length>1?' ('+openL.length+' windows are open).':'.');
     }else if(!pendL.length){
       $('pd-verdict-h').innerHTML='Your '+esc(crops(lead))+' price is <em>set</em>.';
@@ -1030,7 +1047,11 @@ window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);
         var tx;
         if(isDone(ref)&&ref.h!=null) tx=money(ref.h,unitOf(ref))+' (final)';
         else if(isClosed(ref)) tx='window closed, RMA has not released the final price';
-        else if(isOpen(ref)) tx=(ref.h!=null?money(ref.h,unitOf(ref))+' running average, ':'')+'day '+(days(d(ref.hs),TODAY)+1)+' of '+(days(d(ref.hs),d(ref.he))+1);
+        else if(isOpen(ref)){
+          var hc=hpCount(crop,ref.hs,ref.he);
+          tx=hc?money(hc.avg,unitOf(ref))+', average of '+hc.n+(hc.total?' of '+hc.total:'')+' settles'+(ref.h!=null&&Math.round(ref.h*100)!==Math.round(hc.avg*100)?' (RMA posts '+money(ref.h,unitOf(ref))+')':'')
+            :(ref.h!=null?money(ref.h,unitOf(ref))+' running average (RMA)':'running, RMA has not posted a figure');
+        }
         else tx='pending: discovery opens '+shortd(ref.hs);
         pend.textContent=tx; pend.style.whiteSpace='normal'; pend.style.textAlign='right';
         var lg=card.querySelectorAll('.hpc-l')[1];
@@ -1081,9 +1102,10 @@ window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);
     });
   }
 
+  var hpP=fetch('/data/harvest-prices.json',{cache:'no-cache'}).then(function(r){ return r.ok?r.json():null; }).catch(function(){ return null; });
   fetch(SRC,{cache:'no-cache'}).then(function(r){
     if(!r.ok) throw new Error(r.status); return r.json();
-  }).then(function(j){
+  }).then(function(j){ return hpP.then(function(h){ HP=h; return j; }); }).then(function(j){
     if(!j||!j.rows||!j.rows.length) throw new Error('empty');
     boot(j.rows);
   }).catch(function(){

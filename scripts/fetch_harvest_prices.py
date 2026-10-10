@@ -52,13 +52,29 @@ def contract_ticker(commodity):
     return root + MONTH_CODE[mon] + yy + ".CBT"
 
 
-def settled_only(rows, today):
-    """Bars dated before today (Central) only. A same-day Yahoo bar is not the
-    settlement: after the 7 PM reopen it holds evening trades (Oct 5, 2026:
-    4.9625 recorded against a 4.975 close), and even before then it can
-    differ from the figure Yahoo restates the next day (Oct 2: 4.9725 that
-    evening, 4.9775 later). Today's settle is counted on the next run."""
-    return [r for r in rows if r["d"] < today.isoformat()]
+# Today's bar is the settle between the day close and the evening reopen.
+SETTLED_FROM = (14, 0)     # CBOT grains close 1:20 PM CT; settles post by 2
+REOPEN = (19, 0)           # the overnight session opens 7 PM CT
+
+
+def settled_only(rows, today, now=None):
+    """Settled bars only. A bar dated before today (Central) always counts.
+    Today's bar counts only when `now` (Central) is between the settle and the
+    7 PM reopen: after the reopen it holds evening trades (Oct 5, 2026: 4.9625
+    recorded against a 4.975 close).
+
+    2026-10-10: this used to drop today's bar at every run. The workflow runs
+    at 4:47 PM CT on weekdays only, so Friday's settle was not counted until
+    Monday evening: on Oct 9 and 10 the file held 6 settles and $5.01 when the
+    7 settled days averaged $4.98, and the pages counted 5, 6 and 7 days. Yahoo
+    can restate a fresh bar by a tick the next day (Oct 2: 4.9725 that
+    evening, 4.9775 later); the series is rebuilt from the exchange data on
+    every run, so a restated figure replaces it on the next run."""
+    cut = today.isoformat()
+    if (now is not None and now.date() == today and now.weekday() < 5
+            and SETTLED_FROM <= (now.hour, now.minute) < REOPEN):
+        return [r for r in rows if r["d"] <= cut]
+    return [r for r in rows if r["d"] < cut]
 
 
 def month_settlements(ticker, year, month, today=None):
@@ -85,7 +101,8 @@ def range_settlements(ticker, start, end_excl, today=None):
             out.append({"d": idx.strftime("%Y-%m-%d"), "s": round(float(val) / 100, 4)})
     if not out:
         raise RuntimeError("all-NaN settlements for " + ticker)
-    out = settled_only(out, today or today_central())
+    now = datetime.now(CENTRAL)
+    out = settled_only(out, today or now.date(), now)
     if not out:
         raise RuntimeError("no settled day yet for " + ticker + f" {year}-{month:02d}")
     return out
@@ -99,8 +116,15 @@ def with_running_avg(series):
     tot = 0.0
     for i, p in enumerate(series):
         tot += p["s"]
-        p["a"] = round(tot / (i + 1), 2)
+        p["a"] = cents(tot / (i + 1))
     return series
+
+
+def cents(x):
+    """To the cent, halves up, as RMA rounds. Python's round() on a float sends
+    12.885 (77.31 / 6, Nov beans Oct 1-8 2026) to 12.88 because the float is a
+    hair under the half; RMA posted 12.89."""
+    return round(x + 1e-9, 2)
 
 
 def selftest_windows():
@@ -159,11 +183,26 @@ def selftest():
     assert [p["a"] for p in s] == [5.02, 5.0], s
     # the last stamp equals the old one-shot formula
     t = [{"d": str(i), "s": v} for i, v in enumerate([12.84, 12.7725, 12.9, 13.0125])]
-    assert with_running_avg(t)[-1]["a"] == round(sum(p["s"] for p in t) / len(t), 2)
+    assert with_running_avg(t)[-1]["a"] == cents(sum(p["s"] for p in t) / len(t))
+    beans = [12.84, 12.7825, 12.8075, 13.03, 12.975, 12.875]
+    assert with_running_avg([{"d": str(i), "s": v} for i, v in enumerate(beans)])[-1]["a"] == 12.89, "half rounds up, like RMA"
     rows = [{"d": "2026-10-01", "s": 5.0225}, {"d": "2026-10-02", "s": 4.9775}, {"d": "2026-10-05", "s": 4.9625}]
     assert [r["d"] for r in settled_only(rows, date(2026, 10, 5))] == ["2026-10-01", "2026-10-02"], \
         "a bar dated today is not a settlement yet"
     assert len(settled_only(rows, date(2026, 10, 6))) == 3
+    # Friday Oct 9 2026: the 4:47 PM CT run counts that day's settle ...
+    fri = rows + [{"d": "2026-10-09", "s": 4.805}]
+    at = lambda h, m: datetime(2026, 10, 9, h, m, tzinfo=CENTRAL)
+    assert settled_only(fri, date(2026, 10, 9), at(16, 47))[-1]["d"] == "2026-10-09", "settle after the close counts"
+    # ... but not before the close, nor after the 7 PM reopen
+    assert settled_only(fri, date(2026, 10, 9), at(11, 0))[-1]["d"] == "2026-10-05", "intraday bar is not a settle"
+    assert settled_only(fri, date(2026, 10, 9), at(19, 30))[-1]["d"] == "2026-10-05", "evening bar is not a settle"
+    # a weekend run counts Friday as an earlier day
+    assert settled_only(fri, date(2026, 10, 10), datetime(2026, 10, 10, 9, 0, tzinfo=CENTRAL))[-1]["d"] == "2026-10-09"
+    # the hand-worked Oct 9 average: 7 settles, $4.98 (not the 6-settle $5.01)
+    oct_ = [5.0225, 4.9775, 4.9725, 5.08, 5.02, 5.0025, 4.805]
+    s7 = with_running_avg([{"d": str(i), "s": v} for i, v in enumerate(oct_)])
+    assert (len(s7), s7[-1]["a"], s7[-2]["a"]) == (7, 4.98, 5.01), s7
     selftest_windows()
     print("selftest ok")
     return 0
@@ -336,8 +375,9 @@ def card_html(c, crop_year):
             return ('<div class="hpc-leg"><span class="hpc-l">' + label + ' (' + month_word + ' \u00b7 final)</span>'
                     '<span class="hpc-v">$' + f"{leg['price']:.2f}" + '</span></div>')
         if leg["status"] == "running":
-            return ('<div class="hpc-leg"><span class="hpc-l">' + label + ' \u00b7 day ' + str(leg["days_counted"])
-                    + ' of ~' + str(leg.get("days_total", "?")) + ' \u00b7 running estimate</span>'
+            # the one count: settles in the series (also days_counted)
+            return ('<div class="hpc-leg"><span class="hpc-l">' + label + ' \u00b7 ' + str(len(leg.get("series") or []))
+                    + ' of ' + str(leg.get("days_total", "?")) + ' settles \u00b7 running estimate</span>'
                     '<span class="hpc-v">$' + f"{leg['running_avg']:.2f}" + '</span></div>')
         return ('<div class="hpc-leg"><span class="hpc-l">' + label + ' (' + month_word + ')</span>'
                 '<span class="hpc-v hpc-pend">pending: discovery opens '

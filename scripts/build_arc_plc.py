@@ -836,7 +836,8 @@ def snapshot_prices(root="."):
         k = lab.get(c.get("label"))
         h = c.get("harvest") or {}
         if k and h.get("running_avg"):
-            snap["harvest"][k] = {"contract": c.get("contract"), "price": h["running_avg"], "days": h.get("days_counted"),
+            # days: the settles in the series, the one count every page uses
+            snap["harvest"][k] = {"contract": c.get("contract"), "price": h["running_avg"], "days": len(h.get("series") or []),
                                   "of": h.get("days_total"), "status": h.get("status"), "updated": hp.get("updated")}
     for k, key in (("corn", "corn-dec27"), ("soybeans", "beans-nov27")):
         q = (pj.get("quotes") or {}).get(key)
