@@ -5,13 +5,23 @@
     <link>https://agsist.com/daily</link>
     <description>Free daily agricultural market briefing for corn, soybean, and grain producers. Overnight surprises, farmer actions, market analysis, every morning at 5 AM CT.</description>
     <language>en-us</language>
-    <lastBuildDate>Fri, 09 Oct 2026 10:47:36 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 10 Oct 2026 10:54:44 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/agsist.jpg</url>
       <title>AGSIST Daily: Morning Agricultural Intelligence Briefing</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>Corn drops nearly 4% Friday on WASDE; cattle hold the gains</title>
+      <link>https://agsist.com/daily/2026-10-10</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-10-10</guid>
+      <pubDate>Sat, 10 Oct 2026 05:00:00 -0600</pubDate>
+      <description>Corn settled at $4.80 Friday, down almost 20 cents, after WASDE numbers came in heavier than the trade wanted. Cattle didn't blink, closing at $224.60, up 1.2% on the week. Every bushel still in the bin is worth less than it was Thursday morning.
+• Corn takes the WASDE hit
+• Cattle and feeders close the week strong
+Read more: https://agsist.com/daily/2026-10-10</description>
+    </item>
     <item>
       <title>Crude pulls back from the Hormuz run as grains sit quiet</title>
       <link>https://agsist.com/daily/2026-10-09</link>
@@ -345,19 +355,6 @@ Wheat leads grains lower on WASDE positioning and Black Sea news; the weekly exp
 • CRUDE HOLDS ABOVE $97; TANKER RATES AT RECORDS
   → If fall diesel needs are still unpriced, record tanker rates and $97 crude say this is not the window to wait.
 Read more: https://agsist.com/daily/2026-09-10</description>
-    </item>
-    <item>
-      <title>BRENT HITS $100; GRAINS AND CATTLE FOLLOW</title>
-      <link>https://agsist.com/daily/2026-09-09</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-09-09</guid>
-      <pubDate>Wed, 09 Sep 2026 05:00:00 -0600</pubDate>
-      <description>WTI settled at **$95.26**, its highest close in two months, after the US destroyed five Iranian tankers and Iran struck US forces in Jordan, the sharpest re-escalation of the Iran-Hormuz cycle since its July flare. Wheat added 11 cents on war-premium buying; harvest diesel has no global slack. The September WASDE lands Friday into a market that just re-priced risk. The next 48 hours are not quiet.
-US strikes on Iranian tankers push crude to a two-month high, dragging harvest input costs higher and lifting grains on war-premium buying.
-• ENERGY LEADS THE COMPLEX
-  → If fall diesel needs are unpriced, today's Brent close above $100 says this is the window, not a reason to wait for a pullback.
-• WHEAT LIFTS ON WAR BID
-• CATTLE AND HOGS RUN HIGHER
-Read more: https://agsist.com/daily/2026-09-09</description>
     </item>
   </channel>
 </rss>

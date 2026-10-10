@@ -1,6 +1,17 @@
 {
   "briefings": [
     {
+      "date": "2026-10-10",
+      "date_display": "Saturday, October 10, 2026",
+      "headline": "Corn drops nearly 4% Friday on WASDE; cattle hold the gains",
+      "teaser": "Corn took a hard hit on WASDE Friday while cattle and feeders kept climbing.",
+      "market_mood": "mixed",
+      "surprise_count": 0,
+      "sections": 2,
+      "url": "/daily/2026-10-10",
+      "market_closed": true
+    },
+    {
       "date": "2026-10-09",
       "date_display": "Friday, October 9, 2026",
       "headline": "Crude pulls back from the Hormuz run as grains sit quiet",
@@ -2415,6 +2426,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-10-09T10:47:29.918209+00:00",
-  "count": 210
+  "updated": "2026-10-10T10:54:38.021576+00:00",
+  "count": 211
 }
