@@ -45,8 +45,21 @@ FOLDER_MB = {
 }
 DEFAULT_FOLDER_MB = 25
 
-SET_MIN = 50          # this many .html files under one top-level folder = a generated set
+SET_MIN = 20          # this many .html files under one top-level folder = a generated set
 SET_PAGE_KB = 150     # cap for any one page in a generated set
+
+# Known offenders with a dated reason. Each entry is a debt, not a pass:
+# remove it when the page is fixed. The check prints them every run.
+PAGE_EXCEPTIONS = {
+    "farmland-atlas/texas/index.html": "atlas state hubs are being reworked in the 2026-10 consolidation (rent/atlas merge)",
+    "farmland-atlas/alaska/index.html": "atlas state hubs are being reworked in the 2026-10 consolidation (rent/atlas merge)",
+    "basis/kansas.html": "basis state pages move the elevator table to on-demand data in the 2026-10 consolidation",
+    "basis/nebraska.html": "basis state pages move the elevator table to on-demand data in the 2026-10 consolidation",
+    "basis/illinois.html": "basis state pages move the elevator table to on-demand data in the 2026-10 consolidation",
+    "basis/minnesota.html": "basis state pages move the elevator table to on-demand data in the 2026-10 consolidation",
+    "basis/south-dakota.html": "basis state pages move the elevator table to on-demand data in the 2026-10 consolidation",
+    "basis/iowa.html": "basis state pages move the elevator table to on-demand data in the 2026-10 consolidation",
+}
 
 SKIP_DIRS = {".git", ".github", "node_modules", "__pycache__", ".claude"}
 
@@ -87,12 +100,16 @@ def measure(root=ROOT):
         if n > cap * 1048576:
             over.append(f"{top}/ is {mb(n)} MB, budget {cap} MB")
     fat = []
+    excused = []
     for top, pages in html.items():
         if len(pages) < SET_MIN:
             continue
         for rel, n in pages:
             if n > SET_PAGE_KB * 1024:
-                fat.append((rel, round(n / 1024)))
+                if rel.replace(os.sep, "/") in PAGE_EXCEPTIONS:
+                    excused.append((rel, round(n / 1024)))
+                else:
+                    fat.append((rel, round(n / 1024)))
     fat.sort(key=lambda x: -x[1])
     for rel, kb in fat[:10]:
         over.append(f"{rel} is {kb} KB; pages in a generated set are capped at {SET_PAGE_KB} KB")
@@ -105,6 +122,7 @@ def measure(root=ROOT):
         "warn": total > WARN_MB * 1048576,
         "folders": {k: mb(v) for k, v in sorted(folders.items(), key=lambda kv: -kv[1])},
         "over": over,
+        "excused": [f"{r} {kb} KB: {PAGE_EXCEPTIONS[r.replace(os.sep, '/')]}" for r, kb in excused],
     }
 
 
@@ -161,6 +179,8 @@ def main(argv):
         print(f"  {k:20s}{v:8.1f} MB")
     if r["warn"] and not r["over"]:
         print(f"WARNING: over {WARN_MB} MB")
+    for e in r["excused"]:
+        print("EXCUSED (fix and remove from PAGE_EXCEPTIONS):", e)
     for o in r["over"]:
         print("OVER:", o)
     return 1 if r["over"] else 0
