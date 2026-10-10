@@ -16,9 +16,9 @@
 <link rel="apple-touch-icon"                    href="/img/apple-touch-icon.png">
 <link rel="manifest"                            href="/manifest.json">
 
-<title>Developer Docs: AGSIST Widget Embeds &amp; Data Feeds</title>
-<meta name="description" content="Embed the AGSIST GDU calculator with one script, or pull open JSON market-data feeds. No account needed.">
-<meta name="keywords"    content="AGSIST developer docs, agricultural widget embed, GDU calculator widget, farm market data JSON feed">
+<title>Embed Tools and Data Feeds: AGSIST Developer Docs</title>
+<meta name="description" content="Put the AGSIST GDU calculator or the ARC or PLC calculator on your site with an iframe or one script, or pull open JSON market-data feeds. No account needed.">
+<meta name="keywords"    content="AGSIST developer docs, agricultural widget embed, GDU calculator widget, ARC PLC calculator embed, farm market data JSON feed">
 <meta name="author"      content="Sigurd Lindquist">
 <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
 <link rel="canonical"    href="https://agsist.com/developer">
@@ -26,8 +26,8 @@
 <meta property="og:type"         content="website">
 <meta property="og:site_name"    content="AGSIST">
 <meta property="og:locale"       content="en_US">
-<meta property="og:title"        content="Developer Docs: AGSIST Widget Embeds &amp; Data Feeds">
-<meta property="og:description"  content="Embed the AGSIST GDU calculator with one script, or pull open JSON market-data feeds.">
+<meta property="og:title"        content="Embed Tools and Data Feeds: AGSIST Developer Docs">
+<meta property="og:description"  content="Embed the GDU or ARC or PLC calculator with an iframe or one script, or pull open JSON market-data feeds.">
 <meta property="og:url"          content="https://agsist.com/developer">
 <meta property="og:image"        content="https://agsist.com/img/og/agsist.jpg">
 <meta property="og:image:width"  content="1200">
@@ -36,8 +36,8 @@
 <meta name="twitter:card"        content="summary_large_image">
 <meta name="twitter:site"        content="@agsist">
 <meta name="twitter:creator"     content="@agsist">
-<meta name="twitter:title"       content="Developer Docs: AGSIST Widget Embeds &amp; Data Feeds">
-<meta name="twitter:description" content="Embed the GDU calculator with one script, or pull open JSON market-data feeds.">
+<meta name="twitter:title"       content="Embed Tools and Data Feeds: AGSIST Developer Docs">
+<meta name="twitter:description" content="Embed the GDU or ARC or PLC calculator with an iframe or one script, or pull open JSON market-data feeds.">
 <meta name="twitter:image"       content="https://agsist.com/img/og/agsist.jpg">
 
 <script>/* agsist-theme-early: saved theme, else the device's, set before first paint so pages do not flash the wrong color. loader.js applies the same rule. */try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.setAttribute('data-theme',_t);}catch(e){}</script><script>/* agsist-ga-guard 2026-10-09: Google Analytics loads only when the browser sends no Global Privacy Control signal and the off switch on /privacy is not set, and only once the page is shown (a page loaded ahead in the background is not a visit). dataLayer and gtag always exist, so page code that calls them never throws. */(function(w,d,n){var off=false,v,i,s;w.dataLayer=w.dataLayer||[];if(typeof w.gtag!=='function'){w.gtag=function(){w.dataLayer.push(arguments);};}try{off=w.localStorage.getItem('agsist-ga-off')==='1';}catch(e){}if(n.globalPrivacyControl===true){off=true;}w.agsistGaOff=off;w.gtag('set','allow_google_signals',false);w.gtag('set','allow_ad_personalization_signals',false);if(off){return;}i=function(){s=d.createElement('script');s.async=true;s.src='https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H';(d.head||d.documentElement).appendChild(s);};if(d.prerendering){d.addEventListener('prerenderingchange',i,{once:true});}else{i();}})(window,document,navigator);</script>
@@ -80,6 +80,14 @@
 .wc-footer a:hover{opacity:.8}
 [data-theme="light"] .wc-footer{background:var(--surface2)}
 [data-theme="light"] .dev-lead{background:var(--surface)}
+.wc-snip-lbl{font-family:'JetBrains Mono',monospace;font-size:.75rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--text-muted);margin:1rem 0 0}
+.wc-snip{position:relative}
+.wc-snip pre{padding-right:4.6rem}
+.wc-copy{position:absolute;top:.45rem;right:.45rem;min-height:36px;padding:0 .7rem;border:1px solid var(--border);border-radius:6px;background:var(--surface2);color:var(--text);font:600 .78rem Inter,sans-serif;cursor:pointer}
+.wc-copy:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.wc-prev{margin-top:1rem}
+.wc-prev iframe{width:100%;max-width:480px;height:560px;border:1px solid var(--border);border-radius:8px;display:block;background:var(--surface)}
+.dev-page code{font-family:'JetBrains Mono',monospace;font-size:.86em}
 .wc-endpoint{font-family:'JetBrains Mono',monospace;font-size:0.785rem;color:var(--text-muted)}
 
 /* data feed endpoints */
@@ -106,7 +114,7 @@
 }
 </style>
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"WebPage","url":"https://agsist.com/developer","name":"Developer Docs","isPartOf":{"@type":"WebSite","url":"https://agsist.com/"},"breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"AGSIST","item":"https://agsist.com/"},{"@type":"ListItem","position":2,"name":"Developer","item":"https://agsist.com/developer"}]}}
+{"@context":"https://schema.org","@type":"WebPage","url":"https://agsist.com/developer","name":"Embed Tools and Data Feeds","isPartOf":{"@type":"WebSite","url":"https://agsist.com/"},"breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"AGSIST","item":"https://agsist.com/"},{"@type":"ListItem","position":2,"name":"Developer","item":"https://agsist.com/developer"}]}}
 </script>
 </head>
 <body>
@@ -132,20 +140,17 @@
 <main id="main" tabindex="-1">
 <div class="dev-page">
 
-<h1>Developer Docs</h1>
+<h1>Embed tools and data feeds</h1>
 <p class="sub page-lede">AGSIST publishes embeddable agricultural tools and open JSON market-data feeds for ag media, extension services, co-ops, and farm websites. Add a widget with one script, or consume the data feeds directly to build your own UI. Want a custom build? Reach out.</p>
 
-<div class="dev-lead"><strong>One script, one div.</strong> The GDU calculator is the only widget the script serves today. It loads from a single file: <code>https://agsist.com/embed.js</code>. Add the script once, then drop a <code>data-agsist-widget</code> div wherever you want it. The script injects the live tool in an iframe, adds a crawlable &ldquo;Powered by AGSIST&rdquo; backlink in your page, and auto-resizes the frame. Prefer copy-paste? The <a href="/embed">embed gallery</a> has ready snippets and live previews.</div>
+<div class="dev-lead"><strong>One script, one div.</strong> Two tools are live: the GDU calculator and the ARC or PLC calculator. Both load from a single file: <code>https://agsist.com/embed.js</code>. Add the script once, then drop a <code>data-agsist-widget</code> div wherever you want a tool. The script injects the live tool in an iframe, adds a crawlable &ldquo;Powered by AGSIST&rdquo; link in your page, and resizes the frame to fit. Prefer a plain iframe? Each tool below has one ready to copy.</div>
 
-<pre>&lt;div data-agsist-widget="gdu"&gt;&lt;/div&gt;
-&lt;script async src="https://agsist.com/embed.js"&gt;&lt;/script&gt;</pre>
-
-
-<!-- ═══ WIDGETS ══════════════════════════════════════════════════════ -->
-<h2>Embeddable Widgets</h2>
+<!-- ═══ WIDGETS (merged from the old /embed page, 2026-10) ═══════════════ -->
+<h2 id="widgets" style="scroll-margin-top:80px">Embeddable widgets</h2>
+<p>Run a co-op, elevator, ag-retail or extension site? Copy a snippet, paste it into your page, and your visitors get the live tool. Free, no account, no API key.</p>
 
 <!-- ── GDU Calculator ────────────────────────────────────────────── -->
-<div class="widget-card">
+<div class="widget-card" id="gdu">
   <div class="wc-head">
     <div class="wc-icon"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 20h10"/><path d="M10 20c5.5-2.5.8-6.4 3-10"/><path d="M9.5 9.4c1.1.8 1.8 2.2 2.3 3.7-2 .4-3.5.4-4.8-.3-1.2-.6-2.3-1.9-3-4.2 2.8-.5 4.4 0 5.5.8z"/><path d="M14.1 6a7 7 0 0 0-1.1 4c1.9-.1 3.3-.6 4.3-1.4 1-1 1.6-2.3 1.7-4.6-2.7.1-4 1-4.9 2z"/></svg></div>
     <div class="wc-meta">
@@ -153,19 +158,69 @@
         <span class="wc-name">GDU Calculator</span>
         <span class="wc-tag wc-tag--live">Live</span>
       </div>
-      <p class="wc-desc">Auto-fetches growing degree units from a planting date and location, tracks corn &amp; soybean stage, projects black layer, and flags first-frost risk. The iframe gives your visitors the full live calculator; the injected anchor is the real backlink.</p>
+      <p class="wc-desc">Pulls real growing degree units from a planting date and location, tracks corn and soybean stage, projects black layer, and flags first-frost risk.</p>
     </div>
   </div>
   <div class="wc-body">
-    <p class="wc-key">widget key&nbsp; <b>data-agsist-widget="gdu"</b></p>
-<pre>&lt;div data-agsist-widget="gdu"&gt;&lt;/div&gt;
-&lt;script async src="https://agsist.com/embed.js"&gt;&lt;/script&gt;</pre>
+    <p class="wc-snip-lbl">Option A: iframe (simplest)</p>
+    <div class="wc-snip"><button type="button" class="wc-copy" data-copy="ifr-gdu">Copy</button>
+<pre id="ifr-gdu">&lt;iframe src="https://agsist.com/embed/gdu"
+  title="AGSIST GDU Calculator"
+  style="width:100%;max-width:480px;height:560px;border:0"
+  loading="lazy"&gt;&lt;/iframe&gt;
+&lt;p style="font:600 11px sans-serif;text-align:right;max-width:480px"&gt;
+  &lt;a href="https://agsist.com/gdu-calculator"&gt;Powered by AGSIST&lt;/a&gt;
+&lt;/p&gt;</pre></div>
+    <p class="wc-snip-lbl">Option B: script (resizes itself, adds the link for you)</p>
+    <div class="wc-snip"><button type="button" class="wc-copy" data-copy="scr-gdu">Copy</button>
+<pre id="scr-gdu">&lt;div data-agsist-widget="gdu"&gt;&lt;/div&gt;
+&lt;script async src="https://agsist.com/embed.js"&gt;&lt;/script&gt;</pre></div>
+    <div class="wc-prev">
+      <p class="wc-snip-lbl" style="margin-top:0">Live preview</p>
+      <iframe src="/embed/gdu" title="AGSIST GDU Calculator preview" loading="lazy"></iframe>
+    </div>
   </div>
   <div class="wc-footer">
     <span class="wc-endpoint">iframe: /embed/gdu</span>
     <a href="/gdu-calculator">View live GDU Calculator →</a>
   </div>
 </div>
+
+<!-- ── ARC or PLC calculator ─────────────────────────────────────── -->
+<div class="widget-card" id="arc-plc">
+  <div class="wc-head">
+    <div class="wc-icon"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></svg></div>
+    <div class="wc-meta">
+      <div class="wc-title-row">
+        <span class="wc-name">ARC or PLC, 2026 and 2027</span>
+        <span class="wc-tag wc-tag--live">Live</span>
+      </div>
+      <p class="wc-desc">Farmers pick a crop and county, type their PLC yield and a price, and see which program pays more per base acre across a range of prices and county yields. Uses the 2026 and 2027 effective reference prices and FSA&rsquo;s official county benchmark yields from <a href="/arc-plc">agsist.com/arc-plc</a>.</p>
+    </div>
+  </div>
+  <div class="wc-body">
+    <p class="wc-snip-lbl">Option A: iframe (simplest)</p>
+    <div class="wc-snip"><button type="button" class="wc-copy" data-copy="ifr-arc">Copy</button>
+<pre id="ifr-arc">&lt;iframe src="https://agsist.com/embed/arc-plc"
+  title="AGSIST ARC or PLC calculator"
+  style="width:100%;max-width:720px;height:1100px;border:0"
+  loading="lazy"&gt;&lt;/iframe&gt;
+&lt;p style="font:600 11px sans-serif;text-align:right;max-width:720px"&gt;
+  &lt;a href="https://agsist.com/arc-plc"&gt;ARC or PLC calculator by AGSIST&lt;/a&gt;
+&lt;/p&gt;</pre></div>
+    <p class="wc-desc" style="margin:.8rem 0 0">Start it on one county, crop or year by adding to the iframe address: <code>?st=WI&amp;fips=55017</code> (two-letter state and the five-digit county FIPS code), <code>&amp;crop=soybeans</code> (corn, soybeans, wheat, sorghum, barley, oats, peanuts and every other crop on the calculator&rsquo;s list), and <code>&amp;year=2027</code> (2026 or 2027). For example <code>https://agsist.com/embed/arc-plc?st=WI&amp;fips=55017&amp;crop=corn&amp;year=2026</code>.</p>
+    <p class="wc-snip-lbl">Option B: script (resizes itself, adds the link for you)</p>
+    <div class="wc-snip"><button type="button" class="wc-copy" data-copy="scr-arc">Copy</button>
+<pre id="scr-arc">&lt;div data-agsist-widget="arc-plc"&gt;&lt;/div&gt;
+&lt;script async src="https://agsist.com/embed.js"&gt;&lt;/script&gt;</pre></div>
+  </div>
+  <div class="wc-footer">
+    <span class="wc-endpoint">iframe: /embed/arc-plc</span>
+    <a href="/arc-plc">View live ARC or PLC calculator →</a>
+  </div>
+</div>
+
+<p class="wc-desc"><strong>A note on the link.</strong> The script places a real &ldquo;Powered by AGSIST&rdquo; link in your page, and the iframe snippet carries the same link under it. I&rsquo;d appreciate you keeping it. It&rsquo;s how a free tool stays free. Nothing tracks your visitors beyond standard, anonymized usage stats on the tool itself. Want a widget built for your operation? <a href="mailto:sig@farmers1st.com?subject=AGSIST%20embed%20widget">Email sig@farmers1st.com</a>.</p>
 
 
 <!-- ═══ LIVE DATA FEEDS ══════════════════════════════════════════════ -->
@@ -286,5 +341,19 @@
 <!-- /static-nav:footer -->
 </div>
 <script src="/components/loader.js?v=18" defer></script>
+<script>
+(function(){
+  document.querySelectorAll('.wc-copy').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      var code=document.getElementById(btn.getAttribute('data-copy'));
+      if(!code)return;
+      var text=code.textContent;
+      function done(ok){btn.textContent=ok?'Copied':'Select and copy';setTimeout(function(){btn.textContent='Copy';},1600);}
+      if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(text).then(function(){done(true);},function(){done(false);});}
+      else{done(false);}
+    });
+  });
+})();
+</script>
 </body>
 </html>

@@ -1928,7 +1928,7 @@ def build_main(D, ch):
   <p class="ap-disc"><b>This is an estimate, not a USDA determination.</b> Payments depend on FSA&rsquo;s official yields, prices and your farm records.
   Read FSA&rsquo;s <a href="{FSA_PAGE}" rel="noopener">ARC/PLC page</a>, its <a href="{FSA_DATA}" rel="noopener">program data</a>,
   or <a href="{OFFICE}" rel="noopener">find your county FSA office</a>. Dollars are before the 5.7% sequestration cut.
-  Run an extension office or co-op site? <a href="/embed#arc-plc">Embed the calculator</a>.</p>
+  Run an extension office or co-op site? <a href="/developer#arc-plc">Embed the calculator</a>.</p>
   <details class="ap-det"><summary>Sources</summary><ul class="ap-src">{srcs}<li><a href="https://quickstats.nass.usda.gov/" rel="noopener">USDA NASS Quick Stats</a> (season-average prices)</li></ul></details>
   <p class="ap-small">Related: <a href="/farm-bill">Farm bill tracker</a> &middot; <a href="/breakeven">Break-even calculator</a> &middot; <a href="/harvest-price-tracker">Harvest price and pre-sell</a></p>
 </main>

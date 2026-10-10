@@ -115,7 +115,7 @@ PAGES = [
     ("/about", "About", "Who runs AGSIST", "about sig sigurd lindquist"),
     ("/contact", "Contact", "Get in touch", "contact email"),
     ("/data-sources", "Data sources", "Where the numbers come from", "data sources"),
-    ("/embed", "Embed widgets", "Put AGSIST on your site", "embed widgets"),
+    ("/developer#widgets", "Embed widgets", "Put AGSIST on your site", "embed widgets iframe gdu arc plc"),
     ("/developer", "Developer API", "Data feeds", "developer api feeds"),
     ("/sponsor", "Sponsor", "Advertise on AGSIST", "sponsor advertise ads"),
     ("/changelog", "What's new", "Site updates", "changelog updates new"),

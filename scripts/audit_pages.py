@@ -57,7 +57,7 @@ SKIP = {
     "404.html",                              # by design: error page
     "offline.html",                          # by design: sw.js serves it with no signal
     "cashbids.html", "fastfacts.html",      # redirect stubs
-    "embed.html",
+    "embed.html", "presell-calculator.html", "ag-odds.html",
 }
 
 SEV = ("HIGH", "MEDIUM", "LOW")
