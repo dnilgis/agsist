@@ -54,7 +54,6 @@ OLD_HREF = re.compile(r'(<aside class="ag-sponsor-ribbon"(?:(?!</aside>).)*?href
 
 
 NAMES = {"whats-priced-in": "What's Priced In", "breakeven": "Break-Even Calculator",
-         "presell-calculator": "Pre-Sell Calculator",
          "conditions-yield": "Ratings vs Yield", "conditions": "Crop Conditions", "basis": "Basis vs Normal",
          "elevators": "Elevator Coverage Map", "fast-facts": "Reference Tables",
          "foreign-land": "Foreign-Owned Land", "spray": "Spray Advisory", "urea": "Urea Volatilization Risk",

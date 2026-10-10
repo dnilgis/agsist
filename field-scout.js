@@ -2975,7 +2975,7 @@
       if(!b || !b.corn) return null;
       var p=b.corn.cash, lo=Math.round(loBu*p), hi=Math.round(hiBu*p);
       return 'At <strong>$'+p.toFixed(2)+'</strong> nearby cash corn, a '+loBu+'–'+hiBu+' bu/ac drag is roughly <strong>$'+lo+'–$'+hi+'/ac</strong> left on the table. '
-        + '<a href="/presell-calculator" target="_blank" rel="noopener" class="fs-act-link">Run the presell math &rarr;</a>'
+        + '<a href="/harvest-price-tracker#presell" target="_blank" rel="noopener" class="fs-act-link">Run the presell math &rarr;</a>'
         + '<span class="fs-src">est. from university continuous-corn trial ranges &times; your local bid</span>';
     }
 

@@ -1930,7 +1930,7 @@ def build_main(D, ch):
   or <a href="{OFFICE}" rel="noopener">find your county FSA office</a>. Dollars are before the 5.7% sequestration cut.
   Run an extension office or co-op site? <a href="/embed#arc-plc">Embed the calculator</a>.</p>
   <details class="ap-det"><summary>Sources</summary><ul class="ap-src">{srcs}<li><a href="https://quickstats.nass.usda.gov/" rel="noopener">USDA NASS Quick Stats</a> (season-average prices)</li></ul></details>
-  <p class="ap-small">Related: <a href="/farm-bill">Farm bill tracker</a> &middot; <a href="/presell-calculator">Pre-sell calculator</a> &middot; <a href="/breakeven">Break-even calculator</a> &middot; <a href="/harvest-price-tracker">Harvest price tracker</a></p>
+  <p class="ap-small">Related: <a href="/farm-bill">Farm bill tracker</a> &middot; <a href="/breakeven">Break-even calculator</a> &middot; <a href="/harvest-price-tracker">Harvest price and pre-sell</a></p>
 </main>
 """
     return head(title, desc, "/arc-plc", jsonld, True, fonts, og_title=og_title) + body + tail(ftr, calc=True), {

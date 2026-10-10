@@ -122,12 +122,6 @@
    "pitch": "Your name beside the planting date guide. One category-exclusive slot."
   },
   {
-   "id": "presell-calculator",
-   "page": "/presell-calculator",
-   "name": "Pre-Sell Calculator",
-   "pitch": "Your name beside the pre-sell calculator. One category-exclusive slot."
-  },
-  {
    "id": "rent-hub",
    "page": "/rent",
    "name": "Cash rent by state",

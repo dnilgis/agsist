@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#0a0c0d">
 <title>2026 Harvest vs Projected Price: Crop Insurance | AGSIST</title>
-<meta name="description" content="The 2026 RMA projected and harvest prices for corn and soybeans: the numbers behind Revenue Protection guarantees, plus 15 years of history.">
+<meta name="description" content="The 2026 RMA projected and harvest prices for corn and soybeans, what your Revenue Protection guarantee is worth, how many bushels you can safely pre-sell, and 15 years of history.">
 <link rel="canonical" href="https://agsist.com/harvest-price-tracker">
   <meta property="og:image" content="https://agsist.com/img/og/agsist.jpg">
   <meta property="og:image:alt" content="2026 Harvest Price vs Projected Price: Corn &amp; Soybean Crop Insurance Tracker | AGSIST">
@@ -185,6 +185,10 @@ details.pd-d .pd-db{padding:0 1rem 1rem;}
 .pd-out span b,.pd-out2 span b{display:inline;font-family:var(--pd-mono);font-weight:700;
   font-size:inherit;color:var(--pd-txt);margin:0;}
 .pd-out2.up span b{color:var(--pd-green);}
+/* pre-sell step under the guarantee (merged from the old /presell-calculator) */
+.pd-ps{margin-top:1rem;scroll-margin-top:80px;}
+.pd-ps h3{font-size:1.08rem;margin:0 0 .35rem;}
+.pd-ps .pd-r3{grid-template-columns:1fr 2fr;}
 
 /* ── baked fallback cards. fetch_harvest_prices.py owns this markup;
       never hand-edit between the SEED markers, edit the script. ────────── */
@@ -395,6 +399,17 @@ table.hp-hist td.up{color:var(--pd-green);} table.hp-hist td.dn{color:var(--pd-r
   </div>
   <p class="pd-note">Estimate at 100% price election, computed on your device and stored nowhere. Your actual guarantee depends on unit structure, practice and county. Confirm it with your agent. Then fold that floor into your own costs with the <a href="/breakeven" style="color:var(--pd-gold2)">break-even calculator</a>.</p>
 
+  <div class="pd-calc pd-ps" id="presell">
+    <h3>How many bushels can you safely forward-sell?</h3>
+    <p class="pd-note" style="margin:0 0 .7rem">Your coverage level times your APH is the bushels your guarantee stands behind. A common rule is to keep sales made before harvest at or under that number, because every one of those bushels has a revenue floor under it. It uses the crop, APH and coverage you picked above.</p>
+    <div class="pd-r3">
+      <div><label for="pd-acres">Acres <span style="text-transform:none">(optional)</span></label>
+        <input id="pd-acres" type="number" inputmode="decimal" min="0" max="100000" placeholder="e.g. 500"></div>
+    </div>
+    <div class="pd-out" id="pd-psbox" hidden><b id="pd-psout"></b><span id="pd-pssub"></span></div>
+    <p class="pd-note"><b>RP protects revenue, not delivery.</b> If you sell ahead more than your guaranteed bushels and then raise a short crop, you may have to buy bushels back at a higher price. The harvest price feature softens that, but it does not erase it. Basis is not covered, because the guarantee is built on futures. This is the arithmetic, not marketing or insurance advice; work it through with your agent.</p>
+  </div>
+
   <h2 id="history">Fifteen years of projected vs. harvest</h2>
   <p class="hp-lede" style="margin-bottom:.5rem">The question behind every Revenue Protection decision: how often does the harvest price finish below the projected price? For corn, <b>10 of the last 15 crop years</b> (2011&ndash;2025). For soybeans, <b>10 of 15</b>. That history is why the price side of RP exists.</p>
 
@@ -432,6 +447,10 @@ table.hp-hist td.up{color:var(--pd-green);} table.hp-hist td.dn{color:var(--pd-r
     <details><summary>Why do other crops show different months?</summary><p>Each crop, and sometimes each region within a crop, has its own contract and discovery window under RMA's Commodity Exchange Price Provisions. Winter wheat keys off the Kansas City (hard red) or Chicago (soft red) contract, July or September depending on the state, discovered in a window that runs mid-August to mid-October before planting; spring wheat keys off September Minneapolis futures, mostly discovered in February. Exact windows vary by state; those tracks are added here once verified.</p></details>
     <details><summary>What about cotton and peanuts?</summary><p>Both are here, and pick your state to see them. Cotton discovers against the ICE December contract in 17 states: a projected-price window that runs from mid-December to the end of February depending on the state, and a harvest window that is September, October or November depending on the state. Peanuts are here for 13 states, priced separately by type (Runners, Spanish, Virginia, Valencia) and by state; the price for your state and type is on the page. The difference is that peanuts have no exchange and no contract month behind them: RMA sets that price without a futures board, so there is a window but nothing to watch trade during it.</p></details>
     <details><summary>Are these the official RMA prices?</summary><p>No. These are RMA's own published figures, mirrored from their price discovery service. While a window is open, the figure is RMA's running average to date, not a final price, and it is labelled that way. The official price is RMA's alone. Verify at prices.rma.usda.gov and talk to your agent.</p></details>
+    <details><summary>How are guaranteed bushels figured?</summary><p>Coverage level times your APH yield. At 80% coverage on a 200 bu/acre APH, that is 160 bu/acre whose revenue your policy stands behind. A common rule is to keep forward sales made before harvest at or under that figure, because those are the bushels with a revenue floor under them.</p></details>
+    <details><summary>What price does the floor use?</summary><p>The projected price, set during the February discovery period for corn and soybeans (December corn or November soybean futures averaged across February). That price, times coverage, times APH, is your per-acre guarantee. If the October harvest price comes in higher, Revenue Protection raises the guarantee to match.</p></details>
+    <details><summary>Does this mean forward-pricing is risk-free up to that level?</summary><p>No. Revenue Protection guarantees revenue, not a number of delivered bushels. If you sell bushels you do not grow, you may have to buy them back. The harvest price feature helps, but the production risk is real. Talk it through with your own agent.</p></details>
+    <details><summary>Is basis covered?</summary><p>No. Crop insurance guarantees are built on futures prices, not your local cash bid. Your basis, cash minus futures, is a separate decision. The <a href="/cash-bids">cash bids</a> and <a href="/basis">basis</a> pages cover that side.</p></details>
   </div>
 
   <div class="hp-cred">
@@ -472,7 +491,7 @@ table.hp-hist td.up{color:var(--pd-green);} table.hp-hist td.dn{color:var(--pd-r
 }
 </script>
 <script type="application/ld+json">
-{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "How is the projected price set?", "acceptedAnswer": {"@type": "Answer", "text": "It's the average daily settlement of the December corn (or November soybean) futures contract across every trading day in February, rounded to the nearest cent. That number, times your coverage level, times your APH yield, is your minimum per-acre revenue guarantee; under Revenue Protection it rises to the harvest price if October averages higher."}}, {"@type": "Question", "name": "How is the harvest price set?", "acceptedAnswer": {"@type": "Answer", "text": "The same contract, averaged across every trading day in October. Revenue Protection uses the higher of the projected or harvest price, so an October rally raises your guarantee; a decline does not lower it. The harvest price counts up to 200% of the projected price. Revenue Protection with Harvest Price Exclusion and Yield Protection do not raise the guarantee."}}, {"@type": "Question", "name": "How often does the harvest price come in below the projected price?", "acceptedAnswer": {"@type": "Answer", "text": "Across 2011–2025, corn’s harvest price finished below its projected price in 10 of 15 crop years, and soybeans’ in 10 of 15. A lower harvest price never lowers a Revenue Protection guarantee: the policy uses the higher of the two, but it is central to how price-loss indemnities are figured. The full year-by-year table is on this page; verify official figures at prices.rma.usda.gov and talk to your own agent about what it means for your policy."}}, {"@type": "Question", "name": "Why do other crops show different months?", "acceptedAnswer": {"@type": "Answer", "text": "Each crop, and sometimes each region within a crop, has its own contract and discovery window under RMA's Commodity Exchange Price Provisions. Winter wheat keys off the Kansas City (hard red) or Chicago (soft red) contract, July or September depending on the state, discovered in a window that runs mid-August to mid-October before planting; spring wheat keys off September Minneapolis futures, mostly discovered in February. Exact windows vary by state; those tracks are added here once verified."}}, {"@type": "Question", "name": "What about cotton and peanuts?", "acceptedAnswer": {"@type": "Answer", "text": "Both are here, and pick your state to see them. Cotton discovers against the ICE December contract in 17 states: a projected-price window that runs from mid-December to the end of February depending on the state, and a harvest window that is September, October or November depending on the state. Peanuts are here for 13 states, priced separately by type (Runners, Spanish, Virginia, Valencia) and by state; the price for your state and type is on the page. The difference is that peanuts have no exchange and no contract month behind them: RMA sets that price without a futures board, so there is a window but nothing to watch trade during it."}}, {"@type": "Question", "name": "Are these the official RMA prices?", "acceptedAnswer": {"@type": "Answer", "text": "No. These are RMA's own published figures, mirrored from their price discovery service. While a window is open, the figure is RMA's running average to date, not a final price, and it is labelled that way. The official price is RMA's alone. Verify at prices.rma.usda.gov and talk to your agent."}}]}
+{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "How is the projected price set?", "acceptedAnswer": {"@type": "Answer", "text": "It's the average daily settlement of the December corn (or November soybean) futures contract across every trading day in February, rounded to the nearest cent. That number, times your coverage level, times your APH yield, is your minimum per-acre revenue guarantee; under Revenue Protection it rises to the harvest price if October averages higher."}}, {"@type": "Question", "name": "How is the harvest price set?", "acceptedAnswer": {"@type": "Answer", "text": "The same contract, averaged across every trading day in October. Revenue Protection uses the higher of the projected or harvest price, so an October rally raises your guarantee; a decline does not lower it. The harvest price counts up to 200% of the projected price. Revenue Protection with Harvest Price Exclusion and Yield Protection do not raise the guarantee."}}, {"@type": "Question", "name": "How often does the harvest price come in below the projected price?", "acceptedAnswer": {"@type": "Answer", "text": "Across 2011–2025, corn’s harvest price finished below its projected price in 10 of 15 crop years, and soybeans’ in 10 of 15. A lower harvest price never lowers a Revenue Protection guarantee: the policy uses the higher of the two, but it is central to how price-loss indemnities are figured. The full year-by-year table is on this page; verify official figures at prices.rma.usda.gov and talk to your own agent about what it means for your policy."}}, {"@type": "Question", "name": "Why do other crops show different months?", "acceptedAnswer": {"@type": "Answer", "text": "Each crop, and sometimes each region within a crop, has its own contract and discovery window under RMA's Commodity Exchange Price Provisions. Winter wheat keys off the Kansas City (hard red) or Chicago (soft red) contract, July or September depending on the state, discovered in a window that runs mid-August to mid-October before planting; spring wheat keys off September Minneapolis futures, mostly discovered in February. Exact windows vary by state; those tracks are added here once verified."}}, {"@type": "Question", "name": "What about cotton and peanuts?", "acceptedAnswer": {"@type": "Answer", "text": "Both are here, and pick your state to see them. Cotton discovers against the ICE December contract in 17 states: a projected-price window that runs from mid-December to the end of February depending on the state, and a harvest window that is September, October or November depending on the state. Peanuts are here for 13 states, priced separately by type (Runners, Spanish, Virginia, Valencia) and by state; the price for your state and type is on the page. The difference is that peanuts have no exchange and no contract month behind them: RMA sets that price without a futures board, so there is a window but nothing to watch trade during it."}}, {"@type": "Question", "name": "Are these the official RMA prices?", "acceptedAnswer": {"@type": "Answer", "text": "No. These are RMA's own published figures, mirrored from their price discovery service. While a window is open, the figure is RMA's running average to date, not a final price, and it is labelled that way. The official price is RMA's alone. Verify at prices.rma.usda.gov and talk to your agent."}}, {"@type": "Question", "name": "How are guaranteed bushels figured?", "acceptedAnswer": {"@type": "Answer", "text": "Coverage level times your APH yield. At 80% coverage on a 200 bu/acre APH, that is 160 bu/acre whose revenue your policy stands behind. A common rule is to keep forward sales made before harvest at or under that figure, because those are the bushels with a revenue floor under them."}}, {"@type": "Question", "name": "What price does the floor use?", "acceptedAnswer": {"@type": "Answer", "text": "The projected price, set during the February discovery period for corn and soybeans (December corn or November soybean futures averaged across February). That price, times coverage, times APH, is your per-acre guarantee. If the October harvest price comes in higher, Revenue Protection raises the guarantee to match."}}, {"@type": "Question", "name": "Does this mean forward-pricing is risk-free up to that level?", "acceptedAnswer": {"@type": "Answer", "text": "No. Revenue Protection guarantees revenue, not a number of delivered bushels. If you sell bushels you do not grow, you may have to buy them back. The harvest price feature helps, but the production risk is real. Talk it through with your own agent."}}, {"@type": "Question", "name": "Is basis covered?", "acceptedAnswer": {"@type": "Answer", "text": "No. Crop insurance guarantees are built on futures prices, not your local cash bid. Your basis, cash minus futures, is a separate decision. The cash bids and basis pages cover that side."}}]}
 </script>
 
 <script>/* agsist-theme-early: saved theme, else the device's, set before first paint so pages do not flash the wrong color. loader.js applies the same rule. */try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.setAttribute('data-theme',_t);}catch(e){}</script><script>/* agsist-ga-guard 2026-10-09: Google Analytics loads only when the browser sends no Global Privacy Control signal and the off switch on /privacy is not set, and only once the page is shown (a page loaded ahead in the background is not a visit). dataLayer and gtag always exist, so page code that calls them never throws. */(function(w,d,n){var off=false,v,i,s;w.dataLayer=w.dataLayer||[];if(typeof w.gtag!=='function'){w.gtag=function(){w.dataLayer.push(arguments);};}try{off=w.localStorage.getItem('agsist-ga-off')==='1';}catch(e){}if(n.globalPrivacyControl===true){off=true;}w.agsistGaOff=off;w.gtag('set','allow_google_signals',false);w.gtag('set','allow_ad_personalization_signals',false);if(off){return;}i=function(){s=d.createElement('script');s.async=true;s.src='https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H';(d.head||d.documentElement).appendChild(s);};if(d.prerendering){d.addEventListener('prerenderingchange',i,{once:true});}else{i();}})(window,document,navigator);</script>
@@ -837,9 +856,27 @@ window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);
     for(var n=0;n<sel.options.length;n++){ if(sel.options[n].textContent===keep){i=n;break;} }
     sel.selectedIndex = i>=0 ? i : 0;
   }
+  // Pre-sell step: guaranteed units per acre = APH x coverage. Hidden whenever the
+  // guarantee above has no answer, so it never shows a number the box above does not.
+  function presell(aph,cov,cu,g){
+    var box=$('pd-psbox'); if(!box) return;
+    if(!(aph>0)||!(cov>0)||!g||!cu){ box.hidden=true; return; }
+    var per=aph*cov, f1=function(n){return n.toLocaleString('en-US',{maximumFractionDigits:1});};
+    var ac=Number(String($('pd-acres').value).trim());
+    var tot=(ac>0&&ac<=100000)?per*ac:0;
+    $('pd-psout').textContent=f1(per)+' '+cu+'/ac'+(tot?' ('+Math.round(tot).toLocaleString('en-US')+' '+cu+')':'');
+    $('pd-pssub').innerHTML=aph.toLocaleString('en-US')+' '+cu+' APH × '+(cov*100).toFixed(0)+
+      '% coverage. Selling ahead up to '+(tot?Math.round(tot).toLocaleString('en-US')+' '+cu+' on '+
+      ac.toLocaleString('en-US')+' acres':'that many '+(cu==='lb'?'pounds':'bushels')+' an acre')+
+      ' keeps every one of them inside your floor of <b class="pd-num">'+money(g.p,cu)+'</b>'+
+      ' (the '+esc(label(g))+' projected price).';
+    box.hidden=false;
+  }
+
   function calc(seed){
     var g=CROPS[+$('pd-crop').value];
     var out=$('pd-gout'), sub=$('pd-gsub'), box=$('pd-gout2');
+    presell(0);
     if(!g){ out.textContent='-';
       sub.textContent='Choose your state above and this works off your own state’s '+
         'projected price, not the national one.';
@@ -855,13 +892,14 @@ window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);
       box.className='pd-out2 flat'; box.innerHTML=''; return;
     }
     var val=aph*cov*g.p;
+    presell(aph,cov,cu,g);
     out.textContent='$'+Math.round(val).toLocaleString('en-US')+' /ac';
     sub.innerHTML=aph.toLocaleString('en-US')+(cu?' '+cu:'')+' × '+(cov*100).toFixed(0)+
       '% × <b class="pd-num">'+money(g.p,unitOf(g))+'</b>, '+esc(label(g))+
       ' projected price, locked '+shortd(g.ps)+'–'+shortd(g.pe)+'.';
     if(g.h!=null && g.h>g.p){
       // RP values production at the harvest price only up to 200% of the
-      // projected price (RMA); presell-calculator.html applies the same cap.
+      // projected price (RMA).
       var hx=Math.min(g.h,2*g.p), v2=aph*cov*hx, p=(hx-g.p)/g.p*100, live=isOpen(g), sw=stWord(g);
       box.className='pd-out2 up';
       box.innerHTML='<b class="pd-num">$'+Math.round(v2).toLocaleString('en-US')+' /ac</b>'+
@@ -1037,7 +1075,7 @@ window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);
     $('pd-clear').addEventListener('click',function(){ setState('',true);
       document.getElementById('pd-state').focus(); });
     $('pd-crop').addEventListener('change',function(){ calc(true); });
-    ['pd-aph','pd-cov'].forEach(function(id){
+    ['pd-aph','pd-cov','pd-acres'].forEach(function(id){
       $(id).addEventListener('input',function(){ calc(false); });
       $(id).addEventListener('change',function(){ calc(false); });
     });
