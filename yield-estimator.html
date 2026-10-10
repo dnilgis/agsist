@@ -43,7 +43,7 @@
 {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How do I estimate corn yield before harvest?","acceptedAnswer":{"@type":"Answer","text":"The ear count method: count ears in 1/1000 acre row length, then count kernel rows and kernels per row on 10 representative ears. Formula: ears × kernel rows × kernels per row / 90, for a 1/1000-acre sample. Kernel weight varies, so the estimator shows a range across 65,000–95,000 kernels per bushel. Enter these counts in the AGSIST Yield Estimator for a field estimate."}},{"@type":"Question","name":"How accurate is the pre-harvest yield estimate?","acceptedAnswer":{"@type":"Answer","text":"The yield component method is accurate to roughly plus or minus 20 bushels per acre, a figure commonly cited in extension guides. Accuracy improves if you sample at least 5 locations and 10 ears per location, and estimate at the milk (R3) stage or later. Because kernel weight varies, the estimator also shows a range built from 65,000 to 95,000 kernels per bushel."}},{"@type":"Question","name":"How do I estimate soybean yield before harvest?","acceptedAnswer":{"@type":"Answer","text":"Count plants per acre, then count pods per plant and seeds per pod on 10 representative plants. Formula: plants/ac × pods/plant × seeds/pod / (seeds/lb × 60). The AGSIST estimator calculates this automatically."}}]}
 </script>
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"WebApplication","name":"AGSIST Corn & Soybean Yield Estimator","url":"https://agsist.com/yield-estimator","applicationCategory":"Agricultural yield calculator","operatingSystem":"Web browser","description":"Free pre-harvest yield estimator for corn (ear-count / yield-component method) and soybeans (pod-count method), with a break-even profit-and-loss check that auto-fills price from live cash data.","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"author":{"@type":"Person","name":"Sigurd Lindquist","url":"https://agsist.com/about"},"featureList":["Corn ear-count yield estimate","Soybean pod-count yield estimate","Break-even / profit per acre at estimated yield","Auto-filled cash price by crop"]}
+{"@context":"https://schema.org","@type":"WebApplication","name":"AGSIST Corn & Soybean Yield Estimator","url":"https://agsist.com/yield-estimator","applicationCategory":"Agricultural yield calculator","operatingSystem":"Web browser","description":"Free pre-harvest yield estimator for corn (ear-count / yield-component method) and soybeans (pod-count method).","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"author":{"@type":"Person","name":"Sigurd Lindquist","url":"https://agsist.com/about"},"featureList":["Corn ear-count yield estimate","Soybean pod-count yield estimate","Break-even / profit per acre at estimated yield","Auto-filled cash price by crop"]}
 </script>
 
 <style>
@@ -82,8 +82,6 @@
 .mn-result-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.5rem;margin-top:.75rem;}
 @media(min-width:520px){.mn-result-grid{grid-template-columns:repeat(4,minmax(0,1fr));}}
 
-.bm-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.5rem;}
-@media(min-width:520px){.bm-grid{grid-template-columns:repeat(3,minmax(0,1fr));}}
 
 .mn-type-btn{padding:.45rem .6rem;border-radius:8px;border:1px solid var(--border);background:var(--bg);color:var(--text-dim);font-size:0.775rem;font-weight:600;cursor:pointer;transition:all .15s;text-align:left;min-height:44px;}
 .mn-type-btn:hover{border-color:var(--gold);color:var(--text);}
@@ -115,17 +113,9 @@
 .qf-btn:hover{border-color:var(--gold);color:var(--gold);}
 .qf-label{font-size:0.755rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.4rem;}
 
-.bm-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.75rem .85rem;}
-.bm-card-label{font-size:0.745rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.3rem;}
-.bm-card-val{font-family:'JetBrains Mono',monospace;font-size:.95rem;font-weight:700;color:var(--text);}
-.bm-card-val.em{color:var(--gold);}
 
-.manure-link-card{background:linear-gradient(135deg,rgba(58,139,60,.07),rgba(230,176,66,.04));border:2px solid rgba(58,139,60,.25);border-radius:8px;padding:1.2rem 1.3rem;}
-.manure-link-eyebrow{font-size:0.755rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--green);margin-bottom:.55rem;}
-.manure-link-card p{font-size:.82rem;color:var(--text-dim);line-height:1.6;margin:0 0 1rem;}
-.manure-link-card a.go-btn{display:inline-flex;align-items:center;gap:.5rem;background:var(--btn-primary-bg);color:var(--btn-primary-ink);font-family:var(--font-body);font-size:var(--btn-fs);font-weight:700;text-decoration:none;padding:.65rem 1.1rem;border-radius:var(--btn-r);min-height:44px;transition:opacity .15s;text-transform:none;letter-spacing:0}
-.manure-link-card a.go-btn:hover{opacity:.85;}
-.manure-link-sub{font-size:0.775rem;color:var(--text-muted);margin-top:.75rem;line-height:1.55;}
+.ye-next{margin:1rem 0 0;font-size:.95rem;line-height:1.6;color:var(--text-dim);}
+.ye-next a{color:var(--gold);font-weight:600;}
 
 .ye-source{font-size:0.763rem;color:var(--text-muted);text-align:center;margin-top:1.5rem;padding-top:.75rem;border-top:1px solid var(--border);}
 .ye-source a{color:var(--gold);text-decoration:none;}
@@ -192,8 +182,6 @@
   <nav class="ye-tabs" role="tablist" aria-label="Crop estimator tabs">
     <button class="ye-tab active" id="ye-tab-corn"      data-tab="corn"      role="tab" aria-selected="true"  aria-controls="ye-corn"><svg class="ic-sp" aria-hidden="true"><use href="#sp-wheat"/></svg> Corn Yield Estimator</button>
     <button class="ye-tab"        id="ye-tab-bean"      data-tab="bean"      role="tab" aria-selected="false" aria-controls="ye-bean"><svg class="ic-sp" aria-hidden="true"><use href="#sp-leaf"/></svg> Soybean Yield Estimator</button>
-    <button class="ye-tab"        id="ye-tab-breakeven" data-tab="breakeven" role="tab" aria-selected="false" aria-controls="ye-breakeven"><svg class="ic-sp" aria-hidden="true"><use href="#sp-banknote"/></svg> Break-Even vs. Yield</button>
-    <button class="ye-tab"        id="ye-tab-manure"    data-tab="manure"    role="tab" aria-selected="false" aria-controls="ye-manure"> Manure Value</button>
   </nav>
 
   <!-- CORN TAB -->
@@ -386,77 +374,7 @@
     </div>
   </div>
 
-  <!-- BREAK-EVEN TAB -->
-  <div class="ye-panel" id="ye-breakeven" role="tabpanel" aria-labelledby="ye-tab-breakeven" tabindex="0" aria-hidden="true">
-    <div class="ye-panel-head">
-      <h2>Break-Even <span style="color:var(--gold)">vs. Yield</span></h2>
-      <span class="badge">P&amp;L Estimator</span>
-    </div>
-    <div class="ye-panel-body">
-      <div class="ye-method">
-        <div class="ye-method-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-banknote"/></svg> Estimated P&amp;L at Estimated Yield</div>
-        <div class="field-row">
-          <div class="field-group">
-            <label class="field-label" for="bm-yield">Est. Yield (bu/ac)</label>
-            <input class="field-input" id="bm-yield" type="number" value="" step="1" min="0" max="400">
-            <span class="field-note">Auto-fills from the active crop tab</span>
-          </div>
-          <div class="field-group">
-            <label class="field-label" for="bm-price">Sale Price ($/bu)</label>
-            <input class="field-input" id="bm-price" type="number" value="" step="0.05" min="0" max="50">
-            <span class="field-note" id="bm-price-note">Enter a price</span>
-          </div>
-          <div class="field-group">
-            <label class="field-label" for="bm-cost">Total Cost ($/ac)</label>
-            <input class="field-input" id="bm-cost" type="number" value="620" step="5" min="0" max="5000">
-            <span class="field-note" id="bm-cost-note">All-in: seed, fert, rent, etc.</span>
-          </div>
-          <div class="field-group">
-            <label class="field-label" for="bm-acres">Field Acres</label>
-            <input class="field-input" id="bm-acres" type="number" value="200" step="10" min="1" max="50000">
-          </div>
-        </div>
-        <div class="bm-grid" aria-live="polite">
-          <div class="bm-card"><div class="bm-card-label">Revenue / Acre</div><div class="bm-card-val em" id="bm-rev">-</div></div>
-          <div class="bm-card"><div class="bm-card-label">Profit / Acre</div><div class="bm-card-val em" id="bm-profit">-</div></div>
-          <div class="bm-card"><div class="bm-card-label">Break-Even Yield</div><div class="bm-card-val" id="bm-be-yield">-</div></div>
-          <div class="bm-card"><div class="bm-card-label">Break-Even Price</div><div class="bm-card-val" id="bm-be-price">-</div></div>
-          <div class="bm-card"><div class="bm-card-label">Total Farm P/L</div><div class="bm-card-val em" id="bm-total">-</div></div>
-          <div class="bm-card"><div class="bm-card-label">$/bu Cost</div><div class="bm-card-val" id="bm-cost-bu">-</div></div>
-        </div>
-        <div style="margin-top:.75rem;font-size:0.78rem;color:var(--text-muted);line-height:1.55">
-          <svg class="ic-sp" aria-hidden="true"><use href="#sp-pin"/></svg> For the full sensitivity table, what-if scenarios, and printable report &rarr; <a href="/breakeven" style="color:var(--gold);font-weight:700">Open Break-Even Calculator</a>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- MANURE LINK TAB -->
-  <div class="ye-panel" id="ye-manure" role="tabpanel" aria-labelledby="ye-tab-manure" tabindex="0" aria-hidden="true">
-    <div class="ye-panel-head">
-      <h2>Manure <span style="color:var(--gold)">Nutrient Value</span></h2>
-      <span class="badge">Fast Facts Tool</span>
-    </div>
-    <div class="ye-panel-body">
-      <div class="manure-link-card">
-        <div class="manure-link-eyebrow"><svg class="ic-sp" aria-hidden="true"><use href="#sp-banknote"/></svg> Full Manure Nutrient Value Calculator</div>
-        <p>The complete manure calculator lives in <strong>Fast Facts &rarr; Manure tab</strong>. It supports all 12 manure types (dairy, beef, swine, poultry, horse), live fertilizer prices pulled automatically from the data feed, incorporation timing selection, application cost subtraction, and both per-acre and total field savings.</p>
-        <a href="/fast-facts#manure" class="go-btn"> Open Manure Value Calculator &rarr;</a>
-        <div class="manure-link-sub">Supports dairy solid/liquid, beef solid/liquid, swine solid/liquid finish indoor &amp; outdoor, chicken solid, turkey solid, horse solid &middot; Live fertilizer prices auto-filled &middot; Incorporation timing &middot; Net value per acre after application cost</div>
-      </div>
-
-      <div class="ye-method">
-        <div class="ye-method-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-chart-column"/></svg> Why Manure Value Matters to Your Yield Estimate</div>
-        <div style="font-size:.8rem;color:var(--text-dim);line-height:1.65">
-          <p style="margin:0 0 .75rem">When you apply manure, your N, P, and K inputs are partially or fully covered. That changes your break-even calculation significantly: cost per acre goes down, and profit per acre goes up at any given yield.</p>
-          <p style="margin:0 0 .75rem">&#9654; Use the <strong>Manure Calculator</strong> to get your $/acre fertilizer credit.<br>
-          &#9654; Subtract that credit from your total cost in the <strong>Break-Even tab</strong> above.<br>
-          &#9654; Re-run the break-even to see your true bottom line on manured acres.</p>
-          <p style="margin:0">At current fertilizer prices, dairy liquid manure at 6,000 gal/acre (incorporated within 1 hour) is typically worth <strong>$80&ndash;$120/acre</strong> in N+P+K value before application cost.</p>
-        </div>
-      </div>
-    </div>
-  </div>
+  <p class="ye-next">Turn your estimate into a break-even on the <a href="/breakeven">break-even calculator</a>. Crediting manure? The <a href="/fast-facts#manure">manure value calculator</a> prices its N, P and K at current fertilizer prices.</p>
   <style>@media print{.ag-sponsor-ribbon{display:none!important}}</style><aside class="ag-sponsor-ribbon" id="ag-sponsor"><span class="ag-sponsor-tag">Sponsor this page</span> Your name beside the yield estimator. One category-exclusive slot. <span class="ag-sponsor-price" data-rate="page">$29/mo &middot; first month free</span> <a href="/sponsor-apply?slot=yield-estimator&amp;utm_source=yield-estimator&amp;utm_medium=slot">Put your name here &rarr;</a></aside>
 
 <!--FAQ:START-->
@@ -522,10 +440,6 @@ function switchTab(t){
     p.classList.toggle('active',a);
     if(a)p.removeAttribute('aria-hidden');else p.setAttribute('aria-hidden','true');
   });
-  // Re-sync the break-even prefill to whatever crop is now active. Without this,
-  // switching Soybean -> Corn left the break-even panel holding bean bushels
-  // under a corn heading until the user happened to touch a corn input.
-  if(typeof syncBreakeven==='function')syncBreakeven();
 }
 tabs.forEach(function(b){b.addEventListener('click',function(){switchTab(b.dataset.tab);});});
 // Keyboard arrow navigation across the tablist (WCAG tab pattern)
@@ -537,22 +451,7 @@ tabs.forEach(function(b,i){b.addEventListener('keydown',function(e){
   if(n){e.preventDefault();switchTab(n.dataset.tab);n.focus();}
 });});
 
-/* Break-even auto-fill is crop-aware: yield + cash price track the active crop. */
 var activeCrop='corn';
-var BE={corn:{yield:null,price:null},bean:{yield:null,price:null}};
-function syncBreakeven(){
-  var bmY=document.getElementById('bm-yield'), bmP=document.getElementById('bm-price'), bmC=document.getElementById('bm-cost');
-  var d=BE[activeCrop]||{};
-  var pn=document.getElementById('bm-price-note'), cn=document.getElementById('bm-cost-note');
-  var fut=activeCrop==='bean'?'Nov soybean futures, before basis':'Dec corn futures, before basis';
-  if(bmY&&!bmY._manual)bmY.value=(d.yield!=null)?Math.round(d.yield):'';
-  if(bmP&&!bmP._manual)bmP.value=(d.price!=null)?d.price.toFixed(2):'';
-  if(pn)pn.textContent=(bmP&&bmP._manual)?'Your price':(d.price!=null?fut:(BE.stale?'Futures price file is more than 60 hours old. Enter a price.':'No futures price loaded. Enter a price.'));
-  /* Cost is crop-aware. Only corn has a starting value; beans get none. */
-  if(bmC&&!bmC._manual)bmC.value=(activeCrop==='corn')?'620':'';
-  if(cn)cn.textContent=(bmC&&bmC._manual)?'All-in: seed, fert, rent, etc.':(activeCrop==='corn'?'Corn starting value. Replace with your all-in cost.':'No soybean default. Enter your all-in cost.');
-  if(typeof calcBreakeven==='function')calcBreakeven();
-}
 
 /* ROW LENGTH LOOKUP (1/1000 acre for given row width) */
 var ROW_LENGTHS={20:'26\'2"',30:'17\'5"',36:'14\'6"',38:'13\'9"',40:'13\'1"',15:'34\'10"',7.5:'69\'8"'};
@@ -603,7 +502,7 @@ function calcCorn(){
   if(why){
     ['c-yield-val','c-pop-val','c-kpe-val','c-range-val'].forEach(function(id){s(id,'-');});
     s('c-yield-sub',why);
-    BE.corn.yield=null; syncBreakeven(); return;
+    return;
   }
   s('c-yield-sub','bu / acre');
   var pop=ears*1000;
@@ -616,8 +515,7 @@ function calcCorn(){
   // Range is only the kernels-per-bushel sweep (65k-95k) around the 90k headline
   // basis. It is not the field error.
   s('c-range-val',Math.round(kernels/95000)+'–'+Math.round(kernels/65000));
-  activeCrop='corn'; BE.corn.yield=yield_bu;
-  syncBreakeven();
+  activeCrop='corn';
 }
 ['c-row-width','c-ear-count','c-kernel-rows','c-kernels-row'].forEach(function(id){
   var el=document.getElementById(id);if(el)el.addEventListener('input',calcCorn);
@@ -654,7 +552,7 @@ function calcBean(){
   if(why){
     ['b-yield-val','b-pop-val','b-spp-val','b-range-val'].forEach(function(id){s(id,'-');});
     s('b-yield-sub',why);
-    BE.bean.yield=null; syncBreakeven(); return;
+    return;
   }
   s('b-yield-sub','bu / acre');
   var pop=plants*1000;
@@ -666,8 +564,7 @@ function calcBean(){
   // Sweep the seed-size range extension teaches (2,500 large seed - 3,500 stressed)
   // rather than a symmetric percentage.
   s('b-range-val',Math.round((pop*spp)/(3500*60))+'–'+Math.round((pop*spp)/(2500*60)));
-  activeCrop='bean'; BE.bean.yield=yield_bu;
-  syncBreakeven();
+  activeCrop='bean';
 }
 ['b-row-width','b-plant-count','b-pods-plant','b-seeds-pod','b-seeds-lb'].forEach(function(id){
   var el=document.getElementById(id);if(el)el.addEventListener('input',calcBean);
@@ -689,63 +586,6 @@ document.getElementById('qf-bean-avg').addEventListener('click',function(){beanF
 document.getElementById('qf-bean-low').addEventListener('click',function(){beanFill(110,22,2.4,3000);});
 
 calcBean();
-
-/* Both crop calculators run once at load to populate their panels, and each one
-   claims activeCrop as a side effect. calcBean() runs last, so without this the
-   page opened on the Corn tab with the break-even panel prefilled from SOYBEANS
-   (~48 bu under a ~193 bu corn heading). Hand activeCrop back to the tab that is
-   actually visible and re-sync. */
-activeCrop=(document.querySelector('.ye-tab.active')||{}).dataset
-  ? document.querySelector('.ye-tab.active').dataset.tab : 'corn';
-if(activeCrop!=='corn'&&activeCrop!=='bean')activeCrop='corn';
-syncBreakeven();
-
-/* BREAK-EVEN CALCULATOR */
-function calcBreakeven(){
-  var y=fld('bm-yield'), p=fld('bm-price'), c=fld('bm-cost'), a=fld('bm-acres');
-  function inr(id,v){var el=document.getElementById(id),hi=el?parseFloat(el.max):NaN;return v!=null&&v>0&&!(isFinite(hi)&&v>hi);}
-  var okY=inr('bm-yield',y), okP=inr('bm-price',p), okC=inr('bm-cost',c), okA=inr('bm-acres',a);
-  function s(id,v){var el=document.getElementById(id);if(el)el.textContent=v;}
-  function d(v){return (v<0?'-':'')+'$'+Math.abs(v).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});}
-  function nv(why){return ''+why;}
-  function col(id,v){var el=document.getElementById(id);if(el)el.style.color=(v==null)?'':(v>=0?'var(--green)':'#e05c5c');}
-  var eY=nv(y!=null?'yield out of range':'enter a yield'), eP=nv(p!=null?'price out of range':'enter a price'), eC=nv(c!=null?'cost out of range':'enter a cost'), eA=nv(a!=null?'acres out of range':'enter acres');
-  var rev=(okY&&okP)?y*p:null;
-  var profit=(rev!=null&&okC)?rev-c:null;
-  var total=(profit!=null&&okA)?profit*a:null;
-  s('bm-rev',rev!=null?d(rev)+'/ac':(!okY?eY:eP));
-  s('bm-profit',profit!=null?d(profit)+'/ac':(!okY?eY:!okP?eP:eC));
-  s('bm-be-yield',(okC&&okP)?(c/p).toLocaleString('en-US',{minimumFractionDigits:1,maximumFractionDigits:1})+' bu/ac':(!okC?eC:eP));
-  s('bm-be-price',(okC&&okY)?'$'+(c/y).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})+'/bu':(!okC?eC:eY));
-  s('bm-total',total!=null?d(total):(!okY?eY:!okP?eP:!okC?eC:eA));
-  s('bm-cost-bu',(okC&&okY)?'$'+(c/y).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})+'/bu':(!okC?eC:eY));
-  col('bm-rev',null);col('bm-profit',profit);col('bm-total',total);
-}
-['bm-yield','bm-price','bm-cost','bm-acres'].forEach(function(id){
-  var el=document.getElementById(id);
-  if(el){
-    el.addEventListener('input',calcBreakeven);
-    /* Mark as manually edited so auto-fill stops overwriting */
-    el.addEventListener('input',function(){this._manual=true;});
-  }
-});
-calcBreakeven();
-
-/* AUTO-FILL PRICE FROM PRICES.JSON
-   CRITICAL: prices.json stores grain prices in cents — divide by 100 for display.
-   Defensive guard: if value > 100, it's cents; otherwise treat as dollars. */
-fetch('/data/prices.json').then(function(r){return r.ok?r.json():null;}).then(function(data){
-  if(!data||!data.quotes)return;
-  var q=data.quotes;
-  // prices.json stores grain prices in CENTS -> divide by 100 for display.
-  // Dec corn and Nov soybeans by name, the contracts the note says: the
-  // continuous 'corn'/'beans' keys roll to a different month in summer.
-  function px(o){ if(!o||o.close==null)return null; var v=parseFloat(o.close); if(isNaN(v))return null; return v>100?v/100:v; }
-  var ft=Date.parse(data.fetched||''), fresh=isFinite(ft)&&(Date.now()-ft)<=60*3600*1000;
-  if(fresh){ BE.corn.price=px(q['corn-dec']); BE.bean.price=px(q['beans-nov']); }
-  else{ BE.corn.price=null; BE.bean.price=null; BE.stale=true; }
-  syncBreakeven();
-}).catch(function(){});
 
 })();
 </script>
