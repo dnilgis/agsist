@@ -14,7 +14,7 @@ Idempotent: identical inputs produce identical pages; sitemap entries live
 between marker comments and are fully regenerated each run.
 
 v1.1 — 2026-07-03 (cross-state link mesh on every page)
-v1.2 — 2026-10-10 each page lists that state's storm days (data/hail/storm-days.json,
+v1.2 - 2026-10-10 each page lists that state's storm days (data/hail/storm-days.json,
        written by generate_hail_events.py, which mesh.yml runs daily before this);
        Avg/yr is reports over the elapsed span of the record, not the file count.
 `--selftest` runs hand-worked checks and exits.

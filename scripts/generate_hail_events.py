@@ -665,7 +665,7 @@ def main():
             if mp2 != mp:
                 open(MAP_PAGE, "w", encoding="utf-8").write(mp2)
         else:
-            print("hail-map.html: SEED:stormdays markers missing — strip not refreshed")
+            print("hail-map.html: SEED:stormdays markers missing, strip not refreshed")
     except OSError as e:
         print("hail-map.html:", e)
     print(f"storm pages: {made} written/updated of {len(qualifying)} qualifying days · "
