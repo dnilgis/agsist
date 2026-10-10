@@ -224,6 +224,64 @@ def crowded_side(net, p):
     return None
 
 
+def crowd_word(p):
+    """The page's word for a full-record share-of-open-interest percentile
+    (cot.html crowdWord, same cut points). Pipeline copy so the futures pages,
+    the homepage and the scorecard print the word without recomputing it."""
+    if p is None:
+        return "no ranking"
+    if p >= 99:
+        return "top 1%"
+    if p >= 90:
+        return f"top {max(1, math.floor(100 - p + 0.5))}%"   # Math.round, as cot.html rounds
+    if p >= 75:
+        return "high side"
+    if p <= 1:
+        return "bottom 1%"
+    if p <= 10:
+        return f"bottom {max(1, math.floor(p + 0.5))}%"
+    if p <= 25:
+        return "low side"
+    return "middling"
+
+
+# What the COT page's own tests say about using positioning to call price.
+# Measured, not assumed: the share-of-open-interest study and the forward
+# correlations (board_correlation) find no timing signal; a reading that does
+# pass the false-discovery correction is named instead.
+TESTED_NONE = ("Nothing the COT page tested says which way price goes next. "
+               "Positioning shows how much selling (or buying) could be forced "
+               "if the market turns, not when.")
+
+
+def crowd_summary(c):
+    """The one crowding read every page prints, from the one measure: the
+    full-record percentile of managed-money net as a share of open interest,
+    counted on the side the position is on. Called after the family's
+    false-discovery control has set fdr_pass on the studies."""
+    p = (c.get("pctl") or {}).get("net_oi_all")
+    held = any(st.get("verdict") == "measured" and st.get("fdr_pass")
+               for g in (c.get("studies") or {}).values() for st in g.values())
+    side = "long" if (c.get("net") or 0) > 0 else "short" if (c.get("net") or 0) < 0 else "flat"
+    card = c.get("card") or {}
+    return {
+        "pctl": p,
+        "word": crowd_word(p),
+        "crowded": c.get("crowded"),
+        "side": side,
+        "since": (c.get("first_week") or "")[:4] or None,
+        "weeks": c.get("weeks_of_history"),
+        "measure": "managed-money net as a share of open interest, ranked against every week since "
+                   + ((c.get("first_week") or "")[:4] or "the start of the record"),
+        "held": held,
+        "tested": ("One positioning reading held up against the record after the correction "
+                   "for testing many; the COT page names it.") if held else TESTED_NONE,
+        # the trailing-year figure in contracts, for "show the math" only
+        "pct52_contracts": card.get("pct"),
+        "weeks52": card.get("weeks"),
+    }
+
+
 def side_of(net, oi):
     """'long', 'short' or 'flat'. Flat is |net| under FLAT_OI_PCT of open
     interest; without open interest only the sign is known."""
@@ -1321,6 +1379,8 @@ def main():
         t[3]["fdr_pass"] = idx in survivors
     for t in family:
         t[3].setdefault("fdr_pass", False)
+    for r in out.values():
+        r["crowd"] = crowd_summary(r)
     raw_hits = sum(1 for p in pvals if p < ALPHA)
 
     # A p-value grid coarser than the correction threshold makes the correction
@@ -1550,6 +1610,23 @@ def selftest():
     t2 = _divergence_read(fc)
     ckt("a net short with net rising is never 'a long position price has stopped confirming'",
         "long position" not in t2 and "net short" in t2, t2)
+
+    # ── one crowding read ──
+    ckt("crowd word: 81.4 is the high side", crowd_word(81.4) == "high side")
+    ckt("crowd word: 97.6 is top 2%", crowd_word(97.6) == "top 2%")
+    ckt("crowd word: 0.6 is bottom 1%", crowd_word(0.6) == "bottom 1%")
+    ckt("crowd word: 56.3 is middling", crowd_word(56.3) == "middling")
+    ckt("crowd word: 97.5 rounds like cot.html (top 3%)", crowd_word(97.5) == "top 3%")
+    cs = crowd_summary({"pctl": {"net_oi_all": 81.4}, "net": 329839, "crowded": None,
+                        "first_week": "2010-01-05", "weeks_of_history": 875,
+                        "card": {"pct": 88.5, "weeks": 52},
+                        "studies": {"13": {"share_of_oi": {"verdict": "measured", "fdr_pass": False}}}})
+    ckt("crowd summary: corn Oct 6 2026, high side, not crowded, nothing held",
+        cs["word"] == "high side" and cs["crowded"] is None and cs["held"] is False
+        and cs["since"] == "2010" and cs["pct52_contracts"] == 88.5 and cs["tested"] == TESTED_NONE, cs)
+    cs2 = crowd_summary({"pctl": {"net_oi_all": 97.6}, "net": 1, "crowded": "long", "first_week": "2010-01-05",
+                         "studies": {"4": {"flow": {"verdict": "measured", "fdr_pass": True}}}})
+    ckt("crowd summary: a passing study is named, not hidden", cs2["held"] and cs2["tested"] != TESTED_NONE)
 
     # ── shutdown weeks are not entry points ──
     ckt("the 2025-09-30 report's release is unknown", CAL.release_unknown(date(2025, 9, 30)))

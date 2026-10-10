@@ -973,13 +973,17 @@ function renderInsight(key){
   var pill=document.getElementById('pctl-'+key);
   var el=document.getElementById('insight-'+key);
   if(!k){ if(pill) pill.textContent=''; if(el) el.innerHTML=''; return null; }
-  /* SAY WHAT IS BEING RANKED, over how long, and on how many weeks. This pill
-     ranks RAW NET CONTRACTS over the trailing year; the line beneath it ranks
-     net as a SHARE OF OPEN INTEREST over the whole record. Hue is reserved for
-     the line below, which uses the page's one definition of crowded. */
+  /* ONE MEASURE ON THE CARD (2026-10-10). This pill used to rank RAW NET
+     CONTRACTS over the trailing year beside a share-of-open-interest
+     percentile over the whole record: two rankings under one card. It now
+     shows the page's one measure (cot_analysis.py `crowd`: net as a share of
+     open interest, every week since 2010), hued only when crowded; the
+     52-week figure in contracts moves under "show the math". */
+  var cr=c.crowd,cp=cr?cr.pctl:(c.pctl&&c.pctl.net_oi_all);
   if(pill){
-    pill.textContent=ordinal(k.pct)+' percentile · last '+k.weeks+' weeks (n = '+k.weeks+'), contracts';
-    pill.className='cot-pctl';
+    pill.textContent=cp==null?'':((c.crowded&&cr&&cr.word)?cr.word+', crowded '+c.crowded:ordinal(Math.max(1,Math.min(99,cp)))+' percentile')
+      +' \u00b7 share of open interest since '+String(c.first_week||'').slice(0,4)+' (n = '+Number(c.weeks_of_history||0).toLocaleString('en-US')+' weeks)';
+    pill.className='cot-pctl'+(c.crowded==='long'?' hot':c.crowded==='short'?' cold':'');
   }
   if(!el) return k;
   /* Direction of the NET, said as such. "Funds cut 8k" under a net short that
@@ -996,7 +1000,7 @@ function renderInsight(key){
   var f=(k.flips&&k.flips[0])||null, flipTxt='';
   if(f&&f.weeks_ago<=6){ flipTxt=' Funds flipped <b class="'+(f.to==='long'?'up':'dn')+'">net '+f.to+'</b> '+(f.weeks_ago===0?'this week':f.weeks_ago+' week'+(f.weeks_ago>1?'s':'')+' ago')+'.'; }
   var html='Net '+dirWord+(k.chg?' <b>'+fmtMagK(k.chg)+'</b> contract'+(Math.abs(k.chg)===1?'':'s'):'')+' this week'+sharp+driveTxt
-    +'. Net positioning sits at the <b>'+ordinal(k.pct)+' percentile</b> of the last '+k.weeks+' weeks, in contracts.'+flipTxt;
+    +'.'+flipTxt;
   if(k.divergence){
     var dvCls=(k.divergence==='bearish'||k.divergence==='confirmed-down')?'dn':'up';
     var nd=k.chg4>0?'rising':k.chg4<0?'falling':'flat', pd=k.price4>0?'rising':k.price4<0?'falling':'flat';
@@ -1005,6 +1009,8 @@ function renderInsight(key){
   /* The withdrawn analog hit rate (2026-08-21) stays withdrawn: it selected
      weeks with a percentile computed over the whole array, after the fact, and
      counted overlapping weeks of one episode as separate cases. */
+  html+='<details class="cot-math"><summary>Show the math</summary>A shorter yardstick, in contracts: the net sits at the '
+    +ordinal(k.pct)+' percentile of the last '+k.weeks+' weeks (n = '+k.weeks+'). Contracts are not adjusted for the size of the market, so the pill above, not this, is the ranking.</details>';
   el.innerHTML=html;
   return k;
 }

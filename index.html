@@ -1204,7 +1204,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
     <div class="ratio-cot-grid">
       <div class="cot-widget" id="cot-widget">
         <div class="cot-widget-head"><h3 class="cot-widget-title idx1-sub-h"><svg class="ic" aria-hidden="true"><use href="#i-chart-column"/></svg> CFTC COT: Managed Money</h3><span class="cot-badges"><span class="cot-verdict mixed" id="cot-verdict">Loading&hellip;</span><span class="cot-verdict mixed" id="cot-verdict-lv" hidden></span></span></div>
-        <div class="cot-caption">Net position within its past 52 weeks. <span class="tip"><button type="button" class="tip-b" aria-expanded="false" aria-describedby="tip-cot">How to read</button><span id="tip-cot" role="tooltip" class="tip-t" hidden>COT is the CFTC&rsquo;s weekly Commitments of Traders report, positions as of Tuesday. Managed money means hedge funds and commodity trading advisers. Net futures contracts held long vs short by that group in CFTC&rsquo;s disaggregated report. Bar shows where that position sits within the past 52 weeks (not the 3-yr COT Index some desks use, this window runs shorter, which can read positioning as more extreme). The two badges above are separate: Grains averages corn, soybeans and Chicago wheat&rsquo;s position-in-range; Live cattle reads that one row. Neither is a headcount of who&rsquo;s long or short, and one grain can run the other way. &ldquo;Since&rdquo; compares the front-month close on the report&rsquo;s Tuesday with today&rsquo;s, so a contract roll in between is inside the number. Interpretation of public CFTC data, not a trading signal.</span></span></div>
+        <div class="cot-caption">Rank: share of open interest, every week since 2010. Bars: net within its past 52 weeks, in contracts. <span class="tip"><button type="button" class="tip-b" aria-expanded="false" aria-describedby="tip-cot">How to read</button><span id="tip-cot" role="tooltip" class="tip-t" hidden>COT is the CFTC&rsquo;s weekly Commitments of Traders report, positions as of Tuesday. Managed money means hedge funds and commodity trading advisers. Net futures contracts held long vs short by that group in CFTC&rsquo;s disaggregated report. The rank beside each market is the COT page&rsquo;s one measure: the net as a share of open interest, ranked against every week since 2010; crowded means the top or bottom tenth of that record on the side the position is on. The bar is a second, shorter yardstick: where the net sits between its 52-week low and high in contracts, not adjusted for the size of the market. The badges name any market that is crowded on the rank, grains and live cattle separately. Neither is a headcount of who&rsquo;s long or short, and one grain can run the other way. &ldquo;Since&rdquo; compares the front-month close on the report&rsquo;s Tuesday with today&rsquo;s, so a contract roll in between is inside the number. Interpretation of public CFTC data, not a trading signal.</span></span></div>
         <div class="cot-rows" id="cot-rows">
           <div class="cot-row-corn"><div class="cot-row-top"><div class="cot-label"><span class="cot-comm-name">Corn</span></div><div class="cot-right"><span class="cot-dir nc" id="cot-corn-dir">--</span><span class="cot-net" id="cot-corn-net">--</span><span class="cot-chg nc" id="cot-corn-chg">--</span></div></div><div class="cot-bar-wrap"><div class="cot-bar-fill" id="cot-corn-fill"></div><div class="cot-zero-mark" id="cot-corn-zero"></div><div class="cot-bar-dot" id="cot-corn-dot" style="background:var(--text-muted)"></div></div><div class="cot-bar-labels"><span id="cot-corn-min">--</span><span>52-week range</span><span id="cot-corn-max">--</span></div></div>
           <div class="cot-row-beans"><div class="cot-row-top"><div class="cot-label"><span class="cot-comm-name">Soybeans</span></div><div class="cot-right"><span class="cot-dir nc" id="cot-beans-dir">--</span><span class="cot-net" id="cot-beans-net">--</span><span class="cot-chg nc" id="cot-beans-chg">--</span></div></div><div class="cot-bar-wrap"><div class="cot-bar-fill" id="cot-beans-fill"></div><div class="cot-zero-mark" id="cot-beans-zero"></div><div class="cot-bar-dot" id="cot-beans-dot" style="background:var(--text-muted)"></div></div><div class="cot-bar-labels"><span id="cot-beans-min">--</span><span>52-week range</span><span id="cot-beans-max">--</span></div></div>
@@ -2316,21 +2316,44 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')close(true);
   /* WAVE3-L: one badge per group. The old badge averaged three grains with
      live cattle; a cattle feeder and a corn grower read different markets.
      Same thresholds as before, applied to each group on its own. */
+  /* 2026-10-10 ONE MEASURE OF CROWDED. The badge averaged each row's place in
+     its 52-week range in contracts and said "near 52-wk high" while the COT
+     page, on its own measure, called the same funds "high side but not
+     extreme". It now names the markets that are crowded on that one measure
+     (cot-analysis.json `crowd`), and says so when none is. */
+  var COT_CX=null;
+  function cotIso(s){var d=new Date(String(s||'')+(/^\d{4}-\d{2}-\d{2}$/.test(String(s||''))?'T12:00:00':''));return isNaN(d)?'':d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2);}
+  function cxFor(k,data){var c=COT_CX&&COT_CX.commodities&&COT_CX.commodities[k];return (c&&c.date&&data&&cotIso(c.date)===cotIso(data.report_date))?c:null;}
+  function rankTxt(c){var cr=c.crowd,p=cr?cr.pctl:(c.pctl&&c.pctl.net_oi_all);if(p==null)return '';
+    if(c.crowded&&cr&&cr.word)return cr.word+', crowded '+c.crowded;   /* "bottom 1%", never "0th" */
+    var r=Math.max(1,Math.min(99,Math.round(p))),o=['th','st','nd','rd'],v=r%100;return r+(o[(v-20)%10]||o[v]||o[0])+' pct'+(c.crowded?', crowded '+c.crowded:'');}
   function badge(el,rows,data,label){
     if(!el)return;
-    var sc=[],nl=0;rows.forEach(function(r){var d=data[r.k];if(!d)return;var range=(d.max52-d.min52)||1;sc.push((d.net-d.min52)/range);if(d.net>0)nl++;});
-    if(!sc.length){el.hidden=true;return;}
+    var have=0,hot=[];rows.forEach(function(r){var c=cxFor(r.k,data);if(!c)return;have++;if(c.crowded)hot.push({n:r.n.replace(/^Wheat, /,'').replace(/^Live cattle$/,'live cattle'),s:c.crowded});});
+    if(!have){el.hidden=true;return;}
     el.hidden=false;
-    var avg=sc.reduce(function(a,b){return a+b;},0)/sc.length,maj=Math.floor(sc.length/2)+1;
-    if(avg>0.62&&nl>=maj){el.className='cot-verdict long';el.innerHTML='<svg class="ic" aria-hidden="true"><use href="#i-trending-up"/></svg> '+label+': near 52-wk high';}
-    else if(avg<0.38||nl===0){el.className='cot-verdict short';el.innerHTML='<svg class="ic" aria-hidden="true"><use href="#i-trending-down"/></svg> '+label+': near 52-wk low';}
-    else{el.className='cot-verdict mixed';el.textContent='\u2194 '+label+': mid-range';}
+    el.title='Crowded: net as a share of open interest in the top or bottom tenth of every week since 2010, on the side the position is on (the COT page\u2019s measure).';
+    if(!hot.length){el.className='cot-verdict mixed';el.textContent=label+': none crowded';return;}
+    var lg=hot.filter(function(h){return h.s==='long';}),sh=hot.filter(function(h){return h.s==='short';});
+    el.className='cot-verdict '+(lg.length&&!sh.length?'long':sh.length&&!lg.length?'short':'mixed');
+    el.textContent=label+': crowded '+(lg.length?'long, '+lg.map(function(h){return h.n;}).join(', '):'')+(lg.length&&sh.length?'; crowded ':'')+(sh.length?'short, '+sh.map(function(h){return h.n;}).join(', '):'');
+  }
+  function rankRows(data){
+    COT_ROWS.forEach(function(r){
+      /* its own line under the name and numbers, so the row's figures keep their width */
+      var top=document.querySelector('#cot-widget .cot-row-'+r.id+' .cot-row-top');if(!top)return;
+      var sp=top.parentNode.querySelector('.cot-rank');var c=cxFor(r.k,data),t=c?rankTxt(c):'';
+      if(!t){if(sp)sp.remove();return;}
+      if(!sp){sp=document.createElement('div');sp.className='cot-rank';sp.style.cssText='font-size:.8em;color:var(--text-muted);font-weight:600;margin:.05rem 0 .1rem';top.parentNode.insertBefore(sp,top.nextSibling);}
+      sp.textContent='Rank since '+String(c.first_week||'2010').slice(0,4)+': '+t;sp.title=(c.crowd&&c.crowd.word?c.crowd.word+': ':'')+'net as a share of open interest, against every week since '+String(c.first_week||'2010').slice(0,4);
+    });
   }
   function renderCOT(data){
     window.AGSIST_COT._d=data;placeCOT(data);
     COT_ROWS.forEach(function(row){if(data[row.k])renderCOTRow(row.id,data[row.k]);});
     badge(document.getElementById('cot-verdict'),COT_ROWS.filter(function(r){return r.v==='g';}),data,'Grains');
     badge(document.getElementById('cot-verdict-lv'),COT_ROWS.filter(function(r){return r.v==='l';}),data,'Live cattle');
+    rankRows(data);
     var dateEl=document.getElementById('cot-date');
     if(dateEl&&data.report_date){
       var _rds=String(data.report_date);
@@ -2354,9 +2377,11 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')close(true);
   }
   /* WAVE3-L: a failed or malformed cot.json is one line, not ten rows of
      placeholders. */
+  /* data/cot-analysis.json carries the one crowding measure (cot_analysis.py
+     `crowd`); it is used only when it is for the same week as cot.json. */
   fetch('/data/cot.json').then(function(r){if(!r.ok)throw new Error('no-cot');return r.json();}).then(function(d){
     if(!d||typeof d!=='object'||!COT_ROWS.some(function(r){return d[r.k]&&d[r.k].net!=null;}))throw new Error('cot malformed');return d;
-  }).then(renderCOT,function(){
+  }).then(function(d){return fetch('/data/cot-analysis.json').then(function(r){return r.ok?r.json():null;}).catch(function(){return null;}).then(function(a){COT_CX=a;return d;});}).then(renderCOT,function(){
     window.AGSIST_COT.failed=true;
     var verdict=document.getElementById('cot-verdict');if(verdict)verdict.hidden=true;var _cw=document.getElementById('cot-widget');if(_cw)_cw.classList.add('cot-na');
     var rows=document.getElementById('cot-rows');if(rows)rows.innerHTML='<p class="cot-fail" role="status">CFTC positions did not load.</p>';

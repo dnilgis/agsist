@@ -704,7 +704,10 @@ def seed_conditions(today):
 # --- /scorecard ----------------------------------------------------------------
 PB_VERDICT = {"not_enough": "Not enough calls yet.", "coin_flip": "Coin flip.",
               "held_up": "This one held up.", "worse_than_coin": "Worse than a coin flip."}
-PB_SIGNAL = {"crowded_long": "Managed money crowded long", "crowded_short": "Managed money crowded short",
+# "crowded" is the COT page's word for its own measure (cot_analysis.py); the
+# bot's three-year rank is labeled as the bot's rule.
+PB_SIGNAL = {"crowded_long": "The bot\u2019s own rule: funds in the top tenth of 3 years",
+             "crowded_short": "The bot\u2019s own rule: funds in the bottom tenth of 3 years",
              "trend_up": "13-week trend up", "trend_down": "13-week trend down"}
 
 
@@ -807,7 +810,7 @@ def seed_scorecard(today):
     for c in lc:
         why = _e(PB_SIGNAL.get(c.get("signal"), c.get("signal") or ""))
         if c.get("cot_pct") is not None:
-            why += f" (managed money at the {_pb_ord(_jsround(c['cot_pct']))} percentile)"
+            why += f" ({_pb_ord(_jsround(c['cot_pct']))} percentile of the last 156 reports)"
         rows.append(f"<tr><td>{_e(labels.get(c.get('crop'), c.get('crop') or ''))}</td><td>{dir_span(c.get('direction'))}</td>"
                     f"<td>{_e(c.get('contract') or '')}</td><td class=\"num\">{_pb_dollars(c.get('entry'))}</td>"
                     f"<td>{_pb_date(c.get('exit_day'))}</td><td>{why}</td></tr>")

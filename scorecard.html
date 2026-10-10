@@ -121,7 +121,7 @@
         <section class="pb-box" id="pb-live" aria-labelledby="pb-live-tag">
           <div class="pb-box-tag" id="pb-live-tag">Live record</div>
           <p class="pb-verdict" id="pb-live-verdict"><!--SEED:pb:pb-live-verdict-->Not enough calls yet.<!--/SEED--></p>
-          <p id="pb-live-line"><!--SEED:pb:pb-live-line-->0 graded so far. A rate is shown from 40 graded calls and 30 non-overlapping windows. Record as of Oct 7, 2026.<!--/SEED--></p>
+          <p id="pb-live-line"><!--SEED:pb:pb-live-line-->0 graded so far. A rate is shown from 40 graded calls and 30 non-overlapping windows. Record as of Oct 10, 2026.<!--/SEED--></p>
           <p id="pb-live-luck"><!--SEED:pb:pb-live-luck-->4 calls are waiting for their grading day. The first live calls are made at the Oct 5, 2026 close and graded four weeks later.<!--/SEED--></p>
         </section>
         <section class="pb-box" id="pb-bt" aria-labelledby="pb-bt-tag">
@@ -138,7 +138,7 @@
       <p id="pb-latest-when" class="pb-note"><!--SEED:pb:pb-latest-when-->Made at the Oct 5, 2026 close.<!--/SEED--></p>
       <div class="pb-wrap"><table class="pb-table" id="pb-latest" aria-describedby="pb-latest-when">
         <thead><tr><th scope="col">Crop</th><th scope="col">Call</th><th scope="col">Contract</th><th scope="col" class="num">Entry close</th><th scope="col">Grades on</th><th scope="col">Why</th></tr></thead>
-        <tbody><!--SEED:pb:latest--><tr><td>Corn</td><td><span class="pb-down">Down</span></td><td>Dec '26</td><td class="num">$4.9725</td><td>Nov 2, 2026</td><td>Managed money crowded long (managed money at the 97th percentile)</td></tr><tr><td>Soybeans</td><td><span class="pb-down">Down</span></td><td>Nov '26</td><td class="num">$12.8075</td><td>Nov 2, 2026</td><td>Managed money crowded long (managed money at the 96th percentile)</td></tr><tr><td>Chicago wheat</td><td><span class="pb-up">Up</span></td><td>Dec '26</td><td class="num">$6.9225</td><td>Nov 2, 2026</td><td>13-week trend up (managed money at the 87th percentile)</td></tr><tr><td>KC wheat</td><td><span class="pb-down">Down</span></td><td>Dec '26</td><td class="num">$7.4225</td><td>Nov 2, 2026</td><td>Managed money crowded long (managed money at the 92nd percentile)</td></tr><!--/SEED--></tbody>
+        <tbody><!--SEED:pb:latest--><tr><td>Corn</td><td><span class="pb-down">Down</span></td><td>Dec '26</td><td class="num">$4.9725</td><td>Nov 2, 2026</td><td>The bot’s own rule: funds in the top tenth of 3 years (97th percentile of the last 156 reports)</td></tr><tr><td>Soybeans</td><td><span class="pb-down">Down</span></td><td>Nov '26</td><td class="num">$12.8075</td><td>Nov 2, 2026</td><td>The bot’s own rule: funds in the top tenth of 3 years (96th percentile of the last 156 reports)</td></tr><tr><td>Chicago wheat</td><td><span class="pb-up">Up</span></td><td>Dec '26</td><td class="num">$6.9225</td><td>Nov 2, 2026</td><td>13-week trend up (87th percentile of the last 156 reports)</td></tr><tr><td>KC wheat</td><td><span class="pb-down">Down</span></td><td>Dec '26</td><td class="num">$7.4225</td><td>Nov 2, 2026</td><td>The bot’s own rule: funds in the top tenth of 3 years (92nd percentile of the last 156 reports)</td></tr><!--/SEED--></tbody>
       </table></div>
 
       <h2>By crop</h2>
@@ -151,7 +151,7 @@
       <h2>The rule</h2>
       <p>Written down on <span id="pb-reg">2026-10-03</span>, and backtested once that day, before the first live call, as rule set <b id="pb-ver">bot-v1.1</b>. The backtest came out no better than a coin flip and is published as such. On 2026-10-05, after that day&rsquo;s close and before the first live call was written, the timing was corrected so live calls match what was backtested (one call per report, the release date for holiday weeks, shutdown weeks skipped); the direction rule did not change. Any later change gets a new version number and a new record of its own.</p>
       <ol class="pb-rules">
-        <li><b>Crowding first.</b> Take managed money's net position (CFTC) as a share of open interest, from that week's report. Rank it against the <span data-rule="cot_window_reports">156</span> reports before it, about three years. This is the bot's own threshold; the COT page's &ldquo;crowded&rdquo; label uses the 85th/15th percentile of the full record and makes no forecast. At or above the <span data-rule="cot_crowded_long_pct">90</span>th percentile, the funds are crowded long: call <b>down</b>. At or below the <span data-rule="cot_crowded_short_pct">10</span>th, crowded short: call <b>up</b>.</li>
+        <li><b>Crowding first.</b> Take managed money's net position (CFTC) as a share of open interest, from that week's report. Rank it against the <span data-rule="cot_window_reports">156</span> reports before it, about three years. This is <b>the bot&rsquo;s own rule</b>, not the site&rsquo;s measure of crowded: the COT page ranks the same share against every week since 2010 and calls funds crowded only in the top or bottom tenth of that whole record (90th/10th percentile, on the side the position is on), and it makes no forecast from it; its own tests find no timing signal. Under the bot&rsquo;s rule, at or above the <span data-rule="cot_crowded_long_pct">90</span>th percentile of the three years: call <b>down</b>. At or below the <span data-rule="cot_crowded_short_pct">10</span>th: call <b>up</b>.</li>
         <li><b>Otherwise, trend.</b> If the roll-repaired front-month index (Yahoo&rsquo;s continuous futures with the jump at each contract change removed) is higher than <span data-rule="trend_lookback_weeks">13</span> weeks ago, call <b>up</b>; lower, call <b>down</b>; exactly flat, no call.</li>
         <li><b>Grade.</b> An up call is right when the close at the exit (the entry close of the report <span data-rule="horizon_reports">4</span> weeks later) is above the entry close. A down call is right when it is below. A close equal to the entry is a miss.</li>
       </ol>
@@ -180,7 +180,7 @@
           <dt>Raw files</dt>
           <dd><a href="/data/predictions.json">/data/predictions.json</a> (calls, record, rule) and <a href="/data/predictions-backtest.json">/data/predictions-backtest.json</a> (every backtest call). Code: <code>scripts/prediction_bot.py</code>; its selftests carry hand-worked answers.</dd>
           <dt>Last changed</dt>
-          <dd id="pb-updated"><!--SEED:pb:pb-updated-->2026-10-07 01:47:31 UTC<!--/SEED--></dd>
+          <dd id="pb-updated"><!--SEED:pb:pb-updated-->2026-10-10 01:54:25 UTC<!--/SEED--></dd>
         </dl>
       </details>
 
@@ -215,7 +215,8 @@
     'use strict';
     var M=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
     var VERDICT={not_enough:'Not enough calls yet.',coin_flip:'Coin flip.',held_up:'This one held up.',worse_than_coin:'Worse than a coin flip.'};
-    var SIGNAL={crowded_long:'Managed money crowded long',crowded_short:'Managed money crowded short',trend_up:'13-week trend up',trend_down:'13-week trend down'};
+    /* "crowded" is the COT page's word for its own measure; the bot's three-year rank is labeled as the bot's rule */
+    var SIGNAL={crowded_long:'The bot\u2019s own rule: funds in the top tenth of 3 years',crowded_short:'The bot\u2019s own rule: funds in the bottom tenth of 3 years',trend_up:'13-week trend up',trend_down:'13-week trend down'};
     function $(id){return document.getElementById(id);}
     function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
     function fdate(iso){if(!iso)return '-';var p=iso.split('-');return M[+p[1]-1]+' '+(+p[2])+', '+p[0];}
@@ -263,7 +264,7 @@
       var lt=(d.latest||{}),lc=lt.calls||[];
       $('pb-latest-when').textContent=lt.date?('Made at the '+fdate(lt.date)+' close.'):'No live call yet. The first calls are made at the '+fdate(d.first_live_call||d.live_start)+' close.';
       var tb=$('pb-latest').querySelector('tbody');
-      tb.innerHTML=lc.length?lc.map(function(c){return '<tr><td>'+esc(labels[c.crop]||c.crop)+'</td><td>'+dirSpan(c.direction)+'</td><td>'+esc(c.contract)+'</td><td class="num">'+dollars(c.entry)+'</td><td>'+fdate(c.exit_day)+'</td><td>'+esc(SIGNAL[c.signal]||c.signal)+(c.cot_pct!=null?' (managed money at the '+ord(Math.round(c.cot_pct))+' percentile)':'')+'</td></tr>';}).join(''):'<tr><td colspan="6">No calls yet.</td></tr>';
+      tb.innerHTML=lc.length?lc.map(function(c){return '<tr><td>'+esc(labels[c.crop]||c.crop)+'</td><td>'+dirSpan(c.direction)+'</td><td>'+esc(c.contract)+'</td><td class="num">'+dollars(c.entry)+'</td><td>'+fdate(c.exit_day)+'</td><td>'+esc(SIGNAL[c.signal]||c.signal)+(c.cot_pct!=null?' ('+ord(Math.round(c.cot_pct))+' percentile of the last 156 reports)':'')+'</td></tr>';}).join(''):'<tr><td colspan="6">No calls yet.</td></tr>';
 
       var lr=(d.live||{}).records||{},br=bt.records||{};
       var cb=$('pb-bycrop').querySelector('tbody');

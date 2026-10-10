@@ -19,9 +19,10 @@ For each crop, at the entry close of each report:
 
   1. Crowding. Take managed money's net position (long minus short) as a share
      of open interest, from that report. Rank it against the 156 reports
-     before it (three years). This is the bot's own threshold; /cot labels
-     "crowded" at the 85th/15th percentile of the full record, a different,
-     descriptive measure that makes no forecast.
+     before it (three years). This is the bot's own rule; /cot labels
+     "crowded" at the 90th/10th percentile of the full record since 2010
+     (cot_analysis.py CROWDED_HI/LO), a different, descriptive measure that
+     makes no forecast.
        - at or above the 90th percentile  -> call DOWN
        - at or below the 10th percentile  -> call UP
   2. Otherwise, trend. The 13-report change in the roll-repaired front-month

@@ -188,14 +188,14 @@ var CROPS={
       var keRow=document.getElementById('cs-kezw-row'),keVal=document.getElementById('cs-kezw');
       if(keRow&&keVal&&ke&&ke.close!=null&&zw&&zw.close!=null){
         var d1=ke.close-zw.close;
-        keVal.textContent=(d1>=0?'+':'−')+Math.abs(d1).toFixed(2)+'¢';
+        keVal.textContent=AG.px.move(d1,{sign:true});
         keRow.style.display='flex';any=true;
         notes.push(d1>=0?'KC over Chicago: the market is pricing HRW quality/protein over SRW':'KC under Chicago: the market is pricing SRW over HRW right now');
       }else if(keRow){keRow.style.display='none';}
       var mweRow=document.getElementById('cs-mweke-row'),mweVal=document.getElementById('cs-mweke');
       if(mweRow&&mweVal&&mwe&&mwe.close!=null&&ke&&ke.close!=null){
         var d2=mwe.close-ke.close;
-        mweVal.textContent=(d2>=0?'+':'−')+Math.abs(d2).toFixed(2)+'¢';
+        mweVal.textContent=AG.px.move(d2,{sign:true});
         mweRow.style.display='flex';any=true;
         notes.push(d2>=0?'Minneapolis over KC: the protein premium for spring wheat is intact':'Minneapolis under KC: spring wheat trading below HRW');
       }else if(mweRow){mweRow.style.display='none';}
@@ -249,7 +249,7 @@ var CROPS={
     }
     if(front&&front.close){
       var whBu2=front.close/100;
-      sp.push(whBu2<5?'at <strong>$'+whBu2.toFixed(2)+'/bu</strong> prices are below full cost of production for most winter wheat farms':whBu2<6?'at <strong>$'+whBu2.toFixed(2)+'/bu</strong> prices cover variable costs but are tight on land and overhead for most operations':whBu2<7?'at <strong>$'+whBu2.toFixed(2)+'/bu</strong> prices support profitable production for most well-run operations':'at <strong>$'+whBu2.toFixed(2)+'/bu</strong> prices are generating strong margins, a forward selling opportunity worth evaluating');
+      sp.push(whBu2<5?'at <strong>'+grain$(front.close)+'/bu</strong> prices are below full cost of production for most winter wheat farms':whBu2<6?'at <strong>'+grain$(front.close)+'/bu</strong> prices cover variable costs but are tight on land and overhead for most operations':whBu2<7?'at <strong>'+grain$(front.close)+'/bu</strong> prices support profitable production for most well-run operations':'at <strong>'+grain$(front.close)+'/bu</strong> prices are generating strong margins, a forward selling opportunity worth evaluating');
     }
       return sp;
     }
@@ -405,24 +405,59 @@ function renderCropProgress(data){
 
 
 // ============ COT POSITIONING (CFTC Disaggregated) ============
+/* ONE MEASURE OF "CROWDED" (2026-10-10). The three futures pages ranked funds
+   by where the net sat between its 52-week low and high in contracts ("86% of
+   52-wk range, crowded long: unwind risk"), the COT page by the full-record
+   percentile of net as a share of open interest ("81st percentile, high side
+   but not extreme"), and the prediction bot by a three-year percentile. One
+   word, three answers. Every ranked statement here now comes from the COT
+   page's measure, published per market in data/cot-analysis.json `crowd` by
+   scripts/cot_analysis.py: the percentile since 2010, its word, whether it is
+   crowded (top or bottom tenth on the side the position is on) and what the
+   COT page's tests found about it. The 52-week figure in contracts is kept
+   under "show the math" as a second yardstick, never as the ranking.
+   cot.json still supplies the net, the week's change and the wheat classes;
+   when its report date and the analysis's differ, no percentile is printed. */
+var COT_CX=null;   // data/cot-analysis.json commodity for this crop, when it matches cot.json's week
+function cotIsoDay(s){var d=new Date(String(s||'')+(/^\d{4}-\d{2}-\d{2}$/.test(String(s||''))?'T12:00:00':''));if(isNaN(d))return '';return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2);}
+function cotCrowd(){
+  var c=COT_CX;if(!c)return null;
+  var cr=c.crowd||null,p=cr?cr.pctl:(c.pctl&&c.pctl.net_oi_all);
+  if(p==null)return null;
+  return {pctl:p,word:cr?cr.word:null,crowded:cr?cr.crowded:(c.crowded||null),side:c.net>0?'long':c.net<0?'short':'flat',
+          since:(cr&&cr.since)||String(c.first_week||'').slice(0,4)||'2010',weeks:(cr&&cr.weeks)||c.weeks_of_history||null,
+          tested:cr?cr.tested:null};
+}
 function buildCOTPhrases(cotData){
-  if(CROP.cotClasses)return buildCOTPhrasesWheat(cotData);
   if(!cotData||!cotData[CROP_KEY])return [];
-  var d=cotData[CROP_KEY];
-  if(d.net==null||d.min52==null||d.max52==null||d.max52<=d.min52)return [];
-  var pct=Math.round(((d.net-d.min52)/(d.max52-d.min52))*100);
-  pct=Math.max(0,Math.min(100,pct));
-  var stance;
-  if(pct<20)stance=d.net>0?'net long, but near the low of its 52-week range':'deeply short: a contrarian bullish setup if news disappoints';
-  else if(pct<40)stance=d.net>0?'net long, but in the lower part of its 52-week range':'bearishly leaning';
-  else if(pct<60)stance='in neutral territory';
-  else if(pct<80)stance=d.net<0?'net short, but in the upper part of its 52-week range':'bullishly leaning';
-  else stance=d.net<0?'net short, but near the high of its 52-week range':'deeply long: vulnerable to long-liquidation if news disappoints';
-  return ['managed money positioning is <strong>'+stance+'</strong> at '+pct+'% of the way up its 52-week range'];
+  var d=cotData[CROP_KEY],k=cotCrowd();
+  if(d.net==null||!k)return [];
+  var side=d.net>0?'net long':d.net<0?'net short':'flat';
+  return ['managed money'+(CROP.cotClasses?' in Chicago SRW':'')+' is <strong>'+side+'</strong>, at the '+Math.round(k.pctl)+ord(Math.round(k.pctl))+' percentile of its record since '+k.since+' as a share of open interest ('+(k.crowded?'crowded '+k.crowded:(k.word||'not crowded'))+')'];
+}
+
+function cotStrip(data){
+  /* wheat: 3-class strip, Chicago SRW / KC HRW / Mpls HRS: net, side, week
+     change (net minus prev). KC and Mpls often sit on the opposite side of
+     Chicago; a KS or ND grower needs his own class. */
+  var strip=document.getElementById('cot-classes');
+  if(!strip||!CROP.cotClasses)return;
+  var html='';
+  CROP.cotClasses.forEach(function(r){
+    var c=data[r[0]];
+    if(!c||c.net==null)return;
+    var side=c.net>=0?'net long':'net short';
+    var chg='';
+    if(c.prev!=null){
+      var dl=c.net-c.prev;
+      chg=' · wk chg <span class="delta '+(dl>=0?'up':'dn')+'" style="font-family:JetBrains Mono,monospace;font-weight:700">'+fmtKContracts(dl)+'</span>';
+    }
+    html+='<div class="cot-cls-row"><span class="cot-cls-name">'+r[1]+'</span><span><span class="cot-cls-net '+(c.net>=0?'long':'short')+'">'+fmtKContracts(c.net)+'</span> <span class="cot-cls-chg">'+side+chg+'</span></span></div>';
+  });
+  strip.innerHTML=html;
 }
 
 function renderCOT(data){
-  if(CROP.cotClasses)return renderCOTWheat(data);
   var card=document.getElementById('cot-card');
   if(!card)return;
   if(!data||!data[CROP_KEY]){card.style.display='none';return;}
@@ -435,134 +470,60 @@ function renderCOT(data){
   if(netEl){netEl.textContent=fmtKContracts(d.net);netEl.className='cot-net '+(d.net>=0?'long':'short');}
   var subEl=document.getElementById('cot-sub');
   if(subEl)subEl.textContent=(d.net>=0?'net long':'net short')+' contracts (managed money, futures-only)';
+  cotStrip(data);
 
-  // 52w gauge + percentile
-  var pct=null;
-  if(d.min52!=null&&d.max52!=null&&d.max52>d.min52){
-    pct=Math.round(((d.net-d.min52)/(d.max52-d.min52))*100);
-    pct=Math.max(0,Math.min(100,pct));
-    var dot=document.getElementById('cot-dot');if(dot)dot.style.left='calc('+pct+'% - 8px)';
-    var pctEl=document.getElementById('cot-pct');
-    if(pctEl){
-      var rangeStr=fmtKContracts(d.min52)+' to '+fmtKContracts(d.max52);
-      pctEl.innerHTML='<strong>'+pct+'%</strong> of the way up its 52-week range ('+rangeStr+' contracts)';
-    }
-  }else{
-    var gauge=document.getElementById('cot-gauge-wrap');
-    if(gauge)gauge.style.display='none';
-  }
+  // The ranking: share of open interest, every week since 2010.
+  var k=cotCrowd(),gauge=document.getElementById('cot-gauge-wrap'),pctEl=document.getElementById('cot-pct');
+  if(k){
+    if(gauge)gauge.style.display='';
+    var p=Math.max(0,Math.min(100,k.pctl)),pr=Math.round(k.pctl);
+    var dot=document.getElementById('cot-dot');if(dot)dot.style.left='calc('+p+'% - 8px)';
+    if(pctEl)pctEl.innerHTML=(CROP.cotClasses?'Chicago SRW: ':'')+'<strong>'+pr+ord(pr)+' percentile</strong> since '+k.since+', as a share of open interest'+(k.word?': '+k.word:'')+(k.crowded?', crowded '+k.crowded:'');
+  }else if(gauge){gauge.style.display='none';}
 
   // Week change
   var chgEl=document.getElementById('cot-chg');
   if(chgEl){
     if(d.prev!=null){
       var delta=d.net-d.prev;
-      var deltaStr=fmtKContracts(delta);
       var dir;
       if(delta>0&&d.net>=0)dir='added longs';
       else if(delta>0&&d.net<0)dir='covered shorts';
       else if(delta<0&&d.net>0)dir='trimmed longs';
       else if(delta<0&&d.net<0)dir='added shorts';
       else dir='unchanged';
-      chgEl.innerHTML='Week-over-week: <span class="delta '+(delta>=0?'up':'dn')+'">'+deltaStr+'</span> contracts ('+dir+')';
+      chgEl.innerHTML='Week-over-week: <span class="delta '+(delta>=0?'up':'dn')+'">'+fmtKContracts(delta)+'</span> contracts ('+dir+')';
     }else{chgEl.style.display='none';}
   }
 
-  // Interpretation
-  var interp;
-  if(pct==null){interp='Net positioning loaded; 52-week range data insufficient for percentile context.';}
-  else if(pct<20)interp='<strong>Funds are deeply short.</strong> Historically a contrarian bullish setup at extremes: when speculative positioning is one-sided, surprise news often forces sharp short-covering rallies.';
-  else if(pct<40)interp=d.net>0?'<strong>Funds are net long</strong>, though in the lower portion of their 52-week range. The long is smaller than usual for the past year, which is not a bearish position.':'<strong>Funds are bearishly leaning</strong> in the lower portion of their 52-week range. Modest bearish flow but not at an extreme.';
-  else if(pct<60)interp='<strong>Neutral positioning.</strong> Managed money is mid-range; no strong directional bias from speculative flow.';
-  else if(pct<80)interp=d.net<0?'<strong>Funds are net short</strong>, though in the upper portion of their 52-week range. The short is smaller than usual for the past year, which is not a bullish position.':'<strong>Funds are bullishly leaning</strong> in the upper portion of their 52-week range. Modest bullish flow but not at an extreme.';
-  else interp='<strong>Funds are deeply long.</strong> Historically a contrarian bearish setup at extremes: crowded longs unwind hard on negative surprises.';
-  var interpEl=document.getElementById('cot-interp');
-  if(interpEl)interpEl.innerHTML=interp;
-
-  // As-of
-  var asof=document.getElementById('cot-asof');
-  if(asof&&data.report_date){asof.textContent='As of '+data.report_date;if(window.AgAsOf&&data.updated)asof.innerHTML='Positions as of '+data.report_date+' \u00b7 '+AgAsOf.html(data.updated,'usda');}
-}
-
-// ============ COT POSITIONING (CFTC Disaggregated) ============
-function buildCOTPhrasesWheat(cotData){
-  if(!cotData||!cotData[CROP_KEY])return [];
-  var d=cotData[CROP_KEY];
-  if(d.net==null||d.min52==null||d.max52==null||d.max52<=d.min52)return [];
-  var pct=Math.round(((d.net-d.min52)/(d.max52-d.min52))*100);
-  pct=Math.max(0,Math.min(100,pct));
-  var stance;
-  if(pct<20)stance=d.net>0?'net long, but near the low of its 52-week range':'deeply short: a contrarian bullish setup if news disappoints';
-  else if(pct<40)stance=d.net>0?'net long, but in the lower part of its 52-week range':'bearishly leaning';
-  else if(pct<60)stance='in neutral territory';
-  else if(pct<80)stance=d.net<0?'net short, but in the upper part of its 52-week range':'bullishly leaning';
-  else stance=d.net<0?'net short, but near the high of its 52-week range':'deeply long: vulnerable to long-liquidation if news disappoints';
-  return ['managed money positioning in Chicago SRW is <strong>'+stance+'</strong> at '+pct+'% of the way up its 52-week range (KC and Minneapolis rows in the positioning card can differ)'];
-}
-
-function renderCOTWheat(data){
-  var card=document.getElementById('cot-card');
-  if(!card)return;
-  if(!data||!data[CROP_KEY]){card.style.display='none';return;}
-  var d=data[CROP_KEY];
-  if(d.net==null){card.style.display='none';return;}
-  card.style.display='block';
-
-  // 3-class strip: Chicago SRW / KC HRW / Mpls HRS: net, side, week change (net − prev).
-  // KC and Mpls often sit on the opposite side of Chicago; a KS or ND grower needs his own class.
-  var strip=document.getElementById('cot-classes');
-  if(strip){
-    var rows=[['wheat','Chicago SRW (ZW)'],['kcwheat','KC HRW (KE)'],['mplswheat','Mpls HRS (MWE)']];
-    var html='';
-    rows.forEach(function(r){
-      var c=data[r[0]];
-      if(!c||c.net==null)return;
-      var side=c.net>=0?'net long':'net short';
-      var chg='';
-      if(c.prev!=null){
-        var dl=c.net-c.prev;
-        chg=' · wk chg <span class="delta '+(dl>=0?'up':'dn')+'" style="font-family:JetBrains Mono,monospace;font-weight:700">'+fmtKContracts(dl)+'</span>';
-      }
-      html+='<div class="cot-cls-row"><span class="cot-cls-name">'+r[1]+'</span><span><span class="cot-cls-net '+(c.net>=0?'long':'short')+'">'+fmtKContracts(c.net)+'</span> <span class="cot-cls-chg">'+side+chg+'</span></span></div>';
-    });
-    strip.innerHTML=html;
-  }
-
-  // 52w gauge + percentile (Chicago SRW)
-  var pct=null;
-  if(d.min52!=null&&d.max52!=null&&d.max52>d.min52){
-    pct=Math.round(((d.net-d.min52)/(d.max52-d.min52))*100);
-    pct=Math.max(0,Math.min(100,pct));
-    var dot=document.getElementById('cot-dot');if(dot)dot.style.left='calc('+pct+'% - 8px)';
-    var pctEl=document.getElementById('cot-pct');
-    if(pctEl){
-      var rangeStr=fmtKContracts(d.min52)+' to '+fmtKContracts(d.max52);
-      pctEl.innerHTML='Chicago SRW: <strong>'+pct+'%</strong> of the way up its 52-week range ('+rangeStr+' contracts)';
-    }
-  }else{
-    var gauge=document.getElementById('cot-gauge-wrap');
-    if(gauge)gauge.style.display='none';
-  }
-
-  // Interpretation (Chicago SRW gauge)
-  var interp;
-  if(pct==null){interp='Net positioning loaded; 52-week range data insufficient for percentile context.';}
-  else if(pct<20)interp='<strong>In Chicago SRW, funds are deeply short.</strong> Historically a contrarian bullish setup at extremes: when speculative positioning is one-sided, surprise news often forces sharp short-covering rallies.';
-  else if(pct<40)interp=d.net>0?'<strong>In Chicago SRW, funds are net long</strong>, though in the lower portion of their 52-week range. The long is smaller than usual for the past year, which is not a bearish position.':'<strong>In Chicago SRW, funds are bearishly leaning</strong> in the lower portion of their 52-week range. Modest bearish flow but not at an extreme.';
-  else if(pct<60)interp='<strong>Chicago SRW positioning is neutral.</strong> Managed money is mid-range; no strong directional bias from speculative flow.';
-  else if(pct<80)interp=d.net<0?'<strong>In Chicago SRW, funds are net short</strong>, though in the upper portion of their 52-week range. The short is smaller than usual for the past year, which is not a bullish position.':'<strong>In Chicago SRW, funds are bullishly leaning</strong> in the upper portion of their 52-week range. Modest bullish flow but not at an extreme.';
-  else interp='<strong>In Chicago SRW, funds are deeply long.</strong> Historically a contrarian bearish setup at extremes: crowded longs unwind hard on negative surprises.';
-  if(data.kcwheat&&data.kcwheat.net!=null&&d.net!=null&&((data.kcwheat.net>=0)!==(d.net>=0))){
+  // Interpretation: the COT page's tested result, not "crowded longs unwind hard".
+  var interp,where=CROP.cotClasses?'In Chicago SRW, f':'F',side=d.net>0?'long':d.net<0?'short':'flat';
+  if(!k){interp=where+'unds are net '+side+'. The percentile against the record is not shown: the analysis file is not from the same week as these positions.';}
+  else if(k.crowded){interp='<strong>'+where+'unds are crowded '+k.crowded+'</strong>: '+(k.word||'')+' of their record since '+k.since+', measured as a share of open interest. '+(k.tested||'');}
+  else{interp='<strong>'+where+'unds are net '+side+', '+(k.word||'')+'</strong> against their record since '+k.since+', not crowded. '+(k.tested||'');}
+  if(CROP.cotClasses&&data.kcwheat&&data.kcwheat.net!=null&&d.net!=null&&((data.kcwheat.net>=0)!==(d.net>=0))){
     interp+=' Note the classes are split: KC HRW funds sit on the opposite side of Chicago right now, so read the row for your class above.';
   }
   var interpEl=document.getElementById('cot-interp');
   if(interpEl)interpEl.innerHTML=interp;
 
+  // Show the math: the measure, its sample, and the 52-week yardstick in contracts.
+  var mathEl=document.getElementById('cot-math');
+  if(!mathEl&&interpEl){mathEl=document.createElement('details');mathEl.id='cot-math';mathEl.className='cot-math';mathEl.style.cssText='margin-top:.5rem;font-size:.85rem;color:var(--text-dim)';interpEl.parentNode.insertBefore(mathEl,interpEl.nextSibling);}
+  if(mathEl){
+    var m='<summary style="cursor:pointer">Show the math</summary><p style="margin:.4rem 0">';
+    if(k)m+='Ranking: managed-money net (long minus short) divided by open interest, ranked against '+(k.weeks?Number(k.weeks).toLocaleString('en-US')+' weeks':'every week')+' since '+k.since+'. Crowded means the top or bottom tenth of that record, on the side the position is on. Source: CFTC Disaggregated futures-only report; percentile computed by AGSIST from the weekly history (the same figure the <a href="/cot">positioning page</a> shows). ';
+    if(d.min52!=null&&d.max52!=null&&d.max52>d.min52){
+      var p52=Math.max(0,Math.min(100,Math.round(((d.net-d.min52)/(d.max52-d.min52))*100)));
+      m+='A shorter yardstick, in contracts: the net is '+p52+'% of the way from its 52-week low ('+fmtKContracts(d.min52)+') to its high ('+fmtKContracts(d.max52)+'). Contracts are not adjusted for the size of the market, so this is not the ranking.';
+    }
+    mathEl.innerHTML=m+'</p>';
+  }
+
   // As-of
   var asof=document.getElementById('cot-asof');
-  if(asof&&data.report_date){asof.textContent='As of '+data.report_date;if(window.AgAsOf&&data.updated)asof.innerHTML='Positions as of '+data.report_date+' \u00b7 '+AgAsOf.html(data.updated,'usda');}
+  if(asof&&data.report_date){asof.textContent='As of '+data.report_date;if(window.AgAsOf&&data.updated)asof.innerHTML='Positions as of '+data.report_date+' · '+AgAsOf.html(data.updated,'usda');}
 }
-
 
 function fmtKContracts(n){
   if(n==null)return '-';
@@ -636,9 +597,18 @@ function loadExportPace(){
 
 
 function loadCOT(){
-  fetch('/data/cot.json',{cache:'no-store'})
-    .then(function(r){return r.ok?r.json():null;})
-    .then(function(d){if(!d)return;renderCOT(d);window.__agsistMR.cot=buildCOTPhrases(d);if(d&&d[CROP_KEY]){var __ct=d[CROP_KEY];if(__ct.net!=null&&__ct.min52!=null&&__ct.max52!=null&&__ct.max52>__ct.min52){var __cp=Math.round(((__ct.net-__ct.min52)/(__ct.max52-__ct.min52))*100);__cp=Math.max(0,Math.min(100,__cp));window.__agsistMR.cotCtx={pct:__cp};}}renderMarketRead();})
+  function J(u){return fetch(u,{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).catch(function(){return null;});}
+  Promise.all([J('/data/cot.json'),J('/data/cot-analysis.json')])
+    .then(function(R){
+      var d=R[0],a=R[1];if(!d)throw new Error('no cot');
+      var c=a&&a.commodities&&a.commodities[CROP_KEY];
+      /* two files, one week: the percentile is printed only when the analysis is for the positions on the card */
+      COT_CX=(c&&c.date&&cotIsoDay(c.date)===cotIsoDay(d.report_date))?c:null;
+      renderCOT(d);window.__agsistMR.cot=buildCOTPhrases(d);
+      var k=cotCrowd();
+      window.__agsistMR.cotCtx=k?{pct:k.pctl,crowded:k.crowded,word:k.word,since:k.since,tested:k.tested}:null;
+      renderMarketRead();
+    })
     .catch(function(){var c=document.getElementById('cot-card');if(c)c.style.display='none';});
 }
 
@@ -844,7 +814,8 @@ function computeScorecard(){
   }
   // 3. Fund positioning
   if(cot&&cot.pct!=null){
-    factors.push({lbl:'Fund Positioning',val:cot.pct+'% of 52-wk range',cls:'nu',meter:cot.pct,det:cot.pct>=85?'crowded long: unwind risk':cot.pct<=15?'crowded short: squeeze risk':'mid-range'});
+    var _cp=Math.round(cot.pct);
+    factors.push({lbl:'Fund Positioning',val:_cp+ord(_cp)+' pct since '+cot.since,cls:'nu',meter:cot.pct,det:cot.crowded?'crowded '+cot.crowded+' (share of open interest)':(cot.word||'')+', not crowded'});
   }
   // 4. Seasonal: from /data/price-stats.json seasonality; row omitted entirely when data is unavailable
   if(window.__agsistSeas&&window.__agsistSeas.length===12){
@@ -1023,13 +994,10 @@ function buildActionLine(mr){
     }
   }
 
-  // COT extreme overlay: adds nuance
-  if(cot&&cot.pct!=null){
-    if(cot.pct>=85){
-      lines.push('Note: managed money is <strong>deeply long</strong>: crowded positioning that historically unwinds hard on bearish surprises. Adds urgency to lock in margin if available.');
-    }else if(cot.pct<=15){
-      lines.push('Note: managed money is <strong>deeply short</strong>: crowded positioning that historically reverses sharply on bullish surprises. The setup favors patience over panic-selling.');
-    }
+  // COT overlay: only when funds are crowded on the one measure, and with the
+  // COT page's tested result, not a claim that crowded positions "unwind hard".
+  if(cot&&cot.crowded){
+    lines.push('Note: managed money is <strong>crowded '+cot.crowded+'</strong> ('+(cot.word||'')+' of its record since '+cot.since+', as a share of open interest). '+(cot.tested||''));
   }
 
   // Crop progress overlay: only when there's a meaningful divergence
