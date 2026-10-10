@@ -198,7 +198,10 @@ def reduce_recent(rows):
     return out
 
 
-DAMAGING_IN = 1.5     # hail >= this (inches) is treated as crop-damaging
+# hail >= this (inches) counts as damaging. 1 inch is the NWS severe-hail size,
+# and the one line the whole site uses (Farmland Atlas 1-inch days, storm-day
+# pages, state pages). Was 1.5 until 2026-10.
+DAMAGING_IN = 1.0
 _MONTHS = ["", "Jan", "Feb", "Mar", "Apr", "May", "Jun",
            "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
 
@@ -245,9 +248,22 @@ def tally_counties(rows, acc):
             rec["months"][mo] += 1
 
 
-def finalize_counties(acc, years, per_state=12):
+def elapsed_years(years, end_iso):
+    """The span the record actually covers: Jan 1 of the first year to the
+    pull date, in years. Five year files pulled on Oct 1 of the fifth year are
+    4.75 years, not 5. Same rule as yrSpan() in hail-map.html."""
+    try:
+        start = datetime(int(years[0]), 1, 1, 12, tzinfo=timezone.utc)
+        end = datetime.strptime(str(end_iso)[:10], "%Y-%m-%d").replace(hour=12, tzinfo=timezone.utc)
+        y = (end - start).total_seconds() / (365.2425 * 86400)
+        return y if y > 0.5 else max(1, len(years))
+    except (ValueError, IndexError, TypeError):
+        return max(1, len(years))
+
+
+def finalize_counties(acc, years, per_state=12, end_iso=None):
     """Turn the accumulator into {ST: [ranked county rows]} for the page."""
-    n_years = max(1, len(years))
+    n_years = elapsed_years(years, end_iso or datetime.now(timezone.utc).strftime("%Y-%m-%d"))
     by_state = {}
     for (st, county), rec in acc.items():
         peak_i = 0

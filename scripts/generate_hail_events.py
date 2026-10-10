@@ -44,6 +44,12 @@ MIN_REPORTS = 150          # report-count threshold for days with no swath file
 THIN_REPORTS = 25          # below this a day page is noindex,follow and not in the sitemap
 TOP_STONES = 5
 TOP_PLACES = 10
+# Damaging size: 1 inch, the NWS severe-hail threshold and the one line the
+# whole site uses (fetch_hail.DAMAGING_IN, the Farmland Atlas 1-inch days).
+DAMAGING_IN = 1.0
+DAYS_JSON = "data/hail/storm-days.json"   # every storm-day page, newest first, with reports by state
+MAP_PAGE = "hail-map.html"                # its SEED:stormdays strip lists the newest RECENT_STRIP days
+RECENT_STRIP = 5
 
 STATE_NAME = {"AL":"Alabama","AK":"Alaska","AZ":"Arizona","AR":"Arkansas","CA":"California","CO":"Colorado","CT":"Connecticut","DE":"Delaware","DC":"District of Columbia","FL":"Florida","GA":"Georgia","HI":"Hawaii","ID":"Idaho","IL":"Illinois","IN":"Indiana","IA":"Iowa","KS":"Kansas","KY":"Kentucky","LA":"Louisiana","ME":"Maine","MD":"Maryland","MA":"Massachusetts","MI":"Michigan","MN":"Minnesota","MS":"Mississippi","MO":"Missouri","MT":"Montana","NE":"Nebraska","NV":"Nevada","NH":"New Hampshire","NJ":"New Jersey","NM":"New Mexico","NY":"New York","NC":"North Carolina","ND":"North Dakota","OH":"Ohio","OK":"Oklahoma","OR":"Oregon","PA":"Pennsylvania","RI":"Rhode Island","SC":"South Carolina","SD":"South Dakota","TN":"Tennessee","TX":"Texas","UT":"Utah","VT":"Vermont","VA":"Virginia","WA":"Washington","WV":"West Virginia","WI":"Wisconsin","WY":"Wyoming"}
 
@@ -85,7 +91,7 @@ def _add_report(rec, lat, lon, mag, st, city=None):
         mag = float(mag)
         if mag > rec["max"]:
             rec["max"] = mag
-        if mag >= 1.5:
+        if mag >= DAMAGING_IN:
             rec["dmg"] += 1
     st = (st or "").strip().upper()[:2] or None
     if st:
@@ -103,7 +109,7 @@ def _read_json(path):
 
 
 def load_day_index():
-    """date -> {n, max, dmg (>=1.5in count), states, reports, src}.
+    """date -> {n, max, dmg (>=DAMAGING_IN count), states, reports, src}.
 
     Yearly events files (monthly vintage) are the base. Dates on or after that
     vintage (manifest "generated") and inside the recent.json window are taken
@@ -248,7 +254,7 @@ def day_figures(rec, counties):
     ctys = sorted(cty.items(), key=lambda x: (-x[1]["n"], x[0][1], x[0][0]))
     return {
         "n": len(reps), "measured": len(measured), "max": mx, "at_max": at_max,
-        "dmg": sum(1 for r in measured if r["mag"] >= 1.5),
+        "dmg": sum(1 for r in measured if r["mag"] >= DAMAGING_IN),
         "stones": stones[:TOP_STONES], "states": states, "n_states": len(states),
         "counties": ctys[:TOP_PLACES], "n_counties": len(ctys),
         "unmatched": sum(1 for r in reps if not r["county"]),
@@ -420,7 +426,7 @@ def method_html(fig, has_swath):
         " Local Storm Reports are preliminary and unverified: sizes are what spotters, the public and "
         "emergency managers reported, and NOAA NCEI's Storm Data, published months later, is the "
         "verified record. A report with no size counts toward the total but not toward the size figures. "
-        "Damaging size means 1.5 inches or larger. State is the state named on the report. "
+        "Damaging size means 1 inch or larger, the National Weather Service severe-hail size. State is the state named on the report. "
         "County is not carried in the archived file; it is assigned here by placing each report's "
         "coordinates (rounded to about 1 km) inside US Census cartographic county boundaries, so a "
         "report near a county line can land in the neighbouring county."
@@ -520,7 +526,7 @@ def page_html(date, rec, has_swath, mesh_max, today, counties=None):
         "<div class=\"he-stats\">"
         "<div class=\"he-stat\"><div class=\"v\">" + (f"{n:,}" if n else "0") + "</div><div class=\"l\">NWS reports</div></div>"
         "<div class=\"he-stat\"><div class=\"v\">" + (f"{mx:.2f}″" if mx else "-") + "</div><div class=\"l\">largest reported</div></div>"
-        "<div class=\"he-stat\"><div class=\"v\">" + str(dmg) + "</div><div class=\"l\">reports ≥1.5″</div></div>"
+        "<div class=\"he-stat\"><div class=\"v\">" + str(dmg) + "</div><div class=\"l\">reports ≥1″ (severe)</div></div>"
         "<div class=\"he-stat\"><div class=\"v\">" + str(fig["n_states"]) + "</div><div class=\"l\">states reporting</div></div>"
         + ("<div class=\"he-stat\"><div class=\"v\">" + (f"{mesh_max:.2f}″" if mesh_max else "✓") + "</div><div class=\"l\">radar-estimated max</div></div>" if has_swath else "")
         + "</div>\n"
@@ -531,6 +537,37 @@ def page_html(date, rec, has_swath, mesh_max, today, counties=None):
         + method_html(fig, has_swath) +
         "<div class=\"he-src\">Sources: NWS Local Storm Reports via the Iowa Environmental Mesonet (reported sizes, preliminary); NOAA MRMS MESH via Iowa State (radar-estimated swaths); US Census cartographic boundaries (county placement). Reported and estimated are different things and are labeled throughout. Compiled by Sigurd Lindquist · AGSIST · no charge, no login.</div>\n"
         "</div>\n</main>\n<div id=\"site-footer\"></div>\n<script src=\"/components/loader.js\" defer></script>\n</body>\n</html>\n")
+
+
+def _short(d):
+    dt = datetime.strptime(d, "%Y-%m-%d")
+    return dt.strftime("%b ") + str(dt.day)
+
+
+def recent_strip_html(dates_meta, k=RECENT_STRIP):
+    """The hail map's "Recent storm days" strip: the newest k storm-day pages."""
+    if not dates_meta:
+        return ""
+    items = []
+    for d, m in dates_meta[:k]:
+        n = m.get("n") or 0
+        items.append("<li><a href=\"/hail/" + d + "\"><b>" + esc(_short(d)) + "</b> "
+                     + (f"{n:,} report" + ("" if n == 1 else "s") if n else "radar swath") + "</a></li>")
+    return ("<nav class=\"hm-days\" aria-labelledby=\"hm-days-h\"><h2 id=\"hm-days-h\" class=\"hm-days-h\">Recent storm days</h2>"
+            "<ul>" + "".join(items) + "</ul><a class=\"hm-days-all\" href=\"/hail/\">Every storm day &rarr;</a></nav>")
+
+
+def storm_days_doc(dates_meta, day_idx):
+    """data/hail/storm-days.json: every day that has a /hail/<date> page,
+    newest first, with its reports by state. The state pages list their own
+    storm days from it and the hail map's storm check links a day it finds."""
+    out = []
+    for d, m in dates_meta:
+        rec = day_idx.get(d) or {}
+        out.append({"d": d, "n": m.get("n") or 0, "max": round(m.get("max") or 0, 2),
+                    "dmg": rec.get("dmg", 0), "swath": bool(m.get("swath")),
+                    "st": dict(sorted((rec.get("states") or {}).items()))})
+    return {"damaging_in": DAMAGING_IN, "days": out}
 
 
 def hub_html(dates_meta, today):
@@ -615,6 +652,22 @@ def main():
     hub = hub_html(meta, hub_mod)
     if hprev != hub:
         open(hp, "w", encoding="utf-8").write(hub)
+    doc = storm_days_doc(meta, day_idx)
+    body = json.dumps(doc, separators=(",", ":"))
+    if (open(DAYS_JSON).read() if os.path.exists(DAYS_JSON) else None) != body:
+        with open(DAYS_JSON, "w") as fh:
+            fh.write(body)
+    try:
+        mp = open(MAP_PAGE, encoding="utf-8").read()
+        pat = re.compile(r"(<!--SEED:stormdays-->)(.*?)(<!--/SEED:stormdays-->)", re.S)
+        if pat.search(mp):
+            mp2 = pat.sub(lambda m: m.group(1) + recent_strip_html(meta) + m.group(3), mp, count=1)
+            if mp2 != mp:
+                open(MAP_PAGE, "w", encoding="utf-8").write(mp2)
+        else:
+            print("hail-map.html: SEED:stormdays markers missing — strip not refreshed")
+    except OSError as e:
+        print("hail-map.html:", e)
     print(f"storm pages: {made} written/updated of {len(qualifying)} qualifying days · "
           f"{len(qualifying) - len(indexable)} thin (<{THIN_REPORTS} reports) noindexed · hub updated")
 
@@ -668,11 +721,19 @@ def selftest():
     for r in rows:
         _add_report(rec, *r)
     f = day_figures(rec, ci)
-    # by hand: 6 reports, 5 measured, max 2.00 twice, dmg = 2.0,2.0,1.75 = 3,
+    # by hand: 6 reports, 5 measured, max 2.00 twice, dmg (>=1 in) = 2.0,2.0,1.0,1.75 = 4,
     # states KS 4 / NE 2, counties Alpha 3 (hole point unmatched) / Beta 2
     ok(f["n"] == 6 and f["measured"] == 5, "counts")
     ok(f["max"] == 2.0 and len(f["at_max"]) == 2, "max + ties")
-    ok(f["dmg"] == 3, "damaging count")
+    ok(f["dmg"] == 4, "damaging count")
+    # storm-days strip: newest first, capped, each a link to its day page
+    strip = recent_strip_html([("2026-06-02", {"n": 300, "max": 2.5, "swath": True}),
+                               ("2026-06-01", {"n": 6, "max": 2.0, "swath": False})])
+    ok(strip.index("/hail/2026-06-02") < strip.index("/hail/2026-06-01"), "strip order")
+    ok("Jun 2" in strip and "300 reports" in strip and "/hail/" in strip, "strip: " + strip)
+    ok(recent_strip_html([]) == "", "strip empty when no days")
+    sd = storm_days_doc([("2026-06-01", {"n": 6, "max": 2.0, "swath": False})], {"2026-06-01": rec})
+    ok(sd["days"][0]["st"] == {"KS": 4, "NE": 2} and sd["days"][0]["dmg"] == 4, "storm-days doc")
     ok(f["states"] == [("KS", 4), ("NE", 2)], "state ranking")
     ok([(k, v["n"]) for k, v in f["counties"]] == [(("Alpha County", "KS"), 3), (("Beta Parish", "NE"), 2)],
        "county ranking")

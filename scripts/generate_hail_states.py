@@ -14,6 +14,10 @@ Idempotent: identical inputs produce identical pages; sitemap entries live
 between marker comments and are fully regenerated each run.
 
 v1.1 — 2026-07-03 (cross-state link mesh on every page)
+v1.2 — 2026-10-10 each page lists that state's storm days (data/hail/storm-days.json,
+       written by generate_hail_events.py, which mesh.yml runs daily before this);
+       Avg/yr is reports over the elapsed span of the record, not the file count.
+`--selftest` runs hand-worked checks and exits.
 """
 
 import json
@@ -23,6 +27,8 @@ import sys
 from datetime import datetime, timezone
 
 SC = "data/hail/state-counties.json"
+DAYS = "data/hail/storm-days.json"
+DAYS_MAX = 24        # storm days listed per state page, newest first; the storm log has them all
 OUTDIR = "hail-map"
 SITEMAP = "sitemap.xml"
 MARK_A = "<!-- HAIL-STATE-PAGES -->"
@@ -45,6 +51,43 @@ def esc(s):
 def all_state_links(current):
     return " ".join('<a href="/hail-map/' + slug(n) + '">' + esc(n) + "</a>"
                     for n in sorted(STATE_NAME.values()) if n != current)
+
+
+def elapsed_years(years, end_iso):
+    """Jan 1 of the first year to the pull date, in years (fetch_hail.elapsed_years,
+    yrSpan() in hail-map.html). Five files pulled Oct 1 of the fifth year: 4.75."""
+    try:
+        start = datetime(int(years[0]), 1, 1, 12, tzinfo=timezone.utc)
+        end = datetime.strptime(str(end_iso)[:10], "%Y-%m-%d").replace(hour=12, tzinfo=timezone.utc)
+        y = (end - start).total_seconds() / (365.2425 * 86400)
+        return y if y > 0.5 else max(1, len(years))
+    except (ValueError, IndexError, TypeError):
+        return max(1, len(years))
+
+
+def state_storm_days(days, abbr):
+    """[(date, reports in this state, max for the day, swath)] for every storm-day
+    page with at least one report from this state, newest first."""
+    out = []
+    for x in days or []:
+        n = (x.get("st") or {}).get(abbr, 0)
+        if n:
+            out.append((x["d"], n, x.get("max") or 0, bool(x.get("swath"))))
+    return out
+
+
+def storm_days_html(name, sdays):
+    if not sdays:
+        return ("<section class=\"hs-days\"><h2>Storm days in " + esc(name) + "</h2><p>None of the storm days in "
+                "<a href=\"/hail/\">the storm log</a> carry a report from " + esc(name) + ".</p></section>\n")
+    lis = "".join(
+        "<li><a href=\"/hail/" + d + "\">" + esc(datetime.strptime(d, "%Y-%m-%d").strftime("%b ") + str(int(d[8:])) + ", " + d[:4])
+        + "</a> <span>" + f"{n:,}" + " report" + ("" if n == 1 else "s") + " here</span></li>"
+        for d, n, _mx, _sw in sdays[:DAYS_MAX])
+    more = (" Showing the newest " + str(DAYS_MAX) + " of " + str(len(sdays)) + "." if len(sdays) > DAYS_MAX else "")
+    return ("<section class=\"hs-days\" id=\"storm-days\"><h2>Storm days in " + esc(name) + "</h2>"
+            "<p>Days in the storm log with at least one NWS hail report from " + esc(name) + ", newest first. Each page maps that day across the country." + more + "</p>"
+            "<ul>" + lis + "</ul><p><a href=\"/hail/\">Every storm day in the storm log &rarr;</a></p></section>\n")
 
 
 def merge_counties(rows, n_yrs):
@@ -74,9 +117,12 @@ def merge_counties(rows, n_yrs):
     return out
 
 
-def page_html(abbr, name, rows, years, dmg_in, today):
+def page_html(abbr, name, rows, years, dmg_in, today, span=None, sdays=None):
     n_yrs = len(years)
-    rows = merge_counties(rows, n_yrs)
+    span = span or n_yrs
+    rows = merge_counties(rows, span)
+    for r in rows:
+        r["avg"] = round(r.get("total", 0) / span, 1)
     total = sum(r.get("total", 0) for r in rows)
     top = rows[0] if rows else None
     # dominant peak month across the top counties, weighted by report count
@@ -208,6 +254,7 @@ def page_html(abbr, name, rows, years, dmg_in, today):
         ".hs-src{font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--text-dim,#8a948f);margin-top:1.2rem;line-height:1.7}\n"
         ".hs-figs{border:1px solid var(--border,rgba(132,160,168,.12));padding:1rem 1.1rem;margin:1.4rem 0}.hs-figs h2{margin:0 0 .5rem;font-size:1rem}.hs-figs ul{margin:.3rem 0 .7rem;padding-left:1.1rem}.hs-figs li{line-height:1.75;margin:.25rem 0}\n"
         ".hs-cite{font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--text-dim,#8a948f);line-height:1.7;margin:0}\n"
+        ".hs-days ul{list-style:none;margin:.4rem 0 .6rem;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.1rem .9rem}.hs-days li{line-height:2;font-size:.88rem}.hs-days a{color:var(--brand,#d4a23f);text-decoration:none}.hs-days li span{color:var(--text-dim,#8a948f);font-size:.8rem}.hs-days p{line-height:1.7;font-size:.9rem}\n"
         ".hs-pro{font-size:.85rem;color:var(--text-dim,#8a948f);line-height:1.7;margin-top:1.2rem}.hs-pro a{color:var(--brand,#d4a23f)}\n"
         "</style>\n</head>\n<body>\n<div id=\"site-header\"></div>\n<main id=\"main\">\n<div class=\"hs-wrap\">\n"
         "<nav class=\"hs-bc\" aria-label=\"Breadcrumb\"><a href=\"/\">AGSIST</a> \u203a <a href=\"/hail-map\">Hail Map</a> \u203a " + esc(name) + "</nav>\n"
@@ -217,7 +264,8 @@ def page_html(abbr, name, rows, years, dmg_in, today):
         "<h2>Top hail counties in " + esc(name) + " (" + str(years[0]) + "\u2013" + str(years[-1]) + ")</h2>\n"
         "<table><thead><tr><th>County</th><th class=\"num\">Reports</th><th class=\"num\">Avg/yr</th><th>Peak month</th><th class=\"num\">% damaging (\u2265" + str(dmg_in) + "\u2033)</th></tr></thead>"
         "<tbody>" + (trs or '<tr><td colspan="5">Too few reports to rank counties.</td></tr>') + "</tbody></table>\n"
-        + key_figs +
+        + key_figs
+        + storm_days_html(name, sdays) +
         "<h2>" + esc(name) + " hail: the questions people ask</h2>\n"
         + faq_vis +
         "\n<nav class=\"hs-states\" aria-label=\"Hail by state\"><h2>Hail in other states</h2><p>" + all_state_links(name) + "</p></nav>\n"
@@ -236,6 +284,12 @@ def main():
         sys.exit(1)
     years = d.get("years", [])
     dmg_in = d.get("damaging_in", 1.5)
+    span = elapsed_years(years, d.get("generated")) if years else 1
+    try:
+        days = json.load(open(DAYS)).get("days", [])
+    except Exception as e:
+        print("storm-days.json unreadable, state pages list no storm days:", e)
+        days = []
     states = d.get("states", {})
     os.makedirs(OUTDIR, exist_ok=True)
     # LASTMOD MOVES ONLY WITH CONTENT. Every page carries a build date, so a
@@ -255,10 +309,11 @@ def main():
         path = os.path.join(OUTDIR, slug(name) + ".html")
         prev = open(path).read() if os.path.exists(path) else None
         old = prev_mod.get(slug(name))
-        if prev is not None and old and page_html(abbr, name, rows, years, dmg_in, old) == prev:
+        sd = state_storm_days(days, abbr)
+        if prev is not None and old and page_html(abbr, name, rows, years, dmg_in, old, span, sd) == prev:
             lastmod[slug(name)] = old
             continue
-        html = page_html(abbr, name, rows, years, dmg_in, today)
+        html = page_html(abbr, name, rows, years, dmg_in, today, span, sd)
         lastmod[slug(name)] = today
         if prev != html:
             open(path, "w", encoding="utf-8").write(html)
@@ -286,5 +341,32 @@ def main():
         print("sitemap: no change")
 
 
+def selftest():
+    fails = []
+
+    def ok(c, m):
+        if not c:
+            fails.append(m)
+    ok(abs(elapsed_years([2022, 2023, 2024, 2025, 2026], "2026-10-01") - 4.7475) < 0.001, "span 2022..2026-10-01")
+    ok(elapsed_years([2026], "2026-02-01") == 1, "short span falls back to file count")
+    days = [{"d": "2026-06-02", "n": 300, "max": 2.5, "swath": True, "st": {"KS": 40, "NE": 2}},
+            {"d": "2026-06-01", "n": 6, "max": 2.0, "swath": False, "st": {"NE": 6}}]
+    ok(state_storm_days(days, "NE") == [("2026-06-02", 2, 2.5, True), ("2026-06-01", 6, 2.0, False)], "NE days")
+    ok(state_storm_days(days, "IA") == [], "no IA days")
+    h = storm_days_html("Nebraska", state_storm_days(days, "NE"))
+    ok('href="/hail/2026-06-02"' in h and "2 reports here" in h and "6 reports here" in h, "days html: " + h)
+    ok('href="/hail/"' in storm_days_html("Iowa", []), "empty state still links the log")
+    rows = [{"county": "Dane", "total": 190, "avg": 38.0, "peak": "Apr", "dmg_pct": 39}]
+    html = page_html("WI", "Wisconsin", rows, [2022, 2023, 2024, 2025, 2026], 1.0, "2026-10-10", 4.75, [])
+    ok('<td class="num">40.0</td>' in html, "avg = 190 / 4.75 = 40.0")
+    if fails:
+        print("SELFTEST FAILED:\n  " + "\n  ".join(fails))
+        sys.exit(1)
+    print("selftest ok")
+
+
 if __name__ == "__main__":
-    main()
+    if "--selftest" in sys.argv:
+        selftest()
+    else:
+        main()

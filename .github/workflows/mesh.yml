@@ -81,6 +81,11 @@ jobs:
       - name: Generate storm-day pages
         run: python scripts/generate_hail_events.py || echo "storm pages failed - data unaffected"
 
+      # Each /hail-map/<state> page lists that state's storm days from
+      # data/hail/storm-days.json, which the step above just wrote.
+      - name: Refresh state pages' storm-day lists
+        run: python scripts/generate_hail_states.py || echo "state pages failed - data unaffected"
+
       - name: Commit if changed (conflict-armored)
         run: |
           git config user.name  "agsist-bot"
@@ -104,6 +109,7 @@ jobs:
             git checkout origin/main -- data/hail/manifest.json || true
             python scripts/fetch_hail.py --recent || true
             python scripts/generate_hail_events.py || true
+            python scripts/generate_hail_states.py || true
             git add -A
             git commit --amend --no-edit
           done

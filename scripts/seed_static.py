@@ -285,11 +285,24 @@ def seed_hail(today):
     total = sum(int(v) for v in counts.values()) if counts else None
     recent = m.get("recent_count")
     gen = m.get("generated", "")
+    rgen = m.get("recent_generated", "")
     if not total:
         return False
-    line = (f"{total:,} NWS hail reports on the map ({years[0]}\u2013{years[-1]})"
-            + (f" \u00b7 {int(recent):,} in the last {m.get('recent_days',30)} days" if recent else "")
-            + (f" \u00b7 data through {gen}" if gen else ""))
+    # TWO VINTAGES, BOTH STATED. The multi-year archive rebuilds monthly
+    # ("generated"); the 30-day layer refreshes daily ("recent_generated").
+    # One "data through" date next to both counts was wrong for one of them
+    # (Oct 10, 2026: "data through 2026-10-01" beside reports from Oct 9).
+    def _nice(iso):
+        try:
+            d = datetime.strptime(str(iso)[:10], "%Y-%m-%d")
+            return f"{MON3[d.month - 1]} {d.day}, {d.year}"
+        except Exception:
+            return str(iso)
+    line = (f"{total:,} NWS hail reports on the map, {years[0]} through {_nice(gen)}" if gen
+            else f"{total:,} NWS hail reports on the map ({years[0]}\u2013{years[-1]})")
+    if recent:
+        line += (f" \u00b7 {int(recent):,} in the {m.get('recent_days',30)} days to {_nice(rgen)}" if rgen
+                 else f" \u00b7 {int(recent):,} in the last {m.get('recent_days',30)} days")
     t2, ch = seed_between(t, "hailstats", line)
     if ch:
         open("hail-map.html", "w", encoding="utf-8").write(t2)

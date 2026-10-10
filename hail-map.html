@@ -171,6 +171,12 @@
     .hm-point-note{font-size:1rem;color:var(--text-dim,#8a948f);line-height:1.6;margin:.7rem 0 0}
     .hm-zoomnote{position:absolute;bottom:26px;left:8px;z-index:500;background:rgba(10,12,13,.85);border:1px solid rgba(132,160,168,.25);border-radius:6px;color:#c8d0cc;font-family:var(--font-body,'Inter',system-ui,sans-serif);font-size:1rem;padding:.3rem .55rem;pointer-events:none;display:none}
     .hm-states{margin:1.6rem 0 0}
+    .hm-days{display:flex;flex-wrap:wrap;align-items:baseline;gap:.35rem .9rem;margin:.2rem 0 .8rem;font-size:.86rem}
+    .hm-days-h{font-family:'JetBrains Mono',monospace;font-size:.7rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted,#7d8782);margin:0}
+    .hm-days ul{display:flex;flex-wrap:wrap;gap:.3rem .9rem;list-style:none;margin:0;padding:0}
+    .hm-days li a,.hm-days-all{color:var(--brand,#d4a23f);text-decoration:none;display:inline-block;min-height:32px;line-height:32px}
+    .hm-days li a b{color:var(--text)}
+    .hm-days-all{font-weight:600}
     .hm-states-p{color:var(--text-dim,#8a948f);font-size:.86rem;margin:.3rem 0 .7rem}
     .hm-states-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:.3rem .8rem}
     .hm-states-grid a{font-size:.84rem;color:var(--text,#e6ebe9);text-decoration:none;padding:.28rem 0;display:flex;align-items:center;min-height:40px}
@@ -348,7 +354,7 @@
 
       <div class="hm-head">
         <h1 class="hm-title">National Hail Map: <em>did it hail at your place?</em></h1>
-        <p class="hm-sub page-lede"><span id="hm-seed-stats"><!--SEED:hailstats-->64,577 NWS hail reports on the map (2022–2026) · 301 in the last 30 days · data through 2026-10-01<!--/SEED--></span></p>
+        <p class="hm-sub page-lede"><span id="hm-seed-stats"><!--SEED:hailstats-->64,577 NWS hail reports on the map, 2022 through Oct 1, 2026 · 315 in the 30 days to Oct 10, 2026<!--/SEED--></span></p>
               </div>
 
       <div class="hm-search" role="search">
@@ -357,6 +363,8 @@
         <button type="button" id="hm-go">Check</button>
         <button type="button" id="hm-gps" title="Use my location" aria-label="Use my location"><svg class="ic-sp" aria-hidden="true"><use href="#sp-map-pin"/></svg></button>
       </div>
+      <!-- Recent storm days: baked by scripts/generate_hail_events.py from the storm-day pages it writes. -->
+      <!--SEED:stormdays--><nav class="hm-days" aria-labelledby="hm-days-h"><h2 id="hm-days-h" class="hm-days-h">Recent storm days</h2><ul><li><a href="/hail/2026-10-09"><b>Oct 9</b> 39 reports</a></li><li><a href="/hail/2026-10-08"><b>Oct 8</b> 4 reports</a></li><li><a href="/hail/2026-10-07"><b>Oct 7</b> 4 reports</a></li><li><a href="/hail/2026-10-06"><b>Oct 6</b> radar swath</a></li><li><a href="/hail/2026-10-05"><b>Oct 5</b> 8 reports</a></li></ul><a class="hm-days-all" href="/hail/">Every storm day &rarr;</a></nav><!--/SEED:stormdays-->
 
       <div class="hm-mapstack">
       <div class="hm-controls" id="hm-controls" role="group" aria-label="Select view"></div>
@@ -477,7 +485,7 @@
             <select id="hm-cty-select" aria-label="Choose a state"></select>
           </label>
         </div>
-        <p class="hm-cty-hint">Updates as you pan the map. Ranked by total reported hail over the last five years. <strong>% damaging</strong> is the share that were 1.5&Prime; or larger, a partial way to see past the fact that more people means more reports.</p>
+        <p class="hm-cty-hint">Updates as you pan the map. Ranked by total reported hail over the last five years. <strong>% damaging</strong> is the share that were <span id="hm-dmg-in">1</span>&Prime; or larger<span id="hm-dmg-note"> (the National Weather Service severe size)</span>, a partial way to see past the fact that more people means more reports.</p>
         <div class="hm-cty-tablewrap">
           <table class="hm-cty-table" id="hm-cty-table">
             <thead><tr>
@@ -690,7 +698,8 @@
           if(!m || !m.years || !m.years.length){ banner('The hail data is being prepared. Check back shortly.'); return; }
           manifest = m;
           buildControls();
-          var gen=document.getElementById('hm-gen'); if(gen && m.generated) gen.textContent='Data through '+m.generated+'.';
+          /* Two vintages, both stated: the archive (monthly) and the 30-day layer (daily). */
+          var gen=document.getElementById('hm-gen'); if(gen && m.generated) gen.textContent='Archive through '+fmtDate(String(m.generated).slice(0,10))+(m.recent_generated?'; recent reports through '+fmtDate(String(m.recent_generated).slice(0,10)):'')+'.';
           if(gen && window.AgAsOf && m.recent_generated) gen.insertAdjacentHTML('beforeend',' '+AgAsOf.html(m.recent_generated,'daily'));
           var qpw=new URLSearchParams(location.search); var wantSwath=qpw.get('swath')||qpw.get('swaths');
           if(wantSwath && meshIdx && meshIdx.dates.indexOf(wantSwath)>=0){ setView('mesh'); }
@@ -923,7 +932,7 @@
           var rows=ev.slice(0,40).map(function(e){
             var dcell = (e.date===prevDate) ? '<span class="hm-ditto">'+esc(fmtDate(e.date))+'</span>' : esc(fmtDate(e.date));
             prevDate=e.date;
-            var dmg = e.mag!=null && e.mag>=1.5;
+            var dmg = e.mag!=null && e.mag>=DMG_IN;
             return '<tr'+(dmg?' class="hm-row-dmg"':'')+'><td>'+dcell+'</td><td class="num">'+szDot(e.mag)+(e.mag!=null?e.mag.toFixed(2)+'\u2033':'n/a')+'</td><td class="num">'+e.mi.toFixed(1)+' mi</td>'+(hasPlace?'<td>'+esc(e.place)+'</td>':'')+'</tr>';
           }).join('');
           tb.innerHTML='<thead><tr><th scope="col">Date</th><th scope="col" class="num">Size</th><th scope="col" class="num">Distance</th>'+(hasPlace?'<th scope="col">Near</th>':'')+'</tr></thead><tbody>'+rows+'</tbody>'+
@@ -1039,6 +1048,10 @@
     /* The elapsed span of the live record, not the number of files. On
        2026-09-23 with data through 2026-09-01 that is 4.67 years, not 5, and
        dividing by 5 understated the rate by 7% -- more every January. */
+    /* ONE damaging threshold site-wide: 1 inch, the NWS severe-hail size. The
+       Farmland Atlas counts 1-inch days, and the storm-day pages and state
+       pages use the same line. */
+    var DMG_IN=1.0;
     function yrSpan(){
       try{
         var ys=(manifest&&manifest.years)||[];
@@ -1067,6 +1080,17 @@
       }catch(e){}
     }
     function sizeWord(b){ return b>=2.75?'baseball-class (2.75\u2033+)':b>=2?'hen-egg-class (2\u2033+)':b>=1.75?'golf-ball-class (1.75\u2033+)':b>=1.5?'ping-pong-class (1.5\u2033+)':b>=1?'quarter-size or larger (1\u2033+)':'penny-size or larger (0.75\u2033+)'; }
+    /* Storm days that have their own /hail/<date> page (written by
+       generate_hail_events.py). Loaded once, on the first verdict, so a radar
+       hit can link the day's storm page. */
+    var stormDaysP=null;
+    function loadStormDays(){
+      if(!stormDaysP) stormDaysP=fetch(DATA+'storm-days.json').then(function(r){ return r.ok?r.json():null; })
+        .then(function(j){ var o={}; ((j&&j.days)||[]).forEach(function(x){ if(x&&x.d) o[x.d]=1; }); return o; })
+        .catch(function(){ return {}; });
+      return stormDaysP;
+    }
+    function dayPageLink(d,sd){ return (sd&&sd[d])?' <a href="/hail/'+d+'">'+esc(fmtDate(d))+' storm page \u2192</a>':''; }
     function runVerdict(la,lo){
       var v=document.getElementById('hm-verdict'); if(!v) return;
       v.hidden=true;
@@ -1088,7 +1112,9 @@
           .then(function(fc){ if(fc) meshCache[d]=fc; return {d:d,fc:fc}; })
           .catch(function(){ return {d:d,fc:null}; });
       })).then(function(arr){
-        return (live24P||Promise.resolve(null)).catch(function(){ return null; }).then(function(){ return arr; });
+        return Promise.all([(live24P||Promise.resolve(null)).catch(function(){ return null; }), loadStormDays()]).then(function(){ return arr; });
+      }).then(function(arr){
+        return loadStormDays().then(function(sd){ arr.sd=sd; return arr; });
       }).then(function(arr){
         if(!lastLookup || lastLookup.lat!==myLat) return;   // user moved on
         var hits=[], failed=0;
@@ -1113,7 +1139,7 @@
         } else if(hits.length){
           var h=hits[0];
           v.className='hm-verdict hit';
-          v.innerHTML='<strong>Yes. Radar estimated '+sizeWord(h.band)+' hail '+WHERE+' on '+esc(fmtDate(h.d))+'.</strong> <a href="/hail-map?swath='+h.d+'&lat='+myLat.toFixed(4)+'&lon='+myLon.toFixed(4)+'">See that day\u2019s swath \u2192</a>'+BIAS;
+          v.innerHTML='<strong>Yes. Radar estimated '+sizeWord(h.band)+' hail '+WHERE+' on '+esc(fmtDate(h.d))+'.</strong> <a href="/hail-map?swath='+h.d+'&lat='+myLat.toFixed(4)+'&lon='+myLon.toFixed(4)+'">See that day\u2019s swath \u2192</a>'+dayPageLink(h.d,arr.sd)+BIAS;
           v.hidden=false;
         } else if(lookupDay && !recent.length){
           /* The user named a date and the radar archive has no such day --
@@ -1342,7 +1368,7 @@
           '<h1>Hail History Report</h1>'+
           '<p class="meta">Location: '+esc(L.label?L.label+' ':'')+'('+L.lat.toFixed(4)+', '+L.lon.toFixed(4)+')'+
           ' &middot; Radius: '+lookupMi+' miles &middot; Window: '+(L.day?fmtDate(L.day):'last '+(manifest&&manifest.years?manifest.years.length:5)+' years')+' &middot; Generated '+new Date().toLocaleDateString()+'</p>'+
-          '<p><strong>'+L.ev.length+'</strong> NWS hail reports on <strong>'+L.nDays+'</strong> distinct days ('+(L.nDays/5).toFixed(1)+'/yr average). Largest reported stone: <strong>'+(L.maxMag?L.maxMag.toFixed(2)+'&Prime;':'none recorded')+'</strong>.</p>'+
+          '<p><strong>'+L.ev.length+'</strong> NWS hail reports on <strong>'+L.nDays+'</strong> distinct days'+(L.day?'':' ('+(L.nDays/yrSpan()).toFixed(1)+'/yr average)')+'. Largest reported stone: <strong>'+(L.maxMag?L.maxMag.toFixed(2)+'&Prime;':'none recorded')+'</strong>.</p>'+
           ((L.swaths&&L.swaths.hits&&L.swaths.hits.length)?('<h2 style="font-size:1.05rem;margin-top:1.2rem">Radar-estimated swaths at this point (NOAA MRMS MESH)</h2><ul>'+L.swaths.hits.map(function(h){ return '<li>'+esc(h.d)+', inside the &ge;'+h.band+'&Prime; estimated band</li>'; }).join('')+'</ul><p style="font-size:.85rem;color:#555">Radar estimates, not measurements; checked against '+L.swaths.checked+' archived storm days.</p>'):'')+
           '<table><thead><tr><th>Date</th><th>Size</th><th>Distance</th><th>Near</th></tr></thead><tbody>'+rows+'</tbody></table>'+
           '<p style="font-size:.9rem;background:#f5f2e8;border:1px solid #d8cfa8;padding:.6rem .8rem;border-radius:6px"><strong>Using this for a claim:</strong> this printout confirms the date and the neighborhood. Your own photos confirm the property. Bring both; the adjuster does the rest.</p>'+
@@ -1797,13 +1823,22 @@
                 var m=seen[k], t1=m.total||0, t2=r.total||0, T=t1+t2;
                 m.dmg_pct = T? Math.round(((m.dmg_pct||0)*t1+(r.dmg_pct||0)*t2)/T) : m.dmg_pct;
                 if(t2>t1){ m.county=r.county; m.peak=r.peak||m.peak; }
-                m.total=T; m.avg=Math.round(T/5*10)/10;
+                m.total=T;
               } else { seen[k]=r; merged.push(r); }
             });
             merged.sort(function(a,b){ return (b.total||0)-(a.total||0); });
+            /* Avg/yr over the elapsed span of the record (yrSpan), not the
+               number of year files: Jan 2022 to Oct 1 2026 is 4.75 years,
+               and dividing by 5 understated every county's rate. Same span
+               for every row, merged or not. */
+            var span=yrSpan();
+            merged.forEach(function(r){ r.avg=Math.round((r.total||0)/span*10)/10; });
             d.states[st2]=merged;
           }
           countyData=d;
+          /* The file names the threshold its shares were counted at. Print that
+             one, so the label never claims a size the numbers were not built on. */
+          if(d.damaging_in){ var di=document.getElementById('hm-dmg-in'), dn=document.getElementById('hm-dmg-note'); if(di) di.textContent=String(d.damaging_in); if(dn) dn.hidden=(+d.damaging_in!==1); }
           buildStateSelect();
           var c=map.getCenter();
           var st=stateAt(c.lat, c.lng);
