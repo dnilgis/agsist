@@ -180,7 +180,7 @@
     if(s.length - s.indexOf('.') - 1 < 2) s = r.toFixed(2);
     return s;
   }
-  function quarterCents(c){ var a = Math.abs(c), w = Math.floor(a + 1e-9), f = Math.round((a - w) * 4); if(f === 4){ w++; f = 0; } return w + (f ? ' ' + ['', '1/4', '1/2', '3/4'][f] : ''); }
+  function quarterCents(c){ return AG.px.move(c, { style: 'slash', cent: false }); }
   function centsTxt(c){ return c === 0 ? 'even' : (c > 0 ? '+' : '−') + Math.abs(c) + '¢'; }
   function delLabel(period, delivery){
     var m = /^(\d{4})-(\d{2})(?:\/(\d{4})-(\d{2}))?$/.exec(period || '');

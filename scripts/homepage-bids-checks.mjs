@@ -22,6 +22,10 @@ import { dirname, join } from "node:path";
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const HOME = readFileSync(join(ROOT, "components", "bids-homepage.js"), "utf8");
 const NET = readFileSync(join(ROOT, "components", "bids-network.js"), "utf8");
+/* The page loads components/util.js before bids-homepage.js; the card's
+   price text goes through its AG.px. Lifted functions see it the same way. */
+const UTIL = readFileSync(join(ROOT, "components", "util.js"), "utf8");
+const WITH_AG = `var AG = (function(){ var window = {}; ${UTIL}\n return window.AG; })();\n`;
 
 let pass = 0;
 const fails = [];
@@ -86,7 +90,7 @@ eq(placeLabel({ operator: "Allied", city: "Tomah", state: "WI" }), "Tomah, WI", 
 /* 3. the basis unit (2026-10-06): Ritzville Warehouse Co, WA spring wheat,
    cash 13.40, basis +$6.23 (37 other MWZ26 rows imply $7.17). The licensed
    feed sends 623 (cents); the old size rule printed +6c on this card. */
-const B = new Function([liftVar(HOME, "PPU_BAND"), liftVar(HOME, "BASIS_SANE"), lift(HOME, "ppu"), lift(HOME, "flatNum"),
+const B = new Function([WITH_AG, liftVar(HOME, "PPU_BAND"), liftVar(HOME, "BASIS_SANE"), lift(HOME, "ppu"), lift(HOME, "flatNum"),
   lift(HOME, "basisCents"), lift(HOME, "basisUnitOf"), lift(HOME, "basisOdd"), lift(HOME, "licBasis"), lift(HOME, "licUnclear"),
   lift(HOME, "qCents"), lift(HOME, "formatBasis"),
   "return { basisCents, licBasis, licUnclear, basisOdd, formatBasis };"].join("\n"))();

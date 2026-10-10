@@ -23,7 +23,7 @@
      a page's own code runs" — not every inline caller guards for its
      absence, unlike the two callers above. Left as-is. -->
 <script src="/components/sponsor-ad.js?v=1" defer></script>
-  <script src="/components/util.js?v=16"></script>
+  <script src="/components/util.js?v=17"></script>
 <link rel="icon" type="image/x-icon"            href="/img/favicon.ico">
 <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
@@ -574,10 +574,9 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
     var MCODE={F:'Jan',G:'Feb',H:'Mar',J:'Apr',K:'May',M:'Jun',N:'Jul',Q:'Aug',U:'Sep',V:'Oct',X:'Nov',Z:'Dec'};
     var SEP='<span class="hb-sep" aria-hidden="true"> · </span>';
     /* 4.3125 dollars -> "$4.31 1/4": the page writes quarter cents like the pit. */
-    function qd(dollars){var c=Math.round(Number(dollars)*400)/4,w=Math.floor(c+1e-9),f=Math.round((c-w)*4);if(f===4){w++;f=0;}
-      return '$'+(w/100).toFixed(2)+(f?'<span class="hb-frac"> '+['','1/4','1/2','3/4'][f]+'</span>':'');}
-    function qc(cents){var a=Math.abs(cents),q=Math.round(a*4)/4,w=Math.floor(q),f=Math.round((q-w)*4);
-      return (cents<0?MINUS:(cents>0?'+':''))+(w||!f?String(w):'')+(w&&f?' ':'')+(f?['','1/4','1/2','3/4'][f]:'')+'¢';}
+    /* components/util.js AG.px is the site's one grain formatter. */
+    function qd(dollars){return AG.px.priceDollars(dollars,{style:'slash',fracClass:'hb-frac'});}
+    function qc(cents){return AG.px.move(cents,{style:'slash',sign:true});}
     function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
     function set(id,html){var e=$(id);if(e)e.innerHTML=html;}
     function cls(id,c,on){var e=$(id);if(e)e.classList.toggle(c,!!on);}
@@ -792,7 +791,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
           <div class="idx1-extras-sub">Cash price fills from a bid above. Change any number to match your bin.</div>
           <div class="idx1-calc-pickwrap"><label class="idx1-extras-field idx1-calc-pickfield">Price from<select id="idx1-calc-pick" aria-describedby="idx1-calc-why"></select></label>
           <div id="idx1-calc-why" class="idx1-extras-fine"></div></div>
-          <div id="ss-posted" class="ss-posted" hidden></div><script src="/components/storesell.js?v=1" defer></script>
+          <div id="ss-posted" class="ss-posted" hidden></div><script src="/components/storesell.js?v=2" defer></script>
           <div class="idx1-extras-row">
             <label class="idx1-extras-field">Cash price now ($/bu)<input id="idx1-calc-price" type="number" step="0.01" min="0" inputmode="decimal"></label>
             <label class="idx1-extras-field">Storage cost ($/bu/mo)<input id="idx1-calc-cost" type="number" step="0.01" min="0" placeholder="e.g. 0.03" inputmode="decimal"></label>
@@ -1054,7 +1053,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
         var g=GR[k],pre='sig-'+k,st=stats[g.sk],nb=px[k+'-nearby'],q=nb||px[k],pct,lo,hi,tag,rd;
         var live=(q&&q.close!=null)?q.close*g.s:null,mon=(nb&&nb.contract)||'';
         /* quarter cents, like the tiles: 681.75 -> $6.81 3/4 */
-        var qp=function(c){var w=Math.floor(c+1e-9),f=Math.round((c-w)*4);if(f===4){w++;f=0;}return '$'+(w/100).toFixed(2)+(f?' '+['','1/4','1/2','3/4'][f]:'');};
+        var qp=function(c){return AG.px.price(c,{style:'slash'});};
         if(st&&st.pct!=null){pct=st.pct;lo=st.lo;hi=st.hi;tag='5-year';
           var b=bandTxt(pct);rd=b?'<b>'+b+'</b>':'';ranked=true;}
         else if(q&&q.close!=null&&q.wk52_hi!=null&&q.wk52_lo!=null&&q.wk52_hi>q.wk52_lo){lo=q.wk52_lo*g.s;hi=q.wk52_hi*g.s;pct=Math.round((q.close-q.wk52_lo)/(q.wk52_hi-q.wk52_lo)*100);tag='52-week';rd='Where the board price sits in its 52-week range.';}
@@ -1064,7 +1063,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
         if($(pre+'-sub'))$(pre+'-sub').textContent=tag==='5-year'?'percentile':'of its 52-week range';
         if($(pre+'-tag'))$(pre+'-tag').textContent=tag;
         var pe=$(pre+'-price');
-        if(pe){pe.textContent=(live!=null?(mon?mon+' ':'')+qp(q.close)+' · range':'Range')+' $'+lo.toFixed(2)+'–$'+hi.toFixed(2);pe.setAttribute('data-r7','1');}
+        if(pe){pe.textContent=(live!=null?(mon?mon+' ':'')+qp(q.close)+' · range':'Range')+' '+(function(r){return r.lo+'–'+r.hi;})(AG.px.range(lo*100,hi*100,{style:'slash'}));pe.setAttribute('data-r7','1');}
         bar(pre,pct);
         /* wave1-E: in the 5-year case the dot is the percentile of weekly closes, not the
            price's place between the low and high printed above, so the bar says so. */
@@ -1807,11 +1806,11 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')close(true);
   })();
   </script>
 <script src="/components/loader.js?v=18" defer></script>
-<script src="/components/geo.js?v=23" defer></script>
-<script src="/components/bids-homepage.js?v=31" defer></script>
+<script src="/components/geo.js?v=24" defer></script>
+<script src="/components/bids-homepage.js?v=32" defer></script>
 <link rel="stylesheet" href="/components/cb-myelev.css?v=1">
-<script src="/components/cb-myelev.js?v=1" defer></script>
-<script src="/components/homepage-extras.js?v=12" defer></script>
+<script src="/components/cb-myelev.js?v=2" defer></script>
+<script src="/components/homepage-extras.js?v=13" defer></script>
 <script>
 (function() {
   'use strict';
@@ -1912,8 +1911,9 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')close(true);
       var pct=Math.max(0,Math.min(100,((cl-lo)/(hi-lo))*100));
       var elLo=document.getElementById('pcrl-'+fwd.rangeId+'-lo'), elHi=document.getElementById('pcrl-'+fwd.rangeId+'-hi');
       var elF=document.getElementById('pcrf-'+fwd.rangeId), elD=document.getElementById('pcrd-'+fwd.rangeId);
-      if(elLo)elLo.textContent='$'+lo.toFixed(2);
-      if(elHi)elHi.textContent='$'+hi.toFixed(2);
+      var fr=AG.px.range(fq.wk52_lo,fq.wk52_hi,{style:'slash'});
+      if(elLo)elLo.textContent=fr.lo;
+      if(elHi)elHi.textContent=fr.hi;
       if(elF)elF.style.width=pct.toFixed(1)+'%';
       if(elD)elD.style.left=pct.toFixed(1)+'%';
     }
@@ -2003,14 +2003,17 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')close(true);
     /* Subtract the two PRINTED prices, so the gap a reader checks by hand
        is the gap on the line ($5.25 - $5.01 = 24c, not the 23.25c of the
        unrounded values). */
-    var diff=parseFloat((+now).toFixed(2))-parseFloat((+was).toFixed(2)), txt;
+    var diff=parseFloat((+now).toFixed(2))-parseFloat((+was).toFixed(2)), txt, fmt;
     if(GRAIN[key]){
-      var c=Math.round(diff*100);
-      txt=c===0?'unchanged since':(c>0?'+':'\u2212')+Math.abs(c)+'\u00a2 since';
+      /* Grains print to the quarter cent (components/util.js), so the gap
+         is the difference of the two printed quarters. */
+      var c=(AG.px.quarters(+now*100)-AG.px.quarters(+was*100))/4;
+      txt=c===0?'unchanged since':AG.px.move(c,{style:'slash',sign:true})+' since';
+      fmt=function(v){return AG.px.priceDollars(v,{style:'slash'});};
     }else{
       txt=Math.abs(diff)<0.005?'unchanged since':(diff>0?'+':'\u2212')+'$'+Math.abs(diff).toFixed(2)+' since';
+      fmt=function(v){return '$'+(+v).toFixed(2);};
     }
-    var fmt=function(v){return '$'+(+v).toFixed(2);};
     var line=document.getElementById('daily-takeaway-frame');
     if(!line){
       line=document.createElement('p');
@@ -2086,8 +2089,10 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')close(true);
       var elHi=document.getElementById('pcrl-'+sym+'-hi');
       var elF=document.getElementById('pcrf-'+sym);
       var elD=document.getElementById('pcrd-'+sym);
-      if(elLo)elLo.textContent=fmt(sym,lo,-1);
-      if(elHi)elHi.textContent=fmt(sym,hi,1);
+      /* Grains: the site formatter's range, to the quarter cent, never inward. */
+      var gr=GR[sym]?AG.px.range(x.wk52_lo,x.wk52_hi,{style:'slash'}):null;
+      if(elLo)elLo.textContent=gr?gr.lo:fmt(sym,lo,-1);
+      if(elHi)elHi.textContent=gr?gr.hi:fmt(sym,hi,1);
       if(elF)elF.style.width=pct.toFixed(1)+'%';
       if(elD)elD.style.left=pct.toFixed(1)+'%';
     }
@@ -2194,11 +2199,13 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')close(true);
               var n=ct(new Date()),same=(+n.year===+p.year&&+n.month===+p.month&&+n.day===+p.day);
               return{t:'As of '+(same?hm(F):lbl(dayT)),live:false,title:read};
             }
-            if(tr&&m>=800&&m<815)return{t:'As of '+hm(F),live:false,title:'The day session closed at 1:20 PM CT; settle prices may not be final yet. '+read};
+            if(tr&&m>=800&&m<815)return{t:'As of '+hm(F),live:false,title:'The day session closed at 1:20 PM CT; closing prices may not be final yet. '+read};
             if(tr&&m>=465&&m<510)return{t:'Pre-open',live:false,title:'Overnight session closed, day session not open yet. '+read};
             var s=(tr&&m>=815)?dayT:dayT-DY,guard=0;while(!trading(s)&&guard++<10)s-=DY;
             var hn=holName(dayT);
-            return{t:'Settle '+lbl(s),live:false,title:(hn?'Markets closed for '+hn+'. ':'')+'Settle prices for '+lbl(s)+', '+new Date(s).getUTCFullYear()+'. '+read};
+            /* "Close", not "Settle": these are Yahoo Finance closing prices,
+               not CME settlements (the two can differ by a tick or more). */
+            return{t:'Close '+lbl(s),live:false,title:(hn?'Markets closed for '+hn+'. ':'')+'Closing prices for '+lbl(s)+', '+new Date(s).getUTCFullYear()+' (Yahoo Finance closes, not CME settlements). '+read};
           })(data.fetched);
           if(_st){_tb.innerHTML='';(/^As of /.test(_st.t)?['As of',_st.t.slice(6)]:_st.t.split(/ (.+)/).slice(0,2)).forEach(function(w,i){if(i)_tb.appendChild(document.createElement('br'));_tb.appendChild(document.createTextNode(w));});_tb.parentNode.title=_st.title;_tb.parentNode.classList.toggle('stale',!_st.live);}
           else{_tb.innerHTML='Not loaded<br>yet';_tb.parentNode.classList.add('stale');}
@@ -4436,11 +4443,14 @@ function bySym(sym){var hit=null,any=null;Object.keys(Q).forEach(function(x){var
 function cmByTicker(q){if(!q||!q.ticker)return null;var r=null;Object.keys(Q).some(function(x){var lb=cmKey(x);if(lb&&Q[x]&&Q[x].ticker===q.ticker){r=lb;return true;}return false;});return r;}
 /* Grains trade in quarter cents. Printing $4.99 for 498.5 made the prev
    close and the change disagree; this prints $4.98 1/2. */
-function qc(c){var t=Math.round(c*4)/4,w=Math.floor(t),f=t-w;return '$'+(w/100).toFixed(2)+(f===0.25?' 1/4':f===0.5?' 1/2':f===0.75?' 3/4':'');}
+function qc(c){return AG.px.price(c,{style:'slash'});}
+/* What an older geo.js wrote (cent-rounded) or the current one writes (the
+   same quarter text with no small span): either way, dress it with setQ. */
 function r2(c){return '$'+(c/100).toFixed(2);}
+function plainQ(el,c){var t=el&&el.textContent;return !!el&&(t===r2(c)||(t===qc(c)&&t.indexOf('/')>0&&!el.querySelector('.r7-frac')));}
 /* Writes the quarter as a smaller trailing span; textContent stays "$12.83 1/4". */
-function setQ(el,c){var t=qc(c);if(!el||el.textContent===t)return;var m=/^(\$[\d.]+)( \d\/\d)?$/.exec(t);el.textContent=m[1];if(m[2]){var sp=document.createElement('span');sp.className='r7-frac';sp.textContent=m[2];el.appendChild(sp);}}
-function cents(a){var w=Math.floor(a),f=Math.round((a-w)*4);if(f===4){w++;f=0;}var fr=f===1?'1/4':f===2?'1/2':f===3?'3/4':'';return (w||!fr?String(w):'')+(w&&fr?' ':'')+fr+'\u00a2';}
+function setQ(el,c){var t=qc(c);if(!el||(el.textContent===t&&(t.indexOf('/')<0||el.querySelector('.r7-frac'))))return;var m=/^(\$[\d.]+)( \d\/\d)?$/.exec(t);el.textContent=m[1];if(m[2]){var sp=document.createElement('span');sp.className='r7-frac';sp.textContent=m[2];el.appendChild(sp);}}
+function cents(a){return AG.px.move(a,{style:'slash'});}
 function chg(k,q){
   var n=q.netChange;if(n==null||isNaN(+n))return null;n=+n;
   if(n===0)return{t:'unch',c:'nc',p:''};
@@ -4451,14 +4461,14 @@ function chg(k,q){
   else if(c.nod)t=s+a.toFixed(2);
   else t=s+'$'+a.toFixed(2);
   var p='',pc=+q.pctChange;
-  if(!c.bp&&!isNaN(pc)&&q.pctChange!=null){var ap=Math.abs(pc);p=(pc>0?'+':pc<0?'\u2212':'')+(ap<0.05?ap.toFixed(2):ap.toFixed(1))+'%';}
+  if(!c.bp&&!isNaN(pc)&&q.pctChange!=null)p=AG.px.pct(pc,{dp:Math.abs(pc)<0.05?2:1});
   return{t:t,c:n>0?'up':'dn',p:p};
 }
 function rangeFmt(k,v,dir){
-  /* Same formatter as the prices: grains to the quarter cent, the rest
-     rounded like the last price. No floor/ceil (Nov '26 high 1335.25 is
-     $13.35 1/4, not $13.36). */
-  var c=CFG[k];if(c.g)return qc(v*100);
+  /* Grains: the site formatter, low down and high up to the quarter, so a
+     traded quarter prints exactly (Nov '26 high 1335.25 is $13.35 1/4) and
+     an off-quarter end is never moved inside the range. */
+  var c=CFG[k];if(c.g)return AG.px.price(v*100,{style:'slash',mode:dir<0?'down':'up'});
   if(c.cl)return v.toFixed(2)+'\u00a2';
   var d=(c.nod||c.bp)?2:(v>=1000?0:2);
   var s=Number(v.toFixed(d)).toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d});
@@ -4503,7 +4513,7 @@ function renderRow(row){
   var src=source(k)||{label:null,rq:q},rq=c.cm?q:src.rq;
   var st=spreadTxt(k,c.cm||src.label);
   setT(row.querySelector('.r7-cm'),(c.cm||src.label||'Front month')+(st?' \u00b7 '+st:''));
-  if(c.g){var pp=row.querySelector('.pc-price');if(pp&&pp.textContent===r2(q.close))setQ(pp,q.close);}
+  if(c.g){var pp=row.querySelector('.pc-price');if(plainQ(pp,q.close))setQ(pp,q.close);}
   var ch=chg(k,q),ce=row.querySelector('.r7-chg'),pe=row.querySelector('.r7-pct');
   if(ch){setT(ce,ch.t);ce.className='r7-chg '+ch.c;setT(pe,ch.p);pe.className='r7-pct '+ch.c;}
   var lo=rq.wk52_lo,hi=rq.wk52_hi,cl=q.close,rg=row.querySelector('.r7-rg');
@@ -4572,19 +4582,19 @@ function dress(){
     });
     qa('#f-prices .price-cards-grid .pc').forEach(function(card){
       var pv=card.querySelector('.pc-prev'),pr=card.querySelector('.pc-price');if(!pv)return;
-      var m=/^prev: (\S+)(?: (\S+))?$/.exec(pv.textContent),q=null;
+      var m=/^prev: (\S+(?: \d\/\d)?)(?: (\S+))?$/.exec(pv.textContent),q=null;
       if(m){
         q=m[2]?bySym(m[2]):null;
         if(q&&q.open!=null){setT(pv,'Prev close '+qc(q.open));pv.setAttribute('data-r7sym',m[2]);}
         else if(have){setT(pv,'Prev close '+m[1]);pv.removeAttribute('data-r7sym');}
       }else{var sy=pv.getAttribute('data-r7sym');q=sy?bySym(sy):null;}
-      if(q&&pr&&q.close!=null&&pr.textContent===r2(q.close))setQ(pr,q.close);
-      if(q&&q.wk52_lo!=null&&q.wk52_hi!=null){var ls=card.querySelectorAll('.pc-range-labels>span');if(ls.length>=3&&ls[0].textContent){setT(ls[0],qc(q.wk52_lo));setT(ls[2],qc(q.wk52_hi));}}
+      if(q&&pr&&q.close!=null&&plainQ(pr,q.close))setQ(pr,q.close);
+      if(q&&q.wk52_lo!=null&&q.wk52_hi!=null){var ls=card.querySelectorAll('.pc-range-labels>span');if(ls.length>=3&&ls[0].textContent){var rg=AG.px.range(q.wk52_lo,q.wk52_hi,{style:'slash'});setT(ls[0],rg.lo);setT(ls[2],rg.hi);}}
     });
     qa('.prices-strip .t-item[data-sym]').forEach(function(it){
       var k=it.getAttribute('data-sym');if(!GRAIN_T[k])return;
       var pe=it.querySelector('.t-price');if(!pe)return;
-      [Q[k],Q[GRAIN_T[k]]].some(function(q){if(q&&q.close!=null&&pe.textContent===r2(q.close)){setQ(pe,q.close);return true;}return false;});
+      [Q[k],Q[GRAIN_T[k]]].some(function(q){if(q&&q.close!=null&&plainQ(pe,q.close)){setQ(pe,q.close);return true;}return false;});
     });
     qa('#f-prices .price-cards-grid .pc-chg-val').forEach(function(e){if(/^0/.test(e.textContent))setT(e,'unch');});
   }finally{busy=false;}
@@ -4618,14 +4628,14 @@ function observe(){
 }
 /* Prediction markets: ag-linked only. Fed and crude odds are not ag, and a
    politician named Cotton is not cotton. No market links. */
-var AG=/\b(corn|soybeans?|wheat|cattle|hogs?|pork|beef|dairy|milk|fertili[sz]ers?|urea|usda|wasde|ethanol|biofuels?|crops?|harvest|bushels?|farm bill|grains?|egg prices|bird flu|avian)\b/i;
+var AG_WORDS=/\b(corn|soybeans?|wheat|cattle|hogs?|pork|beef|dairy|milk|fertili[sz]ers?|urea|usda|wasde|ethanol|biofuels?|crops?|harvest|bushels?|farm bill|grains?|egg prices|bird flu|avian)\b/i;
 var NOT_AG=/\b(nominat\w*|elections?|president\w*|senat\w*|governor|primary|mayor|congress\w*)\b/i;
 function fmtCT(iso,withTime){var d=new Date(iso);if(isNaN(d.getTime()))return null;var o={timeZone:'America/Chicago',month:'short',day:'numeric',year:'numeric'};if(withTime){o.hour='numeric';o.minute='2-digit';}return d.toLocaleString('en-US',o)+(withTime?' CT':'');}
 function odds(){
   var fold=document.querySelector('.m-fold--kalshi'),box=document.getElementById('f-kalshi');if(!fold||!box)return;
   fetch('/data/markets.json').then(function(r){return r.ok?r.json():null;}).then(function(d){
     if(!d)return;
-    var ag=(d.markets||[]).filter(function(m){var t=String(m.title||'');return m.yes!=null&&AG.test(t)&&!NOT_AG.test(t);});
+    var ag=(d.markets||[]).filter(function(m){var t=String(m.title||'');return m.yes!=null&&AG_WORDS.test(t)&&!NOT_AG.test(t);});
     if(!ag.length)return;
     var got=fmtCT(d.fetched,true);
     var h='<p class="r7-odds-lbl">Third-party market odds, not a recommendation.</p>';
@@ -5474,8 +5484,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
   function ctStamp(iso){var d=new Date(iso);if(!iso||isNaN(d))return '';
     try{return d.toLocaleString('en-US',{month:'short',day:'numeric',hour:'numeric',minute:'2-digit',timeZone:'America/Chicago'})+' CT';}catch(e){return '';}}
   /* 34.75 cents -> "34 3/4" (the ticker's own way of writing eighths of a cent). */
-  function cents(c){var a=Math.abs(c),w=Math.floor(a+1e-9),f=Math.round((a-w)*4);if(f===4){w++;f=0;}
-    return w+(f?(' '+['','1/4','1/2','3/4'][f]):'');}
+  function cents(c){return AG.px.move(c,{style:'slash',cent:false});}
   var MINUS='−';
   window.__r7={pricesOnce:pricesOnce,contractOf:contractOf,ctStamp:ctStamp,cents:cents,tickMonth:tickMonth};
 
@@ -5527,7 +5536,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
       var t=dir.value==='above'?Math.floor(p/step+1)*step:Math.ceil(p/step-1)*step;
       tgt.placeholder=t.toFixed(2);
       /* Grains trade in quarter cents: $5.08\u00bd, not $5.08 (toFixed dropped the half). */
-      var nowTxt=sel.value==='cattle'?'$'+p.toFixed(2):(function(c){var qq=Math.round(c*4),w=Math.floor(qq/4),f=qq%4;return '$'+Math.floor(w/100)+'.'+('0'+(w%100)).slice(-2)+['','\u00bc','\u00bd','\u00be'][f];})(Number(x.close));
+      var nowTxt=sel.value==='cattle'?'$'+p.toFixed(2):AG.px.price(x.close);
       if(now){var mon=contractOf(q,sel.value);now.textContent='Now '+nowTxt+(mon?', '+mon:'')+(stamp?' · '+stamp:'');}}
     sel.addEventListener('change',ex);dir.addEventListener('change',ex);ex();
   });

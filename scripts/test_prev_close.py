@@ -9,7 +9,7 @@ import sys
 
 sys.path.insert(0, "scripts")
 import fetch_prices
-from fetch_prices import close_and_prev, harvest_crosscheck
+from fetch_prices import close_and_prev, harvest_crosscheck, widen_range
 
 NAN = float("nan")
 
@@ -34,6 +34,14 @@ def main():
     chk(close == 1277.25 and prev == 1284.0, "beans: close 1277.25, prev 1284.00 (second-to-last bar)")
     chk(round(close - prev, 2) == -6.75, "beans: change is -6.75, down, not +0.75")
     chk(cd == "2026-10-02" and pd == "2026-10-01", "dates name the two sessions")
+
+    # 1b. The 52-week range contains the latest close (2026-10-09 data:
+    #     hogs 75.15 under a 75.75 low; rice 16.97 over a 16.935 high).
+    chk(widen_range(75.75, 103.35, 75.15) == (75.15, 103.35), "range: a close under the low becomes the low")
+    chk(widen_range(9.245, 16.935, 16.97) == (9.245, 16.97), "range: a close over the high becomes the high")
+    chk(widen_range(425.75, 549.75, 480.5) == (425.75, 549.75), "range: a close inside leaves it alone")
+    chk(widen_range(None, 549.75, 600.0) == (None, 600.0), "range: a missing end stays missing")
+    chk(widen_range(1.0, 2.0, None) == (1.0, 2.0), "range: no close, no change")
 
     # 2. Dec corn the same day: 502.25 then 497.25 -> -5.00 (fast_info said -2.00).
     close, prev, _, _ = close_and_prev([("2026-10-01", 502.25), ("2026-10-02", 497.25)])

@@ -9,6 +9,7 @@
   <!-- /static-nav:fonts -->
   <link rel="preload" href="/components/styles.css?v=23" as="style">
 <link rel="stylesheet" href="/components/styles.css?v=23">
+<script src="/components/util.js?v=17"></script>
 <link rel="icon" type="image/x-icon"            href="/img/favicon.ico">
 <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
@@ -1333,7 +1334,7 @@ function loadGrainPrices(){
   fetch('/data/prices.json').then(function(r){return r.ok?r.json():null;}).then(function(data){
     if(!data||!data.quotes)return;
     var q=data.quotes;
-    function fmtGrain(v){return v!=null?'$'+(parseFloat(v)/100).toFixed(2):'--';}
+    function fmtGrain(v){return v!=null?AG.px.price(v):'--';}   /* components/util.js */
     var ecp=document.getElementById('eco-corn-price');var ncb=document.getElementById('nc-corn');
     if(q.corn&&q.corn.close){
       if(ecp)ecp.textContent=fmtGrain(q.corn.close);

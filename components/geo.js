@@ -937,7 +937,9 @@ var PRICE_MAP = {
 function fmtPrice(val, dec, grain, suffix, prefix, comma) {
   var p = parseFloat(val);
   if (isNaN(p)) return '--';
-  if (grain) { return '$' + (p / 100).toFixed(2); }
+  // Grains: the site's one formatter (components/util.js), to the quarter
+  // cent. toFixed(2) on dollars printed 480.5 as $4.80 or $4.81 by float luck.
+  if (grain) { return AG.px.price(p, {style: 'slash'}); }
   var str = p.toFixed(dec);
   if (comma) str = Number(str).toLocaleString('en-US', {minimumFractionDigits: dec, maximumFractionDigits: dec});
   if (prefix) str = prefix + str;
@@ -960,12 +962,7 @@ function fmtPrice(val, dec, grain, suffix, prefix, comma) {
 // convention the comment above already asks for, unambiguous at any
 // size because every character in it is an ordinary digit or slash.
 function fmtCentsDiff(d){
-  var a=Math.abs(d), w=Math.floor(a), f=Math.round((a-w)*4);
-  if(f===4){w++;f=0;}
-  var fr=f===1?'1/4':f===2?'1/2':f===3?'3/4':'';
-  var whole=(w||!fr)?String(w):'';
-  var sep=(whole&&fr)?' ':'';
-  return whole+sep+fr+'\u00a2';
+  return AG.px.move(d, {style: 'slash'});
 }
 function fmtChange(close, open, grain, netChg, pctChg) {
   var c = parseFloat(close), o = parseFloat(open);
@@ -976,7 +973,9 @@ function fmtChange(close, open, grain, netChg, pctChg) {
   var arrow = diff > 0 ? '\u25B2' : diff < 0 ? '\u25BC' : '';
   var sign  = diff > 0 ? '+' : diff < 0 ? '\u2212' : '';
   var mv    = grain ? fmtCentsDiff(diff) : Math.abs(diff).toFixed(2);
-  return {text: (arrow ? arrow + ' ' : '') + sign + mv + ' (' + sign + Math.abs(pct).toFixed(1) + '%)', cls: dir};
+  // one decimal on the homepage cards and the ticker: they are narrow, and a
+  // second decimal pushed the corn card's line out of its column at 390px
+  return {text: (arrow ? arrow + ' ' : '') + sign + mv + ' (' + AG.px.pct(pct, {dp: 1}) + ')', cls: dir};
 }
 
 function fmtTickerChange(close, open, grain, netChg, pctChg, prefix) {
@@ -990,13 +989,13 @@ function fmtTickerChange(close, open, grain, netChg, pctChg, prefix) {
   var sgn   = diff > 0 ? '+' : '\u2212';      // a true minus, as fmtChange uses
   // the board prints '+$3.83' for cattle; the ticker dropped the $ (prefix)
   var mv    = grain ? fmtCentsDiff(diff) : (prefix || '') + Math.abs(diff).toFixed(2);
-  return {text: arrow + ' ' + sgn + mv + ' \u00b7 ' + sgn + Math.abs(pct).toFixed(1) + '%', cls: dir};
+  return {text: arrow + ' ' + sgn + mv + ' \u00b7 ' + AG.px.pct(pct, {dp: 1}), cls: dir};
 }
 
 function fmtTickerPrice(val, grain, dec, prefix, comma) {
   var p = parseFloat(val);
   if (isNaN(p)) return '--';
-  if (grain) return '$' + (p / 100).toFixed(2);
+  if (grain) return AG.px.price(p, {style: 'slash'});
   var d = dec != null ? dec : 2;
   var str = p.toFixed(d);
   if (comma) str = Number(str).toLocaleString('en-US', {minimumFractionDigits: d, maximumFractionDigits: d});
@@ -1041,8 +1040,10 @@ function update52WeekRange(priceElId, price, wk52Lo, wk52Hi, isGrain, prefix) {
     return Number(v.toFixed(d)).toLocaleString('en-US', {minimumFractionDigits: d, maximumFractionDigits: d});
   }
   if (isGrain) {
-    labels[0].textContent = '$' + fixed(snapLo(lo / 100, 2), 2);
-    labels[2].textContent = '$' + fixed(snapHi(hi / 100, 2), 2);
+    // to the quarter cent, low down and high up (components/util.js)
+    var gr = AG.px.range(lo, hi, {style: 'slash'});
+    labels[0].textContent = gr.lo;
+    labels[2].textContent = gr.hi;
   } else if (hi >= 10000) {
     labels[0].textContent = pfx + grouped(snapLo(lo, 0), 0);
     labels[2].textContent = pfx + grouped(snapHi(hi, 0), 0);

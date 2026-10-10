@@ -13,6 +13,8 @@ import vm from "node:vm";
 
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
 const ctx = { window: {} };
+/* util.js first, as the page loads it: storesell prints through AG.px. */
+vm.runInNewContext(readFileSync(ROOT + "components/util.js", "utf8"), ctx);
 vm.runInNewContext(readFileSync(ROOT + "components/storesell.js", "utf8"), ctx);
 const S = ctx.window.AgsistStoreSell;
 const near = (a, b, msg) => assert.ok(Math.abs(a - b) < 1e-9, `${msg}: ${a} vs ${b}`);

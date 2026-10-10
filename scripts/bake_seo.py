@@ -52,6 +52,9 @@ import sys
 from datetime import date, datetime
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import pricefmt  # noqa: E402  grain price text, the twin of components/util.js AG.px
+
 REPO = Path(__file__).resolve().parent.parent
 DATA = REPO / "data"
 sys.path.insert(0, str(REPO / "scripts"))
@@ -330,9 +333,9 @@ def seo_breakeven(c):
     px = _px(c["prices"], "corn")
     if px is None:
         return None
-    dollars = px / 100.0 if px > 50 else px      # cents vs dollars
+    cents = px if px > 50 else px * 100.0      # cents vs dollars
     return (f"Break-Even Price Calculator: Corn, Soybeans, Wheat{SUFFIX}",
-            f"Corn is near ${dollars:.2f}. Enter your cost per acre and your yield "
+            f"Corn is near {pricefmt.price(cents)}. Enter your cost per acre and your yield "
             f"to get your break-even price per bushel, and the yield where the "
             f"board stops covering them.")
 
@@ -450,8 +453,7 @@ def make_futures(page):
         if px is None or not lab:
             return None
         # grain boards quote in cents; cattle already quotes in dollars per cwt
-        dollars = px / 100.0 if key != "cattle" else px
-        money = f"${dollars:,.2f}"
+        money = pricefmt.price(px) if key != "cattle" else f"${px:,.2f}"
         return (f"{exch} {crop} Futures: {lab} {money}, {extra}{SUFFIX}", None)
 
     build.__name__ = f"seo_{key}_futures"
@@ -500,7 +502,7 @@ def seo_markets(c):
         v = q.get("close")
         if not isinstance(v, (int, float)) or _d(q.get("close_date") or cd) != cd:
             continue
-        picks.append((key, name, _usd(v / 100.0 if grain else v), q.get("contract")))
+        picks.append((key, name, pricefmt.price(v) if grain else _usd(v), q.get("contract")))
     grains = [x for x in picks if x[0] in ("corn", "beans", "wheat")]
     if not grains or grains[0][0] != "corn":
         return None

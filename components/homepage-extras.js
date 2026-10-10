@@ -147,7 +147,7 @@
     if(!carryCover || !el || el.dataset.autofilled !== 'true' || carryCover.months == null || months === carryCover.months) return '';
     return 'The carry covers ' + carryCover.months + ' month' + (carryCover.months === 1 ? '' : 's') + ' (' + carryCover.from + ' to ' + carryCover.to + '), not your ' + months + '.';
   }
-  function qc(c){ var a = Math.abs(c), w = Math.floor(a + 1e-9), f = Math.round((a - w) * 4); if(f === 4){ w++; f = 0; } return w + (f ? ' ' + ['', '1/4', '1/2', '3/4'][f] : '') + '¢'; }
+  function qc(c){ return AG.px.move(c, { style: 'slash' }); }   // components/util.js
   /* WAVE3-H: a prefilled carry also fills "months you would store" with the
      carry's own months, so the two always describe the same period until the
      reader changes one. A pick with no carry clears both boxes if they were
@@ -509,7 +509,7 @@
     var H = window.__agsistHomeBidsInternals;
     return H && H.widFor ? H.widFor(ewid, kind, period, rest) : '';
   }
-  function fmtCash(c){ return '$' + (c / 100).toFixed(2); }
+  function fmtCash(c){ return AG.px.price(c, { style: 'slash' }); }   // same quarter text as the bids card
   function fmtBasis(c){ return c === 0 ? 'even' : (c > 0 ? '+' : '−') + Math.abs(c) + '¢'; }
   function escA(s){ return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
   var FLD = 'display:flex;flex-direction:column;gap:.15rem;flex:1 1 9rem;min-width:0';

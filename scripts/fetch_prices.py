@@ -540,6 +540,25 @@ def close_and_prev(bars):
     return close, prev, close_date, prev_date
 
 
+def widen_range(lo, hi, close):
+    """The 52-week range must contain the latest close.
+
+    fast_info.year_low/year_high lag the last bar: on 2026-10-09 lean hogs
+    closed 75.15 under a published 52-week low of 75.75, rice 16.97 over a
+    16.935 high (4 of 82 quotes). A page then drew the dot outside its own bar
+    and printed a low that the price had already broken. The close IS the new
+    low (or high), so the range is widened to it. A missing end stays missing.
+    Pure function; selftested in scripts/test_prev_close.py.
+    """
+    if close is None:
+        return lo, hi
+    if lo is not None and close < lo:
+        lo = close
+    if hi is not None and close > hi:
+        hi = close
+    return lo, hi
+
+
 def _bars(t):
     """Daily (date_iso, close) pairs for the last ten days, oldest first."""
     hist = t.history(period="10d", interval="1d", auto_adjust=False)
@@ -584,6 +603,7 @@ def fetch_quote(key, ticker):
         pct     = round((net / prev * 100) if prev else 0, 4)
         wk52_hi = round(wk52_hi, 4) if wk52_hi is not None else None
         wk52_lo = round(wk52_lo, 4) if wk52_lo is not None else None
+        wk52_lo, wk52_hi = widen_range(wk52_lo, wk52_hi, close)
 
         range_str = f"  52wk: {wk52_lo}–{wk52_hi}" if wk52_hi and wk52_lo else "  52wk: n/a"
         print(f"  OK   {key:14s} ({ticker:14s})  {close:>12.4f}  {net:+.4f}  {pct:+.2f}%{range_str}")

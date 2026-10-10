@@ -86,6 +86,7 @@ HOME = HOME.slice(0, end) +
    file it reads for the page view, as a browser tab would. */
 function loadScripts() {
   window.AGSIST_BIDS_NET = undefined; window.__emailTop = undefined;
+  (0, eval)(fs.readFileSync(path.join(ROOT, "components", "util.js"), "utf8"));   // the page loads it first
   (0, eval)(NET);
   (0, eval)(HOME);
   ok(typeof window.AGSIST_BIDS_NET === "object", "bids-network.js did not load");

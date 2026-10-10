@@ -102,20 +102,11 @@
 
   /* Quarter cents for posted prices and carry; whole cents for a net that
      mixes in the reader's costs. */
-  function qc(cents){
-    var a = Math.abs(cents), w = Math.floor(a + 1e-9), f = Math.round((a - w) * 4);
-    if(f === 4){ w++; f = 0; }
-    var q = ['', '1/4', '1/2', '3/4'][f];
-    return w ? w + (f ? ' ' + q : '') : (f ? q : '0');
-  }
-  function carryText(d){ var c = d * 100; return Math.abs(c) < 0.125 ? 'even' : (c > 0 ? '+' : '−') + qc(c) + '¢'; }
+  /* The rounding is components/util.js AG.px, the site's one formatter. */
+  function carryText(d){ var c = d * 100; return root.AG.px.quarters(c) === 0 ? 'even' : root.AG.px.move(c, { style: 'slash', sign: true }); }
   function netCents(d){ return Math.round(d * 100); }
   function netText(d){ var c = netCents(d); return c === 0 ? '0¢' : (c > 0 ? '+' : '−') + Math.abs(c) + '¢'; }
-  function cashQ(d){
-    var c = Math.round(d * 400) / 4, whole = Math.floor(c + 1e-9), f = Math.round((c - whole) * 4);
-    if(f === 4){ whole++; f = 0; }
-    return '$' + (whole / 100).toFixed(2) + (f ? ' ' + ['', '1/4', '1/2', '3/4'][f] : '');
-  }
+  function cashQ(d){ return root.AG.px.priceDollars(d, { style: 'slash' }); }
 
   /* The plain line. `p` is the picked later period. */
   function headline(model, p, inputs, where){

@@ -145,22 +145,18 @@
      hero band (index1 reads it from window.agsistBidFmt). The hero wrote
      $4.37 3/4 and the card $4.38 for the same bid. Rounded to the nearest
      quarter cent, the way the pit writes it. */
-  function qParts(dollars){
-    var c = Math.round(Number(dollars) * 400) / 4, w = Math.floor(c + 1e-9), f = Math.round((c - w) * 4);
-    if(f === 4){ w++; f = 0; }
-    return { whole: '$' + (w / 100).toFixed(2), frac: f ? ['', '1/4', '1/2', '3/4'][f] : '' };
-  }
+  /* 2026-10-10: the rounding now lives in components/util.js (AG.px), the
+     site's one grain formatter, so the band, the card and the futures tiles
+     cannot drift apart again. */
   function qCash(dollars, fracClass){
     if(dollars == null || !isFinite(Number(dollars))) return '-';
-    var p = qParts(dollars);
-    return p.whole + (p.frac ? '<span class="' + (fracClass || 'bh-frac') + '"> ' + p.frac + '</span>' : '');
+    return AG.px.priceDollars(dollars, { style: 'slash', fracClass: fracClass || 'bh-frac' });
   }
-  function qCashText(dollars){ if(dollars == null || !isFinite(Number(dollars))) return '-'; var p = qParts(dollars); return p.whole + (p.frac ? ' ' + p.frac : ''); }
+  function qCashText(dollars){ if(dollars == null || !isFinite(Number(dollars))) return '-'; return AG.px.priceDollars(dollars, { style: 'slash' }); }
   /* Cents, signed: \u221262\u00a2, \u221262 1/2\u00a2, \u22121/2\u00a2, even. */
   function qCents(cents){
-    var a = Math.abs(Number(cents)), q = Math.round(a * 4) / 4, w = Math.floor(q + 1e-9), f = Math.round((q - w) * 4);
-    if(!w && !f) return 'even';
-    return (cents < 0 ? '\u2212' : '+') + (w || !f ? String(w) : '') + (w && f ? ' ' : '') + (f ? ['', '1/4', '1/2', '3/4'][f] : '') + '\u00a2';
+    if(AG.px.quarters(cents) === 0) return 'even';
+    return AG.px.move(cents, { style: 'slash', sign: true });
   }
   function formatBasis(bN, bid){
     if(bid && bid.basisUnclear) return { str:'-', cls:'muted', title:'basis unit unclear' };
@@ -747,7 +743,7 @@
   function periodEnd(p){ var m = /^(\d{4})-(\d{2})(?:\/(\d{4})-(\d{2}))?/.exec(String(p || '')); return m ? (m[3] ? m[3] + '-' + m[4] : m[1] + '-' + m[2]) : ''; }
   function shortMon(k){ var m = /^(\d{4})-(\d{2})$/.exec(k || ''); return m ? MON[+m[2] - 1] + ' \'' + m[1].slice(2) : ''; }
   function monthsApart(a, b){ var x = /^(\d{4})-(\d{2})$/.exec(a), y = /^(\d{4})-(\d{2})$/.exec(b); return (x && y) ? (+y[1] - +x[1]) * 12 + (+y[2] - +x[2]) : null; }
-  function quarterCents(c){ var a = Math.abs(c), w = Math.floor(a + 1e-9), f = Math.round((a - w) * 4); if(f === 4){ w++; f = 0; } return w + (f ? ' ' + ['', '1/4', '1/2', '3/4'][f] : ''); }
+  function quarterCents(c){ return AG.px.move(c, { style: 'slash', cent: false }); }
   function boardCarry(b){
     if(b.source !== 'network' || b.bestCash == null || b.cashPrice == null) return null;
     var s0 = periodStart(b.deliveryStart), e0 = periodEnd(b.deliveryStart), s1 = periodStart(b.bestPeriod);

@@ -33,6 +33,8 @@ import json
 import re
 import sys
 from datetime import datetime, timezone
+
+import pricefmt  # grain price text, the twin of components/util.js AG.px
 try:
     from zoneinfo import ZoneInfo
     CT = ZoneInfo("America/Chicago")
@@ -134,13 +136,15 @@ def load_prices():
 
 
 def grain_dollars(q):
-    """Grain quote (cents) → display dollars string, or None if unusable."""
+    """Grain quote (cents) -> display dollars string without the "$", to the
+    quarter cent ("4.80½"), or None if unusable. Same characters as the page
+    scripts print (scripts/pricefmt.py is util.js AG.px's twin)."""
     if not q:
         return None
     c = q.get("close")
     if c is None:
         return None
-    return "%.2f" % (float(c) / 100.0)
+    return pricefmt.price(c, dollar=False)
 
 
 def cwt_dollars(q):
@@ -175,11 +179,11 @@ def stamp_meta_description(text, desc):
 
 
 def _chg(q):
-    """Signed pct-change string for a quote, e.g. '-0.3%'. '' if missing."""
+    """Signed pct-change string for a quote, e.g. '−0.30%'. '' if missing."""
     p = q.get("pctChange")
     if p is None:
         return ""
-    return ("%+.1f%%" % float(p)).replace("+0.0%", "0.0%").replace("-0.0%", "0.0%")
+    return pricefmt.pct(p)
 
 
 # Day-session close, Central time. CBOT grains 1:20 p.m. CT; CME live and
@@ -251,7 +255,7 @@ def px_table(rows, flabel, in_session=False):
         n += 1
         rng = "n/a"
         if q.get("wk52_lo") and q.get("wk52_hi"):
-            rng = "$%.2f&ndash;$%.2f" % (q["wk52_lo"] / 100.0, q["wk52_hi"] / 100.0)
+            rng = "&ndash;".join(pricefmt.range_ends(q["wk52_lo"], q["wk52_hi"]))
         stale = " (last good quote)" if q.get("stale") else ""
         # class="num" -> tabular figures, ranged right. A price column set in a
         # proportional face and ranged left is the loudest "not a finance site"
@@ -467,27 +471,15 @@ MK_MAP = [
 ]
 
 
-def _frac_cents(d):
-    """The page's fmtCents: 4.25 -> '4¼¢'."""
-    import math
-    a = abs(float(d))
-    w = int(math.floor(a))
-    f = _jsround((a - w) * 4)
-    if f == 4:
-        w += 1
-        f = 0
-    fr = {1: "¼", 2: "½", 3: "¾"}.get(f, "")
-    return (str(w) if (w or not fr) else "") + fr + "¢"
-
-
 def _chg_str(net, pct, grain):
-    """The page's chgStr, character for character."""
+    """markets.html chgStr, character for character."""
     if net is None:
         return "-"
+    if grain:
+        return pricefmt.change(net, pct)[0]
     a = "▲" if net > 0 else ("▼" if net < 0 else "")
     s = "+" if net > 0 else ("−" if net < 0 else "")
-    mv = _frac_cents(net) if grain else _fixed(abs(net), 2)
-    return f"{a + ' ' if a else ''}{s}{mv} ({s}{_fixed(abs(float(pct or 0)), 2)}%)"
+    return f"{a + ' ' if a else ''}{s}{_fixed(abs(net), 2)} ({pricefmt.pct(pct)})"
 
 
 def seed_markets(prices, today):
@@ -525,7 +517,7 @@ def seed_markets(prices, today):
             seeds["mk:" + cid] = "-"
             continue
         n += 1
-        seeds["mk:" + pid] = "$" + (_fixed(float(c) / 100.0, 2) if grain else "{:,.2f}".format(float(_fixed(c, 2))))  # $4,162.40, as the page script prints it
+        seeds["mk:" + pid] = (pricefmt.price(c) if grain else "$" + "{:,.2f}".format(float(_fixed(c, 2))))  # $4,162.40, as the page script prints it
         cd = _iso_date(d.get("close_date")) or fd
         when = " &middot; " + _md(cd)
         if d.get("stale"):
@@ -537,8 +529,9 @@ def seed_markets(prices, today):
     for crop, sym in (("corn", "corn"), ("beans", "beans")):
         d = q.get(crop) or {}
         lo, hi = d.get("wk52_lo"), d.get("wk52_hi")
-        seeds["mk:rlo-" + sym] = ("$" + _fixed(lo / 100.0, 2)) if lo is not None else "-"
-        seeds["mk:rhi-" + sym] = ("$" + _fixed(hi / 100.0, 2)) if hi is not None else "-"
+        rlo, rhi = pricefmt.range_ends(lo, hi) if (lo is not None and hi is not None) else ("-", "-")
+        seeds["mk:rlo-" + sym] = rlo
+        seeds["mk:rhi-" + sym] = rhi
     # the nearby card and the deferred card are the same contract in the fall;
     # the page hides the repeat once prices load, so the build hides it too
     # (a card vanishing after first paint pulled the whole grid up)
@@ -582,12 +575,9 @@ def seed_homepage(prices, today):
             seeds["hp:" + k] = "-"
             seeds["hp:" + k + "-when"] = "No quote in the last price file"
             continue
-        # the card's own format (index.html qc): quarter cents as " 1/2", so
-        # the seed and the live price never print the same quote two ways
-        t = round(float(d["close"]) * 4) / 4.0
-        w = int(t)
-        frac = {0.25: " 1/4", 0.5: " 1/2", 0.75: " 3/4"}.get(round(t - w, 2), "")
-        seeds["hp:" + k] = "$" + _fixed(w / 100.0, 2) + frac
+        # the card's own format (geo.js / index.html qc, both AG.px slash
+        # style), so the seed and the live price never print a quote two ways
+        seeds["hp:" + k] = pricefmt.price(d["close"], style="slash")
         live, label = quote_state(d, fetched, "grain")
         seeds["hp:" + k + "-when"] = (state_words(live)[1] + (" " + label if label else "") +
                                       (" (last good quote)" if d.get("stale") else "") +
@@ -1112,9 +1102,7 @@ def _fut_chg(q):
     net, pct = q.get("netChange"), q.get("pctChange")
     if net is None or pct is None:
         return None
-    a = "\u25b2" if net >= 0 else "\u25bc"
-    s = "+" if net > 0 else ("\u2212" if net < 0 else "")
-    return (f"{a} {s}{_frac_cents(net)} ({s}{_fixed(abs(float(pct)), 2)}%)", "up" if net >= 0 else "dn")
+    return pricefmt.change(net, pct)
 
 
 def _chg_seed(c):
@@ -1145,8 +1133,7 @@ def futures_hero_seeds(page, prices):
                 chg = '<span id="nc-chg" class="roll">(contract roll)</span>'
             elif pc is not None:
                 net = cd.get("netChange") or 0
-                sg = "+" if net > 0 else ("\u2212" if net < 0 else "")
-                chg = '<span id="nc-chg" class="' + ("up" if net >= 0 else "dn") + '">(' + sg + _fixed(abs(float(pc)), 2) + "%)</span>"
+                chg = '<span id="nc-chg" class="' + ("up" if net >= 0 else "dn") + '">(' + pricefmt.pct(pc) + ")</span>"
             else:
                 chg = '<span id="nc-chg"></span>'
             out["nc"] = ('<div class="nc-glance" id="nc-glance">Dec \'26 new crop: <strong id="nc-price">$' +
@@ -1163,8 +1150,7 @@ def futures_hero_seeds(page, prices):
             h = "Nov '26 new crop: <strong>$" + grain_dollars(nq) + "</strong>"
             np_ = nq.get("pctChange")
             if np_ is not None and not nq.get("roll"):
-                h += (' <span class="' + ("up" if np_ >= 0 else "dn") + '">(' +
-                      ("+" if np_ > 0 else ("\u2212" if np_ < 0 else "")) + _fixed(abs(float(np_)), 1) + "%)</span>")
+                h += (' <span class="' + ("up" if np_ >= 0 else "dn") + '">(' + pricefmt.pct(np_) + ")</span>")
             out["nc"] = '<div class="nc-line" id="nc-line">' + h + "</div>"
         else:
             out["nc"] = '<div class="nc-line" id="nc-line" style="display:none"></div>'
@@ -1176,7 +1162,7 @@ def futures_hero_seeds(page, prices):
         d26 = q.get("wheat-dec26")
         if d26 and d26.get("close") is not None:
             pc = d26.get("pctChange")
-            chg = (" (" + ("+" if pc >= 0 else "\u2212") + _fixed(abs(float(pc)), 1) + "%)") if pc is not None else ""
+            chg = (" (" + pricefmt.pct(pc) + ")") if pc is not None else ""
             out["bench"] = ('<div class="benchline" id="benchline">Dec \'26 (deferred): <strong>$' + grain_dollars(d26) +
                             "</strong>" + chg + ", winter wheat new-crop is July</div>")
         else:
