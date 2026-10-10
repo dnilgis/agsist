@@ -146,12 +146,6 @@
    "pitch": "Your name beside the spray forecast. One category-exclusive slot."
   },
   {
-   "id": "storage-crunch",
-   "page": "/storage-crunch",
-   "name": "Storage Crunch",
-   "pitch": "A fit for anyone who sells bins, storage or carry. One category-exclusive slot."
-  },
-  {
    "id": "tools",
    "page": "/tools",
    "name": "All Tools",

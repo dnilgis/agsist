@@ -35,7 +35,7 @@ CADENCE = {
     "/": 1,
     "/markets": 1,
     "/cash-bids": 1,
-    "/cash-bids-national": 1,
+    "/basis": 1,          # state basis baked in by build_cash_bid_pages.py
     "/daily": 1,
     "/corn-futures-prices": 1,
     "/soybean-futures-prices": 1,

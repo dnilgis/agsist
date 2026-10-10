@@ -13,7 +13,7 @@ that exists in this checkout)
             Any other top-level page that is indexable and not listed here is
             added with its <title>, and named on stderr so it gets a proper
             entry.
-  states    basis/, rent/, yield/, hail-map/, cash-bids/<state>/,
+  states    rent/, yield/, hail-map/, cash-bids/<state>/,
             farmland-atlas/<state>/ pages that exist and are not noindex
   towns     cash-bids/<state>/<town>.html (title "Cash Grain Bids in X, ST")
   counties  farmland-atlas/data/counties-index.json, kept only where the page
@@ -73,12 +73,10 @@ PAGES = [
     ("/wheat-futures-prices", "Wheat futures", "CBOT and KC wheat quotes", "wheat futures srw hrw kc kansas city zw ke price"),
     ("/cattle-futures-prices", "Cattle futures", "Live and feeder cattle", "cattle live feeder feeders futures cme le gf beef steers"),
     ("/milk-prices", "Milk prices", "How the milk check is priced", "milk dairy class iii class iv check price futures dc cheese"),
-    ("/basis", "Basis vs normal", "Is basis weak or strong", "basis normal weak strong regions"),
+    ("/basis", "Basis by state and vs normal", "Your state's basis, USDA regions, every state", "basis normal weak strong regions state states national storage crunch bins"),
     ("/cash-bids", "Cash bids near you", "Elevator bids by ZIP", "cash bids elevator elevators prices near me zip local grain bid"),
-    ("/cash-bids-national", "National basis by state", "Basis in every state", "national basis state states cash bids"),
-    ("/elevators", "Elevator coverage map", "Which elevators we read", "elevators coverage map network boards"),
+    ("/elevators", "For elevators: coverage and claim your board", "Which elevators we read, claim yours", "elevators coverage map network boards claim board elevator manager"),
     ("/cot", "COT report", "What the funds hold", "cot cftc commitment traders funds managed money positions"),
-    ("/storage-crunch", "Storage crunch", "Grain grown vs storage", "storage bins space crunch capacity"),
     ("/ag-odds", "Prediction markets", "Daily odds board", "odds prediction markets kalshi polymarket bets"),
     ("/tariffs", "Tariff tracker", "Trade policy and grain", "tariffs trade china exports policy"),
     ("/farm-bill", "Farm bill", "Status and the money", "farm bill congress policy payments arc plc"),
@@ -130,8 +128,7 @@ SKIP_ROOT = {"404.html", "sponsor-apply.html"}
 
 # state page sections: dir, url pattern, title suffix, sub, keywords
 STATE_SECTIONS = [
-    ("cash-bids/{slug}/index.html", "/cash-bids/{slug}/", "cash bids by town", "Elevator bids in every town", "cash bids elevators towns grain prices"),
-    ("basis/{slug}.html", "/basis/{slug}", "basis today", "Corn and soybean basis", "basis corn soybean elevators"),
+    ("cash-bids/{slug}/index.html", "/cash-bids/{slug}/", "cash bids and basis", "Bids and basis at every elevator", "cash bids basis elevators towns grain prices corn soybean"),
     ("rent/{slug}.html", "/rent/{slug}", "cash rent by county", "Rent per acre", "cash rent rents rental county acre land"),
     ("yield/{slug}.html", "/yield/{slug}", "yield by year", "Corn and soybean yields", "yield yields corn soybean history bushels"),
     ("hail-map/{slug}.html", "/hail-map/{slug}", "hail map", "Worst hail counties", "hail storm map counties"),

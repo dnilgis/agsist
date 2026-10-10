@@ -177,7 +177,7 @@
     },
     {
      "tag": "fixed",
-     "page": "/storage-crunch",
+     "page": "/basis#storage",
      "name": "The on-farm share column showed the off-farm share",
      "text": "The column headed on-farm share was printing the other half. Iowa read 43% and is 57%: 2.05 billion bushels of on-farm space out of 3.59 billion in total. All states are corrected."
     },
@@ -905,7 +905,7 @@
     },
     {
      "tag": "fixed",
-     "page": "/storage-crunch",
+     "page": "/basis#storage",
      "name": "Storage Crunch",
      "text": "USDA publishes no separate on-farm bin capacity for ten states, and this page was treating that blank as zero, which made those states look like they had almost no storage and put South Carolina at the top of the crunch list at 3.46 times. That was our arithmetic, not South Carolina's grain. Those states now show elevator capacity only and sit out of the ranking, and the count of states over 1.0 drops from 14 to 7."
     },

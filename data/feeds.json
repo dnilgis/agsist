@@ -195,27 +195,25 @@
    "why_quiet": null
   },
   {
-   "path": "data/basis-map.json",
+   "path": "data/basis-states.json",
    "pages": [
-    "cash-bids-national.html"
+    "basis.html"
    ],
    "written_by": [
-    "Build National Basis Map",
-    "Fetch Grain Bids"
+    "cash-bid-pages"
    ],
    "touched_by": [
-    "Build National Basis Map",
-    "Fetch Grain Bids"
+    "cash-bid-pages"
    ],
-   "cadence": "about every 60 minutes",
+   "cadence": "1 launch every day at about 7pm Central",
    "curated": false,
    "planned": false,
    "external": false,
    "url": null,
    "crons": [
-    "7 * * * *"
+    "19 */6 * * *"
    ],
-   "max_gap_hours": 1.0,
+   "max_gap_hours": 6.0,
    "quiet": null,
    "why_quiet": null
   },
@@ -233,7 +231,6 @@
     "Fetch Grain Bids"
    ],
    "touched_by": [
-    "Build National Basis Map",
     "Fetch Grain Bids"
    ],
    "cadence": "about every 60 minutes",
@@ -457,7 +454,6 @@
     "Build Price Stats (5-year percentile)",
     "Rebuild Feed Manifest",
     "Rebuild Call Scorecard",
-    "state-basis-pages",
     "WASDE watch \u2014 grade the report as it lands",
     "Build What's Priced In"
    ],
@@ -601,6 +597,30 @@
     "11 14 * * 2"
    ],
    "max_gap_hours": 168.0,
+   "quiet": null,
+   "why_quiet": null
+  },
+  {
+   "path": "data/elevator-counts.json",
+   "pages": [
+    "index.html"
+   ],
+   "written_by": [
+    "cash-bid-pages"
+   ],
+   "touched_by": [
+    "cash-bid-pages",
+    "Freshness \u2014 seed static prices, dateModified, sitemap lastmod"
+   ],
+   "cadence": "1 launch every day at about 7pm Central",
+   "curated": false,
+   "planned": false,
+   "external": false,
+   "url": null,
+   "crons": [
+    "19 */6 * * *"
+   ],
+   "max_gap_hours": 6.0,
    "quiet": null,
    "why_quiet": null
   },
@@ -1616,29 +1636,6 @@
    "url": null,
    "crons": [
     "33 12 15 * *"
-   ],
-   "max_gap_hours": null,
-   "quiet": null,
-   "why_quiet": null
-  },
-  {
-   "path": "data/storage/storage.json",
-   "pages": [
-    "storage-crunch.html"
-   ],
-   "written_by": [
-    "storage"
-   ],
-   "touched_by": [
-    "storage"
-   ],
-   "cadence": "1 launch every day at about 2am Central",
-   "curated": false,
-   "planned": false,
-   "external": false,
-   "url": null,
-   "crons": [
-    "35 7 20 1 *"
    ],
    "max_gap_hours": null,
    "quiet": null,

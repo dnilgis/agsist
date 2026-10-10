@@ -552,8 +552,8 @@ def build_state_page(name, inp, ctx):
         links.append(f'<a href="/farmland-atlas/{sl}/">{name} Farmland Atlas: every county</a>')
     if os.path.exists(os.path.join(root, "rent", f"{sl}.html")):
         links.append(f'<a href="/rent/{sl}">{name} cash rent by county</a>')
-    if os.path.exists(os.path.join(root, "basis", f"{sl}.html")):
-        links.append(f'<a href="/basis/{sl}">{name} cash basis today</a>')
+    if os.path.exists(os.path.join(root, "cash-bids", sl, "index.html")):
+        links.append(f'<a href="/cash-bids/{sl}/#basis">{name} cash bids and basis today</a>')
     if os.path.exists(os.path.join(root, "arc-plc", f"{sl}.html")):
         links.append(f'<a href="/arc-plc/{sl}">{name} ARC or PLC by county</a>')
     cloud = " &middot; ".join(f'<a href="/yield/{slug(o)}">{esc(o)}</a>' for o in ctx["all_states"] if o != name)
