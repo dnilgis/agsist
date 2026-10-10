@@ -6,6 +6,10 @@
   <meta name="theme-color" content="#0a0c0d">
   <script>/* agsist-theme-early: saved theme, else the device's, set before first paint so pages do not flash the wrong color. loader.js applies the same rule. */try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.setAttribute('data-theme',_t);}catch(e){}</script><script>/* agsist-ga-guard 2026-10-09: Google Analytics loads only when the browser sends no Global Privacy Control signal and the off switch on /privacy is not set, and only once the page is shown (a page loaded ahead in the background is not a visit). dataLayer and gtag always exist, so page code that calls them never throws. */(function(w,d,n){var off=false,v,i,s;w.dataLayer=w.dataLayer||[];if(typeof w.gtag!=='function'){w.gtag=function(){w.dataLayer.push(arguments);};}try{off=w.localStorage.getItem('agsist-ga-off')==='1';}catch(e){}if(n.globalPrivacyControl===true){off=true;}w.agsistGaOff=off;w.gtag('set','allow_google_signals',false);w.gtag('set','allow_ad_personalization_signals',false);if(off){return;}i=function(){s=d.createElement('script');s.async=true;s.src='https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H';(d.head||d.documentElement).appendChild(s);};if(d.prerendering){d.addEventListener('prerenderingchange',i,{once:true});}else{i();}})(window,document,navigator);</script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');function gaEvent(n,p){try{gtag('event',n,p||{});}catch(e){}}</script>
+  <!-- static-nav:fonts (scripts/inject_static_nav.py) -->
+  <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/jetbrains-mono-var.woff2" as="font" type="font/woff2" crossorigin>
+  <!-- /static-nav:fonts -->
   <link rel="preload" href="/components/styles.css?v=23" as="style">
   <link rel="stylesheet" href="/components/styles.css?v=23">
   <link rel="stylesheet" href="/components/asof.css?v=1">
@@ -93,6 +97,16 @@
     .cbt-list a:hover{color:var(--gold)}
     .cbt-cloud{font-size:.82rem;line-height:2;color:var(--text-muted)}
     .cbt-cloud a{color:var(--text-muted);text-decoration:none;border-bottom:1px dotted var(--border)}
+    .cbt-hero{display:flex;flex-wrap:wrap;gap:12px;margin:12px 0}
+    .cbt-stat{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 14px;min-width:220px;flex:1}
+    .cbt-stat .v{font-family:'JetBrains Mono',monospace;font-size:1.4rem;color:var(--text)}
+    .cbt-stat .l{font-size:.85rem;color:var(--text-muted);margin-top:2px;line-height:1.4}
+    .cbt-stat .s{font-size:.85rem;color:var(--text-muted);margin-top:6px;line-height:1.55}
+    .cbt-stat .s b{color:var(--text)}
+    h3{font-size:.98rem;margin:16px 0 4px;color:var(--text)}
+    .cbt-more{display:inline-block;margin:8px 0 4px;padding:9px 14px;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--gold);font-size:.92rem;cursor:pointer;font:inherit}
+    .cbt-more[hidden]{display:none}
+    @media (max-width:640px){.cbt-stat{min-width:0;flex-basis:100%}.cbt-full-t td,.cbt-full-t th{padding:6px 3px}}
   </style>
 </head>
 <body>
@@ -129,7 +143,7 @@
   confirmed on the latest read, the price was posted in the last 72 hours, and its delivery period
   has not ended. This page is a snapshot and is rebuilt through the day; the <a href="/cash-bids?zip=56265">live page</a>
   has the newest board and nearby elevators.</div>
-  <p class="cbt-sub"><a href="/cash-bids/minnesota/">Every Minnesota town</a> &middot; <a href="/basis/minnesota">Minnesota basis today</a></p>
+  <p class="cbt-sub"><a href="/cash-bids/minnesota/">Every Minnesota town</a> &middot; <a href="/cash-bids/minnesota/#basis">Minnesota basis today</a></p>
 </main>
 <div id="site-footer">
 <!-- static-nav:footer (scripts/inject_static_nav.py; source components/footer-fallback.html) -->

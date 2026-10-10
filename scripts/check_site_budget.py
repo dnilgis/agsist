@@ -51,12 +51,6 @@ SET_PAGE_KB = 150     # cap for any one page in a generated set
 # Known offenders with a dated reason. Each entry is a debt, not a pass:
 # remove it when the page is fixed. The check prints them every run.
 PAGE_EXCEPTIONS = {
-    "basis/kansas.html": "basis state pages move the elevator table to on-demand data in the 2026-10 consolidation",
-    "basis/nebraska.html": "basis state pages move the elevator table to on-demand data in the 2026-10 consolidation",
-    "basis/illinois.html": "basis state pages move the elevator table to on-demand data in the 2026-10 consolidation",
-    "basis/minnesota.html": "basis state pages move the elevator table to on-demand data in the 2026-10 consolidation",
-    "basis/south-dakota.html": "basis state pages move the elevator table to on-demand data in the 2026-10 consolidation",
-    "basis/iowa.html": "basis state pages move the elevator table to on-demand data in the 2026-10 consolidation",
 }
 
 SKIP_DIRS = {".git", ".github", "node_modules", "__pycache__", ".claude"}

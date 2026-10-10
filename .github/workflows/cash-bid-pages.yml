@@ -7,6 +7,11 @@ name: cash-bid-pages
 # scripts/fetch_bids.py reads). No Barchart key is passed to this job, the
 # script never opens data/bids.json, and no futures price is printed.
 #
+# Since 2026-10-10 the state index is also the state's basis page (/basis/<state>
+# forwards to it): the basis comes from scripts/basis_method.py, the full
+# elevator table is data/state-basis/<ST>.json, every state's headline is
+# data/basis-states.json, and /basis gets the state answer and ranking baked in.
+#
 # MACHINE-OWNED: edit scripts/build_cash_bid_pages.py, never cash-bids/*/*.html.
 # It also rewrites the og:/twitter: description of cash-bids.html (the link
 # preview) with the network's counts and time; nothing else in that file.
@@ -93,7 +98,11 @@ jobs:
       - name: Selftest (gate)
         run: python scripts/build_cash_bid_pages.py --selftest
 
+      # The state pages carry the state's basis with its change in a week, from
+      # the bids repo's merged-all.json about 7 days back (one GitHub API call).
       - name: Build pages from the network feed
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: python scripts/build_cash_bid_pages.py --print-new /tmp/new-urls.txt
 
       # The site search index reads these town pages (and the atlas, state and
@@ -110,7 +119,8 @@ jobs:
           git config user.name "AGSIST Bot"
           git config user.email "bot@agsist.com"
           # cash-bids.html: only its og:/twitter: description (network counts and time) is rewritten
-          git add -A cash-bids sitemap-cash-bids.xml cash-bids.html data/search-index.json data/search-elevators.json
+          # basis.html: only its SEED:statepick and SEED:staterank blocks (the state basis) are rewritten
+          git add -A cash-bids sitemap-cash-bids.xml cash-bids.html basis.html data/state-basis data/basis-states.json data/elevator-counts.json data/search-index.json data/search-elevators.json
           if git diff --staged --quiet; then echo "no change"; echo "changed=0" >> "$GITHUB_OUTPUT"; exit 0; fi
           git diff --staged --shortstat
           git commit -q -m "pages: rebuild /cash-bids town pages from the elevator network"
