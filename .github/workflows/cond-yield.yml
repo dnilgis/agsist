@@ -71,6 +71,8 @@ jobs:
           # verdict module at the top reads the fresh JSON live — which is how
           # the page ended up contradicting itself by three weeks.
           python3 scripts/build_condyield.py || true
+          # the model and record blocks at the top of the page are baked
+          python3 scripts/bake_crop_size.py || true
           git add -A data/cond-yield data/yield-nowcast.json data/nowcast-direction.json 2>/dev/null || true
           git add conditions-yield.html 2>/dev/null || true
           if git diff --cached --quiet; then echo "no change"; exit 0; fi

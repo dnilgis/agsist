@@ -23,6 +23,7 @@ on:
       - 'data/yield-benchmarks.json'
       - 'scripts/build_yield_benchmarks.py'
       - 'conditions-yield.html'
+      - 'scripts/bake_crop_size.py'
   # Daily, off the hour. The nowcast lands Tuesdays 03:18 UTC, so this picks up
   # a fresh model number the same morning and every other day is a no-op that
   # commits nothing.
@@ -86,6 +87,7 @@ jobs:
           python scripts/usda_current.py --selftest
           python scripts/build_yield_benchmarks.py --selftest
           python scripts/bake_seo.py --selftest
+          python scripts/bake_crop_size.py --selftest
 
       # Refuses to write on an unsourced forecast, and refuses if it disagrees
       # with data/crop-tour.json about a figure both pages print. A red X here
@@ -95,6 +97,8 @@ jobs:
           python scripts/build_yield_benchmarks.py
           # the page's title and description name the forecasts in this file
           python scripts/bake_seo.py --page conditions-yield.html
+          # and the forecast table, model and record are baked into the page
+          python scripts/bake_crop_size.py
 
       - name: Commit
         run: |

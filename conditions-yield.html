@@ -199,172 +199,23 @@ html[data-theme="light"] #cyn-record [style*="opacity:.85"]{opacity:1!important}
   the Pro Farmer tour, DTN and our own ratings model, each with the date it was said and a link to where. Nobody is
   scored until USDA prints the January final. How much the weekly ratings are worth, state by state, is in the research
   section further down.</p>
-  <!-- WHAT EVERYONE ELSE SAYS. Additive: hidden until data/yield-panel.json
-       loads, so the page before the first build is the page that was there
-       yesterday. The numbers are not computed here — scripts/build_yield_benchmarks.py
-       owns every one of them and the panel file carries them ready to print. -->
-  <section id="cy-panel" style="display:none;background:#0d1112;border:1px solid #1a1f20;border-radius:var(--card-r);padding:18px 20px;margin:18px 0">
-    <div style="font-size:0.755rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:7px">Every 2026 forecast, low to high</div>
-    <div id="cyp-verdict" style="font-size:0.9rem;color:#e6ebe9;line-height:1.6;margin-bottom:12px"></div>
-    <div id="cyp-crops" style="display:grid;gap:14px"></div>
-    <div id="cyp-foot" style="font-size:0.795rem;color:#8a948f;line-height:1.65;margin-top:12px"></div>
-  </section>
-  <script>
-  (function(){
-    fetch('/data/yield-panel.json').then(function(r){return r.ok?r.json():null;}).then(function(d){
-      var wrap=document.getElementById('cyp-crops'); if(!wrap)return;
-      if(!d||!d.crops){ panelFail(); return; }
-      var LABEL={corn:'Corn',soybeans:'Soybeans'};
-      
-      /* A GAP IS INFORMATION. A forecaster who published no number for a crop
-         is not in that crop's table at all, and the count under it says how
-         many are — rather than a blank row a reader reads as a zero. */
-      var blocks=[],verdicts=[];
-      Object.keys(LABEL).forEach(function(crop){
-        var c=d.crops[crop]; if(!c||!c.rows||!c.rows.length)return;
-        var sp=c.spread||{};
-        var rows=c.rows.map(function(r){
-          var band=(r.low!=null&&r.high!=null)?' <span style="color:#8a948f">'+r.low.toFixed(1)+'–'+r.high.toFixed(1)+'</span>':'';
-          var when=r.as_of?'<span style="color:#8a948f">'+esc(r.as_of)+'</span>':'<span style="color:#8a948f">no date published</span>';
-          /* USDA'S ROW SORTS INTO THE COLUMN WITH EVERYONE ELSE — its print is a
-             forecast too, and pinning it under a sorted table made the table
-             read as unsorted. Its colour marks it apart without moving it. */
-          var col=r.ours?'#d4a23f':r.official?'#b9c2bd':'#e6ebe9';
-          var name=r.source?'<a href="'+esc(r.source)+'" style="color:'+col+';text-decoration:underline;text-underline-offset:2px">'+esc(r.name)+'</a>':'<span style="color:'+col+'">'+esc(r.name)+'</span>';
-          return '<div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-family:\'JetBrains Mono\',monospace;font-size:0.775rem;padding:5px 0;border-top:1px solid #171c1d'
-            +(r.ours?';background:rgba(212,162,63,.06)':'')+'">'
-            +'<span>'+(r.ours?'▸ ':'')+name+'</span>'
-            +'<span><b style="color:'+col+'">'+r.value.toFixed(1)+'</b>'+band+' &middot; '+when+'</span></div>';
-        }).join('');
-        blocks.push('<div><div style="font-size:0.82rem;color:#e6ebe9;font-weight:600;margin-bottom:2px">'+LABEL[crop]
-          +' <span style="color:#8a948f;font-weight:400">'+esc(c.unit||'')+'</span></div>'+rows
-          +'<div style="font-size:0.755rem;color:#8a948f;margin-top:6px">'+(sp.n||c.rows.length)+' forecasts on the table'
-          +(sp.spread!=null?', '+sp.spread.toFixed(1)+' apart end to end':'')+'.</div></div>');
-        if(sp.ours!=null){
-          verdicts.push(LABEL[crop].toLowerCase()+': ours is '
-            +(sp.highest?'the highest of the '+sp.n:sp.lowest?'the lowest of the '+sp.n:'#'+sp.rank+' of '+sp.n)
-            +(sp.spread!=null&&sp.spread>0?', '+Math.abs(sp.ours_vs_low).toFixed(1)+' over the lowest':''));
-        }
-      });
-      if(!blocks.length){ panelFail(); return; }
-      wrap.innerHTML=blocks.join('');
-      /* THE VERDICT IN WORDS, ABOVE THE NUMBERS. Being the outlier is the
-         thing a reader should take away, and it should not need arithmetic. */
-      var v=document.getElementById('cyp-verdict');
-      if(v)v.textContent=verdicts.length
-        ? 'Read against the other published forecasts: '+verdicts.join('; ')+'.'
-        : 'Other published forecasts, beside ours.';
-      var foot=document.getElementById('cyp-foot');
-      if(foot){
-        var bits=['Everything here was published by somebody else and is linked to where they published it. Our own figure is read from the nowcast file above, not typed in beside it, so the two cannot drift apart.'];
-        var graded=Object.keys(LABEL).some(function(k){return d.crops[k]&&d.crops[k].graded;});
-        bits.push(graded?'Scored against USDA’s January final, misses included.':'Nobody is scored until USDA prints the January final. Being early is not the same as being right, and this panel will not pretend otherwise.');
-        if(d.cross_checked&&d.cross_checked.length)
-          bits.push('Cross-checked against the crop tour page so the two cannot print different numbers for the same figure ('+d.cross_checked.join(', ')+').');
-        foot.textContent=bits.join(' ');
-      }
-      document.getElementById('cy-panel').style.display='block';
-    }).catch(function(){ panelFail(); });
-    function panelFail(){
-      var v=document.getElementById('cyp-verdict'), sec=document.getElementById('cy-panel');
-      if(v)v.textContent='Forecast comparison data did not load';
-      if(sec)sec.style.display='block';
-    }
-  })();
-  </script>
+  <!-- EVERY FORECAST. Baked from data/yield-panel.json by scripts/bake_crop_size.py;
+       never edit by hand. -->
+  <!-- CS:panel --><section id="cy-panel" style="background:#0d1112;border:1px solid #1a1f20;border-radius:var(--card-r);padding:18px 20px;margin:18px 0"><div style="font-size:0.755rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:7px">Every 2026 forecast, low to high</div><div id="cyp-verdict" style="font-size:0.9rem;color:#e6ebe9;line-height:1.6;margin-bottom:12px">Read against the other published forecasts: corn: ours is number 3 of 4, low to high, 7.4 over the lowest; soybeans: ours is the highest of the 4, 1.4 over the lowest.</div><div id="cyp-crops" style="display:grid;gap:14px"><div><div style="font-size:0.82rem;color:#e6ebe9;font-weight:600;margin-bottom:2px">Corn <span style="color:#8a948f;font-weight:400">bu/acre</span></div><div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-family:'JetBrains Mono',monospace;font-size:0.775rem;padding:5px 0;border-top:1px solid #171c1d"><span><a href="https://www.profarmer.com/news/pro-farmer-estimates-2026-u-s-corn-crop-15-344-billion-bushels-soybeans-4-572-billion-bushels" style="color:#e6ebe9;text-decoration:underline;text-underline-offset:2px">Pro Farmer Crop Tour</a></span><span><b style="color:#e6ebe9">173.2</b> <span style="color:#8a948f">171.5&ndash;175.0</span> &middot; <span style="color:#8a948f">2026-08-21</span></span></div><div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-family:'JetBrains Mono',monospace;font-size:0.775rem;padding:5px 0;border-top:1px solid #171c1d"><span><a href="https://www.dtnpf.com/agriculture/web/ag/crops/article/2026/08/10/dtn-digital-yield-tour-estimates-us" style="color:#e6ebe9;text-decoration:underline;text-underline-offset:2px">DTN Digital Yield Tour</a></span><span><b style="color:#e6ebe9">178.5</b> &middot; <span style="color:#8a948f">2026-08-10</span></span></div><div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-family:'JetBrains Mono',monospace;font-size:0.775rem;padding:5px 0;border-top:1px solid #171c1d;background:rgba(212,162,63,.06)"><span>&#9656; <a href="/data/yield-nowcast.json" style="color:#d4a23f;text-decoration:underline;text-underline-offset:2px">AGSIST nowcast</a></span><span><b style="color:#d4a23f">180.6</b> <span style="color:#8a948f">173.7&ndash;187.5</span> &middot; <span style="color:#8a948f">2026-10-04</span></span></div><div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-family:'JetBrains Mono',monospace;font-size:0.775rem;padding:5px 0;border-top:1px solid #171c1d"><span><a href="https://www.usda.gov/oce/commodity/wasde/wasde1026.pdf" style="color:#b9c2bd;text-decoration:underline;text-underline-offset:2px">USDA, October WASDE</a></span><span><b style="color:#b9c2bd">181.2</b> &middot; <span style="color:#8a948f">2026-10-09</span></span></div><div style="font-size:0.755rem;color:#8a948f;margin-top:6px">4 forecasts on the table, 8.0 apart end to end.</div></div><div><div style="font-size:0.82rem;color:#e6ebe9;font-weight:600;margin-bottom:2px">Soybeans <span style="color:#8a948f;font-weight:400">bu/acre</span></div><div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-family:'JetBrains Mono',monospace;font-size:0.775rem;padding:5px 0;border-top:1px solid #171c1d"><span><a href="https://www.dtnpf.com/agriculture/web/ag/crops/article/2026/08/10/dtn-digital-yield-tour-estimates-us" style="color:#e6ebe9;text-decoration:underline;text-underline-offset:2px">DTN Digital Yield Tour</a></span><span><b style="color:#e6ebe9">52.1</b> &middot; <span style="color:#8a948f">2026-08-10</span></span></div><div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-family:'JetBrains Mono',monospace;font-size:0.775rem;padding:5px 0;border-top:1px solid #171c1d"><span><a href="https://www.usda.gov/oce/commodity/wasde/wasde1026.pdf" style="color:#b9c2bd;text-decoration:underline;text-underline-offset:2px">USDA, October WASDE</a></span><span><b style="color:#b9c2bd">53.1</b> &middot; <span style="color:#8a948f">2026-10-09</span></span></div><div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-family:'JetBrains Mono',monospace;font-size:0.775rem;padding:5px 0;border-top:1px solid #171c1d"><span><a href="https://www.profarmer.com/news/pro-farmer-estimates-2026-u-s-corn-crop-15-344-billion-bushels-soybeans-4-572-billion-bushels" style="color:#e6ebe9;text-decoration:underline;text-underline-offset:2px">Pro Farmer Crop Tour</a></span><span><b style="color:#e6ebe9">53.3</b> <span style="color:#8a948f">52.2&ndash;54.4</span> &middot; <span style="color:#8a948f">2026-08-21</span></span></div><div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-family:'JetBrains Mono',monospace;font-size:0.775rem;padding:5px 0;border-top:1px solid #171c1d;background:rgba(212,162,63,.06)"><span>&#9656; <a href="/data/yield-nowcast.json" style="color:#d4a23f;text-decoration:underline;text-underline-offset:2px">AGSIST nowcast</a></span><span><b style="color:#d4a23f">53.5</b> <span style="color:#8a948f">51.1&ndash;55.9</span> &middot; <span style="color:#8a948f">2026-10-04</span></span></div><div style="font-size:0.755rem;color:#8a948f;margin-top:6px">4 forecasts on the table, 1.4 apart end to end.</div></div></div><div id="cyp-foot" style="font-size:0.795rem;color:#8a948f;line-height:1.65;margin-top:12px">Everything here was published by somebody else and is linked to where they published it. Our own figure is read from the nowcast file below, not typed in beside it, so the two cannot drift apart. Nobody is scored until USDA prints the January final. Being early is not the same as being right, and this panel will not pretend otherwise. Cross-checked against the crop tour page so the two cannot print different numbers for the same figure (USDA corn, USDA soybeans, Pro Farmer corn).</div></section><!-- /CS:panel -->
 
-  <section id="cy-nowcast" style="display:none;background:linear-gradient(135deg,#101415 0%,rgba(212,162,63,.05) 100%);border:2px solid rgba(212,162,63,.35);border-radius:12px;padding:18px 20px;margin:18px 0">
+  <section id="cy-nowcast" style="background:linear-gradient(135deg,#101415 0%,rgba(212,162,63,.05) 100%);border:2px solid rgba(212,162,63,.35);border-radius:12px;padding:18px 20px;margin:18px 0">
     <div style="display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:10px">
       <div style="font-family:'JetBrains Mono',monospace;font-size:0.77rem;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:var(--gold)">AGSIST Yield Nowcast: where these fits point right now</div>
-      <div style="font-family:'JetBrains Mono',monospace;font-size:0.755rem;color:#8a948f" id="cyn-week"></div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:0.755rem;color:#8a948f" id="cyn-week"><!-- CS:week -->ratings week ending 2026-10-04 &middot; updates Tuesdays<!-- /CS:week --></div>
     </div>
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px">
-      <div style="background:#0d1112;border:1px solid #1a1f20;border-radius:10px;padding:12px 14px" id="cyn-corn"></div>
-      <div style="background:#0d1112;border:1px solid #1a1f20;border-radius:10px;padding:12px 14px" id="cyn-beans"></div>
+      <div style="background:#0d1112;border:1px solid #1a1f20;border-radius:10px;padding:12px 14px" id="cyn-corn"><!-- CS:corn --><div style="font-size:0.755rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#8a948f;margin-bottom:4px">Corn: 2026 national yield</div><div style="font-family:'JetBrains Mono',monospace;font-size:1.9rem;font-weight:800;color:#e6ebe9;line-height:1">180.6 <span style="font-size:.8rem;font-weight:400;color:#8a948f">bu/ac</span></div><div style="font-family:'JetBrains Mono',monospace;font-size:0.78rem;color:#8a948f;margin-top:5px">80% band &plusmn;6.9 &middot; trend 188.7 (2010&ndash;2025 finals)</div><div style="font-size:0.787rem;margin-top:5px"><span style="color:#e0685f;font-weight:700">&#9660; 8.1 below trend</span></div><div style="font-size:0.765rem;color:#8a948f;margin-top:5px">backtest average, not this week&rsquo;s number (earlier years only, 2011&ndash;2024): MAE 4.2 vs 5.5 trend-only (24% better), n=12 yrs, 18 states</div><!-- /CS:corn --></div>
+      <div style="background:#0d1112;border:1px solid #1a1f20;border-radius:10px;padding:12px 14px" id="cyn-beans"><!-- CS:beans --><div style="font-size:0.755rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#8a948f;margin-bottom:4px">Soybeans: 2026 national yield</div><div style="font-family:'JetBrains Mono',monospace;font-size:1.9rem;font-weight:800;color:#e6ebe9;line-height:1">53.5 <span style="font-size:.8rem;font-weight:400;color:#8a948f">bu/ac</span></div><div style="font-family:'JetBrains Mono',monospace;font-size:0.78rem;color:#8a948f;margin-top:5px">80% band &plusmn;2.4 &middot; trend 53.9 (2010&ndash;2025 finals)</div><div style="font-size:0.787rem;margin-top:5px"><span style="color:#b9c2bd;font-weight:700">&asymp; on trend</span></div><div style="font-size:0.765rem;color:#8a948f;margin-top:5px">backtest average, not this week&rsquo;s number (earlier years only, 2011&ndash;2024): MAE 1.3 vs 2.4 trend-only (46% better), n=13 yrs, 18 states</div><!-- /CS:beans --></div>
     </div>
-    <div id="cyn-record" style="display:none;background:#0d1112;border:1px solid #1a1f20;border-radius:10px;padding:12px 14px;margin-top:12px"></div>
+    <!-- CS:record --><div id="cyn-record" style="background:#0d1112;border:1px solid #1a1f20;border-radius:10px;padding:12px 14px;margin-top:12px"><div style="font-size:0.755rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:7px">On the record: direction vs USDA&rsquo;s next print</div><div style="font-size:0.78rem;color:#8a948f;margin-bottom:8px">Locked from the live model before each WASDE, graded by subtraction after it. Record so far: <b style="color:#e6ebe9">3 of 6</b> correct (3 reports; 2 calls on a defective input, graded as called). Corn and soybeans on one report come from one model run, so the independent sample is the number of reports.</div><div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;font-family:'JetBrains Mono',monospace;font-size:0.775rem;padding:4px 0;border-top:1px solid #171c1d"><span style="color:#e6ebe9">2026-10-09 beans <b style="color:#5fc28a">&#9650; UP</b> <span style="color:#8a948f">model 53.7 &middot; ratings week of Sep 13 &middot; locked Oct 6 &middot; vs USDA 52.8</span></span><span><span style="color:#8a948f">USDA 52.8 &rarr; 53.1</span> <b style="color:#5fc28a">CORRECT</b></span></div><div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;font-family:'JetBrains Mono',monospace;font-size:0.775rem;padding:4px 0;border-top:1px solid #171c1d"><span style="color:#e6ebe9">2026-10-09 corn <b style="color:#5fc28a">&#9650; UP</b> <span style="color:#8a948f">model 182.6 &middot; ratings week of Sep 13 &middot; locked Oct 6 &middot; vs USDA 178.5</span></span><span><span style="color:#8a948f">USDA 178.5 &rarr; 181.2</span> <b style="color:#5fc28a">CORRECT</b></span></div><div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;font-family:'JetBrains Mono',monospace;font-size:0.775rem;padding:4px 0;border-top:1px solid #171c1d;opacity:.85"><span style="color:#e6ebe9">2026-10-09 beans <b style="color:#5fc28a">&#9650; UP</b> <span style="color:#8a948f">model 53.7 &middot; ratings week of Sep 13 &middot; locked Sep 15 &middot; vs USDA 52.7</span></span><span><span style="color:#8a948f">superseded: locked against 52.7, not the print in force; re-locked 2026-10-06 before the report, same call</span></span></div><div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;font-family:'JetBrains Mono',monospace;font-size:0.775rem;padding:4px 0;border-top:1px solid #171c1d;opacity:.85"><span style="color:#e6ebe9">2026-10-09 corn <b style="color:#5fc28a">&#9650; UP</b> <span style="color:#8a948f">model 182.6 &middot; ratings week of Sep 13 &middot; locked Sep 15 &middot; vs USDA 180.7</span></span><span><span style="color:#8a948f">superseded: locked against 180.7, not the print in force; re-locked 2026-10-06 before the report, same call</span></span></div><div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;font-family:'JetBrains Mono',monospace;font-size:0.775rem;padding:4px 0;border-top:1px solid #171c1d"><span style="color:#e6ebe9">2026-09-11 beans <b style="color:#5fc28a">&#9650; UP</b> <span style="color:#8a948f">model 54.1 &middot; ratings week of Aug 16 &middot; locked Aug 18 &middot; vs USDA 52.7</span></span><span><span style="color:#8a948f">USDA 52.7 &rarr; 52.8</span> <b style="color:#5fc28a">CORRECT</b></span></div><div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;font-family:'JetBrains Mono',monospace;font-size:0.775rem;padding:4px 0;border-top:1px solid #171c1d"><span style="color:#e6ebe9">2026-09-11 corn <b style="color:#5fc28a">&#9650; UP</b> <span style="color:#8a948f">model 182.6 &middot; ratings week of Aug 16 &middot; locked Aug 18 &middot; vs USDA 180.7</span></span><span><span style="color:#8a948f">USDA 180.7 &rarr; 178.5</span> <b style="color:#e0685f">INCORRECT</b></span></div><div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;font-family:'JetBrains Mono',monospace;font-size:0.775rem;padding:4px 0;border-top:1px solid #171c1d"><span style="color:#e6ebe9">2026-08-12 beans <b style="color:#5fc28a">&#9650; UP</b> <span style="color:#8a948f">model 53.8 &middot; ratings week of Aug 9 &middot; locked Aug 11 &middot; vs USDA 53.0</span></span><span><span style="color:#8a948f">USDA 53.0 &rarr; 52.7</span> <b style="color:#e0685f">INCORRECT</b> <span style="color:var(--gold)" title="Computed on a history file that carried in-season forecasts as finals; corrected 2026-08-16. Graded as called, not voided.">defective input</span></span></div><div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;font-family:'JetBrains Mono',monospace;font-size:0.775rem;padding:4px 0;border-top:1px solid #171c1d"><span style="color:#e6ebe9">2026-08-12 corn <b style="color:#5fc28a">&#9650; UP</b> <span style="color:#8a948f">model 183.6 &middot; ratings week of Aug 9 &middot; locked Aug 11 &middot; vs USDA 183.0</span></span><span><span style="color:#8a948f">USDA 183.0 &rarr; 180.7</span> <b style="color:#e0685f">INCORRECT</b> <span style="color:var(--gold)" title="Computed on a history file that carried in-season forecasts as finals; corrected 2026-08-16. Graded as called, not voided.">defective input</span></span></div></div><!-- /CS:record -->
     <div style="font-size:0.795rem;color:#8a948f;line-height:1.65;margin-top:10px">Every state&rsquo;s fit on this page, pointed at this week&rsquo;s ratings and weighted by planted acres. The band is the 80th percentile of the model&rsquo;s own misses at this week in a pseudo real-time backtest: each past year is estimated from earlier years only, the way it would have looked that season, never from the years after it. It earns its width from that backtest, and the number of years behind it is printed on each card: a dozen or so, so the band is coarse. The trend is a straight line through every USDA final since 2010. Each weekly number is kept and graded against USDA&rsquo;s final yield in January, misses included.</div>
   </section>
   <aside class="ag-sponsor-ribbon"><span class="ag-sponsor-tag">Sponsor this page</span> Your name beside the ratings and yield record. One category-exclusive slot. <span class="ag-sponsor-price" data-rate="page">$29/mo &middot; first month free</span> <a href="/sponsor-apply?slot=conditions-yield&amp;utm_source=conditions-yield&amp;utm_medium=slot">Put your name here &rarr;</a></aside>
-  <script>
-  (function(){
-    fetch('/data/yield-nowcast.json').then(function(r){return r.ok?r.json():null;}).then(function(d){
-      var box=document.getElementById('cy-nowcast'); if(!box)return;
-      if(!d||!d.crops){ nowcastFail(box); return; }
-      function cell(id,label,c){
-        var el=document.getElementById(id); if(!el||!c)return;
-        var diff=c.nowcast-c.trend;
-        var vs=diff>0.4?'<span style="color:#5fc28a;font-weight:700">\u25B2 '+Math.abs(diff).toFixed(1)+' above trend</span>'
-              :diff<-0.4?'<span style="color:#e0685f;font-weight:700">\u25BC '+Math.abs(diff).toFixed(1)+' below trend</span>'
-              :'<span style="color:#b9c2bd;font-weight:700">\u2248 on trend</span>';
-        el.innerHTML='<div style="font-size:0.755rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#8a948f;margin-bottom:4px">'+label+'</div>'
-          +'<div style="font-family:\'JetBrains Mono\',monospace;font-size:1.9rem;font-weight:800;color:#e6ebe9;line-height:1">'+c.nowcast.toFixed(1)+' <span style="font-size:.8rem;font-weight:400;color:#8a948f">bu/ac</span></div>'
-          +'<div style="font-family:\'JetBrains Mono\',monospace;font-size:0.78rem;color:#8a948f;margin-top:5px">80% band \u00b1'+c.band80.toFixed(1)+' \u00b7 trend '+c.trend.toFixed(1)+(c.trend_window?' ('+c.trend_window.replace('-','\u2013')+' finals)':'')+'</div>'
-          +'<div style="font-size:0.787rem;margin-top:5px">'+vs+'</div>'
-          +'<div style="font-size:0.765rem;color:#8a948f;margin-top:5px">backtest average, not this week\u2019s number'
-          +(c.band_method==='expanding-window'?' (earlier years only'+(c.backtest_window?', '+c.backtest_window.replace('-','\u2013'):'')+')':'')
-          +': MAE '+c.mae.toFixed(1)+' vs '+c.trend_mae.toFixed(1)+' trend-only'+(c.skill_pct!=null?' ('+c.skill_pct+'% better)':'')+', n='+c.backtest_years+' yrs, '+c.states+' states</div>';
-      }
-      cell('cyn-corn','Corn: 2026 national yield',d.crops.corn);
-      cell('cyn-beans','Soybeans: 2026 national yield',d.crops.soybeans);
-      var wk=document.getElementById('cyn-week');
-      if(wk&&d.crops.corn)wk.textContent='ratings week ending '+d.crops.corn.week_ending+' \u00b7 updates Tuesdays';
-      box.style.display='block';
-    }).catch(function(){ var b=document.getElementById('cy-nowcast'); if(b)nowcastFail(b); });
-    function nowcastFail(box){
-      var a=document.getElementById('cyn-corn'), b=document.getElementById('cyn-beans');
-      if(a)a.innerHTML='<div style="font-size:0.9rem;color:#8a948f">Nowcast data did not load</div>';
-      if(b)b.style.display='none';
-      box.style.display='block';
-    }
-
-    // ON THE RECORD: the model's directional call against USDA's next print,
-    // locked before each WASDE and graded by arithmetic after it. The ledger
-    // is append-only and misses stay \u2014 that is the whole product.
-    fetch('/data/nowcast-direction.json').then(function(r){return r.ok?r.json():null;}).then(function(d){
-      if(!d||!d.calls||!d.calls.length)return;
-      var el=document.getElementById('cyn-record'); if(!el)return;
-      var rec=d.record||{graded:0,correct:0,pending:0};
-      // Corn and soybeans locked for one WASDE share one model run and one
-      // report, so the independent sample is the number of reports, not calls.
-      var recLine='First graded call lands with the next report.';
-      if(rec.graded){
-        var bits=[];
-        if(rec.reports!=null)bits.push(rec.reports+(rec.reports===1?' report':' reports'));
-        if(rec.on_defective_input)bits.push(rec.on_defective_input+(rec.on_defective_input===1?' call':' calls')+' on a defective input, graded as called');
-        recLine='Record so far: <b style="color:#e6ebe9">'+rec.correct+' of '+rec.graded+'</b> correct'+(bits.length?' ('+bits.join('; ')+')':'')+'.'
-          +(rec.reports!=null?' Corn and soybeans on one report come from one model run, so the independent sample is the number of reports.':'');
-      }
-      var head='<div style="font-size:0.755rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:7px">On the record: direction vs USDA’s next print</div>'
-        +'<div style="font-size:0.78rem;color:#8a948f;margin-bottom:8px">Locked from the live model before each WASDE, graded by subtraction after it. '+recLine+'</div>';
-      var today=new Date().toISOString().slice(0,10);
-      var MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-      function md(iso){var m=/^(\d{4})-(\d{2})-(\d{2})/.exec(String(iso||''));return m?MON[+m[2]-1]+' '+(+m[3]):String(iso||'');}
-      var rows=d.calls.slice().reverse().map(function(c){
-        var arrow=c.call==='up'?'▲ UP':c.call==='down'?'▼ DOWN':'≈ NO REVISION';
-        var col=c.call==='up'?'#5fc28a':c.call==='down'?'#e0685f':'#b9c2bd';
-        var right, dim=!!c.superseded_by;
-        if(dim){right='<span style="color:#8a948f">superseded: locked against '+c.usda_before+', not the print in force; re-locked '+String(c.superseded_by).replace(/^relock /,'')+' before the report, same call</span>';}
-        else if(c.outcome===null||c.outcome===undefined){
-          right='<span style="color:#8a948f">'+(c.wasde<today?('printed '+c.wasde+', awaiting entry'):('prints '+c.wasde))+'</span>';}
-        else{
-          var ocol=c.outcome==='correct'?'#5fc28a':'#e0685f';
-          right='<span style="color:#8a948f">USDA '+c.usda_before+' → '+c.usda_after+'</span> <b style="color:'+ocol+'">'+c.outcome.toUpperCase()+'</b>'
-            +(c.input_defect?' <span style="color:var(--gold)" title="'+String(c.input_defect).replace(/"/g,'&quot;')+'">defective input</span>':'');
-        }
-        return '<div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;font-family:\'JetBrains Mono\',monospace;font-size:0.775rem;padding:4px 0;border-top:1px solid #171c1d'+(dim?';opacity:.85':'')+'">'
-          +'<span style="color:#e6ebe9">'+c.wasde+' '+(c.crop==='soybeans'?'beans':c.crop)+' <b style="color:'+col+'">'+arrow+'</b>'
-          /* THE LOCK, SAID IN FULL: the number, the ratings week it was read
-             from, and the day it was locked, so a reader can see it came first. */
-          +' <span style="color:#8a948f">model '+c.model+(c.model_week_ending?' \u00b7 ratings week of '+md(c.model_week_ending):'')
-          +(c.locked_on?' \u00b7 locked '+md(c.locked_on):'')+' \u00b7 vs USDA '+c.usda_before+'</span></span>'
-          +'<span>'+right+'</span></div>';
-      }).join('');
-      el.innerHTML=head+rows;
-      el.style.display='block';
-    }).catch(function(){});
-  })();
-  </script>
 
   <details class="cy-fold" id="research">
   <summary><span class="cy-fold-t">Do crop ratings predict yield? The research</span><span class="cy-fold-h">How much the weekly Good+Excellent rating has explained of each state&rsquo;s final yield, every week since 2000.</span></summary>
