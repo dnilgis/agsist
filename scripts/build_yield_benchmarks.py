@@ -301,6 +301,18 @@ def main():
         raise SystemExit(f"{BENCH_PATH} is missing — nothing to build")
     nowcast = _read(NOWCAST_PATH, {})
     tour = _read(TOUR_PATH)
+    # USDA'S CURRENT NUMBER COMES FROM data/wasde.json once that release is
+    # newer than the one typed into yield-benchmarks.json. On 2026-10-10 the
+    # panel still carried September's 178.5 a day after USDA printed 181.2.
+    # The tour file is pointed at the same figure so the cross-check compares
+    # like with like (scripts/usda_current.py).
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    import usda_current
+    cur = usda_current.usda_yields()
+    if usda_current.apply_to_bench(bench, cur):
+        print(f"  USDA current read from data/wasde.json: {cur['label']}, corn {cur.get('corn')}, "
+              f"soybeans {cur.get('soybeans')}")
+    usda_current.apply_to_tour(tour, cur)
     payload = build(bench, nowcast, tour)
     with open(OUT_PATH, "w") as f:
         json.dump(payload, f)

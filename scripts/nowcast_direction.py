@@ -64,6 +64,18 @@ def _load(p, what):
         raise
 
 
+def _usda_bench(croptour_path):
+    """benchmarks.usda from crop-tour.json, brought up to date from
+    data/wasde.json when that release is newer (scripts/usda_current.py).
+    Until 2026-10-10 the grade waited for somebody to retype USDA's number into
+    crop-tour.json; the October calls sat ungraded the day after the print."""
+    import usda_current
+    tour = _load(croptour_path, "crop-tour benchmarks")
+    usda_current.apply_to_tour(tour, usda_current.usda_yields(
+        usda_current.load(str(Path(croptour_path).resolve().parent / "wasde.json"))))
+    return tour["benchmarks"]["usda"]
+
+
 def _ledger():
     if LEDGER.exists():
         return json.loads(LEDGER.read_text())
@@ -120,7 +132,7 @@ def lock(today=None, nowcast_path=NOWCAST, croptour_path=CROPTOUR, ledger=None):
     if nw is None:
         print("[nowcast-dir] lock: WASDE calendar exhausted — revisit annually"); return led, 0
     ncast = _load(nowcast_path, "yield nowcast")
-    bench = _load(croptour_path, "crop-tour benchmarks")["benchmarks"]["usda"]
+    bench = _usda_bench(croptour_path)
     bench_asof = bench.get("as_of")
     pw = usda_dates.prior_wasde(nw)
     if pw and (not bench_asof or date.fromisoformat(bench_asof) < pw):
@@ -208,7 +220,7 @@ def grade(today=None, croptour_path=CROPTOUR, ledger=None):
     corrected row is. Returns (ledger, n_graded)."""
     today = today or date.today()
     led = ledger if ledger is not None else _ledger()
-    bench = _load(croptour_path, "crop-tour benchmarks")["benchmarks"]["usda"]
+    bench = _usda_bench(croptour_path)
     bench_asof = bench.get("as_of")
     n = 0
     for c in led["calls"]:
@@ -373,6 +385,24 @@ def selftest():
         led5, n = grade(date(2026, 10, 10), ct, led5)
         check("(b) superseded rows are never graded; corrected ones are",
               n == 2 and all(c["outcome"] is None for c in led5["calls"] if c.get("superseded_by")))
+
+        # (c) THE GRADE COMES FROM data/wasde.json, NOT A RETYPED FIGURE. The
+        # real Oct 2026 shape: crop-tour.json still says September 178.5 / 52.8;
+        # wasde.json has the Oct 9 print 181.2 / 53.1. Both calls were "up".
+        ct.write_text(json.dumps({"benchmarks": {"usda": {
+            "corn": 178.5, "soy_yield": 52.8, "label": "USDA, September WASDE", "as_of": "2026-09-11"}}}))
+        (td / "wasde.json").write_text(json.dumps({"release": "2026-10-09", "metrics": [
+            {"key": "corn_yield_2627", "value": 181.2}, {"key": "soy_yield_2627", "value": 53.1}]}))
+        led7 = {"calls": [
+            {"wasde": "2026-10-09", "crop": "corn", "model": 182.6, "usda_before": 178.5, "call": "up",
+             "usda_after": None, "actual": None, "outcome": None},
+            {"wasde": "2026-10-09", "crop": "soybeans", "model": 53.7, "usda_before": 52.8, "call": "up",
+             "usda_after": None, "actual": None, "outcome": None}], "call_eps": CALL_EPS, "rev_eps": REV_EPS}
+        led7, n = grade(date(2026, 10, 9), ct, led7)
+        check("(c) graded off wasde.json the day it prints",
+              n == 2 and [c["usda_after"] for c in led7["calls"]] == [181.2, 53.1]
+              and all(c["outcome"] == "correct" for c in led7["calls"]), str(led7["calls"]))
+        (td / "wasde.json").unlink()
 
     print(f"\nnowcast-direction selftest: {P} passed, {F} failed")
     return 1 if F else 0

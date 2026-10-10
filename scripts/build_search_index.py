@@ -100,7 +100,7 @@ PAGES = [
     ("/drought-monitor", "Drought monitor", "Weekly drought map", "drought dry monitor map rain weather"),
     ("/conditions", "Crop conditions", "Good to excellent by state", "crop conditions ratings good excellent progress"),
     ("/crop-tour", "Crop tour", "Pro Farmer tour results", "crop tour pro farmer yield"),
-    ("/conditions-yield", "Ratings vs yield", "Do ratings predict yield", "ratings yield conditions predict"),
+    ("/conditions-yield", "2026 crop size", "Every yield forecast, side by side", "crop size yield forecast estimate usda ratings conditions predict nowcast"),
     ("/pod-counts", "Pod counts", "Do pod counts predict yield", "pod counts soybean yield estimate"),
     ("/hail-map", "Hail map", "Swaths, warnings and history", "hail storm map swath warnings weather"),
     ("/gdu-calculator", "GDU calculator", "Growing degree units", "gdu gdd growing degree units heat calculator"),

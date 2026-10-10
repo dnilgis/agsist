@@ -120,6 +120,8 @@ jobs:
           python scripts/fetch_wasde.py --selftest
           python scripts/read_wasde_pdf.py --selftest
           python scripts/build_whats_priced_in.py --selftest
+          python scripts/usda_current.py --selftest
+          python scripts/nowcast_direction.py --selftest
           # The strip this run is about to fill is drawn twice -- once by the
           # page, once by the prerenderer below. Byte-for-byte, before we write.
           node --test test/wpi-numbers-strip.test.mjs
@@ -172,6 +174,10 @@ jobs:
       - name: Rebuild the page's data
         if: steps.read.outputs.filled == '1'
         run: |
+          # The model's direction calls grade off data/wasde.json the moment it
+          # fills (scripts/nowcast_direction.py reads it through usda_current),
+          # before the scorecard that merges them is rebuilt.
+          python scripts/nowcast_direction.py --grade
           python scripts/build_analyst_scorecard.py
           python scripts/build_whats_priced_in.py
           python scripts/prerender_wpi_scorecard.py || true
@@ -185,7 +191,7 @@ jobs:
           git config user.name "AGSIST Bot"
           git config user.email "bot@agsist.com"
           for i in 1 2 3 4 5; do
-            git add data/analyst-estimates.json data/wpi-history.json data/wasde.json data/wasde-pdf \
+            git add data/analyst-estimates.json data/wpi-history.json data/wasde.json data/wasde-pdf data/nowcast-direction.json \
                     data/analyst-scorecard.json data/whats-priced-in.json \
                     whats-priced-in.html scorecard.html cot.html ag-odds.html index.html usda-calendar.html 2>/dev/null || true
             if git diff --staged --quiet; then echo "No change."; exit 0; fi

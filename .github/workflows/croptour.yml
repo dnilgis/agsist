@@ -52,6 +52,13 @@ on:
     # start reporting. It costs one run a night and it means a night's numbers
     # cannot sit unpublished because nobody happened to push.
     - cron: "30 1 17-22 8 *"
+  # AFTER THE TOUR THE BANNER NAMES USDA'S CURRENT NUMBER, read from
+  # data/wasde.json. The watcher's bot commit does not fire the push trigger,
+  # so this chains off it; the gate lets a run through only when the baked
+  # banner does not already carry that print (scripts/usda_current.py).
+  workflow_run:
+    workflows: ["WASDE watch — grade the report as it lands"]
+    types: [completed]
   workflow_dispatch:
 
 permissions:
@@ -62,7 +69,29 @@ concurrency:
   cancel-in-progress: false     # never interrupt a run mid-write
 
 jobs:
+  gate:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    outputs:
+      go: ${{ steps.g.outputs.go }}
+    steps:
+      - uses: actions/checkout@v4
+        if: github.event_name == 'workflow_run'
+        with:
+          sparse-checkout: |
+            scripts/usda_current.py
+            data/wasde.json
+            crop-tour.html
+          sparse-checkout-cone-mode: false
+      - id: g
+        env:
+          EV: ${{ github.event_name }}
+        run: |
+          if [ "$EV" = "workflow_run" ]; then python3 scripts/usda_current.py --gate croptour >> "$GITHUB_OUTPUT"; else echo "go=1" >> "$GITHUB_OUTPUT"; fi
+
   bake:
+    needs: gate
+    if: needs.gate.outputs.go == '1'
     runs-on: ubuntu-latest
     # BELT. build_croptour.py resolves America/Chicago itself and refuses to
     # bake if it cannot, so this is not load-bearing -- but it also makes

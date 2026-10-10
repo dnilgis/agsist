@@ -393,7 +393,11 @@ def main():
     baked = splice(baked, "seed", render_seed(data, rows),
                    opener="<!--SEED:cystats-->", closer="<!--/SEED-->")
     baked = splice(baked, "stamp", f"Data refreshed {stamp_date(data)}.")
-    md = meta_desc(rows)
+    # THE DESCRIPTION IS NOT THIS BAKER'S ANY MORE (2026-10-10). The page leads
+    # with every 2026 yield forecast now and scripts/bake_seo.py (seo_cond_yield)
+    # writes its title and description from data/yield-panel.json. Two writers
+    # flipped this page every day once already.
+    md = None
     if md:
         pat = re.compile(
             r'((?:<meta name="description"|<meta property="og:description"'

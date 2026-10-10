@@ -111,6 +111,7 @@ def build_ctx(today):
         "crop_tour": _load("crop-tour.json"),
         "prices": _load("prices.json"),
         "cond_yield": _load("cond-yield/fit.json"),
+        "yield_panel": _load("yield-panel.json"),
         "crop_progress": _load("crop-progress.json"),
         "basis": _load("transport/basis.json"),
         "fertilizer": _load("fertilizer.json"),
@@ -260,29 +261,35 @@ def seo_quick_stats(c):
 
 
 def seo_cond_yield(c):
-    """The R-squared curve, read off the file instead of typed into the HTML.
+    """"2026 crop size: every forecast", described from data/yield-panel.json.
 
-    The hand-written description on this page said "ratings in week 35 explain
-    59% of Iowa's final yield. By week 39: 64%." The file said 0.61 and 0.639
-    on 2026-09-08, and both of those were computed with the current year
-    inside its own fit (fixed 2026-09-13). A number in a search snippet that
-    nothing recomputes goes stale silently and nobody sees it but strangers.
-    """
-    d = c.get("cond_yield")
-    if not d:
+    RETITLED 2026-10-10. The page used to be "Do Crop Ratings Predict Yield?
+    The Real R²"; it now leads with every published 2026 yield forecast side by
+    side, and the R² research sits in a folded section. The description names
+    each corn forecast with its date, read off the panel file the page itself
+    renders, so the snippet cannot quote a number the page no longer shows.
+    This is the ONE writer of this page's description (build_condyield.py
+    stopped writing it on the same day)."""
+    d = c.get("yield_panel")
+    rows = ((((d or {}).get("crops") or {}).get("corn") or {}).get("rows")) or []
+    if not rows:
         return None
-    ia = (((d.get("crops") or {}).get("corn") or {}).get("states") or {}).get("IA")
-    if not ia or not ia.get("weeks"):
-        return None
-    # The week that explains the most, computed — not a week somebody liked.
-    wk, best = max(ia["weeks"].items(), key=lambda kv: kv[1].get("r2") or 0)
-    r2 = best.get("r2")
-    n = best.get("n")
-    if r2 is None or not n:
-        return None
-    return ("Do Crop Ratings Predict Yield? The Real R²" + SUFFIX,
-            f"Iowa corn: Good+Excellent in its best week (week {wk}) explains {r2 * 100:.0f}% of yield "
-            f"deviation ({n} years, in-sample R²). Every state and week shown.")
+    short = {"usda": "USDA", "profarmer": "Pro Farmer tour", "dtn": "DTN", "agsist": "our ratings model"}
+    bits = []
+    for r in sorted(rows, key=lambda r: (r.get("id") != "usda", r.get("value") or 0)):
+        if r.get("value") is None:
+            continue
+        name = short.get(r.get("id")) or r.get("name") or ""
+        when = ""
+        try:
+            when = f" ({date.fromisoformat(str(r['as_of'])[:10]).strftime('%b %-d')})" if r.get("id") == "usda" else ""
+        except (KeyError, ValueError):
+            when = ""
+        bits.append(f"{name} {float(r['value']):.1f}{when}")
+    desc = "Every 2026 US corn yield forecast side by side: " + ", ".join(bits) + ". Soybeans too."
+    if len(desc) > DESC_MAX:
+        desc = "Every 2026 US corn yield forecast side by side: " + ", ".join(bits[:3]) + ". Soybeans too."
+    return ("2026 crop size: every forecast" + SUFFIX, desc)
 
 
 def seo_conditions(c):
@@ -745,6 +752,9 @@ def selftest():
 
     T = date(2026, 8, 16)
     ctx = {"today": T, "next_wasde": date(2026, 9, 11),
+           "yield_panel": {"crops": {"corn": {"rows": [
+               {"id": "usda", "value": 180.7, "as_of": "2026-08-12"},
+               {"id": "profarmer", "value": 173.2, "as_of": "2026-08-21"}]}}},
            "cot": {"report_date": "August 11, 2026",
                    "corn": {"net": 125875, "prev": 144821}},
            "crop_tour": {"tour": {"year": 2026, "start": "2026-08-17", "end": "2026-08-20"},
@@ -804,11 +814,17 @@ def selftest():
     ck("after the tour the title carries the number", "Corn 179.4 bu/ac" in t3, t3)
 
     print("\nhonesty")
-    t, d = seo_cond_yield(ctx)
-    ck("cond-yield picks the strongest week, not the first", "week 39" in d and "64%" in d)
-    ck("cond-yield names the sample size", "26 years" in d)
-    ck("cond-yield skips when the file is missing",
-       seo_cond_yield(dict(ctx, cond_yield=None)) is None)
+    _panel = {"crops": {"corn": {"rows": [
+        {"id": "profarmer", "value": 173.2, "as_of": "2026-08-21"},
+        {"id": "dtn", "value": 178.5, "as_of": "2026-08-10"},
+        {"id": "agsist", "value": 180.6, "as_of": "2026-10-04"},
+        {"id": "usda", "value": 181.2, "as_of": "2026-10-09"}]}}}
+    t, d = seo_cond_yield(dict(ctx, yield_panel=_panel))
+    ck("cond-yield is titled for what it now leads with", t == "2026 crop size: every forecast | AGSIST", t)
+    ck("cond-yield's snippet names USDA's current print and its date first",
+       d.startswith("Every 2026 US corn yield forecast side by side: USDA 181.2 (Oct 9), Pro Farmer tour 173.2"), d)
+    ck("cond-yield skips when the panel file is missing",
+       seo_cond_yield(dict(ctx, yield_panel=None)) is None)
     t, d = seo_conditions(ctx)
     ck("conditions carries this week's G+E and last year's", "57%" in d and "66%" in d)
     cp = dict(ctx["crop_progress"], corn={"good_excellent": 54, "good_excellent_prev_year": None},

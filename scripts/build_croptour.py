@@ -450,7 +450,17 @@ def render_hero(data, st, ph, today, sst=None):
                   f"{esc(t['final_expected_label'])} and is not on this page yet")
         verdict = "This page has not been updated with the tour's final number"
     else:
-        kicker = "Tour number is in"
+        # AFTER THE TOUR, THE BANNER SAYS WHERE THE CROP STANDS. Until
+        # 2026-10-10 it read "Tour number is in" for seven weeks with no
+        # number, while USDA moved from 180.7 to 178.5 to 181.2. Both figures
+        # are read from data (USDA's from data/wasde.json, see main()).
+        tb = data["benchmarks"].get("tour") or {}
+        ub = data["benchmarks"].get("usda") or {}
+        if tb.get("corn") is not None and tb.get("as_of") and ub.get("corn") is not None and ub.get("as_of"):
+            kicker = (f"Tour said {float(tb['corn']):.1f} ({short(tb['as_of'])}). "
+                      f"USDA now {float(ub['corn']):.1f} ({short(ub['as_of'])}).")
+        else:
+            kicker = "Tour number is in"
         verdict = "Now compare it to the record below"
 
     # "the last N tours (first-last)" is only true if nothing inside that span
@@ -2216,6 +2226,21 @@ def selftest():
        render_hero({**_d, "nights": []}, t, "stale", date(2026, 8, 28)))
 
     print()
+    print("after the tour, the banner names both numbers from data")
+    _s = {"tour": _d["tour"], "nights": [],
+          "benchmarks": {"tour": {"corn": 173.2, "as_of": "2026-08-21"},
+                         "usda": {"corn": 178.5, "as_of": "2026-09-11"}}}
+    import usda_current as _uc
+    _uc.apply_to_tour(_s, {"as_of": "2026-10-09", "label": "USDA, October WASDE", "corn": 181.2,
+                           "soybeans": 53.1, "source": "u", "prev": {}, "prev_month": None})
+    _h = render_hero(_s, t, "scored", date(2026, 10, 10))
+    ck("scored hero: 'Tour said 173.2 (Aug 21). USDA now 181.2 (Oct 9).'",
+       "Tour said 173.2 (Aug 21). USDA now 181.2 (Oct 9)." in _h)
+    _s2 = {**_s, "benchmarks": {"tour": {"corn": 173.2, "as_of": "2026-08-21"}, "usda": {"corn": None}}}
+    ck("no USDA figure: the banner does not invent one",
+       "USDA now" not in render_hero(_s2, t, "scored", date(2026, 10, 10)))
+
+    print()
     print("live data still bakes every claim")
     root = Path(__file__).resolve().parent.parent
     jp = root / "data" / "crop-tour.json"
@@ -2351,6 +2376,13 @@ def main():
     json_path = Path(args.json) if args.json else root / "data" / "crop-tour.json"
 
     data = json.loads(json_path.read_text(encoding="utf-8"))
+    # USDA'S CURRENT YIELD FROM data/wasde.json once that release is newer than
+    # the one typed into crop-tour.json (scripts/usda_current.py). The page
+    # called September's 178.5 "the number in force" a day after USDA printed
+    # 181.2.
+    import usda_current
+    usda_current.apply_to_tour(data, usda_current.usda_yields(
+        usda_current.load(str(json_path.resolve().parent / "wasde.json"))))
     # Read the nowcast from the model's own file before anything renders, and
     # refuse if the manifest still carries a rival copy of the same figure.
     data["_nowcast"] = nowcast_now(json_path)

@@ -28,6 +28,15 @@ on:
   # commits nothing.
   schedule:
     - cron: '24 4 * * *'
+  # USDA'S NUMBER MOVES ON REPORT DAY, so this runs when the WASDE watcher
+  # finishes. It finishes every 15 minutes; the gate job below lets a run
+  # through only when data/wasde.json carries a USDA yield the panel has not
+  # picked up yet (scripts/usda_current.py --gate panel). A bot commit to
+  # data/wasde.json does not fire the push trigger above, which is why the
+  # panel kept September's 178.5 a day after the 181.2 print.
+  workflow_run:
+    workflows: ["WASDE watch — grade the report as it lands"]
+    types: [completed]
   workflow_dispatch:
 
 permissions:
@@ -38,7 +47,29 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  gate:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    outputs:
+      go: ${{ steps.g.outputs.go }}
+    steps:
+      - uses: actions/checkout@v4
+        if: github.event_name == 'workflow_run'
+        with:
+          sparse-checkout: |
+            scripts/usda_current.py
+            data/wasde.json
+            data/yield-panel.json
+          sparse-checkout-cone-mode: false
+      - id: g
+        env:
+          EV: ${{ github.event_name }}
+        run: |
+          if [ "$EV" = "workflow_run" ]; then python3 scripts/usda_current.py --gate panel >> "$GITHUB_OUTPUT"; else echo "go=1" >> "$GITHUB_OUTPUT"; fi
+
   build:
+    needs: gate
+    if: needs.gate.outputs.go == '1'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -51,19 +82,25 @@ jobs:
       # guards against is silent: a sort that stops sorting or a rank off by
       # one produces a panel that looks fine and ranks people wrongly.
       - name: Selftest the builder
-        run: python scripts/build_yield_benchmarks.py --selftest
+        run: |
+          python scripts/usda_current.py --selftest
+          python scripts/build_yield_benchmarks.py --selftest
+          python scripts/bake_seo.py --selftest
 
       # Refuses to write on an unsourced forecast, and refuses if it disagrees
       # with data/crop-tour.json about a figure both pages print. A red X here
       # means the panel did not update and the old one is still correct.
       - name: Build the panel
-        run: python scripts/build_yield_benchmarks.py
+        run: |
+          python scripts/build_yield_benchmarks.py
+          # the page's title and description name the forecasts in this file
+          python scripts/bake_seo.py --page conditions-yield.html
 
       - name: Commit
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add data/yield-panel.json
+          git add data/yield-panel.json conditions-yield.html
           if git diff --cached --quiet; then echo "panel unchanged"; exit 0; fi
           git commit -m "data: yield benchmark panel [skip ci]"
           for i in 1 2 3; do

@@ -114,13 +114,14 @@
    "usda_before_label": "USDA, September WASDE",
    "call": "up",
    "locked_on": "2026-10-06",
-   "usda_after": null,
-   "actual": null,
-   "outcome": null,
-   "graded_on": null,
+   "usda_after": 181.2,
+   "actual": "up",
+   "outcome": "correct",
+   "graded_on": "2026-10-10",
    "usda_before_as_of": "2026-09-11",
    "corrects": "2026-10-09 corn row locked 2026-09-15",
-   "model_reading_from": "2026-09-15"
+   "model_reading_from": "2026-09-15",
+   "usda_after_label": "USDA, October WASDE"
   },
   {
    "wasde": "2026-10-09",
@@ -132,21 +133,22 @@
    "usda_before_label": "USDA, September WASDE",
    "call": "up",
    "locked_on": "2026-10-06",
-   "usda_after": null,
-   "actual": null,
-   "outcome": null,
-   "graded_on": null,
+   "usda_after": 53.1,
+   "actual": "up",
+   "outcome": "correct",
+   "graded_on": "2026-10-10",
    "usda_before_as_of": "2026-09-11",
    "corrects": "2026-10-09 soybeans row locked 2026-09-15",
-   "model_reading_from": "2026-09-15"
+   "model_reading_from": "2026-09-15",
+   "usda_after_label": "USDA, October WASDE"
   }
  ],
- "updated": "2026-10-06T13:43:14+00:00",
+ "updated": "2026-10-10T14:14:15+00:00",
  "record": {
-  "graded": 4,
-  "correct": 1,
-  "reports": 2,
-  "pending": 2,
+  "graded": 6,
+  "correct": 3,
+  "reports": 3,
+  "pending": 0,
   "on_defective_input": 2,
   "superseded": 2
  }
