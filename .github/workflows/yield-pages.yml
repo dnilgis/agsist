@@ -8,6 +8,7 @@ on:
     branches: [main]
     paths:
       - "scripts/build_state_yield_pages.py"
+      - "scripts/county_yield.py"
   schedule:
     - cron: "23 13 17 * *"
   workflow_dispatch:

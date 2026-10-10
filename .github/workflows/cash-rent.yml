@@ -33,7 +33,7 @@ jobs:
       # Runs offline, needs no key. If the parsing rules are broken there is no
       # point spending an hour hammering a public API to find out.
       - name: Selftest (gate)
-        run: python scripts/fetch_cash_rent.py --selftest
+        run: python scripts/county_yield.py --selftest && python scripts/fetch_cash_rent.py --selftest
 
       - name: Skip outside the release window
         id: window
