@@ -627,7 +627,10 @@
   {
    "path": "data/elevator-coverage-counts.json",
    "pages": [
-    "index.html"
+    "corn-futures-prices.html",
+    "index.html",
+    "soybean-futures-prices.html",
+    "wheat-futures-prices.html"
    ],
    "written_by": [
     "Coverage map \u2014 the elevator directory, drawn"
@@ -807,6 +810,7 @@
    "path": "data/harvest-prices.json",
    "pages": [
     "corn-futures-prices.html",
+    "harvest-price-tracker.html",
     "index.html",
     "soybean-futures-prices.html",
     "status.html",

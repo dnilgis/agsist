@@ -47,14 +47,19 @@ except Exception:                                 # pragma: no cover
     _CT = None
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, os.path.join(ROOT, "scripts"))
+import pricefmt  # noqa: E402  grain price text, the twin of components/util.js AG.px
 OUT = os.path.join(ROOT, "data", "news.json")
 KEEP = 200
 
+# The named contract comes first: when the front month IS December (from the
+# September roll on), "Corn" and "December corn" are one quote, and the item
+# names the contract (2026-09-30 and 10-01 carried both, word for word).
 CROPS = {
-    "corn":      ("Corn",           "/corn-futures-prices"),
     "corn-dec":  ("December corn",  "/corn-futures-prices"),
-    "beans":     ("Soybeans",       "/soybean-futures-prices"),
+    "corn":      ("Corn",           "/corn-futures-prices"),
     "beans-nov": ("November beans", "/soybean-futures-prices"),
+    "beans":     ("Soybeans",       "/soybean-futures-prices"),
     "wheat":     ("Wheat",          "/wheat-futures-prices"),
     "kcwheat":   ("KC wheat",       "/wheat-futures-prices"),
 }
@@ -154,8 +159,9 @@ def iso_day(v):
 
 
 def cents(v):
-    """Board prices arrive in cents. Print them the way a farmer says them."""
-    return f"${v/100:.2f}" if v is not None else None
+    """Board prices arrive in cents. Printed to the quarter cent, the way the
+    price pages print them (scripts/pricefmt.py, the twin of util.js AG.px)."""
+    return pricefmt.price(v) if v is not None else None
 
 
 def say_day(iso):
@@ -208,11 +214,28 @@ def wasde(out, state, held):
             "high", "/whats-priced-in", "USDA, graded against the pre-report survey", iso_day(date)))
 
 
+def cot_published(rd):
+    """The day CFTC published the report with positions as of `rd`, ISO, or
+    the as-of day when the calendar cannot say. A COT item is news the day it
+    is published (Friday), not the Tuesday its positions are dated: stamped on
+    the Tuesday, Friday's item was already three days old on arrival."""
+    a = iso_day(rd)
+    if not a:
+        return None
+    try:
+        import cot_calendar
+        d = datetime.strptime(a, "%Y-%m-%d").date()
+        return a if cot_calendar.release_unknown(d) else cot_calendar.release_date(d).isoformat()
+    except Exception:                                   # noqa: BLE001 - fall back, never invent
+        return a
+
+
 def positioning(out, state, held):
     d = load("cot.json")
     if not d or not d.get("report_date"):
         return
     rd = d["report_date"]
+    pub = cot_published(rd)
     cot = state.setdefault("cot", {})
     for key, name in COT_NAMES.items():
         c = d.get(key)
@@ -245,7 +268,7 @@ def positioning(out, state, held):
                  f"Managed money holds its biggest {name.lower()} net long in a year"),
                 f"Net {net:+,} contracts as of {rd}"
                 + (f", from {prev:+,} the week before." if prev is not None else "."),
-                "high", "/cot", "CFTC Commitments of Traders", iso_day(rd)))
+                "high", "/cot", "CFTC Commitments of Traders", pub))
         elif lo is not None and net <= lo and material:
             _again = (cot.get(key) or {}).get("side") == "min"
             cot[key] = {"side": "min", "rd": rd}
@@ -256,14 +279,14 @@ def positioning(out, state, held):
                  f"Managed money holds its biggest {name.lower()} net short in a year"),
                 f"Net {net:+,} contracts as of {rd}"
                 + (f", from {prev:+,} the week before." if prev is not None else "."),
-                "high", "/cot", "CFTC Commitments of Traders", iso_day(rd)))
+                "high", "/cot", "CFTC Commitments of Traders", pub))
         elif prev is not None and (prev < 0 <= net or net < 0 <= prev):
             side = "long" if net >= 0 else "short"
             out.append(item(
                 f"cot:{rd}:{key}:flip", "positioning",
                 f"Managed money flipped net {side} in {name.lower()}",
                 f"Net {prev:+,} to {net:+,} contracts in a week, as of {rd}.",
-                "notable", "/cot", "CFTC Commitments of Traders", iso_day(rd)))
+                "notable", "/cot", "CFTC Commitments of Traders", pub))
 
 
 def session_stamp(fetched):
@@ -296,11 +319,29 @@ def session_stamp(fetched):
     return ct.date().isoformat(), settled
 
 
+def quote_session(v, fetch_day, fetch_settled):
+    """(day, settled) for one quote. The quote's own close_date names its
+    session when the file carries it: a quote that did not update on a run
+    belongs to the day it closed, not to the day it was read again (Oct 7 and
+    Oct 8 2026 both carried KC wheat's $7.37 close as that day's move). A
+    close dated before the fetch day has settled; one dated the fetch day has
+    settled only inside the post-settle window session_stamp checks; one
+    dated after it is the evening session's trade."""
+    cd = iso_day((v or {}).get("close_date"))
+    if not cd or not fetch_day:
+        return fetch_day, fetch_settled
+    if cd < fetch_day:
+        return cd, True
+    if cd == fetch_day:
+        return cd, fetch_settled
+    return cd, False
+
+
 def board(out, state, held):
     d = load("prices.json")
     q = (d or {}).get("quotes") or {}
-    day, settled = session_stamp((d or {}).get("fetched"))
-    if not day:
+    fday, fsettled = session_stamp((d or {}).get("fetched"))
+    if not fday:
         return
     px = state.setdefault("px", {})
     seen_quotes = []
@@ -308,10 +349,11 @@ def board(out, state, held):
         v = q.get(key)
         if not isinstance(v, dict):
             continue
+        day, settled = quote_session(v, fday, fsettled)
         # "Corn down 3.8%" and "December corn down 3.8%" were the same
         # contract twice: from early fall the front month IS December. One
-        # quote, one item.
-        sig = (v.get("close"), v.get("open"), v.get("netChange"))
+        # contract, one item: same crop, same close, same previous close.
+        sig = (key.split("-")[0], v.get("close"), v.get("open"))
         if sig in seen_quotes:
             continue
         seen_quotes.append(sig)
@@ -370,17 +412,24 @@ def board(out, state, held):
             px[key] = dict(mark, lo=close, lo_day=day)
         if pct is None or abs(pct) < MOVE_NOTABLE:
             continue
+        # A SESSION MOVE IS PUBLISHED ONCE, FROM THE CLOSE. Items written
+        # from an intraday print were never corrected when the session closed
+        # smaller: on 9 October 2026 the Wire said "Wheat down 2.6%, Last
+        # $6.66, -17.5 cents" while wheat closed $6.70 3/4, down 12 1/2
+        # (1.8%, under the bar). An intraday move is not an item.
+        if not settled:
+            held.append(f"{name}: {pct:+.1f}% intraday, waiting for the close")
+            continue
         direction = "up" if pct > 0 else "down"
         nc = v.get("netChange")
-        verb = "Settled" if settled else "Last"
-        detail = f"{verb} {cents(close)}" if close is not None else verb
+        detail = f"Closed {cents(close)}" if close is not None else "Closed"
         if nc is not None:
-            detail += f", {'+' if nc > 0 else ''}{nc:g} cents on the session"
+            detail += f", {pricefmt.move(nc, sign=True)} on the session"
         out.append(item(f"px:{day}:{key}:move", "board",
                         f"{name} {direction} {abs(pct):.1f}% on the day",
                         detail + ".",
                         "high" if abs(pct) >= MOVE_HIGH else "notable",
-                        url, "CME settlement via the AGSIST board", iso_day(day)))
+                        url, "Yahoo Finance close via the AGSIST board", iso_day(day)))
 
 
 def ratings(out, state, held):
@@ -449,10 +498,32 @@ def weather(out, state, held):
 
 DETECTORS = (wasde, positioning, board, ratings, weather)
 
+NAMED = ("corn-dec", "beans-nov")
+
+
+def tidy(items):
+    """Withdraw intraday move items and collapse one contract's move filed
+    under two keys on the same day (see build()). Pure; selftested."""
+    out = [i for i in items
+           if not (str(i.get("id", "")).endswith(":move")
+                   and str(i.get("detail", "")).startswith("Last "))]
+    by = {}
+    for i in out:
+        p = str(i.get("id", "")).split(":")
+        if len(p) == 4 and p[0] == "px" and p[3] == "move":
+            by.setdefault((p[1], p[2].split("-")[0], i.get("detail")), []).append(i)
+    drop = set()
+    for group in by.values():
+        if len(group) > 1:
+            keep = next((i for i in group if i["id"].split(":")[2] in NAMED), group[0])
+            drop.update(id(i) for i in group if i is not keep)
+    return [i for i in out if id(i) not in drop]
+
 
 def build():
     old = load("news.json") or {}
     kept = old.get("items") or []
+    orig = list(kept)
     # THE WIRE'S MEMORY OF WHAT IT HAS ALREADY SAID, and the only reason the
     # 52-week detectors can tell a breakout from the same breakout reported
     # again. It rides in news.json because that is the one file this script
@@ -482,10 +553,14 @@ def build():
     # of its range." twice, word for word, and the second one could not be
     # true: by then the top of the range was $5.43.
     said = {(i.get("headline"), i.get("detail")) for i in kept}
-    # An item already published keeps the words it was published with.
-    # The one exception: a session move published off an intraday print
-    # ("Last $5.05") is replaced once by the same day's settlement ("Settled
-    # $5.02"), so the Wire ends the day saying what the board settled at.
+    # An item already published keeps the words it was published with, with
+    # two exceptions that correct the record rather than restate it:
+    #   - a session move written from an intraday print ("Last $6.66") is
+    #     withdrawn; the close replaces it if the close still clears the bar
+    #     (moves are now written only from the close, see board());
+    #   - the same session move filed under two names for one contract
+    #     ("Corn" and "December corn", same day, same numbers) keeps one,
+    #     the named contract.
     # THE USDA ITEM FOLLOWS THE GRADES. It is rebuilt from latest_result every
     # run, so an older item for the same report date (written when fewer
     # figures were graded, or under the old rule) gives way to the current one.
@@ -496,20 +571,9 @@ def build():
             kept = [k for k in kept if not (str(k.get("id", "")).startswith(pre)
                                             and (k.get("id"), k.get("headline"), k.get("detail"))
                                             != (i.get("id"), i.get("headline"), i.get("detail")))]
+    kept = tidy(kept)
     seen = {i.get("id") for i in kept}
     said = {(i.get("headline"), i.get("detail")) for i in kept}
-    by_id = {i.get("id"): i for i in kept}
-    upgraded = set()
-    for i in fresh:
-        old_i = by_id.get(i.get("id"))
-        if (old_i and str(i.get("id", "")).endswith(":move")
-                and str(i.get("detail", "")).startswith("Settled")
-                and str(old_i.get("detail", "")).startswith("Last")):
-            upgraded.add(i.get("id"))
-    if upgraded:
-        kept = [i for i in kept if i.get("id") not in upgraded]
-        seen = {i.get("id") for i in kept}
-        said = {(i.get("headline"), i.get("detail")) for i in kept}
     added = [i for i in fresh
              if i.get("id") not in seen
              and (i.get("headline"), i.get("detail")) not in said]
@@ -525,7 +589,7 @@ def build():
     # that reading it should tell you. Liveness is the feed manifest's job --
     # data/news.json is registered there with no max_gap, precisely because a
     # quiet wire is correct rather than broken.
-    changed = items != kept
+    changed = items != orig
     out = {
         "updated": (datetime.now(timezone.utc).replace(microsecond=0).isoformat()
                     if changed else (old.get("updated") or "")),
@@ -607,14 +671,17 @@ def _selftest():
             print(f"FAIL: {what}", file=sys.stderr); sys.exit(1)
         ok += 1
 
-    # 509.5 cents prints $5.09 everywhere else on the site (the corn page hero
-    # says exactly that for this close), so the wire must not say $5.10.
-    check(cents(509.5) == "$5.09", "cents() agrees with the price pages")
+    # 509.5 cents prints $5.09 1/2 on the price pages (components/util.js
+    # AG.px, 2026-10-10), so the wire says the same: not $5.10, not $5.09.
+    check(cents(509.5) == "$5.09\u00bd", "cents() agrees with the price pages")
     check(cents(1284.0) == "$12.84", "cents() handles a bean price")
     check(iso_day("September 08, 2026") == "2026-09-08", "iso_day converts the COT's written date")
     check(iso_day("2026-09-11") == "2026-09-11", "iso_day passes ISO through")
     check(iso_day("2026-09-11T14:00:00Z") == "2026-09-11", "iso_day trims a timestamp to its day")
     check(iso_day("") is None and iso_day("not a date") is None, "iso_day invents nothing")
+    check(cot_published("October 06, 2026") == "2026-10-09", "a Tuesday COT is news on its Friday")
+    check(cot_published("September 08, 2026") == "2026-09-11", "a Monday holiday does not delay it")
+    check(cot_published("nope") is None, "cot_published invents nothing")
     d1 = item("x", "k", "h", "d", "notable", "/", "s", "2026-09-08")
     check(d1["day_only"] is True and d1["ts"].startswith("2026-09-08T12:00"),
           "a date-only source is flagged so no clock time is shown for it")
@@ -623,7 +690,7 @@ def _selftest():
     check(cents(None) is None, "cents() passes None through")
 
     o = []
-    board_data = {"fetched": "2026-09-12T00:00:00", "quotes": {
+    board_data = {"fetched": "2026-09-11T19:05:00Z", "quotes": {
         "corn": {"close": 600.0, "pctChange": 5.0, "netChange": 28, "wk52_hi": 599.0, "wk52_lo": 400.0}}}
     globals()["load"] = lambda n: board_data if n == "prices.json" else None
     board(o, {}, [])
@@ -637,7 +704,7 @@ def _selftest():
     board(o, {}, [])
     check(o == [], "a 1% move is not news")
 
-    print("a session move is dated the Central day it happened and says Last until it settles")
+    print("a session move is dated the Central day it happened and waits for the close")
     # THE REAL STAMP from 30 September 2026: fetched 01:57Z on 1 October is
     # 8:57pm Central on 30 September. The Wire dated it 1 October.
     check(session_stamp("2026-10-01T01:57:02Z") == ("2026-09-30", False),
@@ -653,15 +720,28 @@ def _selftest():
         "corn":     {"close": 501.5, "open": 522.0, "pctChange": -3.93, "netChange": -20.5, "wk52_hi": 549.75, "wk52_lo": 425.75},
         "corn-dec": {"close": 501.5, "open": 522.0, "pctChange": -3.93, "netChange": -20.5, "wk52_hi": 549.75, "wk52_lo": 425.75}}}
     globals()["load"] = lambda n: _mv if n == "prices.json" else None
-    o = []
-    board(o, {}, [])
-    check(len(o) == 1, "corn and December corn carrying one quote is one item, not two")
-    check(o[0]["id"] == "px:2026-09-30:corn:move", "...dated 30 September, not 1 October")
-    check(o[0]["detail"].startswith("Last $5.01"), "...and an evening print is a Last, not a Settled")
+    o, held = [], []
+    board(o, {}, held)
+    check(o == [], "an evening print is not a close: no move item")
+    check(any("waiting for the close" in h for h in held), "...and the run says it is waiting")
     _mv["fetched"] = "2026-09-30T19:05:00Z"
     o = []
     board(o, {}, [])
-    check(o[0]["detail"].startswith("Settled $5.01"), "a post-settle fetch says Settled")
+    check(len(o) == 1, "corn and December corn carrying one quote is one item, not two")
+    check(o[0]["id"] == "px:2026-09-30:corn-dec:move", "...under the named contract, dated 30 September")
+    check(o[0]["detail"] == "Closed $5.01\u00bd, \u221220\u00bd\u00a2 on the session.", o[0]["detail"])
+    check(o[0]["source"].startswith("Yahoo Finance close"), "a Yahoo close is not called a CME settlement")
+    # A quote that did not update on this run keeps its own session's day
+    # (2026-10-07 and -08 both filed KC's $7.37 close as that day's move).
+    _st = {"fetched": "2026-10-08T19:05:00Z", "quotes": {
+        "kcwheat": {"close": 737.0, "open": 756.0, "pctChange": -2.51, "netChange": -19.0,
+                    "close_date": "2026-10-07", "wk52_hi": 800.0, "wk52_lo": 600.0}}}
+    globals()["load"] = lambda n: _st if n == "prices.json" else None
+    o = []
+    board(o, {}, [])
+    check(len(o) == 1 and o[0]["id"] == "px:2026-10-07:kcwheat:move", "a stale quote is filed under its own day")
+    check(quote_session({"close_date": "2026-10-09"}, "2026-10-08", True) == ("2026-10-09", False),
+          "a close dated after the fetch day is the evening session, not a close")
 
     # ── the two traps that put the same sentence on the wire four times ──
     print("an extreme reached by standing still is not an event")
@@ -819,27 +899,36 @@ def _selftest():
     check(_d["updated"] == "2026-09-01T00:00:00+00:00",
           "updated keeps the moment the last item arrived, not the moment the job ran")
 
-    print("an intraday Last is replaced once by the same day's Settled")
-    _prior2 = {"updated": "2026-09-30T18:00:00+00:00",
-               "items": [{"id": "px:2026-09-30:corn:move", "ts": "2026-09-30T12:00:00+00:00", "kind": "board",
-                          "headline": "Corn down 3.2% on the day", "detail": "Last $5.05, -16.5 cents on the session.",
-                          "significance": "notable", "url": "/corn-futures-prices", "source": "s", "day_only": True}]}
-    _px2 = {"fetched": "2026-09-30T19:05:00Z", "quotes": {
-        "corn": {"close": 501.5, "open": 522.0, "pctChange": -3.93, "netChange": -20.5, "wk52_hi": 549.75, "wk52_lo": 425.75}}}
+    print("an intraday Last is withdrawn; the close replaces it only if it still clears the bar")
+    def _it(id_, h, d):
+        return {"id": id_, "ts": id_.split(":")[1] + "T12:00:00+00:00", "kind": "board", "headline": h,
+                "detail": d, "significance": "notable", "url": "/", "source": "s", "day_only": True}
+    # THE 9 OCTOBER 2026 FILE: wheat filed at -2.6% off a 2pm print; it closed
+    # $6.70 3/4, -12 1/2 (-1.83%), under the 2.5% bar.
+    _prior2 = {"updated": "2026-10-09T18:00:00+00:00", "items": [
+        _it("px:2026-10-09:wheat:move", "Wheat down 2.6% on the day", "Last $6.66, -17.5 cents on the session.")]}
+    _px2 = {"fetched": "2026-10-09T19:05:00Z", "quotes": {
+        "wheat": {"close": 670.75, "open": 683.25, "pctChange": -1.83, "netChange": -12.5,
+                  "close_date": "2026-10-09", "wk52_hi": 795.0, "wk52_lo": 557.25}}}
     globals()["load"] = lambda n: _prior2 if n == "news.json" else (_px2 if n == "prices.json" else None)
     _d2, _a2, _ch2, _held2 = build()
-    _moves = [i for i in _d2["items"] if i["id"] == "px:2026-09-30:corn:move"]
-    check(len(_moves) == 1, "one move item for the day, not two")
-    check(_moves[0]["detail"].startswith("Settled $5.01"), "...and it is the settlement")
-    check(_ch2 is True, "...which counts as a change")
-    # And the settle, once published, is not replaced by a later evening Last.
-    _px2["fetched"] = "2026-10-01T01:57:02Z"
-    _prior3 = dict(_prior2, items=_d2["items"])
-    globals()["load"] = lambda n: _prior3 if n == "news.json" else (_px2 if n == "prices.json" else None)
+    check(not [i for i in _d2["items"] if i["id"] == "px:2026-10-09:wheat:move"],
+          "a move that closed under the bar is withdrawn, not left at its intraday number")
+    check(_ch2 is True, "...and the withdrawal is a change the run writes")
+    # The same day, a move that still clears the bar at the close replaces it.
+    _px2["quotes"]["wheat"].update(close=666.0, pctChange=-2.53, netChange=-17.25)
     _d3, _a3, _ch3, _held3 = build()
-    _moves3 = [i for i in _d3["items"] if i["id"] == "px:2026-09-30:corn:move"]
-    check(len(_moves3) == 1 and _moves3[0]["detail"].startswith("Settled"),
-          "an evening Last does not overwrite the published settle")
+    _w = [i for i in _d3["items"] if i["id"] == "px:2026-10-09:wheat:move"]
+    check(len(_w) == 1 and _w[0]["detail"].startswith("Closed $6.66"), "the close replaces the intraday line")
+    # THE 30 SEPTEMBER AND 1 OCTOBER 2026 DUPLICATES: corn and December corn,
+    # same day, same numbers. One stays, under the named contract.
+    _dup = [_it("px:2026-10-01:corn:move", "Corn down 3.8% on the day", "Settled $5.02, -20 cents on the session."),
+            _it("px:2026-10-01:corn-dec:move", "December corn down 3.8% on the day", "Settled $5.02, -20 cents on the session."),
+            _it("px:2026-10-01:wheat:move", "Wheat down 2.5% on the day", "Settled $6.77, -17.5 cents on the session.")]
+    _t = tidy(_dup)
+    check([i["id"] for i in _t] == ["px:2026-10-01:corn-dec:move", "px:2026-10-01:wheat:move"],
+          "one contract's move under two names keeps the named one")
+    check(len(tidy(_t)) == 2, "tidy is idempotent")
 
     # THE USDA ITEM FOLLOWS THE GRADES. The real Oct 9 shape: the Wire wrote
     # "All 2 scored figures" when two were graded; the page then graded seven,

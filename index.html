@@ -4320,11 +4320,6 @@ setTimeout(function(){
       if((m=/^(.*?) closed at a 52-week (?:high|low)$/.exec(h)))return m[1]+' traded to a 52-week '+w+' ('+ser+')';}
     return wireVocab(h);}
   function wireDetail(i){var d=String(i.detail||'');if(/:(hi|lo)$/.test(i.id||''))d=d.replace(/, the (highest|lowest) it has settled in a year\./,', the $1 in a year.');return wireVocab(d);}
-  /* Board items (moves, highs, lows) show only from the latest two weekday
-     sessions, Central time; anything older is history, not wire. */
-  function wireRecent(day){try{var t=new Date(new Date().toLocaleString('en-US',{timeZone:'America/Chicago'})),keep=[];
-    while(keep.length<2){var w=t.getDay();if(w>0&&w<6)keep.push(t.getFullYear()+'-'+('0'+(t.getMonth()+1)).slice(-2)+'-'+('0'+t.getDate()).slice(-2));t.setDate(t.getDate()-1);}
-    return keep.indexOf(day)>=0;}catch(e){return false;}}
   function when(iso,dayOnly){
     var d=new Date(iso); if(isNaN(d)) return '';
     var t=new Date(), y=new Date(t.getTime()-864e5);
@@ -4343,32 +4338,27 @@ function agsND(o){if(typeof o==='string')return /^\s*\u2014\s*$/.test(o)?'-':o.r
     if(!band||!g) return;
     var sub=document.getElementById('wire-sub');
     /* r7-bids: counted below, from the cards actually shown. */
-    /* 2026-10-01: news.json built at 8:10 PM CT Sep 30 carried Sep 30's
-       corn move (-20c) stamped Oct 1, and corn and December corn as two
-       items, while the board read +3 1/2c. On the homepage a board-move
-       item shows only if it is today's session (CT) and its direction
-       agrees with the live board; same headline twice shows once; high
-       significance first, then newest. */
-    var live=window.AGSIST_PRICE_DATA||null;   /* the quotes object, set by the board script */
-    var todayCT='';try{todayCT=new Date().toLocaleDateString('en-CA',{timeZone:'America/Chicago'});}catch(e){}
+    /* Same detail twice shows once (build_news.py also files one contract's
+       move once, under the named contract, and dates it by its own close). */
     var seen={};
     /* r7-bids: positioning items only from the latest COT report date in the file. */
     var cotD=function(i){var m=/^cot:([^:]+):/.exec(i.id||'');var d=m?Date.parse(m[1]):NaN;return isNaN(d)?null:d;},cotMax=null;
     items.forEach(function(i){var d=cotD(i);if(d!=null&&(cotMax==null||d>cotMax))cotMax=d;});
     items=items.filter(function(i){var d=cotD(i);return d==null||d===cotMax;});
+    /* 2026-10-10: NEWEST FIRST, NOTHING OLDER THAN THREE DAYS. Sorting
+       "high" significance first put Sep 29-30 items above the Oct 9 WASDE.
+       Board moves are now written only from the close (build_news.py), so a
+       dated move from yesterday is still true and shows with its day; the
+       old today-only and live-direction guards compared yesterday's close
+       with today's board. COT items carry their publication day. */
+    var cutoff='';try{var _c=new Date(new Date().toLocaleString('en-US',{timeZone:'America/Chicago'}));_c.setDate(_c.getDate()-3);cutoff=_c.getFullYear()+'-'+('0'+(_c.getMonth()+1)).slice(-2)+'-'+('0'+_c.getDate()).slice(-2);}catch(e){}
     items=items.filter(function(i){
       var k=(i.detail||'')+'|'+(i.kind||'');if(seen[k])return false;seen[k]=1;
-      var hl=/^px:(\d{4}-\d{2}-\d{2}):[a-z-]+:(hi|lo)$/.exec(i.id||'');   /* r7-bids 7b */
-      if(hl)return wireRecent(hl[1]);
-      var m=/^px:(\d{4}-\d{2}-\d{2}):([a-z-]+):move$/.exec(i.id||'');
-      if(!m)return true;
-      if(!todayCT||m[1]!==todayCT||!live)return false;
-      var q=live[m[2]];if(!q||q.pctChange==null)return false;
-      var down=/ down /.test(' '+(i.headline||'')+' ');
-      return down?(q.pctChange<0):(q.pctChange>0);
+      var day=String(i.ts||'').slice(0,10);
+      return !!day&&(!cutoff||day>=cutoff);
     });
     if(!items.length) return;
-    items.sort(function(a,b){var s=(b.significance==='high')-(a.significance==='high');return s||String(b.ts||'').localeCompare(String(a.ts||''));});
+    items.sort(function(a,b){return String(b.ts||'').localeCompare(String(a.ts||''));});
     var shown=items.slice(0,4);   /* r7-bids: the count is what is shown, after the guards above */
     if(sub) sub.textContent='latest '+shown.length;
     g.innerHTML=shown.map(function(i){
@@ -4379,7 +4369,6 @@ function agsND(o){if(typeof o==='string')return /^\s*\u2014\s*$/.test(o)?'-':o.r
     }).join('');
     var up=d.updated?new Date(d.updated):null;
     if(up&&!isNaN(up)){var hrs=Math.round((Date.now()-up.getTime())/36e5);
-      if(hrs>36){return;} /* a wire older than a day and a half is not news */
       var meta=document.createElement('p');meta.className='wr-meta';
       if(window.AgAsOf)AgAsOf.set(meta,d.updated,'daily');else{meta.textContent=hrs<1?'':'Updated '+hrs+' h ago';if(!meta.textContent)meta.hidden=true;}
       var all=band.querySelector('.wr-all');if(all){all.parentNode.insertBefore(meta,all);}}
