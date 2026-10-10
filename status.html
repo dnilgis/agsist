@@ -65,6 +65,8 @@
   @keyframes stpulse{0%,100%{opacity:.35;}50%{opacity:1;}}
   .st-body{flex:1;min-width:0;}
   .st-name{font-weight:700;font-size:.98rem;color:var(--text,#e7ece8);}
+  .st-src{font-weight:500;font-size:.8rem;margin-left:.4rem;color:var(--gold,#d4a23f);text-decoration:none;white-space:nowrap}
+  .st-card{scroll-margin-top:80px;}
   .st-desc{font-size:.875rem;color:var(--text-muted,#9bb0a3);line-height:1.45;margin-top:.1rem;}
   .st-right{text-align:right;flex-shrink:0;}
   .st-state{font-family:'JetBrains Mono',monospace;font-size:.875rem;font-weight:700;letter-spacing:.03em;text-transform:uppercase;}
@@ -110,7 +112,7 @@
       </nav>
       <div class="page-header" style="margin-bottom:1rem">
         <h1 style="margin-bottom:.3rem">AGSIST Status</h1>
-        <p class="page-lede" style="margin:0">Live health of every AGSIST data feed: checked from your browser, right now. No cached dashboard, no spin. If a number on the site looks old, this page tells you whether it really is.</p>
+        <p class="page-lede" style="margin:0">Live health of every AGSIST data feed: checked from your browser, right now. No cached dashboard, no spin. If a number on the site looks old, this page tells you whether it really is. Where each feed comes from is on the <a href="/data-sources">data sources page</a>.</p>
       </div>
 
       <div class="st-banner" id="st-banner" role="status" aria-live="polite">
@@ -236,7 +238,7 @@
     // check() returns {state, label, age} given (data, ageMs). state ∈ ok/warn/down/idle.
     var COMPONENTS=[
       {
-        name:'Grain Futures Prices', desc:'Corn, soybean & wheat boards, refreshed every 15 min while the market is open.',
+        key:'prices', src:'yahoo', name:'Grain Futures Prices', desc:'Corn, soybean & wheat boards, refreshed every 15 min while the market is open.',
         url:'/data/prices.json', tsKey:'fetched',
         check:function(d,age){
           var open=grainsOpen();
@@ -257,7 +259,7 @@
            merged network file is. Those go in the same row, as a note: two
            rows built on one file would both go amber together and trip the
            "several feeds behind" banner for a single fault. */
-        name:'Cash Grain Bids', desc:'Local elevator bids by ZIP. Fetched every 15 minutes, day and night.',
+        key:'bids', src:'cash-bids', name:'Cash Grain Bids', desc:'Local elevator bids by ZIP. Fetched every 15 minutes, day and night.',
         url:'/data/bids.json', tsKey:'fetched',
         check:function(d,age){
           var MIN=60000, res;
@@ -287,7 +289,7 @@
         }
       },
       {
-        name:'AGSIST Daily Briefing', desc:'The pre-market note, published before the open every morning, weekends included.',
+        key:'daily', name:'AGSIST Daily Briefing', desc:'The pre-market note, published before the open every morning, weekends included.',
         url:'/data/daily.json', tsKey:'generated_at',
         check:function(d,age){
           if(!briefingDue()) return {state:'idle', label:'No briefing due', age:'last one '+ago(age)};
@@ -297,7 +299,7 @@
         }
       },
       {
-        name:'Weather Outlooks', desc:'NOAA temperature & precip outlooks plus the Drought Monitor, refreshed through the day.',
+        key:'outlooks', src:'drought-monitor', name:'Weather Outlooks', desc:'NOAA temperature & precip outlooks plus the Drought Monitor, refreshed through the day.',
         url:'/data/outlooks/manifest.json', tsKey:'fetched_at',
         check:function(d,age){
           /* JUDGED ON THE DROUGHT MONITOR'S OWN DATE, NOT fetched_at. 2026-10-06.
@@ -316,7 +318,7 @@
         }
       },
       {
-        name:'Hail Tracker', desc:'Last-30-days radar hail swaths and storm reports, rebuilt daily.',
+        key:'hail', src:'mrms', name:'Hail Tracker', desc:'Last-30-days radar hail swaths and storm reports, rebuilt daily.',
         url:'/data/hail/manifest.json', tsKey:'recent_generated',
         check:function(d,age){
           if(age < 40*3600000) return {state:'ok', label:'Current', age:ago(age)};
@@ -325,7 +327,7 @@
         }
       },
       {
-        name:'Yield Nowcast', desc:'Weekly corn & soybean yield estimate from USDA condition ratings, updates each Tuesday in season.',
+        key:'nowcast', src:'nass', name:'Yield Nowcast', desc:'Weekly corn & soybean yield estimate from USDA condition ratings, updates each Tuesday in season.',
         url:'/data/yield-nowcast.json', tsKey:'generated',
         check:function(d,age){
           // Off-season (Dec-Mar): USDA ratings pause, the builder deliberately
@@ -339,7 +341,7 @@
         }
       },
       {
-        name:'COT Positioning', desc:'CFTC managed-money and commercial positioning: publishes Fridays, fetched weekly.',
+        key:'cot', src:'cftc', name:'COT Positioning', desc:'CFTC managed-money and commercial positioning: publishes Fridays, fetched weekly.',
         /* `fetched` — the key data/cot.json does not have. It carries `updated`.
            So this card has been reading "No timestamp" in amber every day since
            it shipped, on a page whose entire job is telling a reader whether a
@@ -354,7 +356,7 @@
         }
       },
       {
-        name:'Yield Direction Record', desc:'The nowcast\'s locked directional calls against each WASDE, the append-only public ledger.',
+        key:'direction', src:'usda', name:'Yield Direction Record', desc:'The nowcast\'s locked directional calls against each WASDE, the append-only public ledger.',
         url:'/data/nowcast-direction.json', tsKey:'updated',
         check:function(d,age){
           var pend=(d&&d.record&&d.record.pending)||0, graded=(d&&d.record&&d.record.graded)||0;
@@ -363,7 +365,7 @@
         }
       },
       {
-        name:'Alerts & Subscriptions', desc:'The email briefing and hail-alert service: runs on Cloudflare, independent of the rest.',
+        key:'alerts', name:'Alerts & Subscriptions', desc:'The email briefing and hail-alert service: runs on Cloudflare, independent of the rest.',
         url:'https://agsist-subs.dnilgis.workers.dev/', ping:true,
         check:function(reachable){
           return reachable ? {state:'ok', label:'Online', age:'responding'} : {state:'down', label:'Unreachable', age:'no response'};
@@ -373,11 +375,15 @@
 
     var grid=document.getElementById('st-grid');
     var rows=COMPONENTS.map(function(c){
-      var el=document.createElement('div'); el.className='st-card';
-      el.innerHTML='<span class="dot wait"></span><div class="st-body"><div class="st-name">'+c.name+'</div><div class="st-desc">'+c.desc+'</div></div><div class="st-right"><div class="st-state wait">Checking</div><div class="st-age">&nbsp;</div></div>';
+      var el=document.createElement('div'); el.className='st-card'; if(c.key) el.id='st-'+c.key;
+      el.innerHTML='<span class="dot wait"></span><div class="st-body"><div class="st-name">'+c.name+(c.src?'<a class="st-src" href="/data-sources#'+c.src+'">source</a>':'')+'</div><div class="st-desc">'+c.desc+'</div></div><div class="st-right"><div class="st-state wait">Checking</div><div class="st-age">&nbsp;</div></div>';
       grid.appendChild(el);
       return {c:c, el:el, desc:el.querySelector('.st-desc'), dot:el.querySelector('.dot'), state:el.querySelector('.st-state'), age:el.querySelector('.st-age')};
     });
+
+    /* The rows are built here, after the browser has looked for the anchor, so
+       a link from /data-sources (#st-hail) scrolls to its row once it exists. */
+    if(/^#st-[a-z-]+$/.test(location.hash)){ var _t=document.getElementById(location.hash.slice(1)); if(_t){ try{ _t.scrollIntoView(); }catch(e){} } }
 
     function paint(row, res){
       row.dot.className='dot '+(res.state==='idle'?'ok':res.state);
