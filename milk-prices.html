@@ -912,9 +912,9 @@
   function r2(x){ return Math.round(x*100)/100; }
   function classIII(cheese, whey, fat){
     var pp=r4(proteinPrice(cheese,fat)), os=r4(otherSolids(whey));
-    var skim=r2(pp*LB.protein + os*LB.os);
+    var skimExact=r4(pp*LB.protein + os*LB.os), skim=r2(skimExact);
     var val=r2(0.965*skim + LB.fat*fat);
-    return {pp:pp, os:os, skim:skim, val:val};
+    return {pp:pp, os:os, skimExact:skimExact, skim:skim, val:val};
   }
   function money(n,dp){ return '$'+Number(n).toFixed(dp==null?4:dp); }
   function cwt(n){ return '$'+Number(n).toFixed(2); }
@@ -931,6 +931,11 @@
 
   function render(cheese, whey, fat, monthLabel, isReal){
     var r=classIII(cheese,whey,fat);
+    /* The announced month: the math line prints the pipeline's own figures
+       (fetch_dairy class3_math, from USDA's announced components), so the
+       page does not compute the published month a second time. */
+    var M=(isReal&&SEED.math)?SEED.math:null;
+    if(M) r={pp:M.protein, os:M.other_solids, skimExact:M.skim_exact, skim:M.skim, val:r.val, fat:M.butterfat};
     var priceOut = isReal ? SEED.classIII : r.val;
     // The sandbox recomputes from whatever the sliders say. At the seed values
     // it will not land exactly on USDA's announced price - survey inputs here
@@ -947,7 +952,8 @@
     h+=rowHTML('dp-result','','Other solids price','',money(r.os),'/lb');
     h+=rowHTML('','i-droplet','Butterfat price','Derived from the butter market (shared with Class IV). The fat in your milk.',money(fat),'/lb');
     h+=rowHTML('dp-op credit','','Component math &middot; per cwt at test',
-      'Skim milk price = protein '+money(r.pp,4)+' \u00d7 '+LB.protein.toFixed(2)+' lb + other solids '+money(r.os,4)+' \u00d7 '+LB.os.toFixed(2)+' lb = '+money(r.skim)+'. Class III = 0.965 \u00d7 that, plus butterfat '+money(fat,4)+' \u00d7 '+LB.fat.toFixed(2)+' lb.',
+      'Skim milk price = protein '+money(r.pp,4)+' \u00d7 '+LB.protein.toFixed(2)+' lb + other solids '+money(r.os,4)+' \u00d7 '+LB.os.toFixed(2)+' lb = '+money(r.skimExact,4)+
+      (Math.round(r.skimExact*10000)!==Math.round(r.skim*10000)?', which the federal order rounds to '+cwt(r.skim):'')+'. Class III = 0.965 \u00d7 '+cwt(r.skim)+', plus butterfat '+money(r.fat!=null?r.fat:fat,4)+' \u00d7 '+LB.fat.toFixed(2)+' lb.',
       '+ sum','');
     var gapNote='';
     if(!isReal && modelGap!=null && Math.abs(modelGap)>=0.01){
@@ -1167,7 +1173,7 @@
       var sc=pos(d.survey_cheese)?d.survey_cheese:d.cheese, sw=pos(d.survey_whey)?d.survey_whey:d.whey;
       var sf=pos(cp.butterfat)?cp.butterfat:d.survey_fat;
       if(pos(sc)&&pos(sw)&&pos(sf)&&pos(d.class3)&&Math.abs(classIII(sc,sw,sf).val-d.class3)<=0.02){
-        SEED.cheese=sc;SEED.whey=sw;SEED.fat=sf;SEED.classIII=d.class3;SEED.month=m;seedLabel();
+        SEED.cheese=sc;SEED.whey=sw;SEED.fat=sf;SEED.classIII=d.class3;SEED.month=m;SEED.math=(d.class3_math&&d.class3_math.class3===d.class3)?d.class3_math:null;seedLabel();
         slC.value=sc;slW.value=sw;slF.value=sf;
         // keep the readouts with the sliders: they showed the old seed month until Reset
         svC.textContent=money(sc);svW.textContent=money(sw);svF.textContent=money(sf);

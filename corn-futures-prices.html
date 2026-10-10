@@ -1184,7 +1184,7 @@ function computeScorecard(){
   if(window.__agsistSeas&&window.__agsistSeas.length===12){
     var mo=new Date().getMonth();
     var sv=window.__agsistSeas[mo];
-    factors.push({lbl:'Seasonal Tendency',val:sv+'/100',cls:'nu',meter:sv,det:'5-yr weekly closes, indexed 0–100'});
+    factors.push({lbl:'Seasonal Tendency',val:sv+'/100',cls:'nu',meter:sv,det:seasWin()});
   }
   // 5. RP revenue floor (crop-insurance moat) — only when harvest-prices has this crop
   if(rp&&rp.floor!=null){
@@ -1587,6 +1587,13 @@ function findBestBidForCrop(bids,nearestGridResult,cropKey){
   return{bid:bestBid(cropBids),distance:null};
 }
 
+/* The network's own count (data/elevator-coverage-counts.json, the file the
+   homepage reads), in place of the old "samples 50 ZIP locations" line. No
+   file, no number: the sentence reads fine without it. */
+function netCount(box){fetch('/data/elevator-coverage-counts.json').then(function(r){return r.ok?r.json():null;}).then(function(c){var k=c&&c.counts;if(!k||typeof k.read!=='number'||typeof k.elevators!=='number'||!box)return;Array.prototype.forEach.call(box.querySelectorAll('.net-count'),function(e){e.textContent=' ('+k.read.toLocaleString('en-US')+' of the '+k.elevators.toLocaleString('en-US')+' elevators it knows are read directly)';});}).catch(function(){});}
+/* The seasonal factor's label names the window the index was built on
+   (price-stats.json seasonality_years: 2022-2025 is 4 years, not "5-yr"). */
+function seasWin(){var s=window.__agsistSeasS,y=s&&s.seasonality_years;return (y&&y.length===2?'weekly closes '+y[0]+'–'+y[1]+' ('+(y[1]-y[0]+1)+' years)':'weekly closes')+', indexed 0–100';}
 function fmtBidTime(ts){
   try{
     var d=new Date(ts),now=new Date();
@@ -1674,7 +1681,7 @@ function renderBasisCard(data){
     if(locEl)locEl.textContent='No location set';
     if(emptyEl){
       emptyEl.style.display='block';
-      emptyEl.innerHTML='<strong>Set your ZIP to see your nearest cash bid.</strong> AGSIST samples 50 ZIP locations across the grain belt for representative '+CROP_LABEL.toLowerCase()+' cash bids and basis vs CBOT futures. Tap \u201cSet my ZIP\u201d below to find your nearest sample.';
+      emptyEl.innerHTML='<strong>Set your ZIP to see your nearest cash bid.</strong> AGSIST reads posted '+CROP_LABEL.toLowerCase()+' bids straight from elevator boards<span class="net-count"></span> and shows the nearest, with basis vs CBOT futures. Tap \u201cSet my ZIP\u201d below.';netCount(emptyEl);
     }
     if(srcEl){srcEl.innerHTML='Cash bids from the AGSIST elevator network';}
     return;
@@ -1829,9 +1836,9 @@ function renderBasisCard(data){
       if(hasBidsAtAll){
         msg='<strong>No '+CROP_LABEL.toLowerCase()+' cash bids in the current sample for your area.</strong> Bids vary by elevator, season, and delivery period. Check the full cash bid map for nearby alternatives. '+fetched;
       }else{
-        msg='<strong>Cash bid samples are being collected.</strong> AGSIST polls 50 ZIP locations across the grain belt for representative cash bids and basis vs CBOT futures. Bids refresh every 10 minutes, day and night. '+fetched;
+        msg='<strong>Cash bid samples are being collected.</strong> AGSIST reads posted bids straight from elevator boards<span class="net-count"></span>, with basis vs CBOT futures. '+fetched;
       }
-      emptyEl.innerHTML=msg;
+      emptyEl.innerHTML=msg;netCount(emptyEl);
     }
     if(srcEl){
       srcEl.innerHTML='Cash bids from the AGSIST elevator network';

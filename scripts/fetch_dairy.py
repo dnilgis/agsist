@@ -444,6 +444,28 @@ def class_from_components(c):
             "class4": SKIM_SHARE * (LB_NONFAT * c["nonfat_solids"]) + fat}
 
 
+def class3_math(comp):
+    """The Class III component math the page prints, from the ANNOUNCED
+    components, at full precision and then rounded the way 7 CFR 1000.50 rounds
+    it (the skim milk price to the cent before the 0.965 split).
+
+    September 2026: protein 2.6619 x 3.3 + other solids 0.4147 x 6.0 =
+    11.27247 -> 11.2725 exact, $11.27 as rounded; 0.965 x 11.27 + 3.5 x 1.4762
+    = 16.0423 -> $16.04, the announced price. The page used to print the
+    rounded skim with four decimals ("$11.2700"), which no reader could
+    reproduce from the two products beside it."""
+    p, os_, fat = comp.get("protein"), comp.get("other_solids"), comp.get("butterfat")
+    if not all(isinstance(x, (int, float)) for x in (p, os_, fat)):
+        return None
+    skim_exact = r4(LB_PROTEIN * p + LB_OTHER * os_)
+    skim = round(skim_exact + 1e-9, 2)
+    c3_exact = r4(SKIM_SHARE * skim + LB_FAT * fat)
+    return {"protein": p, "other_solids": os_, "butterfat": fat,
+            "lb_protein": LB_PROTEIN, "lb_other": LB_OTHER, "lb_fat": LB_FAT, "skim_share": SKIM_SHARE,
+            "skim_exact": skim_exact, "skim": skim, "class3_exact": c3_exact,
+            "class3": round(c3_exact + 1e-9, 2)}
+
+
 def protein_from(cheese, fat):
     """Same skim protein formula as milk-prices.html proteinPrice(); used only to
     break ties between candidates and as a note. It is NOT a hard gate, because a
@@ -702,6 +724,9 @@ def class_block(parsed, history):
     comp = parsed["components"]
     if comp:
         b["components"] = {k: comp[k] for k in ("butterfat", "protein", "nonfat_solids", "other_solids")}
+        m3 = class3_math(b["components"])
+        if m3:
+            b["class3_math"] = m3
         for k in ("butter", "ndm", "cheese", "whey"):
             if k not in comp:
                 continue
@@ -1194,6 +1219,9 @@ NOW = datetime.datetime(2026, 9, 27, 12, 0, 0, tzinfo=datetime.timezone.utc)
 
 
 def selftest():
+    m = class3_math({"protein": 2.6619, "other_solids": 0.4147, "butterfat": 1.4762})
+    assert (m["skim_exact"], m["skim"], m["class3"]) == (11.2725, 11.27, 16.04), m
+    assert class3_math({"protein": None, "other_solids": 0.4, "butterfat": 1.4}) is None
     fails = []
 
     def ck(name, cond):

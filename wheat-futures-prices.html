@@ -1133,7 +1133,7 @@ function renderMarketRead(){
 function cap(s){if(!s)return s;return s.charAt(0).toUpperCase()+s.slice(1);}
 
 // ============ PRICING SITUATION SCORECARD (visualizes existing __agsistMR factors) ============
-var SC_SEAS=null; // filled from /data/price-stats.json seasonality (5-yr weekly closes, indexed 0-100); seasonal factor renders only when that data loads
+var SC_SEAS=null; // filled from /data/price-stats.json seasonality (weekly closes over seasonality_years, indexed 0-100); seasonal factor renders only when that data loads
 var SC_SEAS_TIP=['winter dormancy','dormancy/early greenup','greenup','jointing','heading: weather sensitive','harvest pressure begins','peak harvest','post-harvest','planting season','planting/establishment','establishment','year-end positioning'];
 // Map a cash bid's board symbol (e.g. ZWU26) to a dated prices.json key + label.
 // Only Chicago (ZW) dated contracts exist in prices.json — KE/MWE-quoted bids get no equation.
@@ -1163,7 +1163,7 @@ function computeScorecard(){
   }
   if(SC_SEAS&&SC_SEAS.length===12){
     var mo=new Date().getMonth();
-    factors.push({lbl:'Seasonal Tendency',val:SC_SEAS[mo]+'/100',cls:'nu',meter:SC_SEAS[mo],det:'5-yr weekly closes, indexed 0–100'});
+    factors.push({lbl:'Seasonal Tendency',val:SC_SEAS[mo]+'/100',cls:'nu',meter:SC_SEAS[mo],det:seasWin()});
   }
   if(rp&&rp.floor!=null){var _fq=frontQuote(window.__agsistLastQ);var _bq=(_fq&&_fq.close!=null)?_fq.close/100:null;var _gap=(_bq!=null)?(rp.floor-_bq):null;factors.push({lbl:'RP Revenue Floor',val:'$'+rp.floor.toFixed(2),cls:(_gap!=null?(_gap>=0?'up':'dn'):'nu'),meter:(_gap!=null?Math.max(0,Math.min(100,50+_gap*40)):100),det:(_gap!=null?((_gap>=0?'+':'\u2212')+'$'+Math.abs(_gap).toFixed(2)+'/bu vs today\u2019s board'):('projected '+(rp.window||'')+' avg'))});}
   var sit='';
@@ -1553,6 +1553,13 @@ function findBestBidForCrop(bids,nearestGridResult,cropKey){
   return{bid:bestBid(cropBids),distance:null};
 }
 
+/* The network's own count (data/elevator-coverage-counts.json, the file the
+   homepage reads), in place of the old "samples 50 ZIP locations" line. No
+   file, no number: the sentence reads fine without it. */
+function netCount(box){fetch('/data/elevator-coverage-counts.json').then(function(r){return r.ok?r.json():null;}).then(function(c){var k=c&&c.counts;if(!k||typeof k.read!=='number'||typeof k.elevators!=='number'||!box)return;Array.prototype.forEach.call(box.querySelectorAll('.net-count'),function(e){e.textContent=' ('+k.read.toLocaleString('en-US')+' of the '+k.elevators.toLocaleString('en-US')+' elevators it knows are read directly)';});}).catch(function(){});}
+/* The seasonal factor's label names the window the index was built on
+   (price-stats.json seasonality_years: 2022-2025 is 4 years, not "5-yr"). */
+function seasWin(){var s=window.__agsistSeasS,y=s&&s.seasonality_years;return (y&&y.length===2?'weekly closes '+y[0]+'–'+y[1]+' ('+(y[1]-y[0]+1)+' years)':'weekly closes')+', indexed 0–100';}
 function fmtBidTime(ts){
   try{
     var d=new Date(ts),now=new Date();
@@ -1640,7 +1647,7 @@ function renderBasisCard(data){
     if(locEl)locEl.textContent='No location set';
     if(emptyEl){
       emptyEl.style.display='block';
-      emptyEl.innerHTML='<strong>Set your ZIP to see your nearest cash bid.</strong> AGSIST samples 50 ZIP locations across the grain belt for representative '+CROP_LABEL.toLowerCase()+' cash bids and basis vs CBOT futures. Tap \u201cSet my ZIP\u201d below to find your nearest sample.';
+      emptyEl.innerHTML='<strong>Set your ZIP to see your nearest cash bid.</strong> AGSIST reads posted '+CROP_LABEL.toLowerCase()+' bids straight from elevator boards<span class="net-count"></span> and shows the nearest, with basis vs CBOT futures. Tap \u201cSet my ZIP\u201d below.';netCount(emptyEl);
     }
     if(srcEl){srcEl.innerHTML='Cash bids from the AGSIST elevator network';}
     return;
@@ -1795,9 +1802,9 @@ function renderBasisCard(data){
       if(hasBidsAtAll){
         msg='<strong>No '+CROP_LABEL.toLowerCase()+' cash bids in the current sample for your area.</strong> Bids vary by elevator, season, and delivery period. Check the full cash bid map for nearby alternatives. '+fetched;
       }else{
-        msg='<strong>Cash bid samples are being collected.</strong> AGSIST polls 50 ZIP locations across the grain belt for representative cash bids and basis vs CBOT futures. Bids refresh every 10 minutes, day and night. '+fetched;
+        msg='<strong>Cash bid samples are being collected.</strong> AGSIST reads posted bids straight from elevator boards<span class="net-count"></span>, with basis vs CBOT futures. '+fetched;
       }
-      emptyEl.innerHTML=msg;
+      emptyEl.innerHTML=msg;netCount(emptyEl);
     }
     if(srcEl){
       srcEl.innerHTML='Cash bids from the AGSIST elevator network';
@@ -2118,7 +2125,7 @@ fetch('/data/prices.json',{cache:'no-store'})
       sp.push(whBu2<5?'at <strong>$'+whBu2.toFixed(2)+'/bu</strong> prices are below full cost of production for most winter wheat farms':whBu2<6?'at <strong>$'+whBu2.toFixed(2)+'/bu</strong> prices cover variable costs but are tight on land and overhead for most operations':whBu2<7?'at <strong>$'+whBu2.toFixed(2)+'/bu</strong> prices support profitable production for most well-run operations':'at <strong>$'+whBu2.toFixed(2)+'/bu</strong> prices are generating strong margins, a forward selling opportunity worth evaluating');
     }
     var mo=new Date().getMonth();
-    var moTips=['January is typically a recovery month: winter wheat is dormant, Southern Hemisphere harvest provides supply context','February winter wheat is beginning to break dormancy; cold stress risk and potential spring rally building','March historically brings a spring wheat rally as global supply uncertainty peaks before Northern Hemisphere planting','April frost risk premium can add volatility as winter wheat breaks dormancy and heads out','May is pre-harvest season: wheat is heading, quality risk keeps buyers attentive','June harvest pressure arrives: SRW harvest begins, historically the weakest pricing period of the year','July is peak harvest pressure; the seasonal low is typically set this month as combines roll globally','August is the post-harvest recovery window; old crop clears and new positions begin building','September fall demand typically builds as global buyers restock after Northern Hemisphere harvest','October: winter wheat goes in, and stand establishment and early crop reports lead','November: wheat goes dormant and the year\'s global supply gets clearer','December Southern Hemisphere harvest updates and year-end fund positioning drive market direction'];
+    var moTips=['January: winter wheat is dormant; the Southern Hemisphere harvest sets the supply picture','February: winter wheat begins to break dormancy; cold stress is the risk to watch','March: global supply questions build ahead of Northern Hemisphere planting','April frost risk premium can add volatility as winter wheat breaks dormancy and heads out','May is pre-harvest season: wheat is heading, quality risk keeps buyers attentive','June: SRW harvest begins and new-crop supply arrives; see the seasonal chart for how recent years traded','July is peak harvest; combines roll across the Northern Hemisphere','August is the post-harvest recovery window; old crop clears and new positions begin building','September: global buyers restock after the Northern Hemisphere harvest','October: winter wheat goes in, and stand establishment and early crop reports lead','November: wheat goes dormant and the year\'s global supply gets clearer','December Southern Hemisphere harvest updates and year-end fund positioning drive market direction'];
     sp.push(moTips[mo]);
     var dol=q.dollar;
     if(dol&&dol.close){if(dol.close>104)sp.push('the <strong>dollar at '+dol.close.toFixed(1)+'</strong> is a headwind for US wheat export competitiveness against Black Sea origins');else if(dol.close<100)sp.push('the <strong>dollar at '+dol.close.toFixed(1)+'</strong> is improving US wheat export competitiveness on global tenders');}
@@ -2190,9 +2197,10 @@ loadPrices();
 // TRADINGVIEW: fully decoupled from prices, loads independently, degrades gracefully
 document.addEventListener('DOMContentLoaded',function(){
   // Seasonal chart + scorecard seasonal factor both come from measured data
-  // (/data/price-stats.json seasonality: 5-yr weekly closes indexed 0-100).
+  // (/data/price-stats.json seasonality: weekly closes indexed 0-100, over the
+  // seasonality_years window the file names).
   // No data = no chart and no seasonal factor — nothing invented.
-  var TIPS=['Recovery month: dormant wheat, SH harvest','Breaking dormancy; spring rally potential','Spring rally; global supply uncertainty peaks','Pre-harvest; frost risk and heading concerns','Pre-harvest quality risk; buyers attentive','Harvest begins; new-crop supply arrives','Peak harvest; heaviest supply','Post-harvest recovery; old crop clears','Fall demand builds; buyers restocking','Winter wheat planting; establishment key','Pre-dormancy; global supply clarifying','Southern Hemisphere harvest; year-end positioning'];
+  var TIPS=['Dormant wheat; Southern Hemisphere harvest','Breaking dormancy; cold stress risk','Global supply questions ahead of planting','Pre-harvest; frost risk and heading concerns','Pre-harvest quality risk; buyers attentive','Harvest begins; new-crop supply arrives','Peak harvest; heaviest supply','Post-harvest recovery; old crop clears','Fall demand builds; buyers restocking','Winter wheat planting; establishment key','Pre-dormancy; global supply clarifying','Southern Hemisphere harvest; year-end positioning'];
   var MOS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
   function seasCap(s){if(!s)return null;var y=s.seasonality_years;if(s.seasonality_method==='calendar-year-detrended'&&y&&y.length===2){return 'Weekly closes for whole calendar years '+y[0]+'–'+y[1]+', each divided by its own year’s average, then averaged by month and scaled 0–100 (0 = weakest month, 100 = strongest; n='+(s.seasonality_n||'?')+' weeks). Continuous front-month (Yahoo Finance), not roll-adjusted. '+(y[1]-y[0]+1)+' years is a short window: a description of these years, not a forecast.';}return 'Average weekly close by calendar month over a rolling '+(s.years||5)+'-yr window, scaled 0–100 (n='+s.n+' weeks). Raw levels, not detrended, and the window starts and ends mid-year, so in a trending market the months sampled from the earliest or latest year read low or high for that reason alone. A description of these years, not a forecast.';}
   function hideSeas(){var w=document.querySelector('.seas-wrap');if(w)w.style.display='none';}
@@ -2201,7 +2209,7 @@ document.addEventListener('DOMContentLoaded',function(){
     .then(function(d){
       var seas=d&&d[CROP_KEY]&&d[CROP_KEY].seasonality;
       if(!seas||seas.length!==12){hideSeas();return;}
-      SC_SEAS=seas;
+      SC_SEAS=seas;window.__agsistSeasS=d[CROP_KEY];
       var capW=document.getElementById('seas-caption'),capTx=seasCap(d[CROP_KEY]);if(capW&&capTx)capW.textContent=capTx+' Black Sea supply and weather events can override any seasonal pattern.';
       try{renderScorecard();}catch(e){}
       var cm=new Date().getMonth();
