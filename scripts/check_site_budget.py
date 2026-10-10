@@ -33,10 +33,12 @@ WARN_MB = 850
 FAIL_MB = 900
 
 # Top-level folders, in MB. Set with headroom over what each held on
-# 2026-10-10; the arc-plc number drops once its pages are slimmed.
+# 2026-10-10. arc-plc: 150, down from 330 once its pages were slimmed (306 MB
+# to 141 MB: math built on open, one shared counter sheet); its build reads this
+# number and refuses to write past it.
 FOLDER_MB = {
     "data": 300,
-    "arc-plc": 330,
+    "arc-plc": 150,
     "farmland-atlas": 200,
     "cash-bids": 60,
     "daily": 30,

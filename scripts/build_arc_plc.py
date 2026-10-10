@@ -10,8 +10,16 @@ never the files below.
                                   into the HTML so crawlers see it without JS
   arc-plc/<state>.html            /arc-plc/<state>, FSA's official ARC-CO
                                   benchmark yields for every county in the state
-  arc-plc/<state>/<county>.html   /arc-plc/<state>/<county>, one county, with a
-                                  printable summary for the FSA office
+  arc-plc/<state>/<county>.html   /arc-plc/<state>/<county>, one county: short
+                                  answers, key numbers, FAQ; "Show the math" is
+                                  built on open by components/arc-plc-math.js
+  data/arc-plc/math/<ST>.json     what "Show the math" and the counter sheet read
+  arc-plc/sheet.html              /arc-plc/sheet?c=<state>/<county>, the one
+                                  printable counter sheet (noindex), built in the
+                                  browser (components/arc-plc-sheet.js, qr.js)
+  arc-plc/<state>/<county>-sheet.html  old sheet URLs: tiny pages that forward
+  data/arc-plc/hub/<crop>.json    the crop pages' county lists, filled on open
+  components/arc-plc-form.js      the calculator's inputs for the county pages
   embed/arc-plc.html              the embeddable calculator (noindex)
   sitemap-arc-plc.xml             every indexable URL above, lastmod per page
   llms.txt                        its two ARC/PLC lines are rewritten from the data
@@ -19,6 +27,10 @@ never the files below.
     python3 scripts/build_arc_plc.py              write everything
     python3 scripts/build_arc_plc.py --check      exit 1 if any output is stale
     python3 scripts/build_arc_plc.py --selftest   hand-checked cases, writes nothing
+
+The build refuses to write when arc-plc/ would pass its size budget or any page
+its cap (both read from scripts/check_site_budget.py): bulk goes in data files
+the page loads on demand, not in 2,800 copies of a page.
 
 =============================================================================
 WHERE EVERY NUMBER COMES FROM (verified 2026-10-09)
@@ -140,7 +152,7 @@ FINAL_SCOPE = "final only"
 STYLES_V = "23"
 LOADER_V = "18"
 ASOF_V = "1"
-CALC_V = "7"
+CALC_V = "8"   # 8: Show the math built on open, one shared counter sheet, slimmer pages
 MIN_STATE_COUNTIES = 3
 SCEN_YEARS = list(range(2015, 2026))   # years with both an FSA county yield and a price change; 2025 counts once its final MYA is out
 LEAN_GAP = 3.00       # $/base acre: "Leans X" needs at least this expected gap, at least 1 SE, and MIN_WINS winning years
@@ -254,6 +266,7 @@ BACKTEST_YEARS = list(range(2019, 2026))
 OTHER_STATUTORY = [("Sorghum", 4.40, 3.95, 2.42), ("Barley", 5.45, 4.95, 2.75), ("Oats", 2.65, 2.40, 2.20)]
 DESIG = {"all": "all", "irrigated": "irr", "nonirrigated": "non", "non-irrigated": "non"}
 DLABEL = {"all": "All practices", "irr": "Irrigated", "non": "Non-irrigated"}
+PRAC = {"all": "All", "irr": "Irr.", "non": "Non-irr."}   # the state tables' short practice column
 
 STATE_NAMES = {
     "AL": "Alabama", "AK": "Alaska", "AZ": "Arizona", "AR": "Arkansas", "CA": "California",
@@ -1474,13 +1487,17 @@ def head(title, desc, path, jsonld, indexable=True, fonts="", og_title=None, og_
 </head>"""
 
 
-def tail(ftr, calc=False):
+def tail(ftr, calc=False, math=False):
     s = f"""{ftr}
 <script src="/components/asof.js?v={ASOF_V}" defer></script>
 <script src="/components/loader.js?v={LOADER_V}" defer></script>
 <script src="/components/arc-plc-simple.js?v={CALC_V}" defer></script>"""
+    if math:
+        s += f'\n<script src="/{OUT_FORM_JS}?v={CALC_V}" defer></script>'
     if calc:
         s += f'\n<script src="/components/arc-plc.js?v={CALC_V}" defer></script>'
+    if math:
+        s += f'\n<script src="/components/arc-plc-math.js?v={CALC_V}" defer></script>'
     return s + "\n</body>\n</html>\n"
 
 
@@ -1526,6 +1543,32 @@ def form_html(D, crop="corn", st="", fips="", embed=False):
   </div>
   <div class="ap-out" id="ap-out" aria-busy="true"><p class="ap-need">Loading FSA and USDA numbers for the calculator.</p></div>
 </section>"""
+
+
+OUT_FORM_JS = "components/arc-plc-form.js"
+
+
+def form_parts(D, crop="corn", st="", fips="", embed=False):
+    """form_html split into its <section> tag and its inside."""
+    f = form_html(D, crop, st, fips, embed)
+    i = f.index(">") + 1
+    return f[:i], f[i:-len("</section>")]
+
+
+def form_js(D):
+    """components/arc-plc-form.js: the calculator's inside, once for every county page (the county pages
+    carry only its <section> tag; components/arc-plc.js puts this in before it starts). Written from
+    form_html, so the main page, the embed and the county pages share one form."""
+    return ("/* components/arc-plc-form.js: MACHINE-OWNED, written by scripts/build_arc_plc.py (form_js) from form_html.\n"
+            "   The ARC or PLC calculator's inputs, for the county pages, which carry only the <section> it goes in. */\n"
+            "window.AgArcForm = " + json.dumps(form_parts(D)[1], ensure_ascii=False).replace("</", "<\\/") + ";\n")
+
+
+def form_shell(D, crop, st, fips):
+    """A county page's calculator: the section tag, filled from components/arc-plc-form.js."""
+    tag, _inner = form_parts(D, crop, st, fips)
+    return (tag[:-1] + ' data-form="1">\n  <p class="ap-need">The calculator did not load. Check the connection and reload the page, or '
+            f'<a href="/arc-plc?st={esc(st)}&amp;fips={esc(fips)}&amp;crop={esc(crop)}#calculator">open it on the main page</a>.</p>\n</section>')
 
 
 # ---------------------------------------------------------------- main page
@@ -1988,6 +2031,7 @@ def state_page(st, S, D, ch, nav_states):
                         + "".join(f'<td class="num">{f"{pv[k]:.1f}" if pv.get(k) else "n/a"}</td>' for k in CROPS) + "</tr>")
             continue
         first = True
+        nrow = sum(len(c["k"].get(k, [])) for k in ALL if k in y6)
         for k in ALL:
             if k not in y6:
                 continue
@@ -1995,13 +2039,19 @@ def state_page(st, S, D, ch, nav_states):
                 link = f'<a href="/arc-plc/{sl}/{c["s"]}">{esc(re.sub(r" (County|Parish)$", "", c["n"]))}</a>' if first else ""
                 py_avg = plcy.get(c["f"], {}).get(k)
                 if official:
+                    # kept short: Texas lists about 1,500 county, crop and practice rows (the
+                    # maximum payment is 10.2% of revenue per base acre; each county page shows it)
                     m = county_metrics(e["by"], y6[k])
-                    cells = (f'<td class="num">{XC.yf(y6[k], e["by"])}</td><td class="num">{usd(m["br"], 0)}</td><td class="num">{usd(m["max_base"], 0)}</td>')
+                    th = (f'<th scope="row"{f" rowspan={nrow}" if nrow > 1 else ""}>{link}</th>') if first else ""
+                    rows.append(f'<tr>{th}<td>{esc(y6[k]["label"])}</td>'
+                                f'<td>{PRAC[e["d"]]}{", " + esc(e["sub"]) if e.get("sub") else ""}</td><td>{XC.yf(y6[k], e["by"])}</td><td>{usd(m["br"], 0)}</td></tr>')
+                    first = False
+                    continue
                 else:
                     cells = f'<td class="num">{f"{py_avg:.1f}" if py_avg else "n/a"}</td>'
                 rows.append(f'<tr><th scope="row">{link}</th><td>{esc(y6[k]["label"])}</td><td>{esc(ent_label(e))}</td>{cells}</tr>')
                 first = False
-    head_cells = ('<th class="num">Yield</th><th class="num">Revenue</th><th class="num">Max/base ac</th>' if official
+    head_cells = ('<th class="num">Yield</th><th class="num">Revenue</th>' if official
                   else f'<th class="num">Avg PLC yield{f" ({plc_py})" if plc_py else ""}</th>')
     jsonld = [{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [
         {"@type": "ListItem", "position": 1, "name": "Home", "item": f"{SITE}/"},
@@ -2030,7 +2080,9 @@ def state_page(st, S, D, ch, nav_states):
             f"{asof(fsa['as_of'], 'FSA file as of')}" if official else
             f"The {len(S['c'])} {esc(name)} counties FSA lists for corn, soybeans or wheat, with FSA&rsquo;s county average PLC yield. {asof(D['updated'])}")
     table_h = "Official benchmark yield and revenue by county" if official else "County average PLC yields (FSA)"
-    table_note = ("Benchmark yield per acre (FSA, 2026), in bushels or, for peanuts, rice, pulses, seed cotton and most oilseeds, pounds. Revenue = yield &times; 2026 benchmark price, $/acre. Max/base ac = 12% of revenue on 85% of base."
+    table_note = ("Benchmark yield per acre (FSA, 2026), in bushels or, for peanuts, rice, pulses, seed cotton and most oilseeds, pounds. Practice: All = all practices, "
+                  "Irr. = irrigated, Non-irr. = non-irrigated. Revenue = yield &times; 2026 benchmark price, $/acre. The most ARC-CO can pay is 12% of revenue on 85% of base, "
+                  "10.2% of revenue per base acre; each county page works it out."
                   if official else f"Average PLC payment yield on enrolled base in the county by crop, bu/acre, FSA program year {plc_py}. Your farm&rsquo;s own is on the FSA-156EZ.")
     body = f"""
 <body>
@@ -2173,8 +2225,9 @@ def quick_county(c, D):
 
 # ---------------------------------------------------------------- the simple page (county answer cards, finder, counter sheet)
 AUTHOR = {"@type": "Person", "name": "Sigurd Lindquist", "url": f"{SITE}/about", "jobTitle": "Certified Crop Adviser (CCA)"}
-SHEET_SUFFIX = "-sheet"   # /arc-plc/<state>/<county>-sheet, the printable counter sheet (noindex)
-ICON = {
+SHEET_SUFFIX = "-sheet"   # /arc-plc/<state>/<county>-sheet: old counter sheet URLs, now tiny stubs that forward to /arc-plc/sheet
+OUT_SHEET = f"{OUT_DIR}/sheet.html"   # /arc-plc/sheet?c=<state>/<county>: the one counter sheet page (noindex), built in the browser
+ICON_SVG = {
     "pick": '<svg class="ap-ic" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.5" fill="currentColor" stroke="currentColor" stroke-width="1.5"/></svg>',
     "lean": ('<svg class="ap-ic" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.5" fill="none" stroke="currentColor" stroke-width="1.5"/>'
              '<path d="M8 1.5a6.5 6.5 0 0 1 0 13z" fill="currentColor"/></svg>'),
@@ -2182,7 +2235,15 @@ ICON = {
     "ask": ('<svg class="ap-ic" viewBox="0 0 16 16" aria-hidden="true"><rect x="1.5" y="1.5" width="13" height="13" fill="none" stroke="currentColor" '
             'stroke-width="1.5" stroke-dasharray="2.5 1.8"/></svg>'),
 }
+# the county pages draw each tier mark from one sprite (icon_sprite) instead of repeating the SVG on every card
+ICON = {k: f'<svg class="ap-ic" viewBox="0 0 16 16" aria-hidden="true"><use href="#api-{k}"/></svg>' for k in ICON_SVG}
 TIER_WORD = {"pick": "Clear pick", "lean": "Leans", "close": "Close", "ask": "No answer yet"}
+
+
+def icon_sprite():
+    return ('<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">'
+            + "".join(re.sub(r'^<svg class="ap-ic" viewBox="0 0 16 16" aria-hidden="true">(.*)</svg>$', f'<symbol id="api-{k}" viewBox="0 0 16 16">\\1</symbol>', v)
+                      for k, v in ICON_SVG.items()) + "</svg>")
 PIN = ('<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'
        '<circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="2.5" fill="currentColor"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>')
 
@@ -2298,20 +2359,23 @@ def deadlines_box():
 
 def picker_html(D, st="", fips=""):
     """State and county pickers that go to the county page, and Use my location
-    (components/arc-plc-simple.js). The current state's counties are in the HTML."""
+    (components/arc-plc-simple.js). The page carries the state list and its own county; the rest of
+    the state's counties come from data/arc-plc/nav.json once the page has loaded (a full list in
+    every one of 2,800 pages was 24 MB of the site)."""
     sts = sorted(D["states"].items(), key=lambda kv: kv[1]["n"])
-    so = "".join(f'<option value="{k}"{" selected" if k == st else ""}>{esc(S["n"])}</option>' for k, S in sts)
+    so = "".join(f'<option value="{k}"{" selected" if k == st else ""}>{esc(S["n"])}</option>' for k, S in sts if not st or k == st)
+    sfill = " data-fill" if st else ""
     if st and st in D["states"]:
         S = D["states"][st]
         co = '<option value="">Pick a county</option>' + "".join(
-            f'<option value="{c["f"]}" data-s="{c["s"]}"{" selected" if c["f"] == fips else ""}>{esc(c["n"])}</option>' for c in S["c"])
-        dis = ""
+            f'<option value="{c["f"]}" data-s="{c["s"]}" selected>{esc(c["n"])}</option>' for c in S["c"] if c["f"] == fips)
+        dis = " data-fill"
         nos = f'<noscript><p class="ap-small"><a href="/arc-plc/{S["slug"]}">Every {esc(S["n"])} county</a></p></noscript>'
     else:
         co, dis, nos = '<option value="">Pick a state first</option>', " disabled", ""
     return f"""<div class="ap-find" data-arcfind data-nav="/{OUT_STATE_JSON}/nav.json" data-geo="/{OUT_STATE_JSON}/geo/">
     <div class="ap-find-g">
-      <div class="ap-f"><label for="af-st">State</label><select id="af-st"><option value="">Pick a state</option>{so}</select></div>
+      <div class="ap-f"><label for="af-st">State</label><select id="af-st"{sfill}><option value="">Pick a state</option>{so}</select></div>
       <div class="ap-f"><label for="af-co">County</label><select id="af-co"{dis}>{co}</select></div>
       <button type="button" class="btn btn-secondary ap-loc" id="af-loc">{PIN}<span>Use my location</span></button>
     </div>
@@ -2389,127 +2453,112 @@ def crop_card(c, k, D, LY, OY):
     return f'<article class="ap-crop" id="crop-{k}">{head}{"".join(blocks)}</article>'
 
 
-def sheet_why(v, cd, lc, y):
-    w = v["verdict"]
-    erp = f" PLC pays under {XC.say_price(cd, cd['erp']['erp']) if cd.get('unit') == 'lb' else XC.pf(cd, cd['erp']['erp'])}."
-    if w in ("plc", "arc") or w.startswith("lean_"):
-        return f"{WORD[w.replace('lean_', '')]} about ${whole(v['diff'])} more per base acre for {y}.{erp}"
-    if w == "close":
-        return ("Under $1 apart for " + y + "." if cents(abs(v["diff"])) < 100 else f"About ${whole(v['diff'])} apart for {y}.") + erp
-    if w == "none":
-        cen = (cd.get("scen") or {}).get("center")
-        return f"At USDA&rsquo;s {XC.pf(cd, cen)}, neither pays for {y}." if cen else f"Neither pays for {y}."
-    if w == "mismatch":
-        return "County PLC yield is above the benchmark."
-    if w == "noprice":
-        return f"No {y} price outlook to check yet."
-    return "Not enough history." if w == "withheld" else "Waits on USDA&rsquo;s closing 2025 price."
-
-
-def sheet_page(st, S, c, D, LY, OY):
-    """The counter sheet: one letter page, black and white, for the FSA office (noindex)."""
-    import qr_svg
-    name, sl = S["n"], S["slug"]
-    cname = c["n"]
-    url = f"{SITE}/arc-plc/{sl}/{c['s']}"
-    main, small, _nob = crop_split(c, D)
-    rows = []
-    for k in main + small:
-        cd = D["years"][LY]["crops"].get(k) or D["years"]["2026"]["crops"][k]
-        mi, _oi = card_entries(c, k, D)
-        lab = cd["label"] + (f' ({DLABEL[c["k"][k][mi]["d"]].lower()})' if any(x["d"] != c["k"][k][mi]["d"] for x in c["k"][k] if x["by"]) else "")
-        lv = c["levels"].get((k, mi, LY))
-        if not lv:
-            rows.append(f'<tr><td class="c">{esc(lab)}</td><td class="a">{ICON["ask"]}No answer yet</td><td class="a">{ICON["ask"]}No answer yet</td>'
-                        f'<td>No county average PLC yield from FSA.</td></tr>')
-            continue
-        v, v7 = lv["same"], c["levels"][(k, mi, OY)]["same"]
-        rows.append(f'<tr><td class="c">{esc(lab)}</td><td class="a">{ICON[shape(v)]}{short_word(v)}</td><td class="a">{ICON[shape(v7)]}{short_word(v7)}</td>'
-                    f'<td>{sheet_why(v, cd, CROP_LC[k], LY)}</td></tr>')
-    dense = " sh-dense sh-xdense" if len(rows) > 13 else " sh-dense" if len(rows) > 9 else ""
-    sc = signup_copy(build_date())
-    dl = "".join(f"<li>{x}</li>" for _t, x in sc["items"])
-    upd = nice_date(D["updated"][:10])
-    wz = next((cd["scen"]["usda_src"] for cd in D["years"]["2026"]["crops"].values() if (cd.get("scen") or {}).get("usda_src", "").startswith("USDA WASDE")), "USDA")
-    years_h = f"{LY} and {OY}" if LY < OY else f"{OY} and {LY}"
+def sheet_shell(D):
+    """/arc-plc/sheet: the one counter sheet page (noindex). One letter page, black and white, for the
+    FSA office. components/arc-plc-sheet.js reads ?c=<state>/<county> and fills it from
+    data/arc-plc/math/<ST>.json, QR code included (components/qr.js)."""
+    cfg = {"states": {S["slug"]: st for st, S in sorted(D["states"].items())}, "math": f"/{OUT_MATH}/",
+           "icons": ICON_SVG, "key": key_html().replace('class="ap-key"', 'class="ap-key sh-key"').replace("<svg class=\"ap-ic\" viewBox=\"0 0 16 16\" aria-hidden=\"true\"><use href=\"#api-", "@@")}
+    for k, v in ICON_SVG.items():
+        cfg["key"] = cfg["key"].replace(f'@@{k}"/></svg>', v)
+    js = json.dumps(cfg, separators=(",", ":"), ensure_ascii=False).replace("</", "<\\/")
     return f"""<!DOCTYPE html>
 <html lang="en" data-theme="light">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex,follow">
-<link rel="canonical" href="{url}">
-<title>{esc(cname)}, {st} ARC or PLC counter sheet | AGSIST</title>
+<link rel="canonical" href="{SITE}/arc-plc">
+<title>ARC or PLC counter sheet | AGSIST</title>
 <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
 <link rel="stylesheet" href="/components/styles.css?v={STYLES_V}">
+<link rel="stylesheet" href="/components/states.css?v=2">
 <link rel="stylesheet" href="/components/arc-plc-simple.css?v={CALC_V}">
 </head>
 <body class="ap-sheet-body">
-<p class="ap-sheet-bar"><a href="/arc-plc/{sl}/{c['s']}">Back to {esc(cname)}</a> <button type="button" class="btn btn-primary" onclick="window.print()">Print this sheet</button></p>
-<main class="ap-sheet{dense}" id="main">
-  <div class="sh-top">
-    <div><p class="sh-kick">ARC or PLC, {years_h}</p><h1 class="sh-county">{esc(cname)}</h1><p class="sh-sub">{esc(name)}. Which one pays more per base acre?</p></div>
-    <p class="sh-brand">AGSIST</p>
-  </div>
-  <p class="sh-intro">For a typical farm here: FSA&rsquo;s county average PLC yield and benchmark yield. Prices from {esc(wz)} and futures; county yields from FSA.</p>
-  <table class="sh-table"><thead><tr><th scope="col">Crop</th><th scope="col">{LY}</th><th scope="col">{OY}</th><th scope="col">Why</th></tr></thead>
-  <tbody>{"".join(rows)}</tbody></table>
-  {key_html().replace('class="ap-key"', 'class="ap-key sh-key"')}
-  <div class="sh-bottom">
-    <div class="sh-dead"><h2>Deadlines</h2><ul>{dl}</ul></div>
-    <div class="sh-qr"><p class="scan">This county, more detail</p>{qr_svg.qr_svg(url, f"QR code for {url}")}<p class="url">agsist.com/arc-plc/<br>{sl}/{c['s']}</p></div>
-  </div>
-  <p class="sh-foot">General guidance for a typical farm in this county. Your farm&rsquo;s PLC yield can change the answer. Not from FSA.<br>
-  <b>Prepared by AGSIST (agsist.com), updated {upd}</b></p>
-</main>
+<p class="ap-sheet-bar"><a id="sh-back" href="/arc-plc">Find your county</a> <button type="button" class="btn btn-primary" onclick="window.print()">Print this sheet</button></p>
+<main class="ap-sheet sh-msg" id="main"><noscript><p>This sheet is built in the browser. Turn on JavaScript, or open your county&rsquo;s page from <a href="/arc-plc">ARC or PLC</a>.</p></noscript></main>
+<script type="application/json" id="sh-data">{js}</script>
+<script src="/components/states.js?v=1"></script>
+<script src="/components/arc-plc-math.js?v={CALC_V}"></script>
+<script src="/components/qr.js?v={CALC_V}"></script>
+<script src="/components/arc-plc-sheet.js?v={CALC_V}"></script>
 </body>
 </html>
 """
 
 
-def math_summary(c, D, LY, OY, cname):
-    """'Show the math': method, both price starts, the typical-farm table, data dates and sources."""
+def sheet_href(S, c):
+    return f"/arc-plc/sheet?c={S['slug']}/{c['s']}"
+
+
+def sheet_stub(S, c):
+    """An old /arc-plc/<state>/<county>-sheet URL (live 2026-10-09 to 10-10): a few hundred bytes that forward to the shared sheet."""
+    to = sheet_href(S, c)
+    return (f'<!DOCTYPE html>\n<html lang="en"><head><meta charset="utf-8"><meta name="robots" content="noindex,follow">'
+            f'<link rel="canonical" href="{SITE}/arc-plc/{S["slug"]}/{c["s"]}"><meta http-equiv="refresh" content="0; url={to}">'
+            f'<title>{esc(c["n"])} counter sheet</title><script>location.replace("{to}"+location.hash)</script></head>'
+            f'<body><p><a href="{to}">{esc(c["n"])}, {esc(S["n"])}: counter sheet for the FSA office</a></p></body></html>\n')
+
+
+OUT_MATH = f"{OUT_STATE_JSON}/math"   # data/arc-plc/math/<ST>.json: "Show the math" and the counter sheet, loaded on demand
+
+
+def _cents2(x):
+    """An amount as whole cents the way usd() prints it (half up after rnd), 0 when usd_pay() prints $0."""
+    return 0 if cents(x) == 0 else int(round(rnd(x, 2) * 100))
+
+
+def vpack(v):
+    """One typical-farm verdict, compact, for components/arc-plc-math.js:
+    [verdict] or [verdict, n] (withheld) or
+    [verdict, PLC cents, ARC-CO cents, PLC wins, ARC-CO wins, n, |gap| cents, years ARC-CO paid, flags 1 borrowed 2 futures start
+    disagrees 4 gap under a dollar (cents()), |gap| in whole dollars (whole(), rounded once from the unrounded gap)]."""
+    if not v:
+        return None
+    w_ = v["verdict"]
+    if w_ in ("pending", "noprice", "mismatch"):
+        return [w_]
+    if w_ == "withheld":
+        return [w_, v.get("n", 0)]
+    return [w_, _cents2(v["plc"]), _cents2(v["arc"]), v["plc_wins"], v["arc_wins"], v["n"], int(round(rnd(abs(v["diff"]), 2) * 100)),
+            sum(1 for r in v["rows"] if r["arc"] > 0), (1 if v.get("borrowed") else 0) | (2 if v.get("alt_down") else 0) | (4 if cents(abs(v["diff"])) < 100 else 0),
+            whole(v["diff"])]
+
+
+def _n(v):
+    """A JSON number without a trailing .0 (2,037.0 prints the same from 2037)."""
+    return int(v) if isinstance(v, float) and v.is_integer() else v
+
+
+def math_globals(D, ks):
+    """What every county's math shares: crop program numbers and the sentences that name no county."""
+    LY = lead_year()
+    OY = "2027" if LY == "2026" else "2026"
     y6, y7 = D["years"]["2026"]["crops"], D["years"]["2027"]["crops"]
-    main, small, nob = crop_split(c, D)
-    ks = main + small
-    wz = (y6["corn"].get("scen") or {})
-    srcs_ = {}
+    crops = {}
     for k in ks:
-        sc_ = y6[k].get("scen") or {}
-        if sc_.get("center"):
-            srcs_.setdefault(sc_.get("usda_src") or "USDA", []).append(f"{CROP_LC[k]} {XC.pf(y6[k], sc_['center'])}")
-    cen = "; ".join(f"{esc(src_)}: {', '.join(v_)}" for src_, v_ in srcs_.items())
-    alts = []
-    for k in ("corn", "soybeans"):
-        sc_ = y6[k].get("scen") or {}
-        if k in ks and sc_.get("alt"):
-            mi, _ = card_entries(c, k, D)
-            v = c["levels"].get((k, mi, "2026"), {}).get("same", {})
-            a = v.get("alt")
-            agree = (f" Here, the typical farm&rsquo;s answer at that start: {low1(VWORD[a['verdict']])}"
-                     + (" (the same)" if a["verdict"] == v.get("verdict") else f", against {low1(VWORD[v['verdict']])} at USDA&rsquo;s start") + "." if a else "")
-            alts.append(f"{CROP_LC[k].capitalize()}: USDA {usd(sc_['center'])}; futures-based {usd(sc_['alt'])} ({esc(sc_.get('alt_contract') or '')} October average so far, "
-                        f"{usd(sc_['alt_fut'])} over {sc_.get('alt_days')} of {sc_.get('alt_of')} trading days, &times; {sc_['oct_mean']:.3f}, the {min(sc_['ratios'])} to {max(sc_['ratios'])} average of final price / October futures).{agree}")
-    c7 = [f"{CROP_LC[k]} {usd(y7[k]['scen']['center'])} ({y7[k]['scen']['center_label']})" for k in ("corn", "soybeans") if k in ks and (y7.get(k) or {}).get("scen")]
-    pend = [CROP_LC[k] for k in ks if k not in y7]
-    nop = [CROP_LC[k] for k in ks if k in y7 and (y7[k].get("scen") or {}).get("kind") == "noprice"]
-    bor = [CROP_LC[k] for k in ks if (y6[k].get("scen") or {}).get("borrowed")]
-    plcy = D["_plc_yields"].get(c["f"], {})
-    rows = []
-    for k in ks:
-        es = c["k"][k]
-        for i in default_entries(es):
-            for y in (LY, OY):
-                v = c["verdicts"].get((k, i, y))
-                if not v:
-                    continue
-                pay_ = (lambda x: usd_pay(x)) if v["verdict"] not in NOCALL else (lambda x: "none")
-                rows.append(f'<tr><td>{esc(y6[k]["label"])}</td><td>{DLABEL[es[i]["d"]]}</td><td>{y}</td><td class="num">{pay_(v.get("plc", 0))}</td>'
-                            f'<td class="num">{pay_(v.get("arc", 0))}</td><td>{short_word(v)}</td></tr>')
+        cd = y6[k]
+        sc_ = cd.get("scen") or {}
+        x = {"lab": cd["label"], "lc": CROP_LC[k], "u": cd.get("unit", "bu"), "dp": cd.get("dp", 2), "sc": XC.scale(cd),
+             "y": {y: {"erp": D["years"][y]["crops"][k]["erp"]["erp"], "loan": D["years"][y]["crops"][k]["loan"],
+                       "bp": D["years"][y]["crops"][k]["bp"]["value"], "cen": (D["years"][y]["crops"][k].get("scen") or {}).get("center")}
+                   for y in ("2026", "2027") if k in D["years"][y]["crops"]},
+             "src": (sc_.get("usda_src") or "USDA") if sc_.get("center") else None,
+             "bor": bool(sc_.get("borrowed")),
+             "y7": "pend" if k not in y7 else ("nop" if (y7[k].get("scen") or {}).get("kind") == "noprice" else "ok"),
+             "why": sc_.get("why") or "",
+             "hub": (f'{XC.XCROPS[k].get("note", "")} <a href="{XC.hub_path(k)}">All {esc(CROP_LC[k])} counties</a>.' if k in XC.XCROPS else "")}
+        if k in ("corn", "soybeans") and sc_.get("alt"):
+            x["alt"] = (f"{CROP_LC[k].capitalize()}: USDA {usd(sc_['center'])}; futures-based {usd(sc_['alt'])} ({esc(sc_.get('alt_contract') or '')} October average so far, "
+                        f"{usd(sc_['alt_fut'])} over {sc_.get('alt_days')} of {sc_.get('alt_of')} trading days, &times; {sc_['oct_mean']:.3f}, the {min(sc_['ratios'])} to {max(sc_['ratios'])} average of final price / October futures).")
+        if k in ("corn", "soybeans") and (y7.get(k) or {}).get("scen"):
+            x["c7"] = f"{CROP_LC[k]} {usd(y7[k]['scen']['center'])} ({y7[k]['scen']['center_label']})"
+        crops[k] = x
     fsa = D["fsa"] or {}
-    snap_d = next((sc_.get("alt_date") for sc_ in (y6["corn"].get("scen") or {},) if sc_.get("alt_date")), None)
+    wz = (y6["corn"].get("scen") or {})
+    snap_d = wz.get("alt_date")
     fut7 = (y7["corn"].get("scen") or {}).get("fut_date")
-    plcs = "; ".join(f"{CROP_LC[k]} {XC.yf(y6[k], plcy[k], 1)}" for k in ks if plcy.get(k))
     src = [f"FSA 2026 ARC-CO benchmark yields (county file of {nice_date(fsa['as_of'])})" if fsa.get("as_of") else "",
            f"FSA county average PLC yields, program year {(D['plc_county'] or {}).get('py')}",
            f"FSA price tables of {nice_date(D['_xtab_date'])}" if D.get("_xtab_date") else "",
@@ -2518,21 +2567,114 @@ def math_summary(c, D, LY, OY, cname):
            f"Dec 2027 corn and Nov 2027 soybean close of {fut7}" if fut7 else "",
            "USDA NASS season-average prices for closed marketing years",
            "FSA ARC-CO county files, program years " + ", ".join(str(h["py"]) for h in (fsa.get("history") or [])) + " (county yields and payments)"]
-    return f"""<p><b>{LY}.</b> The {LY} crop is mostly harvested, so each scenario uses a normal {esc(cname)} crop (FSA&rsquo;s 2026 benchmark yield) and only the price moves.
-  Prices start from USDA&rsquo;s projected 2026/27 season-average prices ({cen}). Around that price we ran each past year with a final USDA price: how far that year&rsquo;s final season-average
-  price ended from October futures, for corn and soybeans.{(" " + ", ".join(bor).capitalize() + " have no October futures history of their own, so they borrow corn&rsquo;s October swings (wheat its own price changes, scaled to corn&rsquo;s size) and stop at Leans.") if bor else ""}</p>
-  {('<p><b>Two price starts.</b> ' + " ".join(alts) + ' Where the two disagree on which program leads, or on a clear pick, a clear pick drops to Leans.</p>') if alts else ''}
-  <p><b>{OY}.</b> {("Corn and soybeans start from futures: " + "; ".join(c7) + ". Each scenario year also moves the county yield the way it moved that year. ") if c7 else ""}{(", ".join(nop).capitalize() + ": no " + OY + " price outlook we can check against past years, so no " + OY + " answer. ") if nop else ""}{(", ".join(pend).capitalize() + " wait on USDA&rsquo;s closing 2025 price, which sets the 2027 reference price.") if pend else ""}</p>
-  <p><b>Typical farm.</b> FSA&rsquo;s county average PLC yield ({plcs}) and FSA&rsquo;s official benchmark. &ldquo;Lower&rdquo; and &ldquo;Higher&rdquo; mean 15% under or over the
-  county average. Payments are per base acre and count FSA&rsquo;s 85% payment acres, before sequestration and payment limits.</p>
-  <p><b>How we call it.</b> <b>Clear pick</b> when one program averages at least {usd(MIN_GAP)} more per base acre, the gap is more than t times its standard error
-  (2.26 for 10 years, 2.23 for 11), and it paid more in at least {MIN_WINS} of the years. <b>Leans</b> when the gap is at least {usd(LEAN_GAP)} and one standard error, and it paid more in
-  at least {MIN_WINS} years. <b>Close</b> otherwise. When both round to $0: neither expected to pay.</p>
-  <div class="ap-scroll"><table class="tbl ap-t"><caption class="ap-small">Average payment per base acre over the scenario years, typical farm (about the same PLC yield).</caption>
-  <thead><tr><th scope="col">Crop</th><th scope="col">Practice</th><th scope="col">Year</th><th scope="col" class="num">PLC</th><th scope="col" class="num">ARC-CO</th><th scope="col">Answer</th></tr></thead>
-  <tbody>{"".join(rows)}</tbody></table></div>
-  {('<p class="ap-small">FSA lists a benchmark here but no enrolled base for ' + ", ".join(CROP_LC[k] for k in nob) + ".</p>") if nob else ""}
-  <p class="ap-small"><b>Sources.</b> {"; ".join(x for x in src if x)}. {asof(D['updated'])} <a href="/arc-plc#method">Full method and back-test</a>.</p>"""
+    sc = signup_copy(build_date())
+    return {"ly": LY, "oy": OY, "plc_py": (D["plc_county"] or {}).get("py"), "min_scen": MIN_SCEN,
+            "gap": usd(MIN_GAP), "lean": usd(LEAN_GAP), "wins": MIN_WINS,
+            "srcs": "; ".join(x for x in src if x), "asof": asof(D["updated"]), "ask": ASK,
+            "wz": next((cd["scen"]["usda_src"] for cd in y6.values() if (cd.get("scen") or {}).get("usda_src", "").startswith("USDA WASDE")), "USDA"),
+            "dl": [x for _t, x in sc["items"]], "upd": nice_date(D["updated"][:10]), "c": crops}
+
+
+def math_json(D):
+    """data/arc-plc/math/<ST>.json for every state: what components/arc-plc-math.js needs to
+    build a county's "Show the math" and /arc-plc/sheet builds the counter sheet from. Numbers
+    the build figures (verdicts, payments) are carried as figured; the page only lays them out."""
+    if not D["fsa"]:
+        return {}
+    LY = lead_year()
+    OY = "2027" if LY == "2026" else "2026"
+    y6 = D["years"]["2026"]["crops"]
+    win = list((D["fsa"] or {}).get("window") or [])
+    out = {}
+    for st, S in sorted(D["states"].items()):
+        recs, ks_all = {}, []
+        for c in S["c"]:
+            main, small, nob = crop_split(c, D)
+            order = crop_order(c, D)
+            plcy = D["_plc_yields"].get(c["f"], {})
+            es_out, v_out, al = {}, {}, {}
+            for k, es in c["k"].items():
+                rows = []
+                for e in es:
+                    r = {"d": e["d"], "by": _n(e["by"])}
+                    if e.get("dsrc") != "county":
+                        r["ds"] = e.get("dsrc") or "?"
+                    if e.get("sub"):
+                        r["sub"] = e["sub"]
+                    vals = [v for v in (e.get("yrs") or {}).values() if v is not None]
+                    if e["by"] is not None and len(vals) == 5:
+                        if [int(y) for y in e["yrs"]] != win:
+                            raise SystemExit(f"[arc-plc] {c['n']} {k}: trend-yield years {list(e['yrs'])} are not FSA's window {win}")
+                        # the five trend-adjusted yields as %g prints them, and which two the Olympic average drops
+                        # (the first value equal to the low, then to the high: the same marks the old pages carried)
+                        _avg, lo, hi = olympic(vals)
+                        x, lo_d, hi_d = 0, False, False
+                        for j, v in enumerate(e["yrs"].values()):
+                            if not lo_d and v == lo:
+                                x |= 1 << j; lo_d = True
+                            elif not hi_d and v == hi:
+                                x |= 1 << j; hi_d = True
+                        r["ys"], r["x"] = [_n(float(f"{v:g}")) for v in e["yrs"].values()], x
+                    hist = [h for h in e.get("hist", []) if h["py"] != 2026]
+                    if hist:
+                        # program year, benchmark, price, county yield, payment rate, for each year in turn
+                        r["h"] = [_n(x_) for h in hist for x_ in (h["py"], h["by"], h["bp"], h["ay"], h["pay"])]
+                    rows.append(r)
+                es_out[k] = rows
+                v_out[k] = [({LY: vpack(c["verdicts"].get((k, i, LY))), OY: vpack(c["verdicts"].get((k, i, OY)))}
+                             if (c["verdicts"].get((k, i, LY)) or c["verdicts"].get((k, i, OY))) else None) for i in range(len(es))]
+            for k in ("corn", "soybeans"):
+                if k in main + small and (y6[k].get("scen") or {}).get("alt"):
+                    mi, _ = card_entries(c, k, D)
+                    v = c["levels"].get((k, mi, "2026"), {}).get("same", {})
+                    a = v.get("alt")
+                    al[k] = [v.get("verdict"), a["verdict"] if a else None]
+            rec = {"s": c["s"], "n": c["n"], "o": order, "m": main, "sm": small, "nb": nob,
+                   "py": {k: _n(plcy[k]) for k in c["k"] if plcy.get(k)}, "e": es_out, "v": v_out,
+                   "ci": {k: card_entries(c, k, D)[0] for k in main + small}}
+            if al:
+                rec["al"] = al
+            recs[c["f"]] = rec
+            for k in order + main + small + nob:
+                if k not in ks_all:
+                    ks_all.append(k)
+        g = math_globals(D, [k for k in ALL if k in ks_all])
+        g.update({"st": st, "n": S["n"], "slug": S["slug"], "win": win})
+        out[f"{OUT_MATH}/{st}.json"] = json.dumps({"updated": D["updated"], "g": g, "c": recs}, separators=(",", ":"), ensure_ascii=False) + "\n"
+    return out
+
+
+MATH_BOX = ('<div class="ap-mathb"><noscript><p class="ap-small">The working is built in the browser from '
+            '<a href="/' + OUT_MATH + '/{st}.json">this state&rsquo;s data file</a>. <a href="/arc-plc#method">How this is figured</a>.</p></noscript></div>')
+
+
+def key_numbers_html(c, D, cname):
+    """Key numbers, in the page for readers and crawlers: per crop and practice, FSA's 2026 benchmark yield, the
+    price PLC pays under (the effective reference price) for both years, FSA's county average PLC yield, and the
+    ARC-CO payment rate FSA paid in each settled year. Every figure is FSA's or the build's; a missing one says why."""
+    y6, y7 = D["years"]["2026"]["crops"], D["years"]["2027"]["crops"]
+    plcy = D["_plc_yields"].get(c["f"], {})
+    hy = [h["py"] for h in ((D["fsa"] or {}).get("history") or []) if h["py"] != 2026]
+    rows = []
+    for k in crop_order(c, D):
+        cd = y6[k]
+        es = c["k"].get(k) or []
+        for e in es:
+            lab = cd["label"] + ("" if e["d"] == "all" and not e.get("sub") else ", " + ent_label(e).lower())
+            hist = {h["py"]: h for h in e.get("hist", [])}
+            pays = "".join(f'<td>{("none" if hist[y]["pay"] == 0 else usd(hist[y]["pay"])) if y in hist and hist[y]["pay"] is not None else ("not yet" if y in hist else "not in file")}</td>' for y in hy)
+            e7 = f"{XC.pf(y7[k], y7[k]['erp']['erp'])}{XC.per(cd)}" if k in y7 else "not set yet"
+            rows.append(f'<tr><th scope="row">{esc(lab)}</th><td>{XC.yf(cd, e["by"]) if e["by"] else "not loaded"}</td>'
+                        f'<td>{XC.pf(cd, cd["erp"]["erp"])}{XC.per(cd)}</td><td>{e7}</td>'
+                        f'<td>{XC.yf(cd, plcy[k], 1) if plcy.get(k) else "none from FSA"}</td>{pays}</tr>')
+    if not rows:
+        return ""
+    return (f'<h2 id="key-numbers">Key numbers</h2><p class="ap-small">FSA&rsquo;s figures for '
+            f'{esc(cname)}. PLC pays when the season-average price ends under the effective reference price. ARC-CO paid is FSA&rsquo;s rate per '
+            f'acre for the county, before the 85% factor.</p><div class="ap-scroll"><table class="tbl ap-t ap-keyn"><thead><tr><th scope="col" rowspan="2">Crop</th><th scope="col" rowspan="2">Benchmark<br>yield 2026</th>'
+            f'<th scope="colgroup" colspan="2">PLC pays under</th><th scope="col" rowspan="2">County avg<br>PLC yield</th>'
+            + (f'<th scope="colgroup" colspan="{len(hy)}">ARC-CO paid per acre</th>' if hy else "") + '</tr><tr><th scope="col">2026</th><th scope="col">2027</th>'
+            + "".join(f'<th scope="col">{y}</th>' for y in hy) + f'</tr></thead><tbody>{"".join(rows)}</tbody></table></div>')
 
 
 def county_title(cname, st, lab, LY, by_txt):
@@ -2622,6 +2764,11 @@ def county_page(st, S, c, D, ch):
         for e in es:
             if e["by"] is None:
                 blocks.append(f'<h3>{esc(ent_label(e))}</h3><p class="ap-small">Official 2026 benchmark: not loaded here yet. Ask the county office.</p>{hist_table(e, cd)}')
+                continue
+            if official:
+                # the per-practice working (benchmark, Olympic average, break-even, history) is built on open
+                # by components/arc-plc-math.js from data/arc-plc/math/<ST>.json
+                ds_vars.append(f"{CROP_LC[k]} {ent_label(e).lower()} ARC-CO benchmark yield ({u}/acre)")
                 continue
             m = county_metrics(e["by"], cd)
             yrs = e["yrs"]
@@ -2714,14 +2861,14 @@ def county_page(st, S, c, D, ch):
     <button type="button" data-lv="lower" aria-pressed="false">Lower</button><button type="button" data-lv="same" aria-pressed="true">About the same</button><button type="button" data-lv="higher" aria-pressed="false">Higher</button>
   </div>
   <p class="ap-small ap-seg-note" data-same="Your PLC yield is on your farm&rsquo;s FSA-156EZ. Not sure? Leave it on About the same." data-lower="Showing a PLC yield 15% under the county average." data-higher="Showing a PLC yield 15% over the county average.">Your PLC yield is on your farm&rsquo;s FSA-156EZ. Not sure? Leave it on About the same.</p>"""
-        math_top = math_summary(c, D, LY, OY, cname)
+        math_top = ""   # built on open by components/arc-plc-math.js
     else:
         crops_html, tweak, math_top = pending_note(D), "", ""
     body = f"""
 <body>
 {hdr}
 <main class="ap-wrap ap-simple" id="main">
-  {bc_html([("Home", "/"), ("ARC or PLC", "/arc-plc"), (name, f"/arc-plc/{sl}"), (cname, None)])}
+  {icon_sprite() if official else ""}{bc_html([("Home", "/"), ("ARC or PLC", "/arc-plc"), (name, f"/arc-plc/{sl}"), (cname, None)])}
   <p class="page-kicker">{esc(cname)}, {esc(name)}</p>
   <h1>ARC or PLC: the short answer<span class="sr-only"> for {esc(cname)}, {esc(name)}</span></h1>
   {byline_html(D)}
@@ -2731,16 +2878,15 @@ def county_page(st, S, c, D, ch):
   {crops_html}
   <h2 id="deadlines">Deadlines</h2>
   {deadlines_box()}
-  <p class="ap-tools"><a class="btn btn-primary" href="/arc-plc/{sl}/{cslug}{SHEET_SUFFIX}" rel="nofollow">Counter sheet for the FSA office</a>
+  {key_numbers_html(c, D, cname) if official else ''}
+  <p class="ap-tools"><a class="btn btn-primary" href="{sheet_href(S, c)}" rel="nofollow">Counter sheet for the FSA office</a>
   <a class="btn btn-secondary" href="{share}" data-share="{share}" data-title="{esc(cname)} ARC or PLC">Share this county</a></p>
-  <details class="ap-det ap-mathd" id="math"><summary>Show the math</summary>
-  {math_top}
-  {''.join(blocks)}
-  {miss_txt}
+  <details class="ap-det ap-mathd" id="math"{f' data-math="/{OUT_MATH}/{st}.json" data-f="{c["f"]}"' if official else ""}><summary>Show the math</summary>
+  {MATH_BOX.format(st=st) if official else math_top + chr(10) + "  " + "".join(blocks) + chr(10) + "  " + miss_txt}
   <p class="ap-small">Break-even prices are per base acre with both programs on 85% of base and 2026 prices. Your PLC yield is on the FSA-156EZ.</p>
   </details>
   <details class="ap-full" id="run"><summary>Run every number for your farm</summary>
-  {form_html(D, first, st, c['f'])}
+  {form_shell(D, first, st, c['f']) if official else form_html(D, first, st, c['f'])}
   </details>
   {f'<div class="ap-faq ap-noprint"><h2>Questions about {esc(cname)}</h2>{faq_html}</div>' if faqs else ''}
   <p class="ap-disc">An estimate, not a USDA determination. Source: <a href="{FSA_DATA}" rel="noopener">FSA ARC/PLC program data</a>. <a href="{OFFICE}" rel="noopener">Find your county office</a>.</p>
@@ -2749,7 +2895,7 @@ def county_page(st, S, c, D, ch):
 </main>
 <script>document.addEventListener('click',function(e){{var a=e.target.closest&&e.target.closest('[data-share]');if(!a||!navigator.share)return;e.preventDefault();navigator.share({{title:a.getAttribute('data-title'),url:a.getAttribute('data-share')}}).catch(function(){{}});}});</script>
 """
-    page = head(title, desc, path, jsonld, official, fonts) + body + tail(ftr, calc=True)
+    page = head(title, desc, path, jsonld, official, fonts) + body + tail(ftr, calc=True, math=official)
     return page, {"path": path, "indexable": official, "title": title, "desc": desc, "lead": lead, "st": st}
 
 
@@ -2840,6 +2986,7 @@ def render_all(D):
     for k in D.get("_hubs", []):
         page, m = XC.hub_page(sys.modules[__name__], D, k, ch)
         out[f"{OUT_DIR}/{XC.XCROPS[k]['slug']}.html"] = page
+        out[f"{OUT_STATE_JSON}/hub/{k}.json"] = json.dumps(XC.hub_json(D, k), separators=(",", ":"), ensure_ascii=False) + "\n"
         urls.append((m["path"], "0.6", lm))
     nav_states = sorted(D["states"].values(), key=lambda x: x["n"])
     stats = {"states": 0, "states_indexed": 0, "counties": 0, "meta": meta, "examples": {}, "hubs": len(D.get("_hubs", []))}
@@ -2855,12 +3002,15 @@ def render_all(D):
             page, m = county_page(st, S, c, D, ch)
             out[f"{OUT_DIR}/{S['slug']}/{c['s']}.html"] = page
             if D["fsa"]:
-                ly = lead_year()
-                out[f"{OUT_DIR}/{S['slug']}/{c['s']}{SHEET_SUFFIX}.html"] = sheet_page(st, S, c, D, ly, "2027" if ly == "2026" else "2026")
+                out[f"{OUT_DIR}/{S['slug']}/{c['s']}{SHEET_SUFFIX}.html"] = sheet_stub(S, c)
             stats["counties"] += 1
             if m["indexable"]:
                 urls.append((m["path"], "0.5", lm))
             stats["examples"].setdefault("county", m)
+    out[OUT_FORM_JS] = form_js(D)
+    if D["fsa"]:
+        out[OUT_SHEET] = sheet_shell(D)
+        out.update(math_json(D))
     if len({u for u, _p, _l in urls}) != len(urls):
         raise SystemExit("[arc-plc] two pages share one URL; refusing to write the sitemap")
     out[OUT_SITEMAP] = sitemap(urls)
@@ -2880,6 +3030,26 @@ def existing_outputs(root):
     return paths
 
 
+def budget_problems(out):
+    """The size budget for what this build writes under arc-plc/, read from scripts/check_site_budget.py
+    (one set of numbers for the build and the site check): the folder's total and the cap on any one page.
+    Every file in arc-plc/ is this build's output, so the total is the sum of what it is about to write.
+    How it crept up (Oct 2026): 2,772 county pages at 125 KB with the math baked in, plus a sheet each."""
+    import check_site_budget as SB
+    cap_mb, page_kb = SB.FOLDER_MB.get(OUT_DIR, SB.DEFAULT_FOLDER_MB), SB.SET_PAGE_KB
+    sizes = {rel: len(t.encode("utf-8")) for rel, t in out.items() if rel.startswith(OUT_DIR + "/")}
+    total = sum(sizes.values())
+    bad = []
+    if total > cap_mb * 1048576:
+        bad.append(f"{OUT_DIR}/ would be {total / 1048576:.1f} MB, over its {cap_mb} MB budget (scripts/check_site_budget.py)")
+    fat = sorted(((n, rel) for rel, n in sizes.items() if n > page_kb * 1024), reverse=True)
+    for n, rel in fat[:5]:
+        bad.append(f"{rel} would be {n / 1024:.0f} KB, over the {page_kb} KB cap for a page in a generated set")
+    if len(fat) > 5:
+        bad.append(f"...and {len(fat) - 5} more pages over {page_kb} KB")
+    return bad, total
+
+
 def main_build(root=".", check=False):
     inp = load_inputs(root)
     bad = None if check else snapshot_problem(inp["snap"], build_date())
@@ -2887,6 +3057,11 @@ def main_build(root=".", check=False):
         raise SystemExit(f"[arc-plc] refusing to write: the futures snapshot {bad}. Nothing written.")
     D = compute(inp)
     out, stats = render_all(D)
+    over, arc_bytes = budget_problems(out)
+    if over:
+        for o in over:
+            print(f"[arc-plc] OVER BUDGET: {o}", file=sys.stderr)
+        raise SystemExit("[arc-plc] refusing to write: the pages are over the site size budget. Move bulk to data loaded on demand. Nothing written.")
     stale = []
     for rel, content in out.items():
         p = os.path.join(root, rel)
@@ -2911,7 +3086,7 @@ def main_build(root=".", check=False):
     f = D["fsa"]
     print(f"[arc-plc] FSA official file: {('PY' + str(f['py']) + ' as of ' + str(f['as_of'])) if f else 'none'}; "
           f"{stats['states']} state pages ({stats['states_indexed']} indexable), {stats['counties']} county pages; "
-          f"{len(stale)} file(s) written, {len(gone)} removed.")
+          f"{len(stale)} file(s) written, {len(gone)} removed; {OUT_DIR}/ is {arc_bytes / 1048576:.1f} MB.")
     for y in D["years"]:
         for k, x in D["years"][y]["crops"].items():
             print(f"[arc-plc] {y} {k}: ERP {x['erp']['erp']} ({x['erp']['binding']}), benchmark price {x['bp']['value']}")
@@ -3057,9 +3232,17 @@ def selftest():
         S = D["states"]["WI"]
         cp, cm = county_page("WI", S, S["c"][0], D, ("", "", ""))
         sp, sm = state_page("WI", S, D, ("", "", ""), [S])
-        ck("official path: county page indexed, official benchmark, trigger yield, both practices",
-           cm["indexable"] and "official 2026 ARC-CO benchmark" in cp and "170.00 bu" in cp and "200.00 bu" in cp
-           and "county yield comes in below" in cp and 'content="index,follow"' in cp, cm["title"])
+        # the benchmark and both practices are in the page (Key numbers); the working behind them (Olympic average,
+        # trigger yield, break-even) is in data/arc-plc/math/WI.json, which components/arc-plc-math.js lays out on open
+        # (test/arc-plc-math.test.mjs renders it against the old server-rendered math)
+        mj = json.loads(math_json(D)[f"{OUT_MATH}/WI.json"])
+        me = (mj["c"].get("55017") or {}).get("e", {}).get("corn", [])
+        ck("official path: county page indexed, official benchmark in Key numbers, both practices, math in the state's math file",
+           cm["indexable"] and 'id="key-numbers"' in cp and "170.00 bu" in cp and "200.00 bu" in cp and 'content="index,follow"' in cp
+           and f'data-math="/{OUT_MATH}/WI.json" data-f="55017"' in cp and sorted((e["d"], e["by"]) for e in me) == [("irr", 200), ("non", 170)]
+           and all(len(e["ys"]) == 5 and bin(e["x"]).count("1") == 2 for e in me), cm["title"])
+        ck("official path: counter sheet link goes to the shared sheet, no per-county sheet page",
+           'href="/arc-plc/sheet?c=wisconsin/chippewa-county"' in cp and SHEET_SUFFIX + '"' not in cp)
         ck("official path: calculator file carries both practices",
            [e["d"] for e in calc_json(D)[1]["WI"]["c"][0]["k"]["corn"]] == ["irr", "non"])
         bad = dict(f)
@@ -3082,6 +3265,28 @@ def selftest():
     except ImportError:
         ck("openpyxl installed", False)
     ck("no em dash in range text", "—" not in " ".join(ranges_text(runs)))
+    # ---- size budget (numbers from scripts/check_site_budget.py)
+    import check_site_budget as SB
+    small = {f"{OUT_DIR}/a.html": "x" * 1000, "data/arc-plc/math/WI.json": "x" * (SB.SET_PAGE_KB * 1024 + 10)}
+    ck("budget: small pages pass, data files are not pages", budget_problems(small)[0] == [])
+    fat = dict(small, **{f"{OUT_DIR}/texas.html": "x" * (SB.SET_PAGE_KB * 1024 + 1)})
+    ck("budget: a page over the cap is named", any("texas.html" in b for b in budget_problems(fat)[0]))
+    _cap = SB.FOLDER_MB.get(OUT_DIR, SB.DEFAULT_FOLDER_MB)
+    try:
+        SB.FOLDER_MB[OUT_DIR] = 0.0005
+        ck("budget: arc-plc/ over its folder budget refuses", any("over its" in b for b in budget_problems(small)[0]))
+    finally:
+        SB.FOLDER_MB[OUT_DIR] = _cap
+    stub = sheet_stub({"slug": "wisconsin", "n": "Wisconsin"}, {"s": "chippewa-county", "n": "Chippewa County"})
+    ck("old sheet URL: a stub under 1 KB that forwards to the shared sheet, canonical to the county",
+       len(stub.encode()) < 1024 and 'url=/arc-plc/sheet?c=wisconsin/chippewa-county"' in stub and 'location.replace("/arc-plc/sheet?c=wisconsin/chippewa-county"' in stub
+       and 'rel="canonical" href="https://agsist.com/arc-plc/wisconsin/chippewa-county"' in stub and "noindex" in stub, str(len(stub)))
+    vp = vpack({"verdict": "lean_arc", "plc": 0.905, "arc": 5.2049, "diff": -4.2999, "plc_wins": 0, "arc_wins": 4, "n": 11,
+                "rows": [{"arc": 1}, {"arc": 0}, {"arc": 2}], "borrowed": True})
+    # 0.905 -> $0.91 (half up after rnd); 5.2049 -> $5.20; |gap| 4.2999 -> $4.30, whole dollars 4; ARC-CO paid in 2 rows; borrowed flag 1
+    ck("math file: a packed verdict carries the cents as printed", vp == ["lean_arc", 91, 520, 0, 4, 11, 430, 2, 1, 4], str(vp))
+    ck("math file: no-call verdicts carry only the reason", vpack({"verdict": "pending", "n": 0}) == ["pending"]
+       and vpack({"verdict": "withheld", "n": 6}) == ["withheld", 6])
     # ---- Use my location: point in polygon (mirrors components/arc-plc-simple.js)
     sq, hole = [[0, 0], [10, 0], [10, 10], [0, 10], [0, 0]], [[4, 4], [6, 4], [6, 6], [4, 6], [4, 4]]
     navx = {"s": {"XX": {"b": [0, 0, 10, 10]}}}

@@ -731,6 +731,12 @@
     start();
   }
 
-  function boot() { var root = d.querySelector('[data-arcplc]'); if (root) init(root); }
+  /* county pages carry only the calculator's <section>; its inside comes from components/arc-plc-form.js (built from the same form) */
+  function boot() {
+    var root = d.querySelector('[data-arcplc]');
+    if (!root) return;
+    if (!$('ap-out') && root.getAttribute('data-form') && typeof w.AgArcForm === 'string') root.innerHTML = w.AgArcForm;
+    if ($('ap-out')) init(root);
+  }
   if (d.readyState === 'loading') d.addEventListener('DOMContentLoaded', boot); else boot();
 })(typeof window !== 'undefined' ? window : this);

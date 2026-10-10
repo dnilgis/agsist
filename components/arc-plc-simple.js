@@ -4,7 +4,9 @@
    - Lower / About the same / Higher: shows the answer the build figured for a
      PLC yield 15% under, at, or 15% over the county average. Nothing is
      computed here; the three answers are in the page.
-   - State and county pickers go to that county's page.
+   - State and county pickers go to that county's page. A county or state
+     page carries only its own state and county in the lists; the rest come
+     from data/arc-plc/nav.json after the page loads (or on first touch).
    - Use my location: asks the phone only when the button is tapped, then finds
      the county right here (point in polygon against the county shapes in
      data/arc-plc/geo/<ST>.json, cut by the build from the Farmland Atlas file).
@@ -83,7 +85,40 @@
       say('Going to ' + esc(label) + '.');
       w.location.href = '/arc-plc/' + x.slug + '/' + slug;
     }
+    /* the page carries only its own county; the state's full list comes from nav.json once the page
+       has loaded, or the moment the list is touched, whichever is first */
+    function fillCounties() {
+      if (!co.hasAttribute('data-fill') || !st.value) return;
+      var want = st.value;
+      nav().then(function (N) {
+        if (st.value !== want || !co.hasAttribute('data-fill') || !N.s[want]) return;
+        var keep = co.value;
+        co.innerHTML = '<option value="">Pick a county</option>' + N.s[want].c.map(function (c) {
+          return '<option value="' + esc(c[0]) + '" data-s="' + esc(c[2]) + '"' + (c[0] === keep ? ' selected' : '') + '>' + esc(c[1]) + '</option>'; }).join('');
+        co.removeAttribute('data-fill');
+      }).catch(function () {});
+    }
+    function fillStates() {
+      if (!st.hasAttribute('data-fill')) return;
+      nav().then(function (N) {
+        if (!st.hasAttribute('data-fill')) return;
+        var keep = st.value, ks = Object.keys(N.s).sort(function (a, b) { return N.s[a].n < N.s[b].n ? -1 : N.s[a].n > N.s[b].n ? 1 : 0; });
+        st.innerHTML = '<option value="">Pick a state</option>' + ks.map(function (k) {
+          return '<option value="' + esc(k) + '"' + (k === keep ? ' selected' : '') + '>' + esc(N.s[k].n) + '</option>'; }).join('');
+        st.removeAttribute('data-fill');
+      }).catch(function () {});
+    }
+    function fillBoth() { fillStates(); fillCounties(); }
+    if (co.hasAttribute('data-fill') || st.hasAttribute('data-fill')) {
+      ['pointerdown', 'focus', 'touchstart', 'keydown'].forEach(function (ev) {
+        co.addEventListener(ev, fillCounties, { passive: true });
+        st.addEventListener(ev, fillStates, { passive: true });
+      });
+      var idle = w.requestIdleCallback || function (f) { return setTimeout(f, 2000); };
+      if (d.readyState === 'complete') idle(fillBoth); else w.addEventListener('load', function () { idle(fillBoth); });
+    }
     st.addEventListener('change', function () {
+      co.removeAttribute('data-fill');
       say('');
       if (!st.value) { co.innerHTML = '<option value="">Pick a state first</option>'; co.disabled = true; return; }
       co.disabled = true; co.innerHTML = '<option value="">Loading counties</option>';
@@ -149,6 +184,30 @@
     if (want) run.open = true;
   }
 
-  function boot() { levels(); finder(); runOpen(); }
+  /* crop pages (/arc-plc/<crop>): each state's county links, filled from data/arc-plc/hub/<crop>.json when its list opens */
+  function hubs() {
+    var dets = d.querySelectorAll('details[data-hub]'), J = {};
+    function load(u) { if (!J[u]) { J[u] = getJSON(u); J[u].catch(function () { delete J[u]; }); } return J[u]; }
+    Array.prototype.forEach.call(dets, function (det) {
+      var box = det.querySelector('.ap-hubl'), u = det.getAttribute('data-hub'), done = false;
+      function show() {
+        if (done) return;
+        if (w.AgStates) w.AgStates.skeleton(box, 2);
+        load(u).then(function (j) {
+          var sl = det.getAttribute('data-slug'), k = det.getAttribute('data-k'), cs = (j.s || {})[det.getAttribute('data-st')] || [];
+          box.innerHTML = cs.map(function (c) { return '<a href="/arc-plc/' + esc(sl) + '/' + esc(c[0]) + '#' + esc(k) + '">' + esc(c[1]) + '</a>'; }).join(' &middot; ');
+          box.removeAttribute('aria-busy');
+          done = true;
+        }).catch(function () {
+          if (w.AgStates) w.AgStates.error(box, { msg: 'The county list didn’t load.', retry: show, inline: true });
+          else { box.removeAttribute('aria-busy'); box.textContent = 'The county list did not load. Close and open it to try again.'; }
+        });
+      }
+      det.addEventListener('toggle', function () { if (det.open) show(); });
+      det.querySelector('summary').addEventListener('pointerdown', function () { load(u).catch(function () {}); }, { passive: true, once: true });
+    });
+  }
+
+  function boot() { levels(); finder(); runOpen(); hubs(); }
   if (d.readyState === 'loading') d.addEventListener('DOMContentLoaded', boot); else boot();
 })(typeof window !== 'undefined' ? window : this, typeof document !== 'undefined' ? document : null);

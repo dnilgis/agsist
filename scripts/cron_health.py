@@ -8,6 +8,10 @@ no red run, no email, just a page that quietly stops moving. On 2026-10-07,
 08 and 09 the COT watcher did not run once inside its window and nothing said
 so until a reader noticed.
 
+It also checks the size of what GitHub Pages publishes (scripts/check_site_budget.py
+measures it): over 1 GB, Pages stops deploying and the site freezes on its last
+good build, so the row warns at that script's WARN_MB and goes red at FAIL_MB.
+
 This writes data/cron-health.json: for each watched workflow, its last
 successful run, the longest gap its clock allows, and whether the latest
 tick of that clock was served. A tick is served when a run that started
@@ -176,10 +180,37 @@ def collect(now, repo, token, api):
     rows.append(row)
     if row["status"] == "late":
         late.append("cot.html")
+    row = size_row()
+    rows.append(row)
+    if row["status"] == "over":
+        late.append("published-size")
     return rows, late
 
 
 GATED = {wf for wf, crons, *_ in CHECKS if crons is None}
+
+
+def size_row(root=ROOT, measure=None):
+    """The published-size row: the total GitHub Pages serves (scripts/check_site_budget.py measure(),
+    one walker for the site check and this). warn past its WARN_MB, over (red) past FAIL_MB."""
+    clock = "GitHub Pages stops deploying over 1024 MB"
+    try:
+        import check_site_budget as SB
+    except ImportError as e:
+        return {"workflow": "published-size", "critical": True, "clock": clock, "status": "unknown",
+                "why": "scripts/check_site_budget.py could not be loaded: %s" % e}
+    try:
+        r = (measure or SB.measure)(root)
+    except Exception as e:
+        return {"workflow": "published-size", "critical": True, "clock": clock, "status": "unknown", "why": "could not measure: %s" % e}
+    mb, warn, fail = r["total_mb"], r.get("warn_mb", SB.WARN_MB), r.get("fail_mb", SB.FAIL_MB)
+    status = "over" if mb > fail else "warn" if mb > warn else "ok"
+    top = ", ".join("%s %s MB" % (k, v) for k, v in list(r.get("folders", {}).items())[:4])
+    why = "%s MB published (warn at %d, red at %d, Pages limit 1024); biggest: %s" % (mb, warn, fail, top)
+    if r.get("over"):
+        why += "; budget: " + "; ".join(r["over"][:3])
+    return {"workflow": "published-size", "critical": True, "clock": clock, "status": status, "why": why,
+            "total_mb": mb, "warn_mb": warn, "fail_mb": fail, "folders": dict(list(r.get("folders", {}).items())[:8])}
 
 
 def build(now, rows, late):
@@ -303,6 +334,15 @@ def selftest():
     open(os.path.join(d, "data", "daily-archive", "2026-10-09.json"), "w").write("{}")
     check(briefing_status(T("2026-10-09 13:00"), d)[0] == "ok", "briefing published is ok")
     check(briefing_status(T("2026-10-10 02:00"), d)[0] == "ok", "21:00 CDT Friday still reads Friday's file")
+
+    # published size: warn and red lines, from a fake measure (the real walk is check_site_budget's own selftest)
+    fake = lambda mb: (lambda root: {"total_mb": mb, "warn_mb": 850, "fail_mb": 900, "folders": {"data": 300.0}, "over": []})
+    check(size_row(measure=fake(700))["status"] == "ok", "700 MB published is ok")
+    check(size_row(measure=fake(860))["status"] == "warn", "860 MB published warns")
+    check(size_row(measure=fake(905))["status"] == "over", "905 MB published is red")
+    check(size_row(measure=fake(905))["critical"] and "905" in size_row(measure=fake(905))["why"], "the red row says how big")
+    real = size_row()
+    check(real["status"] in ("ok", "warn", "over") and real.get("total_mb", 0) > 0, "the real tree measures (%s)" % real.get("why"))
 
     print("\n%d failed" % len(fails) if fails else "\nall cron_health checks passed")
     return 1 if fails else 0

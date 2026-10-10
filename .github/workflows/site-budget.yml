@@ -1,0 +1,54 @@
+name: Site size budget
+
+# GitHub Pages will not deploy a site over 1 GB. Past that the site does not
+# break, it freezes: every data commit stops reaching readers and nothing on
+# the page says so. scripts/check_site_budget.py measures what Pages publishes
+# (the repo tree minus .git and dot folders; the repo has .nojekyll) and fails
+# on the published total, a top-level folder over its budget, or a page in a
+# generated set over its size cap. Raising a budget is a decision made in that
+# file, in the same commit, with the reason in the message.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '**.html'
+      - 'data/**'
+      - 'scripts/check_site_budget.py'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: site-budget
+  cancel-in-progress: true
+
+jobs:
+  budget:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Prove the check
+        run: python3 scripts/check_site_budget.py --selftest
+
+      - name: Measure what Pages publishes
+        run: |
+          set +e
+          python3 scripts/check_site_budget.py > /tmp/budget.txt
+          rc=$?
+          set -e
+          cat /tmp/budget.txt
+          {
+            echo "## Site size budget"
+            echo
+            echo '```'
+            cat /tmp/budget.txt
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+          if [ "$rc" -ne 0 ]; then
+            grep '^OVER:' /tmp/budget.txt | while IFS= read -r line; do echo "::error title=Site size budget::${line#OVER: }"; done
+            exit 1
+          fi

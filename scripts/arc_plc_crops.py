@@ -611,11 +611,13 @@ def hub_page(B, D, k, ch):
     <p class="ap-small">Prices in dollars per {word(c6)}, FSA&rsquo;s unit for {esc(x['lc'])}. {x.get('note', '')} {B.asof(D['_xtab_date'], 'FSA tables as of')}</p>
   </div>"""
     # states and counties
+    # each state's county links are filled in when its list is opened (components/arc-plc-simple.js), from
+    # data/arc-plc/hub/<crop>.json: oats alone lists about 2,700 counties, too many for every load of this page
     st_html = []
     for st, S, cs in cc:
-        links = " &middot; ".join(f'<a href="/arc-plc/{S["slug"]}/{c["s"]}#{k}">{esc(re.sub(r" (County|Parish|Borough)$", "", c["n"]))}</a>' for c, _es in cs)
-        st_html.append(f'<details class="ap-det"><summary>{esc(S["n"])} ({len(cs):,} {"county" if len(cs) == 1 else "counties"})</summary>'
-                       f'<p class="ap-states">{links}</p><p class="ap-small"><a href="/arc-plc/{S["slug"]}">{esc(S["n"])}: every crop by county</a></p></details>')
+        st_html.append(f'<details class="ap-det ap-hubd" data-hub="/{B.OUT_STATE_JSON}/hub/{k}.json" data-st="{st}" data-slug="{S["slug"]}" data-k="{k}">'
+                       f'<summary>{esc(S["n"])} ({len(cs):,} {"county" if len(cs) == 1 else "counties"})</summary>'
+                       f'<p class="ap-states ap-hubl"></p><p class="ap-small"><a href="/arc-plc/{S["slug"]}">{esc(S["n"])}: every crop by county</a></p></details>')
     faq_html = "".join(f"<details><summary>{esc(qq)}</summary><p>{esc(a)}</p></details>" for qq, a in faq)
     others = " &middot; ".join(f'<a href="{hub_path(j)}">{esc(XCROPS[j]["label"])}</a>' for j in D.get("_hubs", []) if j != k)
     srcs = "".join(f'<li><a href="{esc(v[1])}" rel="noopener">{esc(v[0])}</a></li>' for v in TABLE_URLS.values())
@@ -658,6 +660,11 @@ def hub_page(B, D, k, ch):
 """
     page = B.head(title, desc, path, jsonld, True, fonts) + body + B.tail(ftr)
     return page, {"path": path, "indexable": True, "title": title, "desc": desc, "n": n_c}
+
+
+def hub_json(D, k):
+    """data/arc-plc/hub/<crop>.json: each state's counties with a benchmark for the crop, [slug, short name], for the hub page's lists."""
+    return {"k": k, "s": {st: [[c["s"], re.sub(r" (County|Parish|Borough)$", "", c["n"])] for c, _es in cs] for st, _S, cs in crop_counties(D, k)}}
 
 
 def other_crops_table(D):

@@ -18,6 +18,7 @@
 .ap-t .mut{color:var(--text-muted)}
 .ap-t th[scope=row]{font-weight:600}
 .ap-st .ap-grp{text-align:center;border-bottom:1px solid var(--border)}
+.ap-st td:nth-last-child(-n+2){text-align:right;font-variant-numeric:tabular-nums}
 .ap-math{font-size:var(--fs-sm);color:var(--text-dim)}
 .ap-math s{color:var(--text-muted)}
 .ap-det{border:1px solid var(--border);border-radius:var(--card-r);background:var(--surface);padding:.2rem .9rem;margin:.8rem 0}

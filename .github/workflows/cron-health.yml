@@ -14,6 +14,10 @@ name: Cron health
 # If cron-job.org itself stops, this goes quiet with it; that is what the
 # fallback cron is for, and why Fetch Grain Bids is the first row it checks.
 #
+# It also measures what GitHub Pages publishes (scripts/check_site_budget.py):
+# a warn row past 850 MB and a red one past 900 MB, before the 1 GB limit where
+# Pages stops deploying and the site freezes.
+#
 # The file is committed only when a status changes or every six hours, so it
 # does not add a Pages deploy every half hour.
 
@@ -66,6 +70,7 @@ jobs:
       - name: Prove the checks
         run: |
           python3 scripts/cron_gate.py --selftest
+          python3 scripts/check_site_budget.py --selftest
           python3 scripts/cron_health.py --selftest
 
       - name: Check every clock
@@ -95,6 +100,6 @@ jobs:
       - name: Late
         if: steps.h.outputs.red == '1'
         run: |
-          echo "::error::Time-critical workflow past its clock: ${{ steps.h.outputs.late }}"
+          echo "::error::Time-critical check failed (a workflow past its clock, or published-size over budget): ${{ steps.h.outputs.late }}"
           echo "See data/cron-health.json for which tick was missed and why."
           exit 1

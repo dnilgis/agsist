@@ -57,6 +57,16 @@
 .ap-mathd{margin-top:1.6rem}
 .ap-mathd>summary,.ap-full>summary{font-size:var(--fs-md)}
 .ap-mathd caption{text-align:left;padding-bottom:.3rem}
+.ap-mathb[aria-busy="true"]{min-height:12rem}
+.ap-mathb .st-msg{margin:.6rem 0}
+
+/* key numbers: FSA's figures per crop and practice, in the page */
+.ap-keyn td{text-align:right;font-variant-numeric:tabular-nums}
+.ap-keyn thead th{text-align:right;vertical-align:bottom}
+.ap-keyn thead th:first-child{text-align:left}
+.ap-keyn thead th[scope=colgroup]{text-align:center;border-bottom:1px solid var(--border)}
+.ap-keyn th[scope=row]{position:sticky;left:0;z-index:1;background:var(--bg);white-space:normal;min-width:7.5rem}
+.ap-keyn td,.ap-keyn th{padding-left:.4rem;padding-right:.4rem}
 .ap-full{border:1px solid var(--border);border-radius:var(--r-lg);background:var(--surface);margin:.8rem 0}
 .ap-full>summary{cursor:pointer;font-weight:700;min-height:48px;display:flex;align-items:center;padding:.5rem 1rem}
 .ap-full[open]>summary{border-bottom:1px solid var(--border)}
@@ -96,6 +106,8 @@
 .sh-qr .qr{width:1.35in;height:1.35in;display:block;margin:0 auto}
 .sh-qr .url{font-family:var(--font-mono);font-size:7.5pt;margin:.04in 0 0;line-height:1.3;word-break:break-all}
 .sh-foot{font-size:9pt;margin:.14in 0 0;line-height:1.4}
+.ap-sheet.sh-msg{min-height:0;display:block}
+.ap-sheet.sh-msg[aria-busy="true"]{min-height:6in}
 @media screen and (max-width:8.6in){.ap-sheet{padding:24px 16px;min-height:0}.sh-county{font-size:26pt}.sh-table td.a{white-space:normal}}
 @media print{
   @page{size:letter;margin:.45in}
