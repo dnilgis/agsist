@@ -56,6 +56,9 @@ import sys
 import tempfile
 from decimal import Decimal, ROUND_HALF_UP
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import county_yield as CY  # noqa: E402  (the one least-squares fit)
+
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 import build_atlas_pages as BA  # noqa: E402  (slugify, STATE_NAMES, World -> county slugs)
@@ -117,16 +120,10 @@ def fmt_date(iso):
 
 
 def ols_slope(points):
-    """[(x, y)] -> slope by ordinary least squares, or None for n < 2."""
-    n = len(points)
-    if n < 2:
-        return None
-    mx = sum(x for x, _ in points) / n
-    my = sum(y for _, y in points) / n
-    sxx = sum((x - mx) ** 2 for x, _ in points)
-    if sxx == 0:
-        return None
-    return sum((x - mx) * (y - my) for x, y in points) / sxx
+    """[(x, y)] -> slope by ordinary least squares, or None. The fit is the
+    site's one least-squares implementation (scripts/county_yield.py ols)."""
+    f = CY.ols(points)
+    return f["slope"] if f else None
 
 
 def series_stats(vals, pull_start=None):

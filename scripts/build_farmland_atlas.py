@@ -249,47 +249,9 @@ def log(*a):
 
 # ---------------------------------------------------------------- statistics
 
-# two-sided 97.5% t critical values by degrees of freedom; beyond 30 use 1.96+
-_T975 = {1: 12.706, 2: 4.303, 3: 3.182, 4: 2.776, 5: 2.571, 6: 2.447, 7: 2.365,
-         8: 2.306, 9: 2.262, 10: 2.228, 11: 2.201, 12: 2.179, 13: 2.160, 14: 2.145,
-         15: 2.131, 16: 2.120, 17: 2.110, 18: 2.101, 19: 2.093, 20: 2.086,
-         21: 2.080, 22: 2.074, 23: 2.069, 24: 2.064, 25: 2.060, 26: 2.056,
-         27: 2.052, 28: 2.048, 29: 2.045, 30: 2.042, 40: 2.021, 60: 2.000, 120: 1.980}
-
-
-def t975(df):
-    """Critical t for a 95% two-sided interval. Between tabulated rows the value
-    for the largest tabulated df AT OR BELOW df is used, which is the conservative
-    side (the interval is slightly wider, never narrower, than the exact t)."""
-    if df <= 0:
-        return None
-    if df in _T975:
-        return _T975[df]
-    below = max(k for k in _T975 if k <= df)
-    return _T975[below]
-
-
-def ols(pairs):
-    """OLS y ~ x. pairs: list of (x, y). Returns dict or None (n < 3 or no x spread)."""
-    pts = [(float(x), float(y)) for x, y in pairs if x is not None and y is not None]
-    n = len(pts)
-    if n < 3:
-        return None
-    mx = sum(x for x, _ in pts) / n
-    my = sum(y for _, y in pts) / n
-    sxx = sum((x - mx) ** 2 for x, _ in pts)
-    if sxx == 0:
-        return None
-    sxy = sum((x - mx) * (y - my) for x, y in pts)
-    slope = sxy / sxx
-    intercept = my - slope * mx
-    ss_tot = sum((y - my) ** 2 for _, y in pts)
-    ss_res = sum((y - (intercept + slope * x)) ** 2 for x, y in pts)
-    r2 = 1 - ss_res / ss_tot if ss_tot > 0 else 0.0
-    se = math.sqrt(ss_res / (n - 2) / sxx) if n > 2 else None
-    ci = t975(n - 2) * se if se is not None else None
-    return {"slope": slope, "intercept": intercept, "r2": r2, "n": n,
-            "se": se, "ci95": ci}
+# ols() and t975() are the site's one least-squares fit, in county_yield.py
+# (re-exported here under the old names for the layer modules).
+from county_yield import ols, t975, ends_early, MAX_TREND_GAP  # noqa: E402,F401
 
 
 def pearson(pairs):
@@ -437,7 +399,11 @@ def yield_layer(yld):
         "hist": hist,
         "cash_rent_slope": corn.get("slope"),      # the /cash-rent 15-year fit, kept for reference
     }
-    if fit and len(hist) >= 10:
+    stop = ends_early(max(hist), datetime.now(timezone.utc).year)
+    if stop:
+        rec["slope"] = None
+        rec["trend_status"] = "withheld: " + stop
+    elif fit and len(hist) >= 10:
         rec.update({"slope": round(fit["slope"], 3), "slope_ci95": round(fit["ci95"], 3) if fit["ci95"] is not None else None,
                     "r2": round(fit["r2"], 3), "window": f"{min(hist)}-{max(hist)}"})
     else:

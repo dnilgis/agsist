@@ -61,18 +61,23 @@ import urllib.parse
 import urllib.request
 from datetime import datetime, timezone
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import county_yield as CY  # noqa: E402  (the one trend rule)
+
 API = "https://quickstats.nass.usda.gov/api/api_GET/"
 OUTDIR = "data/cash-rent"
 FIRST_YEAR = 2008
 NO_SURVEY_YEARS = {2015, 2018}    # NASS ran no county cash rents survey in 2015 or 2018
-TREND_WINDOW = 15                 # years of yield history for the trend fit
-MIN_TREND_N = 6                   # fewer real years than this -> no trend, no guess
+# The trend rule (window, minimum years, series-ends-early) lives in
+# scripts/county_yield.py; these names stay so older readers keep working.
+TREND_WINDOW = CY.TREND_WINDOW    # years of yield history for the trend fit
+MIN_TREND_N = CY.MIN_TREND_N      # fewer real years than this -> no trend, no guess
 # A trend is not projected more than this many years past its last observed
 # year. NASS stopped the Nebraska practice series after 2018; a 2012-2018 dryland
 # fit (drought year first) projected to 2026 printed 287 bu for Adams NE dryland
 # corn, which yields ~150. Three covers the normal one-year publication lag
 # plus one missing survey year.
-MAX_TREND_GAP = 3
+MAX_TREND_GAP = CY.MAX_TREND_GAP
 # Years of published irrigated rent before it marks a county as irrigated.
 IRR_RENT_MIN_YEARS = 2
 
@@ -177,31 +182,6 @@ def fips(rec):
     return st.zfill(2) + co.zfill(3)
 
 
-def fit_trend(pairs):
-    """Ordinary least squares yield ~ year.
-
-    Returns (slope, intercept, r2, n) or None. Pure python: no numpy needed in
-    the workflow, and the math is auditable by anyone reading this file.
-    """
-    pairs = sorted(pairs)
-    n = len(pairs)
-    if n < MIN_TREND_N:
-        return None
-    xs = [p[0] for p in pairs]
-    ys = [p[1] for p in pairs]
-    mx, my = sum(xs) / n, sum(ys) / n
-    sxx = sum((x - mx) ** 2 for x in xs)
-    if sxx == 0:
-        return None
-    sxy = sum((xs[i] - mx) * (ys[i] - my) for i in range(n))
-    slope = sxy / sxx
-    intercept = my - slope * mx
-    sst = sum((y - my) ** 2 for y in ys)
-    ssr = sum((ys[i] - (slope * xs[i] + intercept)) ** 2 for i in range(n))
-    r2 = 1.0 - (ssr / sst) if sst > 0 else 0.0
-    return slope, intercept, r2, n
-
-
 def api_get(key, short_desc, state, extra=None):
     """One Quick Stats county query. Raises on transport/HTTP failure.
 
@@ -272,22 +252,12 @@ def yield_entry(pairs, cur):
     """
     hist = {str(y): round(v, 1) for y, v in sorted(pairs)}
     entry = {"hist": hist}
-    recent = [p for p in pairs if p[0] > cur - TREND_WINDOW]
-    fit = fit_trend(recent)
-    last_year = max((p[0] for p in recent), default=None)
-    if fit and cur - last_year > MAX_TREND_GAP:
-        entry["trend_w"] = (f"the county series ends in {last_year}; a trend is not "
-                            f"projected {cur - last_year} years past its last year")
-        fit = None
-    if fit:
-        slope, intercept, r2, n = fit
-        entry.update({
-            "trend": round(slope * cur + intercept, 1),
-            "slope": round(slope, 3),
-            "r2": round(r2, 3),
-            "n": n,
-            "last": round(sorted(recent)[-1][1], 1),
-        })
+    t = CY.trend(pairs, cur, TREND_WINDOW, MIN_TREND_N, MAX_TREND_GAP)
+    if t.get("kind") == "ended":
+        entry["trend_w"] = t["w"]
+    if "trend" in t:
+        entry.update({k: t[k] for k in ("trend", "slope", "r2", "n", "last")})
+        entry["ty"] = t["year"]      # the year the trend is projected to
     return entry
 
 
@@ -471,8 +441,11 @@ def practice_series_guard(rows_total, states):
 
 
 def _trend_out(e, basis):
-    return {"v": e["trend"], "r2": e["r2"], "n": e["n"], "slope": e["slope"],
-            "last": e["last"], "b": basis}
+    out = {"v": e["trend"], "r2": e["r2"], "n": e["n"], "slope": e["slope"],
+           "last": e["last"], "b": basis}
+    if e.get("ty"):
+        out["ty"] = e["ty"]
+    return out
 
 
 def collect_prices(key, state):
@@ -555,18 +528,41 @@ def emit_national():
     out, rents, pcts, yrs, rent_yrs = {}, [], [], [], []
     basis_n = {b: 0 for b in BASES}
     n_withheld = 0
+    n_irr_only = 0
+    gen = []
     for fn in files:
         d = json.load(open(os.path.join(OUTDIR, fn)))
+        if d.get("generated"):
+            gen.append(d["generated"])
         prices = d.get("prices", {}).get("corn", {})
         prelim = set(str(y) for y in d.get("price_prelim", []))
         for c in d["counties"]:
-            rent = c["rent"].get("nonirr") or c["rent"].get("irr")
+            # "r" is ALWAYS non-irrigated (dryland) cropland rent, the same
+            # definition the Farmland Atlas and the /rent pages use. Before
+            # 2026-10 this fell back to irrigated rent where NASS published no
+            # dryland figure, and 86 counties (Orange CA $2,360, Yuma AZ $747)
+            # were painted and counted as "the" rent. Irrigated and pasture now
+            # ship beside it, under their own keys, and never enter the median
+            # or the map breaks.
+            non = c["rent"].get("nonirr") or {}
+            irr = c["rent"].get("irr") or {}
+            pas = c["rent"].get("pasture") or {}
+            rent = non or irr          # the rent pair_county() divides; kind in "rk"
             if not rent:
                 continue
-            ry = max(rent, key=lambda y: int(y))
-            rec = {"r": rent[ry], "ry": int(ry), "s": d["state"], "n": c["name"]}
-            rents.append(rent[ry])
-            rent_yrs.append(int(ry))
+            rec = {"s": d["state"], "n": c["name"]}
+            if non:
+                ry = max(non, key=lambda y: int(y))
+                rec.update({"r": non[ry], "ry": int(ry)})
+                rents.append(non[ry])
+                rent_yrs.append(int(ry))
+            if irr:
+                y_ = max(irr, key=lambda y: int(y))
+                rec.update({"ri": irr[y_], "riy": int(y_)})
+                n_irr_only += 0 if non else 1
+            if pas:
+                y_ = max(pas, key=lambda y: int(y))
+                rec.update({"rp": pas[y_], "rpy": int(y_)})
             # Recompute rather than trust a "pair" block from disk: a state
             # file written before PAIR_RULE existed has none, and the rule
             # must be the one in this file, applied once, everywhere.
@@ -602,15 +598,18 @@ def emit_national():
         return [round(v[int(len(v) * i / n)], 1) for i in range(1, n)]
 
     doc = {
-        "generated": datetime.now(timezone.utc).strftime("%Y-%m-%d"),
+        # the newest state pull it was rolled up from, not the roll-up's own date
+        "generated": max(gen) if gen else datetime.now(timezone.utc).strftime("%Y-%m-%d"),
         "counties": out,
         "rent_breaks": breaks(rents),
         "pct_breaks": breaks(pcts),
         "pct_years": (sorted(set(yrs))[0], sorted(set(yrs))[-1]) if yrs else None,
-        # n_rent = counties with ANY rent, including older carried-forward
-        # ones (2877 vs 2400 from the latest survey on 2026-09-23). Pages that
-        # say "counties with a <year> rent" must use n_rent_latest.
+        # n_rent = counties with ANY non-irrigated rent, including older
+        # carried-forward ones. Pages that say "counties with a <year> rent"
+        # must use n_rent_latest. Irrigated-only counties are counted apart.
+        "rent_def": "non-irrigated cropland cash rent; irrigated (ri) and pasture (rp) ship separately",
         "n_rent": len(rents),
+        "n_irr_only": n_irr_only,
         "rent_year": max(rent_yrs) if rent_yrs else None,
         "n_rent_latest": sum(1 for y in rent_yrs if y == max(rent_yrs)) if rent_yrs else 0,
         "n_pct": len(pcts),
@@ -618,8 +617,9 @@ def emit_national():
         "pct_basis": basis_n,
         "pair_rule": PAIR_RULE,
         "note": ("Ratio year varies by county: each county uses its own latest year in which rent, a county corn yield "
-                 "of the SAME practice, and state price received all exist. Rent is the latest published rent, "
-                 "non-irrigated where available. Non-irrigated rent is divided by the non-irrigated yield, irrigated "
+                 "of the SAME practice, and state price received all exist. Rent (r) is the latest published "
+                 "non-irrigated cropland rent; irrigated (ri) and pasture (rp) are separate fields and never stand in "
+                 "for it. Non-irrigated rent is divided by the non-irrigated yield, irrigated "
                  "rent by the irrigated yield; the all-practice yield only where NASS shows no irrigation in the "
                  "county. Counties where the only yield mixes irrigated and dryland acres are withheld (pw = reason)."),
     }
@@ -680,15 +680,16 @@ def selftest():
 
     # --- trend fit: exact recovery of a known line ---------------------------
     truth = [(y, 2.0 * y - 3830.0) for y in range(2011, 2026)]
-    slope, intercept, r2, n = fit_trend(truth)
+    e = yield_entry(truth, 2026)
+    slope, r2, n = e["slope"], e["r2"], e["n"]
     assert abs(slope - 2.0) < 1e-6, slope
     assert abs(r2 - 1.0) < 1e-9, r2
-    assert n == 15
+    assert n == 14 and e["trend"] == 222.0 and e["ty"] == 2026, e   # 2012-2025 fall in the 15 years ending 2026
     log(f"  trend fit recovers a known line (slope={slope:.3f}, r2={r2:.4f})")
 
     # --- thin data must REFUSE, not extrapolate -----------------------------
-    assert fit_trend([(2023, 180.0), (2024, 182.0)]) is None, "fit on 2 points!"
-    assert fit_trend([(2020, 1.0)] * 8) is None, "zero variance produced a fit"
+    assert "trend" not in yield_entry([(2023, 180.0), (2024, 182.0)], 2026), "fit on 2 points!"
+    assert CY.ols([(2020, 1.0)] * 8) is None, "zero variance produced a fit"
     log("  thin/degenerate data refused")
 
     # --- a series that stopped must not be projected years past its end -----
@@ -772,6 +773,9 @@ def selftest():
                     "rent": {"nonirr": {"2024": 240.0}}, "yield": {}},
           "19001": {"fips": "19001", "name": "Adair",         # only an older rent, carried forward
                     "rent": {"nonirr": {"2019": 200.0}}, "yield": {}},
+          # irrigated only (Orange CA shape): NOT "the" rent, never in the median
+          "19003": {"fips": "19003", "name": "Adams",
+                    "rent": {"irr": {"2024": 2360.0}, "pasture": {"2024": 40.0}}, "yield": {}},
       }
       write_state("IA", counties2, {"corn": {"2016": 3.36, "2024": 4.35}})
       nat = emit_national()
@@ -779,6 +783,9 @@ def selftest():
       # Polk 2024, Adair 2019 carried forward), so n_rent = 3; only two are from
       # the newest year in the file (2024), so n_rent_latest = 2.
       assert nat["n_rent"] == 3, nat["n_rent"]
+      a = nat["counties"]["19003"]
+      assert "r" not in a and a["ri"] == 2360.0 and a["rp"] == 40.0 and nat["n_irr_only"] == 1, a
+      assert 2360.0 not in nat["rent_breaks"], "irrigated rent entered the dryland map breaks"
       assert nat["rent_year"] == 2024 and nat["n_rent_latest"] == 2, nat
       assert nat["n_pct"] == 1, "county without yield must have rent but NO ratio"
       s = nat["counties"]["19169"]
