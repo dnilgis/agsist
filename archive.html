@@ -117,8 +117,8 @@ body{overflow-x:hidden;overflow-x:clip;width:100%;}
 .arc-static-group>summary,.arc-month-group>summary{list-style:none;cursor:pointer;display:flex;align-items:baseline;justify-content:space-between;gap:.6rem;min-height:44px;}
 .arc-static-group>summary::-webkit-details-marker,.arc-month-group>summary::-webkit-details-marker{display:none;}
 .arc-static-group>summary .arc-static-month{flex:1;}
-.arc-static-group>summary::after,.arc-month-group>summary .arc-month-label::after{content:"+";font-family:'JetBrains Mono',monospace;color:var(--gold);font-weight:700;margin-left:.5rem;}
-.arc-static-group[open]>summary::after,.arc-month-group[open]>summary .arc-month-label::after{content:"\2212";}
+.arc-static-group>summary::after,.arc-month-group>summary::after{content:"+";font-family:'JetBrains Mono',monospace;color:var(--gold);font-weight:700;margin-left:.5rem;}
+.arc-static-group[open]>summary::after,.arc-month-group[open]>summary::after{content:"\2212";}
 .arc-static-group .arc-month-count{font-family:'JetBrains Mono',monospace;color:var(--text-muted);}
 .arc-month-group>summary .arc-month-label{flex:1;}
 .arc-month-group:not([open]){margin-bottom:.6rem;}
