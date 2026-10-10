@@ -253,11 +253,14 @@ def seo_quick_stats(c):
         return None
     # label it exactly as the file does; never call a forecast a final
     kind = "forecast" if ia.get("forecast") else "final"
+    # which month's forecast, when the file knows (build_state_stats.py)
+    if ia.get("forecast") and ia.get("forecast_month"):
+        kind = f"USDA {ia['forecast_month']} forecast"
     yr = ia.get("year")
     return (f"Corn & Soybean Yields by State: USDA NASS Data{SUFFIX}",
             f"Iowa corn {y:g} bu/ac ({yr} {kind}). Yields, acres, production "
-            f"and prices by state for corn, soybeans and wheat: USDA Quick "
-            f"Stats, made readable and free.")
+            f"and prices by state for corn, soybeans and wheat, from USDA Quick "
+            f"Stats.")
 
 
 def seo_cond_yield(c):
@@ -846,6 +849,10 @@ def selftest():
 
     t, d = seo_quick_stats(ctx)
     ck("a forecast is called a forecast, never a final", "2026 forecast" in d, d)
+    _qs = seo_quick_stats(dict(ctx, state_stats={"stateStats": {"IA": {
+        "corn_yield": 219.0, "year": 2026, "forecast": True, "forecast_month": "September"}}}))
+    ck("quick stats names the month of the forecast", "(2026 USDA September forecast)" in _qs[1], _qs[1])
+    ck("and still fits the description cap with the longest month", check(_qs[0], _qs[1], "usda-quick-stats.html"))
     ctx4 = dict(ctx, state_stats={"stateStats": {"IA": {"corn_yield": 211.0, "year": 2025,
                                                         "forecast": False}}})
     _, d4 = seo_quick_stats(ctx4)

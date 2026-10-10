@@ -150,7 +150,36 @@ def is_forecast(ref, year=None, today=None, small_grain=False):
     return False
 
 
-def status_label(year, ref, today=None, small_grain=False):
+def forecast_month(ref, load_time=None):
+    """Which month's USDA forecast a row is: "October", or None.
+
+    From the reference period when NASS names it ("YEAR - OCT FORECAST").
+    State rows often do not ("YEAR" for a crop still in the field; see
+    is_forecast), so the second source is the row's load_time: a row NASS
+    loaded on a Crop Production release day IS that release's forecast, and
+    the release days are the single table in usda_dates. A load on any other
+    day (a revision, a reload) names no month: "in-season forecast" stays.
+    """
+    ref = (ref or "").upper()
+    mon = next((MONTHS[m] for m in MONTHS if m in ref and "FORECAST" in ref), None)
+    if mon:
+        return mon
+    if load_time:
+        try:
+            d = date.fromisoformat(str(load_time)[:10])
+        except ValueError:
+            return None
+        try:
+            sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+            import usda_dates
+            if d in usda_dates.CROP_PRODUCTION_2026:
+                return d.strftime("%B")
+        except ImportError:
+            return None
+    return None
+
+
+def status_label(year, ref, today=None, small_grain=False, load_time=None):
     """The honest description of one NASS row.
 
     2026-08-15 INCIDENT: this used to be the unconditional string
@@ -162,13 +191,13 @@ def status_label(year, ref, today=None, small_grain=False):
     """
     ref = (ref or "").upper()
     if is_forecast(ref, year, today, small_grain):
-        mon = next((MONTHS[m] for m in MONTHS if m in ref), None)
+        mon = forecast_month(ref, load_time) or next((MONTHS[m] for m in MONTHS if m in ref), None)
         return f"{year} crop \u00b7 USDA NASS {mon} forecast" if mon else \
                f"{year} crop \u00b7 USDA NASS in-season forecast"
     return f"{year} crop year \u00b7 USDA NASS final"
 
 
-def rows_by_state(rows):
+def rows_by_state(rows, loads=None):
     """{state: {year: {reference_period: value}}} — every vintage kept.
 
     The first cut of this collapsed each state-year to ONE value with a
@@ -188,6 +217,14 @@ def rows_by_state(rows):
         if val is None:
             continue
         ref = r.get("reference_period_desc") or ""
+        lt = r.get("load_time") or ""
+        if loads is not None:
+            # TWO ROWS, ONE PERIOD NAME: keep the one NASS loaded last, and
+            # remember when, so the label can say which month's forecast it is.
+            seen = loads.setdefault(sa, {}).setdefault(int(yr), {})
+            if ref in seen and str(seen[ref]) > str(lt):
+                continue
+            seen[ref] = lt
         out.setdefault(sa, {}).setdefault(int(yr), {})[ref] = val
     return out
 
@@ -220,7 +257,7 @@ def field_map(rows, year):
     return out
 
 
-def assemble(raw_by_field, year, by_state=None):
+def assemble(raw_by_field, year, by_state=None, loads=None):
     """Assemble one record per state at the newest year that state actually has.
 
     Anchoring every state to a single global year is what made 9 states vanish
@@ -279,8 +316,19 @@ def assemble(raw_by_field, year, by_state=None):
             if cells:
                 ref = pick_vintage(cells)
                 break
-        rec = {"name": STATE_NAMES.get(sa, sa), "meta": status_label(yr, ref),
-               "year": yr, "forecast": bool(is_forecast(ref, yr))}
+        lt = None
+        for f in ("corn_yield", "bean_yield", "corn_prod", "bean_prod"):
+            lt = (((loads or {}).get(f) or {}).get(sa) or {}).get(yr, {}).get(ref) or lt
+            if lt:
+                break
+        rec = {"name": STATE_NAMES.get(sa, sa), "meta": status_label(yr, ref, load_time=lt),
+               "year": yr, "forecast": bool(is_forecast(ref, yr)),
+               # THE NASS VINTAGE, STORED. Pages print "USDA October forecast"
+               # from forecast_month; the raw period and load time are kept so
+               # anyone can check which release a figure came from.
+               "nass_reference_period": ref, "nass_load_time": lt or None}
+        if rec["forecast"]:
+            rec["forecast_month"] = forecast_month(ref, lt)
         if sa in COMBINED:
             rec["combined"] = True
         has = False
@@ -311,7 +359,8 @@ def assemble(raw_by_field, year, by_state=None):
             if any(rec[f] is not None for f in WHEAT_FIELDS):
                 rec["wheat_year"] = wyr
                 rec["wheat_forecast"] = bool(is_forecast(wref, wyr, small_grain=True))
-                rec["wheat_meta"] = status_label(wyr, wref, small_grain=True)
+                wlt = (((loads or {}).get("wheat_yield") or {}).get(sa) or {}).get(wyr, {}).get(wref)
+                rec["wheat_meta"] = status_label(wyr, wref, small_grain=True, load_time=wlt)
         else:
             for field in WHEAT_FIELDS:
                 rec[field] = None
@@ -362,8 +411,9 @@ def build(key, out_path):
     if not yr:
         print("No usable NASS data returned; leaving existing file untouched.", file=sys.stderr)
         return 1
-    by_state = {f: rows_by_state(rows) for f, rows in raw_rows.items()}
-    stats = assemble(None, yr, by_state=by_state)
+    loads = {f: {} for f in raw_rows}
+    by_state = {f: rows_by_state(rows, loads[f]) for f, rows in raw_rows.items()}
+    stats = assemble(None, yr, by_state=by_state, loads=loads)
     n_fc = sum(1 for r in stats.values() if r.get("forecast"))
     payload = {
         "updated": datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ"),
@@ -375,6 +425,30 @@ def build(key, out_path):
     print(f"[state-stats] year={yr} | states={len(stats)} | "
           f"forecast-labelled={n_fc} | final={len(stats) - n_fc} -> wrote {out_path}")
     return 0
+
+def release_day_gate(stats_doc, now_utc):
+    """Run on a Crop Production release day? (state-stats.yml chains off the
+    WASDE watch, which completes every 15 minutes.)
+
+    Yes on a release day (usda_dates.CROP_PRODUCTION_2026) from 16:00 UTC,
+    until the file carries that month's forecast, and no more than once every
+    two hours so a release whose state rows load late is retried without a
+    commit every fifteen minutes."""
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    import usda_dates
+    day = now_utc.date()
+    if day not in usda_dates.CROP_PRODUCTION_2026 or now_utc.hour < 16:
+        return False
+    ss = (stats_doc or {}).get("stateStats") or {}
+    month = day.strftime("%B")
+    if any(r.get("forecast_month") == month for r in ss.values()):
+        return False
+    try:
+        upd = datetime.datetime.strptime((stats_doc or {}).get("updated", ""), "%Y-%m-%dT%H:%M:%SZ")
+    except ValueError:
+        return True
+    return (now_utc.replace(tzinfo=None) - upd).total_seconds() >= 2 * 3600
+
 
 # ---- offline self-test (no network) -------------------------------------
 def selftest():
@@ -552,6 +626,42 @@ def selftest():
     assert convert("corn_acres_harvested", 0.0) == 0.0
     ot = assemble(None, 2025, by_state={"corn_yield": {"OT": {2025: {"YEAR": 150.0}}}, "bean_yield": {}, "corn_prod": {}, "bean_prod": {}})
     assert ot["OT"]["combined"] is True and ot["OT"]["name"] == "Other States", ot
+    # ---- 2026-10-10: WHICH MONTH'S FORECAST ------------------------------
+    # The live file said "2026 crop · USDA NASS in-season forecast" on all 33
+    # forecast states: NASS's state rows carry "YEAR" for a standing crop, so
+    # no month could be read off the period. The load time names the release.
+    assert forecast_month("YEAR - OCT FORECAST") == "October"
+    assert forecast_month("YEAR", "2026-10-09 12:00:00.000") == "October"
+    assert forecast_month("YEAR", "2026-10-14 09:00:00.000") is None, \
+        "a load on a day that is not a Crop Production release names no month"
+    assert forecast_month("YEAR", None) is None and forecast_month("YEAR", "junk") is None
+    _l = {}
+    _rows = [{"state_alpha": "IA", "year": "2026", "Value": "216", "reference_period_desc": "YEAR",
+              "load_time": "2026-09-11 12:00:00.000"},
+             {"state_alpha": "IA", "year": "2026", "Value": "219", "reference_period_desc": "YEAR",
+              "load_time": "2026-10-09 12:00:00.000"},
+             {"state_alpha": "IA", "year": "2026", "Value": "999", "reference_period_desc": "YEAR",
+              "load_time": "2026-08-12 12:00:00.000"}]
+    _bs = rows_by_state(_rows, _l)
+    assert _bs["IA"][2026]["YEAR"] == 219 and _l["IA"][2026]["YEAR"].startswith("2026-10-09"), \
+        "two rows under one period name: the one NASS loaded last is published"
+    _st = assemble(None, 2026, by_state={"corn_yield": _bs}, loads={"corn_yield": _l})
+    if date.today() < date(2027, 1, 10):
+        assert _st["IA"]["meta"] == "2026 crop \u00b7 USDA NASS October forecast", _st["IA"]["meta"]
+        assert _st["IA"]["forecast_month"] == "October"
+    assert _st["IA"]["nass_reference_period"] == "YEAR" and _st["IA"]["nass_load_time"].startswith("2026-10-09")
+
+    # the release-day gate
+    _utc = datetime.timezone.utc
+    _doc = {"updated": "2026-10-06T15:23:15Z", "stateStats": {"IA": {"forecast_month": None}}}
+    assert release_day_gate(_doc, datetime.datetime(2026, 10, 9, 16, 5, tzinfo=_utc)), "Oct 9 after the print: run"
+    assert not release_day_gate(_doc, datetime.datetime(2026, 10, 9, 15, 55, tzinfo=_utc)), "before the print: wait"
+    assert not release_day_gate(_doc, datetime.datetime(2026, 10, 10, 16, 5, tzinfo=_utc)), "not a release day"
+    assert not release_day_gate({"updated": "2026-10-09T16:05:00Z", "stateStats": {}},
+                                datetime.datetime(2026, 10, 9, 16, 20, tzinfo=_utc)), "ran 15 minutes ago: wait"
+    assert not release_day_gate({"updated": "2026-10-09T16:05:00Z", "stateStats": {"IA": {"forecast_month": "October"}}},
+                                datetime.datetime(2026, 10, 9, 19, 0, tzinfo=_utc)), "already has October: done"
+
     print("selftest OK:", json.dumps(stats["IA"], separators=(",", ":")))
     print("  forecast label:", st["IA"]["meta"])
     print("  non-forecast state kept:", st["AZ"]["meta"])
@@ -560,6 +670,13 @@ def selftest():
 if __name__ == "__main__":
     if "--selftest" in sys.argv:
         sys.exit(selftest())
+    if "--gate" in sys.argv:
+        try:
+            _doc = json.load(open(os.environ.get("OUT", "data/state-stats.json")))
+        except (OSError, ValueError):
+            _doc = {}
+        print("go=%d" % (1 if release_day_gate(_doc, datetime.datetime.now(datetime.timezone.utc)) else 0))
+        sys.exit(0)
     api_key = os.environ.get("NASS_API_KEY", "").strip()
     if not api_key:
         print("ERROR: NASS_API_KEY not set.", file=sys.stderr); sys.exit(2)

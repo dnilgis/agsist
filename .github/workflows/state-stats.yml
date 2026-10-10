@@ -6,6 +6,14 @@ on:
       - "scripts/build_state_stats.py"
   schedule:
     - cron: "33 12 15 * *"   # monthly, 15th 12:33 UTC (off :30) — picks up the Jan annual summary + NASS revisions
+  # CROP PRODUCTION DAYS. The October forecast printed Oct 9 and this file
+  # waited for the 15th. It chains off the WASDE watch (every 15 minutes) and
+  # the gate job lets a run through on a Crop Production release day, after
+  # the print, until the file carries that month's forecast, at most every two
+  # hours (scripts/build_state_stats.py --gate).
+  workflow_run:
+    workflows: ["WASDE watch — grade the report as it lands"]
+    types: [completed]
   workflow_dispatch:
 
 permissions:
@@ -16,7 +24,29 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  gate:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    outputs:
+      go: ${{ steps.g.outputs.go }}
+    steps:
+      - uses: actions/checkout@v4
+        if: github.event_name == 'workflow_run'
+        with:
+          sparse-checkout: |
+            scripts/build_state_stats.py
+            scripts/usda_dates.py
+            data/state-stats.json
+          sparse-checkout-cone-mode: false
+      - id: g
+        env:
+          EV: ${{ github.event_name }}
+        run: |
+          if [ "$EV" = "workflow_run" ]; then python3 scripts/build_state_stats.py --gate >> "$GITHUB_OUTPUT"; else echo "go=1" >> "$GITHUB_OUTPUT"; fi
+
   build:
+    needs: gate
+    if: needs.gate.outputs.go == '1'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

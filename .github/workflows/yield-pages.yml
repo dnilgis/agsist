@@ -11,6 +11,11 @@ on:
       - "scripts/county_yield.py"
   schedule:
     - cron: "23 13 17 * *"
+  # The pages print the state file's own label ("2026 crop · USDA NASS
+  # October forecast"), so they rebuild when that file does.
+  workflow_run:
+    workflows: ["Build State Stats (USDA NASS)"]
+    types: [completed]
   workflow_dispatch:
 
 permissions:
@@ -22,6 +27,7 @@ concurrency:
 
 jobs:
   build:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

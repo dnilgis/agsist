@@ -19,7 +19,7 @@
   <link rel="manifest"                             href="/manifest.json">
 
   <title>Corn &amp; Soybean Yields by State: USDA NASS Data | AGSIST</title>
-  <meta name="description" content="Iowa corn 219 bu/ac (2026 forecast). Yields, acres, production and prices by state for corn, soybeans and wheat: USDA Quick Stats, made readable and free.">
+  <meta name="description" content="Iowa corn 219 bu/ac (2026 forecast). Yields, acres, production and prices by state for corn, soybeans and wheat, from USDA Quick Stats.">
   <meta name="keywords" content="USDA crop data, corn yield by state, soybean yield, wheat production, USDA NASS Quick Stats, season average farm price, US corn production 2025, top corn producing states, agricultural statistics">
   <meta name="author"  content="Sigurd Lindquist, AGSIST">
   <meta name="robots"  content="index, follow">
@@ -29,7 +29,7 @@
   <meta property="og:site_name"    content="AGSIST">
   <meta property="og:locale"       content="en_US">
   <meta property="og:title"        content="Corn &amp; Soybean Yields by State: USDA NASS Data | AGSIST">
-  <meta property="og:description"  content="Iowa corn 219 bu/ac (2026 forecast). Yields, acres, production and prices by state for corn, soybeans and wheat: USDA Quick Stats, made readable and free.">
+  <meta property="og:description"  content="Iowa corn 219 bu/ac (2026 forecast). Yields, acres, production and prices by state for corn, soybeans and wheat, from USDA Quick Stats.">
   <meta property="og:url"          content="https://agsist.com/usda-quick-stats">
   <meta property="og:image"        content="https://agsist.com/img/og/agsist.jpg">
   <meta property="og:image:width"  content="1200">
@@ -39,7 +39,7 @@
   <meta name="twitter:site"        content="@agsist">
   <meta name="twitter:creator"     content="@agsist">
   <meta name="twitter:title"       content="Corn &amp; Soybean Yields by State: USDA NASS Data | AGSIST">
-  <meta name="twitter:description" content="Iowa corn 219 bu/ac (2026 forecast). Yields, acres, production and prices by state for corn, soybeans and wheat: USDA Quick Stats, made readable and free.">
+  <meta name="twitter:description" content="Iowa corn 219 bu/ac (2026 forecast). Yields, acres, production and prices by state for corn, soybeans and wheat, from USDA Quick Stats.">
   <meta name="twitter:image"       content="https://agsist.com/img/og/agsist.jpg">
 
   <script type="application/ld+json">
@@ -871,6 +871,8 @@
       return { name: ss[k].name || k, prod: ss[k][cmd+'_prod'], yld: ss[k][cmd+'_yield'],
                year: (cmd==='wheat' && ss[k].wheat_year) ? ss[k].wheat_year : ss[k].year,
                fc: (cmd==='wheat' && ss[k].wheat_year) ? !!ss[k].wheat_forecast : !!ss[k].forecast,
+               /* which month's USDA forecast, stored by build_state_stats.py */
+               fm: (cmd==='wheat' && ss[k].wheat_year) ? null : (ss[k].forecast_month || null),
                combined: !!ss[k].combined || isCombined(k) };
     }).filter(function(x){ return x.prod != null && +x.prod > 0 && !x.combined && !isCombined(x.name); })
       .sort(function(a,b){ return b.prod - a.prod; }).slice(0,10);
@@ -884,7 +886,7 @@
     list.innerHTML = arr.map(function(x,i){
       var pct = Math.max(2, (x.prod/max)*100);
       var y = x.yld != null ? ' <small>'+x.yld+' bu/ac</small>' : '';
-      var f = x.fc ? ' <small class="ts-fc" title="USDA NASS in-season forecast, not a final estimate">'+(x.year||'')+' est.</small>'
+      var f = x.fc ? ' <small class="ts-fc" title="'+(x.fm?('USDA NASS '+x.fm+' forecast'):'USDA NASS in-season forecast')+', not a final estimate">'+(x.year||'')+' est.</small>'
         : (x.year && MODAL_YEAR && x.year !== MODAL_YEAR) ? ' <small class="ts-fc" title="A different crop year from most states in this list">'+x.year+' final</small>' : '';
       return '<div class="ts-row"><div class="ts-rank"><span>'+(i+1)+'</span><b>'+x.name+'</b>'+f+'</div>'
         + '<div class="ts-bar-track"><div class="ts-bar" style="width:'+pct.toFixed(1)+'%"></div></div>'
@@ -907,11 +909,15 @@
         var nfc = vals.filter(function(v){ return v.forecast; }).length;
         var yrs = {}; vals.forEach(function(v){ if (v.year) yrs[v.year] = 1; });
         var span = Object.keys(yrs).sort();
+        /* NAME THE MONTH when every forecast state carries the same one */
+        var fms = {}; vals.forEach(function(v){ if (v.forecast) fms[v.forecast_month || '?'] = 1; });
+        var fmk = Object.keys(fms), fmo = (fmk.length === 1 && fmk[0] !== '?') ? fmk[0] : null;
+        var fcw = fmo ? ('USDA NASS ' + fmo + ' forecast') : 'USDA NASS in-season forecast';
         var what = nfc === 0
           ? 'latest final USDA NASS crop year' + (span.length ? (' ' + span.join('/')) : '')
           : (nfc === vals.length
-              ? 'USDA NASS in-season forecast for the ' + span.join('/') + ' crop, not a final estimate'
-              : nfc + ' of ' + vals.length + ' states are USDA NASS in-season forecasts (marked "est."); the rest are finals');
+              ? fcw + ' for the ' + span.join('/') + ' crop, not a final estimate'
+              : nfc + ' of ' + vals.length + ' states are the ' + fcw + ' (marked "est."); the rest are finals');
         src.innerHTML = 'Production in million bushels, ' + what
           + '. Top 10 states; yield shown where reported. The yield table below shows finals only, so a state marked est. can differ from it in either direction.';
       }
