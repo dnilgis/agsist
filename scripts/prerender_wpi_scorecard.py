@@ -107,14 +107,14 @@ def farm_box(n):
     if not n:
         return ('<div class="wp-farmbox">No USDA report is on the board right now. '
                 'Your own numbers: <a href="/breakeven">break-even</a> &middot; '
-                '<a href="/presell-calculator">safe pre-sell</a>.</div>')
+                '<a href="/harvest-price-tracker#presell">safe pre-sell</a>.</div>')
     when = _report_when(n)
     metric = esc(n.get("metric", "the next set of USDA numbers"))
     return ('<div class="wp-farmbox"><b>' + esc(n.get("report", "Next report")) +
             (f': {when}.</b> ' if when else '.</b> ') +
             f'{metric}. If you are holding unpriced bushels, know the number to beat '
             'before that morning. Your own numbers: <a href="/breakeven">break-even</a> '
-            '&middot; <a href="/presell-calculator">safe pre-sell</a>.</div>')
+            '&middot; <a href="/harvest-price-tracker#presell">safe pre-sell</a>.</div>')
 
 
 def sc_next_report(n):
@@ -837,12 +837,11 @@ def bake_scorecard(check_only=False):
     return orig, src, SC_HTML
 
 
-# ── COT + ag-odds bakes (same pattern; JS hides the baked block on hydrate) ──
+# ── COT bake (same pattern; JS hides the baked block on hydrate) ──
+# (ag-odds.html was retired 2026-10; its odds now live on the homepage.)
 
 COT_HTML = "cot.html"
 COT_JSON = "data/cot.json"
-AO_HTML = "ag-odds.html"
-MKT_JSON = "data/markets.json"
 
 COT_LABELS = {"corn": "Corn", "beans": "Soybeans", "wheat": "Chicago wheat",
               "kcwheat": "KC wheat", "mplswheat": "Minneapolis wheat",
@@ -876,38 +875,6 @@ def cot_summary(d):
             + "; ".join(rows[:6]) + ". Full 52-week context, price overlay, and every market below.")
 
 
-def ao_summary(d):
-    mkts = d.get("markets") or []
-    if not mkts:
-        return ""
-    items = []
-    for m in mkts[:6]:
-        t, yes = m.get("title"), m.get("yes")
-        if not t or yes is None:
-            continue
-        items.append(f'{esc(t)} <b>{yes}%</b> yes')
-    if not items:
-        return ""
-    fetched = (d.get("fetched") or "")[:10]
-    return (f'Prediction-market odds as of {esc(fetched)}: ' + "; ".join(items)
-            + ". These are the readings from the pull stamped above, not a live feed. "
-              "The board below re-renders the same pull in your browser.")
-
-
-_MON = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
-
-
-def ao_read_at(d):
-    """The pull time on the one-line note under the H1, e.g. "Oct 7, 2026,
-    16:40 UTC". readAt() in ag-odds.html writes the same wording on hydrate."""
-    f = d.get("fetched") or ""
-    m = re.match(r"(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})", f)
-    if not m:
-        return "once a day"
-    y, mo, dd, hh, mi = m.groups()
-    return f"{_MON[int(mo) - 1]} {int(dd)}, {y}, {hh}:{mi} UTC"
-
-
 def bake_cot():
     with open(COT_JSON, encoding="utf-8") as f:
         d = json.load(f)
@@ -916,17 +883,6 @@ def bake_cot():
     orig = src
     src = replace_region(src, "cot-summary", cot_summary(d), COT_HTML)
     return orig, src, COT_HTML
-
-
-def bake_agodds():
-    with open(MKT_JSON, encoding="utf-8") as f:
-        d = json.load(f)
-    with open(AO_HTML, encoding="utf-8") as f:
-        src = f.read()
-    orig = src
-    src = replace_region(src, "ao-odds", ao_summary(d), AO_HTML)
-    src = replace_region(src, "ao-readat", ao_read_at(d), AO_HTML)
-    return orig, src, AO_HTML
 
 
 # ── ONE PRINT, ONE VERDICT, ACROSS THE TWO FILES THIS PAGE READS ─────────────
@@ -974,7 +930,7 @@ def main():
     # prediction bot's page, which reads data/predictions.json and carries
     # none of the old PRERENDER:sc-* regions. The old call scorecard's data
     # (data/scorecard.json) stays in the repo as an archive, unshown.
-    for bake in (bake_wpi, bake_cot, bake_agodds, bake_home):
+    for bake in (bake_wpi, bake_cot, bake_home):
         orig, new, fname = bake()
         if new != orig:
             if args.check:

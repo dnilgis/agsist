@@ -144,10 +144,10 @@ jobs:
       # Baking here, in the job that owns the data, is the fix. One writer.
       # ONLY THE COT BAKE, AND ONLY AFTER THE DATA IS SAFE.
       #
-      # Run bare, prerender_wpi_scorecard.py bakes FOUR pages -- whats-priced-in,
-      # scorecard, cot and ag-odds -- and three of those belong to other
+      # Run bare, prerender_wpi_scorecard.py bakes several pages -- whats-priced-in,
+      # scorecard, cot and the homepage -- and the others belong to other
       # workflows (analyst-scorecard.yml, daily.yml, whats-priced-in.yml). This
-      # job has no business writing them: it would leave three files dirty that
+      # job has no business writing them: it would leave files dirty that
       # the reset loop below then throws away, and worse, a failure baking a
       # page this workflow does not own would take the price update down with
       # it. bake_cot() is called directly instead.

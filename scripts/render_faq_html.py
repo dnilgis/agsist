@@ -70,7 +70,6 @@ PAGES = {
     "soybean-futures-prices": ("sync", "items"),
     "wheat-futures-prices": ("sync", "items"),
     "storage-crunch":       ("sync", "details"),
-    "ag-odds":              ("sync", "ao"),
 }
 
 STYLE = """<style>

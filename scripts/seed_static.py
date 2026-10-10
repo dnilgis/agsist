@@ -108,7 +108,7 @@ def render_desc(tmpl, **kw):
 # pages whose schema dateModified is stamped with today (price pages get it in
 # the loop above; these get it too because their content changes daily)
 DATEMOD_ONLY = ["index.html", "markets.html", "daily.html",
-                "cash-bids.html", "spray.html", "urea.html", "ag-odds.html",
+                "cash-bids.html", "spray.html", "urea.html",
                 "cot.html", "whats-priced-in.html", "drought-monitor.html",
                 "hail-map.html"]
 
@@ -122,7 +122,6 @@ SITEMAP_URLS = [
     "https://agsist.com/soybean-futures-prices",
     "https://agsist.com/wheat-futures-prices",
     "https://agsist.com/cattle-futures-prices",
-    "https://agsist.com/ag-odds",
     "https://agsist.com/spray",
     "https://agsist.com/hail-map",
 ]

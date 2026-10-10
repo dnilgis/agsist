@@ -40,7 +40,6 @@ CADENCE = {
     "/corn-futures-prices": 1,
     "/soybean-futures-prices": 1,
     "/wheat-futures-prices": 1,
-    "/ag-odds": 1,
     "/whats-priced-in": 1,
     "/cattle-futures-prices": 1,
     "/scorecard": 1,

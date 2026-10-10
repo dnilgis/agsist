@@ -381,11 +381,10 @@ details.fold>summary>h2,details.fold>summary>h3{margin:0!important;padding:0!imp
   <nav class="wp-jump" aria-label="On this page"><b>On this page</b>
     <a href="#next-report">What's expected next</a><span>&middot;</span><a href="#track-record">How past reports landed</a><span>&middot;</span><a href="#analyst-board">Analyst estimates, graded</a><span>&middot;</span><a href="#methodology">Methodology</a><span>&middot;</span><a href="#questions">Questions</a>
   </nav>
-  <!-- PRERENDER:wp-farmbox --><div class="wp-farmbox"><b>November WASDE: Nov 10, 11:00 a.m. Central.</b> . If you are holding unpriced bushels, know the number to beat before that morning. Your own numbers: <a href="/breakeven">break-even</a> &middot; <a href="/presell-calculator">safe pre-sell</a>.</div><!-- /PRERENDER:wp-farmbox -->
+  <!-- PRERENDER:wp-farmbox --><div class="wp-farmbox"><b>November WASDE: Nov 10, 11:00 a.m. Central.</b> . If you are holding unpriced bushels, know the number to beat before that morning. Your own numbers: <a href="/breakeven">break-even</a> &middot; <a href="/harvest-price-tracker#presell">safe pre-sell</a>.</div><!-- /PRERENDER:wp-farmbox -->
 
   <nav class="wp-xlink" aria-label="Related pages">
     <a href="/usda-calendar"><svg class="ic-sp" aria-hidden="true"><use href="#sp-calendar"/></svg> Full USDA report calendar</a>
-    <a href="/ag-odds"><svg class="ic-sp" aria-hidden="true"><use href="#sp-dices"/></svg> Market odds</a>
     <a href="/scorecard">Prediction bot scorecard</a>
     <a href="/corn-futures-prices">Corn futures</a>
     <a href="/soybean-futures-prices">Soybean futures</a>
@@ -718,7 +717,7 @@ window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);
       gaEvent('wpi_result',{report:lr.report||'',in_line:lr.in_line_count,of:lr.metric_count});
     }
   }).catch(function(){
-    document.getElementById('wp-next').innerHTML='<div class="wp-err">Report expectations are briefly unavailable. See the <a href="/usda-calendar" style="color:var(--wp-gold2)">USDA report calendar</a> and <a href="/ag-odds" style="color:var(--wp-gold2)">market odds</a>.</div>';
+    document.getElementById('wp-next').innerHTML='<div class="wp-err">Report expectations are briefly unavailable. See the <a href="/usda-calendar" style="color:var(--wp-gold2)">USDA report calendar</a>.</div>';
   });
   var wrap=document.querySelector('.wp-wrap');
   if(wrap)wrap.addEventListener('click',function(e){var a=e.target.closest('a[href^="/"]');if(a)gaEvent('wpi_link',{to:a.getAttribute('href'),page:'whats-priced-in'});});

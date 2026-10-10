@@ -159,7 +159,7 @@
     },
     {
      "tag": "fixed",
-     "page": "/presell-calculator",
+     "page": "/harvest-price-tracker#presell",
      "name": "Harvest price now counts up to 200% of the projected price, and wheat no longer starts on $6.00",
      "text": "Revenue protection lets the harvest price count up to twice the projected price, and the calculator stopped short of that. It now counts up to 200% and says when the cap applies. Wheat also opened with a $6.00 price we had made up; it now starts blank until you enter one."
     },
@@ -319,13 +319,13 @@
     },
     {
      "tag": "fixed",
-     "page": "/ag-odds",
+     "page": "/#f-kalshi",
      "name": "The Fed card said the opposite of the contract",
      "text": "\u201cWill no Fed rate cuts happen in 2026?\u201d was trading at 96 cents and this page printed \u201c96% odds of a rate cut\u201d beside it. It is a contract that pays if there is NO cut, so the sentence was backwards, and the same fault turned \u201cWill 1 Fed rate cut happen in 2026?\u201d into another reading of the same thing. Every one of these now reads off the question it belongs to. This was ours."
     },
     {
      "tag": "improved",
-     "page": "/ag-odds",
+     "page": "/#f-kalshi",
      "name": "Four legs of one market now sit on one card",
      "text": "The board showed nine cards for what were four markets. Four of them were price steps on a single crude-oil contract, printed as if they were four separate bets, and their percentages looked like they should add up to something. They are now one card, with the note that a lower step is already inside a higher one, so the numbers are not meant to be added."
     },

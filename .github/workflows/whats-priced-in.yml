@@ -77,7 +77,7 @@ jobs:
             # The calendar's title names the next WASDE. This job runs every day,
             # weekends too, so the title rolls the morning after a report.
             python scripts/bake_seo.py --page usda-calendar.html || true
-            git add "$FILE" whats-priced-in.html scorecard.html cot.html ag-odds.html index.html usda-calendar.html
+            git add "$FILE" whats-priced-in.html scorecard.html cot.html index.html usda-calendar.html
             if git diff --staged --quiet; then echo "No change."; exit 0; fi
             git commit -m "Update what's priced in $(date -u +%Y-%m-%dT%H:%M:%SZ)"
             if git push origin "HEAD:$BR"; then echo "Pushed on attempt $i."; exit 0; fi
