@@ -26,13 +26,14 @@ silently stale page). Retry/backoff on transport errors. --selftest is
 offline and gates the workflow.
 """
 import json
+import math
 import os
 import sys
 import time
 import urllib.parse
 import urllib.request
 from collections import defaultdict
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 
 BASE = "https://agtransport.usda.gov/resource/{}.json"
 UA = {"User-Agent": "AGSIST/1.0 (+https://agsist.com)"}
@@ -121,6 +122,158 @@ def basis_guard(rows, band=BASIS_BAND):
     return kept, rejected
 
 
+# ONE-WEEK JUMPS ARE HELD UNTIL THE NEXT WEEK CONFIRMS THEM (2026-10-10).
+# USDA's week of 2026-10-02 moved Kansas corn from -$0.35 to -$1.60, North
+# Carolina soybeans from -$0.05 to -$4.50 and Kansas HRW from -$0.68 to -$3.94
+# in one week, in most interior regions at once. That is a break in the file,
+# not a market, and it sat inside the +/-$5 band. A point whose move from the
+# last kept week is bigger than JUMP_FLOOR, or than the crop's own 99.5th
+# percentile weekly move if that is bigger, is HELD: kept out of the history,
+# the average and the table, and listed with the move. It is accepted when the
+# week after it stays within the same distance of it (the new level held); a
+# point that snaps back is dropped as a one-week blip.
+# Why 50c: over the weekly changes this repo has on file (Apr-Sep 2026, about
+# 260 per crop across the state elevator series) the 99.5th percentile was
+# 26c corn, 27c soybeans, 46c wheat, and no corn or soybean elevator series
+# moved more than 27c in a week. 50c is about twice that for corn and beans
+# and still above wheat's tail. The run recomputes the percentile from its own
+# 6-year pull and uses it when it is larger, so a crop whose ordinary weeks
+# run wider gets a wider gate; both figures are written to the JSON.
+JUMP_FLOOR = 0.50
+JUMP_PCT = 0.995
+JUMP_MAX_GAP_DAYS = 9      # consecutive weekly postings only; a gap is not a week
+JUMP_RECENT_DAYS = 28      # the newest four weeks are judged, not used to set the gate
+
+
+def crop_family(commodity):
+    """'Corn', 'Soybeans', or 'Wheat' for any wheat class: the gate is set per
+    crop, and the three wheat classes share one history to have enough of it."""
+    c = str(commodity or "")
+    return "Wheat" if "wheat" in c.lower() else c
+
+
+def _days(a, b):
+    return (datetime.strptime(b[:10], "%Y-%m-%d") - datetime.strptime(a[:10], "%Y-%m-%d")).days
+
+
+def jump_thresholds(rows, floor=JUMP_FLOOR, pct=JUMP_PCT):
+    """{crop family: {"threshold", "p995", "n"}} from every consecutive weekly
+    change in the state elevator-bid series (the rows the page tables show).
+    The percentile is nearest-rank on the sorted absolute changes. Changes
+    landing in the last JUMP_RECENT_DAYS of the pull are left out: those are
+    the weeks being judged, and a break across ten regions at once would
+    otherwise widen its own gate."""
+    by = defaultdict(list)
+    for r in rows:
+        if str(r.get("market_type", "")).strip() != "Elevator Bid":
+            continue
+        try:
+            v = float(r["basis"])
+        except (KeyError, TypeError, ValueError):
+            continue
+        by[(r.get("commodity"), r.get("market_name"))].append((str(r["date"])[:10], v))
+    last = max((d for pts in by.values() for d, _ in pts), default="")
+    ch = defaultdict(list)
+    for (comm, _), pts in by.items():
+        pts.sort()
+        for (d0, v0), (d1, v1) in zip(pts, pts[1:]):
+            if 0 < _days(d0, d1) <= JUMP_MAX_GAP_DAYS and _days(d1, last) >= JUMP_RECENT_DAYS:
+                ch[crop_family(comm)].append(abs(v1 - v0))
+    out = {}
+    for fam, v in ch.items():
+        v.sort()
+        p = v[min(len(v) - 1, max(0, math.ceil(pct * len(v)) - 1))] if v else None
+        out[fam] = {"threshold": round(max(floor, p or 0), 3), "p995": round(p, 3) if p is not None else None,
+                    "n": len(v)}
+    return out
+
+
+def hold_jumps(pts, thr):
+    """pts sorted [(date, value)] -> (kept, held). held: [{date, value, prev,
+    prev_date, move, status}] where status is "held" (the newest point, no week
+    after it yet) or "blip" (the week after snapped back)."""
+    kept, held = [], []
+    for i, (d, v) in enumerate(pts):
+        if not kept:
+            kept.append((d, v))
+            continue
+        pd, pv = kept[-1]
+        if abs(v - pv) <= thr + 1e-9:
+            kept.append((d, v))
+            continue
+        nxt = pts[i + 1] if i + 1 < len(pts) else None
+        if nxt is not None and abs(nxt[1] - v) <= thr + 1e-9:
+            kept.append((d, v))           # the next week stayed at the new level
+            continue
+        held.append({"date": d, "value": round(v, 3), "prev": round(pv, 3), "prev_date": pd,
+                     "move": round(v - pv, 3), "status": "held" if nxt is None else "blip"})
+    return kept, held
+
+
+def apply_holds(rows, key_fields=("commodity", "market_name", "market_type"), thresholds=None):
+    """rows -> (rows kept, {series key: [held points]}, thresholds).
+
+    Then ONE WEEK PER TABLE: within each (commodity, market type), if any
+    series has its newest posting held, every series in that group is cut back
+    to the week before, so a table never prints one region's new week beside
+    another region's old one. The cut is listed per group in "weeks"."""
+    thresholds = thresholds if thresholds is not None else jump_thresholds(rows)
+    grouped = defaultdict(list)
+    for r in rows:
+        try:
+            float(r["basis"])
+        except (KeyError, TypeError, ValueError):
+            continue
+        grouped[tuple(str(r.get(f, "")).strip() for f in key_fields)].append(r)
+    kept_rows, held = [], {}
+    for k, rs in grouped.items():
+        rs.sort(key=lambda r: str(r["date"])[:10])
+        fam = crop_family(k[0])
+        thr = (thresholds.get(fam) or {}).get("threshold", JUMP_FLOOR)
+        kept, h = hold_jumps([(str(r["date"])[:10], float(r["basis"])) for r in rs], thr)
+        keep_dates = {d for d, _ in kept}
+        kept_rows += [r for r in rs if str(r["date"])[:10] in keep_dates]
+        if h:
+            held["|".join(k)] = h
+            for x in h:
+                print(f"  grain_basis: held {'|'.join(k)} {x['date']}: {x['prev']} -> {x['value']} "
+                      f"({x['move']:+.3f} $/bu in one week, gate {thr} $/bu, {x['status']})", file=sys.stderr)
+    return kept_rows, held, thresholds
+
+
+def one_week_per_group(rows, held, raw_rows, key_fields=("commodity", "market_name", "market_type")):
+    """-> (rows cut to each group's table week, weeks doc). weeks[group] =
+    {week, newest, held: [series...], waiting: [series...]}: `newest` is the
+    newest week USDA posted for the group; `week` is the week the table
+    shows. They differ only when a newest posting is held."""
+    newest = defaultdict(str)
+    for r in raw_rows:
+        g = (str(r.get("commodity", "")).strip(), str(r.get("market_type", "")).strip())
+        newest[g] = max(newest[g], str(r.get("date", ""))[:10])
+    held_new = defaultdict(list)
+    for key, hs in held.items():
+        p = key.split("|")
+        g = (p[0], p[2])
+        if any(x["status"] == "held" and x["date"] == newest[g] for x in hs):
+            held_new[g].append(key)
+    weeks = {}
+    out = []
+    by_g = defaultdict(list)
+    for r in rows:
+        by_g[(str(r.get("commodity", "")).strip(), str(r.get("market_type", "")).strip())].append(r)
+    for g, rs in by_g.items():
+        week = newest[g]
+        if held_new.get(g):
+            week = max((str(r["date"])[:10] for r in rs if str(r["date"])[:10] < newest[g]), default="")
+        cut = [r for r in rs if str(r["date"])[:10] <= week]
+        out += cut
+        waiting = sorted({"|".join(str(r.get(f, "")).strip() for f in key_fields)
+                          for r in rs if str(r["date"])[:10] > week} - set(held_new.get(g, [])))
+        weeks["|".join(g)] = {"week": week, "newest": newest[g], "held": sorted(held_new.get(g, [])),
+                              "waiting": waiting}
+    return out, weeks
+
+
 def series_stats(rows, key_fields, value_field, date_field="date"):
     """rows -> {series_key: {latest, latest_date, avg5, delta, hist[]}}"""
     grouped = defaultdict(list)
@@ -190,6 +343,9 @@ def build(fetch=get_json):
         basis_rows = [r for r in basis_rows
                       if (r.get("commodity"), r.get("market_name")) not in _dupes]
     basis_rows, rejected = basis_guard(basis_rows)
+    raw_rows = basis_rows
+    basis_rows, held, thresholds = apply_holds(basis_rows)
+    basis_rows, weeks = one_week_per_group(basis_rows, held, raw_rows)
     basis = series_stats(basis_rows, ["commodity", "market_name", "market_type"], "basis")
     barge = series_stats(barge_rows, ["location"], "rate")
 
@@ -212,7 +368,9 @@ def build(fetch=get_json):
     note = ("Attribution is regional (named markets and origins), not any specific "
             "elevator. Basis in $/bu vs futures; barge rate is % of 1976 benchmark tariff.")
     basis_doc = {"generated": stamp, "source": "USDA AgTransport grain_basis v85y-3hep",
-                 "note": note, "band": BASIS_BAND, "rejected": rejected, "series": basis}
+                 "note": note, "band": BASIS_BAND, "rejected": rejected,
+                 "jump": {"floor": JUMP_FLOOR, "pct": JUMP_PCT, "by_crop": thresholds},
+                 "held": held, "weeks": weeks, "series": basis}
     journey_doc = {"generated": stamp, "note": note,
                    "barge": barge,
                    "cost_index": {k: v for k, v in cost_latest.items()},
@@ -265,13 +423,56 @@ def selftest():
     # a real wide basis stays; a cents-for-dollars slip (-25 for -0.25) goes
     assert len(basis_guard([{"basis": "-2.95"}, {"basis": "3.1"}])[0]) == 2
     assert len(basis_guard([{"basis": "-25"}])[1]) == 1
+    # one-week jumps: held at the newest week, accepted when the next week
+    # stays at the new level, dropped when it snaps back (hand-worked).
+    k2, h2 = hold_jumps([("2026-09-18", -0.366), ("2026-09-25", -0.352), ("2026-10-02", -1.598)], 0.5)
+    assert [v for _, v in k2] == [-0.366, -0.352] and h2[0]["status"] == "held" and h2[0]["move"] == -1.246, h2
+    k3, h3 = hold_jumps([("2026-09-25", -0.35), ("2026-10-02", -1.60), ("2026-10-09", -1.55)], 0.5)
+    assert len(k3) == 3 and not h3, (k3, h3)
+    k4, h4 = hold_jumps([("2026-09-25", -0.35), ("2026-10-02", -1.60), ("2026-10-09", -0.36)], 0.5)
+    assert [v for _, v in k4] == [-0.35, -0.36] and h4[0]["status"] == "blip", h4
+    k5, h5 = hold_jumps([("2026-09-25", -0.35), ("2026-10-02", -0.84)], 0.5)
+    assert len(k5) == 2 and not h5, "a 49c move is inside a 50c gate"
+    # the gate: nearest-rank 99.5th percentile of the weekly moves, floored at
+    # 50c. 199 moves of 10c and one of 90c: rank ceil(.995*200)=199 -> 10c, so
+    # the floor rules; with two 60c moves on top, rank 199 is 60c.
+    def series_of(moves, name):
+        out, v = [], 0.0
+        for i, m in enumerate([0.0] + moves):
+            v += m if i % 2 else -m
+            d = (datetime(2022, 1, 7) + timedelta(days=7 * i)).strftime("%Y-%m-%d")
+            out.append({"date": d, "market_name": name, "market_type": "Elevator Bid",
+                        "commodity": "Corn", "basis": round(v, 4)})
+        return out
+    quiet = [0.0] * 4          # the last four weeks are judged, not counted
+    t1 = jump_thresholds(series_of([0.1] * 199 + [0.9] + quiet, "A"))["Corn"]
+    assert t1 == {"threshold": 0.5, "p995": 0.1, "n": 200}, t1
+    t2 = jump_thresholds(series_of([0.1] * 198 + [0.6, 0.6] + quiet, "A"))["Corn"]
+    assert t2["threshold"] == 0.6 and t2["n"] == 200, t2
+    # a ten-region break in the newest week does not widen its own gate
+    t3 = jump_thresholds(series_of([0.1] * 200 + [1.2], "A"))["Corn"]
+    assert t3["threshold"] == 0.5 and t3["n"] == 197, t3
+    assert crop_family("Hard Red Winter Wheat") == crop_family("Soft Red Winter Wheat") == "Wheat"
+    # one week per table: Kansas held at Oct 2 cuts Iowa back to Sep 25 too.
+    wk = []
+    for mkt, vals in (("Kansas", (-0.366, -0.352, -1.598)), ("Iowa", (-0.466, -0.432, -0.418))):
+        for d, b in zip(("2026-09-18", "2026-09-25", "2026-10-02"), vals):
+            wk.append({"date": d, "market_name": mkt, "market_type": "Elevator Bid", "commodity": "Corn", "basis": b})
+    kept6, held6, _ = apply_holds(wk, thresholds={"Corn": {"threshold": 0.5}})
+    cut6, weeks6 = one_week_per_group(kept6, held6, wk)
+    assert weeks6["Corn|Elevator Bid"] == {"week": "2026-09-25", "newest": "2026-10-02",
+                                           "held": ["Corn|Kansas|Elevator Bid"],
+                                           "waiting": ["Corn|Iowa|Elevator Bid"]}, weeks6
+    s6 = series_stats(cut6, ["commodity", "market_name", "market_type"], "basis")
+    assert s6["Corn|Iowa|Elevator Bid"]["latest"] == -0.432 and s6["Corn|Kansas|Elevator Bid"]["latest"] == -0.352
+    assert {x["date"] for x in s6.values()} == {"2026-09-25"}, "one week per table"
     # fail-loud path: empty dataset must raise
     try:
         build(fetch=lambda ds, p: [])
         raise AssertionError("empty dataset did not fail loud")
     except SystemExit:
         pass
-    print("SELFTEST OK — shaping, same-week avg, delta, history window, fail-loud")
+    print("SELFTEST OK: shaping, same-week avg, delta, history window, jump hold, one week per table, fail-loud")
 
 
 def main():

@@ -527,43 +527,56 @@ def seo_markets(c):
 
 
 def _basis_rows(j, crop):
+    """(table week, rows posted that week with a normal, newest week posted).
+    ONE WEEK PER TABLE, as the page prints it (2026-10-10): the week
+    scripts/fetch_transport.py wrote for the crop in `weeks` (a week back when
+    the newest one is held as a jump), else the newest posting. A region not
+    posted that week is not counted."""
     ser = (j or {}).get("series") or {}
     newest = max((_d(s.get("date")) for s in ser.values() if _d(s.get("date"))), default=None)
+    wk = _d((((j or {}).get("weeks") or {}).get(f"{crop}|Elevator Bid") or {}).get("week")) or newest
     rows = []
     for k, s in ser.items():
         parts = k.split("|")
         if len(parts) != 3 or parts[0] != crop or parts[2] != "Elevator Bid":
             continue
-        dt = _d(s.get("date"))
-        # the page withholds a row more than 14 days behind the newest week
-        if newest and dt and (newest - dt).days <= 14 and s.get("delta") is not None:
+        if wk and _d(s.get("date")) == wk and s.get("delta") is not None:
             rows.append((parts[1], s))
-    return newest, sorted(rows, key=lambda r: r[1]["delta"])
+    return wk, sorted(rows, key=lambda r: r[1]["delta"]), newest
 
 
 def seo_basis(c):
     """Regional corn basis against its own 5-year same-week normal, counted
-    with the page's own bands (more than 10 cents either way). Dated by the
-    USDA week in the description; the title carries only the count."""
+    with the page's own bands (more than 10 cents either way), in the week the
+    page's table shows. The title follows the larger side, says "mixed" on a
+    tie, and never calls a split week weak. Dated by the USDA week in the
+    description, with the held week named when there is one."""
     j = c.get("basis")
-    newest, rows = _basis_rows(j, "Corn")
-    if not rows or _too_old(newest, c["today"], 21):
+    wk, rows, newest = _basis_rows(j, "Corn")
+    if not rows or _too_old(wk, c["today"], 21):
         return None
     under = sum(1 for _, s in rows if s["delta"] < -0.1)
     over = sum(1 for _, s in rows if s["delta"] > 0.1)
     n = len(rows)
-    if under:
+    if under > over:
         title = f"Corn Basis vs Normal: Weak in {under} of {n} USDA Regions{SUFFIX}"
-    elif over:
+    elif over > under:
         title = f"Corn Basis vs Normal: Strong in {over} of {n} USDA Regions{SUFFIX}"
+    elif under:
+        title = f"Corn Basis vs Normal: Mixed Across {n} USDA Regions{SUFFIX}"
     else:
         title = f"Corn Basis vs Normal: All {n} USDA Regions Near Normal{SUFFIX}"
     name, w = rows[0]
     sign = lambda v: ("-" if v < 0 else "+") + f"${abs(v):.2f}"      # noqa: E731
-    head = (f"Week of {mdY(newest)}: corn basis is over 10¢ under its 5-year normal in "
-            f"{under} of {n} regions. Weakest: {name} {sign(w['latest'])} vs {sign(w['avg5'])}.")
-    tail = " Barge rates that move it."
-    desc = head + tail if len(head + tail) <= DESC_MAX else head
+    head = (f"Week of {mdY(wk)}: corn basis over 10¢ under its 5-year normal in {under} of {n} regions, "
+            f"over 10¢ above in {over}.")
+    held = len(((((j or {}).get("weeks") or {}).get("Corn|Elevator Bid") or {}).get("held")) or [])
+    tails = ([f" USDA's {newest.strftime('%b')} {newest.day} week is held."] if held and newest and newest != wk else []) + \
+        [f" Weakest: {name} {sign(w['latest'])} vs {sign(w['avg5'])}.", " Barge rates that move it."]
+    desc = head
+    for t in tails:
+        if len(desc + t) <= DESC_MAX:
+            desc += t
     return title, desc
 
 
@@ -1034,6 +1047,17 @@ def selftest():
     ck("basis is skipped when the newest week is a month old",
        seo_basis(dict(ctx, today=date(2026, 9, 20))) is None)
     ck("basis skipped with no file", seo_basis(dict(ctx, basis=None)) is None)
+    # a held week: the table steps back to Aug 7 and the counts follow it, not the jumped week
+    hb = {"weeks": {"Corn|Elevator Bid": {"week": "2026-08-07", "newest": "2026-08-14",
+                                         "held": ["Corn|Kansas|Elevator Bid"]}},
+          "series": {"Corn|Kansas|Elevator Bid": {"latest": -0.35, "date": "2026-08-07", "avg5": -0.30, "delta": -0.05},
+                     "Corn|Iowa|Elevator Bid": {"latest": -0.43, "date": "2026-08-07", "avg5": -0.31, "delta": -0.12},
+                     "Corn|Ohio|Elevator Bid": {"latest": -0.20, "date": "2026-08-07", "avg5": -0.33, "delta": 0.13},
+                     "Corn|Indiana|Elevator Bid": {"latest": -1.0, "date": "2026-08-14", "avg5": -0.3, "delta": -0.7}}}
+    t, d = seo_basis(dict(ctx, basis=hb))
+    ck("a held week: counted in the table's week, tie reads mixed", "Mixed Across 3" in t, t)
+    ck("a held week is named and Indiana's jumped week is not counted",
+       "Aug 7, 2026" in d and "Aug 14 week is held" in d and "Indiana" not in d, d)
     t, d = seo_fertilizer(ctx)
     ck("fertilizer title names this round's quotes", "Urea $590/ton" in t, t)
     ck("fertilizer title carries NO date (weekly/monthly data)",
