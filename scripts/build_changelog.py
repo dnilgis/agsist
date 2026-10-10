@@ -83,6 +83,27 @@ def validate(data):
 OPEN_DAYS = 14  # days shown open, counted back from the newest entry (not the clock, so the bake stays idempotent)
 
 
+ROOT = Path(__file__).resolve().parent.parent
+STUB_RE = re.compile(r'http-equiv=["\']refresh["\']', re.I)
+CANON_RE = re.compile(r'<link rel="canonical" href="https://agsist\.com(/[^"]*)"')
+
+
+def live_href(page, root=ROOT):
+    """An old entry can name a page that is now a redirect stub. Link where the
+    stub sends readers (its canonical), so no click on this page depends on a
+    stub. The stub file is the one record of where a page went."""
+    path, sep, frag = page.partition("#")
+    f = root / (path.strip("/") + ".html") if path.strip("/") else None
+    if not f or not f.is_file():
+        return page
+    html = f.read_text(encoding="utf-8")
+    m = CANON_RE.search(html)
+    if not STUB_RE.search(html) or not m:
+        return page
+    dest = m.group(1)
+    return dest + (sep + frag if frag and "#" not in dest else "")
+
+
 def render_day(e, h="h2"):
     out = [f'<section class="cl-day"><{h} class="cl-date">{pretty_date(e["date"])}</{h}>'
            f'<div class="cl-items">']
@@ -91,7 +112,7 @@ def render_day(e, h="h2"):
         out.append(
             f'<div class="cl-item"><div class="cl-top">'
             f'<span class="cl-tag cl-tag--{tag}">{TAGS[tag]}</span>'
-            f'<a class="cl-page" href="{esc(it["page"])}">{esc(it["name"])}</a>'
+            f'<a class="cl-page" href="{esc(live_href(it["page"]))}">{esc(it["name"])}</a>'
             f'</div><p class="cl-text">{esc(it["text"])}</p></div>')
     out.append('</div></section>')
     return "".join(out)
@@ -158,6 +179,10 @@ def gauntlet(html):
     assert m, "JSON-LD block missing"
     json.loads(m.group(1))  # raises if the bake corrupted it
     assert html.count("cl-day") >= 2, "suspiciously few baked entries"
+    hrefs = re.findall(r'class="cl-page" href="([^"]*)"', html)
+    assert len(hrefs) >= 20, f"only {len(hrefs)} entry links baked"
+    stubbed = sorted({h for h in hrefs if live_href(h) != h})
+    assert not stubbed, f"entry links land on redirect stubs: {stubbed}"
 
 
 def main():
